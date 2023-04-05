@@ -27,9 +27,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Bounty Hunter";
             StartText = "Find And Kill Your Target";
-            Objectives = "- Find And Kill your target.";
+            Objectives = "- Find and kill your target";
+            AbilitiesText = "- You can guess a player to be your bounty\n- Upon finding the bounty, you can kill them\n- After your bounty has been killed by you, you can kill others as " +
+                "many times as you want\n- If your target dies not by your hands, you will become a <color=#678D36FF>Troll</color>";
             Color = CustomGameOptions.CustomNeutColors ? Colors.BountyHunter : Colors.Neutral;
-            Type = RoleEnum.BountyHunter;
+            RoleType = RoleEnum.BountyHunter;
             RoleAlignment = RoleAlignment.NeutralEvil;
             AlignmentName = NE;
             UsesLeft = CustomGameOptions.BountyHunterGuesses;

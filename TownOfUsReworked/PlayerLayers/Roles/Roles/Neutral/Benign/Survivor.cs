@@ -20,14 +20,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Survivor";
             StartText = "Do Whatever It Takes To Live";
-            AbilitiesText = $"- You can put on a vest, which makes you unkillable for a short duration of time.\n- You have {UsesLeft} vests remaining.";
+            AbilitiesText = "- You can put on a vest, which makes you unkillable for a short duration of time";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Survivor : Colors.Neutral;
-            LastVested = DateTime.UtcNow;
-            Type = RoleEnum.Survivor;
+            RoleType = RoleEnum.Survivor;
             UsesLeft = CustomGameOptions.MaxVests;
             RoleAlignment = RoleAlignment.NeutralBen;
             AlignmentName = NB;
-            Objectives = "- Live to the end of the game.";
+            Objectives = "- Live to the end of the game";
             InspectorResults = InspectorResults.SeeksToProtect;
         }
 

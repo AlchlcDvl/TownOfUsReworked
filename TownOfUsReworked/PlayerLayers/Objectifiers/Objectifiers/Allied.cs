@@ -5,7 +5,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
 {
     public class Allied : Objectifier
     {
-        public string Objective = "- None.";
+        public string Objective = "- None";
         public Faction Side = Faction.Neutral;
 
         public Allied(PlayerControl player) : base(player)
@@ -14,7 +14,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             SymbolName = "ζ";
             TaskText = Objective;
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Allied : Colors.Objectifier;
-            Type = ObjectifierEnum.Allied;
+            ObjectifierType = ObjectifierEnum.Allied;
         }
     }
 }

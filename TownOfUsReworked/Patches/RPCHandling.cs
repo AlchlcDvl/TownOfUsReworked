@@ -42,7 +42,6 @@ using PerformDeclare = TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.Godfath
 using PerformSidekick = TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod.PerformAbility;
 using PerformShift = TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod.PerformShift;
 using PerformConvert = TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod.PerformConvert;
-using Mine = TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MinerMod.PerformMine;
 using Recruit = TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JackalMod.PerformRecruit;
 
 namespace TownOfUsReworked.Patches
@@ -367,6 +366,10 @@ namespace TownOfUsReworked.Patches
                         Role.GetRole<Mayor>(Utils.PlayerById(reader.ReadByte())).VoteBank += reader.ReadInt32();
                         break;
 
+                    case CustomRPC.AddPoliticianVoteBank:
+                        Role.GetRole<Politician>(Utils.PlayerById(reader.ReadByte())).VoteBank += reader.ReadInt32();
+                        break;
+
                     case CustomRPC.MeetingStart:
                         foreach (var body in Object.FindObjectsOfType<DeadBody>())
                             body.gameObject.Destroy();
@@ -526,9 +529,16 @@ namespace TownOfUsReworked.Patches
                                 mayorRole.VoteBank -= mayorRole.ExtraVotes.Count;
                                 break;
 
+                            case ActionsRPC.SetExtraVotesPol:
+                                var politian = Utils.PlayerById(reader.ReadByte());
+                                var polRole = Role.GetRole<Politician>(politian);
+                                polRole.ExtraVotes = reader.ReadBytesAndSize().ToList();
+                                polRole.VoteBank -= polRole.ExtraVotes.Count;
+                                break;
+
                             case ActionsRPC.SetSwaps:
-                                SwapVotes.Swap1 = MeetingHud.Instance.playerStates.FirstOrDefault(x => x.TargetPlayerId == reader.ReadSByte());
-                                SwapVotes.Swap2 = MeetingHud.Instance.playerStates.FirstOrDefault(x => x.TargetPlayerId == reader.ReadSByte());
+                                SwapVotes.Swap1 = MeetingHud.Instance.playerStates.FirstOrDefault(x => x.TargetPlayerId == reader.ReadByte());
+                                SwapVotes.Swap2 = MeetingHud.Instance.playerStates.FirstOrDefault(x => x.TargetPlayerId == reader.ReadByte());
                                 break;
 
                             case ActionsRPC.Remember:
@@ -610,6 +620,7 @@ namespace TownOfUsReworked.Patches
                                         var retRole9 = Role.GetRole<Retributionist>(ret9);
                                         retRole9.SwoopTimeRemaining = CustomGameOptions.SwoopDuration;
                                         retRole9.Invis();
+                                        Utils.Invis(ret9, ret9 == PlayerControl.LocalPlayer);
                                         break;
 
                                     case RetributionistActionsRPC.Mediate:
@@ -669,19 +680,10 @@ namespace TownOfUsReworked.Patches
                                         gfRole5.BlackmailedPlayer = Utils.PlayerById(reader.ReadByte());
                                         break;
 
-                                    case GodfatherActionsRPC.Mine:
-                                        var ventId2 = reader.ReadInt32();
-                                        var gf6 = Utils.PlayerById(reader.ReadByte());
-                                        var gfRole6 = Role.GetRole<Godfather>(gf6);
-                                        var pos2 = reader.ReadVector2();
-                                        var zAxis2 = reader.ReadSingle();
-                                        PerformDeclare.SpawnVent(ventId2, gfRole6, pos2, zAxis2);
-                                        break;
-
                                     case GodfatherActionsRPC.TimeFreeze:
                                         var gf7 = Utils.PlayerById(reader.ReadByte());
                                         var gfRole7 = Role.GetRole<Godfather>(gf7);
-                                        Freeze.FreezeFunctions.FreezeAll();
+                                        Freeze.FreezeAll();
                                         gfRole7.FreezeTimeRemaining = CustomGameOptions.FreezeDuration;
                                         gfRole7.TimeFreeze();
                                         break;
@@ -691,6 +693,7 @@ namespace TownOfUsReworked.Patches
                                         var gfRole8 = Role.GetRole<Godfather>(gf8);
                                         gfRole8.InvisTimeRemaining = CustomGameOptions.InvisDuration;
                                         gfRole8.Invis();
+                                        Utils.Invis(gf8, gf8 == PlayerControl.LocalPlayer || PlayerControl.LocalPlayer.Is(Faction.Intruder));
                                         break;
 
                                     case GodfatherActionsRPC.Drag:
@@ -771,6 +774,7 @@ namespace TownOfUsReworked.Patches
                                         var rebRole3 = Role.GetRole<Rebel>(reb3);
                                         rebRole3.ShapeshiftTimeRemaining = CustomGameOptions.ShapeshiftDuration;
                                         rebRole3.Shapeshift();
+                                        Utils.Shapeshift();
                                         break;
 
                                     case RebelActionsRPC.Confuse:
@@ -778,7 +782,7 @@ namespace TownOfUsReworked.Patches
                                         var rebRole5 = Role.GetRole<Rebel>(reb5);
                                         rebRole5.ConfuseTimeRemaining = CustomGameOptions.ConfuseDuration;
                                         rebRole5.Confuse();
-                                        Reverse.ConfuseFunctions.ConfuseAll();
+                                        Reverse.ConfuseAll();
                                         break;
                                 }
 
@@ -828,15 +832,42 @@ namespace TownOfUsReworked.Patches
                             case ActionsRPC.AssassinKill:
                                 var toDie = Utils.PlayerById(reader.ReadByte());
                                 var guessString = reader.ReadString();
-                                var assassin = Ability.GetAbilityValue<Assassin>(AbilityEnum.Assassin);
+                                var assassinator = Utils.PlayerById(reader.ReadByte());
+                                var assassin = Ability.GetAbility<Assassin>(assassinator);
                                 AssassinKill.MurderPlayer(assassin, toDie, guessString);
                                 break;
 
                             case ActionsRPC.GuesserKill:
                                 var toDie2 = Utils.PlayerById(reader.ReadByte());
                                 var guessString2 = reader.ReadString();
-                                var assassin2 = Role.GetRoleValue<Guesser>(RoleEnum.Guesser);
+                                var assassinator2 = Utils.PlayerById(reader.ReadByte());
+                                var assassin2 = Role.GetRole<Guesser>(assassinator2);
                                 GuesserKill.MurderPlayer(assassin2, toDie2, guessString2);
+                                break;
+
+                            case ActionsRPC.ForceKill:
+                                var victim = Utils.PlayerById(reader.ReadByte());
+                                victim.GetEnforcer().BombSuccessful = true;
+                                Role.GetRole(victim).Bombed = false;
+                                break;
+
+                            case ActionsRPC.AlertBomb:
+                                var victim3 = Utils.PlayerById(reader.ReadByte());
+                                Role.GetRole(victim3).Bombed = true;
+
+                                if (PlayerControl.LocalPlayer == victim3)
+                                    Utils.Flash(Colors.Enforcer, "There's a bomb on you!", 2);
+
+                                break;
+
+                            case ActionsRPC.SetBomb:
+                                var enf = Utils.PlayerById(reader.ReadByte());
+                                var victim2 = Utils.PlayerById(reader.ReadByte());
+                                var enfRole = Role.GetRole<Enforcer>(enf);
+                                enfRole.TimeRemaining = CustomGameOptions.EnforceDuration;
+                                enfRole.TimeRemaining2 = CustomGameOptions.EnforceRadius;
+                                enfRole.BombedPlayer = victim2;
+                                enfRole.Delay();
                                 break;
 
                             case ActionsRPC.Interrogate:
@@ -909,16 +940,16 @@ namespace TownOfUsReworked.Patches
                             case ActionsRPC.Mine:
                                 var ventId = reader.ReadInt32();
                                 var miner = Utils.PlayerById(reader.ReadByte());
-                                var minerRole = Role.GetRole<Miner>(miner);
+                                var minerRole = Role.GetRole(miner);
                                 var pos = reader.ReadVector2();
                                 var zAxis = reader.ReadSingle();
-                                Mine.SpawnVent(ventId, minerRole, pos, zAxis);
+                                Utils.SpawnVent(ventId, minerRole, pos, zAxis);
                                 break;
 
                             case ActionsRPC.TimeFreeze:
                                 var tm = Utils.PlayerById(reader.ReadByte());
                                 var tmRole = Role.GetRole<TimeMaster>(tm);
-                                Freeze.FreezeFunctions.FreezeAll();
+                                Freeze.FreezeAll();
                                 tmRole.TimeRemaining = CustomGameOptions.FreezeDuration;
                                 tmRole.TimeFreeze();
                                 break;
@@ -928,7 +959,7 @@ namespace TownOfUsReworked.Patches
                                 var drunkRole = Role.GetRole<Drunkard>(drunk);
                                 drunkRole.TimeRemaining = CustomGameOptions.ConfuseDuration;
                                 drunkRole.Confuse();
-                                Reverse.ConfuseFunctions.ConfuseAll();
+                                Reverse.ConfuseAll();
                                 break;
 
                             case ActionsRPC.Invis:
@@ -936,6 +967,7 @@ namespace TownOfUsReworked.Patches
                                 var wraithRole = Role.GetRole<Wraith>(wraith);
                                 wraithRole.TimeRemaining = CustomGameOptions.InvisDuration;
                                 wraithRole.Invis();
+                                Utils.Invis(wraith, wraith == PlayerControl.LocalPlayer || PlayerControl.LocalPlayer.Is(Faction.Intruder));
                                 break;
 
                             case ActionsRPC.Alert:
@@ -1086,6 +1118,7 @@ namespace TownOfUsReworked.Patches
                                 var chameleonRole = Role.GetRole<Chameleon>(chameleon);
                                 chameleonRole.TimeRemaining = CustomGameOptions.SwoopDuration;
                                 chameleonRole.Invis();
+                                Utils.Invis(chameleon, chameleon == PlayerControl.LocalPlayer);
                                 break;
 
                             case ActionsRPC.BarryButton:
@@ -1202,6 +1235,7 @@ namespace TownOfUsReworked.Patches
                                 var ssRole = Role.GetRole<Shapeshifter>(ss);
                                 ssRole.TimeRemaining = CustomGameOptions.ShapeshiftDuration;
                                 ssRole.Shapeshift();
+                                Utils.Shapeshift();
                                 break;
 
                             case ActionsRPC.Gaze:
@@ -1264,7 +1298,7 @@ namespace TownOfUsReworked.Patches
                             case WinLoseRPC.SoloNKWins:
                                 var nkRole = Role.GetRole(Utils.PlayerById(reader.ReadByte()));
 
-                                switch (nkRole.Type)
+                                switch (nkRole.RoleType)
                                 {
                                     case RoleEnum.Glitch:
                                         Role.GlitchWins = true;
@@ -1297,7 +1331,7 @@ namespace TownOfUsReworked.Patches
 
                                 if ((WinLoseRPC)id7 == WinLoseRPC.SameNKWins)
                                 {
-                                    foreach (var role in Role.GetRoles(nkRole.Type))
+                                    foreach (var role in Role.GetRoles(nkRole.RoleType))
                                     {
                                         if (!role.Player.Data.Disconnected && role.NotDefective)
                                             role.Winner = true;
@@ -1344,7 +1378,7 @@ namespace TownOfUsReworked.Patches
 
                                 if (reader.ReadBoolean())
                                 {
-                                    foreach (Corrupted corr in Objectifier.GetObjectifiers(ObjectifierEnum.Corrupted).Cast<Corrupted>())
+                                    foreach (var corr in Objectifier.GetObjectifiers<Corrupted>(ObjectifierEnum.Corrupted))
                                         corr.Winner = true;
                                 }
 
@@ -1361,7 +1395,7 @@ namespace TownOfUsReworked.Patches
                             case WinLoseRPC.OverlordWin:
                                 Objectifier.OverlordWins = true;
 
-                                foreach (Overlord ov in Objectifier.GetObjectifiers(ObjectifierEnum.Overlord).Cast<Overlord>())
+                                foreach (var ov in Objectifier.GetObjectifiers<Overlord>(ObjectifierEnum.Overlord))
                                     ov.Winner = true;
 
                                 break;

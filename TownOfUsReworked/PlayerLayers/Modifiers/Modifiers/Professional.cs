@@ -12,7 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
             Name = "Professional";
             TaskText = "- You have an extra life when assassinating.";
             Color = CustomGameOptions.CustomModifierColors ? Colors.Professional : Colors.Modifier;
-            Type = ModifierEnum.Professional;
+            ModifierType = ModifierEnum.Professional;
             Hidden = !CustomGameOptions.ProfessionalKnows && !LifeUsed;
             LifeUsed = false;
         }

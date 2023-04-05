@@ -95,7 +95,7 @@ namespace TownOfUsReworked.PlayerLayers
             }
             else if (Role.InfectorsWin)
             {
-                var role = Role.AllRoles.Find(x => x.Type == RoleEnum.Plaguebearer || x.Type == RoleEnum.Pestilence);
+                var role = Role.AllRoles.Find(x => x.RoleType == RoleEnum.Plaguebearer || x.RoleType == RoleEnum.Pestilence);
 
                 if (role == null)
                     return;
@@ -118,9 +118,9 @@ namespace TownOfUsReworked.PlayerLayers
             }
             else if (Role.RoleWins)
             {
-                var role = Role.AllRoles.Find(x => ((x.Type == RoleEnum.Arsonist && Role.ArsonistWins) || (x.Type == RoleEnum.Cryomaniac && Role.CryomaniacWins) ||
-                    (x.Type == RoleEnum.Glitch && Role.GlitchWins) || (x.Type == RoleEnum.Juggernaut && Role.JuggernautWins) || (x.Type == RoleEnum.Murderer &&
-                    Role.MurdererWins) || (x.Type == RoleEnum.SerialKiller && Role.SerialKillerWins) || (x.Type == RoleEnum.Werewolf && Role.WerewolfWins) || (x.Type ==
+                var role = Role.AllRoles.Find(x => ((x.RoleType == RoleEnum.Arsonist && Role.ArsonistWins) || (x.RoleType == RoleEnum.Cryomaniac && Role.CryomaniacWins) ||
+                    (x.RoleType == RoleEnum.Glitch && Role.GlitchWins) || (x.RoleType == RoleEnum.Juggernaut && Role.JuggernautWins) || (x.RoleType == RoleEnum.Murderer &&
+                    Role.MurdererWins) || (x.RoleType == RoleEnum.SerialKiller && Role.SerialKillerWins) || (x.RoleType == RoleEnum.Werewolf && Role.WerewolfWins) || (x.RoleType ==
                     RoleEnum.Phantom && Role.PhantomWins)) && x.Winner);
 
                 if (role == null)
@@ -132,15 +132,15 @@ namespace TownOfUsReworked.PlayerLayers
             }
             else if (Objectifier.ObjectifierWins)
             {
-                var obj = Objectifier.AllObjectifiers.Find(x => ((x.Type == ObjectifierEnum.Corrupted && Objectifier.CorruptedWins) || (x.Type ==
-                    ObjectifierEnum.Lovers && Objectifier.LoveWins) || (x.Type == ObjectifierEnum.Rivals && Objectifier.RivalWins) || (x.Type ==
-                    ObjectifierEnum.Taskmaster && Objectifier.TaskmasterWins) || (x.Type == ObjectifierEnum.Overlord && Objectifier.OverlordWins)) && x.Winner);
+                var obj = Objectifier.AllObjectifiers.Find(x => ((x.ObjectifierType == ObjectifierEnum.Corrupted && Objectifier.CorruptedWins) || (x.ObjectifierType ==
+                    ObjectifierEnum.Lovers && Objectifier.LoveWins) || (x.ObjectifierType == ObjectifierEnum.Rivals && Objectifier.RivalWins) || (x.ObjectifierType ==
+                    ObjectifierEnum.Taskmaster && Objectifier.TaskmasterWins) || (x.ObjectifierType == ObjectifierEnum.Overlord && Objectifier.OverlordWins)) && x.Winner);
 
                 if (obj == null)
                     return;
 
                 __instance.BackgroundBar.material.color = obj.Color;
-                text.text = (obj.Type == ObjectifierEnum.Lovers ? "Love" : obj.Type == ObjectifierEnum.Rivals ? "Rival" : $"{obj.Name}") + " Wins!";
+                text.text = (obj.ObjectifierType == ObjectifierEnum.Lovers ? "Love" : (obj.ObjectifierType == ObjectifierEnum.Rivals ? "Rival" : $"{obj.Name}")) + " Wins!";
                 text.color = obj.Color;
             }
 

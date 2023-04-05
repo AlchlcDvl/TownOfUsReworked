@@ -10,7 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
             Name = "Bait";
             TaskText = "- Killing you causes the killer to report your body.";
             Color = CustomGameOptions.CustomModifierColors ? Colors.Bait : Colors.Modifier;
-            Type = ModifierEnum.Bait;
+            ModifierType = ModifierEnum.Bait;
             Hidden = !CustomGameOptions.BaitKnows;
         }
     }

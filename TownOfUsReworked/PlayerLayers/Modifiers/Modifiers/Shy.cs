@@ -10,7 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
             Name = "Shy";
             TaskText = "- You cannot call meetings.";
             Color = CustomGameOptions.CustomModifierColors ? Colors.Shy : Colors.Modifier;
-            Type = ModifierEnum.Shy;
+            ModifierType = ModifierEnum.Shy;
         }
     }
 }

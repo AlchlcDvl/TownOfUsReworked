@@ -2,9 +2,7 @@ using HarmonyLib;
 using Reactor.Utilities;
 using TownOfUsReworked.CustomOptions;
 using UnityEngine;
-using Object = UnityEngine.Object;
 using TownOfUsReworked.PlayerLayers.Roles;
-using TownOfUsReworked.Data;
 using TownOfUsReworked.Objects;
 using System.Collections.Generic;
 using TownOfUsReworked.Classes;
@@ -16,32 +14,32 @@ namespace TownOfUsReworked.Extensions
     {
         public static void ClearBombs(this List<Bomb> obj)
         {
-            foreach (Bomb t in obj)
-            {
-                Object.Destroy(t.Transform.gameObject);
-                Coroutines.Stop(t.BombTimer());
-            }
+            foreach (var t in obj)
+                t.Stop();
 
             obj.Clear();
         }
 
         public static void DetonateBombs(this List<Bomb> obj, string name)
         {
-            foreach (Bomb t in obj)
+            if (Role.SyndicateHasChaosDrive)
             {
-                if (t.Players.Count == 0)
-                    continue;
-
-                foreach (var player in t.Players)
+                foreach (var t in obj)
                 {
-                    Utils.RpcMurderPlayer(player, player, false);
-                    var targetRole = Role.GetRole(player);
-                    targetRole.KilledBy = " By " + name;
-                    targetRole.DeathReason = DeathReasonEnum.Killed;
-                }
-            }
+                    if (t.Players.Count == 0)
+                        continue;
 
-            obj.ClearBombs();
+                    t.Detonate(name);
+                }
+
+                obj.ClearBombs();
+            }
+            else
+            {
+                var bomb = obj[^1];
+                bomb.Detonate(name);
+                obj.Remove(bomb);
+            }
         }
 
         public static Bomb CreateBomb(this Vector3 location)

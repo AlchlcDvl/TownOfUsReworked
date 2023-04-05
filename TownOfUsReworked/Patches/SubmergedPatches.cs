@@ -7,6 +7,7 @@ using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.Patches
 {
+    [HarmonyPatch]
     public static class SubmergedPatches
     {
         [HarmonyPatch(typeof(IntroCutscene._ShowRole_d__39), nameof(IntroCutscene._ShowRole_d__39.MoveNext))]

@@ -19,10 +19,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Drunkard";
             StartText = "Confuse The <color=#8BFDFDFF>Crew</color>";
-            AbilitiesText = "Confuse the <color=#8BFDFDFF>Crew</color>";
+            AbilitiesText = $"- You can invert player's controls for a short while\n{AbilitiesText}";
             Color = CustomGameOptions.CustomSynColors ? Colors.Drunkard : Colors.Syndicate;
             LastConfused = DateTime.UtcNow;
-            Type = RoleEnum.Drunkard;
+            RoleType = RoleEnum.Drunkard;
             RoleAlignment = RoleAlignment.SyndicateDisruption;
             AlignmentName = SD;
         }
@@ -49,7 +49,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Enabled = false;
             LastConfused = DateTime.UtcNow;
-            Reverse.ConfuseFunctions.UnconfuseAll();
+            Reverse.UnconfuseAll();
         }
     }
 }

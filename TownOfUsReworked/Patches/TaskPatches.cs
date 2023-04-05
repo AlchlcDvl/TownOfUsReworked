@@ -4,6 +4,7 @@ using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.Patches
 {
+    [HarmonyPatch]
     public static class TaskPatches
     {
         [HarmonyPatch(typeof(GameData), nameof(GameData.RecomputeTaskCounts))]

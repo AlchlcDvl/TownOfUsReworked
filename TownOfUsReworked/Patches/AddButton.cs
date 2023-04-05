@@ -14,9 +14,6 @@ namespace TownOfUsReworked.Patches
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
     public static class AddButton
     {
-        public static Sprite LighterSprite => AssetManager.Lighter;
-        public static Sprite DarkerSprite => AssetManager.Darker;
-
         private static bool IsExempt(PlayerVoteArea voteArea)
         {
             var player = Utils.PlayerByVoteArea(voteArea);
@@ -33,13 +30,13 @@ namespace TownOfUsReworked.Patches
             var newButton = Object.Instantiate(colorButton, voteArea.transform);
             var renderer = newButton.GetComponent<SpriteRenderer>();
 
-            PlayerControl playerControl = PlayerControl.AllPlayerControls.ToArray().FirstOrDefault(p => p.PlayerId == targetId);
+            var playerControl = PlayerControl.AllPlayerControls.ToArray().FirstOrDefault(p => p.PlayerId == targetId);
             var ColorString = Role.LightDarkColors[playerControl.GetDefaultOutfit().ColorId];
 
             if (ColorString == "lighter")
-                renderer.sprite = LighterSprite;
+                renderer.sprite = AssetManager.Lighter;
             else if (ColorString == "darker")
-                renderer.sprite = DarkerSprite;
+                renderer.sprite = AssetManager.Darker;
 
             newButton.transform.position = colorButton.transform.position - new Vector3(-0.8f, 0.2f, -2f);
             newButton.transform.localScale *= 0.8f;

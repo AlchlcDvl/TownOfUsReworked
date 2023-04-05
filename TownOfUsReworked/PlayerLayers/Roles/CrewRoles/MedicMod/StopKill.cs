@@ -1,9 +1,11 @@
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Data;
+using HarmonyLib;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod
 {
+    [HarmonyPatch]
     public static class StopKill
     {
         public static void BreakShield(byte medicId, byte playerId, bool flag)
@@ -22,12 +24,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod
 
             var player = Utils.PlayerById(playerId);
 
-            foreach (var role2 in Role.GetRoles(RoleEnum.Medic))
+            foreach (var role2 in Role.GetRoles<Medic>(RoleEnum.Medic))
             {
-                if (((Medic)role2).ShieldedPlayer.PlayerId == playerId)
+                if (role2.ShieldedPlayer.PlayerId == playerId)
                 {
-                    ((Medic)role2).ShieldedPlayer = null;
-                    ((Medic)role2).ExShielded = player;
+                    role2.ShieldedPlayer = null;
+                    role2.ExShielded = player;
                     Utils.LogSomething(player.name + " Is Ex-Shielded");
                 }
             }

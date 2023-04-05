@@ -9,14 +9,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
     {
         public static void Postfix()
         {
-            foreach (var role in Role.GetRoles(RoleEnum.Godfather))
-            {
-                var gf = (Godfather)role;
+            if (ConstantVariables.IsLobby || ConstantVariables.IsEnded)
+                return;
 
-                if (gf.FormerRole == null || gf.FormerRole?.Type == RoleEnum.Impostor || !gf.WasMafioso)
+            foreach (var gf in Role.GetRoles<Godfather>(RoleEnum.Godfather))
+            {
+                if (gf.FormerRole == null || gf.FormerRole?.RoleType == RoleEnum.Impostor || !gf.WasMafioso)
                     continue;
 
-                var formerRole = gf.FormerRole.Type;
+                var formerRole = gf.FormerRole.RoleType;
 
                 if (formerRole == RoleEnum.Grenadier)
                 {

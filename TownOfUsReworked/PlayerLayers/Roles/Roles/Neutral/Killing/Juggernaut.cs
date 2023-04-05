@@ -17,10 +17,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Juggernaut";
             StartText = "Your Power Grows With Every Kill";
-            AbilitiesText = "With each kill your kill cooldown decreases\nFake Tasks:";
+            AbilitiesText = "- With each kill, your kill cooldown decreases\n- At 4 kills, you bypass all forms of protection";
+            Objectives = "- Assault anyone who can oppose you";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Juggernaut : Colors.Neutral;
-            LastKilled = DateTime.UtcNow;
-            Type = RoleEnum.Juggernaut;
+            RoleType = RoleEnum.Juggernaut;
             RoleAlignment = RoleAlignment.NeutralKill;
             AlignmentName = NK;
             JuggKills = 0;

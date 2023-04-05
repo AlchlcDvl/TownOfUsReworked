@@ -14,11 +14,8 @@ namespace TownOfUsReworked.Extensions
     {
         public static void ClearBugs(this List<Bug> obj)
         {
-            foreach (Bug t in obj)
-            {
-                Object.Destroy(t.Transform.gameObject);
-                Coroutines.Stop(t.BugTimer());
-            }
+            foreach (var t in obj)
+                t.Stop();
 
             obj.Clear();
         }

@@ -9,14 +9,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EscortMod
     {
         public static void Postfix()
         {
-            foreach (var role in Role.GetRoles(RoleEnum.Escort))
-            {
-                var escort = (Escort)role;
+            if (ConstantVariables.IsLobby || ConstantVariables.IsEnded)
+                return;
 
-                if (escort.Blocking)
-                    escort.Block();
-                else if (escort.Enabled)
-                    escort.UnBlock();
+            foreach (var role in Role.GetRoles<Escort>(RoleEnum.Escort))
+            {
+                if (role.Blocking)
+                    role.Block();
+                else if (role.Enabled)
+                    role.UnBlock();
             }
         }
     }

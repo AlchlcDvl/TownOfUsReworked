@@ -11,15 +11,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public static class ShowShield
     {
-        private readonly static Color ProtectedColor = Color.cyan;
-
         public static void Postfix()
         {
-            foreach (var role in Role.GetRoles(RoleEnum.Retributionist))
-            {
-                var ret = (Retributionist)role;
+            if (ConstantVariables.IsLobby || ConstantVariables.IsEnded)
+                return;
 
-                if (ret.RevivedRole?.Type != RoleEnum.Medic)
+            foreach (var ret in Role.GetRoles<Retributionist>(RoleEnum.Retributionist))
+            {
+                if (ret.RevivedRole?.RoleType != RoleEnum.Medic)
                     continue;
 
                 var exPlayer = ret.ExShielded;
@@ -50,9 +49,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                     showShielded == ShieldOptions.SelfAndMedic)) || (PlayerControl.LocalPlayer.Is(RoleEnum.Medic) && (showShielded == ShieldOptions.Medic ||
                     showShielded == ShieldOptions.SelfAndMedic)))
                 {
-                    player.MyRend().material.SetColor("_VisorColor", ProtectedColor);
+                    player.MyRend().material.SetColor("_VisorColor", Color.cyan);
                     player.MyRend().material.SetFloat("_Outline", 1f);
-                    player.MyRend().material.SetColor("_OutlineColor", ProtectedColor);
+                    player.MyRend().material.SetColor("_OutlineColor", Color.cyan);
                 }
             }
         }

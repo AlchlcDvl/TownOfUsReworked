@@ -15,7 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             Name = "Radar";
             TaskText = "- You are aware of those close to you.";
             Color = CustomGameOptions.CustomAbilityColors ? Colors.Radar : Colors.Ability;
-            Type = AbilityEnum.Radar;
+            AbilityType = AbilityEnum.Radar;
             RadarArrow = new();
         }
 

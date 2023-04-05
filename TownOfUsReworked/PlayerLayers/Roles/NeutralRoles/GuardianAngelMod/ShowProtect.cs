@@ -13,9 +13,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod
     {
         public static void Postfix()
         {
-            foreach (var role in Role.GetRoles(RoleEnum.GuardianAngel))
+            if (ConstantVariables.IsLobby || ConstantVariables.IsEnded)
+                return;
+
+            foreach (var ga in Role.GetRoles<GuardianAngel>(RoleEnum.GuardianAngel))
             {
-                var ga = (GuardianAngel)role;
                 var player = ga.TargetPlayer;
 
                 if (player == null)

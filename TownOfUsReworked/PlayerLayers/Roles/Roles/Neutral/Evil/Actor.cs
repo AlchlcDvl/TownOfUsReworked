@@ -12,9 +12,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Actor";
             StartText = "Play Pretend WIth The Others";
-            Objectives = $"- Get guessed as one of your target roles.\n- Your target roles belong to the {PretendRoles} role list.";
+            Objectives = $"- Get guessed as one of your target roles\n- Your target roles belong to the {PretendRoles} role list";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Actor : Colors.Neutral;
-            Type = RoleEnum.Actor;
+            RoleType = RoleEnum.Actor;
             RoleAlignment = RoleAlignment.NeutralEvil;
             AlignmentName = NE;
         }

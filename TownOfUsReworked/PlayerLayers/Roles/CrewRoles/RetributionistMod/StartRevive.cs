@@ -60,7 +60,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                 return;
 
             ret.RevivedRole = Role.GetRole(revived);
-            ret.Used.Add(revived.PlayerId);
         }
     }
 }

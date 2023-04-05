@@ -16,11 +16,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Godfather(PlayerControl player) : base(player)
         {
             Name = "Godfather";
-            Type = RoleEnum.Godfather;
+            RoleType = RoleEnum.Godfather;
             StartText = "Promote Your Fellow <color=#FF0000FF>Intruders</color> To Do Better";
-            AbilitiesText = "- You can promote a fellow <color=#FF0000FF>Intruder</color> into becoming your successor.\n- Promoting an <color=#FF0000FF>Intruder</color> turns them " +
-                "into a <color=#6400FFFF>Mafioso</color>.\n- If you die, the <color=#6400FFFF>Mafioso</color> become the new <color=#404C08FF>Godfather</color>\nand inherits better " +
-                "abilities of their former role.";
+            AbilitiesText = "- You can promote a fellow <color=#FF0000FF>Intruder</color> into becoming your successor\n- Promoting an <color=#FF0000FF>Intruder</color> turns them " +
+                "into a <color=#6400FFFF>Mafioso</color>\n- If you die, the <color=#6400FFFF>Mafioso</color> will become the new <color=#404C08FF>Godfather</color>\nand inherits better " +
+                $"abilities of their former role\n{AbilitiesText}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Godfather : Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderSupport;
             AlignmentName = IS;
@@ -123,7 +123,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             //To stop the scenario where the flash and sabotage are called at the same time.
             var system = ShipStatus.Instance.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>();
             var dummyActive = system.dummy.IsActive;
-            var sabActive = system.specials.ToArray().Any(s => s.IsActive);
+            var sabActive = system.specials.Any(s => s.IsActive);
 
             if (sabActive || dummyActive)
                 return;
@@ -221,7 +221,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             var role = GetRole<Godfather>(__instance);
 
-            if (role.FormerRole?.Type != RoleEnum.Janitor)
+            if (role.FormerRole?.RoleType != RoleEnum.Janitor)
                 return;
 
             var body = role.CurrentlyDragging;
@@ -273,7 +273,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastCleaned;
-            var num = CustomButtons.GetModifiedCooldown(Utils.LastImp() && CustomGameOptions.SoloBoost ? (CustomGameOptions.JanitorCleanCd - CustomGameOptions.UnderdogKillBonus) :
+            var num = CustomButtons.GetModifiedCooldown(ConstantVariables.LastImp && CustomGameOptions.SoloBoost ? (CustomGameOptions.JanitorCleanCd - CustomGameOptions.UnderdogKillBonus) :
                 CustomGameOptions.JanitorCleanCd, CustomButtons.GetUnderdogChange(Player), CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -456,7 +456,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         }
 
         //Miner Stuff
-        public readonly List<Vent> Vents = new();
         public AbilityButton MineButton;
         public DateTime LastMined;
         public bool CanPlace;
@@ -551,7 +550,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             FreezeEnabled = false;
             LastFrozen = DateTime.UtcNow;
-            Freeze.FreezeFunctions.UnfreezeAll();
+            Freeze.UnfreezeAll();
         }
 
         //Ambusher Stuff

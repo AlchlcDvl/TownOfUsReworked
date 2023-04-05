@@ -90,9 +90,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
 
         public static void Postfix(MeetingHud __instance)
         {
-            foreach (var role in Role.GetRoles(RoleEnum.Swapper))
+            foreach (var swapper in Role.GetRoles<Swapper>(RoleEnum.Swapper))
             {
-                var swapper = (Swapper)role;
                 swapper.ListOfActives.Clear();
                 swapper.MoarButtons.Clear();
             }
@@ -104,7 +103,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
 
             for (var i = 0; i < __instance.playerStates.Length; i++)
             {
-                var player = Utils.PlayerById(__instance.playerStates[i].TargetPlayerId);
+                var player = Utils.PlayerByVoteArea(__instance.playerStates[i]);
                 var dead = player.Data.IsDead;
                 var swap = player == PlayerControl.LocalPlayer && !CustomGameOptions.SwapSelf && player.Is(RoleEnum.Swapper);
                 var voteswap = player == PlayerControl.LocalPlayer && __instance.playerStates[i].DidVote && player.Is(RoleEnum.Swapper) && !CustomGameOptions.SwapAfterVoting;

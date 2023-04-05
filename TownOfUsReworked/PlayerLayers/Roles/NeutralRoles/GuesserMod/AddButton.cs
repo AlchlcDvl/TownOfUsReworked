@@ -4,10 +4,11 @@ using Reactor.Utilities.Extensions;
 using TMPro;
 using TownOfUsReworked.Classes;
 using UnityEngine;
-using UnityEngine.UI;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Data;
+using static UnityEngine.UI.Button;
+using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
 {
@@ -27,7 +28,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
         {
             var targetId = voteArea.TargetPlayerId;
 
-            if (IsExempt(voteArea) || Utils.PlayerById(targetId) != role.TargetPlayer)
+            if (IsExempt(voteArea) || (Utils.PlayerById(targetId) != role.TargetPlayer && !role.TargetGuessed))
             {
                 role.MoarButtons[targetId] = (null, null, null, null);
                 return;
@@ -48,7 +49,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
             cycleBack.transform.localScale = new Vector3(0.8f, 0.8f, 0.8f);
             cycleBack.layer = 5;
             cycleBack.transform.parent = parent;
-            var cycleEventBack = new Button.ButtonClickedEvent();
+            var cycleEventBack = new ButtonClickedEvent();
             cycleEventBack.AddListener(Cycle(role, voteArea, nameText, false));
             cycleBack.GetComponent<PassiveButton>().OnClick = cycleEventBack;
             var cycleColliderBack = cycleBack.GetComponent<BoxCollider2D>();
@@ -63,7 +64,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
             cycleForward.transform.localScale = new Vector3(0.8f, 0.8f, 0.8f);
             cycleForward.layer = 5;
             cycleForward.transform.parent = parent;
-            var cycleEventForward = new Button.ButtonClickedEvent();
+            var cycleEventForward = new ButtonClickedEvent();
             cycleEventForward.AddListener(Cycle(role, voteArea, nameText, true));
             cycleForward.GetComponent<PassiveButton>().OnClick = cycleEventForward;
             var cycleColliderForward = cycleForward.GetComponent<BoxCollider2D>();
@@ -78,7 +79,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
             guess.transform.localScale = new Vector3(0.8f, 0.8f, 0.8f);
             guess.layer = 5;
             guess.transform.parent = parent;
-            var guessEvent = new Button.ButtonClickedEvent();
+            var guessEvent = new ButtonClickedEvent();
             guessEvent.AddListener(Guess(role, voteArea));
             guess.GetComponent<PassiveButton>().OnClick = guessEvent;
             var bounds = guess.GetComponent<SpriteRenderer>().bounds;
@@ -107,11 +108,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
                     if (++guessIndex >= role.PossibleGuesses.Count)
                         guessIndex = 0;
                 }
-                else
-                {
-                    if (--guessIndex < 0)
-                        guessIndex = role.PossibleGuesses.Count - 1;
-                }
+                else if (--guessIndex < 0)
+                    guessIndex = role.PossibleGuesses.Count - 1;
 
                 var newGuess = role.Guesses[voteArea.TargetPlayerId] = role.PossibleGuesses[guessIndex];
                 nameText.text = newGuess == "None" ? "Guess" : $"<color=#{role.SortedColorMapping[newGuess].ToHtmlStringRGBA()}>{newGuess}</color>";
@@ -154,9 +152,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
 
         public static void Postfix(MeetingHud __instance)
         {
-            foreach (var role in Role.GetRoles(RoleEnum.Guesser))
+            foreach (var guesser in Role.GetRoles<Guesser>(RoleEnum.Guesser))
             {
-                var guesser = (Guesser)role;
                 guesser.Guesses.Clear();
                 guesser.MoarButtons.Clear();
                 guesser.GuessedThisMeeting = false;

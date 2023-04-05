@@ -5,7 +5,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
         Declare,
         Morph,
         Camouflage,
-        Mine,
         Invis,
         Disguise,
         Drag,

@@ -13,7 +13,7 @@ namespace TownOfUsReworked.Patches
     {
         public static void Postfix(HudManager __instance)
         {
-            if (ConstantVariables.IsLobby)
+            if (ConstantVariables.IsLobby || ConstantVariables.IsEnded)
                 return;
 
             __instance.ImpostorVentButton.gameObject.SetActive(Utils.CanVent(PlayerControl.LocalPlayer, PlayerControl.LocalPlayer.Data) || ((PlayerControl.LocalPlayer.Is(RoleEnum.Revealer)

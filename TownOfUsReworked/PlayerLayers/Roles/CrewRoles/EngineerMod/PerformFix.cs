@@ -1,6 +1,6 @@
 using System.Linq;
 using HarmonyLib;
-using Hazel;
+using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Classes;
 using System;
 using TownOfUsReworked.Functions;
@@ -29,7 +29,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EngineerMod
                     return false;
 
                 var dummyActive = system.dummy.IsActive;
-                var sabActive = system.specials.ToArray().Any(s => s.IsActive);
+                var sabActive = system.specials.Any(s => s.IsActive);
 
                 if (!sabActive || dummyActive)
                     return false;

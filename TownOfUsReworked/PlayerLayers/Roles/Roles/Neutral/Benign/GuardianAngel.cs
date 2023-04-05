@@ -23,14 +23,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Guardian Angel";
             StartText = "Protect Your Target With Your Life";
-            Objectives = "- Have your target live to the end of the game.";
+            Objectives = "- Have your target live to the end of the game";
             Color = CustomGameOptions.CustomNeutColors ? Colors.GuardianAngel : Colors.Neutral;
-            LastProtected = DateTime.UtcNow;
-            Type = RoleEnum.GuardianAngel;
+            RoleType = RoleEnum.GuardianAngel;
             UsesLeft = CustomGameOptions.MaxProtects;
             RoleAlignment = RoleAlignment.NeutralBen;
             AlignmentName = NB;
-            AbilitiesText = "- You can protect your target from death for a short while.";
+            AbilitiesText = "- You can protect your target from death for a short while\n- If your target dies, you will be a <color=#DDDD00FF>Survivor</color>";
             InspectorResults = InspectorResults.SeeksToProtect;
         }
 

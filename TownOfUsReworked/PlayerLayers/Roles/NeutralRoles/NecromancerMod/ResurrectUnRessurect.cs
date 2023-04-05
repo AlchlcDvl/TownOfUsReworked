@@ -9,10 +9,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NecromancerMod
     {
         public static void Postfix()
         {
-            foreach (var role in Role.GetRoles(RoleEnum.Necromancer))
-            {
-                var necro = (Necromancer)role;
+            if (ConstantVariables.IsLobby || ConstantVariables.IsEnded)
+                return;
 
+            foreach (var necro in Role.GetRoles<Necromancer>(RoleEnum.Necromancer))
+            {
                 if (necro.IsResurrecting)
                     necro.Resurrect();
                 else if (necro.Resurrecting)

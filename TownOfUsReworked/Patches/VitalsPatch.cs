@@ -4,31 +4,35 @@ using HarmonyLib;
 using UnityEngine;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Patches;
+using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.CustomOptions;
 
-namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AgentMod
+namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch(typeof(VitalsMinigame), nameof(VitalsMinigame.Update))]
     public static class VitalsPatch
     {
+        private static int currentPage;
+        private const int maxPerPage = 15;
+        private static int MaxPages => (int)Mathf.Ceil((float)PlayerControl.AllPlayerControls.Count / maxPerPage);
+
         public static void Postfix(VitalsMinigame __instance)
         {
             var localPlayer = PlayerControl.LocalPlayer;
-            var isAgent = localPlayer.Is(RoleEnum.Agent) || (PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything);
+            var isOP = localPlayer.Is(RoleEnum.Operative) || (PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything);
 
-            if (!isAgent)
+            if (!isOP)
             {
                 var isRet = localPlayer.Is(RoleEnum.Retributionist);
 
                 if (isRet)
                 {
                     var retRole = Role.GetRole<Retributionist>(localPlayer);
-                    isAgent = retRole.RevivedRole?.Type == RoleEnum.Agent;
+                    isOP = retRole.RevivedRole?.RoleType == RoleEnum.Operative;
                 }
             }
 
-            if (!isAgent)
+            if (!isOP)
                 return;
 
             for (var i = 0; i < __instance.vitals.Count; i++)
@@ -50,41 +54,30 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AgentMod
                 tmp.color = Color.red;
                 tmp.text = Math.Ceiling(num / 1000) + "s";
             }
-        }
 
-        private static int currentPage;
-        private const int maxPerPage = 15;
-        private static int MaxPages => (int)Mathf.Ceil((float)PlayerControl.AllPlayerControls.Count / maxPerPage);
+            if (PlayerTask.PlayerHasTaskOfType<HudOverrideTask>(PlayerControl.LocalPlayer))
+                return;
 
-        [HarmonyPatch(typeof(VitalsMinigame), nameof(VitalsMinigame.Update))]
-        public static class VitalsGuiPatchUpdate
-        {
-            public static void Postfix(VitalsMinigame __instance)
+            if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.mouseScrollDelta.y > 0f)
+                currentPage = Mathf.Clamp(currentPage - 1, 0, MaxPages - 1);
+            else if (Input.GetKeyDown(KeyCode.RightArrow) || Input.mouseScrollDelta.y < 0f)
+                currentPage = Mathf.Clamp(currentPage + 1, 0, MaxPages - 1);
+
+            var j = 0;
+
+            foreach (var panel in __instance.vitals)
             {
-                if (PlayerTask.PlayerHasTaskOfType<HudOverrideTask>(PlayerControl.LocalPlayer))
-                    return;
-
-                if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.mouseScrollDelta.y > 0f)
-                    currentPage = Mathf.Clamp(currentPage - 1, 0, MaxPages - 1);
-                else if (Input.GetKeyDown(KeyCode.RightArrow) || Input.mouseScrollDelta.y < 0f)
-                    currentPage = Mathf.Clamp(currentPage + 1, 0, MaxPages - 1);
-
-                var i = 0;
-
-                foreach (var panel in __instance.vitals)
+                if (j >= currentPage * maxPerPage && j < (currentPage + 1) * maxPerPage)
                 {
-                    if (i >= currentPage * maxPerPage && i < (currentPage + 1) * maxPerPage)
-                    {
-                        panel.gameObject.SetActive(true);
-                        var relativeIndex = i % maxPerPage;
-                        panel.transform.localPosition = new Vector3(__instance.XStart + (__instance.XOffset * (relativeIndex % 3)), __instance.YStart + (__instance.YOffset *
-                            (relativeIndex / 3)), -1f);
-                    }
-                    else
-                        panel.gameObject.SetActive(false);
-
-                    i++;
+                    panel.gameObject.SetActive(true);
+                    var relativeIndex = j % maxPerPage;
+                    panel.transform.localPosition = new Vector3(__instance.XStart + (__instance.XOffset * (relativeIndex % 3)), __instance.YStart + (__instance.YOffset *
+                        (relativeIndex / 3)), -1f);
                 }
+                else
+                    panel.gameObject.SetActive(false);
+
+                j++;
             }
         }
     }

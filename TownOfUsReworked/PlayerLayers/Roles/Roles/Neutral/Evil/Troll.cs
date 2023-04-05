@@ -16,11 +16,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Troll";
             StartText = "Troll Everyone With Your Death";
-            AbilitiesText = "- You can interact with players.\n- Your interactions do nothing except spread infection and possibly kill you via touch sensitive roles.";
+            AbilitiesText = "- You can interact with players\n- Your interactions do nothing except spread infection and possibly kill you via touch sensitive roles";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Troll : Colors.Neutral;
-            Type = RoleEnum.Troll;
+            RoleType = RoleEnum.Troll;
             RoleAlignment = RoleAlignment.NeutralEvil;
             AlignmentName = NE;
+            Objectives = "- Get killed";
         }
 
         public float InteractTimer()

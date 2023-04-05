@@ -14,10 +14,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Thief";
             StartText = "Steal From The Killers";
-            AbilitiesText = "- You can kill players to steal their roles.\n- You cannot steal roles from players who cannot kill.";
+            AbilitiesText = "- You can kill players to steal their roles\n- You cannot steal roles from players who cannot kill.";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Thief : Colors.Neutral;
             LastStolen = DateTime.UtcNow;
-            Type = RoleEnum.Thief;
+            RoleType = RoleEnum.Thief;
             RoleAlignment = RoleAlignment.NeutralBen;
             AlignmentName = NB;
         }

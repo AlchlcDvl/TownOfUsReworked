@@ -6,6 +6,7 @@ using TownOfUsReworked.Data;
 namespace TownOfUsReworked.Patches
 {
     //Thanks to twix for this code
+    [HarmonyPatch]
     public static class Reportmessage
     {
         private static string location;

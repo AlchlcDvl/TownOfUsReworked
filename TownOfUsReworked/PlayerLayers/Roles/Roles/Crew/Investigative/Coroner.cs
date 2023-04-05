@@ -28,10 +28,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Coroner";
             StartText = "Examine The Dead For Info";
-            AbilitiesText = "- You know when players die and will be notified to as to where their body is for a brief period of time.\n- When reporting a body, you get all of " +
-                "the required info from it.";
+            AbilitiesText = "- You know when players die and will be notified to as to where their body is for a brief period of time\n- You will get a report when you report a body";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Coroner : Colors.Crew;
-            Type = RoleEnum.Coroner;
+            RoleType = RoleEnum.Coroner;
             RoleAlignment = RoleAlignment.CrewInvest;
             AlignmentName = CI;
             BodyArrows = new();

@@ -29,13 +29,13 @@ namespace TownOfUsReworked.Patches
             if (role != null)
                 objectiveString += role.Name;
 
-            if (objectifier != null)
+            if (objectifier != null && objectifier.ObjectifierType != ObjectifierEnum.None)
                 objectiveString += $" {objectifier.GetColoredSymbol()}";
 
-            if (modifier != null)
+            if (modifier != null && modifier.ModifierType != ModifierEnum.None)
                 otherString += $" {modifier.Name}";
 
-            if (ability != null)
+            if (ability != null && ability.AbilityType != AbilityEnum.None)
                 otherString += $" {ability.Name}";
 
             var String = objectiveString;

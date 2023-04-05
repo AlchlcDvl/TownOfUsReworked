@@ -5,8 +5,8 @@ using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles;
-using System.Linq;
 using HarmonyLib;
+using Reactor.Utilities;
 
 namespace TownOfUsReworked.Objects
 {
@@ -23,6 +23,12 @@ namespace TownOfUsReworked.Objects
                 yield return 0;
                 Update();
             }
+        }
+
+        public void Stop()
+        {
+            Object.Destroy(Transform.gameObject);
+            Coroutines.Stop(BugTimer());
         }
 
         public void Update()
@@ -51,25 +57,25 @@ namespace TownOfUsReworked.Objects
 
                     if (Players[entry.PlayerId] > CustomGameOptions.MinAmountOfTimeInBug)
                     {
-                        foreach (var t in Role.GetRoles(RoleEnum.Operative).Cast<Operative>())
+                        foreach (var t in Role.GetRoles<Operative>(RoleEnum.Operative))
                         {
                             if (t.Bugs.Contains(this))
                             {
-                                var playerrole = Role.GetRole(Utils.PlayerById(entry.PlayerId)).Type;
+                                var playerrole = Role.GetRole(Utils.PlayerById(entry.PlayerId)).RoleType;
 
                                 if (!t.BuggedPlayers.Contains(playerrole) && entry != t.Player)
                                     t.BuggedPlayers.Add(playerrole);
                             }
                         }
 
-                        foreach (var t in Role.GetRoles(RoleEnum.Retributionist).Cast<Retributionist>())
+                        foreach (var t in Role.GetRoles<Retributionist>(RoleEnum.Retributionist))
                         {
-                            if (t.RevivedRole?.Type != RoleEnum.Operative)
+                            if (t.RevivedRole?.RoleType != RoleEnum.Operative)
                                 continue;
 
                             if (t.Bugs.Contains(this))
                             {
-                                var playerrole = Role.GetRole(Utils.PlayerById(entry.PlayerId)).Type;
+                                var playerrole = Role.GetRole(Utils.PlayerById(entry.PlayerId)).RoleType;
 
                                 if (!t.BuggedPlayers.Contains(playerrole) && entry != t.Player)
                                     t.BuggedPlayers.Add(playerrole);

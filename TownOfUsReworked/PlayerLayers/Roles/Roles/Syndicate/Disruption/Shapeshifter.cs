@@ -19,9 +19,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Shapeshifter";
             StartText = "Change Everyone's Appearances";
-            AbilitiesText = "No one will know who they were";
+            AbilitiesText = $"- You can shuffle everyone's appearances\n{AbilitiesText}";
             Color = CustomGameOptions.CustomSynColors ? Colors.Shapeshifter : Colors.Syndicate;
-            Type = RoleEnum.Shapeshifter;
+            RoleType = RoleEnum.Shapeshifter;
             RoleAlignment = RoleAlignment.SyndicateDisruption;
             AlignmentName = SD;
         }
@@ -29,27 +29,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public void Shapeshift()
         {
             TimeRemaining -= Time.deltaTime;
+            Enabled = true;
 
             if (MeetingHud.Instance)
                 TimeRemaining = 0f;
-
-            if (!Enabled)
-            {
-                var allPlayers = PlayerControl.AllPlayerControls;
-
-                foreach (var player in allPlayers)
-                {
-                    var random = UnityEngine.Random.RandomRangeInt(0, allPlayers.Count);
-
-                    while (player == allPlayers[random])
-                        random = UnityEngine.Random.RandomRangeInt(0, allPlayers.Count);
-
-                    var otherPlayer = allPlayers[random];
-                    Utils.Morph(player, otherPlayer);
-                }
-
-                Enabled = true;
-            }
         }
 
         public void UnShapeshift()

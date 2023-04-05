@@ -22,9 +22,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Tracker";
             StartText = "Stalk Everyone To Monitor Their Movements";
-            AbilitiesText = $"- You can track players which creates arrows that update every now and then.\n- You have {UsesLeft} bugs left.";
+            AbilitiesText = "- You can track players which creates arrows that update every now and then";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Tracker : Colors.Crew;
-            Type = RoleEnum.Tracker;
+            RoleType = RoleEnum.Tracker;
             UsesLeft = CustomGameOptions.MaxTracks;
             TrackerArrows = new Dictionary<byte, ArrowBehaviour>();
             RoleAlignment = RoleAlignment.CrewInvest;

@@ -7,6 +7,7 @@ using TownOfUsReworked.CustomOptions;
 namespace TownOfUsReworked.Patches
 {
     //Thanks to The Other Roles: Community Edition for this code
+    [HarmonyPatch]
     public static class RandomSpawns
     {
         private readonly static System.Random rnd = new((int)DateTime.Now.Ticks);

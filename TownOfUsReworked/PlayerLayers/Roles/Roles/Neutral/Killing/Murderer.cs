@@ -15,10 +15,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Murderer";
             StartText = "Imagine Getting Boring Murderer";
-            AbilitiesText = "Kill everyone!";
+            Objectives = "- Murder anyone who can oppose you";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Murderer : Colors.Neutral;
-            LastKilled = DateTime.UtcNow;
-            Type = RoleEnum.Murderer;
+            RoleType = RoleEnum.Murderer;
             RoleAlignment = RoleAlignment.NeutralKill;
             AlignmentName = NK;
         }

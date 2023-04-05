@@ -80,9 +80,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod
                 Utils.Flash(thiefRole.Color, "You stole someone's role!");
                 thiefRole.StealButton.gameObject.SetActive(false);
                 thiefRole.OnLobby();
+                CustomButtons.ResetCustomTimers(false);
             }
 
-            Role newRole = role.Type switch
+            Role newRole = role.RoleType switch
             {
                 RoleEnum.Anarchist => new Anarchist(thief),
                 RoleEnum.Arsonist => new Arsonist(thief) { DousedPlayers = ((Arsonist)role).DousedPlayers },
@@ -97,6 +98,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod
                 RoleEnum.Dracula => new Dracula(thief) { Converted = ((Dracula)role).Converted },
                 RoleEnum.Framer => new Framer(thief),
                 RoleEnum.Glitch => new Glitch(thief),
+                RoleEnum.Enforcer => new Enforcer(thief),
                 RoleEnum.Godfather => new Godfather(thief),
                 RoleEnum.Gorgon => new Gorgon(thief) { Gazed = ((Gorgon)role).Gazed },
                 RoleEnum.Grenadier => new Grenadier(thief),
@@ -211,8 +213,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod
                     }
                 }
             }
-
-            CustomButtons.ResetCustomTimers(false);
         }
     }
 }

@@ -17,10 +17,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Gorgon";
             StartText = "Turn The <color=#8BFDFDFF>Crew</color> Into Sculptures";
-            AbilitiesText = "- You can stone gaze players, that slows them down and forces them to stand still till a meeting is called.\n- Stoned players cannot move and will die when " +
-                "a meeting is called.";
+            AbilitiesText = "- You can stone gaze players, that slows them down and forces them to stand still till a meeting is called\n- Stoned players cannot move and will die when " +
+                $"a meeting is called\n- With the Chaos Drive, players will not be frozen in place and will never know that they have been gazed by you\n{AbilitiesText}";
             Color = CustomGameOptions.CustomSynColors ? Colors.Gorgon : Colors.Syndicate;
-            Type = RoleEnum.Gorgon;
+            RoleType = RoleEnum.Gorgon;
             RoleAlignment = RoleAlignment.SyndicateKill;
             AlignmentName = SyK;
             Gazed = new();

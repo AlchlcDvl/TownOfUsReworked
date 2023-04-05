@@ -17,16 +17,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public DateTime LastInfected;
         public List<byte> InfectedPlayers = new();
         public int InfectedAlive => InfectedPlayers.Count;
-        public bool CanTransform => PlayerControl.AllPlayerControls.ToArray().Count(x => x?.Data.IsDead == false && !x.Data.Disconnected) <= InfectedAlive;
+        public bool CanTransform => PlayerControl.AllPlayerControls.Count(x => x?.Data.IsDead == false && !x.Data.Disconnected) <= InfectedAlive;
         public AbilityButton InfectButton;
 
         public Plaguebearer(PlayerControl player) : base(player)
         {
             Name = "Plaguebearer";
             StartText = "Spread Disease To Become Pestilence";
-            AbilitiesText = "Infect everyone to become Pestilence\nFake Tasks:";
+            AbilitiesText = "- You can infect players\n- When all players are infected, you will turn into <color=#424242FF>Pestilence</color>";
+            Objectives = "- Infect or kill anyone who can oppose you\n- Infect everyone to become <color=#424242FF>Pestilence</color>";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Plaguebearer : Colors.Neutral;
-            Type = RoleEnum.Plaguebearer;
+            RoleType = RoleEnum.Plaguebearer;
             RoleAlignment = RoleAlignment.NeutralKill;
             AlignmentName = NK;
             InfectedPlayers = new();
@@ -79,8 +80,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (CustomGameOptions.PlayersAlerted)
                 Utils.Flash(Colors.Pestilence, "A plague has spread within the crew, summoning <color=#424242FF>Pestilence</color>!");
-
-            if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
+            else if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
                 Utils.Flash(Colors.Seer, "Someone has changed their identity!");
         }
     }

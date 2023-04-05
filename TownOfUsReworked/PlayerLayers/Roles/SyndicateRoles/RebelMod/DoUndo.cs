@@ -9,14 +9,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
     {
         public static void Postfix()
         {
-            foreach (var role in Role.GetRoles(RoleEnum.Rebel))
-            {
-                var reb = (Rebel)role;
+            if (ConstantVariables.IsLobby || ConstantVariables.IsEnded)
+                return;
 
-                if (reb.FormerRole == null || reb.FormerRole?.Type == RoleEnum.Anarchist || !reb.WasSidekick)
+            foreach (var reb in Role.GetRoles<Rebel>(RoleEnum.Rebel))
+            {
+                if (reb.FormerRole == null || reb.FormerRole?.RoleType == RoleEnum.Anarchist || !reb.WasSidekick)
                     continue;
 
-                var formerRole = reb.FormerRole.Type;
+                var formerRole = reb.FormerRole.RoleType;
 
                 if (formerRole == RoleEnum.Concealer)
                 {

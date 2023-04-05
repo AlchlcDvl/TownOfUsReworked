@@ -22,9 +22,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Janitor";
             StartText = "Sanitise The Ship, By Any Means Neccessary";
-            AbilitiesText = "- You can clean up dead bodies, making them disappear from sight.\n- You can drag bodies to prevent them from getting reported.";
+            AbilitiesText = $"- You can clean up dead bodies, making them disappear from sight\n- You can drag bodies away to prevent them from getting reported.\n{AbilitiesText}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Janitor : Colors.Intruder;
-            Type = RoleEnum.Janitor;
+            RoleType = RoleEnum.Janitor;
             RoleAlignment = RoleAlignment.IntruderConceal;
             AlignmentName = IC;
             InspectorResults = InspectorResults.MeddlesWithDead;
@@ -35,7 +35,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastCleaned;
-            var num = CustomButtons.GetModifiedCooldown(Utils.LastImp() && CustomGameOptions.SoloBoost ? (CustomGameOptions.JanitorCleanCd - CustomGameOptions.UnderdogKillBonus) :
+            var num = CustomButtons.GetModifiedCooldown(ConstantVariables.LastImp && CustomGameOptions.SoloBoost ? (CustomGameOptions.JanitorCleanCd - CustomGameOptions.UnderdogKillBonus) :
                 CustomGameOptions.JanitorCleanCd, CustomButtons.GetUnderdogChange(Player)) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;

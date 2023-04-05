@@ -14,12 +14,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
                 if (__instance == null)
                     return;
 
-                foreach (var vigi in Role.GetRoles(RoleEnum.Vigilante))
+                foreach (var vigi in Role.GetRoles<Vigilante>(RoleEnum.Vigilante))
                 {
-                    var role = (Vigilante)vigi;
-
-                    if (role.PreMeetingDie)
-                        Utils.RpcMurderPlayer(role.Player, role.Player);
+                    if (vigi.PreMeetingDie)
+                        Utils.RpcMurderPlayer(vigi.Player, vigi.Player);
                 }
             }
         }
@@ -29,12 +27,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
         {
             public static void Postfix()
             {
-                foreach (var vigi in Role.GetRoles(RoleEnum.Vigilante))
+                foreach (var vigi in Role.GetRoles<Vigilante>(RoleEnum.Vigilante))
                 {
-                    var role = (Vigilante)vigi;
-
-                    if (role.PostMeetingDie)
-                        role.Player.Exiled();
+                    if (vigi.PostMeetingDie)
+                        vigi.Player.Exiled();
                 }
             }
         }

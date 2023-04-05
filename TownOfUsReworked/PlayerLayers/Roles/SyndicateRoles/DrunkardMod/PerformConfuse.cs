@@ -29,7 +29,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.DrunkardMod
                 writer.Write((byte)ActionsRPC.Confuse);
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Reverse.ConfuseFunctions.ConfuseAll();
+                Reverse.ConfuseAll();
                 role.TimeRemaining = CustomGameOptions.ConfuseDuration;
                 role.Confuse();
                 return false;

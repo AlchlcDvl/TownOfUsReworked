@@ -1,9 +1,4 @@
-using System.Collections.Generic;
-using Hazel;
-using UnityEngine;
-using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers
@@ -18,7 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             SymbolName = "α";
             TaskText = "- Get your rival killed and then live to the final 2.";
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Rivals : Colors.Objectifier;
-            Type = ObjectifierEnum.Rivals;
+            ObjectifierType = ObjectifierEnum.Rivals;
         }
 
         public bool RivalDead() => OtherRival?.Data?.IsDead == true || OtherRival?.Data?.Disconnected == true;

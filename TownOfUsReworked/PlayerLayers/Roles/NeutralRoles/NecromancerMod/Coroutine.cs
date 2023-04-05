@@ -54,12 +54,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NecromancerMod
                 }
             }
 
-            foreach (var deadBody in Object.FindObjectsOfType<DeadBody>())
-            {
-                if (deadBody.ParentId == role.Player.PlayerId)
-                    deadBody.gameObject.Destroy();
-            }
-
             var targetRole = Role.GetRole(player);
             targetRole.DeathReason = DeathReasonEnum.Revived;
             targetRole.KilledBy = " By " + role.PlayerName;
@@ -67,12 +61,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NecromancerMod
             targetRole.IsResurrected = true;
             role.Resurrected.Add(parentId);
 
-            foreach (var poisoner in Role.GetRoles(RoleEnum.Poisoner))
+            foreach (var poisoner in Role.GetRoles<Poisoner>(RoleEnum.Poisoner))
             {
-                var poisonerRole = (Poisoner)poisoner;
-
-                if (poisonerRole.PoisonedPlayer == player)
-                    poisonerRole.PoisonedPlayer = poisonerRole.Player;
+                if (poisoner.PoisonedPlayer == player)
+                    poisoner.PoisonedPlayer = null;
             }
 
             player.Revive();
@@ -102,16 +94,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NecromancerMod
             if (player.Is(ObjectifierEnum.Lovers) && CustomGameOptions.BothLoversDie)
             {
                 var lover = Objectifier.GetObjectifier<Lovers>(player).OtherLover;
-
                 lover.Revive();
                 Murder.KilledPlayers.Remove(Murder.KilledPlayers.Find(x => x.PlayerId == lover.PlayerId));
-
-                foreach (DeadBody deadBody in Object.FindObjectsOfType<DeadBody>())
-                {
-                    if (deadBody.ParentId == lover.PlayerId)
-                        deadBody.gameObject.Destroy();
-                }
-
+                Utils.BodyById(lover.PlayerId).gameObject.Destroy();
                 var loverRole = Role.GetRole(lover);
                 loverRole.DeathReason = DeathReasonEnum.Revived;
                 loverRole.KilledBy = " By " + role.PlayerName;

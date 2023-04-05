@@ -19,10 +19,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Chameleon";
             StartText = "Go Invisible To Stalk Players";
-            AbilitiesText = "- You can turn invisible.";
+            AbilitiesText = "- You can turn invisible";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Chameleon : Colors.Crew;
             LastSwooped = DateTime.UtcNow;
-            Type = RoleEnum.Chameleon;
+            RoleType = RoleEnum.Chameleon;
             AlignmentName = CS;
             InspectorResults = InspectorResults.Unseen;
         }
@@ -36,34 +36,22 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }
 
+        public override void Effect()
+        {
+            if (IsSwooped)
+                Invis();
+            else if (Enabled)
+                Uninvis();
+        }
+
         public void Invis()
         {
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
+            Utils.Invis(Player, PlayerControl.LocalPlayer == Player);
 
             if (MeetingHud.Instance || Player.Data.IsDead)
                 TimeRemaining = 0f;
-
-            var color = new Color32(0, 0, 0, 0);
-
-            if (PlayerControl.LocalPlayer.Data.IsDead || PlayerControl.LocalPlayer == Player)
-                color.a = 26;
-
-            if (Player.GetCustomOutfitType() != CustomPlayerOutfitType.Invis)
-            {
-                Player.SetOutfit(CustomPlayerOutfitType.Invis, new GameData.PlayerOutfit()
-                {
-                    ColorId = Player.CurrentOutfit.ColorId,
-                    HatId = "",
-                    SkinId = "",
-                    VisorId = "",
-                    PlayerName = " "
-                });
-
-                Player.MyRend().color = color;
-                Player.NameText().color = new Color32(0, 0, 0, 0);
-                Player.cosmetics.colorBlindText.color = new Color32(0, 0, 0, 0);
-            }
         }
 
         public void Uninvis()
@@ -71,7 +59,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Enabled = false;
             LastSwooped = DateTime.UtcNow;
             Utils.DefaultOutfit(Player);
-            Player.MyRend().color = new Color32(255, 255, 255, 255);
         }
     }
 }

@@ -28,10 +28,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Beamer";
             StartText = "Send A Player To Another";
-            AbilitiesText = "- You can pick a player to be beamed to another player of your choice.";
+            AbilitiesText = $"- You can pick a player to be beamed to another player of your choice\n{AbilitiesText}";
             Color = CustomGameOptions.CustomSynColors ? Colors.Beamer : Colors.Syndicate;
-            LastBeamed = DateTime.UtcNow;
-            Type = RoleEnum.Beamer;
+            RoleType = RoleEnum.Beamer;
             BeamPlayer1 = null;
             BeamPlayer2 = null;
             RoleAlignment = RoleAlignment.SyndicateSupport;

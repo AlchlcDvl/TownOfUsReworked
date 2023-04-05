@@ -8,6 +8,7 @@ using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
 {
+    [HarmonyPatch]
     public static class GFBlackmailMeetingUpdate
     {
         private static bool shookAlready;
@@ -26,7 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
             {
                 shookAlready = false;
 
-                foreach (var role in Role.GetRoles(RoleEnum.Godfather).Where(x => ((Godfather)x).FormerRole?.Type == RoleEnum.Blackmailer).Cast<Godfather>())
+                foreach (var role in Role.GetRoles<Godfather>(RoleEnum.Godfather))
                 {
                     if (role.BlackmailedPlayer?.PlayerId == PlayerControl.LocalPlayer.PlayerId && !role.BlackmailedPlayer.Data.IsDead)
                         Coroutines.Start(BlackmailShhh());
@@ -70,7 +71,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
         {
             public static void Postfix(MeetingHud __instance)
             {
-                foreach (var role in Role.GetRoles(RoleEnum.Godfather).Where(x => ((Godfather)x).FormerRole?.Type == RoleEnum.Blackmailer).Cast<Godfather>())
+                foreach (var role in Role.GetRoles<Godfather>(RoleEnum.Godfather))
                 {
                     if (role.BlackmailedPlayer?.Data.IsDead == false)
                     {
@@ -97,7 +98,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
         {
             public static bool Prefix()
             {
-                foreach (var role in Role.GetRoles(RoleEnum.Godfather).Where(x => ((Godfather)x).FormerRole?.Type == RoleEnum.Blackmailer).Cast<Godfather>())
+                foreach (var role in Role.GetRoles<Godfather>(RoleEnum.Godfather))
                 {
                     if (MeetingHud.Instance && role.BlackmailedPlayer?.Data.IsDead == false && role.BlackmailedPlayer == PlayerControl.LocalPlayer)
                         return false;

@@ -10,7 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
             Name = "Coward";
             TaskText = "- You can't report bodies.";
             Color = CustomGameOptions.CustomModifierColors ? Colors.Coward : Colors.Modifier;
-            Type = ModifierEnum.Coward;
+            ModifierType = ModifierEnum.Coward;
         }
     }
 }

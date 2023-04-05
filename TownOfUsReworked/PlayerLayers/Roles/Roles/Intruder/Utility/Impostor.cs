@@ -7,7 +7,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Impostor(PlayerControl player) : base(player)
         {
             Name = "Impostor";
-            Type = RoleEnum.Impostor;
+            RoleType = RoleEnum.Impostor;
             StartText = "Sabotage And Kill Everyone";
             RoleAlignment = RoleAlignment.IntruderUtil;
             AlignmentName = IU;

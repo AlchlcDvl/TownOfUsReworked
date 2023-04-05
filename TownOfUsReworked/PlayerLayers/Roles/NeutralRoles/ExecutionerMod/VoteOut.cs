@@ -17,10 +17,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ExecutionerMod
 
             var player = exiled.Object;
 
-            foreach (var role in Role.GetRoles(RoleEnum.Executioner))
+            foreach (var exe in Role.GetRoles<Executioner>(RoleEnum.Executioner))
             {
-                var exe = (Executioner)role;
-
                 if (exe.TargetPlayer == null || (!CustomGameOptions.ExeCanWinBeyondDeath && exe.Player.Data.IsDead))
                     continue;
 

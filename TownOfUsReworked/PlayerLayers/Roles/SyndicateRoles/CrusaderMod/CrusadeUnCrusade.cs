@@ -9,10 +9,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.CrusaderMod
     {
         public static void Postfix()
         {
-            foreach (var role in Role.GetRoles(RoleEnum.Crusader))
-            {
-                var crus = (Crusader)role;
+            if (ConstantVariables.IsLobby || ConstantVariables.IsEnded)
+                return;
 
+            foreach (var crus in Role.GetRoles<Crusader>(RoleEnum.Crusader))
+            {
                 if (crus.OnCrusade)
                     crus.Crusade();
                 else if (crus.Enabled)

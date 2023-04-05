@@ -22,10 +22,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Jester";
             StartText = "It Was Jest A Prank Bro";
-            AbilitiesText = "- After you get ejected, you can haunt a player.";
-            Objectives = "- Get ejected.";
+            AbilitiesText = "- After you get ejected, you can haunt a those who voted for you";
+            Objectives = "- Get ejected";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Jester : Colors.Neutral;
-            Type = RoleEnum.Jester;
+            RoleType = RoleEnum.Jester;
             RoleAlignment = RoleAlignment.NeutralEvil;
             AlignmentName = NE;
             ToHaunt = new();

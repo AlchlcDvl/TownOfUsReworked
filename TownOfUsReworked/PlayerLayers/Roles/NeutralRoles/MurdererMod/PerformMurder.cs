@@ -11,12 +11,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.MurdererMod
     {
         public static bool Prefix(AbilityButton __instance)
         {
-            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Betrayer))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Murderer))
                 return true;
 
-            var role = Role.GetRole<Betrayer>(PlayerControl.LocalPlayer);
+            var role = Role.GetRole<Murderer>(PlayerControl.LocalPlayer);
 
-            if (__instance == role.KillButton)
+            if (__instance == role.MurderButton)
             {
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;

@@ -10,24 +10,22 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CryomaniacMod
     {
         public static void Prefix()
         {
-            foreach (var cryo in Role.GetRoles(RoleEnum.Cryomaniac))
+            foreach (var cryo in Role.GetRoles<Cryomaniac>(RoleEnum.Cryomaniac))
             {
-                var role = (Cryomaniac)cryo;
-
-                if (role.FreezeUsed)
+                if (cryo.FreezeUsed)
                 {
-                    foreach (var player in role.DousedPlayers)
+                    foreach (var player in cryo.DousedPlayers)
                     {
                         var player2 = Utils.PlayerById(player);
 
                         if (player2.Data.IsDead || player2.Data.Disconnected || player2.Is(RoleEnum.Pestilence))
                             continue;
 
-                        Utils.RpcMurderPlayer(role.Player, player2);
+                        Utils.RpcMurderPlayer(cryo.Player, player2);
                     }
 
-                    role.DousedPlayers.Clear();
-                    role.FreezeUsed = false;
+                    cryo.DousedPlayers.Clear();
+                    cryo.FreezeUsed = false;
                 }
             }
         }

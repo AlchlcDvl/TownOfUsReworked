@@ -39,8 +39,8 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
             var traitorObj = Objectifier.GetObjectifier<Traitor>(traitor);
             var traitorRole = Role.GetRole(traitor);
 
-            var IntrudersAlive = PlayerControl.AllPlayerControls.ToArray().Count(x => x.Is(Faction.Intruder) && !x.Data.IsDead && !x.Data.Disconnected);
-            var SyndicateAlive = PlayerControl.AllPlayerControls.ToArray().Count(x => x.Is(Faction.Syndicate) && !x.Data.IsDead && !x.Data.Disconnected);
+            var IntrudersAlive = PlayerControl.AllPlayerControls.Count(x => x.Is(Faction.Intruder) && !x.Data.IsDead && !x.Data.Disconnected);
+            var SyndicateAlive = PlayerControl.AllPlayerControls.Count(x => x.Is(Faction.Syndicate) && !x.Data.IsDead && !x.Data.Disconnected);
 
             var turnIntruder = false;
             var turnSyndicate = false;
@@ -99,7 +99,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
             traitorObj.Turned = true;
             traitor.RegenTask();
 
-            foreach (var snitch in Ability.GetAbilities(AbilityEnum.Snitch).Cast<Snitch>())
+            foreach (var snitch in Ability.GetAbilities<Snitch>(AbilityEnum.Snitch))
             {
                 if (snitch.TasksLeft <= CustomGameOptions.SnitchTasksRemaining && traitor.Is(ObjectifierEnum.Traitor) && CustomGameOptions.SnitchSeesTraitor)
                 {
@@ -114,7 +114,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
                 }
             }
 
-            foreach (var revealer in Role.GetRoles(RoleEnum.Revealer).Cast<Revealer>())
+            foreach (var revealer in Role.GetRoles<Revealer>(RoleEnum.Revealer))
             {
                 if (revealer.Revealed && traitor.Is(ObjectifierEnum.Traitor) && traitorRole.TasksDone && CustomGameOptions.RevealerRevealsTraitor)
                 {

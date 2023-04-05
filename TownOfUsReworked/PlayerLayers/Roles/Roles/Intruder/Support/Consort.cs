@@ -21,10 +21,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Consort(PlayerControl player) : base(player)
         {
             Name = "Consort";
-            Type = RoleEnum.Consort;
+            RoleType = RoleEnum.Consort;
             StartText = "Roleblock The Crew And Stop Them From Progressing";
-            AbilitiesText = "- You can seduce players.\n- Seduction blocks your target from being able to use their abilities for a short while.\n- You are immune to blocks.\n" +
-                "- If you block a <color=#336EFFFF>Serial Killer</color>, they will be forced to kill you.";
+            AbilitiesText = "- You can seduce players\n- Seduction blocks your target from being able to use their abilities for a short while\n- You are immune to blocks\n" +
+                $"- If you block a <color=#336EFFFF>Serial Killer</color>, they will be forced to kill you\n{AbilitiesText}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Consort : Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderSupport;
             AlignmentName = IS;

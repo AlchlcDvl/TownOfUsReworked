@@ -19,6 +19,8 @@ using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GhoulMod;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.Extensions;
 using Random = UnityEngine.Random;
+using TownOfUsReworked.BetterMaps.Airship;
+using TownOfUsReworked.PlayerLayers;
 
 namespace TownOfUsReworked.Classes
 {
@@ -431,19 +433,6 @@ namespace TownOfUsReworked.Classes
                 }
 
                 Utils.LogSomething("Medic Done");
-            }
-
-            if (CustomGameOptions.AgentOn > 0)
-            {
-                num = ConstantVariables.IsCustom ? CustomGameOptions.AgentCount : 1;
-
-                while (num > 0)
-                {
-                    CrewInvestigativeRoles.Add((CustomGameOptions.AgentOn, 9, CustomGameOptions.UniqueAgent));
-                    num--;
-                }
-
-                Utils.LogSomething("Agent Done");
             }
 
             if (CustomGameOptions.AltruistOn > 0)
@@ -1142,6 +1131,19 @@ namespace TownOfUsReworked.Classes
                 Utils.LogSomething("Time Master Done");
             }
 
+            if (CustomGameOptions.EnforcerOn > 0)
+            {
+                num = ConstantVariables.IsCustom ? CustomGameOptions.EnforcerCount : 1;
+
+                while (num > 0)
+                {
+                    IntruderSupportRoles.Add((CustomGameOptions.EnforcerOn, 41, CustomGameOptions.UniqueEnforcer));
+                    num--;
+                }
+
+                Utils.LogSomething("Enforcer Done");
+            }
+
             if (CustomGameOptions.GodfatherOn > 0 && CustomGameOptions.IntruderCount >= 3)
             {
                 num = ConstantVariables.IsCustom ? CustomGameOptions.GodfatherCount : 1;
@@ -1270,6 +1272,19 @@ namespace TownOfUsReworked.Classes
                 }
 
                 Utils.LogSomething("Concealer Done");
+            }
+
+            if (CustomGameOptions.PoliticianOn > 0)
+            {
+                num = ConstantVariables.IsCustom ? CustomGameOptions.PoliticianCount : 1;
+
+                while (num > 0)
+                {
+                    SyndicatePowerRoles.Add((CustomGameOptions.PoliticianOn, 9, CustomGameOptions.UniquePolitician));
+                    num--;
+                }
+
+                Utils.LogSomething("Politician Done");
             }
 
             if (CustomGameOptions.WarperOn > 0 && GameOptionsManager.Instance.currentNormalGameOptions.MapId != 4 && GameOptionsManager.Instance.currentNormalGameOptions.MapId != 5)
@@ -2064,8 +2079,8 @@ namespace TownOfUsReworked.Classes
             canHaveTaskedAbility.RemoveAll(player => !player.CanDoTasks());
             canHaveTaskedAbility.Shuffle();
 
-            canHaveTorch.RemoveAll(player => !(player.Is(Faction.Crew) || player.Is(RoleAlignment.NeutralBen) || player.Is(RoleAlignment.NeutralEvil) || (player.Is(Faction.Neutral) &&
-                CustomGameOptions.LightsAffectNeutrals) || (player.Is(RoleAlignment.NeutralKill) && !CustomGameOptions.NKHasImpVision)));
+            canHaveTorch.RemoveAll(player => (player.Is(RoleAlignment.NeutralKill) && !CustomGameOptions.NKHasImpVision) || player.Is(Faction.Syndicate) || (player.Is(Faction.Neutral) &&
+                !CustomGameOptions.LightsAffectNeutrals) || player.Is(Faction.Intruder));
             canHaveTorch.Shuffle();
 
             canHaveEvilAbility.RemoveAll(player => !(player.Is(Faction.Intruder) || player.Is(Faction.Syndicate)));
@@ -2077,7 +2092,8 @@ namespace TownOfUsReworked.Classes
 
             canHaveBB.RemoveAll(player => (player.Is(RoleEnum.Mayor) && !CustomGameOptions.MayorButton) || (player.Is(RoleEnum.Jester) && !CustomGameOptions.JesterButton) ||
                 (player.Is(RoleEnum.Swapper) && !CustomGameOptions.SwapperButton) || (player.Is(RoleEnum.Actor) && !CustomGameOptions.ActorButton) || (player.Is(RoleEnum.Guesser) &&
-                !CustomGameOptions.GuesserButton) || (player.Is(RoleEnum.Executioner) && !CustomGameOptions.ExecutionerButton));
+                !CustomGameOptions.GuesserButton) || (player.Is(RoleEnum.Executioner) && !CustomGameOptions.ExecutionerButton) || (player.Is(RoleEnum.Politician) &&
+                !CustomGameOptions.PoliticianButton));
             canHaveBB.Shuffle();
 
             var spawnList = ConstantVariables.IsAA ? AASort(AllAbilities, allCount) : AllAbilities;
@@ -2520,7 +2536,7 @@ namespace TownOfUsReworked.Classes
         {
             if (CustomGameOptions.AlliedOn > 0)
             {
-                foreach (var ally in Objectifier.GetObjectifiers(ObjectifierEnum.Allied).Cast<Allied>())
+                foreach (var ally in Objectifier.GetObjectifiers<Allied>(ObjectifierEnum.Allied))
                 {
                     var alliedRole = Role.GetRole(ally.Player);
                     var crew = false;
@@ -2634,7 +2650,7 @@ namespace TownOfUsReworked.Classes
 
             if (CustomGameOptions.ExecutionerOn > 0)
             {
-                foreach (var exe in Role.GetRoles(RoleEnum.Executioner).Cast<Executioner>())
+                foreach (var exe in Role.GetRoles<Executioner>(RoleEnum.Executioner))
                 {
                     exe.TargetPlayer = null;
 
@@ -2662,7 +2678,7 @@ namespace TownOfUsReworked.Classes
 
             if (CustomGameOptions.GuesserOn > 0)
             {
-                foreach (var guess in Role.GetRoles(RoleEnum.Guesser).Cast<Guesser>())
+                foreach (var guess in Role.GetRoles<Guesser>(RoleEnum.Guesser))
                 {
                     guess.TargetPlayer = null;
 
@@ -2690,7 +2706,7 @@ namespace TownOfUsReworked.Classes
 
             if (CustomGameOptions.GuardianAngelOn > 0)
             {
-                foreach (var ga in Role.GetRoles(RoleEnum.GuardianAngel).Cast<GuardianAngel>())
+                foreach (var ga in Role.GetRoles<GuardianAngel>(RoleEnum.GuardianAngel))
                 {
                     ga.TargetPlayer = null;
 
@@ -2718,7 +2734,7 @@ namespace TownOfUsReworked.Classes
 
             if (CustomGameOptions.BountyHunterOn > 0)
             {
-                foreach (var bh in Role.GetRoles(RoleEnum.BountyHunter).Cast<BountyHunter>())
+                foreach (var bh in Role.GetRoles<BountyHunter>(RoleEnum.BountyHunter))
                 {
                     bh.TargetPlayer = null;
 
@@ -2746,7 +2762,7 @@ namespace TownOfUsReworked.Classes
 
             if (CustomGameOptions.ActorOn > 0)
             {
-                foreach (var act in Role.GetRoles(RoleEnum.Actor).Cast<Actor>())
+                foreach (var act in Role.GetRoles<Actor>(RoleEnum.Actor))
                 {
                     act.PretendRoles = InspectorResults.None;
 
@@ -2768,7 +2784,7 @@ namespace TownOfUsReworked.Classes
 
             if (CustomGameOptions.JackalOn > 0)
             {
-                foreach (var jackal in Role.GetRoles(RoleEnum.Jackal).Cast<Jackal>())
+                foreach (var jackal in Role.GetRoles<Jackal>(RoleEnum.Jackal))
                 {
                     jackal.GoodRecruit = null;
                     jackal.EvilRecruit = null;
@@ -2822,7 +2838,7 @@ namespace TownOfUsReworked.Classes
 
             if (CustomGameOptions.LoversOn > 0)
             {
-                foreach (var lover in Objectifier.GetObjectifiers(ObjectifierEnum.Lovers).Cast<Lovers>())
+                foreach (var lover in Objectifier.GetObjectifiers<Lovers>(ObjectifierEnum.Lovers))
                 {
                     if (lover.OtherLover != null || !lovers.Contains(lover.Player))
                         continue;
@@ -2849,7 +2865,7 @@ namespace TownOfUsReworked.Classes
                     }
                 }
 
-                foreach (var lover in Objectifier.GetObjectifiers(ObjectifierEnum.Lovers).Cast<Lovers>())
+                foreach (var lover in Objectifier.GetObjectifiers<Lovers>(ObjectifierEnum.Lovers))
                 {
                     if (lover.OtherLover == null || lovers.Contains(lover.Player))
                     {
@@ -2865,7 +2881,7 @@ namespace TownOfUsReworked.Classes
 
             if (CustomGameOptions.RivalsOn > 0)
             {
-                foreach (var rival in Objectifier.GetObjectifiers(ObjectifierEnum.Rivals).Cast<Rivals>())
+                foreach (var rival in Objectifier.GetObjectifiers<Rivals>(ObjectifierEnum.Rivals))
                 {
                     if (rival.OtherRival != null || !rivals.Contains(rival.Player))
                         continue;
@@ -2892,7 +2908,7 @@ namespace TownOfUsReworked.Classes
                     }
                 }
 
-                foreach (var rival in Objectifier.GetObjectifiers(ObjectifierEnum.Rivals).Cast<Rivals>())
+                foreach (var rival in Objectifier.GetObjectifiers<Rivals>(ObjectifierEnum.Rivals))
                 {
                     if (rival.OtherRival== null || rivals.Contains(rival.Player))
                     {
@@ -2988,6 +3004,9 @@ namespace TownOfUsReworked.Classes
             Objectifier.ObjectifierDictionary.Clear();
             Modifier.ModifierDictionary.Clear();
             Ability.AbilityDictionary.Clear();
+            PlayerLayer.Layers.Clear();
+
+            AddHauntPatch.AssassinatedPlayers.Clear();
 
             CrewAuditorRoles.Clear();
             CrewInvestigativeRoles.Clear();
@@ -3019,6 +3038,9 @@ namespace TownOfUsReworked.Classes
             RevealerOn = false;
             BansheeOn = false;
             GhoulOn = false;
+
+            Tasks.AllCustomPlateform.Clear();
+            Tasks.NearestTask = null;
         }
 
         public static void BeginRoleGen(List<GameData.PlayerInfo> infected)
@@ -3091,7 +3113,7 @@ namespace TownOfUsReworked.Classes
                     _ = new Medic(player);
                     break;
                 case 9:
-                    _ = new Agent(player);
+                    _ = new Politician(player);
                     break;
                 case 10:
                     _ = new Altruist(player);
@@ -3185,6 +3207,9 @@ namespace TownOfUsReworked.Classes
                     break;
                 case 40:
                     _ = new Troll(player);
+                    break;
+                case 41:
+                    _ = new Enforcer(player);
                     break;
                 case 42:
                     _ = new Morphling(player);

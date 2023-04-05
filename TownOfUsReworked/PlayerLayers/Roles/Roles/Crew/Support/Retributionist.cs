@@ -16,9 +16,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Retributionist";
             StartText = "Mimic the Dead";
-            AbilitiesText = "- You can mimic the abilities of dead selective <color=#8BFDFDFF>Crew</color>.";
+            AbilitiesText = "- You can mimic the abilities of dead selective <color=#8BFDFDFF>Crew</color>";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Retributionist : Colors.Crew;
-            Type = RoleEnum.Retributionist;
+            RoleType = RoleEnum.Retributionist;
             RoleAlignment = RoleAlignment.CrewSupport;
             AlignmentName = CS;
             InspectorResults = InspectorResults.DealsWithDead;
@@ -48,7 +48,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public AbilityButton CompareButton;
         public DateTime LastAutopsied;
         public int CompareUsesLeft;
-        public bool CompareButtonUsable => CompareUsesLeft > 0 && RevivedRole?.Type == RoleEnum.Coroner && ReferenceBody != null;
+        public bool CompareButtonUsable => CompareUsesLeft > 0 && RevivedRole?.RoleType == RoleEnum.Coroner && ReferenceBody != null;
         public DeadPlayer ReferenceBody;
         public DateTime LastCompared;
 
@@ -149,7 +149,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public List<RoleEnum> BuggedPlayers = new();
         public AbilityButton BugButton;
         public int BugUsesLeft;
-        public bool BugButtonUsable => BugUsesLeft > 0 && RevivedRole?.Type == RoleEnum.Operative;
+        public bool BugButtonUsable => BugUsesLeft > 0 && RevivedRole?.RoleType == RoleEnum.Operative;
 
         public float BugTimer()
         {
@@ -179,7 +179,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public DateTime LastTracked;
         public AbilityButton TrackButton;
         public int TrackUsesLeft;
-        public bool TrackButtonUsable => TrackUsesLeft > 0 && RevivedRole?.Type == RoleEnum.Tracker;
+        public bool TrackButtonUsable => TrackUsesLeft > 0 && RevivedRole?.RoleType == RoleEnum.Tracker;
 
         public float TrackerTimer()
         {
@@ -209,7 +209,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public DateTime LastKilled;
         public AbilityButton ShootButton;
         public int BulletsLeft;
-        public bool ShootButtonUsable => BulletsLeft > 0 && RevivedRole?.Type == RoleEnum.Vigilante;
+        public bool ShootButtonUsable => BulletsLeft > 0 && RevivedRole?.RoleType == RoleEnum.Vigilante;
 
         public float KillTimer()
         {
@@ -240,7 +240,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public bool OnAlert => AlertTimeRemaining > 0f;
         public AbilityButton AlertButton;
         public int AlertUsesLeft;
-        public bool AlertButtonUsable => AlertUsesLeft > 0 && RevivedRole?.Type == RoleEnum.Veteran;
+        public bool AlertButtonUsable => AlertUsesLeft > 0 && RevivedRole?.RoleType == RoleEnum.Veteran;
 
         public float AlertTimer()
         {
@@ -334,7 +334,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         //Engineer Stuff
         public AbilityButton FixButton;
         public int FixUsesLeft;
-        public bool FixButtonUsable => FixUsesLeft > 0 && RevivedRole?.Type == RoleEnum.Engineer;
+        public bool FixButtonUsable => FixUsesLeft > 0 && RevivedRole?.RoleType == RoleEnum.Engineer;
         public DateTime LastFixed;
 
         public float FixTimer()

@@ -9,10 +9,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SurvivorMod
     {
         public static void Postfix()
         {
-            foreach (var role in Role.GetRoles(RoleEnum.Survivor))
-            {
-                var surv = (Survivor)role;
+            if (ConstantVariables.IsLobby || ConstantVariables.IsEnded)
+                return;
 
+            foreach (var surv in Role.GetRoles<Survivor>(RoleEnum.Survivor))
+            {
                 if (surv.Vesting)
                     surv.Vest();
                 else if (surv.Enabled)

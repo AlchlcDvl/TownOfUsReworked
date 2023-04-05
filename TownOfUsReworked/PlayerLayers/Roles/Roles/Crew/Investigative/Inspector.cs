@@ -16,9 +16,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Inspector(PlayerControl player) : base(player)
         {
             Name = "Inspector";
-            Type = RoleEnum.Inspector;
+            RoleType = RoleEnum.Inspector;
             StartText = "Inspect Player For Their Roles";
-            AbilitiesText = "- You can check a player to get a role list of what they could be.";
+            AbilitiesText = "- You can check a player to get a role list of what they could be";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Inspector : Colors.Crew;
             RoleAlignment = RoleAlignment.CrewInvest;
             AlignmentName = CI;

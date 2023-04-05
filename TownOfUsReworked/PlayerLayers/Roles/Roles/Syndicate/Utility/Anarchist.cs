@@ -7,7 +7,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Anarchist(PlayerControl player) : base(player)
         {
             Name = "Anarchist";
-            Type = RoleEnum.Anarchist;
+            RoleType = RoleEnum.Anarchist;
             StartText = "Wreck Everyone With A Passion";
             RoleAlignment = RoleAlignment.SyndicateUtil;
             AlignmentName = SU;

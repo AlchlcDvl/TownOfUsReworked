@@ -28,32 +28,31 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 | [Intruders](#intruder-roles) | [Syndicate](#syndicate-roles) | [Crew](#crew-roles)               | [Neutrals](#neutral-roles)        |
 |------------------------------|-------------------------------|-----------------------------------|-----------------------------------|
-| [Ambusher](#ambusher)        | [Anarchist](#anarchist)       | [Agent](#agent)                   | [Actor](#actor)                   |
-| [Blackmailer](#blackmailer)  | [Banshee](#banshee)           | [Altruist](#altruist)             | [Amnesiac](#amnesiac)             |
-| [Camouflager](#camouflager)  | [Beamer](#beamer)             | [Chameleon](#chameleon)           | [Arsonist](#arsonist)             |
-| [Consigliere](#consigliere)  | [Bomber](#bomber)             | [Coroner](#coroner)               | [Betrayer](betrayer)              |
-| [Consort](#consort)          | [Concealer](#concealer)       | [Crewmate](#crewmate)             | [Bounty Hunter](#bounty-hunter)   |
-| [Disguiser](#disguiser)      | [Crusader](#crusader)         | [Detective](#detective)           | [Cannibal](#cannibal)             |
-| [Ghoul](#ghoul)              | [Drunkard](#drunkard)         | [Engineer](#engineer)             | [Cryomaniac](#cryomaniac)         |
-| [Godfather](#godfather)      | [Framer](#framer)             | [Escort](#escort)                 | [Dracula](#dracula)               |
-| [Grenadier](#grenadier)      | [Gorgon](#gorgon)             | [Inspector](#inspector)           | [Executioner](#executioner)       |
-| [Impostor](#impostor)        | [Poisoner](#poisoner)         | [Mayor](#mayor)                   | [Glitch](#glitch)                 |
-| [Janitor](#janitor)          | [Rebel](#rebel)               | [Medic](#medic)                   | [Guardian Angel](#guardian-angel) |
-| [Mafioso](#mafioso)          | [Shapeshifter](#shapeshifter) | [Medium](#medium)                 | [Guesser](#guesser)               |
-| [Miner](#miner)              | [Sidekick](#sidekick)         | [Mystic](#mystic)                 | [Jackal](#jackal)                 |
-| [Morphling](#morphling)      | [Warper](#warper)             | [Operative](#operative)           | [Jester](#jester)                 |
-| [Teleporter](#teleporter)    |                               | [Retributionist](#retributionist) | [Juggernaut](#juggernaut)         |
-| [Time Master](#time-master)  |                               | [Revealer](#revealer)             | [Murderer](#murderer)             |
-| [Wraith](#wraith)            |                               | [Seer](#seer)                     | [Necromancer](#necromancer)       |
-|                              |                               | [Sheriff](#sheriff)               | [Pestilence](#pestilence)         |
-|                              |                               | [Shifter](#shifter)               | [Phantom](#phantom)               |
-|                              |                               | [Swapper](#swapper)               | [Plaguebearer](#plaguebearer)     |
-|                              |                               | [Time Lord](#time-lord)           | [Serial Killer](#serial-killer)   |
-|                              |                               | [Tracker](#tracker)               | [Survivor](#survivor)             |
-|                              |                               | [Transporter](#transporter)       | [Thief](#thief)                   |
-|                              |                               | [Vampire Hunter](#vampire-hunter) | [Werewolf](#werewolf)             |
-|                              |                               | [Veteran](#veteran)               | [Whisperer](#whisperer)           |
-|                              |                               | [Vigilante](#vigilante)           |                                   |
+| [Ambusher](#ambusher)        | [Anarchist](#anarchist)       | [Altruist](#altruist)             | [Actor](#actor)                   |
+| [Blackmailer](#blackmailer)  | [Banshee](#banshee)           | [Chameleon](#chameleon)           | [Amnesiac](#amnesiac)             |
+| [Camouflager](#camouflager)  | [Beamer](#beamer)             | [Coroner](#coroner)               | [Arsonist](#arsonist)             |
+| [Consigliere](#consigliere)  | [Bomber](#bomber)             | [Crewmate](#crewmate)             | [Betrayer](betrayer)              |
+| [Consort](#consort)          | [Concealer](#concealer)       | [Detective](#detective)           | [Bounty Hunter](#bounty-hunter)   |
+| [Disguiser](#disguiser)      | [Crusader](#crusader)         | [Engineer](#engineer)             | [Cannibal](#cannibal)             |
+| [Enforcer](#enforcer)        | [Drunkard](#drunkard)         | [Escort](#escort)                 | [Cryomaniac](#cryomaniac)         |
+| [Ghoul](#ghoul)              | [Framer](#framer)             | [Inspector](#inspector)           | [Dracula](#dracula)               |
+| [Godfather](#godfather)      | [Gorgon](#gorgon)             | [Mayor](#mayor)                   | [Executioner](#executioner)       |
+| [Grenadier](#grenadier)      | [Poisoner](#poisoner)         | [Medic](#medic)                   | [Glitch](#glitch)                 |
+| [Impostor](#impostor)        | [Politician](#politician)     | [Medium](#medium)                 | [Guardian Angel](#guardian-angel) |
+| [Janitor](#janitor)          | [Rebel](#rebel)               | [Mystic](#mystic)                 | [Guesser](#guesser)               |
+| [Mafioso](#mafioso)          | [Shapeshifter](#shapeshifter) | [Operative](#operative)           | [Jackal](#jackal)                 |
+| [Miner](#miner)              | [Sidekick](#sidekick)         | [Retributionist](#retributionist) | [Jester](#jester)                 |
+| [Morphling](#morphling)      | [Warper](#warper)             | [Revealer](#revealer)             | [Juggernaut](#juggernaut)         |
+| [Teleporter](#teleporter)    |                               | [Seer](#seer)                     | [Murderer](#murderer)             |
+| [Time Master](#time-master)  |                               | [Sheriff](#sheriff)               | [Necromancer](#necromancer)       |
+| [Wraith](#wraith)            |                               | [Shifter](#shifter)               | [Pestilence](#pestilence)         |
+|                              |                               | [Swapper](#swapper)               | [Phantom](#phantom)               |
+|                              |                               | [Time Lord](#time-lord)           | [Plaguebearer](#plaguebearer)     |
+|                              |                               | [Tracker](#tracker)               | [Serial Killer](#serial-killer)   |
+|                              |                               | [Transporter](#transporter)       | [Survivor](#survivor)             |
+|                              |                               | [Vampire Hunter](#vampire-hunter) | [Thief](#thief)                   |
+|                              |                               | [Veteran](#veteran)               | [Werewolf](#werewolf)             |
+|                              |                               | [Vigilante](#vigilante)           | [Whisperer](#whisperer)           |
 
 | [Modifiers](#modifiers)       | [Abilities](#abilities)       | [Objectifiers](#objectifiers) |
 |-------------------------------|-------------------------------|-------------------------------|
@@ -126,6 +125,24 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 <details>
   <summary>Change Log</summary>
+  <details>
+    <summary>v0.0.3</summary>
+    <ul> <li>New Role: Politician [Syndicate (Power)]</li> </ul>
+    <ul> <li>New Role: Enforcer [Intruder (Killing)]</li> </ul>
+    <ul> <li>Merge: Agent has been merged into Operative, yet another soldier down :saluting_face:</li> </ul>
+    <ul> <li>Update: Updated the presets</li> </ul>
+    <ul> <li>Improvement: Task lists are finally finished</li> </ul>
+    <ul> <li>Improvement: Improved how certain functions work and are called</li> </ul>
+    <ul> <li>Improvement: Winning Guessers can now guess anyone after guessing their target's role</li> </ul>
+    <ul> <li>Bug Fix: Fixed the issue where an Amnesiac/Thief/Shifter changing roles reset everyone's cooldowns</li> </ul>
+    <ul> <li>Bug Fix: Fixed where bots would spawn in a public lobby after turning on persistance for robots in a local lobby</li> </ul>
+    <ul> <li>Bug Fix: Fixed the occasional log spam when assassinating which leads to lag spikes</li> </ul>
+    <ul> <li>Bug Fix: Fixed incorrect Torch assignment</li> </ul>
+    <ul> <li>Role Fix: Fixed the issue where shapeshift morphed multiple players into the same player</li> </ul>
+    <ul> <li>Role Fix: Fixed the issue where an assassinated player who is also blackmailed by the Godfather-Blackmailer would bug out</li> </ul>
+    <ul> <li>Role Fix: Fixed the issue with Murderer being unable to kill</li> </ul>
+    <ul> <li>Temporary Removal: Removed the second Spectate button till I figure out why you can't haunt</li> </ul>
+  </details>
   <details>
     <summary>v0.0.2dev8.75</summary>
     <ul> <li>Critical Fix: Fixed the issue of the mod not being recognised by BepInEx</li> </ul>
@@ -491,11 +508,6 @@ Delete these files and you're good to go!
 
 # Crew Roles
 
-## Agent
-### **Alignment: Crew (Investigative)**
-
-The Agent gains more information when on Admin Table and on Vitals. On Admin Table, the Agent can see the colors of every person on the map. When on Vitals, the Agent is shown how long someone has been dead for.
-
 ## Altruist
 ### **Alignment: Crew (Protective)**
 
@@ -666,7 +678,7 @@ The Mystic only spawns when there is at least one Neutral (Neophyte) role presen
 ## Operative
 ### **Alignment: Crew (Investigative)**
 
-The Operative can place bugs around the map. When players enter the range of the bug, they trigger it. In the following meeting, all players who triggered a bug will have their role displayed to the Operative. However, this is done so in a random order, not stating who entered the bug, nor what role a specific player is.
+The Operative can place bugs around the map. When players enter the range of the bug, they trigger it. In the following meeting, all players who triggered a bug will have their role displayed to the Operative. However, this is done so in a random order, not stating who entered the bug, nor what role a specific player is. The Operative also gains more information when on Admin Table and on Vitals. On Admin Table, the Operative can see the colors of every person on the map. When on Vitals, the Operative is shown how long someone has been dead for.
 
 ### Game Options
 

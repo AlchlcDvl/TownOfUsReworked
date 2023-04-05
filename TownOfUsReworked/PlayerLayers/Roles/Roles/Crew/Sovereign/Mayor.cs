@@ -17,10 +17,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Mayor";
             StartText = "Save Your Votes To Vote Dump Someone";
-            AbilitiesText = "- You can save your votes into your vote bank, so you can vote multiple times later.\n- You can vote multiple times as long as you haven't abstained or " +
-                "are the last player voting.";
+            AbilitiesText = "- You can save your votes into your vote bank, so you can vote multiple times later\n- You can vote multiple times as long as you haven't abstained or " +
+                "are the last player voting";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Mayor : Colors.Crew;
-            Type = RoleEnum.Mayor;
+            RoleType = RoleEnum.Mayor;
             VoteBank = CustomGameOptions.MayorVoteBank;
             RoleAlignment = RoleAlignment.CrewSov;
             AlignmentName = CSv;

@@ -3,12 +3,12 @@ using TownOfUsReworked.Classes;
 using UnityEngine;
 using TownOfUsReworked.Data;
 
-namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AgentMod
+namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod
 {
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
     public static class AddNumbers
     {
-        public static void GenNumber(Agent role, PlayerVoteArea voteArea)
+        public static void GenNumber(Operative role, PlayerVoteArea voteArea)
         {
             var targetId = voteArea.TargetPlayerId;
             var nameText = Object.Instantiate(voteArea.NameText, voteArea.transform);
@@ -19,19 +19,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AgentMod
 
         public static void Postfix(MeetingHud __instance)
         {
-            foreach (var role in Role.GetRoles(RoleEnum.Agent))
-            {
-                var agent = (Agent)role;
-                agent.PlayerNumbers.Clear();
-            }
+            foreach (var role2 in Role.GetRoles<Operative>(RoleEnum.Operative))
+                role2.PlayerNumbers.Clear();
 
-            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Agent))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Operative))
                 return;
 
-            var spyRole = Role.GetRole<Agent>(PlayerControl.LocalPlayer);
+            var role = Role.GetRole<Operative>(PlayerControl.LocalPlayer);
 
             foreach (var voteArea in __instance.playerStates)
-                GenNumber(spyRole, voteArea);
+                GenNumber(role, voteArea);
         }
     }
 }

@@ -9,10 +9,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.DrunkardMod
     {
         public static void Postfix()
         {
-            foreach (var role in Role.GetRoles(RoleEnum.Drunkard))
-            {
-                var drunk = (Drunkard)role;
+            if (ConstantVariables.IsLobby || ConstantVariables.IsEnded)
+                return;
 
+            foreach (var drunk in Role.GetRoles<Drunkard>(RoleEnum.Drunkard))
+            {
                 if (drunk.Confused)
                     drunk.Confuse();
                 else if (drunk.Enabled)

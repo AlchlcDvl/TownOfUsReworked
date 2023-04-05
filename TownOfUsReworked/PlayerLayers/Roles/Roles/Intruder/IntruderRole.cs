@@ -22,6 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = Colors.Intruder;
             Objectives = IntrudersWinCon;
             BaseFaction = Faction.Intruder;
+            AbilitiesText = "- You can kill players\n- You can call sabotages to distract the <color=#8BFDFDFF>Crew</color>";
         }
 
         public float KillTimer()

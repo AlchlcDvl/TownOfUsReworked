@@ -11,11 +11,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BansheeMod
     {
         public static void Postfix()
         {
-            foreach (var role in Role.GetRoles(RoleEnum.Banshee))
-            {
-                var banshee = (Banshee)role;
+            if (ConstantVariables.IsLobby || ConstantVariables.IsEnded)
+                return;
 
-                if (role.Player.Data.Disconnected)
+            foreach (var banshee in Role.GetRoles<Banshee>(RoleEnum.Banshee))
+            {
+                if (banshee.Player.Data.Disconnected)
                     continue;
 
                 var caught = banshee.Caught;
@@ -30,6 +31,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BansheeMod
                     banshee.Faded = false;
                     banshee.Player.MyPhysics.ResetMoveState();
                 }
+
+                if (banshee.Screaming)
+                    banshee.Scream();
+                else if (banshee.Enabled)
+                    banshee.UnScream();
             }
         }
     }

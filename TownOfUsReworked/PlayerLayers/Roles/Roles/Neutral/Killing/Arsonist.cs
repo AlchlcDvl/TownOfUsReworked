@@ -15,7 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     {
         public AbilityButton IgniteButton;
         public AbilityButton DouseButton;
-        public bool LastKiller => !PlayerControl.AllPlayerControls.ToArray().Any(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) ||
+        public bool LastKiller => !PlayerControl.AllPlayerControls.Any(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) ||
             x.Is(RoleAlignment.CrewKill) || x.Is(RoleAlignment.CrewAudit) || x.Is(RoleAlignment.NeutralPros) || (x.Is(RoleAlignment.NeutralKill) && x != Player)));
         public PlayerControl ClosestPlayer;
         public List<byte> DousedPlayers = new();
@@ -27,9 +27,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Arsonist";
             StartText = "Gasoline + Bean + Lighter = Bonfire";
-            AbilitiesText = "- You can douse players in gasoline.\n- Doused players can then be ignite to kill all doused players at once.\n- People who interact with you will also " +
-                "get doused.";
-            Type = RoleEnum.Arsonist;
+            AbilitiesText = "- You can douse players in gasoline\n- Doused players can be ignited, killing them all at once\n- People who interact with you will also get doused";
+            Objectives = "- Burn anyone who can oppose you";
+            RoleType = RoleEnum.Arsonist;
             RoleAlignment = RoleAlignment.NeutralKill;
             AlignmentName = NK;
             Color = CustomGameOptions.CustomNeutColors ? Colors.Arsonist : Colors.Neutral;
@@ -56,11 +56,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Ignite()
         {
-            foreach (var arso in Role.GetRoles(RoleEnum.Arsonist))
+            foreach (var arso in GetRoles<Arsonist>(RoleEnum.Arsonist))
             {
-                var arso2 = (Arsonist)arso;
+                if (arso.Player != Player && !CustomGameOptions.ArsoIgniteAll)
+                    continue;
 
-                foreach (var playerId in arso2.DousedPlayers)
+                foreach (var playerId in arso.DousedPlayers)
                 {
                     var player = Utils.PlayerById(playerId);
 
@@ -70,7 +71,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     Utils.RpcMurderPlayer(Player, player, false);
                 }
 
-                arso2.DousedPlayers.Clear();
+                arso.DousedPlayers.Clear();
             }
         }
 
@@ -78,7 +79,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             _ = new WaitForSeconds(1f);
 
-            if (!source.Is(Type))
+            if (!source.Is(RoleType))
                 return;
 
             DousedPlayers.Add(target.PlayerId);

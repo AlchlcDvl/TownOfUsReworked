@@ -1,7 +1,6 @@
 using HarmonyLib;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
-using System.Linq;
 using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod
@@ -16,10 +15,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod
 
         public static void Postfix()
         {
+            if (ConstantVariables.IsLobby || ConstantVariables.IsEnded)
+                return;
+
             CamouflagerEnabled = false;
             CommsEnabled = false;
 
-            foreach (var camouflager in Role.GetRoles(RoleEnum.Camouflager).Cast<Camouflager>())
+            foreach (var camouflager in Role.GetRoles<Camouflager>(RoleEnum.Camouflager))
             {
                 if (camouflager.Camouflaged)
                 {
@@ -33,7 +35,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod
                 }
             }
 
-            foreach (var godfather in Role.GetRoles(RoleEnum.Godfather).Cast<Godfather>())
+            foreach (var godfather in Role.GetRoles<Godfather>(RoleEnum.Godfather))
             {
                 if (godfather.Camouflaged)
                 {

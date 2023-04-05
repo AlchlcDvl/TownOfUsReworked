@@ -22,7 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
             if (SwapVotes.Swap1 == null || SwapVotes.Swap2 == null)
                 return self;
 
-            foreach (var swapper in Role.AllRoles.Where(x => x.Type == RoleEnum.Swapper))
+            foreach (var swapper in Role.GetRoles<Swapper>(RoleEnum.Swapper))
             {
                 if (swapper.Player.Data.IsDead || swapper.Player.Data.Disconnected)
                     return self;
@@ -154,12 +154,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
 
                     __instance.RpcVotingComplete(array, exiled, tie);
 
-                    foreach (var role in Role.GetRoles(RoleEnum.Mayor))
+                    foreach (var role in Role.GetRoles<Mayor>(RoleEnum.Mayor))
                     {
                         var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.Action, SendOption.Reliable);
                         writer.Write((byte)ActionsRPC.SetExtraVotes);
                         writer.Write(role.Player.PlayerId);
-                        writer.WriteBytesAndSize(((Mayor)role).ExtraVotes.ToArray());
+                        writer.WriteBytesAndSize(role.ExtraVotes.ToArray());
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    }
+
+                    foreach (var role in Role.GetRoles<Politician>(RoleEnum.Politician))
+                    {
+                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.Action, SendOption.Reliable);
+                        writer.Write((byte)ActionsRPC.SetExtraVotes);
+                        writer.Write(role.Player.PlayerId);
+                        writer.WriteBytesAndSize(role.ExtraVotes.ToArray());
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
                     }
                 }

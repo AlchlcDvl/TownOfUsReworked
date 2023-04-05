@@ -32,11 +32,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                     writer.Write(ret.Player.PlayerId);
 
                     if (Imitate == null)
-                        writer.Write(sbyte.MaxValue);
+                        writer.Write(255);
                     else
                     {
                         writer.Write(Imitate.TargetPlayerId);
-                        ret.Revived = Utils.PlayerById(Imitate.TargetPlayerId);
+                        ret.Revived = Utils.PlayerByVoteArea(Imitate);
+                        ret.Used.Add(ret.Revived.PlayerId);
                     }
 
                     AmongUsClient.Instance.FinishRpcImmediately(writer);

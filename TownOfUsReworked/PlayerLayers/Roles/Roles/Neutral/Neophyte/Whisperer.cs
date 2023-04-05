@@ -21,14 +21,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Whisperer";
             Color = Colors.Whisperer;
-            Type = RoleEnum.Whisperer;
+            AbilitiesText = "- You can whisper to players around, slowly bending them to your ideals\n- When a player reaches 100% conversion, they will defect and join the " +
+                "<color=#F995FCFF>Sect</color>";
+            Objectives = "- Persuade or kill anyone who can oppose the <color=#F995FCFF>Sect</color>";
+            RoleType = RoleEnum.Whisperer;
             RoleAlignment = RoleAlignment.NeutralNeo;
             SubFaction = SubFaction.Sect;
             SubFactionColor = Colors.Sect;
             AlignmentName = NN;
             PlayerConversion = new();
             WhisperConversion = CustomGameOptions.InitialWhisperRate;
-
             Persuaded = new()
             {
                 Player.PlayerId

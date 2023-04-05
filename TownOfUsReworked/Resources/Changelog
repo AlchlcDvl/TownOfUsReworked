@@ -1,2 +1,16 @@
 Changelog
-- Critical Fix: Fixed the issue of the mod not being recognised by BepInEx
+- New Role: Politician [Syndicate (Power)]
+- New Role: Enforcer [Intruder (Killing)]
+- Merge: Agent has been merged into Operative, yet another soldier down :saluting_face:
+- Update: Updated the presets
+- Improvement: Task lists are finally finished
+- Improvement: Improved how certain functions work and are called
+- Improvement: Winning Guessers can now guess anyone after guessing their target's role
+- Bug Fix: Fixed the issue where an Amnesiac/Thief/Shifter changing roles reset everyone's cooldowns
+- Bug Fix: Fixed where bots would spawn in a public lobby after turning on persistance for robots in a local lobby
+- Bug Fix: Fixed the occasional log spam when assassinating which leads to lag spikes
+- Bug Fix: Fixed incorrect Torch assignment
+- Role Fix: Fixed the issue where shapeshift morphed multiple players into the same player
+- Role Fix: Fixed the issue where an assassinated player who is also blackmailed by the Godfather-Blackmailer would bug out
+- Role Fix: Fixed the issue with Murderer being unable to kill
+- Temporary Removal: Removed the second Spectate button till I figure out why you can't haunt

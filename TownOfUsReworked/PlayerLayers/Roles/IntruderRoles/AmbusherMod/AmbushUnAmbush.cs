@@ -9,10 +9,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.AmbusherMod
     {
         public static void Postfix()
         {
-            foreach (var role in Role.GetRoles(RoleEnum.Ambusher))
-            {
-                var amb = (Ambusher)role;
+            if (ConstantVariables.IsLobby || ConstantVariables.IsEnded)
+                return;
 
+            foreach (var amb in Role.GetRoles<Ambusher>(RoleEnum.Ambusher))
+            {
                 if (amb.OnAmbush)
                     amb.Ambush();
                 else if (amb.Enabled)

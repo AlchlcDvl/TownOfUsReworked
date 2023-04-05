@@ -9,10 +9,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.ConcealerMod
     {
         public static void Postfix()
         {
-            foreach (var role in Role.GetRoles(RoleEnum.Concealer))
-            {
-                var concealer = (Concealer)role;
+            if (ConstantVariables.IsLobby || ConstantVariables.IsEnded)
+                return;
 
+            foreach (var concealer in Role.GetRoles<Concealer>(RoleEnum.Concealer))
+            {
                 if (concealer.Concealed)
                     concealer.Conceal();
                 else if (concealer.Enabled)

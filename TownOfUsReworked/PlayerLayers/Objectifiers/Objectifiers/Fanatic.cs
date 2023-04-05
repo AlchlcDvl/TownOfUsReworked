@@ -12,15 +12,15 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         public bool Turned;
         public string Objective;
         public Faction Side = Faction.Crew;
-        public bool Betray => (Side == Faction.Intruder && Utils.LastImp()) || (Side == Faction.Syndicate && Utils.LastSyn());
+        public bool Betray => (Side == Faction.Intruder && ConstantVariables.LastImp) || (Side == Faction.Syndicate && ConstantVariables.LastSyn);
 
         public Fanatic(PlayerControl player) : base(player)
         {
             Name = "Fanatic";
             SymbolName = "♠";
-            TaskText = "- Get attacked by either an <color=#FF0000FF>Intruder</color> or a <color=#008000FF>Syndicate</color> to join their side.";
+            TaskText = "- Get attacked by either an <color=#FF0000FF>Intruder</color> or a <color=#008000FF>Syndicate</color> to join their side";
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Fanatic : Colors.Objectifier;
-            Type = ObjectifierEnum.Fanatic;
+            ObjectifierType = ObjectifierEnum.Fanatic;
             Hidden = !CustomGameOptions.FanaticKnows && !Turned;
         }
 
@@ -59,13 +59,12 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         {
             var role = Role.GetRole(Player);
 
-            if (role.Type == RoleEnum.Betrayer)
+            if (role.RoleType == RoleEnum.Betrayer)
                 return;
 
             var betrayer = new Betrayer(Player);
             betrayer.RoleUpdate(role);
             betrayer.Objectives = role.Objectives;
-            Player.RegenTask();
 
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
                 Utils.Flash(Colors.Seer, "Someone changed their identity!");

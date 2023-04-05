@@ -16,7 +16,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             SymbolName = "δ";
             TaskText = "- Kill everyone";
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Corrupted : Colors.Objectifier;
-            Type = ObjectifierEnum.Corrupted;
+            ObjectifierType = ObjectifierEnum.Corrupted;
         }
 
         public float KillTimer()

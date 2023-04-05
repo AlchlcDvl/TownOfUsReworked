@@ -21,7 +21,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Revealer";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Revealer : Colors.Crew;
-            Type = RoleEnum.Revealer;
+            AbilitiesText = "- You can reveal evils players to the <color=#8BFDFDFF>Crew</color> once you finish your tasks without getting clicked.";
+            RoleType = RoleEnum.Revealer;
             RoleAlignment = RoleAlignment.CrewUtil;
             AlignmentName = CU;
             ImpArrows = new();

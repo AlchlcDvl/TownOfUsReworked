@@ -15,7 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             Name = "Button Barry";
             TaskText = "- You can call a button from anywhere.";
             Color = CustomGameOptions.CustomAbilityColors ? Colors.ButtonBarry : Colors.Ability;
-            Type = AbilityEnum.ButtonBarry;
+            AbilityType = AbilityEnum.ButtonBarry;
         }
 
         public float StartTimer()

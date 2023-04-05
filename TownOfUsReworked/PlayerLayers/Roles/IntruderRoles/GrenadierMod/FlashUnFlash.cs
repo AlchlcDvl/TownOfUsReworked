@@ -9,10 +9,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GrenadierMod
     {
         public static void Postfix()
         {
-            foreach (var role in Role.GetRoles(RoleEnum.Grenadier))
-            {
-                var grenadier = (Grenadier)role;
+            if (ConstantVariables.IsLobby || ConstantVariables.IsEnded)
+                return;
 
+            foreach (var grenadier in Role.GetRoles<Grenadier>(RoleEnum.Grenadier))
+            {
                 if (grenadier.Flashed)
                     grenadier.Flash();
                 else if (grenadier.Enabled)

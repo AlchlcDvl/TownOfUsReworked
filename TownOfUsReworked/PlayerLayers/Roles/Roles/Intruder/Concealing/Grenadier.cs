@@ -27,15 +27,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Grenadier";
             StartText = "Blind The <color=#8BFDFDFF>Crew</color> With Your Magnificent Figure";
-            AbilitiesText = "- You can drop a flashbang, which blinds players around you.";
+            AbilitiesText = $"- You can drop a flashbang, which blinds players around you\n{AbilitiesText}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Grenadier : Colors.Intruder;
-            LastFlashed = DateTime.UtcNow;
-            Type = RoleEnum.Grenadier;
+            RoleType = RoleEnum.Grenadier;
             RoleAlignment = RoleAlignment.IntruderConceal;
-            AlignmentName ="Intruder (Concealing)";
+            AlignmentName = IC;
             InspectorResults = InspectorResults.DropsItems;
             ClosestPlayers = new();
-            FlashedPlayers = new List<PlayerControl>();
+            FlashedPlayers = new();
         }
 
         public float FlashTimer()
@@ -64,7 +63,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             //To stop the scenario where the flash and sabotage are called at the same time.
             var system = ShipStatus.Instance.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>();
             var dummyActive = system.dummy.IsActive;
-            var sabActive = system.specials.ToArray().Any(s => s.IsActive);
+            var sabActive = system.specials.Any(s => s.IsActive);
 
             if (sabActive || dummyActive)
                 return;

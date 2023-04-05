@@ -9,10 +9,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ConsortMod
     {
         public static void Postfix()
         {
-            foreach (var role in Role.GetRoles(RoleEnum.Consort))
-            {
-                var consort = (Consort)role;
+            if (ConstantVariables.IsLobby || ConstantVariables.IsEnded)
+                return;
 
+            foreach (var consort in Role.GetRoles<Consort>(RoleEnum.Consort))
+            {
                 if (consort.Blocking)
                     consort.Block();
                 else if (consort.Enabled)

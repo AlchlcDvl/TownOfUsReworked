@@ -69,21 +69,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.IntruderMod
                     {
                         gf.LastKilled = DateTime.UtcNow;
 
-                        if (CustomGameOptions.JaniCooldownsLinked && gf.FormerRole?.Type == RoleEnum.Janitor)
+                        if (CustomGameOptions.JaniCooldownsLinked && gf.FormerRole?.RoleType == RoleEnum.Janitor)
                             gf.LastCleaned = DateTime.UtcNow;
                     }
                     else if (interact[1])
                     {
                         gf.LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
 
-                        if (CustomGameOptions.JaniCooldownsLinked && gf.FormerRole?.Type == RoleEnum.Janitor)
+                        if (CustomGameOptions.JaniCooldownsLinked && gf.FormerRole?.RoleType == RoleEnum.Janitor)
                             gf.LastCleaned.AddSeconds(CustomGameOptions.ProtectKCReset);
                     }
                     else if (interact[2])
                     {
                         gf.LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
 
-                        if (CustomGameOptions.JaniCooldownsLinked && gf.FormerRole?.Type == RoleEnum.Janitor)
+                        if (CustomGameOptions.JaniCooldownsLinked && gf.FormerRole?.RoleType == RoleEnum.Janitor)
                             gf.LastCleaned.AddSeconds(CustomGameOptions.VestKCReset);
                     }
 

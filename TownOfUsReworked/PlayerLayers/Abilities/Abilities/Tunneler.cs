@@ -10,7 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             Name = "Tunneler";
             TaskText = "- You can finish tasks to be able to vent.";
             Color = CustomGameOptions.CustomAbilityColors ? Colors.Tunneler : Colors.Ability;
-            Type = AbilityEnum.Tunneler;
+            AbilityType = AbilityEnum.Tunneler;
             Hidden = !CustomGameOptions.TunnelerKnows;
         }
     }

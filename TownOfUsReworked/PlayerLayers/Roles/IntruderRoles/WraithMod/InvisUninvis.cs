@@ -9,10 +9,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.WraithMod
     {
         public static void Postfix()
         {
-            foreach (var role in Role.GetRoles(RoleEnum.Wraith))
-            {
-                var wraith = (Wraith)role;
+            if (ConstantVariables.IsLobby || ConstantVariables.IsEnded)
+                return;
 
+            foreach (var wraith in Role.GetRoles<Wraith>(RoleEnum.Wraith))
+            {
                 if (wraith.IsInvis)
                     wraith.Invis();
                 else if (wraith.Enabled)

@@ -17,11 +17,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Werewolf(PlayerControl player) : base(player)
         {
             Name = "Werewolf";
-            StartText = "Howl And Maul Everyone";
-            AbilitiesText = "Kill everyone!";
+            StartText = "AWOOOOOOOOOO";
+            AbilitiesText = $"- You kill everyone within {CustomGameOptions.MaulRadius}m";
+            Objectives = "- Maul anyone who can oppose you";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Werewolf : Colors.Neutral;
-            LastMauled = DateTime.UtcNow;
-            Type = RoleEnum.Werewolf;
+            RoleType = RoleEnum.Werewolf;
             RoleAlignment = RoleAlignment.NeutralKill;
             AlignmentName = NK;
         }

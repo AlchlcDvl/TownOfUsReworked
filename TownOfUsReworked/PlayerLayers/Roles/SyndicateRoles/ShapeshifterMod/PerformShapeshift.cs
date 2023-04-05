@@ -30,6 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.ShapeshifterMod
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 role.TimeRemaining = CustomGameOptions.ShapeshiftDuration;
                 role.Shapeshift();
+                Utils.Shapeshift();
                 return false;
             }
 

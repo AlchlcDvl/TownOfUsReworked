@@ -29,12 +29,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Guesser(PlayerControl player) : base(player)
         {
             Name = "Guesser";
-            Type = RoleEnum.Guesser;
+            RoleType = RoleEnum.Guesser;
             RoleAlignment = RoleAlignment.NeutralEvil;
             AlignmentName = NE;
             Color = CustomGameOptions.CustomNeutColors ? Colors.Guesser : Colors.Neutral;
             RemainingGuesses = CustomGameOptions.GuessCount;
             MoarButtons = new();
+            Objectives = "- Guess your target's role";
+            AbilitiesText = "- You can guess player's roles without penalties after you have successfully guessed your target's role\n- If your target dies without getting guessed by " +
+                "you, you will become an <color=#00ACC2FF>Actor</color>";
             ColorMapping = new()
             {
                 { "Crewmate", Colors.Crew }
@@ -60,9 +63,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
                 if (CustomGameOptions.MedicOn > 0)
                     ColorMapping.Add("Medic", Colors.Medic);
-
-                if (CustomGameOptions.AgentOn > 0)
-                    ColorMapping.Add("Agent", Colors.Agent);
 
                 if (CustomGameOptions.AltruistOn > 0)
                     ColorMapping.Add("Altruist", Colors.Altruist);

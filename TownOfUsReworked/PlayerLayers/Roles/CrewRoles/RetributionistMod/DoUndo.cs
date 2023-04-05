@@ -9,14 +9,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod.Revive
     {
         public static void Postfix()
         {
-            foreach (var role in Role.GetRoles(RoleEnum.Retributionist))
-            {
-                var ret = (Retributionist)role;
+            if (ConstantVariables.IsLobby || ConstantVariables.IsEnded)
+                return;
 
+            foreach (var ret in Role.GetRoles<Retributionist>(RoleEnum.Retributionist))
+            {
                 if (ret.RevivedRole == null)
                     continue;
 
-                var revivedRole = ret.RevivedRole.Type;
+                var revivedRole = ret.RevivedRole.RoleType;
 
                 if (revivedRole == RoleEnum.Chameleon)
                 {

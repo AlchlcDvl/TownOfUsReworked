@@ -1,5 +1,9 @@
 using HarmonyLib;
 using UnityEngine;
+using TownOfUsReworked.Classes;
+using TownOfUsReworked.Extensions;
+using Hazel;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 {
@@ -31,8 +35,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                 ResolutionManager.ResolutionChanged.Invoke((float)Screen.width / Screen.height);
                 return false;
             }
-            else if (__instance == role.SpectateButton)
+            else if (__instance == role.BombKillButton)
             {
+                if (Utils.IsTooFar(role.Player, role.ClosestBoom))
+                    return false;
+
+                if (!role.Bombed)
+                    return false;
+
+                role.Player.GetEnforcer().BombSuccessful = Utils.Interact(role.Player, role.ClosestBoom, true)[3];
+                role.Bombed = false;
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+                writer.Write((byte)ActionsRPC.ForceKill);
+                writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
                 return false;
             }
 

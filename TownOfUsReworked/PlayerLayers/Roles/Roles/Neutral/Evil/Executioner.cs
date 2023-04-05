@@ -24,13 +24,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Executioner";
             StartText = "Eject Your Target";
-            Objectives = "- Eject your target.";
+            Objectives = "- Eject your target";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Executioner : Colors.Neutral;
-            Type = RoleEnum.Executioner;
+            RoleType = RoleEnum.Executioner;
             RoleAlignment = RoleAlignment.NeutralEvil;
             AlignmentName = NE;
             ToDoom = new();
             MaxUses = CustomGameOptions.DoomCount <= ToDoom.Count ? CustomGameOptions.DoomCount : ToDoom.Count;
+            AbilitiesText = "- After your target has been ejected, you can doom players who voted for them\n- If your target dies, you will become a <color=#F7B3DAFF>Jester</color>";
         }
 
         public void SetDoomed(MeetingHud __instance)

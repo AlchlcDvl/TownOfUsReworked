@@ -19,9 +19,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Framer";
             StartText = "Make Everyone Suspicious";
-            AbilitiesText = "- You can frame players.\n- Framed players will die very easily to <color=#FFFF00FF>Vigilantes</color> and <color=#073763FF>Assassins</color>.\n- Framed " +
-                "players will appear to have the wrong results to investigative roles till you are dead.";
-            Type = RoleEnum.Framer;
+            AbilitiesText = "- You can frame players\n- Framed players will die very easily to <color=#FFFF00FF>Vigilantes</color> and <color=#073763FF>Assassins</color>\n- Framed " +
+                "players will appear to have the wrong results to investigative roles till you are dead\n- With the Chaos Drive, you can frame all players within" +
+                $"{CustomGameOptions.ChaosDriveFrameRadius}m\n{AbilitiesText}";
+            RoleType = RoleEnum.Framer;
             RoleAlignment = RoleAlignment.SyndicateDisruption;
             AlignmentName = SD;
             Color = CustomGameOptions.CustomSynColors ? Colors.Framer : Colors.Syndicate;

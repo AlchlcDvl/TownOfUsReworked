@@ -19,10 +19,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Camouflager";
             StartText = "Hinder The <color=#8BFDFDFF>Crew</color>'s Recognition";
-            AbilitiesText = "- You can disrupt everyone's vision, causing them to be unable to tell players apart.\n- When camouflaged, everyone will appear grey with no name or " +
-                "cosmetics." + (CustomGameOptions.MeetingColourblind ? "\n- This effect carries over into the meeting if a meeting is called during a camouflage." : "");
+            AbilitiesText = "- You can disrupt everyone's vision, causing them to be unable to tell players apart\n- When camouflaged, everyone will appear grey with fluctuating names " +
+                "and no cosmetics" + (CustomGameOptions.MeetingColourblind ? "\n- This effect carries over into the meeting if a meeting is called during a camouflage" : "") +
+                $"\n{AbilitiesText}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Camouflager : Colors.Intruder;
-            Type = RoleEnum.Camouflager;
+            RoleType = RoleEnum.Camouflager;
             RoleAlignment = RoleAlignment.IntruderConceal;
             AlignmentName = IC;
             InspectorResults = InspectorResults.BringsChaos;

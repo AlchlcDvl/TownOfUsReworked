@@ -16,16 +16,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public AbilityButton ShootButton;
         public int UsesLeft;
         public bool ButtonUsable => UsesLeft > 0;
-        public bool FirstRound = CustomGameOptions.RoundOneNoShot;
+        public bool FirstRound;
 
         public Vigilante(PlayerControl player) : base(player)
         {
             Name = "Vigilante";
             StartText = "Shoot The <color=#FF0000FF>Evildoers</color>";
-            AbilitiesText = "- You can shoot players.\n- You you shoot someone you are not supposed to, you will die to guilt.";
+            AbilitiesText = "- You can shoot players\n- You you shoot someone you are not supposed to, you will die to guilt";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Vigilante : Colors.Crew;
             LastKilled = DateTime.UtcNow;
-            Type = RoleEnum.Vigilante;
+            RoleType = RoleEnum.Vigilante;
             RoleAlignment = RoleAlignment.CrewKill;
             AlignmentName = CK;
             InspectorResults = InspectorResults.UsesGuns;

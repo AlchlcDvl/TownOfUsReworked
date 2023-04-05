@@ -4,6 +4,7 @@ using TownOfUsReworked.Objects;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Modules;
 using TownOfUsReworked.Data;
+using TMPro;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -15,20 +16,23 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public List<RoleEnum> BuggedPlayers = new();
         public bool ButtonUsable => UsesLeft > 0;
         public AbilityButton BugButton;
+        public Dictionary<byte, TMP_Text> PlayerNumbers = new();
 
         public Operative(PlayerControl player) : base(player)
         {
             Name = "Operative";
             StartText = "Detect Which Roles Are Here";
-            AbilitiesText = "- You can place bugs around the map.\n- Upon triggering the bugs, the player's role will be included in a list to bw shown in the next meeting.";
+            AbilitiesText = "- You can place bugs around the map\n- Upon triggering the bugs, the player's role will be included in a list to be shown in the next meeting\n- " +
+                "You can see which colors are where on the admin table\n- On Vitals, the time of death for each player will be shown";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Operative : Colors.Crew;
-            Type = RoleEnum.Operative;
+            RoleType = RoleEnum.Operative;
             BuggedPlayers = new();
             UsesLeft = CustomGameOptions.MaxBugs;
             RoleAlignment = RoleAlignment.CrewInvest;
             AlignmentName = CI;
             Bugs = new();
             InspectorResults = InspectorResults.DropsItems;
+            PlayerNumbers = new();
         }
 
         public float BugTimer()

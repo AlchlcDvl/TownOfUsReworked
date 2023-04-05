@@ -20,9 +20,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Ambusher";
             StartText = "Ambush";
-            AbilitiesText = "- You can ambush players.\n- Ambushed players will be forced to be on alert and will kill whoever interacts with then.";
+            AbilitiesText = $"- You can ambush players\n- Ambushed players will be forced to be on alert and kill whoever interacts with them\n{AbilitiesText}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Ambusher : Colors.Intruder;
-            Type = RoleEnum.Ambusher;
+            RoleType = RoleEnum.Ambusher;
             RoleAlignment = RoleAlignment.IntruderKill;
             AlignmentName = IK;
             InspectorResults = InspectorResults.TracksOthers;

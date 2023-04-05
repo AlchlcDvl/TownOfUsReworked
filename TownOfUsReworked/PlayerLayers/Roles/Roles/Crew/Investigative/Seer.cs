@@ -2,7 +2,6 @@ using TownOfUsReworked.Data;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using System;
-using Reactor.Utilities;
 using System.Linq;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Modules;
@@ -22,12 +21,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Seer(PlayerControl player) : base(player)
         {
             Name = "Seer";
-            Type = RoleEnum.Seer;
+            RoleType = RoleEnum.Seer;
             Color = CustomGameOptions.CustomCrewColors ? Colors.Seer : Colors.Crew;
             RoleAlignment = RoleAlignment.CrewInvest;
             AlignmentName = CI;
-            AbilitiesText = "- You can investigate players to see if their roles have changed.\n- If all players whose roles changed have died, you will become a <color=#FFCC80FF>" +
-                "Sheriff</color>.";
+            AbilitiesText = "- You can investigate players to see if their roles have changed\n- If all players whose roles changed have died, you will become a <color=#FFCC80FF>" +
+                "Sheriff</color>";
             InspectorResults = InspectorResults.TouchesPeople;
         }
 

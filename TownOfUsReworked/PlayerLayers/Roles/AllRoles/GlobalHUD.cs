@@ -66,6 +66,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
             __instance.ReportButton.buttonLabelText.SetOutlineColor(role.FactionColor);
             __instance.ReportButton.buttonLabelText.fontSharedMaterial = __instance.SabotageButton.buttonLabelText.fontSharedMaterial;
 
+            if (local.Is(ModifierEnum.Coward))
+                __instance.ReportButton.gameObject.SetActive(false);
+
             var closestDead = CustomButtons.GetClosestDeadPlayer(local, CustomGameOptions.ReportDistance);
 
             if (closestDead == null || CustomButtons.CannotUse(local))

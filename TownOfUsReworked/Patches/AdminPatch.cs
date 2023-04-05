@@ -7,8 +7,10 @@ using TMPro;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Extensions;
+using TownOfUsReworked.PlayerLayers.Roles;
+using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod;
 
-namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AgentMod
+namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch(typeof(MapCountOverlay), nameof(MapCountOverlay.Update))]
     public static class AdminPatch
@@ -26,7 +28,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AgentMod
             }
         }
 
-        public static void UpdateBlips(CounterArea area, List<int> colorMapping, bool isAgent)
+        public static void UpdateBlips(CounterArea area, List<int> colorMapping, bool isOP)
         {
             area.UpdateCount(colorMapping.Count);
             var icons = area.myIcons.ToArray();
@@ -47,7 +49,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AgentMod
 
                 if (sprite != null)
                 {
-                    if (isAgent)
+                    if (isOP)
                         PlayerMaterial.SetColors(colorMapping[i], sprite);
                     else
                         PlayerMaterial.SetColors(new Color(0.8793f, 1, 0, 1), sprite);
@@ -71,7 +73,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AgentMod
             }
         }
 
-        public static void UpdateBlips(MapCountOverlay __instance, bool isAgent)
+        public static void UpdateBlips(MapCountOverlay __instance, bool isOP)
         {
             var rooms = ShipStatus.Instance.FastRooms;
 
@@ -95,8 +97,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AgentMod
                     var player = collider.GetComponent<PlayerControl>();
                     var data = player?.Data;
 
-                    if (collider.tag == "DeadBody" && ((isAgent && CustomGameOptions.WhoSeesDead == AdminDeadPlayers.Agent) || (!isAgent && CustomGameOptions.WhoSeesDead ==
-                        AdminDeadPlayers.EveryoneButAgent) || CustomGameOptions.WhoSeesDead == AdminDeadPlayers.Everyone || (PlayerControl.LocalPlayer.Data.IsDead &&
+                    if (collider.tag == "DeadBody" && ((isOP && CustomGameOptions.WhoSeesDead == AdminDeadPlayers.Operative) || (!isOP && CustomGameOptions.WhoSeesDead ==
+                        AdminDeadPlayers.EveryoneButOperative) || CustomGameOptions.WhoSeesDead == AdminDeadPlayers.Everyone || (PlayerControl.LocalPlayer.Data.IsDead &&
                         CustomGameOptions.DeadSeeEverything)))
                     {
                         var playerId = collider.GetComponent<DeadBody>().ParentId;
@@ -108,23 +110,23 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AgentMod
                         colorMap.Add(data.DefaultOutfit.ColorId);
                 }
 
-                UpdateBlips(area, colorMap, isAgent);
+                UpdateBlips(area, colorMap, isOP);
             }
         }
 
         public static bool Prefix(MapCountOverlay __instance)
         {
             var localPlayer = PlayerControl.LocalPlayer;
-            var isAgent = localPlayer.Is(RoleEnum.Agent) || (PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything);
+            var isOP = localPlayer.Is(RoleEnum.Operative) || (PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything);
 
-            if (!isAgent)
+            if (!isOP)
             {
                 var isRet = localPlayer.Is(RoleEnum.Retributionist);
 
                 if (isRet)
                 {
                     var retRole = Role.GetRole<Retributionist>(localPlayer);
-                    isAgent = retRole.RevivedRole?.Type == RoleEnum.Agent;
+                    isOP = retRole.RevivedRole?.RoleType == RoleEnum.Operative;
                 }
             }
 
@@ -140,7 +142,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AgentMod
                 SetSabotaged(__instance, sabotaged);
 
             if (!sabotaged)
-                UpdateBlips(__instance, isAgent);
+                UpdateBlips(__instance, isOP);
 
             return false;
         }

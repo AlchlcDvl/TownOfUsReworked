@@ -51,7 +51,6 @@ namespace TownOfUsReworked.Patches
                 GameOptionsManager.Instance.currentNormalGameOptions.NumLongTasks = CustomGameOptions.LongTasks;
                 GameOptionsManager.Instance.currentNormalGameOptions.NumCommonTasks = CustomGameOptions.ShortTasks;
                 GameOptionsManager.Instance.currentNormalGameOptions.MapId = map;
-
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetSettings, SendOption.Reliable);
                 writer.Write(map);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);

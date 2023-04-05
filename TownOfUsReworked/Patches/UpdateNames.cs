@@ -558,25 +558,25 @@ namespace TownOfUsReworked.Patches
                 if (player.IsPersuaded())
                     name += " <color=#F995FCFF>Λ</color>";
 
-                foreach (Arsonist arsonist in Role.AllRoles.ToArray().Where(x => x.Type == RoleEnum.Arsonist).Cast<Arsonist>())
+                foreach (var arsonist in Role.GetRoles<Arsonist>(RoleEnum.Arsonist))
                 {
                     if (arsonist.DousedPlayers.Contains(player.PlayerId))
                         name += " <color=#EE7600FF>Ξ</color>";
                 }
 
-                foreach (Plaguebearer plaguebearer in Role.AllRoles.ToArray().Where(x => x.Type == RoleEnum.Plaguebearer).Cast<Plaguebearer>())
+                foreach (var plaguebearer in Role.GetRoles<Plaguebearer>(RoleEnum.Plaguebearer))
                 {
                     if (plaguebearer.InfectedPlayers.Contains(player.PlayerId))
                         name += " <color=#CFFE61FF>ρ</color>";
                 }
 
-                foreach (Cryomaniac cryomaniac in Role.AllRoles.ToArray().Where(x => x.Type == RoleEnum.Cryomaniac).Cast<Cryomaniac>())
+                foreach (var cryomaniac in Role.GetRoles<Cryomaniac>(RoleEnum.Cryomaniac))
                 {
                     if (cryomaniac.DousedPlayers.Contains(player.PlayerId))
                         name += " <color=#642DEAFF>λ</color>";
                 }
 
-                foreach (Framer framer in Role.AllRoles.ToArray().Where(x => x.Type == RoleEnum.Framer).Cast<Framer>())
+                foreach (var framer in Role.GetRoles<Framer>(RoleEnum.Framer))
                 {
                     if (framer.Framed.Contains(player.PlayerId))
                         name += " <color=#00FFFFFF>ς</color>";
@@ -678,7 +678,7 @@ namespace TownOfUsReworked.Patches
                 }
             }
 
-            if (Role.GetRoles(RoleEnum.Revealer).Any(x => ((Revealer)x).CompletedTasks))
+            if (Role.GetRoles<Revealer>(RoleEnum.Revealer).Any(x => x.CompletedTasks))
             {
                 var role = info[0] as Role;
 
@@ -725,7 +725,7 @@ namespace TownOfUsReworked.Patches
                 {
                     var objectifier = info[3] as Objectifier;
 
-                    if (objectifier.Type != ObjectifierEnum.None && !objectifier.Hidden)
+                    if (objectifier.ObjectifierType != ObjectifierEnum.None && !objectifier.Hidden)
                         name += $" {objectifier.GetColoredSymbol()}";
                 }
             }
@@ -1181,25 +1181,25 @@ namespace TownOfUsReworked.Patches
                 if (player.IsPersuaded())
                     name += " <color=#F995FCFF>Λ</color>";
 
-                foreach (Arsonist arsonist in Role.AllRoles.ToArray().Where(x => x.Type == RoleEnum.Arsonist).Cast<Arsonist>())
+                foreach (var arsonist in Role.GetRoles<Arsonist>(RoleEnum.Arsonist))
                 {
                     if (arsonist.DousedPlayers.Contains(player.TargetPlayerId))
                         name += " <color=#EE7600FF>Ξ</color>";
                 }
 
-                foreach (Plaguebearer plaguebearer in Role.AllRoles.ToArray().Where(x => x.Type == RoleEnum.Plaguebearer).Cast<Plaguebearer>())
+                foreach (var plaguebearer in Role.GetRoles<Plaguebearer>(RoleEnum.Plaguebearer))
                 {
                     if (plaguebearer.InfectedPlayers.Contains(player.TargetPlayerId))
                         name += " <color=#CFFE61FF>ρ</color>";
                 }
 
-                foreach (Cryomaniac cryomaniac in Role.AllRoles.ToArray().Where(x => x.Type == RoleEnum.Cryomaniac).Cast<Cryomaniac>())
+                foreach (var cryomaniac in Role.GetRoles<Cryomaniac>(RoleEnum.Cryomaniac))
                 {
                     if (cryomaniac.DousedPlayers.Contains(player.TargetPlayerId))
                         name += " <color=#642DEAFF>λ</color>";
                 }
 
-                foreach (Framer framer in Role.AllRoles.ToArray().Where(x => x.Type == RoleEnum.Framer).Cast<Framer>())
+                foreach (var framer in Role.GetRoles<Framer>(RoleEnum.Framer))
                 {
                     if (framer.Framed.Contains(player.TargetPlayerId))
                         name += " <color=#00FFFFFF>ς</color>";
@@ -1296,7 +1296,7 @@ namespace TownOfUsReworked.Patches
                 }
             }
 
-            if (Role.GetRoles(RoleEnum.Revealer).Any(x => ((Revealer)x).CompletedTasks))
+            if (Role.GetRoles<Revealer>(RoleEnum.Revealer).Any(x => x.CompletedTasks))
             {
                 var role = info[0] as Role;
 
@@ -1343,7 +1343,7 @@ namespace TownOfUsReworked.Patches
                 {
                     var objectifier = info[3] as Objectifier;
 
-                    if (objectifier.Type != ObjectifierEnum.None && !objectifier.Hidden)
+                    if (objectifier.ObjectifierType != ObjectifierEnum.None && !objectifier.Hidden)
                         name += $" {objectifier.GetColoredSymbol()}";
                 }
             }

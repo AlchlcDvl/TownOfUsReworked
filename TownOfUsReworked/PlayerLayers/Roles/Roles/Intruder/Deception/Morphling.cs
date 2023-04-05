@@ -23,13 +23,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Morphling(PlayerControl player) : base(player)
         {
             Name = "Morphling";
-            StartText = "Transform Into <color=#8BFDFDFF>Crewmates</color> to frame them";
-            AbilitiesText = "Morph into <color=#8BFDFD>Crewmates</color> to frame them";
+            StartText = "Fool The <color=#8BFDFDFF>Crew</color> With Your Appearances";
+            AbilitiesText = $"- You can morph into other players to fool the <color=#8BFDFDFF>Crew</color>\n{AbilitiesText}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Morphling : Colors.Intruder;
             LastMorphed = DateTime.UtcNow;
-            Type = RoleEnum.Morphling;
+            RoleType = RoleEnum.Morphling;
             RoleAlignment = RoleAlignment.IntruderDecep;
             AlignmentName = ID;
+            SampledPlayer = null;
+            MorphedPlayer = null;
         }
 
         public void Morph()

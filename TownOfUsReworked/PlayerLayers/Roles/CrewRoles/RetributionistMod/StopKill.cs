@@ -2,9 +2,11 @@ using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
 using TownOfUsReworked.Data;
+using HarmonyLib;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 {
+    [HarmonyPatch]
     public static class StopKill
     {
         public static void BreakShield(byte retId, byte playerId, bool flag)
@@ -21,15 +23,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 
             var player = Utils.PlayerById(playerId);
 
-            foreach (var role2 in Role.GetRoles(RoleEnum.Retributionist))
+            foreach (var role2 in Role.GetRoles<Retributionist>(RoleEnum.Retributionist))
             {
-                if (((Retributionist)role2).RevivedRole?.Type != RoleEnum.Medic)
+                if (role2.RevivedRole?.RoleType != RoleEnum.Medic)
                     continue;
 
-                if (((Retributionist)role2).ShieldedPlayer.PlayerId == playerId)
+                if (role2.ShieldedPlayer.PlayerId == playerId)
                 {
-                    ((Retributionist)role2).ShieldedPlayer = null;
-                    ((Retributionist)role2).ExShielded = player;
+                    role2.ShieldedPlayer = null;
+                    role2.ExShielded = player;
                     Utils.LogSomething(player.name + " Is Ex-Shielded");
                 }
             }

@@ -1,7 +1,8 @@
-using UnityEngine;
+using Random = UnityEngine.Random;
 using System.Collections.Generic;
 using HarmonyLib;
 using System.Linq;
+using System;
 
 namespace TownOfUsReworked.Extensions
 {
@@ -76,5 +77,9 @@ namespace TownOfUsReworked.Extensions
 
             return newList;
         }
+
+        public static bool Any<T>(this Il2CppSystem.Collections.Generic.List<T> list, Func<T, bool> condition) => list.ToArray().Any(condition);
+
+        public static int Count<T>(this Il2CppSystem.Collections.Generic.List<T> list, Func<T, bool> condition) => list.Count(condition);
     }
 }

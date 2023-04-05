@@ -8,7 +8,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Miner : IntruderRole
     {
-        public readonly List<Vent> Vents = new();
         public AbilityButton MineButton;
         public DateTime LastMined;
         public bool CanPlace;
@@ -17,10 +16,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Miner";
             StartText = "From The Top, Make It Drop, Boom, That's A Vent";
-            AbilitiesText = "Place vents around the map";
+            AbilitiesText = $"- You can mine a vent, forming a vent system of your own\n{AbilitiesText}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Miner : Colors.Intruder;
-            LastMined = DateTime.UtcNow;
-            Type = RoleEnum.Miner;
+            RoleType = RoleEnum.Miner;
             RoleAlignment = RoleAlignment.IntruderSupport;
             AlignmentName = IS;
         }

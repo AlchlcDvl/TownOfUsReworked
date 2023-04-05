@@ -4,6 +4,7 @@ namespace TownOfUsReworked.Data
     {
         FixLights,
         SetExtraVotes,
+        SetExtraVotesPol,
         SetSwaps,
         Shift,
         Protect,
@@ -77,6 +78,9 @@ namespace TownOfUsReworked.Data
         Mark,
         FadeBody,
         SetBackupRecruit,
+        SetBomb,
+        ForceKill,
+        AlertBomb,
 
         None
     }
@@ -335,6 +339,7 @@ namespace TownOfUsReworked.Data
         SetSettings,
 
         AddMayorVoteBank,
+        AddPoliticianVoteBank,
         MeetingStart,
         CheckMurder,
 
@@ -395,7 +400,6 @@ namespace TownOfUsReworked.Data
 
     public enum RoleEnum
     {
-        Agent,
         Altruist,
         Chameleon,
         Coroner,
@@ -455,6 +459,7 @@ namespace TownOfUsReworked.Data
         Consigliere,
         Consort,
         Disguiser,
+        Enforcer,
         Ghoul,
         Godfather,
         Grenadier,
@@ -477,6 +482,7 @@ namespace TownOfUsReworked.Data
         Framer,
         Gorgon,
         Poisoner,
+        Politician,
         Rebel,
         Shapeshifter,
         Sidekick,
@@ -503,7 +509,15 @@ namespace TownOfUsReworked.Data
         None
     }
 
-    public enum PlayerLayerEnum { None }
+    public enum PlayerLayerEnum
+    {
+        Role,
+        Modifier,
+        Ability,
+        Objectifier,
+
+        None
+    }
 
     public enum InspectorResults
     {
@@ -514,7 +528,7 @@ namespace TownOfUsReworked.Data
         BringsChaos, //Jackal, Swapper, Shifter, Camouflager, Thief
         LikesToExplore, //Teleporter, Warper, Beamer, Transporter
         IsBasic, //Crewmate, Impostor, Murderer, Anarchist
-        DifferentLens, //Glitch, Agent, Medium, Engineer, Time Lord, Time Master
+        DifferentLens, //Glitch, Medium, Engineer, Time Lord, Time Master
         HasInformation, //Sheriff, Consigliere, Blackmailer, Detective, Inspector
         MeddlesWithOthers, //Escort, Consort, Jester, Executioner, Actor
         TouchesPeople, //Arsonist, Plaguebearer, Cryomaniac, Framer, Seer
@@ -523,7 +537,7 @@ namespace TownOfUsReworked.Data
         TracksOthers, //Tracker, Mystic, Vampire Hunter, Whisperer, Ambusher
         IsAggressive, //Werewolf, Juggernaut, Sidekick, Serial Killer
         CausesConfusion, //Morphling, Disguiser, Shapeshifter, Betrayer, Drunkard
-        DropsItems, //Bomber, Operative, Grenadier
+        DropsItems, //Bomber, Operative, Grenadier, Enforcer
         Ghostly, //Revealer, Phantom, Banshee, Ghoul
 
         None

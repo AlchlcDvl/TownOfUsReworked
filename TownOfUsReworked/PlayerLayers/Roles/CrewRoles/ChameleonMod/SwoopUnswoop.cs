@@ -9,14 +9,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ChameleonMod
     {
         public static void Postfix()
         {
-            foreach (var role in Role.GetRoles(RoleEnum.Chameleon))
-            {
-                var chameleon = (Chameleon)role;
+            if (ConstantVariables.IsLobby || ConstantVariables.IsEnded)
+                return;
 
-                if (chameleon.IsSwooped)
-                    chameleon.Invis();
-                else if (chameleon.Enabled)
-                    chameleon.Uninvis();
+            foreach (var role in Role.GetRoles<Chameleon>(RoleEnum.Chameleon))
+            {
+                if (role.IsSwooped)
+                    role.Invis();
+                else if (role.Enabled)
+                    role.Uninvis();
             }
         }
     }

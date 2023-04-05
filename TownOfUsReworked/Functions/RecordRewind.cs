@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using HarmonyLib;
 using Hazel;
 using TownOfUsReworked.Patches;
@@ -120,28 +119,21 @@ namespace TownOfUsReworked.Functions
 
         public static void ReviveBody(PlayerControl player)
         {
-            foreach (var poisoner in Role.GetRoles(RoleEnum.Poisoner))
+            foreach (var poisoner in Role.GetRoles<Poisoner>(RoleEnum.Poisoner))
             {
-                var poisonerRole = (Poisoner)poisoner;
-
-                if (poisonerRole.PoisonedPlayer == player)
-                    poisonerRole.PoisonedPlayer = poisonerRole.Player;
+                if (poisoner.PoisonedPlayer == player)
+                    poisoner.PoisonedPlayer = null;
             }
 
-            foreach (var rebel in Role.GetRoles(RoleEnum.Rebel))
+            foreach (var rebel in Role.GetRoles<Rebel>(RoleEnum.Rebel))
             {
-                var rebRole = (Rebel)rebel;
-
-                if (rebRole.FormerRole.Type != RoleEnum.Poisoner)
-                    continue;
-
-                if (rebRole.PoisonedPlayer == player)
-                    rebRole.PoisonedPlayer = rebRole.Player;
+                if (rebel.PoisonedPlayer == player)
+                    rebel.PoisonedPlayer = null;
             }
 
             player.Revive();
             Murder.KilledPlayers.Remove(Murder.KilledPlayers.Find(x => x.PlayerId == player.PlayerId));
-            var body = Object.FindObjectsOfType<DeadBody>().FirstOrDefault(b => b.ParentId == player.PlayerId);
+            var body = Utils.BodyById(player.PlayerId);
 
             if (body != null)
                 Object.Destroy(body.gameObject);

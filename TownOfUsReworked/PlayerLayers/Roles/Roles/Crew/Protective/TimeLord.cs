@@ -18,12 +18,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Time Lord";
             StartText = "Rewind Time To Harass The <color=#FF0000FF>Evildoers</color>";
-            AbilitiesText = $"- You can rewind time, which will force players to move back to a previous location.\n- You have {UsesLeft} rewinds left." + (CustomGameOptions.RewindRevive ?
-                $"\n- Rewinding time will also revive anyone who has died in the last {CustomGameOptions.RewindDuration}s." : "");
+            AbilitiesText = "- You can rewind time, which will force players to move back to a previous location" + (CustomGameOptions.RewindRevive ? "\n- Rewinding time will also" +
+                $" revive anyone who has died in the last {CustomGameOptions.RewindDuration}s" : "");
             Color = CustomGameOptions.CustomCrewColors ? Colors.TimeLord : Colors.Crew;
             StartRewind = DateTime.UtcNow.AddSeconds(-10.0f);
             FinishRewind = DateTime.UtcNow;
-            Type = RoleEnum.TimeLord;
+            RoleType = RoleEnum.TimeLord;
             UsesLeft = CustomGameOptions.RewindMaxUses;
             RoleAlignment = RoleAlignment.CrewProt;
             AlignmentName = CP;

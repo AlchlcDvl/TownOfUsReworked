@@ -12,6 +12,9 @@ namespace TownOfUsReworked.Patches
     {
         public static void Postfix(ExileController __instance)
         {
+            if (ConstantVariables.IsLobby || ConstantVariables.IsEnded)
+                return;
+
             var exiled = __instance.exiled;
 
             if (exiled == null)
@@ -20,8 +23,8 @@ namespace TownOfUsReworked.Patches
             var player = exiled.Object;
             var role = Role.GetRole(player);
 
-            var flag = player.Is(RoleEnum.Altruist) || player.Is(RoleEnum.Agent) || player.Is(RoleEnum.Arsonist) || player.Is(RoleEnum.Amnesiac) || player.Is(RoleEnum.Engineer) ||
-                player.Is(RoleEnum.Escort) || player.Is(RoleEnum.Executioner) || player.Is(RoleEnum.Impostor) || player.Is(RoleEnum.Inspector) || player.Is(RoleEnum.Operative);
+            var flag = player.Is(RoleEnum.Altruist) || player.Is(RoleEnum.Arsonist) || player.Is(RoleEnum.Amnesiac) || player.Is(RoleEnum.Executioner) || player.Is(RoleEnum.Engineer) ||
+                player.Is(RoleEnum.Escort) || player.Is(RoleEnum.Impostor) || player.Is(RoleEnum.Inspector) || player.Is(RoleEnum.Operative);
             var factionflag = player.Is(Faction.Intruder);
             var subfactionflag = player.Is(SubFaction.Undead);
 
@@ -29,7 +32,7 @@ namespace TownOfUsReworked.Patches
             var a_or_an2 = factionflag ? "an" : "a";
             var a_or_an3 = subfactionflag ? "an" : "a";
 
-            var totalEvilsCount = PlayerControl.AllPlayerControls.ToArray().Count(x => ((!x.Is(Faction.Crew) && !x.Is(RoleAlignment.NeutralBen) && !x.Is(RoleAlignment.NeutralEvil)) ||
+            var totalEvilsCount = PlayerControl.AllPlayerControls.Count(x => ((!x.Is(Faction.Crew) && !x.Is(RoleAlignment.NeutralBen) && !x.Is(RoleAlignment.NeutralEvil)) ||
                 x.NotOnTheSameSide()) && !(x.Data.IsDead || x.Data.Disconnected));
             var totalEvilsRemaining = CustomGameOptions.GameMode == GameMode.AllAny ? "an unknown number of" : $"{totalEvilsCount}";
             var evils = totalEvilsCount > 1 ? "evils" : "evil";
@@ -45,14 +48,9 @@ namespace TownOfUsReworked.Patches
             role.DeathReason = DeathReasonEnum.Ejected;
             role.KilledBy = " ";
 
-            foreach (var role2 in Role.GetRoles(RoleEnum.Executioner))
+            foreach (var exe in Role.GetRoles<Executioner>(RoleEnum.Executioner))
             {
-                var exe = (Executioner)role2;
-
-                if (exe.TargetPlayer == null)
-                    continue;
-
-                if (player.PlayerId == exe.TargetPlayer.PlayerId)
+                if (player == exe.TargetPlayer)
                     target = exe.TargetPlayer;
             }
 

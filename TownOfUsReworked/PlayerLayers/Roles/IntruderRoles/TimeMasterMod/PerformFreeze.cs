@@ -30,7 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.TimeMasterMod
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 role.TimeRemaining = CustomGameOptions.FreezeDuration;
-                Freeze.FreezeFunctions.FreezeAll();
+                Freeze.FreezeAll();
                 role.TimeFreeze();
                 return false;
             }

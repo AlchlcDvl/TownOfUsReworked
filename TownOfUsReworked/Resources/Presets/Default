@@ -158,8 +158,6 @@ Move Electrical Outlet
 0
 <color=#C0C0C0FF>Vampire Hunter</color>
 0
-<color=#CCA3CCFF>Agent</color>
-0
 <color=#4D99E6FF>Coroner</color>
 0
 <color=#4D4DFFFF>Detective</color>
@@ -261,8 +259,6 @@ Move Electrical Outlet
 <color=#85AA5BFF>Grenadier</color>
 0
 <color=#2647A2FF>Janitor</color>
-0
-<color=#005643FF>Undertaker</color>
 0
 <color=#40B4FFFF>Disguiser</color>
 0
@@ -422,12 +418,6 @@ Max <color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Investigative</color> <color=
 1
 Min <color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Investigative</color> <color=#FFD700FF>Roles</color>
 1
-<color=#CCA3CCFF>Agent</color> Count
-1
-<color=#CCA3CCFF>Agent</color> Is Unique In All Any
-False
-Who Sees Dead Bodies On Admin
-0
 <color=#4D99E6FF>Coroner</color> Count
 1
 <color=#4D99E6FF>Coroner</color> Is Unique In All Any
@@ -441,6 +431,8 @@ False
 <color=#4D99E6FF>Coroner</color> Gets Killer's Name Under
 1
 Compare Cooldown
+25
+Autopsy Cooldown
 25
 Compare Limit
 5
@@ -522,6 +514,8 @@ Bug Range
 0.25
 Number Of <color=#FFD700FF>Roles</color> Required To Trigger Bug
 3
+Who Sees Dead Bodies On Admin
+0
 Max <color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>
 1
 Min <color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>
@@ -634,6 +628,10 @@ Maximum Number Of Fixes
 1
 Fix Cooldown
 25
+Vent Cooldown
+25
+Vent Duration
+25
 <color=#803333FF>Escort</color> Count
 1
 <color=#803333FF>Escort</color> Is Unique In All Any
@@ -663,7 +661,7 @@ Transport Cooldown
 Maximum Number Of Transports
 5
 <color=#00EEFFFF>Transporter</color> Can Transport Themselves
-False
+True
 <color=#8BFDFDFF>Crewmate</color> Count
 1
 Tasks Remaining When <color=#D3D3D3FF>Revealer</color> Can Be Clicked
@@ -900,6 +898,8 @@ Ignite Cooldown
 25
 Ignite Cooldown Removed When <color=#EE7600FF>Arsonist</color> Is Last Killer
 False
+<color=#EE7600FF>Arsonist</color> Ignition Ignites All Doused Players
+False
 <color=#EE7600FF>Arsonist</color> Douse And Ignite Cooldowns Are Linked
 False
 <color=#EE7600FF>Arsonist</color> Can Vent
@@ -1130,15 +1130,11 @@ Clean Cooldown
 False
 <color=#2647A2FF>Janitor</color> Has Lower Cooldown When Solo
 False
-<color=#005643FF>Undertaker</color> Count
-1
-<color=#005643FF>Undertaker</color> Is Unique In All Any
-False
 Drag Cooldown
 25
 Drag Speed
-0.1
-<color=#005643FF>Undertaker</color> Can Vent
+0.5
+<color=#2647A2FF>Janitor</color> Can Vent
 0
 Max <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Deception</color> <color=#FFD700FF>Roles</color>
 1
@@ -1610,14 +1606,14 @@ False
 False
 <color=#4545FFFF>Corrupted</color> Kill Cooldown
 25
+All <color=#4545FFFF>Corrupted</color> Win Together
+False
 <color=#678D36FF>Fanatic</color> Count
 1
 <color=#678D36FF>Fanatic</color> Is Unique In All Any
 False
 <color=#678D36FF>Fanatic</color> Knows Who They Are On Game Start
 True
-Turned <color=#678D36FF>Fanatic</color> Gets <color=#073763FF>Assassin</color>
-False
 Turned <color=#678D36FF>Fanatic</color> Swaps Colours For Investigative <color=#FFD700FF>Roles</color>
 False
 <color=#D4AF37FF>Snitch</color> Sees Turned <color=#678D36FF>Fanatic</color>
@@ -1666,8 +1662,6 @@ Tasks Remaining When Revealed
 False
 <color=#370D43FF>Traitor</color> Knows Who They Are On Game Start
 True
-Turned <color=#FF0000FF>Traitor</color> Gets <color=#073763FF>Assassin</color>
-False
 <color=#D4AF37FF>Snitch</color> Sees Turned <color=#370D43FF>Traitor</color>
 True
 <color=#D3D3D3FF>Revealer</color> Reveals Turned <color=#370D43FF>Traitor</color>

@@ -17,7 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             Name = "Snitch";
             TaskText = "- You can finish your tasks to get information on who's evil.";
             Color = CustomGameOptions.CustomAbilityColors ? Colors.Snitch : Colors.Ability;
-            Type = AbilityEnum.Snitch;
+            AbilityType = AbilityEnum.Snitch;
             Hidden = !CustomGameOptions.SnitchKnows;
             ImpArrows = new();
             SnitchArrows = new();

@@ -51,9 +51,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
                     dictionary[playerVoteArea.VotedFor] = 1;
             }
 
-            foreach (var role in Role.GetRoles(RoleEnum.Mayor))
+            foreach (var role in Role.GetRoles<Mayor>(RoleEnum.Mayor))
             {
-                foreach (var number in ((Mayor)role).ExtraVotes)
+                foreach (var number in role.ExtraVotes)
                 {
                     if (dictionary.TryGetValue(number, out var num))
                         dictionary[number] = num + 1;
@@ -76,7 +76,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
                     if (ability == null)
                         continue;
 
-                    if (ability.Type == AbilityEnum.Tiebreaker)
+                    if (ability.AbilityType == AbilityEnum.Tiebreaker)
                     {
                         if (dictionary.TryGetValue(player.VotedFor, out var num))
                             dictionary[player.VotedFor] = num + 1;
@@ -92,9 +92,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
         [HarmonyPatch(nameof(MeetingHud.Start))]
         public static void Prefix()
         {
-            foreach (var role in Role.GetRoles(RoleEnum.Mayor))
+            foreach (var mayor in Role.GetRoles<Mayor>(RoleEnum.Mayor))
             {
-                var mayor = (Mayor)role;
                 mayor.ExtraVotes.Clear();
 
                 if (mayor.VoteBank < 0)
@@ -112,20 +111,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
         {
             if (AmongUsClient.Instance.AmHost && MeetingHud.Instance)
             {
-                foreach (var role in Role.GetRoles(RoleEnum.Mayor))
+                foreach (var mayor in Role.GetRoles<Mayor>(RoleEnum.Mayor))
                 {
-                    if (role is Mayor mayor && mayor.VotedOnce)
-                    {
-                        var votesRegained = mayor.ExtraVotes.RemoveAll(x => x == player.PlayerId);
+                    var votesRegained = mayor.ExtraVotes.RemoveAll(x => x == player.PlayerId);
 
-                        if (mayor.Player == PlayerControl.LocalPlayer)
-                            mayor.VoteBank += votesRegained;
+                    if (mayor.Player == PlayerControl.LocalPlayer)
+                        mayor.VoteBank += votesRegained;
 
-                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AddMayorVoteBank, SendOption.Reliable);
-                        writer.Write(mayor.Player.PlayerId);
-                        writer.Write(mayor.VoteBank);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    }
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AddMayorVoteBank, SendOption.Reliable);
+                    writer.Write(mayor.Player.PlayerId);
+                    writer.Write(votesRegained);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
             }
         }
@@ -238,12 +234,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
                     }
                 }
 
-                foreach (var role in Role.GetRoles(RoleEnum.Mayor))
+                foreach (var mayor in Role.GetRoles<Mayor>(RoleEnum.Mayor))
                 {
-                    var mayor = (Mayor)role;
-                    var playerInfo = GameData.Instance.GetPlayerById(role.Player.PlayerId);
+                    var playerInfo = mayor.Player.Data;
                     var anonVotesOption = CustomGameOptions.AnonymousVoting;
-                    GameOptionsManager.Instance.currentNormalGameOptions.AnonymousVotes = true;
+                    GameOptionsManager.Instance.currentNormalGameOptions.AnonymousVotes = CustomGameOptions.MayorAnonymous;
 
                     foreach (var extraVote in mayor.ExtraVotes)
                     {

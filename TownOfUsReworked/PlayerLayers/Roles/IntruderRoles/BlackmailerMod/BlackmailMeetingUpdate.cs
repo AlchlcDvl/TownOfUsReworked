@@ -8,6 +8,7 @@ using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod
 {
+    [HarmonyPatch]
     public static class BlackmailMeetingUpdate
     {
         private static bool shookAlready;
@@ -26,7 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod
             {
                 shookAlready = false;
 
-                foreach (var role in Role.GetRoles(RoleEnum.Blackmailer).Cast<Blackmailer>())
+                foreach (var role in Role.GetRoles<Blackmailer>(RoleEnum.Blackmailer))
                 {
                     if (role.BlackmailedPlayer?.PlayerId == PlayerControl.LocalPlayer.PlayerId && !role.BlackmailedPlayer.Data.IsDead)
                         Coroutines.Start(BlackmailShhh());
@@ -70,7 +71,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod
         {
             public static void Postfix(MeetingHud __instance)
             {
-                foreach (var role in Role.GetRoles(RoleEnum.Blackmailer).Cast<Blackmailer>())
+                foreach (var role in Role.GetRoles<Blackmailer>(RoleEnum.Blackmailer))
                 {
                     if (role.BlackmailedPlayer?.Data.IsDead == false)
                     {
@@ -97,7 +98,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod
         {
             public static bool Prefix()
             {
-                foreach (var role in Role.GetRoles(RoleEnum.Blackmailer).Cast<Blackmailer>())
+                foreach (var role in Role.GetRoles<Blackmailer>(RoleEnum.Blackmailer))
                 {
                     if (MeetingHud.Instance && role.BlackmailedPlayer?.Data.IsDead == false && role.BlackmailedPlayer == PlayerControl.LocalPlayer)
                         return false;

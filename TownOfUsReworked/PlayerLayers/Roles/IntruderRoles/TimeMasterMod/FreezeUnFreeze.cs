@@ -9,10 +9,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.TimeMasterMod
     {
         public static void Postfix()
         {
-            foreach (var role in Role.GetRoles(RoleEnum.TimeMaster))
-            {
-                var tm = (TimeMaster)role;
+            if (ConstantVariables.IsLobby || ConstantVariables.IsEnded)
+                return;
 
+            foreach (var tm in Role.GetRoles<TimeMaster>(RoleEnum.TimeMaster))
+            {
                 if (tm.Frozen)
                     tm.TimeFreeze();
                 else if (tm.Enabled)

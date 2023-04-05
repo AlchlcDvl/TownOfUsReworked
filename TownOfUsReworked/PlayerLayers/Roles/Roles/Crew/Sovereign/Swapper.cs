@@ -14,9 +14,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Swapper";
             StartText = "Swap Votes For Maximum Chaos";
-            AbilitiesText = "- You can swap the votes against 2 players in meetings.";
+            AbilitiesText = "- You can swap the votes against 2 players in meetings";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Swapper : Colors.Crew;
-            Type = RoleEnum.Swapper;
+            RoleType = RoleEnum.Swapper;
             RoleAlignment = RoleAlignment.CrewSov;
             AlignmentName = CSv;
             InspectorResults = InspectorResults.BringsChaos;

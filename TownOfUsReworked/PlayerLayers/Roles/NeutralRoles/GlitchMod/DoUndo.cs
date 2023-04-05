@@ -8,10 +8,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
     {
         public static void Postfix()
         {
-            foreach (var role in Role.GetRoles(RoleEnum.Glitch))
-            {
-                var glitch = (Glitch)role;
+            if (ConstantVariables.IsLobby || ConstantVariables.IsEnded)
+                return;
 
+            foreach (var glitch in Role.GetRoles<Glitch>(RoleEnum.Glitch))
+            {
                 if (glitch.IsUsingMimic)
                     glitch.Mimic();
                 else if (glitch.MimicEnabled)

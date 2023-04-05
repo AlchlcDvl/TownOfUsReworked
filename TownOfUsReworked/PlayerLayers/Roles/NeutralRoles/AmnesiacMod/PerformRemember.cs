@@ -56,6 +56,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
                 amneRole.RememberButton.gameObject.SetActive(false);
                 Utils.Flash(amneRole.Color, "You have attempted to remember who you were!");
                 amneRole.OnLobby();
+                CustomButtons.ResetCustomTimers(false);
             }
 
             if (PlayerControl.LocalPlayer == other)
@@ -64,9 +65,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
                 role.OnLobby();
             }
 
-            Role newRole = role.Type switch
+            Role newRole = role.RoleType switch
             {
-                RoleEnum.Agent => new Agent(amnesiac),
                 RoleEnum.Altruist => new Altruist(amnesiac),
                 RoleEnum.Anarchist => new Anarchist(amnesiac),
                 RoleEnum.Arsonist => new Arsonist(amnesiac) { DousedPlayers = ((Arsonist)role).DousedPlayers },
@@ -74,6 +74,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
                 RoleEnum.Bomber => new Bomber(amnesiac),
                 RoleEnum.Camouflager => new Camouflager(amnesiac),
                 RoleEnum.Cannibal => new Cannibal(amnesiac),
+                RoleEnum.Enforcer => new Enforcer(amnesiac),
                 RoleEnum.Concealer => new Concealer(amnesiac),
                 RoleEnum.Consigliere => new Consigliere(amnesiac) { Investigated = ((Consigliere)role).Investigated },
                 RoleEnum.Consort => new Consort(amnesiac),
@@ -217,8 +218,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
                     }
                 }
             }
-
-            CustomButtons.ResetCustomTimers(false);
         }
     }
 }

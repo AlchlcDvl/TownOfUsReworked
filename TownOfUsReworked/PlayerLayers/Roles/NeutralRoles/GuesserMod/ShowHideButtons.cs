@@ -20,7 +20,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
                 cycleForward.SetActive(false);
                 guess.SetActive(false);
                 guessText.gameObject.SetActive(false);
-
                 cycleBack.GetComponent<PassiveButton>().OnClick = new Button.ButtonClickedEvent();
                 cycleForward.GetComponent<PassiveButton>().OnClick = new Button.ButtonClickedEvent();
                 guess.GetComponent<PassiveButton>().OnClick = new Button.ButtonClickedEvent();
@@ -45,7 +44,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
             cycleForward.SetActive(false);
             guess.SetActive(false);
             guessText.gameObject.SetActive(false);
-
             cycleBack.GetComponent<PassiveButton>().OnClick = new Button.ButtonClickedEvent();
             cycleForward.GetComponent<PassiveButton>().OnClick = new Button.ButtonClickedEvent();
             guess.GetComponent<PassiveButton>().OnClick = new Button.ButtonClickedEvent();

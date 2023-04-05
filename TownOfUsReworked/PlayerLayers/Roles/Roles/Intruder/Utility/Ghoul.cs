@@ -18,8 +18,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Ghoul(PlayerControl player) : base(player)
         {
             Name = "Ghoul";
-            Type = RoleEnum.Ghoul;
+            RoleType = RoleEnum.Ghoul;
             StartText = "BOO!";
+            AbilitiesText = "- You can mark a player for death every round\n- Marked players will be announced to all players and will die at the end of the next meeting if you are not" +
+                " clicked";
             RoleAlignment = RoleAlignment.IntruderUtil;
             AlignmentName = IU;
             InspectorResults = InspectorResults.Ghostly;

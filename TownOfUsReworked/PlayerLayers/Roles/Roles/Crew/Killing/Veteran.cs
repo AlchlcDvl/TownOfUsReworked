@@ -20,9 +20,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Veteran";
             StartText = "Alert To Kill Anyone Who Touches You";
-            AbilitiesText = "- You can go on alert.\n- When on alert, you will kill whoever interacts with you.";
+            AbilitiesText = "- You can go on alert\n- When on alert, you will kill whoever interacts with you";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Veteran : Colors.Crew;
-            Type = RoleEnum.Veteran;
+            RoleType = RoleEnum.Veteran;
             UsesLeft = CustomGameOptions.MaxAlerts;
             RoleAlignment = RoleAlignment.CrewKill;
             AlignmentName = CK;

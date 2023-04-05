@@ -16,16 +16,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public PlayerControl ClosestTarget;
         public DateTime LastInvestigated;
         public string role = CustomGameOptions.ConsigInfo == ConsigInfo.Role ? "role" : "faction";
-        public static Ability Ability => PlayerControl.LocalPlayer.Is(AbilityEnum.Assassin) ? Ability.GetAbility<Assassin>(PlayerControl.LocalPlayer) : null;
-        public static string CanAssassinate => Ability != null && CustomGameOptions.ConsigInfo == ConsigInfo.Role ? "\n- You cannot assassinate players you have revealed." : "";
+        private string CanAssassinate => Ability.GetAbility(Player) != null && Player.Is(AbilityEnum.Assassin) && CustomGameOptions.ConsigInfo == ConsigInfo.Role ?
+            "\n- You cannot assassinate players you have revealed" : "";
 
         public Consigliere(PlayerControl player) : base(player)
         {
             Name = "Consigliere";
             StartText = "See Players For Who They Really Are";
-            AbilitiesText = $"- You can reveal a player's {role}.{CanAssassinate}";
+            AbilitiesText = $"- You can reveal a player's {role}{CanAssassinate}\n{AbilitiesText}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Consigliere : Colors.Intruder;
-            Type = RoleEnum.Consigliere;
+            RoleType = RoleEnum.Consigliere;
             RoleAlignment = RoleAlignment.IntruderSupport;
             AlignmentName = IS;
             Investigated = new();

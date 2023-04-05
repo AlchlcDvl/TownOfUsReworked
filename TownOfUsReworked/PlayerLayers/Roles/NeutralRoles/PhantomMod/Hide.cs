@@ -14,11 +14,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PhantomMod
             if (ConstantVariables.IsEnded || ConstantVariables.IsLobby)
                 return;
 
-            foreach (var role in Role.GetRoles(RoleEnum.Phantom))
+            foreach (var phantom in Role.GetRoles<Phantom>(RoleEnum.Phantom))
             {
-                var phantom = (Phantom)role;
-
-                if (role.Player.Data.Disconnected)
+                if (phantom.Player.Data.Disconnected)
                     continue;
 
                 var caught = phantom.Caught;

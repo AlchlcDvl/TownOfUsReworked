@@ -24,7 +24,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 
             var ret = Role.GetRole<Retributionist>(PlayerControl.LocalPlayer);
 
-            if (ret.RevivedRole?.Type != RoleEnum.Detective)
+            if (ret.RevivedRole?.RoleType != RoleEnum.Detective)
                 return;
 
             _time += Time.deltaTime;

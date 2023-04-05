@@ -13,15 +13,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public DateTime LastMediated;
         public Dictionary<byte, ArrowBehaviour> MediatedPlayers = new();
         public AbilityButton MediateButton;
+        public AbilityButton SeanceButton;
 
         public Medium(PlayerControl player) : base(player)
         {
             Name = "Medium";
             StartText = "Spooky Scary Ghosties Send Shivers Down Your Spine";
-            AbilitiesText = "- You can mediate which makes ghosts visible to you." + (CustomGameOptions.ShowMediumToDead ? "\n- When mediating, dead players will be able to see " +
-                "you." : "");
+            AbilitiesText = "- You can mediate which makes ghosts visible to you" + (CustomGameOptions.ShowMediumToDead ? "\n- When mediating, dead players will be able to see " +
+                "you" : "");
             Color = CustomGameOptions.CustomCrewColors ? Colors.Medium : Colors.Crew;
-            Type = RoleEnum.Medium;
+            RoleType = RoleEnum.Medium;
             MediatedPlayers = new();
             RoleAlignment = RoleAlignment.CrewInvest;
             AlignmentName = CI;

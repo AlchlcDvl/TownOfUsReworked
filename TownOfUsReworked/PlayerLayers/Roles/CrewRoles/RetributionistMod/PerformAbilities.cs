@@ -31,7 +31,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
             if (role.RevivedRole == null)
                 return false;
 
-            var revivedRole = role.RevivedRole?.Type;
+            var revivedRole = role.RevivedRole?.RoleType;
 
             if (__instance == role.ReviveButton && revivedRole == RoleEnum.Altruist)
             {

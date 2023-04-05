@@ -9,13 +9,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public static class ShowShield
     {
-        private readonly static Color ProtectedColor = Color.cyan;
-
         public static void Postfix()
         {
-            foreach (var role in Role.GetRoles(RoleEnum.Medic))
+            if (ConstantVariables.IsLobby || ConstantVariables.IsEnded)
+                return;
+
+            foreach (var medic in Role.GetRoles<Medic>(RoleEnum.Medic))
             {
-                var medic = (Medic)role;
                 var exPlayer = medic.ExShielded;
 
                 if (exPlayer != null)
@@ -44,9 +44,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod
                     showShielded == ShieldOptions.SelfAndMedic)) || (PlayerControl.LocalPlayer == medic.Player && (showShielded == ShieldOptions.Medic ||
                     showShielded == ShieldOptions.SelfAndMedic)))
                 {
-                    player.MyRend().material.SetColor("_VisorColor", ProtectedColor);
+                    player.MyRend().material.SetColor("_VisorColor", Color.cyan);
                     player.MyRend().material.SetFloat("_Outline", 1f);
-                    player.MyRend().material.SetColor("_OutlineColor", ProtectedColor);
+                    player.MyRend().material.SetColor("_OutlineColor", Color.cyan);
                 }
             }
         }

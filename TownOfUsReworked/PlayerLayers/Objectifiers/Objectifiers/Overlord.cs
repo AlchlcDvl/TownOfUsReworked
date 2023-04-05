@@ -11,9 +11,9 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         {
             Name = "Overlord";
             SymbolName = "β";
-            TaskText = $"- Stay alive for {CustomGameOptions.OverlordMeetingWinCount} meetings.";
+            TaskText = $"- Stay alive for {CustomGameOptions.OverlordMeetingWinCount} meetings";
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Overlord : Colors.Objectifier;
-            Type = ObjectifierEnum.Overlord;
+            ObjectifierType = ObjectifierEnum.Overlord;
             Hidden = !CustomGameOptions.OverlordKnows;
         }
     }

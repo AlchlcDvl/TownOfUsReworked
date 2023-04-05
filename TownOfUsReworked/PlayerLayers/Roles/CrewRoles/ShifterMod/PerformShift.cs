@@ -5,6 +5,7 @@ using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Data;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
 {
@@ -71,11 +72,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
                 Utils.Flash(shifterRole.Color, "You stole someone's role!");
                 shifterRole.ShiftButton.gameObject.SetActive(false);
                 shifterRole.OnLobby();
+                CustomButtons.ResetCustomTimers(false);
             }
 
-            Role newRole = role.Type switch
+            Role newRole = role.RoleType switch
             {
-                RoleEnum.Agent => new Agent(shifter),
                 RoleEnum.Altruist => new Altruist(shifter),
                 RoleEnum.Coroner => new Coroner(shifter),
                 RoleEnum.Crewmate => new Crewmate(shifter),

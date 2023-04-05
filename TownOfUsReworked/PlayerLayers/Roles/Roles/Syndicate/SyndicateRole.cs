@@ -22,6 +22,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = Colors.Syndicate;
             Objectives = SyndicateWinCon;
             BaseFaction = Faction.Syndicate;
+            AbilitiesText = (RoleType != RoleEnum.Anarchist && RoleType != RoleEnum.Sidekick ? "- With the Chaos Drive, you can kill players directly" : "- You can kill") +
+                (CustomGameOptions.AltImps ? "- You can sabotage the systems to distract the <color=#8BFDFDFF>Crew</color>" : "");
         }
 
         public float KillTimer()

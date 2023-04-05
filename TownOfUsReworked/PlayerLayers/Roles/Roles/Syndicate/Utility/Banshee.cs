@@ -21,8 +21,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Banshee(PlayerControl player) : base(player)
         {
             Name = "Banshee";
-            Type = RoleEnum.Banshee;
-            StartText = "Scream";
+            RoleType = RoleEnum.Banshee;
+            StartText = "AAAAAAAAAAAAAAAAAAAAAAAAA";
+            AbilitiesText = "- You can scream loudly, blocking all players as a result as long as you are not clicked";
             RoleAlignment = RoleAlignment.SyndicateUtil;
             AlignmentName = SSu;
             InspectorResults = InspectorResults.Ghostly;
@@ -35,7 +36,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
 
-            if (MeetingHud.Instance)
+            if (MeetingHud.Instance || Caught)
                 TimeRemaining = 0f;
         }
 

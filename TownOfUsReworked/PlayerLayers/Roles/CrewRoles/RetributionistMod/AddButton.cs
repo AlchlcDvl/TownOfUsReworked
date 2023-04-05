@@ -45,7 +45,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
             {
                 if (role.ListOfActives.Count(x => x) == 1 && role.OtherButtons[index].GetComponent<SpriteRenderer>().sprite == AssetManager.SwapperSwitchDisabled)
                 {
-                    int active = 0;
+                    var active = 0;
 
                     for (var i = 0; i < role.ListOfActives.Count; i++)
                     {
@@ -75,9 +75,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 
         public static void Postfix(MeetingHud __instance)
         {
-            foreach (var role in Role.GetRoles(RoleEnum.Retributionist))
+            foreach (var ret in Role.GetRoles<Retributionist>(RoleEnum.Retributionist))
             {
-                var ret = (Retributionist)role;
                 ret.ListOfActives.Clear();
                 ret.OtherButtons.Clear();
             }
@@ -94,25 +93,25 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                     if (player.PlayerId == __instance.playerStates[i].TargetPlayerId)
                     {
                         var revivable = false;
-                        var revivedRole = Role.GetRole(player).Type;
+                        var revivedRole = Role.GetRole(player).RoleType;
 
                         if (revivedRole == RoleEnum.Revealer)
                         {
                             var haunter = Role.GetRole<Revealer>(player);
-                            revivedRole = haunter.FormerRole.Type;
+                            revivedRole = haunter.FormerRole.RoleType;
                         }
 
                         if (player.Data.IsDead && !player.Data.Disconnected && (revivedRole == RoleEnum.Detective || revivedRole == RoleEnum.Seer || revivedRole == RoleEnum.Mystic ||
-                            revivedRole == RoleEnum.Agent || revivedRole == RoleEnum.Tracker || revivedRole == RoleEnum.Medic || revivedRole == RoleEnum.Sheriff ||
+                            revivedRole == RoleEnum.Tracker || revivedRole == RoleEnum.Medic || revivedRole == RoleEnum.Sheriff || revivedRole == RoleEnum.VampireHunter ||
                             revivedRole == RoleEnum.Veteran || revivedRole == RoleEnum.Altruist || revivedRole == RoleEnum.Engineer || revivedRole == RoleEnum.Vigilante ||
                             revivedRole == RoleEnum.Medium || revivedRole == RoleEnum.Operative || revivedRole == RoleEnum.Inspector || revivedRole == RoleEnum.Chameleon ||
-                            revivedRole == RoleEnum.Coroner || revivedRole == RoleEnum.VampireHunter))
+                            revivedRole == RoleEnum.Coroner))
                         {
                             revivable = true;
                         }
 
-                        if (retRole.Used.Contains(player.PlayerId))
-                            revivable = false;
+                        //if (retRole.Used.Contains(player.PlayerId))
+                        //    revivable = false;
 
                         GenButton(retRole, i, revivable);
                     }

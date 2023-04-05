@@ -6,6 +6,7 @@ using System.Linq;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.Modules;
 using TownOfUsReworked.Data;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 {
@@ -22,7 +23,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
             if (role.RevivedRole == null)
                 return;
 
-            var copyRole = role.RevivedRole.Type;
+            var copyRole = role.RevivedRole.RoleType;
 
             if (copyRole == RoleEnum.Altruist)
             {
@@ -54,7 +55,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 
                 var system = ShipStatus.Instance.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>();
                 var dummyActive = (bool)system?.dummy.IsActive;
-                var active = (bool)system?.specials.ToArray().Any(s => s.IsActive);
+                var active = (bool)system?.specials.Any(s => s.IsActive);
                 role.FixButton.UpdateButton(role, "FIX", role.FixTimer(), CustomGameOptions.FixCooldown, AssetManager.Fix, AbilityTypes.Effect, "ActionSecondary", null, true,
                     role.FixUsesLeft, role.FixButtonUsable, active && !dummyActive);
             }

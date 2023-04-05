@@ -7,7 +7,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Crewmate(PlayerControl player) : base(player)
         {
             Name = "Crewmate";
-            Type = RoleEnum.Crewmate;
+            RoleType = RoleEnum.Crewmate;
             StartText = "Do Your Tasks";
             RoleAlignment = RoleAlignment.CrewUtil;
             AlignmentName = CU;

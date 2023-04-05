@@ -46,7 +46,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
             if (!role.WasSidekick || role.FormerRole == null)
                 return false;
 
-            var formerRole = role.FormerRole.Type;
+            var formerRole = role.FormerRole.RoleType;
 
             if (__instance == role.ConcealButton && formerRole == RoleEnum.Concealer)
             {
@@ -146,6 +146,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.RebelMod
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 role.ShapeshiftTimeRemaining = CustomGameOptions.ShapeshiftDuration;
                 role.Shapeshift();
+                Utils.Shapeshift();
                 return false;
             }
             else if (__instance == role.WarpButton && formerRole == RoleEnum.Warper)

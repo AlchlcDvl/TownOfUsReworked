@@ -34,7 +34,6 @@ namespace TownOfUsReworked.CustomOptions
         public static CustomNumberOption CoronerOn;
         public static CustomNumberOption SheriffOn;
         public static CustomNumberOption MediumOn;
-        public static CustomNumberOption AgentOn;
         public static CustomNumberOption TrackerOn;
         public static CustomNumberOption InspectorOn;
         public static CustomNumberOption OperativeOn;
@@ -130,6 +129,7 @@ namespace TownOfUsReworked.CustomOptions
         //IK Role Spawn
         public static CustomHeaderOption IntruderKillingRoles;
         public static CustomNumberOption AmbusherOn;
+        public static CustomNumberOption EnforcerOn;
 
         //IS Role Spawn
         public static CustomHeaderOption IntruderSupportRoles;
@@ -158,6 +158,10 @@ namespace TownOfUsReworked.CustomOptions
         public static CustomNumberOption ShapeshifterOn;
         public static CustomNumberOption PoisonerOn;
         public static CustomNumberOption DrunkardOn;
+
+        //SyK Role Spawn
+        public static CustomHeaderOption SyndicatePowerRoles;
+        public static CustomNumberOption PoliticianOn;
 
         //SyK Role Spawn
         public static CustomHeaderOption SyndicateKillingRoles;
@@ -450,6 +454,7 @@ namespace TownOfUsReworked.CustomOptions
         public static CustomNumberOption MinAmountOfTimeInBug;
         public static CustomNumberOption BugRange;
         public static CustomNumberOption MinAmountOfPlayersInBug;
+        public static CustomStringOption WhoSeesDead;
 
         //Seer Options
         public static CustomHeaderOption Seer;
@@ -503,12 +508,6 @@ namespace TownOfUsReworked.CustomOptions
         public static CustomNumberOption InterrogateCooldown;
         public static CustomToggleOption NeutEvilRed;
         public static CustomToggleOption NeutKillingRed;
-
-        //Agent Options
-        public static CustomHeaderOption Agent;
-        public static CustomToggleOption UniqueAgent;
-        public static CustomNumberOption AgentCount;
-        public static CustomStringOption WhoSeesDead;
         
         //CP Options
         public static CustomHeaderOption CrewProtectiveSettings;
@@ -701,12 +700,21 @@ namespace TownOfUsReworked.CustomOptions
         public static CustomNumberOption IKMax;
         public static CustomNumberOption IKMin;
 
-        //Wraith Options
+        //Ambusher Options
         public static CustomHeaderOption Ambusher;
         public static CustomNumberOption AmbusherCount;
         public static CustomToggleOption UniqueAmbusher;
         public static CustomNumberOption AmbushCooldown;
         public static CustomNumberOption AmbushDuration;
+
+        //Enforcer Options
+        public static CustomHeaderOption Enforcer;
+        public static CustomNumberOption EnforcerCount;
+        public static CustomToggleOption UniqueEnforcer;
+        public static CustomNumberOption EnforceCooldown;
+        public static CustomNumberOption EnforceDuration;
+        public static CustomNumberOption EnforceDelay;
+        public static CustomNumberOption EnforceRadius;
 
         //IU Options
         public static CustomHeaderOption IntruderUtilitySettings;
@@ -846,6 +854,15 @@ namespace TownOfUsReworked.CustomOptions
         public static CustomHeaderOption SyndicatePowerSettings;
         public static CustomNumberOption SPMax;
         public static CustomNumberOption SPMin;
+
+        //Politician Options
+        public static CustomHeaderOption Politician;
+        public static CustomNumberOption PoliticianCount;
+        public static CustomToggleOption UniquePolitician;
+        public static CustomNumberOption PoliticianVoteBank;
+        public static CustomNumberOption ChaosDriveVoteAdd;
+        public static CustomToggleOption PoliticianAnonymous;
+        public static CustomToggleOption PoliticianButton;
 
         //Neutral Options
         public static CustomHeaderOption NeutralSettings;
@@ -1040,6 +1057,7 @@ namespace TownOfUsReworked.CustomOptions
         public static CustomNumberOption DouseCooldown;
         public static CustomNumberOption IgniteCooldown;
         public static CustomToggleOption ArsoVent;
+        public static CustomToggleOption ArsoIgniteAll;
         public static CustomToggleOption ArsoLastKillerBoost;
         public static CustomToggleOption ArsoCooldownsLinked;
         public static CustomToggleOption UniqueArsonist;
@@ -1390,6 +1408,7 @@ namespace TownOfUsReworked.CustomOptions
         public static CustomToggleOption ExampleToggle;
         public static CustomNumberOption ExampleNumber;
         public static CustomStringOption ExampleString;
+        public static CustomHeaderOption ExampleHeader;
         #pragma warning restore
 
         public static Func<object, string> PercentFormat { get; } = value => $"{value:0}%";
@@ -1406,10 +1425,11 @@ namespace TownOfUsReworked.CustomOptions
             var num = 0;
 
             /*ExampleNested = new CustomNestedOption(num++, MultiMenu.main, "Example Nested Option");
+            ExampleHeader = new CustomToggleOption(num++, MultiMenu.external, "Example Header Option");
             ExampleToggle = new CustomToggleOption(num++, MultiMenu.external, "Example Toggle Option");
             ExampleNumber = new CustomNumberOption(num++, MultiMenu.external, "Example Number Option", 1, 1, 5, 1, MultiplierFormat);
             ExampleString = new CustomStringOption(num++, MultiMenu.external, "Example String Option", new[] { "Something", "Something Else", "Something Else Else" });
-            ExampleNested.AddOptions(ExampleNumber, ExampleString, ExampleToggle);*/
+            ExampleNested.AddOptions(ExampleHeader, ExampleNumber, ExampleString, ExampleToggle);*/
 
             GameSettings = new CustomHeaderOption(num, MultiMenu.main, "Game Settings");
             PlayerSpeed = new CustomNumberOption(num++, MultiMenu.main, "Player Speed", 1.5f, 0.25f, 10, 0.25f, MultiplierFormat);
@@ -1515,7 +1535,6 @@ namespace TownOfUsReworked.CustomOptions
             VampireHunterOn = new CustomNumberOption(num++, MultiMenu.crew, "<color=#C0C0C0FF>Vampire Hunter</color>", 0, 0, 100, 10, PercentFormat);
 
             CrewInvestigativeRoles = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Investigative</color> <color=#FFD700FF>Roles</color>");
-            AgentOn = new CustomNumberOption(num++, MultiMenu.crew, "<color=#CCA3CCFF>Agent</color>", 0, 0, 100, 10, PercentFormat);
             CoronerOn = new CustomNumberOption(num++, MultiMenu.crew, "<color=#4D99E6FF>Coroner</color>", 0, 0, 100, 10, PercentFormat);
             DetectiveOn = new CustomNumberOption(num++, MultiMenu.crew, "<color=#4D4DFFFF>Detective</color>", 0, 0, 100, 10, PercentFormat);
             InspectorOn = new CustomNumberOption(num++, MultiMenu.crew, "<color=#7E3C64FF>Inspector</color>", 0, 0, 100, 10, PercentFormat);
@@ -1597,6 +1616,7 @@ namespace TownOfUsReworked.CustomOptions
 
             IntruderKillingRoles = new CustomHeaderOption(num++, MultiMenu.intruder, "<color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>");
             AmbusherOn = new CustomNumberOption(num++, MultiMenu.intruder, "<color=#2BD29CFF>Ambusher</color>", 0, 0, 100, 10, PercentFormat);
+            EnforcerOn = new CustomNumberOption(num++, MultiMenu.intruder, "<color=#005643FF>Enforcer</color>", 0, 0, 100, 10, PercentFormat);
 
             IntruderSupportRoles = new CustomHeaderOption(num++, MultiMenu.intruder, "<color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>");
             ConsigliereOn = new CustomNumberOption(num++, MultiMenu.intruder, "<color=#FFFF99FF>Consigliere</color>", 0, 0, 100, 10, PercentFormat);
@@ -1626,6 +1646,9 @@ namespace TownOfUsReworked.CustomOptions
             BeamerOn = new CustomNumberOption(num++, MultiMenu.syndicate, "<color=#0028F5FF>Beamer</color>", 0, 0, 100, 10, PercentFormat);
             RebelOn = new CustomNumberOption(num++, MultiMenu.syndicate, "<color=#FFFCCEFF>Rebel</color>", 0, 0, 100, 10, PercentFormat);
             WarperOn = new CustomNumberOption(num++, MultiMenu.syndicate, "<color=#8C7140FF>Warper</color>", 0, 0, 100, 10, PercentFormat);
+
+            SyndicatePowerRoles = new CustomHeaderOption(num++, MultiMenu.syndicate, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Power</color> <color=#FFD700FF>Roles</color>");
+            PoliticianOn = new CustomNumberOption(num++, MultiMenu.syndicate, "<color=#CCA3CCFF>Politician</color>", 0, 0, 100, 10, PercentFormat);
 
             SyndicateUtilityRoles = new CustomHeaderOption(num++, MultiMenu.syndicate, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Utility</color> <color=#FFD700FF>Roles</color>");
             AnarchistOn = new CustomNumberOption(num++, MultiMenu.syndicate, "<color=#008000FF>Anarchist</color>", 0, 0, 100, 10, PercentFormat);
@@ -1701,11 +1724,6 @@ namespace TownOfUsReworked.CustomOptions
             CIMax = new CustomNumberOption(num++, MultiMenu.crew, "Max <color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Investigative</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
             CIMin = new CustomNumberOption(num++, MultiMenu.crew, "Min <color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Investigative</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
 
-            Agent = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#CCA3CCFF>Agent</color>");
-            AgentCount = new CustomNumberOption(num++, MultiMenu.crew, "<color=#CCA3CCFF>Agent</color> Count", 1, 1, 14, 1);
-            UniqueAgent = new CustomToggleOption(num++, MultiMenu.crew, "<color=#CCA3CCFF>Agent</color> Is Unique In All Any", false);
-            WhoSeesDead = new CustomStringOption(num++, MultiMenu.crew, "Who Sees Dead Bodies On Admin", new[] { "Nobody", "Agent", "Everyone But Agent", "Everyone" });
-
             Coroner = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#4D99E6FF>Coroner</color>");
             CoronerCount = new CustomNumberOption(num++, MultiMenu.crew, "<color=#4D99E6FF>Coroner</color> Count", 1, 1, 14, 1);
             UniqueCoroner = new CustomToggleOption(num++, MultiMenu.crew, "<color=#4D99E6FF>Coroner</color> Is Unique In All Any", false);
@@ -1770,6 +1788,7 @@ namespace TownOfUsReworked.CustomOptions
             MaxBugs = new CustomNumberOption(num++, MultiMenu.crew, "Bug Count", 5, 1, 15, 1);
             BugRange = new CustomNumberOption(num++, MultiMenu.crew, "Bug Range", 0.25f, 0.05f, 1f, 0.05f, DistanceFormat);
             MinAmountOfPlayersInBug = new CustomNumberOption(num++, MultiMenu.crew, "Number Of <color=#FFD700FF>Roles</color> Required To Trigger Bug", 3, 1, 5, 1);
+            WhoSeesDead = new CustomStringOption(num++, MultiMenu.crew, "Who Sees Dead Bodies On Admin", new[] { "Nobody", "Operative", "Everyone But Operative", "Everyone" });
 
             CrewKillingSettings = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Killing</color> Settings");
             CKMax = new CustomNumberOption(num++, MultiMenu.crew, "Max <color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
@@ -1967,11 +1986,11 @@ namespace TownOfUsReworked.CustomOptions
             Cannibal = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#8C4005FF>Cannibal</color>");
             CannibalCount = new CustomNumberOption(num++, MultiMenu.neutral, "<color=#8C4005FF>Cannibal</color> Count", 1, 1, 14, 1);
             UniqueCannibal = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#8C4005FF>Cannibal</color> Is Unique In All Any", false);
-            CannibalCd = new CustomNumberOption(num++, MultiMenu.neutral, "Eat Cooldown", 10f, 10f, 60f, 2.5f, MultiplierFormat);
+            CannibalCd = new CustomNumberOption(num++, MultiMenu.neutral, "Eat Cooldown", 10f, 10f, 60f, 2.5f, CooldownFormat);
             CannibalBodyCount = new CustomNumberOption(num++, MultiMenu.neutral, "Number Of Bodies To Eat", 1, 1, 5, 1);
             CannibalVent = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#8C4005FF>Cannibal</color> Can Vent", false);
             EatArrows = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#8C4005FF>Cannibal</color> Gets Arrows To Dead Bodies", false);
-            EatArrowDelay = new CustomNumberOption(num++, MultiMenu.neutral, "Time After Death Arrow Appears", 5f, 0f, 15f, 1f, MultiplierFormat);
+            EatArrowDelay = new CustomNumberOption(num++, MultiMenu.neutral, "Time After Death Arrow Appears", 5f, 0f, 15f, 1f, CooldownFormat);
             VigiKillsCannibal = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#FFFF00FF>Vigilante</color> Kills <color=#8C4005FF>Cannibal</color>", false);
 
             Executioner = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#CCCCCCFF>Executioner</color>");
@@ -2033,6 +2052,7 @@ namespace TownOfUsReworked.CustomOptions
             DouseCooldown = new CustomNumberOption(num++, MultiMenu.neutral, "Douse Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
             IgniteCooldown = new CustomNumberOption(num++, MultiMenu.neutral, "Ignite Cooldown", 25f, 5f, 60f, 2.5f, CooldownFormat);
             ArsoLastKillerBoost = new CustomToggleOption(num++, MultiMenu.neutral, "Ignite Cooldown Removed When <color=#EE7600FF>Arsonist</color> Is Last Killer", false);
+            ArsoIgniteAll = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#EE7600FF>Arsonist</color> Ignition Ignites All Doused Players", false);
             ArsoCooldownsLinked = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#EE7600FF>Arsonist</color> Douse And Ignite Cooldowns Are Linked", false);
             ArsoVent = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#EE7600FF>Arsonist</color> Can Vent", false);
 
@@ -2237,6 +2257,14 @@ namespace TownOfUsReworked.CustomOptions
             AmbushCooldown = new CustomNumberOption(num++, MultiMenu.intruder, "Ambush Cooldown", 25f, 10f, 40f, 2.5f, CooldownFormat);
             AmbushDuration = new CustomNumberOption(num++, MultiMenu.intruder, "Ambush Duration", 10f, 5f, 15f, 1f, CooldownFormat);
 
+            Enforcer = new CustomHeaderOption(num++, MultiMenu.intruder, "<color=#005643FF>Enforcer</color>");
+            EnforcerCount = new CustomNumberOption(num++, MultiMenu.intruder, "<color=#005643FF>Enforcer</color> Count", 1, 1, 14, 1);
+            UniqueEnforcer = new CustomToggleOption(num++, MultiMenu.intruder, "<color=#005643FF>Enforcer</color> Is Unique In All Any", false);
+            EnforceCooldown = new CustomNumberOption(num++, MultiMenu.intruder, "Enforce Cooldown", 25f, 10f, 40f, 2.5f, CooldownFormat);
+            EnforceDuration = new CustomNumberOption(num++, MultiMenu.intruder, "Enforce Duration", 10f, 5f, 30f, 1f, CooldownFormat);
+            EnforceDelay = new CustomNumberOption(num++, MultiMenu.intruder, "Enforce Delay", 5f, 1f, 15f, 1f, CooldownFormat);
+            EnforceRadius = new CustomNumberOption(num++, MultiMenu.intruder, "Enforce Explosion Radius", 0.25f, 0.05f, 1f, 0.05f, DistanceFormat);
+
             IntruderSupportSettings = new CustomHeaderOption(num++, MultiMenu.intruder, "<color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Support</color> Settings");
             ISMax = new CustomNumberOption(num++, MultiMenu.intruder, "Max <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
             ISMin = new CustomNumberOption(num++, MultiMenu.intruder, "Min <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
@@ -2377,6 +2405,18 @@ namespace TownOfUsReworked.CustomOptions
             SidekickAbilityCooldownDecrease = new CustomNumberOption(num++, MultiMenu.syndicate, "Ability Cooldown Bonus", 0.75f, 0.25f, 0.9f, 0.05f, MultiplierFormat);
             ChaosDriveRebelKillDecrease = new CustomNumberOption(num++, MultiMenu.syndicate, "Chaos Drive Kill Cooldown Decrease", 5f, 1f, 15f, 1f, CooldownFormat);
             PromotedSidekickCanPromote = new CustomToggleOption(num++, MultiMenu.syndicate, "Promoted <color=#FFFCCEFF>Rebel</color> Can Sidekick Others", false);
+
+            SyndicatePowerSettings = new CustomHeaderOption(num++, MultiMenu.syndicate, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Power</color> Settings");
+            SPMax = new CustomNumberOption(num++, MultiMenu.syndicate, "Max <color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Power</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
+            SPMin = new CustomNumberOption(num++, MultiMenu.syndicate, "Min <color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Power</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
+
+            Politician = new CustomHeaderOption(num++, MultiMenu.syndicate, "<color=#CCA3CCFF>Politician</color>");
+            PoliticianCount = new CustomNumberOption(num++, MultiMenu.syndicate, "<color=#CCA3CCFF>Politician</color> Count", 1, 1, 14, 1);
+            UniquePolitician = new CustomToggleOption(num++, MultiMenu.syndicate, "<color=#CCA3CCFF>Politician</color> Is Unique In All Any", false);
+            PoliticianVoteBank = new CustomNumberOption(num++, MultiMenu.syndicate, "Initial <color=#CCA3CCFF>Politician</color> Initial Vote Bank", 0, 0, 10, 1);
+            ChaosDriveVoteAdd = new CustomNumberOption(num++, MultiMenu.syndicate, "Chaos Drive Vote Bank Increase", 1, 0, 10, 1);
+            PoliticianAnonymous = new CustomToggleOption(num++, MultiMenu.syndicate, "Anonymous <color=#CCA3CCFF>Politician</color> Votes", false);
+            PoliticianButton = new CustomToggleOption(num++, MultiMenu.syndicate, "<color=#CCA3CCFF>Politician</color> Can Button");
 
             Warper = new CustomHeaderOption(num++, MultiMenu.syndicate, "<color=#8C7140FF>Warper</color>");
             WarperCount = new CustomNumberOption(num++, MultiMenu.syndicate, "<color=#8C7140FF>Warper</color> Count", 1, 1, 14, 1);

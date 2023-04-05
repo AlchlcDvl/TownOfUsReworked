@@ -13,7 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             SymbolName = "♥";
             TaskText = "- Live to the final 3 with your lover";
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Lovers : Colors.Objectifier;
-            Type = ObjectifierEnum.Lovers;
+            ObjectifierType = ObjectifierEnum.Lovers;
         }
 
         public bool LoverDead() => OtherLover?.Data?.IsDead == true || OtherLover?.Data?.Disconnected == true;

@@ -55,7 +55,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
                 if (Swap1 == null || Swap2 == null)
                     return;
 
-                foreach (var swapper in Role.AllRoles.Where(x => x.Type == RoleEnum.Swapper))
+                foreach (var swapper in Role.GetRoles<Swapper>(RoleEnum.Swapper))
                 {
                     if (swapper.Player.Data.IsDead || swapper.Player.Data.Disconnected)
                         return;

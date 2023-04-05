@@ -14,10 +14,10 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         public Taskmaster(PlayerControl player) : base(player)
         {
             Name = "Taskmaster";
-            TaskText = "- Finish your tasks before the game ends.";
+            TaskText = "- Finish your tasks before the game ends";
             SymbolName = "µ";
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Taskmaster : Colors.Objectifier;
-            Type = ObjectifierEnum.Taskmaster;
+            ObjectifierType = ObjectifierEnum.Taskmaster;
             ImpArrows = new();
         }
 

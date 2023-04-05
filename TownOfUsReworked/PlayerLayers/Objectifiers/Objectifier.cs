@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using TownOfUsReworked.Classes;
@@ -13,7 +12,7 @@ using TownOfUsReworked.Data;
 namespace TownOfUsReworked.PlayerLayers.Objectifiers
 {
     [HarmonyPatch]
-    public abstract class Objectifier : PlayerLayer
+    public class Objectifier : PlayerLayer
     {
         public static readonly Dictionary<byte, Objectifier> ObjectifierDictionary = new();
         public static List<Objectifier> AllObjectifiers => ObjectifierDictionary.Values.ToList();
@@ -37,9 +36,9 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
 
             ObjectifierDictionary.Add(player.PlayerId, this);
             Color = Colors.Objectifier;
+            LayerType = PlayerLayerEnum.Objectifier;
         }
 
-        public ObjectifierEnum Type = ObjectifierEnum.None;
         public string SymbolName = ":";
         public string TaskText = "- None.";
         public bool Hidden;
@@ -47,57 +46,15 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
 
         public string GetColoredSymbol() => $"{ColorString}{SymbolName}</color>";
 
-        private bool Equals(Objectifier other) => Equals(Player, other.Player) && Type == other.Type;
-
-        public override bool Equals(object obj)
-        {
-            if (obj is null)
-                return false;
-
-            if (ReferenceEquals(this, obj))
-                return true;
-
-            if (obj.GetType() != typeof(Objectifier))
-                return false;
-
-            return Equals((Objectifier)obj);
-        }
-
-        public override int GetHashCode() => HashCode.Combine(Player, (int)Type);
-
-        public static bool operator == (Objectifier a, Objectifier b)
-        {
-            if (a is null && b is null)
-                return true;
-
-            if (a is null || b is null)
-                return false;
-
-            return a.Type == b.Type && a.Player.PlayerId == b.Player.PlayerId;
-        }
-
-        public static Objectifier GetObjectifierValue(ObjectifierEnum objEnum)
-        {
-            foreach (var obj in AllObjectifiers)
-            {
-                if (obj.Type == objEnum)
-                    return obj;
-            }
-
-            return null;
-        }
-
-        public static T GetObjectifierValue<T>(ObjectifierEnum objEnum) where T : Objectifier => GetObjectifierValue(objEnum) as T;
-
-        public static bool operator != (Objectifier a, Objectifier b) => !(a == b);
-
         public static Objectifier GetObjectifier(PlayerControl player) => AllObjectifiers.Find(x => x.Player == player);
 
         public static T GetObjectifier<T>(PlayerControl player) where T : Objectifier => GetObjectifier(player) as T;
 
         public static Objectifier GetObjectifier(PlayerVoteArea area) => GetObjectifier(Utils.PlayerByVoteArea(area));
 
-        public static IEnumerable<Objectifier> GetObjectifiers(ObjectifierEnum objectifiertype) => AllObjectifiers.Where(x => x.Type == objectifiertype);
+        public static List<Objectifier> GetObjectifiers(ObjectifierEnum objectifiertype) => AllObjectifiers.Where(x => x.ObjectifierType == objectifiertype).ToList();
+
+        public static List<T> GetObjectifiers<T>(ObjectifierEnum objectifiertype) where T : Objectifier => GetObjectifiers(objectifiertype).Cast<T>().ToList();
 
         public override bool GameEnd(LogicGameFlowNormal __instance)
         {
@@ -110,12 +67,11 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
 
                 if (CustomGameOptions.AllCorruptedWin)
                 {
-                    foreach (var corr in GetObjectifiers(ObjectifierEnum.Corrupted).Cast<Corrupted>())
+                    foreach (var corr in GetObjectifiers<Corrupted>(ObjectifierEnum.Corrupted))
                         corr.Winner = true;
                 }
-                else
-                    Winner = true;
 
+                Winner = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.CorruptedWin);
                 writer.Write(CustomGameOptions.AllCorruptedWin);
@@ -147,7 +103,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
                 Utils.EndGame();
                 return false;
             }
-            else if (TasksDone && Type == ObjectifierEnum.Taskmaster)
+            else if (TasksDone && ObjectifierType == ObjectifierEnum.Taskmaster)
             {
                 TaskmasterWins = true;
                 Winner = true;
@@ -158,11 +114,11 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
                 Utils.EndGame();
                 return false;
             }
-            else if (MeetingPatches.MeetingCount >= CustomGameOptions.OverlordMeetingWinCount && Type == ObjectifierEnum.Overlord && ((Overlord)this).IsAlive)
+            else if (MeetingPatches.MeetingCount >= CustomGameOptions.OverlordMeetingWinCount && ObjectifierType == ObjectifierEnum.Overlord && ((Overlord)this).IsAlive)
             {
                 OverlordWins = true;
 
-                foreach (var ov in GetObjectifiers(ObjectifierEnum.Overlord).Cast<Overlord>())
+                foreach (var ov in GetObjectifiers<Overlord>(ObjectifierEnum.Overlord))
                 {
                     if (ov.IsAlive)
                         ov.Winner = true;

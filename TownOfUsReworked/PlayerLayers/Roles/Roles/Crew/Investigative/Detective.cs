@@ -15,10 +15,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Detective";
             StartText = "Examine Players To Find Bloody Hands";
-            AbilitiesText = "- You can examine players to see if they have killed recently.\n- Your screen will flash red if your target has killed in the " +
-                $"last {CustomGameOptions.RecentKill}s.\n- You can view everyone's footprints to see where they go or where they came from.";
+            AbilitiesText = "- You can examine players to see if they have killed recently\n- Your screen will flash red if your target has killed in the " +
+                $"last {CustomGameOptions.RecentKill}s\n- You can view everyone's footprints to see where they go or where they came from";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Detective : Colors.Crew;
-            Type = RoleEnum.Detective;
+            RoleType = RoleEnum.Detective;
             RoleAlignment = RoleAlignment.CrewInvest;
             AlignmentName = CI;
             InspectorResults = InspectorResults.HasInformation;

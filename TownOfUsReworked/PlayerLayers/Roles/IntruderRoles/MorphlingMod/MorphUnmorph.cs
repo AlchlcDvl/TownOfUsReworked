@@ -9,10 +9,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.MorphlingMod
     {
         public static void Postfix()
         {
-            foreach (var role in Role.GetRoles(RoleEnum.Morphling))
-            {
-                var morphling = (Morphling)role;
+            if (ConstantVariables.IsLobby || ConstantVariables.IsEnded)
+                return;
 
+            foreach (var morphling in Role.GetRoles<Morphling>(RoleEnum.Morphling))
+            {
                 if (morphling.Morphed)
                     morphling.Morph();
                 else if (morphling.Enabled)

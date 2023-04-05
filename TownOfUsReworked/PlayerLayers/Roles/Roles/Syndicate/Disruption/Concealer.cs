@@ -19,9 +19,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Concealer";
             StartText = "Make The <color=#8BFDFDFF>Crew</color> Invisible For Some Chaos";
-            AbilitiesText = "- You can turn off player's ability to see things properly, making all other players appear invisible.";
+            AbilitiesText = $"- You can turn off player's ability to see things properly, making all other players appear invisible\n{AbilitiesText}";
             Color = CustomGameOptions.CustomSynColors ? Colors.Concealer : Colors.Syndicate;
-            Type = RoleEnum.Concealer;
+            RoleType = RoleEnum.Concealer;
             RoleAlignment = RoleAlignment.SyndicateDisruption;
             AlignmentName = SD;
             InspectorResults = InspectorResults.Unseen;

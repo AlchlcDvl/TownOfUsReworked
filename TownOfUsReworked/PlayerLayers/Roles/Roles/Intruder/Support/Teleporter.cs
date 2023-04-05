@@ -19,10 +19,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Teleporter(PlayerControl player) : base(player)
         {
             Name = "Teleporter";
-            StartText = "Get Away From Kills With Ease";
-            AbilitiesText = "Teleport to get away from bodies";
+            StartText = "X Marks The Spot";
+            AbilitiesText = $"- You can mark a spot to teleport to later\n{AbilitiesText}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Teleporter : Colors.Intruder;
-            Type = RoleEnum.Teleporter;
+            RoleType = RoleEnum.Teleporter;
+            AlignmentName = IS;
         }
 
         public float TeleportTimer()

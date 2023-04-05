@@ -21,11 +21,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Poisoner(PlayerControl player) : base(player)
         {
             Name = "Poisoner";
-            StartText = "Poison A <color=#8BFDFDFF>Crewmate</color> To Kill Them Later";
-            AbilitiesText = "Poison the <color=#8BFDFDFF>Crew</color>";
+            StartText = "Delay A Kill To Decieve The <color=#8BFDFDFF>Crew</color>";
+            AbilitiesText = $"- You can poison players\n- Poisoned players will die after {CustomGameOptions.PoisonDuration}s\n- With the Chaos Drive, your poison delay and cooldown" +
+                $"occur concurrently\n{AbilitiesText}";
             Color = CustomGameOptions.CustomIntColors? Colors.Poisoner : Colors.Syndicate;
-            LastPoisoned = DateTime.UtcNow;
-            Type = RoleEnum.Poisoner;
+            RoleType = RoleEnum.Poisoner;
             PoisonedPlayer = null;
             RoleAlignment = RoleAlignment.SyndicateDisruption;
             AlignmentName = SD;

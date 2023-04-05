@@ -23,9 +23,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Warper";
             StartText = "Warp The Crew Away From Each Other";
-            AbilitiesText = "Separate the Crew";
+            AbilitiesText = $"- You can warp all players, forcing them to be teleported to random locations\n- With the Chaos Drive, more locations are opened to you\n{AbilitiesText}";
             Color = CustomGameOptions.CustomSynColors ? Colors.Warper : Colors.Syndicate;
-            Type = RoleEnum.Warper;
+            RoleType = RoleEnum.Warper;
             AlignmentName = SSu;
         }
 

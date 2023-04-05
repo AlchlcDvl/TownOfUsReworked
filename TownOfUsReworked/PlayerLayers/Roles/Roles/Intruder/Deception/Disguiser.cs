@@ -26,9 +26,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Disguiser";
             StartText = "Disguise The <color=#8BFDFDFF>Crew</color> To Frame Them";
-            AbilitiesText = "- You can disguise a player into someone else's appearance.";
+            AbilitiesText = $"- You can disguise a player into someone else's appearance\n{AbilitiesText}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Disguiser : Colors.Intruder;
-            Type = RoleEnum.Disguiser;
+            RoleType = RoleEnum.Disguiser;
             RoleAlignment = RoleAlignment.IntruderDecep;
             AlignmentName = ID;
             MeasuredPlayer = null;

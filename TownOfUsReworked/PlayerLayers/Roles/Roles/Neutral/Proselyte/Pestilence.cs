@@ -15,10 +15,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Pestilence";
             StartText = "The Horseman Of The Apocalypse Has Arrived!";
-            AbilitiesText = "Kill everyone with your unstoppable abilities!";
+            AbilitiesText = "- You are on forever alert, anyone who interacts with you will be killed";
+            Objectives = "- Obliterate anyone who can oppose you";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Pestilence : Colors.Neutral;
-            LastKilled = DateTime.UtcNow;
-            Type = RoleEnum.Pestilence;
+            RoleType = RoleEnum.Pestilence;
             RoleAlignment = RoleAlignment.NeutralPros;
             AlignmentName = NP;
         }

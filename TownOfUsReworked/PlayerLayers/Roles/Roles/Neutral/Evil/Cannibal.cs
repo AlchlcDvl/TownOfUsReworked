@@ -13,7 +13,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public AbilityButton EatButton;
         public DeadBody CurrentTarget;
         public int EatNeed;
-        private string Body => EatNeed == 1 ? "body" : "bodies";
         public bool CannibalWin;
         public DateTime LastEaten;
         public Dictionary<byte, ArrowBehaviour> BodyArrows = new();
@@ -23,14 +22,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Cannibal";
             StartText = "Eat The Bodies Of The Dead";
-            Type = RoleEnum.Cannibal;
-            AbilitiesText = "- You can consume a body, making it disappear from the game.\n- You know when someone dies, so you can find their body.";
+            RoleType = RoleEnum.Cannibal;
+            AbilitiesText = "- You can consume a body, making it disappear from the game" + (CustomGameOptions.EatArrows ? "\n- When someone dies, you get an arrow " +
+                "pointing to their body" : "");
             RoleAlignment = RoleAlignment.NeutralEvil;
             AlignmentName = NE;
             Color = CustomGameOptions.CustomNeutColors ? Colors.Cannibal : Colors.Neutral;
-            Objectives = $"- Eat {EatNeed} {Body}.";
+            Objectives = $"- Eat {EatNeed} {(EatNeed == 1 ? "body" : "bodies")}.";
             BodyArrows = new();
-            EatNeed = CustomGameOptions.CannibalBodyCount >= PlayerControl.AllPlayerControls._size / 2 ? PlayerControl.AllPlayerControls._size / 2 :
+            EatNeed = CustomGameOptions.CannibalBodyCount >= PlayerControl.AllPlayerControls.Count / 2 ? PlayerControl.AllPlayerControls.Count / 2 :
                 CustomGameOptions.CannibalBodyCount; //Limits the max required bodies to 1/2 of lobby's size
         }
 

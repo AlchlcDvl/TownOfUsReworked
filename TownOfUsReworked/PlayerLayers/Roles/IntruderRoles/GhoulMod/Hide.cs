@@ -14,11 +14,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GhoulMod
             if (ConstantVariables.IsEnded || ConstantVariables.IsLobby)
                 return;
 
-            foreach (var role in Role.GetRoles(RoleEnum.Ghoul))
+            foreach (var ghoul in Role.GetRoles<Ghoul>(RoleEnum.Ghoul))
             {
-                var ghoul = (Ghoul)role;
-
-                if (role.Player.Data.Disconnected)
+                if (ghoul.Player.Data.Disconnected)
                     continue;
 
                 var caught = ghoul.Caught;

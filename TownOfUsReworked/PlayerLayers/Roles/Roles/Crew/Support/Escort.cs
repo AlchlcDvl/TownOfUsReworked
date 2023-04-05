@@ -20,10 +20,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Escort(PlayerControl player) : base(player)
         {
             Name = "Escort";
-            Type = RoleEnum.Escort;
+            RoleType = RoleEnum.Escort;
             StartText = "Roleblock Players And Stop Them From Harming Others";
-            AbilitiesText = "- You can seduce players.\n- Seduction blocks your target from being able to use their abilities for a short while.\n- You are immune to blocks.\n" +
-                "- If you attempt to block a <color=#336EFFFF>Serial Killer</color>, they will be forced to kill you.";
+            AbilitiesText = "- You can seduce players\n- Seduction blocks your target from being able to use their abilities for a short while\n- You are immune to blocks\n" +
+                "- If you attempt to block a <color=#336EFFFF>Serial Killer</color>, they will be forced to kill you";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Escort : Colors.Crew;
             RoleAlignment = RoleAlignment.CrewSupport;
             AlignmentName = CS;

@@ -16,9 +16,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Engineer";
             StartText = "Just Fix It";
-            AbilitiesText = $"- You can fix sabotages at any time during the game.\n- You can vent.\n- You have {UsesLeft} fixes left.";
+            AbilitiesText = "- You can fix sabotages at any time during the game\n- You can vent";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Engineer : Colors.Crew;
-            Type = RoleEnum.Engineer;
+            RoleType = RoleEnum.Engineer;
             RoleAlignment = RoleAlignment.CrewSupport;
             AlignmentName = CS;
             InspectorResults = InspectorResults.DifferentLens;

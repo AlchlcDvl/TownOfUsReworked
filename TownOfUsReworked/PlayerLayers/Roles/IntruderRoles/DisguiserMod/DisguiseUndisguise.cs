@@ -9,10 +9,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.DisguiserMod
     {
         public static void Postfix()
         {
-            foreach (var role in Role.GetRoles(RoleEnum.Disguiser))
-            {
-                var disguiser = (Disguiser)role;
+            if (ConstantVariables.IsLobby || ConstantVariables.IsEnded)
+                return;
 
+            foreach (var disguiser in Role.GetRoles<Disguiser>(RoleEnum.Disguiser))
+            {
                 if (disguiser.DelayActive)
                     disguiser.Delay();
                 else if (disguiser.Disguised)

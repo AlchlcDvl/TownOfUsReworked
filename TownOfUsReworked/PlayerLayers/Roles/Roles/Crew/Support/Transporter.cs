@@ -30,9 +30,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Transporter";
             StartText = "Swap Locations Of Players For Maximun Confusion";
-            AbilitiesText = "- You can swap the locations of 2 players of your choice.\n- Transporting someone in a vent will make the other player teleport on top of that vent.";
+            AbilitiesText = "- You can swap the locations of 2 players of your choice\n- Transporting someone in a vent will make the other player teleport on top of that vent or into" +
+                " the vent based on whether the target can vent or not";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Transporter : Colors.Crew;
-            Type = RoleEnum.Transporter;
+            RoleType = RoleEnum.Transporter;
             TransportPlayer1 = null;
             TransportPlayer2 = null;
             UsesLeft = CustomGameOptions.TransportMaxUses;
@@ -57,6 +58,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             DeadBody Player1Body = null;
             DeadBody Player2Body = null;
+            bool WasInVent1 = false;
+            bool WasInVent2 = false;
+            Vent Vent1 = null;
+            Vent Vent2 = null;
 
             if (TransportPlayer1.Data.IsDead)
             {
@@ -80,6 +85,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     yield return null;
 
                 TransportPlayer1.MyPhysics.ExitAllVents();
+                Vent1 = CustomButtons.GetClosestVent(TransportPlayer1);
+                WasInVent1 = true;
             }
 
             if (TransportPlayer2.inVent)
@@ -88,6 +95,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     yield return null;
 
                 TransportPlayer2.MyPhysics.ExitAllVents();
+                Vent2 = CustomButtons.GetClosestVent(TransportPlayer2);
+                WasInVent2 = true;
             }
 
             if (Player1Body == null && Player2Body == null)
@@ -115,6 +124,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         SubmergedCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
                     }
                 }
+
+                if (TransportPlayer1.CanVent(TransportPlayer1.Data) && Vent2 != null && WasInVent2)
+                    TransportPlayer1.MyPhysics.RpcEnterVent(Vent2.Id);
+
+                if (TransportPlayer2.CanVent(TransportPlayer1.Data) && Vent1 != null && WasInVent1)
+                    TransportPlayer2.MyPhysics.RpcEnterVent(Vent1.Id);
             }
             else if (Player1Body != null && Player2Body == null)
             {

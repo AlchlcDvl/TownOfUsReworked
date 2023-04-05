@@ -19,10 +19,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Time Master";
             StartText = "Freeze Time To Stop The <color=#8BFDFDFF>Crew</color>";
-            AbilitiesText = "Freeze time to stop the <color=#8BFDFDFF>Crew</color> from moving";
+            AbilitiesText = $"- You can freeze time to stop the <color=#8BFDFDFF>Crew</color> from moving\n{AbilitiesText}";
             Color = CustomGameOptions.CustomIntColors ? Colors.TimeMaster : Colors.Intruder;
-            LastFrozen = DateTime.UtcNow;
-            Type = RoleEnum.TimeMaster;
+            RoleType = RoleEnum.TimeMaster;
             RoleAlignment = RoleAlignment.IntruderSupport;
             AlignmentName = IS;
         }
@@ -46,7 +45,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Enabled = false;
             LastFrozen = DateTime.UtcNow;
-            Freeze.FreezeFunctions.UnfreezeAll();
+            Freeze.UnfreezeAll();
         }
     }
 }

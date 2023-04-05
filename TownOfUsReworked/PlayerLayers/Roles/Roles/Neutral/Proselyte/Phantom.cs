@@ -17,7 +17,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Phantom";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Phantom : Colors.Neutral;
-            Type = RoleEnum.Phantom;
+            Objectives = "- Finish your tasks without getting clicked";
+            RoleType = RoleEnum.Phantom;
             RoleAlignment = RoleAlignment.NeutralPros;
             AlignmentName = NP;
         }

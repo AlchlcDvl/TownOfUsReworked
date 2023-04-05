@@ -17,11 +17,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Blackmailer";
             StartText = "You Know Their Secrets";
-            AbilitiesText = "- You can blackmail players to ensure they cannot speak in the next meeting.\n- You can blackmail fellow <color=#FF0000FF>Intruders</color>.\n- " +
-                "Everyone will be alerted at the start of the meeting that someone has been blackmailed." + (CustomGameOptions.WhispersNotPrivate ? "\n- You can read whispers during " +
-                "meetings." : "");
+            AbilitiesText = "- You can blackmail players to ensure they cannot speak in the next meeting\n- You can blackmail fellow <color=#FF0000FF>Intruders</color>\n- " +
+                "Everyone will be alerted at the start of the meeting that someone has been blackmailed" + (CustomGameOptions.WhispersNotPrivate ? "\n- You can read whispers during " +
+                "meetings." : "") + $"\n{AbilitiesText}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Blackmailer : Colors.Intruder;
-            Type = RoleEnum.Blackmailer;
+            RoleType = RoleEnum.Blackmailer;
             RoleAlignment = RoleAlignment.IntruderConceal;
             AlignmentName = IC;
             InspectorResults = InspectorResults.HasInformation;

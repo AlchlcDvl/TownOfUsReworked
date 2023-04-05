@@ -23,11 +23,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Rebel(PlayerControl player) : base(player)
         {
             Name = "Rebel";
-            Type = RoleEnum.Rebel;
+            RoleType = RoleEnum.Rebel;
             StartText = "Promote Your Fellow <color=#008000FF>Syndicate</color> To Do Better";
-            AbilitiesText = "- You can promote a fellow <color=#008000FF>Syndicate</color> into becoming your successor.\n- Promoting an <color=#008000FF>Syndicate</color> turns them " +
-                "into a <color=#979C9FFF>Sidekick</color>.\n- If you die, the <color=#979C9FFF>Sidekick</color> become the new <color=#FFFCCEFF>Rebel</color>\nand inherits better " +
-                "abilities of their former role.";
+            AbilitiesText = "- You can promote a fellow <color=#008000FF>Syndicate</color> into becoming your successor\n- Promoting an <color=#008000FF>Syndicate</color> turns them " +
+                "into a <color=#979C9FFF>Sidekick</color>\n- If you die, the <color=#979C9FFF>Sidekick</color> become the new <color=#FFFCCEFF>Rebel</color>\nand inherits better " +
+                $"abilities of their former role\n{AbilitiesText}";
             Color = CustomGameOptions.CustomSynColors ? Colors.Rebel : Colors.Syndicate;
             RoleAlignment = RoleAlignment.SyndicateSupport;
             AlignmentName = SSu;
@@ -164,19 +164,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (MeetingHud.Instance)
                 ShapeshiftTimeRemaining = 0f;
-
-            var allPlayers = PlayerControl.AllPlayerControls;
-
-            foreach (var player in allPlayers)
-            {
-                var random = Random.RandomRangeInt(0, allPlayers.Count);
-
-                while (player == allPlayers[random])
-                    random = Random.RandomRangeInt(0, allPlayers.Count);
-
-                var otherPlayer = allPlayers[random];
-                Utils.Morph(player, otherPlayer);
-            }
         }
 
         public void UnShapeshift()
@@ -511,7 +498,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             ConfuseEnabled = false;
             LastConfused = DateTime.UtcNow;
-            Reverse.ConfuseFunctions.UnconfuseAll();
+            Reverse.UnconfuseAll();
         }
 
         //Crusader Stuff

@@ -2,7 +2,7 @@ using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MediumMod;
-using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.AgentMod;
+using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod;
 using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod;
 using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SerialKillerMod;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod;
@@ -134,12 +134,12 @@ namespace TownOfUsReworked.CustomOptions
         public static int ShifterOn => (int)Generate.ShifterOn.Get();
         public static int AmnesiacOn => (int)Generate.AmnesiacOn.Get();
         public static int ConcealerOn => (int)Generate.ConcealerOn.Get();
+        public static int PoliticianOn => (int)Generate.PoliticianOn.Get();
         public static int TimeLordOn => (int)Generate.TimeLordOn.Get();
         public static int MedicOn => (int)Generate.MedicOn.Get();
         public static int GlitchOn => (int)Generate.GlitchOn.Get();
         public static int MorphlingOn => (int)Generate.MorphlingOn.Get();
         public static int ExecutionerOn => (int)Generate.ExecutionerOn.Get();
-        public static int AgentOn => (int)Generate.AgentOn.Get();
         public static int CrewmateOn => (int)Generate.CrewmateOn.Get();
         public static int ImpostorOn => (int)Generate.ImpostorOn.Get();
         public static int WraithOn => (int)Generate.WraithOn.Get();
@@ -203,6 +203,7 @@ namespace TownOfUsReworked.CustomOptions
         public static int CrusaderOn => (int)Generate.CrusaderOn.Get();
         public static int BansheeOn => (int)Generate.BansheeOn.Get();
         public static int GhoulOn => (int)Generate.GhoulOn.Get();
+        public static int EnforcerOn => (int)Generate.EnforcerOn.Get();
 
         //Ability Spawn
         public static int CrewAssassinOn => (int)Generate.CrewAssassinOn.Get();
@@ -301,11 +302,6 @@ namespace TownOfUsReworked.CustomOptions
         public static bool UniqueSeer => Generate.UniqueSeer.Get();
         public static float SeerCooldown => Generate.SeerCooldown.Get();
 
-        //Agent Settings
-        public static int AgentCount => (int)Generate.AgentCount.Get();
-        public static bool UniqueAgent => Generate.UniqueAgent.Get();
-        public static AdminDeadPlayers WhoSeesDead => (AdminDeadPlayers)Generate.WhoSeesDead.Get();
-
         //Detective Settings
         public static int DetectiveCount => (int)Generate.DetectiveCount.Get();
         public static float ExamineCd => Generate.ExamineCooldown.Get();
@@ -376,6 +372,7 @@ namespace TownOfUsReworked.CustomOptions
         public static int MinAmountOfPlayersInBug => (int)Generate.MinAmountOfPlayersInBug.Get();
         public static bool BugsRemoveOnNewRound => Generate.BugsRemoveOnNewRound.Get();
         public static bool UniqueOperative => Generate.UniqueOperative.Get();
+        public static AdminDeadPlayers WhoSeesDead => (AdminDeadPlayers)Generate.WhoSeesDead.Get();
 
         //Veteran Settings
         public static float AlertCd => Generate.AlertCooldown.Get();
@@ -619,6 +616,7 @@ namespace TownOfUsReworked.CustomOptions
         public static int ArsonistCount => (int)Generate.ArsonistCount.Get();
         public static bool UniqueArsonist => Generate.UniqueArsonist.Get();
         public static bool ArsoCooldownsLinked => Generate.ArsoCooldownsLinked.Get();
+        public static bool ArsoIgniteAll => Generate.ArsoIgniteAll.Get();
 
         //Murderer Settings
         public static float MurdKCD => Generate.MurdKillCooldownOption.Get();
@@ -752,6 +750,14 @@ namespace TownOfUsReworked.CustomOptions
         public static int AmbusherCount => (int)Generate.AmbusherCount.Get();
         public static bool UniqueAmbusher => Generate.UniqueAmbusher.Get();
 
+        //Enforcer Settings
+        public static float EnforceCooldown => Generate.EnforceCooldown.Get();
+        public static float EnforceDuration => Generate.EnforceDuration.Get();
+        public static int EnforcerCount => (int)Generate.EnforcerCount.Get();
+        public static float EnforceRadius => Generate.EnforceRadius.Get();
+        public static float EnforceDelay => Generate.EnforceDelay.Get();
+        public static bool UniqueEnforcer => Generate.UniqueEnforcer.Get();
+
         //Poisoner Settings
         public static float PoisonCd => Generate.PoisonCooldown.Get();
         public static float PoisonDuration => Generate.PoisonDuration.Get();
@@ -859,6 +865,14 @@ namespace TownOfUsReworked.CustomOptions
         public static bool BombsDetonateOnMeetingStart => Generate.BombsDetonateOnMeetingStart.Get();
         public static bool BombsRemoveOnNewRound => Generate.BombsRemoveOnNewRound.Get();
         public static float ChaosDriveBombRange => Generate.ChaosDriveBombRange.Get();
+
+        //Politician Settings
+        public static bool PoliticianAnonymous => Generate.PoliticianAnonymous.Get();
+        public static int PoliticianVoteBank => (int)Generate.PoliticianVoteBank.Get();
+        public static int ChaosDriveVoteAdd => (int)Generate.ChaosDriveVoteAdd.Get();
+        public static bool UniquePolitician => Generate.UniquePolitician.Get();
+        public static int PoliticianCount => (int)Generate.PoliticianCount.Get();
+        public static bool PoliticianButton => Generate.PoliticianButton.Get();
 
         //Concealer Settings
         public static int ConcealerCount => (int)Generate.ConcealerCount.Get();
@@ -1158,8 +1172,8 @@ namespace TownOfUsReworked.CustomOptions
         public static int SSuMin => (int)Generate.SSuMin.Get();
 
         //SP Settings
-        public static int SPMax => 0;
-        public static int SPMin => 0;
+        public static int SPMax => (int)Generate.SPMax.Get();
+        public static int SPMin => (int)Generate.SPMin.Get();
 
         //NE Settings
         public static int NEMax => (int)Generate.NEMax.Get();

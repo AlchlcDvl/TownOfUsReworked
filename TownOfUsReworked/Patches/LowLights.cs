@@ -30,25 +30,13 @@ namespace TownOfUsReworked.Patches
             }
 
             if (player?.IsDead != false)
-            {
                 __result = __instance.MaxLightRadius;
-                return false;
-            }
             else if (player._object.Is(Faction.Intruder) || (player._object.Is(RoleAlignment.NeutralKill) && CustomGameOptions.NKHasImpVision) || player._object.Is(AbilityEnum.Torch))
-            {
                 __result = __instance.MaxLightRadius * CustomGameOptions.IntruderVision;
-                return false;
-            }
             else if (player._object.Is(Faction.Syndicate))
-            {
                 __result = __instance.MaxLightRadius * CustomGameOptions.SyndicateVision;
-                return false;
-            }
             else if (player._object.Is(Faction.Neutral) && !CustomGameOptions.LightsAffectNeutrals)
-            {
                 __result = __instance.MaxLightRadius * CustomGameOptions.NeutralVision;
-                return false;
-            }
             else if (player != null)
             {
                 var switchSystem = __instance.Systems[SystemTypes.Electrical].Cast<SwitchSystem>();

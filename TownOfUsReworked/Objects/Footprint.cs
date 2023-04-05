@@ -27,11 +27,9 @@ namespace TownOfUsReworked.Objects
             Role = role;
             Position = player.transform.position;
             _velocity = player.gameObject.GetComponent<Rigidbody2D>().velocity;
-
             Player = player;
             _time = (int) Time.time;
             Color = Color.black;
-
             Start();
             role.AllPrints.Add(this);
         }

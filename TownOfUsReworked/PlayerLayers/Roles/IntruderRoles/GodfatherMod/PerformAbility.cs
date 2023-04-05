@@ -48,10 +48,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                 return false;
             }
 
-            if (!role.WasMafioso || role.FormerRole == null || role.FormerRole.Type == RoleEnum.Impostor)
+            if (!role.WasMafioso || role.FormerRole == null || role.FormerRole.RoleType == RoleEnum.Impostor)
                 return false;
 
-            var formerRole = role.FormerRole.Type;
+            var formerRole = role.FormerRole.RoleType;
 
             if (__instance == role.BlackmailButton && formerRole == RoleEnum.Blackmailer)
             {
@@ -129,9 +129,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                     if (Utils.IsTooFar(role.Player, role.ClosestTarget))
                         return false;
 
-                    if (role.Disguised || role.DelayActive)
-                        return false;
-
                     if (role.ClosestTarget == role.MeasuredPlayer)
                         return false;
 
@@ -185,7 +182,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
             else if (__instance == role.FlashButton && formerRole == RoleEnum.Grenadier)
             {
                 var system = ShipStatus.Instance.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>();
-                var sabActive = (bool)system?.specials.ToArray().Any(s => s.IsActive);
+                var sabActive = (bool)system?.specials.Any(s => s.IsActive);
 
                 if (sabActive)
                     return false;
@@ -283,16 +280,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                     return false;
 
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                writer.Write((byte)ActionsRPC.GodfatherAction);
-                writer.Write((byte)GodfatherActionsRPC.Mine);
+                writer.Write((byte)ActionsRPC.Mine);
                 var position = PlayerControl.LocalPlayer.transform.position;
-                var id = GetAvailableId();
+                var id = Utils.GetAvailableId();
                 writer.Write(id);
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
                 writer.Write(position);
                 writer.Write(position.z + 0.01f);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
-                SpawnVent(id, role, position, position.z + 0.01f);
+                Utils.SpawnVent(id, role, position, position.z + 0.01f);
+                role.LastMined = DateTime.UtcNow;
                 return false;
             }
             else if (__instance == role.MorphButton && formerRole == RoleEnum.Morphling)
@@ -394,9 +391,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                 if (role.FreezeTimer() != 0f)
                     return false;
 
-                if (role.Frozen)
-                    return false;
-
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.GodfatherAction);
                 writer.Write((byte)GodfatherActionsRPC.TimeFreeze);
@@ -411,9 +405,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                 if (role.InvisTimer() != 0f)
                     return false;
 
-                if (role.IsInvis)
-                    return false;
-
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.GodfatherAction);
                 writer.Write((byte)GodfatherActionsRPC.Invis);
@@ -421,6 +412,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 role.InvisTimeRemaining = CustomGameOptions.InvisDuration;
                 role.Invis();
+                Utils.Invis(role.Player, PlayerControl.LocalPlayer == role.Player);
                 return false;
             }
 
@@ -445,61 +437,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
 
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
                 Utils.Flash(Colors.Seer, "Someone changed their identity!");
-        }
-
-        public static void SpawnVent(int ventId, Godfather role, Vector2 position, float zAxis)
-        {
-            var ventPrefab = UnityEngine.Object.FindObjectOfType<Vent>();
-            var vent = UnityEngine.Object.Instantiate(ventPrefab, ventPrefab.transform.parent);
-
-            vent.Id = ventId;
-            vent.transform.position = new Vector3(position.x, position.y, zAxis);
-
-            if (role.Vents.Count > 0)
-            {
-                var leftVent = role.Vents[^1];
-                vent.Left = leftVent;
-                leftVent.Right = vent;
-            }
-            else
-                vent.Left = null;
-
-            vent.Right = null;
-            vent.Center = null;
-
-            var allVents = ShipStatus.Instance.AllVents.ToList();
-            allVents.Add(vent);
-            ShipStatus.Instance.AllVents = allVents.ToArray();
-
-            role.Vents.Add(vent);
-            role.LastMined = DateTime.UtcNow;
-
-            if (SubmergedCompatibility.IsSubmerged())
-            {
-                vent.gameObject.layer = 12;
-                vent.gameObject.AddSubmergedComponent(SubmergedCompatibility.ElevatorMover); //Just in case elevator vent is not blocked
-
-                if (vent.gameObject.transform.position.y > -7)
-                    vent.gameObject.transform.position = new Vector3(vent.gameObject.transform.position.x, vent.gameObject.transform.position.y, 0.03f);
-                else
-                {
-                    vent.gameObject.transform.position = new Vector3(vent.gameObject.transform.position.x, vent.gameObject.transform.position.y, 0.0009f);
-                    vent.gameObject.transform.localPosition = new Vector3(vent.gameObject.transform.localPosition.x, vent.gameObject.transform.localPosition.y, -0.003f);
-                }
-            }
-        }
-
-        public static int GetAvailableId()
-        {
-            var id = 0;
-
-            while (true)
-            {
-                if (ShipStatus.Instance.AllVents.All(v => v.Id != id))
-                    return id;
-
-                id++;
-            }
         }
     }
 }

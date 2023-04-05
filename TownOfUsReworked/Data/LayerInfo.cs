@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Text;
-using TownOfUsReworked.Data;
 using HarmonyLib;
 
 namespace TownOfUsReworked.Data
@@ -266,6 +265,8 @@ namespace TownOfUsReworked.Data
                     .Append("Description: ").AppendLine(FactionDescription);
                 return builder.ToString();
             }
+
+            public string FullInfo() => $"{RoleInfoMessage}\n{AlignmentInfoMessage}\n{FactionInfoMessage}";
         }
 
         public class ModifierInfo
@@ -377,9 +378,6 @@ namespace TownOfUsReworked.Data
         public readonly static List<RoleInfo> AllRoles = new()
         {
             new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid", "Invalid"),
-            new RoleInfo("Agent", "Ag", "The Agent gains more information when on Admin Table and on Vitals. On Admin Table, the Agent can see the colors of every person" +
-                " on the map. When on Vitals, the Agent is shown how long someone has been dead for.", RoleAlignment.CrewInvest, Faction.Crew, "Hippity hoppity, your privacy is now " +
-                "my property."),
             new RoleInfo("Altruist", "Alt", "The Altruist is capable of reviving dead players. Upon finding a dead body, the Altruist can hit their revive button, " +
                 "sacrificing themselves for the revival of the dead player. If enabled, the dead body disappears, so only they Altruist's body remains at the scene. After a set period" +
                 " of time, the player will be resurrected, if the revival isn't interrupted. Once revived all evil players will be notified of the revival and will have an arrow " +
@@ -409,9 +407,11 @@ namespace TownOfUsReworked.Data
                 "changed, the Mystic will be alerted about it. The Mystic can also investigate players to see if their subfactions have been changed. If the target has a different " +
                 "subfaction, the Mystic's screen will flash red, otherwise it will flash green. It will not, however, work on the Neutral (Neophyte) roles themselves so even people who" +
                 " flashed green might be a converter. Once all subfactions are dead, the Mystic becomes a Seer.", RoleAlignment.CrewAudit, Faction.Crew, "There's a hint of corruption."),
-            new RoleInfo("Operative", "Op", "The Operative can place bugs around the map. When players enter the range of the bug, they trigger it. In the following meeting," +
-                " all players who triggered a bug will have their role displayed to the Operative. However, this is done so in a random order, not stating who entered the bug, nor what " +
-                "role a specific player is.", RoleAlignment.CrewInvest, Faction.Crew, "The only thing you need to find out information is good placement and amazing levels of prediction."),
+            new RoleInfo("Operative", "Op", "The Operative can place bugs around the map. When players enter the range of the bug, they trigger it. In the following meeting, all " +
+                "players who triggered a bug will have their role displayed to the Operative. However, this is done so in a random order, not stating who entered the bug, nor what role " +
+                "a specific player is. The Operative also gains more information when on Admin Table and on Vitals. On Admin Table, the Operative can see the colors of every person on " +
+                "the map. When on Vitals, the Operative is shown how long someone has been dead for.", RoleAlignment.CrewInvest, Faction.Crew, "The only thing you need to find out " +
+                "information is good placement and amazing levels of patience."),
             new RoleInfo("Retributionist", "Ret", "The Retributionist can mimic dead crewamtes. During meetings, the Retributionist can select who they are going to " +
                 "ressurect and use for the following round from the dead. They can choose to use each dead players as many times as they wish. It should be noted the Retributionist " +
                 "can not use all Crew roles and cannot use any Non-Crew role. The cooldowns, limits and everything will be set by the settings for their respective roles.",
@@ -580,7 +580,12 @@ namespace TownOfUsReworked.Data
                 "dies, the Sidekick becomes the new Rebel. As a result, the new Rebel has a lower cooldown on all of their original role's abilities.", RoleAlignment.SyndicateUtil,
                 Faction.Syndicate, "Learning new things."),
             new RoleInfo("Warper", "Warp", "The Warper can teleport everyone to a random vent every now and then. With the Chaos Drive, the number of potential warp points also " +
-                "increases.", RoleAlignment.SyndicateSupport, Faction.Syndicate, "BEGONE!")
+                "increases.", RoleAlignment.SyndicateSupport, Faction.Syndicate, "BEGONE!"),
+            new RoleInfo("Politician", "Pol", "The Politician can vote multiple times like the Mayor. However, unlike the Mayor, the Politician does not gain votes every meeting " +
+                "without the Chaos Drive and must kill players to gain votes", RoleAlignment.SyndicatePower, Faction.Syndicate, "The votes are rigged...by me."),
+            new RoleInfo("Enforcer", "Enf", "The Enforcer can plant bombs on players. After a short while, the target will be alerted to the bomb's presence and must kill someone to " +
+                "get rid of it. If they fail to kill someone within a certain time limit, tje bomb will explode, killing everyone within its vicinity.", RoleAlignment.IntruderKill,
+                Faction.Intruder, "You will do as I say...unless you want to be the painting on the walls.")
         };
 
         public readonly static List<ModifierInfo> AllModifiers = new()
@@ -683,18 +688,18 @@ namespace TownOfUsReworked.Data
                 "confused, he only remembered stabbing the Grenadier once. The Amnesiac sat there in silence, playing around with the toys he had found. He enjoyed the clicking sounds " +
                 "the new toys in his hand made and was itching to use them. Green was being ejected thanks to the close tie he had with Red in the last meeting. Soon the meeting came to " +
                 "a close. Just as everyone was dispersing, the spirit of the Grenadier looked at the Amnesiac, with a cold smile on his face. He had raised his successor well.", "Amne"),
-            new Lore("Glitch", "The Spy woke up to see a dreary yellow maze-like world around him. The maze seemed infinitely large, as there was no limit to be seen. He tried his best " +
-                "to survive in this maze, preserving what was left of his sanity. Several years passed by and by some miracle, he found a vent. Not even thinking that it might be leading" +
-                " to nowhere, he hopped into it. He was nearing death so he was not at liberty to decide. As he fell further down, he questioned his choice, thinking it might just be his " +
-                "end. But then there he was, lying on the floor of the laboratory, in front of the vitals screen. His body seemed fine, heck, even better. The Spy was shocked, it was as " +
-                "if he was not gone for a second in the main world. Everything was as it was when he \"glitched\" through. What greeted him wasn't any of the Crew, it was a parasite. The " +
-                "parasite entered the Spy's body. The parasite and the Spy struggled to gain control of the body, and the Spy succeeded. But he felt...new. Powerful, even. In his " +
-                "mind, all he could think of was the pain and suffering he went through. He couldn't forgive the Crew who didn't even bother to look for him, let alone save him. He " +
-                "needed to make the world aware of what he went through. And he had just the right tools with him. Controlling the dead parasite within his body, along with his warped " +
-                "anatomy thanks to reality breaking, the Spy fused himself with a lot of the technology around him, in an attempt to get stronger. He invented devices to hack the Crew's " +
-                "and Intruders' systems alike, and an illusion device to change his appearance. It was showtime. The best thing the Spy could do right now was kill everyone and hope they " +
-                "get transported to the maze, to feel what he did. He was the one who transcended reality, he was the one with the knowledge to break through the universe's strongest " +
-                "barrier. He was...the Glitch.", "Gli"),
+            new Lore("Glitch", "The Operative woke up to see a dreary yellow maze-like world around him. The maze seemed infinitely large, as there was no limit to be seen. He tried his " +
+                "best to survive in this maze, preserving what was left of his sanity. Several years passed by and by some miracle, he found a vent. Not even thinking that it might be " +
+                "leading to nowhere, he hopped into it. He was nearing death so he was not at liberty to decide. As he fell further down, he questioned his choice, thinking it might " +
+                "just be his end. But then there he was, lying on the floor of the laboratory, in front of the vitals screen. His body seemed fine, heck, even better. The Operative " +
+                "was shocked, it was as if he was not gone for a second in the main world. Everything was as it was when he \"glitched\" through. What greeted him wasn't any of the " +
+                "Crew, it was a parasite. The parasite entered the Operative's body. The parasite and the Operative struggled to gain control of the body, and the Operative succeeded. " +
+                "But he felt...new. Powerful, even. In his mind, all he could think of was the pain and suffering he went through. He couldn't forgive the Crew who didn't even bother " +
+                "to look for him, let alone save him. He needed to make the world aware of what he went through. And he had just the right tools with him. Controlling the dead parasite " +
+                "within his body and harnessing its power, along with his warped anatomy thanks to reality breaking, the Operative fused himself with a lot of the technology around him, " +
+                "in an attempt to get stronger. He invented devices to hack the Crew's and Intruders' systems alike, and an illusion device to change his appearance. It was showtime. " +
+                "The best thing the Operative could do right now was kill everyone and hope they get transported to the maze, to feel what he did. He was the one who transcended reality, " +
+                "he was the one with the knowledge to break through the universe's strongest barrier. He was...the Glitch.", "Gli"),
             new Lore("Juggernaut", "A paranoid Veteran watched his loved one die to the hands of the Crew. He couldn't bear to think he wasn't there to save her. \"If only I was stronger" +
                 ".\" was the thought that plagued his mind. Day in and day out, he pursued strength, in his ultimate goal to destroy Mira, the very company that killed his wife in cold " +
                 "blood. But, he just couldn't shake off the paranoia from the war. No amount of self healing or meditating could take away those horrid memories from wartime. His wife " +

@@ -22,9 +22,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Crusader";
             StartText = "Ambush";
-            AbilitiesText = "- You can crusade players.\n- Ambushed players will be forced to be on alert, and will kill whoever interacts with then.";
+            AbilitiesText = $"- You can crusade players\n- Ambushed players will be forced to be on alert, and will kill whoever interacts with then\n{AbilitiesText}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Crusader : Colors.Syndicate;
-            Type = RoleEnum.Crusader;
+            RoleType = RoleEnum.Crusader;
             RoleAlignment = RoleAlignment.SyndicateKill;
             AlignmentName = SyK;
             InspectorResults = InspectorResults.SeeksToProtect;

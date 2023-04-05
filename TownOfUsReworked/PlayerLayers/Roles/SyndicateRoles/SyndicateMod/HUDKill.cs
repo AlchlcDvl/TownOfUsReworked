@@ -21,7 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.SyndicateMod
 
             var role = Role.GetRole<SyndicateRole>(PlayerControl.LocalPlayer);
 
-            if (role.Type == RoleEnum.Banshee)
+            if (role.RoleType == RoleEnum.Banshee)
             {
                 role.KillButton.gameObject.SetActive(false);
                 return;

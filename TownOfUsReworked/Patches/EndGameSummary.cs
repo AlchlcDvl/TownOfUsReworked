@@ -75,13 +75,13 @@ namespace TownOfUsReworked.Patches
                     if (playerControl.IsBitten())
                         summary += " <color=#7B8968FF>γ</color>";
 
-                    if (objectifier.Type != ObjectifierEnum.None)
+                    if (objectifier.ObjectifierType != ObjectifierEnum.None)
                         summary += $" {objectifier.GetColoredSymbol()}";
 
-                    if (modifier.Type != ModifierEnum.None)
+                    if (modifier.ModifierType != ModifierEnum.None)
                         summary += $" ({modifier.ColorString}{modifier.Name}{endString})";
 
-                    if (ability.Type != AbilityEnum.None)
+                    if (ability.AbilityType != AbilityEnum.None)
                         summary += $" [{ability.ColorString}{ability.Name}{endString}]";
 
                     if (playerControl.IsGATarget())
@@ -184,7 +184,7 @@ namespace TownOfUsReworked.Patches
             }
         }
 
-        private static bool IsWinner(this string playerName) => TempData.winners.ToArray().Any(x => x.PlayerName == playerName);
+        private static bool IsWinner(this string playerName) => TempData.winners.Any(x => x.PlayerName == playerName);
 
         private static string DeathReason(this PlayerControl player)
         {

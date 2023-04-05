@@ -26,10 +26,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
             var Imp = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Intruder) && !x.Is(RoleEnum.Consort)).ToList();
             role.DeclareButton.UpdateButton(role, "PROMOTE", 0, 1, AssetManager.Promote, AbilityTypes.Direct, "Secondary", Imp, !role.HasDeclared);
 
-            if (!role.WasMafioso || role.FormerRole == null || role.FormerRole?.Type == RoleEnum.Impostor)
+            if (!role.WasMafioso || role.FormerRole == null || role.FormerRole?.RoleType == RoleEnum.Impostor)
                 return;
 
-            var formerRole = role.FormerRole?.Type;
+            var formerRole = role.FormerRole?.RoleType;
 
             if (formerRole == RoleEnum.Blackmailer)
             {
@@ -91,7 +91,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod
 
                 var system = ShipStatus.Instance.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>();
                 var dummyActive = (bool)system?.dummy.IsActive;
-                var sabActive = (bool)system?.specials.ToArray().Any(s => s.IsActive);
+                var sabActive = (bool)system?.specials.Any(s => s.IsActive);
                 role.FlashButton.UpdateButton(role, "FLASH", role.FlashTimer(), CustomGameOptions.GrenadeCd, AssetManager.Flash, AbilityTypes.Effect, "Secondary", null, true,
                     !sabActive && !dummyActive && !role.Flashed, role.Flashed, role.FlashTimeRemaining, CustomGameOptions.GrenadeDuration);
             }

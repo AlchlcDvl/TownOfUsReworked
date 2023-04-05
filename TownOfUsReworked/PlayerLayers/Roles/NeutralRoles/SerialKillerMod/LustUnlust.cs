@@ -9,10 +9,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SerialKillerMod
     {
         public static void Postfix()
         {
-            foreach (var role in Role.GetRoles(RoleEnum.SerialKiller))
-            {
-                var sk = (SerialKiller)role;
+            if (ConstantVariables.IsLobby || ConstantVariables.IsEnded)
+                return;
 
+            foreach (var sk in Role.GetRoles<SerialKiller>(RoleEnum.SerialKiller))
+            {
                 if (sk.Lusted)
                     sk.Bloodlust();
                 else if (sk.Enabled)

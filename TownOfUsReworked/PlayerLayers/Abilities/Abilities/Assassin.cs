@@ -12,7 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
     {
         public Dictionary<byte, (GameObject, GameObject, GameObject, TMP_Text)> Buttons = new();
         private readonly Dictionary<string, Color> ColorMapping = new();
-        public Dictionary<string, Color> SortedColorMapping;
+        public Dictionary<string, Color> SortedColorMapping = new();
         public Dictionary<byte, string> Guesses = new();
         public bool GuessedThisMeeting { get; set; }
         public int RemainingKills { get; set; }
@@ -23,9 +23,9 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
         public Assassin(PlayerControl player) : base(player)
         {
             Name = "Assassin";
-            TaskText = $"- You can guess players mid-meetings.\n- You have {RemainingKills} guess left.";
+            TaskText = "- You can guess players mid-meetings";
             Color = CustomGameOptions.CustomAbilityColors ? Colors.Assassin : Colors.Ability;
-            Type = AbilityEnum.Assassin;
+            AbilityType = AbilityEnum.Assassin;
             RemainingKills = CustomGameOptions.AssassinKills;
             ColorMapping = new();
             Buttons = new();
@@ -54,9 +54,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
 
                     if (CustomGameOptions.MedicOn > 0)
                         ColorMapping.Add("Medic", Colors.Medic);
-
-                    if (CustomGameOptions.AgentOn > 0)
-                        ColorMapping.Add("Agent", Colors.Agent);
 
                     if (CustomGameOptions.AltruistOn > 0)
                         ColorMapping.Add("Altruist", Colors.Altruist);

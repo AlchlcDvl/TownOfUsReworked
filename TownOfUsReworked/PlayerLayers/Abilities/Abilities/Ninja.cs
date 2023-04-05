@@ -10,7 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             Name = "Ninja";
             TaskText = "- You do not lunge.";
             Color = CustomGameOptions.CustomAbilityColors ? Colors.Ninja : Colors.Ability;
-            Type = AbilityEnum.Ninja;
+            AbilityType = AbilityEnum.Ninja;
         }
     }
 }

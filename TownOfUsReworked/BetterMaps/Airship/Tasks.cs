@@ -28,7 +28,7 @@ namespace TownOfUsReworked.BetterMaps.Airship
         {
             var Player = PC.Object;
             var truePosition = Player.GetTruePosition();
-            CanUse = !PC.IsDead && Player.CanMove && !CallPlateform.PlateformIsUsed && !UnityEngine.Object.FindObjectOfType<MovingPlatformBehaviour>().InUse;
+            CanUse = !PC.IsDead && Player.CanMove && !CallPlateform.PlateformIsUsed && !FindObjectOfType<MovingPlatformBehaviour>().InUse;
             var Distance = float.MaxValue;
 
             if (CanUse)
@@ -47,7 +47,7 @@ namespace TownOfUsReworked.BetterMaps.Airship
         {
             if (renderer)
             {
-                renderer.material.SetFloat("_Outline", (float) (On ? 1 : 0f));
+                renderer.material.SetFloat("_Outline", On ? 1 : 0);
                 renderer.material.SetColor("_OutlineColor", Color.white);
                 renderer.material.SetColor("_AddColor", On ? Color.white : Color.clear);
             }

@@ -23,7 +23,6 @@ using TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.SyndicateMod;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 using TownOfUsReworked.Objects;
-using System.Reflection;
 using Il2CppInterop.Runtime;
 using System.IO;
 using TMPro;
@@ -153,8 +152,8 @@ namespace TownOfUsReworked.Classes
 
         public static void DefaultOutfit(PlayerControl player)
         {
-            player.MyRend().color = new Color32(255, 255, 255, 255);
             player.SetOutfit(CustomPlayerOutfitType.Default);
+            player.MyRend().color = new Color32(255, 255, 255, 255);
         }
 
         public static void Camouflage()
@@ -189,27 +188,48 @@ namespace TownOfUsReworked.Classes
         public static void Conceal()
         {
             foreach (var player in PlayerControl.AllPlayerControls)
+                Invis(player, PlayerControl.LocalPlayer.Is(Faction.Syndicate));
+        }
+
+        public static void Invis(PlayerControl player, bool condition)
+        {
+            var color = new Color32(0, 0, 0, 0);
+
+            if (condition || PlayerControl.LocalPlayer.Data.IsDead)
+                color.a = 26;
+
+            if (player.GetCustomOutfitType() != CustomPlayerOutfitType.Invis)
             {
-                var color = new Color32(0, 0, 0, 0);
-
-                if (PlayerControl.LocalPlayer.Is(Faction.Syndicate) || PlayerControl.LocalPlayer.Data.IsDead)
-                    color.a = 26;
-
-                if (player.GetCustomOutfitType() != CustomPlayerOutfitType.Invis)
+                player.SetOutfit(CustomPlayerOutfitType.Invis, new GameData.PlayerOutfit()
                 {
-                    player.SetOutfit(CustomPlayerOutfitType.Invis, new GameData.PlayerOutfit()
-                    {
-                        ColorId = player.CurrentOutfit.ColorId,
-                        HatId = "",
-                        SkinId = "",
-                        VisorId = "",
-                        PlayerName = " "
-                    });
+                    ColorId = player.CurrentOutfit.ColorId,
+                    HatId = "",
+                    SkinId = "",
+                    VisorId = "",
+                    PlayerName = " "
+                });
 
-                    player.MyRend().color = color;
-                    player.NameText().color = new Color32(0, 0, 0, 0);
-                    player.cosmetics.colorBlindText.color = new Color32(0, 0, 0, 0);
-                }
+                player.MyRend().color = color;
+                player.NameText().color = new Color32(0, 0, 0, 0);
+                player.cosmetics.colorBlindText.color = new Color32(0, 0, 0, 0);
+            }
+        }
+
+        public static void Shapeshift()
+        {
+            var allPlayers = PlayerControl.AllPlayerControls;
+            var shifted = new List<PlayerControl>();
+
+            foreach (var player in allPlayers)
+            {
+                var random = Random.RandomRangeInt(0, allPlayers.Count);
+
+                while (player == allPlayers[random] || shifted.Contains(allPlayers[random]))
+                    random = Random.RandomRangeInt(0, allPlayers.Count);
+
+                var otherPlayer = allPlayers[random];
+                Morph(player, otherPlayer);
+                shifted.Add(otherPlayer);
             }
         }
 
@@ -407,7 +427,7 @@ namespace TownOfUsReworked.Classes
                 else if (target.Is(ModifierEnum.Diseased) && (killer.Is(Faction.Intruder) || killer.Is(Faction.Syndicate)))
                 {
                     var cooldown = killer.Is(Faction.Intruder) ? CustomGameOptions.IntKillCooldown : CustomGameOptions.ChaosDriveKillCooldown;
-                    var last = Last(killer) && killer.Is(AbilityEnum.Underdog);
+                    var last = LayerExtentions.Last(killer) && killer.Is(AbilityEnum.Underdog);
                     var lowerKC = (cooldown - CustomGameOptions.UnderdogKillBonus) * (CustomGameOptions.DiseasedMultiplier - 1f);
                     var normalKC = cooldown * (CustomGameOptions.DiseasedMultiplier - 1f);
                     var upperKC = (cooldown + CustomGameOptions.UnderdogKillBonus) * (CustomGameOptions.DiseasedMultiplier - 1f);
@@ -497,12 +517,6 @@ namespace TownOfUsReworked.Classes
 
         public static object TryCast(this Il2CppObjectBase self, Type type) => AccessTools.Method(self.GetType(), nameof(Il2CppObjectBase.TryCast)).MakeGenericMethod(type).Invoke(self,
             Array.Empty<object>());
-
-        public static bool LastImp() => PlayerControl.AllPlayerControls.ToArray().Count(x => x.Is(Faction.Intruder) && !(x.Data.IsDead || x.Data.Disconnected)) == 1;
-
-        public static bool LastSyn() => PlayerControl.AllPlayerControls.ToArray().Count(x => x.Is(Faction.Syndicate) && !(x.Data.IsDead || x.Data.Disconnected)) == 1;
-
-        public static bool Last(PlayerControl player) => (player.Is(Faction.Intruder) && LastImp()) || (player.Is(Faction.Syndicate) && LastSyn());
 
         public static bool TasksDone()
         {
@@ -833,6 +847,12 @@ namespace TownOfUsReworked.Classes
                             writer.Write(target.PlayerId);
                             AmongUsClient.Instance.FinishRpcImmediately(writer);
                         }
+
+                        if (player.Is(RoleEnum.Politician))
+                        {
+                            var pol = Role.GetRole<Politician>(player);
+                            pol.VoteBank++;
+                        }
                     }
                 }
 
@@ -921,20 +941,20 @@ namespace TownOfUsReworked.Classes
         {
             if (interacter.IsInfected() || target.IsInfected() || target.Is(RoleEnum.Plaguebearer))
             {
-                foreach (var pb in Role.GetRoles(RoleEnum.Plaguebearer))
-                    ((Plaguebearer)pb).RpcSpreadInfection(interacter, target);
+                foreach (var pb in Role.GetRoles<Plaguebearer>(RoleEnum.Plaguebearer))
+                    pb.RpcSpreadInfection(interacter, target);
             }
 
             if (target.Is(RoleEnum.Arsonist))
             {
-                foreach (var arso in Role.GetRoles(RoleEnum.Arsonist))
-                    ((Arsonist)arso).RpcSpreadDouse(target, interacter);
+                foreach (var arso in Role.GetRoles<Arsonist>(RoleEnum.Arsonist))
+                    arso.RpcSpreadDouse(target, interacter);
             }
 
             if (target.Is(RoleEnum.Cryomaniac))
             {
-                foreach (var cryo in Role.GetRoles(RoleEnum.Cryomaniac))
-                    ((Cryomaniac)cryo).RpcSpreadDouse(target, interacter);
+                foreach (var cryo in Role.GetRoles<Cryomaniac>(RoleEnum.Cryomaniac))
+                    cryo.RpcSpreadDouse(target, interacter);
             }
         }
 
@@ -952,8 +972,8 @@ namespace TownOfUsReworked.Classes
 
         public static void StopDragging(byte id)
         {
-            foreach (var janitor in Role.GetRoles(RoleEnum.Janitor).Where(x => ((Janitor)x).CurrentlyDragging != null && ((Janitor)x).CurrentlyDragging.ParentId == id))
-                ((Janitor)janitor).CurrentlyDragging = null;
+            foreach (var janitor in Role.GetRoles<Janitor>(RoleEnum.Janitor).Where(x => x.CurrentlyDragging != null && x.CurrentlyDragging.ParentId == id))
+                janitor.CurrentlyDragging = null;
         }
 
         public static Sprite CreateSprite(string name)
@@ -1142,6 +1162,63 @@ namespace TownOfUsReworked.Classes
             }
 
             Object.Destroy(body.gameObject);
+        }
+
+        public static void SpawnVent(int ventId, Role role, Vector2 position, float zAxis)
+        {
+            var ventPrefab = Object.FindObjectOfType<Vent>();
+            var vent = Object.Instantiate(ventPrefab, ventPrefab.transform.parent);
+
+            vent.Id = ventId;
+            vent.transform.position = new Vector3(position.x, position.y, zAxis);
+
+            if (role.RoleType != RoleEnum.Godfather && role.RoleType != RoleEnum.Miner)
+                return;
+
+            if (role.Vents.Count > 0)
+            {
+                var leftVent = role.Vents[^1];
+                vent.Left = leftVent;
+                leftVent.Right = vent;
+            }
+            else
+                vent.Left = null;
+
+            vent.Right = null;
+            vent.Center = null;
+
+            var allVents = ShipStatus.Instance.AllVents.ToList();
+            allVents.Add(vent);
+            ShipStatus.Instance.AllVents = allVents.ToArray();
+
+            role.Vents.Add(vent);
+
+            if (SubmergedCompatibility.IsSubmerged())
+            {
+                vent.gameObject.layer = 12;
+                vent.gameObject.AddSubmergedComponent(SubmergedCompatibility.ElevatorMover); //Just in case elevator vent is not blocked
+
+                if (vent.gameObject.transform.position.y > -7)
+                    vent.gameObject.transform.position = new Vector3(vent.gameObject.transform.position.x, vent.gameObject.transform.position.y, 0.03f);
+                else
+                {
+                    vent.gameObject.transform.position = new Vector3(vent.gameObject.transform.position.x, vent.gameObject.transform.position.y, 0.0009f);
+                    vent.gameObject.transform.localPosition = new Vector3(vent.gameObject.transform.localPosition.x, vent.gameObject.transform.localPosition.y, -0.003f);
+                }
+            }
+        }
+
+        public static int GetAvailableId()
+        {
+            var id = 0;
+
+            while (true)
+            {
+                if (ShipStatus.Instance.AllVents.All(v => v.Id != id))
+                    return id;
+
+                id++;
+            }
         }
     }
 }

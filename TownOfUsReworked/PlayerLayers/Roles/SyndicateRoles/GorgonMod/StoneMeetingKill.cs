@@ -10,10 +10,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.GorgonMod
     {
         public static void Prefix()
         {
-            foreach (var gorg in Role.GetRoles(RoleEnum.Gorgon))
+            foreach (var gorgon in Role.GetRoles<Gorgon>(RoleEnum.Gorgon))
             {
-                var gorgon = (Gorgon)gorg;
-
                 foreach (var id in gorgon.Gazed)
                 {
                     var stoned = Utils.PlayerById(id);
@@ -21,7 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.GorgonMod
                     if (stoned == null || stoned.Data?.Disconnected != false || stoned.Data.IsDead || stoned.Is(RoleEnum.Pestilence))
                         continue;
 
-                    Utils.RpcMurderPlayer(gorg.Player, stoned, false);
+                    Utils.RpcMurderPlayer(gorgon.Player, stoned, false);
                     stoned.moveable = true;
                 }
 

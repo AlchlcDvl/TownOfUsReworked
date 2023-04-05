@@ -20,7 +20,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JesterMod
             if (role == null)
                 return;
 
-            if (role.Type == RoleEnum.Jester)
+            if (role.RoleType == RoleEnum.Jester)
             {
                 var jest = (Jester)role;
                 jest.VotedOut = true;

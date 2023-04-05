@@ -9,10 +9,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.ShapeshifterMod
     {
         public static void Postfix()
         {
-            foreach (var role in Role.GetRoles(RoleEnum.Shapeshifter))
-            {
-                var ss = (Shapeshifter)role;
+            if (ConstantVariables.IsLobby || ConstantVariables.IsEnded)
+                return;
 
+            foreach (var ss in Role.GetRoles<Shapeshifter>(RoleEnum.Shapeshifter))
+            {
                 if (ss.Shapeshifted)
                     ss.Shapeshift();
                 else if (ss.Enabled)

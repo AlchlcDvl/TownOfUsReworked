@@ -20,10 +20,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Wraith";
             StartText = "Sneaky Sneaky";
-            AbilitiesText = "Turn invisible and kill undetected";
+            AbilitiesText = $"- You can turn invisible\n{AbilitiesText}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Wraith : Colors.Intruder;
             LastInvis = DateTime.UtcNow;
-            Type = RoleEnum.Wraith;
+            RoleType = RoleEnum.Wraith;
             RoleAlignment = RoleAlignment.IntruderDecep;
             AlignmentName = ID;
         }
@@ -41,30 +41,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
+            Utils.Invis(Player, PlayerControl.LocalPlayer == Player);
 
             if (Player.Data.IsDead || MeetingHud.Instance)
                 TimeRemaining = 0f;
-
-            var color = new Color32(0, 0, 0, 0);
-
-            if (PlayerControl.LocalPlayer.Is(Faction) || PlayerControl.LocalPlayer.Data.IsDead)
-                color.a = 26;
-
-            if (Player.GetCustomOutfitType() != CustomPlayerOutfitType.Invis)
-            {
-                Player.SetOutfit(CustomPlayerOutfitType.Invis, new GameData.PlayerOutfit()
-                {
-                    ColorId = Player.CurrentOutfit.ColorId,
-                    HatId = "",
-                    SkinId = "",
-                    VisorId = "",
-                    PlayerName = " "
-                });
-
-                Player.MyRend().color = color;
-                Player.NameText().color = new Color32(0, 0, 0, 0);
-                Player.cosmetics.colorBlindText.color = new Color32(0, 0, 0, 0);
-            }
         }
 
         public void Uninvis()
@@ -72,7 +52,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Enabled = false;
             LastInvis = DateTime.UtcNow;
             Utils.DefaultOutfit(Player);
-            Player.MyRend().color = new Color32(255, 255, 255, 255);
         }
     }
 }

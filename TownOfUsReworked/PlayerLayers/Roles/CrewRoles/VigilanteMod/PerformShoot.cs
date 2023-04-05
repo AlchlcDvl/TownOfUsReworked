@@ -66,6 +66,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
                         else if (CustomGameOptions.VigiOptions == VigiOptions.PostMeeting)
                             role.PostMeetingDie = true;
                     }
+
+                    role.UsesLeft--;
                 }
                 else if (interact[0])
                     role.LastKilled = DateTime.UtcNow;

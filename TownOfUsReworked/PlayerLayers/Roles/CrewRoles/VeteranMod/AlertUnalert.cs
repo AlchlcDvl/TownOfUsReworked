@@ -9,10 +9,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VeteranMod
     {
         public static void Postfix()
         {
-            foreach (var role in Role.GetRoles(RoleEnum.Veteran))
-            {
-                var veteran = (Veteran)role;
+            if (ConstantVariables.IsLobby || ConstantVariables.IsEnded)
+                return;
 
+            foreach (var veteran in Role.GetRoles<Veteran>(RoleEnum.Veteran))
+            {
                 if (veteran.OnAlert)
                     veteran.Alert();
                 else if (veteran.Enabled)

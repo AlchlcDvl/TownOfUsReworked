@@ -31,12 +31,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Necromancer";
             StartText = "Resurrect The Dead Into Doing Your Bidding";
-            AbilitiesText = "- You can revive a dead body and bring them to your team.";
+            AbilitiesText = "- You can resurrect a dead body and bring them into the <color=#E6108AFF>Reanimated</color>";
+            Objectives = "- Resurrect or kill anyone who can oppose the <color=#E6108AFF>Reanimated</color>";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Necromancer : Colors.Neutral;
-            Type = RoleEnum.Necromancer;
+            RoleType = RoleEnum.Necromancer;
             RoleAlignment = RoleAlignment.NeutralNeo;
             AlignmentName = NN;
-            Objectives = "- Resurrect the dead into helping you gain control of the crew.";
+            Objectives = "- Resurrect the dead into helping you gain control of the crew";
             SubFaction = SubFaction.Reanimated;
             SubFactionColor = Colors.Reanimated;
             ResurrectUsesLeft = CustomGameOptions.ResurrectCount;

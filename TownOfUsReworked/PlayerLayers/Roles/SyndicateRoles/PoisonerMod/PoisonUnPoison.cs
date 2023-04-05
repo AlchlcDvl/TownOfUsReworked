@@ -9,10 +9,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.PoisonerMod
     {
         public static void Postfix()
         {
-            foreach (var role in Role.GetRoles(RoleEnum.Poisoner))
-            {
-                var pois = (Poisoner)role;
+            if (ConstantVariables.IsLobby || ConstantVariables.IsEnded)
+                return;
 
+            foreach (var pois in Role.GetRoles<Poisoner>(RoleEnum.Poisoner))
+            {
                 if (pois.Poisoned)
                     pois.Poison();
                 else if (pois.Enabled)

@@ -10,7 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
             Name = "Flincher";
             TaskText = "- You will randomly flinch while walking.";
             Color = CustomGameOptions.CustomModifierColors ? Colors.Flincher : Colors.Modifier;
-            Type = ModifierEnum.Flincher;
+            ModifierType = ModifierEnum.Flincher;
         }
     }
 }

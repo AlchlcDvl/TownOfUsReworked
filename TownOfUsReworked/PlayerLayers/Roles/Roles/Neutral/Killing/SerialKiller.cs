@@ -21,11 +21,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Serial Killer";
             StartText = "You Like To Play With Knives";
-            AbilitiesText = "Engage in your bloodlust to kill everyone";
+            AbilitiesText = "- You can go into bloodlust\n- When in bloodlust, your kill cooldown is very short\n- If and when an <color=#803333FF>Escort</color>, " +
+                "<color=#801780FF>Consort</color> or <color=#00FF00FF>Glitch</color> tries to block you, you will immediately kill them, regardless of your cooldown\n- You are " +
+                "immune to blocks";
+            Objectives = "- Stab anyone who can oppose you";
             Color = CustomGameOptions.CustomNeutColors ? Colors.SerialKiller : Colors.Neutral;
-            Type = RoleEnum.SerialKiller;
+            RoleType = RoleEnum.SerialKiller;
             RoleAlignment = RoleAlignment.NeutralKill;
             AlignmentName = NK;
+            RoleBlockImmune = true;
         }
 
         public float LustTimer()
