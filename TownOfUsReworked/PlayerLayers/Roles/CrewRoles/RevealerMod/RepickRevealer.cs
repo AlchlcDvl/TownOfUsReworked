@@ -16,6 +16,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod
             if (PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null)
                 return;
 
+            if (!RoleGen.RevealerOn)
+                return;
+
             if (PlayerControl.LocalPlayer != SetRevealer.WillBeRevealer || PlayerControl.LocalPlayer.Data.IsDead)
                 return;
 
@@ -24,14 +27,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod
             if (toChooseFrom.Count == 0)
                 return;
 
-            if (!RoleGen.RevealerOn)
-                return;
-
             var rand = Random.RandomRangeInt(0, toChooseFrom.Count);
             var pc = toChooseFrom[rand];
-
             SetRevealer.WillBeRevealer = pc;
-
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetRevealer, SendOption.Reliable);
             writer.Write(pc.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);

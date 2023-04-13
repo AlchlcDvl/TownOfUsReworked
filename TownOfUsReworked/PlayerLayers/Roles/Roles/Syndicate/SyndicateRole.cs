@@ -14,6 +14,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public DateTime LastKilled;
         public PlayerControl ClosestPlayer;
         public AbilityButton KillButton;
+        public bool HoldsDrive => Player == DriveHolder || (CustomGameOptions.GlobalDrive && SyndicateHasChaosDrive);
 
         protected SyndicateRole(PlayerControl player) : base(player)
         {
@@ -22,7 +23,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = Colors.Syndicate;
             Objectives = SyndicateWinCon;
             BaseFaction = Faction.Syndicate;
-            AbilitiesText = (RoleType != RoleEnum.Anarchist && RoleType != RoleEnum.Sidekick ? "- With the Chaos Drive, you can kill players directly" : "- You can kill") +
+            AbilitiesText = (RoleType is not RoleEnum.Anarchist and not RoleEnum.Sidekick ? "- With the Chaos Drive, you can kill players directly" : "- You can kill") +
                 (CustomGameOptions.AltImps ? "- You can sabotage the systems to distract the <color=#8BFDFDFF>Crew</color>" : "");
         }
 
@@ -30,7 +31,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastKilled;
-            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.ChaosDriveKillCooldown, CustomButtons.GetUnderdogChange(Player)) * 1000f;
+            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.ChaosDriveKillCooldown, CustomButtons.GetUnderdogChange(Player) + (!HoldsDrive && RoleType is RoleEnum.Anarchist
+                ? CustomGameOptions.ChaosDriveCooldownDecrease : 0)) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }

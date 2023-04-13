@@ -6,6 +6,8 @@ using Hazel;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.Data;
+using TownOfUsReworked.Extensions;
+using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 {
@@ -32,8 +34,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                 return;
 
             var ret = Role.GetRole<Retributionist>(PlayerControl.LocalPlayer);
-            Revive(ret, ret.Revived);
-
+            Revive(ret, Utils.PlayerByVoteArea(VotingComplete.Imitate));
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
             writer.Write((byte)ActionsRPC.RetributionistAction);
             writer.Write((byte)RetributionistActionsRPC.RetributionistRevive);
@@ -59,7 +60,28 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
             if (revived == null)
                 return;
 
-            ret.RevivedRole = Role.GetRole(revived);
+            var role = Role.GetRole(revived);
+            ret.RevivedRole = revived.Is(RoleEnum.Revealer) ? ((Revealer)role).FormerRole : role;
+            ret.Revived = revived;
+        }
+    }
+
+    [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.VotingComplete))]
+    public static class VotingComplete
+    {
+        #pragma warning disable
+        public static PlayerVoteArea Imitate;
+        #pragma warning restore
+
+        public static void Postfix()
+        {
+            if (PlayerControl.LocalPlayer.Is(RoleEnum.Retributionist))
+            {
+                var ret = Role.GetRole<Retributionist>(PlayerControl.LocalPlayer);
+
+                foreach (var button in ret.OtherButtons.Where(button => button != null))
+                    button.SetActive(false);
+            }
         }
     }
 }

@@ -4,6 +4,7 @@ using TownOfUsReworked.Data;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.PlayerLayers.Roles;
 using System.Linq;
+using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.Patches
 {
@@ -34,7 +35,7 @@ namespace TownOfUsReworked.Patches
             var role = Role.GetRole(player);
 
             var flag = player.Is(RoleEnum.Altruist) || player.Is(RoleEnum.Arsonist) || player.Is(RoleEnum.Amnesiac) || player.Is(RoleEnum.Executioner) || player.Is(RoleEnum.Engineer) ||
-                player.Is(RoleEnum.Escort) || player.Is(RoleEnum.Impostor) || player.Is(RoleEnum.Inspector) || player.Is(RoleEnum.Operative);
+                player.Is(RoleEnum.Escort) || player.Is(RoleEnum.Impostor) || player.Is(RoleEnum.Inspector) || player.Is(RoleEnum.Operative) || player.Is(RoleEnum.Eraser);
             var factionflag = player.Is(Faction.Intruder);
             var subfactionflag = player.Is(SubFaction.Undead);
 
@@ -68,7 +69,7 @@ namespace TownOfUsReworked.Patches
             {
                 if (CustomGameOptions.CustomEject)
                 {
-                    if (GameOptionsManager.Instance.currentNormalGameOptions.MapId == 0 || GameOptionsManager.Instance.currentNormalGameOptions.MapId == 3)
+                    if (GameOptionsManager.Instance.currentNormalGameOptions.MapId is 0 or 3)
                         ejectString = $"{player.name} is now one with space.";
                     else if (GameOptionsManager.Instance.currentNormalGameOptions.MapId == 1)
                         ejectString = $"{player.name} is now experiencing fatal free fall.";
@@ -89,15 +90,13 @@ namespace TownOfUsReworked.Patches
                     if (player.Is(RoleEnum.Jester) && CustomGameOptions.JestEjectScreen)
                         ejectString = "The <color=#F7B3DAFF>Jester</color> will get his revenge from beyond the grave!";
                     else if (target != null && CustomGameOptions.ExeEjectScreen)
-                        ejectString = "The <color=#CCCCCCFF>Executioner</color> has doomed all of you!";
+                        ejectString = "The <color=#CCCCCCFF>Executioner</color> will avenge the fallen crew!";
                     else
                         ejectString = $"{player.name} was {a_or_an} {role.ColorString + role.Name}</color>.";
                 }
-                else if (player.Is(Faction.Crew) || player.Is(Faction.Intruder) || player.Is(Faction.Syndicate))
-                    ejectString = $"{player.name} was {a_or_an2} {role.FactionColorString + role.FactionName}</color>.";
                 else if (!player.Is(SubFaction.None))
                     ejectString = $"{player.name} was {a_or_an3} {role.SubFactionColorString + role.SubFactionName}</color>.";
-                else
+                else if (player.Is(Faction.Crew) || player.Is(Faction.Intruder) || player.Is(Faction.Syndicate))
                     ejectString = $"{player.name} was {a_or_an2} {role.FactionColorString + role.FactionName}</color>.";
 
                 __instance.ImpostorText.text = totalEvils;

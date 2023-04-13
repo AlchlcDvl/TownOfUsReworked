@@ -4,11 +4,10 @@ using System.Collections.Generic;
 using System.Collections;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
-using Object = UnityEngine.Object;
-using Hazel;
 using TownOfUsReworked.Modules;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Custom;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -21,10 +20,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public bool ButtonUsable => UsesLeft > 0;
         public Dictionary<byte, DateTime> UntransportablePlayers = new();
         public AbilityButton TransportButton;
-        public AbilityButton SetTransportButton1;
-        public AbilityButton SetTransportButton2;
-        public ShapeshifterMinigame TransportMenu1;
-        public ShapeshifterMinigame TransportMenu2;
+        public CustomMenu TransportMenu1;
+        public CustomMenu TransportMenu2;
 
         public Transporter(PlayerControl player) : base(player)
         {
@@ -41,8 +38,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AlignmentName = CS;
             InspectorResults = InspectorResults.LikesToExplore;
             UntransportablePlayers = new();
-            TransportMenu1 = null;
-            TransportMenu2 = null;
+            TransportMenu1 = new CustomMenu(Player, new CustomMenu.Select(Click1));
+            TransportMenu2 = new CustomMenu(Player, new CustomMenu.Select(Click2));
         }
 
         public float TransportTimer()
@@ -187,62 +184,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             TransportPlayer2 = null;
         }
 
-        public void OpenMenu1()
+        public void Click1(PlayerControl player)
         {
-            if (TransportMenu1 == null)
-            {
-                if (Camera.main == null)
-                    return;
-
-                TransportMenu1 = Object.Instantiate(LayerExtentions.GetShapeshifterMenu(), Camera.main.transform, false);
-            }
-
-            TransportMenu1.transform.SetParent(Camera.main.transform, false);
-            TransportMenu1.transform.localPosition = new Vector3(0f, 0f, -50f);
-            TransportMenu1.Begin(null);
-            Player.moveable = false;
-            Player.NetTransform.Halt();
-        }
-
-        public void OpenMenu2()
-        {
-            if (TransportMenu2 == null)
-            {
-                if (Camera.main == null)
-                    return;
-
-                TransportMenu2 = Object.Instantiate(LayerExtentions.GetShapeshifterMenu(), Camera.main.transform, false);
-            }
-
-            TransportMenu2.transform.SetParent(Camera.main.transform, false);
-            TransportMenu2.transform.localPosition = new Vector3(0f, 0f, -50f);
-            TransportMenu2.Begin(null);
-            Player.moveable = false;
-            Player.NetTransform.Halt();
-        }
-
-        public void PanelClick(PlayerControl player, bool menu1)
-        {
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-            writer.Write((byte)(menu1 ? ActionsRPC.SetTransport1 : ActionsRPC.SetTransport2));
-            writer.Write(Player.PlayerId);
-            writer.Write(player.PlayerId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
             Utils.Interact(Player, player);
-            Utils.LogSomething($"Transporting {player.name}");
+            TransportPlayer1 = player;
+            Utils.LogSomething($"1 - {TransportPlayer1.name}");
+        }
 
-            if (TransportPlayer1 == null)
-            {
-                TransportPlayer1 = player;
-                Utils.LogSomething($"1 - {TransportPlayer1.name}");
-            }
-            else if (TransportPlayer2 == null)
-            {
-                TransportPlayer2 = player;
-                Utils.LogSomething($"2 - {TransportPlayer2.name}");
-            }
-
-            Player.moveable = true;
+        public void Click2(PlayerControl player)
+        {
+            Utils.Interact(Player, player);
+            TransportPlayer2 = player;
+            Utils.LogSomething($"2 - {TransportPlayer2.name}");
         }
     }
 }

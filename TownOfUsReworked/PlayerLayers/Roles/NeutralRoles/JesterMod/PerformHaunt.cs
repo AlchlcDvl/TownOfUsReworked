@@ -23,7 +23,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JesterMod
                 if (role.HauntTimer() != 0f)
                     return false;
 
-                Utils.RpcMurderPlayer(role.Player, role.ClosestPlayer, false);
+                Utils.RpcMurderPlayer(role.Player, role.ClosestPlayer, DeathReasonEnum.Killed, false);
                 role.HasHaunted = true;
                 role.MaxUses--;
                 role.LastHaunted = DateTime.UtcNow;

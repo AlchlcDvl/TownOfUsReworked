@@ -1,8 +1,8 @@
 using HarmonyLib;
 using UnityEngine;
-using TownOfUsReworked.Extensions;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Data;
+using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities.MultitaskerMod
 {
@@ -11,7 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.MultitaskerMod
     {
         public static void Postfix()
         {
-            if (!PlayerControl.LocalPlayer.Is(AbilityEnum.Multitasker))
+            if (Utils.NoButton(PlayerControl.LocalPlayer, AbilityEnum.Multitasker))
                 return;
 
             if (PlayerControl.LocalPlayer.Data.Disconnected)

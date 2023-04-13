@@ -23,21 +23,27 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod
                 HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, "Not enough players triggered your bugs.");
             else
             {
-                var message = "The following roles triggered your bug:\n";
-                var position = 0;
-
-                foreach (var role in opRole.BuggedPlayers.OrderBy(_ => Guid.NewGuid()))
-                {
-                    if (position < opRole.BuggedPlayers.Count - 1)
-                        message += $" {role},";
-                    else
-                        message += $" and {role}.";
-
-                    position++;
-                }
-
-                if (string.IsNullOrEmpty(message))
+                if (opRole.BuggedPlayers.Count == 0)
                     return;
+
+                var message = "The following role(s) triggered your bug:\n";
+
+                if (opRole.BuggedPlayers.Count > 1)
+                {
+                    var position = 0;
+
+                    foreach (var role in opRole.BuggedPlayers.OrderBy(_ => Guid.NewGuid()))
+                    {
+                        if (position < opRole.BuggedPlayers.Count - 1)
+                            message += $" {role},";
+                        else
+                            message += $" and {role}.";
+
+                        position++;
+                    }
+                }
+                else
+                    message += $" {opRole.BuggedPlayers[0]}";
 
                 //Ensures only the Operative sees this
                 if (HudManager.Instance)

@@ -4,6 +4,8 @@ using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Modules;
 using TownOfUsReworked.Functions;
 using TownOfUsReworked.Data;
+using TownOfUsReworked.Classes;
+using TownOfUsReworked.Custom;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -14,6 +16,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public float TimeRemaining;
         public DateTime LastConfused;
         public bool Confused => TimeRemaining > 0f;
+        public CustomMenu ConfuseMenu;
+        public PlayerControl ConfusedPlayer;
 
         public Drunkard(PlayerControl player) : base(player)
         {
@@ -25,6 +29,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleType = RoleEnum.Drunkard;
             RoleAlignment = RoleAlignment.SyndicateDisruption;
             AlignmentName = SD;
+            ConfuseMenu = new CustomMenu(Player, new CustomMenu.Select(Click));
         }
 
         public float DrunkTimer()
@@ -49,7 +54,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Enabled = false;
             LastConfused = DateTime.UtcNow;
-            Reverse.UnconfuseAll();
+
+            if (SyndicateHasChaosDrive)
+                Reverse.UnconfuseAll();
+            else
+                Reverse.UnconfuseSingle(ConfusedPlayer);
+        }
+
+        public void Click(PlayerControl player)
+        {
+            var interact = Utils.Interact(Player, player);
+
+            if (interact[3])
+                ConfusedPlayer = player;
+            else if (interact[1])
+                LastConfused.AddSeconds(CustomGameOptions.ProtectKCReset);
         }
     }
 }

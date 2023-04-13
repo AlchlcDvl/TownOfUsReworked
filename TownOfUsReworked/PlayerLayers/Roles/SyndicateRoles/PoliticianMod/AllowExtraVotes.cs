@@ -4,7 +4,7 @@ using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.PoliticianMod
 {
-    [HarmonyPatch(typeof(PlayerVoteArea))]
+    [HarmonyPatch]
     public static class AllowExtraVotes
     {
         [HarmonyPatch(typeof(PlayerVoteArea), nameof(PlayerVoteArea.Select))]
@@ -35,7 +35,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.PoliticianMod
 
                 var role = Role.GetRole<Politician>(PlayerControl.LocalPlayer);
 
-                if (__instance.Parent.state == MeetingHud.VoteStates.Proceeding || __instance.Parent.state == MeetingHud.VoteStates.Results)
+                if (__instance.Parent.state is MeetingHud.VoteStates.Proceeding or MeetingHud.VoteStates.Results)
                     return false;
 
                 if (!role.CanVote)

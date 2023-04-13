@@ -4,6 +4,7 @@ using TownOfUsReworked.CustomOptions;
 using System;
 using Hazel;
 using TownOfUsReworked.Data;
+using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
 {
@@ -73,21 +74,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
                     return false;
 
                 if (role.MimicTarget == null)
-                    return false;
+                    role.MimicMenu.Open(PlayerControl.AllPlayerControls.ToArray().Where(x => x != role.Player).ToList());
+                else
+                {
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+                    writer.Write((byte)ActionsRPC.Mimic);
+                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                    role.TimeRemaining2 = CustomGameOptions.MimicDuration;
+                    role.Mimic();
+                }
 
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                writer.Write((byte)ActionsRPC.Mimic);
-                writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                role.TimeRemaining2 = CustomGameOptions.MimicDuration;
-                role.Mimic();
-                return false;
-            }
-            else if (__instance == role.SampleButton)
-            {
-                if (role.MimicTimer() != 0f)
-                    return false;
-
-                role.OpenMimicMenu();
                 return false;
             }
 

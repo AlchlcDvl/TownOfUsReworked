@@ -47,5 +47,23 @@ namespace TownOfUsReworked.Functions
             Confused.Clear();
             Utils.Flash(Colors.Drunkard, "You are no longer confused!");
         }
+
+        public static void ConfuseSingle(PlayerControl player)
+        {
+            if (player.CanMove && !MeetingHud.Instance && !(player.Data.IsDead || player.Data.Disconnected))
+                player.MyPhysics.Speed *= -1;
+
+            if (PlayerControl.LocalPlayer == player)
+                Utils.Flash(Colors.Drunkard, "You are confused!");
+        }
+
+        public static void UnconfuseSingle(PlayerControl player)
+        {
+            if (player.CanMove && !MeetingHud.Instance && !(player.Data.IsDead || player.Data.Disconnected))
+                player.MyPhysics.Speed *= -1;
+
+            if (PlayerControl.LocalPlayer == player)
+                Utils.Flash(Colors.Drunkard, "You are no longer confused!");
+        }
     }
 }

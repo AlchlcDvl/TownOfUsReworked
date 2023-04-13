@@ -14,10 +14,13 @@ using Reactor.Networking.Attributes;
 using AmongUs.GameOptions;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using TownOfUsReworked.Patches;
+using TownOfUsReworked.MultiClientInstancing;
+using TownOfUsReworked.Crowded.Components;
+using TownOfUsReworked.BetterMaps.Airship;
 
 namespace TownOfUsReworked
 {
-    [BepInPlugin(Id, "TownOfUsReworked", VersionString)]
+    [BepInPlugin(Id, Id, VersionString)]
     [BepInDependency(ReactorPlugin.Id)]
     [BepInDependency(SubmergedCompatibility.SUBMERGED_GUID, BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("gg.reactor.debugger", BepInDependency.DependencyFlags.SoftDependency)] //Fix debugger overwriting MinPlayers
@@ -26,8 +29,8 @@ namespace TownOfUsReworked
     public class TownOfUsReworked : BasePlugin
     {
         public const string Id = "TownOfUsReworked";
-        public const string VersionString = "0.0.3.2";
-        public const string CompleteVersionString = "0.0.3.2";
+        public const string VersionString = "0.0.3.3";
+        public const string CompleteVersionString = "0.0.3.3";
         public readonly static Version Version = Version.Parse(VersionString);
 
         private readonly static string dev = VersionString[6..];
@@ -56,14 +59,16 @@ namespace TownOfUsReworked
         public static bool LobbyCapped = true;
         public static bool Persistence = true;
         public static bool MCIActive = false;
+        public static Debugger Debugger;
         #pragma warning restore
 
         private Harmony _harmony;
 
         public override void Load()
         {
-            Utils.LogSomething("Mod Loading...");
-            _harmony = new("TownOfUsReworked");
+            Utils.LogSomething("Loading...");
+
+            _harmony = new(Id);
 
             var maxImpostors = (Il2CppStructArray<int>)Enumerable.Repeat(255, 255).ToArray();
             GameOptionsData.MaxImpostors = maxImpostors;
@@ -80,8 +85,20 @@ namespace TownOfUsReworked
             Generate.GenerateAll();
             UpdateNames.PlayerNames.Clear();
             AssetManager.Load();
+            RoleGen.ResetEverything();
+
+            ClassInjector.RegisterTypeInIl2Cpp<AbstractPagingBehaviour>();
+            ClassInjector.RegisterTypeInIl2Cpp<ShapeShifterPagingBehaviour>();
+            ClassInjector.RegisterTypeInIl2Cpp<MeetingHudPagingBehaviour>();
+            ClassInjector.RegisterTypeInIl2Cpp<VitalsPagingBehaviour>();
             ClassInjector.RegisterTypeInIl2Cpp<ColorBehaviour>();
+            ClassInjector.RegisterTypeInIl2Cpp<Debugger>();
+            ClassInjector.RegisterTypeInIl2Cpp<Tasks>();
+
+            Debugger = AddComponent<Debugger>();
+
             _harmony.PatchAll();
+
             Utils.LogSomething("Mod Loaded!");
             Utils.LogSomething($"Mod Version v{CompleteVersionString}");
         }

@@ -1,15 +1,16 @@
 ﻿using System;
 using UnityEngine;
+using HarmonyLib;
 
 namespace TownOfUsReworked.Crowded.Components
 {
+    [HarmonyPatch]
     public class AbstractPagingBehaviour : MonoBehaviour
     {
         public AbstractPagingBehaviour(IntPtr ptr) : base(ptr) {}
 
         private int _page;
         public virtual int MaxPerPage => 15;
-
         public virtual int MaxPageIndex => throw new NotImplementedException();
         public virtual void OnPageChanged() => throw new NotImplementedException();
 
@@ -27,10 +28,20 @@ namespace TownOfUsReworked.Crowded.Components
 
         public virtual void Update()
         {
-            if (Input.GetKeyDown(KeyCode.UpArrow) || Input.mouseScrollDelta.y > 0f)
-                PageIndex = Mathf.Clamp(PageIndex - 1, 0, MaxPageIndex);
-            else if (Input.GetKeyDown(KeyCode.DownArrow) || Input.mouseScrollDelta.y < 0f)
-                PageIndex = Mathf.Clamp(PageIndex + 1, 0, MaxPageIndex);
+            if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.LeftArrow) || Input.mouseScrollDelta.y > 0f)
+            {
+                if (PageIndex == 0)
+                    PageIndex = MaxPageIndex;
+                else
+                    PageIndex--;
+            }
+            else if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.RightArrow) || Input.mouseScrollDelta.y < 0f)
+            {
+                if (PageIndex == MaxPageIndex)
+                    PageIndex = 0;
+                else
+                    PageIndex++;
+            }
         }
     }
 }

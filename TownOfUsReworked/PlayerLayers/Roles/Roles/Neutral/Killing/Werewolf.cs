@@ -45,10 +45,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     continue;
 
                 if (!player.Is(RoleEnum.Pestilence))
-                    Utils.RpcMurderPlayer(player2, player, false);
+                    Utils.RpcMurderPlayer(player2, player, DeathReasonEnum.Mauled, false);
 
                 if (player.IsOnAlert() || player.Is(RoleEnum.Pestilence))
-                    Utils.RpcMurderPlayer(player, player2, false);
+                    Utils.RpcMurderPlayer(player, player2);
             }
         }
     }

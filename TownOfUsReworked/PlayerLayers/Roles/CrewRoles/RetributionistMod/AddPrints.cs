@@ -12,8 +12,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
     public static class AddPrints
     {
         private static float _time;
-        private static float Interval => CustomGameOptions.FootprintInterval;
-        private static bool Vent => CustomGameOptions.VentFootprintVisible;
 
         private static Vector2 Position(PlayerControl player) => player.GetTruePosition() + new Vector2(0, 0.366667f);
 
@@ -29,9 +27,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 
             _time += Time.deltaTime;
 
-            if (_time >= Interval)
+            if (_time >= CustomGameOptions.FootprintInterval)
             {
-                _time -= Interval;
+                _time -= CustomGameOptions.FootprintInterval;
 
                 foreach (var player in PlayerControl.AllPlayerControls)
                 {
@@ -41,8 +39,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                     var canPlace = !ret.AllPrints.Any(print => Vector3.Distance(print.Position, Position(player)) < 0.5f && print.Color.a > 0.5 && print.Player.PlayerId ==
                         player.PlayerId);
 
-                    if (Vent && ShipStatus.Instance?.AllVents.Any(vent => Vector2.Distance(vent.gameObject.transform.position, Position(player)) < 1f) == true)
+                    if (CustomGameOptions.VentFootprintVisible && ShipStatus.Instance?.AllVents.Any(vent => Vector2.Distance(vent.gameObject.transform.position, Position(player)) < 1f) ==
+                        true)
+                    {
                         canPlace = false;
+                    }
 
                     if (canPlace)
                         _ = new Footprint(player, ret);

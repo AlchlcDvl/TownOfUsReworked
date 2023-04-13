@@ -127,10 +127,7 @@ namespace TownOfUsReworked.Crowded.Patches
                 var selectedAsString = opts.MaxPlayers.ToString();
 
                 for (var i = 1; i < __instance.MaxPlayerButtons.Count - 1; i++)
-                {
-                    __instance.MaxPlayerButtons[i].enabled = __instance.MaxPlayerButtons[i].GetComponentInChildren<TextMeshPro>().text ==
-                        selectedAsString;
-                }
+                    __instance.MaxPlayerButtons[i].enabled = __instance.MaxPlayerButtons[i].GetComponentInChildren<TextMeshPro>().text == selectedAsString;
 
                 return false;
             }

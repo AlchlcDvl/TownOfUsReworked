@@ -96,7 +96,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 Utils.Flash(Colors.Reanimated, "You are being resurrected!");
 
             if (CustomGameOptions.AltruistTargetBody)
-                Utils.BodyById(parentId)?.gameObject.Destroy();
+                target?.gameObject.Destroy();
 
             var startTime = DateTime.UtcNow;
 
@@ -119,13 +119,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var targetRole = GetRole(player);
             targetRole.DeathReason = DeathReasonEnum.Revived;
             targetRole.KilledBy = " By " + role.PlayerName;
-
-            foreach (var poisoner in GetRoles<Poisoner>(RoleEnum.Poisoner))
-            {
-                if (poisoner.PoisonedPlayer == player)
-                    poisoner.PoisonedPlayer = null;
-            }
-
             player.Revive();
 
             if (player.Data.IsImpostor())
@@ -136,19 +129,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Murder.KilledPlayers.Remove(Murder.KilledPlayers.Find(x => x.PlayerId == player.PlayerId));
             player.NetTransform.SnapTo(new Vector2(position.x, position.y + 0.3636f));
 
-            if (PlayerControl.LocalPlayer == player)
-            {
-                try
-                {
-                    //SoundManager.Instance.PlaySound(TownOfUsReworked.ReviveSound, false, 1f);
-                } catch {}
-            }
-
-            if (SubmergedCompatibility.IsSubmerged() && PlayerControl.LocalPlayer.PlayerId == player.PlayerId)
+            if (SubmergedCompatibility.IsSubmerged() && PlayerControl.LocalPlayer == player)
                 SubmergedCompatibility.ChangeFloor(player.transform.position.y > -7);
 
-            if (target != null)
-                Object.Destroy(target.gameObject);
+            target?.gameObject.Destroy();
 
             if (player.Is(ObjectifierEnum.Lovers) && CustomGameOptions.BothLoversDie)
             {

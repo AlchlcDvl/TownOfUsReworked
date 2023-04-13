@@ -32,10 +32,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             SubFactionColor = Colors.Cabal;
             RoleAlignment = RoleAlignment.NeutralNeo;
             AlignmentName = NN;
-            Recruited = new List<byte>
-            {
-                Player.PlayerId
-            };
+            Recruited = new() { Player.PlayerId };
         }
 
         public float RecruitTimer()

@@ -9,6 +9,7 @@ using TownOfUsReworked.Data;
 namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
+    [HarmonyPriority(Priority.First)]
     public static class GlobalHUD
     {
         public static void Postfix(HudManager __instance)
@@ -29,7 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
             foreach (var player in PlayerControl.AllPlayerControls)
             {
                 Janitor.DragBody(player);
-                Godfather.DragBody(player);
+                PromotedGodfather.DragBody(player);
             }
 
             foreach (var layer in PlayerLayer.GetLayers(local))
@@ -81,7 +82,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
             if (local.IsBlocked())
                 Use = AssetManager.Blocked;
             else
-                Use = AssetManager.Use;
+                Use = __instance.AbilityButton.graphic.sprite;
 
             __instance.UseButton.graphic.sprite = Use;
             __instance.UseButton.buttonLabelText.SetOutlineColor(role.FactionColor);

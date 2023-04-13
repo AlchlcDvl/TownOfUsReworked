@@ -3,6 +3,7 @@ using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Data;
+using Hazel;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BomberMod
 {
@@ -17,7 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BomberMod
             var role = Role.GetRole<Bomber>(PlayerControl.LocalPlayer);
 
             if (CustomGameOptions.BombsDetonateOnMeetingStart)
-                role.Bombs.DetonateBombs(role.PlayerName);
+                role.Bombs.DetonateBombs();
         }
     }
 }

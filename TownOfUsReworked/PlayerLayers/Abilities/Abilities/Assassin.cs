@@ -170,9 +170,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
                     if (CustomGameOptions.ConcealerOn > 0)
                         ColorMapping.Add("Concealer", Colors.Concealer);
 
-                    if (CustomGameOptions.GorgonOn > 0)
-                        ColorMapping.Add("Gorgon", Colors.Gorgon);
-
                     if (CustomGameOptions.ShapeshifterOn > 0)
                         ColorMapping.Add("Shapeshifter", Colors.Shapeshifter);
 
@@ -188,11 +185,14 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
                     if (CustomGameOptions.DrunkardOn > 0)
                         ColorMapping.Add("Drunkard", Colors.Drunkard);
 
-                    if (CustomGameOptions.BeamerOn > 0)
-                        ColorMapping.Add("Beamer", Colors.Beamer);
-
                     if (CustomGameOptions.PoliticianOn > 0)
                         ColorMapping.Add("Politician", Colors.Politician);
+
+                    /*if (CustomGameOptions.EraserOn > 0)
+                        ColorMapping.Add("Eraser", Colors.Eraser);
+
+                    if (CustomGameOptions.ColliderOn > 0)
+                        ColorMapping.Add("Collider", Colors.Collider);*/
 
                     if (CustomGameOptions.RebelOn > 0)
                     {
@@ -374,7 +374,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
                     ColorMapping.Add("Button Barry", Colors.ButtonBarry);
             }
 
-            //Sorts the list alphabetically. 
+            //Sorts the list alphabetically.
             SortedColorMapping = ColorMapping.OrderBy(x => x.Key).ToDictionary(x => x.Key, x => x.Value);
         }
     }

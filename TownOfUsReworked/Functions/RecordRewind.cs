@@ -125,7 +125,7 @@ namespace TownOfUsReworked.Functions
                     poisoner.PoisonedPlayer = null;
             }
 
-            foreach (var rebel in Role.GetRoles<Rebel>(RoleEnum.Rebel))
+            foreach (var rebel in Role.GetRoles<PromotedRebel>(RoleEnum.PromotedRebel))
             {
                 if (rebel.PoisonedPlayer == player)
                     rebel.PoisonedPlayer = null;

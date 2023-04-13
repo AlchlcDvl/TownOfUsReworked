@@ -12,7 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     {
         public PlayerControl ClosestPlayer;
         public DateTime LastRevealed;
-        public static bool ConvertedDead => !PlayerControl.AllPlayerControls.Any(x => x?.Data.IsDead == false && !x.Data.Disconnected && !x.Is(SubFaction.None));
+        public static bool ConvertedDead => !PlayerControl.AllPlayerControls.ToArray().Any(x => x?.Data.IsDead == false && !x.Data.Disconnected && !x.Is(SubFaction.None));
         public AbilityButton RevealButton;
 
         public Mystic(PlayerControl player) : base(player)

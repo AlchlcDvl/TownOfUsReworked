@@ -27,9 +27,6 @@ namespace TownOfUsReworked.PlayerLayers
                 }
             }
 
-            if (!Role.IntruderWin)
-                SoundManager.Instance.StopSound(__instance.ImpostorStinger);
-
             if (Role.NobodyWins || Objectifier.NobodyWins)
             {
                 __instance.BackgroundBar.material.color = Colors.Stalemate;
@@ -39,48 +36,15 @@ namespace TownOfUsReworked.PlayerLayers
             }
             else if (Role.CrewWin)
             {
-                var role = Role.AllRoles.Find(x => x.Faction == Faction.Crew);
+                var role = Role.AllRoles.Find(x => (x.Faction == Faction.Crew && Role.CrewWin) || (x.Faction == Faction.Syndicate && Role.SyndicateWin) || (x.Faction == Faction.Intruder &&
+                    Role.IntruderWin) || (x.Faction == Faction.Neutral && Role.AllNeutralsWin));
 
                 if (role == null)
                     return;
 
                 __instance.BackgroundBar.material.color = Colors.Crew;
-                text.text = "Crew Wins!";
+                text.text = $"{role.FactionName + (role.Faction == Faction.Neutral ? "s" : "")} Win{(role.Faction is Faction.Syndicate or Faction.Crew ? "s" : "")}!";
                 text.color = Colors.Crew;
-                SoundManager.Instance.PlaySound(__instance.CrewStinger, false);
-            }
-            else if (Role.SyndicateWin)
-            {
-                var role = Role.AllRoles.Find(x => x.Faction == Faction.Syndicate);
-
-                if (role == null)
-                    return;
-
-                __instance.BackgroundBar.material.color = Colors.Syndicate;
-                text.text = "Syndicate Wins!";
-                text.color = Colors.Syndicate;
-            }
-            else if (Role.IntruderWin)
-            {
-                var role = Role.AllRoles.Find(x => x.Faction == Faction.Intruder);
-
-                if (role == null)
-                    return;
-
-                __instance.BackgroundBar.material.color = Colors.Intruder;
-                text.text = "Intruders Win!";
-                text.color = Colors.Intruder;
-            }
-            else if (Role.AllNeutralsWin)
-            {
-                var role = Role.AllRoles.Find(x => x.Faction == Faction.Neutral);
-
-                if (role == null)
-                    return;
-
-                __instance.BackgroundBar.material.color = Colors.Neutral;
-                text.text = "Neutrals Win!";
-                text.color = Colors.Neutral;
             }
             else if (Role.NKWins)
             {
@@ -95,7 +59,7 @@ namespace TownOfUsReworked.PlayerLayers
             }
             else if (Role.InfectorsWin)
             {
-                var role = Role.AllRoles.Find(x => x.RoleType == RoleEnum.Plaguebearer || x.RoleType == RoleEnum.Pestilence);
+                var role = Role.AllRoles.Find(x => x.RoleType is RoleEnum.Plaguebearer or RoleEnum.Pestilence);
 
                 if (role == null)
                     return;
@@ -113,7 +77,7 @@ namespace TownOfUsReworked.PlayerLayers
                     return;
 
                 __instance.BackgroundBar.material.color = role.SubFactionColor;
-                text.text = $"The {role.SubFactionName} Win!";
+                text.text = $"The {role.SubFactionName} Win{(role.SubFaction is SubFaction.Sect or SubFaction.Cabal ? "s" : "")}!";
                 text.color = role.SubFactionColor;
             }
             else if (Role.RoleWins)

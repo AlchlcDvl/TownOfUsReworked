@@ -54,7 +54,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
             var player = Utils.PlayerById(parentId);
             var targetRole = Role.GetRole(player);
             targetRole.DeathReason = DeathReasonEnum.Revived;
-            targetRole.KilledBy = " By " + role.PlayerName;
+            targetRole.KilledBy = $" By {role.PlayerName}";
 
             foreach (var poisoner in Role.GetRoles<Poisoner>(RoleEnum.Poisoner))
             {
@@ -81,7 +81,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
             if (player.Is(ObjectifierEnum.Lovers) && CustomGameOptions.BothLoversDie)
             {
                 var lover = Objectifier.GetObjectifier<Lovers>(player).OtherLover;
-
                 lover.Revive();
                 Murder.KilledPlayers.Remove(Murder.KilledPlayers.Find(x => x.PlayerId == lover.PlayerId));
                 Utils.BodyById(lover.PlayerId)?.gameObject.Destroy();

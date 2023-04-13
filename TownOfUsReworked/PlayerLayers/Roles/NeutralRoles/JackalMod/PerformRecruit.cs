@@ -30,12 +30,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JackalMod
 
                 if (interact[3])
                 {
-                    Recruit(role, role.ClosestPlayer);
-                    var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                    writer2.Write((byte)ActionsRPC.SetBackupRecruit);
-                    writer2.Write(PlayerControl.LocalPlayer.PlayerId);
-                    writer2.Write(role.ClosestPlayer.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer2);
+                    RoleGen.Convert(role.ClosestPlayer.PlayerId, role.Player.PlayerId, SubFaction.Cabal, false);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+                    writer.Write((byte)ActionsRPC.Convert);
+                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                    writer.Write(role.ClosestPlayer.PlayerId);
+                    writer.Write((byte)SubFaction.Cabal);
+                    writer.Write(false);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
                     return false;
                 }
                 else if (interact[0])
@@ -47,38 +49,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.JackalMod
             }
 
             return true;
-        }
-
-        public static void Recruit(Jackal jackRole, PlayerControl other)
-        {
-            var role = Role.GetRole(other);
-            var jack = jackRole.Player;
-
-            var convert = other.Is(SubFaction.None);
-
-            if (convert)
-            {
-                jackRole.BackupRecruit = other;
-                role.SubFaction = SubFaction.Cabal;
-                role.IsRecruit = true;
-                jackRole.Recruited.Add(other.PlayerId);
-            }
-            else if (other.IsRecruit())
-                jackRole.Recruited.Add(other.PlayerId);
-            else if (other.Is(RoleEnum.Jackal))
-            {
-                var jackal = (Jackal)role;
-                jackRole.Recruited.AddRange(jackal.Recruited);
-                jackal.Recruited.AddRange(jackRole.Recruited);
-            }
-            else if (!other.Is(SubFaction.None))
-                Utils.RpcMurderPlayer(jack, other);
-
-            jackRole.HasRecruited = true;
-            jackRole.RecruitButton.gameObject.SetActive(false);
-
-            if (PlayerControl.LocalPlayer.Is(RoleEnum.Mystic))
-                Utils.Flash(Colors.Mystic, "Someone has changed their allegience!");
         }
     }
 }

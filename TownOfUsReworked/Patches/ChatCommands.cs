@@ -22,7 +22,6 @@ namespace TownOfUsReworked.Patches
     public static class ChatCommands
     {
         private readonly static List<string> ChatHistory = new();
-        private static int LobbyLimit = 127;
 
         [HarmonyPatch(typeof(ChatController), nameof(ChatController.SendChat))]
         public static class SendChatPatch
@@ -85,49 +84,49 @@ namespace TownOfUsReworked.Patches
                         "Toggle bot persistence");
                 }
                 //RoleInfo help
-                else if (text == "/roleinfo" || text == "/roleinfo " || text == "/ri" || text == "/ri ")
+                else if (text is "/roleinfo" or "/roleinfo " or "/ri" or "/ri ")
                 {
                     chatHandled = true;
                     hudManager.AddChat(player, "Usage: /<roleinfo or ri> <role full or short name>");
                 }
                 //AlignmentInfo help
-                else if (text == "/alignmentinfo" || text == "/alignmentinfo " || text == "/ai" || text == "/ai ")
+                else if (text is "/alignmentinfo" or "/alignmentinfo " or "/ai" or "/ai ")
                 {
                     chatHandled = true;
                     hudManager.AddChat(player, "Usage: /<alignmentinfo or ai> <alignment name or abbreviation>");
                 }
                 //ModifierInfo help
-                else if (text == "/modifierinfo" || text == "/modifierinfo " || text == "/moi" || text == "/moi ")
+                else if (text is "/modifierinfo" or "/modifierinfo " or "/moi" or "/moi ")
                 {
                     chatHandled = true;
                     hudManager.AddChat(player, "Usage: /<modifierinfo or moi> <modifier name or abbreviation>");
                 }
                 //ObjectifierInfo help
-                else if (text == "/objectifierinfo" || text == "/objectifierinfo " || text == "/oi" || text == "/oi ")
+                else if (text is "/objectifierinfo" or "/objectifierinfo " or "/oi" or "/oi ")
                 {
                     chatHandled = true;
                     hudManager.AddChat(player, "Usage: /<objectifierinfo or oi> <objectifier name or abbreviation>");
                 }
                 //AbilityInfo help
-                else if (text == "/abilityinfo" || text == "/abilityinfo " || text == "/abi" || text == "/abi ")
+                else if (text is "/abilityinfo" or "/abilityinfo " or "/abi" or "/abi ")
                 {
                     chatHandled = true;
                     hudManager.AddChat(player, "Usage: /<abilityinfo or abi> <ability name or abbreviation>");
                 }
                 //FactionInfo help
-                else if (text == "/factioninfo" || text == "/factioninfo " || text == "/fi" || text == "/fi ")
+                else if (text is "/factioninfo" or "/factioninfo " or "/fi" or "/fi ")
                 {
                     chatHandled = true;
                     hudManager.AddChat(player, "Usage: /factioninfo <faction name or abbreviation>");
                 }
                 //Quote help
-                else if (text == "/quote" || text == "/quote " || text == "/q" || text == "/q ")
+                else if (text is "/quote" or "/quote " or "/q" or "/q ")
                 {
                     chatHandled = true;
                     hudManager.AddChat(player, "Usage: /<quote or q> <role name or abbreviation>");
                 }
                 //Lore help
-                else if (text == "/lore" || text == "/lore " || text == "/l" || text == "/l ")
+                else if (text is "/lore" or "/lore " or "/l" or "/l ")
                 {
                     chatHandled = true;
                     hudManager.AddChat(player, "Usage: /<lore or l> <role name or abbreviation>");
@@ -213,42 +212,8 @@ namespace TownOfUsReworked.Patches
                 }
                 else if (ConstantVariables.IsLobby)
                 {
-                    //Lobby size help help
-                    if (text == "/size" || text == "/size " || text == "/s" || text == "/s ")
-                    {
-                        chatHandled = true;
-                        hudManager.AddChat(player, "Usage: /<size or s> <number between 1 to 127>");
-                    }
-                    //Changing lobby size
-                    else if (text.StartsWith("/size ") || text.StartsWith("/s "))
-                    {
-                        chatHandled = true;
-
-                        if (AmongUsClient.Instance.AmHost && AmongUsClient.Instance.CanBan())
-                        {
-                            if (!int.TryParse(text.StartsWith("/s ") ? text[3..] : text[6..], out LobbyLimit))
-                                hudManager.AddChat(player, "Invalid");
-                            else
-                            {
-                                LobbyLimit = Math.Clamp(LobbyLimit, 1, 127);
-
-                                if (LobbyLimit != GameOptionsManager.Instance.currentNormalGameOptions.MaxPlayers)
-                                {
-                                    GameOptionsManager.Instance.currentNormalGameOptions.MaxPlayers = LobbyLimit;
-                                    GameStartManager.Instance.LastPlayerCount = LobbyLimit;
-                                    player.RpcSyncSettings(GameOptionsManager.Instance.gameOptionsFactory.ToBytes(GameOptionsManager.Instance.currentGameOptions));
-                                    //TODO Maybe simpler?? 
-                                    hudManager.AddChat(player, $"Lobby size changed to {LobbyLimit} player(s).");
-                                }
-                                else
-                                    hudManager.AddChat(player, $"Lobby size is already {LobbyLimit}.");
-                            }
-                        }
-                        else
-                            hudManager.AddChat(player, "You can't do that.");
-                    }
                     //Name help
-                    else if (text == "/setname" || text == "/setname " || text == "/sn" || text == "/sn ")
+                    if (text is "/setname" or "/setname " or "/sn" or "/sn ")
                     {
                         chatHandled = true;
                         hudManager.AddChat(player, "Usage: /<setname or sn> <name>");
@@ -260,9 +225,9 @@ namespace TownOfUsReworked.Patches
                         inputText = text.StartsWith("/sn") ? otherText[4..] : otherText[9..];
                         //As much as I hate to do this, people will take advatage of this function so we're better off doing this early
                         string[] profanities = { "fuck", "bastard", "cunt", "bitch", "ass", "nigg", "whore", "negro", "dick", "penis", "yiff", "rape", "rapist" };
-                        const string disallowed = "@^[a-zA-Z0-9]+$";
+                        const string disallowed = "@^[{(_-;:\"'.,\\|)}]+$";
 
-                        if (inputText.Any(disallowed.Contains))
+                        if (inputText.ToLower().Any(disallowed.Contains))
                             hudManager.AddChat(player, "Name contains disallowed characters.");
                         else if (profanities.Any(x => inputText.ToLower().Contains(x)))
                             hudManager.AddChat(player, "Name contains unaccepted words.");
@@ -275,7 +240,7 @@ namespace TownOfUsReworked.Patches
                         }
                     }
                     //Colour help
-                    else if (text == "/colour" || text == "/color" || text == "/colour " || text == "/color ")
+                    else if (text is "/colour" or "/color" or "/colour " or "/color ")
                     {
                         chatHandled = true;
                         hudManager.AddChat(player, "Usage: /colour <colour> or /color <color>");
@@ -301,7 +266,7 @@ namespace TownOfUsReworked.Patches
                         }
                     }
                     //Kick help
-                    else if (text == "/kick" || text == "/kick ")
+                    else if (text is "/kick" or "/kick ")
                     {
                         chatHandled = true;
                         hudManager.AddChat(player, "Usage: /kick <player name>");
@@ -339,7 +304,7 @@ namespace TownOfUsReworked.Patches
                         }
                     }
                     //Ban help
-                    else if (text == "/ban" || text == "/ban ")
+                    else if (text is "/ban" or "/ban ")
                     {
                         chatHandled = true;
                         hudManager.AddChat(player, "Usage: /ban <player name>");
@@ -384,7 +349,7 @@ namespace TownOfUsReworked.Patches
                         if (ability?.Hidden == false)
                             hudManager.AddChat(player, LayerInfo.AllAbilities.FirstOrDefault(x => x.Name == ability.Name, LayerInfo.AllAbilities[0])?.InfoMessage());
                     }
-                    else if (text == "/whisper" || text == "/w" || text == "/w ")
+                    else if (text is "/whisper" or "/w" or "/w ")
                     {
                         chatHandled = true;
                         hudManager.AddChat(player, "Usage: /<whisper or w> <meeting number>");
@@ -397,52 +362,57 @@ namespace TownOfUsReworked.Patches
                             hudManager.AddChat(player, "Whispering is not turned on.");
                         else
                         {
-                            inputText = text.StartsWith("/w ") ? text[3..] : text[9..];
-                            var message = text.StartsWith("/w ") ? text[4..] : text[10..];
-                            var message2 = text.StartsWith("/w ") ? text[5..] : text[11..];
-                            var number = inputText.Replace(message, "");
-                            var number2 = inputText.Replace(message2, "");
-                            number = number.Replace(" ", "");
-                            number2 = number2.Replace(" ", "");
-                            var id1 = byte.Parse(number);
-                            var id2 = byte.Parse(number2);
-                            var whispered = Utils.PlayerById(id1);
-                            var whispered2 = Utils.PlayerById(id2);
-
-                            if (whispered != null)
-                            {
-                                if (whispered.Data.IsDead)
-                                    hudManager.AddChat(player, $"{whispered.name} is dead.");
-                                else if (whispered.Data.Disconnected)
-                                    hudManager.AddChat(player, $"{whispered.name} is not in this world anymore.");
-                                else
-                                {
-                                    hudManager.AddChat(player, $"You whisper to {whispered.name}:{message}");
-                                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Whisper, SendOption.Reliable);
-                                    writer.Write(player.PlayerId);
-                                    writer.Write(id1);
-                                    writer.Write(message);
-                                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                                }
-                            }
-                            else if (whispered2 != null)
-                            {
-                                if (whispered2.Data.IsDead)
-                                    hudManager.AddChat(player, $"{whispered2.name} is dead.");
-                                else if (whispered2.Data.Disconnected)
-                                    hudManager.AddChat(player, $"{whispered2.name} is not in this world anymore.");
-                                else
-                                {
-                                    hudManager.AddChat(player, $"You whisper to {whispered2.name}:{message2}");
-                                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Whisper, SendOption.Reliable);
-                                    writer.Write(player.PlayerId);
-                                    writer.Write(id1);
-                                    writer.Write(message);
-                                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                                }
-                            }
+                            if (PlayerControl.LocalPlayer.Data.IsDead)
+                                hudManager.AddChat(player, "You are dead.");
                             else
-                                hudManager.AddChat(player, "Who are you trying to whisper?");
+                            {
+                                inputText = text.StartsWith("/w ") ? text[3..] : text[9..];
+                                var message = text.StartsWith("/w ") ? text[4..] : text[10..];
+                                var message2 = text.StartsWith("/w ") ? text[5..] : text[11..];
+                                var number = inputText.Replace(message, "");
+                                var number2 = inputText.Replace(message2, "");
+                                number = number.Replace(" ", "");
+                                number2 = number2.Replace(" ", "");
+                                var id1 = byte.Parse(number);
+                                var id2 = byte.Parse(number2);
+                                var whispered = Utils.PlayerById(id1);
+                                var whispered2 = Utils.PlayerById(id2);
+
+                                if (whispered != null)
+                                {
+                                    if (whispered.Data.IsDead)
+                                        hudManager.AddChat(player, $"{whispered.name} is dead.");
+                                    else if (whispered.Data.Disconnected)
+                                        hudManager.AddChat(player, $"{whispered.name} is not in this world anymore.");
+                                    else
+                                    {
+                                        hudManager.AddChat(player, $"You whisper to {whispered.name}:{message}");
+                                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Whisper, SendOption.Reliable);
+                                        writer.Write(player.PlayerId);
+                                        writer.Write(id1);
+                                        writer.Write(message);
+                                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                                    }
+                                }
+                                else if (whispered2 != null)
+                                {
+                                    if (whispered2.Data.IsDead)
+                                        hudManager.AddChat(player, $"{whispered2.name} is dead.");
+                                    else if (whispered2.Data.Disconnected)
+                                        hudManager.AddChat(player, $"{whispered2.name} is not in this world anymore.");
+                                    else
+                                    {
+                                        hudManager.AddChat(player, $"You whisper to {whispered2.name}:{message2}");
+                                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Whisper, SendOption.Reliable);
+                                        writer.Write(player.PlayerId);
+                                        writer.Write(id1);
+                                        writer.Write(message);
+                                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                                    }
+                                }
+                                else
+                                    hudManager.AddChat(player, "Who are you trying to whisper?");
+                            }
                         }
                     }
                 }
@@ -517,40 +487,13 @@ namespace TownOfUsReworked.Patches
                     if (Input.GetKeyDown(KeyCode.LeftShift) && ConstantVariables.IsCountDown)
                         GameStartManager.Instance.countDownTimer = 0;
 
-                    if (Input.GetKeyDown(KeyCode.LeftShift) && Input.GetKeyDown(KeyCode.S))
-                        GameStartManager.Instance.Start();
-
-                    if (Input.GetKeyDown(KeyCode.C) && ConstantVariables.IsCountDown)
+                    if (Input.GetKeyDown(KeyCode.LeftControl) && ConstantVariables.IsCountDown)
                         GameStartManager.Instance.ResetStartState();
                 }
             }
         }
 
         //Thanks to The Other Roles for this code
-        [HarmonyPatch(typeof(InnerNetClient), nameof(InnerNetClient.HostGame))]
-        public static class InnerNetClientHostPatch
-        {
-            public static void Prefix([HarmonyArgument(0)] GameOptionsData settings)
-            {
-                int maxPlayers;
-
-                try
-                {
-                    maxPlayers = GameOptionsManager.Instance.currentNormalGameOptions.MaxPlayers;
-                }
-                catch
-                {
-                    maxPlayers = 127;
-                }
-
-                LobbyLimit = maxPlayers;
-                settings.MaxPlayers = 127; // Force 127 Player Lobby on Server
-                DataManager.Settings.Multiplayer.ChatMode = QuickChatModes.FreeChatOrQuickChat;
-            }
-
-            public static void Postfix([HarmonyArgument(0)] GameOptionsData settings) => settings.MaxPlayers = LobbyLimit;
-        }
-
         [HarmonyPatch(typeof(InnerNetClient), nameof(InnerNetClient.JoinGame))]
         public static class InnerNetClientJoinPatch
         {
@@ -562,7 +505,7 @@ namespace TownOfUsReworked.Patches
         {
             public static bool Prefix(AmongUsClient __instance, [HarmonyArgument(0)] ClientData client)
             {
-                if (LobbyLimit < __instance.allClients.Count)
+                if (CustomGameOptions.LobbySize < __instance.allClients.Count)
                 {
                     // TODO: Fix this canceling start
                     DisconnectPlayer(__instance, client.Id);

@@ -6,7 +6,7 @@
 
 An [Among Us](https://store.steampowered.com/app/945360/Among_Us) mod that adds a bunch of roles, modifiers, objectifiers, abilities and game settings.
 
-Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or want to find people to play with!
+Join our [Discord](https://discord.gg/cd27aDQDY9) server if you have any problems or want to find people to play with!
 
 # ***Contents***
 
@@ -30,19 +30,19 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 |------------------------------|-------------------------------|-----------------------------------|-----------------------------------|
 | [Ambusher](#ambusher)        | [Anarchist](#anarchist)       | [Altruist](#altruist)             | [Actor](#actor)                   |
 | [Blackmailer](#blackmailer)  | [Banshee](#banshee)           | [Chameleon](#chameleon)           | [Amnesiac](#amnesiac)             |
-| [Camouflager](#camouflager)  | [Beamer](#beamer)             | [Coroner](#coroner)               | [Arsonist](#arsonist)             |
-| [Consigliere](#consigliere)  | [Bomber](#bomber)             | [Crewmate](#crewmate)             | [Betrayer](betrayer)              |
-| [Consort](#consort)          | [Concealer](#concealer)       | [Detective](#detective)           | [Bounty Hunter](#bounty-hunter)   |
-| [Disguiser](#disguiser)      | [Crusader](#crusader)         | [Engineer](#engineer)             | [Cannibal](#cannibal)             |
-| [Enforcer](#enforcer)        | [Drunkard](#drunkard)         | [Escort](#escort)                 | [Cryomaniac](#cryomaniac)         |
-| [Ghoul](#ghoul)              | [Framer](#framer)             | [Inspector](#inspector)           | [Dracula](#dracula)               |
-| [Godfather](#godfather)      | [Gorgon](#gorgon)             | [Mayor](#mayor)                   | [Executioner](#executioner)       |
-| [Grenadier](#grenadier)      | [Poisoner](#poisoner)         | [Medic](#medic)                   | [Glitch](#glitch)                 |
-| [Impostor](#impostor)        | [Politician](#politician)     | [Medium](#medium)                 | [Guardian Angel](#guardian-angel) |
-| [Janitor](#janitor)          | [Rebel](#rebel)               | [Mystic](#mystic)                 | [Guesser](#guesser)               |
-| [Mafioso](#mafioso)          | [Shapeshifter](#shapeshifter) | [Operative](#operative)           | [Jackal](#jackal)                 |
-| [Miner](#miner)              | [Sidekick](#sidekick)         | [Retributionist](#retributionist) | [Jester](#jester)                 |
-| [Morphling](#morphling)      | [Warper](#warper)             | [Revealer](#revealer)             | [Juggernaut](#juggernaut)         |
+| [Camouflager](#camouflager)  | [Bomber](#bomber)             | [Coroner](#coroner)               | [Arsonist](#arsonist)             |
+| [Consigliere](#consigliere)  | [Concealer](#concealer)       | [Crewmate](#crewmate)             | [Betrayer](betrayer)              |
+| [Consort](#consort)          | [Crusader](#crusader)         | [Detective](#detective)           | [Bounty Hunter](#bounty-hunter)   |
+| [Disguiser](#disguiser)      | [Drunkard](#drunkard)         | [Engineer](#engineer)             | [Cannibal](#cannibal)             |
+| [Enforcer](#enforcer)        | [Framer](#framer)             | [Escort](#escort)                 | [Cryomaniac](#cryomaniac)         |
+| [Ghoul](#ghoul)              | [Poisoner](#poisoner)         | [Inspector](#inspector)           | [Dracula](#dracula)               |
+| [Godfather](#godfather)      | [Politician](#politician)     | [Mayor](#mayor)                   | [Executioner](#executioner)       |
+| [Grenadier](#grenadier)      | [Rebel](#rebel)               | [Medic](#medic)                   | [Glitch](#glitch)                 |
+| [Impostor](#impostor)        | [Shapeshifter](#shapeshifter) | [Medium](#medium)                 | [Guardian Angel](#guardian-angel) |
+| [Janitor](#janitor)          | [Sidekick](#sidekick)         | [Mystic](#mystic)                 | [Guesser](#guesser)               |
+| [Mafioso](#mafioso)          | [Warper](#warper)             | [Operative](#operative)           | [Jackal](#jackal)                 |
+| [Miner](#miner)              |                               | [Retributionist](#retributionist) | [Jester](#jester)                 |
+| [Morphling](#morphling)      |                               | [Revealer](#revealer)             | [Juggernaut](#juggernaut)         |
 | [Teleporter](#teleporter)    |                               | [Seer](#seer)                     | [Murderer](#murderer)             |
 | [Time Master](#time-master)  |                               | [Sheriff](#sheriff)               | [Necromancer](#necromancer)       |
 | [Wraith](#wraith)            |                               | [Shifter](#shifter)               | [Pestilence](#pestilence)         |
@@ -102,6 +102,7 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 | Among Us - Version | Mod Version | Link |
 |--------------------|-------------|------|
+| 2023.3.28 (s & e) | v0.0.3-dev3 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.3-dev3/TownOfUsReworked.zip) |
 | 2023.3.28 (s & e) | v0.0.3-dev2 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.3-dev2/TownOfUsReworked.zip) |
 | 2023.3.28 (s & e) | v0.0.3.1 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.3.1/TownOfUsReworked.zip) |
 | 2023.3.28 (s & e) | v0.0.3 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.3/TownOfUsReworked.zip) |
@@ -128,6 +129,49 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 <details>
   <summary>Change Log</summary>
+  <details>
+    <summary>v0.0.3-dev3</summary>
+    <ul> <li>Addition: All Syndicate roles now have Chaos Drive abilities</li> </ul>
+    <ul> <li>Merge: Beamer has been merged into Warper</li> </ul>
+    <ul> <li>Buff: Consort can roleblock a player from anywhere (to differentiate it from Escort)</li> </ul>
+    <ul> <li>Buff: Godfather can now promote a Consort to eventually become the new Godfather</li> </ul>
+    <ul> <li>Buff: Rebel can now promote a Politician to eventually become the new Rebel</li> </ul>
+    <ul> <li>Buff: Retributionists can use the dead bodies as many times as they want and can also use Transporters and Escorts</li> </ul>
+    <ul> <li>Nerf: Chameleon and Retributionist now have a limited number of uses for their swoop ability</li> </ul>
+    <ul> <li>Nerf: Bomber now only detonates their latest bomb and the their Chaos Drive ability is to detonate all placed bombs</li> </ul>
+    <ul> <li>Nerf: Syndicate (Killing) roles not longer get an extra kill button, their kill abilities just become more powerful</li> </ul>
+    <ul> <li>Nerf: Retributionist does not know if a player is Crew and must attempt to use them to find out</li> </ul>
+    <ul> <li>Nerf: The Chaos Drive is no longer global and is instead assigned to a random player within a specific order, the global Chaos Drive is instead an option</li> </ul>
+    <ul> <li>Change: Concealer can now select a player to make them invisible and its chaos drive ability is its former ability</li> </ul>
+    <ul> <li>Change: Shapeshifter can now select 2 players to swap appearances and its chaos drive ability is its former ability</li> </ul>
+    <ul> <li>Change: Poisoner has been moved into the Syndicate (Killing) alignment</li> </ul>
+    <ul> <li>Improvement: Improved how Transporter and Beamer buttons work</li> </ul>
+    <ul> <li>Improvement: Moved the MCI keybinds into a tiny debug menu of their own (based off of Reactor Debugger code)</li> </ul>
+    <ul> <li>Improvement: Roles with shapeshifter menus can deselect players by prassing backspace</li> </ul>
+    <ul> <li>Improvement: Game announcements are heavily improved on</li> </ul>
+    <ul> <li>Improvement: Godfather and Rebel are now optimised and rewritten for less bugs</li> </ul>
+    <ul> <li>Improvement: Lobby size has been moved from a chat command to an actual setting</li> </ul>
+    <ul> <li>Improvement: Improved how conversions work to fix the occasional lag spike</li> </ul>
+    <ul> <li>Visual Fix: Fixed the issue where the Use button would appear to be deepfried</li> </ul>
+    <ul> <li>Visual Fix: Fixed the issue with revived players being able to see the spectate button</li> </ul>
+    <ul> <li>Bug Fix: Fixed Retributionist arrows sometimes popping up in lobby</li> </ul>
+    <ul> <li>Bug Fix: Potential fix for roles not spawning correctly on lower player counts</li> </ul>
+    <ul> <li>Bug Fix: Fixed being able to zoom out while in a meeting</li> </ul>
+    <ul> <li>Bug Fix: Fixed the issue with /setname not letting you change your name properly</li> </ul>
+    <ul> <li>Bug Fix: Fixed games sometimes crashing on end game</li> </ul>
+    <ul> <li>Bug Fix: Fixed the issue with multiple Overlord and Chaos Drive related messages being sent</li> </ul>
+    <ul> <li>Bug Fix: Fixed the issue with votes being doubled</li> </ul>
+    <ul> <li>Bug Fix: Fixed being able to whisper with alive players</li> </ul>
+    <ul> <li>Role Fix: Retributionist ability use limits actually work this time</li> </ul>
+    <ul> <li>Modifier Fix: Fixed Shy sometimes being able to button</li> </ul>
+    <ul> <li>Role Fix: Fixed the issue where Poisoner would occasionally directly kill their target</li> </ul>
+    <ul> <li>Role Fix: Prevented Jackal from spawning on lower player counts to prevent errors</li> </ul>
+    <ul> <li>Role Fix: Fixed Jackal not spawning with recruits</li> </ul>
+    <ul> <li>Role Fix: Fixed Framer framing players not registering for others</li> </ul>
+    <ul> <li>Removed: Gorgon because of the countless bugs it has</li> </ul>
+    <ul> <li>Removed: Custom Airship spawns because they break the game</li> </ul>
+    <ul> <li>Temporary Removal: Sound effects have been temporarily removed, they'll make a return when there's a sound for everything</li> </ul>
+  </details>
   <details>
     <summary>v0.0.3-dev2</summary>
     <ul> <li>Critical Fix: Fixed the issue where the game would crash when someone was ejected</li> </ul>
@@ -1321,6 +1365,20 @@ The Disguiser can disguise into other players. At the beginning of each, they ca
 | Disguise Delay | The time it takes for the disguise to take place | Time | 25s |
 | Disguise Targets | Who can be disguised by the Disguiser | String | Everyone |
 
+## Enforcer
+### **Alignment: Intruder (Killing)**
+
+The Enforcer can plant bombs on players. After a short while, their target will be alerted to the bomb's presence and must kill someone to get rid of it. If they fail to do so in a time limit, the bomb will explode, killing everyone within its vicinity.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|------|-------------|------|---------|
+| Enforce Cooldown | The cooldown of the Enforce button | Time | 25s |
+| Enforce Duration | The duration of the bomb's presence | Time | 10s |
+| Enforce Delay | Amount of time the target has to kill someone | Time | 5s |
+| Enforce Explosion Radius | Self descriptive | Factor | 0.25m |
+
 ## Ghoul
 ### **Alignment: Intruder (Utility)**
 
@@ -1457,7 +1515,7 @@ Just a plain Syndicate with no abilities and only spawns if all the other roles 
 ## Banshee
 ### **Alignment: Syndicate (Utility)**
 
-The Banshee can block every non-Syndicate player every once in a while.
+The Banshee can block every non-Syndicate player every once in a while. This role cannot get the Chaos Drive.
 
 ### Game Options
 
@@ -1468,7 +1526,7 @@ The Banshee can block every non-Syndicate player every once in a while.
 ## Concealer
 ### **Alignment: Syndicate (Disruption)**
 
-The Concealer can make everyone invisible for a short while, allowing sneaky kills to be made.
+The Concealer can make a player invisible for a short while. With the Chaos Drive, this applies to everyone.
 
 ### Game Options
 
@@ -1492,7 +1550,7 @@ The Crusader can temporaily force anyone to go on alert, killing anyone who inte
 ## Drunkard
 ### **Alignment: Syndicate (Disruption)**
 
-The Drunkard can reverse everyone's control for a short while.
+The Drunkard can reverse a player's controls for a short while. With the Chaos Drive, this applies to everyone.
 
 ### Game Options
 
@@ -1512,21 +1570,10 @@ The Framer can frame players, making them appear to have wrong results and be ea
 |------|-------------|------|---------|
 | Frame Cooldown | The cooldown of the Framer's frame button | Time | 25s |
 
-## Gorgon
+## Poisoner
 ### **Alignment: Syndicate (Killing)**
 
-The Gorgon can stone gaze people to freeze them in place. Upon getting gazed, the player's speed will gradually decrease till they completely stop. When they are frozen, if a meeting is called, all frozen players will be killed. Those who are in the process of slowing down will be saved. With the Chaos Drive, the Gorgon's stone freeze is instant.
-
-### Game Options
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Gaze Cooldown | The cooldown on the Gorgon's gaze button | Time | 25s |
-
-## Poisoner
-### **Alignment: Syndicate (Disruption)**
-
-The Poisoner can poison another player instead of killing. When they poison a player, the poisoned player dies either upon the start of the next meeting or after a set duration. With the Chaos Drive, the poison can spread to other players should they interact with the poisoned player.
+The Poisoner can poison another player instead of killing. When they poison a player, the poisoned player dies either upon the start of the next meeting or after a set duration. With the Chaos Drive, the Poisoner can poison a player from anywhere.
 
 ### Game Options
 
@@ -1536,10 +1583,24 @@ The Poisoner can poison another player instead of killing. When they poison a pl
 | Poison Kill Delay | The delay of the kill after being poisoned | Time | 5s |
 | Poisoner can Vent | Whether the Poisoner can Vent | Toggle | False |
 
+## Politician
+### **Alignment: Syndicate (Power)**
+
+The Politician can vote multiple times like the Mayor, however they do not gain votes in their vote bank and must kill to gain votes. With the Chaos Drive, the Politician gains a passive vote increase, similar to the Mayor's.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|------|-------------|------|---------|
+| Politician Initial Vote Bank | The amount of votes the Politician has at the start of the game | Number | 0 |
+| Chaos Drive Vote Bank Increase | The amount of votes added to the vote bank post-Chaos Drive | Number | 1 |
+| Politician Anonymous Votes | Self descriptive | Toggle | False |
+| Politician Can Button | Self descriptive | Toggle | True |
+
 ## Rebel
 ### **Alignment: Syndicate (Support)**
 
-The Rebel can only spawn in 3+ Syndicate games. They can choose to promote a fellow Syndicate to Sidekick. When the Rebel dies, the Sidekick becomes the new Rebel and has lowered cooldowns. With the Chaos Drive, the Rebel's kill cooldown decreases.
+The Rebel can only spawn in 3+ Syndicate games. They can choose to promote a fellow Syndicate to Sidekick. When the Rebel dies, the Sidekick becomes the new Rebel and has lowered cooldowns. With the Chaos Drive, the Rebel's gains the improved abilities of their former role. A promoted Rebel has the highest priority when recieving the Chaos Drive.
 
 ### Game Options
 
@@ -1551,7 +1612,7 @@ The Rebel can only spawn in 3+ Syndicate games. They can choose to promote a fel
 ## Shapeshifter
 ### **Alignment: Syndicate (Support)**
 
-The Shapeshifter can randomise everyone's appearances for a short while.
+The Shapeshifter can swap the appearances of 2 players. WIth the Chaos Drive, everyone's appearances are suffled.
 
 ### Game Options
 
@@ -1568,7 +1629,7 @@ The Sidekick is promoted from a random non-Rebel Syndicate role. The Sidekick by
 ## Warper
 ### **Alignment: Syndicate (Support)**
 
-The Warper can teleport everyone to a random vent every now and then. With the Chaos Drive, the number of potential warp points also increases.
+The Warper can teleport a player to another player. With the Chaos Drive, the Warper teleports everyone to random positions on the map.
 
 ### Game Options
 
@@ -1595,7 +1656,7 @@ An Allied Neutral Killer now sides with either the Crew, the Intruders or the Sy
 ### Applied to: Crew
 ### Win Condition: Kill everyone.
 
-The Corrupted is a Crewmate with the alignment of a Neutral Killer. On top of their base role's attributes, they also gain a kill button. Their win condition is a special as not even certain Neutrals are allowed to be spared
+The Corrupted is a Crewmate with the alignment of a Neutral Killer. On top of their base role's attributes, they also gain a kill button. Their win condition is so strict that not even Neutral Benigns or Evils can be spared.
 
 ### Game Options
 
@@ -2102,7 +2163,7 @@ If you have any bugs or any need to contact me, join the [Discord Server](https:
 **Undead**
 - This subfaction is led by the Dracula
 - There is a limit of how many can be alive in the subfaction
-- Attempting to interact with a Vampire Hunter as an Undead will force them to kill you.
+- Attempting to interact with a Vampire Hunter as an Undead will force them to kill you
 
 **Sect**
 - This subfaction is led by the Whisperer

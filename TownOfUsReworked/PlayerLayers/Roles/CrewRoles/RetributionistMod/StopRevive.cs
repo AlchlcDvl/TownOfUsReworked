@@ -27,12 +27,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
             if (ret.RevivedRole.RoleType == RoleEnum.Operative)
             {
                 if (ret.BuggedPlayers.Count == 0)
-                    HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, "No one triggered your bugs.");
-                else if (ret.BuggedPlayers.Count < CustomGameOptions.MinAmountOfPlayersInBug)
-                    HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, "Not enough players triggered your bugs.");
-                else
+                    return;
+
+                var message = "The following role(s) triggered your bug:\n";
+
+                if (ret.BuggedPlayers.Count > 1)
                 {
-                    var message = "Roles caught in your bugs:\n";
                     var position = 0;
 
                     foreach (var role in ret.BuggedPlayers.OrderBy(_ => Guid.NewGuid()))
@@ -44,11 +44,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 
                         position++;
                     }
-
-                    //Ensures only the Retributionist-Operative sees this
-                    if (HudManager.Instance)
-                        HudManager.Instance.Chat.AddChat(ret.Player, message);
                 }
+                else
+                    message += $" {ret.BuggedPlayers[0]}";
+
+                //Ensures only the Retributionist-Operative sees this
+                if (HudManager.Instance)
+                    HudManager.Instance.Chat.AddChat(ret.Player, message);
             }
             else if (ret.RevivedRole.RoleType == RoleEnum.Coroner)
             {

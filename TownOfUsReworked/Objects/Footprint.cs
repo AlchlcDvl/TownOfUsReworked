@@ -2,7 +2,7 @@ using TownOfUsReworked.CustomOptions;
 using UnityEngine;
 using TownOfUsReworked.Cosmetics.CustomColors;
 using TownOfUsReworked.PlayerLayers.Roles;
-using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod;
+using TownOfUsReworked.PlayerLayers;
 using TownOfUsReworked.Classes;
 using HarmonyLib;
 
@@ -12,23 +12,23 @@ namespace TownOfUsReworked.Objects
     public class Footprint
     {
         public readonly PlayerControl Player;
-        private GameObject _gameObject;
-        private SpriteRenderer _spriteRenderer;
-        private readonly float _time;
-        private readonly Vector2 _velocity;
+        private GameObject GObject;
+        private SpriteRenderer Sprite;
+        private readonly float Time2;
+        private readonly Vector2 Velocity;
         public Color Color;
         public Vector3 Position;
         public Role Role;
         public static float Duration => CustomGameOptions.FootprintDuration;
-        public static bool Grey => CustomGameOptions.AnonymousFootPrint || CamouflageUnCamouflage.IsCamoed;
+        public static bool Grey => CustomGameOptions.AnonymousFootPrint || DoUndo.IsCamoed;
 
         public Footprint(PlayerControl player, Role role)
         {
             Role = role;
             Position = player.transform.position;
-            _velocity = player.gameObject.GetComponent<Rigidbody2D>().velocity;
+            Velocity = player.gameObject.GetComponent<Rigidbody2D>().velocity;
             Player = player;
-            _time = (int) Time.time;
+            Time2 = (int) Time.time;
             Color = Color.black;
             Start();
             role.AllPrints.Add(this);
@@ -42,34 +42,34 @@ namespace TownOfUsReworked.Objects
 
         private void Start()
         {
-            _gameObject = new GameObject("Footprint");
-            _gameObject.AddSubmergedComponent(SubmergedCompatibility.ElevatorMover);
-            _gameObject.transform.position = Position;
-            _gameObject.transform.Rotate(Vector3.forward * Vector2.SignedAngle(Vector2.up, _velocity));
-            _gameObject.transform.SetParent(Player.transform.parent);
+            GObject = new GameObject("Footprint");
+            GObject.AddSubmergedComponent(SubmergedCompatibility.ElevatorMover);
+            GObject.transform.position = Position;
+            GObject.transform.Rotate(Vector3.forward * Vector2.SignedAngle(Vector2.up, Velocity));
+            GObject.transform.SetParent(Player.transform.parent);
 
-            _spriteRenderer = _gameObject.AddComponent<SpriteRenderer>();
-            _spriteRenderer.sprite = AssetManager.Footprint;
-            _spriteRenderer.color = Color;
+            Sprite = GObject.AddComponent<SpriteRenderer>();
+            Sprite.sprite = AssetManager.Footprint;
+            Sprite.color = Color;
             var appearance = Player.GetAppearance();
             var size = appearance.SizeFactor;
-            _gameObject.transform.localScale *= new Vector2(1.2f, 1f) * new Vector2(size.x, size.y);
+            GObject.transform.localScale *= new Vector2(1.2f, 1f) * new Vector2(size.x, size.y);
 
-            _gameObject.SetActive(true);
+            GObject.SetActive(true);
         }
 
         private void Destroy()
         {
-            Object.Destroy(_gameObject);
+            Object.Destroy(GObject);
             Role.AllPrints.Remove(this);
         }
 
         public bool Update()
         {
             var currentTime = Time.time;
-            var alpha = Mathf.Max(1f - ((currentTime - _time) / Duration), 0f);
+            var alpha = Mathf.Max(1f - ((currentTime - Time2) / Duration), 0f);
 
-            if (alpha < 0 || alpha > 1)
+            if (alpha is < 0 or > 1)
                 alpha = 0;
 
             if (ColorUtils.IsRainbow(Player.GetDefaultOutfit().ColorId) && !Grey)
@@ -90,15 +90,15 @@ namespace TownOfUsReworked.Objects
                 Color = Palette.PlayerColors[Player.GetDefaultOutfit().ColorId];
 
             Color = new Color(Color.r, Color.g, Color.b, alpha);
-            _spriteRenderer.color = Color;
+            Sprite.color = Color;
 
-            if (_time + (int) Duration < currentTime)
+            if (Time2 + (int) Duration < currentTime)
             {
                 Destroy();
                 return true;
             }
-
-            return false;
+            else
+                return false;
         }
     }
 }

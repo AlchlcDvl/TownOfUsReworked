@@ -60,7 +60,7 @@ namespace TownOfUsReworked.Data
         public static Color32 Executioner => new(204, 204, 204, 255); //#CCCCCCFF
         public static Color32 Glitch => new(0, 255, 0, 255); //#00FF00FF
         public static Color32 Arsonist => new(238, 118, 0, 255); //#EE7600FF
-        public static Color32 Amnesiac => new(34, 255, 255, 255); //#22FFFFFF 
+        public static Color32 Amnesiac => new(34, 255, 255, 255); //#22FFFFFF
         public static Color32 Survivor => new(221, 221, 0, 255); //#DDDD00FF
         public static Color32 GuardianAngel => new(255, 255, 255, 255); //#FFFFFFFF
         public static Color32 Plaguebearer => new(207, 254, 97, 255); //#CFFE61FF
@@ -109,15 +109,15 @@ namespace TownOfUsReworked.Data
         public static Color32 Rebel => new(255, 252, 206, 255); //#FFFCCEFF
         public static Color32 Sidekick => new(151, 156, 159, 255); //#979C9FFF
         public static Color32 Concealer => new(192, 37, 37, 255); //#C02525FF
-        public static Color32 Gorgon => new(126, 77, 0, 255); //#7E4D00FF
         public static Color32 Shapeshifter => new(49, 28, 69, 255); //#311C45FF
         public static Color32 Bomber => new(201, 204, 63, 255); //#C9CC3FFF
         public static Color32 Poisoner => new(181, 0, 76, 255); //#B5004CFF
         public static Color32 Drunkard => new(30, 48, 11, 255); //#1E300BFF
-        public static Color32 Beamer => new(0, 40, 245, 255); //#0028F5FF
         public static Color32 Crusader => new(223, 122, 232, 255); //#DF7AE8FF
         public static Color32 Banshee => new(230, 126, 34, 255); //#E67E22FF
         public static Color32 Politician => new(204, 163, 204, 255); //#CCA3CCFF
+        public static Color32 Collider => new(126, 77, 0, 255); //#7E4D00FF
+        public static Color32 Eraser => new(0, 40, 245, 255); //#0028F5FF
 
         //Modifier Colors
         public static Color32 Bait => new(0, 179, 179, 255); //#00B3B3FF
@@ -172,6 +172,6 @@ namespace TownOfUsReworked.Data
         //#6a1515 #569d29 #f1612b #7d86e1 #612bef #e7dae2 #F6AAB7 #EC62A5 #00EEFF #78c689 #e1c849 #fccc52 #6b2d2a #aab43e #FCBA03 #ff351f #F8CD46 #FF4D00 #7EFBC2 #4d4d4d #38b553
 
         //Symbol Storage
-        //⟡ ☆ ♡ ♧ ♤ ø ▶ ❥ ✔ ε Δ Γ ι κ ν σ τ υ φ ψ Ψ ω Ӫ
+        //⟡ ☆ ♡ ♧ ♤ ø ▶ ❥ ✔ ε Γ ι κ ν σ τ υ φ ψ Ψ ω ✧ ¢
     }
 }

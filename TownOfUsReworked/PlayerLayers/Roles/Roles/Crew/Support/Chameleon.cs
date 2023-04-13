@@ -14,6 +14,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public float TimeRemaining;
         public bool IsSwooped => TimeRemaining > 0f;
         public AbilityButton SwoopButton;
+        public int UsesLeft;
+        public bool ButtonUsable => UsesLeft > 0;
 
         public Chameleon(PlayerControl player) : base(player)
         {
@@ -21,10 +23,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             StartText = "Go Invisible To Stalk Players";
             AbilitiesText = "- You can turn invisible";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Chameleon : Colors.Crew;
-            LastSwooped = DateTime.UtcNow;
             RoleType = RoleEnum.Chameleon;
             AlignmentName = CS;
             InspectorResults = InspectorResults.Unseen;
+            UsesLeft = CustomGameOptions.SwoopCount;
         }
 
         public float SwoopTimer()
@@ -36,19 +38,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }
 
-        public override void Effect()
-        {
-            if (IsSwooped)
-                Invis();
-            else if (Enabled)
-                Uninvis();
-        }
-
         public void Invis()
         {
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
-            Utils.Invis(Player, PlayerControl.LocalPlayer == Player);
+            Utils.Invis(Player);
 
             if (MeetingHud.Instance || Player.Data.IsDead)
                 TimeRemaining = 0f;

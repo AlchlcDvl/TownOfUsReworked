@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Data;
-using TownOfUsReworked.Extensions;
+using Hazel;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -31,10 +31,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AlignmentName = NN;
             PlayerConversion = new();
             WhisperConversion = CustomGameOptions.InitialWhisperRate;
-            Persuaded = new()
-            {
-                Player.PlayerId
-            };
+            Persuaded = new() { Player.PlayerId };
         }
 
         public float WhisperTimer()
@@ -69,7 +66,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 PlayerConversion = GetPlayers();
 
             var oldStats = PlayerConversion;
-            PlayerConversion = new();
+            PlayerConversion.Clear();
 
             foreach (var conversionRate in oldStats)
             {
@@ -98,30 +95,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     if (WhisperConversion < 2.5f)
                         WhisperConversion = 2.5f;
 
-                    if (Utils.PlayerById(playerConversion.Item1).Is(SubFaction.None))
-                    {
-                        removals.Add(playerConversion);
-                        var targetRole = GetRole(Utils.PlayerById(playerConversion.Item1));
-                        targetRole.SubFaction = SubFaction.Sect;
-                        targetRole.IsPersuaded = true;
-                        Persuaded.Add(playerConversion.Item1);
-
-                        if (PlayerControl.LocalPlayer.Is(RoleEnum.Mystic))
-                            Utils.Flash(Colors.Mystic, "Someone has changed their allegience!");
-                    }
-                    else if (!Utils.PlayerById(playerConversion.Item1).Is(SubFaction.Sect))
-                        Utils.RpcMurderPlayer(Player, Utils.PlayerById(playerConversion.Item1), false);
-                    else  if (Utils.PlayerById(playerConversion.Item1).Is(SubFaction.Sect))
-                    {
-                        if (Utils.PlayerById(playerConversion.Item1).Is(RoleEnum.Whisperer))
-                        {
-                            var targetRole = GetRole<Whisperer>(Utils.PlayerById(playerConversion.Item1));
-                            Persuaded.AddRange(targetRole.Persuaded);
-                            targetRole.Persuaded.AddRange(Persuaded);
-                        }
-                        else
-                            Persuaded.Add(playerConversion.Item1);
-                    }
+                    RoleGen.Convert(playerConversion.Item1, Player.PlayerId, SubFaction.Sect, false);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+                    writer.Write((byte)ActionsRPC.Convert);
+                    writer.Write(Player.PlayerId);
+                    writer.Write(playerConversion.Item1);
+                    writer.Write((byte)SubFaction.Sect);
+                    writer.Write(false);
+                    removals.Add(playerConversion);
                 }
             }
 

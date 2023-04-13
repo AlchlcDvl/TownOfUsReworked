@@ -21,7 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod
                 if (role.CamouflageTimer() != 0f)
                     return false;
 
-                if (CamouflageUnCamouflage.IsCamoed)
+                if (DoUndo.IsCamoed)
                     return false;
 
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);

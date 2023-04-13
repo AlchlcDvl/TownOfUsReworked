@@ -10,7 +10,6 @@ using UnityEngine;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MediumMod;
 using TownOfUsReworked.Cosmetics.CustomColors;
-using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod;
 using Random = UnityEngine.Random;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Functions;
@@ -31,9 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
             if (role.RevivedRole == null)
                 return false;
 
-            var revivedRole = role.RevivedRole?.RoleType;
-
-            if (__instance == role.ReviveButton && revivedRole == RoleEnum.Altruist)
+            if (__instance == role.ReviveButton)
             {
                 if (Utils.IsTooFar(role.Player, role.CurrentTarget))
                     return false;
@@ -50,7 +47,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                 Coroutines.Start(Coroutine.RetributionistRevive(role.CurrentTarget, role));
                 return false;
             }
-            else if (__instance == role.ShieldButton && revivedRole == RoleEnum.Medic)
+            else if (__instance == role.ShieldButton)
             {
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
@@ -66,12 +63,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                     writer.Write(role.ClosestPlayer.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     role.ShieldedPlayer = role.ClosestPlayer;
-                    role.UsedAbility = true;
                 }
 
                 return false;
             }
-            else if (__instance == role.InspectButton && revivedRole == RoleEnum.Inspector)
+            else if (__instance == role.InspectButton)
             {
                 if (role.InspectTimer() != 0f)
                     return false;
@@ -94,17 +90,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 
                 return false;
             }
-            else if (__instance == role.FixButton && revivedRole == RoleEnum.Engineer)
+            else if (__instance == role.FixButton)
             {
                 var system = ShipStatus.Instance.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>();
-                var specials = system.specials.ToArray();
                 var dummyActive = system.dummy.IsActive;
-                var sabActive = specials.Any(s => s.IsActive);
+                var sabActive = system.specials.ToArray().Any(s => s.IsActive);
 
                 if (!sabActive || dummyActive)
                     return false;
 
                 role.FixUsesLeft--;
+                role.LastFixed = DateTime.UtcNow;
 
                 switch (GameOptionsManager.Instance.currentNormalGameOptions.MapId)
                 {
@@ -241,7 +237,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 
                 return false;
             }
-            else if (__instance == role.ExamineButton && revivedRole == RoleEnum.Detective)
+            else if (__instance == role.ExamineButton)
             {
                 if (role.ExamineTimer() != 0f)
                     return false;
@@ -274,14 +270,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 
                 return false;
             }
-            else if (__instance == role.SwoopButton && revivedRole == RoleEnum.Chameleon)
+            else if (__instance == role.SwoopButton)
             {
                 if (role.SwoopTimer() != 0f)
                     return false;
 
                 role.SwoopTimeRemaining = CustomGameOptions.SwoopDuration;
-                role.Player.RegenTask();
                 role.Invis();
+                role.SwoopUsesLeft--;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.RetributionistAction);
                 writer.Write((byte)RetributionistActionsRPC.Swoop);
@@ -289,13 +285,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 return false;
             }
-            else if (__instance == role.MediateButton && revivedRole == RoleEnum.Medium)
+            else if (__instance == role.MediateButton)
             {
                 if (role.MediateTimer() != 0f)
                     return false;
 
                 role.LastMediated = DateTime.UtcNow;
                 var PlayersDead = Murder.KilledPlayers.GetRange(0, Murder.KilledPlayers.Count);
+
+                if (PlayersDead.Count == 0)
+                    return false;
 
                 if (CustomGameOptions.DeadRevealed == DeadRevealed.Newest)
                     PlayersDead.Reverse();
@@ -338,7 +337,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 
                 return false;
             }
-            else if (__instance == role.InterrogateButton && revivedRole == RoleEnum.Sheriff)
+            else if (__instance == role.InterrogateButton)
             {
                 if (role.InterrogateTimer() != 0f)
                     return false;
@@ -358,7 +357,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 
                 return false;
             }
-            else if (__instance == role.BugButton && revivedRole == RoleEnum.Operative)
+            else if (__instance == role.BugButton)
             {
                 if (role.BugTimer() != 0f)
                     return false;
@@ -368,7 +367,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                 role.Bugs.Add(BugExtensions.CreateBug(PlayerControl.LocalPlayer.GetTruePosition()));
                 return false;
             }
-            else if (__instance == role.TrackButton && revivedRole == RoleEnum.Tracker)
+            else if (__instance == role.TrackButton)
             {
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
@@ -386,7 +385,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                     gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
                     var renderer = gameObj.AddComponent<SpriteRenderer>();
                     renderer.sprite = AssetManager.Arrow;
-                    var Grey = CamouflageUnCamouflage.IsCamoed;
+                    var Grey = DoUndo.IsCamoed;
 
                     if (ColorUtils.IsRainbow(target.GetDefaultOutfit().ColorId) && !Grey)
                         renderer.color = ColorUtils.Rainbow;
@@ -419,7 +418,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 
                 return false;
             }
-            else if (__instance == role.StakeButton && revivedRole == RoleEnum.VampireHunter)
+            else if (__instance == role.StakeButton)
             {
                 if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
                     return false;
@@ -438,7 +437,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 
                 return false;
             }
-            else if (__instance == role.AlertButton && revivedRole == RoleEnum.Veteran)
+            else if (__instance == role.AlertButton)
             {
                 if (role.AlertTimer() != 0f)
                     return false;
@@ -453,7 +452,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 return false;
             }
-            else if (__instance == role.RevealButton && revivedRole == RoleEnum.Mystic)
+            else if (__instance == role.RevealButton)
             {
                 if (role.RevealTimer() != 0f)
                     return false;
@@ -478,7 +477,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 
                 return false;
             }
-            else if (__instance == role.SeerButton && revivedRole == RoleEnum.Seer)
+            else if (__instance == role.SeerButton)
             {
                 if (role.SeerTimer() != 0f)
                     return false;
@@ -502,6 +501,66 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                     role.LastRevealed = DateTime.UtcNow;
                 else if (interact[1])
                     role.LastRevealed.AddSeconds(CustomGameOptions.ProtectKCReset);
+
+                return false;
+            }
+            else if (__instance == role.TransportButton)
+            {
+                if (role.TransportTimer() != 0f)
+                    return false;
+
+                var list = PlayerControl.AllPlayerControls.ToArray().Where(x => !((x == role.Player && !CustomGameOptions.TransSelf) || role.UntransportablePlayers.ContainsKey(x.PlayerId)
+                    || (Utils.BodyById(x.PlayerId) == null && x.Data.IsDead) || x == role.TransportPlayer1 || x == role.TransportPlayer2)).ToList();
+
+                if (role.TransportPlayer1 == null)
+                    role.TransportMenu1.Open(list);
+                else if (role.TransportPlayer2 == null)
+                    role.TransportMenu2.Open(list);
+                else
+                {
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+                    writer.Write((byte)ActionsRPC.RetributionistAction);
+                    writer.Write((byte)RetributionistActionsRPC.Transport);
+                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                    writer.Write(role.TransportPlayer1.PlayerId);
+                    writer.Write(role.TransportPlayer2.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Coroutines.Start(role.TransportPlayers());
+                    role.LastTransported = DateTime.UtcNow;
+                    role.TransportUsesLeft--;
+                    return false;
+                }
+            }
+            else if (__instance == role.BlockButton)
+            {
+                if (role.RoleblockTimer() != 0f)
+                    return false;
+
+                if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
+                    return false;
+
+                var interact = Utils.Interact(role.Player, role.ClosestPlayer);
+
+                if (interact[3])
+                {
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+                    writer.Write((byte)ActionsRPC.RetributionistAction);
+                    writer.Write((byte)RetributionistActionsRPC.EscRoleblock);
+                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                    writer.Write(role.ClosestPlayer.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    role.BlockTimeRemaining = CustomGameOptions.EscRoleblockDuration;
+                    role.BlockTarget = role.ClosestPlayer;
+
+                    foreach (var layer in PlayerLayer.GetLayers(role.BlockTarget))
+                        layer.IsBlocked = !Role.GetRole(role.BlockTarget).RoleBlockImmune;
+
+                    role.Block();
+                }
+                else if (interact[0])
+                    role.LastBlock = DateTime.UtcNow;
+                else if (interact[1])
+                    role.LastBlock.AddSeconds(CustomGameOptions.ProtectKCReset);
 
                 return false;
             }

@@ -25,10 +25,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void TurnGodfather()
         {
-            var role = new Godfather(Player)
+            var role = new PromotedGodfather(Player)
             {
-                WasMafioso = true,
-                HasDeclared = !CustomGameOptions.PromotedMafiosoCanPromote,
                 FormerRole = FormerRole,
                 RoleBlockImmune = FormerRole.RoleBlockImmune
             };

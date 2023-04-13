@@ -113,7 +113,7 @@ namespace TownOfUsReworked.CustomOptions
                             toggle.transform.GetChild(1).gameObject.SetActive(false);
                             toggle.transform.GetChild(2).gameObject.SetActive(false);
                         }
-                        else if (option.Type == CustomOptionType.Button || option.Type == CustomOptionType.Nested)
+                        else if (option.Type is CustomOptionType.Button or CustomOptionType.Nested)
                         {
                             toggle.transform.GetChild(2).gameObject.SetActive(false);
                             toggle.transform.GetChild(0).localPosition += new Vector3(1f, 0f, 0f);

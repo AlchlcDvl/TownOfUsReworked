@@ -3,7 +3,6 @@ using HarmonyLib;
 using Hazel;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
@@ -30,12 +29,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
 
                 if (interact[3])
                 {
-                    var writer3 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                    writer3.Write((byte)ActionsRPC.Convert);
-                    writer3.Write(PlayerControl.LocalPlayer.PlayerId);
-                    writer3.Write(role.ClosestPlayer.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer3);
-                    Convert(role, role.ClosestPlayer);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+                    writer.Write((byte)ActionsRPC.Convert);
+                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                    writer.Write(role.ClosestPlayer.PlayerId);
+                    writer.Write((byte)SubFaction.Undead);
+                    writer.Write(role.Converted.Count >= CustomGameOptions.AliveVampCount);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    RoleGen.Convert(role.ClosestPlayer.PlayerId, role.Player.PlayerId, SubFaction.Undead, role.Converted.Count >= CustomGameOptions.AliveVampCount);
                 }
 
                 if (interact[0])
@@ -49,40 +50,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.DraculaMod
             }
 
             return true;
-        }
-
-        public static void Convert(Dracula dracRole, PlayerControl other)
-        {
-            var role = Role.GetRole(other);
-            var drac = dracRole.Player;
-
-            if (dracRole.Converted.Count >= CustomGameOptions.AliveVampCount)
-            {
-                Utils.RpcMurderPlayer(drac, other);
-                return;
-            }
-
-            var convert = other.Is(SubFaction.None);
-
-            if (convert)
-            {
-                role.SubFaction = SubFaction.Undead;
-                role.IsBitten = true;
-                dracRole.Converted.Add(other.PlayerId);
-            }
-            else if (other.IsBitten())
-                dracRole.Converted.Add(other.PlayerId);
-            else if (other.Is(RoleEnum.Dracula))
-            {
-                var drac2 = (Dracula)role;
-                dracRole.Converted.AddRange(drac2.Converted);
-                drac2.Converted.AddRange(dracRole.Converted);
-            }
-            else if (!other.Is(SubFaction.None))
-                Utils.RpcMurderPlayer(drac, other);
-
-            if (PlayerControl.LocalPlayer.Is(RoleEnum.Mystic))
-                Utils.Flash(Colors.Mystic, "Someone has changed their allegience!");
         }
     }
 }

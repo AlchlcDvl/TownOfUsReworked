@@ -35,7 +35,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
 
                 var role = Role.GetRole<Mayor>(PlayerControl.LocalPlayer);
 
-                if (__instance.Parent.state == MeetingHud.VoteStates.Proceeding || __instance.Parent.state == MeetingHud.VoteStates.Results)
+                if (__instance.Parent.state is MeetingHud.VoteStates.Proceeding or MeetingHud.VoteStates.Results)
                     return false;
 
                 if (!role.CanVote)

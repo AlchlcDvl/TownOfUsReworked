@@ -115,7 +115,7 @@ namespace TownOfUsReworked.CustomOptions
                             toggle.transform.GetChild(1).gameObject.SetActive(false);
                             toggle.transform.GetChild(2).gameObject.SetActive(false);
                         }
-                        else if (option.Type == CustomOptionType.Button || option.Type == CustomOptionType.Nested)
+                        else if (option.Type is CustomOptionType.Button or CustomOptionType.Nested)
                         {
                             toggle.transform.GetChild(2).gameObject.SetActive(false);
                             toggle.transform.GetChild(0).localPosition += new Vector3(1f, 0f, 0f);
@@ -346,12 +346,8 @@ namespace TownOfUsReworked.CustomOptions
                     return;
 
                 var y = __instance.GetComponentsInChildren<OptionBehaviour>().Max(option => option.transform.localPosition.y);
-                float x, z;
-
-                if (__instance.Children.Length == 1)
-                    (x, z) = (__instance.Children[0].transform.localPosition.x, __instance.Children[0].transform.localPosition.z);
-                else
-                    (x, z) = (__instance.Children[1].transform.localPosition.x, __instance.Children[1].transform.localPosition.z);
+                var s = __instance.Children.Length == 1;
+                var (x, z) = (__instance.Children[s ? 0 : 1].transform.localPosition.x, __instance.Children[s ? 0 : 1].transform.localPosition.z);
 
                 var i = 0;
 
@@ -649,6 +645,22 @@ namespace TownOfUsReworked.CustomOptions
 
                 Scroller.Inner = __instance.GameSettings.transform;
                 __instance.GameSettings.transform.SetParent(Scroller.transform);
+            }
+        }
+
+        [HarmonyPatch(typeof(GameSettingMenu), nameof(GameSettingMenu.Update))]
+        public static class GameSettingMenuUpdatePatch
+        {
+            public static void Postfix()
+            {
+                var value = CustomGameOptions.LobbySize;
+
+                if (GameOptionsManager.Instance.currentNormalGameOptions.MaxPlayers != value)
+                {
+                    GameOptionsManager.Instance.currentNormalGameOptions.MaxPlayers = value;
+                    GameStartManager.Instance.LastPlayerCount = value;
+                    PlayerControl.LocalPlayer.RpcSyncSettings(GameOptionsManager.Instance.gameOptionsFactory.ToBytes(GameOptionsManager.Instance.currentGameOptions));
+                }
             }
         }
     }

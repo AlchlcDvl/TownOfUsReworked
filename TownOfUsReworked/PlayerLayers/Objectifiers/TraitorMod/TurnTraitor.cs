@@ -39,8 +39,8 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
             var traitorObj = Objectifier.GetObjectifier<Traitor>(traitor);
             var traitorRole = Role.GetRole(traitor);
 
-            var IntrudersAlive = PlayerControl.AllPlayerControls.Count(x => x.Is(Faction.Intruder) && !x.Data.IsDead && !x.Data.Disconnected);
-            var SyndicateAlive = PlayerControl.AllPlayerControls.Count(x => x.Is(Faction.Syndicate) && !x.Data.IsDead && !x.Data.Disconnected);
+            var IntrudersAlive = PlayerControl.AllPlayerControls.ToArray().Count(x => x.Is(Faction.Intruder) && !x.Data.IsDead && !x.Data.Disconnected);
+            var SyndicateAlive = PlayerControl.AllPlayerControls.ToArray().Count(x => x.Is(Faction.Syndicate) && !x.Data.IsDead && !x.Data.Disconnected);
 
             var turnIntruder = false;
             var turnSyndicate = false;

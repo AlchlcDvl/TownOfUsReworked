@@ -20,7 +20,7 @@ namespace TownOfUsReworked.CustomOptions
         public List<OptionBehaviour> OldButtons;
         public List<CustomButtonOption> SlotButtons = new();
 
-        protected internal Presets(int id) : base(id, MultiMenu.main, "Load Presets") => Do = ToDo;
+        protected internal Presets(int id) : base(id, MultiMenu.main, "Load Preset Settings") => Do = ToDo;
 
         private List<OptionBehaviour> CreateOptions()
         {

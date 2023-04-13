@@ -100,7 +100,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod
                 RoleEnum.Glitch => new Glitch(thief),
                 RoleEnum.Enforcer => new Enforcer(thief),
                 RoleEnum.Godfather => new Godfather(thief),
-                RoleEnum.Gorgon => new Gorgon(thief) { Gazed = ((Gorgon)role).Gazed },
                 RoleEnum.Grenadier => new Grenadier(thief),
                 RoleEnum.Impostor => new Impostor(thief),
                 RoleEnum.Juggernaut => new Juggernaut(thief) { JuggKills = ((Juggernaut)role).JuggKills },
@@ -146,7 +145,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod
                 },
                 RoleEnum.Betrayer => new Betrayer(thief),
                 RoleEnum.Ambusher => new Ambusher(thief),
-                RoleEnum.Beamer => new Beamer(thief),
                 RoleEnum.Crusader => new Crusader(thief),
                 RoleEnum.Drunkard => new Drunkard(thief),
                 _ => new Thief(thief),
@@ -185,11 +183,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod
 
             if (thief.Is(Faction.Intruder) || thief.Is(Faction.Syndicate))
             {
-                foreach (var snitch in Ability.GetAbilities(AbilityEnum.Snitch))
+                foreach (var snitch in Ability.GetAbilities<Snitch>(AbilityEnum.Snitch))
                 {
-                    var snitchRole = (Snitch)snitch;
-
-                    if (snitchRole.TasksDone && PlayerControl.LocalPlayer.Is(AbilityEnum.Snitch))
+                    if (snitch.TasksDone && PlayerControl.LocalPlayer.Is(AbilityEnum.Snitch))
                     {
                         var gameObj = new GameObject();
                         var arrow = gameObj.AddComponent<ArrowBehaviour>();
@@ -198,9 +194,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod
                         renderer.sprite = AssetManager.Arrow;
                         arrow.image = renderer;
                         gameObj.layer = 5;
-                        snitchRole.SnitchArrows.Add(thief.PlayerId, arrow);
+                        snitch.SnitchArrows.Add(thief.PlayerId, arrow);
                     }
-                    else if (snitchRole.TasksDone && PlayerControl.LocalPlayer == thief)
+                    else if (snitch.TasksDone && PlayerControl.LocalPlayer == thief)
                     {
                         var gameObj = new GameObject();
                         var arrow = gameObj.AddComponent<ArrowBehaviour>();
@@ -209,7 +205,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ThiefMod
                         renderer.sprite = AssetManager.Arrow;
                         arrow.image = renderer;
                         gameObj.layer = 5;
-                        snitchRole.ImpArrows.Add(arrow);
+                        snitch.ImpArrows.Add(arrow);
                     }
                 }
             }

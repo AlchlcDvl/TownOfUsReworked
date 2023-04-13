@@ -26,10 +26,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleAlignment = RoleAlignment.NeutralNeo;
             AlignmentName = NN;
             SubFactionColor = Colors.Undead;
-            Converted = new()
-            {
-                Player.PlayerId
-            };
+            Converted = new() { Player.PlayerId };
         }
 
         public float ConvertTimer()

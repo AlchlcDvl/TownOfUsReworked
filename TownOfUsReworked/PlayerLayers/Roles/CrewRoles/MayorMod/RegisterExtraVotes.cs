@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
@@ -6,19 +5,15 @@ using Hazel;
 using InnerNet;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Abilities;
-using Il2CppInterop.Runtime.InteropTypes.Arrays;
-using UnityEngine;
-using Object = UnityEngine.Object;
-using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
 {
-    [HarmonyPatch(typeof(MeetingHud))]
+    [HarmonyPatch]
     public static class RegisterExtraVotes
     {
-        [HarmonyPatch(nameof(MeetingHud.Update))]
+        [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Update))]
         public static void Postfix(MeetingHud __instance)
         {
             if (!PlayerControl.LocalPlayer.Is(RoleEnum.Mayor))
@@ -89,7 +84,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
             return dictionary;
         }
 
-        [HarmonyPatch(nameof(MeetingHud.Start))]
+        [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
         public static void Prefix()
         {
             foreach (var mayor in Role.GetRoles<Mayor>(RoleEnum.Mayor))
@@ -105,8 +100,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
             }
         }
 
+        [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.HandleDisconnect), typeof(PlayerControl), typeof(DisconnectReasons))]
         [HarmonyPrefix]
-        [HarmonyPatch( nameof(MeetingHud.HandleDisconnect), typeof(PlayerControl), typeof(DisconnectReasons))]
         public static void Prefix([HarmonyArgument(0)] PlayerControl player)
         {
             if (AmongUsClient.Instance.AmHost && MeetingHud.Instance)
@@ -182,92 +177,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
 
                 __instance.Cast<InnerNetObject>().SetDirtyBit(1U);
                 __instance.CheckForEndVoting();
-                return false;
-            }
-        }
-
-        [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.VotingComplete))]
-        public static class VotingComplete
-        {
-            public static void Postfix([HarmonyArgument(1)] GameData.PlayerInfo exiled, [HarmonyArgument(2)] bool tie)
-            {
-                var exiledString = exiled == null ? "null" : exiled.PlayerName;
-                Utils.LogSomething($"Exiled PlayerName = {exiledString}");
-                Utils.LogSomething($"Was a tie = {tie}");
-            }
-        }
-
-        [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.PopulateResults))]
-        public static class PopulateResults
-        {
-            public static bool Prefix(MeetingHud __instance, [HarmonyArgument(0)] Il2CppStructArray<MeetingHud.VoterState> states)
-            {
-                var allNums = new Dictionary<int, int>();
-
-                __instance.TitleText.text = Object.FindObjectOfType<TranslationController>() .GetString(StringNames.MeetingVotingResults,
-                    Array.Empty<Il2CppSystem.Object>());
-                var amountOfSkippedVoters = 0;
-
-                for (var i = 0; i < __instance.playerStates.Length; i++)
-                {
-                    var playerVoteArea = __instance.playerStates[i];
-                    playerVoteArea.ClearForResults();
-                    allNums.Add(i, 0);
-
-                    for (var stateIdx = 0; stateIdx < states.Length; stateIdx++)
-                    {
-                        var voteState = states[stateIdx];
-                        var playerInfo = GameData.Instance.GetPlayerById(voteState.VoterId);
-
-                        if (playerInfo == null)
-                            Debug.LogError(string.Format("Couldn't find player info for voter: {0}", voteState.VoterId));
-                        else if (i == 0 && voteState.SkippedVote)
-                        {
-                            __instance.BloopAVoteIcon(playerInfo, amountOfSkippedVoters, __instance.SkippedVoting.transform);
-                            amountOfSkippedVoters++;
-                        }
-                        else if (voteState.VotedForId == playerVoteArea.TargetPlayerId)
-                        {
-                            __instance.BloopAVoteIcon(playerInfo, allNums[i], playerVoteArea.transform);
-                            allNums[i]++;
-                        }
-                    }
-                }
-
-                foreach (var mayor in Role.GetRoles<Mayor>(RoleEnum.Mayor))
-                {
-                    var playerInfo = mayor.Player.Data;
-                    var anonVotesOption = CustomGameOptions.AnonymousVoting;
-                    GameOptionsManager.Instance.currentNormalGameOptions.AnonymousVotes = CustomGameOptions.MayorAnonymous;
-
-                    foreach (var extraVote in mayor.ExtraVotes)
-                    {
-                        if (extraVote == PlayerVoteArea.HasNotVoted || extraVote == PlayerVoteArea.MissedVote || extraVote == PlayerVoteArea.DeadVote)
-                            continue;
-
-                        if (extraVote == PlayerVoteArea.SkippedVote)
-                        {
-                            __instance.BloopAVoteIcon(playerInfo, amountOfSkippedVoters, __instance.SkippedVoting.transform);
-                            amountOfSkippedVoters++;
-                        }
-                        else
-                        {
-                            for (var i = 0; i < __instance.playerStates.Length; i++)
-                            {
-                                var area = __instance.playerStates[i];
-
-                                if (extraVote != area.TargetPlayerId)
-                                    continue;
-
-                                __instance.BloopAVoteIcon(playerInfo, allNums[i], area.transform);
-                                allNums[i]++;
-                            }
-                        }
-                    }
-
-                    GameOptionsManager.Instance.currentNormalGameOptions.AnonymousVotes = anonVotesOption;
-                }
-
                 return false;
             }
         }

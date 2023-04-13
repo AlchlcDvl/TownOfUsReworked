@@ -43,16 +43,9 @@ namespace TownOfUsReworked.Patches
             newButton.layer = 5;
             newButton.transform.parent = colorButton.transform.parent.parent;
             var newButtonClickEvent = new Button.ButtonClickedEvent();
-            newButtonClickEvent.AddListener(LighterDarkerHandler());
+            newButtonClickEvent.AddListener((Action)(() => {}));
             newButton.GetComponent<PassiveButton>().OnClick = newButtonClickEvent;
             Role.Buttons.Add(newButton);
-        }
-
-        private static Action LighterDarkerHandler()
-        {
-            //Used to avoid the Lighter/Darker Indicators causing any button problems by giving them their own Listener events.
-            static void Listener() {}
-            return Listener;
         }
 
         public static void Postfix(MeetingHud __instance)

@@ -44,10 +44,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             KillUsesLeft = CustomGameOptions.NecroKillCount;
             ResurrectedCount = 0;
             KillCount = 0;
-            Resurrected = new List<byte>
-            {
-                Player.PlayerId
-            };
+            Resurrected = new() { Player.PlayerId };
         }
 
         public float ResurrectTimer()

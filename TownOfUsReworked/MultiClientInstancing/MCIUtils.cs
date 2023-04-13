@@ -10,7 +10,7 @@ namespace TownOfUsReworked.MultiClientInstancing
     {
         public static int AvailableId()
         {
-            for (var i = 2; i < 100; i++)
+            for (var i = 1; i < 128; i++)
             {
                 if (!InstanceControl.Clients.ContainsKey(i) && PlayerControl.LocalPlayer.OwnerId != i)
                     return i;
@@ -54,21 +54,22 @@ namespace TownOfUsReworked.MultiClientInstancing
 
         public static void RemovePlayer(byte id)
         {
+            if (id == 0)
+                return;
+
             int clientId = InstanceControl.Clients.FirstOrDefault(x => x.Value.Character.PlayerId == id).Key;
             InstanceControl.Clients.Remove(clientId, out ClientData outputData);
             InstanceControl.PlayerIdClientId.Remove(id);
             AmongUsClient.Instance.RemovePlayer(clientId, DisconnectReasons.ExitGame);
             AmongUsClient.Instance.allClients.Remove(outputData);
-            TownOfUsReworked.MCIActive = InstanceControl.Clients.Count > 0;
         }
 
         public static void RemoveAllPlayers()
         {
-            foreach (byte playerId in InstanceControl.PlayerIdClientId.Keys)
+            foreach (var playerId in InstanceControl.PlayerIdClientId.Keys)
                 RemovePlayer(playerId);
 
             InstanceControl.SwitchTo(AmongUsClient.Instance.allClients[0].Character.PlayerId);
-            TownOfUsReworked.MCIActive = false;
         }
     }
 }

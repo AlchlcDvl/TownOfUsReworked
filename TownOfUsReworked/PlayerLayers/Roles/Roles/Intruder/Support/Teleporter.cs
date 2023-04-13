@@ -1,7 +1,6 @@
 using TownOfUsReworked.Data;
 using System;
 using UnityEngine;
-using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Modules;
 
@@ -42,32 +41,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.MarkCooldown, CustomButtons.GetUnderdogChange(Player)) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
-        }
-
-        public static void Teleport(PlayerControl teleporter)
-        {
-            teleporter.MyPhysics.ResetMoveState();
-            var teleporterRole = GetRole<Teleporter>(teleporter);
-            var position = teleporterRole.TeleportPoint;
-            teleporter.NetTransform.SnapTo(new Vector2(position.x, position.y));
-
-            if (SubmergedCompatibility.IsSubmerged() && PlayerControl.LocalPlayer.PlayerId == teleporter.PlayerId)
-            {
-                SubmergedCompatibility.ChangeFloor(teleporter.GetTruePosition().y > -7);
-                SubmergedCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
-            }
-
-            if (PlayerControl.LocalPlayer.PlayerId == teleporter.PlayerId)
-            {
-                Utils.Flash(Colors.Teleporter, "You have teleported to a different location!");
-
-                if (Minigame.Instance)
-                    Minigame.Instance.Close();
-            }
-
-            teleporter.moveable = true;
-            teleporter.Collider.enabled = true;
-            teleporter.NetTransform.enabled = true;
         }
     }
 }

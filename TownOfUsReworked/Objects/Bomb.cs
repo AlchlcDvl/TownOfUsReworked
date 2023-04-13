@@ -15,6 +15,7 @@ namespace TownOfUsReworked.Objects
     {
         public List<PlayerControl> Players;
         public Transform Transform;
+        public bool Drived;
 
         public IEnumerator BombTimer()
         {
@@ -30,18 +31,13 @@ namespace TownOfUsReworked.Objects
             if (Transform == null)
                 return;
 
-            Players = Utils.GetClosestPlayers(Transform.position, CustomGameOptions.BombRange + (Role.SyndicateHasChaosDrive ? CustomGameOptions.ChaosDriveBombRange : 0f));
+            Players = Utils.GetClosestPlayers(Transform.position, CustomGameOptions.BombRange + (Drived ? CustomGameOptions.ChaosDriveBombRange : 0f) + 0.05f);
         }
 
-        public void Detonate(string name)
+        public void Detonate()
         {
             foreach (var player in Players)
-            {
-                Utils.RpcMurderPlayer(player, player, false);
-                var targetRole = Role.GetRole(player);
-                targetRole.KilledBy = " By " + name;
-                targetRole.DeathReason = DeathReasonEnum.Killed;
-            }
+                Utils.RpcMurderPlayer(player, player, DeathReasonEnum.Bombed, false);
 
             Stop();
         }

@@ -2,6 +2,7 @@
 using HarmonyLib;
 using System.Collections;
 using UnityEngine;
+using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.BetterMaps.Airship
@@ -26,46 +27,13 @@ namespace TownOfUsReworked.BetterMaps.Airship
             }
         }
 
-        private static IEnumerator Fade(bool fadeAway, bool enableAfterFade)
-        {
-            HudManager.Instance.FullScreen.enabled = true;
-
-            if (fadeAway)
-            {
-                for (float i = 1; i >= 0; i -= Time.deltaTime)
-                {
-                    HudManager.Instance.FullScreen.color = new Color(0, 0, 0, i);
-                    yield return null;
-                }
-            }
-            else
-            {
-                for (float i = 0; i <= 1; i += Time.deltaTime)
-                {
-                    HudManager.Instance.FullScreen.color = new Color(0, 0, 0, i);
-                    yield return null;
-                }
-            }
-
-            if (enableAfterFade)
-            {
-                var fs = false;
-                var reactor = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<HeliSabotageSystem>();
-
-                if (reactor.IsActive)
-                    fs = true;
-
-                HudManager.Instance.FullScreen.enabled = fs;
-            }
-        }
-
         private static IEnumerator CoTeleportPlayer(PlayerControl instance)
         {
             TeleportationStarted = true;
-            yield return Fade(false, false);
+            yield return Utils.Fade(false, false);
             instance.NetTransform.RpcSnapTo(new Vector2(5.753f, -10.011f));
             yield return new WaitForSeconds(0.3f);
-            yield return Fade(true, true);
+            yield return Utils.Fade(true, true);
             TeleportationStarted = false;
         }
     }

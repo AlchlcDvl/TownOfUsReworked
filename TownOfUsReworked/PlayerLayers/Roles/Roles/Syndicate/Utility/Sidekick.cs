@@ -24,15 +24,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void TurnRebel()
         {
-            var formerRole = FormerRole;
-
-            var role = new Rebel(Player)
-            {
-                WasSidekick = true,
-                HasDeclared = !CustomGameOptions.PromotedSidekickCanPromote,
-                FormerRole = formerRole
-            };
-
+            var role = new PromotedRebel(Player) { FormerRole = FormerRole };
             role.RoleUpdate(this);
 
             if (Player == PlayerControl.LocalPlayer)

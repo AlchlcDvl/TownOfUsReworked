@@ -7,6 +7,7 @@ using TMPro;
 using AmongUs.Data.Player;
 using AmongUs.Data.Legacy;
 using TownOfUsReworked.Crowded.Components;
+using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.Patches
 {
@@ -29,6 +30,12 @@ namespace TownOfUsReworked.Patches
         public static class ButtonsPatch
         {
             public static void Postfix(ref bool __result) => __result = false;
+        }
+
+        [HarmonyPatch(typeof(DoorCardSwipeGame), nameof(DoorCardSwipeGame.Begin))]
+        public static class DoorSwipePatch
+        {
+            public static void Prefix(DoorCardSwipeGame __instance) => __instance.minAcceptedTime = CustomGameOptions.MinDoorSwipeTime;
         }
 
         //Vent and kill shit
@@ -137,5 +144,23 @@ namespace TownOfUsReworked.Patches
         {
             public static void Postfix(ShapeshifterMinigame __instance) => __instance.gameObject.AddComponent<ShapeShifterPagingBehaviour>().shapeshifterMinigame = __instance;
         }
+
+        /*[HarmonyPatch(typeof(ShapeshifterMinigame), nameof(ShapeshifterMinigame.Close))]
+        public static class ShapeshifterMinigameClosePatch
+        {
+            public static void Postfix(ShapeshifterMinigame __instance) => __instance.gameObject.GetComponent<ShapeShifterPagingBehaviour>().Close();
+        }*/
+
+        [HarmonyPatch(typeof(VitalsMinigame), nameof(VitalsMinigame.Begin))]
+        public static class VitalsMinigameBeginPatch
+        {
+            public static void Postfix(VitalsMinigame __instance) => __instance.gameObject.AddComponent<VitalsPagingBehaviour>().vitalsMinigame = __instance;
+        }
+
+        /*[HarmonyPatch(typeof(VitalsMinigame), nameof(VitalsMinigame.Close))]
+        public static class VitalsMinigameClosePatch
+        {
+            public static void Postfix(VitalsMinigame __instance) => __instance.gameObject.GetComponent<VitalsPagingBehaviour>().Close();
+        }*/
     }
 }

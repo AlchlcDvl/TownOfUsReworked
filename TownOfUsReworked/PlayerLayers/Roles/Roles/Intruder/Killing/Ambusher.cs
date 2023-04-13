@@ -32,7 +32,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastAmbushed;
-            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.AmbushCooldown) * 1000f;
+            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.AmbushCooldown, CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
             var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }

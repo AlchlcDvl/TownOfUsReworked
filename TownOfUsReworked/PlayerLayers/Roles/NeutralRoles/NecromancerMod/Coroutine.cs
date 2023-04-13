@@ -5,7 +5,6 @@ using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Patches;
 using UnityEngine;
-using Object = UnityEngine.Object;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
 using AmongUs.GameOptions;
 using TownOfUsReworked.Data;
@@ -30,10 +29,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NecromancerMod
             if (PlayerControl.LocalPlayer.PlayerId == parentId)
                 Utils.Flash(Colors.Reanimated, "You are being ressurected!");
 
+            Utils.Spread(role.Player, player);
             role.Resurrecting = true;
 
             if (CustomGameOptions.NecromancerTargetBody)
-                Utils.BodyById(parentId)?.gameObject.Destroy();
+                target?.gameObject.Destroy();
 
             var startTime = DateTime.UtcNow;
 
@@ -57,17 +57,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NecromancerMod
             var targetRole = Role.GetRole(player);
             targetRole.DeathReason = DeathReasonEnum.Revived;
             targetRole.KilledBy = " By " + role.PlayerName;
-            targetRole.SubFaction = SubFaction.Reanimated;
-            targetRole.IsResurrected = true;
-            role.Resurrected.Add(parentId);
-
-            foreach (var poisoner in Role.GetRoles<Poisoner>(RoleEnum.Poisoner))
-            {
-                if (poisoner.PoisonedPlayer == player)
-                    poisoner.PoisonedPlayer = null;
-            }
-
             player.Revive();
+            RoleGen.Convert(parentId, role.Player.PlayerId, SubFaction.Reanimated, false);
 
             if (player.Data.IsImpostor())
                 RoleManager.Instance.SetRole(player, RoleTypes.Impostor);
@@ -77,19 +68,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NecromancerMod
             Murder.KilledPlayers.Remove(Murder.KilledPlayers.Find(x => x.PlayerId == player.PlayerId));
             player.NetTransform.SnapTo(new Vector2(position.x, position.y + 0.3636f));
 
-            if (PlayerControl.LocalPlayer == player)
-            {
-                try
-                {
-                    //SoundManager.Instance.PlaySound(TownOfUsReworked.ReviveSound, false, 1f);
-                } catch {}
-            }
-
-            if (SubmergedCompatibility.IsSubmerged() && PlayerControl.LocalPlayer.PlayerId == player.PlayerId)
+            if (SubmergedCompatibility.IsSubmerged() && PlayerControl.LocalPlayer == player)
                 SubmergedCompatibility.ChangeFloor(player.transform.position.y > -7);
 
-            if (target != null)
-                Object.Destroy(target.gameObject);
+            target?.gameObject.Destroy();
 
             if (player.Is(ObjectifierEnum.Lovers) && CustomGameOptions.BothLoversDie)
             {
@@ -100,18 +82,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NecromancerMod
                 var loverRole = Role.GetRole(lover);
                 loverRole.DeathReason = DeathReasonEnum.Revived;
                 loverRole.KilledBy = " By " + role.PlayerName;
-                loverRole.SubFaction = SubFaction.Reanimated;
-                loverRole.IsResurrected = true;
-                role.Resurrected.Add(lover.PlayerId);
+                RoleGen.Convert(lover.PlayerId, role.Player.PlayerId, SubFaction.Reanimated, false);
             }
 
-            if (Minigame.Instance)
-                Minigame.Instance.Close();
+            if (player == PlayerControl.LocalPlayer)
+            {
+                if (MapBehaviour.Instance)
+                    MapBehaviour.Instance.Close();
 
-            Utils.Spread(role.Player, player);
-
-            if (PlayerControl.LocalPlayer.Is(RoleEnum.Mystic))
-                Utils.Flash(Colors.Mystic, "Someone has changed their allegience!");
+                if (Minigame.Instance)
+                    Minigame.Instance.Close();
+            }
         }
     }
 }

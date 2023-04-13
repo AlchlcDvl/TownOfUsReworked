@@ -25,8 +25,8 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
             if (voteArea.AmDead)
                 return true;
 
-            var player = Utils.PlayerById(voteArea.TargetPlayerId);
-            return player?.Data.IsDead != false || player.Data.Disconnected || player.NameText().text.Contains('\n');
+            var player = Utils.PlayerByVoteArea(voteArea);
+            return player?.Data.IsDead != false || player.Data.Disconnected || voteArea.NameText.text.Contains('\n');
         }
 
         public static void GenButton(Assassin role, PlayerVoteArea voteArea)

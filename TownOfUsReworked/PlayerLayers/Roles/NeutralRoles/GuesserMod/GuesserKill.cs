@@ -11,7 +11,7 @@ using TownOfUsReworked.Patches;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod;
-using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod;
+using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.PromotedGodfatherMod;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Data;
 using HarmonyLib;
@@ -23,13 +23,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
     {
         public static void RpcMurderPlayer(Guesser assassin, PlayerControl player, string guess)
         {
-            var voteArea = MeetingHud.Instance.playerStates.First(x => x.TargetPlayerId == player.PlayerId);
-            RpcMurderPlayer(assassin, voteArea, player, guess);
-        }
-
-        public static void RpcMurderPlayer(Guesser assassin, PlayerVoteArea voteArea, PlayerControl player, string guess)
-        {
-            MurderPlayer(assassin, voteArea, player, guess);
+            MurderPlayer(assassin, player, guess);
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
             writer.Write((byte)ActionsRPC.GuesserKill);
             writer.Write(player.PlayerId);
@@ -41,11 +35,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
         public static void MurderPlayer(Guesser assassin, PlayerControl player, string guess)
         {
             var voteArea = MeetingHud.Instance.playerStates.First(x => x.TargetPlayerId == player.PlayerId);
-            MurderPlayer(assassin, voteArea, player, guess);
-        }
-
-        public static void MurderPlayer(Guesser assassin, PlayerVoteArea voteArea, PlayerControl player, string guess)
-        {
             var hudManager = HudManager.Instance;
             var assassinPlayer = assassin.Player;
 
@@ -155,7 +144,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
                     }
                 }
 
-                foreach (var role in Role.GetRoles<Godfather>(RoleEnum.Godfather))
+                foreach (var role in Role.GetRoles<PromotedGodfather>(RoleEnum.PromotedGodfather))
                 {
                     if (role.BlackmailedPlayer != null && voteArea.TargetPlayerId == role.BlackmailedPlayer.PlayerId && GFBlackmailMeetingUpdate.PrevXMark != null &&
                         GFBlackmailMeetingUpdate.PrevOverlay != null)

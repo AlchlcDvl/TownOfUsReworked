@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod;
-using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GodfatherMod;
+using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.PromotedGodfatherMod;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Patches;
@@ -21,14 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
     {
         public static void RpcMurderPlayer(Assassin assassin, PlayerControl player, string guess)
         {
-            var voteArea = MeetingHud.Instance.playerStates.First(x => x.TargetPlayerId == player.PlayerId);
-            RpcMurderPlayer(assassin, voteArea, player, guess);
-        }
-
-        public static void RpcMurderPlayer(Assassin assassin, PlayerVoteArea voteArea, PlayerControl player, string guess)
-        {
-            MurderPlayer(assassin, voteArea, player, guess);
-
+            MurderPlayer(assassin, player, guess);
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
             writer.Write((byte)ActionsRPC.AssassinKill);
             writer.Write(player.PlayerId);
@@ -40,11 +33,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
         public static void MurderPlayer(Assassin assassin, PlayerControl player, string guess, bool checkLover = true)
         {
             var voteArea = MeetingHud.Instance.playerStates.First(x => x.TargetPlayerId == player.PlayerId);
-            MurderPlayer(assassin, voteArea, player, guess, checkLover);
-        }
-
-        public static void MurderPlayer(Assassin assassin, PlayerVoteArea voteArea, PlayerControl player, string guess, bool checkLover = true)
-        {
             var hudManager = HudManager.Instance;
             var assassinPlayer = assassin.Player;
 
@@ -54,16 +42,13 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
                 return;
             }
 
-            if (checkLover)
+            try
             {
-                try
-                {
-                    SoundManager.Instance.PlaySound(PlayerControl.LocalPlayer.KillSfx, false, 1f);
-                } catch {}
+                SoundManager.Instance.PlaySound(PlayerControl.LocalPlayer.KillSfx, false, 1f);
+            } catch {}
 
-                if (PlayerControl.LocalPlayer == player)
-                    hudManager.KillOverlay.ShowKillAnimation(assassinPlayer.Data, player.Data);
-            }
+            if (PlayerControl.LocalPlayer == player)
+                hudManager.KillOverlay.ShowKillAnimation(assassinPlayer.Data, player.Data);
 
             assassinPlayer.RegenTask();
             player.RegenTask();
@@ -109,8 +94,14 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
 
             player.Die(DeathReason.Kill, false);
             var role2 = Role.GetRole(player);
-            role2.DeathReason = DeathReasonEnum.Guessed;
-            role2.KilledBy = " By " + assassin.PlayerName;
+
+            if (assassinPlayer != player)
+            {
+                role2.DeathReason = DeathReasonEnum.Guessed;
+                role2.KilledBy = " By " + assassin.PlayerName;
+            }
+            else
+                role2.DeathReason = DeathReasonEnum.Misfire;
 
             if (checkLover && player.Is(ObjectifierEnum.Lovers) && CustomGameOptions.BothLoversDie)
             {
@@ -158,7 +149,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
                 }
             }
 
-            foreach (var role in Role.GetRoles<Godfather>(RoleEnum.Godfather))
+            foreach (var role in Role.GetRoles<PromotedGodfather>(RoleEnum.PromotedGodfather))
             {
                 if (role.BlackmailedPlayer != null && voteArea.TargetPlayerId == role.BlackmailedPlayer.PlayerId && GFBlackmailMeetingUpdate.PrevXMark != null &&
                     GFBlackmailMeetingUpdate.PrevOverlay != null)

@@ -21,7 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CryomaniacMod
                         if (player2.Data.IsDead || player2.Data.Disconnected || player2.Is(RoleEnum.Pestilence))
                             continue;
 
-                        Utils.RpcMurderPlayer(cryo.Player, player2);
+                        Utils.RpcMurderPlayer(cryo.Player, player2, DeathReasonEnum.Frozen);
                     }
 
                     cryo.DousedPlayers.Clear();

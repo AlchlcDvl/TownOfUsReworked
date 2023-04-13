@@ -30,6 +30,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MediumMod
                 role.LastMediated = DateTime.UtcNow;
                 var PlayersDead = Murder.KilledPlayers.GetRange(0, Murder.KilledPlayers.Count);
 
+                if (PlayersDead.Count == 0)
+                    return false;
+
                 if (CustomGameOptions.DeadRevealed == DeadRevealed.Newest)
                     PlayersDead.Reverse();
 

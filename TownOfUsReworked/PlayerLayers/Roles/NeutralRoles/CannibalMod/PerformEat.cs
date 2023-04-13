@@ -25,7 +25,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.CannibalMod
                 if (role.EatTimer() != 0f)
                     return false;
 
-                Utils.Spread(role.Player, Utils.PlayerById(role.CurrentTarget.ParentId));
+                var player = Utils.PlayerById(role.CurrentTarget.ParentId);
+                Utils.Spread(role.Player, player);
+                Role.Cleaned.Add(player);
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.FadeBody);
                 writer.Write(role.CurrentTarget.ParentId);

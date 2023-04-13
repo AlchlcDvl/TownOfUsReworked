@@ -12,10 +12,6 @@ namespace TownOfUsReworked.Patches
     [HarmonyPatch(typeof(VitalsMinigame), nameof(VitalsMinigame.Update))]
     public static class VitalsPatch
     {
-        private static int currentPage;
-        private const int maxPerPage = 15;
-        private static int MaxPages => (int)Mathf.Ceil((float)PlayerControl.AllPlayerControls.Count / maxPerPage);
-
         public static void Postfix(VitalsMinigame __instance)
         {
             var localPlayer = PlayerControl.LocalPlayer;
@@ -53,31 +49,6 @@ namespace TownOfUsReworked.Patches
                 transform.localScale = Vector3.one / 20;
                 tmp.color = Color.red;
                 tmp.text = Math.Ceiling(num / 1000) + "s";
-            }
-
-            if (PlayerTask.PlayerHasTaskOfType<HudOverrideTask>(PlayerControl.LocalPlayer))
-                return;
-
-            if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.mouseScrollDelta.y > 0f)
-                currentPage = Mathf.Clamp(currentPage - 1, 0, MaxPages - 1);
-            else if (Input.GetKeyDown(KeyCode.RightArrow) || Input.mouseScrollDelta.y < 0f)
-                currentPage = Mathf.Clamp(currentPage + 1, 0, MaxPages - 1);
-
-            var j = 0;
-
-            foreach (var panel in __instance.vitals)
-            {
-                if (j >= currentPage * maxPerPage && j < (currentPage + 1) * maxPerPage)
-                {
-                    panel.gameObject.SetActive(true);
-                    var relativeIndex = j % maxPerPage;
-                    panel.transform.localPosition = new Vector3(__instance.XStart + (__instance.XOffset * (relativeIndex % 3)), __instance.YStart + (__instance.YOffset *
-                        (relativeIndex / 3)), -1f);
-                }
-                else
-                    panel.gameObject.SetActive(false);
-
-                j++;
             }
         }
     }

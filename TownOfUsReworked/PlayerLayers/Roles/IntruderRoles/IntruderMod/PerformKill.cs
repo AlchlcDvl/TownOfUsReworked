@@ -61,9 +61,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.IntruderMod
 
                     return false;
                 }
-                else if (PlayerControl.LocalPlayer.Is(RoleEnum.Godfather))
+                else if (PlayerControl.LocalPlayer.Is(RoleEnum.PromotedGodfather))
                 {
-                    var gf = (Godfather)role;
+                    var gf = (PromotedGodfather)role;
 
                     if (interact[3]  || interact[0])
                     {

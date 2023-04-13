@@ -9,7 +9,7 @@ namespace TownOfUsReworked.BetterMaps.Airship
     {
         public static void Prefix(OpenDoorConsole __instance)
         {
-            var messageWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.DoorSyncToilet, SendOption.None);
+            var messageWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.DoorSyncToilet, SendOption.Reliable);
             messageWriter.Write(__instance.MyDoor.Id);
             AmongUsClient.Instance.FinishRpcImmediately(messageWriter);
         }

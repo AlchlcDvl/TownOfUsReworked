@@ -623,7 +623,7 @@ namespace TownOfUsReworked.Data
             new ObjectifierInfo("Overlord", "Ov", "Every meeting, for as long as an Overlord is alive, players will be alerted to their existence. The game ends if the Overlord lives " +
                 "long enough.", "Survive a set amount of meetings", "Neutrals", "β"),
             new ObjectifierInfo("Corrupted", "Corr", "The Corrupted is a Crewmate with the alignment of a Neutral Killer. On top of their base role's attributes, they also gain a " +
-                "kill button. Their win condition is a special as not even certain Neutrals are allowed to be spared", "Kill everyone", "Crew", "δ"),
+                "kill button. Their win condition is so strict that not even Neutral Benigns or Evils can be spared", "Kill everyone", "Crew", "δ"),
             new ObjectifierInfo("Traitor", "CT (means Crew Traitor)", "The Traitor is a Crewmate who must finish their tasks to switch sides. Upon doing so, they will either join " +
                 "the Intruders or the Syndicate, and will win with that faction. If the Traitor is the only person in their new faction, they become a Betrayer, losing their original" +
                 " role's abilities and gaining the ability to kill in the process.", "Finish tasks to join either the Intruders or Syndicate", "Crew", "♣")
@@ -659,9 +659,9 @@ namespace TownOfUsReworked.Data
         public readonly static List<Lore> AllLore = new()
         {
             new Lore("All", "The story takes place several hundred years in the future. There is a giant leap in scientific advancement. As a result, space travel is a common thing and" +
-                " is commonly used for mining resources from nearby celestial bodies. A multi-billion dollar government space exploration corporation called “Mira” just recently " +
-                "discovered a new habitable planet several light years away. They named it “Polus”. Soon enough, they build a ship that can carry over 200 passengers with plenty of " +
-                "storage for items. The ship is called the “Skeld”. Mira begins an exploration trip to Polus, recruiting special individuals from within their agency to set up camp and" +
+                " is commonly used for mining resources from nearby celestial bodies. A multi-billion dollar government space exploration corporation called \"Mira\" just recently " +
+                "discovered a new habitable planet several light years away. They named it \"Polus\". Soon enough, they build a ship that can carry over 200 passengers with plenty of " +
+                "storage for items. The ship is called the \"Skeld\". Mira begins an exploration trip to Polus, recruiting special individuals from within their agency to set up camp and" +
                 " continue the research of the planet. Little do they know, all sorts of people whose motives conflict with that of Mira have managed to get onboard the Skeld. Not only " +
                 "that, some of the Crew have been mysteriously replaced by shapeshifting parasites hellbent on conquering Earth but unfortunately got swept up in this project. Skeld is " +
                 "soon launched from the Mira HQ. After launch, the Skeld becomes a battlefield of death and mind games while the Crew tries to get rid of these evils when stranded in " +

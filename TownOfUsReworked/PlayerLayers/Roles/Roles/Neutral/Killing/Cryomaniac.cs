@@ -19,7 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public List<byte> DousedPlayers;
         public bool FreezeUsed;
         public DateTime LastDoused;
-        public bool LastKiller => !PlayerControl.AllPlayerControls.Any(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) ||
+        public bool LastKiller => !PlayerControl.AllPlayerControls.ToArray().Any(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) ||
             x.Is(RoleAlignment.CrewKill) || x.Is(RoleAlignment.CrewAudit) || x.Is(RoleAlignment.NeutralPros) || (x.Is(RoleAlignment.NeutralKill) && x != Player)));
         public int DousedAlive => DousedPlayers.Count(x => Utils.PlayerById(x)?.Data?.IsDead == false && Utils.PlayerById(x)?.Data?.Disconnected == false);
 

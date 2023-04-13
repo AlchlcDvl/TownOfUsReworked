@@ -17,7 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public DateTime LastInfected;
         public List<byte> InfectedPlayers = new();
         public int InfectedAlive => InfectedPlayers.Count;
-        public bool CanTransform => PlayerControl.AllPlayerControls.Count(x => x?.Data.IsDead == false && !x.Data.Disconnected) <= InfectedAlive;
+        public bool CanTransform => PlayerControl.AllPlayerControls.ToArray().Count(x => x?.Data.IsDead == false && !x.Data.Disconnected) <= InfectedAlive;
         public AbilityButton InfectButton;
 
         public Plaguebearer(PlayerControl player) : base(player)

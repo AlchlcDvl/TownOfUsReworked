@@ -24,7 +24,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             StartText = "Shoot The <color=#FF0000FF>Evildoers</color>";
             AbilitiesText = "- You can shoot players\n- You you shoot someone you are not supposed to, you will die to guilt";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Vigilante : Colors.Crew;
-            LastKilled = DateTime.UtcNow;
             RoleType = RoleEnum.Vigilante;
             RoleAlignment = RoleAlignment.CrewKill;
             AlignmentName = CK;

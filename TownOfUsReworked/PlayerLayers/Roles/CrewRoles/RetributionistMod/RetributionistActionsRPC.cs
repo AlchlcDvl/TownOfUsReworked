@@ -5,13 +5,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
         Protect,
         AltruistRevive,
         Alert,
+        EscRoleblock,
         Transport,
         SetUntransportable,
         Mediate,
         Interrogate,
         Stake,
         Swoop,
-        RetributionistRevive,
-        RetributionistReviveSet
+        RetributionistRevive
     }
 }

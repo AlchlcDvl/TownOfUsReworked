@@ -38,7 +38,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastBombed;
-            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.AmbushCooldown) * 1000f;
+            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.EnforceCooldown, CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
             var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }
@@ -49,10 +49,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 Utils.Flash(Color, "There's a bomb on you!", 2);
                 GetRole(BombedPlayer).Bombed = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                writer.Write((byte)ActionsRPC.AlertBomb);
-                writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
             }
 
             Enabled = true;
@@ -92,7 +88,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     continue;
 
                 if (!player.Is(RoleEnum.Pestilence))
-                    Utils.RpcMurderPlayer(BombedPlayer, player, false);
+                    Utils.RpcMurderPlayer(BombedPlayer, player, DeathReasonEnum.Bombed, false);
             }
         }
     }

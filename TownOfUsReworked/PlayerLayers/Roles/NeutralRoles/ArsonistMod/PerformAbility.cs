@@ -23,10 +23,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ArsonistMod
                     return false;
 
                 role.LastIgnited = DateTime.UtcNow;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                writer.Write((byte)ActionsRPC.Ignite);
-                writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
                 role.Ignite();
 
                 if (CustomGameOptions.ArsoCooldownsLinked)

@@ -29,7 +29,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.CrusaderMod
 
                 if (interact[3])
                 {
-                    role.TimeRemaining = CustomGameOptions.AmbushDuration;
+                    role.TimeRemaining = CustomGameOptions.CrusadeDuration;
                     role.CrusadedPlayer = role.ClosestCrusade;
                     role.Crusade();
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);

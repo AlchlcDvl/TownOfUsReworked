@@ -18,7 +18,7 @@ namespace TownOfUsReworked.Modules
     [HarmonyPatch]
     public static class CustomButtons
     {
-        public static bool ButtonUsable(ActionButton button) => button.isActiveAndEnabled && !button.isCoolingDown && !CannotUse(PlayerControl.LocalPlayer);
+        public static bool ButtonUsable(ActionButton button) => button.isActiveAndEnabled && !button.isCoolingDown && !CannotUse(PlayerControl.LocalPlayer) && !MeetingHud.Instance;
 
         public static bool SetActive(PlayerControl target, RoleEnum role, bool condition = true) => target?.Data?.IsDead == false && target.Is(role) && condition &&
             ConstantVariables.IsRoaming && (HudManager.Instance.UseButton.isActiveAndEnabled || HudManager.Instance.PetButton.isActiveAndEnabled) && target == PlayerControl.LocalPlayer;
@@ -143,8 +143,8 @@ namespace TownOfUsReworked.Modules
                     jani.CurrentTarget = target;
                     break;
 
-                case RoleEnum.Godfather:
-                    var gf = (Godfather)role;
+                case RoleEnum.PromotedGodfather:
+                    var gf = (PromotedGodfather)role;
                     oldTarget = gf.CurrentTarget;
                     gf.CurrentTarget = target;
                     break;
@@ -182,14 +182,10 @@ namespace TownOfUsReworked.Modules
             if (role.Player != PlayerControl.LocalPlayer)
                 return;
 
-            if (!ButtonUsable(button) || !CanInteract(PlayerControl.LocalPlayer))
+            if (!ButtonUsable(button))
                 return;
 
             var target = GetClosestPlayer(PlayerControl.LocalPlayer, targets);
-            PlayerControl oldTarget = null;
-            PlayerControl oldTarget1 = null;
-            PlayerControl oldTarget2 = null;
-            PlayerControl oldTarget3 = null;
 
             switch (role.Faction)
             {
@@ -198,7 +194,6 @@ namespace TownOfUsReworked.Modules
                         break;
 
                     var intr = (IntruderRole)role;
-                    oldTarget = intr.ClosestPlayer;
                     intr.ClosestPlayer = target;
                     break;
 
@@ -207,328 +202,245 @@ namespace TownOfUsReworked.Modules
                         break;
 
                     var syn = (SyndicateRole)role;
-                    oldTarget = syn.ClosestPlayer;
                     syn.ClosestPlayer = target;
                     break;
             }
 
-            var oldComponent = oldTarget?.MyRend();
-
-            if (target != oldTarget && oldTarget != null && target != null)
-                oldComponent?.material.SetFloat("_Outline", 0f);
+            if (role.Bombed)
+                role.ClosestBoom = target;
 
             switch (role.RoleType)
             {
                 case RoleEnum.Thief:
                     var thief = (Thief)role;
-                    oldTarget = thief.ClosestPlayer;
                     thief.ClosestPlayer = target;
                     break;
 
                 case RoleEnum.Sheriff:
                     var sher = (Sheriff)role;
-                    oldTarget = sher.ClosestPlayer;
                     sher.ClosestPlayer = target;
                     break;
 
                 case RoleEnum.Detective:
                     var det = (Detective)role;
-                    oldTarget = det.ClosestPlayer;
                     det.ClosestPlayer = target;
                     break;
 
                 case RoleEnum.Coroner:
                     var cor = (Coroner)role;
-                    oldTarget = cor.ClosestPlayer;
                     cor.ClosestPlayer = target;
                     break;
 
                 case RoleEnum.Seer:
                     var seer = (Seer)role;
-                    oldTarget = seer.ClosestPlayer;
                     seer.ClosestPlayer = target;
                     break;
 
                 case RoleEnum.VampireHunter:
                     var vh = (VampireHunter)role;
-                    oldTarget = vh.ClosestPlayer;
                     vh.ClosestPlayer = target;
                     break;
 
                 case RoleEnum.Medic:
                     var medic = (Medic)role;
-                    oldTarget = medic.ClosestPlayer;
                     medic.ClosestPlayer = target;
                     break;
 
                 case RoleEnum.Shifter:
                     var shift = (Shifter)role;
-                    oldTarget = shift.ClosestPlayer;
                     shift.ClosestPlayer = target;
                     break;
 
                 case RoleEnum.Mystic:
                     var mys = (Mystic)role;
-                    oldTarget = mys.ClosestPlayer;
                     mys.ClosestPlayer = target;
                     break;
 
                 case RoleEnum.Dracula:
                     var drac = (Dracula)role;
-                    oldTarget = drac.ClosestPlayer;
                     drac.ClosestPlayer = target;
                     break;
 
                 case RoleEnum.Jackal:
                     var jack = (Jackal)role;
-                    oldTarget = jack.ClosestPlayer;
                     jack.ClosestPlayer = target;
                     break;
 
                 case RoleEnum.Retributionist:
                     var ret = (Retributionist)role;
-                    oldTarget = ret.ClosestPlayer;
                     ret.ClosestPlayer = target;
                     break;
 
                 case RoleEnum.Necromancer:
                     var necro = (Necromancer)role;
-                    oldTarget = necro.ClosestPlayer;
                     necro.ClosestPlayer = target;
                     break;
 
                 case RoleEnum.Tracker:
                     var track = (Tracker)role;
-                    oldTarget = track.ClosestPlayer;
                     track.ClosestPlayer = target;
                     break;
 
                 case RoleEnum.Vigilante:
                     var vig = (Vigilante)role;
-                    oldTarget = vig.ClosestPlayer;
                     vig.ClosestPlayer = target;
                     break;
 
                 case RoleEnum.BountyHunter:
                     var bh = (BountyHunter)role;
-                    oldTarget = bh.ClosestPlayer;
                     bh.ClosestPlayer = target;
                     break;
 
                 case RoleEnum.Inspector:
                     var insp = (Inspector)role;
-                    oldTarget = insp.ClosestPlayer;
                     insp.ClosestPlayer = target;
                     break;
 
                 case RoleEnum.Escort:
                     var esc = (Escort)role;
-                    oldTarget = esc.ClosestPlayer;
                     esc.ClosestPlayer = target;
                     break;
 
                 case RoleEnum.Troll:
                     var troll = (Troll)role;
-                    oldTarget = troll.ClosestPlayer;
                     troll.ClosestPlayer = target;
                     break;
 
                 case RoleEnum.Pestilence:
                     var pest = (Pestilence)role;
-                    oldTarget = pest.ClosestPlayer;
                     pest.ClosestPlayer = target;
                     break;
 
                 case RoleEnum.Ambusher:
                     var amb = (Ambusher)role;
-                    oldTarget = amb.ClosestAmbush;
                     amb.ClosestAmbush = target;
                     break;
 
                 case RoleEnum.Blackmailer:
                     var bm = (Blackmailer)role;
-                    oldTarget = bm.ClosestBlackmail;
                     bm.ClosestBlackmail = target;
                     break;
 
                 case RoleEnum.Consigliere:
                     var consig = (Consigliere)role;
-                    oldTarget = consig.ClosestTarget;
                     consig.ClosestTarget = target;
-                    break;
-
-                case RoleEnum.Consort:
-                    var cons = (Consort)role;
-                    oldTarget = cons.ClosestTarget;
-                    cons.ClosestTarget = target;
                     break;
 
                 case RoleEnum.Disguiser:
                     var disg = (Disguiser)role;
-                    oldTarget = disg.ClosestTarget;
                     disg.ClosestTarget = target;
                     break;
 
                 case RoleEnum.Godfather:
                     var gf = (Godfather)role;
-                    oldTarget = gf.ClosestTarget;
-                    oldTarget1 = gf.ClosestBlackmail;
-                    oldTarget2 = gf.ClosestIntruder;
-                    oldTarget3 = gf.ClosestAmbush;
-                    gf.ClosestTarget = target;
-                    gf.ClosestBlackmail = target;
                     gf.ClosestIntruder = target;
-                    gf.ClosestAmbush = target;
+                    break;
+
+                case RoleEnum.PromotedGodfather:
+                    var gf2 = (PromotedGodfather)role;
+                    gf2.ClosestTarget = target;
                     break;
 
                 case RoleEnum.Morphling:
                     var morph = (Morphling)role;
-                    oldTarget = morph.ClosestTarget;
                     morph.ClosestTarget = target;
                     break;
 
                 case RoleEnum.Arsonist:
                     var arso = (Arsonist)role;
-                    oldTarget = arso.ClosestPlayer;
                     arso.ClosestPlayer = target;
                     break;
 
                 case RoleEnum.Cryomaniac:
                     var cryo = (Cryomaniac)role;
-                    oldTarget = cryo.ClosestPlayer;
                     cryo.ClosestPlayer = target;
                     break;
 
                 case RoleEnum.Glitch:
                     var gli = (Glitch)role;
-                    oldTarget = gli.ClosestPlayer;
                     gli.ClosestPlayer = target;
                     break;
 
                 case RoleEnum.Juggernaut:
                     var jugg = (Juggernaut)role;
-                    oldTarget = jugg.ClosestPlayer;
                     jugg.ClosestPlayer = target;
                     break;
 
                 case RoleEnum.Murderer:
                     var murd = (Murderer)role;
-                    oldTarget = murd.ClosestPlayer;
                     murd.ClosestPlayer = target;
                     break;
 
                 case RoleEnum.Plaguebearer:
                     var pb = (Plaguebearer)role;
-                    oldTarget = pb.ClosestPlayer;
                     pb.ClosestPlayer = target;
                     break;
 
                 case RoleEnum.SerialKiller:
                     var sk = (SerialKiller)role;
-                    oldTarget = sk.ClosestPlayer;
                     sk.ClosestPlayer = target;
                     break;
 
                 case RoleEnum.Werewolf:
                     var ww = (Werewolf)role;
-                    oldTarget = ww.ClosestPlayer;
                     ww.ClosestPlayer = target;
                     break;
 
                 case RoleEnum.Crusader:
                     var crus = (Crusader)role;
-                    oldTarget = crus.ClosestCrusade;
                     crus.ClosestCrusade = target;
                     break;
 
                 case RoleEnum.Framer:
                     var frame = (Framer)role;
-                    oldTarget = frame.ClosestFrame;
                     frame.ClosestFrame = target;
-                    break;
-
-                case RoleEnum.Gorgon:
-                    var gorg = (Gorgon)role;
-                    oldTarget = gorg.ClosestGaze;
-                    gorg.ClosestGaze = target;
                     break;
 
                 case RoleEnum.Poisoner:
                     var pois = (Poisoner)role;
-                    oldTarget = pois.ClosestPoison;
                     pois.ClosestPoison = target;
                     break;
 
                 case RoleEnum.Rebel:
-                    var reb = (Rebel)role;
-                    oldTarget = reb.ClosestSyndicate;
-                    oldTarget1 = reb.ClosestFrame;
-                    oldTarget2 = reb.ClosestCrusade;
-                    oldTarget3 = reb.ClosestPoison;
-                    reb.ClosestSyndicate = target;
-                    reb.ClosestFrame = target;
-                    reb.ClosestCrusade = target;
-                    reb.ClosestPoison = target;
+                    var reb1 = (Rebel)role;
+                    reb1.ClosestSyndicate = target;
+                    break;
+
+                case RoleEnum.PromotedRebel:
+                    var reb = (PromotedRebel)role;
+                    reb.ClosestTarget = target;
                     break;
 
                 case RoleEnum.Jester:
-                    var jest = (Rebel)role;
-                    oldTarget = jest.ClosestPlayer;
+                    var jest = (Jester)role;
                     jest.ClosestPlayer = target;
                     break;
 
                 case RoleEnum.Executioner:
                     var exe = (Executioner)role;
-                    oldTarget = exe.ClosestPlayer;
                     exe.ClosestPlayer = target;
                     break;
 
                 case RoleEnum.Betrayer:
                     var bet = (Betrayer)role;
-                    oldTarget = bet.ClosestPlayer;
                     bet.ClosestPlayer = target;
                     break;
 
                 case RoleEnum.Ghoul:
                     var ghoul = (Ghoul)role;
-                    oldTarget = ghoul.ClosestMark;
                     ghoul.ClosestMark = target;
                     break;
 
                 case RoleEnum.Enforcer:
                     var enf = (Enforcer)role;
-                    oldTarget = enf.ClosestBomb;
                     enf.ClosestBomb = target;
                     break;
             }
 
-            oldComponent = oldTarget?.MyRend();
-
-            if (target != oldTarget && oldTarget != null)
-                oldComponent?.material.SetFloat("_Outline", 0f);
-
-            oldComponent = oldTarget1?.MyRend();
-
-            if (target != oldTarget1 && oldTarget1 != null)
-                oldComponent?.material.SetFloat("_Outline", 0f);
-
-            oldComponent = oldTarget2?.MyRend();
-
-            if (target != oldTarget2 && oldTarget2 != null)
-                oldComponent?.material.SetFloat("_Outline", 0f);
-
-            oldComponent = oldTarget3?.MyRend();
-
-            if (target != oldTarget3 && oldTarget3 != null)
-                oldComponent?.material.SetFloat("_Outline", 0f);
-
-            if (role.Bombed)
+            foreach (var player in PlayerControl.AllPlayerControls)
             {
-                oldTarget = role.ClosestBoom;
-                role.ClosestBoom = target;
-
-                if (target != oldTarget && oldTarget != null)
-                    oldComponent?.material.SetFloat("_Outline", 0f);
+                if (player != target)
+                    player.MyRend().material.SetFloat("_Outline", 0f);
             }
 
             if (target != null && !button.isCoolingDown && condition && !CannotUse(PlayerControl.LocalPlayer))
@@ -547,7 +459,7 @@ namespace TownOfUsReworked.Modules
             if (obj.Player != PlayerControl.LocalPlayer)
                 return;
 
-            if (!ButtonUsable(button) || !CanInteract(PlayerControl.LocalPlayer))
+            if (!ButtonUsable(button))
                 return;
 
             var target = GetClosestPlayer(PlayerControl.LocalPlayer, targets);
@@ -795,6 +707,9 @@ namespace TownOfUsReworked.Modules
             var local = PlayerControl.LocalPlayer;
             var role = Role.GetRole(local);
             local.RegenTask();
+
+            if (!start && Role.SyndicateHasChaosDrive)
+                RoleGen.AssignChaosDrive();
 
             if (local.Is(RoleEnum.Chameleon))
             {
@@ -1161,6 +1076,87 @@ namespace TownOfUsReworked.Modules
                     role2.LastMeasured = DateTime.UtcNow;
                 }
             }
+            else if (local.Is(RoleEnum.PromotedGodfather))
+            {
+                var role2 = (PromotedGodfather)role;
+
+                if (start)
+                    role2.FormerRole = null;
+
+                if (role2.FormerRole == null || role2.FormerRole?.RoleType == RoleEnum.Impostor || start)
+                {
+                    switch (role2.FormerRole.RoleType)
+                    {
+                        case RoleEnum.Blackmailer:
+                            role2.BlackmailedPlayer = null;
+                            role2.LastBlackmailed = DateTime.UtcNow;
+                            role2.LastKilled = DateTime.UtcNow;
+                            break;
+
+                        case RoleEnum.Camouflager:
+                            role2.LastCamouflaged = DateTime.UtcNow;
+                            break;
+
+                        case RoleEnum.Consigliere:
+                            role2.LastInvestigated = DateTime.UtcNow;
+                            break;
+
+                        case RoleEnum.Disguiser:
+                            role2.LastDisguised = DateTime.UtcNow;
+                            role2.LastMeasured = DateTime.UtcNow;
+                            role2.MeasuredPlayer = null;
+                            role2.DisguisedPlayer = null;
+                            break;
+
+                        case RoleEnum.Grenadier:
+                            role2.LastFlashed = DateTime.UtcNow;
+                            break;
+
+                        case RoleEnum.Miner:
+                            role2.LastMined = DateTime.UtcNow;
+                            break;
+
+                        case RoleEnum.Janitor:
+                            role2.LastCleaned = DateTime.UtcNow;
+                            role2.CurrentlyDragging = null;
+                            role2.LastDragged = DateTime.UtcNow;
+                            break;
+
+                        case RoleEnum.Morphling:
+                            role2.LastMorphed = DateTime.UtcNow;
+                            role2.LastSampled = DateTime.UtcNow;
+                            role2.SampledPlayer = null;
+                            role2.MorphedPlayer = null;
+                            break;
+
+                        case RoleEnum.Teleporter:
+                            role2.LastTeleport = DateTime.UtcNow;
+                            role2.TeleportPoint = new(0, 0, 0);
+                            break;
+
+                        case RoleEnum.TimeMaster:
+                            role2.LastFrozen = DateTime.UtcNow;
+                            break;
+
+                        case RoleEnum.Wraith:
+                            role2.LastInvis = DateTime.UtcNow;
+                            break;
+
+                        case RoleEnum.Ambusher:
+                            role2.LastAmbushed = DateTime.UtcNow;
+                            role2.AmbushedPlayer = null;
+                            break;
+
+                        case RoleEnum.Consort:
+                            role2.LastBlock = DateTime.UtcNow;
+                            role2.BlockTarget = null;
+                            break;
+                    }
+                }
+
+                if (local.Data.IsDead && !CustomGameOptions.DeadSeeEverything)
+                    role2.Investigated.Clear();
+            }
             else if (local.Is(RoleEnum.Godfather))
             {
                 var role2 = (Godfather)role;
@@ -1172,77 +1168,6 @@ namespace TownOfUsReworked.Modules
                     else
                         role2.LastDeclared = DateTime.UtcNow;
                 }
-
-                if (start)
-                    role2.FormerRole = null;
-
-                if (role2.FormerRole == null || role2.FormerRole?.RoleType == RoleEnum.Impostor || !role2.WasMafioso || start)
-                    return;
-
-                switch (role2.FormerRole.RoleType)
-                {
-                    case RoleEnum.Blackmailer:
-                        role2.BlackmailedPlayer = null;
-                        role2.LastBlackmailed = DateTime.UtcNow;
-                        role2.LastKilled = DateTime.UtcNow;
-                        break;
-
-                    case RoleEnum.Camouflager:
-                        role2.LastCamouflaged = DateTime.UtcNow;
-                        break;
-
-                    case RoleEnum.Consigliere:
-                        role2.LastInvestigated = DateTime.UtcNow;
-                        break;
-
-                    case RoleEnum.Disguiser:
-                        role2.LastDisguised = DateTime.UtcNow;
-                        role2.LastMeasured = DateTime.UtcNow;
-                        role2.MeasuredPlayer = null;
-                        role2.DisguisedPlayer = null;
-                        break;
-
-                    case RoleEnum.Grenadier:
-                        role2.LastFlashed = DateTime.UtcNow;
-                        break;
-
-                    case RoleEnum.Miner:
-                        role2.LastMined = DateTime.UtcNow;
-                        break;
-
-                    case RoleEnum.Janitor:
-                        role2.LastCleaned = DateTime.UtcNow;
-                        role2.CurrentlyDragging = null;
-                        role2.LastDragged = DateTime.UtcNow;
-                        break;
-
-                    case RoleEnum.Morphling:
-                        role2.LastMorphed = DateTime.UtcNow;
-                        role2.LastSampled = DateTime.UtcNow;
-                        role2.SampledPlayer = null;
-                        break;
-
-                    case RoleEnum.Teleporter:
-                        role2.LastTeleport = DateTime.UtcNow;
-                        role2.TeleportPoint = new(0, 0, 0);
-                        break;
-
-                    case RoleEnum.TimeMaster:
-                        role2.LastFrozen = DateTime.UtcNow;
-                        break;
-
-                    case RoleEnum.Wraith:
-                        role2.LastInvis = DateTime.UtcNow;
-                        break;
-
-                    case RoleEnum.Ambusher:
-                        role2.LastAmbushed = DateTime.UtcNow;
-                        role2.AmbushedPlayer = null;
-                        break;
-                }
-
-                if (local.Data.IsDead && !CustomGameOptions.DeadSeeEverything)
-                    role2.Investigated.Clear();
             }
             else if (local.Is(RoleEnum.Grenadier))
             {
@@ -1297,6 +1222,7 @@ namespace TownOfUsReworked.Modules
             else if (local.Is(RoleEnum.Teleporter))
             {
                 var role2 = (Teleporter)role;
+                role2.TeleportPoint = new(0, 0, 0);
 
                 if (start)
                 {
@@ -1383,16 +1309,6 @@ namespace TownOfUsReworked.Modules
                 if (local.Data.IsDead || local.Data.Disconnected)
                     role2.Framed.Clear();
             }
-            else if (local.Is(RoleEnum.Gorgon))
-            {
-                var role2 = (Gorgon)role;
-                role2.Gazed.Clear();
-
-                if (start)
-                    role2.LastGazed = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.GazeCooldown);
-                else
-                    role2.LastGazed = DateTime.UtcNow;
-            }
             else if (local.Is(RoleEnum.Crusader))
             {
                 var role2 = (Crusader)role;
@@ -1424,17 +1340,19 @@ namespace TownOfUsReworked.Modules
                     else
                         role2.LastDeclared = DateTime.UtcNow;
                 }
+            }
+            else if (local.Is(RoleEnum.PromotedRebel))
+            {
+                var role2 = (PromotedRebel)role;
 
-                if (start)
-                    role2.FormerRole = null;
-
-                if (role2.FormerRole == null || role2.FormerRole?.RoleType == RoleEnum.Anarchist || !role2.WasSidekick || start)
+                if (role2.FormerRole == null || role2.FormerRole?.RoleType == RoleEnum.Anarchist || start)
                     return;
 
                 switch (role2.FormerRole.RoleType)
                 {
                     case RoleEnum.Concealer:
                         role2.LastConcealed = DateTime.UtcNow;
+                        role2.ConcealedPlayer = null;
                         break;
 
                     case RoleEnum.Framer:
@@ -1448,14 +1366,28 @@ namespace TownOfUsReworked.Modules
 
                     case RoleEnum.Shapeshifter:
                         role2.LastShapeshifted = DateTime.UtcNow;
+                        role2.ShapeshiftPlayer1 = null;
+                        role2.ShapeshiftPlayer2 = null;
                         break;
 
                     case RoleEnum.Warper:
                         role2.LastWarped = DateTime.UtcNow;
+                        role2.WarpPlayer1 = null;
+                        role2.WarpPlayer2 = null;
                         break;
 
                     case RoleEnum.Drunkard:
                         role2.LastConfused = DateTime.UtcNow;
+                        role2.ConfusedPlayer = null;
+                        break;
+
+                    case RoleEnum.Bomber:
+                        role2.LastPlaced = DateTime.UtcNow;
+                        role2.LastDetonated = DateTime.UtcNow;
+
+                        if (CustomGameOptions.BombsRemoveOnNewRound)
+                            role2.Bombs.ClearBombs();
+
                         break;
 
                     case RoleEnum.Crusader:
@@ -1467,15 +1399,29 @@ namespace TownOfUsReworked.Modules
             else if (local.Is(RoleEnum.Shapeshifter))
             {
                 var role2 = (Shapeshifter)role;
+                role2.ShapeshiftPlayer1 = null;
+                role2.ShapeshiftPlayer2 = null;
 
                 if (start)
                     role2.LastShapeshifted = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ShapeshiftCooldown);
                 else
                     role2.LastShapeshifted = DateTime.UtcNow;
             }
+            else if (local.Is(RoleEnum.Drunkard))
+            {
+                var role2 = (Drunkard)role;
+                role2.ConfusedPlayer = null;
+
+                if (start)
+                    role2.LastConfused = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ConfuseCooldown);
+                else
+                    role2.LastConfused = DateTime.UtcNow;
+            }
             else if (local.Is(RoleEnum.Warper))
             {
                 var role2 = (Warper)role;
+                role2.WarpPlayer1 = null;
+                role2.WarpPlayer2 = null;
 
                 if (start)
                     role2.LastWarped = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.WarpCooldown);
@@ -1503,9 +1449,6 @@ namespace TownOfUsReworked.Modules
                     role2.LastDoused = DateTime.UtcNow;
                     role2.LastIgnited = DateTime.UtcNow;
                 }
-
-                if (local.Data.IsDead)
-                    role2.DousedPlayers.Clear();
             }
             else if (local.Is(RoleEnum.Cannibal))
             {
@@ -1524,9 +1467,6 @@ namespace TownOfUsReworked.Modules
                     role2.LastDoused = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.CryoDouseCooldown);
                 else
                     role2.LastDoused = DateTime.UtcNow;
-
-                if (local.Data.IsDead)
-                    role2.DousedPlayers.Clear();
             }
             else if (local.Is(RoleEnum.Dracula))
             {
@@ -1540,6 +1480,8 @@ namespace TownOfUsReworked.Modules
             else if (local.Is(RoleEnum.Glitch))
             {
                 var role2 = (Glitch)role;
+                role2.MimicTarget = null;
+                role2.HackTarget = null;
 
                 if (start)
                 {

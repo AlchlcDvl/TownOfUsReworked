@@ -8,7 +8,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     public class Engineer : CrewRole
     {
         public AbilityButton FixButton;
-        public int UsesLeft = CustomGameOptions.MaxFixes;
+        public int UsesLeft;
         public bool ButtonUsable => UsesLeft > 0;
         public DateTime LastFixed;
 
@@ -22,6 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleAlignment = RoleAlignment.CrewSupport;
             AlignmentName = CS;
             InspectorResults = InspectorResults.DifferentLens;
+            UsesLeft = CustomGameOptions.MaxFixes;
         }
 
         public float FixTimer()

@@ -5,6 +5,7 @@ using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers.RivalsMod
 {
+    [HarmonyPatch]
     public static class Chat
     {
         [HarmonyPatch(typeof(ChatController), nameof(ChatController.AddChat))]

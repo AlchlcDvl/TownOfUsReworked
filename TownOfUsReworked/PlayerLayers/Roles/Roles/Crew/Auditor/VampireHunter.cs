@@ -12,7 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     {
         public PlayerControl ClosestPlayer;
         public DateTime LastStaked;
-        public static bool VampsDead => !PlayerControl.AllPlayerControls.Any(x => x?.Data.IsDead == false && !x.Data.Disconnected && x.Is(SubFaction.Undead));
+        public static bool VampsDead => !PlayerControl.AllPlayerControls.ToArray().Any(x => x?.Data.IsDead == false && !x.Data.Disconnected && x.Is(SubFaction.Undead));
         public AbilityButton StakeButton;
 
         public VampireHunter(PlayerControl player) : base(player)

@@ -12,10 +12,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     {
         public PlayerControl ClosestPlayer;
         public DateTime LastSeered;
-        public bool ChangedDead => !AllRoles.Any(x => !(x.Player.Data.IsDead || x.Player.Data.Disconnected) && (x.RoleHistory.Count > 0 || x.Is(RoleEnum.Amnesiac) ||
+        public bool ChangedDead => !AllRoles.Any(x => !x.Player.Data.IsDead && !x.Player.Data.Disconnected && (x.RoleHistory.Count > 0 || x.Is(RoleEnum.Amnesiac) ||
             x.Is(RoleEnum.VampireHunter) || x.Is(RoleEnum.Godfather) || x.Is(RoleEnum.Mafioso) || x.Is(RoleEnum.Thief) || x.Is(RoleEnum.Shifter) || x.Is(RoleEnum.Rebel) ||
             x.Is(RoleEnum.Mystic) || (x.Is(RoleEnum.Seer) && x.Player != Player) || x.Is(RoleEnum.Sidekick) || x.Is(RoleEnum.GuardianAngel) || x.Is(RoleEnum.Executioner) ||
-            x.Is(RoleEnum.BountyHunter) || x.Is(RoleEnum.Guesser)));
+            x.Is(RoleEnum.BountyHunter) || x.Is(RoleEnum.Guesser) || x.Player.Is(ObjectifierEnum.Traitor) || x.Player.Is(ObjectifierEnum.Fanatic)));
         public AbilityButton SeerButton;
 
         public Seer(PlayerControl player) : base(player)

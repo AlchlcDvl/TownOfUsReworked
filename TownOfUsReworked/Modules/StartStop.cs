@@ -33,70 +33,40 @@ namespace TownOfUsReworked.Modules
             switch (GameOptionsManager.Instance.currentNormalGameOptions.MapId)
             {
                 case 0:
+                case 1:
                 case 3:
                     var reactor1 = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
-
-                    if (reactor1.IsActive)
-                        fs = true;
-
                     var oxygen1 = ShipStatus.Instance.Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
-
-                    if (oxygen1.IsActive)
-                        fs = true;
-
-                    break;
-
-                case 1:
-                    var reactor2 = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
-
-                    if (reactor2.IsActive)
-                        fs = true;
-
-                    var oxygen2 = ShipStatus.Instance.Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
-
-                    if (oxygen2.IsActive)
-                        fs = true;
-
+                    fs = reactor1.IsActive || oxygen1.IsActive;
                     break;
 
                 case 2:
                     var seismic = ShipStatus.Instance.Systems[SystemTypes.Laboratory].Cast<ReactorSystemType>();
-
-                    if (seismic.IsActive)
-                        fs = true;
-
+                    fs = seismic.IsActive;
                     break;
 
                 case 4:
                     var reactor = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<HeliSabotageSystem>();
-
-                    if (reactor.IsActive)
-                        fs = true;
-
+                    fs = reactor.IsActive;
                     break;
 
                 case 5:
-                    if (!SubmergedCompatibility.Loaded)
-                        break;
+                    var flag = false;
 
-                    var reactor5 = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
+                    foreach (var i in PlayerControl.LocalPlayer.myTasks)
+                    {
+                        if (i.TaskType == SubmergedCompatibility.RetrieveOxygenMask)
+                            flag = true;
+                    }
 
-                    if (reactor5.IsActive)
-                        fs = true;
-
+                    fs = flag;
                     break;
 
                 case 6:
-                    var reactor6 = ShipStatus.Instance.Systems[SystemTypes.Laboratory].Cast<ReactorSystemType>();
-
-                    if (reactor6.IsActive)
-                        fs = true;
-
-                    var oxygen6 = ShipStatus.Instance.Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
-
-                    if (oxygen6.IsActive)
-                        fs = true;
-
+                    var reactor3 = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
+                    var oxygen3 = ShipStatus.Instance.Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
+                    var seismic2 = ShipStatus.Instance.Systems[SystemTypes.Laboratory].Cast<ReactorSystemType>();
+                    fs = reactor3.IsActive || seismic2.IsActive || oxygen3.IsActive;
                     break;
             }
 

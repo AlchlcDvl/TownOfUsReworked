@@ -23,7 +23,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GrenadierMod
 
             var system = ShipStatus.Instance.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>();
             var dummyActive = (bool)system?.dummy.IsActive;
-            var sabActive = (bool)system?.specials.Any(s => s.IsActive);
+            var sabActive = (bool)system?.specials.ToArray().Any(s => s.IsActive);
             role.FlashButton.UpdateButton(role, "FLASH", role.FlashTimer(), CustomGameOptions.GrenadeCd, AssetManager.Flash, AbilityTypes.Effect, "Secondary", null, true, !sabActive &&
                 !dummyActive && !role.Flashed, role.Flashed, role.TimeRemaining, CustomGameOptions.GrenadeDuration);
         }

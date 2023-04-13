@@ -12,9 +12,8 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.LoversMod
         public static bool Prefix(PlayerControl __instance, [HarmonyArgument(0)] DeathReason reason)
         {
             __instance.Data.IsDead = true;
-            var flag3 = __instance.Is(ObjectifierEnum.Lovers) && CustomGameOptions.BothLoversDie;
 
-            if (!flag3)
+            if (!(__instance.Is(ObjectifierEnum.Lovers) && CustomGameOptions.BothLoversDie))
                 return true;
 
             var otherLover = Objectifier.GetObjectifier<Lovers>(__instance).OtherLover;

@@ -30,7 +30,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod
                 foreach (var vigi in Role.GetRoles<Vigilante>(RoleEnum.Vigilante))
                 {
                     if (vigi.PostMeetingDie)
+                    {
                         vigi.Player.Exiled();
+                        vigi.DeathReason = DeathReasonEnum.Suicide;
+                    }
                 }
             }
         }

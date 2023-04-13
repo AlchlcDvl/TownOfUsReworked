@@ -51,7 +51,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.TeleporterMod
                 writer.Write(role.TeleportPoint);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 role.LastTeleport = DateTime.UtcNow;
-                Teleporter.Teleport(role.Player);
+                Utils.Teleport(role.Player, role.TeleportPoint);
 
                 if (CustomGameOptions.TeleCooldownsLinked)
                     role.LastMarked = DateTime.UtcNow;

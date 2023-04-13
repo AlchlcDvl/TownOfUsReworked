@@ -21,7 +21,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.FramerMod
                 if (role.FrameTimer() != 0f)
                     return false;
 
-                if (!Role.SyndicateHasChaosDrive)
+                if (role.HoldsDrive)
+                {
+                    foreach (var player in Utils.GetClosestPlayers(PlayerControl.LocalPlayer.GetTruePosition(), CustomGameOptions.ChaosDriveFrameRadius))
+                        role.Frame(player);
+
+                    role.LastFramed = DateTime.UtcNow;
+                }
+                else
                 {
                     if (Utils.IsTooFar(role.Player, role.ClosestFrame))
                         return false;
@@ -35,13 +42,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.FramerMod
                         role.LastFramed = DateTime.UtcNow;
                     else if (interact[1])
                         role.LastFramed.AddSeconds(CustomGameOptions.ProtectKCReset);
-                }
-                else
-                {
-                    foreach (var player in Utils.GetClosestPlayers(PlayerControl.LocalPlayer.GetTruePosition(), CustomGameOptions.ChaosDriveFrameRadius))
-                        role.Frame(player);
-
-                    role.LastFramed = DateTime.UtcNow;
                 }
 
                 return false;

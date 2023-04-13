@@ -51,10 +51,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 arrow.image = renderer;
                 gameObj.layer = 5;
                 arrow.target = Utils.PlayerById(playerId).transform.position;
+                Utils.Flash(Color, "There's a mediate in progress!");
             }
 
             MediatedPlayers.Add(playerId, arrow);
-            Utils.Flash(Color, "There's a mediate in progress!");
         }
 
         public override void OnLobby()

@@ -36,6 +36,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.JanitorMod
                 writer.Write(playerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 Coroutines.Start(Utils.FadeBody(role.CurrentTarget));
+                Role.Cleaned.Add(player);
                 role.LastCleaned = DateTime.UtcNow;
 
                 if (CustomGameOptions.JaniCooldownsLinked)

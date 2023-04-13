@@ -4,7 +4,6 @@ using TownOfUsReworked.Classes;
 using TownOfUsReworked.Cosmetics.CustomColors;
 using UnityEngine;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod;
 using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TrackerMod
@@ -37,7 +36,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TrackerMod
                     gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
                     var renderer = gameObj.AddComponent<SpriteRenderer>();
                     renderer.sprite = AssetManager.Arrow;
-                    var Grey = CamouflageUnCamouflage.IsCamoed;
+                    var Grey = DoUndo.IsCamoed;
 
                     if (ColorUtils.IsRainbow(target.GetDefaultOutfit().ColorId) && !Grey)
                         renderer.color = ColorUtils.Rainbow;

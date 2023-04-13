@@ -21,8 +21,6 @@ namespace TownOfUsReworked.Patches
         {
             public static readonly List<PlayerRoleInfo> PlayerRoles = new();
 
-            public static void Clear() => PlayerRoles.Clear();
-
             public class PlayerRoleInfo
             {
                 public string PlayerName { get; set; }
@@ -35,7 +33,7 @@ namespace TownOfUsReworked.Patches
         {
             public static void Postfix()
             {
-                AdditionalTempData.Clear();
+                AdditionalTempData.PlayerRoles.Clear();
                 const string endString = "</color>";
 
                 //There's a better way of doing this e.g. switch statement or dictionary. But this works for now.
@@ -75,13 +73,13 @@ namespace TownOfUsReworked.Patches
                     if (playerControl.IsBitten())
                         summary += " <color=#7B8968FF>γ</color>";
 
-                    if (objectifier.ObjectifierType != ObjectifierEnum.None)
+                    if (objectifier?.ObjectifierType != ObjectifierEnum.None)
                         summary += $" {objectifier.GetColoredSymbol()}";
 
-                    if (modifier.ModifierType != ModifierEnum.None)
+                    if (modifier?.ModifierType != ModifierEnum.None)
                         summary += $" ({modifier.ColorString}{modifier.Name}{endString})";
 
-                    if (ability.AbilityType != AbilityEnum.None)
+                    if (ability?.AbilityType != AbilityEnum.None)
                         summary += $" [{ability.ColorString}{ability.Name}{endString}]";
 
                     if (playerControl.IsGATarget())
@@ -179,12 +177,12 @@ namespace TownOfUsReworked.Patches
 
                 var roleSummaryTextMeshRectTransform = roleSummaryTextMesh.GetComponent<RectTransform>();
                 roleSummaryTextMeshRectTransform.anchoredPosition = new Vector2(position.x + 3.5f, position.y - 0.1f);
-                roleSummaryTextMesh.text = roleSummaryText.ToString();
-                AdditionalTempData.Clear();
+                roleSummaryTextMesh.text = $"{roleSummaryText}";
+                AdditionalTempData.PlayerRoles.Clear();
             }
         }
 
-        private static bool IsWinner(this string playerName) => TempData.winners.Any(x => x.PlayerName == playerName);
+        private static bool IsWinner(this string playerName) => TempData.winners.ToArray().Any(x => x.PlayerName == playerName);
 
         private static string DeathReason(this PlayerControl player)
         {
@@ -194,12 +192,12 @@ namespace TownOfUsReworked.Patches
             var role = Role.GetRole(player);
 
             if (role == null)
-                return " ERROR";
+                return "";
 
             var die = $"{role.DeathReason}";
             var killedBy = "";
 
-            if (role.DeathReason != DeathReasonEnum.Alive && role.DeathReason != DeathReasonEnum.Ejected && role.DeathReason != DeathReasonEnum.Suicide)
+            if (role.DeathReason is not DeathReasonEnum.Alive and not DeathReasonEnum.Ejected and not DeathReasonEnum.Suicide)
                 killedBy = role.KilledBy;
 
             return die + killedBy;

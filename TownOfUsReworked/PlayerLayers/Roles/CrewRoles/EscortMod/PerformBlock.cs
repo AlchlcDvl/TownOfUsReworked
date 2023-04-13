@@ -38,7 +38,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.EscortMod
                     role.BlockTarget = role.ClosestPlayer;
 
                     foreach (var layer in PlayerLayer.GetLayers(role.BlockTarget))
-                        layer.IsBlocked = !layer.RoleBlockImmune;
+                        layer.IsBlocked = !Role.GetRole(role.BlockTarget).RoleBlockImmune;
 
                     role.Block();
                 }

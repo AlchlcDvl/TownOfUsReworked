@@ -1,5 +1,4 @@
 using HarmonyLib;
-using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Cosmetics.CustomColors;
@@ -39,7 +38,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.TrackerMod
                         continue;
                     }
 
-                    var Grey = CamouflageUnCamouflage.IsCamoed;
+                    var Grey = DoUndo.IsCamoed;
 
                     if (ColorUtils.IsRainbow(player.GetDefaultOutfit().ColorId) && !Grey)
                         arrow.Value.image.color = ColorUtils.Rainbow;

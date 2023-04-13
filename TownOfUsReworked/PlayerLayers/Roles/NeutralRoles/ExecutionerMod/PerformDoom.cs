@@ -23,7 +23,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.ExecutionerMod
                 if (role.DoomTimer() != 0f)
                     return false;
 
-                Utils.RpcMurderPlayer(role.Player, role.ClosestPlayer, false);
+                Utils.RpcMurderPlayer(role.Player, role.ClosestPlayer, DeathReasonEnum.Killed, false);
                 role.HasDoomed = true;
                 role.MaxUses--;
                 role.LastDoomed = DateTime.UtcNow;

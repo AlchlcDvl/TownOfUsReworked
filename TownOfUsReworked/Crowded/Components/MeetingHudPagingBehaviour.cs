@@ -2,14 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Il2CppInterop.Runtime.Attributes;
-using Reactor.Utilities.Attributes;
 using UnityEngine;
 using HarmonyLib;
 
 namespace TownOfUsReworked.Crowded.Components
 {
     [HarmonyPatch]
-    [RegisterInIl2Cpp]
     public class MeetingHudPagingBehaviour : AbstractPagingBehaviour
     {
         public MeetingHudPagingBehaviour(IntPtr ptr) : base(ptr) {}

@@ -103,10 +103,94 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod
                 {
                     TrackerArrows = ((Retributionist)role).TrackerArrows,
                     Inspected = ((Retributionist)role).Inspected,
-                    Interrogated = ((Retributionist)role).Interrogated
+                    Interrogated = ((Retributionist)role).Interrogated,
+                    RevivedRole = ((Retributionist)role).RevivedRole
                 },
                 _ => new Shifter(shifter),
             };
+
+            switch (role.RoleType)
+            {
+                case RoleEnum.Altruist:
+                    ((Altruist)role).ReviveButton.gameObject.SetActive(false);
+                    break;
+                case RoleEnum.Coroner:
+                    ((Coroner)role).CompareButton.gameObject.SetActive(false);
+                    ((Coroner)role).AutopsyButton.gameObject.SetActive(false);
+                    break;
+                case RoleEnum.Detective:
+                    ((Detective)role).ExamineButton.gameObject.SetActive(false);
+                    break;
+                case RoleEnum.Engineer:
+                    ((Engineer)role).FixButton.gameObject.SetActive(false);
+                    break;
+                case RoleEnum.Escort:
+                    ((Escort)role).BlockButton.gameObject.SetActive(false);
+                    break;
+                case RoleEnum.Inspector:
+                    ((Inspector)role).InspectButton.gameObject.SetActive(false);
+                    break;
+                case RoleEnum.Sheriff:
+                    ((Sheriff)role).InterrogateButton.gameObject.SetActive(false);
+                    break;
+                case RoleEnum.Medic:
+                    ((Medic)role).ShieldButton.gameObject.SetActive(false);
+                    break;
+                case RoleEnum.Tracker:
+                    ((Tracker)role).TrackButton.gameObject.SetActive(false);
+                    break;
+                case RoleEnum.Transporter:
+                    ((Transporter)role).TransportButton.gameObject.SetActive(false);
+                    break;
+                case RoleEnum.Medium:
+                    ((Medium)role).MediateButton.gameObject.SetActive(false);
+                    break;
+                case RoleEnum.Operative:
+                    ((Operative)role).BugButton.gameObject.SetActive(false);
+                    break;
+                case RoleEnum.TimeLord:
+                    ((TimeLord)role).RewindButton.gameObject.SetActive(false);
+                    break;
+                case RoleEnum.VampireHunter:
+                    ((VampireHunter)role).StakeButton.gameObject.SetActive(false);
+                    break;
+                case RoleEnum.Veteran:
+                    ((Veteran)role).AlertButton.gameObject.SetActive(false);
+                    break;
+                case RoleEnum.Vigilante:
+                    ((Vigilante)role).ShootButton.gameObject.SetActive(false);
+                    break;
+                case RoleEnum.Mystic:
+                    ((Mystic)role).RevealButton.gameObject.SetActive(false);
+                    break;
+                case RoleEnum.Seer:
+                    ((Seer)role).SeerButton.gameObject.SetActive(false);
+                    break;
+                case RoleEnum.Chameleon:
+                    ((Chameleon)role).SwoopButton.gameObject.SetActive(false);
+                    break;
+                case RoleEnum.Retributionist:
+                    ((Retributionist)role).ReviveButton.gameObject.SetActive(false);
+                    ((Retributionist)role).CompareButton.gameObject.SetActive(false);
+                    ((Retributionist)role).AutopsyButton.gameObject.SetActive(false);
+                    ((Retributionist)role).ExamineButton.gameObject.SetActive(false);
+                    ((Retributionist)role).FixButton.gameObject.SetActive(false);
+                    ((Retributionist)role).SwoopButton.gameObject.SetActive(false);
+                    ((Retributionist)role).SeerButton.gameObject.SetActive(false);
+                    ((Retributionist)role).RevealButton.gameObject.SetActive(false);
+                    ((Retributionist)role).ShootButton.gameObject.SetActive(false);
+                    ((Retributionist)role).AlertButton.gameObject.SetActive(false);
+                    ((Retributionist)role).StakeButton.gameObject.SetActive(false);
+                    ((Retributionist)role).BugButton.gameObject.SetActive(false);
+                    ((Retributionist)role).MediateButton.gameObject.SetActive(false);
+                    ((Retributionist)role).TransportButton.gameObject.SetActive(false);
+                    ((Retributionist)role).TrackButton.gameObject.SetActive(false);
+                    ((Retributionist)role).ShieldButton.gameObject.SetActive(false);
+                    ((Retributionist)role).InterrogateButton.gameObject.SetActive(false);
+                    ((Retributionist)role).InspectButton.gameObject.SetActive(false);
+                    ((Retributionist)role).BlockButton.gameObject.SetActive(false);
+                    break;
+            }
 
             newRole.RoleUpdate(shifterRole);
             Role newRole2;

@@ -19,8 +19,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsortMod
             if (role.BlockButton == null)
                 role.BlockButton = CustomButtons.InstantiateButton();
 
-            role.BlockButton.UpdateButton(role, "BLOCK", role.RoleblockTimer(), CustomGameOptions.ConsRoleblockCooldown, AssetManager.Placeholder, AbilityTypes.Direct, "Secondary", null,
-                true, !role.Blocking, role.Blocking, role.TimeRemaining, CustomGameOptions.ConsRoleblockDuration);
+            var flag = role.BlockTarget == null;
+            role.BlockButton.UpdateButton(role, flag ? "SET TARGET" : "BLOCK", role.RoleblockTimer(), CustomGameOptions.ConsRoleblockCooldown, AssetManager.Placeholder,
+                AbilityTypes.Effect, "Secondary", null, true, !role.Blocking, role.Blocking, role.TimeRemaining, CustomGameOptions.ConsRoleblockDuration);
         }
     }
 }

@@ -4,6 +4,7 @@ using TownOfUsReworked.CustomOptions;
 using UnityEngine;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Extensions;
+using System;
 
 namespace TownOfUsReworked.Patches
 {

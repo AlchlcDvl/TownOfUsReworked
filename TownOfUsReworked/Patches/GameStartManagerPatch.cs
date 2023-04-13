@@ -4,9 +4,11 @@ using System.Collections.Generic;
 using System;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Modules;
+using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.Patches
 {
+    [HarmonyPatch]
     public static class GameStartManagerPatch
     {
         //Thanks to The Other Roles for this code, made a minor change so that MCI works :sweat_smile:
@@ -41,6 +43,8 @@ namespace TownOfUsReworked.Patches
                 kickingTimer = 0f;
                 //Copy lobby code
                 GUIUtility.systemCopyBuffer = InnerNet.GameCode.IntToGameName(AmongUsClient.Instance.GameId);
+                //lobby size
+                Generate.LobbySize.Set((float)GameOptionsManager.Instance.currentNormalGameOptions.MaxPlayers);
             }
         }
 
@@ -61,6 +65,11 @@ namespace TownOfUsReworked.Patches
 
             public static void Postfix(GameStartManager __instance)
             {
+                var max = GameOptionsManager.Instance.currentNormalGameOptions.MaxPlayers;
+
+                if (__instance.LastPlayerCount != max)
+                    __instance.LastPlayerCount = max;
+
                 if (!TownOfUsReworked.MCIActive)
                 {
                     //Send version as soon as PlayerControl.LocalPlayer exists

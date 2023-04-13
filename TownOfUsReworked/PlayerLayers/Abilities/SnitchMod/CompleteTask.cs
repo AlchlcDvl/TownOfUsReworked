@@ -38,7 +38,8 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.SnitchMod
             }
             else if (PlayerControl.LocalPlayer.Is(AbilityEnum.Snitch) && role.TasksDone)
             {
-                Utils.Flash(Color.green, "You now know who is bad!");
+                if (PlayerControl.LocalPlayer == __instance)
+                    Utils.Flash(Color.green, "You now know who is bad!");
 
                 foreach (var imp in PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Intruder)))
                 {

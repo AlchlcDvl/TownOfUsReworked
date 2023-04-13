@@ -116,7 +116,7 @@ namespace TownOfUsReworked.CustomOptions
 
             foreach (var option in AllOptions)
             {
-                if (option.Type == CustomOptionType.Button || option.Type == CustomOptionType.Header)
+                if (option.Type is CustomOptionType.Button or CustomOptionType.Header)
                     continue;
 
                 builder.AppendLine(option.Name);

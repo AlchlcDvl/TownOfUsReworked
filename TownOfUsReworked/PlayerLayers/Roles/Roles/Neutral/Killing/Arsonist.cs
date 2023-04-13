@@ -15,7 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     {
         public AbilityButton IgniteButton;
         public AbilityButton DouseButton;
-        public bool LastKiller => !PlayerControl.AllPlayerControls.Any(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) ||
+        public bool LastKiller => !PlayerControl.AllPlayerControls.ToArray().Any(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) ||
             x.Is(RoleAlignment.CrewKill) || x.Is(RoleAlignment.CrewAudit) || x.Is(RoleAlignment.NeutralPros) || (x.Is(RoleAlignment.NeutralKill) && x != Player)));
         public PlayerControl ClosestPlayer;
         public List<byte> DousedPlayers = new();
@@ -68,7 +68,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     if (player?.Data.Disconnected == true || player.Data.IsDead || player.Is(RoleEnum.Pestilence) || player.IsProtected())
                         continue;
 
-                    Utils.RpcMurderPlayer(Player, player, false);
+                    Utils.RpcMurderPlayer(Player, player, DeathReasonEnum.Ignited, false);
                 }
 
                 arso.DousedPlayers.Clear();

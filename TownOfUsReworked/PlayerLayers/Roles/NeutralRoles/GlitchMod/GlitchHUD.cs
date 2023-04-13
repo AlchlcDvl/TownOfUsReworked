@@ -26,15 +26,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GlitchMod
             if (role.MimicButton == null)
                 role.MimicButton = CustomButtons.InstantiateButton();
 
-            if (role.SampleButton == null)
-                role.SampleButton = CustomButtons.InstantiateButton();
-
             role.HackButton.UpdateButton(role, "HACK", role.HackTimer(), CustomGameOptions.HackCooldown, AssetManager.Hack, AbilityTypes.Direct, "Tertiary", role.IsUsingHack,
                 role.TimeRemaining, CustomGameOptions.HackDuration, true, !role.IsUsingHack);
-            role.MimicButton.UpdateButton(role, "MIMIC", 0, 1, AssetManager.Mimic, AbilityTypes.Effect, "Secondary", role.IsUsingMimic, role.TimeRemaining2, CustomGameOptions.MimicDuration,
-                role.MimicTarget != null, !role.IsUsingMimic);
-            role.SampleButton.UpdateButton(role, "SAMPLE", role.MimicTimer(), CustomGameOptions.MimicCooldown, AssetManager.Placeholder, AbilityTypes.Effect, "Secondary",
-                !role.IsUsingMimic && role.MimicTarget == null);
+            role.MimicButton.UpdateButton(role, role.MimicTarget == null ? "SAMPLE" : "MIMIC", role.MimicTimer(), CustomGameOptions.MimicCooldown, AssetManager.Mimic, AbilityTypes.Effect,
+                "Secondary", role.IsUsingMimic, role.TimeRemaining2, CustomGameOptions.MimicDuration, true, !role.IsUsingMimic);
             role.KillButton.UpdateButton(role, "NEUTRALISE", role.KillTimer(), CustomGameOptions.GlitchKillCooldown, AssetManager.Neutralise, AbilityTypes.Direct, "ActionSecondary");
 
             if (Input.GetKeyDown(KeyCode.Backspace) && !role.IsUsingMimic)

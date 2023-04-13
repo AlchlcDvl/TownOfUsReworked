@@ -68,8 +68,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     unfortunate2 = allPlayers[target2];
                 }
 
-                Utils.RpcMurderPlayer(unfortunate1, unfortunate2, true);
-                Utils.RpcMurderPlayer(unfortunate2, unfortunate2, true);
+                Utils.RpcMurderPlayer(unfortunate1, unfortunate2);
+                Utils.RpcMurderPlayer(unfortunate2, unfortunate2);
             }
         }
 

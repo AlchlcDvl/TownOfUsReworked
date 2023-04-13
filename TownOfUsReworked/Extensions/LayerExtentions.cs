@@ -45,7 +45,7 @@ namespace TownOfUsReworked.Extensions
 
         public static bool Is(this PlayerControl player, AbilityEnum ability) => Ability.GetAbility(player)?.AbilityType == ability;
 
-        public static bool Is(this PlayerControl player, Faction faction) => Role.GetRole(player)?.Faction == faction;
+        public static bool Is(this PlayerControl player, Faction faction) => player.GetFaction() == faction;
 
         public static bool Is(this PlayerControl player, RoleAlignment alignment) => Role.GetRole(player)?.RoleAlignment == alignment;
 
@@ -266,6 +266,8 @@ namespace TownOfUsReworked.Extensions
 
         public static Crusader GetCrusader(this PlayerControl player) => Role.GetRoles<Crusader>(RoleEnum.Crusader).Find(role => player == role.CrusadedPlayer);
 
+        public static PromotedRebel GetRebCrus(this PlayerControl player) => Role.GetRoles<PromotedRebel>(RoleEnum.PromotedRebel).Find(role => player == role.CrusadedPlayer);
+
         public static bool IsOnAlert(this PlayerControl player)
         {
             var vetFlag = Role.GetRoles<Veteran>(RoleEnum.Veteran).Any(role => role.OnAlert && player == role.Player);
@@ -280,6 +282,8 @@ namespace TownOfUsReworked.Extensions
         public static bool IsAmbushed(this PlayerControl player) => Role.GetRoles<Ambusher>(RoleEnum.Ambusher).Any(role => role.OnAmbush && player == role.AmbushedPlayer);
 
         public static bool IsCrusaded(this PlayerControl player) => Role.GetRoles<Crusader>(RoleEnum.Crusader).Any(role => role.OnCrusade && player == role.CrusadedPlayer);
+
+        public static bool IsRebCrusaded(this PlayerControl player) => Role.GetRoles<PromotedRebel>(RoleEnum.PromotedRebel).Any(role => role.OnCrusade && player == role.CrusadedPlayer);
 
         public static bool IsProtected(this PlayerControl player) => Role.GetRoles<GuardianAngel>(RoleEnum.GuardianAngel).Any(role => role.Protecting && player == role.TargetPlayer);
 
@@ -331,6 +335,20 @@ namespace TownOfUsReworked.Extensions
 
         public static bool IsIntAlly(this PlayerControl player) => Role.GetRole(player).IsIntAlly;
 
+        public static bool IsIntFanatic(this PlayerVoteArea player) => Utils.PlayerByVoteArea(player).IsIntFanatic();
+
+        public static bool IsSynFanatic(this PlayerVoteArea player) => Utils.PlayerByVoteArea(player).IsSynFanatic();
+
+        public static bool IsIntTraitor(this PlayerVoteArea player) => Utils.PlayerByVoteArea(player).IsIntTraitor();
+
+        public static bool IsSynTraitor(this PlayerVoteArea player) => Utils.PlayerByVoteArea(player).IsSynTraitor();
+
+        public static bool IsCrewAlly(this PlayerVoteArea player) => Utils.PlayerByVoteArea(player).IsCrewAlly();
+
+        public static bool IsSynAlly(this PlayerVoteArea player) => Utils.PlayerByVoteArea(player).IsSynAlly();
+
+        public static bool IsIntAlly(this PlayerVoteArea player) => Utils.PlayerByVoteArea(player).IsIntAlly();
+
         public static bool IsOtherRival(this PlayerControl player, PlayerControl refPlayer) => Objectifier.GetObjectifiers<Rivals>(ObjectifierEnum.Rivals).Any(x => x.Player == player &&
             x.OtherRival == refPlayer);
 
@@ -342,6 +360,12 @@ namespace TownOfUsReworked.Extensions
         public static bool IntruderSided(this PlayerControl player) => player.IsIntTraitor() || player.IsIntAlly() || player.IsIntFanatic();
 
         public static bool CrewSided(this PlayerControl player) => player.IsCrewAlly();
+
+        public static bool SyndicateSided(this PlayerVoteArea player) => player.IsSynTraitor() || player.IsSynFanatic() || player.IsSynAlly();
+
+        public static bool IntruderSided(this PlayerVoteArea player) => player.IsIntTraitor() || player.IsIntAlly() || player.IsIntFanatic();
+
+        public static bool CrewSided(this PlayerVoteArea player) => player.IsCrewAlly();
 
         public static void EndGame() => GameManager.Instance.RpcEndGame(GameOverReason.ImpostorByVote, false);
 
@@ -528,7 +552,7 @@ namespace TownOfUsReworked.Extensions
             return intruderFlag || syndicateFlag || traitorFlag || nkFlag || neFlag || framedFlag || fanaticFlag;
         }
 
-        public static bool SeemsGood(this PlayerControl player) => !SeemsEvil(player);
+        public static bool SeemsGood(this PlayerControl player) => !SeemsEvil(player) || Role.DriveHolder == player;
 
         public static bool SeemsEvil(this PlayerVoteArea player) => Utils.PlayerByVoteArea(player).SeemsEvil();
 
@@ -536,8 +560,7 @@ namespace TownOfUsReworked.Extensions
 
         public static bool IsBlockImmune(PlayerControl player) => Role.GetRole(player).RoleBlockImmune;
 
-        public static bool HasTarget(this Role role) => role.RoleType == RoleEnum.Executioner || role.RoleType == RoleEnum.GuardianAngel || role.RoleType == RoleEnum.Guesser ||
-            role.RoleType == RoleEnum.BountyHunter;
+        public static bool HasTarget(this Role role) => role.RoleType is RoleEnum.Executioner or RoleEnum.GuardianAngel or RoleEnum.Guesser or RoleEnum.BountyHunter;
 
         public static List<object> AllPlayerInfo(this PlayerControl player)
         {
@@ -810,16 +833,6 @@ namespace TownOfUsReworked.Extensions
             newRole.IsBlocked = former.IsBlocked;
             newRole.Player.RegenTask();
             former.Player = null;
-        }
-
-        public static ShapeshifterMinigame GetShapeshifterMenu()
-        {
-            var rolePrefab = RoleManager.Instance.AllRoles.First(r => r.Role == RoleTypes.Shapeshifter);
-
-            if (rolePrefab.TryCast<ShapeshifterRole>() != null)
-                return Object.Instantiate(rolePrefab.Cast<ShapeshifterRole>(), GameData.Instance.transform).ShapeshifterMenu;
-
-            return null;
         }
     }
 }

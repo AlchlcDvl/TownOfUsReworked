@@ -5,6 +5,7 @@ using System.Linq;
 using TownOfUsReworked.Modules;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Data;
+using UnityEngine;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.PoisonerMod
 {
@@ -22,9 +23,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.PoisonerMod
                 role.PoisonButton = CustomButtons.InstantiateButton();
 
             var notSyn = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Syndicate) && x != role.PoisonedPlayer).ToList();
-            role.PoisonButton.UpdateButton(role, role.Poisoned ? "POISONED" : "POISON", role.PoisonTimer(), CustomGameOptions.PoisonCd, role.Poisoned ? AssetManager.Poisoned :
-                AssetManager.Poison, AbilityTypes.Direct, "Secondary", notSyn, true, !role.Poisoned, role.Poisoned && !Role.SyndicateHasChaosDrive, role.TimeRemaining,
-                CustomGameOptions.PoisonDuration);
+            var flag = role.PoisonedPlayer == null && role.HoldsDrive;
+            role.PoisonButton.UpdateButton(role, flag ? "SET POISON" : "POISON", role.PoisonTimer(), CustomGameOptions.PoisonCd, AssetManager.Poison, role.HoldsDrive ? AbilityTypes.Effect
+                : AbilityTypes.Direct, "Secondary", notSyn, true, !role.Poisoned, role.Poisoned, role.TimeRemaining, CustomGameOptions.PoisonDuration);
+
+            if (Input.GetKeyDown(KeyCode.Backspace))
+            {
+                if (role.PoisonedPlayer != null && role.HoldsDrive && !role.Poisoned)
+                    role.PoisonedPlayer = null;
+
+                Utils.LogSomething("Removed a target");
+            }
         }
     }
 }

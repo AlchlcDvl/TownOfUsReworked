@@ -41,13 +41,13 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers.VolatileMod
                     var fakePlayer = PlayerControl.AllPlayerControls[otherNumber];
                     __instance.KillOverlay.ShowKillAnimation(fakePlayer.Data, PlayerControl.LocalPlayer.Data);
                 }
-                else if (randomNumber == 2)
+                /*else if (randomNumber == 2)
                 {
                     //Hearing things
                     otherNumber = Random.RandomRangeInt(0, AssetManager.Sounds.Count);
                     var sound = AssetManager.Sounds[otherNumber];
                     AssetManager.Play(sound);
-                }
+                }*/
             }
         }
     }

@@ -1,8 +1,10 @@
 using HarmonyLib;
-using System;
 using UnityEngine;
 using System.Collections.Generic;
 using TownOfUsReworked.CustomOptions;
+using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Data;
+using Hazel;
 
 namespace TownOfUsReworked.Patches
 {
@@ -10,8 +12,6 @@ namespace TownOfUsReworked.Patches
     [HarmonyPatch]
     public static class RandomSpawns
     {
-        private readonly static System.Random rnd = new((int)DateTime.Now.Ticks);
-
         [HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.OnDestroy))]
         static class IntroCutsceneOnDestroyPatch
         {
@@ -26,24 +26,29 @@ namespace TownOfUsReworked.Patches
 
         public static void RandomSpawn()
         {
+            if (!AmongUsClient.Instance.AmHost)
+                return;
+
             if (!CustomGameOptions.RandomSpawns)
                 return;
 
-            if (GameOptionsManager.Instance.currentNormalGameOptions.MapId == 4 || GameOptionsManager.Instance.currentNormalGameOptions.MapId == 5)
+            if (GameOptionsManager.Instance.currentNormalGameOptions.MapId is 4 or 5)
                 return;
 
-            var  skeldSpawn = new List<Vector3>()
+            var skeldSpawn = new List<Vector3>()
             {
                 new Vector3(-2.2f, 2.2f, 0f), //cafeteria. botton. top left.
                 new Vector3(0.7f, 2.2f, 0f), //caffeteria. button. top right.
                 new Vector3(-2.2f, -0.2f, 0f), //caffeteria. button. bottom left.
                 new Vector3(0.7f, -0.2f, 0f), //caffeteria. button. bottom right.
-                new Vector3(10.0f, 3.0f, 0f), //weapons top
-                new Vector3(9.0f, 1.0f, 0f), //weapons bottom
+                new Vector3(4.3f, 0f, 0f), //cafeteria vent
+                new Vector3(10f, 3f, 0f), //weapons top
+                new Vector3(9.5f, -1f, 0f), //weapons bottom
                 new Vector3(6.5f, -3.5f, 0f), //O2
                 new Vector3(11.5f, -3.5f, 0f), //O2-nav hall
                 new Vector3(17.0f, -3.5f, 0f), //navigation top
                 new Vector3(18.2f, -5.7f, 0f), //navigation bottom
+                new Vector3(16f, -2f, 0f), //navigation vent
                 new Vector3(11.5f, -6.5f, 0f), //nav-shields top
                 new Vector3(9.5f, -8.5f, 0f), //nav-shields bottom
                 new Vector3(9.2f, -12.2f, 0f), //shields top
@@ -74,7 +79,7 @@ namespace TownOfUsReworked.Patches
                 new Vector3(-6.5f, -4.5f, 0f) //medbay bottom
             };
 
-            var  miraSpawn = new List<Vector3>()
+            var miraSpawn = new List<Vector3>()
             {
                 new Vector3(-4.5f, 3.5f, 0f), //launchpad top
                 new Vector3(-4.5f, -1.4f, 0f), //launchpad bottom
@@ -99,7 +104,7 @@ namespace TownOfUsReworked.Patches
                 new Vector3(22f, -2f, 0f), //balcony
             };
 
-            var  polusSpawn = new List<Vector3>()
+            var polusSpawn = new List<Vector3>()
             {
                 new Vector3(16.6f, -1f, 0f), //dropship top
                 new Vector3(16.6f, -5f, 0f), //dropship bottom
@@ -147,7 +152,7 @@ namespace TownOfUsReworked.Patches
                 new Vector3(17.5f, -25.7f, 0f), //snowman under office
             };
 
-            var  dleksSpawn = new List<Vector3>()
+            var dleksSpawn = new List<Vector3>()
             {
                 new Vector3(2.2f, 2.2f, 0f), //cafeteria. botton. top left.
                 new Vector3(-0.7f, 2.2f, 0f), //caffeteria. button. top right.
@@ -194,24 +199,21 @@ namespace TownOfUsReworked.Patches
                 if (player.Data.Disconnected || player.Data.IsDead)
                     continue;
 
-                switch (GameOptionsManager.Instance.currentNormalGameOptions.MapId)
+                var location = GameOptionsManager.Instance.currentNormalGameOptions.MapId switch
                 {
-                    case 0:
-                        player.transform.position = skeldSpawn[rnd.Next(skeldSpawn.Count)];
-                        break;
+                    0 => skeldSpawn.Random(),
+                    1 => miraSpawn.Random(),
+                    2 => polusSpawn.Random(),
+                    3 => dleksSpawn.Random(),
+                    _ => throw new System.NotImplementedException(),
+                };
 
-                    case 1:
-                        player.transform.position = miraSpawn[rnd.Next(miraSpawn.Count)];
-                        break;
-
-                    case 2:
-                        player.transform.position = polusSpawn[rnd.Next(polusSpawn.Count)];
-                        break;
-
-                    case 3:
-                        player.transform.position = dleksSpawn[rnd.Next(dleksSpawn.Count)];
-                        break;
-                }
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPos, SendOption.Reliable);
+                writer.Write(player.PlayerId);
+                writer.Write(location.x);
+                writer.Write(location.y);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                player.transform.position = new Vector3(location.x, location.y, player.transform.position.z);
             }
         }
     }

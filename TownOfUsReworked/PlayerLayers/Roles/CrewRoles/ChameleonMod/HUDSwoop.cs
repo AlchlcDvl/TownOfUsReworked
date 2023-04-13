@@ -19,8 +19,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ChameleonMod
             if (role.SwoopButton == null)
                 role.SwoopButton = CustomButtons.InstantiateButton();
 
-            role.SwoopButton.UpdateButton(role, "SWOOP", role.SwoopTimer(), CustomGameOptions.SwoopCooldown, AssetManager.Swoop, AbilityTypes.Effect, "ActionSecondary", role.IsSwooped,
-                role.TimeRemaining, CustomGameOptions.SwoopDuration, true, !role.IsSwooped);
+            role.SwoopButton.UpdateButton(role, "SWOOP", role.SwoopTimer(), CustomGameOptions.SwoopCooldown, AssetManager.Swoop, AbilityTypes.Effect, "ActionSecondary", null,
+                role.ButtonUsable, role.ButtonUsable, role.IsSwooped, role.TimeRemaining, CustomGameOptions.SwoopDuration, true, role.UsesLeft);
         }
     }
 }

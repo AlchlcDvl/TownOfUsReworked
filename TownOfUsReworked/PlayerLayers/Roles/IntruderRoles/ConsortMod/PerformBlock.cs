@@ -1,9 +1,9 @@
-﻿using System;
-using HarmonyLib;
+﻿using HarmonyLib;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using Hazel;
 using TownOfUsReworked.Data;
+using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsortMod
 {
@@ -22,30 +22,22 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsortMod
                 if (role.RoleblockTimer() != 0f)
                     return false;
 
-                if (Utils.IsTooFar(role.Player, role.ClosestPlayer))
-                    return false;
-
-                var interact = Utils.Interact(role.Player, role.ClosestPlayer);
-
-                if (interact[3])
+                if (role.BlockTarget == null)
+                    role.BlockMenu.Open(PlayerControl.AllPlayerControls.ToArray().Where(x => x != role.Player).ToList());
+                else
                 {
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                     writer.Write((byte)ActionsRPC.ConsRoleblock);
                     writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                    writer.Write(role.ClosestPlayer.PlayerId);
+                    writer.Write(role.BlockTarget.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     role.TimeRemaining = CustomGameOptions.ConsRoleblockDuration;
-                    role.BlockTarget = role.ClosestPlayer;
 
                     foreach (var layer in PlayerLayer.GetLayers(role.BlockTarget))
                         layer.IsBlocked = !layer.RoleBlockImmune;
 
                     role.Block();
                 }
-                else if (interact[0])
-                    role.LastBlock = DateTime.UtcNow;
-                else if (interact[1])
-                    role.LastBlock.AddSeconds(CustomGameOptions.ProtectKCReset);
 
                 return false;
             }

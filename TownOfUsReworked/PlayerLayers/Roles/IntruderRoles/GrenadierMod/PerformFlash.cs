@@ -21,7 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GrenadierMod
             if (__instance == role.FlashButton)
             {
                 var system = ShipStatus.Instance.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>();
-                var sabActive = (bool)system?.specials.Any(s => s.IsActive);
+                var sabActive = (bool)system?.specials.ToArray().Any(s => s.IsActive);
 
                 if (sabActive)
                     return false;

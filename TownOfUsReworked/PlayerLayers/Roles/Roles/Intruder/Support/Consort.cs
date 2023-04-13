@@ -5,6 +5,7 @@ using TownOfUsReworked.Classes;
 using UnityEngine;
 using TownOfUsReworked.Modules;
 using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Custom;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -16,7 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public PlayerControl BlockTarget;
         public bool Enabled;
         public bool Blocking => TimeRemaining > 0f;
-        public PlayerControl ClosestTarget;
+        public CustomMenu BlockMenu;
 
         public Consort(PlayerControl player) : base(player)
         {
@@ -29,6 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleAlignment = RoleAlignment.IntruderSupport;
             AlignmentName = IS;
             RoleBlockImmune = true;
+            BlockMenu = new CustomMenu(Player, new CustomMenu.Select(Click));
         }
 
         public void UnBlock()
@@ -59,6 +61,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.ConsRoleblockCooldown, CustomButtons.GetUnderdogChange(Player)) * 1000f;
             var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
+        }
+
+        public void Click(PlayerControl player)
+        {
+            var interact = Utils.Interact(Player, player);
+
+            if (interact[3])
+                BlockTarget = player;
+            else if (interact[0])
+                LastBlock = DateTime.UtcNow;
+            else if (interact[1])
+                LastBlock.AddSeconds(CustomGameOptions.ProtectKCReset);
         }
     }
 }

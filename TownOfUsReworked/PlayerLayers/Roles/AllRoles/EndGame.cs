@@ -2,7 +2,7 @@ using HarmonyLib;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
 {
-    [HarmonyPatch(typeof(GameManager), nameof(GameManager.RpcEndGame))]
+    [HarmonyPatch]
     public static class EndGame
     {
         public static void Reset()

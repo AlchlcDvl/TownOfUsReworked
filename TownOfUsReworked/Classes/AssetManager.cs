@@ -44,7 +44,6 @@ namespace TownOfUsReworked.Classes
         public static Sprite Remember;
         public static Sprite Track;
         public static Sprite Poison;
-        public static Sprite Poisoned;
         public static Sprite Transport;
         public static Sprite Mediate;
         public static Sprite Vest;
@@ -89,7 +88,6 @@ namespace TownOfUsReworked.Classes
         public static Sprite CorruptedKill;
         public static Sprite IntruderKill;
         public static Sprite Report;
-        public static Sprite Use;
         public static Sprite Sabotage;
         public static Sprite Shapeshift;
         public static Sprite Pet;
@@ -109,17 +107,6 @@ namespace TownOfUsReworked.Classes
         public static Sprite Footprint;
         public static Sprite Arrow;
 
-        public static Sprite Vault;
-        public static Sprite Cokpit;
-        public static Sprite Task;
-        public static Sprite Medical;
-
-        public static AnimationClip VaultAnim;
-        public static AnimationClip CokpitAnim;
-        public static AnimationClip MedicalAnim;
-
-        public static GameObject CallPlateform;
-
         public static Material BombMaterial;
         public static Material BugMaterial;
 
@@ -138,7 +125,6 @@ namespace TownOfUsReworked.Classes
         public static Sprite UpdateImage;
         public static Sprite DiscordImage;
 
-        private static AssetBundle AirshipBundle;
         private static AssetBundle BugBundle;
         private static AssetBundle BombBundle;
         #pragma warning restore
@@ -191,7 +177,7 @@ namespace TownOfUsReworked.Classes
                 for (var i = 0; i < samples.Length; i++)
                 {
                     var offset = i * 4;
-                    samples[i] = (float)BitConverter.ToInt32(byteAudio, offset) / Int32.MaxValue;
+                    samples[i] = (float)BitConverter.ToInt32(byteAudio, offset) / int.MaxValue;
                 }
 
                 var audioClip = AudioClip.Create(name, samples.Length, 2, 24000, false);
@@ -260,7 +246,6 @@ namespace TownOfUsReworked.Classes
             Remember = Utils.CreateSprite($"{TownOfUsReworked.Buttons}Remember");
             Track = Utils.CreateSprite($"{TownOfUsReworked.Buttons}Track");
             Poison = Utils.CreateSprite($"{TownOfUsReworked.Buttons}Poison");
-            Poisoned = Utils.CreateSprite($"{TownOfUsReworked.Buttons}Poisoned");
             Transport = Utils.CreateSprite($"{TownOfUsReworked.Buttons}Transport");
             Plant = Utils.CreateSprite($"{TownOfUsReworked.Buttons}Plant");
             Detonate = Utils.CreateSprite($"{TownOfUsReworked.Buttons}Detonate");
@@ -307,7 +292,6 @@ namespace TownOfUsReworked.Classes
             Sidekick = Utils.CreateSprite($"{TownOfUsReworked.Buttons}Sidekick");
             IntruderKill = Utils.CreateSprite($"{TownOfUsReworked.Buttons}IntruderKill");
             Report = Utils.CreateSprite($"{TownOfUsReworked.Buttons}Report");
-            Use = Utils.CreateSprite($"{TownOfUsReworked.Buttons}Use");
             Sabotage = Utils.CreateSprite($"{TownOfUsReworked.Buttons}Sabotage");
             Shapeshift = Utils.CreateSprite($"{TownOfUsReworked.Buttons}Shapeshift");
             Pet = Utils.CreateSprite($"{TownOfUsReworked.Buttons}Pet");
@@ -349,25 +333,9 @@ namespace TownOfUsReworked.Classes
             BombMaterial = BombBundle.LoadAsset<Material>("bomb").DontUnload();
             BugMaterial = BugBundle.LoadAsset<Material>("trap").DontUnload();
 
-            //Better Airship stuff
-            var stream = TownOfUsReworked.Assembly.GetManifestResourceStream($"{TownOfUsReworked.Misc}Airship");
-            AirshipBundle = AssetBundle.LoadFromMemory(stream.ReadFully());
-
             //Menu settings
             DiscordImage = Utils.CreateSprite($"{TownOfUsReworked.Misc}Discord");
             UpdateImage = Utils.CreateSprite($"{TownOfUsReworked.Misc}Update");
-
-            //Better Aiship Resources
-            Vault = AirshipBundle.LoadAsset<Sprite>("Vault").DontDestroy();
-            Cokpit = AirshipBundle.LoadAsset<Sprite>("Cokpit").DontDestroy();
-            Medical = AirshipBundle.LoadAsset<Sprite>("Medical").DontDestroy();
-            Task = AirshipBundle.LoadAsset<Sprite>("task-shields").DontDestroy();
-
-            VaultAnim = AirshipBundle.LoadAsset<AnimationClip>("Vault.anim").DontDestroy();
-            CokpitAnim = AirshipBundle.LoadAsset<AnimationClip>("Cokpit.anim").DontDestroy();
-            MedicalAnim = AirshipBundle.LoadAsset<AnimationClip>("Medical.anim").DontDestroy();
-
-            CallPlateform = AirshipBundle.LoadAsset<GameObject>("call.prefab").DontDestroy();
 
             SoundEffects.Clear();
             Sounds.Clear();

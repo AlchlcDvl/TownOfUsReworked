@@ -7,6 +7,7 @@ using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
 {
+    [HarmonyPatch]
     public static class AddAbstain
     {
         public static void UpdateButton(Mayor role, MeetingHud __instance)

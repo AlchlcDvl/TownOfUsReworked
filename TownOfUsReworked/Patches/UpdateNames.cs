@@ -7,12 +7,12 @@ using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.CustomOptions;
 using UnityEngine;
 using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod;
-using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod;
 using System.Linq;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
 using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod;
 using System.Collections.Generic;
 using TownOfUsReworked.Extensions;
+using TownOfUsReworked.PlayerLayers;
 
 namespace TownOfUsReworked.Patches
 {
@@ -61,7 +61,7 @@ namespace TownOfUsReworked.Patches
             var localinfo = PlayerControl.LocalPlayer.AllPlayerInfo();
             var roleRevealed = false;
 
-            if (CamouflageUnCamouflage.IsCamoed && player != PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead)
+            if (DoUndo.IsCamoed && player != PlayerControl.LocalPlayer && !PlayerControl.LocalPlayer.Data.IsDead)
                 name = Utils.GetRandomisedName();
             else
                 name = PlayerNames.FirstOrDefault(x => x.Key == player.PlayerId).Value;
@@ -558,6 +558,9 @@ namespace TownOfUsReworked.Patches
                 if (player.IsPersuaded())
                     name += " <color=#F995FCFF>Λ</color>";
 
+                if (player == Role.DriveHolder)
+                    name += " <color=#008000FF>Δ</color>";
+
                 foreach (var arsonist in Role.GetRoles<Arsonist>(RoleEnum.Arsonist))
                 {
                     if (arsonist.DousedPlayers.Contains(player.PlayerId))
@@ -640,7 +643,7 @@ namespace TownOfUsReworked.Patches
                 {
                     var ability = info[2] as Ability;
                     color = ability.Color;
-                    name += (name.Contains('\n') ? " " : "\n") + $"{ability.Name}";
+                    name += (name.Contains('\n') ? " " : "\n") + ability.Name;
                     roleRevealed = true;
                 }
             }
@@ -657,7 +660,6 @@ namespace TownOfUsReworked.Patches
                 {
                     color = role.Color;
                     name += $"\n{role.Name}";
-                    name += $" {role.FactionColorString}ξ</color>";
                     roleRevealed = true;
 
                     if (PlayerControl.LocalPlayer.Is(RoleEnum.Consigliere))
@@ -671,46 +673,47 @@ namespace TownOfUsReworked.Patches
                 else
                     color = role.FactionColor;
 
-                if (player.Is(ObjectifierEnum.Traitor) || player.Is(ObjectifierEnum.Fanatic) || player.Is(ObjectifierEnum.Allied))
+                if (player.SyndicateSided() || player.IntruderSided())
                 {
                     var objectifier = info[3] as Objectifier;
                     name += $" {objectifier.GetColoredSymbol()}";
                 }
+                else
+                    name += $" {role.FactionColorString}ξ</color>";
             }
 
-            if (Role.GetRoles<Revealer>(RoleEnum.Revealer).Any(x => x.CompletedTasks))
+            if (PlayerControl.LocalPlayer.Is(Faction.Syndicate) && player == Role.DriveHolder)
+                name += " <color=#008000FF>Δ</color>";
+
+            if (Role.GetRoles<Revealer>(RoleEnum.Revealer).Any(x => x.CompletedTasks) && PlayerControl.LocalPlayer.Is(Faction.Crew))
             {
                 var role = info[0] as Role;
 
-                if (PlayerControl.LocalPlayer.Is(Faction.Crew))
+                if (CustomGameOptions.SnitchSeesRoles)
                 {
-                    if (CustomGameOptions.RevealerRevealsRoles)
+                    if (player.Is(Faction.Syndicate) || player.Is(Faction.Intruder) || (player.Is(Faction.Neutral) && CustomGameOptions.RevealerRevealsNeutrals) || (player.Is(Faction.Crew)
+                        && CustomGameOptions.RevealerRevealsCrew))
                     {
-                        if (player.Is(Faction.Syndicate) || player.Is(Faction.Intruder) || (player.Is(Faction.Neutral) && CustomGameOptions.RevealerRevealsNeutrals) ||
-                            (player.Is(Faction.Crew) && CustomGameOptions.RevealerRevealsCrew))
-                        {
-                            color = role.Color;
-                            name += $"\n{role.Name}";
-                            roleRevealed = true;
-                        }
-                    }
-                    else if (player.Is(Faction.Syndicate) || player.Is(Faction.Intruder) || (player.Is(Faction.Neutral) && CustomGameOptions.RevealerRevealsNeutrals) ||
-                            (player.Is(Faction.Crew) && CustomGameOptions.RevealerRevealsCrew))
-                    {
-                        if (!(player.Is(ObjectifierEnum.Traitor) && CustomGameOptions.RevealerRevealsTraitor) && !(player.Is(ObjectifierEnum.Fanatic) &&
-                            CustomGameOptions.RevealerRevealsFanatic))
-                        {
-                            color = role.FactionColor;
-                            name += $"\n{role.FactionName}";
-                        }
-                        else
-                        {
-                            color = Colors.Crew;
-                            name += "\nCrew";
-                        }
-
+                        color = role.Color;
+                        name += $"\n{role.Name}";
                         roleRevealed = true;
                     }
+                }
+                else if (player.Is(Faction.Syndicate) || player.Is(Faction.Intruder) || (player.Is(Faction.Neutral) && CustomGameOptions.RevealerRevealsNeutrals) || (player.Is(Faction.Crew)
+                    && CustomGameOptions.RevealerRevealsCrew))
+                {
+                    if (!(player.Is(ObjectifierEnum.Traitor) && CustomGameOptions.RevealerRevealsTraitor) && !(player.Is(ObjectifierEnum.Fanatic) && CustomGameOptions.RevealerRevealsFanatic))
+                    {
+                        color = role.FactionColor;
+                        name += $"\n{role.FactionName}";
+                    }
+                    else
+                    {
+                        color = Colors.Crew;
+                        name += "\nCrew";
+                    }
+
+                    roleRevealed = true;
                 }
             }
 
@@ -740,7 +743,7 @@ namespace TownOfUsReworked.Patches
         {
             const string blank = "";
 
-            if (CamouflageUnCamouflage.IsCamoed && CustomGameOptions.MeetingColourblind)
+            if (DoUndo.IsCamoed && CustomGameOptions.MeetingColourblind)
                 return (blank, Color.clear);
 
             var color = Color.white;
@@ -749,7 +752,7 @@ namespace TownOfUsReworked.Patches
             var localinfo = PlayerControl.LocalPlayer.AllPlayerInfo();
             var roleRevealed = false;
 
-            if (CustomGameOptions.Whispers && !(CamouflageUnCamouflage.IsCamoed && CustomGameOptions.MeetingColourblind))
+            if (CustomGameOptions.Whispers && !(DoUndo.IsCamoed && CustomGameOptions.MeetingColourblind))
                 name = $"[{player.TargetPlayerId}] " + name;
 
             if (info[0] == null || localinfo[0] == null)
@@ -759,7 +762,7 @@ namespace TownOfUsReworked.Patches
                 info[0] != null)
             {
                 var role = info[0] as Role;
-                name += $"{(CamouflageUnCamouflage.IsCamoed && CustomGameOptions.MeetingColourblind ? name : blank)} ({role.TasksCompleted}/{role.TotalTasks})";
+                name += $"{(DoUndo.IsCamoed && CustomGameOptions.MeetingColourblind ? name : blank)} ({role.TasksCompleted}/{role.TotalTasks})";
                 roleRevealed = true;
             }
 
@@ -1181,6 +1184,9 @@ namespace TownOfUsReworked.Patches
                 if (player.IsPersuaded())
                     name += " <color=#F995FCFF>Λ</color>";
 
+                if (player == Role.DriveHolder)
+                    name += " <color=#008000FF>Δ</color>";
+
                 foreach (var arsonist in Role.GetRoles<Arsonist>(RoleEnum.Arsonist))
                 {
                     if (arsonist.DousedPlayers.Contains(player.TargetPlayerId))
@@ -1223,16 +1229,16 @@ namespace TownOfUsReworked.Patches
 
                     if (CustomGameOptions.SnitchSeesRoles)
                     {
-                        if (player.Is(Faction.Syndicate) || player.Is(Faction.Intruder) || (player.Is(Faction.Neutral) && CustomGameOptions.SnitchSeesNeutrals) ||
-                            (player.Is(Faction.Crew) && CustomGameOptions.SnitchSeesCrew))
+                        if (player.Is(Faction.Syndicate) || player.Is(Faction.Intruder) || (player.Is(Faction.Neutral) && CustomGameOptions.SnitchSeesNeutrals) || (player.Is(Faction.Crew)
+                            && CustomGameOptions.SnitchSeesCrew))
                         {
                             color = role2.Color;
                             name += $"\n{role2.Name}";
                             roleRevealed = true;
                         }
                     }
-                    else if (player.Is(Faction.Syndicate) || player.Is(Faction.Intruder) || (player.Is(Faction.Neutral) && CustomGameOptions.SnitchSeesNeutrals) ||
-                        (player.Is(Faction.Crew) && CustomGameOptions.SnitchSeesCrew))
+                    else if (player.Is(Faction.Syndicate) || player.Is(Faction.Intruder) || (player.Is(Faction.Neutral) && CustomGameOptions.SnitchSeesNeutrals) || (player.Is(Faction.Crew)
+                        && CustomGameOptions.SnitchSeesCrew))
                     {
                         if (!(player.Is(ObjectifierEnum.Traitor) && CustomGameOptions.SnitchSeesTraitor) && !(player.Is(ObjectifierEnum.Fanatic) && CustomGameOptions.SnitchSeesFanatic))
                         {
@@ -1275,7 +1281,6 @@ namespace TownOfUsReworked.Patches
                 {
                     color = role.Color;
                     name += $"\n{role.Name}";
-                    name += $" {role.FactionColorString}ξ</color>";
                     roleRevealed = true;
 
                     if (PlayerControl.LocalPlayer.Is(RoleEnum.Consigliere))
@@ -1289,46 +1294,48 @@ namespace TownOfUsReworked.Patches
                 else
                     color = role.FactionColor;
 
-                if (player.Is(ObjectifierEnum.Traitor) || player.Is(ObjectifierEnum.Fanatic) || player.Is(ObjectifierEnum.Allied))
+                if (player.SyndicateSided() || player.IntruderSided())
                 {
                     var objectifier = info[3] as Objectifier;
                     name += $" {objectifier.GetColoredSymbol()}";
                 }
+                else
+                    name += $" {role.FactionColorString}ξ</color>";
             }
 
-            if (Role.GetRoles<Revealer>(RoleEnum.Revealer).Any(x => x.CompletedTasks))
+            if (PlayerControl.LocalPlayer.Is(Faction.Syndicate) && player == Role.DriveHolder)
+                name += " <color=#008000FF>Δ</color>";
+
+            if (Role.GetRoles<Revealer>(RoleEnum.Revealer).Any(x => x.CompletedTasks) && PlayerControl.LocalPlayer.Is(Faction.Crew))
             {
                 var role = info[0] as Role;
 
-                if (PlayerControl.LocalPlayer.Is(Faction.Crew))
+                if (CustomGameOptions.SnitchSeesRoles)
                 {
-                    if (CustomGameOptions.SnitchSeesRoles)
-                    {
-                        if (player.Is(Faction.Syndicate) || player.Is(Faction.Intruder) || (player.Is(Faction.Neutral) && CustomGameOptions.RevealerRevealsNeutrals) ||
-                            (player.Is(Faction.Crew) && CustomGameOptions.RevealerRevealsCrew))
-                        {
-                            color = role.Color;
-                            name += $"\n{role.Name}";
-                            roleRevealed = true;
-                        }
-                    }
-                    else if (player.Is(Faction.Syndicate) || player.Is(Faction.Intruder) || (player.Is(Faction.Neutral) && CustomGameOptions.RevealerRevealsNeutrals) ||
+                    if (player.Is(Faction.Syndicate) || player.Is(Faction.Intruder) || (player.Is(Faction.Neutral) && CustomGameOptions.RevealerRevealsNeutrals) ||
                         (player.Is(Faction.Crew) && CustomGameOptions.RevealerRevealsCrew))
                     {
-                        if (!(player.Is(ObjectifierEnum.Traitor) && CustomGameOptions.RevealerRevealsTraitor) && !(player.Is(ObjectifierEnum.Fanatic) &&
-                            CustomGameOptions.RevealerRevealsFanatic))
-                        {
-                            color = role.FactionColor;
-                            name += $"\n{role.FactionName}";
-                        }
-                        else
-                        {
-                            color = Colors.Crew;
-                            name += "\nCrew";
-                        }
-
+                        color = role.Color;
+                        name += $"\n{role.Name}";
                         roleRevealed = true;
                     }
+                }
+                else if (player.Is(Faction.Syndicate) || player.Is(Faction.Intruder) || (player.Is(Faction.Neutral) && CustomGameOptions.RevealerRevealsNeutrals) ||
+                    (player.Is(Faction.Crew) && CustomGameOptions.RevealerRevealsCrew))
+                {
+                    if (!(player.Is(ObjectifierEnum.Traitor) && CustomGameOptions.RevealerRevealsTraitor) && !(player.Is(ObjectifierEnum.Fanatic) &&
+                        CustomGameOptions.RevealerRevealsFanatic))
+                    {
+                        color = role.FactionColor;
+                        name += $"\n{role.FactionName}";
+                    }
+                    else
+                    {
+                        color = Colors.Crew;
+                        name += "\nCrew";
+                    }
+
+                    roleRevealed = true;
                 }
             }
 

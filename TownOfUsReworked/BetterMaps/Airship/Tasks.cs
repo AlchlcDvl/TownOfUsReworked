@@ -2,14 +2,12 @@
 using System.Collections.Generic;
 using HarmonyLib;
 using UnityEngine;
-using Reactor.Utilities.Attributes;
 using Il2CppInterop.Runtime.Attributes;
 using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.BetterMaps.Airship
 {
     [HarmonyPatch]
-    [RegisterInIl2Cpp]
     public class Tasks : MonoBehaviour
     {
         public Tasks(IntPtr ptr) : base(ptr) {}

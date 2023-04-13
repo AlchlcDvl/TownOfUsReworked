@@ -1,6 +1,5 @@
 using HarmonyLib;
 using Reactor.Utilities.Extensions;
-using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Cosmetics.CustomColors;
@@ -14,7 +13,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
     public static class UpdateArrows
     {
         private static DateTime _time = DateTime.UnixEpoch;
-        private static float Interval => CustomGameOptions.UpdateInterval;
         private static bool CamoedLastTick;
 
         public static void Postfix()
@@ -53,7 +51,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                     continue;
                 }
 
-                var Grey = CamouflageUnCamouflage.IsCamoed;
+                var Grey = DoUndo.IsCamoed;
 
                 if (ColorUtils.IsRainbow(player.GetDefaultOutfit().ColorId) && !Grey)
                     arrow.Value.image.color = ColorUtils.Rainbow;
@@ -72,13 +70,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                 else
                     arrow.Value.image.color = Palette.PlayerColors[player.GetDefaultOutfit().ColorId];
 
-                if (_time <= DateTime.UtcNow.AddSeconds(-Interval))
+                if (_time <= DateTime.UtcNow.AddSeconds(-CustomGameOptions.UpdateInterval))
                     arrow.Value.target = player.transform.position;
             }
 
-            CamoedLastTick = CamouflageUnCamouflage.IsCamoed;
+            CamoedLastTick = DoUndo.IsCamoed;
 
-            if (_time <= DateTime.UtcNow.AddSeconds(-Interval))
+            if (_time <= DateTime.UtcNow.AddSeconds(-CustomGameOptions.UpdateInterval))
                 _time = DateTime.UtcNow;
         }
     }

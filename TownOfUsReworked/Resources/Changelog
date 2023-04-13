@@ -1,2 +1,41 @@
 Changelog
-- Critical Fix: Fixed the issue where the game would crash when someone was ejected
+- Addition: All Syndicate roles now have Chaos Drive abilities
+- Merge: Beamer has been merged into Warper
+- Buff: Consort can roleblock a player from anywhere (to differentiate it from Escort)
+- Buff: Godfather can now promote a Consort to eventually become the new Godfather
+- Buff: Rebel can now promote a Politician to eventually become the new Rebel
+- Buff: Retributionists can use the dead bodies as many times as they want and can also use Transporters and Escorts
+- Nerf: Chameleon and Retributionist now have a limited number of uses for their swoop ability
+- Nerf: Bomber now only detonates their latest bomb and the their Chaos Drive ability is to detonate all placed bombs
+- Nerf: Syndicate (Killing) roles not longer get an extra kill button, their kill abilities just become more powerful
+- Nerf: Retributionist does not know if a player is Crew and must attempt to use them to find out
+- Nerf: The Chaos Drive is no longer global and is instead assigned to a random player within a specific order, the global Chaos Drive is instead an option
+- Change: Concealer can now select a player to make them invisible and its chaos drive ability is its former ability
+- Change: Shapeshifter can now select 2 players to swap appearances and its chaos drive ability is its former ability
+- Change: Poisoner has been moved into the Syndicate (Killing) alignment
+- Improvement: Improved how Transporter and Beamer buttons work
+- Improvement: Moved the MCI keybinds into a tiny debug menu of their own (based off of Reactor Debugger code)
+- Improvement: Roles with shapeshifter menus can deselect players by prassing backspace
+- Improvement: Game announcements are heavily improved on
+- Improvement: Godfather and Rebel are now optimised and rewritten for less bugs
+- Improvement: Lobby size has been moved from a chat command to an actual setting
+- Improvement: Improved how conversions work to fix the occasional lag spike
+- Visual Fix: Fixed the issue where the Use button would appear to be deepfried
+- Visual Fix: Fixed the issue with revived players being able to see the spectate button
+- Bug Fix: Fixed Retributionist arrows sometimes popping up in lobby
+- Bug Fix: Potential fix for roles not spawning correctly on lower player counts
+- Bug Fix: Fixed being able to zoom out while in a meeting
+- Bug Fix: Fixed the issue with /setname not letting you change your name properly
+- Bug Fix: Fixed games sometimes crashing on end game
+- Bug Fix: Fixed the issue with multiple Overlord and Chaos Drive related messages being sent
+- Bug Fix: Fixed the issue with votes being doubled
+- Bug Fix: Fixed being able to whisper with alive players
+- Role Fix: Retributionist ability use limits actually work this time
+- Modifier Fix: Fixed Shy sometimes being able to button
+- Role Fix: Fixed the issue where Poisoner would occasionally directly kill their target
+- Role Fix: Prevented Jackal from spawning on lower player counts to prevent errors
+- Role Fix: Fixed Jackal not spawning with recruits
+- Role Fix: Fixed Framer framing players not registering for others
+- Removed: Gorgon because of the countless bugs it has
+- Removed: Custom Airship spawns because they break the game
+- Temporary Removal: Sound effects have been temporarily removed, they'll make a return when there's a sound for everything

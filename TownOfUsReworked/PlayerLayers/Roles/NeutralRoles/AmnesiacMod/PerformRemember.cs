@@ -90,7 +90,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
                 RoleEnum.Framer => new Framer(amnesiac),
                 RoleEnum.Glitch => new Glitch(amnesiac),
                 RoleEnum.Godfather => new Godfather(amnesiac),
-                RoleEnum.Gorgon => new Gorgon(amnesiac),
                 RoleEnum.Grenadier => new Grenadier(amnesiac),
                 RoleEnum.GuardianAngel => new GuardianAngel(amnesiac) { TargetPlayer = target },
                 RoleEnum.Impostor => new Impostor(amnesiac),
@@ -163,7 +162,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
                 },
                 RoleEnum.Betrayer => new Betrayer(amnesiac) { Faction = role.Faction },
                 RoleEnum.Ambusher => new Ambusher(amnesiac),
-                RoleEnum.Beamer => new Beamer(amnesiac),
                 RoleEnum.Crusader => new Crusader(amnesiac),
                 RoleEnum.Drunkard => new Drunkard(amnesiac),
                 _ => new Amnesiac(amnesiac),
@@ -190,11 +188,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
 
             if (amnesiac.Is(Faction.Intruder) || amnesiac.Is(Faction.Syndicate))
             {
-                foreach (var snitch in Ability.GetAbilities(AbilityEnum.Snitch))
+                foreach (var snitch in Ability.GetAbilities<Snitch>(AbilityEnum.Snitch))
                 {
-                    var snitchRole = (Snitch)snitch;
-
-                    if (snitchRole.TasksDone && PlayerControl.LocalPlayer.Is(AbilityEnum.Snitch))
+                    if (snitch.TasksDone && PlayerControl.LocalPlayer.Is(AbilityEnum.Snitch))
                     {
                         var gameObj = new GameObject();
                         var arrow = gameObj.AddComponent<ArrowBehaviour>();
@@ -203,9 +199,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
                         renderer.sprite = AssetManager.Arrow;
                         arrow.image = renderer;
                         gameObj.layer = 5;
-                        snitchRole.SnitchArrows.Add(amnesiac.PlayerId, arrow);
+                        snitch.SnitchArrows.Add(amnesiac.PlayerId, arrow);
                     }
-                    else if (snitchRole.TasksDone && PlayerControl.LocalPlayer == amnesiac)
+                    else if (snitch.TasksDone && PlayerControl.LocalPlayer == amnesiac)
                     {
                         var gameObj = new GameObject();
                         var arrow = gameObj.AddComponent<ArrowBehaviour>();
@@ -214,7 +210,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.AmnesiacMod
                         renderer.sprite = AssetManager.Arrow;
                         arrow.image = renderer;
                         gameObj.layer = 5;
-                        snitchRole.ImpArrows.Add(arrow);
+                        snitch.ImpArrows.Add(arrow);
                     }
                 }
             }

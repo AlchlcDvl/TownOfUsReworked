@@ -1,8 +1,9 @@
 using HarmonyLib;
-using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
+using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Modules;
 using TownOfUsReworked.Data;
+using UnityEngine;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.WarperMod
 {
@@ -19,7 +20,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.WarperMod
             if (role.WarpButton == null)
                 role.WarpButton = CustomButtons.InstantiateButton();
 
-            role.WarpButton.UpdateButton(role, "WARP", role.WarpTimer(), CustomGameOptions.WarpCooldown, AssetManager.Warp, AbilityTypes.Effect, "Secondary");
+            var flag1 = role.WarpPlayer1 == null && !role.HoldsDrive;
+            var flag2 = role.WarpPlayer2 == null && !role.HoldsDrive;
+            role.WarpButton.UpdateButton(role, flag1 ? "FIRST TARGET" : (flag2 ? "SECOND TARGET": "WARP"), role.WarpTimer(), CustomGameOptions.WarpCooldown, AssetManager.Placeholder,
+                AbilityTypes.Effect, "ActionSecondary");
+
+            if (Input.GetKeyDown(KeyCode.Backspace))
+            {
+                if (role.WarpPlayer2 != null && !role.HoldsDrive)
+                    role.WarpPlayer2 = null;
+                else if (role.WarpPlayer1 != null && !role.HoldsDrive)
+                    role.WarpPlayer1 = null;
+
+                Utils.LogSomething("Removed a target");
+            }
         }
     }
 }

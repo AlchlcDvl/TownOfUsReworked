@@ -43,11 +43,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles.AllRoles
                 if (!role.Bombed)
                     return false;
 
-                role.Player.GetEnforcer().BombSuccessful = Utils.Interact(role.Player, role.ClosestBoom, true)[3];
+                var success = Utils.Interact(role.Player, role.ClosestBoom, true)[3];
+                role.Player.GetEnforcer().BombSuccessful = success;
                 role.Bombed = false;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.ForceKill);
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                writer.Write(success);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 return false;
             }

@@ -1,8 +1,7 @@
-using Random = UnityEngine.Random;
+using URandom = UnityEngine.Random;
 using System.Collections.Generic;
 using HarmonyLib;
 using System.Linq;
-using System;
 
 namespace TownOfUsReworked.Extensions
 {
@@ -16,7 +15,7 @@ namespace TownOfUsReworked.Extensions
 
             for (var i = 0; i <= last; ++i)
             {
-                var r = Random.Range(i, count);
+                var r = URandom.RandomRangeInt(i, count);
                 (list[r], list[i]) = (list[i], list[r]);
             }
         }
@@ -78,8 +77,6 @@ namespace TownOfUsReworked.Extensions
             return newList;
         }
 
-        public static bool Any<T>(this Il2CppSystem.Collections.Generic.List<T> list, Func<T, bool> condition) => list.ToArray().Any(condition);
-
-        public static int Count<T>(this Il2CppSystem.Collections.Generic.List<T> list, Func<T, bool> condition) => list.Count(condition);
+        public static T Random<T>(this List<T> list) => list.Count == 1 ? list[0] : list[URandom.RandomRangeInt(0, list.Count)];
     }
 }

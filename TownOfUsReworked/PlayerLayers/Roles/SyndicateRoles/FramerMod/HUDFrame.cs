@@ -22,8 +22,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.FramerMod
                 role.FrameButton = CustomButtons.InstantiateButton();
 
             var notFramed = PlayerControl.AllPlayerControls.ToArray().Where(x => !role.Framed.Contains(x.PlayerId) && !x.Is(Faction.Syndicate)).ToList();
-            role.FrameButton.UpdateButton(role, "FRAME", role.FrameTimer(), CustomGameOptions.FrameCooldown, AssetManager.Placeholder, Role.SyndicateHasChaosDrive ? AbilityTypes.Effect
-                : AbilityTypes.Direct, "Secondary", notFramed);
+            role.FrameButton.UpdateButton(role, "FRAME", role.FrameTimer(), CustomGameOptions.FrameCooldown, AssetManager.Placeholder, role.HoldsDrive ? AbilityTypes.Effect :
+                AbilityTypes.Direct, "Secondary", notFramed);
         }
     }
 }

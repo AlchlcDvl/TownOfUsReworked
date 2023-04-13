@@ -21,6 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public static List<Role> AllRoles => RoleDictionary.Values.ToList();
         public static readonly List<GameObject> Buttons = new();
         public static readonly Dictionary<int, string> LightDarkColors = new();
+        public static readonly List<PlayerControl> Cleaned = new();
 
         public readonly List<Vent> Vents = new();
 
@@ -57,6 +58,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public static int ChaosDriveMeetingTimerCount;
         public static bool SyndicateHasChaosDrive;
+        public static PlayerControl DriveHolder;
         #pragma warning restore
 
         public Color32 FactionColor = Colors.Faction;
@@ -131,8 +133,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     if (ZoomButton == null)
                         ZoomButton = CustomButtons.InstantiateButton();
 
-                    ZoomButton.UpdateButton(this, "SPECTATE", 0, 1, Zooming ? AssetManager.Minus : AssetManager.Plus, AbilityTypes.Effect, "Secondary", null, !ghostRole, !ghostRole,
-                        false, 0, 1, false, 0, !ghostRole);
+                    ZoomButton.UpdateButton(this, "SPECTATE", 0, 1, Zooming ? AssetManager.Minus : AssetManager.Plus, AbilityTypes.Effect, "Secondary", null, !ghostRole && IsDead,
+                        !ghostRole && IsDead, false, 0, 1, false, 0, !ghostRole && IsDead);
                 }
             }
 

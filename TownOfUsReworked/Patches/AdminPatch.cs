@@ -4,7 +4,7 @@ using UnityEngine;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Classes;
 using TMPro;
-using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.CamouflagerMod;
+using TownOfUsReworked.PlayerLayers;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.PlayerLayers.Roles;
@@ -44,7 +44,7 @@ namespace TownOfUsReworked.Patches
                 if (SubmergedCompatibility.Loaded)
                     sprite.color = new Color(1, 1, 1, 1);
 
-                if (CamouflageUnCamouflage.IsCamoed)
+                if (DoUndo.IsCamoed)
                     sprite.color = Color.grey;
 
                 if (sprite != null)

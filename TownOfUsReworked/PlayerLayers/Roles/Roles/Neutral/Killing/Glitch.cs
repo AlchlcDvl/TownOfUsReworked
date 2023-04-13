@@ -6,8 +6,7 @@ using Hazel;
 using TownOfUsReworked.Modules;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.PlayerLayers.Modifiers;
-using Object = UnityEngine.Object;
-using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Custom;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -20,7 +19,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public AbilityButton HackButton;
         public AbilityButton MimicButton;
         public AbilityButton KillButton;
-        public AbilityButton SampleButton;
         public PlayerControl HackTarget;
         public bool IsUsingMimic => TimeRemaining2 > 0f;
         public float TimeRemaining;
@@ -29,7 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public bool MimicEnabled;
         public bool HackEnabled;
         public PlayerControl MimicTarget;
-        public ShapeshifterMinigame MimicMenu;
+        public CustomMenu MimicMenu;
 
         public Glitch(PlayerControl owner) : base(owner)
         {
@@ -39,11 +37,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             StartText = "foreach PlayerControl Glitch.MurderPlayer";
             AbilitiesText = "- You can mimic players' appearances whenever you want to\n- You can hack players to stop them from using their abilities\n- Hacking blocks your target " +
                 "from being able to use their abilities for a short while\n- You are immune to blocks\n- If you block a <color=#336EFFFF>Serial Killer</color>, they will be forced " +
-                "to kill you.";
+                "to kill you";
             Objectives = "- Neutralise anyone who can oppose you";
             RoleAlignment = RoleAlignment.NeutralKill;
             AlignmentName = NK;
-            MimicMenu = null;
+            MimicMenu = new CustomMenu(Player, new CustomMenu.Select(Click));
             RoleBlockImmune = true;
         }
 
@@ -112,23 +110,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
         }
 
-        public void OpenMimicMenu()
-        {
-            if (MimicMenu == null)
-            {
-                if (Camera.main == null)
-                    return;
-
-                MimicMenu = Object.Instantiate(LayerExtentions.GetShapeshifterMenu(), Camera.main.transform, false);
-            }
-
-            MimicMenu.transform.SetParent(Camera.main.transform, false);
-            MimicMenu.transform.localPosition = new Vector3(0f, 0f, -50f);
-            MimicMenu.Begin(null);
-            Player.moveable = false;
-            Player.NetTransform.Halt();
-        }
-
         public bool TryGetModifiedAppearance(out VisualAppearance appearance)
         {
             if (MimicTarget != null)
@@ -143,16 +124,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             return false;
         }
 
-        public void PanelClick(PlayerControl player)
+        public void Click(PlayerControl player)
         {
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-            writer.Write((byte)ActionsRPC.SetMimic);
-            writer.Write(Player.PlayerId);
-            writer.Write(player.PlayerId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
             Utils.LogSomething($"Mimcking {player.name}");
             MimicTarget = player;
-            Player.moveable = true;
         }
     }
 }

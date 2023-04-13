@@ -175,9 +175,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     if (CustomGameOptions.ConcealerOn > 0)
                         ColorMapping.Add("Concealer", Colors.Concealer);
 
-                    if (CustomGameOptions.GorgonOn > 0)
-                        ColorMapping.Add("Gorgon", Colors.Gorgon);
-
                     if (CustomGameOptions.ShapeshifterOn > 0)
                         ColorMapping.Add("Shapeshifter", Colors.Shapeshifter);
 
@@ -192,9 +189,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
                     if (CustomGameOptions.DrunkardOn > 0)
                         ColorMapping.Add("Drunkard", Colors.Drunkard);
-
-                    if (CustomGameOptions.BeamerOn > 0)
-                        ColorMapping.Add("Beamer", Colors.Beamer);
 
                     if (CustomGameOptions.RebelOn > 0)
                     {
