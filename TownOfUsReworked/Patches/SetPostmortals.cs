@@ -72,11 +72,16 @@ namespace TownOfUsReworked.Patches
                         lover.Exiled();
                 }
 
-                SetRevealer(exiled);
-                SetPhantom(exiled);
-                SetBanshee(exiled);
-                SetGhoul(exiled);
+                Reassign(exiled);
             }
+        }
+
+        public static void Reassign(PlayerControl player)
+        {
+            SetRevealer(player);
+            SetPhantom(player);
+            SetBanshee(player);
+            SetGhoul(player);
         }
 
         private static void JesterWin(PlayerControl player)
@@ -172,7 +177,7 @@ namespace TownOfUsReworked.Patches
             if (!RevealerOn)
                 return;
 
-            if (WillBeRevealer?.Data.IsDead == false && exiled.Is(Faction.Crew))
+            if ((WillBeRevealer?.Data.IsDead == false || WillBeRevealer.Data.Disconnected) && exiled.Is(Faction.Crew))
                 WillBeRevealer = exiled;
 
             if (WillBeRevealer?.Is(RoleEnum.Revealer) == false)
@@ -206,7 +211,7 @@ namespace TownOfUsReworked.Patches
             if (!PhantomOn || LayerExtentions.NeutralHasUnfinishedBusiness(exiled))
                 return;
 
-            if (WillBePhantom?.Data.IsDead == false && exiled.Is(Faction.Neutral))
+            if ((WillBePhantom?.Data.IsDead == false || WillBePhantom.Data.Disconnected) && exiled.Is(Faction.Neutral))
                 WillBePhantom = exiled;
 
             if (WillBePhantom?.Is(RoleEnum.Phantom) == false)
@@ -240,7 +245,7 @@ namespace TownOfUsReworked.Patches
             if (!BansheeOn)
                 return;
 
-            if (WillBeBanshee?.Data.IsDead == false && exiled.Is(Faction.Syndicate))
+            if ((WillBeBanshee?.Data.IsDead == false || WillBeBanshee.Data.Disconnected) && exiled.Is(Faction.Syndicate))
                 WillBeBanshee = exiled;
 
             if (WillBeBanshee?.Is(RoleEnum.Banshee) == false)
@@ -273,7 +278,7 @@ namespace TownOfUsReworked.Patches
             if (!GhoulOn)
                 return;
 
-            if (WillBeGhoul?.Data.IsDead == false && exiled.Is(Faction.Syndicate))
+            if ((WillBeGhoul?.Data.IsDead == false || WillBeGhoul.Data.Disconnected) && exiled.Is(Faction.Syndicate))
                 WillBeGhoul = exiled;
 
             if (WillBeGhoul?.Is(RoleEnum.Banshee) == false)

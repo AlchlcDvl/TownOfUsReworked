@@ -2,7 +2,6 @@
 using Hazel;
 using UnityEngine;
 using UnityEngine.UI;
-using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod;
 using TownOfUsReworked.PlayerLayers.Abilities;
 using TownOfUsReworked.PlayerLayers.Abilities.AssassinMod;
 using TownOfUsReworked.Classes;
@@ -60,11 +59,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
                     swapper.MoarButtons.Clear();
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                     writer.Write((byte)ActionsRPC.SetSwaps);
+                    writer.Write(player.PlayerId);
                     writer.Write(sbyte.MaxValue);
                     writer.Write(sbyte.MaxValue);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    SwapVotes.Swap1 = null;
-                    SwapVotes.Swap2 = null;
+                    swapper.Swap1 = null;
+                    swapper.Swap2 = null;
 
                     foreach (var button in Role.GetRole<Swapper>(player).MoarButtons)
                     {
@@ -168,14 +168,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
                     {
                         swapper.ListOfActives[voteArea.TargetPlayerId] = false;
 
-                        if (SwapVotes.Swap1 == voteArea)
-                            SwapVotes.Swap1 = null;
+                        if (swapper.Swap1 == voteArea)
+                            swapper.Swap1 = null;
 
-                        if (SwapVotes.Swap2 == voteArea)
-                            SwapVotes.Swap2 = null;
+                        if (swapper.Swap2 == voteArea)
+                            swapper.Swap2 = null;
 
                         var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                         writer.Write((byte)ActionsRPC.SetSwaps);
+                        writer.Write(PlayerControl.LocalPlayer.PlayerId);
                         writer.Write(sbyte.MaxValue);
                         writer.Write(sbyte.MaxValue);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -233,6 +234,27 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
 
                             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AddPoliticianVoteBank, SendOption.Reliable);
                             writer.Write(pol.Player.PlayerId);
+                            writer.Write(votesRegained);
+                            AmongUsClient.Instance.FinishRpcImmediately(writer);
+                        }
+                    }
+
+                    foreach (var reb in Role.GetRoles<PromotedRebel>(RoleEnum.PromotedRebel))
+                    {
+                        if (!reb.IsPol)
+                            continue;
+
+                        if (reb.Player == player)
+                            reb.ExtraVotes.Clear();
+                        else
+                        {
+                            var votesRegained = reb.ExtraVotes.RemoveAll(x => x == player.PlayerId);
+
+                            if (reb.Player == PlayerControl.LocalPlayer)
+                                reb.VoteBank += votesRegained;
+
+                            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AddRebPoliticianVoteBank, SendOption.Reliable);
+                            writer.Write(reb.Player.PlayerId);
                             writer.Write(votesRegained);
                             AmongUsClient.Instance.FinishRpcImmediately(writer);
                         }

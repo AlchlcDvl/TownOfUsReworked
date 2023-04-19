@@ -64,6 +64,7 @@ namespace TownOfUsReworked.Custom
 
             return num;
         }
+
         public static void ResetCustomTimers(bool start)
         {
             var local = PlayerControl.LocalPlayer;

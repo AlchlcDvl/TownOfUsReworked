@@ -45,6 +45,12 @@ namespace TownOfUsReworked.PlayerLayers
                 __instance.BackgroundBar.material.color = role.FactionColor;
                 text.text = $"{role.FactionName + (role.Faction == Faction.Neutral ? "s" : "")} Win{(role.Faction is Faction.Syndicate or Faction.Crew ? "s" : "")}!";
                 text.color = role.FactionColor;
+
+                if (Role.CrewWin)
+                {
+                    SoundManager.Instance.StopSound(__instance.ImpostorStinger);
+                    SoundManager.instance.PlaySound(__instance.CrewStinger, false);
+                }
             }
             else if (Role.NKWins)
             {

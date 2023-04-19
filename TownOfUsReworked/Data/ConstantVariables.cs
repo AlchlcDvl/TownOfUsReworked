@@ -114,5 +114,14 @@ namespace TownOfUsReworked.Data
             var flag2 = Objectifier.GetObjectifier<Rivals>(player).RivalDead();
             return flag1 && flag2;
         }
+
+        public static bool StalemateDetector()
+        {
+            var notDead = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Data.IsDead && !x.Data.Disconnected);
+            var pureCrew = notDead.Count(x => x.Is(Faction.Crew) && x.Is(SubFaction.None));
+            var nonPureCrew = notDead.Count(x => x.Is(Faction.Crew) && !x.Is(SubFaction.None));
+            var purInt = notDead.Count(x => x.Is(Faction.Intruder) && x.Is(SubFaction.None));
+            return NoOneWins;
+        }
     }
 }

@@ -1,7 +1,6 @@
 using System;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Modules;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Custom;
@@ -50,8 +49,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 if (!player.Is(RoleEnum.Pestilence))
                     Utils.RpcMurderPlayer(Player, player, DeathReasonEnum.Mauled, false);
 
-                if (player.IsOnAlert() || player.Is(RoleEnum.Pestilence) || player.IsAmbushed() || player.IsGFAmbushed())
+                if (player.IsOnAlert() || player.Is(RoleEnum.Pestilence))
                     Utils.RpcMurderPlayer(player, Player);
+                else if (player.IsAmbushed() || player.IsGFAmbushed())
+                    Utils.RpcMurderPlayer(player, Player, DeathReasonEnum.Ambushed);
                 else if (player.IsCrusaded() || player.IsRebCrusaded())
                 {
                     if (player.GetCrusader()?.HoldsDrive == true || player.GetRebCrus()?.HoldsDrive == true)

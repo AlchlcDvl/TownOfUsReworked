@@ -25,6 +25,9 @@ namespace TownOfUsReworked.MultiClientInstancing
                     TownOfUsReworked.MCIActive = false;
                 }
             }
+
+            if (Input.GetKeyDown(KeyCode.F2))
+                TownOfUsReworked.Debugger.TestWindow.Enabled = false;
         }
     }
 }

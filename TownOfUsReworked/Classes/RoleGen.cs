@@ -2983,6 +2983,8 @@ namespace TownOfUsReworked.Classes
             Tasks.NearestTask = null;
 
             Utils.RecentlyKilled.Clear();
+
+            DisconnectHandler.Disconnected.Clear();
         }
 
         public static void BeginRoleGen(List<GameData.PlayerInfo> infected)
@@ -2997,10 +2999,7 @@ namespace TownOfUsReworked.Classes
             else
                 GenClassicCustomAA(infected.ToList());
 
-            var list = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Crew)).ToList();
-
-            if (list.Count > 0)
-                PureCrew = list.Random();
+            PureCrew = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Crew)).ToList().Random();
 
             if (!ConstantVariables.IsVanilla)
             {

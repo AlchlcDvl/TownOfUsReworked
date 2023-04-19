@@ -859,6 +859,7 @@ namespace TownOfUsReworked.CustomOptions
         public static CustomStringOption NoSolo;
         public static CustomNumberOption NeutralMax;
         public static CustomNumberOption NeutralMin;
+        public static CustomToggleOption NeutralsVent;
 
         //NB Options
         public static CustomHeaderOption NeutralBenignSettings;
@@ -1901,10 +1902,11 @@ namespace TownOfUsReworked.CustomOptions
             NeutralSettings = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> Settings");
             CustomNeutColors = new CustomToggleOption(num++, MultiMenu.neutral, "Enable Custom <color=#B3B3B3FF>Neutral</color> Colors");
             NeutralVision = new CustomNumberOption(num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> Vision", 1f, 0.25f, 5f, 0.25f, MultiplierFormat);
-            LightsAffectNeutrals = new CustomToggleOption(num++, MultiMenu.neutral, "Lights Sabotage Affects <color=#B3B3B3FF>Neutral</color> Vision");
+            LightsAffectNeutrals = new CustomToggleOption(num++, MultiMenu.neutral, "Lights Sabotage Affects <color=#B3B3B3FF>Neutrals</color> Vision");
             NeutralMax = new CustomNumberOption(num++, MultiMenu.neutral, "Max <color=#B3B3B3FF>Neutral</color> <color=#FFD700FF>Roles</color>", 5, 1, 14, 1);
             NeutralMin = new CustomNumberOption(num++, MultiMenu.neutral, "Min <color=#B3B3B3FF>Neutral</color> <color=#FFD700FF>Roles</color>", 5, 1, 14, 1);
             NoSolo = new CustomStringOption(num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutrals</color> Together, Strong", new[] { "Never", "Same NKs", "Same Roles", "All NKs", "All Neutrals" });
+            NeutralsVent = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutrals</color> Can Vent");
 
             NeutralBenignSettings = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Benign</color> Settings");
             NBMax = new CustomNumberOption(num++, MultiMenu.neutral, "Max <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Benign</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);

@@ -5,62 +5,64 @@ using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.Patches
 {
-    [HarmonyPatch]
-    public static class TaskPatches
+    [HarmonyPatch(typeof(GameData), nameof(GameData.RecomputeTaskCounts))]
+    public static class RecomputeTaskCounts
     {
-        [HarmonyPatch(typeof(GameData), nameof(GameData.RecomputeTaskCounts))]
-        public static class GameData_RecomputeTaskCounts
+        public static bool Prefix(GameData __instance)
         {
-            public static bool Prefix(GameData __instance)
+            __instance.TotalTasks = 0;
+            __instance.CompletedTasks = 0;
+
+            for (var i = 0; i < __instance.AllPlayers.Count; i++)
             {
-                __instance.TotalTasks = 0;
-                __instance.CompletedTasks = 0;
+                var playerInfo = __instance.AllPlayers.ToArray()[i];
 
-                for (var i = 0; i < __instance.AllPlayers.Count; i++)
+                if (!playerInfo.Disconnected && playerInfo.Tasks != null && playerInfo.Object != null && playerInfo._object.CanDoTasks() && !(playerInfo.IsDead &&
+                    playerInfo._object.Is(RoleEnum.Revealer)))
                 {
-                    var playerInfo = __instance.AllPlayers.ToArray()[i];
-
-                    if (!playerInfo.Disconnected && playerInfo.Tasks != null && playerInfo.Object != null && playerInfo._object.CanDoTasks() && !(playerInfo.IsDead &&
-                        playerInfo._object.Is(RoleEnum.Revealer)))
+                    for (var j = 0; j < playerInfo.Tasks.Count; j++)
                     {
-                        for (var j = 0; j < playerInfo.Tasks.Count; j++)
-                        {
-                            __instance.TotalTasks++;
+                        __instance.TotalTasks++;
 
-                            if (playerInfo.Tasks.ToArray()[j].Complete)
-                                __instance.CompletedTasks++;
-                        }
+                        if (playerInfo.Tasks.ToArray()[j].Complete)
+                            __instance.CompletedTasks++;
                     }
                 }
+            }
 
+            return false;
+        }
+    }
+
+    [HarmonyPatch(typeof(Console), nameof(Console.CanUse))]
+    public static class CanUse
+    {
+        public static bool Prefix(Console __instance, [HarmonyArgument(0)] GameData.PlayerInfo playerInfo, ref float __result)
+        {
+            var playerControl = playerInfo.Object;
+
+            var flag = !playerControl.CanDoTasks();
+
+            //If the console is not a sabotage repair console
+            if (flag && !__instance.AllowImpostor)
+            {
+                __result = float.MaxValue;
                 return false;
             }
+
+            return true;
         }
+    }
 
-        [HarmonyPatch(typeof(Console), nameof(Console.CanUse))]
-        public static class Console_CanUse
-        {
-            public static bool Prefix(Console __instance, [HarmonyArgument(0)] GameData.PlayerInfo playerInfo, ref float __result)
-            {
-                var playerControl = playerInfo.Object;
-
-                var flag = !playerControl.CanDoTasks();
-
-                //If the console is not a sabotage repair console
-                if (flag && !__instance.AllowImpostor)
-                {
-                    __result = float.MaxValue;
-                    return false;
-                }
-
-                return true;
-            }
-        }
-
-        [HarmonyPatch(typeof(LogicGameFlowNormal), nameof(LogicGameFlowNormal.IsGameOverDueToDeath))]
+    [HarmonyPatch(typeof(LogicGameFlowNormal), nameof(LogicGameFlowNormal.IsGameOverDueToDeath))]
+    public static class OverrideEndGame
+    {
         public static void Postfix(ref bool __result) => __result = false;
+    }
 
-        [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.Begin))]
+    [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.Begin))]
+    public static class BeginShip
+    {
         public static bool Prefix()
         {
             var commonTask = CustomGameOptions.CommonTasks;
@@ -77,6 +79,19 @@ namespace TownOfUsReworked.Patches
                 GameOptionsManager.Instance.currentNormalGameOptions.NumLongTasks = longTask;
 
             return true;
+        }
+    }
+
+    [HarmonyPatch(typeof(PlayerControl._CoSetTasks_d__114), nameof(PlayerControl._CoSetTasks_d__114.MoveNext))]
+    public static class PlayerControl_SetTasks
+    {
+        public static void Postfix(PlayerControl._CoSetTasks_d__114 __instance)
+        {
+            if (__instance == null || ConstantVariables.IsHnS)
+                return;
+
+            var player = __instance.__4__this;
+            player.RegenTask();
         }
     }
 }

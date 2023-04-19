@@ -5,6 +5,7 @@ namespace TownOfUsReworked.Data
         FixLights,
         SetExtraVotes,
         SetExtraVotesPol,
+        SetExtraVotesReb,
         SetSwaps,
         Shift,
         Protect,

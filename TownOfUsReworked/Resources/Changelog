@@ -1,34 +1,10 @@
 Changelog
-- WARNING THIS UPDATE IS EXPERIMENTAL
-- Buff: Framer frames work on Vampire Hunters as well and framed Vigilantes can shoot anyone
-- Buff: Coroner-Retributionists also get meeting info like Coroners do
-- Buff: Diseased now applies to every cooldown for the rest of the round
-- Nerf: Reporting bodies no longer spreads douses or infections (because they often break the game rather than be helpful)
-- Nerf: Werewolf mauls can now be stopped if the target is on alert among other things
-- Update: Added changes from v4.0.4 and v4.0.5 of ToU-R
-- Change: Sheriff now sees flashes as indicator for guilt, rather than name changes
-- Recode: The mod was recoded a lot, so you know what that means! more bugs! (kill me please)
-- Improvement: Moved the status text from the intro screen to the too splash screen for better readability
-- Improvement: Improved how buttons work...for like the 20th time but I promise it gets better
-- Improvement: Made the mod a little more lightweight; fingers crossed it also fixes the issue of lag spikes
-- Improvement: Improved spawn code for Revealer, Phantom, Ghoul and Banshee
-- Improvement: Optimised how blackmails work
-- Critical Fix: Fixed not being able to enter codes or names
-- Visual Fix: Fixed player outlines appearing too thin
-- Visual Fix: Fixed the issue with custom buttons not disappearing during meetings
-- Visual Fix: Fixed the Use button having the Haunt sprite when dead
-- Bug Fix: Fixed revived players still having their death reports being sent
-- Bug Fix: Fixed players becoming Revealer, Banshee, Phantom or Ghouls after being revived
-- Bug Fix: Fixed votes being calculated incorrectly
-- Bug Fix: Fixed the end game screen showing the wrong role for players whose roles changed
-- Bug Fix: Fixed the log spam because of the Debugger window
-- Objectifier Fix: Fixed Allied sometimes breaking the game upon start
-- Role Fix: Fixed Godfather being unable to promote Consorts
-- Role Fix: Fixed Godfathers and Rebels being able to promote other Godfather, Rebels, Mafiosos and Sidekicks to...Mafioso or Sidekick
-- Role Fix: Fixed Ambusher/Enforcer-Godfathers from being unable to use their abilities
-- Role Fix: Fixed Bounty Hunter crashing the game on hunting their target
-- Role Fix: Fixed Bounty Hunter cooldowns not resetting upon usage
-- Role Fix: Fixed Bounty Hunter sometimes killing themselves
-- Role Fix: Fixed Cannibal not winning properly
-- Role Fix: Fixed Necromancer's resurrect sometimes crashing the game
-- Role Fix: Fixed the issue with Glitch staying permanently mimicked
+- Addition: Added a disconnect handler to hopefully reduce future errors
+- Improvement: Added support for multiple Swappers swapping
+- Visual Fix: Fixed Whisperer not being able to see how much someone is left to be converted for
+- Bug Fix: Fixed a random log spam caused by players leaving
+- Potential Fix: Lag spikes
+- Role Fix: Fixed Medic-Retributionists not actually protecting anyone
+- Role Fix: Fixed Guardian Angel having 2 buttons
+- Role Fix: An attempt at fixing Retributionist and Swapper meeting buttons
+- Role Fix: Fixed Politician-Rebels not having their votes refunded on assassinations

@@ -2,7 +2,7 @@
 ### ***Also Note: This mod is NOT for mobile and console versions, do not ask for a port.***
 ### ***Also Also Note: This README page is currently under editing, most things here are either missing or subject to change.***
 
-![LOGO](./Images/ToU-Rew.png)
+![LOGO](./Images/Reworked.png)
 
 An [Among Us](https://store.steampowered.com/app/945360/Among_Us) mod that adds a bunch of roles, modifiers, objectifiers, abilities and game settings.
 
@@ -70,11 +70,13 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 | [Volatile](#volatile)         | [Underdog](#underdog)         |                               |
 
 [**Custom Game Settings**](#custom-game-settings)
+- [Common Settings](#common-settings)
 - [Global Settings](#global-settings)
 - [Game Mode Settings](#game-mode-settings)
-- [All Any Mode Settings](#all-any-mode-settings)
 - [Killing Only Mode Settings](#killing-only-mode-settings)
+- [All Any Mode Settings](#all-any-mode-settings)
 - [Game Modifiers](#game-modifiers)
+- [Game Announcements](#game-announcements)
 - [Quality Changes](#quality-changes)
 - [Map Settings](#map-settings)
 - [Better Skeld Settings](#better-skeld-settings)
@@ -91,7 +93,7 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 - [Inspector Results](#inspector-results)
 - [Factions](#factions)
 - [Subfactions](#subfactions)
-- [Syndicate Chaos Drive Local Role Priority](#cd-role-priority)
+- [Syndicate Chaos Drive Role Priority](#syndicate-chaos-drive-role-priority)
 
 [**Credits & Resources**](#credits--resources)
 
@@ -103,6 +105,7 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 | Among Us - Version | Mod Version | Link |
 |--------------------|-------------|------|
+| 2023.3.28 (s & e) | v0.0.4-dev2 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.4-dev2/TownOfUsReworked.zip) |
 | 2023.3.28 (s & e) | v0.0.4-dev1 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.4-dev1/TownOfUsReworked.zip) |
 | 2023.3.28 (s & e) | v0.0.3-dev3 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.3-dev3/TownOfUsReworked.zip) |
 | 2023.3.28 (s & e) | v0.0.3-dev2 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.3-dev2/TownOfUsReworked.zip) |
@@ -131,6 +134,18 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 <details>
   <summary>Change Log</summary>
+  <details>
+    <summary>v0.0.4-dev2</summary>
+    <ul> <li>Addition: Added a disconnect handler to hopefully reduce future errors</li> </ul>
+    <ul> <li>Improvement: Added support for multiple Swappers swapping</li> </ul>
+    <ul> <li>Visual Fix: Fixed Whisperer not being able to see how much someone is left to be converted for</li> </ul>
+    <ul> <li>Bug Fix: Fixed a random log spam caused by players leaving</li> </ul>
+    <ul> <li>Potential Fix: Lag spikes</li> </ul>
+    <ul> <li>Role Fix: Fixed Medic-Retributionists not actually protecting anyone</li> </ul>
+    <ul> <li>Role Fix: Fixed Guardian Angel having 2 buttons</li> </ul>
+    <ul> <li>Role Fix: An attempt at fixing Retributionist and Swapper meeting buttons</li> </ul>
+    <ul> <li>Role Fix: Fixed Politician-Rebels not having their votes refunded on assassinations</li> </ul>
+  </details>
   <details>
     <summary>v0.0.4-dev1</summary>
     <ul> <li>Buff: Framer frames work on Vampire Hunters as well and framed Vigilantes can shoot anyone</li> </ul>
@@ -247,11 +262,11 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
     <summary>v0.0.2dev8</summary>
     <ul> <li>Merge: Janitor and Undertaker were merged because Undertaker was a bit weak, farewell Undertaker, you will be remembered soldier :saluting_face:</li> </ul>
     <ul> <li>Update: Updated the mod to v2023.3.28</li> </ul>
-    <ul> <li>Changes: Made minor changes to how emergency buttons can be called (credits to @twix)</li> </ul>
+    <ul> <li>Changes: Made minor changes to how emergency buttons can be called (credits to @whichtwix)</li> </ul>
     <ul> <li>Changes: Transporter, Beamer and Glitch had minor changes on how their buttons work</li> </ul>
     <ul> <li>Improvement: Reworked layer gen *again* to squash more bugs (and hopefully not create new ones)</li> </ul>
     <ul> <li>Improvement: Improved RPC handling between players</li> </ul>
-    <ul> <li>Improvement: Migrated to using the vanilla Shapeshifter menu over chats for menu usage (thanks to @Zeo from All The Roles for help)</li> </ul>
+    <ul> <li>Improvement: Migrated to using the vanilla Shapeshifter menu over chats for menu usage (thanks to @Zeo666 from All The Roles for help)</li> </ul>
     <ul> <li>Improvement: Improved how roleblocks work internally by a bit</li> </ul>
     <ul> <li>Improvement: Minor improvements to Amnesiac/Shifter/Thief interactions</li> </ul>
     <ul> <li>Visual Fix: Fixed the issue where hidden player layers would still sometimes show up for players</li> </ul>
@@ -519,7 +534,7 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 - Steam or Epic Games
 
 ## Steam Guide
-1. [Download](#releases) the Town of Us version corresponding to the installed Among Us version.
+1. [Download](#releases) the Town of Us Reworked file corresponding to the installed Among Us version.
 
 2. Go to your Steam library.
 
@@ -537,7 +552,7 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 9. Duplicate the new Among Us Folder.
 
-10. Rename it to `Among Us - ToU`.
+10. Rename it to `Among Us - ToU-Rew`.
 
 11. Double-click on the zip file you downloaded.
 
@@ -546,7 +561,7 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 13. Finally, launch `Among Us.exe` from that folder.
 
 ## Epic Games Guide
-1. [Download](#releases) the Town of Us version corresponding to the installed Among Us version.
+1. [Download](#releases) the Town of Us Reworked file corresponding to the installed Among Us version.
 
 2. Go to your Epic Games library.
 
@@ -576,7 +591,7 @@ Your game folder should look something like this.
 
 ![Image](./Images/Folder.png)
 
-A first launch may take up to 5 minutes, so be patient if it doesn't launch immediately.
+The first launch may take a while, so be patient if it doesn't launch immediately.
 
 ## Issues
 If you have issues installing Town of Us Reworked, you can join our [Discord](https://discord.gg/cd27aDQDY9) to receive help.
@@ -585,20 +600,38 @@ If you have issues installing Town of Us Reworked, you can join our [Discord](ht
 
 Delete these files and you're good to go!
 
-![image](https://user-images.githubusercontent.com/56699741/201765022-a784c89f-23c7-448f-9ca2-6359fbaecb24.png)
+![Delete](./Images/Delete.png)
 
 # Common Settings
-## Each role, modifier, objectifier and ability has this setting:
+## Each role, modifier, objectifier and ability has these settings:
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Role/Modifier/Objectifier/Ability | The percentage probability of the specified type appearing in game | Percentage | 0% |
-| Role/Modifier/Objectifier/Ability Count | How many instances of the specified type should spawn in Custom Mode | Number | 1 |
+| Role/Modifier/Objectifier/Ability Count | How many instances of the specified type should spawn in Custom Mode, for Lovers and Rivals it's the number of pairs | Number | 1 |
 | Role/Modifier/Objectifier/Ability Is Unique In All Any | Dictates whether only one of the specified type should spawn in All Any | Toggle | Off |
+
+## Each alignment has these settings
+
+| Name | Description | Type | Default |
+|------|-------------|------|---------|
+| Max Count | Dictates the maximum number of roles from the alignment will spawn | Number | 5 |
+| Min Count | Dictates the minimum number of roles from the alignment will spawn | Number | 5 |
+
+## Each faction has these settings
+
+| Name | Description | Type | Default |
+|------|-------------|------|---------|
+| Max Count | Dictates the maximum number of roles from the faction will spawn | Number | 5 |
+| Min Count | Dictates the minimum number of roles from the faction will spawn | Number | 5 |
+| Faction Can Vent | Dictates whether members of this faction can vent, this is overriden by the specific venting settings for the roles | Toggle | True if not Crew |
+| Custom Faction Colors | Purely a visual thing, dictates whether players want each role color to only match the color of their respective factions | Toggle | True |
 
 # Roles
 
 # Crew Roles
+
+![Crew](./Images/Crew.png)
 
 ## Altruist
 ### **Alignment: Crew (Protective)**
@@ -935,6 +968,8 @@ The Vigilante can kill. However, if they kill someone they shouldn't, they inste
 | Shoot Cooldown | The cooldown on the Vigilante's kill button | Time | 25s |
 
 # Neutral Roles
+
+![Neutral](./Images/Neutral.png)
 
 ## Actor
 ### **Alignment: Neutral (Evil)**
@@ -1327,6 +1362,8 @@ The Whisperer can whisper to all players within a certain radius. With each whis
 
 # Intruder Roles
 
+![Intruder](./Images/Intruder.png)
+
 ## Ambusher
 ### **Alignment: Intruder (Killing)**
 
@@ -1544,6 +1581,8 @@ The Wraith can temporarily turn invisible.
 | Wraith can Vent | Whether the Wraith can Vent | Toggle | False |
 
 # Syndicate Roles
+
+![Syndicate](./Images/Syndicate.png)
 
 ## Anarchist
 ### **Alignment: Syndicate (Utility)**
@@ -2233,7 +2272,7 @@ If you have any bugs or any need to contact me, join the [Discord Server](https:
 
 -----------------------
 
-## Syndicate Chaos Drive Local Role Priority
+## Syndicate Chaos Drive Role Priority
 ### This list shows which Syndicate role alignments/roles gain the Chaos Drive first if "Chaos Drive Is Global" is turned off.
 
 1. Promoted Rebel

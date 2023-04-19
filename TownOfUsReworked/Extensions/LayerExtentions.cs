@@ -367,9 +367,11 @@ namespace TownOfUsReworked.Extensions
         public static bool IsOtherLover(this PlayerControl player, PlayerControl refPlayer) => Objectifier.GetObjectifiers<Lovers>(ObjectifierEnum.Lovers).Any(x => x.Player == player &&
             x.OtherLover == refPlayer);
 
-        public static bool SyndicateSided(this PlayerControl player) => player.IsSynTraitor() || player.IsSynFanatic() || player.IsSynAlly();
+        public static bool SyndicateSided(this PlayerControl player) => player.IsSynTraitor() || player.IsSynFanatic() || player.IsSynAlly() || (player.Is(Faction.Syndicate) &&
+            player.Is(RoleEnum.Betrayer));
 
-        public static bool IntruderSided(this PlayerControl player) => player.IsIntTraitor() || player.IsIntAlly() || player.IsIntFanatic();
+        public static bool IntruderSided(this PlayerControl player) => player.IsIntTraitor() || player.IsIntAlly() || player.IsIntFanatic() || (player.Is(Faction.Intruder) &&
+            player.Is(RoleEnum.Betrayer));
 
         public static bool CrewSided(this PlayerControl player) => player.IsCrewAlly();
 
@@ -469,43 +471,40 @@ namespace TownOfUsReworked.Extensions
                 mainflag = CustomGameOptions.PersuadedVent;
             else if (player.IsBitten())
                 mainflag = CustomGameOptions.UndeadVent;
-            else if (player.Is(Faction.Syndicate))
+            else if (player.Is(Faction.Syndicate) && !player.SyndicateSided())
                 mainflag = (((SyndicateRole)playerRole).HoldsDrive && (int)CustomGameOptions.SyndicateVent is 1) || (int)CustomGameOptions.SyndicateVent is 0;
-            else if (player.Is(Faction.Intruder))
+            else if (player.Is(Faction.Intruder) && !player.IntruderSided())
             {
-                if (CustomGameOptions.IntrudersVent)
-                {
-                    var flag = (player.Is(RoleEnum.Morphling) && !CustomGameOptions.MorphlingVent) || (player.Is(RoleEnum.Wraith) && !CustomGameOptions.WraithVent) ||
-                        (player.Is(RoleEnum.Grenadier) && !CustomGameOptions.GrenadierVent) || (player.Is(RoleEnum.Teleporter) && !CustomGameOptions.TeleVent);
+                var flag = (player.Is(RoleEnum.Morphling) && !CustomGameOptions.MorphlingVent) || (player.Is(RoleEnum.Wraith) && !CustomGameOptions.WraithVent) ||
+                    (player.Is(RoleEnum.Grenadier) && !CustomGameOptions.GrenadierVent) || (player.Is(RoleEnum.Teleporter) && !CustomGameOptions.TeleVent);
 
-                    if (player.Is(RoleEnum.Janitor))
-                    {
-                        var janitor = (Janitor)playerRole;
-                        mainflag = (int)CustomGameOptions.JanitorVentOptions is 3 || (janitor.CurrentlyDragging != null && (int)CustomGameOptions.JanitorVentOptions is 1) ||
-                            (janitor.CurrentlyDragging == null && (int)CustomGameOptions.JanitorVentOptions is 2);
-                    }
-                    else if (player.Is(RoleEnum.PromotedGodfather))
-                    {
-                        var gf = (PromotedGodfather)playerRole;
-                        mainflag = (int)CustomGameOptions.JanitorVentOptions is 3 || (gf.CurrentlyDragging != null && (int)CustomGameOptions.JanitorVentOptions is 1) ||
-                            (gf.CurrentlyDragging == null && (int)CustomGameOptions.JanitorVentOptions is 2);
-                    }
-                    else
-                        mainflag = !flag;
+                if (player.Is(RoleEnum.Janitor))
+                {
+                    var janitor = (Janitor)playerRole;
+                    mainflag = (int)CustomGameOptions.JanitorVentOptions is 3 || (janitor.CurrentlyDragging != null && (int)CustomGameOptions.JanitorVentOptions is 1) ||
+                        (janitor.CurrentlyDragging == null && (int)CustomGameOptions.JanitorVentOptions is 2);
                 }
-                else
+                else if (player.Is(RoleEnum.PromotedGodfather))
+                {
+                    var gf = (PromotedGodfather)playerRole;
+                    mainflag = (int)CustomGameOptions.JanitorVentOptions is 3 || (gf.CurrentlyDragging != null && (int)CustomGameOptions.JanitorVentOptions is 1) ||
+                        (gf.CurrentlyDragging == null && (int)CustomGameOptions.JanitorVentOptions is 2);
+                }
+                else if (flag)
                     mainflag = false;
+                else
+                    mainflag = CustomGameOptions.IntrudersVent;
             }
             else if (player.Is(Faction.Crew) && !player.Is(RoleEnum.Revealer))
             {
-                if (player.Is(AbilityEnum.Tunneler) && !player.Is(RoleEnum.Engineer))
+                if (player.Is(AbilityEnum.Tunneler))
                     mainflag =  playerRole.TasksDone;
                 else
                     mainflag = player.Is(RoleEnum.Engineer) || CustomGameOptions.CrewVent;
             }
             else if (player.Is(Faction.Neutral))
             {
-                var flag = (player.Is(RoleEnum.Murderer) && CustomGameOptions.MurdVent) || (player.Is(RoleEnum.Glitch) && CustomGameOptions.GlitchVent) ||
+                var flag = ((player.Is(RoleEnum.Murderer) && CustomGameOptions.MurdVent) || (player.Is(RoleEnum.Glitch) && CustomGameOptions.GlitchVent) ||
                     (player.Is(RoleEnum.Juggernaut) && CustomGameOptions.JuggVent) || (player.Is(RoleEnum.Pestilence) && CustomGameOptions.PestVent) ||
                     (player.Is(RoleEnum.Jester) && CustomGameOptions.JesterVent) || (player.Is(RoleEnum.Plaguebearer) && CustomGameOptions.PBVent) ||
                     (player.Is(RoleEnum.Arsonist) && CustomGameOptions.ArsoVent) || (player.Is(RoleEnum.Executioner) && CustomGameOptions.ExeVent) ||
@@ -513,7 +512,7 @@ namespace TownOfUsReworked.Extensions
                     (player.Is(RoleEnum.Survivor) && CustomGameOptions.SurvVent) || (player.Is(RoleEnum.Actor) && CustomGameOptions.ActorVent) ||
                     (player.Is(RoleEnum.GuardianAngel) && CustomGameOptions.GAVent) || (player.Is(RoleEnum.Amnesiac) && CustomGameOptions.AmneVent) ||
                     (player.Is(RoleEnum.Werewolf) && CustomGameOptions.WerewolfVent) || (player.Is(RoleEnum.Jackal) && CustomGameOptions.JackalVent) ||
-                    (player.Is(RoleEnum.BountyHunter) && CustomGameOptions.BHVent);
+                    (player.Is(RoleEnum.BountyHunter) && CustomGameOptions.BHVent)) && CustomGameOptions.NeutralsVent;
 
                 if (player.Is(RoleEnum.SerialKiller))
                 {
@@ -524,6 +523,8 @@ namespace TownOfUsReworked.Extensions
                 else
                     mainflag = flag;
             }
+            else if (player.Is(RoleEnum.Betrayer))
+                mainflag = CustomGameOptions.BetrayerVent;
             else if (player.IsPostmortal() && player.inVent)
                 mainflag = true;
 
@@ -837,6 +838,7 @@ namespace TownOfUsReworked.Extensions
             former.OnLobby();
             newRole.OnLobby();
             Role.AllRoles.Remove(former);
+            PlayerLayer.AllLayers.Remove(former);
             former.Player = null;
             newRole.Player.EnableButtons();
 

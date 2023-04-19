@@ -33,8 +33,11 @@ namespace TownOfUsReworked.Patches
         [HarmonyPatch(typeof(GameStartManager), nameof(GameStartManager.Start))]
         public static class GameStartManagerStartPatch
         {
-            public static void Postfix()
+            public static void Postfix(GameStartManager __instance)
             {
+                if (__instance == null)
+                    return;
+
                 //Trigger version refresh
                 versionSent = false;
                 //Reset lobby countdown timer
@@ -58,14 +61,10 @@ namespace TownOfUsReworked.Patches
 
             public static void Prefix(GameStartManager __instance)
             {
-                if (!GameData.Instance )
-                    return; //No instance
-
-                __instance.MinPlayers = 1;
-
-                if (GameData.Instance != null)
+                if (GameData.Instance && __instance)
                 {
                     update = GameData.Instance.PlayerCount != __instance.LastPlayerCount;
+                    __instance.MinPlayers = 1;
 
                     if (__instance.LastPlayerCount > __instance.MinPlayers)
                         fixDummyCounterColor = "00FF00FF";
@@ -78,6 +77,9 @@ namespace TownOfUsReworked.Patches
 
             public static void Postfix(GameStartManager __instance)
             {
+                if (!__instance || !GameData.Instance)
+                    return;
+
                 if (__instance.LastPlayerCount != GameOptionsManager.Instance.currentNormalGameOptions.MaxPlayers)
                     __instance.LastPlayerCount = GameOptionsManager.Instance.currentNormalGameOptions.MaxPlayers;
 
@@ -156,7 +158,7 @@ namespace TownOfUsReworked.Patches
                             SceneChanger.ChangeScene("MainMenu");
                         }
 
-                        __instance.GameStartText.text = $"The host has no or a different version of Town Of Us Reworked.\nYou will be kicked in {Math.Round(10 - kickingTimer)}s.";
+                        __instance.GameStartText.text = $"You or the host has no or a different version of Town Of Us Reworked\nYou will be kicked in {Math.Round(10 - kickingTimer)}s.";
                         __instance.GameStartText.transform.localPosition = __instance.StartButton.transform.localPosition + (Vector3.up * 2);
                     }
                     else if (versionMismatch)

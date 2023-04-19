@@ -38,7 +38,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Type = LayerEnum.GuardianAngel;
             TargetPlayer = null;
             ProtectButton = new(this, AssetManager.Protect, AbilityTypes.Effect, "ActionSecondary", HitProtect, true);
-            GraveProtectButton = new(this, AssetManager.Protect, AbilityTypes.Effect, "ActionSecondary", HitProtect, true, CustomGameOptions.ProtectBeyondTheGrave);
+
+            if (CustomGameOptions.ProtectBeyondTheGrave)
+                GraveProtectButton = new(this, AssetManager.Protect, AbilityTypes.Effect, "ActionSecondary", HitProtect, true, true);
         }
 
         public float ProtectTimer()
@@ -95,8 +97,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             base.UpdateHud(__instance);
             ProtectButton.Update("PROTECT", ProtectTimer(), CustomGameOptions.ProtectCd, UsesLeft, Protecting, TimeRemaining, CustomGameOptions.ProtectDuration, true, TargetAlive);
-            GraveProtectButton.Update("PROTECT", ProtectTimer(), CustomGameOptions.ProtectCd, UsesLeft, Protecting, TimeRemaining, CustomGameOptions.ProtectDuration, true,IsDead &&
-                TargetAlive);
+
+            if (CustomGameOptions.ProtectBeyondTheGrave)
+            {
+                GraveProtectButton.Update("PROTECT", ProtectTimer(), CustomGameOptions.ProtectCd, UsesLeft, Protecting, TimeRemaining, CustomGameOptions.ProtectDuration, true, IsDead &&
+                    TargetAlive);
+            }
 
             if (!TargetAlive && !Player.Data.IsDead)
             {

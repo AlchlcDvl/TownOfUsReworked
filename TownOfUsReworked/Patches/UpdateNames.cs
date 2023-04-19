@@ -240,11 +240,10 @@ namespace TownOfUsReworked.Patches
                 {
                     foreach (var stats in whisperer.PlayerConversion)
                     {
-                        if (stats.Item1 != player.PlayerId)
-                            continue;
+                        var color2 = (int)(stats.Item2 / 100f * 256);
 
-                        var perc = stats.Item2;
-                        color = new Color32(128, 128, (byte)(100 - perc), 255);
+                        if (color2 > 0 && player.PlayerId == stats.Item1)
+                            color = new(255, 255, color2, 255);
                     }
                 }
             }
@@ -499,7 +498,7 @@ namespace TownOfUsReworked.Patches
 
             if (player == PlayerControl.LocalPlayer && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
             {
-                if (player.IsShielded() && (int)CustomGameOptions.ShowShielded is 0 or 2)
+                if ((player.IsShielded() || player.IsRetShielded()) && (int)CustomGameOptions.ShowShielded is 0 or 2)
                     name += " <color=#006600FF>✚</color>";
 
                 if (player.IsProtected() && (int)CustomGameOptions.ShowProtect is 0 or 2)
@@ -532,7 +531,7 @@ namespace TownOfUsReworked.Patches
 
             if (PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything)
             {
-                if (player.IsShielded() && CustomGameOptions.ShowShielded != ShieldOptions.Everyone)
+                if ((player.IsShielded() || player.IsRetShielded()) && CustomGameOptions.ShowShielded != ShieldOptions.Everyone)
                     name += " <color=#006600FF>✚</color>";
 
                 if (player.IsProtected() && CustomGameOptions.ShowProtect != ProtectOptions.Everyone)
@@ -596,8 +595,11 @@ namespace TownOfUsReworked.Patches
                 }
             }
 
-            if (player.IsShielded() && CustomGameOptions.ShowShielded == ShieldOptions.Everyone && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
+            if ((player.IsShielded() || player.IsRetShielded()) && CustomGameOptions.ShowShielded == ShieldOptions.Everyone && !(PlayerControl.LocalPlayer.Data.IsDead &&
+                CustomGameOptions.DeadSeeEverything))
+            {
                 name += " <color=#006600FF>✚</color>";
+            }
 
             if (player.IsProtected() && CustomGameOptions.ShowProtect == ProtectOptions.Everyone && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
                 name += " <color=#FFFFFFFF>η</color>";
@@ -916,6 +918,16 @@ namespace TownOfUsReworked.Patches
                     }
                     else
                         color = whisperer.SubFactionColor;
+                }
+                else
+                {
+                    foreach (var stats in whisperer.PlayerConversion)
+                    {
+                        var color2 = (int)(stats.Item2 / 100f * 256);
+
+                        if (color2 > 0 && player.TargetPlayerId == stats.Item1)
+                            color = new(255, 255, color2, 255);
+                    }
                 }
             }
             else if (PlayerControl.LocalPlayer.Is(RoleEnum.Dracula) && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))

@@ -12,48 +12,46 @@ using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
 {
+    [HarmonyPatch]
     public static class ShowHideSwapButtons
     {
         public static Dictionary<byte, int> CalculateVotes(MeetingHud __instance)
         {
             var self = Utils.CalculateAllVotes(__instance);
 
-            if (SwapVotes.Swap1 == null || SwapVotes.Swap2 == null)
-                return self;
-
             foreach (var swapper in Role.GetRoles<Swapper>(RoleEnum.Swapper))
             {
-                if (swapper.Player.Data.IsDead || swapper.Player.Data.Disconnected)
-                    return self;
+                if (swapper.Player.Data.IsDead || swapper.Player.Data.Disconnected || swapper.Swap1 == null || swapper.Swap2 == null)
+                    continue;
+
+                PlayerControl swapPlayer1 = null;
+                PlayerControl swapPlayer2 = null;
+
+                foreach (var player in PlayerControl.AllPlayerControls)
+                {
+                    if (player.PlayerId == swapper.Swap1.TargetPlayerId)
+                        swapPlayer1 = player;
+
+                    if (player.PlayerId == swapper.Swap2.TargetPlayerId)
+                        swapPlayer2 = player;
+                }
+
+                if (swapPlayer1 == null || swapPlayer2 == null || swapPlayer1.Data.IsDead || swapPlayer1.Data.Disconnected || swapPlayer2.Data.IsDead || swapPlayer2.Data.Disconnected)
+                    continue;
+
+                var swap1 = 0;
+                var swap2 = 0;
+
+                if (self.TryGetValue(swapper.Swap1.TargetPlayerId, out var value))
+                    swap1 = value;
+
+                if (self.TryGetValue(swapper.Swap2.TargetPlayerId, out var value2))
+                    swap2 = value2;
+
+                self[swapper.Swap2.TargetPlayerId] = swap1;
+                self[swapper.Swap1.TargetPlayerId] = swap2;
             }
 
-            PlayerControl swapPlayer1 = null;
-            PlayerControl swapPlayer2 = null;
-
-            foreach (var player in PlayerControl.AllPlayerControls)
-            {
-                if (player.PlayerId == SwapVotes.Swap1.TargetPlayerId)
-                    swapPlayer1 = player;
-
-                if (player.PlayerId == SwapVotes.Swap2.TargetPlayerId)
-                    swapPlayer2 = player;
-            }
-
-            if (swapPlayer1.Data.IsDead || swapPlayer1.Data.Disconnected || swapPlayer2.Data.IsDead || swapPlayer2.Data.Disconnected)
-                return self;
-
-            var swap1 = 0;
-
-            if (self.TryGetValue(SwapVotes.Swap1.TargetPlayerId, out var value))
-                swap1 = value;
-
-            var swap2 = 0;
-
-            if (self.TryGetValue(SwapVotes.Swap2.TargetPlayerId, out var value2))
-                swap2 = value2;
-
-            self[SwapVotes.Swap2.TargetPlayerId] = swap1;
-            self[SwapVotes.Swap1.TargetPlayerId] = swap2;
             return self;
         }
 
@@ -77,30 +75,26 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
 
                 if (swapper.ListOfActives.Count(x => x) == 2)
                 {
-                    var toSet1 = true;
-
                     for (var i = 0; i < swapper.ListOfActives.Count; i++)
                     {
                         if (!swapper.ListOfActives[i])
                             continue;
 
-                        if (toSet1)
-                        {
-                            SwapVotes.Swap1 = __instance.playerStates[i];
-                            toSet1 = false;
-                        }
+                        if (swapper.Swap1 == null)
+                            swapper.Swap1 = __instance.playerStates[i];
                         else
-                            SwapVotes.Swap2 = __instance.playerStates[i];
+                            swapper.Swap2 = __instance.playerStates[i];
                     }
                 }
 
-                if (SwapVotes.Swap1 == null || SwapVotes.Swap2 == null)
+                if (swapper.Swap1 == null || swapper.Swap2 == null)
                     return true;
 
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.SetSwaps);
-                writer.Write(SwapVotes.Swap1.TargetPlayerId);
-                writer.Write(SwapVotes.Swap2.TargetPlayerId);
+                writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                writer.Write(swapper.Swap1.TargetPlayerId);
+                writer.Write(swapper.Swap2.TargetPlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 return true;
             }
@@ -165,7 +159,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
                     foreach (var role in Role.GetRoles<Politician>(RoleEnum.Politician))
                     {
                         var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                        writer.Write((byte)ActionsRPC.SetExtraVotes);
+                        writer.Write((byte)ActionsRPC.SetExtraVotesPol);
+                        writer.Write(role.Player.PlayerId);
+                        writer.WriteBytesAndSize(role.ExtraVotes.ToArray());
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    }
+
+                    foreach (var role in Role.GetRoles<PromotedRebel>(RoleEnum.PromotedRebel))
+                    {
+                        if (!role.IsPol)
+                            continue;
+
+                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+                        writer.Write((byte)ActionsRPC.SetExtraVotesReb);
                         writer.Write(role.Player.PlayerId);
                         writer.WriteBytesAndSize(role.ExtraVotes.ToArray());
                         AmongUsClient.Instance.FinishRpcImmediately(writer);

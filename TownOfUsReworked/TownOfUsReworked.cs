@@ -30,8 +30,8 @@ namespace TownOfUsReworked
     public class TownOfUsReworked : BasePlugin
     {
         public const string Id = "TownOfUsReworked";
-        public const string VersionString = "0.0.4.1";
-        public const string CompleteVersionString = "0.0.4.1";
+        public const string VersionString = "0.0.4.2";
+        public const string CompleteVersionString = "0.0.4.2";
         public readonly static Version Version = new(VersionString);
 
         private readonly static string dev = VersionString[6..];

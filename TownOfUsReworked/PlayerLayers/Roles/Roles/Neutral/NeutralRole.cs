@@ -64,9 +64,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public override bool GameEnd(LogicGameFlowNormal __instance)
         {
-            if (Player.Data.Disconnected)
+            if (Player?.Data.Disconnected == true)
                 return true;
-            else if (Player.Data.IsDead)
+            else if (Player?.Data.IsDead == true)
             {
                 if (RoleType == RoleEnum.Phantom && ((Phantom)this).CompletedTasks)
                 {

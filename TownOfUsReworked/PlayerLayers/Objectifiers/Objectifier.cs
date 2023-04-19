@@ -132,40 +132,5 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
                 ((Lovers)this).LoversAlive()) || (Player.Is(ObjectifierEnum.Rivals) && ((Rivals)this).RivalDead());
             return !flag;
         }
-
-        [HarmonyPatch]
-        public static class CheckEndGame
-        {
-            [HarmonyPatch(typeof(LogicGameFlowNormal), nameof(LogicGameFlowNormal.CheckEndCriteria))]
-            public static bool Prefix(LogicGameFlowNormal __instance)
-            {
-                if (ConstantVariables.IsHnS)
-                    return true;
-
-                if (!AmongUsClient.Instance.AmHost)
-                    return false;
-
-                if (ConstantVariables.NoOneWins)
-                {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                    writer.Write((byte)WinLoseRPC.NobodyWins);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    Utils.EndGame();
-                    Role.NobodyWins = true;
-                    NobodyWins = true;
-                    return true;
-                }
-                else
-                {
-                    foreach (var obj in AllObjectifiers)
-                    {
-                        if (!obj.GameEnd(__instance))
-                            return false;
-                    }
-                }
-
-                return ConstantVariables.GameHasEnded;
-            }
-        }
     }
 }

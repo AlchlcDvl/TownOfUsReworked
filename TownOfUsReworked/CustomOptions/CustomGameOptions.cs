@@ -272,6 +272,7 @@ namespace TownOfUsReworked.CustomOptions
         public static bool LightsAffectNeutrals => Generate.LightsAffectNeutrals.Get();
         public static NoSolo NoSolo => (NoSolo)Generate.NoSolo.Get();
         public static bool CustomNeutColors => Generate.CustomNeutColors.Get();
+        public static bool NeutralsVent => Generate.NeutralsVent.Get();
         public static int NeutralMax => (int)Generate.NeutralMax.Get();
         public static int NeutralMin => (int)Generate.NeutralMin.Get();
 

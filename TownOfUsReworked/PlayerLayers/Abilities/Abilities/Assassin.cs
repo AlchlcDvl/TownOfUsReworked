@@ -11,6 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
     public class Assassin : Ability
     {
         public Dictionary<byte, (GameObject, GameObject, GameObject, TMP_Text)> Buttons = new();
+		public Dictionary<byte, GameObject> Buttons2 = new();
         private readonly Dictionary<string, Color> ColorMapping = new();
         public Dictionary<string, Color> SortedColorMapping = new();
         public Dictionary<byte, string> Guesses = new();

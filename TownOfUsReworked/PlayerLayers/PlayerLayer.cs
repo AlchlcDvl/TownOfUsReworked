@@ -8,6 +8,9 @@ using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Custom;
+using Hazel;
+using TownOfUsReworked.PlayerLayers.Objectifiers;
+using TownOfUsReworked.PlayerLayers.Roles;
 
 namespace TownOfUsReworked.PlayerLayers
 {

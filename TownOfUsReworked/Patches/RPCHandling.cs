@@ -754,9 +754,17 @@ namespace TownOfUsReworked.Patches
                             polRole.VoteBank -= polRole.ExtraVotes.Count;
                             break;
 
+                        case ActionsRPC.SetExtraVotesReb:
+                            var rebel = Utils.PlayerById(reader.ReadByte());
+                            var rebelRole = Role.GetRole<PromotedRebel>(rebel);
+                            rebelRole.ExtraVotes = reader.ReadBytesAndSize().ToList();
+                            rebelRole.VoteBank -= rebelRole.ExtraVotes.Count;
+                            break;
+
                         case ActionsRPC.SetSwaps:
-                            SwapVotes.Swap1 = MeetingHud.Instance.playerStates.FirstOrDefault(x => x.TargetPlayerId == reader.ReadByte());
-                            SwapVotes.Swap2 = MeetingHud.Instance.playerStates.FirstOrDefault(x => x.TargetPlayerId == reader.ReadByte());
+                            var swapper = Role.GetRole<Swapper>(Utils.PlayerById(reader.ReadByte()));
+                            swapper.Swap1 = MeetingHud.Instance.playerStates.FirstOrDefault(x => x.TargetPlayerId == reader.ReadByte());
+                            swapper.Swap2 = MeetingHud.Instance.playerStates.FirstOrDefault(x => x.TargetPlayerId == reader.ReadByte());
                             break;
 
                         case ActionsRPC.Remember:

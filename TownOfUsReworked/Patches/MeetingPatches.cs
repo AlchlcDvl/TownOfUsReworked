@@ -265,6 +265,12 @@ namespace TownOfUsReworked.Patches
                             extraTime += 2;
                         }
                     }
+
+                    foreach (var player in DisconnectHandler.Disconnected)
+                    {
+                        if (player != check)
+                            HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, $"{player.name} escaped the ship last round.");
+                    }
                 }
 
                 var message = "";
@@ -324,6 +330,7 @@ namespace TownOfUsReworked.Patches
                 Role.Cleaned.Clear();
                 GameAnnouncements.GivingAnnouncements = false;
                 GameAnnouncements.Reported = null;
+                DisconnectHandler.Disconnected.Clear();
             }
         }
 

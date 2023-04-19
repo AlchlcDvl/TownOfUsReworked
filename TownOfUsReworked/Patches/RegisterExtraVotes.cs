@@ -98,6 +98,8 @@ namespace TownOfUsReworked.Patches
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
             }
+
+            DisconnectHandler.Disconnected.Add(player);
         }
     }
 

@@ -21,6 +21,8 @@ using Reactor.Utilities;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
 using AmongUs.GameOptions;
 using TownOfUsReworked.Functions;
+using UnityEngine.UI;
+using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -126,6 +128,72 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
                 BodyArrows.Remove(arrow.Key);
             }
+        }
+
+        public static void GenNumber(Retributionist role, PlayerVoteArea voteArea)
+        {
+            var targetId = voteArea.TargetPlayerId;
+            var nameText = Object.Instantiate(voteArea.NameText, voteArea.transform);
+            nameText.transform.localPosition = new Vector3(-1.211f, -0.18f, -0.1f);
+            nameText.text = GameData.Instance.GetPlayerById(targetId).DefaultOutfit.ColorId.ToString();
+            role.PlayerNumbers[targetId] = nameText;
+
+            if (!voteArea.AmDead)
+            {
+                role.OtherButtons.Add(null);
+                role.ListOfActives.Add(false);
+                return;
+            }
+
+            var confirmButton = voteArea.Buttons.transform.GetChild(0).gameObject;
+            var newButton = Object.Instantiate(confirmButton, confirmButton.transform);
+            var renderer = newButton.GetComponent<SpriteRenderer>();
+            var passive = newButton.GetComponent<PassiveButton>();
+
+            renderer.sprite = AssetManager.RetDeselect;
+            newButton.transform.position = new Vector3(-0.95f, -0.02f, -1.3f);
+            newButton.transform.localScale *= 0.8f;
+            newButton.layer = 5;
+            newButton.transform.parent = confirmButton.transform.parent.parent;
+
+            passive.OnClick = new Button.ButtonClickedEvent();
+            passive.OnClick.AddListener(SetActive(role, MeetingHud.Instance.playerStates.IndexOf(voteArea)));
+            role.OtherButtons.Add(newButton);
+            role.ListOfActives.Add(false);
+        }
+
+        private static Action SetActive(Retributionist role, int index)
+        {
+            void Listener()
+            {
+                if (role.ListOfActives.Count(x => x) == 1 && role.OtherButtons[index].GetComponent<SpriteRenderer>().sprite == AssetManager.RetDeselect)
+                {
+                    var active = 0;
+
+                    for (var i = 0; i < role.ListOfActives.Count; i++)
+                    {
+                        if (role.ListOfActives[i])
+                            active = i;
+                    }
+
+                    role.OtherButtons[active].GetComponent<SpriteRenderer>().sprite = role.ListOfActives[active] ? AssetManager.RetDeselect : AssetManager.RetSelect;
+                    role.ListOfActives[active] = !role.ListOfActives[active];
+                }
+
+                role.OtherButtons[index].GetComponent<SpriteRenderer>().sprite = role.ListOfActives[index] ? AssetManager.RetDeselect : AssetManager.RetSelect;
+                role.ListOfActives[index] = !role.ListOfActives[index];
+                VotingComplete.Imitate = null;
+
+                for (var i = 0; i < role.ListOfActives.Count; i++)
+                {
+                    if (!role.ListOfActives[i])
+                        continue;
+
+                    VotingComplete.Imitate = MeetingHud.Instance.playerStates[i];
+                }
+            }
+
+            return Listener;
         }
 
         public override void UpdateHud(HudManager __instance)
@@ -312,14 +380,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             base.OnMeetingStart(__instance);
 
-            foreach (var role2 in GetRoles<Operative>(RoleEnum.Retributionist))
+            foreach (var role2 in GetRoles<Retributionist>(RoleEnum.Retributionist))
+            {
                 role2.PlayerNumbers.Clear();
+                role2.ListOfActives.Clear();
+                role2.OtherButtons.Clear();
+            }
+
+            foreach (var voteArea in __instance.playerStates)
+                GenNumber(this, voteArea);
 
             if (IsOP)
             {
-                foreach (var voteArea in __instance.playerStates)
-                    GenNumber(this, voteArea);
-
                 if (BuggedPlayers.Count == 0)
                     HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, "No one triggered your bugs.");
                 else if (BuggedPlayers.Count < CustomGameOptions.MinAmountOfPlayersInBug)
@@ -644,18 +716,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var num = Player.GetModifiedCooldown(CustomGameOptions.BugCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
-        }
-
-        public static void GenNumber(Retributionist role, PlayerVoteArea voteArea)
-        {
-            if (PlayerControl.LocalPlayer != role.Player)
-                return;
-
-            var targetId = voteArea.TargetPlayerId;
-            var nameText = Object.Instantiate(voteArea.NameText, voteArea.transform);
-            nameText.transform.localPosition = new Vector3(-1.211f, -0.18f, -0.1f);
-            nameText.text = GameData.Instance.GetPlayerById(targetId).DefaultOutfit.ColorId.ToString();
-            role.PlayerNumbers[targetId] = nameText;
         }
 
         public void PlaceBug()

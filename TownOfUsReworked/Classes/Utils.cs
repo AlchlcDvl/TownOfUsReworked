@@ -372,92 +372,7 @@ namespace TownOfUsReworked.Classes
                 if (MeetingHud.Instance)
                     target.Exiled();
 
-                if (AmongUsClient.Instance.AmHost)
-                {
-                    if (SetPostmortals.WillBeRevealer == null)
-                    {
-                        var toChooseFrom = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Crew) && x.Data.IsDead && !x.Data.Disconnected).ToList();
-                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetRevealer, SendOption.Reliable, -1);
-
-                        if (toChooseFrom.Count == 0)
-                        {
-                            SetPostmortals.WillBeRevealer = null;
-                            writer.Write(byte.MaxValue);
-                        }
-                        else
-                        {
-                            var rand = Random.RandomRangeInt(0, toChooseFrom.Count);
-                            var pc = toChooseFrom[rand];
-                            SetPostmortals.WillBeRevealer = pc;
-                            writer.Write(pc.PlayerId);
-                        }
-
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    }
-
-                    if (SetPostmortals.WillBePhantom == null)
-                    {
-                        var toChooseFrom = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Neutral) && x.Data.IsDead && !x.Data.Disconnected).ToList();
-                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPhantom, SendOption.Reliable, -1);
-
-                        if (toChooseFrom.Count == 0)
-                        {
-                            SetPostmortals.WillBePhantom = null;
-                            writer.Write(byte.MaxValue);
-                        }
-                        else
-                        {
-                            var rand = Random.RandomRangeInt(0, toChooseFrom.Count);
-                            var pc = toChooseFrom[rand];
-                            SetPostmortals.WillBePhantom = pc;
-                            writer.Write(pc.PlayerId);
-                        }
-
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    }
-
-                    if (SetPostmortals.WillBeBanshee == null)
-                    {
-                        var toChooseFrom = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Syndicate) && x.Data.IsDead && !x.Data.Disconnected).ToList();
-                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetBanshee, SendOption.Reliable, -1);
-
-                        if (toChooseFrom.Count == 0)
-                        {
-                            SetPostmortals.WillBeBanshee = null;
-                            writer.Write(byte.MaxValue);
-                        }
-                        else
-                        {
-                            var rand = Random.RandomRangeInt(0, toChooseFrom.Count);
-                            var pc = toChooseFrom[rand];
-                            SetPostmortals.WillBeBanshee = pc;
-                            writer.Write(pc.PlayerId);
-                        }
-
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    }
-
-                    if (SetPostmortals.WillBeGhoul == null)
-                    {
-                        var toChooseFrom = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Neutral) && x.Data.IsDead && !x.Data.Disconnected).ToList();
-                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetGhoul, SendOption.Reliable, -1);
-
-                        if (toChooseFrom.Count == 0)
-                        {
-                            SetPostmortals.WillBeGhoul = null;
-                            writer.Write(byte.MaxValue);
-                        }
-                        else
-                        {
-                            var rand = Random.RandomRangeInt(0, toChooseFrom.Count);
-                            var pc = toChooseFrom[rand];
-                            SetPostmortals.WillBeGhoul = pc;
-                            writer.Write(pc.PlayerId);
-                        }
-
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    }
-                }
+                ReassignPostmortals(target);
 
                 if (target.Is(ObjectifierEnum.Lovers))
                 {
@@ -602,11 +517,18 @@ namespace TownOfUsReworked.Classes
                         writer.Write(medic);
                         writer.Write(target.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
-
-                        if (CustomGameOptions.ShieldBreaks)
-                            fullReset = true;
-
+                    fullReset = CustomGameOptions.ShieldBreaks;
                         Medic.BreakShield(medic, target.PlayerId, CustomGameOptions.ShieldBreaks);
+                    }
+                    else if (target.IsRetShielded() && (toKill || toConvert))
+                    {
+                        var medic = target.GetRetMedic().Player.PlayerId;
+                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable);
+                        writer.Write(medic);
+                        writer.Write(target.PlayerId);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    fullReset = CustomGameOptions.ShieldBreaks;
+                        Retributionist.BreakShield(medic, target.PlayerId, CustomGameOptions.ShieldBreaks);
                     }
                     else if (target.IsProtected())
                         gaReset = true;
@@ -618,11 +540,18 @@ namespace TownOfUsReworked.Classes
                     writer.Write(medic);
                     writer.Write(player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
-
-                    if (CustomGameOptions.ShieldBreaks)
-                        fullReset = true;
-
+                    fullReset = CustomGameOptions.ShieldBreaks;
                     Medic.BreakShield(medic, player.PlayerId, CustomGameOptions.ShieldBreaks);
+                }
+                else if (player.IsRetShielded() && !target.Is(AbilityEnum.Ruthless))
+                {
+                    var medic = target.GetRetMedic().Player.PlayerId;
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable);
+                    writer.Write(medic);
+                    writer.Write(target.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    fullReset = CustomGameOptions.ShieldBreaks;
+                    Retributionist.BreakShield(medic, target.PlayerId, CustomGameOptions.ShieldBreaks);
                 }
                 else if (player.IsProtected() && !target.Is(AbilityEnum.Ruthless))
                     gaReset = true;
@@ -636,11 +565,18 @@ namespace TownOfUsReworked.Classes
                     writer.Write(medic);
                     writer.Write(target.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
-
-                    if (CustomGameOptions.ShieldBreaks)
-                        fullReset = true;
-
+                    fullReset = CustomGameOptions.ShieldBreaks;
                     Medic.BreakShield(medic, target.PlayerId, CustomGameOptions.ShieldBreaks);
+                }
+                else if (target.IsRetShielded() && (toKill || toConvert))
+                {
+                    var medic = target.GetRetMedic().Player.PlayerId;
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable);
+                    writer.Write(medic);
+                    writer.Write(target.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    fullReset = CustomGameOptions.ShieldBreaks;
+                    Retributionist.BreakShield(medic, target.PlayerId, CustomGameOptions.ShieldBreaks);
                 }
             }
             else if ((target.IsCrusaded() || target.IsRebCrusaded()) && !bypass)
@@ -654,10 +590,7 @@ namespace TownOfUsReworked.Classes
                         writer.Write(medic);
                         writer.Write(target.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
-
-                        if (CustomGameOptions.ShieldBreaks)
-                            fullReset = true;
-
+                        fullReset = CustomGameOptions.ShieldBreaks;
                         Medic.BreakShield(medic, target.PlayerId, CustomGameOptions.ShieldBreaks);
                     }
                     else if (target.IsProtected())
@@ -670,11 +603,18 @@ namespace TownOfUsReworked.Classes
                     writer.Write(medic);
                     writer.Write(player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
-
-                    if (CustomGameOptions.ShieldBreaks)
-                        fullReset = true;
-
+                    fullReset = CustomGameOptions.ShieldBreaks;
                     Medic.BreakShield(medic, player.PlayerId, CustomGameOptions.ShieldBreaks);
+                }
+                else if (player.IsRetShielded() && !target.Is(AbilityEnum.Ruthless))
+                {
+                    var medic = player.GetRetMedic().Player.PlayerId;
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable);
+                    writer.Write(medic);
+                    writer.Write(player.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    fullReset = CustomGameOptions.ShieldBreaks;
+                    Retributionist.BreakShield(medic, player.PlayerId, CustomGameOptions.ShieldBreaks);
                 }
                 else if (player.IsProtected() && !target.Is(AbilityEnum.Ruthless))
                     gaReset = true;
@@ -696,11 +636,18 @@ namespace TownOfUsReworked.Classes
                     writer.Write(medic);
                     writer.Write(target.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
-
-                    if (CustomGameOptions.ShieldBreaks)
-                        fullReset = true;
-
+                    fullReset = CustomGameOptions.ShieldBreaks;
                     Medic.BreakShield(medic, target.PlayerId, CustomGameOptions.ShieldBreaks);
+                }
+                else if (target.IsRetShielded() && (toKill || toConvert))
+                {
+                    var medic = target.GetRetMedic().Player.PlayerId;
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable);
+                    writer.Write(medic);
+                    writer.Write(target.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    fullReset = CustomGameOptions.ShieldBreaks;
+                    Retributionist.BreakShield(medic, target.PlayerId, CustomGameOptions.ShieldBreaks);
                 }
             }
             else if (target.IsShielded() && (toKill || toConvert) && !bypass)
@@ -709,11 +656,17 @@ namespace TownOfUsReworked.Classes
                 writer.Write(target.GetMedic().Player.PlayerId);
                 writer.Write(target.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
-
-                if (CustomGameOptions.ShieldBreaks)
-                    fullReset = true;
-
+                fullReset = CustomGameOptions.ShieldBreaks;
                 Medic.BreakShield(target.GetMedic().Player.PlayerId, target.PlayerId, CustomGameOptions.ShieldBreaks);
+            }
+            else if (target.IsRetShielded() && (toKill || toConvert) && !bypass)
+            {
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable);
+                writer.Write(target.GetRetMedic().Player.PlayerId);
+                writer.Write(target.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                fullReset = CustomGameOptions.ShieldBreaks;
+                Retributionist.BreakShield(target.GetMedic().Player.PlayerId, target.PlayerId, CustomGameOptions.ShieldBreaks);
             }
             else if (target.IsVesting() && (toKill || toConvert) && !bypass)
                 survReset = true;

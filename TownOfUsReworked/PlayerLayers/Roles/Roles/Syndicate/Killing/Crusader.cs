@@ -2,7 +2,6 @@ using System;
 using UnityEngine;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Modules;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Custom;
@@ -67,14 +66,23 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 Utils.Spread(player2, player);
 
-                if (player.IsVesting() || player.IsProtected() || player2.IsOtherRival(player))
+                if (player.IsVesting() || player.IsProtected() || player2.IsOtherRival(player) || player.IsShielded() || player.IsRetShielded())
                     continue;
 
-                if (!player.Is(RoleEnum.Pestilence) && !player.IsOnAlert())
+                if (!player.Is(RoleEnum.Pestilence))
                     Utils.RpcMurderPlayer(player2, player, DeathReasonEnum.Crusaded, false);
 
                 if (player.IsOnAlert() || player.Is(RoleEnum.Pestilence))
                     Utils.RpcMurderPlayer(player, player2);
+                else if (player.IsAmbushed() || player.IsGFAmbushed())
+                    Utils.RpcMurderPlayer(player, player2, DeathReasonEnum.Ambushed);
+                else if (player.IsCrusaded() || player.IsRebCrusaded())
+                {
+                    if (player.GetCrusader()?.HoldsDrive == true || player.GetRebCrus()?.HoldsDrive == true)
+                        RadialCrusade(player);
+                    else
+                        Utils.RpcMurderPlayer(player, player2, DeathReasonEnum.Crusaded, true);
+                }
             }
         }
 
