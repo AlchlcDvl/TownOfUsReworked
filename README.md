@@ -106,7 +106,7 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 | 2023.3.28 (s & e) | v0.0.4-dev1 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.4-dev1/TownOfUsReworked.zip) |
 | 2023.3.28 (s & e) | v0.0.3-dev3 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.3-dev3/TownOfUsReworked.zip) |
 | 2023.3.28 (s & e) | v0.0.3-dev2 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.3-dev2/TownOfUsReworked.zip) |
-| 2023.3.28 (s & e) | v0.0.3-dev1 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.3.1/TownOfUsReworked.zip) |
+| 2023.3.28 (s & e) | v0.0.3-dev1 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.3-dev1/TownOfUsReworked.zip) |
 | 2023.3.28 (s & e) | v0.0.3 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.3/TownOfUsReworked.zip) |
 | 2023.3.28 (s & e) | v0.0.2dev8.75 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.2-dev8.75/TownOfUsReworked.zip) |
 | 2023.3.28 (s & e) | v0.0.2dev8.5 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.2-dev8.5/TownOfUsReworked.zip) |
