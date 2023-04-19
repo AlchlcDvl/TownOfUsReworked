@@ -151,7 +151,6 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
     <ul> <li>Visual Fix: Fixed the issue with custom buttons not disappearing during meetings</li> </ul>
     <ul> <li>Visual Fix: Fixed the Use button having the Haunt sprite when dead</li> </ul>
     <ul> <li>Bug Fix: Fixed revived players still having their death reports being sent</li> </ul>
-    <ul> <li>Bug Fix: Potential fix for the debugger window log spam</li> </ul>
     <ul> <li>Bug Fix: Fixed players becoming Revealer, Banshee, Phantom or Ghouls after being revived</li> </ul>
     <ul> <li>Bug Fix: Fixed votes being calculated incorrectly</li> </ul>
     <ul> <li>Bug Fix: Fixed the end game screen showing the wrong role for players whose roles changed</li> </ul>

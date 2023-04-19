@@ -18,7 +18,6 @@ Changelog
 - Visual Fix: Fixed the issue with custom buttons not disappearing during meetings
 - Visual Fix: Fixed the Use button having the Haunt sprite when dead
 - Bug Fix: Fixed revived players still having their death reports being sent
-- Bug Fix: Potential fix for the debugger window log spam
 - Bug Fix: Fixed players becoming Revealer, Banshee, Phantom or Ghouls after being revived
 - Bug Fix: Fixed votes being calculated incorrectly
 - Bug Fix: Fixed the end game screen showing the wrong role for players whose roles changed
