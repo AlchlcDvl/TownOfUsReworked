@@ -30,7 +30,7 @@ namespace TownOfUsReworked.Patches
                     touButtonSprite.sprite = AssetManager.UpdateTOUButton;
 
                     //Add onClick event to run the update on button click
-                    passiveTOUButton.OnClick.AddListener((Action) (() =>
+                    passiveTOUButton.OnClick.AddListener((Action)(() =>
                     {
                         ModUpdater.ExecuteUpdate("TOU");
                         touButton.SetActive(false);
@@ -63,7 +63,7 @@ namespace TownOfUsReworked.Patches
                     submergedButtonSprite.sprite = AssetManager.UpdateSubmergedButton;
 
                     //Add onClick event to run the update on button click
-                    passiveSubmergedButton.OnClick.AddListener((Action) (() =>
+                    passiveSubmergedButton.OnClick.AddListener((Action)(() =>
                     {
                         ModUpdater.ExecuteUpdate("SUB");
                         submergedButton.SetActive(false);

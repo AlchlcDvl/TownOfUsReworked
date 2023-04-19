@@ -12,6 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleAlignment = RoleAlignment.SyndicateUtil;
             AlignmentName = SU;
             Base = true;
+            Type = LayerEnum.Anarchist;
         }
     }
 }

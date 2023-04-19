@@ -29,22 +29,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RevealerTargets = new();
             RevealerArrows = new();
             InspectorResults = InspectorResults.Ghostly;
+            Type = LayerEnum.Revealer;
         }
 
         public void Fade()
         {
-            if (Player == null || PlayerControl.LocalPlayer == null)
-                return;
-
             Faded = true;
             Player.Visible = true;
             var color = new Color(1f, 1f, 1f, 0f);
 
             var maxDistance = ShipStatus.Instance.MaxLightRadius * GameOptionsManager.Instance.currentNormalGameOptions.CrewLightMod;
-
-            if (PlayerControl.LocalPlayer == null)
-                return;
-
             var distance = (PlayerControl.LocalPlayer.GetTruePosition() - Player.GetTruePosition()).magnitude;
 
             var distPercent = distance / maxDistance;
@@ -67,8 +61,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
 
             Player.MyRend().color = color;
-            Player.NameText().color = new Color(0f, 0f, 0f, 0f);
-            Player.cosmetics.colorBlindText.color = new Color(0f, 0f, 0f, 0f);
+            Player.NameText().color = new(0f, 0f, 0f, 0f);
+            Player.cosmetics.colorBlindText.color = new(0f, 0f, 0f, 0f);
         }
     }
 }

@@ -16,44 +16,31 @@ namespace TownOfUsReworked.Patches
 {
     public static class IntroCutScenePatch
     {
-        private static TextMeshPro StatusText;
-
-        [HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.BeginCrewmate))]
-        public static class IntroCutscene_BeginCrewmate
-        {
-            public static void Postfix(IntroCutscene __instance)
-            {
-                var player = PlayerControl.LocalPlayer;
-                var modifier = Modifier.GetModifier(player);
-                var objectifier = Objectifier.GetObjectifier(player);
-                var ability = Ability.GetAbility(player);
-                var flag = modifier == null && ability == null && objectifier == null;
-
-                StatusText = !flag ? Object.Instantiate(__instance.RoleText, __instance.RoleText.transform.parent, false) : null;
-            }
-        }
-
-        [HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.BeginImpostor))]
-        public static class IntroCutscene_BeginImpostor
-        {
-            public static void Postfix(IntroCutscene __instance)
-            {
-                var player = PlayerControl.LocalPlayer;
-                var modifier = Modifier.GetModifier(player);
-                var objectifier = Objectifier.GetObjectifier(player);
-                var ability = Ability.GetAbility(player);
-                var flag = modifier == null && ability == null && objectifier == null;
-
-                StatusText = !flag ? Object.Instantiate(__instance.RoleText, __instance.RoleText.transform.parent, false) : null;
-            }
-        }
-
         [HarmonyPatch(typeof(IntroCutscene._CoBegin_d__33), nameof(IntroCutscene._CoBegin_d__33.MoveNext))]
         public static class IntroCutscene_CoBegin_d__29
         {
             public static void Postfix(IntroCutscene._CoBegin_d__33 __instance)
             {
-                var role = Role.GetRole(PlayerControl.LocalPlayer);
+                var player = PlayerControl.LocalPlayer;
+                var role = Role.GetRole(player);
+                var modifier = Modifier.GetModifier(player);
+                var objectifier = Objectifier.GetObjectifier(player);
+                var ability = Ability.GetAbility(player);
+
+                var statusString = "";
+                var status = "";
+
+                if (!modifier.Hidden)
+                    status += $" {modifier?.ColorString}{modifier?.Name}</color>";
+
+                if (!objectifier.Hidden)
+                    status += $" {objectifier?.ColorString}{objectifier?.Name}</color>";
+
+                if (!ability.Hidden)
+                    status += $" {ability?.ColorString}{ability?.Name}</color>";
+
+                if (status.Length != 0)
+                    statusString = $"\n<size=4><color=#{Colors.Status.ToHtmlStringRGBA()}>Status</color>:{status}</size>";
 
                 if (role != null)
                 {
@@ -67,7 +54,7 @@ namespace TownOfUsReworked.Patches
                     __instance.__4__this.BackgroundBar.material.color = role.Color;
                     __instance.__4__this.ImpostorText.text = " ";
                     __instance.__4__this.RoleBlurbText.color = role.Color;
-                    __instance.__4__this.RoleBlurbText.text = role.StartText;
+                    __instance.__4__this.RoleBlurbText.text = role.StartText + statusString;
 
                     var flag = !role.Base && ((CustomGameOptions.CustomCrewColors && PlayerControl.LocalPlayer.Is(Faction.Crew)) || (CustomGameOptions.CustomIntColors &&
                         PlayerControl.LocalPlayer.Is(Faction.Intruder)) || (CustomGameOptions.CustomSynColors && PlayerControl.LocalPlayer.Is(Faction.Syndicate)) ||
@@ -75,34 +62,6 @@ namespace TownOfUsReworked.Patches
 
                     if (flag)
                         __instance.__4__this.RoleText.outlineColor = role.FactionColor;
-                }
-
-                if (StatusText != null)
-                {
-                    var player = PlayerControl.LocalPlayer;
-                    var modifier = Modifier.GetModifier(player);
-                    var objectifier = Objectifier.GetObjectifier(player);
-                    var ability = Ability.GetAbility(player);
-
-                    var statusString = "";
-                    var status = "";
-
-                    if (!modifier.Hidden)
-                        status += $" {modifier.ColorString}{modifier.Name}</color>";
-
-                    if (!objectifier.Hidden)
-                        status += $" {objectifier.ColorString}{objectifier.Name}</color>";
-
-                    if (!ability.Hidden)
-                        status += $" {ability.ColorString}{ability.Name}</color>";
-
-                    if (status.Length != 0)
-                        statusString = $"<size=4><color=#{Colors.Status.ToHtmlStringRGBA()}>Status</color>:{statusString}{status}</size>";
-
-                    StatusText.text = statusString;
-                    StatusText.outlineColor = Colors.Status;
-                    StatusText.transform.position = __instance.__4__this.transform.position - new Vector3(0f, 1.6f, 0f);
-                    StatusText.gameObject.SetActive(true);
                 }
             }
         }
@@ -128,35 +87,6 @@ namespace TownOfUsReworked.Patches
                     __instance.__4__this.BackgroundBar.material.color = role.Color;
                     __instance.__4__this.ImpostorText.text = " ";
                 }
-
-                if (StatusText != null)
-                {
-                    var player = PlayerControl.LocalPlayer;
-                    var modifier = Modifier.GetModifier(player);
-                    var objectifier = Objectifier.GetObjectifier(player);
-                    var ability = Ability.GetAbility(player);
-
-                    var statusString = "";
-                    var status = "";
-
-                    if (!modifier.Hidden)
-                        status += $" {modifier.ColorString}{modifier.Name}</color>";
-
-                    if (!objectifier.Hidden)
-                        status += $" {objectifier.ColorString}{objectifier.Name}</color>";
-
-                    if (!ability.Hidden)
-                        status += $" {ability.ColorString}{ability.Name}</color>";
-
-                    if (status.Length != 0)
-                        statusString = $"<size=4><color=#{Colors.Status.ToHtmlStringRGBA()}>Status</color>:{statusString}{status}</size>";
-
-                    StatusText.text = statusString;
-                    StatusText.outlineColor = Colors.Status;
-
-                    StatusText.transform.position = __instance.__4__this.transform.position - new Vector3(0f, 1.6f, 0f);
-                    StatusText.gameObject.SetActive(true);
-                }
             }
         }
 
@@ -165,7 +95,26 @@ namespace TownOfUsReworked.Patches
         {
             public static void Postfix(IntroCutscene._ShowRole_d__39 __instance)
             {
-                var role = Role.GetRole(PlayerControl.LocalPlayer);
+                var player = PlayerControl.LocalPlayer;
+                var role = Role.GetRole(player);
+                var modifier = Modifier.GetModifier(player);
+                var objectifier = Objectifier.GetObjectifier(player);
+                var ability = Ability.GetAbility(player);
+
+                var statusString = "";
+                var status = "";
+
+                if (!modifier.Hidden)
+                    status += $" {modifier?.ColorString}{modifier?.Name}</color>";
+
+                if (!objectifier.Hidden)
+                    status += $" {objectifier?.ColorString}{objectifier?.Name}</color>";
+
+                if (!ability.Hidden)
+                    status += $" {ability?.ColorString}{ability?.Name}</color>";
+
+                if (status.Length != 0)
+                    statusString = $"\n<size=4><color=#{Colors.Status.ToHtmlStringRGBA()}>Status</color>:{status}</size>";
 
                 if (role != null)
                 {
@@ -173,7 +122,7 @@ namespace TownOfUsReworked.Patches
                     __instance.__4__this.RoleText.color = role.Color;
                     __instance.__4__this.YouAreText.color = role.Color;
                     __instance.__4__this.YouAreText.text = "You Are The";
-                    __instance.__4__this.RoleBlurbText.text = role.StartText;
+                    __instance.__4__this.RoleBlurbText.text = role.StartText + statusString;
                     __instance.__4__this.RoleBlurbText.color = role.Color;
 
                     if (AssetManager.Sounds.Contains(role.IntroSound) && !role.IntroPlayed)

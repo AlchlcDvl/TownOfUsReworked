@@ -1,5 +1,6 @@
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Data;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers
 {
@@ -14,6 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             TaskText = "- Get your rival killed and then live to the final 2.";
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Rivals : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Rivals;
+            Type = LayerEnum.Rivals;
         }
 
         public bool RivalDead() => OtherRival?.Data?.IsDead == true || OtherRival?.Data?.Disconnected == true;
@@ -23,5 +25,13 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         public bool BothRivalsDead() => IsDeadRival() && RivalDead();
 
         public bool IsWinningRival() =>  RivalDead() && !IsDeadRival();
+
+        public override void UpdateHud(HudManager __instance)
+        {
+            base.UpdateHud(__instance);
+
+            if (PlayerControl.LocalPlayer.Is(ObjectifierEnum.Rivals) && !__instance.Chat.isActiveAndEnabled && CustomGameOptions.RivalsChat)
+                __instance.Chat.SetVisible(true);
+        }
     }
 }

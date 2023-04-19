@@ -5,12 +5,14 @@ using TownOfUsReworked.Classes;
 using TownOfUsReworked.Modules;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Custom;
+using System.Linq;
+using Hazel;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Shapeshifter : SyndicateRole
     {
-        public AbilityButton ShapeshiftButton;
+        public CustomButton ShapeshiftButton;
         public bool Enabled;
         public DateTime LastShapeshifted;
         public float TimeRemaining;
@@ -31,8 +33,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AlignmentName = SD;
             ShapeshiftPlayer1 = null;
             ShapeshiftPlayer2 = null;
-            ShapeshiftMenu1 = new CustomMenu(Player, new CustomMenu.Select(Click1));
-            ShapeshiftMenu2 = new CustomMenu(Player, new CustomMenu.Select(Click2));
+            ShapeshiftMenu1 = new(Player, Click1);
+            ShapeshiftMenu2 = new(Player, Click2);
+            Type = LayerEnum.Shapeshifter;
+            ShapeshiftButton = new(this, AssetManager.Shapeshift, AbilityTypes.Effect, "Secondary", HitShapeshift);
         }
 
         public void Shapeshift()
@@ -68,9 +72,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastShapeshifted;
-            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.ShapeshiftCooldown, CustomButtons.GetUnderdogChange(Player)) * 1000f;
-            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.ShapeshiftCooldown) * 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
         public void Click1(PlayerControl player)
@@ -79,6 +83,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (interact[3])
                 ShapeshiftPlayer1 = player;
+            else if (interact[0])
+                LastShapeshifted = DateTime.UtcNow;
             else if (interact[1])
                 LastShapeshifted.AddSeconds(CustomGameOptions.ProtectKCReset);
         }
@@ -89,8 +95,64 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (interact[3])
                 ShapeshiftPlayer2 = player;
+            else if (interact[0])
+                LastShapeshifted = DateTime.UtcNow;
             else if (interact[1])
                 LastShapeshifted.AddSeconds(CustomGameOptions.ProtectKCReset);
+        }
+
+        public void HitShapeshift()
+        {
+            if (ShapeshiftTimer() != 0f)
+                return;
+
+            if (HoldsDrive)
+            {
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+                writer.Write((byte)ActionsRPC.Shapeshift);
+                writer.Write(Player.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                TimeRemaining = CustomGameOptions.ShapeshiftDuration;
+                Shapeshift();
+                Utils.Shapeshift();
+            }
+            else if (ShapeshiftPlayer1 == null)
+                ShapeshiftMenu1.Open(PlayerControl.AllPlayerControls.ToArray().Where(x => !(x == ShapeshiftPlayer2 || (x.Data.IsDead && Utils.BodyById(x.PlayerId) == null))).ToList());
+            else if (ShapeshiftPlayer2 == null)
+                ShapeshiftMenu2.Open(PlayerControl.AllPlayerControls.ToArray().Where(x => !(x == ShapeshiftPlayer1 || (x.Data.IsDead && Utils.BodyById(x.PlayerId) == null))).ToList());
+            else
+            {
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+                writer.Write((byte)ActionsRPC.Shapeshift);
+                writer.Write(Player.PlayerId);
+                writer.Write(ShapeshiftPlayer1.PlayerId);
+                writer.Write(ShapeshiftPlayer2.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                TimeRemaining = CustomGameOptions.ShapeshiftDuration;
+                Shapeshift();
+            }
+        }
+
+        public override void UpdateHud(HudManager __instance)
+        {
+            base.UpdateHud(__instance);
+            var flag1 = ShapeshiftPlayer1 == null && !HoldsDrive;
+            var flag2 = ShapeshiftPlayer2 == null && !HoldsDrive;
+            ShapeshiftButton.Update(flag1 ? "FIRST TARGET" : (flag2 ? "SECOND TARGET": "SHAPESHIFT"), ShapeshiftTimer(), CustomGameOptions.ShapeshiftCooldown, Shapeshifted, TimeRemaining,
+                CustomGameOptions.ShapeshiftDuration);
+
+            if (Input.GetKeyDown(KeyCode.Backspace))
+            {
+                if (!HoldsDrive && !Shapeshifted)
+                {
+                    if (ShapeshiftPlayer2 != null)
+                        ShapeshiftPlayer2 = null;
+                    else if (ShapeshiftPlayer1 != null)
+                        ShapeshiftPlayer1 = null;
+                }
+
+                Utils.LogSomething("Removed a target");
+            }
         }
     }
 }

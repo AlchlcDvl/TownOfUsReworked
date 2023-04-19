@@ -30,7 +30,12 @@ namespace TownOfUsReworked.Patches
             var playerBindings = PlayerControl.AllPlayerControls.ToArray().ToDictionary(player => player.PlayerId);
 
             foreach (var body in Object.FindObjectsOfType<DeadBody>())
-                body.transform.localScale = playerBindings[body.ParentId].GetAppearance().SizeFactor;
+            {
+                var player = playerBindings[body.ParentId];
+
+                if (player != null)
+                    body.transform.localScale = player.GetAppearance().SizeFactor;
+            }
         }
     }
 }

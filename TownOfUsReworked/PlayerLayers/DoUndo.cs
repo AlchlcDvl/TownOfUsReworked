@@ -8,17 +8,20 @@ using UnityEngine;
 namespace TownOfUsReworked.PlayerLayers
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    [HarmonyPriority(Priority.Last)]
+    [HarmonyPriority(Priority.First)]
     public static class DoUndo
     {
         private static bool CommsEnabled;
         private static bool CamouflagerEnabled;
         public static bool IsCamoed => CommsEnabled || CamouflagerEnabled;
 
-        public static void Postfix()
+        public static void Postfix(HudManager __instance)
         {
-            if (ConstantVariables.IsLobby || ConstantVariables.IsEnded)
+            if (ConstantVariables.IsLobby || ConstantVariables.IsEnded || ConstantVariables.Inactive)
                 return;
+
+            foreach (var layer in PlayerLayer.GetLayers(PlayerControl.LocalPlayer))
+                layer.UpdateHud(__instance);
 
             foreach (var role in Role.GetRoles<Chameleon>(RoleEnum.Chameleon))
             {
@@ -41,21 +44,23 @@ namespace TownOfUsReworked.PlayerLayers
                 if (ret.RevivedRole == null)
                     continue;
 
-                var revivedRole = ret.RevivedRole.RoleType;
-
-                if (revivedRole == RoleEnum.Chameleon)
+                if (ret.OnEffect)
                 {
-                    if (ret.IsSwooped)
+                    if (ret.IsCham)
                         ret.Invis();
-                    else if (ret.SwoopEnabled)
-                        ret.Uninvis();
-                }
-                else if (revivedRole == RoleEnum.Veteran)
-                {
-                    if (ret.OnAlert)
+                    else if (ret.IsVet)
                         ret.Alert();
-                    else if (ret.AlertEnabled)
+                    else if (ret.IsEsc)
+                        ret.Block();
+                }
+                else if (ret.Enabled)
+                {
+                    if (ret.IsCham)
+                        ret.Uninvis();
+                    else if (ret.IsVet)
                         ret.UnAlert();
+                    else if (ret.IsEsc)
+                        ret.UnBlock();
                 }
             }
 
@@ -97,53 +102,48 @@ namespace TownOfUsReworked.PlayerLayers
                 if (gf.FormerRole == null || gf.FormerRole?.RoleType == RoleEnum.Impostor)
                     continue;
 
-                var formerRole = gf.FormerRole.RoleType;
-
-                if (formerRole == RoleEnum.Grenadier)
+                if (gf.DelayActive)
                 {
-                    if (gf.Flashed)
+                    if (gf.IsEnf)
+                        gf.BombDelay();
+                    else if (gf.IsDisg)
+                        gf.DisgDelay();
+                }
+                else if (gf.OnEffect)
+                {
+                    if (gf.IsGren)
                         gf.Flash();
-                    else if (gf.FlashEnabled)
-                        gf.UnFlash();
-                }
-                else if (formerRole == RoleEnum.Disguiser)
-                {
-                    if (gf.DelayActive)
-                        gf.Delay();
-                    else if (gf.Disguised)
+                    else if (gf.IsDisg)
                         gf.Disguise();
-                    else if (gf.DisguiserEnabled)
-                        gf.UnDisguise();
-                }
-                else if (formerRole == RoleEnum.Morphling)
-                {
-                    if (gf.Morphed)
+                    else if (gf.IsMorph)
                         gf.Morph();
-                    else if (gf.MorphEnabled)
-                        gf.Unmorph();
-                }
-                else if (formerRole == RoleEnum.TimeMaster)
-                {
-                    if (gf.Frozen)
+                    else if (gf.IsTM)
                         gf.TimeFreeze();
-                    else if (gf.FreezeEnabled)
-                        gf.Unfreeze();
-                }
-                else if (formerRole == RoleEnum.Wraith)
-                {
-                    if (gf.IsInvis)
+                    else if (gf.IsWraith)
                         gf.Invis();
-                    else if (gf.InvisEnabled)
-                        gf.Uninvis();
-                }
-                else if (formerRole == RoleEnum.Camouflager)
-                {
-                    if (gf.Camouflaged)
+                    else if (gf.IsCons)
+                        gf.Block();
+                    else if (gf.IsCamo)
                     {
                         gf.Camouflage();
                         CamouflagerEnabled = true;
                     }
-                    else if (gf.CamoEnabled)
+                }
+                else if (gf.Enabled)
+                {
+                    if (gf.IsGren)
+                        gf.UnFlash();
+                    else if (gf.IsDisg)
+                        gf.UnDisguise();
+                    else if (gf.IsMorph)
+                        gf.Unmorph();
+                    else if (gf.IsTM)
+                        gf.Unfreeze();
+                    else if (gf.IsWraith)
+                        gf.Uninvis();
+                    else if (gf.IsCons)
+                        gf.UnBlock();
+                    else if (gf.IsCamo)
                     {
                         gf.UnCamouflage();
                         CamouflagerEnabled = false;
@@ -256,6 +256,25 @@ namespace TownOfUsReworked.PlayerLayers
                     surv.UnVest();
             }
 
+            foreach (var phantom in Role.GetRoles<Phantom>(RoleEnum.Phantom))
+            {
+                if (phantom.Player.Data.Disconnected)
+                    continue;
+
+                var caught = phantom.Caught;
+
+                if (!caught)
+                    phantom.Fade();
+                else if (phantom.Faded)
+                {
+                    Utils.DefaultOutfit(phantom.Player);
+                    phantom.Player.MyRend().color = Color.white;
+                    phantom.Player.gameObject.layer = LayerMask.NameToLayer("Ghost");
+                    phantom.Faded = false;
+                    phantom.Player.MyPhysics.ResetMoveState();
+                }
+            }
+
             foreach (var banshee in Role.GetRoles<Banshee>(RoleEnum.Banshee))
             {
                 if (banshee.Player.Data.Disconnected)
@@ -347,34 +366,26 @@ namespace TownOfUsReworked.PlayerLayers
                 if (reb.FormerRole == null || reb.FormerRole?.RoleType == RoleEnum.Anarchist)
                     continue;
 
-                var formerRole = reb.FormerRole.RoleType;
-
-                if (formerRole == RoleEnum.Concealer)
+                if (reb.OnEffect)
                 {
-                    if (reb.Concealed)
+                    if (reb.IsConc)
                         reb.Conceal();
-                    else if (reb.ConcealEnabled)
-                        reb.UnConceal();
-                }
-                else if (formerRole == RoleEnum.Poisoner)
-                {
-                    if (reb.Poisoned)
+                    else if (reb.IsPois)
                         reb.Poison();
-                    else if (reb.PoisonEnabled)
-                        reb.PoisonKill();
-                }
-                else if (formerRole == RoleEnum.Drunkard)
-                {
-                    if (reb.Confused)
+                    else if (reb.IsDrunk)
                         reb.Confuse();
-                    else if (reb.ConfuseEnabled)
-                        reb.Unconfuse();
-                }
-                else if (formerRole == RoleEnum.Shapeshifter)
-                {
-                    if (reb.Shapeshifted)
+                    else if (reb.IsSS)
                         reb.Shapeshift();
-                    else if (reb.ShapeshiftEnabled)
+                }
+                else if (reb.Enabled)
+                {
+                    if (reb.IsConc)
+                        reb.UnConceal();
+                    else if (reb.IsPois)
+                        reb.PoisonKill();
+                    else if (reb.IsDrunk)
+                        reb.Unconfuse();
+                    else if (reb.IsSS)
                         reb.UnShapeshift();
                 }
             }

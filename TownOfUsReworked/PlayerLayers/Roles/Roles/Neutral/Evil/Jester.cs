@@ -4,6 +4,10 @@ using TownOfUsReworked.Classes;
 using System;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Custom;
+using TownOfUsReworked.Modules;
+using Hazel;
+using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -12,11 +16,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public bool VotedOut;
         public List<byte> ToHaunt = new();
         public bool HasHaunted;
-        public AbilityButton HauntButton;
+        public CustomButton HauntButton;
         public PlayerControl ClosestPlayer;
         public DateTime LastHaunted;
-        public int MaxUses;
-        public bool CanHaunt => VotedOut && !HasHaunted && MaxUses > 0 && ToHaunt.Count > 0;
+        public int UsesLeft;
+        public bool CanHaunt => VotedOut && !HasHaunted && UsesLeft > 0 && ToHaunt.Count > 0;
 
         public Jester(PlayerControl player) : base(player)
         {
@@ -29,7 +33,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleAlignment = RoleAlignment.NeutralEvil;
             AlignmentName = NE;
             ToHaunt = new();
-            MaxUses = CustomGameOptions.HauntCount <= ToHaunt.Count ? CustomGameOptions.HauntCount : ToHaunt.Count;
+            UsesLeft = CustomGameOptions.HauntCount <= ToHaunt.Count ? CustomGameOptions.HauntCount : ToHaunt.Count;
+            Type = LayerEnum.Jester;
+            HauntButton = new(this, AssetManager.Haunt, AbilityTypes.Direct, "ActionSecondary", Haunt, true);
         }
 
         public void SetHaunted(MeetingHud __instance)
@@ -58,9 +64,27 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastHaunted;
-            var num = CustomGameOptions.HauntCooldown * 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.HauntCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+        }
+
+        public override void UpdateHud(HudManager __instance)
+        {
+            base.UpdateHud(__instance);
+            var ToBeHaunted = PlayerControl.AllPlayerControls.ToArray().Where(x => ToHaunt.Contains(x.PlayerId)).ToList();
+            HauntButton.Update("HAUNT", HauntTimer(), CustomGameOptions.HauntCooldown, UsesLeft, ToBeHaunted, true, CanHaunt);
+        }
+
+        public void Haunt()
+        {
+            if (Utils.IsTooFar(Player, ClosestPlayer) || HauntTimer() != 0f || !CanHaunt)
+                return;
+
+            Utils.RpcMurderPlayer(Player, ClosestPlayer, DeathReasonEnum.Killed, false);
+            HasHaunted = true;
+            UsesLeft--;
+            LastHaunted = DateTime.UtcNow;
         }
     }
 }

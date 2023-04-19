@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 using TownOfUsReworked.Classes;
 using HarmonyLib;
+using TownOfUsReworked.Custom;
 
 namespace TownOfUsReworked.MultiClientInstancing
 {
@@ -18,6 +19,7 @@ namespace TownOfUsReworked.MultiClientInstancing
             if (!TownOfUsReworked.MCIActive)
                 return;
 
+            PlayerControl.LocalPlayer.DisableButtons();
             PlayerControl.LocalPlayer.NetTransform.RpcSnapTo(PlayerControl.LocalPlayer.transform.position);
             PlayerControl.LocalPlayer.moveable = false;
 
@@ -34,34 +36,14 @@ namespace TownOfUsReworked.MultiClientInstancing
 
             HudManager.Instance.SetHudActive(true);
 
-            //Hacky "fix" for twix, AD and Det
-            HudManager.Instance.KillButton.transform.parent.GetComponentsInChildren<Transform>().ToList().ForEach(x =>
-            {
-                if (x.gameObject.name == "KillButton(Clone)")
-                    Object.Destroy(x.gameObject);
-            });
-
-            HudManager.Instance.AbilityButton.transform.parent.GetComponentsInChildren<Transform>().ToList().ForEach(x =>
-            {
-                if (x.gameObject.name == "AbilityButton(Clone)")
-                    Object.Destroy(x.gameObject);
-            });
-
-            HudManager.Instance.transform.GetComponentsInChildren<Transform>().ToList().ForEach(x =>
-            {
-                if (x.gameObject.name == "KillButton(Clone)")
-                    Object.Destroy(x.gameObject);
-
-                if (x.gameObject.name == "AbilityButton(Clone)")
-                    Object.Destroy(x.gameObject);
-            });
-
             light.transform.SetParent(PlayerControl.LocalPlayer.transform);
             light.transform.localPosition = PlayerControl.LocalPlayer.Collider.offset;
 
             Camera.main!.GetComponent<FollowerCamera>().SetTarget(newPlayer);
             PlayerControl.LocalPlayer.MyPhysics.ResetMoveState(true);
             KillAnimation.SetMovement(PlayerControl.LocalPlayer, true);
+
+            PlayerControl.LocalPlayer.EnableButtons();
         }
 
         public static void SwitchTo(int clientId)

@@ -15,6 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
             TaskText = $"- You are ginormous{slowText}.";
             Color = CustomGameOptions.CustomModifierColors ? Colors.Giant : Colors.Modifier;
             ModifierType = ModifierEnum.Giant;
+            Type = LayerEnum.Giant;
         }
 
         public bool TryGetModifiedAppearance(out VisualAppearance appearance)

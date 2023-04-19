@@ -5,12 +5,15 @@ using TownOfUsReworked.Classes;
 using TownOfUsReworked.Modules;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Custom;
+using Hazel;
+using System.Linq;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Concealer : SyndicateRole
     {
-        public AbilityButton ConcealButton;
+        public CustomButton ConcealButton;
         public bool Enabled;
         public DateTime LastConcealed;
         public float TimeRemaining;
@@ -28,8 +31,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleAlignment = RoleAlignment.SyndicateDisruption;
             AlignmentName = SD;
             InspectorResults = InspectorResults.Unseen;
-            ConcealMenu = new CustomMenu(Player, new CustomMenu.Select(Click));
+            ConcealMenu = new(Player, Click);
             ConcealedPlayer = null;
+            Type = LayerEnum.Concealer;
+            ConcealButton = new(this, AssetManager.Placeholder, AbilityTypes.Effect, "Secondary", HitConceal);
         }
 
         public void Conceal()
@@ -56,9 +61,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastConcealed;
-            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.ConcealCooldown, CustomButtons.GetUnderdogChange(Player)) * 1000f;
-            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.ConcealCooldown) * 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
         public void Click(PlayerControl player)
@@ -67,8 +72,55 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (interact[3])
                 ConcealedPlayer = player;
+            else if (interact[0])
+                LastConcealed = DateTime.UtcNow;
             else if (interact[1])
                 LastConcealed.AddSeconds(CustomGameOptions.ProtectKCReset);
+        }
+
+        public void HitConceal()
+        {
+            if (ConcealTimer() != 0f || Concealed)
+                return;
+
+            if (HoldsDrive)
+            {
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+                writer.Write((byte)ActionsRPC.Conceal);
+                writer.Write(Player.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                TimeRemaining = CustomGameOptions.ConcealDuration;
+                Conceal();
+                Utils.Conceal();
+            }
+            else if (ConcealedPlayer == null)
+                ConcealMenu.Open(PlayerControl.AllPlayerControls.ToArray().Where(x => x != Player && x != ConcealedPlayer).ToList());
+            else
+            {
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+                writer.Write((byte)ActionsRPC.Conceal);
+                writer.Write(Player.PlayerId);
+                writer.Write(ConcealedPlayer.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                TimeRemaining = CustomGameOptions.ConcealDuration;
+                Conceal();
+                Utils.Invis(ConcealedPlayer, PlayerControl.LocalPlayer.Is(Faction.Syndicate));
+            }
+        }
+
+        public override void UpdateHud(HudManager __instance)
+        {
+            base.UpdateHud(__instance);
+            var flag = ConcealedPlayer == null && !HoldsDrive;
+            ConcealButton.Update(flag ? "SET TARGET" : "CONCEAL", ConcealTimer(), CustomGameOptions.ConcealCooldown, Concealed, TimeRemaining, CustomGameOptions.ConcealDuration);
+
+            if (Input.GetKeyDown(KeyCode.Backspace))
+            {
+                if (ConcealedPlayer != null && !HoldsDrive && !Concealed)
+                    ConcealedPlayer = null;
+
+                Utils.LogSomething("Removed a target");
+            }
         }
     }
 }

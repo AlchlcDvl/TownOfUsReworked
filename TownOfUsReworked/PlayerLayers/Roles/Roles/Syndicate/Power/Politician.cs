@@ -22,6 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             VoteBank = CustomGameOptions.MayorVoteBank;
             AlignmentName = SP;
             ExtraVotes = new();
+            Type = LayerEnum.Politician;
         }
     }
 }

@@ -31,7 +31,6 @@ namespace TownOfUsReworked.Data
         Remember,
         BaitReport,
         Transport,
-        SetUntransportable,
         Mediate,
         Vest,
         GAProtect,
@@ -39,14 +38,12 @@ namespace TownOfUsReworked.Data
         Poison,
         Infect,
         TimeFreeze,
-        Interrogate,
         Convert,
         Stake,
         Warp,
         WarpAll,
         SetUnwarpable,
         Teleport,
-        Maul,
         Conceal,
         Shapeshift,
         Steal,
@@ -69,6 +66,7 @@ namespace TownOfUsReworked.Data
         FadeBody,
         SetBomb,
         ForceKill,
+        SetUninteractable,
 
         None
     }
@@ -78,9 +76,7 @@ namespace TownOfUsReworked.Data
         Direct,
         Dead,
         Effect,
-        Vent,
-
-        None
+        Vent
     }
 
     public enum TurnRPC
@@ -254,21 +250,10 @@ namespace TownOfUsReworked.Data
     public enum CustomPlayerOutfitType
     {
         Default,
-        Shapeshifted,
         Morph,
         Camouflage,
         Invis,
         PlayerNameOnly
-    }
-
-    public enum LayerRPC
-    {
-        Role,
-        Ability,
-        Modifier,
-        Objectifier,
-
-        None
     }
 
     public enum TargetRPC
@@ -297,20 +282,15 @@ namespace TownOfUsReworked.Data
         NullRole,
 
         SetPhantom,
-        SetRevealer,
-        SetBanshee,
-        SetGhoul,
-
-        PhantomDied,
         CatchPhantom,
 
+        SetRevealer,
         CatchRevealer,
-        RevealerDied,
 
+        SetGhoul,
         CatchGhoul,
-        GhoulDied,
 
-        BansheeDied,
+        SetBanshee,
         CatchBanshee,
 
         Action,
@@ -328,6 +308,7 @@ namespace TownOfUsReworked.Data
 
         AddMayorVoteBank,
         AddPoliticianVoteBank,
+        AddRebPoliticianVoteBank,
         MeetingStart,
         CheckMurder,
 
@@ -508,6 +489,137 @@ namespace TownOfUsReworked.Data
         None
     }
 
+    public enum LayerEnum
+    {
+        Altruist,
+        Chameleon,
+        Coroner,
+        Crewmate,
+        Detective,
+        Engineer,
+        Escort,
+        Inspector,
+        Mayor,
+        Medic,
+        Medium,
+        Mystic,
+        Operative,
+        Retributionist,
+        Revealer,
+        Seer,
+        Sheriff,
+        Shifter,
+        Swapper,
+        TimeLord,
+        Tracker,
+        Transporter,
+        VampireHunter,
+        Veteran,
+        Vigilante,
+
+        Actor,
+        Amnesiac,
+        Arsonist,
+        BountyHunter,
+        Cannibal,
+        Cryomaniac,
+        Dracula,
+        Executioner,
+        Glitch,
+        GuardianAngel,
+        Guesser,
+        Jackal,
+        Jester,
+        Juggernaut,
+        Murderer,
+        Necromancer,
+        Pestilence,
+        Phantom,
+        Plaguebearer,
+        SerialKiller,
+        Survivor,
+        Thief,
+        Troll,
+        Werewolf,
+        Whisperer,
+        Betrayer,
+
+        Ambusher,
+        Blackmailer,
+        Camouflager,
+        Consigliere,
+        Consort,
+        Disguiser,
+        Enforcer,
+        Ghoul,
+        Godfather,
+        Grenadier,
+        Impostor,
+        Janitor,
+        Mafioso,
+        Miner,
+        Morphling,
+        PromotedGodfather,
+        Teleporter,
+        TimeMaster,
+        Wraith,
+
+        Anarchist,
+        Banshee,
+        Bomber,
+        Collider,
+        Concealer,
+        Crusader,
+        Drunkard,
+        Eraser,
+        Framer,
+        Poisoner,
+        Politician,
+        PromotedRebel,
+        Rebel,
+        Shapeshifter,
+        Sidekick,
+        Warper,
+
+        Bait,
+        Coward,
+        Diseased,
+        Drunk,
+        Dwarf,
+        Flincher,
+        Giant,
+        Indomitable,
+        Professional,
+        Shy,
+        VIP,
+        Volatile,
+
+        Allied,
+        Corrupted,
+        Fanatic,
+        Lovers,
+        Overlord,
+        Rivals,
+        Taskmaster,
+        Traitor,
+
+        Assassin,
+        ButtonBarry,
+        Diener,
+        Insider,
+        Multitasker,
+        Ninja,
+        Radar,
+        Ruthless,
+        Snitch,
+        Tiebreaker,
+        Torch,
+        Tunneler,
+        Underdog,
+
+        None
+    }
+
     public enum InspectorResults
     {
         MeddlesWithDead, //Janitor, Altruist, Necromancer
@@ -589,5 +701,166 @@ namespace TownOfUsReworked.Data
         NobodyWins,
 
         None
+    }
+
+    public enum DeadRevealed
+    {
+        Oldest,
+        Newest,
+        Random,
+        All
+    }
+
+    public enum VigiOptions
+    {
+        Immediate,
+        PreMeeting,
+        PostMeeting
+    }
+
+    public enum VigiNotif
+    {
+        Never,
+        Message,
+        Flash
+    }
+
+    public enum AdminDeadPlayers
+    {
+        Nobody,
+        Operative,
+        EveryoneButOperative,
+        Everyone
+    }
+
+    public enum ShieldOptions
+    {
+        Self,
+        Medic,
+        SelfAndMedic,
+        Everyone
+    }
+
+    public enum NotificationOptions
+    {
+        Medic,
+        Shielded,
+        ShieldedAndMedic,
+        Everyone,
+        Nobody
+    }
+
+    public enum BecomeEnum
+    {
+        Shifter,
+        Crewmate
+    }
+
+    public enum RetributionistActionsRPC
+    {
+        Protect,
+        AltruistRevive,
+        Alert,
+        EscRoleblock,
+        Transport,
+        Mediate,
+        Stake,
+        Swoop,
+        RetributionistRevive
+    }
+
+    public enum JanitorOptions
+    {
+        Never,
+        Body,
+        Bodyless,
+        Always
+    }
+
+    public enum DisguiserTargets
+    {
+        Everyone,
+        Intruders,
+        NonIntruders
+    }
+
+    public enum ConsigInfo
+    {
+        Role,
+        Faction
+    }
+
+    public enum RevealerCanBeClickedBy
+    {
+        All,
+        NonCrew,
+        EvilsOnly
+    }
+
+    public enum AlliedFaction
+    {
+        Random,
+        Intruder,
+        Syndicate,
+        Crew
+    }
+
+    public enum GodfatherActionsRPC
+    {
+        Morph,
+        Camouflage,
+        Invis,
+        Disguise,
+        Drag,
+        Drop,
+        FlashGrenade,
+        Blackmail,
+        Infect,
+        TimeFreeze,
+        ConsRoleblock,
+        SetBomb,
+        Ambush
+    }
+
+    public enum SyndicateVentOptions
+    {
+        Always,
+        ChaosDrive,
+        Never
+    }
+
+    public enum RebelActionsRPC
+    {
+        Poison,
+        Warp,
+        Conceal,
+        Shapeshift,
+        Confuse,
+        Frame,
+        Crusade
+    }
+
+    public enum ProtectOptions
+    {
+        Self,
+        GA,
+        SelfAndGA,
+        Everyone
+    }
+
+    public enum NoSolo
+    {
+        Never,
+        SameNKs,
+        AllNKs,
+        AllNeutrals
+    }
+
+    public enum SKVentOptions
+    {
+        Always,
+        Bloodlust,
+        NoLust,
+        Never
     }
 }

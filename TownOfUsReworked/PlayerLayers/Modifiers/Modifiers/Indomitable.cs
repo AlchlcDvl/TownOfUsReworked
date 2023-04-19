@@ -12,6 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
             Color = CustomGameOptions.CustomModifierColors ? Colors.Indomitable : Colors.Modifier;
             ModifierType = ModifierEnum.Indomitable;
             Hidden = !CustomGameOptions.IndomitableKnows;
+            Type = LayerEnum.Indomitable;
         }
     }
 }

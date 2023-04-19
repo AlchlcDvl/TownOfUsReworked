@@ -9,17 +9,13 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
     [HarmonyPatch]
     public class Ability : PlayerLayer
     {
-        public static readonly Dictionary<byte, Ability> AbilityDictionary = new();
-        public static List<Ability> AllAbilities => AbilityDictionary.Values.ToList();
+        public static readonly List<Ability> AllAbilities = new();
 
         protected Ability(PlayerControl player) : base(player)
         {
-            if (AbilityDictionary.ContainsKey(player.PlayerId))
-                AbilityDictionary.Remove(player.PlayerId);
-
-            AbilityDictionary.Add(player.PlayerId, this);
             Color = Colors.Ability;
             LayerType = PlayerLayerEnum.Ability;
+            AllAbilities.Add(this);
         }
 
         public string TaskText = "- None.";

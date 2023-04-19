@@ -7,19 +7,21 @@ using Il2CppSystem.Collections.Generic;
 using TownOfUsReworked.Modules;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Data;
+using TownOfUsReworked.Custom;
+using Hazel;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Grenadier : IntruderRole
     {
-        public AbilityButton FlashButton;
+        public CustomButton FlashButton;
         public bool Enabled;
         public DateTime LastFlashed;
         public float TimeRemaining;
         private static List<PlayerControl> ClosestPlayers = new();
-        private static readonly Color NormalVision = new Color32(212, 212, 212, 0);
-        private static readonly Color DimVision = new Color32(212, 212, 212, 51);
-        private static readonly Color BlindVision = new Color32(212, 212, 212, 255);
+        private static readonly Color32 NormalVision = new(212, 212, 212, 0);
+        private static readonly Color32 DimVision = new(212, 212, 212, 51);
+        private static readonly Color32 BlindVision = new(212, 212, 212, 255);
         public List<PlayerControl> FlashedPlayers = new();
         public bool Flashed => TimeRemaining > 0f;
 
@@ -35,13 +37,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             InspectorResults = InspectorResults.DropsItems;
             ClosestPlayers = new();
             FlashedPlayers = new();
+            Type = LayerEnum.Grenadier;
+            FlashButton = new(this, AssetManager.Flash, AbilityTypes.Effect, "Secondary", HitFlash);
         }
 
         public float FlashTimer()
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastFlashed;
-            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.GrenadeCd, CustomButtons.GetUnderdogChange(Player)) * 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.GrenadeCd) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
@@ -70,7 +74,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             foreach (var player in ClosestPlayers)
             {
-                if (PlayerControl.LocalPlayer.PlayerId == player.PlayerId)
+                if (PlayerControl.LocalPlayer == player)
                 {
                     HudManager.Instance.FullScreen.enabled = true;
                     HudManager.Instance.FullScreen.gameObject.active = true;
@@ -132,9 +136,70 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Enabled = false;
             LastFlashed = DateTime.UtcNow;
-            HudManager.Instance.FullScreen.enabled = true;
             HudManager.Instance.FullScreen.color = NormalVision;
             FlashedPlayers.Clear();
+            var fs = false;
+
+            switch (GameOptionsManager.Instance.currentNormalGameOptions.MapId)
+            {
+                case 0:
+                case 1:
+                case 3:
+                    var reactor1 = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
+                    var oxygen1 = ShipStatus.Instance.Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
+                    fs = reactor1.IsActive || oxygen1.IsActive;
+                    break;
+
+                case 2:
+                    var seismic = ShipStatus.Instance.Systems[SystemTypes.Laboratory].Cast<ReactorSystemType>();
+                    fs = seismic.IsActive;
+                    break;
+
+                case 4:
+                    var reactor = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<HeliSabotageSystem>();
+                    fs = reactor.IsActive;
+                    break;
+
+                case 5:
+                    fs = PlayerControl.LocalPlayer.myTasks.ToArray().Any(x => x.TaskType == SubmergedCompatibility.RetrieveOxygenMask);
+                    break;
+
+                case 6:
+                    var reactor3 = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
+                    var oxygen3 = ShipStatus.Instance.Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
+                    var seismic2 = ShipStatus.Instance.Systems[SystemTypes.Laboratory].Cast<ReactorSystemType>();
+                    fs = reactor3.IsActive || seismic2.IsActive || oxygen3.IsActive;
+                    break;
+            }
+
+            HudManager.Instance.FullScreen.enabled = fs;
+        }
+
+        public void HitFlash()
+        {
+            var system = ShipStatus.Instance.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>();
+            var dummyActive = system.dummy.IsActive;
+            var sabActive = system.specials.ToArray().Any(s => s.IsActive);
+
+            if (sabActive || dummyActive || FlashTimer() != 0f)
+                return;
+
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+            writer.Write((byte)ActionsRPC.FlashGrenade);
+            writer.Write(Player.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            TimeRemaining = CustomGameOptions.GrenadeDuration;
+            Flash();
+        }
+
+        public override void UpdateHud(HudManager __instance)
+        {
+            base.UpdateHud(__instance);
+            var system = ShipStatus.Instance.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>();
+            var dummyActive = system.dummy.IsActive;
+            var sabActive = system.specials.ToArray().Any(s => s.IsActive);
+            var condition = !dummyActive && !sabActive;
+            FlashButton.Update("FLASH", FlashTimer(), CustomGameOptions.GrenadeCd, Flashed, TimeRemaining, CustomGameOptions.GrenadeDuration, condition);
         }
     }
 }

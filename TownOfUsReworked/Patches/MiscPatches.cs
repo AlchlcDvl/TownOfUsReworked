@@ -8,6 +8,8 @@ using AmongUs.Data.Player;
 using AmongUs.Data.Legacy;
 using TownOfUsReworked.Crowded.Components;
 using TownOfUsReworked.CustomOptions;
+using TownOfUsReworked.Data;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.Patches
 {
@@ -20,22 +22,10 @@ namespace TownOfUsReworked.Patches
             public static void Prefix(ref GameSettingMenu __instance) => __instance.HideForOnline = new Il2CppReferenceArray<Transform>(0);
         }
 
-        [HarmonyPatch(typeof(GameStartManager), nameof(GameStartManager.Update))]
-        public static class UpdatePatch
-        {
-            public static void Prefix(GameStartManager __instance) => __instance.MinPlayers = 1;
-        }
-
         [HarmonyPatch(typeof(RoleBehaviour), nameof(RoleBehaviour.IsAffectedByComms), MethodType.Getter)]
         public static class ButtonsPatch
         {
             public static void Postfix(ref bool __result) => __result = false;
-        }
-
-        [HarmonyPatch(typeof(DoorCardSwipeGame), nameof(DoorCardSwipeGame.Begin))]
-        public static class DoorSwipePatch
-        {
-            public static void Prefix(DoorCardSwipeGame __instance) => __instance.minAcceptedTime = CustomGameOptions.MinDoorSwipeTime;
         }
 
         //Vent and kill shit
@@ -45,13 +35,10 @@ namespace TownOfUsReworked.Patches
         {
             public static void Postfix(Vent __instance, [HarmonyArgument(1)] ref bool mainTarget)
             {
-                var active = PlayerControl.LocalPlayer != null && !MeetingHud.Instance && Utils.CanVent(PlayerControl.LocalPlayer, PlayerControl.LocalPlayer.Data);
+                var active = PlayerControl.LocalPlayer != null && !MeetingHud.Instance && PlayerControl.LocalPlayer.CanVent();
                 var role = Role.GetRole(PlayerControl.LocalPlayer);
 
-                if (role == null)
-                    return;
-
-                if (!active)
+                if (role == null || !active)
                     return;
 
                 __instance.myRend.material.SetColor("_OutlineColor", role.Color);
@@ -133,34 +120,22 @@ namespace TownOfUsReworked.Patches
             public static void Postfix(ref SecurityLogger __instance) => __instance.Timers = new float[127];
         }
 
-        [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
-        public static class MeetingHudStartPatch
-        {
-            public static void Postfix(MeetingHud __instance) => __instance.gameObject.AddComponent<MeetingHudPagingBehaviour>().meetingHud = __instance;
-        }
-
-        [HarmonyPatch(typeof(ShapeshifterMinigame), nameof(ShapeshifterMinigame.Begin))]
-        public static class ShapeshifterMinigameBeginPatch
-        {
-            public static void Postfix(ShapeshifterMinigame __instance) => __instance.gameObject.AddComponent<ShapeShifterPagingBehaviour>().shapeshifterMinigame = __instance;
-        }
-
-        /*[HarmonyPatch(typeof(ShapeshifterMinigame), nameof(ShapeshifterMinigame.Close))]
-        public static class ShapeshifterMinigameClosePatch
-        {
-            public static void Postfix(ShapeshifterMinigame __instance) => __instance.gameObject.GetComponent<ShapeShifterPagingBehaviour>().Close();
-        }*/
-
         [HarmonyPatch(typeof(VitalsMinigame), nameof(VitalsMinigame.Begin))]
         public static class VitalsMinigameBeginPatch
         {
-            public static void Postfix(VitalsMinigame __instance) => __instance.gameObject.AddComponent<VitalsPagingBehaviour>().vitalsMinigame = __instance;
+            public static void Postfix(VitalsMinigame __instance)
+            {
+                __instance.gameObject.AddComponent<VitalsPagingBehaviour>().vitalsMinigame = __instance;
+
+                if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.TimeLord) && Minigame.Instance && !PlayerControl.LocalPlayer.Data.IsDead)
+                    __instance.Close();
+            }
         }
 
-        /*[HarmonyPatch(typeof(VitalsMinigame), nameof(VitalsMinigame.Close))]
-        public static class VitalsMinigameClosePatch
+        [HarmonyPatch(typeof(MapBehaviour), nameof(MapBehaviour.ShowSabotageMap))]
+        public static class Sabotage
         {
-            public static void Postfix(VitalsMinigame __instance) => __instance.gameObject.GetComponent<VitalsPagingBehaviour>().Close();
-        }*/
+            public static bool Prefix() => PlayerControl.LocalPlayer.Is(Faction.Intruder) && CustomGameOptions.IntrudersCanSabotage;
+        }
     }
 }

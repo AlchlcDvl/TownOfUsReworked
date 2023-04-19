@@ -613,7 +613,7 @@ namespace TownOfUsReworked.CustomOptions
                 Scroller.ContentYBounds = new FloatRange(MinY, maxY);
 
                 // Prevent scrolling when the player is interacting with a menu
-                if (PlayerControl.LocalPlayer?.CanMove != true)
+                if (PlayerControl.LocalPlayer?.CanMove == false)
                 {
                     __instance.GameSettings.transform.localPosition = LastPosition;
                     return;

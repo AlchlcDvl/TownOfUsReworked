@@ -14,7 +14,8 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             TaskText = $"- Stay alive for {CustomGameOptions.OverlordMeetingWinCount} meetings";
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Overlord : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Overlord;
-            Hidden = !CustomGameOptions.OverlordKnows;
+            Hidden = !CustomGameOptions.OverlordKnows && !IsDead;
+            Type = LayerEnum.Overlord;
         }
     }
 }

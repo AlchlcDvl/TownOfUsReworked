@@ -2,6 +2,8 @@ using TownOfUsReworked.Data;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Extensions;
+using Hazel;
+using TownOfUsReworked.Custom;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -9,7 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     {
         public Role FormerRole;
         public Godfather Godfather;
-        public bool CanPromote => Godfather.Player.Data.IsDead || Godfather.Player.Data.Disconnected;
+        public bool CanPromote => (Godfather.IsDead || Godfather.Player.Data.Disconnected) && !IsDead;
 
         public Mafioso(PlayerControl player) : base(player)
         {
@@ -21,23 +23,40 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = CustomGameOptions.CustomIntColors ? Colors.Mafioso : Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderUtil;
             AlignmentName = IU;
+            Type = LayerEnum.Mafioso;
         }
 
         public void TurnGodfather()
         {
-            var role = new PromotedGodfather(Player)
+            var newRole = new PromotedGodfather(Player)
             {
                 FormerRole = FormerRole,
-                RoleBlockImmune = FormerRole.RoleBlockImmune
+                RoleBlockImmune = FormerRole.RoleBlockImmune,
+                RoleAlignment = FormerRole.RoleAlignment,
+                AlignmentName = FormerRole.AlignmentName
             };
 
-            role.RoleUpdate(this);
+            newRole.RoleUpdate(this);
 
             if (Player == PlayerControl.LocalPlayer)
-                Utils.Flash(Colors.Godfather, "You have been promoted to <color=#404C08FF>Godfather</color>!");
+                Utils.Flash(Colors.Godfather);
 
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
-                Utils.Flash(Colors.Seer, "Someone has changed their identity!");
+                Utils.Flash(Colors.Seer);
+        }
+
+        public override void UpdateHud(HudManager __instance)
+        {
+            base.UpdateHud(__instance);
+
+            if (CanPromote && !Player.Data.IsDead)
+            {
+                TurnGodfather();
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
+                writer.Write((byte)TurnRPC.TurnGodfather);
+                writer.Write(Player.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+            }
         }
     }
 }

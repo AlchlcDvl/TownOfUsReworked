@@ -4,16 +4,19 @@ using TownOfUsReworked.Data;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using System;
-using TownOfUsReworked.Modules;
 using System.Collections;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Custom;
+using Hazel;
+using Reactor.Utilities;
+using System.Linq;
+using HarmonyLib;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Warper : SyndicateRole
     {
-        public AbilityButton WarpButton;
+        public CustomButton WarpButton;
         public DateTime LastWarped;
         public PlayerControl WarpPlayer1;
         public PlayerControl WarpPlayer2;
@@ -32,17 +35,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             WarpPlayer1 = null;
             WarpPlayer2 = null;
             UnwarpablePlayers = new();
-            WarpMenu1 = new CustomMenu(Player, new CustomMenu.Select(Click1));
-            WarpMenu2 = new CustomMenu(Player, new CustomMenu.Select(Click2));
+            WarpMenu1 = new(Player, Click1);
+            WarpMenu2 = new(Player, Click2);
+            Type = LayerEnum.Warper;
+            WarpButton = new(this, AssetManager.Warp, AbilityTypes.Effect, "Secondary", Warp);
         }
 
         public float WarpTimer()
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastWarped;
-            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.WarpCooldown, CustomButtons.GetUnderdogChange(Player)) * 1000f;
-            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.WarpCooldown) * 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
         public IEnumerator WarpPlayers()
@@ -73,7 +78,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 while (SubmergedCompatibility.GetInTransition())
                     yield return null;
 
-                Vent = CustomButtons.GetClosestVent(WarpPlayer2);
+                Vent = WarpPlayer2.GetClosestVent();
                 WasInVent = true;
             }
 
@@ -89,7 +94,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     SubmergedCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
                 }
 
-                if (WarpPlayer1.CanVent(WarpPlayer1.Data) && Vent != null && WasInVent)
+                if (WarpPlayer1.CanVent() && Vent != null && WasInVent)
                     WarpPlayer1.MyPhysics.RpcEnterVent(Vent.Id);
             }
             else if (Player1Body != null && Player2Body == null)
@@ -145,6 +150,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (interact[3])
                 WarpPlayer1 = player;
+            else if (interact[0])
+                LastWarped = DateTime.UtcNow;
             else if (interact[1])
                 LastWarped.AddSeconds(CustomGameOptions.ProtectKCReset);
         }
@@ -155,8 +162,75 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (interact[3])
                 WarpPlayer2 = player;
+            else if (interact[0])
+                LastWarped = DateTime.UtcNow;
             else if (interact[1])
                 LastWarped.AddSeconds(CustomGameOptions.ProtectKCReset);
+        }
+
+        public void Warp()
+        {
+            if (WarpTimer() != 0f)
+                return;
+
+            if (HoldsDrive)
+            {
+                Utils.Warp();
+                LastWarped = DateTime.UtcNow;
+            }
+            else
+            {
+                var targets = PlayerControl.AllPlayerControls.ToArray().Where(x => !(x == WarpPlayer1 || x == WarpPlayer2 || (x == Player && !CustomGameOptions.WarpSelf)
+                    || (x.Data.IsDead && Utils.BodyById(x.PlayerId) == null) || UnwarpablePlayers.ContainsKey(x.PlayerId))).ToList();
+
+                if (WarpPlayer1 == null)
+                    WarpMenu1.Open(targets);
+                else if (WarpPlayer2 == null)
+                    WarpMenu2.Open(targets);
+                else
+                {
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+                    writer.Write((byte)ActionsRPC.Warp);
+                    writer.Write(Player.PlayerId);
+                    writer.Write(WarpPlayer1.PlayerId);
+                    writer.Write(WarpPlayer2.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Coroutines.Start(WarpPlayers());
+                    LastWarped = DateTime.UtcNow;
+                }
+            }
+        }
+
+        public override void UpdateHud(HudManager __instance)
+        {
+            base.UpdateHud(__instance);
+            var flag1 = WarpPlayer1 == null && !HoldsDrive;
+            var flag2 = WarpPlayer2 == null && !HoldsDrive;
+            WarpButton.Update(flag1 ? "FIRST TARGET" : (flag2 ? "SECOND TARGET" : "WARP"), WarpTimer(), CustomGameOptions.WarpCooldown);
+
+            if (Input.GetKeyDown(KeyCode.Backspace))
+            {
+                if (!HoldsDrive)
+                {
+                    if (WarpPlayer2 != null)
+                        WarpPlayer2 = null;
+                    else if (WarpPlayer1 != null)
+                        WarpPlayer1 = null;
+                }
+
+                Utils.LogSomething("Removed a target");
+            }
+
+            foreach (var entry in UnwarpablePlayers)
+            {
+                var player = Utils.PlayerById(entry.Key);
+
+                if (player?.Data.IsDead == true || player.Data.Disconnected)
+                    continue;
+
+                if (UnwarpablePlayers.ContainsKey(player.PlayerId) && player.moveable && UnwarpablePlayers.GetValueSafe(player.PlayerId).AddSeconds(0.5) < DateTime.UtcNow)
+                    UnwarpablePlayers.Remove(player.PlayerId);
+            }
         }
     }
 }

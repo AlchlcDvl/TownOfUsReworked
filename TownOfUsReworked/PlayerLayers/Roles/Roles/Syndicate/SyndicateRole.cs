@@ -6,6 +6,8 @@ using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Modules;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Data;
+using TownOfUsReworked.Custom;
+using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -13,7 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     {
         public DateTime LastKilled;
         public PlayerControl ClosestPlayer;
-        public AbilityButton KillButton;
+        public CustomButton KillButton;
         public bool HoldsDrive => Player == DriveHolder || (CustomGameOptions.GlobalDrive && SyndicateHasChaosDrive);
 
         protected SyndicateRole(PlayerControl player) : base(player)
@@ -23,15 +25,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = Colors.Syndicate;
             Objectives = SyndicateWinCon;
             BaseFaction = Faction.Syndicate;
-            AbilitiesText = (RoleType is not RoleEnum.Anarchist and not RoleEnum.Sidekick ? "- With the Chaos Drive, you can kill players directly" : "- You can kill") +
-                (CustomGameOptions.AltImps ? "- You can sabotage the systems to distract the <color=#8BFDFDFF>Crew</color>" : "");
+            AbilitiesText = (RoleType is not RoleEnum.Anarchist and not RoleEnum.Sidekick && RoleAlignment != RoleAlignment.SyndicateKill ? "- With the Chaos Drive, you can kill " +
+                "players directly" : "- You can kill") + (CustomGameOptions.AltImps ? "- You can sabotage the systems to distract the <color=#8BFDFDFF>Crew</color>" : "");
+            KillButton = new(this, AssetManager.SyndicateKill, AbilityTypes.Direct, "ActionSecondary", Kill);
         }
 
         public float KillTimer()
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastKilled;
-            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.ChaosDriveKillCooldown, CustomButtons.GetUnderdogChange(Player) + (!HoldsDrive && RoleType is RoleEnum.Anarchist
+            var num = Player.GetModifiedCooldown(CustomGameOptions.ChaosDriveKillCooldown + (!HoldsDrive && RoleType is RoleEnum.Anarchist
                 ? CustomGameOptions.ChaosDriveCooldownDecrease : 0)) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -119,6 +122,41 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
 
             return false;
+        }
+
+        public void Kill()
+        {
+            if (Utils.IsTooFar(Player, ClosestPlayer) || KillTimer() != 0f)
+                return;
+
+            var interact = Utils.Interact(Player, ClosestPlayer, true);
+
+            if (interact[3])
+            {
+                if (Player.Is(RoleEnum.Politician))
+                    ((Politician)this).VoteBank++;
+                else if (Player.Is(RoleEnum.PromotedRebel))
+                {
+                    var reb = (PromotedRebel)this;
+
+                    if (reb.IsPol)
+                        reb.VoteBank++;
+                }
+            }
+
+            if (interact[0])
+                LastKilled = DateTime.UtcNow;
+            else if (interact[1])
+                LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
+            else if (interact[2])
+                LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
+        }
+
+        public override void UpdateHud(HudManager __instance)
+        {
+            base.UpdateHud(__instance);
+            var notSyn = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Syndicate)).ToList();
+            KillButton.Update("KILL", KillTimer(), CustomGameOptions.ChaosDriveKillCooldown, notSyn);
         }
     }
 }

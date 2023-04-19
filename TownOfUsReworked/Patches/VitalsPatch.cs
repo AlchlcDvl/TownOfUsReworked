@@ -22,10 +22,7 @@ namespace TownOfUsReworked.Patches
                 var isRet = localPlayer.Is(RoleEnum.Retributionist);
 
                 if (isRet)
-                {
-                    var retRole = Role.GetRole<Retributionist>(localPlayer);
-                    isOP = retRole.RevivedRole?.RoleType == RoleEnum.Operative;
-                }
+                    isOP = Role.GetRole<Retributionist>(localPlayer).IsOP;
             }
 
             if (!isOP)
@@ -40,7 +37,7 @@ namespace TownOfUsReworked.Patches
                     continue;
 
                 var deadBody = Murder.KilledPlayers.First(x => x.PlayerId == info.PlayerId);
-                var num = (float) (DateTime.UtcNow - deadBody.KillTime).TotalMilliseconds;
+                var num = (float)(DateTime.UtcNow - deadBody.KillTime).TotalMilliseconds;
                 var cardio = panel.Cardio.gameObject;
                 var tmp = cardio.GetComponent<TMPro.TextMeshPro>();
                 var transform = tmp.transform;

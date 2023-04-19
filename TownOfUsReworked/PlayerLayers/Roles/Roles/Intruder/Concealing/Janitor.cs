@@ -5,14 +5,19 @@ using UnityEngine;
 using TownOfUsReworked.Classes;
 using System;
 using TownOfUsReworked.Data;
+using TownOfUsReworked.Custom;
+using Hazel;
+using Reactor.Utilities;
+using HarmonyLib;
+using Reactor.Networking.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Janitor : IntruderRole
     {
-        public AbilityButton CleanButton;
-        public AbilityButton DragButton;
-        public AbilityButton DropButton;
+        public CustomButton CleanButton;
+        public CustomButton DragButton;
+        public CustomButton DropButton;
         public DateTime LastDragged;
         public DeadBody CurrentlyDragging;
         public DeadBody CurrentTarget;
@@ -22,21 +27,25 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Janitor";
             StartText = "Sanitise The Ship, By Any Means Neccessary";
-            AbilitiesText = $"- You can clean up dead bodies, making them disappear from sight\n- You can drag bodies away to prevent them from getting reported.\n{AbilitiesText}";
+            AbilitiesText = $"- You can clean up dead bodies, making them disappear from sight\n- You can drag bodies away to prevent them from getting reported\n{AbilitiesText}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Janitor : Colors.Intruder;
             RoleType = RoleEnum.Janitor;
             RoleAlignment = RoleAlignment.IntruderConceal;
             AlignmentName = IC;
             InspectorResults = InspectorResults.MeddlesWithDead;
             CurrentlyDragging = null;
+            Type = LayerEnum.Janitor;
+            CleanButton = new(this, AssetManager.Clean, AbilityTypes.Dead, "Secondary", Clean);
+            DragButton = new(this, AssetManager.Drag, AbilityTypes.Dead, "Tertiary", Drag);
+            DropButton = new(this, AssetManager.Drop, AbilityTypes.Effect, "Tertiary", Drop);
         }
 
         public float CleanTimer()
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastCleaned;
-            var num = CustomButtons.GetModifiedCooldown(ConstantVariables.LastImp && CustomGameOptions.SoloBoost ? (CustomGameOptions.JanitorCleanCd - CustomGameOptions.UnderdogKillBonus) :
-                CustomGameOptions.JanitorCleanCd, CustomButtons.GetUnderdogChange(Player)) * 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.JanitorCleanCd, ConstantVariables.LastImp && CustomGameOptions.SoloBoost ? -CustomGameOptions.UnderdogKillBonus : 0) *
+                1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
@@ -45,9 +54,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastDragged;
-            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.DragCd, CustomButtons.GetUnderdogChange(Player)) * 1000f;
-            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.DragCd) * 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
         public static void DragBody(PlayerControl __instance)
@@ -99,6 +108,77 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
 
             __instance.moveable = true;
+        }
+
+        public void Clean()
+        {
+            if (CleanTimer() != 0f || Utils.IsTooFar(Player, CurrentTarget))
+                return;
+
+            var playerId = CurrentTarget.ParentId;
+            var player = Utils.PlayerById(playerId);
+            Utils.Spread(Player, player);
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+            writer.Write((byte)ActionsRPC.FadeBody);
+            writer.Write(playerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            Coroutines.Start(Utils.FadeBody(CurrentTarget));
+            LastCleaned = DateTime.UtcNow;
+
+            if (CustomGameOptions.JaniCooldownsLinked)
+                LastKilled = DateTime.UtcNow;
+        }
+
+        public void Drag()
+        {
+            if (Utils.IsTooFar(Player, CurrentTarget) || CurrentlyDragging != null)
+                return;
+
+            var playerId = CurrentTarget.ParentId;
+            var player = Utils.PlayerById(playerId);
+            Utils.Spread(Player, player);
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+            writer.Write((byte)ActionsRPC.Drag);
+            writer.Write(Player.PlayerId);
+            writer.Write(playerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            CurrentlyDragging = CurrentTarget;
+        }
+
+        public void Drop()
+        {
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+            writer.Write((byte)ActionsRPC.Drop);
+            writer.Write(Player.PlayerId);
+            Vector3 position = PlayerControl.LocalPlayer.GetTruePosition();
+
+            if (SubmergedCompatibility.IsSubmerged())
+            {
+                if (position.y > -7f)
+                    position.z = 0.0208f;
+                else
+                    position.z = -0.0273f;
+            }
+
+            position.y -= 0.3636f;
+            writer.Write(position);
+            writer.Write(position.z);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+
+            foreach (var component in CurrentlyDragging?.bodyRenderers)
+                component.material.SetFloat("_Outline", 0f);
+
+            CurrentlyDragging.transform.position = position;
+            CurrentlyDragging = null;
+            LastDragged = DateTime.UtcNow;
+        }
+
+        public override void UpdateHud(HudManager __instance)
+        {
+            base.UpdateHud(__instance);
+            CleanButton.Update("CLEAN", CleanTimer(), CustomGameOptions.JanitorCleanCd, true, CurrentlyDragging == null);
+            DragButton.Update("DRAG", DragTimer(), CustomGameOptions.DragCd, true, CurrentlyDragging == null);
+            DropButton.Update("DROP", 0, 1, true, CurrentlyDragging != null);
         }
     }
 }

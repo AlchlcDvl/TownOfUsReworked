@@ -6,6 +6,8 @@ using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Modules;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Data;
+using TownOfUsReworked.Custom;
+using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -13,7 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     {
         public DateTime LastKilled;
         public PlayerControl ClosestPlayer;
-        public AbilityButton KillButton;
+        public CustomButton KillButton;
 
         protected IntruderRole(PlayerControl player) : base(player)
         {
@@ -23,13 +25,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Objectives = IntrudersWinCon;
             BaseFaction = Faction.Intruder;
             AbilitiesText = "- You can kill players\n- You can call sabotages to distract the <color=#8BFDFDFF>Crew</color>";
+            KillButton = new(this, AssetManager.IntruderKill, AbilityTypes.Direct, "ActionSecondary", Kill);
         }
 
         public float KillTimer()
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastKilled;
-            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.IntKillCooldown, CustomButtons.GetUnderdogChange(Player)) * 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.IntKillCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
@@ -116,6 +119,83 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
 
             return false;
+        }
+
+        public void Kill()
+        {
+            if (Utils.IsTooFar(Player, ClosestPlayer) || KillTimer() != 0f)
+                return;
+
+            var interact = Utils.Interact(Player, ClosestPlayer, true);
+
+            if (Player.Is(RoleEnum.Janitor))
+            {
+                var jani = (Janitor)this;
+
+                if (interact[3]  || interact[0])
+                {
+                    jani.LastKilled = DateTime.UtcNow;
+
+                    if (CustomGameOptions.JaniCooldownsLinked)
+                        jani.LastCleaned = DateTime.UtcNow;
+                }
+                else if (interact[1])
+                {
+                    jani.LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
+
+                    if (CustomGameOptions.JaniCooldownsLinked)
+                        jani.LastCleaned.AddSeconds(CustomGameOptions.ProtectKCReset);
+                }
+                else if (interact[2])
+                {
+                    jani.LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
+
+                    if (CustomGameOptions.JaniCooldownsLinked)
+                        jani.LastCleaned.AddSeconds(CustomGameOptions.VestKCReset);
+                }
+            }
+            else if (Player.Is(RoleEnum.PromotedGodfather))
+            {
+                var gf = (PromotedGodfather)this;
+
+                if (interact[3]  || interact[0])
+                {
+                    gf.LastKilled = DateTime.UtcNow;
+
+                    if (CustomGameOptions.JaniCooldownsLinked && gf.FormerRole?.RoleType == RoleEnum.Janitor)
+                        gf.LastCleaned = DateTime.UtcNow;
+                }
+                else if (interact[1])
+                {
+                    gf.LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
+
+                    if (CustomGameOptions.JaniCooldownsLinked && gf.FormerRole?.RoleType == RoleEnum.Janitor)
+                        gf.LastCleaned.AddSeconds(CustomGameOptions.ProtectKCReset);
+                }
+                else if (interact[2])
+                {
+                    gf.LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
+
+                    if (CustomGameOptions.JaniCooldownsLinked && gf.FormerRole?.RoleType == RoleEnum.Janitor)
+                        gf.LastCleaned.AddSeconds(CustomGameOptions.VestKCReset);
+                }
+            }
+            else
+            {
+                if (interact[3] || interact[0])
+                    LastKilled = DateTime.UtcNow;
+                else if (interact[1])
+                    LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
+                else if (interact[2])
+                    LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
+            }
+        }
+
+        public override void UpdateHud(HudManager __instance)
+        {
+            base.UpdateHud(__instance);
+            var notImp = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Intruder)).ToList();
+            KillButton.Update("KILL", KillTimer(), CustomGameOptions.IntKillCooldown, notImp);
         }
     }
 }

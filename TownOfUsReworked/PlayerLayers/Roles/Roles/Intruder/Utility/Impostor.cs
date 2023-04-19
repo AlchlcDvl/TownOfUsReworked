@@ -12,6 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleAlignment = RoleAlignment.IntruderUtil;
             AlignmentName = IU;
             Base = true;
+            Type = LayerEnum.Impostor;
         }
     }
 }

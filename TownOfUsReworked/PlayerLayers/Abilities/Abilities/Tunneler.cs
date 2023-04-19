@@ -11,7 +11,8 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             TaskText = "- You can finish tasks to be able to vent.";
             Color = CustomGameOptions.CustomAbilityColors ? Colors.Tunneler : Colors.Ability;
             AbilityType = AbilityEnum.Tunneler;
-            Hidden = !CustomGameOptions.TunnelerKnows;
+            Hidden = !CustomGameOptions.TunnelerKnows && !TasksDone;
+            Type = LayerEnum.Tunneler;
         }
     }
 }

@@ -12,13 +12,10 @@ using UnityEngine;
 using Reactor.Utilities;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.Data;
-using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PhantomMod;
-using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod;
-using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GhoulMod;
-using TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BansheeMod;
 using Hazel;
 using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Modules;
+using TownOfUsReworked.Patches;
+using TownOfUsReworked.Custom;
 
 namespace TownOfUsReworked.Classes
 {
@@ -45,9 +42,9 @@ namespace TownOfUsReworked.Classes
                 if (!Loaded)
                     return null;
 
-                if (_submarineStatus?.WasCollected != false || !_submarineStatus || _submarineStatus == null)
+                if (_submarineStatus?.WasCollected == true || !_submarineStatus || _submarineStatus == null)
                 {
-                    if (ShipStatus.Instance?.WasCollected != false || !ShipStatus.Instance || ShipStatus.Instance == null)
+                    if (ShipStatus.Instance?.WasCollected == true || !ShipStatus.Instance || ShipStatus.Instance == null)
                         return _submarineStatus = null;
                     else if (ShipStatus.Instance.Type == SUBMERGED_MAP_TYPE)
                         return _submarineStatus = ShipStatus.Instance.GetComponent(Il2CppType.From(SubmarineStatusType))?.TryCast(SubmarineStatusType) as MonoBehaviour;
@@ -222,11 +219,7 @@ namespace TownOfUsReworked.Classes
         {
             Coroutines.Start(WaitMeeting(() => ResetTimers(false)));
             Coroutines.Start(WaitMeeting(GhostRoleBegin));
-
-            SetPhantom.ExileControllerPostfix(ExileController.Instance);
-            SetRevealer.ExileControllerPostfix(ExileController.Instance);
-            SetGhoul.ExileControllerPostfix(ExileController.Instance);
-            SetBanshee.ExileControllerPostfix(ExileController.Instance);
+            SetPostmortals.ExileControllerPostfix(ExileController.Instance);
         }
 
         public static IEnumerator WaitStart(Action next)
@@ -260,7 +253,7 @@ namespace TownOfUsReworked.Classes
             if (PlayerControl.LocalPlayer.Data.IsDead)
                 return;
 
-            CustomButtons.ResetCustomTimers(start);
+            ButtonUtils.ResetCustomTimers(start);
         }
 
         public static void GhostRoleBegin()

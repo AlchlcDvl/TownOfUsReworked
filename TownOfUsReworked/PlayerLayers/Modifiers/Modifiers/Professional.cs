@@ -15,6 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
             ModifierType = ModifierEnum.Professional;
             Hidden = !CustomGameOptions.ProfessionalKnows && !LifeUsed;
             LifeUsed = false;
+            Type = LayerEnum.Professional;
         }
     }
 }

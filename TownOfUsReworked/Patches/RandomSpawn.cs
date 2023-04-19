@@ -26,13 +26,7 @@ namespace TownOfUsReworked.Patches
 
         public static void RandomSpawn()
         {
-            if (!AmongUsClient.Instance.AmHost)
-                return;
-
-            if (!CustomGameOptions.RandomSpawns)
-                return;
-
-            if (GameOptionsManager.Instance.currentNormalGameOptions.MapId is 4 or 5)
+            if (!AmongUsClient.Instance.AmHost || !CustomGameOptions.RandomSpawns || GameOptionsManager.Instance.currentNormalGameOptions.MapId is 4 or 5)
                 return;
 
             var skeldSpawn = new List<Vector3>()

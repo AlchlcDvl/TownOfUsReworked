@@ -43,33 +43,5 @@ namespace TownOfUsReworked.Crowded.Patches
                 return false;
             }
         }
-
-        [HarmonyPatch(typeof(GameStartManager), nameof(GameStartManager.Update))]
-        public static class GameStartManagerUpdatePatch
-        {
-            private static string fixDummyCounterColor;
-
-            public static void Prefix(GameStartManager __instance)
-            {
-                if (GameData.Instance != null && __instance.LastPlayerCount != GameData.Instance.PlayerCount)
-                {
-                    if (__instance.LastPlayerCount > __instance.MinPlayers)
-                        fixDummyCounterColor = "00FF00FF";
-                    else if (__instance.LastPlayerCount == __instance.MinPlayers)
-                        fixDummyCounterColor = "FFFF00FF";
-                    else
-                        fixDummyCounterColor = "FF0000FF";
-                }
-            }
-
-            public static void Postfix(GameStartManager __instance)
-            {
-                if (fixDummyCounterColor != null)
-                {
-                    __instance.PlayerCounter.text = $"<color=#{fixDummyCounterColor}>{GameData.Instance.PlayerCount}/{GameManager.Instance.LogicOptions.MaxPlayers}";
-                    fixDummyCounterColor = null;
-                }
-            }
-        }
     }
 }

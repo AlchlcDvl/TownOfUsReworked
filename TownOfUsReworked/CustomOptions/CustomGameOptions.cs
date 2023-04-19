@@ -1,18 +1,4 @@
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
-using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod;
-using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MediumMod;
-using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod;
-using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod;
-using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.SerialKillerMod;
-using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.ShifterMod;
-using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod;
-using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.VigilanteMod;
-using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.JanitorMod;
-using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NeutralsMod;
-using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.DisguiserMod;
-using TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.SyndicateMod;
-using TownOfUsReworked.PlayerLayers.Objectifiers.AlliedMod;
 using TownOfUsReworked.Data;
 using HarmonyLib;
 
@@ -604,6 +590,7 @@ namespace TownOfUsReworked.CustomOptions
         public static int CryomaniacCount => (int)Generate.CryomaniacCount.Get();
         public static float CryoDouseCooldown => Generate.CryoDouseCooldown.Get();
         public static bool UniqueCryomaniac => Generate.UniqueCryomaniac.Get();
+        public static bool CryoFreezeAll => Generate.CryoFreezeAll.Get();
 
         //Plaguebearer Settings
         public static bool PBVent => Generate.PBVent.Get();

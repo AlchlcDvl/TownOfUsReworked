@@ -11,6 +11,7 @@ using TownOfUsReworked.PlayerLayers.Abilities;
 using AmongUs.GameOptions;
 using TMPro;
 using TownOfUsReworked.Data;
+using TownOfUsReworked.BetterMaps.Airship;
 
 namespace TownOfUsReworked.Patches
 {
@@ -74,13 +75,13 @@ namespace TownOfUsReworked.Patches
                         summary += " <color=#7B8968FF>γ</color>";
 
                     if (objectifier?.ObjectifierType != ObjectifierEnum.None)
-                        summary += $" {objectifier.GetColoredSymbol()}";
+                        summary += $" {objectifier?.ColoredSymbol}";
 
                     if (modifier?.ModifierType != ModifierEnum.None)
-                        summary += $" ({modifier.ColorString}{modifier.Name}{endString})";
+                        summary += $" ({modifier?.ColorString}{modifier?.Name}{endString})";
 
                     if (ability?.AbilityType != AbilityEnum.None)
-                        summary += $" [{ability.ColorString}{ability.Name}{endString}]";
+                        summary += $" [{ability?.ColorString}{ability?.Name}{endString}]";
 
                     if (playerControl.IsGATarget())
                         summary += " <color=#FFFFFFFF>★</color>";
@@ -93,6 +94,9 @@ namespace TownOfUsReworked.Patches
 
                     if (playerControl.IsGuessTarget())
                         summary += " <color=#EEE5BEFF>π</color>";
+
+                    if (playerControl == Role.DriveHolder)
+                        summary += " <color=#008000FF>Δ</color>";
 
                     if (playerControl.CanDoTasks())
                         summary += $" <{role.TasksCompleted}/{role.TotalTasks}>";
@@ -179,6 +183,8 @@ namespace TownOfUsReworked.Patches
                 roleSummaryTextMeshRectTransform.anchoredPosition = new Vector2(position.x + 3.5f, position.y - 0.1f);
                 roleSummaryTextMesh.text = $"{roleSummaryText}";
                 AdditionalTempData.PlayerRoles.Clear();
+
+                SpawnInMinigamePatch.ResetGlobalVariable();
             }
         }
 

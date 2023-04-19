@@ -4,7 +4,6 @@ using TownOfUsReworked.Data;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.PlayerLayers.Roles;
 using System.Linq;
-using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.Patches
 {
@@ -13,17 +12,14 @@ namespace TownOfUsReworked.Patches
     public static class ConfirmEjects
     {
         #pragma warning disable
-        public static ExileController lastExiled;
+        public static ExileController LastExiled;
         #pragma warning restore
 
-        public static void Prefix(ExileController __instance) => lastExiled = __instance;
+        public static void Prefix(ExileController __instance) => LastExiled = __instance;
 
         public static void Postfix(ExileController __instance)
         {
-            if (ConstantVariables.IsLobby || ConstantVariables.IsEnded)
-                return;
-
-            var exiled = lastExiled.exiled;
+            var exiled = LastExiled.exiled;
 
             if (exiled == null)
             {
@@ -103,6 +99,15 @@ namespace TownOfUsReworked.Patches
             }
 
             __instance.completeString = ejectString;
+
+            foreach (var vigi in Role.GetRoles<Vigilante>(RoleEnum.Vigilante))
+            {
+                if (vigi.PostMeetingDie)
+                {
+                    vigi.Player.Exiled();
+                    vigi.DeathReason = DeathReasonEnum.Suicide;
+                }
+            }
         }
     }
 }

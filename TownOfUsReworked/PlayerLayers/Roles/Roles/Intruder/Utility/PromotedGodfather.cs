@@ -9,112 +9,253 @@ using TownOfUsReworked.Modules;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Functions;
 using TownOfUsReworked.Custom;
+using Hazel;
+using Reactor.Networking.Extensions;
+using Reactor.Utilities;
+using TownOfUsReworked.PlayerLayers.Modifiers;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class PromotedGodfather : IntruderRole
+    public class PromotedGodfather : IntruderRole, IVisualAlteration
     {
         public PromotedGodfather(PlayerControl player) : base(player)
         {
             Name = "PromotedGodfather";
             RoleType = RoleEnum.PromotedGodfather;
             StartText = "Promote Your Fellow <color=#FF0000FF>Intruders</color> To Do Better";
-            AbilitiesText = "- You can promote a fellow <color=#FF0000FF>Intruder</color> into becoming your successor\n- Promoting an <color=#FF0000FF>Intruder</color> turns them " +
-                "into a <color=#6400FFFF>Mafioso</color>\n- If you die, the <color=#6400FFFF>Mafioso</color> will become the new <color=#404C08FF>PromotedGodfather</color>\nand inherits better " +
-                $"abilities of their former role\n{AbilitiesText}";
+            AbilitiesText = $"- You have succeeded the former <color=#404C08FF>Godfather</color> and have a shorter cooldown on your former role's abilities\n{FormerRole?.AbilitiesText}" +
+                $"\n{AbilitiesText}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Godfather : Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderSupport;
             AlignmentName = IS;
-            BlockMenu = new CustomMenu(Player, new CustomMenu.Select(ConsClick));
+            BlockMenu = new(Player, ConsClick);
+            Type = LayerEnum.PromotedGodfather;
+            TeleportPoint = new(0, 0, 0);
+            Investigated = new();
+            DisguisePlayer = null;
+            DisguisedPlayer = null;
+            MorphedPlayer = null;
+            SampledPlayer = null;
+            MeasuredPlayer = null;
+            AmbushedPlayer = null;
+            BombedPlayer = null;
+            BlockTarget = null;
+            BlockButton = new(this, AssetManager.Placeholder, AbilityTypes.Effect, "Secondary", Roleblock);
+            BombButton = new(this, AssetManager.Placeholder, AbilityTypes.Direct, "Secondary", Bomb);
+            BlackmailButton = new(this, AssetManager.Blackmail, AbilityTypes.Direct, "Secondary", Blackmail);
+            CamouflageButton = new(this, AssetManager.Camouflage, AbilityTypes.Effect, "Secondary", HitCamouflage);
+            FlashButton = new(this, AssetManager.Flash, AbilityTypes.Effect, "Secondary", HitFlash);
+            CleanButton = new(this, AssetManager.Clean, AbilityTypes.Dead, "Secondary", Clean);
+            DragButton = new(this, AssetManager.Drag, AbilityTypes.Dead, "Tertiary", Drag);
+            DropButton = new(this, AssetManager.Drop, AbilityTypes.Effect, "Tertiary", Drop);
+            DisguiseButton = new(this, AssetManager.Disguise, AbilityTypes.Direct, "Secondary", Disguise);
+            MeasureButton = new(this, AssetManager.Measure, AbilityTypes.Direct, "Tertiary", Measure);
+            MorphButton = new(this, AssetManager.Morph, AbilityTypes.Effect, "Secondary", HitMorph);
+            SampleButton = new(this, AssetManager.Sample, AbilityTypes.Direct, "Tertiary", Sample);
+            InvisButton = new(this, AssetManager.Invis, AbilityTypes.Effect, "Secondary", HitInvis);
+            AmbushButton = new(this, AssetManager.Placeholder, AbilityTypes.Direct, "Secondary", HitAmbush);
+            InvestigateButton = new(this, AssetManager.Placeholder, AbilityTypes.Direct, "Secondary", Investigate);
+            MineButton = new(this, AssetManager.Mine, AbilityTypes.Effect, "Secondary", Mine);
+            MarkButton = new(this, AssetManager.Mark, AbilityTypes.Effect, "Secondary", Mark);
+            TeleportButton = new(this, AssetManager.Teleport, AbilityTypes.Effect, "Secondary", Teleport);
+            FreezeButton = new(this, AssetManager.TimeFreeze, AbilityTypes.Effect, "Secondary", HitFreeze);
         }
 
         //PromotedGodfather Stuff
         public Role FormerRole;
         public DeadBody CurrentTarget;
         public PlayerControl ClosestTarget;
+        public float TimeRemaining;
+        public bool OnEffect => TimeRemaining > 0f;
+        public float TimeRemaining2;
+        public bool DelayActive => TimeRemaining2 > 0f;
+        public bool Enabled;
+
+        public bool TryGetModifiedAppearance(out VisualAppearance appearance)
+        {
+            if (DisguisePlayer != null)
+            {
+                appearance = DisguisePlayer.GetDefaultAppearance();
+                var alteration = Modifier.GetModifier(DisguisePlayer) as IVisualAlteration;
+                alteration?.TryGetModifiedAppearance(out appearance);
+                return true;
+            }
+            else if (MorphedPlayer != null)
+            {
+                appearance = MorphedPlayer.GetDefaultAppearance();
+                var alteration = Modifier.GetModifier(MorphedPlayer) as IVisualAlteration;
+                alteration?.TryGetModifiedAppearance(out appearance);
+                return true;
+            }
+
+            appearance = Player.GetDefaultAppearance();
+            return false;
+        }
+
+        public override void UpdateHud(HudManager __instance)
+        {
+            base.UpdateHud(__instance);
+            var notBlackmailed = PlayerControl.AllPlayerControls.ToArray().Where(player => BlackmailedPlayer != player).ToList();
+            var notMeasured = PlayerControl.AllPlayerControls.ToArray().Where(x => MeasuredPlayer != x).ToList();
+            var targets = PlayerControl.AllPlayerControls.ToArray().Where(x => ((x.Is(Faction.Intruder) && CustomGameOptions.DisguiseTarget == DisguiserTargets.Intruders) ||
+                (!x.Is(Faction.Intruder) && CustomGameOptions.DisguiseTarget == DisguiserTargets.NonIntruders) || CustomGameOptions.DisguiseTarget == DisguiserTargets.Everyone) && x
+                != MeasuredPlayer).ToList();
+            var system = ShipStatus.Instance.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>();
+            var dummyActive = system.dummy.IsActive;
+            var sabActive = system.specials.ToArray().Any(s => s.IsActive);
+            var condition = !dummyActive && !sabActive;
+            var notSampled = PlayerControl.AllPlayerControls.ToArray().Where(x => SampledPlayer != x).ToList();
+            var notAmbushed = PlayerControl.AllPlayerControls.ToArray().Where(x => x != AmbushedPlayer).ToList();
+            var notBombed = PlayerControl.AllPlayerControls.ToArray().Where(x => x != BombedPlayer).ToList();
+            var notInvestigated = PlayerControl.AllPlayerControls.ToArray().Where(x => !Investigated.Contains(x.PlayerId) && !((x.Is(Faction.Intruder) || x.GetSubFaction() ==
+                Player.GetSubFaction()) && CustomGameOptions.FactionSeeRoles)).ToList();
+            var flag = BlockTarget == null;
+            var hits = Physics2D.OverlapBoxAll(Player.transform.position, Utils.GetSize(), 0);
+            hits = hits.ToArray().Where(c => (c.name.Contains("Vent") || !c.isTrigger) && c.gameObject.layer != 8 && c.gameObject.layer != 5).ToArray();
+            CanPlace = hits.Count == 0 && Player.moveable && !SubmergedCompatibility.GetPlayerElevator(Player).Item1;
+            CanMark = CanPlace && TeleportPoint != Player.transform.position;
+            FreezeButton.Update("TIME FREEZE", FreezeTimer(), CustomGameOptions.FreezeCooldown, OnEffect, TimeRemaining, CustomGameOptions.FreezeDuration, true, IsTM);
+            MarkButton.Update("MARK", MarkTimer(), CustomGameOptions.MarkCooldown, CanMark, IsTele);
+            TeleportButton.Update("TELEPORT", TeleportTimer(), CustomGameOptions.TeleportCd, true, TeleportPoint != new Vector3(0, 0, 0) && IsTele);
+            MineButton.Update("MINE", MineTimer(), CustomGameOptions.MineCd, CanPlace, IsMiner);
+            BlockButton.Update(flag ? "SET TARGET" : "ROLEBLOCK", RoleblockTimer(), CustomGameOptions.ConsRoleblockCooldown, OnEffect, TimeRemaining,
+                CustomGameOptions.ConsRoleblockDuration, true, IsCons);
+            InvestigateButton.Update("INVESTIGATE", ConsigliereTimer(), CustomGameOptions.ConsigCd, notInvestigated, true, IsConsig);
+            BombButton.Update("BOMB", BombTimer(), CustomGameOptions.EnforceCooldown, notBombed, DelayActive || OnEffect, DelayActive ? TimeRemaining2 : TimeRemaining, DelayActive ?
+                CustomGameOptions.EnforceDelay : CustomGameOptions.EnforceDuration, true, IsEnf);
+            AmbushButton.Update("AMBUSH", AmbushTimer(), CustomGameOptions.AmbushDuration, notAmbushed, OnEffect, TimeRemaining, CustomGameOptions.AmbushDuration, true, IsAmb);
+            MorphButton.Update("MORPH", MorphTimer(), CustomGameOptions.MorphlingCd, OnEffect, TimeRemaining, CustomGameOptions.MorphlingDuration, true, SampledPlayer != null && IsMorph);
+            SampleButton.Update("SAMPLE", SampleTimer(), CustomGameOptions.MeasureCooldown, notSampled, true, IsMorph);
+            FlashButton.Update("FLASH", FlashTimer(), CustomGameOptions.GrenadeCd, OnEffect, TimeRemaining, CustomGameOptions.GrenadeDuration, condition, IsGren);
+            DisguiseButton.Update("DISGUISE", DisguiseTimer(), CustomGameOptions.DisguiseCooldown, targets, DelayActive || OnEffect, DelayActive ? TimeRemaining2 : TimeRemaining,
+                DelayActive ? CustomGameOptions.TimeToDisguise : CustomGameOptions.DisguiseDuration, true, MeasuredPlayer != null && IsDisg);
+            MeasureButton.Update("MEASURE", MeasureTimer(), CustomGameOptions.MeasureCooldown, notMeasured, true, IsDisg);
+            BlackmailButton.Update("BLACKMAIL", BlackmailTimer(), CustomGameOptions.BlackmailCd, notBlackmailed, true, IsBM);
+            CamouflageButton.Update("CAMOUFLAGE", CamouflageTimer(), CustomGameOptions.CamouflagerCd, OnEffect, TimeRemaining, CustomGameOptions.CamouflagerDuration, !DoUndo.IsCamoed,
+                IsCamo);
+            CleanButton.Update("CLEAN", CleanTimer(), CustomGameOptions.JanitorCleanCd, true, CurrentlyDragging == null && IsJani);
+            DragButton.Update("DRAG", DragTimer(), CustomGameOptions.DragCd, true, CurrentlyDragging == null && IsJani);
+            DropButton.Update("DROP", 0, 1, true, CurrentlyDragging != null && IsJani);
+            InvisButton.Update("INVIS", InvisTimer(), CustomGameOptions.InvisCd, OnEffect, TimeRemaining, CustomGameOptions.InvisDuration, true, IsWraith);
+        }
 
         //Blackmailer Stuff
-        public AbilityButton BlackmailButton;
+        public CustomButton BlackmailButton;
         public PlayerControl BlackmailedPlayer;
         public DateTime LastBlackmailed;
-        public bool Blackmailed => BlackmailedPlayer != null;
+        public bool IsBM => FormerRole?.RoleType == RoleEnum.Blackmailer;
 
         public float BlackmailTimer()
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastBlackmailed;
-            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.BlackmailCd, CustomButtons.GetUnderdogChange(Player), CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.BlackmailCd) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
+        public void Blackmail()
+        {
+            if (BlackmailTimer() != 0f || Utils.IsTooFar(Player, ClosestTarget) || ClosestTarget == BlackmailedPlayer)
+                return;
+
+            var interact = Utils.Interact(Player, ClosestTarget);
+
+            if (interact[3])
+            {
+                BlackmailedPlayer = ClosestTarget;
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+                writer.Write((byte)ActionsRPC.GodfatherAction);
+                writer.Write((byte)GodfatherActionsRPC.Blackmail);
+                writer.Write(Player.PlayerId);
+                writer.Write(ClosestTarget.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+            }
+
+            if (interact[0])
+                LastBlackmailed = DateTime.UtcNow;
+            else if (interact[1])
+                LastBlackmailed.AddSeconds(CustomGameOptions.ProtectKCReset);
+        }
+
         //Camouflager Stuff
-        public AbilityButton CamouflageButton;
-        public bool CamoEnabled;
+        public CustomButton CamouflageButton;
         public DateTime LastCamouflaged;
-        public float CamoTimeRemaining;
-        public bool Camouflaged => CamoTimeRemaining > 0f;
+        public bool IsCamo => FormerRole?.RoleType == RoleEnum.Camouflager;
 
         public void Camouflage()
         {
-            CamoEnabled = true;
-            CamoTimeRemaining -= Time.deltaTime;
+            Enabled = true;
+            TimeRemaining -= Time.deltaTime;
             Utils.Camouflage();
 
             if (MeetingHud.Instance)
-                CamoTimeRemaining = 0f;
+                TimeRemaining = 0f;
         }
 
         public void UnCamouflage()
         {
-            CamoEnabled = false;
+            Enabled = false;
             LastCamouflaged = DateTime.UtcNow;
             Utils.DefaultOutfitAll();
+        }
+
+        public void HitCamouflage()
+        {
+            if (CamouflageTimer() != 0f || DoUndo.IsCamoed)
+                return;
+
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+            writer.Write((byte)ActionsRPC.GodfatherAction);
+            writer.Write((byte)GodfatherActionsRPC.Camouflage);
+            writer.Write(Player.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            TimeRemaining = CustomGameOptions.CamouflagerDuration;
+            Camouflage();
+            Utils.Camouflage();
         }
 
         public float CamouflageTimer()
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastCamouflaged;
-            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.CamouflagerCd, CustomButtons.GetUnderdogChange(Player), CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
-            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.CamouflagerCd) * 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
         //Grenadier Stuff
-        public AbilityButton FlashButton;
-        public bool FlashEnabled;
+        public CustomButton FlashButton;
         public DateTime LastFlashed;
-        public float FlashTimeRemaining;
         private static List<PlayerControl> ClosestPlayers = new();
-        private static readonly Color NormalVision = new Color32(212, 212, 212, 0);
-        private static readonly Color DimVision = new Color32(212, 212, 212, 51);
-        private static readonly Color BlindVision = new Color32(212, 212, 212, 255);
+        private static readonly Color32 NormalVision = new(212, 212, 212, 0);
+        private static readonly Color32 DimVision = new(212, 212, 212, 51);
+        private static readonly Color32 BlindVision = new(212, 212, 212, 255);
         public List<PlayerControl> FlashedPlayers;
-        public bool Flashed => FlashTimeRemaining > 0f;
+        public bool IsGren => FormerRole?.RoleType == RoleEnum.Grenadier;
 
         public float FlashTimer()
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastFlashed;
-            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.GrenadeCd, CustomButtons.GetUnderdogChange(Player), CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.GrenadeCd) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
         public void Flash()
         {
-            if (!FlashEnabled)
+            if (!Enabled)
             {
                 ClosestPlayers = Utils.GetClosestPlayers(Player.GetTruePosition(), CustomGameOptions.FlashRadius);
                 FlashedPlayers = ClosestPlayers;
             }
 
-            FlashEnabled = true;
-            FlashTimeRemaining -= Time.deltaTime;
+            Enabled = true;
+            TimeRemaining -= Time.deltaTime;
 
             if (MeetingHud.Instance)
-                FlashTimeRemaining = 0f;
+                TimeRemaining = 0f;
 
             //To stop the scenario where the flash and sabotage are called at the same time.
             var system = ShipStatus.Instance.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>();
@@ -131,9 +272,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     HudManager.Instance.FullScreen.enabled = true;
                     HudManager.Instance.FullScreen.gameObject.active = true;
 
-                    if (FlashTimeRemaining > CustomGameOptions.GrenadeDuration - 0.5f)
+                    if (TimeRemaining > CustomGameOptions.GrenadeDuration - 0.5f)
                     {
-                        float fade = (FlashTimeRemaining - CustomGameOptions.GrenadeDuration) * (-2f);
+                        float fade = (TimeRemaining - CustomGameOptions.GrenadeDuration) * (-2f);
 
                         if (ShouldPlayerBeBlinded(player))
                             HudManager.Instance.FullScreen.color = Color32.Lerp(NormalVision, BlindVision, fade);
@@ -142,7 +283,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         else
                             HudManager.Instance.FullScreen.color = NormalVision;
                     }
-                    else if (FlashTimeRemaining <= (CustomGameOptions.GrenadeDuration - 0.5f) && FlashTimeRemaining >= 0.5f)
+                    else if (TimeRemaining <= (CustomGameOptions.GrenadeDuration - 0.5f) && TimeRemaining >= 0.5f)
                     {
                         HudManager.Instance.FullScreen.enabled = true;
                         HudManager.Instance.FullScreen.gameObject.active = true;
@@ -154,9 +295,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         else
                             HudManager.Instance.FullScreen.color = NormalVision;
                     }
-                    else if (FlashTimeRemaining < 0.5f)
+                    else if (TimeRemaining < 0.5f)
                     {
-                        float fade2 = (FlashTimeRemaining * -2.0f) + 1.0f;
+                        float fade2 = (TimeRemaining * -2.0f) + 1.0f;
 
                         if (ShouldPlayerBeBlinded(player))
                             HudManager.Instance.FullScreen.color = Color32.Lerp(BlindVision, NormalVision, fade2);
@@ -168,7 +309,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     else
                     {
                         HudManager.Instance.FullScreen.color = NormalVision;
-                        FlashTimeRemaining = 0f;
+                        TimeRemaining = 0f;
                     }
 
                     if (MapBehaviour.Instance)
@@ -186,28 +327,81 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void UnFlash()
         {
-            FlashEnabled = false;
+            Enabled = false;
             LastFlashed = DateTime.UtcNow;
-            HudManager.Instance.FullScreen.enabled = true;
             HudManager.Instance.FullScreen.color = NormalVision;
             FlashedPlayers.Clear();
+            var fs = false;
+
+            switch (GameOptionsManager.Instance.currentNormalGameOptions.MapId)
+            {
+                case 0:
+                case 1:
+                case 3:
+                    var reactor1 = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
+                    var oxygen1 = ShipStatus.Instance.Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
+                    fs = reactor1.IsActive || oxygen1.IsActive;
+                    break;
+
+                case 2:
+                    var seismic = ShipStatus.Instance.Systems[SystemTypes.Laboratory].Cast<ReactorSystemType>();
+                    fs = seismic.IsActive;
+                    break;
+
+                case 4:
+                    var reactor = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<HeliSabotageSystem>();
+                    fs = reactor.IsActive;
+                    break;
+
+                case 5:
+                    fs = PlayerControl.LocalPlayer.myTasks.ToArray().Any(x => x.TaskType == SubmergedCompatibility.RetrieveOxygenMask);
+                    break;
+
+                case 6:
+                    var reactor3 = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
+                    var oxygen3 = ShipStatus.Instance.Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
+                    var seismic2 = ShipStatus.Instance.Systems[SystemTypes.Laboratory].Cast<ReactorSystemType>();
+                    fs = reactor3.IsActive || seismic2.IsActive || oxygen3.IsActive;
+                    break;
+            }
+
+            HudManager.Instance.FullScreen.enabled = fs;
+        }
+
+        public void HitFlash()
+        {
+            var system = ShipStatus.Instance.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>();
+            var dummyActive = system.dummy.IsActive;
+            var sabActive = system.specials.ToArray().Any(s => s.IsActive);
+
+            if (sabActive || dummyActive || FlashTimer() != 0f)
+                return;
+
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+            writer.Write((byte)ActionsRPC.GodfatherAction);
+            writer.Write((byte)GodfatherActionsRPC.FlashGrenade);
+            writer.Write(Player.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            TimeRemaining = CustomGameOptions.GrenadeDuration;
+            Flash();
         }
 
         //Janitor Stuff
-        public AbilityButton CleanButton;
+        public CustomButton CleanButton;
         public DateTime LastCleaned;
         public DateTime LastDragged;
-        public AbilityButton DragButton;
-        public AbilityButton DropButton;
+        public CustomButton DragButton;
+        public CustomButton DropButton;
         public DeadBody CurrentlyDragging;
+        public bool IsJani => FormerRole?.RoleType == RoleEnum.Janitor;
 
         public float DragTimer()
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastDragged;
-            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.DragCd, CustomButtons.GetUnderdogChange(Player)) * 1000f;
-            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.DragCd) * 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
         public static void DragBody(PlayerControl __instance)
@@ -265,44 +459,106 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             __instance.moveable = true;
         }
 
+        public void Clean()
+        {
+            if (CleanTimer() != 0f || Utils.IsTooFar(Player, CurrentTarget))
+                return;
+
+            var playerId = CurrentTarget.ParentId;
+            var player = Utils.PlayerById(playerId);
+            Utils.Spread(Player, player);
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+            writer.Write((byte)ActionsRPC.FadeBody);
+            writer.Write(playerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            Coroutines.Start(Utils.FadeBody(CurrentTarget));
+            LastCleaned = DateTime.UtcNow;
+
+            if (CustomGameOptions.JaniCooldownsLinked)
+                LastKilled = DateTime.UtcNow;
+        }
+
+        public void Drag()
+        {
+            if (Utils.IsTooFar(Player, CurrentTarget) || CurrentlyDragging != null)
+                return;
+
+            var playerId = CurrentTarget.ParentId;
+            var player = Utils.PlayerById(playerId);
+            Utils.Spread(Player, player);
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+            writer.Write((byte)ActionsRPC.GodfatherAction);
+            writer.Write((byte)GodfatherActionsRPC.Drag);
+            writer.Write(Player.PlayerId);
+            writer.Write(playerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            CurrentlyDragging = CurrentTarget;
+        }
+
+        public void Drop()
+        {
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+            writer.Write((byte)ActionsRPC.GodfatherAction);
+            writer.Write((byte)GodfatherActionsRPC.Drop);
+            writer.Write(Player.PlayerId);
+            Vector3 position = PlayerControl.LocalPlayer.GetTruePosition();
+
+            if (SubmergedCompatibility.IsSubmerged())
+            {
+                if (position.y > -7f)
+                    position.z = 0.0208f;
+                else
+                    position.z = -0.0273f;
+            }
+
+            position.y -= 0.3636f;
+            writer.Write(position);
+            writer.Write(position.z);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+
+            foreach (var component in CurrentlyDragging?.bodyRenderers)
+                component.material.SetFloat("_Outline", 0f);
+
+            CurrentlyDragging.transform.position = position;
+            CurrentlyDragging = null;
+            LastDragged = DateTime.UtcNow;
+        }
+
         public float CleanTimer()
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastCleaned;
-            var num = CustomButtons.GetModifiedCooldown(ConstantVariables.LastImp && CustomGameOptions.SoloBoost ? (CustomGameOptions.JanitorCleanCd - CustomGameOptions.UnderdogKillBonus) :
-                CustomGameOptions.JanitorCleanCd, CustomButtons.GetUnderdogChange(Player), CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.JanitorCleanCd, ConstantVariables.LastImp && CustomGameOptions.SoloBoost ? -CustomGameOptions.UnderdogKillBonus : 0) *
+                1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
         //Disguiser Stuff
-        public AbilityButton DisguiseButton;
+        public CustomButton DisguiseButton;
         public DateTime LastDisguised;
         public PlayerControl MeasuredPlayer;
-        public float DisguiserTimeRemaining;
-        public bool Disguised => DisguiserTimeRemaining > 0f;
-        public float DisguiserTimeRemaining2;
-        public bool DelayActive => DisguiserTimeRemaining2 > 0f;
-        public bool DisguiserEnabled;
         public PlayerControl DisguisedPlayer;
-        public AbilityButton MeasureButton;
+        public PlayerControl DisguisePlayer;
+        public CustomButton MeasureButton;
         public DateTime LastMeasured;
+        public bool IsDisg => FormerRole?.RoleType == RoleEnum.Disguiser;
 
         public void Disguise()
         {
-            DisguiserTimeRemaining -= Time.deltaTime;
-            Utils.Morph(DisguisedPlayer, MeasuredPlayer);
+            TimeRemaining -= Time.deltaTime;
+            Utils.Morph(DisguisedPlayer, DisguisePlayer);
 
             if (Player.Data.IsDead || DisguisedPlayer.Data.IsDead || DisguisedPlayer.Data.Disconnected || MeetingHud.Instance)
-                DisguiserTimeRemaining = 0f;
+                TimeRemaining = 0f;
         }
 
-        public void Delay()
+        public void DisgDelay()
         {
-            DisguiserTimeRemaining2 -= Time.deltaTime;
+            TimeRemaining2 -= Time.deltaTime;
 
             if (Player.Data.IsDead || DisguisedPlayer.Data.IsDead || DisguisedPlayer.Data.Disconnected || MeetingHud.Instance)
-                DisguiserTimeRemaining2 = 0f;
+                TimeRemaining2 = 0f;
         }
 
         public void UnDisguise()
@@ -318,7 +574,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastDisguised;
-            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.DisguiseCooldown, CustomButtons.GetUnderdogChange(Player), CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.DisguiseCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
@@ -327,35 +583,100 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastMeasured;
-            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.MeasureCooldown, CustomButtons.GetUnderdogChange(Player), CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.MeasureCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
+        public void HitDisguise()
+        {
+            if (DisguiseTimer() != 0f || Utils.IsTooFar(Player, ClosestTarget) || ClosestTarget == MeasuredPlayer || OnEffect || DelayActive)
+                return;
+
+            var interact = Utils.Interact(Player, ClosestTarget);
+
+            if (interact[3])
+            {
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+                writer.Write((byte)ActionsRPC.GodfatherAction);
+                writer.Write((byte)GodfatherActionsRPC.Disguise);
+                writer.Write(Player.PlayerId);
+                writer.Write(MeasuredPlayer.PlayerId);
+                writer.Write(ClosestTarget.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                TimeRemaining = CustomGameOptions.DisguiseDuration;
+                TimeRemaining2 = CustomGameOptions.TimeToDisguise;
+                DisguisePlayer = MeasuredPlayer;
+                DisguisedPlayer = ClosestTarget;
+                DisgDelay();
+
+                if (CustomGameOptions.DisgCooldownsLinked)
+                    LastMeasured = DateTime.UtcNow;
+            }
+            else if (interact[0])
+            {
+                LastDisguised = DateTime.UtcNow;
+
+                if (CustomGameOptions.DisgCooldownsLinked)
+                    LastMeasured = DateTime.UtcNow;
+            }
+            else if (interact[1])
+            {
+                LastDisguised.AddSeconds(CustomGameOptions.ProtectKCReset);
+
+                if (CustomGameOptions.DisgCooldownsLinked)
+                    LastMeasured.AddSeconds(CustomGameOptions.ProtectKCReset);
+            }
+        }
+
+        public void Measure()
+        {
+            if (MeasureTimer() != 0f || Utils.IsTooFar(Player, ClosestTarget) || ClosestTarget == MeasuredPlayer)
+                return;
+
+            var interact = Utils.Interact(Player, ClosestTarget);
+
+            if (interact[3])
+                MeasuredPlayer = ClosestTarget;
+
+            if (interact[0])
+            {
+                LastMeasured = DateTime.UtcNow;
+
+                if (CustomGameOptions.DisgCooldownsLinked)
+                    LastDisguised = DateTime.UtcNow;
+            }
+            else if (interact[1])
+            {
+                LastMeasured.AddSeconds(CustomGameOptions.ProtectKCReset);
+
+                if (CustomGameOptions.DisgCooldownsLinked)
+                    LastDisguised.AddSeconds(CustomGameOptions.ProtectKCReset);
+            }
+        }
+
         //Morphling Stuff
-        public AbilityButton MorphButton;
+        public CustomButton MorphButton;
         public DateTime LastMorphed;
         public PlayerControl MorphedPlayer;
         public PlayerControl SampledPlayer;
-        public float MorphTimeRemaining;
-        public bool Morphed => MorphTimeRemaining > 0f;
-        public bool MorphEnabled;
         public DateTime LastSampled;
-        public AbilityButton SampleButton;
+        public CustomButton SampleButton;
+        public bool IsMorph => FormerRole?.RoleType == RoleEnum.Morphling;
 
         public void Morph()
         {
-            MorphEnabled = true;
-            MorphTimeRemaining -= Time.deltaTime;
+            Enabled = true;
+            TimeRemaining -= Time.deltaTime;
             Utils.Morph(Player, MorphedPlayer);
 
             if (Player.Data.IsDead || MeetingHud.Instance)
-                MorphTimeRemaining = 0f;
+                TimeRemaining = 0f;
         }
 
         public void Unmorph()
         {
-            MorphEnabled = false;
+            Enabled = false;
             MorphedPlayer = null;
             Utils.DefaultOutfit(Player);
             LastMorphed = DateTime.UtcNow;
@@ -368,7 +689,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastMorphed;
-            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.MorphlingCd, CustomButtons.GetUnderdogChange(Player), CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.MorphlingCd) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
@@ -377,106 +698,176 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastSampled;
-            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.SampleCooldown, CustomButtons.GetUnderdogChange(Player), CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.SampleCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
+        public void HitMorph()
+        {
+            if (MorphTimer() != 0f || SampledPlayer == null || OnEffect)
+                return;
+
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+            writer.Write((byte)ActionsRPC.GodfatherAction);
+            writer.Write((byte)GodfatherActionsRPC.Morph);
+            writer.Write(Player.PlayerId);
+            writer.Write(SampledPlayer.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            TimeRemaining = CustomGameOptions.MorphlingDuration;
+            MorphedPlayer = SampledPlayer;
+            Morph();
+        }
+
+        public void Sample()
+        {
+            if (SampleTimer() != 0f || Utils.IsTooFar(Player, ClosestTarget) || SampledPlayer == ClosestTarget)
+                return;
+
+            var interact = Utils.Interact(Player, ClosestPlayer);
+
+            if (interact[3])
+                SampledPlayer = ClosestTarget;
+
+            if (interact[0])
+            {
+                LastSampled = DateTime.UtcNow;
+
+                if (CustomGameOptions.MorphCooldownsLinked)
+                    LastMorphed = DateTime.UtcNow;
+            }
+            else if (interact[1])
+            {
+                LastSampled.AddSeconds(CustomGameOptions.ProtectKCReset);
+
+                if (CustomGameOptions.MorphCooldownsLinked)
+                    LastMorphed.AddSeconds(CustomGameOptions.ProtectKCReset);
+            }
+        }
+
         //Wraith Stuff
-        public AbilityButton InvisButton;
-        public bool InvisEnabled;
+        public CustomButton InvisButton;
         public DateTime LastInvis;
-        public float InvisTimeRemaining;
-        public bool IsInvis => InvisTimeRemaining > 0f;
+        public bool IsWraith => FormerRole?.RoleType == RoleEnum.Wraith;
 
         public float InvisTimer()
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastInvis;
-            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.InvisCd, CustomButtons.GetUnderdogChange(Player), CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
-            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.InvisCd) * 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
         public void Invis()
         {
-            InvisEnabled = true;
-            InvisTimeRemaining -= Time.deltaTime;
+            Enabled = true;
+            TimeRemaining -= Time.deltaTime;
+            Utils.Invis(Player);
 
             if (Player.Data.IsDead || MeetingHud.Instance)
-                InvisTimeRemaining = 0f;
-
-            var color = new Color32(0, 0, 0, 0);
-
-            if (PlayerControl.LocalPlayer.Is(Faction) || PlayerControl.LocalPlayer.Data.IsDead)
-                color.a = 26;
-
-            if (Player.GetCustomOutfitType() != CustomPlayerOutfitType.Invis)
-            {
-                Player.SetOutfit(CustomPlayerOutfitType.Invis, new GameData.PlayerOutfit()
-                {
-                    ColorId = Player.CurrentOutfit.ColorId,
-                    HatId = "",
-                    SkinId = "",
-                    VisorId = "",
-                    PlayerName = " "
-                });
-
-                Player.MyRend().color = color;
-                Player.NameText().color = new Color32(0, 0, 0, 0);
-                Player.cosmetics.colorBlindText.color = new Color32(0, 0, 0, 0);
-            }
+                TimeRemaining = 0f;
         }
 
         public void Uninvis()
         {
-            InvisEnabled = false;
+            Enabled = false;
             LastInvis = DateTime.UtcNow;
             Utils.DefaultOutfit(Player);
-            Player.MyRend().color = new Color32(255, 255, 255, 255);
+        }
+
+        public void HitInvis()
+        {
+            if (InvisTimer() != 0f || OnEffect)
+                return;
+
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+            writer.Write((byte)ActionsRPC.GodfatherAction);
+            writer.Write((byte)GodfatherActionsRPC.Invis);
+            writer.Write(Player.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            TimeRemaining = CustomGameOptions.InvisDuration;
+            Invis();
         }
 
         //Consigliere Stuff
         public List<byte> Investigated = new();
-        public AbilityButton InvestigateButton;
+        public CustomButton InvestigateButton;
         public DateTime LastInvestigated;
+        public bool IsConsig => FormerRole?.RoleType == RoleEnum.Consigliere;
 
         public float ConsigliereTimer()
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastInvestigated;
-            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.ConsigCd, CustomButtons.GetUnderdogChange(Player), CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
-            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.ConsigCd) * 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+        }
+
+        public void Investigate()
+        {
+            if (ConsigliereTimer() != 0f || Utils.IsTooFar(Player, ClosestTarget) || Investigated.Contains(ClosestTarget.PlayerId))
+                return;
+
+            var interact = Utils.Interact(Player, ClosestTarget);
+
+            if (interact[3])
+                Investigated.Add(ClosestTarget.PlayerId);
+
+            if (interact[0])
+                LastInvestigated = DateTime.UtcNow;
+            else if (interact[1])
+                LastInvestigated.AddSeconds(CustomGameOptions.ProtectKCReset);
         }
 
         //Miner Stuff
-        public AbilityButton MineButton;
+        public CustomButton MineButton;
         public DateTime LastMined;
         public bool CanPlace;
+        public bool IsMiner => FormerRole?.RoleType == RoleEnum.Miner;
 
         public float MineTimer()
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastMined;
-            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.MineCd, CustomButtons.GetUnderdogChange(Player), CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
-            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.MineCd) * 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+        }
+
+        public void Mine()
+        {
+            if (!CanPlace || MineTimer() != 0f)
+                return;
+
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+            writer.Write((byte)ActionsRPC.Mine);
+            var position = Player.transform.position;
+            var id = Utils.GetAvailableId();
+            writer.Write(id);
+            writer.Write(Player.PlayerId);
+            writer.Write(position);
+            writer.Write(position.z + 0.01f);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            Utils.SpawnVent(id, this, position, position.z + 0.01f);
+            LastMined = DateTime.UtcNow;
         }
 
         //Teleporter Stuff
-        public AbilityButton TeleportButton;
+        public CustomButton TeleportButton;
         public DateTime LastTeleport;
         public Vector3 TeleportPoint = new(0, 0, 0);
         public DateTime LastMarked;
-        public AbilityButton MarkButton;
+        public CustomButton MarkButton;
         public bool CanMark;
+        public bool IsTele => FormerRole?.RoleType == RoleEnum.Teleporter;
 
         public float MarkTimer()
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastMarked;
-            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.MarkCooldown, CustomButtons.GetUnderdogChange(Player), CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.MarkCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
@@ -485,88 +876,151 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastTeleport;
-            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.TeleportCd, CustomButtons.GetUnderdogChange(Player), CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.TeleportCd) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
+        public void Mark()
+        {
+            if (!CanMark || MarkTimer() != 0f || TeleportPoint == Player.transform.position)
+                return;
+
+            TeleportPoint = Player.transform.position;
+            LastMarked = DateTime.UtcNow;
+
+            if (CustomGameOptions.TeleCooldownsLinked)
+                LastTeleport = DateTime.UtcNow;
+        }
+
+        public void Teleport()
+        {
+            if (TeleportTimer() != 0f || TeleportPoint == Player.transform.position)
+                return;
+
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+            writer.Write((byte)ActionsRPC.Teleport);
+            writer.Write(Player.PlayerId);
+            writer.Write(TeleportPoint);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            LastTeleport = DateTime.UtcNow;
+            Utils.Teleport(Player, TeleportPoint);
+
+            if (CustomGameOptions.TeleCooldownsLinked)
+                LastMarked = DateTime.UtcNow;
+        }
+
         //Time Master Stuff
-        public AbilityButton FreezeButton;
-        public bool FreezeEnabled;
-        public float FreezeTimeRemaining;
+        public CustomButton FreezeButton;
         public DateTime LastFrozen;
-        public bool Frozen => FreezeTimeRemaining > 0f;
+        public bool IsTM => FormerRole?.RoleType == RoleEnum.TimeMaster;
 
         public float FreezeTimer()
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastFrozen;
-            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.FreezeCooldown, CustomButtons.GetUnderdogChange(Player), CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.FreezeCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
         public void TimeFreeze()
         {
-            FreezeEnabled = true;
-            FreezeTimeRemaining -= Time.deltaTime;
+            Enabled = true;
+            TimeRemaining -= Time.deltaTime;
 
             if (MeetingHud.Instance)
-                FreezeTimeRemaining = 0f;
+                TimeRemaining = 0f;
         }
 
         public void Unfreeze()
         {
-            FreezeEnabled = false;
+            Enabled = false;
             LastFrozen = DateTime.UtcNow;
             Freeze.UnfreezeAll();
         }
 
+        public void HitFreeze()
+        {
+            if (FreezeTimer() != 0f || OnEffect)
+                return;
+
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+            writer.Write((byte)ActionsRPC.GodfatherAction);
+            writer.Write((byte)GodfatherActionsRPC.TimeFreeze);
+            writer.Write(Player.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            TimeRemaining = CustomGameOptions.FreezeDuration;
+            Freeze.FreezeAll();
+            TimeFreeze();
+        }
+
         //Ambusher Stuff
-        public bool AmbushEnabled;
         public DateTime LastAmbushed;
-        public float AmbushTimeRemaining;
-        public bool OnAmbush => AmbushTimeRemaining > 0f;
         public PlayerControl AmbushedPlayer;
-        public AbilityButton AmbushButton;
+        public CustomButton AmbushButton;
+        public bool IsAmb => FormerRole?.RoleType == RoleEnum.Ambusher;
 
         public float AmbushTimer()
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastAmbushed;
-            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.AmbushCooldown, CustomButtons.GetUnderdogChange(Player), CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
-            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.AmbushCooldown) * 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
         public void Ambush()
         {
-            AmbushEnabled = true;
-            AmbushTimeRemaining -= Time.deltaTime;
+            Enabled = true;
+            TimeRemaining -= Time.deltaTime;
 
             if (Player.Data.IsDead || AmbushedPlayer.Data.IsDead || AmbushedPlayer.Data.Disconnected || MeetingHud.Instance)
-                AmbushTimeRemaining = 0f;
+                TimeRemaining = 0f;
         }
 
         public void UnAmbush()
         {
-            AmbushEnabled = false;
+            Enabled = false;
             LastAmbushed = DateTime.UtcNow;
             AmbushedPlayer = null;
         }
 
+        public void HitAmbush()
+        {
+            if (AmbushTimer() != 0f || Utils.IsTooFar(Player, ClosestTarget) || ClosestTarget == AmbushedPlayer)
+                return;
+
+            var interact = Utils.Interact(Player, ClosestTarget);
+
+            if (interact[3])
+            {
+                TimeRemaining = CustomGameOptions.AmbushDuration;
+                AmbushedPlayer = ClosestTarget;
+                Ambush();
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+                writer.Write((byte)ActionsRPC.GodfatherAction);
+                writer.Write((byte)GodfatherActionsRPC.Ambush);
+                writer.Write(Player.PlayerId);
+                writer.Write(ClosestTarget.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+            }
+            else if (interact[0])
+                LastAmbushed = DateTime.UtcNow;
+            else if (interact[1])
+                LastAmbushed.AddSeconds(CustomGameOptions.ProtectKCReset);
+        }
+
         //Consort Stuff
         public DateTime LastBlock;
-        public float BlockTimeRemaining;
-        public AbilityButton BlockButton;
+        public CustomButton BlockButton;
         public PlayerControl BlockTarget;
-        public bool BlockEnabled;
-        public bool Blocking => BlockTimeRemaining > 0f;
         public CustomMenu BlockMenu;
+        public bool IsCons => FormerRole?.RoleType == RoleEnum.Consort;
 
         public void UnBlock()
         {
-            BlockEnabled = false;
+            Enabled = false;
 
             foreach (var layer in GetLayers(BlockTarget))
                 layer.IsBlocked = false;
@@ -578,21 +1032,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Block()
         {
-            BlockEnabled = true;
-            BlockTimeRemaining -= Time.deltaTime;
+            Enabled = true;
+            TimeRemaining -= Time.deltaTime;
 
             if (Player.Data.IsDead || BlockTarget.Data.IsDead || BlockTarget.Data.Disconnected || MeetingHud.Instance || !BlockTarget.IsBlocked())
-                BlockTimeRemaining = 0f;
+                TimeRemaining = 0f;
         }
 
         public float RoleblockTimer()
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastBlock;
-            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.ConsRoleblockCooldown, CustomGameOptions.MafiosoAbilityCooldownDecrease, CustomButtons.GetUnderdogChange(Player))
+            var num = Player.GetModifiedCooldown(CustomGameOptions.ConsRoleblockCooldown)
                 * 1000f;
-            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
         public void ConsClick(PlayerControl player)
@@ -601,56 +1055,77 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (interact[3])
                 BlockTarget = player;
+            else if (interact[0])
+                LastBlock = DateTime.UtcNow;
             else if (interact[1])
                 LastBlock.AddSeconds(CustomGameOptions.ProtectKCReset);
         }
 
+        public void Roleblock()
+        {
+            if (RoleblockTimer() != 0f)
+                return;
+
+            if (BlockTarget == null)
+                BlockMenu.Open(PlayerControl.AllPlayerControls.ToArray().Where(x => x != Player).ToList());
+            else
+            {
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+                writer.Write((byte)ActionsRPC.GodfatherAction);
+                writer.Write((byte)GodfatherActionsRPC.ConsRoleblock);
+                writer.Write(Player.PlayerId);
+                writer.Write(BlockTarget.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                TimeRemaining = CustomGameOptions.ConsRoleblockDuration;
+                Block();
+
+                foreach (var layer in GetLayers(BlockTarget))
+                    layer.IsBlocked = !layer.RoleBlockImmune;
+            }
+        }
+
         //Enforcer Stuff
-        public AbilityButton BombButton;
+        public CustomButton BombButton;
         public PlayerControl BombedPlayer;
-        public bool BombEnabled;
         public DateTime LastBombed;
-        public float BombTimeRemaining;
-        public float BombTimeRemaining2;
-        public bool Bombing => BombTimeRemaining > 0f;
-        public bool BombDelayActive => BombTimeRemaining2 > 0f;
         public bool BombSuccessful;
+        public bool IsEnf => FormerRole?.RoleType == RoleEnum.Enforcer;
 
         public float BombTimer()
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastBombed;
-            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.EnforceCooldown, CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
-            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.EnforceCooldown) * 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
         public void Boom()
         {
-            if (!BombEnabled && PlayerControl.LocalPlayer == BombedPlayer)
+            if (!Enabled && PlayerControl.LocalPlayer == BombedPlayer)
             {
-                Utils.Flash(Color, "There's a bomb on you!", 2);
+                Utils.Flash(Color);
                 GetRole(BombedPlayer).Bombed = true;
             }
 
-            BombEnabled = true;
-            BombTimeRemaining -= Time.deltaTime;
+            Enabled = true;
+            TimeRemaining -= Time.deltaTime;
 
             if (Player.Data.IsDead || MeetingHud.Instance || BombSuccessful)
-                BombTimeRemaining = 0f;
+                TimeRemaining = 0f;
         }
 
         public void BombDelay()
         {
-            BombTimeRemaining2 -= Time.deltaTime;
+            TimeRemaining2 -= Time.deltaTime;
 
             if (Player.Data.IsDead || MeetingHud.Instance)
-                BombTimeRemaining2 = 0f;
+                TimeRemaining2 = 0f;
         }
 
         public void Unboom()
         {
-            BombEnabled = false;
+            Enabled = false;
             LastBombed = DateTime.UtcNow;
             GetRole(BombedPlayer).Bombed = false;
 
@@ -672,6 +1147,32 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 if (!player.Is(RoleEnum.Pestilence))
                     Utils.RpcMurderPlayer(BombedPlayer, player, DeathReasonEnum.Bombed, false);
             }
+        }
+
+        public void Bomb()
+        {
+            if (BombTimer() != 0f || Utils.IsTooFar(Player, ClosestTarget) || BombedPlayer == ClosestTarget)
+                return;
+
+            var interact = Utils.Interact(Player, ClosestTarget);
+
+            if (interact[3])
+            {
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+                writer.Write((byte)ActionsRPC.GodfatherAction);
+                writer.Write((byte)GodfatherActionsRPC.SetBomb);
+                writer.Write(Player.PlayerId);
+                writer.Write(ClosestTarget.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                TimeRemaining = CustomGameOptions.EnforceDuration;
+                TimeRemaining2 = CustomGameOptions.EnforceDelay;
+                BombedPlayer = ClosestTarget;
+                BombDelay();
+            }
+            else if (interact[0])
+                LastBombed = DateTime.UtcNow;
+            else if (interact[1])
+                LastBombed.AddSeconds(CustomGameOptions.ProtectKCReset);
         }
     }
 }

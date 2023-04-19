@@ -10,8 +10,6 @@ using TownOfUsReworked.Objects;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.BlackmailerMod;
-using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.PromotedGodfatherMod;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Data;
 using HarmonyLib;
@@ -126,7 +124,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
                 voteArea.Overlay.color = Color.white;
                 voteArea.XMark.gameObject.SetActive(true);
                 voteArea.XMark.transform.localScale = Vector3.one;
-
                 var meetingHud = MeetingHud.Instance;
 
                 if (player.AmOwner)
@@ -146,21 +143,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
 
                 foreach (var role in Role.GetRoles<PromotedGodfather>(RoleEnum.PromotedGodfather))
                 {
-                    if (role.BlackmailedPlayer != null && voteArea.TargetPlayerId == role.BlackmailedPlayer.PlayerId && GFBlackmailMeetingUpdate.PrevXMark != null &&
-                        GFBlackmailMeetingUpdate.PrevOverlay != null)
+                    if (role.BlackmailedPlayer != null && voteArea.TargetPlayerId == role.BlackmailedPlayer.PlayerId && BlackmailMeetingUpdate.PrevXMark != null &&
+                        BlackmailMeetingUpdate.PrevOverlay != null)
                     {
-                        voteArea.XMark.sprite = GFBlackmailMeetingUpdate.PrevXMark;
-                        voteArea.Overlay.sprite = GFBlackmailMeetingUpdate.PrevOverlay;
-                        voteArea.XMark.transform.localPosition = new Vector3(voteArea.XMark.transform.localPosition.x - GFBlackmailMeetingUpdate.LetterXOffset,
-                            voteArea.XMark.transform.localPosition.y - GFBlackmailMeetingUpdate.LetterYOffset, voteArea.XMark.transform.localPosition.z);
+                        voteArea.XMark.sprite = BlackmailMeetingUpdate.PrevXMark;
+                        voteArea.Overlay.sprite = BlackmailMeetingUpdate.PrevOverlay;
+                        voteArea.XMark.transform.localPosition = new Vector3(voteArea.XMark.transform.localPosition.x - BlackmailMeetingUpdate.LetterXOffset,
+                            voteArea.XMark.transform.localPosition.y - BlackmailMeetingUpdate.LetterYOffset, voteArea.XMark.transform.localPosition.z);
                     }
                 }
 
-            if (PlayerControl.LocalPlayer.Is(AbilityEnum.Assassin) && !PlayerControl.LocalPlayer.Data.IsDead)
-            {
-                var assassin2 = Ability.GetAbility<Assassin>(PlayerControl.LocalPlayer);
-                ShowHideButtons.HideTarget(assassin2, voteArea.TargetPlayerId);
-            }
+                if (PlayerControl.LocalPlayer.Is(AbilityEnum.Assassin) && !PlayerControl.LocalPlayer.Data.IsDead)
+                {
+                    var assassin2 = Ability.GetAbility<Assassin>(PlayerControl.LocalPlayer);
+                    ShowHideButtons.HideTarget(assassin2, voteArea.TargetPlayerId);
+                }
 
                 if (PlayerControl.LocalPlayer.Is(RoleEnum.Swapper) && !PlayerControl.LocalPlayer.Data.IsDead)
                 {
@@ -241,7 +238,39 @@ namespace TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod
                         }
                     }
 
-                    AddHauntPatch.AssassinatedPlayers.Add(player);
+                    if (SetPostmortals.RevealerOn && SetPostmortals.WillBeRevealer == null && player.Is(Faction.Crew))
+                    {
+                        SetPostmortals.WillBeRevealer = player;
+                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetRevealer, SendOption.Reliable, -1);
+                        writer.Write(player.PlayerId);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    }
+
+                    if (SetPostmortals.PhantomOn && SetPostmortals.WillBePhantom == null && player.Is(Faction.Neutral) && !LayerExtentions.NeutralHasUnfinishedBusiness(player))
+                    {
+                        SetPostmortals.WillBePhantom = player;
+                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPhantom, SendOption.Reliable, -1);
+                        writer.Write(player.PlayerId);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    }
+
+                    if (SetPostmortals.BansheeOn && SetPostmortals.WillBeBanshee == null && player.Is(Faction.Syndicate))
+                    {
+                        SetPostmortals.WillBeBanshee = player;
+                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetBanshee, SendOption.Reliable, -1);
+                        writer.Write(player.PlayerId);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    }
+
+                    if (SetPostmortals.GhoulOn && SetPostmortals.WillBeGhoul == null && player.Is(Faction.Intruder))
+                    {
+                        SetPostmortals.WillBeGhoul = player;
+                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetGhoul, SendOption.Reliable, -1);
+                        writer.Write(player.PlayerId);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    }
+
+                    SetPostmortals.AssassinatedPlayers.Add(player);
                     meetingHud.CheckForEndVoting();
                 }
             }

@@ -5,6 +5,9 @@ using TownOfUsReworked.Classes;
 using TownOfUsReworked.Modules;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Data;
+using TownOfUsReworked.Custom;
+using Hazel;
+using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -16,7 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public bool OnCrusade => TimeRemaining > 0f;
         public PlayerControl CrusadedPlayer;
         public PlayerControl ClosestCrusade;
-        public AbilityButton CrusadeButton;
+        public CustomButton CrusadeButton;
 
         public Crusader(PlayerControl player) : base(player)
         {
@@ -28,15 +31,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleAlignment = RoleAlignment.SyndicateKill;
             AlignmentName = SyK;
             InspectorResults = InspectorResults.SeeksToProtect;
+            Type = LayerEnum.Crusader;
+            CrusadedPlayer = null;
+            CrusadeButton = new(this, AssetManager.Placeholder, AbilityTypes.Direct, "Secondary", HitCrusade);
         }
 
         public float CrusadeTimer()
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastCrusaded;
-            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.AlertCd) * 1000f;
-            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.CrusadeCooldown) * 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
         public void Crusade()
@@ -70,6 +76,37 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 if (player.IsOnAlert() || player.Is(RoleEnum.Pestilence))
                     Utils.RpcMurderPlayer(player, player2);
             }
+        }
+
+        public void HitCrusade()
+        {
+            if (CrusadeTimer() != 0f || Utils.IsTooFar(Player, ClosestCrusade))
+                return;
+
+            var interact = Utils.Interact(Player, ClosestCrusade);
+
+            if (interact[3])
+            {
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+                writer.Write((byte)ActionsRPC.Crusade);
+                writer.Write(Player.PlayerId);
+                writer.Write(ClosestCrusade.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                TimeRemaining = CustomGameOptions.CrusadeDuration;
+                CrusadedPlayer = ClosestCrusade;
+                Crusade();
+            }
+            else if (interact[0])
+                LastCrusaded = DateTime.UtcNow;
+            else if (interact[1])
+                LastCrusaded.AddSeconds(CustomGameOptions.ProtectKCReset);
+        }
+
+        public override void UpdateHud(HudManager __instance)
+        {
+            base.UpdateHud(__instance);
+            var notCrusaded = PlayerControl.AllPlayerControls.ToArray().Where(x => x != CrusadedPlayer).ToList();
+            CrusadeButton.Update("CRUSADE", CrusadeTimer(), CustomGameOptions.CrusadeCooldown, notCrusaded, OnCrusade, TimeRemaining, CustomGameOptions.CrusadeDuration);
         }
     }
 }

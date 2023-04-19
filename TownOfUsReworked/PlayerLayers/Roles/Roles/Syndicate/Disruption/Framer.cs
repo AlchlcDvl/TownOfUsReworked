@@ -5,12 +5,16 @@ using TownOfUsReworked.Modules;
 using TownOfUsReworked.Extensions;
 using Hazel;
 using TownOfUsReworked.Data;
+using TownOfUsReworked.Custom;
+using TownOfUsReworked.Classes;
+using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Framer : SyndicateRole
     {
-        public AbilityButton FrameButton;
+        public CustomButton FrameButton;
+        public CustomButton RadialFrameButton;
         public List<byte> Framed = new();
         public DateTime LastFramed;
         public PlayerControl ClosestFrame;
@@ -19,23 +23,25 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Framer";
             StartText = "Make Everyone Suspicious";
-            AbilitiesText = "- You can frame players\n- Framed players will die very easily to <color=#FFFF00FF>Vigilantes</color> and <color=#073763FF>Assassins</color>\n- Framed " +
-                "players will appear to have the wrong results to investigative roles till you are dead\n- With the Chaos Drive, you can frame all players within" +
-                $"{CustomGameOptions.ChaosDriveFrameRadius}m\n{AbilitiesText}";
+            AbilitiesText = "- You can frame players\n- Framed players will die very easily to killing roles and will appear to have the wrong results to investigative roles till you" +
+                $" are dead\n- With the Chaos Drive, you can frame all players within a{CustomGameOptions.ChaosDriveFrameRadius}m radius\n{AbilitiesText}";
             RoleType = RoleEnum.Framer;
             RoleAlignment = RoleAlignment.SyndicateDisruption;
             AlignmentName = SD;
             Color = CustomGameOptions.CustomSynColors ? Colors.Framer : Colors.Syndicate;
             Framed = new();
+            Type = LayerEnum.Framer;
+            FrameButton = new(this, AssetManager.Placeholder, AbilityTypes.Direct, "Secondary", HitFrame);
+            RadialFrameButton = new(this, AssetManager.Placeholder, AbilityTypes.Effect, "Secondary", RadialFrame);
         }
 
         public float FrameTimer()
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastFramed;
-            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.FrameCooldown, CustomButtons.GetUnderdogChange(Player)) * 1000f;
-            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.FrameCooldown) * 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
         public void Frame(PlayerControl player)
@@ -49,6 +55,41 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             writer.Write(Player.PlayerId);
             writer.Write(player.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
+        }
+
+        public void HitFrame()
+        {
+            if (FrameTimer() != 0f || Utils.IsTooFar(Player, ClosestFrame) || HoldsDrive)
+                return;
+
+            var interact = Utils.Interact(Player, ClosestFrame);
+
+            if (interact[3])
+                Frame(ClosestFrame);
+
+            if (interact[0])
+                LastFramed = DateTime.UtcNow;
+            else if (interact[1])
+                LastFramed.AddSeconds(CustomGameOptions.ProtectKCReset);
+        }
+
+        public void RadialFrame()
+        {
+            if (FrameTimer() != 0f || !HoldsDrive)
+                return;
+
+            foreach (var player in Utils.GetClosestPlayers(PlayerControl.LocalPlayer.GetTruePosition(), CustomGameOptions.ChaosDriveFrameRadius))
+                Frame(player);
+
+            LastFramed = DateTime.UtcNow;
+        }
+
+        public override void UpdateHud(HudManager __instance)
+        {
+            base.UpdateHud(__instance);
+            var notFramed = PlayerControl.AllPlayerControls.ToArray().Where(x => !Framed.Contains(x.PlayerId) && !x.Is(Faction.Syndicate)).ToList();
+            FrameButton.Update("FRAME", FrameTimer(), CustomGameOptions.FrameCooldown, notFramed, true, !HoldsDrive);
+            RadialFrameButton.Update("FRAME", FrameTimer(), CustomGameOptions.FrameCooldown, true, HoldsDrive);
         }
     }
 }

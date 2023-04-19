@@ -8,6 +8,7 @@ using TownOfUsReworked.Classes;
 using UnityEngine;
 using TownOfUsReworked.Modules;
 using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Custom;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -18,7 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public List<byte> InfectedPlayers = new();
         public int InfectedAlive => InfectedPlayers.Count;
         public bool CanTransform => PlayerControl.AllPlayerControls.ToArray().Count(x => x?.Data.IsDead == false && !x.Data.Disconnected) <= InfectedAlive;
-        public AbilityButton InfectButton;
+        public CustomButton InfectButton;
 
         public Plaguebearer(PlayerControl player) : base(player)
         {
@@ -31,13 +32,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleAlignment = RoleAlignment.NeutralKill;
             AlignmentName = NK;
             InfectedPlayers = new();
+            Type = LayerEnum.Plaguebearer;
+            InfectButton = new(this, AssetManager.Infect, AbilityTypes.Direct, "ActionSecondary", Infect);
         }
 
         public float InfectTimer()
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastInfected;
-            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.InfectCd) * 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.InfectCd) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
@@ -48,40 +51,66 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 return;
 
             _ = new WaitForSeconds(1f);
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+            writer.Write((byte)ActionsRPC.Infect);
 
             if (InfectedPlayers.Contains(source.PlayerId) || source.Is(RoleEnum.Plaguebearer))
             {
                 InfectedPlayers.Add(target.PlayerId);
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                writer.Write((byte)ActionsRPC.Infect);
                 writer.Write(Player.PlayerId);
                 writer.Write(target.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
             }
             else if (InfectedPlayers.Contains(target.PlayerId) || target.Is(RoleEnum.Plaguebearer))
             {
                 InfectedPlayers.Add(source.PlayerId);
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                writer.Write((byte)ActionsRPC.Infect);
                 writer.Write(Player.PlayerId);
                 writer.Write(source.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
             }
+
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+        }
+
+        public void Infect()
+        {
+            if (Utils.IsTooFar(Player, ClosestPlayer) || InfectTimer() != 0f)
+                return;
+
+            var interact = Utils.Interact(Player, ClosestPlayer);
+
+            if (interact[3])
+                RpcSpreadInfection(Player, ClosestPlayer);
+
+            if (interact[0])
+                LastInfected = DateTime.UtcNow;
+            else if (interact[1])
+                LastInfected.AddSeconds(CustomGameOptions.ProtectKCReset);
         }
 
         public void TurnPestilence()
         {
-            InfectButton.gameObject.SetActive(false);
-            var role = new Pestilence(Player);
-            role.RoleUpdate(this);
+            var newRole = new Pestilence(Player);
+            newRole.RoleUpdate(this);
 
-            if (Player == PlayerControl.LocalPlayer)
-                Utils.Flash(Colors.Pestilence, "Everyone has been infected, you feel your body transforming!");
-
-            if (CustomGameOptions.PlayersAlerted)
-                Utils.Flash(Colors.Pestilence, "A plague has spread within the crew, summoning <color=#424242FF>Pestilence</color>!");
+            if (Player == PlayerControl.LocalPlayer || CustomGameOptions.PlayersAlerted)
+                Utils.Flash(Colors.Pestilence);
             else if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
-                Utils.Flash(Colors.Seer, "Someone has changed their identity!");
+                Utils.Flash(Colors.Seer);
+        }
+
+        public override void UpdateHud(HudManager __instance)
+        {
+            base.UpdateHud(__instance);
+            var notInfected = PlayerControl.AllPlayerControls.ToArray().Where(player => !InfectedPlayers.Contains(player.PlayerId)).ToList();
+            InfectButton.Update("INFECT", InfectTimer(), CustomGameOptions.InfectCd, notInfected, true, !CanTransform);
+
+            if (CanTransform && PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Data.IsDead && !x.Data.Disconnected).ToList().Count > 1 && !Player.Data.IsDead)
+            {
+                TurnPestilence();
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
+                writer.Write((byte)TurnRPC.TurnPestilence);
+                writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+            }
         }
     }
 }

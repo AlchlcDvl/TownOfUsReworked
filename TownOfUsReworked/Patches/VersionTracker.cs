@@ -31,7 +31,7 @@ namespace TownOfUsReworked.Patches
         [HarmonyPostfix]
         public static void Postfix(PingTracker __instance)
         {
-            __instance.text.text = "<color=#00FF00FF>TownOfUs</color><color=#FF00FFFF>Reworked</color>\n" +
+            __instance.text.text = "<b><color=#00FF00FF>TownOfUs</color><color=#FF00FFFF>Reworked</color></b>\n" +
                 $"{(!MeetingHud.Instance ? $"<color=#0000FFFF>{TownOfUsReworked.versionFinal}</color>\n" : "")}" +
                 $"{(!MeetingHud.Instance ? "<color=#C50000FF>By: AlchlcDvl</color>\n" : "")}" +
                 $"Ping: {AmongUsClient.Instance.Ping}ms\n" + (TownOfUsReworked.MCIActive ?

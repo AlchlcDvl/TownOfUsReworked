@@ -34,7 +34,7 @@ namespace TownOfUsReworked.PlayerLayers
                 text.color = Colors.Stalemate;
                 SoundManager.Instance.PlaySound(__instance.DisconnectStinger, false);
             }
-            else if (Role.CrewWin)
+            else if (Role.CrewWin || Role.SyndicateWin || Role.IntruderWin || Role.AllNeutralsWin)
             {
                 var role = Role.AllRoles.Find(x => (x.Faction == Faction.Crew && Role.CrewWin) || (x.Faction == Faction.Syndicate && Role.SyndicateWin) || (x.Faction == Faction.Intruder &&
                     Role.IntruderWin) || (x.Faction == Faction.Neutral && Role.AllNeutralsWin));
@@ -42,9 +42,9 @@ namespace TownOfUsReworked.PlayerLayers
                 if (role == null)
                     return;
 
-                __instance.BackgroundBar.material.color = Colors.Crew;
+                __instance.BackgroundBar.material.color = role.FactionColor;
                 text.text = $"{role.FactionName + (role.Faction == Faction.Neutral ? "s" : "")} Win{(role.Faction is Faction.Syndicate or Faction.Crew ? "s" : "")}!";
-                text.color = Colors.Crew;
+                text.color = role.FactionColor;
             }
             else if (Role.NKWins)
             {
@@ -59,7 +59,7 @@ namespace TownOfUsReworked.PlayerLayers
             }
             else if (Role.InfectorsWin)
             {
-                var role = Role.AllRoles.Find(x => x.RoleType is RoleEnum.Plaguebearer or RoleEnum.Pestilence);
+                var role = Role.AllRoles.Find(x => x.RoleType is RoleEnum.Plaguebearer or RoleEnum.Pestilence && x.Winner);
 
                 if (role == null)
                     return;

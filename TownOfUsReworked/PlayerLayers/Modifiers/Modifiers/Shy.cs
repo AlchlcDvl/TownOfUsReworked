@@ -11,6 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
             TaskText = "- You cannot call meetings.";
             Color = CustomGameOptions.CustomModifierColors ? Colors.Shy : Colors.Modifier;
             ModifierType = ModifierEnum.Shy;
+            Type = LayerEnum.Shy;
         }
     }
 }

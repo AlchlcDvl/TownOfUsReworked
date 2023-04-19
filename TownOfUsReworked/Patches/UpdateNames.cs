@@ -6,10 +6,7 @@ using TownOfUsReworked.PlayerLayers.Abilities;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.CustomOptions;
 using UnityEngine;
-using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod;
 using System.Linq;
-using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MedicMod;
-using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuardianAngelMod;
 using System.Collections.Generic;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.PlayerLayers;
@@ -76,19 +73,7 @@ namespace TownOfUsReworked.Patches
                 roleRevealed = true;
             }
 
-            if (PlayerControl.LocalPlayer.Is(RoleEnum.Sheriff) && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
-            {
-                var sheriff = localinfo[0] as Sheriff;
-
-                if (sheriff.Interrogated.Contains(player.PlayerId))
-                {
-                    if (player.SeemsEvil())
-                        color = Colors.Intruder;
-                    else
-                        color = Colors.Glitch;
-                }
-            }
-            else if (PlayerControl.LocalPlayer.Is(RoleEnum.Consigliere) && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
+            if (PlayerControl.LocalPlayer.Is(RoleEnum.Consigliere) && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
             {
                 var consigliere = localinfo[0] as Consigliere;
 
@@ -112,12 +97,31 @@ namespace TownOfUsReworked.Patches
                     }
                 }
             }
-            else if (PlayerControl.LocalPlayer.Is(RoleEnum.Medic) && (CustomGameOptions.ShowShielded == ShieldOptions.Medic || CustomGameOptions.ShowShielded == ShieldOptions.SelfAndMedic))
+            else if (PlayerControl.LocalPlayer.Is(RoleEnum.Medic))
             {
                 var medic = localinfo[0] as Medic;
 
-                if (medic.ShieldedPlayer != null && medic.ShieldedPlayer == player)
+                if (medic.ShieldedPlayer != null && medic.ShieldedPlayer == player && (int)CustomGameOptions.ShowShielded is 1 or 2)
                     name += " <color=#006600FF>✚</color>";
+            }
+            else if (PlayerControl.LocalPlayer.Is(RoleEnum.Retributionist))
+            {
+                var ret = localinfo[0] as Retributionist;
+
+                if (ret.IsMedic)
+                {
+                    if (ret.ShieldedPlayer != null && ret.ShieldedPlayer == player && (int)CustomGameOptions.ShowShielded is 1 or 2)
+                        name += " <color=#006600FF>✚</color>";
+                }
+                else if (ret.IsInsp)
+                {
+                    if (ret.Inspected.Contains(player.PlayerId))
+                    {
+                        name += $"\n{player.GetInspResults()}";
+                        color = ret.Color;
+                        roleRevealed = true;
+                    }
+                }
             }
             else if (PlayerControl.LocalPlayer.Is(RoleEnum.Arsonist) && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
             {
@@ -209,7 +213,7 @@ namespace TownOfUsReworked.Patches
                     name += " <color=#FFFFFFFF>★</color>";
                     player.MyRend().material.SetColor("_VisorColor", guardianAngel.Color);
 
-                    if (player.IsProtected() && (CustomGameOptions.ShowProtect == ProtectOptions.GA || CustomGameOptions.ShowProtect == ProtectOptions.SelfAndGA))
+                    if (player.IsProtected() && (int)CustomGameOptions.ShowProtect is 1 or 2)
                         name += " <color=#FFFFFFFF>η</color>";
                 }
             }
@@ -463,7 +467,7 @@ namespace TownOfUsReworked.Patches
                         }
                     }
 
-                    name += $" {lover.GetColoredSymbol()}";
+                    name += $" {lover.ColoredSymbol}";
                 }
             }
             else if (PlayerControl.LocalPlayer.Is(ObjectifierEnum.Rivals) && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
@@ -489,16 +493,16 @@ namespace TownOfUsReworked.Patches
                         }
                     }
 
-                    name += $" {rival.GetColoredSymbol()}";
+                    name += $" {rival.ColoredSymbol}";
                 }
             }
 
             if (player == PlayerControl.LocalPlayer && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
             {
-                if (player.IsShielded() && (CustomGameOptions.ShowShielded == ShieldOptions.Self || CustomGameOptions.ShowShielded == ShieldOptions.SelfAndMedic))
+                if (player.IsShielded() && (int)CustomGameOptions.ShowShielded is 0 or 2)
                     name += " <color=#006600FF>✚</color>";
 
-                if (player.IsProtected() && (CustomGameOptions.ShowProtect == ProtectOptions.Self || CustomGameOptions.ShowProtect == ProtectOptions.SelfAndGA))
+                if (player.IsProtected() && (int)CustomGameOptions.ShowProtect is 0 or 2)
                     name += " <color=#FFFFFFFF>η</color>";
 
                 if (player.IsBHTarget())
@@ -676,7 +680,7 @@ namespace TownOfUsReworked.Patches
                 if (player.SyndicateSided() || player.IntruderSided())
                 {
                     var objectifier = info[3] as Objectifier;
-                    name += $" {objectifier.GetColoredSymbol()}";
+                    name += $" {objectifier.ColoredSymbol}";
                 }
                 else
                     name += $" {role.FactionColorString}ξ</color>";
@@ -729,7 +733,7 @@ namespace TownOfUsReworked.Patches
                     var objectifier = info[3] as Objectifier;
 
                     if (objectifier.ObjectifierType != ObjectifierEnum.None && !objectifier.Hidden)
-                        name += $" {objectifier.GetColoredSymbol()}";
+                        name += $" {objectifier.ColoredSymbol}";
                 }
             }
 
@@ -766,19 +770,7 @@ namespace TownOfUsReworked.Patches
                 roleRevealed = true;
             }
 
-            if (PlayerControl.LocalPlayer.Is(RoleEnum.Sheriff) && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
-            {
-                var sheriff = localinfo[0] as Sheriff;
-
-                if (sheriff.Interrogated.Contains(player.TargetPlayerId))
-                {
-                    if (player.SeemsEvil())
-                        color = Colors.Intruder;
-                    else
-                        color = Colors.Glitch;
-                }
-            }
-            else if (PlayerControl.LocalPlayer.Is(RoleEnum.Coroner) && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
+            if (PlayerControl.LocalPlayer.Is(RoleEnum.Coroner) && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
             {
                 var coroner = localinfo[0] as Coroner;
 
@@ -811,12 +803,26 @@ namespace TownOfUsReworked.Patches
                     }
                 }
             }
-            else if (PlayerControl.LocalPlayer.Is(RoleEnum.Medic) && (CustomGameOptions.ShowShielded == ShieldOptions.Medic || CustomGameOptions.ShowShielded == ShieldOptions.SelfAndMedic))
+            else if (PlayerControl.LocalPlayer.Is(RoleEnum.Medic))
             {
                 var medic = localinfo[0] as Medic;
 
-                if (medic.ShieldedPlayer != null && medic.ShieldedPlayer == Utils.PlayerByVoteArea(player))
+                if (medic.ShieldedPlayer != null && medic.ShieldedPlayer.PlayerId == player.TargetPlayerId && (int)CustomGameOptions.ShowShielded is 1 or 2)
                     name += " <color=#006600FF>✚</color>";
+            }
+            else if (PlayerControl.LocalPlayer.Is(RoleEnum.Retributionist))
+            {
+                var ret = localinfo[0] as Retributionist;
+
+                if (ret.IsInsp)
+                {
+                    if (ret.Inspected.Contains(player.TargetPlayerId))
+                    {
+                        name += $"\n{player.GetInspResults()}";
+                        color = ret.Color;
+                        roleRevealed = true;
+                    }
+                }
             }
             else if (PlayerControl.LocalPlayer.Is(RoleEnum.Arsonist) && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
             {
@@ -1095,7 +1101,7 @@ namespace TownOfUsReworked.Patches
                         }
                     }
 
-                    name += $" {lover.GetColoredSymbol()}";
+                    name += $" {lover.ColoredSymbol}";
                 }
             }
             else if (PlayerControl.LocalPlayer.Is(ObjectifierEnum.Rivals) && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
@@ -1121,13 +1127,13 @@ namespace TownOfUsReworked.Patches
                         }
                     }
 
-                    name += $" {rival.GetColoredSymbol()}";
+                    name += $" {rival.ColoredSymbol}";
                 }
             }
 
             if (player.TargetPlayerId == PlayerControl.LocalPlayer.PlayerId && !player.AmDead)
             {
-                if (player.IsShielded() && (CustomGameOptions.ShowShielded == ShieldOptions.Self || CustomGameOptions.ShowShielded == ShieldOptions.SelfAndMedic))
+                if (player.IsShielded() && (int)CustomGameOptions.ShowShielded is 0 or 2)
                     name += " <color=#006600FF>✚</color>";
 
                 if (player.IsBHTarget())
@@ -1297,7 +1303,7 @@ namespace TownOfUsReworked.Patches
                 if (player.SyndicateSided() || player.IntruderSided())
                 {
                     var objectifier = info[3] as Objectifier;
-                    name += $" {objectifier.GetColoredSymbol()}";
+                    name += $" {objectifier.ColoredSymbol}";
                 }
                 else
                     name += $" {role.FactionColorString}ξ</color>";
@@ -1351,7 +1357,7 @@ namespace TownOfUsReworked.Patches
                     var objectifier = info[3] as Objectifier;
 
                     if (objectifier.ObjectifierType != ObjectifierEnum.None && !objectifier.Hidden)
-                        name += $" {objectifier.GetColoredSymbol()}";
+                        name += $" {objectifier.ColoredSymbol}";
                 }
             }
 

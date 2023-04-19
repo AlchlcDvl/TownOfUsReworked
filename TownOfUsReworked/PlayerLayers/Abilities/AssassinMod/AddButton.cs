@@ -26,7 +26,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
                 return true;
 
             var player = Utils.PlayerByVoteArea(voteArea);
-            return player?.Data.IsDead != false || player.Data.Disconnected || voteArea.NameText.text.Contains('\n');
+            return player?.Data.IsDead == true || player.Data.Disconnected || voteArea.NameText.text.Contains('\n');
         }
 
         public static void GenButton(Assassin role, PlayerVoteArea voteArea)
@@ -186,7 +186,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
                         if (!modifier.LifeUsed)
                         {
                             modifier.LifeUsed = true;
-                            Utils.Flash(modifier.Color, "You guessed wrong!");
+                            Utils.Flash(modifier.Color);
                             ShowHideButtons.HideSingle(role, targetId, false, true);
                         }
                         else
@@ -226,9 +226,8 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
 
         public static void Postfix(MeetingHud __instance)
         {
-            foreach (var ability in Ability.GetAbilities(AbilityEnum.Assassin))
+            foreach (var assassin in Ability.GetAbilities<Assassin>(AbilityEnum.Assassin))
             {
-                var assassin = (Assassin)ability;
                 assassin.Guesses.Clear();
                 assassin.Buttons.Clear();
                 assassin.GuessedThisMeeting = false;

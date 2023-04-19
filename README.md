@@ -6,7 +6,7 @@
 
 An [Among Us](https://store.steampowered.com/app/945360/Among_Us) mod that adds a bunch of roles, modifiers, objectifiers, abilities and game settings.
 
-Join our [Discord](https://discord.gg/cd27aDQDY9) server if you have any problems or want to find people to play with!
+Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or want to find people to play with!
 
 # ***Contents***
 
@@ -91,6 +91,7 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) server if you have any problem
 - [Inspector Results](#inspector-results)
 - [Factions](#factions)
 - [Subfactions](#subfactions)
+- [Syndicate Chaos Drive Local Role Priority](#cd-role-priority)
 
 [**Credits & Resources**](#credits--resources)
 
@@ -537,12 +538,12 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) server if you have any problem
 
 Your game folder should look something like this.
 
-![image](https://user-images.githubusercontent.com/56699741/192501078-c70e60c4-c1c2-43fd-b09d-56c643fc9cfe.png)
+![Image](./Images/Folder.png)
 
 A first launch may take up to 5 minutes, so be patient if it doesn't launch immediately.
 
 ## Issues
-If you have issues installing Town of Us, you can join our [Discord](https://discord.gg/cd27aDQDY9) to receive help.
+If you have issues installing Town of Us Reworked, you can join our [Discord](https://discord.gg/cd27aDQDY9) to receive help.
 
 # Uninstallation
 
@@ -659,24 +660,25 @@ The Inspector can check players for their roles. Upon being checked, the targets
 | Inspect Cooldown | The cooldown on the Inspector's Inspect button. | Time | 25s |
 
 ### Inspector Results
-- Meddles With Dead - Janitor, Undertaker, Altruist, Necromancer
-- Deals With Dead - Coroner, Amnesiac, Cannibal, Retributionist
-- Seeks To Protect - Guardian Angel, Survivor, Veteran, Medic, Crusader
-- Leads The Group - Mayor, Godfather, Rebel, Pestilence
-- Brings Chaos - Jackal, Swapper, Shifter, Camouflager, Thief
-- Likes To Explore - Teleporter, Warper, Beamer, Transporter
+- Meddles With Dead - Janitor, Cannibal, Altruist, Necromancer
+- Deals With Dead - Coroner, Amnesiac, Retributionist
+- Preserves Life - Medic, Guardian Angel, Ambusher, Crusader
+- Leads The Group - Mayor, Godfather, Rebel, Dracula
+- Brings Chaos - Swapper, Shifter, Thief, Jackal, Camouflager, Whisperer, Politician
+- Seeks To Destroy - Arsonist, Cryomaniac, Plaguebearer, Pestilence
+- Wants To Explore - Transporter, Teleporter, Warper, Beamer
 - Is Basic - Crewmate, Impostor, Murderer, Anarchist
-- Different Lens - Glitch, Agent, Medium, Engineer, Time Lord, Time Master
-- Has Information - Sheriff, Consigliere, Blackmailer, Detective, Inspector
-- Meddles With Others - Escort, Consort, Jester, Executioner, Actor
-- Touches People - Arsonist, Plaguebearer, Cryomaniac, Framer, Seer
-- Unseen - Chameleon, Wraith, Poisoner, Gorgon, Concealer
-- Uses Guns - Vigilante, Bounty Hunter, Guesser, Mafioso
-- Tracks Others - Tracker, Mystic, Vampire Hunter, Whisperer, Ambusher
-- Is Aggressive - Werewolf, Juggernaut, Sidekick, Serial Killer
-- Causes Confusion - Morphling, Disguiser, Shapeshifter, Betrayer, Drunkard
+- New Lens - Engineer, Time Lord, Time Master, Miner
+- Gains Information - Sheriff, Seer, Blackmailer, Detective, Consigliere, Inspector
+- Is Manipulative - Jester, Executioner, Actor, Troll, Framer
+- Unseen - Chameleon, Wraith, Concealer, Poisoner
+- Is Cold - Veteran, Vigilante, Sidekick, Bounty Hunter, Guesser, Mafioso
+- Tracks Others - Tracker, Mystic, Vampire Hunter, Enforcer
+- Is Aggressive - Betrayer, Werewolf, Juggernaut, Serial Killer
+- Causes Confusion - Morphling, Disguiser, Shapeshifter, Drunkard
 - Drops Items - Bomber, Operative, Grenadier
-- Ghostly - Revealer, Phantom
+- Ghostly - Revealer, Phantom, Ghoul, Banshee
+- Hinders People - Escort, Consort, Glitch
 
 ## Mayor
 ### **Alignment: Crew (Sovereign)**
@@ -900,7 +902,7 @@ The Vigilante can kill. However, if they kill someone they shouldn't, they inste
 
 ## Actor
 ### **Alignment: Neutral (Evil)**
-### Win Condition: Get guessed as a role in your target role list.
+### Win Condition: Get guessed as a role in their target role list
 
 The Actor gets a list of roles at the start of the game. This list of roles depends on which roles are present in the game so that it's easier for the Actor to pretend with certain events. The Actor must pretend to be and get guessed as one of the roles in order to win.
 
@@ -915,7 +917,7 @@ The Actor gets a list of roles at the start of the game. This list of roles depe
 
 ## Amnesiac
 ### **Alignment: Neutral (Benign)**
-### Win Condition: Find a dead body, take their role and then win as that role.
+### Win Condition: Find a dead body, take their role and then win as that role
 
 The Amnesiac is essentially roleless and cannot win without remembering the role of a dead player.
 
@@ -931,7 +933,7 @@ The Amnesiac is essentially roleless and cannot win without remembering the role
 
 ## Arsonist
 ### **Alignment: Neutral (Killing)**
-### Win Condition: Ignite all non-Neutral Benign roles.
+### Win Condition: Ignite all non-Neutral Benign roles
 
 The Arsonist can douse other players with gasoline. After dousing, the Arsonist can choose to ignite all doused players which kills all doused players at once.
 
@@ -947,7 +949,7 @@ The Arsonist can douse other players with gasoline. After dousing, the Arsonist 
 
 ## Bounty Hunter
 ### **Alignment: Neutral (Evil)**
-### Win Condition: Find and kill your target.
+### Win Condition: Find and kill thier target
 
 The Bounty Hunter is assigned a target as the start of the game. They do not know who the target is and must find them via a series of clues and limited guesses. Upon finding their target within the set amount of guesses, the guess button becomes a kill button after the next meeting. The Bounty Hunter's target always knows that there is a bounty on their head. If the Bounty Hunter is unable to find their target within the number of guesses or their target dies not by the Bounty Hunter's hands, the Bounty Hunter turns into a Troll.
 
@@ -960,7 +962,7 @@ The Bounty Hunter is assigned a target as the start of the game. They do not kno
 
 ## Cannibal
 ### **Alignment: Neutral (Evil)**
-### Win Condition: Eat a certain number of bodies.
+### Win Condition: Eat a certain number of bodies
 
 The Cannibal can eat the body which wipes away the body, like the Janitor.
 
@@ -977,7 +979,7 @@ The Cannibal can eat the body which wipes away the body, like the Janitor.
 
 ## Cryomaniac
 ### **Alignment: Neutral (Killing)**
-### Win Condition: Freeze all non-Neutral Benign roles.
+### Win Condition: Freeze all non-Neutral Benign roles
 
 The Cryomaniac can douse in coolant and freeze players similar to the Arsonist's dousing in gasoline and ignite. Freezing players does not immediately kill doused targets, instead when the next meeting is called, all currently doused players will die. When the Cryomaniac is the last killer or when the final number of players reaches a certain threshold, the Cryomaniac can also directly kill.
 
@@ -990,7 +992,7 @@ The Cryomaniac can douse in coolant and freeze players similar to the Arsonist's
 
 ## Dracula
 ### **Alignment: Neutral (Neophyte)**
-### Win Condition: Convert or kill anyone who can oppose them.
+### Win Condition: Convert or kill anyone who can oppose them
 
 The Dracula is the only Undead that spawns in. The Dracula is the leader of the Undead who can convert others into Undead. If the target cannot be converted, they will be attacked instead. The Dracula must watch out for the Vampire Hunter as attempting to convert them will cause the Vampire Hunter to kill the Dracula.
 
@@ -1004,7 +1006,7 @@ The Dracula is the only Undead that spawns in. The Dracula is the leader of the 
 
 ## Executioner
 ### **Alignment: Neutral (Evil)**
-### Win Condition: Live to see your target get ejected.
+### Win Condition: Live (or die according to the settings) to see their target get ejected
 
 The Executioner has no abilities and instead must use gas-lighting techniques to get their target ejected. The Executioner's target, by default, is always non-Crew Sovereign Crew. Once their target is ejected, the Executioner can doom those who voted for their target. If their target dies before ejected, the Executioner turns into a Jester.
 
@@ -1027,7 +1029,7 @@ The Executioner has no abilities and instead must use gas-lighting techniques to
 
 ## Glitch
 ### **Alignment: Neutral (Killing)**
-### Win Condition: Erase the data of all non-Neutral Benign roles.
+### Win Condition: Erase the data of all non-Neutral Benign roles
 
 The Glitch can hack players, resulting in them being unable to do anything for a set duration or they can also mimic someone, which results in them looking exactly like the other person. The Glitch can kill normally.
 
@@ -1044,7 +1046,7 @@ The Glitch can hack players, resulting in them being unable to do anything for a
 
 ## Guardian Angel
 ### **Alignment: Neutral (Benign)**
-### WIn Condition: Have your target live to see the end of the game.
+### WIn Condition: Have your target live to see the end of the game
 
 The Guardian Angel more or less aligns themselves with the faction of their target. The Guardian Angel will win with anyone as long as their target lives to the end of the game, even if their target loses. If the Guardian Angel's target dies, they become a Survivor.
 
@@ -1065,7 +1067,7 @@ The Guardian Angel more or less aligns themselves with the faction of their targ
 
 ## Guesser
 ### **Alignment: Neutral (Evil)**
-### Win Condition: Guess your target's role.
+### Win Condition: Guess your target's role
 
 The Guesser has no abilities aside from guessing only their target. Every meeting, the Guesser is told a hint regarding their target's role.
 
@@ -1081,7 +1083,7 @@ The Guesser has no abilities aside from guessing only their target. Every meetin
 
 ## Jackal
 ### **Alignment: Neutral (Neophyte)**
-### Win Condition: Bribe the crew into joining your side and eliminate any threats.
+### Win Condition: Bribe the crew into joining your side and eliminate any threats
 
 The Jackal is the leader of the Cabal. They spawn in with 2 recruits at the start of the game. One of the recruits is the "good" one, meaning they are Crew. The other is the "evil" recruit, who can be either Intruder, Syndicate or Neutral (Killing). When both recruits die, the Jackal can then recruit another player to join the Cabal and become the backup recruit. If the target happens to be a member of a rival subfaction, they will be attacked instead and the Jackal will still lose their ability to recruit.
 
@@ -1095,7 +1097,7 @@ The Jackal is the leader of the Cabal. They spawn in with 2 recruits at the star
 
 ## Jester
 ### **Alignment: Neutral (Evil)**
-### Win Condition: Get ejected.
+### Win Condition: Get ejected
 
 The Jester has no abilities and must make themselves appear to be evil to the Crew and get ejected. After getting ejected, the Jester can haunt those who voted for them, killing them from beyond the grave.
 
@@ -1113,7 +1115,7 @@ The Jester has no abilities and must make themselves appear to be evil to the Cr
 
 ## Juggernaut
 ### **Alignment: Neutral (Killing)**
-### Win Condition: Kill all non-Neutral Benign roles.
+### Win Condition: Kill all non-Neutral Benign roles
 
 The Juggernaut's kill cooldown decreases with every kill they make. When they reach a certain number of kills, the kill cooldown no longer decreases and instead gives them other buffs, like bypassing protections.
 
@@ -1127,7 +1129,7 @@ The Juggernaut's kill cooldown decreases with every kill they make. When they re
 
 ## Murderer
 ### **Alignment: Neutral (Killing)**
-### Win Condition: Kill all non-Neutral Benign roles.
+### Win Condition: Kill all non-Neutral Benign roles
 
 The Murderer is a simple Neutral Killer with no special abilities.
 
@@ -1140,7 +1142,7 @@ The Murderer is a simple Neutral Killer with no special abilities.
 
 ## Necromancer
 ### **Alignment: Neutral (Neophyte)**
-### Win Condition: Bring the undead to your side.
+### Win Condition: Bring the undead to your side
 
 The Necromancer is essentially an evil Altruist. They can revive dead players and make them join the Necromancer's team, the Reanimated. There is a limit to how many times can the Necromancer can kill and revive players.
 
@@ -1160,7 +1162,7 @@ The Necromancer is essentially an evil Altruist. They can revive dead players an
 
 ## Pestilence
 ### **Alignment: Neutral (Proselyte)**
-### Win Condition: Kill all non-Neutral Benign roles.
+### Win Condition: Kill all non-Neutral Benign roles
 
 Pestilence is always on permanent alert, where anyone who tries to interact with them will die. Pestilence does not spawn in-game and instead gets converted from Plaguebearer after they infect everyone. Pestilence cannot die unless they have been voted out, and they can't be guessed (usually).
 
@@ -1175,7 +1177,7 @@ Pestilence is always on permanent alert, where anyone who tries to interact with
 
 ## Phantom
 ### **Alignment: Neutral (Proselyte)**
-### Win Condition: Finish your tasks without getting clicked or having the game end.
+### Win Condition: Finish your tasks without getting clicked or having the game end
 
 The Phantom spawns when a Neutral player dies withouth accomplishing their objective. They become half-invisible and have to complete all their tasks without getting clicked on to win.
 
@@ -1187,7 +1189,7 @@ The Phantom spawns when a Neutral player dies withouth accomplishing their objec
 
 ## Plaguebearer
 ### **Alignment: Neutral (Killing)**
-### Win Condition: Infect everyone and turn into Pestilence or live to the end by killing off all Non-Neutral Benign roles.
+### Win Condition: Infect everyone and turn into Pestilence or live to the end by killing off all Non-Neutral Benign roles
 
 The Plaguebearer can infect other players. Once infected, the infected player can go and infect other players via interacting with them. Once all players are infected, the Plaguebearer becomes Pestilence.
 
@@ -1200,7 +1202,7 @@ The Plaguebearer can infect other players. Once infected, the infected player ca
 
 ## Serial Killer
 ### **Alignment: Neutral (Killing)**
-### Win Condition: Kill all non-Neutral Benign roles.
+### Win Condition: Kill all non-Neutral Benign roles
 
 Although the Serial Killer has a kill button, they can't use it unless they are in Bloodlust. Once the Serial Killer is in bloodlust they gain the ability to kill. However, unlike most killers, their kill cooldown is really short for the duration of the bloodlust.
 
@@ -1215,7 +1217,7 @@ Although the Serial Killer has a kill button, they can't use it unless they are 
 
 ## Survivor
 ### **Alignment: Neutral (Benign)**
-### Win Condition: Live to see the end of the game.
+### Win Condition: Live to see the end of the game
 
 The Survivor wins by simply surviving. They can vest which makes them immortal for a short duration.
 
@@ -1231,7 +1233,7 @@ The Survivor wins by simply surviving. They can vest which makes them immortal f
 
 ## Thief
 ### **Alignment: Neutral (Benign)**
-### Win Condition: Kill a killer and win as their role.
+### Win Condition: Kill a killer and win as their role
 
 The Thief can kill players to steal their roles. The player, however, must be a role with the ability to kill otherwise the Thief will die. After stealing their target's role, the Thief can now win as whatever role they have become.
 
@@ -1244,7 +1246,7 @@ The Thief can kill players to steal their roles. The player, however, must be a 
 
 ## Troll
 ### **Alignment: Neutral (Evil)**
-### Win Condition: Get killed.
+### Win Condition: Get killed
 
 The Troll just wants to be killed, but not ejected. The Troll can "interact" with players. This interaction does nothing, it just triggers any interaction sensitive roles like Veteran and Pestilence.
 
@@ -1258,7 +1260,7 @@ The Troll just wants to be killed, but not ejected. The Troll can "interact" wit
 
 ## Werewolf
 ### **Alignment: Neutral (Killing)**
-### Win Condition: Kill all non-Neutral Benign roles.
+### Win Condition: Kill all non-Neutral Benign roles
 
 The Werewolf can kill all players within a certain radius.
 
@@ -1272,7 +1274,7 @@ The Werewolf can kill all players within a certain radius.
 
 ## Whisperer
 ### **Alignment: Neutral (Neophyte)**
-### Win Condition: Persuade others into joining the cult.
+### Win Condition: Persuade others into joining the cult
 
 The Whisperer can whisper to all players within a certain radius. With each whisper, the chances of bringing someone over to the Whisperer's side increases till they do convert.
 
@@ -1522,6 +1524,23 @@ The Banshee can block every non-Syndicate player every once in a while. This rol
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Scream Cooldown | The cooldown of the Banshee's Scream button | Time | 25s |
+
+## Bomber
+### **Alignment: Syndicate (Killing)"
+
+The Bomber can place a bomb which can be remotely detonated at any time. Anyone caught inside the bomb's radius at the time of detonation will be killed. Only the latest placed bomb will detonate, unless the Bomber holds the Chaos Drive, with which they can detonate all bombs at once.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|------|-------------|------|---------|
+| Bomb Cooldown | The cooldown on the Bomber's Bomb button | Time | 25s |
+| Detonate Cooldown | The cooldown on the Bomber's Detonate button | Time | 25s |
+| Bomb Radius | The bomb's radius | Distance | 0.25m |
+| Chaos Drive Bomb Radius Increase | Self descriptive | Distance | 0.1m |
+| Bomb and Detonate Cooldowns Are Linked | Self descriptive | Toggle | False |
+| Bombs Are Cleared Every Meeting | Self descriptive | Toggle | False |
+| Bombs Detonate When A Meeting Is Called | Self descriptive | Toggle | False |
 
 ## Concealer
 ### **Alignment: Syndicate (Disruption)**
@@ -1928,12 +1947,6 @@ Ninjas don't lunge when killing.
 
 The Radar always has an arrow pointing towards the nearest player.
 
-### Game Options
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Radar | The percentage probability of the Radar appearing | Percentage | 0% |
-
 ## Ruthless
 ### Applied To: Killers
 
@@ -1959,7 +1972,7 @@ The Snitch is an ability which allows any Crewmate to get arrows pointing toward
 | Snitch Sees Exact Roles | Whether the Snitch also Reveals all Roles | Toggle | False |
 | Snitch Sees Turned Traitor | Whether the Snitch sees a turned Traitor | Toggle | True |
 | Tasks Remaining When Revealed | The number of tasks remaining when the Snitch is revealed to Impostors | Number | 1 |
-| Snitch Sees Impostors in Meetings | Whether the Snitch sees the Impostor's names red in Meetings | Toggle | True |
+| Snitch Sees Evils in Meetings | Whether the Snitch sees the evil players' names red in Meetings | Toggle | True |
 
 ## Tiebreaker
 ### Applied To: Everyone
@@ -1975,7 +1988,7 @@ If any vote is a draw, the Tiebreaker's vote will go through. If they voted anot
 ## Torch
 ### Applied To: Non-Killers
 
-The Torch's has Intruder vision at all times.
+The Torch has Intruder vision at all times.
 
 ### Game Options
 
@@ -2074,6 +2087,8 @@ The Underdog is an Intruder with a prolonged kill cooldown when with a teammate.
 | Enable Custom Neutral Colors | Whether all Neutral roles will have their colors unique or not | Toggle | False |
 | Enable Custom Modifier Colors | Whether all Modifier will have their colors unique or not | Toggle | True |
 
+-----------------------
+
 # Extras
 
 ## New Colors!
@@ -2163,21 +2178,36 @@ If you have any bugs or any need to contact me, join the [Discord Server](https:
 **Undead**
 - This subfaction is led by the Dracula
 - There is a limit of how many can be alive in the subfaction
+- If a Vampire Hunter interacts with an Undead, the Undead will be killed
 - Attempting to interact with a Vampire Hunter as an Undead will force them to kill you
 
 **Sect**
 - This subfaction is led by the Whisperer
-- The Whisperer can bring in as many people as they can, provided they have the cooldown and the % for it
+- The Whisperer can bring in as many people as they want, provided they have the cooldown and the % for it
 - The whispers are precious so the Whisperer must whisper near as many people as possible
 
 **Cabal**
 - This subfaction is led by the Jackal
 - There can be a maximum of 4 members in this subfaction, the Jackal and their 3 recruits
-- The Cabal starts off strong with 3 guaranteed members with the 4th one coming along if both the recruits die
+- The Cabal starts off strong with 3 guaranteed members with the 4th one coming along if both the original recruits die
 
 **Reanimated**
-- This subfactions is led by the Necromancer
+- This subfaction is led by the Necromancer
 - The only condition for becoming a member of this faction is the need to die so that the Necromancer can resurrect you
+
+-----------------------
+
+## Syndicate Chaos Drive Local Role Priority
+### This list shows which Syndicate role alignments/roles gain the Chaos Drive first if "Chaos Drive Is Global" is turned off.
+
+1. Promoted Rebel
+2. Syndicate (Disruption)
+3. Syndicate (Support)
+4. Syndicate (Power)
+5. Syndicate (Killing)
+6. Original Rebel, Sidekick, Anarchist
+
+### **If there are multiple active roles from the same alignment, the Chaos Drive is randomly given to one of those roles.**
 
 -----------------------
 
@@ -2211,6 +2241,8 @@ If you have any bugs or any need to contact me, join the [Discord Server](https:
 [Lunastellia](https://github.com/Lunastellia) - For Better Skeld code\
 [CrowdedMod](https://github.com/CrowdedMods/CrowdedMod) - For allowing to bypass the 15 player limit and is embedded into the mod\
 [Town Of Salem](https://www.blankmediagames.com/TownOfSalem/) & [Traitors In Salem](https://www.traitorsinsalem.com) - For multiple role ideas
+
+-----------------------
 
 # License
 This software is distributed under the GNU GPLv3 License. BepInEx is distributed under LGPL-2.1 License.

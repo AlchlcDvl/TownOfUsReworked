@@ -17,6 +17,7 @@ using TownOfUsReworked.Patches;
 using TownOfUsReworked.MultiClientInstancing;
 using TownOfUsReworked.Crowded.Components;
 using TownOfUsReworked.BetterMaps.Airship;
+using System.IO;
 
 namespace TownOfUsReworked
 {
@@ -29,9 +30,9 @@ namespace TownOfUsReworked
     public class TownOfUsReworked : BasePlugin
     {
         public const string Id = "TownOfUsReworked";
-        public const string VersionString = "0.0.3.3";
-        public const string CompleteVersionString = "0.0.3.3";
-        public readonly static Version Version = Version.Parse(VersionString);
+        public const string VersionString = "0.0.4.1";
+        public const string CompleteVersionString = "0.0.4.1";
+        public readonly static Version Version = new(VersionString);
 
         private readonly static string dev = VersionString[6..];
         private readonly static string test = CompleteVersionString[7..];
@@ -79,6 +80,9 @@ namespace TownOfUsReworked
             GameOptionsData.MinPlayers = minPlayers;
             NormalGameOptionsV07.MinPlayers = minPlayers;
             HideNSeekGameOptionsV07.MinPlayers = minPlayers;
+
+            if (!File.Exists("steam_appid.txt"))
+                File.WriteAllText("steam_appid.txt", "945360");
 
             SubmergedCompatibility.Initialize();
             PalettePatch.Load();

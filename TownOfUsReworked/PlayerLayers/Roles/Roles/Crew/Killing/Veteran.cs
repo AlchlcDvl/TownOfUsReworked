@@ -3,6 +3,9 @@ using UnityEngine;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Modules;
 using TownOfUsReworked.Data;
+using TownOfUsReworked.Custom;
+using Hazel;
+using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -14,7 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public int UsesLeft;
         public bool ButtonUsable => UsesLeft > 0;
         public bool OnAlert => TimeRemaining > 0f;
-        public AbilityButton AlertButton;
+        public CustomButton AlertButton;
 
         public Veteran(PlayerControl player) : base(player)
         {
@@ -27,15 +30,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleAlignment = RoleAlignment.CrewKill;
             AlignmentName = CK;
             InspectorResults = InspectorResults.SeeksToProtect;
+            Type = LayerEnum.Veteran;
+            AlertButton = new(this, AssetManager.Alert, AbilityTypes.Effect, "ActionSecondary", HitAlert, true);
         }
 
         public float AlertTimer()
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastAlerted;
-            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.AlertCd) * 1000f;
-            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.AlertCd) * 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
         public void Alert()
@@ -51,6 +56,26 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Enabled = false;
             LastAlerted = DateTime.UtcNow;
+        }
+
+        public void HitAlert()
+        {
+            if (!ButtonUsable || AlertTimer() != 0f || OnAlert)
+                return;
+
+            TimeRemaining = CustomGameOptions.AlertDuration;
+            UsesLeft--;
+            Alert();
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+            writer.Write((byte)ActionsRPC.Alert);
+            writer.Write(Player.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+        }
+
+        public override void UpdateHud(HudManager __instance)
+        {
+            base.UpdateHud(__instance);
+            AlertButton.Update("ALERT", AlertTimer(), CustomGameOptions.AlertCd, UsesLeft, OnAlert, TimeRemaining, CustomGameOptions.AlertDuration, ButtonUsable, ButtonUsable);
         }
     }
 }

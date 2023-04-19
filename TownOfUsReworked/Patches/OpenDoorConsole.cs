@@ -5,6 +5,7 @@ using UnityEngine;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.PlayerLayers.Roles;
+using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.Patches
 {
@@ -241,4 +242,10 @@ namespace TownOfUsReworked.Patches
         }
     }
     #endregion
+
+    [HarmonyPatch(typeof(DoorCardSwipeGame), nameof(DoorCardSwipeGame.Begin))]
+    public static class DoorSwipePatch
+    {
+        public static void Prefix(DoorCardSwipeGame __instance) => __instance.minAcceptedTime = CustomGameOptions.MinDoorSwipeTime;
+    }
 }

@@ -9,16 +9,18 @@ using TownOfUsReworked.Objects;
 using HarmonyLib;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Modules;
 using TownOfUsReworked.Data;
+using TownOfUsReworked.Custom;
+using System;
+using UnityEngine.UI;
+using Object = UnityEngine.Object;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     [HarmonyPatch]
     public class Role : PlayerLayer
     {
-        public static readonly Dictionary<byte, Role> RoleDictionary = new();
-        public static List<Role> AllRoles => RoleDictionary.Values.ToList();
+        public static readonly List<Role> AllRoles = new();
         public static readonly List<GameObject> Buttons = new();
         public static readonly Dictionary<int, string> LightDarkColors = new();
         public static readonly List<PlayerControl> Cleaned = new();
@@ -59,6 +61,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public static int ChaosDriveMeetingTimerCount;
         public static bool SyndicateHasChaosDrive;
         public static PlayerControl DriveHolder;
+
+        public static ArrowBehaviour Arrow;
+        public static PlayerControl Target;
         #pragma warning restore
 
         public Color32 FactionColor = Colors.Faction;
@@ -86,15 +91,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public string Objectives = "- None";
 
         public bool Bombed;
+        public bool Diseased;
 
         public bool Base;
 
         public readonly List<Footprint> AllPrints = new();
 
-        public AbilityButton SpectateButton;
-        public AbilityButton BombKillButton;
+        public CustomButton BombKillButton;
 
-        public AbilityButton ZoomButton;
+        public CustomButton ZoomInButton;
+        public CustomButton ZoomOutButton;
         public bool Zooming;
 
         public bool IsRecruit;
@@ -117,31 +123,275 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public override void UpdateHud(HudManager __instance)
         {
-            if (IsDead)
+            if (ConstantVariables.Inactive || LobbyBehaviour.Instance || MeetingHud.Instance)
+                return;
+
+            __instance.ReportButton.buttonLabelText.SetOutlineColor(FactionColor);
+            __instance.UseButton.buttonLabelText.SetOutlineColor(FactionColor);
+            __instance.PetButton.buttonLabelText.SetOutlineColor(FactionColor);
+            __instance.ImpostorVentButton.buttonLabelText.SetOutlineColor(FactionColor);
+            __instance.SabotageButton.buttonLabelText.SetOutlineColor(FactionColor);
+            Player.RegenTask();
+
+            if (PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.ShowMediumToDead && AllRoles.Any(x => x.RoleType == RoleEnum.Medium && ((Medium)x).MediatedPlayers.
+                ContainsKey(PlayerControl.LocalPlayer.PlayerId)))
             {
-                var ghostRole = (Player.Is(RoleEnum.Revealer) && !GetRole<Revealer>(Player).Caught) || (Player.Is(RoleEnum.Ghoul) && !GetRole<Ghoul>(Player).Caught) ||
-                    (Player.Is(RoleEnum.Banshee) && !GetRole<Banshee>(Player).Caught) || (Player.Is(RoleEnum.Phantom) && !GetRole<Phantom>(Player).Caught);
+                var role2 = (Medium)AllRoles.Find(x => x.RoleType == RoleEnum.Medium && ((Medium)x).MediatedPlayers.ContainsKey(PlayerControl.LocalPlayer.PlayerId));
+                role2.MediatedPlayers.GetValueSafe(PlayerControl.LocalPlayer.PlayerId).target = role2.Player.transform.position;
+            }
 
-                if (!ghostRole)
+            if (PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.ShowMediumToDead && AllRoles.Any(x => x.RoleType == RoleEnum.Retributionist && ((Retributionist)x).IsMed &&
+                ((Retributionist)x).MediatedPlayers.ContainsKey(PlayerControl.LocalPlayer.PlayerId)))
+            {
+                var role2 = (Retributionist)AllRoles.Find(x => x.RoleType == RoleEnum.Retributionist && ((Retributionist)x).MediatedPlayers.ContainsKey(PlayerControl.
+                    LocalPlayer.PlayerId));
+                role2.MediatedPlayers.GetValueSafe(PlayerControl.LocalPlayer.PlayerId).target = role2.Player.transform.position;
+            }
+
+            foreach (var ret in GetRoles<Retributionist>(RoleEnum.Retributionist))
+            {
+                if (ret.RevivedRole?.RoleType != RoleEnum.Medic)
+                    continue;
+
+                var exPlayer = ret.ExShielded;
+
+                if (exPlayer != null)
                 {
-                    /*if (SpectateButton == null)
-                        SpectateButton = CustomButtons.InstantiateButton();
+                    Utils.LogSomething(exPlayer.name + " is ex-Shielded and unvisored");
+                    exPlayer.MyRend().material.SetColor("_VisorColor", Palette.VisorColor);
+                    exPlayer.MyRend().material.SetFloat("_Outline", 0f);
+                    ret.ExShielded = null;
+                    continue;
+                }
 
-                    SpectateButton.UpdateButton(this, "SPECTATE", 0, 1, AssetManager.Placeholder, AbilityTypes.Effect, "ActionSecondary", null, !ghostRole, !ghostRole, false, 0, 1,
-                        false, 0, !ghostRole);*/
+                var player = ret.ShieldedPlayer;
 
-                    if (ZoomButton == null)
-                        ZoomButton = CustomButtons.InstantiateButton();
+                if (player == null)
+                    continue;
 
-                    ZoomButton.UpdateButton(this, "SPECTATE", 0, 1, Zooming ? AssetManager.Minus : AssetManager.Plus, AbilityTypes.Effect, "Secondary", null, !ghostRole && IsDead,
-                        !ghostRole && IsDead, false, 0, 1, false, 0, !ghostRole && IsDead);
+                if (player.Data.IsDead || ret.Player.Data.IsDead || ret.Player.Data.Disconnected)
+                {
+                    Retributionist.BreakShield(ret.Player.PlayerId, player.PlayerId, true);
+                    continue;
+                }
+
+                var showShielded = (int)CustomGameOptions.ShowShielded;
+
+                if (showShielded is 3 || (PlayerControl.LocalPlayer == player && showShielded is 0 or 2) || (PlayerControl.LocalPlayer.Is(RoleEnum.Medic) && showShielded is 1 or 2))
+                {
+                    player.MyRend().material.SetColor("_VisorColor", new Color32(0, 255, 255, 255));
+                    player.MyRend().material.SetFloat("_Outline", 1f);
                 }
             }
 
-            if (BombKillButton == null)
-                BombKillButton = CustomButtons.InstantiateButton();
+            foreach (var medic in GetRoles<Medic>(RoleEnum.Medic))
+            {
+                var exPlayer = medic.ExShielded;
 
-            BombKillButton.UpdateButton(this, "KILL", 0, 1, AssetManager.Placeholder, AbilityTypes.Direct, "Secondary", null, Bombed, Bombed);
+                if (exPlayer != null)
+                {
+                    Utils.LogSomething(exPlayer.name + " is ex-Shielded and unvisored");
+                    exPlayer.MyRend().material.SetColor("_VisorColor", Palette.VisorColor);
+                    exPlayer.MyRend().material.SetFloat("_Outline", 0f);
+                    medic.ExShielded = null;
+                    continue;
+                }
+
+                var player = medic.ShieldedPlayer;
+
+                if (player == null)
+                    continue;
+
+                if (player.Data.IsDead || medic.Player.Data.IsDead || medic.Player.Data.Disconnected)
+                {
+                    Medic.BreakShield(medic.Player.PlayerId, player.PlayerId, true);
+                    continue;
+                }
+
+                var showShielded = (int)CustomGameOptions.ShowShielded;
+
+                if (showShielded is 3 || (PlayerControl.LocalPlayer == player && showShielded is 0 or 2) || (PlayerControl.LocalPlayer.Is(RoleEnum.Medic) && showShielded is 1 or 2))
+                {
+                    player.MyRend().material.SetColor("_VisorColor", new Color32(0, 255, 255, 255));
+                    player.MyRend().material.SetFloat("_Outline", 1f);
+                }
+            }
+
+            foreach (var haunter in GetRoles<Revealer>(RoleEnum.Revealer))
+            {
+                if (PlayerControl.LocalPlayer.Data.IsDead || haunter.Caught || LobbyBehaviour.Instance || MeetingHud.Instance)
+                {
+                    haunter.RevealerArrows.DestroyAll();
+                    haunter.RevealerArrows.Clear();
+                    haunter.ImpArrows.DestroyAll();
+                    haunter.ImpArrows.Clear();
+                }
+
+                foreach (var arrow in haunter.ImpArrows)
+                    arrow.target = haunter.Player.transform.position;
+
+                foreach (var (arrow, target) in Utils.Zip(haunter.RevealerArrows, haunter.RevealerTargets))
+                {
+                    if (target.Data.IsDead)
+                    {
+                        arrow?.Destroy();
+                        arrow?.gameObject?.Destroy();
+                    }
+
+                    arrow.target = target.transform.position;
+                }
+            }
+
+            if (Arrow != null)
+            {
+                if (LobbyBehaviour.Instance || MeetingHud.Instance || PlayerControl.LocalPlayer.Data.IsDead || Target.Data.IsDead || ConstantVariables.Inactive)
+                {
+                    Arrow.gameObject.Destroy();
+                    Target = null;
+                }
+                else
+                    Arrow.target = Target.transform.position;
+            }
+
+            foreach (var ga in GetRoles<GuardianAngel>(RoleEnum.GuardianAngel))
+            {
+                var player = ga.TargetPlayer;
+
+                if (player == null)
+                    continue;
+
+                if (ga.Protecting)
+                {
+                    var showProtected = (int)CustomGameOptions.ShowProtect;
+
+                    if (showProtected is 3 || (PlayerControl.LocalPlayer == player && showProtected is 0 or 2) || (PlayerControl.LocalPlayer.Is(RoleEnum.GuardianAngel) && showProtected is 1
+                        or 2))
+                    {
+                        player.MyRend().material.SetColor("_VisorColor", new Color32(255, 217, 0, 255));
+                        player.MyRend().material.SetFloat("_Outline", 1f);
+                    }
+                    else
+                    {
+                        player.MyRend().material.SetColor("_VisorColor", Palette.VisorColor);
+                        player.MyRend().material.SetFloat("_Outline", 0f);
+                    }
+                }
+                else if (ga.TargetPlayer.IsShielded())
+                {
+                    var showShielded = (int)CustomGameOptions.ShowShielded;
+
+                    if (showShielded is 3 || (PlayerControl.LocalPlayer == player && showShielded is 0 or 2) || (PlayerControl.LocalPlayer.Is(RoleEnum.Medic) && showShielded is 1 or 2))
+                    {
+                        player.MyRend().material.SetColor("_VisorColor", new Color32(0, 255, 255, 255));
+                        player.MyRend().material.SetFloat("_Outline", 1f);
+                    }
+                    else
+                    {
+                        player.MyRend().material.SetColor("_VisorColor", Palette.VisorColor);
+                        player.MyRend().material.SetFloat("_Outline", 0f);
+                    }
+                }
+                else
+                {
+                    player.MyRend().material.SetColor("_VisorColor", Palette.VisorColor);
+                    player.MyRend().material.SetFloat("_Outline", 0f);
+                }
+            }
+
+            base.UpdateHud(__instance);
+            var dead = (!(Player.Is(RoleEnum.Revealer) && !GetRole<Revealer>(Player).Caught) || (Player.Is(RoleEnum.Ghoul) && !GetRole<Ghoul>(Player).Caught) ||
+                (Player.Is(RoleEnum.Banshee) && !GetRole<Banshee>(Player).Caught) || (Player.Is(RoleEnum.Phantom) && !GetRole<Phantom>(Player).Caught)) && IsDead;
+            ZoomInButton.Update("SPECTATE", 0, 1, true, Zooming && dead);
+            ZoomOutButton.Update("SPECTATE", 0, 1, true, !Zooming && dead);
+            BombKillButton.Update("KILL", 0, 1, true, Bombed && !dead);
+        }
+
+        private static bool IsExempt(PlayerVoteArea voteArea)
+        {
+            var player = Utils.PlayerByVoteArea(voteArea);
+            return player?.Data.Disconnected == true || !CustomGameOptions.LighterDarker;
+        }
+
+        public static void GenButton(PlayerVoteArea voteArea)
+        {
+            if (IsExempt(voteArea))
+                return;
+
+            var targetId = voteArea.TargetPlayerId;
+            var colorButton = voteArea.Buttons.transform.GetChild(0).gameObject;
+            var newButton = Object.Instantiate(colorButton, voteArea.transform);
+            var renderer = newButton.GetComponent<SpriteRenderer>();
+
+            var playerControl = PlayerControl.AllPlayerControls.ToArray().FirstOrDefault(p => p.PlayerId == targetId);
+            var ColorString = LightDarkColors[playerControl.GetDefaultOutfit().ColorId];
+
+            if (ColorString == "lighter")
+                renderer.sprite = AssetManager.Lighter;
+            else if (ColorString == "darker")
+                renderer.sprite = AssetManager.Darker;
+
+            newButton.transform.position = colorButton.transform.position - new Vector3(-0.8f, 0.2f, -2f);
+            newButton.transform.localScale *= 0.8f;
+            newButton.layer = 5;
+            newButton.transform.parent = colorButton.transform.parent.parent;
+            var newButtonClickEvent = new Button.ButtonClickedEvent();
+            newButtonClickEvent.AddListener((Action)(() => {}));
+            newButton.GetComponent<PassiveButton>().OnClick = newButtonClickEvent;
+            Buttons.Add(newButton);
+        }
+
+        public override void OnMeetingStart(MeetingHud __instance)
+        {
+            base.OnMeetingStart(__instance);
+
+            if (CustomGameOptions.LighterDarker)
+            {
+                Buttons.Clear();
+
+                foreach (var voteArea in __instance.playerStates)
+                    GenButton(voteArea);
+            }
+
+            foreach (var mayor in GetRoles<Mayor>(RoleEnum.Mayor))
+            {
+                mayor.ExtraVotes.Clear();
+
+                if (mayor.VoteBank < 0)
+                    mayor.VoteBank = 0;
+
+                mayor.VoteBank++;
+                mayor.SelfVote = false;
+                mayor.VotedOnce = false;
+            }
+
+            foreach (var role in GetRoles<PromotedRebel>(RoleEnum.PromotedRebel))
+            {
+                if (!role.IsPol)
+                    continue;
+
+                role.ExtraVotes.Clear();
+
+                if (role.VoteBank < 0)
+                    role.VoteBank = 0;
+
+                role.VotedOnce = false;
+
+                if (role.HoldsDrive)
+                    role.VoteBank += CustomGameOptions.ChaosDriveVoteAdd;
+            }
+
+            foreach (var role in GetRoles<Politician>(RoleEnum.Politician))
+            {
+                role.ExtraVotes.Clear();
+
+                if (role.VoteBank < 0)
+                    role.VoteBank = 0;
+
+                role.VotedOnce = false;
+
+                if (role.HoldsDrive)
+                    role.VoteBank += CustomGameOptions.ChaosDriveVoteAdd;
+            }
         }
 
         public static readonly string IntrudersWinCon = "- Have a critical sabotage reach 0 seconds\n- Kill anyone who opposes the <color=#FF0000FF>Intruders</color>";
@@ -176,12 +426,45 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         protected Role(PlayerControl player) : base(player)
         {
-            if (RoleDictionary.ContainsKey(player.PlayerId))
-                RoleDictionary.Remove(player.PlayerId);
-
-            RoleDictionary.Add(player.PlayerId, this);
             Color = Colors.Layer;
             LayerType = PlayerLayerEnum.Role;
+            ZoomInButton = new(this, AssetManager.Plus, AbilityTypes.Effect, "ActionSecondary", Zoom, false, true);
+            ZoomOutButton = new(this, AssetManager.Minus, AbilityTypes.Effect, "ActionSecondary", Zoom, false, true);
+            BombKillButton = new(this, AssetManager.Placeholder, AbilityTypes.Direct, "ActionSecondary", BombKill);
+            AllRoles.Add(this);
+        }
+
+        public void Zoom()
+        {
+            Zooming = !Zooming;
+            var size = Zooming ? 12f : 3f;
+            Camera.main.orthographicSize = size;
+
+            foreach (var cam in Camera.allCameras)
+            {
+                if (cam?.gameObject.name == "UI Camera")
+                    cam.orthographicSize = size;
+            }
+
+            ResolutionManager.ResolutionChanged.Invoke((float)Screen.width / Screen.height);
+        }
+
+        public void BombKill()
+        {
+            if (Utils.IsTooFar(Player, ClosestBoom))
+                return;
+
+            if (!Bombed)
+                return;
+
+            var success = Utils.Interact(Player, ClosestBoom, true)[3];
+            Player.GetEnforcer().BombSuccessful = success;
+            Bombed = false;
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+            writer.Write((byte)ActionsRPC.ForceKill);
+            writer.Write(PlayerControl.LocalPlayer.PlayerId);
+            writer.Write(success);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
 
         public static void SetColors()
@@ -329,26 +612,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 if (__instance == null)
                     return;
 
+                if (ConstantVariables.IsHnS)
+                    return;
+
                 var player = __instance.__4__this;
-
-                try
-                {
-                    foreach (var task2 in player.myTasks.ToArray())
-                    {
-                        var importantTextTask = task2.Cast<ImportantTextTask>();
-
-                        if (importantTextTask.Text.Contains("Sabotage and kill everyone") || importantTextTask.Text.Contains("Fake Tasks") || importantTextTask.Text.Contains("Role") ||
-                            importantTextTask.Text.Contains("tasks to win"))
-                        {
-                            player.myTasks.Remove(importantTextTask);
-                        }
-                    }
-                } catch {}
-
-                var task = new GameObject("DetailTask").AddComponent<ImportantTextTask>();
-                task.transform.SetParent(player.transform, false);
-                task.Text = player.GetTaskList();
-                player.myTasks.Insert(0, task);
                 player.RegenTask();
             }
         }

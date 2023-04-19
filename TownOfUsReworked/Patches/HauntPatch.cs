@@ -9,14 +9,11 @@ using TownOfUsReworked.CustomOptions;
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch(typeof(HauntMenuMinigame), nameof(HauntMenuMinigame.SetFilterText))]
-    public static class Hauntpatch
+    public static class HauntPatch
     {
         public static bool Prefix(HauntMenuMinigame __instance)
         {
-            if (ConstantVariables.IsHnS)
-                return true;
-
-            if (!CustomGameOptions.DeadSeeEverything)
+            if (ConstantVariables.IsHnS || !CustomGameOptions.DeadSeeEverything)
                 return true;
 
             var role = Role.GetRole(__instance.HauntTarget);
@@ -30,7 +27,7 @@ namespace TownOfUsReworked.Patches
                 objectiveString += role.Name;
 
             if (objectifier != null && objectifier.ObjectifierType != ObjectifierEnum.None)
-                objectiveString += $" {objectifier.GetColoredSymbol()}";
+                objectiveString += $" {objectifier.ColoredSymbol}";
 
             if (modifier != null && modifier.ModifierType != ModifierEnum.None)
                 otherString += $" {modifier.Name}";

@@ -16,7 +16,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
                     : "- You have short cooldowns when you're alone.");
             Color = CustomGameOptions.CustomAbilityColors ? Colors.Underdog : Colors.Ability;
             AbilityType = AbilityEnum.Underdog;
-            Hidden = !CustomGameOptions.UnderdogKnows;
+            Hidden = !CustomGameOptions.UnderdogKnows && !LayerExtentions.Last(Player);
         }
     }
 }

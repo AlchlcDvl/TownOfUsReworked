@@ -5,6 +5,8 @@ using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Modules;
 using TownOfUsReworked.Data;
+using TownOfUsReworked.Custom;
+using Hazel;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -13,7 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public PlayerControl ClosestPlayer;
         public DateTime LastStaked;
         public static bool VampsDead => !PlayerControl.AllPlayerControls.ToArray().Any(x => x?.Data.IsDead == false && !x.Data.Disconnected && x.Is(SubFaction.Undead));
-        public AbilityButton StakeButton;
+        public CustomButton StakeButton;
 
         public VampireHunter(PlayerControl player) : base(player)
         {
@@ -26,25 +28,56 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleAlignment = RoleAlignment.CrewAudit;
             AlignmentName = CA;
             InspectorResults = InspectorResults.TracksOthers;
+            Type = LayerEnum.VampireHunter;
+            StakeButton = new(this, AssetManager.Stake, AbilityTypes.Direct, "ActionSecondary", Stake);
         }
 
         public float StakeTimer()
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastStaked;
-            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.StakeCooldown) * 1000f;
-            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.StakeCooldown) * 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
         public void TurnVigilante()
         {
-            StakeButton.gameObject.SetActive(false);
-            var role = new Vigilante(Player);
-            role.RoleUpdate(this);
+            var newRole = new Vigilante(Player);
+            newRole.RoleUpdate(this);
 
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
-                Utils.Flash(Colors.Seer, "Someone has changed their identity!");
+                Utils.Flash(Colors.Seer);
+        }
+
+        public override void UpdateHud(HudManager __instance)
+        {
+            base.UpdateHud(__instance);
+            StakeButton.Update("STAKE", StakeTimer(), CustomGameOptions.StakeCooldown);
+
+            if (VampsDead && !PlayerControl.LocalPlayer.Data.IsDead)
+            {
+                TurnVigilante();
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
+                writer.Write((byte)TurnRPC.TurnVigilante);
+                writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+            }
+        }
+
+        public void Stake()
+        {
+            if (Utils.IsTooFar(Player, ClosestPlayer) || StakeTimer() != 0f)
+                return;
+
+            var interact = Utils.Interact(Player, ClosestPlayer, ClosestPlayer.Is(SubFaction.Undead) || ClosestPlayer.IsFramed());
+
+            if (interact[3] || interact[0])
+                LastStaked = DateTime.UtcNow;
+            else if (interact[1])
+                LastStaked.AddSeconds(CustomGameOptions.ProtectKCReset);
+            else if (interact[2])
+                LastStaked.AddSeconds(CustomGameOptions.VestKCReset);
         }
     }
 }

@@ -13,6 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AlignmentName = CU;
             Base = true;
             InspectorResults = InspectorResults.IsBasic;
+            Type = LayerEnum.Crewmate;
         }
     }
 }

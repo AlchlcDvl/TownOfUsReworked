@@ -1,6 +1,8 @@
 using TownOfUsReworked.Data;
 using TownOfUsReworked.CustomOptions;
 using System;
+using TownOfUsReworked.Classes;
+using TownOfUsReworked.Custom;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -8,7 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     {
         public bool Killed;
         public DateTime LastInteracted;
-        public AbilityButton InteractButton;
+        public CustomButton InteractButton;
         public PlayerControl ClosestPlayer;
         public bool TrollWins;
 
@@ -22,6 +24,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleAlignment = RoleAlignment.NeutralEvil;
             AlignmentName = NE;
             Objectives = "- Get killed";
+            Type = LayerEnum.Troll;
+            InteractButton = new(this, AssetManager.Placeholder, AbilityTypes.Direct, "ActionSecondary", Interact);
         }
 
         public float InteractTimer()
@@ -31,6 +35,27 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var num = CustomGameOptions.InteractCooldown * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+        }
+
+        public void Interact()
+        {
+            if (InteractTimer() != 0f || Utils.IsTooFar(Player, ClosestPlayer))
+                return;
+
+            var interact = Utils.Interact(Player, ClosestPlayer);
+
+            if (interact[3] || interact[0])
+                LastInteracted = DateTime.UtcNow;
+            else if (interact[0])
+                LastInteracted = DateTime.UtcNow;
+            else if (interact[1])
+                LastInteracted.AddSeconds(CustomGameOptions.ProtectKCReset);
+        }
+
+        public override void UpdateHud(HudManager __instance)
+        {
+            base.UpdateHud(__instance);
+            InteractButton.Update("INTERACT", InteractTimer(), CustomGameOptions.InteractCooldown);
         }
     }
 }

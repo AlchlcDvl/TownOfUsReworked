@@ -10,7 +10,10 @@ namespace TownOfUsReworked.MultiClientInstancing
         public static void Postfix()
         {
             if (!ConstantVariables.IsLocalGame)
+            {
+                TownOfUsReworked.Debugger.TestWindow.Enabled = false;
                 return; //You must ensure you are only playing on local
+            }
 
             if (Input.GetKeyDown(KeyCode.F1))
             {

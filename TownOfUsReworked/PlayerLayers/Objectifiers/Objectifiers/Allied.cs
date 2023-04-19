@@ -15,6 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             TaskText = Objective;
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Allied : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Allied;
+            Type = LayerEnum.Allied;
         }
     }
 }

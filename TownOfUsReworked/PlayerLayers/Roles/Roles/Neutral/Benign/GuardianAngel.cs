@@ -4,6 +4,9 @@ using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Data;
+using TownOfUsReworked.Custom;
+using Hazel;
+using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -17,7 +20,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public PlayerControl TargetPlayer;
         public bool TargetAlive => TargetPlayer?.Data.IsDead == false && TargetPlayer?.Data.Disconnected == false && !Player.Data.Disconnected;
         public bool Protecting => TimeRemaining > 0f;
-        public AbilityButton ProtectButton;
+        public CustomButton ProtectButton;
+        public CustomButton GraveProtectButton;
 
         public GuardianAngel(PlayerControl player) : base(player)
         {
@@ -31,13 +35,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AlignmentName = NB;
             AbilitiesText = "- You can protect your target from death for a short while\n- If your target dies, you will be a <color=#DDDD00FF>Survivor</color>";
             InspectorResults = InspectorResults.SeeksToProtect;
+            Type = LayerEnum.GuardianAngel;
+            TargetPlayer = null;
+            ProtectButton = new(this, AssetManager.Protect, AbilityTypes.Effect, "ActionSecondary", HitProtect, true);
+            GraveProtectButton = new(this, AssetManager.Protect, AbilityTypes.Effect, "ActionSecondary", HitProtect, true, CustomGameOptions.ProtectBeyondTheGrave);
         }
 
         public float ProtectTimer()
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastProtected;
-            var num = CustomGameOptions.ProtectCd * 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.ProtectCd) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
@@ -53,21 +61,51 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void TurnSurv()
         {
-            ProtectButton.gameObject.SetActive(false);
             var newRole = new Survivor(Player) { UsesLeft = UsesLeft };
             newRole.RoleUpdate(this);
 
             if (Player == PlayerControl.LocalPlayer)
-                Utils.Flash(Colors.Survivor, "Your target died so you have become a <color=#DDDD00FF>Survivor</color>!");
+                Utils.Flash(Colors.Survivor);
 
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
-                Utils.Flash(Colors.Seer, "SOmeone has changed their identity!");
+                Utils.Flash(Colors.Seer);
         }
 
         public void UnProtect()
         {
             Enabled = false;
             LastProtected = DateTime.UtcNow;
+        }
+
+        public void HitProtect()
+        {
+            if (!ButtonUsable || ProtectTimer() != 0f || !TargetAlive || Protecting)
+                return;
+
+            TimeRemaining = CustomGameOptions.ProtectDuration;
+            UsesLeft--;
+            Protect();
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+            writer.Write((byte)ActionsRPC.GAProtect);
+            writer.Write(Player.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+        }
+
+        public override void UpdateHud(HudManager __instance)
+        {
+            base.UpdateHud(__instance);
+            ProtectButton.Update("PROTECT", ProtectTimer(), CustomGameOptions.ProtectCd, UsesLeft, Protecting, TimeRemaining, CustomGameOptions.ProtectDuration, true, TargetAlive);
+            GraveProtectButton.Update("PROTECT", ProtectTimer(), CustomGameOptions.ProtectCd, UsesLeft, Protecting, TimeRemaining, CustomGameOptions.ProtectDuration, true,IsDead &&
+                TargetAlive);
+
+            if (!TargetAlive && !Player.Data.IsDead)
+            {
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
+                writer.Write((byte)TurnRPC.TurnSurv);
+                writer.Write(Player.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                TurnSurv();
+            }
         }
     }
 }

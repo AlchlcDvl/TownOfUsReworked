@@ -3,6 +3,7 @@ using HarmonyLib;
 using TownOfUsReworked.Data;
 using System.Linq;
 using UnityEngine;
+using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.CustomOptions
 {
@@ -116,6 +117,8 @@ namespace TownOfUsReworked.CustomOptions
 
                 if (Input.GetKeyDown(KeyCode.Alpha8) || Input.GetKeyDown(KeyCode.Keypad8))
                     SettingsPage = 7;
+
+                AssetManager.Use = __instance.UseButton.graphic.sprite;
             }
         }
     }

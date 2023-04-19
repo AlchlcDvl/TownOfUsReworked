@@ -40,14 +40,14 @@ namespace TownOfUsReworked.Patches
         }
 
         [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.HandleAnimation))]
-        [HarmonyPriority(Priority.Low)] //Mke sure it occurs after other patches
+        [HarmonyPriority(Priority.Low)] //Make sure it occurs after other patches
         public static class SubmergedPhysicsPatch
         {
             public static void Postfix(PlayerPhysics __instance) => SubmergedCompatibility.Ghostrolefix(__instance);
         }
 
         [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.LateUpdate))]
-        [HarmonyPriority(Priority.Low)] //make sure it occurs after other patches
+        [HarmonyPriority(Priority.Low)] //Make sure it occurs after other patches
         public static class SubmergedLateUpdatePhysicsPatch
         {
             public static void Postfix(PlayerPhysics __instance) => SubmergedCompatibility.Ghostrolefix(__instance);

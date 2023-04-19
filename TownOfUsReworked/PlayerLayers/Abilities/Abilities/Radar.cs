@@ -17,8 +17,26 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             Color = CustomGameOptions.CustomAbilityColors ? Colors.Radar : Colors.Ability;
             AbilityType = AbilityEnum.Radar;
             RadarArrow = new();
+            Type = LayerEnum.Radar;
         }
 
         public override void OnLobby() => RadarArrow.DestroyAll();
+
+        public override void UpdateHud(HudManager __instance)
+        {
+            base.UpdateHud(__instance);
+
+            if (Player.Data.IsDead)
+            {
+                RadarArrow.DestroyAll();
+                RadarArrow.Clear();
+            }
+
+            foreach (var arrow in RadarArrow)
+            {
+                ClosestPlayer = PlayerControl.LocalPlayer.GetClosestPlayer(null, float.MaxValue);
+                arrow.target = ClosestPlayer.transform.position;
+            }
+        }
     }
 }

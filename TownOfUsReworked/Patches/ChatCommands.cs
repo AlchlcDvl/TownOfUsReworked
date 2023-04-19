@@ -6,7 +6,6 @@ using TownOfUsReworked.PlayerLayers.Abilities;
 using TownOfUsReworked.PlayerLayers.Modifiers;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod;
 using InnerNet;
 using TownOfUsReworked.Classes;
 using Hazel;
@@ -14,7 +13,7 @@ using TownOfUsReworked.Data;
 using System.Collections.Generic;
 using UnityEngine;
 using AmongUs.Data;
-using AmongUs.GameOptions;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.Patches
 {
@@ -40,8 +39,7 @@ namespace TownOfUsReworked.Patches
                 var getWhat = CustomGameOptions.ConsigInfo == ConsigInfo.Role ? "role" : "faction";
                 var setColor = TownOfUsReworked.isTest ? ", /setcolour or /setcolor" : "";
                 var whisper = CustomGameOptions.Whispers ? ", /whisper" : "";
-                var kickBan = AmongUsClient.Instance.AmHost && AmongUsClient.Instance.CanBan() ? ", /kick, /ban, /clearlobby, /size" : "";
-
+                var kickBan = AmongUsClient.Instance.AmHost && AmongUsClient.Instance.CanBan() ? ", /kick, /ban, /clearlobby" : "";
                 var player = PlayerControl.LocalPlayer;
 
                 if (ChatHistory.Count == 0 || ChatHistory[^1] != text)
@@ -349,7 +347,7 @@ namespace TownOfUsReworked.Patches
                         if (ability?.Hidden == false)
                             hudManager.AddChat(player, LayerInfo.AllAbilities.FirstOrDefault(x => x.Name == ability.Name, LayerInfo.AllAbilities[0])?.InfoMessage());
                     }
-                    else if (text is "/whisper" or "/w" or "/w ")
+                    else if (text is "/whisper" or "/w" or "/w " or "/whisper ")
                     {
                         chatHandled = true;
                         hudManager.AddChat(player, "Usage: /<whisper or w> <meeting number>");
@@ -362,8 +360,10 @@ namespace TownOfUsReworked.Patches
                             hudManager.AddChat(player, "Whispering is not turned on.");
                         else
                         {
-                            if (PlayerControl.LocalPlayer.Data.IsDead)
+                            if (player.Data.IsDead)
                                 hudManager.AddChat(player, "You are dead.");
+                            else if (player.IsBlackmailed())
+                                hudManager.AddChat(player, "You are blackmailed.");
                             else
                             {
                                 inputText = text.StartsWith("/w ") ? text[3..] : text[9..];
@@ -387,7 +387,7 @@ namespace TownOfUsReworked.Patches
                                     else
                                     {
                                         hudManager.AddChat(player, $"You whisper to {whispered.name}:{message}");
-                                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Whisper, SendOption.Reliable);
+                                        var writer = AmongUsClient.Instance.StartRpcImmediately(player.NetId, (byte)CustomRPC.Whisper, SendOption.Reliable);
                                         writer.Write(player.PlayerId);
                                         writer.Write(id1);
                                         writer.Write(message);
@@ -403,7 +403,7 @@ namespace TownOfUsReworked.Patches
                                     else
                                     {
                                         hudManager.AddChat(player, $"You whisper to {whispered2.name}:{message2}");
-                                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Whisper, SendOption.Reliable);
+                                        var writer = AmongUsClient.Instance.StartRpcImmediately(player.NetId, (byte)CustomRPC.Whisper, SendOption.Reliable);
                                         writer.Write(player.PlayerId);
                                         writer.Write(id1);
                                         writer.Write(message);
@@ -422,6 +422,16 @@ namespace TownOfUsReworked.Patches
                 {
                     chatHandled = true;
                     hudManager.AddChat(player, "Invalid command.");
+                }
+                else if (player.IsBlackmailed() && !chatHandled && otherText != "I am blackmailed.")
+                {
+                    chatHandled = true;
+                    hudManager.AddChat(player, "You are blackmailed.");
+                }
+                else if (GameAnnouncements.GivingAnnouncements && !player.Data.IsDead)
+                {
+                    chatHandled = true;
+                    hudManager.AddChat(player, "You cannot talk right now.");
                 }
 
                 if (chatHandled)

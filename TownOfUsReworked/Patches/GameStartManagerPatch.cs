@@ -54,21 +54,32 @@ namespace TownOfUsReworked.Patches
             private static float startingTimer;
             private static bool update;
             private static string currentText = "";
+            private static string fixDummyCounterColor;
 
             public static void Prefix(GameStartManager __instance)
             {
                 if (!GameData.Instance )
                     return; //No instance
 
-                update = GameData.Instance.PlayerCount != __instance.LastPlayerCount;
+                __instance.MinPlayers = 1;
+
+                if (GameData.Instance != null)
+                {
+                    update = GameData.Instance.PlayerCount != __instance.LastPlayerCount;
+
+                    if (__instance.LastPlayerCount > __instance.MinPlayers)
+                        fixDummyCounterColor = "00FF00FF";
+                    else if (__instance.LastPlayerCount == __instance.MinPlayers)
+                        fixDummyCounterColor = "FFFF00FF";
+                    else
+                        fixDummyCounterColor = "FF0000FF";
+                }
             }
 
             public static void Postfix(GameStartManager __instance)
             {
-                var max = GameOptionsManager.Instance.currentNormalGameOptions.MaxPlayers;
-
-                if (__instance.LastPlayerCount != max)
-                    __instance.LastPlayerCount = max;
+                if (__instance.LastPlayerCount != GameOptionsManager.Instance.currentNormalGameOptions.MaxPlayers)
+                    __instance.LastPlayerCount = GameOptionsManager.Instance.currentNormalGameOptions.MaxPlayers;
 
                 if (!TownOfUsReworked.MCIActive)
                 {
@@ -91,7 +102,7 @@ namespace TownOfUsReworked.Patches
                         if (!PlayerVersions.ContainsKey(client.Id))
                         {
                             versionMismatch = true;
-                            message += $"{client.Character.Data.PlayerName} has a different or no version of Town Of Us Reworked.\n";
+                            message += $"{client.Character.Data.PlayerName} has a different or no version of Town Of Us Reworked\n";
                         }
                         else
                         {
@@ -178,14 +189,14 @@ namespace TownOfUsReworked.Patches
                     return; //No instance
 
                 if (update)
-                    currentText = __instance.PlayerCounter.text;
+                    currentText = $"<color=#{fixDummyCounterColor}>{GameData.Instance.PlayerCount}/{GameManager.Instance.LogicOptions.MaxPlayers}";
 
                 timer = Mathf.Max(0f, timer -= Time.deltaTime);
                 var minutes = (int)(timer / 60);
                 var seconds = (int)(timer % 60);
                 var suffix = $" ({minutes}:{seconds})";
 
-                __instance.PlayerCounter.text = $"<size=75%>{currentText}{suffix}</size>";
+                __instance.PlayerCounter.text = $"<size=75%><color=#{fixDummyCounterColor}>{currentText}{suffix}</color></size>";
                 __instance.PlayerCounter.autoSizeTextContainer = true;
             }
         }

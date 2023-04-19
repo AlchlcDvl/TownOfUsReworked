@@ -11,7 +11,8 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             TaskText = "- You can finish your tasks to see the votes of others.";
             Color = CustomGameOptions.CustomAbilityColors ? Colors.Insider : Colors.Ability;
             AbilityType = AbilityEnum.Insider;
-            Hidden = !CustomGameOptions.InsiderKnows;
+            Hidden = !CustomGameOptions.InsiderKnows && !TasksDone;
+            Type = LayerEnum.Insider;
         }
     }
 }

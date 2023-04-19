@@ -10,18 +10,13 @@ using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.PlayerLayers.Modifiers;
 using TownOfUsReworked.PlayerLayers.Abilities;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
-using TownOfUsReworked.PlayerLayers.Objectifiers.AlliedMod;
 using TownOfUsReworked.Functions;
-using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod;
-using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.PhantomMod;
-using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod;
-using TownOfUsReworked.PlayerLayers.Roles.SyndicateRoles.BansheeMod;
-using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.GhoulMod;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.Extensions;
 using Random = UnityEngine.Random;
 using TownOfUsReworked.BetterMaps.Airship;
 using TownOfUsReworked.PlayerLayers;
+using TownOfUsReworked.Custom;
 
 namespace TownOfUsReworked.Classes
 {
@@ -59,10 +54,6 @@ namespace TownOfUsReworked.Classes
         private static readonly List<(int, int, bool)> AllObjectifiers = new();
 
         #pragma warning disable
-        public static bool PhantomOn;
-        public static bool RevealerOn;
-        public static bool BansheeOn;
-        public static bool GhoulOn;
         public static PlayerControl PureCrew;
         public static int Convertible;
         #pragma warning restore
@@ -158,13 +149,13 @@ namespace TownOfUsReworked.Classes
             while (impostors.Count > 0 && spawnList2.Count > 0)
             {
                 var (_, id, _) = spawnList2.TakeFirst();
-                Gen(impostors.TakeFirst(), id, LayerRPC.Role);
+                Gen(impostors.TakeFirst(), id, PlayerLayerEnum.Role);
             }
 
             while (crewmates.Count > 0 && spawnList1.Count > 0)
             {
                 var (_, id, _) = spawnList1.TakeFirst();
-                Gen(crewmates.TakeFirst(), id, LayerRPC.Role);
+                Gen(crewmates.TakeFirst(), id, PlayerLayerEnum.Role);
             }
 
             Utils.LogSomething("Role Spawn Done");
@@ -299,13 +290,13 @@ namespace TownOfUsReworked.Classes
             while (impostors.Count > 0 && spawnList2.Count > 0)
             {
                 var (_, id, _) = spawnList2.TakeFirst();
-                Gen(impostors.TakeFirst(), id, LayerRPC.Role);
+                Gen(impostors.TakeFirst(), id, PlayerLayerEnum.Role);
             }
 
             while (crewmates.Count > 0 && spawnList1.Count > 0)
             {
                 var (_, id, _) = spawnList1.TakeFirst();
-                Gen(crewmates.TakeFirst(), id, LayerRPC.Role);
+                Gen(crewmates.TakeFirst(), id, PlayerLayerEnum.Role);
             }
 
             Role.SyndicateHasChaosDrive = true;
@@ -327,10 +318,10 @@ namespace TownOfUsReworked.Classes
             crewmates.Shuffle();
             impostors.Shuffle();
 
-            PhantomOn = Utils.Check(CustomGameOptions.PhantomOn);
-            RevealerOn = Utils.Check(CustomGameOptions.RevealerOn);
-            BansheeOn = Utils.Check(CustomGameOptions.BansheeOn);
-            GhoulOn = Utils.Check(CustomGameOptions.GhoulOn);
+            SetPostmortals.PhantomOn = Utils.Check(CustomGameOptions.PhantomOn);
+            SetPostmortals.RevealerOn = Utils.Check(CustomGameOptions.RevealerOn);
+            SetPostmortals.BansheeOn = Utils.Check(CustomGameOptions.BansheeOn);
+            SetPostmortals.GhoulOn = Utils.Check(CustomGameOptions.GhoulOn);
 
             var num = 0;
 
@@ -1231,7 +1222,7 @@ namespace TownOfUsReworked.Classes
 
                 while (num > 0)
                 {
-                    SyndicateDisruptionRoles.Add((CustomGameOptions.PoisonerOn, 51, CustomGameOptions.UniquePoisoner));
+                    SyndicateKillingRoles.Add((CustomGameOptions.PoisonerOn, 51, CustomGameOptions.UniquePoisoner));
                     num--;
                 }
 
@@ -1753,77 +1744,14 @@ namespace TownOfUsReworked.Classes
             while (impostors.Count > 0 && spawnList2.Count > 0)
             {
                 var (_, id, _) = spawnList2.TakeFirst();
-                Gen(impostors.TakeFirst(), id, LayerRPC.Role);
+                Gen(impostors.TakeFirst(), id, PlayerLayerEnum.Role);
             }
 
             while (crewmates.Count > 0 && spawnList1.Count > 0)
             {
                 var (_, id, _) = spawnList1.TakeFirst();
-                Gen(crewmates.TakeFirst(), id, LayerRPC.Role);
+                Gen(crewmates.TakeFirst(), id, PlayerLayerEnum.Role);
             }
-
-            Utils.LogSomething("Role Spawn Done");
-
-            var toChooseFromNeut = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Neutral) && !x.Is(ObjectifierEnum.Allied)).ToList();
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPhantom, SendOption.Reliable);
-
-            if (PhantomOn && toChooseFromNeut.Count != 0)
-            {
-                var rand = Random.RandomRangeInt(0, toChooseFromNeut.Count);
-                var pc = toChooseFromNeut[rand];
-                SetPhantom.WillBePhantom = pc;
-                writer.Write(pc.PlayerId);
-            }
-            else
-                writer.Write(byte.MaxValue);
-
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
-
-            var toChooseFromSyn = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Syndicate)).ToList();
-            var writer3 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetBanshee, SendOption.Reliable);
-
-            if (BansheeOn && toChooseFromSyn.Count != 0)
-            {
-                var rand = Random.RandomRangeInt(0, toChooseFromSyn.Count);
-                var pc = toChooseFromSyn[rand];
-                SetBanshee.WillBeBanshee = pc;
-                writer3.Write(pc.PlayerId);
-            }
-            else
-                writer3.Write(byte.MaxValue);
-
-            AmongUsClient.Instance.FinishRpcImmediately(writer3);
-
-            var toChooseFromCrew = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Crew) && !x.Is(ObjectifierEnum.Traitor) && !x.Is(ObjectifierEnum.Corrupted) &&
-                !x.Is(ObjectifierEnum.Fanatic)).ToList();
-            var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetRevealer, SendOption.Reliable);
-
-            if (RevealerOn && toChooseFromCrew.Count != 0)
-            {
-                var rand = Random.RandomRangeInt(0, toChooseFromCrew.Count);
-                var pc = toChooseFromCrew[rand];
-                SetRevealer.WillBeRevealer = pc;
-                writer2.Write(pc.PlayerId);
-            }
-            else
-                writer2.Write(byte.MaxValue);
-
-            AmongUsClient.Instance.FinishRpcImmediately(writer2);
-
-            var toChooseFromInt = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Intruder)).ToList();
-            var writer4 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetGhoul, SendOption.Reliable);
-
-            if (GhoulOn && toChooseFromInt.Count != 0)
-            {
-                var rand = Random.RandomRangeInt(0, toChooseFromInt.Count);
-                var pc = toChooseFromInt[rand];
-                SetGhoul.WillBeGhoul = pc;
-                writer4.Write(pc.PlayerId);
-            }
-            else
-                writer4.Write(byte.MaxValue);
-
-            AmongUsClient.Instance.FinishRpcImmediately(writer4);
 
             Utils.LogSomething("Role Gen End");
         }
@@ -2108,29 +2036,29 @@ namespace TownOfUsReworked.Classes
                 int[] BB = { 15 };
 
                 if (canHaveSnitch.Count > 0 && Snitch.Contains(id))
-                    Gen(canHaveSnitch.TakeFirst(), id, LayerRPC.Ability);
+                    Gen(canHaveSnitch.TakeFirst(), id, PlayerLayerEnum.Ability);
                 else if (canHaveSyndicateAbility.Count > 0 && Syndicate.Contains(id))
-                    Gen(canHaveSyndicateAbility.TakeFirst(), id, LayerRPC.Ability);
+                    Gen(canHaveSyndicateAbility.TakeFirst(), id, PlayerLayerEnum.Ability);
                 else if (canHaveCrewAbility.Count > 0 && Crew.Contains(id))
-                    Gen(canHaveCrewAbility.TakeFirst(), id, LayerRPC.Ability);
+                    Gen(canHaveCrewAbility.TakeFirst(), id, PlayerLayerEnum.Ability);
                 else if (canHaveNeutralAbility.Count > 0 && Neutral.Contains(id))
-                    Gen(canHaveNeutralAbility.TakeFirst(), id, LayerRPC.Ability);
+                    Gen(canHaveNeutralAbility.TakeFirst(), id, PlayerLayerEnum.Ability);
                 else if (canHaveIntruderAbility.Count > 0 && Intruder.Contains(id))
-                    Gen(canHaveIntruderAbility.TakeFirst(), id, LayerRPC.Ability);
+                    Gen(canHaveIntruderAbility.TakeFirst(), id, PlayerLayerEnum.Ability);
                 else if (canHaveKillingAbility.Count > 0 && Killing.Contains(id))
-                    Gen(canHaveKillingAbility.TakeFirst(), id, LayerRPC.Ability);
+                    Gen(canHaveKillingAbility.TakeFirst(), id, PlayerLayerEnum.Ability);
                 else if (canHaveTorch.Count > 0 && Torch.Contains(id))
-                    Gen(canHaveTorch.TakeFirst(), id, LayerRPC.Ability);
+                    Gen(canHaveTorch.TakeFirst(), id, PlayerLayerEnum.Ability);
                 else if (canHaveEvilAbility.Count > 0 && Evil.Contains(id))
-                    Gen(canHaveEvilAbility.TakeFirst(), id, LayerRPC.Ability);
+                    Gen(canHaveEvilAbility.TakeFirst(), id, PlayerLayerEnum.Ability);
                 else if (canHaveTaskedAbility.Count > 0 && Tasked.Contains(id))
-                    Gen(canHaveTaskedAbility.TakeFirst(), id, LayerRPC.Ability);
+                    Gen(canHaveTaskedAbility.TakeFirst(), id, PlayerLayerEnum.Ability);
                 else if (canHaveAbility.Count > 0 && Global.Contains(id))
-                    Gen(canHaveAbility.TakeFirst(), id, LayerRPC.Ability);
+                    Gen(canHaveAbility.TakeFirst(), id, PlayerLayerEnum.Ability);
                 else if (canHaveTunnelerAbility.Count > 0 && Tunneler.Contains(id) && CustomGameOptions.WhoCanVent == WhoCanVentOptions.Default)
-                    Gen(canHaveTunnelerAbility.TakeFirst(), id, LayerRPC.Ability);
+                    Gen(canHaveTunnelerAbility.TakeFirst(), id, PlayerLayerEnum.Ability);
                 else if (canHaveBB.Count > 0 && BB.Contains(id))
-                    Gen(canHaveBB.TakeFirst(), id, LayerRPC.Ability);
+                    Gen(canHaveBB.TakeFirst(), id, PlayerLayerEnum.Ability);
             }
 
             Utils.LogSomething("Abilities Done");
@@ -2284,13 +2212,13 @@ namespace TownOfUsReworked.Classes
                 int[] Allied = { 5 };
 
                 if (LoverRival.Contains(id) && canHaveLoverorRival.Count > 4)
-                    Gen(canHaveLoverorRival.TakeFirst(), id, LayerRPC.Objectifier);
+                    Gen(canHaveLoverorRival.TakeFirst(), id, PlayerLayerEnum.Objectifier);
                 else if (Crew.Contains(id) && canHaveCrewObjectifier.Count > 0)
-                    Gen(canHaveCrewObjectifier.TakeFirst(), id, LayerRPC.Objectifier);
+                    Gen(canHaveCrewObjectifier.TakeFirst(), id, PlayerLayerEnum.Objectifier);
                 else if (Neutral.Contains(id) && canHaveNeutralObjectifier.Count > 0)
-                    Gen(canHaveNeutralObjectifier.TakeFirst(), id, LayerRPC.Objectifier);
+                    Gen(canHaveNeutralObjectifier.TakeFirst(), id, PlayerLayerEnum.Objectifier);
                 else if (Allied.Contains(id) && canHaveAllied.Count > 0)
-                    Gen(canHaveAllied.TakeFirst(), id, LayerRPC.Objectifier);
+                    Gen(canHaveAllied.TakeFirst(), id, PlayerLayerEnum.Objectifier);
             }
 
             Utils.LogSomething("Objectifiers Done");
@@ -2503,17 +2431,17 @@ namespace TownOfUsReworked.Classes
                 int[] Indomitable = { 11 };
 
                 if (canHaveBait.Count > 0 && Bait.Contains(id))
-                    Gen(canHaveBait.TakeFirst(), id, LayerRPC.Modifier);
+                    Gen(canHaveBait.TakeFirst(), id, PlayerLayerEnum.Modifier);
                 else if (canHaveDiseased.Count > 0 && Diseased.Contains(id))
-                    Gen(canHaveDiseased.TakeFirst(), id, LayerRPC.Modifier);
+                    Gen(canHaveDiseased.TakeFirst(), id, PlayerLayerEnum.Modifier);
                 else if (canHaveProfessional.Count > 0 && Professional.Contains(id))
-                    Gen(canHaveProfessional.TakeFirst(), id, LayerRPC.Modifier);
+                    Gen(canHaveProfessional.TakeFirst(), id, PlayerLayerEnum.Modifier);
                 else if (canHaveModifier.Count > 0 && Global.Contains(id))
-                    Gen(canHaveModifier.TakeFirst(), id, LayerRPC.Modifier);
+                    Gen(canHaveModifier.TakeFirst(), id, PlayerLayerEnum.Modifier);
                 else if (canHaveShy.Count > 0 && Shy.Contains(id))
-                    Gen(canHaveShy.TakeFirst(), id, LayerRPC.Modifier);
+                    Gen(canHaveShy.TakeFirst(), id, PlayerLayerEnum.Modifier);
                 else if (canHaveIndomitable.Count > 0 && Indomitable.Contains(id))
-                    Gen(canHaveIndomitable.TakeFirst(), id, LayerRPC.Modifier);
+                    Gen(canHaveIndomitable.TakeFirst(), id, PlayerLayerEnum.Modifier);
             }
 
             Utils.LogSomething("Modifiers Done");
@@ -2717,7 +2645,7 @@ namespace TownOfUsReworked.Classes
                     if (!player.Is(RoleEnum.Altruist))
                         gaTargets.Add(player);
 
-                    if (Objectifier.GetObjectifier(player).ObjectifierType == ObjectifierEnum.None && player != PureCrew)
+                    if (player != PureCrew)
                         goodRecruits.Add(player);
 
                     if (!player.Is(RoleAlignment.CrewSov))
@@ -2729,7 +2657,7 @@ namespace TownOfUsReworked.Classes
                     {
                         gaTargets.Add(player);
 
-                        if (player.Is(RoleAlignment.NeutralKill) && Objectifier.GetObjectifier(player).ObjectifierType == ObjectifierEnum.None)
+                        if (player.Is(RoleAlignment.NeutralKill))
                             evilRecruits.Add(player);
                     }
 
@@ -3002,15 +2930,15 @@ namespace TownOfUsReworked.Classes
 
             UpdateNames.PlayerNames.Clear();
 
-            ConfirmEjects.lastExiled = null;
+            ConfirmEjects.LastExiled = null;
 
-            Role.RoleDictionary.Clear();
-            Objectifier.ObjectifierDictionary.Clear();
-            Modifier.ModifierDictionary.Clear();
-            Ability.AbilityDictionary.Clear();
-            PlayerLayer.Layers.Clear();
+            Role.AllRoles.Clear();
+            Objectifier.AllObjectifiers.Clear();
+            Modifier.AllModifiers.Clear();
+            Ability.AllAbilities.Clear();
+            PlayerLayer.AllLayers.Clear();
 
-            AddHauntPatch.AssassinatedPlayers.Clear();
+            SetPostmortals.AssassinatedPlayers.Clear();
 
             CrewAuditorRoles.Clear();
             CrewInvestigativeRoles.Clear();
@@ -3038,10 +2966,15 @@ namespace TownOfUsReworked.Classes
             SyndicatePowerRoles.Clear();
             SyndicateRoles.Clear();
 
-            PhantomOn = false;
-            RevealerOn = false;
-            BansheeOn = false;
-            GhoulOn = false;
+            SetPostmortals.PhantomOn = false;
+            SetPostmortals.RevealerOn = false;
+            SetPostmortals.BansheeOn = false;
+            SetPostmortals.GhoulOn = false;
+
+            SetPostmortals.WillBeBanshee = null;
+            SetPostmortals.WillBeGhoul = null;
+            SetPostmortals.WillBeRevealer = null;
+            SetPostmortals.WillBePhantom = null;
 
             PureCrew = null;
             Convertible = 0;
@@ -3064,7 +2997,10 @@ namespace TownOfUsReworked.Classes
             else
                 GenClassicCustomAA(infected.ToList());
 
-            PureCrew = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Crew)).ToList().Random();
+            var list = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Crew)).ToList();
+
+            if (list.Count > 0)
+                PureCrew = list.Random();
 
             if (!ConstantVariables.IsVanilla)
             {
@@ -3092,6 +3028,7 @@ namespace TownOfUsReworked.Classes
             }
 
             Convertible = PlayerControl.AllPlayerControls.ToArray().Count(x => x.Is(SubFaction.None));
+            ButtonUtils.ResetCustomTimers(true);
         }
 
         private static void SetRole(int id, PlayerControl player)
@@ -3446,7 +3383,7 @@ namespace TownOfUsReworked.Classes
             }
         }
 
-        private static void Gen(PlayerControl player, int id, LayerRPC rpc)
+        private static void Gen(PlayerControl player, int id, PlayerLayerEnum rpc)
         {
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetLayer, SendOption.Reliable);
             writer.Write(player.PlayerId);
@@ -3456,15 +3393,15 @@ namespace TownOfUsReworked.Classes
             SetLayer(id, player, rpc);
         }
 
-        public static void SetLayer(int id, PlayerControl player, LayerRPC rpc)
+        public static void SetLayer(int id, PlayerControl player, PlayerLayerEnum rpc)
         {
-            if (rpc == LayerRPC.Role)
+            if (rpc == PlayerLayerEnum.Role)
                 SetRole(id, player);
-            if (rpc == LayerRPC.Modifier)
+            if (rpc == PlayerLayerEnum.Modifier)
                 SetModifier(id, player);
-            if (rpc == LayerRPC.Objectifier)
+            if (rpc == PlayerLayerEnum.Objectifier)
                 SetObjectifier(id, player);
-            if (rpc == LayerRPC.Ability)
+            if (rpc == PlayerLayerEnum.Ability)
                 SetAbility(id, player);
         }
 
@@ -3550,7 +3487,7 @@ namespace TownOfUsReworked.Classes
             var converted = Utils.PlayerById(target);
             var converter = Utils.PlayerById(convert);
 
-            if (condition || Convertible <= 1)
+            if (condition || Convertible <= 1 || !CanConvert(target))
                 Utils.RpcMurderPlayer(converter, converted, DeathReasonEnum.Failed);
             else
             {
@@ -3562,16 +3499,13 @@ namespace TownOfUsReworked.Classes
                     Utils.RpcMurderPlayer(converter, converted, DeathReasonEnum.Failed);
                 else
                 {
-                    Color flash;
-                    string action;
-
-                    (flash, action) = sub switch
+                    Color flash = sub switch
                     {
-                        SubFaction.Undead => (Colors.Undead, "bitten"),
-                        SubFaction.Cabal => (Colors.Cabal, "recruited"),
-                        SubFaction.Reanimated => (Colors.Reanimated, "resurrected"),
-                        SubFaction.Sect => (Colors.Sect, "persuaded"),
-                        _ => (Colors.Stalemate, "errored")
+                        SubFaction.Undead => Colors.Undead,
+                        SubFaction.Cabal => Colors.Cabal,
+                        SubFaction.Reanimated => Colors.Reanimated,
+                        SubFaction.Sect => Colors.Sect,
+                        _ => Colors.Stalemate
                     };
 
                     if (converter.Is(RoleEnum.Dracula))
@@ -3641,10 +3575,10 @@ namespace TownOfUsReworked.Classes
                     Convertible--;
 
                     if (PlayerControl.LocalPlayer == converted)
-                        Utils.Flash(flash, $"You have been {action} by {converter?.name}!");
+                        Utils.Flash(flash);
 
                     if (PlayerControl.LocalPlayer.Is(RoleEnum.Mystic))
-                        Utils.Flash(Colors.Mystic, "Someone has changed their allegience!");
+                        Utils.Flash(Colors.Mystic);
                 }
             }
         }

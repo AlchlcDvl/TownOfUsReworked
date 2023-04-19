@@ -6,6 +6,7 @@ using AmongUs.GameOptions;
 using Il2CppSystem;
 using TownOfUsReworked.PlayerLayers.Roles;
 using Object = UnityEngine.Object;
+using TownOfUsReworked.Crowded.Components;
 
 namespace TownOfUsReworked.Custom
 {
@@ -43,12 +44,16 @@ namespace TownOfUsReworked.Custom
             Menu.Begin(null);
         }
 
-        public void Close() => Menu.Close();
-
         private static ShapeshifterMinigame GetShapeshifterMenu()
         {
             var rolePrefab = RoleManager.Instance.AllRoles.First(r => r.Role == RoleTypes.Shapeshifter);
             return Object.Instantiate(rolePrefab?.Cast<ShapeshifterRole>(), GameData.Instance.transform).ShapeshifterMenu;
+        }
+
+        public void Clicked(PlayerControl player)
+        {
+            Click(player);
+            Menu.Close();
         }
     }
 
@@ -57,27 +62,23 @@ namespace TownOfUsReworked.Custom
     {
         public static bool Prefix(ShapeshifterMinigame __instance)
         {
+            __instance.gameObject.AddComponent<ShapeShifterPagingBehaviour>().shapeshifterMinigame = __instance;
             var menu = CustomMenu.AllMenus.Find(x => x.Menu == __instance && x.Owner == PlayerControl.LocalPlayer);
 
             if (menu == null)
                 return true;
 
-            var list = menu.Targets;
             __instance.potentialVictims = new();
             var list2 = new Il2CppSystem.Collections.Generic.List<UiElement>();
 
-            for (var i = 0; i < list.Count; i++)
+            for (var i = 0; i < menu.Targets.Count; i++)
             {
-                var player = list[i];
+                var player = menu.Targets[i];
                 var num = i % 3;
                 var num2 = i / 3;
                 var panel = Object.Instantiate(__instance.PanelPrefab, __instance.transform);
                 panel.transform.localPosition = new(__instance.XStart + (num * __instance.XOffset), __instance.YStart + (num2 * __instance.YOffset), -1f);
-                panel.SetPlayer(i, player.Data, (Action)(() =>
-                {
-                    menu.Click(player);
-                    __instance.Close();
-                }));
+                panel.SetPlayer(i, player.Data, (Action)(() => menu.Clicked(player)));
                 panel.NameText.color = PlayerControl.LocalPlayer == player ? Role.GetRole(menu.Owner).Color : Color.white;
                 __instance.potentialVictims.Add(panel);
                 list2.Add(panel.Button);

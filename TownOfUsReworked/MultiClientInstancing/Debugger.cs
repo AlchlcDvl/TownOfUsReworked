@@ -23,8 +23,11 @@ namespace TownOfUsReworked.MultiClientInstancing
             {
                 GUILayout.Label("Name: " + DataManager.Player.Customization.Name);
 
-                if (!PlayerControl.LocalPlayer.Data.IsDead && !ConstantVariables.IsEnded && !ConstantVariables.GameHasEnded)
+                if (PlayerControl.LocalPlayer != null && !ConstantVariables.NoLobby && !PlayerControl.LocalPlayer.Data.IsDead && !ConstantVariables.IsEnded &&
+                    !ConstantVariables.GameHasEnded)
+                {
                     PlayerControl.LocalPlayer.Collider.enabled = GUILayout.Toggle(PlayerControl.LocalPlayer.Collider.enabled, "Enable Player Collider");
+                }
 
                 if (ConstantVariables.IsLobby)
                 {
@@ -70,7 +73,7 @@ namespace TownOfUsReworked.MultiClientInstancing
                         {
                             ControllingFigure++;
 
-                            if (ControllingFigure >= PlayerControl.AllPlayerControls.Count)
+                            if (ControllingFigure == PlayerControl.AllPlayerControls.Count)
                                 ControllingFigure = 0;
 
                             InstanceControl.SwitchTo((byte)ControllingFigure);

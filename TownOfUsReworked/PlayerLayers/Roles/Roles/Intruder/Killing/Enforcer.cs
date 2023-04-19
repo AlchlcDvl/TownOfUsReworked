@@ -6,12 +6,14 @@ using TownOfUsReworked.Modules;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Extensions;
 using Hazel;
+using TownOfUsReworked.Custom;
+using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Enforcer : IntruderRole
     {
-        public AbilityButton BombButton;
+        public CustomButton BombButton;
         public PlayerControl BombedPlayer;
         public PlayerControl ClosestBomb;
         public bool Enabled;
@@ -28,33 +30,36 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleType = RoleEnum.Enforcer;
             StartText = "Plant Bombs On Players And Force Them To Kill";
             AbilitiesText = $"- You can plant bombs on players and force them to kill others\n- If the player is unable to kill someone within {CustomGameOptions.EnforceDuration}s" +
-                $", the bomb will detonate and kill everyone within a {CustomGameOptions.EnforceRadius}m\n{AbilitiesText}";
+                $", the bomb will detonate and kill everyone within a {CustomGameOptions.EnforceRadius}m radius\n{AbilitiesText}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Enforcer : Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderKill;
             AlignmentName = IK;
+            Type = LayerEnum.Enforcer;
+            BombedPlayer = null;
+            BombButton = new(this, AssetManager.Placeholder, AbilityTypes.Direct, "Secondary", Bomb);
         }
 
         public float BombTimer()
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastBombed;
-            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.EnforceCooldown, CustomGameOptions.MafiosoAbilityCooldownDecrease) * 1000f;
-            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.EnforceCooldown) * 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
         public void Boom()
         {
             if (!Enabled && PlayerControl.LocalPlayer == BombedPlayer)
             {
-                Utils.Flash(Color, "There's a bomb on you!", 2);
+                Utils.Flash(Color);
                 GetRole(BombedPlayer).Bombed = true;
             }
 
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
 
-            if (Player.Data.IsDead || MeetingHud.Instance || BombSuccessful)
+            if (Player.Data.IsDead || MeetingHud.Instance || BombedPlayer.Data.IsDead || BombedPlayer.Data.Disconnected || BombSuccessful)
                 TimeRemaining = 0f;
         }
 
@@ -62,7 +67,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             TimeRemaining2 -= Time.deltaTime;
 
-            if (Player.Data.IsDead || MeetingHud.Instance)
+            if (Player.Data.IsDead || MeetingHud.Instance || BombedPlayer.Data.IsDead || BombedPlayer.Data.Disconnected)
                 TimeRemaining2 = 0f;
         }
 
@@ -90,6 +95,39 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 if (!player.Is(RoleEnum.Pestilence))
                     Utils.RpcMurderPlayer(BombedPlayer, player, DeathReasonEnum.Bombed, false);
             }
+        }
+
+        public void Bomb()
+        {
+            if (BombTimer() != 0f || Utils.IsTooFar(Player, ClosestBomb) || BombedPlayer == ClosestBomb)
+                return;
+
+            var interact = Utils.Interact(Player, ClosestBomb);
+
+            if (interact[3])
+            {
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+                writer.Write((byte)ActionsRPC.SetBomb);
+                writer.Write(Player.PlayerId);
+                writer.Write(ClosestBomb.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                TimeRemaining = CustomGameOptions.EnforceDuration;
+                TimeRemaining2 = CustomGameOptions.EnforceDelay;
+                BombedPlayer = ClosestBomb;
+                Delay();
+            }
+            else if (interact[0])
+                LastBombed = DateTime.UtcNow;
+            else if (interact[1])
+                LastBombed.AddSeconds(CustomGameOptions.ProtectKCReset);
+        }
+
+        public override void UpdateHud(HudManager __instance)
+        {
+            base.UpdateHud(__instance);
+            var notBombed = PlayerControl.AllPlayerControls.ToArray().Where(x => x != BombedPlayer).ToList();
+            BombButton.Update("BOMB", BombTimer(), CustomGameOptions.EnforceCooldown, notBombed, DelayActive || Bombing, DelayActive ? TimeRemaining2 : TimeRemaining, DelayActive ?
+                CustomGameOptions.EnforceDelay : CustomGameOptions.EnforceDuration);
         }
     }
 }

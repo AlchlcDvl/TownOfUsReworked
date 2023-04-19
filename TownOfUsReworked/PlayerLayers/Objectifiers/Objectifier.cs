@@ -14,8 +14,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
     [HarmonyPatch]
     public class Objectifier : PlayerLayer
     {
-        public static readonly Dictionary<byte, Objectifier> ObjectifierDictionary = new();
-        public static List<Objectifier> AllObjectifiers => ObjectifierDictionary.Values.ToList();
+        public static readonly List<Objectifier> AllObjectifiers = new();
 
         #pragma warning disable
         public static bool NobodyWins;
@@ -31,12 +30,9 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
 
         protected Objectifier(PlayerControl player) : base(player)
         {
-            if (ObjectifierDictionary.ContainsKey(player.PlayerId))
-                ObjectifierDictionary.Remove(player.PlayerId);
-
-            ObjectifierDictionary.Add(player.PlayerId, this);
             Color = Colors.Objectifier;
             LayerType = PlayerLayerEnum.Objectifier;
+            AllObjectifiers.Add(this);
         }
 
         public string SymbolName = ":";
@@ -44,7 +40,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         public bool Hidden;
         public bool Winner;
 
-        public string GetColoredSymbol() => $"{ColorString}{SymbolName}</color>";
+        public string ColoredSymbol => $"{ColorString}{SymbolName}</color>";
 
         public static Objectifier GetObjectifier(PlayerControl player) => AllObjectifiers.Find(x => x.Player == player);
 
@@ -85,7 +81,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
                 LoveWins = true;
                 Winner = true;
                 GetObjectifier(((Lovers)this).OtherLover).Winner = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.WinLose, SendOption.Reliable);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.LoveWin);
                 writer.Write(Player.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);

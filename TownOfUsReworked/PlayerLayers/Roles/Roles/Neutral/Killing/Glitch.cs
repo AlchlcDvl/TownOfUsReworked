@@ -7,6 +7,7 @@ using TownOfUsReworked.Modules;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.PlayerLayers.Modifiers;
 using TownOfUsReworked.Custom;
+using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -16,9 +17,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public DateTime LastMimic;
         public DateTime LastHack;
         public DateTime LastKilled;
-        public AbilityButton HackButton;
-        public AbilityButton MimicButton;
-        public AbilityButton KillButton;
+        public CustomButton HackButton;
+        public CustomButton MimicButton;
+        public CustomButton KillButton;
         public PlayerControl HackTarget;
         public bool IsUsingMimic => TimeRemaining2 > 0f;
         public float TimeRemaining;
@@ -36,31 +37,35 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleType = RoleEnum.Glitch;
             StartText = "foreach PlayerControl Glitch.MurderPlayer";
             AbilitiesText = "- You can mimic players' appearances whenever you want to\n- You can hack players to stop them from using their abilities\n- Hacking blocks your target " +
-                "from being able to use their abilities for a short while\n- You are immune to blocks\n- If you block a <color=#336EFFFF>Serial Killer</color>, they will be forced " +
-                "to kill you";
+                "from being able to use their abilities for a short while\n- You are immune to blocks\n- If you block a <color=#336EFFFF>Serial Killer</color>, they will be forced to" +
+                " kill you";
             Objectives = "- Neutralise anyone who can oppose you";
             RoleAlignment = RoleAlignment.NeutralKill;
             AlignmentName = NK;
-            MimicMenu = new CustomMenu(Player, new CustomMenu.Select(Click));
+            MimicMenu = new(Player, Click);
             RoleBlockImmune = true;
+            Type = LayerEnum.Glitch;
+            KillButton = new(this, AssetManager.Neutralise, AbilityTypes.Direct, "ActionSecondary", Neutralise);
+            HackButton = new(this, AssetManager.Hack, AbilityTypes.Direct, "Secondary", HitHack);
+            MimicButton = new(this, AssetManager.Mimic, AbilityTypes.Effect, "Tertiary", HitMimic);
         }
 
         public float HackTimer()
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastHack;
-            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.HackCooldown) * 1000f;
-            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.HackCooldown) * 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
         public float MimicTimer()
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastMimic;
-            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.MimicCooldown) * 1000f;
-            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.MimicCooldown) * 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
         public void UnHack()
@@ -85,12 +90,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Mimic()
         {
-            TimeRemaining -= Time.deltaTime;
+            TimeRemaining2 -= Time.deltaTime;
             Utils.Morph(Player, MimicTarget);
             MimicEnabled = true;
 
             if (Player.Data.IsDead || MeetingHud.Instance)
-                TimeRemaining = 0f;
+                TimeRemaining2 = 0f;
         }
 
         public void UnMimic()
@@ -101,13 +106,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             LastMimic = DateTime.UtcNow;
         }
 
-        public float KillTimer()
+        public float NeutraliseTimer()
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastKilled;
-            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.GlitchKillCooldown) * 1000f;
-            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.GlitchKillCooldown) * 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
         public bool TryGetModifiedAppearance(out VisualAppearance appearance)
@@ -128,6 +133,83 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Utils.LogSomething($"Mimcking {player.name}");
             MimicTarget = player;
+        }
+
+        public void HitHack()
+        {
+            if (HackTimer() != 0f || Utils.IsTooFar(Player, ClosestPlayer) || IsUsingHack)
+                return;
+
+            var interact = Utils.Interact(Player, ClosestPlayer);
+
+            if (interact[3])
+            {
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+                writer.Write((byte)ActionsRPC.GlitchRoleblock);
+                writer.Write(Player.PlayerId);
+                writer.Write(ClosestPlayer.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                HackTarget = ClosestPlayer;
+                TimeRemaining = CustomGameOptions.HackDuration;
+                Hack();
+
+                foreach (var layer in GetLayers(HackTarget))
+                    layer.IsBlocked = !GetRole(HackTarget).RoleBlockImmune;
+            }
+            else if (interact[0])
+                LastHack = DateTime.UtcNow;
+            else if (interact[1])
+                LastHack.AddSeconds(CustomGameOptions.ProtectKCReset);
+        }
+
+        public void Neutralise()
+        {
+            if (Utils.IsTooFar(Player, ClosestPlayer) || NeutraliseTimer() != 0f)
+                return;
+
+            var interact = Utils.Interact(Player, ClosestPlayer, true);
+
+            if (interact[3] || interact[0])
+                LastKilled = DateTime.UtcNow;
+            else if (interact[1])
+                LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
+            else if (interact[2])
+                LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
+        }
+
+        public void HitMimic()
+        {
+            if (MimicTimer() != 0f)
+                return;
+
+            if (MimicTarget == null)
+                MimicMenu.Open(PlayerControl.AllPlayerControls.ToArray().Where(x => x != Player).ToList());
+            else
+            {
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+                writer.Write((byte)ActionsRPC.Mimic);
+                writer.Write(Player.PlayerId);
+                writer.Write(MimicTarget.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                TimeRemaining2 = CustomGameOptions.MimicDuration;
+                Mimic();
+            }
+        }
+
+        public override void UpdateHud(HudManager __instance)
+        {
+            base.UpdateHud(__instance);
+            KillButton.Update("NEUTRALISE", NeutraliseTimer(), CustomGameOptions.GlitchKillCooldown);
+            HackButton.Update("HACK", HackTimer(), CustomGameOptions.HackCooldown, IsUsingHack, TimeRemaining, CustomGameOptions.HackDuration);
+            MimicButton.Update("MIMIC", MimicTimer(), CustomGameOptions.MimicCooldown, IsUsingMimic, TimeRemaining2, CustomGameOptions.MimicDuration);
+
+            if (Input.GetKeyDown(KeyCode.Backspace))
+            {
+                if (MimicTarget != null && !IsUsingMimic)
+                    MimicTarget = null;
+
+                Utils.LogSomething("Removed a target");
+            }
         }
     }
 }

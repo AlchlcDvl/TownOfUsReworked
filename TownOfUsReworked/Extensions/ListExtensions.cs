@@ -77,6 +77,14 @@ namespace TownOfUsReworked.Extensions
             return newList;
         }
 
-        public static T Random<T>(this List<T> list) => list.Count == 1 ? list[0] : list[URandom.RandomRangeInt(0, list.Count)];
+        public static T Random<T>(this List<T> list, T defaultVal = default)
+        {
+            if (list.Count == 0)
+                return defaultVal;
+            else if (list.Count == 1)
+                return list[0];
+            else
+                return list[URandom.RandomRangeInt(0, list.Count)];
+        }
     }
 }

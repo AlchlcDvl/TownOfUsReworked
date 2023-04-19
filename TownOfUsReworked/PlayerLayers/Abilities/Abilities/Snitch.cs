@@ -18,9 +18,10 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             TaskText = "- You can finish your tasks to get information on who's evil.";
             Color = CustomGameOptions.CustomAbilityColors ? Colors.Snitch : Colors.Ability;
             AbilityType = AbilityEnum.Snitch;
-            Hidden = !CustomGameOptions.SnitchKnows;
+            Hidden = !CustomGameOptions.SnitchKnows && !TasksDone;
             ImpArrows = new();
             SnitchArrows = new();
+            Type = LayerEnum.Snitch;
         }
 
         public void DestroyArrow(byte targetPlayerId)
@@ -41,6 +42,32 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             SnitchArrows.Values.DestroyAll();
             SnitchArrows.Clear();
             ImpArrows.DestroyAll();
+        }
+
+        public override void UpdateHud(HudManager __instance)
+        {
+            base.UpdateHud(__instance);
+
+            if (PlayerControl.LocalPlayer.Data.IsDead || Player.Data.IsDead)
+            {
+                SnitchArrows.Values.DestroyAll();
+                SnitchArrows.Clear();
+                ImpArrows.DestroyAll();
+                ImpArrows.Clear();
+            }
+
+            foreach (var arrow in ImpArrows)
+                arrow.target = Player.transform.position;
+
+            foreach (var arrow in SnitchArrows)
+            {
+                var player = Utils.PlayerById(arrow.Key);
+
+                if (player?.Data.IsDead == true || player?.Data.Disconnected == true)
+                    DestroyArrow(arrow.Key);
+                else
+                    arrow.Value.target = player.transform.position;
+            }
         }
     }
 }

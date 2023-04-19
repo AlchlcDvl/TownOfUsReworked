@@ -18,7 +18,7 @@ namespace TownOfUsReworked.CustomOptions
 
         protected internal void Increase()
         {
-            if (Get() + 1 > Values.Length)
+            if (Get() >= Values.Length)
                 Set(0);
             else
                 Set(Get() + 1);
@@ -26,7 +26,7 @@ namespace TownOfUsReworked.CustomOptions
 
         protected internal void Decrease()
         {
-            if (Get() - 1 < 0)
+            if (Get() <= 0)
                 Set(Values.Length - 1);
             else
                 Set(Get() - 1);

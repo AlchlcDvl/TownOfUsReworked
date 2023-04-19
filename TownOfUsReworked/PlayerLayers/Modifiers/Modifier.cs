@@ -9,17 +9,13 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
     [HarmonyPatch]
     public class Modifier : PlayerLayer
     {
-        public static readonly Dictionary<byte, Modifier> ModifierDictionary = new();
-        public static List<Modifier> AllModifiers => ModifierDictionary.Values.ToList();
+        public static readonly List<Modifier> AllModifiers = new();
 
         protected Modifier(PlayerControl player) : base(player)
         {
-            if (ModifierDictionary.ContainsKey(player.PlayerId))
-                ModifierDictionary.Remove(player.PlayerId);
-
-            ModifierDictionary.Add(player.PlayerId, this);
             Color = Colors.Modifier;
             LayerType = PlayerLayerEnum.Modifier;
+            AllModifiers.Add(this);
         }
 
         public string TaskText = "- None";

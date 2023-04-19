@@ -1,18 +1,18 @@
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Modules;
 using Reactor.Utilities;
 using System;
 using System.Collections;
 using Reactor.Utilities.Extensions;
 using TownOfUsReworked.Patches;
 using UnityEngine;
-using Object = UnityEngine.Object;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
-using AmongUs.GameOptions;
 using TownOfUsReworked.Extensions;
 using Hazel;
 using TownOfUsReworked.Data;
+using TownOfUsReworked.Custom;
+using System.Linq;
+using Random = UnityEngine.Random;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -21,12 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public bool CurrentlyReviving;
         public DeadBody CurrentTarget;
         public bool ReviveUsed;
-        public AbilityButton ReviveButton;
-
-        #pragma warning disable
-        public static ArrowBehaviour Arrow;
-        public static PlayerControl Target;
-        #pragma warning restore
+        public CustomButton ReviveButton;
 
         public Altruist(PlayerControl player) : base(player)
         {
@@ -39,49 +34,36 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleAlignment = RoleAlignment.CrewProt;
             AlignmentName = CP;
             InspectorResults = InspectorResults.MeddlesWithDead;
+            Type = LayerEnum.Altruist;
+            ReviveButton = new(this, AssetManager.Revive, AbilityTypes.Dead, "ActionSecondary", Revive);
         }
 
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-
-            if (ReviveButton == null)
-                ReviveButton = CustomButtons.InstantiateButton();
-
-            ReviveButton.UpdateButton(this, "REVIVE", 0, 1, AssetManager.Revive, AbilityTypes.Dead, "ActionSecondary", !ReviveUsed);
-
-            if (Arrow != null)
-            {
-                if (LobbyBehaviour.Instance || MeetingHud.Instance || PlayerControl.LocalPlayer.Data.IsDead || Target.Data.IsDead)
-                {
-                    Arrow.gameObject.Destroy();
-                    Target = null;
-                }
-                else
-                    Arrow.target = Target.transform.position;
-            }
+            ReviveButton.Update("REVIVE", 0, 1, true, !ReviveUsed);
         }
 
-        public override void ButtonClick(AbilityButton __instance, out bool clicked)
+        public override void OnLobby()
         {
-            clicked = false;
+            Arrow.gameObject.Destroy();
+            Target = null;
+        }
 
-            if (__instance == ReviveButton)
-            {
-                if (Utils.IsTooFar(Player, CurrentTarget))
-                    return;
+        public void Revive()
+        {
+            if (Utils.IsTooFar(Player, CurrentTarget))
+                return;
 
-                var playerId = CurrentTarget.ParentId;
-                var player = Utils.PlayerById(playerId);
-                Utils.Spread(Player, player);
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                writer.Write((byte)ActionsRPC.AltruistRevive);
-                writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                writer.Write(playerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Coroutines.Start(Revive(CurrentTarget, this));
-                clicked = true;
-            }
+            var playerId = CurrentTarget.ParentId;
+            var player = Utils.PlayerById(playerId);
+            Utils.Spread(Player, player);
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+            writer.Write((byte)ActionsRPC.AltruistRevive);
+            writer.Write(Player.PlayerId);
+            writer.Write(playerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            Coroutines.Start(Revive(CurrentTarget, this));
         }
 
         public static IEnumerator Revive(DeadBody target, Altruist role)
@@ -93,7 +75,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 Utils.RpcMurderPlayer(role.Player, role.Player);
 
             if (PlayerControl.LocalPlayer.PlayerId == parentId)
-                Utils.Flash(Colors.Reanimated, "You are being resurrected!");
+                Utils.Flash(role.Color);
 
             if (CustomGameOptions.AltruistTargetBody)
                 target?.gameObject.Destroy();
@@ -114,17 +96,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     yield break;
             }
 
-            Utils.BodyById(role.Player.PlayerId).gameObject.Destroy();
+            Utils.BodyById(role.Player.PlayerId)?.gameObject.Destroy();
             var player = Utils.PlayerById(parentId);
             var targetRole = GetRole(player);
             targetRole.DeathReason = DeathReasonEnum.Revived;
             targetRole.KilledBy = " By " + role.PlayerName;
             player.Revive();
-
-            if (player.Data.IsImpostor())
-                RoleManager.Instance.SetRole(player, RoleTypes.Impostor);
-            else
-                RoleManager.Instance.SetRole(player, RoleTypes.Crewmate);
+            player.Data.SetImpostor(player.Data.IsImpostor());
 
             Murder.KilledPlayers.Remove(Murder.KilledPlayers.Find(x => x.PlayerId == player.PlayerId));
             player.NetTransform.SnapTo(new Vector2(position.x, position.y + 0.3636f));
@@ -136,33 +114,125 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (player.Is(ObjectifierEnum.Lovers) && CustomGameOptions.BothLoversDie)
             {
-                var lover = Objectifier.GetObjectifier<Lovers>(player).OtherLover;
+                var lover = player.GetOtherLover();
                 lover.Revive();
                 Murder.KilledPlayers.Remove(Murder.KilledPlayers.Find(x => x.PlayerId == lover.PlayerId));
                 Utils.BodyById(lover.PlayerId).gameObject.Destroy();
                 var loverRole = GetRole(lover);
                 loverRole.DeathReason = DeathReasonEnum.Revived;
                 loverRole.KilledBy = " By " + role.PlayerName;
+                Utils.RecentlyKilled.Remove(lover);
             }
 
-            if (Minigame.Instance)
-                Minigame.Instance.Close();
+            if (player == PlayerControl.LocalPlayer)
+            {
+                if (Minigame.Instance)
+                    Minigame.Instance.Close();
+
+                if (MapBehaviour.Instance)
+                    MapBehaviour.Instance.Close();
+            }
+
+            if (AmongUsClient.Instance.AmHost)
+            {
+                if (SetPostmortals.WillBeRevealer == player)
+                {
+                    var toChooseFrom = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Crew) && x.Data.IsDead && !x.Data.Disconnected && x != player).ToList();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetRevealer, SendOption.Reliable, -1);
+
+                    if (toChooseFrom.Count == 0)
+                    {
+                        SetPostmortals.WillBeRevealer = null;
+                        writer.Write(byte.MaxValue);
+                    }
+                    else
+                    {
+                        var rand = Random.RandomRangeInt(0, toChooseFrom.Count);
+                        var pc = toChooseFrom[rand];
+                        SetPostmortals.WillBeRevealer = pc;
+                        writer.Write(pc.PlayerId);
+                    }
+
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                }
+                else if (SetPostmortals.WillBePhantom == player)
+                {
+                    var toChooseFrom = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Neutral) && x.Data.IsDead && !x.Data.Disconnected && x != player).ToList();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPhantom, SendOption.Reliable, -1);
+
+                    if (toChooseFrom.Count == 0)
+                    {
+                        SetPostmortals.WillBePhantom = null;
+                        writer.Write(byte.MaxValue);
+                    }
+                    else
+                    {
+                        var rand = Random.RandomRangeInt(0, toChooseFrom.Count);
+                        var pc = toChooseFrom[rand];
+                        SetPostmortals.WillBePhantom = pc;
+                        writer.Write(pc.PlayerId);
+                    }
+
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                }
+                else if (SetPostmortals.WillBeBanshee == player)
+                {
+                    var toChooseFrom = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Syndicate) && x.Data.IsDead && !x.Data.Disconnected && x != player).ToList();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetBanshee, SendOption.Reliable, -1);
+
+                    if (toChooseFrom.Count == 0)
+                    {
+                        SetPostmortals.WillBeBanshee = null;
+                        writer.Write(byte.MaxValue);
+                    }
+                    else
+                    {
+                        var rand = Random.RandomRangeInt(0, toChooseFrom.Count);
+                        var pc = toChooseFrom[rand];
+                        SetPostmortals.WillBeBanshee = pc;
+                        writer.Write(pc.PlayerId);
+                    }
+
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                }
+                else if (SetPostmortals.WillBeGhoul == player)
+                {
+                    var toChooseFrom = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Neutral) && x.Data.IsDead && !x.Data.Disconnected && x != player).ToList();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetGhoul, SendOption.Reliable, -1);
+
+                    if (toChooseFrom.Count == 0)
+                    {
+                        SetPostmortals.WillBeGhoul = null;
+                        writer.Write(byte.MaxValue);
+                    }
+                    else
+                    {
+                        var rand = Random.RandomRangeInt(0, toChooseFrom.Count);
+                        var pc = toChooseFrom[rand];
+                        SetPostmortals.WillBeGhoul = pc;
+                        writer.Write(pc.PlayerId);
+                    }
+
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                }
+            }
 
             role.ReviveUsed = true;
             Utils.Spread(role.Player, player);
+            Utils.RecentlyKilled.Remove(player);
 
             if (PlayerControl.LocalPlayer.Is(Faction.Intruder) || PlayerControl.LocalPlayer.Is(Faction.Syndicate) || PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralKill) ||
                 PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralEvil) || PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralPros) || PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralNeo))
             {
                 var gameObj = new GameObject();
                 Arrow = gameObj.AddComponent<ArrowBehaviour>();
-                gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
+                gameObj.transform.parent = player.gameObject.transform;
                 var renderer = gameObj.AddComponent<SpriteRenderer>();
                 renderer.sprite = AssetManager.Arrow;
                 Arrow.image = renderer;
                 gameObj.layer = 5;
                 Target = player;
-                yield return Utils.FlashCoro(role.Color, "Someone has been revived!");
+                yield return Utils.FlashCoro(role.Color);
             }
         }
     }

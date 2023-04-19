@@ -3,6 +3,8 @@ using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Data;
+using Hazel;
+using TownOfUsReworked.Custom;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers
 {
@@ -22,6 +24,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Fanatic : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Fanatic;
             Hidden = !CustomGameOptions.FanaticKnows && !Turned;
+            Type = LayerEnum.Fanatic;
         }
 
         public static void TurnFanatic(PlayerControl fanatic, Faction faction)
@@ -33,7 +36,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             fanatic2.Turned = true;
 
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Mystic))
-                Utils.Flash(Colors.Mystic, "Someone changed their allegience!");
+                Utils.Flash(Colors.Mystic);
 
             if (faction == Faction.Syndicate)
             {
@@ -62,12 +65,25 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             if (role.RoleType == RoleEnum.Betrayer)
                 return;
 
-            var betrayer = new Betrayer(Player);
+            var betrayer = new Betrayer(Player) { Objectives = role.Objectives };
             betrayer.RoleUpdate(role);
-            betrayer.Objectives = role.Objectives;
 
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
-                Utils.Flash(Colors.Seer, "Someone changed their identity!");
+                Utils.Flash(Colors.Seer);
+        }
+
+        public override void UpdateHud(HudManager __instance)
+        {
+            base.UpdateHud(__instance);
+
+            if (Betray && Turned)
+            {
+                TurnBetrayer();
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
+                writer.Write((byte)TurnRPC.TurnFanaticBetrayer);
+                writer.Write(Player.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+            }
         }
     }
 }

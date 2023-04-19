@@ -3,26 +3,10 @@ using TownOfUsReworked.Classes;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.CustomOptions;
 using UnityEngine;
-using TownOfUsReworked.Modules;
 using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.Patches
 {
-    [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public static class HudManagerVentPatch
-    {
-        public static void Postfix(HudManager __instance)
-        {
-            if (ConstantVariables.IsLobby || ConstantVariables.IsEnded)
-                return;
-
-            __instance.ImpostorVentButton.gameObject.SetActive(Utils.CanVent(PlayerControl.LocalPlayer, PlayerControl.LocalPlayer.Data) || ((PlayerControl.LocalPlayer.Is(RoleEnum.Revealer)
-                || PlayerControl.LocalPlayer.Is(RoleEnum.Phantom) || PlayerControl.LocalPlayer.Is(RoleEnum.Banshee) || PlayerControl.LocalPlayer.Is(RoleEnum.Ghoul)) &&
-                PlayerControl.LocalPlayer.inVent));
-            __instance.ImpostorVentButton.SetTarget(CustomButtons.GetClosestVent(PlayerControl.LocalPlayer));
-        }
-    }
-
     [HarmonyPatch(typeof(Vent), nameof(Vent.CanUse))]
     public static class VentPatches
     {
@@ -33,10 +17,7 @@ namespace TownOfUsReworked.Patches
             var playerControl = playerInfo.Object;
 
             if (ConstantVariables.IsNormal)
-            {
-                couldUse = Utils.CanVent(playerControl, playerInfo) && !playerControl.MustCleanVent(__instance.Id) && (!playerInfo.IsDead || playerControl.inVent) && (playerControl.CanMove
-                    || playerControl.inVent);
-            }
+                couldUse = (playerControl.CanVent() && !playerControl.MustCleanVent(__instance.Id)) || playerControl.inVent;
             else if (ConstantVariables.IsHnS && playerControl.Data.IsImpostor())
                 couldUse = false;
             else

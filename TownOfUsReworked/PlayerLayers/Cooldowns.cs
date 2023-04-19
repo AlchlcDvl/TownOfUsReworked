@@ -1,6 +1,6 @@
 using HarmonyLib;
 using UnityEngine;
-using TownOfUsReworked.Modules;
+using TownOfUsReworked.Custom;
 
 namespace TownOfUsReworked.PlayerLayers
 {
@@ -12,13 +12,13 @@ namespace TownOfUsReworked.PlayerLayers
             if (ExileController.Instance == null || obj != ExileController.Instance.gameObject)
                 return;
 
-            CustomButtons.ResetCustomTimers(false);
+            ButtonUtils.ResetCustomTimers(false);
         }
     }
 
     [HarmonyPatch(typeof(IntroCutscene._CoBegin_d__33), nameof(IntroCutscene._CoBegin_d__33.MoveNext))]
     public static class Start
     {
-        public static void Postfix() => CustomButtons.ResetCustomTimers(true);
+        public static void Postfix() => ButtonUtils.ResetCustomTimers(true);
     }
 }

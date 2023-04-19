@@ -1,14 +1,19 @@
 using System;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Modules;
-using System.Collections.Generic;
 using TownOfUsReworked.Data;
+using TownOfUsReworked.Custom;
+using Hazel;
+using TownOfUsReworked.Classes;
+using Reactor.Networking.Extensions;
+using UnityEngine;
+using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Miner : IntruderRole
     {
-        public AbilityButton MineButton;
+        public CustomButton MineButton;
         public DateTime LastMined;
         public bool CanPlace;
 
@@ -21,15 +26,44 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleType = RoleEnum.Miner;
             RoleAlignment = RoleAlignment.IntruderSupport;
             AlignmentName = IS;
+            Type = LayerEnum.Miner;
+            MineButton = new(this, AssetManager.Mine, AbilityTypes.Effect, "Secondary", Mine);
         }
 
         public float MineTimer()
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastMined;
-            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.MineCd, CustomButtons.GetUnderdogChange(Player)) * 1000f;
-            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.MineCd) * 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+        }
+
+        public void Mine()
+        {
+            if (!CanPlace || MineTimer() != 0f)
+                return;
+
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+            writer.Write((byte)ActionsRPC.Mine);
+            var position = Player.transform.position;
+            var id = Utils.GetAvailableId();
+            writer.Write(id);
+            writer.Write(Player.PlayerId);
+            writer.Write(position);
+            writer.Write(position.z + 0.01f);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            Utils.SpawnVent(id, this, position, position.z + 0.01f);
+            LastMined = DateTime.UtcNow;
+        }
+
+        public override void UpdateHud(HudManager __instance)
+        {
+            base.UpdateHud(__instance);
+            var hits = Physics2D.OverlapBoxAll(Player.transform.position, Utils.GetSize(), 0);
+            hits = hits.ToArray().Where(c => (c.name.Contains("Vent") || !c.isTrigger) && c.gameObject.layer != 8 && c.gameObject.layer != 5).ToArray();
+            CanPlace = hits.Count == 0 && Player.moveable && !SubmergedCompatibility.GetPlayerElevator(Player).Item1;
+            MineButton.Update("MINE", MineTimer(), CustomGameOptions.MineCd, CanPlace);
         }
     }
 }

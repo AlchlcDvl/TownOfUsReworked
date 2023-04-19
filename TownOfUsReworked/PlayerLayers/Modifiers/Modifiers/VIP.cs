@@ -11,7 +11,8 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
             TaskText = "- Your death will alert everyone.";
             Color = CustomGameOptions.CustomModifierColors ? Colors.VIP : Colors.Modifier;
             ModifierType = ModifierEnum.VIP;
-            Hidden = !CustomGameOptions.VIPKnows;
+            Hidden = !CustomGameOptions.VIPKnows && !IsDead;
+            Type = LayerEnum.VIP;
         }
     }
 }

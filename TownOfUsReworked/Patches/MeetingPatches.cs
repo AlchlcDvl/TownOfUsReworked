@@ -12,6 +12,12 @@ using System.Collections.Generic;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Custom;
+using TownOfUsReworked.Crowded.Components;
+using System.Collections;
+using Reactor.Utilities;
+using TownOfUsReworked.PlayerLayers.Objectifiers;
+using System.Linq;
 
 namespace TownOfUsReworked.Patches
 {
@@ -19,7 +25,7 @@ namespace TownOfUsReworked.Patches
     public static class MeetingPatches
     {
         #pragma warning disable
-        private static GameData.PlayerInfo voteTarget = null;
+        private static GameData.PlayerInfo voteTarget;
         public static int MeetingCount;
         #pragma warning restore
 
@@ -98,8 +104,11 @@ namespace TownOfUsReworked.Patches
         [HarmonyPriority(Priority.First)]
         public static class MeetingHUD_Start
         {
-            public static void Postfix()
+            public static void Postfix(MeetingHud __instance)
             {
+                __instance.gameObject.AddComponent<MeetingHudPagingBehaviour>().meetingHud = __instance;
+                Coroutines.Start(Announcements(GameAnnouncements.Reported, __instance));
+
                 foreach (var player in PlayerControl.AllPlayerControls)
                     player.MyPhysics.ResetAnimState();
 
@@ -116,6 +125,205 @@ namespace TownOfUsReworked.Patches
                     Role.SyndicateHasChaosDrive = true;
                     RoleGen.AssignChaosDrive();
                 }
+
+                foreach (var button in CustomButton.AllButtons)
+                    button.Disable();
+
+                foreach (var layer in PlayerLayer.AllLayers)
+                    layer.OnMeetingStart(__instance);
+            }
+
+            private static IEnumerator Announcements(GameData.PlayerInfo target, MeetingHud __instance)
+            {
+                foreach (var button in CustomButton.AllButtons)
+                    button.Disable();
+
+                foreach (var layer in PlayerLayer.AllLayers)
+                    layer.OnBodyReport(target);
+
+                yield return new WaitForSeconds(5f);
+
+                GameAnnouncements.GivingAnnouncements = true;
+                var extraTime = 0f;
+
+                if (CustomGameOptions.GameAnnouncements)
+                {
+                    PlayerControl check = null;
+
+                    if (target != null)
+                    {
+                        var player = target.Object;
+                        check = player;
+                        var report = $"{player.name} was found dead last round.";
+                        HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, report);
+
+                        yield return new WaitForSeconds(2f);
+
+                        extraTime += 2;
+
+                        if (CustomGameOptions.LocationReports)
+                            report = $"Their body was found in {GameAnnouncements.Location}.";
+                        else
+                            report = "It is unknown where they died.";
+
+                        HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, report);
+
+                        yield return new WaitForSeconds(2f);
+
+                        extraTime += 2;
+                        var killer = Utils.PlayerById(Murder.KilledPlayers.Find(x => x.PlayerId == player.PlayerId).KillerId);
+                        var flag = killer.Is(RoleEnum.Altruist) || killer.Is(RoleEnum.Arsonist) || killer.Is(RoleEnum.Amnesiac) || killer.Is(RoleEnum.Executioner) ||
+                            killer.Is(RoleEnum.Engineer) || killer.Is(RoleEnum.Escort) || killer.Is(RoleEnum.Impostor) || killer.Is(RoleEnum.Inspector) || killer.Is(RoleEnum.Operative) ||
+                            killer.Is(RoleEnum.Eraser);
+                        var a_an = flag ? "an" : "a";
+                        var killerRole = Role.GetRole(killer);
+
+                        if (CustomGameOptions.KillerReports == RoleFactionReports.Role)
+                            report = $"They were killed by {a_an} {killerRole.Name}.";
+                        else if (CustomGameOptions.KillerReports == RoleFactionReports.Faction)
+                            report = $"They were killed by a member of the {killerRole.FactionName}.";
+                        else
+                            report = "They were killed by an unknown assailant.";
+
+                        HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, report);
+
+                        yield return new WaitForSeconds(2f);
+
+                        extraTime += 2;
+                        var flag2 = player.Is(RoleEnum.Altruist) || player.Is(RoleEnum.Arsonist) || player.Is(RoleEnum.Amnesiac) || player.Is(RoleEnum.Executioner) ||
+                            player.Is(RoleEnum.Engineer) || player.Is(RoleEnum.Escort) || player.Is(RoleEnum.Impostor) || player.Is(RoleEnum.Inspector) || player.Is(RoleEnum.Operative) ||
+                            player.Is(RoleEnum.Eraser);
+                        var a_an2 = flag2 ? "an" : "a";
+                        var role = Role.GetRole(player);
+
+                        if (CustomGameOptions.RoleFactionReports == RoleFactionReports.Role)
+                            report = $"They were {a_an2} {role.Name}.";
+                        else if (CustomGameOptions.RoleFactionReports == RoleFactionReports.Faction)
+                            report = $"They were from the {role.FactionName} faction.";
+                        else
+                            report = "It is unknown what they were.";
+
+                        HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, report);
+                    }
+                    else
+                        HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, "A meeting has been called.");
+
+                    yield return new WaitForSeconds(2f);
+                    extraTime += 2;
+
+                    foreach (var player in Utils.RecentlyKilled)
+                    {
+                        if (player != check)
+                        {
+                            var report = $"{player.name} was found dead last round.";
+                            HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, report);
+
+                            yield return new WaitForSeconds(2f);
+
+                            extraTime += 2;
+
+                            report = "It is unknown where they died.";
+                            HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, report);
+
+                            yield return new WaitForSeconds(2f);
+
+                            extraTime += 2;
+
+                            var killer = Utils.PlayerById(Murder.KilledPlayers.Find(x => x.PlayerId == player.PlayerId).KillerId);
+                            var killerRole = Role.GetRole(killer);
+
+                            if (Role.Cleaned.Contains(player))
+                                report = "They were killed by an unknown assailant.";
+                            else if (CustomGameOptions.KillerReports == RoleFactionReports.Role)
+                                report = $"They were killed by a(n) {killerRole.Name}.";
+                            else if (CustomGameOptions.KillerReports == RoleFactionReports.Faction)
+                                report = $"They were killed by a member of the {killerRole.FactionName}.";
+                            else
+                                report = "They were killed by an unknown assailant.";
+
+                            HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, report);
+
+                            yield return new WaitForSeconds(2f);
+
+                            extraTime += 2;
+
+                            var role = Role.GetRole(player);
+
+                            if (Role.Cleaned.Contains(player))
+                                report = $"We could not determine what {player.name} was.";
+                            else if (CustomGameOptions.RoleFactionReports == RoleFactionReports.Role)
+                                report = $"They were a(n) {role.Name}.";
+                            else if (CustomGameOptions.RoleFactionReports == RoleFactionReports.Faction)
+                                report = $"They were from the {role.FactionName} faction.";
+                            else
+                                report = $"We could not determine what {player.name} was.";
+
+                            HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, report);
+
+                            yield return new WaitForSeconds(2f);
+
+                            extraTime += 2;
+                        }
+                    }
+                }
+
+                var message = "";
+
+                if (Role.ChaosDriveMeetingTimerCount < CustomGameOptions.ChaosDriveMeetingCount - 1)
+                    message = $"{CustomGameOptions.ChaosDriveMeetingCount - Role.ChaosDriveMeetingTimerCount} meetings remain till the Syndicate gets their hands on the Chaos Drive!";
+                else if (Role.ChaosDriveMeetingTimerCount == CustomGameOptions.ChaosDriveMeetingCount - 1)
+                    message = "This is the last meeting before the Syndicate gets their hands on the Chaos Drive!";
+                else if (Role.ChaosDriveMeetingTimerCount == CustomGameOptions.ChaosDriveMeetingCount)
+                    message = "The Syndicate now possesses the Chaos Drive!";
+                else
+                    message = "The Syndicate possesses the Chaod Drive.";
+
+                HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, message);
+                var writer5 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SendChat, SendOption.Reliable);
+                writer5.Write(message);
+                AmongUsClient.Instance.FinishRpcImmediately(writer5);
+
+                yield return new WaitForSeconds(2f);
+
+                extraTime += 2;
+
+                if (Objectifier.GetObjectifiers<Overlord>(ObjectifierEnum.Overlord).Any(x => x.IsAlive))
+                {
+                    if (MeetingCount == CustomGameOptions.OverlordMeetingWinCount - 1)
+                        message = "This is the last meeting to find and kill the Overlord. Should you fail, you will all lose!";
+                    else if (MeetingCount < CustomGameOptions.OverlordMeetingWinCount - 1)
+                        message = "There seems to be an Overlord bent on dominating the mission! Kill them before they are successful!";
+
+                    if (message != "")
+                    {
+                        HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, message);
+                        var writer6 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SendChat, SendOption.Reliable);
+                        writer6.Write(message);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer6);
+                    }
+
+                    yield return new WaitForSeconds(2f);
+
+                    extraTime += 2;
+                }
+                else if (Objectifier.GetObjectifiers<Overlord>(ObjectifierEnum.Overlord).All(x => !x.IsAlive) && Objectifier.GetObjectifiers<Overlord>(ObjectifierEnum.Overlord).Count > 0)
+                {
+                    message = "All Overlords are dead!";
+                    HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, message);
+                    var writer6 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SendChat, SendOption.Reliable);
+                    writer6.Write(message);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer6);
+
+                    yield return new WaitForSeconds(2f);
+
+                    extraTime += 2;
+                }
+
+                __instance.discussionTimer += extraTime;
+                Utils.RecentlyKilled.Clear();
+                Role.Cleaned.Clear();
+                GameAnnouncements.GivingAnnouncements = false;
+                GameAnnouncements.Reported = null;
             }
         }
 
@@ -138,7 +346,7 @@ namespace TownOfUsReworked.Patches
         [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.StartMeeting))]
         public static class StartMeetingPatch
         {
-            public static void Prefix([HarmonyArgument(0)]GameData.PlayerInfo meetingTarget) => voteTarget = meetingTarget;
+            public static void Prefix([HarmonyArgument(0)] GameData.PlayerInfo meetingTarget) => voteTarget = meetingTarget;
         }
 
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Update))]

@@ -22,6 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             InspectorResults = InspectorResults.BringsChaos;
             MoarButtons = new();
             ListOfActives = new();
+            Type = LayerEnum.Swapper;
         }
     }
 }

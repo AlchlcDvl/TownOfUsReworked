@@ -1,7 +1,5 @@
 using HarmonyLib;
-using TMPro;
 using TownOfUsReworked.Extensions;
-using UnityEngine;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Data;
 
@@ -10,38 +8,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
     [HarmonyPatch]
     public static class AddAbstain
     {
-        public static void UpdateButton(Mayor role, MeetingHud __instance)
-        {
-            var skip = __instance.SkipVoteButton;
-            role.Abstain.gameObject.SetActive(skip.gameObject.active && !role.VotedOnce);
-            role.Abstain.voteComplete = skip.voteComplete;
-            role.Abstain.GetComponent<SpriteRenderer>().enabled = skip.GetComponent<SpriteRenderer>().enabled;
-            role.Abstain.GetComponentsInChildren<TextMeshPro>()[0].text = "Abstain";
-        }
-
-        [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
-        public static class MeetingHudStart
-        {
-            public static void GenButton(Mayor role, MeetingHud __instance)
-            {
-                role.Abstain = Object.Instantiate(__instance.SkipVoteButton, __instance.SkipVoteButton.transform.parent);
-                role.Abstain.Parent = __instance;
-                role.Abstain.SetTargetPlayerId(251);
-                role.Abstain.transform.localPosition = __instance.SkipVoteButton.transform.localPosition + new Vector3(0f, -0.17f, 0f);
-                __instance.SkipVoteButton.transform.localPosition += new Vector3(0f, 0.20f, 0f);
-                UpdateButton(role, __instance);
-            }
-
-            public static void Postfix(MeetingHud __instance)
-            {
-                if (!PlayerControl.LocalPlayer.Is(RoleEnum.Mayor))
-                    return;
-
-                var mayorRole = Role.GetRole<Mayor>(PlayerControl.LocalPlayer);
-                GenButton(mayorRole, __instance);
-            }
-        }
-
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.ClearVote))]
         public static class MeetingHudClearVote
         {
@@ -51,7 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
                     return;
 
                 var mayorRole = Role.GetRole<Mayor>(PlayerControl.LocalPlayer);
-                UpdateButton(mayorRole, __instance);
+                Mayor.UpdateButton(mayorRole, __instance);
             }
         }
 
@@ -65,7 +31,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
 
                 var mayorRole = Role.GetRole<Mayor>(PlayerControl.LocalPlayer);
                 mayorRole.Abstain.ClearButtons();
-                UpdateButton(mayorRole, __instance);
+                Mayor.UpdateButton(mayorRole, __instance);
             }
         }
 
@@ -82,7 +48,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
                 if (__0 != 251)
                     mayorRole.Abstain.ClearButtons();
 
-                UpdateButton(mayorRole, __instance);
+                Mayor.UpdateButton(mayorRole, __instance);
             }
         }
 
@@ -95,7 +61,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
                     return;
 
                 var mayorRole = Role.GetRole<Mayor>(PlayerControl.LocalPlayer);
-                UpdateButton(mayorRole, __instance);
+                Mayor.UpdateButton(mayorRole, __instance);
             }
         }
 
@@ -117,7 +83,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.MayorMod
                         mayorRole.Abstain.SetEnabled();
                 }
 
-                UpdateButton(mayorRole, __instance);
+                Mayor.UpdateButton(mayorRole, __instance);
             }
         }
     }

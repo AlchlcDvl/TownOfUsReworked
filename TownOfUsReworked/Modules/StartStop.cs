@@ -4,6 +4,7 @@ using TownOfUsReworked.Classes;
 using HarmonyLib;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.Functions;
+using System.Linq;
 
 namespace TownOfUsReworked.Modules
 {
@@ -51,15 +52,7 @@ namespace TownOfUsReworked.Modules
                     break;
 
                 case 5:
-                    var flag = false;
-
-                    foreach (var i in PlayerControl.LocalPlayer.myTasks)
-                    {
-                        if (i.TaskType == SubmergedCompatibility.RetrieveOxygenMask)
-                            flag = true;
-                    }
-
-                    fs = flag;
+                    fs = PlayerControl.LocalPlayer.myTasks.ToArray().Any(x => x.TaskType == SubmergedCompatibility.RetrieveOxygenMask);
                     break;
 
                 case 6:

@@ -104,7 +104,7 @@ namespace TownOfUsReworked.Functions
                         deadTime = 0;
                         isDead = false;
 
-                        var write = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte) CustomRPC.Action, SendOption.Reliable);
+                        var write = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                         write.Write((byte)ActionsRPC.RewindRevive);
                         write.Write(PlayerControl.LocalPlayer.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(write);

@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using System;
 using Reactor.Utilities.Extensions;
 using HarmonyLib;
 using AmongUs.Data;
@@ -10,10 +9,11 @@ namespace TownOfUsReworked.Classes
     [HarmonyPatch]
     public static class AssetManager
     {
-        private readonly static Dictionary<string, AudioClip> SoundEffects = new();
         public readonly static List<string> Sounds = new();
+        private readonly static Dictionary<string, AudioClip> SoundEffects = new();
+        private readonly static Dictionary<string, Sprite> ButtonSprites = new();
         private readonly static Dictionary<string, string> Translations = new();
-        public readonly static string[] TranslationKeys = Utils.CreateText("Keys", "Languages").Split("\n");
+        private readonly static string[] TranslationKeys = Utils.CreateText("Keys", "Languages").Split("\n");
 
         #pragma warning disable
         public static Sprite Clean;
@@ -100,6 +100,9 @@ namespace TownOfUsReworked.Classes
         public static Sprite Stake;
         public static Sprite Plus;
         public static Sprite Minus;
+        public static Sprite RetSelect;
+        public static Sprite RetDeselect;
+        public static Sprite Use;
 
         public static Sprite Lighter;
         public static Sprite Blocked;
@@ -129,22 +132,42 @@ namespace TownOfUsReworked.Classes
         private static AssetBundle BombBundle;
         #pragma warning restore
 
-        public static AudioClip Get(string path)
+        public static AudioClip GetAudio(string path)
         {
-            Utils.LogSomething($"Looking For Sound: {path}");
-
             if (!SoundEffects.ContainsKey(path))
             {
                 Utils.LogSomething($"{path} does not exist");
                 return null;
             }
+            else
+                return SoundEffects[path];
+        }
 
-            return SoundEffects[path];
+        public static Sprite GetSprite(string path)
+        {
+            if (!ButtonSprites.ContainsKey(path))
+            {
+                Utils.LogSomething($"{path} does not exist");
+                return null;
+            }
+            else
+                return ButtonSprites[path];
+        }
+
+        public static string Translate(string id)
+        {
+            if (!Translations.ContainsKey(id))
+            {
+                Utils.LogSomething($"{id} does not exist");
+                return "DNE";
+            }
+            else
+                return Translations[id];
         }
 
         public static void Play(string path)
         {
-            var clipToPlay = Get(path);
+            var clipToPlay = GetAudio(path);
             Stop(path);
 
             if (clipToPlay != null && Constants.ShouldPlaySfx())
@@ -156,39 +179,13 @@ namespace TownOfUsReworked.Classes
         public static void Stop(string path)
         {
             if (Constants.ShouldPlaySfx())
-                SoundManager.Instance.StopSound(Get(path));
+                SoundManager.Instance.StopSound(GetAudio(path));
         }
 
         public static void StopAll()
         {
             foreach (var path in SoundEffects.Keys)
                 Stop(path);
-        }
-
-        public static AudioClip CreateAudio(string path, string name = "NoName")
-        {
-            try
-            {
-                var stream = TownOfUsReworked.Executing.GetManifestResourceStream(path);
-                var byteAudio = new byte[stream.Length];
-                _ = stream.Read(byteAudio, 0, (int)stream.Length);
-                var samples = new float[byteAudio.Length / 4];
-
-                for (var i = 0; i < samples.Length; i++)
-                {
-                    var offset = i * 4;
-                    samples[i] = (float)BitConverter.ToInt32(byteAudio, offset) / int.MaxValue;
-                }
-
-                var audioClip = AudioClip.Create(name, samples.Length, 2, 24000, false);
-                audioClip.SetData(samples, 0);
-                return audioClip;
-            }
-            catch
-            {
-                Utils.LogSomething($"Error Loading Sound From: {path}");
-                return null;
-            }
         }
 
         public static string GetLanguage()
@@ -215,8 +212,6 @@ namespace TownOfUsReworked.Classes
                 _ => "English",
             };
         }
-
-        public static string Translate(string id) => Translations[id];
 
         public static void Load()
         {
@@ -302,6 +297,8 @@ namespace TownOfUsReworked.Classes
             EscortRoleblock = Utils.CreateSprite($"{TownOfUsReworked.Buttons}EscortRoleblock");
             Inspect = Utils.CreateSprite($"{TownOfUsReworked.Buttons}Inspect");
             Stake = Utils.CreateSprite($"{TownOfUsReworked.Buttons}Stake");
+            RetSelect = Utils.CreateSprite($"{TownOfUsReworked.Buttons}RetSelect");
+            RetDeselect = Utils.CreateSprite($"{TownOfUsReworked.Buttons}RetDeselect");
 
             //Misc Stuff
             BlackmailOverlay = Utils.CreateSprite($"{TownOfUsReworked.Misc}BlackmailOverlay");
@@ -347,14 +344,21 @@ namespace TownOfUsReworked.Classes
                     //Convenience: As as SoundEffects are stored in the same folder, allow using just the name as well
                     var name = resourceName.Replace(".raw", "");
                     name = name.Replace($"{TownOfUsReworked.Sounds}", "");
-                    SoundEffects.Add(name, CreateAudio(resourceName));
+                    SoundEffects.Add(name, Utils.CreateAudio(resourceName));
                     Sounds.Add(name);
                 }
+                /*else if (resourceName.StartsWith($"{TownOfUsReworked.Buttons}") && resourceName.EndsWith(".png"))
+                {
+                    //Convenience: As as Sprites are stored in the same folder, allow using just the name as well
+                    var name = resourceName.Replace(".png", "");
+                    name = name.Replace($"{TownOfUsReworked.Buttons}", "");
+                    ButtonSprites.Add(name, Utils.CreateSprite(resourceName));
+                }*/
             }
 
             var translation = Utils.CreateText(GetLanguage(), "Languages").Split("\n");
 
-            if (TranslationKeys.Length != 0 && translation.Length != 0 && TranslationKeys.Length == translation.Length)
+            if (TranslationKeys.Length > 0 && translation.Length > 0 && TranslationKeys.Length == translation.Length)
             {
                 var position = 0;
                 Translations.Clear();

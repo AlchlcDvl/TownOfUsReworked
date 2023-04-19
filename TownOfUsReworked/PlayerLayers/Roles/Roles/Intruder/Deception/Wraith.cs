@@ -3,14 +3,15 @@ using TownOfUsReworked.Classes;
 using UnityEngine;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Modules;
-using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Data;
+using TownOfUsReworked.Custom;
+using Hazel;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Wraith : IntruderRole
     {
-        public AbilityButton InvisButton;
+        public CustomButton InvisButton;
         public bool Enabled;
         public DateTime LastInvis;
         public float TimeRemaining;
@@ -22,26 +23,27 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             StartText = "Sneaky Sneaky";
             AbilitiesText = $"- You can turn invisible\n{AbilitiesText}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Wraith : Colors.Intruder;
-            LastInvis = DateTime.UtcNow;
             RoleType = RoleEnum.Wraith;
             RoleAlignment = RoleAlignment.IntruderDecep;
             AlignmentName = ID;
+            Type = LayerEnum.Wraith;
+            InvisButton = new(this, AssetManager.Invis, AbilityTypes.Effect, "Secondary", HitInvis);
         }
 
         public float InvisTimer()
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastInvis;
-            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.InvisCd, CustomButtons.GetUnderdogChange(Player)) * 1000f;
-            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.InvisCd) * 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
         public void Invis()
         {
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
-            Utils.Invis(Player, PlayerControl.LocalPlayer == Player);
+            Utils.Invis(Player);
 
             if (Player.Data.IsDead || MeetingHud.Instance)
                 TimeRemaining = 0f;
@@ -52,6 +54,25 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Enabled = false;
             LastInvis = DateTime.UtcNow;
             Utils.DefaultOutfit(Player);
+        }
+
+        public void HitInvis()
+        {
+            if (InvisTimer() != 0f || IsInvis)
+                return;
+
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+            writer.Write((byte)ActionsRPC.Invis);
+            writer.Write(Player.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            TimeRemaining = CustomGameOptions.InvisDuration;
+            Invis();
+        }
+
+        public override void UpdateHud(HudManager __instance)
+        {
+            base.UpdateHud(__instance);
+            InvisButton.Update("INVIS", InvisTimer(), CustomGameOptions.InvisCd, IsInvis, TimeRemaining, CustomGameOptions.InvisDuration);
         }
     }
 }

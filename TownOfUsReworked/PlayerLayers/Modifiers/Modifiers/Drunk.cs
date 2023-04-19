@@ -11,6 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
             TaskText = "- Your controls are inverted.";
             Color = CustomGameOptions.CustomModifierColors ? Colors.Drunk : Colors.Modifier;
             ModifierType = ModifierEnum.Drunk;
+            Type = LayerEnum.Drunk;
         }
     }
 }

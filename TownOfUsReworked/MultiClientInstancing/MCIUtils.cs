@@ -44,7 +44,7 @@ namespace TownOfUsReworked.MultiClientInstancing
 
             sampleC.Character.SetName($"Robot {sampleC.Character.PlayerId}");
             sampleC.Character.SetSkin(HatManager.Instance.allSkins[Random.Range(0, HatManager.Instance.allSkins.Count)].ProdId, 0);
-            sampleC.Character.SetHat(HatManager.Instance.allHats[Random.Range(0, HatManager.Instance.allHats.Count)].ProdId, 0);
+            sampleC.Character.SetHat("hat_NoHat", 0);
             sampleC.Character.SetColor(Random.Range(0, Palette.PlayerColors.Length));
 
             InstanceControl.Clients.Add(sampleId, sampleC);

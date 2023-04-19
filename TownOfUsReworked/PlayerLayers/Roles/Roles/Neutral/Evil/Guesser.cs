@@ -6,6 +6,7 @@ using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Extensions;
+using Hazel;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -25,10 +26,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public bool AlignmentHintGiven;
         public bool SubFactionHintGiven;
         public bool Failed => !TargetGuessed && (RemainingGuesses <= 0f || TargetPlayer?.Data.IsDead == true || TargetPlayer?.Data.Disconnected == true);
+        private static int lettersGiven;
+        private static bool lettersExhausted;
+        private static string roleName = "";
+        private readonly static List<string> letters = new();
 
         public Guesser(PlayerControl player) : base(player)
         {
             Name = "Guesser";
+            StartText = "Guess What Your Target Might Be";
             RoleType = RoleEnum.Guesser;
             RoleAlignment = RoleAlignment.NeutralEvil;
             AlignmentName = NE;
@@ -38,10 +44,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Objectives = "- Guess your target's role";
             AbilitiesText = "- You can guess player's roles without penalties after you have successfully guessed your target's role\n- If your target dies without getting guessed by " +
                 "you, you will become an <color=#00ACC2FF>Actor</color>";
-            ColorMapping = new()
-            {
-                { "Crewmate", Colors.Crew }
-            };
+            ColorMapping = new() { { "Crewmate", Colors.Crew } };
+            Type = LayerEnum.Guesser;
 
             //Adds all the roles that have a non-zero chance of being in the game
             if (CustomGameOptions.CrewMax > 0 && CustomGameOptions.CrewMin > 0)
@@ -295,10 +299,145 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             newRole.RoleUpdate(this);
 
             if (Player == PlayerControl.LocalPlayer)
-                Utils.Flash(Colors.Actor, "Your target died so you have become an <color=#00ACC2FF>Actor</color>!");
+                Utils.Flash(Colors.Actor);
 
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
-                Utils.Flash(Colors.Seer, "Someone has changed their identity!");
+                Utils.Flash(Colors.Seer);
+        }
+
+        public override void UpdateHud(HudManager __instance)
+        {
+            base.UpdateHud(__instance);
+
+            if (Failed && !Player.Data.IsDead)
+            {
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
+                writer.Write((byte)TurnRPC.TurnAct);
+                writer.Write(Player.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                TurnAct();
+            }
+        }
+
+        public override void OnMeetingStart(MeetingHud __instance)
+        {
+            base.OnMeetingStart(__instance);
+            var targetRole = GetRole(TargetPlayer);
+            var something = "";
+            var newRoleName = targetRole.Name;
+            var rolechanged = false;
+
+            if (roleName != newRoleName && roleName != "")
+            {
+                rolechanged = true;
+                roleName = newRoleName;
+            }
+            else if (roleName?.Length == 0)
+                roleName = newRoleName;
+
+            if (rolechanged)
+            {
+                something = "Your target's role changed!";
+                lettersGiven = 0;
+                lettersExhausted = false;
+                letters.Clear();
+                FactionHintGiven = false;
+                AlignmentHintGiven = false;
+                SubFactionHintGiven = false;
+            }
+            else if (!lettersExhausted)
+            {
+                var random = Random.RandomRangeInt(0, roleName.Length);
+                var random2 = Random.RandomRangeInt(0, roleName.Length);
+                var random3 = Random.RandomRangeInt(0, roleName.Length);
+
+                if (lettersGiven <= roleName.Length - 3)
+                {
+                    while (random == random2 || random2 == random3 || random == random3 || letters.Contains($"{roleName[random]}") || letters.Contains($"{roleName[random2]}") ||
+                        letters.Contains($"{roleName[random3]}"))
+                    {
+                        if (random == random2 || letters.Contains($"{roleName[random2]}"))
+                            random2 = Random.RandomRangeInt(0, roleName.Length);
+
+                        if (random2 == random3 || letters.Contains($"{roleName[random3]}"))
+                            random3 = Random.RandomRangeInt(0, roleName.Length);
+
+                        if (random == random3 || letters.Contains($"{roleName[random]}"))
+                            random = Random.RandomRangeInt(0, roleName.Length);
+                    }
+
+                    something = $"Your target's role as the letters {roleName[random]}, {roleName[random2]} and {roleName[random3]} in it!";
+                }
+                else if (lettersGiven == roleName.Length - 2)
+                {
+                    while (random == random2 || letters.Contains($"{roleName[random]}") || letters.Contains($"{roleName[random2]}"))
+                    {
+                        if (letters.Contains($"{roleName[random2]}"))
+                            random2 = Random.RandomRangeInt(0, roleName.Length);
+
+                        if (letters.Contains($"{roleName[random]}"))
+                            random = Random.RandomRangeInt(0, roleName.Length);
+
+                        if (random == random2)
+                            random = Random.RandomRangeInt(0, roleName.Length);
+                    }
+
+                    something = $"Your target's role as the letters {roleName[random]} and {roleName[random2]} in it!";
+                }
+                else if (lettersGiven == roleName.Length - 1)
+                {
+                    while (letters.Contains($"{roleName[random]}"))
+                        random = Random.RandomRangeInt(0, roleName.Length);
+
+                    something = $"Your target's role as the letter {roleName[random]} in it!";
+                }
+                else if (lettersGiven == roleName.Length)
+                    lettersExhausted = true;
+
+                if (!lettersExhausted)
+                {
+                    if (lettersGiven <= roleName.Length - 3)
+                    {
+                        letters.Add($"{roleName[random]}");
+                        letters.Add($"{roleName[random2]}");
+                        letters.Add($"{roleName[random3]}");
+                        lettersGiven += 3;
+                    }
+                    else if (lettersGiven == roleName.Length - 2)
+                    {
+                        letters.Add($"{roleName[random]}");
+                        letters.Add($"{roleName[random2]}");
+                        lettersGiven += 2;
+                    }
+                    else if (lettersGiven == roleName.Length - 1)
+                    {
+                        letters.Add($"{roleName[random]}");
+                        lettersGiven++;
+                    }
+                }
+            }
+            else if (!FactionHintGiven && lettersExhausted)
+            {
+                something = $"Your target belongs to the {targetRole.FactionName}!";
+                FactionHintGiven = true;
+            }
+            else if (!AlignmentHintGiven && lettersExhausted)
+            {
+                something = $"Your target is a {targetRole.AlignmentName} Role!";
+                AlignmentHintGiven = true;
+            }
+            else if (!SubFactionHintGiven && lettersExhausted)
+            {
+                something = $"Your target belongs to the {targetRole.SubFactionName}!";
+                SubFactionHintGiven = true;
+            }
+
+            if (string.IsNullOrEmpty(something))
+                return;
+
+            //Ensures only the Guesser sees this
+            if (HudManager.Instance && something != "")
+                HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, something);
         }
     }
 }

@@ -3,12 +3,17 @@ using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Extensions;
+using TownOfUsReworked.PlayerLayers.Roles;
+using UnityEngine;
 
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch]
     public static class SpeedPatch
     {
+        private static float _time;
+        private static bool reversed;
+
         [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.FixedUpdate))]
         [HarmonyPostfix]
         public static void PostfixPhysics(PlayerPhysics __instance)
@@ -17,6 +22,50 @@ namespace TownOfUsReworked.Patches
             {
                 __instance.body.velocity *= __instance.myPlayer.GetAppearance().SpeedFactor * (__instance.myPlayer.Data.IsDead && !__instance.myPlayer.Is(RoleEnum.Phantom) &&
                     !__instance.myPlayer.Is(RoleEnum.Revealer) && !__instance.myPlayer.Is(RoleEnum.Ghoul) && !__instance.myPlayer.Is(RoleEnum.Banshee) ? CustomGameOptions.GhostSpeed : 1);
+            }
+
+            if (__instance.myPlayer.Is(RoleEnum.Janitor))
+            {
+                var role = Role.GetRole<Janitor>(__instance.myPlayer);
+
+                if (role.CurrentlyDragging != null && __instance.AmOwner && GameData.Instance && __instance.myPlayer.CanMove)
+                    __instance.body.velocity *= CustomGameOptions.DragModifier;
+            }
+            else if (__instance.myPlayer.Is(RoleEnum.PromotedGodfather))
+            {
+                var role = Role.GetRole<PromotedGodfather>(__instance.myPlayer);
+
+                if (role.CurrentlyDragging != null && __instance.AmOwner && GameData.Instance && __instance.myPlayer.CanMove)
+                    __instance.body.velocity *= CustomGameOptions.DragModifier;
+            }
+
+            if (PlayerControl.LocalPlayer.Is(ModifierEnum.Drunk) && !PlayerControl.LocalPlayer.Data.IsDead && PlayerControl.LocalPlayer.CanMove && __instance.AmOwner && !MeetingHud.Instance)
+            {
+                _time += Time.deltaTime;
+
+                if (CustomGameOptions.DrunkControlsSwap)
+                {
+                    if (_time > CustomGameOptions.DrunkInterval)
+                    {
+                        if (__instance.AmOwner && !reversed)
+                            __instance.body.velocity *= -1;
+
+                        _time -= CustomGameOptions.DrunkInterval;
+                        reversed = !reversed;
+                    }
+                }
+                else if (__instance.AmOwner)
+                    __instance.body.velocity *= -1;
+            }
+            else if (__instance.myPlayer.Is(ModifierEnum.Flincher) && !__instance.myPlayer.Data.IsDead && __instance.myPlayer.CanMove && !MeetingHud.Instance)
+            {
+                _time += Time.deltaTime;
+
+                if (_time >= CustomGameOptions.FlinchInterval && __instance.AmOwner)
+                {
+                    __instance.body.velocity *= -1;
+                    _time -= CustomGameOptions.FlinchInterval;
+                }
             }
         }
 

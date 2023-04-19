@@ -12,6 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             Color = CustomGameOptions.CustomAbilityColors ? Colors.Tiebreaker : Colors.Ability;
             AbilityType = AbilityEnum.Tiebreaker;
             Hidden = !CustomGameOptions.TiebreakerKnows;
+            Type = LayerEnum.Tiebreaker;
         }
     }
 }

@@ -8,7 +8,6 @@ using TownOfUsReworked.PlayerLayers;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.PlayerLayers.Roles;
-using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.OperativeMod;
 
 namespace TownOfUsReworked.Patches
 {
@@ -63,6 +62,7 @@ namespace TownOfUsReworked.Patches
                     //Show first row numbers below player icons
                     //Show second row numbers above player icons
                     //Show all icons on player icons when there are three rows
+
                     if (useCompactText)
                         text.transform.localPosition = new Vector3(0, 0, -20);
                     else if (i / area.MaxWidth == 0)
@@ -97,9 +97,8 @@ namespace TownOfUsReworked.Patches
                     var player = collider.GetComponent<PlayerControl>();
                     var data = player?.Data;
 
-                    if (collider.tag == "DeadBody" && ((isOP && CustomGameOptions.WhoSeesDead == AdminDeadPlayers.Operative) || (!isOP && CustomGameOptions.WhoSeesDead ==
-                        AdminDeadPlayers.EveryoneButOperative) || CustomGameOptions.WhoSeesDead == AdminDeadPlayers.Everyone || (PlayerControl.LocalPlayer.Data.IsDead &&
-                        CustomGameOptions.DeadSeeEverything)))
+                    if (collider.tag == "DeadBody" && ((isOP && (int)CustomGameOptions.WhoSeesDead is 1) || (!isOP && (int)CustomGameOptions.WhoSeesDead is 2) || (int)CustomGameOptions.
+                        WhoSeesDead is 0 || (PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything)))
                     {
                         var playerId = collider.GetComponent<DeadBody>().ParentId;
                         colorMap.Add(GameData.Instance.GetPlayerById(playerId).DefaultOutfit.ColorId);

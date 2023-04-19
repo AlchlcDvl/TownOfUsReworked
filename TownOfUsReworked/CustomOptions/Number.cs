@@ -26,7 +26,7 @@ namespace TownOfUsReworked.CustomOptions
         {
             var increment = Input.GetKeyInt(KeyCode.LeftShift) ? Increment / 2 : Increment;
 
-            if (Get() >= Max)
+            if (Get() + increment > Max)
                 Set(Min);
             else
                 Set(Get() + increment);
@@ -34,12 +34,12 @@ namespace TownOfUsReworked.CustomOptions
 
         protected internal void Decrease()
         {
-            var increment = Input.GetKeyInt(KeyCode.LeftShift) ? Increment / 2 : Increment;
+            var decrement = Input.GetKeyInt(KeyCode.LeftShift) ? Increment / 2 : Increment;
 
-            if (Get() <= Min)
+            if (Get() - decrement <= Min)
                 Set(Max);
             else
-                Set(Get() - increment);
+                Set(Get() - decrement);
         }
 
         public override void OptionCreated()

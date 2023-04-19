@@ -29,9 +29,10 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             RemainingKills = CustomGameOptions.AssassinKills;
             ColorMapping = new();
             Buttons = new();
+            Type = LayerEnum.Assassin;
 
             //Adds all the roles that have a non-zero chance of being in the game
-            if (!PlayerControl.LocalPlayer.Is(Faction.Crew) || PlayerControl.LocalPlayer.NotOnTheSameSide())
+            if (!PlayerControl.LocalPlayer.Is(Faction.Crew))
             {
                 ColorMapping.Add("Crewmate", Colors.Crew);
 
@@ -108,7 +109,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
                 }
             }
 
-            if (!(PlayerControl.LocalPlayer.Is(Faction.Intruder) && PlayerControl.LocalPlayer.Is(SubFaction.None)) && !CustomGameOptions.AltImps && CustomGameOptions.IntruderCount > 0)
+            if (!(PlayerControl.LocalPlayer.Is(Faction.Intruder) || CustomGameOptions.AltImps))
             {
                 ColorMapping.Add("Impostor", Colors.Intruder);
 
@@ -158,7 +159,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
                 }
             }
 
-            if (!(PlayerControl.LocalPlayer.Is(Faction.Syndicate) && PlayerControl.LocalPlayer.Is(SubFaction.None)) && CustomGameOptions.SyndicateCount > 0)
+            if (!PlayerControl.LocalPlayer.Is(Faction.Syndicate) && CustomGameOptions.SyndicateCount > 0)
             {
                 ColorMapping.Add("Anarchist", Colors.Syndicate);
 

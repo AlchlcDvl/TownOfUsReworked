@@ -4,13 +4,17 @@ using TownOfUsReworked.CustomOptions;
 using UnityEngine;
 using TownOfUsReworked.Modules;
 using TownOfUsReworked.Data;
+using TownOfUsReworked.Custom;
+using Hazel;
+using System.Linq;
+using TownOfUsReworked.PlayerLayers.Modifiers;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Morphling : IntruderRole
+    public class Morphling : IntruderRole, IVisualAlteration
     {
-        public AbilityButton MorphButton;
-        public AbilityButton SampleButton;
+        public CustomButton MorphButton;
+        public CustomButton SampleButton;
         public DateTime LastMorphed;
         public DateTime LastSampled;
         public PlayerControl MorphedPlayer;
@@ -24,14 +28,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Morphling";
             StartText = "Fool The <color=#8BFDFDFF>Crew</color> With Your Appearances";
-            AbilitiesText = $"- You can morph into other players to fool the <color=#8BFDFDFF>Crew</color>\n{AbilitiesText}";
+            AbilitiesText = $"- You can morph into other players, taking up their appearances as your own\n{AbilitiesText}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Morphling : Colors.Intruder;
-            LastMorphed = DateTime.UtcNow;
             RoleType = RoleEnum.Morphling;
             RoleAlignment = RoleAlignment.IntruderDecep;
             AlignmentName = ID;
             SampledPlayer = null;
             MorphedPlayer = null;
+            Type = LayerEnum.Morphling;
+            MorphButton = new(this, AssetManager.Morph, AbilityTypes.Effect, "Secondary", HitMorph);
+            SampleButton = new(this, AssetManager.Sample, AbilityTypes.Direct, "Tertiary", Sample);
         }
 
         public void Morph()
@@ -48,7 +54,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             MorphedPlayer = null;
             Enabled = false;
-            Player.RpcRevertShapeshift(true);
             Utils.DefaultOutfit(Player);
             LastMorphed = DateTime.UtcNow;
 
@@ -60,7 +65,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastMorphed;
-            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.MorphlingCd, CustomButtons.GetUnderdogChange(Player)) * 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.MorphlingCd) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
@@ -69,9 +74,72 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastSampled;
-            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.SampleCooldown, CustomButtons.GetUnderdogChange(Player)) * 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.SampleCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+        }
+
+        public bool TryGetModifiedAppearance(out VisualAppearance appearance)
+        {
+            if (MorphedPlayer != null)
+            {
+                appearance = MorphedPlayer.GetDefaultAppearance();
+                var alteration = Modifier.GetModifier(MorphedPlayer) as IVisualAlteration;
+                alteration?.TryGetModifiedAppearance(out appearance);
+                return true;
+            }
+
+            appearance = Player.GetDefaultAppearance();
+            return false;
+        }
+
+        public void HitMorph()
+        {
+            if (MorphTimer() != 0f || SampledPlayer == null || Morphed)
+                return;
+
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+            writer.Write((byte)ActionsRPC.Morph);
+            writer.Write(Player.PlayerId);
+            writer.Write(SampledPlayer.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            TimeRemaining = CustomGameOptions.MorphlingDuration;
+            MorphedPlayer = SampledPlayer;
+            Morph();
+        }
+
+        public void Sample()
+        {
+            if (SampleTimer() != 0f || Utils.IsTooFar(Player, ClosestTarget) || SampledPlayer == ClosestTarget)
+                return;
+
+            var interact = Utils.Interact(Player, ClosestPlayer);
+
+            if (interact[3])
+                SampledPlayer = ClosestTarget;
+
+            if (interact[0])
+            {
+                LastSampled = DateTime.UtcNow;
+
+                if (CustomGameOptions.MorphCooldownsLinked)
+                    LastMorphed = DateTime.UtcNow;
+            }
+            else if (interact[1])
+            {
+                LastSampled.AddSeconds(CustomGameOptions.ProtectKCReset);
+
+                if (CustomGameOptions.MorphCooldownsLinked)
+                    LastMorphed.AddSeconds(CustomGameOptions.ProtectKCReset);
+            }
+        }
+
+        public override void UpdateHud(HudManager __instance)
+        {
+            base.UpdateHud(__instance);
+            var notSampled = PlayerControl.AllPlayerControls.ToArray().Where(x => SampledPlayer != x).ToList();
+            MorphButton.Update("MORPH", MorphTimer(), CustomGameOptions.MorphlingCd, Morphed, TimeRemaining, CustomGameOptions.MorphlingDuration, true, SampledPlayer != null);
+            SampleButton.Update("SAMPLE", SampleTimer(), CustomGameOptions.MeasureCooldown, notSampled);
         }
     }
 }

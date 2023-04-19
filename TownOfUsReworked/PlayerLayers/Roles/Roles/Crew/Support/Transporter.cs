@@ -4,10 +4,13 @@ using System.Collections.Generic;
 using System.Collections;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Modules;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Custom;
+using Hazel;
+using Reactor.Utilities;
+using System.Linq;
+using HarmonyLib;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -19,7 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public int UsesLeft;
         public bool ButtonUsable => UsesLeft > 0;
         public Dictionary<byte, DateTime> UntransportablePlayers = new();
-        public AbilityButton TransportButton;
+        public CustomButton TransportButton;
         public CustomMenu TransportMenu1;
         public CustomMenu TransportMenu2;
 
@@ -38,17 +41,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AlignmentName = CS;
             InspectorResults = InspectorResults.LikesToExplore;
             UntransportablePlayers = new();
-            TransportMenu1 = new CustomMenu(Player, new CustomMenu.Select(Click1));
-            TransportMenu2 = new CustomMenu(Player, new CustomMenu.Select(Click2));
+            TransportMenu1 = new(Player, Click1);
+            TransportMenu2 = new(Player, Click2);
+            Type = LayerEnum.Transporter;
+            TransportButton = new(this, AssetManager.Transport, AbilityTypes.Effect, "ActionSecondary", Transport, true);
         }
 
         public float TransportTimer()
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastTransported;
-            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.TransportCooldown) * 1000f;
-            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.TransportCooldown) * 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
         public IEnumerator TransportPlayers()
@@ -82,7 +87,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     yield return null;
 
                 TransportPlayer1.MyPhysics.ExitAllVents();
-                Vent1 = CustomButtons.GetClosestVent(TransportPlayer1);
+                Vent1 = TransportPlayer1.GetClosestVent();
                 WasInVent1 = true;
             }
 
@@ -92,7 +97,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     yield return null;
 
                 TransportPlayer2.MyPhysics.ExitAllVents();
-                Vent2 = CustomButtons.GetClosestVent(TransportPlayer2);
+                Vent2 = TransportPlayer2.GetClosestVent();
                 WasInVent2 = true;
             }
 
@@ -122,10 +127,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     }
                 }
 
-                if (TransportPlayer1.CanVent(TransportPlayer1.Data) && Vent2 != null && WasInVent2)
+                if (TransportPlayer1.CanVent() && Vent2 != null && WasInVent2)
                     TransportPlayer1.MyPhysics.RpcEnterVent(Vent2.Id);
 
-                if (TransportPlayer2.CanVent(TransportPlayer1.Data) && Vent1 != null && WasInVent1)
+                if (TransportPlayer2.CanVent() && Vent1 != null && WasInVent1)
                     TransportPlayer2.MyPhysics.RpcEnterVent(Vent1.Id);
             }
             else if (Player1Body != null && Player2Body == null)
@@ -186,16 +191,81 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Click1(PlayerControl player)
         {
-            Utils.Interact(Player, player);
-            TransportPlayer1 = player;
-            Utils.LogSomething($"1 - {TransportPlayer1.name}");
+            var interact = Utils.Interact(Player, player);
+
+            if (interact[3])
+                TransportPlayer1 = player;
+            else if (interact[0])
+                LastTransported = DateTime.UtcNow;
+            else if (interact[1])
+                LastTransported.AddSeconds(CustomGameOptions.ProtectKCReset);
         }
 
         public void Click2(PlayerControl player)
         {
-            Utils.Interact(Player, player);
-            TransportPlayer2 = player;
-            Utils.LogSomething($"2 - {TransportPlayer2.name}");
+            var interact = Utils.Interact(Player, player);
+
+            if (interact[3])
+                TransportPlayer2 = player;
+            else if (interact[0])
+                LastTransported = DateTime.UtcNow;
+            else if (interact[1])
+                LastTransported.AddSeconds(CustomGameOptions.ProtectKCReset);
+        }
+
+        public void Transport()
+        {
+            if (TransportTimer() != 0f)
+                return;
+
+            var list = PlayerControl.AllPlayerControls.ToArray().Where(x => !((x == Player && !CustomGameOptions.TransSelf) || UntransportablePlayers.ContainsKey(x.PlayerId) ||
+                (Utils.BodyById(x.PlayerId) == null && x.Data.IsDead) || x == TransportPlayer1 || x == TransportPlayer2)).ToList();
+
+            if (TransportPlayer1 == null)
+                TransportMenu1.Open(list);
+            else if (TransportPlayer2 == null)
+                TransportMenu2.Open(list);
+            else
+            {
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+                writer.Write((byte)ActionsRPC.Transport);
+                writer.Write(Player.PlayerId);
+                writer.Write(TransportPlayer1.PlayerId);
+                writer.Write(TransportPlayer2.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                Coroutines.Start(TransportPlayers());
+                LastTransported = DateTime.UtcNow;
+                UsesLeft--;
+            }
+        }
+
+        public override void UpdateHud(HudManager __instance)
+        {
+            base.UpdateHud(__instance);
+            var flag1 = TransportPlayer1 == null;
+            var flag2 = TransportPlayer2 == null;
+            TransportButton.Update(flag1 ? "FIRST TARGET" : (flag2 ? "SECOND TARGET" : "TRANSPORT"), TransportTimer(), CustomGameOptions.TransportCooldown, UsesLeft, ButtonUsable);
+
+            if (Input.GetKeyDown(KeyCode.Backspace))
+            {
+                if (TransportPlayer2 != null)
+                    TransportPlayer2 = null;
+                else if (TransportPlayer1 != null)
+                    TransportPlayer1 = null;
+
+                Utils.LogSomething("Removed a target");
+            }
+
+            foreach (var entry in UntransportablePlayers)
+            {
+                var player = Utils.PlayerById(entry.Key);
+
+                if (player?.Data.IsDead == true || player.Data.Disconnected)
+                    continue;
+
+                if (UntransportablePlayers.ContainsKey(player.PlayerId) && player.moveable && UntransportablePlayers.GetValueSafe(player.PlayerId).AddSeconds(0.5) < DateTime.UtcNow)
+                    UntransportablePlayers.Remove(player.PlayerId);
+            }
         }
     }
 }

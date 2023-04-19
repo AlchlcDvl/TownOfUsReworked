@@ -16,11 +16,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Phantom(PlayerControl player) : base(player)
         {
             Name = "Phantom";
+            StartText = "Peek-A-Boo!";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Phantom : Colors.Neutral;
             Objectives = "- Finish your tasks without getting clicked";
             RoleType = RoleEnum.Phantom;
             RoleAlignment = RoleAlignment.NeutralPros;
             AlignmentName = NP;
+            Type = LayerEnum.Phantom;
         }
 
         public void Fade()
@@ -52,27 +54,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
 
             Player.MyRend().color = color;
-            Player.NameText().color = new Color(0f, 0f, 0f, 0f);
-            Player.cosmetics.colorBlindText.color = new Color(0f, 0f, 0f, 0f);
-        }
-
-        public override bool GameEnd(LogicGameFlowNormal __instance)
-        {
-            if (!Player.Data.IsDead || Player.Data.Disconnected)
-                return true;
-
-            if (CompletedTasks)
-            {
-                PhantomWins = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.PhantomWin);
-                writer.Write(Player.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-
-            return true;
+            Player.NameText().color = new(0f, 0f, 0f, 0f);
+            Player.cosmetics.colorBlindText.color = new(0f, 0f, 0f, 0f);
         }
     }
 }

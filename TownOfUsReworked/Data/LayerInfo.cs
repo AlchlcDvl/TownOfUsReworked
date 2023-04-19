@@ -565,9 +565,6 @@ namespace TownOfUsReworked.Data
             new RoleInfo("Framer", "Framer", "The Framer can frame players, making them appear to have wrong results and be easily killed by Vigilantes and Assassins. This effects " +
                 "lasts as long as the Framer is alive. With the Chaos Drive, the Framer can frame players within a certain radius.", RoleAlignment.SyndicateDisruption, Faction.Syndicate,
                 "Who knew old documents can get people into trouble?"),
-            new RoleInfo("Gorgon", "Gorg", "The Gorgon can stone gaze people to freeze them in place. Upon getting gazed, the player's speed will gradually decrease till they completely" +
-                " stop. When they are frozen, if a meeting is called, all frozen players will be killed. Those who are in the process of slowing down will be saved. With the Chaos Drive," +
-                " the Gorgon's stone freeze is instant.", RoleAlignment.SyndicateKill, Faction.Syndicate, "LOOK AT ME."),
             new RoleInfo("Poisoner", "Pois", "The Poisoner can poison another player instead of killing. When they poison a player, the poisoned player dies either upon the start of the" +
                 " next meeting or after a set duration. With the Chaos Drive, the poison can spread to other players should they interact with the poisoned player.",
                 RoleAlignment.SyndicateDisruption, Faction.Syndicate, "So now if you mix these together, you end up creating this...thing."),
@@ -704,8 +701,8 @@ namespace TownOfUsReworked.Data
                 ".\" was the thought that plagued his mind. Day in and day out, he pursued strength, in his ultimate goal to destroy Mira, the very company that killed his wife in cold " +
                 "blood. But, he just couldn't shake off the paranoia from the war. No amount of self healing or meditating could take away those horrid memories from wartime. His wife " +
                 "was his only way to support himself, his lifeline. Everytime he thought of her, he would be engulfed in deadly rage, unable to calm down until his fists bled from " +
-                "punching the walls. One day, he saw a job listing to explore a newly discovered planet, Polus. The advertiser? Mira. \"Perfect.\" thought the Veteran as he lifted himself " +
-                "up from his couch, and readied his uniform to go to the application site. He got to the site, to only see that Mira wasn't even performing background checks on the " +
+                "punching the walls. One day, he saw a job listing to explore a newly discovered planet, Polus. The advertiser? Mira. \"Perfect.\" thought the Veteran as he lifted himself" +
+                " up from his couch, and readied his uniform to go to the application site. He got to the site, to only see that Mira wasn't even performing background checks on the " +
                 "applicants. \"That lax behaviour will get you killed, Mira.\" After a few days, he received an acceptance letter. He was accepted! He boarded the ship to see familiar " +
                 "faces, as well suspicious ones. The Mayor, the one who led the team that killed his wife and the Godfather, who he suspected was the cause. Aboard the ship he met new " +
                 "faces, the weak Crewmate, the just Sheriff and the lovely Medic. She reminded him of his wife. But he could not spare his feelings for her. She was affiliated with Mira, " +

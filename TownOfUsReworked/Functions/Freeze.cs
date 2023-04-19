@@ -36,7 +36,7 @@ namespace TownOfUsReworked.Functions
                 }
             }
 
-            Utils.Flash(Colors.TimeMaster, "Time is frozen!");
+            Utils.Flash(Colors.TimeMaster);
         }
 
         public static void UnfreezeAll()
@@ -48,7 +48,7 @@ namespace TownOfUsReworked.Functions
             }
 
             Frozen.Clear();
-            Utils.Flash(Colors.TimeMaster, "Time is no longer frozen!");
+            Utils.Flash(Colors.TimeMaster);
         }
     }
 }

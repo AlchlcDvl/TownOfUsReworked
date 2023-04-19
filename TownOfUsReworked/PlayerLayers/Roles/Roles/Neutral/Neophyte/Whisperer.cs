@@ -4,12 +4,15 @@ using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Data;
 using Hazel;
+using TownOfUsReworked.Modules;
+using TownOfUsReworked.Custom;
+using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Whisperer : NeutralRole
     {
-        public AbilityButton WhisperButton;
+        public CustomButton WhisperButton;
         public DateTime LastWhispered;
         public int WhisperCount;
         public int ConversionCount;
@@ -32,15 +35,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             PlayerConversion = new();
             WhisperConversion = CustomGameOptions.InitialWhisperRate;
             Persuaded = new() { Player.PlayerId };
+            Type = LayerEnum.Whisperer;
+            WhisperButton = new(this, AssetManager.Whisper, AbilityTypes.Effect, "ActionSecondary", Whisper);
         }
 
         public float WhisperTimer()
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastWhispered;
-            var num = (CustomGameOptions.WhisperCooldown + (CustomGameOptions.WhisperCooldownIncrease * WhisperCount)) * 1000f;
-            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.WhisperCooldown, CustomGameOptions.WhisperCooldownIncrease * WhisperCount) * 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
         public List<(byte, int)> GetPlayers()
@@ -58,6 +63,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Whisper()
         {
+            if (WhisperTimer() != 0f)
+                return;
+
             var truePosition = Player.GetTruePosition();
             var closestPlayers = Utils.GetClosestPlayers(truePosition, CustomGameOptions.WhisperRadius);
             closestPlayers.Remove(Player);
@@ -80,7 +88,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     PlayerConversion.Add((player, stats));
             }
 
-            WhisperCount++;
             var removals = new List<(byte, int)>();
 
             foreach (var playerConversion in PlayerConversion)
@@ -108,6 +115,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             foreach (var removal in removals)
                 PlayerConversion.Remove(removal);
+
+            LastWhispered = DateTime.UtcNow;
+            WhisperCount++;
+        }
+
+        public override void UpdateHud(HudManager __instance)
+        {
+            base.UpdateHud(__instance);
+            WhisperButton.Update("WHISPER", WhisperTimer(), CustomGameOptions.WhisperCooldown + (WhisperCount * CustomGameOptions.WhisperCooldownIncrease));
         }
     }
 }

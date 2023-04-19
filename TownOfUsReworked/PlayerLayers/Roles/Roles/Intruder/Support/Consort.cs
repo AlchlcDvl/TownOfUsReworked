@@ -4,8 +4,9 @@ using System;
 using TownOfUsReworked.Classes;
 using UnityEngine;
 using TownOfUsReworked.Modules;
-using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Custom;
+using System.Linq;
+using Hazel;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -13,7 +14,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     {
         public DateTime LastBlock;
         public float TimeRemaining;
-        public AbilityButton BlockButton;
+        public CustomButton BlockButton;
         public PlayerControl BlockTarget;
         public bool Enabled;
         public bool Blocking => TimeRemaining > 0f;
@@ -30,7 +31,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleAlignment = RoleAlignment.IntruderSupport;
             AlignmentName = IS;
             RoleBlockImmune = true;
-            BlockMenu = new CustomMenu(Player, new CustomMenu.Select(Click));
+            BlockMenu = new(Player, Click);
+            Type = LayerEnum.Consort;
+            BlockTarget = null;
+            BlockButton = new(this, AssetManager.Placeholder, AbilityTypes.Effect, "Secondary", Roleblock);
         }
 
         public void UnBlock()
@@ -50,7 +54,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
 
-            if (Player.Data.IsDead || BlockTarget.Data.IsDead || BlockTarget.Data.Disconnected || MeetingHud.Instance || !BlockTarget.IsBlocked())
+            if (Player.Data.IsDead || BlockTarget.Data.IsDead || BlockTarget.Data.Disconnected || MeetingHud.Instance)
                 TimeRemaining = 0f;
         }
 
@@ -58,9 +62,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastBlock;
-            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.ConsRoleblockCooldown, CustomButtons.GetUnderdogChange(Player)) * 1000f;
-            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.ConsRoleblockCooldown) * 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
         public void Click(PlayerControl player)
@@ -73,6 +77,36 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 LastBlock = DateTime.UtcNow;
             else if (interact[1])
                 LastBlock.AddSeconds(CustomGameOptions.ProtectKCReset);
+        }
+
+        public void Roleblock()
+        {
+            if (RoleblockTimer() != 0f)
+                return;
+
+            if (BlockTarget == null)
+                BlockMenu.Open(PlayerControl.AllPlayerControls.ToArray().Where(x => x != Player).ToList());
+            else
+            {
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+                writer.Write((byte)ActionsRPC.ConsRoleblock);
+                writer.Write(Player.PlayerId);
+                writer.Write(BlockTarget.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                TimeRemaining = CustomGameOptions.ConsRoleblockDuration;
+                Block();
+
+                foreach (var layer in GetLayers(BlockTarget))
+                    layer.IsBlocked = !layer.RoleBlockImmune;
+            }
+        }
+
+        public override void UpdateHud(HudManager __instance)
+        {
+            base.UpdateHud(__instance);
+            var flag = BlockTarget == null;
+            BlockButton.Update(flag ? "SET TARGET" : "ROLEBLOCK", RoleblockTimer(), CustomGameOptions.ConsRoleblockCooldown, Blocking, TimeRemaining,
+                CustomGameOptions.ConsRoleblockDuration);
         }
     }
 }

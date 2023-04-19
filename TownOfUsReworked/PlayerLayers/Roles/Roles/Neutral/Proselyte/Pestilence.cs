@@ -2,6 +2,8 @@ using System;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Modules;
 using TownOfUsReworked.Data;
+using TownOfUsReworked.Custom;
+using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -9,7 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     {
         public PlayerControl ClosestPlayer;
         public DateTime LastKilled;
-        public AbilityButton ObliterateButton;
+        public CustomButton ObliterateButton;
 
         public Pestilence(PlayerControl owner) : base(owner)
         {
@@ -21,15 +23,38 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleType = RoleEnum.Pestilence;
             RoleAlignment = RoleAlignment.NeutralPros;
             AlignmentName = NP;
+            Type = LayerEnum.Pestilence;
+            ObliterateButton = new(this, AssetManager.Obliterate, AbilityTypes.Direct, "ActionSecondary", Obliterate);
         }
 
-        public float KillTimer()
+        public float ObliterateTimer()
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastKilled;
-            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.PestKillCd) * 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.PestKillCd) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+        }
+
+        public void Obliterate()
+        {
+            if (Utils.IsTooFar(Player, ClosestPlayer) || ObliterateTimer() != 0f)
+                return;
+
+            var interact = Utils.Interact(Player, ClosestPlayer, true);
+
+            if (interact[3] || interact[0])
+                LastKilled = DateTime.UtcNow;
+            else if (interact[1])
+                LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
+            else if (interact[2])
+                LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
+        }
+
+        public override void UpdateHud(HudManager __instance)
+        {
+            base.UpdateHud(__instance);
+            ObliterateButton.Update("OBLITERATE", ObliterateTimer(), CustomGameOptions.PestKillCd);
         }
     }
 }

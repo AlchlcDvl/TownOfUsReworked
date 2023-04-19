@@ -1,6 +1,11 @@
 using TownOfUsReworked.CustomOptions;
 using System;
 using TownOfUsReworked.Data;
+using TownOfUsReworked.Classes;
+using Hazel;
+using TownOfUsReworked.Custom;
+using TownOfUsReworked.Extensions;
+using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -8,9 +13,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     {
         public PlayerControl ClosestSyndicate;
         public bool HasDeclared;
-        public AbilityButton DeclareButton;
+        public CustomButton SidekickButton;
         public DateTime LastDeclared;
-        public Sidekick Sidekick;
 
         public Rebel(PlayerControl player) : base(player)
         {
@@ -23,6 +27,60 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = CustomGameOptions.CustomSynColors ? Colors.Rebel : Colors.Syndicate;
             RoleAlignment = RoleAlignment.SyndicateSupport;
             AlignmentName = SSu;
+            Type = LayerEnum.Rebel;
+            SidekickButton = new(this, AssetManager.Sidekick, AbilityTypes.Direct, "Secondary", Sidekick);
+        }
+
+        public static void Sidekick(Rebel reb, PlayerControl target)
+        {
+            reb.HasDeclared = true;
+            target.DisableButtons();
+            var formerRole = GetRole(target);
+
+            var sidekick = new Sidekick(target)
+            {
+                FormerRole = formerRole,
+                Rebel = reb
+            };
+
+            sidekick.RoleUpdate(formerRole);
+            target.EnableButtons();
+
+            if (target == PlayerControl.LocalPlayer)
+                Utils.Flash(Colors.Rebel);
+
+            if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
+                Utils.Flash(Colors.Seer);
+        }
+
+        public void Sidekick()
+        {
+            if (Utils.IsTooFar(Player, ClosestSyndicate) || HasDeclared)
+                return;
+
+            var interact = Utils.Interact(Player, ClosestSyndicate);
+
+            if (interact[3])
+            {
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+                writer.Write((byte)ActionsRPC.Sidekick);
+                writer.Write(Player.PlayerId);
+                writer.Write(ClosestSyndicate.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                Sidekick(this, ClosestSyndicate);
+            }
+            else if (interact[0])
+                LastDeclared = DateTime.UtcNow;
+            else if (interact[1])
+                LastDeclared.AddSeconds(CustomGameOptions.ProtectKCReset);
+        }
+
+        public override void UpdateHud(HudManager __instance)
+        {
+            base.UpdateHud(__instance);
+            var Syn = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Intruder) && !x.Is(RoleEnum.Banshee) && !x.Is(RoleEnum.Sidekick) && !x.Is(RoleEnum.Rebel) &&
+                !x.Is(RoleEnum.PromotedRebel)).ToList();
+            SidekickButton.Update("SIDEKICK", 0, 1, Syn, true, !HasDeclared);
         }
     }
 }

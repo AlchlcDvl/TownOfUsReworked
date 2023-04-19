@@ -12,37 +12,36 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
     public static class AddButton
     {
-        public static void GenButton(Retributionist role, PlayerVoteArea index, bool noButton)
+        public static void GenButton(Retributionist role, int index)
         {
-            if (noButton)
+            if (!MeetingHud.Instance.playerStates[index].AmDead)
             {
                 role.OtherButtons.Add(null);
                 role.ListOfActives.Add(false);
                 return;
             }
 
-            var confirmButton = index.Buttons.transform.GetChild(0).gameObject;
-            var newButton = Object.Instantiate(confirmButton, index.transform);
+            var confirmButton = MeetingHud.Instance.playerStates[index].Buttons.transform.GetChild(0).gameObject;
+            var newButton = Object.Instantiate(confirmButton, MeetingHud.Instance.playerStates[index].transform);
             var renderer = newButton.GetComponent<SpriteRenderer>();
             var passive = newButton.GetComponent<PassiveButton>();
 
-            renderer.sprite = AssetManager.SwapperSwitchDisabled;
+            renderer.sprite = AssetManager.RetDeselect;
             newButton.transform.position = new Vector3(-0.95f, -0.02f, -1.3f);
             newButton.transform.localScale *= 0.8f;
             newButton.layer = 5;
             newButton.transform.parent = confirmButton.transform.parent.parent;
-
             passive.OnClick = new Button.ButtonClickedEvent();
             passive.OnClick.AddListener(SetActive(role, index));
             role.OtherButtons.Add(newButton);
             role.ListOfActives.Add(false);
         }
 
-        private static Action SetActive(Retributionist role, PlayerVoteArea voteArea)
+        private static Action SetActive(Retributionist role, int index)
         {
             void Listener()
             {
-                if (role.ListOfActives.Count(x => x) == 1 && role.OtherButtons[voteArea.TargetPlayerId].GetComponent<SpriteRenderer>().sprite == AssetManager.SwapperSwitchDisabled)
+                if (role.ListOfActives.Count(x => x) == 1 && role.OtherButtons[index].GetComponent<SpriteRenderer>().sprite == AssetManager.RetDeselect)
                 {
                     var active = 0;
 
@@ -52,13 +51,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
                             active = i;
                     }
 
-                    role.OtherButtons[active].GetComponent<SpriteRenderer>().sprite = role.ListOfActives[active] ? AssetManager.SwapperSwitchDisabled : AssetManager.SwapperSwitch;
+                    role.OtherButtons[active].GetComponent<SpriteRenderer>().sprite = role.ListOfActives[active] ? AssetManager.RetDeselect : AssetManager.RetSelect;
                     role.ListOfActives[active] = !role.ListOfActives[active];
                 }
 
-                role.OtherButtons[voteArea.TargetPlayerId].GetComponent<SpriteRenderer>().sprite = role.ListOfActives[voteArea.TargetPlayerId] ? AssetManager.SwapperSwitchDisabled :
-                    AssetManager.SwapperSwitch;
-                role.ListOfActives[voteArea.TargetPlayerId] = !role.ListOfActives[voteArea.TargetPlayerId];
+                role.OtherButtons[index].GetComponent<SpriteRenderer>().sprite = role.ListOfActives[index] ? AssetManager.RetDeselect : AssetManager.RetSelect;
+                role.ListOfActives[index] = !role.ListOfActives[index];
                 VotingComplete.Imitate = null;
 
                 for (var i = 0; i < role.ListOfActives.Count; i++)
@@ -86,8 +84,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 
             var retRole = Role.GetRole<Retributionist>(PlayerControl.LocalPlayer);
 
-            foreach (var voteArea in __instance.playerStates)
-                GenButton(retRole, voteArea, !voteArea.AmDead);
+            for (var i = 0; i < __instance.playerStates.Length; i++)
+                GenButton(retRole, i);
         }
     }
 }

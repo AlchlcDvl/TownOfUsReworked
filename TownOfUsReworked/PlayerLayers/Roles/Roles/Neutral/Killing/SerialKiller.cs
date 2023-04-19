@@ -3,13 +3,15 @@ using UnityEngine;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Modules;
 using TownOfUsReworked.Data;
+using TownOfUsReworked.Classes;
+using TownOfUsReworked.Custom;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class SerialKiller : NeutralRole
     {
-        public AbilityButton BloodlustButton;
-        public AbilityButton StabButton;
+        public CustomButton BloodlustButton;
+        public CustomButton StabButton;
         public bool Enabled;
         public PlayerControl ClosestPlayer;
         public DateTime LastLusted;
@@ -30,15 +32,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleAlignment = RoleAlignment.NeutralKill;
             AlignmentName = NK;
             RoleBlockImmune = true;
+            Type = LayerEnum.SerialKiller;
+            StabButton = new(this, AssetManager.Stab, AbilityTypes.Direct, "ActionSecondary", Stab);
+            BloodlustButton = new(this, AssetManager.Placeholder, AbilityTypes.Effect, "Secondary", Lust);
         }
 
         public float LustTimer()
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastLusted;
-            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.BloodlustCd) * 1000f;
-            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.BloodlustCd) * 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
         public void Bloodlust()
@@ -56,13 +61,44 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             LastLusted = DateTime.UtcNow;
         }
 
-        public float KillTimer()
+        public float StabTimer()
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastKilled;
-            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.LustKillCd) * 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.LustKillCd) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+        }
+
+        public void Lust()
+        {
+            if (LustTimer() != 0f || Lusted)
+                return;
+
+            TimeRemaining = CustomGameOptions.BloodlustDuration;
+            Bloodlust();
+        }
+
+        public void Stab()
+        {
+            if (!Lusted || StabTimer() != 0f || Utils.IsTooFar(Player, ClosestPlayer))
+                return;
+
+            var interact = Utils.Interact(Player, ClosestPlayer, true);
+
+            if (interact[3] || interact[0])
+                LastKilled = DateTime.UtcNow;
+            else if (interact[1])
+                LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
+            else if (interact[2])
+                LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
+        }
+
+        public override void UpdateHud(HudManager __instance)
+        {
+            base.UpdateHud(__instance);
+            StabButton.Update("STAB", StabTimer(), CustomGameOptions.LustKillCd, true, Lusted);
+            BloodlustButton.Update("BLOODLUST", LustTimer(), CustomGameOptions.BloodlustCd, Lusted, TimeRemaining, CustomGameOptions.BloodlustDuration);
         }
     }
 }

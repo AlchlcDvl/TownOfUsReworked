@@ -2,7 +2,6 @@ using Il2CppSystem.Collections.Generic;
 using TownOfUsReworked.Classes;
 using Hazel;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NeutralsMod;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Data;
 
@@ -65,8 +64,23 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public override bool GameEnd(LogicGameFlowNormal __instance)
         {
-            if (Player.Data.IsDead || Player.Data.Disconnected)
+            if (Player.Data.Disconnected)
                 return true;
+            else if (Player.Data.IsDead)
+            {
+                if (RoleType == RoleEnum.Phantom && ((Phantom)this).CompletedTasks)
+                {
+                    PhantomWins = true;
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
+                    writer.Write((byte)WinLoseRPC.PhantomWin);
+                    writer.Write(Player.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Utils.EndGame();
+                    return false;
+                }
+                else
+                    return true;
+            }
 
             if ((IsRecruit || RoleType == RoleEnum.Jackal) && ConstantVariables.CabalWin)
             {

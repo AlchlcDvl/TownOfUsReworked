@@ -23,16 +23,16 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TaskmasterMod
             if (role.TasksLeft == CustomGameOptions.TMTasksRemaining)
             {
                 if (PlayerControl.LocalPlayer.Is(ObjectifierEnum.Taskmaster))
-                    Utils.Flash(role.Color, "You are almost done with tasks!");
+                    Utils.Flash(role.Color);
                 else if (PlayerControl.LocalPlayer.Is(Faction.Crew) || PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralBen) || PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralEvil))
-                    Utils.Flash(role.Color, "There is a <color=#ABABFFFF>Taskmaster</color> on the loose!");
+                    Utils.Flash(role.Color);
                 else if (PlayerControl.LocalPlayer.Is(Faction.Intruder) || PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralKill) || PlayerControl.LocalPlayer.Is(Faction.Syndicate) ||
                     PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralNeo) || PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralPros))
                 {
-                    Utils.Flash(role.Color, "There is a <color=#ABABFFFF>Taskmaster</color> on the loose!");
+                    Utils.Flash(role.Color);
                     var gameObj = new GameObject();
                     var arrow = gameObj.AddComponent<ArrowBehaviour>();
-                    gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
+                    gameObj.transform.parent = __instance.gameObject.transform;
                     var renderer = gameObj.AddComponent<SpriteRenderer>();
                     renderer.sprite = AssetManager.Arrow;
                     arrow.image = renderer;
@@ -43,7 +43,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TaskmasterMod
             else if (role.TasksDone)
             {
                 if (PlayerControl.LocalPlayer.Is(ObjectifierEnum.Taskmaster))
-                    Utils.Flash(role.Color, "Done!");
+                    Utils.Flash(role.Color);
 
                 role.WinTasksDone = true;
             }

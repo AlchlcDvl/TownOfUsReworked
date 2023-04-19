@@ -2,12 +2,10 @@ using AmongUs.GameOptions;
 using InnerNet;
 using TownOfUsReworked.CustomOptions;
 using HarmonyLib;
-using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.NeutralsMod;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.PlayerLayers.Roles;
 using System.Linq;
 using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.Data
 {
@@ -15,7 +13,7 @@ namespace TownOfUsReworked.Data
     [HarmonyPatch]
     public static class ConstantVariables
     {
-        public static bool IsCountDown => GameStartManager.InstanceExists && GameStartManager.Instance.startState == GameStartManager.StartingStates.Countdown;
+        public static bool IsCountDown => GameStartManager.Instance && GameStartManager.Instance.startState == GameStartManager.StartingStates.Countdown;
         public static bool IsInGame => AmongUsClient.Instance.GameState == InnerNetClient.GameStates.Started && !LobbyBehaviour.Instance;
         public static bool IsLobby => AmongUsClient.Instance.GameState == InnerNetClient.GameStates.Joined || LobbyBehaviour.Instance;
         public static bool IsEnded => AmongUsClient.Instance.GameState == InnerNetClient.GameStates.Ended;
@@ -31,11 +29,12 @@ namespace TownOfUsReworked.Data
         public static bool IsClassic => CustomGameOptions.GameMode == GameMode.Classic;
         public static bool IsKilling => CustomGameOptions.GameMode == GameMode.KillingOnly;
         public static bool IsVanilla => CustomGameOptions.GameMode == GameMode.Vanilla;
+        public static bool NoLobby => !(IsInGame || IsLobby || IsEnded || IsRoaming || IsMeeting);
 
         public static bool LastImp => PlayerControl.AllPlayerControls.ToArray().Count(x => x.Is(Faction.Intruder) && !(x.Data.IsDead || x.Data.Disconnected)) == 1;
         public static bool LastSyn => PlayerControl.AllPlayerControls.ToArray().Count(x => x.Is(Faction.Syndicate) && !(x.Data.IsDead || x.Data.Disconnected)) == 1;
 
-        public static bool Inactive => PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null || !IsRoaming ||
+        public static bool Inactive => PlayerControl.AllPlayerControls.Count <= 1 || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null || NoLobby ||
             !PlayerControl.LocalPlayer.CanMove;
 
         public static bool CrewWins => !PlayerControl.AllPlayerControls.ToArray().Any(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) ||

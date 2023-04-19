@@ -123,7 +123,7 @@ namespace TownOfUsReworked.Patches
                 return false;
             }
 
-            __result = CustomGameOptions.IntruderCount == 0 ? CustomGameOptions.SyndicateCount : CustomGameOptions.IntruderCount;
+            __result = CustomGameOptions.AltImps ? CustomGameOptions.SyndicateCount : CustomGameOptions.IntruderCount;
             return true;
         }
     }

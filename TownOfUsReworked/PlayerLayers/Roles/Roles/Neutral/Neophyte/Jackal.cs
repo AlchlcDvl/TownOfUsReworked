@@ -2,6 +2,11 @@ using TownOfUsReworked.Data;
 using TownOfUsReworked.CustomOptions;
 using System;
 using System.Collections.Generic;
+using Hazel;
+using TownOfUsReworked.Classes;
+using TownOfUsReworked.Modules;
+using TownOfUsReworked.Custom;
+using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -11,7 +16,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public PlayerControl GoodRecruit;
         public PlayerControl BackupRecruit;
         public PlayerControl ClosestPlayer;
-        public AbilityButton RecruitButton;
+        public CustomButton RecruitButton;
         public bool HasRecruited;
         public bool RecruitsDead => (EvilRecruit == null || GoodRecruit == null || ((EvilRecruit?.Data.IsDead == true || EvilRecruit.Data.Disconnected) &&
             (GoodRecruit?.Data.Disconnected == true || GoodRecruit.Data.IsDead))) && BackupRecruit == null;
@@ -33,15 +38,48 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleAlignment = RoleAlignment.NeutralNeo;
             AlignmentName = NN;
             Recruited = new() { Player.PlayerId };
+            Type = LayerEnum.Jackal;
+            RecruitButton = new(this, AssetManager.Recruit, AbilityTypes.Direct, "ActionSecondary", Recruit);
         }
 
         public float RecruitTimer()
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastRecruited;
-            var num = CustomGameOptions.RecruitCooldown * 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.RecruitCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+        }
+
+        public void Recruit()
+        {
+            if (RecruitTimer() != 0f)
+                return;
+
+            var interact = Utils.Interact(Player, ClosestPlayer, false, true);
+
+            if (interact[3])
+            {
+                RoleGen.Convert(ClosestPlayer.PlayerId, Player.PlayerId, SubFaction.Cabal, false);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+                writer.Write((byte)ActionsRPC.Convert);
+                writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                writer.Write(ClosestPlayer.PlayerId);
+                writer.Write((byte)SubFaction.Cabal);
+                writer.Write(false);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+            }
+            else if (interact[0])
+                LastRecruited = DateTime.UtcNow;
+            else if (interact[1])
+                LastRecruited.AddSeconds(CustomGameOptions.ProtectKCReset);
+        }
+
+        public override void UpdateHud(HudManager __instance)
+        {
+            base.UpdateHud(__instance);
+            var notRecruited = PlayerControl.AllPlayerControls.ToArray().Where(player => !Recruited.Contains(player.PlayerId)).ToList();
+            RecruitButton.Update("RECRUIT", RecruitTimer(), CustomGameOptions.RecruitCooldown, true, RecruitsDead);
         }
     }
 }

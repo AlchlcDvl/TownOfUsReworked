@@ -4,6 +4,9 @@ using System;
 using TownOfUsReworked.Modules;
 using TownOfUsReworked.Extensions;
 using UnityEngine;
+using TownOfUsReworked.Classes;
+using TownOfUsReworked.Custom;
+using Hazel;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -14,7 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public bool Enabled;
         public DateTime LastBlock;
         public float TimeRemaining;
-        public AbilityButton BlockButton;
+        public CustomButton BlockButton;
         public bool Blocking => TimeRemaining > 0f;
 
         public Escort(PlayerControl player) : base(player)
@@ -29,6 +32,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AlignmentName = CS;
             RoleBlockImmune = true;
             InspectorResults = InspectorResults.MeddlesWithOthers;
+            Type = LayerEnum.Escort;
+            BlockTarget = null;
+            BlockButton = new(this, AssetManager.EscortRoleblock, AbilityTypes.Direct, "ActionSecondary", Roleblock);
         }
 
         public void UnBlock()
@@ -55,9 +61,43 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastBlock;
-            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.EscRoleblockCooldown) * 1000f;
-            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.EscRoleblockCooldown) * 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+        }
+
+        public void Roleblock()
+        {
+            if (RoleblockTimer() != 0f || Utils.IsTooFar(Player, ClosestPlayer))
+                return;
+
+            var interact = Utils.Interact(Player, ClosestPlayer);
+
+            if (interact[3])
+            {
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+                writer.Write((byte)ActionsRPC.EscRoleblock);
+                writer.Write(Player.PlayerId);
+                writer.Write(ClosestPlayer.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                TimeRemaining = CustomGameOptions.EscRoleblockDuration;
+                BlockTarget = ClosestPlayer;
+
+                foreach (var layer in GetLayers(BlockTarget))
+                    layer.IsBlocked = !GetRole(BlockTarget).RoleBlockImmune;
+
+                Block();
+            }
+            else if (interact[0])
+                LastBlock = DateTime.UtcNow;
+            else if (interact[1])
+                LastBlock.AddSeconds(CustomGameOptions.ProtectKCReset);
+        }
+
+        public override void UpdateHud(HudManager __instance)
+        {
+            base.UpdateHud(__instance);
+            BlockButton.Update("ROLEBLOCK", RoleblockTimer(), CustomGameOptions.EscRoleblockCooldown, Blocking, TimeRemaining, CustomGameOptions.EscRoleblockDuration);
         }
     }
 }

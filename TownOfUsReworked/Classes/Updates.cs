@@ -31,7 +31,12 @@ namespace TownOfUsReworked.Classes
                 return;
 
             running = true;
-            CheckForUpdate("REW").GetAwaiter().GetResult();
+
+            try
+            {
+                CheckForUpdate("REW").GetAwaiter().GetResult();
+            } catch {}
+
             //Only check of Submerged update if Submerged is already installed
             var codeBase = TownOfUsReworked.Executing.Location;
             UriBuilder uri = new(codeBase);
@@ -41,7 +46,12 @@ namespace TownOfUsReworked.Classes
                 var submergedPath = Uri.UnescapeDataString(uri.Path.Replace("Reworked", "Submerged"));
 
                 if (File.Exists(submergedPath))
-                    CheckForUpdate("Submerged").GetAwaiter().GetResult();
+                {
+                    try
+                    {
+                        CheckForUpdate("Submerged").GetAwaiter().GetResult();
+                    } catch {}
+                }
             }
 
             ClearOldVersions();

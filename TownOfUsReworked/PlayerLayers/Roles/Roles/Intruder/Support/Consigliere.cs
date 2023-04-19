@@ -4,18 +4,21 @@ using TownOfUsReworked.Modules;
 using TownOfUsReworked.Extensions;
 using System.Collections.Generic;
 using TownOfUsReworked.PlayerLayers.Abilities;
-using TownOfUsReworked.PlayerLayers.Roles.IntruderRoles.ConsigliereMod;
 using TownOfUsReworked.Data;
+using TownOfUsReworked.Classes;
+using TownOfUsReworked.Custom;
+using System.Linq;
+using HarmonyLib;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Consigliere : IntruderRole
     {
         public List<byte> Investigated = new();
-        public AbilityButton InvestigateButton;
+        public CustomButton InvestigateButton;
         public PlayerControl ClosestTarget;
         public DateTime LastInvestigated;
-        public string role = CustomGameOptions.ConsigInfo == ConsigInfo.Role ? "role" : "faction";
+        private readonly string role = CustomGameOptions.ConsigInfo == ConsigInfo.Role ? "role" : "faction";
         private string CanAssassinate => Ability.GetAbility(Player) != null && Player.Is(AbilityEnum.Assassin) && CustomGameOptions.ConsigInfo == ConsigInfo.Role ?
             "\n- You cannot assassinate players you have revealed" : "";
 
@@ -29,15 +32,41 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleAlignment = RoleAlignment.IntruderSupport;
             AlignmentName = IS;
             Investigated = new();
+            Type = LayerEnum.Consigliere;
+            InvestigateButton = new(this, AssetManager.Placeholder, AbilityTypes.Direct, "Secondary", Investigate);
         }
 
         public float ConsigliereTimer()
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastInvestigated;
-            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.ConsigCd, CustomButtons.GetUnderdogChange(Player)) * 1000f;
-            var flag2 = num - (float) timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float) timespan.TotalMilliseconds) / 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.ConsigCd) * 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+        }
+
+        public void Investigate()
+        {
+            if (ConsigliereTimer() != 0f || Utils.IsTooFar(Player, ClosestTarget) || Investigated.Contains(ClosestTarget.PlayerId))
+                return;
+
+            var interact = Utils.Interact(Player, ClosestTarget);
+
+            if (interact[3])
+                Investigated.Add(ClosestTarget.PlayerId);
+
+            if (interact[0])
+                LastInvestigated = DateTime.UtcNow;
+            else if (interact[1])
+                LastInvestigated.AddSeconds(CustomGameOptions.ProtectKCReset);
+        }
+
+        public override void UpdateHud(HudManager __instance)
+        {
+            base.UpdateHud(__instance);
+            var notInvestigated = PlayerControl.AllPlayerControls.ToArray().Where(x => !Investigated.Contains(x.PlayerId) && !((x.Is(Faction.Intruder) || x.GetSubFaction() ==
+                Player.GetSubFaction()) && CustomGameOptions.FactionSeeRoles)).ToList();
+            InvestigateButton.Update("INVESTIGATE", ConsigliereTimer(), CustomGameOptions.ConsigCd, notInvestigated);
         }
     }
 }

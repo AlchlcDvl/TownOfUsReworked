@@ -12,6 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             Color = CustomGameOptions.CustomAbilityColors ? Colors.Ruthless : Colors.Ability;
             AbilityType = AbilityEnum.Ruthless;
             Hidden = !CustomGameOptions.RuthlessKnows;
+            Type = LayerEnum.Ruthless;
         }
     }
 }

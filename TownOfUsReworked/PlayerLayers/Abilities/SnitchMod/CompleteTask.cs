@@ -21,11 +21,11 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.SnitchMod
             if (role.TasksLeft == CustomGameOptions.SnitchTasksRemaining)
             {
                 if (PlayerControl.LocalPlayer.Is(AbilityEnum.Snitch))
-                    Utils.Flash(role.Color, "You are almost there!");
+                    Utils.Flash(role.Color);
                 else if (PlayerControl.LocalPlayer.Is(Faction.Intruder) || (PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralKill) && CustomGameOptions.SnitchSeesNeutrals) ||
                     PlayerControl.LocalPlayer.Is(Faction.Syndicate))
                 {
-                    Utils.Flash(role.Color, "A <color=#D4AF37FF>Snitch</color> is nearly finished with their tasks!");
+                    Utils.Flash(role.Color);
                     var gameObj = new GameObject();
                     var arrow = gameObj.AddComponent<ArrowBehaviour>();
                     gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
@@ -39,7 +39,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.SnitchMod
             else if (PlayerControl.LocalPlayer.Is(AbilityEnum.Snitch) && role.TasksDone)
             {
                 if (PlayerControl.LocalPlayer == __instance)
-                    Utils.Flash(Color.green, "You now know who is bad!");
+                    Utils.Flash(Color.green);
 
                 foreach (var imp in PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Intruder)))
                 {
@@ -56,7 +56,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.SnitchMod
             else if (PlayerControl.LocalPlayer.Is(Faction.Intruder) || (PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralKill) && CustomGameOptions.SnitchSeesNeutrals) ||
                 PlayerControl.LocalPlayer.Is(Faction.Syndicate))
             {
-                Utils.Flash(Color.red, "The <color=#D4AF37FF>Snitch</color> finished their tasks!");
+                Utils.Flash(Color.red);
             }
         }
     }

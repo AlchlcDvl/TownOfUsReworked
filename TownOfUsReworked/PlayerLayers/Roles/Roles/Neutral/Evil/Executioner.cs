@@ -4,6 +4,9 @@ using TownOfUsReworked.Classes;
 using System;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Extensions;
+using TownOfUsReworked.Custom;
+using TownOfUsReworked.Modules;
+using Hazel;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -13,11 +16,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public bool TargetVotedOut;
         public List<byte> ToDoom = new();
         public bool HasDoomed;
-        public AbilityButton DoomButton;
+        public CustomButton DoomButton;
         public PlayerControl ClosestPlayer;
         public DateTime LastDoomed;
-        public int MaxUses;
-        public bool CanDoom => TargetVotedOut && !HasDoomed && MaxUses > 0 && ToDoom.Count > 0;
+        public int UsesLeft;
+        public bool CanDoom => TargetVotedOut && !HasDoomed && UsesLeft > 0 && ToDoom.Count > 0;
         public bool Failed => !TargetVotedOut && (TargetPlayer?.Data.IsDead == true || TargetPlayer?.Data.Disconnected == true);
 
         public Executioner(PlayerControl player) : base(player)
@@ -30,8 +33,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleAlignment = RoleAlignment.NeutralEvil;
             AlignmentName = NE;
             ToDoom = new();
-            MaxUses = CustomGameOptions.DoomCount <= ToDoom.Count ? CustomGameOptions.DoomCount : ToDoom.Count;
+            UsesLeft = CustomGameOptions.DoomCount <= ToDoom.Count ? CustomGameOptions.DoomCount : ToDoom.Count;
             AbilitiesText = "- After your target has been ejected, you can doom players who voted for them\n- If your target dies, you will become a <color=#F7B3DAFF>Jester</color>";
+            Type = LayerEnum.Executioner;
+            DoomButton = new(this, AssetManager.Placeholder, AbilityTypes.Direct, "ActionSecondary", Doom, true);
         }
 
         public void SetDoomed(MeetingHud __instance)
@@ -54,7 +59,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastDoomed;
-            var num = CustomGameOptions.DoomCooldown * 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.DoomCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
@@ -65,10 +70,36 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             newRole.RoleUpdate(this);
 
             if (Player == PlayerControl.LocalPlayer)
-                Utils.Flash(Colors.Jester, "Your target died so you have become a <color=#F7B3DAFF>Jester</color>!");
+                Utils.Flash(Colors.Jester);
 
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
-                Utils.Flash(Colors.Seer, "Someone has changed their identity!");
+                Utils.Flash(Colors.Seer);
+        }
+
+        public void Doom()
+        {
+            if (Utils.IsTooFar(Player, ClosestPlayer) || DoomTimer() != 0f || !CanDoom)
+                return;
+
+            Utils.RpcMurderPlayer(Player, ClosestPlayer, DeathReasonEnum.Killed, false);
+            HasDoomed = true;
+            UsesLeft--;
+            LastDoomed = DateTime.UtcNow;
+        }
+
+        public override void UpdateHud(HudManager __instance)
+        {
+            base.UpdateHud(__instance);
+            DoomButton.Update("DOOM", DoomTimer(), CustomGameOptions.DoomCooldown, UsesLeft, true, CanDoom);
+
+            if (Failed && !Player.Data.IsDead)
+            {
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
+                writer.Write((byte)TurnRPC.TurnJest);
+                writer.Write(Player.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                TurnJest();
+            }
         }
     }
 }

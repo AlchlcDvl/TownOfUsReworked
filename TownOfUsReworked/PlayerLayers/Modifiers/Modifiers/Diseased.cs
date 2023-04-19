@@ -11,7 +11,8 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
             TaskText = $"- Your killer's cooldown increases by {CustomGameOptions.DiseasedMultiplier} times.";
             Color = CustomGameOptions.CustomModifierColors ? Colors.Diseased : Colors.Modifier;
             ModifierType = ModifierEnum.Diseased;
-            Hidden = !CustomGameOptions.DiseasedKnows;
+            Hidden = !CustomGameOptions.DiseasedKnows && !IsDead;
+            Type = LayerEnum.Diseased;
         }
     }
 }

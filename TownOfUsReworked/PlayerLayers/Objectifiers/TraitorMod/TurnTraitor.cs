@@ -130,10 +130,10 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
             }
 
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Mystic) && traitor != PlayerControl.LocalPlayer)
-                Utils.Flash(Colors.Mystic, "Someone changed their allegience!");
+                Utils.Flash(Colors.Mystic);
 
             if (traitor == PlayerControl.LocalPlayer || PlayerControl.LocalPlayer.Is(traitorRole.Faction))
-                Utils.Flash(Colors.Traitor, "A <color=#370D43FF>Traitor</color> has revealed themselves!");
+                Utils.Flash(Colors.Traitor);
         }
     }
 }

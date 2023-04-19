@@ -33,7 +33,7 @@ namespace TownOfUsReworked.Functions
                     player.MyPhysics.Speed *= -1;
             }
 
-            Utils.Flash(Colors.Drunkard, "You are confused!");
+            Utils.Flash(Colors.Drunkard);
         }
 
         public static void UnconfuseAll()
@@ -45,7 +45,7 @@ namespace TownOfUsReworked.Functions
             }
 
             Confused.Clear();
-            Utils.Flash(Colors.Drunkard, "You are no longer confused!");
+            Utils.Flash(Colors.Drunkard);
         }
 
         public static void ConfuseSingle(PlayerControl player)
@@ -54,7 +54,7 @@ namespace TownOfUsReworked.Functions
                 player.MyPhysics.Speed *= -1;
 
             if (PlayerControl.LocalPlayer == player)
-                Utils.Flash(Colors.Drunkard, "You are confused!");
+                Utils.Flash(Colors.Drunkard);
         }
 
         public static void UnconfuseSingle(PlayerControl player)
@@ -63,7 +63,7 @@ namespace TownOfUsReworked.Functions
                 player.MyPhysics.Speed *= -1;
 
             if (PlayerControl.LocalPlayer == player)
-                Utils.Flash(Colors.Drunkard, "You are no longer confused!");
+                Utils.Flash(Colors.Drunkard);
         }
     }
 }

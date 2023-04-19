@@ -2,6 +2,8 @@ using System;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Modules;
 using TownOfUsReworked.Data;
+using TownOfUsReworked.Classes;
+using TownOfUsReworked.Custom;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -9,7 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     {
         public PlayerControl ClosestPlayer;
         public DateTime LastKilled;
-        public AbilityButton MurderButton;
+        public CustomButton MurderButton;
 
         public Murderer(PlayerControl player) : base(player)
         {
@@ -20,15 +22,38 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleType = RoleEnum.Murderer;
             RoleAlignment = RoleAlignment.NeutralKill;
             AlignmentName = NK;
+            Type = LayerEnum.Murderer;
+            MurderButton = new(this, AssetManager.Placeholder, AbilityTypes.Direct, "ActionSecondary", Murder);
         }
 
-        public float KillTimer()
+        public float MurderTimer()
         {
             var utcNow = DateTime.UtcNow;
             var timespan = utcNow - LastKilled;
-            var num = CustomButtons.GetModifiedCooldown(CustomGameOptions.MurdKCD) * 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.MurdKCD) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+        }
+
+        public void Murder()
+        {
+            if (Utils.IsTooFar(Player, ClosestPlayer) || MurderTimer() != 0f)
+                return;
+
+            var interact = Utils.Interact(Player, ClosestPlayer, true);
+
+            if (interact[3] || interact[0])
+                LastKilled = DateTime.UtcNow;
+            else if (interact[1])
+                LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
+            else if (interact[2])
+                LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
+        }
+
+        public override void UpdateHud(HudManager __instance)
+        {
+            base.UpdateHud(__instance);
+            MurderButton.Update("MURDER", MurderTimer(), CustomGameOptions.MurdKCD);
         }
     }
 }

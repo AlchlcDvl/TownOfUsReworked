@@ -19,6 +19,7 @@ namespace TownOfUsReworked.Patches
         {
             if (AmongUsClient.Instance.AmHost)
             {
+                RoleGen.ResetEverything();
                 previousMap = GameOptionsManager.Instance.currentNormalGameOptions.MapId;
                 vision = CustomGameOptions.CrewVision;
 

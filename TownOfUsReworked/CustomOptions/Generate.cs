@@ -1030,6 +1030,7 @@ namespace TownOfUsReworked.CustomOptions
         public static CustomNumberOption CryoDouseCooldown;
         public static CustomToggleOption CryoVent;
         public static CustomToggleOption UniqueCryomaniac;
+        public static CustomToggleOption CryoFreezeAll;
 
         //Plaguebearer Options
         public static CustomHeaderOption Plaguebearer;
@@ -2047,6 +2048,7 @@ namespace TownOfUsReworked.CustomOptions
             CryomaniacCount = new CustomNumberOption(num++, MultiMenu.neutral, "<color=#642DEAFF>Cryomaniac</color> Count", 1, 1, 14, 1);
             UniqueCryomaniac = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#642DEAFF>Cryomaniac</color> Is Unique In All Any", false);
             CryoDouseCooldown = new CustomNumberOption(num++, MultiMenu.neutral, "Douse Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            CryoFreezeAll = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#642DEAFF>Cryomaniac</color> Freeze Freezes All Doused Players", false);
             CryoVent = new CustomToggleOption(num++, MultiMenu.neutral, "<color=#642DEAFF>Cryomaniac</color> Can Vent", false);
 
             Glitch = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#00FF00FF>Glitch</color>");
