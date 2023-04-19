@@ -132,6 +132,42 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 <details>
   <summary>Change Log</summary>
   <details>
+    <summary>v0.0.4-dev1</summary>
+    <ul> <li>Buff: Framer frames work on Vampire Hunters as well and framed Vigilantes can shoot anyone</li> </ul>
+    <ul> <li>Buff: Coroner-Retributionists also get meeting info like Coroners do</li> </ul>
+    <ul> <li>Buff: Diseased now applies to every cooldown for the rest of the round</li> </ul>
+    <ul> <li>Nerf: Reporting bodies no longer spreads douses or infections (because they often break the game rather than be helpful)</li> </ul>
+    <ul> <li>Nerf: Werewolf mauls can now be stopped if the target is on alert among other things</li> </ul>
+    <ul> <li>Update: Added changes from v4.0.4 and v4.0.5 of ToU-R</li> </ul>
+    <ul> <li>Change: Sheriff now sees flashes as indicator for guilt, rather than name changes</li> </ul>
+    <ul> <li>Recode: The mod was recoded a lot, so you know what that means! more bugs! (kill me please)</li> </ul>
+    <ul> <li>Improvement: Moved the status text from the intro screen to the too splash screen for better readability</li> </ul>
+    <ul> <li>Improvement: Improved how buttons work...for like the 20th time but I promise it gets better</li> </ul>
+    <ul> <li>Improvement: Made the mod a little more lightweight; fingers crossed it also fixes the issue of lag spikes</li> </ul>
+    <ul> <li>Improvement: Improved spawn code for Revealer, Phantom, Ghoul and Banshee</li> </ul>
+    <ul> <li>Improvement: Optimised how blackmails work</li> </ul>
+    <ul> <li>Critical Fix: Fixed not being able to enter codes or names</li> </ul>
+    <ul> <li>Visual Fix: Fixed player outlines appearing too thin</li> </ul>
+    <ul> <li>Visual Fix: Fixed the issue with custom buttons not disappearing during meetings</li> </ul>
+    <ul> <li>Visual Fix: Fixed the Use button having the Haunt sprite when dead</li> </ul>
+    <ul> <li>Bug Fix: Fixed revived players still having their death reports being sent</li> </ul>
+    <ul> <li>Bug Fix: Potential fix for the debugger window log spam</li> </ul>
+    <ul> <li>Bug Fix: Fixed players becoming Revealer, Banshee, Phantom or Ghouls after being revived</li> </ul>
+    <ul> <li>Bug Fix: Fixed votes being calculated incorrectly</li> </ul>
+    <ul> <li>Bug Fix: Fixed the end game screen showing the wrong role for players whose roles changed</li> </ul>
+    <ul> <li>Bug Fix: Fixed the log spam because of the Debugger window</li> </ul>
+    <ul> <li>Objectifier Fix: Fixed Allied sometimes breaking the game upon start</li> </ul>
+    <ul> <li>Role Fix: Fixed Godfather being unable to promote Consorts</li> </ul>
+    <ul> <li>Role Fix: Fixed Godfathers and Rebels being able to promote other Godfather, Rebels, Mafiosos and Sidekicks to...Mafioso or Sidekick</li> </ul>
+    <ul> <li>Role Fix: Fixed Ambusher/Enforcer-Godfathers from being unable to use their abilities</li> </ul>
+    <ul> <li>Role Fix: Fixed Bounty Hunter crashing the game on hunting their target</li> </ul>
+    <ul> <li>Role Fix: Fixed Bounty Hunter cooldowns not resetting upon usage</li> </ul>
+    <ul> <li>Role Fix: Fixed Bounty Hunter sometimes killing themselves</li> </ul>
+    <ul> <li>Role Fix: Fixed Cannibal not winning properly</li> </ul>
+    <ul> <li>Role Fix: Fixed Necromancer's resurrect sometimes crashing the game</li> </ul>
+    <ul> <li>Role Fix: Fixed the issue with Glitch staying permanently mimicked</li> </ul>
+  </details>
+  <details>
     <summary>v0.0.3-dev3</summary>
     <ul> <li>Addition: All Syndicate roles now have Chaos Drive abilities</li> </ul>
     <ul> <li>Merge: Beamer has been merged into Warper</li> </ul>
