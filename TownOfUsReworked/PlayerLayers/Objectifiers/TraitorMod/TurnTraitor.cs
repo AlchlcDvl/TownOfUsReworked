@@ -107,7 +107,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
                     var arrow = gameObj.AddComponent<ArrowBehaviour>();
                     gameObj.transform.parent = traitor.gameObject.transform;
                     var renderer = gameObj.AddComponent<SpriteRenderer>();
-                    renderer.sprite = AssetManager.Arrow;
+                    renderer.sprite = AssetManager.GetSprite("Arrow");
                     arrow.image = renderer;
                     gameObj.layer = 5;
                     snitch.ImpArrows.Add(arrow);
@@ -122,7 +122,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod
                     var arrow = gameObj.AddComponent<ArrowBehaviour>();
                     gameObj.transform.parent = traitor.gameObject.transform;
                     var renderer = gameObj.AddComponent<SpriteRenderer>();
-                    renderer.sprite = AssetManager.Arrow;
+                    renderer.sprite = AssetManager.GetSprite("Arrow");
                     arrow.image = renderer;
                     gameObj.layer = 5;
                     revealer.ImpArrows.Add(arrow);

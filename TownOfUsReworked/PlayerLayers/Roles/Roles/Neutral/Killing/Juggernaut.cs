@@ -1,16 +1,16 @@
 ﻿using System;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Modules;
 using UnityEngine;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Custom;
+using System.Linq;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Juggernaut : NeutralRole
     {
-        public PlayerControl ClosestPlayer;
         public DateTime LastKilled;
         public int JuggKills;
         public CustomButton AssaultButton;
@@ -27,7 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AlignmentName = NK;
             JuggKills = 0;
             Type = LayerEnum.Juggernaut;
-            AssaultButton = new(this, AssetManager.Assault, AbilityTypes.Direct, "ActionSecondary", Assault);
+            AssaultButton = new(this, "Assault", AbilityTypes.Direct, "ActionSecondary", Assault);
         }
 
         public float AssaultTimer()
@@ -42,10 +42,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Assault()
         {
-            if (Utils.IsTooFar(Player, ClosestPlayer) || AssaultTimer() != 0f)
+            if (Utils.IsTooFar(Player, AssaultButton.TargetPlayer) || AssaultTimer() != 0f)
                 return;
 
-            var interact = Utils.Interact(Player, ClosestPlayer, true, false, JuggKills >= 4);
+            var interact = Utils.Interact(Player, AssaultButton.TargetPlayer, true, false, JuggKills >= 4);
 
             if (interact[3])
                 JuggKills++;
@@ -64,8 +64,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
+            var targets = PlayerControl.AllPlayerControls.ToArray().Where(x => !(x.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) && !(SubFaction != SubFaction.None &&
+                x.GetSubFaction() == SubFaction)).ToList();
             AssaultButton.Update("ASSAULT", AssaultTimer(), Mathf.Clamp(Player.GetModifiedCooldown(CustomGameOptions.JuggKillCooldown, -(CustomGameOptions.JuggKillBonus * JuggKills)), 5,
-                Player.GetModifiedCooldown(CustomGameOptions.JuggKillCooldown)));
+                Player.GetModifiedCooldown(CustomGameOptions.JuggKillCooldown)), targets);
         }
     }
 }

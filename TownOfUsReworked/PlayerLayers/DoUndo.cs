@@ -13,7 +13,8 @@ namespace TownOfUsReworked.PlayerLayers
     {
         private static bool CommsEnabled;
         private static bool CamouflagerEnabled;
-        public static bool IsCamoed => CommsEnabled || CamouflagerEnabled;
+        private static bool GodfatherEnabled;
+        public static bool IsCamoed => CommsEnabled || CamouflagerEnabled || GodfatherEnabled;
 
         public static void Postfix(HudManager __instance)
         {
@@ -39,6 +40,14 @@ namespace TownOfUsReworked.PlayerLayers
                     role.UnBlock();
             }
 
+            foreach (var alt in Role.GetRoles<Altruist>(RoleEnum.Altruist))
+            {
+                if (alt.IsReviving)
+                    alt.Revive();
+                else if (alt.Reviving)
+                    alt.UnRevive();
+            }
+
             foreach (var ret in Role.GetRoles<Retributionist>(RoleEnum.Retributionist))
             {
                 if (ret.RevivedRole == null)
@@ -52,6 +61,8 @@ namespace TownOfUsReworked.PlayerLayers
                         ret.Alert();
                     else if (ret.IsEsc)
                         ret.Block();
+                    else if (ret.IsAlt)
+                        ret.Revive();
                 }
                 else if (ret.Enabled)
                 {
@@ -61,6 +72,8 @@ namespace TownOfUsReworked.PlayerLayers
                         ret.UnAlert();
                     else if (ret.IsEsc)
                         ret.UnBlock();
+                    else if (ret.IsAlt)
+                        ret.UnRevive();
                 }
             }
 
@@ -117,8 +130,6 @@ namespace TownOfUsReworked.PlayerLayers
                         gf.Disguise();
                     else if (gf.IsMorph)
                         gf.Morph();
-                    else if (gf.IsTM)
-                        gf.TimeFreeze();
                     else if (gf.IsWraith)
                         gf.Invis();
                     else if (gf.IsCons)
@@ -126,7 +137,7 @@ namespace TownOfUsReworked.PlayerLayers
                     else if (gf.IsCamo)
                     {
                         gf.Camouflage();
-                        CamouflagerEnabled = true;
+                        GodfatherEnabled = true;
                     }
                 }
                 else if (gf.Enabled)
@@ -137,8 +148,6 @@ namespace TownOfUsReworked.PlayerLayers
                         gf.UnDisguise();
                     else if (gf.IsMorph)
                         gf.Unmorph();
-                    else if (gf.IsTM)
-                        gf.Unfreeze();
                     else if (gf.IsWraith)
                         gf.Uninvis();
                     else if (gf.IsCons)
@@ -146,7 +155,7 @@ namespace TownOfUsReworked.PlayerLayers
                     else if (gf.IsCamo)
                     {
                         gf.UnCamouflage();
-                        CamouflagerEnabled = false;
+                        GodfatherEnabled = false;
                     }
                 }
             }
@@ -193,14 +202,6 @@ namespace TownOfUsReworked.PlayerLayers
                     morphling.Morph();
                 else if (morphling.Enabled)
                     morphling.Unmorph();
-            }
-
-            foreach (var tm in Role.GetRoles<TimeMaster>(RoleEnum.TimeMaster))
-            {
-                if (tm.Frozen)
-                    tm.TimeFreeze();
-                else if (tm.Enabled)
-                    tm.Unfreeze();
             }
 
             foreach (var wraith in Role.GetRoles<Wraith>(RoleEnum.Wraith))
@@ -258,7 +259,7 @@ namespace TownOfUsReworked.PlayerLayers
 
             foreach (var phantom in Role.GetRoles<Phantom>(RoleEnum.Phantom))
             {
-                if (phantom.Player.Data.Disconnected)
+                if (phantom.Disconnected)
                     continue;
 
                 var caught = phantom.Caught;
@@ -277,7 +278,7 @@ namespace TownOfUsReworked.PlayerLayers
 
             foreach (var banshee in Role.GetRoles<Banshee>(RoleEnum.Banshee))
             {
-                if (banshee.Player.Data.Disconnected)
+                if (banshee.Disconnected)
                     continue;
 
                 var caught = banshee.Caught;
@@ -301,7 +302,7 @@ namespace TownOfUsReworked.PlayerLayers
 
             foreach (var ghoul in Role.GetRoles<Ghoul>(RoleEnum.Ghoul))
             {
-                if (ghoul.Player.Data.Disconnected)
+                if (ghoul.Disconnected)
                     continue;
 
                 var caught = ghoul.Caught;
@@ -320,7 +321,7 @@ namespace TownOfUsReworked.PlayerLayers
 
             foreach (var haunter in Role.GetRoles<Revealer>(RoleEnum.Revealer))
             {
-                if (haunter.Player.Data.Disconnected)
+                if (haunter.Disconnected)
                     return;
 
                 var caught = haunter.Caught;
@@ -372,8 +373,6 @@ namespace TownOfUsReworked.PlayerLayers
                         reb.Conceal();
                     else if (reb.IsPois)
                         reb.Poison();
-                    else if (reb.IsDrunk)
-                        reb.Confuse();
                     else if (reb.IsSS)
                         reb.Shapeshift();
                 }
@@ -383,8 +382,6 @@ namespace TownOfUsReworked.PlayerLayers
                         reb.UnConceal();
                     else if (reb.IsPois)
                         reb.PoisonKill();
-                    else if (reb.IsDrunk)
-                        reb.Unconfuse();
                     else if (reb.IsSS)
                         reb.UnShapeshift();
                 }
@@ -439,6 +436,7 @@ namespace TownOfUsReworked.PlayerLayers
                 {
                     CommsEnabled = false;
                     CamouflagerEnabled = false;
+                    GodfatherEnabled = false;
                     Utils.DefaultOutfitAll();
                 }
             }

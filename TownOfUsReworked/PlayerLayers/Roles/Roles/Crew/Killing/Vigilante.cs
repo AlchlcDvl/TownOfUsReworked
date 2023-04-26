@@ -1,16 +1,15 @@
 using System;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Modules;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Custom;
 using TownOfUsReworked.Extensions;
+using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Vigilante : CrewRole
     {
-        public PlayerControl ClosestPlayer;
         public DateTime LastKilled;
         public bool KilledInno;
         public bool PreMeetingDie;
@@ -33,7 +32,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             InspectorResults = InspectorResults.UsesGuns;
             UsesLeft = CustomGameOptions.VigiBulletCount;
             Type = LayerEnum.Vigilante;
-            ShootButton = new(this, AssetManager.Shoot, AbilityTypes.Direct, "ActionSecondary", Shoot, true);
+            ShootButton = new(this, "Shoot", AbilityTypes.Direct, "ActionSecondary", Shoot, true);
         }
 
         public float KillTimer()
@@ -54,28 +53,41 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 if (vigi.PreMeetingDie)
                     Utils.RpcMurderPlayer(vigi.Player, vigi.Player);
                 else if (vigi.Player == PlayerControl.LocalPlayer && vigi.InnoMessage)
-                    HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, "You an innocent an innocent crew! You have put your gun away out of guilt.");
+                    HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, "You killed an innocent an innocent crew! You have put your gun away out of guilt.");
+            }
+        }
+
+        public override void OnMeetingEnd(MeetingHud __instance)
+        {
+            base.OnMeetingEnd(__instance);
+
+            foreach (var vigi in GetRoles<Vigilante>(RoleEnum.Vigilante))
+            {
+                if (vigi.PostMeetingDie)
+                    vigi.Player.Exiled();
             }
         }
 
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            ShootButton.Update("SHOOT", KillTimer(), CustomGameOptions.VigiKillCd, UsesLeft, ButtonUsable, ButtonUsable && !KilledInno && !FirstRound);
+            var targets = PlayerControl.AllPlayerControls.ToArray().Where(x => !(Faction is Faction.Intruder or Faction.Syndicate && x.GetFaction() == Faction)).ToList();
+            ShootButton.Update("SHOOT", KillTimer(), CustomGameOptions.VigiKillCd, UsesLeft, targets, ButtonUsable, ButtonUsable && !KilledInno && !FirstRound);
         }
 
         public void Shoot()
         {
-            if (Utils.IsTooFar(Player, ClosestPlayer) || KillTimer() != 0f || KilledInno)
+            if (Utils.IsTooFar(Player, ShootButton.TargetPlayer) || KillTimer() != 0f || KilledInno)
                 return;
 
-            var flag4 = ClosestPlayer.Is(Faction.Intruder) || ClosestPlayer.Is(RoleAlignment.NeutralKill) || ClosestPlayer.Is(Faction.Syndicate) || (ClosestPlayer.Is(RoleEnum.Jester) &&
-                CustomGameOptions.VigiKillsJester) || (ClosestPlayer.Is(RoleEnum.Executioner) && CustomGameOptions.VigiKillsExecutioner) || (ClosestPlayer.Is(RoleEnum.Cannibal) &&
-                CustomGameOptions.VigiKillsCannibal) || (ClosestPlayer.Is(RoleAlignment.NeutralBen) && CustomGameOptions.VigiKillsNB) || ClosestPlayer.Is(RoleAlignment.NeutralNeo) ||
-                ClosestPlayer.Is(RoleAlignment.NeutralPros) || ClosestPlayer.IsFramed() || Player.IsFramed() || Player.NotOnTheSameSide() || ClosestPlayer.NotOnTheSameSide() ||
-                Player.Is(ObjectifierEnum.Corrupted) || ClosestPlayer.Is(RoleEnum.Troll) || (ClosestPlayer.Is(RoleEnum.BountyHunter) && CustomGameOptions.VigiKillsBH) ||
-                (ClosestPlayer.Is(RoleEnum.Actor) && CustomGameOptions.VigiKillsActor);
-            var interact = Utils.Interact(Player, ClosestPlayer, flag4);
+            var target = ShootButton.TargetPlayer;
+            var flag4 = target.Is(Faction.Intruder) || target.Is(RoleAlignment.NeutralKill) || target.Is(Faction.Syndicate) || target.Is(RoleEnum.Troll) || (target.Is(RoleEnum.Jester) &&
+                CustomGameOptions.VigiKillsJester) || (target.Is(RoleEnum.Executioner) && CustomGameOptions.VigiKillsExecutioner) || (target.Is(RoleEnum.Cannibal) &&
+                CustomGameOptions.VigiKillsCannibal) || (target.Is(RoleAlignment.NeutralBen) && CustomGameOptions.VigiKillsNB) || target.Is(RoleAlignment.NeutralNeo) ||
+                target.Is(RoleAlignment.NeutralPros) || target.IsFramed() || Player.IsFramed() || Player.NotOnTheSameSide() || target.NotOnTheSameSide() ||
+                Player.Is(ObjectifierEnum.Corrupted) || (target.Is(RoleEnum.BountyHunter) && CustomGameOptions.VigiKillsBH) || (target.Is(RoleEnum.Actor) &&
+                CustomGameOptions.VigiKillsActor);
+            var interact = Utils.Interact(Player, target, flag4);
 
             if (interact[3])
             {
@@ -86,11 +98,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 }
                 else
                 {
-                    if (CustomGameOptions.MisfireKillsInno || ClosestPlayer.IsFramed())
-                        Utils.RpcMurderPlayer(Player, ClosestPlayer);
+                    if (CustomGameOptions.MisfireKillsInno || target.IsFramed())
+                        Utils.RpcMurderPlayer(Player, target);
 
                     if (Player == PlayerControl.LocalPlayer && CustomGameOptions.VigiNotifOptions == VigiNotif.Flash && CustomGameOptions.VigiOptions != VigiOptions.Immediate)
-                        Utils.Flash(Color, "Your target was innocent!");
+                        Utils.Flash(Color);
                     else if (CustomGameOptions.VigiNotifOptions == VigiNotif.Message && CustomGameOptions.VigiOptions != VigiOptions.Immediate)
                         InnoMessage = true;
 

@@ -13,7 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
         public Radar(PlayerControl player) : base(player)
         {
             Name = "Radar";
-            TaskText = "- You are aware of those close to you.";
+            TaskText = "- You are aware of those close to you";
             Color = CustomGameOptions.CustomAbilityColors ? Colors.Radar : Colors.Ability;
             AbilityType = AbilityEnum.Radar;
             RadarArrow = new();

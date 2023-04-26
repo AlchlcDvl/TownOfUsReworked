@@ -3,7 +3,6 @@ using TownOfUsReworked.CustomOptions;
 using System;
 using TownOfUsReworked.Classes;
 using UnityEngine;
-using TownOfUsReworked.Modules;
 using TownOfUsReworked.Custom;
 using System.Linq;
 using Hazel;
@@ -34,7 +33,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             BlockMenu = new(Player, Click);
             Type = LayerEnum.Consort;
             BlockTarget = null;
-            BlockButton = new(this, AssetManager.Placeholder, AbilityTypes.Effect, "Secondary", Roleblock);
+            BlockButton = new(this, "ConsortRoleblock", AbilityTypes.Effect, "Secondary", Roleblock);
         }
 
         public void UnBlock()
@@ -53,6 +52,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
+
+            foreach (var layer in GetLayers(BlockTarget))
+                layer.IsBlocked = !GetRole(BlockTarget).RoleBlockImmune;
 
             if (Player.Data.IsDead || BlockTarget.Data.IsDead || BlockTarget.Data.Disconnected || MeetingHud.Instance)
                 TimeRemaining = 0f;
@@ -95,9 +97,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 TimeRemaining = CustomGameOptions.ConsRoleblockDuration;
                 Block();
-
-                foreach (var layer in GetLayers(BlockTarget))
-                    layer.IsBlocked = !layer.RoleBlockImmune;
             }
         }
 

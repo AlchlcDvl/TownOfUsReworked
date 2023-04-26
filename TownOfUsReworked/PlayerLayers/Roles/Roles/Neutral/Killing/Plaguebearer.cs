@@ -6,7 +6,6 @@ using TownOfUsReworked.Data;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using UnityEngine;
-using TownOfUsReworked.Modules;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Custom;
 
@@ -14,7 +13,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Plaguebearer : NeutralRole
     {
-        public PlayerControl ClosestPlayer;
         public DateTime LastInfected;
         public List<byte> InfectedPlayers = new();
         public int InfectedAlive => InfectedPlayers.Count;
@@ -33,7 +31,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AlignmentName = NK;
             InfectedPlayers = new();
             Type = LayerEnum.Plaguebearer;
-            InfectButton = new(this, AssetManager.Infect, AbilityTypes.Direct, "ActionSecondary", Infect);
+            InfectButton = new(this, "Infect", AbilityTypes.Direct, "ActionSecondary", Infect);
         }
 
         public float InfectTimer()
@@ -72,13 +70,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Infect()
         {
-            if (Utils.IsTooFar(Player, ClosestPlayer) || InfectTimer() != 0f)
+            if (Utils.IsTooFar(Player, InfectButton.TargetPlayer) || InfectTimer() != 0f)
                 return;
 
-            var interact = Utils.Interact(Player, ClosestPlayer);
+            var interact = Utils.Interact(Player, InfectButton.TargetPlayer);
 
             if (interact[3])
-                RpcSpreadInfection(Player, ClosestPlayer);
+                RpcSpreadInfection(Player, InfectButton.TargetPlayer);
 
             if (interact[0])
                 LastInfected = DateTime.UtcNow;

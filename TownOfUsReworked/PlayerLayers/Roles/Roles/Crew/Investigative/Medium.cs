@@ -3,16 +3,15 @@ using UnityEngine;
 using System.Collections.Generic;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Modules;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Custom;
 using HarmonyLib;
 using System.Linq;
-using Random = UnityEngine.Random;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.Patches;
 using Hazel;
 using TownOfUsReworked.Extensions;
+using Reactor.Utilities.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -36,7 +35,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AlignmentName = CI;
             InspectorResults = InspectorResults.DifferentLens;
             Type = LayerEnum.Medium;
-            MediateButton = new(this, AssetManager.Mediate, AbilityTypes.Effect, "ActionSecondary", Mediate);
+            MediateButton = new(this, "Mediate", AbilityTypes.Effect, "ActionSecondary", Mediate);
+            SeanceButton = new(this, "Seance", AbilityTypes.Effect, "ActionSecondary", Seance, false, true);
         }
 
         public float MediateTimer()
@@ -48,6 +48,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
+        private static void Seance() { /* Currently blank, gonna work on this later */ }
+
         public void AddMediatePlayer(byte playerId)
         {
             var gameObj = new GameObject();
@@ -57,7 +59,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
                 var renderer = gameObj.AddComponent<SpriteRenderer>();
-                renderer.sprite = AssetManager.Arrow;
+                renderer.sprite = AssetManager.GetSprite("Arrow");
                 arrow.image = renderer;
                 gameObj.layer = 5;
                 arrow.target = Utils.PlayerById(playerId).transform.position;
@@ -65,6 +67,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
 
             MediatedPlayers.Add(playerId, arrow);
+        }
+
+        public void DestroyArrow(byte targetPlayerId)
+        {
+            var arrow = MediatedPlayers.FirstOrDefault(x => x.Key == targetPlayerId);
+            arrow.Value?.Destroy();
+            arrow.Value.gameObject?.Destroy();
+            MediatedPlayers.Remove(arrow.Key);
         }
 
         public override void OnLobby()
@@ -77,6 +87,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             base.UpdateHud(__instance);
             MediateButton.Update("MEDIATE", MediateTimer(), CustomGameOptions.MediateCooldown);
+            SeanceButton.Update("SEANCE", MediateTimer(), CustomGameOptions.MediateCooldown, true, false);
 
             if (!PlayerControl.LocalPlayer.Data.IsDead)
             {
@@ -116,11 +127,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (PlayersDead.Count == 0)
                 return;
 
-            if (CustomGameOptions.DeadRevealed == DeadRevealed.Newest)
-                PlayersDead.Reverse();
-
             if (CustomGameOptions.DeadRevealed != DeadRevealed.Random)
             {
+                if (CustomGameOptions.DeadRevealed == DeadRevealed.Newest)
+                    PlayersDead.Reverse();
+
                 foreach (var dead in PlayersDead)
                 {
                     if (Object.FindObjectsOfType<DeadBody>().Any(x => x.ParentId == dead.PlayerId && !MediatedPlayers.ContainsKey(x.ParentId)))
@@ -140,7 +151,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             else
             {
                 PlayersDead.Shuffle();
-                var dead = PlayersDead[Random.RandomRangeInt(0, PlayersDead.Count - 1)];
+                var dead = PlayersDead.Random();
 
                 if (Object.FindObjectsOfType<DeadBody>().Any(x => x.ParentId == dead.PlayerId && !MediatedPlayers.ContainsKey(x.ParentId)))
                 {

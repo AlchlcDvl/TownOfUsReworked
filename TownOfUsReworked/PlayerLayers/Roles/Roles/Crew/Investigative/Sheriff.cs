@@ -1,6 +1,5 @@
 using System;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Modules;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Custom;
 using TownOfUsReworked.Classes;
@@ -11,7 +10,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Sheriff : CrewRole
     {
-        public PlayerControl ClosestPlayer;
         public CustomButton InterrogateButton;
         public DateTime LastInterrogated;
 
@@ -26,7 +24,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AlignmentName = CI;
             InspectorResults = InspectorResults.HasInformation;
             Type = LayerEnum.Sheriff;
-            InterrogateButton = new(this, AssetManager.Interrogate, AbilityTypes.Direct, "ActionSecondary", Interrogate);
+            InterrogateButton = new(this, "Interrogate", AbilityTypes.Direct, "ActionSecondary", Interrogate);
         }
 
         public float InterrogateTimer()
@@ -40,14 +38,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Interrogate()
         {
-            if (InterrogateTimer() != 0f || Utils.IsTooFar(Player, ClosestPlayer))
+            if (InterrogateTimer() != 0f || Utils.IsTooFar(Player, InterrogateButton.TargetPlayer))
                 return;
 
-            var interact = Utils.Interact(Player, ClosestPlayer);
+            var interact = Utils.Interact(Player, InterrogateButton.TargetPlayer);
 
             if (interact[3])
             {
-                if (ClosestPlayer.SeemsEvil())
+                if (InterrogateButton.TargetPlayer.SeemsEvil())
                     Utils.Flash(new Color32(255, 0, 0, 255));
                 else
                     Utils.Flash(new Color32(0, 255, 0, 255));

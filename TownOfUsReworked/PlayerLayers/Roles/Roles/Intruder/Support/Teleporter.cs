@@ -2,7 +2,6 @@ using TownOfUsReworked.Data;
 using System;
 using UnityEngine;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Modules;
 using TownOfUsReworked.Custom;
 using Hazel;
 using TownOfUsReworked.Classes;
@@ -30,8 +29,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AlignmentName = IS;
             Type = LayerEnum.Teleporter;
             TeleportPoint = new(0, 0, 0);
-            MarkButton = new(this, AssetManager.Mark, AbilityTypes.Effect, "Secondary", Mark);
-            TeleportButton = new(this, AssetManager.Teleport, AbilityTypes.Effect, "Secondary", Teleport);
+            MarkButton = new(this, "Mark", AbilityTypes.Effect, "Secondary", Mark);
+            TeleportButton = new(this, "Teleport", AbilityTypes.Effect, "Secondary", Teleport);
         }
 
         public float TeleportTimer()

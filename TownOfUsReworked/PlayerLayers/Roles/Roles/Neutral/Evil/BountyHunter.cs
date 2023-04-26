@@ -9,14 +9,12 @@ using HarmonyLib;
 using UnityEngine;
 using System.Collections.Generic;
 using Hazel;
-using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class BountyHunter : NeutralRole
     {
         public PlayerControl TargetPlayer;
-        public PlayerControl ClosestPlayer;
         public bool TargetKilled;
         public bool ColorHintGiven;
         public bool LetterHintGiven;
@@ -45,8 +43,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             UsesLeft = CustomGameOptions.BountyHunterGuesses;
             Type = LayerEnum.BountyHunter;
             TargetPlayer = null;
-            GuessButton = new(this, AssetManager.Placeholder, AbilityTypes.Direct, "Secondary", Guess, true);
-            HuntButton = new(this, AssetManager.Placeholder, AbilityTypes.Direct, "ActionSecondary", Hunt);
+            GuessButton = new(this, "BHGuess", AbilityTypes.Direct, "Secondary", Guess, true);
+            HuntButton = new(this, "Hunt", AbilityTypes.Direct, "ActionSecondary", Hunt);
         }
 
         public float CheckTimer()
@@ -227,10 +225,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Guess()
         {
-            if (Utils.IsTooFar(Player, ClosestPlayer) || CheckTimer() != 0f)
+            if (Utils.IsTooFar(Player, GuessButton.TargetPlayer) || CheckTimer() != 0f)
                 return;
 
-            if (ClosestPlayer != TargetPlayer)
+            if (GuessButton.TargetPlayer != TargetPlayer)
             {
                 Utils.Flash(new Color32(255, 0, 0, 255));
                 UsesLeft--;
@@ -246,17 +244,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Hunt()
         {
-            if (ClosestPlayer != TargetPlayer && !TargetKilled)
+            if (HuntButton.TargetPlayer != TargetPlayer && !TargetKilled)
             {
                 Utils.Flash(new Color32(255, 0, 0, 255));
                 LastChecked = DateTime.UtcNow;
             }
-            else if (ClosestPlayer == TargetPlayer && !TargetKilled)
+            else if (HuntButton.TargetPlayer == TargetPlayer && !TargetKilled)
             {
-                var interact = Utils.Interact(Player, ClosestPlayer, true);
+                var interact = Utils.Interact(Player, HuntButton.TargetPlayer, true);
 
                 if (!interact[3])
-                    Utils.RpcMurderPlayer(Player, ClosestPlayer);
+                    Utils.RpcMurderPlayer(Player, HuntButton.TargetPlayer);
 
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.BountyHunterWin);
@@ -267,7 +265,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
             else
             {
-                var interact = Utils.Interact(Player, ClosestPlayer, true);
+                var interact = Utils.Interact(Player, HuntButton.TargetPlayer, true);
 
                 if (interact[0] || interact[3])
                     LastChecked = DateTime.UtcNow;

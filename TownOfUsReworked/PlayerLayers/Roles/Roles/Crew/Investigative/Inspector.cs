@@ -2,16 +2,15 @@ using TownOfUsReworked.Data;
 using TownOfUsReworked.CustomOptions;
 using Il2CppSystem.Collections.Generic;
 using System;
-using TownOfUsReworked.Modules;
 using TownOfUsReworked.Custom;
 using TownOfUsReworked.Classes;
 using System.Linq;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Inspector : CrewRole
     {
-        public PlayerControl ClosestPlayer;
         public DateTime LastInspected;
         public List<byte> Inspected = new();
         public CustomButton InspectButton;
@@ -20,7 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Inspector";
             RoleType = RoleEnum.Inspector;
-            StartText = "Inspect Player For Their Roles";
+            StartText = "Inspect Players For Their Roles";
             AbilitiesText = "- You can check a player to get a role list of what they could be";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Inspector : Colors.Crew;
             RoleAlignment = RoleAlignment.CrewInvest;
@@ -28,7 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Inspected = new();
             InspectorResults = InspectorResults.HasInformation;
             Type = LayerEnum.Inspector;
-            InspectButton = new(this, AssetManager.Inspect, AbilityTypes.Direct, "ActionSecondary", Inspect);
+            InspectButton = new(this, "Inspect", AbilityTypes.Direct, "ActionSecondary", Inspect);
         }
 
         public float InspectTimer()
@@ -42,13 +41,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Inspect()
         {
-            if (InspectTimer() != 0f || Utils.IsTooFar(Player, ClosestPlayer) || Inspected.Contains(ClosestPlayer.PlayerId))
+            if (InspectTimer() != 0f || Utils.IsTooFar(Player, InspectButton.TargetPlayer) || Inspected.Contains(InspectButton.TargetPlayer.PlayerId))
                 return;
 
-            var interact = Utils.Interact(Player, ClosestPlayer);
+            var interact = Utils.Interact(Player, InspectButton.TargetPlayer);
 
             if (interact[3])
-                Inspected.Add(ClosestPlayer.PlayerId);
+                Inspected.Add(InspectButton.TargetPlayer.PlayerId);
 
             if (interact[0])
                 LastInspected = DateTime.UtcNow;
@@ -59,7 +58,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            var notinspected = PlayerControl.AllPlayerControls.ToArray().Where(x => !Inspected.Contains(x.PlayerId)).ToList();
+            var notinspected = PlayerControl.AllPlayerControls.ToArray().Where(x => !Inspected.Contains(x.PlayerId) || (Faction is Faction.Intruder or Faction.Syndicate &&
+                CustomGameOptions.FactionSeeRoles && x.GetFaction() == Faction)).ToList();
             InspectButton.Update("INSPECT", InspectTimer(), CustomGameOptions.InspectCooldown, notinspected);
         }
     }

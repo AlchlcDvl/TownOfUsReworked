@@ -33,6 +33,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public static void UpdateButton(Mayor role, MeetingHud __instance)
         {
+            if (PlayerControl.LocalPlayer != role.Player)
+                return;
+
             var skip = __instance.SkipVoteButton;
             role.Abstain.gameObject.SetActive(skip.gameObject.active && !role.VotedOnce);
             role.Abstain.voteComplete = skip.voteComplete;
@@ -42,6 +45,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void GenButton(MeetingHud __instance)
         {
+            if (PlayerControl.LocalPlayer != Player)
+                return;
+
             Abstain = Object.Instantiate(__instance.SkipVoteButton, __instance.SkipVoteButton.transform.parent);
             Abstain.Parent = __instance;
             Abstain.SetTargetPlayerId(251);

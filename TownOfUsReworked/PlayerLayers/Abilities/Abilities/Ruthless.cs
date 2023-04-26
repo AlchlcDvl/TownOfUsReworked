@@ -8,7 +8,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
         public Ruthless(PlayerControl player) : base(player)
         {
             Name = "Ruthless";
-            TaskText = "- Your attacks cannot be stopped.";
+            TaskText = "- Your attacks cannot be stopped";
             Color = CustomGameOptions.CustomAbilityColors ? Colors.Ruthless : Colors.Ability;
             AbilityType = AbilityEnum.Ruthless;
             Hidden = !CustomGameOptions.RuthlessKnows;

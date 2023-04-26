@@ -2,7 +2,6 @@ using System;
 using UnityEngine;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Modules;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Custom;
 using Hazel;
@@ -30,7 +29,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AlignmentName = IC;
             InspectorResults = InspectorResults.BringsChaos;
             Type = LayerEnum.Camouflager;
-            CamouflageButton = new(this, AssetManager.Camouflage, AbilityTypes.Effect, "Secondary", HitCamouflage);
+            CamouflageButton = new(this, "Camouflage", AbilityTypes.Effect, "Secondary", HitCamouflage);
         }
 
         public void Camouflage()

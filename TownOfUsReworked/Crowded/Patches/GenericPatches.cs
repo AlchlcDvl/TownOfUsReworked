@@ -8,7 +8,7 @@ namespace TownOfUsReworked.Crowded.Patches
     public static class GenericPatches
     {
         [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.CmdCheckColor))]
-        public static class PlayerControlCmdCheckColorPatch
+        public static class CmdCheckColorPatch
         {
             public static bool Prefix(PlayerControl __instance, [HarmonyArgument(0)] byte colorId)
             {
@@ -17,18 +17,14 @@ namespace TownOfUsReworked.Crowded.Patches
             }
         }
 
-        [HarmonyPatch(typeof(PlayerTab), nameof(PlayerTab.IsSelectedItemEquipped))]
-        public static class PlayerTabIsSelectedItemEquippedPatch
+        [HarmonyPatch(typeof(PlayerTab), nameof(PlayerTab.Update))]
+        public static class IsSelectedItemEquippedPatch
         {
-            public static bool Prefix(out bool __result)
-            {
-                __result = true;
-                return false;
-            }
+            public static void Postfix(PlayerTab __instance) => __instance.currentColorIsEquipped = true;
         }
 
         [HarmonyPatch(typeof(PlayerTab), nameof(PlayerTab.UpdateAvailableColors))]
-        public static class PlayerTabUpdateAvailableColorsPatch
+        public static class UpdateAvailableColorsPatch
         {
             public static bool Prefix(PlayerTab __instance)
             {

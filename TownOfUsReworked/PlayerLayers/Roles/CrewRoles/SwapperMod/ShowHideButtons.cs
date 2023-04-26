@@ -21,7 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
 
             foreach (var swapper in Role.GetRoles<Swapper>(RoleEnum.Swapper))
             {
-                if (swapper.Player.Data.IsDead || swapper.Player.Data.Disconnected || swapper.Swap1 == null || swapper.Swap2 == null)
+                if (swapper.IsDead || swapper.Disconnected || swapper.Swap1 == null || swapper.Swap2 == null)
                     continue;
 
                 PlayerControl swapPlayer1 = null;
@@ -67,7 +67,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
 
                 foreach (var button in swapper.MoarButtons.Where(button => button != null))
                 {
-                    if (button.GetComponent<SpriteRenderer>().sprite == AssetManager.SwapperSwitchDisabled)
+                    if (button.GetComponent<SpriteRenderer>().sprite == AssetManager.GetSprite("SwapperSwitchDisabled"))
                         button.SetActive(false);
 
                     button.GetComponent<PassiveButton>().OnClick = new Button.ButtonClickedEvent();

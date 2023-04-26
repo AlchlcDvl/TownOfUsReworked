@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using HarmonyLib;
 
-namespace TownOfUsReworked.Cosmetics.CustomColors
+namespace TownOfUsReworked.Cosmetics
 {
     [HarmonyPatch]
     public static class ColorUtils

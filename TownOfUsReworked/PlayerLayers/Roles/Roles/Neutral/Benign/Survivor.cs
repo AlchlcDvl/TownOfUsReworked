@@ -4,8 +4,6 @@ using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Custom;
 using Hazel;
-using TownOfUsReworked.Modules;
-using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -33,7 +31,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Objectives = "- Live to the end of the game";
             InspectorResults = InspectorResults.SeeksToProtect;
             Type = LayerEnum.Survivor;
-            VestButton = new(this, AssetManager.Vest, AbilityTypes.Effect, "ActionSecondary", HitVest, true);
+            VestButton = new(this, "Vest", AbilityTypes.Effect, "ActionSecondary", HitVest, true);
         }
 
         public float VestTimer()

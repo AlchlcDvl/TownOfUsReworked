@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using TownOfUsReworked.Modules;
 using TownOfUsReworked.CustomOptions;
 using System;
 using TownOfUsReworked.Objects;
@@ -12,6 +11,7 @@ using Object = UnityEngine.Object;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.Custom;
 using TownOfUsReworked.Extensions;
+using Reactor.Utilities.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -20,9 +20,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Dictionary<byte, ArrowBehaviour> BodyArrows = new();
         public List<byte> Reported = new();
         public CustomButton CompareButton;
-        public DeadBody CurrentTarget;
         public DeadPlayer ReferenceBody;
-        public PlayerControl ClosestPlayer;
         public DateTime LastCompared;
         public DateTime LastAutopsied;
         public int UsesLeft;
@@ -43,8 +41,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             InspectorResults = InspectorResults.DealsWithDead;
             UsesLeft = 0;
             Type = LayerEnum.Coroner;
-            AutopsyButton = new(this, AssetManager.Placeholder, AbilityTypes.Dead, "ActionSecondary", Autopsy);
-            CompareButton = new(this, AssetManager.Placeholder, AbilityTypes.Direct, "Secondary", Compare, true);
+            AutopsyButton = new(this, "Autopsy", AbilityTypes.Dead, "ActionSecondary", Autopsy);
+            CompareButton = new(this, "Compare", AbilityTypes.Direct, "Secondary", Compare, true);
         }
 
         public float CompareTimer()
@@ -68,13 +66,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public void DestroyArrow(byte targetPlayerId)
         {
             var arrow = BodyArrows.FirstOrDefault(x => x.Key == targetPlayerId);
-
-            if (arrow.Value != null)
-                Object.Destroy(arrow.Value);
-
-            if (arrow.Value.gameObject != null)
-                Object.Destroy(arrow.Value.gameObject);
-
+            arrow.Value?.Destroy();
+            arrow.Value.gameObject?.Destroy();
             BodyArrows.Remove(arrow.Key);
         }
 
@@ -109,7 +102,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         var arrow = gameObj.AddComponent<ArrowBehaviour>();
                         gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
                         var renderer = gameObj.AddComponent<SpriteRenderer>();
-                        renderer.sprite = AssetManager.Arrow;
+                        renderer.sprite = AssetManager.GetSprite("Arrow");
                         arrow.image = renderer;
                         gameObj.layer = 5;
                         BodyArrows.Add(body.ParentId, arrow);
@@ -127,10 +120,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Autopsy()
         {
-            if (Utils.IsTooFar(Player, CurrentTarget) || AutopsyTimer() != 0f)
+            if (Utils.IsTooFar(Player, AutopsyButton.TargetBody) || AutopsyTimer() != 0f)
                 return;
 
-            var playerId = CurrentTarget.ParentId;
+            var playerId = AutopsyButton.TargetBody.ParentId;
             var player = Utils.PlayerById(playerId);
             Utils.Spread(Player, player);
             var matches = Murder.KilledPlayers.Where(x => x.PlayerId == playerId).ToArray();
@@ -152,14 +145,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Compare()
         {
-            if (ReferenceBody == null || Utils.IsTooFar(Player, ClosestPlayer) || CompareTimer() != 0f)
+            if (ReferenceBody == null || Utils.IsTooFar(Player, CompareButton.TargetPlayer) || CompareTimer() != 0f)
                 return;
 
-            var interact = Utils.Interact(Player, ClosestPlayer);
+            var interact = Utils.Interact(Player, CompareButton.TargetPlayer);
 
             if (interact[3])
             {
-                if (ClosestPlayer.PlayerId == ReferenceBody.KillerId || ClosestPlayer.IsFramed())
+                if (CompareButton.TargetPlayer.PlayerId == ReferenceBody.KillerId || CompareButton.TargetPlayer.IsFramed())
                     Utils.Flash(new Color32(255, 0, 0, 255));
                 else
                     Utils.Flash(new Color32(0, 255, 0, 255));

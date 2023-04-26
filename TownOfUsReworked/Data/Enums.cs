@@ -9,8 +9,6 @@ namespace TownOfUsReworked.Data
         SetSwaps,
         Shift,
         Protect,
-        Rewind,
-        RewindRevive,
         Morph,
         Camouflage,
         Mine,
@@ -38,7 +36,6 @@ namespace TownOfUsReworked.Data
         Blackmail,
         Poison,
         Infect,
-        TimeFreeze,
         Convert,
         Stake,
         Warp,
@@ -58,7 +55,6 @@ namespace TownOfUsReworked.Data
         Sidekick,
         Declare,
         RebelAction,
-        Confuse,
         Frame,
         Ambush,
         Crusade,
@@ -254,14 +250,14 @@ namespace TownOfUsReworked.Data
         Morph,
         Camouflage,
         Invis,
-        PlayerNameOnly
+        PlayerNameOnly,
+        NightVision
     }
 
     public enum TargetRPC
     {
         SetCouple,
         SetDuo,
-
         SetAlliedFaction,
 
         SetGoodRecruit,
@@ -359,6 +355,7 @@ namespace TownOfUsReworked.Data
         Corrupted,
         Fanatic,
         Lovers,
+        Mafia,
         Overlord,
         Rivals,
         Taskmaster,
@@ -388,7 +385,6 @@ namespace TownOfUsReworked.Data
         Sheriff,
         Shifter,
         Swapper,
-        TimeLord,
         Tracker,
         Transporter,
         VampireHunter,
@@ -439,17 +435,13 @@ namespace TownOfUsReworked.Data
         Morphling,
         PromotedGodfather,
         Teleporter,
-        TimeMaster,
         Wraith,
 
         Anarchist,
         Banshee,
         Bomber,
-        Collider,
         Concealer,
         Crusader,
-        Drunkard,
-        Eraser,
         Framer,
         Poisoner,
         Politician,
@@ -511,7 +503,6 @@ namespace TownOfUsReworked.Data
         Sheriff,
         Shifter,
         Swapper,
-        TimeLord,
         Tracker,
         Transporter,
         VampireHunter,
@@ -562,17 +553,13 @@ namespace TownOfUsReworked.Data
         Morphling,
         PromotedGodfather,
         Teleporter,
-        TimeMaster,
         Wraith,
 
         Anarchist,
         Banshee,
         Bomber,
-        Collider,
         Concealer,
         Crusader,
-        Drunkard,
-        Eraser,
         Framer,
         Poisoner,
         Politician,
@@ -599,6 +586,7 @@ namespace TownOfUsReworked.Data
         Corrupted,
         Fanatic,
         Lovers,
+        Mafia,
         Overlord,
         Rivals,
         Taskmaster,
@@ -663,6 +651,8 @@ namespace TownOfUsReworked.Data
         Misfire,
         Frozen,
         Ignited,
+        Haunted,
+        Doomed,
 
         None
     }
@@ -698,6 +688,7 @@ namespace TownOfUsReworked.Data
         RivalWin,
         CorruptedWin,
         OverlordWin,
+        MafiaWins,
 
         NobodyWins,
 
@@ -817,7 +808,6 @@ namespace TownOfUsReworked.Data
         FlashGrenade,
         Blackmail,
         Infect,
-        TimeFreeze,
         ConsRoleblock,
         SetBomb,
         Ambush
@@ -836,7 +826,6 @@ namespace TownOfUsReworked.Data
         Warp,
         Conceal,
         Shapeshift,
-        Confuse,
         Frame,
         Crusade
     }
@@ -863,5 +852,18 @@ namespace TownOfUsReworked.Data
         Bloodlust,
         NoLust,
         Never
+    }
+
+    public enum ChatChannel
+    {
+        Lovers,
+        Rivals,
+        Intruders,
+        Syndicate,
+        Undead,
+        Sect,
+        Cabal,
+        Reanimated,
+        All
     }
 }

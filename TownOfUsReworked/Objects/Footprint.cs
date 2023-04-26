@@ -1,10 +1,11 @@
 using TownOfUsReworked.CustomOptions;
 using UnityEngine;
-using TownOfUsReworked.Cosmetics.CustomColors;
+using TownOfUsReworked.Cosmetics;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.PlayerLayers;
 using TownOfUsReworked.Classes;
 using HarmonyLib;
+using Reactor.Utilities.Extensions;
 
 namespace TownOfUsReworked.Objects
 {
@@ -19,7 +20,6 @@ namespace TownOfUsReworked.Objects
         public Color Color;
         public Vector3 Position;
         public Role Role;
-        public static float Duration => CustomGameOptions.FootprintDuration;
         public static bool Grey => CustomGameOptions.AnonymousFootPrint || DoUndo.IsCamoed;
 
         public Footprint(PlayerControl player, Role role)
@@ -28,7 +28,7 @@ namespace TownOfUsReworked.Objects
             Position = player.transform.position;
             Velocity = player.gameObject.GetComponent<Rigidbody2D>().velocity;
             Player = player;
-            Time2 = (int) Time.time;
+            Time2 = (int)Time.time;
             Color = Color.black;
             Start();
             role.AllPrints.Add(this);
@@ -36,8 +36,10 @@ namespace TownOfUsReworked.Objects
 
         public static void DestroyAll(Role role)
         {
-            while (role.AllPrints.Count != 0)
-                role.AllPrints[0].Destroy();
+            foreach (var print in role.AllPrints)
+                print.Destroy();
+
+            role.AllPrints.Clear();
         }
 
         private void Start()
@@ -49,7 +51,7 @@ namespace TownOfUsReworked.Objects
             GObject.transform.SetParent(Player.transform.parent);
 
             Sprite = GObject.AddComponent<SpriteRenderer>();
-            Sprite.sprite = AssetManager.Footprint;
+            Sprite.sprite = AssetManager.GetSprite("Footprint");
             Sprite.color = Color;
             var appearance = Player.GetAppearance();
             var size = appearance.SizeFactor;
@@ -60,14 +62,14 @@ namespace TownOfUsReworked.Objects
 
         private void Destroy()
         {
-            Object.Destroy(GObject);
+            GObject.Destroy();
             Role.AllPrints.Remove(this);
         }
 
         public bool Update()
         {
             var currentTime = Time.time;
-            var alpha = Mathf.Max(1f - ((currentTime - Time2) / Duration), 0f);
+            var alpha = Mathf.Max(1f - ((currentTime - Time2) / CustomGameOptions.FootprintDuration), 0f);
 
             if (alpha is < 0 or > 1)
                 alpha = 0;
@@ -92,7 +94,7 @@ namespace TownOfUsReworked.Objects
             Color = new Color(Color.r, Color.g, Color.b, alpha);
             Sprite.color = Color;
 
-            if (Time2 + (int) Duration < currentTime)
+            if (Time2 + CustomGameOptions.FootprintDuration < currentTime)
             {
                 Destroy();
                 return true;

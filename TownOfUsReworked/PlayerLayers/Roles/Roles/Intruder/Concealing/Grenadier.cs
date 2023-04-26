@@ -4,7 +4,6 @@ using System.Linq;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using Il2CppSystem.Collections.Generic;
-using TownOfUsReworked.Modules;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Custom;
@@ -38,7 +37,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             ClosestPlayers = new();
             FlashedPlayers = new();
             Type = LayerEnum.Grenadier;
-            FlashButton = new(this, AssetManager.Flash, AbilityTypes.Effect, "Secondary", HitFlash);
+            FlashButton = new(this, "Flash", AbilityTypes.Effect, "Secondary", HitFlash);
         }
 
         public float FlashTimer()

@@ -3,6 +3,7 @@ using TownOfUsReworked.Data;
 using UnityEngine;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Extensions;
+using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Modifiers
 {
@@ -48,9 +49,9 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
                 else if (randomNumber == 1)
                 {
                     //Fake someone killing you
-                    otherNumber = Random.RandomRangeInt(0, PlayerControl.AllPlayerControls.Count);
-                    var fakePlayer = PlayerControl.AllPlayerControls[otherNumber];
-                    __instance.KillOverlay.ShowKillAnimation(fakePlayer.Data, PlayerControl.LocalPlayer.Data);
+                    var fakePlayer = PlayerControl.AllPlayerControls.ToArray().ToList().Random();
+                    Player.NetTransform.Halt();
+                    __instance.KillOverlay.ShowKillAnimation(fakePlayer.Data, Player.Data);
                 }
                 /*else if (randomNumber == 2)
                 {

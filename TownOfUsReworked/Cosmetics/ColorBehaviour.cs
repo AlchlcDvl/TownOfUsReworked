@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace TownOfUsReworked.Cosmetics.CustomColors
+namespace TownOfUsReworked.Cosmetics
 {
     public class ColorBehaviour : MonoBehaviour
     {

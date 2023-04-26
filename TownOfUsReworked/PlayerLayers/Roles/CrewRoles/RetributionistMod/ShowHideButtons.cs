@@ -20,7 +20,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod
 
             foreach (var button in imitator.OtherButtons.Where(button => button != null))
             {
-                if (button.GetComponent<SpriteRenderer>().sprite == AssetManager.SwapperSwitchDisabled)
+                if (button.GetComponent<SpriteRenderer>().sprite == AssetManager.GetSprite("RetDeselect"))
                     button.SetActive(false);
 
                 button.GetComponent<PassiveButton>().OnClick = new Button.ButtonClickedEvent();

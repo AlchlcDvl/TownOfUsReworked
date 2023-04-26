@@ -3,7 +3,6 @@ using System.Linq;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Modules;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Custom;
 using Hazel;
@@ -12,7 +11,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class VampireHunter : CrewRole
     {
-        public PlayerControl ClosestPlayer;
         public DateTime LastStaked;
         public static bool VampsDead => !PlayerControl.AllPlayerControls.ToArray().Any(x => x?.Data.IsDead == false && !x.Data.Disconnected && x.Is(SubFaction.Undead));
         public CustomButton StakeButton;
@@ -29,7 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AlignmentName = CA;
             InspectorResults = InspectorResults.TracksOthers;
             Type = LayerEnum.VampireHunter;
-            StakeButton = new(this, AssetManager.Stake, AbilityTypes.Direct, "ActionSecondary", Stake);
+            StakeButton = new(this, "Stake", AbilityTypes.Direct, "ActionSecondary", Stake);
         }
 
         public float StakeTimer()
@@ -67,10 +65,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Stake()
         {
-            if (Utils.IsTooFar(Player, ClosestPlayer) || StakeTimer() != 0f)
+            if (Utils.IsTooFar(Player, StakeButton.TargetPlayer) || StakeTimer() != 0f)
                 return;
 
-            var interact = Utils.Interact(Player, ClosestPlayer, ClosestPlayer.Is(SubFaction.Undead) || ClosestPlayer.IsFramed());
+            var interact = Utils.Interact(Player, StakeButton.TargetPlayer, StakeButton.TargetPlayer.Is(SubFaction.Undead) || StakeButton.TargetPlayer.IsFramed());
 
             if (interact[3] || interact[0])
                 LastStaked = DateTime.UtcNow;

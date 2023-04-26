@@ -51,9 +51,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
                     if (CustomGameOptions.SwapperOn > 0)
                         ColorMapping.Add("Swapper", Colors.Swapper);
 
-                    if (CustomGameOptions.TimeLordOn > 0)
-                        ColorMapping.Add("Time Lord", Colors.TimeLord);
-
                     if (CustomGameOptions.MedicOn > 0)
                         ColorMapping.Add("Medic", Colors.Medic);
 
@@ -143,9 +140,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
                     if (CustomGameOptions.EnforcerOn > 0)
                         ColorMapping.Add("Enforcer", Colors.Enforcer);
 
-                    if (CustomGameOptions.TimeMasterOn > 0)
-                        ColorMapping.Add("Time Master", Colors.TimeMaster);
-
                     if (CustomGameOptions.DisguiserOn > 0)
                         ColorMapping.Add("Consigliere", Colors.Consigliere);
 
@@ -184,17 +178,11 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
                     if (CustomGameOptions.PoisonerOn > 0)
                         ColorMapping.Add("Poisoner", Colors.Poisoner);
 
-                    if (CustomGameOptions.DrunkardOn > 0)
-                        ColorMapping.Add("Drunkard", Colors.Drunkard);
-
                     if (CustomGameOptions.PoliticianOn > 0)
                         ColorMapping.Add("Politician", Colors.Politician);
 
-                    /*if (CustomGameOptions.EraserOn > 0)
-                        ColorMapping.Add("Eraser", Colors.Eraser);
-
-                    if (CustomGameOptions.ColliderOn > 0)
-                        ColorMapping.Add("Collider", Colors.Collider);*/
+                    if (CustomGameOptions.CrusaderOn > 0)
+                        ColorMapping.Add("Crusader", Colors.Crusader);
 
                     if (CustomGameOptions.RebelOn > 0)
                     {

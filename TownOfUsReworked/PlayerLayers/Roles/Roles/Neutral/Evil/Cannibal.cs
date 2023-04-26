@@ -8,7 +8,6 @@ using TownOfUsReworked.Data;
 using HarmonyLib;
 using UnityEngine;
 using TownOfUsReworked.Patches;
-using TownOfUsReworked.Modules;
 using TownOfUsReworked.Custom;
 using Hazel;
 using Reactor.Utilities;
@@ -18,7 +17,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     public class Cannibal : NeutralRole
     {
         public CustomButton EatButton;
-        public DeadBody CurrentTarget;
         public int EatNeed;
         public bool CannibalWin;
         public DateTime LastEaten;
@@ -30,8 +28,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Name = "Cannibal";
             StartText = "Eat The Bodies Of The Dead";
             RoleType = RoleEnum.Cannibal;
-            AbilitiesText = "- You can consume a body, making it disappear from the game" + (CustomGameOptions.EatArrows ? "\n- When someone dies, you get an arrow " +
-                "pointing to their body" : "");
+            AbilitiesText = "- You can consume a body, making it disappear from the game" + (CustomGameOptions.EatArrows ? "\n- When someone dies, you get an arrow pointing to their body" :
+                "");
             RoleAlignment = RoleAlignment.NeutralEvil;
             AlignmentName = NE;
             Color = CustomGameOptions.CustomNeutColors ? Colors.Cannibal : Colors.Neutral;
@@ -39,7 +37,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             BodyArrows = new();
             EatNeed = CustomGameOptions.CannibalBodyCount >= PlayerControl.AllPlayerControls.Count / 2 ? PlayerControl.AllPlayerControls.Count / 2 : CustomGameOptions.CannibalBodyCount;
             Type = LayerEnum.Cannibal;
-            EatButton = new(this, AssetManager.Eat, AbilityTypes.Dead, "ActionSecondary", Eat);
+            EatButton = new(this, "Eat", AbilityTypes.Dead, "ActionSecondary", Eat);
         }
 
         public float EatTimer()
@@ -93,7 +91,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         var arrow = gameObj.AddComponent<ArrowBehaviour>();
                         gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
                         var renderer = gameObj.AddComponent<SpriteRenderer>();
-                        renderer.sprite = AssetManager.Arrow;
+                        renderer.sprite = AssetManager.GetSprite("Arrow");
                         arrow.image = renderer;
                         gameObj.layer = 5;
                         BodyArrows.Add(body.ParentId, arrow);
@@ -108,18 +106,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Eat()
         {
-            if (Utils.IsTooFar(Player, CurrentTarget) || EatTimer() != 0f)
+            if (Utils.IsTooFar(Player, EatButton.TargetBody) || EatTimer() != 0f)
                 return;
 
-            var player = Utils.PlayerById(CurrentTarget.ParentId);
+            var player = Utils.PlayerById(EatButton.TargetBody.ParentId);
             Utils.Spread(Player, player);
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
             writer.Write((byte)ActionsRPC.FadeBody);
-            writer.Write(CurrentTarget.ParentId);
+            writer.Write(EatButton.TargetBody.ParentId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
             LastEaten = DateTime.UtcNow;
             EatNeed--;
-            Coroutines.Start(Utils.FadeBody(CurrentTarget));
+            Coroutines.Start(Utils.FadeBody(EatButton.TargetBody));
 
             if (EatWin)
             {

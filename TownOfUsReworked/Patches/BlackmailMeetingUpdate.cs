@@ -44,7 +44,7 @@ namespace TownOfUsReworked.Patches
                         if (PrevXMark == null)
                             PrevXMark = playerState.XMark.sprite;
 
-                        playerState.XMark.sprite = AssetManager.BlackmailLetter;
+                        playerState.XMark.sprite = AssetManager.GetSprite("BlackmailLetter");
                         playerState.XMark.transform.localScale *= 0.75f;
                         playerState.XMark.transform.localPosition = new Vector3(playerState.XMark.transform.localPosition.x + LetterXOffset, playerState.XMark.transform.localPosition.y +
                             LetterYOffset, playerState.XMark.transform.localPosition.z);
@@ -67,7 +67,7 @@ namespace TownOfUsReworked.Patches
                         if (PrevXMark == null)
                             PrevXMark = playerState.XMark.sprite;
 
-                        playerState.XMark.sprite = AssetManager.BlackmailLetter;
+                        playerState.XMark.sprite = AssetManager.GetSprite("BlackmailLetter");
                         playerState.XMark.transform.localScale *= 0.75f;
                         playerState.XMark.transform.localPosition = new Vector3(playerState.XMark.transform.localPosition.x + LetterXOffset, playerState.XMark.transform.localPosition.y +
                             LetterYOffset, playerState.XMark.transform.localPosition.z);
@@ -110,7 +110,7 @@ namespace TownOfUsReworked.Patches
                         if (PrevOverlay == null)
                             PrevOverlay = playerState.Overlay.sprite;
 
-                        playerState.Overlay.sprite = AssetManager.BlackmailOverlay;
+                        playerState.Overlay.sprite = AssetManager.GetSprite("BlackmailOverlay");
 
                         if (__instance.state != MeetingHud.VoteStates.Animating && !shookAlready)
                         {
@@ -133,7 +133,7 @@ namespace TownOfUsReworked.Patches
                         if (PrevOverlay == null)
                             PrevOverlay = playerState.Overlay.sprite;
 
-                        playerState.Overlay.sprite = AssetManager.BlackmailOverlay;
+                        playerState.Overlay.sprite = AssetManager.GetSprite("BlackmailOverlay");
 
                         if (__instance.state != MeetingHud.VoteStates.Animating && !shookAlready)
                         {

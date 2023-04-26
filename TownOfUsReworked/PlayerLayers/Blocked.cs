@@ -31,6 +31,9 @@ namespace TownOfUsReworked.PlayerLayers
             if (ConstantVariables.Inactive)
                 return true;
 
+            if (PlayerControl.LocalPlayer.Is(ModifierEnum.Coward))
+                return false;
+
             return PlayerLayer.GetLayers(PlayerControl.LocalPlayer).All(x => !x.IsBlocked);
         }
     }

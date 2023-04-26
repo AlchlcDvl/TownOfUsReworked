@@ -20,7 +20,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Corrupted : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Corrupted;
             Type = LayerEnum.Corrupted;
-            KillButton = new(this, AssetManager.CorruptedKill, AbilityTypes.Direct, "Quarternary", Kill);
+            KillButton = new(this, "CorruptedKill", AbilityTypes.Direct, "Quarternary", Kill);
         }
 
         public float KillTimer()

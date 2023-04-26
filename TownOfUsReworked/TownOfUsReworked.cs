@@ -8,7 +8,7 @@ using Reactor;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using Il2CppInterop.Runtime.Injection;
-using TownOfUsReworked.Cosmetics.CustomColors;
+using TownOfUsReworked.Cosmetics;
 using Reactor.Networking;
 using Reactor.Networking.Attributes;
 using AmongUs.GameOptions;
@@ -30,8 +30,8 @@ namespace TownOfUsReworked
     public class TownOfUsReworked : BasePlugin
     {
         public const string Id = "TownOfUsReworked";
-        public const string VersionString = "0.0.4.2";
-        public const string CompleteVersionString = "0.0.4.2";
+        public const string VersionString = "0.1.0.1";
+        public const string CompleteVersionString = "0.1.0.1t";
         public readonly static Version Version = new(VersionString);
 
         private readonly static string dev = VersionString[6..];

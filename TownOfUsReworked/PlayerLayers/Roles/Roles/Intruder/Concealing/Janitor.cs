@@ -1,5 +1,4 @@
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Modules;
 using TownOfUsReworked.Extensions;
 using UnityEngine;
 using TownOfUsReworked.Classes;
@@ -20,7 +19,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public CustomButton DropButton;
         public DateTime LastDragged;
         public DeadBody CurrentlyDragging;
-        public DeadBody CurrentTarget;
         public DateTime LastCleaned;
 
         public Janitor(PlayerControl player) : base(player)
@@ -35,9 +33,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             InspectorResults = InspectorResults.MeddlesWithDead;
             CurrentlyDragging = null;
             Type = LayerEnum.Janitor;
-            CleanButton = new(this, AssetManager.Clean, AbilityTypes.Dead, "Secondary", Clean);
-            DragButton = new(this, AssetManager.Drag, AbilityTypes.Dead, "Tertiary", Drag);
-            DropButton = new(this, AssetManager.Drop, AbilityTypes.Effect, "Tertiary", Drop);
+            CleanButton = new(this, "Clean", AbilityTypes.Dead, "Secondary", Clean);
+            DragButton = new(this, "Drag", AbilityTypes.Dead, "Tertiary", Drag);
+            DropButton = new(this, "Drop", AbilityTypes.Effect, "Tertiary", Drop);
         }
 
         public float CleanTimer()
@@ -112,17 +110,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Clean()
         {
-            if (CleanTimer() != 0f || Utils.IsTooFar(Player, CurrentTarget))
+            if (CleanTimer() != 0f || Utils.IsTooFar(Player, CleanButton.TargetBody))
                 return;
 
-            var playerId = CurrentTarget.ParentId;
+            var playerId = CleanButton.TargetBody.ParentId;
             var player = Utils.PlayerById(playerId);
             Utils.Spread(Player, player);
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
             writer.Write((byte)ActionsRPC.FadeBody);
             writer.Write(playerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
-            Coroutines.Start(Utils.FadeBody(CurrentTarget));
+            Coroutines.Start(Utils.FadeBody(CleanButton.TargetBody));
             LastCleaned = DateTime.UtcNow;
 
             if (CustomGameOptions.JaniCooldownsLinked)
@@ -131,10 +129,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Drag()
         {
-            if (Utils.IsTooFar(Player, CurrentTarget) || CurrentlyDragging != null)
+            if (Utils.IsTooFar(Player, DragButton.TargetBody) || CurrentlyDragging != null)
                 return;
 
-            var playerId = CurrentTarget.ParentId;
+            var playerId = DragButton.TargetBody.ParentId;
             var player = Utils.PlayerById(playerId);
             Utils.Spread(Player, player);
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
@@ -142,7 +140,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             writer.Write(Player.PlayerId);
             writer.Write(playerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
-            CurrentlyDragging = CurrentTarget;
+            CurrentlyDragging = DragButton.TargetBody;
         }
 
         public void Drop()

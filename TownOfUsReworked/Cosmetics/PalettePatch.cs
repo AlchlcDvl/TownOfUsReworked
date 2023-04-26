@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace TownOfUsReworked.Cosmetics.CustomColors
+namespace TownOfUsReworked.Cosmetics
 {
     public static class PalettePatch
     {

@@ -20,10 +20,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Necromancer : NeutralRole
     {
-        public DeadBody CurrentTarget;
         public DeadBody ResurrectingBody;
         public bool Success;
-        public PlayerControl ClosestPlayer;
         public CustomButton ResurrectButton;
         public CustomButton KillButton;
         public List<byte> Resurrected = new();
@@ -58,8 +56,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             KillCount = 0;
             Resurrected = new() { Player.PlayerId };
             Type = LayerEnum.Necromancer;
-            ResurrectButton = new(this, AssetManager.Ressurect, AbilityTypes.Dead, "ActionSecondary", HitResurrect, true);
-            KillButton = new(this, AssetManager.Placeholder, AbilityTypes.Direct, "Secondary", Kill, true);
+            ResurrectButton = new(this, "Ressurect", AbilityTypes.Dead, "ActionSecondary", HitResurrect, true);
+            KillButton = new(this, "NecroKill", AbilityTypes.Direct, "Secondary", Kill, true);
         }
 
         public float ResurrectTimer()
@@ -82,12 +80,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Resurrect()
         {
-            if (!Resurrecting && PlayerControl.LocalPlayer.PlayerId == CurrentTarget.ParentId)
+            if (!Resurrecting && PlayerControl.LocalPlayer.PlayerId == ResurrectButton.TargetBody.ParentId)
             {
                 Utils.Flash(Colors.Reanimated);
 
                 if (CustomGameOptions.NecromancerTargetBody)
-                    CurrentTarget?.gameObject.Destroy();
+                    ResurrectButton.TargetBody?.gameObject.Destroy();
             }
 
             Resurrecting = true;
@@ -155,7 +153,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            var notMates = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(SubFaction)).ToList();
+            var notMates = PlayerControl.AllPlayerControls.ToArray().Where(x => !Resurrected.Contains(x.PlayerId)).ToList();
             KillButton.Update("KILL", KillTimer(), CustomGameOptions.NecroKillCooldown + (KillCount * CustomGameOptions.NecroKillCooldownIncrease), KillUsesLeft, notMates, true,
                 KillButtonUsable);
             ResurrectButton.Update("RESURRECT", ResurrectTimer(), CustomGameOptions.ResurrectCooldown + (ResurrectedCount * CustomGameOptions.ResurrectCooldownIncrease), ResurrectUsesLeft,
@@ -164,18 +162,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void HitResurrect()
         {
-            if (Utils.IsTooFar(Player, CurrentTarget) || ResurrectTimer() != 0f || !ResurrectButtonUsable)
+            if (Utils.IsTooFar(Player, ResurrectButton.TargetBody) || ResurrectTimer() != 0f || !ResurrectButtonUsable)
                 return;
 
-            if (!RoleGen.CanConvert(CurrentTarget.ParentId))
+            if (RoleGen.Convertible <= 1 || !Utils.PlayerByBody(ResurrectingBody).Is(SubFaction.None))
             {
                 Utils.Flash(new Color32(255, 0, 0, 255));
                 LastResurrected = DateTime.UtcNow;
             }
             else
             {
-                var playerId = CurrentTarget.ParentId;
-                ResurrectingBody = CurrentTarget;
+                var playerId = ResurrectButton.TargetBody.ParentId;
+                ResurrectingBody = ResurrectButton.TargetBody;
                 var player = Utils.PlayerById(playerId);
                 Utils.Spread(Player, player);
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
@@ -194,10 +192,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Kill()
         {
-            if (KillTimer() != 0f || Utils.IsTooFar(Player, ClosestPlayer) || !KillButtonUsable)
+            if (KillTimer() != 0f || Utils.IsTooFar(Player, KillButton.TargetPlayer) || !KillButtonUsable)
                 return;
 
-            var interact = Utils.Interact(Player, ClosestPlayer, true);
+            var interact = Utils.Interact(Player, KillButton.TargetPlayer, true);
 
             if (interact[3])
             {

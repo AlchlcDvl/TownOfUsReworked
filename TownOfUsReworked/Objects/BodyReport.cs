@@ -100,3 +100,24 @@ namespace TownOfUsReworked.Objects
         }
     }
 }
+
+/*using UnityEngine;
+using HarmonyLib;
+
+namespace TownOfUsReworked.Modules
+{
+    [HarmonyPatch]
+    public class PointInTime
+    {
+        public Vector3 position;
+        public float unix;
+        public Vector2 velocity;
+
+        public PointInTime(Vector3 position, Vector2 velocity, float unix)
+        {
+            this.position = position;
+            this.velocity = velocity;
+            this.unix = unix;
+        }
+    }
+}*/ //Still keeping this class, for maybe future use and putting this class here to avoid that damn suggestion my extention keeps giving me

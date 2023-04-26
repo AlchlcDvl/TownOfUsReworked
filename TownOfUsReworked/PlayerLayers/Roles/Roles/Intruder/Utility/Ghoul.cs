@@ -17,7 +17,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public bool Faded;
         public DateTime LastMarked;
         public PlayerControl MarkedPlayer;
-        public PlayerControl ClosestMark;
 
         public Ghoul(PlayerControl player) : base(player)
         {
@@ -32,7 +31,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = CustomGameOptions.CustomIntColors ? Colors.Ghoul : Colors.Intruder;
             MarkedPlayer = null;
             Type = LayerEnum.Ghoul;
-            MarkButton = new(this, AssetManager.Placeholder, AbilityTypes.Direct, "ActionSecondary", Mark, false, true);
+            MarkButton = new(this, "GhoulMark", AbilityTypes.Direct, "ActionSecondary", Mark, false, true);
         }
 
         public float MarkTimer()
@@ -79,15 +78,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Mark()
         {
-            if (MarkTimer() != 0f || Utils.IsTooFar(Player, ClosestMark))
+            if (MarkTimer() != 0f || Utils.IsTooFar(Player, MarkButton.TargetPlayer))
                 return;
 
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
             writer.Write((byte)ActionsRPC.Mark);
             writer.Write(Player.PlayerId);
-            writer.Write(ClosestMark.PlayerId);
+            writer.Write(MarkButton.TargetPlayer.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
-            MarkedPlayer = ClosestMark;
+            MarkedPlayer = MarkButton.TargetPlayer;
         }
 
         public override void UpdateHud(HudManager __instance)

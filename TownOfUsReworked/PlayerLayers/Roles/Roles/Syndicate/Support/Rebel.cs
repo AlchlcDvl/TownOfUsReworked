@@ -11,7 +11,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Rebel : SyndicateRole
     {
-        public PlayerControl ClosestSyndicate;
         public bool HasDeclared;
         public CustomButton SidekickButton;
         public DateTime LastDeclared;
@@ -28,7 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleAlignment = RoleAlignment.SyndicateSupport;
             AlignmentName = SSu;
             Type = LayerEnum.Rebel;
-            SidekickButton = new(this, AssetManager.Sidekick, AbilityTypes.Direct, "Secondary", Sidekick);
+            SidekickButton = new(this, "Sidekick", AbilityTypes.Direct, "Secondary", Sidekick);
         }
 
         public static void Sidekick(Rebel reb, PlayerControl target)
@@ -55,19 +54,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Sidekick()
         {
-            if (Utils.IsTooFar(Player, ClosestSyndicate) || HasDeclared)
+            if (Utils.IsTooFar(Player, SidekickButton.TargetPlayer) || HasDeclared)
                 return;
 
-            var interact = Utils.Interact(Player, ClosestSyndicate);
+            var interact = Utils.Interact(Player, SidekickButton.TargetPlayer);
 
             if (interact[3])
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.Sidekick);
                 writer.Write(Player.PlayerId);
-                writer.Write(ClosestSyndicate.PlayerId);
+                writer.Write(SidekickButton.TargetPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Sidekick(this, ClosestSyndicate);
+                Sidekick(this, SidekickButton.TargetPlayer);
             }
             else if (interact[0])
                 LastDeclared = DateTime.UtcNow;
@@ -78,8 +77,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            var Syn = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Intruder) && !x.Is(RoleEnum.Banshee) && !x.Is(RoleEnum.Sidekick) && !x.Is(RoleEnum.Rebel) &&
-                !x.Is(RoleEnum.PromotedRebel)).ToList();
+            var Syn = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Syndicate) && !(x.GetRole() is RoleEnum.Banshee or RoleEnum.Sidekick or RoleEnum.PromotedRebel or
+                RoleEnum.Rebel)).ToList();
             SidekickButton.Update("SIDEKICK", 0, 1, Syn, true, !HasDeclared);
         }
     }

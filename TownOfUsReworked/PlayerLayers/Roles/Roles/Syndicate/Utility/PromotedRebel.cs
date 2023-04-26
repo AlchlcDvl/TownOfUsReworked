@@ -6,7 +6,6 @@ using UnityEngine;
 using System.Collections.Generic;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Functions;
 using TownOfUsReworked.Objects;
 using System.Collections;
 using TownOfUsReworked.Custom;
@@ -41,22 +40,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             ShapeshiftPlayer2 = null;
             PoisonedPlayer = null;
             Type = LayerEnum.PromotedRebel;
-            ConcealButton = new(this, AssetManager.Placeholder, AbilityTypes.Effect, "Secondary", HitConceal);
-            ConfuseButton = new(this, AssetManager.Placeholder, AbilityTypes.Effect, "Secondary", Drunk);
-            FrameButton = new(this, AssetManager.Placeholder, AbilityTypes.Direct, "Secondary", HitFrame);
-            RadialFrameButton = new(this, AssetManager.Placeholder, AbilityTypes.Effect, "Secondary", RadialFrame);
-            ShapeshiftButton = new(this, AssetManager.Shapeshift, AbilityTypes.Effect, "Secondary", HitShapeshift);
-            BombButton = new(this, AssetManager.Plant, AbilityTypes.Effect, "Secondary", Place);
-            DetonateButton = new(this, AssetManager.Detonate, AbilityTypes.Effect, "Tertiary", Detonate);
-            CrusadeButton = new(this, AssetManager.Placeholder, AbilityTypes.Direct, "Secondary", HitCrusade);
-            PoisonButton = new(this, AssetManager.Poison, AbilityTypes.Direct, "ActionSecondary", HitPoison);
-            GlobalPoisonButton = new(this, AssetManager.Poison, AbilityTypes.Effect, "ActionSecondary", HitGlobalPoison);
-            WarpButton = new(this, AssetManager.Warp, AbilityTypes.Effect, "Secondary", Warp);
+            ConcealButton = new(this, "Conceal", AbilityTypes.Effect, "Secondary", HitConceal);
+            FrameButton = new(this, "Frame", AbilityTypes.Direct, "Secondary", HitFrame);
+            RadialFrameButton = new(this, "Frame", AbilityTypes.Effect, "Secondary", RadialFrame);
+            ShapeshiftButton = new(this, "Shapeshift", AbilityTypes.Effect, "Secondary", HitShapeshift);
+            BombButton = new(this, "Plant", AbilityTypes.Effect, "Secondary", Place);
+            DetonateButton = new(this, "Detonate", AbilityTypes.Effect, "Tertiary", Detonate);
+            CrusadeButton = new(this, "Crusade", AbilityTypes.Direct, "Secondary", HitCrusade);
+            PoisonButton = new(this, "Poison", AbilityTypes.Direct, "ActionSecondary", HitPoison);
+            GlobalPoisonButton = new(this, "Poison", AbilityTypes.Effect, "ActionSecondary", HitGlobalPoison);
+            WarpButton = new(this, "Warp", AbilityTypes.Effect, "Secondary", Warp);
         }
 
         //Rebel Stuff
         public Role FormerRole;
-        public PlayerControl ClosestTarget;
         public bool Enabled;
         public float TimeRemaining;
         public bool OnEffect => TimeRemaining > 0f;
@@ -65,7 +62,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             base.UpdateHud(__instance);
             var flag = ConcealedPlayer == null && !HoldsDrive;
-            var flag1 = ConfusedPlayer == null && !HoldsDrive;
             var notFramed = PlayerControl.AllPlayerControls.ToArray().Where(x => !Framed.Contains(x.PlayerId) && !x.Is(Faction.Syndicate)).ToList();
             var notSyn = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Syndicate) && x != PoisonedPlayer).ToList();
             var flag2 = PoisonedPlayer == null && HoldsDrive;
@@ -76,12 +72,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             ShapeshiftButton.Update(flag5 ? "FIRST TARGET" : (flag6 ? "SECOND TARGET": "SHAPESHIFT"), ShapeshiftTimer(), CustomGameOptions.ShapeshiftCooldown, OnEffect, TimeRemaining,
                 CustomGameOptions.ShapeshiftDuration, true, IsSS);
             WarpButton.Update(flag3 ? "FIRST TARGET" : (flag4 ? "SECOND TARGET" : "WARP"), WarpTimer(), CustomGameOptions.WarpCooldown, true, IsWarp);
-            GlobalPoisonButton.Update(flag2 ? "SET TARGET" : "POISON", PoisonTimer(), CustomGameOptions.PoisonCd, OnEffect, TimeRemaining, CustomGameOptions.PoisonDuration, true, IsPois);
-            PoisonButton.Update("POISON", PoisonTimer(), CustomGameOptions.PoisonCd, notSyn, OnEffect, TimeRemaining, CustomGameOptions.PoisonDuration, true, IsPois);
+            GlobalPoisonButton.Update(flag2 ? "SET TARGET" : "POISON", PoisonTimer(), CustomGameOptions.PoisonCd, OnEffect, TimeRemaining, CustomGameOptions.PoisonDuration, true,
+                HoldsDrive && IsPois);
+            PoisonButton.Update("POISON", PoisonTimer(), CustomGameOptions.PoisonCd, notSyn, OnEffect, TimeRemaining, CustomGameOptions.PoisonDuration, true, !HoldsDrive && IsPois);
             FrameButton.Update("FRAME", FrameTimer(), CustomGameOptions.FrameCooldown, notFramed, true, !HoldsDrive && IsFram);
             RadialFrameButton.Update("FRAME", FrameTimer(), CustomGameOptions.FrameCooldown, true, HoldsDrive && IsFram);
-            ConfuseButton.Update(flag1 ? "SET TARGET" : "CONFUSE", DrunkTimer(), CustomGameOptions.ConfuseCooldown, OnEffect, TimeRemaining, CustomGameOptions.ConfuseDuration, true,
-                IsDrunk);
             ConcealButton.Update(flag ? "SET TARGET" : "CONCEAL", ConcealTimer(), CustomGameOptions.ConcealCooldown, OnEffect, TimeRemaining, CustomGameOptions.ConcealDuration, true,
                 IsConc);
             BombButton.Update("PLACE", BombTimer(), CustomGameOptions.BombCooldown, true, IsBomb);
@@ -89,20 +84,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (Input.GetKeyDown(KeyCode.Backspace))
             {
-                if (!HoldsDrive && !OnEffect)
+                if (!OnEffect)
                 {
-                    if (ShapeshiftPlayer2 != null)
-                        ShapeshiftPlayer2 = null;
-                    else if (ShapeshiftPlayer1 != null)
-                        ShapeshiftPlayer1 = null;
-                    else if (ConcealedPlayer != null)
-                        ConcealedPlayer = null;
-                    else if (ConfusedPlayer != null)
-                        ConfusedPlayer = null;
-                }
-                else if (HoldsDrive && !OnEffect)
-                {
-                    if (PoisonedPlayer != null)
+                    if (!HoldsDrive)
+                    {
+                        if (ShapeshiftPlayer2 != null)
+                            ShapeshiftPlayer2 = null;
+                        else if (ShapeshiftPlayer1 != null)
+                            ShapeshiftPlayer1 = null;
+                        else if (ConcealedPlayer != null)
+                            ConcealedPlayer = null;
+                    }
+                    else if (PoisonedPlayer != null)
                         PoisonedPlayer = null;
                 }
 
@@ -222,13 +215,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void HitFrame()
         {
-            if (FrameTimer() != 0f || Utils.IsTooFar(Player, ClosestTarget) || HoldsDrive)
+            if (FrameTimer() != 0f || Utils.IsTooFar(Player, FrameButton.TargetPlayer) || HoldsDrive)
                 return;
 
-            var interact = Utils.Interact(Player, ClosestTarget);
+            var interact = Utils.Interact(Player, FrameButton.TargetPlayer);
 
             if (interact[3])
-                Frame(ClosestTarget);
+                Frame(FrameButton.TargetPlayer);
 
             if (interact[0])
                 LastFramed = DateTime.UtcNow;
@@ -298,10 +291,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void HitPoison()
         {
-            if (PoisonTimer() != 0f || OnEffect || HoldsDrive || Utils.IsTooFar(Player, ClosestPlayer))
+            if (PoisonTimer() != 0f || OnEffect || HoldsDrive || Utils.IsTooFar(Player, PoisonButton.TargetPlayer))
                 return;
 
-            var interact = Utils.Interact(Player, ClosestPlayer);
+            var interact = Utils.Interact(Player, PoisonButton.TargetPlayer);
 
             if (interact[3])
             {
@@ -309,9 +302,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 writer.Write((byte)ActionsRPC.RebelAction);
                 writer.Write((byte)RebelActionsRPC.Poison);
                 writer.Write(Player.PlayerId);
-                writer.Write(ClosestPlayer.PlayerId);
+                writer.Write(PoisonButton.TargetPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
-                PoisonedPlayer = ClosestPlayer;
+                PoisonedPlayer = PoisonButton.TargetPlayer;
                 TimeRemaining = CustomGameOptions.PoisonDuration;
                 Poison();
             }
@@ -678,86 +671,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
         }
 
-        //Drunkard Stuff
-        public CustomButton ConfuseButton;
-        public DateTime LastConfused;
-        public CustomMenu ConfuseMenu;
-        public PlayerControl ConfusedPlayer;
-        public bool IsDrunk => FormerRole?.RoleType == RoleEnum.Drunkard;
-
-        public float DrunkTimer()
-        {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastConfused;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.FreezeCooldown) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
-        }
-
-        public void Confuse()
-        {
-            Enabled = true;
-            TimeRemaining -= Time.deltaTime;
-
-            if (MeetingHud.Instance)
-                TimeRemaining = 0f;
-        }
-
-        public void Unconfuse()
-        {
-            Enabled = false;
-            LastConfused = DateTime.UtcNow;
-
-            if (HoldsDrive)
-                Reverse.UnconfuseAll();
-            else
-                Reverse.UnconfuseSingle(ConfusedPlayer);
-        }
-
-        public void ConfuseClick(PlayerControl player)
-        {
-            var interact = Utils.Interact(Player, player);
-
-            if (interact[3])
-                ConfusedPlayer = player;
-            else if (interact[0])
-                LastConfused = DateTime.UtcNow;
-            else if (interact[1])
-                LastConfused.AddSeconds(CustomGameOptions.ProtectKCReset);
-        }
-
-        public void Drunk()
-        {
-            if (DrunkTimer() != 0f || OnEffect)
-                return;
-
-            if (HoldsDrive)
-            {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                writer.Write((byte)ActionsRPC.RebelAction);
-                writer.Write((byte)RebelActionsRPC.Confuse);
-                writer.Write(Player.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                TimeRemaining = CustomGameOptions.ConfuseDuration;
-                Confuse();
-                Reverse.ConfuseAll();
-            }
-            else if (ConfusedPlayer == null)
-                ConfuseMenu.Open(PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Syndicate) && x != ConfusedPlayer).ToList());
-            else
-            {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                writer.Write((byte)ActionsRPC.RebelAction);
-                writer.Write((byte)RebelActionsRPC.Confuse);
-                writer.Write(Player.PlayerId);
-                writer.Write(ConfusedPlayer.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                TimeRemaining = CustomGameOptions.ConfuseDuration;
-                Confuse();
-                Reverse.ConfuseSingle(ConfusedPlayer);
-            }
-        }
-
         //Crusader Stuff
         public DateTime LastCrusaded;
         public PlayerControl CrusadedPlayer;
@@ -791,10 +704,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void HitCrusade()
         {
-            if (CrusadeTimer() != 0f || Utils.IsTooFar(Player, ClosestTarget))
+            if (CrusadeTimer() != 0f || Utils.IsTooFar(Player, CrusadeButton.TargetPlayer))
                 return;
 
-            var interact = Utils.Interact(Player, ClosestTarget);
+            var interact = Utils.Interact(Player, CrusadeButton.TargetPlayer);
 
             if (interact[3])
             {
@@ -802,10 +715,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 writer.Write((byte)ActionsRPC.RebelAction);
                 writer.Write((byte)RebelActionsRPC.Crusade);
                 writer.Write(Player.PlayerId);
-                writer.Write(ClosestTarget.PlayerId);
+                writer.Write(CrusadeButton.TargetPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 TimeRemaining = CustomGameOptions.CrusadeDuration;
-                CrusadedPlayer = ClosestTarget;
+                CrusadedPlayer = CrusadeButton.TargetPlayer;
                 Crusade();
             }
             else if (interact[0])

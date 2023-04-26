@@ -10,23 +10,22 @@ using HarmonyLib;
 using TownOfUsReworked.PlayerLayers.Abilities;
 using UnityEngine;
 using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Modules;
 using TownOfUsReworked.Patches;
+using Reactor.Utilities.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Amnesiac : NeutralRole
     {
         public Dictionary<byte, ArrowBehaviour> BodyArrows = new();
-        public DeadBody CurrentTarget;
         public CustomButton RememberButton;
 
         public Amnesiac(PlayerControl player) : base(player)
         {
             Name = "Amnesiac";
             StartText = "You Forgor :skull:";
-            AbilitiesText = "- You can copy over a player's role should you find their body" + (CustomGameOptions.RememberArrows ? "\n- When someone dies, you get an arrow " +
-                "pointing to their body" : "");
+            AbilitiesText = "- You can copy over a player's role should you find their body" + (CustomGameOptions.RememberArrows ? "\n- When someone dies, you get an arrow pointing to " +
+                "their body" : "");
             RoleType = RoleEnum.Amnesiac;
             RoleAlignment = RoleAlignment.NeutralBen;
             AlignmentName = NB;
@@ -35,18 +34,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             BodyArrows = new();
             InspectorResults = InspectorResults.DealsWithDead;
             Type = LayerEnum.Amnesiac;
-            RememberButton = new(this, AssetManager.Remember, AbilityTypes.Dead, "ActionSecondary", Remember);
+            RememberButton = new(this, "Remember", AbilityTypes.Dead, "ActionSecondary", Remember);
         }
 
         public void DestroyArrow(byte targetPlayerId)
         {
             var arrow = BodyArrows.FirstOrDefault(x => x.Key == targetPlayerId);
-
-            if (arrow.Value != null)
-                Object.Destroy(arrow.Value);
-            if (arrow.Value.gameObject != null)
-                Object.Destroy(arrow.Value.gameObject);
-
+            arrow.Value?.Destroy();
+            arrow.Value.gameObject?.Destroy();
             BodyArrows.Remove(arrow.Key);
         }
 
@@ -58,10 +53,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Remember()
         {
-            if (Utils.IsTooFar(Player, CurrentTarget))
+            if (Utils.IsTooFar(Player, RememberButton.TargetBody))
                 return;
 
-            var playerId = CurrentTarget.ParentId;
+            var playerId = RememberButton.TargetBody.ParentId;
             var player = Utils.PlayerById(playerId);
             Utils.Spread(Player, player);
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
@@ -84,17 +79,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (PlayerControl.LocalPlayer == amnesiac)
             {
-                foreach (var component in amneRole.CurrentTarget?.bodyRenderers)
+                foreach (var component in amneRole.RememberButton.TargetBody?.bodyRenderers)
                     component.material.SetFloat("_Outline", 0f);
 
                 Utils.Flash(amneRole.Color);
                 amneRole.OnLobby();
+                ButtonUtils.ResetCustomTimers(false);
             }
 
             if (PlayerControl.LocalPlayer == other)
             {
                 Utils.Flash(amneRole.Color);
                 role.OnLobby();
+                ButtonUtils.ResetCustomTimers(false);
             }
 
             Role newRole = role.RoleType switch
@@ -157,7 +154,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 RoleEnum.PromotedRebel => new PromotedRebel(amnesiac)
                 {
                     VoteBank = ((PromotedRebel)role).VoteBank,
-                    Framed = ((Framer)role).Framed
+                    Framed = ((PromotedRebel)role).Framed
                 },
                 RoleEnum.Sidekick => new Sidekick(amnesiac) { Rebel = (Rebel)leader },
                 RoleEnum.Shapeshifter => new Shapeshifter(amnesiac),
@@ -169,9 +166,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 RoleEnum.Werewolf => new Werewolf(amnesiac),
                 RoleEnum.Janitor => new Janitor(amnesiac),
                 RoleEnum.Poisoner => new Poisoner(amnesiac),
-                RoleEnum.TimeLord => new TimeLord(amnesiac) { UsesLeft = ((Engineer)role).UsesLeft },
                 RoleEnum.Teleporter => new Teleporter(amnesiac) { TeleportPoint = ((Teleporter)role).TeleportPoint },
-                RoleEnum.TimeMaster => new TimeMaster(amnesiac),
                 RoleEnum.Troll => new Troll(amnesiac),
                 RoleEnum.Thief => new Thief(amnesiac),
                 RoleEnum.VampireHunter => new VampireHunter(amnesiac),
@@ -206,7 +201,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 RoleEnum.Betrayer => new Betrayer(amnesiac) { Faction = role.Faction },
                 RoleEnum.Ambusher => new Ambusher(amnesiac),
                 RoleEnum.Crusader => new Crusader(amnesiac),
-                RoleEnum.Drunkard => new Drunkard(amnesiac),
                 _ => new Amnesiac(amnesiac),
             };
 
@@ -238,7 +232,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         var arrow = gameObj.AddComponent<ArrowBehaviour>();
                         gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
                         var renderer = gameObj.AddComponent<SpriteRenderer>();
-                        renderer.sprite = AssetManager.Arrow;
+                        renderer.sprite = AssetManager.GetSprite("Arrow");
                         arrow.image = renderer;
                         gameObj.layer = 5;
                         snitch.SnitchArrows.Add(amnesiac.PlayerId, arrow);
@@ -249,7 +243,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         var arrow = gameObj.AddComponent<ArrowBehaviour>();
                         gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
                         var renderer = gameObj.AddComponent<SpriteRenderer>();
-                        renderer.sprite = AssetManager.Arrow;
+                        renderer.sprite = AssetManager.GetSprite("Arrow");
                         arrow.image = renderer;
                         gameObj.layer = 5;
                         snitch.ImpArrows.Add(arrow);
@@ -265,7 +259,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     var arrow = gameObj.AddComponent<ArrowBehaviour>();
                     gameObj.transform.parent = amnesiac.gameObject.transform;
                     var renderer = gameObj.AddComponent<SpriteRenderer>();
-                    renderer.sprite = AssetManager.Arrow;
+                    renderer.sprite = AssetManager.GetSprite("Arrow");
                     arrow.image = renderer;
                     gameObj.layer = 5;
                     revealer.ImpArrows.Add(arrow);
@@ -274,12 +268,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             amnesiac.EnableButtons();
             other.EnableButtons();
+
+            if (PlayerControl.LocalPlayer == amnesiac)
+                ButtonUtils.ResetCustomTimers(false);
         }
 
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            RememberButton.Update("REMEBER", 0, 1);
+            RememberButton.Update("REMEMBER", 0, 1);
 
             if (CustomGameOptions.RememberArrows && !PlayerControl.LocalPlayer.Data.IsDead)
             {
@@ -300,7 +297,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         var arrow = gameObj.AddComponent<ArrowBehaviour>();
                         gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
                         var renderer = gameObj.AddComponent<SpriteRenderer>();
-                        renderer.sprite = AssetManager.Arrow;
+                        renderer.sprite = AssetManager.GetSprite("Arrow");
                         arrow.image = renderer;
                         gameObj.layer = 5;
                         BodyArrows.Add(body.ParentId, arrow);

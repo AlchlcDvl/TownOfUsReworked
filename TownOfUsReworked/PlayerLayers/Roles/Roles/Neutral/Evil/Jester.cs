@@ -5,8 +5,6 @@ using System;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Custom;
-using TownOfUsReworked.Modules;
-using Hazel;
 using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
@@ -17,7 +15,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public List<byte> ToHaunt = new();
         public bool HasHaunted;
         public CustomButton HauntButton;
-        public PlayerControl ClosestPlayer;
         public DateTime LastHaunted;
         public int UsesLeft;
         public bool CanHaunt => VotedOut && !HasHaunted && UsesLeft > 0 && ToHaunt.Count > 0;
@@ -35,7 +32,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             ToHaunt = new();
             UsesLeft = CustomGameOptions.HauntCount <= ToHaunt.Count ? CustomGameOptions.HauntCount : ToHaunt.Count;
             Type = LayerEnum.Jester;
-            HauntButton = new(this, AssetManager.Haunt, AbilityTypes.Direct, "ActionSecondary", Haunt, true);
+            HauntButton = new(this, "Haunt", AbilityTypes.Direct, "ActionSecondary", Haunt, true);
         }
 
         public void SetHaunted(MeetingHud __instance)
@@ -72,16 +69,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            var ToBeHaunted = PlayerControl.AllPlayerControls.ToArray().Where(x => ToHaunt.Contains(x.PlayerId)).ToList();
-            HauntButton.Update("HAUNT", HauntTimer(), CustomGameOptions.HauntCooldown, UsesLeft, ToBeHaunted, true, CanHaunt);
+            var ToBeHaunted = PlayerControl.AllPlayerControls.ToArray().Where(x => ToHaunt.Contains(x.PlayerId) && !(x.GetSubFaction() == SubFaction && SubFaction !=
+                SubFaction.None)).ToList();
+            HauntButton.Update("HAUNT", HauntTimer(), CustomGameOptions.HauntCooldown, UsesLeft, ToBeHaunted, CanHaunt, CanHaunt);
         }
 
         public void Haunt()
         {
-            if (Utils.IsTooFar(Player, ClosestPlayer) || HauntTimer() != 0f || !CanHaunt)
+            if (Utils.IsTooFar(Player, HauntButton.TargetPlayer) || HauntTimer() != 0f || !CanHaunt)
                 return;
 
-            Utils.RpcMurderPlayer(Player, ClosestPlayer, DeathReasonEnum.Killed, false);
+            Utils.RpcMurderPlayer(Player, HauntButton.TargetPlayer, DeathReasonEnum.Haunted, false);
             HasHaunted = true;
             UsesLeft--;
             LastHaunted = DateTime.UtcNow;

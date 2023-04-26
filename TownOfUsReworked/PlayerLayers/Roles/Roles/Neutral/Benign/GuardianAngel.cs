@@ -6,7 +6,6 @@ using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Custom;
 using Hazel;
-using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -37,10 +36,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             InspectorResults = InspectorResults.SeeksToProtect;
             Type = LayerEnum.GuardianAngel;
             TargetPlayer = null;
-            ProtectButton = new(this, AssetManager.Protect, AbilityTypes.Effect, "ActionSecondary", HitProtect, true);
+            ProtectButton = new(this, "Protect", AbilityTypes.Effect, "ActionSecondary", HitProtect, true);
 
             if (CustomGameOptions.ProtectBeyondTheGrave)
-                GraveProtectButton = new(this, AssetManager.Protect, AbilityTypes.Effect, "ActionSecondary", HitProtect, true, true);
+                GraveProtectButton = new(this, "Protect", AbilityTypes.Effect, "ActionSecondary", HitProtect, true, true);
         }
 
         public float ProtectTimer()

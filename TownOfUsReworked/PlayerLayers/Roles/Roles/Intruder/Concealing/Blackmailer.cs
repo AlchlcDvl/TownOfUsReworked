@@ -1,6 +1,5 @@
 using System;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Modules;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Custom;
 using Hazel;
@@ -13,7 +12,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     {
         public CustomButton BlackmailButton;
         public PlayerControl BlackmailedPlayer;
-        public PlayerControl ClosestBlackmail;
         public DateTime LastBlackmailed;
 
         public Blackmailer(PlayerControl player) : base(player)
@@ -29,7 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             InspectorResults = InspectorResults.HasInformation;
             BlackmailedPlayer = null;
             Type = LayerEnum.Blackmailer;
-            BlackmailButton = new(this, AssetManager.Blackmail, AbilityTypes.Direct, "Secondary", Blackmail);
+            BlackmailButton = new(this, "Blackmail", AbilityTypes.Direct, "Secondary", Blackmail);
         }
 
         public float BlackmailTimer()
@@ -43,18 +41,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Blackmail()
         {
-            if (BlackmailTimer() != 0f || Utils.IsTooFar(Player, ClosestBlackmail) || ClosestBlackmail == BlackmailedPlayer)
+            if (BlackmailTimer() != 0f || Utils.IsTooFar(Player, BlackmailButton.TargetPlayer) || BlackmailButton.TargetPlayer == BlackmailedPlayer)
                 return;
 
-            var interact = Utils.Interact(Player, ClosestBlackmail);
+            var interact = Utils.Interact(Player, BlackmailButton.TargetPlayer);
 
             if (interact[3])
             {
-                BlackmailedPlayer = ClosestBlackmail;
+                BlackmailedPlayer = BlackmailButton.TargetPlayer;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.Blackmail);
                 writer.Write(Player.PlayerId);
-                writer.Write(ClosestBlackmail.PlayerId);
+                writer.Write(BlackmailButton.TargetPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
             }
 

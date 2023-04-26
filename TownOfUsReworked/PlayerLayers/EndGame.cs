@@ -1,6 +1,7 @@
 using HarmonyLib;
 using TownOfUsReworked.BetterMaps.Airship;
 using TownOfUsReworked.PlayerLayers.Roles;
+using TownOfUsReworked.Objects;
 
 namespace TownOfUsReworked.PlayerLayers
 {
@@ -10,7 +11,10 @@ namespace TownOfUsReworked.PlayerLayers
         public static void Reset()
         {
             foreach (var role in Role.AllRoles)
+            {
+                Footprint.DestroyAll(role);
                 role.AllPrints.Clear();
+            }
         }
 
         [HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.ExitGame))]

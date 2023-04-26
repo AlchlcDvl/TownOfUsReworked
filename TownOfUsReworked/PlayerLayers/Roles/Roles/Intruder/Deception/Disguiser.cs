@@ -23,7 +23,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public PlayerControl MeasuredPlayer;
         public PlayerControl DisguisePlayer;
         public PlayerControl DisguisedPlayer;
-        public PlayerControl ClosestTarget;
         public bool DelayActive => TimeRemaining2 > 0f;
         public bool Disguised => TimeRemaining > 0f;
         public bool Enabled;
@@ -39,8 +38,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AlignmentName = ID;
             MeasuredPlayer = null;
             Type = LayerEnum.Disguiser;
-            DisguiseButton = new(this, AssetManager.Disguise, AbilityTypes.Direct, "Secondary", Disguise);
-            MeasureButton = new(this, AssetManager.Measure, AbilityTypes.Direct, "Tertiary", Measure);
+            DisguiseButton = new(this, "Disguise", AbilityTypes.Direct, "Secondary", HitDisguise);
+            MeasureButton = new(this, "Measure", AbilityTypes.Direct, "Tertiary", Measure);
             DisguisePlayer = null;
             DisguisedPlayer = null;
         }
@@ -93,10 +92,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void HitDisguise()
         {
-            if (DisguiseTimer() != 0f || Utils.IsTooFar(Player, ClosestTarget) || ClosestTarget == MeasuredPlayer || Disguised || DelayActive)
+            if (DisguiseTimer() != 0f || Utils.IsTooFar(Player, DisguiseButton.TargetPlayer) || DisguiseButton.TargetPlayer == MeasuredPlayer || Disguised || DelayActive)
                 return;
 
-            var interact = Utils.Interact(Player, ClosestTarget);
+            var interact = Utils.Interact(Player, DisguiseButton.TargetPlayer);
 
             if (interact[3])
             {
@@ -104,12 +103,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 writer.Write((byte)ActionsRPC.Disguise);
                 writer.Write(Player.PlayerId);
                 writer.Write(MeasuredPlayer.PlayerId);
-                writer.Write(ClosestTarget.PlayerId);
+                writer.Write(DisguiseButton.TargetPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 TimeRemaining = CustomGameOptions.DisguiseDuration;
                 TimeRemaining2 = CustomGameOptions.TimeToDisguise;
                 DisguisePlayer = MeasuredPlayer;
-                DisguisedPlayer = ClosestTarget;
+                DisguisedPlayer = DisguiseButton.TargetPlayer;
                 Delay();
 
                 if (CustomGameOptions.DisgCooldownsLinked)
@@ -133,13 +132,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Measure()
         {
-            if (MeasureTimer() != 0f || Utils.IsTooFar(Player, ClosestTarget) || ClosestTarget == MeasuredPlayer)
+            if (MeasureTimer() != 0f || Utils.IsTooFar(Player, MeasureButton.TargetPlayer) || MeasureButton.TargetPlayer == MeasuredPlayer)
                 return;
 
-            var interact = Utils.Interact(Player, ClosestTarget);
+            var interact = Utils.Interact(Player, MeasureButton.TargetPlayer);
 
             if (interact[3])
-                MeasuredPlayer = ClosestTarget;
+                MeasuredPlayer = MeasureButton.TargetPlayer;
 
             if (interact[0])
             {

@@ -1,21 +1,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Object = UnityEngine.Object;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Modules;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Custom;
 using UnityEngine;
-using TownOfUsReworked.Cosmetics.CustomColors;
+using TownOfUsReworked.Cosmetics;
+using Reactor.Utilities.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Tracker : CrewRole
     {
         public Dictionary<byte, ArrowBehaviour> TrackerArrows;
-        public PlayerControl ClosestPlayer;
         public DateTime LastTracked;
         public int UsesLeft;
         public bool ButtonUsable => UsesLeft > 0;
@@ -35,7 +33,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AlignmentName = CI;
             InspectorResults = InspectorResults.TracksOthers;
             Type = LayerEnum.Tracker;
-            TrackButton = new(this, AssetManager.Track, AbilityTypes.Direct, "ActionSecondary", Track, true);
+            TrackButton = new(this, "Track", AbilityTypes.Direct, "ActionSecondary", Track, true);
         }
 
         public float TrackerTimer()
@@ -50,13 +48,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public void DestroyArrow(byte targetPlayerId)
         {
             var arrow = TrackerArrows.FirstOrDefault(x => x.Key == targetPlayerId);
-
-            if (arrow.Value != null)
-                Object.Destroy(arrow.Value);
-
-            if (arrow.Value.gameObject != null)
-                Object.Destroy(arrow.Value.gameObject);
-
+            arrow.Value?.Destroy();
+            arrow.Value.gameObject?.Destroy();
             TrackerArrows.Remove(arrow.Key);
         }
 
@@ -68,19 +61,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Track()
         {
-            if (Utils.IsTooFar(Player, ClosestPlayer) || TrackerTimer() != 0f)
+            if (Utils.IsTooFar(Player, TrackButton.TargetPlayer) || TrackerTimer() != 0f)
                 return;
 
-            var interact = Utils.Interact(Player, ClosestPlayer);
+            var interact = Utils.Interact(Player, TrackButton.TargetPlayer);
 
             if (interact[3])
             {
-                var target = ClosestPlayer;
+                var target = TrackButton.TargetPlayer;
                 var gameObj = new GameObject();
                 var arrow = gameObj.AddComponent<ArrowBehaviour>();
                 gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
                 var renderer = gameObj.AddComponent<SpriteRenderer>();
-                renderer.sprite = AssetManager.Arrow;
+                renderer.sprite = AssetManager.GetSprite("Arrow");
 
                 if (DoUndo.IsCamoed)
                     renderer.color = new Color32(128, 128, 128, 255);
@@ -126,11 +119,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 {
                     var player = Utils.PlayerById(arrow.Key);
 
-                    if (player == null || player.Data?.IsDead == true || player.Data.Disconnected)
+                    #pragma warning disable
+                    if (player == null || player.Data.IsDead || player.Data.Disconnected)
                     {
                         DestroyArrow(arrow.Key);
                         continue;
                     }
+                    #pragma warning restore
 
                     if (DoUndo.IsCamoed)
                         arrow.Value.image.color = new Color32(128, 128, 128, 255);

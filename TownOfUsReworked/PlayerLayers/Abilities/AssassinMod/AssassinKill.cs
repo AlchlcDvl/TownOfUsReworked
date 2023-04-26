@@ -170,7 +170,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities.AssassinMod
                 var swapper = Role.GetRole<Swapper>(PlayerControl.LocalPlayer);
                 var button = swapper.MoarButtons[voteArea.TargetPlayerId];
 
-                if (button.GetComponent<SpriteRenderer>().sprite == AssetManager.SwapperSwitch)
+                if (button.GetComponent<SpriteRenderer>().sprite == AssetManager.GetSprite("SwapperSwitch"))
                 {
                     swapper.ListOfActives[voteArea.TargetPlayerId] = false;
 

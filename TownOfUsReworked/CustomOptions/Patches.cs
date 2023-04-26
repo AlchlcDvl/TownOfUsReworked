@@ -14,6 +14,9 @@ namespace TownOfUsReworked.CustomOptions
     public static class Patches
     {
         private static readonly string[] Menus = { "Game", "Crew", "Neutral", "Intruder", "Syndicate", "Modifier", "Objectifier", "Ability" };
+        private static int LastPage;
+        private static readonly List<GameObject> MenuG = new();
+        private static readonly List<SpriteRenderer> MenuS = new();
 
         #pragma warning disable
         public static Export ExportButton;
@@ -197,8 +200,8 @@ namespace TownOfUsReworked.CustomOptions
                 obj.transform.localPosition = new Vector3(obj.transform.localPosition.x - diff, obj.transform.localPosition.y, obj.transform.localPosition.z);
                 __instance.GameSettingsHightlight.gameObject.transform.parent.localPosition = new Vector3(obj.transform.localPosition.x, obj.transform.localPosition.y,
                     obj.transform.localPosition.z);
-                List<GameObject> menug = new();
-                List<SpriteRenderer> menugs = new ();
+                MenuG.Clear();
+                MenuS.Clear();
 
                 for (var index = 0; index < Menus.Length; index++)
                 {
@@ -232,34 +235,33 @@ namespace TownOfUsReworked.CustomOptions
                     var tabBackground = hatButton.GetChild(1);
 
                     var renderer = hatIcon.GetComponent<SpriteRenderer>();
-                    renderer.sprite = GetSettingSprite(index);
+                    renderer.sprite = AssetManager.GetSprite(GetSettingSprite(index));
                     var touSettingsHighlight = tabBackground.GetComponent<SpriteRenderer>();
-                    menug.Add(touSettings);
-                    menugs.Add(touSettingsHighlight);
+                    MenuG.Add(touSettings);
+                    MenuS.Add(touSettingsHighlight);
 
                     var passiveButton = tabBackground.GetComponent<PassiveButton>();
                     passiveButton.OnClick = new ButtonClickedEvent();
-                    passiveButton.OnClick.AddListener(ToggleButton(menug, menugs, index));
+                    passiveButton.OnClick.AddListener(ToggleButton(MenuG, MenuS, index));
                 }
 
-                ToggleButtonVoid(menug, menugs, 0);
+                ToggleButtonVoid(MenuG, MenuS, LastPage);
             }
 
-            public static Sprite GetSettingSprite(int index)
+            private static string GetSettingSprite(int index) => index switch
             {
-                return index switch
-                {
-                    1 => AssetManager.CrewSettingsButton,
-                    2 => AssetManager.NeutralSettingsButton,
-                    3 => AssetManager.IntruderSettingsButton,
-                    4 => AssetManager.SyndicateSettingsButton,
-                    5 => AssetManager.ModifierSettingsButton,
-                    6 => AssetManager.ObjectifierSettingsButton,
-                    7 => AssetManager.AbilitySettingsButton,
-                    _ => AssetManager.SettingsButton
-                };
-            }
+                1 => "Crew",
+                2 => "Neutral",
+                3 => "Intruders",
+                4 => "Syndicate",
+                5 => "Modifiers",
+                6 => "Objectifiers",
+                7 => "Abilities",
+                _ => "SettingsButton"
+            };
         }
+
+        public static System.Action ToggleButton(List<GameObject> settings, List<SpriteRenderer> highlight, int id) => new(() => ToggleButtonVoid(settings, highlight, id));
 
         [HarmonyPatch(typeof(GameSettingMenu), nameof(GameSettingMenu.Update))]
         public static class OptionsMenuBehaviour_Update
@@ -277,19 +279,31 @@ namespace TownOfUsReworked.CustomOptions
                 __instance.RolesSettingsHightlight.gameObject.transform.parent.parent.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().gameObject.SetActive(false);
                 __instance.GameSettingsHightlight.gameObject.transform.parent.parent.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().gameObject.SetActive(false);
 
-                foreach (var option in CustomOption.AllOptions)
-                {
-                    switch (option.ParentRole)
-                    {
-                        case RoleEnum.Mystic:
-                            option.Active = CustomGameOptions.MysticOn > 0;
-                            break;
-                    }
-                }
+                if (Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1))
+                    ToggleButtonVoid(MenuG, MenuS, 0);
+
+                if (Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Keypad2))
+                    ToggleButtonVoid(MenuG, MenuS, 1);
+
+                if (Input.GetKeyDown(KeyCode.Alpha3) || Input.GetKeyDown(KeyCode.Keypad3))
+                    ToggleButtonVoid(MenuG, MenuS, 2);
+
+                if (Input.GetKeyDown(KeyCode.Alpha4) || Input.GetKeyDown(KeyCode.Keypad4))
+                    ToggleButtonVoid(MenuG, MenuS, 3);
+
+                if (Input.GetKeyDown(KeyCode.Alpha5) || Input.GetKeyDown(KeyCode.Keypad5))
+                    ToggleButtonVoid(MenuG, MenuS, 4);
+
+                if (Input.GetKeyDown(KeyCode.Alpha6) || Input.GetKeyDown(KeyCode.Keypad6))
+                    ToggleButtonVoid(MenuG, MenuS, 5);
+
+                if (Input.GetKeyDown(KeyCode.Alpha7) || Input.GetKeyDown(KeyCode.Keypad7))
+                    ToggleButtonVoid(MenuG, MenuS, 6);
+
+                if (Input.GetKeyDown(KeyCode.Alpha8) || Input.GetKeyDown(KeyCode.Keypad8))
+                    ToggleButtonVoid(MenuG, MenuS, 7);
             }
         }
-
-        public static System.Action ToggleButton(List<GameObject> settings, List<SpriteRenderer> highlight, int id) => new(() => ToggleButtonVoid(settings, highlight, id));
 
         public static void ToggleButtonVoid(List<GameObject> settings, List<SpriteRenderer> highlight, int id)
         {
@@ -298,6 +312,8 @@ namespace TownOfUsReworked.CustomOptions
                 g.SetActive(id == settings.IndexOf(g));
                 highlight[settings.IndexOf(g)].enabled = id == settings.IndexOf(g);
             }
+
+            LastPage = id;
         }
 
         [HarmonyPatch(typeof(GameOptionsMenu), nameof(GameOptionsMenu.Start))]

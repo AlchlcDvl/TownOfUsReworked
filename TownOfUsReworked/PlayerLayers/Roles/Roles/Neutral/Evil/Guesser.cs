@@ -62,9 +62,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 if (CustomGameOptions.SwapperOn > 0)
                     ColorMapping.Add("Swapper", Colors.Swapper);
 
-                if (CustomGameOptions.TimeLordOn > 0)
-                    ColorMapping.Add("Time Lord", Colors.TimeLord);
-
                 if (CustomGameOptions.MedicOn > 0)
                     ColorMapping.Add("Medic", Colors.Medic);
 
@@ -150,9 +147,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     if (CustomGameOptions.DisguiserOn > 0)
                         ColorMapping.Add("Disguiser", Colors.Disguiser);
 
-                    if (CustomGameOptions.TimeMasterOn > 0)
-                        ColorMapping.Add("Time Master", Colors.TimeMaster);
-
                     if (CustomGameOptions.DisguiserOn > 0)
                         ColorMapping.Add("Consigliere", Colors.Consigliere);
 
@@ -191,8 +185,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     if (CustomGameOptions.PoisonerOn > 0)
                         ColorMapping.Add("Poisoner", Colors.Poisoner);
 
-                    if (CustomGameOptions.DrunkardOn > 0)
-                        ColorMapping.Add("Drunkard", Colors.Drunkard);
+                    if (CustomGameOptions.CrusaderOn > 0)
+                        ColorMapping.Add("Crusader", Colors.Crusader);
 
                     if (CustomGameOptions.RebelOn > 0)
                     {

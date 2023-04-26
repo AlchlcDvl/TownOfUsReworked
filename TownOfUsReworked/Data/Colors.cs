@@ -34,7 +34,6 @@ namespace TownOfUsReworked.Data
         public static Color32 Vigilante => new(255, 255, 0, 255); //#FFFF00FF
         public static Color32 Engineer => new(255, 166, 10, 255); //#FFA60AFF
         public static Color32 Swapper => new(102, 230, 102, 255); //#66E666FF
-        public static Color32 TimeLord => new(0, 0, 255, 255); //#0000FFFF
         public static Color32 Medic => new(0, 102, 0, 255); //#006600FF
         public static Color32 Sheriff => new(255, 204, 128, 255); //#FFCC80FF
         public static Color32 Altruist => new(102, 0, 0, 255); //#660000FF
@@ -94,7 +93,6 @@ namespace TownOfUsReworked.Data
         public static Color32 Miner => new(170, 118, 50, 255); //#AA7632FF
         public static Color32 Blackmailer => new(2, 167, 162, 255); //#02A752FF
         public static Color32 Disguiser => new(64, 180, 255, 255); //#40B4FFFF
-        public static Color32 TimeMaster => new(0, 0, 167, 255); //#0000A7FF
         public static Color32 Consort => new(128, 23, 128, 255); //#801780FF
         public static Color32 Teleporter => new(106, 168, 79, 255); //#6AA84FFF
         public static Color32 Godfather => new(64, 76, 8, 255); //#404C08FF
@@ -112,12 +110,9 @@ namespace TownOfUsReworked.Data
         public static Color32 Shapeshifter => new(49, 28, 69, 255); //#311C45FF
         public static Color32 Bomber => new(201, 204, 63, 255); //#C9CC3FFF
         public static Color32 Poisoner => new(181, 0, 76, 255); //#B5004CFF
-        public static Color32 Drunkard => new(30, 48, 11, 255); //#1E300BFF
         public static Color32 Crusader => new(223, 122, 232, 255); //#DF7AE8FF
         public static Color32 Banshee => new(230, 126, 34, 255); //#E67E22FF
         public static Color32 Politician => new(204, 163, 204, 255); //#CCA3CCFF
-        public static Color32 Collider => new(126, 77, 0, 255); //#7E4D00FF
-        public static Color32 Eraser => new(0, 40, 245, 255); //#0028F5FF
 
         //Modifier Colors
         public static Color32 Bait => new(0, 179, 179, 255); //#00B3B3FF
@@ -156,6 +151,7 @@ namespace TownOfUsReworked.Data
         public static Color32 Overlord => new(0, 128, 128, 255); //#008080FF
         public static Color32 Corrupted => new(69, 69, 255, 255); //#4545FFFF
         public static Color32 Allied => new(69, 69, 169, 255); //#4545A9FF
+        public static Color32 Mafia => new(0, 238, 255, 255); //#00EEFFFF
 
         //Other
         public static Color32 Stalemate => new(239, 230, 230, 255); //#E6E6E6FF
@@ -169,9 +165,10 @@ namespace TownOfUsReworked.Data
         //Color Storage
         //#dcee85 #6c29ab #800000 #808000 #008000 #800080 #000080 #2dff00 #e74c3c #992d22 #00FFFD #917ac0 #Eac1d2 #286e58 #db4f20 #abd432 #2e3b97 #ffd100 #fffcce #40b4ff #a82626 #8ff731
         //#4e4e4e #fffead #1abc9c #2ecc71 #1f8b4c #3498db #ad1457 #c27c0e #ffd2fb #ff7900 #805bc4 #95a5a6 #979c9f #888888 #ff7272 #f25ff1 #FF00FF #916640 #1AFF74 #2672FF #8637C2 #3769FE
-        //#6a1515 #569d29 #f1612b #7d86e1 #612bef #e7dae2 #F6AAB7 #EC62A5 #00EEFF #78c689 #e1c849 #fccc52 #6b2d2a #aab43e #FCBA03 #ff351f #F8CD46 #FF4D00 #7EFBC2 #4d4d4d #38b553
+        //#6a1515 #569d29 #f1612b #7d86e1 #612bef #e7dae2 #F6AAB7 #EC62A5 #78c689 #e1c849 #fccc52 #6b2d2a #aab43e #FCBA03 #ff351f #F8CD46 #FF4D00 #7EFBC2 #4d4d4d #38b553 #0000FF #0000A7
+        //#0028F5 #7E4D00 #1E300B
 
         //Symbol Storage
-        //⟡ ☆ ♡ ♧ ♤ ø ▶ ❥ ✔ ε Γ ι κ ν σ τ υ φ ψ Ψ ω ✧ ¢
+        //⟡ ☆ ♡ ♧ ♤ ø ▶ ❥ ✔ ε Γ ι κ ν σ τ υ φ ψ Ψ ✧ ¢
     }
 }

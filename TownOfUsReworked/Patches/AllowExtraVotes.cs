@@ -15,7 +15,8 @@ namespace TownOfUsReworked.Patches
 
             var flag = (PlayerControl.LocalPlayer.Is(RoleEnum.Mayor) && !Role.GetRole<Mayor>(PlayerControl.LocalPlayer).CanVote) || (PlayerControl.LocalPlayer.Is(RoleEnum.Politician) &&
                 !Role.GetRole<Politician>(PlayerControl.LocalPlayer).CanVote) || (PlayerControl.LocalPlayer.Is(RoleEnum.PromotedRebel) &&
-                Role.GetRole<PromotedRebel>(PlayerControl.LocalPlayer).IsPol && !Role.GetRole<PromotedRebel>(PlayerControl.LocalPlayer).CanVote);
+                (!Role.GetRole<PromotedRebel>(PlayerControl.LocalPlayer).IsPol || (Role.GetRole<PromotedRebel>(PlayerControl.LocalPlayer).IsPol &&
+                !Role.GetRole<PromotedRebel>(PlayerControl.LocalPlayer).CanVote)));
 
             if (!(PlayerControl.LocalPlayer.Data.IsDead || __instance.AmDead || !__instance.Parent.Select(__instance.TargetPlayerId) || flag))
                 __instance.Buttons.SetActive(true);

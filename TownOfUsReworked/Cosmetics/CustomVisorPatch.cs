@@ -4,8 +4,9 @@ using UnityEngine;
 using System.Linq;
 using Reactor.Utilities.Extensions;
 using TownOfUsReworked.Classes;
+using Il2CppInterop.Runtime.InteropTypes.Arrays;
 
-namespace TownOfUsReworked.Cosmetics.CustomVisors
+namespace TownOfUsReworked.Cosmetics
 {
     //Thanks to Las Monjas for this code
     public static class CustomVisorPatch
@@ -71,6 +72,45 @@ namespace TownOfUsReworked.Cosmetics.CustomVisors
             var tex2D = new Texture2D(1, 1, TextureFormat.ARGB32, false);
             Utils.LoadImage(tex2D, mainImg, false);
             return Sprite.Create(tex2D, new Rect(0.0f, 0.0f, tex2D.width, tex2D.height), new Vector2(0.5f, 0.5f), 100f);
+        }
+
+        /*[HarmonyPatch(typeof(VisorsTab), nameof(VisorsTab.OnEnable))]
+        public static class EnableSprites
+        {
+            public static void Postfix()
+            {
+                var innerVisors = GameObject.Find("VisorGroup").transform.GetChild(0).transform.GetChild(0).gameObject;
+                var visor = 0;
+
+                for (var i = 1; i < innerVisors.transform.GetChildCount(); i++)
+                {
+                    if (innerVisors.transform.GetChild(i).transform.GetChild(2).transform.GetChild(0).GetComponent<SpriteRenderer>().sprite == null)
+                    {
+                        innerVisors.transform.GetChild(i).transform.GetChild(2).transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = GetSprite(AuthorDatas[visor].Name);
+                        visor++;
+                    }
+                }
+            }
+        }*/
+
+        [HarmonyPatch(typeof(HatManager), nameof(HatManager.GetUnlockedVisors))]
+        public static class UnlockVisors
+        {
+            public static bool Prefix(HatManager __instance, ref Il2CppReferenceArray<VisorData> __result)
+            {
+                __result =
+                (
+                    from v
+                    in __instance.allVisors.ToArray()
+                    where v.Free || AmongUs.Data.DataManager.Player.Purchases.GetPurchase(v.ProductId, v.BundleId)
+                    select v
+                    into o
+                    orderby o.displayOrder descending,
+                    o.name
+                    select o
+                ).ToArray();
+                return false;
+            }
         }
     }
 }

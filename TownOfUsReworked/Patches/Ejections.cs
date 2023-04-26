@@ -31,7 +31,7 @@ namespace TownOfUsReworked.Patches
             var role = Role.GetRole(player);
 
             var flag = player.Is(RoleEnum.Altruist) || player.Is(RoleEnum.Arsonist) || player.Is(RoleEnum.Amnesiac) || player.Is(RoleEnum.Executioner) || player.Is(RoleEnum.Engineer) ||
-                player.Is(RoleEnum.Escort) || player.Is(RoleEnum.Impostor) || player.Is(RoleEnum.Inspector) || player.Is(RoleEnum.Operative) || player.Is(RoleEnum.Eraser);
+                player.Is(RoleEnum.Escort) || player.Is(RoleEnum.Impostor) || player.Is(RoleEnum.Inspector) || player.Is(RoleEnum.Operative);
             var factionflag = player.Is(Faction.Intruder);
             var subfactionflag = player.Is(SubFaction.Undead);
 

@@ -2,7 +2,6 @@ using System;
 using UnityEngine;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Modules;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Custom;
 using Hazel;
@@ -34,7 +33,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             ConcealMenu = new(Player, Click);
             ConcealedPlayer = null;
             Type = LayerEnum.Concealer;
-            ConcealButton = new(this, AssetManager.Placeholder, AbilityTypes.Effect, "Secondary", HitConceal);
+            ConcealButton = new(this, "Conceal", AbilityTypes.Effect, "Secondary", HitConceal);
         }
 
         public void Conceal()

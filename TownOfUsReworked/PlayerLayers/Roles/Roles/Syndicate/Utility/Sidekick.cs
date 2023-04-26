@@ -2,7 +2,6 @@ using TownOfUsReworked.Data;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Custom;
 using Hazel;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
@@ -11,7 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     {
         public Role FormerRole;
         public Rebel Rebel;
-        public bool CanPromote => (Rebel.IsDead || Rebel.Player.Data.Disconnected) && !IsDead;
+        public bool CanPromote => (Rebel.IsDead || Rebel.Disconnected) && !IsDead;
 
         public Sidekick(PlayerControl player) : base(player)
         {

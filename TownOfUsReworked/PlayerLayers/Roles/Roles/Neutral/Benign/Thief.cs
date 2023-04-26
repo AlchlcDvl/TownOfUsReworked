@@ -13,7 +13,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Thief : NeutralRole
     {
-        public PlayerControl ClosestPlayer;
         public DateTime LastStolen;
         public CustomButton StealButton;
 
@@ -27,7 +26,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleAlignment = RoleAlignment.NeutralBen;
             AlignmentName = NB;
             Type = LayerEnum.Thief;
-            StealButton = new(this, AssetManager.Placeholder, AbilityTypes.Direct, "ActionSecondary", Steal);
+            StealButton = new(this, "Steal", AbilityTypes.Direct, "ActionSecondary", Steal);
         }
 
         public float StealTimer()
@@ -41,26 +40,26 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Steal()
         {
-            if (Utils.IsTooFar(Player, ClosestPlayer) || StealTimer() != 0f)
+            if (Utils.IsTooFar(Player, StealButton.TargetPlayer) || StealTimer() != 0f)
                 return;
 
-            var interact = Utils.Interact(Player, ClosestPlayer, true);
+            var interact = Utils.Interact(Player, StealButton.TargetPlayer, true);
 
             if (interact[3])
             {
-                if (!(ClosestPlayer.Is(Faction.Intruder) || ClosestPlayer.Is(Faction.Syndicate) || ClosestPlayer.Is(RoleAlignment.NeutralKill) ||
-                    ClosestPlayer.Is(RoleAlignment.NeutralNeo) || ClosestPlayer.Is(RoleAlignment.NeutralPros) || ClosestPlayer.Is(RoleAlignment.CrewKill)))
+                if (!(StealButton.TargetPlayer.Is(Faction.Intruder) || StealButton.TargetPlayer.Is(Faction.Syndicate) || StealButton.TargetPlayer.Is(RoleAlignment.NeutralKill) ||
+                    StealButton.TargetPlayer.Is(RoleAlignment.NeutralNeo) || StealButton.TargetPlayer.Is(RoleAlignment.NeutralPros) || StealButton.TargetPlayer.Is(RoleAlignment.CrewKill)))
                     Utils.RpcMurderPlayer(Player, Player);
                 else
                 {
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                     writer.Write((byte)ActionsRPC.Steal);
                     writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                    writer.Write(ClosestPlayer.PlayerId);
+                    writer.Write(StealButton.TargetPlayer.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     //SoundManager.Instance.PlaySound(TownOfUsReworked.StealSound, false, 0.4f);
-                    Utils.RpcMurderPlayer(Player, ClosestPlayer);
-                    Steal(this, ClosestPlayer);
+                    Utils.RpcMurderPlayer(Player, StealButton.TargetPlayer);
+                    Steal(this, StealButton.TargetPlayer);
                 }
             }
 
@@ -128,7 +127,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 RoleEnum.Janitor => new Janitor(thief),
                 RoleEnum.Poisoner => new Poisoner(thief),
                 RoleEnum.Teleporter => new Teleporter(thief),
-                RoleEnum.TimeMaster => new TimeMaster(thief),
                 RoleEnum.VampireHunter => new VampireHunter(thief),
                 RoleEnum.Veteran => new Veteran(thief) { UsesLeft = ((Veteran)role).UsesLeft },
                 RoleEnum.Vigilante => new Vigilante(thief) { UsesLeft = ((Vigilante)role).UsesLeft },
@@ -157,11 +155,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 RoleEnum.Betrayer => new Betrayer(thief) { Faction = role.Faction },
                 RoleEnum.Ambusher => new Ambusher(thief),
                 RoleEnum.Crusader => new Crusader(thief),
-                RoleEnum.Drunkard => new Drunkard(thief),
                 RoleEnum.PromotedRebel => new PromotedRebel(thief)
                 {
                     VoteBank = ((PromotedRebel)role).VoteBank,
-                    Framed = ((Framer)role).Framed
+                    Framed = ((PromotedRebel)role).Framed
                 },
                 _ => new Thief(thief),
             };
@@ -206,7 +203,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         var arrow = gameObj.AddComponent<ArrowBehaviour>();
                         gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
                         var renderer = gameObj.AddComponent<SpriteRenderer>();
-                        renderer.sprite = AssetManager.Arrow;
+                        renderer.sprite = AssetManager.GetSprite("Arrow");
                         arrow.image = renderer;
                         gameObj.layer = 5;
                         snitch.SnitchArrows.Add(thief.PlayerId, arrow);
@@ -217,7 +214,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         var arrow = gameObj.AddComponent<ArrowBehaviour>();
                         gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
                         var renderer = gameObj.AddComponent<SpriteRenderer>();
-                        renderer.sprite = AssetManager.Arrow;
+                        renderer.sprite = AssetManager.GetSprite("Arrow");
                         arrow.image = renderer;
                         gameObj.layer = 5;
                         snitch.ImpArrows.Add(arrow);
@@ -233,7 +230,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     var arrow = gameObj.AddComponent<ArrowBehaviour>();
                     gameObj.transform.parent = thief.gameObject.transform;
                     var renderer = gameObj.AddComponent<SpriteRenderer>();
-                    renderer.sprite = AssetManager.Arrow;
+                    renderer.sprite = AssetManager.GetSprite("Arrow");
                     arrow.image = renderer;
                     gameObj.layer = 5;
                     revealer.ImpArrows.Add(arrow);

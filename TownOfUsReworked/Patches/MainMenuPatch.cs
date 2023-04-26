@@ -26,7 +26,7 @@ namespace TownOfUsReworked.Patches
             var tourewLogo = new GameObject("bannerLogo_TownOfUsReworked");
             tourewLogo.transform.position = Vector3.up;
             var renderer = tourewLogo.AddComponent<SpriteRenderer>();
-            renderer.sprite = AssetManager.ToUBanner;
+            renderer.sprite = AssetManager.GetSprite("TownOfUsReworkedBanner");
 
             var InvButton = GameObject.Find("InventoryButton");
 
@@ -35,7 +35,7 @@ namespace TownOfUsReworked.Patches
 
             var discObj = Object.Instantiate(InvButton, InvButton.transform.parent);
             var iconrenderer1 = discObj.GetComponent<SpriteRenderer>();
-            iconrenderer1.sprite = AssetManager.DiscordImage;
+            iconrenderer1.sprite = AssetManager.GetSprite("Discord");
 
             var button1 = discObj.GetComponent<PassiveButton>();
             button1.OnClick = new ButtonClickedEvent();
@@ -43,7 +43,7 @@ namespace TownOfUsReworked.Patches
 
             var announceObj = Object.Instantiate(InvButton, InvButton.transform.parent);
             var iconrenderer2 = announceObj.GetComponent<SpriteRenderer>();
-            iconrenderer2.sprite = AssetManager.UpdateImage;
+            iconrenderer2.sprite = AssetManager.GetSprite("Update");
 
             var button2 = announceObj.GetComponent<PassiveButton>();
             button2.OnClick = new ButtonClickedEvent();

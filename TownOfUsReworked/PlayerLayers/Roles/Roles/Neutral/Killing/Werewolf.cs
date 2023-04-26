@@ -4,12 +4,12 @@ using TownOfUsReworked.Classes;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Custom;
+using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Werewolf : NeutralRole
     {
-        public PlayerControl ClosestPlayer;
         public DateTime LastMauled;
         public bool CanMaul;
         public CustomButton MaulButton;
@@ -25,7 +25,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleAlignment = RoleAlignment.NeutralKill;
             AlignmentName = NK;
             Type = LayerEnum.Werewolf;
-            MaulButton = new(this, AssetManager.Maul, AbilityTypes.Direct, "ActionSecondary", HitMaul);
+            MaulButton = new(this, "Maul", AbilityTypes.Direct, "ActionSecondary", HitMaul);
         }
 
         public float MaulTimer()
@@ -43,8 +43,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 Utils.Spread(Player, player);
 
-                if (player.IsVesting() || player.IsProtected() || Player.IsOtherRival(player) || Player == player || ClosestPlayer == player || player.IsShielded() || player.IsRetShielded())
+                if (player.IsVesting() || player.IsProtected() || Player.IsOtherRival(player) || Player == player || MaulButton.TargetPlayer == player || player.IsShielded() ||
+                    player.IsRetShielded())
+                {
                     continue;
+                }
 
                 if (!player.Is(RoleEnum.Pestilence))
                     Utils.RpcMurderPlayer(Player, player, DeathReasonEnum.Mauled, false);
@@ -65,10 +68,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void HitMaul()
         {
-            if (MaulTimer() != 0f || Utils.IsTooFar(Player, ClosestPlayer))
+            if (MaulTimer() != 0f || Utils.IsTooFar(Player, MaulButton.TargetPlayer))
                 return;
 
-            var interact = Utils.Interact(Player, ClosestPlayer, true);
+            var interact = Utils.Interact(Player, MaulButton.TargetPlayer, true);
 
             if (interact[3])
                 Maul();
@@ -84,7 +87,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            MaulButton.Update("MAUL", MaulTimer(), CustomGameOptions.MaulCooldown);
+            var targets = PlayerControl.AllPlayerControls.ToArray().Where(x => !(x.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) && !(SubFaction != SubFaction.None &&
+                x.GetSubFaction() == SubFaction)).ToList();
+            MaulButton.Update("MAUL", MaulTimer(), CustomGameOptions.MaulCooldown, targets);
         }
     }
 }

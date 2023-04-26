@@ -24,8 +24,6 @@ namespace TownOfUsReworked.CustomOptions
         public static int LobbySize => (int)Generate.LobbySize.Get();
 
         //Game Modifiers
-        public static bool ColourblindComms => Generate.ColourblindComms.Get();
-        public static bool MeetingColourblind => Generate.MeetingColourblind.Get();
         public static WhoCanVentOptions WhoCanVent => (WhoCanVentOptions)Generate.WhoCanVent.Get();
         public static bool VisualTasks => Generate.VisualTasks.Get();
         public static bool AnonymousVoting => Generate.AnonymousVoting.Get();
@@ -42,8 +40,14 @@ namespace TownOfUsReworked.CustomOptions
         public static bool EnableModifiers => Generate.EnableModifiers.Get();
         public static bool EnableObjectifiers => Generate.EnableObjectifiers.Get();
         public static bool VentTargetting => Generate.VentTargetting.Get();
+
+        //Better Sabotage Settings
         public static float ReactorShake => Generate.ReactorShake.Get();
         public static bool OxySlow => Generate.OxySlow.Get();
+        public static bool ColourblindComms => Generate.ColourblindComms.Get();
+        public static bool MeetingColourblind => Generate.MeetingColourblind.Get();
+        public static bool NightVision => Generate.NightVision.Get();
+        public static bool EvilsIgnoreNV => Generate.EvilsIgnoreNV.Get();
 
         //Announcement Settings
         public static bool LocationReports => Generate.LocationReports.Get();
@@ -124,7 +128,6 @@ namespace TownOfUsReworked.CustomOptions
         public static int AmnesiacOn => (int)Generate.AmnesiacOn.Get();
         public static int ConcealerOn => (int)Generate.ConcealerOn.Get();
         public static int PoliticianOn => (int)Generate.PoliticianOn.Get();
-        public static int TimeLordOn => (int)Generate.TimeLordOn.Get();
         public static int MedicOn => (int)Generate.MedicOn.Get();
         public static int GlitchOn => (int)Generate.GlitchOn.Get();
         public static int MorphlingOn => (int)Generate.MorphlingOn.Get();
@@ -173,7 +176,6 @@ namespace TownOfUsReworked.CustomOptions
         public static int DraculaOn => (int)Generate.DraculaOn.Get();
         public static int ConsigliereOn => (int)Generate.ConsigliereOn.Get();
         public static int MinerOn => (int)Generate.MinerOn.Get();
-        public static int TimeMasterOn => (int)Generate.TimeMasterOn.Get();
         public static int PhantomOn => (int)Generate.PhantomOn.Get();
         public static int RevealerOn => (int)Generate.RevealerOn.Get();
         public static int RetributionistOn => (int)Generate.RetributionistOn.Get();
@@ -183,7 +185,6 @@ namespace TownOfUsReworked.CustomOptions
         public static int MysticOn => (int)Generate.MysticOn.Get();
         public static int ChameleonOn => (int)Generate.ChameleonOn.Get();
         public static int GuesserOn => (int)Generate.GuesserOn.Get();
-        public static int DrunkardOn => (int)Generate.DrunkardOn.Get();
         public static int BountyHunterOn => (int)Generate.BountyHunterOn.Get();
         public static int ActorOn => (int)Generate.ActorOn.Get();
         public static int AmbusherOn => (int)Generate.AmbusherOn.Get();
@@ -218,6 +219,7 @@ namespace TownOfUsReworked.CustomOptions
         public static int OverlordOn => (int)Generate.OverlordOn.Get();
         public static int LoversOn => (int)Generate.LoversOn.Get();
         public static int AlliedOn => (int)Generate.AlliedOn.Get();
+        public static int MafiaOn => (int)Generate.MafiaOn.Get();
 
         //Modifier Spawn
         public static int ProfessionalOn => (int)Generate.ProfessionalOn.Get();
@@ -386,6 +388,8 @@ namespace TownOfUsReworked.CustomOptions
         public static bool UniqueAltruist => Generate.UniqueAltruist.Get();
         public static float AltReviveDuration => Generate.AltReviveDuration.Get();
         public static int AltruistCount => (int)Generate.AltruistCount.Get();
+        public static int ReviveCount => (int)Generate.ReviveCount.Get();
+        public static float ReviveCooldown => Generate.ReviveCooldown.Get();
 
         //Medic Settings
         public static ShieldOptions ShowShielded => (ShieldOptions)Generate.ShowShielded.Get();
@@ -393,15 +397,6 @@ namespace TownOfUsReworked.CustomOptions
         public static bool UniqueMedic => Generate.UniqueMedic.Get();
         public static NotificationOptions NotificationShield => (NotificationOptions)Generate.WhoGetsNotification.Get();
         public static bool ShieldBreaks => Generate.ShieldBreaks.Get();
-
-        //TL Settings
-        public static float RewindDuration => Generate.RewindDuration.Get();
-        public static float RewindCooldown => Generate.RewindCooldown.Get();
-        public static int RewindMaxUses => (int)Generate.RewindMaxUses.Get();
-        public static bool TLImmunity => Generate.TLImmunity.Get();
-        public static bool RewindRevive => Generate.RewindRevive.Get();
-        public static int TimeLordCount => (int)Generate.TimeLordCount.Get();
-        public static bool UniqueTimeLord => Generate.UniqueTimeLord.Get();
 
         //Mayor Settings
         public static bool MayorAnonymous => Generate.MayorAnonymous.Get();
@@ -763,14 +758,6 @@ namespace TownOfUsReworked.CustomOptions
         public static int ConsigliereCount => (int)Generate.ConsigCount.Get();
         public static bool UniqueConsigliere => Generate.UniqueConsigliere.Get();
 
-        //Time Master Settings
-        public static float FreezeDuration => Generate.FreezeDuration.Get();
-        public static float FreezeCooldown => Generate.FreezeCooldown.Get();
-        public static int TimeMasterCount => (int)Generate.TimeMasterCount.Get();
-        public static bool UniqueTimeMaster => Generate.UniqueTimeMaster.Get();
-        public static bool TMImmunity => Generate.TMImmunity.Get();
-        public static bool IntruderImmunity => Generate.IntruderImmunity.Get();
-
         //Consort Settings
         public static int ConsortCount => (int)Generate.ConsortCount.Get();
         public static float ConsRoleblockCooldown => Generate.ConsRoleblockCooldown.Get();
@@ -822,13 +809,6 @@ namespace TownOfUsReworked.CustomOptions
         public static int CrusaderCount => (int)Generate.CrusaderCount.Get();
         public static bool UniqueCrusader => Generate.UniqueCrusader.Get();
         public static float ChaosDriveCrusadeRadius => Generate.ChaosDriveCrusadeRadius.Get();
-
-        //Drunkard Settings
-        public static int DrunkardCount => (int)Generate.DrunkardCount.Get();
-        public static float ConfuseCooldown => Generate.ConfuseCooldown.Get();
-        public static float ConfuseDuration => Generate.ConfuseDuration.Get();
-        public static bool UniqueDrunkard => Generate.UniqueDrunkard.Get();
-        public static bool SyndicateImmunity => Generate.SyndicateImmunity.Get();
 
         //Banshee Settings
         public static float ScreamCooldown => Generate.ScreamCooldown.Get();
@@ -954,29 +934,13 @@ namespace TownOfUsReworked.CustomOptions
         public static int TunnelerCount => (int)Generate.TunnelerCount.Get();
         public static bool UniqueTunneler => Generate.UniqueTunneler.Get();
 
-        //Lovers Settings
-        public static bool BothLoversDie => Generate.BothLoversDie.Get();
-        public static bool UniqueLovers => Generate.UniqueLovers.Get();
-        public static bool LoversChat => Generate.LoversChat.Get();
-        public static int LoversCount => (int)Generate.LoversCount.Get();
-        public static bool LoversFaction => Generate.LoversFaction.Get();
-        public static bool LoversRoles => Generate.LoversRoles.Get();
-
-        //Rivals Settings
-        public static bool RivalsChat => Generate.RivalsChat.Get();
-        public static int RivalsCount => (int)Generate.RivalsCount.Get();
-        public static bool RivalsFaction => Generate.RivalsFaction.Get();
-        public static bool RivalsRoles => Generate.RivalsRoles.Get();
-        public static bool UniqueRivals => Generate.UniqueRivals.Get();
-
         //Radar Settings
         public static bool UniqueRadar => Generate.UniqueRadar.Get();
         public static int RadarCount => (int)Generate.RadarCount.Get();
 
-        //Indomitable Settings
-        public static bool UniqueIndomitable => Generate.UniqueIndomitable.Get();
-        public static int IndomitableCount => (int)Generate.IndomitableCount.Get();
-        public static bool IndomitableKnows => Generate.IndomitableKnows.Get();
+        //Ninja Settings
+        public static int NinjaCount => (int)Generate.NinjaCount.Get();
+        public static bool UniqueNinja => Generate.UniqueNinja.Get();
 
         //Ruthless Settings
         public static int RuthlessCount => (int)Generate.RuthlessCount.Get();
@@ -1005,11 +969,55 @@ namespace TownOfUsReworked.CustomOptions
         public static int TaskmasterCount => (int)Generate.TaskmasterCount.Get();
         public static bool UniqueTaskmaster => Generate.UniqueTaskmaster.Get();
 
+        //Lovers Settings
+        public static bool BothLoversDie => Generate.BothLoversDie.Get();
+        public static bool UniqueLovers => Generate.UniqueLovers.Get();
+        public static bool LoversChat => Generate.LoversChat.Get();
+        public static int LoversCount => (int)Generate.LoversCount.Get();
+        public static bool LoversFaction => Generate.LoversFaction.Get();
+        public static bool LoversRoles => Generate.LoversRoles.Get();
+
+        //Rivals Settings
+        public static bool RivalsChat => Generate.RivalsChat.Get();
+        public static int RivalsCount => (int)Generate.RivalsCount.Get();
+        public static bool RivalsFaction => Generate.RivalsFaction.Get();
+        public static bool RivalsRoles => Generate.RivalsRoles.Get();
+        public static bool UniqueRivals => Generate.UniqueRivals.Get();
+
+        //Mafia Settings
+        public static int MafiaCount => (int)Generate.MafiaCount.Get();
+        public static bool MafiaRoles => Generate.MafiaRoles.Get();
+        public static bool UniqueMafia => Generate.UniqueMafia.Get();
+        public static bool MafVent => Generate.MafVent.Get();
+
         //Giant Settings
         public static int GiantCount => (int)Generate.GiantCount.Get();
         public static float GiantSpeed => Generate.GiantSpeed.Get();
         public static float GiantScale => Generate.GiantScale.Get();
         public static bool UniqueGiant => Generate.UniqueGiant.Get();
+
+        //Indomitable Settings
+        public static bool UniqueIndomitable => Generate.UniqueIndomitable.Get();
+        public static int IndomitableCount => (int)Generate.IndomitableCount.Get();
+        public static bool IndomitableKnows => Generate.IndomitableKnows.Get();
+
+        //Overlord Settings
+        public static int OverlordCount => (int)Generate.OverlordCount.Get();
+        public static bool UniqueOverlord => Generate.UniqueOverlord.Get();
+        public static int OverlordMeetingWinCount => (int)Generate.OverlordMeetingWinCount.Get();
+        public static bool OverlordKnows => Generate.OverlordKnows.Get();
+
+        //Allied Settings
+        public static int AlliedCount => (int)Generate.AlliedCount.Get();
+        public static bool UniqueAllied => Generate.UniqueAllied.Get();
+        public static AlliedFaction AlliedFaction => (AlliedFaction)Generate.AlliedFaction.Get();
+
+        //Corrupted Settings
+        public static int CorruptedCount => (int)Generate.CorruptedCount.Get();
+        public static bool UniqueCorrupted => Generate.UniqueCorrupted.Get();
+        public static float CorruptedKillCooldown => Generate.CorruptedKillCooldown.Get();
+        public static bool AllCorruptedWin => Generate.AllCorruptedWin.Get();
+        public static bool CorruptedVent => Generate.CorruptedVent.Get();
 
         //Dwarf Settings
         public static float DwarfSpeed => Generate.DwarfSpeed.Get();
@@ -1040,10 +1048,6 @@ namespace TownOfUsReworked.CustomOptions
         public static int ShyCount => (int)Generate.ShyCount.Get();
         public static bool UniqueShy => Generate.UniqueShy.Get();
 
-        //Ninja Settings
-        public static int NinjaCount => (int)Generate.NinjaCount.Get();
-        public static bool UniqueNinja => Generate.UniqueNinja.Get();
-
         //VIP Settings
         public static bool VIPKnows => Generate.VIPKnows.Get();
         public static bool UniqueVIP => Generate.UniqueVIP.Get();
@@ -1068,23 +1072,6 @@ namespace TownOfUsReworked.CustomOptions
         //Coward Settings
         public static int CowardCount => (int)Generate.CowardCount.Get();
         public static bool UniqueCoward => Generate.UniqueCoward.Get();
-
-        //Overlord Settings
-        public static int OverlordCount => (int)Generate.OverlordCount.Get();
-        public static bool UniqueOverlord => Generate.UniqueOverlord.Get();
-        public static int OverlordMeetingWinCount => (int)Generate.OverlordMeetingWinCount.Get();
-        public static bool OverlordKnows => Generate.OverlordKnows.Get();
-
-        //Allied Settings
-        public static int AlliedCount => (int)Generate.AlliedCount.Get();
-        public static bool UniqueAllied => Generate.UniqueAllied.Get();
-        public static AlliedFaction AlliedFaction => (AlliedFaction)Generate.AlliedFaction.Get();
-
-        //Corrupted Settings
-        public static int CorruptedCount => (int)Generate.CorruptedCount.Get();
-        public static bool UniqueCorrupted => Generate.UniqueCorrupted.Get();
-        public static float CorruptedKillCooldown => Generate.CorruptedKillCooldown.Get();
-        public static bool AllCorruptedWin => Generate.AllCorruptedWin.Get();
 
         //NB Settings
         public static int NBMax => (int)Generate.NBMax.Get();

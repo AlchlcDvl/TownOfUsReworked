@@ -31,7 +31,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod
                     var arrow = gameObj.AddComponent<ArrowBehaviour>();
                     gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
                     var renderer = gameObj.AddComponent<SpriteRenderer>();
-                    renderer.sprite = AssetManager.Arrow;
+                    renderer.sprite = AssetManager.GetSprite("Arrow");
                     arrow.image = renderer;
                     gameObj.layer = 5;
                     role.ImpArrows.Add(arrow);

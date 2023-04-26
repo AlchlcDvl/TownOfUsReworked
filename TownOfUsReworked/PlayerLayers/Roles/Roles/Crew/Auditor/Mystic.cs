@@ -4,7 +4,6 @@ using TownOfUsReworked.CustomOptions;
 using System;
 using System.Linq;
 using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Modules;
 using TownOfUsReworked.Custom;
 using UnityEngine;
 using Hazel;
@@ -13,7 +12,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Mystic : CrewRole
     {
-        public PlayerControl ClosestPlayer;
         public DateTime LastRevealed;
         public static bool ConvertedDead => !PlayerControl.AllPlayerControls.ToArray().Any(x => x?.Data.IsDead == false && !x.Data.Disconnected && !x.Is(SubFaction.None));
         public CustomButton RevealButton;
@@ -30,7 +28,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 " and converters die, you will become a <color=#71368AFF>Seer</color>";
             InspectorResults = InspectorResults.TracksOthers;
             Type = LayerEnum.Mystic;
-            RevealButton = new(this, AssetManager.Reveal, AbilityTypes.Direct, "ActionSecondary", Reveal);
+            RevealButton = new(this, "Reveal", AbilityTypes.Direct, "ActionSecondary", Reveal);
         }
 
         public float RevealTimer()
@@ -68,14 +66,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Reveal()
         {
-            if (RevealTimer() != 0f || Utils.IsTooFar(Player, ClosestPlayer))
+            if (RevealTimer() != 0f || Utils.IsTooFar(Player, RevealButton.TargetPlayer))
                 return;
 
-            var interact = Utils.Interact(Player, ClosestPlayer);
+            var interact = Utils.Interact(Player, RevealButton.TargetPlayer);
 
             if (interact[3])
             {
-                if ((!ClosestPlayer.Is(SubFaction.None) && !ClosestPlayer.Is(RoleAlignment.NeutralNeo)) || ClosestPlayer.IsFramed())
+                if ((!RevealButton.TargetPlayer.Is(SubFaction.None) && !RevealButton.TargetPlayer.Is(RoleAlignment.NeutralNeo)) || RevealButton.TargetPlayer.IsFramed())
                     Utils.Flash(new Color32(255, 0, 0, 255));
                 else
                     Utils.Flash(new Color32(0, 255, 0, 255));

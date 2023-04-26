@@ -1,5 +1,4 @@
 using TownOfUsReworked.Data;
-using TownOfUsReworked.Modules;
 using System;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Custom;
@@ -13,7 +12,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     {
         public CustomButton KillButton;
         public DateTime LastKilled;
-        public PlayerControl ClosestPlayer;
 
         public Betrayer(PlayerControl player) : base(player)
         {
@@ -25,7 +23,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleAlignment = RoleAlignment.NeutralPros;
             AlignmentName = NP;
             Type = LayerEnum.Betrayer;
-            KillButton = new(this, AssetManager.Placeholder, AbilityTypes.Direct, "ActionSecondary", Kill);
+            KillButton = new(this, "BetKill", AbilityTypes.Direct, "ActionSecondary", Kill);
         }
 
         public float KillTimer()
@@ -39,10 +37,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Kill()
         {
-            if (Utils.IsTooFar(Player, ClosestPlayer) || KillTimer() != 0f || Faction == Faction.Neutral)
+            if (Utils.IsTooFar(Player, KillButton.TargetPlayer) || KillTimer() != 0f || Faction == Faction.Neutral)
                 return;
 
-            var interact = Utils.Interact(Player, ClosestPlayer, true);
+            var interact = Utils.Interact(Player, KillButton.TargetPlayer, true);
 
             if (interact[3] || interact[0])
                 LastKilled = DateTime.UtcNow;
@@ -54,13 +52,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public override void UpdateHud(HudManager __instance)
         {
-            base.UpdateHud(__instance);
-
             if (Faction == Faction.Neutral)
                 return;
 
-            var notSyn = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction)).ToList();
-            KillButton.Update("KILL", KillTimer(), CustomGameOptions.BetrayerKillCooldown, notSyn);
+            base.UpdateHud(__instance);
+            var notMates = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction)).ToList();
+            KillButton.Update("KILL", KillTimer(), CustomGameOptions.BetrayerKillCooldown, notMates);
         }
     }
 }

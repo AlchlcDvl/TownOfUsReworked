@@ -33,26 +33,26 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 | [Camouflager](#camouflager)  | [Bomber](#bomber)             | [Coroner](#coroner)               | [Arsonist](#arsonist)             |
 | [Consigliere](#consigliere)  | [Concealer](#concealer)       | [Crewmate](#crewmate)             | [Betrayer](betrayer)              |
 | [Consort](#consort)          | [Crusader](#crusader)         | [Detective](#detective)           | [Bounty Hunter](#bounty-hunter)   |
-| [Disguiser](#disguiser)      | [Drunkard](#drunkard)         | [Engineer](#engineer)             | [Cannibal](#cannibal)             |
-| [Enforcer](#enforcer)        | [Framer](#framer)             | [Escort](#escort)                 | [Cryomaniac](#cryomaniac)         |
-| [Ghoul](#ghoul)              | [Poisoner](#poisoner)         | [Inspector](#inspector)           | [Dracula](#dracula)               |
-| [Godfather](#godfather)      | [Politician](#politician)     | [Mayor](#mayor)                   | [Executioner](#executioner)       |
-| [Grenadier](#grenadier)      | [Rebel](#rebel)               | [Medic](#medic)                   | [Glitch](#glitch)                 |
-| [Impostor](#impostor)        | [Shapeshifter](#shapeshifter) | [Medium](#medium)                 | [Guardian Angel](#guardian-angel) |
-| [Janitor](#janitor)          | [Sidekick](#sidekick)         | [Mystic](#mystic)                 | [Guesser](#guesser)               |
-| [Mafioso](#mafioso)          | [Warper](#warper)             | [Operative](#operative)           | [Jackal](#jackal)                 |
+| [Disguiser](#disguiser)      | [Framer](#framer)             | [Engineer](#engineer)             | [Cannibal](#cannibal)             |
+| [Enforcer](#enforcer)        | [Poisoner](#poisoner)         | [Escort](#escort)                 | [Cryomaniac](#cryomaniac)         |
+| [Ghoul](#ghoul)              | [Politician](#politician)     | [Inspector](#inspector)           | [Dracula](#dracula)               |
+| [Godfather](#godfather)      | [Rebel](#rebel)               | [Mayor](#mayor)                   | [Executioner](#executioner)       |
+| [Grenadier](#grenadier)      | [Shapeshifter](#shapeshifter) | [Medic](#medic)                   | [Glitch](#glitch)                 |
+| [Impostor](#impostor)        | [Sidekick](#sidekick)         | [Medium](#medium)                 | [Guardian Angel](#guardian-angel) |
+| [Janitor](#janitor)          | [Warper](#warper)             | [Mystic](#mystic)                 | [Guesser](#guesser)               |
+| [Mafioso](#mafioso)          |                               | [Operative](#operative)           | [Jackal](#jackal)                 |
 | [Miner](#miner)              |                               | [Retributionist](#retributionist) | [Jester](#jester)                 |
 | [Morphling](#morphling)      |                               | [Revealer](#revealer)             | [Juggernaut](#juggernaut)         |
 | [Teleporter](#teleporter)    |                               | [Seer](#seer)                     | [Murderer](#murderer)             |
-| [Time Master](#time-master)  |                               | [Sheriff](#sheriff)               | [Necromancer](#necromancer)       |
-| [Wraith](#wraith)            |                               | [Shifter](#shifter)               | [Pestilence](#pestilence)         |
+| [Wraith](#wraith)            |                               | [Sheriff](#sheriff)               | [Necromancer](#necromancer)       |
+|                              |                               | [Shifter](#shifter)               | [Pestilence](#pestilence)         |
 |                              |                               | [Swapper](#swapper)               | [Phantom](#phantom)               |
-|                              |                               | [Time Lord](#time-lord)           | [Plaguebearer](#plaguebearer)     |
-|                              |                               | [Tracker](#tracker)               | [Serial Killer](#serial-killer)   |
-|                              |                               | [Transporter](#transporter)       | [Survivor](#survivor)             |
-|                              |                               | [Vampire Hunter](#vampire-hunter) | [Thief](#thief)                   |
-|                              |                               | [Veteran](#veteran)               | [Werewolf](#werewolf)             |
-|                              |                               | [Vigilante](#vigilante)           | [Whisperer](#whisperer)           |
+|                              |                               | [Tracker](#tracker)               | [Plaguebearer](#plaguebearer)     |
+|                              |                               | [Transporter](#transporter)       | [Serial Killer](#serial-killer)   |
+|                              |                               | [Vampire Hunter](#vampire-hunter) | [Survivor](#survivor)             |
+|                              |                               | [Veteran](#veteran)               | [Thief](#thief)                   |
+|                              |                               | [Vigilante](#vigilante)           | [Werewolf](#werewolf)             |
+|                              |                               |                                   | [Whisperer](#whisperer)           |
 
 | [Modifiers](#modifiers)       | [Abilities](#abilities)       | [Objectifiers](#objectifiers) |
 |-------------------------------|-------------------------------|-------------------------------|
@@ -105,6 +105,7 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 | Among Us - Version | Mod Version | Link |
 |--------------------|-------------|------|
+| 2023.3.28 (s & e) | v0.1.0-dev1 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.1.0-dev1/TownOfUsReworked.zip) |
 | 2023.3.28 (s & e) | v0.0.4-dev2 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.4-dev2/TownOfUsReworked.zip) |
 | 2023.3.28 (s & e) | v0.0.4-dev1 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.4-dev1/TownOfUsReworked.zip) |
 | 2023.3.28 (s & e) | v0.0.3-dev3 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.3-dev3/TownOfUsReworked.zip) |
@@ -133,7 +134,38 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 # Changelogs
 
 <details>
-  <summary>Change Log</summary>
+  <summary>Changelog</summary>
+  <details>
+    <summary>v0.1.0-dev1</summary>
+    <ul> <li>Buff: Altruist can now revive players multiple times and sacrifices themselves on the last revive</li> </ul>
+    <ul> <li>Update: Updated Crowded to fix the double click issue</li> </ul>
+    <ul> <li>Update: Updated the role info from the recent updates in the in-game wiki</li> </ul>
+    <ul> <li>Improvement: Improved player targetting</li> </ul>
+    <ul> <li>Improvement: Settings now open to the last tab you were on, and keybinds for page jumping also work in there</li> </ul>
+    <ul> <li>Critical Fix: Fixed the Haunt button not working</li> </ul>
+    <ul> <li>Visual Fix: Fixed Poisoner having 2 buttons</li> </ul>
+    <ul> <li>Visual Fix: Fixed the sheer amount of ability buttons spawning (hopefully)</li> </ul>
+    <ul> <li>Visual Fix: Fixed buttons not disappearing when a meeting is called</li> </ul>
+    <ul> <li>Visual Fix: Fixed the spectate button looking a little cut off</li> </ul>
+    <ul> <li>Bug Fix: Fixed Vitals immediately closing upon opening</li> </ul>
+    <ul> <li>Bug Fix: Fixed staying zoomed out during a meeting</li> </ul>
+    <ul> <li>Bug Fix: Fixed the issue with targets not being higlighted at the times they are supposed to be</li> </ul>
+    <ul> <li>Bug Fix: Fixed settings looping incorrectly</li> </ul>
+    <ul> <li>Bug Fix: Fixed the issue with friendly fire</li> </ul>
+    <ul> <li>Objectifier Fix: Fixed Corrupted not ending the game when it is supposed to</li> </ul>
+    <ul> <li>Modifier Fix: Fixed continuously walking when being fake killed as Volatile</li> </ul>
+    <ul> <li>Ability Fix: Button Barry no longer bugs out a meeting for themselves</li> </ul>
+    <ul> <li>Role + Ability Fix: Fixed not being able to guess Crusader (for Assassin and Guesser)</li> </ul>
+    <ul> <li>Role Fix: Fixed Arsonist buttons not working</li> </ul>
+    <ul> <li>Role Fix: Fixed footprints not disappearing after a meeting for Detectives and Retributionist-Detectives</li> </ul>
+    <ul> <li>Role Fix: Fixed Rebel not being able to promote anyone</li> </ul>
+    <ul> <li>Role Fix: Fixed Disguiser not being able to disguise players</li> </ul>
+    <ul> <li>Role Fix: Fixed Syndicate roles having a kill button from the start</li> </ul>
+    <ul> <li>Role Fix: Fixed Troll screwing with the end game upon dying</li> </ul>
+    <ul> <li>Role Fix: Fixed Godfather-Janitors not dropping bodies when being warped/transported</li> </ul>
+    <ul> <li>Removed: Time Lord, Time Master and Drunkard because they break the game often, they'll return when I find a way to fix that</li> </ul>
+    <ul> <li>Removed: Removed the /setname chat command because it visually bugs out a lot (thanks to a certain group of people)</li> </ul>
+  </details>
   <details>
     <summary>v0.0.4-dev2</summary>
     <ul> <li>Addition: Added a disconnect handler to hopefully reduce future errors</li> </ul>
@@ -535,56 +567,32 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 ## Steam Guide
 1. [Download](#releases) the Town of Us Reworked file corresponding to the installed Among Us version.
-
 2. Go to your Steam library.
-
 3. Right-click Among Us > click `Manage` > click `Browse local files`.
-
 4. In the File Explorer, delete the entire `Among Us` folder.
-
 5. Go back to your Steam library.
-
 6. Right-Click Among Us > click `Properties...` > click `LOCAL FILES`.
-
 7. Click on `VERIFY INTEGRITY OF GAME FILES...`.
-
 8. Wait for Steam to download a clean version of Among Us.
-
 9. Duplicate the new Among Us Folder.
-
 10. Rename it to `Among Us - ToU-Rew`.
-
 11. Double-click on the zip file you downloaded.
-
 12. Drag all the files from the zip file in the new ToU folder.
-
 13. Finally, launch `Among Us.exe` from that folder.
 
 ## Epic Games Guide
 1. [Download](#releases) the Town of Us Reworked file corresponding to the installed Among Us version.
-
 2. Go to your Epic Games library.
-
 3. Find Among Us and click on the 3 dots `...` > click `Uninstall`.
-
 4. Confirm you want to Uninstall Among Us.
-
 5. In the Epic library, click on Among Us to install.
-
 6. Copy the Folder Path.
-
 7. Uncheck Auto-Update.
-
 8. Click on Install.
-
 9. Click Yes on the Windows pop up.
-
 10. Paste the folder path in Windows search bar.
-
 11. Click on Enter.
-
 12. Copy or move the contents of the Town Of Us zip file into the AmongUs folder.
-
 13. Finally, launch Among Us from Epic Games library.
 
 Your game folder should look something like this.
@@ -598,12 +606,14 @@ If you have issues installing Town of Us Reworked, you can join our [Discord](ht
 
 # Uninstallation
 
-Delete these files and you're good to go!
+For Epic Games users, delete these files and you're good to go!
 
 ![Delete](./Images/Delete.png)
 
+For Steam users, delete the `Among Us - ToU-Rew` that you created.
+
 # Common Settings
-## Each role, modifier, objectifier and ability has these settings:
+## Each role, modifier, objectifier and ability has these settings
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -636,7 +646,7 @@ Delete these files and you're good to go!
 ## Altruist
 ### **Alignment: Crew (Protective)**
 
-The Altruist is capable of reviving dead players. Upon finding a dead body, the Altruist can hit their revive button, sacrificing themselves for the revival of the dead player. If enabled, the dead body disappears, so only they Altruist's body remains at the scene. After a set period of time, the player will be resurrected, if the revival isn't interrupted. Once revived all evil players will be notified of the revival and will have an arrow pointing towards the revived player.
+The Altruist is capable of reviving dead players. After a set period of time, the player will be resurrected, if the revival isn't interrupted. Once a player is revived, all evil players will be notified of the revival and will have an arrow pointing towards the revived player. Once the Altruist uses up all of their ability charges, they sacrifice themselves on the last use of their ability.
 
 ### Game Options
 
@@ -681,7 +691,7 @@ Just a plain Crew with no abilities and only spawns if all the other roles are t
 ## Detective
 ### **Alignment: Crew (Investigative)**
 
-The Detective can examine other players for suspicious behavior. If the examined player has killed recently, the Detective will be alerted about it. The Detective can also see the footprints of players. All footprints disappear after a set amount of time and only the Detective can see them.
+The Detective can examine other players for bloody hands. If the examined player has killed recently, the Detective will be alerted about it. The Detective can also see the footprints of players. All footprints disappear after a set amount of time and only the Detective can see them.
 
 ### Game Options
 
@@ -887,21 +897,6 @@ The Swapper can swap the votes on 2 players during a meeting. All the votes for 
 | Swapper Can Swap After Voting | Whether the Swapper Can Press the Button | Toggle | True |
 | Swapper Can Swap Themself | Whether the Swapper Can Press the Button | Toggle | True |
 
-## Time Lord
-### **Alignment: Crew (Protective)**
-
-The Time Lord can rewind time and reverse the positions of all players. If enabled, any players killed during this time will be revived. Nothing but movements and kills are affected.
-
-### Game Options
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Revive During Rewind | Whether the Time Lord revives dead players when rewinding | Toggle | False |
-| Time Lord Immunity To Freeze And Rewind | Whether the Time Lord is immune to their own rewind and the Time Master's time freeze | Toggle | False |
-| Rewind Duration | How far the rewind goes back in time | Time | 2s |
-| Rewind Cooldown | The cooldown on the Time Lord's Rewind button | Time | 25s |
-| Max Uses | The amount of times the Rewind ability can be used | Number | 5 |
-
 ## Tracker
 ### **Alignment: Crew (Investigative)**
 
@@ -942,7 +937,7 @@ The Vampire Hunter only spawns if there are Undead in the game. They can check p
 ## Veteran
 ### **Alignment: Crew (Killing)**
 
-The Veteran can go on alert. When the Veteran is on alert, anyone, even if Crew, who interacts with the Veteran dies.
+The Veteran can go on alert. Anyone who interacts with a Veteran on alert will be killed by the Veteran in question.
 
 ### Game Options
 
@@ -1004,7 +999,7 @@ The Amnesiac is essentially roleless and cannot win without remembering the role
 
 ## Arsonist
 ### **Alignment: Neutral (Killing)**
-### Win Condition: Ignite all non-Neutral Benign roles
+### Win Condition: Ignite anyone who opposes them
 
 The Arsonist can douse other players with gasoline. After dousing, the Arsonist can choose to ignite all doused players which kills all doused players at once.
 
@@ -1017,6 +1012,19 @@ The Arsonist can douse other players with gasoline. After dousing, the Arsonist 
 | Ignite Cooldown Removed When Arsonist Is Last Killer | Decides whether the Arsonist's Ignite cooldown is reduced to 0s if they happen to be the last killer alive | Toggle | True |
 | Arsonist Douse And Ignite Cooldowns Are Linked | Decides whether the Arsonist's cooldowns are linked so that dousing resets ignition and vice versa | Toggle | True |
 | Arsonist Can Vent | Decides whether the Arsonist can vent | Toggle | True |
+
+## Betrayer
+### **Alignment: Neutral (Proselyte)**
+### Win Condition: Kill anyone who opposes the faction they defected to
+
+The Betrayer is a simple killer, who turned after a turned Traitor/Fanatic was the only member of their new faction remaning. This role does not spawn directly.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|------|-------------|------|---------|
+| Kill Cooldown | The cooldown of the Betrayer's kill button | Time | 25s |
+| Betrayer Can Vent | Decides whether the Betrayer can vent | Toggle | True |
 
 ## Bounty Hunter
 ### **Alignment: Neutral (Evil)**
@@ -1235,7 +1243,7 @@ The Necromancer is essentially an evil Altruist. They can revive dead players an
 ### **Alignment: Neutral (Proselyte)**
 ### Win Condition: Kill all non-Neutral Benign roles
 
-Pestilence is always on permanent alert, where anyone who tries to interact with them will die. Pestilence does not spawn in-game and instead gets converted from Plaguebearer after they infect everyone. Pestilence cannot die unless they have been voted out, and they can't be guessed (usually).
+Pestilence is always on permanent alert, where anyone who tries to interact with them will die. Pestilence does not spawn in-game and instead gets converted from Plaguebearer after they infect everyone. Pestilence cannot die unless they have been voted out, and they can't be guessed (usually). This role does not spawn directly, unless it's set to, in which case it will replace the Plaguebearer.
 
 ### Game Options
 
@@ -1553,20 +1561,6 @@ The Teleporter can teleport to a marked positions. The Teleporter can mark a loc
 | Recall Cooldown | The cooldown of the Teleporter's teleport button | Time | 25s |
 | Teleporter can Vent | Whether the Teleporter can Vent | Toggle | False |
 
-## Time Master
-### **Alignment: Intruder (Support)**
-
-The Time Master can freeze time, causing everyone to freeze in place and unable to move for a short while. Time freeze and sabotages cannot happen for obvious reasons.
-
-### Game Options
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Freeze Cooldown | The cooldown of the Time Master's freeze button | Time | 25s |
-| Freeze Duration | How long the time freeze lasts for | Time | 10s |
-| Time Master Immunity To Freeze And Rewind | Whether the Time master is immune to their own time freeze and the Time Lord's rewind | Toggle | False |
-| Other Intruders Are Immune to Freeze | Whether the other Intruders are immune to the Time Master's time freeze | Toggle | False |
-
 ## Wraith
 ### **Alignment: Intruder (Concealing)**
 
@@ -1641,18 +1635,6 @@ The Crusader can temporaily force anyone to go on alert, killing anyone who inte
 | Crusade Cooldown | The cooldown of the Crusader's Crusade button | Time | 25s |
 | Crusade Duration | The duration of the Crusader target's Crusade | Time | 10s |
 
-## Drunkard
-### **Alignment: Syndicate (Disruption)**
-
-The Drunkard can reverse a player's controls for a short while. With the Chaos Drive, this applies to everyone.
-
-### Game Options
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Confuse Cooldown | The cooldown on the Drunkard's confuse button | Time | 25s |
-| Confuse Duration | The duration of the Drunkard's confusion | Time | 10s |
-
 ## Framer
 ### **Alignment: Syndicate (Disruption)**
 
@@ -1694,7 +1676,7 @@ The Politician can vote multiple times like the Mayor, however they do not gain 
 ## Rebel
 ### **Alignment: Syndicate (Support)**
 
-The Rebel can only spawn in 3+ Syndicate games. They can choose to promote a fellow Syndicate to Sidekick. When the Rebel dies, the Sidekick becomes the new Rebel and has lowered cooldowns. With the Chaos Drive, the Rebel's gains the improved abilities of their former role. A promoted Rebel has the highest priority when recieving the Chaos Drive.
+The Rebel can only spawn in 3+ Syndicate games. They can choose to promote a fellow Syndicate to Sidekick. When the Rebel dies, the Sidekick becomes the new Rebel and has lowered cooldowns. With the Chaos Drive, the Rebel's gains the improved abilities of their former role. A promoted Rebel has the highest priority when recieving the Chaos Drive and the original Rebel as the lowest priority.
 
 ### Game Options
 
@@ -1730,6 +1712,8 @@ The Warper can teleport a player to another player. With the Chaos Drive, the Wa
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Warp Cooldown | The cooldown on the Warper's Warp button | Time | 25s |
+
+-----------------------
 
 # Objectifiers
 Objectifiers are basically a second objective for the player. They can either choose to win the regular way, or win via their Objectifier's condition.
@@ -1839,6 +1823,8 @@ The Traitor is a Crewmate who must finish their tasks to switch sides. Upon doin
 | Snitch Sees Turned Intuder Traitor | Whether the Snitch sees a turned Traitor who has joined the Intruders | Toggle | True |
 | Revealer reveals Turned Traitor | Whether the Rvealer reveals a turned Traitor who has joined the Intruders | Toggle | True |
 | Turned Traitor Swaps Colours for Investigative Roles | The Traitor switches colours | Toggle | False |
+
+-----------------------
 
 # Modifiers
 Modifiers are passive afflictions that change a player's gameplay.
@@ -1954,6 +1940,8 @@ You see and hear things and might lash out on others.
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Volatile | The percentage probability of the Volatile appearing | Percentage | 0% |
+
+-----------------------
 
 # Abilities
 Abilities give you extra perks on top of your role's regular powers.
@@ -2088,6 +2076,8 @@ The Underdog is an Intruder with a prolonged kill cooldown when with a teammate.
 | Kill Cooldown Bonus | The amount of time added or removed from the Underdog's Kill Cooldown | Time | 5s |
 | Increased Kill Cooldown  | Whether the Underdog's Kill Cooldown is Increased when 2+ Imps are alive | Toggle | True |
 
+-----------------------
+
 # Custom Game Settings
 
 ## Game Mode Settings
@@ -2173,7 +2163,9 @@ New colors are added for crewmates to pick from.
 Custom hats, nameplates and visors have been added, made by some very talented artists. These are mostly for streamers.
 
 ## Bug / Suggestions / Additions
-If you have any bugs or any need to contact me, join the [Discord Server](https://discord.gg/cd27aDQDY9) or create an issue or pull request on GitHub.
+If you have any bugs or any need to contact me, join the [Discord](https://discord.gg/cd27aDQDY9) or create an issue or pull request on GitHub.
+
+-----------------------
 
 # Game Info
 
@@ -2269,8 +2261,6 @@ If you have any bugs or any need to contact me, join the [Discord Server](https:
 **Reanimated**
 - This subfaction is led by the Necromancer
 - The only condition for becoming a member of this faction is the need to die so that the Necromancer can resurrect you
-
------------------------
 
 ## Syndicate Chaos Drive Role Priority
 ### This list shows which Syndicate role alignments/roles gain the Chaos Drive first if "Chaos Drive Is Global" is turned off.

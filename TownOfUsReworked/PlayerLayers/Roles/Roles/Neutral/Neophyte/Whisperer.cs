@@ -4,9 +4,7 @@ using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Data;
 using Hazel;
-using TownOfUsReworked.Modules;
 using TownOfUsReworked.Custom;
-using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -36,7 +34,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             WhisperConversion = CustomGameOptions.InitialWhisperRate;
             Persuaded = new() { Player.PlayerId };
             Type = LayerEnum.Whisperer;
-            WhisperButton = new(this, AssetManager.Whisper, AbilityTypes.Effect, "ActionSecondary", Whisper);
+            WhisperButton = new(this, "Whisper", AbilityTypes.Effect, "ActionSecondary", Whisper);
         }
 
         public float WhisperTimer()
@@ -109,6 +107,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     writer.Write(playerConversion.Item1);
                     writer.Write((byte)SubFaction.Sect);
                     writer.Write(false);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
                     removals.Add(playerConversion);
                 }
             }

@@ -7,7 +7,6 @@ using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Objects;
 using HarmonyLib;
-using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Custom;
@@ -24,8 +23,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public static readonly List<GameObject> Buttons = new();
         public static readonly Dictionary<int, string> LightDarkColors = new();
         public static readonly List<PlayerControl> Cleaned = new();
-
-        public readonly List<Vent> Vents = new();
 
         public virtual void IntroPrefix(IntroCutscene._ShowTeam_d__36 __instance) {}
 
@@ -73,7 +70,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public RoleAlignment RoleAlignment = RoleAlignment.None;
         public SubFaction SubFaction = SubFaction.None;
         public InspectorResults InspectorResults = InspectorResults.None;
-        public List<Role> RoleHistory = new();
+        public readonly List<Role> RoleHistory = new();
+        public ChatChannel CurrentChannel = ChatChannel.All;
+        public readonly List<Vent> Vents = new();
+        public readonly List<Footprint> AllPrints = new();
 
         public string FactionColorString => $"<color=#{FactionColor.ToHtmlStringRGBA()}>";
         public string SubFactionColorString => $"<color=#{SubFactionColor.ToHtmlStringRGBA()}>";
@@ -95,8 +95,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public bool Base;
 
-        public readonly List<Footprint> AllPrints = new();
-
         public CustomButton BombKillButton;
 
         public CustomButton ZoomInButton;
@@ -115,11 +113,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public bool IsSynFanatic;
         public bool IsCrewAlly;
         public bool NotDefective => !IsRecruit && !IsResurrected && !IsPersuaded && !IsBitten && !IsIntAlly && !IsIntFanatic && !IsIntTraitor && !IsSynAlly && !IsSynTraitor &&
-            !IsSynFanatic && !IsCrewAlly;
-
-        public bool Winner;
-
-        public PlayerControl ClosestBoom;
+            !IsSynFanatic && !IsCrewAlly && !Player.Is(ObjectifierEnum.Corrupted) && !Player.Is(ObjectifierEnum.Mafia);
 
         public override void UpdateHud(HudManager __instance)
         {
@@ -131,6 +125,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             __instance.PetButton.buttonLabelText.SetOutlineColor(FactionColor);
             __instance.ImpostorVentButton.buttonLabelText.SetOutlineColor(FactionColor);
             __instance.SabotageButton.buttonLabelText.SetOutlineColor(FactionColor);
+            __instance.AbilityButton.buttonLabelText.SetOutlineColor(FactionColor);
             Player.RegenTask();
 
             if (PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.ShowMediumToDead && AllRoles.Any(x => x.RoleType == RoleEnum.Medium && ((Medium)x).MediatedPlayers.
@@ -150,7 +145,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             foreach (var ret in GetRoles<Retributionist>(RoleEnum.Retributionist))
             {
-                if (ret.RevivedRole?.RoleType != RoleEnum.Medic)
+                if (!ret.IsMedic)
                     continue;
 
                 var exPlayer = ret.ExShielded;
@@ -169,7 +164,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 if (player == null)
                     continue;
 
-                if (player.Data.IsDead || ret.Player.Data.IsDead || ret.Player.Data.Disconnected)
+                if (player.Data.IsDead || ret.IsDead || ret.Disconnected)
                 {
                     Retributionist.BreakShield(ret.Player.PlayerId, player.PlayerId, true);
                     continue;
@@ -202,7 +197,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 if (player == null)
                     continue;
 
-                if (player.Data.IsDead || medic.Player.Data.IsDead || medic.Player.Data.Disconnected)
+                if (player.Data.IsDead || medic.IsDead || medic.Disconnected)
                 {
                     Medic.BreakShield(medic.Player.PlayerId, player.PlayerId, true);
                     continue;
@@ -326,9 +321,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var ColorString = LightDarkColors[playerControl.GetDefaultOutfit().ColorId];
 
             if (ColorString == "lighter")
-                renderer.sprite = AssetManager.Lighter;
+                renderer.sprite = AssetManager.GetSprite("Lighter");
             else if (ColorString == "darker")
-                renderer.sprite = AssetManager.Darker;
+                renderer.sprite = AssetManager.GetSprite("Darker");
 
             newButton.transform.position = colorButton.transform.position - new Vector3(-0.8f, 0.2f, -2f);
             newButton.transform.localScale *= 0.8f;
@@ -392,6 +387,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 if (role.HoldsDrive)
                     role.VoteBank += CustomGameOptions.ChaosDriveVoteAdd;
             }
+
+            Zooming = false;
+            Camera.main.orthographicSize = 3f;
+
+            foreach (var cam in Camera.allCameras)
+            {
+                if (cam?.gameObject.name == "UI Camera")
+                    cam.orthographicSize = 3f;
+            }
+
+            ResolutionManager.ResolutionChanged.Invoke((float)Screen.width / Screen.height);
+
+            foreach (var role in AllRoles)
+                role.CurrentChannel = ChatChannel.All;
         }
 
         public static readonly string IntrudersWinCon = "- Have a critical sabotage reach 0 seconds\n- Kill anyone who opposes the <color=#FF0000FF>Intruders</color>";
@@ -428,9 +437,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Color = Colors.Layer;
             LayerType = PlayerLayerEnum.Role;
-            ZoomInButton = new(this, AssetManager.Plus, AbilityTypes.Effect, "ActionSecondary", Zoom, false, true);
-            ZoomOutButton = new(this, AssetManager.Minus, AbilityTypes.Effect, "ActionSecondary", Zoom, false, true);
-            BombKillButton = new(this, AssetManager.Placeholder, AbilityTypes.Direct, "ActionSecondary", BombKill);
+            ZoomInButton = new(this, "Plus", AbilityTypes.Effect, "ActionSecondary", Zoom, false, true);
+            ZoomOutButton = new(this, "Minus", AbilityTypes.Effect, "ActionSecondary", Zoom, false, true);
+            BombKillButton = new(this, "BombKill", AbilityTypes.Direct, "ActionSecondary", BombKill);
             AllRoles.Add(this);
         }
 
@@ -451,13 +460,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void BombKill()
         {
-            if (Utils.IsTooFar(Player, ClosestBoom))
+            if (Utils.IsTooFar(Player, BombKillButton.TargetPlayer))
                 return;
 
             if (!Bombed)
                 return;
 
-            var success = Utils.Interact(Player, ClosestBoom, true)[3];
+            var success = Utils.Interact(Player, BombKillButton.TargetPlayer, true)[3];
             Player.GetEnforcer().BombSuccessful = success;
             Bombed = false;
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);

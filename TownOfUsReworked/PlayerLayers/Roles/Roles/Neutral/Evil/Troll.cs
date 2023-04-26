@@ -11,7 +11,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public bool Killed;
         public DateTime LastInteracted;
         public CustomButton InteractButton;
-        public PlayerControl ClosestPlayer;
         public bool TrollWins;
 
         public Troll(PlayerControl player) : base(player)
@@ -25,7 +24,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AlignmentName = NE;
             Objectives = "- Get killed";
             Type = LayerEnum.Troll;
-            InteractButton = new(this, AssetManager.Placeholder, AbilityTypes.Direct, "ActionSecondary", Interact);
+            InteractButton = new(this, "Placeholder", AbilityTypes.Direct, "ActionSecondary", Interact);
         }
 
         public float InteractTimer()
@@ -39,10 +38,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Interact()
         {
-            if (InteractTimer() != 0f || Utils.IsTooFar(Player, ClosestPlayer))
+            if (InteractTimer() != 0f || Utils.IsTooFar(Player, InteractButton.TargetPlayer))
                 return;
 
-            var interact = Utils.Interact(Player, ClosestPlayer);
+            var interact = Utils.Interact(Player, InteractButton.TargetPlayer);
 
             if (interact[3] || interact[0])
                 LastInteracted = DateTime.UtcNow;

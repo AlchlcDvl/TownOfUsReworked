@@ -4,7 +4,6 @@ using TownOfUsReworked.CustomOptions;
 using System;
 using System.Linq;
 using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Modules;
 using TownOfUsReworked.Custom;
 using UnityEngine;
 
@@ -12,9 +11,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Seer : CrewRole
     {
-        public PlayerControl ClosestPlayer;
         public DateTime LastSeered;
-        public bool ChangedDead => !AllRoles.Any(x => !x.Player.Data.IsDead && !x.Player.Data.Disconnected && (x.RoleHistory.Count > 0 || x.Is(RoleEnum.Amnesiac) ||
+        public bool ChangedDead => !AllRoles.Any(x => !x.IsDead && !x.Disconnected && (x.RoleHistory.Count > 0 || x.Is(RoleEnum.Amnesiac) ||
             x.Is(RoleEnum.VampireHunter) || x.Is(RoleEnum.Godfather) || x.Is(RoleEnum.Mafioso) || x.Is(RoleEnum.Thief) || x.Is(RoleEnum.Shifter) || x.Is(RoleEnum.Rebel) ||
             x.Is(RoleEnum.Mystic) || (x.Is(RoleEnum.Seer) && x != this) || x.Is(RoleEnum.Sidekick) || x.Is(RoleEnum.GuardianAngel) || x.Is(RoleEnum.Executioner) ||
             x.Is(RoleEnum.BountyHunter) || x.Is(RoleEnum.Guesser) || x.Player.Is(ObjectifierEnum.Traitor) || x.Player.Is(ObjectifierEnum.Fanatic)));
@@ -31,7 +29,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 "Sheriff</color>";
             InspectorResults = InspectorResults.TouchesPeople;
             Type = LayerEnum.Seer;
-            SeerButton = new(this, AssetManager.Seer, AbilityTypes.Direct, "ActionSecondary", See);
+            SeerButton = new(this, "Seer", AbilityTypes.Direct, "ActionSecondary", See);
         }
 
         public float SeerTimer()
@@ -45,7 +43,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void TurnSheriff()
         {
-            SeerButton.Disable();
             var role = new Sheriff(Player);
             role.RoleUpdate(this);
 
@@ -55,16 +52,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void See()
         {
-            if (SeerTimer() != 0f || Utils.IsTooFar(Player, ClosestPlayer))
+            if (SeerTimer() != 0f || Utils.IsTooFar(Player, SeerButton.TargetPlayer))
                 return;
 
-            var interact = Utils.Interact(Player, ClosestPlayer);
+            var interact = Utils.Interact(Player, SeerButton.TargetPlayer);
 
             if (interact[3])
             {
-                var targetRoleCount = GetRole(ClosestPlayer).RoleHistory.Count;
-
-                if (targetRoleCount > 0 || ClosestPlayer.IsFramed())
+                if (GetRole(SeerButton.TargetPlayer).RoleHistory.Count > 0 || SeerButton.TargetPlayer.IsFramed())
                     Utils.Flash(new Color32(255, 0, 0, 255));
                 else
                     Utils.Flash(new Color32(0, 255, 0, 255));

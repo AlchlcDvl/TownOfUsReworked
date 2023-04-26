@@ -121,19 +121,14 @@ namespace TownOfUsReworked.Patches
     [HarmonyPatch(typeof(VitalsMinigame), nameof(VitalsMinigame.Begin))]
     public static class VitalsMinigameBeginPatch
     {
-        public static void Postfix(VitalsMinigame __instance)
-        {
-            __instance.gameObject.AddComponent<VitalsPagingBehaviour>().vitalsMinigame = __instance;
-
-            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.TimeLord) && Minigame.Instance && !PlayerControl.LocalPlayer.Data.IsDead)
-                __instance.Close();
-        }
+        public static void Postfix(VitalsMinigame __instance) => __instance.gameObject.AddComponent<VitalsPagingBehaviour>().vitalsMinigame = __instance;
     }
 
     [HarmonyPatch(typeof(MapBehaviour), nameof(MapBehaviour.ShowSabotageMap))]
     public static class Sabotage
     {
-        public static bool Prefix() => PlayerControl.LocalPlayer.Is(Faction.Intruder) && CustomGameOptions.IntrudersCanSabotage;
+        public static bool Prefix() => (PlayerControl.LocalPlayer.Is(Faction.Intruder) && CustomGameOptions.IntrudersCanSabotage) || (PlayerControl.LocalPlayer.Is(Faction.Syndicate) &&
+            CustomGameOptions.AltImps);
     }
 
     [HarmonyPatch(typeof(GameData), nameof(GameData.HandleDisconnect), typeof(PlayerControl), typeof(DisconnectReasons))]
@@ -143,7 +138,7 @@ namespace TownOfUsReworked.Patches
 
         public static void Prefix([HarmonyArgument(0)] PlayerControl player)
         {
-            SetPostmortals.Reassign(player);
+            Utils.ReassignPostmortals(player);
             Disconnected.Add(player);
         }
     }

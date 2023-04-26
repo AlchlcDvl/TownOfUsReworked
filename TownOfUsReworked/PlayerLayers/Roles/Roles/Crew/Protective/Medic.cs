@@ -9,7 +9,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Medic : CrewRole
     {
-        public PlayerControl ClosestPlayer;
         public bool UsedAbility => ShieldedPlayer != null || ExShielded != null;
         public PlayerControl ShieldedPlayer;
         public PlayerControl ExShielded;
@@ -29,24 +28,24 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AlignmentName = CP;
             InspectorResults = InspectorResults.SeeksToProtect;
             Type = LayerEnum.Medic;
-            ShieldButton = new(this, AssetManager.Shield, AbilityTypes.Direct, "ActionSecondary", Protect);
+            ShieldButton = new(this, "Shield", AbilityTypes.Direct, "ActionSecondary", Protect);
         }
 
         public void Protect()
         {
-            if (Utils.IsTooFar(Player, ClosestPlayer))
+            if (Utils.IsTooFar(Player, ShieldButton.TargetPlayer))
                 return;
 
-            var interact = Utils.Interact(Player, ClosestPlayer);
+            var interact = Utils.Interact(Player, ShieldButton.TargetPlayer);
 
             if (interact[3])
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.Protect);
                 writer.Write(Player.PlayerId);
-                writer.Write(ClosestPlayer.PlayerId);
+                writer.Write(ShieldButton.TargetPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
-                ShieldedPlayer = ClosestPlayer;
+                ShieldedPlayer = ShieldButton.TargetPlayer;
             }
         }
 
@@ -61,9 +60,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var role = GetRole<Medic>(Utils.PlayerById(medicId));
 
-            if ((PlayerControl.LocalPlayer.PlayerId == playerId && (CustomGameOptions.NotificationShield == NotificationOptions.Shielded || CustomGameOptions.NotificationShield ==
-                NotificationOptions.ShieldedAndMedic)) || (PlayerControl.LocalPlayer.PlayerId == medicId && (CustomGameOptions.NotificationShield == NotificationOptions.Medic ||
-                CustomGameOptions.NotificationShield == NotificationOptions.ShieldedAndMedic)) || CustomGameOptions.NotificationShield == NotificationOptions.Everyone)
+            if ((PlayerControl.LocalPlayer.PlayerId == playerId && (int)CustomGameOptions.NotificationShield is 1 or 2) || (PlayerControl.LocalPlayer.PlayerId == medicId &&
+                (int)CustomGameOptions.NotificationShield is 0 or 2) || CustomGameOptions.NotificationShield == NotificationOptions.Everyone)
             {
                 Utils.Flash(role.Color);
             }

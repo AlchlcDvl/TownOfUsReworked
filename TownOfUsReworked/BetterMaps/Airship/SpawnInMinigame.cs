@@ -12,10 +12,7 @@ namespace TownOfUsReworked.BetterMaps.Airship
     public static class SpawnInMinigamePatch
     {
         private static bool GameStarted;
-
-        #pragma warning disable
-        public static List<byte> SpawnPoints = new();
-        #pragma warning restore
+        public readonly static List<byte> SpawnPoints = new();
 
         [HarmonyPatch(typeof(SpawnInMinigame), nameof(SpawnInMinigame.Begin))]
         public static class SpawnInMiningameBeginPatch
@@ -47,13 +44,10 @@ namespace TownOfUsReworked.BetterMaps.Airship
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
                     }
 
-                    if (CustomGameOptions.SpawnType != AirshipSpawnType.Normal)
-                    {
-                        if (CustomGameOptions.SpawnType == AirshipSpawnType.Fixed)
-                            __instance.Locations = new SpawnInMinigame.SpawnLocation[3] { Spawn[3], Spawn[2], Spawn[5] };
-                        else if (CustomGameOptions.SpawnType == AirshipSpawnType.RandomSynchronized)
-                            __instance.Locations = new SpawnInMinigame.SpawnLocation[3] { Spawn[SpawnPoints[0]], Spawn[SpawnPoints[1]], Spawn[SpawnPoints[2]] };
-                    }
+                    if (CustomGameOptions.SpawnType == AirshipSpawnType.Fixed)
+                        __instance.Locations = new SpawnInMinigame.SpawnLocation[3] { Spawn[3], Spawn[2], Spawn[5] };
+                    else if (CustomGameOptions.SpawnType == AirshipSpawnType.RandomSynchronized)
+                        __instance.Locations = new SpawnInMinigame.SpawnLocation[3] { Spawn[SpawnPoints[0]], Spawn[SpawnPoints[1]], Spawn[SpawnPoints[2]] };
 
                     return true;
                 }

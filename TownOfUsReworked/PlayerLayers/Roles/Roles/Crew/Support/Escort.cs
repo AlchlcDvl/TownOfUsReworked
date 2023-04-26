@@ -1,18 +1,17 @@
 using TownOfUsReworked.Data;
 using TownOfUsReworked.CustomOptions;
 using System;
-using TownOfUsReworked.Modules;
 using TownOfUsReworked.Extensions;
 using UnityEngine;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Custom;
 using Hazel;
+using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Escort : CrewRole
     {
-        public PlayerControl ClosestPlayer;
         public PlayerControl BlockTarget;
         public bool Enabled;
         public DateTime LastBlock;
@@ -34,7 +33,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             InspectorResults = InspectorResults.MeddlesWithOthers;
             Type = LayerEnum.Escort;
             BlockTarget = null;
-            BlockButton = new(this, AssetManager.EscortRoleblock, AbilityTypes.Direct, "ActionSecondary", Roleblock);
+            BlockButton = new(this, "EscortRoleblock", AbilityTypes.Direct, "ActionSecondary", Roleblock);
         }
 
         public void UnBlock()
@@ -53,7 +52,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
 
-            if (MeetingHud.Instance || Player.Data.IsDead || BlockTarget.Data.IsDead || BlockTarget.Data.Disconnected || !BlockTarget.IsBlocked())
+            foreach (var layer in GetLayers(BlockTarget))
+                layer.IsBlocked = !GetRole(BlockTarget).RoleBlockImmune;
+
+            if (MeetingHud.Instance || Player.Data.IsDead || BlockTarget.Data.IsDead || BlockTarget.Data.Disconnected)
                 TimeRemaining = 0f;
         }
 
@@ -68,24 +70,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Roleblock()
         {
-            if (RoleblockTimer() != 0f || Utils.IsTooFar(Player, ClosestPlayer))
+            if (RoleblockTimer() != 0f || Utils.IsTooFar(Player, BlockButton.TargetPlayer))
                 return;
 
-            var interact = Utils.Interact(Player, ClosestPlayer);
+            var interact = Utils.Interact(Player, BlockButton.TargetPlayer);
 
             if (interact[3])
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.EscRoleblock);
                 writer.Write(Player.PlayerId);
-                writer.Write(ClosestPlayer.PlayerId);
+                writer.Write(BlockButton.TargetPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 TimeRemaining = CustomGameOptions.EscRoleblockDuration;
-                BlockTarget = ClosestPlayer;
-
-                foreach (var layer in GetLayers(BlockTarget))
-                    layer.IsBlocked = !GetRole(BlockTarget).RoleBlockImmune;
-
+                BlockTarget = BlockButton.TargetPlayer;
                 Block();
             }
             else if (interact[0])
@@ -97,7 +95,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            BlockButton.Update("ROLEBLOCK", RoleblockTimer(), CustomGameOptions.EscRoleblockCooldown, Blocking, TimeRemaining, CustomGameOptions.EscRoleblockDuration);
+            var targets = PlayerControl.AllPlayerControls.ToArray().Where(x => !(Faction is Faction.Intruder or Faction.Syndicate && x.GetFaction() == Faction)).ToList();
+            BlockButton.Update("ROLEBLOCK", RoleblockTimer(), CustomGameOptions.EscRoleblockCooldown, targets, Blocking, TimeRemaining, CustomGameOptions.EscRoleblockDuration);
         }
     }
 }

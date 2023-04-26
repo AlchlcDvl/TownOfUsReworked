@@ -2,7 +2,6 @@ using System;
 using UnityEngine;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Modules;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Custom;
 using Hazel;
@@ -30,7 +29,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             InspectorResults = InspectorResults.Unseen;
             UsesLeft = CustomGameOptions.SwoopCount;
             Type = LayerEnum.Chameleon;
-            SwoopButton = new(this, AssetManager.Swoop, AbilityTypes.Direct, "ActionSecondary", HitSwoop, true);
+            SwoopButton = new(this, "Swoop", AbilityTypes.Direct, "ActionSecondary", HitSwoop, true);
         }
 
         public float SwoopTimer()

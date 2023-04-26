@@ -4,9 +4,10 @@ using UnityEngine;
 using System.Linq;
 using Reactor.Utilities.Extensions;
 using TownOfUsReworked.Classes;
+using Il2CppInterop.Runtime.InteropTypes.Arrays;
 
 //Adapted from https://github.com/xxomega77xx/HatPack
-namespace TownOfUsReworked.Cosmetics.CustomVisors
+namespace TownOfUsReworked.Cosmetics
 {
     //Thanks to Las Monjas for the code
     public static class CustomHats
@@ -89,6 +90,45 @@ namespace TownOfUsReworked.Cosmetics.CustomVisors
             var tex2D = new Texture2D(1, 1, TextureFormat.ARGB32, false);
             Utils.LoadImage(tex2D, mainImg, false);
             return Sprite.Create(tex2D, new Rect(0.0f, 0.0f, tex2D.width, tex2D.height), new Vector2(0.5f, 0.5f), 100f);
+        }
+
+        /*[HarmonyPatch(typeof(HatsTab), nameof(HatsTab.OnEnable))]
+        public static class EnableSprites
+        {
+            public static void Postfix()
+            {
+                var innerHats = GameObject.Find("HatsGroup").transform.GetChild(1).transform.GetChild(0).gameObject;
+                var hat = 0;
+
+                for (var i = 1; i < innerHats.transform.GetChildCount(); i++)
+                {
+                    if (innerHats.transform.GetChild(i).transform.GetChild(2).transform.GetChild(0).GetComponent<SpriteRenderer>().sprite == null)
+                    {
+                        innerHats.transform.GetChild(i).transform.GetChild(2).transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = GetSprite(AuthorDatas[hat].Name);
+                        hat++;
+                    }
+                }
+            }
+        }*/
+
+        [HarmonyPatch(typeof(HatManager), nameof(HatManager.GetUnlockedHats))]
+        public static class UnlockHats
+        {
+            public static bool Prefix(HatManager __instance, ref Il2CppReferenceArray<HatData> __result)
+            {
+                __result =
+                (
+                    from h
+                    in __instance.allHats.ToArray()
+                    where h.Free || AmongUs.Data.DataManager.Player.Purchases.GetPurchase(h.ProductId, h.BundleId)
+                    select h
+                    into o
+                    orderby o.displayOrder descending,
+                    o.name
+                    select o
+                ).ToArray();
+                return false;
+            }
         }
     }
 }

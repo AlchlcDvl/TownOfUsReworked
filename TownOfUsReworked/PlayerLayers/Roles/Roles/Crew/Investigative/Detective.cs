@@ -1,6 +1,5 @@
 using System;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Modules;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Custom;
 using TownOfUsReworked.Patches;
@@ -14,7 +13,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Detective : CrewRole
     {
-        public PlayerControl ClosestPlayer;
         public DateTime LastExamined;
         public CustomButton ExamineButton;
         private static float Time2;
@@ -31,7 +29,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AlignmentName = CI;
             InspectorResults = InspectorResults.HasInformation;
             Type = LayerEnum.Detective;
-            ExamineButton = new(this, AssetManager.Examine, AbilityTypes.Direct, "ActionSecondary", Examine);
+            ExamineButton = new(this, "Examine", AbilityTypes.Direct, "ActionSecondary", Examine);
         }
 
         public float ExamineTimer()
@@ -46,29 +44,29 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void OnMeetingStart(MeetingHud __instance)
         {
             base.OnMeetingStart(__instance);
-            AllPrints.Clear();
+            Footprint.DestroyAll(this);
         }
 
         private static Vector2 Position(PlayerControl player) => player.GetTruePosition() + new Vector2(0, 0.366667f);
 
         public void Examine()
         {
-            if (ExamineTimer() != 0f || Utils.IsTooFar(Player, ClosestPlayer))
+            if (ExamineTimer() != 0f || Utils.IsTooFar(Player, ExamineButton.TargetPlayer))
                 return;
 
-            var interact = Utils.Interact(Player, ClosestPlayer);
+            var interact = Utils.Interact(Player, ExamineButton.TargetPlayer);
 
             if (interact[3])
             {
-                var hasKilled = false;
+                var hasKilled = ExamineButton.TargetPlayer.IsFramed();
 
                 foreach (var player in Murder.KilledPlayers)
                 {
-                    if (player.KillerId == ClosestPlayer.PlayerId && (DateTime.UtcNow - player.KillTime).TotalSeconds <= CustomGameOptions.RecentKill)
+                    if (player.KillerId == ExamineButton.TargetPlayer.PlayerId && (DateTime.UtcNow - player.KillTime).TotalSeconds <= CustomGameOptions.RecentKill)
                         hasKilled = true;
                 }
 
-                if (hasKilled || ClosestPlayer.IsFramed())
+                if (hasKilled)
                     Utils.Flash(new Color32(255, 0, 0, 255));
                 else
                     Utils.Flash(new Color32(0, 255, 0, 255));
@@ -84,41 +82,47 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             base.UpdateHud(__instance);
             ExamineButton.Update("EXAMINE", ExamineTimer(), CustomGameOptions.ExamineCd);
-            Time2 += Time.deltaTime;
 
-            if (Time2 >= CustomGameOptions.FootprintInterval)
+            if (!PlayerControl.LocalPlayer.Data.IsDead)
             {
-                Time2 -= CustomGameOptions.FootprintInterval;
+                Time2 += Time.deltaTime;
 
-                foreach (var player in PlayerControl.AllPlayerControls)
+                if (Time2 >= CustomGameOptions.FootprintInterval)
                 {
-                    if (player?.Data.IsDead == true || player == PlayerControl.LocalPlayer)
-                        continue;
+                    Time2 -= CustomGameOptions.FootprintInterval;
 
-                    var canPlace = !AllPrints.Any(print => Vector3.Distance(print.Position, Position(player)) < 0.5f && print.Color.a > 0.5 && print.Player.PlayerId ==
-                        player.PlayerId);
-
-                    if (CustomGameOptions.VentFootprintVisible && ShipStatus.Instance?.AllVents.Any(vent => Vector2.Distance(vent.gameObject.transform.position, Position(player)) < 1f) ==
-                        true)
+                    foreach (var player in PlayerControl.AllPlayerControls)
                     {
-                        canPlace = false;
+                        if (player?.Data.IsDead == true || player == PlayerControl.LocalPlayer)
+                            continue;
+
+                        var canPlace = !AllPrints.Any(print => Vector3.Distance(print.Position, Position(player)) < 0.5f && print.Color.a > 0.5 && print.Player.PlayerId ==
+                            player.PlayerId);
+
+                        if (CustomGameOptions.VentFootprintVisible && ShipStatus.Instance?.AllVents.Any(vent => Vector2.Distance(vent.gameObject.transform.position, Position(player)) < 1f)
+                            == true)
+                        {
+                            canPlace = false;
+                        }
+
+                        if (canPlace)
+                            _ = new Footprint(player, this);
                     }
 
-                    if (canPlace)
-                        _ = new Footprint(player, this);
-                }
-
-                for (var i = 0; i < AllPrints.Count; i++)
-                {
-                    try
+                    for (var i = 0; i < AllPrints.Count; i++)
                     {
-                        var footprint = AllPrints[i];
+                        try
+                        {
+                            var footprint = AllPrints[i];
 
-                        if (footprint.Update())
-                            i--;
-                    } catch { /*Assume footprint value is null and allow the loop to continue*/ }
+                            if (footprint.Update())
+                                i--;
+                        } catch { /*Assume footprint value is null and allow the loop to continue*/ }
+                    }
                 }
             }
+            else
+                OnLobby();
         }
     }
 }

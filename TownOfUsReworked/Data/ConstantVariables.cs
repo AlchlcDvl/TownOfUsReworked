@@ -30,7 +30,6 @@ namespace TownOfUsReworked.Data
         public static bool IsKilling => CustomGameOptions.GameMode == GameMode.KillingOnly;
         public static bool IsVanilla => CustomGameOptions.GameMode == GameMode.Vanilla;
         public static bool NoLobby => !(IsInGame || IsLobby || IsEnded || IsRoaming || IsMeeting);
-
         public static bool LastImp => PlayerControl.AllPlayerControls.ToArray().Count(x => x.Is(Faction.Intruder) && !(x.Data.IsDead || x.Data.Disconnected)) == 1;
         public static bool LastSyn => PlayerControl.AllPlayerControls.ToArray().Count(x => x.Is(Faction.Syndicate) && !(x.Data.IsDead || x.Data.Disconnected)) == 1;
 
@@ -85,15 +84,8 @@ namespace TownOfUsReworked.Data
             !x.Data.Disconnected && (x.Is(Faction.Intruder) || (x.Is(RoleAlignment.NeutralKill) && x != player) || x.Is(RoleAlignment.NeutralNeo) || x.Is(Faction.Syndicate) ||
             x.Is(RoleAlignment.NeutralPros) || x.Is(ObjectifierEnum.Allied) || x.Is(Faction.Crew) || x.NotOnTheSameSide())) && CustomGameOptions.NoSolo == NoSolo.Never;
 
-        public static bool CorruptedWin(PlayerControl player)
-        {
-            if (!player.Is(ObjectifierEnum.Corrupted))
-                return false;
-            else if (CustomGameOptions.AllCorruptedWin)
-                return !PlayerControl.AllPlayerControls.ToArray().Any(x => !x.Data.IsDead && !x.Data.Disconnected && !x.Is(ObjectifierEnum.Corrupted));
-            else
-                return !PlayerControl.AllPlayerControls.ToArray().Any(x => !x.Data.IsDead && !x.Data.Disconnected && !x.Is(ObjectifierEnum.Corrupted) && x != player);
-        }
+        public static bool CorruptedWin(PlayerControl player) => !PlayerControl.AllPlayerControls.ToArray().Any(x => !x.Data.IsDead && !x.Data.Disconnected &&
+            !x.Is(ObjectifierEnum.Corrupted) && ((x != player && !CustomGameOptions.AllCorruptedWin) || CustomGameOptions.AllCorruptedWin));
 
         public static bool LoversWin(PlayerControl player)
         {
@@ -114,6 +106,8 @@ namespace TownOfUsReworked.Data
             var flag2 = Objectifier.GetObjectifier<Rivals>(player).RivalDead();
             return flag1 && flag2;
         }
+
+        public static bool MafiaWin => !PlayerControl.AllPlayerControls.ToArray().Any(x => !x.Data.IsDead && !x.Data.Disconnected && !x.Is(ObjectifierEnum.Mafia));
 
         public static bool StalemateDetector()
         {

@@ -2,7 +2,6 @@ using System;
 using TownOfUsReworked.Classes;
 using UnityEngine;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Modules;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Custom;
 using Hazel;
@@ -27,7 +26,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleAlignment = RoleAlignment.IntruderDecep;
             AlignmentName = ID;
             Type = LayerEnum.Wraith;
-            InvisButton = new(this, AssetManager.Invis, AbilityTypes.Effect, "Secondary", HitInvis);
+            InvisButton = new(this, "Invis", AbilityTypes.Effect, "Secondary", HitInvis);
         }
 
         public float InvisTimer()

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Modules;
 using TownOfUsReworked.Extensions;
 using Hazel;
 using TownOfUsReworked.Data;
@@ -17,7 +16,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public CustomButton RadialFrameButton;
         public List<byte> Framed = new();
         public DateTime LastFramed;
-        public PlayerControl ClosestFrame;
 
         public Framer(PlayerControl player) : base(player)
         {
@@ -31,8 +29,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = CustomGameOptions.CustomSynColors ? Colors.Framer : Colors.Syndicate;
             Framed = new();
             Type = LayerEnum.Framer;
-            FrameButton = new(this, AssetManager.Placeholder, AbilityTypes.Direct, "Secondary", HitFrame);
-            RadialFrameButton = new(this, AssetManager.Placeholder, AbilityTypes.Effect, "Secondary", RadialFrame);
+            FrameButton = new(this, "Frame", AbilityTypes.Direct, "Secondary", HitFrame);
+            RadialFrameButton = new(this, "Frame", AbilityTypes.Effect, "Secondary", RadialFrame);
         }
 
         public float FrameTimer()
@@ -59,13 +57,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void HitFrame()
         {
-            if (FrameTimer() != 0f || Utils.IsTooFar(Player, ClosestFrame) || HoldsDrive)
+            if (FrameTimer() != 0f || Utils.IsTooFar(Player, FrameButton.TargetPlayer) || HoldsDrive)
                 return;
 
-            var interact = Utils.Interact(Player, ClosestFrame);
+            var interact = Utils.Interact(Player, FrameButton.TargetPlayer);
 
             if (interact[3])
-                Frame(ClosestFrame);
+                Frame(FrameButton.TargetPlayer);
 
             if (interact[0])
                 LastFramed = DateTime.UtcNow;

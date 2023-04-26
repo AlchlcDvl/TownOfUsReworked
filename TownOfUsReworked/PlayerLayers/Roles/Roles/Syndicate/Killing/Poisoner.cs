@@ -2,7 +2,6 @@ using System;
 using UnityEngine;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Modules;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Custom;
@@ -17,7 +16,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public CustomButton GlobalPoisonButton;
         public DateTime LastPoisoned;
         public PlayerControl PoisonedPlayer;
-        public PlayerControl ClosestPoison;
         public float TimeRemaining;
         public bool Enabled;
         public bool Poisoned => TimeRemaining > 0f;
@@ -37,8 +35,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             PoisonMenu = new(Player, Click);
             PoisonedPlayer = null;
             Type = LayerEnum.Poisoner;
-            PoisonButton = new(this, AssetManager.Poison, AbilityTypes.Direct, "ActionSecondary", HitPoison);
-            GlobalPoisonButton = new(this, AssetManager.Poison, AbilityTypes.Effect, "ActionSecondary", HitGlobalPoison);
+            PoisonButton = new(this, "Poison", AbilityTypes.Direct, "ActionSecondary", HitPoison);
+            GlobalPoisonButton = new(this, "Poison", AbilityTypes.Effect, "ActionSecondary", HitGlobalPoison);
         }
 
         public void Poison()
@@ -96,8 +94,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             base.UpdateHud(__instance);
             var notSyn = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Syndicate) && x != PoisonedPlayer).ToList();
             var flag = PoisonedPlayer == null && HoldsDrive;
-            GlobalPoisonButton.Update(flag ? "SET TARGET" : "POISON", PoisonTimer(), CustomGameOptions.PoisonCd, Poisoned, TimeRemaining, CustomGameOptions.PoisonDuration);
-            PoisonButton.Update("POISON", PoisonTimer(), CustomGameOptions.PoisonCd, notSyn, Poisoned, TimeRemaining, CustomGameOptions.PoisonDuration);
+            GlobalPoisonButton.Update(flag ? "SET TARGET" : "POISON", PoisonTimer(), CustomGameOptions.PoisonCd, Poisoned, TimeRemaining, CustomGameOptions.PoisonDuration, true,
+                HoldsDrive);
+            PoisonButton.Update("POISON", PoisonTimer(), CustomGameOptions.PoisonCd, notSyn, Poisoned, TimeRemaining, CustomGameOptions.PoisonDuration, true, !HoldsDrive);
 
             if (Input.GetKeyDown(KeyCode.Backspace))
             {
@@ -110,19 +109,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void HitPoison()
         {
-            if (PoisonTimer() != 0f || Poisoned || HoldsDrive || Utils.IsTooFar(Player, ClosestPlayer))
+            if (PoisonTimer() != 0f || Poisoned || HoldsDrive || Utils.IsTooFar(Player, PoisonButton.TargetPlayer))
                 return;
 
-            var interact = Utils.Interact(Player, ClosestPlayer);
+            var interact = Utils.Interact(Player, PoisonButton.TargetPlayer);
 
             if (interact[3])
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.Poison);
                 writer.Write(Player.PlayerId);
-                writer.Write(ClosestPlayer.PlayerId);
+                writer.Write(PoisonButton.TargetPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
-                PoisonedPlayer = ClosestPlayer;
+                PoisonedPlayer = PoisonButton.TargetPlayer;
                 TimeRemaining = CustomGameOptions.PoisonDuration;
                 Poison();
             }

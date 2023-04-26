@@ -7,8 +7,6 @@ using Reactor.Utilities;
 using AmongUs.GameOptions;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Modules;
-using TownOfUsReworked.Functions;
 using System.Collections.Generic;
 using TownOfUsReworked.Extensions;
 using Object = UnityEngine.Object;
@@ -23,7 +21,6 @@ using TownOfUsReworked.PlayerLayers.Abilities;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.PlayerLayers.Abilities.AssassinMod;
 using TownOfUsReworked.PlayerLayers.Objectifiers.TraitorMod;
-using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod;
 using TownOfUsReworked.PlayerLayers.Roles.NeutralRoles.GuesserMod;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod;
 
@@ -480,7 +477,9 @@ namespace TownOfUsReworked.Patches
                                 case RetributionistActionsRPC.AltruistRevive:
                                     var ret8 = Utils.PlayerById(reader.ReadByte());
                                     var retRole8 = Role.GetRole<Retributionist>(ret8);
-                                    Coroutines.Start(Retributionist.Revive(Utils.BodyById(reader.ReadByte()), retRole8));
+                                    retRole8.RevivingBody = Utils.BodyById(reader.ReadByte());
+                                    retRole8.TimeRemaining = CustomGameOptions.AltReviveDuration;
+                                    retRole8.Revive();
                                     break;
 
                                 case RetributionistActionsRPC.Swoop:
@@ -538,8 +537,8 @@ namespace TownOfUsReworked.Patches
                                     var gfRole4 = Role.GetRole<PromotedGodfather>(gf4);
                                     gfRole4.TimeRemaining2 = CustomGameOptions.TimeToDisguise;
                                     gfRole4.TimeRemaining = CustomGameOptions.DisguiseDuration;
-                                    gfRole4.MeasuredPlayer = disguiseTarget2;
-                                    gfRole4.ClosestPlayer = disguiserForm2;
+                                    gfRole4.DisguisedPlayer = disguiseTarget2;
+                                    gfRole4.DisguisePlayer = disguiserForm2;
                                     gfRole4.DisgDelay();
                                     break;
 
@@ -558,14 +557,6 @@ namespace TownOfUsReworked.Patches
 
                                 case GodfatherActionsRPC.Blackmail:
                                     Role.GetRole<PromotedGodfather>(Utils.PlayerById(reader.ReadByte())).BlackmailedPlayer = Utils.PlayerById(reader.ReadByte());
-                                    break;
-
-                                case GodfatherActionsRPC.TimeFreeze:
-                                    var gf7 = Utils.PlayerById(reader.ReadByte());
-                                    var gfRole7 = Role.GetRole<PromotedGodfather>(gf7);
-                                    gfRole7.TimeRemaining = CustomGameOptions.FreezeDuration;
-                                    gfRole7.TimeFreeze();
-                                    Freeze.FreezeAll();
                                     break;
 
                                 case GodfatherActionsRPC.Invis:
@@ -684,22 +675,6 @@ namespace TownOfUsReworked.Patches
                                     Coroutines.Start(rebRole4.WarpPlayers());
                                     break;
 
-                                case RebelActionsRPC.Confuse:
-                                    var reb5 = Utils.PlayerById(reader.ReadByte());
-                                    var rebRole5 = Role.GetRole<PromotedRebel>(reb5);
-                                    rebRole5.TimeRemaining = CustomGameOptions.ConfuseDuration;
-                                    rebRole5.Confuse();
-
-                                    if (Role.SyndicateHasChaosDrive)
-                                        Reverse.ConfuseAll();
-                                    else
-                                    {
-                                        rebRole5.ConfusedPlayer = Utils.PlayerById(reader.ReadByte());
-                                        Reverse.ConfuseSingle(rebRole5.ConfusedPlayer);
-                                    }
-
-                                    break;
-
                                 case RebelActionsRPC.Frame:
                                     var reb6 = Utils.PlayerById(reader.ReadByte());
                                     var rebRole6 = Role.GetRole<PromotedRebel>(reb6);
@@ -794,12 +769,6 @@ namespace TownOfUsReworked.Patches
                             Utils.Teleport(teleporter, reader.ReadVector2());
                             break;
 
-                        case ActionsRPC.Rewind:
-                            var tl = Utils.PlayerById(reader.ReadByte());
-                            var tlRole = Role.GetRole<TimeLord>(tl);
-                            StartStop.StartRewind(tlRole);
-                            break;
-
                         case ActionsRPC.Sidekick:
                             var reb = Utils.PlayerById(reader.ReadByte());
                             var side = Utils.PlayerById(reader.ReadByte());
@@ -821,10 +790,6 @@ namespace TownOfUsReworked.Patches
                         case ActionsRPC.Protect:
                             var medic = Utils.PlayerById(reader.ReadByte());
                             Role.GetRole<Medic>(medic).ShieldedPlayer = Utils.PlayerById(reader.ReadByte());
-                            break;
-
-                        case ActionsRPC.RewindRevive:
-                            RecordRewind.ReviveBody(Utils.PlayerById(reader.ReadByte()));
                             break;
 
                         case ActionsRPC.BypassKill:
@@ -876,19 +841,14 @@ namespace TownOfUsReworked.Patches
                             var banshee2 = Utils.PlayerById(reader.ReadByte());
                             var bansheeRole2 = Role.GetRole<Banshee>(banshee2);
                             bansheeRole2.TimeRemaining = CustomGameOptions.ScreamDuration;
-                            bansheeRole2.Scream();
 
                             foreach (var player8 in PlayerControl.AllPlayerControls)
                             {
                                 if (!player8.Data.IsDead && !player8.Data.Disconnected && !player8.Is(Faction.Syndicate))
-                                {
                                     bansheeRole2.Blocked.Add(player8.PlayerId);
-
-                                    foreach (var layer in PlayerLayer.GetLayers(player8))
-                                        layer.IsBlocked = !Role.GetRole(player8).RoleBlockImmune;
-                                }
                             }
 
+                            bansheeRole2.Scream();
                             break;
 
                         case ActionsRPC.Mark:
@@ -929,30 +889,6 @@ namespace TownOfUsReworked.Patches
                             var pos = reader.ReadVector2();
                             var zAxis = reader.ReadSingle();
                             Utils.SpawnVent(ventId, minerRole, pos, zAxis);
-                            break;
-
-                        case ActionsRPC.TimeFreeze:
-                            var tm = Utils.PlayerById(reader.ReadByte());
-                            var tmRole = Role.GetRole<TimeMaster>(tm);
-                            Freeze.FreezeAll();
-                            tmRole.TimeRemaining = CustomGameOptions.FreezeDuration;
-                            tmRole.TimeFreeze();
-                            break;
-
-                        case ActionsRPC.Confuse:
-                            var drunk = Utils.PlayerById(reader.ReadByte());
-                            var drunkRole = Role.GetRole<Drunkard>(drunk);
-
-                            if (Role.SyndicateHasChaosDrive)
-                                Reverse.ConfuseAll();
-                            else
-                            {
-                                drunkRole.ConfusedPlayer = Utils.PlayerById(reader.ReadByte());
-                                Reverse.ConfuseSingle(drunkRole.ConfusedPlayer);
-                            }
-
-                            drunkRole.TimeRemaining = CustomGameOptions.ConfuseDuration;
-                            drunkRole.Confuse();
                             break;
 
                         case ActionsRPC.Invis:
@@ -1065,7 +1001,9 @@ namespace TownOfUsReworked.Patches
                         case ActionsRPC.AltruistRevive:
                             var altruistPlayer = Utils.PlayerById(reader.ReadByte());
                             var altruistRole = Role.GetRole<Altruist>(altruistPlayer);
-                            Coroutines.Start(Altruist.Revive(Utils.BodyById(reader.ReadByte()), altruistRole));
+                            altruistRole.RevivingBody = Utils.BodyById(reader.ReadByte());
+                            altruistRole.TimeRemaining = CustomGameOptions.AltReviveDuration;
+                            altruistRole.Revive();
                             break;
 
                         case ActionsRPC.NecromancerResurrect:
@@ -1145,10 +1083,6 @@ namespace TownOfUsReworked.Patches
                             var escort = Utils.PlayerById(reader.ReadByte());
                             var blocked2 = Utils.PlayerById(reader.ReadByte());
                             var escortRole = Role.GetRole<Escort>(escort);
-
-                            foreach (var layer in PlayerLayer.GetLayers(blocked2))
-                                layer.IsBlocked = !Role.GetRole(blocked2).RoleBlockImmune;
-
                             escortRole.BlockTarget = blocked2;
                             escortRole.TimeRemaining = CustomGameOptions.EscRoleblockDuration;
                             escortRole.Block();
@@ -1158,10 +1092,6 @@ namespace TownOfUsReworked.Patches
                             var glitch = Utils.PlayerById(reader.ReadByte());
                             var blocked3 = Utils.PlayerById(reader.ReadByte());
                             var glitchRole = Role.GetRole<Glitch>(glitch);
-
-                            foreach (var layer in PlayerLayer.GetLayers(blocked3))
-                                layer.IsBlocked = !Role.GetRole(blocked3).RoleBlockImmune;
-
                             glitchRole.HackTarget = blocked3;
                             glitchRole.TimeRemaining = CustomGameOptions.HackDuration;
                             glitchRole.Hack();
@@ -1171,10 +1101,6 @@ namespace TownOfUsReworked.Patches
                             var consort = Utils.PlayerById(reader.ReadByte());
                             var blocked = Utils.PlayerById(reader.ReadByte());
                             var consortRole = Role.GetRole<Consort>(consort);
-
-                            foreach (var layer in PlayerLayer.GetLayers(blocked))
-                                layer.IsBlocked = !Role.GetRole(blocked).RoleBlockImmune;
-
                             consortRole.BlockTarget = blocked;
                             consortRole.TimeRemaining = CustomGameOptions.ConsRoleblockDuration;
                             consortRole.Block();
@@ -1311,7 +1237,7 @@ namespace TownOfUsReworked.Patches
                             {
                                 foreach (var role in Role.GetRoles(nkRole.RoleType))
                                 {
-                                    if (!role.Player.Data.Disconnected && role.NotDefective)
+                                    if (!role.Disconnected && role.NotDefective)
                                         role.Winner = true;
                                 }
                             }
@@ -1354,7 +1280,7 @@ namespace TownOfUsReworked.Patches
                         case WinLoseRPC.CorruptedWin:
                             Objectifier.CorruptedWins = true;
 
-                            if (reader.ReadBoolean())
+                            if (CustomGameOptions.AllCorruptedWin)
                             {
                                 foreach (var corr in Objectifier.GetObjectifiers<Corrupted>(ObjectifierEnum.Corrupted))
                                     corr.Winner = true;
@@ -1376,6 +1302,10 @@ namespace TownOfUsReworked.Patches
                             foreach (var ov in Objectifier.GetObjectifiers<Overlord>(ObjectifierEnum.Overlord))
                                 ov.Winner = true;
 
+                            break;
+
+                        case WinLoseRPC.MafiaWins:
+                            Objectifier.MafiaWins = true;
                             break;
 
                         case WinLoseRPC.TaskmasterWin:

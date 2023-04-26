@@ -4,7 +4,6 @@ using System;
 using TownOfUsReworked.Custom;
 using TownOfUsReworked.Classes;
 using Hazel;
-using TownOfUsReworked.Modules;
 
 namespace TownOfUsReworked.PlayerLayers.Abilities
 {
@@ -18,11 +17,11 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
         public ButtonBarry(PlayerControl player) : base(player)
         {
             Name = "Button Barry";
-            TaskText = "- You can call a button from anywhere.";
+            TaskText = "- You can call a button from anywhere";
             Color = CustomGameOptions.CustomAbilityColors ? Colors.ButtonBarry : Colors.Ability;
             AbilityType = AbilityEnum.ButtonBarry;
             Type = LayerEnum.ButtonBarry;
-            ButtonButton = new(this, AssetManager.Button, AbilityTypes.Effect, "Quarternary", Call, true);
+            ButtonButton = new(this, "Button", AbilityTypes.Effect, "Quarternary", Call, true);
         }
 
         public float StartTimer()
@@ -44,11 +43,15 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             writer.Write((byte)ActionsRPC.BarryButton);
             writer.Write(Player.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
-            MeetingRoomManager.Instance.reporter = Player;
-            MeetingRoomManager.Instance.target = null;
-            AmongUsClient.Instance.DisconnectHandlers.AddUnique(MeetingRoomManager.Instance.Cast<IDisconnectHandler>());
-            HudManager.Instance.OpenMeetingRoom(Player);
-            Player.RpcStartMeeting(null);
+
+            if (AmongUsClient.Instance.AmHost)
+            {
+                MeetingRoomManager.Instance.reporter = Player;
+                MeetingRoomManager.Instance.target = null;
+                AmongUsClient.Instance.DisconnectHandlers.AddUnique(MeetingRoomManager.Instance.Cast<IDisconnectHandler>());
+                HudManager.Instance.OpenMeetingRoom(Player);
+                Player.RpcStartMeeting(null);
+            }
         }
 
         public override void UpdateHud(HudManager __instance)

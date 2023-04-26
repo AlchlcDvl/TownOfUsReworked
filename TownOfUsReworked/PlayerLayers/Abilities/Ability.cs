@@ -11,7 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
     {
         public static readonly List<Ability> AllAbilities = new();
 
-        protected Ability(PlayerControl player) : base(player)
+        public Ability(PlayerControl player) : base(player)
         {
             Color = Colors.Ability;
             LayerType = PlayerLayerEnum.Ability;

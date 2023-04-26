@@ -1,15 +1,15 @@
 using System;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Modules;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Custom;
 using TownOfUsReworked.Classes;
+using System.Linq;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Pestilence : NeutralRole
     {
-        public PlayerControl ClosestPlayer;
         public DateTime LastKilled;
         public CustomButton ObliterateButton;
 
@@ -24,7 +24,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleAlignment = RoleAlignment.NeutralPros;
             AlignmentName = NP;
             Type = LayerEnum.Pestilence;
-            ObliterateButton = new(this, AssetManager.Obliterate, AbilityTypes.Direct, "ActionSecondary", Obliterate);
+            ObliterateButton = new(this, "Obliterate", AbilityTypes.Direct, "ActionSecondary", Obliterate);
         }
 
         public float ObliterateTimer()
@@ -38,10 +38,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Obliterate()
         {
-            if (Utils.IsTooFar(Player, ClosestPlayer) || ObliterateTimer() != 0f)
+            if (Utils.IsTooFar(Player, ObliterateButton.TargetPlayer) || ObliterateTimer() != 0f)
                 return;
 
-            var interact = Utils.Interact(Player, ClosestPlayer, true);
+            var interact = Utils.Interact(Player, ObliterateButton.TargetPlayer, true);
 
             if (interact[3] || interact[0])
                 LastKilled = DateTime.UtcNow;
@@ -54,6 +54,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
+            var notMates = PlayerControl.AllPlayerControls.ToArray().Where(x => !(x.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) && !(SubFaction != SubFaction.None &&
+                x.GetSubFaction() == SubFaction));
             ObliterateButton.Update("OBLITERATE", ObliterateTimer(), CustomGameOptions.PestKillCd);
         }
     }

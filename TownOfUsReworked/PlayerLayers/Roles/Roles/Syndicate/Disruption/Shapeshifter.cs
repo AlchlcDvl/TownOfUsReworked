@@ -2,7 +2,6 @@ using System;
 using UnityEngine;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Modules;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Custom;
 using System.Linq;
@@ -36,7 +35,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             ShapeshiftMenu1 = new(Player, Click1);
             ShapeshiftMenu2 = new(Player, Click2);
             Type = LayerEnum.Shapeshifter;
-            ShapeshiftButton = new(this, AssetManager.Shapeshift, AbilityTypes.Effect, "Secondary", HitShapeshift);
+            ShapeshiftButton = new(this, "Shapeshift", AbilityTypes.Effect, "Secondary", HitShapeshift);
         }
 
         public void Shapeshift()

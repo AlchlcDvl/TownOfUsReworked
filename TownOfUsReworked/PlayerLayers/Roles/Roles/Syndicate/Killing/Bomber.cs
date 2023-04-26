@@ -1,12 +1,10 @@
 using System;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Modules;
 using System.Collections.Generic;
 using TownOfUsReworked.Objects;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Custom;
 using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -29,8 +27,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AlignmentName = SyK;
             Bombs = new();
             Type = LayerEnum.Bomber;
-            BombButton = new(this, AssetManager.Plant, AbilityTypes.Effect, "Secondary", Place);
-            DetonateButton = new(this, AssetManager.Detonate, AbilityTypes.Effect, "Tertiary", Detonate);
+            BombButton = new(this, "Plant", AbilityTypes.Effect, "Secondary", Place);
+            DetonateButton = new(this, "Detonate", AbilityTypes.Effect, "Tertiary", Detonate);
         }
 
         public float BombTimer()

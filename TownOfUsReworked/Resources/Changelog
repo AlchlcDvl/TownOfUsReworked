@@ -1,10 +1,29 @@
 Changelog
-- Addition: Added a disconnect handler to hopefully reduce future errors
-- Improvement: Added support for multiple Swappers swapping
-- Visual Fix: Fixed Whisperer not being able to see how much someone is left to be converted for
-- Bug Fix: Fixed a random log spam caused by players leaving
-- Potential Fix: Lag spikes
-- Role Fix: Fixed Medic-Retributionists not actually protecting anyone
-- Role Fix: Fixed Guardian Angel having 2 buttons
-- Role Fix: An attempt at fixing Retributionist and Swapper meeting buttons
-- Role Fix: Fixed Politician-Rebels not having their votes refunded on assassinations
+- Buff: Altruist can now revive players multiple times and sacrifices themselves on the last revive
+- Update: Updated Crowded to fix the double click issue
+- Update: Updated the role info from the recent updates in the in-game wiki
+- Improvement: Improved player targetting
+- Improvement: Settings now open to the last tab you were on, and keybinds for page jumping also work in there
+- Critical Fix: Fixed the Haunt button not working
+- Visual Fix: Fixed Poisoner having 2 buttons
+- Visual Fix: Fixed the sheer amount of ability buttons spawning (hopefully)
+- Visual Fix: Fixed buttons not disappearing when a meeting is called
+- Visual Fix: Fixed the spectate button looking a little cut off
+- Bug Fix: Fixed Vitals immediately closing upon opening
+- Bug Fix: Fixed staying zoomed out during a meeting
+- Bug Fix: Fixed the issue with targets not being higlighted at the times they are supposed to be
+- Bug Fix: Fixed settings looping incorrectly
+- Bug Fix: Fixed the issue with friendly fire
+- Objectifier Fix: Fixed Corrupted not ending the game when it is supposed to
+- Modifier Fix: Fixed continuously walking when being fake killed as Volatile
+- Ability Fix: Button Barry no longer bugs out a meeting for themselves
+- Role + Ability Fix: Fixed not being able to guess Crusader (for Assassin and Guesser)
+- Role Fix: Fixed Arsonist buttons not working
+- Role Fix: Fixed footprints not disappearing after a meeting for Detectives and Retributionist-Detectives
+- Role Fix: Fixed Rebel not being able to promote anyone
+- Role Fix: Fixed Disguiser not being able to disguise players
+- Role Fix: Fixed Syndicate roles having a kill button from the start
+- Role Fix: Fixed Troll screwing with the end game upon dying
+- Role Fix: Fixed Godfather-Janitors not dropping bodies when being warped/transported
+- Removed: Time Lord, Time Master and Drunkard because they break the game often, they'll return when I find a way to fix that
+- Removed: Removed the /setname chat command because it visually bugs out a lot (thanks to a certain group of people)

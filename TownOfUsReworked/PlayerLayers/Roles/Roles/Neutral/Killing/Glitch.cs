@@ -8,18 +8,18 @@ using TownOfUsReworked.Data;
 using TownOfUsReworked.PlayerLayers.Modifiers;
 using TownOfUsReworked.Custom;
 using System.Linq;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Glitch : NeutralRole, IVisualAlteration
     {
-        public PlayerControl ClosestPlayer;
         public DateTime LastMimic;
         public DateTime LastHack;
         public DateTime LastKilled;
         public CustomButton HackButton;
         public CustomButton MimicButton;
-        public CustomButton KillButton;
+        public CustomButton NeutraliseButton;
         public PlayerControl HackTarget;
         public bool IsUsingMimic => TimeRemaining2 > 0f;
         public float TimeRemaining;
@@ -45,9 +45,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             MimicMenu = new(Player, Click);
             RoleBlockImmune = true;
             Type = LayerEnum.Glitch;
-            KillButton = new(this, AssetManager.Neutralise, AbilityTypes.Direct, "ActionSecondary", Neutralise);
-            HackButton = new(this, AssetManager.Hack, AbilityTypes.Direct, "Secondary", HitHack);
-            MimicButton = new(this, AssetManager.Mimic, AbilityTypes.Effect, "Tertiary", HitMimic);
+            NeutraliseButton = new(this, "Neutralise", AbilityTypes.Direct, "ActionSecondary", Neutralise);
+            HackButton = new(this, "Hack", AbilityTypes.Direct, "Secondary", HitHack);
+            MimicButton = new(this, "Mimic", AbilityTypes.Effect, "Tertiary", HitMimic);
         }
 
         public float HackTimer()
@@ -137,19 +137,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void HitHack()
         {
-            if (HackTimer() != 0f || Utils.IsTooFar(Player, ClosestPlayer) || IsUsingHack)
+            if (HackTimer() != 0f || Utils.IsTooFar(Player, HackButton.TargetPlayer) || IsUsingHack)
                 return;
 
-            var interact = Utils.Interact(Player, ClosestPlayer);
+            var interact = Utils.Interact(Player, HackButton.TargetPlayer);
 
             if (interact[3])
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.GlitchRoleblock);
                 writer.Write(Player.PlayerId);
-                writer.Write(ClosestPlayer.PlayerId);
+                writer.Write(HackButton.TargetPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
-                HackTarget = ClosestPlayer;
+                HackTarget = HackButton.TargetPlayer;
                 TimeRemaining = CustomGameOptions.HackDuration;
                 Hack();
 
@@ -164,10 +164,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Neutralise()
         {
-            if (Utils.IsTooFar(Player, ClosestPlayer) || NeutraliseTimer() != 0f)
+            if (Utils.IsTooFar(Player, NeutraliseButton.TargetPlayer) || NeutraliseTimer() != 0f)
                 return;
 
-            var interact = Utils.Interact(Player, ClosestPlayer, true);
+            var interact = Utils.Interact(Player, NeutraliseButton.TargetPlayer, true);
 
             if (interact[3] || interact[0])
                 LastKilled = DateTime.UtcNow;
@@ -199,8 +199,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            KillButton.Update("NEUTRALISE", NeutraliseTimer(), CustomGameOptions.GlitchKillCooldown);
-            HackButton.Update("HACK", HackTimer(), CustomGameOptions.HackCooldown, IsUsingHack, TimeRemaining, CustomGameOptions.HackDuration);
+            var targets = PlayerControl.AllPlayerControls.ToArray().Where(x => !(x.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) && !(SubFaction != SubFaction.None &&
+                x.GetSubFaction() == SubFaction)).ToList();
+            var notHacked = PlayerControl.AllPlayerControls.ToArray().Where(x => x != HackTarget).ToList();
+            NeutraliseButton.Update("NEUTRALISE", NeutraliseTimer(), CustomGameOptions.GlitchKillCooldown, targets);
+            HackButton.Update("HACK", HackTimer(), CustomGameOptions.HackCooldown, notHacked, IsUsingHack, TimeRemaining, CustomGameOptions.HackDuration);
             MimicButton.Update("MIMIC", MimicTimer(), CustomGameOptions.MimicCooldown, IsUsingMimic, TimeRemaining2, CustomGameOptions.MimicDuration);
 
             if (Input.GetKeyDown(KeyCode.Backspace))

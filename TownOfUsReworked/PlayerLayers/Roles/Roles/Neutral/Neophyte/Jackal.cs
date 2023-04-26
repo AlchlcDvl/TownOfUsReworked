@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using Hazel;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.Modules;
 using TownOfUsReworked.Custom;
 using System.Linq;
 
@@ -15,7 +14,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public PlayerControl EvilRecruit;
         public PlayerControl GoodRecruit;
         public PlayerControl BackupRecruit;
-        public PlayerControl ClosestPlayer;
         public CustomButton RecruitButton;
         public bool HasRecruited;
         public bool RecruitsDead => (EvilRecruit == null || GoodRecruit == null || ((EvilRecruit?.Data.IsDead == true || EvilRecruit.Data.Disconnected) &&
@@ -39,7 +37,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AlignmentName = NN;
             Recruited = new() { Player.PlayerId };
             Type = LayerEnum.Jackal;
-            RecruitButton = new(this, AssetManager.Recruit, AbilityTypes.Direct, "ActionSecondary", Recruit);
+            RecruitButton = new(this, "Recruit", AbilityTypes.Direct, "ActionSecondary", Recruit);
         }
 
         public float RecruitTimer()
@@ -56,15 +54,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (RecruitTimer() != 0f)
                 return;
 
-            var interact = Utils.Interact(Player, ClosestPlayer, false, true);
+            var interact = Utils.Interact(Player, RecruitButton.TargetPlayer, false, true);
 
             if (interact[3])
             {
-                RoleGen.Convert(ClosestPlayer.PlayerId, Player.PlayerId, SubFaction.Cabal, false);
+                RoleGen.Convert(RecruitButton.TargetPlayer.PlayerId, Player.PlayerId, SubFaction.Cabal, false);
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.Convert);
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                writer.Write(ClosestPlayer.PlayerId);
+                writer.Write(RecruitButton.TargetPlayer.PlayerId);
                 writer.Write((byte)SubFaction.Cabal);
                 writer.Write(false);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);

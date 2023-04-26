@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
 using UnityEngine;
 
-namespace TownOfUsReworked.Cosmetics.CustomColors
+namespace TownOfUsReworked.Cosmetics
 {
     [HarmonyPatch(typeof(PlayerTab))]
     public static class PlayerTabPatch

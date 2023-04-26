@@ -14,10 +14,8 @@ namespace TownOfUsReworked.Patches
             //Fix Grenadier and screwed blind in lobby
             HudManager.Instance.FullScreen.gameObject.active = false;
 
-            foreach (var layer in PlayerLayer.AllLayers)
-                layer.OnLobby();
-
             RoleGen.ResetEverything();
+            PlayerLayer.DeleteAll();
 
             if (!ConstantVariables.IsLocalGame)
                 return;

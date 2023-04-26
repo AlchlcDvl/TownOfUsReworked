@@ -5,7 +5,6 @@ using TownOfUsReworked.Data;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.PlayerLayers.Roles;
-using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RevealerMod;
 
 namespace TownOfUsReworked.Patches
 {

@@ -69,7 +69,7 @@ namespace TownOfUsReworked.Patches
                     var lover = exiled.GetOtherLover();
 
                     if (!lover.Is(RoleEnum.Pestilence) && CustomGameOptions.BothLoversDie)
-                        lover.Exiled();
+                        lover?.Exiled();
                 }
 
                 Reassign(exiled);
@@ -104,7 +104,7 @@ namespace TownOfUsReworked.Patches
         {
             foreach (var exe in Role.GetRoles<Executioner>(RoleEnum.Executioner))
             {
-                if (exe.TargetPlayer == null || (!CustomGameOptions.ExeCanWinBeyondDeath && exe.Player.Data.IsDead))
+                if (exe.TargetPlayer == null || (!CustomGameOptions.ExeCanWinBeyondDeath && exe.IsDead))
                     continue;
 
                 if (player == exe.TargetPlayer)

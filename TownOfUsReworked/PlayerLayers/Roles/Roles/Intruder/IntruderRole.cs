@@ -1,9 +1,7 @@
 using Il2CppSystem.Collections.Generic;
 using TownOfUsReworked.Classes;
-using Hazel;
 using System;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Modules;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Custom;
@@ -14,7 +12,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     public abstract class IntruderRole : Role
     {
         public DateTime LastKilled;
-        public PlayerControl ClosestPlayer;
         public CustomButton KillButton;
 
         protected IntruderRole(PlayerControl player) : base(player)
@@ -25,7 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Objectives = IntrudersWinCon;
             BaseFaction = Faction.Intruder;
             AbilitiesText = "- You can kill players\n- You can call sabotages to distract the <color=#8BFDFDFF>Crew</color>";
-            KillButton = new(this, AssetManager.IntruderKill, AbilityTypes.Direct, "ActionSecondary", Kill);
+            KillButton = new(this, "IntruderKill", AbilityTypes.Direct, "ActionSecondary", Kill);
         }
 
         public float KillTimer()
@@ -63,93 +60,41 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 team.Add(Player.GetOtherLover());
             else if (Player.Is(ObjectifierEnum.Rivals))
                 team.Add(Player.GetOtherRival());
+            else if (Player.Is(ObjectifierEnum.Mafia))
+            {
+                foreach (var player in PlayerControl.AllPlayerControls)
+                {
+                    if (player != Player && player.Is(ObjectifierEnum.Mafia))
+                        team.Add(player);
+                }
+            }
 
             __instance.teamToShow = team;
         }
 
-        public override bool GameEnd(LogicGameFlowNormal __instance)
-        {
-            if (Player.Data.IsDead || Player.Data.Disconnected)
-                return true;
-
-            if (IsRecruit && ConstantVariables.CabalWin)
-            {
-                CabalWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.CabalWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if (IsPersuaded && ConstantVariables.SectWin)
-            {
-                SectWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.SectWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if (IsBitten && ConstantVariables.UndeadWin)
-            {
-                UndeadWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.UndeadWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if (IsResurrected && ConstantVariables.ReanimatedWin)
-            {
-                ReanimatedWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.ReanimatedWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-            else if (ConstantVariables.IntrudersWin && NotDefective)
-            {
-                IntruderWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.IntruderWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-                return false;
-            }
-
-            return false;
-        }
-
         public void Kill()
         {
-            if (Utils.IsTooFar(Player, ClosestPlayer) || KillTimer() != 0f)
+            if (Utils.IsTooFar(Player, KillButton.TargetPlayer) || KillTimer() != 0f)
                 return;
 
-            var interact = Utils.Interact(Player, ClosestPlayer, true);
+            var interact = Utils.Interact(Player, KillButton.TargetPlayer, true);
 
             if (Player.Is(RoleEnum.Janitor))
             {
                 var jani = (Janitor)this;
 
-                if (interact[3]  || interact[0])
+                if (interact[3] || interact[0])
                 {
-                    jani.LastKilled = DateTime.UtcNow;
-
                     if (CustomGameOptions.JaniCooldownsLinked)
                         jani.LastCleaned = DateTime.UtcNow;
                 }
                 else if (interact[1])
                 {
-                    jani.LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
-
                     if (CustomGameOptions.JaniCooldownsLinked)
                         jani.LastCleaned.AddSeconds(CustomGameOptions.ProtectKCReset);
                 }
                 else if (interact[2])
                 {
-                    jani.LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
-
                     if (CustomGameOptions.JaniCooldownsLinked)
                         jani.LastCleaned.AddSeconds(CustomGameOptions.VestKCReset);
                 }
@@ -158,43 +103,40 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 var gf = (PromotedGodfather)this;
 
-                if (interact[3]  || interact[0])
+                if (interact[3] || interact[0])
                 {
-                    gf.LastKilled = DateTime.UtcNow;
-
                     if (CustomGameOptions.JaniCooldownsLinked && gf.FormerRole?.RoleType == RoleEnum.Janitor)
                         gf.LastCleaned = DateTime.UtcNow;
                 }
                 else if (interact[1])
                 {
-                    gf.LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
-
                     if (CustomGameOptions.JaniCooldownsLinked && gf.FormerRole?.RoleType == RoleEnum.Janitor)
                         gf.LastCleaned.AddSeconds(CustomGameOptions.ProtectKCReset);
                 }
                 else if (interact[2])
                 {
-                    gf.LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
-
                     if (CustomGameOptions.JaniCooldownsLinked && gf.FormerRole?.RoleType == RoleEnum.Janitor)
                         gf.LastCleaned.AddSeconds(CustomGameOptions.VestKCReset);
                 }
             }
-            else
-            {
-                if (interact[3] || interact[0])
-                    LastKilled = DateTime.UtcNow;
-                else if (interact[1])
-                    LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
-                else if (interact[2])
-                    LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
-            }
+
+            if (interact[3] || interact[0])
+                LastKilled = DateTime.UtcNow;
+            else if (interact[1])
+                LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
+            else if (interact[2])
+                LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
         }
 
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            var notImp = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Intruder)).ToList();
+            var notImp = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Intruder) && !(x.GetSubFaction() == SubFaction && SubFaction != SubFaction.None) &&
+                x != Player.GetOtherLover() && x != Player.GetOtherRival()).ToList();
+
+            if (Player.Is(ObjectifierEnum.Mafia))
+                notImp.RemoveAll(x => x.Is(ObjectifierEnum.Mafia));
+
             KillButton.Update("KILL", KillTimer(), CustomGameOptions.IntKillCooldown, notImp);
         }
     }

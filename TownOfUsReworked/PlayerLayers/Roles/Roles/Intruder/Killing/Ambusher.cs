@@ -1,7 +1,6 @@
 using System;
 using UnityEngine;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Modules;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Custom;
 using System.Linq;
@@ -17,7 +16,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public float TimeRemaining;
         public bool OnAmbush => TimeRemaining > 0f;
         public PlayerControl AmbushedPlayer;
-        public PlayerControl ClosestAmbush;
         public CustomButton AmbushButton;
 
         public Ambusher(PlayerControl player) : base(player)
@@ -32,7 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             InspectorResults = InspectorResults.TracksOthers;
             Type = LayerEnum.Ambusher;
             AmbushedPlayer = null;
-            AmbushButton = new(this, AssetManager.Placeholder, AbilityTypes.Direct, "Secondary", HitAmbush);
+            AmbushButton = new(this, "Ambush", AbilityTypes.Direct, "Secondary", HitAmbush);
         }
 
         public float AmbushTimer()
@@ -62,15 +60,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void HitAmbush()
         {
-            if (AmbushTimer() != 0f || Utils.IsTooFar(Player, ClosestAmbush) || ClosestAmbush == AmbushedPlayer)
+            if (AmbushTimer() != 0f || Utils.IsTooFar(Player, AmbushButton.TargetPlayer) || AmbushButton.TargetPlayer == AmbushedPlayer)
                 return;
 
-            var interact = Utils.Interact(Player, ClosestAmbush);
+            var interact = Utils.Interact(Player, AmbushButton.TargetPlayer);
 
             if (interact[3])
             {
                 TimeRemaining = CustomGameOptions.AmbushDuration;
-                AmbushedPlayer = ClosestAmbush;
+                AmbushedPlayer = AmbushButton.TargetPlayer;
                 Ambush();
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.Ambush);

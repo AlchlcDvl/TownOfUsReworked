@@ -28,6 +28,12 @@ namespace TownOfUsReworked.Custom
                 button.Enable();
         }
 
+        public static void DestroyButtons(this PlayerControl player)
+        {
+            foreach (var button in CustomButton.AllButtons.Where(x => x.Owner.Player == player))
+                button.Destroy();
+        }
+
         public static bool CannotUse(this PlayerControl player) => player.onLadder || player.IsBlocked() || player.inVent || player.inMovingPlat;
 
         public static float GetModifiedCooldown(this PlayerControl player, float cooldown, float difference = 0f, float factor = 1f) => (cooldown * factor * player.GetMultiplier()) +
@@ -175,21 +181,6 @@ namespace TownOfUsReworked.Custom
                 else
                     role2.LastShifted = DateTime.UtcNow;
             }
-            else if (local.Is(RoleEnum.TimeLord))
-            {
-                var role2 = (TimeLord)role;
-
-                if (start)
-                {
-                    role2.FinishRewind = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.RewindCooldown);
-                    role2.StartRewind = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.RewindCooldown - 10f);
-                }
-                else
-                {
-                    role2.FinishRewind = DateTime.UtcNow;
-                    role2.StartRewind = DateTime.UtcNow.AddSeconds(-10f);
-                }
-            }
             else if (local.Is(RoleEnum.Tracker))
             {
                 var role2 = (Tracker)role;
@@ -214,6 +205,15 @@ namespace TownOfUsReworked.Custom
                     role2.LastTransported = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.TransportCooldown);
                 else
                     role2.LastTransported = DateTime.UtcNow;
+            }
+            else if (local.Is(RoleEnum.Altruist))
+            {
+                var role2 = (Altruist)role;
+
+                if (start)
+                    role2.LastRevived = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ReviveCooldown);
+                else
+                    role2.LastRevived = DateTime.UtcNow;
             }
             else if (local.Is(RoleEnum.VampireHunter))
             {
@@ -491,10 +491,6 @@ namespace TownOfUsReworked.Custom
                             role2.TeleportPoint = new(0, 0, 0);
                             break;
 
-                        case RoleEnum.TimeMaster:
-                            role2.LastFrozen = DateTime.UtcNow;
-                            break;
-
                         case RoleEnum.Wraith:
                             role2.LastInvis = DateTime.UtcNow;
                             break;
@@ -591,15 +587,6 @@ namespace TownOfUsReworked.Custom
                     role2.LastTeleport = DateTime.UtcNow;
                     role2.LastMarked = DateTime.UtcNow;
                 }
-            }
-            else if (local.Is(RoleEnum.TimeMaster))
-            {
-                var role2 = (TimeMaster)role;
-
-                if (start)
-                    role2.LastFrozen = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.FreezeCooldown);
-                else
-                    role2.LastFrozen = DateTime.UtcNow;
             }
             else if (local.Is(RoleEnum.Wraith))
             {
@@ -733,11 +720,6 @@ namespace TownOfUsReworked.Custom
                         role2.WarpPlayer2 = null;
                         break;
 
-                    case RoleEnum.Drunkard:
-                        role2.LastConfused = DateTime.UtcNow;
-                        role2.ConfusedPlayer = null;
-                        break;
-
                     case RoleEnum.Bomber:
                         role2.LastPlaced = DateTime.UtcNow;
                         role2.LastDetonated = DateTime.UtcNow;
@@ -763,16 +745,6 @@ namespace TownOfUsReworked.Custom
                     role2.LastShapeshifted = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ShapeshiftCooldown);
                 else
                     role2.LastShapeshifted = DateTime.UtcNow;
-            }
-            else if (local.Is(RoleEnum.Drunkard))
-            {
-                var role2 = (Drunkard)role;
-                role2.ConfusedPlayer = null;
-
-                if (start)
-                    role2.LastConfused = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ConfuseCooldown);
-                else
-                    role2.LastConfused = DateTime.UtcNow;
             }
             else if (local.Is(RoleEnum.Warper))
             {
@@ -1108,7 +1080,7 @@ namespace TownOfUsReworked.Custom
                 var arrow = gameObj.AddComponent<ArrowBehaviour>();
                 gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
                 var renderer = gameObj.AddComponent<SpriteRenderer>();
-                renderer.sprite = AssetManager.Arrow;
+                renderer.sprite = AssetManager.GetSprite("Arrow");
                 renderer.color = radar.Color;
                 arrow.image = renderer;
                 gameObj.layer = 5;

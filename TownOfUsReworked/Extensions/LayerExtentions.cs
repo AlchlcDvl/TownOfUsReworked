@@ -92,6 +92,19 @@ namespace TownOfUsReworked.Extensions
             return role.SubFaction;
         }
 
+        public static RoleEnum GetRole(this PlayerControl player)
+        {
+            if (player == null)
+                return RoleEnum.None;
+
+            var role = Role.GetRole(player);
+
+            if (role == null)
+                return RoleEnum.None;
+
+            return role.RoleType;
+        }
+
         public static Faction GetFaction(this PlayerVoteArea player) => Utils.PlayerByVoteArea(player).GetFaction();
 
         public static SubFaction GetSubFaction(this PlayerVoteArea player) => Utils.PlayerByVoteArea(player).GetSubFaction();
@@ -116,9 +129,6 @@ namespace TownOfUsReworked.Extensions
 
         public static bool NotOnTheSameSide(this PlayerControl player)
         {
-            if (player == null)
-                return false;
-
             var traitorFlag = player.IsTurnedTraitor();
             var fanaticFlag = player.IsTurnedFanatic();
             var recruitFlag = player.IsRecruit();
@@ -128,7 +138,8 @@ namespace TownOfUsReworked.Extensions
             var rivalFlag = player.IsWinningRival();
             var corruptedFlag = player.Is(ObjectifierEnum.Corrupted);
             var loverFlag = player.Is(ObjectifierEnum.Lovers);
-            return traitorFlag || recruitFlag || sectFlag || revivedFlag || rivalFlag || fanaticFlag || corruptedFlag || bittenFlag || loverFlag;
+            var mafFlag = player.Is(ObjectifierEnum.Mafia);
+            return traitorFlag || recruitFlag || sectFlag || revivedFlag || rivalFlag || fanaticFlag || corruptedFlag || bittenFlag || loverFlag || mafFlag;
         }
 
         public static bool CanDoTasks(this PlayerControl player)
@@ -463,6 +474,10 @@ namespace TownOfUsReworked.Extensions
                 mainflag = playerInfo.IsImpostor();
             else if (playerRole.IsBlocked)
                 mainflag = false;
+            else if (player.Is(ObjectifierEnum.Mafia))
+                mainflag = CustomGameOptions.MafVent;
+            else if (player.Is(ObjectifierEnum.Corrupted))
+                mainflag = CustomGameOptions.CorruptedVent;
             else if (player.IsRecruit())
                 mainflag = CustomGameOptions.RecruitVent;
             else if (player.IsResurrected())
@@ -811,7 +826,7 @@ namespace TownOfUsReworked.Extensions
 
         public static void RoleUpdate(this Role newRole, Role former)
         {
-            former.Player.DisableButtons();
+            former.Player.DestroyButtons();
             newRole.RoleHistory.Add(former);
             newRole.RoleHistory.AddRange(former.RoleHistory);
             newRole.Player = former.Player;

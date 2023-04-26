@@ -34,7 +34,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers.TaskmasterMod
                     var arrow = gameObj.AddComponent<ArrowBehaviour>();
                     gameObj.transform.parent = __instance.gameObject.transform;
                     var renderer = gameObj.AddComponent<SpriteRenderer>();
-                    renderer.sprite = AssetManager.Arrow;
+                    renderer.sprite = AssetManager.GetSprite("Arrow");
                     arrow.image = renderer;
                     gameObj.layer = 5;
                     role.ImpArrows.Add(arrow);

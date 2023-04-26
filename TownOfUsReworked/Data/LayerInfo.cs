@@ -378,10 +378,10 @@ namespace TownOfUsReworked.Data
         public readonly static List<RoleInfo> AllRoles = new()
         {
             new RoleInfo("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid", "Invalid"),
-            new RoleInfo("Altruist", "Alt", "The Altruist is capable of reviving dead players. Upon finding a dead body, the Altruist can hit their revive button, " +
-                "sacrificing themselves for the revival of the dead player. If enabled, the dead body disappears, so only they Altruist's body remains at the scene. After a set period" +
-                " of time, the player will be resurrected, if the revival isn't interrupted. Once revived all evil players will be notified of the revival and will have an arrow " +
-                "pointing towards the revived player.", RoleAlignment.CrewProt, Faction.Crew, "I know what I have to do but I don't know if I have the strength to do it."),
+            new RoleInfo("Altruist", "Alt", "The Altruist is capable of reviving dead players. After a set period of time, the player will be resurrected, if the revival isn't " +
+                "interrupted. Once a player is revived, all evil players will be notified of the revival and will have an arrow pointing towards the revived player. Once the Altruist " +
+                "uses up all of their ability charges, they sacrifice themselves on the last use of their ability.", RoleAlignment.CrewProt, Faction.Crew, "I know what I have to do but " +
+                "I don't know if I have the strength to do it."),
             new RoleInfo("Chameleon", "Cham", "The Chameleon can go invisible to stalk players and see what they do when no one is around.", RoleAlignment.CrewSupport,
                 Faction.Crew, "Are you sure you can see me?"),
             new RoleInfo("Coroner", "Cor", "The Coroner gets an alert when someone dies. On top of this, the Coroner briefly gets an arrow pointing in the direction of " +
@@ -391,18 +391,20 @@ namespace TownOfUsReworked.Data
             new RoleInfo("Crewmate", "Crew", "Just a plain Crew with no abilities and only spawns if all the other roles are taken or set to spawn in Custom mode.",
                 RoleAlignment.CrewUtil, Faction.Crew, "I once made a pencil using 2 erasers...they were pointless, just like me."),
             new RoleInfo("Engineer", "Engi", "The Engineer can fix sabotages from anywhere on the map. They can also use vents to get across the map easily.",
-                RoleAlignment.CrewSupport, Faction.Crew, "How am I going to stop some big mean mother hubbard from tearing me a structurally superfluous new behind? The solution? A wrench."),
+                RoleAlignment.CrewSupport, Faction.Crew, "How am I going to stop some big mean mother hubbard from tearing me a structurally superfluous new behind? The solution? A " +
+                "wrench."),
             new RoleInfo("Escort", "Esc", "The Escort can roleblock players and prevent them from doing anything for a short while.", RoleAlignment.CrewSupport, Faction.Crew,
                 "Today, I will make you a man."),
             new RoleInfo("Inspector", "Insp", "The Inspector can check players for their roles. Upon being checked, the targets' names will be updated to give a list of what" +
                 " roles could the target possibly be.", RoleAlignment.CrewInvest, Faction.Crew, "THAT'S THE GODFATHER! YOU GOTTA BELIEVE ME."),
-            new RoleInfo("Mayor", "Mayo (XD)", "The Mayor can vote multiple times. The Mayor has a Vote Bank, which is the number of times they can vote. They have the option" +
-                " to abstain their vote during a meeting, adding that vote to the Vote Bank. As long as not everyone has voted, the Mayor can use as many votes from their Vote Bank as they" +
-                " please.", RoleAlignment.CrewSov, Faction.Crew, "Um, those votes are legitimate. No, the votes are not rigged."),
+            new RoleInfo("Mayor", "Mayo (XD)", "The Mayor can vote multiple times. The Mayor has a Vote Bank, which is the number of times they can vote. They have the option to abstain" +
+                " their vote during a meeting, adding that vote to the Vote Bank. As long as not everyone has voted, the Mayor can use as many votes from their Vote Bank as they please.",
+                RoleAlignment.CrewSov, Faction.Crew, "Um, those votes are legitimate. No, the votes are not rigged."),
             new RoleInfo("Medic", "Medic", "The Medic can give any player a shield that will make them immortal until the Medic is dead. A shielded player cannot be " +
                 "killed by anyone, unless it's a suicide. Shielded players have a green ✚ next to their names.", RoleAlignment.CrewProt, Faction.Crew, "Where does it hurt?"),
             new RoleInfo("Medium", "Med", "The Medium can mediate to be able to see ghosts. If the Medium uses this ability, the Medium and the dead player will be able to " +
-                "see each other and communicate from beyond the grave!", RoleAlignment.CrewInvest, Faction.Crew, "The voices...they are telling me...my breath stinks? Can ghosts even smell?"),
+                "see each other and communicate from beyond the grave!", RoleAlignment.CrewInvest, Faction.Crew, "The voices...they are telling me...my breath stinks? Can ghosts even " +
+                "smell?"),
             new RoleInfo("Mystic", "Mys", "The Mystic only spawns when there is at least one Neutral (Neophyte) role present in the game. Whenever someone's subfaction is " +
                 "changed, the Mystic will be alerted about it. The Mystic can also investigate players to see if their subfactions have been changed. If the target has a different " +
                 "subfaction, the Mystic's screen will flash red, otherwise it will flash green. It will not, however, work on the Neutral (Neophyte) roles themselves so even people who" +
@@ -427,10 +429,9 @@ namespace TownOfUsReworked.Data
                 RoleAlignment.CrewSupport, Faction.Crew, "GET BACK HERE I WANT YOUR ROLE."),
             new RoleInfo("Swapper", "Swap", "The Swapper can swap the votes on 2 players during a meeting. All the votes for the first player will instead be counted " +
                 "towards the second player and vice versa.", RoleAlignment.CrewSov, Faction.Crew, "Oh no, they totally voted the other guy off. I have no idea why is everyone denying it."),
-            new RoleInfo("Time Lord", "TL", "The Time Lord can rewind time and reverse the positions of all players. If enabled, any players killed during this time will be" +
-                " revived. Nothing but movements and kills are affected.", RoleAlignment.CrewSupport, Faction.Crew, "What's better than an Altruist? One that dosen't die!"),
             new RoleInfo("Tracker", "Track", "InvaThe Tracker can track other during a round. Once they track someone, an arrow is continuously pointing to them, which " +
-                "updates in set intervals.lid", RoleAlignment.CrewInvest, Faction.Crew, "I only took up this job because the others were full. Yes it's a proper job. No, I'm not a stalker."),
+                "updates in set intervals.lid", RoleAlignment.CrewInvest, Faction.Crew, "I only took up this job because the others were full. Yes it's a proper job. No, I'm not a " +
+                "stalker."),
             new RoleInfo("Transporter", "Trans", "The Transporter can swap the locations of two players at will. Players who have been transported are alerted with a blue " +
                 "flash on their screen.", RoleAlignment.CrewSupport, Faction.Crew, "You're here and you're there. Where will you go? That's for me to decide."),
             new RoleInfo("Vampire Hunter", "VH", "The Vampire Hunter only spawns if there are Undead in the game. They can check players to see if they are an Undead. When " +
@@ -476,8 +477,9 @@ namespace TownOfUsReworked.Data
                 "and the Jackal will still lose their ability to recruit. Members of the Cabal have a dark grey $ next to their names.", RoleAlignment.NeutralNeo, Faction.Neutral,
                 "I've got money.", "Recruit or kill anyone who can oppose Cabal."),
             new RoleInfo("Guardian Angel", "GA", "The Guardian Angel more or less aligns themselves with the faction of their target. The Guardian Angel will win with anyone" +
-                " as long as their target lives to the end of the game, even if their target loses. If the Guardian Angel's target dies, they become a Survivor. Targets have a white ★ and " +
-                "white η when being protected next to their names.", RoleAlignment.NeutralBen, Faction.Neutral, "Hush child...Mama's here.", "Have their target live to the end of the game."),
+                " as long as their target lives to the end of the game, even if their target loses. If the Guardian Angel's target dies, they become a Survivor. Targets have a white ★ " +
+                "and white η when being protected next to their names.", RoleAlignment.NeutralBen, Faction.Neutral, "Hush child...Mama's here.", "Have their target live to the end of " +
+                "the game."),
             new RoleInfo("Jester", "Jest", "The Jester has no abilities and must make themselves appear to be evil to the Crew and get ejected. After getting ejected, the " +
                 "Jester can haunt those who voted for them, killing them from beyond the grave.", RoleAlignment.NeutralEvil, Faction.Neutral, "Hehehe I wonder if I do this...",
                 "Get ejected."),
@@ -494,8 +496,8 @@ namespace TownOfUsReworked.Data
                 " they do a lot of things I like. For example, staying dead.", "Resurrect the dead and kill off anyone who can oppose the Reanimated."),
             new RoleInfo("Pestilence", "Pest", "Pestilence is always on permanent alert, where anyone who tries to interact with them will die. Pestilence does not spawn " +
                 "in-game and instead gets converted from Plaguebearer after they infect everyone. Pestilence cannot die unless they have been voted out, and they can't be guessed " +
-                "(usually).", RoleAlignment.NeutralPros, Faction.Neutral, "I am the god of disease, nothing can kill me. *Voice from the distance* Ejections can!", "Obliterate anyone " +
-                "who can oppose them."),
+                "(usually). This role does not spawn directly, unless it's set to, in which case it will replace the Plaguebearer.", RoleAlignment.NeutralPros, Faction.Neutral,
+                "I am the god of disease, nothing can kill me. *Voice from the distance* Ejections can!", "Obliterate anyone who can oppose them."),
             new RoleInfo("Phantom", "Phan", "The Phantom spawns when a Neutral player dies withouth accomplishing their objective. They become half-invisible and have to complete all " +
                 "their tasks without getting clicked on to win.", RoleAlignment.NeutralPros, Faction.Neutral, "I'm the one who you should not have killed. *Voice from the distance* " +
                 "Get outta here! This is not FNAF!", "Finish tasks without getting caught."),
@@ -549,40 +551,46 @@ namespace TownOfUsReworked.Data
                 "* It was me."),
             new RoleInfo("Teleporter", "Tele", "The Teleporter can teleport to a marked positions. The Teleporter can mark a location which they can then teleport to later.",
                 RoleAlignment.IntruderSupport, Faction.Intruder, "He's here, he's there, he's everywhere. Who are ya gonna call? Psychic friend fr-"),
-            new RoleInfo("Time Master", "TM", "The Time Master can freeze time, causing everyone to freeze in place and unable to move for a short while. Time freeze and sabotages cannot" +
-                " happen for obvious reasons.", RoleAlignment.IntruderSupport, Faction.Intruder, "Aww can't move, can you? It'll be alright~"),
             new RoleInfo("Wraith", "Wraith", "The Wraith can temporarily turn invisible.", RoleAlignment.IntruderDecep, Faction.Intruder, "Now you see me, now you don't."),
-            new RoleInfo("Anarchist", "Anarch", "Just a plain Syndicate with no abilities and only spawns if all the other roles are taken or set to spawn in Custom mode." +
-                " Its only benefit is its ability to kill from the beginning of the game. With the Chaos Drive, the Anarchist's kill cooldown decreases.", RoleAlignment.SyndicateUtil,
+            new RoleInfo("Anarchist", "Anarch", "Just a plain Syndicate with no abilities and only spawns if all the other roles are taken or set to spawn in Custom mode. Its only " +
+                "benefit is its ability to kill from the beginning of the game. With the Chaos Drive, the Anarchist's kill cooldown decreases.", RoleAlignment.SyndicateUtil,
                 Faction.Syndicate, "If you ever feel useless, just remember that I also exist."),
-            new RoleInfo("Banshee", "Bansh", "The Banshee can block every non-Syndicate player every once in a while.", RoleAlignment.SyndicateUtil, Faction.Syndicate, "AAAAAAAAAAAAAAA"),
-            new RoleInfo("Concealer", "Conceal", "The Concealer can make everyone invisible for a short while, allowing sneaky kills to be made.", RoleAlignment.SyndicateDisruption,
-                Faction.Syndicate, "Invalid"),
+            new RoleInfo("Banshee", "Bansh", "The Banshee can block every non-Syndicate player every once in a while. This role cannot get the Chaos Drive.", RoleAlignment.SyndicateUtil,
+                Faction.Syndicate, "AAAAAAAAAAAAAAA"),
+            new RoleInfo("Concealer", "Conceal", "The Concealer can make a player invisible for a short while. With the Chaos Drive, this applies to everyone.",
+                RoleAlignment.SyndicateDisruption, Faction.Syndicate, "Invalid"),
             new RoleInfo("Crusader", "Crus", "The Crusader can temporaily force anyone to go on alert, killing anyone who interacts with the Crusader's target. With the Chaos Drive," +
                 " attempting to interact with the Crusader's target will cause the target to kill everyone within a certain range, including the target themselves.",
                 RoleAlignment.SyndicateKill, Faction.Syndicate, "I WILL PURGE THIS UNHOLY LAND!"),
-            new RoleInfo("Drunkard", "Drunk", "The Drunkard can reverse everyone's control for a short while.", RoleAlignment.SyndicateDisruption, Faction.Syndicate, "*Burp*"),
             new RoleInfo("Framer", "Framer", "The Framer can frame players, making them appear to have wrong results and be easily killed by Vigilantes and Assassins. This effects " +
                 "lasts as long as the Framer is alive. With the Chaos Drive, the Framer can frame players within a certain radius.", RoleAlignment.SyndicateDisruption, Faction.Syndicate,
                 "Who knew old documents can get people into trouble?"),
             new RoleInfo("Poisoner", "Pois", "The Poisoner can poison another player instead of killing. When they poison a player, the poisoned player dies either upon the start of the" +
-                " next meeting or after a set duration. With the Chaos Drive, the poison can spread to other players should they interact with the poisoned player.",
-                RoleAlignment.SyndicateDisruption, Faction.Syndicate, "So now if you mix these together, you end up creating this...thing."),
+                " next meeting or after a set duration. With the Chaos Drive, the Poisoner can poison a player from anywhere.", RoleAlignment.SyndicateKill, Faction.Syndicate,
+                "So now if you mix these together, you end up creating this...thing."),
             new RoleInfo("Rebel", "Reb", "The Rebel can only spawn in 3+ Syndicate games. They can choose to promote a fellow Syndicate to Sidekick. When the Rebel dies, the Sidekick" +
-                " becomes the new Rebel and has lowered cooldowns. With the Chaos Drive, the Rebel's kill cooldown decreases.", RoleAlignment.SyndicateSupport, Faction.Syndicate,
-                "DOWN WITH THE GOVERNMENT!"),
-            new RoleInfo("Shapeshifter", "SS", "The Shapeshifter can randomise everyone's appearances for a short while.", RoleAlignment.SyndicateDisruption, Faction.Syndicate,
-                "Everyone! We will be playing dress up! TOGETHER!"),
+                " becomes the new Rebel and has lowered cooldowns. With the Chaos Drive, the Rebel's gains the improved abilities of their former role. A promoted Rebel has the highest" +
+                " priority when recieving the Chaos Drive and the original Rebel as the lowest priority.", RoleAlignment.SyndicateSupport, Faction.Syndicate, "DOWN WITH THE GOVERNMENT!"),
+            new RoleInfo("Shapeshifter", "SS", "The Shapeshifter can swap the appearances of 2 players. WIth the Chaos Drive, everyone's appearances are suffled.",
+                RoleAlignment.SyndicateDisruption, Faction.Syndicate, "Everyone! We will be playing dress up! TOGETHER!"),
             new RoleInfo("Sidekick", "Side", "The Sidekick is promoted from a random non-Rebel Syndicate role. The Sidekick by themselves is nothing special, but when the Rebel " +
                 "dies, the Sidekick becomes the new Rebel. As a result, the new Rebel has a lower cooldown on all of their original role's abilities.", RoleAlignment.SyndicateUtil,
                 Faction.Syndicate, "Learning new things."),
-            new RoleInfo("Warper", "Warp", "The Warper can teleport everyone to a random vent every now and then. With the Chaos Drive, the number of potential warp points also " +
-                "increases.", RoleAlignment.SyndicateSupport, Faction.Syndicate, "BEGONE!"),
+            new RoleInfo("Warper", "Warp", "The Warper can teleport a player to another player. With the Chaos Drive, the Warper teleports everyone to random positions on the map.",
+                RoleAlignment.SyndicateSupport, Faction.Syndicate, "BEGONE!"),
             new RoleInfo("Politician", "Pol", "The Politician can vote multiple times like the Mayor. However, unlike the Mayor, the Politician does not gain votes every meeting " +
                 "without the Chaos Drive and must kill players to gain votes", RoleAlignment.SyndicatePower, Faction.Syndicate, "The votes are rigged...by me."),
             new RoleInfo("Enforcer", "Enf", "The Enforcer can plant bombs on players. After a short while, the target will be alerted to the bomb's presence and must kill someone to " +
                 "get rid of it. If they fail to kill someone within a certain time limit, tje bomb will explode, killing everyone within its vicinity.", RoleAlignment.IntruderKill,
-                Faction.Intruder, "You will do as I say...unless you want to be the painting on the walls.")
+                Faction.Intruder, "You will do as I say...unless you want to be the painting on the walls."),
+            new RoleInfo("Bomber", "Bomb", "The Bomber can place a bomb which can be remotely detonated at any time. Anyone caught inside the bomb's radius at the time of detonation will" +
+                " be killed. Only the latest placed bomb will detonate, unless the Bomber holds the Chaos Drive, with which they can detonate all bombs at once.",
+                RoleAlignment.SyndicateKill, Faction.Syndicate, "KABOOM!!"),
+            new RoleInfo("Detective", "Det", "The Detective can examine other players for bloody hands. If the examined player has killed recently, the Detective will be alerted about " +
+                "it. The Detective can also see the footprints of players. All footprints disappear after a set amount of time and only the Detective can see them.",
+                RoleAlignment.CrewInvest, Faction.Crew, "I am skilled in identifying blood...yup that's defintely blood."),
+            new RoleInfo("Betrayer", "Bet", "The Betrayer is a simple killer, who turned after a turned Traitor/Fanatic was the only member of their new faction remaning. This role does" +
+                " not spawn directly.", RoleAlignment.NeutralPros, Faction.Neutral, "Kill anyone who opposes the faction they defected to")
         };
 
         public readonly static List<ModifierInfo> AllModifiers = new()

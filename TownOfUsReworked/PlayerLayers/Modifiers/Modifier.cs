@@ -11,7 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
     {
         public static readonly List<Modifier> AllModifiers = new();
 
-        protected Modifier(PlayerControl player) : base(player)
+        public Modifier(PlayerControl player) : base(player)
         {
             Color = Colors.Modifier;
             LayerType = PlayerLayerEnum.Modifier;

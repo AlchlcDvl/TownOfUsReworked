@@ -19,7 +19,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public DateTime LastSampled;
         public PlayerControl MorphedPlayer;
         public PlayerControl SampledPlayer;
-        public PlayerControl ClosestTarget;
         public float TimeRemaining;
         public bool Enabled;
         public bool Morphed => TimeRemaining > 0f;
@@ -36,8 +35,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             SampledPlayer = null;
             MorphedPlayer = null;
             Type = LayerEnum.Morphling;
-            MorphButton = new(this, AssetManager.Morph, AbilityTypes.Effect, "Secondary", HitMorph);
-            SampleButton = new(this, AssetManager.Sample, AbilityTypes.Direct, "Tertiary", Sample);
+            MorphButton = new(this, "Morph", AbilityTypes.Effect, "Secondary", HitMorph);
+            SampleButton = new(this, "Sample", AbilityTypes.Direct, "Tertiary", Sample);
         }
 
         public void Morph()
@@ -110,13 +109,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Sample()
         {
-            if (SampleTimer() != 0f || Utils.IsTooFar(Player, ClosestTarget) || SampledPlayer == ClosestTarget)
+            if (SampleTimer() != 0f || Utils.IsTooFar(Player, SampleButton.TargetPlayer) || SampledPlayer == SampleButton.TargetPlayer)
                 return;
 
-            var interact = Utils.Interact(Player, ClosestPlayer);
+            var interact = Utils.Interact(Player, SampleButton.TargetPlayer);
 
             if (interact[3])
-                SampledPlayer = ClosestTarget;
+                SampledPlayer = SampleButton.TargetPlayer;
 
             if (interact[0])
             {

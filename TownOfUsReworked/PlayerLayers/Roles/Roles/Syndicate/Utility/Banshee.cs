@@ -35,13 +35,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Blocked = new();
             Type = LayerEnum.Banshee;
             RoleBlockImmune = true; //Not taking chances
-            ScreamButton = new(this, AssetManager.Placeholder, AbilityTypes.Effect, "ActionSecondary", HitScream);
+            ScreamButton = new(this, "Scream", AbilityTypes.Effect, "ActionSecondary", HitScream);
         }
 
         public void Scream()
         {
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
+
+            foreach (var id in Blocked)
+            {
+                var player = Utils.PlayerById(id);
+
+                foreach (var layer in GetLayers(player))
+                    layer.IsBlocked = !GetRole(player).RoleBlockImmune;
+            }
 
             if (MeetingHud.Instance || Caught)
                 TimeRemaining = 0f;
@@ -123,12 +131,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             foreach (var player in PlayerControl.AllPlayerControls)
             {
                 if (!player.Data.IsDead && !player.Data.Disconnected && !player.Is(Faction.Syndicate))
-                {
-                    foreach (var layer in GetLayers(player))
-                        layer.IsBlocked = !GetRole(player).RoleBlockImmune;
-
                     Blocked.Add(player.PlayerId);
-                }
             }
         }
 

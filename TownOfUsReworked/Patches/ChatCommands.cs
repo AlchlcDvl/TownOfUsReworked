@@ -37,7 +37,7 @@ namespace TownOfUsReworked.Patches
                 var EatNeed = CustomGameOptions.CannibalBodyCount >= PlayerControl.AllPlayerControls._size / 2 ? PlayerControl.AllPlayerControls._size / 2 :
                     CustomGameOptions.CannibalBodyCount;
                 var getWhat = CustomGameOptions.ConsigInfo == ConsigInfo.Role ? "role" : "faction";
-                var setColor = TownOfUsReworked.isTest ? ", /setcolour or /setcolor" : "";
+                var setColor = TownOfUsReworked.isTest ? ", /setcolour or /setcolor, /setname" : "";
                 var whisper = CustomGameOptions.Whispers ? ", /whisper" : "";
                 var kickBan = AmongUsClient.Instance.AmHost && AmongUsClient.Instance.CanBan() ? ", /kick, /ban, /clearlobby" : "";
                 var player = PlayerControl.LocalPlayer;
@@ -50,9 +50,7 @@ namespace TownOfUsReworked.Patches
                 {
                     chatHandled = true;
                     hudManager.AddChat(player, "Commands available all the time:\n/modinfo /roleinfo, /modifierinfo, /abilityinfo, /objectifierinfo, /factioninfo, /alignmentinfo," +
-                        " /quote, /credits, /controls, /lore");
-                    hudManager.AddChat(player, $"Commands available in lobby:\n/setname{setColor}{kickBan}");
-                    hudManager.AddChat(player, $"Commands available in game:\n/mystate{whisper}");
+                        $" /quote, /credits, /controls, /lore\n\nCommands available in lobby:\n{setColor}{kickBan}\n\nCommands available in game:\n/mystate{whisper}");
                 }
                 //Display a message (Information about the mod)
                 else if (text.StartsWith("/modinfo") || text.StartsWith("/mi"))
@@ -62,7 +60,7 @@ namespace TownOfUsReworked.Patches
                         "Of Us Reactivated and its forks plus some of my own code.\nCredits to the parties have already been given (good luck to those who want to try to cancel me for " +
                         "no reason). This mod has several reworks and additions which I believe fit the mod better. Plus, the more layers there are, the more unique a player's " +
                         "experience will be each game. If I've missed someone, let me know via Discord.\nNow that you know the basic info, if you want to know more try using the other " +
-                        "info commands, visiting the GitHub page at \nhttps://github.com/AlchlcDvl/TownOfUsReworked/ or joining my discord at \nhttps://discord.gg/cd27aDQDY9/. Good luck!");
+                        "info commands, visiting the GitHub page or joining my discord. Good luck!");
                 }
                 //Credits
                 else if (text.StartsWith("/credits") || text.StartsWith("/cr "))
@@ -211,19 +209,19 @@ namespace TownOfUsReworked.Patches
                 else if (ConstantVariables.IsLobby)
                 {
                     //Name help
-                    if (text is "/setname" or "/setname " or "/sn" or "/sn ")
+                    if (text is "/setname" or "/setname " or "/sn" or "/sn " && TownOfUsReworked.isTest)
                     {
                         chatHandled = true;
                         hudManager.AddChat(player, "Usage: /<setname or sn> <name>");
                     }
                     //Change name (Can have multiple players the same name!)
-                    else if (text.StartsWith("/setname ") || text.StartsWith("/sn "))
+                    else if ((text.StartsWith("/setname ") || text.StartsWith("/sn ")) && TownOfUsReworked.isTest)
                     {
                         chatHandled = true;
                         inputText = text.StartsWith("/sn") ? otherText[4..] : otherText[9..];
                         //As much as I hate to do this, people will take advatage of this function so we're better off doing this early
                         string[] profanities = { "fuck", "bastard", "cunt", "bitch", "ass", "nigg", "whore", "negro", "dick", "penis", "yiff", "rape", "rapist" };
-                        const string disallowed = "@^[{(_-;:\"'.,\\|)}]+$";
+                        const string disallowed = "@^[{(_-;:\"'.,\\|)}]+$!#$%^&&*?/";
 
                         if (inputText.ToLower().Any(disallowed.Contains))
                             hudManager.AddChat(player, "Name contains disallowed characters.");
@@ -238,13 +236,13 @@ namespace TownOfUsReworked.Patches
                         }
                     }
                     //Colour help
-                    else if (text is "/colour" or "/color" or "/colour " or "/color ")
+                    else if (text is "/colour" or "/color" or "/colour " or "/color " && TownOfUsReworked.isTest)
                     {
                         chatHandled = true;
                         hudManager.AddChat(player, "Usage: /colour <colour> or /color <color>");
                     }
                     //Change colour (Can have multiple players the same colour!)
-                    else if (text.StartsWith("/color ") || text.StartsWith("/colour "))
+                    else if ((text.StartsWith("/color ") || text.StartsWith("/colour ")) && TownOfUsReworked.isTest)
                     {
                         chatHandled = true;
                         inputText = text.StartsWith("/colour ") ? text[7..] : text[6..];
@@ -378,7 +376,9 @@ namespace TownOfUsReworked.Patches
                                 var whispered = Utils.PlayerById(id1);
                                 var whispered2 = Utils.PlayerById(id2);
 
-                                if (whispered != null)
+                                if (whispered == player)
+                                    hudManager.AddChat(player, "Don't whisper yourself, weirdo.");
+                                else if (whispered != null)
                                 {
                                     if (whispered.Data.IsDead)
                                         hudManager.AddChat(player, $"{whispered.name} is dead.");
@@ -428,7 +428,7 @@ namespace TownOfUsReworked.Patches
                     chatHandled = true;
                     hudManager.AddChat(player, "You are blackmailed.");
                 }
-                else if (GameAnnouncements.GivingAnnouncements && !player.Data.IsDead)
+                else if (MeetingPatches.GivingAnnouncements && !player.Data.IsDead)
                 {
                     chatHandled = true;
                     hudManager.AddChat(player, "You cannot talk right now.");

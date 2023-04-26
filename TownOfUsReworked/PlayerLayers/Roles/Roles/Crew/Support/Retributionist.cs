@@ -12,14 +12,11 @@ using System.Collections;
 using TownOfUsReworked.Custom;
 using HarmonyLib;
 using TownOfUsReworked.Patches;
-using Random = UnityEngine.Random;
 using Hazel;
 using TMPro;
-using TownOfUsReworked.Cosmetics.CustomColors;
+using TownOfUsReworked.Cosmetics;
 using Reactor.Utilities.Extensions;
 using Reactor.Utilities;
-using TownOfUsReworked.PlayerLayers.Objectifiers;
-using AmongUs.GameOptions;
 using TownOfUsReworked.Functions;
 using UnityEngine.UI;
 using TownOfUsReworked.PlayerLayers.Roles.CrewRoles.RetributionistMod;
@@ -53,25 +50,25 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             TransportMenu1 = new(Player, Click1);
             TransportMenu2 = new(Player, Click2);
             Type = LayerEnum.Retributionist;
-            RevealButton = new(this, AssetManager.Reveal, AbilityTypes.Direct, "ActionSecondary", Reveal);
-            StakeButton = new(this, AssetManager.Stake, AbilityTypes.Direct, "ActionSecondary", Stake);
-            AutopsyButton = new(this, AssetManager.Placeholder, AbilityTypes.Dead, "ActionSecondary", Autopsy);
-            CompareButton = new(this, AssetManager.Placeholder, AbilityTypes.Direct, "Secondary", Compare, true);
-            ExamineButton = new(this, AssetManager.Examine, AbilityTypes.Direct, "ActionSecondary", Examine);
-            InspectButton = new(this, AssetManager.Inspect, AbilityTypes.Direct, "ActionSecondary", Inspect);
-            MediateButton = new(this, AssetManager.Mediate, AbilityTypes.Effect, "ActionSecondary", Mediate);
-            BugButton = new(this, AssetManager.Bug, AbilityTypes.Effect, "ActionSecondary", PlaceBug, true);
-            SeerButton = new(this, AssetManager.Seer, AbilityTypes.Direct, "ActionSecondary", See);
-            InterrogateButton = new(this, AssetManager.Interrogate, AbilityTypes.Direct, "ActionSecondary", Interrogate);
-            TrackButton = new(this, AssetManager.Track, AbilityTypes.Direct, "ActionSecondary", Track, true);
-            AlertButton = new(this, AssetManager.Alert, AbilityTypes.Effect, "ActionSecondary", HitAlert, true);
-            ShootButton = new(this, AssetManager.Shoot, AbilityTypes.Direct, "ActionSecondary", Shoot, true);
-            ReviveButton = new(this, AssetManager.Revive, AbilityTypes.Dead, "ActionSecondary", Revive);
-            ShieldButton = new(this, AssetManager.Shield, AbilityTypes.Direct, "ActionSecondary", Protect);
-            SwoopButton = new(this, AssetManager.Swoop, AbilityTypes.Direct, "ActionSecondary", HitSwoop, true);
-            FixButton = new(this, AssetManager.Fix, AbilityTypes.Effect, "ActionSecondary", Fix, true);
-            BlockButton = new(this, AssetManager.EscortRoleblock, AbilityTypes.Direct, "ActionSecondary", Roleblock);
-            TransportButton = new(this, AssetManager.Transport, AbilityTypes.Effect, "ActionSecondary", Transport, true);
+            RevealButton = new(this, "Reveal", AbilityTypes.Direct, "ActionSecondary", Reveal);
+            StakeButton = new(this, "Stake", AbilityTypes.Direct, "ActionSecondary", Stake);
+            AutopsyButton = new(this, "Autopsy", AbilityTypes.Dead, "ActionSecondary", Autopsy);
+            CompareButton = new(this, "Compare", AbilityTypes.Direct, "Secondary", Compare, true);
+            ExamineButton = new(this, "Examine", AbilityTypes.Direct, "ActionSecondary", Examine);
+            InspectButton = new(this, "Inspect", AbilityTypes.Direct, "ActionSecondary", Inspect);
+            MediateButton = new(this, "Mediate", AbilityTypes.Effect, "ActionSecondary", Mediate);
+            BugButton = new(this, "Bug", AbilityTypes.Effect, "ActionSecondary", PlaceBug, true);
+            SeerButton = new(this, "Seer", AbilityTypes.Direct, "ActionSecondary", See);
+            InterrogateButton = new(this, "Interrogate", AbilityTypes.Direct, "ActionSecondary", Interrogate);
+            TrackButton = new(this, "Track", AbilityTypes.Direct, "ActionSecondary", Track, true);
+            AlertButton = new(this, "Alert", AbilityTypes.Effect, "ActionSecondary", HitAlert, true);
+            ShootButton = new(this, "Shoot", AbilityTypes.Direct, "ActionSecondary", Shoot, true);
+            ReviveButton = new(this, "Revive", AbilityTypes.Dead, "ActionSecondary", HitRevive, true);
+            ShieldButton = new(this, "Shield", AbilityTypes.Direct, "ActionSecondary", Protect);
+            SwoopButton = new(this, "Swoop", AbilityTypes.Direct, "ActionSecondary", HitSwoop, true);
+            FixButton = new(this, "Fix", AbilityTypes.Effect, "ActionSecondary", Fix, true);
+            BlockButton = new(this, "EscortRoleblock", AbilityTypes.Direct, "ActionSecondary", Roleblock);
+            TransportButton = new(this, "Transport", AbilityTypes.Effect, "ActionSecondary", Transport, true);
         }
 
         //Retributionist Stuff
@@ -79,8 +76,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public readonly List<bool> ListOfActives = new();
         public Role RevivedRole;
         public PlayerControl Revived;
-        public PlayerControl ClosestPlayer;
-        public DeadBody CurrentTarget;
         public int UsesLeft;
         public float TimeRemaining;
         public bool ButtonUsable => UsesLeft > 0;
@@ -98,95 +93,100 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             TrackerArrows.Values.DestroyAll();
             TrackerArrows.Clear();
 
-            Arrow.gameObject.Destroy();
+            Arrow?.Destroy();
+            Arrow?.gameObject?.Destroy();
             Target = null;
         }
 
         public void DestroyArrow(byte targetPlayerId)
         {
-            if (RevivedRole?.RoleType == RoleEnum.Tracker)
+            if (IsTrack)
             {
                 var arrow = TrackerArrows.FirstOrDefault(x => x.Key == targetPlayerId);
-
-                if (arrow.Value != null)
-                    Object.Destroy(arrow.Value);
-
-                if (arrow.Value.gameObject != null)
-                    Object.Destroy(arrow.Value.gameObject);
-
+                arrow.Value?.Destroy();
+                arrow.Value.gameObject?.Destroy();
                 TrackerArrows.Remove(arrow.Key);
             }
-            else if (RevivedRole?.RoleType == RoleEnum.Coroner)
+            else if (IsCor)
             {
                 var arrow = BodyArrows.FirstOrDefault(x => x.Key == targetPlayerId);
-
-                if (arrow.Value != null)
-                    Object.Destroy(arrow.Value);
-
-                if (arrow.Value.gameObject != null)
-                    Object.Destroy(arrow.Value.gameObject);
-
+                arrow.Value?.Destroy();
+                arrow.Value.gameObject?.Destroy();
                 BodyArrows.Remove(arrow.Key);
+            }
+            else if (IsMed)
+            {
+                var arrow = MediatedPlayers.FirstOrDefault(x => x.Key == targetPlayerId);
+                arrow.Value?.Destroy();
+                arrow.Value.gameObject?.Destroy();
+                MediatedPlayers.Remove(arrow.Key);
             }
         }
 
-        public static void GenNumber(Retributionist role, PlayerVoteArea voteArea)
+        public void GenNumber(PlayerVoteArea voteArea)
         {
+            if (Player != PlayerControl.LocalPlayer)
+                return;
+
             var targetId = voteArea.TargetPlayerId;
             var nameText = Object.Instantiate(voteArea.NameText, voteArea.transform);
             nameText.transform.localPosition = new Vector3(-1.211f, -0.18f, -0.1f);
             nameText.text = GameData.Instance.GetPlayerById(targetId).DefaultOutfit.ColorId.ToString();
-            role.PlayerNumbers[targetId] = nameText;
+            PlayerNumbers[targetId] = nameText;
 
             if (!voteArea.AmDead)
             {
-                role.OtherButtons.Add(null);
-                role.ListOfActives.Add(false);
+                OtherButtons.Add(null);
+                ListOfActives.Add(false);
                 return;
             }
 
-            var confirmButton = voteArea.Buttons.transform.GetChild(0).gameObject;
-            var newButton = Object.Instantiate(confirmButton, confirmButton.transform);
+            var button = voteArea.Buttons.transform.Find("CancelButton").gameObject;
+            var newButton = Object.Instantiate(button, button.transform);
             var renderer = newButton.GetComponent<SpriteRenderer>();
             var passive = newButton.GetComponent<PassiveButton>();
 
-            renderer.sprite = AssetManager.RetDeselect;
-            newButton.transform.position = new Vector3(-0.95f, -0.02f, -1.3f);
-            newButton.transform.localScale *= 0.8f;
+            renderer.sprite = AssetManager.GetSprite("RetDeselect");
+            newButton.name = "RetMimicButton";
+            newButton.transform.localPosition = button.transform.position - new Vector3(0.75f, 0f, 0f);
             newButton.layer = 5;
-            newButton.transform.parent = confirmButton.transform.parent.parent;
+
+            var component = newButton.GetComponent<BoxCollider2D>();
+            component.size = renderer.sprite.bounds.size;
+            component.offset = Vector2.zero;
+            newButton.transform.GetChild(0).gameObject.Destroy();
 
             passive.OnClick = new Button.ButtonClickedEvent();
-            passive.OnClick.AddListener(SetActive(role, MeetingHud.Instance.playerStates.IndexOf(voteArea)));
-            role.OtherButtons.Add(newButton);
-            role.ListOfActives.Add(false);
+            passive.OnClick.AddListener(SetActive(MeetingHud.Instance.playerStates.IndexOf(voteArea)));
+            OtherButtons.Add(newButton);
+            ListOfActives.Add(false);
         }
 
-        private static Action SetActive(Retributionist role, int index)
+        private Action SetActive(int index)
         {
             void Listener()
             {
-                if (role.ListOfActives.Count(x => x) == 1 && role.OtherButtons[index].GetComponent<SpriteRenderer>().sprite == AssetManager.RetDeselect)
+                if (ListOfActives.Count(x => x) == 1 && OtherButtons[index].GetComponent<SpriteRenderer>().sprite == AssetManager.GetSprite("RetDeselect"))
                 {
                     var active = 0;
 
-                    for (var i = 0; i < role.ListOfActives.Count; i++)
+                    for (var i = 0; i < ListOfActives.Count; i++)
                     {
-                        if (role.ListOfActives[i])
+                        if (ListOfActives[i])
                             active = i;
                     }
 
-                    role.OtherButtons[active].GetComponent<SpriteRenderer>().sprite = role.ListOfActives[active] ? AssetManager.RetDeselect : AssetManager.RetSelect;
-                    role.ListOfActives[active] = !role.ListOfActives[active];
+                    OtherButtons[active].GetComponent<SpriteRenderer>().sprite = ListOfActives[active] ? AssetManager.GetSprite("RetDeselect") : AssetManager.GetSprite("RetSelect");
+                    ListOfActives[active] = !ListOfActives[active];
                 }
 
-                role.OtherButtons[index].GetComponent<SpriteRenderer>().sprite = role.ListOfActives[index] ? AssetManager.RetDeselect : AssetManager.RetSelect;
-                role.ListOfActives[index] = !role.ListOfActives[index];
+                OtherButtons[index].GetComponent<SpriteRenderer>().sprite = ListOfActives[index] ? AssetManager.GetSprite("RetDeselect") : AssetManager.GetSprite("RetSelect");
+                ListOfActives[index] = !ListOfActives[index];
                 VotingComplete.Imitate = null;
 
-                for (var i = 0; i < role.ListOfActives.Count; i++)
+                for (var i = 0; i < ListOfActives.Count; i++)
                 {
-                    if (!role.ListOfActives[i])
+                    if (!ListOfActives[i])
                         continue;
 
                     VotingComplete.Imitate = MeetingHud.Instance.playerStates[i];
@@ -224,13 +224,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AlertButton.Update("ALERT", AlertTimer(), CustomGameOptions.AlertCd, UsesLeft, OnEffect, TimeRemaining, CustomGameOptions.AlertDuration, ButtonUsable, IsVet &&
                 ButtonUsable);
             ShootButton.Update("SHOOT", KillTimer(), CustomGameOptions.VigiKillCd, UsesLeft, ButtonUsable, ButtonUsable && IsVig);
-            ReviveButton.Update("REVIVE", 0, 1, true, IsAlt && !ReviveUsed);
+            ReviveButton.Update("REVIVE", ReviveTimer(), CustomGameOptions.ReviveCooldown, UsesLeft, ButtonUsable,ButtonUsable && IsAlt);
             SwoopButton.Update("SWOOP", SwoopTimer(), CustomGameOptions.SwoopCooldown, UsesLeft, OnEffect, TimeRemaining, CustomGameOptions.SwoopDuration, true, IsCham);
             BlockButton.Update("ROLEBLOCK", RoleblockTimer(), CustomGameOptions.EscRoleblockCooldown, OnEffect, TimeRemaining, CustomGameOptions.EscRoleblockDuration, true, IsEsc);
 
             if (!PlayerControl.LocalPlayer.Data.IsDead)
             {
-                if (RevivedRole?.RoleType == RoleEnum.Coroner)
+                if (IsCor)
                 {
                     var validBodies = Object.FindObjectsOfType<DeadBody>().Where(x => Murder.KilledPlayers.Any(y => y.PlayerId == x.ParentId && DateTime.UtcNow <
                         y.KillTime.AddSeconds(CustomGameOptions.CoronerArrowDuration)));
@@ -249,7 +249,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                             var arrow = gameObj.AddComponent<ArrowBehaviour>();
                             gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
                             var renderer = gameObj.AddComponent<SpriteRenderer>();
-                            renderer.sprite = AssetManager.Arrow;
+                            renderer.sprite = AssetManager.GetSprite("Arrow");
                             arrow.image = renderer;
                             gameObj.layer = 5;
                             BodyArrows.Add(body.ParentId, arrow);
@@ -258,7 +258,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         BodyArrows.GetValueSafe(body.ParentId).target = body.TruePosition;
                     }
                 }
-                else if (RevivedRole?.RoleType == RoleEnum.Medium)
+                else if (IsMed)
                 {
                     foreach (var player in PlayerControl.AllPlayerControls)
                     {
@@ -283,17 +283,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         }
                     }
                 }
-                else if (RevivedRole?.RoleType == RoleEnum.Tracker)
+                else if (IsTrack)
                 {
                     foreach (var arrow in TrackerArrows)
                     {
                         var player = Utils.PlayerById(arrow.Key);
 
-                        if (player == null || player.Data?.IsDead == true || player.Data.Disconnected)
+                        #pragma warning disable
+                        if (player == null || player.Data.IsDead || player.Data.Disconnected)
                         {
                             DestroyArrow(arrow.Key);
                             continue;
                         }
+                        #pragma warning restore
 
                         if (DoUndo.IsCamoed)
                             arrow.Value.image.color = new Color32(128, 128, 128, 255);
@@ -319,60 +321,57 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     if (_time <= DateTime.UtcNow.AddSeconds(-CustomGameOptions.UpdateInterval))
                         _time = DateTime.UtcNow;
                 }
+                else if (IsDet)
+                {
+                    Time2 += Time.deltaTime;
+
+                    if (Time2 >= CustomGameOptions.FootprintInterval)
+                    {
+                        Time2 -= CustomGameOptions.FootprintInterval;
+
+                        foreach (var player in PlayerControl.AllPlayerControls)
+                        {
+                            if (player?.Data.IsDead == true || player == PlayerControl.LocalPlayer)
+                                continue;
+
+                            var canPlace = !AllPrints.Any(print => Vector3.Distance(print.Position, Position(player)) < 0.5f && print.Color.a > 0.5 && print.Player.PlayerId ==
+                                player.PlayerId);
+
+                            if (CustomGameOptions.VentFootprintVisible && ShipStatus.Instance?.AllVents.Any(vent => Vector2.Distance(vent.gameObject.transform.position, Position(player)) <
+                                1f) == true)
+                            {
+                                canPlace = false;
+                            }
+
+                            if (canPlace)
+                                _ = new Footprint(player, this);
+                        }
+
+                        for (var i = 0; i < AllPrints.Count; i++)
+                        {
+                            try
+                            {
+                                var footprint = AllPrints[i];
+
+                                if (footprint.Update())
+                                    i--;
+                            } catch { /*Assume footprint value is null and allow the loop to continue*/ }
+                        }
+                    }
+                }
             }
             else
                 OnLobby();
 
-            if (IsDet)
+            foreach (var entry in UntransportablePlayers)
             {
-                Time2 += Time.deltaTime;
+                var player = Utils.PlayerById(entry.Key);
 
-                if (Time2 >= CustomGameOptions.FootprintInterval)
-                {
-                    Time2 -= CustomGameOptions.FootprintInterval;
+                if (player?.Data.IsDead == true || player.Data.Disconnected)
+                    continue;
 
-                    foreach (var player in PlayerControl.AllPlayerControls)
-                    {
-                        if (player?.Data.IsDead == true || player == PlayerControl.LocalPlayer)
-                            continue;
-
-                        var canPlace = !AllPrints.Any(print => Vector3.Distance(print.Position, Position(player)) < 0.5f && print.Color.a > 0.5 && print.Player.PlayerId ==
-                            player.PlayerId);
-
-                        if (CustomGameOptions.VentFootprintVisible && ShipStatus.Instance?.AllVents.Any(vent => Vector2.Distance(vent.gameObject.transform.position, Position(player)) <
-                            1f) == true)
-                        {
-                            canPlace = false;
-                        }
-
-                        if (canPlace)
-                            _ = new Footprint(player, this);
-                    }
-
-                    for (var i = 0; i < AllPrints.Count; i++)
-                    {
-                        try
-                        {
-                            var footprint = AllPrints[i];
-
-                            if (footprint.Update())
-                                i--;
-                        } catch { /*Assume footprint value is null and allow the loop to continue*/ }
-                    }
-                }
-            }
-            else if (IsTrans)
-            {
-                foreach (var entry in UntransportablePlayers)
-                {
-                    var player = Utils.PlayerById(entry.Key);
-
-                    if (player?.Data.IsDead == true || player.Data.Disconnected)
-                        continue;
-
-                    if (UntransportablePlayers.ContainsKey(player.PlayerId) && player.moveable && UntransportablePlayers.GetValueSafe(player.PlayerId).AddSeconds(0.5) < DateTime.UtcNow)
-                        UntransportablePlayers.Remove(player.PlayerId);
-                }
+                if (UntransportablePlayers.ContainsKey(player.PlayerId) && player.moveable && UntransportablePlayers.GetValueSafe(player.PlayerId).AddSeconds(0.5) < DateTime.UtcNow)
+                    UntransportablePlayers.Remove(player.PlayerId);
             }
         }
 
@@ -388,7 +387,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
 
             foreach (var voteArea in __instance.playerStates)
-                GenNumber(this, voteArea);
+                GenNumber(voteArea);
 
             if (IsOP)
             {
@@ -418,12 +417,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 }
             }
             else if (IsDet)
-                AllPrints.Clear();
-            else if (IsMedic)
-            {
-                ExShielded = ShieldedPlayer;
-                ShieldedPlayer = null;
-            }
+                Footprint.DestroyAll(this);
 
             RevivedRole = null;
         }
@@ -458,10 +452,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Autopsy()
         {
-            if (Utils.IsTooFar(Player, CurrentTarget) || AutopsyTimer() != 0f)
+            if (Utils.IsTooFar(Player, AutopsyButton.TargetBody) || AutopsyTimer() != 0f)
                 return;
 
-            var playerId = CurrentTarget.ParentId;
+            var playerId = AutopsyButton.TargetBody.ParentId;
             var player = Utils.PlayerById(playerId);
             Utils.Spread(Player, player);
             var matches = Murder.KilledPlayers.Where(x => x.PlayerId == playerId).ToArray();
@@ -483,14 +477,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Compare()
         {
-            if (ReferenceBody == null || Utils.IsTooFar(Player, ClosestPlayer) || CompareTimer() != 0f || !ButtonUsable)
+            if (ReferenceBody == null || Utils.IsTooFar(Player, CompareButton.TargetPlayer) || CompareTimer() != 0f)
                 return;
 
-            var interact = Utils.Interact(Player, ClosestPlayer);
+            var interact = Utils.Interact(Player, CompareButton.TargetPlayer);
 
             if (interact[3])
             {
-                if (ClosestPlayer.PlayerId == ReferenceBody.KillerId || ClosestPlayer.IsFramed())
+                if (CompareButton.TargetPlayer.PlayerId == ReferenceBody.KillerId || CompareButton.TargetPlayer.IsFramed())
                     Utils.Flash(new Color32(255, 0, 0, 255));
                 else
                     Utils.Flash(new Color32(0, 255, 0, 255));
@@ -558,10 +552,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Examine()
         {
-            if (ExamineTimer() != 0f || Utils.IsTooFar(Player, ClosestPlayer))
+            if (ExamineTimer() != 0f || Utils.IsTooFar(Player, ExamineButton.TargetPlayer))
                 return;
 
-            var interact = Utils.Interact(Player, ClosestPlayer);
+            var interact = Utils.Interact(Player, ExamineButton.TargetPlayer);
 
             if (interact[3])
             {
@@ -569,11 +563,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
                 foreach (var player in Murder.KilledPlayers)
                 {
-                    if (player.KillerId == ClosestPlayer.PlayerId && (DateTime.UtcNow - player.KillTime).TotalSeconds <= CustomGameOptions.RecentKill)
+                    if (player.KillerId == ExamineButton.TargetPlayer.PlayerId && (DateTime.UtcNow - player.KillTime).TotalSeconds <= CustomGameOptions.RecentKill)
                         hasKilled = true;
                 }
 
-                if (hasKilled || ClosestPlayer.IsFramed())
+                if (hasKilled || ExamineButton.TargetPlayer.IsFramed())
                     Utils.Flash(new Color32(255, 0, 0, 255));
                 else
                     Utils.Flash(new Color32(0, 255, 0, 255));
@@ -602,13 +596,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Inspect()
         {
-            if (InspectTimer() != 0f || Utils.IsTooFar(Player, ClosestPlayer) || Inspected.Contains(ClosestPlayer.PlayerId))
+            if (InspectTimer() != 0f || Utils.IsTooFar(Player, InspectButton.TargetPlayer) || Inspected.Contains(InspectButton.TargetPlayer.PlayerId))
                 return;
 
-            var interact = Utils.Interact(Player, ClosestPlayer);
+            var interact = Utils.Interact(Player, InspectButton.TargetPlayer);
 
             if (interact[3])
-                Inspected.Add(ClosestPlayer.PlayerId);
+                Inspected.Add(InspectButton.TargetPlayer.PlayerId);
 
             if (interact[0])
                 LastInspected = DateTime.UtcNow;
@@ -642,11 +636,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (PlayersDead.Count == 0)
                 return;
 
-            if (CustomGameOptions.DeadRevealed == DeadRevealed.Newest)
-                PlayersDead.Reverse();
-
             if (CustomGameOptions.DeadRevealed != DeadRevealed.Random)
             {
+                if (CustomGameOptions.DeadRevealed == DeadRevealed.Newest)
+                    PlayersDead.Reverse();
+
                 foreach (var dead in PlayersDead)
                 {
                     if (Object.FindObjectsOfType<DeadBody>().Any(x => x.ParentId == dead.PlayerId && !MediatedPlayers.ContainsKey(x.ParentId)))
@@ -667,7 +661,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             else
             {
                 PlayersDead.Shuffle();
-                var dead = PlayersDead[Random.RandomRangeInt(0, PlayersDead.Count - 1)];
+                var dead = PlayersDead.Random();
 
                 if (Object.FindObjectsOfType<DeadBody>().Any(x => x.ParentId == dead.PlayerId && !MediatedPlayers.ContainsKey(x.ParentId)))
                 {
@@ -691,7 +685,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 gameObj.transform.parent = Player.gameObject.transform;
                 var renderer = gameObj.AddComponent<SpriteRenderer>();
-                renderer.sprite = AssetManager.Arrow;
+                renderer.sprite = AssetManager.GetSprite("Arrow");
                 arrow.image = renderer;
                 gameObj.layer = 5;
                 arrow.target = Utils.PlayerById(playerId).transform.position;
@@ -744,14 +738,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Interrogate()
         {
-            if (InterrogateTimer() != 0f || Utils.IsTooFar(Player, ClosestPlayer))
+            if (InterrogateTimer() != 0f || Utils.IsTooFar(Player, InterrogateButton.TargetPlayer))
                 return;
 
-            var interact = Utils.Interact(Player, ClosestPlayer);
+            var interact = Utils.Interact(Player, InterrogateButton.TargetPlayer);
 
             if (interact[3])
             {
-                if (ClosestPlayer.SeemsEvil())
+                if (InterrogateButton.TargetPlayer.SeemsEvil())
                     Utils.Flash(new Color32(255, 0, 0, 255));
                 else
                     Utils.Flash(new Color32(0, 255, 0, 255));
@@ -781,19 +775,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Track()
         {
-            if (Utils.IsTooFar(Player, ClosestPlayer) || TrackerTimer() != 0f)
+            if (Utils.IsTooFar(Player, TrackButton.TargetPlayer) || TrackerTimer() != 0f)
                 return;
 
-            var interact = Utils.Interact(Player, ClosestPlayer);
+            var interact = Utils.Interact(Player, TrackButton.TargetPlayer);
 
             if (interact[3])
             {
-                var target = ClosestPlayer;
+                var target = TrackButton.TargetPlayer;
                 var gameObj = new GameObject();
                 var arrow = gameObj.AddComponent<ArrowBehaviour>();
                 gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
                 var renderer = gameObj.AddComponent<SpriteRenderer>();
-                renderer.sprite = AssetManager.Arrow;
+                renderer.sprite = AssetManager.GetSprite("Arrow");
 
                 if (DoUndo.IsCamoed)
                     renderer.color = new Color32(128, 128, 128, 255);
@@ -841,10 +835,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Shoot()
         {
-            if (Utils.IsTooFar(Player, ClosestPlayer) || KillTimer() != 0f)
+            if (Utils.IsTooFar(Player, ShootButton.TargetPlayer) || KillTimer() != 0f)
                 return;
 
-            var interact = Utils.Interact(Player, ClosestPlayer, true);
+            var interact = Utils.Interact(Player, ShootButton.TargetPlayer, true);
 
             if (interact[3] || interact[0])
                 LastKilled = DateTime.UtcNow;
@@ -870,10 +864,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Stake()
         {
-            if (Utils.IsTooFar(Player, ClosestPlayer) || StakeTimer() != 0f)
+            if (Utils.IsTooFar(Player, StakeButton.TargetPlayer) || StakeTimer() != 0f)
                 return;
 
-            var interact = Utils.Interact(Player, ClosestPlayer, ClosestPlayer.Is(SubFaction.Undead) || ClosestPlayer.IsFramed());
+            var interact = Utils.Interact(Player, StakeButton.TargetPlayer, StakeButton.TargetPlayer.Is(SubFaction.Undead) || StakeButton.TargetPlayer.IsFramed());
 
             if (interact[3] || interact[0])
                 LastStaked = DateTime.UtcNow;
@@ -928,16 +922,102 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         }
 
         //Altruist Stuff
-        public bool ReviveUsed;
         public CustomButton ReviveButton;
         public bool IsAlt => RevivedRole?.RoleType == RoleEnum.Altruist;
+        public bool Reviving;
+        public DeadBody RevivingBody;
+        public bool Success;
+        public DateTime LastRevived;
+
+        public float ReviveTimer()
+        {
+            var utcNow = DateTime.UtcNow;
+            var timespan = utcNow - LastRevived;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.ReviveCooldown) * 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+        }
 
         public void Revive()
         {
-            if (Utils.IsTooFar(Player, CurrentTarget))
+            if (!Reviving && PlayerControl.LocalPlayer.PlayerId == ReviveButton.TargetBody.ParentId)
+            {
+                Utils.Flash(Color);
+
+                if (CustomGameOptions.AltruistTargetBody)
+                    ReviveButton.TargetBody?.gameObject.Destroy();
+            }
+
+            Reviving = true;
+            TimeRemaining -= Time.deltaTime;
+
+            if (MeetingHud.Instance || Player.Data.IsDead)
+            {
+                Success = false;
+                TimeRemaining = 0f;
+            }
+        }
+
+        public void UnRevive()
+        {
+            Reviving = false;
+            LastRevived = DateTime.UtcNow;
+
+            if (Success)
+                FinishRevive();
+        }
+
+        private void FinishRevive()
+        {
+            var position = RevivingBody.TruePosition;
+            var player = Utils.PlayerById(RevivingBody.ParentId);
+            var targetRole = GetRole(player);
+            targetRole.DeathReason = DeathReasonEnum.Revived;
+            targetRole.KilledBy = " By " + PlayerName;
+            player.Revive();
+            player.Data.SetImpostor(player.Data.IsImpostor());
+            UsesLeft--;
+            Utils.ReassignPostmortals(player);
+            Utils.RecentlyKilled.Remove(player);
+            Murder.KilledPlayers.Remove(Murder.KilledPlayers.Find(x => x.PlayerId == player.PlayerId));
+            player.NetTransform.SnapTo(new Vector2(position.x, position.y + 0.3636f));
+            RevivingBody?.gameObject.Destroy();
+
+            if (SubmergedCompatibility.IsSubmerged() && PlayerControl.LocalPlayer == player)
+                SubmergedCompatibility.ChangeFloor(player.transform.position.y > -7);
+
+            if (player.Is(ObjectifierEnum.Lovers) && CustomGameOptions.BothLoversDie)
+            {
+                var lover = player.GetOtherLover();
+                var body = Utils.BodyById(lover.PlayerId);
+                var position2 = body.TruePosition;
+                lover.Revive();
+                Murder.KilledPlayers.Remove(Murder.KilledPlayers.Find(x => x.PlayerId == lover.PlayerId));
+                body?.gameObject.Destroy();
+                var loverRole = GetRole(lover);
+                loverRole.DeathReason = DeathReasonEnum.Revived;
+                loverRole.KilledBy = " By " + PlayerName;
+                RoleGen.Convert(lover.PlayerId, Player.PlayerId, SubFaction.Reanimated, false);
+                Utils.RecentlyKilled.Remove(lover);
+                lover.Data.SetImpostor(lover.Data.IsImpostor());
+                Utils.ReassignPostmortals(lover);
+                lover.NetTransform.SnapTo(new Vector2(position2.x, position2.y + 0.3636f));
+
+                if (SubmergedCompatibility.IsSubmerged() && PlayerControl.LocalPlayer == lover)
+                    SubmergedCompatibility.ChangeFloor(lover.transform.position.y > -7);
+            }
+
+            if (UsesLeft == 0)
+                Utils.RpcMurderPlayer(Player, Player);
+        }
+
+        public void HitRevive()
+        {
+            if (Utils.IsTooFar(Player, ReviveButton.TargetBody) || ReviveTimer() != 0f || !ButtonUsable)
                 return;
 
-            var playerId = CurrentTarget.ParentId;
+            var playerId = ReviveButton.TargetBody.ParentId;
+            RevivingBody = ReviveButton.TargetBody;
             var player = Utils.PlayerById(playerId);
             Utils.Spread(Player, player);
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
@@ -946,94 +1026,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             writer.Write(Player.PlayerId);
             writer.Write(playerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
-            Coroutines.Start(Revive(CurrentTarget, this));
-        }
-
-        public static IEnumerator Revive(DeadBody target, Retributionist role)
-        {
-            if (role.RevivedRole?.RoleType != RoleEnum.Altruist)
-                yield break;
-
-            var parentId = target.ParentId;
-            var position = target.TruePosition;
-
-            if (AmongUsClient.Instance.AmHost)
-                Utils.RpcMurderPlayer(role.Player, role.Player);
-
-            if (PlayerControl.LocalPlayer.PlayerId == parentId)
-                Utils.Flash(role.Color);
-
-            if (CustomGameOptions.AltruistTargetBody)
-                target?.gameObject.Destroy();
-
-            var startTime = DateTime.UtcNow;
-
-            while (true)
-            {
-                var now = DateTime.UtcNow;
-                var seconds = (now - startTime).TotalSeconds;
-
-                if (seconds < CustomGameOptions.AltReviveDuration)
-                    yield return null;
-                else
-                    break;
-
-                if (MeetingHud.Instance)
-                    yield break;
-            }
-
-            Utils.BodyById(role.Player.PlayerId)?.gameObject.Destroy();
-            var player = Utils.PlayerById(parentId);
-            var targetRole = GetRole(player);
-            targetRole.DeathReason = DeathReasonEnum.Revived;
-            targetRole.KilledBy = " By " + role.PlayerName;
-            player.Revive();
-
-            if (player.Data.IsImpostor())
-                RoleManager.Instance.SetRole(player, RoleTypes.Impostor);
-            else
-                RoleManager.Instance.SetRole(player, RoleTypes.Crewmate);
-
-            Murder.KilledPlayers.Remove(Murder.KilledPlayers.Find(x => x.PlayerId == player.PlayerId));
-            player.NetTransform.SnapTo(new Vector2(position.x, position.y + 0.3636f));
-
-            if (SubmergedCompatibility.IsSubmerged() && PlayerControl.LocalPlayer == player)
-                SubmergedCompatibility.ChangeFloor(player.transform.position.y > -7);
-
-            target?.gameObject.Destroy();
-
-            if (player.Is(ObjectifierEnum.Lovers) && CustomGameOptions.BothLoversDie)
-            {
-                var lover = Objectifier.GetObjectifier<Lovers>(player).OtherLover;
-                lover.Revive();
-                Murder.KilledPlayers.Remove(Murder.KilledPlayers.Find(x => x.PlayerId == lover.PlayerId));
-                Utils.BodyById(lover.PlayerId).gameObject.Destroy();
-                var loverRole = GetRole(lover);
-                loverRole.DeathReason = DeathReasonEnum.Revived;
-                loverRole.KilledBy = " By " + role.PlayerName;
-                Utils.RecentlyKilled.Remove(lover);
-            }
-
-            if (Minigame.Instance)
-                Minigame.Instance.Close();
-
-            role.ReviveUsed = true;
-            Utils.Spread(role.Player, player);
-            Utils.RecentlyKilled.Remove(player);
-
-            if (PlayerControl.LocalPlayer.Is(Faction.Intruder) || PlayerControl.LocalPlayer.Is(Faction.Syndicate) || PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralKill) ||
-                PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralEvil) || PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralPros) || PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralNeo))
-            {
-                var gameObj = new GameObject();
-                Arrow = gameObj.AddComponent<ArrowBehaviour>();
-                gameObj.transform.parent = player.gameObject.transform;
-                var renderer = gameObj.AddComponent<SpriteRenderer>();
-                renderer.sprite = AssetManager.Arrow;
-                Arrow.image = renderer;
-                gameObj.layer = 5;
-                Target = player;
-                yield return Utils.FlashCoro(role.Color);
-            }
+            TimeRemaining = CustomGameOptions.NecroResurrectDuration;
+            Success = true;
+            Revive();
         }
 
         //Medic Stuff
@@ -1045,10 +1040,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Protect()
         {
-            if (Utils.IsTooFar(Player, ClosestPlayer))
+            if (Utils.IsTooFar(Player, ShieldButton.TargetPlayer))
                 return;
 
-            var interact = Utils.Interact(Player, ClosestPlayer);
+            var interact = Utils.Interact(Player, ShieldButton.TargetPlayer);
 
             if (interact[3])
             {
@@ -1056,19 +1051,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 writer.Write((byte)ActionsRPC.RetributionistAction);
                 writer.Write((byte)RetributionistActionsRPC.Protect);
                 writer.Write(Player.PlayerId);
-                writer.Write(ClosestPlayer.PlayerId);
+                writer.Write(ShieldButton.TargetPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
-                ShieldedPlayer = ClosestPlayer;
+                ShieldedPlayer = ShieldButton.TargetPlayer;
             }
         }
 
-        public static void BreakShield(byte medicId, byte playerId, bool flag)
+        public static void BreakShield(byte retId, byte playerId, bool flag)
         {
-            var role = GetRole<Retributionist>(Utils.PlayerById(medicId));
+            var role = GetRole<Retributionist>(Utils.PlayerById(retId));
 
-            if ((PlayerControl.LocalPlayer.PlayerId == playerId && (CustomGameOptions.NotificationShield == NotificationOptions.Shielded || CustomGameOptions.NotificationShield ==
-                NotificationOptions.ShieldedAndMedic)) || (PlayerControl.LocalPlayer.PlayerId == medicId && (CustomGameOptions.NotificationShield == NotificationOptions.Medic ||
-                CustomGameOptions.NotificationShield == NotificationOptions.ShieldedAndMedic)) || CustomGameOptions.NotificationShield == NotificationOptions.Everyone)
+            if ((PlayerControl.LocalPlayer.PlayerId == playerId && (int)CustomGameOptions.NotificationShield is 1 or 2) || (PlayerControl.LocalPlayer.PlayerId == retId &&
+                (int)CustomGameOptions.NotificationShield is 0 or 2) || CustomGameOptions.NotificationShield == NotificationOptions.Everyone)
             {
                 Utils.Flash(role.Color);
             }
@@ -1170,142 +1164,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             UsesLeft--;
             LastFixed = DateTime.UtcNow;
-
-            switch (GameOptionsManager.Instance.currentNormalGameOptions.MapId)
-            {
-                case 1:
-                    var comms2 = ShipStatus.Instance.Systems[SystemTypes.Comms].Cast<HqHudSystemType>();
-
-                    if (comms2.IsActive)
-                        FixFunctions.FixMiraComms();
-
-                    var reactor2 = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
-
-                    if (reactor2.IsActive)
-                        FixFunctions.FixReactor(SystemTypes.Reactor);
-
-                    var oxygen2 = ShipStatus.Instance.Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
-
-                    if (oxygen2.IsActive)
-                        FixFunctions.FixOxygen();
-
-                    var lights2 = ShipStatus.Instance.Systems[SystemTypes.Electrical].Cast<SwitchSystem>();
-
-                    if (lights2.IsActive)
-                        FixFunctions.FixLights(lights2);
-
-                    break;
-
-                case 2:
-                    var comms3 = ShipStatus.Instance.Systems[SystemTypes.Comms].Cast<HudOverrideSystemType>();
-
-                    if (comms3.IsActive)
-                        FixFunctions.FixComms();
-
-                    var seismic = ShipStatus.Instance.Systems[SystemTypes.Laboratory].Cast<ReactorSystemType>();
-
-                    if (seismic.IsActive)
-                        FixFunctions.FixReactor(SystemTypes.Laboratory);
-
-                    var lights3 = ShipStatus.Instance.Systems[SystemTypes.Electrical].Cast<SwitchSystem>();
-
-                    if (lights3.IsActive)
-                        FixFunctions.FixLights(lights3);
-
-                    break;
-
-                case 0:
-                case 3:
-                    var comms1 = ShipStatus.Instance.Systems[SystemTypes.Comms].Cast<HudOverrideSystemType>();
-
-                    if (comms1.IsActive)
-                        FixFunctions.FixComms();
-
-                    var reactor1 = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
-
-                    if (reactor1.IsActive)
-                        FixFunctions.FixReactor(SystemTypes.Reactor);
-
-                    var oxygen1 = ShipStatus.Instance.Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
-
-                    if (oxygen1.IsActive)
-                        FixFunctions.FixOxygen();
-
-                    var lights1 = ShipStatus.Instance.Systems[SystemTypes.Electrical].Cast<SwitchSystem>();
-
-                    if (lights1.IsActive)
-                        FixFunctions.FixLights(lights1);
-
-                    break;
-
-                case 4:
-                    var comms4 = ShipStatus.Instance.Systems[SystemTypes.Comms].Cast<HudOverrideSystemType>();
-
-                    if (comms4.IsActive)
-                        FixFunctions.FixComms();
-
-                    var reactor = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<HeliSabotageSystem>();
-
-                    if (reactor.IsActive)
-                        FixFunctions.FixAirshipReactor();
-
-                    var lights4 = ShipStatus.Instance.Systems[SystemTypes.Electrical].Cast<SwitchSystem>();
-
-                    if (lights4.IsActive)
-                        FixFunctions.FixLights(lights4);
-
-                    break;
-
-                case 5:
-                    if (!SubmergedCompatibility.Loaded)
-                        break;
-
-                    var reactor5 = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
-
-                    if (reactor5.IsActive)
-                        FixFunctions.FixReactor(SystemTypes.Reactor);
-
-                    var lights5 = ShipStatus.Instance.Systems[SystemTypes.Electrical].Cast<SwitchSystem>();
-
-                    if (lights5.IsActive)
-                        FixFunctions.FixLights(lights5);
-
-                    var comms5 = ShipStatus.Instance.Systems[SystemTypes.Comms].Cast<HudOverrideSystemType>();
-
-                    if (comms5.IsActive)
-                        FixFunctions.FixComms();
-
-                    foreach (var i in PlayerControl.LocalPlayer.myTasks)
-                    {
-                        if (i.TaskType == SubmergedCompatibility.RetrieveOxygenMask)
-                            FixFunctions.FixSubOxygen();
-                    }
-
-                    break;
-
-                case 6:
-                    var comms6 = ShipStatus.Instance.Systems[SystemTypes.Comms].Cast<HudOverrideSystemType>();
-
-                    if (comms6.IsActive)
-                        FixFunctions.FixComms();
-
-                    var reactor6 = ShipStatus.Instance.Systems[SystemTypes.Laboratory].Cast<ReactorSystemType>();
-
-                    if (reactor6.IsActive)
-                        FixFunctions.FixReactor(SystemTypes.Laboratory);
-
-                    var oxygen6 = ShipStatus.Instance.Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
-
-                    if (oxygen6.IsActive)
-                        FixFunctions.FixOxygen();
-
-                    var lights6 = ShipStatus.Instance.Systems[SystemTypes.Electrical].Cast<SwitchSystem>();
-
-                    if (lights6.IsActive)
-                        FixFunctions.FixLights(lights6);
-
-                    break;
-            }
+            FixFunctions.Fix();
         }
 
         //Mystic Stuff
@@ -1324,14 +1183,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Reveal()
         {
-            if (RevealTimer() != 0f || Utils.IsTooFar(Player, ClosestPlayer))
+            if (RevealTimer() != 0f || Utils.IsTooFar(Player, RevealButton.TargetPlayer))
                 return;
 
-            var interact = Utils.Interact(Player, ClosestPlayer);
+            var interact = Utils.Interact(Player, RevealButton.TargetPlayer);
 
             if (interact[3])
             {
-                if ((!ClosestPlayer.Is(SubFaction.None) && !ClosestPlayer.Is(RoleAlignment.NeutralNeo)) || ClosestPlayer.IsFramed())
+                if ((!RevealButton.TargetPlayer.Is(SubFaction.None) && !RevealButton.TargetPlayer.Is(RoleAlignment.NeutralNeo)) || RevealButton.TargetPlayer.IsFramed())
                     Utils.Flash(new Color32(255, 0, 0, 255));
                 else
                     Utils.Flash(new Color32(0, 255, 0, 255));
@@ -1359,16 +1218,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void See()
         {
-            if (SeerTimer() != 0f || Utils.IsTooFar(Player, ClosestPlayer))
+            if (SeerTimer() != 0f || Utils.IsTooFar(Player, SeerButton.TargetPlayer))
                 return;
 
-            var interact = Utils.Interact(Player, ClosestPlayer);
+            var interact = Utils.Interact(Player, SeerButton.TargetPlayer);
 
             if (interact[3])
             {
-                var targetRoleCount = GetRole(ClosestPlayer).RoleHistory.Count;
-
-                if (targetRoleCount > 0 || ClosestPlayer.IsFramed())
+                if (GetRole(SeerButton.TargetPlayer).RoleHistory.Count > 0 || SeerButton.TargetPlayer.IsFramed())
                     Utils.Flash(new Color32(255, 0, 0, 255));
                 else
                     Utils.Flash(new Color32(0, 255, 0, 255));
@@ -1402,7 +1259,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
 
-            if (MeetingHud.Instance || Player.Data.IsDead || BlockTarget.Data.IsDead || BlockTarget.Data.Disconnected || !BlockTarget.IsBlocked())
+            foreach (var layer in GetLayers(BlockTarget))
+                layer.IsBlocked = !GetRole(BlockTarget).RoleBlockImmune;
+
+            if (MeetingHud.Instance || Player.Data.IsDead || BlockTarget.Data.IsDead || BlockTarget.Data.Disconnected)
                 TimeRemaining = 0f;
         }
 
@@ -1417,10 +1277,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Roleblock()
         {
-            if (RoleblockTimer() != 0f || Utils.IsTooFar(Player, ClosestPlayer))
+            if (RoleblockTimer() != 0f || Utils.IsTooFar(Player, BlockButton.TargetPlayer))
                 return;
 
-            var interact = Utils.Interact(Player, ClosestPlayer);
+            var interact = Utils.Interact(Player, BlockButton.TargetPlayer);
 
             if (interact[3])
             {
@@ -1428,14 +1288,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 writer.Write((byte)ActionsRPC.RetributionistAction);
                 writer.Write((byte)RetributionistActionsRPC.EscRoleblock);
                 writer.Write(Player.PlayerId);
-                writer.Write(ClosestPlayer.PlayerId);
+                writer.Write(BlockButton.TargetPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 TimeRemaining = CustomGameOptions.EscRoleblockDuration;
-                BlockTarget = ClosestPlayer;
-
-                foreach (var layer in GetLayers(BlockTarget))
-                    layer.IsBlocked = !GetRole(BlockTarget).RoleBlockImmune;
-
+                BlockTarget = BlockButton.TargetPlayer;
                 Block();
             }
             else if (interact[0])
@@ -1467,8 +1323,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             DeadBody Player1Body = null;
             DeadBody Player2Body = null;
-            bool WasInVent1 = false;
-            bool WasInVent2 = false;
+            var WasInVent1 = false;
+            var WasInVent2 = false;
             Vent Vent1 = null;
             Vent Vent2 = null;
 
@@ -1625,13 +1481,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (TransportTimer() != 0f)
                 return;
 
-            var list = PlayerControl.AllPlayerControls.ToArray().Where(x => !((x == Player && !CustomGameOptions.TransSelf) || UntransportablePlayers.ContainsKey(x.PlayerId) ||
-                (Utils.BodyById(x.PlayerId) == null && x.Data.IsDead) || x == TransportPlayer1 || x == TransportPlayer2)).ToList();
-
             if (TransportPlayer1 == null)
-                TransportMenu1.Open(list);
+            {
+                TransportMenu1.Open(PlayerControl.AllPlayerControls.ToArray().Where(x => !((x == Player && !CustomGameOptions.TransSelf) || UntransportablePlayers.ContainsKey(x.PlayerId) ||
+                    (Utils.BodyById(x.PlayerId) == null && x.Data.IsDead) || x == TransportPlayer2)).ToList());
+            }
             else if (TransportPlayer2 == null)
-                TransportMenu2.Open(list);
+            {
+                TransportMenu2.Open(PlayerControl.AllPlayerControls.ToArray().Where(x => !((x == Player && !CustomGameOptions.TransSelf) || UntransportablePlayers.ContainsKey(x.PlayerId) ||
+                    (Utils.BodyById(x.PlayerId) == null && x.Data.IsDead) || x == TransportPlayer1)).ToList());
+            }
             else
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);

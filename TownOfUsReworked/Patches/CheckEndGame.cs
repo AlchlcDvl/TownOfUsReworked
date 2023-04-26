@@ -7,19 +7,20 @@ using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.PlayerLayers;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.PlayerLayers.Roles;
+using System.Linq;
 
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch(typeof(LogicGameFlowNormal), nameof(LogicGameFlowNormal.CheckEndCriteria))]
     public static class CheckEndGame
     {
-        public static bool Prefix(LogicGameFlowNormal __instance)
+        public static bool Prefix()
         {
+            if (!AmongUsClient.Instance.AmHost || ConstantVariables.IsFreePlay)
+                return false;
+
             if (ConstantVariables.IsHnS)
                 return true;
-
-            if (!AmongUsClient.Instance.AmHost)
-                return false;
 
             var crewexists = false;
 
@@ -68,15 +69,7 @@ namespace TownOfUsReworked.Patches
                 return true;
             }
             else
-            {
-                foreach (var layer in PlayerLayer.AllLayers)
-                {
-                    if (!layer.GameEnd(__instance))
-                        return false;
-                }
-
-                return ConstantVariables.GameHasEnded;
-            }
+                return PlayerLayer.AllLayers.All(layer => layer.GameEnd()) || ConstantVariables.GameHasEnded;
         }
     }
 }

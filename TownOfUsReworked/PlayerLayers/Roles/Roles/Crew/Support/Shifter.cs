@@ -6,12 +6,12 @@ using Hazel;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Custom;
+using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Shifter : CrewRole
     {
-        public PlayerControl ClosestPlayer;
         public DateTime LastShifted;
         public CustomButton ShiftButton;
 
@@ -23,12 +23,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 "cause you to kill yourself";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Shifter : Colors.Crew;
             RoleType = RoleEnum.Shifter;
-            LastShifted = DateTime.UtcNow;
             RoleAlignment = RoleAlignment.CrewSupport;
             AlignmentName = CS;
             InspectorResults = InspectorResults.BringsChaos;
             Type = LayerEnum.Shifter;
-            ShiftButton = new(this, AssetManager.Shift, AbilityTypes.Direct, "ActionSecondary", Shift);
+            ShiftButton = new(this, "Shift", AbilityTypes.Direct, "ActionSecondary", Shift);
         }
 
         public float ShiftTimer()
@@ -42,19 +41,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Shift()
         {
-            if (ShiftTimer() != 0f || Utils.IsTooFar(Player, ClosestPlayer))
+            if (ShiftTimer() != 0f || Utils.IsTooFar(Player, ShiftButton.TargetPlayer))
                 return;
 
-            var interact = Utils.Interact(Player, ClosestPlayer);
+            var interact = Utils.Interact(Player, ShiftButton.TargetPlayer);
 
             if (interact[3])
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.Shift);
                 writer.Write(Player.PlayerId);
-                writer.Write(ClosestPlayer.PlayerId);
+                writer.Write(ShiftButton.TargetPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Shift(this, ClosestPlayer);
+                Shift(this, ShiftButton.TargetPlayer);
             }
 
             if (interact[0])
@@ -67,8 +66,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var role = GetRole(other);
             var shifter = shifterRole.Player;
-            other.DisableButtons();
-            shifter.DisableButtons();
+            other.DestroyButtons();
+            shifter.DestroyButtons();
 
             if (!other.Is(Faction.Crew) || other.IsFramed())
             {
@@ -80,12 +79,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 Utils.Flash(shifterRole.Color);
                 role.OnLobby();
+                ButtonUtils.ResetCustomTimers(false);
             }
 
             if (PlayerControl.LocalPlayer == shifter)
             {
                 Utils.Flash(shifterRole.Color);
                 shifterRole.OnLobby();
+                ButtonUtils.ResetCustomTimers(false);
             }
 
             Role newRole = role.RoleType switch
@@ -105,7 +106,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 RoleEnum.Transporter => new Transporter(shifter),
                 RoleEnum.Medium => new Medium(shifter),
                 RoleEnum.Operative => new Operative(shifter),
-                RoleEnum.TimeLord => new TimeLord(shifter),
                 RoleEnum.VampireHunter => new VampireHunter(shifter),
                 RoleEnum.Veteran => new Veteran(shifter),
                 RoleEnum.Vigilante => new Vigilante(shifter),
@@ -131,7 +131,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            ShiftButton.Update("SHIFT", ShiftTimer(), CustomGameOptions.ShifterCd);
+            var targets = PlayerControl.AllPlayerControls.ToArray().Where(x => !(Faction is Faction.Intruder or Faction.Syndicate && x.GetFaction() == Faction)).ToList();
+            ShiftButton.Update("SHIFT", ShiftTimer(), CustomGameOptions.ShifterCd, targets);
         }
     }
 }

@@ -17,7 +17,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public float TimeRemaining;
         public bool OnCrusade => TimeRemaining > 0f;
         public PlayerControl CrusadedPlayer;
-        public PlayerControl ClosestCrusade;
         public CustomButton CrusadeButton;
 
         public Crusader(PlayerControl player) : base(player)
@@ -32,7 +31,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             InspectorResults = InspectorResults.SeeksToProtect;
             Type = LayerEnum.Crusader;
             CrusadedPlayer = null;
-            CrusadeButton = new(this, AssetManager.Placeholder, AbilityTypes.Direct, "Secondary", HitCrusade);
+            CrusadeButton = new(this, "Crusade", AbilityTypes.Direct, "Secondary", HitCrusade);
         }
 
         public float CrusadeTimer()
@@ -88,20 +87,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void HitCrusade()
         {
-            if (CrusadeTimer() != 0f || Utils.IsTooFar(Player, ClosestCrusade))
+            if (CrusadeTimer() != 0f || Utils.IsTooFar(Player, CrusadeButton.TargetPlayer))
                 return;
 
-            var interact = Utils.Interact(Player, ClosestCrusade);
+            var interact = Utils.Interact(Player, CrusadeButton.TargetPlayer);
 
             if (interact[3])
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.Crusade);
                 writer.Write(Player.PlayerId);
-                writer.Write(ClosestCrusade.PlayerId);
+                writer.Write(CrusadeButton.TargetPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 TimeRemaining = CustomGameOptions.CrusadeDuration;
-                CrusadedPlayer = ClosestCrusade;
+                CrusadedPlayer = CrusadeButton.TargetPlayer;
                 Crusade();
             }
             else if (interact[0])

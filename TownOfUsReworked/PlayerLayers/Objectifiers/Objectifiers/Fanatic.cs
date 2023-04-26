@@ -4,7 +4,6 @@ using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Data;
 using Hazel;
-using TownOfUsReworked.Custom;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers
 {

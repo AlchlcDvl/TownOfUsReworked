@@ -3,8 +3,9 @@ using System.Linq;
 using HarmonyLib;
 using UnityEngine;
 using TownOfUsReworked.Classes;
+using Il2CppInterop.Runtime.InteropTypes.Arrays;
 
-namespace TownOfUsReworked.Cosmetics.CustomNameplates
+namespace TownOfUsReworked.Cosmetics
 {
     //Thanks to Las Monjas for this code
     public static class CustomNameplatesPatch
@@ -53,6 +54,26 @@ namespace TownOfUsReworked.Cosmetics.CustomNameplates
                 newPlate.ChipOffset = new Vector2(0f, 0.2f);
 
                 return newPlate;
+            }
+        }
+
+        [HarmonyPatch(typeof(HatManager), nameof(HatManager.GetUnlockedNamePlates))]
+        public static class UnlockNameplates
+        {
+            public static bool Prefix(HatManager __instance, ref Il2CppReferenceArray<NamePlateData> __result)
+            {
+                __result =
+                (
+                    from n
+                    in __instance.allNamePlates.ToArray()
+                    where n.Free || AmongUs.Data.DataManager.Player.Purchases.GetPurchase(n.ProductId, n.BundleId)
+                    select n
+                    into o
+                    orderby o.displayOrder descending,
+                    o.name
+                    select o
+                ).ToArray();
+                return false;
             }
         }
     }

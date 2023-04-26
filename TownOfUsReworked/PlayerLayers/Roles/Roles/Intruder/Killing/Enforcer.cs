@@ -2,7 +2,6 @@ using TownOfUsReworked.Data;
 using System;
 using UnityEngine;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Modules;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Extensions;
 using Hazel;
@@ -15,7 +14,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     {
         public CustomButton BombButton;
         public PlayerControl BombedPlayer;
-        public PlayerControl ClosestBomb;
         public bool Enabled;
         public DateTime LastBombed;
         public float TimeRemaining;
@@ -36,7 +34,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AlignmentName = IK;
             Type = LayerEnum.Enforcer;
             BombedPlayer = null;
-            BombButton = new(this, AssetManager.Placeholder, AbilityTypes.Direct, "Secondary", Bomb);
+            BombButton = new(this, "Enforce", AbilityTypes.Direct, "Secondary", Bomb);
         }
 
         public float BombTimer()
@@ -99,21 +97,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Bomb()
         {
-            if (BombTimer() != 0f || Utils.IsTooFar(Player, ClosestBomb) || BombedPlayer == ClosestBomb)
+            if (BombTimer() != 0f || Utils.IsTooFar(Player, BombButton.TargetPlayer) || BombedPlayer == BombButton.TargetPlayer)
                 return;
 
-            var interact = Utils.Interact(Player, ClosestBomb);
+            var interact = Utils.Interact(Player, BombButton.TargetPlayer);
 
             if (interact[3])
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.SetBomb);
                 writer.Write(Player.PlayerId);
-                writer.Write(ClosestBomb.PlayerId);
+                writer.Write(BombButton.TargetPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 TimeRemaining = CustomGameOptions.EnforceDuration;
                 TimeRemaining2 = CustomGameOptions.EnforceDelay;
-                BombedPlayer = ClosestBomb;
+                BombedPlayer = BombButton.TargetPlayer;
                 Delay();
             }
             else if (interact[0])

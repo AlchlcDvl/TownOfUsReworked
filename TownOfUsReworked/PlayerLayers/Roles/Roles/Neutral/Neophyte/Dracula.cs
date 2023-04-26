@@ -2,10 +2,8 @@ using System;
 using System.Collections.Generic;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Data;
-using HarmonyLib;
 using TownOfUsReworked.Classes;
 using System.Linq;
-using TownOfUsReworked.Modules;
 using Hazel;
 using TownOfUsReworked.Custom;
 
@@ -15,7 +13,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     {
         public DateTime LastBitten;
         public CustomButton BiteButton;
-        public PlayerControl ClosestPlayer;
         public List<byte> Converted = new();
 
         public Dracula(PlayerControl player) : base(player)
@@ -34,7 +31,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             SubFactionColor = Colors.Undead;
             Converted = new() { Player.PlayerId };
             Type = LayerEnum.Dracula;
-            BiteButton = new(this, AssetManager.Bite, AbilityTypes.Direct, "ActionSecondary", Convert);
+            BiteButton = new(this, "Bite", AbilityTypes.Direct, "ActionSecondary", Convert);
         }
 
         public float ConvertTimer()
@@ -48,21 +45,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Convert()
         {
-            if (Utils.IsTooFar(Player, ClosestPlayer) || ConvertTimer() != 0f)
+            if (Utils.IsTooFar(Player, BiteButton.TargetPlayer) || ConvertTimer() != 0f)
                 return;
 
-            var interact = Utils.Interact(Player, ClosestPlayer, false, true);
+            var interact = Utils.Interact(Player, BiteButton.TargetPlayer, false, true);
 
             if (interact[3])
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.Convert);
                 writer.Write(Player.PlayerId);
-                writer.Write(ClosestPlayer.PlayerId);
+                writer.Write(BiteButton.TargetPlayer.PlayerId);
                 writer.Write((byte)SubFaction.Undead);
                 writer.Write(Converted.Count >= CustomGameOptions.AliveVampCount);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
-                RoleGen.Convert(ClosestPlayer.PlayerId, Player.PlayerId, SubFaction.Undead, Converted.Count >= CustomGameOptions.AliveVampCount);
+                RoleGen.Convert(BiteButton.TargetPlayer.PlayerId, Player.PlayerId, SubFaction.Undead, Converted.Count >= CustomGameOptions.AliveVampCount);
             }
 
             if (interact[0])

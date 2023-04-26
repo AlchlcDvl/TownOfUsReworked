@@ -38,7 +38,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             WarpMenu1 = new(Player, Click1);
             WarpMenu2 = new(Player, Click2);
             Type = LayerEnum.Warper;
-            WarpButton = new(this, AssetManager.Warp, AbilityTypes.Effect, "Secondary", Warp);
+            WarpButton = new(this, "Warp", AbilityTypes.Effect, "Secondary", Warp);
         }
 
         public float WarpTimer()
@@ -54,7 +54,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             DeadBody Player1Body = null;
             DeadBody Player2Body = null;
-            bool WasInVent = false;
+            var WasInVent = false;
             Vent Vent = null;
 
             if (WarpPlayer1.Data.IsDead)
@@ -180,13 +180,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
             else
             {
-                var targets = PlayerControl.AllPlayerControls.ToArray().Where(x => !(x == WarpPlayer1 || x == WarpPlayer2 || (x == Player && !CustomGameOptions.WarpSelf)
-                    || (x.Data.IsDead && Utils.BodyById(x.PlayerId) == null) || UnwarpablePlayers.ContainsKey(x.PlayerId))).ToList();
-
                 if (WarpPlayer1 == null)
-                    WarpMenu1.Open(targets);
+                {
+                    WarpMenu1.Open(PlayerControl.AllPlayerControls.ToArray().Where(x => !(x == WarpPlayer2 || (x == Player && !CustomGameOptions.WarpSelf) || (x.Data.IsDead &&
+                        Utils.BodyById(x.PlayerId) == null) || UnwarpablePlayers.ContainsKey(x.PlayerId))).ToList());
+                }
                 else if (WarpPlayer2 == null)
-                    WarpMenu2.Open(targets);
+                {
+                    WarpMenu2.Open(PlayerControl.AllPlayerControls.ToArray().Where(x => !(x == WarpPlayer1 || (x == Player && !CustomGameOptions.WarpSelf) || (x.Data.IsDead &&
+                        Utils.BodyById(x.PlayerId) == null) || UnwarpablePlayers.ContainsKey(x.PlayerId))).ToList());
+                }
                 else
                 {
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);

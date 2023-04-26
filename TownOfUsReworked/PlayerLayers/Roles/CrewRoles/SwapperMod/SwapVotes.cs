@@ -39,7 +39,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles.CrewRoles.SwapperMod
                     foreach (var button in role.MoarButtons.Where(button => button != null))
                         button.SetActive(false);
 
-                    if (role.Player.Data.IsDead || role.Player.Data.Disconnected || role.Swap1 == null || role.Swap2 == null)
+                    if (role.IsDead || role.Disconnected || role.Swap1 == null || role.Swap2 == null)
                         continue;
 
                     PlayerControl swapPlayer1 = null;

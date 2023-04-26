@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
 using UnityEngine;
 
-namespace TownOfUsReworked.Cosmetics.CustomColors
+namespace TownOfUsReworked.Cosmetics
 {
     [HarmonyPatch(typeof(PlayerMaterial), nameof(PlayerMaterial.SetColors), typeof(int), typeof(Renderer))]
     public static class SetPlayerMaterialPatch

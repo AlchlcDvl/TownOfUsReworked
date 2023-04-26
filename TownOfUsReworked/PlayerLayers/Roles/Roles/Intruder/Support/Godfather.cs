@@ -11,7 +11,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Godfather : IntruderRole
     {
-        public PlayerControl ClosestIntruder;
         public bool HasDeclared;
         public CustomButton DeclareButton;
         public DateTime LastDeclared;
@@ -28,7 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleAlignment = RoleAlignment.IntruderSupport;
             AlignmentName = IS;
             Type = LayerEnum.Godfather;
-            DeclareButton = new(this, AssetManager.Promote, AbilityTypes.Direct, "Secondary", Declare);
+            DeclareButton = new(this, "Promote", AbilityTypes.Direct, "Secondary", Declare);
         }
 
         public static void Declare(Godfather gf, PlayerControl target)
@@ -55,19 +54,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Declare()
         {
-            if (Utils.IsTooFar(Player, ClosestIntruder) || HasDeclared)
+            if (Utils.IsTooFar(Player, DeclareButton.TargetPlayer) || HasDeclared)
                 return;
 
-            var interact = Utils.Interact(Player, ClosestIntruder);
+            var interact = Utils.Interact(Player, DeclareButton.TargetPlayer);
 
             if (interact[3])
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.Declare);
                 writer.Write(Player.PlayerId);
-                writer.Write(ClosestIntruder.PlayerId);
+                writer.Write(DeclareButton.TargetPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Declare(this, ClosestIntruder);
+                Declare(this, DeclareButton.TargetPlayer);
             }
             else if (interact[0])
                 LastDeclared = DateTime.UtcNow;
@@ -78,8 +77,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            var Imp = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Intruder) && !x.Is(RoleEnum.Ghoul) && !x.Is(RoleEnum.Mafioso) && !x.Is(RoleEnum.Godfather) &&
-                !x.Is(RoleEnum.PromotedGodfather)).ToList();
+            var Imp = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Intruder) && !(x.GetRole() is RoleEnum.Ghoul or RoleEnum.Mafioso or RoleEnum.PromotedGodfather or
+                RoleEnum.Godfather)).ToList();
             DeclareButton.Update("PROMOTE", 0, 1, Imp, true, !HasDeclared);
         }
     }

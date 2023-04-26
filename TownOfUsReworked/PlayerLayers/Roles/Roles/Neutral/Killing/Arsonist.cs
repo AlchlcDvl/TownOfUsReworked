@@ -5,7 +5,6 @@ using Hazel;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using UnityEngine;
-using TownOfUsReworked.Modules;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Custom;
@@ -19,7 +18,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public bool LastKiller => !PlayerControl.AllPlayerControls.ToArray().Any(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) ||
             x.Is(RoleAlignment.CrewKill) || x.Is(RoleAlignment.CrewAudit) || x.Is(RoleAlignment.NeutralPros) || (x.Is(RoleAlignment.NeutralKill) && x != Player))) &&
             CustomGameOptions.ArsoLastKillerBoost;
-        public PlayerControl ClosestPlayer;
         public List<byte> DousedPlayers = new();
         public DateTime LastDoused;
         public DateTime LastIgnited;
@@ -37,8 +35,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = CustomGameOptions.CustomNeutColors ? Colors.Arsonist : Colors.Neutral;
             DousedPlayers = new();
             Type = LayerEnum.Arsonist;
-            DouseButton = new(this, AssetManager.ArsoDouse, AbilityTypes.Effect, "ActionSecondary", Douse);
-            IgniteButton = new(this, AssetManager.Ignite, AbilityTypes.Direct, "Secondary", Ignite);
+            DouseButton = new(this, "ArsoDouse", AbilityTypes.Direct, "ActionSecondary", Douse);
+            IgniteButton = new(this, "Ignite", AbilityTypes.Effect, "Secondary", Ignite);
         }
 
         public float DouseTimer()
@@ -91,13 +89,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Douse()
         {
-            if (Utils.IsTooFar(Player, ClosestPlayer) || DouseTimer() != 0f || DousedPlayers.Contains(ClosestPlayer.PlayerId))
+            if (Utils.IsTooFar(Player, DouseButton.TargetPlayer) || DouseTimer() != 0f || DousedPlayers.Contains(DouseButton.TargetPlayer.PlayerId))
                 return;
 
-            var interact = Utils.Interact(Player, ClosestPlayer);
+            var interact = Utils.Interact(Player, DouseButton.TargetPlayer);
 
             if (interact[3])
-                RpcSpreadDouse(Player, ClosestPlayer);
+                RpcSpreadDouse(Player, DouseButton.TargetPlayer);
 
             if (interact[0])
             {
@@ -132,7 +130,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            var notDoused = PlayerControl.AllPlayerControls.ToArray().Where(player => !DousedPlayers.Contains(player.PlayerId)).ToList();
+            var notDoused = PlayerControl.AllPlayerControls.ToArray().Where(x => !DousedPlayers.Contains(x.PlayerId) && !(x.Is(Faction) && Faction is Faction.Intruder or
+                Faction.Syndicate) && !(SubFaction != SubFaction.None && x.GetSubFaction() == SubFaction)).ToList();
             DouseButton.Update("DOUSE", DouseTimer(), CustomGameOptions.DouseCd, notDoused);
             IgniteButton.Update("IGNITE", IgniteTimer(), CustomGameOptions.IgniteCd, true, DousedAlive > 0);
         }

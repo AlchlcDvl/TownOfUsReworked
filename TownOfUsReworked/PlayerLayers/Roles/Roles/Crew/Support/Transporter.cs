@@ -44,7 +44,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             TransportMenu1 = new(Player, Click1);
             TransportMenu2 = new(Player, Click2);
             Type = LayerEnum.Transporter;
-            TransportButton = new(this, AssetManager.Transport, AbilityTypes.Effect, "ActionSecondary", Transport, true);
+            TransportButton = new(this, "Transport", AbilityTypes.Effect, "ActionSecondary", Transport, true);
         }
 
         public float TransportTimer()
@@ -60,8 +60,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             DeadBody Player1Body = null;
             DeadBody Player2Body = null;
-            bool WasInVent1 = false;
-            bool WasInVent2 = false;
+            var WasInVent1 = false;
+            var WasInVent2 = false;
             Vent Vent1 = null;
             Vent Vent2 = null;
 
@@ -218,13 +218,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (TransportTimer() != 0f)
                 return;
 
-            var list = PlayerControl.AllPlayerControls.ToArray().Where(x => !((x == Player && !CustomGameOptions.TransSelf) || UntransportablePlayers.ContainsKey(x.PlayerId) ||
-                (Utils.BodyById(x.PlayerId) == null && x.Data.IsDead) || x == TransportPlayer1 || x == TransportPlayer2)).ToList();
-
             if (TransportPlayer1 == null)
-                TransportMenu1.Open(list);
+            {
+                TransportMenu1.Open(PlayerControl.AllPlayerControls.ToArray().Where(x => !((x == Player && !CustomGameOptions.TransSelf) || UntransportablePlayers.ContainsKey(x.PlayerId) ||
+                    (Utils.BodyById(x.PlayerId) == null && x.Data.IsDead) || x == TransportPlayer2)).ToList());
+            }
             else if (TransportPlayer2 == null)
-                TransportMenu2.Open(list);
+            {
+                TransportMenu2.Open(PlayerControl.AllPlayerControls.ToArray().Where(x => !((x == Player && !CustomGameOptions.TransSelf) || UntransportablePlayers.ContainsKey(x.PlayerId) ||
+                    (Utils.BodyById(x.PlayerId) == null && x.Data.IsDead) || x == TransportPlayer1)).ToList());
+            }
             else
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);

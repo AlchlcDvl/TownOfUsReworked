@@ -36,7 +36,7 @@ namespace TownOfUsReworked.CustomOptions
         {
             var decrement = Input.GetKeyInt(KeyCode.LeftShift) ? Increment / 2 : Increment;
 
-            if (Get() - decrement <= Min)
+            if (Get() - decrement < Min)
                 Set(Max);
             else
                 Set(Get() - decrement);

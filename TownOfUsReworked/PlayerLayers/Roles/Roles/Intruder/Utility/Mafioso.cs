@@ -3,7 +3,6 @@ using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Extensions;
 using Hazel;
-using TownOfUsReworked.Custom;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -11,7 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     {
         public Role FormerRole;
         public Godfather Godfather;
-        public bool CanPromote => (Godfather.IsDead || Godfather.Player.Data.Disconnected) && !IsDead;
+        public bool CanPromote => (Godfather.IsDead || Godfather.Disconnected) && !IsDead;
 
         public Mafioso(PlayerControl player) : base(player)
         {

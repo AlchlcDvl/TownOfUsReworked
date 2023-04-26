@@ -1,11 +1,9 @@
 using System;
 using UnityEngine;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Modules;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Custom;
 using Hazel;
-using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -31,7 +29,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AlignmentName = CK;
             InspectorResults = InspectorResults.SeeksToProtect;
             Type = LayerEnum.Veteran;
-            AlertButton = new(this, AssetManager.Alert, AbilityTypes.Effect, "ActionSecondary", HitAlert, true);
+            AlertButton = new(this, "Alert", AbilityTypes.Effect, "ActionSecondary", HitAlert, true);
         }
 
         public float AlertTimer()

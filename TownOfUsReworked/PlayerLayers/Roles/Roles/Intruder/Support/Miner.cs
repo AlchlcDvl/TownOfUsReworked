@@ -1,6 +1,5 @@
 using System;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Modules;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Custom;
 using Hazel;
@@ -27,7 +26,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleAlignment = RoleAlignment.IntruderSupport;
             AlignmentName = IS;
             Type = LayerEnum.Miner;
-            MineButton = new(this, AssetManager.Mine, AbilityTypes.Effect, "Secondary", Mine);
+            MineButton = new(this, "Mine", AbilityTypes.Effect, "Secondary", Mine);
         }
 
         public float MineTimer()

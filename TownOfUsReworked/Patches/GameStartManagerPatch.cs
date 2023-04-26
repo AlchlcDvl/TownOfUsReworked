@@ -187,11 +187,14 @@ namespace TownOfUsReworked.Patches
                     startingTimer -= Time.deltaTime;
 
                 //Lobby timer
-                if (!GameData.Instance)
+                if (!GameData.Instance || !__instance)
                     return; //No instance
 
+                if (fixDummyCounterColor is "" or null)
+                    fixDummyCounterColor = "00FF00FF";
+
                 if (update)
-                    currentText = $"<color=#{fixDummyCounterColor}>{GameData.Instance.PlayerCount}/{GameManager.Instance.LogicOptions.MaxPlayers}";
+                    currentText = $"<color=#{fixDummyCounterColor}>{GameData.Instance?.PlayerCount}/{CustomGameOptions.LobbySize}";
 
                 timer = Mathf.Max(0f, timer -= Time.deltaTime);
                 var minutes = (int)(timer / 60);

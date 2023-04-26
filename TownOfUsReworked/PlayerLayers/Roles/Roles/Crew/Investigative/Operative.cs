@@ -2,14 +2,12 @@
 using System.Collections.Generic;
 using TownOfUsReworked.Objects;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Modules;
 using TownOfUsReworked.Data;
 using TMPro;
 using TownOfUsReworked.Custom;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -39,7 +37,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             InspectorResults = InspectorResults.DropsItems;
             PlayerNumbers = new();
             Type = LayerEnum.Operative;
-            BugButton = new(this, AssetManager.Bug, AbilityTypes.Effect, "ActionSecondary", PlaceBug, true);
+            BugButton = new(this, "Bug", AbilityTypes.Effect, "ActionSecondary", PlaceBug, true);
         }
 
         public float BugTimer()
@@ -51,16 +49,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
-        public static void GenNumber(Operative role, PlayerVoteArea voteArea)
+        public void GenNumber(PlayerVoteArea voteArea)
         {
-            if (PlayerControl.LocalPlayer != role.Player)
-                return;
-
             var targetId = voteArea.TargetPlayerId;
             var nameText = Object.Instantiate(voteArea.NameText, voteArea.transform);
             nameText.transform.localPosition = new Vector3(-1.211f, -0.18f, -0.1f);
             nameText.text = GameData.Instance.GetPlayerById(targetId).DefaultOutfit.ColorId.ToString();
-            role.PlayerNumbers[targetId] = nameText;
+            PlayerNumbers[targetId] = nameText;
         }
 
         public override void OnMeetingStart(MeetingHud __instance)
@@ -71,41 +66,31 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 role2.PlayerNumbers.Clear();
 
             foreach (var voteArea in __instance.playerStates)
-                GenNumber(this, voteArea);
-
-            if (Utils.NoButton(PlayerControl.LocalPlayer, RoleEnum.Operative))
-                return;
+                GenNumber(voteArea);
 
             if (BuggedPlayers.Count == 0)
                 HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, "No one triggered your bugs.");
             else if (BuggedPlayers.Count < CustomGameOptions.MinAmountOfPlayersInBug)
                 HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, "Not enough players triggered your bugs.");
+            else if (BuggedPlayers.Count == 1)
+                HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, $"A {BuggedPlayers[0]} triggered your bug.");
             else
             {
-                if (BuggedPlayers.Count == 0)
-                    HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, "No one triggered your bugs.");
-                else if (BuggedPlayers.Count < CustomGameOptions.MinAmountOfPlayersInBug)
-                    HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, "Not enough players triggered your bugs.");
-                else if (BuggedPlayers.Count == 1)
-                    HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, $"A {BuggedPlayers[0]} triggered your bug.");
-                else
+                var message = "The following roles triggered your bug:\n";
+                var position = 0;
+                BuggedPlayers.Shuffle();
+
+                foreach (var role in BuggedPlayers)
                 {
-                    var message = "The following roles triggered your bug:\n";
-                    var position = 0;
-                    BuggedPlayers.Shuffle();
+                    if (position < BuggedPlayers.Count - 1)
+                        message += $" {role},";
+                    else
+                        message += $" and {role}.";
 
-                    foreach (var role in BuggedPlayers)
-                    {
-                        if (position < BuggedPlayers.Count - 1)
-                            message += $" {role},";
-                        else
-                            message += $" and {role}.";
-
-                        position++;
-                    }
-
-                    HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, message);
+                    position++;
                 }
+
+                HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, message);
             }
         }
 

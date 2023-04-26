@@ -1,6 +1,5 @@
 using System;
 using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Modules;
 using TownOfUsReworked.Extensions;
 using System.Collections.Generic;
 using TownOfUsReworked.PlayerLayers.Abilities;
@@ -16,7 +15,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     {
         public List<byte> Investigated = new();
         public CustomButton InvestigateButton;
-        public PlayerControl ClosestTarget;
         public DateTime LastInvestigated;
         private readonly string role = CustomGameOptions.ConsigInfo == ConsigInfo.Role ? "role" : "faction";
         private string CanAssassinate => Ability.GetAbility(Player) != null && Player.Is(AbilityEnum.Assassin) && CustomGameOptions.ConsigInfo == ConsigInfo.Role ?
@@ -33,7 +31,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AlignmentName = IS;
             Investigated = new();
             Type = LayerEnum.Consigliere;
-            InvestigateButton = new(this, AssetManager.Placeholder, AbilityTypes.Direct, "Secondary", Investigate);
+            InvestigateButton = new(this, "Investigate", AbilityTypes.Direct, "Secondary", Investigate);
         }
 
         public float ConsigliereTimer()
@@ -47,13 +45,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Investigate()
         {
-            if (ConsigliereTimer() != 0f || Utils.IsTooFar(Player, ClosestTarget) || Investigated.Contains(ClosestTarget.PlayerId))
+            if (ConsigliereTimer() != 0f || Utils.IsTooFar(Player, InvestigateButton.TargetPlayer) || Investigated.Contains(InvestigateButton.TargetPlayer.PlayerId))
                 return;
 
-            var interact = Utils.Interact(Player, ClosestTarget);
+            var interact = Utils.Interact(Player, InvestigateButton.TargetPlayer);
 
             if (interact[3])
-                Investigated.Add(ClosestTarget.PlayerId);
+                Investigated.Add(InvestigateButton.TargetPlayer.PlayerId);
 
             if (interact[0])
                 LastInvestigated = DateTime.UtcNow;

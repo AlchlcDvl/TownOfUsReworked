@@ -5,7 +5,6 @@ using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using UnityEngine;
 using System.Linq;
-using TownOfUsReworked.Modules;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Custom;
@@ -16,7 +15,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     {
         public CustomButton FreezeButton;
         public CustomButton DouseButton;
-        public PlayerControl ClosestPlayer;
         public List<byte> DousedPlayers;
         public bool FreezeUsed;
         public DateTime LastDoused;
@@ -37,8 +35,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AlignmentName = NK;
             DousedPlayers = new();
             Type = LayerEnum.Cryomaniac;
-            DouseButton = new(this, AssetManager.Placeholder, AbilityTypes.Direct, "ActionSecondary", Douse);
-            FreezeButton = new(this, AssetManager.CryoFreeze, AbilityTypes.Effect, "Secondary", Freeze);
+            DouseButton = new(this, "CryoDouse", AbilityTypes.Direct, "ActionSecondary", Douse);
+            FreezeButton = new(this, "CryoFreeze", AbilityTypes.Effect, "Secondary", Freeze);
         }
 
         public float DouseTimer()
@@ -91,20 +89,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            var notDoused = PlayerControl.AllPlayerControls.ToArray().Where(player => !DousedPlayers.Contains(player.PlayerId)).ToList();
+            var notDoused = PlayerControl.AllPlayerControls.ToArray().Where(x => !DousedPlayers.Contains(x.PlayerId) && !(x.Is(Faction) && Faction is Faction.Intruder or
+                Faction.Syndicate) && !(SubFaction != SubFaction.None && x.GetSubFaction() == SubFaction)).ToList();
             DouseButton.Update("DOUSE", DouseTimer(), CustomGameOptions.DouseCd, notDoused);
             FreezeButton.Update("FREEZE", 0, 1, true, DousedAlive > 0 && !FreezeUsed);
         }
 
         public void Douse()
         {
-            if (Utils.IsTooFar(Player, ClosestPlayer) || DouseTimer() != 0f || DousedPlayers.Contains(ClosestPlayer.PlayerId))
+            if (Utils.IsTooFar(Player, DouseButton.TargetPlayer) || DouseTimer() != 0f || DousedPlayers.Contains(DouseButton.TargetPlayer.PlayerId))
                 return;
 
-            var interact = Utils.Interact(Player, ClosestPlayer, LastKiller);
+            var interact = Utils.Interact(Player, DouseButton.TargetPlayer, LastKiller);
 
             if (interact[3])
-                RpcSpreadDouse(Player, ClosestPlayer);
+                RpcSpreadDouse(Player, DouseButton.TargetPlayer);
 
             if (interact[0])
                 LastDoused = DateTime.UtcNow;
