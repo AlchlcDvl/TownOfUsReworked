@@ -4,6 +4,8 @@
 
 ![LOGO](./Images/Reworked.png)
 
+<p align="center"><a href="https://github.com/AlchlcDvl/TownOfUsReworked/releases/"><img src="https://badgen.net/github/release/AlchlcDvl/TownOfUsReworkeds?icon=github"></a></p>
+
 An [Among Us](https://store.steampowered.com/app/945360/Among_Us) mod that adds a bunch of roles, modifiers, objectifiers, abilities and game settings.
 
 Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or want to find people to play with!
@@ -20,6 +22,7 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 - [Requirements](#requirements)
 - [Steam Guide](#steam-guide)
 - [Epic Games Guide](#epic-games-guide)
+- [Linux Guide](#linus-guide)
 - [Issues](#issues)
 
 [**Uninstallation**](#uninstallation)
@@ -595,11 +598,18 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 12. Copy or move the contents of the Town Of Us zip file into the AmongUs folder.
 13. Finally, launch Among Us from Epic Games library.
 
+## Linux Guide
+1. Install Among Us via Steam
+2. Download newest [release](https://github.com/Zeo666/AllTheRoles/releases/latest) and extract it to ~/.steam/steam/steamapps/common/Among Us
+3. Enable `winhttp.dll` via the proton winecfg (https://docs.bepinex.dev/articles/advanced/steam_interop.html#open-winecfg-for-the-target-game)
+4. Launch the game via Steam
+
 Your game folder should look something like this.
 
 ![Image](./Images/Folder.png)
 
 The first launch may take a while, so be patient if it doesn't launch immediately.
+If the mod still does not work, download and install [vc_redist](https://aka.ms/vs/16/release/vc_redist.x86.exe)
 
 ## Issues
 If you have issues installing Town of Us Reworked, you can join our [Discord](https://discord.gg/cd27aDQDY9) to receive help.
