@@ -608,8 +608,7 @@ Your game folder should look something like this.
 
 ![Image](./Images/Folder.png)
 
-The first launch may take a while, so be patient if it doesn't launch immediately.
-If the mod still does not work, download and install [vc_redist](https://aka.ms/vs/16/release/vc_redist.x86.exe)
+The first launch may take a while, so be patient if it doesn't launch immediately. If the mod still does not work, download and install [vc_redist](https://aka.ms/vs/16/release/vc_redist.x86.exe) and try again.
 
 ## Issues
 If you have issues installing Town of Us Reworked, you can join our [Discord](https://discord.gg/cd27aDQDY9) to receive help.
