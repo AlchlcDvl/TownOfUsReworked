@@ -600,7 +600,7 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 ## Linux Guide
 1. Install Among Us via Steam
-2. Download newest [release](https://github.com/Zeo666/AllTheRoles/releases/latest) and extract it to ~/.steam/steam/steamapps/common/Among Us
+2. Download newest [release](https://github.com/AlchlcDvl/TownOfUsReworked/releases/latest) and extract it to ~/.steam/steam/steamapps/common/Among Us
 3. Enable `winhttp.dll` via the proton winecfg (https://docs.bepinex.dev/articles/advanced/steam_interop.html#open-winecfg-for-the-target-game)
 4. Launch the game via Steam
 
