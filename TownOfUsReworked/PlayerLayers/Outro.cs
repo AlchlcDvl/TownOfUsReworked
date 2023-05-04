@@ -27,11 +27,12 @@ namespace TownOfUsReworked.PlayerLayers
                 }
             }
 
-            if (Role.NobodyWins || Objectifier.NobodyWins)
+            if (PlayerLayer.NobodyWins)
             {
                 __instance.BackgroundBar.material.color = Colors.Stalemate;
-                text.text = "Stalemate!";
+                text.text = "Stalemate";
                 text.color = Colors.Stalemate;
+                SoundManager.Instance.StopSound(__instance.ImpostorStinger);
                 SoundManager.Instance.PlaySound(__instance.DisconnectStinger, false);
             }
             else if (Role.CrewWin || Role.SyndicateWin || Role.IntruderWin || Role.AllNeutralsWin)
@@ -43,7 +44,7 @@ namespace TownOfUsReworked.PlayerLayers
                     return;
 
                 __instance.BackgroundBar.material.color = role.FactionColor;
-                text.text = $"{role.FactionName + (role.Faction == Faction.Neutral ? "s" : "")} Win{(role.Faction is Faction.Syndicate or Faction.Crew ? "s" : "")}!";
+                text.text = $"{role.FactionName + (role.Faction is Faction.Neutral or Faction.Intruder ? "s" : "")} Win{(role.Faction is Faction.Syndicate or Faction.Crew ? "s" : "")}!";
                 text.color = role.FactionColor;
 
                 if (Role.CrewWin)
@@ -104,13 +105,14 @@ namespace TownOfUsReworked.PlayerLayers
             {
                 var obj = Objectifier.AllObjectifiers.Find(x => ((x.ObjectifierType == ObjectifierEnum.Corrupted && Objectifier.CorruptedWins) || (x.ObjectifierType ==
                     ObjectifierEnum.Lovers && Objectifier.LoveWins) || (x.ObjectifierType == ObjectifierEnum.Rivals && Objectifier.RivalWins) || (x.ObjectifierType ==
-                    ObjectifierEnum.Taskmaster && Objectifier.TaskmasterWins) || (x.ObjectifierType == ObjectifierEnum.Overlord && Objectifier.OverlordWins)) && x.Winner);
+                    ObjectifierEnum.Taskmaster && Objectifier.TaskmasterWins) || (x.ObjectifierType == ObjectifierEnum.Overlord && Objectifier.OverlordWins) || (x.ObjectifierType ==
+                    ObjectifierEnum.Mafia && Objectifier.MafiaWins)) && x.Winner);
 
                 if (obj == null)
                     return;
 
                 __instance.BackgroundBar.material.color = obj.Color;
-                text.text = (obj.ObjectifierType == ObjectifierEnum.Lovers ? "Love" : (obj.ObjectifierType == ObjectifierEnum.Rivals ? "Rival" : $"{obj.Name}")) + " Wins!";
+                text.text = (Objectifier.LoveWins ? "Love" : (Objectifier.RivalWins ? "Rival" : (Objectifier.MafiaWins ? "The Mafia" : $"{obj.Name}"))) + " Wins!";
                 text.color = obj.Color;
             }
 

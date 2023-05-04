@@ -13,20 +13,20 @@ namespace TownOfUsReworked.CustomOptions
         public readonly MultiMenu Menu;
         public Func<object, string> Format;
         public string Name;
-        protected internal object Value { get; set; }
-        protected internal OptionBehaviour Setting { get; set; }
-        protected internal CustomOptionType Type { get; set; }
-        protected internal RoleEnum ParentRole { get; set; } = RoleEnum.None;
-        protected internal ModifierEnum ParentModifier { get; set; } = ModifierEnum.None;
-        protected internal AbilityEnum ParentAbility { get; set; } = AbilityEnum.None;
-        protected internal ObjectifierEnum ParentObjectifier { get; set; } = ObjectifierEnum.None;
-        protected internal List<Map> ParentMaps { get; set; } = new();
-        protected internal bool Active { get; set; } = true;
-        protected internal List<bool> Actives { get; set; } = new();
+        public object Value { get; set; }
+        public OptionBehaviour Setting { get; set; }
+        public CustomOptionType Type { get; set; }
+        public RoleEnum ParentRole { get; set; } = RoleEnum.None;
+        public ModifierEnum ParentModifier { get; set; } = ModifierEnum.None;
+        public AbilityEnum ParentAbility { get; set; } = AbilityEnum.None;
+        public ObjectifierEnum ParentObjectifier { get; set; } = ObjectifierEnum.None;
+        public List<Map> ParentMaps { get; set; } = new();
+        public bool Active { get; set; } = true;
+        public List<bool> Actives { get; set; } = new();
         public object DefaultValue { get; set; }
         public static bool LobbyTextScroller { get; set; } = true;
 
-        protected internal CustomOption(int id, MultiMenu menu, string name, CustomOptionType type, object defaultValue, Func<object, string> format = null)
+        public CustomOption(int id, MultiMenu menu, string name, CustomOptionType type, object defaultValue, Func<object, string> format = null)
         {
             ID = id;
             Menu = menu;
@@ -46,7 +46,7 @@ namespace TownOfUsReworked.CustomOptions
 
         public virtual void OptionCreated() => Setting.name = Setting.gameObject.name = Name;
 
-        protected internal void Set(object value, bool SendRpc = true)
+        public void Set(object value, bool SendRpc = true)
         {
             Value = value;
 
@@ -77,14 +77,14 @@ namespace TownOfUsReworked.CustomOptions
             }
         }
 
-        protected internal void SetRole(RoleEnum role) => ParentRole = role;
+        public void SetRole(RoleEnum role) => ParentRole = role;
 
-        protected internal void SetAbility(AbilityEnum ability) => ParentAbility = ability;
+        public void SetAbility(AbilityEnum ability) => ParentAbility = ability;
 
-        protected internal void SetObjectifier(ObjectifierEnum objectifier) => ParentObjectifier = objectifier;
+        public void SetObjectifier(ObjectifierEnum objectifier) => ParentObjectifier = objectifier;
 
-        protected internal void SetModifier(ModifierEnum modifier) => ParentModifier = modifier;
+        public void SetModifier(ModifierEnum modifier) => ParentModifier = modifier;
 
-        protected internal void SetMaps(params Map[] maps) => ParentMaps.AddRange(maps);
+        public void SetMaps(params Map[] maps) => ParentMaps.AddRange(maps);
     }
 }

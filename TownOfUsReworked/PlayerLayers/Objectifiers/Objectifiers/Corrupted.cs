@@ -8,49 +8,49 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
 {
     public class Corrupted : Objectifier
     {
-        public DateTime LastKilled;
+        public DateTime LastCorrupted;
         public PlayerControl ClosestPlayer;
-        public CustomButton KillButton;
+        public CustomButton CorruptButton;
 
         public Corrupted(PlayerControl player) : base(player)
         {
             Name = "Corrupted";
             SymbolName = "δ";
-            TaskText = "- Kill everyone";
+            TaskText = "- Corrupt everyone";
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Corrupted : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Corrupted;
             Type = LayerEnum.Corrupted;
-            KillButton = new(this, "CorruptedKill", AbilityTypes.Direct, "Quarternary", Kill);
+            CorruptButton = new(this, "CorruptedCorrupt", AbilityTypes.Direct, "Quarternary", Corrupt);
         }
 
-        public float KillTimer()
+        public float CorruptTimer()
         {
             var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastKilled;
+            var timespan = utcNow - LastCorrupted;
             var num = CustomGameOptions.CorruptedKillCooldown * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
-        public void Kill()
+        public void Corrupt()
         {
-            if (KillTimer() != 0f || Utils.IsTooFar(Player, ClosestPlayer))
+            if (CorruptTimer() != 0f || Utils.IsTooFar(Player, ClosestPlayer))
                 return;
 
             var interact = Utils.Interact(Player, ClosestPlayer, true);
 
             if (interact[3] || interact[0])
-                LastKilled = DateTime.UtcNow;
+                LastCorrupted = DateTime.UtcNow;
             else if (interact[1])
-                LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
+                LastCorrupted.AddSeconds(CustomGameOptions.ProtectKCReset);
             else if (interact[2])
-                LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
+                LastCorrupted.AddSeconds(CustomGameOptions.VestKCReset);
         }
 
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            KillButton.Update("KILL", KillTimer(), CustomGameOptions.CorruptedKillCooldown);
+            CorruptButton.Update("CORRUPT", CorruptTimer(), CustomGameOptions.CorruptedKillCooldown);
         }
     }
 }

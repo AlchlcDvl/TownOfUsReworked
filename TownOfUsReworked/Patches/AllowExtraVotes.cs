@@ -1,7 +1,7 @@
 using HarmonyLib;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Data;
-using TownOfUsReworked.PlayerLayers.Roles;
+using TownOfUsReworked.PlayerLayers.Abilities;
 
 namespace TownOfUsReworked.Patches
 {
@@ -10,13 +10,10 @@ namespace TownOfUsReworked.Patches
     {
         public static bool Prefix(PlayerVoteArea __instance)
         {
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Mayor) && !PlayerControl.LocalPlayer.Is(RoleEnum.Politician) && !PlayerControl.LocalPlayer.Is(RoleEnum.PromotedRebel))
+            if (!PlayerControl.LocalPlayer.Is(AbilityEnum.Politician))
                 return true;
 
-            var flag = (PlayerControl.LocalPlayer.Is(RoleEnum.Mayor) && !Role.GetRole<Mayor>(PlayerControl.LocalPlayer).CanVote) || (PlayerControl.LocalPlayer.Is(RoleEnum.Politician) &&
-                !Role.GetRole<Politician>(PlayerControl.LocalPlayer).CanVote) || (PlayerControl.LocalPlayer.Is(RoleEnum.PromotedRebel) &&
-                (!Role.GetRole<PromotedRebel>(PlayerControl.LocalPlayer).IsPol || (Role.GetRole<PromotedRebel>(PlayerControl.LocalPlayer).IsPol &&
-                !Role.GetRole<PromotedRebel>(PlayerControl.LocalPlayer).CanVote)));
+            var flag = PlayerControl.LocalPlayer.Is(AbilityEnum.Politician) && !Ability.GetAbility<Politician>(PlayerControl.LocalPlayer).CanVote;
 
             if (!(PlayerControl.LocalPlayer.Data.IsDead || __instance.AmDead || !__instance.Parent.Select(__instance.TargetPlayerId) || flag))
                 __instance.Buttons.SetActive(true);
@@ -30,15 +27,15 @@ namespace TownOfUsReworked.Patches
     {
         public static bool Prefix(PlayerVoteArea __instance)
         {
-            if (!PlayerControl.LocalPlayer.Is(RoleEnum.Mayor) && !PlayerControl.LocalPlayer.Is(RoleEnum.Politician) && !PlayerControl.LocalPlayer.Is(RoleEnum.PromotedRebel))
+            if (!PlayerControl.LocalPlayer.Is(AbilityEnum.Politician))
                 return true;
 
             if (__instance.Parent.state is MeetingHud.VoteStates.Proceeding or MeetingHud.VoteStates.Results)
                 return false;
 
-            if (PlayerControl.LocalPlayer.Is(RoleEnum.Mayor))
+            if (PlayerControl.LocalPlayer.Is(AbilityEnum.Politician))
             {
-                var role = Role.GetRole<Mayor>(PlayerControl.LocalPlayer);
+                var role = Ability.GetAbility<Politician>(PlayerControl.LocalPlayer);
 
                 if (!role.CanVote)
                     return false;
@@ -50,26 +47,6 @@ namespace TownOfUsReworked.Patches
                 }
                 else
                     role.SelfVote = true;
-            }
-            else if (PlayerControl.LocalPlayer.Is(RoleEnum.Politician))
-            {
-                var role = Role.GetRole<Politician>(PlayerControl.LocalPlayer);
-
-                if (!role.CanVote)
-                    return false;
-
-                role.VoteBank--;
-                role.VotedOnce = true;
-            }
-            else if (PlayerControl.LocalPlayer.Is(RoleEnum.PromotedRebel))
-            {
-                var role = Role.GetRole<PromotedRebel>(PlayerControl.LocalPlayer);
-
-                if (!role.IsPol || !role.CanVote)
-                    return false;
-
-                role.VoteBank--;
-                role.VotedOnce = true;
             }
 
             __instance.Parent.Confirm(__instance.TargetPlayerId);

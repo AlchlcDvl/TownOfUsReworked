@@ -13,6 +13,7 @@ namespace TownOfUsReworked.Cosmetics
     {
         private static Material MagicShader;
         private readonly static List<VisorMetadataElement> AuthorDatas = Loader.LoadCustomVisorData();
+        private readonly static Dictionary<string, Sprite> Sprites = new();
         private static bool _customVisorLoaded;
 
         [HarmonyPatch(typeof(HatManager), nameof(HatManager.GetVisorById))]
@@ -43,7 +44,7 @@ namespace TownOfUsReworked.Cosmetics
             {
                 //Borrowed from Other Roles to get hats alt shaders to work
                 if (MagicShader == null)
-                    MagicShader = DestroyableSingleton<HatManager>.Instance.PlayerMaterial;
+                    MagicShader = HatManager.Instance.PlayerMaterial;
 
                 var a = ScriptableObject.CreateInstance<VisorViewData>();
                 var b = new AddressableLoadWrapper<VisorViewData>();
@@ -71,10 +72,12 @@ namespace TownOfUsReworked.Cosmetics
             var mainImg = stream.ReadFully();
             var tex2D = new Texture2D(1, 1, TextureFormat.ARGB32, false);
             Utils.LoadImage(tex2D, mainImg, false);
-            return Sprite.Create(tex2D, new Rect(0.0f, 0.0f, tex2D.width, tex2D.height), new Vector2(0.5f, 0.5f), 100f);
+            var sprite = Sprite.Create(tex2D, new Rect(0.0f, 0.0f, tex2D.width, tex2D.height), new Vector2(0.5f, 0.5f), 100f);
+            Sprites.Add(name, sprite);
+            return sprite;
         }
 
-        /*[HarmonyPatch(typeof(VisorsTab), nameof(VisorsTab.OnEnable))]
+        [HarmonyPatch(typeof(VisorsTab), nameof(VisorsTab.OnEnable))]
         public static class EnableSprites
         {
             public static void Postfix()
@@ -86,12 +89,12 @@ namespace TownOfUsReworked.Cosmetics
                 {
                     if (innerVisors.transform.GetChild(i).transform.GetChild(2).transform.GetChild(0).GetComponent<SpriteRenderer>().sprite == null)
                     {
-                        innerVisors.transform.GetChild(i).transform.GetChild(2).transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = GetSprite(AuthorDatas[visor].Name);
+                        innerVisors.transform.GetChild(i).transform.GetChild(2).transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = Sprites[AuthorDatas[visor].Name];
                         visor++;
                     }
                 }
             }
-        }*/
+        }
 
         [HarmonyPatch(typeof(HatManager), nameof(HatManager.GetUnlockedVisors))]
         public static class UnlockVisors

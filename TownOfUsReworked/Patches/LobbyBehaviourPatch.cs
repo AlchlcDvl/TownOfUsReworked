@@ -7,13 +7,12 @@ using TownOfUsReworked.Classes;
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch(typeof(LobbyBehaviour), nameof(LobbyBehaviour.Start))]
-    static class LobbyBehaviourPatch
+    public static class LobbyBehaviourPatch
     {
         public static void Postfix()
         {
             //Fix Grenadier and screwed blind in lobby
             HudManager.Instance.FullScreen.gameObject.active = false;
-
             RoleGen.ResetEverything();
             PlayerLayer.DeleteAll();
 

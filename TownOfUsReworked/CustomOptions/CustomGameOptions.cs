@@ -192,6 +192,11 @@ namespace TownOfUsReworked.CustomOptions
         public static int BansheeOn => (int)Generate.BansheeOn.Get();
         public static int GhoulOn => (int)Generate.GhoulOn.Get();
         public static int EnforcerOn => (int)Generate.EnforcerOn.Get();
+        public static int DictatorOn => (int)Generate.DictatorOn.Get();
+        public static int MonarchOn => (int)Generate.MonarchOn.Get();
+        public static int SpellslingerOn => (int)Generate.SpellslingerOn.Get();
+        public static int StalkerOn => (int)Generate.StalkerOn.Get();
+        public static int ColliderOn => (int)Generate.ColliderOn.Get();
 
         //Ability Spawn
         public static int CrewAssassinOn => (int)Generate.CrewAssassinOn.Get();
@@ -301,7 +306,6 @@ namespace TownOfUsReworked.CustomOptions
         public static float FootprintInterval => Generate.FootprintInterval.Get();
         public static float FootprintDuration => Generate.FootprintDuration.Get();
         public static bool AnonymousFootPrint => Generate.AnonymousFootPrint.Get();
-        public static bool VentFootprintVisible => Generate.VentFootprintVisible.Get();
 
         //Inspector Settings
         public static int InspectorCount => (int)Generate.InspectorCount.Get();
@@ -398,19 +402,29 @@ namespace TownOfUsReworked.CustomOptions
         public static NotificationOptions NotificationShield => (NotificationOptions)Generate.WhoGetsNotification.Get();
         public static bool ShieldBreaks => Generate.ShieldBreaks.Get();
 
+        //Dictator Settings
+        public static bool UniqueDictator => Generate.UniqueDictator.Get();
+        public static int DictatorCount => (int)Generate.DictatorCount.Get();
+        public static bool DictatorButton => Generate.DictatorButton.Get();
+        public static bool RoundOneNoDictReveal => Generate.RoundOneNoDictReveal.Get();
+        public static bool DictateAfterVoting => Generate.DictateAfterVoting.Get();
+
         //Mayor Settings
-        public static bool MayorAnonymous => Generate.MayorAnonymous.Get();
-        public static int MayorVoteBank => (int)Generate.MayorVoteBank.Get();
         public static bool UniqueMayor => Generate.UniqueMayor.Get();
         public static int MayorCount => (int)Generate.MayorCount.Get();
+        public static int MayorVoteCount => (int)Generate.MayorVoteCount.Get();
         public static bool MayorButton => Generate.MayorButton.Get();
+        public static bool RoundOneNoReveal => Generate.RoundOneNoReveal.Get();
 
-        //Swapper Settings
-        public static bool SwapperButton => Generate.SwapperButton.Get();
-        public static int SwapperCount => (int)Generate.SwapperCount.Get();
-        public static bool SwapAfterVoting => Generate.SwapAfterVoting.Get();
-        public static bool SwapSelf => Generate.SwapSelf.Get();
-        public static bool UniqueSwapper => Generate.UniqueSwapper.Get();
+        //Monarch Settings
+        public static bool UniqueMonarch => Generate.UniqueMonarch.Get();
+        public static int MonarchCount => (int)Generate.MonarchCount.Get();
+        public static int KnightVoteCount => (int)Generate.KnightVoteCount.Get();
+        public static int KnightCount => (int)Generate.KnightCount.Get();
+        public static bool KnightButton => Generate.KnightButton.Get();
+        public static bool MonarchButton => Generate.MonarchButton.Get();
+        public static bool RoundOneNoKnighting => Generate.RoundOneNoKnighting.Get();
+        public static float KnightingCooldown => Generate.KnightingCooldown.Get();
 
         //Engineer Settings
         public static int EngineerCount => (int)Generate.EngineerCount.Get();
@@ -434,6 +448,7 @@ namespace TownOfUsReworked.CustomOptions
         //Retributionist Settings
         public static int RetributionistCount => (int)Generate.RetributionistCount.Get();
         public static bool UniqueRetributionist => Generate.UniqueRetributionist.Get();
+        public static bool ReviveAfterVoting => Generate.ReviveAfterVoting.Get();
 
         //Shifter Settings
         public static BecomeEnum ShiftedBecomes => (BecomeEnum)Generate.ShiftedBecomes.Get();
@@ -456,7 +471,6 @@ namespace TownOfUsReworked.CustomOptions
         public static int AmnesiacCount => (int)Generate.AmnesiacCount.Get();
         public static bool AmneVent => Generate.AmneVent.Get();
         public static bool AmneVentSwitch => Generate.AmneSwitchVent.Get();
-        public static bool AmneTurnAssassin => Generate.AmneTurnAssassin.Get();
         public static float RememberArrowDelay => Generate.RememberArrowDelay.Get();
         public static bool UniqueAmnesiac => Generate.UniqueAmnesiac.Get();
 
@@ -603,6 +617,7 @@ namespace TownOfUsReworked.CustomOptions
         public static bool UniqueArsonist => Generate.UniqueArsonist.Get();
         public static bool ArsoCooldownsLinked => Generate.ArsoCooldownsLinked.Get();
         public static bool ArsoIgniteAll => Generate.ArsoIgniteAll.Get();
+        public static bool IgnitionCremates => Generate.IgnitionCremates.Get();
 
         //Murderer Settings
         public static float MurdKCD => Generate.MurdKillCooldownOption.Get();
@@ -668,7 +683,6 @@ namespace TownOfUsReworked.CustomOptions
         public static float RecruitCooldown => Generate.RecruitCooldown.Get();
 
         //Phantom Settings
-        public static int PhantomCount => (int)Generate.PhantomCount.Get();
         public static int PhantomTasksRemaining => (int)Generate.PhantomTasksRemaining.Get();
         public static bool PhantomPlayersAlerted => Generate.PhantomPlayersAlerted.Get();
 
@@ -789,13 +803,26 @@ namespace TownOfUsReworked.CustomOptions
 
         //Anarchist Settings
         public static int AnarchistCount => (int)Generate.AnarchistCount.Get();
-        public static float ChaosDriveCooldownDecrease => Generate.ChaosDriveCooldownDecrease.Get();
+        public static float AnarchKillCooldown => Generate.AnarchKillCooldown.Get();
 
         //Framer Settings
         public static int FramerCount => (int)Generate.FramerCount.Get();
         public static float FrameCooldown => Generate.FrameCooldown.Get();
         public static float ChaosDriveFrameRadius => Generate.ChaosDriveFrameRadius.Get();
         public static bool UniqueFramer => Generate.UniqueFramer.Get();
+
+        //Spellslinger Settings
+        public static int SpellslingerCount => (int)Generate.SpellslingerCount.Get();
+        public static float SpellCooldown => Generate.SpellCooldown.Get();
+        public static float SpellCooldownIncrease => Generate.SpellCooldownIncrease.Get();
+        public static bool UniqueSpellslinger => Generate.UniqueSpellslinger.Get();
+
+        //Collider Settings
+        public static int ColliderCount => (int)Generate.ColliderCount.Get();
+        public static float CollideCooldown => Generate.CollideCooldown.Get();
+        public static float CollideRange => Generate.CollideRange.Get();
+        public static float CollideRangeIncrease => Generate.CollideRangeIncrease.Get();
+        public static bool UniqueCollider => Generate.UniqueCollider.Get();
 
         //Shapeshifter Settings
         public static int ShapeshifterCount => (int)Generate.ShapeshifterCount.Get();
@@ -825,19 +852,16 @@ namespace TownOfUsReworked.CustomOptions
         public static bool BombsRemoveOnNewRound => Generate.BombsRemoveOnNewRound.Get();
         public static float ChaosDriveBombRange => Generate.ChaosDriveBombRange.Get();
 
-        //Politician Settings
-        public static bool PoliticianAnonymous => Generate.PoliticianAnonymous.Get();
-        public static int PoliticianVoteBank => (int)Generate.PoliticianVoteBank.Get();
-        public static int ChaosDriveVoteAdd => (int)Generate.ChaosDriveVoteAdd.Get();
-        public static bool UniquePolitician => Generate.UniquePolitician.Get();
-        public static int PoliticianCount => (int)Generate.PoliticianCount.Get();
-        public static bool PoliticianButton => Generate.PoliticianButton.Get();
-
         //Concealer Settings
         public static int ConcealerCount => (int)Generate.ConcealerCount.Get();
         public static float ConcealCooldown => Generate.ConcealCooldown.Get();
         public static float ConcealDuration => Generate.ConcealDuration.Get();
         public static bool UniqueConcealer => Generate.UniqueConcealer.Get();
+
+        //Stalker Settings
+        public static int StalkerCount => (int)Generate.StalkerCount.Get();
+        public static bool UniqueStalker => Generate.UniqueStalker.Get();
+        public static float StalkCd => Generate.StalkCooldown.Get();
 
         //Poisoner Settings
         public static float PoisonCd => Generate.PoisonCooldown.Get();
@@ -919,6 +943,20 @@ namespace TownOfUsReworked.CustomOptions
         public static int ButtonBarryCount => (int)Generate.ButtonBarryCount.Get();
         public static float ButtonCooldown => Generate.ButtonCooldown.Get();
         public static bool UniqueButtonBarry => Generate.UniqueButtonBarry.Get();
+
+        //Swapper Settings
+        public static bool SwapperButton => Generate.SwapperButton.Get();
+        public static int SwapperCount => (int)Generate.SwapperCount.Get();
+        public static bool SwapAfterVoting => Generate.SwapAfterVoting.Get();
+        public static bool SwapSelf => Generate.SwapSelf.Get();
+        public static bool UniqueSwapper => Generate.UniqueSwapper.Get();
+
+        //Politician Settings
+        public static bool PoliticianAnonymous => Generate.PoliticianAnonymous.Get();
+        public static int PoliticianVoteBank => (int)Generate.PoliticianVoteBank.Get();
+        public static bool UniquePolitician => Generate.UniquePolitician.Get();
+        public static int PoliticianCount => (int)Generate.PoliticianCount.Get();
+        public static bool PoliticianButton => Generate.PoliticianButton.Get();
 
         //Tiebreaker Settings
         public static bool TiebreakerKnows => Generate.TiebreakerKnows.Get();

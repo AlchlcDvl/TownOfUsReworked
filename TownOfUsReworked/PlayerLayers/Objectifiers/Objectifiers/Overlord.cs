@@ -5,7 +5,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
 {
     public class Overlord : Objectifier
     {
-        public bool IsAlive => !(Player.Data.IsDead || Player.Data.Disconnected);
+        public bool IsAlive => !(IsDead || Disconnected);
 
         public Overlord(PlayerControl player) : base(player)
         {

@@ -24,11 +24,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public static readonly Dictionary<int, string> LightDarkColors = new();
         public static readonly List<PlayerControl> Cleaned = new();
 
+        public static Role LocalRole => GetRole(PlayerControl.LocalPlayer);
+
         public virtual void IntroPrefix(IntroCutscene._ShowTeam_d__36 __instance) {}
 
         #pragma warning disable
-        public static bool NobodyWins;
-
         public static bool UndeadWin;
         public static bool CabalWin;
         public static bool ReanimatedWin;
@@ -58,9 +58,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public static int ChaosDriveMeetingTimerCount;
         public static bool SyndicateHasChaosDrive;
         public static PlayerControl DriveHolder;
-
-        public static ArrowBehaviour Arrow;
-        public static PlayerControl Target;
         #pragma warning restore
 
         public Color32 FactionColor = Colors.Faction;
@@ -70,10 +67,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public RoleAlignment RoleAlignment = RoleAlignment.None;
         public SubFaction SubFaction = SubFaction.None;
         public InspectorResults InspectorResults = InspectorResults.None;
-        public readonly List<Role> RoleHistory = new();
+        public List<Role> RoleHistory = new();
         public ChatChannel CurrentChannel = ChatChannel.All;
-        public readonly List<Vent> Vents = new();
-        public readonly List<Footprint> AllPrints = new();
+        public List<Vent> Vents = new();
+        public List<Footprint> AllPrints = new();
+        public Dictionary<byte, ArrowBehaviour> AllArrows = new();
+        public Dictionary<byte, SpriteRenderer> Points = new();
 
         public string FactionColorString => $"<color=#{FactionColor.ToHtmlStringRGBA()}>";
         public string SubFactionColorString => $"<color=#{SubFactionColor.ToHtmlStringRGBA()}>";
@@ -92,7 +91,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public bool Bombed;
         public bool Diseased;
-
         public bool Base;
 
         public CustomButton BombKillButton;
@@ -117,30 +115,26 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public override void UpdateHud(HudManager __instance)
         {
-            if (ConstantVariables.Inactive || LobbyBehaviour.Instance || MeetingHud.Instance)
-                return;
-
+            base.UpdateHud(__instance);
             __instance.ReportButton.buttonLabelText.SetOutlineColor(FactionColor);
             __instance.UseButton.buttonLabelText.SetOutlineColor(FactionColor);
             __instance.PetButton.buttonLabelText.SetOutlineColor(FactionColor);
             __instance.ImpostorVentButton.buttonLabelText.SetOutlineColor(FactionColor);
             __instance.SabotageButton.buttonLabelText.SetOutlineColor(FactionColor);
-            __instance.AbilityButton.buttonLabelText.SetOutlineColor(FactionColor);
             Player.RegenTask();
 
-            if (PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.ShowMediumToDead && AllRoles.Any(x => x.RoleType == RoleEnum.Medium && ((Medium)x).MediatedPlayers.
-                ContainsKey(PlayerControl.LocalPlayer.PlayerId)))
+            if (IsDead && CustomGameOptions.ShowMediumToDead && AllRoles.Any(x => x.RoleType == RoleEnum.Medium && ((Medium)x).MediatedPlayers.ContainsKey(Player.PlayerId)))
             {
-                var role2 = (Medium)AllRoles.Find(x => x.RoleType == RoleEnum.Medium && ((Medium)x).MediatedPlayers.ContainsKey(PlayerControl.LocalPlayer.PlayerId));
-                role2.MediatedPlayers.GetValueSafe(PlayerControl.LocalPlayer.PlayerId).target = role2.Player.transform.position;
+                var role2 = (Medium)AllRoles.Find(x => x.RoleType == RoleEnum.Medium && ((Medium)x).MediatedPlayers.ContainsKey(Player.PlayerId));
+                role2.MediatedPlayers.GetValueSafe(Player.PlayerId).target = role2.Player.transform.position;
             }
 
-            if (PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.ShowMediumToDead && AllRoles.Any(x => x.RoleType == RoleEnum.Retributionist && ((Retributionist)x).IsMed &&
-                ((Retributionist)x).MediatedPlayers.ContainsKey(PlayerControl.LocalPlayer.PlayerId)))
+            if (IsDead && CustomGameOptions.ShowMediumToDead && AllRoles.Any(x => x.RoleType == RoleEnum.Retributionist && ((Retributionist)x).IsMed &&
+                ((Retributionist)x).MediatedPlayers.ContainsKey(Player.PlayerId)))
             {
                 var role2 = (Retributionist)AllRoles.Find(x => x.RoleType == RoleEnum.Retributionist && ((Retributionist)x).MediatedPlayers.ContainsKey(PlayerControl.
                     LocalPlayer.PlayerId));
-                role2.MediatedPlayers.GetValueSafe(PlayerControl.LocalPlayer.PlayerId).target = role2.Player.transform.position;
+                role2.MediatedPlayers.GetValueSafe(Player.PlayerId).target = role2.Player.transform.position;
             }
 
             foreach (var ret in GetRoles<Retributionist>(RoleEnum.Retributionist))
@@ -166,13 +160,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
                 if (player.Data.IsDead || ret.IsDead || ret.Disconnected)
                 {
-                    Retributionist.BreakShield(ret.Player.PlayerId, player.PlayerId, true);
+                    Retributionist.BreakShield(ret.PlayerId, player.PlayerId, true);
                     continue;
                 }
 
                 var showShielded = (int)CustomGameOptions.ShowShielded;
 
-                if (showShielded is 3 || (PlayerControl.LocalPlayer == player && showShielded is 0 or 2) || (PlayerControl.LocalPlayer.Is(RoleEnum.Medic) && showShielded is 1 or 2))
+                if (showShielded is 3 || (Player == player && showShielded is 0 or 2) || (Player.Is(RoleEnum.Medic) && showShielded is 1 or 2))
                 {
                     player.MyRend().material.SetColor("_VisorColor", new Color32(0, 255, 255, 255));
                     player.MyRend().material.SetFloat("_Outline", 1f);
@@ -199,53 +193,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
                 if (player.Data.IsDead || medic.IsDead || medic.Disconnected)
                 {
-                    Medic.BreakShield(medic.Player.PlayerId, player.PlayerId, true);
+                    Medic.BreakShield(medic.PlayerId, player.PlayerId, true);
                     continue;
                 }
 
                 var showShielded = (int)CustomGameOptions.ShowShielded;
 
-                if (showShielded is 3 || (PlayerControl.LocalPlayer == player && showShielded is 0 or 2) || (PlayerControl.LocalPlayer.Is(RoleEnum.Medic) && showShielded is 1 or 2))
+                if (showShielded is 3 || (Player == player && showShielded is 0 or 2) || (Player.Is(RoleEnum.Medic) && showShielded is 1 or 2))
                 {
                     player.MyRend().material.SetColor("_VisorColor", new Color32(0, 255, 255, 255));
                     player.MyRend().material.SetFloat("_Outline", 1f);
                 }
-            }
-
-            foreach (var haunter in GetRoles<Revealer>(RoleEnum.Revealer))
-            {
-                if (PlayerControl.LocalPlayer.Data.IsDead || haunter.Caught || LobbyBehaviour.Instance || MeetingHud.Instance)
-                {
-                    haunter.RevealerArrows.DestroyAll();
-                    haunter.RevealerArrows.Clear();
-                    haunter.ImpArrows.DestroyAll();
-                    haunter.ImpArrows.Clear();
-                }
-
-                foreach (var arrow in haunter.ImpArrows)
-                    arrow.target = haunter.Player.transform.position;
-
-                foreach (var (arrow, target) in Utils.Zip(haunter.RevealerArrows, haunter.RevealerTargets))
-                {
-                    if (target.Data.IsDead)
-                    {
-                        arrow?.Destroy();
-                        arrow?.gameObject?.Destroy();
-                    }
-
-                    arrow.target = target.transform.position;
-                }
-            }
-
-            if (Arrow != null)
-            {
-                if (LobbyBehaviour.Instance || MeetingHud.Instance || PlayerControl.LocalPlayer.Data.IsDead || Target.Data.IsDead || ConstantVariables.Inactive)
-                {
-                    Arrow.gameObject.Destroy();
-                    Target = null;
-                }
-                else
-                    Arrow.target = Target.transform.position;
             }
 
             foreach (var ga in GetRoles<GuardianAngel>(RoleEnum.GuardianAngel))
@@ -259,7 +217,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 {
                     var showProtected = (int)CustomGameOptions.ShowProtect;
 
-                    if (showProtected is 3 || (PlayerControl.LocalPlayer == player && showProtected is 0 or 2) || (PlayerControl.LocalPlayer.Is(RoleEnum.GuardianAngel) && showProtected is 1
+                    if (showProtected is 3 || (Player == player && showProtected is 0 or 2) || (Player.Is(RoleEnum.GuardianAngel) && showProtected is 1
                         or 2))
                     {
                         player.MyRend().material.SetColor("_VisorColor", new Color32(255, 217, 0, 255));
@@ -275,7 +233,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 {
                     var showShielded = (int)CustomGameOptions.ShowShielded;
 
-                    if (showShielded is 3 || (PlayerControl.LocalPlayer == player && showShielded is 0 or 2) || (PlayerControl.LocalPlayer.Is(RoleEnum.Medic) && showShielded is 1 or 2))
+                    if (showShielded is 3 || (Player == player && showShielded is 0 or 2) || (Player.Is(RoleEnum.Medic) && showShielded is 1 or 2))
                     {
                         player.MyRend().material.SetColor("_VisorColor", new Color32(0, 255, 255, 255));
                         player.MyRend().material.SetFloat("_Outline", 1f);
@@ -293,12 +251,99 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 }
             }
 
-            base.UpdateHud(__instance);
+            foreach (var arrow in AllArrows)
+            {
+                var player = Utils.PlayerById(arrow.Key);
+
+                #pragma warning disable
+                if (player == null || player.Data.IsDead || player.Data.Disconnected)
+                {
+                    DestroyArrowR(arrow.Key);
+                    continue;
+                }
+                #pragma warning restore
+
+                arrow.Value.target = player.transform.position;
+            }
+
             var dead = (!(Player.Is(RoleEnum.Revealer) && !GetRole<Revealer>(Player).Caught) || (Player.Is(RoleEnum.Ghoul) && !GetRole<Ghoul>(Player).Caught) ||
                 (Player.Is(RoleEnum.Banshee) && !GetRole<Banshee>(Player).Caught) || (Player.Is(RoleEnum.Phantom) && !GetRole<Phantom>(Player).Caught)) && IsDead;
             ZoomInButton.Update("SPECTATE", 0, 1, true, Zooming && dead);
             ZoomOutButton.Update("SPECTATE", 0, 1, true, !Zooming && dead);
             BombKillButton.Update("KILL", 0, 1, true, Bombed && !dead);
+        }
+
+        public void DestroyArrowR(byte targetPlayerId)
+        {
+            var arrow = AllArrows.FirstOrDefault(x => x.Key == targetPlayerId);
+            arrow.Value?.Destroy();
+            arrow.Value?.gameObject?.Destroy();
+            AllArrows.Remove(arrow.Key);
+        }
+
+        public override void OnMeetingEnd(MeetingHud __instance)
+        {
+            base.OnMeetingEnd(__instance);
+            ClearPoints();
+
+            if (Player.Is(ObjectifierEnum.Lovers))
+                CurrentChannel = ChatChannel.Lovers;
+            else if (Player.Is(ObjectifierEnum.Rivals))
+                CurrentChannel = ChatChannel.Rivals;
+        }
+
+        public override void OnLobby()
+        {
+            base.OnLobby();
+            ClearPoints();
+            AllArrows.Values.DestroyAll();
+            AllArrows.Clear();
+        }
+
+        public override void UpdateMap(MapBehaviour __instance)
+        {
+            base.UpdateMap(__instance);
+            __instance.ColorControl.baseColor = Color;
+            __instance.ColorControl.SetColor(Color);
+
+            if (IsBlocked)
+                __instance.Close();
+
+            if (IsDead || MeetingHud.Instance)
+                return;
+
+            foreach (var pair in AllArrows)
+            {
+                var player = Utils.PlayerById(pair.Key);
+
+                if (!player.Data.IsDead)
+                {
+                    var v = pair.Value.target;
+                    v /= ShipStatus.Instance.MapScale;
+                    v.x *= Mathf.Sign(ShipStatus.Instance.transform.localScale.x);
+                    v.z = -1f;
+
+                    if (Points.ContainsKey(player.PlayerId))
+                        Points[player.PlayerId].transform.localPosition = v;
+                    else
+                    {
+                        var point = Object.Instantiate(__instance.HerePoint, __instance.HerePoint.transform.parent, true);
+                        point.transform.localPosition = v;
+                        point.enabled = true;
+                        player.SetPlayerMaterialColors(point);
+                        Points.Add(player.PlayerId, point);
+                    }
+                }
+            }
+        }
+
+        public void ClearPoints()
+        {
+            foreach (var pair in Points)
+            {
+                pair.Value.Destroy();
+                Points.Remove(pair.Key);
+            }
         }
 
         private static bool IsExempt(PlayerVoteArea voteArea)
@@ -341,51 +386,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (CustomGameOptions.LighterDarker)
             {
+                foreach (var button in Buttons)
+                {
+                    button.SetActive(false);
+                    button.Destroy();
+                }
+
                 Buttons.Clear();
 
                 foreach (var voteArea in __instance.playerStates)
                     GenButton(voteArea);
-            }
-
-            foreach (var mayor in GetRoles<Mayor>(RoleEnum.Mayor))
-            {
-                mayor.ExtraVotes.Clear();
-
-                if (mayor.VoteBank < 0)
-                    mayor.VoteBank = 0;
-
-                mayor.VoteBank++;
-                mayor.SelfVote = false;
-                mayor.VotedOnce = false;
-            }
-
-            foreach (var role in GetRoles<PromotedRebel>(RoleEnum.PromotedRebel))
-            {
-                if (!role.IsPol)
-                    continue;
-
-                role.ExtraVotes.Clear();
-
-                if (role.VoteBank < 0)
-                    role.VoteBank = 0;
-
-                role.VotedOnce = false;
-
-                if (role.HoldsDrive)
-                    role.VoteBank += CustomGameOptions.ChaosDriveVoteAdd;
-            }
-
-            foreach (var role in GetRoles<Politician>(RoleEnum.Politician))
-            {
-                role.ExtraVotes.Clear();
-
-                if (role.VoteBank < 0)
-                    role.VoteBank = 0;
-
-                role.VotedOnce = false;
-
-                if (role.HoldsDrive)
-                    role.VoteBank += CustomGameOptions.ChaosDriveVoteAdd;
             }
 
             Zooming = false;
@@ -440,6 +450,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             ZoomInButton = new(this, "Plus", AbilityTypes.Effect, "ActionSecondary", Zoom, false, true);
             ZoomOutButton = new(this, "Minus", AbilityTypes.Effect, "ActionSecondary", Zoom, false, true);
             BombKillButton = new(this, "BombKill", AbilityTypes.Direct, "ActionSecondary", BombKill);
+            Points = new();
             AllRoles.Add(this);
         }
 
@@ -471,7 +482,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Bombed = false;
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
             writer.Write((byte)ActionsRPC.ForceKill);
-            writer.Write(PlayerControl.LocalPlayer.PlayerId);
+            writer.Write(Player.PlayerId);
             writer.Write(success);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
@@ -528,6 +539,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public static Role GetRoleFromName(string name) => AllRoles.Find(x => x.Name == name);
 
         public static T GetRole<T>(PlayerControl player) where T : Role => GetRole(player) as T;
+
+        public static T GetRole<T>(PlayerVoteArea area) where T : Role => GetRole(area) as T;
 
         public static Role GetRole(PlayerVoteArea area) => GetRole(Utils.PlayerByVoteArea(area));
 

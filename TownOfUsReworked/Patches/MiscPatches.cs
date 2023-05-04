@@ -11,6 +11,8 @@ using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Extensions;
 using System.Collections.Generic;
+using Hazel;
+using TownOfUsReworked.PlayerLayers;
 
 namespace TownOfUsReworked.Patches
 {
@@ -49,13 +51,8 @@ namespace TownOfUsReworked.Patches
     {
         public static void Postfix(MapBehaviour __instance)
         {
-            var role = Role.GetRole(PlayerControl.LocalPlayer);
-
-            if (role != null)
-            {
-                __instance.ColorControl.baseColor = role.Color;
-                __instance.ColorControl.SetColor(role.Color);
-            }
+            foreach (var layer in PlayerLayer.GetLayers(PlayerControl.LocalPlayer))
+                layer?.UpdateMap(__instance);
         }
     }
 
@@ -140,6 +137,17 @@ namespace TownOfUsReworked.Patches
         {
             Utils.ReassignPostmortals(player);
             Disconnected.Add(player);
+        }
+    }
+
+    [HarmonyPatch(typeof(OpenDoorConsole), nameof(OpenDoorConsole.Use))]
+    public static class SyncToiletDoor
+    {
+        public static void Prefix(OpenDoorConsole __instance)
+        {
+            var messageWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.DoorSyncToilet, SendOption.Reliable);
+            messageWriter.Write(__instance.MyDoor.Id);
+            AmongUsClient.Instance.FinishRpcImmediately(messageWriter);
         }
     }
 }

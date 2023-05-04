@@ -40,8 +40,8 @@ namespace TownOfUsReworked.Data
             private readonly string IDDescription = "Intruder (Deception) roles are built to spread misinformation. Never trust your eyes, for the killer you " +
                 "saw in front of you might not be the one who they seem to be.";
             private readonly string IUDescription = "Intruder (Utility) roles usually don't appear under regaular spawn conditions.";
-            private readonly string IKDescription = "Intruder (Killing) role! You have a ruthless ability to kill people with no mercy. Kill off the crew as fast as possible " +
-                "with your abilities!";
+            private readonly string IKDescription = "Intruder (Killing) roles have an addition ability to kill. Be careful of them as large numbers of dead bpdies will start to pile up" +
+                " with them around.";
 
             private readonly string SyndicateObjective = "Have a critical sabotage set off by the Syndicate reach 0 seconds or kill off all Intruders, Unfaithful Syndicate, " +
                 "Crew and Neutral Killers, Proselytes and Neophytes.";
@@ -157,17 +157,17 @@ namespace TownOfUsReworked.Data
                     case RoleAlignment.IntruderSupport:
                         AlignmentDescription = ISDescription;
                         Alignment = "Intruder (Support)";
-                        AlignmentShort = "CS";
+                        AlignmentShort = "IS";
                         break;
                     case RoleAlignment.IntruderConceal:
                         AlignmentDescription = ICDescription;
                         Alignment = "Intruder (Concealing)";
-                        AlignmentShort = "IS";
+                        AlignmentShort = "IC";
                         break;
                     case RoleAlignment.IntruderDecep:
                         AlignmentDescription = IDDescription;
                         Alignment = "Intuder (Deception)";
-                        AlignmentShort = "IS";
+                        AlignmentShort = "ID";
                         break;
                     case RoleAlignment.IntruderKill:
                         AlignmentDescription = IKDescription;
@@ -397,9 +397,8 @@ namespace TownOfUsReworked.Data
                 "Today, I will make you a man."),
             new RoleInfo("Inspector", "Insp", "The Inspector can check players for their roles. Upon being checked, the targets' names will be updated to give a list of what" +
                 " roles could the target possibly be.", RoleAlignment.CrewInvest, Faction.Crew, "THAT'S THE GODFATHER! YOU GOTTA BELIEVE ME."),
-            new RoleInfo("Mayor", "Mayo (XD)", "The Mayor can vote multiple times. The Mayor has a Vote Bank, which is the number of times they can vote. They have the option to abstain" +
-                " their vote during a meeting, adding that vote to the Vote Bank. As long as not everyone has voted, the Mayor can use as many votes from their Vote Bank as they please.",
-                RoleAlignment.CrewSov, Faction.Crew, "Um, those votes are legitimate. No, the votes are not rigged."),
+            new RoleInfo("Mayor", "Mayo (XD)", "The Mayor has no active ability aside from being able to reveal themselves as the Mayor to other players. Upon doing so, their vote " +
+                "counts as extra.", RoleAlignment.CrewSov, Faction.Crew, "Um, those votes are legitimate. No, the votes are not rigged."),
             new RoleInfo("Medic", "Medic", "The Medic can give any player a shield that will make them immortal until the Medic is dead. A shielded player cannot be " +
                 "killed by anyone, unless it's a suicide. Shielded players have a green ✚ next to their names.", RoleAlignment.CrewProt, Faction.Crew, "Where does it hurt?"),
             new RoleInfo("Medium", "Med", "The Medium can mediate to be able to see ghosts. If the Medium uses this ability, the Medium and the dead player will be able to " +
@@ -427,8 +426,6 @@ namespace TownOfUsReworked.Data
                 " they're sus."),
             new RoleInfo("Shifter", "Shift", "The Shifter can swap roles with someone, as long as they are Crew. If the shift is unsuccessful, the Shifter will die.",
                 RoleAlignment.CrewSupport, Faction.Crew, "GET BACK HERE I WANT YOUR ROLE."),
-            new RoleInfo("Swapper", "Swap", "The Swapper can swap the votes on 2 players during a meeting. All the votes for the first player will instead be counted " +
-                "towards the second player and vice versa.", RoleAlignment.CrewSov, Faction.Crew, "Oh no, they totally voted the other guy off. I have no idea why is everyone denying it."),
             new RoleInfo("Tracker", "Track", "InvaThe Tracker can track other during a round. Once they track someone, an arrow is continuously pointing to them, which " +
                 "updates in set intervals.lid", RoleAlignment.CrewInvest, Faction.Crew, "I only took up this job because the others were full. Yes it's a proper job. No, I'm not a " +
                 "stalker."),
@@ -448,11 +445,11 @@ namespace TownOfUsReworked.Data
             new RoleInfo("Arsonist", "Arso", "The Arsonist can douse other players with gasoline. After dousing, the Arsonist can choose to ignite all doused players which " +
                 "kills all doused players at once. Doused players have an orange Ξ next to their names", RoleAlignment.NeutralKill, Faction.Neutral, "I like my meat well done.",
                 "Douse and ignite anyone who can oppose them"),
-            new RoleInfo("Bounty Hunter", "BH", "The Bounty Hunter is assigned a target as the start of the game. They do not know who the target is and must find them via " +
-                "a series of clues and limited guesses. Upon finding their target within the set amount of guesses, the guess button becomes a kill button after the next meeting. The " +
-                "Bounty Hunter's target always knows that there is a bounty on their head. If the Bounty Hunter is unable to find their target within the number of guesses or their target" +
-                " dies not by the Bounty Hunter's hands, the Bounty Hunter turns into a Troll. The target has a red Θ next to their names.", RoleAlignment.NeutralEvil, Faction.Neutral,
-                "You can run, but you can't hide.", "Find and kill their bounty."),
+            new RoleInfo("Bounty Hunter", "BH", "The Bounty Hunter is assigned a target as the start of the game. Every meeting, the Bounty Hunter is given clue to who their target " +
+                "might be. They do not know who the target is and must find them via a series of clues and limited guesses. Upon finding their target within the set amount of guesses," +
+                " the guess button becomes a kill button. The Bounty Hunter's target always knows that there is a bounty on their head. If the Bounty Hunter is unable to find their " +
+                "target within the number of guesses or their target dies not by the Bounty Hunter's hands, the Bounty Hunter turns into a Troll. The target has a red Θ next to " +
+                "their names.", RoleAlignment.NeutralEvil, Faction.Neutral, "You can run, but you can't hide.", "Find and kill their bounty."),
             new RoleInfo("Cannibal", "Cann", "The Cannibal can eat the body which wipes away the body, like the Janitor.", RoleAlignment.NeutralEvil, Faction.Neutral, "How " +
                 "do you survive with no food but with a lot of people? Improvise, adapt, overcome.", "Eat a certain number of bodies."),
             new RoleInfo("Cryomaniac", "Cryo", "The Cryomaniac can douse in coolant and freeze players similar to the Arsonist's dousing in gasoline and ignite. Freezing " +
@@ -478,7 +475,7 @@ namespace TownOfUsReworked.Data
                 "I've got money.", "Recruit or kill anyone who can oppose Cabal."),
             new RoleInfo("Guardian Angel", "GA", "The Guardian Angel more or less aligns themselves with the faction of their target. The Guardian Angel will win with anyone" +
                 " as long as their target lives to the end of the game, even if their target loses. If the Guardian Angel's target dies, they become a Survivor. Targets have a white ★ " +
-                "and white η when being protected next to their names.", RoleAlignment.NeutralBen, Faction.Neutral, "Hush child...Mama's here.", "Have their target live to the end of " +
+                "and a white η when being protected next to their names.", RoleAlignment.NeutralBen, Faction.Neutral, "Hush child...Mama's here.", "Have their target live to the end of " +
                 "the game."),
             new RoleInfo("Jester", "Jest", "The Jester has no abilities and must make themselves appear to be evil to the Crew and get ejected. After getting ejected, the " +
                 "Jester can haunt those who voted for them, killing them from beyond the grave.", RoleAlignment.NeutralEvil, Faction.Neutral, "Hehehe I wonder if I do this...",
@@ -520,7 +517,7 @@ namespace TownOfUsReworked.Data
                 "Sect increases till they do convert.", RoleAlignment.NeutralNeo, Faction.Neutral, "Psst.", "Persuade or kill anyone who can oppose the Sect."),
             new RoleInfo("Ambusher", "Amb", "The Ambusher can temporaily force anyone to go on alert, killing anyone who interacts with the Ambusher's target.", RoleAlignment.IntruderKill,
                 Faction.Intruder, "BOO"),
-            new RoleInfo("Blackmailer", "BM", "The Blackmailer can silence people in meetings. During each round, the Blackmailer can go up to someone and blackmail them. This prevents" +
+            new RoleInfo("Blackmailer", "BM", "The Blackmailer can silence people. During each round, the Blackmailer can go up to someone and blackmail them. This prevents" +
                 " the blackmailed person from speaking during the next meeting.", RoleAlignment.IntruderConceal, Faction.Intruder, "Shush."),
             new RoleInfo("Camouflager", "Camo", "The Camouflager does the same thing as the Comms Sabotage, but their camouflage can be stacked on top other sabotages. Camouflaged " +
                 "players can kill in front everyone and no one will know who it is.", RoleAlignment.IntruderConceal, Faction.Intruder, "Good luck telling others apart."),
@@ -578,8 +575,6 @@ namespace TownOfUsReworked.Data
                 Faction.Syndicate, "Learning new things."),
             new RoleInfo("Warper", "Warp", "The Warper can teleport a player to another player. With the Chaos Drive, the Warper teleports everyone to random positions on the map.",
                 RoleAlignment.SyndicateSupport, Faction.Syndicate, "BEGONE!"),
-            new RoleInfo("Politician", "Pol", "The Politician can vote multiple times like the Mayor. However, unlike the Mayor, the Politician does not gain votes every meeting " +
-                "without the Chaos Drive and must kill players to gain votes", RoleAlignment.SyndicatePower, Faction.Syndicate, "The votes are rigged...by me."),
             new RoleInfo("Enforcer", "Enf", "The Enforcer can plant bombs on players. After a short while, the target will be alerted to the bomb's presence and must kill someone to " +
                 "get rid of it. If they fail to kill someone within a certain time limit, tje bomb will explode, killing everyone within its vicinity.", RoleAlignment.IntruderKill,
                 Faction.Intruder, "You will do as I say...unless you want to be the painting on the walls."),
@@ -590,7 +585,20 @@ namespace TownOfUsReworked.Data
                 "it. The Detective can also see the footprints of players. All footprints disappear after a set amount of time and only the Detective can see them.",
                 RoleAlignment.CrewInvest, Faction.Crew, "I am skilled in identifying blood...yup that's defintely blood."),
             new RoleInfo("Betrayer", "Bet", "The Betrayer is a simple killer, who turned after a turned Traitor/Fanatic was the only member of their new faction remaning. This role does" +
-                " not spawn directly.", RoleAlignment.NeutralPros, Faction.Neutral, "Kill anyone who opposes the faction they defected to")
+                " not spawn directly.", RoleAlignment.NeutralPros, Faction.Neutral, "The back that trusts me the most is the sweetest to stab", "Kill anyone who opposes the faction " +
+                "they defected to"),
+            new RoleInfo("Dictator", "Dict", "The Dictator has no active ability aside from revealing themselves as the Dictator to all players. When revealed, in the next meeting " +
+                "they can pick up to 3 players to be ejected. All 3 players will be killed at the end of the meeting, along with the chosen 4th player everyone else votes on (if " +
+                "any). If any of the 3 killed players happens to be Crew, the Dictator goes out the airlock with them. After that meeting, the Dictator has no post ejection ability.", RoleAlignment.CrewSov, Faction.Crew, "Out you go!"),
+            new RoleInfo("Monarch", "Mon", "The Monarch can appoint players as knights. When the next meeting is called, all knighted players will be announced. Knighted players will " +
+                "have their votes count as extra.", RoleAlignment.CrewSov, Faction.Crew, "Doth thou solemnly swear your allegiance to the lord?"),
+            new RoleInfo("Stalker", "Stalk", "The Stalker is a buffed Tracker with no update interval. With the Chaos Drive, the arrows are no longer affected by camouflages and all " +
+                "players instantly have an arrow pointing at them upon receiving the Chaos Drive.", RoleAlignment.SyndicateSupport, Faction.Syndicate, "I'll follow you"),
+            new RoleInfo("Spellslinger", "Spell", "The Spellslinger is a powerful role who can cast curses on players. When all non-Syndicate players are cursed, the game ends in a " +
+                "Syndicate victory. With each curse cast, the spell cooldown increases. This effect is negated by the Chaos Drive.", RoleAlignment.SyndicatePower, Faction.Syndicate,
+                "I CURSE YOU TO SUCK ONE THOUSAND D-"),
+            new RoleInfo("Collider", "Col", "The Collider can mark players as positive and negative. If these charged players come within a certain distance of each other, they will " +
+                "die together. With the Chaos Drive, the range of collision increases.", RoleAlignment.SyndicateKill, Faction.Syndicate, "I'm a great matchmaker, I dare say.")
         };
 
         public readonly static List<ModifierInfo> AllModifiers = new()
@@ -603,8 +611,7 @@ namespace TownOfUsReworked.Data
             new ModifierInfo("Dwarf", "Dwarf", "The Dwarf's body is smaller and they are faster.", "Everyone"),
             new ModifierInfo("Giant", "Giant", "The Giant's body is bigger and they are slower.", "Everyone"),
             new ModifierInfo("Flincher", "FLinch", "The Flincher will randomly twitch backwards. Fun Fact: The Flincher is actually a bug which I turned into a modifier.", "Everyone"),
-            new ModifierInfo("Shy", "Shy", "The Shy player cannot call meetings.", "Everyone except Button Barries and those who cannot call meetings (like Mayors when the Mayor Button" +
-                " setting is off)"),
+            new ModifierInfo("Shy", "Shy", "The Shy player cannot call meetings.", "Everyone except Button Barries and roles who cannot call meetings"),
             new ModifierInfo("Indomitable", "Ind", "The Indomitable cannot be guessed.", "Everyone except Actor"),
             new ModifierInfo("VIP", "VIP", "When the VIP dies, everyone is alerted to their death and their screen will flash in the color of the VIP's role.", "Everyone"),
             new ModifierInfo("Professional", "Prof", "The Professional has an extra life when guessing.", "Assassins"),
@@ -631,17 +638,19 @@ namespace TownOfUsReworked.Data
                 "kill button. Their win condition is so strict that not even Neutral Benigns or Evils can be spared", "Kill everyone", "Crew", "δ"),
             new ObjectifierInfo("Traitor", "CT (means Crew Traitor)", "The Traitor is a Crewmate who must finish their tasks to switch sides. Upon doing so, they will either join " +
                 "the Intruders or the Syndicate, and will win with that faction. If the Traitor is the only person in their new faction, they become a Betrayer, losing their original" +
-                " role's abilities and gaining the ability to kill in the process.", "Finish tasks to join either the Intruders or Syndicate", "Crew", "♣")
+                " role's abilities and gaining the ability to kill in the process.", "Finish tasks to join either the Intruders or Syndicate", "Crew", "♣"),
+            new ObjectifierInfo("Mafia", "Maf", "The Mafia are a group of players with a linked win condition. They must kill anyone who is not a member of the Mafia. All Mafia win" +
+                " together.", "Kill anyone who is not a member of the Mafia", "Everyone", "ω"),
         };
 
         public readonly static List<AbilityInfo> AllAbilities = new()
         {
             new AbilityInfo("Invalid", "Invalid", "Invalid", "Invalid"),
             new AbilityInfo("Assassin", "Assassin", "The Assassin is given to a certain number of Intruders, Syndicate and/or Neutral Killers. This ability gives the Intruder, Syndicate" +
-                " or Neutral Killer a chance to kill during meetings by guessing the roles or modifiers of others. If they guess wrong, they die instead.", "Everyone except Neutral Evil," +
-                " Proselyte and Benign roles"),
+                " or Neutral a chance to kill during meetings by guessing the roles or modifiers of others. If they guess wrong, they die instead.", "Intruders, Crew, Syndicate, " +
+                "Neutral (Killing) and Neutral (Neophyte)"),
             new AbilityInfo("Button Barry", "BB", "Button Barry has the ability to call a meeting from anywhere on the map, even during sabotages. Calling a meeting during a non-" +
-                "critical sabotage will fix the sabotage.", "Everyone except those who cannot call meetings (like Mayors when the Mayor Button setting is off"),
+                "critical sabotage will fix the sabotage.", "Everyone except roles who cannot call meetings"),
             new AbilityInfo("Insider", "Ins", "The Insider will be able to view everyone's votes in meetings upon finishing their tasks. Only spawns if Anonymous Votes is turn on.",
                 "Crew"),
             new AbilityInfo("Multitasker", "MT", "When doing tasks, the Multitasker's task window is transparent.", "Roles with tasks"),
@@ -658,7 +667,12 @@ namespace TownOfUsReworked.Data
                 "lights are off"),
             new AbilityInfo("Tunneler", "Tun", "The Tunneler will be able to vent when they finish their tasks.", "Crew except Engineer"),
             new AbilityInfo("Underdog", "UD", "The Underdog is an Intruder with a prolonged kill cooldown when with a teammate. When they are the only remaining Intruder, they will " +
-                "have their kill cooldown shortened.", "Intruders and Syndicate")
+                "have their kill cooldown shortened.", "Intruders and Syndicate"),
+            new AbilityInfo("Politician", "Pol", "TThe Politician can vote multiple times. If the Politician cannot kill, they gain a new button called the abstain button which stores " +
+                "their vote for later use. On the other hand, if the Politician can kill, they lose the Abstain button ans instead gain a vote for each player they kill", "Crew, " +
+                "Intruders, Syndicate and Neutral Killers"),
+            new AbilityInfo("Swapper", "Swap", "The Swapper can swap the votes on 2 players during a meeting. All the votes for the first player will instead be counted " +
+                "towards the second player and vice versa.", "Crew")
         };
 
         public readonly static List<Lore> AllLore = new()

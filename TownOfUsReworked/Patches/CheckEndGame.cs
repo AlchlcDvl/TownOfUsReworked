@@ -5,9 +5,7 @@ using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.PlayerLayers;
-using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.PlayerLayers.Roles;
-using System.Linq;
 
 namespace TownOfUsReworked.Patches
 {
@@ -36,9 +34,7 @@ namespace TownOfUsReworked.Patches
                 writer.Write((byte)WinLoseRPC.NobodyWins);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 Utils.EndGame();
-                Role.NobodyWins = true;
-                Objectifier.NobodyWins = true;
-                return true;
+                PlayerLayer.NobodyWins = true;
             }
             else if ((Utils.TasksDone() || GameData.Instance.TotalTasks <= GameData.Instance.CompletedTasks) && crewexists)
             {
@@ -47,7 +43,6 @@ namespace TownOfUsReworked.Patches
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 Utils.EndGame();
                 Role.CrewWin = true;
-                return true;
             }
             else if (Utils.Sabotaged())
             {
@@ -66,10 +61,20 @@ namespace TownOfUsReworked.Patches
 
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 Utils.EndGame();
-                return true;
             }
             else
-                return PlayerLayer.AllLayers.All(layer => layer.GameEnd()) || ConstantVariables.GameHasEnded;
+            {
+                foreach (var layer in PlayerLayer.AllLayers)
+                    layer.GameEnd();
+            }
+
+            return ConstantVariables.GameHasEnded;
         }
+    }
+
+    [HarmonyPatch(typeof(LogicGameFlowNormal), nameof(LogicGameFlowNormal.IsGameOverDueToDeath))]
+    public static class OverrideEndGame
+    {
+        public static void Postfix(ref bool __result) => __result = false;
     }
 }

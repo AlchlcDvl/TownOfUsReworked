@@ -6,12 +6,12 @@ namespace TownOfUsReworked.CustomOptions
     [HarmonyPatch]
     public class CustomToggleOption : CustomOption
     {
-        protected internal CustomToggleOption(int id, MultiMenu menu, string name, bool value = true) : base(id, menu, name, CustomOptionType.Toggle, value) => Format = val => (bool)val ?
-            "On" : "Off";
+        public CustomToggleOption(int id, MultiMenu menu, string name, bool value = true) : base(id, menu, name, CustomOptionType.Toggle, value) => Format = val => (bool)val ?
+            "True" : "False";
 
-        protected internal bool Get() => (bool)Value;
+        public bool Get() => (bool)Value;
 
-        protected internal void Toggle() => Set(!Get());
+        public void Toggle() => Set(!Get());
 
         public override void OptionCreated()
         {

@@ -292,7 +292,7 @@ Move Electrical Outlet
 100
 <color=#B5004CFF>Poisoner</color>
 100
-<color=#311C45FF>Shapeshifter</color>
+<color=#2DFF00FF>Shapeshifter</color>
 100
 <color=#C9CC3FFF>Bomber</color>
 100
@@ -1310,9 +1310,9 @@ Poison Cooldown
 10
 Poison Kill Delay
 1
-<color=#311C45FF>Shapeshifter</color> Count
+<color=#2DFF00FF>Shapeshifter</color> Count
 14
-<color=#311C45FF>Shapeshifter</color> Is Unique In All Any
+<color=#2DFF00FF>Shapeshifter</color> Is Unique In All Any
 False
 Shapeshift Cooldown
 10

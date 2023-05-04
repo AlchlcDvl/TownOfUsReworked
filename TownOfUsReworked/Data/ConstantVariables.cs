@@ -6,6 +6,7 @@ using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.PlayerLayers.Roles;
 using System.Linq;
 using TownOfUsReworked.Extensions;
+using TownOfUsReworked.PlayerLayers;
 
 namespace TownOfUsReworked.Data
 {
@@ -74,15 +75,15 @@ namespace TownOfUsReworked.Data
             x.Is(RoleAlignment.NeutralKill) || (x.Is(RoleAlignment.NeutralNeo) && !x.Is(RoleEnum.Necromancer)) || x.Is(Faction.Syndicate) || x.Is(RoleAlignment.NeutralPros) ||
             x.NotOnTheSameSide()) && !x.IsResurrected());
 
-        public static bool GameHasEnded => Role.RoleWins || Role.NobodyWins || Objectifier.NobodyWins || Objectifier.ObjectifierWins;
+        public static bool GameHasEnded => Role.RoleWins || Objectifier.ObjectifierWins || PlayerLayer.NobodyWins;
 
         public static bool SameNKWins(RoleEnum nk) => nk != RoleEnum.Plaguebearer && !PlayerControl.AllPlayerControls.ToArray().Any(x => !x.Data.IsDead && !x.Data.Disconnected &&
             (x.Is(Faction.Intruder) || (x.Is(RoleAlignment.NeutralKill) && !x.Is(nk)) || x.Is(RoleAlignment.NeutralNeo) || x.Is(Faction.Syndicate) || x.Is(RoleAlignment.NeutralPros) ||
-            x.Is(ObjectifierEnum.Allied) || x.Is(Faction.Crew) || x.NotOnTheSameSide())) && CustomGameOptions.NoSolo == NoSolo.SameNKs;
+            x.Is(Faction.Crew) || x.NotOnTheSameSide())) && CustomGameOptions.NoSolo == NoSolo.SameNKs;
 
         public static bool SoloNKWins(RoleEnum nk, PlayerControl player) => nk != RoleEnum.Plaguebearer && !PlayerControl.AllPlayerControls.ToArray().Any(x => !x.Data.IsDead &&
             !x.Data.Disconnected && (x.Is(Faction.Intruder) || (x.Is(RoleAlignment.NeutralKill) && x != player) || x.Is(RoleAlignment.NeutralNeo) || x.Is(Faction.Syndicate) ||
-            x.Is(RoleAlignment.NeutralPros) || x.Is(ObjectifierEnum.Allied) || x.Is(Faction.Crew) || x.NotOnTheSameSide())) && CustomGameOptions.NoSolo == NoSolo.Never;
+            x.Is(RoleAlignment.NeutralPros) || x.Is(Faction.Crew) || x.NotOnTheSameSide())) && CustomGameOptions.NoSolo == NoSolo.Never;
 
         public static bool CorruptedWin(PlayerControl player) => !PlayerControl.AllPlayerControls.ToArray().Any(x => !x.Data.IsDead && !x.Data.Disconnected &&
             !x.Is(ObjectifierEnum.Corrupted) && ((x != player && !CustomGameOptions.AllCorruptedWin) || CustomGameOptions.AllCorruptedWin));

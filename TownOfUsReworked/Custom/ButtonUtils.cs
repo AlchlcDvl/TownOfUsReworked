@@ -6,10 +6,10 @@ using TownOfUsReworked.Data;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.PlayerLayers.Abilities;
-using UnityEngine;
 using System;
 using Hazel;
 using TownOfUsReworked.Classes;
+using TownOfUsReworked.Objects;
 
 namespace TownOfUsReworked.Custom
 {
@@ -141,8 +141,7 @@ namespace TownOfUsReworked.Custom
             else if (local.Is(RoleEnum.Medium))
             {
                 var role2 = (Medium)role;
-                role2.MediatedPlayers.Values.DestroyAll();
-                role2.MediatedPlayers.Clear();
+                role2.OnLobby();
 
                 if (start)
                     role2.LastMediated = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.MediateCooldown);
@@ -155,7 +154,7 @@ namespace TownOfUsReworked.Custom
                 role2.BuggedPlayers.Clear();
 
                 if (CustomGameOptions.BugsRemoveOnNewRound)
-                    role2.Bugs.ClearBugs();
+                    role2.OnLobby();
 
                 if (start)
                     role2.LastBugged = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.BugCooldown);
@@ -174,7 +173,6 @@ namespace TownOfUsReworked.Custom
             else if (local.Is(RoleEnum.Shifter))
             {
                 var role2 = (Shifter)role;
-                role2.LastShifted = DateTime.UtcNow;
 
                 if (start)
                     role2.LastShifted = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ShifterCd);
@@ -188,8 +186,7 @@ namespace TownOfUsReworked.Custom
                 if (CustomGameOptions.ResetOnNewRound)
                 {
                     role2.UsesLeft = CustomGameOptions.MaxTracks;
-                    role2.TrackerArrows.Values.DestroyAll();
-                    role2.TrackerArrows.Clear();
+                    role2.OnLobby();
                 }
 
                 if (start)
@@ -200,6 +197,8 @@ namespace TownOfUsReworked.Custom
             else if (local.Is(RoleEnum.Transporter))
             {
                 var role2 = (Transporter)role;
+                role2.TransportPlayer1 = null;
+                role2.TransportPlayer2 = null;
 
                 if (start)
                     role2.LastTransported = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.TransportCooldown);
@@ -225,7 +224,7 @@ namespace TownOfUsReworked.Custom
                     {
                         var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
                         writer.Write((byte)TurnRPC.TurnVigilante);
-                        writer.Write(role2.Player.PlayerId);
+                        writer.Write(role2.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
                         role2.TurnVigilante();
                     }
@@ -254,7 +253,7 @@ namespace TownOfUsReworked.Custom
                     {
                         var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
                         writer.Write((byte)TurnRPC.TurnSeer);
-                        writer.Write(role2.Player.PlayerId);
+                        writer.Write(role2.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
                         role2.TurnSeer();
                     }
@@ -274,7 +273,7 @@ namespace TownOfUsReworked.Custom
                     {
                         var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
                         writer.Write((byte)TurnRPC.TurnSeer);
-                        writer.Write(role2.Player.PlayerId);
+                        writer.Write(role2.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
                         role2.TurnSheriff();
                     }
@@ -287,12 +286,27 @@ namespace TownOfUsReworked.Custom
             else if (local.Is(RoleEnum.Vigilante))
             {
                 var role2 = (Vigilante)role;
-                role2.FirstRound = start && CustomGameOptions.RoundOneNoShot;
+                role2.RoundOne = start && CustomGameOptions.RoundOneNoShot;
 
                 if (start)
                     role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.VigiKillCd);
                 else
                     role2.LastKilled = DateTime.UtcNow;
+            }
+            else if (local.Is(RoleEnum.Mayor))
+            {
+                var role2 = (Mayor)role;
+                role2.RoundOne = start && CustomGameOptions.RoundOneNoReveal;
+            }
+            else if (local.Is(RoleEnum.Monarch))
+            {
+                var role2 = (Monarch)role;
+                role2.RoundOne = start && CustomGameOptions.RoundOneNoKnighting;
+
+                if (start)
+                    role2.LastKnighted = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.KnightingCooldown);
+                else
+                    role2.LastKnighted = DateTime.UtcNow;
             }
             else if (local.Is(RoleEnum.Retributionist))
             {
@@ -327,10 +341,7 @@ namespace TownOfUsReworked.Custom
                         role2.LastTracked = DateTime.UtcNow;
 
                         if (CustomGameOptions.ResetOnNewRound)
-                        {
-                            role2.TrackerArrows.Values.DestroyAll();
-                            role2.TrackerArrows.Clear();
-                        }
+                            role2.OnLobby();
 
                         break;
 
@@ -340,8 +351,7 @@ namespace TownOfUsReworked.Custom
 
                     case RoleEnum.Medium:
                         role2.LastMediated = DateTime.UtcNow;
-                        role2.MediatedPlayers.Values.DestroyAll();
-                        role2.MediatedPlayers.Clear();
+                        role2.OnLobby();
                         break;
 
                     case RoleEnum.Operative:
@@ -349,7 +359,7 @@ namespace TownOfUsReworked.Custom
                         role2.BuggedPlayers.Clear();
 
                         if (CustomGameOptions.BugsRemoveOnNewRound)
-                            role2.Bugs.ClearBugs();
+                            role2.OnLobby();
 
                         break;
 
@@ -357,8 +367,15 @@ namespace TownOfUsReworked.Custom
                         role2.LastInspected = DateTime.UtcNow;
                         break;
 
-                    default:
-                        role2.RevivedRole = null;
+                    case RoleEnum.Escort:
+                        role2.LastBlock = DateTime.UtcNow;
+                        role2.BlockTarget = null;
+                        break;
+
+                    case RoleEnum.Transporter:
+                        role2.LastTransported = DateTime.UtcNow;
+                        role2.TransportPlayer1 = null;
+                        role2.TransportPlayer2 = null;
                         break;
                 }
 
@@ -387,6 +404,7 @@ namespace TownOfUsReworked.Custom
             else if (local.Is(RoleEnum.Enforcer))
             {
                 var role2 = (Enforcer)role;
+                role2.BombedPlayer = null;
 
                 if (start)
                     role2.LastBombed = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.EnforceCooldown);
@@ -437,74 +455,72 @@ namespace TownOfUsReworked.Custom
             {
                 var role2 = (PromotedGodfather)role;
 
-                if (start)
-                    role2.FormerRole = null;
+                if (role2.FormerRole == null || role2.IsImp || start)
+                    return;
 
-                if (role2.FormerRole == null || role2.FormerRole?.RoleType == RoleEnum.Impostor || start)
+                switch (role2.FormerRole.RoleType)
                 {
-                    switch (role2.FormerRole.RoleType)
-                    {
-                        case RoleEnum.Blackmailer:
-                            role2.BlackmailedPlayer = null;
-                            role2.LastBlackmailed = DateTime.UtcNow;
-                            role2.LastKilled = DateTime.UtcNow;
-                            break;
+                    case RoleEnum.Blackmailer:
+                        role2.BlackmailedPlayer = null;
+                        role2.LastBlackmailed = DateTime.UtcNow;
+                        role2.LastKilled = DateTime.UtcNow;
+                        break;
 
-                        case RoleEnum.Camouflager:
-                            role2.LastCamouflaged = DateTime.UtcNow;
-                            break;
+                    case RoleEnum.Camouflager:
+                        role2.LastCamouflaged = DateTime.UtcNow;
+                        break;
 
-                        case RoleEnum.Consigliere:
-                            role2.LastInvestigated = DateTime.UtcNow;
-                            break;
+                    case RoleEnum.Consigliere:
+                        role2.LastInvestigated = DateTime.UtcNow;
+                        break;
 
-                        case RoleEnum.Disguiser:
-                            role2.LastDisguised = DateTime.UtcNow;
-                            role2.LastMeasured = DateTime.UtcNow;
-                            role2.MeasuredPlayer = null;
-                            role2.DisguisedPlayer = null;
-                            break;
+                    case RoleEnum.Disguiser:
+                        role2.LastDisguised = DateTime.UtcNow;
+                        role2.LastMeasured = DateTime.UtcNow;
+                        role2.MeasuredPlayer = null;
+                        role2.DisguisedPlayer = null;
+                        role2.DisguisePlayer = null;
+                        break;
 
-                        case RoleEnum.Grenadier:
-                            role2.LastFlashed = DateTime.UtcNow;
-                            break;
+                    case RoleEnum.Grenadier:
+                        role2.LastFlashed = DateTime.UtcNow;
+                        break;
 
-                        case RoleEnum.Miner:
-                            role2.LastMined = DateTime.UtcNow;
-                            break;
+                    case RoleEnum.Miner:
+                        role2.LastMined = DateTime.UtcNow;
+                        break;
 
-                        case RoleEnum.Janitor:
-                            role2.LastCleaned = DateTime.UtcNow;
-                            role2.CurrentlyDragging = null;
-                            role2.LastDragged = DateTime.UtcNow;
-                            break;
+                    case RoleEnum.Janitor:
+                        role2.LastCleaned = DateTime.UtcNow;
+                        role2.LastDragged = DateTime.UtcNow;
+                        role2.CurrentlyDragging = null;
+                        break;
 
-                        case RoleEnum.Morphling:
-                            role2.LastMorphed = DateTime.UtcNow;
-                            role2.LastSampled = DateTime.UtcNow;
-                            role2.SampledPlayer = null;
-                            role2.MorphedPlayer = null;
-                            break;
+                    case RoleEnum.Morphling:
+                        role2.LastMorphed = DateTime.UtcNow;
+                        role2.LastSampled = DateTime.UtcNow;
+                        role2.SampledPlayer = null;
+                        role2.MorphedPlayer = null;
+                        break;
 
-                        case RoleEnum.Teleporter:
-                            role2.LastTeleport = DateTime.UtcNow;
-                            role2.TeleportPoint = new(0, 0, 0);
-                            break;
+                    case RoleEnum.Teleporter:
+                        role2.LastTeleport = DateTime.UtcNow;
+                        role2.TeleportPoint = new(0, 0, 0);
+                        break;
 
-                        case RoleEnum.Wraith:
-                            role2.LastInvis = DateTime.UtcNow;
-                            break;
+                    case RoleEnum.Wraith:
+                        role2.LastInvis = DateTime.UtcNow;
+                        break;
 
-                        case RoleEnum.Ambusher:
-                            role2.LastAmbushed = DateTime.UtcNow;
-                            role2.AmbushedPlayer = null;
-                            break;
+                    case RoleEnum.Ambusher:
+                        role2.LastAmbushed = DateTime.UtcNow;
+                        role2.AmbushedPlayer = null;
+                        break;
 
-                        case RoleEnum.Consort:
-                            role2.LastBlock = DateTime.UtcNow;
-                            role2.BlockTarget = null;
-                            break;
-                    }
+                    case RoleEnum.Consort:
+                        role2.LastBlock = DateTime.UtcNow;
+                        role2.BlockTarget = null;
+                        break;
                 }
 
                 if (local.Data.IsDead && !CustomGameOptions.DeadSeeEverything)
@@ -560,6 +576,7 @@ namespace TownOfUsReworked.Custom
             {
                 var role2 = (Morphling)role;
                 role2.SampledPlayer = null;
+                role2.MorphedPlayer = null;
 
                 if (start)
                 {
@@ -617,18 +634,37 @@ namespace TownOfUsReworked.Custom
             else if (local.Is(RoleEnum.Concealer))
             {
                 var role2 = (Concealer)role;
+                role2.ConcealedPlayer = null;
 
                 if (start)
                     role2.LastConcealed = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ConcealCooldown);
                 else
                     role2.LastConcealed = DateTime.UtcNow;
             }
+            else if (local.Is(RoleEnum.Spellslinger))
+            {
+                var role2 = (Spellslinger)role;
+
+                if (start)
+                    role2.LastSpelled = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.SpellCooldown);
+                else
+                    role2.LastSpelled = DateTime.UtcNow;
+            }
+            else if (local.Is(RoleEnum.Stalker))
+            {
+                var role2 = (Stalker)role;
+
+                if (start)
+                    role2.LastStalked = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.StalkCd);
+                else
+                    role2.LastStalked = DateTime.UtcNow;
+            }
             else if (local.Is(RoleEnum.Bomber))
             {
                 var role2 = (Bomber)role;
 
                 if (CustomGameOptions.BombsRemoveOnNewRound)
-                    role2.Bombs.ClearBombs();
+                    Bomb.Clear(role2.Bombs);
 
                 if (start)
                 {
@@ -689,7 +725,7 @@ namespace TownOfUsReworked.Custom
             {
                 var role2 = (PromotedRebel)role;
 
-                if (role2.FormerRole == null || role2.FormerRole?.RoleType == RoleEnum.Anarchist || start)
+                if (role2.FormerRole == null || role2.IsAnarch || start)
                     return;
 
                 switch (role2.FormerRole.RoleType)
@@ -725,7 +761,7 @@ namespace TownOfUsReworked.Custom
                         role2.LastDetonated = DateTime.UtcNow;
 
                         if (CustomGameOptions.BombsRemoveOnNewRound)
-                            role2.Bombs.ClearBombs();
+                            Bomb.Clear(role2.Bombs);
 
                         break;
 
@@ -835,7 +871,7 @@ namespace TownOfUsReworked.Custom
                     {
                         var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
                         writer.Write((byte)TurnRPC.TurnSurv);
-                        writer.Write(role2.Player.PlayerId);
+                        writer.Write(role2.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
                         role2.TurnSurv();
                         Role.GetRole(role2.Player).RoleHistory.Remove(role2);
@@ -986,7 +1022,7 @@ namespace TownOfUsReworked.Custom
                     {
                         var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
                         writer.Write((byte)TurnRPC.TurnTroll);
-                        writer.Write(role2.Player.PlayerId);
+                        writer.Write(role2.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
                         role2.TurnTroll();
                         Role.GetRole(role2.Player).RoleHistory.Remove(role2);
@@ -1007,7 +1043,7 @@ namespace TownOfUsReworked.Custom
                 {
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
                     writer.Write((byte)TurnRPC.TurnJest);
-                    writer.Write(role2.Player.PlayerId);
+                    writer.Write(role2.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     role2.TurnJest();
                     Role.GetRole(role2.Player).RoleHistory.Remove(role2);
@@ -1021,7 +1057,7 @@ namespace TownOfUsReworked.Custom
                 {
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
                     writer.Write((byte)TurnRPC.TurnAct);
-                    writer.Write(role2.Player.PlayerId);
+                    writer.Write(role2.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     role2.TurnAct();
                     Role.GetRole(role2.Player).RoleHistory.Remove(role2);
@@ -1052,12 +1088,11 @@ namespace TownOfUsReworked.Custom
             if (local.Is(ObjectifierEnum.Corrupted))
             {
                 var obj2 = (Corrupted)obj;
-                obj2.LastKilled = DateTime.UtcNow;
 
                 if (start)
-                    obj2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.CorruptedKillCooldown);
+                    obj2.LastCorrupted = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.CorruptedKillCooldown);
                 else
-                    obj2.LastKilled = DateTime.UtcNow;
+                    obj2.LastCorrupted = DateTime.UtcNow;
             }
 
             var ab = Ability.GetAbility(local);
@@ -1065,33 +1100,15 @@ namespace TownOfUsReworked.Custom
             if (local.Is(AbilityEnum.ButtonBarry))
             {
                 var ab2 = (ButtonBarry)ab;
-                ab2.LastButtoned = DateTime.UtcNow;
 
                 if (start)
                     ab2.LastButtoned = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ButtonCooldown);
                 else
                     ab2.LastButtoned = DateTime.UtcNow;
             }
-
-            if (local.Is(AbilityEnum.Radar) && start)
-            {
-                var radar = Ability.GetAbility<Radar>(PlayerControl.LocalPlayer);
-                var gameObj = new GameObject();
-                var arrow = gameObj.AddComponent<ArrowBehaviour>();
-                gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
-                var renderer = gameObj.AddComponent<SpriteRenderer>();
-                renderer.sprite = AssetManager.GetSprite("Arrow");
-                renderer.color = radar.Color;
-                arrow.image = renderer;
-                gameObj.layer = 5;
-                arrow.target = PlayerControl.LocalPlayer.transform.position;
-                radar.RadarArrow.Add(arrow);
-            }
         }
 
-        #pragma warning disable
-        public static bool ButtonUsable(this ActionButton button) => button != null && button.isActiveAndEnabled && !button.isCoolingDown && !PlayerControl.LocalPlayer.CannotUse() &&
+        public static bool ButtonUsable(this ActionButton button) => button.isActiveAndEnabled && !button.isCoolingDown && !PlayerControl.LocalPlayer.CannotUse() &&
             !MeetingHud.Instance;
-        #pragma warning restore
     }
 }

@@ -4,10 +4,11 @@ using Reactor.Utilities.ImGui;
 using UnityEngine;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.PlayerLayers.Roles;
-using TownOfUsReworked.PlayerLayers.Objectifiers;
+using TownOfUsReworked.PlayerLayers;
 using TownOfUsReworked.Classes;
 using Il2CppInterop.Runtime.Attributes;
 using TownOfUsReworked.CustomOptions;
+using Random = UnityEngine.Random;
 
 namespace TownOfUsReworked.MultiClientInstancing
 {
@@ -91,8 +92,7 @@ namespace TownOfUsReworked.MultiClientInstancing
 
                     if (GUILayout.Button("End Game"))
                     {
-                        Role.NobodyWins = true;
-                        Objectifier.NobodyWins = true;
+                        PlayerLayer.NobodyWins = true;
                         Utils.EndGame();
                     }
 
@@ -154,14 +154,23 @@ namespace TownOfUsReworked.MultiClientInstancing
                                 Utils.Revive(player);
                         }
                     }
+                }
 
-                    if (PlayerControl.LocalPlayer)
-                    {
-                        var position = PlayerControl.LocalPlayer.transform.position;
-                        GUILayout.Label($"x: {position.x}");
-                        GUILayout.Label($"y: {position.y}");
-                        GUILayout.Label($"z: {position.z}");
-                    }
+                if (GUILayout.Button("Flash"))
+                {
+                    var r = Random.RandomRangeInt(0, 256);
+                    var g = Random.RandomRangeInt(0, 256);
+                    var b = Random.RandomRangeInt(0, 256);
+                    var flashColor = new Color32((byte)r, (byte)g, (byte)b, 255);
+                    Utils.Flash(flashColor);
+                }
+
+                if (PlayerControl.LocalPlayer)
+                {
+                    var position = PlayerControl.LocalPlayer.transform.position;
+                    GUILayout.Label($"x: {position.x}");
+                    GUILayout.Label($"y: {position.y}");
+                    GUILayout.Label($"z: {position.z}");
                 }
             })
             {

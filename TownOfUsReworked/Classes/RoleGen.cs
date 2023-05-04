@@ -15,6 +15,8 @@ using TownOfUsReworked.Extensions;
 using Random = UnityEngine.Random;
 using TownOfUsReworked.BetterMaps.Airship;
 using TownOfUsReworked.PlayerLayers;
+using TownOfUsReworked.Objects;
+using TownOfUsReworked.Custom;
 
 namespace TownOfUsReworked.Classes
 {
@@ -332,6 +334,32 @@ namespace TownOfUsReworked.Classes
                 Utils.LogSomething("Mayor Done");
             }
 
+            if (CustomGameOptions.MonarchOn > 0)
+            {
+                num = ConstantVariables.IsCustom ? CustomGameOptions.MonarchCount : 1;
+
+                while (num > 0)
+                {
+                    CrewSovereignRoles.Add((CustomGameOptions.MonarchOn, 5, CustomGameOptions.UniqueMonarch));
+                    num--;
+                }
+
+                Utils.LogSomething("Monarch Done");
+            }
+
+            if (CustomGameOptions.DictatorOn > 0)
+            {
+                num = ConstantVariables.IsCustom ? CustomGameOptions.DictatorCount : 1;
+
+                while (num > 0)
+                {
+                    CrewSovereignRoles.Add((CustomGameOptions.DictatorOn, 6, CustomGameOptions.UniqueDictator));
+                    num--;
+                }
+
+                Utils.LogSomething("Dictator Done");
+            }
+
             if (CustomGameOptions.SheriffOn > 0)
             {
                 num = ConstantVariables.IsCustom ? CustomGameOptions.SheriffCount : 1;
@@ -382,19 +410,6 @@ namespace TownOfUsReworked.Classes
                 }
 
                 Utils.LogSomething("Engineer Done");
-            }
-
-            if (CustomGameOptions.SwapperOn > 0)
-            {
-                num = ConstantVariables.IsCustom ? CustomGameOptions.SwapperCount : 1;
-
-                while (num > 0)
-                {
-                    CrewSovereignRoles.Add((CustomGameOptions.SwapperOn, 5, CustomGameOptions.UniqueSwapper));
-                    num--;
-                }
-
-                Utils.LogSomething("Swapper Done");
             }
 
             if (CustomGameOptions.MedicOn > 0)
@@ -1197,6 +1212,19 @@ namespace TownOfUsReworked.Classes
                 Utils.LogSomething("Poisoner Done");
             }
 
+            if (CustomGameOptions.ColliderOn > 0)
+            {
+                num = ConstantVariables.IsCustom ? CustomGameOptions.ColliderCount : 1;
+
+                while (num > 0)
+                {
+                    SyndicateKillingRoles.Add((CustomGameOptions.ColliderOn, 7, CustomGameOptions.UniqueCollider));
+                    num--;
+                }
+
+                Utils.LogSomething("Collider Done");
+            }
+
             if (CustomGameOptions.ConcealerOn > 0)
             {
                 num = ConstantVariables.IsCustom ? CustomGameOptions.ConcealerCount : 1;
@@ -1208,19 +1236,6 @@ namespace TownOfUsReworked.Classes
                 }
 
                 Utils.LogSomething("Concealer Done");
-            }
-
-            if (CustomGameOptions.PoliticianOn > 0)
-            {
-                num = ConstantVariables.IsCustom ? CustomGameOptions.PoliticianCount : 1;
-
-                while (num > 0)
-                {
-                    SyndicatePowerRoles.Add((CustomGameOptions.PoliticianOn, 9, CustomGameOptions.UniquePolitician));
-                    num--;
-                }
-
-                Utils.LogSomething("Politician Done");
             }
 
             if (CustomGameOptions.WarperOn > 0 && GameOptionsManager.Instance.currentNormalGameOptions.MapId != 4 && GameOptionsManager.Instance.currentNormalGameOptions.MapId != 5)
@@ -1247,6 +1262,32 @@ namespace TownOfUsReworked.Classes
                 }
 
                 Utils.LogSomething("Bomber Done");
+            }
+
+            if (CustomGameOptions.SpellslingerOn > 0)
+            {
+                num = ConstantVariables.IsCustom ? CustomGameOptions.SpellslingerCount : 1;
+
+                while (num > 0)
+                {
+                    SyndicatePowerRoles.Add((CustomGameOptions.SpellslingerOn, 55, CustomGameOptions.UniqueSpellslinger));
+                    num--;
+                }
+
+                Utils.LogSomething("Spellslinger Done");
+            }
+
+            if (CustomGameOptions.StalkerOn > 0)
+            {
+                num = ConstantVariables.IsCustom ? CustomGameOptions.StalkerCount : 1;
+
+                while (num > 0)
+                {
+                    SyndicateSupportRoles.Add((CustomGameOptions.StalkerOn, 9, CustomGameOptions.UniqueStalker));
+                    num--;
+                }
+
+                Utils.LogSomething("Stalker Done");
             }
 
             if (ConstantVariables.IsClassic || ConstantVariables.IsCustom)
@@ -1911,6 +1952,32 @@ namespace TownOfUsReworked.Classes
                 Utils.LogSomething("Button Barry Done");
             }
 
+            if (CustomGameOptions.PoliticianOn > 0)
+            {
+                num = ConstantVariables.IsCustom ? CustomGameOptions.PoliticianCount : 1;
+
+                while (num > 0)
+                {
+                    AllAbilities.Add((CustomGameOptions.PoliticianOn, 16, CustomGameOptions.UniquePolitician));
+                    num--;
+                }
+
+                Utils.LogSomething("Politician Done");
+            }
+
+            if (CustomGameOptions.SwapperOn > 0)
+            {
+                num = ConstantVariables.IsCustom ? CustomGameOptions.SwapperCount : 1;
+
+                while (num > 0)
+                {
+                    AllAbilities.Add((CustomGameOptions.SwapperOn, 3, CustomGameOptions.UniqueSwapper));
+                    num--;
+                }
+
+                Utils.LogSomething("Swapper Done");
+            }
+
             var allCount = PlayerControl.AllPlayerControls.Count;
             Sort(AllAbilities, CustomGameOptions.MaxAbilities, CustomGameOptions.MinAbilities);
             AllAbilities.Shuffle();
@@ -1927,6 +1994,7 @@ namespace TownOfUsReworked.Classes
             var canHaveKillingAbility = PlayerControl.AllPlayerControls.Il2CppToSystem();
             var canHaveAbility = PlayerControl.AllPlayerControls.Il2CppToSystem();
             var canHaveBB = PlayerControl.AllPlayerControls.Il2CppToSystem();
+            var canHavePolitician = PlayerControl.AllPlayerControls.Il2CppToSystem();
 
             canHaveIntruderAbility.RemoveAll(player => !player.Is(Faction.Intruder) || (player.Is(RoleEnum.Consigliere) && CustomGameOptions.ConsigInfo == ConsigInfo.Role));
             canHaveIntruderAbility.Shuffle();
@@ -1961,10 +2029,13 @@ namespace TownOfUsReworked.Classes
             canHaveKillingAbility.Shuffle();
 
             canHaveBB.RemoveAll(player => (player.Is(RoleEnum.Mayor) && !CustomGameOptions.MayorButton) || (player.Is(RoleEnum.Jester) && !CustomGameOptions.JesterButton) ||
-                (player.Is(RoleEnum.Swapper) && !CustomGameOptions.SwapperButton) || (player.Is(RoleEnum.Actor) && !CustomGameOptions.ActorButton) || (player.Is(RoleEnum.Guesser) &&
-                !CustomGameOptions.GuesserButton) || (player.Is(RoleEnum.Executioner) && !CustomGameOptions.ExecutionerButton) || (player.Is(RoleEnum.Politician) &&
-                !CustomGameOptions.PoliticianButton));
+                (player.Is(RoleEnum.Actor) && !CustomGameOptions.ActorButton) || (player.Is(RoleEnum.Guesser) && !CustomGameOptions.GuesserButton) || (player.Is(RoleEnum.Executioner) &&
+                !CustomGameOptions.ExecutionerButton) || (!CustomGameOptions.MonarchButton && player.Is(RoleEnum.Monarch)) || (!CustomGameOptions.DictatorButton &&
+                player.Is(RoleEnum.Dictator)));
             canHaveBB.Shuffle();
+
+            canHavePolitician.RemoveAll(player => player.Is(RoleAlignment.NeutralEvil) || player.Is(RoleAlignment.NeutralBen) || player.Is(RoleAlignment.NeutralNeo));
+            canHavePolitician.Shuffle();
 
             var spawnList = ConstantVariables.IsAA ? AASort(AllAbilities, allCount) : AllAbilities;
             spawnList.Shuffle();
@@ -1979,7 +2050,7 @@ namespace TownOfUsReworked.Classes
                 var (_, id, _) = spawnList.TakeFirst();
                 int[] Snitch = { 1 };
                 int[] Syndicate = { 12 };
-                int[] Crew = { 0 };
+                int[] Crew = { 0, 3 };
                 int[] Neutral = { 13 };
                 int[] Intruder = { 11 };
                 int[] Killing = { 10, 14 };
@@ -1989,6 +2060,7 @@ namespace TownOfUsReworked.Classes
                 int[] Global = { 5, 6 };
                 int[] Tunneler = { 9 };
                 int[] BB = { 15 };
+                int[] Pol = { 16 };
 
                 if (canHaveSnitch.Count > 0 && Snitch.Contains(id))
                     Gen(canHaveSnitch.TakeFirst(), id, PlayerLayerEnum.Ability);
@@ -2014,6 +2086,8 @@ namespace TownOfUsReworked.Classes
                     Gen(canHaveTunnelerAbility.TakeFirst(), id, PlayerLayerEnum.Ability);
                 else if (canHaveBB.Count > 0 && BB.Contains(id))
                     Gen(canHaveBB.TakeFirst(), id, PlayerLayerEnum.Ability);
+                else if (canHavePolitician.Count > 0 && Pol.Contains(id))
+                    Gen(canHavePolitician.TakeFirst(), id, PlayerLayerEnum.Ability);
             }
 
             Utils.LogSomething("Abilities Done");
@@ -2130,7 +2204,7 @@ namespace TownOfUsReworked.Classes
                 Utils.LogSomething("Taskmaster Done");
             }
 
-            /*if (CustomGameOptions.MafiaOn > 0)
+            if (CustomGameOptions.MafiaOn > 0)
             {
                 num = ConstantVariables.IsCustom ? CustomGameOptions.MafiaCount : 2;
 
@@ -2141,7 +2215,7 @@ namespace TownOfUsReworked.Classes
                 }
 
                 Utils.LogSomething("Mafia Done");
-            }*/
+            }
 
             var allCount = PlayerControl.AllPlayerControls.Count;
             Sort(AllObjectifiers, CustomGameOptions.MaxObjectifiers, CustomGameOptions.MinObjectifiers);
@@ -2382,8 +2456,10 @@ namespace TownOfUsReworked.Classes
             canHaveIndomitable.Shuffle();
 
             canHaveShy.RemoveAll(player => (player.Is(RoleEnum.Mayor) && !CustomGameOptions.MayorButton) || (player.Is(RoleEnum.Jester) && !CustomGameOptions.JesterButton) ||
-                (player.Is(RoleEnum.Swapper) && !CustomGameOptions.SwapperButton) || (player.Is(RoleEnum.Actor) && !CustomGameOptions.ActorButton) || (player.Is(RoleEnum.Guesser) &&
-                !CustomGameOptions.GuesserButton) || (player.Is(RoleEnum.Executioner) && !CustomGameOptions.ExecutionerButton) || player.Is(AbilityEnum.ButtonBarry));
+                (player.Is(AbilityEnum.Swapper) && !CustomGameOptions.SwapperButton) || (player.Is(RoleEnum.Actor) && !CustomGameOptions.ActorButton) || (player.Is(RoleEnum.Guesser) &&
+                !CustomGameOptions.GuesserButton) || (player.Is(RoleEnum.Executioner) && !CustomGameOptions.ExecutionerButton) || player.Is(AbilityEnum.ButtonBarry) ||
+                (player.Is(AbilityEnum.Politician) && !CustomGameOptions.PoliticianButton) || (!CustomGameOptions.DictatorButton && player.Is(RoleEnum.Dictator)) ||
+                (!CustomGameOptions.MonarchButton && player.Is(RoleEnum.Monarch)));
             canHaveShy.Shuffle();
 
             var spawnList = ConstantVariables.IsAA ? AASort(AllModifiers, allCount) : AllModifiers;
@@ -2463,7 +2539,7 @@ namespace TownOfUsReworked.Classes
                     alliedRole.IsIntAlly = intr;
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Target, SendOption.Reliable);
                     writer.Write((byte)TargetRPC.SetAlliedFaction);
-                    writer.Write(ally.Player.PlayerId);
+                    writer.Write(ally.PlayerId);
                     writer.Write((byte)alliedRole.Faction);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
@@ -2511,7 +2587,7 @@ namespace TownOfUsReworked.Classes
                         Objectifier.GetObjectifier<Lovers>(lover.OtherLover).OtherLover = lover.Player;
                         var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Target, SendOption.Reliable);
                         writer.Write((byte)TargetRPC.SetCouple);
-                        writer.Write(lover.Player.PlayerId);
+                        writer.Write(lover.PlayerId);
                         writer.Write(lover.OtherLover.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
                         //Utils.LogSomething($"Lovers = {lover.Player.name} & {lover.OtherLover.name}");
@@ -2525,7 +2601,7 @@ namespace TownOfUsReworked.Classes
                         _ = new Objectifierless(lover.Player);
                         lovers.Remove(lover.Player);
                         var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.NullObjectifier, SendOption.Reliable);
-                        writer.Write(lover.Player.PlayerId);
+                        writer.Write(lover.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
                     }
                 }
@@ -2553,7 +2629,7 @@ namespace TownOfUsReworked.Classes
                         Objectifier.GetObjectifier<Rivals>(rival.OtherRival).OtherRival = rival.Player;
                         var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Target, SendOption.Reliable);
                         writer.Write((byte)TargetRPC.SetDuo);
-                        writer.Write(rival.Player.PlayerId);
+                        writer.Write(rival.PlayerId);
                         writer.Write(rival.OtherRival.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
                         //Utils.LogSomething($"Rivals = {rival.Player.name} & {rival.OtherRival.name}");
@@ -2567,7 +2643,7 @@ namespace TownOfUsReworked.Classes
                         _ = new Objectifierless(rival.Player);
                         rivals.Remove(rival.Player);
                         var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.NullObjectifier, SendOption.Reliable);
-                        writer.Write(rival.Player.PlayerId);
+                        writer.Write(rival.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
                     }
                 }
@@ -2663,7 +2739,7 @@ namespace TownOfUsReworked.Classes
                         exeTargets.Remove(exe.TargetPlayer);
                         var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Target, SendOption.Reliable);
                         writer.Write((byte)TargetRPC.SetExeTarget);
-                        writer.Write(exe.Player.PlayerId);
+                        writer.Write(exe.PlayerId);
                         writer.Write(exe.TargetPlayer.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
                         //Utils.LogSomething($"Exe Target = {exe.TargetPlayer.name}");
@@ -2691,7 +2767,7 @@ namespace TownOfUsReworked.Classes
                         guessTargets.Remove(guess.TargetPlayer);
                         var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Target, SendOption.Reliable);
                         writer.Write((byte)TargetRPC.SetGuessTarget);
-                        writer.Write(guess.Player.PlayerId);
+                        writer.Write(guess.PlayerId);
                         writer.Write(guess.TargetPlayer.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
                         //Utils.LogSomething($"Exe Target = {exe.TargetPlayer.name}");
@@ -2719,7 +2795,7 @@ namespace TownOfUsReworked.Classes
                         gaTargets.Remove(ga.TargetPlayer);
                         var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Target, SendOption.Reliable);
                         writer.Write((byte)TargetRPC.SetGATarget);
-                        writer.Write(ga.Player.PlayerId);
+                        writer.Write(ga.PlayerId);
                         writer.Write(ga.TargetPlayer.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
                         //Utils.LogSomething($"GA Target = {ga.TargetPlayer.name}");
@@ -2747,7 +2823,7 @@ namespace TownOfUsReworked.Classes
                         bhTargets.Remove(bh.TargetPlayer);
                         var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Target, SendOption.Reliable);
                         writer.Write((byte)TargetRPC.SetBHTarget);
-                        writer.Write(bh.Player.PlayerId);
+                        writer.Write(bh.PlayerId);
                         writer.Write(bh.TargetPlayer.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
                         //Utils.LogSomething($"BH Target = {ga.TargetPlayer.name}");
@@ -2771,7 +2847,7 @@ namespace TownOfUsReworked.Classes
 
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Target, SendOption.Reliable);
                     writer.Write((byte)TargetRPC.SetActPretendList);
-                    writer.Write(act.Player.PlayerId);
+                    writer.Write(act.PlayerId);
                     writer.Write((byte)act.PretendRoles);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
@@ -2803,7 +2879,7 @@ namespace TownOfUsReworked.Classes
                         jackal.Recruited.Add(jackal.GoodRecruit.PlayerId);
                         var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Target, SendOption.Reliable);
                         writer.Write((byte)TargetRPC.SetGoodRecruit);
-                        writer.Write(jackal.Player.PlayerId);
+                        writer.Write(jackal.PlayerId);
                         writer.Write(jackal.GoodRecruit.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
                         //Utils.LogSomething($"Good Recruit = {jackal.GoodRecruit.name}");
@@ -2825,7 +2901,7 @@ namespace TownOfUsReworked.Classes
                         Role.GetRole(jackal.EvilRecruit).SubFactionColor = Colors.Cabal;
                         var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Target, SendOption.Reliable);
                         writer.Write((byte)TargetRPC.SetEvilRecruit);
-                        writer.Write(jackal.Player.PlayerId);
+                        writer.Write(jackal.PlayerId);
                         writer.Write(jackal.EvilRecruit.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
                         //Utils.LogSomething($"Evil Recruit = {jackal.EvilRecruit.name}");
@@ -2837,20 +2913,23 @@ namespace TownOfUsReworked.Classes
 
             foreach (var player in PlayerControl.AllPlayerControls)
             {
-                if ((!CustomGameOptions.MayorButton && player.Is(RoleEnum.Mayor)) || (!CustomGameOptions.SwapperButton && player.Is(RoleEnum.Swapper)) || (!CustomGameOptions.ActorButton
+                if ((!CustomGameOptions.MayorButton && player.Is(RoleEnum.Mayor)) || (!CustomGameOptions.SwapperButton && player.Is(AbilityEnum.Swapper)) || (!CustomGameOptions.ActorButton
                     && player.Is(RoleEnum.Actor)) || player.Is(ModifierEnum.Shy) || (!CustomGameOptions.ExecutionerButton && player.Is(RoleEnum.Executioner)) ||
                     (!CustomGameOptions.GuesserButton && player.Is(RoleEnum.Guesser)) || (!CustomGameOptions.JesterButton && player.Is(RoleEnum.Jester)) ||
-                    (!CustomGameOptions.PoliticianButton && player.Is(RoleEnum.Politician)))
+                    (!CustomGameOptions.PoliticianButton && player.Is(AbilityEnum.Politician)) || (!CustomGameOptions.DictatorButton && player.Is(RoleEnum.Dictator)) ||
+                    (!CustomGameOptions.MonarchButton && player.Is(RoleEnum.Monarch)))
                 {
                     player.RemainingEmergencies = 0;
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.RemoveMeetings, SendOption.Reliable);
+                    writer.Write(player.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
             }
         }
 
         public static void ResetEverything()
         {
-            Role.NobodyWins = false;
-            Objectifier.NobodyWins = false;
+            PlayerLayer.NobodyWins = false;
 
             Role.CrewWin = false;
             Role.SyndicateWin = false;
@@ -2951,6 +3030,10 @@ namespace TownOfUsReworked.Classes
             Utils.RecentlyKilled.Clear();
 
             DisconnectHandler.Disconnected.Clear();
+
+            CustomButton.AllButtons.Clear();
+
+            Ash.AllPiles.Clear();
         }
 
         public static void BeginRoleGen(List<GameData.PlayerInfo> infected)
@@ -3015,13 +3098,19 @@ namespace TownOfUsReworked.Classes
                     _ = new Engineer(player);
                     break;
                 case 5:
-                    _ = new Swapper(player);
+                    _ = new Monarch(player);
+                    break;
+                case 6:
+                    _ = new Dictator(player);
+                    break;
+                case 7:
+                    _ = new PlayerLayers.Roles.Collider(player);
                     break;
                 case 8:
                     _ = new Medic(player);
                     break;
                 case 9:
-                    _ = new Politician(player);
+                    _ = new Stalker(player);
                     break;
                 case 10:
                     _ = new Altruist(player);
@@ -3158,6 +3247,9 @@ namespace TownOfUsReworked.Classes
                 case 54:
                     _ = new Disguiser(player);
                     break;
+                case 55:
+                    _ = new Spellslinger(player);
+                    break;
                 case 56:
                     _ = new Godfather(player);
                     break;
@@ -3234,6 +3326,9 @@ namespace TownOfUsReworked.Classes
                 case 2:
                     _ = new Insider(player);
                     break;
+                case 3:
+                    _ = new Swapper(player);
+                    break;
                 case 4:
                     _ = new Multitasker(player);
                     break;
@@ -3260,6 +3355,9 @@ namespace TownOfUsReworked.Classes
                     break;
                 case 15:
                     _ = new ButtonBarry(player);
+                    break;
+                case 16:
+                    _ = new Politician(player);
                     break;
             }
         }
@@ -3365,59 +3463,39 @@ namespace TownOfUsReworked.Classes
 
         public static void AssignChaosDrive()
         {
-            if (CustomGameOptions.SyndicateCount == 0)
+            if (CustomGameOptions.SyndicateCount == 0 || !AmongUsClient.Instance.AmHost)
                 return;
 
-            var list = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Data.IsDead && !x.Data.Disconnected && x.Is(Faction.Syndicate)).ToList();
+            var list = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Data.IsDead && !x.Data.Disconnected && x.Is(Faction.Syndicate));
 
-            if (list.Count == 0)
+            if (!list.Any())
                 return;
 
-            if (!AmongUsClient.Instance.AmHost)
-                return;
-
-            if (Role.DriveHolder?.Data.IsDead == false && Role.DriveHolder?.Data.Disconnected == false)
-                return;
+            var all = PlayerControl.AllPlayerControls.Il2CppToSystem();
 
             #pragma warning disable
             if (Role.DriveHolder == null || Role.DriveHolder.Data.IsDead || Role.DriveHolder.Data.Disconnected)
             {
-                PlayerControl chosen = null;
-                list = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(RoleEnum.PromotedRebel) && !x.Data.IsDead && !x.Data.Disconnected).ToList();
+                var chosen = all.Find(x => !x.Data.IsDead && !x.Data.Disconnected && x.Is(RoleEnum.PromotedRebel));
 
-                if (list.Count > 0)
-                    chosen = list.Random();
-                else
+                if (chosen == null)
                 {
-                    list = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Data.IsDead && !x.Data.Disconnected && x.Is(RoleAlignment.SyndicateDisruption)).ToList();
+                    chosen = all.Find(x => !x.Data.IsDead && !x.Data.Disconnected && x.Is(RoleAlignment.SyndicateDisruption));
 
-                    if (list.Count > 0)
-                        chosen = list.Random();
-                    else
+                    if (chosen == null)
                     {
-                        list = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Data.IsDead && !x.Data.Disconnected && x.Is(RoleAlignment.SyndicateSupport)).ToList();
+                        chosen = all.Find(x => !x.Data.IsDead && !x.Data.Disconnected && x.Is(RoleAlignment.SyndicateSupport));
 
-                        if (list.Count > 0)
-                            chosen = list.Random();
-                        else
+                        if (chosen == null)
                         {
-                            list = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Data.IsDead && !x.Data.Disconnected && x.Is(RoleAlignment.SyndicatePower)).ToList();
+                            chosen = all.Find(x => !x.Data.IsDead && !x.Data.Disconnected && x.Is(RoleAlignment.SyndicatePower));
 
-                            if (list.Count > 0)
-                                chosen = list.Random();
-
-                            else
+                            if (chosen == null)
                             {
-                                list = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Data.IsDead && !x.Data.Disconnected && x.Is(RoleAlignment.SyndicateKill)).ToList();
+                                chosen = all.Find(x => !x.Data.IsDead && !x.Data.Disconnected && x.Is(RoleAlignment.SyndicateKill));
 
-                                if (list.Count > 0)
-                                    chosen = list.Random();
-                                else
-                                {
-                                    list = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(RoleEnum.Anarchist) || x.Is(RoleEnum.Rebel)
-                                        || x.Is(RoleEnum.Sidekick))).ToList();
-                                    chosen = list.Count > 0 ? list.Random() : null;
-                                }
+                                if (chosen == null)
+                                    chosen = all.Find(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(RoleEnum.Anarchist) || x.Is(RoleEnum.Rebel) || x.Is(RoleEnum.Sidekick)));
                             }
                         }
                     }

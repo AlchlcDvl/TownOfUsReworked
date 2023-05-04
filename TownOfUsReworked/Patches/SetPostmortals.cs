@@ -10,6 +10,7 @@ using TownOfUsReworked.Data;
 using System.Collections.Generic;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.CustomOptions;
+using TownOfUsReworked.PlayerLayers;
 
 namespace TownOfUsReworked.Patches
 {
@@ -74,6 +75,33 @@ namespace TownOfUsReworked.Patches
 
                 Reassign(exiled);
             }
+
+            foreach (var dict in Role.GetRoles<Dictator>(RoleEnum.Dictator))
+            {
+                if (dict.Revealed && dict.ToBeEjected.Count > 0)
+                {
+                    foreach (var exiled1 in dict.ToBeEjected)
+                    {
+                        var player = Utils.PlayerById(exiled1);
+
+                        if (player == null)
+                            continue;
+
+                        player.Exiled();
+                        var role = Role.GetRole(player);
+                        role.KilledBy = " By " + dict.PlayerName;
+                        role.DeathReason = DeathReasonEnum.Dictated;
+                    }
+
+                    if (dict.ToDie)
+                    {
+                        dict.Player.Exiled();
+                        dict.DeathReason = DeathReasonEnum.Suicide;
+                    }
+
+                    dict.Ejected = true;
+                }
+            }
         }
 
         public static void Reassign(PlayerControl player)
@@ -91,10 +119,9 @@ namespace TownOfUsReworked.Patches
                 if (jest.Player == player)
                 {
                     jest.VotedOut = true;
-                    jest.SetHaunted(MeetingHud.Instance);
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.JesterWin);
-                    writer.Write(jest.Player.PlayerId);
+                    writer.Write(jest.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
             }
@@ -110,10 +137,9 @@ namespace TownOfUsReworked.Patches
                 if (player == exe.TargetPlayer)
                 {
                     exe.TargetVotedOut = true;
-                    exe.SetDoomed(MeetingHud.Instance);
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.ExecutionerWin);
-                    writer.Write(exe.Player.PlayerId);
+                    writer.Write(exe.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
             }

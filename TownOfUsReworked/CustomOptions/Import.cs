@@ -21,7 +21,7 @@ namespace TownOfUsReworked.CustomOptions
         public List<OptionBehaviour> OldButtons;
         public List<CustomButtonOption> SlotButtons = new();
 
-        protected internal Import(int id) : base(id, MultiMenu.main, "Load Custom Settings") => Do = ToDo;
+        public Import(int id) : base(id, MultiMenu.main, "Load Custom Settings") => Do = ToDo;
 
         private List<OptionBehaviour> CreateOptions()
         {
@@ -49,9 +49,9 @@ namespace TownOfUsReworked.CustomOptions
             return options;
         }
 
-        protected internal void Cancel(Func<IEnumerator> flashCoro) => Coroutines.Start(CancelCoro(flashCoro));
+        public void Cancel(Func<IEnumerator> flashCoro) => Coroutines.Start(CancelCoro(flashCoro));
 
-        protected internal IEnumerator CancelCoro(Func<IEnumerator> flashCoro)
+        public IEnumerator CancelCoro(Func<IEnumerator> flashCoro)
         {
             var __instance = Object.FindObjectOfType<GameOptionsMenu>();
 
@@ -77,7 +77,7 @@ namespace TownOfUsReworked.CustomOptions
             yield return flashCoro();
         }
 
-        protected internal void ToDo()
+        public void ToDo()
         {
             SlotButtons.Clear();
             SlotButtons.Add(new CustomButtonOption(1, MultiMenu.external, "Slot 1", delegate { ImportSlot(1); }));
@@ -178,9 +178,6 @@ namespace TownOfUsReworked.CustomOptions
             Setting.Cast<ToggleOption>().TitleText.color = Color.white;
         }
 
-        private IEnumerator FlashWhite()
-        {
-            yield return null;
-        }
+        private IEnumerator FlashWhite() => null;
     }
 }

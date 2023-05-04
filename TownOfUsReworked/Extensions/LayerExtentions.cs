@@ -260,6 +260,8 @@ namespace TownOfUsReworked.Extensions
 
         public static bool IsShielded(this PlayerControl player) => Role.GetRoles<Medic>(RoleEnum.Medic).Any(role => player == role.ShieldedPlayer);
 
+        public static bool IsKnighted(this PlayerControl player) => Role.GetRoles<Monarch>(RoleEnum.Monarch).Any(role => role.Knighted.Contains(player.PlayerId));
+
         public static bool IsBlackmailed(this PlayerControl player)
         {
             var bmFlag = Role.GetRoles<Blackmailer>(RoleEnum.Blackmailer).Any(role => role.BlackmailedPlayer == player);
@@ -273,6 +275,8 @@ namespace TownOfUsReworked.Extensions
             role.RevivedRole?.RoleType == RoleEnum.Medic);
 
         public static bool IsShielded(this PlayerVoteArea player) => Utils.PlayerByVoteArea(player).IsShielded();
+
+        public static bool IsKnighted(this PlayerVoteArea player) => Utils.PlayerByVoteArea(player).IsKnighted();
 
         public static bool IsRetShielded(this PlayerVoteArea player) => Utils.PlayerByVoteArea(player).IsRetShielded();
 
@@ -449,6 +453,25 @@ namespace TownOfUsReworked.Extensions
 
         public static bool IsPostmortal(this PlayerControl player) => player.Is(RoleEnum.Revealer) || player.Is(RoleEnum.Phantom) || player.Is(RoleEnum.Ghoul) ||
             player.Is(RoleEnum.Banshee);
+
+        public static bool UnCaught(this PlayerControl player)
+        {
+            var role = Role.GetRole(player);
+
+            if (role == null)
+                return false;
+
+            if (player.Is(RoleEnum.Phantom))
+                return ((Phantom)role).Caught;
+            else if (player.Is(RoleEnum.Revealer))
+                return ((Revealer)role).Caught;
+            else if (player.Is(RoleEnum.Ghoul))
+                return ((Ghoul)role).Caught;
+            else if (player.Is(RoleEnum.Banshee))
+                return ((Banshee)role).Caught;
+
+            return false;
+        }
 
         public static bool CanVent(this PlayerControl player)
         {
@@ -885,8 +908,8 @@ namespace TownOfUsReworked.Extensions
             target.Player.RegenTask();
         }
 
-		public static void SetImpostor(this GameData.PlayerInfo player, bool impostor)
-		{
+        public static void SetImpostor(this GameData.PlayerInfo player, bool impostor)
+        {
             if (player == null)
                 return;
 
@@ -894,6 +917,6 @@ namespace TownOfUsReworked.Extensions
             var imp = player.IsDead ? RoleTypes.ImpostorGhost : RoleTypes.Impostor;
             var crew = player.IsDead ? RoleTypes.CrewmateGhost : RoleTypes.Crewmate;
             RoleManager.Instance.SetRole(player.Object, impostor ? imp : crew);
-		}
+        }
     }
 }

@@ -13,6 +13,7 @@ namespace TownOfUsReworked.Objects
     public class Footprint
     {
         public readonly PlayerControl Player;
+        public byte PlayerId => Player.PlayerId;
         private GameObject GObject;
         private SpriteRenderer Sprite;
         private readonly float Time2;

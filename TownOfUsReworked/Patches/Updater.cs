@@ -40,7 +40,7 @@ namespace TownOfUsReworked.Patches
                     var text = touButton.transform.GetChild(0).GetComponent<TMPro.TMP_Text>();
                     __instance.StartCoroutine(Effects.Lerp(0.1f, new Action<float>(_ => text.SetText(""))));
                     //Set popup stuff
-                    var man = DestroyableSingleton<TwitchManager>.Instance;
+                    var man = TwitchManager.Instance;
                     ModUpdater.InfoPopup = UnityEngine.Object.Instantiate(man.TwitchPopup);
                     ModUpdater.InfoPopup.TextAreaTMP.fontSize *= 0.7f;
                     ModUpdater.InfoPopup.TextAreaTMP.enableAutoSizing = false;
@@ -73,7 +73,7 @@ namespace TownOfUsReworked.Patches
                     var text = submergedButton.transform.GetChild(0).GetComponent<TMPro.TMP_Text>();
                     __instance.StartCoroutine(Effects.Lerp(0.1f, new Action<float>(_ => text.SetText(""))));
                     //Set popup stuff
-                    var man = DestroyableSingleton<TwitchManager>.Instance;
+                    var man = TwitchManager.Instance;
                     ModUpdater.InfoPopup = UnityEngine.Object.Instantiate(man.TwitchPopup);
                     ModUpdater.InfoPopup.TextAreaTMP.fontSize *= 0.7f;
                     ModUpdater.InfoPopup.TextAreaTMP.enableAutoSizing = false;

@@ -64,11 +64,11 @@ namespace TownOfUsReworked.Patches
                     ShortTitle = "Changes",
                     SubTitle = "no idea what im doing anymore lmao",
                     PinState = false,
-                    Date = "03.03.2023"
+                    Date = "30.04.2023"
                 };
 
                 var changelog = Utils.CreateText("Changelog");
-                changesAnnouncement.Text = $"<size=60%>{changelog}</size>";
+                changesAnnouncement.Text = $"<size=75%>{changelog}</size>";
 
                 __instance.StartCoroutine(Effects.Lerp(0.01f, new Action<float>((p) =>
                 {
@@ -98,6 +98,17 @@ namespace TownOfUsReworked.Patches
                     }
                 })));
             }));
+
+            __instance.StartCoroutine(Effects.Lerp(0.01f, new Action<float>(p =>
+            {
+                if (p == 1)
+                {
+                    InvButton = GameObject.Find("InventoryButton");
+
+                    foreach (var tf in InvButton.transform.parent.GetComponentsInChildren<Transform>())
+                        tf.localPosition = new Vector2(tf.localPosition.x * 0.8f, tf.localPosition.y);
+                }
+            })));
         }
     }
 }

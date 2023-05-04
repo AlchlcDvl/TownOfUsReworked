@@ -4,16 +4,17 @@ using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Data;
 using Hazel;
+using HarmonyLib;
+using UnityEngine;
+using TownOfUsReworked.PlayerLayers.Abilities;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers
 {
     public class Fanatic : Objectifier
     {
-        public Role former;
         public bool Turned;
-        public string Objective;
         public Faction Side = Faction.Crew;
-        public bool Betray => (Side == Faction.Intruder && ConstantVariables.LastImp) || (Side == Faction.Syndicate && ConstantVariables.LastSyn);
+        public bool Betray => ((Side == Faction.Intruder && ConstantVariables.LastImp) || (Side == Faction.Syndicate && ConstantVariables.LastSyn)) && !IsDead;
 
         public Fanatic(PlayerControl player) : base(player)
         {
@@ -31,7 +32,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             var fanaticRole = Role.GetRole(fanatic);
             var fanatic2 = GetObjectifier<Fanatic>(fanatic);
             fanaticRole.Faction = faction;
-            fanatic2.former = fanaticRole;
             fanatic2.Turned = true;
 
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Mystic))
@@ -39,22 +39,64 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
 
             if (faction == Faction.Syndicate)
             {
-                fanatic2.Objective = Role.SyndicateWinCon;
                 fanatic2.Color = Colors.Syndicate;
                 fanaticRole.IsSynFanatic = true;
                 fanaticRole.FactionColor = Colors.Syndicate;
+                fanaticRole.Objectives = Role.SyndicateWinCon;
             }
             else if (faction == Faction.Intruder)
             {
-                fanatic2.Objective = Role.IntrudersWinCon;
                 fanatic2.Color = Colors.Intruder;
                 fanaticRole.IsIntFanatic = true;
                 fanaticRole.FactionColor = Colors.Intruder;
+                fanaticRole.Objectives = Role.IntrudersWinCon;
             }
 
             fanatic2.Side = faction;
-            fanatic2.TaskText = "";
+            fanatic2.Hidden = false;
             fanatic.RegenTask();
+            var localRole = Role.GetRole(PlayerControl.LocalPlayer);
+
+            foreach (var snitch in Ability.GetAbilities<Snitch>(AbilityEnum.Snitch))
+            {
+                if (CustomGameOptions.SnitchSeesFanatic)
+                {
+                    if (snitch.TasksLeft <= CustomGameOptions.SnitchTasksRemaining && fanatic == PlayerControl.LocalPlayer)
+                    {
+                        var gameObj = new GameObject("SnitchArrow") { layer = 5 };
+                        var arrow = gameObj.AddComponent<ArrowBehaviour>();
+                        gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
+                        var renderer = gameObj.AddComponent<SpriteRenderer>();
+                        renderer.sprite = AssetManager.GetSprite("Arrow");
+                        arrow.image = renderer;
+                        localRole.AllArrows.Add(snitch.PlayerId, arrow);
+                    }
+                    else if (snitch.TasksDone && snitch.Player == PlayerControl.LocalPlayer)
+                    {
+                        var gameObj = new GameObject("SnitchEvilArrow") { layer = 5 };
+                        var arrow = gameObj.AddComponent<ArrowBehaviour>();
+                        gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
+                        var renderer = gameObj.AddComponent<SpriteRenderer>();
+                        renderer.sprite = AssetManager.GetSprite("Arrow");
+                        arrow.image = renderer;
+                        localRole.AllArrows.Add(PlayerControl.LocalPlayer.PlayerId, arrow);
+                    }
+                }
+            }
+
+            foreach (var revealer in Role.GetRoles<Revealer>(RoleEnum.Revealer))
+            {
+                if (revealer.Revealed && CustomGameOptions.RevealerRevealsFanatic && fanatic == PlayerControl.LocalPlayer)
+                {
+                    var gameObj = new GameObject("RevealerArrow") { layer = 5 };
+                    var arrow = gameObj.AddComponent<ArrowBehaviour>();
+                    gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
+                    var renderer = gameObj.AddComponent<SpriteRenderer>();
+                    renderer.sprite = AssetManager.GetSprite("Arrow");
+                    arrow.image = renderer;
+                    localRole.AllArrows.Add(revealer.PlayerId, arrow);
+                }
+            }
         }
 
         public void TurnBetrayer()

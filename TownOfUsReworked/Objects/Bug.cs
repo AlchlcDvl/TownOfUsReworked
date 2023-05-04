@@ -11,12 +11,13 @@ using Reactor.Utilities;
 namespace TownOfUsReworked.Objects
 {
     [HarmonyPatch]
-    public class Bug
+    public class Bug : Range
     {
         public Dictionary<byte, float> Players = new();
-        public Transform Transform;
 
-        public IEnumerator BugTimer()
+        public Bug(Vector2 position) : base(position, Colors.Operative, CustomGameOptions.BugRange, "Bug") => Coroutines.Start(Timer());
+
+        public override IEnumerator Timer()
         {
             while (Transform != null)
             {
@@ -25,29 +26,20 @@ namespace TownOfUsReworked.Objects
             }
         }
 
-        public void Stop()
+        public override void Update()
         {
-            Object.Destroy(Transform.gameObject);
-            Coroutines.Stop(BugTimer());
-        }
-
-        public void Update()
-        {
-            foreach (PlayerControl player in PlayerControl.AllPlayerControls)
+            foreach (var player in PlayerControl.AllPlayerControls)
             {
                 if (player.Data.IsDead)
                     continue;
 
-                if (Vector2.Distance(Transform.position, player.GetTruePosition()) < CustomGameOptions.BugRange + 0.05f)
+                if (Vector2.Distance(Transform.position, player.GetTruePosition()) < CustomGameOptions.BugRange)
                 {
                     if (!Players.ContainsKey(player.PlayerId))
                         Players.Add(player.PlayerId, 0f);
                 }
-                else
-                {
-                    if (Players.ContainsKey(player.PlayerId))
-                        Players.Remove(player.PlayerId);
-                }
+                else if (Players.ContainsKey(player.PlayerId))
+                    Players.Remove(player.PlayerId);
 
                 var entry = player;
 
@@ -55,7 +47,7 @@ namespace TownOfUsReworked.Objects
                 {
                     Players[entry.PlayerId] += Time.deltaTime;
 
-                    if (Players[entry.PlayerId] > CustomGameOptions.MinAmountOfTimeInBug)
+                    if (Players[entry.PlayerId] >= CustomGameOptions.MinAmountOfTimeInBug)
                     {
                         foreach (var t in Role.GetRoles<Operative>(RoleEnum.Operative))
                         {
@@ -70,7 +62,7 @@ namespace TownOfUsReworked.Objects
 
                         foreach (var t in Role.GetRoles<Retributionist>(RoleEnum.Retributionist))
                         {
-                            if (t.RevivedRole?.RoleType != RoleEnum.Operative)
+                            if (!t.IsOP)
                                 continue;
 
                             if (t.Bugs.Contains(this))
@@ -84,6 +76,12 @@ namespace TownOfUsReworked.Objects
                     }
                 }
             }
+        }
+
+        public static void Clear(List<Bug> obj)
+        {
+            foreach (var t in obj)
+                t.Destroy();
         }
     }
 }

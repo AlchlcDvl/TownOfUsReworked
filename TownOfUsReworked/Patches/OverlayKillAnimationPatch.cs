@@ -5,9 +5,9 @@ using TownOfUsReworked.CustomOptions;
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch(typeof(OverlayKillAnimation), nameof(OverlayKillAnimation.Initialize))]
-    static class OverlayKillAnimationPatch
+    public static class OverlayKillAnimationPatch
     {
-        static int currentOutfitTypeCache;
+        private static int currentOutfitTypeCache;
 
         public static void Prefix(GameData.PlayerInfo kInfo)
         {

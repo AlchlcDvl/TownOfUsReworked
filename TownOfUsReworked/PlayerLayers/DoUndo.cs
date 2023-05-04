@@ -395,6 +395,18 @@ namespace TownOfUsReworked.PlayerLayers
                     ss.UnShapeshift();
             }
 
+            foreach (var body in Object.FindObjectsOfType<DeadBody>())
+            {
+                var backColor = IsCamoed ? Palette.PlayerColors[6] : Palette.PlayerColors[Utils.PlayerByBody(body).GetDefaultOutfit().ColorId];
+                var bodyColor = IsCamoed ? Palette.ShadowColors[6] : Palette.ShadowColors[Utils.PlayerByBody(body).GetDefaultOutfit().ColorId];
+
+                foreach (var renderer in body.bodyRenderers)
+                {
+                    renderer.material.SetColor("_BackColor", backColor);
+                    renderer.material.SetColor("_BodyColor", bodyColor);
+                }
+            }
+
             if (CustomGameOptions.ColourblindComms)
             {
                 if (ShipStatus.Instance)

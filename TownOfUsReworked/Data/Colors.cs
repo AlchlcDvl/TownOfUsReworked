@@ -33,7 +33,6 @@ namespace TownOfUsReworked.Data
         public static Color32 Mayor => new(112, 79, 168, 255); //#704FA8FF
         public static Color32 Vigilante => new(255, 255, 0, 255); //#FFFF00FF
         public static Color32 Engineer => new(255, 166, 10, 255); //#FFA60AFF
-        public static Color32 Swapper => new(102, 230, 102, 255); //#66E666FF
         public static Color32 Medic => new(0, 102, 0, 255); //#006600FF
         public static Color32 Sheriff => new(255, 204, 128, 255); //#FFCC80FF
         public static Color32 Altruist => new(102, 0, 0, 255); //#660000FF
@@ -53,6 +52,8 @@ namespace TownOfUsReworked.Data
         public static Color32 Retributionist => new(141, 15, 140, 255); //#8D0F8CFF
         public static Color32 Chameleon => new(84, 17, 248, 255); //#5411F8FF
         public static Color32 Seer => new(113, 54, 138, 255); //#71368AFF
+        public static Color32 Monarch => new(255, 0, 78, 255); //#FF004EFF
+        public static Color32 Dictator => new(0, 203, 151, 255); //#00CB97FF
 
         //Neutral Colors
         public static Color32 Jester => new(247, 179, 218, 255); //#F7B3DAFF
@@ -107,12 +108,14 @@ namespace TownOfUsReworked.Data
         public static Color32 Rebel => new(255, 252, 206, 255); //#FFFCCEFF
         public static Color32 Sidekick => new(151, 156, 159, 255); //#979C9FFF
         public static Color32 Concealer => new(192, 37, 37, 255); //#C02525FF
-        public static Color32 Shapeshifter => new(49, 28, 69, 255); //#311C45FF
+        public static Color32 Shapeshifter => new(45, 255, 0, 255); //#2DFF00FF
         public static Color32 Bomber => new(201, 204, 63, 255); //#C9CC3FFF
         public static Color32 Poisoner => new(181, 0, 76, 255); //#B5004CFF
         public static Color32 Crusader => new(223, 122, 232, 255); //#DF7AE8FF
         public static Color32 Banshee => new(230, 126, 34, 255); //#E67E22FF
-        public static Color32 Politician => new(204, 163, 204, 255); //#CCA3CCFF
+        public static Color32 Collider => new(179, 69, 255, 255); //#B345FFFF
+        public static Color32 Stalker => new(126, 77, 0, 255); //#7E4D00FF
+        public static Color32 Spellslinger => new(0, 40, 245, 255); //#0028F5FF
 
         //Modifier Colors
         public static Color32 Bait => new(0, 179, 179, 255); //#00B3B3FF
@@ -141,6 +144,8 @@ namespace TownOfUsReworked.Data
         public static Color32 Multitasker => new(255, 128, 77, 255); //#FF804DFF
         public static Color32 Ruthless => new(33, 96, 221, 255); //#2160DDFF
         public static Color32 Ninja => new(168, 67, 0, 0); //#A84300FF
+        public static Color32 Politician => new(204, 163, 204, 255); //#CCA3CCFF
+        public static Color32 Swapper => new(102, 230, 102, 255); //#66E666FF
 
         //Objectifier Colors
         public static Color32 Lovers => new(255, 102, 204, 255); //#FF66CCFF
@@ -163,12 +168,12 @@ namespace TownOfUsReworked.Data
         public static Color32 Abilities => new(32, 102, 148, 255); //#206694FF
 
         //Color Storage
-        //#dcee85 #6c29ab #800000 #808000 #008000 #800080 #000080 #2dff00 #e74c3c #992d22 #00FFFD #917ac0 #Eac1d2 #286e58 #db4f20 #abd432 #2e3b97 #ffd100 #fffcce #40b4ff #a82626 #8ff731
+        //#dcee85 #6c29ab #800000 #808000 #008000 #800080 #000080 #e74c3c #992d22 #00FFFD #917ac0 #Eac1d2 #286e58 #db4f20 #abd432 #2e3b97 #ffd100 #fffcce #40b4ff #a82626 #8ff731 #942b3b
         //#4e4e4e #fffead #1abc9c #2ecc71 #1f8b4c #3498db #ad1457 #c27c0e #ffd2fb #ff7900 #805bc4 #95a5a6 #979c9f #888888 #ff7272 #f25ff1 #FF00FF #916640 #1AFF74 #2672FF #8637C2 #3769FE
         //#6a1515 #569d29 #f1612b #7d86e1 #612bef #e7dae2 #F6AAB7 #EC62A5 #78c689 #e1c849 #fccc52 #6b2d2a #aab43e #FCBA03 #ff351f #F8CD46 #FF4D00 #7EFBC2 #4d4d4d #38b553 #0000FF #0000A7
-        //#0028F5 #7E4D00 #1E300B
+        //#1E300B #06DF0C #F3A6D3 #939593 #FB9327 #0437EF #6697FF #9B7038 #5865F2 #f25e75
 
         //Symbol Storage
-        //⟡ ☆ ♡ ♧ ♤ ø ▶ ❥ ✔ ε Γ ι κ ν σ τ υ φ ψ Ψ ✧ ¢
+        //⟡ ☆ ♡ ♧ ♤ ø ▶ ❥ ✔ ε Γ ι ν σ τ υ φ ψ Ψ ✧ ¢
     }
 }

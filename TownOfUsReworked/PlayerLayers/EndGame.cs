@@ -1,5 +1,4 @@
 using HarmonyLib;
-using TownOfUsReworked.BetterMaps.Airship;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.Objects;
 
@@ -14,16 +13,6 @@ namespace TownOfUsReworked.PlayerLayers
             {
                 Footprint.DestroyAll(role);
                 role.AllPrints.Clear();
-            }
-        }
-
-        [HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.ExitGame))]
-        public static class EndGamePatch
-        {
-            public static void Prefix()
-            {
-                Reset();
-                SpawnInMinigamePatch.ResetGlobalVariable();
             }
         }
 

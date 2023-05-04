@@ -44,26 +44,7 @@ namespace TownOfUsReworked.Classes
 
         public static SpriteRenderer MyRend(this PlayerControl p) => p.cosmetics.currentBodySprite.BodySprite;
 
-        public static KeyValuePair<byte, int> MaxPair(this Dictionary<byte, int> self, out bool tie)
-        {
-            tie = true;
-            var result = new KeyValuePair<byte, int>(byte.MaxValue, int.MinValue);
-
-            foreach (var keyValuePair in self)
-            {
-                if (keyValuePair.Value > result.Value)
-                {
-                    result = keyValuePair;
-                    tie = false;
-                }
-                else if (keyValuePair.Value == result.Value)
-                    tie = true;
-            }
-
-            return result;
-        }
-
-        public static VisualAppearance GetDefaultAppearance(this PlayerControl player) => new() { Player = player };
+        public static VisualAppearance GetDefaultAppearance(this PlayerControl player) => new(player);
 
         public static bool TryGetAppearance(this PlayerControl player, IVisualAlteration modifier, out VisualAppearance appearance)
         {
@@ -238,6 +219,8 @@ namespace TownOfUsReworked.Classes
 
         public static PlayerControl PlayerById(byte id) => PlayerControl.AllPlayerControls.ToArray().ToList().Find(x => x.PlayerId == id);
 
+        public static PlayerVoteArea VoteAreaById(byte id) => MeetingHud.Instance.playerStates.ToList().Find(x => x.TargetPlayerId == id);
+
         public static DeadBody BodyById(byte id) => Object.FindObjectsOfType<DeadBody>().ToArray().ToList().Find(x => x.ParentId == id);
 
         public static PlayerControl PlayerByBody(DeadBody body) => PlayerById(body.ParentId);
@@ -309,7 +292,7 @@ namespace TownOfUsReworked.Classes
             if (!data.IsDead)
             {
                 if (killer == PlayerControl.LocalPlayer)
-                    SoundManager.Instance.PlaySound(PlayerControl.LocalPlayer.KillSfx, false, 1f);
+                    SoundManager.Instance.PlaySound(PlayerControl.LocalPlayer.KillSfx, false);
 
                 target.gameObject.layer = LayerMask.NameToLayer("Ghost");
                 target.Visible = false;
@@ -391,6 +374,9 @@ namespace TownOfUsReworked.Classes
                 else if (target.Is(ModifierEnum.Bait))
                     BaitReport(killer, target);
 
+                if (killer.Is(AbilityEnum.Politician))
+                    Ability.GetAbility<Politician>(killer).VoteBank++;
+
                 if (target.Is(RoleEnum.Troll))
                 {
                     var troll = Role.GetRole<Troll>(target);
@@ -444,16 +430,20 @@ namespace TownOfUsReworked.Classes
                 if (item == null)
                     continue;
 
-                Object.Destroy(item);
+                item.Destroy();
 
                 if (item.gameObject == null)
-                    return;
+                    continue;
 
-                Object.Destroy(item.gameObject);
+                item.gameObject.Destroy();
             }
         }
 
-        public static void EndGame(GameOverReason reason = GameOverReason.ImpostorByVote, bool showAds = false) => GameManager.Instance.RpcEndGame(reason, showAds);
+        public static void EndGame()
+        {
+            Ash.DestroyAll();
+            GameManager.Instance.RpcEndGame(GameOverReason.ImpostorByVote, false);
+        }
 
         public static object TryCast(this Il2CppObjectBase self, Type type) => AccessTools.Method(self.GetType(), nameof(Il2CppObjectBase.TryCast)).MakeGenericMethod(type).Invoke(self,
             Array.Empty<object>());
@@ -526,7 +516,7 @@ namespace TownOfUsReworked.Classes
                 {
                     if (target.IsShielded() && (toKill || toConvert))
                     {
-                        var medic = target.GetMedic().Player.PlayerId;
+                        var medic = target.GetMedic().PlayerId;
                         var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable);
                         writer.Write(medic);
                         writer.Write(target.PlayerId);
@@ -536,7 +526,7 @@ namespace TownOfUsReworked.Classes
                     }
                     else if (target.IsRetShielded() && (toKill || toConvert))
                     {
-                        var medic = target.GetRetMedic().Player.PlayerId;
+                        var medic = target.GetRetMedic().PlayerId;
                         var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable);
                         writer.Write(medic);
                         writer.Write(target.PlayerId);
@@ -549,7 +539,7 @@ namespace TownOfUsReworked.Classes
                 }
                 else if (player.IsShielded() && !target.Is(AbilityEnum.Ruthless))
                 {
-                    var medic = player.GetMedic().Player.PlayerId;
+                    var medic = player.GetMedic().PlayerId;
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable);
                     writer.Write(medic);
                     writer.Write(player.PlayerId);
@@ -559,7 +549,7 @@ namespace TownOfUsReworked.Classes
                 }
                 else if (player.IsRetShielded() && !target.Is(AbilityEnum.Ruthless))
                 {
-                    var medic = target.GetRetMedic().Player.PlayerId;
+                    var medic = target.GetRetMedic().PlayerId;
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable);
                     writer.Write(medic);
                     writer.Write(target.PlayerId);
@@ -574,7 +564,7 @@ namespace TownOfUsReworked.Classes
 
                 if (target.IsShielded() && (toKill || toConvert))
                 {
-                    var medic = target.GetMedic().Player.PlayerId;
+                    var medic = target.GetMedic().PlayerId;
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable);
                     writer.Write(medic);
                     writer.Write(target.PlayerId);
@@ -584,7 +574,7 @@ namespace TownOfUsReworked.Classes
                 }
                 else if (target.IsRetShielded() && (toKill || toConvert))
                 {
-                    var medic = target.GetRetMedic().Player.PlayerId;
+                    var medic = target.GetRetMedic().PlayerId;
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable);
                     writer.Write(medic);
                     writer.Write(target.PlayerId);
@@ -599,7 +589,7 @@ namespace TownOfUsReworked.Classes
                 {
                     if (target.IsShielded() && (toKill || toConvert))
                     {
-                        var medic = target.GetMedic().Player.PlayerId;
+                        var medic = target.GetMedic().PlayerId;
                         var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable);
                         writer.Write(medic);
                         writer.Write(target.PlayerId);
@@ -609,7 +599,7 @@ namespace TownOfUsReworked.Classes
                     }
                     else if (target.IsRetShielded() && (toKill || toConvert))
                     {
-                        var medic = target.GetRetMedic().Player.PlayerId;
+                        var medic = target.GetRetMedic().PlayerId;
                         var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable);
                         writer.Write(medic);
                         writer.Write(target.PlayerId);
@@ -622,7 +612,7 @@ namespace TownOfUsReworked.Classes
                 }
                 else if (player.IsShielded() && !target.Is(AbilityEnum.Ruthless))
                 {
-                    var medic = player.GetMedic().Player.PlayerId;
+                    var medic = player.GetMedic().PlayerId;
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable);
                     writer.Write(medic);
                     writer.Write(player.PlayerId);
@@ -632,7 +622,7 @@ namespace TownOfUsReworked.Classes
                 }
                 else if (player.IsRetShielded() && !target.Is(AbilityEnum.Ruthless))
                 {
-                    var medic = player.GetRetMedic().Player.PlayerId;
+                    var medic = player.GetRetMedic().PlayerId;
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable);
                     writer.Write(medic);
                     writer.Write(player.PlayerId);
@@ -655,7 +645,7 @@ namespace TownOfUsReworked.Classes
 
                 if (target.IsShielded() && (toKill || toConvert))
                 {
-                    var medic = target.GetMedic().Player.PlayerId;
+                    var medic = target.GetMedic().PlayerId;
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable);
                     writer.Write(medic);
                     writer.Write(target.PlayerId);
@@ -665,7 +655,7 @@ namespace TownOfUsReworked.Classes
                 }
                 else if (target.IsRetShielded() && (toKill || toConvert))
                 {
-                    var medic = target.GetRetMedic().Player.PlayerId;
+                    var medic = target.GetRetMedic().PlayerId;
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable);
                     writer.Write(medic);
                     writer.Write(target.PlayerId);
@@ -677,20 +667,20 @@ namespace TownOfUsReworked.Classes
             else if (target.IsShielded() && (toKill || toConvert) && !bypass)
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable);
-                writer.Write(target.GetMedic().Player.PlayerId);
+                writer.Write(target.GetMedic().PlayerId);
                 writer.Write(target.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 fullReset = CustomGameOptions.ShieldBreaks;
-                Medic.BreakShield(target.GetMedic().Player.PlayerId, target.PlayerId, CustomGameOptions.ShieldBreaks);
+                Medic.BreakShield(target.GetMedic().PlayerId, target.PlayerId, CustomGameOptions.ShieldBreaks);
             }
             else if (target.IsRetShielded() && (toKill || toConvert) && !bypass)
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable);
-                writer.Write(target.GetRetMedic().Player.PlayerId);
+                writer.Write(target.GetRetMedic().PlayerId);
                 writer.Write(target.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 fullReset = CustomGameOptions.ShieldBreaks;
-                Retributionist.BreakShield(target.GetMedic().Player.PlayerId, target.PlayerId, CustomGameOptions.ShieldBreaks);
+                Retributionist.BreakShield(target.GetMedic().PlayerId, target.PlayerId, CustomGameOptions.ShieldBreaks);
             }
             else if (target.IsVesting() && (toKill || toConvert) && !bypass)
                 survReset = true;
@@ -716,8 +706,8 @@ namespace TownOfUsReworked.Classes
                         RpcMurderPlayer(player, target);
                 }
 
-                if (toConvert && RoleGen.Convertible <= 0)
-                        RpcMurderPlayer(player, target, DeathReasonEnum.Failed);
+                if (toConvert && RoleGen.Convertible <= 1)
+                    RpcMurderPlayer(player, target, DeathReasonEnum.Failed);
 
                 abilityUsed = true;
                 fullReset = true;
@@ -841,8 +831,7 @@ namespace TownOfUsReworked.Classes
             try
             {
                 var tex = CreatTexture(name);
-                var sname = name.Replace(".png", "").Replace($"{TownOfUsReworked.Sounds}", "").Replace($"{TownOfUsReworked.Buttons}", "");
-                var sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f), AssetManager.GetSize(sname));
+                var sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f), 100);
                 sprite.hideFlags |= HideFlags.HideAndDontSave | HideFlags.DontSaveInEditor;
                 sprite.DontDestroy();
                 return sprite;
@@ -853,6 +842,65 @@ namespace TownOfUsReworked.Classes
                 return null;
             }
         }
+
+        public static Sprite CreateSprite2(string name)
+        {
+            try
+            {
+                name += ".png";
+                var tex = new Texture2D(0, 0, TextureFormat.RGBA32, Texture.GenerateAllMips, false, IntPtr.Zero);
+                var imageStream = TownOfUsReworked.Executing.GetManifestResourceStream(name);
+                var img = imageStream.ReadFully();
+                LoadImage(tex, img, true);
+                tex.DontDestroy();
+                var sprite = Sprite.Create(tex, new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f), 100);
+                sprite.DontDestroy();
+                return sprite;
+            }
+            catch
+            {
+                LogSomething($"Error Loading {name}");
+                return null;
+            }
+        }
+
+        /*public static Sprite CreateSprite3(string name)
+        {
+            try
+            {
+                var stream = TownOfUsReworked.Assembly.GetManifestResourceStream($"{TownOfUsReworked.Hats}{name}.png");
+                var mainImg = stream.ReadFully();
+                var tex2D = new Texture2D(1, 1, TextureFormat.ARGB32, false);
+                LoadImage(tex2D, mainImg, false);
+                var sprite = Sprite.Create(tex2D, new Rect(0, 0, tex2D.width, tex2D.height), new Vector2(0.5f, 0.5f), 100);
+                sprite.DontDestroy();
+                return sprite;
+            }
+            catch
+            {
+                LogSomething($"Error Loading {name}");
+                return null;
+            }
+        }
+
+        public static Sprite CreateSprite4(string name)
+        {
+            try
+            {
+                var stream = TownOfUsReworked.Assembly.GetManifestResourceStream($"{TownOfUsReworked.Visors}{name}.png");
+                var mainImg = stream.ReadFully();
+                var tex2D = new Texture2D(1, 1, TextureFormat.ARGB32, false);
+                LoadImage(tex2D, mainImg, false);
+                var sprite = Sprite.Create(tex2D, new Rect(0, 0, tex2D.width, tex2D.height), new Vector2(0.5f, 0.5f), 100);
+                sprite.DontDestroy();
+                return sprite;
+            }
+            catch
+            {
+                LogSomething($"Error Loading {name}");
+                return null;
+            }
+        }*/
 
         public static void LoadImage(Texture2D tex, byte[] data, bool markNonReadable)
         {
@@ -869,16 +917,15 @@ namespace TownOfUsReworked.Classes
                 var stream = TownOfUsReworked.Executing.GetManifestResourceStream(path);
                 var length = stream.Length;
                 var byteTexture = new Il2CppStructArray<byte>(length);
-                stream.Read(new Span<byte>(IntPtr.Add(byteTexture.Pointer, IntPtr.Size * 4).ToPointer(), (int) length));
+                stream.Read(new Span<byte>(IntPtr.Add(byteTexture.Pointer, IntPtr.Size * 4).ToPointer(), (int)length));
                 ImageConversion.LoadImage(texture, byteTexture, false);
                 return texture;
             }
             catch
             {
-                System.Console.WriteLine("Error loading texture from resources: " + path);
+                LogSomething("Error loading texture from resources: " + path);
+                return null;
             }
-
-            return null;
         }
 
         public static void LogSomething(object message) => PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage(message);
@@ -992,157 +1039,12 @@ namespace TownOfUsReworked.Classes
             return name;
         }
 
-        public static void Flash(Color color, string message = "", float duration = 1f, float size = 100f)
-        {
-            if (!HudManager.Instance || HudManager.Instance.FullScreen == null)
-                return;
-
-            HudManager.Instance.FullScreen.gameObject.SetActive(true);
-            HudManager.Instance.FullScreen.enabled = true;
-
-            // Message Text
-            var messageText = Object.Instantiate(HudManager.Instance.KillButton.cooldownTimerText, HudManager.Instance.transform);
-            messageText.text = $"<size={size}%>{message}</size>";
-            messageText.enableWordWrapping = false;
-            messageText.transform.localScale = Vector3.one * 0.5f;
-            messageText.transform.localPosition = new Vector3(0f, 0f, 0f);
-            messageText.gameObject.SetActive(true);
-            HudManager.Instance.StartCoroutine(Effects.Lerp(duration, new Action<float>((p) =>
-            {
-                var fullscreen = HudManager.Instance.FullScreen;
-
-                if (p < 0.5)
-                {
-                    if (fullscreen != null)
-                        fullscreen.color = new Color(color.r, color.g, color.b, Mathf.Clamp01(p * 1.5f));
-                }
-                else if (fullscreen != null)
-                    fullscreen.color = new Color(color.r, color.g, color.b, Mathf.Clamp01((1 - p) * 1.5f));
-                if (p == 1f)
-                {
-                    if (fullscreen != null)
-                        fullscreen.enabled = false;
-
-                    messageText.gameObject.Destroy();
-                }
-            })));
-
-            var fs = false;
-
-            switch (GameOptionsManager.Instance.currentNormalGameOptions.MapId)
-            {
-                case 0:
-                case 1:
-                case 3:
-                    var reactor1 = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
-                    var oxygen1 = ShipStatus.Instance.Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
-                    fs = reactor1.IsActive || oxygen1.IsActive;
-                    break;
-
-                case 2:
-                    var seismic = ShipStatus.Instance.Systems[SystemTypes.Laboratory].Cast<ReactorSystemType>();
-                    fs = seismic.IsActive;
-                    break;
-
-                case 4:
-                    var reactor = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<HeliSabotageSystem>();
-                    fs = reactor.IsActive;
-                    break;
-
-                case 5:
-                    fs = PlayerControl.LocalPlayer.myTasks.ToArray().Any(x => x.TaskType == SubmergedCompatibility.RetrieveOxygenMask);
-                    break;
-
-                case 6:
-                    var reactor3 = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
-                    var oxygen3 = ShipStatus.Instance.Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
-                    var seismic2 = ShipStatus.Instance.Systems[SystemTypes.Laboratory].Cast<ReactorSystemType>();
-                    fs = reactor3.IsActive || seismic2.IsActive || oxygen3.IsActive;
-                    break;
-            }
-
-            HudManager.Instance.FullScreen.enabled = fs;
-        }
-
-        public static IEnumerator FlashCoro(Color color, string message = "", float duration = 1f, float size = 100f)
-        {
-            if (!HudManager.Instance || HudManager.Instance.FullScreen == null)
-                yield break;
-
-            HudManager.Instance.FullScreen.gameObject.SetActive(true);
-            HudManager.Instance.FullScreen.enabled = true;
-
-            // Message Text
-            var messageText = Object.Instantiate(HudManager.Instance.KillButton.cooldownTimerText, HudManager.Instance.transform);
-            messageText.text = $"<size={size}%>{message}</size>";
-            messageText.enableWordWrapping = false;
-            messageText.transform.localScale = Vector3.one * 0.5f;
-            messageText.transform.localPosition = new Vector3(0f, 0f, 0f);
-            messageText.gameObject.SetActive(true);
-            HudManager.Instance.StartCoroutine(Effects.Lerp(duration, new Action<float>((p) =>
-            {
-                var fullscreen = HudManager.Instance.FullScreen;
-
-                if (p < 0.5)
-                {
-                    if (fullscreen != null)
-                        fullscreen.color = new Color(color.r, color.g, color.b, Mathf.Clamp01(p * 1.5f));
-                }
-                else if (fullscreen != null)
-                    fullscreen.color = new Color(color.r, color.g, color.b, Mathf.Clamp01((1 - p) * 1.5f));
-
-                if (p == 1f)
-                {
-                    if (fullscreen != null)
-                        fullscreen.enabled = false;
-
-                    messageText.gameObject.Destroy();
-                }
-            })));
-
-            var fs = false;
-
-            switch (GameOptionsManager.Instance.currentNormalGameOptions.MapId)
-            {
-                case 0:
-                case 1:
-                case 3:
-                    var reactor1 = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
-                    var oxygen1 = ShipStatus.Instance.Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
-                    fs = reactor1.IsActive || oxygen1.IsActive;
-                    break;
-
-                case 2:
-                    var seismic = ShipStatus.Instance.Systems[SystemTypes.Laboratory].Cast<ReactorSystemType>();
-                    fs = seismic.IsActive;
-                    break;
-
-                case 4:
-                    var reactor = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<HeliSabotageSystem>();
-                    fs = reactor.IsActive;
-                    break;
-
-                case 5:
-                    fs = PlayerControl.LocalPlayer.myTasks.ToArray().Any(x => x.TaskType == SubmergedCompatibility.RetrieveOxygenMask);
-                    break;
-
-                case 6:
-                    var reactor3 = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
-                    var oxygen3 = ShipStatus.Instance.Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
-                    var seismic2 = ShipStatus.Instance.Systems[SystemTypes.Laboratory].Cast<ReactorSystemType>();
-                    fs = reactor3.IsActive || seismic2.IsActive || oxygen3.IsActive;
-                    break;
-            }
-
-            HudManager.Instance.FullScreen.enabled = fs;
-        }
-
         public static IEnumerator FadeBody(DeadBody body)
         {
             if (body == null)
                 yield break;
 
-            foreach(var renderer in body.bodyRenderers)
+            foreach (var renderer in body.bodyRenderers)
             {
                 var backColor = renderer.material.GetColor(Shader.PropertyToID("_BackColor"));
                 var bodyColor = renderer.material.GetColor(Shader.PropertyToID("_BodyColor"));
@@ -1217,7 +1119,9 @@ namespace TownOfUsReworked.Classes
             }
         }
 
-        public static IEnumerator FlashCoroutine(Color color)
+        public static void Flash(Color color, float duration = 1f, string message = "", float size = 100f) => Coroutines.Start(FlashCoroutine(color, duration, message, size));
+
+        public static IEnumerator FlashCoroutine(Color color, float duration, string message, float size)
         {
             color.a = 0.3f;
 
@@ -1229,51 +1133,61 @@ namespace TownOfUsReworked.Classes
                 fullscreen.color = color;
             }
 
-            yield return new WaitForSeconds(1f);
+            // Message Text
+            var messageText = Object.Instantiate(HudManager.Instance.KillButton.cooldownTimerText, HudManager.Instance.transform);
+            messageText.text = $"<size={size}%>{message}</size>";
+            messageText.enableWordWrapping = false;
+            messageText.transform.localScale = Vector3.one * 0.5f;
+            messageText.transform.localPosition = new(0, 0, 0);
+            messageText.gameObject.SetActive(true);
+
+            yield return new WaitForSeconds(duration);
 
             if (HudManager.InstanceExists && HudManager.Instance.FullScreen)
             {
                 var fullscreen = HudManager.Instance.FullScreen;
 
                 if (fullscreen.color.Equals(color))
-                {
                     fullscreen.color = new Color(1f, 0f, 0f, 0.37254903f);
-                    var fs = false;
 
-                    switch (GameOptionsManager.Instance.currentNormalGameOptions.MapId)
-                    {
-                        case 0:
-                        case 1:
-                        case 3:
-                            var reactor1 = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
-                            var oxygen1 = ShipStatus.Instance.Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
-                            fs = reactor1.IsActive || oxygen1.IsActive;
-                            break;
+                var fs = false;
 
-                        case 2:
-                            var seismic = ShipStatus.Instance.Systems[SystemTypes.Laboratory].Cast<ReactorSystemType>();
-                            fs = seismic.IsActive;
-                            break;
+                switch (GameOptionsManager.Instance.currentNormalGameOptions.MapId)
+                {
+                    case 0:
+                    case 1:
+                    case 3:
+                        var reactor1 = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
+                        var oxygen1 = ShipStatus.Instance.Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
+                        fs = reactor1.IsActive || oxygen1.IsActive;
+                        break;
 
-                        case 4:
-                            var reactor = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<HeliSabotageSystem>();
-                            fs = reactor.IsActive;
-                            break;
+                    case 2:
+                        var seismic = ShipStatus.Instance.Systems[SystemTypes.Laboratory].Cast<ReactorSystemType>();
+                        fs = seismic.IsActive;
+                        break;
 
-                        case 5:
-                            fs = PlayerControl.LocalPlayer.myTasks.ToArray().Any(x => x.TaskType == SubmergedCompatibility.RetrieveOxygenMask);
-                            break;
+                    case 4:
+                        var reactor = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<HeliSabotageSystem>();
+                        fs = reactor.IsActive;
+                        break;
 
-                        case 6:
-                            var reactor3 = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
-                            var oxygen3 = ShipStatus.Instance.Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
-                            var seismic2 = ShipStatus.Instance.Systems[SystemTypes.Laboratory].Cast<ReactorSystemType>();
-                            fs = reactor3.IsActive || seismic2.IsActive || oxygen3.IsActive;
-                            break;
-                    }
+                    case 5:
+                        fs = PlayerControl.LocalPlayer.myTasks.ToArray().Any(x => x.TaskType == SubmergedCompatibility.RetrieveOxygenMask);
+                        break;
 
-                    fullscreen.enabled = fs;
+                    case 6:
+                        var reactor3 = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
+                        var oxygen3 = ShipStatus.Instance.Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
+                        var seismic2 = ShipStatus.Instance.Systems[SystemTypes.Laboratory].Cast<ReactorSystemType>();
+                        fs = reactor3.IsActive || seismic2.IsActive || oxygen3.IsActive;
+                        break;
                 }
+
+                fullscreen.enabled = fs;
+                fullscreen.gameObject.active = fs;
+                messageText.gameObject.SetActive(false);
+                messageText.gameObject.Destroy();
             }
         }
 
@@ -1298,7 +1212,7 @@ namespace TownOfUsReworked.Classes
         {
             if (coordinates.ContainsKey(PlayerControl.LocalPlayer.PlayerId))
             {
-                Flash(Colors.Warper, "You were warped to an unknown location!");
+                Flash(Colors.Warper);
 
                 if (Minigame.Instance)
                     Minigame.Instance.Close();
@@ -1536,16 +1450,23 @@ namespace TownOfUsReworked.Classes
         public static void Revive(DeadBody body)
         {
             var player = PlayerById(body.ParentId);
-            body?.gameObject.Destroy();
             player.Revive();
             var position = body.TruePosition;
             Murder.KilledPlayers.Remove(Murder.KilledPlayers.Find(x => x.PlayerId == player.PlayerId));
+            RecentlyKilled.Remove(player);
+            ReassignPostmortals(player);
+            player.Data.SetImpostor(player.Data.IsImpostor());
             player.NetTransform.SnapTo(new Vector2(position.x, position.y + 0.3636f));
+
+            if (SubmergedCompatibility.IsSubmerged() && PlayerControl.LocalPlayer == player)
+                SubmergedCompatibility.ChangeFloor(player.transform.position.y > -7);
 
             if (player.Data.IsImpostor())
                 RoleManager.Instance.SetRole(player, RoleTypes.Impostor);
             else
                 RoleManager.Instance.SetRole(player, RoleTypes.Crewmate);
+
+            body?.gameObject.Destroy();
         }
 
         public static void Revive(PlayerControl player) => Revive(BodyById(player.PlayerId));
@@ -1596,7 +1517,7 @@ namespace TownOfUsReworked.Classes
 
             if (PlayerControl.LocalPlayer == player)
             {
-                Flash(Colors.Teleporter, "You have moved to a different location!");
+                Flash(Colors.Teleporter);
 
                 if (Minigame.Instance)
                     Minigame.Instance.Close();
@@ -1610,7 +1531,7 @@ namespace TownOfUsReworked.Classes
             player.NetTransform.enabled = true;
         }
 
-        public static Dictionary<byte, int> CalculateAllVotes(MeetingHud __instance)
+        public static Dictionary<byte, int> CalculateAllVotes(this MeetingHud __instance, out bool tie, out KeyValuePair<byte, int> max)
         {
             var dictionary = new Dictionary<byte, int>();
 
@@ -1627,43 +1548,73 @@ namespace TownOfUsReworked.Classes
                     dictionary[playerVoteArea.VotedFor] = 1;
             }
 
+            foreach (var role in Ability.GetAbilities<Politician>(AbilityEnum.Politician))
+            {
+                foreach (var number in role.ExtraVotes)
+                {
+                    if (dictionary.TryGetValue(number, out var num))
+                        dictionary[number] = num + 1;
+                    else
+                        dictionary[number] = 1;
+                }
+            }
+
             foreach (var role in Role.GetRoles<Mayor>(RoleEnum.Mayor))
             {
-                foreach (var number in role.ExtraVotes)
+                if (role.Revealed)
                 {
-                    if (dictionary.TryGetValue(number, out var num))
-                        dictionary[number] = num + 1;
+                    if (dictionary.TryGetValue(role.Voted, out var num))
+                        dictionary[role.Voted] = num + CustomGameOptions.MayorVoteCount;
                     else
-                        dictionary[number] = 1;
+                        dictionary[role.Voted] = CustomGameOptions.MayorVoteCount;
                 }
             }
 
-            foreach (var role in Role.GetRoles<Politician>(RoleEnum.Politician))
+            var knighted = new List<byte>();
+
+            foreach (var role in Role.GetRoles<Monarch>(RoleEnum.Monarch))
             {
-                foreach (var number in role.ExtraVotes)
+                foreach (var id in role.Knighted)
                 {
-                    if (dictionary.TryGetValue(number, out var num))
-                        dictionary[number] = num + 1;
-                    else
-                        dictionary[number] = 1;
+                    if (!knighted.Contains(id))
+                    {
+                        var area = VoteAreaById(id);
+
+                        if (dictionary.TryGetValue(area.VotedFor, out var num))
+                            dictionary[area.VotedFor] = num + CustomGameOptions.KnightVoteCount;
+                        else
+                            dictionary[area.VotedFor] = CustomGameOptions.KnightVoteCount;
+
+                        knighted.Add(id);
+                    }
                 }
             }
 
-            foreach (var role in Role.GetRoles<PromotedRebel>(RoleEnum.PromotedRebel))
+            foreach (var swapper in Ability.GetAbilities<Swapper>(AbilityEnum.Swapper))
             {
-                if (!role.IsPol)
+                if (swapper.IsDead || swapper.Disconnected || swapper.Swap1 == null || swapper.Swap2 == null)
                     continue;
 
-                foreach (var number in role.ExtraVotes)
-                {
-                    if (dictionary.TryGetValue(number, out var num))
-                        dictionary[number] = num + 1;
-                    else
-                        dictionary[number] = 1;
-                }
+                var swapPlayer1 = PlayerByVoteArea(swapper.Swap1);
+                var swapPlayer2 = PlayerByVoteArea(swapper.Swap2);
+
+                if (swapPlayer1 == null || swapPlayer2 == null || swapPlayer1.Data.IsDead || swapPlayer1.Data.Disconnected || swapPlayer2.Data.IsDead || swapPlayer2.Data.Disconnected)
+                    continue;
+
+                var swap1 = 0;
+                var swap2 = 0;
+
+                if (dictionary.TryGetValue(swapper.Swap1.TargetPlayerId, out var value))
+                    swap1 = value;
+
+                if (dictionary.TryGetValue(swapper.Swap2.TargetPlayerId, out var value2))
+                    swap2 = value2;
+
+                dictionary[swapper.Swap2.TargetPlayerId] = swap1;
+                dictionary[swapper.Swap1.TargetPlayerId] = swap2;
             }
 
-            dictionary.MaxPair(out var tie);
+            max = dictionary.MaxPair(out tie);
 
             if (tie)
             {
@@ -1684,7 +1635,27 @@ namespace TownOfUsReworked.Classes
                 }
             }
 
+            dictionary.MaxPair(out tie);
             return dictionary;
+        }
+
+        public static KeyValuePair<byte, int> MaxPair(this Dictionary<byte, int> self, out bool tie)
+        {
+            tie = true;
+            var result = new KeyValuePair<byte, int>(255, int.MinValue);
+
+            foreach (var keyValuePair in self)
+            {
+                if (keyValuePair.Value > result.Value)
+                {
+                    result = keyValuePair;
+                    tie = false;
+                }
+                else if (keyValuePair.Value == result.Value)
+                    tie = true;
+            }
+
+            return result;
         }
 
         public static void ReassignPostmortals(PlayerControl player)
@@ -1699,7 +1670,7 @@ namespace TownOfUsReworked.Classes
                     if (toChooseFrom.Count == 0)
                     {
                         SetPostmortals.WillBeRevealer = null;
-                        writer.Write(byte.MaxValue);
+                        writer.Write(255);
                     }
                     else
                     {
@@ -1719,7 +1690,7 @@ namespace TownOfUsReworked.Classes
                     if (toChooseFrom.Count == 0)
                     {
                         SetPostmortals.WillBePhantom = null;
-                        writer.Write(byte.MaxValue);
+                        writer.Write(255);
                     }
                     else
                     {
@@ -1739,7 +1710,7 @@ namespace TownOfUsReworked.Classes
                     if (toChooseFrom.Count == 0)
                     {
                         SetPostmortals.WillBeBanshee = null;
-                        writer.Write(byte.MaxValue);
+                        writer.Write(255);
                     }
                     else
                     {
@@ -1759,7 +1730,7 @@ namespace TownOfUsReworked.Classes
                     if (toChooseFrom.Count == 0)
                     {
                         SetPostmortals.WillBeGhoul = null;
-                        writer.Write(byte.MaxValue);
+                        writer.Write(255);
                     }
                     else
                     {
@@ -1793,11 +1764,12 @@ namespace TownOfUsReworked.Classes
                     continue;
 
                 var distance = Vector2.Distance(truePosition, player.GetTruePosition());
+                var vector = player.GetTruePosition() - truePosition;
 
-                if (distance > closestDistance)
+                if (distance > closestDistance || distance > maxDistance)
                     continue;
 
-                if (distance > maxDistance)
+                if (PhysicsHelpers.AnyNonTriggersBetween(truePosition, vector.normalized, distance, Constants.ShipAndObjectsMask))
                     continue;
 
                 closestPlayer = player;
@@ -1817,8 +1789,12 @@ namespace TownOfUsReworked.Classes
             foreach (var vent in Object.FindObjectsOfType<Vent>())
             {
                 var distance = Vector2.Distance(truePosition, new Vector2(vent.transform.position.x, vent.transform.position.y));
+                var vector = new Vector2(vent.transform.position.x, vent.transform.position.y) - truePosition;
 
                 if (distance > maxDistance || distance > closestDistance)
+                    continue;
+
+                if (PhysicsHelpers.AnyNonTriggersBetween(truePosition, vector.normalized, distance, Constants.ShipAndObjectsMask))
                     continue;
 
                 closestVent = vent;
@@ -1828,9 +1804,9 @@ namespace TownOfUsReworked.Classes
             return closestVent;
         }
 
-        public static DeadBody GetClosestDeadPlayer(this PlayerControl player, float maxDistance = 0f)
+        public static DeadBody GetClosestDeadPlayer(this PlayerControl refPlayer, float maxDistance = 0f)
         {
-            var truePosition = player.GetTruePosition();
+            var truePosition = refPlayer.GetTruePosition();
             var closestDistance = double.MaxValue;
             DeadBody closestBody = null;
 
@@ -1840,8 +1816,12 @@ namespace TownOfUsReworked.Classes
             foreach (var body in Object.FindObjectsOfType<DeadBody>())
             {
                 var distance = Vector2.Distance(truePosition, body.TruePosition);
+                var vector = body.TruePosition - truePosition;
 
                 if (distance > maxDistance || distance > closestDistance)
+                    continue;
+
+                if (PhysicsHelpers.AnyNonTriggersBetween(truePosition, vector.normalized, distance, Constants.ShipAndObjectsMask))
                     continue;
 
                 closestBody = body;
@@ -1849,6 +1829,33 @@ namespace TownOfUsReworked.Classes
             }
 
             return closestBody;
+        }
+
+        public static Console GetClosestConsole(this PlayerControl refPlayer, float maxDistance = 0f)
+        {
+            var truePosition = refPlayer.GetTruePosition();
+            var closestDistance = double.MaxValue;
+            Console closestConsole = null;
+
+            if (maxDistance == 0f)
+                maxDistance = CustomGameOptions.InteractionDistance;
+
+            foreach (var console in Object.FindObjectsOfType<Console>())
+            {
+                var distance = Vector2.Distance(truePosition, console.transform.position);
+                var vector = new Vector2(console.transform.position.x, console.transform.position.y) - truePosition;
+
+                if (distance > maxDistance || distance > closestDistance)
+                    continue;
+
+                if (PhysicsHelpers.AnyNonTriggersBetween(truePosition, vector.normalized, distance, Constants.ShipAndObjectsMask))
+                    continue;
+
+                closestConsole = console;
+                closestDistance = distance;
+            }
+
+            return closestConsole;
         }
     }
 }

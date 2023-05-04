@@ -15,6 +15,7 @@ using TownOfUsReworked.Patches;
 using System;
 using TownOfUsReworked.PlayerLayers.Abilities;
 using TownOfUsReworked.PlayerLayers.Modifiers;
+using TownOfUsReworked.Objects;
 
 namespace TownOfUsReworked.PlayerLayers
 {
@@ -37,10 +38,11 @@ namespace TownOfUsReworked.PlayerLayers
         public bool IsBlocked;
         public bool RoleBlockImmune;
 
-        public bool Winner;
+        #pragma warning disable
+        public static bool NobodyWins;
+        #pragma warning restore
 
-        public bool IsDead => Player.Data.IsDead;
-        public bool Disconnected => Player.Data.Disconnected;
+        public bool Winner;
 
         public readonly static List<PlayerLayer> AllLayers = new();
 
@@ -67,6 +69,11 @@ namespace TownOfUsReworked.PlayerLayers
             else if (Player.Is(Faction.Neutral))
                 Vent = AssetManager.GetSprite("NeutralVent");
 
+            if (__instance.ImpostorVentButton.currentTarget == null || IsBlocked)
+                __instance.ImpostorVentButton.SetDisabled();
+            else
+                __instance.ImpostorVentButton.SetEnabled();
+
             __instance.ImpostorVentButton.graphic.sprite = Vent;
             __instance.ImpostorVentButton.buttonLabelText.text = IsBlocked ? "BLOCKED" : "VENT";
             __instance.ImpostorVentButton.buttonLabelText.fontSharedMaterial = __instance.SabotageButton.buttonLabelText.fontSharedMaterial;
@@ -83,9 +90,21 @@ namespace TownOfUsReworked.PlayerLayers
             __instance.ReportButton.graphic.sprite = IsBlocked ? AssetManager.GetSprite("Blocked") : AssetManager.GetSprite("Report");
             __instance.ReportButton.buttonLabelText.fontSharedMaterial = __instance.SabotageButton.buttonLabelText.fontSharedMaterial;
 
+            //var closestUsable = Player.GetClosestConsole();
+
+            if (Player.closest == null || IsBlocked)
+                __instance.UseButton.SetDisabled();
+            else
+                __instance.UseButton.SetEnabled();
+
             __instance.UseButton.buttonLabelText.text = IsBlocked ? "BLOCKED" : "USE";
             __instance.UseButton.graphic.sprite = IsBlocked ? AssetManager.GetSprite("Blocked") : AssetManager.Use;
             __instance.UseButton.buttonLabelText.fontSharedMaterial = __instance.SabotageButton.buttonLabelText.fontSharedMaterial;
+
+            if (IsBlocked)
+                __instance.PetButton.SetDisabled();
+            else
+                __instance.PetButton.SetEnabled();
 
             __instance.PetButton.buttonLabelText.text = IsBlocked ? "BLOCKED" : "PET";
             __instance.PetButton.graphic.sprite = IsBlocked ? AssetManager.GetSprite("Blocked") : AssetManager.GetSprite("Pet");
@@ -106,20 +125,34 @@ namespace TownOfUsReworked.PlayerLayers
                 MapBehaviour.Instance.Close();
         }
 
+        public virtual void UpdateMeeting(MeetingHud __instance) => Player.DisableButtons();
+
+        public virtual void VoteComplete(MeetingHud __instance) {}
+
+        public virtual void ConfirmVotePrefix(MeetingHud __instance) => __instance.SkipVoteButton.gameObject.SetActive(false);
+
+        public virtual void ConfirmVotePostfix(MeetingHud __instance) => __instance.SkipVoteButton.gameObject.SetActive(false);
+
+        public virtual void ClearVote(MeetingHud __instance) {}
+
+        public virtual void SelectVote(MeetingHud __instance, int id) {}
+
+        public virtual void UpdateMap(MapBehaviour __instance) {}
+
         public virtual void OnMeetingStart(MeetingHud __instance)
         {
-            foreach (var player in PlayerControl.AllPlayerControls)
-                player.RegenTask();
-
+            Player.DisableButtons();
+            Player.RegenTask();
             EndGame.Reset();
+            Ash.DestroyAll();
         }
 
         public virtual void OnMeetingEnd(MeetingHud __instance)
         {
-            foreach (var player in PlayerControl.AllPlayerControls)
-                player.RegenTask();
-
+            Player.EnableButtons();
+            Player.RegenTask();
             EndGame.Reset();
+            ButtonUtils.ResetCustomTimers(false);
         }
 
         public virtual void OnBodyReport(GameData.PlayerInfo info) => EndGame.Reset();
@@ -127,13 +160,15 @@ namespace TownOfUsReworked.PlayerLayers
         protected PlayerLayer(PlayerControl player)
         {
             Player = player;
-            PlayerName = player.Data.PlayerName;
             AllLayers.Add(this);
         }
 
-        public string PlayerName;
         public PlayerControl Player;
 
+        public bool IsDead => Player.Data.IsDead;
+        public bool Disconnected => Player.Data.Disconnected;
+        public string PlayerName => Player.Data.PlayerName;
+        public byte PlayerId => Player.PlayerId;
         public int TasksLeft => Player.Data.Tasks.ToArray().Count(x => !x.Complete);
         public int TasksCompleted => Player.Data.Tasks.ToArray().Count(x => x.Complete);
         public int TotalTasks => Player.Data.Tasks.ToArray().Length;
@@ -141,10 +176,10 @@ namespace TownOfUsReworked.PlayerLayers
 
         public string ColorString => $"<color=#{Color.ToHtmlStringRGBA()}>";
 
-        public bool GameEnd()
+        public void GameEnd()
         {
-            if (Disconnected)
-                return true;
+            if (Player == null || Disconnected)
+                return;
             else if (IsDead)
             {
                 if (Type == LayerEnum.Phantom && TasksDone)
@@ -157,7 +192,7 @@ namespace TownOfUsReworked.PlayerLayers
                     Utils.EndGame();
                 }
 
-                return true;
+                return;
             }
             else if (LayerType == PlayerLayerEnum.Objectifier)
             {
@@ -177,7 +212,6 @@ namespace TownOfUsReworked.PlayerLayers
                     writer.Write(Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
-                    return true;
                 }
                 else if (Type == LayerEnum.Lovers && ConstantVariables.LoversWin(Player))
                 {
@@ -189,7 +223,6 @@ namespace TownOfUsReworked.PlayerLayers
                     writer.Write(Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
-                    return true;
                 }
                 else if (Type == LayerEnum.Rivals && ConstantVariables.RivalsWin(Player))
                 {
@@ -200,7 +233,6 @@ namespace TownOfUsReworked.PlayerLayers
                     writer.Write(Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
-                    return true;
                 }
                 else if (Type == LayerEnum.Taskmaster && TasksDone)
                 {
@@ -211,18 +243,17 @@ namespace TownOfUsReworked.PlayerLayers
                     writer.Write(Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
-                    return true;
                 }
                 else if (Type == LayerEnum.Mafia && ConstantVariables.MafiaWin)
                 {
                     Objectifier.MafiaWins = true;
+                    Winner = true;
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.MafiaWins);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
-                    return true;
                 }
-                else if (Type == LayerEnum.Overlord && MeetingPatches.MeetingCount >= CustomGameOptions.OverlordMeetingWinCount && ((Overlord)this).IsAlive)
+                else if (Type == LayerEnum.Overlord && MeetingPatches.MeetingCount >= CustomGameOptions.OverlordMeetingWinCount && !IsDead && !Disconnected)
                 {
                     Objectifier.OverlordWins = true;
 
@@ -232,16 +263,12 @@ namespace TownOfUsReworked.PlayerLayers
                             ov.Winner = true;
                     }
 
+                    Winner = true;
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.OverlordWin);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
-                    return true;
                 }
-
-                return !(Type is LayerEnum.Corrupted or LayerEnum.Allied or LayerEnum.Overlord or LayerEnum.Mafia || (ObjectifierType == ObjectifierEnum.Lovers &&
-                    ((Lovers)this).LoversAlive()) || Player.IsWinningRival() || (ObjectifierType == ObjectifierEnum.Traitor && ((Traitor)this).Turned) || (ObjectifierType ==
-                    ObjectifierEnum.Fanatic && ((Fanatic)this).Turned));
             }
             else if (LayerType == PlayerLayerEnum.Role)
             {
@@ -254,7 +281,6 @@ namespace TownOfUsReworked.PlayerLayers
                     writer.Write((byte)WinLoseRPC.CabalWin);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
-                    return true;
                 }
                 else if ((role.IsPersuaded || Type == LayerEnum.Whisperer) && ConstantVariables.SectWin)
                 {
@@ -263,7 +289,6 @@ namespace TownOfUsReworked.PlayerLayers
                     writer.Write((byte)WinLoseRPC.SectWin);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
-                    return true;
                 }
                 else if ((role.IsBitten || Type == LayerEnum.Dracula) && ConstantVariables.UndeadWin)
                 {
@@ -272,7 +297,6 @@ namespace TownOfUsReworked.PlayerLayers
                     writer.Write((byte)WinLoseRPC.UndeadWin);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
-                    return true;
                 }
                 else if ((role.IsResurrected || Type == LayerEnum.Necromancer) && ConstantVariables.ReanimatedWin)
                 {
@@ -281,7 +305,6 @@ namespace TownOfUsReworked.PlayerLayers
                     writer.Write((byte)WinLoseRPC.ReanimatedWin);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
-                    return true;
                 }
                 else if (role.Faction == Faction.Syndicate && (role.NotDefective || Type == LayerEnum.Betrayer || role.IsSynAlly || role.IsSynFanatic || role.IsSynTraitor) &&
                     ConstantVariables.SyndicateWins)
@@ -291,7 +314,6 @@ namespace TownOfUsReworked.PlayerLayers
                     writer.Write((byte)WinLoseRPC.SyndicateWin);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
-                    return true;
                 }
                 else if (role.Faction == Faction.Intruder && (role.NotDefective || Type == LayerEnum.Betrayer || role.IsIntAlly || role.IsIntFanatic || role.IsIntTraitor) &&
                     ConstantVariables.IntrudersWin)
@@ -301,7 +323,6 @@ namespace TownOfUsReworked.PlayerLayers
                     writer.Write((byte)WinLoseRPC.IntruderWin);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
-                    return true;
                 }
                 else if (role.Faction == Faction.Crew && (role.NotDefective || role.IsCrewAlly) && ConstantVariables.CrewWins)
                 {
@@ -310,7 +331,6 @@ namespace TownOfUsReworked.PlayerLayers
                     writer.Write((byte)WinLoseRPC.CrewWin);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
-                    return true;
                 }
                 else if (role.NotDefective && ConstantVariables.PestOrPBWins && Type is LayerEnum.Plaguebearer or LayerEnum.Pestilence)
                 {
@@ -319,7 +339,6 @@ namespace TownOfUsReworked.PlayerLayers
                     writer.Write((byte)WinLoseRPC.InfectorsWin);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
-                    return true;
                 }
                 else if (ConstantVariables.AllNeutralsWin && role.NotDefective)
                 {
@@ -328,7 +347,6 @@ namespace TownOfUsReworked.PlayerLayers
                     writer.Write((byte)WinLoseRPC.AllNeutralsWin);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
-                    return true;
                 }
                 else if (ConstantVariables.AllNKsWin && role.NotDefective && role.RoleAlignment == RoleAlignment.NeutralKill)
                 {
@@ -337,7 +355,6 @@ namespace TownOfUsReworked.PlayerLayers
                     writer.Write((byte)WinLoseRPC.AllNKsWin);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
-                    return true;
                 }
                 else if (role.NotDefective && role.RoleAlignment == RoleAlignment.NeutralKill && (ConstantVariables.SameNKWins(RoleType) ||
                     ConstantVariables.SoloNKWins(RoleType, Player)))
@@ -388,14 +405,8 @@ namespace TownOfUsReworked.PlayerLayers
                     writer.Write(Player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
-                    return true;
                 }
-
-                return role.RoleAlignment != RoleAlignment.NeutralKill && role.RoleAlignment != RoleAlignment.NeutralNeo && (Type is not LayerEnum.Pestilence and not LayerEnum.Betrayer) &&
-                    role.NotDefective && role.Faction is not Faction.Crew and not Faction.Intruder and not Faction.None and not Faction.Syndicate;
             }
-            else
-                return true;
         }
 
         public static bool operator ==(PlayerLayer a, PlayerLayer b)

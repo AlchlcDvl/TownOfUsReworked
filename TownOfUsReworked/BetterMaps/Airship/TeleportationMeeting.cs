@@ -17,7 +17,7 @@ namespace TownOfUsReworked.BetterMaps.Airship
             if (LobbyBehaviour.Instance || __instance == null || __instance.Data == null || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null)
                 return;
 
-            if (__instance?.PlayerId != PlayerControl.LocalPlayer.PlayerId)
+            if (__instance.PlayerId != PlayerControl.LocalPlayer.PlayerId)
                 return;
 
             if (CustomGameOptions.AddTeleporters && !TeleportationStarted && Vector2.Distance(__instance.transform.position, new Vector2(17.331f, 15.236f)) < 0.5f &&
@@ -30,10 +30,11 @@ namespace TownOfUsReworked.BetterMaps.Airship
         private static IEnumerator CoTeleportPlayer(PlayerControl instance)
         {
             TeleportationStarted = true;
-            yield return Utils.Fade(false, false);
+            Coroutines.Start(Utils.Fade(false, false));
+            yield return new WaitForSeconds(0.25f);
             instance.NetTransform.RpcSnapTo(new Vector2(5.753f, -10.011f));
-            yield return new WaitForSeconds(0.3f);
-            yield return Utils.Fade(true, true);
+            yield return new WaitForSeconds(0.25f);
+            Coroutines.Start(Utils.Fade(true, true));
             TeleportationStarted = false;
         }
     }

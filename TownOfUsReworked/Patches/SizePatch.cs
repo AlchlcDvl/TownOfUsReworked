@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using System.Linq;
 using TownOfUsReworked.Classes;
 using UnityEngine;
 using TownOfUsReworked.Data;
@@ -27,15 +26,8 @@ namespace TownOfUsReworked.Patches
                     player.transform.localScale = new Vector3(0.7f, 0.7f, 1.0f);
             }
 
-            var playerBindings = PlayerControl.AllPlayerControls.ToArray().ToDictionary(player => player.PlayerId);
-
             foreach (var body in Object.FindObjectsOfType<DeadBody>())
-            {
-                var player = playerBindings[body.ParentId];
-
-                if (player != null)
-                    body.transform.localScale = player.GetAppearance().SizeFactor;
-            }
+                body.transform.localScale = Utils.PlayerById(body.ParentId).GetAppearance().SizeFactor;
         }
     }
 }

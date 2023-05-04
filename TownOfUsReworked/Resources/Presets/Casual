@@ -294,7 +294,7 @@ Move Electrical Outlet
 10
 <color=#00FFFFFF>Framer</color>
 20
-<color=#311C45FF>Shapeshifter</color>
+<color=#2DFF00FF>Shapeshifter</color>
 40
 <color=#C9CC3FFF>Bomber</color>
 60
@@ -1316,9 +1316,9 @@ Frame Cooldown
 25
 Chaos Drive Frame Radius
 0.25
-<color=#311C45FF>Shapeshifter</color> Count
+<color=#2DFF00FF>Shapeshifter</color> Count
 1
-<color=#311C45FF>Shapeshifter</color> Is Unique In All Any
+<color=#2DFF00FF>Shapeshifter</color> Is Unique In All Any
 False
 Shapeshift Cooldown
 25

@@ -9,6 +9,7 @@ using TownOfUsReworked.Classes;
 using TownOfUsReworked.PlayerLayers.Roles;
 using static UnityEngine.UI.Button;
 using Reactor.Utilities.Extensions;
+using UnityEngine;
 
 namespace TownOfUsReworked.Custom
 {
@@ -18,7 +19,7 @@ namespace TownOfUsReworked.Custom
         public readonly static List<CustomButton> AllButtons = new();
         public AbilityButton Base;
         public PlayerLayer Owner;
-        public string Button;
+        public Sprite Button;
         public AbilityTypes Type;
         public string Keybind;
         public bool PostDeath;
@@ -38,7 +39,7 @@ namespace TownOfUsReworked.Custom
         public CustomButton(PlayerLayer owner, string button, AbilityTypes type, string keybind, Click click, bool hasUses = false, bool postDeath = false)
         {
             Owner = owner;
-            Button = button;
+            Button = AssetManager.GetSprite(button);
             Type = type;
             DoClick = click;
             Keybind = keybind;
@@ -59,7 +60,7 @@ namespace TownOfUsReworked.Custom
             button.buttonLabelText.enabled = true;
             button.usesRemainingText.enabled = true;
             button.usesRemainingSprite.enabled = true;
-            button.commsDown?.gameObject?.SetActive(false);
+            button.commsDown?.SetActive(false);
             return button;
         }
 
@@ -94,10 +95,10 @@ namespace TownOfUsReworked.Custom
                 var component = TargetPlayer.MyRend();
                 component.material.SetFloat("_Outline", 1f);
                 component.material.SetColor("_OutlineColor", Owner.Color);
-                Base.SetEnabled();
+                Base?.SetEnabled();
             }
             else
-                Base.SetDisabled();
+                Base?.SetDisabled();
         }
 
         private void SetDeadTarget(bool usable, bool condition)
@@ -123,18 +124,18 @@ namespace TownOfUsReworked.Custom
                     component.material.SetColor("_OutlineColor", Owner.Color);
                 }
 
-                Base.SetEnabled();
+                Base?.SetEnabled();
             }
             else
-                Base.SetDisabled();
+                Base?.SetDisabled();
         }
 
         public void SetEffectTarget(bool effectActive, bool condition = true)
         {
             if ((!Base.isCoolingDown && condition && !Owner.Player.CannotUse() && !effectActive) || effectActive)
-                Base.SetEnabled();
+                Base?.SetEnabled();
             else
-                Base.SetDisabled();
+                Base?.SetDisabled();
         }
 
         public void Update(string label, float timer, float maxTimer, int uses, bool effectActive, float effectTimer, float maxDuration, bool condition, bool usable, List<PlayerControl>
@@ -153,12 +154,12 @@ namespace TownOfUsReworked.Custom
             else if (Type == AbilityTypes.Effect)
                 SetEffectTarget(effectActive, usable && condition);
 
-            Base.graphic.sprite = Owner.IsBlocked ? AssetManager.GetSprite("Blocked") : (AssetManager.GetSprite(Button) ?? AssetManager.GetSprite("Placeholder"));
+            Base.graphic.sprite = Owner.IsBlocked ? AssetManager.GetSprite("Blocked") : (Button ?? AssetManager.GetSprite("Placeholder"));
             Base.buttonLabelText.text = Owner.IsBlocked ? "BLOCKED" : label;
             Base.commsDown?.gameObject?.SetActive(false);
             Base.buttonLabelText.SetOutlineColor(Owner.Color);
             Uses = uses;
-            Clickable = !effectActive && usable && condition && Base.ButtonUsable() && !(HasUses && Uses <= 0) && !MeetingHud.Instance;
+            Clickable = Base != null && !effectActive && usable && condition && Base.ButtonUsable() && !(HasUses && Uses <= 0) && !MeetingHud.Instance;
             Base.gameObject.SetActive(PostDeath ? SetDeadActive : SetAliveActive);
 
             if (effectActive)
@@ -204,7 +205,14 @@ namespace TownOfUsReworked.Custom
 
         public void Destroy()
         {
+            Base?.SetCoolDown(0, 0);
+            Base?.buttonLabelText?.gameObject?.SetActive(false);
+            Base?.gameObject?.SetActive(false);
+            Base?.commsDown?.SetActive(false);
+            Base?.buttonLabelText?.gameObject.Destroy();
+            Base?.commsDown?.Destroy();
             Base?.gameObject?.Destroy();
+            Object.Destroy(Base);
             Base = null;
             AllButtons.Remove(this);
         }

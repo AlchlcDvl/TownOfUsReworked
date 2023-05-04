@@ -26,21 +26,21 @@ namespace TownOfUsReworked.CustomOptions
                 builder.AppendLine("Press TAB Or The Page Number To Change Pages");
 
                 if (SettingsPage == 0)
-                    builder.AppendLine("\nGlobal Settings");
+                    builder.AppendLine("\nGlobal");
                 else if (SettingsPage == 1)
-                    builder.AppendLine("\n<color=#8BFDFDFF>Crew</color> Settings");
+                    builder.AppendLine("\n<color=#8BFDFDFF>Crew</color>");
                 else if (SettingsPage == 2)
-                    builder.AppendLine("\n<color=#B3B3B3FF>Neutral</color> Settings");
+                    builder.AppendLine("\n<color=#B3B3B3FF>Neutral</color>");
                 else if (SettingsPage == 3)
-                    builder.AppendLine("\n<color=#FF0000FF>Intruder</color> Settings");
+                    builder.AppendLine("\n<color=#FF0000FF>Intruder</color>");
                 else if (SettingsPage == 4)
-                    builder.AppendLine("\n<color=#008000FF>Syndicate</color> Settings");
+                    builder.AppendLine("\n<color=#008000FF>Syndicate</color>");
                 else if (SettingsPage == 5)
-                    builder.AppendLine("\n<color=#7F7F7FFF>Modifier</color> Settings");
+                    builder.AppendLine("\n<color=#7F7F7FFF>Modifier</color>");
                 else if (SettingsPage == 6)
-                    builder.AppendLine("\n<color=#DD585BFF>Objectifier</color> Settings");
+                    builder.AppendLine("\n<color=#DD585BFF>Objectifier</color>");
                 else if (SettingsPage == 7)
-                    builder.AppendLine("\n<color=#FF9900FF>Ability</color> Settings");
+                    builder.AppendLine("\n<color=#FF9900FF>Ability</color>");
 
                 foreach (var option in CustomOption.AllOptions.Where(x => x.Menu == (MultiMenu)SettingsPage && x.Active))
                 {

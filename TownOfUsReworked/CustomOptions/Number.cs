@@ -8,7 +8,7 @@ namespace TownOfUsReworked.CustomOptions
     [HarmonyPatch]
     public class CustomNumberOption : CustomOption
     {
-        protected internal CustomNumberOption(int id, MultiMenu menu, string name, float defaultValue, float min, float max, float increment, Func<object, string> format = null) :
+        public CustomNumberOption(int id, MultiMenu menu, string name, float defaultValue, float min, float max, float increment, Func<object, string> format = null) :
             base(id, menu, name, CustomOptionType.Number, defaultValue, format)
         {
             Min = min;
@@ -20,9 +20,9 @@ namespace TownOfUsReworked.CustomOptions
         protected float Max { get; set; }
         protected float Increment { get; set; }
 
-        protected internal float Get() => (float)Value;
+        public float Get() => (float)Value;
 
-        protected internal void Increase()
+        public void Increase()
         {
             var increment = Input.GetKeyInt(KeyCode.LeftShift) ? Increment / 2 : Increment;
 
@@ -32,7 +32,7 @@ namespace TownOfUsReworked.CustomOptions
                 Set(Get() + increment);
         }
 
-        protected internal void Decrease()
+        public void Decrease()
         {
             var decrement = Input.GetKeyInt(KeyCode.LeftShift) ? Increment / 2 : Increment;
 

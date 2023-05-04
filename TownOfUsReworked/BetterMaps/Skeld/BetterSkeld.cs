@@ -68,16 +68,13 @@ namespace TownOfUsReworked.BetterMaps.Skeld
 
         private static void AdjustSkeld()
         {
-            if (IsObjectsFetched)
+            if (IsObjectsFetched && CustomGameOptions.SkeldVentImprovements)
             {
-                if (CustomGameOptions.SkeldVentImprovements)
-                {
-                    MoveReactorVent();
-                    MoveShieldsVent();
-                    MoveBigYVent();
-                    MoveNavVentNorth();
-                    MoveCafeVent();
-                }
+                MoveReactorVent();
+                MoveShieldsVent();
+                MoveBigYVent();
+                MoveNavVentNorth();
+                MoveCafeVent();
             }
 
             if (CustomGameOptions.SkeldVentImprovements)

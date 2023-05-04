@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using Reactor.Utilities.Extensions;
 using HarmonyLib;
 using AmongUs.Data;
 
@@ -11,19 +10,13 @@ namespace TownOfUsReworked.Classes
     {
         public readonly static List<string> Sounds = new();
         private readonly static Dictionary<string, AudioClip> SoundEffects = new();
-        private readonly static Dictionary<string, Sprite> ButtonSprites = new();
+        private readonly static Dictionary<string, Sprite> Sprites = new();
         private readonly static Dictionary<string, string> Translations = new();
         private readonly static Dictionary<string, float> Sizes = new();
         private readonly static string[] TranslationKeys = Utils.CreateText("Keys", "Languages").Split("\n");
 
         #pragma warning disable
         public static Sprite Use;
-
-        public static Material BombMaterial;
-        public static Material BugMaterial;
-
-        private static AssetBundle BugBundle;
-        private static AssetBundle BombBundle;
         #pragma warning restore
 
         public static AudioClip GetAudio(string path)
@@ -39,13 +32,13 @@ namespace TownOfUsReworked.Classes
 
         public static Sprite GetSprite(string path)
         {
-            if (!ButtonSprites.ContainsKey(path))
+            if (!Sprites.ContainsKey(path))
             {
                 Utils.LogSomething($"{path} does not exist");
-                return MeetingHud.Instance ? ButtonSprites["MeetingPlaceholder"] : ButtonSprites["Placeholder"];
+                return MeetingHud.Instance ? Sprites["MeetingPlaceholder"] : Sprites["Placeholder"];
             }
             else
-                return ButtonSprites[path];
+                return Sprites[path];
         }
 
         public static float GetSize(string path)
@@ -120,28 +113,8 @@ namespace TownOfUsReworked.Classes
 
         public static void Load()
         {
-            var stream1 = TownOfUsReworked.Assembly.GetManifestResourceStream($"{TownOfUsReworked.Misc}Bomber");
-            var stream2 = TownOfUsReworked.Assembly.GetManifestResourceStream($"{TownOfUsReworked.Misc}Operative");
-            BombBundle = AssetBundle.LoadFromMemory(stream1.ReadFully());
-            BugBundle = AssetBundle.LoadFromMemory(stream2.ReadFully());
-            BombMaterial = BombBundle.LoadAsset<Material>("bomb").DontUnload();
-            BugMaterial = BugBundle.LoadAsset<Material>("trap").DontUnload();
-
             SoundEffects.Clear();
             Sounds.Clear();
-
-            foreach (var resourceName in TownOfUsReworked.Assembly.GetManifestResourceNames())
-            {
-                if (resourceName.StartsWith($"{TownOfUsReworked.Misc}") || resourceName.StartsWith($"{TownOfUsReworked.Buttons}"))
-                {
-                    var name = resourceName.Replace(".png", "").Replace($"{TownOfUsReworked.Sounds}", "").Replace($"{TownOfUsReworked.Buttons}", "");
-
-                    if (name == "NightVisionOverlay")
-                        Sizes.Add(name, 350);
-                    else
-                        Sizes.Add(name, 100);
-                }
-            }
 
             foreach (var resourceName in TownOfUsReworked.Assembly.GetManifestResourceNames())
             {
@@ -154,12 +127,17 @@ namespace TownOfUsReworked.Classes
                 else if (resourceName.StartsWith($"{TownOfUsReworked.Buttons}") && resourceName.EndsWith(".png"))
                 {
                     var name = resourceName.Replace(".png", "").Replace($"{TownOfUsReworked.Buttons}", "");
-                    ButtonSprites.Add(name, Utils.CreateSprite(resourceName));
+                    Sprites.Add(name, Utils.CreateSprite(resourceName));
                 }
                 else if (resourceName.StartsWith($"{TownOfUsReworked.Misc}") && resourceName.EndsWith(".png"))
                 {
                     var name = resourceName.Replace(".png", "").Replace($"{TownOfUsReworked.Misc}", "");
-                    ButtonSprites.Add(name, Utils.CreateSprite(resourceName));
+                    Sprites.Add(name, Utils.CreateSprite(resourceName));
+                }
+                else if (resourceName.StartsWith($"{TownOfUsReworked.Nameplates}") && resourceName.EndsWith(".png"))
+                {
+                    var name = resourceName.Replace(".png", "").Replace($"{TownOfUsReworked.Nameplates}", "");
+                    Sprites.Add(name, Utils.CreateSprite(resourceName));
                 }
             }
 

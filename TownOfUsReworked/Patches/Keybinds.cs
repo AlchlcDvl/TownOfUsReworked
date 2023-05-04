@@ -17,21 +17,20 @@ namespace TownOfUsReworked.Patches
             __instance.userData.RegisterBind("Quarternary", "Quartnary Ability", KeyboardKeyCode.Z);
         }
 
-        private static int RegisterBind(this UserData self, string name, string description, KeyboardKeyCode keycode, int elementIdentifierId = -1, int category = 0, InputActionType
-            type = InputActionType.Button)
+        private static int RegisterBind(this UserData self, string name, string description, KeyboardKeyCode keycode)
         {
-            self.AddAction(category);
+            self.AddAction(0);
             var action = self.GetAction(self.actions.Count - 1)!;
 
             action.name = name;
             action.descriptiveName = description;
-            action.categoryId = category;
-            action.type = type;
+            action.categoryId = 0;
+            action.type = InputActionType.Button;
             action.userAssignable = true;
 
             var map = new ActionElementMap
             {
-                _elementIdentifierId = elementIdentifierId,
+                _elementIdentifierId = -1,
                 _actionId = action.id,
                 _elementType = ControllerElementType.Button,
                 _axisContribution = Pole.Positive,

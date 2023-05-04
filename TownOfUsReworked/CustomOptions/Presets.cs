@@ -10,6 +10,7 @@ using Object = UnityEngine.Object;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Classes;
 using HarmonyLib;
+using System.IO;
 
 namespace TownOfUsReworked.CustomOptions
 {
@@ -20,7 +21,7 @@ namespace TownOfUsReworked.CustomOptions
         public List<OptionBehaviour> OldButtons;
         public List<CustomButtonOption> SlotButtons = new();
 
-        protected internal Presets(int id) : base(id, MultiMenu.main, "Load Preset Settings") => Do = ToDo;
+        public Presets(int id) : base(id, MultiMenu.main, "Load Preset Settings") => Do = ToDo;
 
         private List<OptionBehaviour> CreateOptions()
         {
@@ -48,9 +49,13 @@ namespace TownOfUsReworked.CustomOptions
             return options;
         }
 
-        protected internal void Cancel(Func<IEnumerator> flashCoro) => Coroutines.Start(CancelCoro(flashCoro));
+        public Action Cancel(Func<IEnumerator> flashCoro)
+        {
+            void Listener() => Coroutines.Start(CancelCoro(flashCoro));
+            return Listener;
+        }
 
-        protected internal IEnumerator CancelCoro(Func<IEnumerator> flashCoro)
+        public IEnumerator CancelCoro(Func<IEnumerator> flashCoro)
         {
             var __instance = Object.FindObjectOfType<GameOptionsMenu>();
 
@@ -76,13 +81,14 @@ namespace TownOfUsReworked.CustomOptions
             yield return flashCoro();
         }
 
-        protected internal void ToDo()
+        public void ToDo()
         {
             SlotButtons.Clear();
-            SlotButtons.Add(new CustomButtonOption(1, MultiMenu.external, "Casual", delegate { LoadPreset("Casual"); }));
-            SlotButtons.Add(new CustomButtonOption(1, MultiMenu.external, "Chaos", delegate { LoadPreset("Chaos"); }));
-            SlotButtons.Add(new CustomButtonOption(1, MultiMenu.external, "Default", delegate { LoadPreset("Default"); }));
-            SlotButtons.Add(new CustomButtonOption(1, MultiMenu.external, "Cancel", delegate { Cancel(FlashWhite); }));
+            SlotButtons.Add(new CustomButtonOption(1, MultiMenu.external, "Casual", LoadPreset("Casual", false)));
+            SlotButtons.Add(new CustomButtonOption(1, MultiMenu.external, "Chaos", LoadPreset("Chaos", false)));
+            SlotButtons.Add(new CustomButtonOption(1, MultiMenu.external, "Default", LoadPreset("Default", true)));
+            SlotButtons.Add(new CustomButtonOption(1, MultiMenu.external, "Last Used", LoadPreset("LastUsed", true)));
+            SlotButtons.Add(new CustomButtonOption(1, MultiMenu.external, "Cancel", Cancel(FlashWhite)));
 
             var options = CreateOptions();
             var __instance = Object.FindObjectOfType<GameOptionsMenu>();
@@ -101,64 +107,68 @@ namespace TownOfUsReworked.CustomOptions
             __instance.Children = new Il2CppReferenceArray<OptionBehaviour>(options.ToArray());
         }
 
-        private void LoadPreset(string presetName)
+        public Action LoadPreset(string presetName, bool data)
         {
-            Utils.LogSomething($"Loading - {presetName}");
-            string text = null;
-
-            try
+            void Listener()
             {
-                text = Utils.CreateText(presetName, "Presets");
-            }
-            catch
-            {
-                Cancel(FlashRed);
-                return;
-            }
+                Utils.LogSomething($"Loading - {presetName}");
+                string text = null;
 
-            if (text == null)
-            {
-                Cancel(FlashRed);
-                return;
-            }
-
-            var splitText = text.Split("\n").ToList();
-
-            while (splitText.Count > 0)
-            {
-                var name = splitText[0].Trim();
-                splitText.RemoveAt(0);
-                var option = AllOptions.Find(o => o.Name.Equals(name, StringComparison.Ordinal));
-
-                if (option == null)
+                try
                 {
-                    try
+                    text = data ? File.ReadAllText(Path.Combine(Application.persistentDataPath, $"{presetName}Settings")) : Utils.CreateText(presetName, "Presets");
+                }
+                catch
+                {
+                    text = "";
+                }
+
+                if (string.IsNullOrEmpty(text))
+                {
+                    Cancel(FlashRed);
+                    return;
+                }
+
+                var splitText = text.Split("\n").ToList();
+
+                while (splitText.Count > 0)
+                {
+                    var name = splitText[0].Trim();
+                    splitText.RemoveAt(0);
+                    var option = AllOptions.Find(o => o.Name.Equals(name, StringComparison.Ordinal));
+
+                    if (option == null)
                     {
-                        splitText.RemoveAt(0);
-                    } catch {}
+                        try
+                        {
+                            splitText.RemoveAt(0);
+                        } catch {}
 
-                    continue;
+                        continue;
+                    }
+
+                    var value = splitText[0];
+                    splitText.RemoveAt(0);
+
+                    switch (option.Type)
+                    {
+                        case CustomOptionType.Number:
+                            option.Set(float.Parse(value), false);
+                            break;
+                        case CustomOptionType.Toggle:
+                            option.Set(bool.Parse(value), false);
+                            break;
+                        case CustomOptionType.String:
+                            option.Set(int.Parse(value), false);
+                            break;
+                    }
                 }
 
-                var value = splitText[0];
-                splitText.RemoveAt(0);
-
-                switch (option.Type)
-                {
-                    case CustomOptionType.Number:
-                        option.Set(float.Parse(value), false);
-                        break;
-                    case CustomOptionType.Toggle:
-                        option.Set(bool.Parse(value), false);
-                        break;
-                    case CustomOptionType.String:
-                        option.Set(int.Parse(value), false);
-                        break;
-                }
+                RPC.SendRPC();
+                Cancel(FlashGreen);
             }
 
-            RPC.SendRPC();
-            Cancel(FlashGreen);
+            return Listener;
         }
 
         private IEnumerator FlashGreen()
@@ -175,9 +185,6 @@ namespace TownOfUsReworked.CustomOptions
             Setting.Cast<ToggleOption>().TitleText.color = Color.white;
         }
 
-        private IEnumerator FlashWhite()
-        {
-            yield return null;
-        }
+        private IEnumerator FlashWhite() => null;
     }
 }

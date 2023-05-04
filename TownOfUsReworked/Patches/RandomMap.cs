@@ -22,8 +22,9 @@ namespace TownOfUsReworked.Patches
                 RoleGen.ResetEverything();
                 previousMap = GameOptionsManager.Instance.currentNormalGameOptions.MapId;
                 vision = CustomGameOptions.CrewVision;
-
-                var map = (byte)((int)CustomGameOptions.Map == 3 ? 4 : ((int)CustomGameOptions.Map == 4 ? 5 : (int)CustomGameOptions.Map));
+                byte[] maps = { 0, 1, 2, 4, 5 };
+                var map = maps[(int)CustomGameOptions.Map];
+                byte[] tbMode = { 1, 0, 2 };
 
                 if (CustomGameOptions.RandomMapEnabled || (map == 5 && !SubmergedCompatibility.Loaded))
                     map = GetRandomMap();
@@ -38,8 +39,8 @@ namespace TownOfUsReworked.Patches
                 GameOptionsManager.Instance.currentNormalGameOptions.VisualTasks = CustomGameOptions.VisualTasks;
                 GameOptionsManager.Instance.currentNormalGameOptions.PlayerSpeedMod = CustomGameOptions.PlayerSpeed;
                 GameOptionsManager.Instance.currentNormalGameOptions.NumImpostors = CustomGameOptions.IntruderCount;
-                GameOptionsManager.Instance.currentNormalGameOptions.GhostsDoTasks = CustomGameOptions.GhostTasksCountToWin;
-                GameOptionsManager.Instance.currentNormalGameOptions.TaskBarMode = (AmongUs.GameOptions.TaskBarMode)CustomGameOptions.TaskBarMode;
+                //GameOptionsManager.Instance.currentNormalGameOptions.GhostsDoTasks = CustomGameOptions.GhostTasksCountToWin;
+                GameOptionsManager.Instance.currentNormalGameOptions.TaskBarMode = (AmongUs.GameOptions.TaskBarMode)tbMode[(int)CustomGameOptions.TaskBarMode];
                 GameOptionsManager.Instance.currentNormalGameOptions.ConfirmImpostor = CustomGameOptions.ConfirmEjects;
                 GameOptionsManager.Instance.currentNormalGameOptions.VotingTime = CustomGameOptions.VotingTime;
                 GameOptionsManager.Instance.currentNormalGameOptions.DiscussionTime = CustomGameOptions.DiscussionTime;
@@ -47,7 +48,6 @@ namespace TownOfUsReworked.Patches
                 GameOptionsManager.Instance.currentNormalGameOptions.EmergencyCooldown = CustomGameOptions.EmergencyButtonCooldown;
                 GameOptionsManager.Instance.currentNormalGameOptions.NumEmergencyMeetings = CustomGameOptions.EmergencyButtonCount;
                 GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown = CustomGameOptions.IntKillCooldown;
-                GameOptionsManager.Instance.currentNormalGameOptions.GhostsDoTasks = CustomGameOptions.GhostTasksCountToWin;
                 GameOptionsManager.Instance.currentNormalGameOptions.NumShortTasks = CustomGameOptions.ShortTasks;
                 GameOptionsManager.Instance.currentNormalGameOptions.NumLongTasks = CustomGameOptions.LongTasks;
                 GameOptionsManager.Instance.currentNormalGameOptions.NumCommonTasks = CustomGameOptions.ShortTasks;

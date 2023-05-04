@@ -6,7 +6,7 @@ namespace TownOfUsReworked.CustomOptions
     [HarmonyPatch]
     public class CustomStringOption : CustomOption
     {
-        protected internal CustomStringOption(int id, MultiMenu menu, string name, string[] values) : base(id, menu, name, CustomOptionType.String, 0)
+        public CustomStringOption(int id, MultiMenu menu, string name, string[] values) : base(id, menu, name, CustomOptionType.String, 0)
         {
             Values = values;
             Format = value => Values[(int)value];
@@ -14,17 +14,17 @@ namespace TownOfUsReworked.CustomOptions
 
         protected string[] Values { get; set; }
 
-        protected internal int Get() => (int)Value;
+        public int Get() => (int)Value;
 
-        protected internal void Increase()
+        public void Increase()
         {
-            if (Get() + 1 > Values.Length)
+            if (Get() + 1 >= Values.Length)
                 Set(0);
             else
                 Set(Get() + 1);
         }
 
-        protected internal void Decrease()
+        public void Decrease()
         {
             if (Get() - 1 < 0)
                 Set(Values.Length - 1);

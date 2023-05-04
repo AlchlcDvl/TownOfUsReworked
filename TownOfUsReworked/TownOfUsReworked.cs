@@ -24,14 +24,14 @@ namespace TownOfUsReworked
     [BepInPlugin(Id, Id, VersionString)]
     [BepInDependency(ReactorPlugin.Id)]
     [BepInDependency(SubmergedCompatibility.SUBMERGED_GUID, BepInDependency.DependencyFlags.SoftDependency)]
-    [BepInDependency("gg.reactor.debugger", BepInDependency.DependencyFlags.SoftDependency)] //Fix debugger overwriting MinPlayers
+    [BepInDependency("gg.reactor.debugger", BepInDependency.DependencyFlags.SoftDependency)]
     [ReactorModFlags(ModFlags.RequireOnAllClients)]
     [BepInProcess("Among Us.exe")]
     public class TownOfUsReworked : BasePlugin
     {
         public const string Id = "TownOfUsReworked";
-        public const string VersionString = "0.1.0.1";
-        public const string CompleteVersionString = "0.1.0.1t";
+        public const string VersionString = "0.2.0.0";
+        public const string CompleteVersionString = "0.2.0.0";
         public readonly static Version Version = new(VersionString);
 
         private readonly static string dev = VersionString[6..];

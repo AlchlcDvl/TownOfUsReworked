@@ -4,8 +4,6 @@ namespace TownOfUsReworked.Data
     {
         FixLights,
         SetExtraVotes,
-        SetExtraVotesPol,
-        SetExtraVotesReb,
         SetSwaps,
         Shift,
         Protect,
@@ -64,6 +62,14 @@ namespace TownOfUsReworked.Data
         SetBomb,
         ForceKill,
         SetUninteractable,
+        Burn,
+        MayorReveal,
+        DictatorReveal,
+        Spell,
+        SetPositive,
+        SetNegative,
+        Knight,
+        SetExiles,
 
         None
     }
@@ -232,8 +238,8 @@ namespace TownOfUsReworked.Data
 
     public enum TaskBarMode
     {
-        Normal,
         MeetingOnly,
+        Normal,
         Invisible
     }
 
@@ -266,7 +272,7 @@ namespace TownOfUsReworked.Data
         SetGATarget,
         SetGuessTarget,
         SetBHTarget,
-        SetActPretendList,
+        SetActPretendList
     }
 
     public enum CustomRPC
@@ -303,11 +309,10 @@ namespace TownOfUsReworked.Data
         SetPos,
         SetSettings,
 
-        AddMayorVoteBank,
-        AddPoliticianVoteBank,
-        AddRebPoliticianVoteBank,
+        AddVoteBank,
         MeetingStart,
         CheckMurder,
+        RemoveMeetings,
 
         SubmergedFixOxygen,
 
@@ -338,9 +343,11 @@ namespace TownOfUsReworked.Data
         Insider,
         Multitasker,
         Ninja,
+        Politician,
         Radar,
         Ruthless,
         Snitch,
+        Swapper,
         Tiebreaker,
         Torch,
         Tunneler,
@@ -371,12 +378,14 @@ namespace TownOfUsReworked.Data
         Coroner,
         Crewmate,
         Detective,
+        Dictator,
         Engineer,
         Escort,
         Inspector,
         Mayor,
         Medic,
         Medium,
+        Monarch,
         Mystic,
         Operative,
         Retributionist,
@@ -384,7 +393,6 @@ namespace TownOfUsReworked.Data
         Seer,
         Sheriff,
         Shifter,
-        Swapper,
         Tracker,
         Transporter,
         VampireHunter,
@@ -441,14 +449,16 @@ namespace TownOfUsReworked.Data
         Banshee,
         Bomber,
         Concealer,
+        Collider,
         Crusader,
         Framer,
         Poisoner,
-        Politician,
         PromotedRebel,
         Rebel,
         Shapeshifter,
         Sidekick,
+        Spellslinger,
+        Stalker,
         Warper,
 
         None
@@ -489,12 +499,14 @@ namespace TownOfUsReworked.Data
         Coroner,
         Crewmate,
         Detective,
+        Dictator,
         Engineer,
         Escort,
         Inspector,
         Mayor,
         Medic,
         Medium,
+        Monarch,
         Mystic,
         Operative,
         Retributionist,
@@ -502,7 +514,6 @@ namespace TownOfUsReworked.Data
         Seer,
         Sheriff,
         Shifter,
-        Swapper,
         Tracker,
         Transporter,
         VampireHunter,
@@ -558,6 +569,7 @@ namespace TownOfUsReworked.Data
         Anarchist,
         Banshee,
         Bomber,
+        Collider,
         Concealer,
         Crusader,
         Framer,
@@ -567,6 +579,8 @@ namespace TownOfUsReworked.Data
         Rebel,
         Shapeshifter,
         Sidekick,
+        Spellslinger,
+        Stalker,
         Warper,
 
         Bait,
@@ -601,6 +615,7 @@ namespace TownOfUsReworked.Data
         Radar,
         Ruthless,
         Snitch,
+        Swapper,
         Tiebreaker,
         Torch,
         Tunneler,
@@ -611,23 +626,23 @@ namespace TownOfUsReworked.Data
 
     public enum InspectorResults
     {
-        MeddlesWithDead, //Janitor, Altruist, Necromancer
-        DealsWithDead, //Coroner, Amnesiac, Cannibal, Retributionist
-        SeeksToProtect, //Guardian Angel, Survivor, Veteran, Medic, Crusader
-        LeadsTheGroup, //Mayor, Godfather, Rebel, Pestilence
-        BringsChaos, //Jackal, Swapper, Shifter, Camouflager, Thief
-        LikesToExplore, //Teleporter, Warper, Beamer, Transporter
-        IsBasic, //Crewmate, Impostor, Murderer, Anarchist
-        DifferentLens, //Glitch, Medium, Engineer, Time Lord, Time Master
-        HasInformation, //Sheriff, Consigliere, Blackmailer, Detective, Inspector
-        MeddlesWithOthers, //Escort, Consort, Jester, Executioner, Actor
-        TouchesPeople, //Arsonist, Plaguebearer, Cryomaniac, Framer, Seer
-        Unseen, //Chameleon, Wraith, Poisoner, Gorgon, Concealer
-        UsesGuns, //Vigilante, Bounty Hunter, Guesser, Mafioso
-        TracksOthers, //Tracker, Mystic, Vampire Hunter, Whisperer, Ambusher
-        IsAggressive, //Werewolf, Juggernaut, Sidekick, Serial Killer
-        CausesConfusion, //Morphling, Disguiser, Shapeshifter, Betrayer, Drunkard
+        DealsWithDead, //Coroner, Amnesiac, Retributionist, Janitor, Cannibal
+        PreservesLife, //Medic, Guardian Angel, Altruist, Necromancer, Crusader
+        LeadsTheGroup, //Mayor, Godfather, Rebel, Pestilence, Survivor
+        BringsChaos, //Shifter, Thief, Camouflager, Whisperer, Jackal
+        SeeksToDestroy, //Arsonist, Cryomaniac, Plaguebearer, Spellslinger
+        MovesAround, //Transporter, Teleporter, Warper, Collider
+        NewLens, //Engineer, Miner, Seer, Dracula, Medium, Monarch
+        GainsInfo, //Sheriff, Consigliere, Blackmailer, Detective, Inspector
+        Manipulative, //Jester, Executioner, Actor, Troll, Framer, Dictator
+        Unseen, //Chameleon, Wraith, Concealer, Poisoner
+        IsCold, //Veteran, Vigilante, Sidekick, Guesser, Mafioso
+        TracksOthers, //Tracker, Mystic, Vampire Hunter, Bounty Hunter, Stalker
+        IsAggressive, //Betrayer, Werewolf, Juggernaut, Serial Killer
+        CreatesConfusion, //Morphling, Disguiser, Shapeshifter
         DropsItems, //Bomber, Operative, Grenadier, Enforcer
+        HindersOthers, //Escort, Consort, Glitch, Ambusher
+        IsBasic, //Crewmate, Impostor, Murderer, Anarchist
         Ghostly, //Revealer, Phantom, Banshee, Ghoul
 
         None
@@ -653,6 +668,8 @@ namespace TownOfUsReworked.Data
         Ignited,
         Haunted,
         Doomed,
+        Dictated,
+        Collided,
 
         None
     }

@@ -12,8 +12,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         public static readonly List<Objectifier> AllObjectifiers = new();
 
         #pragma warning disable
-        public static bool NobodyWins;
-
         public static bool LoveWins;
         public static bool RivalWins;
         public static bool TaskmasterWins;
@@ -32,7 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         }
 
         public string SymbolName = ":";
-        public string TaskText = "- None.";
+        public string TaskText = "- None";
         public bool Hidden;
 
         public string ColoredSymbol => $"{ColorString}{SymbolName}</color>";

@@ -22,8 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             if (!Minigame.Instance)
                 return;
 
-            var Base = Minigame.Instance as MonoBehaviour;
-            SpriteRenderer[] rends = Base.GetComponentsInChildren<SpriteRenderer>();
+            var rends = Minigame.Instance.GetComponentsInChildren<SpriteRenderer>();
             var trans = CustomGameOptions.Transparancy / 100f;
 
             for (int i = 0; i < rends.Length; i++)

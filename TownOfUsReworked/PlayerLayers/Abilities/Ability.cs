@@ -18,8 +18,26 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             AllAbilities.Add(this);
         }
 
-        public string TaskText = "- None.";
+        public string TaskText = "- None";
         public bool Hidden;
+
+        public override void OnMeetingStart(MeetingHud __instance)
+        {
+            base.OnMeetingStart(__instance);
+
+            foreach (var pol in GetAbilities<Politician>(AbilityEnum.Politician))
+            {
+                pol.ExtraVotes.Clear();
+
+                if (pol.VoteBank < 0)
+                    pol.VoteBank = 0;
+
+                pol.VotedOnce = false;
+
+                if (!pol.CanKill)
+                    pol.VoteBank++;
+            }
+        }
 
         public static Ability GetAbility(PlayerControl player) => AllAbilities.Find(x => x.Player == player);
 

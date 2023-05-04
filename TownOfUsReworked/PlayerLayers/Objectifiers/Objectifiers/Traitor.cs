@@ -4,17 +4,14 @@ using TownOfUsReworked.Extensions;
 using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.Data;
 using Hazel;
-using TownOfUsReworked.Custom;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers
 {
     public class Traitor : Objectifier
     {
-        public Role former;
         public bool Turned;
-        public string Objective;
         public Faction Side = Faction.Crew;
-        public bool Betray => (Side == Faction.Intruder && ConstantVariables.LastImp) || (Side == Faction.Syndicate && ConstantVariables.LastSyn);
+        public bool Betray => ((Side == Faction.Intruder && ConstantVariables.LastImp) || (Side == Faction.Syndicate && ConstantVariables.LastSyn)) && !IsDead;
 
         public Traitor(PlayerControl player) : base(player)
         {

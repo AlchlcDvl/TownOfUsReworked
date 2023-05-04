@@ -18,20 +18,20 @@ namespace TownOfUsReworked.BetterMaps.Airship
                 if ((byte)CustomGameOptions.MoveAdmin == 1)
                 {
                     AdminTable.transform.position = new Vector2(-17.269f, 1.375f);
-                    AdminTable.transform.rotation = Quaternion.Euler(new Vector3(0.000f, 0.000f, 350.316f));
-                    AdminTable.transform.localScale = new Vector3(1f, 1f, 1f);
+                    AdminTable.transform.rotation = Quaternion.Euler(new Vector3(0, 0, 350.316f));
+                    AdminTable.transform.localScale = new Vector3(1, 1, 1);
 
                     MapFloating.transform.position = new Vector2(-17.736f, 2.36f);
-                    MapFloating.transform.rotation = Quaternion.Euler(new Vector3(0.000f, 0.000f, 350f));
-                    MapFloating.transform.localScale = new Vector3(1f, 1f, 1f);
+                    MapFloating.transform.rotation = Quaternion.Euler(new Vector3(0, 0, 350));
+                    MapFloating.transform.localScale = new Vector3(1, 1, 1);
                 }
                 else if ((byte)CustomGameOptions.MoveAdmin == 2)
                 {
                     // New Admin
-                    AdminTable.transform.position = new Vector3(5.078f, 3.4f, 1f);
-                    AdminTable.transform.rotation = Quaternion.Euler(new Vector3(0f, 0f, 76.1f));
-                    AdminTable.transform.localScale = new Vector3(1.200f, 1.700f, 1f);
-                    MapFloating.transform.localScale = new Vector3(0f, 0f, 0f);
+                    AdminTable.transform.position = new Vector3(5.078f, 3.4f, 1);
+                    AdminTable.transform.rotation = Quaternion.Euler(new Vector3(0, 0, 76.1f));
+                    AdminTable.transform.localScale = new Vector3(1.200f, 1.700f, 1);
+                    MapFloating.transform.localScale = new Vector3(0, 0, 0);
                 }
             }
 
@@ -42,13 +42,13 @@ namespace TownOfUsReworked.BetterMaps.Airship
                 if ((byte)CustomGameOptions.MoveElectrical == 1)
                 {
                     Electrical.transform.position = new Vector2(-8.818f, 13.184f);
-                    Electrical.transform.localScale = new Vector3(0.909f, 0.818f, 1f);
+                    Electrical.transform.localScale = new Vector3(0.909f, 0.818f, 1);
 
                     var OriginalSupport = GameObject.Find("Vault/cockpit_comms");
                     var SupportElectrical = Object.Instantiate(OriginalSupport, OriginalSupport.transform);
 
                     SupportElectrical.transform.position = new Vector2(-8.792f, 13.242f);
-                    SupportElectrical.transform.localScale = new Vector3(1f, 1f, 1f);
+                    SupportElectrical.transform.localScale = new Vector3(1, 1, 1);
                 }
                 else if ((byte)CustomGameOptions.MoveElectrical == 2)
                     Electrical.transform.position = new Vector2(19.339f, -3.665f);

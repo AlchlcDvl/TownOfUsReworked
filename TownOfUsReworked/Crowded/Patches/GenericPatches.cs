@@ -1,6 +1,6 @@
-﻿using TownOfUsReworked.Crowded.Net;
-using HarmonyLib;
-using Reactor.Networking.Rpc;
+﻿using HarmonyLib;
+using TownOfUsReworked.Data;
+using Hazel;
 
 namespace TownOfUsReworked.Crowded.Patches
 {
@@ -12,7 +12,10 @@ namespace TownOfUsReworked.Crowded.Patches
         {
             public static bool Prefix(PlayerControl __instance, [HarmonyArgument(0)] byte colorId)
             {
-                Rpc<SetColorRpc>.Instance.Send(__instance, colorId);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetColor, SendOption.Reliable);
+                writer.Write(__instance.PlayerId);
+                writer.Write(colorId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
                 return false;
             }
         }
@@ -32,7 +35,7 @@ namespace TownOfUsReworked.Crowded.Patches
 
                 for (var i = 0; i < Palette.PlayerColors.Count; i++)
                 {
-                    if(!PlayerControl.LocalPlayer || PlayerControl.LocalPlayer.CurrentOutfit.ColorId != i)
+                    if (!PlayerControl.LocalPlayer || PlayerControl.LocalPlayer.CurrentOutfit.ColorId != i)
                         __instance.AvailableColors.Add(i);
                 }
 

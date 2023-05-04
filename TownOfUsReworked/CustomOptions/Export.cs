@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Il2CppSystem.Text;
+using System.Text;
 using Reactor.Utilities;
 using Reactor.Utilities.Extensions;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
@@ -22,7 +22,7 @@ namespace TownOfUsReworked.CustomOptions
         public List<OptionBehaviour> OldButtons;
         public List<CustomButtonOption> SlotButtons = new();
 
-        protected internal Export(int id) : base(id, MultiMenu.main, "Save Custom Settings") => Do = ToDo;
+        public Export(int id) : base(id, MultiMenu.main, "Save Custom Settings") => Do = ToDo;
 
         private List<OptionBehaviour> CreateOptions()
         {
@@ -50,9 +50,9 @@ namespace TownOfUsReworked.CustomOptions
             return options;
         }
 
-        protected internal void Cancel(Func<IEnumerator> flashCoro) => Coroutines.Start(CancelCoro(flashCoro));
+        public void Cancel(Func<IEnumerator> flashCoro) => Coroutines.Start(CancelCoro(flashCoro));
 
-        protected internal IEnumerator CancelCoro(Func<IEnumerator> flashCoro)
+        public IEnumerator CancelCoro(Func<IEnumerator> flashCoro)
         {
             var __instance = Object.FindObjectOfType<GameOptionsMenu>();
 
@@ -77,7 +77,7 @@ namespace TownOfUsReworked.CustomOptions
             yield return flashCoro();
         }
 
-        protected internal void ToDo()
+        public void ToDo()
         {
             SlotButtons.Clear();
             SlotButtons.Add(new CustomButtonOption(1, MultiMenu.external, "Slot 1", delegate { ExportSlot(1); }));
@@ -116,7 +116,7 @@ namespace TownOfUsReworked.CustomOptions
 
             foreach (var option in AllOptions)
             {
-                if (option.Type is CustomOptionType.Button or CustomOptionType.Header)
+                if (option.Type is CustomOptionType.Button or CustomOptionType.Header or CustomOptionType.Nested)
                     continue;
 
                 builder.AppendLine(option.Name);
@@ -153,9 +153,6 @@ namespace TownOfUsReworked.CustomOptions
             Setting.Cast<ToggleOption>().TitleText.color = Color.white;
         }
 
-        private IEnumerator FlashWhite()
-        {
-            yield return null;
-        }
+        private IEnumerator FlashWhite() => null;
     }
 }

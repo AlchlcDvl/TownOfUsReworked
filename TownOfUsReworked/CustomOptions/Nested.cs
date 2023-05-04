@@ -24,7 +24,7 @@ namespace TownOfUsReworked.CustomOptions
         private readonly CustomButtonOption CancelButton;
         private readonly CustomHeaderOption Header;
 
-        protected internal CustomNestedOption(int id, MultiMenu menu, string name) : base(id, menu, name, CustomOptionType.Nested, 0)
+        public CustomNestedOption(int id, MultiMenu menu, string name) : base(id, menu, name, CustomOptionType.Nested, 0)
         {
             InternalOptions = new List<CustomOption>();
             Header = new CustomHeaderOption(-1, MultiMenu.external, name);
@@ -34,7 +34,7 @@ namespace TownOfUsReworked.CustomOptions
             AllCancelButtons.Add(CancelButton);
         }
 
-        protected internal void ToDo()
+        public void ToDo()
         {
             var options = CreateOptions();
             var __instance = Object.FindObjectOfType<GameOptionsMenu>();
@@ -130,14 +130,11 @@ namespace TownOfUsReworked.CustomOptions
             return options;
         }
 
-        protected internal void Cancel(Func<IEnumerator> flashCoro) => Coroutines.Start(CancelCoro(flashCoro));
+        public void Cancel(Func<IEnumerator> flashCoro) => Coroutines.Start(CancelCoro(flashCoro));
 
-        private IEnumerator FlashWhite()
-        {
-            yield return null;
-        }
+        private IEnumerator FlashWhite() => null;
 
-        protected internal IEnumerator CancelCoro(Func<IEnumerator> flashCoro)
+        public IEnumerator CancelCoro(Func<IEnumerator> flashCoro)
         {
             var __instance = Object.FindObjectOfType<GameOptionsMenu>();
 
@@ -164,31 +161,31 @@ namespace TownOfUsReworked.CustomOptions
             Setting.Cast<ToggleOption>().TitleText.text = Name;
         }
 
-        protected internal void SetRole2(RoleEnum role)
+        public void SetRole2(RoleEnum role)
         {
             foreach (var option in InternalOptions)
                 option.SetRole(role);
         }
 
-        protected internal void SetAbility2(AbilityEnum ability)
+        public void SetAbility2(AbilityEnum ability)
         {
             foreach (var option in InternalOptions)
                 option.SetAbility(ability);
         }
 
-        protected internal void SetObjectifier2(ObjectifierEnum objectifier)
+        public void SetObjectifier2(ObjectifierEnum objectifier)
         {
             foreach (var option in InternalOptions)
                 option.SetObjectifier(objectifier);
         }
 
-        protected internal void SetModifier2(ModifierEnum modifier)
+        public void SetModifier2(ModifierEnum modifier)
         {
             foreach (var option in InternalOptions)
                 option.SetModifier(modifier);
         }
 
-        protected internal void SetMaps2(params Map[] maps)
+        public void SetMaps2(params Map[] maps)
         {
             foreach (var option in InternalOptions)
                 option.SetMaps(maps);

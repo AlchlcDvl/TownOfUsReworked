@@ -4,6 +4,7 @@ using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.Data;
 using System.Collections.Generic;
+using TownOfUsReworked.PlayerLayers;
 
 namespace TownOfUsReworked.Patches
 {
@@ -35,8 +36,11 @@ namespace TownOfUsReworked.Patches
                 var gameEnded = false;
                 var includeNEs = false;
 
-                if (Role.NobodyWins || Objectifier.NobodyWins)
-                    return;
+                if (PlayerLayer.NobodyWins)
+                {
+                    gameEnded = true;
+                    includeNEs = true;
+                }
                 else if (Role.AllNeutralsWin)
                 {
                     foreach (var role2 in Role.GetRoles(Faction.Neutral))

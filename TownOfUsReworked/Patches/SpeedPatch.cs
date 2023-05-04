@@ -19,10 +19,7 @@ namespace TownOfUsReworked.Patches
         public static void PostfixPhysics(PlayerPhysics __instance)
         {
             if (__instance.AmOwner && GameData.Instance && __instance.myPlayer.CanMove)
-            {
-                __instance.body.velocity *= __instance.myPlayer.GetAppearance().SpeedFactor * (__instance.myPlayer.Data.IsDead && !__instance.myPlayer.Is(RoleEnum.Phantom) &&
-                    !__instance.myPlayer.Is(RoleEnum.Revealer) && !__instance.myPlayer.Is(RoleEnum.Ghoul) && !__instance.myPlayer.Is(RoleEnum.Banshee) ? CustomGameOptions.GhostSpeed : 1);
-            }
+                __instance.body.velocity *= __instance.myPlayer.GetAppearance().SpeedFactor;
 
             if (__instance.myPlayer.Is(RoleEnum.Janitor))
             {

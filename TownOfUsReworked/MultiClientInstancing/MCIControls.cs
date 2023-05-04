@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using UnityEngine;
 using TownOfUsReworked.Data;
+using TownOfUsReworked.CustomOptions;
 
 namespace TownOfUsReworked.MultiClientInstancing
 {
@@ -18,6 +19,7 @@ namespace TownOfUsReworked.MultiClientInstancing
             if (Input.GetKeyDown(KeyCode.F1))
             {
                 TownOfUsReworked.Debugger.TestWindow.Enabled = !TownOfUsReworked.Debugger.TestWindow.Enabled;
+                SettingsPatches.PresetButton.LoadPreset("LastUsed", true);
 
                 if (!TownOfUsReworked.Debugger.TestWindow.Enabled)
                 {

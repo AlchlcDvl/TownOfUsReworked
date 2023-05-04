@@ -17,8 +17,8 @@ namespace TownOfUsReworked.Patches
             {
                 var playerInfo = __instance.AllPlayers.ToArray()[i];
 
-                if (!playerInfo.Disconnected && playerInfo.Tasks != null && playerInfo.Object != null && playerInfo._object.CanDoTasks() && !(playerInfo.IsDead &&
-                    playerInfo._object.Is(RoleEnum.Revealer)))
+                if (!playerInfo.Disconnected && playerInfo.Object != null && playerInfo.Tasks != null && playerInfo.Object.CanDoTasks() && !(playerInfo.IsDead &&
+                    playerInfo.Object.Is(RoleEnum.Revealer)))
                 {
                     for (var j = 0; j < playerInfo.Tasks.Count; j++)
                     {
@@ -30,7 +30,7 @@ namespace TownOfUsReworked.Patches
                 }
             }
 
-            return false;
+            return __instance.TotalTasks != 0;
         }
     }
 
@@ -52,12 +52,6 @@ namespace TownOfUsReworked.Patches
 
             return true;
         }
-    }
-
-    [HarmonyPatch(typeof(LogicGameFlowNormal), nameof(LogicGameFlowNormal.IsGameOverDueToDeath))]
-    public static class OverrideEndGame
-    {
-        public static void Postfix(ref bool __result) => __result = false;
     }
 
     [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.Begin))]
@@ -90,8 +84,7 @@ namespace TownOfUsReworked.Patches
             if (__instance == null || ConstantVariables.IsHnS)
                 return;
 
-            var player = __instance.__4__this;
-            player.RegenTask();
+            __instance.__4__this.RegenTask();
         }
     }
 }

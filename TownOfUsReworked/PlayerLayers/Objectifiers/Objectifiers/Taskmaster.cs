@@ -1,7 +1,5 @@
 using TownOfUsReworked.Data;
 using TownOfUsReworked.CustomOptions;
-using System.Collections.Generic;
-using TownOfUsReworked.Classes;
 
 namespace TownOfUsReworked.PlayerLayers.Objectifiers
 {
@@ -9,7 +7,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
     {
         public bool Revealed => TasksLeft <= CustomGameOptions.TMTasksRemaining;
         public bool WinTasksDone;
-        public List<ArrowBehaviour> ImpArrows = new();
 
         public Taskmaster(PlayerControl player) : base(player)
         {
@@ -18,24 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             SymbolName = "µ";
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Taskmaster : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Taskmaster;
-            ImpArrows = new();
             Type = LayerEnum.Taskmaster;
-        }
-
-        public override void OnLobby() => ImpArrows.DestroyAll();
-
-        public override void UpdateHud(HudManager __instance)
-        {
-            base.UpdateHud(__instance);
-
-            if (PlayerControl.LocalPlayer.Data.IsDead || Player.Data.IsDead)
-            {
-                ImpArrows.DestroyAll();
-                ImpArrows.Clear();
-            }
-
-            foreach (var arrow in ImpArrows)
-                arrow.target = Player.transform.position;
         }
     }
 }

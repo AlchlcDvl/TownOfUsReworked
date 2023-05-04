@@ -26,7 +26,7 @@ namespace TownOfUsReworked.Patches
                     var role = Role.GetRole<Phantom>(__instance);
                     role.Caught = true;
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CatchPhantom, SendOption.Reliable);
-                    writer.Write(role.Player.PlayerId);
+                    writer.Write(role.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
             }
@@ -44,7 +44,7 @@ namespace TownOfUsReworked.Patches
                     var role = Role.GetRole<Revealer>(__instance);
                     role.Caught = true;
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CatchRevealer, SendOption.Reliable);
-                    writer.Write(role.Player.PlayerId);
+                    writer.Write(role.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
             }
@@ -55,7 +55,7 @@ namespace TownOfUsReworked.Patches
                     var role = Role.GetRole<Banshee>(__instance);
                     role.Caught = true;
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CatchBanshee, SendOption.Reliable);
-                    writer.Write(role.Player.PlayerId);
+                    writer.Write(role.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
             }
@@ -66,7 +66,7 @@ namespace TownOfUsReworked.Patches
                     var role = Role.GetRole<Ghoul>(__instance);
                     role.Caught = true;
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CatchGhoul, SendOption.Reliable);
-                    writer.Write(role.Player.PlayerId);
+                    writer.Write(role.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
             }
