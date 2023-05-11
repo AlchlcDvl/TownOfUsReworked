@@ -158,7 +158,46 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
   <summary>Changelog</summary>
   <details>
     <summary>v0.2.1</summary>
-    <ul> <li>Addition: Added a disconnect handler to hopefully reduce future errors</li> </ul>
+    <ul> <li>New Preset: Ranked</li> </ul>
+    <ul> <li>Return: Drunkard's back, new and improved!</li> </ul>
+    <ul> <li>Return: Cosmetic sections are back</li> </ul>
+    <ul> <li>Addition: Added the /summary (or /sum for short) command for being able to see the game summary of the previous game when in lobby</li> </ul>
+    <ul> <li>Addition: Dwarf and Giant were changed interally, mix and match with the settings to find things out ;)</li> </ul>
+    <ul> <li>Buff: Completing tasks restores a charge for roles with limited uses</li> </ul>
+    <ul> <li>Buff: On low player counts, Amnesiac now becomes a Thief</li> </ul>
+    <ul> <li>Buff: Monarchs with alive knights now cannot be killed as long as one of the alive knights is Crew (Ruthless still bypasses this)</li> </ul>
+    <ul> <li>Nerf: Clicking a Revealer who has finished their tasks now disables their ability</li> </ul>
+    <ul> <li>Nerf: Everyone is told who has been spelled during meetings, so at least the dangers of Spellslinger is known</li> </ul>
+    <ul> <li>Nerf: Misfiring on a framed innocent player will no longer kill the Vigilante, unless the Misfire setting is turned on</li> </ul>
+    <ul> <li>Recode: Cosmetic handling was recoded to work like how The Other Roles does it</li> </ul>
+    <ul> <li>Optimisation: Some code was optimsed</li> </ul>
+    <ul> <li>Improvement: Turned Traitors and Fanatics with the Assassin ability now have their guessing menus updated to their new factions</li> </ul>
+    <ul> <li>Improvement: Added a paging behaviour for the guessing menu, to prevent guess buttons going off-screen</li> </ul>
+    <ul> <li>Improvement: The mod's weight has been heavily reduced</li> </ul>
+    <ul> <li>Improvement: Improved player targetting some more</li> </ul>
+    <ul> <li>Change: Teleporter's color was changed because it was too close to the Grenadier's green</li> </ul>
+    <ul> <li>Critical Fix: Fixed Airship crashing players when loading in</li> </ul>
+    <ul> <li>Bug Fix: Fixed the weird issue with blank abilities appearing</li> </ul>
+    <ul> <li>Bug Fix: Fixed being able to target dead players and postmortal roles</li> </ul>
+    <ul> <li>Bug Fix: Fixed loading presets not actually closing the option menu</li> </ul>
+    <ul> <li>Bug Fix: Changing the screen resolution no longer clips the settings out of bounds</li> </ul>
+    <ul> <li>Bug Fix: Fixed players being assigned multiple abilities</li> </ul>
+    <ul> <li>Modifier Fix: Fixed Volatile weirding out the spawn in sequence</li> </ul>
+    <ul> <li>Objectifier Fix: Fixed Corrupted being unable to kill players</li> </ul>
+    <ul> <li>Ability Fix: Fixed Multitasker not making the task windows transparent</li> </ul>
+    <ul> <li>Role + Ability Fix: Fixed the weird scaling of the guessing menu (it looped the size for every button added lmao, making it smaller with each possible guess added)</li> </ul>
+    <ul> <li>Role Fix: Fixed incorrect distance scaling for a lot of roles</li> </ul>
+    <ul> <li>Role Fix: Fixed Anarchist's kill cooldown not resetting correctly on game start</li> </ul>
+    <ul> <li>Role Fix: Fixed Stalker's Stalk button not appearing</li> </ul>
+    <ul> <li>Role Fix: Fixed (Collider/Spellslinger/Stalker)-Rebels not having their buttons</li> </ul>
+    <ul> <li>Role Fix: Fixed Executioner being unable to doom players</li> </ul>
+    <ul> <li>Role Fix: Fixed Jester being unable to haunt players</li> </ul>
+    <ul> <li>Role Fix: Fixed Bomber and Enforcer bomb kills being marked as suicides</li> </ul>
+    <ul> <li>Role Fix: Enforcer can no longer place bombs on their teammates</li> </ul>
+    <ul> <li>Role Fix: Fixed Spellslinger not being able to see who they spelled</li> </ul>
+    <ul> <li>Role Fix: Fixed Tracker-Retributionist's Track button not updating</li> </ul>
+    <ul> <li>Role Fix: Retributionist's ability uses now update correctly</li> </ul>
+    <ul> <li>Potential Fix: Lag on the cosmetics screen and the cosmetic icons not having the hats in them</li> </ul>
   </details>
   <details>
     <summary>v0.2.0</summary>
