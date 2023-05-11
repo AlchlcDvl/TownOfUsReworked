@@ -64,7 +64,7 @@ namespace TownOfUsReworked.MultiClientInstancing
                 return;
 
             var clientId = Clients.FirstOrDefault(x => x.Value.Character.PlayerId == id).Key;
-            Clients.Remove(clientId, out ClientData outputData);
+            Clients.Remove(clientId, out var outputData);
             PlayerIdClientId.Remove(id);
             AmongUsClient.Instance.RemovePlayer(clientId, DisconnectReasons.ExitGame);
             AmongUsClient.Instance.allClients.Remove(outputData);

@@ -29,8 +29,8 @@ namespace TownOfUsReworked
     {
         public const string Id = "me.alchlcdvl.reworked";
         public const string Name = "TownOfUsReworked";
-        public const string VersionString = "0.2.1.0";
-        public const string CompleteVersionString = "0.2.1.0t";
+        public const string VersionString = "0.2.2.0";
+        public const string CompleteVersionString = "0.2.2.0";
         public readonly static Version Version = new(VersionString);
 
         private readonly static string dev = VersionString[6..];

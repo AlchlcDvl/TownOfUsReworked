@@ -13,7 +13,7 @@ namespace TownOfUsReworked.Cosmetics
 {
     public static class CosmeticsLoader
     {
-        private const string REPO = "https://raw.githubusercontent.com/AlchlcDvl/TownOfUsReworked/master/Cosmetics";
+        private const string REPO = "https://raw.githubusercontent.com/AlchlcDvl/ReworkedHats/master";
         public readonly static List<CustomNameplateOnline> NameplateDetails = new();
         public readonly static List<CustomHatOnline> HatDetails = new();
         public readonly static List<CustomVisorOnline> VisorDetails = new();
@@ -55,6 +55,21 @@ namespace TownOfUsReworked.Cosmetics
             }
         }
 
+        private static async void LaunchVisorFetcherAsync()
+        {
+            try
+            {
+                var status = await FetchVisors();
+
+                if (status != HttpStatusCode.OK)
+                    Utils.LogSomething("Custom Visors could not be loaded");
+            }
+            catch (Exception e)
+            {
+                Utils.LogSomething("Unable to fetch visors\n" + e.Message);
+            }
+        }
+
         public static async Task<HttpStatusCode> FetchHats()
         {
             var http = new HttpClient();
@@ -72,10 +87,10 @@ namespace TownOfUsReworked.Cosmetics
                     return HttpStatusCode.ExpectationFailed;
                 }
 
-                var json = await response.Content.ReadAsStringAsync();
-                var jobj = JObject.Parse(json)["CustomHats"];
+                var json = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                var jobj = JObject.Parse(json)["hats"];
 
-                if (!jobj.HasValues)
+                if (jobj == null || jobj?.HasValues == false)
                     return HttpStatusCode.ExpectationFailed;
 
                 var hatdatas = new List<CustomHatOnline>();
@@ -152,29 +167,13 @@ namespace TownOfUsReworked.Cosmetics
             }
             catch (Exception ex)
             {
-                Utils.LogSomething(ex.ToString());
                 Utils.LogSomething(ex);
             }
 
             return HttpStatusCode.OK;
         }
 
-        private static async void LaunchVisorFetcherAsync()
-        {
-            try
-            {
-                var status = await FetchVisor();
-
-                if (status != HttpStatusCode.OK)
-                    Utils.LogSomething("Custom Visor could not be loaded");
-            }
-            catch (Exception e)
-            {
-                Utils.LogSomething("Unable to fetch visors\n" + e.Message);
-            }
-        }
-
-        public static async Task<HttpStatusCode> FetchVisor()
+        public static async Task<HttpStatusCode> FetchVisors()
         {
             var http = new HttpClient();
             http.DefaultRequestHeaders.CacheControl = new() { NoCache = true };
@@ -191,10 +190,10 @@ namespace TownOfUsReworked.Cosmetics
                     return HttpStatusCode.ExpectationFailed;
                 }
 
-                var json = await response.Content.ReadAsStringAsync();
-                var jobj = JObject.Parse(json)["CustomVisors"];
+                var json = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                var jobj = JObject.Parse(json)["visors"];
 
-                if (!jobj.HasValues)
+                if (jobj == null || jobj?.HasValues == false)
                     return HttpStatusCode.ExpectationFailed;
 
                 var visordatas = new List<CustomVisorOnline>();
@@ -245,7 +244,7 @@ namespace TownOfUsReworked.Cosmetics
 
                 foreach (var file in markedfordownload)
                 {
-                    var hatFileResponse = await http.GetAsync($"{REPO}/CustomVisors/{file}", HttpCompletionOption.ResponseContentRead);
+                    var hatFileResponse = await http.GetAsync($"{REPO}/visors/{file}", HttpCompletionOption.ResponseContentRead);
 
                     if (hatFileResponse.StatusCode != HttpStatusCode.OK)
                         continue;
@@ -260,7 +259,6 @@ namespace TownOfUsReworked.Cosmetics
             }
             catch (Exception ex)
             {
-                Utils.LogSomething(ex.ToString());
                 Utils.LogSomething(ex);
             }
 
@@ -292,10 +290,10 @@ namespace TownOfUsReworked.Cosmetics
                     return HttpStatusCode.ExpectationFailed;
                 }
 
-                var json = await response.Content.ReadAsStringAsync();
-                var jobj = JObject.Parse(json)["CustomNameplates"];
+                var json = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                var jobj = JObject.Parse(json)["nameplates"];
 
-                if (!jobj.HasValues)
+                if (jobj == null || jobj?.HasValues == false)
                     return HttpStatusCode.ExpectationFailed;
 
                 var NamePlateDatas = new List<CustomNameplateOnline>();
@@ -340,7 +338,7 @@ namespace TownOfUsReworked.Cosmetics
 
                 foreach (var file in markedfordownload)
                 {
-                    var NameplateFileResponse = await http.GetAsync($"{REPO}/CustomNameplates/{file}", HttpCompletionOption.ResponseContentRead);
+                    var NameplateFileResponse = await http.GetAsync($"{REPO}/nameplates/{file}", HttpCompletionOption.ResponseContentRead);
 
                     if (NameplateFileResponse.StatusCode != HttpStatusCode.OK)
                         continue;
@@ -355,7 +353,6 @@ namespace TownOfUsReworked.Cosmetics
             }
             catch (Exception ex)
             {
-                Utils.LogSomething(ex.ToString());
                 Utils.LogSomething(ex);
             }
 

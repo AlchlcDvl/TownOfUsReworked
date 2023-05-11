@@ -122,6 +122,7 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 | Among Us - Version | Mod Version | Link |
 |--------------------|-------------|------|
+| 2023.3.28 (s & e) | v0.2.2 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.2.2/TownOfUsReworked.zip) |
 | 2023.3.28 (s & e) | v0.2.1 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.2.1/TownOfUsReworked.zip) |
 | 2023.3.28 (s & e) | v0.2.0 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.2.0/TownOfUsReworked.zip) |
 | 2023.3.28 (s & e) | v0.1.0-dev1 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.1.0-dev1/TownOfUsReworked.zip) |
@@ -156,6 +157,11 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 <details>
   <summary>Changelog</summary>
+  <details>
+    <summary>v0.2.2</summary>
+    <ul> <li>Critical Fix: Fixed the sudden issue of players just not dying at all</li> </ul>
+    <ul> <li>Temporary Removal: Custom cosmetics are temporarily removed till I figure out why they aren't loading</li> </ul>
+  </details>
   <details>
     <summary>v0.2.1</summary>
     <ul> <li>New Preset: Ranked</li> </ul>
