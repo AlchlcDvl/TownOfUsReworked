@@ -41,7 +41,7 @@ namespace TownOfUsReworked.Patches
 
             var totalEvilsCount = PlayerControl.AllPlayerControls.ToArray().Count(x => ((!x.Is(Faction.Crew) && !x.Is(RoleAlignment.NeutralBen) && !x.Is(RoleAlignment.NeutralEvil)) ||
                 x.NotOnTheSameSide()) && !(x.Data.IsDead || x.Data.Disconnected));
-            var totalEvilsRemaining = CustomGameOptions.GameMode == GameMode.AllAny ? "an unknown number of" : $"{totalEvilsCount}";
+            var totalEvilsRemaining = ConstantVariables.IsAA ? "an unknown number of" : $"{totalEvilsCount}";
             var evils = totalEvilsCount > 1 ? "evils" : "evil";
             var IsAre = totalEvilsCount > 1 ? "are" : "is";
             var totalEvils = $"There {IsAre} {totalEvilsRemaining} <color=#FF0000FF>{evils}</color> remaining.";
@@ -65,15 +65,15 @@ namespace TownOfUsReworked.Patches
             {
                 if (CustomGameOptions.CustomEject)
                 {
-                    if (GameOptionsManager.Instance.currentNormalGameOptions.MapId is 0 or 3)
+                    if (TownOfUsReworked.VanillaOptions.MapId is 0 or 3)
                         ejectString = $"{player.name} is now one with space.";
-                    else if (GameOptionsManager.Instance.currentNormalGameOptions.MapId == 1)
+                    else if (TownOfUsReworked.VanillaOptions.MapId == 1)
                         ejectString = $"{player.name} is now experiencing fatal free fall.";
-                    else if (GameOptionsManager.Instance.currentNormalGameOptions.MapId == 2)
+                    else if (TownOfUsReworked.VanillaOptions.MapId == 2)
                         ejectString = $"{player.name} is now enjoying a hot bath.";
-                    else if (GameOptionsManager.Instance.currentNormalGameOptions.MapId == 4)
+                    else if (TownOfUsReworked.VanillaOptions.MapId == 4)
                         ejectString = $"{player.name} is now experiencing gravity.";
-                    else if (GameOptionsManager.Instance.currentNormalGameOptions.MapId == 5)
+                    else if (TownOfUsReworked.VanillaOptions.MapId == 5)
                         ejectString = $"{player.name} is now off to a scuba adventure.";
                 }
                 else

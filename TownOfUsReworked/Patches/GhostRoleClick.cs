@@ -43,6 +43,7 @@ namespace TownOfUsReworked.Patches
                 {
                     var role = Role.GetRole<Revealer>(__instance);
                     role.Caught = true;
+                    role.CompletedTasks = false;
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CatchRevealer, SendOption.Reliable);
                     writer.Write(role.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);

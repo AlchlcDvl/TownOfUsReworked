@@ -15,7 +15,7 @@ namespace TownOfUsReworked.Patches
         {
             public static void Postfix()
             {
-                if (SubmergedCompatibility.IsSubmerged())
+                if (SubmergedCompatibility.IsSubmerged)
                     Coroutines.Start(SubmergedCompatibility.WaitStart(() => SubmergedCompatibility.ResetTimers(false)));
             }
         }
@@ -25,16 +25,10 @@ namespace TownOfUsReworked.Patches
         {
             public static void Postfix(HudManager __instance)
             {
-                if (SubmergedCompatibility.IsSubmerged())
+                if (SubmergedCompatibility.IsSubmerged)
                 {
-                    if (PlayerControl.LocalPlayer.Data.IsDead && PlayerControl.LocalPlayer.Is(RoleEnum.Revealer))
-                        __instance.MapButton.transform.parent.Find(__instance.MapButton.name + "(Clone)").gameObject.SetActive(Role.GetRole<Revealer>(PlayerControl.LocalPlayer).Caught);
-                    else if (PlayerControl.LocalPlayer.Data.IsDead && PlayerControl.LocalPlayer.Is(RoleEnum.Phantom))
-                        __instance.MapButton.transform.parent.Find(__instance.MapButton.name + "(Clone)").gameObject.SetActive(Role.GetRole<Phantom>(PlayerControl.LocalPlayer).Caught);
-                    else if (PlayerControl.LocalPlayer.Data.IsDead && PlayerControl.LocalPlayer.Is(RoleEnum.Ghoul))
-                        __instance.MapButton.transform.parent.Find(__instance.MapButton.name + "(Clone)").gameObject.SetActive(Role.GetRole<Ghoul>(PlayerControl.LocalPlayer).Caught);
-                    else if (PlayerControl.LocalPlayer.Data.IsDead && PlayerControl.LocalPlayer.Is(RoleEnum.Banshee))
-                        __instance.MapButton.transform.parent.Find(__instance.MapButton.name + "(Clone)").gameObject.SetActive(Role.GetRole<Banshee>(PlayerControl.LocalPlayer).Caught);
+                    if (PlayerControl.LocalPlayer.Data.IsDead && PlayerControl.LocalPlayer.IsPostmortal())
+                        __instance.MapButton.transform.parent.Find(__instance.MapButton.name + "(Clone)").gameObject.SetActive(PlayerControl.LocalPlayer.Caught());
                 }
             }
         }

@@ -4,8 +4,9 @@ using HarmonyLib;
 using UnityEngine;
 using Il2CppInterop.Runtime.Attributes;
 using TownOfUsReworked.CustomOptions;
+using TownOfUsReworked.BetterMaps.Airship;
 
-namespace TownOfUsReworked.BetterMaps.Airship
+namespace TownOfUsReworked.Monos
 {
     [HarmonyPatch]
     public class Tasks : MonoBehaviour

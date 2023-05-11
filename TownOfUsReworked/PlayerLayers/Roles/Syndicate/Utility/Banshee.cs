@@ -30,7 +30,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AbilitiesText = "- You can scream loudly, blocking all players as long as you are not clicked";
             RoleAlignment = RoleAlignment.SyndicateUtil;
             AlignmentName = SSu;
-            InspectorResults = InspectorResults.Ghostly;
             Color = CustomGameOptions.CustomSynColors ? Colors.Banshee : Colors.Syndicate;
             Blocked = new();
             Type = LayerEnum.Banshee;
@@ -90,7 +89,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Player.Visible = true;
             var color = new Color(1f, 1f, 1f, 0f);
 
-            var maxDistance = ShipStatus.Instance.MaxLightRadius * GameOptionsManager.Instance.currentNormalGameOptions.CrewLightMod;
+            var maxDistance = ShipStatus.Instance.MaxLightRadius * TownOfUsReworked.VanillaOptions.CrewLightMod;
             var distance = (PlayerControl.LocalPlayer.GetTruePosition() - Player.GetTruePosition()).magnitude;
 
             var distPercent = distance / maxDistance;
@@ -124,7 +123,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
             writer.Write((byte)ActionsRPC.Scream);
-            writer.Write(Player.PlayerId);
+            writer.Write(PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
             TimeRemaining = CustomGameOptions.ScreamDuration;
             Scream();

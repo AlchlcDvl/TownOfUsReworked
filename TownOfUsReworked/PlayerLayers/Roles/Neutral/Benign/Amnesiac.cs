@@ -30,7 +30,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleAlignment = RoleAlignment.NeutralBen;
             AlignmentName = NB;
             Color = CustomGameOptions.CustomNeutColors ? Colors.Amnesiac : Colors.Neutral;
-            Objectives = "- Find a dead body, remember their role and then fulfill the win condition for that role";
+            Objectives = "- Find a dead body, remember their role and then fulfill the win condition for that role\n- If there are less than 7 players alive, you will become a " +
+                "<color=#80FF00FF>Thief</color>";
             BodyArrows = new();
             InspectorResults = InspectorResults.DealsWithDead;
             Type = LayerEnum.Amnesiac;
@@ -52,6 +53,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             BodyArrows.Clear();
         }
 
+        public void TurnThief()
+        {
+            var newRole = new Thief(Player);
+            newRole.RoleUpdate(this);
+
+            if (Player == PlayerControl.LocalPlayer)
+                Utils.Flash(Colors.Thief);
+
+            if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
+                Utils.Flash(Colors.Seer);
+        }
+
         public void Remember()
         {
             if (Utils.IsTooFar(Player, RememberButton.TargetBody))
@@ -62,7 +75,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Utils.Spread(Player, player);
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
             writer.Write((byte)ActionsRPC.Remember);
-            writer.Write(Player.PlayerId);
+            writer.Write(PlayerId);
             writer.Write(playerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
             Remember(this, player);
@@ -98,7 +111,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Role newRole = role.RoleType switch
             {
                 RoleEnum.Anarchist => new Anarchist(amnesiac),
-                RoleEnum.Arsonist => new Arsonist(amnesiac) { DousedPlayers = ((Arsonist)role).DousedPlayers },
+                RoleEnum.Arsonist => new Arsonist(amnesiac) { Doused = ((Arsonist)role).Doused },
                 RoleEnum.Blackmailer => new Blackmailer(amnesiac),
                 RoleEnum.Bomber => new Bomber(amnesiac),
                 RoleEnum.Camouflager => new Camouflager(amnesiac),
@@ -108,7 +121,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 RoleEnum.Consigliere => new Consigliere(amnesiac) { Investigated = ((Consigliere)role).Investigated },
                 RoleEnum.Consort => new Consort(amnesiac),
                 RoleEnum.Crewmate => new Crewmate(amnesiac),
-                RoleEnum.Cryomaniac => new Cryomaniac(amnesiac) { DousedPlayers = ((Cryomaniac)role).DousedPlayers },
+                RoleEnum.Cryomaniac => new Cryomaniac(amnesiac) { Doused = ((Cryomaniac)role).Doused },
                 RoleEnum.Detective => new Detective(amnesiac),
                 RoleEnum.Disguiser => new Disguiser(amnesiac),
                 RoleEnum.Dracula => new Dracula(amnesiac) { Converted = ((Dracula)role).Converted },
@@ -143,7 +156,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 RoleEnum.Shapeshifter => new Shapeshifter(amnesiac),
                 RoleEnum.Murderer => new Murderer(amnesiac),
                 RoleEnum.Survivor => new Survivor(amnesiac) { UsesLeft = ((Survivor)role).UsesLeft },
-                RoleEnum.Plaguebearer => new Plaguebearer(amnesiac) { InfectedPlayers = ((Plaguebearer)role).InfectedPlayers },
+                RoleEnum.Plaguebearer => new Plaguebearer(amnesiac) { Infected = ((Plaguebearer)role).Infected },
                 RoleEnum.Pestilence => new Pestilence(amnesiac),
                 RoleEnum.SerialKiller => new SerialKiller(amnesiac),
                 RoleEnum.Werewolf => new Werewolf(amnesiac),
@@ -156,6 +169,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 RoleEnum.Warper => new Warper(amnesiac),
                 RoleEnum.Wraith => new Wraith(amnesiac),
                 RoleEnum.Mystic => new Mystic(amnesiac),
+                RoleEnum.Dictator => new Dictator(amnesiac),
                 RoleEnum.Seer => new Seer(amnesiac),
                 RoleEnum.Actor => new Actor(amnesiac) { PretendRoles = actor },
                 RoleEnum.BountyHunter => new BountyHunter(amnesiac) { TargetPlayer = target },
@@ -244,7 +258,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         var renderer = gameObj.AddComponent<SpriteRenderer>();
                         renderer.sprite = AssetManager.GetSprite("Arrow");
                         arrow.image = renderer;
-                        GetRole(PlayerControl.LocalPlayer).AllArrows.Add(snitch.PlayerId, arrow);
+                        LocalRole.AllArrows.Add(snitch.PlayerId, arrow);
                     }
                     else if (snitch.TasksDone && PlayerControl.LocalPlayer == snitch.Player)
                     {
@@ -268,7 +282,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         var renderer = gameObj.AddComponent<SpriteRenderer>();
                         renderer.sprite = AssetManager.GetSprite("Arrow");
                         arrow.image = renderer;
-                        GetRole(PlayerControl.LocalPlayer).AllArrows.Add(revealer.PlayerId, arrow);
+                        LocalRole.AllArrows.Add(revealer.PlayerId, arrow);
                     }
                 }
             }
@@ -313,8 +327,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     BodyArrows.GetValueSafe(body.ParentId).target = body.TruePosition;
                 }
             }
-            else if (BodyArrows.Count != 0)
+            else if (BodyArrows.Count != 0 || PlayerControl.AllPlayerControls.Count <= 4)
                 OnLobby();
+
+            if (PlayerControl.AllPlayerControls.Count <= 4 && !IsDead)
+            {
+                TurnThief();
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
+                writer.Write((byte)TurnRPC.TurnThief);
+                writer.Write(PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+            }
         }
     }
 }

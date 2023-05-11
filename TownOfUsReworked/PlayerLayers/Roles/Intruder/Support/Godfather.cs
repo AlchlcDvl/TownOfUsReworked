@@ -64,7 +64,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.Declare);
-                writer.Write(Player.PlayerId);
+                writer.Write(PlayerId);
                 writer.Write(DeclareButton.TargetPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 Declare(this, DeclareButton.TargetPlayer);
@@ -75,12 +75,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 LastDeclared.AddSeconds(CustomGameOptions.ProtectKCReset);
         }
 
+        public bool Exception1(PlayerControl player) => !player.Is(Faction) || player.GetRole() is RoleEnum.PromotedGodfather or RoleEnum.Mafioso or RoleEnum.Godfather;
+
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            var Imp = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Intruder) && !(x.GetRole() is RoleEnum.Ghoul or RoleEnum.Mafioso or RoleEnum.PromotedGodfather or
-                RoleEnum.Godfather)).ToList();
-            DeclareButton.Update("PROMOTE", 0, 1, Imp, true, !HasDeclared);
+            DeclareButton.Update("PROMOTE", 0, 1, true, !HasDeclared);
         }
     }
 }

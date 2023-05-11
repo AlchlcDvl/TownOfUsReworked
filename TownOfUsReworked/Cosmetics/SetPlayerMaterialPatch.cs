@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using UnityEngine;
+using TownOfUsReworked.Monos;
 
 namespace TownOfUsReworked.Cosmetics
 {

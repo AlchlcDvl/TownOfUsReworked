@@ -5,8 +5,6 @@ using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Custom;
-using System.Linq;
-using TownOfUsReworked.PlayerLayers.Abilities;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -23,7 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Objectives = IntrudersWinCon;
             BaseFaction = Faction.Intruder;
             AbilitiesText = "- You can kill players\n- You can call sabotages to distract the <color=#8BFDFDFF>Crew</color>";
-            KillButton = new(this, "IntruderKill", AbilityTypes.Direct, "ActionSecondary", Kill);
+            KillButton = new(this, "IntruderKill", AbilityTypes.Direct, "ActionSecondary", Kill, Exception);
         }
 
         public float KillTimer()
@@ -129,16 +127,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
         }
 
+        public bool Exception(PlayerControl player) => player.Is(Faction) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || player == Player.GetOtherLover() || player ==
+            Player.GetOtherRival() || (player.Is(ObjectifierEnum.Mafia) && Player.Is(ObjectifierEnum.Mafia));
+
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            var notImp = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Intruder) && !(x.GetSubFaction() == SubFaction && SubFaction != SubFaction.None) &&
-                x != Player.GetOtherLover() && x != Player.GetOtherRival()).ToList();
-
-            if (Player.Is(ObjectifierEnum.Mafia))
-                notImp.RemoveAll(x => x.Is(ObjectifierEnum.Mafia));
-
-            KillButton.Update("KILL", KillTimer(), CustomGameOptions.IntKillCooldown, notImp);
+            KillButton.Update("KILL", KillTimer(), CustomGameOptions.IntKillCooldown);
         }
     }
 }

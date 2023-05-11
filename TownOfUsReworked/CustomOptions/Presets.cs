@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Reactor.Utilities;
 using Reactor.Utilities.Extensions;
-using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.Data;
@@ -21,7 +20,7 @@ namespace TownOfUsReworked.CustomOptions
         public List<OptionBehaviour> OldButtons;
         public List<CustomButtonOption> SlotButtons = new();
 
-        public Presets(int id) : base(id, MultiMenu.main, "Load Preset Settings") => Do = ToDo;
+        public Presets() : base(-1, MultiMenu.main, "Load Preset Settings") => Do = ToDo;
 
         private List<OptionBehaviour> CreateOptions()
         {
@@ -49,34 +48,26 @@ namespace TownOfUsReworked.CustomOptions
             return options;
         }
 
-        public Action Cancel(Func<IEnumerator> flashCoro)
-        {
-            void Listener() => Coroutines.Start(CancelCoro(flashCoro));
-            return Listener;
-        }
+        private void Cancel(Func<IEnumerator> flashCoro) => Coroutines.Start(CancelCoro(flashCoro));
 
-        public IEnumerator CancelCoro(Func<IEnumerator> flashCoro)
+        private IEnumerator CancelCoro(Func<IEnumerator> flashCoro)
         {
             var __instance = Object.FindObjectOfType<GameOptionsMenu>();
 
             foreach (var option in SlotButtons.Skip(1))
-                option.Setting.gameObject.Destroy();
+                option.Setting?.gameObject?.Destroy();
 
             Loading = SlotButtons[0];
             Loading.Do = () => {};
             Loading.Setting.Cast<ToggleOption>().TitleText.text = "Loading...";
-
             __instance.Children = new[] { Loading.Setting };
-
             yield return new WaitForSeconds(0.5f);
-
             Loading.Setting.gameObject.Destroy();
 
             foreach (var option in OldButtons)
                 option.gameObject.SetActive(true);
 
             __instance.Children = OldButtons.ToArray();
-
             yield return new WaitForEndOfFrame();
             yield return flashCoro();
         }
@@ -84,12 +75,12 @@ namespace TownOfUsReworked.CustomOptions
         public void ToDo()
         {
             SlotButtons.Clear();
-            SlotButtons.Add(new CustomButtonOption(1, MultiMenu.external, "Casual", LoadPreset("Casual", false)));
-            SlotButtons.Add(new CustomButtonOption(1, MultiMenu.external, "Chaos", LoadPreset("Chaos", false)));
-            SlotButtons.Add(new CustomButtonOption(1, MultiMenu.external, "Default", LoadPreset("Default", true)));
-            SlotButtons.Add(new CustomButtonOption(1, MultiMenu.external, "Last Used", LoadPreset("LastUsed", true)));
-            SlotButtons.Add(new CustomButtonOption(1, MultiMenu.external, "Cancel", Cancel(FlashWhite)));
-
+            SlotButtons.Add(new CustomButtonOption(-1, MultiMenu.external, "Casual", delegate { LoadPreset("Casual", false); }));
+            SlotButtons.Add(new CustomButtonOption(-1, MultiMenu.external, "Chaos", delegate { LoadPreset("Chaos", false); }));
+            SlotButtons.Add(new CustomButtonOption(-1, MultiMenu.external, "Default", delegate { LoadPreset("Default", true); }));
+            SlotButtons.Add(new CustomButtonOption(-1, MultiMenu.external, "Last Used", delegate { LoadPreset("LastUsed", true); }));
+            SlotButtons.Add(new CustomButtonOption(-1, MultiMenu.external, "Ranked", delegate { LoadPreset("Ranked", false); }));
+            SlotButtons.Add(new CustomButtonOption(-1, MultiMenu.external, "Cancel", delegate { Cancel(FlashWhite); }));
             var options = CreateOptions();
             var __instance = Object.FindObjectOfType<GameOptionsMenu>();
             var y = __instance.GetComponentsInChildren<OptionBehaviour>().Max(option => option.transform.localPosition.y);
@@ -102,73 +93,72 @@ namespace TownOfUsReworked.CustomOptions
                 option.gameObject.SetActive(false);
 
             foreach (var option in options)
-                option.transform.localPosition = new Vector3(x, y - (i++ * 0.5f), z);
+                option.transform.localPosition = new(x, y - (i++ * 0.5f), z);
 
-            __instance.Children = new Il2CppReferenceArray<OptionBehaviour>(options.ToArray());
+            __instance.Children = new(options.ToArray());
         }
 
-        public Action LoadPreset(string presetName, bool data)
+        public void LoadPreset(string presetName, bool data, bool inLobby = false)
         {
-            void Listener()
+            Utils.LogSomething($"Loading - {presetName}");
+            string text = null;
+
+            try
             {
-                Utils.LogSomething($"Loading - {presetName}");
-                string text = null;
-
-                try
-                {
-                    text = data ? File.ReadAllText(Path.Combine(Application.persistentDataPath, $"{presetName}Settings")) : Utils.CreateText(presetName, "Presets");
-                }
-                catch
-                {
-                    text = "";
-                }
-
-                if (string.IsNullOrEmpty(text))
-                {
-                    Cancel(FlashRed);
-                    return;
-                }
-
-                var splitText = text.Split("\n").ToList();
-
-                while (splitText.Count > 0)
-                {
-                    var name = splitText[0].Trim();
-                    splitText.RemoveAt(0);
-                    var option = AllOptions.Find(o => o.Name.Equals(name, StringComparison.Ordinal));
-
-                    if (option == null)
-                    {
-                        try
-                        {
-                            splitText.RemoveAt(0);
-                        } catch {}
-
-                        continue;
-                    }
-
-                    var value = splitText[0];
-                    splitText.RemoveAt(0);
-
-                    switch (option.Type)
-                    {
-                        case CustomOptionType.Number:
-                            option.Set(float.Parse(value), false);
-                            break;
-                        case CustomOptionType.Toggle:
-                            option.Set(bool.Parse(value), false);
-                            break;
-                        case CustomOptionType.String:
-                            option.Set(int.Parse(value), false);
-                            break;
-                    }
-                }
-
-                RPC.SendRPC();
-                Cancel(FlashGreen);
+                text = data ? File.ReadAllText(Path.Combine(Application.persistentDataPath, $"{presetName}Settings")) : Utils.CreateText(presetName, "Presets");
+            }
+            catch
+            {
+                text = "";
             }
 
-            return Listener;
+            if (string.IsNullOrEmpty(text))
+            {
+                Cancel(FlashRed);
+                Utils.LogSomething("Preset no exist");
+                return;
+            }
+
+            var splitText = text.Split("\n").ToList();
+
+            while (splitText.Count > 0)
+            {
+                var option = AllOptions.Find(o => o.Name.Equals(splitText[0].Trim(), StringComparison.Ordinal));
+                splitText.RemoveAt(0);
+
+                if (option == null)
+                {
+                    try
+                    {
+                        splitText.RemoveAt(0);
+                    } catch {}
+
+                    continue;
+                }
+
+                var value = splitText[0];
+                splitText.RemoveAt(0);
+
+                switch (option.Type)
+                {
+                    case CustomOptionType.Number:
+                        option.Set(float.Parse(value), false);
+                        break;
+
+                    case CustomOptionType.Toggle:
+                        option.Set(bool.Parse(value), false);
+                        break;
+
+                    case CustomOptionType.String:
+                        option.Set(int.Parse(value), false);
+                        break;
+                }
+            }
+
+            RPC.SendRPC();
+
+            if (!inLobby)
+                Cancel(FlashGreen);
         }
 
         private IEnumerator FlashGreen()

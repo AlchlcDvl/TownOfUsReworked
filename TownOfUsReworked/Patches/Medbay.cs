@@ -41,8 +41,8 @@ namespace TownOfUsReworked.Patches
                 newHeightInch -= 12;
             }
 
-            string weightString = $"{newWeight}lb";
-            string heightString = $"{newHeightFeet}' {newHeightInch}\"";
+            var weightString = $"{newWeight}lb";
+            var heightString = $"{newHeightFeet}' {newHeightInch}\"";
 
             __instance.completeString = __instance.completeString.Replace("3' 6\"", heightString).Replace("92lb", weightString);
         }

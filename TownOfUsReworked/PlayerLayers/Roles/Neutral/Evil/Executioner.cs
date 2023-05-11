@@ -6,7 +6,6 @@ using TownOfUsReworked.Data;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Custom;
 using Hazel;
-using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -20,7 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public DateTime LastDoomed;
         public int UsesLeft;
         public bool CanDoom => TargetVotedOut && !HasDoomed && UsesLeft > 0 && ToDoom.Count > 0;
-        public bool Failed => !TargetVotedOut && (TargetPlayer?.Data.IsDead == true || TargetPlayer?.Data.Disconnected == true);
+        public bool Failed => TargetPlayer == null || (!TargetVotedOut && (TargetPlayer.Data.IsDead || TargetPlayer.Data.Disconnected));
 
         public Executioner(PlayerControl player) : base(player)
         {
@@ -32,16 +31,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleAlignment = RoleAlignment.NeutralEvil;
             AlignmentName = NE;
             ToDoom = new();
-            UsesLeft = CustomGameOptions.DoomCount <= ToDoom.Count ? CustomGameOptions.DoomCount : ToDoom.Count;
+            UsesLeft = CustomGameOptions.DoomCount;
             AbilitiesText = "- After your target has been ejected, you can doom players who voted for them\n- If your target dies, you will become a <color=#F7B3DAFF>Jester</color>";
             Type = LayerEnum.Executioner;
-            DoomButton = new(this, "Doom", AbilityTypes.Direct, "ActionSecondary", Doom, true);
+            DoomButton = new(this, "Doom", AbilityTypes.Direct, "ActionSecondary", Doom, Exception, true);
             InspectorResults = InspectorResults.Manipulative;
         }
 
         public override void VoteComplete(MeetingHud __instance)
         {
             base.VoteComplete(__instance);
+
+            if (TargetVotedOut)
+                return;
+
             ToDoom.Clear();
 
             foreach (var state in __instance.playerStates)
@@ -57,6 +60,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 ToDoom.Shuffle();
                 ToDoom.Remove(ToDoom[^1]);
             }
+
+            UsesLeft = CustomGameOptions.DoomCount <= ToDoom.Count ? CustomGameOptions.DoomCount : ToDoom.Count;
         }
 
         public float DoomTimer()
@@ -91,20 +96,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             LastDoomed = DateTime.UtcNow;
         }
 
+        public bool Exception(PlayerControl player) => !ToDoom.Contains(player.PlayerId) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(ObjectifierEnum.Mafia) &&
+            Player.Is(ObjectifierEnum.Mafia));
+
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            var ToBeDoomed = PlayerControl.AllPlayerControls.ToArray().Where(x => ToDoom.Contains(x.PlayerId) && !(x.GetSubFaction() == SubFaction && SubFaction !=
-                SubFaction.None)).ToList();
-            DoomButton.Update("DOOM", DoomTimer(), CustomGameOptions.DoomCooldown, UsesLeft, ToBeDoomed, CanDoom, CanDoom);
+            DoomButton.Update("DOOM", DoomTimer(), CustomGameOptions.DoomCooldown, UsesLeft, CanDoom, CanDoom);
 
             if (Failed && !IsDead)
             {
+                TurnJest();
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
                 writer.Write((byte)TurnRPC.TurnJest);
-                writer.Write(Player.PlayerId);
+                writer.Write(PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
-                TurnJest();
             }
         }
     }

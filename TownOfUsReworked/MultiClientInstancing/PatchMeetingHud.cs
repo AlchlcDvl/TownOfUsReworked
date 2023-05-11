@@ -12,7 +12,7 @@ namespace TownOfUsReworked.MultiClientInstancing
             if (!ConstantVariables.IsLocalGame || !TownOfUsReworked.MCIActive)
                 return;
 
-            foreach (PlayerControl player in PlayerControl.AllPlayerControls)
+            foreach (var player in PlayerControl.AllPlayerControls)
                 __instance.CmdCastVote(player.PlayerId, suspectStateIdx);
         }
     }

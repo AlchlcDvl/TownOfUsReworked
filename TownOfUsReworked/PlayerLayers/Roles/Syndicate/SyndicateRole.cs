@@ -5,7 +5,6 @@ using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Custom;
-using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -24,7 +23,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             BaseFaction = Faction.Syndicate;
             AbilitiesText = (RoleType is not RoleEnum.Anarchist and not RoleEnum.Sidekick && RoleAlignment != RoleAlignment.SyndicateKill ? "- With the Chaos Drive, you can kill " +
                 "players directly" : "- You can kill") + (CustomGameOptions.AltImps ? "- You can sabotage the systems to distract the <color=#8BFDFDFF>Crew</color>" : "");
-            KillButton = new(this, "SyndicateKill", AbilityTypes.Direct, "ActionSecondary", Kill);
+            KillButton = new(this, "SyndicateKill", AbilityTypes.Direct, "ActionSecondary", Kill, Exception);
         }
 
         public float KillTimer()
@@ -89,17 +88,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
         }
 
+        public bool Exception(PlayerControl player) => player.Is(Faction) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || player == Player.GetOtherLover() || player ==
+            Player.GetOtherRival() || (player.Is(ObjectifierEnum.Mafia) && Player.Is(ObjectifierEnum.Mafia));
+
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            var notSyn = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Syndicate) && !(x.GetSubFaction() == SubFaction && SubFaction != SubFaction.None) &&
-                x != Player.GetOtherLover() && x != Player.GetOtherRival()).ToList();
-
-            if (Player.Is(ObjectifierEnum.Mafia))
-                notSyn.RemoveAll(x => x.Is(ObjectifierEnum.Mafia));
-
-            KillButton.Update("KILL", KillTimer(), CustomGameOptions.ChaosDriveKillCooldown, notSyn, true, HoldsDrive || Type is LayerEnum.Anarchist or LayerEnum.Sidekick or
-                LayerEnum.Rebel);
+            KillButton.Update("KILL", KillTimer(), CustomGameOptions.ChaosDriveKillCooldown, true, HoldsDrive || Type is LayerEnum.Anarchist or LayerEnum.Sidekick or LayerEnum.Rebel);
         }
     }
 }

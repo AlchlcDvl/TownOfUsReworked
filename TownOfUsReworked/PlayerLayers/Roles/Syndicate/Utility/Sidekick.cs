@@ -53,7 +53,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 TurnRebel();
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
                 writer.Write((byte)TurnRPC.TurnRebel);
-                writer.Write(Player.PlayerId);
+                writer.Write(PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
             }
         }

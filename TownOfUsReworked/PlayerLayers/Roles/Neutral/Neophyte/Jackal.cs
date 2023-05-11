@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using Hazel;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Custom;
-using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -37,7 +36,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AlignmentName = NN;
             Recruited = new() { Player.PlayerId };
             Type = LayerEnum.Jackal;
-            RecruitButton = new(this, "Recruit", AbilityTypes.Direct, "ActionSecondary", Recruit);
+            RecruitButton = new(this, "Recruit", AbilityTypes.Direct, "ActionSecondary", Recruit, Exception);
             InspectorResults = InspectorResults.BringsChaos;
         }
 
@@ -74,10 +73,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 LastRecruited.AddSeconds(CustomGameOptions.ProtectKCReset);
         }
 
+        public bool Exception(PlayerControl player) => Recruited.Contains(player.PlayerId);
+
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            var notRecruited = PlayerControl.AllPlayerControls.ToArray().Where(player => !Recruited.Contains(player.PlayerId)).ToList();
             RecruitButton.Update("RECRUIT", RecruitTimer(), CustomGameOptions.RecruitCooldown, true, RecruitsDead);
         }
     }

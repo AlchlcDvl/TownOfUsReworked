@@ -9,7 +9,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
     public class Corrupted : Objectifier
     {
         public DateTime LastCorrupted;
-        public PlayerControl ClosestPlayer;
         public CustomButton CorruptButton;
 
         public Corrupted(PlayerControl player) : base(player)
@@ -34,10 +33,10 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
 
         public void Corrupt()
         {
-            if (CorruptTimer() != 0f || Utils.IsTooFar(Player, ClosestPlayer))
+            if (CorruptTimer() != 0f || Utils.IsTooFar(Player, CorruptButton.TargetPlayer))
                 return;
 
-            var interact = Utils.Interact(Player, ClosestPlayer, true);
+            var interact = Utils.Interact(Player, CorruptButton.TargetPlayer, true);
 
             if (interact[3] || interact[0])
                 LastCorrupted = DateTime.UtcNow;

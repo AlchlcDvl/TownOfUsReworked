@@ -2,7 +2,7 @@
 using UnityEngine;
 using HarmonyLib;
 
-namespace TownOfUsReworked.Crowded.Components
+namespace TownOfUsReworked.Monos
 {
     [HarmonyPatch]
     public class AbstractPagingBehaviour : MonoBehaviour
@@ -13,7 +13,6 @@ namespace TownOfUsReworked.Crowded.Components
         public virtual int MaxPerPage => 15;
         public virtual int MaxPageIndex => throw new NotImplementedException();
         public virtual void OnPageChanged() => throw new NotImplementedException();
-
         public virtual int PageIndex
         {
             get => _page;

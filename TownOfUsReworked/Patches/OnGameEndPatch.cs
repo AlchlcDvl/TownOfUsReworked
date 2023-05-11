@@ -33,23 +33,14 @@ namespace TownOfUsReworked.Patches
                 TempData.winners = new();
                 TempData.winners.Clear();
                 var winners = new List<WinningPlayerData>();
-                var gameEnded = false;
-                var includeNEs = false;
 
-                if (PlayerLayer.NobodyWins)
-                {
-                    gameEnded = true;
-                    includeNEs = true;
-                }
-                else if (Role.AllNeutralsWin)
+                if (Role.AllNeutralsWin)
                 {
                     foreach (var role2 in Role.GetRoles(Faction.Neutral))
                     {
                         if (!role2.Disconnected && role2.NotDefective)
                             winners.Add(PotentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
                     }
-
-                    gameEnded = true;
                 }
                 else if (Role.NKWins)
                 {
@@ -58,9 +49,6 @@ namespace TownOfUsReworked.Patches
                         if (!role2.Disconnected && role2.NotDefective)
                             winners.Add(PotentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
                     }
-
-                    gameEnded = true;
-                    includeNEs = true;
                 }
                 else if (Role.CrewWin)
                 {
@@ -75,9 +63,6 @@ namespace TownOfUsReworked.Patches
                         if (!ally.Disconnected && ally.Side == Faction.Crew)
                             winners.Add(PotentialWinners.Where(x => x.PlayerName == ally.PlayerName).ToList()[0]);
                     }
-
-                    gameEnded = true;
-                    includeNEs = true;
                 }
                 else if (Role.IntruderWin)
                 {
@@ -104,9 +89,6 @@ namespace TownOfUsReworked.Patches
                         if (!fanatic.Disconnected && fanatic.Side == Faction.Intruder)
                             winners.Add(PotentialWinners.Where(x => x.PlayerName == fanatic.PlayerName).ToList()[0]);
                     }
-
-                    gameEnded = true;
-                    includeNEs = true;
                 }
                 else if (Role.SyndicateWin)
                 {
@@ -133,9 +115,6 @@ namespace TownOfUsReworked.Patches
                         if (!fanatic.Disconnected && fanatic.Side == Faction.Syndicate)
                             winners.Add(PotentialWinners.Where(x => x.PlayerName == fanatic.PlayerName).ToList()[0]);
                     }
-
-                    gameEnded = true;
-                    includeNEs = true;
                 }
                 else if (Role.UndeadWin)
                 {
@@ -144,9 +123,6 @@ namespace TownOfUsReworked.Patches
                         if (!role2.Disconnected)
                             winners.Add(PotentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
                     }
-
-                    gameEnded = true;
-                    includeNEs = true;
                 }
                 else if (Role.CabalWin)
                 {
@@ -155,9 +131,6 @@ namespace TownOfUsReworked.Patches
                         if (!role2.Disconnected)
                             winners.Add(PotentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
                     }
-
-                    gameEnded = true;
-                    includeNEs = true;
                 }
                 else if (Role.SectWin)
                 {
@@ -166,9 +139,6 @@ namespace TownOfUsReworked.Patches
                         if (!role2.Disconnected)
                             winners.Add(PotentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
                     }
-
-                    gameEnded = true;
-                    includeNEs = true;
                 }
                 else if (Role.ReanimatedWin)
                 {
@@ -177,9 +147,6 @@ namespace TownOfUsReworked.Patches
                         if (!role2.Disconnected)
                             winners.Add(PotentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
                     }
-
-                    gameEnded = true;
-                    includeNEs = true;
                 }
                 else if (Role.InfectorsWin)
                 {
@@ -194,9 +161,6 @@ namespace TownOfUsReworked.Patches
                         if (!role2.Disconnected && role2.NotDefective)
                             winners.Add(PotentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
                     }
-
-                    gameEnded = true;
-                    includeNEs = true;
                 }
                 else if (Role.GlitchWins)
                 {
@@ -205,9 +169,6 @@ namespace TownOfUsReworked.Patches
                         if (!role2.Disconnected && role2.NotDefective && role2.Winner)
                             winners.Add(PotentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
                     }
-
-                    gameEnded = true;
-                    includeNEs = true;
                 }
                 else if (Role.JuggernautWins)
                 {
@@ -216,9 +177,6 @@ namespace TownOfUsReworked.Patches
                         if (!role2.Disconnected && role2.NotDefective && role2.Winner)
                             winners.Add(PotentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
                     }
-
-                    gameEnded = true;
-                    includeNEs = true;
                 }
                 else if (Role.ArsonistWins)
                 {
@@ -227,9 +185,6 @@ namespace TownOfUsReworked.Patches
                         if (!role2.Disconnected && role2.NotDefective)
                             winners.Add(PotentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
                     }
-
-                    gameEnded = true;
-                    includeNEs = true;
                 }
                 else if (Role.SerialKillerWins)
                 {
@@ -238,9 +193,6 @@ namespace TownOfUsReworked.Patches
                         if (!role2.Disconnected && role2.NotDefective && role2.Winner)
                             winners.Add(PotentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
                     }
-
-                    gameEnded = true;
-                    includeNEs = true;
                 }
                 else if (Role.MurdererWins)
                 {
@@ -249,9 +201,6 @@ namespace TownOfUsReworked.Patches
                         if (!role2.Disconnected && role2.NotDefective)
                             winners.Add(PotentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
                     }
-
-                    gameEnded = true;
-                    includeNEs = true;
                 }
                 else if (Role.WerewolfWins)
                 {
@@ -260,9 +209,6 @@ namespace TownOfUsReworked.Patches
                         if (!role2.Disconnected && role2.NotDefective && role2.Winner)
                             winners.Add(PotentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
                     }
-
-                    gameEnded = true;
-                    includeNEs = true;
                 }
                 else if (Role.CryomaniacWins)
                 {
@@ -271,9 +217,6 @@ namespace TownOfUsReworked.Patches
                         if (!role2.Disconnected && role2.NotDefective && role2.Winner)
                             winners.Add(PotentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
                     }
-
-                    gameEnded = true;
-                    includeNEs = true;
                 }
                 else if (Role.PhantomWins)
                 {
@@ -282,9 +225,6 @@ namespace TownOfUsReworked.Patches
                         if (!role2.Disconnected && role2.NotDefective && role2.CompletedTasks)
                             winners.Add(PotentialWinners.Where(x => x.PlayerName == role2.PlayerName).ToList()[0]);
                     }
-
-                    gameEnded = true;
-                    includeNEs = true;
                 }
                 else if (Objectifier.LoveWins)
                 {
@@ -293,8 +233,6 @@ namespace TownOfUsReworked.Patches
                         if (!lover.Disconnected && lover.Winner)
                             winners.Add(PotentialWinners.Where(x => x.PlayerName == lover.PlayerName).ToList()[0]);
                     }
-
-                    gameEnded = true;
                 }
                 else if (Objectifier.RivalWins)
                 {
@@ -303,8 +241,6 @@ namespace TownOfUsReworked.Patches
                         if (!rival.Disconnected && rival.Winner)
                             winners.Add(PotentialWinners.Where(x => x.PlayerName == rival.PlayerName).ToList()[0]);
                     }
-
-                    gameEnded = true;
                 }
                 else if (Objectifier.TaskmasterWins)
                 {
@@ -313,8 +249,6 @@ namespace TownOfUsReworked.Patches
                         if (!tm.Disconnected && tm.Winner)
                             winners.Add(PotentialWinners.Where(x => x.PlayerName == tm.PlayerName).ToList()[0]);
                     }
-
-                    gameEnded = true;
                 }
                 else if (Objectifier.OverlordWins)
                 {
@@ -323,8 +257,6 @@ namespace TownOfUsReworked.Patches
                         if (!ov.Disconnected && ov.Winner)
                             winners.Add(PotentialWinners.Where(x => x.PlayerName == ov.PlayerName).ToList()[0]);
                     }
-
-                    gameEnded = true;
                 }
                 else if (Objectifier.CorruptedWins)
                 {
@@ -333,8 +265,6 @@ namespace TownOfUsReworked.Patches
                         if (!corr.Disconnected && corr.Winner)
                             winners.Add(PotentialWinners.Where(x => x.PlayerName == corr.PlayerName).ToList()[0]);
                     }
-
-                    gameEnded = true;
                 }
                 else if (Objectifier.MafiaWins)
                 {
@@ -343,74 +273,69 @@ namespace TownOfUsReworked.Patches
                         if (!maf.Disconnected)
                             winners.Add(PotentialWinners.Where(x => x.PlayerName == maf.PlayerName).ToList()[0]);
                     }
-
-                    gameEnded = true;
                 }
 
-                if (gameEnded)
+                if (!Objectifier.ObjectifierWins)
                 {
-                    if (includeNEs)
+                    foreach (var surv in Role.GetRoles<Survivor>(RoleEnum.Survivor))
                     {
-                        foreach (var surv in Role.GetRoles<Survivor>(RoleEnum.Survivor))
-                        {
-                            if (surv.Alive)
-                                winners.Add(PotentialWinners.Where(x => x.PlayerName == surv.PlayerName).ToList()[0]);
-                        }
-
-                        foreach (var ga in Role.GetRoles<GuardianAngel>(RoleEnum.GuardianAngel))
-                        {
-                            if (ga.TargetAlive)
-                                winners.Add(PotentialWinners.Where(x => x.PlayerName == ga.PlayerName).ToList()[0]);
-                        }
-
-                        foreach (var jest in Role.GetRoles<Jester>(RoleEnum.Jester))
-                        {
-                            if (jest.VotedOut && !jest.Disconnected)
-                                winners.Add(PotentialWinners.Where(x => x.PlayerName == jest.PlayerName).ToList()[0]);
-                        }
-
-                        foreach (var exe in Role.GetRoles<Executioner>(RoleEnum.Executioner))
-                        {
-                            if (exe.TargetVotedOut && !exe.Disconnected)
-                                winners.Add(PotentialWinners.Where(x => x.PlayerName == exe.PlayerName).ToList()[0]);
-                        }
-
-                        foreach (var bh in Role.GetRoles<BountyHunter>(RoleEnum.BountyHunter))
-                        {
-                            if (bh.TargetKilled && !bh.Disconnected)
-                                winners.Add(PotentialWinners.Where(x => x.PlayerName == bh.PlayerName).ToList()[0]);
-                        }
-
-                        foreach (var act in Role.GetRoles<Actor>(RoleEnum.Actor))
-                        {
-                            if (act.Guessed && !act.Disconnected)
-                                winners.Add(PotentialWinners.Where(x => x.PlayerName == act.PlayerName).ToList()[0]);
-                        }
-
-                        foreach (var cann in Role.GetRoles<Cannibal>(RoleEnum.Cannibal))
-                        {
-                            if (cann.EatWin && !cann.Disconnected)
-                                winners.Add(PotentialWinners.Where(x => x.PlayerName == cann.PlayerName).ToList()[0]);
-                        }
-
-                        foreach (var guess in Role.GetRoles<Guesser>(RoleEnum.Guesser))
-                        {
-                            if (guess.TargetGuessed && !guess.Disconnected)
-                                winners.Add(PotentialWinners.Where(x => x.PlayerName == guess.PlayerName).ToList()[0]);
-                        }
-
-                        foreach (var troll in Role.GetRoles<Troll>(RoleEnum.Troll))
-                        {
-                            if (troll.Killed && !troll.Disconnected)
-                                winners.Add(PotentialWinners.Where(x => x.PlayerName == troll.PlayerName).ToList()[0]);
-                        }
+                        if (surv.Alive)
+                            winners.Add(PotentialWinners.Where(x => x.PlayerName == surv.PlayerName).ToList()[0]);
                     }
 
-                    TempData.winners = new Il2CppSystem.Collections.Generic.List<WinningPlayerData>();
+                    foreach (var ga in Role.GetRoles<GuardianAngel>(RoleEnum.GuardianAngel))
+                    {
+                        if (ga.TargetAlive)
+                            winners.Add(PotentialWinners.Where(x => x.PlayerName == ga.PlayerName).ToList()[0]);
+                    }
 
-                    foreach (var win in winners)
-                        TempData.winners.Add(win);
+                    foreach (var jest in Role.GetRoles<Jester>(RoleEnum.Jester))
+                    {
+                        if (jest.VotedOut && !jest.Disconnected)
+                            winners.Add(PotentialWinners.Where(x => x.PlayerName == jest.PlayerName).ToList()[0]);
+                    }
+
+                    foreach (var exe in Role.GetRoles<Executioner>(RoleEnum.Executioner))
+                    {
+                        if (exe.TargetVotedOut && !exe.Disconnected)
+                            winners.Add(PotentialWinners.Where(x => x.PlayerName == exe.PlayerName).ToList()[0]);
+                    }
+
+                    foreach (var bh in Role.GetRoles<BountyHunter>(RoleEnum.BountyHunter))
+                    {
+                        if (bh.TargetKilled && !bh.Disconnected)
+                            winners.Add(PotentialWinners.Where(x => x.PlayerName == bh.PlayerName).ToList()[0]);
+                    }
+
+                    foreach (var act in Role.GetRoles<Actor>(RoleEnum.Actor))
+                    {
+                        if (act.Guessed && !act.Disconnected)
+                            winners.Add(PotentialWinners.Where(x => x.PlayerName == act.PlayerName).ToList()[0]);
+                    }
+
+                    foreach (var cann in Role.GetRoles<Cannibal>(RoleEnum.Cannibal))
+                    {
+                        if (cann.EatWin && !cann.Disconnected)
+                            winners.Add(PotentialWinners.Where(x => x.PlayerName == cann.PlayerName).ToList()[0]);
+                    }
+
+                    foreach (var guess in Role.GetRoles<Guesser>(RoleEnum.Guesser))
+                    {
+                        if (guess.TargetGuessed && !guess.Disconnected)
+                            winners.Add(PotentialWinners.Where(x => x.PlayerName == guess.PlayerName).ToList()[0]);
+                    }
+
+                    foreach (var troll in Role.GetRoles<Troll>(RoleEnum.Troll))
+                    {
+                        if (troll.Killed && !troll.Disconnected)
+                            winners.Add(PotentialWinners.Where(x => x.PlayerName == troll.PlayerName).ToList()[0]);
+                    }
                 }
+
+                TempData.winners = new Il2CppSystem.Collections.Generic.List<WinningPlayerData>();
+
+                foreach (var win in winners)
+                    TempData.winners.Add(win);
             }
         }
     }

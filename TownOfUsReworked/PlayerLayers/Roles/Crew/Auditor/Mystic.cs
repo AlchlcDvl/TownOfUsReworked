@@ -54,12 +54,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             base.UpdateHud(__instance);
             RevealButton.Update("REVEAL", RevealTimer(), CustomGameOptions.RevealCooldown);
 
-            if (ConvertedDead && !PlayerControl.LocalPlayer.Data.IsDead)
+            if (ConvertedDead && !IsDead)
             {
                 TurnSeer();
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
                 writer.Write((byte)TurnRPC.TurnSeer);
-                writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                writer.Write(PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
             }
         }

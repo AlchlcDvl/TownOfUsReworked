@@ -6,7 +6,6 @@ using TownOfUsReworked.Modules;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Custom;
 using Hazel;
-using System.Linq;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.PlayerLayers.Modifiers;
 
@@ -38,8 +37,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AlignmentName = ID;
             MeasuredPlayer = null;
             Type = LayerEnum.Disguiser;
-            DisguiseButton = new(this, "Disguise", AbilityTypes.Direct, "Secondary", HitDisguise);
-            MeasureButton = new(this, "Measure", AbilityTypes.Direct, "Tertiary", Measure);
+            DisguiseButton = new(this, "Disguise", AbilityTypes.Direct, "Secondary", HitDisguise, Exception1);
+            MeasureButton = new(this, "Measure", AbilityTypes.Direct, "Tertiary", Measure, Exception2);
             DisguisePlayer = null;
             DisguisedPlayer = null;
             InspectorResults = InspectorResults.CreatesConfusion;
@@ -102,7 +101,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.Disguise);
-                writer.Write(Player.PlayerId);
+                writer.Write(PlayerId);
                 writer.Write(MeasuredPlayer.PlayerId);
                 writer.Write(DisguiseButton.TargetPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -157,16 +156,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
         }
 
+        public bool Exception1(PlayerControl player) => (player.Is(Faction) && CustomGameOptions.DisguiseTarget == DisguiserTargets.NonIntruders) || (!player.Is(Faction) &&
+            CustomGameOptions.DisguiseTarget == DisguiserTargets.Intruders);
+
+        public bool Exception2(PlayerControl player) => player == MeasuredPlayer;
+
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            var notMeasured = PlayerControl.AllPlayerControls.ToArray().Where(x => MeasuredPlayer != x).ToList();
-            var targets = PlayerControl.AllPlayerControls.ToArray().Where(x => ((x.Is(Faction.Intruder) && CustomGameOptions.DisguiseTarget == DisguiserTargets.Intruders) ||
-                (!x.Is(Faction.Intruder) && CustomGameOptions.DisguiseTarget == DisguiserTargets.NonIntruders) || CustomGameOptions.DisguiseTarget == DisguiserTargets.Everyone) && x
-                != MeasuredPlayer).ToList();
-            DisguiseButton.Update("DISGUISE", DisguiseTimer(), CustomGameOptions.DisguiseCooldown, targets, DelayActive || Disguised, DelayActive ? TimeRemaining2 : TimeRemaining,
+            DisguiseButton.Update("DISGUISE", DisguiseTimer(), CustomGameOptions.DisguiseCooldown, DelayActive || Disguised, DelayActive ? TimeRemaining2 : TimeRemaining,
                 DelayActive ? CustomGameOptions.TimeToDisguise : CustomGameOptions.DisguiseDuration, true, MeasuredPlayer != null);
-            MeasureButton.Update("MEASURE", MeasureTimer(), CustomGameOptions.MeasureCooldown, notMeasured);
+            MeasureButton.Update("MEASURE", MeasureTimer(), CustomGameOptions.MeasureCooldown);
         }
 
         public bool TryGetModifiedAppearance(out VisualAppearance appearance)

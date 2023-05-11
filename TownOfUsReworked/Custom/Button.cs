@@ -6,10 +6,10 @@ using System;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Classes;
-using TownOfUsReworked.PlayerLayers.Roles;
 using static UnityEngine.UI.Button;
 using Reactor.Utilities.Extensions;
 using UnityEngine;
+using System.Linq;
 
 namespace TownOfUsReworked.Custom
 {
@@ -26,17 +26,18 @@ namespace TownOfUsReworked.Custom
         public bool HasUses;
         public Click DoClick;
         public bool Clickable;
-        public int Uses;
         public PlayerControl TargetPlayer;
         public DeadBody TargetBody;
-        public Veteran TargetVent;
+        public Vent TargetVent;
+        public Exclude Exception;
         public delegate void Click();
+        public delegate bool Exclude(PlayerControl player);
         private bool SetAliveActive => !Owner.IsDead && Owner.Player.Is(Owner.Type, Owner.LayerType) && ConstantVariables.IsRoaming && Owner.Player == PlayerControl.LocalPlayer &&
             (HudManager.Instance.UseButton.isActiveAndEnabled || HudManager.Instance.PetButton.isActiveAndEnabled);
         private bool SetDeadActive => Owner.IsDead && Owner.Player.Is(Owner.Type, Owner.LayerType) && ConstantVariables.IsRoaming && Owner.Player == PlayerControl.LocalPlayer &&
             (HudManager.Instance.UseButton.isActiveAndEnabled || HudManager.Instance.PetButton.isActiveAndEnabled) && PostDeath;
 
-        public CustomButton(PlayerLayer owner, string button, AbilityTypes type, string keybind, Click click, bool hasUses = false, bool postDeath = false)
+        public CustomButton(PlayerLayer owner, string button, AbilityTypes type, string keybind, Click click, Exclude exception, bool hasUses = false, bool postDeath = false)
         {
             Owner = owner;
             Button = AssetManager.GetSprite(button);
@@ -45,12 +46,18 @@ namespace TownOfUsReworked.Custom
             Keybind = keybind;
             HasUses = hasUses;
             PostDeath = postDeath;
+            Exception = exception ?? BlankBool;
             Base = InstantiateButton();
+            Base.graphic.sprite = Button;
             var component = Base.GetComponent<PassiveButton>();
-            component.OnClick = new ButtonClickedEvent();
+            component.OnClick.RemoveAllListeners();
             component.OnClick.AddListener(new Action(Clicked));
+            Disable();
             AllButtons.Add(this);
         }
+
+        public CustomButton(PlayerLayer owner, string button, AbilityTypes type, string keybind, Click click, bool hasUses = false, bool postDeath = false) : this(owner,
+            button, type, keybind, click, null, hasUses, postDeath) {}
 
         private static AbilityButton InstantiateButton()
         {
@@ -66,13 +73,15 @@ namespace TownOfUsReworked.Custom
 
         public static void Blank() {}
 
+        public static bool BlankBool(PlayerControl player) => false;
+
         public void Clicked()
         {
             if (Clickable)
                 DoClick();
         }
 
-        private void SetAliveTarget(List<PlayerControl> targets, bool usable, bool condition)
+        private void SetAliveTarget(bool usable, bool condition)
         {
             if ((Owner.IsDead && !PostDeath) || !usable)
             {
@@ -82,7 +91,8 @@ namespace TownOfUsReworked.Custom
                 return;
             }
 
-            TargetPlayer = Owner.Player.GetClosestPlayer(targets);
+            var targets = PlayerControl.AllPlayerControls.Il2CppToSystem();
+            TargetPlayer = Owner.Player.GetClosestPlayer(targets.Where(x => !Exception(x) && x != Owner.Player && !x.IsPostmortal() && !x.Data.IsDead).ToList());
 
             foreach (var player in PlayerControl.AllPlayerControls)
             {
@@ -132,14 +142,13 @@ namespace TownOfUsReworked.Custom
 
         public void SetEffectTarget(bool effectActive, bool condition = true)
         {
-            if ((!Base.isCoolingDown && condition && !Owner.Player.CannotUse() && !effectActive) || effectActive)
+            if ((!Base.isCoolingDown && condition && !Owner.Player.CannotUse()) || effectActive)
                 Base?.SetEnabled();
             else
                 Base?.SetDisabled();
         }
 
-        public void Update(string label, float timer, float maxTimer, int uses, bool effectActive, float effectTimer, float maxDuration, bool condition, bool usable, List<PlayerControl>
-            targets)
+        public void Update(string label, float timer, float maxTimer, int uses, bool effectActive, float effectTimer, float maxDuration, bool condition = true, bool usable = true)
         {
             if (Owner.Player != PlayerControl.LocalPlayer || (HasUses && uses <= 0) || MeetingHud.Instance || ConstantVariables.Inactive || !usable || (!PostDeath && Owner.IsDead))
             {
@@ -148,18 +157,17 @@ namespace TownOfUsReworked.Custom
             }
 
             if (Type == AbilityTypes.Direct)
-                SetAliveTarget(targets, usable, condition);
+                SetAliveTarget(usable, condition);
             else if (Type == AbilityTypes.Dead)
                 SetDeadTarget(usable, condition);
             else if (Type == AbilityTypes.Effect)
-                SetEffectTarget(effectActive, usable && condition);
+                SetEffectTarget(effectActive, condition);
 
             Base.graphic.sprite = Owner.IsBlocked ? AssetManager.GetSprite("Blocked") : (Button ?? AssetManager.GetSprite("Placeholder"));
             Base.buttonLabelText.text = Owner.IsBlocked ? "BLOCKED" : label;
             Base.commsDown?.gameObject?.SetActive(false);
             Base.buttonLabelText.SetOutlineColor(Owner.Color);
-            Uses = uses;
-            Clickable = Base != null && !effectActive && usable && condition && Base.ButtonUsable() && !(HasUses && Uses <= 0) && !MeetingHud.Instance;
+            Clickable = Base != null && !effectActive && usable && condition && Base.ButtonUsable() && !(HasUses && uses <= 0) && !MeetingHud.Instance && !Owner.IsBlocked;
             Base.gameObject.SetActive(PostDeath ? SetDeadActive : SetAliveActive);
 
             if (effectActive)
@@ -176,28 +184,13 @@ namespace TownOfUsReworked.Custom
                 Clicked();
         }
 
-        public void Update(string label, float timer, float maxTimer, bool condition = true, bool usable = true) => Update(label, timer, maxTimer, 0, false, 0, 1, condition, usable, null);
-
-        public void Update(string label, float timer, float maxTimer, List<PlayerControl> targets, bool condition = true, bool usable = true) => Update(label, timer, maxTimer, 0, false, 0,
-            1, condition, usable, targets);
-
-        public void Update(string label, float timer, float maxTimer, int uses, List<PlayerControl> targets, bool condition = true, bool usable = true) => Update(label, timer, maxTimer,
-            uses, false, 0, 1, condition, usable, targets);
+        public void Update(string label, float timer, float maxTimer, bool condition = true, bool usable = true) => Update(label, timer, maxTimer, 0, false, 0, 1, condition, usable);
 
         public void Update(string label, float timer, float maxTimer, int uses, bool condition = true, bool usable = true) => Update(label, timer, maxTimer, uses, false, 0, 1, condition,
-            usable, null);
+            usable);
 
         public void Update(string label, float timer, float maxTimer, bool effectActive, float effectTimer, float maxDuration, bool condition = true, bool usable = true) => Update(label,
-            timer, maxTimer, 0, effectActive, effectTimer, maxDuration, condition, usable, null);
-
-        public void Update(string label, float timer, float maxTimer, int uses, bool effectActive, float effectTimer, float maxDuration, bool condition = true, bool usable = true) =>
-            Update(label, timer, maxTimer, uses, effectActive, effectTimer, maxDuration, condition, usable, null);
-
-        public void Update(string label, float timer, float maxTimer, int uses, List<PlayerControl> targets, bool effectActive, float effectTimer, float maxDuration, bool condition = true,
-            bool usable = true) => Update(label, timer, maxTimer, uses, effectActive, effectTimer, maxDuration, condition, usable, targets);
-
-        public void Update(string label, float timer, float maxTimer, List<PlayerControl> targets, bool effectActive, float effectTimer, float maxDuration, bool condition = true, bool
-            usable = true) => Update(label, timer, maxTimer, 0, effectActive, effectTimer, maxDuration, condition, usable, targets);
+            timer, maxTimer, 0, effectActive, effectTimer, maxDuration, condition, usable);
 
         public void Disable() => Base?.gameObject?.SetActive(false);
 
@@ -205,6 +198,9 @@ namespace TownOfUsReworked.Custom
 
         public void Destroy()
         {
+            if (Base == null)
+                return;
+
             Base?.SetCoolDown(0, 0);
             Base?.buttonLabelText?.gameObject?.SetActive(false);
             Base?.gameObject?.SetActive(false);
@@ -214,7 +210,6 @@ namespace TownOfUsReworked.Custom
             Base?.gameObject?.Destroy();
             Object.Destroy(Base);
             Base = null;
-            AllButtons.Remove(this);
         }
     }
 }

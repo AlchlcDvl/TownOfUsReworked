@@ -275,15 +275,15 @@ namespace TownOfUsReworked.Classes
         class GitHubApiObject
         {
             [JsonPropertyName("tag_name")]
-            public string tag_name { get; set; }
+            public string tag_name;
             [JsonPropertyName("assets")]
-            public GitHubApiAsset[] assets { get; set; }
+            public GitHubApiAsset[] assets;
         }
 
         class GitHubApiAsset
         {
             [JsonPropertyName("browser_download_url")]
-            public string browser_download_url { get; set; }
+            public string browser_download_url;
         }
         #pragma warning restore
     }

@@ -3,7 +3,6 @@ using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Custom;
 using TownOfUsReworked.Classes;
-using System.Linq;
 using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
@@ -24,7 +23,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleAlignment = RoleAlignment.NeutralPros;
             AlignmentName = NP;
             Type = LayerEnum.Pestilence;
-            ObliterateButton = new(this, "Obliterate", AbilityTypes.Direct, "ActionSecondary", Obliterate);
+            ObliterateButton = new(this, "Obliterate", AbilityTypes.Direct, "ActionSecondary", Obliterate, Exception);
             InspectorResults = InspectorResults.LeadsTheGroup;
         }
 
@@ -52,11 +51,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
         }
 
+        public bool Exception(PlayerControl player) => (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) ||
+            player == Player.GetOtherLover() || player == Player.GetOtherRival() || (player.Is(ObjectifierEnum.Mafia) && Player.Is(ObjectifierEnum.Mafia));
+
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            var notMates = PlayerControl.AllPlayerControls.ToArray().Where(x => !(x.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) && !(SubFaction != SubFaction.None &&
-                x.GetSubFaction() == SubFaction));
             ObliterateButton.Update("OBLITERATE", ObliterateTimer(), CustomGameOptions.PestKillCd);
         }
     }

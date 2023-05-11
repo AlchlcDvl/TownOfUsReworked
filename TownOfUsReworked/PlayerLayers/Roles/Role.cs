@@ -10,8 +10,6 @@ using HarmonyLib;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Custom;
-using System;
-using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
@@ -123,18 +121,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             __instance.SabotageButton.buttonLabelText.SetOutlineColor(FactionColor);
             Player.RegenTask();
 
-            if (IsDead && CustomGameOptions.ShowMediumToDead && AllRoles.Any(x => x.RoleType == RoleEnum.Medium && ((Medium)x).MediatedPlayers.ContainsKey(Player.PlayerId)))
+            if (IsDead && CustomGameOptions.ShowMediumToDead && AllRoles.Any(x => x.RoleType == RoleEnum.Medium && ((Medium)x).MediatedPlayers.ContainsKey(PlayerId)))
             {
-                var role2 = (Medium)AllRoles.Find(x => x.RoleType == RoleEnum.Medium && ((Medium)x).MediatedPlayers.ContainsKey(Player.PlayerId));
-                role2.MediatedPlayers.GetValueSafe(Player.PlayerId).target = role2.Player.transform.position;
+                var role2 = (Medium)AllRoles.Find(x => x.RoleType == RoleEnum.Medium && ((Medium)x).MediatedPlayers.ContainsKey(PlayerId));
+                role2.MediatedPlayers.GetValueSafe(PlayerId).target = role2.Player.transform.position;
             }
 
             if (IsDead && CustomGameOptions.ShowMediumToDead && AllRoles.Any(x => x.RoleType == RoleEnum.Retributionist && ((Retributionist)x).IsMed &&
-                ((Retributionist)x).MediatedPlayers.ContainsKey(Player.PlayerId)))
+                ((Retributionist)x).MediatedPlayers.ContainsKey(PlayerId)))
             {
-                var role2 = (Retributionist)AllRoles.Find(x => x.RoleType == RoleEnum.Retributionist && ((Retributionist)x).MediatedPlayers.ContainsKey(PlayerControl.
-                    LocalPlayer.PlayerId));
-                role2.MediatedPlayers.GetValueSafe(Player.PlayerId).target = role2.Player.transform.position;
+                var role2 = (Retributionist)AllRoles.Find(x => x.RoleType == RoleEnum.Retributionist && ((Retributionist)x).MediatedPlayers.ContainsKey(PlayerId));
+                role2.MediatedPlayers.GetValueSafe(PlayerId).target = role2.Player.transform.position;
             }
 
             foreach (var ret in GetRoles<Retributionist>(RoleEnum.Retributionist))
@@ -266,8 +263,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 arrow.Value.target = player.transform.position;
             }
 
-            var dead = (!(Player.Is(RoleEnum.Revealer) && !GetRole<Revealer>(Player).Caught) || (Player.Is(RoleEnum.Ghoul) && !GetRole<Ghoul>(Player).Caught) ||
-                (Player.Is(RoleEnum.Banshee) && !GetRole<Banshee>(Player).Caught) || (Player.Is(RoleEnum.Phantom) && !GetRole<Phantom>(Player).Caught)) && IsDead;
+            var dead = (!Player.IsPostmortal() || (Player.IsPostmortal() && !Player.Caught())) && IsDead;
             ZoomInButton.Update("SPECTATE", 0, 1, true, Zooming && dead);
             ZoomOutButton.Update("SPECTATE", 0, 1, true, !Zooming && dead);
             BombKillButton.Update("KILL", 0, 1, true, Bombed && !dead);
@@ -374,30 +370,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             newButton.transform.localScale *= 0.8f;
             newButton.layer = 5;
             newButton.transform.parent = colorButton.transform.parent.parent;
-            var newButtonClickEvent = new Button.ButtonClickedEvent();
-            newButtonClickEvent.AddListener((Action)(() => {}));
-            newButton.GetComponent<PassiveButton>().OnClick = newButtonClickEvent;
+            newButton.GetComponent<PassiveButton>().OnClick.RemoveAllListeners();
             Buttons.Add(newButton);
         }
 
         public override void OnMeetingStart(MeetingHud __instance)
         {
             base.OnMeetingStart(__instance);
-
-            if (CustomGameOptions.LighterDarker)
-            {
-                foreach (var button in Buttons)
-                {
-                    button.SetActive(false);
-                    button.Destroy();
-                }
-
-                Buttons.Clear();
-
-                foreach (var voteArea in __instance.playerStates)
-                    GenButton(voteArea);
-            }
-
             Zooming = false;
             Camera.main.orthographicSize = 3f;
 
@@ -409,8 +388,79 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             ResolutionManager.ResolutionChanged.Invoke((float)Screen.width / Screen.height);
 
+            if (CustomGameOptions.LighterDarker)
+            {
+                foreach (var button in Buttons)
+                {
+                    if (button == null)
+                        continue;
+
+                    button.SetActive(false);
+                    button.Destroy();
+                }
+
+                Buttons.Clear();
+
+                foreach (var voteArea in __instance.playerStates)
+                    GenButton(voteArea);
+            }
+
             foreach (var role in AllRoles)
                 role.CurrentChannel = ChatChannel.All;
+
+            foreach (var role2 in GetRoles<Retributionist>(RoleEnum.Retributionist))
+            {
+                role2.PlayerNumbers.Clear();
+                role2.Actives.Clear();
+                role2.MoarButtons.Clear();
+                role2.Selected = null;
+            }
+
+            foreach (var guesser in GetRoles<Guesser>(RoleEnum.Guesser))
+            {
+                guesser.HideButtons();
+                guesser.OtherButtons.Clear();
+            }
+
+            foreach (var arso in GetRoles<Arsonist>(RoleEnum.Arsonist))
+            {
+                arso.Doused.RemoveAll(x => Utils.PlayerById(x).Data.IsDead || Utils.PlayerById(x).Data.Disconnected);
+
+                if (arso.IsDead)
+                    arso.Doused.Clear();
+            }
+
+            foreach (var cryo in GetRoles<Cryomaniac>(RoleEnum.Cryomaniac))
+            {
+                cryo.Doused.RemoveAll(x => Utils.PlayerById(x).Data.IsDead || Utils.PlayerById(x).Data.Disconnected);
+
+                if (cryo.IsDead)
+                    cryo.Doused.Clear();
+            }
+
+            foreach (var pb in GetRoles<Plaguebearer>(RoleEnum.Plaguebearer))
+            {
+                pb.Infected.RemoveAll(x => Utils.PlayerById(x).Data.IsDead || Utils.PlayerById(x).Data.Disconnected);
+
+                if (pb.IsDead)
+                    pb.Infected.Clear();
+            }
+
+            foreach (var framer in GetRoles<Framer>(RoleEnum.Framer))
+            {
+                framer.Framed.RemoveAll(x => Utils.PlayerById(x).Data.IsDead || Utils.PlayerById(x).Data.Disconnected);
+
+                if (framer.IsDead)
+                    framer.Framed.Clear();
+            }
+
+            foreach (var spell in GetRoles<Spellslinger>(RoleEnum.Spellslinger))
+            {
+                spell.Spelled.RemoveAll(x => Utils.PlayerById(x).Data.IsDead || Utils.PlayerById(x).Data.Disconnected);
+
+                if (spell.IsDead)
+                    spell.Spelled.Clear();
+            }
         }
 
         public static readonly string IntrudersWinCon = "- Have a critical sabotage reach 0 seconds\n- Kill anyone who opposes the <color=#FF0000FF>Intruders</color>";
@@ -471,10 +521,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void BombKill()
         {
-            if (Utils.IsTooFar(Player, BombKillButton.TargetPlayer))
-                return;
-
-            if (!Bombed)
+            if (Utils.IsTooFar(Player, BombKillButton.TargetPlayer) || !Bombed)
                 return;
 
             var success = Utils.Interact(Player, BombKillButton.TargetPlayer, true)[3];
@@ -482,7 +529,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Bombed = false;
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
             writer.Write((byte)ActionsRPC.ForceKill);
-            writer.Write(Player.PlayerId);
+            writer.Write(PlayerId);
             writer.Write(success);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
@@ -539,8 +586,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public static Role GetRoleFromName(string name) => AllRoles.Find(x => x.Name == name);
 
         public static T GetRole<T>(PlayerControl player) where T : Role => GetRole(player) as T;
-
-        public static T GetRole<T>(PlayerVoteArea area) where T : Role => GetRole(area) as T;
 
         public static Role GetRole(PlayerVoteArea area) => GetRole(Utils.PlayerByVoteArea(area));
 

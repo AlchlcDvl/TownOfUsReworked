@@ -64,7 +64,6 @@ namespace TownOfUsReworked.CustomOptions
                     value = reader.ReadInt32();
 
                 customOption?.Set(value);
-
                 Utils.LogSomething($"{customOption?.Name} : {customOption}:");
             }
         }

@@ -111,7 +111,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 var renderer = gameObj.AddComponent<SpriteRenderer>();
                 renderer.sprite = AssetManager.GetSprite("Arrow");
                 arrow.image = renderer;
-                GetRole(PlayerControl.LocalPlayer).AllArrows.Add(player.PlayerId, arrow);
+                LocalRole.AllArrows.Add(player.PlayerId, arrow);
                 Utils.Flash(Color);
             }
         }
@@ -127,7 +127,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Utils.Spread(Player, player);
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
             writer.Write((byte)ActionsRPC.AltruistRevive);
-            writer.Write(Player.PlayerId);
+            writer.Write(PlayerId);
             writer.Write(playerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
             TimeRemaining = CustomGameOptions.AltReviveDuration;

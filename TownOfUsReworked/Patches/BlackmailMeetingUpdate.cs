@@ -12,7 +12,7 @@ namespace TownOfUsReworked.Patches
     [HarmonyPatch]
     public static class BlackmailMeetingUpdate
     {
-        private static bool shookAlready;
+        private static bool ShookAlready;
 
         #pragma warning disable
         public static Sprite PrevXMark;
@@ -26,7 +26,7 @@ namespace TownOfUsReworked.Patches
         {
             public static void Postfix(MeetingHud __instance)
             {
-                shookAlready = false;
+                ShookAlready = false;
 
                 foreach (var role in Role.GetRoles<Blackmailer>(RoleEnum.Blackmailer))
                 {
@@ -46,7 +46,7 @@ namespace TownOfUsReworked.Patches
 
                         playerState.XMark.sprite = AssetManager.GetSprite("BlackmailLetter");
                         playerState.XMark.transform.localScale *= 0.75f;
-                        playerState.XMark.transform.localPosition = new Vector3(playerState.XMark.transform.localPosition.x + LetterXOffset, playerState.XMark.transform.localPosition.y +
+                        playerState.XMark.transform.localPosition = new(playerState.XMark.transform.localPosition.x + LetterXOffset, playerState.XMark.transform.localPosition.y +
                             LetterYOffset, playerState.XMark.transform.localPosition.z);
                     }
                 }
@@ -69,7 +69,7 @@ namespace TownOfUsReworked.Patches
 
                         playerState.XMark.sprite = AssetManager.GetSprite("BlackmailLetter");
                         playerState.XMark.transform.localScale *= 0.75f;
-                        playerState.XMark.transform.localPosition = new Vector3(playerState.XMark.transform.localPosition.x + LetterXOffset, playerState.XMark.transform.localPosition.y +
+                        playerState.XMark.transform.localPosition = new(playerState.XMark.transform.localPosition.x + LetterXOffset, playerState.XMark.transform.localPosition.y +
                             LetterYOffset, playerState.XMark.transform.localPosition.z);
                     }
                 }
@@ -80,7 +80,7 @@ namespace TownOfUsReworked.Patches
                 yield return HudManager.Instance.CoFadeFullScreen(Color.clear, new Color(0f, 0f, 0f, 0.98f));
                 var TempPosition = HudManager.Instance.shhhEmblem.transform.localPosition;
                 var TempDuration = HudManager.Instance.shhhEmblem.HoldDuration;
-                HudManager.Instance.shhhEmblem.transform.localPosition = new Vector3(HudManager.Instance.shhhEmblem.transform.localPosition.x,
+                HudManager.Instance.shhhEmblem.transform.localPosition = new(HudManager.Instance.shhhEmblem.transform.localPosition.x,
                     HudManager.Instance.shhhEmblem.transform.localPosition.y, HudManager.Instance.FullScreen.transform.position.z + 1f);
                 HudManager.Instance.shhhEmblem.TextImage.text = "YOU ARE BLACKMAILED";
                 HudManager.Instance.shhhEmblem.HoldDuration = 2.5f;
@@ -112,9 +112,9 @@ namespace TownOfUsReworked.Patches
 
                         playerState.Overlay.sprite = AssetManager.GetSprite("BlackmailOverlay");
 
-                        if (__instance.state != MeetingHud.VoteStates.Animating && !shookAlready)
+                        if (__instance.state != MeetingHud.VoteStates.Animating && !ShookAlready)
                         {
-                            shookAlready = true;
+                            ShookAlready = true;
                             __instance.StartCoroutine(Effects.SwayX(playerState.transform));
                         }
                     }
@@ -135,9 +135,9 @@ namespace TownOfUsReworked.Patches
 
                         playerState.Overlay.sprite = AssetManager.GetSprite("BlackmailOverlay");
 
-                        if (__instance.state != MeetingHud.VoteStates.Animating && !shookAlready)
+                        if (__instance.state != MeetingHud.VoteStates.Animating && !ShookAlready)
                         {
-                            shookAlready = true;
+                            ShookAlready = true;
                             __instance.StartCoroutine(Effects.SwayX(playerState.transform));
                         }
                     }

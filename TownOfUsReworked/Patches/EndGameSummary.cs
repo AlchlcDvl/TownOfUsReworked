@@ -8,24 +8,29 @@ using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.PlayerLayers.Modifiers;
 using TownOfUsReworked.PlayerLayers.Abilities;
-using AmongUs.GameOptions;
 using TMPro;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.BetterMaps.Airship;
+using System.IO;
 
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch]
     public static class Summary
     {
-        public static class AdditionalTempData
-        {
-            public static readonly List<PlayerRoleInfo> PlayerRoles = new();
+        private static readonly List<PlayerInfo> PlayerRoles = new();
 
-            public class PlayerRoleInfo
+        public class PlayerInfo
+        {
+            public string PlayerName;
+            public string History;
+            public string CachedHistory;
+
+            public PlayerInfo(string name, string history, string cache)
             {
-                public string PlayerName { get; set; }
-                public string Role { get; set; }
+                PlayerName = name;
+                History = history;
+                CachedHistory = cache;
             }
         }
 
@@ -34,14 +39,14 @@ namespace TownOfUsReworked.Patches
         {
             public static void Postfix()
             {
-                AdditionalTempData.PlayerRoles.Clear();
-                const string endString = "</color>";
+                PlayerRoles.Clear();
 
                 //There's a better way of doing this e.g. switch statement or dictionary. But this works for now.
                 //AD says - Done.
                 foreach (var playerControl in PlayerControl.AllPlayerControls)
                 {
                     var summary = "";
+                    var cache = "";
 
                     var info = playerControl.AllPlayerInfo();
                     var role = info[0] as Role;
@@ -56,60 +61,97 @@ namespace TownOfUsReworked.Patches
                             role.RoleHistory.Reverse();
 
                             foreach (var role2 in role.RoleHistory)
-                                summary += $"{role2.ColorString}{role2.Name}{endString} → ";
+                            {
+                                summary += $"{role2.ColorString}{role2.Name}</color> → ";
+                                cache += $"{role2.Name} → ";
+                            }
                         }
 
-                        summary += role.ColorString + role.Name + endString;
+                        summary += role.ColorString + role.Name + "</color>";
+                        cache += role.Name;
                     }
 
                     if (playerControl.IsRecruit())
+                    {
                         summary += " <color=#575657FF>$</color>";
+                        cache += " $";
+                    }
 
                     if (playerControl.IsPersuaded())
+                    {
                         summary += " <color=#F995FCFF>Λ</color>";
+                        cache += " Λ";
+                    }
 
                     if (playerControl.IsResurrected())
+                    {
                         summary += " <color=#E6108AFF>Σ</color>";
+                        cache += " Σ";
+                    }
 
                     if (playerControl.IsBitten())
+                    {
                         summary += " <color=#7B8968FF>γ</color>";
+                        cache += " γ";
+                    }
 
                     if (objectifier?.ObjectifierType != ObjectifierEnum.None)
+                    {
                         summary += $" {objectifier?.ColoredSymbol}";
+                        cache += $" {objectifier?.SymbolName}";
+                    }
 
                     if (modifier?.ModifierType != ModifierEnum.None)
-                        summary += $" ({modifier?.ColorString}{modifier?.Name}{endString})";
+                    {
+                        summary += $" ({modifier?.ColorString}{modifier?.Name}</color>)";
+                        cache += $" ({modifier?.Name})";
+                    }
 
                     if (ability?.AbilityType != AbilityEnum.None)
-                        summary += $" [{ability?.ColorString}{ability?.Name}{endString}]";
+                    {
+                        summary += $" [{ability?.ColorString}{ability?.Name}</color>]";
+                        cache += $" [{ability?.Name}]";
+                    }
 
                     if (playerControl.IsGATarget())
+                    {
                         summary += " <color=#FFFFFFFF>★</color>";
+                        cache += " ★";
+                    }
 
                     if (playerControl.IsExeTarget())
+                    {
                         summary += " <color=#CCCCCCFF>§</color>";
+                        cache += " §";
+                    }
 
                     if (playerControl.IsBHTarget())
+                    {
                         summary += " <color=#B51E39FF>Θ</color>";
+                        cache += " Θ";
+                    }
 
                     if (playerControl.IsGuessTarget())
+                    {
                         summary += " <color=#EEE5BEFF>π</color>";
+                        cache += " π";
+                    }
 
                     if (playerControl == Role.DriveHolder)
+                    {
                         summary += " <color=#008000FF>Δ</color>";
+                        cache += " Δ";
+                    }
 
                     if (playerControl.CanDoTasks())
+                    {
                         summary += $" <{role.TasksCompleted}/{role.TotalTasks}>";
+                        cache += $" <{role.TasksCompleted}/{role.TotalTasks}>";
+                    }
 
                     summary += $" | {playerControl.DeathReason()}";
-
-                    var info2 = new AdditionalTempData.PlayerRoleInfo()
-                    {
-                        PlayerName = playerControl.Data.PlayerName,
-                        Role = summary
-                    };
-
-                    AdditionalTempData.PlayerRoles.Add(info2);
+                    cache += $" | {playerControl.DeathReason()}";
+                    PlayerRoles.Add(new PlayerInfo(playerControl.Data.PlayerName, summary, cache));
                 }
             }
         }
@@ -119,58 +161,70 @@ namespace TownOfUsReworked.Patches
         {
             public static void Postfix(EndGameManager __instance)
             {
-                if (GameOptionsManager.Instance.CurrentGameOptions.GameMode == GameModes.HideNSeek)
+                if (ConstantVariables.IsHnS)
                     return;
 
-                var bonusText = Object.Instantiate(__instance.WinText.gameObject);
-                bonusText.transform.position = new Vector3(__instance.WinText.transform.position.x, __instance.WinText.transform.position.y - 0.8f, __instance.WinText.transform.position.z);
-                bonusText.transform.localScale = new Vector3(0.7f, 0.7f, 1f);
-                var textRenderer = bonusText.GetComponent<TMP_Text>();
-                textRenderer.text = "";
-
-                var position = Camera.main.ViewportToWorldPoint(new Vector3(0f, 1f, Camera.main.nearClipPlane));
+                var position = Camera.main.ViewportToWorldPoint(new(0f, 1f, Camera.main.nearClipPlane));
                 var roleSummary = Object.Instantiate(__instance.WinText.gameObject);
-                roleSummary.transform.position = new Vector3(__instance.Navigation.ExitButton.transform.position.x + 0.1f, position.y - 0.1f, -14f);
-                roleSummary.transform.localScale = new Vector3(1f, 1f, 1f);
+                roleSummary.transform.position = new(__instance.Navigation.ExitButton.transform.position.x + 0.1f, position.y - 0.1f, -14f);
+                roleSummary.transform.localScale = new(1f, 1f, 1f);
 
                 var roleSummaryText = new StringBuilder();
+                var roleSummaryCache = new StringBuilder();
                 var winnersText = new StringBuilder();
+                var winnersCache = new StringBuilder();
                 var losersText = new StringBuilder();
+                var losersCache = new StringBuilder();
 
                 var winnerCount = 0;
                 var loserCount = 0;
 
                 roleSummaryText.AppendLine("<size=125%><u><b>End Game Summary</b></u>:</size>");
                 roleSummaryText.AppendLine();
+                roleSummaryCache.AppendLine("End Game Summary:");
+                roleSummaryCache.AppendLine();
                 winnersText.AppendLine("<size=105%><b>Winners</b></size>");
                 losersText.AppendLine("<size=105%><b>Losers</b></size>");
+                winnersCache.AppendLine("Winners");
+                losersCache.AppendLine("Losers");
 
-                foreach (var data in AdditionalTempData.PlayerRoles)
+                foreach (var data in PlayerRoles)
                 {
-                    var role = string.Join(" ", data.Role);
-                    var dataString = $"<size=75%>{data.PlayerName} - {role}</size>";
+                    var dataString = $"<size=75%>{data.PlayerName} - {data.History}</size>";
+                    var dataCache = $"{data.PlayerName} - {data.CachedHistory}";
 
                     if (data.PlayerName.IsWinner())
                     {
                         winnersText.AppendLine(dataString);
+                        winnersCache.AppendLine(dataCache);
                         winnerCount++;
                     }
                     else
                     {
                         losersText.AppendLine(dataString);
+                        losersCache.AppendLine(dataCache);
                         loserCount++;
                     }
                 }
 
                 if (winnerCount == 0)
+                {
                     winnersText.AppendLine("<size=75%>No One Won</size>");
+                    winnersCache.AppendLine("No One Won");
+                }
 
                 if (loserCount == 0)
+                {
                     losersText.AppendLine("<size=75%>No One Lost</size>");
+                    losersCache.AppendLine("No One Lost");
+                }
 
                 roleSummaryText.Append(winnersText);
                 roleSummaryText.AppendLine();
                 roleSummaryText.Append(losersText);
+                roleSummaryCache.Append(winnersCache);
+                roleSummaryCache.AppendLine();
+                roleSummaryCache.Append(losersCache);
 
                 var roleSummaryTextMesh = roleSummary.GetComponent<TMP_Text>();
                 roleSummaryTextMesh.alignment = TextAlignmentOptions.TopLeft;
@@ -180,9 +234,20 @@ namespace TownOfUsReworked.Patches
                 roleSummaryTextMesh.fontSize = 1.5f;
 
                 var roleSummaryTextMeshRectTransform = roleSummaryTextMesh.GetComponent<RectTransform>();
-                roleSummaryTextMeshRectTransform.anchoredPosition = new Vector2(position.x + 3.5f, position.y - 0.1f);
+                roleSummaryTextMeshRectTransform.anchoredPosition = new(position.x + 3.5f, position.y - 0.1f);
                 roleSummaryTextMesh.text = $"{roleSummaryText}";
-                AdditionalTempData.PlayerRoles.Clear();
+
+                var text = Path.Combine(Application.persistentDataPath, "Summary-temp");
+
+                try
+                {
+                    File.WriteAllText(text, roleSummaryCache.ToString());
+                    var text2 = Path.Combine(Application.persistentDataPath, "Summary");
+                    File.Delete(text2);
+                    File.Move(text, text2);
+                } catch {}
+
+                PlayerRoles.Clear();
 
                 SpawnInMinigamePatch.ResetGlobalVariable();
             }

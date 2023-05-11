@@ -53,12 +53,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             base.UpdateHud(__instance);
             StakeButton.Update("STAKE", StakeTimer(), CustomGameOptions.StakeCooldown);
 
-            if (VampsDead && !PlayerControl.LocalPlayer.Data.IsDead)
+            if (VampsDead && !IsDead)
             {
                 TurnVigilante();
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
                 writer.Write((byte)TurnRPC.TurnVigilante);
-                writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                writer.Write(PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
             }
         }

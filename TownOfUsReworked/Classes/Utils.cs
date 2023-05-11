@@ -12,14 +12,12 @@ using TownOfUsReworked.PlayerLayers;
 using TownOfUsReworked.PlayerLayers.Modifiers;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.CustomOptions;
-using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using UnityEngine;
 using Reactor.Utilities;
 using Il2CppInterop.Runtime.InteropTypes;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 using TownOfUsReworked.Objects;
-using Il2CppInterop.Runtime;
 using System.IO;
 using TMPro;
 using AmongUs.GameOptions;
@@ -33,10 +31,7 @@ namespace TownOfUsReworked.Classes
     [HarmonyPatch]
     public static class Utils
     {
-        private static DLoadImage _iCallLoadImage;
         public readonly static List<PlayerControl> RecentlyKilled = new();
-
-        private delegate bool DLoadImage(IntPtr tex, IntPtr data, bool markNonReadable);
 
         public static TextMeshPro NameText(this PlayerControl p) => p.cosmetics.nameText;
 
@@ -223,7 +218,11 @@ namespace TownOfUsReworked.Classes
 
         public static DeadBody BodyById(byte id) => Object.FindObjectsOfType<DeadBody>().ToArray().ToList().Find(x => x.ParentId == id);
 
+        public static DeadBody BodyByPlayer(PlayerControl player) => BodyById(player.PlayerId);
+
         public static PlayerControl PlayerByBody(DeadBody body) => PlayerById(body.ParentId);
+
+        public static PlayerVoteArea VoteAreaByPlayer(PlayerControl player) => VoteAreaById(player.PlayerId);
 
         public static Vent VentById(int id) => Object.FindObjectsOfType<Vent>().ToArray().ToList().Find(x => x.Id == id);
 
@@ -421,8 +420,6 @@ namespace TownOfUsReworked.Classes
             }
         }
 
-        public static IEnumerable<(T1, T2)> Zip<T1, T2>(List<T1> first, List<T2> second) => first.Zip(second, (x, y) => (x, y));
-
         public static void DestroyAll(this IEnumerable<Component> listie)
         {
             foreach (var item in listie)
@@ -508,9 +505,9 @@ namespace TownOfUsReworked.Classes
             bypass = bypass || player.Is(AbilityEnum.Ruthless);
             Spread(player, target);
 
-            if (target.IsOnAlert() || target.IsAmbushed() || target.IsGFAmbushed() || target.Is(RoleEnum.Pestilence) || (target.Is(RoleEnum.VampireHunter) &&
-                player.Is(SubFaction.Undead)) || (target.Is(RoleEnum.SerialKiller) && (player.Is(RoleEnum.Escort) || player.Is(RoleEnum.Consort) || (player.Is(RoleEnum.Glitch) &&
-                !toKill)) && !bypass))
+            if (target.IsOnAlert() || ((target.IsAmbushed() || target.IsGFAmbushed()) && (!player.Is(Faction.Intruder) || (player.Is(Faction.Intruder) &&
+                CustomGameOptions.AmbushMates))) || target.Is(RoleEnum.Pestilence) || (target.Is(RoleEnum.VampireHunter) && player.Is(SubFaction.Undead)) ||
+                (target.Is(RoleEnum.SerialKiller) && (player.Is(RoleEnum.Escort) || player.Is(RoleEnum.Consort) || (player.Is(RoleEnum.Glitch) && !toKill)) && !bypass))
             {
                 if (player.Is(RoleEnum.Pestilence))
                 {
@@ -583,7 +580,7 @@ namespace TownOfUsReworked.Classes
                     Retributionist.BreakShield(medic, target.PlayerId, CustomGameOptions.ShieldBreaks);
                 }
             }
-            else if ((target.IsCrusaded() || target.IsRebCrusaded()) && !bypass)
+            else if ((target.IsCrusaded() || target.IsRebCrusaded()) && (!player.Is(Faction.Syndicate) || (player.Is(Faction.Syndicate) && CustomGameOptions.CrusadeMates)) && !bypass)
             {
                 if (player.Is(RoleEnum.Pestilence))
                 {
@@ -686,6 +683,8 @@ namespace TownOfUsReworked.Classes
                 survReset = true;
             else if (target.IsProtected() && (toKill || toConvert) && !bypass)
                 gaReset = true;
+            else if (target.IsProtectedMonarch() && (toKill || toConvert) && !bypass)
+                gaReset = true;
             else if (player.IsOtherRival(target) && (toKill || toConvert))
                 fullReset = true;
             else
@@ -698,15 +697,15 @@ namespace TownOfUsReworked.Classes
                         Fanatic.TurnFanatic(target, role.Faction);
                         var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
                         writer.Write((byte)TurnRPC.TurnFanatic);
-                        writer.Write(player.PlayerId);
                         writer.Write(target.PlayerId);
+                        writer.Write((byte)role.Faction);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
                     }
                     else
                         RpcMurderPlayer(player, target);
                 }
 
-                if (toConvert && RoleGen.Convertible <= 1)
+                if (toConvert && (RoleGen.Convertible <= 0 || RoleGen.PureCrew == target))
                     RpcMurderPlayer(player, target, DeathReasonEnum.Failed);
 
                 abilityUsed = true;
@@ -716,31 +715,8 @@ namespace TownOfUsReworked.Classes
             return new List<bool> { fullReset, gaReset, survReset, abilityUsed };
         }
 
-        public static Il2CppSystem.Collections.Generic.List<PlayerControl> GetClosestPlayers(Vector2 truePosition, float radius)
-        {
-            var playerControlList = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
-            var allPlayers = GameData.Instance.AllPlayers;
-            var lightRadius = radius * ShipStatus.Instance.MaxLightRadius;
-
-            for (var index = 0; index < allPlayers.Count; ++index)
-            {
-                var playerInfo = allPlayers[index];
-
-                if (!playerInfo.Disconnected)
-                {
-                    var vector2 = new Vector2(playerInfo.Object.GetTruePosition().x - truePosition.x, playerInfo.Object.GetTruePosition().y - truePosition.y);
-                    var magnitude = vector2.magnitude;
-
-                    if (magnitude <= lightRadius)
-                    {
-                        var playerControl = playerInfo.Object;
-                        playerControlList.Add(playerControl);
-                    }
-                }
-            }
-
-            return playerControlList;
-        }
+        public static Il2CppSystem.Collections.Generic.List<PlayerControl> GetClosestPlayers(Vector2 truePosition, float radius) => PlayerControl.AllPlayerControls.ToArray().Where(x =>
+            Vector2.Distance(truePosition, x.GetTruePosition()) <= radius).ToList().SystemToIl2Cpp();
 
         public static bool IsTooFar(PlayerControl player, PlayerControl target)
         {
@@ -786,23 +762,14 @@ namespace TownOfUsReworked.Classes
 
         public static void Spread(PlayerControl interacter, PlayerControl target)
         {
-            if (interacter.IsInfected() || target.IsInfected() || target.Is(RoleEnum.Plaguebearer))
-            {
-                foreach (var pb in Role.GetRoles<Plaguebearer>(RoleEnum.Plaguebearer))
-                    pb.RpcSpreadInfection(interacter, target);
-            }
+            foreach (var pb in Role.GetRoles<Plaguebearer>(RoleEnum.Plaguebearer))
+                pb.RpcSpreadInfection(interacter, target);
 
-            if (target.Is(RoleEnum.Arsonist))
-            {
-                foreach (var arso in Role.GetRoles<Arsonist>(RoleEnum.Arsonist))
-                    arso.RpcSpreadDouse(target, interacter);
-            }
+            foreach (var arso in Role.GetRoles<Arsonist>(RoleEnum.Arsonist))
+                arso.RpcSpreadDouse(target, interacter);
 
-            if (target.Is(RoleEnum.Cryomaniac))
-            {
-                foreach (var cryo in Role.GetRoles<Cryomaniac>(RoleEnum.Cryomaniac))
-                    cryo.RpcSpreadDouse(target, interacter);
-            }
+            foreach (var cryo in Role.GetRoles<Cryomaniac>(RoleEnum.Cryomaniac))
+                cryo.RpcSpreadDouse(target, interacter);
         }
 
         public static bool Check(int probability)
@@ -824,108 +791,6 @@ namespace TownOfUsReworked.Classes
 
             foreach (var godfather in Role.GetRoles<PromotedGodfather>(RoleEnum.PromotedGodfather).Where(x => x.CurrentlyDragging != null && x.CurrentlyDragging.ParentId == id))
                 godfather.Drop();
-        }
-
-        public static Sprite CreateSprite(string name)
-        {
-            try
-            {
-                var tex = CreatTexture(name);
-                var sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f), 100);
-                sprite.hideFlags |= HideFlags.HideAndDontSave | HideFlags.DontSaveInEditor;
-                sprite.DontDestroy();
-                return sprite;
-            }
-            catch
-            {
-                LogSomething($"Error Loading {name}");
-                return null;
-            }
-        }
-
-        public static Sprite CreateSprite2(string name)
-        {
-            try
-            {
-                name += ".png";
-                var tex = new Texture2D(0, 0, TextureFormat.RGBA32, Texture.GenerateAllMips, false, IntPtr.Zero);
-                var imageStream = TownOfUsReworked.Executing.GetManifestResourceStream(name);
-                var img = imageStream.ReadFully();
-                LoadImage(tex, img, true);
-                tex.DontDestroy();
-                var sprite = Sprite.Create(tex, new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f), 100);
-                sprite.DontDestroy();
-                return sprite;
-            }
-            catch
-            {
-                LogSomething($"Error Loading {name}");
-                return null;
-            }
-        }
-
-        /*public static Sprite CreateSprite3(string name)
-        {
-            try
-            {
-                var stream = TownOfUsReworked.Assembly.GetManifestResourceStream($"{TownOfUsReworked.Hats}{name}.png");
-                var mainImg = stream.ReadFully();
-                var tex2D = new Texture2D(1, 1, TextureFormat.ARGB32, false);
-                LoadImage(tex2D, mainImg, false);
-                var sprite = Sprite.Create(tex2D, new Rect(0, 0, tex2D.width, tex2D.height), new Vector2(0.5f, 0.5f), 100);
-                sprite.DontDestroy();
-                return sprite;
-            }
-            catch
-            {
-                LogSomething($"Error Loading {name}");
-                return null;
-            }
-        }
-
-        public static Sprite CreateSprite4(string name)
-        {
-            try
-            {
-                var stream = TownOfUsReworked.Assembly.GetManifestResourceStream($"{TownOfUsReworked.Visors}{name}.png");
-                var mainImg = stream.ReadFully();
-                var tex2D = new Texture2D(1, 1, TextureFormat.ARGB32, false);
-                LoadImage(tex2D, mainImg, false);
-                var sprite = Sprite.Create(tex2D, new Rect(0, 0, tex2D.width, tex2D.height), new Vector2(0.5f, 0.5f), 100);
-                sprite.DontDestroy();
-                return sprite;
-            }
-            catch
-            {
-                LogSomething($"Error Loading {name}");
-                return null;
-            }
-        }*/
-
-        public static void LoadImage(Texture2D tex, byte[] data, bool markNonReadable)
-        {
-            _iCallLoadImage ??= IL2CPP.ResolveICall<DLoadImage>("UnityEngine.ImageConversion::LoadImage");
-            var il2CPPArray = (Il2CppStructArray<byte>) data;
-            _iCallLoadImage.Invoke(tex.Pointer, il2CPPArray.Pointer, markNonReadable);
-        }
-
-        public static unsafe Texture2D CreatTexture(string path)
-        {
-            try
-            {
-                var texture = new Texture2D(2, 2, TextureFormat.ARGB32, true);
-                var stream = TownOfUsReworked.Executing.GetManifestResourceStream(path);
-                var length = stream.Length;
-                var byteTexture = new Il2CppStructArray<byte>(length);
-                stream.Read(new Span<byte>(IntPtr.Add(byteTexture.Pointer, IntPtr.Size * 4).ToPointer(), (int)length));
-                ImageConversion.LoadImage(texture, byteTexture, false);
-                return texture;
-            }
-            catch
-            {
-                LogSomething("Error loading texture from resources: " + path);
-                return null;
-            }
         }
 
         public static void LogSomething(object message) => PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage(message);
@@ -954,32 +819,6 @@ namespace TownOfUsReworked.Classes
             }
         }
 
-        public static AudioClip CreateAudio(string path, string name = "NoName")
-        {
-            try
-            {
-                var stream = TownOfUsReworked.Executing.GetManifestResourceStream(path);
-                var byteAudio = new byte[stream.Length];
-                _ = stream.Read(byteAudio, 0, (int)stream.Length);
-                var samples = new float[byteAudio.Length / 4];
-
-                for (var i = 0; i < samples.Length; i++)
-                {
-                    var offset = i * 4;
-                    samples[i] = (float)BitConverter.ToInt32(byteAudio, offset) / int.MaxValue;
-                }
-
-                var audioClip = AudioClip.Create(name, samples.Length, 2, 24000, false);
-                audioClip.SetData(samples, 0);
-                return audioClip;
-            }
-            catch
-            {
-                LogSomething($"Error Loading {path}");
-                return null;
-            }
-        }
-
         public static bool IsInRange(this float num, float min, float max, bool minInclusive = false, bool maxInclusive = false)
         {
             if (minInclusive && maxInclusive)
@@ -998,10 +837,10 @@ namespace TownOfUsReworked.Classes
             writer.Write((byte)TownOfUsReworked.Version.Major);
             writer.Write((byte)TownOfUsReworked.Version.Minor);
             writer.Write((byte)TownOfUsReworked.Version.Build);
-            writer.Write(AmongUsClient.Instance.AmHost ? GameStartManagerPatch.timer : -1f);
             writer.WritePacked(AmongUsClient.Instance.ClientId);
             writer.Write((byte)(TownOfUsReworked.Version.Revision < 0 ? 0xFF : TownOfUsReworked.Version.Revision));
             writer.Write(TownOfUsReworked.Executing.ManifestModule.ModuleVersionId.ToByteArray());
+            writer.Write(AmongUsClient.Instance.AmHost ? GameStartManagerPatch.timer : -1f);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
             VersionHandshake(TownOfUsReworked.Version.Major, TownOfUsReworked.Version.Minor, TownOfUsReworked.Version.Build, TownOfUsReworked.Version.Revision,
                 TownOfUsReworked.Executing.ManifestModule.ModuleVersionId, AmongUsClient.Instance.ClientId);
@@ -1091,7 +930,7 @@ namespace TownOfUsReworked.Classes
 
             role.Vents.Add(vent);
 
-            if (SubmergedCompatibility.IsSubmerged())
+            if (SubmergedCompatibility.IsSubmerged)
             {
                 vent.gameObject.layer = 12;
                 vent.gameObject.AddSubmergedComponent(SubmergedCompatibility.ElevatorMover); //Just in case elevator vent is not blocked
@@ -1152,7 +991,7 @@ namespace TownOfUsReworked.Classes
 
                 var fs = false;
 
-                switch (GameOptionsManager.Instance.currentNormalGameOptions.MapId)
+                switch (TownOfUsReworked.VanillaOptions.MapId)
                 {
                     case 0:
                     case 1:
@@ -1412,7 +1251,7 @@ namespace TownOfUsReworked.Classes
             foreach (var vent in vents)
                 allLocations.Add(GetVentPosition(vent));
 
-            switch (GameOptionsManager.Instance.currentNormalGameOptions.MapId)
+            switch (TownOfUsReworked.VanillaOptions.MapId)
             {
                 case 0:
                     allLocations.AddRange(SkeldPositions);
@@ -1449,16 +1288,17 @@ namespace TownOfUsReworked.Classes
 
         public static void Revive(DeadBody body)
         {
-            var player = PlayerById(body.ParentId);
+            var player = PlayerByBody(body);
             player.Revive();
             var position = body.TruePosition;
             Murder.KilledPlayers.Remove(Murder.KilledPlayers.Find(x => x.PlayerId == player.PlayerId));
             RecentlyKilled.Remove(player);
+            Role.Cleaned.Remove(player);
             ReassignPostmortals(player);
             player.Data.SetImpostor(player.Data.IsImpostor());
             player.NetTransform.SnapTo(new Vector2(position.x, position.y + 0.3636f));
 
-            if (SubmergedCompatibility.IsSubmerged() && PlayerControl.LocalPlayer == player)
+            if (SubmergedCompatibility.IsSubmerged && PlayerControl.LocalPlayer == player)
                 SubmergedCompatibility.ChangeFloor(player.transform.position.y > -7);
 
             if (player.Data.IsImpostor())
@@ -1509,7 +1349,7 @@ namespace TownOfUsReworked.Classes
             player.MyPhysics.ResetMoveState();
             player.NetTransform.SnapTo(new Vector2(position.x, position.y));
 
-            if (SubmergedCompatibility.IsSubmerged() && PlayerControl.LocalPlayer == player)
+            if (SubmergedCompatibility.IsSubmerged && PlayerControl.LocalPlayer == player)
             {
                 SubmergedCompatibility.ChangeFloor(player.GetTruePosition().y > -7);
                 SubmergedCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
@@ -1829,33 +1669,6 @@ namespace TownOfUsReworked.Classes
             }
 
             return closestBody;
-        }
-
-        public static Console GetClosestConsole(this PlayerControl refPlayer, float maxDistance = 0f)
-        {
-            var truePosition = refPlayer.GetTruePosition();
-            var closestDistance = double.MaxValue;
-            Console closestConsole = null;
-
-            if (maxDistance == 0f)
-                maxDistance = CustomGameOptions.InteractionDistance;
-
-            foreach (var console in Object.FindObjectsOfType<Console>())
-            {
-                var distance = Vector2.Distance(truePosition, console.transform.position);
-                var vector = new Vector2(console.transform.position.x, console.transform.position.y) - truePosition;
-
-                if (distance > maxDistance || distance > closestDistance)
-                    continue;
-
-                if (PhysicsHelpers.AnyNonTriggersBetween(truePosition, vector.normalized, distance, Constants.ShipAndObjectsMask))
-                    continue;
-
-                closestConsole = console;
-                closestDistance = distance;
-            }
-
-            return closestConsole;
         }
     }
 }

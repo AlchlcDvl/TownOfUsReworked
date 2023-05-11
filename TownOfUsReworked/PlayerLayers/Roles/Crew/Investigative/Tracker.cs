@@ -35,7 +35,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             InspectorResults = InspectorResults.TracksOthers;
             Type = LayerEnum.Tracker;
             _time = DateTime.UnixEpoch;
-            TrackButton = new(this, "Track", AbilityTypes.Direct, "ActionSecondary", Track, true);
+            TrackButton = new(this, "Track", AbilityTypes.Direct, "ActionSecondary", Track, Exception, true);
         }
 
         public float TrackerTimer()
@@ -62,6 +62,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             TrackerArrows.Clear();
             ClearPoints();
         }
+
+        public bool Exception(PlayerControl player) => TrackerArrows.ContainsKey(player.PlayerId);
 
         public void Track()
         {
@@ -112,8 +114,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            var notTracked = PlayerControl.AllPlayerControls.ToArray().Where(x => !TrackerArrows.ContainsKey(x.PlayerId)).ToList();
-            TrackButton.Update("Track", TrackerTimer(), CustomGameOptions.TrackCd, UsesLeft, notTracked, ButtonUsable);
+            TrackButton.Update("TRACK", TrackerTimer(), CustomGameOptions.TrackCd, UsesLeft, ButtonUsable, ButtonUsable);
 
             if (PlayerControl.LocalPlayer.Data.IsDead)
                 OnLobby();

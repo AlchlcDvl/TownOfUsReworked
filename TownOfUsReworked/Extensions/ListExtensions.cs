@@ -22,7 +22,6 @@ namespace TownOfUsReworked.Extensions
 
         public static T TakeFirst<T>(this List<T> list)
         {
-            list.Shuffle();
             var item = list[0];
 
             while (item == null)
@@ -32,7 +31,6 @@ namespace TownOfUsReworked.Extensions
             }
 
             list.RemoveAt(0);
-            list.Shuffle();
             return item;
         }
 
@@ -53,15 +51,6 @@ namespace TownOfUsReworked.Extensions
             {
                 if (list.Contains(item))
                     list.Remove(item);
-            }
-        }
-
-        public static void AddRange<T>(this List<T> list, List<T> list2)
-        {
-            foreach (var item in list2)
-            {
-                if (!list.Contains(item))
-                    list.Add(item);
             }
         }
 

@@ -6,7 +6,6 @@ using Hazel;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Custom;
-using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -50,7 +49,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.Shift);
-                writer.Write(Player.PlayerId);
+                writer.Write(PlayerId);
                 writer.Write(ShiftButton.TargetPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 Shift(this, ShiftButton.TargetPlayer);
@@ -109,6 +108,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 RoleEnum.Veteran => new Veteran(shifter) { UsesLeft = ((Veteran)role).UsesLeft },
                 RoleEnum.Vigilante => new Vigilante(shifter) { UsesLeft = ((Vigilante)role).UsesLeft },
                 RoleEnum.Chameleon => new Chameleon(shifter) { UsesLeft = ((Chameleon)role).UsesLeft },
+                RoleEnum.Dictator => new Dictator(shifter),
                 RoleEnum.Tracker => new Tracker(shifter)
                 {
                     TrackerArrows = ((Tracker)role).TrackerArrows,
@@ -145,11 +145,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             shifter.EnableButtons();
         }
 
+        public bool Exception(PlayerControl player) => Faction is Faction.Intruder or Faction.Syndicate && player.Is(Faction);
+
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            var targets = PlayerControl.AllPlayerControls.ToArray().Where(x => !(Faction is Faction.Intruder or Faction.Syndicate && x.GetFaction() == Faction)).ToList();
-            ShiftButton.Update("SHIFT", ShiftTimer(), CustomGameOptions.ShifterCd, targets);
+            ShiftButton.Update("SHIFT", ShiftTimer(), CustomGameOptions.ShifterCd);
         }
     }
 }

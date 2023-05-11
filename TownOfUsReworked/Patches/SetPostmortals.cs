@@ -25,7 +25,7 @@ namespace TownOfUsReworked.Patches
     {
         public static void Prefix(GameObject obj)
         {
-            if (!SubmergedCompatibility.Loaded || GameOptionsManager.Instance.currentNormalGameOptions.MapId != 5)
+            if (!SubmergedCompatibility.Loaded || TownOfUsReworked.VanillaOptions.MapId != 5)
                 return;
 
             if (obj.name.Contains("ExileCutscene"))
@@ -181,7 +181,7 @@ namespace TownOfUsReworked.Patches
                     if (normalPlayerTask.TaskType == TaskTypes.UploadData)
                         normalPlayerTask.taskStep = 1;
 
-                    if ((normalPlayerTask.TaskType is TaskTypes.EmptyGarbage or TaskTypes.EmptyChute) && (GameOptionsManager.Instance.currentNormalGameOptions.MapId is 0 or 3 or 4))
+                    if ((normalPlayerTask.TaskType is TaskTypes.EmptyGarbage or TaskTypes.EmptyChute) && (TownOfUsReworked.VanillaOptions.MapId is 0 or 3 or 4))
                         normalPlayerTask.taskStep = 1;
 
                     if (updateArrow)

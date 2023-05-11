@@ -71,7 +71,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
             writer.Write((byte)ActionsRPC.Teleport);
-            writer.Write(Player.PlayerId);
+            writer.Write(PlayerId);
             writer.Write(TeleportPoint);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
             LastTeleport = DateTime.UtcNow;

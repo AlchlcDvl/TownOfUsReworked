@@ -7,15 +7,14 @@ using BepInEx;
 using BepInEx.Unity.IL2CPP;
 using HarmonyLib;
 using Il2CppInterop.Runtime;
-using Il2CppInterop.Runtime.Injection;
 using UnityEngine;
 using Reactor.Utilities;
-using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.Data;
 using Hazel;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Patches;
 using TownOfUsReworked.Custom;
+using TownOfUsReworked.Monos;
 
 namespace TownOfUsReworked.Classes
 {
@@ -80,9 +79,10 @@ namespace TownOfUsReworked.Classes
         private static Type Vent_MoveToVent_PatchType;
         private static FieldInfo InTransitionField;
 
-        #pragma warning disable
         private static Type CustomTaskTypesType;
         private static FieldInfo RetrieveOxigenMaskField;
+
+        #pragma warning disable
         public static TaskTypes RetrieveOxygenMask;
         #pragma warning restore
 
@@ -163,7 +163,7 @@ namespace TownOfUsReworked.Classes
 
         public static void CheckOutOfBoundsElevator(PlayerControl player)
         {
-            if (!Loaded || IsSubmerged())
+            if (!Loaded || IsSubmerged)
                 return;
 
             var elevator = GetPlayerElevator(player);
@@ -180,7 +180,7 @@ namespace TownOfUsReworked.Classes
 
         public static void MoveDeadPlayerElevator(PlayerControl player)
         {
-            if (!IsSubmerged())
+            if (!IsSubmerged)
                 return;
 
             var elevator = GetPlayerElevator(player);
@@ -203,10 +203,10 @@ namespace TownOfUsReworked.Classes
 
         public static Tuple<bool, object> GetPlayerElevator(PlayerControl player)
         {
-            if (!IsSubmerged())
+            if (!IsSubmerged)
                 return Tuple.Create(false, (object)null);
 
-            foreach (object elevator in (IList)SubmergedElevators.GetValue(SubmergedInstance.GetValue(null)))
+            foreach (var elevator in (IList)SubmergedElevators.GetValue(SubmergedInstance.GetValue(null)))
             {
                 if ((bool)GetInElevator.Invoke(elevator, new object[] { player }))
                     return Tuple.Create(true, elevator);
@@ -261,9 +261,7 @@ namespace TownOfUsReworked.Classes
             if (!PlayerControl.LocalPlayer.Data.IsDead)
                 return;
 
-            if ((PlayerControl.LocalPlayer.Is(RoleEnum.Revealer) && !Role.GetRole<Revealer>(PlayerControl.LocalPlayer).Caught) || (PlayerControl.LocalPlayer.Is(RoleEnum.Phantom) &&
-                !Role.GetRole<Phantom>(PlayerControl.LocalPlayer).Caught) || (PlayerControl.LocalPlayer.Is(RoleEnum.Banshee) && !Role.GetRole<Banshee>(PlayerControl.LocalPlayer).Caught) ||
-                (PlayerControl.LocalPlayer.Is(RoleEnum.Ghoul) && !Role.GetRole<Ghoul>(PlayerControl.LocalPlayer).Caught))
+            if (PlayerControl.LocalPlayer.IsPostmortal() && !PlayerControl.LocalPlayer.Caught())
             {
                 var startingVent = ShipStatus.Instance.AllVents[UnityEngine.Random.RandomRangeInt(0, ShipStatus.Instance.AllVents.Count)];
 
@@ -287,8 +285,7 @@ namespace TownOfUsReworked.Classes
             {
                 var player = __instance.myPlayer;
 
-                if ((player.Is(RoleEnum.Phantom) && !Role.GetRole<Phantom>(player).Caught) || (player.Is(RoleEnum.Revealer) && !Role.GetRole<Revealer>(player).Caught) ||
-                    (player.Is(RoleEnum.Ghoul) && !Role.GetRole<Ghoul>(player).Caught) || (player.Is(RoleEnum.Banshee) && !Role.GetRole<Banshee>(player).Caught))
+                if (player.IsPostmortal() && !player.Caught())
                 {
                     if (player.AmOwner)
                         MoveDeadPlayerElevator(player);
@@ -350,12 +347,6 @@ namespace TownOfUsReworked.Classes
             } catch (NullReferenceException) {}
         }
 
-        public static bool IsSubmerged() => Loaded && ShipStatus.Instance && ShipStatus.Instance.Type == SUBMERGED_MAP_TYPE;
-    }
-
-    public class MissingSubmergedBehaviour : MonoBehaviour
-    {
-        static MissingSubmergedBehaviour() => ClassInjector.RegisterTypeInIl2Cpp<MissingSubmergedBehaviour>();
-        public MissingSubmergedBehaviour(IntPtr ptr) : base(ptr) {}
+        public static bool IsSubmerged => Loaded && ShipStatus.Instance && ShipStatus.Instance.Type == SUBMERGED_MAP_TYPE;
     }
 }

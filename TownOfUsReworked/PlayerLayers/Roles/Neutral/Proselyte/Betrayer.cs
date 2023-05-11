@@ -3,7 +3,6 @@ using System;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Custom;
 using TownOfUsReworked.Classes;
-using System.Linq;
 using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
@@ -23,7 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleAlignment = RoleAlignment.NeutralPros;
             AlignmentName = NP;
             Type = LayerEnum.Betrayer;
-            KillButton = new(this, "BetKill", AbilityTypes.Direct, "ActionSecondary", Kill);
+            KillButton = new(this, "BetKill", AbilityTypes.Direct, "ActionSecondary", Kill, Exception);
             InspectorResults = InspectorResults.IsAggressive;
         }
 
@@ -51,14 +50,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
         }
 
+        public bool Exception(PlayerControl player) => (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) ||
+            player == Player.GetOtherLover() || player == Player.GetOtherRival();
+
         public override void UpdateHud(HudManager __instance)
         {
             if (Faction == Faction.Neutral)
                 return;
 
             base.UpdateHud(__instance);
-            var notMates = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction)).ToList();
-            KillButton.Update("KILL", KillTimer(), CustomGameOptions.BetrayerKillCooldown, notMates);
+            KillButton.Update("KILL", KillTimer(), CustomGameOptions.BetrayerKillCooldown);
         }
     }
 }

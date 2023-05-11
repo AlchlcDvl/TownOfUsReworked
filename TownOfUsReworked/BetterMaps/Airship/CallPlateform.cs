@@ -5,6 +5,7 @@ using UnityEngine;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.CustomOptions;
 using Reactor.Utilities;
+using TownOfUsReworked.Monos;
 
 namespace TownOfUsReworked.BetterMaps.Airship
 {

@@ -113,10 +113,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 }
             }
             else if (BodyArrows.Count != 0)
-            {
-                BodyArrows.Values.DestroyAll();
-                BodyArrows.Clear();
-            }
+                OnLobby();
         }
 
         public void Autopsy()

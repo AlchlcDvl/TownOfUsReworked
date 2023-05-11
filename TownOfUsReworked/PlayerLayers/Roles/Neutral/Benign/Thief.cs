@@ -58,7 +58,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     writer.Write(PlayerControl.LocalPlayer.PlayerId);
                     writer.Write(StealButton.TargetPlayer.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    //SoundManager.Instance.PlaySound(TownOfUsReworked.StealSound, false, 0.4f);
                     Utils.RpcMurderPlayer(Player, StealButton.TargetPlayer);
                     Steal(this, StealButton.TargetPlayer);
                 }
@@ -72,6 +71,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 LastStolen.AddSeconds(CustomGameOptions.VestKCReset);
         }
 
+        public bool Exception(PlayerControl player) => player.Is(Faction) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || player == Player.GetOtherLover() || player ==
+            Player.GetOtherRival() || (player.Is(ObjectifierEnum.Mafia) && Player.Is(ObjectifierEnum.Mafia));
+
         public static void Steal(Thief thiefRole, PlayerControl other)
         {
             var role = GetRole(other);
@@ -81,29 +83,24 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             thief.DisableButtons();
             other.DisableButtons();
 
-            if (PlayerControl.LocalPlayer == other)
+            if (PlayerControl.LocalPlayer == other || PlayerControl.LocalPlayer == thief)
             {
                 Utils.Flash(thiefRole.Color);
                 role.OnLobby();
-            }
-
-            if (PlayerControl.LocalPlayer == thief)
-            {
-                Utils.Flash(thiefRole.Color);
                 thiefRole.OnLobby();
             }
 
             Role newRole = role.RoleType switch
             {
                 RoleEnum.Anarchist => new Anarchist(thief),
-                RoleEnum.Arsonist => new Arsonist(thief) { DousedPlayers = ((Arsonist)role).DousedPlayers },
+                RoleEnum.Arsonist => new Arsonist(thief) { Doused = ((Arsonist)role).Doused },
                 RoleEnum.Blackmailer => new Blackmailer(thief),
                 RoleEnum.Bomber => new Bomber(thief),
                 RoleEnum.Camouflager => new Camouflager(thief),
                 RoleEnum.Concealer => new Concealer(thief),
                 RoleEnum.Consigliere => new Consigliere(thief) { Investigated = ((Consigliere)role).Investigated },
                 RoleEnum.Consort => new Consort(thief),
-                RoleEnum.Cryomaniac => new Cryomaniac(thief) { DousedPlayers = ((Cryomaniac)role).DousedPlayers },
+                RoleEnum.Cryomaniac => new Cryomaniac(thief) { Doused = ((Cryomaniac)role).Doused },
                 RoleEnum.Disguiser => new Disguiser(thief),
                 RoleEnum.Dracula => new Dracula(thief) { Converted = ((Dracula)role).Converted },
                 RoleEnum.Framer => new Framer(thief) { Framed = ((Framer)role).Framed },
@@ -121,7 +118,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 RoleEnum.Sidekick => new Sidekick(thief) { Rebel = (Rebel)leader },
                 RoleEnum.Shapeshifter => new Shapeshifter(thief),
                 RoleEnum.Murderer => new Murderer(thief),
-                RoleEnum.Plaguebearer => new Plaguebearer(thief) { InfectedPlayers = ((Plaguebearer)role).InfectedPlayers },
+                RoleEnum.Plaguebearer => new Plaguebearer(thief) { Infected = ((Plaguebearer)role).Infected },
                 RoleEnum.Pestilence => new Pestilence(thief),
                 RoleEnum.SerialKiller => new SerialKiller(thief),
                 RoleEnum.Werewolf => new Werewolf(thief),
@@ -203,7 +200,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         var renderer = gameObj.AddComponent<SpriteRenderer>();
                         renderer.sprite = AssetManager.GetSprite("Arrow");
                         arrow.image = renderer;
-                        GetRole(PlayerControl.LocalPlayer).AllArrows.Add(snitch.PlayerId, arrow);
+                        LocalRole.AllArrows.Add(snitch.PlayerId, arrow);
                     }
                     else if (snitch.TasksDone && PlayerControl.LocalPlayer == snitch.Player)
                     {
@@ -213,7 +210,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         var renderer = gameObj.AddComponent<SpriteRenderer>();
                         renderer.sprite = AssetManager.GetSprite("Arrow");
                         arrow.image = renderer;
-                        GetRole(snitch.Player).AllArrows.Add(thief.PlayerId, arrow);
+                        LocalRole.AllArrows.Add(thief.PlayerId, arrow);
                     }
                 }
 
@@ -227,7 +224,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         var renderer = gameObj.AddComponent<SpriteRenderer>();
                         renderer.sprite = AssetManager.GetSprite("Arrow");
                         arrow.image = renderer;
-                        GetRole(PlayerControl.LocalPlayer).AllArrows.Add(revealer.PlayerId, arrow);
+                        LocalRole.AllArrows.Add(revealer.PlayerId, arrow);
                     }
                 }
             }

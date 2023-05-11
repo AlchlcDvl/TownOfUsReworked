@@ -6,13 +6,12 @@ using TownOfUsReworked.Classes;
 using TMPro;
 using AmongUs.Data.Player;
 using AmongUs.Data.Legacy;
-using TownOfUsReworked.Crowded.Components;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Extensions;
 using System.Collections.Generic;
-using Hazel;
 using TownOfUsReworked.PlayerLayers;
+using TownOfUsReworked.Monos;
 
 namespace TownOfUsReworked.Patches
 {
@@ -36,13 +35,12 @@ namespace TownOfUsReworked.Patches
         public static void Postfix(Vent __instance, [HarmonyArgument(1)] ref bool mainTarget)
         {
             var active = PlayerControl.LocalPlayer != null && !MeetingHud.Instance && PlayerControl.LocalPlayer.CanVent();
-            var role = Role.GetRole(PlayerControl.LocalPlayer);
 
-            if (role == null || !active)
+            if (Role.LocalRole == null || !active)
                 return;
 
-            __instance.myRend.material.SetColor("_OutlineColor", role.Color);
-            __instance.myRend.material.SetColor("_AddColor", mainTarget ? role.Color : Color.clear);
+            __instance.myRend.material.SetColor("_OutlineColor", Role.LocalRole.Color);
+            __instance.myRend.material.SetColor("_AddColor", mainTarget ? Role.LocalRole.Color : Color.clear);
         }
     }
 
@@ -51,7 +49,7 @@ namespace TownOfUsReworked.Patches
     {
         public static void Postfix(MapBehaviour __instance)
         {
-            foreach (var layer in PlayerLayer.GetLayers(PlayerControl.LocalPlayer))
+            foreach (var layer in PlayerLayer.LocalLayers)
                 layer?.UpdateMap(__instance);
         }
     }
@@ -140,14 +138,16 @@ namespace TownOfUsReworked.Patches
         }
     }
 
-    [HarmonyPatch(typeof(OpenDoorConsole), nameof(OpenDoorConsole.Use))]
-    public static class SyncToiletDoor
+    [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.CanMove), MethodType.Getter)]
+    public static class CanMove
     {
-        public static void Prefix(OpenDoorConsole __instance)
+        public static bool Prefix(PlayerControl __instance, ref bool __result)
         {
-            var messageWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.DoorSyncToilet, SendOption.Reliable);
-            messageWriter.Write(__instance.MyDoor.Id);
-            AmongUsClient.Instance.FinishRpcImmediately(messageWriter);
+            __result = __instance.moveable && !Minigame.Instance && !__instance.shapeshifting && (!HudManager.InstanceExists || (!HudManager.Instance.Chat.IsOpen &&
+                !HudManager.Instance.KillOverlay.IsOpen && !HudManager.Instance.GameMenu.IsOpen)) && (!MapBehaviour.Instance || !MapBehaviour.Instance.IsOpenStopped) &&
+                !MeetingHud.Instance && !PlayerCustomizationMenu.Instance && !IntroCutscene.Instance;
+
+            return false;
         }
     }
 }

@@ -9,7 +9,6 @@ using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Custom;
 using Hazel;
 using Reactor.Utilities;
-using System.Linq;
 using HarmonyLib;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
@@ -35,8 +34,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             WarpPlayer1 = null;
             WarpPlayer2 = null;
             UnwarpablePlayers = new();
-            WarpMenu1 = new(Player, Click1);
-            WarpMenu2 = new(Player, Click2);
+            WarpMenu1 = new(Player, Click1, Exception1);
+            WarpMenu2 = new(Player, Click2, Exception2);
             Type = LayerEnum.Warper;
             WarpButton = new(this, "Warp", AbilityTypes.Effect, "Secondary", Warp);
             InspectorResults = InspectorResults.MovesAround;
@@ -89,7 +88,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 WarpPlayer1.NetTransform.SnapTo(new Vector2(WarpPlayer2.GetTruePosition().x, WarpPlayer2.GetTruePosition().y + 0.3636f));
                 WarpPlayer1.MyRend().flipX = WarpPlayer2.MyRend().flipX;
 
-                if (SubmergedCompatibility.IsSubmerged() && PlayerControl.LocalPlayer.PlayerId == WarpPlayer1.PlayerId)
+                if (SubmergedCompatibility.IsSubmerged && PlayerControl.LocalPlayer.PlayerId == WarpPlayer1.PlayerId)
                 {
                     SubmergedCompatibility.ChangeFloor(WarpPlayer1.GetTruePosition().y > -7);
                     SubmergedCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
@@ -103,7 +102,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 Utils.StopDragging(Player1Body.ParentId);
                 Player1Body.transform.position = WarpPlayer2.GetTruePosition();
 
-                if (SubmergedCompatibility.IsSubmerged() && PlayerControl.LocalPlayer.PlayerId == WarpPlayer2.PlayerId)
+                if (SubmergedCompatibility.IsSubmerged && PlayerControl.LocalPlayer.PlayerId == WarpPlayer2.PlayerId)
                 {
                     SubmergedCompatibility.ChangeFloor(WarpPlayer2.GetTruePosition().y > -7);
                     SubmergedCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
@@ -114,7 +113,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 WarpPlayer1.MyPhysics.ResetMoveState();
                 WarpPlayer1.NetTransform.SnapTo(new Vector2(Player2Body.TruePosition.x, Player2Body.TruePosition.y + 0.3636f));
 
-                if (SubmergedCompatibility.IsSubmerged() && PlayerControl.LocalPlayer.PlayerId == WarpPlayer1.PlayerId)
+                if (SubmergedCompatibility.IsSubmerged && PlayerControl.LocalPlayer.PlayerId == WarpPlayer1.PlayerId)
                 {
                     SubmergedCompatibility.ChangeFloor(WarpPlayer1.GetTruePosition().y > -7);
                     SubmergedCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
@@ -169,6 +168,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 LastWarped.AddSeconds(CustomGameOptions.ProtectKCReset);
         }
 
+        public bool Exception1(PlayerControl player) => (player == Player && !CustomGameOptions.WarpSelf) || UnwarpablePlayers.ContainsKey(player.PlayerId) || player == WarpPlayer2 ||
+            (Utils.BodyById(player.PlayerId) == null && player.Data.IsDead);
+
+        public bool Exception2(PlayerControl player) => (player == Player && !CustomGameOptions.WarpSelf) || UnwarpablePlayers.ContainsKey(player.PlayerId) || player == WarpPlayer1 ||
+            (Utils.BodyById(player.PlayerId) == null && player.Data.IsDead);
+
         public void Warp()
         {
             if (WarpTimer() != 0f)
@@ -180,20 +185,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 LastWarped = DateTime.UtcNow;
             }
             else if (WarpPlayer1 == null)
-            {
-                WarpMenu1.Open(PlayerControl.AllPlayerControls.ToArray().Where(x => !(x == WarpPlayer2 || (x == Player && !CustomGameOptions.WarpSelf) || (x.Data.IsDead &&
-                    Utils.BodyById(x.PlayerId) == null) || UnwarpablePlayers.ContainsKey(x.PlayerId))).ToList());
-            }
+                WarpMenu1.Open();
             else if (WarpPlayer2 == null)
-            {
-                WarpMenu2.Open(PlayerControl.AllPlayerControls.ToArray().Where(x => !(x == WarpPlayer1 || (x == Player && !CustomGameOptions.WarpSelf) || (x.Data.IsDead &&
-                    Utils.BodyById(x.PlayerId) == null) || UnwarpablePlayers.ContainsKey(x.PlayerId))).ToList());
-            }
+                WarpMenu2.Open();
             else
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.Warp);
-                writer.Write(Player.PlayerId);
+                writer.Write(PlayerId);
                 writer.Write(WarpPlayer1.PlayerId);
                 writer.Write(WarpPlayer2.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);

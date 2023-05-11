@@ -276,7 +276,7 @@ Move Electrical Outlet
 100
 <color=#AA7632FF>Miner</color>
 100
-<color=#6AA84FFF>Teleporter</color>
+<color=#939593FF>Teleporter</color>
 100
 <color=#0000A7FF>Time Master</color>
 100
@@ -1226,17 +1226,17 @@ True
 False
 Mine Cooldown
 10
-<color=#6AA84FFF>Teleporter</color> Count
+<color=#939593FF>Teleporter</color> Count
 14
-<color=#6AA84FFF>Teleporter</color> Is Unique In All Any
+<color=#939593FF>Teleporter</color> Is Unique In All Any
 False
 Teleport Cooldown
 10
 Mark Cooldown
 10
-<color=#6AA84FFF>Teleporter</color> Mark And Teleport Cooldowns Are Linked
+<color=#939593FF>Teleporter</color> Mark And Teleport Cooldowns Are Linked
 False
-<color=#6AA84FFF>Teleporter</color> Can Vent
+<color=#939593FF>Teleporter</color> Can Vent
 True
 <color=#0000A7FF>Time Master</color> Count
 14

@@ -31,26 +31,43 @@ namespace TownOfUsReworked.Patches
             switch ((CustomRPC)callId)
             {
                 case CustomRPC.SetLayer:
-                    var player = Utils.PlayerById(reader.ReadByte());
-                    var id = reader.ReadInt32();
-                    var rpc = (PlayerLayerEnum)reader.ReadByte();
-                    RoleGen.SetLayer(id, player, rpc);
+                    RoleGen.SetLayer(reader.ReadInt32(), Utils.PlayerById(reader.ReadByte()), (PlayerLayerEnum)reader.ReadByte());
                     break;
 
                 case CustomRPC.NullAbility:
-                    _ = new Abilityless(Utils.PlayerById(reader.ReadByte()));
+                    var toNull2 = Utils.PlayerById(reader.ReadByte());
+
+                    if (Ability.GetAbility(toNull2) != null)
+                        Ability.GetAbility(toNull2).Player = null;
+
+                    _ = new Abilityless(toNull2);
                     break;
 
                 case CustomRPC.NullModifier:
-                    _ = new Modifierless(Utils.PlayerById(reader.ReadByte()));
+                    var toNull1 = Utils.PlayerById(reader.ReadByte());
+
+                    if (Modifier.GetModifier(toNull1) != null)
+                        Modifier.GetModifier(toNull1).Player = null;
+
+                    _ = new Modifierless(toNull1);
                     break;
 
                 case CustomRPC.NullObjectifier:
-                    _ = new Objectifierless(Utils.PlayerById(reader.ReadByte()));
+                    var toNull = Utils.PlayerById(reader.ReadByte());
+
+                    if (Objectifier.GetObjectifier(toNull) != null)
+                        Objectifier.GetObjectifier(toNull).Player = null;
+
+                    _ = new Objectifierless(toNull);
                     break;
 
                 case CustomRPC.NullRole:
-                    _ = new Roleless(Utils.PlayerById(reader.ReadByte()));
+                    var toNull3 = Utils.PlayerById(reader.ReadByte());
+
+                    if (Role.GetRole(toNull3) != null)
+                        Role.GetRole(toNull3).Player = null;
+
+                    _ = new Roleless(toNull3);
                     break;
 
                 case CustomRPC.SetRevealer:
@@ -121,12 +138,15 @@ namespace TownOfUsReworked.Patches
                     break;
 
                 case CustomRPC.SendChat:
-                    string report = reader.ReadString();
+                    var report = reader.ReadString();
                     HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, report);
                     break;
 
                 case CustomRPC.CatchRevealer:
-                    Role.GetRole<Revealer>(Utils.PlayerById(reader.ReadByte())).Caught = true;
+                    var rev = Utils.PlayerById(reader.ReadByte());
+                    var revRole = Role.GetRole<Revealer>(rev);
+                    revRole.Caught = true;
+                    revRole.CompletedTasks = false;
                     break;
 
                 case CustomRPC.AddVoteBank:
@@ -159,14 +179,6 @@ namespace TownOfUsReworked.Patches
                     murderKiller.CheckMurder(murderTarget);
                     break;
 
-                case CustomRPC.FixAnimation:
-                    var player5 = Utils.PlayerById(reader.ReadByte());
-                    player5.MyPhysics.ResetMoveState();
-                    player5.Collider.enabled = true;
-                    player5.moveable = true;
-                    player5.NetTransform.enabled = true;
-                    break;
-
                 case CustomRPC.SetColor:
                     Utils.PlayerById(reader.ReadByte()).SetColor(reader.ReadByte());
                     break;
@@ -175,27 +187,16 @@ namespace TownOfUsReworked.Patches
                     var major = reader.ReadByte();
                     var minor = reader.ReadByte();
                     var patch = reader.ReadByte();
+                    var versionOwnerId = reader.ReadPackedInt32();
+                    var c = reader.Length - reader.Position >= 17;
+                    var revision = c ? reader.ReadByte() : 255;
+                    var guid = c ? new Guid(reader.ReadBytes(16)) : new(new byte[16]);
+                    Utils.VersionHandshake(major, minor, patch, revision == 255 ? -1 : revision, guid, versionOwnerId);
                     var timer = reader.ReadSingle();
 
                     if (!AmongUsClient.Instance.AmHost && timer >= 0f)
                         GameStartManagerPatch.timer = timer;
 
-                    var versionOwnerId = reader.ReadPackedInt32();
-                    var revision = 255;
-                    Guid guid;
-
-                    if (reader.Length - reader.Position >= 17)
-                    {
-                        //Enough bytes left to read
-                        revision = reader.ReadByte();
-                        //GUID
-                        var gbytes = reader.ReadBytes(16);
-                        guid = new Guid(gbytes);
-                    }
-                    else
-                        guid = new Guid(new byte[16]);
-
-                    Utils.VersionHandshake(major, minor, patch, revision == 255 ? -1 : revision, guid, versionOwnerId);
                     break;
 
                 case CustomRPC.SubmergedFixOxygen:
@@ -228,27 +229,28 @@ namespace TownOfUsReworked.Patches
 
                 case CustomRPC.SetSettings:
                     var map = reader.ReadByte();
-                    GameOptionsManager.Instance.currentNormalGameOptions.MapId = map == 255 ? (byte)0 : map;
-                    GameOptionsManager.Instance.currentNormalGameOptions.RoleOptions.SetRoleRate(RoleTypes.Scientist, 0, 0);
-                    GameOptionsManager.Instance.currentNormalGameOptions.RoleOptions.SetRoleRate(RoleTypes.Engineer, 0, 0);
-                    GameOptionsManager.Instance.currentNormalGameOptions.RoleOptions.SetRoleRate(RoleTypes.GuardianAngel, 0, 0);
-                    GameOptionsManager.Instance.currentNormalGameOptions.RoleOptions.SetRoleRate(RoleTypes.Shapeshifter, 0, 0);
-                    GameOptionsManager.Instance.currentNormalGameOptions.CrewLightMod = CustomGameOptions.CrewVision;
-                    GameOptionsManager.Instance.currentNormalGameOptions.ImpostorLightMod = CustomGameOptions.IntruderVision;
-                    GameOptionsManager.Instance.currentNormalGameOptions.AnonymousVotes = CustomGameOptions.AnonymousVoting;
-                    GameOptionsManager.Instance.currentNormalGameOptions.VisualTasks = CustomGameOptions.VisualTasks;
-                    GameOptionsManager.Instance.currentNormalGameOptions.PlayerSpeedMod = CustomGameOptions.PlayerSpeed;
-                    GameOptionsManager.Instance.currentNormalGameOptions.NumImpostors = CustomGameOptions.IntruderCount;
-                    GameOptionsManager.Instance.currentNormalGameOptions.GhostsDoTasks = CustomGameOptions.GhostTasksCountToWin;
-                    GameOptionsManager.Instance.currentNormalGameOptions.TaskBarMode = (AmongUs.GameOptions.TaskBarMode)CustomGameOptions.TaskBarMode;
-                    GameOptionsManager.Instance.currentNormalGameOptions.ConfirmImpostor = CustomGameOptions.ConfirmEjects;
-                    GameOptionsManager.Instance.currentNormalGameOptions.VotingTime = CustomGameOptions.VotingTime;
-                    GameOptionsManager.Instance.currentNormalGameOptions.DiscussionTime = CustomGameOptions.DiscussionTime;
-                    GameOptionsManager.Instance.currentNormalGameOptions.KillDistance = CustomGameOptions.InteractionDistance;
-                    GameOptionsManager.Instance.currentNormalGameOptions.EmergencyCooldown = CustomGameOptions.EmergencyButtonCooldown;
-                    GameOptionsManager.Instance.currentNormalGameOptions.NumEmergencyMeetings = CustomGameOptions.EmergencyButtonCount;
-                    GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown = CustomGameOptions.IntKillCooldown;
-                    GameOptionsManager.Instance.currentNormalGameOptions.GhostsDoTasks = CustomGameOptions.GhostTasksCountToWin;
+                    TownOfUsReworked.VanillaOptions.MapId = map == 255 ? (byte)0 : map;
+                    TownOfUsReworked.VanillaOptions.RoleOptions.SetRoleRate(RoleTypes.Scientist, 0, 0);
+                    TownOfUsReworked.VanillaOptions.RoleOptions.SetRoleRate(RoleTypes.Engineer, 0, 0);
+                    TownOfUsReworked.VanillaOptions.RoleOptions.SetRoleRate(RoleTypes.GuardianAngel, 0, 0);
+                    TownOfUsReworked.VanillaOptions.RoleOptions.SetRoleRate(RoleTypes.Shapeshifter, 0, 0);
+                    TownOfUsReworked.VanillaOptions.CrewLightMod = CustomGameOptions.CrewVision;
+                    TownOfUsReworked.VanillaOptions.ImpostorLightMod = CustomGameOptions.IntruderVision;
+                    TownOfUsReworked.VanillaOptions.AnonymousVotes = CustomGameOptions.AnonymousVoting;
+                    TownOfUsReworked.VanillaOptions.VisualTasks = CustomGameOptions.VisualTasks;
+                    TownOfUsReworked.VanillaOptions.PlayerSpeedMod = CustomGameOptions.PlayerSpeed;
+                    TownOfUsReworked.VanillaOptions.NumImpostors = CustomGameOptions.IntruderCount;
+                    TownOfUsReworked.VanillaOptions.GhostsDoTasks = CustomGameOptions.GhostTasksCountToWin;
+                    TownOfUsReworked.VanillaOptions.TaskBarMode = (AmongUs.GameOptions.TaskBarMode)CustomGameOptions.TaskBarMode;
+                    TownOfUsReworked.VanillaOptions.ConfirmImpostor = CustomGameOptions.ConfirmEjects;
+                    TownOfUsReworked.VanillaOptions.VotingTime = CustomGameOptions.VotingTime;
+                    TownOfUsReworked.VanillaOptions.DiscussionTime = CustomGameOptions.DiscussionTime;
+                    TownOfUsReworked.VanillaOptions.KillDistance = CustomGameOptions.InteractionDistance;
+                    TownOfUsReworked.VanillaOptions.EmergencyCooldown = CustomGameOptions.EmergencyButtonCooldown;
+                    TownOfUsReworked.VanillaOptions.NumEmergencyMeetings = CustomGameOptions.EmergencyButtonCount;
+                    TownOfUsReworked.VanillaOptions.KillCooldown = CustomGameOptions.IntKillCooldown;
+                    TownOfUsReworked.VanillaOptions.GhostsDoTasks = CustomGameOptions.GhostTasksCountToWin;
+                    GameOptionsManager.Instance.currentNormalGameOptions = TownOfUsReworked.VanillaOptions;
 
                     if (CustomGameOptions.AutoAdjustSettings)
                         RandomMap.AdjustSettings(map);
@@ -268,12 +270,16 @@ namespace TownOfUsReworked.Patches
                             Objectifier.GetObjectifier<Fanatic>(Utils.PlayerById(reader.ReadByte())).TurnBetrayer();
                             break;
 
-                        case TurnRPC.TurnPestilence:
-                            Role.GetRole<Plaguebearer>(Utils.PlayerById(reader.ReadByte())).TurnPestilence();
+                        case TurnRPC.TurnFanatic:
+                            Fanatic.TurnFanatic(Utils.PlayerById(reader.ReadByte()), (Faction)reader.ReadByte());
                             break;
 
                         case TurnRPC.TurnVigilante:
                             Role.GetRole<VampireHunter>(Utils.PlayerById(reader.ReadByte())).TurnVigilante();
+                            break;
+
+                        case TurnRPC.TurnPestilence:
+                            Role.GetRole<Plaguebearer>(Utils.PlayerById(reader.ReadByte())).TurnPestilence();
                             break;
 
                         case TurnRPC.TurnTroll:
@@ -296,6 +302,10 @@ namespace TownOfUsReworked.Patches
                             Role.GetRole<Sidekick>(Utils.PlayerById(reader.ReadByte())).TurnRebel();
                             break;
 
+                        case TurnRPC.TurnThief:
+                            Role.GetRole<Amnesiac>(Utils.PlayerById(reader.ReadByte())).TurnThief();
+                            break;
+
                         case TurnRPC.TurnSheriff:
                             Role.GetRole<Seer>(Utils.PlayerById(reader.ReadByte())).TurnSheriff();
                             break;
@@ -310,13 +320,6 @@ namespace TownOfUsReworked.Patches
 
                         case TurnRPC.TurnTraitor:
                             CompleteTasksPatch.TurnTraitor(Utils.PlayerById(reader.ReadByte()));
-                            break;
-
-                        case TurnRPC.TurnFanatic:
-                            var attacker = Utils.PlayerById(reader.ReadByte());
-                            var fanatic = Utils.PlayerById(reader.ReadByte());
-                            var attackerRole = Role.GetRole(attacker);
-                            Fanatic.TurnFanatic(fanatic, attackerRole.Faction);
                             break;
                     }
 
@@ -634,7 +637,7 @@ namespace TownOfUsReworked.Patches
                                     rebRole2.TimeRemaining = CustomGameOptions.ConcealDuration;
                                     rebRole2.Conceal();
 
-                                    if (Role.SyndicateHasChaosDrive)
+                                    if (rebRole2.HoldsDrive)
                                         Utils.Conceal();
                                     else
                                     {
@@ -650,7 +653,7 @@ namespace TownOfUsReworked.Patches
                                     rebRole3.TimeRemaining = CustomGameOptions.ShapeshiftDuration;
                                     rebRole3.Shapeshift();
 
-                                    if (Role.SyndicateHasChaosDrive)
+                                    if (rebRole3.HoldsDrive)
                                         Utils.Shapeshift();
                                     else
                                     {
@@ -673,9 +676,7 @@ namespace TownOfUsReworked.Patches
                                     break;
 
                                 case RebelActionsRPC.Frame:
-                                    var reb6 = Utils.PlayerById(reader.ReadByte());
-                                    var rebRole6 = Role.GetRole<PromotedRebel>(reb6);
-                                    rebRole6.Framed.Add(reader.ReadByte());
+                                    Role.GetRole<PromotedRebel>(Utils.PlayerById(reader.ReadByte())).Framed.Add(reader.ReadByte());
                                     break;
 
                                 case RebelActionsRPC.Crusade:
@@ -686,21 +687,16 @@ namespace TownOfUsReworked.Patches
                                     rebRole7.CrusadedPlayer = crused2;
                                     rebRole7.Crusade();
                                     break;
+
+                                case RebelActionsRPC.Spell:
+                                    Role.GetRole<PromotedRebel>(Utils.PlayerById(reader.ReadByte())).Spelled.Add(reader.ReadByte());
+                                    break;
                             }
 
                             break;
 
                         case ActionsRPC.FreezeDouse:
-                            var cryomaniac = Utils.PlayerById(reader.ReadByte());
-                            var freezedouseTarget = Utils.PlayerById(reader.ReadByte());
-                            var cryomaniacRole = Role.GetRole<Cryomaniac>(cryomaniac);
-                            cryomaniacRole.DousedPlayers.Add(freezedouseTarget.PlayerId);
-                            break;
-
-                        case ActionsRPC.RevealerFinished:
-                            var revealer2 = Utils.PlayerById(reader.ReadByte());
-                            var revealerRole2 = Role.GetRole<Revealer>(revealer2);
-                            revealerRole2.CompletedTasks = true;
+                            Role.GetRole<Cryomaniac>(Utils.PlayerById(reader.ReadByte())).Doused.Add(reader.ReadByte());
                             break;
 
                         case ActionsRPC.FadeBody:
@@ -726,21 +722,15 @@ namespace TownOfUsReworked.Patches
                             break;
 
                         case ActionsRPC.Remember:
-                            var amnesiac = Utils.PlayerById(reader.ReadByte());
-                            var other = Utils.PlayerById(reader.ReadByte());
-                            Amnesiac.Remember(Role.GetRole<Amnesiac>(amnesiac), other);
+                            Amnesiac.Remember(Role.GetRole<Amnesiac>(Utils.PlayerById(reader.ReadByte())), Utils.PlayerById(reader.ReadByte()));
                             break;
 
                         case ActionsRPC.Steal:
-                            var thief = Utils.PlayerById(reader.ReadByte());
-                            var other4 = Utils.PlayerById(reader.ReadByte());
-                            Thief.Steal(Role.GetRole<Thief>(thief), other4);
+                            Thief.Steal(Role.GetRole<Thief>(Utils.PlayerById(reader.ReadByte())), Utils.PlayerById(reader.ReadByte()));
                             break;
 
                         case ActionsRPC.Shift:
-                            var shifter = Utils.PlayerById(reader.ReadByte());
-                            var other2 = Utils.PlayerById(reader.ReadByte());
-                            Shifter.Shift(Role.GetRole<Shifter>(shifter), other2);
+                            Shifter.Shift(Role.GetRole<Shifter>(Utils.PlayerById(reader.ReadByte())), Utils.PlayerById(reader.ReadByte()));
                             break;
 
                         case ActionsRPC.Convert:
@@ -748,31 +738,23 @@ namespace TownOfUsReworked.Patches
                             break;
 
                         case ActionsRPC.Teleport:
-                            var teleporter = Utils.PlayerById(reader.ReadByte());
-                            Utils.Teleport(teleporter, reader.ReadVector2());
+                            Utils.Teleport(Utils.PlayerById(reader.ReadByte()), reader.ReadVector2());
                             break;
 
                         case ActionsRPC.Sidekick:
-                            var reb = Utils.PlayerById(reader.ReadByte());
-                            var side = Utils.PlayerById(reader.ReadByte());
-                            Rebel.Sidekick(Role.GetRole<Rebel>(reb), side);
+                            Rebel.Sidekick(Role.GetRole<Rebel>(Utils.PlayerById(reader.ReadByte())), Utils.PlayerById(reader.ReadByte()));
                             break;
 
                         case ActionsRPC.Frame:
-                            var framer = Utils.PlayerById(reader.ReadByte());
-                            var framerRole = Role.GetRole<Framer>(framer);
-                            framerRole.Framed.Add(reader.ReadByte());
+                             Role.GetRole<Framer>(Utils.PlayerById(reader.ReadByte())).Framed.Add(reader.ReadByte());
                             break;
 
                         case ActionsRPC.Declare:
-                            var gf = Utils.PlayerById(reader.ReadByte());
-                            var maf = Utils.PlayerById(reader.ReadByte());
-                            Godfather.Declare(Role.GetRole<Godfather>(gf), maf);
+                            Godfather.Declare(Role.GetRole<Godfather>(Utils.PlayerById(reader.ReadByte())), Utils.PlayerById(reader.ReadByte()));
                             break;
 
                         case ActionsRPC.Protect:
-                            var medic = Utils.PlayerById(reader.ReadByte());
-                            Role.GetRole<Medic>(medic).ShieldedPlayer = Utils.PlayerById(reader.ReadByte());
+                            Role.GetRole<Medic>(Utils.PlayerById(reader.ReadByte())).ShieldedPlayer = Utils.PlayerById(reader.ReadByte());
                             break;
 
                         case ActionsRPC.BypassKill:
@@ -780,15 +762,11 @@ namespace TownOfUsReworked.Patches
                             break;
 
                         case ActionsRPC.AssassinKill:
-                            var toDie = Utils.PlayerById(reader.ReadByte());
-                            var guessString = reader.ReadString();
-                            Ability.GetAbility<Assassin>(Utils.PlayerById(reader.ReadByte())).MurderPlayer(toDie, guessString);
+                            Ability.GetAbility<Assassin>(Utils.PlayerById(reader.ReadByte())).MurderPlayer(Utils.PlayerById(reader.ReadByte()), reader.ReadString());
                             break;
 
                         case ActionsRPC.GuesserKill:
-                            var toDie2 = Utils.PlayerById(reader.ReadByte());
-                            var guessString2 = reader.ReadString();
-                            Role.GetRole<Guesser>(Utils.PlayerById(reader.ReadByte())).MurderPlayer(toDie2, guessString2);
+                            Role.GetRole<Guesser>(Utils.PlayerById(reader.ReadByte())).MurderPlayer(Utils.PlayerById(reader.ReadByte()), reader.ReadString());
                             break;
 
                         case ActionsRPC.ForceKill:
@@ -831,10 +809,7 @@ namespace TownOfUsReworked.Patches
                             break;
 
                         case ActionsRPC.Mark:
-                            var ghoul2 = Utils.PlayerById(reader.ReadByte());
-                            var marked = Utils.PlayerById(reader.ReadByte());
-                            var ghoulRole2 = Role.GetRole<Ghoul>(ghoul2);
-                            ghoulRole2.MarkedPlayer = marked;
+                            Role.GetRole<Ghoul>(Utils.PlayerById(reader.ReadByte())).MarkedPlayer = Utils.PlayerById(reader.ReadByte());
                             break;
 
                         case ActionsRPC.Disguise:
@@ -857,17 +832,11 @@ namespace TownOfUsReworked.Patches
                             break;
 
                         case ActionsRPC.Blackmail:
-                            var blackmailer = Role.GetRole<Blackmailer>(Utils.PlayerById(reader.ReadByte()));
-                            blackmailer.BlackmailedPlayer = Utils.PlayerById(reader.ReadByte());
+                            Role.GetRole<Blackmailer>(Utils.PlayerById(reader.ReadByte())).BlackmailedPlayer = Utils.PlayerById(reader.ReadByte());
                             break;
 
                         case ActionsRPC.Mine:
-                            var ventId = reader.ReadInt32();
-                            var miner = Utils.PlayerById(reader.ReadByte());
-                            var minerRole = Role.GetRole(miner);
-                            var pos = reader.ReadVector2();
-                            var zAxis = reader.ReadSingle();
-                            Utils.SpawnVent(ventId, minerRole, pos, zAxis);
+                            Utils.SpawnVent(reader.ReadInt32(), Role.GetRole(Utils.PlayerById(reader.ReadByte())), reader.ReadVector2(), reader.ReadSingle());
                             break;
 
                         case ActionsRPC.Invis:
@@ -965,16 +934,11 @@ namespace TownOfUsReworked.Patches
                             break;
 
                         case ActionsRPC.Douse:
-                            var arsonist = Utils.PlayerById(reader.ReadByte());
-                            var douseTarget = Utils.PlayerById(reader.ReadByte());
-                            var arsonistRole = Role.GetRole<Arsonist>(arsonist);
-                            arsonistRole.DousedPlayers.Add(douseTarget.PlayerId);
+                            Role.GetRole<Arsonist>(Utils.PlayerById(reader.ReadByte())).Doused.Add(reader.ReadByte());
                             break;
 
                         case ActionsRPC.Infect:
-                            var pb = Utils.PlayerById(reader.ReadByte());
-                            var infected = reader.ReadByte();
-                            Role.GetRole<Plaguebearer>(pb).InfectedPlayers.Add(infected);
+                            Role.GetRole<Plaguebearer>(Utils.PlayerById(reader.ReadByte())).Infected.Add(reader.ReadByte());
                             break;
 
                         case ActionsRPC.AltruistRevive:
@@ -1029,15 +993,11 @@ namespace TownOfUsReworked.Patches
                             break;
 
                         case ActionsRPC.BaitReport:
-                            var baitKiller = Utils.PlayerById(reader.ReadByte());
-                            var bait = Utils.PlayerById(reader.ReadByte());
-                            baitKiller.ReportDeadBody(bait.Data);
+                            Utils.PlayerById(reader.ReadByte()).ReportDeadBody(Utils.PlayerById(reader.ReadByte()).Data);
                             break;
 
                         case ActionsRPC.Drag:
-                            var dienerPlayer = Utils.PlayerById(reader.ReadByte());
-                            var dienerRole = Role.GetRole<Janitor>(dienerPlayer);
-                            dienerRole.CurrentlyDragging = Utils.BodyById(reader.ReadByte());
+                            Role.GetRole<Janitor>(Utils.PlayerById(reader.ReadByte())).CurrentlyDragging = Utils.BodyById(reader.ReadByte());
                             break;
 
                         case ActionsRPC.Drop:
@@ -1098,7 +1058,7 @@ namespace TownOfUsReworked.Patches
                             var concealer = Utils.PlayerById(reader.ReadByte());
                             var concealerRole = Role.GetRole<Concealer>(concealer);
 
-                            if (Role.SyndicateHasChaosDrive)
+                            if (concealerRole.HoldsDrive)
                                 Utils.Conceal();
                             else
                             {
@@ -1114,7 +1074,7 @@ namespace TownOfUsReworked.Patches
                             var ss = Utils.PlayerById(reader.ReadByte());
                             var ssRole = Role.GetRole<Shapeshifter>(ss);
 
-                            if (Role.SyndicateHasChaosDrive)
+                            if (ssRole.HoldsDrive)
                                 Utils.Shapeshift();
                             else
                             {
@@ -1134,7 +1094,7 @@ namespace TownOfUsReworked.Patches
 
                             foreach (var body in Object.FindObjectsOfType<DeadBody>())
                             {
-                                if (arsoRole.DousedPlayers.Contains(body.ParentId))
+                                if (arsoRole.Doused.Contains(body.ParentId))
                                 {
                                     Coroutines.Start(Utils.FadeBody(body));
                                     _ = new Ash(body.TruePosition);
@@ -1198,6 +1158,16 @@ namespace TownOfUsReworked.Patches
 
                         case ActionsRPC.Knight:
                             Role.GetRole<Monarch>(Utils.PlayerById(reader.ReadByte())).ToBeKnighted.Add(reader.ReadByte());
+                            break;
+
+                        case ActionsRPC.Confuse:
+                            var drunkRole = Role.GetRole<Drunkard>(Utils.PlayerById(reader.ReadByte()));
+
+                            if (!drunkRole.HoldsDrive)
+                                drunkRole.ConfusedPlayer = Utils.PlayerById(reader.ReadByte());
+
+                            drunkRole.TimeRemaining = CustomGameOptions.ConfuseDuration;
+                            drunkRole.Confuse();
                             break;
                     }
 

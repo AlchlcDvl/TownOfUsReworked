@@ -16,10 +16,13 @@ namespace TownOfUsReworked.Objects
     {
         public List<PlayerControl> Players;
         public bool Drived;
+        public PlayerControl Bomber;
 
-        public Bomb(Vector2 position, bool drived) : base(position, Colors.Bomber, CustomGameOptions.BombRange + (drived ? CustomGameOptions.ChaosDriveBombRange : 0f), "Bomb")
+        public Bomb(Vector2 position, bool drived, PlayerControl bomb) : base(position, Colors.Bomber, CustomGameOptions.BombRange + (drived ? CustomGameOptions.ChaosDriveBombRange : 0f),
+            "Bomb")
         {
             Drived = drived;
+            Bomber = bomb;
             Coroutines.Start(Timer());
         }
 
@@ -44,8 +47,13 @@ namespace TownOfUsReworked.Objects
         {
             foreach (var player in Players)
             {
-                if (!player.Is(RoleEnum.Pestilence) && !player.IsOnAlert() && !player.IsProtected() && !player.IsShielded() && !player.IsRetShielded())
-                    Utils.RpcMurderPlayer(player, player, DeathReasonEnum.Bombed, false);
+                if (player.Is(RoleEnum.Pestilence) || player.IsOnAlert() || player.IsProtected() || player.IsShielded() || player.IsRetShielded() || player.IsProtectedMonarch() ||
+                    (player.Is(Faction.Syndicate) && !CustomGameOptions.BombKillsSyndicate))
+                {
+                    continue;
+                }
+
+                Utils.RpcMurderPlayer(Bomber, player, DeathReasonEnum.Bombed, false);
             }
 
             Destroy();

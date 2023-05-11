@@ -4,7 +4,6 @@ using TownOfUsReworked.Data;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Custom;
 using TownOfUsReworked.Extensions;
-using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -68,11 +67,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
         }
 
+        public bool Exception(PlayerControl player) => player.Is(Faction) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || player == Player.GetOtherLover() || player ==
+            Player.GetOtherRival() || (player.Is(ObjectifierEnum.Mafia) && Player.Is(ObjectifierEnum.Mafia));
+
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            var targets = PlayerControl.AllPlayerControls.ToArray().Where(x => !(Faction is Faction.Intruder or Faction.Syndicate && x.GetFaction() == Faction)).ToList();
-            ShootButton.Update("SHOOT", KillTimer(), CustomGameOptions.VigiKillCd, UsesLeft, targets, ButtonUsable, ButtonUsable && !KilledInno && !RoundOne);
+            ShootButton.Update("SHOOT", KillTimer(), CustomGameOptions.VigiKillCd, UsesLeft, ButtonUsable, ButtonUsable && !KilledInno && !RoundOne);
         }
 
         public void Shoot()
@@ -98,7 +99,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 }
                 else
                 {
-                    if (CustomGameOptions.MisfireKillsInno || target.IsFramed())
+                    if (CustomGameOptions.MisfireKillsInno)
                         Utils.RpcMurderPlayer(Player, target);
 
                     if (Player == PlayerControl.LocalPlayer && CustomGameOptions.VigiNotifOptions == VigiNotif.Flash && CustomGameOptions.VigiOptions != VigiOptions.Immediate)

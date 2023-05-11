@@ -45,14 +45,12 @@ namespace TownOfUsReworked.PlayerLayers
         public bool Winner;
 
         public readonly static List<PlayerLayer> AllLayers = new();
+        public static List<PlayerLayer> LocalLayers => GetLayers(PlayerControl.LocalPlayer);
 
         public virtual void OnLobby() => EndGame.Reset();
 
         public virtual void UpdateHud(HudManager __instance)
         {
-            if (ConstantVariables.Inactive || LobbyBehaviour.Instance || MeetingHud.Instance)
-                return;
-
             __instance.KillButton.SetTarget(null);
             __instance.KillButton.gameObject.SetActive(false);
 
@@ -187,7 +185,7 @@ namespace TownOfUsReworked.PlayerLayers
                     Role.PhantomWins = true;
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.PhantomWin);
-                    writer.Write(Player.PlayerId);
+                    writer.Write(PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
                 }
@@ -209,7 +207,7 @@ namespace TownOfUsReworked.PlayerLayers
                     Winner = true;
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.CorruptedWin);
-                    writer.Write(Player.PlayerId);
+                    writer.Write(PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
                 }
@@ -220,7 +218,7 @@ namespace TownOfUsReworked.PlayerLayers
                     Objectifier.GetObjectifier(((Lovers)this).OtherLover).Winner = true;
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.LoveWin);
-                    writer.Write(Player.PlayerId);
+                    writer.Write(PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
                 }
@@ -230,7 +228,7 @@ namespace TownOfUsReworked.PlayerLayers
                     Winner = true;
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.RivalWin);
-                    writer.Write(Player.PlayerId);
+                    writer.Write(PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
                 }
@@ -240,7 +238,7 @@ namespace TownOfUsReworked.PlayerLayers
                     Winner = true;
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)WinLoseRPC.TaskmasterWin);
-                    writer.Write(Player.PlayerId);
+                    writer.Write(PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
                 }
@@ -402,7 +400,7 @@ namespace TownOfUsReworked.PlayerLayers
                     Winner = true;
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                     writer.Write((byte)(CustomGameOptions.NoSolo == NoSolo.SameNKs ? WinLoseRPC.SameNKWins : WinLoseRPC.SoloNKWins));
-                    writer.Write(Player.PlayerId);
+                    writer.Write(PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
                 }

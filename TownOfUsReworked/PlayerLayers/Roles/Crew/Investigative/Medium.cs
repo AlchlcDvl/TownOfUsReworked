@@ -57,7 +57,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (Player == PlayerControl.LocalPlayer || CustomGameOptions.ShowMediumToDead)
             {
-                gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
+                gameObj.transform.parent = Player.gameObject.transform;
                 var renderer = gameObj.AddComponent<SpriteRenderer>();
                 renderer.sprite = AssetManager.GetSprite("Arrow");
                 arrow.image = renderer;
@@ -141,7 +141,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                         writer.Write((byte)ActionsRPC.Mediate);
                         writer.Write(dead.PlayerId);
-                        writer.Write(Player.PlayerId);
+                        writer.Write(PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
 
                         if (CustomGameOptions.DeadRevealed != DeadRevealed.All)
@@ -160,7 +160,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                     writer.Write((byte)ActionsRPC.Mediate);
                     writer.Write(dead.PlayerId);
-                    writer.Write(Player.PlayerId);
+                    writer.Write(PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
             }

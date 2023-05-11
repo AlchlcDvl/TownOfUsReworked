@@ -1,8 +1,8 @@
 using HarmonyLib;
-using TownOfUsReworked.BetterMaps.Airship;
 using TownOfUsReworked.Extensions;
 using System.Linq;
 using TownOfUsReworked.Data;
+using TownOfUsReworked.Monos;
 
 namespace TownOfUsReworked.PlayerLayers
 {
@@ -18,7 +18,7 @@ namespace TownOfUsReworked.PlayerLayers
             if (!PlayerControl.LocalPlayer.CanVent())
                 return false;
 
-            return PlayerLayer.GetLayers(PlayerControl.LocalPlayer).All(x => !x.IsBlocked);
+            return PlayerLayer.LocalLayers.All(x => !x.IsBlocked);
         }
     }
 
@@ -34,7 +34,7 @@ namespace TownOfUsReworked.PlayerLayers
             if (PlayerControl.LocalPlayer.Is(ModifierEnum.Coward))
                 return false;
 
-            return PlayerLayer.GetLayers(PlayerControl.LocalPlayer).All(x => !x.IsBlocked);
+            return PlayerLayer.LocalLayers.All(x => !x.IsBlocked);
         }
     }
 
@@ -48,13 +48,13 @@ namespace TownOfUsReworked.PlayerLayers
                 return true;
 
             if (__instance.isActiveAndEnabled && PlayerControl.LocalPlayer && Tasks.NearestTask != null && Tasks.AllCustomPlateform != null &&
-                PlayerLayer.GetLayers(PlayerControl.LocalPlayer).All(x => !x.IsBlocked))
+                PlayerLayer.LocalLayers.All(x => !x.IsBlocked))
             {
                 Tasks.NearestTask.Use();
                 return false;
             }
 
-            return PlayerLayer.GetLayers(PlayerControl.LocalPlayer).All(x => !x.IsBlocked);
+            return PlayerLayer.LocalLayers.All(x => !x.IsBlocked);
         }
     }
 
@@ -67,7 +67,7 @@ namespace TownOfUsReworked.PlayerLayers
             if (ConstantVariables.Inactive)
                 return true;
 
-            return PlayerLayer.GetLayers(PlayerControl.LocalPlayer).All(x => !x.IsBlocked);
+            return PlayerLayer.LocalLayers.All(x => !x.IsBlocked);
         }
     }
 
@@ -80,7 +80,7 @@ namespace TownOfUsReworked.PlayerLayers
             if (ConstantVariables.Inactive)
                 return true;
 
-            return PlayerLayer.GetLayers(PlayerControl.LocalPlayer).All(x => !x.IsBlocked);
+            return PlayerLayer.LocalLayers.All(x => !x.IsBlocked);
         }
     }
 
@@ -93,7 +93,7 @@ namespace TownOfUsReworked.PlayerLayers
             if (ConstantVariables.Inactive)
                 return true;
 
-            return PlayerLayer.GetLayers(PlayerControl.LocalPlayer).All(x => !x.IsBlocked); //No petting for you lmao
+            return PlayerLayer.LocalLayers.All(x => !x.IsBlocked); //No petting for you lmao
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using HarmonyLib;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Data;
-using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.Patches
@@ -19,26 +18,8 @@ namespace TownOfUsReworked.Patches
             {
                 var ghostRole = false;
 
-                if (PlayerControl.LocalPlayer.Is(RoleEnum.Revealer))
-                {
-                    var revealer = Role.GetRole<Revealer>(PlayerControl.LocalPlayer);
-                    ghostRole = !revealer.Caught;
-                }
-                else if (PlayerControl.LocalPlayer.Is(RoleEnum.Phantom))
-                {
-                    var phantom = Role.GetRole<Phantom>(PlayerControl.LocalPlayer);
-                    ghostRole = !phantom.Caught;
-                }
-                else if (PlayerControl.LocalPlayer.Is(RoleEnum.Banshee))
-                {
-                    var banshee = Role.GetRole<Banshee>(PlayerControl.LocalPlayer);
-                    ghostRole = !banshee.Caught;
-                }
-                else if (PlayerControl.LocalPlayer.Is(RoleEnum.Ghoul))
-                {
-                    var ghoul = Role.GetRole<Ghoul>(PlayerControl.LocalPlayer);
-                    ghostRole = !ghoul.Caught;
-                }
+                if (PlayerControl.LocalPlayer.IsPostmortal())
+                    ghostRole = !PlayerControl.LocalPlayer.Caught();
 
                 HudManager.Instance.AbilityButton.gameObject.SetActive(!ghostRole && !MeetingHud.Instance && PlayerControl.LocalPlayer.Data.IsDead);
             }

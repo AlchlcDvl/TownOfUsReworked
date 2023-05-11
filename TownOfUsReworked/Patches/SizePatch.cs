@@ -13,18 +13,13 @@ namespace TownOfUsReworked.Patches
             if (ConstantVariables.IsLobby)
             {
                 foreach (var player in PlayerControl.AllPlayerControls.ToArray())
-                    player.transform.localScale = new Vector3(0.7f, 0.7f, 1.0f);
+                    player.transform.localScale = new(0.7f, 0.7f, 1f);
 
                 return;
             }
 
             foreach (var player in PlayerControl.AllPlayerControls.ToArray())
-            {
-                if (!(player.Data.IsDead || player.Data.Disconnected))
-                    player.transform.localScale = player.GetAppearance().SizeFactor;
-                else
-                    player.transform.localScale = new Vector3(0.7f, 0.7f, 1.0f);
-            }
+                player.transform.localScale = !(player.Data.IsDead || player.Data.Disconnected) ? player.GetAppearance().SizeFactor : new(0.7f, 0.7f, 1f);
 
             foreach (var body in Object.FindObjectsOfType<DeadBody>())
                 body.transform.localScale = Utils.PlayerById(body.ParentId).GetAppearance().SizeFactor;

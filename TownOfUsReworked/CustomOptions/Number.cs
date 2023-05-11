@@ -16,9 +16,9 @@ namespace TownOfUsReworked.CustomOptions
             Increment = increment;
         }
 
-        protected float Min { get; set; }
-        protected float Max { get; set; }
-        protected float Increment { get; set; }
+        protected float Min;
+        protected float Max;
+        protected float Increment;
 
         public float Get() => (float)Value;
 

@@ -9,17 +9,17 @@ namespace TownOfUsReworked.Data
     {
         public class RoleInfo
         {
-            public string Name { get; set; }
-            public string Short { get; set; }
-            public string Alignment { get; set; }
-            public string Description { get; set; }
-            public string AlignmentDescription { get; set; }
-            public string AlignmentShort { get; set; }
-            public string FactionDescription { get; set; }
-            public string FactionShort { get; set; }
-            public string WinCon { get; set; }
-            public string Quote { get; set; }
-            public string FactionS { get; set; }
+            public string Name;
+            public string Short;
+            public string Alignment;
+            public string Description;
+            public string AlignmentDescription;
+            public string AlignmentShort;
+            public string FactionDescription;
+            public string FactionShort;
+            public string WinCon;
+            public string Quote;
+            public string FactionS;
 
             private readonly string SyndicateDescription = "Syndicate is an \"evil\" faction that is an informed minority of the game. They have special abilities specifically geared towards" +
                 " slowing down the progress of other or causing chaos. Syndicate members, unless they are Syndicate (Killing), Anarchist or Sidekick, cannot kill by default. Instead" +
@@ -271,10 +271,10 @@ namespace TownOfUsReworked.Data
 
         public class ModifierInfo
         {
-            public string Name { get; set; }
-            public string Short { get; set; }
-            public string Description { get; set; }
-            public string AppliesTo { get; set; }
+            public string Name;
+            public string Short;
+            public string Description;
+            public string AppliesTo;
 
             public ModifierInfo(string name, string shortF, string description, string applies)
             {
@@ -297,12 +297,12 @@ namespace TownOfUsReworked.Data
 
         public class ObjectifierInfo
         {
-            public string Name { get; set; }
-            public string Short { get; set; }
-            public string AppliesTo { get; set; }
-            public string Description { get; set; }
-            public string WinCon { get; set; }
-            public string Symbol { get; set; }
+            public string Name;
+            public string Short;
+            public string AppliesTo;
+            public string Description;
+            public string WinCon;
+            public string Symbol;
 
             public ObjectifierInfo(string name, string shortF, string description, string wincon, string applies, string symbol)
             {
@@ -329,10 +329,10 @@ namespace TownOfUsReworked.Data
 
         public class AbilityInfo
         {
-            public string Name { get; set; }
-            public string Short { get; set; }
-            public string AppliesTo { get; set; }
-            public string Description { get; set; }
+            public string Name;
+            public string Short;
+            public string AppliesTo;
+            public string Description;
 
             public AbilityInfo(string name, string shortF, string description, string applies)
             {
@@ -355,9 +355,9 @@ namespace TownOfUsReworked.Data
 
         public class Lore
         {
-            public string Name { get; set; }
-            public string Short { get; set; }
-            public string Story { get; set; }
+            public string Name;
+            public string Short;
+            public string Story;
 
             public Lore(string name, string story, string shortF)
             {
@@ -598,7 +598,9 @@ namespace TownOfUsReworked.Data
                 "Syndicate victory. With each curse cast, the spell cooldown increases. This effect is negated by the Chaos Drive.", RoleAlignment.SyndicatePower, Faction.Syndicate,
                 "I CURSE YOU TO SUCK ONE THOUSAND D-"),
             new RoleInfo("Collider", "Col", "The Collider can mark players as positive and negative. If these charged players come within a certain distance of each other, they will " +
-                "die together. With the Chaos Drive, the range of collision increases.", RoleAlignment.SyndicateKill, Faction.Syndicate, "I'm a great matchmaker, I dare say.")
+                "die together. With the Chaos Drive, the range of collision increases.", RoleAlignment.SyndicateKill, Faction.Syndicate, "I'm a great matchmaker, I dare say."),
+            new RoleInfo("Drunkard", "Drunk", "The Drunkard can reverse a player's controls. With the Chaos Drive, this effect applies to everyone.", RoleAlignment.SyndicateDisruption,
+                Faction.Syndicate, "*Burp*")
         };
 
         public readonly static List<ModifierInfo> AllModifiers = new()

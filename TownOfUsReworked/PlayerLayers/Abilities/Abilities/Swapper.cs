@@ -72,7 +72,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
 
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
             writer.Write((byte)ActionsRPC.SetSwaps);
-            writer.Write(Player.PlayerId);
+            writer.Write(PlayerId);
             writer.Write(Swap1.TargetPlayerId);
             writer.Write(Swap2.TargetPlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -167,7 +167,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
 
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
             writer.Write((byte)ActionsRPC.SetSwaps);
-            writer.Write(Player.PlayerId);
+            writer.Write(PlayerId);
             writer.Write(Swap1.TargetPlayerId);
             writer.Write(Swap2.TargetPlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);

@@ -15,14 +15,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public CustomButton FreezeButton;
         public CustomButton DouseButton;
         public CustomButton KillButton;
-        public List<byte> DousedPlayers;
+        public List<byte> Doused;
         public bool FreezeUsed;
         public DateTime LastDoused;
         public DateTime LastKilled;
         public bool LastKiller => !PlayerControl.AllPlayerControls.ToArray().Any(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) ||
             x.Is(RoleAlignment.CrewKill) || x.Is(RoleAlignment.CrewAudit) || x.Is(RoleAlignment.NeutralPros) || x.Is(RoleAlignment.NeutralNeo) || (x.Is(RoleAlignment.NeutralKill) && x !=
             Player)));
-        public int DousedAlive => DousedPlayers.Count(x => !Utils.PlayerById(x).Data.IsDead && !Utils.PlayerById(x).Data.Disconnected);
+        public int DousedAlive => Doused.Count(x => !Utils.PlayerById(x).Data.IsDead && !Utils.PlayerById(x).Data.Disconnected);
 
         public Cryomaniac(PlayerControl player) : base(player)
         {
@@ -35,11 +35,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleType = RoleEnum.Cryomaniac;
             RoleAlignment = RoleAlignment.NeutralKill;
             AlignmentName = NK;
-            DousedPlayers = new();
+            Doused = new();
             Type = LayerEnum.Cryomaniac;
-            DouseButton = new(this, "CryoDouse", AbilityTypes.Direct, "ActionSecondary", Douse);
+            DouseButton = new(this, "CryoDouse", AbilityTypes.Direct, "ActionSecondary", Douse, Exception);
             FreezeButton = new(this, "CryoFreeze", AbilityTypes.Effect, "Secondary", Freeze);
-            KillButton = new(this, "CryoKill", AbilityTypes.Direct, "Tertiary", Kill);
+            KillButton = new(this, "CryoKill", AbilityTypes.Direct, "Tertiary", Kill, Exception);
             InspectorResults = InspectorResults.SeeksToDestroy;
         }
 
@@ -78,13 +78,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void RpcSpreadDouse(PlayerControl source, PlayerControl target)
         {
-            if (!source.Is(RoleType) || DousedPlayers.Contains(target.PlayerId))
+            if (!source.Is(RoleType) || Doused.Contains(target.PlayerId))
                 return;
 
-            DousedPlayers.Add(target.PlayerId);
+            Doused.Add(target.PlayerId);
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
             writer.Write((byte)ActionsRPC.FreezeDouse);
-            writer.Write(Player.PlayerId);
+            writer.Write(PlayerId);
             writer.Write(target.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
@@ -97,36 +97,37 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 if (cryo.FreezeUsed)
                 {
-                    foreach (var player in cryo.DousedPlayers)
+                    foreach (var player in cryo.Doused)
                     {
                         var player2 = Utils.PlayerById(player);
 
                         if (player2.Data.IsDead || player2.Data.Disconnected || player2.Is(RoleEnum.Pestilence) || player2.IsProtected())
                             continue;
 
-                        Utils.RpcMurderPlayer(cryo.Player, player2, DeathReasonEnum.Frozen);
+                        Utils.RpcMurderPlayer(Player, player2, DeathReasonEnum.Frozen);
                     }
 
-                    cryo.DousedPlayers.Clear();
+                    cryo.Doused.Clear();
                     cryo.FreezeUsed = false;
                 }
             }
         }
 
+        public bool Exception(PlayerControl player) => !Doused.Contains(player.PlayerId) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction
+            is Faction.Intruder or Faction.Syndicate) || player == Player.GetOtherLover() || player == Player.GetOtherRival() || (player.Is(ObjectifierEnum.Mafia) &&
+            Player.Is(ObjectifierEnum.Mafia));
+
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            var notDoused = PlayerControl.AllPlayerControls.ToArray().Where(x => !DousedPlayers.Contains(x.PlayerId) && !(x.Is(Faction) && Faction is Faction.Intruder or
-                Faction.Syndicate) && !(SubFaction != SubFaction.None && x.GetSubFaction() == SubFaction)).ToList();
-            DouseButton.Update("DOUSE", DouseTimer(), CustomGameOptions.DouseCd, notDoused);
-            KillButton.Update("KILL", KillTimer(), CustomGameOptions.DouseCd, notDoused, true, LastKiller);
+            DouseButton.Update("DOUSE", DouseTimer(), CustomGameOptions.DouseCd);
+            KillButton.Update("KILL", KillTimer(), CustomGameOptions.DouseCd, true, LastKiller);
             FreezeButton.Update("FREEZE", 0, 1, true, DousedAlive > 0 && !FreezeUsed);
-            DousedPlayers.RemoveAll(x => Utils.PlayerById(x).Data.IsDead || Utils.PlayerById(x).Data.Disconnected);
         }
 
         public void Douse()
         {
-            if (Utils.IsTooFar(Player, DouseButton.TargetPlayer) || DouseTimer() != 0f || DousedPlayers.Contains(DouseButton.TargetPlayer.PlayerId))
+            if (Utils.IsTooFar(Player, DouseButton.TargetPlayer) || DouseTimer() != 0f || Doused.Contains(DouseButton.TargetPlayer.PlayerId))
                 return;
 
             var interact = Utils.Interact(Player, DouseButton.TargetPlayer, LastKiller);

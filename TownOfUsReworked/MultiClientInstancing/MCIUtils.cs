@@ -2,17 +2,23 @@ using InnerNet;
 using UnityEngine;
 using System.Linq;
 using HarmonyLib;
+using System.Collections.Generic;
+using TownOfUsReworked.Classes;
+using TownOfUsReworked.Custom;
 
 namespace TownOfUsReworked.MultiClientInstancing
 {
     [HarmonyPatch]
     public static class MCIUtils
     {
+        public static readonly Dictionary<int, ClientData> Clients = new();
+        public static readonly Dictionary<byte, int> PlayerIdClientId = new();
+
         public static int AvailableId()
         {
             for (var i = 1; i < 128; i++)
             {
-                if (!InstanceControl.Clients.ContainsKey(i) && PlayerControl.LocalPlayer.OwnerId != i)
+                if (!Clients.ContainsKey(i) && PlayerControl.LocalPlayer.OwnerId != i)
                     return i;
             }
 
@@ -23,8 +29,8 @@ namespace TownOfUsReworked.MultiClientInstancing
         {
             if (GameData.Instance.AllPlayers.Count == 1)
             {
-                InstanceControl.Clients.Clear();
-                InstanceControl.PlayerIdClientId.Clear();
+                Clients.Clear();
+                PlayerIdClientId.Clear();
             }
         }
 
@@ -47,8 +53,8 @@ namespace TownOfUsReworked.MultiClientInstancing
             sampleC.Character.SetHat("hat_NoHat", 0);
             sampleC.Character.SetColor(Random.Range(0, Palette.PlayerColors.Length));
 
-            InstanceControl.Clients.Add(sampleId, sampleC);
-            InstanceControl.PlayerIdClientId.Add(sampleC.Character.PlayerId, sampleId);
+            Clients.Add(sampleId, sampleC);
+            PlayerIdClientId.Add(sampleC.Character.PlayerId, sampleId);
             return sampleC.Character;
         }
 
@@ -57,19 +63,59 @@ namespace TownOfUsReworked.MultiClientInstancing
             if (id == 0)
                 return;
 
-            int clientId = InstanceControl.Clients.FirstOrDefault(x => x.Value.Character.PlayerId == id).Key;
-            InstanceControl.Clients.Remove(clientId, out ClientData outputData);
-            InstanceControl.PlayerIdClientId.Remove(id);
+            var clientId = Clients.FirstOrDefault(x => x.Value.Character.PlayerId == id).Key;
+            Clients.Remove(clientId, out ClientData outputData);
+            PlayerIdClientId.Remove(id);
             AmongUsClient.Instance.RemovePlayer(clientId, DisconnectReasons.ExitGame);
             AmongUsClient.Instance.allClients.Remove(outputData);
         }
 
         public static void RemoveAllPlayers()
         {
-            foreach (var playerId in InstanceControl.PlayerIdClientId.Keys)
+            foreach (var playerId in PlayerIdClientId.Keys)
                 RemovePlayer(playerId);
 
-            InstanceControl.SwitchTo(AmongUsClient.Instance.allClients[0].Character.PlayerId);
+            SwitchTo(AmongUsClient.Instance.allClients[0].Character.PlayerId);
+        }
+
+        public static void SwitchTo(byte playerId)
+        {
+            if (!TownOfUsReworked.MCIActive)
+                return;
+
+            PlayerControl.LocalPlayer.DisableButtons();
+            PlayerControl.LocalPlayer.NetTransform.RpcSnapTo(PlayerControl.LocalPlayer.transform.position);
+            PlayerControl.LocalPlayer.moveable = false;
+
+            var light = PlayerControl.LocalPlayer.lightSource;
+
+            //Setup new player
+            var newPlayer = Utils.PlayerById(playerId);
+            PlayerControl.LocalPlayer = newPlayer;
+            PlayerControl.LocalPlayer.lightSource = light;
+            PlayerControl.LocalPlayer.moveable = true;
+
+            AmongUsClient.Instance.ClientId = newPlayer.OwnerId;
+            AmongUsClient.Instance.HostId = newPlayer.OwnerId;
+
+            HudManager.Instance.SetHudActive(true);
+
+            light.transform.SetParent(PlayerControl.LocalPlayer.transform);
+            light.transform.localPosition = PlayerControl.LocalPlayer.Collider.offset;
+
+            Camera.main!.GetComponent<FollowerCamera>().SetTarget(newPlayer);
+            PlayerControl.LocalPlayer.MyPhysics.ResetMoveState(true);
+            KillAnimation.SetMovement(PlayerControl.LocalPlayer, true);
+
+            PlayerControl.LocalPlayer.EnableButtons();
+        }
+
+        public static void SwitchTo(int clientId)
+        {
+            byte? id = PlayerIdClientId.Keys.FirstOrDefault(x => PlayerIdClientId[x] == clientId);
+
+            if (id != null)
+                SwitchTo((byte)id);
         }
     }
 }

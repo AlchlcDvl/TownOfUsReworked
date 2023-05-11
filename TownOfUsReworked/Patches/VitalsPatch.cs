@@ -22,7 +22,7 @@ namespace TownOfUsReworked.Patches
                 var isRet = localPlayer.Is(RoleEnum.Retributionist);
 
                 if (isRet)
-                    isOP = Role.GetRole<Retributionist>(localPlayer).IsOP;
+                    isOP = ((Retributionist)Role.LocalRole).IsOP;
             }
 
             if (!isOP)

@@ -3,9 +3,9 @@ using UnityEngine;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Custom;
-using System.Linq;
 using Hazel;
 using TownOfUsReworked.Classes;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -30,7 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             InspectorResults = InspectorResults.HindersOthers;
             Type = LayerEnum.Ambusher;
             AmbushedPlayer = null;
-            AmbushButton = new(this, "Ambush", AbilityTypes.Direct, "Secondary", HitAmbush);
+            AmbushButton = new(this, "Ambush", AbilityTypes.Direct, "Secondary", HitAmbush, Exception1);
         }
 
         public float AmbushTimer()
@@ -72,7 +72,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 Ambush();
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.Ambush);
-                writer.Write(Player.PlayerId);
+                writer.Write(PlayerId);
                 writer.Write(AmbushedPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
             }
@@ -82,11 +82,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 LastAmbushed.AddSeconds(CustomGameOptions.ProtectKCReset);
         }
 
+        public bool Exception1(PlayerControl player) => player == AmbushedPlayer || (player.Is(Faction) && !CustomGameOptions.AmbushMates) || (player.Is(SubFaction) &&
+            SubFaction != SubFaction.None);
+
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            var notAmbushed = PlayerControl.AllPlayerControls.ToArray().Where(x => x != AmbushedPlayer).ToList();
-            AmbushButton.Update("AMBUSH", AmbushTimer(), CustomGameOptions.AmbushDuration, notAmbushed, OnAmbush, TimeRemaining, CustomGameOptions.AmbushDuration);
+            AmbushButton.Update("AMBUSH", AmbushTimer(), CustomGameOptions.AmbushDuration, OnAmbush, TimeRemaining, CustomGameOptions.AmbushDuration);
         }
     }
 }

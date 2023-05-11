@@ -27,7 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = CustomGameOptions.CustomIntColors ? Colors.Godfather : Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderSupport;
             AlignmentName = IS;
-            BlockMenu = new(Player, ConsClick);
+            BlockMenu = new(Player, ConsClick, Exception1);
             Type = LayerEnum.PromotedGodfather;
             TeleportPoint = new(0, 0, 0);
             Investigated = new();
@@ -40,20 +40,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             BombedPlayer = null;
             BlockTarget = null;
             BlockButton = new(this, "ConsortRoleblock", AbilityTypes.Effect, "Secondary", Roleblock);
-            BombButton = new(this, "Enforce", AbilityTypes.Direct, "Secondary", Bomb);
-            BlackmailButton = new(this, "Blackmail", AbilityTypes.Direct, "Secondary", Blackmail);
+            BombButton = new(this, "Enforce", AbilityTypes.Direct, "Secondary", Bomb, Exception7);
+            BlackmailButton = new(this, "Blackmail", AbilityTypes.Direct, "Secondary", Blackmail, Exception2);
             CamouflageButton = new(this, "Camouflage", AbilityTypes.Effect, "Secondary", HitCamouflage);
             FlashButton = new(this, "Flash", AbilityTypes.Effect, "Secondary", HitFlash);
             CleanButton = new(this, "Clean", AbilityTypes.Dead, "Secondary", Clean);
             DragButton = new(this, "Drag", AbilityTypes.Dead, "Tertiary", Drag);
             DropButton = new(this, "Drop", AbilityTypes.Effect, "Tertiary", Drop);
-            DisguiseButton = new(this, "Disguise", AbilityTypes.Direct, "Secondary", HitDisguise);
-            MeasureButton = new(this, "Measure", AbilityTypes.Direct, "Tertiary", Measure);
+            DisguiseButton = new(this, "Disguise", AbilityTypes.Direct, "Secondary", HitDisguise, Exception3);
+            MeasureButton = new(this, "Measure", AbilityTypes.Direct, "Tertiary", Measure, Exception4);
             MorphButton = new(this, "Morph", AbilityTypes.Effect, "Secondary", HitMorph);
-            SampleButton = new(this, "Sample", AbilityTypes.Direct, "Tertiary", Sample);
+            SampleButton = new(this, "Sample", AbilityTypes.Direct, "Tertiary", Sample, Exception5);
             InvisButton = new(this, "Invis", AbilityTypes.Effect, "Secondary", HitInvis);
-            AmbushButton = new(this, "Ambush", AbilityTypes.Direct, "Secondary", HitAmbush);
-            InvestigateButton = new(this, "Investigate", AbilityTypes.Direct, "Secondary", Investigate);
+            AmbushButton = new(this, "Ambush", AbilityTypes.Direct, "Secondary", HitAmbush, Exception6);
+            InvestigateButton = new(this, "Investigate", AbilityTypes.Direct, "Secondary", Investigate, Exception8);
             MineButton = new(this, "Mine", AbilityTypes.Effect, "Secondary", Mine);
             MarkButton = new(this, "Mark", AbilityTypes.Effect, "Secondary", Mark);
             TeleportButton = new(this, "Teleport", AbilityTypes.Effect, "Secondary", Teleport);
@@ -89,14 +89,27 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             return false;
         }
 
+        public bool Exception1(PlayerControl player) => player == BlockTarget || player == Player || player.Is(Faction) || (player.Is(SubFaction) && SubFaction != SubFaction.None);
+
+        public bool Exception2(PlayerControl player) => player == BlackmailedPlayer;
+
+        public bool Exception3(PlayerControl player) => (player.Is(Faction) && CustomGameOptions.DisguiseTarget == DisguiserTargets.NonIntruders) || (!player.Is(Faction) &&
+            CustomGameOptions.DisguiseTarget == DisguiserTargets.Intruders);
+
+        public bool Exception4(PlayerControl player) => player == MeasuredPlayer;
+
+        public bool Exception5(PlayerControl player) => player == SampledPlayer;
+
+        public bool Exception6(PlayerControl player) => player == AmbushedPlayer;
+
+        public bool Exception7(PlayerControl player) => player == BombedPlayer || player.Is(Faction) || (player.Is(SubFaction) && SubFaction != SubFaction.None);
+
+        public bool Exception8(PlayerControl player) => Investigated.Contains(player.PlayerId) || ((player.Is(Faction) || (player.Is(SubFaction) && SubFaction != SubFaction.None)) &&
+            CustomGameOptions.FactionSeeRoles);
+
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            var notBlackmailed = PlayerControl.AllPlayerControls.ToArray().Where(player => BlackmailedPlayer != player).ToList();
-            var notMeasured = PlayerControl.AllPlayerControls.ToArray().Where(x => MeasuredPlayer != x).ToList();
-            var targets = PlayerControl.AllPlayerControls.ToArray().Where(x => ((x.Is(Faction.Intruder) && CustomGameOptions.DisguiseTarget == DisguiserTargets.Intruders) ||
-                (!x.Is(Faction.Intruder) && CustomGameOptions.DisguiseTarget == DisguiserTargets.NonIntruders) || CustomGameOptions.DisguiseTarget == DisguiserTargets.Everyone) && x
-                != MeasuredPlayer).ToList();
             var system = ShipStatus.Instance.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>();
             var dummyActive = system.dummy.IsActive;
             var sabActive = system.specials.ToArray().Any(s => s.IsActive);
@@ -104,8 +117,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var notSampled = PlayerControl.AllPlayerControls.ToArray().Where(x => SampledPlayer != x).ToList();
             var notAmbushed = PlayerControl.AllPlayerControls.ToArray().Where(x => x != AmbushedPlayer).ToList();
             var notBombed = PlayerControl.AllPlayerControls.ToArray().Where(x => x != BombedPlayer).ToList();
-            var notInvestigated = PlayerControl.AllPlayerControls.ToArray().Where(x => !Investigated.Contains(x.PlayerId) && !((x.Is(Faction.Intruder) || x.GetSubFaction() ==
-                Player.GetSubFaction()) && CustomGameOptions.FactionSeeRoles)).ToList();
             var flag = BlockTarget == null;
             var hits = Physics2D.OverlapBoxAll(Player.transform.position, Utils.GetSize(), 0);
             hits = hits.ToArray().Where(c => (c.name.Contains("Vent") || !c.isTrigger) && c.gameObject.layer != 8 && c.gameObject.layer != 5).ToArray();
@@ -116,17 +127,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             MineButton.Update("MINE", MineTimer(), CustomGameOptions.MineCd, CanPlace, IsMiner);
             BlockButton.Update(flag ? "SET TARGET" : "ROLEBLOCK", RoleblockTimer(), CustomGameOptions.ConsRoleblockCooldown, OnEffect, TimeRemaining,
                 CustomGameOptions.ConsRoleblockDuration, true, IsCons);
-            InvestigateButton.Update("INVESTIGATE", ConsigliereTimer(), CustomGameOptions.ConsigCd, notInvestigated, true, IsConsig);
-            BombButton.Update("BOMB", BombTimer(), CustomGameOptions.EnforceCooldown, notBombed, DelayActive || OnEffect, DelayActive ? TimeRemaining2 : TimeRemaining, DelayActive ?
+            InvestigateButton.Update("INVESTIGATE", ConsigliereTimer(), CustomGameOptions.ConsigCd, true, IsConsig);
+            BombButton.Update("BOMB", BombTimer(), CustomGameOptions.EnforceCooldown, DelayActive || OnEffect, DelayActive ? TimeRemaining2 : TimeRemaining, DelayActive ?
                 CustomGameOptions.EnforceDelay : CustomGameOptions.EnforceDuration, true, IsEnf);
-            AmbushButton.Update("AMBUSH", AmbushTimer(), CustomGameOptions.AmbushDuration, notAmbushed, OnEffect, TimeRemaining, CustomGameOptions.AmbushDuration, true, IsAmb);
+            AmbushButton.Update("AMBUSH", AmbushTimer(), CustomGameOptions.AmbushDuration, OnEffect, TimeRemaining, CustomGameOptions.AmbushDuration, true, IsAmb);
             MorphButton.Update("MORPH", MorphTimer(), CustomGameOptions.MorphlingCd, OnEffect, TimeRemaining, CustomGameOptions.MorphlingDuration, true, SampledPlayer != null && IsMorph);
-            SampleButton.Update("SAMPLE", SampleTimer(), CustomGameOptions.MeasureCooldown, notSampled, true, IsMorph);
+            SampleButton.Update("SAMPLE", SampleTimer(), CustomGameOptions.MeasureCooldown, true, IsMorph);
             FlashButton.Update("FLASH", FlashTimer(), CustomGameOptions.GrenadeCd, OnEffect, TimeRemaining, CustomGameOptions.GrenadeDuration, condition, IsGren);
-            DisguiseButton.Update("DISGUISE", DisguiseTimer(), CustomGameOptions.DisguiseCooldown, targets, DelayActive || OnEffect, DelayActive ? TimeRemaining2 : TimeRemaining,
+            DisguiseButton.Update("DISGUISE", DisguiseTimer(), CustomGameOptions.DisguiseCooldown, DelayActive || OnEffect, DelayActive ? TimeRemaining2 : TimeRemaining,
                 DelayActive ? CustomGameOptions.TimeToDisguise : CustomGameOptions.DisguiseDuration, true, MeasuredPlayer != null && IsDisg);
-            MeasureButton.Update("MEASURE", MeasureTimer(), CustomGameOptions.MeasureCooldown, notMeasured, true, IsDisg);
-            BlackmailButton.Update("BLACKMAIL", BlackmailTimer(), CustomGameOptions.BlackmailCd, notBlackmailed, true, IsBM);
+            MeasureButton.Update("MEASURE", MeasureTimer(), CustomGameOptions.MeasureCooldown, true, IsDisg);
+            BlackmailButton.Update("BLACKMAIL", BlackmailTimer(), CustomGameOptions.BlackmailCd, true, IsBM);
             CamouflageButton.Update("CAMOUFLAGE", CamouflageTimer(), CustomGameOptions.CamouflagerCd, OnEffect, TimeRemaining, CustomGameOptions.CamouflagerDuration, !DoUndo.IsCamoed,
                 IsCamo);
             CleanButton.Update("CLEAN", CleanTimer(), CustomGameOptions.JanitorCleanCd, true, CurrentlyDragging == null && IsJani);
@@ -166,7 +177,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.GodfatherAction);
                 writer.Write((byte)GodfatherActionsRPC.Blackmail);
-                writer.Write(Player.PlayerId);
+                writer.Write(PlayerId);
                 writer.Write(BlackmailButton.TargetPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
             }
@@ -207,7 +218,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
             writer.Write((byte)ActionsRPC.GodfatherAction);
             writer.Write((byte)GodfatherActionsRPC.Camouflage);
-            writer.Write(Player.PlayerId);
+            writer.Write(PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
             TimeRemaining = CustomGameOptions.CamouflagerDuration;
             Camouflage();
@@ -332,7 +343,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             FlashedPlayers.Clear();
             var fs = false;
 
-            switch (GameOptionsManager.Instance.currentNormalGameOptions.MapId)
+            switch (TownOfUsReworked.VanillaOptions.MapId)
             {
                 case 0:
                 case 1:
@@ -379,7 +390,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
             writer.Write((byte)ActionsRPC.GodfatherAction);
             writer.Write((byte)GodfatherActionsRPC.FlashGrenade);
-            writer.Write(Player.PlayerId);
+            writer.Write(PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
             TimeRemaining = CustomGameOptions.GrenadeDuration;
             Flash();
@@ -435,7 +446,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             //WHY ARE THERE DIFFERENT LOCAL Z INDEXS FOR DIFFERENT DECALS ON DIFFERENT LEVELS?!?!?!
             //AD: idk ¯\_(ツ)_/¯
-            if (SubmergedCompatibility.IsSubmerged())
+            if (SubmergedCompatibility.IsSubmerged)
             {
                 if (newPos.y > -7f)
                     newPos.z = 0.0208f;
@@ -488,7 +499,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
             writer.Write((byte)ActionsRPC.GodfatherAction);
             writer.Write((byte)GodfatherActionsRPC.Drag);
-            writer.Write(Player.PlayerId);
+            writer.Write(PlayerId);
             writer.Write(playerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
             CurrentlyDragging = DragButton.TargetBody;
@@ -499,10 +510,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
             writer.Write((byte)ActionsRPC.GodfatherAction);
             writer.Write((byte)GodfatherActionsRPC.Drop);
-            writer.Write(Player.PlayerId);
+            writer.Write(PlayerId);
             Vector3 position = PlayerControl.LocalPlayer.GetTruePosition();
 
-            if (SubmergedCompatibility.IsSubmerged())
+            if (SubmergedCompatibility.IsSubmerged)
             {
                 if (position.y > -7f)
                     position.z = 0.0208f;
@@ -599,7 +610,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.GodfatherAction);
                 writer.Write((byte)GodfatherActionsRPC.Disguise);
-                writer.Write(Player.PlayerId);
+                writer.Write(PlayerId);
                 writer.Write(MeasuredPlayer.PlayerId);
                 writer.Write(DisguiseButton.TargetPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -710,7 +721,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
             writer.Write((byte)ActionsRPC.GodfatherAction);
             writer.Write((byte)GodfatherActionsRPC.Morph);
-            writer.Write(Player.PlayerId);
+            writer.Write(PlayerId);
             writer.Write(SampledPlayer.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
             TimeRemaining = CustomGameOptions.MorphlingDuration;
@@ -783,7 +794,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
             writer.Write((byte)ActionsRPC.GodfatherAction);
             writer.Write((byte)GodfatherActionsRPC.Invis);
-            writer.Write(Player.PlayerId);
+            writer.Write(PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
             TimeRemaining = CustomGameOptions.InvisDuration;
             Invis();
@@ -845,7 +856,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var position = Player.transform.position;
             var id = Utils.GetAvailableId();
             writer.Write(id);
-            writer.Write(Player.PlayerId);
+            writer.Write(PlayerId);
             writer.Write(position);
             writer.Write(position.z + 0.01f);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -899,7 +910,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
             writer.Write((byte)ActionsRPC.Teleport);
-            writer.Write(Player.PlayerId);
+            writer.Write(PlayerId);
             writer.Write(TeleportPoint);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
             LastTeleport = DateTime.UtcNow;
@@ -955,7 +966,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.GodfatherAction);
                 writer.Write((byte)GodfatherActionsRPC.Ambush);
-                writer.Write(Player.PlayerId);
+                writer.Write(PlayerId);
                 writer.Write(AmbushButton.TargetPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
             }
@@ -1024,13 +1035,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 return;
 
             if (BlockTarget == null)
-                BlockMenu.Open(PlayerControl.AllPlayerControls.ToArray().Where(x => x != Player).ToList());
+                BlockMenu.Open();
             else
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.GodfatherAction);
                 writer.Write((byte)GodfatherActionsRPC.ConsRoleblock);
-                writer.Write(Player.PlayerId);
+                writer.Write(PlayerId);
                 writer.Write(BlockTarget.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 TimeRemaining = CustomGameOptions.ConsRoleblockDuration;
@@ -1115,7 +1126,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.GodfatherAction);
                 writer.Write((byte)GodfatherActionsRPC.SetBomb);
-                writer.Write(Player.PlayerId);
+                writer.Write(PlayerId);
                 writer.Write(BombButton.TargetPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 TimeRemaining = CustomGameOptions.EnforceDuration;

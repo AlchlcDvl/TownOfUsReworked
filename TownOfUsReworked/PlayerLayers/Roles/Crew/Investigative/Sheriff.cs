@@ -24,7 +24,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AlignmentName = CI;
             InspectorResults = InspectorResults.GainsInfo;
             Type = LayerEnum.Sheriff;
-            InterrogateButton = new(this, "Interrogate", AbilityTypes.Direct, "ActionSecondary", Interrogate);
+            InterrogateButton = new(this, "Interrogate", AbilityTypes.Direct, "ActionSecondary", Interrogate, Exception);
         }
 
         public float InterrogateTimer()
@@ -56,6 +56,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             else if (interact[1])
                 LastInterrogated.AddSeconds(CustomGameOptions.ProtectKCReset);
         }
+
+        public bool Exception(PlayerControl player) => (((Faction is Faction.Intruder or Faction.Syndicate && player.Is(Faction)) || (player.Is(SubFaction) && SubFaction !=
+            SubFaction.None)) && CustomGameOptions.FactionSeeRoles) || (player == Player.GetOtherLover() && CustomGameOptions.LoversRoles) || (player == Player.GetOtherRival() &&
+            CustomGameOptions.RivalsRoles) || (player.Is(ObjectifierEnum.Mafia) && Player.Is(ObjectifierEnum.Mafia) && CustomGameOptions.MafiaRoles);
 
         public override void UpdateHud(HudManager __instance)
         {

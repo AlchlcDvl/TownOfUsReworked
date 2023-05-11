@@ -42,7 +42,7 @@ namespace TownOfUsReworked.CustomOptions
                 else if (SettingsPage == 7)
                     builder.AppendLine("\n<color=#FF9900FF>Ability</color>");
 
-                foreach (var option in CustomOption.AllOptions.Where(x => x.Menu == (MultiMenu)SettingsPage && x.Active))
+                foreach (var option in CustomOption.AllOptions.Where(x => x.Menu == (MultiMenu)SettingsPage))
                 {
                     if (option.Type == CustomOptionType.Button || option.ID == -1)
                         continue;

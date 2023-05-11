@@ -4,7 +4,6 @@ using TownOfUsReworked.Data;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Custom;
 using TownOfUsReworked.Extensions;
-using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -18,12 +17,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Name = "Murderer";
             StartText = "Imagine Getting Boring Murderer";
             Objectives = "- Murder anyone who can oppose you";
+            AbilitiesText = "- You can kill";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Murderer : Colors.Neutral;
             RoleType = RoleEnum.Murderer;
             RoleAlignment = RoleAlignment.NeutralKill;
             AlignmentName = NK;
             Type = LayerEnum.Murderer;
-            MurderButton = new(this, "Murder", AbilityTypes.Direct, "ActionSecondary", Murder);
+            MurderButton = new(this, "Murder", AbilityTypes.Direct, "ActionSecondary", Murder, Exception);
             InspectorResults = InspectorResults.IsBasic;
         }
 
@@ -51,12 +51,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
         }
 
+        public bool Exception(PlayerControl player) => (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) ||
+            player == Player.GetOtherLover() || player == Player.GetOtherRival() || (player.Is(ObjectifierEnum.Mafia) && Player.Is(ObjectifierEnum.Mafia));
+
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            var targets = PlayerControl.AllPlayerControls.ToArray().Where(x => !(x.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) && !(SubFaction != SubFaction.None &&
-                x.GetSubFaction() == SubFaction)).ToList();
-            MurderButton.Update("MURDER", MurderTimer(), CustomGameOptions.MurdKCD, targets);
+            MurderButton.Update("MURDER", MurderTimer(), CustomGameOptions.MurdKCD);
         }
     }
 }

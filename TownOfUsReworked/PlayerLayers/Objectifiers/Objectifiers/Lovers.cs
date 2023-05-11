@@ -30,8 +30,8 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         {
             base.UpdateHud(__instance);
 
-            if (PlayerControl.LocalPlayer.Is(ObjectifierEnum.Lovers) && !__instance.Chat.isActiveAndEnabled && CustomGameOptions.LoversChat)
-                __instance.Chat.SetVisible(true);
+            if (!__instance.Chat.isActiveAndEnabled)
+                __instance.Chat.SetVisible(CustomGameOptions.LoversChat);
         }
     }
 }

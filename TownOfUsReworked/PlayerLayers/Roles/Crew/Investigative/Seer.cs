@@ -6,16 +6,17 @@ using System.Linq;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Custom;
 using UnityEngine;
+using Hazel;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Seer : CrewRole
     {
         public DateTime LastSeered;
-        public bool ChangedDead => !AllRoles.Any(x => !x.IsDead && !x.Disconnected && (x.RoleHistory.Count > 0 || x.Is(RoleEnum.Amnesiac) ||
+        public bool ChangedDead => !AllRoles.Any(x => !x.IsDead && !x.Disconnected && (x.RoleHistory.Count > 0 || x.Is(RoleEnum.Amnesiac) || x.Player.Is(ObjectifierEnum.Traitor) ||
             x.Is(RoleEnum.VampireHunter) || x.Is(RoleEnum.Godfather) || x.Is(RoleEnum.Mafioso) || x.Is(RoleEnum.Thief) || x.Is(RoleEnum.Shifter) || x.Is(RoleEnum.Rebel) ||
             x.Is(RoleEnum.Mystic) || (x.Is(RoleEnum.Seer) && x != this) || x.Is(RoleEnum.Sidekick) || x.Is(RoleEnum.GuardianAngel) || x.Is(RoleEnum.Executioner) ||
-            x.Is(RoleEnum.BountyHunter) || x.Is(RoleEnum.Guesser) || x.Player.Is(ObjectifierEnum.Traitor) || x.Player.Is(ObjectifierEnum.Fanatic)));
+            x.Is(RoleEnum.BountyHunter) || x.Is(RoleEnum.Guesser) || x.Player.Is(ObjectifierEnum.Fanatic)));
         public CustomButton SeerButton;
 
         public Seer(PlayerControl player) : base(player)
@@ -27,6 +28,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AlignmentName = CI;
             AbilitiesText = "- You can investigate players to see if their roles have changed\n- If all players whose roles changed have died, you will become a <color=#FFCC80FF>" +
                 "Sheriff</color>";
+            StartText = "You See People's Histories";
             InspectorResults = InspectorResults.GainsInfo;
             Type = LayerEnum.Seer;
             SeerButton = new(this, "Seer", AbilityTypes.Direct, "ActionSecondary", See);
@@ -75,6 +77,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             base.UpdateHud(__instance);
             SeerButton.Update("SEE", SeerTimer(), CustomGameOptions.SeerCooldown);
+
+            if (ChangedDead && !IsDead)
+            {
+                TurnSheriff();
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
+                writer.Write((byte)TurnRPC.TurnSheriff);
+                writer.Write(PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+            }
         }
     }
 }

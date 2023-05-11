@@ -13,11 +13,8 @@ namespace TownOfUsReworked.Patches
             if (!PlayerControl.LocalPlayer.Is(AbilityEnum.Politician))
                 return true;
 
-            var flag = PlayerControl.LocalPlayer.Is(AbilityEnum.Politician) && !Ability.GetAbility<Politician>(PlayerControl.LocalPlayer).CanVote;
-
-            if (!(PlayerControl.LocalPlayer.Data.IsDead || __instance.AmDead || !__instance.Parent.Select(__instance.TargetPlayerId) || flag))
-                __instance.Buttons.SetActive(true);
-
+            var flag = PlayerControl.LocalPlayer.Is(AbilityEnum.Politician) && !((Politician)Ability.LocalAbility).CanVote;
+            __instance.Buttons.SetActive(!(PlayerControl.LocalPlayer.Data.IsDead || __instance.AmDead || !__instance.Parent.Select(__instance.TargetPlayerId) || flag));
             return false;
         }
     }
@@ -35,18 +32,16 @@ namespace TownOfUsReworked.Patches
 
             if (PlayerControl.LocalPlayer.Is(AbilityEnum.Politician))
             {
-                var role = Ability.GetAbility<Politician>(PlayerControl.LocalPlayer);
-
-                if (!role.CanVote)
+                if (!((Politician)Ability.LocalAbility).CanVote)
                     return false;
 
-                if (__instance != role.Abstain)
+                if (__instance != ((Politician)Ability.LocalAbility).Abstain)
                 {
-                    role.VoteBank--;
-                    role.VotedOnce = true;
+                    ((Politician)Ability.LocalAbility).VoteBank--;
+                    ((Politician)Ability.LocalAbility).VotedOnce = true;
                 }
                 else
-                    role.SelfVote = true;
+                    ((Politician)Ability.LocalAbility).SelfVote = true;
             }
 
             __instance.Parent.Confirm(__instance.TargetPlayerId);

@@ -10,6 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
     public class Ability : PlayerLayer
     {
         public static readonly List<Ability> AllAbilities = new();
+        public static Ability LocalAbility => GetAbility(PlayerControl.LocalPlayer);
 
         public Ability(PlayerControl player) : base(player)
         {
@@ -24,6 +25,12 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
         public override void OnMeetingStart(MeetingHud __instance)
         {
             base.OnMeetingStart(__instance);
+
+            foreach (var assassin in GetAbilities<Assassin>(AbilityEnum.Assassin))
+            {
+                assassin.HideButtons();
+                assassin.OtherButtons.Clear();
+            }
 
             foreach (var pol in GetAbilities<Politician>(AbilityEnum.Politician))
             {

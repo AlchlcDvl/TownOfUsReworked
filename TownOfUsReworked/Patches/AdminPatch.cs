@@ -123,10 +123,7 @@ namespace TownOfUsReworked.Patches
                 var isRet = localPlayer.Is(RoleEnum.Retributionist);
 
                 if (isRet)
-                {
-                    var retRole = Role.GetRole<Retributionist>(localPlayer);
-                    isOP = retRole.RevivedRole?.RoleType == RoleEnum.Operative;
-                }
+                    isOP = ((Retributionist)Role.LocalRole).IsOP;
             }
 
             __instance.timer += Time.deltaTime;

@@ -4,8 +4,8 @@ using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Custom;
-using System.Linq;
 using Hazel;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -32,8 +32,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AlignmentName = SD;
             ShapeshiftPlayer1 = null;
             ShapeshiftPlayer2 = null;
-            ShapeshiftMenu1 = new(Player, Click1);
-            ShapeshiftMenu2 = new(Player, Click2);
+            ShapeshiftMenu1 = new(Player, Click1, Exception1);
+            ShapeshiftMenu2 = new(Player, Click2, Exception2);
             Type = LayerEnum.Shapeshifter;
             ShapeshiftButton = new(this, "Shapeshift", AbilityTypes.Effect, "Secondary", HitShapeshift);
             InspectorResults = InspectorResults.CreatesConfusion;
@@ -110,21 +110,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.Shapeshift);
-                writer.Write(Player.PlayerId);
+                writer.Write(PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 TimeRemaining = CustomGameOptions.ShapeshiftDuration;
                 Shapeshift();
                 Utils.Shapeshift();
             }
             else if (ShapeshiftPlayer1 == null)
-                ShapeshiftMenu1.Open(PlayerControl.AllPlayerControls.ToArray().Where(x => !(x == ShapeshiftPlayer2 || (x.Data.IsDead && Utils.BodyById(x.PlayerId) == null))).ToList());
+                ShapeshiftMenu1.Open();
             else if (ShapeshiftPlayer2 == null)
-                ShapeshiftMenu2.Open(PlayerControl.AllPlayerControls.ToArray().Where(x => !(x == ShapeshiftPlayer1 || (x.Data.IsDead && Utils.BodyById(x.PlayerId) == null))).ToList());
+                ShapeshiftMenu2.Open();
             else
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.Shapeshift);
-                writer.Write(Player.PlayerId);
+                writer.Write(PlayerId);
                 writer.Write(ShapeshiftPlayer1.PlayerId);
                 writer.Write(ShapeshiftPlayer2.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -132,6 +132,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 Shapeshift();
             }
         }
+
+        public bool Exception1(PlayerControl player) => player == Player || player == ShapeshiftPlayer2 || (player.Data.IsDead && Utils.BodyByPlayer(player) == null) || (player.Is(Faction)
+            && !CustomGameOptions.ShapeshiftMates);
+
+        public bool Exception2(PlayerControl player) => player == Player || player == ShapeshiftPlayer1 || (player.Data.IsDead && Utils.BodyByPlayer(player) == null) || (player.Is(Faction)
+            && !CustomGameOptions.ShapeshiftMates);
 
         public override void UpdateHud(HudManager __instance)
         {

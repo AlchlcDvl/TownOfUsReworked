@@ -21,7 +21,7 @@ namespace TownOfUsReworked.PlayerLayers
             if (ConstantVariables.IsLobby || ConstantVariables.IsEnded || ConstantVariables.Inactive)
                 return;
 
-            foreach (var layer in PlayerLayer.GetLayers(PlayerControl.LocalPlayer))
+            foreach (var layer in PlayerLayer.LocalLayers)
                 layer.UpdateHud(__instance);
 
             foreach (var role in Role.GetRoles<Chameleon>(RoleEnum.Chameleon))
@@ -112,7 +112,7 @@ namespace TownOfUsReworked.PlayerLayers
 
             foreach (var gf in Role.GetRoles<PromotedGodfather>(RoleEnum.Godfather))
             {
-                if (gf.FormerRole == null || gf.FormerRole?.RoleType == RoleEnum.Impostor)
+                if (gf.FormerRole == null || gf.IsImp)
                     continue;
 
                 if (gf.DelayActive)
@@ -364,7 +364,7 @@ namespace TownOfUsReworked.PlayerLayers
 
             foreach (var reb in Role.GetRoles<PromotedRebel>(RoleEnum.PromotedRebel))
             {
-                if (reb.FormerRole == null || reb.FormerRole?.RoleType == RoleEnum.Anarchist)
+                if (reb.FormerRole == null || reb.IsAnarch)
                     continue;
 
                 if (reb.OnEffect)
@@ -397,13 +397,12 @@ namespace TownOfUsReworked.PlayerLayers
 
             foreach (var body in Object.FindObjectsOfType<DeadBody>())
             {
-                var backColor = IsCamoed ? Palette.PlayerColors[6] : Palette.PlayerColors[Utils.PlayerByBody(body).GetDefaultOutfit().ColorId];
-                var bodyColor = IsCamoed ? Palette.ShadowColors[6] : Palette.ShadowColors[Utils.PlayerByBody(body).GetDefaultOutfit().ColorId];
+                var num = IsCamoed ? 6 : Utils.PlayerByBody(body).GetDefaultOutfit().ColorId;
 
                 foreach (var renderer in body.bodyRenderers)
                 {
-                    renderer.material.SetColor("_BackColor", backColor);
-                    renderer.material.SetColor("_BodyColor", bodyColor);
+                    renderer.material.SetColor("_BackColor", Palette.PlayerColors[num]);
+                    renderer.material.SetColor("_BodyColor", Palette.ShadowColors[num]);
                 }
             }
 
@@ -411,7 +410,7 @@ namespace TownOfUsReworked.PlayerLayers
             {
                 if (ShipStatus.Instance)
                 {
-                    switch (GameOptionsManager.Instance.currentNormalGameOptions.MapId)
+                    switch (TownOfUsReworked.VanillaOptions.MapId)
                     {
                         case 0:
                         case 2:

@@ -55,7 +55,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             fanatic2.Side = faction;
             fanatic2.Hidden = false;
             fanatic.RegenTask();
-            var localRole = Role.GetRole(PlayerControl.LocalPlayer);
 
             foreach (var snitch in Ability.GetAbilities<Snitch>(AbilityEnum.Snitch))
             {
@@ -69,7 +68,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
                         var renderer = gameObj.AddComponent<SpriteRenderer>();
                         renderer.sprite = AssetManager.GetSprite("Arrow");
                         arrow.image = renderer;
-                        localRole.AllArrows.Add(snitch.PlayerId, arrow);
+                        Role.LocalRole.AllArrows.Add(snitch.PlayerId, arrow);
                     }
                     else if (snitch.TasksDone && snitch.Player == PlayerControl.LocalPlayer)
                     {
@@ -79,7 +78,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
                         var renderer = gameObj.AddComponent<SpriteRenderer>();
                         renderer.sprite = AssetManager.GetSprite("Arrow");
                         arrow.image = renderer;
-                        localRole.AllArrows.Add(PlayerControl.LocalPlayer.PlayerId, arrow);
+                        Role.LocalRole.AllArrows.Add(PlayerControl.LocalPlayer.PlayerId, arrow);
                     }
                 }
             }
@@ -94,7 +93,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
                     var renderer = gameObj.AddComponent<SpriteRenderer>();
                     renderer.sprite = AssetManager.GetSprite("Arrow");
                     arrow.image = renderer;
-                    localRole.AllArrows.Add(revealer.PlayerId, arrow);
+                    Role.LocalRole.AllArrows.Add(revealer.PlayerId, arrow);
                 }
             }
         }
@@ -122,7 +121,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
                 TurnBetrayer();
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
                 writer.Write((byte)TurnRPC.TurnFanaticBetrayer);
-                writer.Write(Player.PlayerId);
+                writer.Write(PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
             }
         }

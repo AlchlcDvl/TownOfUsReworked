@@ -85,7 +85,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             //WHY ARE THERE DIFFERENT LOCAL Z INDEXS FOR DIFFERENT DECALS ON DIFFERENT LEVELS?!?!?!
             //AD: idk ¯\_(ツ)_/¯
-            if (SubmergedCompatibility.IsSubmerged())
+            if (SubmergedCompatibility.IsSubmerged)
             {
                 if (newPos.y > -7f)
                     newPos.z = 0.0208f;
@@ -137,7 +137,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Utils.Spread(Player, player);
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
             writer.Write((byte)ActionsRPC.Drag);
-            writer.Write(Player.PlayerId);
+            writer.Write(PlayerId);
             writer.Write(playerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
             CurrentlyDragging = DragButton.TargetBody;
@@ -147,10 +147,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
             writer.Write((byte)ActionsRPC.Drop);
-            writer.Write(Player.PlayerId);
+            writer.Write(PlayerId);
             Vector3 position = PlayerControl.LocalPlayer.GetTruePosition();
 
-            if (SubmergedCompatibility.IsSubmerged())
+            if (SubmergedCompatibility.IsSubmerged)
             {
                 if (position.y > -7f)
                     position.z = 0.0208f;

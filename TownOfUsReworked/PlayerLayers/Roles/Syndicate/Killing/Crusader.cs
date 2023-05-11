@@ -6,7 +6,6 @@ using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Custom;
 using Hazel;
-using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -31,7 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             InspectorResults = InspectorResults.PreservesLife;
             Type = LayerEnum.Crusader;
             CrusadedPlayer = null;
-            CrusadeButton = new(this, "Crusade", AbilityTypes.Direct, "ActionSecondary", HitCrusade);
+            CrusadeButton = new(this, "Crusade", AbilityTypes.Direct, "ActionSecondary", HitCrusade, Exception1);
         }
 
         public float CrusadeTimer()
@@ -65,8 +64,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 Utils.Spread(player2, player);
 
-                if (player.IsVesting() || player.IsProtected() || player2.IsOtherRival(player) || player.IsShielded() || player.IsRetShielded())
+                if (player.IsVesting() || player.IsProtected() || player2.IsOtherRival(player) || player.IsShielded() || player.IsRetShielded() || (player.Is(Faction.Syndicate) &&
+                    !CustomGameOptions.CrusadeMates))
+                {
                     continue;
+                }
 
                 if (!player.Is(RoleEnum.Pestilence))
                     Utils.RpcMurderPlayer(player2, player, DeathReasonEnum.Crusaded, false);
@@ -76,12 +78,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 else if (player.IsAmbushed() || player.IsGFAmbushed())
                     Utils.RpcMurderPlayer(player, player2, DeathReasonEnum.Ambushed);
                 else if (player.IsCrusaded() || player.IsRebCrusaded())
-                {
-                    if (player.GetCrusader()?.HoldsDrive == true || player.GetRebCrus()?.HoldsDrive == true)
-                        RadialCrusade(player);
-                    else
-                        Utils.RpcMurderPlayer(player, player2, DeathReasonEnum.Crusaded, true);
-                }
+                    Utils.RpcMurderPlayer(player, player2, DeathReasonEnum.Crusaded);
             }
         }
 
@@ -96,7 +93,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.Crusade);
-                writer.Write(Player.PlayerId);
+                writer.Write(PlayerId);
                 writer.Write(CrusadeButton.TargetPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 TimeRemaining = CustomGameOptions.CrusadeDuration;
@@ -109,11 +106,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 LastCrusaded.AddSeconds(CustomGameOptions.ProtectKCReset);
         }
 
+        public bool Exception1(PlayerControl player) => player == CrusadedPlayer || (player.Is(Faction) && !CustomGameOptions.CrusadeMates) || (player.Is(SubFaction) &&
+            SubFaction != SubFaction.None);
+
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            var notCrusaded = PlayerControl.AllPlayerControls.ToArray().Where(x => x != CrusadedPlayer).ToList();
-            CrusadeButton.Update("CRUSADE", CrusadeTimer(), CustomGameOptions.CrusadeCooldown, notCrusaded, OnCrusade, TimeRemaining, CustomGameOptions.CrusadeDuration);
+            CrusadeButton.Update("CRUSADE", CrusadeTimer(), CustomGameOptions.CrusadeCooldown, OnCrusade, TimeRemaining, CustomGameOptions.CrusadeDuration);
         }
     }
 }

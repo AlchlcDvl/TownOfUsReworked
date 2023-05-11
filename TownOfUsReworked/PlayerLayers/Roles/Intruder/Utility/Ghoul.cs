@@ -31,7 +31,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = CustomGameOptions.CustomIntColors ? Colors.Ghoul : Colors.Intruder;
             MarkedPlayer = null;
             Type = LayerEnum.Ghoul;
-            MarkButton = new(this, "GhoulMark", AbilityTypes.Direct, "ActionSecondary", Mark, false, true);
+            MarkButton = new(this, "GhoulMark", AbilityTypes.Direct, "ActionSecondary", Mark, Exception1, false, true);
         }
 
         public float MarkTimer()
@@ -49,7 +49,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Player.Visible = true;
             var color = new Color(1f, 1f, 1f, 0f);
 
-            var maxDistance = ShipStatus.Instance.MaxLightRadius * GameOptionsManager.Instance.currentNormalGameOptions.CrewLightMod;
+            var maxDistance = ShipStatus.Instance.MaxLightRadius * TownOfUsReworked.VanillaOptions.CrewLightMod;
             var distance = (PlayerControl.LocalPlayer.GetTruePosition() - Player.GetTruePosition()).magnitude;
 
             var distPercent = distance / maxDistance;
@@ -83,18 +83,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
             writer.Write((byte)ActionsRPC.Mark);
-            writer.Write(Player.PlayerId);
+            writer.Write(PlayerId);
             writer.Write(MarkButton.TargetPlayer.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
             MarkedPlayer = MarkButton.TargetPlayer;
         }
 
+        public bool Exception1(PlayerControl player) => player == MarkedPlayer || player.Is(Faction) || player.Is(SubFaction);
+
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
             KillButton.Disable();
-            var notImp = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Intruder) && x != MarkedPlayer).ToList();
-            MarkButton.Update("MARK", MarkTimer(), CustomGameOptions.GhoulMarkCd, notImp, true, MarkedPlayer == null);
+            MarkButton.Update("MARK", MarkTimer(), CustomGameOptions.GhoulMarkCd, true, MarkedPlayer == null);
         }
     }
 }

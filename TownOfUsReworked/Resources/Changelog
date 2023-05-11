@@ -1,45 +1,41 @@
 Changelog
-- New Roles: Monarch, Dictator [Crew (Sovereign)]
-- New Role: Spellslinger, Collider [Syndicate (Killing)]
-- New Role: Stalker [Syndicate (Support)]
-- New Objectifier: Mafia
-- New Preset: Last Used - This preset always loads the settings you last played with in your previous Among Us session
-- Addition: 2 new nameplates
-- Buff: Added an optional buff for Arsonist to cremate ignited bodies
-- Buff: Cryomaniac's last killer kill ability has been given its own kill button
-- Nerf: The number of assassinations are now linked between all Assassins
-- Recode: Guesser and Assassin have been recoded to work like in The Other Roles
-- Rework: Mayor now works the same as its Town Of Salem counterpart
-- Rework: Politician has been fused with the original Mayor and was changed into an ability
-- Rework: Swapper is now an ability
-- Change: Changed the Shapeshifter color as it's too dark
-- Completion: Inspector results are now finished
-- Improvement: The Stalemate screen will now include any Neutral (Evil) role that has won
-- Improvement: Improved Chaos Drive assignment between players
-- Improvement: Improved how task completion is handled
-- Improvement: Improved how guesses are handled
-- Improvement: All actions now occur within their respective layers to hopefully reduce the lag
-- Improvement: Increased the size of the changelogs for better readability
-- Improvement: Improved how win conditions are handled to remove any underlying issues
-- Improvement: The main menu buttons are much closer now to look neater
-- Improvement: Swapper swaps don't need to be disabled anymore, they automatically update to swapping the new targets
-- Improvement: Decreased mod weight
-- Improvement: Assassinated players will have buttons generate on them for the Retributionist
-- Improvement: The default settings preset now auto updates
-- Improvement: Arrow targets are now reflected on maps
-- Critical Fix: Fixed being able to select targets through walls
-- Bug Fix: Fixed the wiki not giving the correct results for alignments
-- Bug Fix: Fixed string options occasionally freaking out
-- Bug Fix: Fixed nameplates not being displayed properly
-- Bug Fix: Fixed being able to call meetings when you can't
-- Bug Fix: Fixed chaos drive messages being repeated
-- Layer Fix: Fixed arrows not updating correctly
-- Role Fix: Fixed Retributionist buttons not appearing on the game screen or disappearing when getting assassinated
-- Role Fix: Fixed Sidekick being unable to kill
-- Role Fix: Fixed weird/inconsistent role changing interactions for Thief, Amnesiac and Shifter
-- Role Fix: Fixed Altruist and Necromancer revivals bugging out other players
-- Role Fix: Fixed Promoted Godfather cooldowns not resetting
-- Modifier Fix: Fixed Shy being assigned to Politicians when they cannot button
-- Ability Fix: Fixed Swapper buttons not appearing on the game screen
-- Revert: Reverted flashes back to the original Town Of Us style (but with still some modifications like in The Other Roles)
-- Removed: Removed the test features that I forgot to remove in the previous release
+- New Preset: Ranked
+- Return: Drunkard's back, new and improved!
+- Return: Cosmetic sections are back
+- Addition: Added the /summary (or /sum for short) command for being able to see the game summary of the previous game when in lobby
+- Addition: Dwarf and Giant were changed interally, mix and match with the settings to find things out ;)
+- Buff: Completing tasks restores a charge for roles with limited uses
+- Buff: On low player counts, Amnesiac now becomes a Thief
+- Buff: Monarchs with alive knights now cannot be killed as long as one of the alive knights is Crew (Ruthless still bypasses this)
+- Nerf: Clicking a Revealer who has finished their tasks now disables their ability
+- Nerf: Everyone is told who has been spelled during meetings, so at least the dangers of Spellslinger is known
+- Nerf: Misfiring on a framed innocent player will no longer kill the Vigilante, unless the Misfire setting is turned on
+- Recode: Cosmetic handling was recoded to work like how The Other Roles does it
+- Optimisation: Some code was optimsed
+- Improvement: Turned Traitors and Fanatics with the Assassin ability now have their guessing menus updated to their new factions
+- Improvement: Added a paging behaviour for the guessing menu, to prevent guess buttons going off-screen
+- Improvement: The mod's weight has been heavily reduced
+- Improvement: Improved player targetting some more
+- Change: Teleporter's color was changed because it was too close to the Grenadier's green
+- Critical Fix: Fixed Airship crashing players when loading in
+- Bug Fix: Fixed the weird issue with blank abilities appearing
+- Bug Fix: Fixed being able to target dead players and postmortal roles
+- Bug Fix: Fixed loading presets not actually closing the option menu
+- Bug Fix: Changing the screen resolution no longer clips the settings out of bounds
+- Bug Fix: Fixed players being assigned multiple abilities
+- Modifier Fix: Fixed Volatile weirding out the spawn in sequence
+- Objectifier Fix: Fixed Corrupted being unable to kill players
+- Ability Fix: Fixed Multitasker not making the task windows transparent
+- Role + Ability Fix: Fixed the weird scaling of the guessing menu (it looped the size for every button added lmao, making it smaller with each possible guess added)
+- Role Fix: Fixed incorrect distance scaling for a lot of roles
+- Role Fix: Fixed Anarchist's kill cooldown not resetting correctly on game start
+- Role Fix: Fixed Stalker's Stalk button not appearing
+- Role Fix: Fixed (Collider/Spellslinger/Stalker)-Rebels not having their buttons
+- Role Fix: Fixed Executioner being unable to doom players
+- Role Fix: Fixed Jester being unable to haunt players
+- Role Fix: Fixed Bomber and Enforcer bomb kills being marked as suicides
+- Role Fix: Enforcer can no longer place bombs on their teammates
+- Role Fix: Fixed Spellslinger not being able to see who they spelled
+- Role Fix: Fixed Tracker-Retributionist's Track button not updating
+- Role Fix: Retributionist's ability uses now update correctly
+- Potential Fix: Lag on the cosmetics screen and the cosmetic icons not having the hats in them

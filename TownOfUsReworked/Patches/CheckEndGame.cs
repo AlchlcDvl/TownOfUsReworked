@@ -10,15 +10,13 @@ using TownOfUsReworked.PlayerLayers.Roles;
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch(typeof(LogicGameFlowNormal), nameof(LogicGameFlowNormal.CheckEndCriteria))]
+    [HarmonyPriority(Priority.First)]
     public static class CheckEndGame
     {
         public static bool Prefix()
         {
             if (!AmongUsClient.Instance.AmHost || ConstantVariables.IsFreePlay)
                 return false;
-
-            if (ConstantVariables.IsHnS)
-                return true;
 
             var crewexists = false;
 
@@ -33,16 +31,16 @@ namespace TownOfUsReworked.Patches
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.NobodyWins);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
                 PlayerLayer.NobodyWins = true;
+                Utils.EndGame();
             }
             else if ((Utils.TasksDone() || GameData.Instance.TotalTasks <= GameData.Instance.CompletedTasks) && crewexists)
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.CrewWin);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
                 Role.CrewWin = true;
+                Utils.EndGame();
             }
             else if (Utils.Sabotaged())
             {

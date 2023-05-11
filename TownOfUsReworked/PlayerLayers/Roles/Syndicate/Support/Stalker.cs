@@ -30,7 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AlignmentName = SSu;
             InspectorResults = InspectorResults.TracksOthers;
             Type = LayerEnum.Stalker;
-            StalkButton = new(this, "Stalk", AbilityTypes.Direct, "ActionSecondary", Stalk, true);
+            StalkButton = new(this, "Stalk", AbilityTypes.Direct, "ActionSecondary", Stalk, Exception1);
         }
 
         public float StalkTimer()
@@ -103,11 +103,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 LastStalked.AddSeconds(CustomGameOptions.ProtectKCReset);
         }
 
+        public bool Exception1(PlayerControl player) => StalkerArrows.ContainsKey(player.PlayerId);
+
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            var notStalked = PlayerControl.AllPlayerControls.ToArray().Where(x => !StalkerArrows.ContainsKey(x.PlayerId)).ToList();
-            StalkButton.Update("Stalk", StalkTimer(), CustomGameOptions.StalkCd, notStalked, true, !HoldsDrive);
+            StalkButton.Update("STALK", StalkTimer(), CustomGameOptions.StalkCd, true, !HoldsDrive);
 
             if (IsDead)
                 OnLobby();

@@ -35,7 +35,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
             writer.Write((byte)ActionsRPC.MayorReveal);
-            writer.Write(Player.PlayerId);
+            writer.Write(PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
             Revealed = true;
             Utils.Flash(Color);
@@ -43,13 +43,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             foreach (var medic in GetRoles<Medic>(RoleEnum.Medic))
             {
                 if (medic.ShieldedPlayer == Player)
-                    Medic.BreakShield(medic.PlayerId, Player.PlayerId, true);
+                    Medic.BreakShield(medic.PlayerId, PlayerId, true);
             }
 
             foreach (var ret in GetRoles<Retributionist>(RoleEnum.Retributionist))
             {
                 if (ret.ShieldedPlayer == Player)
-                    Retributionist.BreakShield(ret.PlayerId, Player.PlayerId, true);
+                    Retributionist.BreakShield(ret.PlayerId, PlayerId, true);
             }
         }
 

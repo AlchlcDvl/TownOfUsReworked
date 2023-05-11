@@ -6,7 +6,6 @@ using Hazel;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Custom;
 using TownOfUsReworked.Classes;
-using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -29,7 +28,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = CustomGameOptions.CustomSynColors ? Colors.Framer : Colors.Syndicate;
             Framed = new();
             Type = LayerEnum.Framer;
-            FrameButton = new(this, "Frame", AbilityTypes.Direct, "Secondary", HitFrame);
+            FrameButton = new(this, "Frame", AbilityTypes.Direct, "Secondary", HitFrame, Exception1);
             RadialFrameButton = new(this, "Frame", AbilityTypes.Effect, "Secondary", RadialFrame);
             InspectorResults = InspectorResults.Manipulative;
         }
@@ -51,8 +50,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Framed.Add(player.PlayerId);
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
             writer.Write((byte)ActionsRPC.Frame);
-            writer.Write(Player.PlayerId);
-            writer.Write(player.PlayerId);
+            writer.Write(PlayerId);
+            writer.Write(PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
 
@@ -83,13 +82,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             LastFramed = DateTime.UtcNow;
         }
 
+        public bool Exception1(PlayerControl player) => Framed.Contains(player.PlayerId) || player.Is(Faction) || (player.Is(SubFaction) && SubFaction != SubFaction.None);
+
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            var notFramed = PlayerControl.AllPlayerControls.ToArray().Where(x => !Framed.Contains(x.PlayerId) && !x.Is(Faction.Syndicate)).ToList();
-            FrameButton.Update("FRAME", FrameTimer(), CustomGameOptions.FrameCooldown, notFramed, true, !HoldsDrive);
+            FrameButton.Update("FRAME", FrameTimer(), CustomGameOptions.FrameCooldown, true, !HoldsDrive);
             RadialFrameButton.Update("FRAME", FrameTimer(), CustomGameOptions.FrameCooldown, true, HoldsDrive);
-            Framed.RemoveAll(x => Utils.PlayerById(x).Data.IsDead || Utils.PlayerById(x).Data.Disconnected);
         }
     }
 }

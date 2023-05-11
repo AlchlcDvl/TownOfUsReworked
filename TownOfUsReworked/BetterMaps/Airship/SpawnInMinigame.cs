@@ -5,6 +5,7 @@ using UnityEngine;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Data;
 using Hazel;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.BetterMaps.Airship
 {
@@ -19,20 +20,33 @@ namespace TownOfUsReworked.BetterMaps.Airship
         {
             public static bool Prefix(SpawnInMinigame __instance)
             {
+                if (TownOfUsReworked.MCIActive)
+                {
+                    foreach (var player in PlayerControl.AllPlayerControls)
+                    {
+                        if (!player.Data.PlayerName.Contains("Robot"))
+                            continue;
+
+                        var rand = new System.Random().Next(0, __instance.Locations.Count);
+                        player.gameObject.SetActive(true);
+                        player.NetTransform.RpcSnapTo(__instance.Locations[rand].Location);
+                    }
+                }
+
                 if (CustomGameOptions.MeetingSpawnChoice || !GameStarted)
                 {
                     GameStarted = true;
-                    var Spawn = __instance.Locations.ToArray().ToList();
+                    var Spawn = __instance.Locations.ToArray();
 
                     if (AmongUsClient.Instance.AmHost)
                     {
-                        var random = (byte)Random.RandomRangeInt(0, Spawn.Count);
+                        var random = (byte)Random.RandomRangeInt(0, Spawn.Length);
                         var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetSpawnAirship, SendOption.Reliable);
                         writer.Write(PlayerControl.LocalPlayer.PlayerId);
 
-                        while (SpawnPoints.Contains(random) || SpawnPoints.Count < 3)
+                        while (SpawnPoints.Count < 3)
                         {
-                            random = (byte)Random.RandomRangeInt(0, Spawn.Count);
+                            random = (byte)Random.RandomRangeInt(0, Spawn.Length);
 
                             if (!SpawnPoints.Contains(random))
                             {

@@ -5,7 +5,6 @@ using TownOfUsReworked.Data;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Custom;
 using TownOfUsReworked.Extensions;
-using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -33,7 +32,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AlignmentName = NK;
             RoleBlockImmune = true;
             Type = LayerEnum.SerialKiller;
-            StabButton = new(this, "Stab", AbilityTypes.Direct, "ActionSecondary", Stab);
+            StabButton = new(this, "Stab", AbilityTypes.Direct, "ActionSecondary", Stab, Exception);
             BloodlustButton = new(this, "Bloodlust", AbilityTypes.Effect, "Secondary", Lust);
             InspectorResults = InspectorResults.IsAggressive;
         }
@@ -95,12 +94,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
         }
 
+        public bool Exception(PlayerControl player) => (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) ||
+            player == Player.GetOtherLover() || player == Player.GetOtherRival() || (player.Is(ObjectifierEnum.Mafia) && Player.Is(ObjectifierEnum.Mafia));
+
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            var targets = PlayerControl.AllPlayerControls.ToArray().Where(x => !(x.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) && !(SubFaction != SubFaction.None &&
-                x.GetSubFaction() == SubFaction)).ToList();
-            StabButton.Update("STAB", StabTimer(), CustomGameOptions.LustKillCd, targets, Lusted, Lusted);
+            StabButton.Update("STAB", StabTimer(), CustomGameOptions.LustKillCd, Lusted, Lusted);
             BloodlustButton.Update("BLOODLUST", LustTimer(), CustomGameOptions.BloodlustCd, Lusted, TimeRemaining, CustomGameOptions.BloodlustDuration);
         }
     }

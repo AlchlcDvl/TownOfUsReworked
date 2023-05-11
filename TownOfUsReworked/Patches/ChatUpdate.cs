@@ -42,10 +42,8 @@ namespace TownOfUsReworked.Patches
                     {
                         if (bubble.Cast<ChatBubble>().NameText.text.Contains(PlayerControl.LocalPlayer.Data.PlayerName))
                         {
-                            var role = Role.GetRole(PlayerControl.LocalPlayer);
-
-                            if (role != null)
-                                bubble.Cast<ChatBubble>().NameText.color = role.Color;
+                            if (Role.LocalRole != null)
+                                bubble.Cast<ChatBubble>().NameText.color = Role.LocalRole.Color;
 
                             if (CustomGameOptions.Whispers && !bubble.Cast<ChatBubble>().NameText.text.Contains($"[{PlayerControl.LocalPlayer.PlayerId}] "))
                                 bubble.Cast<ChatBubble>().NameText.text = $"[{PlayerControl.LocalPlayer.PlayerId}] " + bubble.Cast<ChatBubble>().NameText.text;

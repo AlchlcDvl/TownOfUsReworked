@@ -63,14 +63,14 @@ namespace TownOfUsReworked.Patches
             var normalTask = CustomGameOptions.ShortTasks;
             var longTask = CustomGameOptions.LongTasks;
 
-            if (GameOptionsManager.Instance.currentNormalGameOptions.NumCommonTasks > commonTask)
-                GameOptionsManager.Instance.currentNormalGameOptions.NumCommonTasks = commonTask;
+            if (TownOfUsReworked.VanillaOptions.NumCommonTasks > commonTask)
+                TownOfUsReworked.VanillaOptions.NumCommonTasks = commonTask;
 
-            if (GameOptionsManager.Instance.currentNormalGameOptions.NumShortTasks > normalTask)
-                GameOptionsManager.Instance.currentNormalGameOptions.NumShortTasks = normalTask;
+            if (TownOfUsReworked.VanillaOptions.NumShortTasks > normalTask)
+                TownOfUsReworked.VanillaOptions.NumShortTasks = normalTask;
 
-            if (GameOptionsManager.Instance.currentNormalGameOptions.NumLongTasks > longTask)
-                GameOptionsManager.Instance.currentNormalGameOptions.NumLongTasks = longTask;
+            if (TownOfUsReworked.VanillaOptions.NumLongTasks > longTask)
+                TownOfUsReworked.VanillaOptions.NumLongTasks = longTask;
 
             return true;
         }

@@ -9,8 +9,9 @@ using TownOfUsReworked.Classes;
 using Il2CppInterop.Runtime.Attributes;
 using TownOfUsReworked.CustomOptions;
 using Random = UnityEngine.Random;
+using TownOfUsReworked.MultiClientInstancing;
 
-namespace TownOfUsReworked.MultiClientInstancing
+namespace TownOfUsReworked.Monos
 {
     public class Debugger : MonoBehaviour
     {
@@ -47,9 +48,9 @@ namespace TownOfUsReworked.MultiClientInstancing
 
                     if (GUILayout.Button("Remove Last Bot"))
                     {
-                        MCIUtils.RemovePlayer((byte)InstanceControl.Clients.Count);
+                        MCIUtils.RemovePlayer((byte)MCIUtils.Clients.Count);
 
-                        if (InstanceControl.Clients.Count == 0)
+                        if (MCIUtils.Clients.Count == 0)
                             TownOfUsReworked.MCIActive = false;
                     }
 
@@ -77,7 +78,7 @@ namespace TownOfUsReworked.MultiClientInstancing
                             if (ControllingFigure == PlayerControl.AllPlayerControls.Count)
                                 ControllingFigure = 0;
 
-                            InstanceControl.SwitchTo((byte)ControllingFigure);
+                            MCIUtils.SwitchTo((byte)ControllingFigure);
                         }
                         else if (GUILayout.Button("Previous Player"))
                         {
@@ -86,7 +87,7 @@ namespace TownOfUsReworked.MultiClientInstancing
                             if (ControllingFigure < 0)
                                 ControllingFigure = PlayerControl.AllPlayerControls.Count - 1;
 
-                            InstanceControl.SwitchTo((byte)ControllingFigure);
+                            MCIUtils.SwitchTo((byte)ControllingFigure);
                         }
                     }
 
@@ -154,6 +155,14 @@ namespace TownOfUsReworked.MultiClientInstancing
                                 Utils.Revive(player);
                         }
                     }
+
+                    if (GUILayout.Button("Log Dump"))
+                    {
+                        foreach (var layer in PlayerLayer.LocalLayers)
+                            Utils.LogSomething(layer.Name);
+
+                        Utils.LogSomething("Is Dead - " + PlayerControl.LocalPlayer.Data.IsDead);
+                    }
                 }
 
                 if (GUILayout.Button("Flash"))
@@ -178,10 +187,30 @@ namespace TownOfUsReworked.MultiClientInstancing
             };
         }
 
-        #pragma warning disable
-        private void Update() {}
+        public void Update()
+        {
+            if (ConstantVariables.NoPlayers || !ConstantVariables.IsLocalGame)
+            {
+                TestWindow.Enabled = false;
+                return; //You must ensure you are only playing on local
+            }
 
-        private void OnGUI() => TestWindow.OnGUI();
-        #pragma warning restore
+            if (Input.GetKeyDown(KeyCode.F1))
+            {
+                TestWindow.Enabled = !TestWindow.Enabled;
+                SettingsPatches.PresetButton.LoadPreset("LastUsed", true, true);
+
+                if (!TestWindow.Enabled)
+                {
+                    MCIUtils.RemoveAllPlayers();
+                    TownOfUsReworked.MCIActive = false;
+                }
+            }
+
+            if (Input.GetKeyDown(KeyCode.F2))
+                TestWindow.Enabled = !TestWindow.Enabled;
+        }
+
+        public void OnGUI() => TestWindow.OnGUI();
     }
 }

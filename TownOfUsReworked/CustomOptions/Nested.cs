@@ -141,7 +141,7 @@ namespace TownOfUsReworked.CustomOptions
             foreach (var option in InternalOptions.Skip(1))
                 option.Setting.gameObject.Destroy();
 
-            var Loading = InternalOptions[0] as CustomHeaderOption;
+            var Loading = InternalOptions[0];
             Loading.Setting.Cast<ToggleOption>().TitleText.text = "Loading...";
             __instance.Children = new[] { Loading.Setting };
             yield return new WaitForSeconds(0.5f);
@@ -159,36 +159,6 @@ namespace TownOfUsReworked.CustomOptions
         {
             base.OptionCreated();
             Setting.Cast<ToggleOption>().TitleText.text = Name;
-        }
-
-        public void SetRole2(RoleEnum role)
-        {
-            foreach (var option in InternalOptions)
-                option.SetRole(role);
-        }
-
-        public void SetAbility2(AbilityEnum ability)
-        {
-            foreach (var option in InternalOptions)
-                option.SetAbility(ability);
-        }
-
-        public void SetObjectifier2(ObjectifierEnum objectifier)
-        {
-            foreach (var option in InternalOptions)
-                option.SetObjectifier(objectifier);
-        }
-
-        public void SetModifier2(ModifierEnum modifier)
-        {
-            foreach (var option in InternalOptions)
-                option.SetModifier(modifier);
-        }
-
-        public void SetMaps2(params Map[] maps)
-        {
-            foreach (var option in InternalOptions)
-                option.SetMaps(maps);
         }
     }
 }

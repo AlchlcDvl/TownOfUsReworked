@@ -11,9 +11,9 @@ namespace TownOfUsReworked.Objects
     [HarmonyPatch]
     public class BodyReport
     {
-        public PlayerControl Killer { get; set; }
-        public PlayerControl Body { get; set; }
-        public float KillAge { get; set; }
+        public PlayerControl Killer;
+        public PlayerControl Body;
+        public float KillAge;
 
         public static string ParseBodyReport(BodyReport br)
         {

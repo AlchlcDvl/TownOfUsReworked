@@ -28,8 +28,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AlignmentName = SP;
             Color = CustomGameOptions.CustomSynColors ? Colors.Spellslinger : Colors.Syndicate;
             Spelled = new();
+            SpellCount = 0;
             Type = LayerEnum.Spellslinger;
-            SpellButton = new(this, "Spell", AbilityTypes.Direct, "Secondary", HitSpell);
+            SpellButton = new(this, "Spell", AbilityTypes.Direct, "Secondary", HitSpell, Exception1);
             InspectorResults = InspectorResults.SeeksToDestroy;
         }
 
@@ -50,7 +51,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Spelled.Add(player.PlayerId);
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
             writer.Write((byte)ActionsRPC.Spell);
-            writer.Write(Player.PlayerId);
+            writer.Write(PlayerId);
             writer.Write(player.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
@@ -91,12 +92,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
         }
 
+        public bool Exception1(PlayerControl player) => Spelled.Contains(player.PlayerId) || player.Is(Faction);
+
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            var notSpelled = PlayerControl.AllPlayerControls.ToArray().Where(x => !Spelled.Contains(x.PlayerId) && !x.Is(Faction.Syndicate)).ToList();
-            SpellButton.Update("Spell", SpellTimer(), CustomGameOptions.SpellCooldown + (SpellCount * CustomGameOptions.SpellCooldownIncrease), notSpelled);
-            Spelled.RemoveAll(x => Utils.PlayerById(x).Data.IsDead || Utils.PlayerById(x).Data.Disconnected);
+            SpellButton.Update("SPELL", SpellTimer(), CustomGameOptions.SpellCooldown + (SpellCount * CustomGameOptions.SpellCooldownIncrease));
         }
     }
 }

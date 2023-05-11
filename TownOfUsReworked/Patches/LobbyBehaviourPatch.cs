@@ -19,11 +19,12 @@ namespace TownOfUsReworked.Patches
             if (!ConstantVariables.IsLocalGame)
                 return;
 
-            if (InstanceControl.Clients.Count != 0 && TownOfUsReworked.MCIActive && ConstantVariables.IsLocalGame)
+            if (MCIUtils.Clients.Count != 0 && TownOfUsReworked.MCIActive && ConstantVariables.IsLocalGame)
             {
-                int count = InstanceControl.Clients.Count;
-                InstanceControl.Clients.Clear();
-                InstanceControl.PlayerIdClientId.Clear();
+                var count = MCIUtils.Clients.Count;
+                TownOfUsReworked.Debugger.TestWindow.Enabled = true;
+                MCIUtils.Clients.Clear();
+                MCIUtils.PlayerIdClientId.Clear();
 
                 if (TownOfUsReworked.Persistence)
                 {

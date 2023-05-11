@@ -17,7 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public int UsesLeft;
         public bool ButtonUsable => UsesLeft > 0;
         public PlayerControl TargetPlayer;
-        public bool TargetAlive => TargetPlayer?.Data.IsDead == false && TargetPlayer?.Data.Disconnected == false && !Disconnected;
+        public bool TargetAlive => Player != null && TargetPlayer != null && !Disconnected && !TargetPlayer.Data.IsDead && !TargetPlayer.Data.Disconnected;
         public bool Protecting => TimeRemaining > 0f;
         public CustomButton ProtectButton;
         public CustomButton GraveProtectButton;
@@ -88,7 +88,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Protect();
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
             writer.Write((byte)ActionsRPC.GAProtect);
-            writer.Write(Player.PlayerId);
+            writer.Write(PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
 
@@ -105,11 +105,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (!TargetAlive && !IsDead)
             {
+                TurnSurv();
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
                 writer.Write((byte)TurnRPC.TurnSurv);
-                writer.Write(Player.PlayerId);
+                writer.Write(PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
-                TurnSurv();
             }
         }
     }

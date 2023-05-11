@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Classes;
-using System.Linq;
 using Hazel;
 using TownOfUsReworked.Custom;
 
@@ -55,7 +54,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.Convert);
-                writer.Write(Player.PlayerId);
+                writer.Write(PlayerId);
                 writer.Write(BiteButton.TargetPlayer.PlayerId);
                 writer.Write((byte)SubFaction.Undead);
                 writer.Write(Converted.Count >= CustomGameOptions.AliveVampCount);
@@ -71,11 +70,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 LastBitten.AddSeconds(CustomGameOptions.VestKCReset);
         }
 
+        public bool Exception(PlayerControl player) => Converted.Contains(player.PlayerId);
+
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            var notVamp = PlayerControl.AllPlayerControls.ToArray().Where(player => !Converted.Contains(player.PlayerId)).ToList();
-            BiteButton.Update("BITE", ConvertTimer(), CustomGameOptions.BiteCd, notVamp);
+            BiteButton.Update("BITE", ConvertTimer(), CustomGameOptions.BiteCd);
         }
     }
 }

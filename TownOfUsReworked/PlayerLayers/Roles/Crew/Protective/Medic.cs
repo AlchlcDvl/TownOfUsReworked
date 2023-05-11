@@ -28,7 +28,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AlignmentName = CP;
             InspectorResults = InspectorResults.PreservesLife;
             Type = LayerEnum.Medic;
-            ShieldButton = new(this, "Shield", AbilityTypes.Direct, "ActionSecondary", Protect);
+            ShieldButton = new(this, "Shield", AbilityTypes.Direct, "ActionSecondary", Protect, Exception);
         }
 
         public void Protect()
@@ -42,18 +42,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.Protect);
-                writer.Write(Player.PlayerId);
+                writer.Write(PlayerId);
                 writer.Write(ShieldButton.TargetPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 ShieldedPlayer = ShieldButton.TargetPlayer;
             }
         }
 
+        public bool Exception(PlayerControl player) => player == ShieldedPlayer;
+
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            var notShielded = PlayerControl.AllPlayerControls.ToArray().Where(x => x != ShieldedPlayer).ToList();
-            ShieldButton.Update("SHIELD", 0, 1, notShielded, !UsedAbility, !UsedAbility);
+            ShieldButton.Update("SHIELD", 0, 1, !UsedAbility, !UsedAbility);
         }
 
         public static void BreakShield(byte medicId, byte playerId, bool flag)

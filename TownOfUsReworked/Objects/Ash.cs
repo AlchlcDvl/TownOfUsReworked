@@ -16,9 +16,9 @@ namespace TownOfUsReworked.Objects
         {
             Pile = new GameObject("AshPile") { layer = 11 };
             Pile.AddSubmergedComponent("ElevatorMover");
-			Pile.transform.position = new Vector3(position.x, position.y, (position.y / 1000f) + 0.001f);
-			Pile.transform.localScale = Vector3.one * 0.35f;
-			Pile.AddComponent<SpriteRenderer>().sprite = AssetManager.GetSprite("AshPile");
+            Pile.transform.position = new Vector3(position.x, position.y, (position.y / 1000f) + 0.001f);
+            Pile.transform.localScale = Vector3.one * 0.35f;
+            Pile.AddComponent<SpriteRenderer>().sprite = AssetManager.GetSprite("AshPile");
             Pile.SetActive(true);
             AllPiles.Add(this);
         }

@@ -4,7 +4,6 @@ using TownOfUsReworked.Data;
 using TownOfUsReworked.Custom;
 using Hazel;
 using TownOfUsReworked.Classes;
-using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -27,7 +26,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             InspectorResults = InspectorResults.GainsInfo;
             BlackmailedPlayer = null;
             Type = LayerEnum.Blackmailer;
-            BlackmailButton = new(this, "Blackmail", AbilityTypes.Direct, "Secondary", Blackmail);
+            BlackmailButton = new(this, "Blackmail", AbilityTypes.Direct, "Secondary", Blackmail, Exception1);
         }
 
         public float BlackmailTimer()
@@ -51,7 +50,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 BlackmailedPlayer = BlackmailButton.TargetPlayer;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.Blackmail);
-                writer.Write(Player.PlayerId);
+                writer.Write(PlayerId);
                 writer.Write(BlackmailButton.TargetPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
             }
@@ -62,11 +61,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 LastBlackmailed.AddSeconds(CustomGameOptions.ProtectKCReset);
         }
 
+        public bool Exception1(PlayerControl player) => player == BlackmailedPlayer;
+
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            var notBlackmailed = PlayerControl.AllPlayerControls.ToArray().Where(player => BlackmailedPlayer != player).ToList();
-            BlackmailButton.Update("BLACKMAIL", BlackmailTimer(), CustomGameOptions.BlackmailCd, notBlackmailed);
+            BlackmailButton.Update("BLACKMAIL", BlackmailTimer(), CustomGameOptions.BlackmailCd);
         }
     }
 }

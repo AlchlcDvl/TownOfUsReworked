@@ -280,7 +280,7 @@ Move Electrical Outlet
 0
 <color=#AA7632FF>Miner</color>
 40
-<color=#6AA84FFF>Teleporter</color>
+<color=#939593FF>Teleporter</color>
 70
 <color=#0000A7FF>Time Master</color>
 0
@@ -1238,17 +1238,17 @@ Ability Cooldown Bonus
 False
 Mine Cooldown
 17.5
-<color=#6AA84FFF>Teleporter</color> Count
+<color=#939593FF>Teleporter</color> Count
 1
-<color=#6AA84FFF>Teleporter</color> Is Unique In All Any
+<color=#939593FF>Teleporter</color> Is Unique In All Any
 False
 Teleport Cooldown
 22.5
 Mark Cooldown
 25
-<color=#6AA84FFF>Teleporter</color> Mark And Teleport Cooldowns Are Linked
+<color=#939593FF>Teleporter</color> Mark And Teleport Cooldowns Are Linked
 False
-<color=#6AA84FFF>Teleporter</color> Can Vent
+<color=#939593FF>Teleporter</color> Can Vent
 False
 <color=#0000A7FF>Time Master</color> Count
 1

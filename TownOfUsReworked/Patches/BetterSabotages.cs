@@ -32,21 +32,21 @@ namespace TownOfUsReworked.Patches
 
                     if (reactorSystemType.IsActive && CustomGameOptions.ReactorShake != 0f)
                     {
-                        __instance.PlayerCam.ShakeScreen(400, CustomGameOptions.ReactorShake * (reactorSystemType.ReactorDuration - reactorSystemType.Countdown) /
-                            reactorSystemType.ReactorDuration / 75f);
+                        __instance.PlayerCam.ShakeScreen(400, CustomGameOptions.ReactorShake * (reactorSystemType.ReactorDuration - reactorSystemType.Countdown) / 75f /
+                            reactorSystemType.ReactorDuration);
                     }
                     else
                         __instance.PlayerCam.ShakeScreen(0, 0);
                 }
 
-                if (ShipStatus.Instance.Systems.ContainsKey(SystemTypes.Reactor) && GameOptionsManager.Instance.currentNormalGameOptions.MapId == 0)
+                if (ShipStatus.Instance.Systems.ContainsKey(SystemTypes.Reactor) && TownOfUsReworked.VanillaOptions.MapId is 0 or 3 or 6)
                 {
                     var reactorSystemType = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
 
                     if (reactorSystemType.IsActive && CustomGameOptions.ReactorShake != 0f)
                     {
-                        __instance.PlayerCam.ShakeScreen(400, CustomGameOptions.ReactorShake * (reactorSystemType.ReactorDuration - reactorSystemType.Countdown) /
-                            reactorSystemType.ReactorDuration / 100f);
+                        __instance.PlayerCam.ShakeScreen(400, CustomGameOptions.ReactorShake * (reactorSystemType.ReactorDuration - reactorSystemType.Countdown) / 100f /
+                            reactorSystemType.ReactorDuration);
                     }
                     else
                         __instance.PlayerCam.ShakeScreen(0, 0);

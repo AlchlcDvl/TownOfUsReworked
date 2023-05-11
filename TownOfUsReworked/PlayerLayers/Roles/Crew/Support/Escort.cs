@@ -79,7 +79,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.EscRoleblock);
-                writer.Write(Player.PlayerId);
+                writer.Write(PlayerId);
                 writer.Write(BlockButton.TargetPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 TimeRemaining = CustomGameOptions.EscRoleblockDuration;
@@ -92,11 +92,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 LastBlock.AddSeconds(CustomGameOptions.ProtectKCReset);
         }
 
+        public bool Exception(PlayerControl player) => player == BlockTarget;
+
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            var targets = PlayerControl.AllPlayerControls.ToArray().Where(x => !(Faction is Faction.Intruder or Faction.Syndicate && x.GetFaction() == Faction)).ToList();
-            BlockButton.Update("ROLEBLOCK", RoleblockTimer(), CustomGameOptions.EscRoleblockCooldown, targets, Blocking, TimeRemaining, CustomGameOptions.EscRoleblockDuration);
+            BlockButton.Update("ROLEBLOCK", RoleblockTimer(), CustomGameOptions.EscRoleblockCooldown, Blocking, TimeRemaining, CustomGameOptions.EscRoleblockDuration);
         }
     }
 }

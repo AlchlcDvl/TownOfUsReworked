@@ -6,7 +6,6 @@ using TownOfUsReworked.Classes;
 using TownOfUsReworked.Extensions;
 using Hazel;
 using TownOfUsReworked.Custom;
-using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -34,7 +33,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AlignmentName = IK;
             Type = LayerEnum.Enforcer;
             BombedPlayer = null;
-            BombButton = new(this, "Enforce", AbilityTypes.Direct, "Secondary", Bomb);
+            BombButton = new(this, "Enforce", AbilityTypes.Direct, "Secondary", Bomb, Exception1);
             InspectorResults = InspectorResults.DropsItems;
         }
 
@@ -92,7 +91,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     continue;
 
                 if (!player.Is(RoleEnum.Pestilence))
-                    Utils.RpcMurderPlayer(BombedPlayer, player, DeathReasonEnum.Bombed, false);
+                    Utils.RpcMurderPlayer(Player, player, DeathReasonEnum.Bombed, false);
             }
         }
 
@@ -107,7 +106,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.SetBomb);
-                writer.Write(Player.PlayerId);
+                writer.Write(PlayerId);
                 writer.Write(BombButton.TargetPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 TimeRemaining = CustomGameOptions.EnforceDuration;
@@ -121,11 +120,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 LastBombed.AddSeconds(CustomGameOptions.ProtectKCReset);
         }
 
+        public bool Exception1(PlayerControl player) => player == BombedPlayer || player.Is(Faction) || (player.Is(SubFaction) && SubFaction != SubFaction.None);
+
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            var notBombed = PlayerControl.AllPlayerControls.ToArray().Where(x => x != BombedPlayer).ToList();
-            BombButton.Update("BOMB", BombTimer(), CustomGameOptions.EnforceCooldown, notBombed, DelayActive || Bombing, DelayActive ? TimeRemaining2 : TimeRemaining, DelayActive ?
+            BombButton.Update("BOMB", BombTimer(), CustomGameOptions.EnforceCooldown, DelayActive || Bombing, DelayActive ? TimeRemaining2 : TimeRemaining, DelayActive ?
                 CustomGameOptions.EnforceDelay : CustomGameOptions.EnforceDuration);
         }
     }

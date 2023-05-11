@@ -4,8 +4,11 @@ using System.Linq;
 using Il2CppInterop.Runtime.Attributes;
 using UnityEngine;
 using HarmonyLib;
+using TownOfUsReworked.Data;
+using TownOfUsReworked.PlayerLayers.Abilities;
+using TownOfUsReworked.PlayerLayers.Roles;
 
-namespace TownOfUsReworked.Crowded.Components
+namespace TownOfUsReworked.Monos
 {
     [HarmonyPatch]
     public class MeetingHudPagingBehaviour : AbstractPagingBehaviour
@@ -34,13 +37,15 @@ namespace TownOfUsReworked.Crowded.Components
 
             foreach (var button in Targets)
             {
-                if (i >= PageIndex * MaxPerPage && i < (PageIndex + 1) * MaxPerPage)
+                if (i >= PageIndex * MaxPerPage && i < (PageIndex + 1) * MaxPerPage && !Ability.GetAbilities<Assassin>(AbilityEnum.Assassin).Any(x => x.Phone != null) &&
+                    !Role.GetRoles<Guesser>(RoleEnum.Guesser).Any(x => x.Phone != null))
                 {
                     button.gameObject.SetActive(true);
                     var relativeIndex = i % MaxPerPage;
                     var row = relativeIndex / 3;
+                    var col = relativeIndex % 3;
                     var buttonTransform = button.transform;
-                    buttonTransform.localPosition = meetingHud.VoteOrigin + new Vector3(meetingHud.VoteButtonOffsets.x * (relativeIndex % 3), meetingHud.VoteButtonOffsets.y * row,
+                    buttonTransform.localPosition = meetingHud.VoteOrigin + new Vector3(meetingHud.VoteButtonOffsets.x * col, meetingHud.VoteButtonOffsets.y * row,
                         buttonTransform.localPosition.z);
                 }
                 else

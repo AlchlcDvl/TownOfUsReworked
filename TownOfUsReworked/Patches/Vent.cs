@@ -36,7 +36,7 @@ namespace TownOfUsReworked.Patches
 
             canUse = couldUse;
 
-            if (SubmergedCompatibility.IsSubmerged())
+            if (SubmergedCompatibility.IsSubmerged)
             {
                 if (SubmergedCompatibility.GetInTransition())
                 {
@@ -104,7 +104,7 @@ namespace TownOfUsReworked.Patches
                 return CustomGameOptions.TrollVentSwitch;
             else if (player.Is(RoleEnum.Actor) && CustomGameOptions.ActorVent)
                 return CustomGameOptions.ActVentSwitch;
-            else if (player.Is(RoleEnum.Phantom) || player.Is(RoleEnum.Revealer) || player.Is(RoleEnum.Banshee) || player.Is(RoleEnum.Ghoul))
+            else if (player.IsPostmortal())
                 return false;
             else
                 return true;

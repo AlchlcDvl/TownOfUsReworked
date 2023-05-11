@@ -5,7 +5,6 @@ using System;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Custom;
-using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -23,22 +22,26 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Jester";
             StartText = "It Was Jest A Prank Bro";
-            AbilitiesText = "- After you get ejected, you can haunt a those who voted for you";
+            AbilitiesText = "- After you get ejected, you can haunt those who voted for you";
             Objectives = "- Get ejected";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Jester : Colors.Neutral;
             RoleType = RoleEnum.Jester;
             RoleAlignment = RoleAlignment.NeutralEvil;
             AlignmentName = NE;
             ToHaunt = new();
-            UsesLeft = CustomGameOptions.HauntCount <= ToHaunt.Count ? CustomGameOptions.HauntCount : ToHaunt.Count;
+            UsesLeft = CustomGameOptions.HauntCount;
             Type = LayerEnum.Jester;
-            HauntButton = new(this, "Haunt", AbilityTypes.Direct, "ActionSecondary", Haunt, true, true);
+            HauntButton = new(this, "Haunt", AbilityTypes.Direct, "ActionSecondary", Haunt, Exception, true, true);
             InspectorResults = InspectorResults.Manipulative;
         }
 
         public override void VoteComplete(MeetingHud __instance)
         {
             base.VoteComplete(__instance);
+
+            if (VotedOut)
+                return;
+
             ToHaunt.Clear();
 
             foreach (var state in __instance.playerStates)
@@ -54,6 +57,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 ToHaunt.Shuffle();
                 ToHaunt.Remove(ToHaunt[^1]);
             }
+
+            UsesLeft = CustomGameOptions.HauntCount <= ToHaunt.Count ? CustomGameOptions.HauntCount : ToHaunt.Count;
         }
 
         public float HauntTimer()
@@ -65,12 +70,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
+        public bool Exception(PlayerControl player) => !ToHaunt.Contains(player.PlayerId) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(ObjectifierEnum.Mafia) &&
+            Player.Is(ObjectifierEnum.Mafia));
+
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            var ToBeHaunted = PlayerControl.AllPlayerControls.ToArray().Where(x => ToHaunt.Contains(x.PlayerId) && !(x.GetSubFaction() == SubFaction && SubFaction !=
-                SubFaction.None)).ToList();
-            HauntButton.Update("HAUNT", HauntTimer(), CustomGameOptions.HauntCooldown, UsesLeft, ToBeHaunted, CanHaunt, CanHaunt);
+            HauntButton.Update("HAUNT", HauntTimer(), CustomGameOptions.HauntCooldown, UsesLeft, CanHaunt, CanHaunt);
         }
 
         public void Haunt()

@@ -66,7 +66,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Alert();
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
             writer.Write((byte)ActionsRPC.Alert);
-            writer.Write(Player.PlayerId);
+            writer.Write(PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
 

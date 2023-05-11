@@ -10,6 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
     public class Objectifier : PlayerLayer
     {
         public static readonly List<Objectifier> AllObjectifiers = new();
+        public static Objectifier LocalObjectifier => GetObjectifier(PlayerControl.LocalPlayer);
 
         #pragma warning disable
         public static bool LoveWins;

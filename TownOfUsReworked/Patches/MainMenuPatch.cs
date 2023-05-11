@@ -70,44 +70,36 @@ namespace TownOfUsReworked.Patches
                 var changelog = Utils.CreateText("Changelog");
                 changesAnnouncement.Text = $"<size=75%>{changelog}</size>";
 
-                __instance.StartCoroutine(Effects.Lerp(0.01f, new Action<float>((p) =>
+                __instance.StartCoroutine(Effects.Lerp(0.01f, new Action<float>(_ =>
                 {
-                    if (p == 1)
+                    var backup = DataManager.Player.Announcements.allAnnouncements;
+                    popUp.Init(false);
+                    DataManager.Player.Announcements.allAnnouncements = new();
+                    DataManager.Player.Announcements.allAnnouncements.Insert(0, changesAnnouncement);
+
+                    foreach (var item in popUp.visibleAnnouncements)
+                        Object.Destroy(item);
+
+                    foreach (var item in Object.FindObjectsOfType<AnnouncementPanel>())
                     {
-                        var backup = DataManager.Player.Announcements.allAnnouncements;
-                        popUp.Init(false);
-                        DataManager.Player.Announcements.allAnnouncements = new();
-                        DataManager.Player.Announcements.allAnnouncements.Insert(0, changesAnnouncement);
-
-                        foreach (var item in popUp.visibleAnnouncements)
-                            Object.Destroy(item);
-
-                        foreach (var item in Object.FindObjectsOfType<AnnouncementPanel>())
-                        {
-                            if (item != popUp.ErrorPanel)
-                                Object.Destroy(item.gameObject);
-                        }
-
-                        popUp.CreateAnnouncementList();
-                        popUp.visibleAnnouncements[0].PassiveButton.OnClick.RemoveAllListeners();
-                        DataManager.Player.Announcements.allAnnouncements = backup;
-                        var titleText = GameObject.Find("Title_Text").GetComponent<TMPro.TextMeshPro>();
-
-                        if (titleText != null)
-                            titleText.text = "";
+                        if (item != popUp.ErrorPanel)
+                            Object.Destroy(item.gameObject);
                     }
+
+                    popUp.CreateAnnouncementList();
+                    popUp.visibleAnnouncements[0].PassiveButton.OnClick.RemoveAllListeners();
+                    DataManager.Player.Announcements.allAnnouncements = backup;
+                    var titleText = GameObject.Find("Title_Text").GetComponent<TMPro.TextMeshPro>();
+
+                    if (titleText != null)
+                        titleText.text = "";
                 })));
             }));
 
-            __instance.StartCoroutine(Effects.Lerp(0.01f, new Action<float>(p =>
+            __instance.StartCoroutine(Effects.Lerp(0.01f, new Action<float>(_ =>
             {
-                if (p == 1)
-                {
-                    InvButton = GameObject.Find("InventoryButton");
-
-                    foreach (var tf in InvButton.transform.parent.GetComponentsInChildren<Transform>())
-                        tf.localPosition = new Vector2(tf.localPosition.x * 0.8f, tf.localPosition.y);
-                }
+                foreach (var tf in InvButton.transform.parent.GetComponentsInChildren<Transform>())
+                    tf.localPosition = new Vector2(tf.localPosition.x * 0.8f, tf.localPosition.y);
             })));
         }
     }

@@ -4,7 +4,6 @@ using TownOfUsReworked.Classes;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Custom;
-using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -25,7 +24,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleAlignment = RoleAlignment.NeutralKill;
             AlignmentName = NK;
             Type = LayerEnum.Werewolf;
-            MaulButton = new(this, "Maul", AbilityTypes.Direct, "ActionSecondary", HitMaul);
+            MaulButton = new(this, "Maul", AbilityTypes.Direct, "ActionSecondary", HitMaul, Exception);
             InspectorResults = InspectorResults.IsAggressive;
         }
 
@@ -85,12 +84,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 LastMauled.AddSeconds(CustomGameOptions.VestKCReset);
         }
 
+        public bool Exception(PlayerControl player) => (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) ||
+            player == Player.GetOtherLover() || player == Player.GetOtherRival() || (player.Is(ObjectifierEnum.Mafia) && Player.Is(ObjectifierEnum.Mafia));
+
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            var targets = PlayerControl.AllPlayerControls.ToArray().Where(x => !(x.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) && !(SubFaction != SubFaction.None &&
-                x.GetSubFaction() == SubFaction)).ToList();
-            MaulButton.Update("MAUL", MaulTimer(), CustomGameOptions.MaulCooldown, targets);
+            MaulButton.Update("MAUL", MaulTimer(), CustomGameOptions.MaulCooldown);
         }
     }
 }

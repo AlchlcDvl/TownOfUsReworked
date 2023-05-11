@@ -5,6 +5,7 @@ using TownOfUsReworked.CustomOptions;
 using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Data;
 using Hazel;
+using System;
 
 namespace TownOfUsReworked.Patches
 {
@@ -13,20 +14,20 @@ namespace TownOfUsReworked.Patches
     public static class RandomSpawns
     {
         [HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.OnDestroy))]
-        static class IntroCutsceneOnDestroyPatch
+        public static class IntroCutsceneOnDestroyPatch
         {
             public static void Prefix() => RandomSpawn();
         }
 
         [HarmonyPatch(typeof(ExileController), nameof(ExileController.WrapUp))]
-        static class BaseExileControllerPatch
+        public static class BaseExileControllerPatch
         {
             public static void Postfix() => RandomSpawn();
         }
 
-        public static void RandomSpawn()
+        private static void RandomSpawn()
         {
-            if (!AmongUsClient.Instance.AmHost || !CustomGameOptions.RandomSpawns || GameOptionsManager.Instance.currentNormalGameOptions.MapId is 4 or 5)
+            if (!AmongUsClient.Instance.AmHost || !CustomGameOptions.RandomSpawns || TownOfUsReworked.VanillaOptions.MapId is 4 or 5)
                 return;
 
             var skeldSpawn = new List<Vector3>()
@@ -193,13 +194,13 @@ namespace TownOfUsReworked.Patches
                 if (player.Data.Disconnected || player.Data.IsDead)
                     continue;
 
-                var location = GameOptionsManager.Instance.currentNormalGameOptions.MapId switch
+                var location = TownOfUsReworked.VanillaOptions.MapId switch
                 {
                     0 => skeldSpawn.Random(),
                     1 => miraSpawn.Random(),
                     2 => polusSpawn.Random(),
                     3 => dleksSpawn.Random(),
-                    _ => throw new System.NotImplementedException(),
+                    _ => throw new NotImplementedException(),
                 };
 
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPos, SendOption.Reliable);
@@ -207,7 +208,7 @@ namespace TownOfUsReworked.Patches
                 writer.Write(location.x);
                 writer.Write(location.y);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
-                player.transform.position = new Vector3(location.x, location.y, player.transform.position.z);
+                player.transform.position = new(location.x, location.y, player.transform.position.z);
             }
         }
     }

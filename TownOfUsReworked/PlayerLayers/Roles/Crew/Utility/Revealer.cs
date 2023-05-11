@@ -32,7 +32,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Player.Visible = true;
             var color = new Color(1f, 1f, 1f, 0f);
 
-            var maxDistance = ShipStatus.Instance.MaxLightRadius * GameOptionsManager.Instance.currentNormalGameOptions.CrewLightMod;
+            var maxDistance = ShipStatus.Instance.MaxLightRadius * TownOfUsReworked.VanillaOptions.CrewLightMod;
             var distance = (PlayerControl.LocalPlayer.GetTruePosition() - Player.GetTruePosition()).magnitude;
 
             var distPercent = distance / maxDistance;

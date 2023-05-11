@@ -41,8 +41,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AlignmentName = CS;
             InspectorResults = InspectorResults.MovesAround;
             UntransportablePlayers = new();
-            TransportMenu1 = new(Player, Click1);
-            TransportMenu2 = new(Player, Click2);
+            TransportMenu1 = new(Player, Click1, Exception1);
+            TransportMenu2 = new(Player, Click2, Exception2);
             Type = LayerEnum.Transporter;
             TransportButton = new(this, "Transport", AbilityTypes.Effect, "ActionSecondary", Transport, true);
         }
@@ -112,7 +112,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 TransportPlayer2.NetTransform.SnapTo(new Vector2(TempPosition.x, TempPosition.y + 0.3636f));
                 TransportPlayer2.MyRend().flipX = TempFacing;
 
-                if (SubmergedCompatibility.IsSubmerged())
+                if (SubmergedCompatibility.IsSubmerged)
                 {
                     if (PlayerControl.LocalPlayer.PlayerId == TransportPlayer1.PlayerId)
                     {
@@ -141,7 +141,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 Player1Body.transform.position = TransportPlayer2.GetTruePosition();
                 TransportPlayer2.NetTransform.SnapTo(new Vector2(TempPosition.x, TempPosition.y + 0.3636f));
 
-                if (SubmergedCompatibility.IsSubmerged() && PlayerControl.LocalPlayer.PlayerId == TransportPlayer2.PlayerId)
+                if (SubmergedCompatibility.IsSubmerged && PlayerControl.LocalPlayer.PlayerId == TransportPlayer2.PlayerId)
                 {
                     SubmergedCompatibility.ChangeFloor(TransportPlayer2.GetTruePosition().y > -7);
                     SubmergedCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
@@ -155,7 +155,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 TransportPlayer1.NetTransform.SnapTo(new Vector2(Player2Body.TruePosition.x, Player2Body.TruePosition.y + 0.3636f));
                 Player2Body.transform.position = TempPosition;
 
-                if (SubmergedCompatibility.IsSubmerged() && PlayerControl.LocalPlayer.PlayerId == TransportPlayer1.PlayerId)
+                if (SubmergedCompatibility.IsSubmerged && PlayerControl.LocalPlayer.PlayerId == TransportPlayer1.PlayerId)
                 {
                     SubmergedCompatibility.ChangeFloor(TransportPlayer1.GetTruePosition().y > -7);
                     SubmergedCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
@@ -213,26 +213,26 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 LastTransported.AddSeconds(CustomGameOptions.ProtectKCReset);
         }
 
+        public bool Exception1(PlayerControl player) => (player == Player && !CustomGameOptions.TransSelf) || UntransportablePlayers.ContainsKey(player.PlayerId) ||
+            (Utils.BodyById(player.PlayerId) == null && player.Data.IsDead) || player == TransportPlayer2;
+
+        public bool Exception2(PlayerControl player) => (player == Player && !CustomGameOptions.TransSelf) || UntransportablePlayers.ContainsKey(player.PlayerId) ||
+            (Utils.BodyById(player.PlayerId) == null && player.Data.IsDead) || player == TransportPlayer1;
+
         public void Transport()
         {
             if (TransportTimer() != 0f)
                 return;
 
             if (TransportPlayer1 == null)
-            {
-                TransportMenu1.Open(PlayerControl.AllPlayerControls.ToArray().Where(x => !((x == Player && !CustomGameOptions.TransSelf) || UntransportablePlayers.ContainsKey(x.PlayerId) ||
-                    (Utils.BodyById(x.PlayerId) == null && x.Data.IsDead) || x == TransportPlayer2)).ToList());
-            }
+                TransportMenu1.Open();
             else if (TransportPlayer2 == null)
-            {
-                TransportMenu2.Open(PlayerControl.AllPlayerControls.ToArray().Where(x => !((x == Player && !CustomGameOptions.TransSelf) || UntransportablePlayers.ContainsKey(x.PlayerId) ||
-                    (Utils.BodyById(x.PlayerId) == null && x.Data.IsDead) || x == TransportPlayer1)).ToList());
-            }
+                TransportMenu2.Open();
             else
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.Transport);
-                writer.Write(Player.PlayerId);
+                writer.Write(PlayerId);
                 writer.Write(TransportPlayer1.PlayerId);
                 writer.Write(TransportPlayer2.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -263,7 +263,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 var player = Utils.PlayerById(entry.Key);
 
-                if (player?.Data.IsDead == true || player.Data.Disconnected)
+                if (player == null)
+                    continue;
+
+                if (player.Data.IsDead || player.Data.Disconnected)
                     continue;
 
                 if (UntransportablePlayers.ContainsKey(player.PlayerId) && player.moveable && UntransportablePlayers.GetValueSafe(player.PlayerId).AddSeconds(0.5) < DateTime.UtcNow)

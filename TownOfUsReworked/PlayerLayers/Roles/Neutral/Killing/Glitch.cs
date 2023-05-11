@@ -7,7 +7,6 @@ using TownOfUsReworked.Modules;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.PlayerLayers.Modifiers;
 using TownOfUsReworked.Custom;
-using System.Linq;
 using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
@@ -42,11 +41,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Objectives = "- Neutralise anyone who can oppose you";
             RoleAlignment = RoleAlignment.NeutralKill;
             AlignmentName = NK;
-            MimicMenu = new(Player, Click);
+            MimicMenu = new(Player, Click, Exception3);
             RoleBlockImmune = true;
             Type = LayerEnum.Glitch;
-            NeutraliseButton = new(this, "Neutralise", AbilityTypes.Direct, "ActionSecondary", Neutralise);
-            HackButton = new(this, "Hack", AbilityTypes.Direct, "Secondary", HitHack);
+            NeutraliseButton = new(this, "Neutralise", AbilityTypes.Direct, "ActionSecondary", Neutralise, Exception1);
+            HackButton = new(this, "Hack", AbilityTypes.Direct, "Secondary", HitHack, Exception2);
             MimicButton = new(this, "Mimic", AbilityTypes.Effect, "Tertiary", HitMimic);
             InspectorResults = InspectorResults.HindersOthers;
         }
@@ -118,7 +117,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public bool TryGetModifiedAppearance(out VisualAppearance appearance)
         {
-            if (MimicTarget != null)
+            if (MimicTarget)
             {
                 appearance = MimicTarget.GetDefaultAppearance();
                 var alteration = Modifier.GetModifier(MimicTarget) as IVisualAlteration;
@@ -147,7 +146,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.GlitchRoleblock);
-                writer.Write(Player.PlayerId);
+                writer.Write(PlayerId);
                 writer.Write(HackButton.TargetPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 HackTarget = HackButton.TargetPlayer;
@@ -184,12 +183,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 return;
 
             if (MimicTarget == null)
-                MimicMenu.Open(PlayerControl.AllPlayerControls.ToArray().Where(x => x != Player).ToList());
+                MimicMenu.Open();
             else
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.Mimic);
-                writer.Write(Player.PlayerId);
+                writer.Write(PlayerId);
                 writer.Write(MimicTarget.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 TimeRemaining2 = CustomGameOptions.MimicDuration;
@@ -197,14 +196,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
         }
 
+        public bool Exception1(PlayerControl player) => (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate)
+            || player == Player.GetOtherLover() || player == Player.GetOtherRival() || (player.Is(ObjectifierEnum.Mafia) && Player.Is(ObjectifierEnum.Mafia));
+
+        public bool Exception2(PlayerControl player) => player != HackTarget;
+
+        public bool Exception3(PlayerControl player) => player == Player;
+
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            var targets = PlayerControl.AllPlayerControls.ToArray().Where(x => !(x.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) && !(SubFaction != SubFaction.None &&
-                x.GetSubFaction() == SubFaction)).ToList();
-            var notHacked = PlayerControl.AllPlayerControls.ToArray().Where(x => x != HackTarget).ToList();
-            NeutraliseButton.Update("NEUTRALISE", NeutraliseTimer(), CustomGameOptions.GlitchKillCooldown, targets);
-            HackButton.Update("HACK", HackTimer(), CustomGameOptions.HackCooldown, notHacked, IsUsingHack, TimeRemaining, CustomGameOptions.HackDuration);
+            NeutraliseButton.Update("NEUTRALISE", NeutraliseTimer(), CustomGameOptions.GlitchKillCooldown);
+            HackButton.Update("HACK", HackTimer(), CustomGameOptions.HackCooldown, IsUsingHack, TimeRemaining, CustomGameOptions.HackDuration);
             MimicButton.Update("MIMIC", MimicTimer(), CustomGameOptions.MimicCooldown, IsUsingMimic, TimeRemaining2, CustomGameOptions.MimicDuration);
 
             if (Input.GetKeyDown(KeyCode.Backspace))

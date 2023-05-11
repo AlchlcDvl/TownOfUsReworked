@@ -36,7 +36,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             MorphedPlayer = null;
             Type = LayerEnum.Morphling;
             MorphButton = new(this, "Morph", AbilityTypes.Effect, "Secondary", HitMorph);
-            SampleButton = new(this, "Sample", AbilityTypes.Direct, "Tertiary", Sample);
+            SampleButton = new(this, "Sample", AbilityTypes.Direct, "Tertiary", Sample, Exception1);
             InspectorResults = InspectorResults.CreatesConfusion;
         }
 
@@ -100,7 +100,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
             writer.Write((byte)ActionsRPC.Morph);
-            writer.Write(Player.PlayerId);
+            writer.Write(PlayerId);
             writer.Write(SampledPlayer.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
             TimeRemaining = CustomGameOptions.MorphlingDuration;
@@ -134,12 +134,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
         }
 
+        public bool Exception1(PlayerControl player) => player == SampledPlayer;
+
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            var notSampled = PlayerControl.AllPlayerControls.ToArray().Where(x => SampledPlayer != x).ToList();
             MorphButton.Update("MORPH", MorphTimer(), CustomGameOptions.MorphlingCd, Morphed, TimeRemaining, CustomGameOptions.MorphlingDuration, true, SampledPlayer != null);
-            SampleButton.Update("SAMPLE", SampleTimer(), CustomGameOptions.MeasureCooldown, notSampled);
+            SampleButton.Update("SAMPLE", SampleTimer(), CustomGameOptions.MeasureCooldown);
         }
     }
 }

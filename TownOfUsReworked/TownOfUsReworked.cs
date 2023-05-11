@@ -14,14 +14,12 @@ using Reactor.Networking.Attributes;
 using AmongUs.GameOptions;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using TownOfUsReworked.Patches;
-using TownOfUsReworked.MultiClientInstancing;
-using TownOfUsReworked.Crowded.Components;
-using TownOfUsReworked.BetterMaps.Airship;
 using System.IO;
+using TownOfUsReworked.Monos;
 
 namespace TownOfUsReworked
 {
-    [BepInPlugin(Id, Id, VersionString)]
+    [BepInPlugin(Id, Name, VersionString)]
     [BepInDependency(ReactorPlugin.Id)]
     [BepInDependency(SubmergedCompatibility.SUBMERGED_GUID, BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("gg.reactor.debugger", BepInDependency.DependencyFlags.SoftDependency)]
@@ -29,9 +27,10 @@ namespace TownOfUsReworked
     [BepInProcess("Among Us.exe")]
     public class TownOfUsReworked : BasePlugin
     {
-        public const string Id = "TownOfUsReworked";
-        public const string VersionString = "0.2.0.0";
-        public const string CompleteVersionString = "0.2.0.0";
+        public const string Id = "me.alchlcdvl.reworked";
+        public const string Name = "TownOfUsReworked";
+        public const string VersionString = "0.2.1.0";
+        public const string CompleteVersionString = "0.2.1.0t";
         public readonly static Version Version = new(VersionString);
 
         private readonly static string dev = VersionString[6..];
@@ -56,6 +55,8 @@ namespace TownOfUsReworked
         public static Assembly Assembly => typeof(TownOfUsReworked).Assembly;
         public static Assembly Executing => Assembly.GetExecutingAssembly();
 
+        public static NormalGameOptionsV07 VanillaOptions => GameOptionsManager.Instance.currentNormalGameOptions;
+
         #pragma warning disable
         public static bool LobbyCapped = true;
         public static bool Persistence = true;
@@ -63,20 +64,18 @@ namespace TownOfUsReworked
         public static Debugger Debugger;
         #pragma warning restore
 
-        private Harmony _harmony;
+        private readonly Harmony Harmony = new(Id);
 
         public override void Load()
         {
             Utils.LogSomething("Loading...");
-
-            _harmony = new(Id);
 
             var maxImpostors = (Il2CppStructArray<int>)Enumerable.Repeat(255, 255).ToArray();
             GameOptionsData.MaxImpostors = maxImpostors;
             NormalGameOptionsV07.MaxImpostors = maxImpostors;
             HideNSeekGameOptionsV07.MaxImpostors = maxImpostors;
 
-            var minPlayers = (Il2CppStructArray<int>)Enumerable.Repeat(1, 255).ToArray();
+            var minPlayers = (Il2CppStructArray<int>)Enumerable.Repeat(1, 1).ToArray();
             GameOptionsData.MinPlayers = minPlayers;
             NormalGameOptionsV07.MinPlayers = minPlayers;
             HideNSeekGameOptionsV07.MinPlayers = minPlayers;
@@ -90,7 +89,9 @@ namespace TownOfUsReworked
             UpdateNames.PlayerNames.Clear();
             AssetManager.Load();
             RoleGen.ResetEverything();
+            CosmeticsLoader.LaunchFetchers();
 
+            ClassInjector.RegisterTypeInIl2Cpp<MissingSubmergedBehaviour>();
             ClassInjector.RegisterTypeInIl2Cpp<AbstractPagingBehaviour>();
             ClassInjector.RegisterTypeInIl2Cpp<ShapeShifterPagingBehaviour>();
             ClassInjector.RegisterTypeInIl2Cpp<MeetingHudPagingBehaviour>();
@@ -101,7 +102,7 @@ namespace TownOfUsReworked
 
             Debugger = AddComponent<Debugger>();
 
-            _harmony.PatchAll();
+            Harmony.PatchAll();
 
             Utils.LogSomething("Mod Loaded!");
             Utils.LogSomething($"Mod Version v{CompleteVersionString}");

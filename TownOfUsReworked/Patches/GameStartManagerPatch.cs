@@ -5,6 +5,7 @@ using System;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Modules;
 using TownOfUsReworked.CustomOptions;
+using TownOfUsReworked.Data;
 
 namespace TownOfUsReworked.Patches
 {
@@ -47,7 +48,7 @@ namespace TownOfUsReworked.Patches
                 //Copy lobby code
                 GUIUtility.systemCopyBuffer = InnerNet.GameCode.IntToGameName(AmongUsClient.Instance.GameId);
                 //lobby size
-                Generate.LobbySize.Set((float)GameOptionsManager.Instance.currentNormalGameOptions.MaxPlayers);
+                Generate.LobbySize.Set((float)TownOfUsReworked.VanillaOptions.MaxPlayers);
             }
         }
 
@@ -61,6 +62,9 @@ namespace TownOfUsReworked.Patches
 
             public static void Prefix(GameStartManager __instance)
             {
+                if (ConstantVariables.NoLobby || ConstantVariables.IsInGame)
+                    return;
+
                 if (GameData.Instance && __instance)
                 {
                     update = GameData.Instance.PlayerCount != __instance.LastPlayerCount;
@@ -77,11 +81,11 @@ namespace TownOfUsReworked.Patches
 
             public static void Postfix(GameStartManager __instance)
             {
-                if (!__instance || !GameData.Instance)
+                if (!__instance || !GameData.Instance || ConstantVariables.NoLobby || ConstantVariables.IsInGame)
                     return;
 
-                if (__instance.LastPlayerCount != GameOptionsManager.Instance.currentNormalGameOptions.MaxPlayers)
-                    __instance.LastPlayerCount = GameOptionsManager.Instance.currentNormalGameOptions.MaxPlayers;
+                if (__instance.LastPlayerCount != TownOfUsReworked.VanillaOptions.MaxPlayers)
+                    __instance.LastPlayerCount = TownOfUsReworked.VanillaOptions.MaxPlayers;
 
                 if (!TownOfUsReworked.MCIActive)
                 {

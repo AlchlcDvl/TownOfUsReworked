@@ -64,7 +64,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.Sidekick);
-                writer.Write(Player.PlayerId);
+                writer.Write(PlayerId);
                 writer.Write(SidekickButton.TargetPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 Sidekick(this, SidekickButton.TargetPlayer);
@@ -75,12 +75,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 LastDeclared.AddSeconds(CustomGameOptions.ProtectKCReset);
         }
 
+        public bool Exception1(PlayerControl player) => !player.Is(Faction) || player.GetRole() is RoleEnum.PromotedRebel or RoleEnum.Sidekick or RoleEnum.Rebel;
+
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            var Syn = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Syndicate) && !(x.GetRole() is RoleEnum.Banshee or RoleEnum.Sidekick or RoleEnum.PromotedRebel or
-                RoleEnum.Rebel)).ToList();
-            SidekickButton.Update("SIDEKICK", 0, 1, Syn, true, !HasDeclared);
+            SidekickButton.Update("SIDEKICK", 0, 1, true, !HasDeclared);
         }
     }
 }

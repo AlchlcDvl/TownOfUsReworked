@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using AmongUs.Data;
 using TownOfUsReworked.Extensions;
+using System.IO;
 
 namespace TownOfUsReworked.Patches
 {
@@ -46,11 +47,11 @@ namespace TownOfUsReworked.Patches
                     ChatHistory.Add(text);
 
                 //Help command - lists commands available
-                if (text.StartsWith("/help") || text == "/h" || text == "/h ")
+                if (text.StartsWith("/help") || text == "/h" || text.StartsWith("/h "))
                 {
                     chatHandled = true;
                     hudManager.AddChat(player, "Commands available all the time:\n/modinfo /roleinfo, /modifierinfo, /abilityinfo, /objectifierinfo, /factioninfo, /alignmentinfo," +
-                        $" /quote, /credits, /controls, /lore\n\nCommands available in lobby:\n{setColor}{kickBan}\n\nCommands available in game:\n/mystate{whisper}");
+                        $" /quote, /credits, /controls, /lore\n\nCommands available in lobby:\n/summary{setColor}{kickBan}\n\nCommands available in game:\n/mystate{whisper}");
                 }
                 //Display a message (Information about the mod)
                 else if (text.StartsWith("/modinfo") || text.StartsWith("/mi"))
@@ -320,6 +321,23 @@ namespace TownOfUsReworked.Patches
                                 AmongUsClient.Instance.KickPlayer(client.Id, true);
                         }
                     }
+                    //Redisplays the summary for those who missed/skipped it
+                    else if (text.StartsWith("/summary") || text.StartsWith("/sum"))
+                    {
+                        var summary = "";
+
+                        try
+                        {
+                            summary = File.ReadAllText(Path.Combine(Application.persistentDataPath, "Summary"));
+                        }
+                        catch
+                        {
+                            summary = "Summary could not be found.";
+                        }
+
+                        hudManager.AddChat(player, summary);
+                        chatHandled = true;
+                    }
                 }
                 else if (!ConstantVariables.IsLobby)
                 {
@@ -469,8 +487,15 @@ namespace TownOfUsReworked.Patches
 
                 if (Input.GetKeyDown(KeyCode.UpArrow) && ChatHistory.Count > 0)
                 {
-                    CurrentHistorySelection = Mathf.Clamp(--CurrentHistorySelection, 0, ChatHistory.Count - 1);
-                    __instance.TextArea.SetText(ChatHistory[CurrentHistorySelection]);
+                    CurrentHistorySelection--;
+
+                    if (CurrentHistorySelection >= 0)
+                        __instance.TextArea.SetText(ChatHistory[CurrentHistorySelection]);
+                    else
+                    {
+                        __instance.TextArea.SetText("");
+                        CurrentHistorySelection = 0;
+                    }
                 }
 
                 if (Input.GetKeyDown(KeyCode.DownArrow) && ChatHistory.Count > 0)
@@ -517,7 +542,6 @@ namespace TownOfUsReworked.Patches
             {
                 if (CustomGameOptions.LobbySize < __instance.allClients.Count)
                 {
-                    // TODO: Fix this canceling start
                     DisconnectPlayer(__instance, client.Id);
                     return false;
                 }
@@ -530,14 +554,14 @@ namespace TownOfUsReworked.Patches
                 if (!_this.AmHost)
                     return;
 
-                var messageWriter = MessageWriter.Get(SendOption.Reliable);
-                messageWriter.StartMessage(4);
-                messageWriter.Write(_this.GameId);
-                messageWriter.WritePacked(clientId);
-                messageWriter.Write((byte)DisconnectReasons.GameFull);
-                messageWriter.EndMessage();
-                _this.SendOrDisconnect(messageWriter);
-                messageWriter.Recycle();
+                var writer = MessageWriter.Get(SendOption.Reliable);
+                writer.StartMessage(4);
+                writer.Write(_this.GameId);
+                writer.WritePacked(clientId);
+                writer.Write((byte)DisconnectReasons.GameFull);
+                writer.EndMessage();
+                _this.SendOrDisconnect(writer);
+                writer.Recycle();
             }
         }
     }

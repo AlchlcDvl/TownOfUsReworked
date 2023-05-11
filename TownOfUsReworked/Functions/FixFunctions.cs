@@ -56,7 +56,7 @@ namespace TownOfUsReworked.Functions
             if (!sabActive || dummyActive)
                 return;
 
-            switch (GameOptionsManager.Instance.currentNormalGameOptions.MapId)
+            switch (TownOfUsReworked.VanillaOptions.MapId)
             {
                 case 1:
                     var comms2 = ShipStatus.Instance.Systems[SystemTypes.Comms].Cast<HqHudSystemType>();

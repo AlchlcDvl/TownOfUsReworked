@@ -6,7 +6,6 @@ using TownOfUsReworked.Extensions;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Custom;
 using Hazel;
-using System.Linq;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -32,10 +31,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             PoisonedPlayer = null;
             RoleAlignment = RoleAlignment.SyndicateKill;
             AlignmentName = SyK;
-            PoisonMenu = new(Player, Click);
+            PoisonMenu = new(Player, Click, Exception1);
             PoisonedPlayer = null;
             Type = LayerEnum.Poisoner;
-            PoisonButton = new(this, "Poison", AbilityTypes.Direct, "ActionSecondary", HitPoison);
+            PoisonButton = new(this, "Poison", AbilityTypes.Direct, "ActionSecondary", HitPoison, Exception1);
             GlobalPoisonButton = new(this, "Poison", AbilityTypes.Effect, "ActionSecondary", HitGlobalPoison);
             InspectorResults = InspectorResults.Unseen;
         }
@@ -72,22 +71,23 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var interact = Utils.Interact(Player, player);
 
-            if (interact[3])
+            if (interact[3] && !player.IsProtected() && !player.IsVesting())
                 PoisonedPlayer = player;
             else if (interact[0])
                 LastPoisoned = DateTime.UtcNow;
-            else if (interact[1])
+            else if (interact[1] || player.IsProtected())
                 LastPoisoned.AddSeconds(CustomGameOptions.ProtectKCReset);
+            else if (player.IsVesting())
+                LastPoisoned.AddSeconds(CustomGameOptions.VestKCReset);
         }
 
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            var notSyn = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Syndicate) && x != PoisonedPlayer).ToList();
             var flag = PoisonedPlayer == null && HoldsDrive;
             GlobalPoisonButton.Update(flag ? "SET TARGET" : "POISON", PoisonTimer(), CustomGameOptions.PoisonCd, Poisoned, TimeRemaining, CustomGameOptions.PoisonDuration, true,
                 HoldsDrive);
-            PoisonButton.Update("POISON", PoisonTimer(), CustomGameOptions.PoisonCd, notSyn, Poisoned, TimeRemaining, CustomGameOptions.PoisonDuration, true, !HoldsDrive);
+            PoisonButton.Update("POISON", PoisonTimer(), CustomGameOptions.PoisonCd, Poisoned, TimeRemaining, CustomGameOptions.PoisonDuration, true, !HoldsDrive);
 
             if (Input.GetKeyDown(KeyCode.Backspace))
             {
@@ -97,6 +97,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 Utils.LogSomething("Removed a target");
             }
         }
+
+        public bool Exception1(PlayerControl player) => player == PoisonedPlayer || player.Is(Faction) || (player.Is(SubFaction) && SubFaction != SubFaction.None);
 
         public void HitPoison()
         {
@@ -130,7 +132,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 return;
 
             if (PoisonedPlayer == null)
-                PoisonMenu.Open(PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Syndicate) && x != PoisonedPlayer).ToList());
+                PoisonMenu.Open();
             else
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);

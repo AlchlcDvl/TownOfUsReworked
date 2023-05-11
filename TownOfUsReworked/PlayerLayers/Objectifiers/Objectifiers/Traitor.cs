@@ -47,7 +47,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
                 TurnBetrayer();
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
                 writer.Write((byte)TurnRPC.TurnTraitorBetrayer);
-                writer.Write(Player.PlayerId);
+                writer.Write(PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
             }
         }

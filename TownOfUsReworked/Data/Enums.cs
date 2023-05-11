@@ -22,7 +22,6 @@ namespace TownOfUsReworked.Data
         Drop,
         AssassinKill,
         GuesserKill,
-        RevealerFinished,
         FlashGrenade,
         Alert,
         Remember,
@@ -66,10 +65,9 @@ namespace TownOfUsReworked.Data
         MayorReveal,
         DictatorReveal,
         Spell,
-        SetPositive,
-        SetNegative,
         Knight,
         SetExiles,
+        Confuse,
 
         None
     }
@@ -98,6 +96,7 @@ namespace TownOfUsReworked.Data
         TurnSurv,
         TurnAct,
         TurnTroll,
+        TurnThief,
 
         None
     }
@@ -305,7 +304,6 @@ namespace TownOfUsReworked.Data
 
         Start,
         SyncCustomSettings,
-        FixAnimation,
         SetPos,
         SetSettings,
 
@@ -319,9 +317,6 @@ namespace TownOfUsReworked.Data
         SendChat,
         Whisper,
         Guess,
-        LoveRivalChat,
-        FactionComms,
-        SubFactionComms,
 
         SetSpawnAirship,
         DoorSyncToilet,
@@ -451,6 +446,7 @@ namespace TownOfUsReworked.Data
         Concealer,
         Collider,
         Crusader,
+        Drunkard,
         Framer,
         Poisoner,
         PromotedRebel,
@@ -572,6 +568,7 @@ namespace TownOfUsReworked.Data
         Collider,
         Concealer,
         Crusader,
+        Drunkard,
         Framer,
         Poisoner,
         Politician,
@@ -641,7 +638,7 @@ namespace TownOfUsReworked.Data
         IsAggressive, //Betrayer, Werewolf, Juggernaut, Serial Killer
         CreatesConfusion, //Morphling, Disguiser, Shapeshifter
         DropsItems, //Bomber, Operative, Grenadier, Enforcer
-        HindersOthers, //Escort, Consort, Glitch, Ambusher
+        HindersOthers, //Escort, Consort, Glitch, Ambusher, Drunkard
         IsBasic, //Crewmate, Impostor, Murderer, Anarchist
         Ghostly, //Revealer, Phantom, Banshee, Ghoul
 
@@ -844,7 +841,8 @@ namespace TownOfUsReworked.Data
         Conceal,
         Shapeshift,
         Frame,
-        Crusade
+        Crusade,
+        Spell
     }
 
     public enum ProtectOptions

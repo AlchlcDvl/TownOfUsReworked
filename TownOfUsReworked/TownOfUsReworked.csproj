@@ -3,7 +3,7 @@
     <AssemblyName>Reworked</AssemblyName>
     <RootNamespace>TownOfUsReworked</RootNamespace>
     <TargetFramework>net6.0</TargetFramework>
-    <Version>0.2.0.0</Version>
+    <Version>0.2.1.0</Version>
     <DebugType>embedded</DebugType>
     <LangVersion>latest</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -24,17 +24,10 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Resources\*" />
-    <EmbeddedResource Include="Resources\Hats\**" />
     <EmbeddedResource Include="Resources\Sounds\**" />
     <EmbeddedResource Include="Resources\Misc\**" />
     <EmbeddedResource Include="Resources\Buttons\**" />
     <EmbeddedResource Include="Resources\Presets\**" />
-    <EmbeddedResource Include="Resources\Nameplates\**" />
-    <EmbeddedResource Include="Resources\Visors\**" />
     <EmbeddedResource Include="Resources\Languages\**" />
   </ItemGroup>
-
-  <Target Name="Copy" AfterTargets="Build" Condition="'$(AmongUs)' != ''">
-    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(AmongUs)/BepInEx/plugins/" UseSymboliclinksIfPossible="true" />
-  </Target>
 </Project>

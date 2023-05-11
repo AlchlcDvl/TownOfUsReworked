@@ -6,7 +6,6 @@ using TownOfUsReworked.PlayerLayers.Abilities;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Custom;
-using System.Linq;
 using HarmonyLib;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
@@ -31,7 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AlignmentName = IS;
             Investigated = new();
             Type = LayerEnum.Consigliere;
-            InvestigateButton = new(this, "Investigate", AbilityTypes.Direct, "Secondary", Investigate);
+            InvestigateButton = new(this, "Investigate", AbilityTypes.Direct, "Secondary", Investigate, Exception1);
             InspectorResults = InspectorResults.GainsInfo;
         }
 
@@ -60,12 +59,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 LastInvestigated.AddSeconds(CustomGameOptions.ProtectKCReset);
         }
 
+        public bool Exception1(PlayerControl player) => Investigated.Contains(player.PlayerId) || ((player.Is(Faction) || (player.Is(SubFaction) && SubFaction != SubFaction.None)) &&
+            CustomGameOptions.FactionSeeRoles);
+
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            var notInvestigated = PlayerControl.AllPlayerControls.ToArray().Where(x => !Investigated.Contains(x.PlayerId) && !((x.Is(Faction.Intruder) || x.GetSubFaction() ==
-                Player.GetSubFaction()) && CustomGameOptions.FactionSeeRoles)).ToList();
-            InvestigateButton.Update("INVESTIGATE", ConsigliereTimer(), CustomGameOptions.ConsigCd, notInvestigated);
+            InvestigateButton.Update("INVESTIGATE", ConsigliereTimer(), CustomGameOptions.ConsigCd);
         }
     }
 }

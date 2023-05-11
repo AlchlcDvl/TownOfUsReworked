@@ -19,11 +19,10 @@ namespace TownOfUsReworked.Patches
             if (localPlayer == null)
                 return true;
 
-            var localrole = Role.GetRole(localPlayer);
             var sourcerole = Role.GetRole(sourcePlayer);
             return MeetingHud.Instance != null || LobbyBehaviour.Instance != null || localPlayer.Data.IsDead || sourcePlayer == localPlayer || (sourcePlayer.GetOtherLover() == localPlayer
                 && CustomGameOptions.LoversChat && sourcerole.CurrentChannel == ChatChannel.Lovers) || (sourcePlayer.GetOtherRival() == localPlayer && CustomGameOptions.RivalsChat &&
-                sourcerole.CurrentChannel == ChatChannel.Rivals);
+                sourcerole.CurrentChannel == ChatChannel.Rivals) || sourcerole.CurrentChannel == ChatChannel.All;
         }
     }
 }

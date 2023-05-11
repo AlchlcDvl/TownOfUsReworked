@@ -47,28 +47,29 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Selected = null;
             TransportPlayer1 = null;
             TransportPlayer2 = null;
-            TransportMenu1 = new(Player, Click1);
-            TransportMenu2 = new(Player, Click2);
             _time = DateTime.UnixEpoch;
             Type = LayerEnum.Retributionist;
+            UsesLeft = CustomGameOptions.MaxUses;
+            TransportMenu1 = new(Player, Click1, Exception7);
+            TransportMenu2 = new(Player, Click2, Exception8);
             RevealButton = new(this, "Reveal", AbilityTypes.Direct, "ActionSecondary", Reveal);
             StakeButton = new(this, "Stake", AbilityTypes.Direct, "ActionSecondary", Stake);
             AutopsyButton = new(this, "Autopsy", AbilityTypes.Dead, "ActionSecondary", Autopsy);
             CompareButton = new(this, "Compare", AbilityTypes.Direct, "Secondary", Compare, true);
             ExamineButton = new(this, "Examine", AbilityTypes.Direct, "ActionSecondary", Examine);
-            InspectButton = new(this, "Inspect", AbilityTypes.Direct, "ActionSecondary", Inspect);
+            InspectButton = new(this, "Inspect", AbilityTypes.Direct, "ActionSecondary", Inspect, Exception1);
             MediateButton = new(this, "Mediate", AbilityTypes.Effect, "ActionSecondary", Mediate);
             BugButton = new(this, "Bug", AbilityTypes.Effect, "ActionSecondary", PlaceBug, true);
             SeerButton = new(this, "Seer", AbilityTypes.Direct, "ActionSecondary", See);
-            InterrogateButton = new(this, "Interrogate", AbilityTypes.Direct, "ActionSecondary", Interrogate);
-            TrackButton = new(this, "Track", AbilityTypes.Direct, "ActionSecondary", Track, true);
+            InterrogateButton = new(this, "Interrogate", AbilityTypes.Direct, "ActionSecondary", Interrogate, Exception2);
+            TrackButton = new(this, "Track", AbilityTypes.Direct, "ActionSecondary", Track, Exception3, true);
             AlertButton = new(this, "Alert", AbilityTypes.Effect, "ActionSecondary", HitAlert, true);
-            ShootButton = new(this, "Shoot", AbilityTypes.Direct, "ActionSecondary", Shoot, true);
+            ShootButton = new(this, "Shoot", AbilityTypes.Direct, "ActionSecondary", Shoot, Exception4, true);
             ReviveButton = new(this, "Revive", AbilityTypes.Dead, "ActionSecondary", HitRevive, true);
-            ShieldButton = new(this, "Shield", AbilityTypes.Direct, "ActionSecondary", Protect);
+            ShieldButton = new(this, "Shield", AbilityTypes.Direct, "ActionSecondary", Protect, Exception5);
             SwoopButton = new(this, "Swoop", AbilityTypes.Direct, "ActionSecondary", HitSwoop, true);
             FixButton = new(this, "Fix", AbilityTypes.Effect, "ActionSecondary", Fix, true);
-            BlockButton = new(this, "EscortRoleblock", AbilityTypes.Direct, "ActionSecondary", Roleblock);
+            BlockButton = new(this, "EscortRoleblock", AbilityTypes.Direct, "ActionSecondary", Roleblock, Exception6);
             TransportButton = new(this, "Transport", AbilityTypes.Effect, "ActionSecondary", Transport, true);
         }
 
@@ -212,11 +213,26 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 HideSingle(i);
         }
 
+        public bool Exception1(PlayerControl player) => Inspected.Contains(player.PlayerId) || (((Faction is Faction.Intruder or Faction.Syndicate && player.Is(Faction)) ||
+            (player.Is(SubFaction) && SubFaction != SubFaction.None)) && CustomGameOptions.FactionSeeRoles) || (player == Player.GetOtherLover() && CustomGameOptions.LoversRoles) ||
+            (player == Player.GetOtherRival() && CustomGameOptions.RivalsRoles) || (player.Is(ObjectifierEnum.Mafia) && Player.Is(ObjectifierEnum.Mafia) && CustomGameOptions.MafiaRoles);
+
+        public bool Exception2(PlayerControl player) => (((Faction is Faction.Intruder or Faction.Syndicate && player.Is(Faction)) || (player.Is(SubFaction) && SubFaction !=
+            SubFaction.None)) && CustomGameOptions.FactionSeeRoles) || (player == Player.GetOtherLover() && CustomGameOptions.LoversRoles) || (player == Player.GetOtherRival() &&
+            CustomGameOptions.RivalsRoles) || (player.Is(ObjectifierEnum.Mafia) && Player.Is(ObjectifierEnum.Mafia) && CustomGameOptions.MafiaRoles);
+
+        public bool Exception3(PlayerControl player) => TrackerArrows.ContainsKey(player.PlayerId);
+
+        public bool Exception4(PlayerControl player) => player.Is(Faction) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || player == Player.GetOtherLover() || player ==
+            Player.GetOtherRival() || (player.Is(ObjectifierEnum.Mafia) && Player.Is(ObjectifierEnum.Mafia));
+
+        public bool Exception5(PlayerControl player) => player == ShieldedPlayer;
+
+        public bool Exception6(PlayerControl player) => player == BlockTarget;
+
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            var notinspected = PlayerControl.AllPlayerControls.ToArray().Where(x => !Inspected.Contains(x.PlayerId)).ToList();
-            var notShielded = PlayerControl.AllPlayerControls.ToArray().Where(x => x != ShieldedPlayer).ToList();
             var system = ShipStatus.Instance.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>();
             var dummyActive = system?.dummy.IsActive;
             var active = system?.specials.ToArray().Any(s => s.IsActive);
@@ -226,13 +242,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             TransportButton.Update(flag1 ? "FIRST TARGET" : (flag2 ? "SECOND TARGET" : "TRANSPORT"), TransportTimer(), CustomGameOptions.TransportCooldown, UsesLeft, ButtonUsable,
                 ButtonUsable && IsTrans);
             FixButton.Update("FIX", FixTimer(), CustomGameOptions.FixCooldown, UsesLeft, condition && ButtonUsable, ButtonUsable && IsEngi);
-            ShieldButton.Update("SHIELD", 0, 1, notShielded, !UsedMedicAbility, !UsedMedicAbility && IsMedic);
+            ShieldButton.Update("SHIELD", 0, 1, !UsedMedicAbility, !UsedMedicAbility && IsMedic);
             RevealButton.Update("REVEAL", RevealTimer(), CustomGameOptions.RevealCooldown, true, IsMys);
             StakeButton.Update("STAKE", StakeTimer(), CustomGameOptions.StakeCooldown, true, IsVH);
             AutopsyButton.Update("AUTOPSY", AutopsyTimer(), CustomGameOptions.AutopsyCooldown, true, IsCor);
             CompareButton.Update("COMPARE", CompareTimer(), CustomGameOptions.CompareCooldown, UsesLeft, ButtonUsable, ReferenceBody != null && IsCor && ButtonUsable);
             ExamineButton.Update("EXAMINE", ExamineTimer(), CustomGameOptions.ExamineCd, true, IsDet);
-            InspectButton.Update("INSPECT", InspectTimer(), CustomGameOptions.InspectCooldown, notinspected, true, IsInsp);
+            InspectButton.Update("INSPECT", InspectTimer(), CustomGameOptions.InspectCooldown, true, IsInsp);
             MediateButton.Update("MEDIATE", MediateTimer(), CustomGameOptions.MediateCooldown, true, IsMed);
             BugButton.Update("BUG", BugTimer(), CustomGameOptions.BugCooldown, UsesLeft, ButtonUsable, IsOP && ButtonUsable);
             SeerButton.Update("SEE", SeerTimer(), CustomGameOptions.SeerCooldown, true, IsSeer);
@@ -243,6 +259,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             ReviveButton.Update("REVIVE", ReviveTimer(), CustomGameOptions.ReviveCooldown, UsesLeft, ButtonUsable,ButtonUsable && IsAlt);
             SwoopButton.Update("SWOOP", SwoopTimer(), CustomGameOptions.SwoopCooldown, UsesLeft, OnEffect, TimeRemaining, CustomGameOptions.SwoopDuration, true, IsCham);
             BlockButton.Update("ROLEBLOCK", RoleblockTimer(), CustomGameOptions.EscRoleblockCooldown, OnEffect, TimeRemaining, CustomGameOptions.EscRoleblockDuration, true, IsEsc);
+            TrackButton.Update("TRACK", TrackerTimer(), CustomGameOptions.TrackCd, UsesLeft, ButtonUsable, ButtonUsable && IsTrack);
 
             if (!PlayerControl.LocalPlayer.Data.IsDead)
             {
@@ -374,7 +391,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 var player = Utils.PlayerById(entry.Key);
 
-                if (player?.Data.IsDead == true || player.Data.Disconnected)
+                if (player == null)
+                    continue;
+
+                if (player.Data.IsDead || player.Data.Disconnected)
                     continue;
 
                 if (UntransportablePlayers.ContainsKey(player.PlayerId) && player.moveable && UntransportablePlayers.GetValueSafe(player.PlayerId).AddSeconds(0.5) < DateTime.UtcNow)
@@ -400,7 +420,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
             writer.Write((byte)ActionsRPC.RetributionistAction);
             writer.Write((byte)RetributionistActionsRPC.RetributionistRevive);
-            writer.Write(Player.PlayerId);
+            writer.Write(PlayerId);
             writer.Write(Selected.TargetPlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
@@ -409,16 +429,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             base.OnMeetingStart(__instance);
 
-            foreach (var role2 in GetRoles<Retributionist>(RoleEnum.Retributionist))
-            {
-                role2.PlayerNumbers.Clear();
-                role2.Actives.Clear();
-                role2.MoarButtons.Clear();
-                Selected = null;
-            }
-
             foreach (var voteArea in __instance.playerStates)
                 GenButtons(voteArea, __instance);
+
+            Selected = null;
 
             if (IsOP)
             {
@@ -449,6 +463,35 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
             else if (IsDet)
                 Footprint.DestroyAll(this);
+        }
+
+        public override void UpdateMap(MapBehaviour __instance)
+        {
+            base.UpdateMap(__instance);
+
+            foreach (var pair in TrackerArrows)
+            {
+                var player = Utils.PlayerById(pair.Key);
+
+                if (!player.Data.IsDead)
+                {
+                    var v = pair.Value.target;
+                    v /= ShipStatus.Instance.MapScale;
+                    v.x *= Mathf.Sign(ShipStatus.Instance.transform.localScale.x);
+                    v.z = -1f;
+
+                    if (Points.ContainsKey(player.PlayerId))
+                        Points[player.PlayerId].transform.localPosition = v;
+                    else
+                    {
+                        var point = Object.Instantiate(__instance.HerePoint, __instance.HerePoint.transform.parent, true);
+                        point.transform.localPosition = v;
+                        point.enabled = true;
+                        player.SetPlayerMaterialColors(point);
+                        Points.Add(player.PlayerId, point);
+                    }
+                }
+            }
         }
 
         //Coroner Stuff
@@ -678,7 +721,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         writer.Write((byte)ActionsRPC.RetributionistAction);
                         writer.Write((byte)RetributionistActionsRPC.Mediate);
                         writer.Write(dead.PlayerId);
-                        writer.Write(Player.PlayerId);
+                        writer.Write(PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
 
                         if (CustomGameOptions.DeadRevealed != DeadRevealed.All)
@@ -698,7 +741,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     writer.Write((byte)ActionsRPC.RetributionistAction);
                     writer.Write((byte)RetributionistActionsRPC.Mediate);
                     writer.Write(dead.PlayerId);
-                    writer.Write(Player.PlayerId);
+                    writer.Write(PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
             }
@@ -930,7 +973,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
             writer.Write((byte)ActionsRPC.RetributionistAction);
             writer.Write((byte)RetributionistActionsRPC.Alert);
-            writer.Write(Player.PlayerId);
+            writer.Write(PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
 
@@ -997,46 +1040,37 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         private void FinishRevive()
         {
-            var position = RevivingBody.TruePosition;
-            var player = Utils.PlayerById(RevivingBody.ParentId);
+            var player = Utils.PlayerByBody(RevivingBody);
             var targetRole = GetRole(player);
+            var formerKiller = targetRole.KilledBy;
             targetRole.DeathReason = DeathReasonEnum.Revived;
             targetRole.KilledBy = " By " + PlayerName;
-            player.Revive();
-            player.Data.SetImpostor(player.Data.IsImpostor());
+            Utils.Revive(player);
             UsesLeft--;
-            Utils.ReassignPostmortals(player);
-            Utils.RecentlyKilled.Remove(player);
-            Murder.KilledPlayers.Remove(Murder.KilledPlayers.Find(x => x.PlayerId == player.PlayerId));
-            player.NetTransform.SnapTo(new Vector2(position.x, position.y + 0.3636f));
-            RevivingBody?.gameObject.Destroy();
-
-            if (SubmergedCompatibility.IsSubmerged() && PlayerControl.LocalPlayer == player)
-                SubmergedCompatibility.ChangeFloor(player.transform.position.y > -7);
 
             if (player.Is(ObjectifierEnum.Lovers) && CustomGameOptions.BothLoversDie)
             {
                 var lover = player.GetOtherLover();
-                var body = Utils.BodyById(lover.PlayerId);
-                var position2 = body.TruePosition;
-                lover.Revive();
-                Murder.KilledPlayers.Remove(Murder.KilledPlayers.Find(x => x.PlayerId == lover.PlayerId));
-                body?.gameObject.Destroy();
                 var loverRole = GetRole(lover);
                 loverRole.DeathReason = DeathReasonEnum.Revived;
                 loverRole.KilledBy = " By " + PlayerName;
-                RoleGen.Convert(lover.PlayerId, Player.PlayerId, SubFaction.Reanimated, false);
-                Utils.RecentlyKilled.Remove(lover);
-                lover.Data.SetImpostor(lover.Data.IsImpostor());
-                Utils.ReassignPostmortals(lover);
-                lover.NetTransform.SnapTo(new Vector2(position2.x, position2.y + 0.3636f));
-
-                if (SubmergedCompatibility.IsSubmerged() && PlayerControl.LocalPlayer == lover)
-                    SubmergedCompatibility.ChangeFloor(lover.transform.position.y > -7);
+                Utils.Revive(lover);
             }
 
             if (UsesLeft == 0)
                 Utils.RpcMurderPlayer(Player, Player);
+
+            if (formerKiller.Contains(PlayerControl.LocalPlayer.Data.PlayerName))
+            {
+                var gameObj = new GameObject("RetributionistArrow") { layer = 5 };
+                var arrow = gameObj.AddComponent<ArrowBehaviour>();
+                gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
+                var renderer = gameObj.AddComponent<SpriteRenderer>();
+                renderer.sprite = AssetManager.GetSprite("Arrow");
+                arrow.image = renderer;
+                LocalRole.AllArrows.Add(player.PlayerId, arrow);
+                Utils.Flash(Color);
+            }
         }
 
         public void HitRevive()
@@ -1051,7 +1085,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
             writer.Write((byte)ActionsRPC.RetributionistAction);
             writer.Write((byte)RetributionistActionsRPC.AltruistRevive);
-            writer.Write(Player.PlayerId);
+            writer.Write(PlayerId);
             writer.Write(playerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
             TimeRemaining = CustomGameOptions.NecroResurrectDuration;
@@ -1078,7 +1112,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.RetributionistAction);
                 writer.Write((byte)RetributionistActionsRPC.Protect);
-                writer.Write(Player.PlayerId);
+                writer.Write(PlayerId);
                 writer.Write(ShieldButton.TargetPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 ShieldedPlayer = ShieldButton.TargetPlayer;
@@ -1139,7 +1173,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
             writer.Write((byte)ActionsRPC.RetributionistAction);
             writer.Write((byte)RetributionistActionsRPC.Swoop);
-            writer.Write(Player.PlayerId);
+            writer.Write(PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
 
@@ -1315,7 +1349,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.RetributionistAction);
                 writer.Write((byte)RetributionistActionsRPC.EscRoleblock);
-                writer.Write(Player.PlayerId);
+                writer.Write(PlayerId);
                 writer.Write(BlockButton.TargetPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 TimeRemaining = CustomGameOptions.EscRoleblockDuration;
@@ -1403,7 +1437,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 TransportPlayer2.NetTransform.SnapTo(new Vector2(TempPosition.x, TempPosition.y + 0.3636f));
                 TransportPlayer2.MyRend().flipX = TempFacing;
 
-                if (SubmergedCompatibility.IsSubmerged())
+                if (SubmergedCompatibility.IsSubmerged)
                 {
                     if (PlayerControl.LocalPlayer.PlayerId == TransportPlayer1.PlayerId)
                     {
@@ -1432,7 +1466,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 Player1Body.transform.position = TransportPlayer2.GetTruePosition();
                 TransportPlayer2.NetTransform.SnapTo(new Vector2(TempPosition.x, TempPosition.y + 0.3636f));
 
-                if (SubmergedCompatibility.IsSubmerged() && PlayerControl.LocalPlayer.PlayerId == TransportPlayer2.PlayerId)
+                if (SubmergedCompatibility.IsSubmerged && PlayerControl.LocalPlayer.PlayerId == TransportPlayer2.PlayerId)
                 {
                     SubmergedCompatibility.ChangeFloor(TransportPlayer2.GetTruePosition().y > -7);
                     SubmergedCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
@@ -1446,7 +1480,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 TransportPlayer1.NetTransform.SnapTo(new Vector2(Player2Body.TruePosition.x, Player2Body.TruePosition.y + 0.3636f));
                 Player2Body.transform.position = TempPosition;
 
-                if (SubmergedCompatibility.IsSubmerged() && PlayerControl.LocalPlayer.PlayerId == TransportPlayer1.PlayerId)
+                if (SubmergedCompatibility.IsSubmerged && PlayerControl.LocalPlayer.PlayerId == TransportPlayer1.PlayerId)
                 {
                     SubmergedCompatibility.ChangeFloor(TransportPlayer1.GetTruePosition().y > -7);
                     SubmergedCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
@@ -1504,27 +1538,27 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 LastTransported.AddSeconds(CustomGameOptions.ProtectKCReset);
         }
 
+        public bool Exception7(PlayerControl player) => (player == Player && !CustomGameOptions.TransSelf) || UntransportablePlayers.ContainsKey(player.PlayerId) ||
+            (Utils.BodyById(player.PlayerId) == null && player.Data.IsDead) || player == TransportPlayer2;
+
+        public bool Exception8(PlayerControl player) => (player == Player && !CustomGameOptions.TransSelf) || UntransportablePlayers.ContainsKey(player.PlayerId) ||
+            (Utils.BodyById(player.PlayerId) == null && player.Data.IsDead) || player == TransportPlayer1;
+
         public void Transport()
         {
             if (TransportTimer() != 0f)
                 return;
 
             if (TransportPlayer1 == null)
-            {
-                TransportMenu1.Open(PlayerControl.AllPlayerControls.ToArray().Where(x => !((x == Player && !CustomGameOptions.TransSelf) || UntransportablePlayers.ContainsKey(x.PlayerId) ||
-                    (Utils.BodyById(x.PlayerId) == null && x.Data.IsDead) || x == TransportPlayer2)).ToList());
-            }
+                TransportMenu1.Open();
             else if (TransportPlayer2 == null)
-            {
-                TransportMenu2.Open(PlayerControl.AllPlayerControls.ToArray().Where(x => !((x == Player && !CustomGameOptions.TransSelf) || UntransportablePlayers.ContainsKey(x.PlayerId) ||
-                    (Utils.BodyById(x.PlayerId) == null && x.Data.IsDead) || x == TransportPlayer1)).ToList());
-            }
+                TransportMenu2.Open();
             else
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.RetributionistAction);
                 writer.Write((byte)RetributionistActionsRPC.Transport);
-                writer.Write(Player.PlayerId);
+                writer.Write(PlayerId);
                 writer.Write(TransportPlayer1.PlayerId);
                 writer.Write(TransportPlayer2.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);

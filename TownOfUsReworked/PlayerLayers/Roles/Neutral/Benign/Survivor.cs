@@ -15,7 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public int UsesLeft;
         public bool ButtonUsable => UsesLeft > 0;
         public bool Vesting => TimeRemaining > 0f;
-        public bool Alive => !Disconnected && !IsDead;
+        public bool Alive => Player != null && !Disconnected && !IsDead;
         public CustomButton VestButton;
 
         public Survivor(PlayerControl player) : base(player)

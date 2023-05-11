@@ -12,12 +12,12 @@ using System.Collections.Generic;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Crowded.Components;
 using System.Collections;
 using Reactor.Utilities;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
 using System.Linq;
 using TownOfUsReworked.PlayerLayers.Abilities;
+using TownOfUsReworked.Monos;
 
 namespace TownOfUsReworked.Patches
 {
@@ -27,7 +27,6 @@ namespace TownOfUsReworked.Patches
         #pragma warning disable
         private static GameData.PlayerInfo VoteTarget;
         public static int MeetingCount;
-        private static string Location = "";
         private static GameData.PlayerInfo Reported = null;
         public static bool GivingAnnouncements = false;
         #pragma warning restore
@@ -56,12 +55,6 @@ namespace TownOfUsReworked.Patches
                     }
                 }
             }
-        }
-
-        [HarmonyPatch(typeof(RoomTracker), nameof(RoomTracker.FixedUpdate))]
-        public static class Recordlocation
-        {
-            public static void Postfix(RoomTracker __instance) => Location = __instance.text.transform.localPosition.y != -3.25f ? __instance.text.text : "a hallway or somewhere outside.";
         }
 
         [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.CmdReportDeadBody))]
@@ -122,13 +115,13 @@ namespace TownOfUsReworked.Patches
                     RoleGen.AssignChaosDrive();
                 }
 
-                foreach (var layer in PlayerLayer.GetLayers(PlayerControl.LocalPlayer))
+                foreach (var layer in PlayerLayer.LocalLayers)
                     layer?.OnMeetingStart(__instance);
             }
 
             private static IEnumerator Announcements(GameData.PlayerInfo target, MeetingHud __instance)
             {
-                foreach (var layer in PlayerLayer.GetLayers(PlayerControl.LocalPlayer))
+                foreach (var layer in PlayerLayer.LocalLayers)
                     layer?.OnBodyReport(target);
 
                 yield return new WaitForSeconds(5f);
@@ -152,7 +145,7 @@ namespace TownOfUsReworked.Patches
                         extraTime += 2;
 
                         if (CustomGameOptions.LocationReports)
-                            report = $"Their body was found in {Location}.";
+                            report = $"Their body was found in {GetLocation(Utils.BodyById(target.PlayerId).TruePosition)}.";
                         else
                             report = "It is unknown where they died.";
 
@@ -335,6 +328,117 @@ namespace TownOfUsReworked.Patches
                 Reported = null;
                 DisconnectHandler.Disconnected.Clear();
             }
+
+            private static string GetLocation(Vector2 position)
+            {
+                var result = "";
+
+                switch (TownOfUsReworked.VanillaOptions.MapId)
+                {
+                    case 0:
+
+                        if (position.x is < 5 and > -6 && position.y > -4.5f)
+                            result = "Cafeteria";
+                        else if (position.y is < -0.5f and > -5.4f && position.x is > -11 and < -5.4f)
+                            result = "Medbay";
+                        else if (position.y is < 3 and > -1.2f && position.x is > -19 and < -15)
+                            result = "Upper Engine";
+                        else if (position.y is < -1.7f and > -8.2f && position.x < -19.4f)
+                            result = "Reactor";
+                        else if (position.y is < -3 and > -6.9f && position.x is < -12 and > -14.4f)
+                            result = "Security";
+                        else if (position.y is < 6.2f and > -4.7f && position.x is < 8 and > 4.7f)
+                            result = "O2";
+                        else if (position.y is < -9.4f and > -13.6f && position.x is > -19 and < -15)
+                            result = "Upper Engine";
+                        else if (position.y is < -7.7f and > -13.5f && position.x is > -9.9f and < -5.4f)
+                            result = "Electrical";
+                        else if (position.y is < -8.7f and > -17 && position.x is > -5f and < 0.7f)
+                            result = "Storage";
+                        else if (position.y is < -6.5f and > -9.9f && position.x is > 2.2f and < 6.8f)
+                            result = "Admin";
+                        else if (position.y < -13.8f && position.x is > 1.7f and < 6.4f)
+                            result = "Communications";
+                        else if (position.y < -10 && position.x > 6.8f)
+                            result = "Shields";
+                        else if (position.y > -0.8f && position.x > 7.1f)
+                            result = "Weapons";
+                        else if (position.x > 15)
+                            result = "Navigation";
+                        else
+                            result = "Hallway";
+
+                        break;
+
+                    case 1:
+
+                        if ((position.y is > -1 and < 6 && position.x is > 21.3f and < 29) || (position.x is > 18.1f and < 21.1f && position.y is < 1.3f and > -1))
+                            result = "Cafeteria";
+                        else if ((position.y is < 5.4f and > 0.6f && position.x is > 9 and < 11) || (position.x is < 8.5f and > 3.9f && position.y is > 0.5f and < 2.3f))
+                            result = "Locker";
+                        else if (position.y is < -0.5f and > -5.4f && position.x is > -11 and < -5.4f)
+                            result = "Medbay";
+                        else if (position.y is < 5.6f and > 2.8f && position.x is > 13.8f and < 17)
+                            result = "Communications";
+                        else if (position.y is < 10 and > 3.3f && position.x is > 5 and < 7.1f)
+                            result = "Decontamination";
+                        else if (position.y is < 21.2f and > 17.3f && position.x is > 19.2f and < 22.7f)
+                            result = "Admin";
+                        else if (position.y is < 21.2f and > 17.3f && position.x is > 13 and < 16.4f)
+                            result = "Office";
+                        else if (position.y is < 5.2f and > 2 && position.x is > 18.1f and < 20.9f)
+                            result = "Storage";
+                        else if (position.y > 10 && position.x is > 0.2f and < 5)
+                            result = "Reactor";
+                        else if (position.y > 10 && position.x is > 7.5f and < 12)
+                            result = "Laboratory";
+                        else if (position.y < -1 && position.x > 18)
+                            result = "Balcony";
+                        else if (position.y > 21.5f)
+                            result = "Greenhouse";
+                        else if (position.x < -2.7f)
+                            result = "Launchpad";
+                        else
+                            result = "Hallway";
+
+                        break;
+
+                    case 2:
+
+                        if ((position.y is > -12.5f and < -10.6f && position.x is > 18.6f and < 22.5f) || (position.x is > -11.1f and < -10.6f && position.y is < 18.6f and > 17.4f))
+                            result = "Storage";
+                        else if ((position.y is < -15.6f and > -22.7f && position.x is > 0.5f and < 4.1f) || (position.x is < 6.7f and > 4.1f && position.y is < -18.6f and > -21.4f))
+                            result = "O2";
+                        else if (position.y is < -15.5f and > -18.2f && position.x is > 10.3f and < 13)
+                            result = "Communications";
+                        else if (position.y > -20.3f && position.x is > 16.1f and < 28.7f)
+                            result = "Office";
+                        else if (position.y < -20.3f && position.x is > 19.8f and < 25.2f)
+                            result = "Admin";
+                        else if (position.y is < -10.7f and > -12.6f && position.x < 4.2f)
+                            result = "Security";
+                        else if (position.y is < -8.8f and > -12.6f && position.x < 11.2f)
+                            result = "Electrical";
+                        else if (position.y < -22.7 && position.x < 4.2)
+                            result = "Boiler Room";
+                        else if (position.y < -18.7f && position.x > 33.7f)
+                            result = "Specimen";
+                        else if (position.y > -10.5f && position.x is > 24.7f)
+                            result = "Laboratory";
+                        else if (position.y > -6)
+                            result = "Dropship";
+                        else
+                            result = "Hallway or Outside";
+
+                        break;
+
+                    case 5:
+                        result = "Somewhere";
+                        break;
+                }
+
+                return result;
+            }
         }
 
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Close))]
@@ -351,7 +455,7 @@ namespace TownOfUsReworked.Patches
                 foreach (var player in PlayerControl.AllPlayerControls)
                     player.MyPhysics.ResetAnimState();
 
-                foreach (var layer in PlayerLayer.GetLayers(PlayerControl.LocalPlayer))
+                foreach (var layer in PlayerLayer.LocalLayers)
                     layer?.OnMeetingEnd(__instance);
             }
         }
@@ -385,7 +489,7 @@ namespace TownOfUsReworked.Patches
                 foreach (var player in __instance.playerStates)
                     (player.NameText.text, player.NameText.color) = UpdateGameName(player);
 
-                foreach (var layer in PlayerLayer.GetLayers(PlayerControl.LocalPlayer))
+                foreach (var layer in PlayerLayer.LocalLayers)
                     layer.UpdateMeeting(__instance);
 
                 if (!PlayerControl.LocalPlayer.Is(AbilityEnum.Politician) || PlayerControl.LocalPlayer.Data.IsDead || __instance.TimerText.text.Contains("Can Vote"))
@@ -404,12 +508,12 @@ namespace TownOfUsReworked.Patches
                 Utils.LogSomething($"Exiled PlayerName = {exiledString}");
                 Utils.LogSomething($"Was a tie = {tie}");
 
-                foreach (var layer in PlayerLayer.GetLayers(PlayerControl.LocalPlayer))
+                foreach (var layer in PlayerLayer.LocalLayers)
                     layer.VoteComplete(__instance);
 
                 Coroutines.Start(PerformSwaps());
 
-                foreach (var layer in PlayerLayer.GetLayers(PlayerControl.LocalPlayer))
+                foreach (var layer in PlayerLayer.LocalLayers)
                     layer?.OnMeetingEnd(__instance);
             }
         }
@@ -419,7 +523,7 @@ namespace TownOfUsReworked.Patches
         {
             public static void Postfix(MeetingHud __instance, int __0)
             {
-                foreach (var layer in PlayerLayer.GetLayers(PlayerControl.LocalPlayer))
+                foreach (var layer in PlayerLayer.LocalLayers)
                     layer.SelectVote(__instance, __0);
             }
         }
@@ -429,7 +533,7 @@ namespace TownOfUsReworked.Patches
         {
             public static void Postfix(MeetingHud __instance)
             {
-                foreach (var layer in PlayerLayer.GetLayers(PlayerControl.LocalPlayer))
+                foreach (var layer in PlayerLayer.LocalLayers)
                     layer.ClearVote(__instance);
             }
         }
@@ -531,7 +635,7 @@ namespace TownOfUsReworked.Patches
                 foreach (var politician in Ability.GetAbilities<Politician>(AbilityEnum.Politician))
                 {
                     var playerInfo = politician.Player.Data;
-                    GameOptionsManager.Instance.currentNormalGameOptions.AnonymousVotes = CustomGameOptions.PoliticianAnonymous;
+                    TownOfUsReworked.VanillaOptions.AnonymousVotes = CustomGameOptions.PoliticianAnonymous;
 
                     foreach (var extraVote in politician.ExtraVotes)
                     {
@@ -558,13 +662,13 @@ namespace TownOfUsReworked.Patches
                         }
                     }
 
-                    GameOptionsManager.Instance.currentNormalGameOptions.AnonymousVotes = CustomGameOptions.AnonymousVoting;
+                    TownOfUsReworked.VanillaOptions.AnonymousVotes = CustomGameOptions.AnonymousVoting;
                 }
 
                 /*foreach (var mayor in Role.GetRoles<Mayor>(RoleEnum.Mayor))
                 {
                     var playerInfo = mayor.Player.Data;
-                    GameOptionsManager.Instance.currentNormalGameOptions.AnonymousVotes = CustomGameOptions.MayorAnonymous;
+                    TownOfUsReworked.VanillaOptions.AnonymousVotes = CustomGameOptions.MayorAnonymous;
 
                     if (mayor.Voted == PlayerVoteArea.HasNotVoted || mayor.Voted == PlayerVoteArea.MissedVote || mayor.Voted == PlayerVoteArea.DeadVote || !mayor.Revealed)
                         continue;
@@ -591,7 +695,7 @@ namespace TownOfUsReworked.Patches
                         }
                     }
 
-                    GameOptionsManager.Instance.currentNormalGameOptions.AnonymousVotes = CustomGameOptions.AnonymousVoting;
+                    TownOfUsReworked.VanillaOptions.AnonymousVotes = CustomGameOptions.AnonymousVoting;
                 }*/
 
                 return false;
@@ -608,9 +712,9 @@ namespace TownOfUsReworked.Patches
                 var deadFlag = CustomGameOptions.DeadSeeEverything && PlayerControl.LocalPlayer.Data.IsDead;
 
                 if (PlayerControl.LocalPlayer.Is(AbilityEnum.Insider))
-                    insiderFlag = Role.GetRole(PlayerControl.LocalPlayer).TasksDone;
+                    insiderFlag = Role.LocalRole.TasksDone;
 
-                if (GameOptionsManager.Instance.currentNormalGameOptions.AnonymousVotes && !(deadFlag || insiderFlag))
+                if (TownOfUsReworked.VanillaOptions.AnonymousVotes && !(deadFlag || insiderFlag))
                     PlayerMaterial.SetColors(Palette.DisabledGrey, spriteRenderer);
                 else
                     PlayerMaterial.SetColors(voterPlayer.DefaultOutfit.ColorId, spriteRenderer);
@@ -649,6 +753,9 @@ namespace TownOfUsReworked.Patches
 
             if (player.IsKnighted())
                 name += "<color=#FF004EFF>κ</color>";
+
+            if (player.IsSpelled())
+                name += "<color=#0028F5FF>ø</color>";
 
             if (player.Is(RoleEnum.Mayor) && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything) && PlayerControl.LocalPlayer.PlayerId != player.TargetPlayerId)
             {
@@ -721,26 +828,23 @@ namespace TownOfUsReworked.Patches
             {
                 var godfather = localinfo[0] as PromotedGodfather;
 
-                if (godfather.IsConsig)
+                if (godfather.IsConsig && godfather.Investigated.Contains(player.TargetPlayerId))
                 {
-                    if (godfather.Investigated.Contains(player.TargetPlayerId))
+                    var role = info[0] as Role;
+                    roleRevealed = true;
+
+                    if (CustomGameOptions.ConsigInfo == ConsigInfo.Role)
                     {
-                        var role = info[0] as Role;
-                        roleRevealed = true;
+                        color = role.Color;
+                        name += $"\n{role.Name}";
 
-                        if (CustomGameOptions.ConsigInfo == ConsigInfo.Role)
-                        {
-                            color = role.Color;
-                            name += $"\n{role.Name}";
-
-                            if (godfather.Player.GetSubFaction() == player.GetSubFaction() && player.GetSubFaction() != SubFaction.None)
-                                godfather.Investigated.Remove(player.TargetPlayerId);
-                        }
-                        else if (CustomGameOptions.ConsigInfo == ConsigInfo.Faction)
-                        {
-                            color = role.FactionColor;
-                            name += $"\n{role.FactionName}";
-                        }
+                        if (godfather.Player.GetSubFaction() == player.GetSubFaction() && player.GetSubFaction() != SubFaction.None)
+                            godfather.Investigated.Remove(player.TargetPlayerId);
+                    }
+                    else if (CustomGameOptions.ConsigInfo == ConsigInfo.Faction)
+                    {
+                        color = role.FactionColor;
+                        name += $"\n{role.FactionName}";
                     }
                 }
             }
@@ -755,35 +859,39 @@ namespace TownOfUsReworked.Patches
             {
                 var ret = localinfo[0] as Retributionist;
 
-                if (ret.IsInsp)
+                if (ret.IsInsp && ret.Inspected.Contains(player.TargetPlayerId))
                 {
-                    if (ret.Inspected.Contains(player.TargetPlayerId))
-                    {
-                        name += $"\n{player.GetInspResults()}";
-                        color = ret.Color;
-                        roleRevealed = true;
-                    }
+                    name += $"\n{player.GetInspResults()}";
+                    color = ret.Color;
+                    roleRevealed = true;
+                }
+                else if (ret.IsCor && ret.Reported.Contains(player.TargetPlayerId))
+                {
+                    var role = info[0] as Role;
+                    color = role.Color;
+                    name += $"\n{role.Name}";
+                    roleRevealed = true;
                 }
             }
             else if (PlayerControl.LocalPlayer.Is(RoleEnum.Arsonist) && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
             {
                 var arsonist = localinfo[0] as Arsonist;
 
-                if (arsonist.DousedPlayers.Contains(player.TargetPlayerId))
+                if (arsonist.Doused.Contains(player.TargetPlayerId))
                     name += " <color=#EE7600FF>Ξ</color>";
             }
             else if (PlayerControl.LocalPlayer.Is(RoleEnum.Plaguebearer) && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
             {
                 var plaguebearer = localinfo[0] as Plaguebearer;
 
-                if (plaguebearer.InfectedPlayers.Contains(player.TargetPlayerId))
+                if (plaguebearer.Infected.Contains(player.TargetPlayerId) && PlayerControl.LocalPlayer.PlayerId != player.TargetPlayerId)
                     name += " <color=#CFFE61FF>ρ</color>";
             }
             else if (PlayerControl.LocalPlayer.Is(RoleEnum.Cryomaniac) && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
             {
                 var cryomaniac = localinfo[0] as Cryomaniac;
 
-                if (cryomaniac.DousedPlayers.Contains(player.TargetPlayerId))
+                if (cryomaniac.Doused.Contains(player.TargetPlayerId))
                     name += " <color=#642DEAFF>λ</color>";
             }
             else if (PlayerControl.LocalPlayer.Is(RoleEnum.Framer) && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything))
@@ -1279,29 +1387,17 @@ namespace TownOfUsReworked.Patches
                 if (player == Role.DriveHolder)
                     name += " <color=#008000FF>Δ</color>";
 
-                foreach (var arsonist in Role.GetRoles<Arsonist>(RoleEnum.Arsonist))
-                {
-                    if (arsonist.DousedPlayers.Contains(player.TargetPlayerId))
-                        name += " <color=#EE7600FF>Ξ</color>";
-                }
+                if (player.IsFramed())
+                    name += " <color=#00FFFFFF>ς</color>";
 
-                foreach (var plaguebearer in Role.GetRoles<Plaguebearer>(RoleEnum.Plaguebearer))
-                {
-                    if (plaguebearer.InfectedPlayers.Contains(player.TargetPlayerId))
-                        name += " <color=#CFFE61FF>ρ</color>";
-                }
+                if (player.IsInfected())
+                    name += " <color=#CFFE61FF>ρ</color>";
 
-                foreach (var cryomaniac in Role.GetRoles<Cryomaniac>(RoleEnum.Cryomaniac))
-                {
-                    if (cryomaniac.DousedPlayers.Contains(player.TargetPlayerId))
-                        name += " <color=#642DEAFF>λ</color>";
-                }
+                if (player.IsArsoDoused())
+                    name += " <color=#EE7600FF>Ξ</color>";
 
-                foreach (var framer in Role.GetRoles<Framer>(RoleEnum.Framer))
-                {
-                    if (framer.Framed.Contains(player.TargetPlayerId))
-                        name += " <color=#00FFFFFF>ς</color>";
-                }
+                if (player.IsCryoDoused())
+                    name += " <<color=#642DEAFF>λ</color>";
 
                 if (PlayerControl.LocalPlayer.Is(RoleEnum.Consigliere))
                 {
@@ -1397,7 +1493,7 @@ namespace TownOfUsReworked.Patches
 
                 var whiteBackgroundDest2 = (Vector2)whiteBackground2.position;
 
-                var duration = 2f / Ability.GetAbilities(AbilityEnum.Swapper).Count;
+                var duration = 1f / Ability.GetAbilities(AbilityEnum.Swapper).Count;
 
                 Coroutines.Start(Slide2D(pool1, pooldest1, pooldest2, duration));
                 Coroutines.Start(Slide2D(pool2, pooldest2, pooldest1, duration));
@@ -1407,7 +1503,7 @@ namespace TownOfUsReworked.Patches
                 Coroutines.Start(Slide2D(mask2, maskdest2, maskdest1, duration));
                 Coroutines.Start(Slide2D(whiteBackground1, whiteBackgroundDest1, whiteBackgroundDest2, duration));
                 Coroutines.Start(Slide2D(whiteBackground2, whiteBackgroundDest2, whiteBackgroundDest1, duration));
-                yield return new WaitForSeconds(0.1f);
+                yield return new WaitForSeconds(duration);
             }
         }
     }

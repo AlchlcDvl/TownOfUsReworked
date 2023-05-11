@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using Reactor.Utilities;
 using Reactor.Utilities.Extensions;
-using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.Data;
@@ -21,7 +20,7 @@ namespace TownOfUsReworked.CustomOptions
         public List<OptionBehaviour> OldButtons;
         public List<CustomButtonOption> SlotButtons = new();
 
-        public Import(int id) : base(id, MultiMenu.main, "Load Custom Settings") => Do = ToDo;
+        public Import() : base(-1, MultiMenu.main, "Load Custom Settings") => Do = ToDo;
 
         private List<OptionBehaviour> CreateOptions()
         {
@@ -61,18 +60,14 @@ namespace TownOfUsReworked.CustomOptions
             Loading = SlotButtons[0];
             Loading.Do = () => {};
             Loading.Setting.Cast<ToggleOption>().TitleText.text = "Loading...";
-
             __instance.Children = new[] {Loading.Setting};
-
             yield return new WaitForSeconds(0.5f);
-
             Loading.Setting.gameObject.Destroy();
 
             foreach (var option in OldButtons)
                 option.gameObject.SetActive(true);
 
             __instance.Children = OldButtons.ToArray();
-
             yield return new WaitForEndOfFrame();
             yield return flashCoro();
         }
@@ -80,17 +75,17 @@ namespace TownOfUsReworked.CustomOptions
         public void ToDo()
         {
             SlotButtons.Clear();
-            SlotButtons.Add(new CustomButtonOption(1, MultiMenu.external, "Slot 1", delegate { ImportSlot(1); }));
-            SlotButtons.Add(new CustomButtonOption(1, MultiMenu.external, "Slot 2", delegate { ImportSlot(2); }));
-            SlotButtons.Add(new CustomButtonOption(1, MultiMenu.external, "Slot 3", delegate { ImportSlot(3); }));
-            SlotButtons.Add(new CustomButtonOption(1, MultiMenu.external, "Slot 4", delegate { ImportSlot(4); }));
-            SlotButtons.Add(new CustomButtonOption(1, MultiMenu.external, "Slot 5", delegate { ImportSlot(5); }));
-            SlotButtons.Add(new CustomButtonOption(1, MultiMenu.external, "Slot 6", delegate { ImportSlot(6); }));
-            SlotButtons.Add(new CustomButtonOption(1, MultiMenu.external, "Slot 7", delegate { ImportSlot(7); }));
-            SlotButtons.Add(new CustomButtonOption(1, MultiMenu.external, "Slot 8", delegate { ImportSlot(8); }));
-            SlotButtons.Add(new CustomButtonOption(1, MultiMenu.external, "Slot 9", delegate { ImportSlot(9); }));
-            SlotButtons.Add(new CustomButtonOption(1, MultiMenu.external, "Slot 10", delegate { ImportSlot(10); }));
-            SlotButtons.Add(new CustomButtonOption(1, MultiMenu.external, "Cancel", delegate { Cancel(FlashWhite); }));
+            SlotButtons.Add(new CustomButtonOption(-1, MultiMenu.external, "Slot 1", delegate { ImportSlot(1); }));
+            SlotButtons.Add(new CustomButtonOption(-1, MultiMenu.external, "Slot 2", delegate { ImportSlot(2); }));
+            SlotButtons.Add(new CustomButtonOption(-1, MultiMenu.external, "Slot 3", delegate { ImportSlot(3); }));
+            SlotButtons.Add(new CustomButtonOption(-1, MultiMenu.external, "Slot 4", delegate { ImportSlot(4); }));
+            SlotButtons.Add(new CustomButtonOption(-1, MultiMenu.external, "Slot 5", delegate { ImportSlot(5); }));
+            SlotButtons.Add(new CustomButtonOption(-1, MultiMenu.external, "Slot 6", delegate { ImportSlot(6); }));
+            SlotButtons.Add(new CustomButtonOption(-1, MultiMenu.external, "Slot 7", delegate { ImportSlot(7); }));
+            SlotButtons.Add(new CustomButtonOption(-1, MultiMenu.external, "Slot 8", delegate { ImportSlot(8); }));
+            SlotButtons.Add(new CustomButtonOption(-1, MultiMenu.external, "Slot 9", delegate { ImportSlot(9); }));
+            SlotButtons.Add(new CustomButtonOption(-1, MultiMenu.external, "Slot 10", delegate { ImportSlot(10); }));
+            SlotButtons.Add(new CustomButtonOption(-1, MultiMenu.external, "Cancel", delegate { Cancel(FlashWhite); }));
 
             var options = CreateOptions();
             var __instance = Object.FindObjectOfType<GameOptionsMenu>();
@@ -104,9 +99,9 @@ namespace TownOfUsReworked.CustomOptions
                 option.gameObject.SetActive(false);
 
             foreach (var option in options)
-                option.transform.localPosition = new Vector3(x, y - (i++ * 0.5f), z);
+                option.transform.localPosition = new(x, y - (i++ * 0.5f), z);
 
-            __instance.Children = new Il2CppReferenceArray<OptionBehaviour>(options.ToArray());
+            __instance.Children = new(options.ToArray());
         }
 
         private void ImportSlot(int slotId)
@@ -151,9 +146,11 @@ namespace TownOfUsReworked.CustomOptions
                     case CustomOptionType.Number:
                         option.Set(float.Parse(value), false);
                         break;
+
                     case CustomOptionType.Toggle:
                         option.Set(bool.Parse(value), false);
                         break;
+
                     case CustomOptionType.String:
                         option.Set(int.Parse(value), false);
                         break;

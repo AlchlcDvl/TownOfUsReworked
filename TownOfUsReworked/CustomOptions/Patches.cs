@@ -7,6 +7,7 @@ using UnityEngine;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Classes;
 using static UnityEngine.UI.Button;
+using TMPro;
 
 namespace TownOfUsReworked.CustomOptions
 {
@@ -83,9 +84,6 @@ namespace TownOfUsReworked.CustomOptions
 
             foreach (var option in CustomOption.AllOptions.Where(x => x.Menu == type))
             {
-                if (!option.Active)
-                    continue;
-
                 if (option.Setting != null)
                 {
                     option.Setting.gameObject.SetActive(true);
@@ -197,8 +195,8 @@ namespace TownOfUsReworked.CustomOptions
             {
                 var obj = __instance.RolesSettingsHightlight.gameObject.transform.parent.parent;
                 var diff = (0.7f * Menus.Length) - 2;
-                obj.transform.localPosition = new Vector3(obj.transform.localPosition.x - diff, obj.transform.localPosition.y, obj.transform.localPosition.z);
-                __instance.GameSettingsHightlight.gameObject.transform.parent.localPosition = new Vector3(obj.transform.localPosition.x, obj.transform.localPosition.y,
+                obj.transform.localPosition = new(obj.transform.localPosition.x - diff, obj.transform.localPosition.y, obj.transform.localPosition.z);
+                __instance.GameSettingsHightlight.gameObject.transform.parent.localPosition = new(obj.transform.localPosition.x, obj.transform.localPosition.y,
                     obj.transform.localPosition.z);
                 MenuG.Clear();
                 MenuS.Clear();
@@ -218,7 +216,7 @@ namespace TownOfUsReworked.CustomOptions
                     if (title != null)
                     {
                         title.GetComponent<TextTranslatorTMP>().Destroy();
-                        title.GetComponent<TMPro.TextMeshPro>().m_text = $"Town Of Us Reworked {Menus[index]} Settings";
+                        title.GetComponent<TextMeshPro>().m_text = $"Town Of Us Reworked {Menus[index]} Settings";
                     }
 
                     var sliderInner = gameGroup?.FindChild("SliderInner");
@@ -227,7 +225,7 @@ namespace TownOfUsReworked.CustomOptions
                         sliderInner.GetComponent<GameOptionsMenu>().name = $"ToU-Rew{Menus[index]}OptionsMenu";
 
                     var ourSettingsButton = Object.Instantiate(obj.gameObject, obj.transform.parent);
-                    ourSettingsButton.transform.localPosition = new Vector3(obj.localPosition.x + (0.7f * (index + 1)), obj.localPosition.y, obj.localPosition.z);
+                    ourSettingsButton.transform.localPosition = new(obj.localPosition.x + (0.7f * (index + 1)), obj.localPosition.y, obj.localPosition.z);
                     ourSettingsButton.name = $"ToU-Rew{Menus[index]}Tab";
 
                     var hatButton = ourSettingsButton.transform.GetChild(0); //TODO: Change to FindChild I guess to be sure
@@ -242,10 +240,10 @@ namespace TownOfUsReworked.CustomOptions
 
                     var passiveButton = tabBackground.GetComponent<PassiveButton>();
                     passiveButton.OnClick = new ButtonClickedEvent();
-                    passiveButton.OnClick.AddListener(ToggleButton(MenuG, MenuS, index));
+                    passiveButton.OnClick.AddListener(ToggleButton(index));
                 }
 
-                ToggleButtonVoid(MenuG, MenuS, LastPage);
+                ToggleButtonVoid(LastPage);
             }
 
             private static string GetSettingSprite(int index) => index switch
@@ -261,7 +259,7 @@ namespace TownOfUsReworked.CustomOptions
             };
         }
 
-        public static System.Action ToggleButton(List<GameObject> settings, List<SpriteRenderer> highlight, int id) => new(() => ToggleButtonVoid(settings, highlight, id));
+        public static System.Action ToggleButton(int id) => new(() => ToggleButtonVoid(id));
 
         [HarmonyPatch(typeof(GameSettingMenu), nameof(GameSettingMenu.Update))]
         public static class OptionsMenuBehaviour_Update
@@ -280,37 +278,37 @@ namespace TownOfUsReworked.CustomOptions
                 __instance.GameSettingsHightlight.gameObject.transform.parent.parent.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().gameObject.SetActive(false);
 
                 if (Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1))
-                    ToggleButtonVoid(MenuG, MenuS, 0);
+                    ToggleButtonVoid(0);
 
                 if (Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Keypad2))
-                    ToggleButtonVoid(MenuG, MenuS, 1);
+                    ToggleButtonVoid(1);
 
                 if (Input.GetKeyDown(KeyCode.Alpha3) || Input.GetKeyDown(KeyCode.Keypad3))
-                    ToggleButtonVoid(MenuG, MenuS, 2);
+                    ToggleButtonVoid(2);
 
                 if (Input.GetKeyDown(KeyCode.Alpha4) || Input.GetKeyDown(KeyCode.Keypad4))
-                    ToggleButtonVoid(MenuG, MenuS, 3);
+                    ToggleButtonVoid(3);
 
                 if (Input.GetKeyDown(KeyCode.Alpha5) || Input.GetKeyDown(KeyCode.Keypad5))
-                    ToggleButtonVoid(MenuG, MenuS, 4);
+                    ToggleButtonVoid(4);
 
                 if (Input.GetKeyDown(KeyCode.Alpha6) || Input.GetKeyDown(KeyCode.Keypad6))
-                    ToggleButtonVoid(MenuG, MenuS, 5);
+                    ToggleButtonVoid(5);
 
                 if (Input.GetKeyDown(KeyCode.Alpha7) || Input.GetKeyDown(KeyCode.Keypad7))
-                    ToggleButtonVoid(MenuG, MenuS, 6);
+                    ToggleButtonVoid(6);
 
                 if (Input.GetKeyDown(KeyCode.Alpha8) || Input.GetKeyDown(KeyCode.Keypad8))
-                    ToggleButtonVoid(MenuG, MenuS, 7);
+                    ToggleButtonVoid(7);
             }
         }
 
-        public static void ToggleButtonVoid(List<GameObject> settings, List<SpriteRenderer> highlight, int id)
+        public static void ToggleButtonVoid(int id)
         {
-            foreach (var g in settings)
+            foreach (var g in MenuG)
             {
-                g.SetActive(id == settings.IndexOf(g));
-                highlight[settings.IndexOf(g)].enabled = id == settings.IndexOf(g);
+                g?.SetActive(MenuG[id] == g);
+                MenuS[id].enabled = MenuG[id] == g;
             }
 
             LastPage = id;
@@ -344,7 +342,7 @@ namespace TownOfUsReworked.CustomOptions
                         foreach (var option in customOptions)
                             option.transform.localPosition = new Vector3(x, y - (i++ * 0.5f), z);
 
-                        __instance.Children = new Il2CppReferenceArray<OptionBehaviour>(customOptions.ToArray());
+                        __instance.Children = new(customOptions.ToArray());
                         return false;
                     }
                 }
@@ -364,7 +362,6 @@ namespace TownOfUsReworked.CustomOptions
                 var y = __instance.GetComponentsInChildren<OptionBehaviour>().Max(option => option.transform.localPosition.y);
                 var s = __instance.Children.Length == 1;
                 var (x, z) = (__instance.Children[s ? 0 : 1].transform.localPosition.x, __instance.Children[s ? 0 : 1].transform.localPosition.z);
-
                 var i = 0;
 
                 foreach (var option in __instance.Children)
@@ -590,34 +587,35 @@ namespace TownOfUsReworked.CustomOptions
         [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
         public static class HudManagerUpdate
         {
-            private const float MinX = -5.233334f, OriginalY = 2.9f, MinY = 3f;
+            private static float MinX = -5.233334f, MinY = 2.9f;
             //Differs to cause excess options to appear cut off to encourage scrolling
 
             private static Scroller Scroller;
-            private static Vector3 LastPosition = new(MinX, MinY);
+            private static Vector3 LastPosition;
+            private static float LastAspect;
+            private static bool sStLastPosition;
 
             public static void Prefix(HudManager __instance)
             {
                 if (__instance.GameSettings?.transform == null)
                     return;
 
-                //Scroller disabled
-                if (!CustomOption.LobbyTextScroller)
+                var safeArea = Screen.safeArea;
+                var aspect = Mathf.Min(Camera.main.aspect, safeArea.width / safeArea.height);
+                var safeOrthographicSize = CameraSafeArea.GetSafeOrthographicSize(Camera.main);
+                MinX = 0.1f - (safeOrthographicSize * aspect);
+
+                if (!sStLastPosition || aspect != LastAspect)
                 {
-                    //Remove scroller if disabled late
+                    LastPosition = new(MinX, MinY);
+                    LastAspect = aspect;
+                    sStLastPosition = true;
+
                     if (Scroller != null)
-                    {
-                        __instance.GameSettings.transform.SetParent(Scroller.transform.parent);
-                        __instance.GameSettings.transform.localPosition = new Vector3(MinX, OriginalY);
-
-                        Object.Destroy(Scroller);
-                    }
-
-                    return;
+                        Scroller.ContentXBounds = new(MinX, MinX);
                 }
 
                 CreateScroller(__instance);
-
                 Scroller.gameObject.SetActive(__instance.GameSettings.gameObject.activeSelf);
 
                 if (!Scroller.gameObject.active)
@@ -626,7 +624,7 @@ namespace TownOfUsReworked.CustomOptions
                 var rows = __instance.GameSettings.text.Count(c => c == '\n');
                 var maxY = Mathf.Max(MinY, (rows * 0.081f) + ((rows - 38) * 0.081f));
 
-                Scroller.ContentYBounds = new FloatRange(MinY, maxY);
+                Scroller.ContentYBounds = new(MinY, maxY);
 
                 // Prevent scrolling when the player is interacting with a menu
                 if (PlayerControl.LocalPlayer?.CanMove == false)
@@ -671,9 +669,9 @@ namespace TownOfUsReworked.CustomOptions
             {
                 var value = CustomGameOptions.LobbySize;
 
-                if (GameOptionsManager.Instance.currentNormalGameOptions.MaxPlayers != value)
+                if (TownOfUsReworked.VanillaOptions.MaxPlayers != value)
                 {
-                    GameOptionsManager.Instance.currentNormalGameOptions.MaxPlayers = value;
+                    TownOfUsReworked.VanillaOptions.MaxPlayers = value;
                     GameStartManager.Instance.LastPlayerCount = value;
                     PlayerControl.LocalPlayer.RpcSyncSettings(GameOptionsManager.Instance.gameOptionsFactory.ToBytes(GameOptionsManager.Instance.currentGameOptions));
                 }

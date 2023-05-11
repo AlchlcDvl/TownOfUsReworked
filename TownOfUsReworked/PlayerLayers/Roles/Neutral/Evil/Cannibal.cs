@@ -125,7 +125,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer2.Write((byte)WinLoseRPC.CannibalWin);
-                writer2.Write(Player.PlayerId);
+                writer2.Write(PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer2);
             }
         }

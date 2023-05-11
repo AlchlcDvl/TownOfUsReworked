@@ -9,7 +9,6 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
 {
     public class Volatile : Modifier
     {
-        public bool Exposed;
         private static float _time;
         private static int randomNumber;
         private static int otherNumber;
@@ -20,21 +19,24 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
             TaskText = "- You experience a lot of hallucinations and lash out.";
             Color = CustomGameOptions.CustomModifierColors ? Colors.Volatile : Colors.Modifier;
             ModifierType = ModifierEnum.Volatile;
-            Hidden = !CustomGameOptions.VolatileKnows && !Exposed;
+            Hidden = !CustomGameOptions.VolatileKnows;
             Type = LayerEnum.Volatile;
-            Exposed = false;
         }
 
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
+
+            if (Minigame.Instance)
+                return;
+
             _time += Time.deltaTime;
 
             if (_time >= CustomGameOptions.VolatileInterval)
             {
                 randomNumber = Random.RandomRangeInt(0, 3);
                 _time -= CustomGameOptions.VolatileInterval;
-                Exposed = true;
+                Hidden = false;
                 Player.RegenTask();
 
                 if (randomNumber == 0)

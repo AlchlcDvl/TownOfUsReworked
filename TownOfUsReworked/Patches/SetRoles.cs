@@ -14,8 +14,8 @@ namespace TownOfUsReworked.Patches
         {
             Utils.LogSomething("RPC SET ROLE");
             RoleGen.ResetEverything();
-            var startWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Start, SendOption.Reliable);
-            AmongUsClient.Instance.FinishRpcImmediately(startWriter);
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Start, SendOption.Reliable);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
             Utils.LogSomething("Cleared Variables");
             RoleGen.BeginRoleGen(GameData.Instance.AllPlayers.ToArray().Where(o => o.IsImpostor()).ToList());
 

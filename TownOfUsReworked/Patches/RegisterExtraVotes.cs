@@ -41,7 +41,7 @@ namespace TownOfUsReworked.Patches
     {
         public static bool Prefix(MeetingHud __instance)
         {
-            foreach (var layer in PlayerLayer.GetLayers(PlayerControl.LocalPlayer))
+            foreach (var layer in PlayerLayer.LocalLayers)
                 layer.ConfirmVotePrefix(__instance);
 
             return true;
@@ -49,7 +49,7 @@ namespace TownOfUsReworked.Patches
 
         public static void Postfix(MeetingHud __instance)
         {
-            foreach (var layer in PlayerLayer.GetLayers(PlayerControl.LocalPlayer))
+            foreach (var layer in PlayerLayer.LocalLayers)
                 layer.ConfirmVotePostfix(__instance);
         }
     }

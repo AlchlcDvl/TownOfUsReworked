@@ -7,9 +7,9 @@ using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.PlayerLayers.Objectifiers;
 using TownOfUsReworked.PlayerLayers.Abilities;
 using System;
-using Hazel;
 using TownOfUsReworked.Classes;
 using TownOfUsReworked.Objects;
+using TownOfUsReworked.PlayerLayers;
 
 namespace TownOfUsReworked.Custom
 {
@@ -74,7 +74,7 @@ namespace TownOfUsReworked.Custom
         public static void ResetCustomTimers(bool start)
         {
             var local = PlayerControl.LocalPlayer;
-            var role = Role.GetRole(local);
+            var role = Role.LocalRole;
             local.RegenTask();
 
             if (!start && Role.SyndicateHasChaosDrive)
@@ -185,7 +185,7 @@ namespace TownOfUsReworked.Custom
 
                 if (CustomGameOptions.ResetOnNewRound)
                 {
-                    role2.UsesLeft = CustomGameOptions.MaxTracks;
+                    role2.UsesLeft = CustomGameOptions.MaxTracks + (role.TasksDone ? 1 : 0);
                     role2.OnLobby();
                 }
 
@@ -219,18 +219,7 @@ namespace TownOfUsReworked.Custom
                 var role2 = (VampireHunter)role;
 
                 if (start)
-                {
-                    if (VampireHunter.VampsDead)
-                    {
-                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
-                        writer.Write((byte)TurnRPC.TurnVigilante);
-                        writer.Write(role2.PlayerId);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                        role2.TurnVigilante();
-                    }
-                    else
-                        role2.LastStaked = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.StakeCooldown);
-                }
+                    role2.LastStaked = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.StakeCooldown);
                 else
                     role2.LastStaked = DateTime.UtcNow;
             }
@@ -248,18 +237,7 @@ namespace TownOfUsReworked.Custom
                 var role2 = (Mystic)role;
 
                 if (start)
-                {
-                    if (Mystic.ConvertedDead)
-                    {
-                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
-                        writer.Write((byte)TurnRPC.TurnSeer);
-                        writer.Write(role2.PlayerId);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                        role2.TurnSeer();
-                    }
-                    else
-                        role2.LastRevealed = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.RevealCooldown);
-                }
+                    role2.LastRevealed = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.RevealCooldown);
                 else
                     role2.LastRevealed = DateTime.UtcNow;
             }
@@ -268,18 +246,7 @@ namespace TownOfUsReworked.Custom
                 var role2 = (Seer)role;
 
                 if (start)
-                {
-                    if (role2.ChangedDead)
-                    {
-                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
-                        writer.Write((byte)TurnRPC.TurnSeer);
-                        writer.Write(role2.PlayerId);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                        role2.TurnSheriff();
-                    }
-                    else
-                        role2.LastSeered = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.SeerCooldown);
-                }
+                    role2.LastSeered = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.SeerCooldown);
                 else
                     role2.LastSeered = DateTime.UtcNow;
             }
@@ -866,19 +833,7 @@ namespace TownOfUsReworked.Custom
                 var role2 = (GuardianAngel)role;
 
                 if (start)
-                {
-                    if (!role2.TargetAlive)
-                    {
-                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
-                        writer.Write((byte)TurnRPC.TurnSurv);
-                        writer.Write(role2.PlayerId);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                        role2.TurnSurv();
-                        Role.GetRole(role2.Player).RoleHistory.Remove(role2);
-                    }
-                    else
-                        role2.LastProtected = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ProtectCd);
-                }
+                    role2.LastProtected = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ProtectCd);
                 else
                     role2.LastProtected = DateTime.UtcNow;
             }
@@ -909,9 +864,7 @@ namespace TownOfUsReworked.Custom
             else if (local.Is(RoleEnum.Jester))
             {
                 var role2 = (Jester)role;
-
-                if (role2.VotedOut)
-                    role2.LastHaunted = DateTime.UtcNow;
+                role2.LastHaunted = DateTime.UtcNow;
             }
             else if (local.Is(RoleEnum.Juggernaut))
             {
@@ -950,7 +903,7 @@ namespace TownOfUsReworked.Custom
                     role2.LastInfected = DateTime.UtcNow;
 
                 if (local.Data.IsDead || local.Data.Disconnected)
-                    role2.InfectedPlayers.Clear();
+                    role2.Infected.Clear();
             }
             else if (local.Is(RoleEnum.SerialKiller))
             {
@@ -1017,51 +970,14 @@ namespace TownOfUsReworked.Custom
                 var role2 = (BountyHunter)role;
 
                 if (start)
-                {
-                    if (role2.Failed)
-                    {
-                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
-                        writer.Write((byte)TurnRPC.TurnTroll);
-                        writer.Write(role2.PlayerId);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                        role2.TurnTroll();
-                        Role.GetRole(role2.Player).RoleHistory.Remove(role2);
-                    }
-                    else
-                        role2.LastChecked = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.BountyHunterCooldown);
-                }
+                    role2.LastChecked = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.BountyHunterCooldown);
                 else
                     role2.LastChecked = DateTime.UtcNow;
             }
             else if (local.Is(RoleEnum.Executioner))
             {
                 var role2 = (Executioner)role;
-
-                if (role2.TargetVotedOut)
-                    role2.LastDoomed = DateTime.UtcNow;
-                else if (role2.Failed && start)
-                {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
-                    writer.Write((byte)TurnRPC.TurnJest);
-                    writer.Write(role2.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    role2.TurnJest();
-                    Role.GetRole(role2.Player).RoleHistory.Remove(role2);
-                }
-            }
-            else if (local.Is(RoleEnum.Guesser))
-            {
-                var role2 = (Guesser)role;
-
-                if (role2.Failed && start)
-                {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
-                    writer.Write((byte)TurnRPC.TurnAct);
-                    writer.Write(role2.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    role2.TurnAct();
-                    Role.GetRole(role2.Player).RoleHistory.Remove(role2);
-                }
+                role2.LastDoomed = DateTime.UtcNow;
             }
 
             if (role.BaseFaction == Faction.Intruder)
@@ -1078,7 +994,10 @@ namespace TownOfUsReworked.Custom
                 var role2 = (SyndicateRole)role;
 
                 if (start)
-                    role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ChaosDriveKillCooldown);
+                {
+                    role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - (local.Is(RoleEnum.Anarchist) && !role2.HoldsDrive ?
+                        CustomGameOptions.AnarchKillCooldown : CustomGameOptions.ChaosDriveKillCooldown));
+                }
                 else
                     role2.LastKilled = DateTime.UtcNow;
             }

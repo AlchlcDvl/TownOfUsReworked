@@ -30,8 +30,8 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         {
             base.UpdateHud(__instance);
 
-            if (PlayerControl.LocalPlayer.Is(ObjectifierEnum.Rivals) && !__instance.Chat.isActiveAndEnabled && CustomGameOptions.RivalsChat)
-                __instance.Chat.SetVisible(true);
+            if (!__instance.Chat.isActiveAndEnabled)
+                __instance.Chat.SetVisible(CustomGameOptions.RivalsChat);
         }
     }
 }

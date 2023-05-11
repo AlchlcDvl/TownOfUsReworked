@@ -6,7 +6,8 @@ using AmongUs.GameOptions;
 using Il2CppSystem;
 using TownOfUsReworked.PlayerLayers.Roles;
 using Object = UnityEngine.Object;
-using TownOfUsReworked.Crowded.Components;
+using TownOfUsReworked.Monos;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.Custom
 {
@@ -16,20 +17,23 @@ namespace TownOfUsReworked.Custom
         public ShapeshifterMinigame Menu;
         public PlayerControl Owner;
         public Select Click;
+        public Exclude Exception;
         public List<PlayerControl> Targets;
         public readonly static List<CustomMenu> AllMenus = new();
         public delegate void Select(PlayerControl player);
+        public delegate bool Exclude(PlayerControl player);
 
-        public CustomMenu(PlayerControl owner, Select click)
+        public CustomMenu(PlayerControl owner, Select click, Exclude exception)
         {
             Owner = owner;
             Click = click;
+            Exception = exception;
             AllMenus.Add(this);
         }
 
-        public void Open(List<PlayerControl> targets)
+        public void Open()
         {
-            Targets = targets;
+            Targets = PlayerControl.AllPlayerControls.ToArray().Where(x => !Exception(x) && !x.IsPostmortal() && !x.Data.IsDead).ToList();
 
             if (Menu == null)
             {

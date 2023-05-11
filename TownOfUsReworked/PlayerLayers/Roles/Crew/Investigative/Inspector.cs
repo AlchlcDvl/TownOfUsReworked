@@ -4,7 +4,6 @@ using Il2CppSystem.Collections.Generic;
 using System;
 using TownOfUsReworked.Custom;
 using TownOfUsReworked.Classes;
-using System.Linq;
 using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
@@ -27,7 +26,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Inspected = new();
             InspectorResults = InspectorResults.GainsInfo;
             Type = LayerEnum.Inspector;
-            InspectButton = new(this, "Inspect", AbilityTypes.Direct, "ActionSecondary", Inspect);
+            InspectButton = new(this, "Inspect", AbilityTypes.Direct, "ActionSecondary", Inspect, Exception);
         }
 
         public float InspectTimer()
@@ -55,12 +54,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 LastInspected.AddSeconds(CustomGameOptions.ProtectKCReset);
         }
 
+        public bool Exception(PlayerControl player) => Inspected.Contains(player.PlayerId) || (((Faction is Faction.Intruder or Faction.Syndicate && player.Is(Faction)) ||
+            (player.Is(SubFaction) && SubFaction != SubFaction.None)) && CustomGameOptions.FactionSeeRoles) || (player == Player.GetOtherLover() && CustomGameOptions.LoversRoles) || (player
+            == Player.GetOtherRival() && CustomGameOptions.RivalsRoles) || (player.Is(ObjectifierEnum.Mafia) && Player.Is(ObjectifierEnum.Mafia) && CustomGameOptions.MafiaRoles);
+
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            var notinspected = PlayerControl.AllPlayerControls.ToArray().Where(x => !Inspected.Contains(x.PlayerId) || (Faction is Faction.Intruder or Faction.Syndicate &&
-                CustomGameOptions.FactionSeeRoles && x.GetFaction() == Faction)).ToList();
-            InspectButton.Update("INSPECT", InspectTimer(), CustomGameOptions.InspectCooldown, notinspected);
+            InspectButton.Update("INSPECT", InspectTimer(), CustomGameOptions.InspectCooldown);
         }
     }
 }

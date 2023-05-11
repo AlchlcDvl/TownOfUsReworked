@@ -49,7 +49,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var position = Player.transform.position;
             var id = Utils.GetAvailableId();
             writer.Write(id);
-            writer.Write(Player.PlayerId);
+            writer.Write(PlayerId);
             writer.Write(position);
             writer.Write(position.z + 0.01f);
             AmongUsClient.Instance.FinishRpcImmediately(writer);

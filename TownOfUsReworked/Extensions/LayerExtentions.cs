@@ -139,7 +139,8 @@ namespace TownOfUsReworked.Extensions
             var corruptedFlag = player.Is(ObjectifierEnum.Corrupted);
             var loverFlag = player.Is(ObjectifierEnum.Lovers);
             var mafFlag = player.Is(ObjectifierEnum.Mafia);
-            return traitorFlag || recruitFlag || sectFlag || revivedFlag || rivalFlag || fanaticFlag || corruptedFlag || bittenFlag || loverFlag || mafFlag;
+            return traitorFlag || recruitFlag || sectFlag || revivedFlag || rivalFlag || fanaticFlag || corruptedFlag || bittenFlag || loverFlag || mafFlag ||
+                !Role.GetRole(player).NotDefective;
         }
 
         public static bool CanDoTasks(this PlayerControl player)
@@ -262,6 +263,14 @@ namespace TownOfUsReworked.Extensions
 
         public static bool IsKnighted(this PlayerControl player) => Role.GetRoles<Monarch>(RoleEnum.Monarch).Any(role => role.Knighted.Contains(player.PlayerId));
 
+        public static bool IsSpelled(this PlayerControl player) => Role.GetRoles<Spellslinger>(RoleEnum.Spellslinger).Any(role => role.Spelled.Contains(player.PlayerId));
+
+        public static bool IsArsoDoused(this PlayerControl player) => Role.GetRoles<Arsonist>(RoleEnum.Arsonist).Any(role => role.Doused.Contains(player.PlayerId));
+
+        public static bool IsCryoDoused(this PlayerControl player) => Role.GetRoles<Cryomaniac>(RoleEnum.Cryomaniac).Any(role => role.Doused.Contains(player.PlayerId));
+
+        public static bool IsProtectedMonarch(this PlayerControl player) => Role.GetRoles<Monarch>(RoleEnum.Monarch).Any(role => role.Protected && role.Player == player);
+
         public static bool IsBlackmailed(this PlayerControl player)
         {
             var bmFlag = Role.GetRoles<Blackmailer>(RoleEnum.Blackmailer).Any(role => role.BlackmailedPlayer == player);
@@ -277,6 +286,14 @@ namespace TownOfUsReworked.Extensions
         public static bool IsShielded(this PlayerVoteArea player) => Utils.PlayerByVoteArea(player).IsShielded();
 
         public static bool IsKnighted(this PlayerVoteArea player) => Utils.PlayerByVoteArea(player).IsKnighted();
+
+        public static bool IsSpelled(this PlayerVoteArea player) => Utils.PlayerByVoteArea(player).IsSpelled();
+
+        public static bool IsArsoDoused(this PlayerVoteArea player) => Utils.PlayerByVoteArea(player).IsArsoDoused();
+
+        public static bool IsCryoDoused(this PlayerVoteArea player) => Utils.PlayerByVoteArea(player).IsCryoDoused();
+
+        public static bool IsProtectedMonarch(this PlayerVoteArea player) => Utils.PlayerByVoteArea(player).IsProtectedMonarch();
 
         public static bool IsRetShielded(this PlayerVoteArea player) => Utils.PlayerByVoteArea(player).IsRetShielded();
 
@@ -314,7 +331,7 @@ namespace TownOfUsReworked.Extensions
 
         public static bool IsProtected(this PlayerControl player) => Role.GetRoles<GuardianAngel>(RoleEnum.GuardianAngel).Any(role => role.Protecting && player == role.TargetPlayer);
 
-        public static bool IsInfected(this PlayerControl player) => Role.GetRoles<Plaguebearer>(RoleEnum.Plaguebearer).Any(role => role.InfectedPlayers.Contains(player.PlayerId) ||
+        public static bool IsInfected(this PlayerControl player) => Role.GetRoles<Plaguebearer>(RoleEnum.Plaguebearer).Any(role => role.Infected.Contains(player.PlayerId) ||
             player == role.Player);
 
         public static bool IsFramed(this PlayerControl player) => Role.GetRoles<Framer>(RoleEnum.Framer).Any(role => role.Framed.Contains(player.PlayerId));
@@ -454,11 +471,11 @@ namespace TownOfUsReworked.Extensions
         public static bool IsPostmortal(this PlayerControl player) => player.Is(RoleEnum.Revealer) || player.Is(RoleEnum.Phantom) || player.Is(RoleEnum.Ghoul) ||
             player.Is(RoleEnum.Banshee);
 
-        public static bool UnCaught(this PlayerControl player)
+        public static bool Caught(this PlayerControl player)
         {
             var role = Role.GetRole(player);
 
-            if (role == null)
+            if (role == null || !player.Data.IsDead)
                 return false;
 
             if (player.Is(RoleEnum.Phantom))
@@ -470,7 +487,39 @@ namespace TownOfUsReworked.Extensions
             else if (player.Is(RoleEnum.Banshee))
                 return ((Banshee)role).Caught;
 
-            return false;
+            return true;
+        }
+
+        public static float GetModifiedSpeed(this PlayerControl player)
+        {
+            var result = 1f;
+
+            if (player.Is(ModifierEnum.Dwarf))
+                result = CustomGameOptions.DwarfSpeed;
+            else if (player.Is(ModifierEnum.Giant))
+                result = CustomGameOptions.GiantSpeed;
+            else if (player.Is(ModifierEnum.Drunk))
+                result = Modifier.GetModifier<Drunk>(player).Modify;
+
+            if (player.Is(RoleEnum.Janitor) && Role.GetRole<Janitor>(player).CurrentlyDragging != null)
+                result *= CustomGameOptions.DragModifier;
+            else if (player.Is(RoleEnum.PromotedGodfather) && Role.GetRole<PromotedGodfather>(player).CurrentlyDragging != null)
+                result *= CustomGameOptions.DragModifier;
+
+            if (Role.GetRoles<Drunkard>(RoleEnum.Drunkard).Any(x => x.Confused && (x.HoldsDrive || (x.ConfusedPlayer == player))))
+                result *= -1;
+
+            return result;
+        }
+
+        public static float GetModifiedSize(this PlayerControl player)
+        {
+            if (player.Is(ModifierEnum.Dwarf))
+                return CustomGameOptions.DwarfScale;
+            else if (player.Is(ModifierEnum.Giant))
+                return CustomGameOptions.GiantScale;
+            else
+                return 1;
         }
 
         public static bool CanVent(this PlayerControl player)
@@ -608,16 +657,16 @@ namespace TownOfUsReworked.Extensions
 
         public static bool HasTarget(this Role role) => role.RoleType is RoleEnum.Executioner or RoleEnum.GuardianAngel or RoleEnum.Guesser or RoleEnum.BountyHunter;
 
-        public static List<object> AllPlayerInfo(this PlayerControl player)
+        public static List<PlayerLayer> AllPlayerInfo(this PlayerControl player)
         {
             var role = Role.GetRole(player);
             var modifier = Modifier.GetModifier(player);
             var ability = Ability.GetAbility(player);
             var objectifier = Objectifier.GetObjectifier(player);
-            return new List<object> { role, modifier, ability, objectifier };
+            return new List<PlayerLayer> { role, modifier, ability, objectifier };
         }
 
-        public static List<object> AllPlayerInfo(this PlayerVoteArea player) => Utils.PlayerByVoteArea(player).AllPlayerInfo();
+        public static List<PlayerLayer> AllPlayerInfo(this PlayerVoteArea player) => Utils.PlayerByVoteArea(player).AllPlayerInfo();
 
         public static PlayerControl GetOtherLover(this PlayerControl player)
         {
@@ -713,7 +762,7 @@ namespace TownOfUsReworked.Extensions
             if (info[3] != null && !objectifier.Hidden && objectifier.ObjectifierType != ObjectifierEnum.None)
             {
                 objectives += $"\n{objectifier.ColorString}{objectifier.TaskText}</color>";
-                objectifierName += $"{objectifier.ColorString}{objectifier.Name}</color>";
+                objectifierName += $"{objectifier.ColorString}{objectifier.Name} {objectifier.ColoredSymbol}</color>";
             }
             else
                 objectifierName += "None";
@@ -849,10 +898,9 @@ namespace TownOfUsReworked.Extensions
 
         public static void RoleUpdate(this Role newRole, Role former)
         {
-            former.Player.DestroyButtons();
+            former.Player.DisableButtons();
             newRole.RoleHistory.Add(former);
             newRole.RoleHistory.AddRange(former.RoleHistory);
-            newRole.Player = former.Player;
             newRole.Faction = former.Faction;
             newRole.SubFaction = former.SubFaction;
             newRole.FactionColor = former.FactionColor;
@@ -882,30 +930,6 @@ namespace TownOfUsReworked.Extensions
 
             if (newRole.Player == PlayerControl.LocalPlayer || former.Player == PlayerControl.LocalPlayer)
                 ButtonUtils.ResetCustomTimers(false);
-        }
-
-        public static void CarryData(this Role target, Role giver)
-        {
-            target.Faction = giver.Faction;
-            target.SubFaction = giver.SubFaction;
-            target.FactionColor = giver.FactionColor;
-            target.SubFactionColor = giver.SubFactionColor;
-            target.DeathReason = giver.DeathReason;
-            target.KilledBy = giver.KilledBy;
-            target.IsBitten = giver.IsBitten;
-            target.IsRecruit = giver.IsRecruit;
-            target.IsResurrected = giver.IsResurrected;
-            target.IsPersuaded = giver.IsPersuaded;
-            target.IsIntFanatic = giver.IsIntFanatic;
-            target.IsIntTraitor = giver.IsIntTraitor;
-            target.IsSynFanatic = giver.IsSynFanatic;
-            target.IsSynTraitor = giver.IsSynTraitor;
-            target.IsIntAlly = giver.IsIntAlly;
-            target.IsSynAlly = giver.IsSynAlly;
-            target.IsCrewAlly = giver.IsCrewAlly;
-            target.IsBlocked = giver.IsBlocked;
-            target.Diseased = giver.Diseased;
-            target.Player.RegenTask();
         }
 
         public static void SetImpostor(this GameData.PlayerInfo player, bool impostor)

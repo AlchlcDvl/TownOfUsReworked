@@ -13,18 +13,10 @@ namespace TownOfUsReworked.CustomOptions
         public readonly MultiMenu Menu;
         public Func<object, string> Format;
         public string Name;
-        public object Value { get; set; }
-        public OptionBehaviour Setting { get; set; }
-        public CustomOptionType Type { get; set; }
-        public RoleEnum ParentRole { get; set; } = RoleEnum.None;
-        public ModifierEnum ParentModifier { get; set; } = ModifierEnum.None;
-        public AbilityEnum ParentAbility { get; set; } = AbilityEnum.None;
-        public ObjectifierEnum ParentObjectifier { get; set; } = ObjectifierEnum.None;
-        public List<Map> ParentMaps { get; set; } = new();
-        public bool Active { get; set; } = true;
-        public List<bool> Actives { get; set; } = new();
-        public object DefaultValue { get; set; }
-        public static bool LobbyTextScroller { get; set; } = true;
+        public object Value;
+        public OptionBehaviour Setting;
+        public CustomOptionType Type;
+        public object DefaultValue;
 
         public CustomOption(int id, MultiMenu menu, string name, CustomOptionType type, object defaultValue, Func<object, string> format = null)
         {
@@ -76,15 +68,5 @@ namespace TownOfUsReworked.CustomOptions
                 str.ValueText.text = ToString();
             }
         }
-
-        public void SetRole(RoleEnum role) => ParentRole = role;
-
-        public void SetAbility(AbilityEnum ability) => ParentAbility = ability;
-
-        public void SetObjectifier(ObjectifierEnum objectifier) => ParentObjectifier = objectifier;
-
-        public void SetModifier(ModifierEnum modifier) => ParentModifier = modifier;
-
-        public void SetMaps(params Map[] maps) => ParentMaps.AddRange(maps);
     }
 }

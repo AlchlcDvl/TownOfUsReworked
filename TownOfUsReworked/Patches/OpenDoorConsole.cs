@@ -1,11 +1,11 @@
 using System;
 using HarmonyLib;
-using TownOfUsReworked.Data;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using TownOfUsReworked.Extensions;
-using TownOfUsReworked.PlayerLayers.Roles;
 using TownOfUsReworked.CustomOptions;
+using TownOfUsReworked.Data;
+using Hazel;
 
 namespace TownOfUsReworked.Patches
 {
@@ -18,20 +18,14 @@ namespace TownOfUsReworked.Patches
             __state = false;
             var playerControl = playerInfo.Object;
 
-            if ((playerControl.Is(RoleEnum.Phantom) && !Role.GetRole<Phantom>(playerControl).Caught) || (playerControl.Is(RoleEnum.Revealer) && playerInfo.IsDead &&
-                !Role.GetRole<Revealer>(playerControl).Caught) || (playerControl.Is(RoleEnum.Ghoul) && !Role.GetRole<Ghoul>(playerControl).Caught) ||
-                (playerControl.Is(RoleEnum.Banshee) && !Role.GetRole<Banshee>(playerControl).Caught))
+            if (playerControl.IsPostmortal() && !playerControl.Caught())
             {
                 playerInfo.IsDead = false;
                 __state = true;
             }
         }
 
-        public static void Postfix([HarmonyArgument(0)] GameData.PlayerInfo playerInfo, ref bool __state)
-        {
-            if (__state)
-                playerInfo.IsDead = true;
-        }
+        public static void Postfix([HarmonyArgument(0)] GameData.PlayerInfo playerInfo, ref bool __state) => playerInfo.IsDead = __state;
     }
 
     [HarmonyPatch(typeof(OpenDoorConsole), nameof(OpenDoorConsole.Use))]
@@ -41,10 +35,9 @@ namespace TownOfUsReworked.Patches
         {
             __instance.CanUse(PlayerControl.LocalPlayer.Data, out var canUse, out _);
 
-            if (!canUse)
-                return false;
+            if (canUse)
+                __instance.MyDoor.SetDoorway(true);
 
-            __instance.MyDoor.SetDoorway(true);
             return false;
         }
     }
@@ -59,20 +52,14 @@ namespace TownOfUsReworked.Patches
             __state = false;
             var playerControl = playerInfo.Object;
 
-            if ((playerControl.Is(RoleEnum.Phantom) && !Role.GetRole<Phantom>(playerControl).Caught) || (playerControl.Is(RoleEnum.Revealer) &&
-                !Role.GetRole<Revealer>(playerControl).Caught && playerInfo.IsDead) || (playerControl.Is(RoleEnum.Ghoul) && !Role.GetRole<Ghoul>(playerControl).Caught) ||
-                (playerControl.Is(RoleEnum.Banshee) && !Role.GetRole<Banshee>(playerControl).Caught))
+            if (playerControl.IsPostmortal() && !playerControl.Caught())
             {
                 playerInfo.IsDead = false;
                 __state = true;
             }
         }
 
-        public static void Postfix([HarmonyArgument(0)] GameData.PlayerInfo playerInfo, ref bool __state)
-        {
-            if (__state)
-                playerInfo.IsDead = true;
-        }
+        public static void Postfix([HarmonyArgument(0)] GameData.PlayerInfo playerInfo, ref bool __state) => playerInfo.IsDead = __state;
     }
 
     [HarmonyPatch(typeof(DoorConsole), nameof(DoorConsole.Use))]
@@ -109,19 +96,14 @@ namespace TownOfUsReworked.Patches
             __state = false;
             var playerControl = playerInfo.Object;
 
-            if ((playerControl.Is(RoleEnum.Phantom) && !Role.GetRole<Phantom>(playerControl).Caught) || (playerControl.Is(RoleEnum.Revealer) &&
-                !Role.GetRole<Revealer>(playerControl).Caught && playerInfo.IsDead))
+            if (playerControl.IsPostmortal() && !playerControl.Caught())
             {
                 playerInfo.IsDead = false;
                 __state = true;
             }
         }
 
-        public static void Postfix([HarmonyArgument(0)] GameData.PlayerInfo playerInfo, ref bool __state)
-        {
-            if (__state)
-                playerInfo.IsDead = true;
-        }
+        public static void Postfix([HarmonyArgument(0)] GameData.PlayerInfo playerInfo, ref bool __state) => playerInfo.IsDead = __state;
     }
 
     [HarmonyPatch(typeof(Ladder), nameof(Ladder.Use))]
@@ -149,20 +131,14 @@ namespace TownOfUsReworked.Patches
             __state = false;
             var playerControl = playerInfo.Object;
 
-            if ((playerControl.Is(RoleEnum.Phantom) && !Role.GetRole<Phantom>(playerControl).Caught) || (playerControl.Is(RoleEnum.Revealer) &&
-                !Role.GetRole<Revealer>(playerControl).Caught && playerInfo.IsDead) || (playerControl.Is(RoleEnum.Ghoul) && !Role.GetRole<Ghoul>(playerControl).Caught) ||
-                (playerControl.Is(RoleEnum.Banshee) && !Role.GetRole<Banshee>(playerControl).Caught))
+            if (playerControl.IsPostmortal() && !playerControl.Caught())
             {
                 playerInfo.IsDead = false;
                 __state = true;
             }
         }
 
-        public static void Postfix([HarmonyArgument(0)] GameData.PlayerInfo playerInfo, ref bool __state)
-        {
-            if (__state)
-                playerInfo.IsDead = true;
-        }
+        public static void Postfix([HarmonyArgument(0)] GameData.PlayerInfo playerInfo, ref bool __state) => playerInfo.IsDead = __state;
     }
     #endregion
 
@@ -175,20 +151,14 @@ namespace TownOfUsReworked.Patches
             __state = false;
             var playerControl = playerInfo.Object;
 
-            if ((playerControl.Is(RoleEnum.Phantom) && !Role.GetRole<Phantom>(playerControl).Caught) || (playerControl.Is(RoleEnum.Revealer) &&
-                !Role.GetRole<Revealer>(playerControl).Caught && playerInfo.IsDead) || (playerControl.Is(RoleEnum.Ghoul) && !Role.GetRole<Ghoul>(playerControl).Caught) ||
-                (playerControl.Is(RoleEnum.Banshee) && !Role.GetRole<Banshee>(playerControl).Caught))
+            if (playerControl.IsPostmortal() && !playerControl.Caught())
             {
                 playerInfo.IsDead = false;
                 __state = true;
             }
         }
 
-        public static void Postfix([HarmonyArgument(0)] GameData.PlayerInfo playerInfo, ref bool __state)
-        {
-            if (__state)
-                playerInfo.IsDead = true;
-        }
+        public static void Postfix([HarmonyArgument(0)] GameData.PlayerInfo playerInfo, ref bool __state) => playerInfo.IsDead = __state;
     }
     #endregion
 
@@ -201,20 +171,14 @@ namespace TownOfUsReworked.Patches
             __state = false;
             var playerControl = playerInfo.Object;
 
-            if ((playerControl.Is(RoleEnum.Phantom) && !Role.GetRole<Phantom>(playerControl).Caught) || (playerControl.Is(RoleEnum.Revealer) &&
-                !Role.GetRole<Revealer>(playerControl).Caught && playerInfo.IsDead) || (playerControl.Is(RoleEnum.Ghoul) && !Role.GetRole<Ghoul>(playerControl).Caught) ||
-                (playerControl.Is(RoleEnum.Banshee) && !Role.GetRole<Banshee>(playerControl).Caught))
+            if (playerControl.IsPostmortal() && !playerControl.Caught())
             {
                 playerInfo.IsDead = false;
                 __state = true;
             }
         }
 
-        public static void Postfix([HarmonyArgument(0)] GameData.PlayerInfo playerInfo, ref bool __state)
-        {
-            if (__state)
-                playerInfo.IsDead = true;
-        }
+        public static void Postfix([HarmonyArgument(0)] GameData.PlayerInfo playerInfo, ref bool __state) => playerInfo.IsDead = __state;
     }
 
     [HarmonyPatch(typeof(Console), nameof(Console.Use))]
@@ -247,5 +211,16 @@ namespace TownOfUsReworked.Patches
     public static class DoorSwipePatch
     {
         public static void Prefix(DoorCardSwipeGame __instance) => __instance.minAcceptedTime = CustomGameOptions.MinDoorSwipeTime;
+    }
+
+    [HarmonyPatch(typeof(OpenDoorConsole), nameof(OpenDoorConsole.Use))]
+    public static class SyncToiletDoor
+    {
+        public static void Prefix(OpenDoorConsole __instance)
+        {
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.DoorSyncToilet, SendOption.Reliable);
+            writer.Write(__instance.MyDoor.Id);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+        }
     }
 }

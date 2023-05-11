@@ -19,8 +19,8 @@ namespace TownOfUsReworked.Objects
         {
             Item = new GameObject(name) { layer = 11 };
             Item.AddSubmergedComponent("ElevatorMover");
-			Item.transform.position = new Vector3(position.x, position.y, (position.y / 1000f) + 0.001f);
-			Item.transform.localScale = Vector3.one * scale * 0.35f;
+            Item.transform.position = new Vector3(position.x, position.y, (position.y / 1000f) + 0.001f);
+            Item.transform.localScale = new(scale * 0.25f, scale * 0.25f, 1f);
             Transform = Item.transform;
             var rend = Item.AddComponent<SpriteRenderer>();
             rend.sprite = AssetManager.GetSprite("Range");
@@ -40,14 +40,7 @@ namespace TownOfUsReworked.Objects
             AllItems.Remove(this);
         }
 
-        public virtual IEnumerator Timer()
-        {
-            while (Transform != null)
-            {
-                yield return 0;
-                Update();
-            }
-        }
+        public virtual IEnumerator Timer() => null;
 
         public virtual void Update() {}
 

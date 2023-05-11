@@ -49,12 +49,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             base.UpdateHud(__instance);
 
-            if (CanPromote && !IsDead)
+            if (CanPromote)
             {
                 TurnGodfather();
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
                 writer.Write((byte)TurnRPC.TurnGodfather);
-                writer.Write(Player.PlayerId);
+                writer.Write(PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
             }
         }

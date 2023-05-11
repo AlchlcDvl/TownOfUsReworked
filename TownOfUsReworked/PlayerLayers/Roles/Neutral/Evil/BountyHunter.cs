@@ -23,7 +23,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public CustomButton GuessButton;
         public CustomButton HuntButton;
         public bool ButtonUsable => UsesLeft > 0;
-        public bool Failed => (UsesLeft <= 0 && !TargetFound) || (!TargetKilled && (TargetPlayer?.Data.IsDead == true || TargetPlayer?.Data.Disconnected == true));
+        public bool Failed => TargetPlayer == null || (UsesLeft <= 0 && !TargetFound) || (!TargetKilled && (TargetPlayer.Data.IsDead || TargetPlayer.Data.Disconnected));
         public int UsesLeft;
         private static int lettersGiven;
         private static bool lettersExhausted;
@@ -216,11 +216,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (Failed && !IsDead)
             {
+                TurnTroll();
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
                 writer.Write((byte)TurnRPC.TurnTroll);
-                writer.Write(Player.PlayerId);
+                writer.Write(PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
-                TurnTroll();
             }
         }
 
@@ -259,7 +259,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.BountyHunterWin);
-                writer.Write(Player.PlayerId);
+                writer.Write(PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 TargetKilled = true;
                 LastChecked = DateTime.UtcNow;

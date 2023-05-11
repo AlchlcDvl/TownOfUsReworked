@@ -21,7 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             Color = CustomGameOptions.CustomAbilityColors ? Colors.ButtonBarry : Colors.Ability;
             AbilityType = AbilityEnum.ButtonBarry;
             Type = LayerEnum.ButtonBarry;
-            ButtonButton = new(this, "Button", AbilityTypes.Effect, "Quarternary", Call, true);
+            ButtonButton = new(this, "Button", AbilityTypes.Effect, "Quarternary", Call);
         }
 
         public float StartTimer()
@@ -41,7 +41,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             ButtonUsed = true;
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
             writer.Write((byte)ActionsRPC.BarryButton);
-            writer.Write(Player.PlayerId);
+            writer.Write(PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
 
             if (AmongUsClient.Instance.AmHost)
@@ -57,7 +57,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            ButtonButton.Update("BUTTON", StartTimer(), CustomGameOptions.ButtonCooldown, Player.RemainingEmergencies, ButtonUsable);
+            ButtonButton.Update("BUTTON", StartTimer(), CustomGameOptions.ButtonCooldown, true, ButtonUsable);
         }
     }
 }

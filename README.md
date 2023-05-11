@@ -1,6 +1,7 @@
 ### ***Note: This repo is a fork of [Town of Us Reactivated](https://github.com/eDonnes124/Town-Of-Us-R) and is currently under development.***
 ### ***Also Note: This mod is NOT for mobile and console versions, do not ask for a port.***
-### ***Also Also Note: This README page is currently under editing, most things here are either missing or subject to change.***
+
+-----------------------
 
 ![LOGO](./Images/Reworked.png)
 
@@ -10,7 +11,9 @@ An [Among Us](https://store.steampowered.com/app/945360/Among_Us) mod that adds 
 
 Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or want to find people to play with!
 
-# ***Contents***
+-----------------------
+
+# Contents
 
 [**Contents**](#contents)
 
@@ -23,6 +26,7 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 - [Steam Guide](#steam-guide)
 - [Epic Games Guide](#epic-games-guide)
 - [Linux Guide](#linux-guide)
+- [Results](#results)
 - [Issues](#issues)
 
 [**Uninstallation**](#uninstallation)
@@ -37,15 +41,15 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 | [Consigliere](#consigliere)  | [Collider](#collider)         | [Crewmate](#crewmate)             | [Betrayer](betrayer)              |
 | [Consort](#consort)          | [Concealer](#concealer)       | [Detective](#detective)           | [Bounty Hunter](#bounty-hunter)   |
 | [Disguiser](#disguiser)      | [Crusader](#crusader)         | [Dictator](#dictator)             | [Cannibal](#cannibal)             |
-| [Enforcer](#enforcer)        | [Framer](#framer)             | [Engineer](#engineer)             | [Cryomaniac](#cryomaniac)         |
-| [Ghoul](#ghoul)              | [Poisoner](#poisoner)         | [Escort](#escort)                 | [Dracula](#dracula)               |
-| [Godfather](#godfather)      | [Rebel](#rebel)               | [Inspector](#inspector)           | [Executioner](#executioner)       |
-| [Grenadier](#grenadier)      | [Shapeshifter](#shapeshifter) | [Mayor](#mayor)                   | [Glitch](#glitch)                 |
-| [Impostor](#impostor)        | [Sidekick](#sidekick)         | [Medic](#medic)                   | [Guardian Angel](#guardian-angel) |
-| [Janitor](#janitor)          | [Spellslinger](#spellslinger) | [Medium](#medium)                 | [Guesser](#guesser)               |
-| [Mafioso](#mafioso)          | [Stalker](#stalker)           | [Monarch](#monarch)               | [Jackal](#jackal)                 |
-| [Miner](#miner)              | [Warper](#warper)             | [Mystic](#mystic)                 | [Jester](#jester)                 |
-| [Morphling](#morphling)      |                               | [Operative](#operative)           | [Juggernaut](#juggernaut)         |
+| [Enforcer](#enforcer)        | [Drunkard](#drunkard)         | [Engineer](#engineer)             | [Cryomaniac](#cryomaniac)         |
+| [Ghoul](#ghoul)              | [Framer](#framer)             | [Escort](#escort)                 | [Dracula](#dracula)               |
+| [Godfather](#godfather)      | [Poisoner](#poisoner)         | [Inspector](#inspector)           | [Executioner](#executioner)       |
+| [Grenadier](#grenadier)      | [Rebel](#rebel)               | [Mayor](#mayor)                   | [Glitch](#glitch)                 |
+| [Impostor](#impostor)        | [Shapeshifter](#shapeshifter) | [Medic](#medic)                   | [Guardian Angel](#guardian-angel) |
+| [Janitor](#janitor)          | [Sidekick](#sidekick)         | [Medium](#medium)                 | [Guesser](#guesser)               |
+| [Mafioso](#mafioso)          | [Spellslinger](#spellslinger) | [Monarch](#monarch)               | [Jackal](#jackal)                 |
+| [Miner](#miner)              | [Stalker](#stalker)           | [Mystic](#mystic)                 | [Jester](#jester)                 |
+| [Morphling](#morphling)      | [Warper](#warper)             | [Operative](#operative)           | [Juggernaut](#juggernaut)         |
 | [Teleporter](#teleporter)    |                               | [Retributionist](#retributionist) | [Murderer](#murderer)             |
 | [Wraith](#wraith)            |                               | [Revealer](#revealer)             | [Necromancer](#necromancer)       |
 |                              |                               | [Seer](#seer)                     | [Pestilence](#pestilence)         |
@@ -104,6 +108,8 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 - [Custom Hats](#custom-hats)
 - [Bug Reports, Suggestions & Additions](#bug--suggestions--additions)
 
+[**Layer Explanation And Assignment**](#layer-explanation-and-assignment)
+
 [**Credits & Resources**](#credits--resources)
 
 [**License**](#license)
@@ -116,6 +122,7 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 | Among Us - Version | Mod Version | Link |
 |--------------------|-------------|------|
+| 2023.3.28 (s & e) | v0.2.1 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.2.1/TownOfUsReworked.zip) |
 | 2023.3.28 (s & e) | v0.2.0 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.2.0/TownOfUsReworked.zip) |
 | 2023.3.28 (s & e) | v0.1.0-dev1 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.1.0-dev1/TownOfUsReworked.zip) |
 | 2023.3.28 (s & e) | v0.0.4-dev2 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.4-dev2/TownOfUsReworked.zip) |
@@ -150,9 +157,14 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 <details>
   <summary>Changelog</summary>
   <details>
+    <summary>v0.2.1</summary>
+    <ul> <li>Addition: Added a disconnect handler to hopefully reduce future errors</li> </ul>
+  </details>
+  <details>
     <summary>v0.2.0</summary>
     <ul> <li>New Roles: Monarch, Dictator [Crew (Sovereign)]</li> </ul>
-    <ul> <li>New Role: Spellslinger, Collider [Syndicate (Killing)]</li> </ul>
+    <ul> <li>New Role: Spellslinger [Syndicate (Power)]</li> </ul>
+    <ul> <li>New Role: Collider [Syndicate (Killing)]</li> </ul>
     <ul> <li>New Role: Stalker [Syndicate (Support)]</li> </ul>
     <ul> <li>New Objectifier: Mafia</li> </ul>
     <ul> <li>New Preset: Last Used - This preset always loads the settings you last played with in your previous Among Us session</li> </ul>
@@ -660,24 +672,25 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 ## Linux Guide
 1. Install Among Us via Steam
-2. Download newest [release](https://github.com/AlchlcDvl/TownOfUsReworked/latest) and extract it to ~/.steam/steam/steamapps/common/Among Us
+2. Download newest [release](https://github.com/AlchlcDvl/TownOfUsReworked/releases) and extract it to ~/.steam/steam/steamapps/common/Among Us
 3. Enable `winhttp.dll` via the proton winecfg (https://docs.bepinex.dev/articles/advanced/steam_interop.html#open-winecfg-for-the-target-game)
 4. Launch the game via Steam
 
+## Results
 Your game folder should look something like this.
 
 ![Image](./Images/Folder.png)
 
-The first launch may take a while, so be patient if it doesn't launch immediately. If the mod still does not work, download and install [vc_redist](https://aka.ms/vs/16/release/vc_redist.x86.exe) and try again.
+The first launch will take a while, so be patient if it doesn't launch immediately. If the mod still does not work, install [vc_redist](https://aka.ms/vs/16/release/vc_redist.x86.exe) and try again.
 
 ## Issues
-If you have issues installing Town of Us Reworked, you can join our [Discord](https://discord.gg/cd27aDQDY9) to receive help.
+If you still have issues installing Town of Us Reworked, you can join our [Discord](https://discord.gg/cd27aDQDY9) to receive help.
 
 -----------------------
 
 # Uninstallation
 
-For Epic Games users, delete these files and you're good to go!
+For Epic Games and Linux users, delete these files and you're good to go!
 
 ![Delete](./Images/Delete.png)
 
@@ -713,7 +726,7 @@ For Steam users, delete the `Among Us - ToU-Rew` that you created.
 
 -----------------------
 
-# Roles
+# Player Layers
 
 # Crew Roles
 
@@ -918,7 +931,7 @@ The Operative can place bugs around the map. When players enter the range of the
 | Bug Cooldown | The cooldown on the Operative's Bug button | Time | 25s |
 | Minimum Amount Of Time Required For Bug To Trigger | How long a player must stay in the bug for it to trigger | Time | 0s |
 | Bugs Removed Each Round | Whether the Operative's bugs are removed after each meeting | Toggle | True |
-| Bug Count | The number of bugss they can place in a game | Number | 5 |
+| Max Bugs | The number of bugs they can place in a game | Number | 5 |
 | Bug Range | The size of each trap | Factor | 0.25x |
 | Minimum Number Of Roles Required To Trigger Bug | The number of players that must enter the bug for it to be triggered | Number | 1 |
 | Who Sees Dead Bodies On Admin | Which players see dead bodies on the admin map | String | Nobody |
@@ -932,7 +945,8 @@ The Retributionist can resurrect dead crewmates. During meetings, the Retributio
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Retributionist Can Mimic After Voting | Dictates whether the Retributionist can continue voting players | Toggle | True |
+| Retributionist Can Mimic After Voting | Dictates whether the Retributionist can continue reviving players after voting | Toggle | True |
+| Max Uses | How many times can the Retributionist use the abilities of roles with limited uses on their abilities | Number | 5 |
 
 ## Revealer
 ### Alignment: Crew (Utility)
@@ -1513,6 +1527,7 @@ The Ambusher can temporaily force anyone to go on alert, killing anyone who inte
 |------|-------------|------|---------|
 | Ambush Cooldown | The cooldown on the Ambusher's Ambush button | Time | 10s |
 | Ambush Duration | The duration of the Ambusher target's Alert | Time | 25s |
+| Ambusher Can Ambush Teammates | Dictates whether the Ambusher can target teammates, while also being able to kill them | Toggle | False |
 
 ## Blackmailer
 ### Alignment: Intruder (Concealing)
@@ -1525,6 +1540,7 @@ The Blackmailer can silence people. During each round, the Blackmailer can go up
 |------|-------------|------|---------|
 | Blackmail Cooldown | The cooldown on the Blackmailer's Blackmail button | Time | 25s |
 | Blackmailer Can Read Whispers | Self descriptive | Toggle | False |
+| Blackmailer Can Blackmail Teammates | Self descriptive | Toggle | False |
 
 ## Camouflager
 ### Alignment: Intruder (Concealing)
@@ -1725,6 +1741,7 @@ Each member of this faction has a special ability and then after a certain numbe
 | Syndicate Replaces Intruders | Self descriptive | Toggle | False |
 | Chaos Drive Timer | How many meetings must pass before the Chaos Drive is handed out | Number | 3 |
 | Chaos Drive Is Global | The Chaos Drive is handed out to every member of the Syndicate rather than only one | Toggle | False |
+| Bomb Detonation Kills Members Of The Syndicate | Dictates whether members of the Syndicate are immune to bomb detonations | Toggle | True |
 
 ## Anarchist
 ### Alignment: Syndicate (Utility)
@@ -1735,7 +1752,7 @@ Just a plain Syndicate with no abilities and only spawns if all the other roles 
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Kill Cooldown | The cooldown on the Anarchist's Kill button | Time | 25s |
+| Kill Cooldown | The cooldown on the Anarchist's Kill button before receiving the Chaos Drive | Time | 25s |
 
 ## Banshee
 ### Alignment: Syndicate (Utility)
@@ -1777,6 +1794,7 @@ The Concealer can make a player invisible for a short while. With the Chaos Driv
 |------|-------------|------|---------|
 | Conceal Cooldown | The cooldown on the Concealer's conceal button | Time | 25s |
 | Conceal Duration | The duration of the Concealer's conceal | Time | 10s |
+| Concealer Can Conceal Teammates | Self descriptive | Toggle | False |
 
 ## Crusader
 ### Alignment: Syndicate (Killing)
@@ -1789,6 +1807,7 @@ The Crusader can temporaily force anyone to go on alert, killing anyone who inte
 |------|-------------|------|---------|
 | Crusade Cooldown | The cooldown on the Crusader's Crusade button | Time | 25s |
 | Crusade Duration | The duration of the Crusader target's Crusade | Time | 10s |
+| Crusader Can Crusade Teammates | Dictates whether the Crusader can target teammates, while also being able to kill them | Toggle | False |
 
 ## Collider
 ### Alignment: Syndicate (Killing)
@@ -1802,6 +1821,19 @@ The Collider can mark players as positive and negative. If these charged players
 | Coolide Cooldown | The cooldown on the Collider's Coolide button | Time | 25s |
 | Collide Radius | How much distance must be between the charged players for them to survive | Distance | 1m |
 | Chaos Drive Collide Radius Increase | How much does the collide distance increase by upon receiving the Chaos Drive | Distance | 1m |
+
+## Drunkard
+### **Alignment: Syndicate (Disruption)**
+
+The Drunkard can reverse a player's controls for a short while. With the Chaos Drive, this applies to everyone.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|------|-------------|------|---------|
+| Confuse Cooldown | The cooldown on the Drunkard's confuse button | Time | 25s |
+| Confuse Duration | The duration of the Drunkard's confusion | Time | 10s |
+| Syndicate Are Immune To Confuse | Self descriptive | Toggle | False |
 
 ## Framer
 ### Alignment: Syndicate (Disruption)
@@ -1849,6 +1881,7 @@ The Shapeshifter can swap the appearances of 2 players. WIth the Chaos Drive, ev
 |------|-------------|------|---------|
 | Shapeshift Cooldown | The cooldown on the Shapeshifter's Shapeshift button | Time | 25s |
 | Shapeshift Duration | The duration of the Shapeshifter's Shapeshift | Time | 10s |
+| Shapeshifter Can Shapeshift Teammates | Self descriptive | Toggle | False |
 
 ## Sidekick
 ### Alignment: Syndicate (Utility)
@@ -2565,6 +2598,50 @@ If you have any bugs or any need to contact me, join the [Discord](https://disco
 
 -----------------------
 
+# Layer Explanation And Assignment
+
+Since [TheOtherRoles](https://github.com/Eisbison/TheOtherRoles) has a section about this, might as well add my own. So here goes.
+
+A player's identity in the game is divided into 4 classifications, or Player Layers.
+
+The first and most important one is a [Role](#roles). It decides your abilities and goals for the game. Every game, you are guaranteed to have a role as not having one basically means you cannot play the game.
+
+The next one is an [Objectifier](#objectifiers). It provides and alternate way for you to win, and sometimes it may override the your original win condition (see [Corrupted](#corrupted) and [Mafia](#mafia)) or change your win condition mid-game (see [Traitor](#traitor) and [Fanatic](#fanatic)).
+
+The third layer is an [Ability](#abilities). It gives you can additional ability on top of your original abilities, to help boost your chances of winning.
+
+The last layer is a [Modifier](#modifiers). It is a passive affliction, usually negative or benign in nature, that serves no purpose and is there for fun. It cam alter a player's gameplay based on what they might have. For example, [Baits](#bait) and [Diseased](#diseased) players would want to die for their modifiers to take effect.
+
+With the general explanations out of the way, let's begin with how they are assigned.
+
+The Layer assignment is split into 7 phases.
+
+In the first phase, all required lists are cleared and all variables are reset.
+
+At the beginning of the phases 2 to 5, the spawn chances are handled. If the spawn chance is greater than 0%, the relevant layer is added to a list. If the mode is set to Custom, the same layer is added as many times as set by the count setting. For [Lovers](#lovers) and [Rivals](#rivals), they are added twice for each count as they depend on pairs, rather than singluar assignment. So setting them to spawn twice means that the list will contain up to 4 instances of Lovers/Rivals.
+
+The list's size is then modified to whatever the Max and Min settings for the specific layer or its alignment or faction (in case of Roles).
+
+The list is then shuffled around a lot and then sorted. During sorting, the first thing that happens is the addition of layers with 100% spawn chance being added to the list. If the spawn chance is between 0% and 100%, a random number is drawn from 1 to 99. If the number is less than or equal to the spawn chance, it is added to the spawning list.
+
+As a side note, setting a layer to 100% does not guarantee its spawn. This is because if there are multiple layers set to 100% and the number of assignable players is less than the amount of guaranteed layers, some of the layers will be left out.
+
+In All Any mode, however, the sorting is done differently. Any layer with a spawn chance of greater than 0% is guaranteed to be added, regardless to what it actually was set to. With this list, is then sorted on uniqueness. As long as the spawning list's size is lower than the number of players, it will keep adding a random layer from the initial list to the spawning list. If the layer has been set to unique, that layer is then removed from the initial list so that it is never randomly pulled again.
+
+The second phase of layer assignment is Roles. These have no special conditions as having a role is a requirement for other layers to spawn. If the number of assignable roles is less than the number of players, the outlying players will be assigned Crewmate, Impostor or Anarchist based on their faction.
+
+After the roles are assigned, a random Crew aligned player will be designated as the "Pure Crew" who will not recieve any Objectifier or be recruited by the [Jackal](#jackal). The Pure Crew cannot be converted into other subfactions either and would rather die than join them. This is a sort of hacky solution I came up for when there are no one capable of contributing to the task bar. Because of there technically being "0" tasks, the game would just end in no one's victory.
+
+Anyways, for the next 3 phases, the assignment also includes another action. Before the layers are assigned, a list of players is made for every restricted type (like making a list of players which only includes Crew because the modifier can only be assigned to Crew). After that, the layers are assigned corresponding to their set player lists, which each assigned player being removed from other player lists.
+
+The next phase is the handing out of targets. During this phase, layers with targets, such as Guesser, Lovers, Rivals and Executioner are given their targets. Lovers or Rivals who are left out will have that objectifier be removed.
+
+The final phase is what I call "The Cleanup". During this phase, roles whose targets could not be assigned will be changed into roles that don't have targets. After that, empty non-role layers are handed out to those who did not get any layer of that type prevent null errors during the game. Finally, certain variables for conversion are set, so that conversions are handled easier.
+
+After that, it's gaming time.
+
+-----------------------
+
 # Credits & Resources
 
 [Reactor](https://github.com/NuclearPowered/Reactor) - The framework of the mod\
@@ -2594,12 +2671,14 @@ If you have any bugs or any need to contact me, join the [Discord](https://disco
 [VincentVision](https://github.com/VincentVision) - For some code here and there from his version of Town Of Us (which was deleted sadly)\
 [Lunastellia](https://github.com/Lunastellia) - For Better Skeld code\
 [CrowdedMod](https://github.com/CrowdedMods/CrowdedMod) - For allowing to bypass the 15 player limit and is embedded into the mod\
-[Town Of Salem](https://www.blankmediagames.com/TownOfSalem/) & [Traitors In Salem](https://www.traitorsinsalem.com) - For multiple role ideas
+[Town Of Salem](https://www.blankmediagames.com/TownOfSalem/), [Traitors In Salem](https://www.traitorsinsalem.com) & [Town Of Salem 2](https://store.steampowered.com/app/2140510/Town_of_Salem_2/) - For multiple role ideas
 
 -----------------------
 
 # License
 This software is distributed under the GNU GPLv3 License. BepInEx is distributed under LGPL-2.1 License.
+
+-----------------------
 
 #
 <p align="center">This mod is not affiliated with Among Us or Innersloth LLC, and the content contained therein is not endorsed or otherwise sponsored by Innersloth LLC. Portions of the materials contained herein are property of Innersloth LLC.</p>

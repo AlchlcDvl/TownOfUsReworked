@@ -3,7 +3,6 @@ using TownOfUsReworked.Classes;
 using TownOfUsReworked.CustomOptions;
 using System;
 using TownOfUsReworked.Custom;
-using System.Linq;
 using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
@@ -28,8 +27,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             InspectorResults = InspectorResults.MovesAround;
             Positive = null;
             Negative = null;
-            PositiveButton = new(this, "Positive", AbilityTypes.Direct, "ActionSecondary", SetPositive);
-            NegativeButton = new(this, "Negative", AbilityTypes.Direct, "Secondary", SetNegative);
+            PositiveButton = new(this, "Positive", AbilityTypes.Direct, "ActionSecondary", SetPositive, Exception1);
+            NegativeButton = new(this, "Negative", AbilityTypes.Direct, "Secondary", SetNegative, Exception2);
         }
 
         public float PositiveTimer()
@@ -82,12 +81,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 LastNegative.AddSeconds(CustomGameOptions.ProtectKCReset);
         }
 
+        public bool Exception1(PlayerControl player) => player == Negative || player.Is(Faction) || (player.Is(SubFaction) && SubFaction != SubFaction.None);
+
+        public bool Exception2(PlayerControl player) => player == Positive || player.Is(Faction) || (player.Is(SubFaction) && SubFaction != SubFaction.None);
+
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            var notCharged = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Is(Faction.Syndicate) && x != Positive && x != Negative).ToList();
-            PositiveButton.Update("SET POSITIVE", PositiveTimer(), CustomGameOptions.CollideCooldown, notCharged);
-            NegativeButton.Update("SET NEGATIVE", NegativeTimer(), CustomGameOptions.CollideCooldown, notCharged);
+            PositiveButton.Update("SET POSITIVE", PositiveTimer(), CustomGameOptions.CollideCooldown);
+            NegativeButton.Update("SET NEGATIVE", NegativeTimer(), CustomGameOptions.CollideCooldown);
             var range = CustomGameOptions.CollideRange + (HoldsDrive ? CustomGameOptions.CollideRangeIncrease : 0);
 
             if (Utils.GetDistBetweenPlayers(Positive, Negative) <= range)

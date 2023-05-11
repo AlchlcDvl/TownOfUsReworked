@@ -36,30 +36,32 @@ namespace TownOfUsReworked.Patches
                         renderer.sprite = AssetManager.GetSprite("Arrow");
                         arrow.image = renderer;
                         gameObj.layer = 5;
-                        Role.GetRole(PlayerControl.LocalPlayer).AllArrows.Add(role.PlayerId, arrow);
+                        Role.LocalRole.AllArrows.Add(role.PlayerId, arrow);
                     }
                 }
                 else if (PlayerControl.LocalPlayer.Is(AbilityEnum.Snitch) && role.TasksDone)
                 {
                     if (PlayerControl.LocalPlayer == __instance)
+                    {
                         Utils.Flash(Color.green);
 
-                    foreach (var imp in PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) || (x.Is(RoleAlignment.NeutralKill) &&
-                        CustomGameOptions.SnitchSeesNeutrals)))
-                    {
-                        var gameObj = new GameObject("SnitchEvilArrow") { layer = 5 };
-                        var arrow = gameObj.AddComponent<ArrowBehaviour>();
-                        gameObj.transform.parent = imp.gameObject.transform;
-                        var renderer = gameObj.AddComponent<SpriteRenderer>();
-                        renderer.sprite = AssetManager.GetSprite("Arrow");
-                        arrow.image = renderer;
-                        Role.GetRole(__instance).AllArrows.Add(imp.PlayerId, arrow);
+                        foreach (var imp in PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) || (x.Is(RoleAlignment.NeutralKill) &&
+                            CustomGameOptions.SnitchSeesNeutrals)))
+                        {
+                            var gameObj = new GameObject("SnitchEvilArrow") { layer = 5 };
+                            var arrow = gameObj.AddComponent<ArrowBehaviour>();
+                            gameObj.transform.parent = imp.gameObject.transform;
+                            var renderer = gameObj.AddComponent<SpriteRenderer>();
+                            renderer.sprite = AssetManager.GetSprite("Arrow");
+                            arrow.image = renderer;
+                            Role.LocalRole.AllArrows.Add(imp.PlayerId, arrow);
+                        }
                     }
-                }
-                else if (PlayerControl.LocalPlayer.Is(Faction.Intruder) || (PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralKill) && CustomGameOptions.SnitchSeesNeutrals) ||
-                    PlayerControl.LocalPlayer.Is(Faction.Syndicate))
-                {
-                    Utils.Flash(Color.red);
+                    else if (PlayerControl.LocalPlayer.Is(Faction.Intruder) || (PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralKill) && CustomGameOptions.SnitchSeesNeutrals) ||
+                        PlayerControl.LocalPlayer.Is(Faction.Syndicate))
+                    {
+                        Utils.Flash(Color.red);
+                    }
                 }
             }
 
@@ -97,7 +99,7 @@ namespace TownOfUsReworked.Patches
                         var renderer = gameObj.AddComponent<SpriteRenderer>();
                         renderer.sprite = AssetManager.GetSprite("Arrow");
                         arrow.image = renderer;
-                        Role.GetRole(PlayerControl.LocalPlayer).AllArrows.Add(role.PlayerId, arrow);
+                        Role.LocalRole.AllArrows.Add(role.PlayerId, arrow);
                     }
                 }
                 else if (role.TasksDone)
@@ -138,23 +140,47 @@ namespace TownOfUsReworked.Patches
                         var renderer = gameObj.AddComponent<SpriteRenderer>();
                         renderer.sprite = AssetManager.GetSprite("Arrow");
                         arrow.image = renderer;
-                        Role.GetRole(PlayerControl.LocalPlayer).AllArrows.Add(role.PlayerId, arrow);
+                        Role.LocalRole.AllArrows.Add(role.PlayerId, arrow);
                     }
                 }
                 else if (role.TasksDone && !role.Caught)
                 {
-                    role.CompletedTasks = true;
+                    role.CompletedTasks = role.TasksDone;
 
                     if (PlayerControl.LocalPlayer.Is(RoleEnum.Revealer) || PlayerControl.LocalPlayer.Is(Faction.Intruder) || PlayerControl.LocalPlayer.Is(Faction.Syndicate) ||
                         (PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralKill) && CustomGameOptions.RevealerRevealsNeutrals))
                     {
                         Utils.Flash(role.Color);
                     }
+                }
+            }
 
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                    writer.Write((byte)ActionsRPC.RevealerFinished);
-                    writer.Write(role.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+            var role1 = Role.GetRole(__instance);
+
+            if (role1.TasksDone)
+            {
+                if (__instance.Is(RoleEnum.Tracker))
+                    ((Tracker)role1).UsesLeft++;
+                else if (__instance.Is(RoleEnum.Transporter))
+                    ((Transporter)role1).UsesLeft++;
+                else if (__instance.Is(RoleEnum.Vigilante))
+                    ((Vigilante)role1).UsesLeft++;
+                else if (__instance.Is(RoleEnum.Veteran))
+                    ((Veteran)role1).UsesLeft++;
+                else if (__instance.Is(RoleEnum.Altruist))
+                    ((Altruist)role1).UsesLeft++;
+                else if (__instance.Is(RoleEnum.Monarch))
+                    ((Monarch)role1).UsesLeft++;
+                else if (__instance.Is(RoleEnum.Chameleon))
+                    ((Chameleon)role1).UsesLeft++;
+                else if (__instance.Is(RoleEnum.Engineer))
+                    ((Engineer)role1).UsesLeft++;
+                else if (__instance.Is(RoleEnum.Retributionist))
+                    ((Retributionist)role1).UsesLeft++;
+                else if (__instance.Is(RoleEnum.Coroner))
+                {
+                    if (((Coroner)role1).ReferenceBody != null)
+                        ((Coroner)role1).UsesLeft++;
                 }
             }
         }
@@ -234,7 +260,7 @@ namespace TownOfUsReworked.Patches
                         var renderer = gameObj.AddComponent<SpriteRenderer>();
                         renderer.sprite = AssetManager.GetSprite("Arrow");
                         arrow.image = renderer;
-                        Role.GetRole(PlayerControl.LocalPlayer).AllArrows.Add(snitch.PlayerId, arrow);
+                        Role.LocalRole.AllArrows.Add(snitch.PlayerId, arrow);
                     }
                     else if (snitch.TasksDone && snitch.Player == PlayerControl.LocalPlayer)
                     {
@@ -244,7 +270,7 @@ namespace TownOfUsReworked.Patches
                         var renderer = gameObj.AddComponent<SpriteRenderer>();
                         renderer.sprite = AssetManager.GetSprite("Arrow");
                         arrow.image = renderer;
-                        Role.GetRole(PlayerControl.LocalPlayer).AllArrows.Add(PlayerControl.LocalPlayer.PlayerId, arrow);
+                        Role.LocalRole.AllArrows.Add(PlayerControl.LocalPlayer.PlayerId, arrow);
                     }
                 }
             }
@@ -259,7 +285,7 @@ namespace TownOfUsReworked.Patches
                     var renderer = gameObj.AddComponent<SpriteRenderer>();
                     renderer.sprite = AssetManager.GetSprite("Arrow");
                     arrow.image = renderer;
-                    Role.GetRole(PlayerControl.LocalPlayer).AllArrows.Add(revealer.PlayerId, arrow);
+                    Role.LocalRole.AllArrows.Add(revealer.PlayerId, arrow);
                 }
             }
 

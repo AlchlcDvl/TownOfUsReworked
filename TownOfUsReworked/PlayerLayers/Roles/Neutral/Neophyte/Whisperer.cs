@@ -5,6 +5,7 @@ using TownOfUsReworked.Classes;
 using TownOfUsReworked.Data;
 using Hazel;
 using TownOfUsReworked.Custom;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -104,7 +105,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     RoleGen.Convert(playerConversion.Item1, Player.PlayerId, SubFaction.Sect, false);
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                     writer.Write((byte)ActionsRPC.Convert);
-                    writer.Write(Player.PlayerId);
+                    writer.Write(PlayerId);
                     writer.Write(playerConversion.Item1);
                     writer.Write((byte)SubFaction.Sect);
                     writer.Write(false);
@@ -113,9 +114,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 }
             }
 
-            foreach (var removal in removals)
-                PlayerConversion.Remove(removal);
-
+            PlayerConversion.RemoveRange(removals);
             LastWhispered = DateTime.UtcNow;
             WhisperCount++;
         }

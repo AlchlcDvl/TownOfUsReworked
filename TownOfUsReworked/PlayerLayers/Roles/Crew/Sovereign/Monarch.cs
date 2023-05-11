@@ -19,6 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public DateTime LastKnighted;
         public int UsesLeft;
         public bool ButtonUsable => UsesLeft > 0;
+        public bool Protected => Knighted.Count > 0 && Knighted.Any(x => Utils.PlayerById(x).Is(Faction.Crew));
 
         public Monarch(PlayerControl player) : base(player)
         {
@@ -34,7 +35,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Knighted = new();
             ToBeKnighted = new();
             UsesLeft = CustomGameOptions.KnightCount;
-            KnightButton = new(this, "Knight", AbilityTypes.Direct, "ActionSecondary", Knight, true);
+            KnightButton = new(this, "Knight", AbilityTypes.Direct, "ActionSecondary", Knight, Exception, true);
         }
 
         public float KnightTimer()
@@ -53,18 +54,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
             writer.Write((byte)ActionsRPC.Knight);
-            writer.Write(Player.PlayerId);
+            writer.Write(PlayerId);
             writer.Write(KnightButton.TargetPlayer.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
             ToBeKnighted.Add(KnightButton.TargetPlayer.PlayerId);
             UsesLeft--;
         }
 
+        public bool Exception(PlayerControl player) => ToBeKnighted.Contains(player.PlayerId) || player.IsKnighted();
+
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            var notKnighted = PlayerControl.AllPlayerControls.ToArray().Where(x => !ToBeKnighted.Contains(x.PlayerId) && !Knighted.Contains(x.PlayerId) && !x.IsKnighted()).ToList();
-            KnightButton.Update("KNIGHT", KnightTimer(), CustomGameOptions.KnightingCooldown, UsesLeft, notKnighted, ButtonUsable, !RoundOne && ButtonUsable);
+            KnightButton.Update("KNIGHT", KnightTimer(), CustomGameOptions.KnightingCooldown, UsesLeft, ButtonUsable, !RoundOne && ButtonUsable);
         }
     }
 }

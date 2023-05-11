@@ -197,6 +197,7 @@ namespace TownOfUsReworked.CustomOptions
         public static int SpellslingerOn => (int)Generate.SpellslingerOn.Get();
         public static int StalkerOn => (int)Generate.StalkerOn.Get();
         public static int ColliderOn => (int)Generate.ColliderOn.Get();
+        public static int DrunkardOn => (int)Generate.DrunkardOn.Get();
 
         //Ability Spawn
         public static int CrewAssassinOn => (int)Generate.CrewAssassinOn.Get();
@@ -449,6 +450,7 @@ namespace TownOfUsReworked.CustomOptions
         public static int RetributionistCount => (int)Generate.RetributionistCount.Get();
         public static bool UniqueRetributionist => Generate.UniqueRetributionist.Get();
         public static bool ReviveAfterVoting => Generate.ReviveAfterVoting.Get();
+        public static int MaxUses => (int)Generate.MaxUses.Get();
 
         //Shifter Settings
         public static BecomeEnum ShiftedBecomes => (BecomeEnum)Generate.ShiftedBecomes.Get();
@@ -710,6 +712,7 @@ namespace TownOfUsReworked.CustomOptions
         public static int BlackmailerCount => (int)Generate.BlackmailerCount.Get();
         public static bool UniqueBlackmailer => Generate.UniqueBlackmailer.Get();
         public static bool WhispersNotPrivate => Generate.WhispersNotPrivate.Get();
+        public static bool BlackmailMates => Generate.BlackmailMates.Get();
 
         //Grenadier Settings
         public static bool GrenadierIndicators => Generate.GrenadierIndicators.Get();
@@ -749,6 +752,7 @@ namespace TownOfUsReworked.CustomOptions
         public static float AmbushDuration => Generate.AmbushDuration.Get();
         public static int AmbusherCount => (int)Generate.AmbusherCount.Get();
         public static bool UniqueAmbusher => Generate.UniqueAmbusher.Get();
+        public static bool AmbushMates => Generate.AmbushMates.Get();
 
         //Enforcer Settings
         public static float EnforceCooldown => Generate.EnforceCooldown.Get();
@@ -829,6 +833,14 @@ namespace TownOfUsReworked.CustomOptions
         public static float ShapeshiftCooldown => Generate.ShapeshiftCooldown.Get();
         public static float ShapeshiftDuration => Generate.ShapeshiftDuration.Get();
         public static bool UniqueShapeshifter => Generate.UniqueShapeshifter.Get();
+        public static bool ShapeshiftMates => Generate.ShapeshiftMates.Get();
+
+        //Drunkard Settings
+        public static int DrunkardCount => (int)Generate.DrunkardCount.Get();
+        public static float ConfuseCooldown => Generate.ConfuseCooldown.Get();
+        public static float ConfuseDuration => Generate.ConfuseDuration.Get();
+        public static bool UniqueDrunkard => Generate.UniqueDrunkard.Get();
+        public static bool ConfuseImmunity => Generate.ConfuseImmunity.Get();
 
         //Crusader Settings
         public static float CrusadeCooldown => Generate.CrusadeCooldown.Get();
@@ -836,6 +848,7 @@ namespace TownOfUsReworked.CustomOptions
         public static int CrusaderCount => (int)Generate.CrusaderCount.Get();
         public static bool UniqueCrusader => Generate.UniqueCrusader.Get();
         public static float ChaosDriveCrusadeRadius => Generate.ChaosDriveCrusadeRadius.Get();
+        public static bool CrusadeMates => Generate.CrusadeMates.Get();
 
         //Banshee Settings
         public static float ScreamCooldown => Generate.ScreamCooldown.Get();
@@ -851,12 +864,14 @@ namespace TownOfUsReworked.CustomOptions
         public static bool BombsDetonateOnMeetingStart => Generate.BombsDetonateOnMeetingStart.Get();
         public static bool BombsRemoveOnNewRound => Generate.BombsRemoveOnNewRound.Get();
         public static float ChaosDriveBombRange => Generate.ChaosDriveBombRange.Get();
+        public static bool BombKillsSyndicate => Generate.BombKillsSyndicate.Get();
 
         //Concealer Settings
         public static int ConcealerCount => (int)Generate.ConcealerCount.Get();
         public static float ConcealCooldown => Generate.ConcealCooldown.Get();
         public static float ConcealDuration => Generate.ConcealDuration.Get();
         public static bool UniqueConcealer => Generate.UniqueConcealer.Get();
+        public static bool ConcealMates => Generate.ConcealMates.Get();
 
         //Stalker Settings
         public static int StalkerCount => (int)Generate.StalkerCount.Get();

@@ -5,7 +5,6 @@ using TownOfUsReworked.Classes;
 using TownOfUsReworked.Data;
 using TownOfUsReworked.Custom;
 using Hazel;
-using System.Linq;
 using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
@@ -29,8 +28,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleType = RoleEnum.Concealer;
             RoleAlignment = RoleAlignment.SyndicateDisruption;
             AlignmentName = SD;
-            InspectorResults = InspectorResults.Unseen;
-            ConcealMenu = new(Player, Click);
+            ConcealMenu = new(Player, Click, Exception1);
             ConcealedPlayer = null;
             Type = LayerEnum.Concealer;
             ConcealButton = new(this, "Conceal", AbilityTypes.Effect, "Secondary", HitConceal);
@@ -42,7 +40,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
 
-            if (MeetingHud.Instance || (ConcealedPlayer == null && !SyndicateHasChaosDrive))
+            if (MeetingHud.Instance || (ConcealedPlayer == null && !HoldsDrive))
                 TimeRemaining = 0f;
         }
 
@@ -50,8 +48,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Enabled = false;
             LastConcealed = DateTime.UtcNow;
+            ConcealedPlayer = null;
 
-            if (SyndicateHasChaosDrive)
+            if (HoldsDrive)
                 Utils.DefaultOutfitAll();
             else
                 Utils.DefaultOutfit(ConcealedPlayer);
@@ -87,19 +86,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.Conceal);
-                writer.Write(Player.PlayerId);
+                writer.Write(PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 TimeRemaining = CustomGameOptions.ConcealDuration;
                 Conceal();
                 Utils.Conceal();
             }
             else if (ConcealedPlayer == null)
-                ConcealMenu.Open(PlayerControl.AllPlayerControls.ToArray().Where(x => x != Player && x != ConcealedPlayer).ToList());
+                ConcealMenu.Open();
             else
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.Conceal);
-                writer.Write(Player.PlayerId);
+                writer.Write(PlayerId);
                 writer.Write(ConcealedPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 TimeRemaining = CustomGameOptions.ConcealDuration;
@@ -107,6 +106,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 Utils.Invis(ConcealedPlayer, PlayerControl.LocalPlayer.Is(Faction.Syndicate));
             }
         }
+
+        public bool Exception1(PlayerControl player) => player == ConcealedPlayer || player == Player || (player.Is(Faction) && !CustomGameOptions.ConcealMates);
 
         public override void UpdateHud(HudManager __instance)
         {

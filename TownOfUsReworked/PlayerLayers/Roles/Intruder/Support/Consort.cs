@@ -4,8 +4,8 @@ using System;
 using TownOfUsReworked.Classes;
 using UnityEngine;
 using TownOfUsReworked.Custom;
-using System.Linq;
 using Hazel;
+using TownOfUsReworked.Extensions;
 
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
@@ -30,7 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleAlignment = RoleAlignment.IntruderSupport;
             AlignmentName = IS;
             RoleBlockImmune = true;
-            BlockMenu = new(Player, Click);
+            BlockMenu = new(Player, Click, Exception1);
             Type = LayerEnum.Consort;
             BlockTarget = null;
             BlockButton = new(this, "ConsortRoleblock", AbilityTypes.Effect, "Secondary", Roleblock);
@@ -88,18 +88,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 return;
 
             if (BlockTarget == null)
-                BlockMenu.Open(PlayerControl.AllPlayerControls.ToArray().Where(x => x != Player).ToList());
+                BlockMenu.Open();
             else
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.ConsRoleblock);
-                writer.Write(Player.PlayerId);
+                writer.Write(PlayerId);
                 writer.Write(BlockTarget.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 TimeRemaining = CustomGameOptions.ConsRoleblockDuration;
                 Block();
             }
         }
+
+        public bool Exception1(PlayerControl player) => player == BlockTarget || player == Player || player.Is(Faction) || (player.Is(SubFaction) && SubFaction != SubFaction.None);
 
         public override void UpdateHud(HudManager __instance)
         {
