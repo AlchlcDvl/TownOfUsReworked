@@ -1,8 +1,4 @@
-﻿using HarmonyLib;
-using System.Linq;
-using TownOfUsReworked.CustomOptions;
-
-namespace TownOfUsReworked.Patches
+﻿namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch(typeof(OverlayKillAnimation), nameof(OverlayKillAnimation.Initialize))]
     public static class OverlayKillAnimationPatch

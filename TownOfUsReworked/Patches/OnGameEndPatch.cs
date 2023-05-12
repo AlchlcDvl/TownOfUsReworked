@@ -1,11 +1,3 @@
-using HarmonyLib;
-using System.Linq;
-using TownOfUsReworked.PlayerLayers.Roles;
-using TownOfUsReworked.PlayerLayers.Objectifiers;
-using TownOfUsReworked.Data;
-using System.Collections.Generic;
-using TownOfUsReworked.PlayerLayers;
-
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch]

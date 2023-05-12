@@ -1,18 +1,3 @@
-using HarmonyLib;
-using System.Collections.Generic;
-using UnityEngine;
-using System.Text;
-using System.Linq;
-using TownOfUsReworked.Extensions;
-using TownOfUsReworked.PlayerLayers.Roles;
-using TownOfUsReworked.PlayerLayers.Objectifiers;
-using TownOfUsReworked.PlayerLayers.Modifiers;
-using TownOfUsReworked.PlayerLayers.Abilities;
-using TMPro;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.BetterMaps.Airship;
-using System.IO;
-
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch]
@@ -165,7 +150,7 @@ namespace TownOfUsReworked.Patches
                     return;
 
                 var position = Camera.main.ViewportToWorldPoint(new(0f, 1f, Camera.main.nearClipPlane));
-                var roleSummary = Object.Instantiate(__instance.WinText.gameObject);
+                var roleSummary = UObject.Instantiate(__instance.WinText.gameObject);
                 roleSummary.transform.position = new(__instance.Navigation.ExitButton.transform.position.x + 0.1f, position.y - 0.1f, -14f);
                 roleSummary.transform.localScale = new(1f, 1f, 1f);
 

@@ -1,12 +1,4 @@
-﻿using System;
-using TownOfUsReworked.CustomOptions;
-using UnityEngine;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.Custom;
-using TownOfUsReworked.Extensions;
-
-namespace TownOfUsReworked.PlayerLayers.Roles
+﻿namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Juggernaut : NeutralRole
     {

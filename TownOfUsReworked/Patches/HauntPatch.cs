@@ -1,11 +1,3 @@
-using HarmonyLib;
-using TownOfUsReworked.PlayerLayers.Roles;
-using TownOfUsReworked.PlayerLayers.Modifiers;
-using TownOfUsReworked.PlayerLayers.Objectifiers;
-using TownOfUsReworked.PlayerLayers.Abilities;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.CustomOptions;
-
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch(typeof(HauntMenuMinigame), nameof(HauntMenuMinigame.SetFilterText))]
@@ -42,6 +34,65 @@ namespace TownOfUsReworked.Patches
 
             __instance.FilterText.text = $"<size=75%>{String}</size>";
             return false;
+        }
+    }
+
+    [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.Update))]
+    public static class HauntUpdatePatch
+    {
+        public static void Postfix()
+        {
+            if (!ConstantVariables.IsInGame)
+                HudManager.Instance.AbilityButton.gameObject.SetActive(false);
+            else if (ConstantVariables.IsHnS)
+                HudManager.Instance.AbilityButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsImpostor());
+            else
+            {
+                var ghostRole = false;
+
+                if (PlayerControl.LocalPlayer.IsPostmortal())
+                    ghostRole = !PlayerControl.LocalPlayer.Caught();
+
+                HudManager.Instance.AbilityButton.gameObject.SetActive(!ghostRole && !MeetingHud.Instance && PlayerControl.LocalPlayer.Data.IsDead);
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(HauntMenuMinigame), nameof(HauntMenuMinigame.Start))]
+    public static class AddNeutralHauntPatch
+    {
+        public static bool Prefix(HauntMenuMinigame __instance)
+        {
+            if (!ConstantVariables.IsNormal)
+                return true;
+
+            __instance.FilterButtons[0].gameObject.SetActive(true);
+            var numActive = 0;
+            var numButtons = __instance.FilterButtons.Count(x => x.isActiveAndEnabled);
+            var edgeDist = 0.6f * numButtons;
+
+            foreach (var button in __instance.FilterButtons)
+            {
+                if (button.isActiveAndEnabled)
+                {
+                    button.transform.SetLocalX(FloatRange.SpreadToEdges(-edgeDist, edgeDist, numActive, numButtons));
+                    numActive++;
+                }
+            }
+
+            return false;
+        }
+    }
+
+    [HarmonyPatch(typeof(HauntMenuMinigame), nameof(HauntMenuMinigame.FixedUpdate))]
+    public static class CloseHauntPatch
+    {
+        public static void Prefix(HauntMenuMinigame __instance)
+        {
+            if (__instance.amClosing == Minigame.CloseState.Closing)
+                __instance.amClosing = Minigame.CloseState.None;
+            else if (__instance.amClosing == Minigame.CloseState.None)
+                __instance.amClosing = Minigame.CloseState.Closing;
         }
     }
 }

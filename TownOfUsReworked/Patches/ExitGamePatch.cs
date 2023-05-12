@@ -1,10 +1,3 @@
-using HarmonyLib;
-using UnityEngine;
-using System.Text;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.CustomOptions;
-using System.IO;
-
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.ExitGame))]

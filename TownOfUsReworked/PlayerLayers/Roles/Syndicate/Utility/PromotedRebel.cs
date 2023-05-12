@@ -1,20 +1,3 @@
-using Hazel;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Classes;
-using System;
-using UnityEngine;
-using System.Collections.Generic;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Objects;
-using System.Collections;
-using TownOfUsReworked.Custom;
-using System.Linq;
-using Reactor.Utilities;
-using TownOfUsReworked.Cosmetics;
-using Reactor.Utilities.Extensions;
-using Object = UnityEngine.Object;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class PromotedRebel : SyndicateRole
@@ -42,6 +25,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Negative = null;
             WarpPlayer1 = null;
             WarpPlayer2 = null;
+            ConfusedPlayer = null;
+            ConfuseMenu = new(Player, ConfuseClick, Exception12);
             WarpMenu1 = new(Player, WarpClick1, Exception5);
             WarpMenu2 = new(Player, WarpClick2, Exception6);
             ConcealMenu = new(Player, ConcealClick, Exception1);
@@ -62,6 +47,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             PoisonButton = new(this, "Poison", AbilityTypes.Direct, "ActionSecondary", HitPoison, Exception4);
             GlobalPoisonButton = new(this, "Poison", AbilityTypes.Effect, "ActionSecondary", HitGlobalPoison);
             WarpButton = new(this, "Warp", AbilityTypes.Effect, "Secondary", Warp);
+            ConfuseButton = new(this, "Confuse", AbilityTypes.Effect, "Secondary", HitConfuse);
             InspectorResults = InspectorResults.LeadsTheGroup;
         }
 
@@ -97,6 +83,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public bool Exception11(PlayerControl player) => player == Positive || player.Is(Faction) || (player.Is(SubFaction) && SubFaction != SubFaction.None);
 
+        public bool Exception12(PlayerControl player) => player == ConfusedPlayer || player == Player || (player.Is(Faction) && !CustomGameOptions.ConfuseImmunity);
+
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
@@ -107,6 +95,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var flag4 = WarpPlayer2 == null && !HoldsDrive;
             var flag5 = ShapeshiftPlayer1 == null && !HoldsDrive;
             var flag6 = ShapeshiftPlayer2 == null && !HoldsDrive;
+            var flag7 = ConfusedPlayer == null && !HoldsDrive;
+            ConfuseButton.Update(flag7 ? "SET TARGET" : "CONFUSE", ConfuseTimer(), CustomGameOptions.ConfuseCooldown, OnEffect, TimeRemaining, CustomGameOptions.ConfuseDuration);
             StalkButton.Update("STALK", StalkTimer(), CustomGameOptions.StalkCd, true, !HoldsDrive && IsStalk);
             SpellButton.Update("SPELL", SpellTimer(), CustomGameOptions.SpellCooldown + (SpellCount * CustomGameOptions.SpellCooldownIncrease), true, IsSpell);
             PositiveButton.Update("SET POSITIVE", PositiveTimer(), CustomGameOptions.CollideCooldown, true, IsCol);
@@ -136,6 +126,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                             ShapeshiftPlayer1 = null;
                         else if (ConcealedPlayer != null)
                             ConcealedPlayer = null;
+                        else if (ConfusedPlayer != null)
+                            ConfusedPlayer = null;
                     }
                     else if (PoisonedPlayer != null)
                         PoisonedPlayer = null;
@@ -271,7 +263,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         Points[player.PlayerId].transform.localPosition = v;
                     else
                     {
-                        var point = Object.Instantiate(__instance.HerePoint, __instance.HerePoint.transform.parent, true);
+                        var point = UObject.Instantiate(__instance.HerePoint, __instance.HerePoint.transform.parent, true);
                         point.transform.localPosition = v;
                         point.enabled = true;
                         player.SetPlayerMaterialColors(point);
@@ -295,6 +287,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
+
+            if (HoldsDrive)
+                Utils.Conceal();
+            else
+                Utils.Invis(ConcealedPlayer, PlayerControl.LocalPlayer.Is(Faction.Syndicate));
 
             if (MeetingHud.Instance || (ConcealedPlayer == null && !HoldsDrive))
                 TimeRemaining = 0f;
@@ -737,7 +734,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (Player1Body == null && Player2Body == null)
             {
                 WarpPlayer1.MyPhysics.ResetMoveState();
-                WarpPlayer1.NetTransform.SnapTo(new Vector2(WarpPlayer2.GetTruePosition().x, WarpPlayer2.GetTruePosition().y + 0.3636f));
+                WarpPlayer1.NetTransform.SnapTo(new(WarpPlayer2.GetTruePosition().x, WarpPlayer2.GetTruePosition().y + 0.3636f));
                 WarpPlayer1.MyRend().flipX = WarpPlayer2.MyRend().flipX;
 
                 if (SubmergedCompatibility.IsSubmerged && PlayerControl.LocalPlayer.PlayerId == WarpPlayer1.PlayerId)
@@ -763,7 +760,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             else if (Player1Body == null && Player2Body != null)
             {
                 WarpPlayer1.MyPhysics.ResetMoveState();
-                WarpPlayer1.NetTransform.SnapTo(new Vector2(Player2Body.TruePosition.x, Player2Body.TruePosition.y + 0.3636f));
+                WarpPlayer1.NetTransform.SnapTo(new(Player2Body.TruePosition.x, Player2Body.TruePosition.y + 0.3636f));
 
                 if (SubmergedCompatibility.IsSubmerged && PlayerControl.LocalPlayer.PlayerId == WarpPlayer1.PlayerId)
                 {
@@ -1095,6 +1092,84 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 LastStalked = DateTime.UtcNow;
             else if (interact[1])
                 LastStalked.AddSeconds(CustomGameOptions.ProtectKCReset);
+        }
+
+        //Drunkard Stuff
+        public CustomButton ConfuseButton;
+        public DateTime LastConfused;
+        public float Modifier => OnEffect ? -1 : 1;
+        public PlayerControl ConfusedPlayer;
+        public CustomMenu ConfuseMenu;
+        public bool IsDrunk => FormerRole?.RoleType == RoleEnum.Drunkard;
+
+        public void Confuse()
+        {
+            if (!Enabled && (PlayerControl.LocalPlayer == ConfusedPlayer || HoldsDrive))
+                Utils.Flash(Color);
+
+            Enabled = true;
+            TimeRemaining -= Time.deltaTime;
+
+            if (MeetingHud.Instance || (ConfusedPlayer == null && !HoldsDrive))
+                TimeRemaining = 0f;
+        }
+
+        public void UnConfuse()
+        {
+            Enabled = false;
+            LastConfused = DateTime.UtcNow;
+            ConfusedPlayer = null;
+        }
+
+        public float ConfuseTimer()
+        {
+            var utcNow = DateTime.UtcNow;
+            var timespan = utcNow - LastConfused;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.ConfuseCooldown) * 1000f;
+            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
+            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+        }
+
+        public void ConfuseClick(PlayerControl player)
+        {
+            var interact = Utils.Interact(Player, player);
+
+            if (interact[3])
+                ConfusedPlayer = player;
+            else if (interact[0])
+                LastConfused = DateTime.UtcNow;
+            else if (interact[1])
+                LastConfused.AddSeconds(CustomGameOptions.ProtectKCReset);
+        }
+
+        public void HitConfuse()
+        {
+            if (ConfuseTimer() != 0f || OnEffect)
+                return;
+
+            if (HoldsDrive)
+            {
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+                writer.Write((byte)ActionsRPC.RebelAction);
+                writer.Write((byte)RebelActionsRPC.Confuse);
+                writer.Write(PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                TimeRemaining = CustomGameOptions.ConfuseDuration;
+                Confuse();
+            }
+            else if (ConfusedPlayer == null)
+                ConfuseMenu.Open();
+            else
+            {
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+                writer.Write((byte)ActionsRPC.RebelAction);
+                writer.Write((byte)RebelActionsRPC.Confuse);
+                writer.Write(PlayerId);
+                writer.Write(ConfusedPlayer.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                TimeRemaining = CustomGameOptions.ConfuseDuration;
+                Confuse();
+            }
         }
     }
 }

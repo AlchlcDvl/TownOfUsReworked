@@ -1,7 +1,3 @@
-using HarmonyLib;
-using TownOfUsReworked.PlayerLayers.Roles;
-using TownOfUsReworked.Objects;
-
 namespace TownOfUsReworked.PlayerLayers
 {
     [HarmonyPatch]

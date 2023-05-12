@@ -1,11 +1,4 @@
-﻿using System;
-using HarmonyLib;
-using Reactor.Utilities.Extensions;
-using TMPro;
-using UnityEngine;
-using AmongUs.GameOptions;
-
-namespace TownOfUsReworked.Crowded
+﻿namespace TownOfUsReworked.Crowded
 {
     [HarmonyPatch(typeof(CreateOptionsPicker), nameof(CreateOptionsPicker.Awake))]
     public static class CreateOptionsPicker_Awake

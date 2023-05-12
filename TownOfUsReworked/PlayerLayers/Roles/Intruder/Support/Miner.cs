@@ -1,13 +1,3 @@
-using System;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Custom;
-using Hazel;
-using TownOfUsReworked.Classes;
-using Reactor.Networking.Extensions;
-using UnityEngine;
-using System.Linq;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Miner : IntruderRole

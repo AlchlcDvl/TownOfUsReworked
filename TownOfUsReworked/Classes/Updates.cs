@@ -1,13 +1,8 @@
-using UnityEngine;
-using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System;
-using HarmonyLib;
 
 namespace TownOfUsReworked.Classes
 {
@@ -172,6 +167,7 @@ namespace TownOfUsReworked.Classes
                         }
                     }
                 }
+
                 var assets = data.assets;
 
                 if (assets == null)
@@ -231,7 +227,7 @@ namespace TownOfUsReworked.Classes
                 }
 
                 var codeBase = TownOfUsReworked.Executing.Location;
-                UriBuilder uri = new(codeBase);
+                var uri = new UriBuilder(codeBase);
                 var fullname = Uri.UnescapeDataString(uri.Path);
 
                 if (updateType == "Submerged")

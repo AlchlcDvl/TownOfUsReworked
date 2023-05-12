@@ -1,46 +1,61 @@
-using UnityEngine;
-using System.IO;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using System.Security.Cryptography;
 using Newtonsoft.Json.Linq;
-using TownOfUsReworked.Classes;
-using System;
 
 namespace TownOfUsReworked.Cosmetics
 {
     public static class CosmeticsLoader
     {
         private const string REPO = "https://raw.githubusercontent.com/AlchlcDvl/ReworkedHats/master";
-        public readonly static List<CustomNameplateOnline> NameplateDetails = new();
-        public readonly static List<CustomHatOnline> HatDetails = new();
-        public readonly static List<CustomVisorOnline> VisorDetails = new();
+        private static bool HatsRunning;
+        private static bool NameplatesRunning;
+        private static bool VisorsRunning;
+        private static Task FetchHat;
+        private static Task FetchNameplate;
+        private static Task FetchVisor;
+        public readonly static List<CustomNameplates.CustomNameplate> NameplateDetails = new();
+        public readonly static List<CustomHats.CustomHat> HatDetails = new();
+        public readonly static List<CustomVisors.CustomVisor> VisorDetails = new();
 
         public static void LaunchFetchers()
         {
-            LaunchNameplateFetcherAsync();
-            LaunchHatFetcherAsync();
-            LaunchVisorFetcherAsync();
+            LaunchHatFetcher();
+            LaunchNameplateFetcher();
+            LaunchVisorFetcher();
         }
 
-        private static async void LaunchNameplateFetcherAsync()
+        private static void LaunchHatFetcher()
         {
-            try
-            {
-                var status = await FetchNameplates();
+            if (HatsRunning)
+                return;
 
-                if (status != HttpStatusCode.OK)
-                    Utils.LogSomething("Custom Nameplates could not be loaded");
-            }
-            catch (Exception e)
-            {
-                Utils.LogSomething("Unable to fetch nameplates\n" + e.Message);
-            }
+            HatsRunning = true;
+            FetchHat = LaunchHatFetcherAsync();
+            Utils.LogSomething("Fetched hats");
         }
 
-        private static async void LaunchHatFetcherAsync()
+        private static void LaunchNameplateFetcher()
+        {
+            if (NameplatesRunning)
+                return;
+
+            NameplatesRunning = true;
+            FetchNameplate = LaunchNameplateFetcherAsync();
+            Utils.LogSomething("Fetched nameplates");
+        }
+
+        private static void LaunchVisorFetcher()
+        {
+            if (VisorsRunning)
+                return;
+
+            VisorsRunning = true;
+            FetchVisor = LaunchVisorFetcherAsync();
+            Utils.LogSomething("Fetched visors");
+        }
+
+        private static async Task LaunchHatFetcherAsync()
         {
             try
             {
@@ -53,9 +68,28 @@ namespace TownOfUsReworked.Cosmetics
             {
                 Utils.LogSomething("Unable to fetch hats\n" + e.Message);
             }
+
+            HatsRunning = false;
         }
 
-        private static async void LaunchVisorFetcherAsync()
+        private static async Task LaunchNameplateFetcherAsync()
+        {
+            try
+            {
+                var status = await FetchNameplates();
+
+                if (status != HttpStatusCode.OK)
+                    Utils.LogSomething("Custom Nameplates could not be loaded");
+            }
+            catch (Exception e)
+            {
+                Utils.LogSomething("Unable to fetch nameplates\n" + e.Message);
+            }
+
+            NameplatesRunning = false;
+        }
+
+        private static async Task LaunchVisorFetcherAsync()
         {
             try
             {
@@ -68,6 +102,8 @@ namespace TownOfUsReworked.Cosmetics
             {
                 Utils.LogSomething("Unable to fetch visors\n" + e.Message);
             }
+
+            VisorsRunning = false;
         }
 
         public static async Task<HttpStatusCode> FetchHats()
@@ -87,37 +123,31 @@ namespace TownOfUsReworked.Cosmetics
                     return HttpStatusCode.ExpectationFailed;
                 }
 
-                var json = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                var json = await response.Content.ReadAsStringAsync();
                 var jobj = JObject.Parse(json)["hats"];
 
                 if (jobj == null || jobj?.HasValues == false)
                     return HttpStatusCode.ExpectationFailed;
 
-                var hatdatas = new List<CustomHatOnline>();
+                var hatdatas = new List<CustomHats.CustomHat>();
 
                 for (var current = jobj.First; current != null; current = current.Next)
                 {
                     if (current.HasValues)
                     {
-                        var info = new CustomHatOnline
+                        var info = new CustomHats.CustomHat
                         {
                             Name = current["name"]?.ToString(),
-                            ID = SanitizeResourcePath(current["id"]?.ToString())
+                            ID = current["id"]?.ToString()
                         };
 
                         if (info.ID == null || info.Name == null) // required
                             continue;
 
-                        info.Reshasha = current["reshasha"]?.ToString();
-                        info.BackID = SanitizeResourcePath(current["backid"]?.ToString());
-                        info.Reshashb = current["reshashb"]?.ToString();
-                        info.ClimbID = SanitizeResourcePath(current["climbid"]?.ToString());
-                        info.Reshashc = current["reshashc"]?.ToString();
-                        info.FlipID = SanitizeResourcePath(current["flipid"]?.ToString());
-                        info.Reshashf = current["reshashf"]?.ToString();
-                        info.BackflipID = SanitizeResourcePath(current["backflipid"]?.ToString());
-                        info.Reshashbf = current["reshashbf"]?.ToString();
-
+                        info.BackID = current["backid"]?.ToString();
+                        info.ClimbID = current["climbid"]?.ToString();
+                        info.FlipID = current["flipid"]?.ToString();
+                        info.BackflipID = current["backflipid"]?.ToString();
                         info.Artist = current["artist"]?.ToString();
                         info.Condition = current["condition"]?.ToString();
                         info.NoBouce = current["nobounce"] != null;
@@ -130,29 +160,30 @@ namespace TownOfUsReworked.Cosmetics
                 var markedfordownload = new List<string>();
                 var filePath = Path.GetDirectoryName(Application.dataPath) + "\\CustomHats\\";
 
-                var md5 = MD5.Create();
+                if (!Directory.Exists(filePath))
+                    Directory.CreateDirectory(filePath);
 
                 foreach (var data in hatdatas)
                 {
-                    if (DoesResourceRequireDownload(filePath + data.ID, data.Reshasha, md5))
+                    if (!File.Exists(filePath + data.ID + ".png"))
                         markedfordownload.Add(data.ID);
 
-                    if (data.BackID != null && DoesResourceRequireDownload(filePath + data.BackID, data.Reshashb, md5))
+                    if (data.BackID != null && !File.Exists(filePath + data.BackID + ".png"))
                         markedfordownload.Add(data.BackID);
 
-                    if (data.ClimbID != null && DoesResourceRequireDownload(filePath + data.ClimbID, data.Reshashc, md5))
+                    if (data.ClimbID != null && !File.Exists(filePath + data.ClimbID + ".png"))
                         markedfordownload.Add(data.ClimbID);
 
-                    if (data.FlipID != null && DoesResourceRequireDownload(filePath + data.FlipID, data.Reshashf, md5))
+                    if (data.FlipID != null && !File.Exists(filePath + data.FlipID + ".png"))
                         markedfordownload.Add(data.FlipID);
 
-                    if (data.BackflipID != null && DoesResourceRequireDownload(filePath + data.BackflipID, data.Reshashbf, md5))
+                    if (data.BackflipID != null && !File.Exists(filePath + data.BackflipID + ".png"))
                         markedfordownload.Add(data.BackflipID);
                 }
 
                 foreach (var file in markedfordownload)
                 {
-                    var hatFileResponse = await http.GetAsync($"{REPO}/hats/{file}", HttpCompletionOption.ResponseContentRead);
+                    var hatFileResponse = await http.GetAsync($"{REPO}/hats/{file}.png", HttpCompletionOption.ResponseContentRead);
 
                     if (hatFileResponse.StatusCode != HttpStatusCode.OK)
                         continue;
@@ -190,61 +221,53 @@ namespace TownOfUsReworked.Cosmetics
                     return HttpStatusCode.ExpectationFailed;
                 }
 
-                var json = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                var json = await response.Content.ReadAsStringAsync();
                 var jobj = JObject.Parse(json)["visors"];
 
                 if (jobj == null || jobj?.HasValues == false)
                     return HttpStatusCode.ExpectationFailed;
 
-                var visordatas = new List<CustomVisorOnline>();
+                var visorDatas = new List<CustomVisors.CustomVisor>();
 
                 for (var current = jobj.First; current != null; current = current.Next)
                 {
                     if (current.HasValues)
                     {
-                        var info = new CustomVisorOnline
+                        var info = new CustomVisors.CustomVisor
                         {
                             Name = current["name"]?.ToString(),
-                            ID = SanitizeResourcePath(current["id"]?.ToString())
+                            ID = current["id"]?.ToString()
                         };
 
                         if (info.ID == null || info.Name == null) // required
                             continue;
 
-                        info.Reshasha = current["reshasha"]?.ToString();
-                        info.Reshashb = current["reshashb"]?.ToString();
-                        info.Reshashc = current["reshashc"]?.ToString();
-                        info.FlipID = SanitizeResourcePath(current["flipid"]?.ToString());
-                        info.Reshashf = current["reshashf"]?.ToString();
-                        info.Reshashbf = current["reshashbf"]?.ToString();
-
+                        info.FlipID = current["flipid"]?.ToString();
                         info.Artist = current["artist"]?.ToString();
                         info.Condition = current["condition"]?.ToString();
                         info.Adaptive = current["adaptive"] != null;
-                        visordatas.Add(info);
+                        visorDatas.Add(info);
                     }
                 }
 
                 var markedfordownload = new List<string>();
-                var filePath = Path.GetDirectoryName(Application.dataPath) + "\\CustomHats\\";
+                var filePath = Path.GetDirectoryName(Application.dataPath) + "\\CustomVisors\\";
 
                 if (!Directory.Exists(filePath))
                     Directory.CreateDirectory(filePath);
 
-                var md5 = MD5.Create();
-
-                foreach (var data in visordatas)
+                foreach (var data in visorDatas)
                 {
-                    if (DoesResourceRequireDownload(filePath + data.ID, data.Reshasha, md5))
+                    if (!File.Exists(filePath + data.ID + ".png"))
                         markedfordownload.Add(data.ID);
 
-                    if (data.FlipID != null && DoesResourceRequireDownload(filePath + data.FlipID, data.Reshashf, md5))
+                    if (data.FlipID != null && !File.Exists(filePath + data.FlipID + ".png"))
                         markedfordownload.Add(data.FlipID);
                 }
 
                 foreach (var file in markedfordownload)
                 {
-                    var hatFileResponse = await http.GetAsync($"{REPO}/visors/{file}", HttpCompletionOption.ResponseContentRead);
+                    var hatFileResponse = await http.GetAsync($"{REPO}/visors/{file}.png", HttpCompletionOption.ResponseContentRead);
 
                     if (hatFileResponse.StatusCode != HttpStatusCode.OK)
                         continue;
@@ -255,7 +278,7 @@ namespace TownOfUsReworked.Cosmetics
                 }
 
                 VisorDetails.Clear();
-                VisorDetails.AddRange(visordatas);
+                VisorDetails.AddRange(visorDatas);
             }
             catch (Exception ex)
             {
@@ -263,14 +286,6 @@ namespace TownOfUsReworked.Cosmetics
             }
 
             return HttpStatusCode.OK;
-        }
-
-        private static string SanitizeResourcePath(string res)
-        {
-            if (res?.EndsWith(".png") != true)
-                return null;
-
-            return res.Replace("\\", "").Replace("/", "").Replace("*", "").Replace("..", "");
         }
 
         public static async Task<HttpStatusCode> FetchNameplates()
@@ -290,35 +305,30 @@ namespace TownOfUsReworked.Cosmetics
                     return HttpStatusCode.ExpectationFailed;
                 }
 
-                var json = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                var json = await response.Content.ReadAsStringAsync();
                 var jobj = JObject.Parse(json)["nameplates"];
 
                 if (jobj == null || jobj?.HasValues == false)
                     return HttpStatusCode.ExpectationFailed;
 
-                var NamePlateDatas = new List<CustomNameplateOnline>();
+                var namePlateDatas = new List<CustomNameplates.CustomNameplate>();
 
                 for (var current = jobj.First; current != null; current = current.Next)
                 {
                     if (current.HasValues)
                     {
-                        var info = new CustomNameplateOnline
+                        var info = new CustomNameplates.CustomNameplate
                         {
                             Name = current["name"]?.ToString(),
-                            ID = SanitizeResourcePath(current["id"]?.ToString())
+                            ID = current["id"]?.ToString()
                         };
 
                         if (info.ID == null || info.Name == null) // required
                             continue;
 
-                        info.Reshasha = current["reshasha"]?.ToString();
-                        info.Reshashb = current["reshashb"]?.ToString();
-                        info.Reshashc = current["reshashc"]?.ToString();
-                        info.Reshashf = current["reshashf"]?.ToString();
-                        info.Reshashbf = current["reshashbf"]?.ToString();
                         info.Artist = current["artist"]?.ToString();
                         info.Condition = current["condition"]?.ToString();
-                        NamePlateDatas.Add(info);
+                        namePlateDatas.Add(info);
                     }
                 }
 
@@ -328,17 +338,15 @@ namespace TownOfUsReworked.Cosmetics
                 if (!Directory.Exists(filePath))
                     Directory.CreateDirectory(filePath);
 
-                var md5 = MD5.Create();
-
-                foreach (var data in NamePlateDatas)
+                foreach (var data in namePlateDatas)
                 {
-                    if (DoesResourceRequireDownload(filePath + data.ID, data.Reshasha, md5))
+                    if (!File.Exists(filePath + data.ID + ".png"))
                         markedfordownload.Add(data.ID);
                 }
 
                 foreach (var file in markedfordownload)
                 {
-                    var NameplateFileResponse = await http.GetAsync($"{REPO}/nameplates/{file}", HttpCompletionOption.ResponseContentRead);
+                    var NameplateFileResponse = await http.GetAsync($"{REPO}/nameplates/{file}.png", HttpCompletionOption.ResponseContentRead);
 
                     if (NameplateFileResponse.StatusCode != HttpStatusCode.OK)
                         continue;
@@ -349,7 +357,7 @@ namespace TownOfUsReworked.Cosmetics
                 }
 
                 NameplateDetails.Clear();
-                NameplateDetails.AddRange(NamePlateDatas);
+                NameplateDetails.AddRange(namePlateDatas);
             }
             catch (Exception ex)
             {
@@ -357,43 +365,6 @@ namespace TownOfUsReworked.Cosmetics
             }
 
             return HttpStatusCode.OK;
-        }
-
-        private static bool DoesResourceRequireDownload(string respath, string reshash, MD5 md5)
-        {
-            if (reshash == null || !File.Exists(respath))
-                return true;
-
-            var stream = File.OpenRead(respath);
-            var hash = BitConverter.ToString(md5.ComputeHash(stream)).Replace("-", "").ToLowerInvariant();
-            return !reshash.Equals(hash);
-        }
-
-        public class CustomNameplateOnline : CustomNameplates.CustomNameplate
-        {
-            public string Reshasha { get; set; }
-            public string Reshashb { get; set; }
-            public string Reshashc { get; set; }
-            public string Reshashf { get; set; }
-            public string Reshashbf { get; set; }
-        }
-
-        public class CustomHatOnline : CustomHats.CustomHat
-        {
-            public string Reshasha { get; set; }
-            public string Reshashb { get; set; }
-            public string Reshashc { get; set; }
-            public string Reshashf { get; set; }
-            public string Reshashbf { get; set; }
-        }
-
-        public class CustomVisorOnline : CustomVisors.CustomVisor
-        {
-            public string Reshasha { get; set; }
-            public string Reshashb { get; set; }
-            public string Reshashc { get; set; }
-            public string Reshashf { get; set; }
-            public string Reshashbf { get; set; }
         }
     }
 }

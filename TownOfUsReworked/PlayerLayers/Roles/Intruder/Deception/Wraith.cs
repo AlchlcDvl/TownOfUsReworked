@@ -1,11 +1,3 @@
-using System;
-using TownOfUsReworked.Classes;
-using UnityEngine;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Custom;
-using Hazel;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Wraith : IntruderRole
@@ -43,7 +35,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
-            Utils.Invis(Player);
+            Utils.Invis(Player, PlayerControl.LocalPlayer.Is(Faction.Intruder));
 
             if (IsDead || MeetingHud.Instance)
                 TimeRemaining = 0f;

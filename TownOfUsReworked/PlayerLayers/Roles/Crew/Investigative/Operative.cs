@@ -1,15 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using TownOfUsReworked.Objects;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Data;
-using TMPro;
-using TownOfUsReworked.Custom;
-using UnityEngine;
-using Object = UnityEngine.Object;
-using TownOfUsReworked.Extensions;
-
-namespace TownOfUsReworked.PlayerLayers.Roles
+﻿namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Operative : CrewRole
     {
@@ -59,8 +48,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public void GenNumber(PlayerVoteArea voteArea)
         {
             var targetId = voteArea.TargetPlayerId;
-            var nameText = Object.Instantiate(voteArea.NameText, voteArea.transform);
-            nameText.transform.localPosition = new Vector3(-1.211f, -0.18f, -0.1f);
+            var nameText = UObject.Instantiate(voteArea.NameText, voteArea.transform);
+            nameText.transform.localPosition = new(-1.211f, -0.18f, -0.1f);
             nameText.text = GameData.Instance.GetPlayerById(targetId).DefaultOutfit.ColorId.ToString();
             PlayerNumbers[targetId] = nameText;
         }

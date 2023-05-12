@@ -1,11 +1,3 @@
-using HarmonyLib;
-using Hazel;
-using System;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Data;
-using AmongUs.GameOptions;
-using TownOfUsReworked.Classes;
-
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch]
@@ -88,8 +80,8 @@ namespace TownOfUsReworked.Patches
 
         public static byte GetRandomMap()
         {
-            Random _rnd = new();
-            float totalWeight = 0;
+            var _rnd = new SRandom();
+            var totalWeight = 0f;
             totalWeight += CustomGameOptions.RandomMapSkeld;
             totalWeight += CustomGameOptions.RandomMapMira;
             totalWeight += CustomGameOptions.RandomMapPolus;

@@ -1,22 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
-using TMPro;
-using UnityEngine;
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Extensions;
-using Hazel;
-using System;
-using HarmonyLib;
-using Object = UnityEngine.Object;
-using Random = UnityEngine.Random;
-using static UnityEngine.UI.Button;
-using TownOfUsReworked.PlayerLayers.Abilities;
-using TownOfUsReworked.Objects;
-using TownOfUsReworked.Patches;
-using Reactor.Utilities.Extensions;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Guesser : NeutralRole
@@ -361,9 +342,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 var buttonParent = new GameObject("Guess").transform;
                 buttonParent.SetParent(Phone.transform);
-                var button = Object.Instantiate(buttonTemplate, buttonParent);
-                Object.Instantiate(maskTemplate, buttonParent);
-                var label = Object.Instantiate(textTemplate, button);
+                var button = UObject.Instantiate(buttonTemplate, buttonParent);
+                UObject.Instantiate(maskTemplate, buttonParent);
+                var label = UObject.Instantiate(textTemplate, button);
                 button.GetComponent<SpriteRenderer>().sprite = HatManager.Instance.GetNamePlateById("nameplate_NoPlate")?.viewData?.viewData?.Image;
 
                 if (!GuessButtons.ContainsKey(i))
@@ -493,9 +474,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
             else if (!lettersExhausted)
             {
-                var random = Random.RandomRangeInt(0, roleName.Length);
-                var random2 = Random.RandomRangeInt(0, roleName.Length);
-                var random3 = Random.RandomRangeInt(0, roleName.Length);
+                var random = URandom.RandomRangeInt(0, roleName.Length);
+                var random2 = URandom.RandomRangeInt(0, roleName.Length);
+                var random3 = URandom.RandomRangeInt(0, roleName.Length);
 
                 if (lettersGiven <= roleName.Length - 3)
                 {
@@ -503,13 +484,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         letters.Contains($"{roleName[random3]}"))
                     {
                         if (random == random2 || letters.Contains($"{roleName[random2]}"))
-                            random2 = Random.RandomRangeInt(0, roleName.Length);
+                            random2 = URandom.RandomRangeInt(0, roleName.Length);
 
                         if (random2 == random3 || letters.Contains($"{roleName[random3]}"))
-                            random3 = Random.RandomRangeInt(0, roleName.Length);
+                            random3 = URandom.RandomRangeInt(0, roleName.Length);
 
                         if (random == random3 || letters.Contains($"{roleName[random]}"))
-                            random = Random.RandomRangeInt(0, roleName.Length);
+                            random = URandom.RandomRangeInt(0, roleName.Length);
                     }
 
                     something = $"Your target's role as the letters {roleName[random]}, {roleName[random2]} and {roleName[random3]} in it!";
@@ -519,13 +500,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     while (random == random2 || letters.Contains($"{roleName[random]}") || letters.Contains($"{roleName[random2]}"))
                     {
                         if (letters.Contains($"{roleName[random2]}"))
-                            random2 = Random.RandomRangeInt(0, roleName.Length);
+                            random2 = URandom.RandomRangeInt(0, roleName.Length);
 
                         if (letters.Contains($"{roleName[random]}"))
-                            random = Random.RandomRangeInt(0, roleName.Length);
+                            random = URandom.RandomRangeInt(0, roleName.Length);
 
                         if (random == random2)
-                            random = Random.RandomRangeInt(0, roleName.Length);
+                            random = URandom.RandomRangeInt(0, roleName.Length);
                     }
 
                     something = $"Your target's role as the letters {roleName[random]} and {roleName[random2]} in it!";
@@ -533,7 +514,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 else if (lettersGiven == roleName.Length - 1)
                 {
                     while (letters.Contains($"{roleName[random]}"))
-                        random = Random.RandomRangeInt(0, roleName.Length);
+                        random = URandom.RandomRangeInt(0, roleName.Length);
 
                     something = $"Your target's role as the letter {roleName[random]} in it!";
                 }
@@ -605,7 +586,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
 
             var template = voteArea.Buttons.transform.Find("CancelButton").gameObject;
-            var targetBox = Object.Instantiate(template, voteArea.transform);
+            var targetBox = UObject.Instantiate(template, voteArea.transform);
             targetBox.name = "GuessButton";
             targetBox.transform.localPosition = new(-0.95f, 0.03f, -1.3f);
             var renderer = targetBox.GetComponent<SpriteRenderer>();
@@ -634,8 +615,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             __instance.TimerText.gameObject.SetActive(false);
             HudManager.Instance.Chat.SetVisible(false);
             Page = 0;
-            var PhoneUI = Object.FindObjectsOfType<Transform>().FirstOrDefault(x => x.name == "PhoneUI");
-            var container = Object.Instantiate(PhoneUI, __instance.transform);
+            var PhoneUI = UObject.FindObjectsOfType<Transform>().FirstOrDefault(x => x.name == "PhoneUI");
+            var container = UObject.Instantiate(PhoneUI, __instance.transform);
             container.transform.localPosition = new(0, 0, -5f);
             Phone = container.gameObject;
             var buttonTemplate = voteArea.transform.FindChild("votePlayerBase");
@@ -644,8 +625,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var textTemplate = voteArea.NameText;
             var exitButtonParent = new GameObject("CustomExitButton").transform;
             exitButtonParent.SetParent(container);
-            var exitButton = Object.Instantiate(buttonTemplate.transform, exitButtonParent);
-            var exitButtonMask = Object.Instantiate(maskTemplate, exitButtonParent);
+            var exitButton = UObject.Instantiate(buttonTemplate.transform, exitButtonParent);
+            var exitButtonMask = UObject.Instantiate(maskTemplate, exitButtonParent);
             exitButton.gameObject.GetComponent<SpriteRenderer>().sprite = smallButtonTemplate.GetComponent<SpriteRenderer>().sprite;
             exitButtonParent.transform.localPosition = new(2.725f, 2.1f, -5);
             exitButtonParent.transform.localScale = new(0.217f, 0.9f, 1);
@@ -691,8 +672,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 return;
 
             button.SetActive(false);
-            button.GetComponent<PassiveButton>().OnClick = new ButtonClickedEvent();
-            Object.Destroy(button);
+            button.GetComponent<PassiveButton>().OnClick.RemoveAllListeners();
+            button.Destroy();
             OtherButtons[targetId] = null;
         }
 
@@ -862,7 +843,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     {
                         voteArea.XMark.sprite = BlackmailMeetingUpdate.PrevXMark;
                         voteArea.Overlay.sprite = BlackmailMeetingUpdate.PrevOverlay;
-                        voteArea.XMark.transform.localPosition = new Vector3(voteArea.XMark.transform.localPosition.x - BlackmailMeetingUpdate.LetterXOffset,
+                        voteArea.XMark.transform.localPosition = new(voteArea.XMark.transform.localPosition.x - BlackmailMeetingUpdate.LetterXOffset,
                             voteArea.XMark.transform.localPosition.y - BlackmailMeetingUpdate.LetterYOffset, voteArea.XMark.transform.localPosition.z);
                     }
                 }
@@ -874,7 +855,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     {
                         voteArea.XMark.sprite = BlackmailMeetingUpdate.PrevXMark;
                         voteArea.Overlay.sprite = BlackmailMeetingUpdate.PrevOverlay;
-                        voteArea.XMark.transform.localPosition = new Vector3(voteArea.XMark.transform.localPosition.x - BlackmailMeetingUpdate.LetterXOffset,
+                        voteArea.XMark.transform.localPosition = new(voteArea.XMark.transform.localPosition.x - BlackmailMeetingUpdate.LetterXOffset,
                             voteArea.XMark.transform.localPosition.y - BlackmailMeetingUpdate.LetterYOffset, voteArea.XMark.transform.localPosition.z);
                     }
                 }

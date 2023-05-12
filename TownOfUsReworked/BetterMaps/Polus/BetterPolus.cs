@@ -1,8 +1,3 @@
-using System.Linq;
-using HarmonyLib;
-using UnityEngine;
-using TownOfUsReworked.CustomOptions;
-
 namespace TownOfUsReworked.BetterMaps.Polus
 {
     [HarmonyPatch(typeof(ShipStatus))]
@@ -111,7 +106,7 @@ namespace TownOfUsReworked.BetterMaps.Polus
 
         private static void FindVents()
         {
-            var ventsList = Object.FindObjectsOfType<Vent>().ToList();
+            var ventsList = UObject.FindObjectsOfType<Vent>().ToList();
 
             if (ElectricBuildingVent == null)
                 ElectricBuildingVent = ventsList.Find(vent => vent.gameObject.name == "ElectricBuildingVent");
@@ -135,7 +130,7 @@ namespace TownOfUsReworked.BetterMaps.Polus
                 BathroomVent = ventsList.Find(vent => vent.gameObject.name == "BathroomVent");
 
             if (SpeciVent == null)
-                SpeciVent = Object.Instantiate(AdminVent, AdminVent.transform);
+                SpeciVent = UObject.Instantiate(AdminVent, AdminVent.transform);
 
             IsVentsFetched = ElectricBuildingVent != null && ElectricalVent != null && ScienceBuildingVent != null && StorageVent != null &&
                 LightCageVent != null;
@@ -144,16 +139,16 @@ namespace TownOfUsReworked.BetterMaps.Polus
         private static void FindRooms()
         {
             if (Comms == null)
-                Comms = Object.FindObjectsOfType<GameObject>().ToList().Find(o => o.name == "Comms");
+                Comms = UObject.FindObjectsOfType<GameObject>().ToList().Find(o => o.name == "Comms");
 
             if (DropShip == null)
-                DropShip = Object.FindObjectsOfType<GameObject>().ToList().Find(o => o.name == "Dropship");
+                DropShip = UObject.FindObjectsOfType<GameObject>().ToList().Find(o => o.name == "Dropship");
 
             if (Outside == null)
-                Outside = Object.FindObjectsOfType<GameObject>().ToList().Find(o => o.name == "Outside");
+                Outside = UObject.FindObjectsOfType<GameObject>().ToList().Find(o => o.name == "Outside");
 
             if (Science == null)
-                Science = Object.FindObjectsOfType<GameObject>().ToList().Find(o => o.name == "Science");
+                Science = UObject.FindObjectsOfType<GameObject>().ToList().Find(o => o.name == "Science");
 
             IsRoomsFetched = Comms != null && DropShip != null && Outside != null && Science != null;
         }
@@ -161,24 +156,24 @@ namespace TownOfUsReworked.BetterMaps.Polus
         private static void FindObjects()
         {
             if (WifiConsole == null)
-                WifiConsole = Object.FindObjectsOfType<Console>().ToList().Find(console => console.name == "panel_wifi");
+                WifiConsole = UObject.FindObjectsOfType<Console>().ToList().Find(console => console.name == "panel_wifi");
 
             if (NavConsole == null)
-                NavConsole = Object.FindObjectsOfType<Console>().ToList().Find(console => console.name == "panel_nav");
+                NavConsole = UObject.FindObjectsOfType<Console>().ToList().Find(console => console.name == "panel_nav");
 
             if (Vitals == null)
-                Vitals = Object.FindObjectsOfType<SystemConsole>().ToList().Find(console => console.name == "panel_vitals");
+                Vitals = UObject.FindObjectsOfType<SystemConsole>().ToList().Find(console => console.name == "panel_vitals");
 
             if (DvdScreenOffice == null)
             {
-                var DvdScreenAdmin = Object.FindObjectsOfType<GameObject>().ToList().Find(o => o.name == "dvdscreen");
+                var DvdScreenAdmin = UObject.FindObjectsOfType<GameObject>().ToList().Find(o => o.name == "dvdscreen");
 
                 if (DvdScreenAdmin != null)
-                    DvdScreenOffice = Object.Instantiate(DvdScreenAdmin);
+                    DvdScreenOffice = UObject.Instantiate(DvdScreenAdmin);
             }
 
             if (TempCold == null)
-                TempCold = Object.FindObjectsOfType<Console>().ToList().Find(console => console.name == "panel_tempcold");
+                TempCold = UObject.FindObjectsOfType<Console>().ToList().Find(console => console.name == "panel_tempcold");
 
             IsObjectsFetched = WifiConsole != null && NavConsole != null && Vitals != null && DvdScreenOffice != null && TempCold != null;
         }

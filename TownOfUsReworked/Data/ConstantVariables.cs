@@ -1,13 +1,3 @@
-using AmongUs.GameOptions;
-using InnerNet;
-using TownOfUsReworked.CustomOptions;
-using HarmonyLib;
-using TownOfUsReworked.PlayerLayers.Objectifiers;
-using TownOfUsReworked.PlayerLayers.Roles;
-using System.Linq;
-using TownOfUsReworked.Extensions;
-using TownOfUsReworked.PlayerLayers;
-
 namespace TownOfUsReworked.Data
 {
     //Thanks to Town Of Host for this code

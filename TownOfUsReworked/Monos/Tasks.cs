@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using HarmonyLib;
-using UnityEngine;
-using Il2CppInterop.Runtime.Attributes;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.BetterMaps.Airship;
-
-namespace TownOfUsReworked.Monos
+﻿namespace TownOfUsReworked.Monos
 {
     [HarmonyPatch]
     public class Tasks : MonoBehaviour
@@ -57,7 +49,7 @@ namespace TownOfUsReworked.Monos
             var CallPlateform = new GameObject("CallPlateform");
             CallPlateform.transform.position = Position;
             CallPlateform.transform.localRotation = Quaternion.Euler(Rotation);
-            CallPlateform.transform.localScale = new Vector3(1f, 1f, 2f);
+            CallPlateform.transform.localScale = new(1f, 1f, 2f);
             CallPlateform.layer = 12;
             CallPlateform.SetActive(true);
 

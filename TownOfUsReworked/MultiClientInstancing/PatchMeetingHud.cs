@@ -1,7 +1,4 @@
-﻿using HarmonyLib;
-using TownOfUsReworked.Data;
-
-namespace TownOfUsReworked.MultiClientInstancing
+﻿namespace TownOfUsReworked.MultiClientInstancing
 {
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Confirm))]
     [HarmonyPriority(Priority.Last)]

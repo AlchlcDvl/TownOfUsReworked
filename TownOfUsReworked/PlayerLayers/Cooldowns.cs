@@ -1,13 +1,9 @@
-using HarmonyLib;
-using UnityEngine;
-using TownOfUsReworked.Custom;
-
 namespace TownOfUsReworked.PlayerLayers
 {
-    [HarmonyPatch(typeof(Object), nameof(Object.Destroy), typeof(Object))]
+    [HarmonyPatch(typeof(UObject), nameof(UObject.Destroy), typeof(UObject))]
     public static class HUDClose
     {
-        public static void Postfix(Object obj)
+        public static void Postfix(UObject obj)
         {
             if (ExileController.Instance == null || obj != ExileController.Instance.gameObject)
                 return;

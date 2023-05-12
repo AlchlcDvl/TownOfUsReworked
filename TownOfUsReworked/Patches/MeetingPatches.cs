@@ -1,24 +1,3 @@
-using HarmonyLib;
-using UnityEngine;
-using TownOfUsReworked.CustomOptions;
-using Hazel;
-using Reactor.Utilities.Extensions;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.PlayerLayers.Roles;
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.PlayerLayers;
-using System;
-using System.Collections.Generic;
-using Il2CppInterop.Runtime.InteropTypes.Arrays;
-using Object = UnityEngine.Object;
-using TownOfUsReworked.Extensions;
-using System.Collections;
-using Reactor.Utilities;
-using TownOfUsReworked.PlayerLayers.Objectifiers;
-using System.Linq;
-using TownOfUsReworked.PlayerLayers.Abilities;
-using TownOfUsReworked.Monos;
-
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch]
@@ -449,7 +428,7 @@ namespace TownOfUsReworked.Patches
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.MeetingStart, SendOption.Reliable);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
 
-                foreach (var body in Object.FindObjectsOfType<DeadBody>())
+                foreach (var body in UObject.FindObjectsOfType<DeadBody>())
                     body.gameObject.Destroy();
 
                 foreach (var player in PlayerControl.AllPlayerControls)
@@ -603,7 +582,7 @@ namespace TownOfUsReworked.Patches
             public static bool Prefix(MeetingHud __instance, [HarmonyArgument(0)] Il2CppStructArray<MeetingHud.VoterState> states)
             {
                 var allNums = new Dictionary<int, int>();
-                __instance.TitleText.text = Object.FindObjectOfType<TranslationController>().GetString(StringNames.MeetingVotingResults, Array.Empty<Il2CppSystem.Object>());
+                __instance.TitleText.text = UObject.FindObjectOfType<TranslationController>().GetString(StringNames.MeetingVotingResults, Array.Empty<Il2CppSystem.Object>());
                 var amountOfSkippedVoters = 0;
 
                 for (var i = 0; i < __instance.playerStates.Length; i++)
@@ -707,7 +686,7 @@ namespace TownOfUsReworked.Patches
         {
             public static bool Prefix(MeetingHud __instance, [HarmonyArgument(0)] GameData.PlayerInfo voterPlayer, [HarmonyArgument(1)] int index, [HarmonyArgument(2)] Transform parent)
             {
-                var spriteRenderer = Object.Instantiate(__instance.PlayerVotePrefab);
+                var spriteRenderer = UObject.Instantiate(__instance.PlayerVotePrefab);
                 var insiderFlag = false;
                 var deadFlag = CustomGameOptions.DeadSeeEverything && PlayerControl.LocalPlayer.Data.IsDead;
 
@@ -1432,7 +1411,7 @@ namespace TownOfUsReworked.Patches
             }
 
             if (roleRevealed)
-                player.ColorBlindName.transform.localPosition = new Vector3(-0.93f, -0.2f, -0.1f);
+                player.ColorBlindName.transform.localPosition = new(-0.93f, -0.2f, -0.1f);
 
             return (name, color);
         }

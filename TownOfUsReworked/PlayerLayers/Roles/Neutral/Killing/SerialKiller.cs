@@ -1,12 +1,4 @@
-﻿using System;
-using UnityEngine;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.Custom;
-using TownOfUsReworked.Extensions;
-
-namespace TownOfUsReworked.PlayerLayers.Roles
+﻿namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class SerialKiller : NeutralRole
     {

@@ -1,26 +1,3 @@
-using Hazel;
-using System;
-using HarmonyLib;
-using System.Linq;
-using UnityEngine;
-using Reactor.Utilities;
-using AmongUs.GameOptions;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Objects;
-using TownOfUsReworked.Classes;
-using System.Collections.Generic;
-using TownOfUsReworked.Extensions;
-using Object = UnityEngine.Object;
-using Reactor.Utilities.Extensions;
-using TownOfUsReworked.PlayerLayers;
-using Reactor.Networking.Extensions;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.BetterMaps.Airship;
-using TownOfUsReworked.PlayerLayers.Roles;
-using TownOfUsReworked.PlayerLayers.Modifiers;
-using TownOfUsReworked.PlayerLayers.Abilities;
-using TownOfUsReworked.PlayerLayers.Objectifiers;
-
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.HandleRpc))]
@@ -107,9 +84,6 @@ namespace TownOfUsReworked.Patches
 
                     break;
 
-                case CustomRPC.Guess:
-                    break;
-
                 case CustomRPC.CatchPhantom:
                     Role.GetRole<Phantom>(Utils.PlayerById(reader.ReadByte())).Caught = true;
                     break;
@@ -137,11 +111,6 @@ namespace TownOfUsReworked.Patches
 
                     break;
 
-                case CustomRPC.SendChat:
-                    var report = reader.ReadString();
-                    HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, report);
-                    break;
-
                 case CustomRPC.CatchRevealer:
                     var rev = Utils.PlayerById(reader.ReadByte());
                     var revRole = Role.GetRole<Revealer>(rev);
@@ -154,7 +123,7 @@ namespace TownOfUsReworked.Patches
                     break;
 
                 case CustomRPC.MeetingStart:
-                    foreach (var body in Object.FindObjectsOfType<DeadBody>())
+                    foreach (var body in UObject.FindObjectsOfType<DeadBody>())
                         body.gameObject.Destroy();
 
                     foreach (var player10 in PlayerControl.AllPlayerControls)
@@ -163,20 +132,16 @@ namespace TownOfUsReworked.Patches
                     break;
 
                 case CustomRPC.DoorSyncToilet:
-                    var Id = reader.ReadInt32();
-                    var DoorToSync = Object.FindObjectsOfType<PlainDoor>().FirstOrDefault(door => door.Id == Id);
-                    DoorToSync.SetDoorway(true);
+                    var doorToSync = UObject.FindObjectsOfType<PlainDoor>().FirstOrDefault(door => door.Id == reader.ReadInt32());
+                    doorToSync.SetDoorway(true);
                     break;
 
                 case CustomRPC.SyncPlateform:
-                    var isLeft = reader.ReadBoolean();
-                    CallPlateform.SyncPlateform(isLeft);
+                    CallPlateform.SyncPlateform(reader.ReadBoolean());
                     break;
 
                 case CustomRPC.CheckMurder:
-                    var murderKiller = Utils.PlayerById(reader.ReadByte());
-                    var murderTarget = Utils.PlayerById(reader.ReadByte());
-                    murderKiller.CheckMurder(murderTarget);
+                    Utils.PlayerById(reader.ReadByte()).CheckMurder(Utils.PlayerById(reader.ReadByte()));
                     break;
 
                 case CustomRPC.SetColor:
@@ -208,9 +173,8 @@ namespace TownOfUsReworked.Patches
                     break;
 
                 case CustomRPC.SetSpawnAirship:
-                    while (SpawnInMinigamePatch.SpawnPoints.Count < 3)
-                        SpawnInMinigamePatch.SpawnPoints.Add(reader.ReadByte());
-
+                    SpawnInMinigamePatch.SpawnPoints.Clear();
+                    SpawnInMinigamePatch.SpawnPoints.AddRange(reader.ReadBytesAndSize().ToList());
                     break;
 
                 case CustomRPC.ChaosDrive:
@@ -220,7 +184,7 @@ namespace TownOfUsReworked.Patches
 
                 case CustomRPC.SetPos:
                     var setplayer = Utils.PlayerById(reader.ReadByte());
-                    setplayer.transform.position = new Vector3(reader.ReadSingle(), reader.ReadSingle(), setplayer.transform.position.z);
+                    setplayer.transform.position = new(reader.ReadSingle(), reader.ReadSingle(), setplayer.transform.position.z);
                     break;
 
                 case CustomRPC.SyncCustomSettings:
@@ -461,10 +425,7 @@ namespace TownOfUsReworked.Patches
                                     break;
 
                                 case RetributionistActionsRPC.Protect:
-                                    var ret5 = Utils.PlayerById(reader.ReadByte());
-                                    var shielded2 = Utils.PlayerById(reader.ReadByte());
-                                    var retRole5 = Role.GetRole<Retributionist>(ret5);
-                                    retRole5.ShieldedPlayer = shielded2;
+                                    Role.GetRole<Retributionist>(Utils.PlayerById(reader.ReadByte())).ShieldedPlayer = Utils.PlayerById(reader.ReadByte());
                                     break;
 
                                 case RetributionistActionsRPC.Alert:
@@ -494,7 +455,7 @@ namespace TownOfUsReworked.Patches
                                     var mediatedPlayer2 = Utils.PlayerById(reader.ReadByte());
                                     var retRole10 = Role.GetRole<Retributionist>(Utils.PlayerById(reader.ReadByte()));
 
-                                    if (PlayerControl.LocalPlayer.PlayerId != mediatedPlayer2.PlayerId)
+                                    if (PlayerControl.LocalPlayer != mediatedPlayer2)
                                         break;
 
                                     retRole10.AddMediatePlayer(mediatedPlayer2.PlayerId);
@@ -564,7 +525,6 @@ namespace TownOfUsReworked.Patches
                                     var gfRole8 = Role.GetRole<PromotedGodfather>(gf8);
                                     gfRole8.TimeRemaining = CustomGameOptions.InvisDuration;
                                     gfRole8.Invis();
-                                    Utils.Invis(gf8, PlayerControl.LocalPlayer.Is(Faction.Intruder));
                                     break;
 
                                 case GodfatherActionsRPC.Drag:
@@ -583,7 +543,6 @@ namespace TownOfUsReworked.Patches
                                 case GodfatherActionsRPC.Camouflage:
                                     var gf11 = Utils.PlayerById(reader.ReadByte());
                                     var gfRole11 = Role.GetRole<PromotedGodfather>(gf11);
-                                    Utils.Camouflage();
                                     gfRole11.TimeRemaining = CustomGameOptions.CamouflagerDuration;
                                     gfRole11.Camouflage();
                                     break;
@@ -634,35 +593,26 @@ namespace TownOfUsReworked.Patches
                                 case RebelActionsRPC.Conceal:
                                     var reb2 = Utils.PlayerById(reader.ReadByte());
                                     var rebRole2 = Role.GetRole<PromotedRebel>(reb2);
+
+                                    if (!rebRole2.HoldsDrive)
+                                        rebRole2.ConcealedPlayer = Utils.PlayerById(reader.ReadByte());
+
                                     rebRole2.TimeRemaining = CustomGameOptions.ConcealDuration;
                                     rebRole2.Conceal();
-
-                                    if (rebRole2.HoldsDrive)
-                                        Utils.Conceal();
-                                    else
-                                    {
-                                        rebRole2.ConcealedPlayer = Utils.PlayerById(reader.ReadByte());
-                                        Utils.Invis(rebRole2.ConcealedPlayer, PlayerControl.LocalPlayer.Is(Faction.Syndicate));
-                                    }
-
                                     break;
 
                                 case RebelActionsRPC.Shapeshift:
                                     var reb3 = Utils.PlayerById(reader.ReadByte());
                                     var rebRole3 = Role.GetRole<PromotedRebel>(reb3);
-                                    rebRole3.TimeRemaining = CustomGameOptions.ShapeshiftDuration;
-                                    rebRole3.Shapeshift();
 
-                                    if (rebRole3.HoldsDrive)
-                                        Utils.Shapeshift();
-                                    else
+                                    if (!rebRole3.HoldsDrive)
                                     {
                                         rebRole3.ShapeshiftPlayer1 = Utils.PlayerById(reader.ReadByte());
                                         rebRole3.ShapeshiftPlayer2 = Utils.PlayerById(reader.ReadByte());
-                                        Utils.Morph(rebRole3.ShapeshiftPlayer1, rebRole3.ShapeshiftPlayer2);
-                                        Utils.Morph(rebRole3.ShapeshiftPlayer2, rebRole3.ShapeshiftPlayer1);
                                     }
 
+                                    rebRole3.TimeRemaining = CustomGameOptions.ShapeshiftDuration;
+                                    rebRole3.Shapeshift();
                                     break;
 
                                 case RebelActionsRPC.Warp:
@@ -683,13 +633,23 @@ namespace TownOfUsReworked.Patches
                                     var reb7 = Utils.PlayerById(reader.ReadByte());
                                     var crused2 = Utils.PlayerById(reader.ReadByte());
                                     var rebRole7 = Role.GetRole<PromotedRebel>(reb7);
-                                    rebRole7.TimeRemaining = CustomGameOptions.CrusadeDuration;
                                     rebRole7.CrusadedPlayer = crused2;
+                                    rebRole7.TimeRemaining = CustomGameOptions.CrusadeDuration;
                                     rebRole7.Crusade();
                                     break;
 
                                 case RebelActionsRPC.Spell:
                                     Role.GetRole<PromotedRebel>(Utils.PlayerById(reader.ReadByte())).Spelled.Add(reader.ReadByte());
+                                    break;
+
+                                case RebelActionsRPC.Confuse:
+                                    var rebRole6 = Role.GetRole<Drunkard>(Utils.PlayerById(reader.ReadByte()));
+
+                                    if (!rebRole6.HoldsDrive)
+                                        rebRole6.ConfusedPlayer = Utils.PlayerById(reader.ReadByte());
+
+                                    rebRole6.TimeRemaining = CustomGameOptions.ConfuseDuration;
+                                    rebRole6.Confuse();
                                     break;
                             }
 
@@ -828,7 +788,9 @@ namespace TownOfUsReworked.Patches
                             var poisoner = Utils.PlayerById(reader.ReadByte());
                             var poisoned = Utils.PlayerById(reader.ReadByte());
                             var poisonerRole = Role.GetRole<Poisoner>(poisoner);
+                            poisonerRole.TimeRemaining = CustomGameOptions.PoisonDuration;
                             poisonerRole.PoisonedPlayer = poisoned;
+                            poisonerRole.Poison();
                             break;
 
                         case ActionsRPC.Blackmail:
@@ -844,7 +806,6 @@ namespace TownOfUsReworked.Patches
                             var wraithRole = Role.GetRole<Wraith>(wraith);
                             wraithRole.TimeRemaining = CustomGameOptions.InvisDuration;
                             wraithRole.Invis();
-                            Utils.Invis(wraith, PlayerControl.LocalPlayer.Is(Faction.Intruder));
                             break;
 
                         case ActionsRPC.Alert:
@@ -962,11 +923,7 @@ namespace TownOfUsReworked.Patches
                             var coordinates = new Dictionary<byte, Vector2>();
 
                             for (var i = 0; i < teleports; i++)
-                            {
-                                var playerId = reader.ReadByte();
-                                var location = reader.ReadVector2();
-                                coordinates.Add(playerId, location);
-                            }
+                                coordinates.Add(reader.ReadByte(), reader.ReadVector2());
 
                             Utils.WarpPlayersToCoordinates(coordinates);
                             break;
@@ -1007,13 +964,12 @@ namespace TownOfUsReworked.Patches
                             var dienerRole2 = Role.GetRole<Janitor>(dienerPlayer2);
                             var body3 = dienerRole2.CurrentlyDragging;
                             dienerRole2.CurrentlyDragging = null;
-                            body3.transform.position = new Vector3(v2.x, v2.y, v2z);
+                            body3.transform.position = new(v2.x, v2.y, v2z);
                             break;
 
                         case ActionsRPC.Camouflage:
                             var camouflager = Utils.PlayerById(reader.ReadByte());
                             var camouflagerRole = Role.GetRole<Camouflager>(camouflager);
-                            Utils.Camouflage();
                             camouflagerRole.TimeRemaining = CustomGameOptions.CamouflagerDuration;
                             camouflagerRole.Camouflage();
                             break;
@@ -1058,13 +1014,8 @@ namespace TownOfUsReworked.Patches
                             var concealer = Utils.PlayerById(reader.ReadByte());
                             var concealerRole = Role.GetRole<Concealer>(concealer);
 
-                            if (concealerRole.HoldsDrive)
-                                Utils.Conceal();
-                            else
-                            {
+                            if (!concealerRole.HoldsDrive)
                                 concealerRole.ConcealedPlayer = Utils.PlayerById(reader.ReadByte());
-                                Utils.Invis(concealerRole.ConcealedPlayer, PlayerControl.LocalPlayer.Is(Faction.Syndicate));
-                            }
 
                             concealerRole.TimeRemaining = CustomGameOptions.ConcealDuration;
                             concealerRole.Conceal();
@@ -1074,14 +1025,10 @@ namespace TownOfUsReworked.Patches
                             var ss = Utils.PlayerById(reader.ReadByte());
                             var ssRole = Role.GetRole<Shapeshifter>(ss);
 
-                            if (ssRole.HoldsDrive)
-                                Utils.Shapeshift();
-                            else
+                            if (!ssRole.HoldsDrive)
                             {
                                 ssRole.ShapeshiftPlayer1 = Utils.PlayerById(reader.ReadByte());
                                 ssRole.ShapeshiftPlayer2 = Utils.PlayerById(reader.ReadByte());
-                                Utils.Morph(ssRole.ShapeshiftPlayer1, ssRole.ShapeshiftPlayer2);
-                                Utils.Morph(ssRole.ShapeshiftPlayer2, ssRole.ShapeshiftPlayer1);
                             }
 
                             ssRole.TimeRemaining = CustomGameOptions.ShapeshiftDuration;
@@ -1092,7 +1039,7 @@ namespace TownOfUsReworked.Patches
                             var arso = Utils.PlayerById(reader.ReadByte());
                             var arsoRole = Role.GetRole<Arsonist>(arso);
 
-                            foreach (var body in Object.FindObjectsOfType<DeadBody>())
+                            foreach (var body in UObject.FindObjectsOfType<DeadBody>())
                             {
                                 if (arsoRole.Doused.Contains(body.ParentId))
                                 {
@@ -1146,9 +1093,7 @@ namespace TownOfUsReworked.Patches
                         case ActionsRPC.SetExiles:
                             var dict = Utils.PlayerById(reader.ReadByte());
                             var dictRole = Role.GetRole<Dictator>(dict);
-                            dictRole.ToBeEjected.Add(reader.ReadByte());
-                            dictRole.ToBeEjected.Add(reader.ReadByte());
-                            dictRole.ToBeEjected.Add(reader.ReadByte());
+                            dictRole.ToBeEjected = reader.ReadBytesAndSize().ToList();
                             dictRole.ToDie = reader.ReadBoolean();
                             break;
 

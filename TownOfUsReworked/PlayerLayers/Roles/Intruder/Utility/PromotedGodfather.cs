@@ -1,18 +1,3 @@
-using TownOfUsReworked.Data;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Classes;
-using Il2CppSystem.Collections.Generic;
-using System;
-using UnityEngine;
-using System.Linq;
-using TownOfUsReworked.Modules;
-using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Custom;
-using Hazel;
-using Reactor.Networking.Extensions;
-using Reactor.Utilities;
-using TownOfUsReworked.PlayerLayers.Modifiers;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class PromotedGodfather : IntruderRole, IVisualAlteration
@@ -773,7 +758,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
-            Utils.Invis(Player);
+            Utils.Invis(Player, PlayerControl.LocalPlayer.Is(Faction.Intruder));
 
             if (IsDead || MeetingHud.Instance)
                 TimeRemaining = 0f;

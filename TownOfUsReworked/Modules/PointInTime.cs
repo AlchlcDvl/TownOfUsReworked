@@ -1,7 +1,4 @@
-/*using UnityEngine;
-using HarmonyLib;
-
-namespace TownOfUsReworked.Modules
+/*namespace TownOfUsReworked.Modules
 {
     [HarmonyPatch]
     public class PointInTime

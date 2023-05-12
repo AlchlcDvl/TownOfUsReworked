@@ -1,14 +1,3 @@
-using System;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Custom;
-using TownOfUsReworked.Patches;
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Objects;
-using UnityEngine;
-using System.Linq;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Detective : CrewRole

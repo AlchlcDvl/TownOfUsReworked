@@ -1,11 +1,3 @@
-using HarmonyLib;
-using System;
-using UnityEngine;
-using static UnityEngine.UI.Button;
-using Object = UnityEngine.Object;
-using TownOfUsReworked.Classes;
-using AmongUs.Data;
-
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.Start))]
@@ -15,6 +7,7 @@ namespace TownOfUsReworked.Patches
 
         public static void Postfix(MainMenuManager __instance)
         {
+            CosmeticsLoader.LaunchFetchers();
             var amongUsLogo = GameObject.Find("bannerLogo_AmongUs");
 
             if (amongUsLogo != null)
@@ -33,26 +26,24 @@ namespace TownOfUsReworked.Patches
             if (InvButton == null)
                 return;
 
-            var discObj = Object.Instantiate(InvButton, InvButton.transform.parent);
+            var discObj = UObject.Instantiate(InvButton, InvButton.transform.parent);
             var iconrenderer1 = discObj.GetComponent<SpriteRenderer>();
             iconrenderer1.sprite = AssetManager.GetSprite("Discord");
 
             var button1 = discObj.GetComponent<PassiveButton>();
-            button1.OnClick = new ButtonClickedEvent();
+            button1.OnClick.RemoveAllListeners();
             button1.OnClick.AddListener((Action)(() => Application.OpenURL("https://discord.gg/cd27aDQDY9")));
 
-            var announceObj = Object.Instantiate(InvButton, InvButton.transform.parent);
+            var announceObj = UObject.Instantiate(InvButton, InvButton.transform.parent);
             var iconrenderer2 = announceObj.GetComponent<SpriteRenderer>();
             iconrenderer2.sprite = AssetManager.GetSprite("Update");
 
             var button2 = announceObj.GetComponent<PassiveButton>();
-            button2.OnClick = new ButtonClickedEvent();
+            button2.OnClick.RemoveAllListeners();
             button2.OnClick.AddListener((Action)(() =>
             {
-                if (popUp != null)
-                    Object.Destroy(popUp);
-
-                popUp = Object.Instantiate(Object.FindObjectOfType<AnnouncementPopUp>(true));
+                popUp?.Destroy();
+                popUp = UObject.Instantiate(UObject.FindObjectOfType<AnnouncementPopUp>(true));
                 popUp.gameObject.SetActive(true);
 
                 var changesAnnouncement = new Assets.InnerNet.Announcement
@@ -78,18 +69,18 @@ namespace TownOfUsReworked.Patches
                     DataManager.Player.Announcements.allAnnouncements.Insert(0, changesAnnouncement);
 
                     foreach (var item in popUp.visibleAnnouncements)
-                        Object.Destroy(item);
+                        item.Destroy();
 
-                    foreach (var item in Object.FindObjectsOfType<AnnouncementPanel>())
+                    foreach (var item in UObject.FindObjectsOfType<AnnouncementPanel>())
                     {
                         if (item != popUp.ErrorPanel)
-                            Object.Destroy(item.gameObject);
+                            item.gameObject.Destroy();
                     }
 
                     popUp.CreateAnnouncementList();
                     popUp.visibleAnnouncements[0].PassiveButton.OnClick.RemoveAllListeners();
                     DataManager.Player.Announcements.allAnnouncements = backup;
-                    var titleText = GameObject.Find("Title_Text").GetComponent<TMPro.TextMeshPro>();
+                    var titleText = GameObject.Find("Title_Text").GetComponent<TextMeshPro>();
 
                     if (titleText != null)
                         titleText.text = "";
@@ -99,7 +90,7 @@ namespace TownOfUsReworked.Patches
             __instance.StartCoroutine(Effects.Lerp(0.01f, new Action<float>(_ =>
             {
                 foreach (var tf in InvButton.transform.parent.GetComponentsInChildren<Transform>())
-                    tf.localPosition = new Vector2(tf.localPosition.x * 0.8f, tf.localPosition.y);
+                    tf.localPosition = new(tf.localPosition.x * 0.8f, tf.localPosition.y);
             })));
         }
     }

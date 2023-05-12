@@ -1,15 +1,3 @@
-using System.Collections.Generic;
-using UnityEngine;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Classes;
-using Object = UnityEngine.Object;
-using System;
-using System.Linq;
-using Hazel;
-using static UnityEngine.UI.Button;
-using Reactor.Utilities.Extensions;
-
 namespace TownOfUsReworked.PlayerLayers.Abilities
 {
     public class Swapper : Ability
@@ -42,7 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             }
 
             var template = voteArea.Buttons.transform.Find("CancelButton").gameObject;
-            var targetBox = Object.Instantiate(template, voteArea.transform);
+            var targetBox = UObject.Instantiate(template, voteArea.transform);
             targetBox.name = "SwapButton";
             targetBox.transform.localPosition = new(-0.95f, 0.03f, -1.3f);
             var renderer = targetBox.GetComponent<SpriteRenderer>();
@@ -54,9 +42,9 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             button.OnMouseOut.AddListener((Action)(() => renderer.color = Actives[voteArea.TargetPlayerId] ? UnityEngine.Color.green : UnityEngine.Color.white));
             button.OnMouseOver.RemoveAllListeners();
             button.OnMouseOver.AddListener((Action)(() => renderer.color = UnityEngine.Color.red));
-            var component2 = targetBox.GetComponent<BoxCollider2D>();
-            component2.size = renderer.sprite.bounds.size;
-            component2.offset = Vector2.zero;
+            var collider = targetBox.GetComponent<BoxCollider2D>();
+            collider.size = renderer.sprite.bounds.size;
+            collider.offset = Vector2.zero;
             targetBox.transform.GetChild(0).gameObject.Destroy();
             MoarButtons.Add(voteArea.TargetPlayerId, targetBox);
             Actives.Add(voteArea.TargetPlayerId, false);
@@ -134,14 +122,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
         {
             base.OnMeetingStart(__instance);
 
-            foreach (var swapper in GetAbilities<Swapper>(AbilityEnum.Swapper))
-            {
-                Actives.Clear();
-                MoarButtons.Clear();
-                Swap1 = null;
-                Swap2 = null;
-            }
-
             foreach (var area in __instance.playerStates)
                 GenButton(area, __instance);
         }
@@ -181,7 +161,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
                 return;
 
             button.SetActive(false);
-            button.GetComponent<PassiveButton>().OnClick = new ButtonClickedEvent();
+            button.GetComponent<PassiveButton>().OnClick.RemoveAllListeners();
             button.GetComponent<PassiveButton>().OnMouseOver.RemoveAllListeners();
             button.GetComponent<PassiveButton>().OnMouseOut.RemoveAllListeners();
             button.Destroy();

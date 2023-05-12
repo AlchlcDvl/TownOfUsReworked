@@ -1,6 +1,3 @@
-using TownOfUsReworked.Data;
-using TownOfUsReworked.CustomOptions;
-
 namespace TownOfUsReworked.PlayerLayers.Objectifiers
 {
     public class Taskmaster : Objectifier

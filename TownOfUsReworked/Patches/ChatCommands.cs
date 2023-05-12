@@ -1,21 +1,3 @@
-using System;
-using System.Linq;
-using HarmonyLib;
-using TownOfUsReworked.PlayerLayers.Roles;
-using TownOfUsReworked.PlayerLayers.Abilities;
-using TownOfUsReworked.PlayerLayers.Modifiers;
-using TownOfUsReworked.PlayerLayers.Objectifiers;
-using TownOfUsReworked.CustomOptions;
-using InnerNet;
-using TownOfUsReworked.Classes;
-using Hazel;
-using TownOfUsReworked.Data;
-using System.Collections.Generic;
-using UnityEngine;
-using AmongUs.Data;
-using TownOfUsReworked.Extensions;
-using System.IO;
-
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch]

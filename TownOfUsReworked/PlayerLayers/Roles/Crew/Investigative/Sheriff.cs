@@ -1,11 +1,3 @@
-using System;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Custom;
-using TownOfUsReworked.Classes;
-using UnityEngine;
-using TownOfUsReworked.Extensions;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Sheriff : CrewRole
@@ -17,7 +9,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Sheriff";
             StartText = "Reveal The Alignment Of Other Players";
-            AbilitiesText = "- You can reveal alignments of other players relative to the <color=#8BFDFDFF>Crew</color>";
+            AbilitiesText = "- You can reveal alignments of other players relative to the <color=#8CFFFFFF>Crew</color>";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Sheriff : Colors.Crew;
             RoleType = RoleEnum.Sheriff;
             RoleAlignment = RoleAlignment.CrewKill;

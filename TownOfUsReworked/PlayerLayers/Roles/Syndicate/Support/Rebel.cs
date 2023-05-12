@@ -1,12 +1,3 @@
-using TownOfUsReworked.CustomOptions;
-using System;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Classes;
-using Hazel;
-using TownOfUsReworked.Custom;
-using TownOfUsReworked.Extensions;
-using System.Linq;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Rebel : SyndicateRole

@@ -1,6 +1,3 @@
-using HarmonyLib;
-using TownOfUsReworked.CustomOptions;
-
 namespace TownOfUsReworked.BetterMaps.Polus
 {
     [HarmonyPatch(typeof(ReactorSystemType), nameof(ReactorSystemType.RepairDamage))]

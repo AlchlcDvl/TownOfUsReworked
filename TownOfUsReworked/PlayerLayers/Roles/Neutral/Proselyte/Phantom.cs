@@ -1,9 +1,3 @@
-using UnityEngine;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Classes;
-using Hazel;
-using TownOfUsReworked.Data;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Phantom : NeutralRole

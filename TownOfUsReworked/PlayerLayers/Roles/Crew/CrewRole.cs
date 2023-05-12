@@ -1,9 +1,6 @@
-using Il2CppSystem.Collections.Generic;
-using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Data;
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public abstract class CrewRole : Role
+    public class CrewRole : Role
     {
         protected CrewRole(PlayerControl player) : base(player)
         {
@@ -19,8 +16,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (Player != PlayerControl.LocalPlayer)
                 return;
 
-            var team = new List<PlayerControl>();
-            team.Add(PlayerControl.LocalPlayer);
+            var team = new List<PlayerControl> { PlayerControl.LocalPlayer };
 
             if (IsRecruit)
             {
@@ -43,7 +39,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 }
             }
 
-            __instance.teamToShow = team;
+            __instance.teamToShow = team.SystemToIl2Cpp();
         }
     }
 }

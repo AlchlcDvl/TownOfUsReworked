@@ -1,10 +1,3 @@
-using System.Text;
-using HarmonyLib;
-using TownOfUsReworked.Data;
-using System.Linq;
-using UnityEngine;
-using TownOfUsReworked.Classes;
-
 namespace TownOfUsReworked.CustomOptions
 {
     [HarmonyPatch]
@@ -23,12 +16,12 @@ namespace TownOfUsReworked.CustomOptions
                 #pragma warning disable
                 var builder = new StringBuilder();
                 builder.AppendLine($"Currently Viewing Page ({SettingsPage + 1}/8)");
-                builder.AppendLine("Press TAB Or The Page Number To Change Pages");
+                builder.AppendLine("Press Tab Or The Page Number To Change Pages");
 
                 if (SettingsPage == 0)
                     builder.AppendLine("\nGlobal");
                 else if (SettingsPage == 1)
-                    builder.AppendLine("\n<color=#8BFDFDFF>Crew</color>");
+                    builder.AppendLine("\n<color=#8CFFFFFF>Crew</color>");
                 else if (SettingsPage == 2)
                     builder.AppendLine("\n<color=#B3B3B3FF>Neutral</color>");
                 else if (SettingsPage == 3)

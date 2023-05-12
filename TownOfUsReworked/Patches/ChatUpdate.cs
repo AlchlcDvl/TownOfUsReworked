@@ -1,10 +1,3 @@
-using HarmonyLib;
-using TownOfUsReworked.PlayerLayers.Roles;
-using TownOfUsReworked.CustomOptions;
-using UnityEngine;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Extensions;
-
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
@@ -28,8 +21,8 @@ namespace TownOfUsReworked.Patches
                 {
                     if (bubble.Cast<ChatBubble>().NameText != null)
                     {
-                        bubble.Cast<ChatBubble>().NameText.alignment = TMPro.TextAlignmentOptions.Left;
-                        bubble.Cast<ChatBubble>().TextArea.alignment = TMPro.TextAlignmentOptions.TopLeft;
+                        bubble.Cast<ChatBubble>().NameText.alignment = TextAlignmentOptions.Left;
+                        bubble.Cast<ChatBubble>().TextArea.alignment = TextAlignmentOptions.TopLeft;
                     }
                 }
 

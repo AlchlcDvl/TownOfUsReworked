@@ -1,19 +1,3 @@
-using HarmonyLib;
-using System.Collections.Generic;
-using System.Linq;
-using Reactor.Utilities.Extensions;
-using TownOfUsReworked.PlayerLayers;
-using TownOfUsReworked.PlayerLayers.Roles;
-using TownOfUsReworked.PlayerLayers.Objectifiers;
-using TownOfUsReworked.PlayerLayers.Modifiers;
-using TownOfUsReworked.PlayerLayers.Abilities;
-using TownOfUsReworked.CustomOptions;
-using UnityEngine;
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.Data;
-using AmongUs.GameOptions;
-using TownOfUsReworked.Custom;
-
 namespace TownOfUsReworked.Extensions
 {
     [HarmonyPatch]
@@ -475,7 +459,7 @@ namespace TownOfUsReworked.Extensions
         {
             var role = Role.GetRole(player);
 
-            if (role == null || !player.Data.IsDead)
+            if (role == null || !player.IsPostmortal())
                 return false;
 
             if (player.Is(RoleEnum.Phantom))

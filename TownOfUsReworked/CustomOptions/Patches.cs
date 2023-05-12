@@ -1,14 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
-using HarmonyLib;
-using Reactor.Utilities.Extensions;
-using Il2CppInterop.Runtime.InteropTypes.Arrays;
-using UnityEngine;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Classes;
-using static UnityEngine.UI.Button;
-using TMPro;
-
 namespace TownOfUsReworked.CustomOptions
 {
     [HarmonyPatch]
@@ -28,9 +17,9 @@ namespace TownOfUsReworked.CustomOptions
         private static List<OptionBehaviour> CreateOptions(GameOptionsMenu __instance, MultiMenu type)
         {
             var options = new List<OptionBehaviour>();
-            var togglePrefab = Object.FindObjectOfType<ToggleOption>();
-            var numberPrefab = Object.FindObjectOfType<NumberOption>();
-            var stringPrefab = Object.FindObjectOfType<StringOption>();
+            var togglePrefab = UObject.FindObjectOfType<ToggleOption>();
+            var numberPrefab = UObject.FindObjectOfType<NumberOption>();
+            var stringPrefab = UObject.FindObjectOfType<StringOption>();
 
             if (type == MultiMenu.main)
             {
@@ -41,7 +30,7 @@ namespace TownOfUsReworked.CustomOptions
                 }
                 else
                 {
-                    var toggle = Object.Instantiate(togglePrefab, togglePrefab.transform.parent);
+                    var toggle = UObject.Instantiate(togglePrefab, togglePrefab.transform.parent);
                     toggle.transform.GetChild(2).gameObject.SetActive(false);
                     toggle.transform.GetChild(0).localPosition += new Vector3(1f, 0f, 0f);
                     ExportButton.Setting = toggle;
@@ -56,7 +45,7 @@ namespace TownOfUsReworked.CustomOptions
                 }
                 else
                 {
-                    var toggle = Object.Instantiate(togglePrefab, togglePrefab.transform.parent);
+                    var toggle = UObject.Instantiate(togglePrefab, togglePrefab.transform.parent);
                     toggle.transform.GetChild(2).gameObject.SetActive(false);
                     toggle.transform.GetChild(0).localPosition += new Vector3(1f, 0f, 0f);
                     ImportButton.Setting = toggle;
@@ -71,7 +60,7 @@ namespace TownOfUsReworked.CustomOptions
                 }
                 else
                 {
-                    var toggle = Object.Instantiate(togglePrefab, togglePrefab.transform.parent);
+                    var toggle = UObject.Instantiate(togglePrefab, togglePrefab.transform.parent);
                     toggle.transform.GetChild(2).gameObject.SetActive(false);
                     toggle.transform.GetChild(0).localPosition += new Vector3(1f, 0f, 0f);
                     PresetButton.Setting = toggle;
@@ -94,13 +83,13 @@ namespace TownOfUsReworked.CustomOptions
                 switch (option.Type)
                 {
                     case CustomOptionType.Number:
-                        var number = Object.Instantiate(numberPrefab, numberPrefab.transform.parent);
+                        var number = UObject.Instantiate(numberPrefab, numberPrefab.transform.parent);
                         option.Setting = number;
                         options.Add(number);
                         break;
 
                     case CustomOptionType.String:
-                        var str = Object.Instantiate(stringPrefab, stringPrefab.transform.parent);
+                        var str = UObject.Instantiate(stringPrefab, stringPrefab.transform.parent);
                         option.Setting = str;
                         options.Add(str);
                         break;
@@ -109,7 +98,7 @@ namespace TownOfUsReworked.CustomOptions
                     case CustomOptionType.Nested:
                     case CustomOptionType.Button:
                     case CustomOptionType.Header:
-                        var toggle = Object.Instantiate(togglePrefab, togglePrefab.transform.parent);
+                        var toggle = UObject.Instantiate(togglePrefab, togglePrefab.transform.parent);
 
                         if (option.Type == CustomOptionType.Header)
                         {
@@ -203,7 +192,7 @@ namespace TownOfUsReworked.CustomOptions
 
                 for (var index = 0; index < Menus.Length; index++)
                 {
-                    var touSettings = Object.Instantiate(__instance.RegularGameSettings, __instance.RegularGameSettings.transform.parent);
+                    var touSettings = UObject.Instantiate(__instance.RegularGameSettings, __instance.RegularGameSettings.transform.parent);
                     touSettings.SetActive(false);
                     touSettings.name = "ToU-RewSettings" + Menus[index];
 
@@ -224,7 +213,7 @@ namespace TownOfUsReworked.CustomOptions
                     if (sliderInner != null)
                         sliderInner.GetComponent<GameOptionsMenu>().name = $"ToU-Rew{Menus[index]}OptionsMenu";
 
-                    var ourSettingsButton = Object.Instantiate(obj.gameObject, obj.transform.parent);
+                    var ourSettingsButton = UObject.Instantiate(obj.gameObject, obj.transform.parent);
                     ourSettingsButton.transform.localPosition = new(obj.localPosition.x + (0.7f * (index + 1)), obj.localPosition.y, obj.localPosition.z);
                     ourSettingsButton.name = $"ToU-Rew{Menus[index]}Tab";
 
@@ -239,7 +228,7 @@ namespace TownOfUsReworked.CustomOptions
                     MenuS.Add(touSettingsHighlight);
 
                     var passiveButton = tabBackground.GetComponent<PassiveButton>();
-                    passiveButton.OnClick = new ButtonClickedEvent();
+                    passiveButton.OnClick.RemoveAllListeners();
                     passiveButton.OnClick.AddListener(ToggleButton(index));
                 }
 
@@ -340,7 +329,7 @@ namespace TownOfUsReworked.CustomOptions
                         var i = 0;
 
                         foreach (var option in customOptions)
-                            option.transform.localPosition = new Vector3(x, y - (i++ * 0.5f), z);
+                            option.transform.localPosition = new(x, y - (i++ * 0.5f), z);
 
                         __instance.Children = new(customOptions.ToArray());
                         return false;
@@ -365,7 +354,7 @@ namespace TownOfUsReworked.CustomOptions
                 var i = 0;
 
                 foreach (var option in __instance.Children)
-                    option.transform.localPosition = new Vector3(x, y - (i++ * 0.5f), z);
+                    option.transform.localPosition = new(x, y - (i++ * 0.5f), z);
             }
         }
 
@@ -652,9 +641,9 @@ namespace TownOfUsReworked.CustomOptions
                 Scroller.allowX = false;
                 Scroller.allowY = true;
                 Scroller.active = true;
-                Scroller.velocity = new Vector2(0, 0);
-                Scroller.ScrollbarYBounds = new FloatRange(0, 0);
-                Scroller.ContentXBounds = new FloatRange(MinX, MinX);
+                Scroller.velocity = new(0, 0);
+                Scroller.ScrollbarYBounds = new(0, 0);
+                Scroller.ContentXBounds = new(MinX, MinX);
                 Scroller.enabled = true;
 
                 Scroller.Inner = __instance.GameSettings.transform;

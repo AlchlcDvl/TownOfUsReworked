@@ -1,9 +1,3 @@
-using HarmonyLib;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.CustomOptions;
-using UnityEngine;
-using TownOfUsReworked.Extensions;
-
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch(typeof(Minigame), nameof(Minigame.Begin))]
@@ -19,7 +13,7 @@ namespace TownOfUsReworked.Patches
                 var oldColor1 = rend.color[0];
                 var oldColor2 = rend.color[1];
                 var oldColor3 = rend.color[2];
-                rend.color = new Color(oldColor1, oldColor2, oldColor3, CustomGameOptions.Transparancy / 100f);
+                rend.color = new(oldColor1, oldColor2, oldColor3, CustomGameOptions.Transparancy / 100f);
             }
         }
     }

@@ -1,12 +1,3 @@
-using System;
-using UnityEngine;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Custom;
-using Hazel;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Poisoner : SyndicateRole
@@ -23,7 +14,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Poisoner(PlayerControl player) : base(player)
         {
             Name = "Poisoner";
-            StartText = "Delay A Kill To Decieve The <color=#8BFDFDFF>Crew</color>";
+            StartText = "Delay A Kill To Decieve The <color=#8CFFFFFF>Crew</color>";
             AbilitiesText = $"- You can poison players\n- Poisoned players will die after {CustomGameOptions.PoisonDuration}s\n- With the Chaos Drive, you can poison players from anywhere"
                 + $"occur concurrently\n{AbilitiesText}";
             Color = CustomGameOptions.CustomIntColors? Colors.Poisoner : Colors.Syndicate;
@@ -32,7 +23,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleAlignment = RoleAlignment.SyndicateKill;
             AlignmentName = SyK;
             PoisonMenu = new(Player, Click, Exception1);
-            PoisonedPlayer = null;
             Type = LayerEnum.Poisoner;
             PoisonButton = new(this, "Poison", AbilityTypes.Direct, "ActionSecondary", HitPoison, Exception1);
             GlobalPoisonButton = new(this, "Poison", AbilityTypes.Effect, "ActionSecondary", HitGlobalPoison);

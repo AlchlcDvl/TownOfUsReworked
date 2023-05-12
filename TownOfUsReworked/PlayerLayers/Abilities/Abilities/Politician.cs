@@ -1,10 +1,3 @@
-using System.Collections.Generic;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Data;
-using TMPro;
-using UnityEngine;
-using TownOfUsReworked.Extensions;
-
 namespace TownOfUsReworked.PlayerLayers.Abilities
 {
     public class Politician : Ability
@@ -48,7 +41,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             if (CanKill)
                 return;
 
-            Abstain = Object.Instantiate(__instance.SkipVoteButton, __instance.SkipVoteButton.transform.parent);
+            Abstain = UObject.Instantiate(__instance.SkipVoteButton, __instance.SkipVoteButton.transform.parent);
             Abstain.Parent = __instance;
             Abstain.SetTargetPlayerId(251);
             Abstain.transform.localPosition = __instance.SkipVoteButton.transform.localPosition + new Vector3(0f, -0.17f, 0f);

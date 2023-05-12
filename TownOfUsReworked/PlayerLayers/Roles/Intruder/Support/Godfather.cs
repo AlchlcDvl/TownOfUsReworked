@@ -1,12 +1,3 @@
-using TownOfUsReworked.Data;
-using TownOfUsReworked.CustomOptions;
-using System;
-using TownOfUsReworked.Custom;
-using Hazel;
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.Extensions;
-using System.Linq;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Godfather : IntruderRole

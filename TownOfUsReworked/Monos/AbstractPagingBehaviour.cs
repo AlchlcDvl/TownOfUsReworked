@@ -1,8 +1,4 @@
-﻿using System;
-using UnityEngine;
-using HarmonyLib;
-
-namespace TownOfUsReworked.Monos
+﻿namespace TownOfUsReworked.Monos
 {
     [HarmonyPatch]
     public class AbstractPagingBehaviour : MonoBehaviour

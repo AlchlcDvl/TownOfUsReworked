@@ -1,15 +1,4 @@
-﻿using System;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Classes;
-using UnityEngine;
-using Hazel;
-using TownOfUsReworked.Modules;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.PlayerLayers.Modifiers;
-using TownOfUsReworked.Custom;
-using TownOfUsReworked.Extensions;
-
-namespace TownOfUsReworked.PlayerLayers.Roles
+﻿namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Glitch : NeutralRole, IVisualAlteration
     {

@@ -1,16 +1,3 @@
-using UnityEngine;
-using System.Collections.Generic;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.CustomOptions;
-using System;
-using System.Collections;
-using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Custom;
-using Hazel;
-using Reactor.Utilities;
-using HarmonyLib;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Warper : SyndicateRole
@@ -85,7 +72,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (Player1Body == null && Player2Body == null)
             {
                 WarpPlayer1.MyPhysics.ResetMoveState();
-                WarpPlayer1.NetTransform.SnapTo(new Vector2(WarpPlayer2.GetTruePosition().x, WarpPlayer2.GetTruePosition().y + 0.3636f));
+                WarpPlayer1.NetTransform.SnapTo(new(WarpPlayer2.GetTruePosition().x, WarpPlayer2.GetTruePosition().y + 0.3636f));
                 WarpPlayer1.MyRend().flipX = WarpPlayer2.MyRend().flipX;
 
                 if (SubmergedCompatibility.IsSubmerged && PlayerControl.LocalPlayer.PlayerId == WarpPlayer1.PlayerId)
@@ -111,7 +98,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             else if (Player1Body == null && Player2Body != null)
             {
                 WarpPlayer1.MyPhysics.ResetMoveState();
-                WarpPlayer1.NetTransform.SnapTo(new Vector2(Player2Body.TruePosition.x, Player2Body.TruePosition.y + 0.3636f));
+                WarpPlayer1.NetTransform.SnapTo(new(Player2Body.TruePosition.x, Player2Body.TruePosition.y + 0.3636f));
 
                 if (SubmergedCompatibility.IsSubmerged && PlayerControl.LocalPlayer.PlayerId == WarpPlayer1.PlayerId)
                 {

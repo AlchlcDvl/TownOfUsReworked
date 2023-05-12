@@ -1,14 +1,3 @@
-using System;
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.CustomOptions;
-using UnityEngine;
-using TownOfUsReworked.Modules;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Custom;
-using Hazel;
-using System.Linq;
-using TownOfUsReworked.PlayerLayers.Modifiers;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Morphling : IntruderRole, IVisualAlteration
@@ -26,7 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Morphling(PlayerControl player) : base(player)
         {
             Name = "Morphling";
-            StartText = "Fool The <color=#8BFDFDFF>Crew</color> With Your Appearances";
+            StartText = "Fool The <color=#8CFFFFFF>Crew</color> With Your Appearances";
             AbilitiesText = $"- You can morph into other players, taking up their appearances as your own\n{AbilitiesText}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Morphling : Colors.Intruder;
             RoleType = RoleEnum.Morphling;

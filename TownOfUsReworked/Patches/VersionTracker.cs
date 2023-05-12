@@ -1,8 +1,3 @@
-using HarmonyLib;
-using UnityEngine;
-using TMPro;
-using TownOfUsReworked.Data;
-
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch(typeof(VersionShower), nameof(VersionShower.Start))]
@@ -14,8 +9,8 @@ namespace TownOfUsReworked.Patches
 
             if (gameObject != null)
             {
-                var textMeshPro = Object.Instantiate(__instance.text);
-                textMeshPro.transform.position = new Vector3(0f, -0.3f, 0f);
+                var textMeshPro = UObject.Instantiate(__instance.text);
+                textMeshPro.transform.position = new(0f, -0.3f, 0f);
                 textMeshPro.text = $"{TownOfUsReworked.versionFinal}\n<size=85%>Created by <color=#C50000FF>AlchlcDvl</color></size>";
                 textMeshPro.alignment = TextAlignmentOptions.Center;
                 textMeshPro.fontSize *= 0.75f;

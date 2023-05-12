@@ -1,24 +1,15 @@
-using HarmonyLib;
-using UnityEngine;
-using System.Linq;
-using System.Collections;
-using Reactor.Utilities;
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.PlayerLayers.Roles;
-
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch]
     public static class BlackmailMeetingUpdate
     {
         private static bool ShookAlready;
+        public const float LetterXOffset = 0.22f;
+        public const float LetterYOffset = -0.32f;
 
         #pragma warning disable
         public static Sprite PrevXMark;
         public static Sprite PrevOverlay;
-        public const float LetterXOffset = 0.22f;
-        public const float LetterYOffset = -0.32f;
         #pragma warning restore
 
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]

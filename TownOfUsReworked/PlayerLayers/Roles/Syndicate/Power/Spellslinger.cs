@@ -1,13 +1,3 @@
-using System;
-using System.Collections.Generic;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Extensions;
-using Hazel;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Custom;
-using TownOfUsReworked.Classes;
-using System.Linq;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Spellslinger : SyndicateRole
@@ -20,7 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Spellslinger(PlayerControl player) : base(player)
         {
             Name = "Spellslinger";
-            StartText = "Place the <color=#8BFDFDFF>Crew</color> Under A Curse";
+            StartText = "Place the <color=#8CFFFFFF>Crew</color> Under A Curse";
             AbilitiesText = "- You can place a spell on players\n- When all non-<color=#008000FF>Syndicate</color> players are spelled the game ends in a <color=#008000FF>Syndicate" +
                 $"</color> win\n- With the Chaos Drive, your spells are astral\n{AbilitiesText}";
             RoleType = RoleEnum.Spellslinger;

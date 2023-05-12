@@ -1,8 +1,3 @@
-using HarmonyLib;
-using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.CustomOptions;
-
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch(typeof(GameData), nameof(GameData.RecomputeTaskCounts))]

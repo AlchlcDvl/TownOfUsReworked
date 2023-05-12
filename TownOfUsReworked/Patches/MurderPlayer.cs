@@ -1,8 +1,3 @@
-using HarmonyLib;
-using System;
-using System.Collections.Generic;
-using TownOfUsReworked.Objects;
-
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.MurderPlayer))]

@@ -1,12 +1,3 @@
-using System;
-using UnityEngine;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Custom;
-using Hazel;
-using TownOfUsReworked.Extensions;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Concealer : SyndicateRole
@@ -22,7 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Concealer(PlayerControl player) : base(player)
         {
             Name = "Concealer";
-            StartText = "Make The <color=#8BFDFDFF>Crew</color> Invisible For Some Chaos";
+            StartText = "Make The <color=#8CFFFFFF>Crew</color> Invisible For Some Chaos";
             AbilitiesText = "- You can make a player invisible\n- With the Chaos Drive, you make everyone invisible";
             Color = CustomGameOptions.CustomSynColors ? Colors.Concealer : Colors.Syndicate;
             RoleType = RoleEnum.Concealer;
@@ -39,6 +30,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
+
+            if (HoldsDrive)
+                Utils.Conceal();
+            else
+                Utils.Invis(ConcealedPlayer, PlayerControl.LocalPlayer.Is(Faction.Syndicate));
 
             if (MeetingHud.Instance || (ConcealedPlayer == null && !HoldsDrive))
                 TimeRemaining = 0f;

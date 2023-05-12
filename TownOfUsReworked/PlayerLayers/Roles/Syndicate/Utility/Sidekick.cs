@@ -1,9 +1,3 @@
-using TownOfUsReworked.Data;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.Extensions;
-using Hazel;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Sidekick : SyndicateRole

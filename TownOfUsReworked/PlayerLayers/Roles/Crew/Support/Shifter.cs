@@ -1,12 +1,3 @@
-using System;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Data;
-using HarmonyLib;
-using Hazel;
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Custom;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Shifter : CrewRole
@@ -18,7 +9,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Shifter";
             StartText = "Shift Around Roles";
-            AbilitiesText = "- You can steal another player's role\n- You can only shift with <color=#8BFDFDFF>Crew</color>\n- Shifting with non-<color=#8BFDFDFF>Crew</color> will " +
+            AbilitiesText = "- You can steal another player's role\n- You can only shift with <color=#8CFFFFFF>Crew</color>\n- Shifting with non-<color=#8CFFFFFF>Crew</color> will " +
                 "cause you to kill yourself";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Shifter : Colors.Crew;
             RoleType = RoleEnum.Shifter;

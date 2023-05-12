@@ -1,10 +1,3 @@
-using Hazel;
-using HarmonyLib;
-using System.Linq;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.CustomOptions;
-
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch(typeof(RoleManager), nameof(RoleManager.SelectRoles))]

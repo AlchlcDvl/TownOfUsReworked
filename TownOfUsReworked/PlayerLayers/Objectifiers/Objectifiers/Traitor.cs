@@ -1,10 +1,3 @@
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Extensions;
-using TownOfUsReworked.PlayerLayers.Roles;
-using TownOfUsReworked.Data;
-using Hazel;
-
 namespace TownOfUsReworked.PlayerLayers.Objectifiers
 {
     public class Traitor : Objectifier

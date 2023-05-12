@@ -1,15 +1,3 @@
-using HarmonyLib;
-using Reactor.Utilities.Extensions;
-using UnityEngine;
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.PlayerLayers.Modifiers;
-using TownOfUsReworked.PlayerLayers.Objectifiers;
-using TownOfUsReworked.PlayerLayers.Abilities;
-using TownOfUsReworked.PlayerLayers.Roles;
-using TownOfUsReworked.Extensions;
-
 namespace TownOfUsReworked.Patches
 {
     public static class IntroCutScenePatch

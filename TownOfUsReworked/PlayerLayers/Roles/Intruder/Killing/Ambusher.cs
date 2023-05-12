@@ -1,12 +1,3 @@
-using System;
-using UnityEngine;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Custom;
-using Hazel;
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.Extensions;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Ambusher : IntruderRole
@@ -21,7 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Ambusher(PlayerControl player) : base(player)
         {
             Name = "Ambusher";
-            StartText = "Spook The <color=#8BFDFDFF>Crew</color>";
+            StartText = "Spook The <color=#8CFFFFFF>Crew</color>";
             AbilitiesText = $"- You can ambush players\n- Ambushed players will be forced to be on alert and kill whoever interacts with them\n{AbilitiesText}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Ambusher : Colors.Intruder;
             RoleType = RoleEnum.Ambusher;

@@ -1,10 +1,3 @@
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.CustomOptions;
-using System;
-using TownOfUsReworked.Custom;
-using TownOfUsReworked.Extensions;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Collider : SyndicateRole

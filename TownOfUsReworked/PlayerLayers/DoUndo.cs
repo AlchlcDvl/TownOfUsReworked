@@ -1,10 +1,3 @@
-using HarmonyLib;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.PlayerLayers.Roles;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Classes;
-using UnityEngine;
-
 namespace TownOfUsReworked.PlayerLayers
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
@@ -395,7 +388,7 @@ namespace TownOfUsReworked.PlayerLayers
                     ss.UnShapeshift();
             }
 
-            foreach (var body in Object.FindObjectsOfType<DeadBody>())
+            foreach (var body in UObject.FindObjectsOfType<DeadBody>())
             {
                 var num = IsCamoed ? 6 : Utils.PlayerByBody(body).GetDefaultOutfit().ColorId;
 

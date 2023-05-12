@@ -1,14 +1,3 @@
-using System;
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.CustomOptions;
-using UnityEngine;
-using TownOfUsReworked.Modules;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Custom;
-using Hazel;
-using TownOfUsReworked.Extensions;
-using TownOfUsReworked.PlayerLayers.Modifiers;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Disguiser : IntruderRole, IVisualAlteration
@@ -29,7 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Disguiser(PlayerControl player) : base(player)
         {
             Name = "Disguiser";
-            StartText = "Disguise The <color=#8BFDFDFF>Crew</color> To Frame Them";
+            StartText = "Disguise The <color=#8CFFFFFF>Crew</color> To Frame Them";
             AbilitiesText = $"- You can disguise a player into someone else's appearance\n{AbilitiesText}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Disguiser : Colors.Intruder;
             RoleType = RoleEnum.Disguiser;

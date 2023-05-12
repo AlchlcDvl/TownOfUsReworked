@@ -1,14 +1,3 @@
-using HarmonyLib;
-using UnityEngine;
-using System.Collections.Generic;
-using System.Linq;
-using AmongUs.GameOptions;
-using Il2CppSystem;
-using TownOfUsReworked.PlayerLayers.Roles;
-using Object = UnityEngine.Object;
-using TownOfUsReworked.Monos;
-using TownOfUsReworked.Extensions;
-
 namespace TownOfUsReworked.Custom
 {
     [HarmonyPatch]
@@ -40,18 +29,18 @@ namespace TownOfUsReworked.Custom
                 if (Camera.main == null)
                     return;
 
-                Menu = Object.Instantiate(GetShapeshifterMenu(), Camera.main.transform, false);
+                Menu = UObject.Instantiate(GetShapeshifterMenu(), Camera.main.transform, false);
             }
 
             Menu.transform.SetParent(Camera.main.transform, false);
-            Menu.transform.localPosition = new Vector3(0f, 0f, -50f);
+            Menu.transform.localPosition = new(0f, 0f, -50f);
             Menu.Begin(null);
         }
 
         private static ShapeshifterMinigame GetShapeshifterMenu()
         {
             var rolePrefab = RoleManager.Instance.AllRoles.First(r => r.Role == RoleTypes.Shapeshifter);
-            return Object.Instantiate(rolePrefab?.Cast<ShapeshifterRole>(), GameData.Instance.transform).ShapeshifterMenu;
+            return UObject.Instantiate(rolePrefab?.Cast<ShapeshifterRole>(), GameData.Instance.transform).ShapeshifterMenu;
         }
 
         public void Clicked(PlayerControl player)
@@ -80,7 +69,7 @@ namespace TownOfUsReworked.Custom
                 var player = menu.Targets[i];
                 var num = i % 3;
                 var num2 = i / 3;
-                var panel = Object.Instantiate(__instance.PanelPrefab, __instance.transform);
+                var panel = UObject.Instantiate(__instance.PanelPrefab, __instance.transform);
                 panel.transform.localPosition = new(__instance.XStart + (num * __instance.XOffset), __instance.YStart + (num2 * __instance.YOffset), -1f);
                 panel.SetPlayer(i, player.Data, (Action)(() => menu.Clicked(player)));
                 panel.NameText.color = PlayerControl.LocalPlayer == player ? Role.GetRole(menu.Owner).Color : Color.white;

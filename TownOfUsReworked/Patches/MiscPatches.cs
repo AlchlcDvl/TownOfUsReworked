@@ -1,17 +1,5 @@
-using HarmonyLib;
-using Il2CppInterop.Runtime.InteropTypes.Arrays;
-using UnityEngine;
-using TownOfUsReworked.PlayerLayers.Roles;
-using TownOfUsReworked.Classes;
-using TMPro;
 using AmongUs.Data.Player;
 using AmongUs.Data.Legacy;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Extensions;
-using System.Collections.Generic;
-using TownOfUsReworked.PlayerLayers;
-using TownOfUsReworked.Monos;
 
 namespace TownOfUsReworked.Patches
 {
@@ -83,7 +71,7 @@ namespace TownOfUsReworked.Patches
                 text.fontMaterial.SetFloat("_FaceDilate", 0.151f);
             }
 
-            text.transform.localPosition = new Vector3(0, 0, -20);
+            text.transform.localPosition = new(0, 0, -20);
             text.text = "";
             text.gameObject.SetActive(false);
         }
@@ -148,6 +136,28 @@ namespace TownOfUsReworked.Patches
                 !MeetingHud.Instance && !PlayerCustomizationMenu.Instance && !IntroCutscene.Instance;
 
             return false;
+        }
+    }
+
+    [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.HandleAnimation))]
+    public static class HandleAnimation
+    {
+        public static void Prefix(PlayerPhysics __instance, [HarmonyArgument(0)] ref bool amDead)
+        {
+            if (__instance.myPlayer.IsPostmortal())
+                amDead = __instance.myPlayer.Caught();
+        }
+    }
+
+    [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.Visible), MethodType.Setter)]
+    public static class VisibleOverride
+    {
+        public static void Prefix(PlayerControl __instance, [HarmonyArgument(0)] ref bool value)
+        {
+            if (!__instance.IsPostmortal() || (__instance.IsPostmortal() && __instance.Caught()))
+                return;
+
+            value = !__instance.inVent;
         }
     }
 }

@@ -1,14 +1,3 @@
-using System.Collections.Generic;
-using HarmonyLib;
-using UnityEngine;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Classes;
-using TMPro;
-using TownOfUsReworked.PlayerLayers;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Extensions;
-using TownOfUsReworked.PlayerLayers.Roles;
-
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch(typeof(MapCountOverlay), nameof(MapCountOverlay.Update))]
@@ -64,11 +53,11 @@ namespace TownOfUsReworked.Patches
                     //Show all icons on player icons when there are three rows
 
                     if (useCompactText)
-                        text.transform.localPosition = new Vector3(0, 0, -20);
+                        text.transform.localPosition = new(0, 0, -20);
                     else if (i / area.MaxWidth == 0)
-                        text.transform.localPosition = new Vector3(0, -area.YOffset, -20);
+                        text.transform.localPosition = new(0, -area.YOffset, -20);
                     else
-                        text.transform.localPosition = new Vector3(0, area.YOffset, -20);
+                        text.transform.localPosition = new(0, area.YOffset, -20);
                 }
             }
         }

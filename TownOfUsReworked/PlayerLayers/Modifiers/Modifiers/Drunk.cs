@@ -1,7 +1,3 @@
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Data;
-using UnityEngine;
-
 namespace TownOfUsReworked.PlayerLayers.Modifiers
 {
     public class Drunk : Modifier

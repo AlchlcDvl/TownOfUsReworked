@@ -1,13 +1,3 @@
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.PlayerLayers.Roles;
-using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Data;
-using Hazel;
-using HarmonyLib;
-using UnityEngine;
-using TownOfUsReworked.PlayerLayers.Abilities;
-
 namespace TownOfUsReworked.PlayerLayers.Objectifiers
 {
     public class Fanatic : Objectifier

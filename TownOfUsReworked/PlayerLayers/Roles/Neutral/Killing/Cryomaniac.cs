@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Hazel;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Classes;
-using System.Linq;
-using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Custom;
-
-namespace TownOfUsReworked.PlayerLayers.Roles
+﻿namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Cryomaniac : NeutralRole
     {

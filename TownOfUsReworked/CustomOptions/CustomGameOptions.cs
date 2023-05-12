@@ -1,7 +1,3 @@
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.Data;
-using HarmonyLib;
-
 namespace TownOfUsReworked.CustomOptions
 {
     [HarmonyPatch]
@@ -34,7 +30,6 @@ namespace TownOfUsReworked.CustomOptions
         public static bool Whispers => Generate.Whispers.Get();
         public static bool WhispersAnnouncement => Generate.WhispersAnnouncement.Get();
         public static bool AppearanceAnimation => Generate.AppearanceAnimation.Get();
-        public static bool LighterDarker => Generate.LighterDarker.Get();
         public static bool RandomSpawns => Generate.RandomSpawns.Get();
         public static bool EnableAbilities => Generate.EnableAbilities.Get();
         public static bool EnableModifiers => Generate.EnableModifiers.Get();
@@ -46,8 +41,8 @@ namespace TownOfUsReworked.CustomOptions
         public static bool OxySlow => Generate.OxySlow.Get();
         public static bool ColourblindComms => Generate.ColourblindComms.Get();
         public static bool MeetingColourblind => Generate.MeetingColourblind.Get();
-        public static bool NightVision => Generate.NightVision.Get();
-        public static bool EvilsIgnoreNV => Generate.EvilsIgnoreNV.Get();
+        //public static bool NightVision => Generate.NightVision.Get();
+        //public static bool EvilsIgnoreNV => Generate.EvilsIgnoreNV.Get();
 
         //Announcement Settings
         public static bool LocationReports => Generate.LocationReports.Get();
@@ -61,6 +56,8 @@ namespace TownOfUsReworked.CustomOptions
         public static bool SeeTasks => Generate.SeeTasks.Get();
         public static bool CustomEject => Generate.CustomEject.Get();
         public static bool WhiteNameplates => Generate.WhiteNameplates.Get();
+        public static bool LighterDarker => Generate.LighterDarker.Get();
+        public static bool ObstructNames => Generate.ObstructNames.Get();
 
         //Game Modes
         public static GameMode GameMode => (GameMode)Generate.GameMode.Get();

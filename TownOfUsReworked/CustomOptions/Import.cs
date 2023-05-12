@@ -1,16 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Reactor.Utilities;
-using Reactor.Utilities.Extensions;
-using UnityEngine;
-using Object = UnityEngine.Object;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Classes;
-using HarmonyLib;
-
 namespace TownOfUsReworked.CustomOptions
 {
     [HarmonyPatch]
@@ -25,7 +12,7 @@ namespace TownOfUsReworked.CustomOptions
         private List<OptionBehaviour> CreateOptions()
         {
             var options = new List<OptionBehaviour>();
-            var togglePrefab = Object.FindObjectOfType<ToggleOption>();
+            var togglePrefab = UObject.FindObjectOfType<ToggleOption>();
 
             foreach (var button in SlotButtons)
             {
@@ -36,7 +23,7 @@ namespace TownOfUsReworked.CustomOptions
                 }
                 else
                 {
-                    var toggle = Object.Instantiate(togglePrefab, togglePrefab.transform.parent);
+                    var toggle = UObject.Instantiate(togglePrefab, togglePrefab.transform.parent);
                     toggle.transform.GetChild(2).gameObject.SetActive(false);
                     toggle.transform.GetChild(0).localPosition += new Vector3(1f, 0f, 0f);
                     button.Setting = toggle;
@@ -52,7 +39,7 @@ namespace TownOfUsReworked.CustomOptions
 
         public IEnumerator CancelCoro(Func<IEnumerator> flashCoro)
         {
-            var __instance = Object.FindObjectOfType<GameOptionsMenu>();
+            var __instance = UObject.FindObjectOfType<GameOptionsMenu>();
 
             foreach (var option in SlotButtons.Skip(1))
                 option.Setting.gameObject.Destroy();
@@ -88,7 +75,7 @@ namespace TownOfUsReworked.CustomOptions
             SlotButtons.Add(new CustomButtonOption(-1, MultiMenu.external, "Cancel", delegate { Cancel(FlashWhite); }));
 
             var options = CreateOptions();
-            var __instance = Object.FindObjectOfType<GameOptionsMenu>();
+            var __instance = UObject.FindObjectOfType<GameOptionsMenu>();
             var y = __instance.GetComponentsInChildren<OptionBehaviour>().Max(option => option.transform.localPosition.y);
             var x = __instance.Children[1].transform.localPosition.x;
             var z = __instance.Children[1].transform.localPosition.z;

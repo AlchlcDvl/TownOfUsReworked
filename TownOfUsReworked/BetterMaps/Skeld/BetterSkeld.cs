@@ -1,8 +1,3 @@
-using System.Linq;
-using HarmonyLib;
-using UnityEngine;
-using TownOfUsReworked.CustomOptions;
-
 namespace TownOfUsReworked.BetterMaps.Skeld
 {
     [HarmonyPatch(typeof(ShipStatus))]
@@ -85,7 +80,7 @@ namespace TownOfUsReworked.BetterMaps.Skeld
 
         private static void FindVents()
         {
-            var ventsList = Object.FindObjectsOfType<Vent>().ToList();
+            var ventsList = UObject.FindObjectsOfType<Vent>().ToList();
 
             if (NavVentSouth == null)
                 NavVentSouth = ventsList.Find(vent => vent.gameObject.name == "NavVentSouth");
@@ -118,19 +113,19 @@ namespace TownOfUsReworked.BetterMaps.Skeld
         private static void FindObjects()
         {
             if (ReactorVent == null)
-                ReactorVent = Object.FindObjectsOfType<Vent>().ToList().Find(vent => vent.gameObject.name == "ReactorVent");
+                ReactorVent = UObject.FindObjectsOfType<Vent>().ToList().Find(vent => vent.gameObject.name == "ReactorVent");
 
             if (ShieldsVent == null)
-                ShieldsVent = Object.FindObjectsOfType<Vent>().ToList().Find(vent => vent.gameObject.name == "ShieldsVent");
+                ShieldsVent = UObject.FindObjectsOfType<Vent>().ToList().Find(vent => vent.gameObject.name == "ShieldsVent");
 
             if (BigYVent == null)
-                BigYVent = Object.FindObjectsOfType<Vent>().ToList().Find(vent => vent.gameObject.name == "BigYVent");
+                BigYVent = UObject.FindObjectsOfType<Vent>().ToList().Find(vent => vent.gameObject.name == "BigYVent");
 
             if (NavVentNorth == null)
-                NavVentNorth = Object.FindObjectsOfType<Vent>().ToList().Find(vent => vent.gameObject.name == "NavVentNorth");
+                NavVentNorth = UObject.FindObjectsOfType<Vent>().ToList().Find(vent => vent.gameObject.name == "NavVentNorth");
 
             if (CafeVent == null)
-                CafeVent = Object.FindObjectsOfType<Vent>().ToList().Find(vent => vent.gameObject.name == "CafeVent");
+                CafeVent = UObject.FindObjectsOfType<Vent>().ToList().Find(vent => vent.gameObject.name == "CafeVent");
 
             IsObjectsFetched = ReactorVent != null && ShieldsVent != null && BigYVent != null && NavVentNorth != null && CafeVent != null;
         }

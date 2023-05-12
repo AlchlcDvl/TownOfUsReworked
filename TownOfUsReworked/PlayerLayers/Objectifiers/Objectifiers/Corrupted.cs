@@ -1,9 +1,3 @@
-using TownOfUsReworked.CustomOptions;
-using System;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Custom;
-using TownOfUsReworked.Classes;
-
 namespace TownOfUsReworked.PlayerLayers.Objectifiers
 {
     public class Corrupted : Objectifier

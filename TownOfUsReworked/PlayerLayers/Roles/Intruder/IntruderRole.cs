@@ -1,14 +1,6 @@
-using Il2CppSystem.Collections.Generic;
-using TownOfUsReworked.Classes;
-using System;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Custom;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public abstract class IntruderRole : Role
+    public class IntruderRole : Role
     {
         public DateTime LastKilled;
         public CustomButton KillButton;
@@ -20,7 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = Colors.Intruder;
             Objectives = IntrudersWinCon;
             BaseFaction = Faction.Intruder;
-            AbilitiesText = "- You can kill players\n- You can call sabotages to distract the <color=#8BFDFDFF>Crew</color>";
+            AbilitiesText = "- You can kill players\n- You can call sabotages to distract the <color=#8CFFFFFF>Crew</color>";
             KillButton = new(this, "IntruderKill", AbilityTypes.Direct, "ActionSecondary", Kill, Exception);
         }
 
@@ -38,8 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (Player != PlayerControl.LocalPlayer)
                 return;
 
-            var team = new List<PlayerControl>();
-            team.Add(PlayerControl.LocalPlayer);
+            var team = new List<PlayerControl> { PlayerControl.LocalPlayer };
 
             if (IsRecruit)
             {
@@ -68,7 +59,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 }
             }
 
-            __instance.teamToShow = team;
+            __instance.teamToShow = team.SystemToIl2Cpp();
         }
 
         public void Kill()

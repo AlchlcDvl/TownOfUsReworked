@@ -1,17 +1,3 @@
-using Hazel;
-using System.Collections.Generic;
-using System.Linq;
-using Reactor.Utilities.Extensions;
-using UnityEngine;
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Objects;
-using HarmonyLib;
-using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Custom;
-using Object = UnityEngine.Object;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     [HarmonyPatch]
@@ -323,7 +309,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         Points[player.PlayerId].transform.localPosition = v;
                     else
                     {
-                        var point = Object.Instantiate(__instance.HerePoint, __instance.HerePoint.transform.parent, true);
+                        var point = UObject.Instantiate(__instance.HerePoint, __instance.HerePoint.transform.parent, true);
                         point.transform.localPosition = v;
                         point.enabled = true;
                         player.SetPlayerMaterialColors(point);
@@ -355,7 +341,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             var targetId = voteArea.TargetPlayerId;
             var colorButton = voteArea.Buttons.transform.GetChild(0).gameObject;
-            var newButton = Object.Instantiate(colorButton, voteArea.transform);
+            var newButton = UObject.Instantiate(colorButton, voteArea.transform);
             var renderer = newButton.GetComponent<SpriteRenderer>();
 
             var playerControl = PlayerControl.AllPlayerControls.ToArray().FirstOrDefault(p => p.PlayerId == targetId);
@@ -461,6 +447,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 if (spell.IsDead)
                     spell.Spelled.Clear();
             }
+
+            foreach (var dict in GetRoles<Dictator>(RoleEnum.Dictator))
+            {
+                dict.Actives.Clear();
+                dict.MoarButtons.Clear();
+                dict.ToBeEjected.Clear();
+            }
         }
 
         public static readonly string IntrudersWinCon = "- Have a critical sabotage reach 0 seconds\n- Kill anyone who opposes the <color=#FF0000FF>Intruders</color>";
@@ -479,13 +472,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public static readonly string SP = "<color=#008000FF>Syndicate (<color=#1D7CF2FF>Power</color>)</color>";
 
         public static readonly string CrewWinCon = "- Finish all tasks\n- Eject all <color=#FF0000FF>evildoers</color>";
-        public static readonly string CP = "<color=#8BFDFDFF>Crew (<color=#1D7CF2FF>Protective</color>)</color>";
-        public static readonly string CI = "<color=#8BFDFDFF>Crew (<color=#1D7CF2FF>Investigative</color>)</color>";
-        public static readonly string CU = "<color=#8BFDFDFF>Crew (<color=#1D7CF2FF>Utility</color>)</color>";
-        public static readonly string CS = "<color=#8BFDFDFF>Crew (<color=#1D7CF2FF>Support</color>)</color>";
-        public static readonly string CA = "<color=#8BFDFDFF>Crew (<color=#1D7CF2FF>Auditor</color>)</color>";
-        public static readonly string CK = "<color=#8BFDFDFF>Crew (<color=#1D7CF2FF>Killing</color>)</color>";
-        public static readonly string CSv = "<color=#8BFDFDFF>Crew (<color=#1D7CF2FF>Sovereign</color>)</color>";
+        public static readonly string CP = "<color=#8CFFFFFF>Crew (<color=#1D7CF2FF>Protective</color>)</color>";
+        public static readonly string CI = "<color=#8CFFFFFF>Crew (<color=#1D7CF2FF>Investigative</color>)</color>";
+        public static readonly string CU = "<color=#8CFFFFFF>Crew (<color=#1D7CF2FF>Utility</color>)</color>";
+        public static readonly string CS = "<color=#8CFFFFFF>Crew (<color=#1D7CF2FF>Support</color>)</color>";
+        public static readonly string CA = "<color=#8CFFFFFF>Crew (<color=#1D7CF2FF>Auditor</color>)</color>";
+        public static readonly string CK = "<color=#8CFFFFFF>Crew (<color=#1D7CF2FF>Killing</color>)</color>";
+        public static readonly string CSv = "<color=#8CFFFFFF>Crew (<color=#1D7CF2FF>Sovereign</color>)</color>";
 
         public static readonly string NB = "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Benign</color>)</color>";
         public static readonly string NE = "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Evil</color>)</color>";

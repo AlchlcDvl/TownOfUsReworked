@@ -1,12 +1,3 @@
-using System.Collections.Generic;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Classes;
-using System;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Custom;
-using Hazel;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Executioner : NeutralRole

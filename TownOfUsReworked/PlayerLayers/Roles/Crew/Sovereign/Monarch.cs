@@ -1,13 +1,3 @@
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Custom;
-using Hazel;
-using System.Collections.Generic;
-using System;
-using System.Linq;
-using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Classes;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Monarch : CrewRole

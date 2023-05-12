@@ -1,15 +1,3 @@
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Classes;
-using Random = UnityEngine.Random;
-using System;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Custom;
-using HarmonyLib;
-using UnityEngine;
-using System.Collections.Generic;
-using Hazel;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class BountyHunter : NeutralRole
@@ -77,9 +65,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (!lettersExhausted)
             {
-                var random = Random.RandomRangeInt(0, targetName.Length);
-                var random2 = Random.RandomRangeInt(0, targetName.Length);
-                var random3 = Random.RandomRangeInt(0, targetName.Length);
+                var random = URandom.RandomRangeInt(0, targetName.Length);
+                var random2 = URandom.RandomRangeInt(0, targetName.Length);
+                var random3 = URandom.RandomRangeInt(0, targetName.Length);
 
                 if (lettersGiven <= targetName.Length - 3)
                 {
@@ -87,13 +75,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         letters.Contains($"{targetName[random3]}"))
                     {
                         if (random == random2 || letters.Contains($"{targetName[random2]}"))
-                            random2 = Random.RandomRangeInt(0, targetName.Length);
+                            random2 = URandom.RandomRangeInt(0, targetName.Length);
 
                         if (random2 == random3 || letters.Contains($"{targetName[random3]}"))
-                            random3 = Random.RandomRangeInt(0, targetName.Length);
+                            random3 = URandom.RandomRangeInt(0, targetName.Length);
 
                         if (random == random3 || letters.Contains($"{targetName[random]}"))
-                            random = Random.RandomRangeInt(0, targetName.Length);
+                            random = URandom.RandomRangeInt(0, targetName.Length);
                     }
 
                     something = $"Your target's name has the letters {targetName[random]}, {targetName[random2]} and {targetName[random3]} in it!";
@@ -103,13 +91,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     while (random == random2 || letters.Contains($"{targetName[random]}") || letters.Contains($"{targetName[random2]}"))
                     {
                         if (letters.Contains($"{targetName[random2]}"))
-                            random2 = Random.RandomRangeInt(0, targetName.Length);
+                            random2 = URandom.RandomRangeInt(0, targetName.Length);
 
                         if (letters.Contains($"{targetName[random]}"))
-                            random = Random.RandomRangeInt(0, targetName.Length);
+                            random = URandom.RandomRangeInt(0, targetName.Length);
 
                         if (random == random2)
-                            random = Random.RandomRangeInt(0, targetName.Length);
+                            random = URandom.RandomRangeInt(0, targetName.Length);
                     }
 
                     something = $"Your target's name has the letters {targetName[random]} and {targetName[random2]} in it!";
@@ -117,7 +105,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 else if (lettersGiven == targetName.Length - 1)
                 {
                     while (letters.Contains($"{targetName[random]}"))
-                        random = Random.RandomRangeInt(0, targetName.Length);
+                        random = URandom.RandomRangeInt(0, targetName.Length);
 
                     something = $"Your target's name has the letter {targetName[random]} in it!";
                 }

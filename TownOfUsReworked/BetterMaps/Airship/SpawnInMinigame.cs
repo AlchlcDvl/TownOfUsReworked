@@ -1,13 +1,4 @@
-﻿using HarmonyLib;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Data;
-using Hazel;
-using TownOfUsReworked.Extensions;
-
-namespace TownOfUsReworked.BetterMaps.Airship
+﻿namespace TownOfUsReworked.BetterMaps.Airship
 {
     [HarmonyPatch]
     public static class SpawnInMinigamePatch
@@ -20,6 +11,12 @@ namespace TownOfUsReworked.BetterMaps.Airship
         {
             public static bool Prefix(SpawnInMinigame __instance)
             {
+                if (PlayerControl.LocalPlayer.IsPostmortal() && !PlayerControl.LocalPlayer.Caught())
+                {
+                    __instance.Close();
+                    return false;
+                }
+
                 if (TownOfUsReworked.MCIActive)
                 {
                     foreach (var player in PlayerControl.AllPlayerControls)
@@ -27,7 +24,7 @@ namespace TownOfUsReworked.BetterMaps.Airship
                         if (!player.Data.PlayerName.Contains("Robot"))
                             continue;
 
-                        var rand = new System.Random().Next(0, __instance.Locations.Count);
+                        var rand = new SRandom().Next(0, __instance.Locations.Count);
                         player.gameObject.SetActive(true);
                         player.NetTransform.RpcSnapTo(__instance.Locations[rand].Location);
                     }
@@ -40,28 +37,26 @@ namespace TownOfUsReworked.BetterMaps.Airship
 
                     if (AmongUsClient.Instance.AmHost)
                     {
-                        var random = (byte)Random.RandomRangeInt(0, Spawn.Length);
+                        var random = (byte)URandom.RandomRangeInt(0, Spawn.Length);
                         var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetSpawnAirship, SendOption.Reliable);
                         writer.Write(PlayerControl.LocalPlayer.PlayerId);
 
                         while (SpawnPoints.Count < 3)
                         {
-                            random = (byte)Random.RandomRangeInt(0, Spawn.Length);
+                            random = (byte)URandom.RandomRangeInt(0, Spawn.Length);
 
                             if (!SpawnPoints.Contains(random))
-                            {
                                 SpawnPoints.Add(random);
-                                writer.Write(random);
-                            }
                         }
 
+                        writer.WriteBytesAndSize(SpawnPoints.ToArray());
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
                     }
 
                     if (CustomGameOptions.SpawnType == AirshipSpawnType.Fixed)
-                        __instance.Locations = new SpawnInMinigame.SpawnLocation[3] { Spawn[3], Spawn[2], Spawn[5] };
+                        __instance.Locations = new[] { Spawn[3], Spawn[2], Spawn[5] };
                     else if (CustomGameOptions.SpawnType == AirshipSpawnType.RandomSynchronized)
-                        __instance.Locations = new SpawnInMinigame.SpawnLocation[3] { Spawn[SpawnPoints[0]], Spawn[SpawnPoints[1]], Spawn[SpawnPoints[2]] };
+                        __instance.Locations = new[] { Spawn[SpawnPoints[0]], Spawn[SpawnPoints[1]], Spawn[SpawnPoints[2]] };
 
                     return true;
                 }

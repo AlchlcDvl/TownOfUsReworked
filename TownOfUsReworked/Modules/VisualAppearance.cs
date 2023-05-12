@@ -1,9 +1,4 @@
-﻿using UnityEngine;
-using HarmonyLib;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Extensions;
-
-namespace TownOfUsReworked.Modules
+﻿namespace TownOfUsReworked.Modules
 {
     [HarmonyPatch]
     public class VisualAppearance

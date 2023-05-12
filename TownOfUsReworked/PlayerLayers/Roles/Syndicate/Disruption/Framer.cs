@@ -1,12 +1,3 @@
-using System;
-using System.Collections.Generic;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Extensions;
-using Hazel;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Custom;
-using TownOfUsReworked.Classes;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Framer : SyndicateRole

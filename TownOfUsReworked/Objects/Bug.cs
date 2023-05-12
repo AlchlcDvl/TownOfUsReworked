@@ -1,14 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.CustomOptions;
-using UnityEngine;
-using TownOfUsReworked.PlayerLayers.Roles;
-using HarmonyLib;
-using Reactor.Utilities;
-
-namespace TownOfUsReworked.Objects
+﻿namespace TownOfUsReworked.Objects
 {
     [HarmonyPatch]
     public class Bug : Range

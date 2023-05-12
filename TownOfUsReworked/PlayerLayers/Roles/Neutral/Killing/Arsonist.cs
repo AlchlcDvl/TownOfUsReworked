@@ -1,17 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Hazel;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Custom;
-using TownOfUsReworked.Objects;
-using Object = UnityEngine.Object;
-using Reactor.Utilities;
-
-namespace TownOfUsReworked.PlayerLayers.Roles
+﻿namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Arsonist : NeutralRole
     {
@@ -87,7 +74,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     writer.Write(arso.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
 
-                    foreach (var body in Object.FindObjectsOfType<DeadBody>())
+                    foreach (var body in UObject.FindObjectsOfType<DeadBody>())
                     {
                         if (arso.Doused.Contains(body.ParentId) && Utils.PlayerById(body.ParentId).Data.IsDead)
                         {

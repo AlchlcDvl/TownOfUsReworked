@@ -1,22 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using BepInEx;
-using BepInEx.Unity.IL2CPP;
-using HarmonyLib;
-using Il2CppInterop.Runtime;
-using UnityEngine;
-using Reactor.Utilities;
-using TownOfUsReworked.Data;
-using Hazel;
-using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Patches;
-using TownOfUsReworked.Custom;
-using TownOfUsReworked.Monos;
-
-namespace TownOfUsReworked.Classes
+﻿namespace TownOfUsReworked.Classes
 {
     [HarmonyPatch]
     public static class SubmergedCompatibility
@@ -263,10 +245,10 @@ namespace TownOfUsReworked.Classes
 
             if (PlayerControl.LocalPlayer.IsPostmortal() && !PlayerControl.LocalPlayer.Caught())
             {
-                var startingVent = ShipStatus.Instance.AllVents[UnityEngine.Random.RandomRangeInt(0, ShipStatus.Instance.AllVents.Count)];
+                var startingVent = ShipStatus.Instance.AllVents[URandom.RandomRangeInt(0, ShipStatus.Instance.AllVents.Count)];
 
                 while (startingVent == ShipStatus.Instance.AllVents[0] || startingVent == ShipStatus.Instance.AllVents[14])
-                    startingVent = ShipStatus.Instance.AllVents[UnityEngine.Random.RandomRangeInt(0, ShipStatus.Instance.AllVents.Count)];
+                    startingVent = ShipStatus.Instance.AllVents[URandom.RandomRangeInt(0, ShipStatus.Instance.AllVents.Count)];
 
                 ChangeFloor(startingVent.transform.position.y > -7f);
                 var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPos, SendOption.Reliable);
@@ -274,7 +256,7 @@ namespace TownOfUsReworked.Classes
                 writer2.Write(startingVent.transform.position.x);
                 writer2.Write(startingVent.transform.position.y);
                 AmongUsClient.Instance.FinishRpcImmediately(writer2);
-                PlayerControl.LocalPlayer.NetTransform.RpcSnapTo(new Vector2(startingVent.transform.position.x, startingVent.transform.position.y + 0.3636f));
+                PlayerControl.LocalPlayer.NetTransform.RpcSnapTo(new(startingVent.transform.position.x, startingVent.transform.position.y + 0.3636f));
                 PlayerControl.LocalPlayer.MyPhysics.RpcEnterVent(startingVent.Id);
             }
         }

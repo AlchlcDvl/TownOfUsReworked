@@ -1,11 +1,4 @@
-﻿using HarmonyLib;
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Extensions;
-using UnityEngine;
-
-namespace TownOfUsReworked.Patches
+﻿namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch]
     public static class SpeedPatch

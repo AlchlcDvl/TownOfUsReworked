@@ -1,10 +1,3 @@
-using HarmonyLib;
-using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.PlayerLayers.Roles;
-using System.Linq;
-
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch(typeof(ExileController), nameof(ExileController.Begin))]

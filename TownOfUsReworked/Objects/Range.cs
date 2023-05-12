@@ -1,11 +1,3 @@
-using HarmonyLib;
-using UnityEngine;
-using System.Collections.Generic;
-using TownOfUsReworked.Classes;
-using Reactor.Utilities.Extensions;
-using System.Collections;
-using Reactor.Utilities;
-
 namespace TownOfUsReworked.Objects
 {
     [HarmonyPatch]

@@ -1,15 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Custom;
-using UnityEngine;
-using TownOfUsReworked.Cosmetics;
-using Reactor.Utilities.Extensions;
-using Object = UnityEngine.Object;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Stalker : SyndicateRole
@@ -208,7 +196,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         Points[player.PlayerId].transform.localPosition = v;
                     else
                     {
-                        var point = Object.Instantiate(__instance.HerePoint, __instance.HerePoint.transform.parent, true);
+                        var point = UObject.Instantiate(__instance.HerePoint, __instance.HerePoint.transform.parent, true);
                         point.transform.localPosition = v;
                         point.enabled = true;
                         player.SetPlayerMaterialColors(point);

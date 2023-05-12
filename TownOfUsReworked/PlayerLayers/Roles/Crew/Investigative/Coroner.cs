@@ -1,18 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
-using TownOfUsReworked.CustomOptions;
-using System;
-using TownOfUsReworked.Objects;
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.Data;
-using HarmonyLib;
-using UnityEngine;
-using Object = UnityEngine.Object;
-using TownOfUsReworked.Patches;
-using TownOfUsReworked.Custom;
-using TownOfUsReworked.Extensions;
-using Reactor.Utilities.Extensions;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Coroner : CrewRole
@@ -86,7 +71,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (!PlayerControl.LocalPlayer.Data.IsDead)
             {
-                var validBodies = Object.FindObjectsOfType<DeadBody>().Where(x => Murder.KilledPlayers.Any(y => y.PlayerId == x.ParentId && DateTime.UtcNow <
+                var validBodies = UObject.FindObjectsOfType<DeadBody>().Where(x => Murder.KilledPlayers.Any(y => y.PlayerId == x.ParentId && DateTime.UtcNow <
                     y.KillTime.AddSeconds(CustomGameOptions.CoronerArrowDuration)));
 
                 foreach (var bodyArrow in BodyArrows.Keys)
@@ -186,10 +171,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 Killer = Utils.PlayerById(killer.KillerId),
                 Body = Utils.PlayerById(killer.PlayerId),
+                Reporter = Player,
                 KillAge = (float)(DateTime.UtcNow - killer.KillTime).TotalMilliseconds
             };
 
-            var reportMsg = BodyReport.ParseBodyReport(br);
+            var reportMsg = br.ParseBodyReport();
 
             if (string.IsNullOrWhiteSpace(reportMsg))
                 return;

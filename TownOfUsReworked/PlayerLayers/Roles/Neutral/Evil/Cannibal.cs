@@ -1,17 +1,3 @@
-using System;
-using System.Collections.Generic;
-using TownOfUsReworked.CustomOptions;
-using System.Linq;
-using Object = UnityEngine.Object;
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.Data;
-using HarmonyLib;
-using UnityEngine;
-using TownOfUsReworked.Patches;
-using TownOfUsReworked.Custom;
-using Hazel;
-using Reactor.Utilities;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Cannibal : NeutralRole
@@ -21,7 +7,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public bool CannibalWin;
         public DateTime LastEaten;
         public Dictionary<byte, ArrowBehaviour> BodyArrows = new();
-        public bool EatWin => EatNeed <= 0;
+        public bool EatWin => EatNeed == 0;
 
         public Cannibal(PlayerControl player) : base(player)
         {
@@ -53,12 +39,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public void DestroyArrow(byte targetPlayerId)
         {
             var arrow = BodyArrows.FirstOrDefault(x => x.Key == targetPlayerId);
-
-            if (arrow.Value != null)
-                Object.Destroy(arrow.Value);
-            if (arrow.Value.gameObject != null)
-                Object.Destroy(arrow.Value.gameObject);
-
+            arrow.Value?.Destroy();
+            arrow.Value.gameObject?.Destroy();
             BodyArrows.Remove(arrow.Key);
         }
 
@@ -74,9 +56,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             base.UpdateHud(__instance);
             EatButton.Update("EAT", EatTimer(), CustomGameOptions.CannibalCd);
 
-            if (CustomGameOptions.EatArrows && !PlayerControl.LocalPlayer.Data.IsDead)
+            if (CustomGameOptions.EatArrows && !IsDead)
             {
-                var validBodies = Object.FindObjectsOfType<DeadBody>().Where(x => Murder.KilledPlayers.Any(y => y.PlayerId == x.ParentId &&
+                var validBodies = UObject.FindObjectsOfType<DeadBody>().Where(x => Murder.KilledPlayers.Any(y => y.PlayerId == x.ParentId &&
                     y.KillTime.AddSeconds(CustomGameOptions.EatArrowDelay) < DateTime.UtcNow));
 
                 foreach (var bodyArrow in BodyArrows.Keys)

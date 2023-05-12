@@ -1,9 +1,3 @@
-using TownOfUsReworked.Data;
-using TownOfUsReworked.CustomOptions;
-using System;
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.Custom;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Troll : NeutralRole

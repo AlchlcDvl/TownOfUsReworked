@@ -1,11 +1,3 @@
-using System;
-using TownOfUsReworked.Data;
-using HarmonyLib;
-using TownOfUsReworked.Classes;
-using UnityEngine;
-using System.Text;
-using System.IO;
-
 namespace TownOfUsReworked.CustomOptions
 {
     [HarmonyPatch]
@@ -60,7 +52,6 @@ namespace TownOfUsReworked.CustomOptions
         public static CustomToggleOption Whispers;
         public static CustomToggleOption WhispersAnnouncement;
         public static CustomToggleOption AppearanceAnimation;
-        public static CustomToggleOption LighterDarker;
         public static CustomToggleOption RandomSpawns;
         public static CustomToggleOption EnableModifiers;
         public static CustomToggleOption EnableAbilities;
@@ -74,6 +65,8 @@ namespace TownOfUsReworked.CustomOptions
         public static CustomToggleOption WhiteNameplates;
         public static CustomToggleOption SeeTasks;
         public static CustomToggleOption CustomEject;
+        public static CustomToggleOption LighterDarker;
+        public static CustomToggleOption ObstructNames;
 
         //Better Sabotages
         public static CustomHeaderOption BetterSabotages;
@@ -1531,6 +1524,7 @@ namespace TownOfUsReworked.CustomOptions
             SeeTasks = new CustomToggleOption(num++, MultiMenu.main, "See Tasks During The Game");
             CustomEject = new CustomToggleOption(num++, MultiMenu.main, "Custom Ejection Messages");
             LighterDarker = new CustomToggleOption(num++, MultiMenu.main, "Enable Lighter Darker Colors");
+            ObstructNames = new CustomToggleOption(num++, MultiMenu.main, "Hide Obstructed Player Names");
 
             MapSettings = new CustomHeaderOption(num++, MultiMenu.main, "Map Settings");
             Map = new CustomStringOption(num++, MultiMenu.main, "Map", Maps);
@@ -1582,11 +1576,11 @@ namespace TownOfUsReworked.CustomOptions
             MoveAdmin = new CustomStringOption(num++, MultiMenu.main, "Move Admin", new [] { "Don't Move", "Right Of Cockpit", "Main Hall" });
             MoveElectrical = new CustomStringOption(num++, MultiMenu.main, "Move Electrical Outlet", new [] { "Don't Move", "Vault", "Electrical" });
 
-            CrewAuditorRoles = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Auditor</color> <color=#FFD700FF>Roles</color>");
+            CrewAuditorRoles = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Auditor</color> <color=#FFD700FF>Roles</color>");
             MysticOn = new CustomNumberOption(num++, MultiMenu.crew, "<color=#708EEFFF>Mystic</color>", 0, 0, 100, 10, PercentFormat);
             VampireHunterOn = new CustomNumberOption(num++, MultiMenu.crew, "<color=#C0C0C0FF>Vampire Hunter</color>", 0, 0, 100, 10, PercentFormat);
 
-            CrewInvestigativeRoles = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Investigative</color> <color=#FFD700FF>Roles</color>");
+            CrewInvestigativeRoles = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Investigative</color> <color=#FFD700FF>Roles</color>");
             CoronerOn = new CustomNumberOption(num++, MultiMenu.crew, "<color=#4D99E6FF>Coroner</color>", 0, 0, 100, 10, PercentFormat);
             DetectiveOn = new CustomNumberOption(num++, MultiMenu.crew, "<color=#4D4DFFFF>Detective</color>", 0, 0, 100, 10, PercentFormat);
             InspectorOn = new CustomNumberOption(num++, MultiMenu.crew, "<color=#7E3C64FF>Inspector</color>", 0, 0, 100, 10, PercentFormat);
@@ -1596,20 +1590,20 @@ namespace TownOfUsReworked.CustomOptions
             SheriffOn = new CustomNumberOption(num++, MultiMenu.crew, "<color=#FFCC80FF>Sheriff</color>", 0, 0, 100, 10, PercentFormat);
             TrackerOn = new CustomNumberOption(num++, MultiMenu.crew, "<color=#009900FF>Tracker</color>", 0, 0, 100, 10, PercentFormat);
 
-            CrewKillingRoles = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>");
+            CrewKillingRoles = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>");
             VeteranOn = new CustomNumberOption(num++, MultiMenu.crew, "<color=#998040FF>Veteran</color>", 0, 0, 100, 10, PercentFormat);
             VigilanteOn = new CustomNumberOption(num++, MultiMenu.crew, "<color=#FFFF00FF>Vigilante</color>", 0, 0, 100, 10, PercentFormat);
 
-            CrewProtectiveRoles = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Protective</color> <color=#FFD700FF>Roles</color>");
+            CrewProtectiveRoles = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Protective</color> <color=#FFD700FF>Roles</color>");
             AltruistOn = new CustomNumberOption(num++, MultiMenu.crew, "<color=#660000FF>Altruist</color>", 0, 0, 100, 10, PercentFormat);
             MedicOn = new CustomNumberOption(num++, MultiMenu.crew, "<color=#006600FF>Medic</color>", 0, 0, 100, 10, PercentFormat);
 
-            CrewSovereignRoles = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Sovereign</color> <color=#FFD700FF>Roles</color>");
+            CrewSovereignRoles = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Sovereign</color> <color=#FFD700FF>Roles</color>");
             DictatorOn = new CustomNumberOption(num++, MultiMenu.crew, "<color=#00CB97FF>Dictator</color>", 0, 0, 100, 10, PercentFormat);
             MayorOn = new CustomNumberOption(num++, MultiMenu.crew, "<color=#704FA8FF>Mayor</color>", 0, 0, 100, 10, PercentFormat);
             MonarchOn = new CustomNumberOption(num++, MultiMenu.crew, "<color=#FF004EFF>Monarch</color>", 0, 0, 100, 10, PercentFormat);
 
-            CrewSupportRoles = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>");
+            CrewSupportRoles = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>");
             ChameleonOn = new CustomNumberOption(num++, MultiMenu.crew, "<color=#5411F8FF>Chameleon</color>", 0, 0, 100, 10, PercentFormat);
             EngineerOn = new CustomNumberOption(num++, MultiMenu.crew, "<color=#FFA60AFF>Engineer</color>", 0, 0, 100, 10, PercentFormat);
             EscortOn = new CustomNumberOption(num++, MultiMenu.crew, "<color=#803333FF>Escort</color>", 0, 0, 100, 10, PercentFormat);
@@ -1617,8 +1611,8 @@ namespace TownOfUsReworked.CustomOptions
             ShifterOn = new CustomNumberOption(num++, MultiMenu.crew, "<color=#DF851FFF>Shifter</color>", 0, 0, 100, 10, PercentFormat);
             TransporterOn = new CustomNumberOption(num++, MultiMenu.crew, "<color=#00EEFFFF>Transporter</color>", 0, 0, 100, 10, PercentFormat);
 
-            CrewUtilityRoles = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Utility</color> <color=#FFD700FF>Roles</color>");
-            CrewmateOn = new CustomNumberOption(num++, MultiMenu.crew, "<color=#8BFDFDFF>Crewmate</color>", 0, 0, 100, 10, PercentFormat);
+            CrewUtilityRoles = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Utility</color> <color=#FFD700FF>Roles</color>");
+            CrewmateOn = new CustomNumberOption(num++, MultiMenu.crew, "<color=#8CFFFFFF>Crewmate</color>", 0, 0, 100, 10, PercentFormat);
             RevealerOn = new CustomNumberOption(num++, MultiMenu.crew, "<color=#D3D3D3FF>Revealer</color>", 0, 0, 100, 10, PercentFormat);
 
             NeutralBenignRoles = new CustomHeaderOption(num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Benign</color> <color=#FFD700FF>Roles</color>");
@@ -1732,7 +1726,7 @@ namespace TownOfUsReworked.CustomOptions
 
             Abilities = new CustomHeaderOption(num++, MultiMenu.ability, "<color=#FF9900FF>Abilities</color>");
             ButtonBarryOn = new CustomNumberOption(num++, MultiMenu.ability, "<color=#E600FFFF>Button Barry</color>", 0, 0, 100, 10, PercentFormat);
-            CrewAssassinOn = new CustomNumberOption(num++, MultiMenu.ability, "<color=#8BFDFDFF>Crew</color> <color=#073763FF>Assassin</color>", 0, 0, 100, 10, PercentFormat);
+            CrewAssassinOn = new CustomNumberOption(num++, MultiMenu.ability, "<color=#8CFFFFFF>Crew</color> <color=#073763FF>Assassin</color>", 0, 0, 100, 10, PercentFormat);
             InsiderOn = new CustomNumberOption(num++, MultiMenu.ability, "<color=#26FCFBFF>Insider</color>", 0, 0, 100, 10, PercentFormat);
             IntruderAssassinOn = new CustomNumberOption(num++, MultiMenu.ability, "<color=#FF0000FF>Intruder</color> <color=#073763FF>Assassin</color>", 0, 0, 100, 10, PercentFormat);
             MultitaskerOn = new CustomNumberOption(num++, MultiMenu.ability, "<color=#FF804DFF>Multitasker</color>", 0, 0, 100, 10, PercentFormat);
@@ -1749,20 +1743,20 @@ namespace TownOfUsReworked.CustomOptions
             TunnelerOn = new CustomNumberOption(num++, MultiMenu.ability, "<color=#E91E63FF>Tunneler</color>", 0, 0, 100, 10, PercentFormat);
             UnderdogOn = new CustomNumberOption(num++, MultiMenu.ability, "<color=#841A7FFF>Underdog</color>", 0, 0, 100, 10, PercentFormat);
 
-            CrewSettings = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#8BFDFDFF>Crew</color> Settings");
-            CustomCrewColors = new CustomToggleOption(num++, MultiMenu.crew, "Enable Custom <color=#8BFDFDFF>Crew</color> Colors");
+            CrewSettings = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#8CFFFFFF>Crew</color> Settings");
+            CustomCrewColors = new CustomToggleOption(num++, MultiMenu.crew, "Enable Custom <color=#8CFFFFFF>Crew</color> Colors");
             CommonTasks = new CustomNumberOption(num++, MultiMenu.crew, "Common Tasks", 2, 0, 100, 1);
             LongTasks = new CustomNumberOption(num++, MultiMenu.crew, "Long Tasks", 1, 0, 100, 1);
             ShortTasks = new CustomNumberOption(num++, MultiMenu.crew, "Short Tasks", 4, 0, 100, 1);
-            //GhostTasksCountToWin = new CustomToggleOption(num++, MultiMenu.crew, "<color=#8BFDFDFF>Crew</color> Ghost Tasks Count To Win");
-            CrewVision = new CustomNumberOption(num++, MultiMenu.crew, "<color=#8BFDFDFF>Crew</color> Vision", 1f, 0.25f, 5f, 0.25f, MultiplierFormat);
-            CrewMax = new CustomNumberOption(num++, MultiMenu.crew, "Max <color=#8BFDFDFF>Crew</color> <color=#FFD700FF>Roles</color>", 5, 0, 14, 1);
-            CrewMin = new CustomNumberOption(num++, MultiMenu.crew, "Min <color=#8BFDFDFF>Crew</color> <color=#FFD700FF>Roles</color>", 5, 0, 14, 1);
-            CrewVent = new CustomToggleOption(num++, MultiMenu.crew, "<color=#8BFDFDFF>Crew</color> Can Vent", false);
+            //GhostTasksCountToWin = new CustomToggleOption(num++, MultiMenu.crew, "<color=#8CFFFFFF>Crew</color> Ghost Tasks Count To Win");
+            CrewVision = new CustomNumberOption(num++, MultiMenu.crew, "<color=#8CFFFFFF>Crew</color> Vision", 1f, 0.25f, 5f, 0.25f, MultiplierFormat);
+            CrewMax = new CustomNumberOption(num++, MultiMenu.crew, "Max <color=#8CFFFFFF>Crew</color> <color=#FFD700FF>Roles</color>", 5, 0, 14, 1);
+            CrewMin = new CustomNumberOption(num++, MultiMenu.crew, "Min <color=#8CFFFFFF>Crew</color> <color=#FFD700FF>Roles</color>", 5, 0, 14, 1);
+            CrewVent = new CustomToggleOption(num++, MultiMenu.crew, "<color=#8CFFFFFF>Crew</color> Can Vent", false);
 
-            CrewAuditorSettings = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Auditor</color> Settings");
-            CAMax = new CustomNumberOption(num++, MultiMenu.crew, "Max <color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Auditor</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
-            CAMin = new CustomNumberOption(num++, MultiMenu.crew, "Min <color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Auditor</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
+            CrewAuditorSettings = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Auditor</color> Settings");
+            CAMax = new CustomNumberOption(num++, MultiMenu.crew, "Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Auditor</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
+            CAMin = new CustomNumberOption(num++, MultiMenu.crew, "Min <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Auditor</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
 
             MysticSettings = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#708EEFFF>Mystic</color>");
             MysticCount = new CustomNumberOption(num++, MultiMenu.crew, "<color=#708EEFFF>Mystic</color> Count", 1, 1, 14, 1);
@@ -1774,9 +1768,9 @@ namespace TownOfUsReworked.CustomOptions
             UniqueVampireHunter = new CustomToggleOption(num++, MultiMenu.crew, "<color=#C0C0C0FF>Vampire Hunter</color> Is Unique In All Any", false);
             StakeCooldown = new CustomNumberOption(num++, MultiMenu.crew, "Stake Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
 
-            CrewInvestigativeSettings = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Investigative</color> Settings");
-            CIMax = new CustomNumberOption(num++, MultiMenu.crew, "Max <color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Investigative</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
-            CIMin = new CustomNumberOption(num++, MultiMenu.crew, "Min <color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Investigative</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
+            CrewInvestigativeSettings = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Investigative</color> Settings");
+            CIMax = new CustomNumberOption(num++, MultiMenu.crew, "Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Investigative</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
+            CIMin = new CustomNumberOption(num++, MultiMenu.crew, "Min <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Investigative</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
 
             Coroner = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#4D99E6FF>Coroner</color>");
             CoronerCount = new CustomNumberOption(num++, MultiMenu.crew, "<color=#4D99E6FF>Coroner</color> Count", 1, 1, 14, 1);
@@ -1842,9 +1836,9 @@ namespace TownOfUsReworked.CustomOptions
             MinAmountOfPlayersInBug = new CustomNumberOption(num++, MultiMenu.crew, "Number Of <color=#FFD700FF>Roles</color> Required To Trigger Bug", 1, 1, 5, 1);
             WhoSeesDead = new CustomStringOption(num++, MultiMenu.crew, "Who Sees Dead Bodies On Admin", new[] { "Nobody", "Operative", "Everyone But Operative", "Everyone" });
 
-            CrewKillingSettings = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Killing</color> Settings");
-            CKMax = new CustomNumberOption(num++, MultiMenu.crew, "Max <color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
-            CKMin = new CustomNumberOption(num++, MultiMenu.crew, "Min <color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
+            CrewKillingSettings = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Killing</color> Settings");
+            CKMax = new CustomNumberOption(num++, MultiMenu.crew, "Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
+            CKMin = new CustomNumberOption(num++, MultiMenu.crew, "Min <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
 
             Veteran = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#998040FF>Veteran</color>");
             VeteranCount = new CustomNumberOption(num++, MultiMenu.crew, "<color=#998040FF>Veteran</color> Count", 1, 1, 14, 1);
@@ -1864,9 +1858,9 @@ namespace TownOfUsReworked.CustomOptions
             VigiKillCd = new CustomNumberOption(num++, MultiMenu.crew, "Shoot Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
             VigiBulletCount = new CustomNumberOption(num++, MultiMenu.crew, "Max Bullets", 5, 1, 15, 1);
 
-            CrewProtectiveSettings = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Protective</color> Settings");
-            CPMax = new CustomNumberOption(num++, MultiMenu.crew, "Max <color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Protective</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
-            CPMin = new CustomNumberOption(num++, MultiMenu.crew, "Min <color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Protective</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
+            CrewProtectiveSettings = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Protective</color> Settings");
+            CPMax = new CustomNumberOption(num++, MultiMenu.crew, "Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Protective</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
+            CPMin = new CustomNumberOption(num++, MultiMenu.crew, "Min <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Protective</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
 
             Altruist = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#660000FF>Altruist</color>");
             AltruistCount = new CustomNumberOption(num++, MultiMenu.crew, "<color=#660000FF>Altruist</color> Count", 1, 1, 14, 1);
@@ -1883,9 +1877,9 @@ namespace TownOfUsReworked.CustomOptions
             WhoGetsNotification = new CustomStringOption(num++, MultiMenu.crew, "Who Gets Murder Attempt Indicator", new[] { "Medic", "Self", "Self And Medic", "Everyone", "Nobody" });
             ShieldBreaks = new CustomToggleOption(num++, MultiMenu.crew, "Shield Breaks On Murder Attempt");
 
-            CrewSovereignSettings = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Sovereign</color> Settings");
-            CSvMax = new CustomNumberOption(num++, MultiMenu.crew, "Max <color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Sovereign</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
-            CSvMin = new CustomNumberOption(num++, MultiMenu.crew, "Min <color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Sovereign</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
+            CrewSovereignSettings = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Sovereign</color> Settings");
+            CSvMax = new CustomNumberOption(num++, MultiMenu.crew, "Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Sovereign</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
+            CSvMin = new CustomNumberOption(num++, MultiMenu.crew, "Min <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Sovereign</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
 
             Dictator = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#00CB97FF>Dictator</color>");
             DictatorCount = new CustomNumberOption(num++, MultiMenu.crew, "<color=#00CB97FF>Dictator</color> Count", 1, 1, 14, 1);
@@ -1910,9 +1904,9 @@ namespace TownOfUsReworked.CustomOptions
             MonarchButton = new CustomToggleOption(num++, MultiMenu.crew, "<color=#FF004EFF>Monarch</color> Can Button");
             KnightButton = new CustomToggleOption(num++, MultiMenu.crew, "Knights Can Button");
 
-            CrewSupportSettings = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Support</color> Settings");
-            CSMax = new CustomNumberOption(num++, MultiMenu.crew, "Max <color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
-            CSMin = new CustomNumberOption(num++, MultiMenu.crew, "Min <color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
+            CrewSupportSettings = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Support</color> Settings");
+            CSMax = new CustomNumberOption(num++, MultiMenu.crew, "Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
+            CSMin = new CustomNumberOption(num++, MultiMenu.crew, "Min <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
 
             Chameleon = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#5411F8FF>Chameleon</color>");
             ChameleonCount = new CustomNumberOption(num++, MultiMenu.crew, "<color=#5411F8FF>Chameleon</color> Count", 1, 1, 14, 1);
@@ -1952,16 +1946,16 @@ namespace TownOfUsReworked.CustomOptions
             TransportMaxUses = new CustomNumberOption(num++, MultiMenu.crew, "Max Transports", 5, 1, 15, 1);
             TransSelf = new CustomToggleOption(num++, MultiMenu.crew, "<color=#00EEFFFF>Transporter</color> Can Transport Themselves");
 
-            CrewUtilitySettings = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Utility</color> Settings");
+            CrewUtilitySettings = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Utility</color> Settings");
 
-            Crewmate = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#8BFDFDFF>Crewmate</color>");
-            CrewCount = new CustomNumberOption(num++, MultiMenu.crew, "<color=#8BFDFDFF>Crewmate</color> Count", 1, 1, 14, 1);
+            Crewmate = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#8CFFFFFF>Crewmate</color>");
+            CrewCount = new CustomNumberOption(num++, MultiMenu.crew, "<color=#8CFFFFFF>Crewmate</color> Count", 1, 1, 14, 1);
 
             Revealer = new CustomHeaderOption(num++, MultiMenu.crew, "<color=#D3D3D3FF>Revealer</color>");
             RevealerTasksRemainingClicked = new CustomNumberOption(num++, MultiMenu.crew, "Tasks Remaining When <color=#D3D3D3FF>Revealer</color> Can Be Clicked", 5, 1, 10, 1);
             RevealerTasksRemainingAlert = new CustomNumberOption(num++, MultiMenu.crew, "Tasks Remaining When Revealed", 1, 1, 5, 1);
             RevealerRevealsNeutrals = new CustomToggleOption(num++, MultiMenu.crew, "<color=#D3D3D3FF>Revealer</color> Reveals <color=#B3B3B3FF>Neutrals</color>", false);
-            RevealerRevealsCrew = new CustomToggleOption(num++, MultiMenu.crew, "<color=#D3D3D3FF>Revealer</color> Reveals <color=#8BFDFDFF>Crew</color>", false);
+            RevealerRevealsCrew = new CustomToggleOption(num++, MultiMenu.crew, "<color=#D3D3D3FF>Revealer</color> Reveals <color=#8CFFFFFF>Crew</color>", false);
             RevealerRevealsRoles = new CustomToggleOption(num++, MultiMenu.crew, "<color=#D3D3D3FF>Revealer</color> Reveals Exact <color=#FFD700FF>Roles</color>", false);
             RevealerCanBeClickedBy = new CustomStringOption(num++, MultiMenu.crew, "Who Can Click <color=#D3D3D3FF>Revealer</color>", new[] { "All", "Non Crew", "Evils Only" });
 
@@ -2561,7 +2555,7 @@ namespace TownOfUsReworked.CustomOptions
 
             Assassin = new CustomHeaderOption(num++, MultiMenu.ability, "<color=#073763FF>Assassin</color>");
             NumberOfImpostorAssassins = new CustomNumberOption(num++, MultiMenu.ability, "<color=#FF0000FF>Intruder</color> <color=#073763FF>Assassins</color> Count", 1, 1, 14, 1);
-            NumberOfCrewAssassins = new CustomNumberOption(num++, MultiMenu.ability, "<color=#8BFDFDFF>Crew</color> <color=#073763FF>Assassins</color> Count", 1, 1, 14, 1);
+            NumberOfCrewAssassins = new CustomNumberOption(num++, MultiMenu.ability, "<color=#8CFFFFFF>Crew</color> <color=#073763FF>Assassins</color> Count", 1, 1, 14, 1);
             NumberOfNeutralAssassins = new CustomNumberOption(num++, MultiMenu.ability, "<color=#B3B3B3FF>Neutral</color> <color=#073763FF>Assassins</color> Count", 1, 1, 14, 1);
             NumberOfSyndicateAssassins = new CustomNumberOption(num++, MultiMenu.ability, "<color=#008000FF>Syndicate</color> <color=#073763FF>Assassins</color> Count", 1, 1, 14, 1);
             UniqueAssassin = new CustomToggleOption(num++, MultiMenu.ability, "<color=#073763FF>Assassin</color> Is Unique In All Any", false);
@@ -2615,7 +2609,7 @@ namespace TownOfUsReworked.CustomOptions
             UniqueSnitch = new CustomToggleOption(num++, MultiMenu.ability, "<color=#D4AF37FF>Snitch</color> Is Unique In All Any", false);
             SnitchKnows = new CustomToggleOption(num++, MultiMenu.ability, "<color=#D4AF37FF>Snitch</color> Knows Who They Are On Game Start");
             SnitchSeesNeutrals = new CustomToggleOption(num++, MultiMenu.ability, "<color=#D4AF37FF>Snitch</color> Sees <color=#B3B3B3FF>Neutrals</color>", false);
-            SnitchSeesCrew = new CustomToggleOption(num++, MultiMenu.ability, "<color=#D4AF37FF>Snitch</color> Sees <color=#8BFDFDFF>Crew</color>", false);
+            SnitchSeesCrew = new CustomToggleOption(num++, MultiMenu.ability, "<color=#D4AF37FF>Snitch</color> Sees <color=#8CFFFFFF>Crew</color>", false);
             SnitchSeesRoles = new CustomToggleOption(num++, MultiMenu.ability, "<color=#D4AF37FF>Snitch</color> Sees Exact <color=#FFD700FF>Roles</color>", false);
             SnitchTasksRemaining = new CustomNumberOption(num++, MultiMenu.ability, "Tasks Remaining When Revealed", 1, 1, 5, 1);
             SnitchSeestargetsInMeeting = new CustomToggleOption(num++, MultiMenu.ability, "<color=#D4AF37FF>Snitch</color> Sees Evils In Meetings");

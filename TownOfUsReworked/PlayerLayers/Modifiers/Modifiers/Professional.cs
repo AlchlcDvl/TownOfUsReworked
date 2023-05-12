@@ -1,6 +1,3 @@
-using TownOfUsReworked.Data;
-using TownOfUsReworked.CustomOptions;
-
 namespace TownOfUsReworked.PlayerLayers.Modifiers
 {
     public class Professional : Modifier

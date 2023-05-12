@@ -1,10 +1,3 @@
-using System.Collections.Generic;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.Data;
-using Reactor.Utilities.Extensions;
-using UnityEngine;
-
 namespace TownOfUsReworked.PlayerLayers.Abilities
 {
     public class Radar : Ability
@@ -72,7 +65,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
                 Point.transform.localPosition = v;
             else
             {
-                var Point = Object.Instantiate(__instance.HerePoint, __instance.HerePoint.transform.parent, true);
+                var Point = UObject.Instantiate(__instance.HerePoint, __instance.HerePoint.transform.parent, true);
                 Point.enabled = true;
                 Point.color = Color;
                 Point.transform.localPosition = v;

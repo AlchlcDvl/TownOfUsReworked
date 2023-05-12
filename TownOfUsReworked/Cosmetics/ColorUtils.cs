@@ -1,7 +1,4 @@
-﻿using UnityEngine;
-using HarmonyLib;
-
-namespace TownOfUsReworked.Cosmetics
+﻿namespace TownOfUsReworked.Cosmetics
 {
     [HarmonyPatch]
     public static class ColorUtils

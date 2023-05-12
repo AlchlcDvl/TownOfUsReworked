@@ -1,5 +1,3 @@
-using TownOfUsReworked.Data;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Crewmate : CrewRole

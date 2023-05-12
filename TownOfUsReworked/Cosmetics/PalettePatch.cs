@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-namespace TownOfUsReworked.Cosmetics
+﻿namespace TownOfUsReworked.Cosmetics
 {
     public static class PalettePatch
     {

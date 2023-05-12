@@ -1,10 +1,3 @@
-using System;
-using TownOfUsReworked.CustomOptions;
-using System.Collections.Generic;
-using TownOfUsReworked.Objects;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Custom;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Bomber : SyndicateRole

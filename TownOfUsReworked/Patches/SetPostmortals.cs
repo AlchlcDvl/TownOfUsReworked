@@ -1,17 +1,3 @@
-using System;
-using HarmonyLib;
-using Hazel;
-using TownOfUsReworked.Classes;
-using UnityEngine;
-using Object = UnityEngine.Object;
-using Random = UnityEngine.Random;
-using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Data;
-using System.Collections.Generic;
-using TownOfUsReworked.PlayerLayers.Roles;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.PlayerLayers;
-
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch(typeof(AirshipExileController), nameof(AirshipExileController.WrapUpAndSpawn))]
@@ -20,7 +6,7 @@ namespace TownOfUsReworked.Patches
         public static void Postfix(AirshipExileController __instance) => SetPostmortals.ExileControllerPostfix(__instance);
     }
 
-    [HarmonyPatch(typeof(Object), nameof(Object.Destroy), new Type[] { typeof(GameObject) })]
+    [HarmonyPatch(typeof(UObject), nameof(UObject.Destroy), new Type[] { typeof(GameObject) })]
     public static class SubmergedExile
     {
         public static void Prefix(GameObject obj)
@@ -147,7 +133,7 @@ namespace TownOfUsReworked.Patches
 
         public static void SetStartingVent(PlayerControl player)
         {
-            var startingVent = ShipStatus.Instance.AllVents[Random.RandomRangeInt(0, ShipStatus.Instance.AllVents.Count)];
+            var startingVent = ShipStatus.Instance.AllVents[URandom.RandomRangeInt(0, ShipStatus.Instance.AllVents.Count)];
 
             var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPos, SendOption.Reliable);
             writer2.Write(player.PlayerId);
@@ -155,7 +141,7 @@ namespace TownOfUsReworked.Patches
             writer2.Write(startingVent.transform.position.y + 0.3636f);
             AmongUsClient.Instance.FinishRpcImmediately(writer2);
 
-            player.NetTransform.RpcSnapTo(new Vector2(startingVent.transform.position.x, startingVent.transform.position.y + 0.3636f));
+            player.NetTransform.RpcSnapTo(new(startingVent.transform.position.x, startingVent.transform.position.y + 0.3636f));
             player.MyPhysics.RpcEnterVent(startingVent.Id);
         }
 
@@ -172,7 +158,7 @@ namespace TownOfUsReworked.Patches
 
                     if (normalPlayerTask.TaskType == TaskTypes.PickUpTowels)
                     {
-                        foreach (var console in Object.FindObjectsOfType<TowelTaskConsole>())
+                        foreach (var console in UObject.FindObjectsOfType<TowelTaskConsole>())
                             console.Image.color = Color.white;
                     }
 

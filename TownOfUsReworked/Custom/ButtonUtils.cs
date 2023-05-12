@@ -1,16 +1,3 @@
-using HarmonyLib;
-using System.Linq;
-using TownOfUsReworked.Extensions;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.PlayerLayers.Roles;
-using TownOfUsReworked.PlayerLayers.Objectifiers;
-using TownOfUsReworked.PlayerLayers.Abilities;
-using System;
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.Objects;
-using TownOfUsReworked.PlayerLayers;
-
 namespace TownOfUsReworked.Custom
 {
     [HarmonyPatch]

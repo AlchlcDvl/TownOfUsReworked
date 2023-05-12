@@ -1,12 +1,3 @@
-using HarmonyLib;
-using Hazel;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.PlayerLayers;
-using TownOfUsReworked.PlayerLayers.Roles;
-
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch(typeof(LogicGameFlowNormal), nameof(LogicGameFlowNormal.CheckEndCriteria))]

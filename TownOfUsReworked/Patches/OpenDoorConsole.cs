@@ -1,13 +1,3 @@
-using System;
-using HarmonyLib;
-using UnityEngine;
-using Object = UnityEngine.Object;
-using TownOfUsReworked.Extensions;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Data;
-using Hazel;
-using TownOfUsReworked.PlayerLayers.Roles;
-
 namespace TownOfUsReworked.Patches
 {
     #region OpenDoorConsole
@@ -87,8 +77,8 @@ namespace TownOfUsReworked.Patches
                 return false;
 
             PlayerControl.LocalPlayer.NetTransform.Halt();
-            var minigame = Object.Instantiate(__instance.MinigamePrefab, Camera.main.transform);
-            minigame.transform.localPosition = new Vector3(0f, 0f, -50f);
+            var minigame = UObject.Instantiate(__instance.MinigamePrefab, Camera.main.transform);
+            minigame.transform.localPosition = new(0f, 0f, -50f);
 
             try
             {
@@ -231,9 +221,9 @@ namespace TownOfUsReworked.Patches
 
                 if (playerTask.MinigamePrefab)
                 {
-                    var minigame = Object.Instantiate(playerTask.GetMinigamePrefab());
+                    var minigame = UObject.Instantiate(playerTask.GetMinigamePrefab());
                     minigame.transform.SetParent(Camera.main.transform, false);
-                    minigame.transform.localPosition = new Vector3(0f, 0f, -50f);
+                    minigame.transform.localPosition = new(0f, 0f, -50f);
                     minigame.Console = __instance;
                     minigame.Begin(playerTask);
                 }

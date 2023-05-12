@@ -1,13 +1,9 @@
-using System;
-using System.Collections;
 using System.Linq.Expressions;
-using Il2CppSystem.Collections.Generic;
-using HarmonyLib;
 
 namespace TownOfUsReworked.Modules
 {
     [HarmonyPatch]
-    public unsafe class Il2CppListEnumerable<T> : System.Collections.Generic.IEnumerable<T>, System.Collections.Generic.IEnumerator<T> where T : Il2CppSystem.Object
+    public unsafe class Il2CppListEnumerable<T> : IEnumerable<T>, IEnumerator<T> where T : Il2CppSystem.Object
     {
         private struct Il2CppListStruct
         {
@@ -37,7 +33,7 @@ namespace TownOfUsReworked.Modules
         private readonly int _count;
         private int _index = -1;
 
-        public Il2CppListEnumerable(List<T> list)
+        public Il2CppListEnumerable(Il2CppSystem.Collections.Generic.List<T> list)
         {
             var listStruct = (Il2CppListStruct*) list.Pointer;
             _count = listStruct->_size;
@@ -59,7 +55,7 @@ namespace TownOfUsReworked.Modules
 
         public void Reset() => _index = -1;
 
-        public System.Collections.Generic.IEnumerator<T> GetEnumerator() => this;
+        public IEnumerator<T> GetEnumerator() => this;
 
         IEnumerator IEnumerable.GetEnumerator() => this;
 

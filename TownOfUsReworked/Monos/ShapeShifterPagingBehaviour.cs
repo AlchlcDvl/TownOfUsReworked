@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Il2CppInterop.Runtime.Attributes;
-using HarmonyLib;
-
-namespace TownOfUsReworked.Monos
+﻿namespace TownOfUsReworked.Monos
 {
     [HarmonyPatch]
     public class ShapeShifterPagingBehaviour : AbstractPagingBehaviour

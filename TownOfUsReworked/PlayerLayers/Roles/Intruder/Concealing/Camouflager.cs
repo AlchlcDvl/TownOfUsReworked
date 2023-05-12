@@ -1,11 +1,3 @@
-using System;
-using UnityEngine;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Custom;
-using Hazel;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Camouflager : IntruderRole
@@ -19,7 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Camouflager(PlayerControl player) : base(player)
         {
             Name = "Camouflager";
-            StartText = "Hinder The <color=#8BFDFDFF>Crew</color>'s Recognition";
+            StartText = "Hinder The <color=#8CFFFFFF>Crew</color>'s Recognition";
             AbilitiesText = "- You can disrupt everyone's vision, causing them to be unable to tell players apart\n- When camouflaged, everyone will appear grey with fluctuating names " +
                 $"and no cosmetics{(CustomGameOptions.MeetingColourblind ? "\n- This effect carries over into the meeting if a meeting is called during a camouflage" : "")}\n" +
                 $"{AbilitiesText}";

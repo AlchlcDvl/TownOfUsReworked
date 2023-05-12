@@ -1,9 +1,3 @@
-using System.Collections.Generic;
-using Hazel;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Classes;
-using HarmonyLib;
-
 namespace TownOfUsReworked.CustomOptions
 {
     [HarmonyPatch]

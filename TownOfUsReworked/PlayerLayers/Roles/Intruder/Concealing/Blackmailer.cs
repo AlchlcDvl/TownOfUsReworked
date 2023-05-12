@@ -1,10 +1,3 @@
-using System;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Custom;
-using Hazel;
-using TownOfUsReworked.Classes;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Blackmailer : IntruderRole

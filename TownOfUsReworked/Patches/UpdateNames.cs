@@ -1,16 +1,3 @@
-using HarmonyLib;
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.PlayerLayers.Objectifiers;
-using TownOfUsReworked.PlayerLayers.Abilities;
-using TownOfUsReworked.PlayerLayers.Roles;
-using TownOfUsReworked.CustomOptions;
-using UnityEngine;
-using System.Linq;
-using System.Collections.Generic;
-using TownOfUsReworked.Extensions;
-using TownOfUsReworked.PlayerLayers;
-
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
@@ -37,6 +24,15 @@ namespace TownOfUsReworked.Patches
         {
             if (player.GetCustomOutfitType() == CustomPlayerOutfitType.Invis && player != PlayerControl.LocalPlayer)
                 return ("", Color.clear);
+
+            var distance = Vector2.Distance(PlayerControl.LocalPlayer.GetTruePosition(), player.GetTruePosition());
+            var vector = player.GetTruePosition() - PlayerControl.LocalPlayer.GetTruePosition();
+
+            if (PhysicsHelpers.AnyNonTriggersBetween(PlayerControl.LocalPlayer.GetTruePosition(), vector.normalized, distance, Constants.ShipAndObjectsMask) &&
+                CustomGameOptions.ObstructNames)
+            {
+                return ("", Color.clear);
+            }
 
             var name = CustomGameOptions.NoNames && !ConstantVariables.IsLobby ? "" : player.Data.PlayerName;
             var color = Color.white;
@@ -65,7 +61,7 @@ namespace TownOfUsReworked.Patches
             if (player.IsMarked())
                 name += " <color=#F1C40FFF>χ</color>";
 
-            if (player.Is(RoleEnum.Mayor) && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything) && PlayerControl.LocalPlayer.PlayerId != player.PlayerId)
+            if (player.Is(RoleEnum.Mayor) && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything) && PlayerControl.LocalPlayer != player)
             {
                 var mayor = info[0] as Mayor;
 
@@ -105,7 +101,7 @@ namespace TownOfUsReworked.Patches
                     }
                 }
             }
-            else if (player.Is(RoleEnum.Dictator) && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything) && PlayerControl.LocalPlayer.PlayerId != player.PlayerId)
+            else if (player.Is(RoleEnum.Dictator) && !(PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything) && PlayerControl.LocalPlayer != player)
             {
                 var dict = info[0] as Dictator;
 
@@ -865,7 +861,7 @@ namespace TownOfUsReworked.Patches
             }
 
             if (roleRevealed)
-                player.NameText().transform.localPosition = new Vector3(0f, 0.15f, -0.5f);
+                player.NameText().transform.localPosition = new(0f, 0.15f, -0.5f);
 
             return (name, color);
         }

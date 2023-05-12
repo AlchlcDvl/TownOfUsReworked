@@ -1,9 +1,3 @@
-using HarmonyLib;
-using TownOfUsReworked.Extensions;
-using System.Linq;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Monos;
-
 namespace TownOfUsReworked.PlayerLayers
 {
     [HarmonyPatch(typeof(VentButton), nameof(VentButton.DoClick))]

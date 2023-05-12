@@ -1,13 +1,3 @@
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.CustomOptions;
-using System;
-using System.Linq;
-using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Custom;
-using UnityEngine;
-using Hazel;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Mystic : CrewRole

@@ -1,12 +1,3 @@
-using System;
-using System.Collections.Generic;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.Data;
-using Hazel;
-using TownOfUsReworked.Custom;
-using TownOfUsReworked.Extensions;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Whisperer : NeutralRole

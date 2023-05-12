@@ -1,8 +1,3 @@
-using System;
-using UnityEngine;
-using TownOfUsReworked.Data;
-using HarmonyLib;
-
 namespace TownOfUsReworked.CustomOptions
 {
     [HarmonyPatch]

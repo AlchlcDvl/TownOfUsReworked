@@ -200,7 +200,7 @@ Move Electrical Outlet
 100
 <color=#00EEFFFF>Transporter</color>
 100
-<color=#8BFDFDFF>Crewmate</color>
+<color=#8CFFFFFF>Crewmate</color>
 100
 <color=#D3D3D3FF>Revealer</color>
 100
@@ -352,7 +352,7 @@ Move Electrical Outlet
 100
 <color=#E600FFFF>Button Barry</color>
 100
-<color=#8BFDFDFF>Crew</color> <color=#073763FF>Assassin</color>
+<color=#8CFFFFFF>Crew</color> <color=#073763FF>Assassin</color>
 100
 <color=#26FCFBFF>Insider</color>
 100
@@ -380,7 +380,7 @@ Move Electrical Outlet
 100
 <color=#841A7FFF>Underdog</color>
 100
-Enable Custom <color=#8BFDFDFF>Crew</color> Colors
+Enable Custom <color=#8CFFFFFF>Crew</color> Colors
 True
 Short Task Count
 1
@@ -388,19 +388,19 @@ Long Task Count
 1
 Common Task Count
 1
-<color=#8BFDFDFF>Crew</color> Ghost Tasks Count To Win
+<color=#8CFFFFFF>Crew</color> Ghost Tasks Count To Win
 True
-<color=#8BFDFDFF>Crew</color> Vision
+<color=#8CFFFFFF>Crew</color> Vision
 0.5
-Max <color=#8BFDFDFF>Crew</color> <color=#FFD700FF>Roles</color>
+Max <color=#8CFFFFFF>Crew</color> <color=#FFD700FF>Roles</color>
 14
-Min <color=#8BFDFDFF>Crew</color> <color=#FFD700FF>Roles</color>
+Min <color=#8CFFFFFF>Crew</color> <color=#FFD700FF>Roles</color>
 14
-<color=#8BFDFDFF>Crew</color> Can Vent
+<color=#8CFFFFFF>Crew</color> Can Vent
 True
-Max <color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Auditor</color> <color=#FFD700FF>Roles</color>
+Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Auditor</color> <color=#FFD700FF>Roles</color>
 14
-Min <color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Auditor</color> <color=#FFD700FF>Roles</color>
+Min <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Auditor</color> <color=#FFD700FF>Roles</color>
 14
 <color=#708EEFFF>Mystic</color> Count
 14
@@ -414,9 +414,9 @@ Reveal Cooldown
 False
 Stake Cooldown
 10
-Max <color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Investigative</color> <color=#FFD700FF>Roles</color>
+Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Investigative</color> <color=#FFD700FF>Roles</color>
 14
-Min <color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Investigative</color> <color=#FFD700FF>Roles</color>
+Min <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Investigative</color> <color=#FFD700FF>Roles</color>
 14
 <color=#4D99E6FF>Coroner</color> Count
 14
@@ -516,9 +516,9 @@ Number Of <color=#FFD700FF>Roles</color> Required To Trigger Bug
 3
 Who Sees Dead Bodies On Admin
 3
-Max <color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>
+Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>
 14
-Min <color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>
+Min <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>
 14
 <color=#998040FF>Veteran</color> Count
 14
@@ -548,9 +548,9 @@ Shoot Cooldown
 10
 Maximum Number Of Bullets
 15
-Max <color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Protective</color> <color=#FFD700FF>Roles</color>
+Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Protective</color> <color=#FFD700FF>Roles</color>
 14
-Min <color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Protective</color> <color=#FFD700FF>Roles</color>
+Min <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Protective</color> <color=#FFD700FF>Roles</color>
 14
 <color=#660000FF>Altruist</color> Count
 14
@@ -584,9 +584,9 @@ Rewind Cooldown
 10
 Maximum Number Of Rewinds
 15
-Max <color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Sovereign</color> <color=#FFD700FF>Roles</color>
+Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Sovereign</color> <color=#FFD700FF>Roles</color>
 14
-Min <color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Sovereign</color> <color=#FFD700FF>Roles</color>
+Min <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Sovereign</color> <color=#FFD700FF>Roles</color>
 14
 <color=#704FA8FF>Mayor</color> Count
 14
@@ -608,9 +608,9 @@ True
 True
 <color=#66E666FF>Swapper</color> Can Swap Themself
 True
-Max <color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>
+Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>
 14
-Min <color=#8BFDFDFF>Crew</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>
+Min <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>
 14
 <color=#5411F8FF>Chameleon</color> Count
 14
@@ -662,7 +662,7 @@ Maximum Number Of Transports
 15
 <color=#00EEFFFF>Transporter</color> Can Transport Themselves
 True
-<color=#8BFDFDFF>Crewmate</color> Count
+<color=#8CFFFFFF>Crewmate</color> Count
 14
 Tasks Remaining When <color=#D3D3D3FF>Revealer</color> Can Be Clicked
 3
@@ -670,7 +670,7 @@ Tasks Remaining When Revealed
 1
 <color=#D3D3D3FF>Revealer</color> Reveals <color=#B3B3B3FF>Neutrals</color>
 True
-<color=#D3D3D3FF>Revealer</color> Reveals <color=#8BFDFDFF>Crew</color>
+<color=#D3D3D3FF>Revealer</color> Reveals <color=#8CFFFFFF>Crew</color>
 True
 <color=#D3D3D3FF>Revealer</color> Reveals Exact <color=#FFD700FF>Roles</color>
 True
@@ -1488,7 +1488,7 @@ Min <color=#FF9900FF>Abilities</color>
 14
 <color=#FF0000FF>Intruder</color> <color=#073763FF>Assassins</color> Count
 14
-<color=#8BFDFDFF>Crew</color> <color=#073763FF>Assassins</color> Count
+<color=#8CFFFFFF>Crew</color> <color=#073763FF>Assassins</color> Count
 14
 <color=#B3B3B3FF>Neutral</color> <color=#073763FF>Assassins</color> Count
 14
@@ -1554,7 +1554,7 @@ False
 True
 <color=#D4AF37FF>Snitch</color> Sees <color=#B3B3B3FF>Neutrals</color>
 True
-<color=#D4AF37FF>Snitch</color> Sees <color=#8BFDFDFF>Crew</color>
+<color=#D4AF37FF>Snitch</color> Sees <color=#8CFFFFFF>Crew</color>
 True
 <color=#D4AF37FF>Snitch</color> Sees Exact <color=#FFD700FF>Roles</color>
 True

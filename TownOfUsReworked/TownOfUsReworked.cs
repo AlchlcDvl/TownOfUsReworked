@@ -1,21 +1,60 @@
-using System;
-using System.Linq;
-using System.Reflection;
-using BepInEx;
-using BepInEx.Unity.IL2CPP;
-using HarmonyLib;
-using Reactor;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Classes;
-using Il2CppInterop.Runtime.Injection;
-using TownOfUsReworked.Cosmetics;
-using Reactor.Networking;
-using Reactor.Networking.Attributes;
-using AmongUs.GameOptions;
-using Il2CppInterop.Runtime.InteropTypes.Arrays;
-using TownOfUsReworked.Patches;
-using System.IO;
-using TownOfUsReworked.Monos;
+global using AmongUs.Data;
+global using AmongUs.GameOptions;
+
+global using BepInEx;
+global using BepInEx.Unity.IL2CPP;
+
+global using HarmonyLib;
+global using Hazel;
+
+global using Il2CppInterop.Runtime;
+global using Il2CppInterop.Runtime.Attributes;
+global using Il2CppInterop.Runtime.InteropTypes;
+global using Il2CppInterop.Runtime.InteropTypes.Arrays;
+global using Il2CppInterop.Runtime.Injection;
+
+global using Reactor;
+global using Reactor.Utilities;
+global using Reactor.Utilities.Extensions;
+global using Reactor.Networking.Attributes;
+global using Reactor.Networking.Extensions;
+global using Reactor.Networking;
+
+global using TownOfUsReworked.Classes;
+global using TownOfUsReworked.Data;
+global using TownOfUsReworked.CustomOptions;
+global using TownOfUsReworked.Cosmetics;
+global using TownOfUsReworked.Monos;
+global using TownOfUsReworked.Patches;
+global using TownOfUsReworked.Custom;
+global using TownOfUsReworked.MultiClientInstancing;
+global using TownOfUsReworked.Objects;
+global using TownOfUsReworked.Modules;
+global using TownOfUsReworked.Extensions;
+global using TownOfUsReworked.PlayerLayers;
+global using TownOfUsReworked.Functions;
+global using TownOfUsReworked.PlayerLayers.Roles;
+global using TownOfUsReworked.PlayerLayers.Abilities;
+global using TownOfUsReworked.PlayerLayers.Modifiers;
+global using TownOfUsReworked.PlayerLayers.Objectifiers;
+global using TownOfUsReworked.BetterMaps.Airship;
+
+global using System.Linq;
+global using System;
+global using System.IO;
+global using System.Text;
+global using SRandom = System.Random;
+global using System.Reflection;
+global using System.Collections.Generic;
+global using System.Collections;
+
+global using UnityEngine;
+global using URandom = UnityEngine.Random;
+global using UObject = UnityEngine.Object;
+
+global using TMPro;
+
+global using InnerNet;
 
 namespace TownOfUsReworked
 {
@@ -29,8 +68,8 @@ namespace TownOfUsReworked
     {
         public const string Id = "me.alchlcdvl.reworked";
         public const string Name = "TownOfUsReworked";
-        public const string VersionString = "0.2.2.0";
-        public const string CompleteVersionString = "0.2.2.0";
+        public const string VersionString = "0.2.3.0";
+        public const string CompleteVersionString = "0.2.3.0";
         public readonly static Version Version = new(VersionString);
 
         private readonly static string dev = VersionString[6..];
@@ -47,9 +86,6 @@ namespace TownOfUsReworked
         public readonly static string Sounds = $"{Resources}Sounds.";
         public readonly static string Misc = $"{Resources}Misc.";
         public readonly static string Presets = $"{Resources}Presets.";
-        public readonly static string Hats = $"{Resources}Hats.";
-        public readonly static string Visors = $"{Resources}Visors.";
-        public readonly static string Nameplates = $"{Resources}Nameplates.";
         public readonly static string Languages = $"{Resources}Languages.";
 
         public static Assembly Assembly => typeof(TownOfUsReworked).Assembly;
@@ -89,7 +125,6 @@ namespace TownOfUsReworked
             UpdateNames.PlayerNames.Clear();
             AssetManager.Load();
             RoleGen.ResetEverything();
-            CosmeticsLoader.LaunchFetchers();
 
             ClassInjector.RegisterTypeInIl2Cpp<MissingSubmergedBehaviour>();
             ClassInjector.RegisterTypeInIl2Cpp<AbstractPagingBehaviour>();
@@ -105,7 +140,7 @@ namespace TownOfUsReworked
             Harmony.PatchAll();
 
             Utils.LogSomething("Mod Loaded!");
-            Utils.LogSomething($"Mod Version v{CompleteVersionString}");
+            Utils.LogSomething($"Mod Version {versionFinal}");
         }
     }
 }

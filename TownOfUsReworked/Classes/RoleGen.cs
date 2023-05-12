@@ -1,23 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using HarmonyLib;
-using Hazel;
-using UnityEngine;
-using TownOfUsReworked.PlayerLayers.Roles;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.PlayerLayers.Modifiers;
-using TownOfUsReworked.PlayerLayers.Abilities;
-using TownOfUsReworked.PlayerLayers.Objectifiers;
-using TownOfUsReworked.Patches;
-using TownOfUsReworked.Extensions;
-using Random = UnityEngine.Random;
-using TownOfUsReworked.PlayerLayers;
-using TownOfUsReworked.Objects;
-using TownOfUsReworked.Custom;
-using TownOfUsReworked.Monos;
-
 namespace TownOfUsReworked.Classes
 {
     [HarmonyPatch]
@@ -74,7 +54,7 @@ namespace TownOfUsReworked.Classes
             if (min > max)
                 (max, min) = (min, max);
 
-            var amount = Random.RandomRangeInt(min, max + 1);
+            var amount = URandom.RandomRangeInt(min, max + 1);
             var tempList = new List<(int, int, bool)>();
 
             foreach (var item in items)
@@ -94,7 +74,7 @@ namespace TownOfUsReworked.Classes
 
                 if (chance < 100)
                 {
-                    var random = Random.RandomRangeInt(0, 100);
+                    var random = URandom.RandomRangeInt(0, 100);
 
                     if (random < chance)
                         tempList.Add(item);
@@ -1339,7 +1319,7 @@ namespace TownOfUsReworked.Classes
 
                     while (maxIntSum > maxInt)
                     {
-                        switch (Random.RandomRangeInt(0, 4))
+                        switch (URandom.RandomRangeInt(0, 4))
                         {
                             case 0:
                                 if (maxIC > 0) maxIC--;
@@ -1363,7 +1343,7 @@ namespace TownOfUsReworked.Classes
 
                     while (minIntSum > minInt)
                     {
-                        switch (Random.RandomRangeInt(0, 4))
+                        switch (URandom.RandomRangeInt(0, 4))
                         {
                             case 0:
                                 if (minIC > 0) minIC--;
@@ -1426,7 +1406,7 @@ namespace TownOfUsReworked.Classes
 
                     while (maxNeutSum > maxNeut)
                     {
-                        switch (Random.RandomRangeInt(0, 4))
+                        switch (URandom.RandomRangeInt(0, 4))
                         {
                             case 0:
                                 if (maxNE > 0) maxNE--;
@@ -1450,7 +1430,7 @@ namespace TownOfUsReworked.Classes
 
                     while (minNeutSum > minNeut)
                     {
-                        switch (Random.RandomRangeInt(0, 4))
+                        switch (URandom.RandomRangeInt(0, 4))
                         {
                             case 0:
                                 if (minNE > 0) minNE--;
@@ -1508,7 +1488,7 @@ namespace TownOfUsReworked.Classes
 
                     while (maxSynSum > maxSyn)
                     {
-                        switch (Random.RandomRangeInt(0, 4))
+                        switch (URandom.RandomRangeInt(0, 4))
                         {
                             case 0:
                                 if (maxSSu > 0) maxSSu--;
@@ -1532,7 +1512,7 @@ namespace TownOfUsReworked.Classes
 
                     while (minSynSum > minSyn)
                     {
-                        switch (Random.RandomRangeInt(0, 4))
+                        switch (URandom.RandomRangeInt(0, 4))
                         {
                             case 0:
                                 if (minSSu > 0) minSSu--;
@@ -1599,7 +1579,7 @@ namespace TownOfUsReworked.Classes
 
                     while (maxCrewSum > maxCrew)
                     {
-                        switch (Random.RandomRangeInt(0, 6))
+                        switch (URandom.RandomRangeInt(0, 6))
                         {
                             case 0:
                                 if (maxCA > 0) maxCA--;
@@ -1631,7 +1611,7 @@ namespace TownOfUsReworked.Classes
 
                     while (minCrewSum > minCrew)
                     {
-                        switch (Random.RandomRangeInt(0, 6))
+                        switch (URandom.RandomRangeInt(0, 6))
                         {
                             case 0:
                                 if (minCA > 0) minCA--;
@@ -2592,7 +2572,7 @@ namespace TownOfUsReworked.Classes
 
                     if (CustomGameOptions.AlliedFaction == AlliedFaction.Random)
                     {
-                        var random = Random.RandomRangeInt(0, 3);
+                        var random = URandom.RandomRangeInt(0, 3);
                         intr = random == 0;
                         syn = random == 1;
                         crew = random == 2;
@@ -2816,7 +2796,7 @@ namespace TownOfUsReworked.Classes
                         while (exe.TargetPlayer == null || exe.TargetPlayer == exe.Player)
                         {
                             exeTargets.Shuffle();
-                            var exeNum = Random.RandomRangeInt(0, exeTargets.Count);
+                            var exeNum = URandom.RandomRangeInt(0, exeTargets.Count);
                             exe.TargetPlayer = exeTargets[exeNum];
                         }
 
@@ -2844,7 +2824,7 @@ namespace TownOfUsReworked.Classes
                         while (guess.TargetPlayer == null || guess.TargetPlayer == guess.Player || guess.TargetPlayer.Is(ModifierEnum.Indomitable))
                         {
                             guessTargets.Shuffle();
-                            var guessNum = Random.RandomRangeInt(0, guessTargets.Count);
+                            var guessNum = URandom.RandomRangeInt(0, guessTargets.Count);
                             guess.TargetPlayer = guessTargets[guessNum];
                         }
 
@@ -2872,7 +2852,7 @@ namespace TownOfUsReworked.Classes
                         while (ga.TargetPlayer == null || ga.TargetPlayer == ga.Player)
                         {
                             gaTargets.Shuffle();
-                            var gaNum = Random.RandomRangeInt(0, gaTargets.Count);
+                            var gaNum = URandom.RandomRangeInt(0, gaTargets.Count);
                             ga.TargetPlayer = gaTargets[gaNum];
                         }
 
@@ -2900,7 +2880,7 @@ namespace TownOfUsReworked.Classes
                         while (bh.TargetPlayer == null || bh.TargetPlayer == bh.Player)
                         {
                             bhTargets.Shuffle();
-                            var bhNum = Random.RandomRangeInt(0, gaTargets.Count);
+                            var bhNum = URandom.RandomRangeInt(0, gaTargets.Count);
                             bh.TargetPlayer = bhTargets[bhNum];
                         }
 
@@ -2925,7 +2905,7 @@ namespace TownOfUsReworked.Classes
 
                     while (act.PretendRoles == InspectorResults.None)
                     {
-                        var actNum = Random.RandomRangeInt(0, 17);
+                        var actNum = URandom.RandomRangeInt(0, 17);
                         act.PretendRoles = (InspectorResults)actNum;
                     }
 
@@ -2952,7 +2932,7 @@ namespace TownOfUsReworked.Classes
                         while (jackal.GoodRecruit == null || jackal.GoodRecruit == jackal.Player)
                         {
                             goodRecruits.Shuffle();
-                            var goodNum = Random.RandomRangeInt(0, goodRecruits.Count - 1);
+                            var goodNum = URandom.RandomRangeInt(0, goodRecruits.Count - 1);
                             jackal.GoodRecruit = goodRecruits[goodNum];
                         }
 
@@ -2974,7 +2954,7 @@ namespace TownOfUsReworked.Classes
                         while (jackal.EvilRecruit == null || jackal.EvilRecruit == jackal.Player)
                         {
                             evilRecruits.Shuffle();
-                            var evilNum = Random.RandomRangeInt(0, evilRecruits.Count - 1);
+                            var evilNum = URandom.RandomRangeInt(0, evilRecruits.Count - 1);
                             jackal.EvilRecruit = evilRecruits[evilNum];
                         }
 

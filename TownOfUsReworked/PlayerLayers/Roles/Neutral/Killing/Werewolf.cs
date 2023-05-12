@@ -1,10 +1,3 @@
-using System;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Custom;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Werewolf : NeutralRole

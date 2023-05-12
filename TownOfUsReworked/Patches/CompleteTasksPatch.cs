@@ -1,15 +1,3 @@
-using System.Linq;
-using HarmonyLib;
-using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.CustomOptions;
-using UnityEngine;
-using TownOfUsReworked.Data;
-using Hazel;
-using TownOfUsReworked.PlayerLayers.Roles;
-using TownOfUsReworked.PlayerLayers.Objectifiers;
-using TownOfUsReworked.PlayerLayers.Abilities;
-
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.CompleteTask))]
@@ -201,7 +189,7 @@ namespace TownOfUsReworked.Patches
 
             if (IntrudersAlive > 0 && SyndicateAlive > 0)
             {
-                var random = Random.RandomRangeInt(0, 100);
+                var random = URandom.RandomRangeInt(0, 100);
 
                 if (IntrudersAlive == SyndicateAlive)
                 {

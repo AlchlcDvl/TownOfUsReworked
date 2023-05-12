@@ -1,10 +1,3 @@
-using HarmonyLib;
-using UnityEngine;
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.PlayerLayers.Objectifiers;
-using TownOfUsReworked.PlayerLayers.Roles;
-using TownOfUsReworked.Data;
-
 namespace TownOfUsReworked.PlayerLayers
 {
     [HarmonyPatch(typeof(EndGameManager), nameof(EndGameManager.Start))]
@@ -15,8 +8,8 @@ namespace TownOfUsReworked.PlayerLayers
             if (!ConstantVariables.GameHasEnded)
                 return;
 
-            var text = Object.Instantiate(__instance.WinText);
-            var players = Object.FindObjectsOfType<PoolablePlayer>();
+            var text = UObject.Instantiate(__instance.WinText);
+            var players = UObject.FindObjectsOfType<PoolablePlayer>();
 
             if (players.Count > 0)
             {

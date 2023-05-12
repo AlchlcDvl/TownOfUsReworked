@@ -1,7 +1,4 @@
-﻿using UnityEngine;
-using HarmonyLib;
-
-namespace TownOfUsReworked.Data
+﻿namespace TownOfUsReworked.Data
 {
     [HarmonyPatch]
     public static class Colors
@@ -16,7 +13,7 @@ namespace TownOfUsReworked.Data
         public static Color32 SubFaction => new(32, 77, 66, 255); //#204D42FF
 
         //Faction Colors
-        public static Color32 Crew => new(139, 253, 253, 255); //#8BFDFDFF
+        public static Color32 Crew => new(140, 255, 255, 255); //#8CFFFFFF
         public static Color32 Neutral => new(179, 179, 179, 255); //#B3B3B3FF
         public static Color32 Intruder => new(255, 0, 0, 255); //#FF0000FF
         public static Color32 Syndicate => new(0, 128, 0, 255); //#008000FF
@@ -144,7 +141,7 @@ namespace TownOfUsReworked.Data
         public static Color32 Radar => new(255, 0, 128, 255); //#FF0080FF
         public static Color32 Multitasker => new(255, 128, 77, 255); //#FF804DFF
         public static Color32 Ruthless => new(33, 96, 221, 255); //#2160DDFF
-        public static Color32 Ninja => new(168, 67, 0, 0); //#A84300FF
+        public static Color32 Ninja => new(168, 67, 0, 255); //#A84300FF
         public static Color32 Politician => new(204, 163, 204, 255); //#CCA3CCFF
         public static Color32 Swapper => new(102, 230, 102, 255); //#66E666FF
 

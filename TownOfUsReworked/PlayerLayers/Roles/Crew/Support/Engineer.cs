@@ -1,10 +1,3 @@
-using TownOfUsReworked.Data;
-using TownOfUsReworked.CustomOptions;
-using System;
-using TownOfUsReworked.Custom;
-using TownOfUsReworked.Functions;
-using System.Linq;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Engineer : CrewRole

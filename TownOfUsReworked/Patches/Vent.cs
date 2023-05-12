@@ -1,10 +1,3 @@
-using HarmonyLib;
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.CustomOptions;
-using UnityEngine;
-using TownOfUsReworked.Extensions;
-
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch(typeof(Vent), nameof(Vent.CanUse))]

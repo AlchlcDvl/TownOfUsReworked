@@ -1,13 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Il2CppInterop.Runtime.Attributes;
-using UnityEngine;
-using HarmonyLib;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.PlayerLayers.Abilities;
-using TownOfUsReworked.PlayerLayers.Roles;
-
 namespace TownOfUsReworked.Monos
 {
     [HarmonyPatch]

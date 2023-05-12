@@ -1,12 +1,3 @@
-using TownOfUsReworked.CustomOptions;
-using UnityEngine;
-using TownOfUsReworked.Cosmetics;
-using TownOfUsReworked.PlayerLayers.Roles;
-using TownOfUsReworked.PlayerLayers;
-using TownOfUsReworked.Classes;
-using HarmonyLib;
-using Reactor.Utilities.Extensions;
-
 namespace TownOfUsReworked.Objects
 {
     [HarmonyPatch]
@@ -56,7 +47,7 @@ namespace TownOfUsReworked.Objects
             Sprite.color = Color;
             var appearance = Player.GetAppearance();
             var size = appearance.SizeFactor;
-            GObject.transform.localScale *= new Vector2(1.2f, 1f) * new Vector2(size.x, size.y);
+            GObject.transform.localScale *= Player.GetModifiedSize();
 
             GObject.SetActive(true);
         }

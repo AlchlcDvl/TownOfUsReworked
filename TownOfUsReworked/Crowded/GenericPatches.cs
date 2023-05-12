@@ -1,8 +1,4 @@
-﻿using HarmonyLib;
-using TownOfUsReworked.Data;
-using Hazel;
-
-namespace TownOfUsReworked.Crowded
+﻿namespace TownOfUsReworked.Crowded
 {
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.CmdCheckColor))]
     public static class CmdCheckColorPatch

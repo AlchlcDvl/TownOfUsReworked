@@ -1,8 +1,4 @@
-﻿using TownOfUsReworked.Data;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Extensions;
-
-namespace TownOfUsReworked.PlayerLayers.Abilities
+﻿namespace TownOfUsReworked.PlayerLayers.Abilities
 {
     public class Underdog : Ability
     {

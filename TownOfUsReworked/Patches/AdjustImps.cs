@@ -1,8 +1,3 @@
-using HarmonyLib;
-using Random = UnityEngine.Random;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Data;
-
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch(typeof(IGameOptionsExtensions), nameof(IGameOptionsExtensions.GetAdjustedNumImpostors))]
@@ -16,7 +11,7 @@ namespace TownOfUsReworked.Patches
             if (ConstantVariables.IsAA)
             {
                 var players = GameData.Instance.PlayerCount;
-                var random = Random.RandomRangeInt(0, 100);
+                var random = URandom.RandomRangeInt(0, 100);
                 int impostors;
 
                 if (players <= 6)

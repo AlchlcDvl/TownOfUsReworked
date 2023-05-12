@@ -1,13 +1,3 @@
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Classes;
-using System;
-using Reactor.Utilities.Extensions;
-using UnityEngine;
-using TownOfUsReworked.Extensions;
-using Hazel;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Custom;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Altruist : CrewRole

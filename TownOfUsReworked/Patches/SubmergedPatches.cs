@@ -1,11 +1,4 @@
-﻿using HarmonyLib;
-using Reactor.Utilities;
-using TownOfUsReworked.PlayerLayers.Roles;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.Extensions;
-
-namespace TownOfUsReworked.Patches
+﻿namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch]
     public static class SubmergedPatches
@@ -25,11 +18,8 @@ namespace TownOfUsReworked.Patches
         {
             public static void Postfix(HudManager __instance)
             {
-                if (SubmergedCompatibility.IsSubmerged)
-                {
-                    if (PlayerControl.LocalPlayer.Data.IsDead && PlayerControl.LocalPlayer.IsPostmortal())
-                        __instance.MapButton.transform.parent.Find(__instance.MapButton.name + "(Clone)").gameObject.SetActive(PlayerControl.LocalPlayer.Caught());
-                }
+                if (SubmergedCompatibility.IsSubmerged && PlayerControl.LocalPlayer.Data.IsDead && PlayerControl.LocalPlayer.IsPostmortal())
+                    __instance.MapButton.transform.parent.Find(__instance.MapButton.name + "(Clone)").gameObject.SetActive(PlayerControl.LocalPlayer.Caught());
             }
         }
 

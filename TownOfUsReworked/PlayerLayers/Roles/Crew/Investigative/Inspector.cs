@@ -1,11 +1,3 @@
-using TownOfUsReworked.Data;
-using TownOfUsReworked.CustomOptions;
-using Il2CppSystem.Collections.Generic;
-using System;
-using TownOfUsReworked.Custom;
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.Extensions;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Inspector : CrewRole

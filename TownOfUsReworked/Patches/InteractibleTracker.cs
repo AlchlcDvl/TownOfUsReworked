@@ -1,10 +1,3 @@
-using HarmonyLib;
-using System;
-using Hazel;
-using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.PlayerLayers.Roles;
-
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.ClimbLadder))]

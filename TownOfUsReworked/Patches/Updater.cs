@@ -1,9 +1,4 @@
-using HarmonyLib;
-using UnityEngine;
-using System;
 using Twitch;
-using TownOfUsReworked.Classes;
-using static UnityEngine.UI.Button;
 
 namespace TownOfUsReworked.Patches
 {
@@ -22,11 +17,11 @@ namespace TownOfUsReworked.Patches
 
                 if (template != null)
                 {
-                    var touButton = UnityEngine.Object.Instantiate(template, null);
-                    touButton.transform.localPosition = new Vector3(touButton.transform.localPosition.x, touButton.transform.localPosition.y + 0.6f, touButton.transform.localPosition.z);
+                    var touButton = UObject.Instantiate(template, null);
+                    touButton.transform.localPosition = new(touButton.transform.localPosition.x, touButton.transform.localPosition.y + 0.6f, touButton.transform.localPosition.z);
                     var passiveTOUButton = touButton.GetComponent<PassiveButton>();
                     SpriteRenderer touButtonSprite = touButton.GetComponent<SpriteRenderer>();
-                    passiveTOUButton.OnClick = new ButtonClickedEvent();
+                    passiveTOUButton.OnClick.RemoveAllListeners();
                     touButtonSprite.sprite = AssetManager.GetSprite("UpdateToUButton");
 
                     //Add onClick event to run the update on button click
@@ -37,11 +32,11 @@ namespace TownOfUsReworked.Patches
                     }));
 
                     //Set button text
-                    var text = touButton.transform.GetChild(0).GetComponent<TMPro.TMP_Text>();
+                    var text = touButton.transform.GetChild(0).GetComponent<TMP_Text>();
                     __instance.StartCoroutine(Effects.Lerp(0.1f, new Action<float>(_ => text.SetText(""))));
                     //Set popup stuff
                     var man = TwitchManager.Instance;
-                    ModUpdater.InfoPopup = UnityEngine.Object.Instantiate(man.TwitchPopup);
+                    ModUpdater.InfoPopup = UObject.Instantiate(man.TwitchPopup);
                     ModUpdater.InfoPopup.TextAreaTMP.fontSize *= 0.7f;
                     ModUpdater.InfoPopup.TextAreaTMP.enableAutoSizing = false;
                 }
@@ -54,12 +49,12 @@ namespace TownOfUsReworked.Patches
 
                 if (template != null)
                 {
-                    var submergedButton = UnityEngine.Object.Instantiate(template, null);
-                    submergedButton.transform.localPosition = new Vector3(submergedButton.transform.localPosition.x, submergedButton.transform.localPosition.y + 1.2f,
+                    var submergedButton = UObject.Instantiate(template, null);
+                    submergedButton.transform.localPosition = new(submergedButton.transform.localPosition.x, submergedButton.transform.localPosition.y + 1.2f,
                         submergedButton.transform.localPosition.z);
                     var passiveSubmergedButton = submergedButton.GetComponent<PassiveButton>();
                     SpriteRenderer submergedButtonSprite = submergedButton.GetComponent<SpriteRenderer>();
-                    passiveSubmergedButton.OnClick = new ButtonClickedEvent();
+                    passiveSubmergedButton.OnClick.RemoveAllListeners();
                     submergedButtonSprite.sprite = AssetManager.GetSprite("UpdateSubmergedButton");
 
                     //Add onClick event to run the update on button click
@@ -70,11 +65,11 @@ namespace TownOfUsReworked.Patches
                     }));
 
                     //Set button text
-                    var text = submergedButton.transform.GetChild(0).GetComponent<TMPro.TMP_Text>();
+                    var text = submergedButton.transform.GetChild(0).GetComponent<TMP_Text>();
                     __instance.StartCoroutine(Effects.Lerp(0.1f, new Action<float>(_ => text.SetText(""))));
                     //Set popup stuff
                     var man = TwitchManager.Instance;
-                    ModUpdater.InfoPopup = UnityEngine.Object.Instantiate(man.TwitchPopup);
+                    ModUpdater.InfoPopup = UObject.Instantiate(man.TwitchPopup);
                     ModUpdater.InfoPopup.TextAreaTMP.fontSize *= 0.7f;
                     ModUpdater.InfoPopup.TextAreaTMP.enableAutoSizing = false;
                 }

@@ -1,8 +1,4 @@
-﻿using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Extensions;
-
-namespace TownOfUsReworked.PlayerLayers.Objectifiers
+﻿namespace TownOfUsReworked.PlayerLayers.Objectifiers
 {
     public class Lovers : Objectifier
     {

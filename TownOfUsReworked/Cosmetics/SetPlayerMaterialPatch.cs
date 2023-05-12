@@ -1,8 +1,4 @@
-﻿using HarmonyLib;
-using UnityEngine;
-using TownOfUsReworked.Monos;
-
-namespace TownOfUsReworked.Cosmetics
+﻿namespace TownOfUsReworked.Cosmetics
 {
     [HarmonyPatch(typeof(PlayerMaterial), nameof(PlayerMaterial.SetColors), typeof(int), typeof(Renderer))]
     public static class SetPlayerMaterialPatch

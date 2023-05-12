@@ -1,10 +1,3 @@
-using TownOfUsReworked.Data;
-using System;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Custom;
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.Extensions;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Betrayer : NeutralRole

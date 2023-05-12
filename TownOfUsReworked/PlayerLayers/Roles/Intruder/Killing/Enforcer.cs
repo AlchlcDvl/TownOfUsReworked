@@ -1,12 +1,3 @@
-using TownOfUsReworked.Data;
-using System;
-using UnityEngine;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.Extensions;
-using Hazel;
-using TownOfUsReworked.Custom;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Enforcer : IntruderRole

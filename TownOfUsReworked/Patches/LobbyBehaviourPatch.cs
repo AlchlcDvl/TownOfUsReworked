@@ -1,10 +1,4 @@
-﻿using HarmonyLib;
-using TownOfUsReworked.PlayerLayers;
-using TownOfUsReworked.MultiClientInstancing;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Classes;
-
-namespace TownOfUsReworked.Patches
+﻿namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch(typeof(LobbyBehaviour), nameof(LobbyBehaviour.Start))]
     public static class LobbyBehaviourPatch

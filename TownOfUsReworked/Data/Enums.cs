@@ -314,9 +314,7 @@ namespace TownOfUsReworked.Data
 
         SubmergedFixOxygen,
 
-        SendChat,
         Whisper,
-        Guess,
 
         SetSpawnAirship,
         DoorSyncToilet,
@@ -842,7 +840,8 @@ namespace TownOfUsReworked.Data
         Shapeshift,
         Frame,
         Crusade,
-        Spell
+        Spell,
+        Confuse
     }
 
     public enum ProtectOptions

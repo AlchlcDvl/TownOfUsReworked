@@ -1,10 +1,3 @@
-using HarmonyLib;
-using TownOfUsReworked.Classes;
-using UnityEngine;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Extensions;
-
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.CalculateLightRadius))]

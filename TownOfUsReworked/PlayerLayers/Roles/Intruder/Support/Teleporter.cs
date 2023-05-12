@@ -1,13 +1,3 @@
-using TownOfUsReworked.Data;
-using System;
-using UnityEngine;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Custom;
-using Hazel;
-using TownOfUsReworked.Classes;
-using Reactor.Networking.Extensions;
-using System.Linq;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Teleporter : IntruderRole

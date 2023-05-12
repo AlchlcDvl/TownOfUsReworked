@@ -1,13 +1,3 @@
-using System.Collections.Generic;
-using UnityEngine;
-using HarmonyLib;
-using AmongUs.Data;
-using System.IO;
-using System;
-using System.Linq;
-using Il2CppInterop.Runtime.InteropTypes.Arrays;
-using Reactor.Utilities.Extensions;
-
 namespace TownOfUsReworked.Classes
 {
     [HarmonyPatch]
@@ -125,7 +115,7 @@ namespace TownOfUsReworked.Classes
                 Stream stream = assembly.GetManifestResourceStream(path);
                 var length = stream.Length;
                 var byteTexture = new Il2CppStructArray<byte>(length);
-                stream.Read(new Span<byte>(IntPtr.Add(byteTexture.Pointer, IntPtr.Size * 4).ToPointer(), (int) length));
+                stream.Read(new Span<byte>(IntPtr.Add(byteTexture.Pointer, IntPtr.Size * 4).ToPointer(), (int)length));
 
                 if (path.Contains("HorseHats"))
                     byteTexture = new(byteTexture.Reverse().ToArray());
@@ -147,14 +137,11 @@ namespace TownOfUsReworked.Classes
             {
                 var stream = TownOfUsReworked.Executing.GetManifestResourceStream(path);
                 var byteAudio = new byte[stream.Length];
-                _ = stream.Read(byteAudio, 0, (int)stream.Length);
+                stream.Read(byteAudio, 0, (int)stream.Length);
                 var samples = new float[byteAudio.Length / 4];
 
                 for (var i = 0; i < samples.Length; i++)
-                {
-                    var offset = i * 4;
-                    samples[i] = (float)BitConverter.ToInt32(byteAudio, offset) / int.MaxValue;
-                }
+                    samples[i] = (float)BitConverter.ToInt32(byteAudio, i * 4) / int.MaxValue;
 
                 var audioClip = AudioClip.Create(name, samples.Length, 2, 24000, false);
                 audioClip.SetData(samples, 0);
@@ -172,7 +159,7 @@ namespace TownOfUsReworked.Classes
             try
             {
                 var tex = CreatTexture(name);
-                var sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f), 100);
+                var sprite = Sprite.Create(tex, new(0, 0, tex.width, tex.height), new(0.5f, 0.5f), 100);
                 sprite.hideFlags |= HideFlags.HideAndDontSave | HideFlags.DontSaveInEditor;
                 sprite.DontDestroy();
                 return sprite;
@@ -216,11 +203,9 @@ namespace TownOfUsReworked.Classes
                     SoundEffects.Add(name, CreateAudio(resourceName));
                     Sounds.Add(name);
                 }
-                else if ((resourceName.StartsWith($"{TownOfUsReworked.Buttons}") || resourceName.StartsWith($"{TownOfUsReworked.Misc}") ||
-                    resourceName.StartsWith($"{TownOfUsReworked.Nameplates}")) && resourceName.EndsWith(".png"))
+                else if ((resourceName.StartsWith($"{TownOfUsReworked.Buttons}") || resourceName.StartsWith($"{TownOfUsReworked.Misc}")) && resourceName.EndsWith(".png"))
                 {
-                    var name = resourceName.Replace(".png", "").Replace($"{TownOfUsReworked.Buttons}", "").Replace($"{TownOfUsReworked.Nameplates}", "").Replace($"{TownOfUsReworked.Misc}",
-                        "");
+                    var name = resourceName.Replace(".png", "").Replace($"{TownOfUsReworked.Buttons}", "").Replace($"{TownOfUsReworked.Misc}", "");
                     Sprites.Add(name, CreateSprite(resourceName));
                 }
             }

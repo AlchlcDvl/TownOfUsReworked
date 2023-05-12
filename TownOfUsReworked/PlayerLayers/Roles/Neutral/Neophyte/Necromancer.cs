@@ -1,14 +1,3 @@
-using TownOfUsReworked.Data;
-using TownOfUsReworked.CustomOptions;
-using System.Collections.Generic;
-using System;
-using UnityEngine;
-using Reactor.Utilities.Extensions;
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.Extensions;
-using Hazel;
-using TownOfUsReworked.Custom;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Necromancer : NeutralRole

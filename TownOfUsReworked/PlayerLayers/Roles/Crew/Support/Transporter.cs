@@ -1,17 +1,3 @@
-using System;
-using UnityEngine;
-using System.Collections.Generic;
-using System.Collections;
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Custom;
-using Hazel;
-using Reactor.Utilities;
-using System.Linq;
-using HarmonyLib;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Transporter : CrewRole
@@ -107,9 +93,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 TransportPlayer2.MyPhysics.ResetMoveState();
                 var TempPosition = TransportPlayer1.GetTruePosition();
                 var TempFacing = TransportPlayer1.MyRend().flipX;
-                TransportPlayer1.NetTransform.SnapTo(new Vector2(TransportPlayer2.GetTruePosition().x, TransportPlayer2.GetTruePosition().y + 0.3636f));
+                TransportPlayer1.NetTransform.SnapTo(new(TransportPlayer2.GetTruePosition().x, TransportPlayer2.GetTruePosition().y + 0.3636f));
                 TransportPlayer1.MyRend().flipX = TransportPlayer2.MyRend().flipX;
-                TransportPlayer2.NetTransform.SnapTo(new Vector2(TempPosition.x, TempPosition.y + 0.3636f));
+                TransportPlayer2.NetTransform.SnapTo(new(TempPosition.x, TempPosition.y + 0.3636f));
                 TransportPlayer2.MyRend().flipX = TempFacing;
 
                 if (SubmergedCompatibility.IsSubmerged)
@@ -139,7 +125,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 TransportPlayer2.MyPhysics.ResetMoveState();
                 var TempPosition = Player1Body.TruePosition;
                 Player1Body.transform.position = TransportPlayer2.GetTruePosition();
-                TransportPlayer2.NetTransform.SnapTo(new Vector2(TempPosition.x, TempPosition.y + 0.3636f));
+                TransportPlayer2.NetTransform.SnapTo(new(TempPosition.x, TempPosition.y + 0.3636f));
 
                 if (SubmergedCompatibility.IsSubmerged && PlayerControl.LocalPlayer.PlayerId == TransportPlayer2.PlayerId)
                 {
@@ -152,7 +138,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 Utils.StopDragging(Player2Body.ParentId);
                 TransportPlayer1.MyPhysics.ResetMoveState();
                 var TempPosition = TransportPlayer1.GetTruePosition();
-                TransportPlayer1.NetTransform.SnapTo(new Vector2(Player2Body.TruePosition.x, Player2Body.TruePosition.y + 0.3636f));
+                TransportPlayer1.NetTransform.SnapTo(new(Player2Body.TruePosition.x, Player2Body.TruePosition.y + 0.3636f));
                 Player2Body.transform.position = TempPosition;
 
                 if (SubmergedCompatibility.IsSubmerged && PlayerControl.LocalPlayer.PlayerId == TransportPlayer1.PlayerId)

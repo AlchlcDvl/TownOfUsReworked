@@ -1,15 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using TownOfUsReworked.CustomOptions;
-using UnityEngine;
-using TownOfUsReworked.Classes;
-using HarmonyLib;
-using TownOfUsReworked.Data;
-using Reactor.Utilities;
-using System.Linq;
-using TownOfUsReworked.Extensions;
-
-namespace TownOfUsReworked.Objects
+﻿namespace TownOfUsReworked.Objects
 {
     [HarmonyPatch]
     public class Bomb : Range
@@ -40,7 +29,7 @@ namespace TownOfUsReworked.Objects
             if (Transform == null)
                 return;
 
-            Players = Utils.GetClosestPlayers(Transform.position, CustomGameOptions.BombRange + (Drived ? CustomGameOptions.ChaosDriveBombRange : 0f)).Il2CppToSystem();
+            Players = Utils.GetClosestPlayers(Transform.position, CustomGameOptions.BombRange + (Drived ? CustomGameOptions.ChaosDriveBombRange : 0f));
         }
 
         public void Detonate()

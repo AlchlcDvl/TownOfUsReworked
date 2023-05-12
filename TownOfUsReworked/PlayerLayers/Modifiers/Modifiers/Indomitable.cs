@@ -1,6 +1,3 @@
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Data;
-
 namespace TownOfUsReworked.PlayerLayers.Modifiers
 {
     public class Indomitable : Modifier

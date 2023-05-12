@@ -1,11 +1,3 @@
-using InnerNet;
-using UnityEngine;
-using System.Linq;
-using HarmonyLib;
-using System.Collections.Generic;
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.Custom;
-
 namespace TownOfUsReworked.MultiClientInstancing
 {
     [HarmonyPatch]
@@ -49,9 +41,10 @@ namespace TownOfUsReworked.MultiClientInstancing
             AmongUsClient.Instance.allClients.Add(sampleC);
 
             sampleC.Character.SetName($"Robot {sampleC.Character.PlayerId}");
-            sampleC.Character.SetSkin(HatManager.Instance.allSkins[Random.Range(0, HatManager.Instance.allSkins.Count)].ProdId, 0);
+            sampleC.Character.SetSkin(HatManager.Instance.allSkins[URandom.Range(0, HatManager.Instance.allSkins.Count)].ProdId, 0);
+            sampleC.Character.SetNamePlate(HatManager.Instance.allNamePlates[URandom.Range(0, HatManager.Instance.allNamePlates.Count)].ProdId);
             sampleC.Character.SetHat("hat_NoHat", 0);
-            sampleC.Character.SetColor(Random.Range(0, Palette.PlayerColors.Length));
+            sampleC.Character.SetColor(URandom.Range(0, Palette.PlayerColors.Length));
 
             Clients.Add(sampleId, sampleC);
             PlayerIdClientId.Add(sampleC.Character.PlayerId, sampleId);

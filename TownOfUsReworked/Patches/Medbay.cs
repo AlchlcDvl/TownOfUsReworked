@@ -1,9 +1,3 @@
-using HarmonyLib;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.Extensions;
-
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch(typeof(MedScanMinigame), nameof(MedScanMinigame.Begin))]

@@ -1,16 +1,3 @@
-using HarmonyLib;
-using UnityEngine;
-using System.IO;
-using System.Collections.Generic;
-using System.Linq;
-using AmongUs.Data;
-using TownOfUsReworked.Classes;
-using System;
-using TMPro;
-using Object = UnityEngine.Object;
-using Reactor.Utilities.Extensions;
-using Il2CppInterop.Runtime.InteropTypes.Arrays;
-
 namespace TownOfUsReworked.Cosmetics
 {
     [HarmonyPatch]
@@ -21,10 +8,6 @@ namespace TownOfUsReworked.Cosmetics
         private static Material Shader;
         public readonly static Dictionary<string, VisorExtension> CustomVisorRegistry = new();
 
-        #pragma warning disable
-        public static VisorExtension TestExt;
-        #pragma warning restore
-
         private static Sprite CreateVisorSprite(string path, bool fromDisk = false)
         {
             var texture = fromDisk ? AssetManager.LoadDiskTexture(path) : AssetManager.LoadResourceTexture(path);
@@ -32,7 +15,7 @@ namespace TownOfUsReworked.Cosmetics
             if (texture == null)
                 return null;
 
-            var sprite = Sprite.Create(texture, new Rect(0f, 0f, texture.width, texture.height), new Vector2(0.53f, 0.575f), texture.width * 0.375f);
+            var sprite = Sprite.Create(texture, new(0f, 0f, texture.width, texture.height), new(0.5f, 0.5f), 100);
 
             if (sprite == null)
                 return null;
@@ -42,10 +25,19 @@ namespace TownOfUsReworked.Cosmetics
             return sprite;
         }
 
-        private static VisorData CreateVisorBehaviour(CustomVisor cv, bool fromDisk = false, bool testOnly = false)
+        private static VisorData CreateVisorBehaviour(CustomVisor cv, bool fromDisk = false)
         {
             if (Shader == null)
                 Shader = HatManager.Instance.PlayerMaterial;
+
+            if (fromDisk)
+            {
+                var filePath = Path.GetDirectoryName(Application.dataPath) + "\\CustomVisors\\";
+                cv.ID = filePath + cv.ID + ".png";
+
+                if (cv.FlipID != null)
+                    cv.FlipID = filePath + cv.FlipID + ".png";
+            }
 
             var visor = ScriptableObject.CreateInstance<VisorData>();
             visor.viewData.viewData = ScriptableObject.CreateInstance<VisorViewData>();
@@ -66,46 +58,28 @@ namespace TownOfUsReworked.Cosmetics
             var extend = new VisorExtension
             {
                 Artist = cv.Artist ?? "Unknown",
-                Package = cv.Package ?? "Misc",
                 Condition = cv.Condition ?? "none"
             };
 
             if (cv.FlipID != null)
                 extend.FlipImage = CreateVisorSprite(cv.FlipID, fromDisk);
 
-            if (testOnly)
-            {
-                TestExt = extend;
-                TestExt.Condition = visor.name;
-            }
-            else
+            if (!CustomVisorRegistry.ContainsKey(visor.name))
                 CustomVisorRegistry.Add(visor.name, extend);
 
             return visor;
         }
 
-        private static VisorData CreateVisorBehaviour(CosmeticsLoader.CustomVisorOnline chd)
-        {
-            var filePath = Path.GetDirectoryName(Application.dataPath) + "\\CustomVisors\\";
-            chd.ID = filePath + chd.ID;
-
-            if (chd.FlipID != null)
-                chd.FlipID = filePath + chd.FlipID;
-
-            return CreateVisorBehaviour(chd, true, false);
-        }
-
         public class VisorExtension
         {
             public string Artist { get; set; }
-            public string Package { get; set; }
             public string Condition { get; set; }
             public Sprite FlipImage { get; set; }
         }
+
         public class CustomVisor
         {
             public string Artist { get; set; }
-            public string Package { get; set; }
             public string Condition { get; set; }
             public string Name { get; set; }
             public string ID { get; set; }
@@ -130,7 +104,7 @@ namespace TownOfUsReworked.Cosmetics
                 {
                     while (CosmeticsLoader.VisorDetails.Count > 0)
                     {
-                        var visorData = CreateVisorBehaviour(CosmeticsLoader.VisorDetails[0]);
+                        var visorData = CreateVisorBehaviour(CosmeticsLoader.VisorDetails[0], true);
                         allVisors.Add(visorData);
                         CosmeticsLoader.VisorDetails.RemoveAt(0);
                     }
@@ -152,7 +126,7 @@ namespace TownOfUsReworked.Cosmetics
         [HarmonyPatch(typeof(VisorsTab), nameof(VisorsTab.OnEnable))]
         public static class VisorsTabOnEnablePatch
         {
-            public const string InnerslothPackageName = "Innersloth Visors";
+            public const string InnerslothPackageName = "Innersloth";
             private static TMP_Text Template;
 
             public static float CreateVisorPackage(List<Tuple<VisorData, VisorExtension>> visors, string packageName, float YStart, VisorsTab __instance)
@@ -166,11 +140,11 @@ namespace TownOfUsReworked.Cosmetics
 
                 if (Template != null)
                 {
-                    var title = Object.Instantiate(Template, __instance.scroller.Inner);
+                    var title = UObject.Instantiate(Template, __instance.scroller.Inner);
                     var material = title.GetComponent<MeshRenderer>().material;
                     material.SetFloat("_StencilComp", 4f);
                     material.SetFloat("_Stencil", 1f);
-                    title.transform.localPosition = new Vector3(2.25f, YStart, -1f);
+                    title.transform.localPosition = new(2.25f, YStart, -1f);
                     title.transform.localScale = Vector3.one * 1.5f;
                     title.fontSize *= 0.5f;
                     title.enableAutoSizing = false;
@@ -184,7 +158,7 @@ namespace TownOfUsReworked.Cosmetics
                     var ext = visors[i].Item2 != null;
                     var xpos = __instance.XRange.Lerp(i % __instance.NumPerRow / (__instance.NumPerRow - 1f));
                     var ypos = offset - (i / __instance.NumPerRow * (isDefault ? 1f : 1.5f) * __instance.YOffset);
-                    var colorChip = Object.Instantiate(__instance.ColorTabPrefab, __instance.scroller.Inner);
+                    var colorChip = UObject.Instantiate(__instance.ColorTabPrefab, __instance.scroller.Inner);
 
                     if (ActiveInputManager.currentControlType == ActiveInputManager.InputType.Keyboard)
                     {
@@ -215,7 +189,7 @@ namespace TownOfUsReworked.Cosmetics
 
                         if (Template != null)
                         {
-                            var description = Object.Instantiate(Template, colorChip.transform);
+                            var description = UObject.Instantiate(Template, colorChip.transform);
                             var material2 = description.GetComponent<MeshRenderer>().material;
                             material2.SetFloat("_StencilComp", 4f);
                             material2.SetFloat("_Stencil", 1f);
@@ -258,10 +232,10 @@ namespace TownOfUsReworked.Cosmetics
 
                     if (ext != null)
                     {
-                        if (!packages.ContainsKey(ext.Package))
-                            packages[ext.Package] = new();
+                        if (!packages.ContainsKey(ext.Artist))
+                            packages[ext.Artist] = new();
 
-                        packages[ext.Package].Add(new(visorBehaviour, ext));
+                        packages[ext.Artist].Add(new(visorBehaviour, ext));
                     }
                     else
                     {
@@ -293,31 +267,8 @@ namespace TownOfUsReworked.Cosmetics
             }
         }
 
-        [HarmonyPatch(typeof(HatManager), nameof(HatManager.GetUnlockedVisors))]
-        public static class UnlockVisors
-        {
-            public static bool Prefix(HatManager __instance, ref Il2CppReferenceArray<VisorData> __result)
-            {
-                __result =
-                (
-                    from v
-                    in __instance.allVisors.ToArray()
-                    where v.Free || DataManager.Player.Purchases.GetPurchase(v.ProductId, v.BundleId)
-                    select v
-                    into o
-                    orderby o.displayOrder descending,
-                    o.name
-                    select o
-                ).ToArray();
-                return false;
-            }
-        }
-
         public static VisorExtension GetVisorExtension(this VisorData visor)
         {
-            if (TestExt?.Condition.Equals(visor.name) == true)
-                return TestExt;
-
             CustomVisorRegistry.TryGetValue(visor.name, out var ret);
             return ret;
         }

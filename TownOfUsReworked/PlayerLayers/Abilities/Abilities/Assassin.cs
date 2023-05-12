@@ -1,24 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using TMPro;
-using UnityEngine;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Extensions;
-using Hazel;
-using System;
-using HarmonyLib;
-using Object = UnityEngine.Object;
-using static UnityEngine.UI.Button;
-using TownOfUsReworked.PlayerLayers.Roles;
-using TownOfUsReworked.PlayerLayers.Modifiers;
-using TownOfUsReworked.PlayerLayers.Objectifiers;
-using TownOfUsReworked.Objects;
-using TownOfUsReworked.Patches;
-using TownOfUsReworked.Classes;
-using Reactor.Utilities.Extensions;
-
-namespace TownOfUsReworked.PlayerLayers.Abilities
+﻿namespace TownOfUsReworked.PlayerLayers.Abilities
 {
     public class Assassin : Ability
     {
@@ -444,9 +424,9 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             {
                 var buttonParent = new GameObject("Guess").transform;
                 buttonParent.SetParent(Phone.transform);
-                var button = Object.Instantiate(buttonTemplate, buttonParent);
-                Object.Instantiate(maskTemplate, buttonParent);
-                var label = Object.Instantiate(textTemplate, button);
+                var button = UObject.Instantiate(buttonTemplate, buttonParent);
+                UObject.Instantiate(maskTemplate, buttonParent);
+                var label = UObject.Instantiate(textTemplate, button);
                 button.GetComponent<SpriteRenderer>().sprite = HatManager.Instance.GetNamePlateById("nameplate_NoPlate")?.viewData?.viewData?.Image;
 
                 if (!Buttons.ContainsKey(i))
@@ -599,7 +579,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             }
 
             var template = voteArea.Buttons.transform.Find("CancelButton").gameObject;
-            var targetBox = Object.Instantiate(template, voteArea.transform);
+            var targetBox = UObject.Instantiate(template, voteArea.transform);
             targetBox.name = "GuessButton";
             targetBox.transform.localPosition = new(-0.95f, 0.03f, -1.3f);
             var renderer = targetBox.GetComponent<SpriteRenderer>();
@@ -628,8 +608,8 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             __instance.TimerText.gameObject.SetActive(false);
             HudManager.Instance.Chat.SetVisible(false);
             Page = 0;
-            var PhoneUI = Object.FindObjectsOfType<Transform>().FirstOrDefault(x => x.name == "PhoneUI");
-            var container = Object.Instantiate(PhoneUI, __instance.transform);
+            var PhoneUI = UObject.FindObjectsOfType<Transform>().FirstOrDefault(x => x.name == "PhoneUI");
+            var container = UObject.Instantiate(PhoneUI, __instance.transform);
             container.transform.localPosition = new(0, 0, -5f);
             Phone = container.gameObject;
             var buttonTemplate = voteArea.transform.FindChild("votePlayerBase");
@@ -638,8 +618,8 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             var textTemplate = voteArea.NameText;
             var exitButtonParent = new GameObject("CustomExitButton").transform;
             exitButtonParent.SetParent(container);
-            var exitButton = Object.Instantiate(buttonTemplate.transform, exitButtonParent);
-            var exitButtonMask = Object.Instantiate(maskTemplate, exitButtonParent);
+            var exitButton = UObject.Instantiate(buttonTemplate.transform, exitButtonParent);
+            var exitButtonMask = UObject.Instantiate(maskTemplate, exitButtonParent);
             exitButton.gameObject.GetComponent<SpriteRenderer>().sprite = smallButtonTemplate.GetComponent<SpriteRenderer>().sprite;
             exitButtonParent.transform.localPosition = new(2.725f, 2.1f, -5);
             exitButtonParent.transform.localScale = new(0.217f, 0.9f, 1);
@@ -685,8 +665,8 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
                 return;
 
             button.SetActive(false);
-            button.GetComponent<PassiveButton>().OnClick = new ButtonClickedEvent();
-            Object.Destroy(button);
+            button.GetComponent<PassiveButton>().OnClick.RemoveAllListeners();
+            button.Destroy();
             OtherButtons[targetId] = null;
         }
 
@@ -871,7 +851,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
                 {
                     voteArea.XMark.sprite = BlackmailMeetingUpdate.PrevXMark;
                     voteArea.Overlay.sprite = BlackmailMeetingUpdate.PrevOverlay;
-                    voteArea.XMark.transform.localPosition = new Vector3(voteArea.XMark.transform.localPosition.x - BlackmailMeetingUpdate.LetterXOffset,
+                    voteArea.XMark.transform.localPosition = new(voteArea.XMark.transform.localPosition.x - BlackmailMeetingUpdate.LetterXOffset,
                         voteArea.XMark.transform.localPosition.y - BlackmailMeetingUpdate.LetterYOffset, voteArea.XMark.transform.localPosition.z);
                 }
             }
@@ -883,7 +863,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
                 {
                     voteArea.XMark.sprite = BlackmailMeetingUpdate.PrevXMark;
                     voteArea.Overlay.sprite = BlackmailMeetingUpdate.PrevOverlay;
-                    voteArea.XMark.transform.localPosition = new Vector3(voteArea.XMark.transform.localPosition.x - BlackmailMeetingUpdate.LetterXOffset,
+                    voteArea.XMark.transform.localPosition = new(voteArea.XMark.transform.localPosition.x - BlackmailMeetingUpdate.LetterXOffset,
                         voteArea.XMark.transform.localPosition.y - BlackmailMeetingUpdate.LetterYOffset, voteArea.XMark.transform.localPosition.z);
                 }
             }

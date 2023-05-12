@@ -1,3 +1,8 @@
 Changelog
-- Critical Fix: Fixed the sudden issue of players just not dying at all
-- Temporary Removal: Custom cosmetics are temporarily removed till I figure out why they aren't loading
+- Nerf: Reporting a body while being flashed yields no results for the Coroner and the Retributionist-Coroner
+- Addition: Added "Hide Obstructed Player Names" option so that you don't see players' names through walls
+- Improvement: Improved some rpc handling between roles
+- Improvement: Reduced the mod size even more, god I love doing this
+- Critical Fix: Fixed custom cosmetics not loading
+- Visual Fix: Fixed the hat and visor tabs not displaying cosmetics
+- Ability Fix: Fixed Ninja appearing invisible (ironic, I know)

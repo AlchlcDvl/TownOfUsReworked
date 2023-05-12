@@ -1,17 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using Reactor.Utilities;
-using Il2CppInterop.Runtime.InteropTypes.Arrays;
-using UnityEngine;
-using Object = UnityEngine.Object;
-using Reactor.Utilities.Extensions;
-using TownOfUsReworked.Classes;
-using HarmonyLib;
-using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Data;
-
 namespace TownOfUsReworked.CustomOptions
 {
     [HarmonyPatch]
@@ -37,7 +23,7 @@ namespace TownOfUsReworked.CustomOptions
         public void ToDo()
         {
             var options = CreateOptions();
-            var __instance = Object.FindObjectOfType<GameOptionsMenu>();
+            var __instance = UObject.FindObjectOfType<GameOptionsMenu>();
             var y = __instance.GetComponentsInChildren<OptionBehaviour>().Max(option => option.transform.localPosition.y);
             var x = __instance.Children[1].transform.localPosition.x;
             var z = __instance.Children[1].transform.localPosition.z;
@@ -48,7 +34,7 @@ namespace TownOfUsReworked.CustomOptions
                 option.gameObject.SetActive(false);
 
             foreach (var option in options)
-                option.transform.localPosition = new Vector3(x, y - (i++ * 0.5f), z);
+                option.transform.localPosition = new(x, y - (i++ * 0.5f), z);
 
             __instance.Children = new Il2CppReferenceArray<OptionBehaviour>(options.ToArray());
         }
@@ -66,9 +52,9 @@ namespace TownOfUsReworked.CustomOptions
         private List<OptionBehaviour> CreateOptions()
         {
             var options = new List<OptionBehaviour>();
-            var togglePrefab = Object.FindObjectOfType<ToggleOption>();
-            var stringPrefab = Object.FindObjectOfType<StringOption>();
-            var numberPrefab = Object.FindObjectOfType<NumberOption>();
+            var togglePrefab = UObject.FindObjectOfType<ToggleOption>();
+            var stringPrefab = UObject.FindObjectOfType<StringOption>();
+            var numberPrefab = UObject.FindObjectOfType<NumberOption>();
 
             if (togglePrefab == null)
                 Utils.LogSomething("Toggle DNE");
@@ -91,13 +77,13 @@ namespace TownOfUsReworked.CustomOptions
                 switch (option.Type)
                 {
                     case CustomOptionType.Number:
-                        var number = Object.Instantiate(numberPrefab, numberPrefab.transform.parent);
+                        var number = UObject.Instantiate(numberPrefab, numberPrefab.transform.parent);
                         option.Setting = number;
                         options.Add(number);
                         break;
 
                     case CustomOptionType.String:
-                        var str = Object.Instantiate(stringPrefab, stringPrefab.transform.parent);
+                        var str = UObject.Instantiate(stringPrefab, stringPrefab.transform.parent);
                         option.Setting = str;
                         options.Add(str);
                         break;
@@ -106,7 +92,7 @@ namespace TownOfUsReworked.CustomOptions
                     case CustomOptionType.Nested:
                     case CustomOptionType.Button:
                     case CustomOptionType.Header:
-                        var toggle = Object.Instantiate(togglePrefab, togglePrefab.transform.parent);
+                        var toggle = UObject.Instantiate(togglePrefab, togglePrefab.transform.parent);
 
                         if (option.Type == CustomOptionType.Header)
                         {
@@ -136,7 +122,7 @@ namespace TownOfUsReworked.CustomOptions
 
         public IEnumerator CancelCoro(Func<IEnumerator> flashCoro)
         {
-            var __instance = Object.FindObjectOfType<GameOptionsMenu>();
+            var __instance = UObject.FindObjectOfType<GameOptionsMenu>();
 
             foreach (var option in InternalOptions.Skip(1))
                 option.Setting.gameObject.Destroy();

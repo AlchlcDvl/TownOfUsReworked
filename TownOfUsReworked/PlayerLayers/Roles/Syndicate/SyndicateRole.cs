@@ -1,14 +1,6 @@
-using Il2CppSystem.Collections.Generic;
-using TownOfUsReworked.Classes;
-using System;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Custom;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public abstract class SyndicateRole : Role
+    public class SyndicateRole : Role
     {
         public DateTime LastKilled;
         public CustomButton KillButton;
@@ -22,7 +14,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Objectives = SyndicateWinCon;
             BaseFaction = Faction.Syndicate;
             AbilitiesText = (RoleType is not RoleEnum.Anarchist and not RoleEnum.Sidekick && RoleAlignment != RoleAlignment.SyndicateKill ? "- With the Chaos Drive, you can kill " +
-                "players directly" : "- You can kill") + (CustomGameOptions.AltImps ? "- You can sabotage the systems to distract the <color=#8BFDFDFF>Crew</color>" : "");
+                "players directly" : "- You can kill") + (CustomGameOptions.AltImps ? "- You can sabotage the systems to distract the <color=#8CFFFFFF>Crew</color>" : "");
             KillButton = new(this, "SyndicateKill", AbilityTypes.Direct, "ActionSecondary", Kill, Exception);
         }
 
@@ -40,8 +32,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (Player != PlayerControl.LocalPlayer)
                 return;
 
-            var team = new List<PlayerControl>();
-            team.Add(PlayerControl.LocalPlayer);
+            var team = new List<PlayerControl> { PlayerControl.LocalPlayer };
 
             if (IsRecruit)
             {
@@ -70,7 +61,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 }
             }
 
-            __instance.teamToShow = team;
+            __instance.teamToShow = team.SystemToIl2Cpp();
         }
 
         public void Kill()

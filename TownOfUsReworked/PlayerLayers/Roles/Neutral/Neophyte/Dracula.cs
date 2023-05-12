@@ -1,11 +1,3 @@
-using System;
-using System.Collections.Generic;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Classes;
-using Hazel;
-using TownOfUsReworked.Custom;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Dracula : NeutralRole
@@ -19,7 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Name = "Dracula";
             RoleType = RoleEnum.Dracula;
             StartText = "Lead The <color=#7B8968FF>Undead</color> To Victory";
-            AbilitiesText = "- You can convert the <color=#8BFDFDFF>Crew</color> into your own sub faction\n- If the target cannot be converted or the number of alive " +
+            AbilitiesText = "- You can convert the <color=#8CFFFFFF>Crew</color> into your own sub faction\n- If the target cannot be converted or the number of alive " +
                 $"<color=#7B8968FF>Undead</color> exceeds {CustomGameOptions.AliveVampCount}, you will kill them instead\n- Attempting to convert a <color=#C0C0C0FF>Vampire Hunter" +
                 "</color> will force them to kill you";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Dracula : Colors.Neutral;

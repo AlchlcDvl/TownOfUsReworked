@@ -1,10 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
-using Il2CppInterop.Runtime.Attributes;
-using HarmonyLib;
-
 namespace TownOfUsReworked.Monos
 {
     [HarmonyPatch]

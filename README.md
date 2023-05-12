@@ -105,7 +105,7 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 [**Extras**](#extras)
 - [New Colors](#new-colors)
-- [Custom Hats](#custom-hats)
+- [Custom Cosmetics](#custom-cosmetics)
 - [Bug Reports, Suggestions & Additions](#bug--suggestions--additions)
 
 [**Layer Explanation And Assignment**](#layer-explanation-and-assignment)
@@ -122,6 +122,7 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 | Among Us - Version | Mod Version | Link |
 |--------------------|-------------|------|
+| 2023.3.28 (s & e) | v0.2.3 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.2.3/TownOfUsReworked.zip) |
 | 2023.3.28 (s & e) | v0.2.2 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.2.2/TownOfUsReworked.zip) |
 | 2023.3.28 (s & e) | v0.2.1 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.2.1/TownOfUsReworked.zip) |
 | 2023.3.28 (s & e) | v0.2.0 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.2.0/TownOfUsReworked.zip) |
@@ -157,6 +158,16 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 <details>
   <summary>Changelog</summary>
+  <details>
+    <summary>v0.2.3</summary>
+    <ul> <li>Nerf: Reporting a body while being flashed yields no results for the Coroner and the Retributionist-Coroner</li> </ul>
+    <ul> <li>Addition: Added "Hide Obstructed Player Names" option so that you don't see players' names through walls</li> </ul>
+    <ul> <li>Improvement: Improved some rpc handling between roles</li> </ul>
+    <ul> <li>Improvement: Reduced the mod size even more, god I love doing this</li> </ul>
+    <ul> <li>Critical Fix: Fixed custom cosmetics not loading</li> </ul>
+    <ul> <li>Visual Fix: Fixed the hat and visor tabs not displaying cosmetics</li> </ul>
+    <ul> <li>Ability Fix: Fixed Ninja appearing invisible (ironic, I know)</li> </ul>
+  </details>
   <details>
     <summary>v0.2.2</summary>
     <ul> <li>Critical Fix: Fixed the sudden issue of players just not dying at all</li> </ul>
@@ -2636,7 +2647,7 @@ The Underdog is an Intruder with a prolonged kill cooldown when with a teammate.
 New colors are added for crewmates to pick from.
 
 ## Custom Cosmetics!
-Custom hats, nameplates and visors have been added, made by some very talented artists. These are mostly for streamers.
+Custom hats, nameplates and visors have been added, made by some very talented artists. These are mostly for streamers. You can find these assets in the [ReworkedHats](https://github.com/AlchlcDvl/ReworkedHats) repo.
 
 ## Bug / Suggestions / Additions
 If you have any bugs or any need to contact me, join the [Discord](https://discord.gg/cd27aDQDY9) or create an issue or pull request on GitHub.

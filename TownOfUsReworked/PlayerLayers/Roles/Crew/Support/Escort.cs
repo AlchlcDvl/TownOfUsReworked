@@ -1,13 +1,3 @@
-using TownOfUsReworked.Data;
-using TownOfUsReworked.CustomOptions;
-using System;
-using TownOfUsReworked.Extensions;
-using UnityEngine;
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.Custom;
-using Hazel;
-using System.Linq;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Escort : CrewRole

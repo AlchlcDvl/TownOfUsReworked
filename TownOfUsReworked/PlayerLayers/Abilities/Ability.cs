@@ -1,9 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
-using TownOfUsReworked.Classes;
-using HarmonyLib;
-using TownOfUsReworked.Data;
-
 namespace TownOfUsReworked.PlayerLayers.Abilities
 {
     [HarmonyPatch]
@@ -30,6 +24,14 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             {
                 assassin.HideButtons();
                 assassin.OtherButtons.Clear();
+            }
+
+            foreach (var swapper in GetAbilities<Swapper>(AbilityEnum.Swapper))
+            {
+                swapper.Actives.Clear();
+                swapper.MoarButtons.Clear();
+                swapper.Swap1 = null;
+                swapper.Swap2 = null;
             }
 
             foreach (var pol in GetAbilities<Politician>(AbilityEnum.Politician))

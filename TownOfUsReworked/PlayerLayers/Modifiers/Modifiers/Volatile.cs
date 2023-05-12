@@ -1,10 +1,3 @@
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Data;
-using UnityEngine;
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.Extensions;
-using System.Linq;
-
 namespace TownOfUsReworked.PlayerLayers.Modifiers
 {
     public class Volatile : Modifier
@@ -34,7 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
 
             if (_time >= CustomGameOptions.VolatileInterval)
             {
-                randomNumber = Random.RandomRangeInt(0, 3);
+                randomNumber = URandom.RandomRangeInt(0, 3);
                 _time -= CustomGameOptions.VolatileInterval;
                 Hidden = false;
                 Player.RegenTask();
@@ -42,9 +35,9 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
                 if (randomNumber == 0)
                 {
                     //Flashes
-                    otherNumber = Random.RandomRangeInt(0, 256);
-                    var otherNumber2 = Random.RandomRangeInt(0, 256);
-                    var otherNumber3 = Random.RandomRangeInt(0, 256);
+                    otherNumber = URandom.RandomRangeInt(0, 256);
+                    var otherNumber2 = URandom.RandomRangeInt(0, 256);
+                    var otherNumber3 = URandom.RandomRangeInt(0, 256);
                     var flashColor = new Color32((byte)otherNumber, (byte)otherNumber2, (byte)otherNumber3, 255);
                     Utils.Flash(flashColor);
                 }
@@ -58,7 +51,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
                 /*else if (randomNumber == 2)
                 {
                     //Hearing things
-                    otherNumber = Random.RandomRangeInt(0, AssetManager.Sounds.Count);
+                    otherNumber = URandom.RandomRangeInt(0, AssetManager.Sounds.Count);
                     var sound = AssetManager.Sounds[otherNumber];
                     AssetManager.Play(sound);
                 }*/

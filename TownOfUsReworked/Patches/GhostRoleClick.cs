@@ -1,11 +1,3 @@
-using HarmonyLib;
-using Hazel;
-using System.Linq;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Extensions;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.PlayerLayers.Roles;
-
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.OnClick))]
@@ -34,7 +26,7 @@ namespace TownOfUsReworked.Patches
             {
                 if ((CustomGameOptions.RevealerCanBeClickedBy == RevealerCanBeClickedBy.EvilsOnly && !(PlayerControl.LocalPlayer.Is(Faction.Intruder) ||
                     PlayerControl.LocalPlayer.Is(Faction.Syndicate))) || (CustomGameOptions.RevealerCanBeClickedBy == RevealerCanBeClickedBy.NonCrew &&
-                    !(PlayerControl.LocalPlayer.Is(Faction.Intruder)|| PlayerControl.LocalPlayer.Is(Faction.Syndicate) || PlayerControl.LocalPlayer.Is(Faction.Neutral))))
+                    PlayerControl.LocalPlayer.Is(Faction.Crew)))
                 {
                     return;
                 }

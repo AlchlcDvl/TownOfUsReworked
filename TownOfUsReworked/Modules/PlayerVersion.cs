@@ -1,5 +1,3 @@
-using System;
-
 namespace TownOfUsReworked.Modules
 {
     public class PlayerVersion
@@ -7,10 +5,10 @@ namespace TownOfUsReworked.Modules
         public readonly Version Version;
         public readonly Guid Guid;
 
-        public PlayerVersion(Version Version, Guid Guid)
+        public PlayerVersion(Version version, Guid guid)
         {
-            this.Version = Version;
-            this.Guid = Guid;
+            Version = version;
+            Guid = guid;
         }
 
         public bool GuidMatches => TownOfUsReworked.Assembly.ManifestModule.ModuleVersionId.Equals(Guid);

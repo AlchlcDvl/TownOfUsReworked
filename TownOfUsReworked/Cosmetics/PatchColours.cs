@@ -1,7 +1,4 @@
-﻿using HarmonyLib;
-using Il2CppInterop.Runtime.InteropTypes.Arrays;
-
-namespace TownOfUsReworked.Cosmetics
+﻿namespace TownOfUsReworked.Cosmetics
 {
     [HarmonyPatch(typeof(TranslationController), nameof(TranslationController.GetString), new[] { typeof(StringNames), typeof(Il2CppReferenceArray<Il2CppSystem.Object>) })]
     public static class PatchColours

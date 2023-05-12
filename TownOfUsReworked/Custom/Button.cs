@@ -1,16 +1,3 @@
-using HarmonyLib;
-using TownOfUsReworked.PlayerLayers;
-using System.Collections.Generic;
-using TownOfUsReworked.Data;
-using System;
-using Object = UnityEngine.Object;
-using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Classes;
-using static UnityEngine.UI.Button;
-using Reactor.Utilities.Extensions;
-using UnityEngine;
-using System.Linq;
-
 namespace TownOfUsReworked.Custom
 {
     [HarmonyPatch]
@@ -61,7 +48,7 @@ namespace TownOfUsReworked.Custom
 
         private static AbilityButton InstantiateButton()
         {
-            var button = Object.Instantiate(HudManager.Instance.AbilityButton, HudManager.Instance.AbilityButton.transform.parent);
+            var button = UObject.Instantiate(HudManager.Instance.AbilityButton, HudManager.Instance.AbilityButton.transform.parent);
             button.buttonLabelText.fontSharedMaterial = HudManager.Instance.SabotageButton.buttonLabelText.fontSharedMaterial;
             button.graphic.enabled = true;
             button.buttonLabelText.enabled = true;
@@ -115,7 +102,7 @@ namespace TownOfUsReworked.Custom
         {
             if ((Owner.IsDead && !PostDeath) || !usable)
             {
-                foreach (var body in Object.FindObjectsOfType<DeadBody>())
+                foreach (var body in UObject.FindObjectsOfType<DeadBody>())
                 {
                     foreach (var oldComponent in body?.bodyRenderers)
                         oldComponent?.material.SetFloat("_Outline", 0f);
@@ -208,7 +195,7 @@ namespace TownOfUsReworked.Custom
             Base?.buttonLabelText?.gameObject.Destroy();
             Base?.commsDown?.Destroy();
             Base?.gameObject?.Destroy();
-            Object.Destroy(Base);
+            Base.Destroy();
             Base = null;
         }
     }

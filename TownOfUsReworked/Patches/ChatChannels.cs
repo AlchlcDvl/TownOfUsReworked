@@ -1,9 +1,3 @@
-using HarmonyLib;
-using TownOfUsReworked.PlayerLayers.Roles;
-using TownOfUsReworked.Extensions;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Data;
-
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch(typeof(ChatController), nameof(ChatController.AddChat))]

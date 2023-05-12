@@ -1,25 +1,3 @@
-using System.Collections.Generic;
-using UnityEngine;
-using TownOfUsReworked.Classes;
-using System;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Objects;
-using System.Linq;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Extensions;
-using Object = UnityEngine.Object;
-using System.Collections;
-using TownOfUsReworked.Custom;
-using HarmonyLib;
-using TownOfUsReworked.Patches;
-using Hazel;
-using TMPro;
-using TownOfUsReworked.Cosmetics;
-using Reactor.Utilities.Extensions;
-using Reactor.Utilities;
-using TownOfUsReworked.Functions;
-using static UnityEngine.UI.Button;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Retributionist : CrewRole
@@ -28,7 +6,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Retributionist";
             StartText = "Mimic the Dead";
-            AbilitiesText = "- You can mimic the abilities of dead selective <color=#8BFDFDFF>Crew</color>";
+            AbilitiesText = "- You can mimic the abilities of dead selective <color=#8CFFFFFF>Crew</color>";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Retributionist : Colors.Crew;
             RoleType = RoleEnum.Retributionist;
             RoleAlignment = RoleAlignment.CrewSupport;
@@ -136,8 +114,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public void GenButtons(PlayerVoteArea voteArea, MeetingHud __instance)
         {
             var targetId = voteArea.TargetPlayerId;
-            var nameText = Object.Instantiate(voteArea.NameText, voteArea.transform);
-            nameText.transform.localPosition = new Vector3(-1.211f, -0.18f, -0.1f);
+            var nameText = UObject.Instantiate(voteArea.NameText, voteArea.transform);
+            nameText.transform.localPosition = new(-1.211f, -0.18f, -0.1f);
             nameText.text = GameData.Instance.GetPlayerById(targetId).DefaultOutfit.ColorId.ToString();
             PlayerNumbers[targetId] = nameText;
 
@@ -149,7 +127,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
 
             var template = voteArea.Buttons.transform.Find("CancelButton").gameObject;
-            var targetBox = Object.Instantiate(template, voteArea.transform);
+            var targetBox = UObject.Instantiate(template, voteArea.transform);
             targetBox.name = "ReviveButton";
             targetBox.transform.localPosition = new(-0.4f, 0.03f, -1.3f);
             var renderer = targetBox.GetComponent<SpriteRenderer>();
@@ -200,7 +178,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 return;
 
             button.SetActive(false);
-            button.GetComponent<PassiveButton>().OnClick = new ButtonClickedEvent();
+            button.GetComponent<PassiveButton>().OnClick.RemoveAllListeners();
             button.GetComponent<PassiveButton>().OnMouseOver.RemoveAllListeners();
             button.GetComponent<PassiveButton>().OnMouseOut.RemoveAllListeners();
             button.Destroy();
@@ -265,7 +243,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 if (IsCor)
                 {
-                    var validBodies = Object.FindObjectsOfType<DeadBody>().Where(x => Murder.KilledPlayers.Any(y => y.PlayerId == x.ParentId && DateTime.UtcNow <
+                    var validBodies = UObject.FindObjectsOfType<DeadBody>().Where(x => Murder.KilledPlayers.Any(y => y.PlayerId == x.ParentId && DateTime.UtcNow <
                         y.KillTime.AddSeconds(CustomGameOptions.CoronerArrowDuration)));
 
                     foreach (var bodyArrow in BodyArrows.Keys)
@@ -484,7 +462,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         Points[player.PlayerId].transform.localPosition = v;
                     else
                     {
-                        var point = Object.Instantiate(__instance.HerePoint, __instance.HerePoint.transform.parent, true);
+                        var point = UObject.Instantiate(__instance.HerePoint, __instance.HerePoint.transform.parent, true);
                         point.transform.localPosition = v;
                         point.enabled = true;
                         player.SetPlayerMaterialColors(point);
@@ -591,10 +569,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 Killer = Utils.PlayerById(killer.KillerId),
                 Body = Utils.PlayerById(killer.PlayerId),
+                Reporter = Player,
                 KillAge = (float)(DateTime.UtcNow - killer.KillTime).TotalMilliseconds
             };
 
-            var reportMsg = BodyReport.ParseBodyReport(br);
+            var reportMsg = br.ParseBodyReport();
 
             if (string.IsNullOrWhiteSpace(reportMsg))
                 return;
@@ -714,7 +693,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
                 foreach (var dead in PlayersDead)
                 {
-                    if (Object.FindObjectsOfType<DeadBody>().Any(x => x.ParentId == dead.PlayerId && !MediatedPlayers.ContainsKey(x.ParentId)))
+                    if (UObject.FindObjectsOfType<DeadBody>().Any(x => x.ParentId == dead.PlayerId && !MediatedPlayers.ContainsKey(x.ParentId)))
                     {
                         AddMediatePlayer(dead.PlayerId);
                         var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
@@ -734,7 +713,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 PlayersDead.Shuffle();
                 var dead = PlayersDead.Random();
 
-                if (Object.FindObjectsOfType<DeadBody>().Any(x => x.ParentId == dead.PlayerId && !MediatedPlayers.ContainsKey(x.ParentId)))
+                if (UObject.FindObjectsOfType<DeadBody>().Any(x => x.ParentId == dead.PlayerId && !MediatedPlayers.ContainsKey(x.ParentId)))
                 {
                     AddMediatePlayer(dead.PlayerId);
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
@@ -1432,9 +1411,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 TransportPlayer2.MyPhysics.ResetMoveState();
                 var TempPosition = TransportPlayer1.GetTruePosition();
                 var TempFacing = TransportPlayer1.MyRend().flipX;
-                TransportPlayer1.NetTransform.SnapTo(new Vector2(TransportPlayer2.GetTruePosition().x, TransportPlayer2.GetTruePosition().y + 0.3636f));
+                TransportPlayer1.NetTransform.SnapTo(new(TransportPlayer2.GetTruePosition().x, TransportPlayer2.GetTruePosition().y + 0.3636f));
                 TransportPlayer1.MyRend().flipX = TransportPlayer2.MyRend().flipX;
-                TransportPlayer2.NetTransform.SnapTo(new Vector2(TempPosition.x, TempPosition.y + 0.3636f));
+                TransportPlayer2.NetTransform.SnapTo(new(TempPosition.x, TempPosition.y + 0.3636f));
                 TransportPlayer2.MyRend().flipX = TempFacing;
 
                 if (SubmergedCompatibility.IsSubmerged)
@@ -1464,7 +1443,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 TransportPlayer2.MyPhysics.ResetMoveState();
                 var TempPosition = Player1Body.TruePosition;
                 Player1Body.transform.position = TransportPlayer2.GetTruePosition();
-                TransportPlayer2.NetTransform.SnapTo(new Vector2(TempPosition.x, TempPosition.y + 0.3636f));
+                TransportPlayer2.NetTransform.SnapTo(new(TempPosition.x, TempPosition.y + 0.3636f));
 
                 if (SubmergedCompatibility.IsSubmerged && PlayerControl.LocalPlayer.PlayerId == TransportPlayer2.PlayerId)
                 {
@@ -1477,7 +1456,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 Utils.StopDragging(Player2Body.ParentId);
                 TransportPlayer1.MyPhysics.ResetMoveState();
                 var TempPosition = TransportPlayer1.GetTruePosition();
-                TransportPlayer1.NetTransform.SnapTo(new Vector2(Player2Body.TruePosition.x, Player2Body.TruePosition.y + 0.3636f));
+                TransportPlayer1.NetTransform.SnapTo(new(Player2Body.TruePosition.x, Player2Body.TruePosition.y + 0.3636f));
                 Player2Body.transform.position = TempPosition;
 
                 if (SubmergedCompatibility.IsSubmerged && PlayerControl.LocalPlayer.PlayerId == TransportPlayer1.PlayerId)

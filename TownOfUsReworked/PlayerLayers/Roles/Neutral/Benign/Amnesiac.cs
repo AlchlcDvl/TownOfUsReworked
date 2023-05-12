@@ -1,18 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
-using Object = UnityEngine.Object;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Custom;
-using Hazel;
-using HarmonyLib;
-using TownOfUsReworked.PlayerLayers.Abilities;
-using UnityEngine;
-using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Patches;
-using Reactor.Utilities.Extensions;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Amnesiac : NeutralRole
@@ -301,7 +286,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (CustomGameOptions.RememberArrows && !PlayerControl.LocalPlayer.Data.IsDead)
             {
-                var validBodies = Object.FindObjectsOfType<DeadBody>().Where(x => Murder.KilledPlayers.Any(y => y.PlayerId == x.ParentId &&
+                var validBodies = UObject.FindObjectsOfType<DeadBody>().Where(x => Murder.KilledPlayers.Any(y => y.PlayerId == x.ParentId &&
                     y.KillTime.AddSeconds(CustomGameOptions.RememberArrowDelay) < System.DateTime.UtcNow));
 
                 foreach (var bodyArrow in BodyArrows.Keys)

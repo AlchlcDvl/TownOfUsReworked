@@ -1,15 +1,3 @@
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Extensions;
-using UnityEngine;
-using TownOfUsReworked.Classes;
-using System;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Custom;
-using Hazel;
-using Reactor.Utilities;
-using HarmonyLib;
-using Reactor.Networking.Extensions;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Janitor : IntruderRole

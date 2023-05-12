@@ -1,15 +1,4 @@
-using System;
-using AmongUs.Data;
 using Reactor.Utilities.ImGui;
-using UnityEngine;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.PlayerLayers.Roles;
-using TownOfUsReworked.PlayerLayers;
-using TownOfUsReworked.Classes;
-using Il2CppInterop.Runtime.Attributes;
-using TownOfUsReworked.CustomOptions;
-using Random = UnityEngine.Random;
-using TownOfUsReworked.MultiClientInstancing;
 
 namespace TownOfUsReworked.Monos
 {
@@ -21,7 +10,7 @@ namespace TownOfUsReworked.Monos
 
         public Debugger(IntPtr ptr) : base(ptr)
         {
-            TestWindow = new DragWindow(new Rect(20, 20, 0, 0), "MCI Debugger", () =>
+            TestWindow = new DragWindow(new(20, 20, 0, 0), "MCI Debugger", () =>
             {
                 GUILayout.Label("Name: " + DataManager.Player.Customization.Name);
 
@@ -167,9 +156,9 @@ namespace TownOfUsReworked.Monos
 
                 if (GUILayout.Button("Flash"))
                 {
-                    var r = Random.RandomRangeInt(0, 256);
-                    var g = Random.RandomRangeInt(0, 256);
-                    var b = Random.RandomRangeInt(0, 256);
+                    var r = URandom.RandomRangeInt(0, 256);
+                    var g = URandom.RandomRangeInt(0, 256);
+                    var b = URandom.RandomRangeInt(0, 256);
                     var flashColor = new Color32((byte)r, (byte)g, (byte)b, 255);
                     Utils.Flash(flashColor);
                 }

@@ -1,9 +1,3 @@
-using Hazel;
-using TownOfUsReworked.Data;
-using HarmonyLib;
-using TownOfUsReworked.Classes;
-using System.Linq;
-
 namespace TownOfUsReworked.Functions
 {
     [HarmonyPatch]

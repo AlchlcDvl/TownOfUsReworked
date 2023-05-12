@@ -1,14 +1,3 @@
-using System;
-using UnityEngine;
-using System.Linq;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Classes;
-using Il2CppSystem.Collections.Generic;
-using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Custom;
-using Hazel;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Grenadier : IntruderRole
@@ -18,16 +7,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public DateTime LastFlashed;
         public float TimeRemaining;
         private static List<PlayerControl> ClosestPlayers = new();
-        private static readonly Color32 NormalVision = new(212, 212, 212, 0);
-        private static readonly Color32 DimVision = new(212, 212, 212, 51);
-        private static readonly Color32 BlindVision = new(212, 212, 212, 255);
+        private static Color32 NormalVision => new(212, 212, 212, 0);
+        private static Color32 DimVision => new(212, 212, 212, 51);
+        private static Color32 BlindVision => new(212, 212, 212, 255);
         public List<PlayerControl> FlashedPlayers = new();
         public bool Flashed => TimeRemaining > 0f;
 
         public Grenadier(PlayerControl player) : base(player)
         {
             Name = "Grenadier";
-            StartText = "Blind The <color=#8BFDFDFF>Crew</color> With Your Magnificent Figure";
+            StartText = "Blind The <color=#8CFFFFFF>Crew</color> With Your Magnificent Figure";
             AbilitiesText = $"- You can drop a flashbang, which blinds players around you\n{AbilitiesText}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Grenadier : Colors.Intruder;
             RoleType = RoleEnum.Grenadier;

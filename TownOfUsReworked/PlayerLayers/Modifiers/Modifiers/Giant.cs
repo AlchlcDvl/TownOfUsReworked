@@ -1,8 +1,3 @@
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Modules;
-using TownOfUsReworked.Data;
-
 namespace TownOfUsReworked.PlayerLayers.Modifiers
 {
     public class Giant : Modifier, IVisualAlteration

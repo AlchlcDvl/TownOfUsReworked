@@ -1,14 +1,3 @@
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Classes;
-using System;
-using TownOfUsReworked.CustomOptions;
-using UnityEngine;
-using System.Collections.Generic;
-using TownOfUsReworked.Custom;
-using HarmonyLib;
-using Hazel;
-using TownOfUsReworked.Extensions;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Banshee : SyndicateRole

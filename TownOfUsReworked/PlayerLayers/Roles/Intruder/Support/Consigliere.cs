@@ -1,13 +1,3 @@
-using System;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Extensions;
-using System.Collections.Generic;
-using TownOfUsReworked.PlayerLayers.Abilities;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.Custom;
-using HarmonyLib;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Consigliere : IntruderRole

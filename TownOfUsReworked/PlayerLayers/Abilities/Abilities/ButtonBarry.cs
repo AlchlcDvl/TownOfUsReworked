@@ -1,10 +1,3 @@
-using TownOfUsReworked.Data;
-using TownOfUsReworked.CustomOptions;
-using System;
-using TownOfUsReworked.Custom;
-using TownOfUsReworked.Classes;
-using Hazel;
-
 namespace TownOfUsReworked.PlayerLayers.Abilities
 {
     public class ButtonBarry : Ability

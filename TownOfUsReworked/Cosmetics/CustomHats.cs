@@ -1,15 +1,3 @@
-using HarmonyLib;
-using UnityEngine;
-using System.IO;
-using System.Collections.Generic;
-using System.Linq;
-using AmongUs.Data;
-using TownOfUsReworked.Classes;
-using Il2CppInterop.Runtime.InteropTypes.Arrays;
-using System;
-using TMPro;
-using Object = UnityEngine.Object;
-
 namespace TownOfUsReworked.Cosmetics
 {
     [HarmonyPatch]
@@ -18,7 +6,6 @@ namespace TownOfUsReworked.Cosmetics
         private static bool Loaded;
         private static bool Running;
         private static Material Shader;
-
         public readonly static Dictionary<string, HatExtension> CustomHatRegistry = new();
 
         #pragma warning disable
@@ -28,7 +15,6 @@ namespace TownOfUsReworked.Cosmetics
         public class HatExtension
         {
             public string Artist { get; set; }
-            public string Package { get; set; }
             public string Condition { get; set; }
             public Sprite FlipImage { get; set; }
             public Sprite BackFlipImage { get; set; }
@@ -127,7 +113,7 @@ namespace TownOfUsReworked.Cosmetics
             if (texture == null)
                 return null;
 
-            var sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.53f, 0.575f), texture.width * 0.375f);
+            var sprite = Sprite.Create(texture, new(0, 0, texture.width, texture.height), new(0.5f, 0.5f), 100);
 
             if (sprite == null)
                 return null;
@@ -141,6 +127,24 @@ namespace TownOfUsReworked.Cosmetics
         {
             if (Shader == null)
                 Shader = HatManager.Instance.PlayerMaterial;
+
+            if (fromDisk)
+            {
+                var filePath = Path.GetDirectoryName(Application.dataPath) + "\\CustomHats\\";
+                ch.ID = filePath + ch.ID + ".png";
+
+                if (ch.BackID != null)
+                    ch.BackID = filePath + ch.BackID + ".png";
+
+                if (ch.ClimbID != null)
+                    ch.ClimbID = filePath + ch.ClimbID + ".png";
+
+                if (ch.FlipID != null)
+                    ch.FlipID = filePath + ch.FlipID + ".png";
+
+                if (ch.BackflipID != null)
+                    ch.BackflipID = filePath + ch.BackflipID + ".png";
+            }
 
             var hat = ScriptableObject.CreateInstance<HatData>();
             hat.hatViewData.viewData = ScriptableObject.CreateInstance<HatViewData>();
@@ -176,40 +180,17 @@ namespace TownOfUsReworked.Cosmetics
                 extend.FlipImage = CreateHatSprite(ch.FlipID, fromDisk);
 
             if (ch.BackflipID != null)
-                 extend.BackFlipImage = CreateHatSprite(ch.BackflipID, fromDisk);
+                extend.BackFlipImage = CreateHatSprite(ch.BackflipID, fromDisk);
 
             if (testOnly)
             {
                 TestExt = extend;
                 TestExt.Condition = hat.name;
             }
-            else
+            else if (!CustomHatRegistry.ContainsKey(hat.name))
                 CustomHatRegistry.Add(hat.name, extend);
 
             return hat;
-        }
-
-        private static HatData CreateHatBehaviour(CosmeticsLoader.CustomHatOnline chd, bool fromDisk = true)
-        {
-            if (fromDisk)
-            {
-                var filePath = Path.GetDirectoryName(Application.dataPath) + "\\CustomHats\\";
-                chd.ID = filePath + chd.ID;
-
-                if (chd.BackID != null)
-                    chd.BackID = filePath + chd.BackID;
-
-                if (chd.ClimbID != null)
-                    chd.ClimbID = filePath + chd.ClimbID;
-
-                if (chd.FlipID != null)
-                    chd.FlipID = filePath + chd.FlipID;
-
-                if (chd.BackflipID != null)
-                    chd.BackflipID = filePath + chd.BackflipID;
-            }
-
-            return CreateHatBehaviour(chd, fromDisk, false);
         }
 
         [HarmonyPatch(typeof(HatManager), nameof(HatManager.GetHatById))]
@@ -229,7 +210,8 @@ namespace TownOfUsReworked.Cosmetics
                 {
                     while (CosmeticsLoader.HatDetails.Count > 0)
                     {
-                        AllHats.Add(CreateHatBehaviour(CosmeticsLoader.HatDetails[0], true));
+                        var hatData = CreateHatBehaviour(CosmeticsLoader.HatDetails[0], true);
+                        AllHats.Add(hatData);
                         CosmeticsLoader.HatDetails.RemoveAt(0);
                     }
 
@@ -245,26 +227,6 @@ namespace TownOfUsReworked.Cosmetics
             }
 
             public static void Postfix() => Running = false;
-        }
-
-        [HarmonyPatch(typeof(HatManager), nameof(HatManager.GetUnlockedHats))]
-        public static class UnlockHats
-        {
-            public static bool Prefix(HatManager __instance, ref Il2CppReferenceArray<HatData> __result)
-            {
-                __result =
-                (
-                    from h
-                    in __instance.allHats.ToArray()
-                    where h.Free || DataManager.Player.Purchases.GetPurchase(h.ProductId, h.BundleId)
-                    select h
-                    into o
-                    orderby o.displayOrder descending,
-                    o.name
-                    select o
-                ).ToArray();
-                return false;
-            }
         }
 
         [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.HandleAnimation))]
@@ -288,20 +250,10 @@ namespace TownOfUsReworked.Cosmetics
                     return;
 
                 if (extend.FlipImage != null)
-                {
-                    if (__instance.FlipX)
-                        hp.FrontLayer.sprite = extend.FlipImage;
-                    else
-                        hp.FrontLayer.sprite = hp.hatView.MainImage;
-                }
+                    hp.FrontLayer.sprite = __instance.FlipX ? extend.FlipImage : hp.hatView.MainImage;
 
                 if (extend.BackFlipImage != null)
-                {
-                    if (__instance.FlipX)
-                        hp.BackLayer.sprite = extend.BackFlipImage;
-                    else
-                        hp.BackLayer.sprite = hp.hatView.BackImage;
-                }
+                    hp.BackLayer.sprite = __instance.FlipX ? extend.BackFlipImage : hp.hatView.BackImage;
             }
         }
 
@@ -380,8 +332,8 @@ namespace TownOfUsReworked.Cosmetics
         [HarmonyPatch(typeof(HatsTab), nameof(HatsTab.OnEnable))]
         public static class HatsTabOnEnablePatch
         {
-            private const string InnerslothPackageName = "Innersloth Hats";
-            private static TMP_Text textTemplate;
+            private const string InnerslothPackageName = "Innersloth";
+            private static TMP_Text Template;
 
             public static float CreateHatPackage(List<Tuple<HatData, HatExtension>> hats, string packageName, float YStart, HatsTab __instance)
             {
@@ -392,9 +344,9 @@ namespace TownOfUsReworked.Cosmetics
 
                 var offset = YStart;
 
-                if (textTemplate != null)
+                if (Template != null)
                 {
-                    var title = Object.Instantiate(textTemplate, __instance.scroller.Inner);
+                    var title = UObject.Instantiate(Template, __instance.scroller.Inner);
                     title.transform.localPosition = new(2.25f, YStart, -1f);
                     title.transform.localScale = Vector3.one * 1.5f;
                     title.fontSize *= 0.5f;
@@ -410,7 +362,7 @@ namespace TownOfUsReworked.Cosmetics
 
                     var xpos = __instance.XRange.Lerp(i % __instance.NumPerRow / (__instance.NumPerRow - 1f));
                     var ypos = offset - (i / __instance.NumPerRow * (isDefaultPackage ? 1f : 1.5f) * __instance.YOffset);
-                    var colorChip = Object.Instantiate(__instance.ColorTabPrefab, __instance.scroller.Inner);
+                    var colorChip = UObject.Instantiate(__instance.ColorTabPrefab, __instance.scroller.Inner);
 
                     if (ActiveInputManager.currentControlType == ActiveInputManager.InputType.Keyboard)
                     {
@@ -436,18 +388,18 @@ namespace TownOfUsReworked.Cosmetics
                         if (foreground != null)
                             foreground.localPosition = Vector3.down * 0.243f;
 
-                        if (textTemplate != null)
+                        if (Template != null)
                         {
-                            var description = Object.Instantiate(textTemplate, colorChip.transform);
+                            var description = UObject.Instantiate(Template, colorChip.transform);
                             description.transform.localPosition = new(0f, -0.65f, -1f);
                             description.alignment = TextAlignmentOptions.Center;
                             description.transform.localScale = Vector3.one * 0.65f;
-                            __instance.StartCoroutine(Effects.Lerp(0.1f, new Action<float>(_ => description.SetText($"{hat.name}\nby {ext.Artist}"))));
+                            __instance.StartCoroutine(Effects.Lerp(0.1f, new Action<float>(_ => description.SetText($"{hat.name}"))));
                         }
                     }
 
                     colorChip.transform.localPosition = new(xpos, ypos, -1f);
-                    colorChip.Inner.SetHat(hat, __instance.HasLocalPlayer() ? PlayerControl.LocalPlayer.Data.DefaultOutfit.ColorId : ((int)DataManager.Player.Customization.Color));
+                    colorChip.Inner.SetHat(hat, __instance.HasLocalPlayer() ? PlayerControl.LocalPlayer.Data.DefaultOutfit.ColorId : DataManager.Player.Customization.Color);
                     colorChip.Inner.transform.localPosition = hat.ChipOffset;
                     colorChip.Tag = hat;
                     colorChip.SelectionHighlight.gameObject.SetActive(false);
@@ -460,7 +412,7 @@ namespace TownOfUsReworked.Cosmetics
             public static bool Prefix(HatsTab __instance)
             {
                 for (var i = 0; i < __instance.scroller.Inner.childCount; i++)
-                    Object.Destroy(__instance.scroller.Inner.GetChild(i).gameObject);
+                    __instance.scroller.Inner.GetChild(i).gameObject.Destroy();
 
                 __instance.ColorChips = new();
 
@@ -473,10 +425,10 @@ namespace TownOfUsReworked.Cosmetics
 
                     if (ext != null)
                     {
-                        if (!packages.ContainsKey(ext.Package))
-                            packages[ext.Package] = new();
+                        if (!packages.ContainsKey(ext.Artist))
+                            packages[ext.Artist] = new();
 
-                        packages[ext.Package].Add(new(hatBehaviour, ext));
+                        packages[ext.Artist].Add(new(hatBehaviour, ext));
                     }
                     else
                     {
@@ -488,7 +440,7 @@ namespace TownOfUsReworked.Cosmetics
                 }
 
                 var YOffset = __instance.YStart;
-                textTemplate = GameObject.Find("HatsGroup").transform.FindChild("Text").GetComponent<TMP_Text>();
+                Template = GameObject.Find("HatsGroup").transform.FindChild("Text").GetComponent<TMP_Text>();
 
                 var orderedKeys = packages.Keys.OrderBy(x =>
                 {

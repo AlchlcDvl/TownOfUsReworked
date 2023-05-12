@@ -1,17 +1,3 @@
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Custom;
-using Hazel;
-using TownOfUsReworked.Classes;
-using System.Collections.Generic;
-using UnityEngine;
-using Object = UnityEngine.Object;
-using System;
-using System.Linq;
-using static UnityEngine.UI.Button;
-using Reactor.Utilities.Extensions;
-using TownOfUsReworked.Extensions;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Dictator : CrewRole
@@ -83,7 +69,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
 
             var template = voteArea.Buttons.transform.Find("CancelButton").gameObject;
-            var targetBox = Object.Instantiate(template, voteArea.transform);
+            var targetBox = UObject.Instantiate(template, voteArea.transform);
             targetBox.name = "DictateButton";
             targetBox.transform.localPosition = new(-0.4f, 0.03f, -1.3f);
             var renderer = targetBox.GetComponent<SpriteRenderer>();
@@ -112,10 +98,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             writer.Write((byte)ActionsRPC.SetExiles);
             writer.Write(PlayerId);
             writer.Write(ToDie);
-
-            foreach (var bit in ToBeEjected)
-                writer.Write(bit);
-
+            writer.WriteBytesAndSize(ToBeEjected.ToArray());
             AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
 
@@ -165,13 +148,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             base.OnMeetingStart(__instance);
 
-            foreach (var swapper in GetRoles<Dictator>(RoleEnum.Dictator))
-            {
-                Actives.Clear();
-                MoarButtons.Clear();
-                ToBeEjected.Clear();
-            }
-
             foreach (var area in __instance.playerStates)
                 GenButton(area, __instance);
         }
@@ -200,10 +176,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             writer.Write((byte)ActionsRPC.SetExiles);
             writer.Write(PlayerId);
             writer.Write(ToDie);
-
-            foreach (var bit in ToBeEjected)
-                writer.Write(bit);
-
+            writer.WriteBytesAndSize(ToBeEjected.ToArray());
             AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
 
@@ -215,7 +188,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 return;
 
             button.SetActive(false);
-            button.GetComponent<PassiveButton>().OnClick = new ButtonClickedEvent();
+            button.GetComponent<PassiveButton>().OnClick.RemoveAllListeners();
             button.GetComponent<PassiveButton>().OnMouseOver.RemoveAllListeners();
             button.GetComponent<PassiveButton>().OnMouseOut.RemoveAllListeners();
             button.Destroy();

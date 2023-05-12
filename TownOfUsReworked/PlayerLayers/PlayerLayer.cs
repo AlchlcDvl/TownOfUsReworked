@@ -1,22 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
-using Reactor.Utilities.Extensions;
-using UnityEngine;
-using HarmonyLib;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Classes;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Custom;
-using Hazel;
-using TownOfUsReworked.PlayerLayers.Objectifiers;
-using TownOfUsReworked.PlayerLayers.Roles;
-using TownOfUsReworked.Patches;
-using System;
-using TownOfUsReworked.PlayerLayers.Abilities;
-using TownOfUsReworked.PlayerLayers.Modifiers;
-using TownOfUsReworked.Objects;
-
 namespace TownOfUsReworked.PlayerLayers
 {
     [HarmonyPatch]
@@ -163,14 +144,17 @@ namespace TownOfUsReworked.PlayerLayers
 
         public PlayerControl Player;
 
-        public bool IsDead => Player.Data.IsDead;
-        public bool Disconnected => Player.Data.Disconnected;
-        public string PlayerName => Player.Data.PlayerName;
+        #pragma warning disable
+        public bool IsDead => Player != null && Player.Data.IsDead;
+        public bool Disconnected => Player != null && Player.Data.Disconnected;
+        #pragma warning restore
+
+        public string PlayerName => Player?.Data.PlayerName;
         public byte PlayerId => Player.PlayerId;
         public int TasksLeft => Player.Data.Tasks.ToArray().Count(x => !x.Complete);
         public int TasksCompleted => Player.Data.Tasks.ToArray().Count(x => x.Complete);
         public int TotalTasks => Player.Data.Tasks.ToArray().Length;
-        public bool TasksDone => TasksLeft <= 0 || TasksCompleted >= TotalTasks;
+        public bool TasksDone => Player != null && (TasksLeft <= 0 || TasksCompleted >= TotalTasks);
 
         public string ColorString => $"<color=#{Color.ToHtmlStringRGBA()}>";
 

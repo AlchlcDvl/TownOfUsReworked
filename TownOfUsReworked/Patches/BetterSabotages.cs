@@ -1,8 +1,3 @@
-using System;
-using HarmonyLib;
-using TownOfUsReworked.CustomOptions;
-using TownOfUsReworked.Data;
-
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]

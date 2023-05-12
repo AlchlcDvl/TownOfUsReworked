@@ -1,7 +1,3 @@
-using System.Collections.Generic;
-using System.Text;
-using HarmonyLib;
-
 namespace TownOfUsReworked.Data
 {
     [HarmonyPatch]

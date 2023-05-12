@@ -1,13 +1,4 @@
-﻿using HarmonyLib;
-using Hazel;
-using System.Collections;
-using UnityEngine;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.CustomOptions;
-using Reactor.Utilities;
-using TownOfUsReworked.Monos;
-
-namespace TownOfUsReworked.BetterMaps.Airship
+﻿namespace TownOfUsReworked.BetterMaps.Airship
 {
     [HarmonyPatch(typeof(AirshipStatus), nameof(AirshipStatus.OnEnable))]
     public static class CallPlateform
@@ -23,17 +14,17 @@ namespace TownOfUsReworked.BetterMaps.Airship
 
             if (CustomGameOptions.CallPlatform)
             {
-                Tasks.CreateThisTask(new Vector3(5.531f, 9.788f, 1f), new Vector3(0f, 0f, 0f), () =>
+                Tasks.CreateThisTask(new(5.531f, 9.788f, 1f), new(0f, 0f, 0f), () =>
                 {
-                    var Plateform = Object.FindObjectOfType<MovingPlatformBehaviour>();
+                    var Plateform = UObject.FindObjectOfType<MovingPlatformBehaviour>();
 
                     if (!Plateform.IsLeft && !PlateformIsUsed)
                         UsePlateforRpc(Plateform, false);
                 });
 
-                Tasks.CreateThisTask(new Vector3(10.148f, 9.806f, 1f), new Vector3(0f, 180f, 0f), () =>
+                Tasks.CreateThisTask(new(10.148f, 9.806f, 1f), new(0f, 180f, 0f), () =>
                 {
-                    var Plateform = Object.FindObjectOfType<MovingPlatformBehaviour>();
+                    var Plateform = UObject.FindObjectOfType<MovingPlatformBehaviour>();
 
                     if (Plateform.IsLeft && !PlateformIsUsed)
                         UsePlateforRpc(Plateform, true);
@@ -43,7 +34,7 @@ namespace TownOfUsReworked.BetterMaps.Airship
 
         public static void SyncPlateform(bool isLeft)
         {
-            var Plateform = Object.FindObjectOfType<MovingPlatformBehaviour>();
+            var Plateform = UObject.FindObjectOfType<MovingPlatformBehaviour>();
             Coroutines.Start(UsePlatform(Plateform, isLeft));
         }
 

@@ -1,8 +1,4 @@
-﻿using System;
-using UnityEngine;
-using TownOfUsReworked.Cosmetics;
-
-namespace TownOfUsReworked.Monos
+﻿namespace TownOfUsReworked.Monos
 {
     public class ColorBehaviour : MonoBehaviour
     {

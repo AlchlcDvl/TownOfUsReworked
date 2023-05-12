@@ -1,12 +1,3 @@
-using TownOfUsReworked.Data;
-using TownOfUsReworked.CustomOptions;
-using System;
-using TownOfUsReworked.Classes;
-using UnityEngine;
-using TownOfUsReworked.Custom;
-using Hazel;
-using TownOfUsReworked.Extensions;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Consort : IntruderRole

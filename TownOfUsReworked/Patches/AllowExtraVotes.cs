@@ -1,8 +1,3 @@
-using HarmonyLib;
-using TownOfUsReworked.Extensions;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.PlayerLayers.Abilities;
-
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch(typeof(PlayerVoteArea), nameof(PlayerVoteArea.Select))]

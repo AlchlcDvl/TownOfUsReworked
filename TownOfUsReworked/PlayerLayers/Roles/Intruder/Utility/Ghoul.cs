@@ -1,13 +1,3 @@
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Classes;
-using System;
-using TownOfUsReworked.CustomOptions;
-using UnityEngine;
-using TownOfUsReworked.Custom;
-using Hazel;
-using System.Linq;
-using TownOfUsReworked.Extensions;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Ghoul : IntruderRole

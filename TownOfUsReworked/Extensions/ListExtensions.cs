@@ -1,8 +1,3 @@
-using URandom = UnityEngine.Random;
-using System.Collections.Generic;
-using HarmonyLib;
-using System.Linq;
-
 namespace TownOfUsReworked.Extensions
 {
     [HarmonyPatch]
