@@ -206,11 +206,11 @@ namespace TownOfUsReworked.Cosmetics
                     colorChip.Tag = visor.ProdId;
                     colorChip.SelectionHighlight.gameObject.SetActive(false);
                     var color = __instance.HasLocalPlayer() ? PlayerControl.LocalPlayer.Data.DefaultOutfit.ColorId : DataManager.Player.Customization.Color;
-					__instance.StartCoroutine(visor.CoLoadViewData(new Action<VisorViewData>(x =>
-					{
-						colorChip.Inner.FrontLayer.sprite = x.IdleFrame;
-						__instance.UpdateSpriteMaterialColor(colorChip, x, color);
-					})));
+                    __instance.StartCoroutine(visor.CoLoadViewData(new Action<VisorViewData>(x =>
+                    {
+                        colorChip.Inner.FrontLayer.sprite = x.IdleFrame;
+                        __instance.UpdateSpriteMaterialColor(colorChip, x, color);
+                    })));
                     __instance.ColorChips.Add(colorChip);
                 }
 

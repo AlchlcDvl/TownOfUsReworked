@@ -17,7 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             StartText = "Delay A Kill To Decieve The <color=#8CFFFFFF>Crew</color>";
             AbilitiesText = $"- You can poison players\n- Poisoned players will die after {CustomGameOptions.PoisonDuration}s\n- With the Chaos Drive, you can poison players from anywhere"
                 + $"occur concurrently\n{AbilitiesText}";
-            Color = CustomGameOptions.CustomIntColors? Colors.Poisoner : Colors.Syndicate;
+            Color = CustomGameOptions.CustomSynColors? Colors.Poisoner : Colors.Syndicate;
             RoleType = RoleEnum.Poisoner;
             PoisonedPlayer = null;
             RoleAlignment = RoleAlignment.SyndicateKill;
