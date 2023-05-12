@@ -34,6 +34,7 @@
                 {
                     GameStarted = true;
                     var Spawn = __instance.Locations.ToArray();
+                    SpawnPoints.Clear();
 
                     if (AmongUsClient.Instance.AmHost)
                     {
