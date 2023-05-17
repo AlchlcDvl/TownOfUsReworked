@@ -125,6 +125,7 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 | Among Us | Mod Version | Link |
 |--------------------|-------------|------|
+| 2023.3.28 (s & e) | v0.2.4 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.2.4/TownOfUsReworked.zip) |
 | 2023.3.28 (s & e) | v0.2.3 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.2.3/TownOfUsReworked.zip) |
 | 2023.3.28 (s & e) | v0.2.2 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.2.2/TownOfUsReworked.zip) |
 | 2023.3.28 (s & e) | v0.2.1 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.2.1/TownOfUsReworked.zip) |
