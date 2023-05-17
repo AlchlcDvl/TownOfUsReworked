@@ -1,5 +1,6 @@
-##### ***Note: This repo is a fork of [Town of Us Reactivated](https://github.com/eDonnes124/Town-Of-Us-R) and is currently under development.***
-##### ***Also Note: This mod is NOT for mobile and console versions, do not ask for a port.***
+
+<p align="center"***Note: This repo is a fork of [Town of Us Reactivated](https://github.com/eDonnes124/Town-Of-Us-R) and is currently under development.***</p>
+<p align="center">***Also Note: This mod is NOT for mobile and console versions, do not ask for a port.***</p>
 
 -----------------------
 
@@ -2073,7 +2074,7 @@ The Corrupted is a Crewmate with the alignment of a Neutral Killer. On top of th
 
 ## Defector
 ### Applied To: Intruders and Syndicate
-### Win Condition: 
+### Win Condition: Be the last one of thier faction to switch sides
 
 A Defector switches sides when they happen to be the last player alive in their original faction.
 
