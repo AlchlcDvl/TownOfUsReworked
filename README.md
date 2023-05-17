@@ -32,7 +32,7 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 [**Uninstallation**](#uninstallation)
 
-[**Differences**](#difference)
+[**Differences**](#differences)
 
 [**Player Layers**](#player-layers)
 
@@ -804,10 +804,11 @@ In this mod, we have :-
 - New Layer called Objectifiers
 - New Faction: Syndicate
 - New Mechanic: Subfactions where your alignment now belongs that that subfaction while wielding the role from your proper faction
+- New Mechanic: Your final allegience at the end of the game is no longer guaranteed to stay the same at the start of the game
 - A lot of new features
 - Reworks for existing layers
 - A lot of improvements and qol changes
-- Vanilla settings were integrated into the mod along with aa lot more customisation
+- Vanilla settings were integrated into the mod along with a lot more customisation
 - Improved win conditions so games actually end the way they are supposed to without being unfair
 - Brought back old and forgotten features from older versions
 - Internal code changes so that it works smoothly/looks nicer
