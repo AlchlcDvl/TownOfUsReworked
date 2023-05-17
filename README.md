@@ -1,5 +1,5 @@
 
-<p align="center"***Note: This repo is a fork of [Town of Us Reactivated](https://github.com/eDonnes124/Town-Of-Us-R) and is currently under development.***</p>
+<p align="center">***Note: This repo is a fork of [Town of Us Reactivated](https://github.com/eDonnes124/Town-Of-Us-R) and is currently under development.***</p>
 <p align="center">***Also Note: This mod is NOT for mobile and console versions, do not ask for a port.***</p>
 
 -----------------------
