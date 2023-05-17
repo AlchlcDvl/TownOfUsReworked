@@ -14,7 +14,7 @@ namespace TownOfUsReworked.Patches
                 RoleGen.ResetEverything();
                 previousMap = TownOfUsReworked.VanillaOptions.MapId;
                 vision = CustomGameOptions.CrewVision;
-                byte[] maps = { 0, 1, 2, 4, 5 };
+                byte[] maps = { 0, 1, 2, 4, 5, 6 };
                 var map = maps[(int)CustomGameOptions.Map];
                 byte[] tbMode = { 1, 0, 2 };
 

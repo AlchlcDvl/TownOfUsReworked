@@ -29,7 +29,6 @@
                 " kill you";
             Objectives = "- Neutralise anyone who can oppose you";
             RoleAlignment = RoleAlignment.NeutralKill;
-            AlignmentName = NK;
             MimicMenu = new(Player, Click, Exception3);
             RoleBlockImmune = true;
             Type = LayerEnum.Glitch;

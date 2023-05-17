@@ -21,7 +21,6 @@
             BuggedPlayers = new();
             UsesLeft = CustomGameOptions.MaxBugs;
             RoleAlignment = RoleAlignment.CrewInvest;
-            AlignmentName = CI;
             Bugs = new();
             InspectorResults = InspectorResults.DropsItems;
             PlayerNumbers = new();

@@ -18,7 +18,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 "- If you attempt to block a <color=#336EFFFF>Serial Killer</color>, they will be forced to kill you";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Escort : Colors.Crew;
             RoleAlignment = RoleAlignment.CrewSupport;
-            AlignmentName = CS;
             RoleBlockImmune = true;
             InspectorResults = InspectorResults.HindersOthers;
             Type = LayerEnum.Escort;

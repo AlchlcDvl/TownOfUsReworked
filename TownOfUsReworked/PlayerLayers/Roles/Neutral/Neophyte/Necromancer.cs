@@ -28,7 +28,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = CustomGameOptions.CustomNeutColors ? Colors.Necromancer : Colors.Neutral;
             RoleType = RoleEnum.Necromancer;
             RoleAlignment = RoleAlignment.NeutralNeo;
-            AlignmentName = NN;
             Objectives = "- Resurrect the dead into helping you gain control of the crew";
             SubFaction = SubFaction.Reanimated;
             SubFactionColor = Colors.Reanimated;

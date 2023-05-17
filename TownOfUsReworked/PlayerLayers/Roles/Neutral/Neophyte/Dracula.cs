@@ -18,7 +18,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Objectives = "- Convert or kill anyone who can oppose the <color=#7B8968FF>Undead</color>";
             SubFaction = SubFaction.Undead;
             RoleAlignment = RoleAlignment.NeutralNeo;
-            AlignmentName = NN;
             SubFactionColor = Colors.Undead;
             Converted = new() { Player.PlayerId };
             Type = LayerEnum.Dracula;

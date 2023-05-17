@@ -16,7 +16,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AbilitiesText = $"- You can mark a spot to teleport to later\n{AbilitiesText}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Teleporter : Colors.Intruder;
             RoleType = RoleEnum.Teleporter;
-            AlignmentName = IS;
             Type = LayerEnum.Teleporter;
             TeleportPoint = new(0, 0, 0);
             MarkButton = new(this, "Mark", AbilityTypes.Effect, "Secondary", Mark);

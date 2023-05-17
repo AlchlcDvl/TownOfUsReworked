@@ -7,7 +7,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         public Rivals(PlayerControl player) : base(player)
         {
             Name = "Rival";
-            SymbolName = "α";
+            Symbol = "α";
             TaskText = "- Get your rival killed and then live to the final 2.";
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Rivals : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Rivals;

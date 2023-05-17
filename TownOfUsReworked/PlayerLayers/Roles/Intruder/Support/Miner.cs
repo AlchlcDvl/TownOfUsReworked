@@ -14,7 +14,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = CustomGameOptions.CustomIntColors ? Colors.Miner : Colors.Intruder;
             RoleType = RoleEnum.Miner;
             RoleAlignment = RoleAlignment.IntruderSupport;
-            AlignmentName = IS;
             Type = LayerEnum.Miner;
             MineButton = new(this, "Mine", AbilityTypes.Effect, "Secondary", Mine);
             InspectorResults = InspectorResults.NewLens;

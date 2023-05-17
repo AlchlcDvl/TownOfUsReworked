@@ -36,11 +36,11 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             var renderer = targetBox.GetComponent<SpriteRenderer>();
             renderer.sprite = AssetManager.GetSprite("SwapDisabled");
             var button = targetBox.GetComponent<PassiveButton>();
-            button.OnClick.RemoveAllListeners();
+            button.OnClick = new();
             button.OnClick.AddListener(SetActive(voteArea, __instance));
-            button.OnMouseOut.RemoveAllListeners();
+            button.OnMouseOut = new();
             button.OnMouseOut.AddListener((Action)(() => renderer.color = Actives[voteArea.TargetPlayerId] ? UnityEngine.Color.green : UnityEngine.Color.white));
-            button.OnMouseOver.RemoveAllListeners();
+            button.OnMouseOver = new();
             button.OnMouseOver.AddListener((Action)(() => renderer.color = UnityEngine.Color.red));
             var collider = targetBox.GetComponent<BoxCollider2D>();
             collider.size = renderer.sprite.bounds.size;
@@ -161,9 +161,9 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
                 return;
 
             button.SetActive(false);
-            button.GetComponent<PassiveButton>().OnClick.RemoveAllListeners();
-            button.GetComponent<PassiveButton>().OnMouseOver.RemoveAllListeners();
-            button.GetComponent<PassiveButton>().OnMouseOut.RemoveAllListeners();
+            button.GetComponent<PassiveButton>().OnClick = new();
+            button.GetComponent<PassiveButton>().OnMouseOver = new();
+            button.GetComponent<PassiveButton>().OnMouseOut = new();
             button.Destroy();
             MoarButtons[targetId] = null;
         }

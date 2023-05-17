@@ -48,11 +48,7 @@ namespace TownOfUsReworked.Patches
                 HudManager.Instance.AbilityButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsImpostor());
             else
             {
-                var ghostRole = false;
-
-                if (PlayerControl.LocalPlayer.IsPostmortal())
-                    ghostRole = !PlayerControl.LocalPlayer.Caught();
-
+                var ghostRole = PlayerControl.LocalPlayer.IsPostmortal() && !PlayerControl.LocalPlayer.Caught();
                 HudManager.Instance.AbilityButton.gameObject.SetActive(!ghostRole && !MeetingHud.Instance && PlayerControl.LocalPlayer.Data.IsDead);
             }
         }
@@ -63,7 +59,7 @@ namespace TownOfUsReworked.Patches
     {
         public static bool Prefix(HauntMenuMinigame __instance)
         {
-            if (!ConstantVariables.IsNormal)
+            if (!ConstantVariables.IsNormal || Role.LocalRole.Zooming)
                 return true;
 
             __instance.FilterButtons[0].gameObject.SetActive(true);
@@ -81,18 +77,6 @@ namespace TownOfUsReworked.Patches
             }
 
             return false;
-        }
-    }
-
-    [HarmonyPatch(typeof(HauntMenuMinigame), nameof(HauntMenuMinigame.FixedUpdate))]
-    public static class CloseHauntPatch
-    {
-        public static void Prefix(HauntMenuMinigame __instance)
-        {
-            if (__instance.amClosing == Minigame.CloseState.Closing)
-                __instance.amClosing = Minigame.CloseState.None;
-            else if (__instance.amClosing == Minigame.CloseState.None)
-                __instance.amClosing = Minigame.CloseState.Closing;
         }
     }
 }

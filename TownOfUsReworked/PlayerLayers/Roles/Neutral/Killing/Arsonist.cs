@@ -20,7 +20,6 @@
             Objectives = "- Burn anyone who can oppose you";
             RoleType = RoleEnum.Arsonist;
             RoleAlignment = RoleAlignment.NeutralKill;
-            AlignmentName = NK;
             Color = CustomGameOptions.CustomNeutColors ? Colors.Arsonist : Colors.Neutral;
             Doused = new();
             Type = LayerEnum.Arsonist;
@@ -74,7 +73,7 @@
                     writer.Write(arso.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
 
-                    foreach (var body in UObject.FindObjectsOfType<DeadBody>())
+                    foreach (var body in Utils.AllBodies)
                     {
                         if (arso.Doused.Contains(body.ParentId) && Utils.PlayerById(body.ParentId).Data.IsDead)
                         {

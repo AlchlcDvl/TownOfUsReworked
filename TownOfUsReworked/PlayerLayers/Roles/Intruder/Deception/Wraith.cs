@@ -16,7 +16,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = CustomGameOptions.CustomIntColors ? Colors.Wraith : Colors.Intruder;
             RoleType = RoleEnum.Wraith;
             RoleAlignment = RoleAlignment.IntruderDecep;
-            AlignmentName = ID;
             Type = LayerEnum.Wraith;
             InvisButton = new(this, "Invis", AbilityTypes.Effect, "Secondary", HitInvis);
             InspectorResults = InspectorResults.Unseen;

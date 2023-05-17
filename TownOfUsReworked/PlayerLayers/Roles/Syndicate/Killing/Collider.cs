@@ -16,7 +16,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             StartText = "FUUUUUUUUUUUUUUUUUUUUUUUUUUSION!";
             Color = CustomGameOptions.CustomSynColors ? Colors.Collider : Colors.Syndicate;
             RoleAlignment = RoleAlignment.SyndicateKill;
-            AlignmentName = SyK;
             Type = LayerEnum.Collider;
             InspectorResults = InspectorResults.MovesAround;
             Positive = null;

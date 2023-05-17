@@ -8,7 +8,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleType = RoleEnum.Anarchist;
             StartText = "Wreck Everyone With A Passion";
             RoleAlignment = RoleAlignment.SyndicateUtil;
-            AlignmentName = SU;
             Base = true;
             Type = LayerEnum.Anarchist;
             InspectorResults = InspectorResults.IsBasic;

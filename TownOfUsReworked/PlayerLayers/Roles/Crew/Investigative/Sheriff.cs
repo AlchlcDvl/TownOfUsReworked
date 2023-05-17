@@ -13,7 +13,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = CustomGameOptions.CustomCrewColors ? Colors.Sheriff : Colors.Crew;
             RoleType = RoleEnum.Sheriff;
             RoleAlignment = RoleAlignment.CrewKill;
-            AlignmentName = CI;
             InspectorResults = InspectorResults.GainsInfo;
             Type = LayerEnum.Sheriff;
             InterrogateButton = new(this, "Interrogate", AbilityTypes.Direct, "ActionSecondary", Interrogate, Exception);

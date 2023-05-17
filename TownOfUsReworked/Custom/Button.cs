@@ -16,6 +16,7 @@ namespace TownOfUsReworked.Custom
         public PlayerControl TargetPlayer;
         public DeadBody TargetBody;
         public Vent TargetVent;
+        public Special TargetSpecial;
         public Exclude Exception;
         public delegate void Click();
         public delegate bool Exclude(PlayerControl player);
@@ -36,9 +37,7 @@ namespace TownOfUsReworked.Custom
             Exception = exception ?? BlankBool;
             Base = InstantiateButton();
             Base.graphic.sprite = Button;
-            var component = Base.GetComponent<PassiveButton>();
-            component.OnClick.RemoveAllListeners();
-            component.OnClick.AddListener(new Action(Clicked));
+            Base.GetComponent<PassiveButton>().OnClick.AddListener(new Action(Clicked));
             Disable();
             AllButtons.Add(this);
         }
@@ -55,6 +54,7 @@ namespace TownOfUsReworked.Custom
             button.usesRemainingText.enabled = true;
             button.usesRemainingSprite.enabled = true;
             button.commsDown?.SetActive(false);
+            button.GetComponent<PassiveButton>().OnClick = new();
             return button;
         }
 
@@ -102,7 +102,7 @@ namespace TownOfUsReworked.Custom
         {
             if ((Owner.IsDead && !PostDeath) || !usable)
             {
-                foreach (var body in UObject.FindObjectsOfType<DeadBody>())
+                foreach (var body in Utils.AllBodies)
                 {
                     foreach (var oldComponent in body?.bodyRenderers)
                         oldComponent?.material.SetFloat("_Outline", 0f);
@@ -137,7 +137,8 @@ namespace TownOfUsReworked.Custom
 
         public void Update(string label, float timer, float maxTimer, int uses, bool effectActive, float effectTimer, float maxDuration, bool condition = true, bool usable = true)
         {
-            if (Owner.Player != PlayerControl.LocalPlayer || (HasUses && uses <= 0) || MeetingHud.Instance || ConstantVariables.Inactive || !usable || (!PostDeath && Owner.IsDead))
+            if (Owner.Player != PlayerControl.LocalPlayer || ConstantVariables.IsLobby || (HasUses && uses <= 0) || MeetingHud.Instance || ConstantVariables.Inactive || !usable ||
+                (!PostDeath && Owner.IsDead))
             {
                 Disable();
                 return;
@@ -154,8 +155,9 @@ namespace TownOfUsReworked.Custom
             Base.buttonLabelText.text = Owner.IsBlocked ? "BLOCKED" : label;
             Base.commsDown?.gameObject?.SetActive(false);
             Base.buttonLabelText.SetOutlineColor(Owner.Color);
-            Clickable = Base != null && !effectActive && usable && condition && Base.ButtonUsable() && !(HasUses && uses <= 0) && !MeetingHud.Instance && !Owner.IsBlocked;
             Base.gameObject.SetActive(PostDeath ? SetDeadActive : SetAliveActive);
+            Clickable = Base != null && !effectActive && usable && condition && Base.ButtonUsable() && !(HasUses && uses <= 0) && !MeetingHud.Instance && !Owner.IsBlocked &&
+                Owner.Player.CanMove;
 
             if (effectActive)
                 Base.SetFillUp(effectTimer, maxDuration);
@@ -171,7 +173,9 @@ namespace TownOfUsReworked.Custom
                 Clicked();
         }
 
-        public void Update(string label, float timer, float maxTimer, bool condition = true, bool usable = true) => Update(label, timer, maxTimer, 0, false, 0, 1, condition, usable);
+        public void Update(string label, bool condition = true, bool usable = true) => Update(label, 0, 1, condition, usable);
+
+        public void Update(string label, float timer, float maxTimer, bool condition = true, bool usable = true) => Update(label, timer, maxTimer, 0, condition, usable);
 
         public void Update(string label, float timer, float maxTimer, int uses, bool condition = true, bool usable = true) => Update(label, timer, maxTimer, uses, false, 0, 1, condition,
             usable);
@@ -197,6 +201,14 @@ namespace TownOfUsReworked.Custom
             Base?.gameObject?.Destroy();
             Base.Destroy();
             Base = null;
+        }
+
+        public static void DisableAll() => AllButtons.ForEach(x => x.Disable());
+
+        public static void DestroyAll()
+        {
+            AllButtons.ForEach(x => x.Destroy());
+            AllButtons.Clear();
         }
     }
 }

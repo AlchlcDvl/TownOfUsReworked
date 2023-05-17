@@ -349,6 +349,9 @@
 
                 if (CustomGameOptions.MafiaOn > 0)
                     ColorMapping.Add("Mafia", Colors.Mafia);
+
+                if (CustomGameOptions.DefectorOn > 0)
+                    ColorMapping.Add("Defector", Colors.Defector);
             }
 
             //Add Abilities if enabled
@@ -441,12 +444,12 @@
                 label.transform.localScale *= 1.7f;
                 label.text = Sorted[k].Key;
                 label.color = Sorted[k].Value;
-                button.GetComponent<PassiveButton>().OnMouseOver.RemoveAllListeners();
+                button.GetComponent<PassiveButton>().OnMouseOver = new();
                 button.GetComponent<PassiveButton>().OnMouseOver.AddListener((Action)(() => button.GetComponent<SpriteRenderer>().color = UnityEngine.Color.green));
-                button.GetComponent<PassiveButton>().OnMouseOut.RemoveAllListeners();
+                button.GetComponent<PassiveButton>().OnMouseOut = new();
                 button.GetComponent<PassiveButton>().OnMouseOut.AddListener((Action)(() => button.GetComponent<SpriteRenderer>().color = SelectedButton == button ? UnityEngine.Color.red :
                     UnityEngine.Color.white));
-                button.GetComponent<PassiveButton>().OnClick.RemoveAllListeners();
+                button.GetComponent<PassiveButton>().OnClick = new();
                 button.GetComponent<PassiveButton>().OnClick.AddListener((Action)(() =>
                 {
                     if (IsDead)
@@ -566,8 +569,9 @@
         private bool IsExempt(PlayerVoteArea voteArea)
         {
             var player = Utils.PlayerByVoteArea(voteArea);
-            return player.Data.IsDead || player.Data.Disconnected || voteArea.NameText.text.Contains('\n') || (player == Player && player == PlayerControl.LocalPlayer) || player ==
-                Player.GetOtherLover() || player == Player.GetOtherRival() || RemainingKills <= 0 || IsDead || voteArea.NameText.color != UnityEngine.Color.white;
+            return player.Data.IsDead || player.Data.Disconnected || (voteArea.NameText.text.Contains('\n') && Player.GetFaction() != player.GetFaction()) || (player == Player &&
+                player == PlayerControl.LocalPlayer) || Player.GetFaction() == player.GetFaction() || player == Player.GetOtherLover() || player == Player.GetOtherRival() ||
+                RemainingKills <= 0 || IsDead;
         }
 
         public void GenButton(PlayerVoteArea voteArea, MeetingHud __instance)
@@ -578,18 +582,17 @@
                 return;
             }
 
-            var template = voteArea.Buttons.transform.Find("CancelButton").gameObject;
-            var targetBox = UObject.Instantiate(template, voteArea.transform);
+            var targetBox = UObject.Instantiate(voteArea.Buttons.transform.Find("CancelButton").gameObject, voteArea.transform);
             targetBox.name = "GuessButton";
             targetBox.transform.localPosition = new(-0.95f, 0.03f, -1.3f);
             var renderer = targetBox.GetComponent<SpriteRenderer>();
             renderer.sprite = AssetManager.GetSprite("Guess");
             var button = targetBox.GetComponent<PassiveButton>();
-            button.OnClick.RemoveAllListeners();
+            button.OnClick = new();
             button.OnClick.AddListener((Action)(() => Guess(voteArea, __instance)));
-            button.OnMouseOut.RemoveAllListeners();
+            button.OnMouseOut = new();
             button.OnMouseOut.AddListener((Action)(() => renderer.color = UnityEngine.Color.white));
-            button.OnMouseOver.RemoveAllListeners();
+            button.OnMouseOver = new();
             button.OnMouseOver.AddListener((Action)(() => renderer.color = UnityEngine.Color.red));
             var collider = targetBox.GetComponent<BoxCollider2D>();
             collider.size = renderer.sprite.bounds.size;
@@ -608,22 +611,17 @@
             __instance.TimerText.gameObject.SetActive(false);
             HudManager.Instance.Chat.SetVisible(false);
             Page = 0;
-            var PhoneUI = UObject.FindObjectsOfType<Transform>().FirstOrDefault(x => x.name == "PhoneUI");
-            var container = UObject.Instantiate(PhoneUI, __instance.transform);
+            var container = UObject.Instantiate(UObject.FindObjectsOfType<Transform>().FirstOrDefault(x => x.name == "PhoneUI"), __instance.transform);
             container.transform.localPosition = new(0, 0, -5f);
             Phone = container.gameObject;
             var buttonTemplate = voteArea.transform.FindChild("votePlayerBase");
-            var maskTemplate = voteArea.transform.FindChild("MaskArea");
             var smallButtonTemplate = voteArea.Buttons.transform.Find("CancelButton");
-            var textTemplate = voteArea.NameText;
             var exitButtonParent = new GameObject("CustomExitButton").transform;
             exitButtonParent.SetParent(container);
             var exitButton = UObject.Instantiate(buttonTemplate.transform, exitButtonParent);
-            var exitButtonMask = UObject.Instantiate(maskTemplate, exitButtonParent);
             exitButton.gameObject.GetComponent<SpriteRenderer>().sprite = smallButtonTemplate.GetComponent<SpriteRenderer>().sprite;
             exitButtonParent.transform.localPosition = new(2.725f, 2.1f, -5);
-            exitButtonParent.transform.localScale = new(0.217f, 0.9f, 1);
-            exitButton.GetComponent<PassiveButton>().OnClick.RemoveAllListeners();
+            exitButton.GetComponent<PassiveButton>().OnClick = new();
             exitButton.GetComponent<PassiveButton>().OnClick.AddListener((Action)(() => Exit(__instance)));
             SetButtons(__instance, voteArea);
         }
@@ -640,11 +638,12 @@
             {
                 foreach (var item in pair.Value)
                 {
-                    item?.GetComponent<PassiveButton>().OnClick.RemoveAllListeners();
-                    item?.GetComponent<PassiveButton>().OnMouseOut.RemoveAllListeners();
-                    item?.GetComponent<PassiveButton>().OnMouseOver.RemoveAllListeners();
-                    item?.gameObject?.SetActive(false);
-                    item?.gameObject?.Destroy();
+                    item.GetComponent<PassiveButton>().OnClick = new();
+                    item.GetComponent<PassiveButton>().OnMouseOut = new();
+                    item.GetComponent<PassiveButton>().OnMouseOver = new();
+                    item.gameObject.SetActive(false);
+                    item.gameObject.Destroy();
+                    item.Destroy();
                 }
             }
 
@@ -665,7 +664,7 @@
                 return;
 
             button.SetActive(false);
-            button.GetComponent<PassiveButton>().OnClick.RemoveAllListeners();
+            button.GetComponent<PassiveButton>().OnClick = new();
             button.Destroy();
             OtherButtons[targetId] = null;
         }
@@ -964,7 +963,7 @@
                 if (SetPostmortals.RevealerOn && SetPostmortals.WillBeRevealer == null && player.Is(Faction.Crew))
                 {
                     SetPostmortals.WillBeRevealer = player;
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetRevealer, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetRevealer, SendOption.Reliable);
                     writer.Write(player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
@@ -972,7 +971,7 @@
                 if (SetPostmortals.PhantomOn && SetPostmortals.WillBePhantom == null && player.Is(Faction.Neutral) && !LayerExtentions.NeutralHasUnfinishedBusiness(player))
                 {
                     SetPostmortals.WillBePhantom = player;
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPhantom, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPhantom, SendOption.Reliable);
                     writer.Write(player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
@@ -980,7 +979,7 @@
                 if (SetPostmortals.BansheeOn && SetPostmortals.WillBeBanshee == null && player.Is(Faction.Syndicate))
                 {
                     SetPostmortals.WillBeBanshee = player;
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetBanshee, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetBanshee, SendOption.Reliable);
                     writer.Write(player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
@@ -988,7 +987,7 @@
                 if (SetPostmortals.GhoulOn && SetPostmortals.WillBeGhoul == null && player.Is(Faction.Intruder))
                 {
                     SetPostmortals.WillBeGhoul = player;
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetGhoul, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetGhoul, SendOption.Reliable);
                     writer.Write(player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }

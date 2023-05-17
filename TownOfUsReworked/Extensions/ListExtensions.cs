@@ -29,17 +29,6 @@ namespace TownOfUsReworked.Extensions
             return item;
         }
 
-        public static void Replace<T>(this List<T> list, T item1, T item2)
-        {
-            var item = list.Find(x => x.GetType() == item1.GetType());
-
-            if (item == null)
-                return;
-
-            var index = list.IndexOf(item1);
-            list[index] = item2;
-        }
-
         public static void RemoveRange<T>(this List<T> list, List<T> list2)
         {
             foreach (var item in list2)

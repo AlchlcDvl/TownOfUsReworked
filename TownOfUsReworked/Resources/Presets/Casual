@@ -1416,7 +1416,7 @@ Min <color=#7F7F7FFF>Modifiers</color>
 1
 <color=#00B3B3FF>Bait</color> Is Unique In All Any
 False
-<color=#00B3B3FF>Bait</color> Knows Who They Are On Game Start
+<color=#00B3B3FF>Bait</color> Knows Who They Are
 True
 Minimum Delay for <color=#00B3B3FF>Bait</color> Self Report
 0
@@ -1430,7 +1430,7 @@ False
 1
 <color=#374D1EFF>Diseased</color> Is Unique In All Any
 False
-<color=#374D1EFF>Diseased</color> Knows Who They Are On Game Start
+<color=#374D1EFF>Diseased</color> Knows Who They Are
 True
 <color=#374D1EFF>Diseased</color> Kill Multiplier
 3
@@ -1468,13 +1468,13 @@ False
 1
 <color=#2DE5BEFF>Indomitable</color> Is Unique In All Any
 False
-<color=#2DE5BEFF>Indomitable</color> Knows Who They Are On Game Start
+<color=#2DE5BEFF>Indomitable</color> Knows Who They Are
 True
 <color=#860B7AFF>Professional</color> Count
 1
 <color=#860B7AFF>Professional</color> Is Unique In All Any
 False
-<color=#860B7AFF>Professional</color> Knows Who They Are On Game Start
+<color=#860B7AFF>Professional</color> Knows Who They Are
 True
 <color=#1002C5FF>Shy</color> Count
 1
@@ -1484,7 +1484,7 @@ False
 1
 <color=#DCEE85FF>VIP</color> Is Unique In All Any
 False
-<color=#DCEE85FF>VIP</color> Knows Who They Are On Game Start
+<color=#DCEE85FF>VIP</color> Knows Who They Are
 True
 <color=#FFA60AFF>Volatile</color> Count
 1
@@ -1492,7 +1492,7 @@ True
 False
 <color=#FFA60AFF>Volatile</color> Interval
 15
-<color=#FFA60AFF>Volatile</color> Knows Who They Are On Game Start
+<color=#FFA60AFF>Volatile</color> Knows Who They Are
 True
 Enable Custom <color=#FF9900FF>Ability</color> Colors
 True
@@ -1538,7 +1538,7 @@ False
 1
 <color=#26FCFBFF>Insider</color> Is Unique In All Any
 False
-<color=#26FCFBFF>Insider</color> Knows Who They Are On Game Start
+<color=#26FCFBFF>Insider</color> Knows Who They Are
 True
 <color=#FF804DFF>Multitasker</color> Count
 1
@@ -1558,13 +1558,13 @@ False
 1
 <color=#2160DDFF>Ruthless</color> Is Unique In All Any
 False
-<color=#2160DDFF>Ruthless</color> Knows Who They Are On Game Start
+<color=#2160DDFF>Ruthless</color> Knows Who They Are
 True
 <color=#D4AF37FF>Snitch</color> Count
 1
 <color=#D4AF37FF>Snitch</color> Is Unique In All Any
 False
-<color=#D4AF37FF>Snitch</color> Knows Who They Are On Game Start
+<color=#D4AF37FF>Snitch</color> Knows Who They Are
 True
 <color=#D4AF37FF>Snitch</color> Sees <color=#B3B3B3FF>Neutrals</color>
 False
@@ -1580,7 +1580,7 @@ True
 1
 <color=#99E699FF>Tiebreaker</color> Is Unique In All Any
 False
-<color=#99E699FF>Tiebreaker</color> Knows Who They Are On Game Start
+<color=#99E699FF>Tiebreaker</color> Knows Who They Are
 True
 <color=#FFFF99FF>Torch</color> Count
 1
@@ -1590,13 +1590,13 @@ False
 1
 <color=#E91E63FF>Tunneler</color> Is Unique In All Any
 False
-<color=#E91E63FF>Tunneler</color> Knows Who They Are On Game Start
+<color=#E91E63FF>Tunneler</color> Knows Who They Are
 True
 <color=#841A7FFF>Underdog</color> Count
 1
 <color=#841A7FFF>Underdog</color> Is Unique In All Any
 False
-<color=#841A7FFF>Underdog</color> Knows Who They Are On Game Start
+<color=#841A7FFF>Underdog</color> Knows Who They Are
 True
 Kill Cooldown Bonus
 5
@@ -1626,7 +1626,7 @@ False
 1
 <color=#678D36FF>Fanatic</color> Is Unique In All Any
 False
-<color=#678D36FF>Fanatic</color> Knows Who They Are On Game Start
+<color=#678D36FF>Fanatic</color> Knows Who They Are
 True
 Turned <color=#678D36FF>Fanatic</color> Swaps Colours For Investigative <color=#FFD700FF>Roles</color>
 False
@@ -1650,7 +1650,7 @@ True
 1
 <color=#008080FF>Overlord</color> Is Unique In All Any
 False
-<color=#008080FF>Overlord</color> Knows Who They Are On Game Start
+<color=#008080FF>Overlord</color> Knows Who They Are
 True
 <color=#008080FF>Overlord</color> Meeting Timer
 2
@@ -1674,7 +1674,7 @@ Tasks Remaining When Revealed
 1
 <color=#370D43FF>Traitor</color> Is Unique In All Any
 False
-<color=#370D43FF>Traitor</color> Knows Who They Are On Game Start
+<color=#370D43FF>Traitor</color> Knows Who They Are
 False
 <color=#D4AF37FF>Snitch</color> Sees Turned <color=#370D43FF>Traitor</color>
 True

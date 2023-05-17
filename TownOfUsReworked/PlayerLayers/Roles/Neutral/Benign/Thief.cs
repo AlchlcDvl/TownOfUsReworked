@@ -13,7 +13,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = CustomGameOptions.CustomNeutColors ? Colors.Thief : Colors.Neutral;
             RoleType = RoleEnum.Thief;
             RoleAlignment = RoleAlignment.NeutralBen;
-            AlignmentName = NB;
             Type = LayerEnum.Thief;
             StealButton = new(this, "Steal", AbilityTypes.Direct, "ActionSecondary", Steal);
             InspectorResults = InspectorResults.BringsChaos;

@@ -16,7 +16,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = CustomGameOptions.CustomSynColors ? Colors.Bomber : Colors.Syndicate;
             RoleType = RoleEnum.Bomber;
             RoleAlignment = RoleAlignment.SyndicateKill;
-            AlignmentName = SyK;
             Bombs = new();
             Type = LayerEnum.Bomber;
             BombButton = new(this, "Plant", AbilityTypes.Effect, "ActionSecondary", Place);

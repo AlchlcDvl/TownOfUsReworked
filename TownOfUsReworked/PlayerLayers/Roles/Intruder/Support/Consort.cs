@@ -19,7 +19,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 $"- If you block a <color=#336EFFFF>Serial Killer</color>, they will be forced to kill you\n{AbilitiesText}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Consort : Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderSupport;
-            AlignmentName = IS;
             RoleBlockImmune = true;
             BlockMenu = new(Player, Click, Exception1);
             Type = LayerEnum.Consort;

@@ -13,7 +13,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 "their body" : "");
             RoleType = RoleEnum.Amnesiac;
             RoleAlignment = RoleAlignment.NeutralBen;
-            AlignmentName = NB;
             Color = CustomGameOptions.CustomNeutColors ? Colors.Amnesiac : Colors.Neutral;
             Objectives = "- Find a dead body, remember their role and then fulfill the win condition for that role\n- If there are less than 7 players alive, you will become a " +
                 "<color=#80FF00FF>Thief</color>";
@@ -282,11 +281,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            RememberButton.Update("REMEMBER", 0, 1);
+            RememberButton.Update("REMEMBER");
 
             if (CustomGameOptions.RememberArrows && !PlayerControl.LocalPlayer.Data.IsDead)
             {
-                var validBodies = UObject.FindObjectsOfType<DeadBody>().Where(x => Murder.KilledPlayers.Any(y => y.PlayerId == x.ParentId &&
+                var validBodies = Utils.AllBodies.Where(x => Murder.KilledPlayers.Any(y => y.PlayerId == x.ParentId &&
                     y.KillTime.AddSeconds(CustomGameOptions.RememberArrowDelay) < System.DateTime.UtcNow));
 
                 foreach (var bodyArrow in BodyArrows.Keys)

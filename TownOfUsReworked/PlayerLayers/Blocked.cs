@@ -41,14 +41,15 @@ namespace TownOfUsReworked.PlayerLayers
             if (ConstantVariables.Inactive)
                 return true;
 
-            if (__instance.isActiveAndEnabled && PlayerControl.LocalPlayer && Tasks.NearestTask != null && Tasks.AllCustomPlateform != null &&
-                PlayerLayer.LocalLayers.All(x => !x.IsBlocked))
+            var notBlocked = PlayerLayer.LocalLayers.All(x => !x.IsBlocked);
+
+            if (__instance.isActiveAndEnabled && PlayerControl.LocalPlayer && Tasks.NearestTask != null && Tasks.AllCustomPlateform != null && notBlocked)
             {
                 Tasks.NearestTask.Use();
                 return false;
             }
 
-            return PlayerLayer.LocalLayers.All(x => !x.IsBlocked);
+            return notBlocked;
         }
     }
 

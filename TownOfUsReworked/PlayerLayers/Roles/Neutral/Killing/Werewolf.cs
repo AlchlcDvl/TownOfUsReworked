@@ -15,7 +15,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = CustomGameOptions.CustomNeutColors ? Colors.Werewolf : Colors.Neutral;
             RoleType = RoleEnum.Werewolf;
             RoleAlignment = RoleAlignment.NeutralKill;
-            AlignmentName = NK;
             Type = LayerEnum.Werewolf;
             MaulButton = new(this, "Maul", AbilityTypes.Direct, "ActionSecondary", HitMaul, Exception);
             InspectorResults = InspectorResults.IsAggressive;

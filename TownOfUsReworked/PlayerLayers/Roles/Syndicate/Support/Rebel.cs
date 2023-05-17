@@ -16,7 +16,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 $"abilities of their former role\n{AbilitiesText}";
             Color = CustomGameOptions.CustomSynColors ? Colors.Rebel : Colors.Syndicate;
             RoleAlignment = RoleAlignment.SyndicateSupport;
-            AlignmentName = SSu;
             Type = LayerEnum.Rebel;
             SidekickButton = new(this, "Sidekick", AbilityTypes.Direct, "Secondary", Sidekick);
             InspectorResults = InspectorResults.LeadsTheGroup;
@@ -71,7 +70,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            SidekickButton.Update("SIDEKICK", 0, 1, true, !HasDeclared);
+            SidekickButton.Update("SIDEKICK", true, !HasDeclared);
         }
     }
 }

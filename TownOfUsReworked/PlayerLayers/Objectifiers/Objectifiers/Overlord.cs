@@ -7,7 +7,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         public Overlord(PlayerControl player) : base(player)
         {
             Name = "Overlord";
-            SymbolName = "β";
+            Symbol = "β";
             TaskText = $"- Stay alive for {CustomGameOptions.OverlordMeetingWinCount} meetings";
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Overlord : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Overlord;

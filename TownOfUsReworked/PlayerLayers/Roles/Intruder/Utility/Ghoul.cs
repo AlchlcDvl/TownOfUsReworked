@@ -16,7 +16,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AbilitiesText = "- You can mark a player for death every round\n- Marked players will be announced to all players and will die at the end of the next meeting if you are not" +
                 " clicked";
             RoleAlignment = RoleAlignment.IntruderUtil;
-            AlignmentName = IU;
             InspectorResults = InspectorResults.Ghostly;
             Color = CustomGameOptions.CustomIntColors ? Colors.Ghoul : Colors.Intruder;
             MarkedPlayer = null;

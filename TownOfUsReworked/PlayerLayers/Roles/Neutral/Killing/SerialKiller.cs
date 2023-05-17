@@ -21,7 +21,6 @@
             Color = CustomGameOptions.CustomNeutColors ? Colors.SerialKiller : Colors.Neutral;
             RoleType = RoleEnum.SerialKiller;
             RoleAlignment = RoleAlignment.NeutralKill;
-            AlignmentName = NK;
             RoleBlockImmune = true;
             Type = LayerEnum.SerialKiller;
             StabButton = new(this, "Stab", AbilityTypes.Direct, "ActionSecondary", Stab, Exception);

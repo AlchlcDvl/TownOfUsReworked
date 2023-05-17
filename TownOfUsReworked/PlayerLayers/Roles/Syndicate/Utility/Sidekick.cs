@@ -14,7 +14,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AbilitiesText = "- When the <color=#FFFCCEFF>Rebel</color> dies, you will become the new <color=#FFFCCEFF>Rebel</color> with boosted abilities of your former ";
             Color = CustomGameOptions.CustomSynColors ? Colors.Sidekick : Colors.Syndicate;
             RoleAlignment = RoleAlignment.SyndicateUtil;
-            AlignmentName = SU;
             Type = LayerEnum.Sidekick;
             InspectorResults = InspectorResults.IsCold;
         }
@@ -25,8 +24,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 FormerRole = FormerRole,
                 RoleBlockImmune = FormerRole.RoleBlockImmune,
-                RoleAlignment = FormerRole.RoleAlignment,
-                AlignmentName = FormerRole.AlignmentName
+                RoleAlignment = FormerRole.RoleAlignment
             };
 
             newRole.RoleUpdate(this);

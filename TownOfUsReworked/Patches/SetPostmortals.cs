@@ -28,6 +28,9 @@ namespace TownOfUsReworked.Patches
 
         public static void ExileControllerPostfix(ExileController __instance)
         {
+            if (PlayerControl.LocalPlayer.Data.Disconnected)
+                return;
+
             foreach (var player in AssassinatedPlayers)
             {
                 if (!player.Data.Disconnected)
@@ -186,22 +189,26 @@ namespace TownOfUsReworked.Patches
 
         public static void SetRevealer(PlayerControl exiled)
         {
-            if (!RevealerOn)
+            if (!RevealerOn || !exiled.Is(Faction.Crew))
                 return;
 
-            if ((WillBeRevealer?.Data.IsDead == false || WillBeRevealer.Data.Disconnected) && exiled.Is(Faction.Crew))
+            if (WillBeRevealer == null)
                 WillBeRevealer = exiled;
 
-            if (WillBeRevealer?.Is(RoleEnum.Revealer) == false)
+            if (WillBeRevealer.Data.Disconnected)
+                Utils.ReassignPostmortals(WillBeRevealer);
+
+            if (!WillBeRevealer.Data.IsDead)
+                return;
+
+            if (!WillBeRevealer.Is(RoleEnum.Revealer))
             {
                 var former = Role.GetRole(WillBeRevealer);
                 var role = new Revealer(WillBeRevealer) { FormerRole = former };
                 role.RoleUpdate(former);
                 RemoveTasks(PlayerControl.LocalPlayer);
                 WillBeRevealer.gameObject.layer = LayerMask.NameToLayer("Players");
-
-                if (PlayerControl.LocalPlayer != WillBeRevealer)
-                    PlayerControl.LocalPlayer.MyPhysics.ResetMoveState();
+                WillBeRevealer.MyPhysics.ResetMoveState();
             }
 
             if (WillBeRevealer == PlayerControl.LocalPlayer)
@@ -220,13 +227,19 @@ namespace TownOfUsReworked.Patches
 
         public static void SetPhantom(PlayerControl exiled)
         {
-            if (!PhantomOn || LayerExtentions.NeutralHasUnfinishedBusiness(exiled))
+            if (!PhantomOn || LayerExtentions.NeutralHasUnfinishedBusiness(exiled) || !exiled.Is(Faction.Neutral))
                 return;
 
-            if ((WillBePhantom?.Data.IsDead == false || WillBePhantom.Data.Disconnected) && exiled.Is(Faction.Neutral))
+            if (WillBePhantom == null)
                 WillBePhantom = exiled;
 
-            if (WillBePhantom?.Is(RoleEnum.Phantom) == false)
+            if (WillBePhantom.Data.Disconnected)
+                Utils.ReassignPostmortals(WillBePhantom);
+
+            if (!WillBePhantom.Data.IsDead)
+                return;
+
+            if (!WillBePhantom.Is(RoleEnum.Phantom))
             {
                 var former = Role.GetRole(WillBePhantom);
                 var role = new Phantom(WillBePhantom);
@@ -254,13 +267,22 @@ namespace TownOfUsReworked.Patches
 
         public static void SetBanshee(PlayerControl exiled)
         {
-            if (!BansheeOn)
+            if (!BansheeOn || !exiled.Is(Faction.Syndicate))
                 return;
 
-            if ((WillBeBanshee?.Data.IsDead == false || WillBeBanshee.Data.Disconnected) && exiled.Is(Faction.Syndicate))
+            if (WillBeBanshee == null)
                 WillBeBanshee = exiled;
 
-            if (WillBeBanshee?.Is(RoleEnum.Banshee) == false)
+            if (WillBeBanshee == null)
+                WillBeBanshee = exiled;
+
+            if (WillBeBanshee.Data.Disconnected)
+                Utils.ReassignPostmortals(WillBeBanshee);
+
+            if (!WillBeBanshee.Data.IsDead)
+                return;
+
+            if (!WillBeBanshee.Is(RoleEnum.Banshee))
             {
                 var former = Role.GetRole(WillBeBanshee);
                 var role = new Banshee(WillBeBanshee);
@@ -287,13 +309,22 @@ namespace TownOfUsReworked.Patches
 
         public static void SetGhoul(PlayerControl exiled)
         {
-            if (!GhoulOn)
+            if (!GhoulOn || !exiled.Is(Faction.Syndicate))
                 return;
 
-            if ((WillBeGhoul?.Data.IsDead == false || WillBeGhoul.Data.Disconnected) && exiled.Is(Faction.Syndicate))
+            if (WillBeGhoul == null)
                 WillBeGhoul = exiled;
 
-            if (WillBeGhoul?.Is(RoleEnum.Banshee) == false)
+            if (WillBeGhoul == null)
+                WillBeGhoul = exiled;
+
+            if (WillBeGhoul.Data.Disconnected)
+                Utils.ReassignPostmortals(WillBeGhoul);
+
+            if (!WillBeGhoul.Data.IsDead)
+                return;
+
+            if (!WillBeGhoul.Is(RoleEnum.Banshee))
             {
                 var former = Role.GetRole(WillBeGhoul);
                 var role = new Ghoul(WillBeGhoul);

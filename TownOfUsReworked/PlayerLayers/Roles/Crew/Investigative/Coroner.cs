@@ -20,7 +20,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = CustomGameOptions.CustomCrewColors ? Colors.Coroner : Colors.Crew;
             RoleType = RoleEnum.Coroner;
             RoleAlignment = RoleAlignment.CrewInvest;
-            AlignmentName = CI;
             BodyArrows = new();
             Reported = new();
             InspectorResults = InspectorResults.DealsWithDead;
@@ -71,7 +70,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (!PlayerControl.LocalPlayer.Data.IsDead)
             {
-                var validBodies = UObject.FindObjectsOfType<DeadBody>().Where(x => Murder.KilledPlayers.Any(y => y.PlayerId == x.ParentId && DateTime.UtcNow <
+                var validBodies = Utils.AllBodies.Where(x => Murder.KilledPlayers.Any(y => y.PlayerId == x.ParentId && DateTime.UtcNow <
                     y.KillTime.AddSeconds(CustomGameOptions.CoronerArrowDuration)));
 
                 foreach (var bodyArrow in BodyArrows.Keys)

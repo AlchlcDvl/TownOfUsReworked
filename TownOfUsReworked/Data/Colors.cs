@@ -155,6 +155,7 @@
         public static Color32 Corrupted => new(69, 69, 255, 255); //#4545FFFF
         public static Color32 Allied => new(69, 69, 169, 255); //#4545A9FF
         public static Color32 Mafia => new(0, 238, 255, 255); //#00EEFFFF
+        public static Color32 Defector => new(225, 200, 73, 255); //#E1C849FF
 
         //Other
         public static Color32 Stalemate => new(239, 230, 230, 255); //#E6E6E6FF
@@ -168,10 +169,10 @@
         //Color Storage
         //#dcee85 #6c29ab #800000 #808000 #008000 #800080 #000080 #e74c3c #992d22 #00FFFD #917ac0 #Eac1d2 #286e58 #db4f20 #abd432 #2e3b97 #ffd100 #fffcce #40b4ff #a82626 #8ff731 #942b3b
         //#4e4e4e #fffead #1abc9c #2ecc71 #1f8b4c #3498db #ad1457 #c27c0e #ffd2fb #805bc4 #95a5a6 #979c9f #888888 #ff7272 #f25ff1 #FF00FF #916640 #1AFF74 #2672FF #8637C2 #3769FE #e7dae2
-        //#6a1515 #569d29 #f1612b #7d86e1 #612bef #F6AAB7 #EC62A5 #78c689 #e1c849 #fccc52 #6b2d2a #aab43e #FCBA03 #ff351f #F8CD46 #FF4D00 #7EFBC2 #4d4d4d #38b553 #0000FF #0000A7 #f25e75
-        //#1E300B #06DF0C #F3A6D3 #FB9327 #0437EF #6697FF #9B7038 #5865F2
+        //#6a1515 #569d29 #f1612b #7d86e1 #612bef #F6AAB7 #EC62A5 #78c689 #fccc52 #6b2d2a #aab43e #FCBA03 #ff351f #F8CD46 #FF4D00 #7EFBC2 #4d4d4d #38b553 #0000FF #0000A7 #f25e75 #5865F2
+        //#1E300B #06DF0C #F3A6D3 #FB9327 #0437EF #6697FF #9B7038
 
         //Symbol Storage
-        //⟡ ☆ ♡ ♧ ♤ ▶ ❥ ✔ ε Γ ι ν σ τ υ φ ψ Ψ ✧ ¢
+        //⟡ ☆ ♡ ♧ ♤ ▶ ❥ ✔ Γ ι ν σ τ υ ψ Ψ ✧ ¢
     }
 }

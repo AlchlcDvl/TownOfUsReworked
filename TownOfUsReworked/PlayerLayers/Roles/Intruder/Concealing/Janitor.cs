@@ -17,7 +17,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = CustomGameOptions.CustomIntColors ? Colors.Janitor : Colors.Intruder;
             RoleType = RoleEnum.Janitor;
             RoleAlignment = RoleAlignment.IntruderConceal;
-            AlignmentName = IC;
             InspectorResults = InspectorResults.DealsWithDead;
             CurrentlyDragging = null;
             Type = LayerEnum.Janitor;
@@ -164,7 +163,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             base.UpdateHud(__instance);
             CleanButton.Update("CLEAN", CleanTimer(), CustomGameOptions.JanitorCleanCd, true, CurrentlyDragging == null);
             DragButton.Update("DRAG", DragTimer(), CustomGameOptions.DragCd, true, CurrentlyDragging == null);
-            DropButton.Update("DROP", 0, 1, true, CurrentlyDragging != null);
+            DropButton.Update("DROP", true, CurrentlyDragging != null);
         }
     }
 }

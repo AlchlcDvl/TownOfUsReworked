@@ -25,7 +25,7 @@ namespace TownOfUsReworked.Patches
                 PlayerLayer.NobodyWins = true;
                 Utils.EndGame();
             }
-            else if ((Utils.TasksDone() || GameData.Instance.TotalTasks <= GameData.Instance.CompletedTasks) && crewexists)
+            else if ((LayerExtentions.TasksDone() || GameData.Instance.TotalTasks <= GameData.Instance.CompletedTasks) && crewexists)
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.CrewWin);
@@ -33,7 +33,7 @@ namespace TownOfUsReworked.Patches
                 Role.CrewWin = true;
                 Utils.EndGame();
             }
-            else if (Utils.Sabotaged())
+            else if (LayerExtentions.Sabotaged())
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
 

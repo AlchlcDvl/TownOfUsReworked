@@ -22,7 +22,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleType = RoleEnum.GuardianAngel;
             UsesLeft = CustomGameOptions.MaxProtects;
             RoleAlignment = RoleAlignment.NeutralBen;
-            AlignmentName = NB;
             AbilitiesText = "- You can protect your target from death for a short while\n- If your target dies, you will be a <color=#DDDD00FF>Survivor</color>";
             InspectorResults = InspectorResults.PreservesLife;
             Type = LayerEnum.GuardianAngel;

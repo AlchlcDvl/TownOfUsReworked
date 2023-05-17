@@ -17,7 +17,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = CustomGameOptions.CustomIntColors ? Colors.Consigliere : Colors.Intruder;
             RoleType = RoleEnum.Consigliere;
             RoleAlignment = RoleAlignment.IntruderSupport;
-            AlignmentName = IS;
             Investigated = new();
             Type = LayerEnum.Consigliere;
             InvestigateButton = new(this, "Investigate", AbilityTypes.Direct, "Secondary", Investigate, Exception1);

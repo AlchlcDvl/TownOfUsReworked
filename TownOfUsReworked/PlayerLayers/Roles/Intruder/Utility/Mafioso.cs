@@ -15,7 +15,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 $"\n{AbilitiesText}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Mafioso : Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderUtil;
-            AlignmentName = IU;
             Type = LayerEnum.Mafioso;
             InspectorResults = InspectorResults.IsCold;
         }
@@ -26,8 +25,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 FormerRole = FormerRole,
                 RoleBlockImmune = FormerRole.RoleBlockImmune,
-                RoleAlignment = FormerRole.RoleAlignment,
-                AlignmentName = FormerRole.AlignmentName
+                RoleAlignment = FormerRole.RoleAlignment
             };
 
             newRole.RoleUpdate(this);

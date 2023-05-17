@@ -19,7 +19,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = CustomGameOptions.CustomCrewColors ? Colors.Dictator : Colors.Crew;
             RoleType = RoleEnum.Dictator;
             RoleAlignment = RoleAlignment.CrewSov;
-            AlignmentName = CSv;
             InspectorResults = InspectorResults.Manipulative;
             Type = LayerEnum.Dictator;
             ToBeEjected = new();
@@ -56,7 +55,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            RevealButton.Update("REVEAL", 0, 1, !Revealed, !Revealed && !RoundOne);
+            RevealButton.Update("REVEAL", !Revealed, !Revealed && !RoundOne);
         }
 
         public void GenButton(PlayerVoteArea voteArea, MeetingHud __instance)
@@ -75,11 +74,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var renderer = targetBox.GetComponent<SpriteRenderer>();
             renderer.sprite = AssetManager.GetSprite("SwapDisabled");
             var button = targetBox.GetComponent<PassiveButton>();
-            button.OnClick.RemoveAllListeners();
+            button.OnClick = new();
             button.OnClick.AddListener(SetActive(voteArea, __instance));
-            button.OnMouseOut.RemoveAllListeners();
+            button.OnMouseOut = new();
             button.OnMouseOut.AddListener((Action)(() => renderer.color = Actives[voteArea.TargetPlayerId] ? UnityEngine.Color.green : UnityEngine.Color.white));
-            button.OnMouseOver.RemoveAllListeners();
+            button.OnMouseOver = new();
             button.OnMouseOver.AddListener((Action)(() => renderer.color = UnityEngine.Color.red));
             var component2 = targetBox.GetComponent<BoxCollider2D>();
             component2.size = renderer.sprite.bounds.size;
@@ -188,9 +187,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 return;
 
             button.SetActive(false);
-            button.GetComponent<PassiveButton>().OnClick.RemoveAllListeners();
-            button.GetComponent<PassiveButton>().OnMouseOver.RemoveAllListeners();
-            button.GetComponent<PassiveButton>().OnMouseOut.RemoveAllListeners();
+            button.GetComponent<PassiveButton>().OnClick = new();
+            button.GetComponent<PassiveButton>().OnMouseOver = new();
+            button.GetComponent<PassiveButton>().OnMouseOut = new();
             button.Destroy();
             MoarButtons[targetId] = null;
         }

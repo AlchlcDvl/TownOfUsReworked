@@ -12,7 +12,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleType = RoleEnum.Mystic;
             Color = CustomGameOptions.CustomCrewColors ? Colors.Mystic : Colors.Crew;
             RoleAlignment = RoleAlignment.CrewAudit;
-            AlignmentName = CA;
             StartText = "You Know When Converts Happen";
             AbilitiesText = "- You can investigate players to see if they have been converted\n- Whenever someone has been converted, you will be alerted to it\n- When all converted" +
                 " and converters die, you will become a <color=#71368AFF>Seer</color>";

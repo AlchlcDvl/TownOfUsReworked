@@ -13,7 +13,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = CustomGameOptions.CustomNeutColors ? Colors.Actor : Colors.Neutral;
             RoleType = RoleEnum.Actor;
             RoleAlignment = RoleAlignment.NeutralEvil;
-            AlignmentName = NE;
             Type = LayerEnum.Actor;
             PretendRoles = InspectorResults.None;
             InspectorResults = InspectorResults.Manipulative;

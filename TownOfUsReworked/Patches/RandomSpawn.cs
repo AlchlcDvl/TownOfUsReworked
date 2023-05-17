@@ -1,6 +1,7 @@
 namespace TownOfUsReworked.Patches
 {
-    //Thanks to The Other Roles: Community Edition for this code
+    //The code is from The Other Roles: Community Edition with slight modifications; link :- https://github.com/JustASysAdmin/TheOtherRoles2/blob/main/TheOtherRoles/Patches/IntroPatch.cs
+    //under GPL v3
     [HarmonyPatch]
     public static class RandomSpawns
     {

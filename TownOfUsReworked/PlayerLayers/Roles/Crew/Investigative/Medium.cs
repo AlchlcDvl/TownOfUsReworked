@@ -17,7 +17,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleType = RoleEnum.Medium;
             MediatedPlayers = new();
             RoleAlignment = RoleAlignment.CrewInvest;
-            AlignmentName = CI;
             InspectorResults = InspectorResults.NewLens;
             Type = LayerEnum.Medium;
             MediateButton = new(this, "Mediate", AbilityTypes.Effect, "ActionSecondary", Mediate);
@@ -86,16 +85,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
                         if (!CustomGameOptions.ShowMediatePlayer)
                         {
-                            player.SetOutfit(CustomPlayerOutfitType.Camouflage, new GameData.PlayerOutfit()
-                            {
-                                ColorId = player.GetDefaultOutfit().ColorId,
-                                HatId = "",
-                                SkinId = "",
-                                VisorId = "",
-                                PlayerName = " "
-                            });
-
-                            PlayerMaterial.SetColors(new Color32(128, 128, 128, 255), player.MyRend());
+                            player.SetOutfit(CustomPlayerOutfitType.Camouflage, Utils.CamoOutfit(player));
+                            PlayerMaterial.SetColors(UnityEngine.Color.grey, player.MyRend());
                         }
                     }
                 }
@@ -120,7 +111,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
                 foreach (var dead in PlayersDead)
                 {
-                    if (UObject.FindObjectsOfType<DeadBody>().Any(x => x.ParentId == dead.PlayerId && !MediatedPlayers.ContainsKey(x.ParentId)))
+                    if (Utils.AllBodies.Any(x => x.ParentId == dead.PlayerId && !MediatedPlayers.ContainsKey(x.ParentId)))
                     {
                         AddMediatePlayer(dead.PlayerId);
                         var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
@@ -139,7 +130,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 PlayersDead.Shuffle();
                 var dead = PlayersDead.Random();
 
-                if (UObject.FindObjectsOfType<DeadBody>().Any(x => x.ParentId == dead.PlayerId && !MediatedPlayers.ContainsKey(x.ParentId)))
+                if (Utils.AllBodies.Any(x => x.ParentId == dead.PlayerId && !MediatedPlayers.ContainsKey(x.ParentId)))
                 {
                     AddMediatePlayer(dead.PlayerId);
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);

@@ -234,6 +234,7 @@ namespace TownOfUsReworked.Patches
             traitorObj.Side = traitorRole.Faction;
             traitorObj.Turned = true;
             traitorObj.Hidden = false;
+            traitorRole.RoleAlignment = traitorRole.RoleAlignment.GetNewAlignment(traitorRole.Faction);
             traitor.RegenTask();
 
             foreach (var snitch in Ability.GetAbilities<Snitch>(AbilityEnum.Snitch))

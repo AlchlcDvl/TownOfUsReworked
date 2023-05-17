@@ -9,7 +9,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         {
             Name = "Taskmaster";
             TaskText = "- Finish your tasks before the game ends";
-            SymbolName = "µ";
+            Symbol = "µ";
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Taskmaster : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Taskmaster;
             Type = LayerEnum.Taskmaster;

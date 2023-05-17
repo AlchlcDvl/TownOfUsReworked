@@ -17,8 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AbilitiesText = "- You can make a player invisible\n- With the Chaos Drive, you make everyone invisible";
             Color = CustomGameOptions.CustomSynColors ? Colors.Concealer : Colors.Syndicate;
             RoleType = RoleEnum.Concealer;
-            RoleAlignment = RoleAlignment.SyndicateDisruption;
-            AlignmentName = SD;
+            RoleAlignment = RoleAlignment.SyndicateDisrup;
             ConcealMenu = new(Player, Click, Exception1);
             ConcealedPlayer = null;
             Type = LayerEnum.Concealer;
@@ -44,12 +43,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Enabled = false;
             LastConcealed = DateTime.UtcNow;
-            ConcealedPlayer = null;
 
             if (HoldsDrive)
                 Utils.DefaultOutfitAll();
             else
                 Utils.DefaultOutfit(ConcealedPlayer);
+
+            ConcealedPlayer = null;
         }
 
         public float ConcealTimer()

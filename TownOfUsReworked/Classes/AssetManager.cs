@@ -7,7 +7,9 @@ namespace TownOfUsReworked.Classes
         private readonly static Dictionary<string, AudioClip> SoundEffects = new();
         private readonly static Dictionary<string, Sprite> Sprites = new();
         private readonly static Dictionary<string, string> Translations = new();
+        private readonly static Dictionary<string, float> Sizes = new();
         private readonly static string[] TranslationKeys = Utils.CreateText("Keys", "Languages").Split("\n");
+        public readonly static Sprite[] PortalAnimation = new Sprite[205];
 
         #pragma warning disable
         public static Sprite Use;
@@ -158,8 +160,10 @@ namespace TownOfUsReworked.Classes
         {
             try
             {
+                var sname = name.Replace(".png", "").Replace(TownOfUsReworked.Buttons, "").Replace(TownOfUsReworked.Misc, "").Replace(TownOfUsReworked.Portal, "");
                 var tex = CreatTexture(name);
-                var sprite = Sprite.Create(tex, new(0, 0, tex.width, tex.height), new(0.5f, 0.5f), 100);
+                var sprite = Sprite.Create(tex, new(0, 0, tex.width, tex.height), new(0.5f, 0.5f), Sizes[sname]);
+                sprite.name = sname;
                 sprite.hideFlags |= HideFlags.HideAndDontSave | HideFlags.DontSaveInEditor;
                 sprite.DontDestroy();
                 return sprite;
@@ -197,16 +201,40 @@ namespace TownOfUsReworked.Classes
 
             foreach (var resourceName in TownOfUsReworked.Assembly.GetManifestResourceNames())
             {
-                if (resourceName.StartsWith($"{TownOfUsReworked.Sounds}") && resourceName.EndsWith(".raw"))
+                if (resourceName.EndsWith(".png"))
                 {
-                    var name = resourceName.Replace(".raw", "").Replace($"{TownOfUsReworked.Sounds}", "");
+                    var name = resourceName.Replace(".png", "").Replace(TownOfUsReworked.Buttons, "").Replace(TownOfUsReworked.Misc, "").Replace(TownOfUsReworked.Portal, "");
+
+                    if (name is "CurrentSettings" or "Help" or "Cross" or "Plus" or "Minus")
+                        Sizes.Add(name, 180);
+                    else if (name == "RoleCard")
+                        Sizes.Add(name, 200);
+                    else
+                        Sizes.Add(name, 100);
+                }
+            }
+
+            var position2 = 0;
+
+            foreach (var resourceName in TownOfUsReworked.Assembly.GetManifestResourceNames())
+            {
+                if (resourceName.StartsWith(TownOfUsReworked.Sounds) && resourceName.EndsWith(".raw"))
+                {
+                    var name = resourceName.Replace(".raw", "").Replace(TownOfUsReworked.Sounds, "");
                     SoundEffects.Add(name, CreateAudio(resourceName));
                     Sounds.Add(name);
                 }
-                else if ((resourceName.StartsWith($"{TownOfUsReworked.Buttons}") || resourceName.StartsWith($"{TownOfUsReworked.Misc}")) && resourceName.EndsWith(".png"))
+                else if ((resourceName.StartsWith(TownOfUsReworked.Buttons) || resourceName.StartsWith(TownOfUsReworked.Misc)) && resourceName.EndsWith(".png"))
                 {
-                    var name = resourceName.Replace(".png", "").Replace($"{TownOfUsReworked.Buttons}", "").Replace($"{TownOfUsReworked.Misc}", "");
+                    var name = resourceName.Replace(".png", "").Replace(TownOfUsReworked.Buttons, "").Replace(TownOfUsReworked.Misc, "");
                     Sprites.Add(name, CreateSprite(resourceName));
+                }
+                else if (resourceName.StartsWith(TownOfUsReworked.Portal) && resourceName.EndsWith(".png"))
+                {
+                    if (PortalAnimation[position2] == null)
+                        PortalAnimation[position2] = CreateSprite(resourceName);
+
+                    position2++;
                 }
             }
 

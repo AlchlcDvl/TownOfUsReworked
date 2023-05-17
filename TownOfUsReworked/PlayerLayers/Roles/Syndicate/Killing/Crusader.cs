@@ -17,7 +17,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = CustomGameOptions.CustomSynColors ? Colors.Crusader : Colors.Syndicate;
             RoleType = RoleEnum.Crusader;
             RoleAlignment = RoleAlignment.SyndicateKill;
-            AlignmentName = SyK;
             InspectorResults = InspectorResults.PreservesLife;
             Type = LayerEnum.Crusader;
             CrusadedPlayer = null;

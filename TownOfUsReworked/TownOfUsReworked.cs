@@ -68,8 +68,8 @@ namespace TownOfUsReworked
     {
         public const string Id = "me.alchlcdvl.reworked";
         public const string Name = "TownOfUsReworked";
-        public const string VersionString = "0.2.3.0";
-        public const string CompleteVersionString = "0.2.3.0";
+        private const string VersionString = "0.2.4.0";
+        private const string CompleteVersionString = "0.2.4.0";
         public readonly static Version Version = new(VersionString);
 
         private readonly static string dev = VersionString[6..];
@@ -81,12 +81,13 @@ namespace TownOfUsReworked
         private readonly static string testString = isTest ? "_test" : "";
         public readonly static string versionFinal = $"v{version}{devString}{testString}";
 
-        public readonly static string Resources = "TownOfUsReworked.Resources.";
-        public readonly static string Buttons = $"{Resources}Buttons.";
-        public readonly static string Sounds = $"{Resources}Sounds.";
-        public readonly static string Misc = $"{Resources}Misc.";
-        public readonly static string Presets = $"{Resources}Presets.";
-        public readonly static string Languages = $"{Resources}Languages.";
+        public const string Resources = "TownOfUsReworked.Resources.";
+        public const string Buttons = $"{Resources}Buttons.";
+        public const string Sounds = $"{Resources}Sounds.";
+        public const string Misc = $"{Resources}Misc.";
+        public const string Presets = $"{Resources}Presets.";
+        public const string Languages = $"{Resources}Languages.";
+        public const string Portal = $"{Resources}Portal.";
 
         public static Assembly Assembly => typeof(TownOfUsReworked).Assembly;
         public static Assembly Executing => Assembly.GetExecutingAssembly();

@@ -12,11 +12,12 @@ namespace TownOfUsReworked.Extensions
         public static string ObjectifierColorString => $"<color=#{Colors.Objectifier.ToHtmlStringRGBA()}>";
         public static string ModifierColorString => $"<color=#{Colors.Modifier.ToHtmlStringRGBA()}>";
         public static string AbilityColorString => $"<color=#{Colors.Ability.ToHtmlStringRGBA()}>";
+        public static string SubFactionColorString => $"<color=#{Colors.SubFaction.ToHtmlStringRGBA()}>";
 
         public static bool Is(this PlayerControl player, RoleEnum roleType) => Role.GetRole(player)?.RoleType == roleType;
 
         public static bool Is(this PlayerControl player, LayerEnum type, PlayerLayerEnum layer) => PlayerLayer.AllLayers.Find(x => x.Player == player && x.Type == type && x.LayerType ==
-            layer) != null;
+            layer);
 
         public static bool Is(this Role role, RoleEnum roleType) => role?.RoleType == roleType;
 
@@ -89,19 +90,42 @@ namespace TownOfUsReworked.Extensions
             return role.RoleType;
         }
 
+        public static RoleAlignment GetAlignment(this PlayerControl player)
+        {
+            if (player == null)
+                return RoleAlignment.None;
+
+            var role = Role.GetRole(player);
+
+            if (role == null)
+                return RoleAlignment.None;
+
+            return role.RoleAlignment;
+        }
+
         public static Faction GetFaction(this PlayerVoteArea player) => Utils.PlayerByVoteArea(player).GetFaction();
 
         public static SubFaction GetSubFaction(this PlayerVoteArea player) => Utils.PlayerByVoteArea(player).GetSubFaction();
 
-        public static bool IsRecruit(this PlayerControl player) => Role.AllRoles.Find(x => x.Player == player).IsRecruit;
+        public static bool IsRecruit(this PlayerControl player) => Role.GetRole(player).IsRecruit;
 
-        public static bool IsBitten(this PlayerControl player) => Role.AllRoles.Find(x => x.Player == player).IsBitten;
+        public static bool IsBitten(this PlayerControl player) => Role.GetRole(player).IsBitten;
 
-        public static bool IsPersuaded(this PlayerControl player) => Role.AllRoles.Find(x => x.Player == player).IsPersuaded;
+        public static bool IsPersuaded(this PlayerControl player) => Role.GetRole(player).IsPersuaded;
 
-        public static bool IsResurrected(this PlayerControl player) => Role.AllRoles.Find(x => x.Player == player).IsResurrected;
+        public static bool IsResurrected(this PlayerControl player) => Role.GetRole(player).IsResurrected;
 
-        public static bool Diseased(this PlayerControl player) => Role.AllRoles.Find(x => x.Player == player).Diseased;
+        public static bool Diseased(this PlayerControl player) => Role.GetRole(player).Diseased;
+
+        public static bool IsCrewDefect(this PlayerControl player) => Role.GetRole(player).IsCrewDefect;
+
+        public static bool IsIntDefect(this PlayerControl player) => Role.GetRole(player).IsIntDefect;
+
+        public static bool IsSynDefect(this PlayerControl player) => Role.GetRole(player).IsSynDefect;
+
+        public static bool IsNeutDefect(this PlayerControl player) => Role.GetRole(player).IsNeutDefect;
+
+        public static bool IsDefect(this PlayerControl player) => player.IsCrewDefect() || player.IsIntDefect() || player.IsSynDefect() || player.IsNeutDefect();
 
         public static bool IsRecruit(this PlayerVoteArea player) => Utils.PlayerByVoteArea(player).IsRecruit();
 
@@ -124,7 +148,7 @@ namespace TownOfUsReworked.Extensions
             var loverFlag = player.Is(ObjectifierEnum.Lovers);
             var mafFlag = player.Is(ObjectifierEnum.Mafia);
             return traitorFlag || recruitFlag || sectFlag || revivedFlag || rivalFlag || fanaticFlag || corruptedFlag || bittenFlag || loverFlag || mafFlag ||
-                !Role.GetRole(player).NotDefective;
+                !Role.GetRole(player).Faithful;
         }
 
         public static bool CanDoTasks(this PlayerControl player)
@@ -142,13 +166,14 @@ namespace TownOfUsReworked.Extensions
 
             var phantomflag = player.Is(RoleEnum.Phantom);
 
-            var sideFlag = player.NotOnTheSameSide();
+            var sideflag = player.NotOnTheSameSide();
             var taskmasterflag = player.Is(ObjectifierEnum.Taskmaster);
+            var defectflag = player.IsCrewDefect();
 
-            var flag1 = crewflag && !sideFlag;
+            var flag1 = crewflag && !sideflag;
             var flag2 = neutralflag && (taskmasterflag || phantomflag);
-            var flag3 = intruderflag && taskmasterflag;
-            var flag4 = syndicateflag && taskmasterflag;
+            var flag3 = intruderflag && (taskmasterflag || defectflag);
+            var flag4 = syndicateflag && (taskmasterflag || defectflag);
             return flag1 || flag2 || flag3 || flag4;
         }
 
@@ -384,12 +409,12 @@ namespace TownOfUsReworked.Extensions
             x.OtherLover == refPlayer);
 
         public static bool SyndicateSided(this PlayerControl player) => player.IsSynTraitor() || player.IsSynFanatic() || player.IsSynAlly() || (player.Is(Faction.Syndicate) &&
-            player.Is(RoleEnum.Betrayer));
+            player.Is(RoleEnum.Betrayer)) || player.IsSynDefect();
 
         public static bool IntruderSided(this PlayerControl player) => player.IsIntTraitor() || player.IsIntAlly() || player.IsIntFanatic() || (player.Is(Faction.Intruder) &&
-            player.Is(RoleEnum.Betrayer));
+            player.Is(RoleEnum.Betrayer)) || player.IsIntDefect();
 
-        public static bool CrewSided(this PlayerControl player) => player.IsCrewAlly();
+        public static bool CrewSided(this PlayerControl player) => player.IsCrewAlly() || player.IsCrewDefect();
 
         public static bool SyndicateSided(this PlayerVoteArea player) => player.IsSynTraitor() || player.IsSynFanatic() || player.IsSynAlly();
 
@@ -478,6 +503,9 @@ namespace TownOfUsReworked.Extensions
         {
             var result = 1f;
 
+            if (DoUndo.IsCamoed && CustomGameOptions.CamoHideSpeed)
+                return result;
+
             if (player.Is(ModifierEnum.Dwarf))
                 result = CustomGameOptions.DwarfSpeed;
             else if (player.Is(ModifierEnum.Giant))
@@ -485,9 +513,9 @@ namespace TownOfUsReworked.Extensions
             else if (player.Is(ModifierEnum.Drunk))
                 result = Modifier.GetModifier<Drunk>(player).Modify;
 
-            if (player.Is(RoleEnum.Janitor) && Role.GetRole<Janitor>(player).CurrentlyDragging != null)
+            if (player.Is(RoleEnum.Janitor) && Role.GetRole<Janitor>(player).CurrentlyDragging)
                 result *= CustomGameOptions.DragModifier;
-            else if (player.Is(RoleEnum.PromotedGodfather) && Role.GetRole<PromotedGodfather>(player).CurrentlyDragging != null)
+            else if (player.Is(RoleEnum.PromotedGodfather) && Role.GetRole<PromotedGodfather>(player).CurrentlyDragging)
                 result *= CustomGameOptions.DragModifier;
 
             if (Role.GetRoles<Drunkard>(RoleEnum.Drunkard).Any(x => x.Confused && (x.HoldsDrive || (x.ConfusedPlayer == player))))
@@ -498,19 +526,18 @@ namespace TownOfUsReworked.Extensions
 
         public static float GetModifiedSize(this PlayerControl player)
         {
-            if (player.Is(ModifierEnum.Dwarf))
+            if (DoUndo.IsCamoed && CustomGameOptions.CamoHideSize)
+                return 1f;
+            else if (player.Is(ModifierEnum.Dwarf))
                 return CustomGameOptions.DwarfScale;
             else if (player.Is(ModifierEnum.Giant))
                 return CustomGameOptions.GiantScale;
             else
-                return 1;
+                return 1f;
         }
 
         public static bool CanVent(this PlayerControl player)
         {
-            if (!player.CanMove)
-                return false;
-
             var playerInfo = player?.Data;
 
             if (ConstantVariables.IsHnS)
@@ -552,13 +579,13 @@ namespace TownOfUsReworked.Extensions
                 if (player.Is(RoleEnum.Janitor))
                 {
                     var janitor = (Janitor)playerRole;
-                    mainflag = (int)CustomGameOptions.JanitorVentOptions is 3 || (janitor.CurrentlyDragging != null && (int)CustomGameOptions.JanitorVentOptions is 1) ||
+                    mainflag = (int)CustomGameOptions.JanitorVentOptions is 3 || (janitor.CurrentlyDragging && (int)CustomGameOptions.JanitorVentOptions is 1) ||
                         (janitor.CurrentlyDragging == null && (int)CustomGameOptions.JanitorVentOptions is 2);
                 }
                 else if (player.Is(RoleEnum.PromotedGodfather))
                 {
                     var gf = (PromotedGodfather)playerRole;
-                    mainflag = (int)CustomGameOptions.JanitorVentOptions is 3 || (gf.CurrentlyDragging != null && (int)CustomGameOptions.JanitorVentOptions is 1) ||
+                    mainflag = (int)CustomGameOptions.JanitorVentOptions is 3 || (gf.CurrentlyDragging && (int)CustomGameOptions.JanitorVentOptions is 1) ||
                         (gf.CurrentlyDragging == null && (int)CustomGameOptions.JanitorVentOptions is 2);
                 }
                 else if (flag)
@@ -709,7 +736,7 @@ namespace TownOfUsReworked.Extensions
             return false;
         }
 
-        public static string GetTaskList(this PlayerControl player)
+        public static string RoleCardInfo(this PlayerControl player)
         {
             var info = player.AllPlayerInfo();
 
@@ -718,7 +745,7 @@ namespace TownOfUsReworked.Extensions
             var ability = info[2] as Ability;
             var objectifier = info[3] as Objectifier;
 
-            var objectives = $"{ObjectivesColorString}Objectives:";
+            var objectives = $"{ObjectivesColorString}Goal:";
             var abilities = $"{AbilitiesColorString}Abilities:";
             var attributes = $"{AttributesColorString}Attributes:";
             var roleName = $"{RoleColorString}Role: <b>";
@@ -726,41 +753,44 @@ namespace TownOfUsReworked.Extensions
             var abilityName = $"{AbilityColorString}Ability: <b>";
             var modifierName = $"{ModifierColorString}Modifier: <b>";
             var alignment = $"{AlignmentColorString}Alignment: <b>";
+            var subfaction = $"{SubFactionColorString}Sub-Faction: <b>";
 
-            if (info[0] != null)
+            if (info[0])
             {
                 roleName += $"{role.ColorString}{role.Name}</color>";
                 objectives += $"\n{role.ColorString}{role.Objectives}</color>";
-                alignment += $"{role.AlignmentName}";
+                alignment += $"{role.RoleAlignment.AlignmentName(true)}";
+                subfaction += $"{role.SubFactionColorString}{role.SubFactionName}</color>";
             }
             else
             {
                 roleName += "None";
-                objectives += "\n- None.";
                 alignment += "None";
+                subfaction += "None";
             }
 
             roleName += "</b></color>";
             alignment += "</b></color>";
+            subfaction += "</b></color>";
 
-            if (info[3] != null && !objectifier.Hidden && objectifier.ObjectifierType != ObjectifierEnum.None)
+            if (info[3] && !objectifier.Hidden)
             {
                 objectives += $"\n{objectifier.ColorString}{objectifier.TaskText}</color>";
-                objectifierName += $"{objectifier.ColorString}{objectifier.Name} {objectifier.ColoredSymbol}</color>";
+                objectifierName += $"{objectifier.ColorString}{objectifier.Name} {objectifier.Symbol}</color>";
             }
             else
-                objectifierName += "None";
+                objectifierName += "None φ";
 
             objectifierName += "</b></color>";
 
-            if (info[2] != null && !ability.Hidden && ability.AbilityType != AbilityEnum.None)
+            if (info[2] && !ability.Hidden && ability.AbilityType != AbilityEnum.None)
                 abilityName += $"{ability.ColorString}{ability.Name}</color>";
             else
                 abilityName += "None";
 
             abilityName += "</b></color>";
 
-            if (info[1] != null && !modifier.Hidden && modifier.ModifierType != ModifierEnum.None)
+            if (info[1] && !modifier.Hidden && modifier.ModifierType != ModifierEnum.None)
                 modifierName += $"{modifier.ColorString}{modifier.Name}</color>";
             else
                 modifierName += "None";
@@ -789,74 +819,54 @@ namespace TownOfUsReworked.Extensions
                 abilities += "\n- Attempting to interact with a <color=#C0C0C0FF>Vampire Hunter</color> will force them to kill you</color>";
             }
 
+            if (objectives == $"{ObjectivesColorString}Objectives:")
+                objectives += "\n- None";
+
             objectives += "</color>";
-            var hasnothing = true;
 
-            if (info[0] != null)
-            {
+            if (info[0])
                 abilities += $"\n{role.ColorString}{role.AbilitiesText}</color>";
-                hasnothing = false;
-            }
 
-            if (info[2] != null && !ability.Hidden && ability.AbilityType != AbilityEnum.None)
-            {
+            if (info[2] && !ability.Hidden && ability.AbilityType != AbilityEnum.None)
                 abilities += $"\n{ability.ColorString}{ability.TaskText}</color>";
-                hasnothing = false;
-            }
 
-            if (hasnothing)
+            if (abilities == $"{AbilitiesColorString}Abilities:")
                 abilities += "\n- None";
 
             abilities += "</color>";
-            hasnothing = true;
 
-            if (info[1] != null && !modifier.Hidden && modifier.ModifierType != ModifierEnum.None)
+            if (info[0] && role.HasTarget() && role.RoleType != RoleEnum.BountyHunter)
             {
-                attributes += $"\n{modifier.ColorString}{modifier.TaskText}</color>";
-                hasnothing = false;
+                attributes += $"\n{role.ColorString}- Your target is {(CustomGameOptions.Whispers ? $"[{role.Player.GetTarget().PlayerId}]"  : "")}" +
+                    $"{role.Player.GetTarget().Data.PlayerName}";
             }
+
+            if (info[1] && !modifier.Hidden && modifier.ModifierType != ModifierEnum.None)
+                attributes += $"\n{modifier.ColorString}- {modifier.TaskText}</color>";
 
             if (player.IsGuessTarget() && CustomGameOptions.GuesserTargetKnows)
-            {
                 attributes += "\n<color=#EEE5BEFF>- Someone wants to guess you</color>";
-                hasnothing = false;
-            }
 
             if (player.IsExeTarget() && CustomGameOptions.ExeTargetKnows)
-            {
                 attributes += "\n<color=#CCCCCCFF>- Someone wants you ejected</color>";
-                hasnothing = false;
-            }
 
             if (player.IsGATarget() && CustomGameOptions.GATargetKnows)
-            {
                 attributes += "\n<color=#FFFFFFFF>- Someone wants to protect you</color>";
-                hasnothing = false;
-            }
 
             if (player.IsBHTarget())
-            {
                 attributes += "\n<color=#B51E39FF>- There is a bounty on your head</color>";
-                hasnothing = false;
-            }
 
             if (player.Data.IsDead)
-            {
                 attributes += "\n<color=#FF0000FF>- You are dead</color>";
-                hasnothing = false;
-            }
 
             if (!player.CanDoTasks())
-            {
                 attributes += "\n<color=#ABCDEFFF>- Your tasks are fake</color>";
-                hasnothing = false;
-            }
 
-            if (hasnothing)
+            if (attributes == $"{AttributesColorString}Attributes:")
                 attributes += "\n- None";
 
             attributes += "</color>";
-            return $"{roleName}\n{objectifierName}\n{abilityName}\n{modifierName}\n{alignment}\n{objectives}\n{abilities}\n{attributes}\n<color=#FFFFFFFF>Tasks:</color>";
+            return $"{roleName}\n{objectifierName}\n{abilityName}\n{modifierName}\n{alignment}\n{subfaction}\n{objectives}\n{abilities}\n{attributes}";
         }
 
         public static void RegenTask(this PlayerControl player)
@@ -867,17 +877,10 @@ namespace TownOfUsReworked.Extensions
                 {
                     var task3 = task2.TryCast<ImportantTextTask>();
 
-                    if (task3.Text.Contains("Sabotage and kill everyone") || task3.Text.Contains("Fake Tasks") || task3.Text.Contains("Role") || task3.Text.Contains("tasks to win"))
+                    if (task3.Text.Contains("Sabotage and kill everyone") || task3.Text.Contains("Fake Tasks") || task3.Text.Contains("tasks to win"))
                         player.myTasks.Remove(task3);
                 }
             } catch {}
-
-            //player.myTasks.Clear();
-            var task = new GameObject("DetailTask").AddComponent<ImportantTextTask>();
-            task.transform.SetParent(player.transform, false);
-            task.Text = player.GetTaskList()/* + tasks*/;
-            player.myTasks.Insert(0, task);
-            //player.myTasks.Add(task);
         }
 
         public static void RoleUpdate(this Role newRole, Role former)
@@ -904,6 +907,10 @@ namespace TownOfUsReworked.Extensions
             newRole.IsCrewAlly = former.IsCrewAlly;
             newRole.IsBlocked = former.IsBlocked;
             newRole.Diseased = former.Diseased;
+            newRole.IsIntDefect = former.IsIntDefect;
+            newRole.IsSynDefect = former.IsSynDefect;
+            newRole.IsCrewDefect = former.IsCrewDefect;
+            newRole.IsNeutDefect = former.IsNeutDefect;
             newRole.Player.RegenTask();
             former.OnLobby();
             newRole.OnLobby();
@@ -925,6 +932,150 @@ namespace TownOfUsReworked.Extensions
             var imp = player.IsDead ? RoleTypes.ImpostorGhost : RoleTypes.Impostor;
             var crew = player.IsDead ? RoleTypes.CrewmateGhost : RoleTypes.Crewmate;
             RoleManager.Instance.SetRole(player.Object, impostor ? imp : crew);
+        }
+
+        public static string AlignmentName(this RoleAlignment alignment, bool withColors = false) => alignment switch
+        {
+            RoleAlignment.CrewSupport => withColors ? "<color=#8CFFFFFF>Crew (<color=#1D7CF2FF>Support</color>)</color>" : "Crew (Support)",
+            RoleAlignment.CrewInvest => withColors ? "<color=#8CFFFFFF>Crew (<color=#1D7CF2FF>Investigative</color>)</color>" : "Crew (Investigative)",
+            RoleAlignment.CrewProt => withColors ? "<color=#8CFFFFFF>Crew (<color=#1D7CF2FF>Protective</color>)</color>" : "Crew (Protective)",
+            RoleAlignment.CrewKill => withColors ? "<color=#8CFFFFFF>Crew (<color=#1D7CF2FF>Killing</color>)</color>" : "Crew (Killing)",
+            RoleAlignment.CrewUtil => withColors ? "<color=#8CFFFFFF>Crew (<color=#1D7CF2FF>Utility</color>)</color>" : "Crew (Utility)",
+            RoleAlignment.CrewSov => withColors ? "<color=#8CFFFFFF>Crew (<color=#1D7CF2FF>Sovereign</color>)</color>" : "Crew (Sovereign)",
+            RoleAlignment.CrewAudit => withColors ? "<color=#8CFFFFFF>Crew (<color=#1D7CF2FF>Auditor</color>)</color>" : "Crew (Auditor)",
+            RoleAlignment.CrewDecep => withColors ? "<color=#8CFFFFFF>Crew (<color=#1D7CF2FF>Deception</color>)</color>" : "Crew (Deception)",
+            RoleAlignment.CrewConceal => withColors ? "<color=#8CFFFFFF>Crew (<color=#1D7CF2FF>Concealing</color>)</color>" : "Crew (Concealing)",
+            RoleAlignment.CrewPower => withColors ? "<color=#8CFFFFFF>Crew (<color=#1D7CF2FF>Power</color>)</color>" : "Crew (Power)",
+            RoleAlignment.CrewDisrup => withColors ? "<color=#8CFFFFFF>Crew (<color=#1D7CF2FF>Disruption</color>)</color>" : "Crew (Disruption)",
+            RoleAlignment.IntruderSupport => withColors ? "<color=#FF0000FF>Intruder (<color=#1D7CF2FF>Support</color>)</color>" : "Intruder (Support)",
+            RoleAlignment.IntruderConceal => withColors ? "<color=#FF0000FF>Intruder (<color=#1D7CF2FF>Concealing</color>)</color>" : "Intruder (Concealing)",
+            RoleAlignment.IntruderDecep => withColors ? "<color=#FF0000FF>Intruder (<color=#1D7CF2FF>Deception</color>)</color>" : "Intuder (Deception)",
+            RoleAlignment.IntruderKill => withColors ? "<color=#FF0000FF>Intruder (<color=#1D7CF2FF>Killing</color>)</color>" : "Intruder (Killing)",
+            RoleAlignment.IntruderUtil => withColors ? "<color=#FF0000FF>Intruder (<color=#1D7CF2FF>Utility</color>)</color>" : "Intruder (Utility)",
+            RoleAlignment.IntruderInvest => withColors ? "<color=#FF0000FF>Intruder (<color=#1D7CF2FF>Investigative</color>)</color>" : "Intruder (Investigative)",
+            RoleAlignment.IntruderAudit => withColors ? "<color=#FF0000FF>Intruder (<color=#1D7CF2FF>Auditor</color>)</color>" : "Intruder (Auditor)",
+            RoleAlignment.IntruderProt => withColors ? "<color=#FF0000FF>Intruder (<color=#1D7CF2FF>Protective</color>)</color>" : "Intruder (Protective)",
+            RoleAlignment.IntruderSov => withColors ? "<color=#FF0000FF>Intruder (<color=#1D7CF2FF>Sovereign</color>)</color>" : "Intruder (Sovereign)",
+            RoleAlignment.IntruderDisrup=> withColors ? "<color=#FF0000FF>Intruder (<color=#1D7CF2FF>Disruption</color>)</color>" : "Intruder (Disruption)",
+            RoleAlignment.IntruderPower => withColors ? "<color=#FF0000FF>Intruder (<color=#1D7CF2FF>Power</color>)</color>" : "Intruder (Power)",
+            RoleAlignment.NeutralKill => withColors ? "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Killing</color>)</color>" : "Neutral (Killing)",
+            RoleAlignment.NeutralNeo => withColors ? "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Neophyte</color>)</color>" : "Neutral (Neophyte)",
+            RoleAlignment.NeutralEvil => withColors ? "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Evil</color>)</color>" : "Neutral (Evil)",
+            RoleAlignment.NeutralBen => withColors ? "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Benign</color>)</color>" : "Neutral (Benign)",
+            RoleAlignment.NeutralPros => withColors ? "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Proselyte</color>)</color>" : "Neutral (Proselyte)",
+            RoleAlignment.NeutralSupport => withColors ? "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Support</color>)</color>" : "Neutral (Support)",
+            RoleAlignment.NeutralInvest => withColors ? "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Investigative</color>)</color>" : "Neutral (Investigative)",
+            RoleAlignment.NeutralProt => withColors ? "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Protective</color>)</color>" : "Neutral (Protective)",
+            RoleAlignment.NeutralUtil => withColors ? "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Utility</color>)</color>" : "Neutral (Utility)",
+            RoleAlignment.NeutralSov => withColors ? "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Sovereign</color>)</color>" : "Neutral (Sovereign)",
+            RoleAlignment.NeutralAudit => withColors ? "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Auditor</color>)</color>" : "Neutral (Auditor)",
+            RoleAlignment.NeutralConceal => withColors ? "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Concealing</color>)</color>" : "Neutral (Concealing)",
+            RoleAlignment.NeutralDecep => withColors ? "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Deception</color>)</color>" : "Neutral (Deception)",
+            RoleAlignment.NeutralPower => withColors ? "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Power</color>)</color>" : "Neutral (Power)",
+            RoleAlignment.NeutralDisrup => withColors ? "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Apocalypse</color>)</color>" : "Neutral (Disruption)",
+            RoleAlignment.NeutralApoc => withColors ? "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Disruption</color>)</color>" : "Neutral (Apocalypse)",
+            RoleAlignment.NeutralHarb => withColors ? "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Harbinger</color>)</color>" : "Neutral (Harbinger)",
+            RoleAlignment.SyndicateKill => withColors ? "<color=#008000FF>Syndicate (<color=#1D7CF2FF>Killing</color>)</color>" : "Syndicate (Killing)",
+            RoleAlignment.SyndicateSupport => withColors ? "<color=#008000FF>Syndicate (<color=#1D7CF2FF>Support</color>)</color>" : "Syndicate (Support)",
+            RoleAlignment.SyndicateDisrup => withColors ? "<color=#008000FF>Syndicate (<color=#1D7CF2FF>Disruption</color>)</color>" : "Syndicate (Disruption)",
+            RoleAlignment.SyndicatePower => withColors ? "<color=#008000FF>Syndicate (<color=#1D7CF2FF>Power</color>)</color>" : "Syndicate (Power)",
+            RoleAlignment.SyndicateUtil => withColors ? "<color=#008000FF>Syndicate (<color=#1D7CF2FF>Utility</color>)</color>" : "Syndicate (Utility)",
+            RoleAlignment.SyndicateInvest => withColors ? "<color=#008000FF>Syndicate (<color=#1D7CF2FF>Investigative</color>)</color>" : "Syndicate (Investigative)",
+            RoleAlignment.SyndicateAudit => withColors ? "<color=#008000FF>Syndicate (<color=#1D7CF2FF>Auditor</color>)</color>" : "Syndicate (Auditor)",
+            RoleAlignment.SyndicateSov => withColors ? "<color=#008000FF>Syndicate (<color=#1D7CF2FF>Sovereign</color>)</color>" : "Syndicate (Sovereign)",
+            RoleAlignment.SyndicateProt => withColors ? "<color=#008000FF>Syndicate (<color=#1D7CF2FF>Protective</color>)</color>" : "Syndicate (Protective)",
+            RoleAlignment.SyndicateConceal => withColors ? "<color=#008000FF>Syndicate (<color=#1D7CF2FF>Concealing</color>)</color>" : "Syndicate (Concealing)",
+            RoleAlignment.SyndicateDecep => withColors ? "<color=#008000FF>Syndicate (<color=#1D7CF2FF>Deception</color>)</color>" : "Syndicate (Deception)",
+            RoleAlignment.None => "Invalid",
+            _ => "Invalid",
+        };
+
+        public static RoleAlignment GetNewAlignment(this RoleAlignment alignment, Faction faction)
+        {
+            if (faction == Faction.Crew)
+            {
+                return alignment switch
+                {
+                    RoleAlignment.NeutralKill => RoleAlignment.CrewKill,
+                    RoleAlignment.IntruderSupport => RoleAlignment.CrewSupport,
+                    RoleAlignment.IntruderConceal => RoleAlignment.CrewConceal,
+                    RoleAlignment.IntruderDecep => RoleAlignment.CrewDecep,
+                    RoleAlignment.IntruderUtil => RoleAlignment.CrewUtil,
+                    RoleAlignment.IntruderKill => RoleAlignment.CrewKill,
+                    RoleAlignment.SyndicateDisrup => RoleAlignment.CrewDisrup,
+                    RoleAlignment.SyndicatePower => RoleAlignment.CrewPower,
+                    RoleAlignment.SyndicateSupport => RoleAlignment.CrewSupport,
+                    RoleAlignment.SyndicateKill => RoleAlignment.CrewSupport,
+                    RoleAlignment.SyndicateUtil => RoleAlignment.CrewUtil,
+                    _ => alignment
+                };
+            }
+            else if (faction == Faction.Intruder)
+            {
+                return alignment switch
+                {
+                    RoleAlignment.CrewSupport => RoleAlignment.IntruderSupport,
+                    RoleAlignment.CrewInvest => RoleAlignment.IntruderInvest,
+                    RoleAlignment.CrewProt => RoleAlignment.IntruderProt,
+                    RoleAlignment.CrewKill => RoleAlignment.IntruderKill,
+                    RoleAlignment.CrewUtil => RoleAlignment.IntruderUtil,
+                    RoleAlignment.CrewSov => RoleAlignment.IntruderSov,
+                    RoleAlignment.CrewAudit => RoleAlignment.IntruderAudit,
+                    RoleAlignment.NeutralKill => RoleAlignment.IntruderKill,
+                    RoleAlignment.SyndicateDisrup => RoleAlignment.IntruderDisrup,
+                    RoleAlignment.SyndicatePower => RoleAlignment.IntruderPower,
+                    RoleAlignment.SyndicateSupport => RoleAlignment.IntruderSupport,
+                    RoleAlignment.SyndicateKill => RoleAlignment.IntruderKill,
+                    RoleAlignment.SyndicateUtil => RoleAlignment.IntruderUtil,
+                    _ => alignment
+                };
+            }
+            else if (faction == Faction.Syndicate)
+            {
+                return alignment switch
+                {
+                    RoleAlignment.CrewSupport => RoleAlignment.SyndicateSupport,
+                    RoleAlignment.CrewInvest => RoleAlignment.SyndicateInvest,
+                    RoleAlignment.CrewProt => RoleAlignment.SyndicateProt,
+                    RoleAlignment.CrewKill => RoleAlignment.SyndicateKill,
+                    RoleAlignment.CrewUtil => RoleAlignment.SyndicateUtil,
+                    RoleAlignment.CrewSov => RoleAlignment.SyndicateSov,
+                    RoleAlignment.CrewAudit => RoleAlignment.SyndicateAudit,
+                    RoleAlignment.NeutralKill => RoleAlignment.SyndicateKill,
+                    RoleAlignment.IntruderSupport => RoleAlignment.SyndicateSupport,
+                    RoleAlignment.IntruderConceal => RoleAlignment.SyndicateConceal,
+                    RoleAlignment.IntruderDecep => RoleAlignment.SyndicateDecep,
+                    RoleAlignment.IntruderUtil => RoleAlignment.SyndicateUtil,
+                    RoleAlignment.IntruderKill => RoleAlignment.SyndicateKill,
+                    _ => alignment
+                };
+            }
+            else if (faction == Faction.Neutral)
+            {
+                return alignment switch
+                {
+                    RoleAlignment.CrewSupport => RoleAlignment.NeutralSupport,
+                    RoleAlignment.CrewInvest => RoleAlignment.NeutralInvest,
+                    RoleAlignment.CrewProt => RoleAlignment.NeutralProt,
+                    RoleAlignment.CrewKill => RoleAlignment.NeutralKill,
+                    RoleAlignment.CrewUtil => RoleAlignment.NeutralUtil,
+                    RoleAlignment.CrewSov => RoleAlignment.NeutralSov,
+                    RoleAlignment.CrewAudit => RoleAlignment.NeutralAudit,
+                    RoleAlignment.IntruderSupport => RoleAlignment.NeutralSupport,
+                    RoleAlignment.IntruderConceal => RoleAlignment.NeutralConceal,
+                    RoleAlignment.IntruderDecep => RoleAlignment.NeutralDecep,
+                    RoleAlignment.IntruderUtil => RoleAlignment.NeutralUtil,
+                    RoleAlignment.IntruderKill => RoleAlignment.NeutralKill,
+                    RoleAlignment.SyndicateDisrup => RoleAlignment.NeutralDisrup,
+                    RoleAlignment.SyndicatePower => RoleAlignment.NeutralDisrup,
+                    RoleAlignment.SyndicateSupport => RoleAlignment.NeutralSupport,
+                    RoleAlignment.SyndicateKill => RoleAlignment.NeutralKill,
+                    RoleAlignment.SyndicateUtil => RoleAlignment.NeutralUtil,
+                    _ => alignment
+                };
+            }
+
+            return alignment;
         }
     }
 }

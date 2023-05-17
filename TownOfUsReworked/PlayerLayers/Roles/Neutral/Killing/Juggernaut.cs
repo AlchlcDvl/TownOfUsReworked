@@ -15,7 +15,6 @@
             Color = CustomGameOptions.CustomNeutColors ? Colors.Juggernaut : Colors.Neutral;
             RoleType = RoleEnum.Juggernaut;
             RoleAlignment = RoleAlignment.NeutralKill;
-            AlignmentName = NK;
             JuggKills = 0;
             Type = LayerEnum.Juggernaut;
             AssaultButton = new(this, "Assault", AbilityTypes.Direct, "ActionSecondary", Assault, Exception);

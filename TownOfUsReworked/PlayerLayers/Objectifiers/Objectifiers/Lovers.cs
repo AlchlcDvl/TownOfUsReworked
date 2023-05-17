@@ -7,7 +7,7 @@
         public Lovers(PlayerControl player) : base(player)
         {
             Name = "Lover";
-            SymbolName = "♥";
+            Symbol = "♥";
             TaskText = "- Live to the final 3 with your lover";
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Lovers : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Lovers;

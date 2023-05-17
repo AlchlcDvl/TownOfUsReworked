@@ -23,7 +23,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = CustomGameOptions.CustomIntColors ? Colors.Disguiser : Colors.Intruder;
             RoleType = RoleEnum.Disguiser;
             RoleAlignment = RoleAlignment.IntruderDecep;
-            AlignmentName = ID;
             MeasuredPlayer = null;
             Type = LayerEnum.Disguiser;
             DisguiseButton = new(this, "Disguise", AbilityTypes.Direct, "Secondary", HitDisguise, Exception1);

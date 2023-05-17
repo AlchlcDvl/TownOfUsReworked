@@ -7,6 +7,7 @@
         {
             //Fix Grenadier and screwed blind in lobby
             HudManager.Instance.FullScreen.gameObject.active = false;
+            GameSettings.SettingsPage = 0;
             RoleGen.ResetEverything();
             PlayerLayer.DeleteAll();
 

@@ -12,9 +12,10 @@ namespace TownOfUsReworked.Objects
         public Color Color;
         public Vector3 Position;
         public Role Role;
+        public bool Even;
         public static bool Grey => CustomGameOptions.AnonymousFootPrint || DoUndo.IsCamoed;
 
-        public Footprint(PlayerControl player, Role role)
+        public Footprint(PlayerControl player, Role role, bool even)
         {
             Role = role;
             Position = player.transform.position;
@@ -23,6 +24,7 @@ namespace TownOfUsReworked.Objects
             Time2 = (int)Time.time;
             Color = Color.black;
             Start();
+            Even = even;
             role.AllPrints.Add(this);
         }
 
@@ -43,7 +45,7 @@ namespace TownOfUsReworked.Objects
             GObject.transform.SetParent(Player.transform.parent);
 
             Sprite = GObject.AddComponent<SpriteRenderer>();
-            Sprite.sprite = AssetManager.GetSprite("Footprint");
+            Sprite.sprite = Even ? AssetManager.GetSprite("FootprintLeft") : AssetManager.GetSprite("FootprintRight");
             Sprite.color = Color;
             var appearance = Player.GetAppearance();
             var size = appearance.SizeFactor;

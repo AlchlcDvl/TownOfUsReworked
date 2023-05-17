@@ -21,7 +21,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 $", the bomb will detonate and kill everyone within a {CustomGameOptions.EnforceRadius}m radius\n{AbilitiesText}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Enforcer : Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderKill;
-            AlignmentName = IK;
             Type = LayerEnum.Enforcer;
             BombedPlayer = null;
             BombButton = new(this, "Enforce", AbilityTypes.Direct, "Secondary", Bomb, Exception1);

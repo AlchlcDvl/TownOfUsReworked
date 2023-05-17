@@ -24,7 +24,6 @@
             Color = CustomGameOptions.CustomNeutColors ? Colors.Cryomaniac : Colors.Neutral;
             RoleType = RoleEnum.Cryomaniac;
             RoleAlignment = RoleAlignment.NeutralKill;
-            AlignmentName = NK;
             Doused = new();
             Type = LayerEnum.Cryomaniac;
             DouseButton = new(this, "CryoDouse", AbilityTypes.Direct, "ActionSecondary", Douse, Exception);
@@ -112,7 +111,7 @@
             base.UpdateHud(__instance);
             DouseButton.Update("DOUSE", DouseTimer(), CustomGameOptions.DouseCd);
             KillButton.Update("KILL", KillTimer(), CustomGameOptions.DouseCd, true, LastKiller);
-            FreezeButton.Update("FREEZE", 0, 1, true, DousedAlive > 0 && !FreezeUsed);
+            FreezeButton.Update("FREEZE", true, DousedAlive > 0 && !FreezeUsed);
         }
 
         public void Douse()

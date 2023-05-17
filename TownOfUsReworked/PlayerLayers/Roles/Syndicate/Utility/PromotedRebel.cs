@@ -11,7 +11,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = CustomGameOptions.CustomSynColors ? Colors.Rebel : Colors.Syndicate;
             RoleAlignment = RoleAlignment.SyndicateSupport;
             Type = LayerEnum.PromotedRebel;
-            AlignmentName = SSu;
             SpellCount = 0;
             Framed = new();
             UnwarpablePlayers = new();
@@ -26,6 +25,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             WarpPlayer1 = null;
             WarpPlayer2 = null;
             ConfusedPlayer = null;
+            Player1Body = null;
+            Player2Body = null;
+            WasInVent = false;
+            Vent = null;
+            WarpObj = new GameObject("Warp") { layer = 5 };
+            WarpObj.AddSubmergedComponent("ElevatorMover");
+            WarpObj.transform.position = new(Player.GetTruePosition().x, Player.GetTruePosition().y, (Player.GetTruePosition().y / 1000f) + 0.01f);
+            AnimationPlaying = WarpObj.AddComponent<SpriteRenderer>();
+            AnimationPlaying.sprite = AssetManager.PortalAnimation[0];
+            AnimationPlaying.material = HatManager.Instance.PlayerMaterial;
+            WarpObj.SetActive(true);
             ConfuseMenu = new(Player, ConfuseClick, Exception12);
             WarpMenu1 = new(Player, WarpClick1, Exception5);
             WarpMenu2 = new(Player, WarpClick2, Exception6);
@@ -160,23 +170,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     }
                     #pragma warning restore
 
-                    if (DoUndo.IsCamoed && !HoldsDrive)
-                        arrow.Value.image.color = Palette.PlayerColors[6];
-                    else if (ColorUtils.IsRainbow(player.GetDefaultOutfit().ColorId))
-                        arrow.Value.image.color = ColorUtils.Rainbow;
-                    else if (ColorUtils.IsChroma(player.GetDefaultOutfit().ColorId))
-                        arrow.Value.image.color = ColorUtils.Chroma;
-                    else if (ColorUtils.IsMonochrome(player.GetDefaultOutfit().ColorId))
-                        arrow.Value.image.color = ColorUtils.Monochrome;
-                    else if (ColorUtils.IsMantle(player.GetDefaultOutfit().ColorId))
-                        arrow.Value.image.color = ColorUtils.Mantle;
-                    else if (ColorUtils.IsFire(player.GetDefaultOutfit().ColorId))
-                        arrow.Value.image.color = ColorUtils.Fire;
-                    else if (ColorUtils.IsGalaxy(player.GetDefaultOutfit().ColorId))
-                        arrow.Value.image.color = ColorUtils.Galaxy;
-                    else
-                        arrow.Value.image.color = Palette.PlayerColors[player.GetDefaultOutfit().ColorId];
-
+                    arrow.Value.image.color = player.GetPlayerColor(!HoldsDrive);
                     arrow.Value.target = player.transform.position;
                 }
 
@@ -688,6 +682,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public CustomMenu WarpMenu1;
         public CustomMenu WarpMenu2;
         public Dictionary<byte, DateTime> UnwarpablePlayers = new();
+        public SpriteRenderer AnimationPlaying;
+        public GameObject WarpObj;
+        public DeadBody Player1Body;
+        public DeadBody Player2Body;
+        public bool WasInVent;
+        public Vent Vent;
         public bool IsWarp => FormerRole?.RoleType == RoleEnum.Warper;
 
         public float WarpTimer()
@@ -701,16 +701,25 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public IEnumerator WarpPlayers()
         {
-            DeadBody Player1Body = null;
-            DeadBody Player2Body = null;
-            bool WasInVent = false;
-            Vent Vent = null;
+            Player1Body = null;
+            Player2Body = null;
+            WasInVent = false;
+            Vent = null;
+            TimeRemaining = CustomGameOptions.WarpDuration;
 
             if (WarpPlayer1.Data.IsDead)
             {
                 Player1Body = Utils.BodyById(WarpPlayer1.PlayerId);
 
                 if (Player1Body == null)
+                    yield break;
+            }
+
+            if (WarpPlayer2.Data.IsDead)
+            {
+                Player2Body = Utils.BodyById(WarpPlayer2.PlayerId);
+
+                if (Player2Body == null)
                     yield break;
             }
 
@@ -731,13 +740,40 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 WasInVent = true;
             }
 
+            WarpPlayer1.moveable = false;
+            WarpPlayer1.NetTransform.Halt();
+
+            if (PlayerControl.LocalPlayer == WarpPlayer1)
+                Utils.Flash(Color, CustomGameOptions.WarpDuration);
+
+            if (Player1Body == null && !WasInVent)
+                AnimateWarp();
+
+            var startTime = DateTime.UtcNow;
+
+            while (true)
+            {
+                var now = DateTime.UtcNow;
+                var seconds = (now - startTime).TotalSeconds;
+
+                if (seconds < CustomGameOptions.WarpDuration)
+                {
+                    TimeRemaining -= Time.deltaTime;
+                    yield return null;
+                }
+                else
+                    break;
+
+                if (MeetingHud.Instance)
+                    yield break;
+            }
+
             if (Player1Body == null && Player2Body == null)
             {
                 WarpPlayer1.MyPhysics.ResetMoveState();
                 WarpPlayer1.NetTransform.SnapTo(new(WarpPlayer2.GetTruePosition().x, WarpPlayer2.GetTruePosition().y + 0.3636f));
-                WarpPlayer1.MyRend().flipX = WarpPlayer2.MyRend().flipX;
 
-                if (SubmergedCompatibility.IsSubmerged && PlayerControl.LocalPlayer.PlayerId == WarpPlayer1.PlayerId)
+                if (SubmergedCompatibility.IsSubmerged && PlayerControl.LocalPlayer == WarpPlayer1)
                 {
                     SubmergedCompatibility.ChangeFloor(WarpPlayer1.GetTruePosition().y > -7);
                     SubmergedCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
@@ -751,7 +787,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 Utils.StopDragging(Player1Body.ParentId);
                 Player1Body.transform.position = WarpPlayer2.GetTruePosition();
 
-                if (SubmergedCompatibility.IsSubmerged && PlayerControl.LocalPlayer.PlayerId == WarpPlayer2.PlayerId)
+                if (SubmergedCompatibility.IsSubmerged && PlayerControl.LocalPlayer == WarpPlayer2)
                 {
                     SubmergedCompatibility.ChangeFloor(WarpPlayer2.GetTruePosition().y > -7);
                     SubmergedCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
@@ -762,7 +798,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 WarpPlayer1.MyPhysics.ResetMoveState();
                 WarpPlayer1.NetTransform.SnapTo(new(Player2Body.TruePosition.x, Player2Body.TruePosition.y + 0.3636f));
 
-                if (SubmergedCompatibility.IsSubmerged && PlayerControl.LocalPlayer.PlayerId == WarpPlayer1.PlayerId)
+                if (SubmergedCompatibility.IsSubmerged && PlayerControl.LocalPlayer == WarpPlayer1)
                 {
                     SubmergedCompatibility.ChangeFloor(WarpPlayer1.GetTruePosition().y > -7);
                     SubmergedCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
@@ -774,10 +810,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 Player1Body.transform.position = Player2Body.TruePosition;
             }
 
-            if (PlayerControl.LocalPlayer == WarpPlayer1 || PlayerControl.LocalPlayer == WarpPlayer2)
+            if (PlayerControl.LocalPlayer == WarpPlayer1)
             {
-                Utils.Flash(Colors.Warper);
-
                 if (Minigame.Instance)
                     Minigame.Instance.Close();
 
@@ -791,6 +825,25 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             WarpPlayer2.MyPhysics.ResetMoveState();
             WarpPlayer1 = null;
             WarpPlayer2 = null;
+            TimeRemaining = 0; //Insurance
+            LastWarped = DateTime.UtcNow;
+        }
+
+        public void AnimateWarp()
+        {
+            WarpObj.transform.position = new(WarpPlayer1.GetTruePosition().x, WarpPlayer1.GetTruePosition().y + 0.4f, (WarpPlayer1.GetTruePosition().y / 1000f) + 0.01f);
+            AnimationPlaying.flipX = WarpPlayer1.MyRend().flipX;
+
+            HudManager.Instance.StartCoroutine(Effects.Lerp(CustomGameOptions.WarpDuration, new Action<float>(p =>
+            {
+                var index = (int)(p * AssetManager.PortalAnimation.Length);
+                index = Mathf.Clamp(index, 0, AssetManager.PortalAnimation.Length - 1);
+                AnimationPlaying.sprite = AssetManager.PortalAnimation[index];
+                WarpPlayer1.SetPlayerMaterialColors(AnimationPlaying);
+
+                if (p == 1)
+                    AnimationPlaying.sprite = null;
+            })));
         }
 
         public void WarpClick1(PlayerControl player)
@@ -1064,24 +1117,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
                 var renderer = gameObj.AddComponent<SpriteRenderer>();
                 renderer.sprite = AssetManager.GetSprite("Arrow");
-
-                if (DoUndo.IsCamoed && !HoldsDrive)
-                    renderer.color = Palette.PlayerColors[6];
-                else if (ColorUtils.IsRainbow(target.GetDefaultOutfit().ColorId))
-                    renderer.color = ColorUtils.Rainbow;
-                else if (ColorUtils.IsChroma(target.GetDefaultOutfit().ColorId))
-                    renderer.color = ColorUtils.Chroma;
-                else if (ColorUtils.IsMonochrome(target.GetDefaultOutfit().ColorId))
-                    renderer.color = ColorUtils.Monochrome;
-                else if (ColorUtils.IsMantle(target.GetDefaultOutfit().ColorId))
-                    renderer.color = ColorUtils.Mantle;
-                else if (ColorUtils.IsFire(target.GetDefaultOutfit().ColorId))
-                    renderer.color = ColorUtils.Fire;
-                else if (ColorUtils.IsGalaxy(target.GetDefaultOutfit().ColorId))
-                    renderer.color = ColorUtils.Galaxy;
-                else
-                    renderer.color = Palette.PlayerColors[target.GetDefaultOutfit().ColorId];
-
+                renderer.color = target.GetPlayerColor(!HoldsDrive);
                 arrow.image = renderer;
                 gameObj.layer = 5;
                 arrow.target = target.transform.position;

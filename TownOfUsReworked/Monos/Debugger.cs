@@ -2,6 +2,7 @@ using Reactor.Utilities.ImGui;
 
 namespace TownOfUsReworked.Monos
 {
+    //Based off of Reactor.Debugger but merged with MCI and added some functions of my own for testing
     public class Debugger : MonoBehaviour
     {
         [HideFromIl2Cpp]
@@ -49,7 +50,7 @@ namespace TownOfUsReworked.Monos
                         TownOfUsReworked.MCIActive = false;
                     }
                 }
-                else
+                else if (TownOfUsReworked.MCIActive)
                 {
                     Role.SyndicateHasChaosDrive = GUILayout.Toggle(Role.SyndicateHasChaosDrive, "Enable Chaos Drive");
 
@@ -58,26 +59,23 @@ namespace TownOfUsReworked.Monos
                     else
                         Role.DriveHolder = null;
 
-                    if (TownOfUsReworked.MCIActive)
+                    if (GUILayout.Button("Next Player"))
                     {
-                        if (GUILayout.Button("Next Player"))
-                        {
-                            ControllingFigure++;
+                        ControllingFigure++;
 
-                            if (ControllingFigure == PlayerControl.AllPlayerControls.Count)
-                                ControllingFigure = 0;
+                        if (ControllingFigure == PlayerControl.AllPlayerControls.Count)
+                            ControllingFigure = 0;
 
-                            MCIUtils.SwitchTo((byte)ControllingFigure);
-                        }
-                        else if (GUILayout.Button("Previous Player"))
-                        {
-                            ControllingFigure--;
+                        MCIUtils.SwitchTo((byte)ControllingFigure);
+                    }
+                    else if (GUILayout.Button("Previous Player"))
+                    {
+                        ControllingFigure--;
 
-                            if (ControllingFigure < 0)
-                                ControllingFigure = PlayerControl.AllPlayerControls.Count - 1;
+                        if (ControllingFigure < 0)
+                            ControllingFigure = PlayerControl.AllPlayerControls.Count - 1;
 
-                            MCIUtils.SwitchTo((byte)ControllingFigure);
-                        }
+                        MCIUtils.SwitchTo((byte)ControllingFigure);
                     }
 
                     if (GUILayout.Button("End Game"))
@@ -104,10 +102,7 @@ namespace TownOfUsReworked.Monos
                     }
 
                     if (GUILayout.Button("Complete Tasks"))
-                    {
-                        foreach (var task in PlayerControl.LocalPlayer.myTasks)
-                            PlayerControl.LocalPlayer.RpcCompleteTask(task.Id);
-                    }
+                        PlayerControl.LocalPlayer.myTasks.Il2CppToSystem().ForEach(x => PlayerControl.LocalPlayer.RpcCompleteTask(x.Id));
 
                     if (GUILayout.Button("Redo Intro Sequence"))
                     {
@@ -119,19 +114,13 @@ namespace TownOfUsReworked.Monos
                         PlayerControl.LocalPlayer.CmdReportDeadBody(null);
 
                     if (GUILayout.Button("End Meeting") && MeetingHud.Instance)
-                    {
-                        foreach (var player in PlayerControl.AllPlayerControls)
-                            MeetingHud.Instance.CmdCastVote(player.PlayerId, player.PlayerId);
-                    }
+                        PlayerControl.AllPlayerControls.Il2CppToSystem().ForEach(x => MeetingHud.Instance.CmdCastVote(x.PlayerId, x.PlayerId));
 
                     if (GUILayout.Button("Kill Self"))
                         Utils.RpcMurderPlayer(PlayerControl.LocalPlayer, PlayerControl.LocalPlayer);
 
                     if (GUILayout.Button("Kill All"))
-                    {
-                        foreach (var player in PlayerControl.AllPlayerControls)
-                            Utils.RpcMurderPlayer(player, player);
-                    }
+                        PlayerControl.AllPlayerControls.Il2CppToSystem().ForEach(x => Utils.RpcMurderPlayer(x, x));
 
                     if (GUILayout.Button("Revive Self"))
                         Utils.Revive(PlayerControl.LocalPlayer);
@@ -147,9 +136,7 @@ namespace TownOfUsReworked.Monos
 
                     if (GUILayout.Button("Log Dump"))
                     {
-                        foreach (var layer in PlayerLayer.LocalLayers)
-                            Utils.LogSomething(layer.Name);
-
+                        PlayerLayer.LocalLayers.ForEach(x => Utils.LogSomething(x.Name));
                         Utils.LogSomething("Is Dead - " + PlayerControl.LocalPlayer.Data.IsDead);
                     }
                 }

@@ -3,13 +3,14 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
     public class Fanatic : Objectifier
     {
         public bool Turned;
+        public bool Betrayed;
         public Faction Side = Faction.Crew;
-        public bool Betray => ((Side == Faction.Intruder && ConstantVariables.LastImp) || (Side == Faction.Syndicate && ConstantVariables.LastSyn)) && !IsDead;
+        public bool Betray => ((Side == Faction.Intruder && ConstantVariables.LastImp) || (Side == Faction.Syndicate && ConstantVariables.LastSyn)) && !IsDead && Turned && !Betrayed;
 
         public Fanatic(PlayerControl player) : base(player)
         {
             Name = "Fanatic";
-            SymbolName = "♠";
+            Symbol = "♠";
             TaskText = "- Get attacked by either an <color=#FF0000FF>Intruder</color> or a <color=#008000FF>Syndicate</color> to join their side";
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Fanatic : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Fanatic;
@@ -17,40 +18,40 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             Type = LayerEnum.Fanatic;
         }
 
-        public static void TurnFanatic(PlayerControl fanatic, Faction faction)
+        public void TurnFanatic(Faction faction)
         {
-            var fanaticRole = Role.GetRole(fanatic);
-            var fanatic2 = GetObjectifier<Fanatic>(fanatic);
+            var fanaticRole = Role.GetRole(Player);
             fanaticRole.Faction = faction;
-            fanatic2.Turned = true;
+            Turned = true;
 
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Mystic))
                 Utils.Flash(Colors.Mystic);
 
             if (faction == Faction.Syndicate)
             {
-                fanatic2.Color = Colors.Syndicate;
+                Color = Colors.Syndicate;
                 fanaticRole.IsSynFanatic = true;
                 fanaticRole.FactionColor = Colors.Syndicate;
                 fanaticRole.Objectives = Role.SyndicateWinCon;
             }
             else if (faction == Faction.Intruder)
             {
-                fanatic2.Color = Colors.Intruder;
+                Color = Colors.Intruder;
                 fanaticRole.IsIntFanatic = true;
                 fanaticRole.FactionColor = Colors.Intruder;
                 fanaticRole.Objectives = Role.IntrudersWinCon;
             }
 
-            fanatic2.Side = faction;
-            fanatic2.Hidden = false;
-            fanatic.RegenTask();
+            Side = faction;
+            Hidden = false;
+            fanaticRole.RoleAlignment = fanaticRole.RoleAlignment.GetNewAlignment(fanaticRole.Faction);
+            Player.RegenTask();
 
             foreach (var snitch in Ability.GetAbilities<Snitch>(AbilityEnum.Snitch))
             {
                 if (CustomGameOptions.SnitchSeesFanatic)
                 {
-                    if (snitch.TasksLeft <= CustomGameOptions.SnitchTasksRemaining && fanatic == PlayerControl.LocalPlayer)
+                    if (snitch.TasksLeft <= CustomGameOptions.SnitchTasksRemaining && Player == PlayerControl.LocalPlayer)
                     {
                         var gameObj = new GameObject("SnitchArrow") { layer = 5 };
                         var arrow = gameObj.AddComponent<ArrowBehaviour>();
@@ -75,7 +76,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
 
             foreach (var revealer in Role.GetRoles<Revealer>(RoleEnum.Revealer))
             {
-                if (revealer.Revealed && CustomGameOptions.RevealerRevealsFanatic && fanatic == PlayerControl.LocalPlayer)
+                if (revealer.Revealed && CustomGameOptions.RevealerRevealsFanatic && Player == PlayerControl.LocalPlayer)
                 {
                     var gameObj = new GameObject("RevealerArrow") { layer = 5 };
                     var arrow = gameObj.AddComponent<ArrowBehaviour>();
@@ -97,6 +98,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
 
             var betrayer = new Betrayer(Player) { Objectives = role.Objectives };
             betrayer.RoleUpdate(role);
+            Betrayed = true;
 
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
                 Utils.Flash(Colors.Seer);

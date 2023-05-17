@@ -5,29 +5,30 @@ namespace TownOfUsReworked.Classes
     {
         #pragma warning disable
         public static List<(int, int, bool)> CrewAuditorRoles = new();
-        public static List<(int, int, bool)> CrewInvestigativeRoles = new();
         public static List<(int, int, bool)> CrewKillingRoles = new();
-        public static List<(int, int, bool)> CrewProtectiveRoles = new();
-        public static List<(int, int, bool)> CrewSovereignRoles = new();
         public static List<(int, int, bool)> CrewSupportRoles = new();
+        public static List<(int, int, bool)> CrewSovereignRoles = new();
+        public static List<(int, int, bool)> CrewProtectiveRoles = new();
+        public static List<(int, int, bool)> CrewInvestigativeRoles = new();
         public static List<(int, int, bool)> CrewRoles = new();
 
         public static List<(int, int, bool)> NeutralEvilRoles = new();
         public static List<(int, int, bool)> NeutralBenignRoles = new();
         public static List<(int, int, bool)> NeutralKillingRoles = new();
         public static List<(int, int, bool)> NeutralNeophyteRoles = new();
+        public static List<(int, int, bool)> NeutralHarbingerRoles = new();
         public static List<(int, int, bool)> NeutralRoles = new();
 
-        public static List<(int, int, bool)> IntruderDeceptionRoles = new();
-        public static List<(int, int, bool)> IntruderConcealingRoles = new();
         public static List<(int, int, bool)> IntruderKillingRoles = new();
         public static List<(int, int, bool)> IntruderSupportRoles = new();
+        public static List<(int, int, bool)> IntruderDeceptionRoles = new();
+        public static List<(int, int, bool)> IntruderConcealingRoles = new();
         public static List<(int, int, bool)> IntruderRoles = new();
 
-        public static List<(int, int, bool)> SyndicateDisruptionRoles = new();
-        public static List<(int, int, bool)> SyndicateKillingRoles = new();
         public static List<(int, int, bool)> SyndicatePowerRoles = new();
         public static List<(int, int, bool)> SyndicateSupportRoles = new();
+        public static List<(int, int, bool)> SyndicateKillingRoles = new();
+        public static List<(int, int, bool)> SyndicateDisruptionRoles = new();
         public static List<(int, int, bool)> SyndicateRoles = new();
 
         public static List<(int, int, bool)> AllModifiers = new();
@@ -796,12 +797,11 @@ namespace TownOfUsReworked.Classes
 
                 while (num > 0)
                 {
-                    NeutralKillingRoles.Add((CustomGameOptions.PlaguebearerOn, CustomGameOptions.PestSpawn ? 33 : 34, CustomGameOptions.UniquePlaguebearer));
+                    NeutralHarbingerRoles.Add((CustomGameOptions.PlaguebearerOn, CustomGameOptions.PestSpawn ? 34 : 33, CustomGameOptions.UniquePlaguebearer));
                     num--;
                 }
 
                 var PBorPest = CustomGameOptions.PestSpawn ? "Pestilence" : "Plaguebearer";
-
                 Utils.LogSomething($"{PBorPest} Done");
             }
 
@@ -1399,14 +1399,16 @@ namespace TownOfUsReworked.Classes
                     var maxNK = CustomGameOptions.NKMax;
                     var minNN = CustomGameOptions.NNMin;
                     var maxNN = CustomGameOptions.NNMax;
+                    var maxNH = CustomGameOptions.NHMax;
+                    var minNH = CustomGameOptions.NHMin;
                     var minNeut = CustomGameOptions.NeutralMin;
                     var maxNeut = CustomGameOptions.NeutralMax;
-                    var maxNeutSum = maxNE + maxNB + maxNK + maxNN;
-                    var minNeutSum = minNE + minNB + minNK + minNN;
+                    var maxNeutSum = maxNE + maxNB + maxNK + maxNN + maxNH;
+                    var minNeutSum = minNE + minNB + minNK + minNN + minNH;
 
                     while (maxNeutSum > maxNeut)
                     {
-                        switch (URandom.RandomRangeInt(0, 4))
+                        switch (URandom.RandomRangeInt(0, 5))
                         {
                             case 0:
                                 if (maxNE > 0) maxNE--;
@@ -1423,14 +1425,18 @@ namespace TownOfUsReworked.Classes
                             case 3:
                                 if (maxNN > 0) maxNN--;
                                 break;
+
+                            case 4:
+                                if (maxNH > 0) maxNH--;
+                                break;
                         }
 
-                        maxNeutSum = maxNE + maxNB + maxNK + maxNN;
+                        maxNeutSum = maxNE + maxNB + maxNK + maxNN + maxNH;
                     }
 
                     while (minNeutSum > minNeut)
                     {
-                        switch (URandom.RandomRangeInt(0, 4))
+                        switch (URandom.RandomRangeInt(0, 5))
                         {
                             case 0:
                                 if (minNE > 0) minNE--;
@@ -1447,6 +1453,10 @@ namespace TownOfUsReworked.Classes
                             case 3:
                                 if (minNN > 0) minNN--;
                                 break;
+
+                            case 4:
+                                if (minNH > 0) minNH--;
+                                break;
                         }
 
                         minNeutSum = minNE + minNB + minNK + minNN;
@@ -1456,11 +1466,13 @@ namespace TownOfUsReworked.Classes
                     NeutralEvilRoles = NeutralEvilRoles.Sort(maxNE, minNE);
                     NeutralKillingRoles = NeutralKillingRoles.Sort(maxNK, minNK);
                     NeutralNeophyteRoles = NeutralNeophyteRoles.Sort(maxNN, minNN);
+                    NeutralHarbingerRoles = NeutralHarbingerRoles.Sort(maxNH, minNH);
 
                     NeutralRoles.AddRange(NeutralBenignRoles);
                     NeutralRoles.AddRange(NeutralEvilRoles);
                     NeutralRoles.AddRange(NeutralKillingRoles);
                     NeutralRoles.AddRange(NeutralNeophyteRoles);
+                    NeutralRoles.AddRange(NeutralHarbingerRoles);
 
                     while (maxNeut >= crewmates.Count)
                         maxNeut--;
@@ -2034,7 +2046,7 @@ namespace TownOfUsReworked.Classes
             canHaveEvilAbility.Shuffle();
 
             canHaveKillingAbility.RemoveAll(player => !(player.Is(Faction.Intruder) || player.Is(Faction.Syndicate) || player.Is(RoleAlignment.NeutralNeo) ||
-                player.Is(RoleAlignment.NeutralKill)));
+                player.Is(RoleAlignment.NeutralKill) || player.Is(RoleAlignment.CrewKill) || player.Is(ObjectifierEnum.Corrupted)));
             canHaveKillingAbility.Shuffle();
 
             canHaveBB.RemoveAll(player => (player.Is(RoleEnum.Mayor) && !CustomGameOptions.MayorButton) || (player.Is(RoleEnum.Jester) && !CustomGameOptions.JesterButton) ||
@@ -2247,6 +2259,19 @@ namespace TownOfUsReworked.Classes
                 Utils.LogSomething("Mafia Done");
             }
 
+            if (CustomGameOptions.DefectorOn > 0)
+            {
+                num = ConstantVariables.IsCustom ? CustomGameOptions.DefectorCount : 1;
+
+                while (num > 0)
+                {
+                    AllObjectifiers.Add((CustomGameOptions.DefectorOn, 9, CustomGameOptions.UniqueDefector));
+                    num--;
+                }
+
+                Utils.LogSomething("Defector Done");
+            }
+
             var allCount = PlayerControl.AllPlayerControls.Count;
             AllObjectifiers = AllObjectifiers.Sort(CustomGameOptions.MaxObjectifiers, CustomGameOptions.MinObjectifiers);
 
@@ -2255,6 +2280,7 @@ namespace TownOfUsReworked.Classes
             var canHaveCrewObjectifier = PlayerControl.AllPlayerControls.Il2CppToSystem();
             var canHaveAllied = PlayerControl.AllPlayerControls.Il2CppToSystem();
             var canHaveObjectifier = PlayerControl.AllPlayerControls.Il2CppToSystem();
+            var canHaveDefector = PlayerControl.AllPlayerControls.Il2CppToSystem();
 
             canHaveLoverorRival.RemoveAll(player => player.Is(RoleEnum.Altruist) || player.Is(RoleEnum.Troll) || player.Is(RoleEnum.Actor) || player.Is(RoleEnum.Jester) ||
                 player.Is(RoleEnum.Shifter) || player == PureCrew);
@@ -2272,10 +2298,13 @@ namespace TownOfUsReworked.Classes
             canHaveObjectifier.RemoveAll(player => player == PureCrew);
             canHaveObjectifier.Shuffle();
 
+            canHaveDefector.RemoveAll(player => player == PureCrew || !(player.Is(Faction.Intruder) || player.Is(Faction.Syndicate)));
+            canHaveDefector.Shuffle();
+
             var spawnList = ConstantVariables.IsAA ? AASort(AllObjectifiers, allCount) : AllObjectifiers;
             spawnList = spawnList.SpawnSort();
 
-            while (canHaveNeutralObjectifier.Count > 0 || canHaveCrewObjectifier.Count > 0 || canHaveLoverorRival.Count > 4 || canHaveObjectifier.Count > 1)
+            while (canHaveNeutralObjectifier.Count > 0 || canHaveCrewObjectifier.Count > 0 || canHaveLoverorRival.Count > 4 || canHaveObjectifier.Count > 0 || canHaveDefector.Count > 0)
             {
                 if (spawnList.Count == 0)
                     break;
@@ -2286,6 +2315,7 @@ namespace TownOfUsReworked.Classes
                 int[] Neutral = { 4, 7 };
                 int[] Allied = { 5 };
                 int[] Global = { 8 };
+                int[] Defect = { 9 };
 
                 PlayerControl assigned = null;
 
@@ -2299,6 +2329,8 @@ namespace TownOfUsReworked.Classes
                     assigned = canHaveAllied.TakeFirst();
                 else if (Global.Contains(id) && canHaveObjectifier.Count > 1)
                     assigned = canHaveObjectifier.TakeFirst();
+                else if (Defect.Contains(id) && canHaveDefector.Count > 1)
+                    assigned = canHaveDefector.TakeFirst();
 
                 if (assigned != null)
                 {
@@ -2307,6 +2339,7 @@ namespace TownOfUsReworked.Classes
                     canHaveNeutralObjectifier.Remove(assigned);
                     canHaveAllied.Remove(assigned);
                     canHaveObjectifier.Remove(assigned);
+                    canHaveDefector.Remove(assigned);
 
                     if (Objectifier.GetObjectifier(assigned) == null)
                         Gen(assigned, id, PlayerLayerEnum.Objectifier);
@@ -2582,18 +2615,21 @@ namespace TownOfUsReworked.Classes
                     {
                         alliedRole.Faction = Faction.Crew;
                         alliedRole.FactionColor = Colors.Crew;
+                        alliedRole.RoleAlignment = RoleAlignment.CrewKill;
                         ally.Color = Colors.Crew;
                     }
                     else if (intr)
                     {
                         alliedRole.Faction = Faction.Intruder;
                         alliedRole.FactionColor = Colors.Intruder;
+                        alliedRole.RoleAlignment = RoleAlignment.IntruderKill;
                         ally.Color = Colors.Intruder;
                     }
                     else if (syn)
                     {
                         alliedRole.Faction = Faction.Syndicate;
                         alliedRole.FactionColor = Colors.Syndicate;
+                        alliedRole.RoleAlignment = RoleAlignment.SyndicateKill;
                         ally.Color = Colors.Syndicate;
                     }
 
@@ -2601,6 +2637,7 @@ namespace TownOfUsReworked.Classes
                     alliedRole.IsSynAlly = syn;
                     alliedRole.IsCrewAlly = crew;
                     alliedRole.IsIntAlly = intr;
+                    alliedRole.RoleAlignment = alliedRole.RoleAlignment.GetNewAlignment(alliedRole.Faction);
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Target, SendOption.Reliable);
                     writer.Write((byte)TargetRPC.SetAlliedFaction);
                     writer.Write(ally.PlayerId);
@@ -3099,6 +3136,8 @@ namespace TownOfUsReworked.Classes
 
             Ash.AllPiles.Clear();
             Objects.Range.AllItems.Clear();
+
+            GameSettings.SettingsPage = 0;
         }
 
         public static void BeginRoleGen(List<GameData.PlayerInfo> infected)
@@ -3461,6 +3500,9 @@ namespace TownOfUsReworked.Classes
                 case 8:
                     _ = new Mafia(player);
                     break;
+                case 9:
+                    _ = new Defector(player);
+                    break;
             }
         }
 
@@ -3548,7 +3590,7 @@ namespace TownOfUsReworked.Classes
 
                 if (chosen == null)
                 {
-                    chosen = all.Find(x => !x.Data.IsDead && !x.Data.Disconnected && x.Is(RoleAlignment.SyndicateDisruption));
+                    chosen = all.Find(x => !x.Data.IsDead && !x.Data.Disconnected && x.Is(RoleAlignment.SyndicateDisrup));
 
                     if (chosen == null)
                     {
@@ -3670,6 +3712,7 @@ namespace TownOfUsReworked.Classes
 
                     role1.SubFaction = sub;
                     role1.SubFactionColor = flash;
+                    role1.RoleAlignment = role1.RoleAlignment.GetNewAlignment(Faction.Neutral);
                     Convertible--;
 
                     if (PlayerControl.LocalPlayer == converted)

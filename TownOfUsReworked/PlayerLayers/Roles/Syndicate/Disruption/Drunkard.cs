@@ -18,8 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AbilitiesText = "- You can confuse a player\n- Confused players will have their controls reverse\n- With the Chaos Drive, you reverse everyone's controls";
             Color = CustomGameOptions.CustomSynColors ? Colors.Drunkard : Colors.Syndicate;
             RoleType = RoleEnum.Drunkard;
-            RoleAlignment = RoleAlignment.SyndicateDisruption;
-            AlignmentName = SD;
+            RoleAlignment = RoleAlignment.SyndicateDisrup;
             ConfuseMenu = new(Player, Click, Exception1);
             ConfusedPlayer = null;
             Type = LayerEnum.Drunkard;

@@ -19,8 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AbilitiesText = $"- You can shuffle everyone's appearances\n{AbilitiesText}";
             Color = CustomGameOptions.CustomSynColors ? Colors.Shapeshifter : Colors.Syndicate;
             RoleType = RoleEnum.Shapeshifter;
-            RoleAlignment = RoleAlignment.SyndicateDisruption;
-            AlignmentName = SD;
+            RoleAlignment = RoleAlignment.SyndicateDisrup;
             ShapeshiftPlayer1 = null;
             ShapeshiftPlayer2 = null;
             ShapeshiftMenu1 = new(Player, Click1, Exception1);
@@ -57,6 +56,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 Utils.DefaultOutfit(ShapeshiftPlayer1);
                 Utils.DefaultOutfit(ShapeshiftPlayer2);
             }
+
+            ShapeshiftPlayer1 = null;
+            ShapeshiftPlayer2 = null;
         }
 
         public float ShapeshiftTimer()

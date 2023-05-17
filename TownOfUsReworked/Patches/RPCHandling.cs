@@ -123,7 +123,7 @@ namespace TownOfUsReworked.Patches
                     break;
 
                 case CustomRPC.MeetingStart:
-                    foreach (var body in UObject.FindObjectsOfType<DeadBody>())
+                    foreach (var body in Utils.AllBodies)
                         body.gameObject.Destroy();
 
                     foreach (var player10 in PlayerControl.AllPlayerControls)
@@ -158,10 +158,6 @@ namespace TownOfUsReworked.Patches
                     var guid = c ? new Guid(reader.ReadBytes(16)) : new(new byte[16]);
                     Utils.VersionHandshake(major, minor, patch, revision == 255 ? -1 : revision, guid, versionOwnerId);
                     var timer = reader.ReadSingle();
-
-                    if (!AmongUsClient.Instance.AmHost && timer >= 0f)
-                        GameStartManagerPatch.timer = timer;
-
                     break;
 
                 case CustomRPC.SubmergedFixOxygen:
@@ -189,6 +185,10 @@ namespace TownOfUsReworked.Patches
 
                 case CustomRPC.SyncCustomSettings:
                     RPC.ReceiveRPC(reader);
+                    break;
+
+                case CustomRPC.Notify:
+                    ChatCommands.Notify(reader.ReadByte());
                     break;
 
                 case CustomRPC.SetSettings:
@@ -226,6 +226,10 @@ namespace TownOfUsReworked.Patches
 
                     switch ((TurnRPC)id5)
                     {
+                        case TurnRPC.TurnFanatic:
+                            Objectifier.GetObjectifier<Fanatic>(Utils.PlayerById(reader.ReadByte())).TurnFanatic((Faction)reader.ReadByte());
+                            break;
+
                         case TurnRPC.TurnTraitorBetrayer:
                             Objectifier.GetObjectifier<Traitor>(Utils.PlayerById(reader.ReadByte())).TurnBetrayer();
                             break;
@@ -234,8 +238,8 @@ namespace TownOfUsReworked.Patches
                             Objectifier.GetObjectifier<Fanatic>(Utils.PlayerById(reader.ReadByte())).TurnBetrayer();
                             break;
 
-                        case TurnRPC.TurnFanatic:
-                            Fanatic.TurnFanatic(Utils.PlayerById(reader.ReadByte()), (Faction)reader.ReadByte());
+                        case TurnRPC.TurnSides:
+                            Objectifier.GetObjectifier<Defector>(Utils.PlayerById(reader.ReadByte())).TurnSides();
                             break;
 
                         case TurnRPC.TurnVigilante:
@@ -362,22 +366,26 @@ namespace TownOfUsReworked.Patches
                             {
                                 alliedRole.FactionColor = Colors.Crew;
                                 alliedRole.IsCrewAlly = true;
+                                alliedRole.RoleAlignment = RoleAlignment.CrewKill;
                                 ally.Color = Colors.Crew;
                             }
                             else if (faction == Faction.Intruder)
                             {
                                 alliedRole.FactionColor = Colors.Intruder;
                                 alliedRole.IsIntAlly = true;
+                                alliedRole.RoleAlignment = RoleAlignment.IntruderKill;
                                 ally.Color = Colors.Intruder;
                             }
                             else if (faction == Faction.Syndicate)
                             {
                                 alliedRole.FactionColor = Colors.Syndicate;
                                 alliedRole.IsSynAlly = true;
+                                alliedRole.RoleAlignment = RoleAlignment.SyndicateKill;
                                 ally.Color = Colors.Syndicate;
                             }
 
-                            ally.Side = alliedRole.Faction;
+                            ally.Side = faction;
+                            alliedRole.RoleAlignment = alliedRole.RoleAlignment.GetNewAlignment(faction);
                             break;
 
                         case TargetRPC.SetCouple:
@@ -1039,7 +1047,7 @@ namespace TownOfUsReworked.Patches
                             var arso = Utils.PlayerById(reader.ReadByte());
                             var arsoRole = Role.GetRole<Arsonist>(arso);
 
-                            foreach (var body in UObject.FindObjectsOfType<DeadBody>())
+                            foreach (var body in Utils.AllBodies)
                             {
                                 if (arsoRole.Doused.Contains(body.ParentId))
                                 {
@@ -1202,7 +1210,7 @@ namespace TownOfUsReworked.Patches
                             {
                                 foreach (var role in Role.GetRoles(nkRole.RoleType))
                                 {
-                                    if (!role.Disconnected && role.NotDefective)
+                                    if (!role.Disconnected && role.Faithful)
                                         role.Winner = true;
                                 }
                             }

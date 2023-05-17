@@ -15,7 +15,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = CustomGameOptions.CustomCrewColors ? Colors.Mayor : Colors.Crew;
             RoleType = RoleEnum.Mayor;
             RoleAlignment = RoleAlignment.CrewSov;
-            AlignmentName = CSv;
             InspectorResults = InspectorResults.LeadsTheGroup;
             Type = LayerEnum.Mayor;
             Voted = 255;
@@ -50,7 +49,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            RevealButton.Update("REVEAL", 0, 1, !Revealed, !Revealed && !RoundOne);
+            RevealButton.Update("REVEAL", !Revealed, !Revealed && !RoundOne);
         }
     }
 }

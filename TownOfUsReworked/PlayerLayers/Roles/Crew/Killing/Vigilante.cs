@@ -20,7 +20,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = CustomGameOptions.CustomCrewColors ? Colors.Vigilante : Colors.Crew;
             RoleType = RoleEnum.Vigilante;
             RoleAlignment = RoleAlignment.CrewKill;
-            AlignmentName = CK;
             InspectorResults = InspectorResults.IsCold;
             UsesLeft = CustomGameOptions.VigiBulletCount;
             Type = LayerEnum.Vigilante;

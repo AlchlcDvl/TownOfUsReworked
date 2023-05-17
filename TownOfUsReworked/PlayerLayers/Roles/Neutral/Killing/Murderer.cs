@@ -14,7 +14,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = CustomGameOptions.CustomNeutColors ? Colors.Murderer : Colors.Neutral;
             RoleType = RoleEnum.Murderer;
             RoleAlignment = RoleAlignment.NeutralKill;
-            AlignmentName = NK;
             Type = LayerEnum.Murderer;
             MurderButton = new(this, "Murder", AbilityTypes.Direct, "ActionSecondary", Murder, Exception);
             InspectorResults = InspectorResults.IsBasic;

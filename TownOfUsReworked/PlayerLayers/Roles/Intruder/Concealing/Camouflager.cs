@@ -18,7 +18,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = CustomGameOptions.CustomIntColors ? Colors.Camouflager : Colors.Intruder;
             RoleType = RoleEnum.Camouflager;
             RoleAlignment = RoleAlignment.IntruderConceal;
-            AlignmentName = IC;
             InspectorResults = InspectorResults.BringsChaos;
             Type = LayerEnum.Camouflager;
             CamouflageButton = new(this, "Camouflage", AbilityTypes.Effect, "Secondary", HitCamouflage);

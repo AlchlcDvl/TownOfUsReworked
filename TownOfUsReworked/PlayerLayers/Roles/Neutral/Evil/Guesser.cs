@@ -31,7 +31,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             StartText = "Guess What Your Target Might Be";
             RoleType = RoleEnum.Guesser;
             RoleAlignment = RoleAlignment.NeutralEvil;
-            AlignmentName = NE;
             Color = CustomGameOptions.CustomNeutColors ? Colors.Guesser : Colors.Neutral;
             RemainingGuesses = CustomGameOptions.GuessCount;
             OtherButtons = new();
@@ -359,12 +358,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 label.transform.localScale *= 1.7f;
                 label.text = Sorted[k].Key;
                 label.color = Sorted[k].Value;
-                button.GetComponent<PassiveButton>().OnMouseOver.RemoveAllListeners();
+                button.GetComponent<PassiveButton>().OnMouseOver = new();
                 button.GetComponent<PassiveButton>().OnMouseOver.AddListener((Action)(() => button.GetComponent<SpriteRenderer>().color = UnityEngine.Color.green));
-                button.GetComponent<PassiveButton>().OnMouseOut.RemoveAllListeners();
+                button.GetComponent<PassiveButton>().OnMouseOut = new();
                 button.GetComponent<PassiveButton>().OnMouseOut.AddListener((Action)(() => button.GetComponent<SpriteRenderer>().color = SelectedButton == button ? UnityEngine.Color.red :
                     UnityEngine.Color.white));
-                button.GetComponent<PassiveButton>().OnClick.RemoveAllListeners();
+                button.GetComponent<PassiveButton>().OnClick = new();
                 button.GetComponent<PassiveButton>().OnClick.AddListener((Action)(() =>
                 {
                     if (IsDead)
@@ -550,7 +549,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
             else if (!AlignmentHintGiven && lettersExhausted)
             {
-                something = $"Your target is a {targetRole.AlignmentName} Role!";
+                something = $"Your target's role belongs to {targetRole.RoleAlignment.AlignmentName()} alignment!";
                 AlignmentHintGiven = true;
             }
             else if (!SubFactionHintGiven && lettersExhausted)
@@ -573,8 +572,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         private bool IsExempt(PlayerVoteArea voteArea)
         {
             var player = Utils.PlayerByVoteArea(voteArea);
-            return player.Data.IsDead || player.Data.Disconnected || (player != TargetPlayer && !TargetGuessed) || player == PlayerControl.LocalPlayer || player == Player.GetOtherLover() ||
-                player == Player.GetOtherRival() || RemainingGuesses <= 0 || IsDead;
+            return player.Data.IsDead || player.Data.Disconnected || (player != TargetPlayer && !TargetGuessed) || player == PlayerControl.LocalPlayer || RemainingGuesses <= 0 ||
+                IsDead || player == Player.GetOtherLover() || player == Player.GetOtherRival();
         }
 
         public void GenButton(PlayerVoteArea voteArea, MeetingHud __instance)
@@ -592,11 +591,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var renderer = targetBox.GetComponent<SpriteRenderer>();
             renderer.sprite = AssetManager.GetSprite("Guess");
             var button = targetBox.GetComponent<PassiveButton>();
-            button.OnClick.RemoveAllListeners();
+            button.OnClick = new();
             button.OnClick.AddListener((Action)(() => Guess(voteArea, __instance)));
-            button.OnMouseOut.RemoveAllListeners();
+            button.OnMouseOut = new();
             button.OnMouseOut.AddListener((Action)(() => renderer.color = UnityEngine.Color.white));
-            button.OnMouseOver.RemoveAllListeners();
+            button.OnMouseOver = new();
             button.OnMouseOver.AddListener((Action)(() => renderer.color = UnityEngine.Color.red));
             var collider = targetBox.GetComponent<BoxCollider2D>();
             collider.size = renderer.sprite.bounds.size;
@@ -630,7 +629,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             exitButton.gameObject.GetComponent<SpriteRenderer>().sprite = smallButtonTemplate.GetComponent<SpriteRenderer>().sprite;
             exitButtonParent.transform.localPosition = new(2.725f, 2.1f, -5);
             exitButtonParent.transform.localScale = new(0.217f, 0.9f, 1);
-            exitButton.GetComponent<PassiveButton>().OnClick.RemoveAllListeners();
+            exitButton.GetComponent<PassiveButton>().OnClick = new();
             exitButton.GetComponent<PassiveButton>().OnClick.AddListener((Action)(() => Exit(__instance)));
             SetButtons(__instance, voteArea);
         }
@@ -647,11 +646,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 foreach (var item in pair.Value)
                 {
-                    item?.GetComponent<PassiveButton>().OnClick.RemoveAllListeners();
-                    item?.GetComponent<PassiveButton>().OnMouseOut.RemoveAllListeners();
-                    item?.GetComponent<PassiveButton>().OnMouseOver.RemoveAllListeners();
-                    item?.gameObject?.SetActive(false);
-                    item?.gameObject?.Destroy();
+                    item.GetComponent<PassiveButton>().OnClick = new();
+                    item.GetComponent<PassiveButton>().OnMouseOut = new();
+                    item.GetComponent<PassiveButton>().OnMouseOver = new();
+                    item.gameObject.SetActive(false);
+                    item.gameObject.Destroy();
+                    item.Destroy();
                 }
             }
 
@@ -672,7 +672,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 return;
 
             button.SetActive(false);
-            button.GetComponent<PassiveButton>().OnClick.RemoveAllListeners();
+            button.GetComponent<PassiveButton>().OnClick = new();
             button.Destroy();
             OtherButtons[targetId] = null;
         }
@@ -958,7 +958,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     if (SetPostmortals.RevealerOn && SetPostmortals.WillBeRevealer == null && player.Is(Faction.Crew))
                     {
                         SetPostmortals.WillBeRevealer = player;
-                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetRevealer, SendOption.Reliable, -1);
+                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetRevealer, SendOption.Reliable);
                         writer.Write(PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
                     }
@@ -966,7 +966,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     if (SetPostmortals.PhantomOn && SetPostmortals.WillBePhantom == null && player.Is(Faction.Neutral) && !LayerExtentions.NeutralHasUnfinishedBusiness(player))
                     {
                         SetPostmortals.WillBePhantom = player;
-                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPhantom, SendOption.Reliable, -1);
+                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPhantom, SendOption.Reliable);
                         writer.Write(PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
                     }
@@ -974,7 +974,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     if (SetPostmortals.BansheeOn && SetPostmortals.WillBeBanshee == null && player.Is(Faction.Syndicate))
                     {
                         SetPostmortals.WillBeBanshee = player;
-                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetBanshee, SendOption.Reliable, -1);
+                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetBanshee, SendOption.Reliable);
                         writer.Write(PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
                     }
@@ -982,7 +982,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     if (SetPostmortals.GhoulOn && SetPostmortals.WillBeGhoul == null && player.Is(Faction.Intruder))
                     {
                         SetPostmortals.WillBeGhoul = player;
-                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetGhoul, SendOption.Reliable, -1);
+                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetGhoul, SendOption.Reliable);
                         writer.Write(PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
                     }

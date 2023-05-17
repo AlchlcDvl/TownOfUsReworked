@@ -15,7 +15,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleType = RoleEnum.Stalker;
             StalkerArrows = new();
             RoleAlignment = RoleAlignment.SyndicateSupport;
-            AlignmentName = SSu;
             InspectorResults = InspectorResults.TracksOthers;
             Type = LayerEnum.Stalker;
             StalkButton = new(this, "Stalk", AbilityTypes.Direct, "ActionSecondary", Stalk, Exception1);
@@ -61,24 +60,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
                 var renderer = gameObj.AddComponent<SpriteRenderer>();
                 renderer.sprite = AssetManager.GetSprite("Arrow");
-
-                if (DoUndo.IsCamoed && !HoldsDrive)
-                    renderer.color = Palette.PlayerColors[6];
-                else if (ColorUtils.IsRainbow(target.GetDefaultOutfit().ColorId))
-                    renderer.color = ColorUtils.Rainbow;
-                else if (ColorUtils.IsChroma(target.GetDefaultOutfit().ColorId))
-                    renderer.color = ColorUtils.Chroma;
-                else if (ColorUtils.IsMonochrome(target.GetDefaultOutfit().ColorId))
-                    renderer.color = ColorUtils.Monochrome;
-                else if (ColorUtils.IsMantle(target.GetDefaultOutfit().ColorId))
-                    renderer.color = ColorUtils.Mantle;
-                else if (ColorUtils.IsFire(target.GetDefaultOutfit().ColorId))
-                    renderer.color = ColorUtils.Fire;
-                else if (ColorUtils.IsGalaxy(target.GetDefaultOutfit().ColorId))
-                    renderer.color = ColorUtils.Galaxy;
-                else
-                    renderer.color = Palette.PlayerColors[target.GetDefaultOutfit().ColorId];
-
+                renderer.color = target.GetPlayerColor(!HoldsDrive);
                 arrow.image = renderer;
                 gameObj.layer = 5;
                 arrow.target = target.transform.position;
@@ -114,23 +96,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     }
                     #pragma warning restore
 
-                    if (DoUndo.IsCamoed && !HoldsDrive)
-                        arrow.Value.image.color = Palette.PlayerColors[6];
-                    else if (ColorUtils.IsRainbow(player.GetDefaultOutfit().ColorId))
-                        arrow.Value.image.color = ColorUtils.Rainbow;
-                    else if (ColorUtils.IsChroma(player.GetDefaultOutfit().ColorId))
-                        arrow.Value.image.color = ColorUtils.Chroma;
-                    else if (ColorUtils.IsMonochrome(player.GetDefaultOutfit().ColorId))
-                        arrow.Value.image.color = ColorUtils.Monochrome;
-                    else if (ColorUtils.IsMantle(player.GetDefaultOutfit().ColorId))
-                        arrow.Value.image.color = ColorUtils.Mantle;
-                    else if (ColorUtils.IsFire(player.GetDefaultOutfit().ColorId))
-                        arrow.Value.image.color = ColorUtils.Fire;
-                    else if (ColorUtils.IsGalaxy(player.GetDefaultOutfit().ColorId))
-                        arrow.Value.image.color = ColorUtils.Galaxy;
-                    else
-                        arrow.Value.image.color = Palette.PlayerColors[player.GetDefaultOutfit().ColorId];
-
+                    arrow.Value.image.color = player.GetPlayerColor(!HoldsDrive);
                     arrow.Value.target = player.transform.position;
                 }
 

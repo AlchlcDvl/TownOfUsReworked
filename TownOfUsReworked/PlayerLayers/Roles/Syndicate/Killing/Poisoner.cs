@@ -21,7 +21,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleType = RoleEnum.Poisoner;
             PoisonedPlayer = null;
             RoleAlignment = RoleAlignment.SyndicateKill;
-            AlignmentName = SyK;
             PoisonMenu = new(Player, Click, Exception1);
             Type = LayerEnum.Poisoner;
             PoisonButton = new(this, "Poison", AbilityTypes.Direct, "ActionSecondary", HitPoison, Exception1);

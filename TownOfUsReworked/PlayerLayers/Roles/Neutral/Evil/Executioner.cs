@@ -20,7 +20,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = CustomGameOptions.CustomNeutColors ? Colors.Executioner : Colors.Neutral;
             RoleType = RoleEnum.Executioner;
             RoleAlignment = RoleAlignment.NeutralEvil;
-            AlignmentName = NE;
             ToDoom = new();
             UsesLeft = CustomGameOptions.DoomCount;
             AbilitiesText = "- After your target has been ejected, you can doom players who voted for them\n- If your target dies, you will become a <color=#F7B3DAFF>Jester</color>";

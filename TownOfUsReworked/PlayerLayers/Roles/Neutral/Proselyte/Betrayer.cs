@@ -13,7 +13,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleType = RoleEnum.Betrayer;
             Color = CustomGameOptions.CustomNeutColors ? Colors.Betrayer : Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralPros;
-            AlignmentName = NP;
             Type = LayerEnum.Betrayer;
             KillButton = new(this, "BetKill", AbilityTypes.Direct, "ActionSecondary", Kill, Exception);
             InspectorResults = InspectorResults.IsAggressive;

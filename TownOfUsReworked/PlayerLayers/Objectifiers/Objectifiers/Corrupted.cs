@@ -8,12 +8,13 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         public Corrupted(PlayerControl player) : base(player)
         {
             Name = "Corrupted";
-            SymbolName = "δ";
+            Symbol = "δ";
             TaskText = "- Corrupt everyone";
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Corrupted : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Corrupted;
             Type = LayerEnum.Corrupted;
             CorruptButton = new(this, "CorruptedCorrupt", AbilityTypes.Direct, "Quarternary", Corrupt);
+            Role.GetRole(Player).RoleAlignment = Role.GetRole(Player).RoleAlignment.GetNewAlignment(Faction.Neutral);
         }
 
         public float CorruptTimer()

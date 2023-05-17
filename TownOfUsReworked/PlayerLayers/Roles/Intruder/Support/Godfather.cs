@@ -16,7 +16,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 $"abilities of their former role\n{AbilitiesText}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Godfather : Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderSupport;
-            AlignmentName = IS;
             Type = LayerEnum.Godfather;
             DeclareButton = new(this, "Promote", AbilityTypes.Direct, "Secondary", Declare);
             InspectorResults = InspectorResults.LeadsTheGroup;
@@ -71,7 +70,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            DeclareButton.Update("PROMOTE", 0, 1, true, !HasDeclared);
+            DeclareButton.Update("PROMOTE", true, !HasDeclared);
         }
     }
 }

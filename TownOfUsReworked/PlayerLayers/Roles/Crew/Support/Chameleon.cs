@@ -17,7 +17,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AbilitiesText = "- You can turn invisible";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Chameleon : Colors.Crew;
             RoleType = RoleEnum.Chameleon;
-            AlignmentName = CS;
             InspectorResults = InspectorResults.Unseen;
             UsesLeft = CustomGameOptions.SwoopCount;
             Type = LayerEnum.Chameleon;

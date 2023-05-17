@@ -16,8 +16,8 @@
             foreach (var player in PlayerControl.AllPlayerControls.ToArray())
                 player.transform.localScale = !(player.Data.IsDead || player.Data.Disconnected) ? player.GetAppearance().SizeFactor : new(0.7f, 0.7f, 1f);
 
-            foreach (var body in UObject.FindObjectsOfType<DeadBody>())
-                body.transform.localScale = Utils.PlayerById(body.ParentId).GetAppearance().SizeFactor;
+            foreach (var body in Utils.AllBodies)
+                body.transform.localScale = Utils.PlayerByBody(body).GetAppearance().SizeFactor;
         }
     }
 }

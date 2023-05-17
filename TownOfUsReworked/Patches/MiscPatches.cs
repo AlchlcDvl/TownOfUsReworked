@@ -160,4 +160,17 @@ namespace TownOfUsReworked.Patches
             value = !__instance.inVent;
         }
     }
+
+    [HarmonyPatch(typeof(Minigame), nameof(Minigame.Begin))]
+    public static class MinigamePatch
+    {
+        public static void Postfix(Minigame __instance)
+        {
+            if (!__instance || !PlayerControl.LocalPlayer.Is(AbilityEnum.Multitasker))
+                return;
+
+            foreach (var rend in __instance.GetComponentsInChildren<SpriteRenderer>())
+                rend.color = new(rend.color.r, rend.color.g, rend.color.b, CustomGameOptions.Transparancy / 100f);
+        }
+    }
 }

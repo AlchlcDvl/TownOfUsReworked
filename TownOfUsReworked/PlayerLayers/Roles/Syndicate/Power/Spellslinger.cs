@@ -15,7 +15,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 $"</color> win\n- With the Chaos Drive, your spells are astral\n{AbilitiesText}";
             RoleType = RoleEnum.Spellslinger;
             RoleAlignment = RoleAlignment.SyndicatePower;
-            AlignmentName = SP;
             Color = CustomGameOptions.CustomSynColors ? Colors.Spellslinger : Colors.Syndicate;
             Spelled = new();
             SpellCount = 0;
@@ -35,10 +34,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Spell(PlayerControl player)
         {
-            if (player.Is(Faction.Syndicate) || Spelled.Contains(player.PlayerId))
+            if (player.Is(Faction) || Spelled.Contains(player.PlayerId))
                 return;
 
             Spelled.Add(player.PlayerId);
+            Spelled.RemoveAll(x => Utils.PlayerById(x).Data.IsDead || Utils.PlayerById(x).Data.Disconnected);
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
             writer.Write((byte)ActionsRPC.Spell);
             writer.Write(PlayerId);
@@ -72,11 +72,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     LastSpelled.AddSeconds(CustomGameOptions.ProtectKCReset);
             }
 
-            if (Spelled.Count >= PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && !x.Is(Faction.Syndicate)))
+            if (Spelled.Count >= PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && !x.Is(Faction)))
             {
-                SyndicateWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.SyndicateWin);
+
+                if (Faction == Faction.Intruder)
+                {
+                    writer.Write((byte)WinLoseRPC.IntruderWin);
+                    IntruderWin = true;
+                }
+                else if (Faction == Faction.Syndicate)
+                {
+                    writer.Write((byte)WinLoseRPC.SyndicateWin);
+                    SyndicateWin = true;
+                }
+
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 Utils.EndGame();
             }

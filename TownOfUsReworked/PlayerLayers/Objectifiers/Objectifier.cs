@@ -24,11 +24,11 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             AllObjectifiers.Add(this);
         }
 
-        public string SymbolName = ":";
+        public string Symbol = "φ";
         public string TaskText = "- None";
         public bool Hidden;
 
-        public string ColoredSymbol => $"{ColorString}{SymbolName}</color>";
+        public string ColoredSymbol => $"{ColorString}{Symbol}</color>";
 
         public static Objectifier GetObjectifier(PlayerControl player) => AllObjectifiers.Find(x => x.Player == player);
 

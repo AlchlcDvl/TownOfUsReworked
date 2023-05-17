@@ -15,7 +15,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = CustomGameOptions.CustomIntColors ? Colors.Blackmailer : Colors.Intruder;
             RoleType = RoleEnum.Blackmailer;
             RoleAlignment = RoleAlignment.IntruderConceal;
-            AlignmentName = IC;
             InspectorResults = InspectorResults.GainsInfo;
             BlackmailedPlayer = null;
             Type = LayerEnum.Blackmailer;

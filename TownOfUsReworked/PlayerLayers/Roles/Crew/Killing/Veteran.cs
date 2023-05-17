@@ -19,7 +19,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleType = RoleEnum.Veteran;
             UsesLeft = CustomGameOptions.MaxAlerts;
             RoleAlignment = RoleAlignment.CrewKill;
-            AlignmentName = CK;
             InspectorResults = InspectorResults.IsCold;
             Type = LayerEnum.Veteran;
             AlertButton = new(this, "Alert", AbilityTypes.Effect, "ActionSecondary", HitAlert, true);

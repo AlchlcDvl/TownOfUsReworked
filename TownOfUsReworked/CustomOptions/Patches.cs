@@ -205,7 +205,7 @@ namespace TownOfUsReworked.CustomOptions
                     if (title != null)
                     {
                         title.GetComponent<TextTranslatorTMP>().Destroy();
-                        title.GetComponent<TextMeshPro>().m_text = $"Town Of Us Reworked {Menus[index]} Settings";
+                        title.GetComponent<TextMeshPro>().m_text = $"{Menus[index]} Settings";
                     }
 
                     var sliderInner = gameGroup?.FindChild("SliderInner");
@@ -223,12 +223,11 @@ namespace TownOfUsReworked.CustomOptions
 
                     var renderer = hatIcon.GetComponent<SpriteRenderer>();
                     renderer.sprite = AssetManager.GetSprite(GetSettingSprite(index));
-                    var touSettingsHighlight = tabBackground.GetComponent<SpriteRenderer>();
                     MenuG.Add(touSettings);
-                    MenuS.Add(touSettingsHighlight);
+                    MenuS.Add(tabBackground.GetComponent<SpriteRenderer>());
 
                     var passiveButton = tabBackground.GetComponent<PassiveButton>();
-                    passiveButton.OnClick.RemoveAllListeners();
+                    passiveButton.OnClick = new();
                     passiveButton.OnClick.AddListener(ToggleButton(index));
                 }
 
@@ -248,7 +247,7 @@ namespace TownOfUsReworked.CustomOptions
             };
         }
 
-        public static System.Action ToggleButton(int id) => new(() => ToggleButtonVoid(id));
+        public static Action ToggleButton(int id) => new(() => ToggleButtonVoid(id));
 
         [HarmonyPatch(typeof(GameSettingMenu), nameof(GameSettingMenu.Update))]
         public static class OptionsMenuBehaviour_Update
@@ -294,9 +293,12 @@ namespace TownOfUsReworked.CustomOptions
 
         public static void ToggleButtonVoid(int id)
         {
+            if (MenuG.Count <= id)
+                return;
+
             foreach (var g in MenuG)
             {
-                g?.SetActive(MenuG[id] == g);
+                g.SetActive(MenuG[id] == g);
                 MenuS[id].enabled = MenuG[id] == g;
             }
 
@@ -577,8 +579,6 @@ namespace TownOfUsReworked.CustomOptions
         public static class HudManagerUpdate
         {
             private static float MinX = -5.233334f, MinY = 2.9f;
-            //Differs to cause excess options to appear cut off to encourage scrolling
-
             private static Scroller Scroller;
             private static Vector3 LastPosition;
             private static float LastAspect;
@@ -600,7 +600,7 @@ namespace TownOfUsReworked.CustomOptions
                     LastAspect = aspect;
                     sStLastPosition = true;
 
-                    if (Scroller != null)
+                    if (Scroller)
                         Scroller.ContentXBounds = new(MinX, MinX);
                 }
 
@@ -633,9 +633,8 @@ namespace TownOfUsReworked.CustomOptions
                 if (Scroller != null)
                     return;
 
-                Scroller = new GameObject("SettingsScroller").AddComponent<Scroller>();
+                Scroller = new GameObject("SettingsScroller") { layer = 5 }.AddComponent<Scroller>();
                 Scroller.transform.SetParent(__instance.GameSettings.transform.parent);
-                Scroller.gameObject.layer = 5;
 
                 Scroller.transform.localScale = Vector3.one;
                 Scroller.allowX = false;
@@ -656,12 +655,10 @@ namespace TownOfUsReworked.CustomOptions
         {
             public static void Postfix()
             {
-                var value = CustomGameOptions.LobbySize;
-
-                if (TownOfUsReworked.VanillaOptions.MaxPlayers != value)
+                if (TownOfUsReworked.VanillaOptions.MaxPlayers != CustomGameOptions.LobbySize)
                 {
-                    TownOfUsReworked.VanillaOptions.MaxPlayers = value;
-                    GameStartManager.Instance.LastPlayerCount = value;
+                    TownOfUsReworked.VanillaOptions.MaxPlayers = CustomGameOptions.LobbySize;
+                    GameStartManager.Instance.LastPlayerCount = CustomGameOptions.LobbySize;
                     PlayerControl.LocalPlayer.RpcSyncSettings(GameOptionsManager.Instance.gameOptionsFactory.ToBytes(GameOptionsManager.Instance.currentGameOptions));
                 }
             }

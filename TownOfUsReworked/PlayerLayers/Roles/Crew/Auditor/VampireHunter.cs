@@ -15,7 +15,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = CustomGameOptions.CustomCrewColors ? Colors.VampireHunter : Colors.Crew;
             RoleType = RoleEnum.VampireHunter;
             RoleAlignment = RoleAlignment.CrewAudit;
-            AlignmentName = CA;
             InspectorResults = InspectorResults.TracksOthers;
             Type = LayerEnum.VampireHunter;
             StakeButton = new(this, "Stake", AbilityTypes.Direct, "ActionSecondary", Stake);

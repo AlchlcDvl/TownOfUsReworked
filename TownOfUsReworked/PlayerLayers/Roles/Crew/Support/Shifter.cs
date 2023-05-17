@@ -14,7 +14,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = CustomGameOptions.CustomCrewColors ? Colors.Shifter : Colors.Crew;
             RoleType = RoleEnum.Shifter;
             RoleAlignment = RoleAlignment.CrewSupport;
-            AlignmentName = CS;
             InspectorResults = InspectorResults.BringsChaos;
             Type = LayerEnum.Shifter;
             ShiftButton = new(this, "Shift", AbilityTypes.Direct, "ActionSecondary", Shift);

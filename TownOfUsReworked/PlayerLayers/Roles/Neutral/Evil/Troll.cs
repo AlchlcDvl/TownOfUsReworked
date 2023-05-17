@@ -15,7 +15,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = CustomGameOptions.CustomNeutColors ? Colors.Troll : Colors.Neutral;
             RoleType = RoleEnum.Troll;
             RoleAlignment = RoleAlignment.NeutralEvil;
-            AlignmentName = NE;
             Objectives = "- Get killed";
             Type = LayerEnum.Troll;
             InteractButton = new(this, "Placeholder", AbilityTypes.Direct, "ActionSecondary", Interact);

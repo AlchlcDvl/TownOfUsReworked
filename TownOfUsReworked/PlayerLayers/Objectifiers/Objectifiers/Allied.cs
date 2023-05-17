@@ -8,7 +8,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         public Allied(PlayerControl player) : base(player)
         {
             Name = "Allied";
-            SymbolName = "ζ";
+            Symbol = "ζ";
             TaskText = Objective;
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Allied : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Allied;

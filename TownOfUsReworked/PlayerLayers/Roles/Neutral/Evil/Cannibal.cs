@@ -17,7 +17,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AbilitiesText = "- You can consume a body, making it disappear from the game" + (CustomGameOptions.EatArrows ? "\n- When someone dies, you get an arrow pointing to their body" :
                 "");
             RoleAlignment = RoleAlignment.NeutralEvil;
-            AlignmentName = NE;
             Color = CustomGameOptions.CustomNeutColors ? Colors.Cannibal : Colors.Neutral;
             Objectives = $"- Eat {EatNeed} {(EatNeed == 1 ? "body" : "bodies")}";
             BodyArrows = new();
@@ -58,7 +57,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (CustomGameOptions.EatArrows && !IsDead)
             {
-                var validBodies = UObject.FindObjectsOfType<DeadBody>().Where(x => Murder.KilledPlayers.Any(y => y.PlayerId == x.ParentId &&
+                var validBodies = Utils.AllBodies.Where(x => Murder.KilledPlayers.Any(y => y.PlayerId == x.ParentId &&
                     y.KillTime.AddSeconds(CustomGameOptions.EatArrowDelay) < DateTime.UtcNow));
 
                 foreach (var bodyArrow in BodyArrows.Keys)

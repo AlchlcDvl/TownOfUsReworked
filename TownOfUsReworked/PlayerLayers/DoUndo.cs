@@ -388,7 +388,7 @@ namespace TownOfUsReworked.PlayerLayers
                     ss.UnShapeshift();
             }
 
-            foreach (var body in UObject.FindObjectsOfType<DeadBody>())
+            foreach (var body in Utils.AllBodies)
             {
                 var num = IsCamoed ? 6 : Utils.PlayerByBody(body).GetDefaultOutfit().ColorId;
 

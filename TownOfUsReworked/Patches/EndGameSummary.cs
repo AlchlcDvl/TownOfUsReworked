@@ -83,7 +83,7 @@ namespace TownOfUsReworked.Patches
                     if (objectifier?.ObjectifierType != ObjectifierEnum.None)
                     {
                         summary += $" {objectifier?.ColoredSymbol}";
-                        cache += $" {objectifier?.SymbolName}";
+                        cache += $" {objectifier?.Symbol}";
                     }
 
                     if (modifier?.ModifierType != ModifierEnum.None)

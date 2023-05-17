@@ -21,7 +21,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleAlignment = RoleAlignment.NeutralNeo;
             SubFaction = SubFaction.Sect;
             SubFactionColor = Colors.Sect;
-            AlignmentName = NN;
             PlayerConversion = new();
             WhisperConversion = CustomGameOptions.InitialWhisperRate;
             Persuaded = new() { Player.PlayerId };

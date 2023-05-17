@@ -18,7 +18,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             StartText = "AAAAAAAAAAAAAAAAAAAAAAAAA";
             AbilitiesText = "- You can scream loudly, blocking all players as long as you are not clicked";
             RoleAlignment = RoleAlignment.SyndicateUtil;
-            AlignmentName = SSu;
             Color = CustomGameOptions.CustomSynColors ? Colors.Banshee : Colors.Syndicate;
             Blocked = new();
             Type = LayerEnum.Banshee;

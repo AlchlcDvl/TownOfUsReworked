@@ -19,7 +19,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = CustomGameOptions.CustomNeutColors ? Colors.Jester : Colors.Neutral;
             RoleType = RoleEnum.Jester;
             RoleAlignment = RoleAlignment.NeutralEvil;
-            AlignmentName = NE;
             ToHaunt = new();
             UsesLeft = CustomGameOptions.HauntCount;
             Type = LayerEnum.Jester;

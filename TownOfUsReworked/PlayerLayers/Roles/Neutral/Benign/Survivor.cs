@@ -20,7 +20,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleType = RoleEnum.Survivor;
             UsesLeft = CustomGameOptions.MaxVests;
             RoleAlignment = RoleAlignment.NeutralBen;
-            AlignmentName = NB;
             Objectives = "- Live to the end of the game";
             InspectorResults = InspectorResults.LeadsTheGroup;
             Type = LayerEnum.Survivor;

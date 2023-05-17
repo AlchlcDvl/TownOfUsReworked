@@ -5,6 +5,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public DateTime LastExamined;
         public CustomButton ExamineButton;
         private static float Time2;
+        private static int Even;
 
         public Detective(PlayerControl player) : base(player)
         {
@@ -15,7 +16,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = CustomGameOptions.CustomCrewColors ? Colors.Detective : Colors.Crew;
             RoleType = RoleEnum.Detective;
             RoleAlignment = RoleAlignment.CrewInvest;
-            AlignmentName = CI;
             InspectorResults = InspectorResults.GainsInfo;
             Type = LayerEnum.Detective;
             ExamineButton = new(this, "Examine", AbilityTypes.Direct, "ActionSecondary", Examine);
@@ -79,14 +79,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 if (Time2 >= CustomGameOptions.FootprintInterval)
                 {
                     Time2 -= CustomGameOptions.FootprintInterval;
+                    Even++;
 
                     foreach (var player in PlayerControl.AllPlayerControls)
                     {
-                        if (player?.Data.IsDead == true || player == PlayerControl.LocalPlayer)
+                        if (player.Data.IsDead || player.Data.Disconnected || player == PlayerControl.LocalPlayer)
                             continue;
 
                         if (!AllPrints.Any(print => Vector3.Distance(print.Position, Position(player)) < 0.5f && print.Color.a > 0.5 && print.PlayerId == player.PlayerId))
-                            _ = new Footprint(player, this);
+                            _ = new Footprint(player, this, Even % 2 == 0);
                     }
 
                     for (var i = 0; i < AllPrints.Count; i++)

@@ -15,7 +15,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Objectives = "- Finish your tasks without getting clicked";
             RoleType = RoleEnum.Phantom;
             RoleAlignment = RoleAlignment.NeutralPros;
-            AlignmentName = NP;
             Type = LayerEnum.Phantom;
             InspectorResults = InspectorResults.Ghostly;
         }

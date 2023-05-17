@@ -19,7 +19,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = CustomGameOptions.CustomCrewColors ? Colors.Monarch : Colors.Crew;
             RoleType = RoleEnum.Monarch;
             RoleAlignment = RoleAlignment.CrewSov;
-            AlignmentName = CSv;
             InspectorResults = InspectorResults.NewLens;
             Type = LayerEnum.Monarch;
             Knighted = new();

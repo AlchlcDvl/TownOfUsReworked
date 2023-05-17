@@ -1,9 +1,9 @@
-### ***Note: This repo is a fork of [Town of Us Reactivated](https://github.com/eDonnes124/Town-Of-Us-R) and is currently under development.***
-### ***Also Note: This mod is NOT for mobile and console versions, do not ask for a port.***
+##### ***Note: This repo is a fork of [Town of Us Reactivated](https://github.com/eDonnes124/Town-Of-Us-R) and is currently under development.***
+##### ***Also Note: This mod is NOT for mobile and console versions, do not ask for a port.***
 
 -----------------------
 
-![LOGO](./Images/Reworked.png)
+![LOGO](./Images/Reworked.png "Logo")
 
 <p align="center"><a href="https://github.com/AlchlcDvl/TownOfUsReworked/releases/"><img src="https://badgen.net/github/release/AlchlcDvl/TownOfUsReworked?icon=github"></a></p>
 
@@ -30,6 +30,8 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 - [Issues](#issues)
 
 [**Uninstallation**](#uninstallation)
+
+[**Differences**](#difference)
 
 [**Player Layers**](#player-layers)
 
@@ -65,14 +67,14 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 |-------------------------------|-------------------------------|-------------------------------|
 | [Bait](#bait)                 | [Assassin](#assassin)         | [Allied](#allied)             |
 | [Coward](#coward)             | [Button Barry](#button-barry) | [Corrupted](#corrupted)       |
-| [Diseased](#diseased)         | [Insider](#insider)           | [Fanatic](#fanatic)           |
-| [Drunk](#drunk)               | [Multitasker](#multitasker)   | [Lovers](#lovers)             |
-| [Dwarf](#dwarf)               | [Ninja](#ninja)               | [Mafia](#mafia)               |
-| [Flincher](#flincher)         | [Politician](#politician)     | [Overlord](#overlord)         |
-| [Giant](#giant)               | [Radar](#radar)               | [Rivals](#rivals)             |
-| [Indomitable](#indomitable)   | [Ruthless](#ruthless)         | [Taskmaster](#taskmaster)     |
-| [Professional](#professional) | [Snitch](#snitch)             | [Traitor](#traitor)           |
-| [Shy](#shy)                   | [Swapper](#swapper)           |                               |
+| [Diseased](#diseased)         | [Insider](#insider)           | [Defector](#defector)         |
+| [Drunk](#drunk)               | [Multitasker](#multitasker)   | [Fanatic](#fanatic)           |
+| [Dwarf](#dwarf)               | [Ninja](#ninja)               | [Lovers](#lovers)             |
+| [Flincher](#flincher)         | [Politician](#politician)     | [Mafia](#mafia)               |
+| [Giant](#giant)               | [Radar](#radar)               | [Overlord](#overlord)         |
+| [Indomitable](#indomitable)   | [Ruthless](#ruthless)         | [Rivals](#rivals)             |
+| [Professional](#professional) | [Snitch](#snitch)             | [Taskmaster](#taskmaster)     |
+| [Shy](#shy)                   | [Swapper](#swapper)           | [Traitor](#traitor)           |
 | [VIP](#vip)                   | [Tiebreaker](#tiebreaker)     |                               |
 | [Volatile](#volatile)         | [Torch](#torch)               |                               |
 |                               | [Tunneler](#tunneler)         |                               |
@@ -102,6 +104,7 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 - [Inspector Results](#inspector-results)
 - [Subfactions](#subfactions)
 - [Syndicate Chaos Drive Role Priority](#syndicate-chaos-drive-role-priority)
+- [Game Modes](#game-modes)
 
 [**Extras**](#extras)
 - [New Colors](#new-colors)
@@ -120,7 +123,7 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 **Disclaimer: The mod is *not* guaranteed to work on the latest versions of Among Us when it updates.**
 
-| Among Us - Version | Mod Version | Link |
+| Among Us | Mod Version | Link |
 |--------------------|-------------|------|
 | 2023.3.28 (s & e) | v0.2.3 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.2.3/TownOfUsReworked.zip) |
 | 2023.3.28 (s & e) | v0.2.2 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.2.2/TownOfUsReworked.zip) |
@@ -158,6 +161,38 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 <details>
   <summary>Changelog</summary>
+  <details>
+    <summary>v0.2.4</summary>
+    <ul> <li>New Objectifier: Defector</li> </ul>
+    <ul> <li>New Alignments: Neutral (Harbinger) and Neutral (Apocalypse)</li> </ul>
+    <ul> <li>Addition: Added some secret role alignments, try seeing how to get them (hint: betrayal and change)</li> </ul>
+    <ul> <li>Addition: Some actions are now animated</li> </ul>
+    <ul> <li>Addition: Added a button to be able to see what settings are there in game</li> </ul>
+    <ul> <li>Addition: Role cards: this is where the info about your role goes instead of the task list (WIP)</li> </ul>
+    <ul> <li>Buff: Ruthless and Ninja can now be assigned to Crew (Killing) roles and those with the Corrupted objectifier</li> </ul>
+    <ul> <li>Nerf: Intruders and Syndicate with Ruthless can no longer convert Fanatics</li> </ul>
+    <ul> <li>Change: Plaguebearer can no longer get Allied</li> </ul>
+    <ul> <li>Improvement: Improved how appearance changes are handled</li> </ul>
+    <ul> <li>Improvement: Added a logo next to the ping tracker (thanks to @Jsushi7)</li> </ul>
+    <ul> <li>Improvement: Improved the layout of the main menu (inspired by the main menu changes made by @Zeo666 in All The Roles)</li> </ul>
+    <ul> <li>Improvement: The task counter has been moved from your name to the task tab</li> </ul>
+    <ul> <li>Improvement: The zooming buttons are now smaller and moved to a different location</li> </ul>
+    <ul> <li>Improvement: The in-game wiki has recieved a slight recode</li> </ul>
+    <ul> <li>Improvement: You no longer know the status of players until the meeting after your death (to avoid players coming back to life and ratting everyone out)</li> </ul>
+    <ul> <li>Improvement: Improved the footprint graphics for Detectives and Retributionist-Detectives</li> </ul>
+    <ul> <li>Bug Fix: Fixed the spectate button opening up the haunting menu</li> </ul>
+    <ul> <li>Bug Fix: Fixed being unable to leave vents</li> </ul>
+    <ul> <li>Bug Fix: Fixed vision not updating correctly when switching between dead and alive players using MCI</li> </ul>
+    <ul> <li>Bug Fix: Fixed Pestilence spawning instead of Plaguebearer with the Pestilence Spawn option is turned off</li> </ul>
+    <ul> <li>Visual Fix: Fixed ghosts being unable to see the names and roles of players through walls with the obstruct names option turned on</li> </ul>
+    <ul> <li>Role Fix: Fixed the Concealer's target staying invisible forever</li> </ul>
+    <ul> <li>Role Fix: Fixed the Guesser's target's alignment hint having text hexcode color control</li> </ul>
+    <ul> <li>Role Fix: Fixed Bounty Hunter being shown their target on the intro screen</li> </ul>
+    <ul> <li>Role Fix: Fixed Dracula and Jackal killing those they are trying to convert</li> </ul>
+    <ul> <li>Role Fix: Fixed turning betrayer being spammed in the end game summary</li> </ul>
+    <ul> <li>Ability Fix: Fixed killing Politicians being unable to vote players</li> </ul>
+    <ul> <li>Removal: The lobby timer because it's kind of useless as most people play on modded servers anyways, which don't expire</li> </ul>
+  </details>
   <details>
     <summary>v0.2.3</summary>
     <ul> <li>Nerf: Reporting a body while being flashed yields no results for the Coroner and the Retributionist-Coroner</li> </ul>
@@ -204,7 +239,7 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
     <ul> <li>Ability Fix: Fixed Multitasker not making the task windows transparent</li> </ul>
     <ul> <li>Role + Ability Fix: Fixed the weird scaling of the guessing menu (it looped the size for every button added lmao, making it smaller with each possible guess added)</li> </ul>
     <ul> <li>Role Fix: Fixed incorrect distance scaling for a lot of roles</li> </ul>
-    <ul> <li>Role Fix: Fixed Anarchist's kill cooldown not resetting correctly on game start</li> </ul>
+    <ul> <li>Role Fix: Fixed Anarchist's kill cooldown not resetting correctly</li> </ul>
     <ul> <li>Role Fix: Fixed Stalker's Stalk button not appearing</li> </ul>
     <ul> <li>Role Fix: Fixed (Collider/Spellslinger/Stalker)-Rebels not having their buttons</li> </ul>
     <ul> <li>Role Fix: Fixed Executioner being unable to doom players</li> </ul>
@@ -754,6 +789,31 @@ For Steam users, delete the `Among Us - ToU-Rew` that you created.
 
 -----------------------
 
+# Differences
+
+This is yet another Town Of Us clone, I know. The main reason this mod exists is because I hated why despite me constantly telling the devs to remove the "The" in "The Glitch". After that I simply looked for help from [Det](https://github.com/FERTAILS) and then slowly learned from there.
+
+> "*I simply taught him on how to make an empty role, and then he FUCKING EXPLODED*" - Det
+
+Jokes aside, this mod has now become my own twist on what Town Of Us should have been like. ~~I have nearly 300 roles planned after all ;)~~
+
+In this mod, we have :-
+- New Roles, Abilities and Modifiers (which is a given)
+- New Layer called Objectifiers
+- New Faction: Syndicate
+- New Mechanic: Subfactions where your alignment now belongs that that subfaction while wielding the role from your proper faction
+- A lot of new features
+- Reworks for existing layers
+- A lot of improvements and qol changes
+- Vanilla settings were integrated into the mod along with aa lot more customisation
+- Improved win conditions so games actually end the way they are supposed to without being unfair
+- Brought back old and forgotten features from older versions
+- Internal code changes so that it works smoothly/looks nicer
+- In-game wiki to get info about every type of layers
+- Lore
+
+-----------------------
+
 # Common Settings
 ## Each role, modifier, objectifier and ability has these settings
 
@@ -788,7 +848,7 @@ For Steam users, delete the `Among Us - ToU-Rew` that you created.
 
 ![Crew](./Images/Crew.png)
 
-Each member has a special ability which determines who’s who and can help weed out the evils. The main theme of this faction is deduction and goodwill. This faction is an uninformed majority meaning they make up most of the crew and don't who the other members are. The Crew can do tasks which sort of act like a timer for non-Crew roles.
+Each member has a special ability which determines who’s who and can help weed out the evils. The main theme of this faction is deduction and goodwill. This faction is an uninformed majority meaning they make up most of the players and don't who the other members are. The Crew can do tasks which sort of act like a timer for non-Crew roles.
 
 ### Crew Settings
 
@@ -1425,7 +1485,7 @@ The Necromancer is essentially an evil Altruist. They can revive dead players an
 | Reanimated Can Vent | Whether the Necromancer's Reanimated Can Vent, overriding their role's vent settings | Toggle | False |
 
 ## Pestilence
-### Alignment: Neutral (Proselyte)
+### Alignment: Neutral (Apocalypse)
 ### Win Condition: Kill all non-Neutral Benign roles
 
 Pestilence is always on permanent alert, where anyone who tries to interact with them will die. Pestilence does not spawn in-game and instead gets converted from Plaguebearer after they infect everyone. Pestilence cannot die unless they have been voted out, and they can't be guessed (usually). This role does not spawn directly, unless it's set to, in which case it will replace the Plaguebearer.
@@ -1453,7 +1513,7 @@ The Phantom spawns when a Neutral player dies withouth accomplishing their objec
 | Players Are Alerted When Phantom Is Clickable | Whether players are alerted to the Phantom's existence and clickability | Number | 5 |
 
 ## Plaguebearer
-### Alignment: Neutral (Killing)
+### Alignment: Neutral (Harbinger)
 ### Win Condition: Infect everyone and turn into Pestilence or live to the end by killing off anyone who opposes them
 
 The Plaguebearer can infect other players. Once infected, the infected player can go and infect other players via interacting with them. Once all players are infected, the Plaguebearer becomes Pestilence.
@@ -1986,7 +2046,7 @@ Objectifiers are basically a second objective for the player. They can either ch
 
 ## Allied
 ### Applied To: Neutral (Killing)
-### Win Condition: Win with whichever faction they are aligned with.
+### Win Condition: Win with whichever faction they are aligned with
 
 An Allied Neutral Killer now sides with either the Crew, the Intruders or the Syndicate. In the case of the latter two, all faction members are shown the Allied player's role, and can no longer kill them.
 
@@ -1998,7 +2058,7 @@ An Allied Neutral Killer now sides with either the Crew, the Intruders or the Sy
 
 ## Corrupted
 ### Applied to: Crew
-### Win Condition: Kill everyone.
+### Win Condition: Kill everyone
 
 The Corrupted is a Crewmate with the alignment of a Neutral Killer. On top of their base role's attributes, they also gain a kill button. Their win condition is so strict that not even Neutral Benigns or Evils can be spared.
 
@@ -2010,9 +2070,22 @@ The Corrupted is a Crewmate with the alignment of a Neutral Killer. On top of th
 | All Corrupted Win Together | Self descriptive | Toggle | False |
 | Corrupted Can Vent | Self descriptive | Toggle | False |
 
+## Defector
+### Applied To: Intruders and Syndicate
+### Win Condition: 
+
+A Defector switches sides when they happen to be the last player alive in their original faction.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|------|-------------|------|---------|
+| Defector Faction | Which faction the Defector joins | String | Random |
+| Defector Knows Who They Are | Whether the Defector knows who they are | Toggle | True |
+
 ## Fanatic
 ### Applied To: Crew
-### Win Condition: Get attacked by either the Intruders or the Syndicate to join their team.
+### Win Condition: Get attacked by either the Intruders or the Syndicate to join their team
 
 When attacked, the Fanatic joins whichever faction their attacker belongs to. From then on, their alliance sits with said faction.
 
@@ -2020,14 +2093,14 @@ When attacked, the Fanatic joins whichever faction their attacker belongs to. Fr
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Fanatic Knows Who They Are On Game Start | Whether the Fanatic knows who they are | Toggle | True |
+| Fanatic Knows Who They Are | Whether the Fanatic knows who they are | Toggle | True |
 | Snitch Sees Turned Fanatic | Whether the Snitch sees a turned Fanatic | Toggle | True |
 | Revealer Reveals Turned Fanatic | Whether the Revealer reveals a turned Fanatic | Toggle | True |
 | Turned Fanatic Swaps Colours for Investigative Roles | Self descriptive | Toggle | False |
 
 ## Lovers
 ### Applied To: Everyone
-### Win Condition: Be 2 of the 3 final players.
+### Win Condition: Be 2 of the 3 final players
 
 The Lovers are two players who are linked together. They gain the primary objective to stay alive together. If they are both among the last 3 players, they win as a Lover pair. In order to so, they gain access to a private chat, only visible by them in between meetings. However, they can also win with their respective team, hence why the Lovers do not know the role of the other Lover.
 
@@ -2055,7 +2128,7 @@ The Mafia are a group of players with a linked win condition. They must kill any
 
 ## Overlord
 ### Applied To: Neutrals
-### Win Condition: Survive a set amount of meetings.
+### Win Condition: Survive a set amount of meetings
 
 Every meeting, for as long as an Overlord is alive, players will be alerted to their existence. The game ends if the Overlord lives long enough.
 
@@ -2063,12 +2136,12 @@ Every meeting, for as long as an Overlord is alive, players will be alerted to t
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Overlord Knows Who They Are On Game Start | Whether the Overlord knows who they are | Toggle | True |
+| Overlord Knows Who They Are | Whether the Overlord knows who they are | Toggle | True |
 | Overlord Meeting Timer | How many meetings the Overlord must survive | Number | 2 |
 
 ## Rivals
 ### Applied To: Everyone
-### Win condition: Get the other rival killed without directly interfering, then live to the final 2.
+### Win condition: Get the other rival killed without directly interfering, then live to the final 2
 
 The Rivals cannot do anything to each other and must get the other one killed.
 
@@ -2082,7 +2155,7 @@ The Rivals cannot do anything to each other and must get the other one killed.
 
 ## Taskmaster
 ### Applied To: Neutrals
-### Win Condition: Finish tasks before the game ends or dying.
+### Win Condition: Finish tasks before the game ends or dying
 
 The Taskmaster is basically a living Phantom. When a certain number of tasks are remaining, the Taskmaster is revealed to Intruders and the Syndicate and the Crew only sees a flash to indicate the Taskmaster's existence.
 
@@ -2094,7 +2167,7 @@ The Taskmaster is basically a living Phantom. When a certain number of tasks are
 
 ## Traitor
 ### Applies To: Crew
-### Win Condition: Finish tasks to join either the Intruders or Syndicate.
+### Win Condition: Finish tasks to join either the Intruders or Syndicate
 
 The Traitor is a Crewmate who must finish their tasks to switch sides. Upon doing so, they will either join the Intruders or the Syndicate, and will win with that faction. If the Traitor is the only person in their new faction, they become a Betrayer, losing their original role's abilities and gaining the ability to kill in the process.
 
@@ -2102,7 +2175,7 @@ The Traitor is a Crewmate who must finish their tasks to switch sides. Upon doin
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Traitor Knows Who They Are On Game Start | Whether the Traitor knows who they are | Toggle | True |
+| Traitor Knows Who They Are | Whether the Traitor knows who they are | Toggle | True |
 | Snitch Sees Turned Traitor | Whether the Snitch sees a turned Traitor | Toggle | True |
 | Revealer Reveals Turned Traitor | Whether the Revealer reveals a turned Traitor | Toggle | True |
 | Turned Traitor Swaps Colours for Investigative Roles | Self descriptive | Toggle | False |
@@ -2121,7 +2194,7 @@ Killing the Bait makes the killer auto self-report.
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Bait Knows Who They Are On Game Start | Whether the Bait knows who they are | Toggle | True |
+| Bait Knows Who They Are | Whether the Bait knows who they are | Toggle | True |
 | Bait Minimum Delay | The minimum time the killer of the Bait reports the body | Time | 0s |
 | Bait Maximum Delay | The maximum time the killer of the Bait reports the body | Time | 1s |
 
@@ -2139,7 +2212,7 @@ Killing the Diseased increases the killer's kill cooldown.
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Diseased Knows Who They Are On Game Start | Whether the Bait knows who they are | Toggle | True |
+| Diseased Knows Who They Are | Whether the Bait knows who they are | Toggle | True |
 | Kill Multiplier | How much the Kill Cooldown of the killer is increased by | Factor | 3x |
 
 ## Drunk
@@ -2191,7 +2264,7 @@ You cannot be guessed/assassinated in meetings.
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Indomitable Knows Who They Are On Game Start | Whether a player knows they are Indomitable at the start of a game | Toggle | False |
+| Indomitable Knows Who They Are | Whether a player knows they are Indomitable at the start of a game | Toggle | False |
 
 ## Professional
 ### Applied To: Assassins
@@ -2202,7 +2275,7 @@ You have one extra life used when you guess incorrectly.
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Professional Knows Who They Are On Game Start | Whether a player knows they are a Professional at the start of a game | Toggle | True |
+| Professional Knows Who They Are | Whether a player knows they are a Professional at the start of a game | Toggle | True |
 
 ## Shy
 ### Applied To: Everyone
@@ -2218,7 +2291,7 @@ Everyone is alerted of the VIP's death through a flash of the VIP's role color.
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| VIP Knows Who They Are On Game Start | Whether a player knows they are a VIP at the start of a game | Toggle | True |
+| VIP Knows Who They Are | Whether a player knows they are a VIP at the start of a game | Toggle | True |
 
 ## Volatile
 ### Applied To: Everyone
@@ -2279,7 +2352,7 @@ The Insider will be able to view everyone's votes in meetings upon finishing the
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Insider Knows Who They Are On Game Start | Whether a player knows they are a Insider at the start of a game | Toggle | True |
+| Insider Knows Who They Are | Whether a player knows they are a Insider at the start of a game | Toggle | True |
 
 ## Multitasker
 ### Applied to: Roles with tasks
@@ -2323,7 +2396,7 @@ A Ruthless killer can bypass all forms of protection. Although they bypass alert
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Ruthless Knows Who They Are On Game Start | Whether a player knows they are a Ruthless at the start of a game | Toggle | True |
+| Ruthless Knows Who They Are | Whether a player knows they are a Ruthless at the start of a game | Toggle | True |
 
 ## Snitch
 ### Applied To: Crew
@@ -2334,7 +2407,7 @@ The Snitch is an ability which allows any Crewmate to get arrows pointing toward
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Snitch Knows Who They Are On Game Start | Whether a player knows they are a Snitch at the start of a game | Toggle | True |
+| Snitch Knows Who They Are | Whether a player knows they are a Snitch at the start of a game | Toggle | True |
 | Snitch Sees Neutral Roles | Whether the Snitch also Reveals Neutral Roles | Toggle | False |
 | Snitch Sees Crew Roles | Whether the Snitch also Reveals Crew Roles | Toggle | False |
 | Snitch Sees Exact Roles | Whether the Snitch also Reveals all Roles | Toggle | False |
@@ -2363,7 +2436,7 @@ If any vote is a draw, the Tiebreaker's vote will go through. If they voted anot
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Tiebreaker Knows Who They Are On Game Start | Whether a player knows they are a Tiebreaker at the start of a game | Toggle | True |
+| Tiebreaker Knows Who They Are | Whether a player knows they are a Tiebreaker at the start of a game | Toggle | True |
 
 ## Torch
 ### Applied To: Non-Killers
@@ -2379,7 +2452,7 @@ The Tunneler will be able to vent when they finish their tasks.
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Tunneler Knows Who They Are On Game Start | Whether a player knows they are a Tunneler at the start of a game | Toggle | True |
+| Tunneler Knows Who They Are | Whether a player knows they are a Tunneler at the start of a game | Toggle | True |
 
 ## Underdog
 ### Applied To: Intruders
@@ -2390,7 +2463,7 @@ The Underdog is an Intruder with a prolonged kill cooldown when with a teammate.
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Underdog Knows Who They Are On Game Start | Whether a player knows they are a Underdog at the start of a game | Toggle | True |
+| Underdog Knows Who They Are | Whether a player knows they are a Underdog at the start of a game | Toggle | True |
 | Kill Cooldown Bonus | The amount of time added or removed from the Underdog's Kill Cooldown | Time | 5s |
 | Increased Kill Cooldown  | Whether the Underdog's Kill Cooldown is Increased when they aren't alone | Toggle | True |
 
@@ -2637,7 +2710,29 @@ The Underdog is an Intruder with a prolonged kill cooldown when with a teammate.
 5. Syndicate (Killing)
 6. Original Rebel, Sidekick, Anarchist
 
-### **If there are multiple active roles from the same alignment, the Chaos Drive is randomly given to one of those roles.**
+**If there are multiple active roles from the same alignment, the Chaos Drive is randomly given to one of those roles.**
+
+## Game Modes
+
+This mod has a lot of different modes which greatly change how the game continues!
+
+**Vanilla**
+- Nothing special, eveyone is either a basic [Crewmate](#crewmate) or [Impostor](#impostor)
+
+**Classic**
+- This is the main mode of the game
+- Any layer can spawn in this mode, but only once
+
+**Killing Only**
+- This is a restricted Classic mode where only roles with the capability to kill are the only ones that can spawn
+- The Syndicate recieves their Chaos Drive at the start of the game
+
+**All Any**
+- This mode has no restrictions on how many instances of a layer can spawn
+- Each layer has a property called "Uniqueness" which is basically if only one of that layer can spawn (or two for Lovers and Rivals)
+
+**Custom**
+- This mode is basically Classic but you can decide how many instances of the layer can spawn in the game
 
 -----------------------
 
@@ -2688,11 +2783,11 @@ The second phase of layer assignment is Roles. These have no special conditions 
 
 After the roles are assigned, a random Crew aligned player will be designated as the "Pure Crew" who will not recieve any Objectifier or be recruited by the [Jackal](#jackal). The Pure Crew cannot be converted into other subfactions either and would rather die than join them. This is a sort of hacky solution I came up for when there are no one capable of contributing to the task bar. Because of there technically being "0" tasks, the game would just end in no one's victory.
 
-Anyways, for the next 3 phases, the assignment also includes another action. Before the layers are assigned, a list of players is made for every restricted type (like making a list of players which only includes Crew because the modifier can only be assigned to Crew). After that, the layers are assigned corresponding to their set player lists, which each assigned player being removed from other player lists.
+Anyways, for the next 3 phases, the assignment also includes another action. Before the layers are assigned, a list of players is made for every restricted type (like making a list of players which only includes Crew because the layer can only be assigned to Crew). After that, the layers are assigned corresponding to their set player lists, which each assigned player being removed from other player lists.
 
 The next phase is the handing out of targets. During this phase, layers with targets, such as Guesser, Lovers, Rivals and Executioner are given their targets. Lovers or Rivals who are left out will have that objectifier be removed.
 
-The final phase is what I call "The Cleanup". During this phase, roles whose targets could not be assigned will be changed into roles that don't have targets. After that, empty non-role layers are handed out to those who did not get any layer of that type prevent null errors during the game. Finally, certain variables for conversion are set, so that conversions are handled easier.
+The final phase is what I call "The Cleanup". During this phase, roles whose targets could not be assigned will be changed into roles that don't have targets. After that, empty layers are handed out to those who did not get any layer of that type prevent null errors during the game. Finally, certain variables for conversion are set, so that conversions are handled easier.
 
 After that, it's gaming time.
 
@@ -2708,22 +2803,24 @@ After that, it's gaming time.
 [TooManyRolesMods](https://github.com/Hardel-DW/TooManyRolesMods) - For the Investigator & Time Lord roles\
 [Evan91380](https://github.com/Evan91380/BetterAirShip) & [Hardel](https://github.com/Hardel-DW) - For Better Airship code\
 [TorchMod](https://github.com/tomozbot/TorchMod) - For the inspiration of the Torch ability\
-[XtraCube](https://github.com/XtraCube) - For the CustomColors\
-[TheOtherRoles](https://github.com/Eisbison/TheOtherRoles) - For the inspiration of the Tracker role and the Bait modifier and a lot of code that I shamelessly yoinked\
+[XtraCube](https://github.com/XtraCube) - For the custom colors\
+[The Other Roles](https://github.com/Eisbison/TheOtherRoles) - For the inspiration of the Tracker role and the Bait modifier, cosmetics system, teleport animation and version control\
+[The Other Roles: Community Edition](https://github.com/JustASysAdmin/TheOtherRoles2) - For the random spawns option\
 [Las Monjas](https://github.com/KiraYamato94/LasMonjas) - For the code for custom cosmetics\
 [5up](https://www.twitch.tv/5uppp) and the Submarine Team - For the inspiration of the Grenadier role\
-[MyDragonBreath](https://github.com/MyDragonBreath) - For Submerged Compatibility, MultiClientInstancing and the Operative role\
+[MyDragonBreath](https://github.com/MyDragonBreath) - For Submerged Compatibility, MultiClientInstancing and partially the Operative role\
 [Guus](https://github.com/OhMyGuus) - For support for the old Among Us versions (v2021.11.9.5 and v2021.12.15)\
 [ItsTheNumberH](https://github.com/itsTheNumberH/Town-Of-H) - For Coward, Volatile and Bait modifiers, Poisoner and Cannibal roles, partially for Tracker and Coroner roles and bug fixes\
 [Ruiner](https://github.com/ruiner189/Town-Of-Us-Redux) - For Lovers being changed into an objectifier and Task Tracking\
-[Term](https://www.twitch.tv/termboii) - For creating Transporter, Medium, Blackmailer and Plaguebearer and porting v2.5.0 to the new Among Us version (v2021.12.15)\
+[Term](https://www.twitch.tv/termboii) - For creating Medium, Blackmailer and Plaguebearer, partially for Transporter and porting v2.5.0 to the new Among Us version (v2021.12.15)\
 [Zeo](https://github.com/Zeo666/AllTheRoles) - For the idea of Ruthless and help with migrating to the use of shapeshifter menus\
 [BryBry16](https://github.com/Brybry16/BetterPolus) - For the code used for Better Polus\
 [Polus.gg Team](https://github.com/SubmergedAmongUs/Submerged) - For the Submerged map\
 [Slushigoose](https://github.com/slushiegoose) - For making the mod in the first place\
 [eDonnes](https://github.com/eDonnes124/) - For continuing the mod after it was discontinued\
+[Det](https://github.com/FERTAILS) - For getting me into modding\
 [TownOfHost-TheOtherRoles](https://github.com/music-discussion/TownOfHost-TheOtherRoles) - For a lot of the QoL code plus some chat command ideas\
-[Essentials](https://github.com/DorCoMaNdO/Reactor-Essentials) - For creating custom game options which are now embedded into the mod\
+[Essentials](https://github.com/DorCoMaNdO/Reactor-Essentials) - For creating custom game options which are now embedded into the mod [here](https://github.com/AlchlcDvl/TownOfUsReworked/tree/master/TownOfUsReworked/CustomOptions/Base.cs)\
 [VincentVision](https://github.com/VincentVision) - For some code here and there from his version of Town Of Us (which was deleted sadly)\
 [Lunastellia](https://github.com/Lunastellia) - For Better Skeld code\
 [CrowdedMod](https://github.com/CrowdedMods/CrowdedMod) - For allowing to bypass the 15 player limit and is embedded into the mod\

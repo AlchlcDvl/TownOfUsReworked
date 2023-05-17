@@ -27,7 +27,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = CustomGameOptions.CustomNeutColors ? Colors.BountyHunter : Colors.Neutral;
             RoleType = RoleEnum.BountyHunter;
             RoleAlignment = RoleAlignment.NeutralEvil;
-            AlignmentName = NE;
             UsesLeft = CustomGameOptions.BountyHunterGuesses;
             Type = LayerEnum.BountyHunter;
             TargetPlayer = null;

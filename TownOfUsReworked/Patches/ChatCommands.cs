@@ -116,7 +116,7 @@ namespace TownOfUsReworked.Patches
                     chatHandled = true;
                     inputText = text.StartsWith("/ri ") ? text[4..] : text[10..];
                     chatText = LayerInfo.AllRoles.FirstOrDefault(x => string.Equals(inputText, x.Name, StringComparison.OrdinalIgnoreCase) || string.Equals(inputText, x.Short,
-                        StringComparison.OrdinalIgnoreCase), LayerInfo.AllRoles[0]).RoleInfoMessage();
+                        StringComparison.OrdinalIgnoreCase), LayerInfo.AllRoles[0]).InfoMessage();
                     hudManager.AddChat(player, chatText);
                 }
                 //Gives information regarding factions
@@ -124,8 +124,8 @@ namespace TownOfUsReworked.Patches
                 {
                     chatHandled = true;
                     inputText = text.StartsWith("/fi ") ? text[4..] : text[13..];
-                    chatText = LayerInfo.AllRoles.FirstOrDefault(x => string.Equals(inputText, x.FactionS, StringComparison.OrdinalIgnoreCase) || string.Equals(inputText, x.FactionShort,
-                        StringComparison.OrdinalIgnoreCase), LayerInfo.AllRoles[0]).FactionInfoMessage();
+                    chatText = LayerInfo.AllFactions.FirstOrDefault(x => string.Equals(inputText, x.Name, StringComparison.OrdinalIgnoreCase) || string.Equals(inputText, x.Short,
+                        StringComparison.OrdinalIgnoreCase), LayerInfo.AllFactions[0]).InfoMessage();
                     hudManager.AddChat(player, chatText);
                 }
                 //Gives information regarding alignments
@@ -133,8 +133,8 @@ namespace TownOfUsReworked.Patches
                 {
                     chatHandled = true;
                     inputText = text.StartsWith("/ai ") ? text[4..] : text[15..];
-                    chatText = LayerInfo.AllRoles.FirstOrDefault(x => string.Equals(x.Alignment, inputText, StringComparison.OrdinalIgnoreCase) || string.Equals(x.AlignmentShort,
-                        inputText, StringComparison.OrdinalIgnoreCase), LayerInfo.AllRoles[0]).AlignmentInfoMessage();
+                    chatText = LayerInfo.AllAlignments.FirstOrDefault(x => string.Equals(x.Name, inputText, StringComparison.OrdinalIgnoreCase) || string.Equals(x.Short, inputText,
+                        StringComparison.OrdinalIgnoreCase), LayerInfo.AllAlignments[0]).InfoMessage();
                     hudManager.AddChat(player, chatText);
                 }
                 //Gives information regarding modifiers
@@ -161,7 +161,7 @@ namespace TownOfUsReworked.Patches
                     chatHandled = true;
                     inputText = text.StartsWith("/oi ") ? text[4..] : text[17..];
                     chatText = LayerInfo.AllObjectifiers.FirstOrDefault(x => string.Equals(x.Name, inputText, StringComparison.OrdinalIgnoreCase) || string.Equals(x.Short, inputText,
-                        StringComparison.OrdinalIgnoreCase), LayerInfo.AllObjectifiers[0]).InfoMessage();
+                        StringComparison.OrdinalIgnoreCase) || string.Equals(x.Symbol, inputText, StringComparison.OrdinalIgnoreCase), LayerInfo.AllObjectifiers[0]).InfoMessage();
                     hudManager.AddChat(player, chatText);
                 }
                 //Gives information regarding objectifiers
@@ -333,17 +333,20 @@ namespace TownOfUsReworked.Patches
                         var ability = Ability.GetAbility(player);
                         var objectifier = Objectifier.GetObjectifier(player);
 
-                        if (role != null)
-                            hudManager.AddChat(player, LayerInfo.AllRoles.FirstOrDefault(x => x.Name == role.Name, LayerInfo.AllRoles[0])?.RoleInfoMessage());
+                        if (role)
+                            hudManager.AddChat(player, LayerInfo.AllRoles.FirstOrDefault(x => x.Name == role.Name, LayerInfo.AllRoles[0]).InfoMessage());
 
-                        if (modifier?.Hidden == false)
-                            hudManager.AddChat(player, LayerInfo.AllModifiers.FirstOrDefault(x => x.Name == modifier.Name, LayerInfo.AllModifiers[0])?.InfoMessage());
+                        if (!modifier.Hidden)
+                            hudManager.AddChat(player, LayerInfo.AllModifiers.FirstOrDefault(x => x.Name == modifier.Name, LayerInfo.AllModifiers[0]).InfoMessage());
 
-                        if (objectifier?.Hidden == false)
-                            hudManager.AddChat(player, LayerInfo.AllObjectifiers.FirstOrDefault(x => x.Name == objectifier.Name, LayerInfo.AllObjectifiers[0])?.InfoMessage());
+                        if (!objectifier.Hidden)
+                        {
+                            hudManager.AddChat(player, LayerInfo.AllObjectifiers.FirstOrDefault(x => x.Name == objectifier.Name || x.Symbol == objectifier.Symbol,
+                                LayerInfo.AllObjectifiers[0]).InfoMessage());
+                        }
 
-                        if (ability?.Hidden == false)
-                            hudManager.AddChat(player, LayerInfo.AllAbilities.FirstOrDefault(x => x.Name == ability.Name, LayerInfo.AllAbilities[0])?.InfoMessage());
+                        if (!ability.Hidden)
+                            hudManager.AddChat(player, LayerInfo.AllAbilities.FirstOrDefault(x => x.Name == ability.Name, LayerInfo.AllAbilities[0]).InfoMessage());
                     }
                     else if (text is "/whisper" or "/w" or "/w " or "/whisper ")
                     {
@@ -378,7 +381,7 @@ namespace TownOfUsReworked.Patches
 
                                 if (whispered == player)
                                     hudManager.AddChat(player, "Don't whisper yourself, weirdo.");
-                                else if (whispered != null)
+                                else if (whispered)
                                 {
                                     if (whispered.Data.IsDead)
                                         hudManager.AddChat(player, $"{whispered.name} is dead.");
@@ -394,7 +397,7 @@ namespace TownOfUsReworked.Patches
                                         AmongUsClient.Instance.FinishRpcImmediately(writer);
                                     }
                                 }
-                                else if (whispered2 != null)
+                                else if (whispered2)
                                 {
                                     if (whispered2.Data.IsDead)
                                         hudManager.AddChat(player, $"{whispered2.name} is dead.");
@@ -428,7 +431,7 @@ namespace TownOfUsReworked.Patches
                     chatHandled = true;
                     hudManager.AddChat(player, "You are blackmailed.");
                 }
-                else if (MeetingPatches.GivingAnnouncements && !player.Data.IsDead)
+                else if (MeetingPatches.GivingAnnouncements && !player.Data.IsDead && !chatHandled)
                 {
                     chatHandled = true;
                     hudManager.AddChat(player, "You cannot talk right now.");
@@ -440,7 +443,43 @@ namespace TownOfUsReworked.Patches
                     hudManager.quickChatMenu.ResetGlyphs();
                 }
 
+                if (!player.Data.IsDead && !chatHandled && !MeetingPatches.GivingAnnouncements && text != "")
+                {
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Notify, SendOption.Reliable);
+                    writer.Write(player.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    Notify(player.PlayerId);
+                }
+
                 return !chatHandled;
+            }
+        }
+
+        public static void Notify(byte targetPlayerId)
+        {
+            if (!MeetingHud.Instance)
+                return;
+
+            try
+            {
+                var playerVoteArea = MeetingHud.Instance.playerStates.ToList().Find(x => x.TargetPlayerId == targetPlayerId);
+                var rend = UObject.Instantiate(playerVoteArea.Megaphone, playerVoteArea.Megaphone.transform);
+                rend.name = "Notification";
+                rend.transform.localPosition = new(-2f, 0.1f, -1f);
+                rend.sprite = AssetManager.GetSprite("Chat");
+                rend.gameObject.SetActive(true);
+                HudManager.Instance.StartCoroutine(Effects.Lerp(2, new Action<float>(p =>
+                {
+                    if (p == 1)
+                    {
+                        rend.gameObject.SetActive(false);
+                        rend.gameObject.Destroy();
+                    }
+                })));
+            }
+            catch
+            {
+                Utils.LogSomething("Notif already exists");
             }
         }
 
@@ -510,7 +549,7 @@ namespace TownOfUsReworked.Patches
             }
         }
 
-        //Thanks to The Other Roles for this code
+        //The code is from The Other Roles; link :- https://github.com/TheOtherRolesAU/TheOtherRoles/blob/main/TheOtherRoles/Modules/DynamicLobbies.cs under GPL v3
         [HarmonyPatch(typeof(InnerNetClient), nameof(InnerNetClient.JoinGame))]
         public static class InnerNetClientJoinPatch
         {

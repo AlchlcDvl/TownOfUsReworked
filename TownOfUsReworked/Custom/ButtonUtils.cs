@@ -63,6 +63,7 @@ namespace TownOfUsReworked.Custom
             var local = PlayerControl.LocalPlayer;
             var role = Role.LocalRole;
             local.RegenTask();
+            Utils.RoundOne = start;
 
             if (!start && Role.SyndicateHasChaosDrive)
                 RoleGen.AssignChaosDrive();

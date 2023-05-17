@@ -25,7 +25,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             SubFaction = SubFaction.Cabal;
             SubFactionColor = Colors.Cabal;
             RoleAlignment = RoleAlignment.NeutralNeo;
-            AlignmentName = NN;
             Recruited = new() { Player.PlayerId };
             Type = LayerEnum.Jackal;
             RecruitButton = new(this, "Recruit", AbilityTypes.Direct, "ActionSecondary", Recruit, Exception);

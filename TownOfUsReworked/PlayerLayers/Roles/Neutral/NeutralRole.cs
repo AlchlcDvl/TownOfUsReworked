@@ -34,7 +34,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 team.Add(jackal.EvilRecruit);
             }
 
-            if (this.HasTarget())
+            if (this.HasTarget() && RoleType != RoleEnum.BountyHunter)
                 team.Add(Player.GetTarget());
 
             if (Player.Is(ObjectifierEnum.Lovers))

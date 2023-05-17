@@ -17,7 +17,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = CustomGameOptions.CustomIntColors ? Colors.Ambusher : Colors.Intruder;
             RoleType = RoleEnum.Ambusher;
             RoleAlignment = RoleAlignment.IntruderKill;
-            AlignmentName = IK;
             InspectorResults = InspectorResults.HindersOthers;
             Type = LayerEnum.Ambusher;
             AmbushedPlayer = null;

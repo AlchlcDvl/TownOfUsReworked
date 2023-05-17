@@ -3,21 +3,18 @@ namespace TownOfUsReworked.Patches
     [HarmonyPatch]
     public static class GameStartManagerPatch
     {
-        //Thanks to The Other Roles for this code, made a minor change so that MCI works :sweat_smile:
+        //The code is from The Other Roles; link :- https://github.com/TheOtherRolesAU/TheOtherRoles/blob/main/TheOtherRoles/Patches/GameStartManagerPatch.cs under GPL v3 with some
+        //modifications from me to account for MCI
         public readonly static Dictionary<int, PlayerVersion> PlayerVersions = new();
         private static float kickingTimer;
         private static bool versionSent;
-
-        #pragma warning disable
-        public static float timer = 600f;
-        #pragma warning restore
 
         [HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.OnPlayerJoined))]
         public static class AmongUsClientOnPlayerJoinedPatch
         {
             public static void Postfix()
             {
-                if (PlayerControl.LocalPlayer != null && !TownOfUsReworked.MCIActive)
+                if (PlayerControl.LocalPlayer && !TownOfUsReworked.MCIActive)
                     Utils.ShareGameVersion();
             }
         }
@@ -32,12 +29,10 @@ namespace TownOfUsReworked.Patches
 
                 //Trigger version refresh
                 versionSent = false;
-                //Reset lobby countdown timer
-                timer = 600f;
                 //Reset kicking timer
                 kickingTimer = 0f;
                 //Copy lobby code
-                GUIUtility.systemCopyBuffer = InnerNet.GameCode.IntToGameName(AmongUsClient.Instance.GameId);
+                GUIUtility.systemCopyBuffer = GameCode.IntToGameName(AmongUsClient.Instance.GameId);
                 //lobby size
                 Generate.LobbySize.Set((float)TownOfUsReworked.VanillaOptions.MaxPlayers);
             }
@@ -47,9 +42,6 @@ namespace TownOfUsReworked.Patches
         public static class GameStartManagerUpdatePatch
         {
             private static float startingTimer;
-            private static bool update;
-            private static string currentText = "";
-            private static string fixDummyCounterColor;
 
             public static void Prefix(GameStartManager __instance)
             {
@@ -57,17 +49,7 @@ namespace TownOfUsReworked.Patches
                     return;
 
                 if (GameData.Instance && __instance)
-                {
-                    update = GameData.Instance.PlayerCount != __instance.LastPlayerCount;
                     __instance.MinPlayers = 1;
-
-                    if (__instance.LastPlayerCount > __instance.MinPlayers)
-                        fixDummyCounterColor = "00FF00FF";
-                    else if (__instance.LastPlayerCount == __instance.MinPlayers)
-                        fixDummyCounterColor = "FFFF00FF";
-                    else
-                        fixDummyCounterColor = "FF0000FF";
-                }
             }
 
             public static void Postfix(GameStartManager __instance)
@@ -180,24 +162,6 @@ namespace TownOfUsReworked.Patches
                 //Start Timer
                 if (startingTimer > 0)
                     startingTimer -= Time.deltaTime;
-
-                //Lobby timer
-                if (!GameData.Instance || !__instance)
-                    return; //No instance
-
-                if (fixDummyCounterColor is "" or null)
-                    fixDummyCounterColor = "00FF00FF";
-
-                if (update)
-                    currentText = $"<color=#{fixDummyCounterColor}>{GameData.Instance?.PlayerCount}/{CustomGameOptions.LobbySize}";
-
-                timer = Mathf.Max(0f, timer -= Time.deltaTime);
-                var minutes = (int)(timer / 60);
-                var seconds = (int)(timer % 60);
-                var suffix = $" ({minutes}:{seconds})";
-
-                __instance.PlayerCounter.text = $"<size=75%><color=#{fixDummyCounterColor}>{currentText}{suffix}</color></size>";
-                __instance.PlayerCounter.autoSizeTextContainer = true;
             }
         }
 

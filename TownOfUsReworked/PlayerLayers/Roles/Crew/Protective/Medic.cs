@@ -18,7 +18,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             ShieldedPlayer = null;
             ExShielded = null;
             RoleAlignment = RoleAlignment.CrewProt;
-            AlignmentName = CP;
             InspectorResults = InspectorResults.PreservesLife;
             Type = LayerEnum.Medic;
             ShieldButton = new(this, "Shield", AbilityTypes.Direct, "ActionSecondary", Protect, Exception);
@@ -47,7 +46,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            ShieldButton.Update("SHIELD", 0, 1, !UsedAbility, !UsedAbility);
+            ShieldButton.Update("SHIELD", !UsedAbility, !UsedAbility);
         }
 
         public static void BreakShield(byte medicId, byte playerId, bool flag)

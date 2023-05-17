@@ -1,11 +1,22 @@
-﻿namespace TownOfUsReworked.Classes
+﻿using System;
+
+namespace TownOfUsReworked.Classes
 {
     [HarmonyPatch]
     public static class Utils
     {
         public readonly static List<PlayerControl> RecentlyKilled = new();
+        private readonly static Dictionary<PlayerControl, PlayerControl> CachedMorphs = new();
+        public static List<DeadBody> AllBodies => UObject.FindObjectsOfType<DeadBody>().ToList();
+
+        #pragma warning disable
+        public static PlayerControl FirstDead;
+        public static bool RoundOne;
+        #pragma warning restore
 
         public static TextMeshPro NameText(this PlayerControl p) => p.cosmetics.nameText;
+
+        public static TextMeshPro ColorBlindText(this PlayerControl p) => p.cosmetics.colorBlindText;
 
         public static TextMeshPro NameText(this PoolablePlayer p) => p.cosmetics.nameText;
 
@@ -76,70 +87,100 @@
                 player.SetOutfit(CustomPlayerOutfitType.Morph, MorphedPlayer.Data.DefaultOutfit);
         }
 
-        public static void DefaultOutfit(PlayerControl player)
+        public static void DefaultOutfit(PlayerControl player) => Coroutines.Start(DefaultOutfitCoro(player));
+
+        public static IEnumerator DefaultOutfitCoro(PlayerControl player)
         {
+            if (player.GetCustomOutfitType() == CustomPlayerOutfitType.Invis)
+            {
+                HudManager.Instance.StartCoroutine(Effects.Lerp(1, new Action<float>(p =>
+                {
+                    var rend = player.MyRend();
+                    rend.color = new(255, 255, 255, p);
+                    var text = player.NameText();
+                    text.color = new(text.color.a, text.color.a, text.color.a, p);
+                    var cbtext = player.ColorBlindText();
+                    cbtext.color = new(cbtext.color.a, cbtext.color.a, cbtext.color.a, p);
+                })));
+
+                yield return new WaitForSeconds(1f);
+            }
+
             player.SetOutfit(CustomPlayerOutfitType.Default);
-            player.MyRend().color = new Color32(255, 255, 255, 255);
+            CachedMorphs.Remove(player);
+            yield return null;
         }
 
-        public static void Camouflage()
+        public static void Camouflage() => PlayerControl.AllPlayerControls.Il2CppToSystem().ForEach(CamoSingle);
+
+        public static void CamoSingle(PlayerControl player) => Coroutines.Start(CamoSingleCoro(player));
+
+        public static IEnumerator CamoSingleCoro(PlayerControl player)
         {
-            foreach (var player in PlayerControl.AllPlayerControls)
+            if (player.GetCustomOutfitType() is not CustomPlayerOutfitType.Camouflage and not CustomPlayerOutfitType.Invis and not CustomPlayerOutfitType.PlayerNameOnly &&
+                !player.Data.IsDead && !PlayerControl.LocalPlayer.Data.IsDead && player != PlayerControl.LocalPlayer)
             {
-                if (player.GetCustomOutfitType() != CustomPlayerOutfitType.Camouflage && player.GetCustomOutfitType() != CustomPlayerOutfitType.Invis && player.GetCustomOutfitType() !=
-                    CustomPlayerOutfitType.PlayerNameOnly && !player.Data.IsDead && !PlayerControl.LocalPlayer.Data.IsDead && player != PlayerControl.LocalPlayer)
+                player.SetOutfit(CustomPlayerOutfitType.Camouflage, CamoOutfit(player));
+                PlayerMaterial.SetColors(Color.grey, player.MyRend());
+
+                HudManager.Instance.StartCoroutine(Effects.Lerp(1, new Action<float>(p =>
                 {
-                    player.SetOutfit(CustomPlayerOutfitType.Camouflage, new GameData.PlayerOutfit()
-                    {
-                        ColorId = player.GetDefaultOutfit().ColorId,
-                        HatId = "",
-                        SkinId = "",
-                        VisorId = "",
-                        PlayerName = " "
-                    });
-
-                    PlayerMaterial.SetColors(Color.grey, player.MyRend());
-                    player.NameText().color = Color.clear;
-                    player.cosmetics.colorBlindText.color = Color.clear;
-
-                    if (CustomGameOptions.CamoHideSize)
-                        player.GetAppearance().SizeFactor.Set(1f, 1f, 1f);
-
-                    if (CustomGameOptions.CamoHideSpeed)
-                        player.MyPhysics.body.velocity.Set(CustomGameOptions.PlayerSpeed, CustomGameOptions.PlayerSpeed);
-                }
+                    var cbtext = player.ColorBlindText();
+                    cbtext.color = new(cbtext.color.a, cbtext.color.a, cbtext.color.a, 1 - p);
+                })));
             }
+
+            yield return null;
         }
 
-        public static void Conceal()
+        public static void Conceal() => PlayerControl.AllPlayerControls.Il2CppToSystem().ForEach(x => Invis(x, PlayerControl.LocalPlayer.Is(Faction.Syndicate)));
+
+        public static void Invis(PlayerControl player, bool condition = false) => Coroutines.Start(InvisCoro(player, condition));
+
+        public static IEnumerator InvisCoro(PlayerControl player, bool condition = false)
         {
-            foreach (var player in PlayerControl.AllPlayerControls)
-                Invis(player, PlayerControl.LocalPlayer.Is(Faction.Syndicate));
-        }
+            var color = Color.clear;
+            color.a = condition || PlayerControl.LocalPlayer.Data.IsDead || player == PlayerControl.LocalPlayer ? 0.1f : 0f;
 
-        public static void Invis(PlayerControl player, bool condition = false)
-        {
-            var color = new Color32(0, 0, 0, 0);
-
-            if (condition || PlayerControl.LocalPlayer.Data.IsDead || player == PlayerControl.LocalPlayer)
-                color.a = 26;
-
-            if (player.GetCustomOutfitType() != CustomPlayerOutfitType.Invis)
+            if (player.GetCustomOutfitType() != CustomPlayerOutfitType.Invis && !player.Data.IsDead)
             {
-                player.SetOutfit(CustomPlayerOutfitType.Invis, new GameData.PlayerOutfit()
-                {
-                    ColorId = player.CurrentOutfit.ColorId,
-                    HatId = "",
-                    SkinId = "",
-                    VisorId = "",
-                    PlayerName = " "
-                });
+                player.SetOutfit(CustomPlayerOutfitType.Invis, InvisOutfit(player));
 
-                player.MyRend().color = color;
-                player.NameText().color = new Color32(0, 0, 0, 0);
-                player.cosmetics.colorBlindText.color = new Color32(0, 0, 0, 0);
+                HudManager.Instance.StartCoroutine(Effects.Lerp(1, new Action<float>(p =>
+                {
+                    var rend = player.MyRend();
+                    var a = Mathf.Clamp(1 - p, color.a, 1);
+                    var r = rend.color.r * (1 - p);
+                    var g = rend.color.g * (1 - p);
+                    var b = rend.color.b * (1 - p);
+                    rend.color = new(r, g, b, a);
+                    var text = player.NameText();
+                    text.color = new(text.color.a, text.color.a, text.color.a, 1 - p);
+                    var cbtext = player.ColorBlindText();
+                    cbtext.color = new(cbtext.color.a, cbtext.color.a, cbtext.color.a, 1 - p);
+                })));
             }
+
+            yield return null;
         }
+
+        public static GameData.PlayerOutfit InvisOutfit(PlayerControl player) => new()
+        {
+            ColorId = player.CurrentOutfit.ColorId,
+            HatId = "",
+            SkinId = "",
+            VisorId = "",
+            PlayerName = " "
+        };
+
+        public static GameData.PlayerOutfit CamoOutfit(PlayerControl player) => new()
+        {
+            ColorId = player.GetDefaultOutfit().ColorId,
+            HatId = "",
+            SkinId = "",
+            VisorId = "",
+            PlayerName = " "
+        };
 
         public static void Shapeshift()
         {
@@ -159,16 +200,32 @@
             }
         }
 
-        public static void DefaultOutfitAll()
-        {
-            foreach (var player in PlayerControl.AllPlayerControls)
-                DefaultOutfit(player);
-        }
+        public static void DefaultOutfitAll() => PlayerControl.AllPlayerControls.Il2CppToSystem().ForEach(DefaultOutfit);
 
         public static void AddUnique<T>(this Il2CppSystem.Collections.Generic.List<T> self, T item) where T : IDisconnectHandler
         {
             if (!self.Contains(item))
                 self.Add(item);
+        }
+
+        public static Color GetPlayerColor(this PlayerControl player, bool camoCondition = true)
+        {
+            if (DoUndo.IsCamoed && camoCondition)
+                return Color.grey;
+            else if (ColorUtils.IsRainbow(player.GetDefaultOutfit().ColorId))
+                return ColorUtils.Rainbow;
+            else if (ColorUtils.IsChroma(player.GetDefaultOutfit().ColorId))
+                return ColorUtils.Chroma;
+            else if (ColorUtils.IsMonochrome(player.GetDefaultOutfit().ColorId))
+                return ColorUtils.Monochrome;
+            else if (ColorUtils.IsMantle(player.GetDefaultOutfit().ColorId))
+                return ColorUtils.Mantle;
+            else if (ColorUtils.IsFire(player.GetDefaultOutfit().ColorId))
+                return ColorUtils.Fire;
+            else if (ColorUtils.IsGalaxy(player.GetDefaultOutfit().ColorId))
+                return ColorUtils.Galaxy;
+            else
+                return Palette.PlayerColors[player.GetDefaultOutfit().ColorId];
         }
 
         public static List<PlayerControl> GetCrewmates(List<PlayerControl> impostors) => PlayerControl.AllPlayerControls.ToArray().Where(player => !impostors.Any(imp => imp ==
@@ -188,7 +245,7 @@
 
         public static PlayerVoteArea VoteAreaById(byte id) => MeetingHud.Instance.playerStates.ToList().Find(x => x.TargetPlayerId == id);
 
-        public static DeadBody BodyById(byte id) => UObject.FindObjectsOfType<DeadBody>().ToArray().ToList().Find(x => x.ParentId == id);
+        public static DeadBody BodyById(byte id) => AllBodies.Find(x => x.ParentId == id);
 
         public static DeadBody BodyByPlayer(PlayerControl player) => BodyById(player.PlayerId);
 
@@ -260,105 +317,106 @@
 
             lunge = !killer.Is(AbilityEnum.Ninja) && lunge && killer != target;
 
-            if (!data.IsDead)
+            if (data.IsDead)
+                return;
+
+            if (killer == PlayerControl.LocalPlayer)
+                SoundManager.Instance.PlaySound(PlayerControl.LocalPlayer.KillSfx, false);
+
+            if (FirstDead == null)
+                FirstDead = target;
+
+            target.gameObject.layer = LayerMask.NameToLayer("Ghost");
+            target.Visible = false;
+
+            if (PlayerControl.LocalPlayer.Is(RoleEnum.Coroner) && !PlayerControl.LocalPlayer.Data.IsDead)
+                Flash(Colors.Coroner);
+
+            if (PlayerControl.LocalPlayer.Data.IsDead)
+                Flash(Colors.Stalemate);
+
+            var targetRole = Role.GetRole(target);
+
+            if (target.Is(ModifierEnum.VIP))
+                Flash(targetRole.Color);
+
+            var killerRole = Role.GetRole(killer);
+
+            if (target.AmOwner)
             {
-                if (killer == PlayerControl.LocalPlayer)
-                    SoundManager.Instance.PlaySound(PlayerControl.LocalPlayer.KillSfx, false);
+                if (Minigame.Instance)
+                    Minigame.Instance.Close();
 
-                target.gameObject.layer = LayerMask.NameToLayer("Ghost");
-                target.Visible = false;
+                if (MapBehaviour.Instance)
+                    MapBehaviour.Instance.Close();
 
-                if (PlayerControl.LocalPlayer.Is(RoleEnum.Coroner) && !PlayerControl.LocalPlayer.Data.IsDead)
-                    Flash(Colors.Coroner);
-
-                if (PlayerControl.LocalPlayer.Data.IsDead)
-                    Flash(Colors.Stalemate);
-
-                var targetRole = Role.GetRole(target);
-
-                if (target.Is(ModifierEnum.VIP))
-                    Flash(targetRole.Color);
-
-                var killerRole = Role.GetRole(killer);
-
-                if (target.AmOwner)
-                {
-                    if (Minigame.Instance)
-                        Minigame.Instance.Close();
-
-                    if (MapBehaviour.Instance)
-                        MapBehaviour.Instance.Close();
-
-                    HudManager.Instance.KillOverlay.ShowKillAnimation(killer.Data, data);
-                    HudManager.Instance.ShadowQuad.gameObject.SetActive(false);
-                    target.NameText().GetComponent<MeshRenderer>().material.SetInt("_Mask", 0);
-                    target.RpcSetScanner(false);
-                }
-
-                if (lunge)
-                    killer.MyPhysics.StartCoroutine(killer.KillAnimations.Random().CoPerformKill(killer, target));
-                else
-                    killer.MyPhysics.StartCoroutine(killer.KillAnimations.Random().CoPerformKill(target, target));
-
-                if (killer != target)
-                {
-                    targetRole.KilledBy = " By " + killerRole.PlayerName;
-                    targetRole.DeathReason = reason;
-                }
-                else
-                    targetRole.DeathReason = DeathReasonEnum.Suicide;
-
-                var deadBody = new DeadPlayer
-                {
-                    PlayerId = target.PlayerId,
-                    KillerId = killer.PlayerId,
-                    KillTime = DateTime.UtcNow
-                };
-
-                if (target.Is(RoleEnum.Framer))
-                    ((Framer)killerRole).Framed.Clear();
-
-                target.RegenTask();
-                killer.RegenTask();
-                RecentlyKilled.Add(target);
-
-                if (target == Role.DriveHolder)
-                    RoleGen.AssignChaosDrive();
-
-                Murder.KilledPlayers.Add(deadBody);
-
-                if (MeetingHud.Instance)
-                    target.Exiled();
-
-                ReassignPostmortals(target);
-
-                if (target.Is(ObjectifierEnum.Lovers))
-                {
-                    var lover = target.GetOtherLover();
-
-                    if (!lover.Is(RoleEnum.Pestilence) && CustomGameOptions.BothLoversDie && !lover.Data.IsDead)
-                        MurderPlayer(lover, lover, DeathReasonEnum.Suicide, lunge);
-                }
-
-                if (target.Is(ModifierEnum.Diseased))
-                    killerRole.Diseased = true;
-                else if (target.Is(ModifierEnum.Bait))
-                    BaitReport(killer, target);
-
-                if (killer.Is(AbilityEnum.Politician))
-                    Ability.GetAbility<Politician>(killer).VoteBank++;
-
-                if (target.Is(RoleEnum.Troll))
-                {
-                    var troll = Role.GetRole<Troll>(target);
-                    troll.Killed = true;
-                    RpcMurderPlayer(target, killer, DeathReasonEnum.Trolled, false);
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                    writer.Write((byte)WinLoseRPC.TrollWin);
-                    writer.Write(target.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                }
+                HudManager.Instance.KillOverlay.ShowKillAnimation(killer.Data, data);
+                HudManager.Instance.ShadowQuad.gameObject.SetActive(false);
+                target.NameText().GetComponent<MeshRenderer>().material.SetInt("_Mask", 0);
+                target.RpcSetScanner(false);
             }
+
+            killer.MyPhysics.StartCoroutine(killer.KillAnimations.Random().CoPerformKill(lunge ? killer : target, target));
+
+            if (killer != target)
+            {
+                targetRole.KilledBy = " By " + killerRole.PlayerName;
+                targetRole.DeathReason = reason;
+            }
+            else
+                targetRole.DeathReason = DeathReasonEnum.Suicide;
+
+            var deadBody = new DeadPlayer
+            {
+                PlayerId = target.PlayerId,
+                KillerId = killer.PlayerId,
+                KillTime = DateTime.UtcNow
+            };
+
+            if (target.Is(RoleEnum.Framer))
+                ((Framer)killerRole).Framed.Clear();
+
+            RecentlyKilled.Add(target);
+
+            if (target == Role.DriveHolder)
+                RoleGen.AssignChaosDrive();
+
+            Murder.KilledPlayers.Add(deadBody);
+
+            if (MeetingHud.Instance)
+                target.Exiled();
+
+            ReassignPostmortals(target);
+
+            if (target.Is(ObjectifierEnum.Lovers))
+            {
+                var lover = target.GetOtherLover();
+
+                if (!lover.Is(RoleEnum.Pestilence) && CustomGameOptions.BothLoversDie && !lover.Data.IsDead)
+                    RpcMurderPlayer(lover, lover);
+            }
+
+            if (target.Is(ModifierEnum.Diseased))
+                killerRole.Diseased = true;
+            else if (target.Is(ModifierEnum.Bait))
+                BaitReport(killer, target);
+
+            if (killer.Is(AbilityEnum.Politician))
+                Ability.GetAbility<Politician>(killer).VoteBank++;
+
+            if (target.Is(RoleEnum.Troll))
+            {
+                var troll = Role.GetRole<Troll>(target);
+                troll.Killed = true;
+                RpcMurderPlayer(target, killer, DeathReasonEnum.Trolled, false);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
+                writer.Write((byte)WinLoseRPC.TrollWin);
+                writer.Write(target.PlayerId);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+            }
+
+            target.RegenTask();
+            killer.RegenTask();
         }
 
         public static void BaitReport(PlayerControl killer, PlayerControl target) => Coroutines.Start(BaitReportDelay(killer, target));
@@ -416,57 +474,6 @@
 
         public static object TryCast(this Il2CppObjectBase self, Type type) => AccessTools.Method(self.GetType(), nameof(Il2CppObjectBase.TryCast)).MakeGenericMethod(type).Invoke(self,
             Array.Empty<object>());
-
-        public static bool TasksDone()
-        {
-            var allCrew = new List<PlayerControl>();
-            var crewWithNoTasks = new List<PlayerControl>();
-
-            foreach (var player in PlayerControl.AllPlayerControls)
-            {
-                if (player.CanDoTasks() && player.Is(Faction.Crew))
-                {
-                    allCrew.Add(player);
-
-                    if (Role.GetRole(player)?.TasksDone == true)
-                        crewWithNoTasks.Add(player);
-                }
-            }
-
-            return allCrew.Count == crewWithNoTasks.Count;
-        }
-
-        public static bool Sabotaged()
-        {
-            if (ShipStatus.Instance.Systems != null)
-            {
-                if (ShipStatus.Instance.Systems.ContainsKey(SystemTypes.LifeSupp))
-                {
-                    var lifeSuppSystemType = ShipStatus.Instance.Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
-
-                    if (lifeSuppSystemType.Countdown < 0f)
-                        return true;
-                }
-
-                if (ShipStatus.Instance.Systems.ContainsKey(SystemTypes.Laboratory))
-                {
-                    var reactorSystemType = ShipStatus.Instance.Systems[SystemTypes.Laboratory].Cast<ReactorSystemType>();
-
-                    if (reactorSystemType.Countdown < 0f)
-                        return true;
-                }
-
-                if (ShipStatus.Instance.Systems.ContainsKey(SystemTypes.Reactor))
-                {
-                    var reactorSystemType = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ICriticalSabotage>();
-
-                    if (reactorSystemType.Countdown < 0f)
-                        return true;
-                }
-            }
-
-            return false;
-        }
 
         public static List<bool> Interact(PlayerControl player, PlayerControl target, bool toKill = false, bool toConvert = false, bool bypass = false)
         {
@@ -663,10 +670,10 @@
             {
                 if (toKill)
                 {
-                    if (target.Is(ObjectifierEnum.Fanatic) && (player.Is(Faction.Intruder) || player.Is(Faction.Syndicate)) && target.IsUnturnedFanatic())
+                    if (target.Is(ObjectifierEnum.Fanatic) && (player.Is(Faction.Intruder) || player.Is(Faction.Syndicate)) && target.IsUnturnedFanatic() && !bypass)
                     {
                         var role = Role.GetRole(player);
-                        Fanatic.TurnFanatic(target, role.Faction);
+                        Objectifier.GetObjectifier<Fanatic>(target).TurnFanatic(role.Faction);
                         var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
                         writer.Write((byte)TurnRPC.TurnFanatic);
                         writer.Write(target.PlayerId);
@@ -676,9 +683,6 @@
                     else
                         RpcMurderPlayer(player, target);
                 }
-
-                if (toConvert && (RoleGen.Convertible <= 0 || RoleGen.PureCrew == target))
-                    RpcMurderPlayer(player, target, DeathReasonEnum.Failed);
 
                 abilityUsed = true;
                 fullReset = true;
@@ -812,7 +816,6 @@
             writer.WritePacked(AmongUsClient.Instance.ClientId);
             writer.Write((byte)(TownOfUsReworked.Version.Revision < 0 ? 0xFF : TownOfUsReworked.Version.Revision));
             writer.Write(TownOfUsReworked.Executing.ManifestModule.ModuleVersionId.ToByteArray());
-            writer.Write(AmongUsClient.Instance.AmHost ? GameStartManagerPatch.timer : -1f);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
             VersionHandshake(TownOfUsReworked.Version.Major, TownOfUsReworked.Version.Minor, TownOfUsReworked.Version.Build, TownOfUsReworked.Version.Revision,
                 TownOfUsReworked.Executing.ManifestModule.ModuleVersionId, AmongUsClient.Instance.ClientId);
@@ -1477,13 +1480,11 @@
                 if (SetPostmortals.WillBeRevealer == player)
                 {
                     var toChooseFrom = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Crew) && x.Data.IsDead && !x.Data.Disconnected).ToList();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetRevealer, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetRevealer, SendOption.Reliable);
+                    SetPostmortals.WillBeRevealer = null;
 
                     if (toChooseFrom.Count == 0)
-                    {
-                        SetPostmortals.WillBeRevealer = null;
                         writer.Write(255);
-                    }
                     else
                     {
                         var rand = URandom.RandomRangeInt(0, toChooseFrom.Count);
@@ -1497,13 +1498,11 @@
                 else if (SetPostmortals.WillBePhantom == player)
                 {
                     var toChooseFrom = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Neutral) && x.Data.IsDead && !x.Data.Disconnected).ToList();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPhantom, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPhantom, SendOption.Reliable);
+                    SetPostmortals.WillBePhantom = null;
 
                     if (toChooseFrom.Count == 0)
-                    {
-                        SetPostmortals.WillBePhantom = null;
                         writer.Write(255);
-                    }
                     else
                     {
                         var rand = URandom.RandomRangeInt(0, toChooseFrom.Count);
@@ -1517,13 +1516,11 @@
                 else if (SetPostmortals.WillBeBanshee == player)
                 {
                     var toChooseFrom = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Syndicate) && x.Data.IsDead && !x.Data.Disconnected).ToList();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetBanshee, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetBanshee, SendOption.Reliable);
+                    SetPostmortals.WillBeBanshee = null;
 
                     if (toChooseFrom.Count == 0)
-                    {
-                        SetPostmortals.WillBeBanshee = null;
                         writer.Write(255);
-                    }
                     else
                     {
                         var rand = URandom.RandomRangeInt(0, toChooseFrom.Count);
@@ -1537,13 +1534,11 @@
                 else if (SetPostmortals.WillBeGhoul == player)
                 {
                     var toChooseFrom = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Neutral) && x.Data.IsDead && !x.Data.Disconnected).ToList();
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetGhoul, SendOption.Reliable, -1);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetGhoul, SendOption.Reliable);
+                    SetPostmortals.WillBeGhoul = null;
 
                     if (toChooseFrom.Count == 0)
-                    {
-                        SetPostmortals.WillBeGhoul = null;
                         writer.Write(255);
-                    }
                     else
                     {
                         var rand = URandom.RandomRangeInt(0, toChooseFrom.Count);
@@ -1625,7 +1620,7 @@
             if (maxDistance == 0f)
                 maxDistance = CustomGameOptions.InteractionDistance;
 
-            foreach (var body in UObject.FindObjectsOfType<DeadBody>())
+            foreach (var body in AllBodies)
             {
                 var distance = Vector2.Distance(truePosition, body.TruePosition);
                 var vector = body.TruePosition - truePosition;
@@ -1642,5 +1637,76 @@
 
             return closestBody;
         }
+
+        /*public static void CallRpc(params object[] data)
+        {
+            if (data[0] is not CustomRPC)
+                throw new ArgumentException("First param should be a custom rpc");
+
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)(CustomRPC)data[0], SendOption.Reliable);
+
+            if (data.Length > 1)
+            {
+                foreach (var item in data[1..])
+                {
+                    if (item is bool boolean)
+                        writer.Write(boolean);
+                    else if (item is int integer)
+                        writer.Write(integer);
+                    else if (item is uint uinteger)
+                        writer.Write(uinteger);
+                    else if (item is float Float)
+                        writer.Write(Float);
+                    else if (item is byte Byte)
+                        writer.Write(Byte);
+                    else if (item is sbyte sByte)
+                        writer.Write(sByte);
+                    else if (item is Vector2 vector)
+                        writer.Write(vector);
+                    else if (item is Vector3 vector3)
+                        writer.Write(vector3);
+                    else if (item is ulong Ulong)
+                        writer.Write(Ulong);
+                    else if (item is ushort Ushort)
+                        writer.Write(Ushort);
+                    else if (item is short Short)
+                        writer.Write(Short);
+                    else if (item is long Long)
+                        writer.Write(Long);
+                    else if (item is byte[] array)
+                        writer.WriteBytesAndSize(array);
+                    else if (item is TargetRPC target)
+                        writer.Write((byte)target);
+                    else if (item is ActionsRPC action)
+                        writer.Write((byte)action);
+                    else if (item is TurnRPC turn)
+                        writer.Write((byte)turn);
+                    else if (item is Faction faction)
+                        writer.Write((byte)faction);
+                    else if (item is RoleAlignment alignment)
+                        writer.Write((byte)alignment);
+                    else if (item is SubFaction subfaction)
+                        writer.Write((byte)subfaction);
+                    else if (item is PlayerLayerEnum layer)
+                        writer.Write((byte)layer);
+                    else if (item is InspectorResults results)
+                        writer.Write((byte)results);
+                    else if (item is DeathReasonEnum death)
+                        writer.Write((byte)death);
+                    else if (item is WinLoseRPC winlose)
+                        writer.Write((byte)winlose);
+                    else if (item is RetributionistActionsRPC retAction)
+                        writer.Write((byte)retAction);
+                    else if (item is GodfatherActionsRPC gfAction)
+                        writer.Write((byte)gfAction);
+                    else if (item is RebelActionsRPC rebAction)
+                        writer.Write((byte)rebAction);
+                    else
+                        LogSomething($"Unknown data type used in the rpc: item - {nameof(item)}, rpc - {data[0]}");
+                }
+            }
+
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+        }*/
     }
 }

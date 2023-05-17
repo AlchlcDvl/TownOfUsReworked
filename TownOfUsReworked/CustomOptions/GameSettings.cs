@@ -3,7 +3,9 @@ namespace TownOfUsReworked.CustomOptions
     [HarmonyPatch]
     public static class GameSettings
     {
-        private static int SettingsPage;
+        #pragma warning disable
+        public static int SettingsPage;
+        #pragma warning restore
 
         [HarmonyPatch(typeof(IGameOptionsExtensions), nameof(IGameOptionsExtensions.ToHudString))]
         public static class GameOptionsDataPatch
@@ -13,54 +15,59 @@ namespace TownOfUsReworked.CustomOptions
                 if (ConstantVariables.IsHnS)
                     return;
 
-                #pragma warning disable
-                var builder = new StringBuilder();
-                builder.AppendLine($"Currently Viewing Page ({SettingsPage + 1}/8)");
-                builder.AppendLine("Press Tab Or The Page Number To Change Pages");
-
-                if (SettingsPage == 0)
-                    builder.AppendLine("\nGlobal");
-                else if (SettingsPage == 1)
-                    builder.AppendLine("\n<color=#8CFFFFFF>Crew</color>");
-                else if (SettingsPage == 2)
-                    builder.AppendLine("\n<color=#B3B3B3FF>Neutral</color>");
-                else if (SettingsPage == 3)
-                    builder.AppendLine("\n<color=#FF0000FF>Intruder</color>");
-                else if (SettingsPage == 4)
-                    builder.AppendLine("\n<color=#008000FF>Syndicate</color>");
-                else if (SettingsPage == 5)
-                    builder.AppendLine("\n<color=#7F7F7FFF>Modifier</color>");
-                else if (SettingsPage == 6)
-                    builder.AppendLine("\n<color=#DD585BFF>Objectifier</color>");
-                else if (SettingsPage == 7)
-                    builder.AppendLine("\n<color=#FF9900FF>Ability</color>");
-
-                foreach (var option in CustomOption.AllOptions.Where(x => x.Menu == (MultiMenu)SettingsPage))
-                {
-                    if (option.Type == CustomOptionType.Button || option.ID == -1)
-                        continue;
-
-                    if (option.Type == CustomOptionType.Header)
-                        builder.AppendLine($"\n{option.Name}");
-                    else if (option.Type == CustomOptionType.Nested)
-                    {
-                        var nested = (CustomNestedOption)option;
-
-                        foreach (var option2 in nested.InternalOptions)
-                        {
-                            if (option2.Type == CustomOptionType.Header)
-                                builder.AppendLine($"\n{option2.Name}");
-                            else if (option2.Type != CustomOptionType.Button)
-                                builder.AppendLine($"    {option2.Name} - {option2}");
-                        }
-                    }
-                    else
-                        builder.AppendLine($"    {option.Name} - {option}");
-                }
-                #pragma warning restore
-
-                __result = $"<size=1.25>{builder}</size>";
+                __result = Settings();
             }
+        }
+
+        public static string Settings()
+        {
+            #pragma warning disable
+            var builder = new StringBuilder();
+            builder.AppendLine($"Currently Viewing Page ({SettingsPage + 1}/8)");
+            builder.AppendLine("Press The Tab/Page Number To Change Pages");
+
+            if (SettingsPage == 0)
+                builder.AppendLine("\nGlobal");
+            else if (SettingsPage == 1)
+                builder.AppendLine("\n<color=#8CFFFFFF>Crew</color>");
+            else if (SettingsPage == 2)
+                builder.AppendLine("\n<color=#B3B3B3FF>Neutral</color>");
+            else if (SettingsPage == 3)
+                builder.AppendLine("\n<color=#FF0000FF>Intruder</color>");
+            else if (SettingsPage == 4)
+                builder.AppendLine("\n<color=#008000FF>Syndicate</color>");
+            else if (SettingsPage == 5)
+                builder.AppendLine("\n<color=#7F7F7FFF>Modifier</color>");
+            else if (SettingsPage == 6)
+                builder.AppendLine("\n<color=#DD585BFF>Objectifier</color>");
+            else if (SettingsPage == 7)
+                builder.AppendLine("\n<color=#FF9900FF>Ability</color>");
+
+            foreach (var option in CustomOption.AllOptions.Where(x => x.Menu == (MultiMenu)SettingsPage))
+            {
+                if (option.Type == CustomOptionType.Button || option.ID == -1)
+                    continue;
+
+                if (option.Type == CustomOptionType.Header)
+                    builder.AppendLine($"\n{option.Name}");
+                else if (option.Type == CustomOptionType.Nested)
+                {
+                    var nested = (CustomNestedOption)option;
+
+                    foreach (var option2 in nested.InternalOptions)
+                    {
+                        if (option2.Type == CustomOptionType.Header)
+                            builder.AppendLine($"\n{option2.Name}");
+                        else if (option2.Type != CustomOptionType.Button)
+                            builder.AppendLine($"    {option2.Name} - {option2}");
+                    }
+                }
+                else
+                    builder.AppendLine($"    {option.Name} - {option}");
+            }
+            #pragma warning restore
+
+            return $"<size=1.25>{builder}</size>";
         }
 
         [HarmonyPatch(typeof(GameOptionsMenu), nameof(GameOptionsMenu.Update))]
@@ -74,10 +81,8 @@ namespace TownOfUsReworked.CustomOptions
         {
             public static void Postfix(HudManager __instance)
             {
-                if (!ConstantVariables.IsLobby)
-                    return;
-
-                __instance.ReportButton.gameObject.SetActive(false);
+                if (ConstantVariables.IsLobby)
+                    __instance.ReportButton.gameObject.SetActive(false);
 
                 if (Input.GetKeyDown(KeyCode.Tab))
                 {

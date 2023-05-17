@@ -20,7 +20,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = CustomGameOptions.CustomIntColors ? Colors.Morphling : Colors.Intruder;
             RoleType = RoleEnum.Morphling;
             RoleAlignment = RoleAlignment.IntruderDecep;
-            AlignmentName = ID;
             SampledPlayer = null;
             MorphedPlayer = null;
             Type = LayerEnum.Morphling;

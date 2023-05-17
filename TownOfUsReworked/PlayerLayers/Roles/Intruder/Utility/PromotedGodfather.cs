@@ -11,7 +11,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 $"\n{AbilitiesText}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Godfather : Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderSupport;
-            AlignmentName = IS;
             BlockMenu = new(Player, ConsClick, Exception1);
             Type = LayerEnum.PromotedGodfather;
             TeleportPoint = new(0, 0, 0);
@@ -127,7 +126,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 IsCamo);
             CleanButton.Update("CLEAN", CleanTimer(), CustomGameOptions.JanitorCleanCd, true, CurrentlyDragging == null && IsJani);
             DragButton.Update("DRAG", DragTimer(), CustomGameOptions.DragCd, true, CurrentlyDragging == null && IsJani);
-            DropButton.Update("DROP", 0, 1, true, CurrentlyDragging != null && IsJani);
+            DropButton.Update("DROP", true, CurrentlyDragging != null && IsJani);
             InvisButton.Update("INVIS", InvisTimer(), CustomGameOptions.InvisCd, OnEffect, TimeRemaining, CustomGameOptions.InvisDuration, true, IsWraith);
         }
 

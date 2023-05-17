@@ -110,7 +110,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             base.SelectVote(__instance, id);
 
             if (id != 251)
-                Abstain.ClearButtons();
+                Abstain?.ClearButtons();
 
             UpdateButton(__instance);
         }

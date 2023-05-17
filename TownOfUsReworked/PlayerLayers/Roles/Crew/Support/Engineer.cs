@@ -15,7 +15,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = CustomGameOptions.CustomCrewColors ? Colors.Engineer : Colors.Crew;
             RoleType = RoleEnum.Engineer;
             RoleAlignment = RoleAlignment.CrewSupport;
-            AlignmentName = CS;
             InspectorResults = InspectorResults.NewLens;
             UsesLeft = CustomGameOptions.MaxFixes;
             Type = LayerEnum.Engineer;

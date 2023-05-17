@@ -93,6 +93,8 @@ namespace TownOfUsReworked.MultiClientInstancing
 
             HudManager.Instance.SetHudActive(true);
 
+            HudManager.Instance.ShadowQuad.gameObject.SetActive(!newPlayer.Data.IsDead);
+
             light.transform.SetParent(PlayerControl.LocalPlayer.transform);
             light.transform.localPosition = PlayerControl.LocalPlayer.Collider.offset;
 

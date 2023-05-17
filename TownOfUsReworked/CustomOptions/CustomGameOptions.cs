@@ -223,6 +223,7 @@ namespace TownOfUsReworked.CustomOptions
         public static int LoversOn => (int)Generate.LoversOn.Get();
         public static int AlliedOn => (int)Generate.AlliedOn.Get();
         public static int MafiaOn => (int)Generate.MafiaOn.Get();
+        public static int DefectorOn => (int)Generate.DefectorOn.Get();
 
         //Modifier Spawn
         public static int ProfessionalOn => (int)Generate.ProfessionalOn.Get();
@@ -461,6 +462,7 @@ namespace TownOfUsReworked.CustomOptions
         public static int TransporterCount => (int)Generate.TransporterCount.Get();
         public static bool UniqueTransporter => Generate.UniqueTransporter.Get();
         public static bool TransSelf => Generate.TransSelf.Get();
+        public static float TransportDuration => Generate.TransportDuration.Get();
 
         //Crewmate Settings
         public static int CrewCount => (int)Generate.CrewCount.Get();
@@ -891,6 +893,7 @@ namespace TownOfUsReworked.CustomOptions
         public static bool UniqueWarper => Generate.UniqueWarper.Get();
         public static bool WarpSelf => Generate.WarpSelf.Get();
         public static int WarperCount => (int)Generate.WarperCount.Get();
+        public static float WarpDuration => Generate.WarpDuration.Get();
 
         //Betrayer Settings
         public static float BetrayerKillCooldown => Generate.BetrayerKillCooldown.Get();
@@ -1026,6 +1029,12 @@ namespace TownOfUsReworked.CustomOptions
         public static int LoversCount => (int)Generate.LoversCount.Get();
         public static bool LoversFaction => Generate.LoversFaction.Get();
         public static bool LoversRoles => Generate.LoversRoles.Get();
+
+        //Defector Settings
+        public static bool DefectorKnows => Generate.DefectorKnows.Get();
+        public static bool UniqueDefector => Generate.UniqueDefector.Get();
+        public static int DefectorCount => (int)Generate.DefectorCount.Get();
+        public static DefectorFaction DefectorFaction => (DefectorFaction)Generate.DefectorFaction.Get();
 
         //Rivals Settings
         public static bool RivalsChat => Generate.RivalsChat.Get();
@@ -1197,5 +1206,9 @@ namespace TownOfUsReworked.CustomOptions
         //NN Settings
         public static int NNMax => (int)Generate.NNMax.Get();
         public static int NNMin => (int)Generate.NNMin.Get();
+
+        //NH Settings
+        public static int NHMax => (int)Generate.NHMax.Get();
+        public static int NHMin => (int)Generate.NHMin.Get();
     }
 }

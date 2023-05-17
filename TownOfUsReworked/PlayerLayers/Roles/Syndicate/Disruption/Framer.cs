@@ -14,8 +14,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AbilitiesText = "- You can frame players\n- Framed players will die very easily to killing roles and will appear to have the wrong results to investigative roles till you" +
                 $" are dead\n- With the Chaos Drive, you can frame all players within a{CustomGameOptions.ChaosDriveFrameRadius}m radius\n{AbilitiesText}";
             RoleType = RoleEnum.Framer;
-            RoleAlignment = RoleAlignment.SyndicateDisruption;
-            AlignmentName = SD;
+            RoleAlignment = RoleAlignment.SyndicateDisrup;
             Color = CustomGameOptions.CustomSynColors ? Colors.Framer : Colors.Syndicate;
             Framed = new();
             Type = LayerEnum.Framer;

@@ -21,7 +21,7 @@ namespace TownOfUsReworked.Patches
                     touButton.transform.localPosition = new(touButton.transform.localPosition.x, touButton.transform.localPosition.y + 0.6f, touButton.transform.localPosition.z);
                     var passiveTOUButton = touButton.GetComponent<PassiveButton>();
                     SpriteRenderer touButtonSprite = touButton.GetComponent<SpriteRenderer>();
-                    passiveTOUButton.OnClick.RemoveAllListeners();
+                    passiveTOUButton.OnClick = new();
                     touButtonSprite.sprite = AssetManager.GetSprite("UpdateToUButton");
 
                     //Add onClick event to run the update on button click
@@ -54,7 +54,7 @@ namespace TownOfUsReworked.Patches
                         submergedButton.transform.localPosition.z);
                     var passiveSubmergedButton = submergedButton.GetComponent<PassiveButton>();
                     SpriteRenderer submergedButtonSprite = submergedButton.GetComponent<SpriteRenderer>();
-                    passiveSubmergedButton.OnClick.RemoveAllListeners();
+                    passiveSubmergedButton.OnClick = new();
                     submergedButtonSprite.sprite = AssetManager.GetSprite("UpdateSubmergedButton");
 
                     //Add onClick event to run the update on button click

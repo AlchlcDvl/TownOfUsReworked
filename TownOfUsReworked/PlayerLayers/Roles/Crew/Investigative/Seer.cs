@@ -15,7 +15,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleType = RoleEnum.Seer;
             Color = CustomGameOptions.CustomCrewColors ? Colors.Seer : Colors.Crew;
             RoleAlignment = RoleAlignment.CrewInvest;
-            AlignmentName = CI;
             AbilitiesText = "- You can investigate players to see if their roles have changed\n- If all players whose roles changed have died, you will become a <color=#FFCC80FF>" +
                 "Sheriff</color>";
             StartText = "You See People's Histories";

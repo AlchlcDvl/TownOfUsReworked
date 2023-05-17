@@ -21,7 +21,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = CustomGameOptions.CustomIntColors ? Colors.Grenadier : Colors.Intruder;
             RoleType = RoleEnum.Grenadier;
             RoleAlignment = RoleAlignment.IntruderConceal;
-            AlignmentName = IC;
             InspectorResults = InspectorResults.DropsItems;
             ClosestPlayers = new();
             FlashedPlayers = new();

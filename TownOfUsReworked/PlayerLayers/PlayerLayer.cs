@@ -13,11 +13,7 @@ namespace TownOfUsReworked.PlayerLayers
         public AbilityEnum AbilityType = AbilityEnum.None;
         public LayerEnum Type = LayerEnum.None;
 
-        public string KilledBy = "";
-        public DeathReasonEnum DeathReason = DeathReasonEnum.Alive;
-
         public bool IsBlocked;
-        public bool RoleBlockImmune;
 
         #pragma warning disable
         public static bool NobodyWins;
@@ -288,7 +284,7 @@ namespace TownOfUsReworked.PlayerLayers
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
                 }
-                else if (role.Faction == Faction.Syndicate && (role.NotDefective || Type == LayerEnum.Betrayer || role.IsSynAlly || role.IsSynFanatic || role.IsSynTraitor) &&
+                else if (role.Faction == Faction.Syndicate && (role.Faithful || Type == LayerEnum.Betrayer || role.IsSynAlly || role.IsSynFanatic || role.IsSynTraitor) &&
                     ConstantVariables.SyndicateWins)
                 {
                     Role.SyndicateWin = true;
@@ -297,7 +293,7 @@ namespace TownOfUsReworked.PlayerLayers
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
                 }
-                else if (role.Faction == Faction.Intruder && (role.NotDefective || Type == LayerEnum.Betrayer || role.IsIntAlly || role.IsIntFanatic || role.IsIntTraitor) &&
+                else if (role.Faction == Faction.Intruder && (role.Faithful || Type == LayerEnum.Betrayer || role.IsIntAlly || role.IsIntFanatic || role.IsIntTraitor) &&
                     ConstantVariables.IntrudersWin)
                 {
                     Role.IntruderWin = true;
@@ -306,7 +302,7 @@ namespace TownOfUsReworked.PlayerLayers
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
                 }
-                else if (role.Faction == Faction.Crew && (role.NotDefective || role.IsCrewAlly) && ConstantVariables.CrewWins)
+                else if (role.Faction == Faction.Crew && (role.Faithful || role.IsCrewAlly) && ConstantVariables.CrewWins)
                 {
                     Role.CrewWin = true;
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
@@ -314,7 +310,7 @@ namespace TownOfUsReworked.PlayerLayers
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
                 }
-                else if (role.NotDefective && ConstantVariables.PestOrPBWins && Type is LayerEnum.Plaguebearer or LayerEnum.Pestilence)
+                else if (role.Faithful && ConstantVariables.PestOrPBWins && Type is LayerEnum.Plaguebearer or LayerEnum.Pestilence)
                 {
                     Role.InfectorsWin = true;
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
@@ -322,7 +318,7 @@ namespace TownOfUsReworked.PlayerLayers
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
                 }
-                else if (ConstantVariables.AllNeutralsWin && role.NotDefective)
+                else if (ConstantVariables.AllNeutralsWin && role.Faithful)
                 {
                     Role.AllNeutralsWin = true;
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
@@ -330,7 +326,7 @@ namespace TownOfUsReworked.PlayerLayers
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
                 }
-                else if (ConstantVariables.AllNKsWin && role.NotDefective && role.RoleAlignment == RoleAlignment.NeutralKill)
+                else if (ConstantVariables.AllNKsWin && role.Faithful && role.RoleAlignment == RoleAlignment.NeutralKill)
                 {
                     Role.NKWins = true;
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
@@ -338,7 +334,7 @@ namespace TownOfUsReworked.PlayerLayers
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
                 }
-                else if (role.NotDefective && role.RoleAlignment == RoleAlignment.NeutralKill && (ConstantVariables.SameNKWins(RoleType) ||
+                else if (role.Faithful && role.RoleAlignment == RoleAlignment.NeutralKill && (ConstantVariables.SameNKWins(RoleType) ||
                     ConstantVariables.SoloNKWins(RoleType, Player)))
                 {
                     switch (RoleType)
@@ -376,7 +372,7 @@ namespace TownOfUsReworked.PlayerLayers
                     {
                         foreach (var role2 in Role.GetRoles(RoleType))
                         {
-                            if (!role2.Disconnected && role2.NotDefective)
+                            if (!role2.Disconnected && role2.Faithful)
                                 role2.Winner = true;
                         }
                     }
@@ -404,7 +400,9 @@ namespace TownOfUsReworked.PlayerLayers
 
         public static bool operator !=(PlayerLayer a, PlayerLayer b) => !(a == b);
 
-        private bool Equals(PlayerLayer other) => Equals(Player, other.Player) && Type == other.Type;
+        public static implicit operator bool(PlayerLayer exists) => exists != null;
+
+        private bool Equals(PlayerLayer other) => Equals(Player, other.Player) && Type == other.Type && GetHashCode() == other.GetHashCode();
 
         public override bool Equals(object obj)
         {

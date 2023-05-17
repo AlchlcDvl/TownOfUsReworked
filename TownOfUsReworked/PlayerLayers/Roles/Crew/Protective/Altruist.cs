@@ -20,7 +20,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = CustomGameOptions.CustomCrewColors ? Colors.Altruist : Colors.Crew;
             RoleType = RoleEnum.Altruist;
             RoleAlignment = RoleAlignment.CrewProt;
-            AlignmentName = CP;
             InspectorResults = InspectorResults.PreservesLife;
             Type = LayerEnum.Altruist;
             UsesLeft = CustomGameOptions.ReviveCount;

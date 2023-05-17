@@ -10,7 +10,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = CustomGameOptions.CustomCrewColors ? Colors.Retributionist : Colors.Crew;
             RoleType = RoleEnum.Retributionist;
             RoleAlignment = RoleAlignment.CrewSupport;
-            AlignmentName = CS;
             InspectorResults = InspectorResults.DealsWithDead;
             Inspected = new();
             BodyArrows = new();
@@ -28,6 +27,26 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             _time = DateTime.UnixEpoch;
             Type = LayerEnum.Retributionist;
             UsesLeft = CustomGameOptions.MaxUses;
+            Player1Body = null;
+            Player2Body = null;
+            WasInVent1 = false;
+            WasInVent2 = false;
+            Vent1 = null;
+            Vent2 = null;
+            Transport1 = new GameObject("Transport1") { layer = 5 };
+            Transport2 = new GameObject("Transport2") { layer = 5 };
+            Transport1.AddSubmergedComponent("ElevatorMover");
+            Transport2.AddSubmergedComponent("ElevatorMover");
+            Transport1.transform.position = new(Player.GetTruePosition().x, Player.GetTruePosition().y, (Player.GetTruePosition().y / 1000f) + 0.01f);
+            Transport1.transform.position = new(Player.GetTruePosition().x, Player.GetTruePosition().y, (Player.GetTruePosition().y / 1000f) + 0.01f);
+            AnimationPlaying1 = Transport1.AddComponent<SpriteRenderer>();
+            AnimationPlaying2 = Transport2.AddComponent<SpriteRenderer>();
+            AnimationPlaying1.sprite = AssetManager.PortalAnimation[0];
+            AnimationPlaying2.sprite = AssetManager.PortalAnimation[0];
+            AnimationPlaying1.material = HatManager.Instance.PlayerMaterial;
+            AnimationPlaying2.material = HatManager.Instance.PlayerMaterial;
+            Transport1.SetActive(true);
+            Transport2.SetActive(true);
             TransportMenu1 = new(Player, Click1, Exception7);
             TransportMenu2 = new(Player, Click2, Exception8);
             RevealButton = new(this, "Reveal", AbilityTypes.Direct, "ActionSecondary", Reveal);
@@ -133,7 +152,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var renderer = targetBox.GetComponent<SpriteRenderer>();
             renderer.sprite = AssetManager.GetSprite("RetDeselect");
             var button = targetBox.GetComponent<PassiveButton>();
-            button.OnClick.RemoveAllListeners();
+            button.OnClick = new();
             button.OnClick.AddListener(SetActive(voteArea, __instance));
             MoarButtons.Add(targetId, targetBox);
             Actives.Add(targetId, false);
@@ -178,9 +197,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 return;
 
             button.SetActive(false);
-            button.GetComponent<PassiveButton>().OnClick.RemoveAllListeners();
-            button.GetComponent<PassiveButton>().OnMouseOver.RemoveAllListeners();
-            button.GetComponent<PassiveButton>().OnMouseOut.RemoveAllListeners();
+            button.GetComponent<PassiveButton>().OnClick = new();
+            button.GetComponent<PassiveButton>().OnMouseOver = new();
+            button.GetComponent<PassiveButton>().OnMouseOut = new();
             button.Destroy();
             MoarButtons[targetId] = null;
         }
@@ -217,10 +236,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var condition = active == true && dummyActive == false;
             var flag1 = TransportPlayer1 == null;
             var flag2 = TransportPlayer2 == null;
-            TransportButton.Update(flag1 ? "FIRST TARGET" : (flag2 ? "SECOND TARGET" : "TRANSPORT"), TransportTimer(), CustomGameOptions.TransportCooldown, UsesLeft, ButtonUsable,
-                ButtonUsable && IsTrans);
+            TransportButton.Update(flag1 ? "FIRST TARGET" : (flag2 ? "SECOND TARGET" : "TRANSPORT"), TransportTimer(), CustomGameOptions.TransportCooldown, UsesLeft, OnEffect,
+                TimeRemaining, CustomGameOptions.TransportDuration, ButtonUsable, ButtonUsable && IsTrans);
             FixButton.Update("FIX", FixTimer(), CustomGameOptions.FixCooldown, UsesLeft, condition && ButtonUsable, ButtonUsable && IsEngi);
-            ShieldButton.Update("SHIELD", 0, 1, !UsedMedicAbility, !UsedMedicAbility && IsMedic);
+            ShieldButton.Update("SHIELD", !UsedMedicAbility, !UsedMedicAbility && IsMedic);
             RevealButton.Update("REVEAL", RevealTimer(), CustomGameOptions.RevealCooldown, true, IsMys);
             StakeButton.Update("STAKE", StakeTimer(), CustomGameOptions.StakeCooldown, true, IsVH);
             AutopsyButton.Update("AUTOPSY", AutopsyTimer(), CustomGameOptions.AutopsyCooldown, true, IsCor);
@@ -243,7 +262,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 if (IsCor)
                 {
-                    var validBodies = UObject.FindObjectsOfType<DeadBody>().Where(x => Murder.KilledPlayers.Any(y => y.PlayerId == x.ParentId && DateTime.UtcNow <
+                    var validBodies = Utils.AllBodies.Where(x => Murder.KilledPlayers.Any(y => y.PlayerId == x.ParentId && DateTime.UtcNow <
                         y.KillTime.AddSeconds(CustomGameOptions.CoronerArrowDuration)));
 
                     foreach (var bodyArrow in BodyArrows.Keys)
@@ -280,16 +299,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
                             if (!CustomGameOptions.ShowMediatePlayer)
                             {
-                                player.SetOutfit(CustomPlayerOutfitType.Camouflage, new GameData.PlayerOutfit()
-                                {
-                                    ColorId = player.GetDefaultOutfit().ColorId,
-                                    HatId = "",
-                                    SkinId = "",
-                                    VisorId = "",
-                                    PlayerName = " "
-                                });
-
-                                PlayerMaterial.SetColors(new Color32(128, 128, 128, 255), player.MyRend());
+                                player.SetOutfit(CustomPlayerOutfitType.Camouflage, Utils.CamoOutfit(player));
+                                PlayerMaterial.SetColors(UnityEngine.Color.grey, player.MyRend());
                             }
                         }
                     }
@@ -308,22 +319,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         }
                         #pragma warning restore
 
-                        if (DoUndo.IsCamoed)
-                            arrow.Value.image.color = Palette.PlayerColors[6];
-                        else if (ColorUtils.IsRainbow(player.GetDefaultOutfit().ColorId))
-                            arrow.Value.image.color = ColorUtils.Rainbow;
-                        else if (ColorUtils.IsChroma(player.GetDefaultOutfit().ColorId))
-                            arrow.Value.image.color = ColorUtils.Chroma;
-                        else if (ColorUtils.IsMonochrome(player.GetDefaultOutfit().ColorId))
-                            arrow.Value.image.color = ColorUtils.Monochrome;
-                        else if (ColorUtils.IsMantle(player.GetDefaultOutfit().ColorId))
-                            arrow.Value.image.color = ColorUtils.Mantle;
-                        else if (ColorUtils.IsFire(player.GetDefaultOutfit().ColorId))
-                            arrow.Value.image.color = ColorUtils.Fire;
-                        else if (ColorUtils.IsGalaxy(player.GetDefaultOutfit().ColorId))
-                            arrow.Value.image.color = ColorUtils.Galaxy;
-                        else
-                            arrow.Value.image.color = Palette.PlayerColors[player.GetDefaultOutfit().ColorId];
+                        arrow.Value.image.color = player.GetPlayerColor();
 
                         if (_time <= DateTime.UtcNow.AddSeconds(-CustomGameOptions.UpdateInterval))
                             arrow.Value.target = player.transform.position;
@@ -339,14 +335,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     if (Time2 >= CustomGameOptions.FootprintInterval)
                     {
                         Time2 -= CustomGameOptions.FootprintInterval;
+                        Even++;
 
                         foreach (var player in PlayerControl.AllPlayerControls)
                         {
-                            if (player?.Data.IsDead == true || player == PlayerControl.LocalPlayer)
+                            if (player.Data.IsDead || player.Data.Disconnected || player == PlayerControl.LocalPlayer)
                                 continue;
 
                             if (!AllPrints.Any(print => Vector3.Distance(print.Position, Position(player)) < 0.5f && print.Color.a > 0.5 && print.PlayerId == player.PlayerId))
-                                _ = new Footprint(player, this);
+                                _ = new Footprint(player, this, Even % 2 == 0);
                         }
 
                         for (var i = 0; i < AllPrints.Count; i++)
@@ -588,6 +585,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public CustomButton ExamineButton;
         public bool IsDet => RevivedRole?.RoleType == RoleEnum.Detective;
         private static float Time2;
+        private static int Even;
 
         public float ExamineTimer()
         {
@@ -693,7 +691,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
                 foreach (var dead in PlayersDead)
                 {
-                    if (UObject.FindObjectsOfType<DeadBody>().Any(x => x.ParentId == dead.PlayerId && !MediatedPlayers.ContainsKey(x.ParentId)))
+                    if (Utils.AllBodies.Any(x => x.ParentId == dead.PlayerId && !MediatedPlayers.ContainsKey(x.ParentId)))
                     {
                         AddMediatePlayer(dead.PlayerId);
                         var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
@@ -713,7 +711,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 PlayersDead.Shuffle();
                 var dead = PlayersDead.Random();
 
-                if (UObject.FindObjectsOfType<DeadBody>().Any(x => x.ParentId == dead.PlayerId && !MediatedPlayers.ContainsKey(x.ParentId)))
+                if (Utils.AllBodies.Any(x => x.ParentId == dead.PlayerId && !MediatedPlayers.ContainsKey(x.ParentId)))
                 {
                     AddMediatePlayer(dead.PlayerId);
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
@@ -838,24 +836,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
                 var renderer = gameObj.AddComponent<SpriteRenderer>();
                 renderer.sprite = AssetManager.GetSprite("Arrow");
-
-                if (DoUndo.IsCamoed)
-                    renderer.color = Palette.PlayerColors[6];
-                else if (ColorUtils.IsRainbow(target.GetDefaultOutfit().ColorId))
-                    renderer.color = ColorUtils.Rainbow;
-                else if (ColorUtils.IsChroma(target.GetDefaultOutfit().ColorId))
-                    renderer.color = ColorUtils.Chroma;
-                else if (ColorUtils.IsMonochrome(target.GetDefaultOutfit().ColorId))
-                    renderer.color = ColorUtils.Monochrome;
-                else if (ColorUtils.IsMantle(target.GetDefaultOutfit().ColorId))
-                    renderer.color = ColorUtils.Mantle;
-                else if (ColorUtils.IsFire(target.GetDefaultOutfit().ColorId))
-                    renderer.color = ColorUtils.Fire;
-                else if (ColorUtils.IsGalaxy(target.GetDefaultOutfit().ColorId))
-                    renderer.color = ColorUtils.Galaxy;
-                else
-                    renderer.color = Palette.PlayerColors[target.GetDefaultOutfit().ColorId];
-
+                renderer.color = target.GetPlayerColor();
                 arrow.image = renderer;
                 gameObj.layer = 5;
                 arrow.target = target.transform.position;
@@ -1349,6 +1330,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public CustomButton TransportButton;
         public CustomMenu TransportMenu1;
         public CustomMenu TransportMenu2;
+        public SpriteRenderer AnimationPlaying1;
+        public SpriteRenderer AnimationPlaying2;
+        public GameObject Transport1;
+        public GameObject Transport2;
+        public DeadBody Player1Body;
+        public DeadBody Player2Body;
+        public bool WasInVent1;
+        public bool WasInVent2;
+        public Vent Vent1;
+        public Vent Vent2;
         public bool IsTrans => RevivedRole?.RoleType == RoleEnum.Transporter;
 
         public float TransportTimer()
@@ -1362,12 +1353,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public IEnumerator TransportPlayers()
         {
-            DeadBody Player1Body = null;
-            DeadBody Player2Body = null;
-            var WasInVent1 = false;
-            var WasInVent2 = false;
-            Vent Vent1 = null;
-            Vent Vent2 = null;
+            Player1Body = null;
+            Player2Body = null;
+            WasInVent1 = false;
+            WasInVent2 = false;
+            Vent1 = null;
+            Vent2 = null;
+            TimeRemaining = CustomGameOptions.TransportDuration;
 
             if (TransportPlayer1.Data.IsDead)
             {
@@ -1405,26 +1397,56 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 WasInVent2 = true;
             }
 
+            TransportPlayer1.moveable = false;
+            TransportPlayer2.moveable = false;
+            TransportPlayer1.NetTransform.Halt();
+            TransportPlayer2.NetTransform.Halt();
+
+            if (PlayerControl.LocalPlayer == TransportPlayer1 || PlayerControl.LocalPlayer == TransportPlayer2)
+                Utils.Flash(Color, CustomGameOptions.TransportDuration);
+
+            if (Player1Body == null && !WasInVent1)
+                AnimateTransport1();
+
+            if (Player2Body == null && !WasInVent2)
+                AnimateTransport2();
+
+            var startTime = DateTime.UtcNow;
+
+            while (true)
+            {
+                var now = DateTime.UtcNow;
+                var seconds = (now - startTime).TotalSeconds;
+
+                if (seconds < CustomGameOptions.TransportDuration)
+                {
+                    TimeRemaining -= Time.deltaTime;
+                    yield return null;
+                }
+                else
+                    break;
+
+                if (MeetingHud.Instance)
+                    yield break;
+            }
+
             if (Player1Body == null && Player2Body == null)
             {
                 TransportPlayer1.MyPhysics.ResetMoveState();
                 TransportPlayer2.MyPhysics.ResetMoveState();
                 var TempPosition = TransportPlayer1.GetTruePosition();
-                var TempFacing = TransportPlayer1.MyRend().flipX;
                 TransportPlayer1.NetTransform.SnapTo(new(TransportPlayer2.GetTruePosition().x, TransportPlayer2.GetTruePosition().y + 0.3636f));
-                TransportPlayer1.MyRend().flipX = TransportPlayer2.MyRend().flipX;
                 TransportPlayer2.NetTransform.SnapTo(new(TempPosition.x, TempPosition.y + 0.3636f));
-                TransportPlayer2.MyRend().flipX = TempFacing;
 
                 if (SubmergedCompatibility.IsSubmerged)
                 {
-                    if (PlayerControl.LocalPlayer.PlayerId == TransportPlayer1.PlayerId)
+                    if (PlayerControl.LocalPlayer == TransportPlayer1)
                     {
                         SubmergedCompatibility.ChangeFloor(TransportPlayer1.GetTruePosition().y > -7);
                         SubmergedCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
                     }
 
-                    if (PlayerControl.LocalPlayer.PlayerId == TransportPlayer2.PlayerId)
+                    if (PlayerControl.LocalPlayer == TransportPlayer2)
                     {
                         SubmergedCompatibility.ChangeFloor(TransportPlayer2.GetTruePosition().y > -7);
                         SubmergedCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
@@ -1445,7 +1467,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 Player1Body.transform.position = TransportPlayer2.GetTruePosition();
                 TransportPlayer2.NetTransform.SnapTo(new(TempPosition.x, TempPosition.y + 0.3636f));
 
-                if (SubmergedCompatibility.IsSubmerged && PlayerControl.LocalPlayer.PlayerId == TransportPlayer2.PlayerId)
+                if (SubmergedCompatibility.IsSubmerged && PlayerControl.LocalPlayer == TransportPlayer2)
                 {
                     SubmergedCompatibility.ChangeFloor(TransportPlayer2.GetTruePosition().y > -7);
                     SubmergedCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
@@ -1459,7 +1481,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 TransportPlayer1.NetTransform.SnapTo(new(Player2Body.TruePosition.x, Player2Body.TruePosition.y + 0.3636f));
                 Player2Body.transform.position = TempPosition;
 
-                if (SubmergedCompatibility.IsSubmerged && PlayerControl.LocalPlayer.PlayerId == TransportPlayer1.PlayerId)
+                if (SubmergedCompatibility.IsSubmerged && PlayerControl.LocalPlayer == TransportPlayer1)
                 {
                     SubmergedCompatibility.ChangeFloor(TransportPlayer1.GetTruePosition().y > -7);
                     SubmergedCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
@@ -1474,8 +1496,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (PlayerControl.LocalPlayer == TransportPlayer1 || PlayerControl.LocalPlayer == TransportPlayer2)
             {
-                Utils.Flash(Colors.Transporter);
-
                 if (Minigame.Instance)
                     Minigame.Instance.Close();
 
@@ -1491,6 +1511,42 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             TransportPlayer2.NetTransform.enabled = true;
             TransportPlayer1 = null;
             TransportPlayer2 = null;
+            TimeRemaining = 0; //Insurance
+            LastTransported = DateTime.UtcNow;
+        }
+
+        public void AnimateTransport1()
+        {
+            Transport1.transform.position = new(TransportPlayer1.GetTruePosition().x, TransportPlayer1.GetTruePosition().y + 0.4f, (TransportPlayer1.GetTruePosition().y / 1000f) + 0.01f);
+            AnimationPlaying1.flipX = TransportPlayer1.MyRend().flipX;
+
+            HudManager.Instance.StartCoroutine(Effects.Lerp(CustomGameOptions.TransportDuration, new Action<float>(p =>
+            {
+                var index = (int)(p * AssetManager.PortalAnimation.Length);
+                index = Mathf.Clamp(index, 0, AssetManager.PortalAnimation.Length - 1);
+                AnimationPlaying1.sprite = AssetManager.PortalAnimation[index];
+                TransportPlayer1.SetPlayerMaterialColors(AnimationPlaying1);
+
+                if (p == 1)
+                    AnimationPlaying1.sprite = null;
+            })));
+        }
+
+        public void AnimateTransport2()
+        {
+            Transport2.transform.position = new(TransportPlayer2.GetTruePosition().x, TransportPlayer2.GetTruePosition().y + 0.4f, (TransportPlayer2.GetTruePosition().y / 1000f) + 0.01f);
+            AnimationPlaying2.flipX = TransportPlayer2.MyRend().flipX;
+
+            HudManager.Instance.StartCoroutine(Effects.Lerp(CustomGameOptions.TransportDuration, new Action<float>(p =>
+            {
+                var index = (int)(p * AssetManager.PortalAnimation.Length);
+                index = Mathf.Clamp(index, 0, AssetManager.PortalAnimation.Length - 1);
+                AnimationPlaying2.sprite = AssetManager.PortalAnimation[index];
+                TransportPlayer2.SetPlayerMaterialColors(AnimationPlaying2);
+
+                if (p == 1)
+                    AnimationPlaying2.sprite = null;
+            })));
         }
 
         public void Click1(PlayerControl player)
@@ -1542,7 +1598,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 writer.Write(TransportPlayer2.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 Coroutines.Start(TransportPlayers());
-                LastTransported = DateTime.UtcNow;
                 UsesLeft--;
             }
         }

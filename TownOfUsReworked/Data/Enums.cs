@@ -77,7 +77,8 @@ namespace TownOfUsReworked.Data
         Direct,
         Dead,
         Effect,
-        Vent
+        Vent,
+        Special
     }
 
     public enum TurnRPC
@@ -97,6 +98,7 @@ namespace TownOfUsReworked.Data
         TurnAct,
         TurnTroll,
         TurnThief,
+        TurnSides,
 
         None
     }
@@ -120,24 +122,52 @@ namespace TownOfUsReworked.Data
         CrewUtil,
         CrewSov,
         CrewAudit,
+        CrewConceal,
+        CrewDecep,
+        CrewPower,
+        CrewDisrup,
 
         IntruderSupport,
         IntruderConceal,
         IntruderDecep,
         IntruderKill,
         IntruderUtil,
+        IntruderInvest,
+        IntruderProt,
+        IntruderSov,
+        IntruderAudit,
+        IntruderPower,
+        IntruderDisrup,
 
         NeutralKill,
         NeutralNeo,
         NeutralEvil,
         NeutralBen,
         NeutralPros,
+        NeutralApoc,
+        NeutralHarb,
+        NeutralInvest,
+        NeutralAudit,
+        NeutralSov,
+        NeutralProt,
+        NeutralSupport,
+        NeutralUtil,
+        NeutralConceal,
+        NeutralDecep,
+        NeutralDisrup,
+        NeutralPower,
 
         SyndicateKill,
         SyndicateSupport,
-        SyndicateDisruption,
+        SyndicateDisrup,
         SyndicatePower,
         SyndicateUtil,
+        SyndicateInvest,
+        SyndicateProt,
+        SyndicateSov,
+        SyndicateAudit,
+        SyndicateConceal,
+        SyndicateDecep,
 
         None
     }
@@ -252,11 +282,12 @@ namespace TownOfUsReworked.Data
     public enum CustomPlayerOutfitType
     {
         Default,
+        Shapeshifted,
+        HorseWrangler,
         Morph,
         Camouflage,
         Invis,
-        PlayerNameOnly,
-        NightVision
+        PlayerNameOnly
     }
 
     public enum TargetRPC
@@ -277,52 +308,39 @@ namespace TownOfUsReworked.Data
     public enum CustomRPC
     {
         SetLayer = 100,
-
         NullModifier,
         NullObjectifier,
         NullAbility,
         NullRole,
-
         SetPhantom,
         CatchPhantom,
-
         SetRevealer,
         CatchRevealer,
-
         SetGhoul,
         CatchGhoul,
-
         SetBanshee,
         CatchBanshee,
-
         Action,
         WinLose,
         Change,
         Target,
-
         AttemptSound,
-
         Start,
         SyncCustomSettings,
         SetPos,
         SetSettings,
-
         AddVoteBank,
         MeetingStart,
         CheckMurder,
         RemoveMeetings,
-
+        Notify,
         SubmergedFixOxygen,
-
         Whisper,
-
         SetSpawnAirship,
         DoorSyncToilet,
         SyncPlateform,
-
         SetColor,
         VersionHandshake,
-
         ChaosDrive,
 
         None
@@ -353,6 +371,7 @@ namespace TownOfUsReworked.Data
     {
         Allied,
         Corrupted,
+        Defector,
         Fanatic,
         Lovers,
         Mafia,
@@ -593,6 +612,7 @@ namespace TownOfUsReworked.Data
 
         Allied,
         Corrupted,
+        Defector,
         Fanatic,
         Lovers,
         Mafia,
@@ -879,5 +899,12 @@ namespace TownOfUsReworked.Data
         Cabal,
         Reanimated,
         All
+    }
+
+    public enum DefectorFaction
+    {
+        Random,
+        OpposingEvil,
+        Crew
     }
 }

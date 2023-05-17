@@ -13,7 +13,7 @@
             firstButtonRenderer.enabled = false;
 
             var firstButtonButton = firstButtonRenderer.GetComponent<PassiveButton>();
-            firstButtonButton.OnClick.RemoveAllListeners();
+            firstButtonButton.OnClick = new();
             firstButtonButton.OnClick.AddListener((Action)(() =>
             {
                 for (var i = 1; i < 11; i++)
@@ -34,7 +34,7 @@
             lastButtonRenderer.enabled = false;
 
             var lastButtonButton = lastButtonRenderer.GetComponent<PassiveButton>();
-            lastButtonButton.OnClick.RemoveAllListeners();
+            lastButtonButton.OnClick = new();
             lastButtonButton.OnClick.AddListener((Action)(() =>
             {
                 for (var i = 1; i < 11; i++)
@@ -55,7 +55,7 @@
                 var playerButton = __instance.MaxPlayerButtons[i].GetComponent<PassiveButton>();
                 var text = playerButton.GetComponentInChildren<TextMeshPro>();
 
-                playerButton.OnClick.RemoveAllListeners();
+                playerButton.OnClick = new();
                 playerButton.OnClick.AddListener((Action)(() =>
                 {
                     var maxPlayers = byte.Parse(text.text);
@@ -83,7 +83,7 @@
             firstButton.TextMesh.text = "-";
 
             var firstPassiveButton = firstButton.PassiveButton;
-            firstPassiveButton.OnClick.RemoveAllListeners();
+            firstPassiveButton.OnClick = new();
             firstPassiveButton.OnClick.AddListener((Action)(() =>
             {
                 var newVal = Mathf.Clamp(byte.Parse(secondButtonText.text) - 1, 1, __instance.GetTargetOptions().MaxPlayers / 2);
@@ -96,7 +96,7 @@
             thirdButton.TextMesh.text = "+";
 
             var thirdPassiveButton = thirdButton.PassiveButton;
-            thirdPassiveButton.OnClick.RemoveAllListeners();
+            thirdPassiveButton.OnClick = new();
             thirdPassiveButton.OnClick.AddListener((Action)(() =>
             {
                 var newVal = Mathf.Clamp(byte.Parse(secondButtonText.text) + 1, 1, __instance.GetTargetOptions().MaxPlayers / 2);
