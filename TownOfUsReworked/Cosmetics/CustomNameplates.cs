@@ -157,6 +157,7 @@ namespace TownOfUsReworked.Cosmetics
                     })));
                     __instance.ColorChips.Add(colorChip);
                 }
+
                 return offset - ((nameplates.Count - 1) / __instance.NumPerRow * __instance.YOffset) - 1.5f;
             }
 

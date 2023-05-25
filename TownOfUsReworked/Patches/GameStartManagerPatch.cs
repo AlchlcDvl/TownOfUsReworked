@@ -183,7 +183,7 @@ namespace TownOfUsReworked.Patches
 
                 if (!TownOfUsReworked.MCIActive && AmongUsClient.Instance.AmHost)
                 {
-                    foreach (var client in AmongUsClient.Instance.allClients.GetFastEnumerator())
+                    foreach (var client in AmongUsClient.Instance.allClients)
                     {
                         if (client.Character == null)
                             continue;

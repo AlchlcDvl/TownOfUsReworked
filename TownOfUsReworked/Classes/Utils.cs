@@ -902,7 +902,7 @@
                 fullReset = true;
             }
 
-            return new List<bool> { fullReset, gaReset, survReset, abilityUsed };
+            return new() { fullReset, gaReset, survReset, abilityUsed };
         }
 
         public static List<PlayerControl> GetClosestPlayers(Vector2 truePosition, float radius) => PlayerControl.AllPlayerControls.Where(x => Vector2.Distance(truePosition,
@@ -1041,8 +1041,6 @@
                 GameStartManagerPatch.PlayerVersions.Add(clientId, new(ver, guid));
         }
 
-        public static IEnumerable<T> GetFastEnumerator<T>(this Il2CppSystem.Collections.Generic.List<T> list) where T : Il2CppSystem.Object => new Il2CppListEnumerable<T>(list);
-
         public static string GetRandomisedName()
         {
             const string everything = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*()|{}[],.<>;':\"-+=*/`~_\\ ⟡☆♡♧♤ø▶❥✔εΔΓικνστυφψΨωχӪζδ♠♥βαµ♣✚Ξρλς§π" +
@@ -1141,7 +1139,7 @@
             }
         }
 
-        public static void Flash(Color color, float duration = 2f, string message = "", float size = 100f) => Coroutines.Start(FlashCoroutine(color, duration, message, size));
+        public static void Flash(Color32 color, float duration = 2f, string message = "", float size = 100f) => Coroutines.Start(FlashCoroutine(color, duration, message, size));
 
         public static IEnumerator FlashCoroutine(Color color, float duration, string message, float size)
         {
@@ -1170,7 +1168,7 @@
                 var fullscreen = HudManager.Instance.FullScreen;
 
                 if (fullscreen.color.Equals(color))
-                    fullscreen.color = new Color(1f, 0f, 0f, 0.37254903f);
+                    fullscreen.color = new(1f, 0f, 0f, 0.37254903f);
 
                 var fs = false;
 

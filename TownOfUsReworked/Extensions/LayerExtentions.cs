@@ -801,7 +801,7 @@ namespace TownOfUsReworked.Extensions
             var modifier = Modifier.GetModifier(player);
             var ability = Ability.GetAbility(player);
             var objectifier = Objectifier.GetObjectifier(player);
-            return new List<PlayerLayer> { role, modifier, ability, objectifier };
+            return new() { role, modifier, ability, objectifier };
         }
 
         public static List<PlayerLayer> AllPlayerInfo(this PlayerVoteArea player) => Utils.PlayerByVoteArea(player).AllPlayerInfo();

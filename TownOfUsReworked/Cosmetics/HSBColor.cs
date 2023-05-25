@@ -182,7 +182,7 @@ namespace TownOfUsReworked.Cosmetics
                 s = Mathf.Lerp(a.s, b.s, t);
             }
 
-            return new HSBColor(h, s, Mathf.Lerp(a.b, b.b, t), Mathf.Lerp(a.a, b.a, t));
+            return new(h, s, Mathf.Lerp(a.b, b.b, t), Mathf.Lerp(a.a, b.a, t));
         }
 
         public static void Test()

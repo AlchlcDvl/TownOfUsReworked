@@ -112,7 +112,7 @@
             DisableO2MaskCheckField = AccessTools.Field(TaskIsEmergencyPatchType, "DisableO2MaskCheck");
 
             FloorHandlerType = SubTypes.First(t => t.Name == "FloorHandler");
-            GetFloorHandlerMethod = AccessTools.Method(FloorHandlerType, "GetFloorHandler", new Type[] { typeof(PlayerControl) });
+            GetFloorHandlerMethod = AccessTools.Method(FloorHandlerType, "GetFloorHandler", new[] { typeof(PlayerControl) });
             RpcRequestChangeFloorMethod = AccessTools.Method(FloorHandlerType, "RpcRequestChangeFloor");
 
             Vent_MoveToVent_PatchType = SubTypes.First(t => t.Name == "Vent_MoveToVent_Patch");
@@ -131,7 +131,7 @@
             SubmergedExileWrapUpMethod = AccessTools.Method(SubmergedExileController, "WrapUpAndSpawn");
 
             SubmarineElevator = SubTypes.First(t => t.Name == "SubmarineElevator");
-            GetInElevator = AccessTools.Method(SubmarineElevator, "GetInElevator", new Type[] { typeof(PlayerControl) });
+            GetInElevator = AccessTools.Method(SubmarineElevator, "GetInElevator", new[] { typeof(PlayerControl) });
             GetMovementStageFromTime = AccessTools.Method(SubmarineElevator, "GetMovementStageFromTime");
             getSubElevatorSystem = AccessTools.Field(SubmarineElevator, "System");
 
@@ -225,7 +225,7 @@
 
             foreach (var elevator in (IList)SubmergedElevators.GetValue(SubmergedInstance.GetValue(null)))
             {
-                if ((bool)GetInElevator.Invoke(elevator, new object[] { player }))
+                if ((bool)GetInElevator.Invoke(elevator, new[] { player }))
                     return Tuple.Create(true, elevator);
             }
 
@@ -333,7 +333,7 @@
             if (!SubLoaded)
                 return;
 
-            var _floorHandler = ((Component)GetFloorHandlerMethod.Invoke(null, new object[] { PlayerControl.LocalPlayer })).TryCast(FloorHandlerType) as MonoBehaviour;
+            var _floorHandler = ((Component)GetFloorHandlerMethod.Invoke(null, new[] { PlayerControl.LocalPlayer })).TryCast(FloorHandlerType) as MonoBehaviour;
             RpcRequestChangeFloorMethod.Invoke(_floorHandler, new object[] { toUpper });
         }
 
