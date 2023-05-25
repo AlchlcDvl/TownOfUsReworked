@@ -135,6 +135,7 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 <details>
 <summary>Older Versions</summary>
+
 | Among Us | Mod Version | Link |
 |----------|-------------|------|
 | 2023.3.28 (s & e) | v0.1.0-dev1 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.1.0-dev1/TownOfUsReworked.zip) |
@@ -204,7 +205,6 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 - Objectifier Fix: Fixed Defectors not letting the games end properly
 - Objectifier Fix: Fixed only 1 Mafia spawning
 </details>
-<details>
 <details>
 <summary>v0.2.4</summary>
  - New Objectifier: Defector
