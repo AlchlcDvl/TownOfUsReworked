@@ -173,597 +173,596 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 <summary>Changelog</summary>
 <details>
 <summary>v0.2.5</summary>
-- New Role: Silencer [Syndicate (Disruption)]
-- Return: Time Lord and Time Master are back, and more vengeful then ever as the Time Keeper [Syndicate (Power)]!
-- Return: Neutral (Evil) roles now end the game again, but this is togglable
-- Addition: Added a credits button to the main menu
-- Finished: Role cards are now complete
-- Buff: Players with the Torch ability can now see the silhouette of invisible players
-- Buff: VIP dying will now create an arrow pointing towards the VIP's body
-- Buff: Thief can now guess players as killing roles to steal their roles (yes, I took the idea from The Other Roles)
-- Change: Collider's Inspector results are now Unseen rather than MovesAround
-- Recode: Medium has been recoded a little bit for better functionality
-- Recode: Shapeshifts have been recoded again along with appearances being handled even better than before
-- Improvement: Transport and Warp animation sizes now scale with the size of the teleported player
-- Improvement: Improved how arrows and map blips are handled
-- Improvement: Some parts were improved internally
-- Improvement: Improved how kills are handled
-- Improvement: Improved Level Impostor compatibility (WIP)
-- Visual Fix: Fixed the intro messages being clipped off screen for some roles
-- Critical Fix: Fixed Giant and Dwarf crashing the game upon game start
-- Critical Fix: Fixed cosmetics not loading correctly
-- Bug Fix: Fixed Radar and Tiebreaker not being assigned
-- Bug Fix: Fixed only one player being shaken when blackmailed players are revealed
-- Bug Fix: Fixed some rpc spamming regarding kills
-- Role Fix: Fixed Glitch being unable to hack
-- Role Fix: Fixed Drunkard-Rebels not inverting players' controls
-- Role Fix: Fixed Drunkard inverting controls of players forever
-- Role Fix: Fixed winning Cannibals not showing up on the win screen
-- Role Fix: Guardian Angel, Bounty Hunter, Execuioner and Guesser can no longer get their Lover/Rival as targets
-- Role Fix: Fixed Dictator not dying for all players upon misfiring on Crew
-- Objectifier Fix: Fixed Syndicate defected Intruders being able to see the sabotage button
-- Objectifier Fix: Fixed Defectors not letting the games end properly
-- Objectifier Fix: Fixed only 1 Mafia spawning
+- New Role: Silencer [Syndicate (Disruption)]\
+- Return: Time Lord and Time Master are back, and more vengeful then ever as the Time Keeper [Syndicate (Power)]!\
+- Return: Neutral (Evil) roles now end the game again, but this is togglable\
+- Addition: Added a credits button to the main menu\
+- Finished: Role cards are now complete\
+- Buff: Players with the Torch ability can now see the silhouette of invisible players\
+- Buff: VIP dying will now create an arrow pointing towards the VIP's body\
+- Buff: Thief can now guess players as killing roles to steal their roles (yes, I took the idea from The Other Roles)\
+- Change: Collider's Inspector results are now Unseen rather than MovesAround\
+- Recode: Medium has been recoded a little bit for better functionality\
+- Recode: Shapeshifts have been recoded again along with appearances being handled even better than before\
+- Improvement: Transport and Warp animation sizes now scale with the size of the teleported player\
+- Improvement: Improved how arrows and map blips are handled\
+- Improvement: Some parts were improved internally\
+- Improvement: Improved how kills are handled\
+- Improvement: Improved Level Impostor compatibility (WIP)\
+- Visual Fix: Fixed the intro messages being clipped off screen for some roles\
+- Critical Fix: Fixed Giant and Dwarf crashing the game upon game start\
+- Critical Fix: Fixed cosmetics not loading correctly\
+- Bug Fix: Fixed Radar and Tiebreaker not being assigned\
+- Bug Fix: Fixed only one player being shaken when blackmailed players are revealed\
+- Bug Fix: Fixed some rpc spamming regarding kills\
+- Role Fix: Fixed Glitch being unable to hack\
+- Role Fix: Fixed Drunkard-Rebels not inverting players' controls\
+- Role Fix: Fixed Drunkard inverting controls of players forever\
+- Role Fix: Fixed winning Cannibals not showing up on the win screen\
+- Role Fix: Guardian Angel, Bounty Hunter, Execuioner and Guesser can no longer get their Lover/Rival as targets\
+- Role Fix: Fixed Dictator not dying for all players upon misfiring on Crew\
+- Objectifier Fix: Fixed Syndicate defected Intruders being able to see the sabotage button\
+- Objectifier Fix: Fixed Defectors not letting the games end properly\
+- Objectifier Fix: Fixed only 1 Mafia spawning\
 </details>
 <details>
 <summary>v0.2.4</summary>
- - New Objectifier: Defector
- - New Alignments: Neutral (Harbinger) and Neutral (Apocalypse)
- - Addition: Added some secret role alignments, try seeing how to get them (hint: betrayal and change)
- - Addition: Some actions are now animated
- - Addition: Added a button to be able to see what settings are there in game
- - Addition: Role cards: this is where the info about your role goes instead of the task list (WIP)
- - Buff: Ruthless and Ninja can now be assigned to Crew (Killing) roles and those with the Corrupted objectifier
- - Nerf: Intruders and Syndicate with Ruthless can no longer convert Fanatics
- - Change: Plaguebearer can no longer get Allied
- - Improvement: Improved how appearance changes are handled
- - Improvement: Added a logo next to the ping tracker (thanks to @Jsushi7)
- - Improvement: Improved the layout of the main menu (inspired by the main menu changes made by @Zeo666 in All The Roles)
- - Improvement: The task counter has been moved from your name to the task tab
- - Improvement: The zooming buttons are now smaller and moved to a different location
- - Improvement: The in-game wiki has recieved a slight recode
- - Improvement: You no longer know the status of players until the meeting after your death (to avoid players coming back to life and ratting everyone out)
- - Improvement: Improved the footprint graphics for Detectives and Retributionist-Detectives
- - Bug Fix: Fixed the spectate button opening up the haunting menu
- - Bug Fix: Fixed being unable to leave vents
- - Bug Fix: Fixed vision not updating correctly when switching between dead and alive players using MCI
- - Bug Fix: Fixed Pestilence spawning instead of Plaguebearer with the Pestilence Spawn option is turned off
- - Visual Fix: Fixed ghosts being unable to see the names and roles of players through walls with the obstruct names option turned on
- - Role Fix: Fixed the Concealer's target staying invisible forever
- - Role Fix: Fixed the Guesser's target's alignment hint having text hexcode color control
- - Role Fix: Fixed Bounty Hunter being shown their target on the intro screen
- - Role Fix: Fixed Dracula and Jackal killing those they are trying to convert
- - Role Fix: Fixed turning betrayer being spammed in the end game summary
- - Ability Fix: Fixed killing Politicians being unable to vote players
- - Removal: The lobby timer because it's kind of useless as most people play on modded servers anyways, which don't expire
+- New Objectifier: Defector
+- New Alignments: Neutral (Harbinger) and Neutral (Apocalypse)\
+- Addition: Added some secret role alignments, try seeing how to get them (hint: betrayal and change)\
+- Addition: Some actions are now animated\
+- Addition: Added a button to be able to see what settings are there in game\
+- Addition: Role cards: this is where the info about your role goes instead of the task list (WIP)\
+- Buff: Ruthless and Ninja can now be assigned to Crew (Killing) roles and those with the Corrupted objectifier\
+- Nerf: Intruders and Syndicate with Ruthless can no longer convert Fanatics\
+- Change: Plaguebearer can no longer get Allied\
+- Improvement: Improved how appearance changes are handled\
+- Improvement: Added a logo next to the ping tracker (thanks to @Jsushi7)\
+- Improvement: Improved the layout of the main menu (inspired by the main menu changes made by @Zeo666 in All The Roles)\
+- Improvement: The task counter has been moved from your name to the task tab\
+- Improvement: The zooming buttons are now smaller and moved to a different location\
+- Improvement: The in-game wiki has recieved a slight recode\
+- Improvement: You no longer know the status of players until the meeting after your death (to avoid players coming back to life and ratting everyone out)\
+- Improvement: Improved the footprint graphics for Detectives and Retributionist-Detectives\
+- Bug Fix: Fixed the spectate button opening up the haunting menu\
+- Bug Fix: Fixed being unable to leave vents\
+- Bug Fix: Fixed vision not updating correctly when switching between dead and alive players using MCI\
+- Bug Fix: Fixed Pestilence spawning instead of Plaguebearer with the Pestilence Spawn option is turned off\
+- Visual Fix: Fixed ghosts being unable to see the names and roles of players through walls with the obstruct names option turned on\
+- Role Fix: Fixed the Concealer's target staying invisible forever\
+- Role Fix: Fixed the Guesser's target's alignment hint having text hexcode color control\
+- Role Fix: Fixed Bounty Hunter being shown their target on the intro screen\
+- Role Fix: Fixed Dracula and Jackal killing those they are trying to convert\
+- Role Fix: Fixed turning betrayer being spammed in the end game summary\
+- Ability Fix: Fixed killing Politicians being unable to vote players\
+- Removal: The lobby timer because it's kind of useless as most people play on modded servers anyways, which don't expire\
 </details>
 <details>
 <summary>v0.2.3</summary>
- - Nerf: Reporting a body while being flashed yields no results for the Coroner and the Retributionist-Coroner
- - Addition: Added "Hide Obstructed Player Names" option so that you don't see players' names through walls
- - Improvement: Improved some rpc handling between roles
- - Improvement: Reduced the mod size even more, god I love doing this
- - Critical Fix: Fixed custom cosmetics not loading
- - Visual Fix: Fixed the hat and visor tabs not displaying cosmetics
- - Ability Fix: Fixed Ninja appearing invisible (ironic, I know)
+- Nerf: Reporting a body while being flashed yields no results for the Coroner and the Retributionist-Coroner\
+- Addition: Added "Hide Obstructed Player Names" option so that you don't see players' names through walls\
+- Improvement: Improved some rpc handling between roles\
+- Improvement: Reduced the mod size even more, god I love doing this\
+- Critical Fix: Fixed custom cosmetics not loading\
+- Visual Fix: Fixed the hat and visor tabs not displaying cosmetics\
+- Ability Fix: Fixed Ninja appearing invisible (ironic, I know)\
 </details>
 <details>
 <summary>v0.2.2</summary>
- - Critical Fix: Fixed the sudden issue of players just not dying at all
- - Temporary Removal: Custom cosmetics are temporarily removed till I figure out why they aren't loading
+- Critical Fix: Fixed the sudden issue of players just not dying at all\
+- Temporary Removal: Custom cosmetics are temporarily removed till I figure out why they aren't loading\
 </details>
 <details>
 <summary>v0.2.1</summary>
- - New Preset: Ranked
- - Return: Drunkard's back, new and improved!
- - Return: Cosmetic sections are back
- - Addition: Added the /summary (or /sum for short) command for being able to see the game summary of the previous game when in lobby
- - Addition: Dwarf and Giant were changed interally, mix and match with the settings to find things out ;)
- - Buff: Completing tasks restores a charge for roles with limited uses
- - Buff: On low player counts, Amnesiac now becomes a Thief
- - Buff: Monarchs with alive knights now cannot be killed as long as one of the alive knights is Crew (Ruthless still bypasses this)
- - Nerf: Clicking a Revealer who has finished their tasks now disables their ability
- - Nerf: Everyone is told who has been spelled during meetings, so at least the dangers of Spellslinger is known
- - Nerf: Misfiring on a framed innocent player will no longer kill the Vigilante, unless the Misfire setting is turned on
- - Recode: Cosmetic handling was recoded to work like how The Other Roles does it
- - Optimisation: Some code was optimsed
- - Improvement: Turned Traitors and Fanatics with the Assassin ability now have their guessing menus updated to their new factions
- - Improvement: Added a paging behaviour for the guessing menu, to prevent guess buttons going off-screen
- - Improvement: The mod's weight has been heavily reduced
- - Improvement: Improved player targetting some more
- - Change: Teleporter's color was changed because it was too close to the Grenadier's green
- - Critical Fix: Fixed Airship crashing players when loading in
- - Bug Fix: Fixed the weird issue with blank abilities appearing
- - Bug Fix: Fixed being able to target dead players and postmortal roles
- - Bug Fix: Fixed loading presets not actually closing the option menu
- - Bug Fix: Changing the screen resolution no longer clips the settings out of bounds
- - Bug Fix: Fixed players being assigned multiple abilities
- - Modifier Fix: Fixed Volatile weirding out the spawn in sequence
- - Objectifier Fix: Fixed Corrupted being unable to kill players
- - Ability Fix: Fixed Multitasker not making the task windows transparent
- - Role + Ability Fix: Fixed the weird scaling of the guessing menu (it looped the size for every button added lmao, making it smaller with each possible guess added)
- - Role Fix: Fixed incorrect distance scaling for a lot of roles
- - Role Fix: Fixed Anarchist's kill cooldown not resetting correctly
- - Role Fix: Fixed Stalker's Stalk button not appearing
- - Role Fix: Fixed (Collider/Spellslinger/Stalker)-Rebels not having their buttons
- - Role Fix: Fixed Executioner being unable to doom players
- - Role Fix: Fixed Jester being unable to haunt players
- - Role Fix: Fixed Bomber and Enforcer bomb kills being marked as suicides
- - Role Fix: Enforcer can no longer place bombs on their teammates
- - Role Fix: Fixed Spellslinger not being able to see who they spelled
- - Role Fix: Fixed Tracker-Retributionist's Track button not updating
- - Role Fix: Retributionist's ability uses now update correctly
- - Potential Fix: Lag on the cosmetics screen and the cosmetic icons not having the hats in them
+- New Preset: Ranked
+- Return: Drunkard's back, new and improved!\
+- Return: Cosmetic sections are back\
+- Addition: Added the /summary (or /sum for short) command for being able to see the game summary of the previous game when in lobby\
+- Addition: Dwarf and Giant were changed interally, mix and match with the settings to find things out ;)\
+- Buff: Completing tasks restores a charge for roles with limited uses\
+- Buff: On low player counts, Amnesiac now becomes a Thief\
+- Buff: Monarchs with alive knights now cannot be killed as long as one of the alive knights is Crew (Ruthless still bypasses this)\
+- Nerf: Clicking a Revealer who has finished their tasks now disables their ability\
+- Nerf: Everyone is told who has been spelled during meetings, so at least the dangers of Spellslinger is known\
+- Nerf: Misfiring on a framed innocent player will no longer kill the Vigilante, unless the Misfire setting is turned on\
+- Recode: Cosmetic handling was recoded to work like how The Other Roles does it\
+- Optimisation: Some code was optimsed\
+- Improvement: Turned Traitors and Fanatics with the Assassin ability now have their guessing menus updated to their new factions\
+- Improvement: Added a paging behaviour for the guessing menu, to prevent guess buttons going off-screen\
+- Improvement: The mod's weight has been heavily reduced\
+- Improvement: Improved player targetting some more\
+- Change: Teleporter's color was changed because it was too close to the Grenadier's green\
+- Critical Fix: Fixed Airship crashing players when loading in\
+- Bug Fix: Fixed the weird issue with blank abilities appearing\
+- Bug Fix: Fixed being able to target dead players and postmortal roles\
+- Bug Fix: Fixed loading presets not actually closing the option menu\
+- Bug Fix: Changing the screen resolution no longer clips the settings out of bounds\
+- Bug Fix: Fixed players being assigned multiple abilities\
+- Modifier Fix: Fixed Volatile weirding out the spawn in sequence\
+- Objectifier Fix: Fixed Corrupted being unable to kill players\
+- Ability Fix: Fixed Multitasker not making the task windows transparent\
+- Role + Ability Fix: Fixed the weird scaling of the guessing menu (it looped the size for every button added lmao, making it smaller with each possible guess added)\
+- Role Fix: Fixed incorrect distance scaling for a lot of roles\
+- Role Fix: Fixed Anarchist's kill cooldown not resetting correctly\
+- Role Fix: Fixed Stalker's Stalk button not appearing\
+- Role Fix: Fixed (Collider/Spellslinger/Stalker)-Rebels not having their buttons\
+- Role Fix: Fixed Executioner being unable to doom players\
+- Role Fix: Fixed Jester being unable to haunt players\
+- Role Fix: Fixed Bomber and Enforcer bomb kills being marked as suicides\
+- Role Fix: Enforcer can no longer place bombs on their teammates\
+- Role Fix: Fixed Spellslinger not being able to see who they spelled\
+- Role Fix: Fixed Tracker-Retributionist's Track button not updating\
+- Role Fix: Retributionist's ability uses now update correctly\
+- Potential Fix: Lag on the cosmetics screen and the cosmetic icons not having the hats in them\
 </details>
 <details>
 <summary>v0.2.0</summary>
- - New Roles: Monarch, Dictator [Crew (Sovereign)]
- - New Role: Spellslinger [Syndicate (Power)]
- - New Role: Collider [Syndicate (Killing)]
- - New Role: Stalker [Syndicate (Support)]
- - New Objectifier: Mafia
- - New Preset: Last Used - This preset always loads the settings you last played with in your previous Among Us session
- - Addition: 2 new nameplates
- - Buff: Added an optional buff for Arsonist to cremate ignited bodies
- - Buff: Cryomaniac's last killer kill ability has been given its own kill button
- - Nerf: The number of assassinations are now linked between all Assassins
- - Recode: Guesser and Assassin have been recoded to work like in The Other Roles
- - Rework: Mayor now works the same as its Town Of Salem counterpart
- - Rework: Politician has been fused with the original Mayor and was changed into an ability
- - Rework: Swapper is now an ability
- - Change: Changed the Shapeshifter color as it's too dark
- - Completion: Inspector results are now finished
- - Improvement: The Stalemate screen will now include any Neutral (Evil) role that has won
- - Improvement: Improved Chaos Drive assignment between players
- - Improvement: Improved how task completion is handled
- - Improvement: Improved how guesses are handled
- - Improvement: All actions now occur within their respective layers to hopefully reduce the lag
- - Improvement: Increased the size of the changelogs for better readability
- - Improvement: Improved how win conditions are handled to remove any underlying issues
- - Improvement: The main menu buttons are much closer now to look neater
- - Improvement: Swapper swaps don't need to be disabled anymore, they automatically update to swapping the new targets
- - Improvement: Decreased mod weight
- - Improvement: Assassinated players will have buttons generate on them for the Retributionist
- - Improvement: The default settings preset now auto updates
- - Improvement: Arrow targets are now reflected on maps
- - Critical Fix: Fixed being able to select targets through walls
- - Bug Fix: Fixed the wiki not giving the correct results for alignments
- - Bug Fix: Fixed string options occasionally freaking out
- - Bug Fix: Fixed nameplates not being displayed properly
- - Bug Fix: Fixed being able to call meetings when you can't
- - Bug Fix: Fixed chaos drive messages being repeated
- - Layer Fix: Fixed arrows not updating correctly
- - Role Fix: Fixed Retributionist buttons not appearing on the game screen or disappearing when getting assassinated
- - Role Fix: Fixed Sidekick being unable to kill
- - Role Fix: Fixed weird/inconsistent role changing interactions for Thief, Amnesiac and Shifter
- - Role Fix: Fixed Altruist and Necromancer revivals bugging out other players
- - Role Fix: Fixed Promoted Godfather cooldowns not resetting
- - Modifier Fix: Fixed Shy being assigned to Politicians when they cannot button
- - Ability Fix: Fixed Swapper buttons not appearing on the game screen
- - Revert: Reverted flashes back to the original Town Of Us style (but with still some modifications like in The Other Roles)
- - Removed: Removed the test features that I forgot to remove in the previous release
+- New Roles: Monarch, Dictator [Crew (Sovereign)]\
+- New Role: Spellslinger [Syndicate (Power)]\
+- New Role: Collider [Syndicate (Killing)]\
+- New Role: Stalker [Syndicate (Support)]\
+- New Objectifier: Mafia\
+- New Preset: Last Used - This preset always loads the settings you last played with in your previous Among Us session\
+- Addition: 2 new nameplates\
+- Buff: Added an optional buff for Arsonist to cremate ignited bodies\
+- Buff: Cryomaniac's last killer kill ability has been given its own kill button\
+- Nerf: The number of assassinations are now linked between all Assassins\
+- Recode: Guesser and Assassin have been recoded to work like in The Other Roles\
+- Rework: Mayor now works the same as its Town Of Salem counterpart\
+- Rework: Politician has been fused with the original Mayor and was changed into an ability\
+- Rework: Swapper is now an ability\
+- Change: Changed the Shapeshifter color as it's too dark\
+- Completion: Inspector results are now finished\
+- Improvement: The Stalemate screen will now include any Neutral (Evil) role that has won\
+- Improvement: Improved Chaos Drive assignment between players\
+- Improvement: Improved how task completion is handled\
+- Improvement: Improved how guesses are handled\
+- Improvement: All actions now occur within their respective layers to hopefully reduce the lag\
+- Improvement: Increased the size of the changelogs for better readability\
+- Improvement: Improved how win conditions are handled to remove any underlying issues\
+- Improvement: The main menu buttons are much closer now to look neater\
+- Improvement: Swapper swaps don't need to be disabled anymore, they automatically update to swapping the new targets\
+- Improvement: Decreased mod weight\
+- Improvement: Assassinated players will have buttons generate on them for the Retributionist\
+- Improvement: The default settings preset now auto updates\
+- Improvement: Arrow targets are now reflected on maps\
+- Critical Fix: Fixed being able to select targets through walls\
+- Bug Fix: Fixed the wiki not giving the correct results for alignments\
+- Bug Fix: Fixed string options occasionally freaking out\
+- Bug Fix: Fixed nameplates not being displayed properly\
+- Bug Fix: Fixed being able to call meetings when you can't\
+- Bug Fix: Fixed chaos drive messages being repeated\
+- Layer Fix: Fixed arrows not updating correctly\
+- Role Fix: Fixed Retributionist buttons not appearing on the game screen or disappearing when getting assassinated\
+- Role Fix: Fixed Sidekick being unable to kill\
+- Role Fix: Fixed weird/inconsistent role changing interactions for Thief, Amnesiac and Shifter\
+- Role Fix: Fixed Altruist and Necromancer revivals bugging out other players\
+- Role Fix: Fixed Promoted Godfather cooldowns not resetting\
+- Modifier Fix: Fixed Shy being assigned to Politicians when they cannot button\
+- Ability Fix: Fixed Swapper buttons not appearing on the game screen\
+- Revert: Reverted flashes back to the original Town Of Us style (but with still some modifications like in The Other Roles)\
+- Removed: Removed the test features that I forgot to remove in the previous release\
 </details>
 <details>
 <summary>v0.1.0-dev1</summary>
- - Buff: Altruist can now revive players multiple times and sacrifices themselves on the last revive
- - Update: Updated Crowded to fix the double click issue
- - Update: Updated the role info from the recent updates in the in-game wiki
- - Improvement: Improved player targetting
- - Improvement: Settings now open to the last tab you were on, and keybinds for page jumping also work in there
- - Critical Fix: Fixed the Haunt button not working
- - Visual Fix: Fixed Poisoner having 2 buttons
- - Visual Fix: Fixed the sheer amount of ability buttons spawning (hopefully)
- - Visual Fix: Fixed buttons not disappearing when a meeting is called
- - Visual Fix: Fixed the spectate button looking a little cut off
- - Bug Fix: Fixed Vitals immediately closing upon opening
- - Bug Fix: Fixed staying zoomed out during a meeting
- - Bug Fix: Fixed the issue with targets not being higlighted at the times they are supposed to be
- - Bug Fix: Fixed settings looping incorrectly
- - Bug Fix: Fixed the issue with friendly fire
- - Objectifier Fix: Fixed Corrupted not ending the game when it is supposed to
- - Modifier Fix: Fixed continuously walking when being fake killed as Volatile
- - Ability Fix: Button Barry no longer bugs out a meeting for themselves
- - Role + Ability Fix: Fixed not being able to guess Crusader (for Assassin and Guesser)
- - Role Fix: Fixed Arsonist buttons not working
- - Role Fix: Fixed footprints not disappearing after a meeting for Detectives and Retributionist-Detectives
- - Role Fix: Fixed Rebel not being able to promote anyone
- - Role Fix: Fixed Disguiser not being able to disguise players
- - Role Fix: Fixed Syndicate roles having a kill button from the start
- - Role Fix: Fixed Troll screwing with the end game upon dying
- - Role Fix: Fixed Godfather-Janitors not dropping bodies when being warped/transported
- - Removed: Time Lord, Time Master and Drunkard because they break the game often, they'll return when I find a way to fix that
- - Removed: Removed the /setname chat command because it visually bugs out a lot (thanks to a certain group of people)
+- Buff: Altruist can now revive players multiple times and sacrifices themselves on the last revive\
+- Update: Updated Crowded to fix the double click issue\
+- Update: Updated the role info from the recent updates in the in-game wiki\
+- Improvement: Improved player targetting\
+- Improvement: Settings now open to the last tab you were on, and keybinds for page jumping also work in there\
+- Critical Fix: Fixed the Haunt button not working\
+- Visual Fix: Fixed Poisoner having 2 buttons\
+- Visual Fix: Fixed the sheer amount of ability buttons spawning (hopefully)\
+- Visual Fix: Fixed buttons not disappearing when a meeting is called\
+- Visual Fix: Fixed the spectate button looking a little cut off\
+- Bug Fix: Fixed Vitals immediately closing upon opening\
+- Bug Fix: Fixed staying zoomed out during a meeting\
+- Bug Fix: Fixed the issue with targets not being higlighted at the times they are supposed to be\
+- Bug Fix: Fixed settings looping incorrectly\
+- Bug Fix: Fixed the issue with friendly fire\
+- Objectifier Fix: Fixed Corrupted not ending the game when it is supposed to\
+- Modifier Fix: Fixed continuously walking when being fake killed as Volatile\
+- Ability Fix: Button Barry no longer bugs out a meeting for themselves\
+- Role + Ability Fix: Fixed not being able to guess Crusader (for Assassin and Guesser)\
+- Role Fix: Fixed Arsonist buttons not working\
+- Role Fix: Fixed footprints not disappearing after a meeting for Detectives and Retributionist-Detectives\
+- Role Fix: Fixed Rebel not being able to promote anyone\
+- Role Fix: Fixed Disguiser not being able to disguise players\
+- Role Fix: Fixed Syndicate roles having a kill button from the start\
+- Role Fix: Fixed Troll screwing with the end game upon dying\
+- Role Fix: Fixed Godfather-Janitors not dropping bodies when being warped/transported\
+- Removed: Time Lord, Time Master and Drunkard because they break the game often, they'll return when I find a way to fix that\
+- Removed: Removed the /setname chat command because it visually bugs out a lot (thanks to a certain group of people)\
 </details>
 <details>
 <summary>v0.0.4-dev2</summary>
- - Addition: Added a disconnect handler to hopefully reduce future errors
- - Improvement: Added support for multiple Swappers swapping
- - Visual Fix: Fixed Whisperer not being able to see how much someone is left to be converted for
- - Bug Fix: Fixed a random log spam caused by players leaving
- - Potential Fix: Lag spikes
- - Role Fix: Fixed Medic-Retributionists not actually protecting anyone
- - Role Fix: Fixed Guardian Angel having 2 buttons
- - Role Fix: An attempt at fixing Retributionist and Swapper meeting buttons
- - Role Fix: Fixed Politician-Rebels not having their votes refunded on assassinations
+- Addition: Added a disconnect handler to hopefully reduce future errors\
+- Improvement: Added support for multiple Swappers swapping\
+- Visual Fix: Fixed Whisperer not being able to see how much someone is left to be converted for\
+- Bug Fix: Fixed a random log spam caused by players leaving\
+- Potential Fix: Lag spikes\
+- Role Fix: Fixed Medic-Retributionists not actually protecting anyone\
+- Role Fix: Fixed Guardian Angel having 2 buttons\
+- Role Fix: An attempt at fixing Retributionist and Swapper meeting buttons\
+- Role Fix: Fixed Politician-Rebels not having their votes refunded on assassinations\
 </details>
 <details>
 <summary>v0.0.4-dev1</summary>
- - Buff: Framer frames work on Vampire Hunters as well and framed Vigilantes can shoot anyone
- - Buff: Coroner-Retributionists also get meeting info like Coroners do
- - Buff: Diseased now applies to every cooldown for the rest of the round
- - Nerf: Reporting bodies no longer spreads douses or infections (because they often break the game rather than be helpful)
- - Nerf: Werewolf mauls can now be stopped if the target is on alert among other things
- - Update: Added changes from v4.0.4 and v4.0.5 of ToU-R
- - Change: Sheriff now sees flashes as indicator for guilt, rather than name changes
- - Recode: The mod was recoded a lot, so you know what that means! more bugs! (kill me please)
- - Improvement: Moved the status text from the intro screen to the too splash screen for better readability
- - Improvement: Improved how buttons work...for like the 20th time but I promise it gets better
- - Improvement: Made the mod a little more lightweight; fingers crossed it also fixes the issue of lag spikes
- - Improvement: Improved spawn code for Revealer, Phantom, Ghoul and Banshee
- - Improvement: Optimised how blackmails work
- - Critical Fix: Fixed not being able to enter codes or names
- - Visual Fix: Fixed player outlines appearing too thin
- - Visual Fix: Fixed the issue with custom buttons not disappearing during meetings
- - Visual Fix: Fixed the Use button having the Haunt sprite when dead
- - Bug Fix: Fixed revived players still having their death reports being sent
- - Bug Fix: Fixed players becoming Revealer, Banshee, Phantom or Ghouls after being revived
- - Bug Fix: Fixed votes being calculated incorrectly
- - Bug Fix: Fixed the end game screen showing the wrong role for players whose roles changed
- - Bug Fix: Fixed the log spam because of the Debugger window
- - Objectifier Fix: Fixed Allied sometimes breaking the game upon start
- - Role Fix: Fixed Godfather being unable to promote Consorts
- - Role Fix: Fixed Godfathers and Rebels being able to promote other Godfather, Rebels, Mafiosos and Sidekicks to...Mafioso or Sidekick
- - Role Fix: Fixed Ambusher/Enforcer-Godfathers from being unable to use their abilities
- - Role Fix: Fixed Bounty Hunter crashing the game on hunting their target
- - Role Fix: Fixed Bounty Hunter cooldowns not resetting upon usage
- - Role Fix: Fixed Bounty Hunter sometimes killing themselves
- - Role Fix: Fixed Cannibal not winning properly
- - Role Fix: Fixed Necromancer's resurrect sometimes crashing the game
- - Role Fix: Fixed the issue with Glitch staying permanently mimicked
+- Buff: Framer frames work on Vampire Hunters as well and framed Vigilantes can shoot anyone\
+- Buff: Coroner-Retributionists also get meeting info like Coroners do\
+- Buff: Diseased now applies to every cooldown for the rest of the round\
+- Nerf: Reporting bodies no longer spreads douses or infections (because they often break the game rather than be helpful)\
+- Nerf: Werewolf mauls can now be stopped if the target is on alert among other things\
+- Update: Added changes from v4.0.4 and v4.0.5 of ToU-R\
+- Change: Sheriff now sees flashes as indicator for guilt, rather than name changes\
+- Recode: The mod was recoded a lot, so you know what that means! more bugs! (kill me please)\
+- Improvement: Moved the status text from the intro screen to the too splash screen for better readability\
+- Improvement: Improved how buttons work...for like the 20th time but I promise it gets better\
+- Improvement: Made the mod a little more lightweight; fingers crossed it also fixes the issue of lag spikes\
+- Improvement: Improved spawn code for Revealer, Phantom, Ghoul and Banshee\
+- Improvement: Optimised how blackmails work\
+- Critical Fix: Fixed not being able to enter codes or names\
+- Visual Fix: Fixed player outlines appearing too thin\
+- Visual Fix: Fixed the issue with custom buttons not disappearing during meetings\
+- Visual Fix: Fixed the Use button having the Haunt sprite when dead\
+- Bug Fix: Fixed revived players still having their death reports being sent\
+- Bug Fix: Fixed players becoming Revealer, Banshee, Phantom or Ghouls after being revived\
+- Bug Fix: Fixed votes being calculated incorrectly\
+- Bug Fix: Fixed the end game screen showing the wrong role for players whose roles changed\
+- Bug Fix: Fixed the log spam because of the Debugger window\
+- Objectifier Fix: Fixed Allied sometimes breaking the game upon start\
+- Role Fix: Fixed Godfather being unable to promote Consorts\
+- Role Fix: Fixed Godfathers and Rebels being able to promote other Godfather, Rebels, Mafiosos and Sidekicks to...Mafioso or Sidekick\
+- Role Fix: Fixed Ambusher/Enforcer-Godfathers from being unable to use their abilities\
+- Role Fix: Fixed Bounty Hunter crashing the game on hunting their target\
+- Role Fix: Fixed Bounty Hunter cooldowns not resetting upon usage\
+- Role Fix: Fixed Bounty Hunter sometimes killing themselves\
+- Role Fix: Fixed Cannibal not winning properly\
+- Role Fix: Fixed Necromancer's resurrect sometimes crashing the game\
+- Role Fix: Fixed the issue with Glitch staying permanently mimicked\
 </details>
 <details>
 <summary>v0.0.3-dev3</summary>
- - Addition: All Syndicate roles now have Chaos Drive abilities
- - Merge: Beamer has been merged into Warper
- - Buff: Consort can roleblock a player from anywhere (to differentiate it from Escort)
- - Buff: Godfather can now promote a Consort to eventually become the new Godfather
- - Buff: Rebel can now promote a Politician to eventually become the new Rebel
- - Buff: Retributionists can use the dead bodies as many times as they want and can also use Transporters and Escorts
- - Nerf: Chameleon and Retributionist now have a limited number of uses for their swoop ability
- - Nerf: Bomber now only detonates their latest bomb and the their Chaos Drive ability is to detonate all placed bombs
- - Nerf: Syndicate (Killing) roles not longer get an extra kill button, their kill abilities just become more powerful
- - Nerf: Retributionist does not know if a player is Crew and must attempt to use them to find out
- - Nerf: The Chaos Drive is no longer global and is instead assigned to a random player within a specific order, the global Chaos Drive is instead an option
- - Change: Concealer can now select a player to make them invisible and its chaos drive ability is its former ability
- - Change: Shapeshifter can now select 2 players to swap appearances and its chaos drive ability is its former ability
- - Change: Poisoner has been moved into the Syndicate (Killing) alignment
- - Improvement: Improved how Transporter and Beamer buttons work
- - Improvement: Moved the MCI keybinds into a tiny debug menu of their own (based off of Reactor Debugger code)
- - Improvement: Roles with shapeshifter menus can deselect players by prassing backspace
- - Improvement: Game announcements are heavily improved on
- - Improvement: Godfather and Rebel are now optimised and rewritten for less bugs
- - Improvement: Lobby size has been moved from a chat command to an actual setting
- - Improvement: Improved how conversions work to fix the occasional lag spike
- - Visual Fix: Fixed the issue where the Use button would appear to be deepfried
- - Visual Fix: Fixed the issue with revived players being able to see the spectate button
- - Bug Fix: Fixed Retributionist arrows sometimes popping up in lobby
- - Bug Fix: Potential fix for roles not spawning correctly on lower player counts
- - Bug Fix: Fixed being able to zoom out while in a meeting
- - Bug Fix: Fixed the issue with /setname not letting you change your name properly
- - Bug Fix: Fixed games sometimes crashing on end game
- - Bug Fix: Fixed the issue with multiple Overlord and Chaos Drive related messages being sent
- - Bug Fix: Fixed the issue with votes being doubled
- - Bug Fix: Fixed being able to whisper with alive players
- - Role Fix: Retributionist ability use limits actually work this time
- - Modifier Fix: Fixed Shy sometimes being able to button
- - Role Fix: Fixed the issue where Poisoner would occasionally directly kill their target
- - Role Fix: Prevented Jackal from spawning on lower player counts to prevent errors
- - Role Fix: Fixed Jackal not spawning with recruits
- - Role Fix: Fixed Framer framing players not registering for others
- - Removed: Gorgon because of the countless bugs it has
- - Removed: Custom Airship spawns because they break the game
- - Temporary Removal: Sound effects have been temporarily removed, they'll make a return when there's a sound for everything
+- Addition: All Syndicate roles now have Chaos Drive abilities\
+- Merge: Beamer has been merged into Warper\
+- Buff: Consort can roleblock a player from anywhere (to differentiate it from Escort)\
+- Buff: Godfather can now promote a Consort to eventually become the new Godfather\
+- Buff: Rebel can now promote a Politician to eventually become the new Rebel\
+- Buff: Retributionists can use the dead bodies as many times as they want and can also use Transporters and Escorts\
+- Nerf: Chameleon and Retributionist now have a limited number of uses for their swoop ability\
+- Nerf: Bomber now only detonates their latest bomb and the their Chaos Drive ability is to detonate all placed bombs\
+- Nerf: Syndicate (Killing) roles not longer get an extra kill button, their kill abilities just become more powerful\
+- Nerf: Retributionist does not know if a player is Crew and must attempt to use them to find out\
+- Nerf: The Chaos Drive is no longer global and is instead assigned to a random player within a specific order, the global Chaos Drive is instead an option\
+- Change: Concealer can now select a player to make them invisible and its chaos drive ability is its former ability\
+- Change: Shapeshifter can now select 2 players to swap appearances and its chaos drive ability is its former ability\
+- Change: Poisoner has been moved into the Syndicate (Killing) alignment\
+- Improvement: Improved how Transporter and Beamer buttons work\
+- Improvement: Moved the MCI keybinds into a tiny debug menu of their own (based off of Reactor Debugger code)\
+- Improvement: Roles with shapeshifter menus can deselect players by prassing backspace\
+- Improvement: Game announcements are heavily improved on\
+- Improvement: Godfather and Rebel are now optimised and rewritten for less bugs\
+- Improvement: Lobby size has been moved from a chat command to an actual setting\
+- Improvement: Improved how conversions work to fix the occasional lag spike\
+- Visual Fix: Fixed the issue where the Use button would appear to be deepfried\
+- Visual Fix: Fixed the issue with revived players being able to see the spectate button\
+- Bug Fix: Fixed Retributionist arrows sometimes popping up in lobby\
+- Bug Fix: Potential fix for roles not spawning correctly on lower player counts\
+- Bug Fix: Fixed being able to zoom out while in a meeting\
+- Bug Fix: Fixed the issue with /setname not letting you change your name properly\
+- Bug Fix: Fixed games sometimes crashing on end game\
+- Bug Fix: Fixed the issue with multiple Overlord and Chaos Drive related messages being sent\
+- Bug Fix: Fixed the issue with votes being doubled\
+- Bug Fix: Fixed being able to whisper with alive players\
+- Role Fix: Retributionist ability use limits actually work this time\
+- Modifier Fix: Fixed Shy sometimes being able to button\
+- Role Fix: Fixed the issue where Poisoner would occasionally directly kill their target\
+- Role Fix: Prevented Jackal from spawning on lower player counts to prevent errors\
+- Role Fix: Fixed Jackal not spawning with recruits\
+- Role Fix: Fixed Framer framing players not registering for others\
+- Removed: Gorgon because of the countless bugs it has\
+- Removed: Custom Airship spawns because they break the game\
+- Temporary Removal: Sound effects have been temporarily removed, they'll make a return when there's a sound for everything\
 </details>
 <details>
 <summary>v0.0.3-dev2</summary>
- - Critical Fix: Fixed the issue where the game would crash when someone was ejected
+- Critical Fix: Fixed the issue where the game would crash when someone was ejected\
 </details>
 <details>
 <summary>v0.0.3.1</summary>
- - Changes: Forgot to do a couple of things
+- Changes: Forgot to do a couple of things\
 </details>
 <details>
 <summary>v0.0.3</summary>
- - New Role: Politician [Syndicate (Power)]
- - New Role: Enforcer [Intruder (Killing)]
- - Merge: Agent has been merged into Operative, yet another soldier down :saluting_face:
- - Update: Updated the presets
- - Improvement: Task lists are finally finished
- - Improvement: Improved how certain functions work and are called
- - Improvement: Winning Guessers can now guess anyone after guessing their target's role
- - Bug Fix: Fixed the issue where an Amnesiac/Thief/Shifter changing roles reset everyone's cooldowns
- - Bug Fix: Fixed where bots would spawn in a public lobby after turning on persistance for robots in a local lobby
- - Bug Fix: Fixed the occasional log spam when assassinating which leads to lag spikes
- - Bug Fix: Fixed incorrect Torch assignment
- - Role Fix: Fixed the issue where shapeshift morphed multiple players into the same player
- - Role Fix: Fixed the issue where an assassinated player who is also blackmailed by the Godfather-Blackmailer would bug out
- - Role Fix: Fixed the issue with Murderer being unable to kill
- - Temporary Removal: Removed the second Spectate button till I figure out why you can't haunt
+- New Role: Politician [Syndicate (Power)]\
+- New Role: Enforcer [Intruder (Killing)]\
+- Merge: Agent has been merged into Operative, yet another soldier down :saluting_face:\
+- Update: Updated the presets\
+- Improvement: Task lists are finally finished\
+- Improvement: Improved how certain functions work and are called\
+- Improvement: Winning Guessers can now guess anyone after guessing their target's role\
+- Bug Fix: Fixed the issue where an Amnesiac/Thief/Shifter changing roles reset everyone's cooldowns\
+- Bug Fix: Fixed where bots would spawn in a public lobby after turning on persistance for robots in a local lobby\
+- Bug Fix: Fixed the occasional log spam when assassinating which leads to lag spikes\
+- Bug Fix: Fixed incorrect Torch assignment\
+- Role Fix: Fixed the issue where shapeshift morphed multiple players into the same player\
+- Role Fix: Fixed the issue where an assassinated player who is also blackmailed by the Godfather-Blackmailer would bug out\
+- Role Fix: Fixed the issue with Murderer being unable to kill\
+- Temporary Removal: Removed the second Spectate button till I figure out why you can't haunt\
 </details>
 <details>
 <summary>v0.0.2dev8.75</summary>
- - Critical Fix: Fixed the issue of the mod not being recognised by BepInEx
+- Critical Fix: Fixed the issue of the mod not being recognised by BepInEx\
 </details>
 <details>
 <summary>v0.0.2dev8.5</summary>
- - Removed: Removed a couple things I forgot to
+- Removed: Removed a couple things I forgot to\
 </details>
 <details>
 <summary>v0.0.2dev8</summary>
- - Merge: Janitor and Undertaker were merged because Undertaker was a bit weak, farewell Undertaker, you will be remembered soldier :saluting_face:
- - Update: Updated the mod to v2023.3.28
- - Changes: Made minor changes to how emergency buttons can be called (credits to @whichtwix)
- - Changes: Transporter, Beamer and Glitch had minor changes on how their buttons work
- - Improvement: Reworked layer gen *again* to squash more bugs (and hopefully not create new ones)
- - Improvement: Improved RPC handling between players
- - Improvement: Migrated to using the vanilla Shapeshifter menu over chats for menu usage (thanks to @Zeo666 from All The Roles for help)
- - Improvement: Improved how roleblocks work internally by a bit
- - Improvement: Minor improvements to Amnesiac/Shifter/Thief interactions
- - Visual Fix: Fixed the issue where hidden player layers would still sometimes show up for players
- - Bug Fix: Fixed Button Barry cooldown not setting correctly if they don't have an Objectifier
- - Bug Fix: Fixed the issue with  and odd number of Lovers or Rivals spawning in
- - Bug Fix: Potential fix for ability buttons sometimes disabling with comms being turned on
- - Bug Fix: Potential fix for null errors regarding player layers
- - Role Fix: Fixed buttons not disappearing when changing roles
- - Role Fix: Potential fix for Godfather and Janitor being unable to move when dragging bodies
+- Merge: Janitor and Undertaker were merged because Undertaker was a bit weak, farewell Undertaker, you will be remembered soldier :saluting_face:\
+- Update: Updated the mod to v2023.3.28\
+- Changes: Made minor changes to how emergency buttons can be called (credits to @whichtwix)\
+- Changes: Transporter, Beamer and Glitch had minor changes on how their buttons work\
+- Improvement: Reworked layer gen *again* to squash more bugs (and hopefully not create new ones)\
+- Improvement: Improved RPC handling between players\
+- Improvement: Migrated to using the vanilla Shapeshifter menu over chats for menu usage (thanks to @Zeo666 from All The Roles for help)\
+- Improvement: Improved how roleblocks work internally by a bit\
+- Improvement: Minor improvements to Amnesiac/Shifter/Thief interactions\
+- Visual Fix: Fixed the issue where hidden player layers would still sometimes show up for players\
+- Bug Fix: Fixed Button Barry cooldown not setting correctly if they don't have an Objectifier\
+- Bug Fix: Fixed the issue with  and odd number of Lovers or Rivals spawning in\
+- Bug Fix: Potential fix for ability buttons sometimes disabling with comms being turned on\
+- Bug Fix: Potential fix for null errors regarding player layers\
+- Role Fix: Fixed buttons not disappearing when changing roles\
+- Role Fix: Potential fix for Godfather and Janitor being unable to move when dragging bodies\
 </details>
 <details>
 <summary>v0.0.2dev7</summary>
- - Addition: Some Lore
- - Addition: Added framework for translations, feel free to let me know when you want to add a language
- - Addition: 1 new nameplate
- - Code Change: Chat commands have been optimised
- - Code Change: The code was reorganised for better functionality
- - Improvement: The in-game wiki is now complete
- - Improvement: Improved how game cooldowns work by a bit (with lesser lag hopefully)
- - Improvement: Flashes were changed to inclulde text and work like The Other Roles flashes
- - Improvement: Optimised spawn code for Revealers, Phantoms, Ghouls and Banshees
- - Bug Fix: Fixed the win screens not showing up properly
- - Visual Fix: Fixed body outlines not disappearing if they are no longer the main target for roles who interact with dead bodies
- - Visual Fix: Fixed outros sometimes not loading correctly
- - Modifier Fix: Stopped giving Shy to someone with the Button Barry ability
- - Modifier Fix: Fixed the issue where the game nulls out if you kill a Diseased as a Werewolf or Vigilante
- - Ability Fix: Stopped giving Button Barry to someone who cannot button
- - Ability Fix: Stopped giving Torch to Neutrals or Neutral Killers when their respective lights settings are off
- - Role Fix: Fixed Revealers, Phantoms, Ghouls and Banshees sometimes not being able to leave vents
+- Addition: Some Lore\
+- Addition: Added framework for translations, feel free to let me know when you want to add a language\
+- Addition: 1 new nameplate\
+- Code Change: Chat commands have been optimised\
+- Code Change: The code was reorganised for better functionality\
+- Improvement: The in-game wiki is now complete\
+- Improvement: Improved how game cooldowns work by a bit (with lesser lag hopefully)\
+- Improvement: Flashes were changed to inclulde text and work like The Other Roles flashes\
+- Improvement: Optimised spawn code for Revealers, Phantoms, Ghouls and Banshees\
+- Bug Fix: Fixed the win screens not showing up properly\
+- Visual Fix: Fixed body outlines not disappearing if they are no longer the main target for roles who interact with dead bodies\
+- Visual Fix: Fixed outros sometimes not loading correctly\
+- Modifier Fix: Stopped giving Shy to someone with the Button Barry ability\
+- Modifier Fix: Fixed the issue where the game nulls out if you kill a Diseased as a Werewolf or Vigilante\
+- Ability Fix: Stopped giving Button Barry to someone who cannot button\
+- Ability Fix: Stopped giving Torch to Neutrals or Neutral Killers when their respective lights settings are off\
+- Role Fix: Fixed Revealers, Phantoms, Ghouls and Banshees sometimes not being able to leave vents\
 </details>
 <details>
 <summary>v0.0.2dev6</summary>
- - Critical Fix: Fixed buttons not working
- - Code Change: Changed how outros work
+- Critical Fix: Fixed buttons not working\
+- Code Change: Changed how outros work\
 </details>
 <details>
 <summary>v0.0.2dev5</summary>
- - WARNING THIS UPDATE IS EXPERIMENTAL
- - Changes: Information now passes from one to another when an Amnesiac, Shifter or Thief changes roles
- - Code Change: The code was optimised again for better functionality (this means there might be new bugs :cri:)
- - Critical Fix: Fixed the issue where you could keep clikcing the button and it would perform its function, regardless of cooldown
- - Bug Fix: There were a lot of misc bug fixes, most annoying errors should be gone
- - Role Fix: Fixed the Glitch's mimic list not closing when they start mimicing
- - Role Fix: Fixed players crusaded by a Rebel-Crusader not killing upon interacting
+- WARNING THIS UPDATE IS EXPERIMENTAL\
+- Changes: Information now passes from one to another when an Amnesiac, Shifter or Thief changes roles\
+- Code Change: The code was optimised again for better functionality (this means there might be new bugs :cri:)\
+- Critical Fix: Fixed the issue where you could keep clicking the button and it would perform its function, regardless of cooldown\
+- Bug Fix: There were a lot of misc bug fixes, most annoying errors should be gone\
+- Role Fix: Fixed the Glitch's mimic list not closing when they start mimicking\
+- Role Fix: Fixed players crusaded by a Rebel-Crusader not killing upon interacting\
 </details>
 <details>
 <summary>v0.0.2dev4</summary>
- - Addition: Added a zooming button for dead players
- - Code Change: Changed how games end to squash bugs; past, present and future
- - Critical Fix: Fixed the the issue with turned Traitors and Fanatics not letting the game end
- - Critical Fix: Fixed games not ending correctly again
- - Role Fix: Fixed Juggernaut not being able to bypass protections after getting a certain number of kills
- - Role Fix: Clamped Juggernaut kill cooldown so that it does not become too op
+- Addition: Added a zooming button for dead players\
+- Code Change: Changed how games end to squash bugs; past, present and future\
+- Critical Fix: Fixed the the issue with turned Traitors and Fanatics not letting the game end\
+- Critical Fix: Fixed games not ending correctly again\
+- Role Fix: Fixed Juggernaut not being able to bypass protections after getting a certain number of kills\
+- Role Fix: Clamped Juggernaut kill cooldown so that it does not become too op\
 </details>
 <details>
 <summary>v0.0.2dev3</summary>
- - New Role: Ambusher [Intruder (Killing)]
- - New Role: Crusader [Syndicate (Killing)]
- - New Role: Ghoul [Intruder (Utility)]
- - New Role: Beamer [Syndicate (Support)]
- - New Role: Banshee [Syndicate (Utility)]
- - New Role: Betrayer [Neutral (Proselyte)]
- - Addition: New keybind settings
- - Addition: Added a proper in-game wiki that can be accessed from /[type]info chat commands (WIP)
- - Addition: Added setting pages for easier browsing while in lobby
- - Addition: Added a semi functioning profanity filter to the /setname chat command
- - Update: Merged features from v4.0.3 of Town Of Us
- - Changes: Guardian Angel turned Survivor will have the same number of vests as the number of protects they had as Guardian Angels
- - Critical Fix: Fixed Crew roles not spawning under certain conditions
- - Visual Fix: All buttons now have consistent fonts
- - Visual Fix: Fixed the Report button lighting up incorrectly
- - Visual Fix: Potential fix for color flashes preventing reactor/oxygen flashes from showing up
- - Bug Fix: Fixed Button Barry being unable to spawn
- - Bug Fix: Fixed Neutral Killing roles from not being able to win properly, nor their proper win screens showing up
- - Bug Fix: Fixed sound effects not working the way they were supposed to, now some roles have an intro sound
- - Bug Fix: Fixed dynamic lobbies not allowing you to set the lobby max or min to 127 and 1 respectively
- - Role Fix: Fixed Executioner being unable to doom players
- - Role Fix: Fixed Glitch being unable to mimic players
- - Role Fix: Fixed Arsonist breaking the game
- - Role Fix: Fixed Transporter's button not lighting up or working properly
- - Role Fix: Fixed Guardian Angels randomly bugging out
- - Role Fix: Fixed winning Neutrals becoming Phantom when they are the first dead neutral
- - Role Fix: Fixed the limits on Necromancer not decreasing properly
- - Role Fix: Fixed Godfather-Undertaker being unable to drag bodies
- - Role Fix: Fixed Revealer and Phantom being unable to leave vents
- - Role Fix: Fixed Phantom and Revealer clicking themselves into losing
- - Role Fix: Fixed Guesser interactions with other meeting-based roles/abilities
- - Role Fix: Fixed Revealer not being able to reveal players upon finishing their tasks
- - Role Fix: Fixed Rebel-Poisoner from not being able to poison players
- - Removed: Vanilla setting tabs since their options have been moved into custom settings
- - Removed: BepInEx updater because...just no
+- New Role: Ambusher [Intruder (Killing)]\
+- New Role: Crusader [Syndicate (Killing)]\
+- New Role: Ghoul [Intruder (Utility)]\
+- New Role: Beamer [Syndicate (Support)]\
+- New Role: Banshee [Syndicate (Utility)]\
+- New Role: Betrayer [Neutral (Proselyte)]\
+- Addition: New keybind settings\
+- Addition: Added a proper in-game wiki that can be accessed from /[type]info chat commands (WIP)\
+- Addition: Added setting pages for easier browsing while in lobby\
+- Addition: Added a semi functioning profanity filter to the /setname chat command\
+- Update: Merged features from v4.0.3 of Town Of Us\
+- Changes: Guardian Angel turned Survivor will have the same number of vests as the number of protects they had as Guardian Angels\
+- Critical Fix: Fixed Crew roles not spawning under certain conditions\
+- Visual Fix: All buttons now have consistent fonts\
+- Visual Fix: Fixed the Report button lighting up incorrectly\
+- Visual Fix: Potential fix for color flashes preventing reactor/oxygen flashes from showing up\
+- Bug Fix: Fixed Button Barry being unable to spawn\
+- Bug Fix: Fixed Neutral Killing roles from not being able to win properly, nor their proper win screens showing up\
+- Bug Fix: Fixed sound effects not working the way they were supposed to, now some roles have an intro sound\
+- Bug Fix: Fixed dynamic lobbies not allowing you to set the lobby max or min to 127 and 1 respectively\
+- Role Fix: Fixed Executioner being unable to doom players\
+- Role Fix: Fixed Glitch being unable to mimic players\
+- Role Fix: Fixed Arsonist breaking the game\
+- Role Fix: Fixed Transporter's button not lighting up or working properly\
+- Role Fix: Fixed Guardian Angels randomly bugging out\
+- Role Fix: Fixed winning Neutrals becoming Phantom when they are the first dead neutral\
+- Role Fix: Fixed the limits on Necromancer not decreasing properly\
+- Role Fix: Fixed Godfather-Undertaker being unable to drag bodies\
+- Role Fix: Fixed Revealer and Phantom being unable to leave vents\
+- Role Fix: Fixed Phantom and Revealer clicking themselves into losing\
+- Role Fix: Fixed Guesser interactions with other meeting-based roles/abilities\
+- Role Fix: Fixed Revealer not being able to reveal players upon finishing their tasks\
+- Role Fix: Fixed Rebel-Poisoner from not being able to poison players\
+- Removed: Vanilla setting tabs since their options have been moved into custom settings\
+- Removed: BepInEx updater because...just no\
 </details>
 <details>
 <summary>v0.0.2dev2</summary>
- - Update: Updated to v2023.2.28
- - Addition: New colors
- - Addition: Better sabotages
- - Addition: Some more settings for game customisation
- - Addition: Version control - Having the wrong/modified versions of the mod compared to the host's will boot you out of the lobby
- - Improvement: Role buttons are now dynamic, meaning they appear and disappear based on certain actions
- - Improvement: Camouflages are now a little more fun now
- - Improvement: Ability uses now appear a little differently than how they used to originally
- - Buff: Torch ability has been fused with Lighter (mainly because I couldn't get Imp vision affected by lights to work)
- - Nerf: Retributionist can only use a dead player once
- - Critical Fix: Fixed Killing Only crashing the game for the host and nulling everyone else's roles
- - Critical Fix: Fixed All Any nulling roles when not a single role is turned on
- - Critical Fix: Fixed Modifiers not spawning in Classic or Custom mode
- - Critical Fix: Roleblocks actually work now!
- - Critical Fix: Fixed Intruder roles sometimes killing their targets upon using their abilities
- - Vanilla Fix: Fixed Report button being visible in lobby
- - Visual Fix: Fixed footprints sometimes being stupidly small
- - Visual Fix: Corrected some more color names
- - Visual Fix: Fixed haunting players not showing their objectifier symbols as being colored
- - Visual Fix: Fixed kill buttons not having text
- - Visual Fix: Fixed all nks winning not having a win screen
- - Visual Fix: Fixed Poisoner and Gorgon buttons being in the centre of the screen rather than the side
- - Role Fix: Fixed Bounty Hunter winning regardless of who they kill and then proceeding to be able to kill with no cooldown
- - Role Fix: Fixed Retributionist being unable to use a Mystic or Seer
- - Role Fix: Fixed Bomber placing bomb not reseting the detonate button with the linked cooldown setting being on
- - Role Fix: Fixed Retributionist unable to interact sometimes
- - Role Fix: Fixed Engineer and Retributionist-Engineer unable to fix sabotages on Skeld
- - Role Fix: Fixed Time Master's time freeze not stopping
- - Role Fix: Fixed Drunkard's invert controls staying inverted forever
- - ROle Fix: Fixed Time Master and Drunkard lag spiking the game when their abilities are active
- - Role Fix: Fixed Teleporter clipping through walls if they place their teleport points just right
- - Role Fix: Fixed Godfather and Rebel not being able to promote fellow team mates
- - Role Fix: Attempt no. 23 in fixing Glitch, here's to hoping it works
- - Objectifier Fix: Fixed Amnesiac/Thief Taskmaster turned Intruder/Syndicate being unable to do tasks to win
- - Objectifier Fix: Fixed the bug where alive Overlords did not win together
- - Objectifier Fix: Fixed Lovers and Rivals nulling when spawning in
- - Objectifier Fix: Fixed Traitor, Fanatic and Allied not winning with their selected factions
- - Code Change: Redid layer generation yet again to squash any hidden bugs + optimisation
- - Code Change: Player HUDs were redone again
- - Code Change: Disguiser, Morphling, Teleporter and Undertaker were recoded a little
- - Code Change: MCI was changed up a bit, the controls are redone and for some reason I'm yet to post controls smh
- - Removed: Retributionist can no longer use a Time Lord because of the countless bugs it creates
- - Removed: Lighter ability
+- Update: Updated to v2023.2.28\
+- Addition: New colors\
+- Addition: Better sabotages\
+- Addition: Some more settings for game customisation\
+- Addition: Version control - Having the wrong/modified versions of the mod compared to the host's will boot you out of the lobby\
+- Improvement: Role buttons are now dynamic, meaning they appear and disappear based on certain actions\
+- Improvement: Camouflages are now a little more fun now\
+- Improvement: Ability uses now appear a little differently than how they used to originally\
+- Merge: Torch ability has been fused with Lighter (mainly because I couldn't get Imp vision affected by lights to work)\
+- Nerf: Retributionist can only use a dead player once\
+- Critical Fix: Fixed Killing Only crashing the game for the host and nulling everyone else's roles\
+- Critical Fix: Fixed All Any nulling roles when not a single role is turned on\
+- Critical Fix: Fixed Modifiers not spawning in Classic or Custom mode\
+- Critical Fix: Roleblocks actually work now!\
+- Critical Fix: Fixed Intruder roles sometimes killing their targets upon using their abilities\
+- Vanilla Fix: Fixed Report button being visible in lobby\
+- Visual Fix: Fixed footprints sometimes being stupidly small\
+- Visual Fix: Corrected some more color names\
+- Visual Fix: Fixed haunting players not showing their objectifier symbols as being colored\
+- Visual Fix: Fixed kill buttons not having text\
+- Visual Fix: Fixed all nks winning not having a win screen\
+- Visual Fix: Fixed Poisoner and Gorgon buttons being in the centre of the screen rather than the side\
+- Role Fix: Fixed Bounty Hunter winning regardless of who they kill and then proceeding to be able to kill with no cooldown\
+- Role Fix: Fixed Retributionist being unable to use a Mystic or Seer\
+- Role Fix: Fixed Bomber placing bomb not reseting the detonate button with the linked cooldown setting being on\
+- Role Fix: Fixed Retributionist unable to interact sometimes\
+- Role Fix: Fixed Engineer and Retributionist-Engineer unable to fix sabotages on Skeld\
+- Role Fix: Fixed Time Master's time freeze not stopping\
+- Role Fix: Fixed Drunkard's invert controls staying inverted forever\
+- ROle Fix: Fixed Time Master and Drunkard lag spiking the game when their abilities are active\
+- Role Fix: Fixed Teleporter clipping through walls if they place their teleport points just right\
+- Role Fix: Fixed Godfather and Rebel not being able to promote fellow team mates\
+- Role Fix: Attempt no. 23 in fixing Glitch, here's to hoping it works\
+- Objectifier Fix: Fixed Amnesiac/Thief Taskmaster turned Intruder/Syndicate being unable to do tasks to win\
+- Objectifier Fix: Fixed the bug where alive Overlords did not win together\
+- Objectifier Fix: Fixed Lovers and Rivals nulling when spawning in\
+- Objectifier Fix: Fixed Traitor, Fanatic and Allied not winning with their selected factions\
+- Code Change: Redid layer generation yet again to squash any hidden bugs + optimisation\
+- Code Change: Player HUDs were redone again\
+- Code Change: Disguiser, Morphling, Teleporter and Undertaker were recoded a little\
+- Code Change: MCI was changed up a bit, the controls are redone and for some reason I'm yet to post controls smh\
+- Removed: Retributionist can no longer use a Time Lord because of the countless bugs it creates\
 </details>
 <details>
 <summary>v0.0.1dev19</summary>
- - Addition: New 'Default' preset for those who want to reset their settings to default
- - Addition: New 'Vanilla' gamemode, no idea why I added it so just roll with it
- - Addition: Added LevelImpostor compatibility
- - Improvement: Settings now loop (for example if the setting allows for the range 1 to 10, moving beyond 10 will result in the setting becoming 1)
- - Changes: None of the Neutral (Evil) roles end the game anymore, instead making them win brings about a penalty to players
- - Critical Fix: Another attempt at fixing games not ending properly
- - Critical Fix: MCI works now (albiet with some bugs of its own)! Controls will be coming later so until then, just press random buttons
- - Bug Fix: Presets can now be loaded properly
- - Bug Fix: Fixed changelogs appearing as "Fetching..." always
- - Bug Fix: Fixed the Corrupted kill button not lighting up properly
- - Bug Fix: Fixed the Speci vent not having the proper vent connections
- - Visual Fix: Fixed Detective footprints being absolutely huge
- - Role Fix: Fixed Retributionist mediate button not showing up
- - Role Fix: Fixed Poisoner returning an Intruder win rather than a Syndicate one
- - Removal: Removed the 'Footprint Size' settings because it's kind of useless
+- Addition: New 'Default' preset for those who want to reset their settings to default\
+- Addition: New 'Vanilla' gamemode, no idea why I added it so just roll with it\
+- Addition: Added LevelImpostor compatibility\
+- Improvement: Settings now loop (for example if the setting allows for the range 1 to 10, moving beyond 10 will result in the setting becoming 1)\
+- Changes: None of the Neutral (Evil) roles end the game anymore, instead making them win brings about a penalty to players\
+- Critical Fix: Another attempt at fixing games not ending properly\
+- Critical Fix: MCI works now (albiet with some bugs of its own)! Controls will be coming later so until then, just press random buttons\
+- Bug Fix: Presets can now be loaded properly\
+- Bug Fix: Fixed changelogs appearing as "Fetching..." always\
+- Bug Fix: Fixed the Corrupted kill button not lighting up properly\
+- Bug Fix: Fixed the Speci vent not having the proper vent connections\
+- Visual Fix: Fixed Detective footprints being absolutely huge\
+- Role Fix: Fixed Retributionist mediate button not showing up\
+- Role Fix: Fixed Poisoner returning an Intruder win rather than a Syndicate one\
+- Removal: Removed the 'Footprint Size' settings because it's kind of useless\
 </details>
 <details>
 <summary>v0.0.1dev18.5</summary>
- - Critical Fix: Fixed games not ending correctly (hopefully)
+- Critical Fix: Fixed games not ending correctly (hopefully)\
 </details>
 <details>
 <summary>v0.0.1dev18</summary>
- - New Ability: Ninja
- - Addition: Chaos drive abilities! Earlier it only added a kill button but now the Syndicate also has buffed abilities (only some roles have it as of right now)
- - Addition: Added an announcements and updates button for those who are too lazy to check the changelogs
- - Buff: Coroner can now autopsy dead bodies and compare them to players to find the killers
- - Changes: Seer now turns into Sheriff if all players whose roles can change/have changed are dead
- - Changes: The Main Menu was changed a bit
- - Improvement: Better task lists
- - Improvement: All the non-role layer details are finally complete
- - Improvement: Removed the "Sabotage and kill everyone" text that all Intruders have (to make way for the new task lists)
- - Bug Fix: Fixed the report button not showing for some reason
- - Bug Fix: Fixed Modifiers, Objectifiers and Abilities from sometimes not spawning
- - Bug Fix: Fixed Shy being assigned to roles who cannot button (like Mayor with the Mayor Button settings turned off)
- - Visual Fix: Fixed Janitor's clean button incorrectly lighting up
- - Visual Fix: Fixed the good recruit not showing up on your screen if you are the Serial Killer recruit
- - Objectifier Fix: Fixed Allied not winning with and displaying their decided faction
- - Objectifier Fix: Fixed Fanatic not changing factions properly
- - Role Fix: Fixed Bounty Hunter not being able to check for targets
- - Role Fix: Fixed Vampire Hunter not killing an Undead interactor
+- New Ability: Ninja
+- Addition: Chaos drive abilities! Earlier it only added a kill button but now the Syndicate also has buffed abilities (only some roles have it as of right now)\
+- Addition: Added an announcements and updates button for those who are too lazy to check the changelogs\
+- Buff: Coroner can now autopsy dead bodies and compare them to players to find the killers\
+- Changes: Seer now turns into Sheriff if all players whose roles can change/have changed are dead\
+- Changes: The Main Menu was changed a bit\
+- Improvement: Better task lists\
+- Improvement: All the non-role layer details are finally complete\
+- Improvement: Removed the "Sabotage and kill everyone" text that all Intruders have (to make way for the new task lists)\
+- Bug Fix: Fixed the report button not showing for some reason\
+- Bug Fix: Fixed Modifiers, Objectifiers and Abilities from sometimes not spawning\
+- Bug Fix: Fixed Shy being assigned to roles who cannot button (like Mayor with the Mayor Button settings turned off)\
+- Visual Fix: Fixed Janitor's clean button incorrectly lighting up\
+- Visual Fix: Fixed the good recruit not showing up on your screen if you are the Serial Killer recruit\
+- Objectifier Fix: Fixed Allied not winning with and displaying their decided faction\
+- Objectifier Fix: Fixed Fanatic not changing factions properly\
+- Role Fix: Fixed Bounty Hunter not being able to check for targets\
+- Role Fix: Fixed Vampire Hunter not killing an Undead interactor\
 </details>
 <details>
 <summary>v0.0.1dev17</summary>
- - Addition: Custom nameplates and visors
- - Addition: New 'Casual' preset
- - Addition: You minimap now reflects the color of your role
- - Addition: Polus Reactor countdown can be changed now
- - Improvement: The end game screen shows your role under your name if you win
- - Internal: The code recieved yet another restructuring
- - Internal: The code for custom hats and role names was changed
- - Changes: Some buttons have their art now
- - Bug Fix: Fixed Seer not spawning when Godfather and Plaguebearer are on
- - Bug Fix: Fixed Seer not flashing when someone's role changes
- - Bug Fix: Fixed Revealers and Phantoms being unable to leave vents (WIP)
- - Bug Fix: Fixed Plaguebearer turning Pestilence not appearing on the end game summary
- - Bug Fix: Fixed Indomitable messing with role gen
- - Bug Fix: Fixed Inspector not being able to use their buttons
- - Visual Fix: Fixed Turquoise and Lilac having the wrong names
- - Visual Fix: Fixed role names not appearing under people's names if they are not the player themselves
- - Role Fix: Another attempt at unglitching Glitch
+- Addition: Custom nameplates and visors\
+- Addition: New 'Casual' preset\
+- Addition: You minimap now reflects the color of your role\
+- Addition: Polus Reactor countdown can be changed now\
+- Improvement: The end game screen shows your role under your name if you win\
+- Internal: The code recieved yet another restructuring\
+- Internal: The code for custom hats and role names was changed\
+- Changes: Some buttons have their art now\
+- Bug Fix: Fixed Seer not spawning when Godfather and Plaguebearer are on\
+- Bug Fix: Fixed Seer not flashing when someone's role changes\
+- Bug Fix: Fixed Revealers and Phantoms being unable to leave vents (WIP)\
+- Bug Fix: Fixed Plaguebearer turning Pestilence not appearing on the end game summary\
+- Bug Fix: Fixed Indomitable messing with role gen\
+- Bug Fix: Fixed Inspector not being able to use their buttons\
+- Visual Fix: Fixed Turquoise and Lilac having the wrong names\
+- Visual Fix: Fixed role names not appearing under people's names if they are not the player themselves\
+- Role Fix: Another attempt at unglitching Glitch\
 </details>
 <details>
 <summary>v0.0.1dev16</summary>
- - Addition: Added dynamic lobby size changing
- - Role Fix: Time Lord and Retributionist-Time Lord getting stuck when rewinding
- - Role Fix: Bounty Hunter, Guesser and Actor hints not being sent
- - Bug Fix: Fixed Time Lord and Retributionist-Time Lord rewind not reviving those who were poisoned by the Rebel-Poisoner
- - Bug Fix: Fixed being able to whisper to dead players and dead players being able to whisper to the living
- - Bug Fix: Fixed Ruthless messing with role gen
- - Bug Fix: Conceal not working
- - Visual Fix: Changed Necromancer's color because it was too similar to Impostor Red
- - Buff: Blackmailer and dead players can read whispers now (both of which are togglable)
- - Changes: Changed how do the Undead work
- - Changes: Changed the appearance of footprints
- - Update: Updated CrowdedMod code
- - Removed: Dampyr and Vampire
+- Addition: Added dynamic lobby size changing\
+- Role Fix: Time Lord and Retributionist-Time Lord getting stuck when rewinding\
+- Role Fix: Bounty Hunter, Guesser and Actor hints not being sent\
+- Bug Fix: Fixed Time Lord and Retributionist-Time Lord rewind not reviving those who were poisoned by the Rebel-Poisoner\
+- Bug Fix: Fixed being able to whisper to dead players and dead players being able to whisper to the living\
+- Bug Fix: Fixed Ruthless messing with role gen\
+- Bug Fix: Conceal not working\
+- Visual Fix: Changed Necromancer's color because it was too similar to Impostor Red\
+- Buff: Blackmailer and dead players can read whispers now (both of which are togglable)\
+- Changes: Changed how do the Undead work\
+- Changes: Changed the appearance of footprints\
+- Update: Updated CrowdedMod code\
+- Removed: Dampyr and Vampire\
 </details>
 <details>
 <summary>v0.0.1dev15</summary>
- - Addition: Preset settings (WIP).
- - Addition: Custom intro screen sounds (WIP).
- - Addition: Whispering system.
- - RoleFix: Fixed the issue with Bomber count messing with role gen.
- - Role Fix: Fixed Bounty Hunter not winning.
- - Visual Fix: Fixed Chameleon not appearing semi-invisible for themselves.
+- Addition: Preset settings (WIP)\
+- Addition: Custom intro screen sounds (WIP)\
+- Addition: Whispering system\
+- RoleFix: Fixed the issue with Bomber count messing with role gen\
+- Role Fix: Fixed Bounty Hunter not winning\
+- Visual Fix: Fixed Chameleon not appearing semi-invisible for themselves\
 </details>
 <details>
 <summary>v0.0.1dev14</summary>
- - Fixed Necromancer not being able to kill.
- - Fixed the uses count on the Necromancer's buttons.
- - Fixed Necromancer's settings being misplaced.
- - Fixed some more cooldown issues (jeez they are one too many).
- - Bomber now works!
+- Fixed Necromancer not being able to kill\
+- Fixed the uses count on the Necromancer's buttons\
+- Fixed Necromancer's settings being misplaced\
+- Fixed some more cooldown issues (jeez they are one too many)\
+- Bomber now works!\
 </details>
 <details>
 <summary>v0.0.1dev13.5</summary>
- - Fixed some cooldowns.
+- Fixed some cooldowns\
 </details>
 <details>
 <summary>v0.0.1dev13</summary>
- - New Roles, Modifiers and Abilities!
- - Introducing Objectifiers! They are essentially secondary roles for you!
- - New Faction: The Syndicate! Can you survive the chaos they bring?
- - New Subfactions: Undead, Cabal, Reanimated and Sect! Stop them from over taking the mission!
- - New Features! Chat scrolling, chat commands and more!
- - Reworks, renames, buffs and nerfs! A lot of roles are different from the base mod, can you guess which ones were which?
- - New Settings with room for even more customisation!
- - New Mode: Custom! Allow multiple of the same roles to spawn, all at your discretion!
- - Modifiers, Abilities and Objectifiers can now also spawn in Killing Only mode!
- - New Game Modifiers! Spice up your game with settings that can drastically change the outcome of a game!
- - (Most) Vanilla settings have been integrated into the Custom Settings!
- - All Any is now truly All Any!
- - Brought back old and forgotten features from previous versions!
- - Improved features like better end game summaries!
- - Improved the win conditions of a lot of roles!
- - More QoL features!
- - A lot of internal code changes for smoother (and hopefully less buggy) game experiences!
+- New Roles, Modifiers and Abilities!\
+- Introducing Objectifiers! They are essentially secondary roles for you!\
+- New Faction: The Syndicate! Can you survive the chaos they bring?\
+- New Subfactions: Undead, Cabal, Reanimated and Sect! Stop them from over taking the mission!\
+- New Features! Chat scrolling, chat commands and more!\
+- Reworks, renames, buffs and nerfs! A lot of roles are different from the base mod, can you guess which ones were which?\
+- New Settings with room for even more customisation!\
+- New Mode: Custom! Allow multiple of the same roles to spawn, all at your discretion!\
+- Modifiers, Abilities and Objectifiers can now also spawn in Killing Only mode!\
+- New Game Modifiers! Spice up your game with settings that can drastically change the outcome of a game!\
+- (Most) Vanilla settings have been integrated into the Custom Settings!\
+- All Any is now truly All Any!\
+- Brought back old and forgotten features from previous versions!\
+- Improved features like better end game summaries!\
+- Improved the win conditions of a lot of roles!\
+- More QoL features!\
+- A lot of internal code changes for smoother (and hopefully less buggy) game experiences!\
 </details>
 </details>
 
