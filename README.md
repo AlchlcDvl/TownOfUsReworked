@@ -605,7 +605,7 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 <ul> <li>Addition: New colors</li> </ul>
 <ul> <li>Addition: Better sabotages</li> </ul>
 <ul> <li>Addition: Some more settings for game customisation</li> </ul>
-<ul> <li>Addition: Version control <ul> <li>Having the wrong/modified versions of the mod compared to the host's will boot you out of the lobby</li> </ul>
+<ul> <li>Addition: Version control: Having the wrong/modified versions of the mod compared to the host's will boot you out of the lobby</li> </ul>
 <ul> <li>Improvement: Role buttons are now dynamic, meaning they appear and disappear based on certain actions</li> </ul>
 <ul> <li>Improvement: Camouflages are now a little more fun now</li> </ul>
 <ul> <li>Improvement: Ability uses now appear a little differently than how they used to originally</li> </ul>
