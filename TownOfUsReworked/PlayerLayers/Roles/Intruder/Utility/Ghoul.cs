@@ -25,8 +25,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float MarkTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastMarked;
+            var timespan = DateTime.UtcNow - LastMarked;
             var num = CustomGameOptions.GhoulMarkCd * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;

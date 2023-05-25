@@ -2,8 +2,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
 {
     public class Radar : Ability
     {
-        public List<ArrowBehaviour> RadarArrow = new();
-        public SpriteRenderer Point;
+        public CustomArrow RadarArrow;
 
         public Radar(PlayerControl player) : base(player)
         {
@@ -11,15 +10,14 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             TaskText = "- You are aware of those close to you";
             Color = CustomGameOptions.CustomAbilityColors ? Colors.Radar : Colors.Ability;
             AbilityType = AbilityEnum.Radar;
-            RadarArrow = new();
+            RadarArrow = new(Player, Color);
             Type = LayerEnum.Radar;
         }
 
         public override void OnLobby()
         {
             base.OnLobby();
-            RadarArrow.DestroyAll();
-            ClearPoint();
+            RadarArrow?.Destroy();
         }
 
         public override void UpdateHud(HudManager __instance)
@@ -27,51 +25,9 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             base.UpdateHud(__instance);
 
             if (IsDead)
-            {
                 OnLobby();
-                return;
-            }
-
-            if (RadarArrow.Count == 0)
-            {
-                var gameObj = new GameObject("RadarArrow") { layer = 5 };
-                var arrow = gameObj.AddComponent<ArrowBehaviour>();
-                gameObj.transform.parent = Player.gameObject.transform;
-                var renderer = gameObj.AddComponent<SpriteRenderer>();
-                renderer.sprite = AssetManager.GetSprite("Arrow");
-                renderer.color = Color;
-                arrow.image = renderer;
-                arrow.target = Player.transform.position;
-                RadarArrow.Add(arrow);
-            }
-
-            foreach (var arrow in RadarArrow)
-                arrow.target = Player.GetClosestPlayer(null, float.MaxValue).transform.position;
-        }
-
-        public override void UpdateMap(MapBehaviour __instance)
-        {
-            base.UpdateMap(__instance);
-
-            if (IsDead || MeetingHud.Instance)
-                return;
-
-            var v = RadarArrow[Player.GetClosestPlayer(null, float.MaxValue).PlayerId].target;
-            v /= ShipStatus.Instance.MapScale;
-            v.x *= Mathf.Sign(ShipStatus.Instance.transform.localScale.x);
-            v.z = -1f;
-
-            if (Point)
-                Point.transform.localPosition = v;
             else
-            {
-                var Point = UObject.Instantiate(__instance.HerePoint, __instance.HerePoint.transform.parent, true);
-                Point.enabled = true;
-                Point.color = Color;
-                Point.transform.localPosition = v;
-            }
+                RadarArrow.Update(Player.GetClosestPlayer(null, float.MaxValue, true).transform.position);
         }
-
-        public void ClearPoint() => Point.Destroy();
     }
 }

@@ -7,7 +7,7 @@ namespace TownOfUsReworked.CustomOptions
         public List<OptionBehaviour> OldButtons;
         public List<CustomButtonOption> SlotButtons = new();
 
-        public Import() : base(-1, MultiMenu.main, "Load Custom Settings") => Do = ToDo;
+        public Import() : base(MultiMenu.main, "Load Custom Settings") => Do = ToDo;
 
         private List<OptionBehaviour> CreateOptions()
         {
@@ -62,17 +62,11 @@ namespace TownOfUsReworked.CustomOptions
         public void ToDo()
         {
             SlotButtons.Clear();
-            SlotButtons.Add(new CustomButtonOption(-1, MultiMenu.external, "Slot 1", delegate { ImportSlot(1); }));
-            SlotButtons.Add(new CustomButtonOption(-1, MultiMenu.external, "Slot 2", delegate { ImportSlot(2); }));
-            SlotButtons.Add(new CustomButtonOption(-1, MultiMenu.external, "Slot 3", delegate { ImportSlot(3); }));
-            SlotButtons.Add(new CustomButtonOption(-1, MultiMenu.external, "Slot 4", delegate { ImportSlot(4); }));
-            SlotButtons.Add(new CustomButtonOption(-1, MultiMenu.external, "Slot 5", delegate { ImportSlot(5); }));
-            SlotButtons.Add(new CustomButtonOption(-1, MultiMenu.external, "Slot 6", delegate { ImportSlot(6); }));
-            SlotButtons.Add(new CustomButtonOption(-1, MultiMenu.external, "Slot 7", delegate { ImportSlot(7); }));
-            SlotButtons.Add(new CustomButtonOption(-1, MultiMenu.external, "Slot 8", delegate { ImportSlot(8); }));
-            SlotButtons.Add(new CustomButtonOption(-1, MultiMenu.external, "Slot 9", delegate { ImportSlot(9); }));
-            SlotButtons.Add(new CustomButtonOption(-1, MultiMenu.external, "Slot 10", delegate { ImportSlot(10); }));
-            SlotButtons.Add(new CustomButtonOption(-1, MultiMenu.external, "Cancel", delegate { Cancel(FlashWhite); }));
+
+            for (var j = 1; j < 11; j++)
+                SlotButtons.Add(new(MultiMenu.external, $"Slot {j}", delegate { ImportSlot(j); }));
+
+            SlotButtons.Add(new(MultiMenu.external, "Cancel", delegate { Cancel(FlashWhite); }));
 
             var options = CreateOptions();
             var __instance = UObject.FindObjectOfType<GameOptionsMenu>();
@@ -128,19 +122,26 @@ namespace TownOfUsReworked.CustomOptions
                 var value = splitText[0];
                 splitText.RemoveAt(0);
 
-                switch (option.Type)
+                try
                 {
-                    case CustomOptionType.Number:
-                        option.Set(float.Parse(value), false);
-                        break;
+                    switch (option.Type)
+                    {
+                        case CustomOptionType.Number:
+                            option.Set(float.Parse(value));
+                            break;
 
-                    case CustomOptionType.Toggle:
-                        option.Set(bool.Parse(value), false);
-                        break;
+                        case CustomOptionType.Toggle:
+                            option.Set(bool.Parse(value));
+                            break;
 
-                    case CustomOptionType.String:
-                        option.Set(int.Parse(value), false);
-                        break;
+                        case CustomOptionType.String:
+                            option.Set(int.Parse(value));
+                            break;
+                    }
+                }
+                catch
+                {
+                    Utils.LogSomething("Unable to set - " + option.Name + " : " + value);
                 }
             }
 

@@ -8,8 +8,8 @@
         {
             public static void Postfix()
             {
-                if (SubmergedCompatibility.IsSubmerged)
-                    Coroutines.Start(SubmergedCompatibility.WaitStart(() => SubmergedCompatibility.ResetTimers(false)));
+                if (ModCompatibility.IsSubmerged)
+                    Coroutines.Start(ModCompatibility.WaitStart(() => ButtonUtils.ResetCustomTimers(false)));
             }
         }
 
@@ -18,7 +18,7 @@
         {
             public static void Postfix(HudManager __instance)
             {
-                if (SubmergedCompatibility.IsSubmerged && PlayerControl.LocalPlayer.Data.IsDead && PlayerControl.LocalPlayer.IsPostmortal())
+                if (ModCompatibility.IsSubmerged && PlayerControl.LocalPlayer.Data.IsDead && PlayerControl.LocalPlayer.IsPostmortal())
                     __instance.MapButton.transform.parent.Find(__instance.MapButton.name + "(Clone)").gameObject.SetActive(PlayerControl.LocalPlayer.Caught());
             }
         }
@@ -27,14 +27,14 @@
         [HarmonyPriority(Priority.Low)] //Make sure it occurs after other patches
         public static class SubmergedPhysicsPatch
         {
-            public static void Postfix(PlayerPhysics __instance) => SubmergedCompatibility.Ghostrolefix(__instance);
+            public static void Postfix(PlayerPhysics __instance) => ModCompatibility.Ghostrolefix(__instance);
         }
 
         [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.LateUpdate))]
         [HarmonyPriority(Priority.Low)] //Make sure it occurs after other patches
         public static class SubmergedLateUpdatePhysicsPatch
         {
-            public static void Postfix(PlayerPhysics __instance) => SubmergedCompatibility.Ghostrolefix(__instance);
+            public static void Postfix(PlayerPhysics __instance) => ModCompatibility.Ghostrolefix(__instance);
         }
     }
 }

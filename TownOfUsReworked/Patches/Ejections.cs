@@ -4,9 +4,7 @@ namespace TownOfUsReworked.Patches
     [HarmonyPriority(Priority.First)]
     public static class ConfirmEjects
     {
-        #pragma warning disable
         public static ExileController LastExiled;
-        #pragma warning restore
 
         public static void Prefix(ExileController __instance) => LastExiled = __instance;
 
@@ -32,7 +30,7 @@ namespace TownOfUsReworked.Patches
             var a_or_an2 = factionflag ? "an" : "a";
             var a_or_an3 = subfactionflag ? "an" : "a";
 
-            var totalEvilsCount = PlayerControl.AllPlayerControls.ToArray().Count(x => ((!x.Is(Faction.Crew) && !x.Is(RoleAlignment.NeutralBen) && !x.Is(RoleAlignment.NeutralEvil)) ||
+            var totalEvilsCount = PlayerControl.AllPlayerControls.Count(x => ((!x.Is(Faction.Crew) && !x.Is(RoleAlignment.NeutralBen) && !x.Is(RoleAlignment.NeutralEvil)) ||
                 x.NotOnTheSameSide()) && !(x.Data.IsDead || x.Data.Disconnected));
             var totalEvilsRemaining = ConstantVariables.IsAA ? "an unknown number of" : $"{totalEvilsCount}";
             var evils = totalEvilsCount > 1 ? "evils" : "evil";

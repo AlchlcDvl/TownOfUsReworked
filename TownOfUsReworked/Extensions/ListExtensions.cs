@@ -59,5 +59,13 @@ namespace TownOfUsReworked.Extensions
             else
                 return list[URandom.RandomRangeInt(0, list.Count)];
         }
+
+        public static int Count<T>(this Il2CppSystem.Collections.Generic.List<T> list, Func<T, bool> predicate) => list.Il2CppToSystem().Count(predicate);
+
+        public static bool Any<T>(this Il2CppSystem.Collections.Generic.List<T> list, Func<T, bool> predicate) => list.Il2CppToSystem().Any(predicate);
+
+        public static IEnumerable<T> Where<T>(this Il2CppSystem.Collections.Generic.List<T> list, Func<T, bool> predicate) => list.Il2CppToSystem().Where(predicate);
+
+        public static void ForEach<T>(this Il2CppSystem.Collections.Generic.List<T> list, Action<T> action) => list.Il2CppToSystem().ForEach(action);
     }
 }

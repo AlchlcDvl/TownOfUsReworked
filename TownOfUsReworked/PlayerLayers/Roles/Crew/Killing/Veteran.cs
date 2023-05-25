@@ -26,8 +26,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float AlertTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastAlerted;
+            var timespan = DateTime.UtcNow - LastAlerted;
             var num = Player.GetModifiedCooldown(CustomGameOptions.AlertCd) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;

@@ -8,12 +8,17 @@ namespace TownOfUsReworked.Classes
         private readonly static Dictionary<string, Sprite> Sprites = new();
         private readonly static Dictionary<string, string> Translations = new();
         private readonly static Dictionary<string, float> Sizes = new();
-        private readonly static string[] TranslationKeys = Utils.CreateText("Keys", "Languages").Split("\n");
+        //private readonly static string[] TranslationKeys = Utils.CreateText("Keys", "Languages").Split("\n");
         public readonly static Sprite[] PortalAnimation = new Sprite[205];
-
-        #pragma warning disable
         public static Sprite Use;
-        #pragma warning restore
+        public static Dictionary<string, string> Presets = new()
+        {
+            { "Casual", Utils.CreateText("Casual", "Presets")},
+            { "Chaos", Utils.CreateText("Chaos", "Presets")},
+            { "Default", File.ReadAllText(Path.Combine(Application.persistentDataPath, "DefaultSettings"))},
+            { "Last Used", File.ReadAllText(Path.Combine(Application.persistentDataPath, "LastUsedSettings"))},
+            { "Ranked", Utils.CreateText("Ranked", "Presets")}
+        };
 
         public static AudioClip GetAudio(string path)
         {
@@ -113,15 +118,10 @@ namespace TownOfUsReworked.Classes
             try
             {
                 var texture = new Texture2D(2, 2, TextureFormat.ARGB32, true);
-                var assembly = TownOfUsReworked.Executing;
-                Stream stream = assembly.GetManifestResourceStream(path);
+                var stream = TownOfUsReworked.Executing.GetManifestResourceStream(path);
                 var length = stream.Length;
                 var byteTexture = new Il2CppStructArray<byte>(length);
-                stream.Read(new Span<byte>(IntPtr.Add(byteTexture.Pointer, IntPtr.Size * 4).ToPointer(), (int)length));
-
-                if (path.Contains("HorseHats"))
-                    byteTexture = new(byteTexture.Reverse().ToArray());
-
+                stream.Read(new(IntPtr.Add(byteTexture.Pointer, IntPtr.Size * 4).ToPointer(), (int)length));
                 ImageConversion.LoadImage(texture, byteTexture, false);
                 return texture;
             }
@@ -161,7 +161,7 @@ namespace TownOfUsReworked.Classes
             try
             {
                 var sname = name.Replace(".png", "").Replace(TownOfUsReworked.Buttons, "").Replace(TownOfUsReworked.Misc, "").Replace(TownOfUsReworked.Portal, "");
-                var tex = CreatTexture(name);
+                var tex = LoadResourceTexture(name);
                 var sprite = Sprite.Create(tex, new(0, 0, tex.width, tex.height), new(0.5f, 0.5f), Sizes[sname]);
                 sprite.name = sname;
                 sprite.hideFlags |= HideFlags.HideAndDontSave | HideFlags.DontSaveInEditor;
@@ -171,25 +171,6 @@ namespace TownOfUsReworked.Classes
             catch
             {
                 Utils.LogSomething($"Error Loading {name}");
-                return null;
-            }
-        }
-
-        public static unsafe Texture2D CreatTexture(string path)
-        {
-            try
-            {
-                var texture = new Texture2D(2, 2, TextureFormat.ARGB32, true);
-                var stream = TownOfUsReworked.Executing.GetManifestResourceStream(path);
-                var length = stream.Length;
-                var byteTexture = new Il2CppStructArray<byte>(length);
-                stream.Read(new(IntPtr.Add(byteTexture.Pointer, IntPtr.Size * 4).ToPointer(), (int)length));
-                ImageConversion.LoadImage(texture, byteTexture, false);
-                return texture;
-            }
-            catch
-            {
-                Utils.LogSomething("Error loading texture from resources: " + path);
                 return null;
             }
         }
@@ -218,13 +199,14 @@ namespace TownOfUsReworked.Classes
 
             foreach (var resourceName in TownOfUsReworked.Assembly.GetManifestResourceNames())
             {
-                if (resourceName.StartsWith(TownOfUsReworked.Sounds) && resourceName.EndsWith(".raw"))
+                /*if (resourceName.StartsWith(TownOfUsReworked.Sounds) && resourceName.EndsWith(".raw"))
                 {
                     var name = resourceName.Replace(".raw", "").Replace(TownOfUsReworked.Sounds, "");
                     SoundEffects.Add(name, CreateAudio(resourceName));
                     Sounds.Add(name);
-                }
-                else if ((resourceName.StartsWith(TownOfUsReworked.Buttons) || resourceName.StartsWith(TownOfUsReworked.Misc)) && resourceName.EndsWith(".png"))
+                }*/
+
+                if ((resourceName.StartsWith(TownOfUsReworked.Buttons) || resourceName.StartsWith(TownOfUsReworked.Misc)) && resourceName.EndsWith(".png"))
                 {
                     var name = resourceName.Replace(".png", "").Replace(TownOfUsReworked.Buttons, "").Replace(TownOfUsReworked.Misc, "");
                     Sprites.Add(name, CreateSprite(resourceName));
@@ -238,7 +220,7 @@ namespace TownOfUsReworked.Classes
                 }
             }
 
-            var translation = Utils.CreateText(GetLanguage(), "Languages").Split("\n");
+            /*var translation = Utils.CreateText(GetLanguage(), "Languages").Split("\n");
 
             if (TranslationKeys.Length > 0 && translation.Length > 0 && TranslationKeys.Length == translation.Length)
             {
@@ -250,7 +232,7 @@ namespace TownOfUsReworked.Classes
                     Translations.Add(key, translation[position]);
                     position++;
                 }
-            }
+            }*/
         }
     }
 }

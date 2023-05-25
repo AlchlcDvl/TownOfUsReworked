@@ -44,8 +44,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float ResurrectTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastResurrected;
+            var timespan = DateTime.UtcNow - LastResurrected;
             var num = Player.GetModifiedCooldown(CustomGameOptions.ResurrectCooldown, ResurrectedCount * CustomGameOptions.ResurrectCooldownIncrease) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -53,8 +52,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float KillTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastKilled;
+            var timespan = DateTime.UtcNow - LastKilled;
             var num = Player.GetModifiedCooldown(CustomGameOptions.NecroKillCooldown, KillCount * CustomGameOptions.NecroKillCooldownIncrease) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -129,7 +127,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (RoleGen.Convertible <= 0 || !Utils.PlayerByBody(ResurrectButton.TargetBody).Is(SubFaction.None))
             {
-                Utils.Flash(new Color32(255, 0, 0, 255));
+                Utils.Flash(new(255, 0, 0, 255));
                 LastResurrected = DateTime.UtcNow;
             }
             else

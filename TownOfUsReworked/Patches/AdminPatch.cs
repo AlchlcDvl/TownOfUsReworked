@@ -29,8 +29,8 @@ namespace TownOfUsReworked.Patches
                 var sprite = icon.GetComponent<SpriteRenderer>();
                 var text = icon.GetComponentInChildren<TextMeshPro>(true);
 
-                if (SubmergedCompatibility.Loaded)
-                    sprite.color = new Color(1, 1, 1, 1);
+                if (ModCompatibility.SubLoaded)
+                    sprite.color = new(1, 1, 1, 1);
 
                 if (DoUndo.IsCamoed)
                     sprite.color = Color.grey;

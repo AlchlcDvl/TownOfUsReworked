@@ -17,7 +17,7 @@
 
         public override IEnumerator Timer()
         {
-            while (Transform != null)
+            while (Transform)
             {
                 yield return 0;
                 Update();
@@ -26,9 +26,7 @@
 
         public override void Update()
         {
-            if (Transform == null)
-                return;
-
+            base.Update();
             Players = Utils.GetClosestPlayers(Transform.position, CustomGameOptions.BombRange + (Drived ? CustomGameOptions.ChaosDriveBombRange : 0f));
         }
 

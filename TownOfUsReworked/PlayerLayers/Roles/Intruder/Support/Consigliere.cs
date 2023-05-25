@@ -12,7 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Consigliere(PlayerControl player) : base(player)
         {
             Name = "Consigliere";
-            StartText = "See Players For Who They Really Are";
+            StartText = "See The <color=#8CFFFFFF>Crew</color> For Who They Really Are";
             AbilitiesText = $"- You can reveal a player's {role}{CanAssassinate}\n{AbilitiesText}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Consigliere : Colors.Intruder;
             RoleType = RoleEnum.Consigliere;
@@ -25,8 +25,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float ConsigliereTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastInvestigated;
+            var timespan = DateTime.UtcNow - LastInvestigated;
             var num = Player.GetModifiedCooldown(CustomGameOptions.ConsigCd) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;

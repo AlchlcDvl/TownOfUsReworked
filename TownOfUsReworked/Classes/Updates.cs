@@ -2,14 +2,12 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace TownOfUsReworked.Classes
 {
     [HarmonyPatch]
     public static class ModUpdater
     {
-        #pragma warning disable
         public static bool running;
         public static bool hasREWUpdate;
         public static bool hasSubmergedUpdate;
@@ -18,7 +16,6 @@ namespace TownOfUsReworked.Classes
         private static Task updateREWTask;
         private static Task updateSubmergedTask;
         public static GenericPopup InfoPopup;
-        #pragma warning restore
 
         public static void LaunchUpdater()
         {
@@ -36,7 +33,7 @@ namespace TownOfUsReworked.Classes
             var codeBase = TownOfUsReworked.Executing.Location;
             UriBuilder uri = new(codeBase);
 
-            if (SubmergedCompatibility.Loaded)
+            if (ModCompatibility.SubLoaded)
             {
                 var submergedPath = Uri.UnescapeDataString(uri.Path.Replace("Reworked", "Submerged"));
 
@@ -147,22 +144,22 @@ namespace TownOfUsReworked.Classes
 
                     if (diff < 0)
                     {
-                        //REW update required
+                        //Reworked update required
                         hasREWUpdate = true;
                     }
                 }
                 else if (updateType == "Submerged")
                 {
                     //Accounts for broken version
-                    if (SubmergedCompatibility.Version == null)
+                    if (ModCompatibility.SubVersion == null)
                         hasSubmergedUpdate = true;
                     else
                     {
-                        diff = SubmergedCompatibility.Version.CompareTo(SemanticVersioning.Version.Parse(tagname.Replace("v", "")));
+                        diff = ModCompatibility.SubVersion.CompareTo(SemanticVersioning.Version.Parse(tagname.Replace("v", "")));
 
                         if (diff < 0)
                         {
-                            // Submerged update required
+                            //Submerged update required
                             hasSubmergedUpdate = true;
                         }
                     }
@@ -266,21 +263,5 @@ namespace TownOfUsReworked.Classes
             if (InfoPopup.TextAreaTMP != null)
                 InfoPopup.TextAreaTMP.text = message;
         }
-
-        #pragma warning disable
-        class GitHubApiObject
-        {
-            [JsonPropertyName("tag_name")]
-            public string tag_name;
-            [JsonPropertyName("assets")]
-            public GitHubApiAsset[] assets;
-        }
-
-        class GitHubApiAsset
-        {
-            [JsonPropertyName("browser_download_url")]
-            public string browser_download_url;
-        }
-        #pragma warning restore
     }
 }

@@ -11,12 +11,9 @@ namespace TownOfUsReworked.Cosmetics
         private static bool HatsRunning;
         private static bool NameplatesRunning;
         private static bool VisorsRunning;
-        private static Task FetchHat;
-        private static Task FetchNameplate;
-        private static Task FetchVisor;
-        public readonly static List<CustomNameplates.CustomNameplate> NameplateDetails = new();
-        public readonly static List<CustomHats.CustomHat> HatDetails = new();
-        public readonly static List<CustomVisors.CustomVisor> VisorDetails = new();
+        public readonly static List<CustomNameplate> NameplateDetails = new();
+        public readonly static List<CustomHat> HatDetails = new();
+        public readonly static List<CustomVisor> VisorDetails = new();
 
         public static void LaunchFetchers()
         {
@@ -31,7 +28,7 @@ namespace TownOfUsReworked.Cosmetics
                 return;
 
             HatsRunning = true;
-            FetchHat = LaunchHatFetcherAsync();
+            _ = LaunchHatFetcherAsync();
             Utils.LogSomething("Fetched hats");
         }
 
@@ -41,7 +38,7 @@ namespace TownOfUsReworked.Cosmetics
                 return;
 
             NameplatesRunning = true;
-            FetchNameplate = LaunchNameplateFetcherAsync();
+            _ = LaunchNameplateFetcherAsync();
             Utils.LogSomething("Fetched nameplates");
         }
 
@@ -51,7 +48,7 @@ namespace TownOfUsReworked.Cosmetics
                 return;
 
             VisorsRunning = true;
-            FetchVisor = LaunchVisorFetcherAsync();
+            _ = LaunchVisorFetcherAsync();
             Utils.LogSomething("Fetched visors");
         }
 
@@ -110,7 +107,7 @@ namespace TownOfUsReworked.Cosmetics
         {
             var http = new HttpClient();
             http.DefaultRequestHeaders.CacheControl = new() { NoCache = true };
-            var response = await http.GetAsync(new Uri($"{REPO}/CustomHats.json"), HttpCompletionOption.ResponseContentRead);
+            var response = await http.GetAsync(new Uri($"{REPO}/Hats.json"), HttpCompletionOption.ResponseContentRead);
 
             try
             {
@@ -129,19 +126,19 @@ namespace TownOfUsReworked.Cosmetics
                 if (jobj == null || jobj?.HasValues == false)
                     return HttpStatusCode.ExpectationFailed;
 
-                var hatdatas = new List<CustomHats.CustomHat>();
+                var hatdatas = new List<CustomHat>();
 
                 for (var current = jobj.First; current != null; current = current.Next)
                 {
                     if (current.HasValues)
                     {
-                        var info = new CustomHats.CustomHat
+                        var info = new CustomHat
                         {
                             Name = current["name"]?.ToString(),
                             ID = current["id"]?.ToString()
                         };
 
-                        if (info.ID == null || info.Name == null) // required
+                        if (info.ID == null || info.Name == null) //Required
                             continue;
 
                         info.BackID = current["backid"]?.ToString();
@@ -189,7 +186,7 @@ namespace TownOfUsReworked.Cosmetics
                         continue;
 
                     var responseStream = await hatFileResponse.Content.ReadAsStreamAsync();
-                    var fileStream = File.Create($"{filePath}\\{file}");
+                    var fileStream = File.Create($"{filePath}\\{file}.png");
                     responseStream.CopyTo(fileStream);
                 }
 
@@ -208,7 +205,7 @@ namespace TownOfUsReworked.Cosmetics
         {
             var http = new HttpClient();
             http.DefaultRequestHeaders.CacheControl = new() { NoCache = true };
-            var response = await http.GetAsync(new Uri($"{REPO}/CustomVisors.json"), HttpCompletionOption.ResponseContentRead);
+            var response = await http.GetAsync(new Uri($"{REPO}/Visors.json"), HttpCompletionOption.ResponseContentRead);
 
             try
             {
@@ -227,13 +224,13 @@ namespace TownOfUsReworked.Cosmetics
                 if (jobj == null || jobj?.HasValues == false)
                     return HttpStatusCode.ExpectationFailed;
 
-                var visorDatas = new List<CustomVisors.CustomVisor>();
+                var visorDatas = new List<CustomVisor>();
 
                 for (var current = jobj.First; current != null; current = current.Next)
                 {
                     if (current.HasValues)
                     {
-                        var info = new CustomVisors.CustomVisor
+                        var info = new CustomVisor
                         {
                             Name = current["name"]?.ToString(),
                             ID = current["id"]?.ToString()
@@ -273,7 +270,7 @@ namespace TownOfUsReworked.Cosmetics
                         continue;
 
                     var responseStream = await hatFileResponse.Content.ReadAsStreamAsync();
-                    var fileStream = File.Create($"{filePath}\\{file}");
+                    var fileStream = File.Create($"{filePath}\\{file}.png");
                     responseStream.CopyTo(fileStream);
                 }
 
@@ -292,7 +289,7 @@ namespace TownOfUsReworked.Cosmetics
         {
             var http = new HttpClient();
             http.DefaultRequestHeaders.CacheControl = new() { NoCache = true };
-            var response = await http.GetAsync(new Uri($"{REPO}/CustomNameplates.json"), HttpCompletionOption.ResponseContentRead);
+            var response = await http.GetAsync(new Uri($"{REPO}/Nameplates.json"), HttpCompletionOption.ResponseContentRead);
 
             try
             {
@@ -311,13 +308,13 @@ namespace TownOfUsReworked.Cosmetics
                 if (jobj == null || jobj?.HasValues == false)
                     return HttpStatusCode.ExpectationFailed;
 
-                var namePlateDatas = new List<CustomNameplates.CustomNameplate>();
+                var namePlateDatas = new List<CustomNameplate>();
 
                 for (var current = jobj.First; current != null; current = current.Next)
                 {
                     if (current.HasValues)
                     {
-                        var info = new CustomNameplates.CustomNameplate
+                        var info = new CustomNameplate
                         {
                             Name = current["name"]?.ToString(),
                             ID = current["id"]?.ToString()
@@ -352,7 +349,7 @@ namespace TownOfUsReworked.Cosmetics
                         continue;
 
                     var responseStream = await NameplateFileResponse.Content.ReadAsStreamAsync();
-                    var fileStream = File.Create($"{filePath}\\{file}");
+                    var fileStream = File.Create($"{filePath}\\{file}.png");
                     responseStream.CopyTo(fileStream);
                 }
 

@@ -3,9 +3,7 @@ namespace TownOfUsReworked.CustomOptions
     [HarmonyPatch]
     public static class GameSettings
     {
-        #pragma warning disable
         public static int SettingsPage;
-        #pragma warning restore
 
         [HarmonyPatch(typeof(IGameOptionsExtensions), nameof(IGameOptionsExtensions.ToHudString))]
         public static class GameOptionsDataPatch
@@ -21,7 +19,6 @@ namespace TownOfUsReworked.CustomOptions
 
         public static string Settings()
         {
-            #pragma warning disable
             var builder = new StringBuilder();
             builder.AppendLine($"Currently Viewing Page ({SettingsPage + 1}/8)");
             builder.AppendLine("Press The Tab/Page Number To Change Pages");
@@ -45,7 +42,7 @@ namespace TownOfUsReworked.CustomOptions
 
             foreach (var option in CustomOption.AllOptions.Where(x => x.Menu == (MultiMenu)SettingsPage))
             {
-                if (option.Type == CustomOptionType.Button || option.ID == -1)
+                if (option.Type == CustomOptionType.Button)
                     continue;
 
                 if (option.Type == CustomOptionType.Header)
@@ -65,7 +62,6 @@ namespace TownOfUsReworked.CustomOptions
                 else
                     builder.AppendLine($"    {option.Name} - {option}");
             }
-            #pragma warning restore
 
             return $"<size=1.25>{builder}</size>";
         }

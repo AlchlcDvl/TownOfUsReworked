@@ -29,9 +29,9 @@ namespace TownOfUsReworked.Patches
 
             canUse = couldUse;
 
-            if (SubmergedCompatibility.IsSubmerged)
+            if (ModCompatibility.IsSubmerged)
             {
-                if (SubmergedCompatibility.GetInTransition())
+                if (ModCompatibility.GetInTransition())
                 {
                     __result = float.MaxValue;
                     return;

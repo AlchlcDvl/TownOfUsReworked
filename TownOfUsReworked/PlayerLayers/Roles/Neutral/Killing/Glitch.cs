@@ -1,6 +1,6 @@
 ﻿namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Glitch : NeutralRole, IVisualAlteration
+    public class Glitch : NeutralRole
     {
         public DateTime LastMimic;
         public DateTime LastHack;
@@ -40,8 +40,7 @@
 
         public float HackTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastHack;
+            var timespan = DateTime.UtcNow - LastHack;
             var num = Player.GetModifiedCooldown(CustomGameOptions.HackCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -49,8 +48,7 @@
 
         public float MimicTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastMimic;
+            var timespan = DateTime.UtcNow - LastMimic;
             var num = Player.GetModifiedCooldown(CustomGameOptions.MimicCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -96,25 +94,10 @@
 
         public float NeutraliseTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastKilled;
+            var timespan = DateTime.UtcNow - LastKilled;
             var num = Player.GetModifiedCooldown(CustomGameOptions.GlitchKillCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
-        }
-
-        public bool TryGetModifiedAppearance(out VisualAppearance appearance)
-        {
-            if (MimicTarget)
-            {
-                appearance = MimicTarget.GetDefaultAppearance();
-                var alteration = Modifier.GetModifier(MimicTarget) as IVisualAlteration;
-                alteration?.TryGetModifiedAppearance(out appearance);
-                return true;
-            }
-
-            appearance = Player.GetDefaultAppearance();
-            return false;
         }
 
         public void Click(PlayerControl player)
@@ -187,7 +170,7 @@
         public bool Exception1(PlayerControl player) => (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate)
             || player == Player.GetOtherLover() || player == Player.GetOtherRival() || (player.Is(ObjectifierEnum.Mafia) && Player.Is(ObjectifierEnum.Mafia));
 
-        public bool Exception2(PlayerControl player) => player != HackTarget;
+        public bool Exception2(PlayerControl player) => player == HackTarget;
 
         public bool Exception3(PlayerControl player) => player == Player;
 

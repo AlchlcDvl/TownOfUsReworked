@@ -25,8 +25,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float SpellTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastSpelled;
+            var timespan = DateTime.UtcNow - LastSpelled;
             var num = Player.GetModifiedCooldown(CustomGameOptions.SpellCooldown, SpellCount * CustomGameOptions.SpellCooldownIncrease) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -72,7 +71,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     LastSpelled.AddSeconds(CustomGameOptions.ProtectKCReset);
             }
 
-            if (Spelled.Count >= PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected && !x.Is(Faction)))
+            if (Spelled.Count >= PlayerControl.AllPlayerControls.Count(x => !x.Data.IsDead && !x.Data.Disconnected && !x.Is(Faction)))
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
 

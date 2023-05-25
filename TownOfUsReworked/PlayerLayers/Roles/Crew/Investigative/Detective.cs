@@ -23,8 +23,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float ExamineTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastExamined;
+            var timespan = DateTime.UtcNow - LastExamined;
             var num = Player.GetModifiedCooldown(CustomGameOptions.ExamineCd) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -49,16 +48,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 var hasKilled = ExamineButton.TargetPlayer.IsFramed();
 
-                foreach (var player in Murder.KilledPlayers)
+                foreach (var player in Utils.KilledPlayers)
                 {
                     if (player.KillerId == ExamineButton.TargetPlayer.PlayerId && (DateTime.UtcNow - player.KillTime).TotalSeconds <= CustomGameOptions.RecentKill)
                         hasKilled = true;
                 }
 
                 if (hasKilled)
-                    Utils.Flash(new Color32(255, 0, 0, 255));
+                    Utils.Flash(new(255, 0, 0, 255));
                 else
-                    Utils.Flash(new Color32(0, 255, 0, 255));
+                    Utils.Flash(new(0, 255, 0, 255));
             }
 
             if (interact[0])

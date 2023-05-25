@@ -34,7 +34,7 @@ namespace TownOfUsReworked.Patches
                         __instance.PlayerCam.ShakeScreen(0, 0);
                 }
 
-                if (ShipStatus.Instance.Systems.ContainsKey(SystemTypes.Reactor) && TownOfUsReworked.VanillaOptions.MapId is 0 or 3 or 6)
+                if (ShipStatus.Instance.Systems.ContainsKey(SystemTypes.Reactor) && TownOfUsReworked.VanillaOptions.MapId is 0 or 6)
                 {
                     var reactorSystemType = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
 

@@ -567,6 +567,11 @@ namespace TownOfUsReworked.Data
                 "I CURSE YOU TO SUCK ONE THOUSAND D-"),
             new("Collider", "Col", "The Collider can mark players as positive and negative. If these charged players come within a certain distance of each other, they will " +
                 "die together. With the Chaos Drive, the range of collision increases.", RoleAlignment.SyndicateKill, Faction.Syndicate, "I'm a great matchmaker, trust me."),
+            new("Time Keeper", "TK", "The Time Keeper can control time. Without the Chaos Drive, the Time Keeper can freeze time, making everyone unable to move. With the Chaos Drive, the"
+                + "Time Keeper rewinds players instead.", RoleAlignment.SyndicatePower, Faction.Syndicate, "IT'S TIME TO STOP. NO MORE."),
+            new("Silencer", "Sil", "The Silencer can silencer people. Silenced plaeyrs cannot see the messages being sent by others but can still talk. Other players can still talk but " +
+                "can't get their info through to the silenced player. With the Chaos Drive, silence prevents everyone except for the silenced player from talking.",
+                RoleAlignment.SyndicateDisrup, Faction.Syndicate, "QUIET."),
             new("Drunkard", "Drunk", "The Drunkard can reverse a player's controls. With the Chaos Drive, this effect applies to everyone.", RoleAlignment.SyndicateDisrup,
                 Faction.Syndicate, "*Burp*")
         };

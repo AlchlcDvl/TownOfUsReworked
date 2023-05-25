@@ -54,8 +54,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float ConcealTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastConcealed;
+            var timespan = DateTime.UtcNow - LastConcealed;
             var num = Player.GetModifiedCooldown(CustomGameOptions.ConcealCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;

@@ -136,7 +136,7 @@ namespace TownOfUsReworked.Patches
 
                     summary += $" | {playerControl.DeathReason()}";
                     cache += $" | {playerControl.DeathReason()}";
-                    PlayerRoles.Add(new PlayerInfo(playerControl.Data.PlayerName, summary, cache));
+                    PlayerRoles.Add(new(playerControl.Data.PlayerName, summary, cache));
                 }
             }
         }
@@ -238,7 +238,7 @@ namespace TownOfUsReworked.Patches
             }
         }
 
-        private static bool IsWinner(this string playerName) => TempData.winners.ToArray().Any(x => x.PlayerName == playerName);
+        private static bool IsWinner(this string playerName) => TempData.winners.Any(x => x.PlayerName == playerName);
 
         private static string DeathReason(this PlayerControl player)
         {

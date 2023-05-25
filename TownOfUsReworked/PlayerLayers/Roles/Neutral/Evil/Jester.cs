@@ -54,8 +54,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float HauntTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastHaunted;
+            var timespan = DateTime.UtcNow - LastHaunted;
             var num = Player.GetModifiedCooldown(CustomGameOptions.HauntCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;

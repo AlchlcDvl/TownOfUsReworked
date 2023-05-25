@@ -3,9 +3,7 @@
     [HarmonyPatch(typeof(AirshipStatus), nameof(AirshipStatus.OnEnable))]
     public static class CallPlateform
     {
-        #pragma warning disable
         public static bool PlateformIsUsed;
-        #pragma warning restore
 
         public static void Postfix()
         {
@@ -54,7 +52,7 @@
             Plateform.IsDirty = true;
 
             var sourcePos = Plateform.IsLeft ? Plateform.LeftPosition : Plateform.RightPosition;
-            var targetPos = (!Plateform.IsLeft) ? Plateform.LeftPosition : Plateform.RightPosition;
+            var targetPos = !Plateform.IsLeft ? Plateform.LeftPosition : Plateform.RightPosition;
             yield return Effects.Wait(0.1f);
 
             yield return Effects.Slide3D(Plateform.transform, sourcePos, targetPos, PlayerControl.LocalPlayer.MyPhysics.Speed);

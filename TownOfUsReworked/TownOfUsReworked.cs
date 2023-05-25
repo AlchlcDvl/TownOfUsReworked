@@ -32,7 +32,6 @@ global using TownOfUsReworked.Objects;
 global using TownOfUsReworked.Modules;
 global using TownOfUsReworked.Extensions;
 global using TownOfUsReworked.PlayerLayers;
-global using TownOfUsReworked.Functions;
 global using TownOfUsReworked.PlayerLayers.Roles;
 global using TownOfUsReworked.PlayerLayers.Abilities;
 global using TownOfUsReworked.PlayerLayers.Modifiers;
@@ -51,6 +50,7 @@ global using System.Collections;
 global using UnityEngine;
 global using URandom = UnityEngine.Random;
 global using UObject = UnityEngine.Object;
+global using UColor = UnityEngine.Color;
 
 global using TMPro;
 
@@ -60,7 +60,8 @@ namespace TownOfUsReworked
 {
     [BepInPlugin(Id, Name, VersionString)]
     [BepInDependency(ReactorPlugin.Id)]
-    [BepInDependency(SubmergedCompatibility.SUBMERGED_GUID, BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInDependency(ModCompatibility.SUBMERGED_GUID, BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInDependency(ModCompatibility.LI_GUID, BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("gg.reactor.debugger", BepInDependency.DependencyFlags.SoftDependency)]
     [ReactorModFlags(ModFlags.RequireOnAllClients)]
     [BepInProcess("Among Us.exe")]
@@ -68,8 +69,8 @@ namespace TownOfUsReworked
     {
         public const string Id = "me.alchlcdvl.reworked";
         public const string Name = "TownOfUsReworked";
-        private const string VersionString = "0.2.4.0";
-        private const string CompleteVersionString = "0.2.4.0";
+        public const string VersionString = "0.2.5.0";
+        private const string CompleteVersionString = "0.2.5.0";
         public readonly static Version Version = new(VersionString);
 
         private readonly static string dev = VersionString[6..];
@@ -83,10 +84,10 @@ namespace TownOfUsReworked
 
         public const string Resources = "TownOfUsReworked.Resources.";
         public const string Buttons = $"{Resources}Buttons.";
-        public const string Sounds = $"{Resources}Sounds.";
+        //public const string Sounds = $"{Resources}Sounds.";
         public const string Misc = $"{Resources}Misc.";
-        public const string Presets = $"{Resources}Presets.";
-        public const string Languages = $"{Resources}Languages.";
+        //public const string Presets = $"{Resources}Presets.";
+        //public const string Languages = $"{Resources}Languages.";
         public const string Portal = $"{Resources}Portal.";
 
         public static Assembly Assembly => typeof(TownOfUsReworked).Assembly;
@@ -94,18 +95,19 @@ namespace TownOfUsReworked
 
         public static NormalGameOptionsV07 VanillaOptions => GameOptionsManager.Instance.currentNormalGameOptions;
 
-        #pragma warning disable
         public static bool LobbyCapped = true;
         public static bool Persistence = true;
-        public static bool MCIActive = false;
+        public static bool MCIActive;
         public static Debugger Debugger;
-        #pragma warning restore
 
         private readonly Harmony Harmony = new(Id);
 
         public override void Load()
         {
             Utils.LogSomething("Loading...");
+
+            if (!File.Exists("steam_appid.txt"))
+                File.WriteAllText("steam_appid.txt", "945360");
 
             var maxImpostors = (Il2CppStructArray<int>)Enumerable.Repeat(255, 255).ToArray();
             GameOptionsData.MaxImpostors = maxImpostors;
@@ -117,10 +119,10 @@ namespace TownOfUsReworked
             NormalGameOptionsV07.MinPlayers = minPlayers;
             HideNSeekGameOptionsV07.MinPlayers = minPlayers;
 
-            if (!File.Exists("steam_appid.txt"))
-                File.WriteAllText("steam_appid.txt", "945360");
+            Harmony.PatchAll();
 
-            SubmergedCompatibility.Initialize();
+            ModCompatibility.InitializeSubmerged();
+            ModCompatibility.InitializeLevelImpostor();
             PalettePatch.Load();
             Generate.GenerateAll();
             UpdateNames.PlayerNames.Clear();
@@ -128,17 +130,17 @@ namespace TownOfUsReworked
             RoleGen.ResetEverything();
 
             ClassInjector.RegisterTypeInIl2Cpp<MissingSubmergedBehaviour>();
+            ClassInjector.RegisterTypeInIl2Cpp<MissingLIBehaviour>();
             ClassInjector.RegisterTypeInIl2Cpp<AbstractPagingBehaviour>();
             ClassInjector.RegisterTypeInIl2Cpp<ShapeShifterPagingBehaviour>();
             ClassInjector.RegisterTypeInIl2Cpp<MeetingHudPagingBehaviour>();
             ClassInjector.RegisterTypeInIl2Cpp<VitalsPagingBehaviour>();
             ClassInjector.RegisterTypeInIl2Cpp<ColorBehaviour>();
+            //ClassInjector.RegisterTypeInIl2Cpp<AutoUpdater>();
             ClassInjector.RegisterTypeInIl2Cpp<Debugger>();
             ClassInjector.RegisterTypeInIl2Cpp<Tasks>();
 
             Debugger = AddComponent<Debugger>();
-
-            Harmony.PatchAll();
 
             Utils.LogSomething("Mod Loaded!");
             Utils.LogSomething($"Mod Version {versionFinal}");

@@ -7,7 +7,7 @@ namespace TownOfUsReworked.CustomOptions
         public List<OptionBehaviour> OldButtons;
         public List<CustomButtonOption> SlotButtons = new();
 
-        public Presets() : base(-1, MultiMenu.main, "Load Preset Settings") => Do = ToDo;
+        public Presets() : base(MultiMenu.main, "Load Preset Settings") => Do = ToDo;
 
         private List<OptionBehaviour> CreateOptions()
         {
@@ -62,12 +62,8 @@ namespace TownOfUsReworked.CustomOptions
         public void ToDo()
         {
             SlotButtons.Clear();
-            SlotButtons.Add(new CustomButtonOption(-1, MultiMenu.external, "Casual", delegate { LoadPreset("Casual", false); }));
-            SlotButtons.Add(new CustomButtonOption(-1, MultiMenu.external, "Chaos", delegate { LoadPreset("Chaos", false); }));
-            SlotButtons.Add(new CustomButtonOption(-1, MultiMenu.external, "Default", delegate { LoadPreset("Default", true); }));
-            SlotButtons.Add(new CustomButtonOption(-1, MultiMenu.external, "Last Used", delegate { LoadPreset("LastUsed", true); }));
-            SlotButtons.Add(new CustomButtonOption(-1, MultiMenu.external, "Ranked", delegate { LoadPreset("Ranked", false); }));
-            SlotButtons.Add(new CustomButtonOption(-1, MultiMenu.external, "Cancel", delegate { Cancel(FlashWhite); }));
+            AssetManager.Presets.Keys.ToList().ForEach(x => SlotButtons.Add(new(MultiMenu.external, x, delegate { LoadPreset(x); })));
+            SlotButtons.Add(new(MultiMenu.external, "Cancel", delegate { Cancel(FlashWhite); }));
             var options = CreateOptions();
             var __instance = UObject.FindObjectOfType<GameOptionsMenu>();
             var y = __instance.GetComponentsInChildren<OptionBehaviour>().Max(option => option.transform.localPosition.y);
@@ -85,14 +81,14 @@ namespace TownOfUsReworked.CustomOptions
             __instance.Children = new(options.ToArray());
         }
 
-        public void LoadPreset(string presetName, bool data, bool inLobby = false)
+        public void LoadPreset(string presetName, bool inLobby = false)
         {
             Utils.LogSomething($"Loading - {presetName}");
             string text = null;
 
             try
             {
-                text = data ? File.ReadAllText(Path.Combine(Application.persistentDataPath, $"{presetName}Settings")) : Utils.CreateText(presetName, "Presets");
+                text = AssetManager.Presets[presetName];
             }
             catch
             {
@@ -126,19 +122,26 @@ namespace TownOfUsReworked.CustomOptions
                 var value = splitText[0];
                 splitText.RemoveAt(0);
 
-                switch (option.Type)
+                try
                 {
-                    case CustomOptionType.Number:
-                        option.Set(float.Parse(value), false);
-                        break;
+                    switch (option.Type)
+                    {
+                        case CustomOptionType.Number:
+                            option.Set(float.Parse(value));
+                            break;
 
-                    case CustomOptionType.Toggle:
-                        option.Set(bool.Parse(value), false);
-                        break;
+                        case CustomOptionType.Toggle:
+                            option.Set(bool.Parse(value));
+                            break;
 
-                    case CustomOptionType.String:
-                        option.Set(int.Parse(value), false);
-                        break;
+                        case CustomOptionType.String:
+                            option.Set(int.Parse(value));
+                            break;
+                    }
+                }
+                catch
+                {
+                    Utils.LogSomething("Unable to set - " + option.Name + " : " + value);
                 }
             }
 

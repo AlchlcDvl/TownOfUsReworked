@@ -4,7 +4,7 @@
     {
         public CustomButton IgniteButton;
         public CustomButton DouseButton;
-        public bool LastKiller => !PlayerControl.AllPlayerControls.ToArray().Any(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) ||
+        public bool LastKiller => !PlayerControl.AllPlayerControls.Any(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) ||
             x.Is(RoleAlignment.CrewKill) || x.Is(RoleAlignment.CrewAudit) || x.Is(RoleAlignment.NeutralPros) || (x.Is(RoleAlignment.NeutralKill) && x != Player))) &&
             CustomGameOptions.ArsoLastKillerBoost;
         public List<byte> Doused = new();
@@ -30,8 +30,7 @@
 
         public float DouseTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastDoused;
+            var timespan = DateTime.UtcNow - LastDoused;
             var num = Player.GetModifiedCooldown(CustomGameOptions.DouseCd) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -39,8 +38,7 @@
 
         public float IgniteTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastIgnited;
+            var timespan = DateTime.UtcNow - LastIgnited;
             var num = Player.GetModifiedCooldown(CustomGameOptions.IgniteCd) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;

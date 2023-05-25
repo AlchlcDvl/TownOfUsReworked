@@ -39,9 +39,9 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             button.OnClick = new();
             button.OnClick.AddListener(SetActive(voteArea, __instance));
             button.OnMouseOut = new();
-            button.OnMouseOut.AddListener((Action)(() => renderer.color = Actives[voteArea.TargetPlayerId] ? UnityEngine.Color.green : UnityEngine.Color.white));
+            button.OnMouseOut.AddListener((Action)(() => renderer.color = Actives[voteArea.TargetPlayerId] ? UColor.green : UColor.white));
             button.OnMouseOver = new();
-            button.OnMouseOver.AddListener((Action)(() => renderer.color = UnityEngine.Color.red));
+            button.OnMouseOver.AddListener((Action)(() => renderer.color = UColor.red));
             var collider = targetBox.GetComponent<BoxCollider2D>();
             collider.size = renderer.sprite.bounds.size;
             collider.offset = Vector2.zero;
@@ -85,20 +85,20 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
                     Swap1 = null;
                     Actives[Swap1.TargetPlayerId] = false;
                     MoarButtons[Swap1.TargetPlayerId].GetComponent<SpriteRenderer>().sprite = AssetManager.GetSprite("SwapDisabled");
-                    MoarButtons[Swap1.TargetPlayerId].GetComponent<SpriteRenderer>().color = UnityEngine.Color.white;
+                    MoarButtons[Swap1.TargetPlayerId].GetComponent<SpriteRenderer>().color = UColor.white;
                 }
                 else if (Swap2 == voteArea)
                 {
                     Swap2 = null;
                     Actives[Swap2.TargetPlayerId] = false;
                     MoarButtons[Swap2.TargetPlayerId].GetComponent<SpriteRenderer>().sprite = AssetManager.GetSprite("SwapDisabled");
-                    MoarButtons[Swap2.TargetPlayerId].GetComponent<SpriteRenderer>().color = UnityEngine.Color.white;
+                    MoarButtons[Swap2.TargetPlayerId].GetComponent<SpriteRenderer>().color = UColor.white;
                 }
                 else
                 {
                     Actives[Swap1.TargetPlayerId] = false;
                     MoarButtons[Swap1.TargetPlayerId].GetComponent<SpriteRenderer>().sprite = AssetManager.GetSprite("SwapDisabled");
-                    MoarButtons[Swap1.TargetPlayerId].GetComponent<SpriteRenderer>().color = UnityEngine.Color.white;
+                    MoarButtons[Swap1.TargetPlayerId].GetComponent<SpriteRenderer>().color = UColor.white;
                     Swap1 = Swap2;
                     Swap2 = voteArea;
                 }
@@ -111,7 +111,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
                         continue;
 
                     MoarButtons[pair.Key].GetComponent<SpriteRenderer>().sprite = Actives[pair.Key] ? AssetManager.GetSprite("SwapActive") : AssetManager.GetSprite("SwapDisabled");
-                    MoarButtons[pair.Key].GetComponent<SpriteRenderer>().color = Actives[pair.Key] ? UnityEngine.Color.green : UnityEngine.Color.white;
+                    MoarButtons[pair.Key].GetComponent<SpriteRenderer>().color = Actives[pair.Key] ? UColor.green : UColor.white;
                 }
             }
 

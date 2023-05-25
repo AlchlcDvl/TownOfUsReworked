@@ -47,8 +47,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float ConfuseTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastConfused;
+            var timespan = DateTime.UtcNow - LastConfused;
             var num = Player.GetModifiedCooldown(CustomGameOptions.ConfuseCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;

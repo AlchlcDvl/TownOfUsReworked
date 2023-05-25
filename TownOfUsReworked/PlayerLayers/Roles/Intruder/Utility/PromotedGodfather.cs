@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class PromotedGodfather : IntruderRole, IVisualAlteration
+    public class PromotedGodfather : IntruderRole
     {
         public PromotedGodfather(PlayerControl player) : base(player)
         {
@@ -52,30 +52,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public bool DelayActive => TimeRemaining2 > 0f;
         public bool Enabled;
 
-        public bool TryGetModifiedAppearance(out VisualAppearance appearance)
-        {
-            if (DisguisePlayer != null)
-            {
-                appearance = DisguisePlayer.GetDefaultAppearance();
-                var alteration = Modifier.GetModifier(DisguisePlayer) as IVisualAlteration;
-                alteration?.TryGetModifiedAppearance(out appearance);
-                return true;
-            }
-            else if (MorphedPlayer != null)
-            {
-                appearance = MorphedPlayer.GetDefaultAppearance();
-                var alteration = Modifier.GetModifier(MorphedPlayer) as IVisualAlteration;
-                alteration?.TryGetModifiedAppearance(out appearance);
-                return true;
-            }
-
-            appearance = Player.GetDefaultAppearance();
-            return false;
-        }
-
         public bool Exception1(PlayerControl player) => player == BlockTarget || player == Player || player.Is(Faction) || (player.Is(SubFaction) && SubFaction != SubFaction.None);
 
-        public bool Exception2(PlayerControl player) => player == BlackmailedPlayer;
+        public bool Exception2(PlayerControl player) => player == BlackmailedPlayer || (player.Is(Faction) && Faction != Faction.Crew && CustomGameOptions.BlackmailMates) ||
+            (player.Is(SubFaction) && SubFaction != SubFaction.None && CustomGameOptions.BlackmailMates);
 
         public bool Exception3(PlayerControl player) => (player.Is(Faction) && CustomGameOptions.DisguiseTarget == DisguiserTargets.NonIntruders) || (!player.Is(Faction) &&
             CustomGameOptions.DisguiseTarget == DisguiserTargets.Intruders);
@@ -96,15 +76,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             base.UpdateHud(__instance);
             var system = ShipStatus.Instance.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>();
             var dummyActive = system.dummy.IsActive;
-            var sabActive = system.specials.ToArray().Any(s => s.IsActive);
+            var sabActive = system.specials.Any(s => s.IsActive);
             var condition = !dummyActive && !sabActive;
-            var notSampled = PlayerControl.AllPlayerControls.ToArray().Where(x => SampledPlayer != x).ToList();
-            var notAmbushed = PlayerControl.AllPlayerControls.ToArray().Where(x => x != AmbushedPlayer).ToList();
-            var notBombed = PlayerControl.AllPlayerControls.ToArray().Where(x => x != BombedPlayer).ToList();
+            var notSampled = PlayerControl.AllPlayerControls.Where(x => SampledPlayer != x).ToList();
+            var notAmbushed = PlayerControl.AllPlayerControls.Where(x => x != AmbushedPlayer).ToList();
+            var notBombed = PlayerControl.AllPlayerControls.Where(x => x != BombedPlayer).ToList();
             var flag = BlockTarget == null;
             var hits = Physics2D.OverlapBoxAll(Player.transform.position, Utils.GetSize(), 0);
-            hits = hits.ToArray().Where(c => (c.name.Contains("Vent") || !c.isTrigger) && c.gameObject.layer != 8 && c.gameObject.layer != 5).ToArray();
-            CanPlace = hits.Count == 0 && Player.moveable && !SubmergedCompatibility.GetPlayerElevator(Player).Item1;
+            hits = hits.Where(c => (c.name.Contains("Vent") || !c.isTrigger) && c.gameObject.layer != 8 && c.gameObject.layer != 5).ToArray();
+            CanPlace = hits.Count == 0 && Player.moveable && !ModCompatibility.GetPlayerElevator(Player).Item1;
             CanMark = CanPlace && TeleportPoint != Player.transform.position;
             MarkButton.Update("MARK", MarkTimer(), CustomGameOptions.MarkCooldown, CanMark, IsTele);
             TeleportButton.Update("TELEPORT", TeleportTimer(), CustomGameOptions.TeleportCd, true, TeleportPoint != new Vector3(0, 0, 0) && IsTele);
@@ -137,12 +117,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public CustomButton BlackmailButton;
         public PlayerControl BlackmailedPlayer;
         public DateTime LastBlackmailed;
+        public bool ShookAlready;
+        public Sprite PrevOverlay;
+        public Color PrevColor;
         public bool IsBM => FormerRole?.RoleType == RoleEnum.Blackmailer;
 
         public float BlackmailTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastBlackmailed;
+            var timespan = DateTime.UtcNow - LastBlackmailed;
             var num = Player.GetModifiedCooldown(CustomGameOptions.BlackmailCd) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -211,8 +193,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float CamouflageTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastCamouflaged;
+            var timespan = DateTime.UtcNow - LastCamouflaged;
             var num = Player.GetModifiedCooldown(CustomGameOptions.CamouflagerCd) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -230,8 +211,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float FlashTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastFlashed;
+            var timespan = DateTime.UtcNow - LastFlashed;
             var num = Player.GetModifiedCooldown(CustomGameOptions.GrenadeCd) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -254,7 +234,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             //To stop the scenario where the flash and sabotage are called at the same time.
             var system = ShipStatus.Instance.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>();
             var dummyActive = system.dummy.IsActive;
-            var sabActive = system.specials.ToArray().Any(s => s.IsActive);
+            var sabActive = system.specials.Any(s => s.IsActive);
 
             if (sabActive || dummyActive)
                 return;
@@ -348,7 +328,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     break;
 
                 case 5:
-                    fs = PlayerControl.LocalPlayer.myTasks.ToArray().Any(x => x.TaskType == SubmergedCompatibility.RetrieveOxygenMask);
+                    fs = PlayerControl.LocalPlayer.myTasks.Any(x => x.TaskType == ModCompatibility.RetrieveOxygenMask);
                     break;
 
                 case 6:
@@ -366,7 +346,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var system = ShipStatus.Instance.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>();
             var dummyActive = system.dummy.IsActive;
-            var sabActive = system.specials.ToArray().Any(s => s.IsActive);
+            var sabActive = system.specials.Any(s => s.IsActive);
 
             if (sabActive || dummyActive || FlashTimer() != 0f)
                 return;
@@ -391,8 +371,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float DragTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastDragged;
+            var timespan = DateTime.UtcNow - LastDragged;
             var num = Player.GetModifiedCooldown(CustomGameOptions.DragCd) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -430,7 +409,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             //WHY ARE THERE DIFFERENT LOCAL Z INDEXS FOR DIFFERENT DECALS ON DIFFERENT LEVELS?!?!?!
             //AD: idk ¯\_(ツ)_/¯
-            if (SubmergedCompatibility.IsSubmerged)
+            if (ModCompatibility.IsSubmerged)
             {
                 if (newPos.y > -7f)
                     newPos.z = 0.0208f;
@@ -446,7 +425,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             foreach (var component in body?.bodyRenderers)
             {
-                component.material.SetColor("_OutlineColor", UnityEngine.Color.green);
+                component.material.SetColor("_OutlineColor", UColor.green);
                 component.material.SetFloat("_Outline", 1f);
             }
 
@@ -497,7 +476,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             writer.Write(PlayerId);
             Vector3 position = PlayerControl.LocalPlayer.GetTruePosition();
 
-            if (SubmergedCompatibility.IsSubmerged)
+            if (ModCompatibility.IsSubmerged)
             {
                 if (position.y > -7f)
                     position.z = 0.0208f;
@@ -520,8 +499,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float CleanTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastCleaned;
+            var timespan = DateTime.UtcNow - LastCleaned;
             var num = Player.GetModifiedCooldown(CustomGameOptions.JanitorCleanCd, ConstantVariables.LastImp && CustomGameOptions.SoloBoost ? -CustomGameOptions.UnderdogKillBonus : 0) *
                 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
@@ -566,8 +544,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float DisguiseTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastDisguised;
+            var timespan = DateTime.UtcNow - LastDisguised;
             var num = Player.GetModifiedCooldown(CustomGameOptions.DisguiseCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -575,8 +552,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float MeasureTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastMeasured;
+            var timespan = DateTime.UtcNow - LastMeasured;
             var num = Player.GetModifiedCooldown(CustomGameOptions.MeasureCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -681,8 +657,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float MorphTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastMorphed;
+            var timespan = DateTime.UtcNow - LastMorphed;
             var num = Player.GetModifiedCooldown(CustomGameOptions.MorphlingCd) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -690,8 +665,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float SampleTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastSampled;
+            var timespan = DateTime.UtcNow - LastSampled;
             var num = Player.GetModifiedCooldown(CustomGameOptions.SampleCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -746,8 +720,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float InvisTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastInvis;
+            var timespan = DateTime.UtcNow - LastInvis;
             var num = Player.GetModifiedCooldown(CustomGameOptions.InvisCd) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -792,8 +765,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float ConsigliereTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastInvestigated;
+            var timespan = DateTime.UtcNow - LastInvestigated;
             var num = Player.GetModifiedCooldown(CustomGameOptions.ConsigCd) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -823,8 +795,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float MineTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastMined;
+            var timespan = DateTime.UtcNow - LastMined;
             var num = Player.GetModifiedCooldown(CustomGameOptions.MineCd) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -859,8 +830,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float MarkTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastMarked;
+            var timespan = DateTime.UtcNow - LastMarked;
             var num = Player.GetModifiedCooldown(CustomGameOptions.MarkCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -868,8 +838,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float TeleportTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastTeleport;
+            var timespan = DateTime.UtcNow - LastTeleport;
             var num = Player.GetModifiedCooldown(CustomGameOptions.TeleportCd) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -912,8 +881,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float AmbushTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastAmbushed;
+            var timespan = DateTime.UtcNow - LastAmbushed;
             var num = Player.GetModifiedCooldown(CustomGameOptions.AmbushCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -993,8 +961,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float RoleblockTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastBlock;
+            var timespan = DateTime.UtcNow - LastBlock;
             var num = Player.GetModifiedCooldown(CustomGameOptions.ConsRoleblockCooldown)
                 * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
@@ -1042,8 +1009,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float BombTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastBombed;
+            var timespan = DateTime.UtcNow - LastBombed;
             var num = Player.GetModifiedCooldown(CustomGameOptions.EnforceCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;

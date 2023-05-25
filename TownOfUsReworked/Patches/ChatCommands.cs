@@ -3,7 +3,7 @@ namespace TownOfUsReworked.Patches
     [HarmonyPatch]
     public static class ChatCommands
     {
-        private readonly static List<string> ChatHistory = new();
+        public readonly static List<string> ChatHistory = new();
 
         [HarmonyPatch(typeof(ChatController), nameof(ChatController.SendChat))]
         public static class SendChatPatch
@@ -33,34 +33,23 @@ namespace TownOfUsReworked.Patches
                 {
                     chatHandled = true;
                     hudManager.AddChat(player, "Commands available all the time:\n/modinfo /roleinfo, /modifierinfo, /abilityinfo, /objectifierinfo, /factioninfo, /alignmentinfo," +
-                        $" /quote, /credits, /controls, /lore\n\nCommands available in lobby:\n/summary{setColor}{kickBan}\n\nCommands available in game:\n/mystate{whisper}");
+                        $" /quote, /controls, /lore\n\nCommands available in lobby:\n/summary{setColor}{kickBan}\n\nCommands available in game:\n/mystate{whisper}");
                 }
                 //Display a message (Information about the mod)
                 else if (text.StartsWith("/modinfo") || text.StartsWith("/mi"))
                 {
                     chatHandled = true;
                     hudManager.AddChat(player, $"Welcome to Town Of Us Reworked {TownOfUsReworked.versionFinal}!\nTown Of Us Reworked is essentially a weird mishmash of code from Town " +
-                        "Of Us Reactivated and its forks plus some of my own code.\nCredits to the parties have already been given (good luck to those who want to try to cancel me for " +
-                        "no reason). This mod has several reworks and additions which I believe fit the mod better. Plus, the more layers there are, the more unique a player's " +
-                        "experience will be each game. If I've missed someone, let me know via Discord.\nNow that you know the basic info, if you want to know more try using the other " +
-                        "info commands, visiting the GitHub page or joining my discord. Good luck!");
-                }
-                //Credits
-                else if (text.StartsWith("/credits") || text.StartsWith("/cr "))
-                {
-                    chatHandled = true;
-                    hudManager.AddChat(player, "The mod would not have been possible without these people!\nMod Creator: slushiegoose\nContinued By: polus.gg\n" +
-                        "Reactivated By: eDonnes (or Donners), Term, MyDragonBreath and -H\nWith Help (And Code) From: Discussions, Det, Oper, -H, twix, xerminator, Zeo and" +
-                        " MyDragonBreath\nRemaining credits are on the GitHub!");
+                        "Of Us Reactivated and its forks plus some of my own code. Credits to the parties have already been given. This mod has several reworks and additions which I " +
+                        "believe fit the mod better. Plus, the more layers there are, the more unique a player's experience will be each game. If I've missed someone, let me know via " +
+                        "Discord.\nNow that you know the basic info, if you want to know more try using the other info commands, visiting the GitHub page or joining my discord. Happy " + "ejections!");
                 }
                 //Control
                 else if (text.StartsWith("/controls") || text.StartsWith("/ctrl"))
                 {
                     chatHandled = true;
-                    hudManager.AddChat(player, "Here are the controls for MCI:-\nF1: Spawn a robot and toggle MCI to active (only in lobby)\nF2/F3: Swap control over the bots (only " +
-                        "in game)\nF4: End the game in a stalemate\nF5: Fix a sabotage\nF6: Finish all tasks\nF7: Replay the intro cutscene (only in game)\nF8: Remove all bots and toggle" +
-                        " MCI to inactive (only in lobby)\nF9: Remove the latest bot and toggle MCI to inactive if there was only one bot (only in lobby)\nF10: Toggle lobby cap\nF11: " +
-                        "Toggle bot persistence");
+                    hudManager.AddChat(player, "Here are the controls:\n F1 - Start up the MCI control panel (local only)\nF2 - Toggle the visibility of the control panel (local only)\n" +
+                        "Tab - Change pages\nUp/Left Arrow - Go up a page when in a meny\nDown/Right Arrow - Go down a page when in a menu");
                 }
                 //RoleInfo help
                 else if (text is "/roleinfo" or "/roleinfo " or "/ri" or "/ri ")
@@ -426,10 +415,15 @@ namespace TownOfUsReworked.Patches
                     chatHandled = true;
                     hudManager.AddChat(player, "Invalid command.");
                 }
-                else if (player.IsBlackmailed() && !chatHandled && otherText != "I am blackmailed.")
+                else if (player.IsBlackmailed() && !chatHandled && text != "i am blackmailed.")
                 {
                     chatHandled = true;
                     hudManager.AddChat(player, "You are blackmailed.");
+                }
+                else if (!player.IsSilenced() && !chatHandled && text != "i am silenced." && PlayerControl.AllPlayerControls.Any(x => x.IsSilenced() && x.GetSilencer().HoldsDrive))
+                {
+                    chatHandled = true;
+                    hudManager.AddChat(player, "You are silenced.");
                 }
                 else if (MeetingPatches.GivingAnnouncements && !player.Data.IsDead && !chatHandled)
                 {
@@ -462,7 +456,7 @@ namespace TownOfUsReworked.Patches
 
             try
             {
-                var playerVoteArea = MeetingHud.Instance.playerStates.ToList().Find(x => x.TargetPlayerId == targetPlayerId);
+                var playerVoteArea = Utils.VoteAreaById(targetPlayerId);
                 var rend = UObject.Instantiate(playerVoteArea.Megaphone, playerVoteArea.Megaphone.transform);
                 rend.name = "Notification";
                 rend.transform.localPosition = new(-2f, 0.1f, -1f);
@@ -515,7 +509,7 @@ namespace TownOfUsReworked.Patches
                     else
                     {
                         __instance.TextArea.SetText("");
-                        CurrentHistorySelection = 0;
+                        CurrentHistorySelection = ChatHistory.Count - 1;
                     }
                 }
 
@@ -525,10 +519,11 @@ namespace TownOfUsReworked.Patches
 
                     if (CurrentHistorySelection < ChatHistory.Count)
                         __instance.TextArea.SetText(ChatHistory[CurrentHistorySelection]);
-                    else if (CurrentHistorySelection > ChatHistory.Count)
-                        __instance.TextArea.SetText(ChatHistory[0]);
-                    else
+                    else if (CurrentHistorySelection == ChatHistory.Count)
+                    {
                         __instance.TextArea.SetText("");
+                        CurrentHistorySelection = 0;
+                    }
                 }
             }
         }

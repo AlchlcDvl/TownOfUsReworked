@@ -13,7 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Escort";
             RoleType = RoleEnum.Escort;
-            StartText = "Roleblock Players And Stop Them From Harming Others";
+            StartText = "Roleblock Players From Harming The <color=#8CFFFFFF>Crew</color>";
             AbilitiesText = "- You can seduce players\n- Seduction blocks your target from being able to use their abilities for a short while\n- You are immune to blocks\n" +
                 "- If you attempt to block a <color=#336EFFFF>Serial Killer</color>, they will be forced to kill you";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Escort : Colors.Crew;
@@ -50,8 +50,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float RoleblockTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastBlock;
+            var timespan = DateTime.UtcNow - LastBlock;
             var num = Player.GetModifiedCooldown(CustomGameOptions.EscRoleblockCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;

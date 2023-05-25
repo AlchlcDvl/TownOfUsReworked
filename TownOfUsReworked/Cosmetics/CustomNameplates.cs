@@ -1,9 +1,23 @@
 namespace TownOfUsReworked.Cosmetics
 {
+    public class NameplateExtension
+    {
+        public string Artist { get; set; }
+        public string Condition { get; set; }
+    }
+
+    public class CustomNameplate
+    {
+        public string Artist { get; set; }
+        public string Condition { get; set; }
+        public string Name { get; set; }
+        public string ID { get; set; }
+    }
+
     [HarmonyPatch]
     public static class CustomNameplates
     {
-        private static bool Loaded;
+        private static bool SubLoaded;
         private static bool Running;
         public readonly static Dictionary<string, NameplateExtension> CustomNameplateRegistry = new();
 
@@ -53,20 +67,6 @@ namespace TownOfUsReworked.Cosmetics
             return nameplate;
         }
 
-        public class NameplateExtension
-        {
-            public string Artist { get; set; }
-            public string Condition { get; set; }
-        }
-
-        public class CustomNameplate
-        {
-            public string Artist { get; set; }
-            public string Condition { get; set; }
-            public string Name { get; set; }
-            public string ID { get; set; }
-        }
-
         [HarmonyPatch(typeof(HatManager), nameof(HatManager.GetNamePlateById))]
         public static class HatManagerPatch
         {
@@ -93,11 +93,11 @@ namespace TownOfUsReworked.Cosmetics
                 }
                 catch (Exception e)
                 {
-                    if (!Loaded)
+                    if (!SubLoaded)
                         Utils.LogSomething("Unable to add Custom Nameplates\n" + e);
                 }
 
-                Loaded = true;
+                SubLoaded = true;
             }
 
             public static void Postfix() => Running = false;

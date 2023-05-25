@@ -1,9 +1,26 @@
 namespace TownOfUsReworked.Cosmetics
 {
+    public class VisorExtension
+    {
+        public string Artist { get; set; }
+        public string Condition { get; set; }
+        public Sprite FlipImage { get; set; }
+    }
+
+    public class CustomVisor
+    {
+        public string Artist { get; set; }
+        public string Condition { get; set; }
+        public string Name { get; set; }
+        public string ID { get; set; }
+        public string FlipID { get; set; }
+        public bool Adaptive { get; set; }
+    }
+
     [HarmonyPatch]
     public static class CustomVisors
     {
-        private static bool Loaded;
+        private static bool SubLoaded;
         private static bool Running;
         private static Material Shader;
         public readonly static Dictionary<string, VisorExtension> CustomVisorRegistry = new();
@@ -70,23 +87,6 @@ namespace TownOfUsReworked.Cosmetics
             return visor;
         }
 
-        public class VisorExtension
-        {
-            public string Artist { get; set; }
-            public string Condition { get; set; }
-            public Sprite FlipImage { get; set; }
-        }
-
-        public class CustomVisor
-        {
-            public string Artist { get; set; }
-            public string Condition { get; set; }
-            public string Name { get; set; }
-            public string ID { get; set; }
-            public string FlipID { get; set; }
-            public bool Adaptive { get; set; }
-        }
-
         [HarmonyPatch(typeof(HatManager), nameof(HatManager.GetVisorById))]
         public static class HatManagerPatch
         {
@@ -113,11 +113,11 @@ namespace TownOfUsReworked.Cosmetics
                 }
                 catch (Exception e)
                 {
-                    if (!Loaded)
+                    if (!SubLoaded)
                         Utils.LogSomething("Unable to add Custom Visors\n" + e);
                 }
 
-                Loaded = true;
+                SubLoaded = true;
             }
 
             public static void Postfix() => Running = false;

@@ -1,18 +1,15 @@
-﻿using System;
-
-namespace TownOfUsReworked.Classes
+﻿namespace TownOfUsReworked.Classes
 {
     [HarmonyPatch]
     public static class Utils
     {
         public readonly static List<PlayerControl> RecentlyKilled = new();
-        private readonly static Dictionary<PlayerControl, PlayerControl> CachedMorphs = new();
+        public readonly static Dictionary<PlayerControl, PlayerControl> CachedMorphs = new();
+        public readonly static List<DeadPlayer> KilledPlayers = new();
         public static List<DeadBody> AllBodies => UObject.FindObjectsOfType<DeadBody>().ToList();
-
-        #pragma warning disable
+        private static bool Shapeshifted;
         public static PlayerControl FirstDead;
         public static bool RoundOne;
-        #pragma warning restore
 
         public static TextMeshPro NameText(this PlayerControl p) => p.cosmetics.nameText;
 
@@ -22,26 +19,7 @@ namespace TownOfUsReworked.Classes
 
         public static SpriteRenderer MyRend(this PlayerControl p) => p.cosmetics.currentBodySprite.BodySprite;
 
-        public static VisualAppearance GetDefaultAppearance(this PlayerControl player) => new(player);
-
-        public static bool TryGetAppearance(this PlayerControl player, IVisualAlteration modifier, out VisualAppearance appearance)
-        {
-            if (modifier != null)
-                return modifier.TryGetModifiedAppearance(out appearance);
-
-            appearance = player.GetDefaultAppearance();
-            return false;
-        }
-
-        public static VisualAppearance GetAppearance(this PlayerControl player)
-        {
-            if (player.TryGetAppearance(Role.GetRole(player) as IVisualAlteration, out var appearance))
-                return appearance;
-            else if (player.TryGetAppearance(Modifier.GetModifier(player) as IVisualAlteration, out appearance))
-                return appearance;
-            else
-                return player.GetDefaultAppearance();
-        }
+        public static VisualAppearance GetAppearance(this PlayerControl player) => VisualAppearance.AllAppearances.Find(x => x.Player == player) ?? new(player);
 
         public static bool IsImpostor(this GameData.PlayerInfo playerinfo) => playerinfo?.Role?.TeamType == RoleTeamTypes.Impostor;
 
@@ -111,7 +89,7 @@ namespace TownOfUsReworked.Classes
             yield return null;
         }
 
-        public static void Camouflage() => PlayerControl.AllPlayerControls.Il2CppToSystem().ForEach(CamoSingle);
+        public static void Camouflage() => PlayerControl.AllPlayerControls.ForEach(CamoSingle);
 
         public static void CamoSingle(PlayerControl player) => Coroutines.Start(CamoSingleCoro(player));
 
@@ -133,14 +111,14 @@ namespace TownOfUsReworked.Classes
             yield return null;
         }
 
-        public static void Conceal() => PlayerControl.AllPlayerControls.Il2CppToSystem().ForEach(x => Invis(x, PlayerControl.LocalPlayer.Is(Faction.Syndicate)));
+        public static void Conceal() => PlayerControl.AllPlayerControls.ForEach(x => Invis(x, PlayerControl.LocalPlayer.Is(Faction.Syndicate)));
 
         public static void Invis(PlayerControl player, bool condition = false) => Coroutines.Start(InvisCoro(player, condition));
 
         public static IEnumerator InvisCoro(PlayerControl player, bool condition = false)
         {
             var color = Color.clear;
-            color.a = condition || PlayerControl.LocalPlayer.Data.IsDead || player == PlayerControl.LocalPlayer ? 0.1f : 0f;
+            color.a = condition || PlayerControl.LocalPlayer.Data.IsDead || player == PlayerControl.LocalPlayer || PlayerControl.LocalPlayer.Is(AbilityEnum.Torch) ? 0.1f : 0f;
 
             if (player.GetCustomOutfitType() != CustomPlayerOutfitType.Invis && !player.Data.IsDead)
             {
@@ -184,23 +162,32 @@ namespace TownOfUsReworked.Classes
 
         public static void Shapeshift()
         {
-            var allPlayers = PlayerControl.AllPlayerControls;
-            var shifted = new List<PlayerControl>();
-
-            foreach (var player in allPlayers)
+            if (!Shapeshifted)
             {
-                var random = URandom.RandomRangeInt(0, allPlayers.Count);
+                Shapeshifted = true;
+                var allPlayers = PlayerControl.AllPlayerControls;
+                var shuffledPlayers = PlayerControl.AllPlayerControls.Il2CppToSystem();
+                shuffledPlayers.Shuffle();
 
-                while (player == allPlayers[random] || shifted.Contains(allPlayers[random]))
-                    random = URandom.RandomRangeInt(0, allPlayers.Count);
-
-                var otherPlayer = allPlayers[random];
-                Morph(player, otherPlayer);
-                shifted.Add(otherPlayer);
+                for (var i = 0; i < allPlayers.Count; i++)
+                {
+                    var morphed = allPlayers[i];
+                    var morphTarget = shuffledPlayers[i];
+                    Morph(morphed, morphTarget);
+                    CachedMorphs.Add(morphed, morphTarget);
+                }
+            }
+            else
+            {
+                PlayerControl.AllPlayerControls.ForEach(x =>
+                {
+                    if (CachedMorphs.ContainsKey(x))
+                        Morph(x, CachedMorphs[x]);
+                });
             }
         }
 
-        public static void DefaultOutfitAll() => PlayerControl.AllPlayerControls.Il2CppToSystem().ForEach(DefaultOutfit);
+        public static void DefaultOutfitAll() => PlayerControl.AllPlayerControls.ForEach(DefaultOutfit);
 
         public static void AddUnique<T>(this Il2CppSystem.Collections.Generic.List<T> self, T item) where T : IDisconnectHandler
         {
@@ -208,9 +195,9 @@ namespace TownOfUsReworked.Classes
                 self.Add(item);
         }
 
-        public static Color GetPlayerColor(this PlayerControl player, bool camoCondition = true)
+        public static Color GetPlayerColor(this PlayerControl player, bool camoCondition = true, bool otherCondition = false)
         {
-            if (DoUndo.IsCamoed && camoCondition)
+            if ((DoUndo.IsCamoed && camoCondition) || otherCondition)
                 return Color.grey;
             else if (ColorUtils.IsRainbow(player.GetDefaultOutfit().ColorId))
                 return ColorUtils.Rainbow;
@@ -228,7 +215,7 @@ namespace TownOfUsReworked.Classes
                 return Palette.PlayerColors[player.GetDefaultOutfit().ColorId];
         }
 
-        public static List<PlayerControl> GetCrewmates(List<PlayerControl> impostors) => PlayerControl.AllPlayerControls.ToArray().Where(player => !impostors.Any(imp => imp ==
+        public static List<PlayerControl> GetCrewmates(List<PlayerControl> impostors) => PlayerControl.AllPlayerControls.Where(player => !impostors.Any(imp => imp ==
             player)).ToList();
 
         public static List<PlayerControl> GetImpostors(List<GameData.PlayerInfo> infected)
@@ -338,7 +325,14 @@ namespace TownOfUsReworked.Classes
             var targetRole = Role.GetRole(target);
 
             if (target.Is(ModifierEnum.VIP))
+            {
                 Flash(targetRole.Color);
+
+                if (!Role.LocalRole.AllArrows.ContainsKey(target.PlayerId))
+                    Role.LocalRole.AllArrows.Add(target.PlayerId, new(PlayerControl.LocalPlayer, Colors.VIP));
+                else
+                    Role.LocalRole.AllArrows[target.PlayerId].Update(Colors.VIP);
+            }
 
             var killerRole = Role.GetRole(killer);
 
@@ -366,29 +360,17 @@ namespace TownOfUsReworked.Classes
             else
                 targetRole.DeathReason = DeathReasonEnum.Suicide;
 
-            var deadBody = new DeadPlayer
-            {
-                PlayerId = target.PlayerId,
-                KillerId = killer.PlayerId,
-                KillTime = DateTime.UtcNow
-            };
-
             if (target.Is(RoleEnum.Framer))
                 ((Framer)killerRole).Framed.Clear();
 
             RecentlyKilled.Add(target);
+            KilledPlayers.Add(new(killer.PlayerId, target.PlayerId));
+            ReassignPostmortals(target);
 
             if (target == Role.DriveHolder)
                 RoleGen.AssignChaosDrive();
 
-            Murder.KilledPlayers.Add(deadBody);
-
-            if (MeetingHud.Instance)
-                target.Exiled();
-
-            ReassignPostmortals(target);
-
-            if (target.Is(ObjectifierEnum.Lovers))
+            if (target.Is(ObjectifierEnum.Lovers) && AmongUsClient.Instance.AmHost)
             {
                 var lover = target.GetOtherLover();
 
@@ -404,7 +386,7 @@ namespace TownOfUsReworked.Classes
             if (killer.Is(AbilityEnum.Politician))
                 Ability.GetAbility<Politician>(killer).VoteBank++;
 
-            if (target.Is(RoleEnum.Troll))
+            if (target.Is(RoleEnum.Troll) && AmongUsClient.Instance.AmHost)
             {
                 var troll = Role.GetRole<Troll>(target);
                 troll.Killed = true;
@@ -417,6 +399,253 @@ namespace TownOfUsReworked.Classes
 
             target.RegenTask();
             killer.RegenTask();
+        }
+
+        public static void MarkMeetingDead(PlayerControl target, PlayerControl killer, bool doesKill = true)
+        {
+            try
+            {
+                SoundManager.Instance.PlaySound(PlayerControl.LocalPlayer.KillSfx, false);
+            } catch {}
+
+            if (target == PlayerControl.LocalPlayer)
+            {
+                HudManager.Instance.KillOverlay.ShowKillAnimation(killer.Data, target.Data);
+                HudManager.Instance.ShadowQuad.gameObject.SetActive(false);
+                target.NameText().GetComponent<MeshRenderer>().material.SetInt("_Mask", 0);
+                target.RpcSetScanner(false);
+                MeetingHud.Instance.SetForegroundForDead();
+
+                if (target.Is(AbilityEnum.Swapper))
+                {
+                    var swapper = Ability.GetAbility<Swapper>(PlayerControl.LocalPlayer);
+                    swapper.Swap1 = null;
+                    swapper.Swap2 = null;
+                    swapper.HideButtons();
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+                    writer.Write((byte)ActionsRPC.SetSwaps);
+                    writer.Write(target.PlayerId);
+                    writer.Write(255);
+                    writer.Write(255);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                }
+
+                if (target.Is(RoleEnum.Guesser))
+                    Role.GetRole<Guesser>(target).HideButtons();
+
+                if (target.Is(RoleEnum.Dictator))
+                {
+                    var dict = Role.GetRole<Dictator>(target);
+                    dict.HideButtons();
+                    dict.ToBeEjected.Clear();
+                    dict.ToDie = false;
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+                    writer.Write((byte)ActionsRPC.SetExiles);
+                    writer.Write(target.PlayerId);
+                    writer.Write(false);
+                    writer.WriteBytesAndSize(new List<byte>() { 255, 255, 255 }.ToArray());
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                }
+
+                if (target.Is(RoleEnum.Retributionist))
+                    Role.GetRole<Retributionist>(target).HideButtons();
+
+                if (target.Is(AbilityEnum.Assassin))
+                {
+                    Ability.GetAbility<Assassin>(target).Exit(MeetingHud.Instance);
+                    Ability.GetAbility<Assassin>(target).HideButtons();
+                }
+            }
+
+            target.Die(DeathReason.Kill, false);
+            KilledPlayers.Add(new(killer.PlayerId, target.PlayerId));
+            var voteArea = VoteAreaByPlayer(target);
+
+            if (voteArea == null)
+                return;
+
+            if (voteArea.DidVote)
+                voteArea.UnsetVote();
+
+            voteArea.AmDead = true;
+            voteArea.Overlay.gameObject.SetActive(true);
+            voteArea.Overlay.color = UColor.white;
+            voteArea.XMark.gameObject.SetActive(true);
+            voteArea.XMark.transform.localScale = Vector3.one;
+
+            foreach (var role in Role.GetRoles<Blackmailer>(RoleEnum.Blackmailer))
+            {
+                if (target.PlayerId == role.BlackmailedPlayer?.PlayerId && role.PrevOverlay != null)
+                {
+                    voteArea.Overlay.sprite = role.PrevOverlay;
+                    voteArea.Overlay.color = role.PrevColor;
+                }
+            }
+
+            foreach (var role in Role.GetRoles<Silencer>(RoleEnum.Silencer))
+            {
+                if (target.PlayerId == role.SilencedPlayer?.PlayerId && role.PrevOverlay != null)
+                {
+                    voteArea.Overlay.sprite = role.PrevOverlay;
+                    voteArea.Overlay.color = role.PrevColor;
+                }
+            }
+
+            foreach (var role in Role.GetRoles<PromotedGodfather>(RoleEnum.PromotedGodfather))
+            {
+                if (target.PlayerId == role.BlackmailedPlayer?.PlayerId && role.PrevOverlay != null && role.IsBM)
+                {
+                    voteArea.Overlay.sprite = role.PrevOverlay;
+                    voteArea.Overlay.color = role.PrevColor;
+                }
+            }
+
+            foreach (var role in Role.GetRoles<PromotedRebel>(RoleEnum.PromotedRebel))
+            {
+                if (target.PlayerId == role.SilencedPlayer?.PlayerId && role.PrevOverlay != null && role.IsSil)
+                {
+                    voteArea.Overlay.sprite = role.PrevOverlay;
+                    voteArea.Overlay.color = role.PrevColor;
+                }
+            }
+
+            if (PlayerControl.LocalPlayer.Is(AbilityEnum.Assassin) && !PlayerControl.LocalPlayer.Data.IsDead)
+                Ability.GetAbility<Assassin>(PlayerControl.LocalPlayer).HideSingle(target.PlayerId);
+
+            if (PlayerControl.LocalPlayer.Is(RoleEnum.Guesser) && !PlayerControl.LocalPlayer.Data.IsDead)
+                Role.GetRole<Guesser>(PlayerControl.LocalPlayer).HideSingle(target.PlayerId);
+
+            if (PlayerControl.LocalPlayer.Is(AbilityEnum.Swapper) && !PlayerControl.LocalPlayer.Data.IsDead)
+            {
+                var swapper = Ability.GetAbility<Swapper>(PlayerControl.LocalPlayer);
+                var active = swapper.Actives[target.PlayerId];
+
+                if (active)
+                {
+                    if (swapper.Swap1 == voteArea)
+                        swapper.Swap1 = null;
+                    else if (swapper.Swap2 == voteArea)
+                        swapper.Swap2 = null;
+
+                    swapper.Actives[target.PlayerId] = false;
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+                    writer.Write((byte)ActionsRPC.SetSwaps);
+                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                    writer.Write(255);
+                    writer.Write(255);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                }
+
+                swapper.HideSingle(target.PlayerId);
+            }
+
+            if (PlayerControl.LocalPlayer.Is(RoleEnum.Dictator) && !PlayerControl.LocalPlayer.Data.IsDead)
+            {
+                var dictator = Role.GetRole<Dictator>(PlayerControl.LocalPlayer);
+                var active = dictator.Actives[target.PlayerId];
+
+                if (active)
+                {
+                    dictator.ToBeEjected.Clear();
+
+                    for (var i = 0; i < dictator.Actives.Count; i++)
+                        dictator.Actives[(byte)i] = false;
+
+                    dictator.Actives[target.PlayerId] = false;
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
+                    writer.Write((byte)ActionsRPC.SetExiles);
+                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                    writer.Write(false);
+                    writer.WriteBytesAndSize(new List<byte>() { 255, 255, 255 }.ToArray());
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                }
+
+                dictator.HideSingle(target.PlayerId);
+            }
+
+            if (PlayerControl.LocalPlayer.Is(RoleEnum.Retributionist) && !PlayerControl.LocalPlayer.Data.IsDead)
+            {
+                var ret = Role.GetRole<Retributionist>(PlayerControl.LocalPlayer);
+                ret.MoarButtons.Remove(target.PlayerId);
+                ret.GenButtons(voteArea, MeetingHud.Instance);
+            }
+
+            foreach (var area in MeetingHud.Instance.playerStates)
+            {
+                if (area.VotedFor != target.PlayerId)
+                    continue;
+
+                area.UnsetVote();
+
+                if (target == PlayerControl.LocalPlayer)
+                    MeetingHud.Instance.ClearVote();
+            }
+
+            if (AmongUsClient.Instance.AmHost)
+            {
+                foreach (var mayor in Ability.GetAbilities<Politician>(AbilityEnum.Politician))
+                {
+                    if (mayor.Player == target)
+                        mayor.ExtraVotes.Clear();
+                    else
+                    {
+                        var votesRegained = mayor.ExtraVotes.RemoveAll(x => x == target.PlayerId);
+
+                        if (mayor.Player == PlayerControl.LocalPlayer)
+                            mayor.VoteBank += votesRegained;
+
+                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AddVoteBank, SendOption.Reliable);
+                        writer.Write(mayor.PlayerId);
+                        writer.Write(votesRegained);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    }
+                }
+
+                if (SetPostmortals.RevealerOn && SetPostmortals.WillBeRevealer == null && target.Is(Faction.Crew))
+                {
+                    SetPostmortals.WillBeRevealer = target;
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetRevealer, SendOption.Reliable);
+                    writer.Write(target.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                }
+
+                if (SetPostmortals.PhantomOn && SetPostmortals.WillBePhantom == null && target.Is(Faction.Neutral) && !LayerExtentions.NeutralHasUnfinishedBusiness(target))
+                {
+                    SetPostmortals.WillBePhantom = target;
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPhantom, SendOption.Reliable);
+                    writer.Write(target.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                }
+
+                if (SetPostmortals.BansheeOn && SetPostmortals.WillBeBanshee == null && target.Is(Faction.Syndicate))
+                {
+                    SetPostmortals.WillBeBanshee = target;
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetBanshee, SendOption.Reliable);
+                    writer.Write(target.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                }
+
+                if (SetPostmortals.GhoulOn && SetPostmortals.WillBeGhoul == null && target.Is(Faction.Intruder))
+                {
+                    SetPostmortals.WillBeGhoul = target;
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetGhoul, SendOption.Reliable);
+                    writer.Write(target.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                }
+
+                SetPostmortals.AssassinatedPlayers.Add(target);
+                MeetingHud.Instance.CheckForEndVoting();
+            }
+
+            var role2 = Role.GetRole(target);
+
+            if ((killer != target && doesKill) || !doesKill)
+            {
+                role2.DeathReason = DeathReasonEnum.Guessed;
+                role2.KilledBy = " By " + killer.name;
+            }
+            else
+                role2.DeathReason = DeathReasonEnum.Misfire;
         }
 
         public static void BaitReport(PlayerControl killer, PlayerControl target) => Coroutines.Start(BaitReportDelay(killer, target));
@@ -450,25 +679,10 @@ namespace TownOfUsReworked.Classes
             }
         }
 
-        public static void DestroyAll(this IEnumerable<Component> listie)
-        {
-            foreach (var item in listie)
-            {
-                if (item == null)
-                    continue;
-
-                item.Destroy();
-
-                if (item.gameObject == null)
-                    continue;
-
-                item.gameObject.Destroy();
-            }
-        }
-
         public static void EndGame()
         {
             Ash.DestroyAll();
+            Objects.Range.DestroyAll();
             GameManager.Instance.RpcEndGame(GameOverReason.ImpostorByVote, false);
         }
 
@@ -691,7 +905,7 @@ namespace TownOfUsReworked.Classes
             return new List<bool> { fullReset, gaReset, survReset, abilityUsed };
         }
 
-        public static List<PlayerControl> GetClosestPlayers(Vector2 truePosition, float radius) => PlayerControl.AllPlayerControls.ToArray().Where(x => Vector2.Distance(truePosition,
+        public static List<PlayerControl> GetClosestPlayers(Vector2 truePosition, float radius) => PlayerControl.AllPlayerControls.Where(x => Vector2.Distance(truePosition,
             x.GetTruePosition()) <= radius).ToList();
 
         public static bool IsTooFar(PlayerControl player, PlayerControl target)
@@ -771,15 +985,13 @@ namespace TownOfUsReworked.Classes
 
         public static void LogSomething(object message) => PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage(message);
 
-        public static string CreateText(string itemName, string folder = "", string subfolder = "")
+        public static string CreateText(string itemName, string folder = "")
         {
             try
             {
                 string resourceName;
 
-                if (subfolder != "" && folder != "")
-                    resourceName = $"{TownOfUsReworked.Resources}{folder}.{subfolder}.{itemName}";
-                else if (subfolder.Length == 0 && folder != "")
+                if (folder != "")
                     resourceName = $"{TownOfUsReworked.Resources}{folder}.{itemName}";
                 else
                     resourceName = TownOfUsReworked.Resources + itemName;
@@ -813,9 +1025,9 @@ namespace TownOfUsReworked.Classes
             writer.Write((byte)TownOfUsReworked.Version.Major);
             writer.Write((byte)TownOfUsReworked.Version.Minor);
             writer.Write((byte)TownOfUsReworked.Version.Build);
-            writer.WritePacked(AmongUsClient.Instance.ClientId);
-            writer.Write((byte)(TownOfUsReworked.Version.Revision < 0 ? 0xFF : TownOfUsReworked.Version.Revision));
+            writer.Write(TownOfUsReworked.Version.Revision);
             writer.Write(TownOfUsReworked.Executing.ManifestModule.ModuleVersionId.ToByteArray());
+            writer.WritePacked(AmongUsClient.Instance.ClientId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
             VersionHandshake(TownOfUsReworked.Version.Major, TownOfUsReworked.Version.Minor, TownOfUsReworked.Version.Build, TownOfUsReworked.Version.Revision,
                 TownOfUsReworked.Executing.ManifestModule.ModuleVersionId, AmongUsClient.Instance.ClientId);
@@ -823,14 +1035,10 @@ namespace TownOfUsReworked.Classes
 
         public static void VersionHandshake(int major, int minor, int build, int revision, Guid guid, int clientId)
         {
-            Version ver;
+            var ver = new Version(major, minor, build, revision);
 
-            if (revision < 0)
-                ver = new Version(major, minor, build);
-            else
-                ver = new Version(major, minor, build, revision);
-
-            GameStartManagerPatch.PlayerVersions[clientId] = new PlayerVersion(ver, guid);
+            if (!GameStartManagerPatch.PlayerVersions.ContainsKey(clientId))
+                GameStartManagerPatch.PlayerVersions.Add(clientId, new(ver, guid));
         }
 
         public static IEnumerable<T> GetFastEnumerator<T>(this Il2CppSystem.Collections.Generic.List<T> list) where T : Il2CppSystem.Object => new Il2CppListEnumerable<T>(list);
@@ -905,10 +1113,10 @@ namespace TownOfUsReworked.Classes
 
             role.Vents.Add(vent);
 
-            if (SubmergedCompatibility.IsSubmerged)
+            if (ModCompatibility.IsSubmerged)
             {
                 vent.gameObject.layer = 12;
-                vent.gameObject.AddSubmergedComponent(SubmergedCompatibility.ElevatorMover); //Just in case elevator vent is not blocked
+                vent.gameObject.AddSubmergedComponent(ModCompatibility.ElevatorMover); //Just in case elevator vent is not blocked
 
                 if (vent.gameObject.transform.position.y > -7)
                     vent.gameObject.transform.position = new(vent.gameObject.transform.position.x, vent.gameObject.transform.position.y, 0.03f);
@@ -933,7 +1141,7 @@ namespace TownOfUsReworked.Classes
             }
         }
 
-        public static void Flash(Color color, float duration = 1f, string message = "", float size = 100f) => Coroutines.Start(FlashCoroutine(color, duration, message, size));
+        public static void Flash(Color color, float duration = 2f, string message = "", float size = 100f) => Coroutines.Start(FlashCoroutine(color, duration, message, size));
 
         public static IEnumerator FlashCoroutine(Color color, float duration, string message, float size)
         {
@@ -987,7 +1195,7 @@ namespace TownOfUsReworked.Classes
                         break;
 
                     case 5:
-                        fs = PlayerControl.LocalPlayer.myTasks.ToArray().Any(x => x.TaskType == SubmergedCompatibility.RetrieveOxygenMask);
+                        fs = PlayerControl.LocalPlayer.myTasks.Any(x => x.TaskType == ModCompatibility.RetrieveOxygenMask);
                         break;
 
                     case 6:
@@ -1057,7 +1265,7 @@ namespace TownOfUsReworked.Classes
 
         public static Dictionary<byte, Vector2> GenerateWarpCoordinates()
         {
-            var targets = PlayerControl.AllPlayerControls.ToArray().Where(player => !player.Data.IsDead && !player.Data.Disconnected).ToList();
+            var targets = PlayerControl.AllPlayerControls.Where(player => !player.Data.IsDead && !player.Data.Disconnected).ToList();
             var vents = UObject.FindObjectsOfType<Vent>();
             var coordinates = new Dictionary<byte, Vector2>(targets.Count);
 
@@ -1263,18 +1471,25 @@ namespace TownOfUsReworked.Classes
 
         public static void Revive(DeadBody body)
         {
+            if (body == null)
+                return;
+
             var player = PlayerByBody(body);
+
+            if (!player.Data.IsDead)
+                return;
+
             player.Revive();
             var position = body.TruePosition;
-            Murder.KilledPlayers.Remove(Murder.KilledPlayers.Find(x => x.PlayerId == player.PlayerId));
+            KilledPlayers.Remove(KilledPlayers.Find(x => x.PlayerId == player.PlayerId));
             RecentlyKilled.Remove(player);
             Role.Cleaned.Remove(player);
             ReassignPostmortals(player);
             player.Data.SetImpostor(player.Data.IsImpostor());
             player.NetTransform.SnapTo(new(position.x, position.y + 0.3636f));
 
-            if (SubmergedCompatibility.IsSubmerged && PlayerControl.LocalPlayer == player)
-                SubmergedCompatibility.ChangeFloor(player.transform.position.y > -7);
+            if (ModCompatibility.IsSubmerged && PlayerControl.LocalPlayer == player)
+                ModCompatibility.ChangeFloor(player.transform.position.y > -7);
 
             if (player.Data.IsImpostor())
                 RoleManager.Instance.SetRole(player, RoleTypes.Impostor);
@@ -1294,7 +1509,7 @@ namespace TownOfUsReworked.Classes
             {
                 for (float i = 1; i >= 0; i -= Time.deltaTime)
                 {
-                    HudManager.Instance.FullScreen.color = new Color(0, 0, 0, i);
+                    HudManager.Instance.FullScreen.color = new(0, 0, 0, i);
                     yield return null;
                 }
             }
@@ -1302,7 +1517,7 @@ namespace TownOfUsReworked.Classes
             {
                 for (float i = 0; i <= 1; i += Time.deltaTime)
                 {
-                    HudManager.Instance.FullScreen.color = new Color(0, 0, 0, i);
+                    HudManager.Instance.FullScreen.color = new(0, 0, 0, i);
                     yield return null;
                 }
             }
@@ -1324,10 +1539,10 @@ namespace TownOfUsReworked.Classes
             player.MyPhysics.ResetMoveState();
             player.NetTransform.SnapTo(new(position.x, position.y));
 
-            if (SubmergedCompatibility.IsSubmerged && PlayerControl.LocalPlayer == player)
+            if (ModCompatibility.IsSubmerged && PlayerControl.LocalPlayer == player)
             {
-                SubmergedCompatibility.ChangeFloor(player.GetTruePosition().y > -7);
-                SubmergedCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
+                ModCompatibility.ChangeFloor(player.GetTruePosition().y > -7);
+                ModCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
             }
 
             if (PlayerControl.LocalPlayer == player)
@@ -1479,7 +1694,7 @@ namespace TownOfUsReworked.Classes
             {
                 if (SetPostmortals.WillBeRevealer == player)
                 {
-                    var toChooseFrom = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Crew) && x.Data.IsDead && !x.Data.Disconnected).ToList();
+                    var toChooseFrom = PlayerControl.AllPlayerControls.Where(x => x.Is(Faction.Crew) && x.Data.IsDead && !x.Data.Disconnected).ToList();
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetRevealer, SendOption.Reliable);
                     SetPostmortals.WillBeRevealer = null;
 
@@ -1497,7 +1712,7 @@ namespace TownOfUsReworked.Classes
                 }
                 else if (SetPostmortals.WillBePhantom == player)
                 {
-                    var toChooseFrom = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Neutral) && x.Data.IsDead && !x.Data.Disconnected).ToList();
+                    var toChooseFrom = PlayerControl.AllPlayerControls.Where(x => x.Is(Faction.Neutral) && x.Data.IsDead && !x.Data.Disconnected).ToList();
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPhantom, SendOption.Reliable);
                     SetPostmortals.WillBePhantom = null;
 
@@ -1515,7 +1730,7 @@ namespace TownOfUsReworked.Classes
                 }
                 else if (SetPostmortals.WillBeBanshee == player)
                 {
-                    var toChooseFrom = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Syndicate) && x.Data.IsDead && !x.Data.Disconnected).ToList();
+                    var toChooseFrom = PlayerControl.AllPlayerControls.Where(x => x.Is(Faction.Syndicate) && x.Data.IsDead && !x.Data.Disconnected).ToList();
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetBanshee, SendOption.Reliable);
                     SetPostmortals.WillBeBanshee = null;
 
@@ -1533,7 +1748,7 @@ namespace TownOfUsReworked.Classes
                 }
                 else if (SetPostmortals.WillBeGhoul == player)
                 {
-                    var toChooseFrom = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Neutral) && x.Data.IsDead && !x.Data.Disconnected).ToList();
+                    var toChooseFrom = PlayerControl.AllPlayerControls.Where(x => x.Is(Faction.Neutral) && x.Data.IsDead && !x.Data.Disconnected).ToList();
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetGhoul, SendOption.Reliable);
                     SetPostmortals.WillBeGhoul = null;
 
@@ -1552,7 +1767,7 @@ namespace TownOfUsReworked.Classes
             }
         }
 
-        public static PlayerControl GetClosestPlayer(this PlayerControl refPlayer, List<PlayerControl> AllPlayers = null, float maxDistance = 0f)
+        public static PlayerControl GetClosestPlayer(this PlayerControl refPlayer, List<PlayerControl> AllPlayers = null, float maxDistance = 0f, bool ignoreWalls = false)
         {
             if (refPlayer.Data.IsDead && !refPlayer.Is(RoleEnum.Jester) && !refPlayer.Is(RoleEnum.Ghoul))
                 return null;
@@ -1576,7 +1791,7 @@ namespace TownOfUsReworked.Classes
                 if (distance > closestDistance || distance > maxDistance)
                     continue;
 
-                if (PhysicsHelpers.AnyNonTriggersBetween(truePosition, vector.normalized, distance, Constants.ShipAndObjectsMask))
+                if (PhysicsHelpers.AnyNonTriggersBetween(truePosition, vector.normalized, distance, Constants.ShipAndObjectsMask) && !ignoreWalls)
                     continue;
 
                 closestPlayer = player;
@@ -1586,7 +1801,7 @@ namespace TownOfUsReworked.Classes
             return closestPlayer;
         }
 
-        public static Vent GetClosestVent(this PlayerControl refPlayer)
+        public static Vent GetClosestVent(this PlayerControl refPlayer, bool ignoreWalls = false)
         {
             var truePosition = refPlayer.GetTruePosition();
             var maxDistance = CustomGameOptions.InteractionDistance / 2;
@@ -1601,7 +1816,7 @@ namespace TownOfUsReworked.Classes
                 if (distance > maxDistance || distance > closestDistance)
                     continue;
 
-                if (PhysicsHelpers.AnyNonTriggersBetween(truePosition, vector.normalized, distance, Constants.ShipAndObjectsMask))
+                if (PhysicsHelpers.AnyNonTriggersBetween(truePosition, vector.normalized, distance, Constants.ShipAndObjectsMask) && !ignoreWalls)
                     continue;
 
                 closestVent = vent;
@@ -1611,7 +1826,7 @@ namespace TownOfUsReworked.Classes
             return closestVent;
         }
 
-        public static DeadBody GetClosestDeadPlayer(this PlayerControl refPlayer, float maxDistance = 0f)
+        public static DeadBody GetClosestDeadPlayer(this PlayerControl refPlayer, float maxDistance = 0f, bool ignoreWalls = false)
         {
             var truePosition = refPlayer.GetTruePosition();
             var closestDistance = double.MaxValue;
@@ -1628,7 +1843,7 @@ namespace TownOfUsReworked.Classes
                 if (distance > maxDistance || distance > closestDistance)
                     continue;
 
-                if (PhysicsHelpers.AnyNonTriggersBetween(truePosition, vector.normalized, distance, Constants.ShipAndObjectsMask))
+                if (PhysicsHelpers.AnyNonTriggersBetween(truePosition, vector.normalized, distance, Constants.ShipAndObjectsMask) && !ignoreWalls)
                     continue;
 
                 closestBody = body;

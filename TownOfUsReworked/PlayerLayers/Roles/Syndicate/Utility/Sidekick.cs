@@ -40,7 +40,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             base.UpdateHud(__instance);
 
-            if (CanPromote && !IsDead)
+            if (CanPromote)
             {
                 TurnRebel();
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);

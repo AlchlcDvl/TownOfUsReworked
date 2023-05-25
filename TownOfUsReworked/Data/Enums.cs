@@ -22,6 +22,7 @@ namespace TownOfUsReworked.Data
         Drop,
         AssassinKill,
         GuesserKill,
+        ThiefKill,
         FlashGrenade,
         Alert,
         Remember,
@@ -68,6 +69,8 @@ namespace TownOfUsReworked.Data
         Knight,
         SetExiles,
         Confuse,
+        TimeControl,
+        Silence,
 
         None
     }
@@ -470,8 +473,10 @@ namespace TownOfUsReworked.Data
         Rebel,
         Shapeshifter,
         Sidekick,
+        Silencer,
         Spellslinger,
         Stalker,
+        TimeKeeper,
         Warper,
 
         None
@@ -593,8 +598,10 @@ namespace TownOfUsReworked.Data
         Rebel,
         Shapeshifter,
         Sidekick,
+        Silencer,
         Spellslinger,
         Stalker,
+        TimeKeeper,
         Warper,
 
         Bait,
@@ -646,11 +653,11 @@ namespace TownOfUsReworked.Data
         LeadsTheGroup, //Mayor, Godfather, Rebel, Pestilence, Survivor
         BringsChaos, //Shifter, Thief, Camouflager, Whisperer, Jackal
         SeeksToDestroy, //Arsonist, Cryomaniac, Plaguebearer, Spellslinger
-        MovesAround, //Transporter, Teleporter, Warper, Collider
+        MovesAround, //Transporter, Teleporter, Warper, Time Keeper
         NewLens, //Engineer, Miner, Seer, Dracula, Medium, Monarch
-        GainsInfo, //Sheriff, Consigliere, Blackmailer, Detective, Inspector
+        GainsInfo, //Sheriff, Consigliere, Blackmailer, Detective, Inspector, Silencer
         Manipulative, //Jester, Executioner, Actor, Troll, Framer, Dictator
-        Unseen, //Chameleon, Wraith, Concealer, Poisoner
+        Unseen, //Chameleon, Wraith, Concealer, Poisoner, Collider
         IsCold, //Veteran, Vigilante, Sidekick, Guesser, Mafioso
         TracksOthers, //Tracker, Mystic, Vampire Hunter, Bounty Hunter, Stalker
         IsAggressive, //Betrayer, Werewolf, Juggernaut, Serial Killer
@@ -861,7 +868,9 @@ namespace TownOfUsReworked.Data
         Frame,
         Crusade,
         Spell,
-        Confuse
+        Confuse,
+        TimeControl,
+        Silence
     }
 
     public enum ProtectOptions
@@ -906,5 +915,12 @@ namespace TownOfUsReworked.Data
         Random,
         OpposingEvil,
         Crew
+    }
+
+    public enum ShowMediumToDead
+    {
+        No,
+        Target,
+        AllDead
     }
 }

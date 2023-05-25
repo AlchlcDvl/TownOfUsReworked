@@ -3,8 +3,8 @@ namespace TownOfUsReworked.CustomOptions
     [HarmonyPatch]
     public class CustomNumberOption : CustomOption
     {
-        public CustomNumberOption(int id, MultiMenu menu, string name, float defaultValue, float min, float max, float increment, Func<object, string> format = null) :
-            base(id, menu, name, CustomOptionType.Number, defaultValue, format)
+        public CustomNumberOption(int id, MultiMenu menu, string name, float defaultValue, float min, float max, float increment, Func<object, string> format = null) : base(id, menu, name,
+            CustomOptionType.Number, defaultValue, format)
         {
             Min = min;
             Max = max;
@@ -43,7 +43,7 @@ namespace TownOfUsReworked.CustomOptions
             var number = Setting.Cast<NumberOption>();
 
             number.TitleText.text = Name;
-            number.ValidRange = new FloatRange(Min, Max);
+            number.ValidRange = new(Min, Max);
             number.Increment = Increment;
             number.Value = number.oldValue = Get();
             number.ValueText.text = ToString();

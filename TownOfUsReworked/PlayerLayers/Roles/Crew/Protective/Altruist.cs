@@ -34,8 +34,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float ReviveTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastRevived;
+            var timespan = DateTime.UtcNow - LastRevived;
             var num = Player.GetModifiedCooldown(CustomGameOptions.ReviveCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -94,13 +93,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (formerKiller.Contains(PlayerControl.LocalPlayer.Data.PlayerName))
             {
-                var gameObj = new GameObject("AltruistArrow") { layer = 5 };
-                var arrow = gameObj.AddComponent<ArrowBehaviour>();
-                gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
-                var renderer = gameObj.AddComponent<SpriteRenderer>();
-                renderer.sprite = AssetManager.GetSprite("Arrow");
-                arrow.image = renderer;
-                LocalRole.AllArrows.Add(player.PlayerId, arrow);
+                LocalRole.AllArrows.Add(player.PlayerId, new(PlayerControl.LocalPlayer, Color));
                 Utils.Flash(Color);
             }
         }

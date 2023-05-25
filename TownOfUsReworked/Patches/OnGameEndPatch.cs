@@ -13,7 +13,7 @@ namespace TownOfUsReworked.Patches
                 PotentialWinners.Clear();
 
                 foreach (var player in PlayerControl.AllPlayerControls)
-                    PotentialWinners.Add(new WinningPlayerData(player.Data));
+                    PotentialWinners.Add(new(player.Data));
             }
         }
 
@@ -287,16 +287,19 @@ namespace TownOfUsReworked.Patches
 
                 if (!Objectifier.ObjectifierWins)
                 {
-                    foreach (var surv in Role.GetRoles<Survivor>(RoleEnum.Survivor))
+                    if (!CustomGameOptions.NeutralEvilsEndGame)
                     {
-                        if (surv.Alive)
-                            winners.Add(PotentialWinners.Where(x => x.PlayerName == surv.PlayerName).ToList()[0]);
-                    }
+                        foreach (var surv in Role.GetRoles<Survivor>(RoleEnum.Survivor))
+                        {
+                            if (surv.Alive)
+                                winners.Add(PotentialWinners.Where(x => x.PlayerName == surv.PlayerName).ToList()[0]);
+                        }
 
-                    foreach (var ga in Role.GetRoles<GuardianAngel>(RoleEnum.GuardianAngel))
-                    {
-                        if (ga.TargetAlive)
-                            winners.Add(PotentialWinners.Where(x => x.PlayerName == ga.PlayerName).ToList()[0]);
+                        foreach (var ga in Role.GetRoles<GuardianAngel>(RoleEnum.GuardianAngel))
+                        {
+                            if (ga.TargetAlive)
+                                winners.Add(PotentialWinners.Where(x => x.PlayerName == ga.PlayerName).ToList()[0]);
+                        }
                     }
 
                     foreach (var jest in Role.GetRoles<Jester>(RoleEnum.Jester))
@@ -325,7 +328,7 @@ namespace TownOfUsReworked.Patches
 
                     foreach (var cann in Role.GetRoles<Cannibal>(RoleEnum.Cannibal))
                     {
-                        if (cann.EatWin && !cann.Disconnected)
+                        if (cann.Eaten && !cann.Disconnected)
                             winners.Add(PotentialWinners.Where(x => x.PlayerName == cann.PlayerName).ToList()[0]);
                     }
 
@@ -342,7 +345,7 @@ namespace TownOfUsReworked.Patches
                     }
                 }
 
-                TempData.winners = new Il2CppSystem.Collections.Generic.List<WinningPlayerData>();
+                TempData.winners = new();
 
                 foreach (var win in winners)
                     TempData.winners.Add(win);

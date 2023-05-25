@@ -42,8 +42,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float CamouflageTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastCamouflaged;
+            var timespan = DateTime.UtcNow - LastCamouflaged;
             var num = Player.GetModifiedCooldown(CustomGameOptions.CamouflagerCd) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;

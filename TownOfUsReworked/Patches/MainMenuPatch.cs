@@ -14,7 +14,7 @@ namespace TownOfUsReworked.Patches
 
             if (amongUsLogo != null)
             {
-                amongUsLogo.transform.localScale *= 0.7f;
+                amongUsLogo.transform.localScale *= 0.75f;
                 amongUsLogo.transform.position += Vector3.up * 0.25f;
             }
 
@@ -55,13 +55,11 @@ namespace TownOfUsReworked.Patches
                     Number = 500,
                     Title = "Town Of Us Reworked Changes",
                     ShortTitle = "Changes",
-                    SubTitle = "no idea what im doing anymore lmao",
+                    SubTitle = "No idea what I'm doing anymore lmao",
                     PinState = false,
-                    Date = "30.04.2023"
+                    Date = "30.04.2023",
+                    Text = $"<size=75%>{Utils.CreateText("Changelog")}</size>"
                 };
-
-                var changelog = Utils.CreateText("Changelog");
-                changesAnnouncement.Text = $"<size=75%>{changelog}</size>";
 
                 __instance.StartCoroutine(Effects.Lerp(0.01f, new Action<float>(_ =>
                 {
@@ -69,6 +67,57 @@ namespace TownOfUsReworked.Patches
                     popUp.Init(false);
                     DataManager.Player.Announcements.allAnnouncements = new();
                     DataManager.Player.Announcements.allAnnouncements.Insert(0, changesAnnouncement);
+
+                    foreach (var item in popUp.visibleAnnouncements)
+                        item.Destroy();
+
+                    foreach (var item in UObject.FindObjectsOfType<AnnouncementPanel>())
+                    {
+                        if (item != popUp.ErrorPanel)
+                            item.gameObject.Destroy();
+                    }
+
+                    popUp.CreateAnnouncementList();
+                    popUp.visibleAnnouncements[0].PassiveButton.OnClick = new();
+                    DataManager.Player.Announcements.allAnnouncements = backup;
+                    var titleText = GameObject.Find("Title_Text").GetComponent<TextMeshPro>();
+
+                    if (titleText != null)
+                        titleText.text = "";
+                })));
+            }));
+
+            var credObj = UObject.Instantiate(InvButton, InvButton.transform.parent);
+            /*var iconrenderer3 = discObj.GetComponent<SpriteRenderer>();
+            iconrenderer3.sprite = AssetManager.GetSprite("Credits");*/
+
+            var button3 = credObj.GetComponent<PassiveButton>();
+            button3.OnClick = new();
+            button3.OnClick.AddListener((Action)(() =>
+            {
+                popUp?.Destroy();
+                popUp = UObject.Instantiate(UObject.FindObjectOfType<AnnouncementPopUp>(true));
+                popUp.gameObject.SetActive(true);
+
+                var creditsAnnouncement = new Announcement
+                {
+                    Id = "tourewCredits",
+                    Language = 0,
+                    Number = 500,
+                    Title = "Town Of Us Reworked Credits",
+                    ShortTitle = "Credits",
+                    SubTitle = "This mod wasn't possible without these people!",
+                    PinState = false,
+                    Date = "30.04.2023",
+                    Text = $"<size=75%>{Utils.CreateText("Credits")}</size>"
+                };
+
+                __instance.StartCoroutine(Effects.Lerp(0.01f, new Action<float>(_ =>
+                {
+                    var backup = DataManager.Player.Announcements.allAnnouncements;
+                    popUp.Init(false);
+                    DataManager.Player.Announcements.allAnnouncements = new();
+                    DataManager.Player.Announcements.allAnnouncements.Insert(0, creditsAnnouncement);
 
                     foreach (var item in popUp.visibleAnnouncements)
                         item.Destroy();

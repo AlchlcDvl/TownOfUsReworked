@@ -22,8 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float InspectTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastInspected;
+            var timespan = DateTime.UtcNow - LastInspected;
             var num = Player.GetModifiedCooldown(CustomGameOptions.InspectCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;

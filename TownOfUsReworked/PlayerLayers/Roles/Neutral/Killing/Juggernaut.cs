@@ -23,8 +23,7 @@
 
         public float AssaultTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastKilled;
+            var timespan = DateTime.UtcNow - LastKilled;
             var num = Mathf.Clamp(Player.GetModifiedCooldown(CustomGameOptions.JuggKillCooldown, -(CustomGameOptions.JuggKillBonus * JuggKills)), 5,
                 Player.GetModifiedCooldown(CustomGameOptions.JuggKillCooldown)) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;

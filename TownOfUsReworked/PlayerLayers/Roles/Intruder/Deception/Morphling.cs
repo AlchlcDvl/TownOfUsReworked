@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Morphling : IntruderRole, IVisualAlteration
+    public class Morphling : IntruderRole
     {
         public CustomButton MorphButton;
         public CustomButton SampleButton;
@@ -51,8 +51,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float MorphTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastMorphed;
+            var timespan = DateTime.UtcNow - LastMorphed;
             var num = Player.GetModifiedCooldown(CustomGameOptions.MorphlingCd) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -60,25 +59,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float SampleTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastSampled;
+            var timespan = DateTime.UtcNow - LastSampled;
             var num = Player.GetModifiedCooldown(CustomGameOptions.SampleCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
-        }
-
-        public bool TryGetModifiedAppearance(out VisualAppearance appearance)
-        {
-            if (MorphedPlayer != null)
-            {
-                appearance = MorphedPlayer.GetDefaultAppearance();
-                var alteration = Modifier.GetModifier(MorphedPlayer) as IVisualAlteration;
-                alteration?.TryGetModifiedAppearance(out appearance);
-                return true;
-            }
-
-            appearance = Player.GetDefaultAppearance();
-            return false;
         }
 
         public void HitMorph()

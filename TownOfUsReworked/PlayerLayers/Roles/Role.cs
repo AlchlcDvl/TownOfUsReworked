@@ -12,7 +12,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public virtual void IntroPrefix(IntroCutscene._ShowTeam_d__36 __instance) {}
 
-        #pragma warning disable
         public static bool UndeadWin;
         public static bool CabalWin;
         public static bool ReanimatedWin;
@@ -36,13 +35,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public static bool PhantomWins;
 
+        public static bool JesterWins;
+        public static bool ActorWins;
+        public static bool ExecutionerWins;
+        public static bool GuesserWins;
+        public static bool BountyHunterWins;
+        public static bool CannibalWins;
+        public static bool TrollWins;
+
         public static bool RoleWins => UndeadWin || CabalWin || InfectorsWin || ReanimatedWin || SectWin || NKWins || CrewWin || IntruderWin || SyndicateWin || AllNeutralsWin || GlitchWins
-            || JuggernautWins || SerialKillerWins || ArsonistWins || CryomaniacWins || MurdererWins || PhantomWins || WerewolfWins;
+            || JuggernautWins || SerialKillerWins || ArsonistWins || CryomaniacWins || MurdererWins || PhantomWins || WerewolfWins || ActorWins || BountyHunterWins || CannibalWins ||
+            ExecutionerWins || GuesserWins || JesterWins || TrollWins;
 
         public static int ChaosDriveMeetingTimerCount;
         public static bool SyndicateHasChaosDrive;
         public static PlayerControl DriveHolder;
-        #pragma warning restore
 
         public Color32 FactionColor = Colors.Faction;
         public Color32 SubFactionColor = Colors.SubFaction;
@@ -55,8 +62,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public ChatChannel CurrentChannel = ChatChannel.All;
         public List<Vent> Vents = new();
         public List<Footprint> AllPrints = new();
-        public Dictionary<byte, ArrowBehaviour> AllArrows = new();
-        public Dictionary<byte, SpriteRenderer> Points = new();
+        public Dictionary<byte, CustomArrow> AllArrows = new();
+        public Dictionary<byte, CustomArrow> DeadArrows = new();
+        public Dictionary<PointInTime, DateTime> Positions = new();
+        public List<PointInTime> PointsInTime => Positions.Keys.ToList();
 
         public string FactionColorString => $"<color=#{FactionColor.ToHtmlStringRGBA()}>";
         public string SubFactionColorString => $"<color=#{SubFactionColor.ToHtmlStringRGBA()}>";
@@ -66,6 +75,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public string StartText = "Woah The Game Started";
         public string AbilitiesText = "- None";
+        public string Objectives = "- None";
 
         public string FactionName => $"{Faction}";
         public string SubFactionName => $"{SubFaction}";
@@ -75,7 +85,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public bool RoleBlockImmune;
 
-        public string Objectives = "- None";
+        public bool Rewinding;
 
         public bool Bombed;
         public bool Diseased;
@@ -90,6 +100,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public GameObject RoleCardButton;
         public bool RoleCardActive;
         public TextMeshPro RoleInfo;
+        public GameObject RoleCard;
         public Vector3 Pos2;
 
         public GameObject ZoomButton;
@@ -124,21 +135,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             __instance.PetButton.buttonLabelText.SetOutlineColor(FactionColor);
             __instance.ImpostorVentButton.buttonLabelText.SetOutlineColor(FactionColor);
             __instance.SabotageButton.buttonLabelText.SetOutlineColor(FactionColor);
+            __instance.SabotageButton.gameObject.SetActive(((BaseFaction == Faction.Intruder && Faction == Faction.Intruder) || (BaseFaction == Faction.Syndicate && Faction ==
+                Faction.Syndicate && CustomGameOptions.AltImps)) && Player.Data.IsImpostor());
             Player.RegenTask();
             __instance.GameSettings.text = GameSettings.Settings();
-
-            if (IsDead && CustomGameOptions.ShowMediumToDead && AllRoles.Any(x => x.RoleType == RoleEnum.Medium && ((Medium)x).MediatedPlayers.ContainsKey(PlayerId)))
-            {
-                var role2 = (Medium)AllRoles.Find(x => x.RoleType == RoleEnum.Medium && ((Medium)x).MediatedPlayers.ContainsKey(PlayerId));
-                role2.MediatedPlayers.GetValueSafe(PlayerId).target = role2.Player.transform.position;
-            }
-
-            if (IsDead && CustomGameOptions.ShowMediumToDead && AllRoles.Any(x => x.RoleType == RoleEnum.Retributionist && ((Retributionist)x).IsMed &&
-                ((Retributionist)x).MediatedPlayers.ContainsKey(PlayerId)))
-            {
-                var role2 = (Retributionist)AllRoles.Find(x => x.RoleType == RoleEnum.Retributionist && ((Retributionist)x).MediatedPlayers.ContainsKey(PlayerId));
-                role2.MediatedPlayers.GetValueSafe(PlayerId).target = role2.Player.transform.position;
-            }
 
             foreach (var ret in GetRoles<Retributionist>(RoleEnum.Retributionist))
             {
@@ -233,31 +233,35 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     player.MyRend().material.SetFloat("_Outline", 0f);
             }
 
-            foreach (var arrow in AllArrows)
+            if (IsDead)
             {
-                var player = Utils.PlayerById(arrow.Key);
-
-                #pragma warning disable
-                if (player == null || player.Data.IsDead || player.Data.Disconnected)
+                foreach (var pair in DeadArrows)
                 {
-                    DestroyArrowR(arrow.Key);
-                    continue;
+                    var player = Utils.PlayerById(pair.Key);
+                    pair.Value.Update(player.transform.position);
                 }
-                #pragma warning restore
-
-                arrow.Value.target = player.transform.position;
             }
 
-            var dead = (!Player.IsPostmortal() || (Player.IsPostmortal() && Player.Caught())) && IsDead;
-            BombKillButton.Update("KILL", true, Bombed);
+            foreach (var pair in AllArrows)
+            {
+                var player = Utils.PlayerById(pair.Key);
+                var body = Utils.BodyById(pair.Key);
 
-            var diff = __instance.SettingsButton.transform.localPosition - __instance.MapButton.transform.localPosition;
+                if (player.Data.Disconnected || (player.Data.IsDead && !body))
+                {
+                    DestroyArrowR(pair.Key);
+                    continue;
+                }
+
+                pair.Value.Update(player.Data.IsDead ? player.transform.position : body.transform.position);
+            }
+
+            BombKillButton.Update("KILL", true, Bombed);
 
             if (!SettingsButton)
             {
                 SettingsButton = UObject.Instantiate(__instance.MapButton.gameObject, __instance.MapButton.transform.parent);
-                var rend = SettingsButton.GetComponent<SpriteRenderer>();
-                rend.sprite = AssetManager.GetSprite("CurrentSettings");
+                SettingsButton.GetComponent<SpriteRenderer>().sprite = AssetManager.GetSprite("CurrentSettings");
                 SettingsButton.GetComponent<PassiveButton>().OnClick = new();
                 SettingsButton.GetComponent<PassiveButton>().OnClick.AddListener((Action)(() => OpenSettings(__instance)));
             }
@@ -269,8 +273,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (!RoleCardButton)
             {
                 RoleCardButton = UObject.Instantiate(__instance.MapButton.gameObject, __instance.MapButton.transform.parent);
-                var rend = RoleCardButton.GetComponent<SpriteRenderer>();
-                rend.sprite = AssetManager.GetSprite("Help");
+                RoleCardButton.GetComponent<SpriteRenderer>().sprite = AssetManager.GetSprite("Help");
                 RoleCardButton.GetComponent<PassiveButton>().OnClick = new();
                 RoleCardButton.GetComponent<PassiveButton>().OnClick.AddListener((Action)(() => OpenRoleCard(__instance)));
             }
@@ -282,14 +285,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (!ZoomButton)
             {
                 ZoomButton = UObject.Instantiate(__instance.MapButton.gameObject, __instance.MapButton.transform.parent);
-                var rend = ZoomButton.GetComponent<SpriteRenderer>();
-                rend.sprite = AssetManager.GetSprite("Plus");
                 ZoomButton.GetComponent<PassiveButton>().OnClick = new();
                 ZoomButton.GetComponent<PassiveButton>().OnClick.AddListener(new Action(Zoom));
             }
 
             Pos3 = Pos2 + new Vector3(0, -0.66f, 0f);
-            ZoomButton.SetActive(__instance.MapButton.gameObject.active && !(MapBehaviour.Instance && MapBehaviour.Instance.IsOpen) && ConstantVariables.IsNormal && dead);
+            ZoomButton.SetActive(__instance.MapButton.gameObject.active && !(MapBehaviour.Instance && MapBehaviour.Instance.IsOpen) && ConstantVariables.IsNormal &&
+                (!Player.IsPostmortal() || (Player.IsPostmortal() && Player.Caught())) && IsDead);
             ZoomButton.transform.localPosition = Pos3;
             ZoomButton.GetComponent<SpriteRenderer>().sprite = AssetManager.GetSprite(Zooming ? "Plus" : "Minus");
 
@@ -313,20 +315,46 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (RoleCardActive)
                 RoleInfo.text = Player.RoleCardInfo();
+
+            if (!IsDead && !(Faction == Faction.Syndicate && CustomGameOptions.TimeRewindImmunity))
+            {
+                if (!Rewinding)
+                {
+                    Positions.Add(new(Player.transform.position), DateTime.UtcNow);
+                    var toBeRemoved = new List<PointInTime>();
+
+                    foreach (var pair in Positions)
+                    {
+                        var seconds = (DateTime.UtcNow - pair.Value).TotalSeconds;
+
+                        if (seconds > CustomGameOptions.TimeControlDuration + 1)
+                            toBeRemoved.Add(pair.Key);
+                    }
+
+                    foreach (var key in toBeRemoved)
+                        Positions.Remove(key);
+                }
+                else if (Positions.Count > 0)
+                {
+                    var point = PointsInTime[^1];
+                    Player.NetTransform.RpcSnapTo(point.Position);
+                    Positions.Remove(point);
+                }
+                else
+                    Positions.Clear();
+            }
         }
 
         public void DestroyArrowR(byte targetPlayerId)
         {
             var arrow = AllArrows.FirstOrDefault(x => x.Key == targetPlayerId);
             arrow.Value?.Destroy();
-            arrow.Value?.gameObject?.Destroy();
             AllArrows.Remove(arrow.Key);
         }
 
         public override void OnMeetingEnd(MeetingHud __instance)
         {
             base.OnMeetingEnd(__instance);
-            ClearPoints();
 
             if (Player.Is(ObjectifierEnum.Lovers))
                 CurrentChannel = ChatChannel.Lovers;
@@ -337,8 +365,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void OnLobby()
         {
             base.OnLobby();
-            ClearPoints();
-            AllArrows.Values.DestroyAll();
+            AllArrows.Values.ToList().DestroyAll();
             AllArrows.Clear();
         }
 
@@ -355,14 +382,25 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 RoleInfo = UObject.Instantiate(__instance.KillButton.cooldownTimerText, __instance.transform);
                 RoleInfo.enableWordWrapping = false;
                 RoleInfo.transform.localScale = Vector3.one * 0.5f;
-                RoleInfo.transform.localPosition = new(0, 0, 50f);
+                RoleInfo.transform.localPosition = new(0, 0, -1f);
                 RoleInfo.alignment = TextAlignmentOptions.Center;
                 RoleInfo.gameObject.layer = 5;
+            }
+
+            if (!RoleCard)
+            {
+                RoleCard = new GameObject("RoleCard") { layer = 5 };
+                RoleCard.AddComponent<SpriteRenderer>().sprite = AssetManager.GetSprite("RoleCard");
+                RoleCard.transform.SetParent(__instance.transform);
+                RoleCard.transform.localPosition = new(0, 0, 0);
+                RoleCard.transform.localScale *= 4f;
+                RoleCard.layer = 5;
             }
 
             RoleCardActive = !RoleCardActive;
             RoleInfo.text = Player.RoleCardInfo();
             RoleInfo.gameObject.SetActive(RoleCardActive);
+            RoleCard.SetActive(RoleCardActive);
         }
 
         public override void UpdateMap(MapBehaviour __instance)
@@ -373,42 +411,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (IsBlocked)
                 __instance.Close();
-
-            if (IsDead || MeetingHud.Instance)
-                return;
-
-            foreach (var pair in AllArrows)
-            {
-                var player = Utils.PlayerById(pair.Key);
-
-                if (!player.Data.IsDead)
-                {
-                    var v = pair.Value.target;
-                    v /= ShipStatus.Instance.MapScale;
-                    v.x *= Mathf.Sign(ShipStatus.Instance.transform.localScale.x);
-                    v.z = -1f;
-
-                    if (Points.ContainsKey(player.PlayerId))
-                        Points[player.PlayerId].transform.localPosition = v;
-                    else
-                    {
-                        var point = UObject.Instantiate(__instance.HerePoint, __instance.HerePoint.transform.parent, true);
-                        point.transform.localPosition = v;
-                        point.enabled = true;
-                        player.SetPlayerMaterialColors(point);
-                        Points.Add(player.PlayerId, point);
-                    }
-                }
-            }
-        }
-
-        public void ClearPoints()
-        {
-            foreach (var pair in Points)
-            {
-                pair.Value.Destroy();
-                Points.Remove(pair.Key);
-            }
         }
 
         private static bool IsExempt(PlayerVoteArea voteArea)
@@ -448,7 +450,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             SettingsActive = false;
             HudManager.Instance.GameSettings.gameObject.SetActive(false);
             RoleCardActive = false;
-            RoleInfo.gameObject.SetActive(false);
+            RoleInfo?.gameObject?.SetActive(false);
+            RoleCard?.SetActive(false);
             Zooming = false;
             Camera.main.orthographicSize = 3f;
 
@@ -550,10 +553,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         protected Role(PlayerControl player) : base(player)
         {
+            if (GetRole(player))
+                GetRole(player).Player = null;
+
             Color = Colors.Layer;
             LayerType = PlayerLayerEnum.Role;
             BombKillButton = new(this, "BombKill", AbilityTypes.Direct, "ActionSecondary", BombKill);
-            Points = new();
             AllRoles.Add(this);
         }
 

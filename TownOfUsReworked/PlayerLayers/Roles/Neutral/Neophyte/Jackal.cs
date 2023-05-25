@@ -33,8 +33,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float RecruitTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastRecruited;
+            var timespan = DateTime.UtcNow - LastRecruited;
             var num = Player.GetModifiedCooldown(CustomGameOptions.RecruitCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;

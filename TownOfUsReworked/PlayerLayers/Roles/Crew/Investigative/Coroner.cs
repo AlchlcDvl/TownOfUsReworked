@@ -2,7 +2,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Coroner : CrewRole
     {
-        public Dictionary<byte, ArrowBehaviour> BodyArrows = new();
+        public Dictionary<byte, CustomArrow> BodyArrows = new();
         public List<byte> Reported = new();
         public CustomButton CompareButton;
         public DeadPlayer ReferenceBody;
@@ -31,8 +31,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float CompareTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastCompared;
+            var timespan = DateTime.UtcNow - LastCompared;
             var num = Player.GetModifiedCooldown(CustomGameOptions.CompareCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -40,8 +39,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float AutopsyTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastAutopsied;
+            var timespan = DateTime.UtcNow - LastAutopsied;
             var num = Player.GetModifiedCooldown(CustomGameOptions.AutopsyCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -51,14 +49,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var arrow = BodyArrows.FirstOrDefault(x => x.Key == targetPlayerId);
             arrow.Value?.Destroy();
-            arrow.Value.gameObject?.Destroy();
             BodyArrows.Remove(arrow.Key);
         }
 
         public override void OnLobby()
         {
             base.OnLobby();
-            BodyArrows.Values.DestroyAll();
+            BodyArrows.Values.ToList().DestroyAll();
             BodyArrows.Clear();
         }
 
@@ -70,7 +67,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (!PlayerControl.LocalPlayer.Data.IsDead)
             {
-                var validBodies = Utils.AllBodies.Where(x => Murder.KilledPlayers.Any(y => y.PlayerId == x.ParentId && DateTime.UtcNow <
+                var validBodies = Utils.AllBodies.Where(x => Utils.KilledPlayers.Any(y => y.PlayerId == x.ParentId && DateTime.UtcNow <
                     y.KillTime.AddSeconds(CustomGameOptions.CoronerArrowDuration)));
 
                 foreach (var bodyArrow in BodyArrows.Keys)
@@ -82,18 +79,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 foreach (var body in validBodies)
                 {
                     if (!BodyArrows.ContainsKey(body.ParentId))
-                    {
-                        var gameObj = new GameObject("CoronerArrow");
-                        var arrow = gameObj.AddComponent<ArrowBehaviour>();
-                        gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
-                        var renderer = gameObj.AddComponent<SpriteRenderer>();
-                        renderer.sprite = AssetManager.GetSprite("Arrow");
-                        arrow.image = renderer;
-                        gameObj.layer = 5;
-                        BodyArrows.Add(body.ParentId, arrow);
-                    }
+                        BodyArrows.Add(body.ParentId, new(Player, Color));
 
-                    BodyArrows.GetValueSafe(body.ParentId).target = body.TruePosition;
+                    BodyArrows[body.ParentId].Update(body.TruePosition);
                 }
             }
             else if (BodyArrows.Count != 0)
@@ -108,14 +96,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var playerId = AutopsyButton.TargetBody.ParentId;
             var player = Utils.PlayerById(playerId);
             Utils.Spread(Player, player);
-            var matches = Murder.KilledPlayers.Where(x => x.PlayerId == playerId).ToArray();
+            var matches = Utils.KilledPlayers.Where(x => x.PlayerId == playerId).ToArray();
             DeadPlayer killed = null;
 
             if (matches.Length > 0)
                 killed = matches[0];
 
             if (killed == null)
-                Utils.Flash(new Color32(255, 0, 0, 255));
+                Utils.Flash(new(255, 0, 0, 255));
             else
             {
                 ReferenceBody = killed;
@@ -135,9 +123,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (interact[3])
             {
                 if (CompareButton.TargetPlayer.PlayerId == ReferenceBody.KillerId || CompareButton.TargetPlayer.IsFramed())
-                    Utils.Flash(new Color32(255, 0, 0, 255));
+                    Utils.Flash(new(255, 0, 0, 255));
                 else
-                    Utils.Flash(new Color32(0, 255, 0, 255));
+                    Utils.Flash(new(0, 255, 0, 255));
 
                 UsesLeft--;
             }
@@ -155,7 +143,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (info == null || PlayerControl.LocalPlayer != Player)
                 return;
 
-            var matches = Murder.KilledPlayers.Where(x => x.PlayerId == info.PlayerId).ToArray();
+            var matches = Utils.KilledPlayers.Where(x => x.PlayerId == info.PlayerId).ToArray();
             DeadPlayer killer = null;
 
             if (matches.Length > 0)

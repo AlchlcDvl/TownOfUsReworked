@@ -605,6 +605,15 @@ namespace TownOfUsReworked.Custom
                 else
                     role2.LastSpelled = DateTime.UtcNow;
             }
+            else if (local.Is(RoleEnum.TimeKeeper))
+            {
+                var role2 = (TimeKeeper)role;
+
+                if (start)
+                    role2.LastTimed = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.TimeControlCooldown);
+                else
+                    role2.LastTimed = DateTime.UtcNow;
+            }
             else if (local.Is(RoleEnum.Stalker))
             {
                 var role2 = (Stalker)role;

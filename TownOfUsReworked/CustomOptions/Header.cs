@@ -3,7 +3,7 @@ namespace TownOfUsReworked.CustomOptions
     [HarmonyPatch]
     public class CustomHeaderOption : CustomOption
     {
-        public CustomHeaderOption(int id, MultiMenu menu, string name) : base(id, menu, name, CustomOptionType.Header, 0) {}
+        public CustomHeaderOption(MultiMenu menu, string name) : base(-1, menu, name, CustomOptionType.Header, 0) {}
 
         public override void OptionCreated()
         {

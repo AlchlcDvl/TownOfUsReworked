@@ -9,10 +9,8 @@
         public byte Id;
         public Action OnClick;
 
-        #pragma warning disable
         public static Tasks NearestTask;
         private readonly SpriteRenderer renderer = null;
-        #pragma warning restore
 
         [HideFromIl2Cpp]
         public float CanUse(GameData.PlayerInfo PC, out bool CanUse)
@@ -46,17 +44,17 @@
 
         public static void CreateThisTask(Vector3 Position, Vector3 Rotation, Action OnClick)
         {
-            var CallPlateform = new GameObject("CallPlateform");
-            CallPlateform.transform.position = Position;
-            CallPlateform.transform.localRotation = Quaternion.Euler(Rotation);
-            CallPlateform.transform.localScale = new(1f, 1f, 2f);
-            CallPlateform.layer = 12;
-            CallPlateform.SetActive(true);
+            var callPlateform = new GameObject("CallPlateform");
+            callPlateform.transform.position = Position;
+            callPlateform.transform.localRotation = Quaternion.Euler(Rotation);
+            callPlateform.transform.localScale = new(1f, 1f, 2f);
+            callPlateform.layer = 12;
+            callPlateform.SetActive(true);
 
-            var CallPlateformTasks = CallPlateform.AddComponent<Tasks>();
-            CallPlateformTasks.Id = 1;
-            CallPlateformTasks.OnClick = OnClick;
-            AllCustomPlateform.Add(CallPlateform);
+            var callPlateformTasks = callPlateform.AddComponent<Tasks>();
+            callPlateformTasks.Id = 1;
+            callPlateformTasks.OnClick = OnClick;
+            AllCustomPlateform.Add(callPlateform);
         }
 
         public static void ClosestTasks(PlayerControl Player)
@@ -91,7 +89,7 @@
 
             if (__instance.isActiveAndEnabled && PlayerControl.LocalPlayer && Tasks.NearestTask != null && Tasks.AllCustomPlateform != null)
             {
-                __instance.graphic.color = new Color(1f, 1f, 1f, 1f);
+                __instance.graphic.color = new(1f, 1f, 1f, 1f);
                 return false;
             }
 

@@ -11,7 +11,7 @@ namespace TownOfUsReworked.Monos
 
         public Debugger(IntPtr ptr) : base(ptr)
         {
-            TestWindow = new DragWindow(new(20, 20, 0, 0), "MCI Debugger", () =>
+            TestWindow = new(new(20, 20, 0, 0), "MCI Debugger", () =>
             {
                 GUILayout.Label("Name: " + DataManager.Player.Customization.Name);
 
@@ -102,7 +102,7 @@ namespace TownOfUsReworked.Monos
                     }
 
                     if (GUILayout.Button("Complete Tasks"))
-                        PlayerControl.LocalPlayer.myTasks.Il2CppToSystem().ForEach(x => PlayerControl.LocalPlayer.RpcCompleteTask(x.Id));
+                        PlayerControl.LocalPlayer.myTasks.ForEach(x => PlayerControl.LocalPlayer.RpcCompleteTask(x.Id));
 
                     if (GUILayout.Button("Redo Intro Sequence"))
                     {
@@ -114,25 +114,19 @@ namespace TownOfUsReworked.Monos
                         PlayerControl.LocalPlayer.CmdReportDeadBody(null);
 
                     if (GUILayout.Button("End Meeting") && MeetingHud.Instance)
-                        PlayerControl.AllPlayerControls.Il2CppToSystem().ForEach(x => MeetingHud.Instance.CmdCastVote(x.PlayerId, x.PlayerId));
+                        PlayerControl.AllPlayerControls.ForEach(x => MeetingHud.Instance.CmdCastVote(x.PlayerId, x.PlayerId));
 
                     if (GUILayout.Button("Kill Self"))
                         Utils.RpcMurderPlayer(PlayerControl.LocalPlayer, PlayerControl.LocalPlayer);
 
                     if (GUILayout.Button("Kill All"))
-                        PlayerControl.AllPlayerControls.Il2CppToSystem().ForEach(x => Utils.RpcMurderPlayer(x, x));
+                        PlayerControl.AllPlayerControls.ForEach(x => Utils.RpcMurderPlayer(x, x));
 
                     if (GUILayout.Button("Revive Self"))
                         Utils.Revive(PlayerControl.LocalPlayer);
 
                     if (GUILayout.Button("Revive All"))
-                    {
-                        foreach (var player in PlayerControl.AllPlayerControls)
-                        {
-                            if (player.Data.IsDead)
-                                Utils.Revive(player);
-                        }
-                    }
+                        PlayerControl.AllPlayerControls.ForEach(x => Utils.Revive(x));
 
                     if (GUILayout.Button("Log Dump"))
                     {
@@ -143,19 +137,19 @@ namespace TownOfUsReworked.Monos
 
                 if (GUILayout.Button("Flash"))
                 {
-                    var r = URandom.RandomRangeInt(0, 256);
-                    var g = URandom.RandomRangeInt(0, 256);
-                    var b = URandom.RandomRangeInt(0, 256);
-                    var flashColor = new Color32((byte)r, (byte)g, (byte)b, 255);
+                    var r = (byte)URandom.RandomRangeInt(0, 256);
+                    var g = (byte)URandom.RandomRangeInt(0, 256);
+                    var b = (byte)URandom.RandomRangeInt(0, 256);
+                    var flashColor = new Color32(r, g, b, 255);
                     Utils.Flash(flashColor);
                 }
 
                 if (PlayerControl.LocalPlayer)
                 {
                     var position = PlayerControl.LocalPlayer.transform.position;
-                    GUILayout.Label($"x: {position.x}");
-                    GUILayout.Label($"y: {position.y}");
-                    GUILayout.Label($"z: {position.z}");
+                    GUILayout.Label($"x: {position.x:00.00}");
+                    GUILayout.Label($"y: {position.y:00.00}");
+                    GUILayout.Label($"z: {position.z:00.00}");
                 }
             })
             {
@@ -174,7 +168,7 @@ namespace TownOfUsReworked.Monos
             if (Input.GetKeyDown(KeyCode.F1))
             {
                 TestWindow.Enabled = !TestWindow.Enabled;
-                SettingsPatches.PresetButton.LoadPreset("LastUsed", true, true);
+                SettingsPatches.PresetButton.LoadPreset("LastUsed", true);
 
                 if (!TestWindow.Enabled)
                 {

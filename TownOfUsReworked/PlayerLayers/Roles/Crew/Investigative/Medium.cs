@@ -3,19 +3,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     public class Medium : CrewRole
     {
         public DateTime LastMediated;
-        public Dictionary<byte, ArrowBehaviour> MediatedPlayers = new();
+        public Dictionary<byte, CustomArrow> MediateArrows = new();
         public CustomButton MediateButton;
         public CustomButton SeanceButton;
+        public List<byte> MediatedPlayers = new();
 
         public Medium(PlayerControl player) : base(player)
         {
             Name = "Medium";
             StartText = "Spooky Scary Ghosties Send Shivers Down Your Spine";
-            AbilitiesText = "- You can mediate which makes ghosts visible to you" + (CustomGameOptions.ShowMediumToDead ? "\n- When mediating, dead players will be able to see " +
-                "you" : "");
+            AbilitiesText = "- You can mediate which makes ghosts visible to you" + (CustomGameOptions.ShowMediumToDead != ShowMediumToDead.No ?
+                "\n- When mediating, dead players will be able to see you" : "");
             Color = CustomGameOptions.CustomCrewColors ? Colors.Medium : Colors.Crew;
             RoleType = RoleEnum.Medium;
             MediatedPlayers = new();
+            MediateArrows = new();
             RoleAlignment = RoleAlignment.CrewInvest;
             InspectorResults = InspectorResults.NewLens;
             Type = LayerEnum.Medium;
@@ -25,8 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float MediateTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastMediated;
+            var timespan = DateTime.UtcNow - LastMediated;
             var num = Player.GetModifiedCooldown(CustomGameOptions.MediateCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -34,37 +35,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         private static void Seance() { /* Currently blank, gonna work on this later */ }
 
-        public void AddMediatePlayer(byte playerId)
-        {
-            var gameObj = new GameObject("MediumArrow");
-            var arrow = gameObj.AddComponent<ArrowBehaviour>();
-
-            if (Player == PlayerControl.LocalPlayer || CustomGameOptions.ShowMediumToDead)
-            {
-                gameObj.transform.parent = Player.gameObject.transform;
-                var renderer = gameObj.AddComponent<SpriteRenderer>();
-                renderer.sprite = AssetManager.GetSprite("Arrow");
-                arrow.image = renderer;
-                gameObj.layer = 5;
-                arrow.target = Utils.PlayerById(playerId).transform.position;
-                Utils.Flash(Color);
-            }
-
-            MediatedPlayers.Add(playerId, arrow);
-        }
-
         public void DestroyArrow(byte targetPlayerId)
         {
-            var arrow = MediatedPlayers.FirstOrDefault(x => x.Key == targetPlayerId);
+            var arrow = MediateArrows.FirstOrDefault(x => x.Key == targetPlayerId);
             arrow.Value?.Destroy();
-            arrow.Value.gameObject?.Destroy();
-            MediatedPlayers.Remove(arrow.Key);
+            MediateArrows.Remove(arrow.Key);
         }
 
         public override void OnLobby()
         {
             base.OnLobby();
-            MediatedPlayers.Values.DestroyAll();
+            MediateArrows.Values.ToList().DestroyAll();
+            MediateArrows.Clear();
             MediatedPlayers.Clear();
         }
 
@@ -74,19 +56,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             MediateButton.Update("MEDIATE", MediateTimer(), CustomGameOptions.MediateCooldown);
             SeanceButton.Update("SEANCE", MediateTimer(), CustomGameOptions.MediateCooldown, true, false);
 
-            if (!PlayerControl.LocalPlayer.Data.IsDead)
+            if (!IsDead)
             {
                 foreach (var player in PlayerControl.AllPlayerControls)
                 {
-                    if (MediatedPlayers.ContainsKey(player.PlayerId))
+                    if (MediateArrows.ContainsKey(player.PlayerId))
                     {
-                        MediatedPlayers.GetValueSafe(player.PlayerId).target = player.transform.position;
+                        MediateArrows[player.PlayerId].Update(player.transform.position, player.GetPlayerColor(false, CustomGameOptions.ShowMediatePlayer));
                         player.Visible = true;
 
                         if (!CustomGameOptions.ShowMediatePlayer)
                         {
                             player.SetOutfit(CustomPlayerOutfitType.Camouflage, Utils.CamoOutfit(player));
-                            PlayerMaterial.SetColors(UnityEngine.Color.grey, player.MyRend());
+                            PlayerMaterial.SetColors(UColor.grey, player.MyRend());
                         }
                     }
                 }
@@ -99,7 +81,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 return;
 
             LastMediated = DateTime.UtcNow;
-            var PlayersDead = Murder.KilledPlayers.GetRange(0, Murder.KilledPlayers.Count);
+            var PlayersDead = Utils.KilledPlayers.GetRange(0, Utils.KilledPlayers.Count);
 
             if (PlayersDead.Count == 0)
                 return;
@@ -111,13 +93,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
                 foreach (var dead in PlayersDead)
                 {
-                    if (Utils.AllBodies.Any(x => x.ParentId == dead.PlayerId && !MediatedPlayers.ContainsKey(x.ParentId)))
+                    if (Utils.AllBodies.Any(x => x.ParentId == dead.PlayerId && !MediateArrows.ContainsKey(x.ParentId)))
                     {
-                        AddMediatePlayer(dead.PlayerId);
+                        MediateArrows.Add(dead.PlayerId, new(Player, Color));
+                        MediatedPlayers.Add(dead.PlayerId);
                         var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                         writer.Write((byte)ActionsRPC.Mediate);
-                        writer.Write(dead.PlayerId);
                         writer.Write(PlayerId);
+                        writer.Write(dead.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
 
                         if (CustomGameOptions.DeadRevealed != DeadRevealed.All)
@@ -130,13 +113,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 PlayersDead.Shuffle();
                 var dead = PlayersDead.Random();
 
-                if (Utils.AllBodies.Any(x => x.ParentId == dead.PlayerId && !MediatedPlayers.ContainsKey(x.ParentId)))
+                if (Utils.AllBodies.Any(x => x.ParentId == dead.PlayerId && !MediateArrows.ContainsKey(x.ParentId)))
                 {
-                    AddMediatePlayer(dead.PlayerId);
+                    MediateArrows.Add(dead.PlayerId, new(Player, Color));
+                    MediatedPlayers.Add(dead.PlayerId);
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                     writer.Write((byte)ActionsRPC.Mediate);
-                    writer.Write(dead.PlayerId);
                     writer.Write(PlayerId);
+                    writer.Write(dead.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
             }

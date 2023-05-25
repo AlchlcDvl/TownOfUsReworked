@@ -3,7 +3,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     public class Mystic : CrewRole
     {
         public DateTime LastRevealed;
-        public static bool ConvertedDead => !PlayerControl.AllPlayerControls.ToArray().Any(x => x?.Data.IsDead == false && !x.Data.Disconnected && !x.Is(SubFaction.None));
+        public static bool ConvertedDead => !PlayerControl.AllPlayerControls.Any(x => !x.Data.IsDead && !x.Data.Disconnected && !x.Is(SubFaction.None));
         public CustomButton RevealButton;
 
         public Mystic(PlayerControl player) : base(player)
@@ -22,8 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float RevealTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastRevealed;
+            var timespan = DateTime.UtcNow - LastRevealed;
             var num = Player.GetModifiedCooldown(CustomGameOptions.RevealCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -63,9 +62,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (interact[3])
             {
                 if ((!RevealButton.TargetPlayer.Is(SubFaction.None) && !RevealButton.TargetPlayer.Is(RoleAlignment.NeutralNeo)) || RevealButton.TargetPlayer.IsFramed())
-                    Utils.Flash(new Color32(255, 0, 0, 255));
+                    Utils.Flash(new(255, 0, 0, 255));
                 else
-                    Utils.Flash(new Color32(0, 255, 0, 255));
+                    Utils.Flash(new(0, 255, 0, 255));
             }
 
             if (interact[0])

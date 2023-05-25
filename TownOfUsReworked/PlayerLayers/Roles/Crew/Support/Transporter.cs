@@ -28,8 +28,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Transporter";
             StartText = "Swap Locations Of Players For Maximum Confusion";
-            AbilitiesText = "- You can swap the locations of 2 players of your choice\n- Transporting someone in a vent will make the other player teleport on top of that vent or into" +
-                " the vent based on whether the target can vent or not";
+            AbilitiesText = "- You can swap the locations of 2 players of your choice";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Transporter : Colors.Crew;
             RoleType = RoleEnum.Transporter;
             TransportPlayer1 = null;
@@ -48,8 +47,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             WasInVent2 = false;
             Vent1 = null;
             Vent2 = null;
-            Transport1 = new GameObject("Transport1") { layer = 5 };
-            Transport2 = new GameObject("Transport2") { layer = 5 };
+            Transport1 = new("Transport1") { layer = 5 };
+            Transport2 = new("Transport2") { layer = 5 };
             Transport1.AddSubmergedComponent("ElevatorMover");
             Transport2.AddSubmergedComponent("ElevatorMover");
             Transport1.transform.position = new(Player.GetTruePosition().x, Player.GetTruePosition().y, (Player.GetTruePosition().y / 1000f) + 0.01f);
@@ -66,8 +65,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float TransportTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastTransported;
+            var timespan = DateTime.UtcNow - LastTransported;
             var num = Player.GetModifiedCooldown(CustomGameOptions.TransportCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -101,7 +99,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (TransportPlayer1.inVent)
             {
-                while (SubmergedCompatibility.GetInTransition())
+                while (ModCompatibility.GetInTransition())
                     yield return null;
 
                 TransportPlayer1.MyPhysics.ExitAllVents();
@@ -111,7 +109,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (TransportPlayer2.inVent)
             {
-                while (SubmergedCompatibility.GetInTransition())
+                while (ModCompatibility.GetInTransition())
                     yield return null;
 
                 TransportPlayer2.MyPhysics.ExitAllVents();
@@ -160,18 +158,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 TransportPlayer1.NetTransform.SnapTo(new(TransportPlayer2.GetTruePosition().x, TransportPlayer2.GetTruePosition().y + 0.3636f));
                 TransportPlayer2.NetTransform.SnapTo(new(TempPosition.x, TempPosition.y + 0.3636f));
 
-                if (SubmergedCompatibility.IsSubmerged)
+                if (ModCompatibility.IsSubmerged)
                 {
                     if (PlayerControl.LocalPlayer == TransportPlayer1)
                     {
-                        SubmergedCompatibility.ChangeFloor(TransportPlayer1.GetTruePosition().y > -7);
-                        SubmergedCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
+                        ModCompatibility.ChangeFloor(TransportPlayer1.GetTruePosition().y > -7);
+                        ModCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
                     }
 
                     if (PlayerControl.LocalPlayer == TransportPlayer2)
                     {
-                        SubmergedCompatibility.ChangeFloor(TransportPlayer2.GetTruePosition().y > -7);
-                        SubmergedCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
+                        ModCompatibility.ChangeFloor(TransportPlayer2.GetTruePosition().y > -7);
+                        ModCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
                     }
                 }
 
@@ -189,10 +187,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 Player1Body.transform.position = TransportPlayer2.GetTruePosition();
                 TransportPlayer2.NetTransform.SnapTo(new(TempPosition.x, TempPosition.y + 0.3636f));
 
-                if (SubmergedCompatibility.IsSubmerged && PlayerControl.LocalPlayer == TransportPlayer2)
+                if (ModCompatibility.IsSubmerged && PlayerControl.LocalPlayer == TransportPlayer2)
                 {
-                    SubmergedCompatibility.ChangeFloor(TransportPlayer2.GetTruePosition().y > -7);
-                    SubmergedCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
+                    ModCompatibility.ChangeFloor(TransportPlayer2.GetTruePosition().y > -7);
+                    ModCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
                 }
             }
             else if (Player1Body == null && Player2Body != null)
@@ -203,10 +201,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 TransportPlayer1.NetTransform.SnapTo(new(Player2Body.TruePosition.x, Player2Body.TruePosition.y + 0.3636f));
                 Player2Body.transform.position = TempPosition;
 
-                if (SubmergedCompatibility.IsSubmerged && PlayerControl.LocalPlayer == TransportPlayer1)
+                if (ModCompatibility.IsSubmerged && PlayerControl.LocalPlayer == TransportPlayer1)
                 {
-                    SubmergedCompatibility.ChangeFloor(TransportPlayer1.GetTruePosition().y > -7);
-                    SubmergedCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
+                    ModCompatibility.ChangeFloor(TransportPlayer1.GetTruePosition().y > -7);
+                    ModCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
                 }
             }
             else if (Player1Body != null && Player2Body != null)
@@ -263,8 +261,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void AnimateTransport1()
         {
-            Transport1.transform.position = new(TransportPlayer1.GetTruePosition().x, TransportPlayer1.GetTruePosition().y + 0.4f, (TransportPlayer1.GetTruePosition().y / 1000f) + 0.01f);
+            Transport1.transform.position = new(TransportPlayer1.GetTruePosition().x, TransportPlayer1.GetTruePosition().y + 0.35f, (TransportPlayer1.GetTruePosition().y / 1000f) + 0.01f);
             AnimationPlaying1.flipX = TransportPlayer1.MyRend().flipX;
+            AnimationPlaying1.transform.localScale *= 0.9f * TransportPlayer2.GetModifiedSize();
 
             HudManager.Instance.StartCoroutine(Effects.Lerp(CustomGameOptions.TransportDuration, new Action<float>(p =>
             {
@@ -280,8 +279,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void AnimateTransport2()
         {
-            Transport2.transform.position = new(TransportPlayer2.GetTruePosition().x, TransportPlayer2.GetTruePosition().y + 0.4f, (TransportPlayer2.GetTruePosition().y / 1000f) + 0.01f);
+            Transport2.transform.position = new(TransportPlayer2.GetTruePosition().x, TransportPlayer2.GetTruePosition().y + 0.35f, (TransportPlayer2.GetTruePosition().y / 1000f) + 0.01f);
             AnimationPlaying2.flipX = TransportPlayer2.MyRend().flipX;
+            AnimationPlaying2.transform.localScale *= 0.9f * TransportPlayer2.GetModifiedSize();
 
             HudManager.Instance.StartCoroutine(Effects.Lerp(CustomGameOptions.TransportDuration, new Action<float>(p =>
             {

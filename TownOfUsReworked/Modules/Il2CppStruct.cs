@@ -7,10 +7,8 @@ namespace TownOfUsReworked.Modules
     {
         private struct Il2CppListStruct
         {
-            #pragma warning disable
             public IntPtr _items;
             public int _size;
-            #pragma warning restore
         }
 
         private static readonly int _elemSize;
@@ -59,8 +57,6 @@ namespace TownOfUsReworked.Modules
 
         IEnumerator IEnumerable.GetEnumerator() => this;
 
-        #pragma warning disable
         public void Dispose() {}
-        #pragma warning restore
     }
 }

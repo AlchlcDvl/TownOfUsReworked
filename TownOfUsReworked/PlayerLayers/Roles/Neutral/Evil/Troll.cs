@@ -5,7 +5,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public bool Killed;
         public DateTime LastInteracted;
         public CustomButton InteractButton;
-        public bool TrollWins;
 
         public Troll(PlayerControl player) : base(player)
         {
@@ -23,8 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float InteractTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastInteracted;
+            var timespan = DateTime.UtcNow - LastInteracted;
             var num = CustomGameOptions.InteractCooldown * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;

@@ -5,13 +5,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public CustomButton BlackmailButton;
         public PlayerControl BlackmailedPlayer;
         public DateTime LastBlackmailed;
+        public bool ShookAlready;
+        public Sprite PrevOverlay;
+        public Color PrevColor;
 
         public Blackmailer(PlayerControl player) : base(player)
         {
             Name = "Blackmailer";
             StartText = "You Know Their Secrets";
-            AbilitiesText = "- You can blackmail players to ensure they cannot speak in the next meeting\n- Everyone will be alerted at the start of the meeting that someone has been" +
-                $" blackmailed{(CustomGameOptions.WhispersNotPrivate ? "\n- You can read whispers during meetings." : "")}\n{AbilitiesText}";
+            AbilitiesText = "- You can silence players to ensure they cannot hear what others say\n" + (CustomGameOptions.BMRevealed ? "- Everyone will be alerted at the start of the " +
+                "meeting that someone has been silenced " : "") + (CustomGameOptions.WhispersNotPrivate ? "\n- You can read whispers during meetings" : "") + $"\n{AbilitiesText}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Blackmailer : Colors.Intruder;
             RoleType = RoleEnum.Blackmailer;
             RoleAlignment = RoleAlignment.IntruderConceal;
@@ -23,8 +26,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float BlackmailTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastBlackmailed;
+            var timespan = DateTime.UtcNow - LastBlackmailed;
             var num = Player.GetModifiedCooldown(CustomGameOptions.BlackmailCd) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -53,7 +55,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 LastBlackmailed.AddSeconds(CustomGameOptions.ProtectKCReset);
         }
 
-        public bool Exception1(PlayerControl player) => player == BlackmailedPlayer;
+        public bool Exception1(PlayerControl player) => player == BlackmailedPlayer || (player.Is(Faction) && Faction != Faction.Crew && CustomGameOptions.BlackmailMates) ||
+            (player.Is(SubFaction) && SubFaction != SubFaction.None && CustomGameOptions.BlackmailMates);
 
         public override void UpdateHud(HudManager __instance)
         {

@@ -4,9 +4,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     {
         public CustomButton EatButton;
         public int EatNeed;
-        public bool CannibalWin;
+        public bool Eaten;
         public DateTime LastEaten;
-        public Dictionary<byte, ArrowBehaviour> BodyArrows = new();
+        public Dictionary<byte, CustomArrow> BodyArrows = new();
         public bool EatWin => EatNeed == 0;
 
         public Cannibal(PlayerControl player) : base(player)
@@ -28,8 +28,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float EatTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastEaten;
+            var timespan = DateTime.UtcNow - LastEaten;
             var num = Player.GetModifiedCooldown(CustomGameOptions.CannibalCd) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -39,14 +38,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var arrow = BodyArrows.FirstOrDefault(x => x.Key == targetPlayerId);
             arrow.Value?.Destroy();
-            arrow.Value.gameObject?.Destroy();
             BodyArrows.Remove(arrow.Key);
         }
 
         public override void OnLobby()
         {
             base.OnLobby();
-            BodyArrows.Values.DestroyAll();
+            BodyArrows.Values.ToList().DestroyAll();
             BodyArrows.Clear();
         }
 
@@ -57,7 +55,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (CustomGameOptions.EatArrows && !IsDead)
             {
-                var validBodies = Utils.AllBodies.Where(x => Murder.KilledPlayers.Any(y => y.PlayerId == x.ParentId &&
+                var validBodies = Utils.AllBodies.Where(x => Utils.KilledPlayers.Any(y => y.PlayerId == x.ParentId &&
                     y.KillTime.AddSeconds(CustomGameOptions.EatArrowDelay) < DateTime.UtcNow));
 
                 foreach (var bodyArrow in BodyArrows.Keys)
@@ -69,18 +67,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 foreach (var body in validBodies)
                 {
                     if (!BodyArrows.ContainsKey(body.ParentId))
-                    {
-                        var gameObj = new GameObject("CannibalArrow");
-                        var arrow = gameObj.AddComponent<ArrowBehaviour>();
-                        gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
-                        var renderer = gameObj.AddComponent<SpriteRenderer>();
-                        renderer.sprite = AssetManager.GetSprite("Arrow");
-                        arrow.image = renderer;
-                        gameObj.layer = 5;
-                        BodyArrows.Add(body.ParentId, arrow);
-                    }
+                        BodyArrows.Add(body.ParentId, new(Player, Color));
 
-                    BodyArrows.GetValueSafe(body.ParentId).target = body.TruePosition;
+                    BodyArrows[body.ParentId].Update(body.TruePosition);
                 }
             }
             else if (BodyArrows.Count != 0)
@@ -108,6 +97,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 writer2.Write((byte)WinLoseRPC.CannibalWin);
                 writer2.Write(PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer2);
+                Eaten = true;
             }
         }
     }

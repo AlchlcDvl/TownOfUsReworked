@@ -10,11 +10,11 @@ namespace TownOfUsReworked.CustomOptions
         private readonly CustomButtonOption CancelButton;
         private readonly CustomHeaderOption Header;
 
-        public CustomNestedOption(int id, MultiMenu menu, string name) : base(id, menu, name, CustomOptionType.Nested, 0)
+        public CustomNestedOption(MultiMenu menu, string name) : base(-1, menu, name, CustomOptionType.Nested, 0)
         {
-            InternalOptions = new List<CustomOption>();
-            Header = new CustomHeaderOption(-1, MultiMenu.external, name);
-            CancelButton = new CustomButtonOption(-1, MultiMenu.external, "Cancel", delegate { Cancel(FlashWhite); });
+            InternalOptions = new();
+            Header = new(MultiMenu.external, name);
+            CancelButton = new(MultiMenu.external, "Cancel", delegate { Cancel(FlashWhite); });
             InternalOptions.Add(Header);
             InternalOptions.Add(CancelButton);
             AllCancelButtons.Add(CancelButton);

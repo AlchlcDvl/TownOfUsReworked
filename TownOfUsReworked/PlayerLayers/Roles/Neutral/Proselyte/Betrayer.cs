@@ -20,8 +20,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float KillTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastKilled;
+            var timespan = DateTime.UtcNow - LastKilled;
             var num = Player.GetModifiedCooldown(CustomGameOptions.BetrayerKillCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -42,8 +41,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
         }
 
-        public bool Exception(PlayerControl player) => (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) ||
-            player == Player.GetOtherLover() || player == Player.GetOtherRival();
+        public bool Exception(PlayerControl player) => (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is Faction.Intruder or
+            Faction.Syndicate) || player == Player.GetOtherLover() || player == Player.GetOtherRival();
 
         public override void UpdateHud(HudManager __instance)
         {

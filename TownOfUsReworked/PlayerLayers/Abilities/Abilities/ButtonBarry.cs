@@ -19,8 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
 
         public float StartTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastButtoned;
+            var timespan = DateTime.UtcNow - LastButtoned;
             var num = Player.GetModifiedCooldown(CustomGameOptions.ButtonCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;

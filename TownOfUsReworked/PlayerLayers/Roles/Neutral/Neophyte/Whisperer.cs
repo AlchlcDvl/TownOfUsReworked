@@ -31,8 +31,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float WhisperTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastWhispered;
+            var timespan = DateTime.UtcNow - LastWhispered;
             var num = Player.GetModifiedCooldown(CustomGameOptions.WhisperCooldown, CustomGameOptions.WhisperCooldownIncrease * WhisperCount) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;

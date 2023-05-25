@@ -4,7 +4,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     {
         public DateTime LastInfected;
         public List<byte> Infected = new();
-        public bool CanTransform => PlayerControl.AllPlayerControls.ToArray().Count(x => !x.Data.IsDead && !x.Data.Disconnected) <= Infected.Count;
+        public bool CanTransform => PlayerControl.AllPlayerControls.Count(x => !x.Data.IsDead && !x.Data.Disconnected) <= Infected.Count;
         public CustomButton InfectButton;
 
         public Plaguebearer(PlayerControl player) : base(player)
@@ -24,8 +24,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float InfectTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastInfected;
+            var timespan = DateTime.UtcNow - LastInfected;
             var num = Player.GetModifiedCooldown(CustomGameOptions.InfectCd) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;

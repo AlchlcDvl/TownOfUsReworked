@@ -20,8 +20,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float KillTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastKilled;
+            var timespan = DateTime.UtcNow - LastKilled;
             var num = Player.GetModifiedCooldown(!HoldsDrive && RoleType is RoleEnum.Anarchist ? CustomGameOptions.AnarchKillCooldown : CustomGameOptions.ChaosDriveKillCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;

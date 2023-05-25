@@ -14,7 +14,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Consort";
             RoleType = RoleEnum.Consort;
-            StartText = "Roleblock The Crew And Stop Them From Progressing";
+            StartText = "Roleblock The <color=#8CFFFFFF>Crew</color> From Progressing";
             AbilitiesText = "- You can seduce players\n- Seduction blocks your target from being able to use their abilities for a short while\n- You are immune to blocks\n" +
                 $"- If you block a <color=#336EFFFF>Serial Killer</color>, they will be forced to kill you\n{AbilitiesText}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Consort : Colors.Intruder;
@@ -53,8 +53,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float RoleblockTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastBlock;
+            var timespan = DateTime.UtcNow - LastBlock;
             var num = Player.GetModifiedCooldown(CustomGameOptions.ConsRoleblockCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;

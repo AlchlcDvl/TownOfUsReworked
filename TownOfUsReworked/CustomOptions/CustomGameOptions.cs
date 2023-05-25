@@ -78,7 +78,7 @@ namespace TownOfUsReworked.CustomOptions
         public static float RandomMapMira => Generate.RandomMapMira.Get();
         public static float RandomMapPolus => Generate.RandomMapPolus.Get();
         public static float RandomMapAirship => Generate.RandomMapAirship.Get();
-        public static float RandomMapSubmerged => SubmergedCompatibility.Loaded ? Generate.RandomMapSubmerged.Get() : 0f;
+        public static float RandomMapSubmerged => ModCompatibility.SubLoaded ? Generate.RandomMapSubmerged.Get() : 0f;
         public static float SmallMapDecreasedCooldown => Generate.SmallMapDecreasedCooldown.Get();
         public static float LargeMapIncreasedCooldown => Generate.LargeMapIncreasedCooldown.Get();
         public static int SmallMapIncreasedShortTasks => (int)Generate.SmallMapIncreasedShortTasks.Get();
@@ -195,6 +195,8 @@ namespace TownOfUsReworked.CustomOptions
         public static int StalkerOn => (int)Generate.StalkerOn.Get();
         public static int ColliderOn => (int)Generate.ColliderOn.Get();
         public static int DrunkardOn => (int)Generate.DrunkardOn.Get();
+        public static int TimeKeeperOn => (int)Generate.TimeKeeperOn.Get();
+        public static int SilencerOn => (int)Generate.SilencerOn.Get();
 
         //Ability Spawn
         public static int CrewAssassinOn => (int)Generate.CrewAssassinOn.Get();
@@ -279,6 +281,7 @@ namespace TownOfUsReworked.CustomOptions
         public static NoSolo NoSolo => (NoSolo)Generate.NoSolo.Get();
         public static bool CustomNeutColors => Generate.CustomNeutColors.Get();
         public static bool NeutralsVent => Generate.NeutralsVent.Get();
+        public static bool NeutralEvilsEndGame => Generate.NeutralEvilsEndGame.Get();
         public static int NeutralMax => (int)Generate.NeutralMax.Get();
         public static int NeutralMin => (int)Generate.NeutralMin.Get();
 
@@ -316,7 +319,7 @@ namespace TownOfUsReworked.CustomOptions
         public static DeadRevealed DeadRevealed => (DeadRevealed)Generate.DeadRevealed.Get();
         public static float MediateCooldown => Generate.MediateCooldown.Get();
         public static bool ShowMediatePlayer => Generate.ShowMediatePlayer.Get();
-        public static bool ShowMediumToDead => Generate.ShowMediumToDead.Get();
+        public static ShowMediumToDead ShowMediumToDead => (ShowMediumToDead)Generate.ShowMediumToDead.Get();
         public static bool UniqueMedium => Generate.UniqueMedium.Get();
 
         //Coroner Settings
@@ -712,6 +715,7 @@ namespace TownOfUsReworked.CustomOptions
         public static bool UniqueBlackmailer => Generate.UniqueBlackmailer.Get();
         public static bool WhispersNotPrivate => Generate.WhispersNotPrivate.Get();
         public static bool BlackmailMates => Generate.BlackmailMates.Get();
+        public static bool BMRevealed => Generate.BMRevealed.Get();
 
         //Grenadier Settings
         public static bool GrenadierIndicators => Generate.GrenadierIndicators.Get();
@@ -841,6 +845,14 @@ namespace TownOfUsReworked.CustomOptions
         public static bool UniqueDrunkard => Generate.UniqueDrunkard.Get();
         public static bool ConfuseImmunity => Generate.ConfuseImmunity.Get();
 
+        //Time Keeper Settings
+        public static int TimeKeeperCount => (int)Generate.TimeKeeperCount.Get();
+        public static float TimeControlCooldown => Generate.TimeControlCooldown.Get();
+        public static float TimeControlDuration => Generate.TimeControlDuration.Get();
+        public static bool UniqueTimeKeeper => Generate.UniqueTimeKeeper.Get();
+        public static bool TimeFreezeImmunity => Generate.TimeFreezeImmunity.Get();
+        public static bool TimeRewindImmunity => Generate.TimeRewindImmunity.Get();
+
         //Crusader Settings
         public static float CrusadeCooldown => Generate.CrusadeCooldown.Get();
         public static float CrusadeDuration => Generate.CrusadeDuration.Get();
@@ -871,6 +883,14 @@ namespace TownOfUsReworked.CustomOptions
         public static float ConcealDuration => Generate.ConcealDuration.Get();
         public static bool UniqueConcealer => Generate.UniqueConcealer.Get();
         public static bool ConcealMates => Generate.ConcealMates.Get();
+
+        //Silencer Settings
+        public static float SilenceCooldown => Generate.SilenceCooldown.Get();
+        public static int SilencerCount => (int)Generate.SilencerCount.Get();
+        public static bool UniqueSilencer => Generate.UniqueSilencer.Get();
+        public static bool WhispersNotPrivateSilencer => Generate.WhispersNotPrivateSilencer.Get();
+        public static bool SilenceMates => Generate.SilenceMates.Get();
+        public static bool SilenceRevealed => Generate.SilenceRevealed.Get();
 
         //Stalker Settings
         public static int StalkerCount => (int)Generate.StalkerCount.Get();

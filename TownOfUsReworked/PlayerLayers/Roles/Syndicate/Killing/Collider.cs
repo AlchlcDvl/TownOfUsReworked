@@ -17,7 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = CustomGameOptions.CustomSynColors ? Colors.Collider : Colors.Syndicate;
             RoleAlignment = RoleAlignment.SyndicateKill;
             Type = LayerEnum.Collider;
-            InspectorResults = InspectorResults.MovesAround;
+            InspectorResults = InspectorResults.Unseen;
             Positive = null;
             Negative = null;
             PositiveButton = new(this, "Positive", AbilityTypes.Direct, "ActionSecondary", SetPositive, Exception1);
@@ -26,8 +26,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float PositiveTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastPositive;
+            var timespan = DateTime.UtcNow - LastPositive;
             var num = Player.GetModifiedCooldown(CustomGameOptions.CollideCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -35,8 +34,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float NegativeTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastNegative;
+            var timespan = DateTime.UtcNow - LastNegative;
             var num = Player.GetModifiedCooldown(CustomGameOptions.CollideCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;

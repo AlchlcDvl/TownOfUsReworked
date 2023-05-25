@@ -114,6 +114,8 @@
         public static Color32 Stalker => new(126, 77, 0, 255); //#7E4D00FF
         public static Color32 Spellslinger => new(0, 40, 245, 255); //#0028F5FF
         public static Color32 Drunkard => new(255, 121, 0, 255); //#FF7900FF
+        public static Color32 TimeKeeper => new(55, 105, 254, 255); //#3769FEFF
+        public static Color32 Silencer => new(170, 180, 62, 255); //#AAB43EFF
 
         //Modifier Colors
         public static Color32 Bait => new(0, 179, 179, 255); //#00B3B3FF
@@ -165,12 +167,13 @@
         public static Color32 Objectives => new(177, 72, 226, 255); //#B148E2FF
         public static Color32 Attributes => new(236, 28, 69, 255); //#EC1C45FF
         public static Color32 Abilities => new(32, 102, 148, 255); //#206694FF
+        public static Color32 What => new(102, 151, 255, 255); //#6697FFFF
 
         //Color Storage
         //#dcee85 #6c29ab #800000 #808000 #008000 #800080 #000080 #e74c3c #992d22 #00FFFD #917ac0 #Eac1d2 #286e58 #db4f20 #abd432 #2e3b97 #ffd100 #fffcce #40b4ff #a82626 #8ff731 #942b3b
-        //#4e4e4e #fffead #1abc9c #2ecc71 #1f8b4c #3498db #ad1457 #c27c0e #ffd2fb #805bc4 #95a5a6 #979c9f #888888 #ff7272 #f25ff1 #FF00FF #916640 #1AFF74 #2672FF #8637C2 #3769FE #e7dae2
-        //#6a1515 #569d29 #f1612b #7d86e1 #612bef #F6AAB7 #EC62A5 #78c689 #fccc52 #6b2d2a #aab43e #FCBA03 #ff351f #F8CD46 #FF4D00 #7EFBC2 #4d4d4d #38b553 #0000FF #0000A7 #f25e75 #5865F2
-        //#1E300B #06DF0C #F3A6D3 #FB9327 #0437EF #6697FF #9B7038
+        //#4e4e4e #fffead #1abc9c #2ecc71 #1f8b4c #3498db #ad1457 #c27c0e #ffd2fb #805bc4 #95a5a6 #979c9f #888888 #ff7272 #f25ff1 #FF00FF #916640 #1AFF74 #2672FF #8637C2 #e7dae2 #9B7038
+        //#6a1515 #569d29 #f1612b #7d86e1 #612bef #F6AAB7 #EC62A5 #78c689 #fccc52 #6b2d2a #FCBA03 #ff351f #F8CD46 #FF4D00 #7EFBC2 #4d4d4d #38b553 #0000FF #0000A7 #f25e75 #5865F2 #0437EF
+        //#1E300B #06DF0C #F3A6D3 #FB9327
 
         //Symbol Storage
         //⟡ ☆ ♡ ♧ ♤ ▶ ❥ ✔ Γ ι ν σ τ υ ψ Ψ ✧ ¢

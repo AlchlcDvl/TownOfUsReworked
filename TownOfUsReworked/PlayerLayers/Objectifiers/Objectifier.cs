@@ -6,19 +6,20 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         public static readonly List<Objectifier> AllObjectifiers = new();
         public static Objectifier LocalObjectifier => GetObjectifier(PlayerControl.LocalPlayer);
 
-        #pragma warning disable
         public static bool LoveWins;
         public static bool RivalWins;
         public static bool TaskmasterWins;
         public static bool CorruptedWins;
         public static bool OverlordWins;
         public static bool MafiaWins;
-        #pragma warning restore
 
         public static bool ObjectifierWins => LoveWins || RivalWins || TaskmasterWins || CorruptedWins || OverlordWins || MafiaWins;
 
         public Objectifier(PlayerControl player) : base(player)
         {
+            if (GetObjectifier(player))
+                GetObjectifier(player).Player = null;
+
             Color = Colors.Objectifier;
             LayerType = PlayerLayerEnum.Objectifier;
             AllObjectifiers.Add(this);

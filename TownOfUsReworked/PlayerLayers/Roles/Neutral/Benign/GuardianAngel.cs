@@ -34,8 +34,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float ProtectTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastProtected;
+            var timespan = DateTime.UtcNow - LastProtected;
             var num = Player.GetModifiedCooldown(CustomGameOptions.ProtectCd) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;

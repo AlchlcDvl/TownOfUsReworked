@@ -9,7 +9,7 @@
 
         public override IEnumerator Timer()
         {
-            while (Transform != null)
+            while (Transform)
             {
                 yield return 0;
                 Update();
@@ -18,6 +18,8 @@
 
         public override void Update()
         {
+            base.Update();
+
             foreach (var player in PlayerControl.AllPlayerControls)
             {
                 if (player.Data.IsDead)

@@ -37,8 +37,7 @@
 
         public float BugTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastBugged;
+            var timespan = DateTime.UtcNow - LastBugged;
             var num = Player.GetModifiedCooldown(CustomGameOptions.BugCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -102,7 +101,7 @@
 
             UsesLeft--;
             LastBugged = DateTime.UtcNow;
-            Bugs.Add(new Bug(Player.GetTruePosition()));
+            Bugs.Add(new(Player.GetTruePosition()));
         }
     }
 }

@@ -2,7 +2,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Amnesiac : NeutralRole
     {
-        public Dictionary<byte, ArrowBehaviour> BodyArrows = new();
+        public Dictionary<byte, CustomArrow> BodyArrows = new();
         public CustomButton RememberButton;
 
         public Amnesiac(PlayerControl player) : base(player)
@@ -26,14 +26,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var arrow = BodyArrows.FirstOrDefault(x => x.Key == targetPlayerId);
             arrow.Value?.Destroy();
-            arrow.Value.gameObject?.Destroy();
             BodyArrows.Remove(arrow.Key);
         }
 
         public override void OnLobby()
         {
             base.OnLobby();
-            BodyArrows.Values.DestroyAll();
+            BodyArrows.Values.ToList().DestroyAll();
             BodyArrows.Clear();
         }
 
@@ -235,39 +234,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 foreach (var snitch in Ability.GetAbilities<Snitch>(AbilityEnum.Snitch))
                 {
                     if (snitch.TasksLeft <= CustomGameOptions.SnitchTasksRemaining && PlayerControl.LocalPlayer == amnesiac)
-                    {
-                        var gameObj = new GameObject("SnitchArrow") { layer = 5 };
-                        var arrow = gameObj.AddComponent<ArrowBehaviour>();
-                        gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
-                        var renderer = gameObj.AddComponent<SpriteRenderer>();
-                        renderer.sprite = AssetManager.GetSprite("Arrow");
-                        arrow.image = renderer;
-                        LocalRole.AllArrows.Add(snitch.PlayerId, arrow);
-                    }
+                        LocalRole.AllArrows.Add(snitch.PlayerId, new(amnesiac, Colors.Snitch, 0));
                     else if (snitch.TasksDone && PlayerControl.LocalPlayer == snitch.Player)
-                    {
-                        var gameObj = new GameObject("SnitchEvilArrow") { layer = 5 };
-                        var arrow = gameObj.AddComponent<ArrowBehaviour>();
-                        gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
-                        var renderer = gameObj.AddComponent<SpriteRenderer>();
-                        renderer.sprite = AssetManager.GetSprite("Arrow");
-                        arrow.image = renderer;
-                        GetRole(snitch.Player).AllArrows.Add(amnesiac.PlayerId, arrow);
-                    }
+                        GetRole(snitch.Player).AllArrows.Add(amnesiac.PlayerId, new(snitch.Player, Colors.Snitch));
                 }
 
                 foreach (var revealer in GetRoles<Revealer>(RoleEnum.Revealer))
                 {
                     if (revealer.Revealed && PlayerControl.LocalPlayer == amnesiac)
-                    {
-                        var gameObj = new GameObject("RevealerArrow") { layer = 5 };
-                        var arrow = gameObj.AddComponent<ArrowBehaviour>();
-                        gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
-                        var renderer = gameObj.AddComponent<SpriteRenderer>();
-                        renderer.sprite = AssetManager.GetSprite("Arrow");
-                        arrow.image = renderer;
-                        LocalRole.AllArrows.Add(revealer.PlayerId, arrow);
-                    }
+                        LocalRole.AllArrows.Add(revealer.PlayerId, new(amnesiac, Colors.Revealer, 0));
                 }
             }
 
@@ -285,7 +260,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (CustomGameOptions.RememberArrows && !PlayerControl.LocalPlayer.Data.IsDead)
             {
-                var validBodies = Utils.AllBodies.Where(x => Murder.KilledPlayers.Any(y => y.PlayerId == x.ParentId &&
+                var validBodies = Utils.AllBodies.Where(x => Utils.KilledPlayers.Any(y => y.PlayerId == x.ParentId &&
                     y.KillTime.AddSeconds(CustomGameOptions.RememberArrowDelay) < System.DateTime.UtcNow));
 
                 foreach (var bodyArrow in BodyArrows.Keys)
@@ -297,18 +272,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 foreach (var body in validBodies)
                 {
                     if (!BodyArrows.ContainsKey(body.ParentId))
-                    {
-                        var gameObj = new GameObject();
-                        var arrow = gameObj.AddComponent<ArrowBehaviour>();
-                        gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
-                        var renderer = gameObj.AddComponent<SpriteRenderer>();
-                        renderer.sprite = AssetManager.GetSprite("Arrow");
-                        arrow.image = renderer;
-                        gameObj.layer = 5;
-                        BodyArrows.Add(body.ParentId, arrow);
-                    }
+                        BodyArrows.Add(body.ParentId, new(Player, Color));
 
-                    BodyArrows.GetValueSafe(body.ParentId).target = body.TruePosition;
+                    BodyArrows[body.ParentId].Update(body.TruePosition);
                 }
             }
             else if (BodyArrows.Count != 0 || PlayerControl.AllPlayerControls.Count <= 4)

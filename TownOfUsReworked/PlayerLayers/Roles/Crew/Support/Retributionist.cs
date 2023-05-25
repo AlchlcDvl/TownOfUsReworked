@@ -33,8 +33,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             WasInVent2 = false;
             Vent1 = null;
             Vent2 = null;
-            Transport1 = new GameObject("Transport1") { layer = 5 };
-            Transport2 = new GameObject("Transport2") { layer = 5 };
+            Transport1 = new("Transport1") { layer = 5 };
+            Transport2 = new("Transport2") { layer = 5 };
             Transport1.AddSubmergedComponent("ElevatorMover");
             Transport2.AddSubmergedComponent("ElevatorMover");
             Transport1.transform.position = new(Player.GetTruePosition().x, Player.GetTruePosition().y, (Player.GetTruePosition().y / 1000f) + 0.01f);
@@ -86,13 +86,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             base.OnLobby();
 
-            BodyArrows.Values.DestroyAll();
+            BodyArrows.Values.ToList().DestroyAll();
             BodyArrows.Clear();
 
-            MediatedPlayers.Values.DestroyAll();
+            MediateArrows.Values.ToList().DestroyAll();
+            MediateArrows.Clear();
             MediatedPlayers.Clear();
 
-            TrackerArrows.Values.DestroyAll();
+            TrackerArrows.Values.ToList().DestroyAll();
             TrackerArrows.Clear();
 
             Bug.Clear(Bugs);
@@ -105,21 +106,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 var arrow = TrackerArrows.FirstOrDefault(x => x.Key == targetPlayerId);
                 arrow.Value?.Destroy();
-                arrow.Value.gameObject?.Destroy();
                 TrackerArrows.Remove(arrow.Key);
             }
             else if (IsCor)
             {
                 var arrow = BodyArrows.FirstOrDefault(x => x.Key == targetPlayerId);
                 arrow.Value?.Destroy();
-                arrow.Value.gameObject?.Destroy();
                 BodyArrows.Remove(arrow.Key);
             }
             else if (IsMed)
             {
-                var arrow = MediatedPlayers.FirstOrDefault(x => x.Key == targetPlayerId);
+                var arrow = MediateArrows.FirstOrDefault(x => x.Key == targetPlayerId);
                 arrow.Value?.Destroy();
-                arrow.Value.gameObject?.Destroy();
                 MediatedPlayers.Remove(arrow.Key);
             }
         }
@@ -150,7 +148,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             targetBox.name = "ReviveButton";
             targetBox.transform.localPosition = new(-0.4f, 0.03f, -1.3f);
             var renderer = targetBox.GetComponent<SpriteRenderer>();
-            renderer.sprite = AssetManager.GetSprite("RetDeselect");
+            renderer.sprite = AssetManager.GetSprite("RetDisabled");
             var button = targetBox.GetComponent<PassiveButton>();
             button.OnClick = new();
             button.OnClick.AddListener(SetActive(voteArea, __instance));
@@ -171,7 +169,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 if (Selected != null)
                 {
                     Actives[Selected.TargetPlayerId] = !Actives[voteArea.TargetPlayerId];
-                    MoarButtons[Selected.TargetPlayerId].GetComponent<SpriteRenderer>().sprite = AssetManager.GetSprite("RetDeselect");
+                    MoarButtons[Selected.TargetPlayerId].GetComponent<SpriteRenderer>().sprite = AssetManager.GetSprite("RetDisabled");
                 }
 
                 Selected = voteArea;
@@ -182,7 +180,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     if (MoarButtons[pair.Key] == null)
                         continue;
 
-                    MoarButtons[pair.Key].GetComponent<SpriteRenderer>().sprite = Actives[pair.Key] ? AssetManager.GetSprite("RetSelect") : AssetManager.GetSprite("RetDeselect");
+                    MoarButtons[pair.Key].GetComponent<SpriteRenderer>().sprite = Actives[pair.Key] ? AssetManager.GetSprite("RetActive") : AssetManager.GetSprite("RetDisabled");
                 }
             }
 
@@ -232,7 +230,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             base.UpdateHud(__instance);
             var system = ShipStatus.Instance.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>();
             var dummyActive = system?.dummy.IsActive;
-            var active = system?.specials.ToArray().Any(s => s.IsActive);
+            var active = system?.specials.Any(s => s.IsActive);
             var condition = active == true && dummyActive == false;
             var flag1 = TransportPlayer1 == null;
             var flag2 = TransportPlayer2 == null;
@@ -258,11 +256,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             BlockButton.Update("ROLEBLOCK", RoleblockTimer(), CustomGameOptions.EscRoleblockCooldown, OnEffect, TimeRemaining, CustomGameOptions.EscRoleblockDuration, true, IsEsc);
             TrackButton.Update("TRACK", TrackerTimer(), CustomGameOptions.TrackCd, UsesLeft, ButtonUsable, ButtonUsable && IsTrack);
 
-            if (!PlayerControl.LocalPlayer.Data.IsDead)
+            if (!IsDead)
             {
                 if (IsCor)
                 {
-                    var validBodies = Utils.AllBodies.Where(x => Murder.KilledPlayers.Any(y => y.PlayerId == x.ParentId && DateTime.UtcNow <
+                    var validBodies = Utils.AllBodies.Where(x => Utils.KilledPlayers.Any(y => y.PlayerId == x.ParentId && DateTime.UtcNow <
                         y.KillTime.AddSeconds(CustomGameOptions.CoronerArrowDuration)));
 
                     foreach (var bodyArrow in BodyArrows.Keys)
@@ -274,59 +272,43 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     foreach (var body in validBodies)
                     {
                         if (!BodyArrows.ContainsKey(body.ParentId))
-                        {
-                            var gameObj = new GameObject("RetCoronerArrow");
-                            var arrow = gameObj.AddComponent<ArrowBehaviour>();
-                            gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
-                            var renderer = gameObj.AddComponent<SpriteRenderer>();
-                            renderer.sprite = AssetManager.GetSprite("Arrow");
-                            arrow.image = renderer;
-                            gameObj.layer = 5;
-                            BodyArrows.Add(body.ParentId, arrow);
-                        }
+                            BodyArrows.Add(body.ParentId, new(Player, Color));
 
-                        BodyArrows.GetValueSafe(body.ParentId).target = body.TruePosition;
+                        BodyArrows[body.ParentId].Update(body.TruePosition);
                     }
                 }
                 else if (IsMed)
                 {
                     foreach (var player in PlayerControl.AllPlayerControls)
                     {
-                        if (MediatedPlayers.ContainsKey(player.PlayerId))
+                        if (MediateArrows.ContainsKey(player.PlayerId))
                         {
-                            MediatedPlayers.GetValueSafe(player.PlayerId).target = player.transform.position;
+                            MediateArrows[player.PlayerId].Update(player.transform.position, player.GetPlayerColor(false, CustomGameOptions.ShowMediatePlayer));
                             player.Visible = true;
 
                             if (!CustomGameOptions.ShowMediatePlayer)
                             {
                                 player.SetOutfit(CustomPlayerOutfitType.Camouflage, Utils.CamoOutfit(player));
-                                PlayerMaterial.SetColors(UnityEngine.Color.grey, player.MyRend());
+                                PlayerMaterial.SetColors(UColor.grey, player.MyRend());
                             }
                         }
                     }
                 }
                 else if (IsTrack)
                 {
-                    foreach (var arrow in TrackerArrows)
+                    foreach (var pair in TrackerArrows)
                     {
-                        var player = Utils.PlayerById(arrow.Key);
+                        var player = Utils.PlayerById(pair.Key);
+                        var body = Utils.BodyById(pair.Key);
 
-                        #pragma warning disable
-                        if (player == null || player.Data.IsDead || player.Data.Disconnected)
+                        if (player.Data.Disconnected || (player.Data.IsDead && !body))
                         {
-                            DestroyArrow(arrow.Key);
+                            DestroyArrow(pair.Key);
                             continue;
                         }
-                        #pragma warning restore
 
-                        arrow.Value.image.color = player.GetPlayerColor();
-
-                        if (_time <= DateTime.UtcNow.AddSeconds(-CustomGameOptions.UpdateInterval))
-                            arrow.Value.target = player.transform.position;
+                        pair.Value.Update(player.Data.IsDead ? player.GetTruePosition() : body.TruePosition, player.GetPlayerColor());
                     }
-
-                    if (_time <= DateTime.UtcNow.AddSeconds(-CustomGameOptions.UpdateInterval))
-                        _time = DateTime.UtcNow;
                 }
                 else if (IsDet)
                 {
@@ -440,37 +422,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 Footprint.DestroyAll(this);
         }
 
-        public override void UpdateMap(MapBehaviour __instance)
-        {
-            base.UpdateMap(__instance);
-
-            foreach (var pair in TrackerArrows)
-            {
-                var player = Utils.PlayerById(pair.Key);
-
-                if (!player.Data.IsDead)
-                {
-                    var v = pair.Value.target;
-                    v /= ShipStatus.Instance.MapScale;
-                    v.x *= Mathf.Sign(ShipStatus.Instance.transform.localScale.x);
-                    v.z = -1f;
-
-                    if (Points.ContainsKey(player.PlayerId))
-                        Points[player.PlayerId].transform.localPosition = v;
-                    else
-                    {
-                        var point = UObject.Instantiate(__instance.HerePoint, __instance.HerePoint.transform.parent, true);
-                        point.transform.localPosition = v;
-                        point.enabled = true;
-                        player.SetPlayerMaterialColors(point);
-                        Points.Add(player.PlayerId, point);
-                    }
-                }
-            }
-        }
-
         //Coroner Stuff
-        public Dictionary<byte, ArrowBehaviour> BodyArrows = new();
+        public Dictionary<byte, CustomArrow> BodyArrows = new();
         public CustomButton AutopsyButton;
         public CustomButton CompareButton;
         public DateTime LastAutopsied;
@@ -481,8 +434,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float CompareTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastCompared;
+            var timespan = DateTime.UtcNow - LastCompared;
             var num = Player.GetModifiedCooldown(CustomGameOptions.CompareCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -490,8 +442,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float AutopsyTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastAutopsied;
+            var timespan = DateTime.UtcNow - LastAutopsied;
             var num = Player.GetModifiedCooldown(CustomGameOptions.AutopsyCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -505,14 +456,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var playerId = AutopsyButton.TargetBody.ParentId;
             var player = Utils.PlayerById(playerId);
             Utils.Spread(Player, player);
-            var matches = Murder.KilledPlayers.Where(x => x.PlayerId == playerId).ToArray();
+            var matches = Utils.KilledPlayers.Where(x => x.PlayerId == playerId).ToArray();
             DeadPlayer killed = null;
 
             if (matches.Length > 0)
                 killed = matches[0];
 
             if (killed == null)
-                Utils.Flash(new Color32(255, 0, 0, 255));
+                Utils.Flash(new(255, 0, 0, 255));
             else
             {
                 ReferenceBody = killed;
@@ -532,9 +483,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (interact[3])
             {
                 if (CompareButton.TargetPlayer.PlayerId == ReferenceBody.KillerId || CompareButton.TargetPlayer.IsFramed())
-                    Utils.Flash(new Color32(255, 0, 0, 255));
+                    Utils.Flash(new(255, 0, 0, 255));
                 else
-                    Utils.Flash(new Color32(0, 255, 0, 255));
+                    Utils.Flash(new(0, 255, 0, 255));
 
                 UsesLeft--;
             }
@@ -551,7 +502,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 return;
 
             base.OnBodyReport(info);
-            var matches = Murder.KilledPlayers.Where(x => x.PlayerId == info.PlayerId).ToArray();
+            var matches = Utils.KilledPlayers.Where(x => x.PlayerId == info.PlayerId).ToArray();
             DeadPlayer killer = null;
 
             if (matches.Length > 0)
@@ -589,8 +540,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float ExamineTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastExamined;
+            var timespan = DateTime.UtcNow - LastExamined;
             var num = Player.GetModifiedCooldown(CustomGameOptions.ExamineCd) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -609,16 +559,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 var hasKilled = false;
 
-                foreach (var player in Murder.KilledPlayers)
+                foreach (var player in Utils.KilledPlayers)
                 {
                     if (player.KillerId == ExamineButton.TargetPlayer.PlayerId && (DateTime.UtcNow - player.KillTime).TotalSeconds <= CustomGameOptions.RecentKill)
                         hasKilled = true;
                 }
 
                 if (hasKilled || ExamineButton.TargetPlayer.IsFramed())
-                    Utils.Flash(new Color32(255, 0, 0, 255));
+                    Utils.Flash(new(255, 0, 0, 255));
                 else
-                    Utils.Flash(new Color32(0, 255, 0, 255));
+                    Utils.Flash(new(0, 255, 0, 255));
             }
 
             if (interact[0])
@@ -635,8 +585,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float InspectTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastInspected;
+            var timespan = DateTime.UtcNow - LastInspected;
             var num = Player.GetModifiedCooldown(CustomGameOptions.InspectCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -660,14 +609,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         //Medium Stuff
         public DateTime LastMediated;
-        public Dictionary<byte, ArrowBehaviour> MediatedPlayers = new();
+        public Dictionary<byte, CustomArrow> MediateArrows = new();
         public CustomButton MediateButton;
+        public CustomButton SeanceButton;
+        public List<byte> MediatedPlayers = new();
         public bool IsMed => RevivedRole?.RoleType == RoleEnum.Medium;
 
         public float MediateTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastMediated;
+            var timespan = DateTime.UtcNow - LastMediated;
             var num = Player.GetModifiedCooldown(CustomGameOptions.MediateCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -679,7 +629,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 return;
 
             LastMediated = DateTime.UtcNow;
-            var PlayersDead = Murder.KilledPlayers.GetRange(0, Murder.KilledPlayers.Count);
+            var PlayersDead = Utils.KilledPlayers.GetRange(0, Utils.KilledPlayers.Count);
 
             if (PlayersDead.Count == 0)
                 return;
@@ -691,14 +641,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
                 foreach (var dead in PlayersDead)
                 {
-                    if (Utils.AllBodies.Any(x => x.ParentId == dead.PlayerId && !MediatedPlayers.ContainsKey(x.ParentId)))
+                    if (Utils.AllBodies.Any(x => x.ParentId == dead.PlayerId && !MediateArrows.ContainsKey(x.ParentId)))
                     {
-                        AddMediatePlayer(dead.PlayerId);
+                        MediateArrows.Add(dead.PlayerId, new(Player, Color));
+                        MediatedPlayers.Add(dead.PlayerId);
                         var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                         writer.Write((byte)ActionsRPC.RetributionistAction);
                         writer.Write((byte)RetributionistActionsRPC.Mediate);
-                        writer.Write(dead.PlayerId);
                         writer.Write(PlayerId);
+                        writer.Write(dead.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
 
                         if (CustomGameOptions.DeadRevealed != DeadRevealed.All)
@@ -711,36 +662,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 PlayersDead.Shuffle();
                 var dead = PlayersDead.Random();
 
-                if (Utils.AllBodies.Any(x => x.ParentId == dead.PlayerId && !MediatedPlayers.ContainsKey(x.ParentId)))
+                if (Utils.AllBodies.Any(x => x.ParentId == dead.PlayerId && !MediateArrows.ContainsKey(x.ParentId)))
                 {
-                    AddMediatePlayer(dead.PlayerId);
+                    MediateArrows.Add(dead.PlayerId, new(Player, Color));
+                    MediatedPlayers.Add(dead.PlayerId);
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                     writer.Write((byte)ActionsRPC.RetributionistAction);
                     writer.Write((byte)RetributionistActionsRPC.Mediate);
-                    writer.Write(dead.PlayerId);
                     writer.Write(PlayerId);
+                    writer.Write(dead.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
             }
-        }
-
-        public void AddMediatePlayer(byte playerId)
-        {
-            var gameObj = new GameObject("RetMediumArrow");
-            var arrow = gameObj.AddComponent<ArrowBehaviour>();
-
-            if (Player == PlayerControl.LocalPlayer || CustomGameOptions.ShowMediumToDead)
-            {
-                gameObj.transform.parent = Player.gameObject.transform;
-                var renderer = gameObj.AddComponent<SpriteRenderer>();
-                renderer.sprite = AssetManager.GetSprite("Arrow");
-                arrow.image = renderer;
-                gameObj.layer = 5;
-                arrow.target = Utils.PlayerById(playerId).transform.position;
-                Utils.Flash(Colors.Medium);
-            }
-
-            MediatedPlayers.Add(playerId, arrow);
         }
 
         //Operative Stuff
@@ -753,8 +686,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float BugTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastBugged;
+            var timespan = DateTime.UtcNow - LastBugged;
             var num = Player.GetModifiedCooldown(CustomGameOptions.BugCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -767,7 +699,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             UsesLeft--;
             LastBugged = DateTime.UtcNow;
-            Bugs.Add(new Bug(Player.GetTruePosition()));
+            Bugs.Add(new(Player.GetTruePosition()));
         }
 
         //Sheriff Stuff
@@ -777,8 +709,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float InterrogateTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastInterrogated;
+            var timespan = DateTime.UtcNow - LastInterrogated;
             var num = Player.GetModifiedCooldown(CustomGameOptions.InterrogateCd) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -794,9 +725,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (interact[3])
             {
                 if (InterrogateButton.TargetPlayer.SeemsEvil())
-                    Utils.Flash(new Color32(255, 0, 0, 255));
+                    Utils.Flash(new(255, 0, 0, 255));
                 else
-                    Utils.Flash(new Color32(0, 255, 0, 255));
+                    Utils.Flash(new(0, 255, 0, 255));
             }
 
             if (interact[0])
@@ -806,7 +737,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         }
 
         //Tracker Stuff
-        public Dictionary<byte, ArrowBehaviour> TrackerArrows = new();
+        public Dictionary<byte, CustomArrow> TrackerArrows = new();
         public DateTime LastTracked;
         public CustomButton TrackButton;
         public bool IsTrack => RevivedRole?.RoleType == RoleEnum.Tracker;
@@ -814,8 +745,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float TrackerTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastTracked;
+            var timespan = DateTime.UtcNow - LastTracked;
             var num = Player.GetModifiedCooldown(CustomGameOptions.TrackCd) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -830,17 +760,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (interact[3])
             {
-                var target = TrackButton.TargetPlayer;
-                var gameObj = new GameObject("RetTrackerArrow");
-                var arrow = gameObj.AddComponent<ArrowBehaviour>();
-                gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
-                var renderer = gameObj.AddComponent<SpriteRenderer>();
-                renderer.sprite = AssetManager.GetSprite("Arrow");
-                renderer.color = target.GetPlayerColor();
-                arrow.image = renderer;
-                gameObj.layer = 5;
-                arrow.target = target.transform.position;
-                TrackerArrows.Add(target.PlayerId, arrow);
+                TrackerArrows.Add(TrackButton.TargetPlayer.PlayerId, new(Player, TrackButton.TargetPlayer.GetPlayerColor(), CustomGameOptions.UpdateInterval));
                 UsesLeft--;
             }
 
@@ -857,8 +777,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float KillTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastKilled;
+            var timespan = DateTime.UtcNow - LastKilled;
             var num = Player.GetModifiedCooldown(CustomGameOptions.VigiKillCd) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -886,8 +805,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float StakeTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastStaked;
+            var timespan = DateTime.UtcNow - LastStaked;
             var num = Player.GetModifiedCooldown(CustomGameOptions.StakeCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -915,8 +833,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float AlertTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastAlerted;
+            var timespan = DateTime.UtcNow - LastAlerted;
             var num = Player.GetModifiedCooldown(CustomGameOptions.AlertCd) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -962,8 +879,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float ReviveTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastRevived;
+            var timespan = DateTime.UtcNow - LastRevived;
             var num = Player.GetModifiedCooldown(CustomGameOptions.ReviveCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -1022,13 +938,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (formerKiller.Contains(PlayerControl.LocalPlayer.Data.PlayerName))
             {
-                var gameObj = new GameObject("RetributionistArrow") { layer = 5 };
-                var arrow = gameObj.AddComponent<ArrowBehaviour>();
-                gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
-                var renderer = gameObj.AddComponent<SpriteRenderer>();
-                renderer.sprite = AssetManager.GetSprite("Arrow");
-                arrow.image = renderer;
-                LocalRole.AllArrows.Add(player.PlayerId, arrow);
+                LocalRole.AllArrows.Add(player.PlayerId, new(PlayerControl.LocalPlayer, Color));
                 Utils.Flash(Color);
             }
         }
@@ -1115,8 +1025,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float SwoopTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastSwooped;
+            var timespan = DateTime.UtcNow - LastSwooped;
             var num = Player.GetModifiedCooldown(CustomGameOptions.InvisCd) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -1161,8 +1070,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float FixTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastFixed;
+            var timespan = DateTime.UtcNow - LastFixed;
             var num = Player.GetModifiedCooldown(CustomGameOptions.FixCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -1179,14 +1087,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 return;
 
             var dummyActive = system.dummy.IsActive;
-            var sabActive = system.specials.ToArray().Any(s => s.IsActive);
+            var sabActive = system.specials.Any(s => s.IsActive);
 
             if (!sabActive || dummyActive)
                 return;
 
             UsesLeft--;
             LastFixed = DateTime.UtcNow;
-            FixFunctions.Fix();
+            FixExtentions.Fix();
         }
 
         //Mystic Stuff
@@ -1196,8 +1104,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float RevealTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastRevealed;
+            var timespan = DateTime.UtcNow - LastRevealed;
             var num = Player.GetModifiedCooldown(CustomGameOptions.RevealCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -1213,9 +1120,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (interact[3])
             {
                 if ((!RevealButton.TargetPlayer.Is(SubFaction.None) && !RevealButton.TargetPlayer.Is(RoleAlignment.NeutralNeo)) || RevealButton.TargetPlayer.IsFramed())
-                    Utils.Flash(new Color32(255, 0, 0, 255));
+                    Utils.Flash(new(255, 0, 0, 255));
                 else
-                    Utils.Flash(new Color32(0, 255, 0, 255));
+                    Utils.Flash(new(0, 255, 0, 255));
             }
 
             if (interact[0])
@@ -1231,8 +1138,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float SeerTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastSeered;
+            var timespan = DateTime.UtcNow - LastSeered;
             var num = Player.GetModifiedCooldown(CustomGameOptions.SeerCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -1248,9 +1154,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (interact[3])
             {
                 if (GetRole(SeerButton.TargetPlayer).RoleHistory.Count > 0 || SeerButton.TargetPlayer.IsFramed())
-                    Utils.Flash(new Color32(255, 0, 0, 255));
+                    Utils.Flash(new(255, 0, 0, 255));
                 else
-                    Utils.Flash(new Color32(0, 255, 0, 255));
+                    Utils.Flash(new(0, 255, 0, 255));
             }
 
             if (interact[0])
@@ -1290,8 +1196,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float RoleblockTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastBlock;
+            var timespan = DateTime.UtcNow - LastBlock;
             var num = Player.GetModifiedCooldown(CustomGameOptions.EscRoleblockCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -1344,8 +1249,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float TransportTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastTransported;
+            var timespan = DateTime.UtcNow - LastTransported;
             var num = Player.GetModifiedCooldown(CustomGameOptions.TransportCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -1379,7 +1283,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (TransportPlayer1.inVent)
             {
-                while (SubmergedCompatibility.GetInTransition())
+                while (ModCompatibility.GetInTransition())
                     yield return null;
 
                 TransportPlayer1.MyPhysics.ExitAllVents();
@@ -1389,7 +1293,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (TransportPlayer2.inVent)
             {
-                while (SubmergedCompatibility.GetInTransition())
+                while (ModCompatibility.GetInTransition())
                     yield return null;
 
                 TransportPlayer2.MyPhysics.ExitAllVents();
@@ -1438,18 +1342,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 TransportPlayer1.NetTransform.SnapTo(new(TransportPlayer2.GetTruePosition().x, TransportPlayer2.GetTruePosition().y + 0.3636f));
                 TransportPlayer2.NetTransform.SnapTo(new(TempPosition.x, TempPosition.y + 0.3636f));
 
-                if (SubmergedCompatibility.IsSubmerged)
+                if (ModCompatibility.IsSubmerged)
                 {
                     if (PlayerControl.LocalPlayer == TransportPlayer1)
                     {
-                        SubmergedCompatibility.ChangeFloor(TransportPlayer1.GetTruePosition().y > -7);
-                        SubmergedCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
+                        ModCompatibility.ChangeFloor(TransportPlayer1.GetTruePosition().y > -7);
+                        ModCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
                     }
 
                     if (PlayerControl.LocalPlayer == TransportPlayer2)
                     {
-                        SubmergedCompatibility.ChangeFloor(TransportPlayer2.GetTruePosition().y > -7);
-                        SubmergedCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
+                        ModCompatibility.ChangeFloor(TransportPlayer2.GetTruePosition().y > -7);
+                        ModCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
                     }
                 }
 
@@ -1467,10 +1371,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 Player1Body.transform.position = TransportPlayer2.GetTruePosition();
                 TransportPlayer2.NetTransform.SnapTo(new(TempPosition.x, TempPosition.y + 0.3636f));
 
-                if (SubmergedCompatibility.IsSubmerged && PlayerControl.LocalPlayer == TransportPlayer2)
+                if (ModCompatibility.IsSubmerged && PlayerControl.LocalPlayer == TransportPlayer2)
                 {
-                    SubmergedCompatibility.ChangeFloor(TransportPlayer2.GetTruePosition().y > -7);
-                    SubmergedCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
+                    ModCompatibility.ChangeFloor(TransportPlayer2.GetTruePosition().y > -7);
+                    ModCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
                 }
             }
             else if (Player1Body == null && Player2Body != null)
@@ -1481,10 +1385,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 TransportPlayer1.NetTransform.SnapTo(new(Player2Body.TruePosition.x, Player2Body.TruePosition.y + 0.3636f));
                 Player2Body.transform.position = TempPosition;
 
-                if (SubmergedCompatibility.IsSubmerged && PlayerControl.LocalPlayer == TransportPlayer1)
+                if (ModCompatibility.IsSubmerged && PlayerControl.LocalPlayer == TransportPlayer1)
                 {
-                    SubmergedCompatibility.ChangeFloor(TransportPlayer1.GetTruePosition().y > -7);
-                    SubmergedCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
+                    ModCompatibility.ChangeFloor(TransportPlayer1.GetTruePosition().y > -7);
+                    ModCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
                 }
             }
             else if (Player1Body != null && Player2Body != null)
@@ -1517,8 +1421,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void AnimateTransport1()
         {
-            Transport1.transform.position = new(TransportPlayer1.GetTruePosition().x, TransportPlayer1.GetTruePosition().y + 0.4f, (TransportPlayer1.GetTruePosition().y / 1000f) + 0.01f);
+            Transport1.transform.position = new(TransportPlayer1.GetTruePosition().x, TransportPlayer1.GetTruePosition().y + 0.35f, (TransportPlayer1.GetTruePosition().y / 1000f) + 0.01f);
             AnimationPlaying1.flipX = TransportPlayer1.MyRend().flipX;
+            AnimationPlaying1.transform.localScale *= 0.9f * TransportPlayer2.GetModifiedSize();
 
             HudManager.Instance.StartCoroutine(Effects.Lerp(CustomGameOptions.TransportDuration, new Action<float>(p =>
             {
@@ -1534,8 +1439,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void AnimateTransport2()
         {
-            Transport2.transform.position = new(TransportPlayer2.GetTruePosition().x, TransportPlayer2.GetTruePosition().y + 0.4f, (TransportPlayer2.GetTruePosition().y / 1000f) + 0.01f);
+            Transport2.transform.position = new(TransportPlayer2.GetTruePosition().x, TransportPlayer2.GetTruePosition().y + 0.35f, (TransportPlayer2.GetTruePosition().y / 1000f) + 0.01f);
             AnimationPlaying2.flipX = TransportPlayer2.MyRend().flipX;
+            AnimationPlaying2.transform.localScale *= 0.9f * TransportPlayer2.GetModifiedSize();
 
             HudManager.Instance.StartCoroutine(Effects.Lerp(CustomGameOptions.TransportDuration, new Action<float>(p =>
             {

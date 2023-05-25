@@ -71,18 +71,18 @@
             public static Vector3 GetMeetingPosition(byte PlayerId)
             {
                 var halfPlayerValue = (int) Mathf.Round(PlayerControl.AllPlayerControls.Count / 2);
-                var Position = new Vector3(9f, 16f, 0);
+                var position = new Vector3(9f, 16f, 0);
 
                 var xIndex = (PlayerId - (PlayerId % 2)) / 2;
                 var yIndex = PlayerId % 2;
 
                 var marge = (13f - 9f) / halfPlayerValue;
-                Position.x += marge * xIndex;
+                position.x += marge * xIndex;
 
                 if (yIndex == 1)
-                    Position.y = 14.4f;
+                    position.y = 14.4f;
 
-                return Position;
+                return position;
             }
         }
 

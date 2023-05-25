@@ -30,8 +30,7 @@
 
         public float LustTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastLusted;
+            var timespan = DateTime.UtcNow - LastLusted;
             var num = Player.GetModifiedCooldown(CustomGameOptions.BloodlustCd) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -54,8 +53,7 @@
 
         public float StabTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastKilled;
+            var timespan = DateTime.UtcNow - LastKilled;
             var num = Player.GetModifiedCooldown(CustomGameOptions.LustKillCd) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;

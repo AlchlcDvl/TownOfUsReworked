@@ -3,13 +3,11 @@ namespace TownOfUsReworked.Patches
     [HarmonyPatch]
     public static class MeetingPatches
     {
-        #pragma warning disable
         private static GameData.PlayerInfo VoteTarget;
         public static int MeetingCount;
         private static GameData.PlayerInfo Reported = null;
         public static bool GivingAnnouncements = false;
         private static DeadBody ReportedBody = null;
-        #pragma warning restore
 
         [HarmonyPatch(typeof(PlayerVoteArea), nameof(PlayerVoteArea.SetCosmetics))]
         public static class PlayerStates
@@ -131,7 +129,7 @@ namespace TownOfUsReworked.Patches
 
                         yield return new WaitForSeconds(2f);
 
-                        var killer = Utils.PlayerById(Murder.KilledPlayers.Find(x => x.PlayerId == player.PlayerId).KillerId);
+                        var killer = Utils.PlayerById(Utils.KilledPlayers.Find(x => x.PlayerId == player.PlayerId).KillerId);
                         var flag = killer.Is(RoleEnum.Altruist) || killer.Is(RoleEnum.Arsonist) || killer.Is(RoleEnum.Amnesiac) || killer.Is(RoleEnum.Executioner) ||
                             killer.Is(RoleEnum.Engineer) || killer.Is(RoleEnum.Escort) || killer.Is(RoleEnum.Impostor) || killer.Is(RoleEnum.Inspector) || killer.Is(RoleEnum.Operative);
                         var a_an = flag ? "an" : "a";
@@ -183,7 +181,7 @@ namespace TownOfUsReworked.Patches
 
                             yield return new WaitForSeconds(2f);
 
-                            var killer = Utils.PlayerById(Murder.KilledPlayers.Find(x => x.PlayerId == player.PlayerId).KillerId);
+                            var killer = Utils.PlayerById(Utils.KilledPlayers.Find(x => x.PlayerId == player.PlayerId).KillerId);
                             var killerRole = Role.GetRole(killer);
                             var flag = killer.Is(RoleEnum.Altruist) || killer.Is(RoleEnum.Arsonist) || killer.Is(RoleEnum.Amnesiac) || killer.Is(RoleEnum.Executioner) ||
                                 killer.Is(RoleEnum.Engineer) || killer.Is(RoleEnum.Escort) || killer.Is(RoleEnum.Impostor) || killer.Is(RoleEnum.Inspector) ||

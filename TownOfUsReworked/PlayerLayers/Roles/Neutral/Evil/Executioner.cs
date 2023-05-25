@@ -56,8 +56,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float DoomTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastDoomed;
+            var timespan = DateTime.UtcNow - LastDoomed;
             var num = Player.GetModifiedCooldown(CustomGameOptions.DoomCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;

@@ -15,7 +15,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AbilitiesText = "- You can reveal evils players to the <color=#8CFFFFFF>Crew</color> once you finish your tasks without getting clicked.";
             RoleType = RoleEnum.Revealer;
             RoleAlignment = RoleAlignment.CrewUtil;
-            Points = new();
             InspectorResults = InspectorResults.Ghostly;
             Type = LayerEnum.Revealer;
         }

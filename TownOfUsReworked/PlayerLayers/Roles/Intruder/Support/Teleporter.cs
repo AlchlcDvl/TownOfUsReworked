@@ -25,8 +25,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float TeleportTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastTeleport;
+            var timespan = DateTime.UtcNow - LastTeleport;
             var num = Player.GetModifiedCooldown(CustomGameOptions.TeleportCd) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -34,8 +33,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float MarkTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastMarked;
+            var timespan = DateTime.UtcNow - LastMarked;
             var num = Player.GetModifiedCooldown(CustomGameOptions.MarkCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -74,8 +72,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             base.UpdateHud(__instance);
             var hits = Physics2D.OverlapBoxAll(Player.transform.position, Utils.GetSize(), 0);
-            hits = hits.ToArray().Where(c => (c.name.Contains("Vent") || !c.isTrigger) && c.gameObject.layer != 8 && c.gameObject.layer != 5).ToArray();
-            CanMark = hits.Count == 0 && Player.moveable && !SubmergedCompatibility.GetPlayerElevator(Player).Item1 && TeleportPoint != Player.transform.position;
+            hits = hits.Where(c => (c.name.Contains("Vent") || !c.isTrigger) && c.gameObject.layer != 8 && c.gameObject.layer != 5).ToArray();
+            CanMark = hits.Count == 0 && Player.moveable && !ModCompatibility.GetPlayerElevator(Player).Item1 && TeleportPoint != Player.transform.position;
             MarkButton.Update("MARK", MarkTimer(), CustomGameOptions.MarkCooldown, CanMark);
             TeleportButton.Update("TELEPORT", TeleportTimer(), CustomGameOptions.TeleportCd, true, TeleportPoint != new Vector3(0, 0, 0));
         }

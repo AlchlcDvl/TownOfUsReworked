@@ -18,7 +18,7 @@ namespace TownOfUsReworked.Patches
                 var map = maps[(int)CustomGameOptions.Map];
                 byte[] tbMode = { 1, 0, 2 };
 
-                if (CustomGameOptions.RandomMapEnabled || (map == 5 && !SubmergedCompatibility.Loaded))
+                if (CustomGameOptions.RandomMapEnabled || (map == 5 && !ModCompatibility.SubLoaded))
                     map = GetRandomMap();
 
                 TownOfUsReworked.VanillaOptions.RoleOptions.SetRoleRate(RoleTypes.Scientist, 0, 0);
@@ -43,7 +43,7 @@ namespace TownOfUsReworked.Patches
                 TownOfUsReworked.VanillaOptions.NumShortTasks = CustomGameOptions.ShortTasks;
                 TownOfUsReworked.VanillaOptions.NumLongTasks = CustomGameOptions.LongTasks;
                 TownOfUsReworked.VanillaOptions.NumCommonTasks = CustomGameOptions.ShortTasks;
-                TownOfUsReworked.VanillaOptions.MapId = map;
+                TownOfUsReworked.VanillaOptions.MapId = GameOptionsManager.Instance.currentNormalGameOptions.MapId == 6 ? (byte)6 : map;
                 GameOptionsManager.Instance.currentNormalGameOptions = TownOfUsReworked.VanillaOptions;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetSettings, SendOption.Reliable);
                 writer.Write(map);
@@ -87,7 +87,7 @@ namespace TownOfUsReworked.Patches
             totalWeight += CustomGameOptions.RandomMapPolus;
             totalWeight += CustomGameOptions.RandomMapAirship;
 
-            if (SubmergedCompatibility.Loaded)
+            if (ModCompatibility.SubLoaded)
                 totalWeight += CustomGameOptions.RandomMapSubmerged;
 
             if (totalWeight == 0)
@@ -115,7 +115,7 @@ namespace TownOfUsReworked.Patches
 
             randomNumber -= CustomGameOptions.RandomMapAirship;
 
-            if (SubmergedCompatibility.Loaded && randomNumber < CustomGameOptions.RandomMapSubmerged)
+            if (ModCompatibility.SubLoaded && randomNumber < CustomGameOptions.RandomMapSubmerged)
                 return 5;
 
             return TownOfUsReworked.VanillaOptions.MapId;
@@ -145,33 +145,33 @@ namespace TownOfUsReworked.Patches
 
         public static void AdjustCooldowns(float change)
         {
-            Generate.InterrogateCooldown.Set((float)Generate.InterrogateCooldown.Value + change, false);
-            Generate.TrackCooldown.Set((float)Generate.TrackCooldown.Value + change, false);
-            Generate.BugCooldown.Set((float)Generate.BugCooldown.Value + change, false);
-            Generate.VigiKillCd.Set((float)Generate.VigiKillCd.Value + change, false);
-            Generate.AlertCooldown.Set((float)Generate.AlertCooldown.Value + change, false);
-            Generate.TransportCooldown.Set((float)Generate.TransportCooldown.Value + change, false);
-            Generate.ProtectCd.Set((float)Generate.ProtectCd.Value + change, false);
-            Generate.VestCd.Set((float)Generate.VestCd.Value + change, false);
-            Generate.DouseCooldown.Set((float)Generate.DouseCooldown.Value + change, false);
-            Generate.InfectCooldown.Set((float)Generate.InfectCooldown.Value + change, false);
-            Generate.PestKillCooldown.Set((float)Generate.PestKillCooldown.Value + change, false);
-            Generate.HackCooldown.Set((float)Generate.HackCooldown.Value + change, false);
-            Generate.MimicCooldown.Set((float)Generate.MimicCooldown.Value + change, false);
-            Generate.GlitchKillCooldown.Set((float)Generate.GlitchKillCooldown.Value + change, false);
-            Generate.JuggKillCooldown.Set((float)Generate.JuggKillCooldown.Value + change, false);
-            Generate.BloodlustCooldown.Set((float)Generate.BloodlustCooldown.Value + change, false);
-            Generate.GrenadeCooldown.Set((float)Generate.GrenadeCooldown.Value + change, false);
-            Generate.MorphlingCooldown.Set((float)Generate.MorphlingCooldown.Value + change, false);
-            Generate.InvisCooldown.Set((float)Generate.InvisCooldown.Value + change, false);
-            Generate.PoisonCooldown.Set((float)Generate.PoisonCooldown.Value + change, false);
-            Generate.MineCooldown.Set((float)Generate.MineCooldown.Value + change, false);
-            Generate.DragCooldown.Set((float)Generate.DragCooldown.Value + change, false);
-            Generate.JanitorCleanCd.Set((float)Generate.JanitorCleanCd.Value + change, false);
-            Generate.DisguiseCooldown.Set((float)Generate.DisguiseCooldown.Value + change, false);
-            Generate.IgniteCooldown.Set((float)Generate.IgniteCooldown.Value + change, false);
-            Generate.RevealCooldown.Set((float)Generate.RevealCooldown.Value + change, false);
-            Generate.IntruderKillCooldown.Set((float)Generate.IntruderKillCooldown.Value + change, false);
+            Generate.InterrogateCooldown.Set((float)Generate.InterrogateCooldown.Value + change);
+            Generate.TrackCooldown.Set((float)Generate.TrackCooldown.Value + change);
+            Generate.BugCooldown.Set((float)Generate.BugCooldown.Value + change);
+            Generate.VigiKillCd.Set((float)Generate.VigiKillCd.Value + change);
+            Generate.AlertCooldown.Set((float)Generate.AlertCooldown.Value + change);
+            Generate.TransportCooldown.Set((float)Generate.TransportCooldown.Value + change);
+            Generate.ProtectCd.Set((float)Generate.ProtectCd.Value + change);
+            Generate.VestCd.Set((float)Generate.VestCd.Value + change);
+            Generate.DouseCooldown.Set((float)Generate.DouseCooldown.Value + change);
+            Generate.InfectCooldown.Set((float)Generate.InfectCooldown.Value + change);
+            Generate.PestKillCooldown.Set((float)Generate.PestKillCooldown.Value + change);
+            Generate.HackCooldown.Set((float)Generate.HackCooldown.Value + change);
+            Generate.MimicCooldown.Set((float)Generate.MimicCooldown.Value + change);
+            Generate.GlitchKillCooldown.Set((float)Generate.GlitchKillCooldown.Value + change);
+            Generate.JuggKillCooldown.Set((float)Generate.JuggKillCooldown.Value + change);
+            Generate.BloodlustCooldown.Set((float)Generate.BloodlustCooldown.Value + change);
+            Generate.GrenadeCooldown.Set((float)Generate.GrenadeCooldown.Value + change);
+            Generate.MorphlingCooldown.Set((float)Generate.MorphlingCooldown.Value + change);
+            Generate.InvisCooldown.Set((float)Generate.InvisCooldown.Value + change);
+            Generate.PoisonCooldown.Set((float)Generate.PoisonCooldown.Value + change);
+            Generate.MineCooldown.Set((float)Generate.MineCooldown.Value + change);
+            Generate.DragCooldown.Set((float)Generate.DragCooldown.Value + change);
+            Generate.JanitorCleanCd.Set((float)Generate.JanitorCleanCd.Value + change);
+            Generate.DisguiseCooldown.Set((float)Generate.DisguiseCooldown.Value + change);
+            Generate.IgniteCooldown.Set((float)Generate.IgniteCooldown.Value + change);
+            Generate.RevealCooldown.Set((float)Generate.RevealCooldown.Value + change);
+            Generate.IntruderKillCooldown.Set((float)Generate.IntruderKillCooldown.Value + change);
 
             if (change % 5 != 0)
             {
@@ -181,7 +181,7 @@ namespace TownOfUsReworked.Patches
                     change += 2.5f;
             }
 
-            Generate.EmergencyButtonCooldown.Set((float)Generate.EmergencyButtonCooldown.Value + change, false);
+            Generate.EmergencyButtonCooldown.Set((float)Generate.EmergencyButtonCooldown.Value + change);
         }
     }
 }

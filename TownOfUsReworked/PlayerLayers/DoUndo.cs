@@ -355,6 +355,22 @@ namespace TownOfUsReworked.PlayerLayers
                     pois.PoisonKill();
             }
 
+            foreach (var tk in Role.GetRoles<TimeKeeper>(RoleEnum.TimeKeeper))
+            {
+                if (tk.Controlling)
+                    tk.Control();
+                else if (tk.Enabled)
+                    tk.UnControl();
+            }
+
+            foreach (var drunk in Role.GetRoles<Drunkard>(RoleEnum.Drunkard))
+            {
+                if (drunk.Confused)
+                    drunk.Confuse();
+                else if (drunk.Enabled)
+                    drunk.UnConfuse();
+            }
+
             foreach (var reb in Role.GetRoles<PromotedRebel>(RoleEnum.PromotedRebel))
             {
                 if (reb.FormerRole == null || reb.IsAnarch)
@@ -368,6 +384,10 @@ namespace TownOfUsReworked.PlayerLayers
                         reb.Poison();
                     else if (reb.IsSS)
                         reb.Shapeshift();
+                    else if (reb.IsDrunk)
+                        reb.Confuse();
+                    else if (reb.IsTK)
+                        reb.Control();
                 }
                 else if (reb.Enabled)
                 {
@@ -377,6 +397,10 @@ namespace TownOfUsReworked.PlayerLayers
                         reb.PoisonKill();
                     else if (reb.IsSS)
                         reb.UnShapeshift();
+                    else if (reb.IsDrunk)
+                        reb.UnConfuse();
+                    else if (reb.IsTK)
+                        reb.UnControl();
                 }
             }
 

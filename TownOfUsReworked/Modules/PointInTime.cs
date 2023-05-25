@@ -1,4 +1,4 @@
-/*namespace TownOfUsReworked.Modules
+namespace TownOfUsReworked.Modules
 {
     [HarmonyPatch]
     public class PointInTime
@@ -7,4 +7,4 @@
 
         public PointInTime(Vector3 position) => Position = position;
     }
-}*/
+}

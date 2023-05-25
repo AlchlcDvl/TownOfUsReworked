@@ -59,6 +59,23 @@ namespace TownOfUsReworked.Patches
 
             return ConstantVariables.GameHasEnded;
         }
+
+        public static void DetectStalemate()
+        {
+            var notDead = PlayerControl.AllPlayerControls.Where(x => !x.Data.IsDead && !x.Data.Disconnected);
+            var pureCrew = notDead.Count(x => x.Is(Faction.Crew) && x.Is(SubFaction.None));
+            var nonPureCrew = notDead.Count(x => x.Is(Faction.Crew) && !x.Is(SubFaction.None));
+            var purInt = notDead.Count(x => x.Is(Faction.Intruder) && x.Is(SubFaction.None));
+
+            /*if (false)
+            {
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
+                writer.Write((byte)WinLoseRPC.NobodyWins);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                PlayerLayer.NobodyWins = true;
+                Utils.EndGame();
+            }*/
+        }
     }
 
     [HarmonyPatch(typeof(LogicGameFlowNormal), nameof(LogicGameFlowNormal.IsGameOverDueToDeath))]

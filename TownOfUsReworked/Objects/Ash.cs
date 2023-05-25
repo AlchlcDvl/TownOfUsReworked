@@ -8,7 +8,7 @@ namespace TownOfUsReworked.Objects
 
         public Ash(Vector2 position)
         {
-            Pile = new GameObject("AshPile") { layer = 11 };
+            Pile = new("AshPile") { layer = 11 };
             Pile.AddSubmergedComponent("ElevatorMover");
             Pile.transform.position = new(position.x, position.y, (position.y / 1000f) + 0.001f);
             Pile.transform.localScale = Vector3.one * 0.35f;

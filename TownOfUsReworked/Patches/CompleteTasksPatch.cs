@@ -17,14 +17,7 @@ namespace TownOfUsReworked.Patches
                         PlayerControl.LocalPlayer.Is(Faction.Syndicate))
                     {
                         Utils.Flash(role.Color);
-                        var gameObj = new GameObject("SnitchArrow") { layer = 5 };
-                        var arrow = gameObj.AddComponent<ArrowBehaviour>();
-                        gameObj.transform.parent = __instance.gameObject.transform;
-                        var renderer = gameObj.AddComponent<SpriteRenderer>();
-                        renderer.sprite = AssetManager.GetSprite("Arrow");
-                        arrow.image = renderer;
-                        gameObj.layer = 5;
-                        Role.LocalRole.AllArrows.Add(role.PlayerId, arrow);
+                        Role.LocalRole.AllArrows.Add(role.PlayerId, new(PlayerControl.LocalPlayer, role.Color));
                     }
                 }
                 else if (PlayerControl.LocalPlayer.Is(AbilityEnum.Snitch) && role.TasksDone)
@@ -33,16 +26,10 @@ namespace TownOfUsReworked.Patches
                     {
                         Utils.Flash(Color.green);
 
-                        foreach (var imp in PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) || (x.Is(RoleAlignment.NeutralKill) &&
+                        foreach (var imp in PlayerControl.AllPlayerControls.Where(x => x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) || (x.Is(RoleAlignment.NeutralKill) &&
                             CustomGameOptions.SnitchSeesNeutrals)))
                         {
-                            var gameObj = new GameObject("SnitchEvilArrow") { layer = 5 };
-                            var arrow = gameObj.AddComponent<ArrowBehaviour>();
-                            gameObj.transform.parent = imp.gameObject.transform;
-                            var renderer = gameObj.AddComponent<SpriteRenderer>();
-                            renderer.sprite = AssetManager.GetSprite("Arrow");
-                            arrow.image = renderer;
-                            Role.LocalRole.AllArrows.Add(imp.PlayerId, arrow);
+                            Role.LocalRole.AllArrows.Add(imp.PlayerId, new(__instance, role.Color));
                         }
                     }
                     else if (PlayerControl.LocalPlayer.Is(Faction.Intruder) || (PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralKill) && CustomGameOptions.SnitchSeesNeutrals) ||
@@ -81,13 +68,7 @@ namespace TownOfUsReworked.Patches
                         PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralNeo) || PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralPros))
                     {
                         Utils.Flash(role.Color);
-                        var gameObj = new GameObject("TMArrow") { layer = 5 };
-                        var arrow = gameObj.AddComponent<ArrowBehaviour>();
-                        gameObj.transform.parent = __instance.gameObject.transform;
-                        var renderer = gameObj.AddComponent<SpriteRenderer>();
-                        renderer.sprite = AssetManager.GetSprite("Arrow");
-                        arrow.image = renderer;
-                        Role.LocalRole.AllArrows.Add(role.PlayerId, arrow);
+                        Role.LocalRole.AllArrows.Add(role.PlayerId, new(PlayerControl.LocalPlayer, role.Color));
                     }
                 }
                 else if (role.TasksDone)
@@ -122,13 +103,7 @@ namespace TownOfUsReworked.Patches
                     {
                         role.Revealed = true;
                         Utils.Flash(role.Color);
-                        var gameObj = new GameObject("RevealerArrow") { layer = 5 };
-                        var arrow = gameObj.AddComponent<ArrowBehaviour>();
-                        gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
-                        var renderer = gameObj.AddComponent<SpriteRenderer>();
-                        renderer.sprite = AssetManager.GetSprite("Arrow");
-                        arrow.image = renderer;
-                        Role.LocalRole.AllArrows.Add(role.PlayerId, arrow);
+                        Role.LocalRole.AllArrows.Add(role.PlayerId, new(PlayerControl.LocalPlayer, role.Color));
                     }
                 }
                 else if (role.TasksDone && !role.Caught)
@@ -181,8 +156,8 @@ namespace TownOfUsReworked.Patches
             var traitorObj = Objectifier.GetObjectifier<Traitor>(traitor);
             var traitorRole = Role.GetRole(traitor);
 
-            var IntrudersAlive = PlayerControl.AllPlayerControls.ToArray().Count(x => x.Is(Faction.Intruder) && !x.Data.IsDead && !x.Data.Disconnected);
-            var SyndicateAlive = PlayerControl.AllPlayerControls.ToArray().Count(x => x.Is(Faction.Syndicate) && !x.Data.IsDead && !x.Data.Disconnected);
+            var IntrudersAlive = PlayerControl.AllPlayerControls.Count(x => x.Is(Faction.Intruder) && !x.Data.IsDead && !x.Data.Disconnected);
+            var SyndicateAlive = PlayerControl.AllPlayerControls.Count(x => x.Is(Faction.Syndicate) && !x.Data.IsDead && !x.Data.Disconnected);
 
             var turnIntruder = false;
             var turnSyndicate = false;
@@ -241,41 +216,17 @@ namespace TownOfUsReworked.Patches
             {
                 if (CustomGameOptions.SnitchSeesTraitor)
                 {
-                    if (snitch.TasksLeft <= CustomGameOptions.SnitchTasksRemaining && traitor == PlayerControl.LocalPlayer)
-                    {
-                        var gameObj = new GameObject("SnitchArrow") { layer = 5 };
-                        var arrow = gameObj.AddComponent<ArrowBehaviour>();
-                        gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
-                        var renderer = gameObj.AddComponent<SpriteRenderer>();
-                        renderer.sprite = AssetManager.GetSprite("Arrow");
-                        arrow.image = renderer;
-                        Role.LocalRole.AllArrows.Add(snitch.PlayerId, arrow);
-                    }
-                    else if (snitch.TasksDone && snitch.Player == PlayerControl.LocalPlayer)
-                    {
-                        var gameObj = new GameObject("SnitchEvilArrow") { layer = 5 };
-                        var arrow = gameObj.AddComponent<ArrowBehaviour>();
-                        gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
-                        var renderer = gameObj.AddComponent<SpriteRenderer>();
-                        renderer.sprite = AssetManager.GetSprite("Arrow");
-                        arrow.image = renderer;
-                        Role.LocalRole.AllArrows.Add(PlayerControl.LocalPlayer.PlayerId, arrow);
-                    }
+                    if (snitch.TasksLeft <= CustomGameOptions.SnitchTasksRemaining && PlayerControl.LocalPlayer == traitor)
+                        Role.LocalRole.AllArrows.Add(snitch.PlayerId, new(traitor, Colors.Snitch, 0));
+                    else if (snitch.TasksDone && PlayerControl.LocalPlayer == snitch.Player)
+                        Role.GetRole(snitch.Player).AllArrows.Add(traitor.PlayerId, new(snitch.Player, Colors.Snitch));
                 }
             }
 
             foreach (var revealer in Role.GetRoles<Revealer>(RoleEnum.Revealer))
             {
                 if (revealer.Revealed && CustomGameOptions.RevealerRevealsTraitor && traitor == PlayerControl.LocalPlayer)
-                {
-                    var gameObj = new GameObject("RevealerArrow") { layer = 5 };
-                    var arrow = gameObj.AddComponent<ArrowBehaviour>();
-                    gameObj.transform.parent = PlayerControl.LocalPlayer.gameObject.transform;
-                    var renderer = gameObj.AddComponent<SpriteRenderer>();
-                    renderer.sprite = AssetManager.GetSprite("Arrow");
-                    arrow.image = renderer;
-                    Role.LocalRole.AllArrows.Add(revealer.PlayerId, arrow);
-                }
+                    Role.LocalRole.AllArrows.Add(revealer.PlayerId, new(traitor, revealer.Color));
             }
 
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Mystic) && traitor != PlayerControl.LocalPlayer)

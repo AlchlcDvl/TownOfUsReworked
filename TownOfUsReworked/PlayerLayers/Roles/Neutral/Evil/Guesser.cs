@@ -5,10 +5,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public PlayerControl TargetPlayer;
         public bool TargetGuessed;
         public int RemainingGuesses;
-        public bool GuesserWins;
         public bool FactionHintGiven;
         public bool AlignmentHintGiven;
-        public bool SubFactionHintGiven;
+        public bool InspectorGiven;
         public bool Failed => TargetPlayer == null || (!TargetGuessed && (RemainingGuesses <= 0f || TargetPlayer.Data.IsDead || TargetPlayer.Data.Disconnected));
         private int lettersGiven;
         private bool lettersExhausted;
@@ -23,7 +22,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public int MaxPage;
         public Dictionary<int, List<Transform>> GuessButtons = new();
         public Dictionary<int, KeyValuePair<string, Color>> Sorted = new();
-        public byte Focused;
 
         public Guesser(PlayerControl player) : base(player)
         {
@@ -210,6 +208,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     if (CustomGameOptions.SpellslingerOn > 0)
                         ColorMapping.Add("Spellslinger", Colors.Spellslinger);
 
+                    if (CustomGameOptions.TimeKeeperOn > 0)
+                        ColorMapping.Add("Time Keeper", Colors.TimeKeeper);
+
                     if (CustomGameOptions.RebelOn > 0)
                     {
                         ColorMapping.Add("Rebel", Colors.Rebel);
@@ -248,28 +249,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 }
 
                 if (CustomGameOptions.DraculaOn > 0)
-                {
                     ColorMapping.Add("Dracula", Colors.Dracula);
-                    ColorMapping.Add("Bitten", Colors.Undead);
-                }
 
                 if (CustomGameOptions.JackalOn > 0)
-                {
                     ColorMapping.Add("Jackal", Colors.Jackal);
-                    ColorMapping.Add("Recruit", Colors.Cabal);
-                }
 
                 if (CustomGameOptions.NecromancerOn > 0)
-                {
                     ColorMapping.Add("Necromancer", Colors.Necromancer);
-                    ColorMapping.Add("Resurrected", Colors.Reanimated);
-                }
 
                 if (CustomGameOptions.WhispererOn > 0)
-                {
                     ColorMapping.Add("Whisperer", Colors.Whisperer);
-                    ColorMapping.Add("Persuaded", Colors.Sect);
-                }
 
                 if (CustomGameOptions.AmnesiacOn > 0)
                     ColorMapping.Add("Amnesiac", Colors.Amnesiac);
@@ -359,10 +348,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 label.text = Sorted[k].Key;
                 label.color = Sorted[k].Value;
                 button.GetComponent<PassiveButton>().OnMouseOver = new();
-                button.GetComponent<PassiveButton>().OnMouseOver.AddListener((Action)(() => button.GetComponent<SpriteRenderer>().color = UnityEngine.Color.green));
+                button.GetComponent<PassiveButton>().OnMouseOver.AddListener((Action)(() => button.GetComponent<SpriteRenderer>().color = UColor.green));
                 button.GetComponent<PassiveButton>().OnMouseOut = new();
-                button.GetComponent<PassiveButton>().OnMouseOut.AddListener((Action)(() => button.GetComponent<SpriteRenderer>().color = SelectedButton == button ? UnityEngine.Color.red :
-                    UnityEngine.Color.white));
+                button.GetComponent<PassiveButton>().OnMouseOut.AddListener((Action)(() => button.GetComponent<SpriteRenderer>().color = SelectedButton == button ? UColor.red :
+                    UColor.white));
                 button.GetComponent<PassiveButton>().OnClick = new();
                 button.GetComponent<PassiveButton>().OnClick.AddListener((Action)(() =>
                 {
@@ -375,7 +364,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     {
                         var focusedTarget = Utils.PlayerByVoteArea(voteArea);
 
-                        if (__instance.state == MeetingHud.VoteStates.Discussion || focusedTarget == null || RemainingGuesses <= 0 )
+                        if (__instance.state == MeetingHud.VoteStates.Discussion || focusedTarget == null || RemainingGuesses <= 0)
                             return;
 
                         var targetId = voteArea.TargetPlayerId;
@@ -468,8 +457,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 lettersExhausted = false;
                 letters.Clear();
                 FactionHintGiven = false;
-                AlignmentHintGiven = false;
-                SubFactionHintGiven = false;
+                InspectorGiven = false;
             }
             else if (!lettersExhausted)
             {
@@ -552,10 +540,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 something = $"Your target's role belongs to {targetRole.RoleAlignment.AlignmentName()} alignment!";
                 AlignmentHintGiven = true;
             }
-            else if (!SubFactionHintGiven && lettersExhausted)
+            else if (!InspectorGiven && lettersExhausted)
             {
-                something = $"Your target belongs to the {targetRole.SubFactionName}!";
-                SubFactionHintGiven = true;
+                something = $"Your target belongs to the {targetRole.InspectorResults} role list!";
+                InspectorGiven = true;
             }
 
             if (string.IsNullOrEmpty(something))
@@ -594,9 +582,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             button.OnClick = new();
             button.OnClick.AddListener((Action)(() => Guess(voteArea, __instance)));
             button.OnMouseOut = new();
-            button.OnMouseOut.AddListener((Action)(() => renderer.color = UnityEngine.Color.white));
+            button.OnMouseOut.AddListener((Action)(() => renderer.color = UColor.white));
             button.OnMouseOver = new();
-            button.OnMouseOver.AddListener((Action)(() => renderer.color = UnityEngine.Color.red));
+            button.OnMouseOver.AddListener((Action)(() => renderer.color = UColor.red));
             var collider = targetBox.GetComponent<BoxCollider2D>();
             collider.size = renderer.sprite.bounds.size;
             collider.offset = Vector2.zero;
@@ -618,15 +606,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var container = UObject.Instantiate(PhoneUI, __instance.transform);
             container.transform.localPosition = new(0, 0, -5f);
             Phone = container.gameObject;
-            var buttonTemplate = voteArea.transform.FindChild("votePlayerBase");
-            var maskTemplate = voteArea.transform.FindChild("MaskArea");
-            var smallButtonTemplate = voteArea.Buttons.transform.Find("CancelButton");
-            var textTemplate = voteArea.NameText;
             var exitButtonParent = new GameObject("CustomExitButton").transform;
             exitButtonParent.SetParent(container);
-            var exitButton = UObject.Instantiate(buttonTemplate.transform, exitButtonParent);
-            var exitButtonMask = UObject.Instantiate(maskTemplate, exitButtonParent);
-            exitButton.gameObject.GetComponent<SpriteRenderer>().sprite = smallButtonTemplate.GetComponent<SpriteRenderer>().sprite;
+            var exitButton = UObject.Instantiate(voteArea.transform.FindChild("votePlayerBase").transform, exitButtonParent);
+            var exitButtonMask = UObject.Instantiate(voteArea.transform.FindChild("MaskArea"), exitButtonParent);
+            exitButton.gameObject.GetComponent<SpriteRenderer>().sprite = voteArea.Buttons.transform.Find("CancelButton").GetComponent<SpriteRenderer>().sprite;
             exitButtonParent.transform.localPosition = new(2.725f, 2.1f, -5);
             exitButtonParent.transform.localScale = new(0.217f, 0.9f, 1);
             exitButton.GetComponent<PassiveButton>().OnClick = new();
@@ -706,7 +690,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                             item?.gameObject?.SetActive(Page == pair.Key);
                     }
 
-                    GuessButtons[Page].ForEach(x => x.GetComponent<SpriteRenderer>().color = x == SelectedButton ? UnityEngine.Color.red : UnityEngine.Color.white);
+                    GuessButtons[Page].ForEach(x => x.GetComponent<SpriteRenderer>().color = x == SelectedButton ? UColor.red : UColor.white);
                 }
             }
 
@@ -734,74 +718,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void MurderPlayer(PlayerControl player, string guess)
         {
-            var voteArea = Utils.VoteAreaByPlayer(player);
-            var hudManager = HudManager.Instance;
-
-            try
-            {
-                SoundManager.Instance.PlaySound(PlayerControl.LocalPlayer.KillSfx, false);
-            } catch {}
-
-            Player.RegenTask();
-            player.RegenTask();
-
             if (Player != player)
             {
-                if (player == PlayerControl.LocalPlayer)
-                {
-                    hudManager.KillOverlay.ShowKillAnimation(Player.Data, player.Data);
-                    hudManager.ShadowQuad.gameObject.SetActive(false);
-                    player.NameText().GetComponent<MeshRenderer>().material.SetInt("_Mask", 0);
-                    player.RpcSetScanner(false);
-
-                    if (player.Is(AbilityEnum.Swapper))
-                    {
-                        var swapper = Ability.GetAbility<Swapper>(player);
-                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                        writer.Write((byte)ActionsRPC.SetSwaps);
-                        writer.Write(PlayerId);
-                        writer.Write(255);
-                        writer.Write(255);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                        swapper.Swap1 = null;
-                        swapper.Swap2 = null;
-                        swapper.HideButtons();
-                    }
-
-                    if (player.Is(RoleEnum.Guesser))
-                        GetRole<Guesser>(player).HideButtons();
-
-                    if (player.Is(RoleEnum.Retributionist))
-                        GetRole<Retributionist>(player).HideButtons();
-
-                    if (player.Is(RoleEnum.Dictator))
-                    {
-                        GetRole<Dictator>(player).HideButtons();
-                        GetRole<Dictator>(player).ToBeEjected.Clear();
-                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                        writer.Write((byte)ActionsRPC.SetExiles);
-                        writer.Write(player.PlayerId);
-                        writer.Write(255);
-                        writer.Write(255);
-                        writer.Write(255);
-                        writer.Write(false);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    }
-
-                    if (player.Is(AbilityEnum.Assassin))
-                    {
-                        Ability.GetAbility<Assassin>(player).Exit(MeetingHud.Instance);
-                        Ability.GetAbility<Assassin>(player).HideButtons();
-                    }
-                }
-
-                player.Die(global::DeathReason.Kill, false);
-
-                var role2 = GetRole(player);
-                role2.DeathReason = DeathReasonEnum.Guessed;
-                role2.KilledBy = " By " + PlayerName;
-
-                if (player.Is(ObjectifierEnum.Lovers) && CustomGameOptions.BothLoversDie)
+                if (player.Is(ObjectifierEnum.Lovers) && CustomGameOptions.BothLoversDie && AmongUsClient.Instance.AmHost)
                 {
                     var otherLover = player.GetOtherLover();
 
@@ -810,204 +729,27 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 }
 
                 TargetGuessed = true;
-
-                var deadPlayer = new DeadPlayer
-                {
-                    PlayerId = player.PlayerId,
-                    KillerId = player.PlayerId,
-                    KillTime = DateTime.UtcNow,
-                };
-
-                Murder.KilledPlayers.Add(deadPlayer);
-
-                if (voteArea == null)
-                    return;
-
-                if (voteArea.DidVote)
-                    voteArea.UnsetVote();
-
-                voteArea.AmDead = true;
-                voteArea.Overlay.gameObject.SetActive(true);
-                voteArea.Overlay.color = UnityEngine.Color.white;
-                voteArea.XMark.gameObject.SetActive(true);
-                voteArea.XMark.transform.localScale = Vector3.one;
-                var meetingHud = MeetingHud.Instance;
-
-                if (player.AmOwner)
-                    meetingHud.SetForegroundForDead();
-
-                foreach (var role in GetRoles<Blackmailer>(RoleEnum.Blackmailer))
-                {
-                    if (role.BlackmailedPlayer != null && voteArea.TargetPlayerId == role.BlackmailedPlayer.PlayerId && BlackmailMeetingUpdate.PrevXMark != null &&
-                        BlackmailMeetingUpdate.PrevOverlay != null)
-                    {
-                        voteArea.XMark.sprite = BlackmailMeetingUpdate.PrevXMark;
-                        voteArea.Overlay.sprite = BlackmailMeetingUpdate.PrevOverlay;
-                        voteArea.XMark.transform.localPosition = new(voteArea.XMark.transform.localPosition.x - BlackmailMeetingUpdate.LetterXOffset,
-                            voteArea.XMark.transform.localPosition.y - BlackmailMeetingUpdate.LetterYOffset, voteArea.XMark.transform.localPosition.z);
-                    }
-                }
-
-                foreach (var role in GetRoles<PromotedGodfather>(RoleEnum.PromotedGodfather))
-                {
-                    if (role.BlackmailedPlayer != null && voteArea.TargetPlayerId == role.BlackmailedPlayer.PlayerId && BlackmailMeetingUpdate.PrevXMark != null &&
-                        BlackmailMeetingUpdate.PrevOverlay != null && role.IsBM)
-                    {
-                        voteArea.XMark.sprite = BlackmailMeetingUpdate.PrevXMark;
-                        voteArea.Overlay.sprite = BlackmailMeetingUpdate.PrevOverlay;
-                        voteArea.XMark.transform.localPosition = new(voteArea.XMark.transform.localPosition.x - BlackmailMeetingUpdate.LetterXOffset,
-                            voteArea.XMark.transform.localPosition.y - BlackmailMeetingUpdate.LetterYOffset, voteArea.XMark.transform.localPosition.z);
-                    }
-                }
-
-                if (PlayerControl.LocalPlayer.Is(AbilityEnum.Assassin) && !PlayerControl.LocalPlayer.Data.IsDead)
-                    Ability.GetAbility<Assassin>(PlayerControl.LocalPlayer).HideSingle(voteArea.TargetPlayerId);
-
-                if (PlayerControl.LocalPlayer.Is(RoleEnum.Guesser) && !PlayerControl.LocalPlayer.Data.IsDead)
-                    GetRole<Guesser>(PlayerControl.LocalPlayer).HideSingle(player.PlayerId);
-
-                if (PlayerControl.LocalPlayer.Is(AbilityEnum.Swapper) && !PlayerControl.LocalPlayer.Data.IsDead)
-                {
-                    var swapper = Ability.GetAbility<Swapper>(PlayerControl.LocalPlayer);
-                    var active = swapper.Actives[voteArea.TargetPlayerId];
-
-                    if (active)
-                    {
-                        if (swapper.Swap1 == voteArea)
-                            swapper.Swap1 = null;
-                        else if (swapper.Swap2 == voteArea)
-                            swapper.Swap2 = null;
-
-                        swapper.Actives[voteArea.TargetPlayerId] = false;
-                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                        writer.Write((byte)ActionsRPC.SetSwaps);
-                        writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                        writer.Write(255);
-                        writer.Write(255);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    }
-
-                    swapper.HideSingle(voteArea.TargetPlayerId);
-                }
-
-                if (PlayerControl.LocalPlayer.Is(RoleEnum.Dictator) && !PlayerControl.LocalPlayer.Data.IsDead)
-                {
-                    var dictator = GetRole<Dictator>(PlayerControl.LocalPlayer);
-                    var active = dictator.Actives[voteArea.TargetPlayerId];
-
-                    if (active)
-                    {
-                        dictator.ToBeEjected.Clear();
-
-                        for (var i = 0; i < dictator.Actives.Count; i++)
-                            dictator.Actives[(byte)i] = false;
-
-                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                        writer.Write((byte)ActionsRPC.SetExiles);
-                        writer.Write(PlayerControl.LocalPlayer.PlayerId);
-                        writer.Write(255);
-                        writer.Write(255);
-                        writer.Write(255);
-                        writer.Write(false);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    }
-
-                    dictator.HideSingle(voteArea.TargetPlayerId);
-                }
-
-                if (PlayerControl.LocalPlayer.Is(RoleEnum.Retributionist) && !PlayerControl.LocalPlayer.Data.IsDead)
-                {
-                    var ret = GetRole<Retributionist>(PlayerControl.LocalPlayer);
-                    ret.GenButtons(voteArea, meetingHud);
-                }
-
-                foreach (var playerVoteArea in meetingHud.playerStates)
-                {
-                    if (playerVoteArea.VotedFor != player.PlayerId)
-                        continue;
-
-                    playerVoteArea.UnsetVote();
-                    var voteAreaPlayer = Utils.PlayerById(playerVoteArea.TargetPlayerId);
-
-                    if (!voteAreaPlayer.AmOwner)
-                        continue;
-
-                    meetingHud.ClearVote();
-                }
-
-                if (AmongUsClient.Instance.AmHost)
-                {
-                    foreach (var mayor in Ability.GetAbilities<Politician>(AbilityEnum.Politician))
-                    {
-                        if (mayor.Player == player)
-                            mayor.ExtraVotes.Clear();
-                        else
-                        {
-                            var votesRegained = mayor.ExtraVotes.RemoveAll(x => x == player.PlayerId);
-
-                            if (mayor.Player == PlayerControl.LocalPlayer)
-                                mayor.VoteBank += votesRegained;
-
-                            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AddVoteBank, SendOption.Reliable);
-                            writer.Write(mayor.PlayerId);
-                            writer.Write(votesRegained);
-                            AmongUsClient.Instance.FinishRpcImmediately(writer);
-                        }
-                    }
-
-                    if (SetPostmortals.RevealerOn && SetPostmortals.WillBeRevealer == null && player.Is(Faction.Crew))
-                    {
-                        SetPostmortals.WillBeRevealer = player;
-                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetRevealer, SendOption.Reliable);
-                        writer.Write(PlayerId);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    }
-
-                    if (SetPostmortals.PhantomOn && SetPostmortals.WillBePhantom == null && player.Is(Faction.Neutral) && !LayerExtentions.NeutralHasUnfinishedBusiness(player))
-                    {
-                        SetPostmortals.WillBePhantom = player;
-                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPhantom, SendOption.Reliable);
-                        writer.Write(PlayerId);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    }
-
-                    if (SetPostmortals.BansheeOn && SetPostmortals.WillBeBanshee == null && player.Is(Faction.Syndicate))
-                    {
-                        SetPostmortals.WillBeBanshee = player;
-                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetBanshee, SendOption.Reliable);
-                        writer.Write(PlayerId);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    }
-
-                    if (SetPostmortals.GhoulOn && SetPostmortals.WillBeGhoul == null && player.Is(Faction.Intruder))
-                    {
-                        SetPostmortals.WillBeGhoul = player;
-                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetGhoul, SendOption.Reliable);
-                        writer.Write(PlayerId);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    }
-
-                    SetPostmortals.AssassinatedPlayers.Add(player);
-                    meetingHud.CheckForEndVoting();
-                }
+                Utils.MarkMeetingDead(player, Player, false);
             }
             else
             {
-                if (!TargetGuessed)
-                    RemainingGuesses--;
+                var hudManager = HudManager.Instance;
 
-                foreach (var player2 in PlayerControl.AllPlayerControls)
+                if (Player == player)
                 {
-                    if (player2.Data.IsDead && Player != player2 && !TargetGuessed)
+                    if (!TargetGuessed)
                     {
-                        if (Player == player)
-                            hudManager.Chat.AddChat(player2, $"{PlayerName} incorrectly guessed {player.name} as {guess} and lost a guess!");
+                        RemainingGuesses--;
+
+                        if (ConstantVariables.DeadSeeEverything && Player != PlayerControl.LocalPlayer)
+                            hudManager.Chat.AddChat(PlayerControl.LocalPlayer, $"{PlayerName} incorrectly guessed {player.name} as {guess} and lost a guess!");
+                        else if (Player == PlayerControl.LocalPlayer && !TargetGuessed)
+                            hudManager.Chat.AddChat(PlayerControl.LocalPlayer, $"You incorrectly guessed {player.name} as {guess} and lost a guess!");
                     }
-                    else if (Player == player2 && Player == PlayerControl.LocalPlayer && !TargetGuessed)
-                    {
-                        if (Player != player)
-                            hudManager.Chat.AddChat(player2, $"You incorrectly guessed {player.name} as {guess} and lost a guess!");
-                    }
+                    else if (ConstantVariables.DeadSeeEverything && Player != PlayerControl.LocalPlayer)
+                        hudManager.Chat.AddChat(PlayerControl.LocalPlayer, $"{PlayerName} incorrectly guessed {player.name} as {guess}!");
+                    else if (Player == PlayerControl.LocalPlayer && !TargetGuessed)
+                        hudManager.Chat.AddChat(PlayerControl.LocalPlayer, $"You incorrectly guessed {player.name} as {guess}!");
                 }
             }
         }

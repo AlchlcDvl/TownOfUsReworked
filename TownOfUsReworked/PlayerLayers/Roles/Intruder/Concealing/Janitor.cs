@@ -27,8 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float CleanTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastCleaned;
+            var timespan = DateTime.UtcNow - LastCleaned;
             var num = Player.GetModifiedCooldown(CustomGameOptions.JanitorCleanCd, ConstantVariables.LastImp && CustomGameOptions.SoloBoost ? -CustomGameOptions.UnderdogKillBonus : 0) *
                 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
@@ -37,8 +36,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float DragTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastDragged;
+            var timespan = DateTime.UtcNow - LastDragged;
             var num = Player.GetModifiedCooldown(CustomGameOptions.DragCd) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -72,7 +70,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             //WHY ARE THERE DIFFERENT LOCAL Z INDEXS FOR DIFFERENT DECALS ON DIFFERENT LEVELS?!?!?!
             //AD: idk ¯\_(ツ)_/¯
-            if (SubmergedCompatibility.IsSubmerged)
+            if (ModCompatibility.IsSubmerged)
             {
                 if (newPos.y > -7f)
                     newPos.z = 0.0208f;
@@ -88,7 +86,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             foreach (var component in body?.bodyRenderers)
             {
-                component.material.SetColor("_OutlineColor", UnityEngine.Color.green);
+                component.material.SetColor("_OutlineColor", UColor.green);
                 component.material.SetFloat("_Outline", 1f);
             }
 
@@ -137,7 +135,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             writer.Write(PlayerId);
             Vector3 position = PlayerControl.LocalPlayer.GetTruePosition();
 
-            if (SubmergedCompatibility.IsSubmerged)
+            if (ModCompatibility.IsSubmerged)
             {
                 if (position.y > -7f)
                     position.z = 0.0208f;

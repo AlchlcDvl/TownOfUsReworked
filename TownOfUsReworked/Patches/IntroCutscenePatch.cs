@@ -49,12 +49,12 @@ namespace TownOfUsReworked.Patches
                 __instance.__4__this.RoleBlurbText.text = role.StartText + statusString;
                 __instance.__4__this.RoleBlurbText.color = role.Color;
 
-                if (AssetManager.Sounds.Contains(role.IntroSound) && !role.IntroPlayed)
+                /*if (AssetManager.Sounds.Contains(role.IntroSound) && !role.IntroPlayed)
                 {
                     SoundManager.Instance.StopSound(PlayerControl.LocalPlayer.Data.Role.IntroSound);
                     AssetManager.Play(role.IntroSound);
                     role.IntroPlayed = true;
-                }
+                }*/
 
                 var flag = !role.Base && ((CustomGameOptions.CustomCrewColors && PlayerControl.LocalPlayer.Is(Faction.Crew)) || (CustomGameOptions.CustomIntColors &&
                     PlayerControl.LocalPlayer.Is(Faction.Intruder)) || (CustomGameOptions.CustomSynColors && PlayerControl.LocalPlayer.Is(Faction.Syndicate)) ||

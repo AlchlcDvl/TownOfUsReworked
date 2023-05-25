@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Modifiers
 {
-    public class Giant : Modifier, IVisualAlteration
+    public class Giant : Modifier
     {
         private static bool Chonk => CustomGameOptions.DwarfScale != 1;
         private static bool Snail => CustomGameOptions.DwarfSpeed != 1;
@@ -13,12 +13,6 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
             Color = CustomGameOptions.CustomModifierColors ? Colors.Giant : Colors.Modifier;
             ModifierType = ModifierEnum.Giant;
             Type = LayerEnum.Giant;
-        }
-
-        public bool TryGetModifiedAppearance(out VisualAppearance appearance)
-        {
-            appearance = Player.GetAppearance();
-            return true;
         }
     }
 }

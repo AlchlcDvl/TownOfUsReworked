@@ -16,7 +16,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Enforcer";
             RoleType = RoleEnum.Enforcer;
-            StartText = "Plant Bombs On Players And Force Them To Kill";
+            StartText = "Force The <color=#8CFFFFFF>Crew</color> To Do Your Bidding";
             AbilitiesText = $"- You can plant bombs on players and force them to kill others\n- If the player is unable to kill someone within {CustomGameOptions.EnforceDuration}s" +
                 $", the bomb will detonate and kill everyone within a {CustomGameOptions.EnforceRadius}m radius\n{AbilitiesText}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Enforcer : Colors.Intruder;
@@ -29,8 +29,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float BombTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastBombed;
+            var timespan = DateTime.UtcNow - LastBombed;
             var num = Player.GetModifiedCooldown(CustomGameOptions.EnforceCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;

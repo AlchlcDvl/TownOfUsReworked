@@ -37,8 +37,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float CheckTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastChecked;
+            var timespan = DateTime.UtcNow - LastChecked;
             var num = Player.GetModifiedCooldown(CustomGameOptions.BountyHunterCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -218,13 +217,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (GuessButton.TargetPlayer != TargetPlayer)
             {
-                Utils.Flash(new Color32(255, 0, 0, 255));
+                Utils.Flash(new(255, 0, 0, 255));
                 UsesLeft--;
             }
             else
             {
                 TargetFound = true;
-                Utils.Flash(new Color32(0, 255, 0, 255));
+                Utils.Flash(new(0, 255, 0, 255));
             }
 
             LastChecked = DateTime.UtcNow;
@@ -234,7 +233,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             if (HuntButton.TargetPlayer != TargetPlayer && !TargetKilled)
             {
-                Utils.Flash(new Color32(255, 0, 0, 255));
+                Utils.Flash(new(255, 0, 0, 255));
                 LastChecked = DateTime.UtcNow;
             }
             else if (HuntButton.TargetPlayer == TargetPlayer && !TargetKilled)

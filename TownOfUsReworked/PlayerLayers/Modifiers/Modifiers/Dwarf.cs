@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Modifiers
 {
-    public class Dwarf : Modifier, IVisualAlteration
+    public class Dwarf : Modifier
     {
         private static bool Smol => CustomGameOptions.DwarfScale != 1;
         private static bool Sped => CustomGameOptions.DwarfSpeed != 1;
@@ -13,12 +13,6 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
             Color = CustomGameOptions.CustomModifierColors ? Colors.Dwarf : Colors.Modifier;
             ModifierType = ModifierEnum.Dwarf;
             Type = LayerEnum.Dwarf;
-        }
-
-        public bool TryGetModifiedAppearance(out VisualAppearance appearance)
-        {
-            appearance = Player.GetAppearance();
-            return true;
         }
     }
 }

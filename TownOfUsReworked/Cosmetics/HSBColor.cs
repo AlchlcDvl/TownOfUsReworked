@@ -133,7 +133,7 @@ namespace TownOfUsReworked.Cosmetics
                 }
             }
 
-            return new Color(Mathf.Clamp01(r), Mathf.Clamp01(g), Mathf.Clamp01(b), hsbColor.a);
+            return new(Mathf.Clamp01(r), Mathf.Clamp01(g), Mathf.Clamp01(b), hsbColor.a);
         }
 
         public readonly Color ToColor() => ToColor(this);
@@ -144,8 +144,8 @@ namespace TownOfUsReworked.Cosmetics
         {
             float h, s;
 
-            //check special case black (color.b==0): interpolate neither hue nor saturation!
-            //check special case grey (color.s==0): don't interpolate hue!
+            //Check special case black (color.b==0): interpolate neither hue nor saturation!
+            //Check special case grey (color.s==0): don't interpolate hue!
             if (a.b == 0)
             {
                 h = b.h;
@@ -190,22 +190,22 @@ namespace TownOfUsReworked.Cosmetics
             var color = new HSBColor(Color.red);
             Debug.Log("red: " + color);
 
-            color = new HSBColor(Color.green);
+            color = new(Color.green);
             Debug.Log("green: " + color);
 
-            color = new HSBColor(Color.blue);
+            color = new(Color.blue);
             Debug.Log("blue: " + color);
 
-            color = new HSBColor(Color.grey);
+            color = new(Color.grey);
             Debug.Log("grey: " + color);
 
-            color = new HSBColor(Color.white);
+            color = new(Color.white);
             Debug.Log("white: " + color);
 
-            color = new HSBColor(new Color(0.4f, 1f, 0.84f, 1f));
+            color = new(new(0.4f, 1f, 0.84f, 1f));
             Debug.Log("0.4, 1f, 0.84: " + color);
 
-            Debug.Log("164,82,84   .... 0.643137f, 0.321568f, 0.329411f  :" + ToColor(new HSBColor(new Color(0.643137f, 0.321568f, 0.329411f))));
+            Debug.Log("164,82,84   .... 0.643137f, 0.321568f, 0.329411f  :" + ToColor(new(new(0.643137f, 0.321568f, 0.329411f))));
         }
     }
 }

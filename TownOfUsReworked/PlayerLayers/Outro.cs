@@ -9,15 +9,11 @@ namespace TownOfUsReworked.PlayerLayers
                 return;
 
             var text = UObject.Instantiate(__instance.WinText);
-            var players = UObject.FindObjectsOfType<PoolablePlayer>();
 
-            if (players.Count > 0)
+            foreach (var player in UObject.FindObjectsOfType<PoolablePlayer>())
             {
-                foreach (var player in players)
-                {
-                    var role = Role.AllRoles.Find(x => x.PlayerName == player.NameText().text);
-                    player.NameText().text = $"{role.ColorString}<size=75%>{role.Name}</size>\n<size=90%>{player.NameText().text}</size></color>";
-                }
+                var role = Role.AllRoles.Find(x => x.PlayerName == player.NameText().text);
+                player.NameText().text = $"{role.ColorString}<size=75%>{role.Name}</size>\n<size=90%>{player.NameText().text}</size></color>";
             }
 
             if (PlayerLayer.NobodyWins)
@@ -28,23 +24,51 @@ namespace TownOfUsReworked.PlayerLayers
                 SoundManager.Instance.StopSound(__instance.ImpostorStinger);
                 SoundManager.Instance.PlaySound(__instance.DisconnectStinger, false);
             }
-            else if (Role.CrewWin || Role.SyndicateWin || Role.IntruderWin || Role.AllNeutralsWin)
+            else if (Role.SyndicateWin)
             {
-                var role = Role.AllRoles.Find(x => (x.Faction == Faction.Crew && Role.CrewWin) || (x.Faction == Faction.Syndicate && Role.SyndicateWin) || (x.Faction == Faction.Intruder &&
-                    Role.IntruderWin) || (x.Faction == Faction.Neutral && Role.AllNeutralsWin));
+                var role = Role.AllRoles.Find(x => x.Faction == Faction.Syndicate && Role.SyndicateWin);
 
                 if (role == null)
                     return;
 
                 __instance.BackgroundBar.material.color = role.FactionColor;
-                text.text = $"{role.FactionName + (role.Faction is Faction.Neutral or Faction.Intruder ? "s" : "")} Win{(role.Faction is Faction.Syndicate or Faction.Crew ? "s" : "")}!";
+                text.text = "The Syndicate Wins";
                 text.color = role.FactionColor;
+            }
+            else if (Role.IntruderWin)
+            {
+                var role = Role.AllRoles.Find(x => x.Faction == Faction.Intruder);
 
-                if (Role.CrewWin)
-                {
-                    SoundManager.Instance.StopSound(__instance.ImpostorStinger);
-                    SoundManager.instance.PlaySound(__instance.CrewStinger, false);
-                }
+                if (role == null)
+                    return;
+
+                __instance.BackgroundBar.material.color = role.FactionColor;
+                text.text = "Intruders Win";
+                text.color = role.FactionColor;
+            }
+            else if (Role.AllNeutralsWin)
+            {
+                var role = Role.AllRoles.Find(x => x.Faction == Faction.Neutral && Role.AllNeutralsWin);
+
+                if (role == null)
+                    return;
+
+                __instance.BackgroundBar.material.color = role.FactionColor;
+                text.text = "Neutrals Win";
+                text.color = role.FactionColor;
+            }
+            else if (Role.CrewWin)
+            {
+                var role = Role.AllRoles.Find(x => x.Faction == Faction.Crew && Role.CrewWin);
+
+                if (role == null)
+                    return;
+
+                __instance.BackgroundBar.material.color = role.FactionColor;
+                text.text = "Crew Wins";
+                text.color = role.FactionColor;
+                SoundManager.Instance.StopSound(__instance.ImpostorStinger);
+                SoundManager.instance.PlaySound(__instance.CrewStinger, false);
             }
             else if (Role.NKWins)
             {
@@ -54,7 +78,7 @@ namespace TownOfUsReworked.PlayerLayers
                     return;
 
                 __instance.BackgroundBar.material.color = Colors.Alignment;
-                text.text = "Neutral Killers Win!";
+                text.text = "Neutral Killers Win";
                 text.color = Colors.Alignment;
             }
             else if (Role.InfectorsWin)
@@ -65,54 +89,289 @@ namespace TownOfUsReworked.PlayerLayers
                     return;
 
                 __instance.BackgroundBar.material.color = Colors.Infector;
-                text.text = "Infectors Win!";
+                text.text = "Infectors Win";
                 text.color = Colors.Infector;
             }
-            else if (Role.UndeadWin || Role.CabalWin || Role.SectWin || Role.ReanimatedWin)
+            else if (Role.UndeadWin)
             {
-                var role = Role.AllRoles.Find(x => (x.SubFaction == SubFaction.Undead && Role.UndeadWin) || (x.SubFaction == SubFaction.Cabal && Role.CabalWin) ||
-                    (x.SubFaction == SubFaction.Sect && Role.SectWin) || (x.SubFaction == SubFaction.Reanimated && Role.ReanimatedWin));
+                var role = Role.AllRoles.Find(x => x.SubFaction == SubFaction.Undead && Role.UndeadWin);
 
                 if (role == null)
                     return;
 
                 __instance.BackgroundBar.material.color = role.SubFactionColor;
-                text.text = $"The {role.SubFactionName} Win{(role.SubFaction is SubFaction.Sect or SubFaction.Cabal ? "s" : "")}!";
+                text.text = "The Undead Win";
                 text.color = role.SubFactionColor;
             }
-            else if (Role.RoleWins)
+            else if (Role.CabalWin)
             {
-                var role = Role.AllRoles.Find(x => ((x.RoleType == RoleEnum.Arsonist && Role.ArsonistWins) || (x.RoleType == RoleEnum.Cryomaniac && Role.CryomaniacWins) ||
-                    (x.RoleType == RoleEnum.Glitch && Role.GlitchWins) || (x.RoleType == RoleEnum.Juggernaut && Role.JuggernautWins) || (x.RoleType == RoleEnum.Murderer &&
-                    Role.MurdererWins) || (x.RoleType == RoleEnum.SerialKiller && Role.SerialKillerWins) || (x.RoleType == RoleEnum.Werewolf && Role.WerewolfWins) || (x.RoleType ==
-                    RoleEnum.Phantom && Role.PhantomWins)) && x.Winner);
+                var role = Role.AllRoles.Find(x => x.SubFaction == SubFaction.Cabal && Role.CabalWin);
+
+                if (role == null)
+                    return;
+
+                __instance.BackgroundBar.material.color = role.SubFactionColor;
+                text.text = "The Cabal Wins";
+                text.color = role.SubFactionColor;
+            }
+            else if (Role.SectWin)
+            {
+                var role = Role.AllRoles.Find(x => x.SubFaction == SubFaction.Sect && Role.SectWin);
+
+                if (role == null)
+                    return;
+
+                __instance.BackgroundBar.material.color = role.SubFactionColor;
+                text.text = "The Sect Wins";
+                text.color = role.SubFactionColor;
+            }
+            else if (Role.ReanimatedWin)
+            {
+                var role = Role.AllRoles.Find(x => x.SubFaction == SubFaction.Reanimated && Role.ReanimatedWin);
+
+                if (role == null)
+                    return;
+
+                __instance.BackgroundBar.material.color = role.SubFactionColor;
+                text.text = "The Reanimated Win";
+                text.color = role.SubFactionColor;
+            }
+            else if (Role.CryomaniacWins)
+            {
+                var role = Role.AllRoles.Find(x => x.RoleType == RoleEnum.Cryomaniac && x.Winner);
 
                 if (role == null)
                     return;
 
                 __instance.BackgroundBar.material.color = role.Color;
-                text.text = $"{role.Name} Wins!";
+                text.text = "Cryomaniac Wins";
                 text.color = role.Color;
             }
-            else if (Objectifier.ObjectifierWins)
+            else if (Role.ArsonistWins)
             {
-                var obj = Objectifier.AllObjectifiers.Find(x => ((x.ObjectifierType == ObjectifierEnum.Corrupted && Objectifier.CorruptedWins) || (x.ObjectifierType ==
-                    ObjectifierEnum.Lovers && Objectifier.LoveWins) || (x.ObjectifierType == ObjectifierEnum.Rivals && Objectifier.RivalWins) || (x.ObjectifierType ==
-                    ObjectifierEnum.Taskmaster && Objectifier.TaskmasterWins) || (x.ObjectifierType == ObjectifierEnum.Overlord && Objectifier.OverlordWins) || (x.ObjectifierType ==
-                    ObjectifierEnum.Mafia && Objectifier.MafiaWins)) && x.Winner);
+                var role = Role.AllRoles.Find(x => x.RoleType == RoleEnum.Arsonist && x.Winner);
+
+                if (role == null)
+                    return;
+
+                __instance.BackgroundBar.material.color = role.Color;
+                text.text = "Aronist Wins";
+                text.color = role.Color;
+            }
+            else if (Role.GlitchWins)
+            {
+                var role = Role.AllRoles.Find(x => x.RoleType == RoleEnum.Glitch && x.Winner);
+
+                if (role == null)
+                    return;
+
+                __instance.BackgroundBar.material.color = role.Color;
+                text.text = "Glitch Wins";
+                text.color = role.Color;
+            }
+            else if (Role.JuggernautWins)
+            {
+                var role = Role.AllRoles.Find(x => x.RoleType == RoleEnum.Juggernaut && x.Winner);
+
+                if (role == null)
+                    return;
+
+                __instance.BackgroundBar.material.color = role.Color;
+                text.text = "Juggernaut Wins";
+                text.color = role.Color;
+            }
+            else if (Role.MurdererWins)
+            {
+                var role = Role.AllRoles.Find(x => x.RoleType == RoleEnum.Murderer && x.Winner);
+
+                if (role == null)
+                    return;
+
+                __instance.BackgroundBar.material.color = role.Color;
+                text.text = "Murderer Wins";
+                text.color = role.Color;
+            }
+            else if (Role.SerialKillerWins)
+            {
+                var role = Role.AllRoles.Find(x => x.RoleType == RoleEnum.SerialKiller && x.Winner);
+
+                if (role == null)
+                    return;
+
+                __instance.BackgroundBar.material.color = role.Color;
+                text.text = "Serial Killer Wins";
+                text.color = role.Color;
+            }
+            else if (Role.WerewolfWins)
+            {
+                var role = Role.AllRoles.Find(x => x.RoleType == RoleEnum.Werewolf && x.Winner);
+
+                if (role == null)
+                    return;
+
+                __instance.BackgroundBar.material.color = role.Color;
+                text.text = "Werewolf Wins";
+                text.color = role.Color;
+            }
+            else if (Role.PhantomWins)
+            {
+                var role = Role.AllRoles.Find(x => x.RoleType == RoleEnum.Phantom && x.Winner);
+
+                if (role == null)
+                    return;
+
+                __instance.BackgroundBar.material.color = role.Color;
+                text.text = "Phantom Wins";
+                text.color = role.Color;
+            }
+            else if (Role.ActorWins)
+            {
+                var role = Role.AllRoles.Find(x => x.RoleType == RoleEnum.Actor && x.Winner);
+
+                if (role == null)
+                    return;
+
+                __instance.BackgroundBar.material.color = role.Color;
+                text.text = "Actor Wins";
+                text.color = role.Color;
+            }
+            else if (Role.BountyHunterWins)
+            {
+                var role = Role.AllRoles.Find(x => x.RoleType == RoleEnum.BountyHunter && x.Winner);
+
+                if (role == null)
+                    return;
+
+                __instance.BackgroundBar.material.color = role.Color;
+                text.text = "Bounty Hunter Wins";
+                text.color = role.Color;
+            }
+            else if (Role.CannibalWins)
+            {
+                var role = Role.AllRoles.Find(x => x.RoleType == RoleEnum.Cannibal && x.Winner);
+
+                if (role == null)
+                    return;
+
+                __instance.BackgroundBar.material.color = role.Color;
+                text.text = "Cannibal Wins";
+                text.color = role.Color;
+            }
+            else if (Role.ExecutionerWins)
+            {
+                var role = Role.AllRoles.Find(x => x.RoleType == RoleEnum.Executioner && x.Winner);
+
+                if (role == null)
+                    return;
+
+                __instance.BackgroundBar.material.color = role.Color;
+                text.text = "Executioner Wins";
+                text.color = role.Color;
+            }
+            else if (Role.GuesserWins)
+            {
+                var role = Role.AllRoles.Find(x => x.RoleType == RoleEnum.Guesser && x.Winner);
+
+                if (role == null)
+                    return;
+
+                __instance.BackgroundBar.material.color = role.Color;
+                text.text = "Guesser Wins";
+                text.color = role.Color;
+            }
+            else if (Role.JesterWins)
+            {
+                var role = Role.AllRoles.Find(x => x.RoleType == RoleEnum.Jester && x.Winner);
+
+                if (role == null)
+                    return;
+
+                __instance.BackgroundBar.material.color = role.Color;
+                text.text = "Jester Wins";
+                text.color = role.Color;
+            }
+            else if (Role.TrollWins)
+            {
+                var role = Role.AllRoles.Find(x => x.RoleType == RoleEnum.Troll && x.Winner);
+
+                if (role == null)
+                    return;
+
+                __instance.BackgroundBar.material.color = role.Color;
+                text.text = "Troll Wins";
+                text.color = role.Color;
+            }
+            else if (Objectifier.CorruptedWins)
+            {
+                var obj = Objectifier.AllObjectifiers.Find(x => x.ObjectifierType == ObjectifierEnum.Corrupted && x.Winner);
 
                 if (obj == null)
                     return;
 
                 __instance.BackgroundBar.material.color = obj.Color;
-                text.text = (Objectifier.LoveWins ? "Love" : (Objectifier.RivalWins ? "Rival" : (Objectifier.MafiaWins ? "The Mafia" : $"{obj.Name}"))) + " Wins!";
+                text.text = "Corrupted Wins";
+                text.color = obj.Color;
+            }
+            else if (Objectifier.LoveWins)
+            {
+                var obj = Objectifier.AllObjectifiers.Find(x => x.ObjectifierType == ObjectifierEnum.Lovers && x.Winner);
+
+                if (obj == null)
+                    return;
+
+                __instance.BackgroundBar.material.color = obj.Color;
+                text.text = "Love Wins";
+                text.color = obj.Color;
+            }
+            else if (Objectifier.RivalWins)
+            {
+                var obj = Objectifier.AllObjectifiers.Find(x => x.ObjectifierType == ObjectifierEnum.Rivals && x.Winner);
+
+                if (obj == null)
+                    return;
+
+                __instance.BackgroundBar.material.color = obj.Color;
+                text.text = "Rival Wins";
+                text.color = obj.Color;
+            }
+            else if (Objectifier.TaskmasterWins)
+            {
+                var obj = Objectifier.AllObjectifiers.Find(x => x.ObjectifierType == ObjectifierEnum.Taskmaster && x.Winner);
+
+                if (obj == null)
+                    return;
+
+                __instance.BackgroundBar.material.color = obj.Color;
+                text.text = "Taskmaster Wins";
+                text.color = obj.Color;
+            }
+            else if (Objectifier.OverlordWins)
+            {
+                var obj = Objectifier.AllObjectifiers.Find(x => x.ObjectifierType == ObjectifierEnum.Overlord && x.Winner);
+
+                if (obj == null)
+                    return;
+
+                __instance.BackgroundBar.material.color = obj.Color;
+                text.text = "Overlord Wins";
+                text.color = obj.Color;
+            }
+            else if (Objectifier.MafiaWins)
+            {
+                var obj = Objectifier.AllObjectifiers.Find(x => x.ObjectifierType == ObjectifierEnum.Mafia && x.Winner);
+
+                if (obj == null)
+                    return;
+
+                __instance.BackgroundBar.material.color = obj.Color;
+                text.text = "The Mafia Wins";
                 text.color = obj.Color;
             }
 
             var pos = __instance.WinText.transform.localPosition;
-            pos.y = 1.5f;
-            text.transform.position = pos;
-            text.text = $"<size=4>{text.text}</size>";
+            pos.y += 1.5f;
+            __instance.WinText.transform.localPosition = pos;
+            text.text = $"<size=50%>{text.text}</size>";
         }
     }
 }

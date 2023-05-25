@@ -29,10 +29,9 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             if (CanKill)
                 return;
 
-            var skip = __instance.SkipVoteButton;
-            Abstain.gameObject.SetActive(skip.gameObject.active && !VotedOnce);
-            Abstain.voteComplete = skip.voteComplete;
-            Abstain.GetComponent<SpriteRenderer>().enabled = skip.GetComponent<SpriteRenderer>().enabled;
+            Abstain.gameObject.SetActive(__instance.SkipVoteButton.gameObject.active && !VotedOnce);
+            Abstain.voteComplete = __instance.SkipVoteButton.voteComplete;
+            Abstain.GetComponent<SpriteRenderer>().enabled = __instance.SkipVoteButton.GetComponent<SpriteRenderer>().enabled;
             Abstain.GetComponentsInChildren<TextMeshPro>()[0].text = "Abstain";
         }
 
@@ -45,7 +44,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             Abstain.Parent = __instance;
             Abstain.SetTargetPlayerId(251);
             Abstain.transform.localPosition = __instance.SkipVoteButton.transform.localPosition + new Vector3(0f, -0.17f, 0f);
-            __instance.SkipVoteButton.transform.localPosition += new Vector3(0f, 0.20f, 0f);
+            __instance.SkipVoteButton.transform.localPosition += new Vector3(0f, 0.17f, 0f);
             UpdateButton(__instance);
         }
 

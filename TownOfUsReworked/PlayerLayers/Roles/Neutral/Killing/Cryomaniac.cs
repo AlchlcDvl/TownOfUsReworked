@@ -9,7 +9,7 @@
         public bool FreezeUsed;
         public DateTime LastDoused;
         public DateTime LastKilled;
-        public bool LastKiller => !PlayerControl.AllPlayerControls.ToArray().Any(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) ||
+        public bool LastKiller => !PlayerControl.AllPlayerControls.Any(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) ||
             x.Is(RoleAlignment.CrewKill) || x.Is(RoleAlignment.CrewAudit) || x.Is(RoleAlignment.NeutralPros) || x.Is(RoleAlignment.NeutralNeo) || (x.Is(RoleAlignment.NeutralKill) && x !=
             Player)));
         public int DousedAlive => Doused.Count(x => !Utils.PlayerById(x).Data.IsDead && !Utils.PlayerById(x).Data.Disconnected);
@@ -27,15 +27,14 @@
             Doused = new();
             Type = LayerEnum.Cryomaniac;
             DouseButton = new(this, "CryoDouse", AbilityTypes.Direct, "ActionSecondary", Douse, Exception);
-            FreezeButton = new(this, "CryoFreeze", AbilityTypes.Effect, "Secondary", Freeze);
+            FreezeButton = new(this, "Freeze", AbilityTypes.Effect, "Secondary", Freeze);
             KillButton = new(this, "CryoKill", AbilityTypes.Direct, "Tertiary", Kill, Exception);
             InspectorResults = InspectorResults.SeeksToDestroy;
         }
 
         public float DouseTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastDoused;
+            var timespan = DateTime.UtcNow - LastDoused;
             var num = Player.GetModifiedCooldown(CustomGameOptions.DouseCd) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -43,8 +42,7 @@
 
         public float KillTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastKilled;
+            var timespan = DateTime.UtcNow - LastKilled;
             var num = Player.GetModifiedCooldown(CustomGameOptions.DouseCd) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;

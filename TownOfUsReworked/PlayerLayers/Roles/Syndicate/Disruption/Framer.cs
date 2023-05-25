@@ -25,8 +25,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float FrameTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastFramed;
+            var timespan = DateTime.UtcNow - LastFramed;
             var num = Player.GetModifiedCooldown(CustomGameOptions.FrameCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;

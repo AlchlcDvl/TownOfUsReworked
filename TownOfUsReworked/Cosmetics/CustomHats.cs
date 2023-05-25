@@ -1,39 +1,36 @@
 namespace TownOfUsReworked.Cosmetics
 {
+    public class HatExtension
+    {
+        public string Artist { get; set; }
+        public string Condition { get; set; }
+        public Sprite FlipImage { get; set; }
+        public Sprite BackFlipImage { get; set; }
+    }
+
+    public class CustomHat
+    {
+        public string Artist { get; set; }
+        public string Condition { get; set; }
+        public string Name { get; set; }
+        public string ID { get; set; }
+        public string FlipID { get; set; }
+        public string BackflipID { get; set; }
+        public string BackID { get; set; }
+        public string ClimbID { get; set; }
+        public bool NoBouce { get; set; }
+        public bool Adaptive { get; set; }
+        public bool Behind { get; set; }
+    }
+
     [HarmonyPatch]
     public static class CustomHats
     {
-        private static bool Loaded;
+        private static bool SubLoaded;
         private static bool Running;
         private static Material Shader;
         public readonly static Dictionary<string, HatExtension> CustomHatRegistry = new();
-
-        #pragma warning disable
         public static HatExtension TestExt;
-        #pragma warning restore
-
-        public class HatExtension
-        {
-            public string Artist { get; set; }
-            public string Condition { get; set; }
-            public Sprite FlipImage { get; set; }
-            public Sprite BackFlipImage { get; set; }
-        }
-
-        public class CustomHat
-        {
-            public string Artist { get; set; }
-            public string Condition { get; set; }
-            public string Name { get; set; }
-            public string ID { get; set; }
-            public string FlipID { get; set; }
-            public string BackflipID { get; set; }
-            public string BackID { get; set; }
-            public string ClimbID { get; set; }
-            public bool NoBouce { get; set; }
-            public bool Adaptive { get; set; }
-            public bool Behind { get; set; }
-        }
 
         private static List<CustomHat> CreateCustomHatDetails(string[] hats, bool fromDisk = false)
         {
@@ -153,7 +150,7 @@ namespace TownOfUsReworked.Cosmetics
             if (ch.BackID != null)
             {
                 hat.hatViewData.viewData.BackImage = CreateHatSprite(ch.BackID, fromDisk);
-                ch.Behind = true; // Required to view backresource
+                ch.Behind = true; //Required to view backresource
             }
 
             if (ch.ClimbID != null)
@@ -219,11 +216,11 @@ namespace TownOfUsReworked.Cosmetics
                 }
                 catch (Exception e)
                 {
-                    if (!Loaded)
+                    if (!SubLoaded)
                         Utils.LogSomething("Unable to add Custom Hats\n" + e);
                 }
 
-                Loaded = true;
+                SubLoaded = true;
             }
 
             public static void Postfix() => Running = false;

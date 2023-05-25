@@ -78,8 +78,7 @@ namespace TownOfUsReworked.Custom
                 return;
             }
 
-            var targets = PlayerControl.AllPlayerControls.Il2CppToSystem();
-            TargetPlayer = Owner.Player.GetClosestPlayer(targets.Where(x => !Exception(x) && x != Owner.Player && !x.IsPostmortal() && !x.Data.IsDead).ToList());
+            TargetPlayer = Owner.Player.GetClosestPlayer(PlayerControl.AllPlayerControls.Where(x => !Exception(x) && x != Owner.Player && !x.IsPostmortal() && !x.Data.IsDead).ToList());
 
             foreach (var player in PlayerControl.AllPlayerControls)
             {
@@ -135,6 +134,15 @@ namespace TownOfUsReworked.Custom
                 Base?.SetDisabled();
         }
 
+        public IEnumerator ButtonUpdate()
+        {
+            while (Base != null)
+            {
+                yield return 0;
+                Update();
+            }
+        }
+
         public void Update(string label, float timer, float maxTimer, int uses, bool effectActive, float effectTimer, float maxDuration, bool condition = true, bool usable = true)
         {
             if (Owner.Player != PlayerControl.LocalPlayer || ConstantVariables.IsLobby || (HasUses && uses <= 0) || MeetingHud.Instance || ConstantVariables.Inactive || !usable ||
@@ -172,6 +180,8 @@ namespace TownOfUsReworked.Custom
             if (Rewired.ReInput.players.GetPlayer(0).GetButtonDown(Keybind))
                 Clicked();
         }
+
+        public void Update(bool condition = true, bool usable = true) => Update("ABILITY", condition, usable);
 
         public void Update(string label, bool condition = true, bool usable = true) => Update(label, 0, 1, condition, usable);
 

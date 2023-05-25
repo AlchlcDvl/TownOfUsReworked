@@ -9,6 +9,14 @@
         [HarmonyPostfix]
         public static void PostfixPhysics(PlayerPhysics __instance)
         {
+            if (ConstantVariables.IsLobby)
+            {
+                if (__instance.AmOwner && GameData.Instance && __instance.myPlayer.CanMove)
+                    __instance.body.velocity *= CustomGameOptions.PlayerSpeed;
+
+                return;
+            }
+
             if (__instance.AmOwner && GameData.Instance && __instance.myPlayer.CanMove)
                 __instance.body.velocity *= __instance.myPlayer.GetAppearance().SpeedFactor;
 
@@ -31,7 +39,7 @@
             if (!__instance.AmOwner && __instance.interpolateMovement != 0 && GameData.Instance)
             {
                 var player = __instance.gameObject.GetComponent<PlayerControl>();
-                __instance.body.velocity *= player.GetAppearance().SpeedFactor;
+                __instance.body.velocity *= ConstantVariables.IsLobby ? CustomGameOptions.PlayerSpeed : player.GetAppearance().SpeedFactor;
             }
         }
     }

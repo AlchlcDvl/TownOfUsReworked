@@ -1,30 +1,31 @@
-Changelog
-- New Objectifier: Defector
-- New Alignments: Neutral (Harbinger) and Neutral (Apocalypse)
-- Addition: Added some secret role alignments, try seeing how to get them (hint: betrayal and change)
-- Addition: Some actions are now animated
-- Addition: Added a button to be able to see what settings are there in game
-- Addition: Role cards: this is where the info about your role goes instead of the task list (WIP)
-- Buff: Ruthless and Ninja can now be assigned to Crew (Killing) roles and those with the Corrupted objectifier
-- Nerf: Intruders and Syndicate with Ruthless can no longer convert Fanatics
-- Change: Plaguebearer can no longer get Allied
-- Improvement: Improved how appearance changes are handled
-- Improvement: Added a logo next to the ping tracker (thanks to @Jsushi)
-- Improvement: Improved the layout of the main menu (inspired by the main menu changes made by @Zeo in All The Roles)
-- Improvement: The task counter has been moved from your name to the task tab
-- Improvement: The zooming buttons are now smaller and moved to a different location
-- Improvement: The in-game wiki has recieved a slight recode
-- Improvement: You no longer know the status of players until the meeting after your death (to avoid players coming back to life and ratting everyone out)
-- Improvement: Improved the footprint graphics for Detectives and Retributionist-Detectives
-- Bug Fix: Fixed the spectate button opening up the haunting menu
-- Bug Fix: Fixed being unable to leave vents
-- Bug Fix: Fixed vision not updating correctly when switching between dead and alive players using MCI
-- Bug Fix: Fixed Pestilence spawning instead of Plaguebearer with the Pestilence Spawn option is turned off
-- Visual Fix: Fixed ghosts being unable to see the names and roles of players through walls with the obstruct names option turned on
-- Role Fix: Fixed the Concealer's target staying invisible forever
-- Role Fix: Fixed the Guesser's target's alignment hint having text hexcode color control
-- Role Fix: Fixed Bounty Hunter being shown their target on the intro screen
-- Role Fix: Fixed Dracula and Jackal killing those they are trying to convert
-- Role Fix: Fixed turning betrayer being spammed in the end game summary
-- Ability Fix: Fixed killing Politicians being unable to vote players
-- Removal: The lobby timer because it's kind of useless as most people play on modded servers anyways, which don't expire
+- New Role: Silencer [Syndicate (Disruption)]
+- Return: Time Lord and Time Master are back, and more vengeful then ever as the Time Keeper [Syndicate (Power)]!
+- Return: Neutral (Evil) roles now end the game again, but this is togglable
+- Addition: Added a credits button to the main menu
+- Finished: Role cards are now complete
+- Buff: Players with the Torch ability can now see the silhouette of invisible players
+- Buff: VIP dying will now create an arrow pointing towards the VIP's body
+- Buff: Thief can now guess players as killing roles to steal their roles (yes, I took the idea from The Other Roles)
+- Change: Collider's Inspector results are now Unseen rather than MovesAround
+- Recode: Medium has been recoded a little bit for better functionality
+- Recode: Shapeshifts have been recoded again along with appearances being handled even better than before
+- Improvement: Transport and Warp animation sizes now scale with the size of the teleported player
+- Improvement: Improved how arrows and map blips are handled
+- Improvement: Some parts were improved internally
+- Improvement: Improved how kills are handled
+- Improvement: Improved Level Impostor compatibility (WIP)
+- Visual Fix: Fixed the intro messages being clipped off screen for some roles
+- Critical Fix: Fixed Giant and Dwarf crashing the game upon game start
+- Critical Fix: Fixed cosmetics not loading correctly
+- Bug Fix: Fixed Radar and Tiebreaker not being assigned
+- Bug Fix: Fixed only one player being shaken when blackmailed players are revealed
+- Bug Fix: Fixed some rpc spamming regarding kills
+- Role Fix: Fixed Glitch being unable to hack
+- Role Fix: Fixed Drunkard-Rebels not inverting players' controls
+- Role Fix: Fixed Drunkard inverting controls of players forever
+- Role Fix: Fixed winning Cannibals not showing up on the win screen
+- Role Fix: Guardian Angel, Bounty Hunter, Execuioner and Guesser can no longer get their Lover/Rival as targets
+- Role Fix: Fixed Dictator not dying for all players upon misfiring on Crew
+- Objectifier Fix: Fixed Syndicate defected Intruders being able to see the sabotage button
+- Objectifier Fix: Fixed Defectors not letting the games end properly
+- Objectifier Fix: Fixed only 1 Mafia spawning

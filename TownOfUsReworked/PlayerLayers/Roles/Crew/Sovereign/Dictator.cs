@@ -72,14 +72,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             targetBox.name = "DictateButton";
             targetBox.transform.localPosition = new(-0.4f, 0.03f, -1.3f);
             var renderer = targetBox.GetComponent<SpriteRenderer>();
-            renderer.sprite = AssetManager.GetSprite("SwapDisabled");
+            renderer.sprite = AssetManager.GetSprite("DictDisabled");
             var button = targetBox.GetComponent<PassiveButton>();
             button.OnClick = new();
             button.OnClick.AddListener(SetActive(voteArea, __instance));
             button.OnMouseOut = new();
-            button.OnMouseOut.AddListener((Action)(() => renderer.color = Actives[voteArea.TargetPlayerId] ? UnityEngine.Color.green : UnityEngine.Color.white));
+            button.OnMouseOut.AddListener((Action)(() => renderer.color = Actives[voteArea.TargetPlayerId] ? UColor.green : UColor.white));
             button.OnMouseOver = new();
-            button.OnMouseOver.AddListener((Action)(() => renderer.color = UnityEngine.Color.red));
+            button.OnMouseOver.AddListener((Action)(() => renderer.color = UColor.red));
             var component2 = targetBox.GetComponent<BoxCollider2D>();
             component2.size = renderer.sprite.bounds.size;
             component2.offset = Vector2.zero;
@@ -135,8 +135,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     if (MoarButtons[pair.Key] == null)
                         continue;
 
-                    MoarButtons[pair.Key].GetComponent<SpriteRenderer>().sprite = Actives[pair.Key] ? AssetManager.GetSprite("SwapActive") : AssetManager.GetSprite("SwapDisabled");
-                    MoarButtons[pair.Key].GetComponent<SpriteRenderer>().color = Actives[pair.Key] ? UnityEngine.Color.green : UnityEngine.Color.white;
+                    MoarButtons[pair.Key].GetComponent<SpriteRenderer>().sprite = Actives[pair.Key] ? AssetManager.GetSprite("DictActive") : AssetManager.GetSprite("DictDisabled");
+                    MoarButtons[pair.Key].GetComponent<SpriteRenderer>().color = Actives[pair.Key] ? UColor.green : UColor.white;
                 }
             }
 

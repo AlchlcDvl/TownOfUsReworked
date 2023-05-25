@@ -25,8 +25,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float SwoopTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastSwooped;
+            var timespan = DateTime.UtcNow - LastSwooped;
             var num = Player.GetModifiedCooldown(CustomGameOptions.SwoopCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;

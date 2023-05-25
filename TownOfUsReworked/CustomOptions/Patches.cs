@@ -8,11 +8,9 @@ namespace TownOfUsReworked.CustomOptions
         private static readonly List<GameObject> MenuG = new();
         private static readonly List<SpriteRenderer> MenuS = new();
 
-        #pragma warning disable
         public static Export ExportButton;
         public static Import ImportButton;
         public static Presets PresetButton;
-        #pragma warning restore
 
         private static List<OptionBehaviour> CreateOptions(GameOptionsMenu __instance, MultiMenu type)
         {
@@ -314,7 +312,7 @@ namespace TownOfUsReworked.CustomOptions
                 {
                     if (__instance.name == $"ToU-Rew{Menus[index]}OptionsMenu")
                     {
-                        __instance.Children = new Il2CppReferenceArray<OptionBehaviour>(System.Array.Empty<OptionBehaviour>());
+                        __instance.Children = new(Array.Empty<OptionBehaviour>());
                         var childeren = new Transform[__instance.gameObject.transform.childCount];
 
                         for (var k = 0; k < childeren.Length; k++)
@@ -582,7 +580,7 @@ namespace TownOfUsReworked.CustomOptions
             private static Scroller Scroller;
             private static Vector3 LastPosition;
             private static float LastAspect;
-            private static bool sStLastPosition;
+            private static bool SLastPosition;
 
             public static void Prefix(HudManager __instance)
             {
@@ -594,11 +592,11 @@ namespace TownOfUsReworked.CustomOptions
                 var safeOrthographicSize = CameraSafeArea.GetSafeOrthographicSize(Camera.main);
                 MinX = 0.1f - (safeOrthographicSize * aspect);
 
-                if (!sStLastPosition || aspect != LastAspect)
+                if (!SLastPosition || aspect != LastAspect)
                 {
                     LastPosition = new(MinX, MinY);
                     LastAspect = aspect;
-                    sStLastPosition = true;
+                    SLastPosition = true;
 
                     if (Scroller)
                         Scroller.ContentXBounds = new(MinX, MinX);

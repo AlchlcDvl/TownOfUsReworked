@@ -19,8 +19,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
 
         public float CorruptTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastCorrupted;
+            var timespan = DateTime.UtcNow - LastCorrupted;
             var num = CustomGameOptions.CorruptedKillCooldown * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;

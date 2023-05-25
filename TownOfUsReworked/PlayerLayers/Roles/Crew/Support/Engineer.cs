@@ -23,8 +23,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float FixTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastFixed;
+            var timespan = DateTime.UtcNow - LastFixed;
             var num = Player.GetModifiedCooldown(CustomGameOptions.FixCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -41,14 +40,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 return;
 
             var dummyActive = system.dummy.IsActive;
-            var sabActive = system.specials.ToArray().Any(s => s.IsActive);
+            var sabActive = system.specials.Any(s => s.IsActive);
 
             if (!sabActive || dummyActive)
                 return;
 
             UsesLeft--;
             LastFixed = DateTime.UtcNow;
-            FixFunctions.Fix();
+            FixExtentions.Fix();
         }
 
         public override void UpdateHud(HudManager __instance)
@@ -56,7 +55,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             base.UpdateHud(__instance);
             var system = ShipStatus.Instance.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>();
             var dummyActive = system?.dummy.IsActive;
-            var active = system?.specials.ToArray().Any(s => s.IsActive);
+            var active = system?.specials.Any(s => s.IsActive);
             var condition = active == true && dummyActive == false;
             FixButton.Update("FIX", FixTimer(), CustomGameOptions.FixCooldown, UsesLeft, condition && ButtonUsable, ButtonUsable);
         }

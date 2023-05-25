@@ -11,7 +11,7 @@ namespace TownOfUsReworked.Patches
     {
         public static void Prefix(GameObject obj)
         {
-            if (!SubmergedCompatibility.Loaded || TownOfUsReworked.VanillaOptions.MapId != 5)
+            if (!ModCompatibility.SubLoaded || TownOfUsReworked.VanillaOptions.MapId != 5)
                 return;
 
             if (obj.name.Contains("ExileCutscene"))
@@ -182,10 +182,8 @@ namespace TownOfUsReworked.Patches
             }
         }
 
-        #pragma warning disable
         public static PlayerControl WillBeRevealer;
         public static bool RevealerOn;
-        #pragma warning restore
 
         public static void SetRevealer(PlayerControl exiled)
         {
@@ -220,10 +218,8 @@ namespace TownOfUsReworked.Patches
             }
         }
 
-        #pragma warning disable
         public static PlayerControl WillBePhantom;
         public static bool PhantomOn;
-        #pragma warning restore
 
         public static void SetPhantom(PlayerControl exiled)
         {
@@ -260,10 +256,8 @@ namespace TownOfUsReworked.Patches
             }
         }
 
-        #pragma warning disable
         public static PlayerControl WillBeBanshee;
         public static bool BansheeOn;
-        #pragma warning restore
 
         public static void SetBanshee(PlayerControl exiled)
         {
@@ -302,10 +296,8 @@ namespace TownOfUsReworked.Patches
             }
         }
 
-        #pragma warning disable
         public static PlayerControl WillBeGhoul;
         public static bool GhoulOn;
-        #pragma warning restore
 
         public static void SetGhoul(PlayerControl exiled)
         {

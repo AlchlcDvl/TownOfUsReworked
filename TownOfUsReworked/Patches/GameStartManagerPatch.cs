@@ -33,7 +33,7 @@ namespace TownOfUsReworked.Patches
                 kickingTimer = 0f;
                 //Copy lobby code
                 GUIUtility.systemCopyBuffer = GameCode.IntToGameName(AmongUsClient.Instance.GameId);
-                //lobby size
+                //Lobby size
                 Generate.LobbySize.Set((float)TownOfUsReworked.VanillaOptions.MaxPlayers);
             }
         }
@@ -45,11 +45,10 @@ namespace TownOfUsReworked.Patches
 
             public static void Prefix(GameStartManager __instance)
             {
-                if (ConstantVariables.NoLobby || ConstantVariables.IsInGame)
+                if (!__instance || !GameData.Instance || ConstantVariables.NoLobby || ConstantVariables.IsInGame)
                     return;
 
-                if (GameData.Instance && __instance)
-                    __instance.MinPlayers = 1;
+                __instance.MinPlayers = 1;
             }
 
             public static void Postfix(GameStartManager __instance)
@@ -162,6 +161,15 @@ namespace TownOfUsReworked.Patches
                 //Start Timer
                 if (startingTimer > 0)
                     startingTimer -= Time.deltaTime;
+
+                var hex = "FF0000FF";
+
+                if (__instance.LastPlayerCount > __instance.MinPlayers)
+                    hex = "FFFF00FF";
+                else if (__instance.LastPlayerCount == __instance.MinPlayers)
+                    hex = "FF0000FF";
+
+                __instance.PlayerCounter.text = $"<color=#{hex}>{GameData.Instance.PlayerCount}/{CustomGameOptions.LobbySize}</color>";
             }
         }
 

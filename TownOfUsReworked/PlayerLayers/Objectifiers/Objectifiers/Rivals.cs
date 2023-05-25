@@ -3,6 +3,10 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
     public class Rivals : Objectifier
     {
         public PlayerControl OtherRival;
+        public bool RivalDead => OtherRival?.Data?.IsDead == true || OtherRival?.Data?.Disconnected == true;
+        public bool IsDeadRival => IsDead || Disconnected;
+        public bool BothRivalsDead => IsDeadRival && RivalDead;
+        public bool IsWinningRival =>  RivalDead && !IsDeadRival;
 
         public Rivals(PlayerControl player) : base(player)
         {
@@ -13,14 +17,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             ObjectifierType = ObjectifierEnum.Rivals;
             Type = LayerEnum.Rivals;
         }
-
-        public bool RivalDead() => OtherRival?.Data?.IsDead == true || OtherRival?.Data?.Disconnected == true;
-
-        public bool IsDeadRival() => Player?.Data?.IsDead == true || Player?.Data?.Disconnected == true;
-
-        public bool BothRivalsDead() => IsDeadRival() && RivalDead();
-
-        public bool IsWinningRival() =>  RivalDead() && !IsDeadRival();
 
         public override void UpdateHud(HudManager __instance)
         {

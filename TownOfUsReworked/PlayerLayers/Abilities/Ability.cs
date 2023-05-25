@@ -8,6 +8,9 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
 
         public Ability(PlayerControl player) : base(player)
         {
+            if (GetAbility(player))
+                GetAbility(player).Player = null;
+
             Color = Colors.Ability;
             LayerType = PlayerLayerEnum.Ability;
             AllAbilities.Add(this);

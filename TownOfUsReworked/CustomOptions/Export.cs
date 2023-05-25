@@ -7,7 +7,7 @@ namespace TownOfUsReworked.CustomOptions
         public List<OptionBehaviour> OldButtons;
         public List<CustomButtonOption> SlotButtons = new();
 
-        public Export() : base(-1, MultiMenu.main, "Save Custom Settings") => Do = ToDo;
+        public Export() : base(MultiMenu.main, "Save Custom Settings") => Do = ToDo;
 
         private List<OptionBehaviour> CreateOptions()
         {
@@ -62,17 +62,11 @@ namespace TownOfUsReworked.CustomOptions
         public void ToDo()
         {
             SlotButtons.Clear();
-            SlotButtons.Add(new CustomButtonOption(-1, MultiMenu.external, "Slot 1", delegate { ExportSlot(1); }));
-            SlotButtons.Add(new CustomButtonOption(-1, MultiMenu.external, "Slot 2", delegate { ExportSlot(2); }));
-            SlotButtons.Add(new CustomButtonOption(-1, MultiMenu.external, "Slot 3", delegate { ExportSlot(3); }));
-            SlotButtons.Add(new CustomButtonOption(-1, MultiMenu.external, "Slot 4", delegate { ExportSlot(4); }));
-            SlotButtons.Add(new CustomButtonOption(-1, MultiMenu.external, "Slot 5", delegate { ExportSlot(5); }));
-            SlotButtons.Add(new CustomButtonOption(-1, MultiMenu.external, "Slot 6", delegate { ExportSlot(6); }));
-            SlotButtons.Add(new CustomButtonOption(-1, MultiMenu.external, "Slot 7", delegate { ExportSlot(7); }));
-            SlotButtons.Add(new CustomButtonOption(-1, MultiMenu.external, "Slot 8", delegate { ExportSlot(8); }));
-            SlotButtons.Add(new CustomButtonOption(-1, MultiMenu.external, "Slot 9", delegate { ExportSlot(9); }));
-            SlotButtons.Add(new CustomButtonOption(-1, MultiMenu.external, "Slot 10", delegate { ExportSlot(10); }));
-            SlotButtons.Add(new CustomButtonOption(-1, MultiMenu.external, "Cancel", delegate { Cancel(FlashWhite); }));
+
+            for (var j = 1; j < 11; j++)
+                SlotButtons.Add(new(MultiMenu.external, $"Slot {j}", delegate { ExportSlot(j); }));
+
+            SlotButtons.Add(new(MultiMenu.external, "Cancel", delegate { Cancel(FlashWhite); }));
 
             var options = CreateOptions();
             var __instance = UObject.FindObjectOfType<GameOptionsMenu>();

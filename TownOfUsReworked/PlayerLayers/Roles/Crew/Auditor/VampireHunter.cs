@@ -3,7 +3,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     public class VampireHunter : CrewRole
     {
         public DateTime LastStaked;
-        public static bool VampsDead => !PlayerControl.AllPlayerControls.ToArray().Any(x => !x.Data.IsDead && !x.Data.Disconnected && x.Is(SubFaction.Undead));
+        public static bool VampsDead => !PlayerControl.AllPlayerControls.Any(x => !x.Data.IsDead && !x.Data.Disconnected && x.Is(SubFaction.Undead));
         public CustomButton StakeButton;
 
         public VampireHunter(PlayerControl player) : base(player)
@@ -22,8 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float StakeTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastStaked;
+            var timespan = DateTime.UtcNow - LastStaked;
             var num = Player.GetModifiedCooldown(CustomGameOptions.StakeCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;

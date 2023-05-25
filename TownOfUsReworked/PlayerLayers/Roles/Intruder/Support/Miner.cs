@@ -21,8 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float MineTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastMined;
+            var timespan = DateTime.UtcNow - LastMined;
             var num = Player.GetModifiedCooldown(CustomGameOptions.MineCd) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -50,8 +49,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             base.UpdateHud(__instance);
             var hits = Physics2D.OverlapBoxAll(Player.transform.position, Utils.GetSize(), 0);
-            hits = hits.ToArray().Where(c => (c.name.Contains("Vent") || !c.isTrigger) && c.gameObject.layer != 8 && c.gameObject.layer != 5).ToArray();
-            CanPlace = hits.Count == 0 && Player.moveable && !SubmergedCompatibility.GetPlayerElevator(Player).Item1;
+            hits = hits.Where(c => (c.name.Contains("Vent") || !c.isTrigger) && c.gameObject.layer != 8 && c.gameObject.layer != 5).ToArray();
+            CanPlace = hits.Count == 0 && Player.moveable && !ModCompatibility.GetPlayerElevator(Player).Item1;
             MineButton.Update("MINE", MineTimer(), CustomGameOptions.MineCd, CanPlace);
         }
     }

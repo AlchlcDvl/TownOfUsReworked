@@ -20,8 +20,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float InterrogateTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastInterrogated;
+            var timespan = DateTime.UtcNow - LastInterrogated;
             var num = Player.GetModifiedCooldown(CustomGameOptions.InterrogateCd) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -37,9 +36,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (interact[3])
             {
                 if (InterrogateButton.TargetPlayer.SeemsEvil())
-                    Utils.Flash(new Color32(255, 0, 0, 255));
+                    Utils.Flash(new(255, 0, 0, 255));
                 else
-                    Utils.Flash(new Color32(0, 255, 0, 255));
+                    Utils.Flash(new(0, 255, 0, 255));
             }
 
             if (interact[0])

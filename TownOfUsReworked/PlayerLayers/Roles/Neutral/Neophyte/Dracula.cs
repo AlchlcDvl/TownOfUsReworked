@@ -27,8 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float ConvertTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastBitten;
+            var timespan = DateTime.UtcNow - LastBitten;
             var num = Player.GetModifiedCooldown(CustomGameOptions.BiteCd) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;

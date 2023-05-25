@@ -30,8 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float FlashTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastFlashed;
+            var timespan = DateTime.UtcNow - LastFlashed;
             var num = Player.GetModifiedCooldown(CustomGameOptions.GrenadeCd) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -54,7 +53,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             //To stop the scenario where the flash and sabotage are called at the same time.
             var system = ShipStatus.Instance.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>();
             var dummyActive = system.dummy.IsActive;
-            var sabActive = system.specials.ToArray().Any(s => s.IsActive);
+            var sabActive = system.specials.Any(s => s.IsActive);
 
             if (sabActive || dummyActive)
                 return;
@@ -148,7 +147,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     break;
 
                 case 5:
-                    fs = PlayerControl.LocalPlayer.myTasks.ToArray().Any(x => x.TaskType == SubmergedCompatibility.RetrieveOxygenMask);
+                    fs = PlayerControl.LocalPlayer.myTasks.Any(x => x.TaskType == ModCompatibility.RetrieveOxygenMask);
                     break;
 
                 case 6:
@@ -166,7 +165,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var system = ShipStatus.Instance.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>();
             var dummyActive = system.dummy.IsActive;
-            var sabActive = system.specials.ToArray().Any(s => s.IsActive);
+            var sabActive = system.specials.Any(s => s.IsActive);
 
             if (sabActive || dummyActive || FlashTimer() != 0f)
                 return;
@@ -184,7 +183,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             base.UpdateHud(__instance);
             var system = ShipStatus.Instance.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>();
             var dummyActive = system.dummy.IsActive;
-            var sabActive = system.specials.ToArray().Any(s => s.IsActive);
+            var sabActive = system.specials.Any(s => s.IsActive);
             var condition = !dummyActive && !sabActive;
             FlashButton.Update("FLASH", FlashTimer(), CustomGameOptions.GrenadeCd, Flashed, TimeRemaining, CustomGameOptions.GrenadeDuration, condition);
         }

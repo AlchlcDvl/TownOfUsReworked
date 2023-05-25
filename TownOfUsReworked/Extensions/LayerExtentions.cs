@@ -21,15 +21,17 @@ namespace TownOfUsReworked.Extensions
 
         public static bool Is(this Role role, RoleEnum roleType) => role?.RoleType == roleType;
 
+        public static bool Is(this Objectifier obj, ObjectifierEnum objectifiertype) => obj?.ObjectifierType == objectifiertype;
+
         public static bool Is(this PlayerControl player, Role role) => Role.GetRole(player).Player == role.Player;
 
         public static bool Is(this PlayerControl player, SubFaction subFaction) => Role.GetRole(player)?.SubFaction == subFaction;
 
         public static bool Is(this PlayerControl player, ModifierEnum modifierType) => Modifier.GetModifier(player)?.ModifierType == modifierType;
 
-        public static bool Is(this PlayerControl player, ObjectifierEnum abilityType) => Objectifier.GetObjectifier(player)?.ObjectifierType == abilityType;
+        public static bool Is(this PlayerControl player, ObjectifierEnum objectifiertype) => Objectifier.GetObjectifier(player)?.ObjectifierType == objectifiertype;
 
-        public static bool Is(this PlayerControl player, AbilityEnum ability) => Ability.GetAbility(player)?.AbilityType == ability;
+        public static bool Is(this PlayerControl player, AbilityEnum abilityType) => Ability.GetAbility(player)?.AbilityType == abilityType;
 
         public static bool Is(this PlayerControl player, Faction faction) => player.GetFaction() == faction;
 
@@ -45,7 +47,7 @@ namespace TownOfUsReworked.Extensions
 
         public static bool Is(this PlayerVoteArea player, ObjectifierEnum abilityType) => Utils.PlayerByVoteArea(player).Is(abilityType);
 
-        public static bool Is(this PlayerVoteArea player, AbilityEnum ability) => Utils.PlayerByVoteArea(player).Is(ability);
+        public static bool Is(this PlayerVoteArea player, AbilityEnum abilityType) => Utils.PlayerByVoteArea(player).Is(abilityType);
 
         public static bool Is(this PlayerVoteArea player, Faction faction) => Utils.PlayerByVoteArea(player).Is(faction);
 
@@ -287,6 +289,15 @@ namespace TownOfUsReworked.Extensions
             return bmFlag || gfFlag;
         }
 
+        public static bool IsSilenced(this PlayerControl player)
+        {
+            var silFlag = Role.GetRoles<Silencer>(RoleEnum.Silencer).Any(role => role.SilencedPlayer == player);
+            var rebFlag = Role.GetRoles<PromotedRebel>(RoleEnum.PromotedRebel).Any(role => role.SilencedPlayer == player);
+            return silFlag || rebFlag;
+        }
+
+        public static Silencer GetSilencer(this PlayerControl player) => Role.GetRoles<Silencer>(RoleEnum.Silencer).Find(x => x.SilencedPlayer == player);
+
         public static bool IsBombed(this PlayerControl player) => Role.GetRoles<Enforcer>(RoleEnum.Enforcer).Any(role => player == role.BombedPlayer);
 
         public static bool IsRetShielded(this PlayerControl player) => Role.GetRoles<Retributionist>(RoleEnum.Retributionist).Any(role => player == role.ShieldedPlayer &&
@@ -361,7 +372,7 @@ namespace TownOfUsReworked.Extensions
 
             var rival = Objectifier.GetObjectifier<Rivals>(player);
 
-            return rival.RivalDead();
+            return rival.RivalDead;
         }
 
         public static bool IsTurnedTraitor(this PlayerControl player) => player.IsIntTraitor() || player.IsSynTraitor();
@@ -499,7 +510,9 @@ namespace TownOfUsReworked.Extensions
             return true;
         }
 
-        public static float GetModifiedSpeed(this PlayerControl player)
+        public static float GetModifiedSpeed(this PlayerControl player) => player.IsMimicking(out var mimicked) ? player.GetSpeed() : mimicked.GetSpeed();
+
+        public static float GetSpeed(this PlayerControl player)
         {
             var result = 1f;
 
@@ -513,18 +526,44 @@ namespace TownOfUsReworked.Extensions
             else if (player.Is(ModifierEnum.Drunk))
                 result = Modifier.GetModifier<Drunk>(player).Modify;
 
-            if (player.Is(RoleEnum.Janitor) && Role.GetRole<Janitor>(player).CurrentlyDragging)
-                result *= CustomGameOptions.DragModifier;
-            else if (player.Is(RoleEnum.PromotedGodfather) && Role.GetRole<PromotedGodfather>(player).CurrentlyDragging)
+            if (player.IsDragging())
                 result *= CustomGameOptions.DragModifier;
 
-            if (Role.GetRoles<Drunkard>(RoleEnum.Drunkard).Any(x => x.Confused && (x.HoldsDrive || (x.ConfusedPlayer == player))))
+            if (Role.GetRoles<Drunkard>(RoleEnum.Drunkard).Any(x => x.Confused && (x.HoldsDrive || (x.ConfusedPlayer == player && !x.HoldsDrive))) ||
+                Role.GetRoles<PromotedRebel>(RoleEnum.PromotedRebel).Any(x => x.OnEffect && (x.HoldsDrive || (x.ConfusedPlayer == player && !x.HoldsDrive)) && x.IsDrunk))
+            {
                 result *= -1;
+            }
+
+            if (Role.GetRoles<TimeKeeper>(RoleEnum.TimeKeeper).Any(x => x.Controlling))
+            {
+                if (!player.Is(Faction.Syndicate) || (player.Is(Faction.Syndicate) && ((Role.GetRoles<TimeKeeper>(RoleEnum.TimeKeeper).Any(x => x.Controlling && x.HoldsDrive) &&
+                    !CustomGameOptions.TimeRewindImmunity) || (Role.GetRoles<TimeKeeper>(RoleEnum.TimeKeeper).Any(x => x.Controlling && !x.HoldsDrive) &&
+                    !CustomGameOptions.TimeFreezeImmunity))))
+                {
+                    result *= 0;
+                }
+            }
+
+            if (Role.GetRoles<PromotedRebel>(RoleEnum.PromotedRebel).Any(x => x.OnEffect))
+            {
+                if (!player.Is(Faction.Syndicate) || (player.Is(Faction.Syndicate) && ((Role.GetRoles<PromotedRebel>(RoleEnum.PromotedRebel).Any(x => x.OnEffect && x.HoldsDrive &&
+                    x.IsTK) && !CustomGameOptions.TimeRewindImmunity) || (Role.GetRoles<PromotedRebel>(RoleEnum.PromotedRebel).Any(x => x.OnEffect && !x.HoldsDrive && x.IsTK) &&
+                    !CustomGameOptions.TimeFreezeImmunity))))
+                {
+                    result *= 0;
+                }
+            }
 
             return result;
         }
 
-        public static float GetModifiedSize(this PlayerControl player)
+        public static bool IsDragging(this PlayerControl player) => (player.Is(RoleEnum.Janitor) && Role.GetRole<Janitor>(player).CurrentlyDragging) ||
+            (player.Is(RoleEnum.PromotedGodfather) && Role.GetRole<PromotedGodfather>(player).CurrentlyDragging);
+
+        public static float GetModifiedSize(this PlayerControl player) => player.IsMimicking(out var mimicked) ? mimicked.GetSize() : player.GetSize();
+
+        public static float GetSize(this PlayerControl player)
         {
             if (DoUndo.IsCamoed && CustomGameOptions.CamoHideSize)
                 return 1f;
@@ -534,6 +573,94 @@ namespace TownOfUsReworked.Extensions
                 return CustomGameOptions.GiantScale;
             else
                 return 1f;
+        }
+
+        public static bool IsMimicking(this PlayerControl player, out PlayerControl mimicked)
+        {
+            var role = Role.GetRole(player);
+            mimicked = player;
+
+            if (!role)
+                return false;
+
+            if (Role.GetRoles<Shapeshifter>(RoleEnum.Shapeshifter).Any(x => x.Shapeshifted))
+            {
+                if (Utils.CachedMorphs.ContainsKey(player))
+                    mimicked = Utils.CachedMorphs[player];
+                else
+                {
+                    var ss = (Shapeshifter)Role.AllRoles.Find(x => x.Type == LayerEnum.Shapeshifter && ((Shapeshifter)x).Shapeshifted && (player == ((Shapeshifter)x).ShapeshiftPlayer1 ||
+                        player == ((Shapeshifter)x).ShapeshiftPlayer2));
+
+                    if (ss != null)
+                    {
+                        if (ss.ShapeshiftPlayer1 == player)
+                            mimicked = ss.ShapeshiftPlayer2;
+                        else if (ss.ShapeshiftPlayer2 == player)
+                            mimicked = ss.ShapeshiftPlayer1;
+                    }
+                }
+
+                return true;
+            }
+            else if (Role.GetRoles<PromotedRebel>(RoleEnum.PromotedRebel).Any(x => x.OnEffect && x.IsSS))
+            {
+                if (Utils.CachedMorphs.ContainsKey(player))
+                    mimicked = Utils.CachedMorphs[player];
+                else
+                {
+                    var reb = (PromotedRebel)Role.AllRoles.Find(x => x.Type == LayerEnum.PromotedRebel && ((PromotedRebel)x).OnEffect && (player == ((PromotedRebel)x).ShapeshiftPlayer1 ||
+                        player == ((PromotedRebel)x).ShapeshiftPlayer2));
+
+                    if (reb != null)
+                    {
+                        if (reb.ShapeshiftPlayer1 == player)
+                            mimicked = reb.ShapeshiftPlayer2;
+                        else if (reb.ShapeshiftPlayer2 == player)
+                            mimicked = reb.ShapeshiftPlayer1;
+                    }
+                }
+
+                return true;
+            }
+            else if (role.Type == LayerEnum.Morphling)
+            {
+                var morph = (Morphling)role;
+                mimicked = morph.MorphedPlayer;
+                return morph.Morphed;
+            }
+            else if (Role.GetRoles<Disguiser>(RoleEnum.Disguiser).Any(x => x.Disguised))
+            {
+                var disg = (Disguiser)Role.AllRoles.Find(x => x.Type == LayerEnum.Disguiser && ((Disguiser)x).Disguised && player == ((Disguiser)x).DisguisedPlayer);
+
+                if (disg != null)
+                    mimicked = disg.DisguisePlayer;
+
+                return disg != null;
+            }
+            else if (role.Type == LayerEnum.PromotedGodfather)
+            {
+                var gf = (PromotedGodfather)role;
+                mimicked = gf.MorphedPlayer;
+                return gf.OnEffect && gf.IsMorph;
+            }
+            else if (Role.GetRoles<PromotedGodfather>(RoleEnum.PromotedGodfather).Any(x => x.OnEffect && x.IsDisg))
+            {
+                var gf = (PromotedGodfather)Role.AllRoles.Find(x => x.Type == LayerEnum.PromotedGodfather && ((PromotedGodfather)x).OnEffect && player == ((Disguiser)x).DisguisedPlayer);
+
+                if (gf != null)
+                    mimicked = gf.DisguisePlayer;
+
+                return gf != null;
+            }
+            else if (role.Type == LayerEnum.Glitch)
+            {
+                var glitch = (Glitch)role;
+                mimicked = glitch.MimicTarget;
+                return glitch.IsUsingMimic;
+            }
+
+            return false;
         }
 
         public static bool CanVent(this PlayerControl player)
@@ -886,6 +1013,8 @@ namespace TownOfUsReworked.Extensions
         public static void RoleUpdate(this Role newRole, Role former)
         {
             former.Player.DisableButtons();
+            former.Player.DisableArrows();
+            former.OnLobby();
             newRole.RoleHistory.Add(former);
             newRole.RoleHistory.AddRange(former.RoleHistory);
             newRole.Faction = former.Faction;
@@ -911,13 +1040,13 @@ namespace TownOfUsReworked.Extensions
             newRole.IsSynDefect = former.IsSynDefect;
             newRole.IsCrewDefect = former.IsCrewDefect;
             newRole.IsNeutDefect = former.IsNeutDefect;
+            newRole.AllArrows = former.AllArrows;
             newRole.Player.RegenTask();
-            former.OnLobby();
             newRole.OnLobby();
             Role.AllRoles.Remove(former);
             PlayerLayer.AllLayers.Remove(former);
-            former.Player = null;
             newRole.Player.EnableButtons();
+            newRole.Player.EnableArrows();
 
             if (newRole.Player == PlayerControl.LocalPlayer || former.Player == PlayerControl.LocalPlayer)
                 ButtonUtils.ResetCustomTimers(false);

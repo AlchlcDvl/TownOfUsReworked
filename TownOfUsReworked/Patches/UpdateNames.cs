@@ -8,10 +8,10 @@ namespace TownOfUsReworked.Patches
 
         public static void Postfix()
         {
-            if (ConstantVariables.Inactive || ConstantVariables.IsHnS)
+            if (ConstantVariables.Inactive || ConstantVariables.IsHnS || MeetingHud.Instance || LobbyBehaviour.Instance)
                 return;
 
-            PlayerControl.AllPlayerControls.Il2CppToSystem().ForEach(x => x.SetName());
+            PlayerControl.AllPlayerControls.ForEach(x => x.SetName());
         }
 
         private static void SetName(this PlayerControl player)

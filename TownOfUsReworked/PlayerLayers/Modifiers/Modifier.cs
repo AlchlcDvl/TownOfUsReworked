@@ -8,6 +8,9 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
 
         public Modifier(PlayerControl player) : base(player)
         {
+            if (GetModifier(player))
+                GetModifier(player).Player = null;
+
             Color = Colors.Modifier;
             LayerType = PlayerLayerEnum.Modifier;
             AllModifiers.Add(this);

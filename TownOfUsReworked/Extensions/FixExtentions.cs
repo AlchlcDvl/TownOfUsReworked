@@ -1,7 +1,7 @@
-namespace TownOfUsReworked.Functions
+namespace TownOfUsReworked.Extensions
 {
     [HarmonyPatch]
-    public static class FixFunctions
+    public static class FixExtentions
     {
         public static void FixComms() => ShipStatus.Instance.RpcRepairSystem(SystemTypes.Comms, 0);
 
@@ -23,7 +23,7 @@ namespace TownOfUsReworked.Functions
 
         public static void FixSubOxygen()
         {
-            SubmergedCompatibility.RepairOxygen();
+            ModCompatibility.RepairOxygen();
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SubmergedFixOxygen, SendOption.Reliable);
             writer.Write(PlayerControl.LocalPlayer.NetId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -45,7 +45,7 @@ namespace TownOfUsReworked.Functions
                 return;
 
             var dummyActive = system.dummy.IsActive;
-            var sabActive = system.specials.ToArray().Any(s => s.IsActive);
+            var sabActive = system.specials.Any(s => s.IsActive);
 
             if (!sabActive || dummyActive)
                 return;
@@ -136,7 +136,7 @@ namespace TownOfUsReworked.Functions
                     break;
 
                 case 5:
-                    if (!SubmergedCompatibility.Loaded)
+                    if (!ModCompatibility.SubLoaded)
                         break;
 
                     var reactor5 = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
@@ -156,7 +156,7 @@ namespace TownOfUsReworked.Functions
 
                     foreach (var i in PlayerControl.LocalPlayer.myTasks)
                     {
-                        if (i.TaskType == SubmergedCompatibility.RetrieveOxygenMask)
+                        if (i.TaskType == ModCompatibility.RetrieveOxygenMask)
                             FixSubOxygen();
                     }
 

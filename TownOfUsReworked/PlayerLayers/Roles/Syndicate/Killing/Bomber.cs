@@ -25,8 +25,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float BombTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastPlaced;
+            var timespan = DateTime.UtcNow - LastPlaced;
             var num = Player.GetModifiedCooldown(CustomGameOptions.BombCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -34,8 +33,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float DetonateTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastDetonated;
+            var timespan = DateTime.UtcNow - LastDetonated;
             var num = Player.GetModifiedCooldown(CustomGameOptions.DetonateCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -61,7 +59,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (BombTimer() != 0f)
                 return;
 
-            Bombs.Add(new Bomb(Player.GetTruePosition(), HoldsDrive, Player));
+            Bombs.Add(new(Player.GetTruePosition(), HoldsDrive, Player));
             LastPlaced = DateTime.UtcNow;
 
             if (CustomGameOptions.BombCooldownsLinked)

@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Disguiser : IntruderRole, IVisualAlteration
+    public class Disguiser : IntruderRole
     {
         public CustomButton DisguiseButton;
         public CustomButton MeasureButton;
@@ -62,8 +62,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float DisguiseTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastDisguised;
+            var timespan = DateTime.UtcNow - LastDisguised;
             var num = Player.GetModifiedCooldown(CustomGameOptions.DisguiseCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -71,8 +70,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float MeasureTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastMeasured;
+            var timespan = DateTime.UtcNow - LastMeasured;
             var num = Player.GetModifiedCooldown(CustomGameOptions.MeasureCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
@@ -155,20 +153,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             DisguiseButton.Update("DISGUISE", DisguiseTimer(), CustomGameOptions.DisguiseCooldown, DelayActive || Disguised, DelayActive ? TimeRemaining2 : TimeRemaining,
                 DelayActive ? CustomGameOptions.TimeToDisguise : CustomGameOptions.DisguiseDuration, true, MeasuredPlayer != null);
             MeasureButton.Update("MEASURE", MeasureTimer(), CustomGameOptions.MeasureCooldown);
-        }
-
-        public bool TryGetModifiedAppearance(out VisualAppearance appearance)
-        {
-            if (DisguisePlayer != null)
-            {
-                appearance = DisguisePlayer.GetDefaultAppearance();
-                var alteration = Modifier.GetModifier(DisguisePlayer) as IVisualAlteration;
-                alteration?.TryGetModifiedAppearance(out appearance);
-                return true;
-            }
-
-            appearance = Player.GetDefaultAppearance();
-            return false;
         }
     }
 }

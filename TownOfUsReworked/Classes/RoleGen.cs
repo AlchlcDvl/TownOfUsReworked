@@ -3,41 +3,39 @@ namespace TownOfUsReworked.Classes
     [HarmonyPatch]
     public static class RoleGen
     {
-        #pragma warning disable
-        public static List<(int, int, bool)> CrewAuditorRoles = new();
-        public static List<(int, int, bool)> CrewKillingRoles = new();
-        public static List<(int, int, bool)> CrewSupportRoles = new();
-        public static List<(int, int, bool)> CrewSovereignRoles = new();
-        public static List<(int, int, bool)> CrewProtectiveRoles = new();
-        public static List<(int, int, bool)> CrewInvestigativeRoles = new();
-        public static List<(int, int, bool)> CrewRoles = new();
+        private static List<(int, int, bool)> CrewAuditorRoles = new();
+        private static List<(int, int, bool)> CrewKillingRoles = new();
+        private static List<(int, int, bool)> CrewSupportRoles = new();
+        private static List<(int, int, bool)> CrewSovereignRoles = new();
+        private static List<(int, int, bool)> CrewProtectiveRoles = new();
+        private static List<(int, int, bool)> CrewInvestigativeRoles = new();
+        private static List<(int, int, bool)> CrewRoles = new();
 
-        public static List<(int, int, bool)> NeutralEvilRoles = new();
-        public static List<(int, int, bool)> NeutralBenignRoles = new();
-        public static List<(int, int, bool)> NeutralKillingRoles = new();
-        public static List<(int, int, bool)> NeutralNeophyteRoles = new();
-        public static List<(int, int, bool)> NeutralHarbingerRoles = new();
-        public static List<(int, int, bool)> NeutralRoles = new();
+        private static List<(int, int, bool)> NeutralEvilRoles = new();
+        private static List<(int, int, bool)> NeutralBenignRoles = new();
+        private static List<(int, int, bool)> NeutralKillingRoles = new();
+        private static List<(int, int, bool)> NeutralNeophyteRoles = new();
+        private static List<(int, int, bool)> NeutralHarbingerRoles = new();
+        private static List<(int, int, bool)> NeutralRoles = new();
 
-        public static List<(int, int, bool)> IntruderKillingRoles = new();
-        public static List<(int, int, bool)> IntruderSupportRoles = new();
-        public static List<(int, int, bool)> IntruderDeceptionRoles = new();
-        public static List<(int, int, bool)> IntruderConcealingRoles = new();
-        public static List<(int, int, bool)> IntruderRoles = new();
+        private static List<(int, int, bool)> IntruderKillingRoles = new();
+        private static List<(int, int, bool)> IntruderSupportRoles = new();
+        private static List<(int, int, bool)> IntruderDeceptionRoles = new();
+        private static List<(int, int, bool)> IntruderConcealingRoles = new();
+        private static List<(int, int, bool)> IntruderRoles = new();
 
-        public static List<(int, int, bool)> SyndicatePowerRoles = new();
-        public static List<(int, int, bool)> SyndicateSupportRoles = new();
-        public static List<(int, int, bool)> SyndicateKillingRoles = new();
-        public static List<(int, int, bool)> SyndicateDisruptionRoles = new();
-        public static List<(int, int, bool)> SyndicateRoles = new();
+        private static List<(int, int, bool)> SyndicatePowerRoles = new();
+        private static List<(int, int, bool)> SyndicateSupportRoles = new();
+        private static List<(int, int, bool)> SyndicateKillingRoles = new();
+        private static List<(int, int, bool)> SyndicateDisruptionRoles = new();
+        private static List<(int, int, bool)> SyndicateRoles = new();
 
-        public static List<(int, int, bool)> AllModifiers = new();
-        public static List<(int, int, bool)> AllAbilities = new();
-        public static List<(int, int, bool)> AllObjectifiers = new();
+        private static List<(int, int, bool)> AllModifiers = new();
+        private static List<(int, int, bool)> AllAbilities = new();
+        private static List<(int, int, bool)> AllObjectifiers = new();
 
         public static PlayerControl PureCrew;
         public static int Convertible;
-        #pragma warning restore
 
         private static List<(int, int, bool)> Sort(this List<(int, int, bool)> items, int max, int min)
         {
@@ -130,11 +128,8 @@ namespace TownOfUsReworked.Classes
             Utils.LogSomething("Role Gen Start");
             var impostors = Utils.GetImpostors(infected);
             var crewmates = Utils.GetCrewmates(impostors);
-
-            #pragma warning disable
             var spawnList1 = new List<(int, int, bool)>();
             var spawnList2 = new List<(int, int, bool)>();
-            #pragma warning restore
 
             CrewRoles.Clear();
             IntruderRoles.Clear();
@@ -1300,6 +1295,32 @@ namespace TownOfUsReworked.Classes
                 Utils.LogSomething("Drunkard Done");
             }
 
+            if (CustomGameOptions.TimeKeeperOn > 0)
+            {
+                num = ConstantVariables.IsCustom ? CustomGameOptions.TimeKeeperCount : 1;
+
+                while (num > 0)
+                {
+                    SyndicatePowerRoles.Add((CustomGameOptions.TimeKeeperOn, 74, CustomGameOptions.UniqueTimeKeeper));
+                    num--;
+                }
+
+                Utils.LogSomething("Time Keeper Done");
+            }
+
+            if (CustomGameOptions.SilencerOn > 0)
+            {
+                num = ConstantVariables.IsCustom ? CustomGameOptions.SilencerCount : 1;
+
+                while (num > 0)
+                {
+                    SyndicateDisruptionRoles.Add((CustomGameOptions.SilencerOn, 77, CustomGameOptions.UniqueSilencer));
+                    num--;
+                }
+
+                Utils.LogSomething("Silencer Done");
+            }
+
             if (ConstantVariables.IsClassic || ConstantVariables.IsCustom)
             {
                 if (!CustomGameOptions.AltImps)
@@ -2109,6 +2130,8 @@ namespace TownOfUsReworked.Classes
                     assigned = canHaveBB.TakeFirst();
                 else if (canHavePolitician.Count > 0 && Pol.Contains(id))
                     assigned = canHavePolitician.TakeFirst();
+                else if (canHaveAbility.Count > 0 && Global.Contains(id))
+                    assigned = canHaveAbility.TakeFirst();
 
                 if (assigned != null)
                 {
@@ -2124,6 +2147,7 @@ namespace TownOfUsReworked.Classes
                     canHaveTunnelerAbility.Remove(assigned);
                     canHaveBB.Remove(assigned);
                     canHavePolitician.Remove(assigned);
+                    canHaveAbility.Remove(assigned);
 
                     if (Ability.GetAbility(assigned) == null)
                         Gen(assigned, id, PlayerLayerEnum.Ability);
@@ -2699,11 +2723,10 @@ namespace TownOfUsReworked.Classes
                 {
                     if (lover.OtherLover == null || lovers.Contains(lover.Player))
                     {
-                        _ = new Objectifierless(lover.Player);
                         var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.NullObjectifier, SendOption.Reliable);
                         writer.Write(lover.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
-                        lover.Player = null;
+                        _ = new Objectifierless(lover.Player);
                     }
                 }
 
@@ -2741,20 +2764,30 @@ namespace TownOfUsReworked.Classes
                 {
                     if (rival.OtherRival == null || rivals.Contains(rival.Player))
                     {
-                        _ = new Objectifierless(rival.Player);
                         var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.NullObjectifier, SendOption.Reliable);
                         writer.Write(rival.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
-                        rival.Player = null;
+                        _ = new Objectifierless(rival.Player);
                     }
                 }
 
                 Utils.LogSomething("Rivals Set");
             }
 
+            if (CustomGameOptions.MafiaOn > 0 && PlayerControl.AllPlayerControls.Count(x => x.Is(ObjectifierEnum.Mafia)) == 1)
+            {
+                foreach (var player in PlayerControl.AllPlayerControls.Where(x => x.Is(ObjectifierEnum.Mafia)))
+                {
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.NullObjectifier, SendOption.Reliable);
+                    writer.Write(player.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    _ = new Objectifierless(player);
+                }
+            }
+
             foreach (var player in PlayerControl.AllPlayerControls)
             {
-                if (Modifier.GetModifier(player) == null)
+                if (!Modifier.GetModifier(player))
                 {
                     _ = new Modifierless(player);
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.NullModifier, SendOption.Reliable);
@@ -2762,7 +2795,7 @@ namespace TownOfUsReworked.Classes
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
 
-                if (Ability.GetAbility(player) == null)
+                if (!Ability.GetAbility(player))
                 {
                     _ = new Abilityless(player);
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.NullAbility, SendOption.Reliable);
@@ -2770,7 +2803,7 @@ namespace TownOfUsReworked.Classes
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
 
-                if (Objectifier.GetObjectifier(player) == null)
+                if (!Objectifier.GetObjectifier(player))
                 {
                     _ = new Objectifierless(player);
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.NullObjectifier, SendOption.Reliable);
@@ -2830,7 +2863,8 @@ namespace TownOfUsReworked.Classes
 
                     if (exeTargets.Count > 0)
                     {
-                        while (exe.TargetPlayer == null || exe.TargetPlayer == exe.Player)
+                        while (exe.TargetPlayer == null || exe.TargetPlayer == exe.Player || exe.TargetPlayer == exe.Player.GetOtherLover() || exe.TargetPlayer ==
+                            exe.Player.GetOtherRival())
                         {
                             exeTargets.Shuffle();
                             var exeNum = URandom.RandomRangeInt(0, exeTargets.Count);
@@ -2858,7 +2892,8 @@ namespace TownOfUsReworked.Classes
 
                     if (guessTargets.Count > 0)
                     {
-                        while (guess.TargetPlayer == null || guess.TargetPlayer == guess.Player || guess.TargetPlayer.Is(ModifierEnum.Indomitable))
+                        while (guess.TargetPlayer == null || guess.TargetPlayer == guess.Player || guess.TargetPlayer.Is(ModifierEnum.Indomitable) || guess.TargetPlayer ==
+                            guess.Player.GetOtherLover() || guess.TargetPlayer == guess.Player.GetOtherRival())
                         {
                             guessTargets.Shuffle();
                             var guessNum = URandom.RandomRangeInt(0, guessTargets.Count);
@@ -2886,7 +2921,7 @@ namespace TownOfUsReworked.Classes
 
                     if (gaTargets.Count > 0)
                     {
-                        while (ga.TargetPlayer == null || ga.TargetPlayer == ga.Player)
+                        while (ga.TargetPlayer == null || ga.TargetPlayer == ga.Player || ga.TargetPlayer == ga.Player.GetOtherLover() || ga.TargetPlayer == ga.Player.GetOtherRival())
                         {
                             gaTargets.Shuffle();
                             var gaNum = URandom.RandomRangeInt(0, gaTargets.Count);
@@ -2914,7 +2949,7 @@ namespace TownOfUsReworked.Classes
 
                     if (bhTargets.Count > 0)
                     {
-                        while (bh.TargetPlayer == null || bh.TargetPlayer == bh.Player)
+                        while (bh.TargetPlayer == null || bh.TargetPlayer == bh.Player || bh.TargetPlayer == bh.Player.GetOtherLover() || bh.TargetPlayer == bh.Player.GetOtherRival())
                         {
                             bhTargets.Shuffle();
                             var bhNum = URandom.RandomRangeInt(0, gaTargets.Count);
@@ -3025,7 +3060,17 @@ namespace TownOfUsReworked.Classes
                     writer.Write(player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
+
+                if (!Role.GetRole(player))
+                {
+                    _ = new Roleless(player);
+                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.NullRole, SendOption.Reliable);
+                    writer.Write(player.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                }
             }
+
+            Utils.LogSomething("Buttons And Roles Removed");
         }
 
         public static void ResetEverything()
@@ -3054,6 +3099,14 @@ namespace TownOfUsReworked.Classes
 
             Role.PhantomWins = false;
 
+            Role.JesterWins = false;
+            Role.ActorWins = false;
+            Role.ExecutionerWins = false;
+            Role.GuesserWins = false;
+            Role.BountyHunterWins = false;
+            Role.CannibalWins = false;
+            Role.TrollWins = false;
+
             Objectifier.LoveWins = false;
             Objectifier.RivalWins = false;
             Objectifier.TaskmasterWins = false;
@@ -3069,7 +3122,7 @@ namespace TownOfUsReworked.Classes
 
             MeetingPatches.MeetingCount = 0;
 
-            Murder.KilledPlayers.Clear();
+            Utils.KilledPlayers.Clear();
 
             Role.Buttons.Clear();
             Role.SetColors();
@@ -3152,7 +3205,7 @@ namespace TownOfUsReworked.Classes
             else
                 GenClassicCustomAA(infected.ToList());
 
-            PureCrew = PlayerControl.AllPlayerControls.ToArray().Where(x => x.Is(Faction.Crew)).ToList().Random();
+            PureCrew = PlayerControl.AllPlayerControls.Where(x => x.Is(Faction.Crew)).ToList().Random();
 
             if (!ConstantVariables.IsVanilla)
             {
@@ -3168,18 +3221,7 @@ namespace TownOfUsReworked.Classes
                 SetTargets();
             }
 
-            foreach (var player in PlayerControl.AllPlayerControls)
-            {
-                if (Role.GetRole(player) == null)
-                {
-                    _ = new Roleless(player);
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.NullRole, SendOption.Reliable);
-                    writer.Write(player.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                }
-            }
-
-            Convertible = PlayerControl.AllPlayerControls.ToArray().Count(x => x.Is(SubFaction.None) && x != PureCrew);
+            Convertible = PlayerControl.AllPlayerControls.Count(x => x.Is(SubFaction.None) && x != PureCrew);
         }
 
         private static void SetRole(int id, PlayerControl player)
@@ -3408,11 +3450,17 @@ namespace TownOfUsReworked.Classes
                 case 73:
                     _ = new Necromancer(player);
                     break;
+                case 74:
+                    _ = new TimeKeeper(player);
+                    break;
                 case 75:
                     _ = new Ambusher(player);
                     break;
                 case 76:
                     _ = new Crusader(player);
+                    break;
+                case 77:
+                    _ = new Silencer(player);
                     break;
             }
         }
@@ -3576,36 +3624,33 @@ namespace TownOfUsReworked.Classes
             if (CustomGameOptions.SyndicateCount == 0 || !AmongUsClient.Instance.AmHost)
                 return;
 
-            var list = PlayerControl.AllPlayerControls.ToArray().Where(x => !x.Data.IsDead && !x.Data.Disconnected && x.Is(Faction.Syndicate));
-
-            if (!list.Any())
+            if (!PlayerControl.AllPlayerControls.Any(x => !x.Data.IsDead && !x.Data.Disconnected && x.Is(Faction.Syndicate)))
                 return;
 
-            var all = PlayerControl.AllPlayerControls.Il2CppToSystem();
+            var all = PlayerControl.AllPlayerControls.Where(x => !x.Data.IsDead && !x.Data.Disconnected).ToList();
 
-            #pragma warning disable
             if (Role.DriveHolder == null || Role.DriveHolder.Data.IsDead || Role.DriveHolder.Data.Disconnected)
             {
-                var chosen = all.Find(x => !x.Data.IsDead && !x.Data.Disconnected && x.Is(RoleEnum.PromotedRebel));
+                var chosen = all.Find(x => x.Is(RoleEnum.PromotedRebel));
 
                 if (chosen == null)
                 {
-                    chosen = all.Find(x => !x.Data.IsDead && !x.Data.Disconnected && x.Is(RoleAlignment.SyndicateDisrup));
+                    chosen = all.Find(x => x.Is(RoleAlignment.SyndicateDisrup));
 
                     if (chosen == null)
                     {
-                        chosen = all.Find(x => !x.Data.IsDead && !x.Data.Disconnected && x.Is(RoleAlignment.SyndicateSupport));
+                        chosen = all.Find(x => x.Is(RoleAlignment.SyndicateSupport));
 
                         if (chosen == null)
                         {
-                            chosen = all.Find(x => !x.Data.IsDead && !x.Data.Disconnected && x.Is(RoleAlignment.SyndicatePower));
+                            chosen = all.Find(x => x.Is(RoleAlignment.SyndicatePower));
 
                             if (chosen == null)
                             {
-                                chosen = all.Find(x => !x.Data.IsDead && !x.Data.Disconnected && x.Is(RoleAlignment.SyndicateKill));
+                                chosen = all.Find(x => x.Is(RoleAlignment.SyndicateKill));
 
                                 if (chosen == null)
-                                    chosen = all.Find(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(RoleEnum.Anarchist) || x.Is(RoleEnum.Rebel) || x.Is(RoleEnum.Sidekick)));
+                                    chosen = all.Find(x => x.Is(RoleEnum.Anarchist) || x.Is(RoleEnum.Rebel) || x.Is(RoleEnum.Sidekick));
                             }
                         }
                     }
@@ -3619,7 +3664,6 @@ namespace TownOfUsReworked.Classes
                     Role.DriveHolder = chosen;
                 }
             }
-            #pragma warning restore
         }
 
         public static void Convert(byte target, byte convert, SubFaction sub, bool condition)

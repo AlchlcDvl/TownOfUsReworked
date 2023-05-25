@@ -8,7 +8,7 @@ namespace TownOfUsReworked.CustomOptions
             List<CustomOption> options;
 
             if (optionn != null)
-                options = new List<CustomOption> {optionn};
+                options = new() { optionn };
             else
                 options = CustomOption.AllOptions;
 
@@ -46,19 +46,22 @@ namespace TownOfUsReworked.CustomOptions
             {
                 var id = reader.ReadInt32();
                 var customOption = CustomOption.AllOptions.Find(option => option.ID == id);
+
+                if (customOption == null)
+                    continue;
+
                 // Works but may need to change to gameObject.name check
-                var type = customOption?.Type;
                 object value = null;
 
-                if (type == CustomOptionType.Toggle)
+                if (customOption.Type == CustomOptionType.Toggle)
                     value = reader.ReadBoolean();
-                else if (type == CustomOptionType.Number)
+                else if (customOption.Type == CustomOptionType.Number)
                     value = reader.ReadSingle();
-                else if (type == CustomOptionType.String)
+                else if (customOption.Type == CustomOptionType.String)
                     value = reader.ReadInt32();
 
-                customOption?.Set(value);
-                Utils.LogSomething($"{customOption?.Name} : {customOption}:");
+                customOption.Set(value);
+                Utils.LogSomething($"{customOption?.Name} : {customOption}");
             }
         }
     }

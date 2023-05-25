@@ -39,6 +39,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 Utils.Morph(ShapeshiftPlayer1, ShapeshiftPlayer2);
                 Utils.Morph(ShapeshiftPlayer2, ShapeshiftPlayer1);
             }
+            else
+                Utils.Shapeshift();
 
             if (MeetingHud.Instance)
                 TimeRemaining = 0f;
@@ -63,8 +65,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public float ShapeshiftTimer()
         {
-            var utcNow = DateTime.UtcNow;
-            var timespan = utcNow - LastShapeshifted;
+            var timespan = DateTime.UtcNow - LastShapeshifted;
             var num = Player.GetModifiedCooldown(CustomGameOptions.ShapeshiftCooldown) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
