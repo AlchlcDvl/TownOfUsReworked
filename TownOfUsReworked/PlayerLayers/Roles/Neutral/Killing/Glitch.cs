@@ -23,11 +23,11 @@
             Name = "Glitch";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Glitch : Colors.Neutral;
             RoleType = RoleEnum.Glitch;
-            StartText = "foreach PlayerControl Glitch.MurderPlayer";
-            AbilitiesText = "- You can mimic players' appearances whenever you want to\n- You can hack players to stop them from using their abilities\n- Hacking blocks your target " +
-                "from being able to use their abilities for a short while\n- You are immune to blocks\n- If you block a <color=#336EFFFF>Serial Killer</color>, they will be forced to" +
+            StartText = () => "foreach PlayerControl Glitch.MurderPlayer";
+            AbilitiesText = () => "- You can mimic players' appearances whenever you want to\n- You can hack players to stop them from using their abilities\n- Hacking blocks your target "
+                + "from being able to use their abilities for a short while\n- You are immune to blocks\n- If you block a <color=#336EFFFF>Serial Killer</color>, they will be forced to" +
                 " kill you";
-            Objectives = "- Neutralise anyone who can oppose you";
+            Objectives = () => "- Neutralise anyone who can oppose you";
             RoleAlignment = RoleAlignment.NeutralKill;
             MimicMenu = new(Player, Click, Exception3);
             RoleBlockImmune = true;
@@ -36,6 +36,9 @@
             HackButton = new(this, "Hack", AbilityTypes.Direct, "Secondary", HitHack, Exception2);
             MimicButton = new(this, "Mimic", AbilityTypes.Effect, "Tertiary", HitMimic);
             InspectorResults = InspectorResults.HindersOthers;
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float HackTimer()

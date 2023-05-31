@@ -11,7 +11,7 @@ namespace TownOfUsReworked.Patches
                 {
                     var votesRegained = pol.ExtraVotes.RemoveAll(x => x == player.PlayerId);
 
-                    if (pol.Player == PlayerControl.LocalPlayer)
+                    if (pol.Local)
                         pol.VoteBank += votesRegained;
 
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AddVoteBank, SendOption.Reliable);

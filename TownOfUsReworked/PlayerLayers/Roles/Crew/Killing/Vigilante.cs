@@ -15,8 +15,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Vigilante(PlayerControl player) : base(player)
         {
             Name = "Vigilante";
-            StartText = "Shoot The <color=#FF0000FF>Evildoers</color>";
-            AbilitiesText = "- You can shoot players\n- You you shoot someone you are not supposed to, you will die to guilt";
+            StartText = () => "Shoot The <color=#FF0000FF>Evildoers</color>";
+            AbilitiesText = () => "- You can shoot players\n- You you shoot someone you are not supposed to, you will die to guilt";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Vigilante : Colors.Crew;
             RoleType = RoleEnum.Vigilante;
             RoleAlignment = RoleAlignment.CrewKill;
@@ -24,6 +24,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             UsesLeft = CustomGameOptions.VigiBulletCount;
             Type = LayerEnum.Vigilante;
             ShootButton = new(this, "Shoot", AbilityTypes.Direct, "ActionSecondary", Shoot, true);
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float KillTimer()
@@ -42,7 +45,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 if (vigi.PreMeetingDie)
                     Utils.RpcMurderPlayer(vigi.Player, vigi.Player);
-                else if (vigi.Player == PlayerControl.LocalPlayer && vigi.InnoMessage)
+                else if (vigi.Local && vigi.InnoMessage)
                     HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, "You killed an innocent an innocent crew! You have put your gun away out of guilt.");
             }
         }
@@ -93,7 +96,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     if (CustomGameOptions.MisfireKillsInno)
                         Utils.RpcMurderPlayer(Player, target);
 
-                    if (Player == PlayerControl.LocalPlayer && CustomGameOptions.VigiNotifOptions == VigiNotif.Flash && CustomGameOptions.VigiOptions != VigiOptions.Immediate)
+                    if (Local && CustomGameOptions.VigiNotifOptions == VigiNotif.Flash && CustomGameOptions.VigiOptions != VigiOptions.Immediate)
                         Utils.Flash(Color);
                     else if (CustomGameOptions.VigiNotifOptions == VigiNotif.Message && CustomGameOptions.VigiOptions != VigiOptions.Immediate)
                         InnoMessage = true;

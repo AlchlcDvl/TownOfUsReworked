@@ -810,11 +810,8 @@ namespace TownOfUsReworked.Patches
                 }
             }
 
-            if ((player.IsShielded() || player.IsRetShielded()) && (int)CustomGameOptions.ShowShielded is 3 && !(PlayerControl.LocalPlayer.Data.IsDead &&
-                CustomGameOptions.DeadSeeEverything))
-            {
+            if ((player.IsShielded() || player.IsRetShielded()) && (int)CustomGameOptions.ShowShielded is 3 && !ConstantVariables.DeadSeeEverything)
                 name += " <color=#006600FF>✚</color>";
-            }
 
             if (player.IsProtected() && CustomGameOptions.ShowProtect == ProtectOptions.Everyone && !ConstantVariables.DeadSeeEverything)
                 name += " <color=#FFFFFFFF>η</color>";

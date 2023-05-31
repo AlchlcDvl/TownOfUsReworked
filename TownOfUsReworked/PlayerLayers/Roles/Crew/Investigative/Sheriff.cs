@@ -8,14 +8,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Sheriff(PlayerControl player) : base(player)
         {
             Name = "Sheriff";
-            StartText = "Reveal The Alignment Of Other Players";
-            AbilitiesText = "- You can reveal alignments of other players relative to the <color=#8CFFFFFF>Crew</color>";
+            StartText = () => "Reveal The Alignment Of Other Players";
+            AbilitiesText = () => "- You can reveal alignments of other players relative to the <color=#8CFFFFFF>Crew</color>";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Sheriff : Colors.Crew;
             RoleType = RoleEnum.Sheriff;
             RoleAlignment = RoleAlignment.CrewKill;
             InspectorResults = InspectorResults.GainsInfo;
             Type = LayerEnum.Sheriff;
             InterrogateButton = new(this, "Interrogate", AbilityTypes.Direct, "ActionSecondary", Interrogate, Exception);
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float InterrogateTimer()

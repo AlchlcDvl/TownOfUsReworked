@@ -13,8 +13,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Escort";
             RoleType = RoleEnum.Escort;
-            StartText = "Roleblock Players From Harming The <color=#8CFFFFFF>Crew</color>";
-            AbilitiesText = "- You can seduce players\n- Seduction blocks your target from being able to use their abilities for a short while\n- You are immune to blocks\n" +
+            StartText = () => "Roleblock Players From Harming The <color=#8CFFFFFF>Crew</color>";
+            AbilitiesText = () => "- You can seduce players\n- Seduction blocks your target from being able to use their abilities for a short while\n- You are immune to blocks\n" +
                 "- If you attempt to block a <color=#336EFFFF>Serial Killer</color>, they will be forced to kill you";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Escort : Colors.Crew;
             RoleAlignment = RoleAlignment.CrewSupport;
@@ -23,6 +23,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Type = LayerEnum.Escort;
             BlockTarget = null;
             BlockButton = new(this, "EscortRoleblock", AbilityTypes.Direct, "ActionSecondary", Roleblock);
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public void UnBlock()

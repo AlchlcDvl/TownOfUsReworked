@@ -5,8 +5,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Retributionist(PlayerControl player) : base(player)
         {
             Name = "Retributionist";
-            StartText = "Mimic the Dead";
-            AbilitiesText = "- You can mimic the abilities of dead selective <color=#8CFFFFFF>Crew</color>";
+            StartText = () => "Mimic the Dead";
+            AbilitiesText = () => "- You can mimic the abilities of dead <color=#8CFFFFFF>Crew</color>";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Retributionist : Colors.Crew;
             RoleType = RoleEnum.Retributionist;
             RoleAlignment = RoleAlignment.CrewSupport;
@@ -68,6 +68,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             FixButton = new(this, "Fix", AbilityTypes.Effect, "ActionSecondary", Fix, true);
             BlockButton = new(this, "EscortRoleblock", AbilityTypes.Direct, "ActionSecondary", Roleblock, Exception6);
             TransportButton = new(this, "Transport", AbilityTypes.Effect, "ActionSecondary", Transport, true);
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         //Retributionist Stuff
@@ -498,7 +501,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public override void OnBodyReport(GameData.PlayerInfo info)
         {
-            if (info == null || PlayerControl.LocalPlayer != Player || !IsCor)
+            if (info == null || !Local || !IsCor)
                 return;
 
             base.OnBodyReport(info);

@@ -10,13 +10,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Mafioso";
             RoleType = RoleEnum.Mafioso;
-            StartText = "Succeed The <color=#404C08FF>Godfather</color>";
-            AbilitiesText = "- When the <color=#404C08FF>Godfather</color> dies, you will become the new <color=#404C08FF>Godfather</color> with boosted abilities of your former role" +
-                $"\n{AbilitiesText}";
+            StartText = () => "Succeed The <color=#404C08FF>Godfather</color>";
+            AbilitiesText = () => "- When the <color=#404C08FF>Godfather</color> dies, you will become the new <color=#404C08FF>Godfather</color> with boosted abilities of your former " +
+                $"role\n{AbilitiesText()}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Mafioso : Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderUtil;
             Type = LayerEnum.Mafioso;
             InspectorResults = InspectorResults.IsCold;
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public void TurnGodfather()
@@ -30,7 +33,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             newRole.RoleUpdate(this);
 
-            if (Player == PlayerControl.LocalPlayer)
+            if (Local)
                 Utils.Flash(Colors.Godfather);
 
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))

@@ -11,8 +11,8 @@
             {
                 var colorChip = __instance.ColorChips[i];
                 colorChip.transform.localScale *= 0.6f;
-                var x = __instance.XRange.Lerp(i % 6 / 6f) + 0.25f;
-                var y = __instance.YStart - (i / 6 * 0.35f);
+                var x = __instance.XRange.Lerp(i % 7 / 7f) + 0.25f;
+                var y = __instance.YStart - (i / 7 * 0.35f);
                 colorChip.transform.localPosition = new(x, y, 2f);
             }
         }
@@ -36,6 +36,8 @@
                 else if (ColorUtils.IsMonochrome(i))
                     __instance.ColorChips[i].Inner.SpriteColor = ColorUtils.Monochrome;
             }
+
+            __instance.currentColorIsEquipped = true;
         }
     }
 }

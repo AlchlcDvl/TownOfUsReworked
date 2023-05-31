@@ -9,10 +9,13 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
         public Dwarf(PlayerControl player) : base(player)
         {
             Name = !Smol && !Sped ? "Useless" : (!Smol ? "Flash" : (Sped ? "Gremlin" : "Dwarf"));
-            TaskText = !Smol && !Sped ? "- Why" : $"- You are tiny {Text}";
+            TaskText = () => !Smol && !Sped ? "- Why" : $"- You are tiny {Text}";
             Color = CustomGameOptions.CustomModifierColors ? Colors.Dwarf : Colors.Modifier;
             ModifierType = ModifierEnum.Dwarf;
             Type = LayerEnum.Dwarf;
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
     }
 }

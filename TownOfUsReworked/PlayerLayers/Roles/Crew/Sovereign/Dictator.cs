@@ -14,8 +14,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Dictator(PlayerControl player) : base(player)
         {
             Name = "Dictator";
-            StartText = "You Have The Final Say";
-            AbilitiesText = "- You can reveal yourself to the crew to eject up to 3 players in a meeting\n- When revealed, you cannot be protected";
+            StartText = () => "You Have The Final Say";
+            AbilitiesText = () => "- You can reveal yourself to the crew to eject up to 3 players in a meeting\n- When revealed, you cannot be protected";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Dictator : Colors.Crew;
             RoleType = RoleEnum.Dictator;
             RoleAlignment = RoleAlignment.CrewSov;
@@ -25,6 +25,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Ejected = false;
             ToDie = false;
             RevealButton = new(this, "DictatorReveal", AbilityTypes.Effect, "ActionSecondary", Reveal);
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public void Reveal()

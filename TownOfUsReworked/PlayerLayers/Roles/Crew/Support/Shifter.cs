@@ -8,8 +8,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Shifter(PlayerControl player) : base(player)
         {
             Name = "Shifter";
-            StartText = "Shift Around Roles";
-            AbilitiesText = "- You can steal another player's role\n- You can only shift with <color=#8CFFFFFF>Crew</color>\n- Shifting with non-<color=#8CFFFFFF>Crew</color> will " +
+            StartText = () => "Shift Around Roles";
+            AbilitiesText = () => "- You can steal another player's role\n- You can only shift with <color=#8CFFFFFF>Crew</color>\n- Shifting with non-<color=#8CFFFFFF>Crew</color> will " +
                 "cause you to kill yourself";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Shifter : Colors.Crew;
             RoleType = RoleEnum.Shifter;
@@ -17,6 +17,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             InspectorResults = InspectorResults.BringsChaos;
             Type = LayerEnum.Shifter;
             ShiftButton = new(this, "Shift", AbilityTypes.Direct, "ActionSecondary", Shift);
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float ShiftTimer()

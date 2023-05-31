@@ -13,19 +13,16 @@ namespace TownOfUsReworked.Objects
             var report = $"{Body.Data.PlayerName}'s Report:\n";
             var killerRole = Role.GetRole(Killer);
             var bodyRole = Role.GetRole(Body);
-            var selfFlag = Body == Killer;
 
-            var flashed = Role.GetRoles<Grenadier>(RoleEnum.Grenadier).Any(x => x.Flashed && x.FlashedPlayers.Contains(Reporter)) ||
-                Role.GetRoles<PromotedGodfather>(RoleEnum.PromotedGodfather).Any(x => x.OnEffect && x.FlashedPlayers.Contains(Reporter));
-
-            if (!flashed)
+            if (!(Role.GetRoles<Grenadier>(RoleEnum.Grenadier).Any(x => x.Flashed && x.FlashedPlayers.Contains(Reporter)) ||
+                Role.GetRoles<PromotedGodfather>(RoleEnum.PromotedGodfather).Any(x => x.OnEffect && x.IsGren && x.FlashedPlayers.Contains(Reporter))))
             {
                 report += $"They died approximately {Math.Round(KillAge / 1000)}s ago!\n";
                 report += $"They were a {bodyRole.Name}!\n";
 
-                if (selfFlag)
+                if (Body == Killer)
                     report += "There is evidence of self-harm!";
-                else if (!selfFlag)
+                else
                 {
                     if (CustomGameOptions.CoronerReportRole)
                         report += $"They were killed by a {killerRole.Name}!\n";

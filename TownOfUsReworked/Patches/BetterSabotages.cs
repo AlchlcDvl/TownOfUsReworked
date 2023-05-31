@@ -13,15 +13,14 @@ namespace TownOfUsReworked.Patches
 
                     if (lifeSuppSystemType.IsActive && CustomGameOptions.OxySlow)
                     {
-                        foreach (PlayerControl player in PlayerControl.AllPlayerControls)
+                        foreach (var player in PlayerControl.AllPlayerControls)
                         {
                             if (!player.Data.IsDead)
                                 player.MyPhysics.Speed = Math.Clamp(2.5f * lifeSuppSystemType.Countdown / lifeSuppSystemType.LifeSuppDuration, 1f, CustomGameOptions.PlayerSpeed);
                         }
                     }
                 }
-
-                if (ShipStatus.Instance.Systems.ContainsKey(SystemTypes.Laboratory))
+                else if (ShipStatus.Instance.Systems.ContainsKey(SystemTypes.Laboratory))
                 {
                     var reactorSystemType = ShipStatus.Instance.Systems[SystemTypes.Laboratory].Cast<ReactorSystemType>();
 
@@ -33,8 +32,7 @@ namespace TownOfUsReworked.Patches
                     else
                         __instance.PlayerCam.ShakeScreen(0, 0);
                 }
-
-                if (ShipStatus.Instance.Systems.ContainsKey(SystemTypes.Reactor) && TownOfUsReworked.VanillaOptions.MapId is 0 or 6)
+                else if (ShipStatus.Instance.Systems.ContainsKey(SystemTypes.Reactor) && TownOfUsReworked.VanillaOptions.MapId is 0 or 6)
                 {
                     var reactorSystemType = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
 

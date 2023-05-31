@@ -9,15 +9,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Troll(PlayerControl player) : base(player)
         {
             Name = "Troll";
-            StartText = "Troll Everyone With Your Death";
-            AbilitiesText = "- You can interact with players\n- Your interactions do nothing except spread infection and possibly kill you via touch sensitive roles";
+            StartText = () => "Troll Everyone With Your Death";
+            AbilitiesText = () => "- You can interact with players\n- Your interactions do nothing except spread infection and possibly kill you via touch sensitive roles";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Troll : Colors.Neutral;
             RoleType = RoleEnum.Troll;
             RoleAlignment = RoleAlignment.NeutralEvil;
-            Objectives = "- Get killed";
+            Objectives = () => "- Get killed";
             Type = LayerEnum.Troll;
             InteractButton = new(this, "Placeholder", AbilityTypes.Direct, "ActionSecondary", Interact);
             InspectorResults = InspectorResults.Manipulative;
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float InteractTimer()

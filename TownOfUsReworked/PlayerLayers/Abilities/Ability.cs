@@ -16,7 +16,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             AllAbilities.Add(this);
         }
 
-        public string TaskText = "- None";
+        public Func<string> TaskText = () => "- None";
         public bool Hidden;
 
         public override void OnMeetingStart(MeetingHud __instance)

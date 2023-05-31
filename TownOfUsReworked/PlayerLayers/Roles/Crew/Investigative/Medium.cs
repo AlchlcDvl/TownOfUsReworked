@@ -11,8 +11,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Medium(PlayerControl player) : base(player)
         {
             Name = "Medium";
-            StartText = "Spooky Scary Ghosties Send Shivers Down Your Spine";
-            AbilitiesText = "- You can mediate which makes ghosts visible to you" + (CustomGameOptions.ShowMediumToDead != ShowMediumToDead.No ?
+            StartText = () => "Spooky Scary Ghosties Send Shivers Down Your Spine";
+            AbilitiesText = () => "- You can mediate which makes ghosts visible to you" + (CustomGameOptions.ShowMediumToDead != ShowMediumToDead.No ?
                 "\n- When mediating, dead players will be able to see you" : "");
             Color = CustomGameOptions.CustomCrewColors ? Colors.Medium : Colors.Crew;
             RoleType = RoleEnum.Medium;
@@ -23,6 +23,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Type = LayerEnum.Medium;
             MediateButton = new(this, "Mediate", AbilityTypes.Effect, "ActionSecondary", Mediate);
             SeanceButton = new(this, "Seance", AbilityTypes.Effect, "ActionSecondary", Seance, false, true);
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float MediateTimer()

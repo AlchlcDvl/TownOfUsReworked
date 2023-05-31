@@ -9,9 +9,9 @@
         public Juggernaut(PlayerControl player) : base(player)
         {
             Name = "Juggernaut";
-            StartText = "Your Power Grows With Every Kill";
-            AbilitiesText = "- With each kill, your kill cooldown decreases\n- At 4 kills, you bypass all forms of protection";
-            Objectives = "- Assault anyone who can oppose you";
+            StartText = () => "Your Power Grows With Every Kill";
+            AbilitiesText = () => "- With each kill, your kill cooldown decreases\n- At 4 kills, you bypass all forms of protection";
+            Objectives = () => "- Assault anyone who can oppose you";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Juggernaut : Colors.Neutral;
             RoleType = RoleEnum.Juggernaut;
             RoleAlignment = RoleAlignment.NeutralKill;
@@ -19,6 +19,9 @@
             Type = LayerEnum.Juggernaut;
             AssaultButton = new(this, "Assault", AbilityTypes.Direct, "ActionSecondary", Assault, Exception);
             InspectorResults = InspectorResults.IsAggressive;
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float AssaultTimer()
@@ -40,7 +43,7 @@
             if (interact[3])
                 JuggKills++;
 
-            if (JuggKills == 4 && PlayerControl.LocalPlayer == Player)
+            if (JuggKills == 4 && Local)
                 Utils.Flash(Color);
 
             if (interact[0])

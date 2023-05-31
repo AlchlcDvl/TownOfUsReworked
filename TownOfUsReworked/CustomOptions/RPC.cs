@@ -63,6 +63,8 @@ namespace TownOfUsReworked.CustomOptions
                 customOption.Set(value);
                 Utils.LogSomething($"{customOption?.Name} : {customOption}");
             }
+
+            CustomOption.SaveSettings("LastUsedSettings");
         }
     }
 }

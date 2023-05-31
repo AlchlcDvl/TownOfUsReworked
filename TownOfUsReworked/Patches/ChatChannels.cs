@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch(typeof(ChatController), nameof(ChatController.AddChat))]
-    public static class Chats
+    public static class ChatChannels
     {
         public static bool Prefix(ChatController __instance, [HarmonyArgument(0)] PlayerControl sourcePlayer)
         {

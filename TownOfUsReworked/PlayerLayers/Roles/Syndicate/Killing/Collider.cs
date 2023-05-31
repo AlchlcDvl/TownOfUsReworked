@@ -13,7 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Collider";
             RoleType = RoleEnum.Collider;
-            StartText = "FUUUUUUUUUUUUUUUUUUUUUUUUUUSION!";
+            StartText = () => "FUUUUUUUUUUUUUUUUUUUUUUUUUUSION!";
             Color = CustomGameOptions.CustomSynColors ? Colors.Collider : Colors.Syndicate;
             RoleAlignment = RoleAlignment.SyndicateKill;
             Type = LayerEnum.Collider;
@@ -22,6 +22,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Negative = null;
             PositiveButton = new(this, "Positive", AbilityTypes.Direct, "ActionSecondary", SetPositive, Exception1);
             NegativeButton = new(this, "Negative", AbilityTypes.Direct, "Secondary", SetNegative, Exception2);
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float PositiveTimer()
@@ -87,6 +90,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 Utils.RpcMurderPlayer(Player, Positive, DeathReasonEnum.Collided, false);
                 Utils.RpcMurderPlayer(Player, Negative, DeathReasonEnum.Collided, false);
+                Positive = null;
+                Negative = null;
             }
         }
 

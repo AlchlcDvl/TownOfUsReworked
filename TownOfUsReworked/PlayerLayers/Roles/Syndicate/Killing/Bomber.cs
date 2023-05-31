@@ -11,8 +11,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Bomber(PlayerControl player) : base(player)
         {
             Name = "Bomber";
-            StartText = "Make People Go Boom";
-            AbilitiesText = $"- You can place bombs which you can detonate at any time to kill anyone within a certain radius\n{AbilitiesText}";
+            StartText = () => "Make People Go Boom";
+            AbilitiesText = () => $"- You can place bombs which you can detonate at any time to kill anyone within a certain radius\n{AbilitiesText()}";
             Color = CustomGameOptions.CustomSynColors ? Colors.Bomber : Colors.Syndicate;
             RoleType = RoleEnum.Bomber;
             RoleAlignment = RoleAlignment.SyndicateKill;
@@ -21,6 +21,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             BombButton = new(this, "Plant", AbilityTypes.Effect, "ActionSecondary", Place);
             DetonateButton = new(this, "Detonate", AbilityTypes.Effect, "Secondary", Detonate);
             InspectorResults = InspectorResults.DropsItems;
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float BombTimer()

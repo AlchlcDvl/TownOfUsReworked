@@ -131,8 +131,8 @@ namespace TownOfUsReworked.Patches
                     break;
 
                 case CustomRPC.VersionHandshake:
-                    Utils.VersionHandshake(reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32(), reader.ReadInt32(), new(reader.Length - reader.Position >= 17 ?
-                        reader.ReadBytes(16) : new byte[16]), reader.ReadPackedInt32());
+                    Utils.VersionHandshake(reader.ReadByte(), reader.ReadByte(), reader.ReadByte(), reader.ReadByte(), new(reader.Length - reader.Position >= 17 ? reader.ReadBytes(16) :
+                        new byte[16]), reader.ReadPackedInt32());
                     break;
 
                 case CustomRPC.SubmergedFixOxygen:
@@ -155,7 +155,9 @@ namespace TownOfUsReworked.Patches
 
                 case CustomRPC.SetPos:
                     var setplayer = Utils.PlayerById(reader.ReadByte());
-                    setplayer.transform.position = new(reader.ReadSingle(), reader.ReadSingle(), setplayer.transform.position.z);
+                    var pos = reader.ReadVector2();
+                    pos.y += 0.3636f;
+                    setplayer.transform.position = new(pos.x, pos.y, setplayer.transform.position.z);
                     break;
 
                 case CustomRPC.SyncCustomSettings:
@@ -179,7 +181,7 @@ namespace TownOfUsReworked.Patches
                     TownOfUsReworked.VanillaOptions.VisualTasks = CustomGameOptions.VisualTasks;
                     TownOfUsReworked.VanillaOptions.PlayerSpeedMod = CustomGameOptions.PlayerSpeed;
                     TownOfUsReworked.VanillaOptions.NumImpostors = CustomGameOptions.IntruderCount;
-                    TownOfUsReworked.VanillaOptions.GhostsDoTasks = CustomGameOptions.GhostTasksCountToWin;
+                    //TownOfUsReworked.VanillaOptions.GhostsDoTasks = CustomGameOptions.GhostTasksCountToWin;
                     TownOfUsReworked.VanillaOptions.TaskBarMode = (AmongUs.GameOptions.TaskBarMode)CustomGameOptions.TaskBarMode;
                     TownOfUsReworked.VanillaOptions.ConfirmImpostor = CustomGameOptions.ConfirmEjects;
                     TownOfUsReworked.VanillaOptions.VotingTime = CustomGameOptions.VotingTime;

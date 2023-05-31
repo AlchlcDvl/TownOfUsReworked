@@ -1,5 +1,3 @@
-using TownOfUsReworked.Data;
-
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Roleless : Role
@@ -8,6 +6,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "None";
             InspectorResults = InspectorResults.None;
+            Type = LayerEnum.None;
+            Player.Data.SetImpostor(false);
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
     }
 }

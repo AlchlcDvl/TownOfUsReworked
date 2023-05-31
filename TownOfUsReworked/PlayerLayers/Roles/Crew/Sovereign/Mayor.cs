@@ -10,8 +10,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Mayor(PlayerControl player) : base(player)
         {
             Name = "Mayor";
-            StartText = "Reveal Yourself To Commit Voter Fraud";
-            AbilitiesText = $"- You can reveal yourself to the crew\n- When revealed, your votes count {CustomGameOptions.MayorVoteCount + 1} times and you cannot be protected";
+            StartText = () => "Reveal Yourself To Commit Voter Fraud";
+            AbilitiesText = () => $"- You can reveal yourself to the crew\n- When revealed, your votes count {CustomGameOptions.MayorVoteCount + 1} times but you cannot be protected";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Mayor : Colors.Crew;
             RoleType = RoleEnum.Mayor;
             RoleAlignment = RoleAlignment.CrewSov;
@@ -19,6 +19,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Type = LayerEnum.Mayor;
             Voted = 255;
             RevealButton = new(this, "MayorReveal", AbilityTypes.Effect, "ActionSecondary", Reveal);
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public void Reveal()

@@ -10,11 +10,14 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
         public ButtonBarry(PlayerControl player) : base(player)
         {
             Name = "Button Barry";
-            TaskText = "- You can call a button from anywhere";
+            TaskText = () => "- You can call a button from anywhere";
             Color = CustomGameOptions.CustomAbilityColors ? Colors.ButtonBarry : Colors.Ability;
             AbilityType = AbilityEnum.ButtonBarry;
             Type = LayerEnum.ButtonBarry;
             ButtonButton = new(this, "Button", AbilityTypes.Effect, "Quarternary", Call);
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float StartTimer()
@@ -35,6 +38,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             writer.Write((byte)ActionsRPC.BarryButton);
             writer.Write(PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
+            FixExtentions.Fix();
 
             if (AmongUsClient.Instance.AmHost)
             {

@@ -15,8 +15,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Banshee";
             RoleType = RoleEnum.Banshee;
-            StartText = "AAAAAAAAAAAAAAAAAAAAAAAAA";
-            AbilitiesText = "- You can scream loudly, blocking all players as long as you are not clicked";
+            StartText = () => "AAAAAAAAAAAAAAAAAAAAAAAAA";
+            AbilitiesText = () => "- You can scream loudly, blocking all players as long as you are not clicked";
             RoleAlignment = RoleAlignment.SyndicateUtil;
             Color = CustomGameOptions.CustomSynColors ? Colors.Banshee : Colors.Syndicate;
             Blocked = new();
@@ -24,6 +24,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleBlockImmune = true; //Not taking chances
             ScreamButton = new(this, "Scream", AbilityTypes.Effect, "ActionSecondary", HitScream);
             InspectorResults = InspectorResults.Ghostly;
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public void Scream()

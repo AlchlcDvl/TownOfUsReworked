@@ -15,8 +15,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Coroner(PlayerControl player) : base(player)
         {
             Name = "Coroner";
-            StartText = "Examine The Dead For Info";
-            AbilitiesText = "- You know when players die and will be notified to as to where their body is for a brief period of time\n- You will get a report when you report a body";
+            StartText = () => "Examine The Dead For Info";
+            AbilitiesText = () => "- You know when players die and will be notified to as to where their body is for a brief period of time\n- You will get a report when you report a body"
+                + "\n- You can perform an autopsy on bodies, to get a reference\n- You can compare the autopsy reference with players to see if they killed the body you examined";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Coroner : Colors.Crew;
             RoleType = RoleEnum.Coroner;
             RoleAlignment = RoleAlignment.CrewInvest;
@@ -27,6 +28,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Type = LayerEnum.Coroner;
             AutopsyButton = new(this, "Autopsy", AbilityTypes.Dead, "ActionSecondary", Autopsy);
             CompareButton = new(this, "Compare", AbilityTypes.Direct, "Secondary", Compare, true);
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float CompareTimer()
@@ -140,7 +144,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             base.OnBodyReport(info);
 
-            if (info == null || PlayerControl.LocalPlayer != Player)
+            if (info == null || !Local)
                 return;
 
             var matches = Utils.KilledPlayers.Where(x => x.PlayerId == info.PlayerId).ToArray();

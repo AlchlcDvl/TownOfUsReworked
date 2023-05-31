@@ -430,7 +430,13 @@ namespace TownOfUsReworked.Patches
         [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.StartMeeting))]
         public static class StartMeetingPatch
         {
-            public static void Prefix([HarmonyArgument(0)] GameData.PlayerInfo meetingTarget) => VoteTarget = meetingTarget;
+            public static void Prefix([HarmonyArgument(0)] GameData.PlayerInfo meetingTarget)
+            {
+                VoteTarget = meetingTarget;
+
+                if (PlayerControl.LocalPlayer.Is(ModifierEnum.Astral))
+                    Modifier.GetModifier<Astral>(PlayerControl.LocalPlayer).LastPosition = PlayerControl.LocalPlayer.transform.position;
+            }
         }
 
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Update))]
@@ -1410,35 +1416,60 @@ namespace TownOfUsReworked.Patches
                 var background1 = role.Swap1.Background.transform;
                 var mask1 = role.Swap1.MaskArea.transform;
                 var whiteBackground1 = role.Swap1.PlayerButton.transform;
+                var level1 = role.Swap1.LevelNumberText.transform;
+                var cb1 = role.Swap1.ColorBlindName.transform;
+                var overlay1 = role.Swap1.Overlay.transform;
+                var report1 = role.Swap1.Megaphone.transform;
+
                 var pooldest1 = (Vector2)pool1.position;
                 var namedest1 = (Vector2)name1.position;
                 var backgroundDest1 = (Vector2)background1.position;
                 var whiteBackgroundDest1 = (Vector2)whiteBackground1.position;
                 var maskdest1 = (Vector2)mask1.position;
+                var leveldest1 = (Vector2)level1.position;
+                var cbdest1 = (Vector2)cb1.position;
+                var overlaydest1 = (Vector2)overlay1.position;
+                var reportdest1 = (Vector2)report1.position;
 
                 var pool2 = role.Swap2.PlayerIcon.transform;
                 var name2 = role.Swap2.NameText.transform;
                 var background2 = role.Swap2.Background.transform;
                 var mask2 = role.Swap2.MaskArea.transform;
                 var whiteBackground2 = role.Swap2.PlayerButton.transform;
+                var level2 = role.Swap2.LevelNumberText.transform;
+                var cb2 = role.Swap2.ColorBlindName.transform;
+                var overlay2 = role.Swap2.Overlay.transform;
+                var report2 = role.Swap2.Megaphone.transform;
 
                 var pooldest2 = (Vector2)pool2.position;
                 var namedest2 = (Vector2)name2.position;
                 var backgrounddest2 = (Vector2)background2.position;
-                var maskdest2 = (Vector2)mask2.position;
-
                 var whiteBackgroundDest2 = (Vector2)whiteBackground2.position;
+                var maskdest2 = (Vector2)mask2.position;
+                var leveldest2 = (Vector2)level2.position;
+                var cbdest2 = (Vector2)cb2.position;
+                var overlaydest2 = (Vector2)overlay2.position;
+                var reportdest2 = (Vector2)report2.position;
 
                 var duration = 1f / Ability.GetAbilities(AbilityEnum.Swapper).Count;
 
+                Coroutines.Start(Slide2D(cb1, cbdest1, cbdest2, duration));
+                Coroutines.Start(Slide2D(cb2, cbdest2, cbdest1, duration));
                 Coroutines.Start(Slide2D(pool1, pooldest1, pooldest2, duration));
                 Coroutines.Start(Slide2D(pool2, pooldest2, pooldest1, duration));
                 Coroutines.Start(Slide2D(name1, namedest1, namedest2, duration));
                 Coroutines.Start(Slide2D(name2, namedest2, namedest1, duration));
                 Coroutines.Start(Slide2D(mask1, maskdest1, maskdest2, duration));
                 Coroutines.Start(Slide2D(mask2, maskdest2, maskdest1, duration));
+                Coroutines.Start(Slide2D(level1, leveldest1, leveldest2, duration));
+                Coroutines.Start(Slide2D(level2, leveldest2, leveldest1, duration));
+                Coroutines.Start(Slide2D(report1, reportdest1, reportdest2, duration));
+                Coroutines.Start(Slide2D(report2, reportdest2, reportdest1, duration));
+                Coroutines.Start(Slide2D(overlay1, overlaydest1, overlaydest2, duration));
+                Coroutines.Start(Slide2D(overlay2, overlaydest2, overlaydest1, duration));
                 Coroutines.Start(Slide2D(whiteBackground1, whiteBackgroundDest1, whiteBackgroundDest2, duration));
                 Coroutines.Start(Slide2D(whiteBackground2, whiteBackgroundDest2, whiteBackgroundDest1, duration));
+
                 yield return new WaitForSeconds(duration);
             }
         }

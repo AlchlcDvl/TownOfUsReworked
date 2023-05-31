@@ -414,12 +414,14 @@ namespace TownOfUsReworked.PlayerLayers
 
             foreach (var body in Utils.AllBodies)
             {
-                var num = IsCamoed ? 6 : Utils.PlayerByBody(body).GetDefaultOutfit().ColorId;
+                var renderer = body.bodyRenderers.FirstOrDefault();
 
-                foreach (var renderer in body.bodyRenderers)
+                if (IsCamoed)
+                    PlayerMaterial.SetColors(Color.grey, renderer);
+                else
                 {
-                    renderer.material.SetColor("_BackColor", Palette.PlayerColors[num]);
-                    renderer.material.SetColor("_BodyColor", Palette.ShadowColors[num]);
+                    renderer.material.SetColor("_BackColor", Utils.PlayerByBody(body).GetShadowColor());
+                    renderer.material.SetColor("_BodyColor", Utils.PlayerByBody(body).GetPlayerColor());
                 }
             }
 

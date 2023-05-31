@@ -9,15 +9,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public VampireHunter(PlayerControl player) : base(player)
         {
             Name = "Vampire Hunter";
-            StartText = "Stake The <color=#7B8968FF>Undead</color>";
-            AbilitiesText = "- You can stake players to see if they have been turned\n- When you stake a turned person, or an <color=#7B8968FF>Undead</color> tries to interact with " +
-                "you, you will kill them\n- When all <color=#7B8968FF>Undead</color> players die, you will become a <color=#FFFF00FF>Vigilante</color>";
+            StartText = () => "Stake The <color=#7B8968FF>Undead</color>";
+            AbilitiesText = () => "- You can stake players to see if they have been turned\n- When you stake a turned person, or an <color=#7B8968FF>Undead</color> tries to interact with "
+                + "you, you will kill them\n- When all <color=#7B8968FF>Undead</color> players die, you will become a <color=#FFFF00FF>Vigilante</color>";
             Color = CustomGameOptions.CustomCrewColors ? Colors.VampireHunter : Colors.Crew;
             RoleType = RoleEnum.VampireHunter;
             RoleAlignment = RoleAlignment.CrewAudit;
             InspectorResults = InspectorResults.TracksOthers;
             Type = LayerEnum.VampireHunter;
             StakeButton = new(this, "Stake", AbilityTypes.Direct, "ActionSecondary", Stake);
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float StakeTimer()

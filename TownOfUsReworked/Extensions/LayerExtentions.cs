@@ -147,11 +147,13 @@ namespace TownOfUsReworked.Extensions
             var revivedFlag = player.IsResurrected();
             var rivalFlag = player.IsWinningRival();
             var corruptedFlag = player.Is(ObjectifierEnum.Corrupted);
-            var loverFlag = player.Is(ObjectifierEnum.Lovers);
+            var loverFlag = player.HasAliveLover();
             var mafFlag = player.Is(ObjectifierEnum.Mafia);
             return traitorFlag || recruitFlag || sectFlag || revivedFlag || rivalFlag || fanaticFlag || corruptedFlag || bittenFlag || loverFlag || mafFlag ||
                 !Role.GetRole(player).Faithful;
         }
+
+        public static bool HasAliveLover(this PlayerControl player) => player.Is(ObjectifierEnum.Lovers) && Objectifier.GetObjectifier<Lovers>(player).LoversAlive;
 
         public static bool CanDoTasks(this PlayerControl player)
         {
@@ -364,15 +366,10 @@ namespace TownOfUsReworked.Extensions
 
         public static bool IsWinningRival(this PlayerControl player)
         {
-            if (player == null || player.Data == null)
-                return false;
-
             if (!player.Is(ObjectifierEnum.Rivals))
                 return false;
 
-            var rival = Objectifier.GetObjectifier<Rivals>(player);
-
-            return rival.RivalDead;
+            return Objectifier.GetObjectifier<Rivals>(player).RivalDead;
         }
 
         public static bool IsTurnedTraitor(this PlayerControl player) => player.IsIntTraitor() || player.IsSynTraitor();
@@ -885,7 +882,7 @@ namespace TownOfUsReworked.Extensions
             if (info[0])
             {
                 roleName += $"{role.ColorString}{role.Name}</color>";
-                objectives += $"\n{role.ColorString}{role.Objectives}</color>";
+                objectives += $"\n{role.ColorString}{role.Objectives()}</color>";
                 alignment += $"{role.RoleAlignment.AlignmentName(true)}";
                 subfaction += $"{role.SubFactionColorString}{role.SubFactionName}</color>";
             }
@@ -952,7 +949,7 @@ namespace TownOfUsReworked.Extensions
             objectives += "</color>";
 
             if (info[0])
-                abilities += $"\n{role.ColorString}{role.AbilitiesText}</color>";
+                abilities += $"\n{role.ColorString}{role.AbilitiesText()}</color>";
 
             if (info[2] && !ability.Hidden && ability.AbilityType != AbilityEnum.None)
                 abilities += $"\n{ability.ColorString}{ability.TaskText}</color>";
@@ -961,12 +958,6 @@ namespace TownOfUsReworked.Extensions
                 abilities += "\n- None";
 
             abilities += "</color>";
-
-            if (info[0] && role.HasTarget() && role.RoleType != RoleEnum.BountyHunter)
-            {
-                attributes += $"\n{role.ColorString}- Your target is {(CustomGameOptions.Whispers ? $"[{role.Player.GetTarget().PlayerId}]"  : "")}" +
-                    $"{role.Player.GetTarget().Data.PlayerName}";
-            }
 
             if (info[1] && !modifier.Hidden && modifier.ModifierType != ModifierEnum.None)
                 attributes += $"\n{modifier.ColorString}- {modifier.TaskText}</color>";
@@ -1013,7 +1004,6 @@ namespace TownOfUsReworked.Extensions
         public static void RoleUpdate(this Role newRole, Role former)
         {
             former.Player.DisableButtons();
-            former.Player.DisableArrows();
             former.OnLobby();
             newRole.RoleHistory.Add(former);
             newRole.RoleHistory.AddRange(former.RoleHistory);
@@ -1046,9 +1036,8 @@ namespace TownOfUsReworked.Extensions
             Role.AllRoles.Remove(former);
             PlayerLayer.AllLayers.Remove(former);
             newRole.Player.EnableButtons();
-            newRole.Player.EnableArrows();
 
-            if (newRole.Player == PlayerControl.LocalPlayer || former.Player == PlayerControl.LocalPlayer)
+            if (newRole.Local || former.Local)
                 ButtonUtils.ResetCustomTimers(false);
         }
 

@@ -13,8 +13,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Veteran(PlayerControl player) : base(player)
         {
             Name = "Veteran";
-            StartText = "Alert To Kill Anyone Who Touches You";
-            AbilitiesText = "- You can go on alert\n- When on alert, you will kill whoever interacts with you";
+            StartText = () => "Alert To Kill Anyone Who Touches You";
+            AbilitiesText = () => "- You can go on alert\n- When on alert, you will kill whoever interacts with you";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Veteran : Colors.Crew;
             RoleType = RoleEnum.Veteran;
             UsesLeft = CustomGameOptions.MaxAlerts;
@@ -22,6 +22,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             InspectorResults = InspectorResults.IsCold;
             Type = LayerEnum.Veteran;
             AlertButton = new(this, "Alert", AbilityTypes.Effect, "ActionSecondary", HitAlert, true);
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float AlertTimer()

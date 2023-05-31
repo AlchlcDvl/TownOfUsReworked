@@ -27,16 +27,18 @@ namespace TownOfUsReworked.Patches
 
             if (PlayerControl.LocalPlayer.Is(AbilityEnum.Politician))
             {
-                if (!((Politician)Ability.LocalAbility).CanVote)
+                var pol = (Politician)Ability.LocalAbility;
+
+                if (!pol.CanVote)
                     return false;
 
-                if (__instance != ((Politician)Ability.LocalAbility).Abstain)
+                if (__instance != pol.Abstain)
                 {
-                    ((Politician)Ability.LocalAbility).VoteBank--;
-                    ((Politician)Ability.LocalAbility).VotedOnce = true;
+                    pol.VoteBank--;
+                    pol.VotedOnce = true;
                 }
                 else
-                    ((Politician)Ability.LocalAbility).SelfVote = true;
+                    pol.SelfVote = true;
             }
 
             __instance.Parent.Confirm(__instance.TargetPlayerId);

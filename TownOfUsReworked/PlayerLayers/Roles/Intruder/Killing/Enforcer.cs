@@ -16,15 +16,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Enforcer";
             RoleType = RoleEnum.Enforcer;
-            StartText = "Force The <color=#8CFFFFFF>Crew</color> To Do Your Bidding";
-            AbilitiesText = $"- You can plant bombs on players and force them to kill others\n- If the player is unable to kill someone within {CustomGameOptions.EnforceDuration}s" +
-                $", the bomb will detonate and kill everyone within a {CustomGameOptions.EnforceRadius}m radius\n{AbilitiesText}";
+            StartText = () => "Force The <color=#8CFFFFFF>Crew</color> To Do Your Bidding";
+            AbilitiesText = () => $"- You can plant bombs on players and force them to kill others\n- If the player is unable to kill someone within {CustomGameOptions.EnforceDuration}s" +
+                $", the bomb will detonate and kill everyone within a {CustomGameOptions.EnforceRadius}m radius\n{AbilitiesText()}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Enforcer : Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderKill;
             Type = LayerEnum.Enforcer;
             BombedPlayer = null;
             BombButton = new(this, "Enforce", AbilityTypes.Direct, "Secondary", Bomb, Exception1);
             InspectorResults = InspectorResults.DropsItems;
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float BombTimer()
@@ -76,7 +79,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 Utils.Spread(BombedPlayer, player);
 
-                if (player.IsVesting() || player.IsProtected() || player.IsOnAlert() || player.IsShielded() || player.IsRetShielded())
+                if (player.IsVesting() || player.IsProtected() || player.IsOnAlert() || player.IsShielded() || player.IsRetShielded() || player.IsProtectedMonarch())
                     continue;
 
                 if (!player.Is(RoleEnum.Pestilence))

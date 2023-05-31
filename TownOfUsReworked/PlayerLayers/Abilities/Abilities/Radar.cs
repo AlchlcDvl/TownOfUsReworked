@@ -7,11 +7,14 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
         public Radar(PlayerControl player) : base(player)
         {
             Name = "Radar";
-            TaskText = "- You are aware of those close to you";
+            TaskText = () => "- You are aware of those close to you";
             Color = CustomGameOptions.CustomAbilityColors ? Colors.Radar : Colors.Ability;
             AbilityType = AbilityEnum.Radar;
             RadarArrow = new(Player, Color);
             Type = LayerEnum.Radar;
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public override void OnLobby()

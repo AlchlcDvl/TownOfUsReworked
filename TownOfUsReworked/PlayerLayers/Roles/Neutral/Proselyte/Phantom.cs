@@ -10,13 +10,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Phantom(PlayerControl player) : base(player)
         {
             Name = "Phantom";
-            StartText = "Peek-A-Boo!";
+            StartText = () => "Peek-A-Boo!";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Phantom : Colors.Neutral;
-            Objectives = "- Finish your tasks without getting clicked";
+            Objectives = () => "- Finish your tasks without getting clicked";
             RoleType = RoleEnum.Phantom;
             RoleAlignment = RoleAlignment.NeutralPros;
             Type = LayerEnum.Phantom;
             InspectorResults = InspectorResults.Ghostly;
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public void Fade()
@@ -36,16 +39,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             color.a = Mathf.Lerp(color.a, 0, distPercent);
 
             if (Player.GetCustomOutfitType() != CustomPlayerOutfitType.PlayerNameOnly)
-            {
-                Player.SetOutfit(CustomPlayerOutfitType.PlayerNameOnly, new GameData.PlayerOutfit()
-                {
-                    ColorId = Player.GetDefaultOutfit().ColorId,
-                    HatId = "",
-                    SkinId = "",
-                    VisorId = "",
-                    PlayerName = ""
-                });
-            }
+                Player.SetOutfit(CustomPlayerOutfitType.PlayerNameOnly, Utils.SpookyOutfit(Player));
 
             Player.MyRend().color = color;
             Player.NameText().color = new(0f, 0f, 0f, 0f);

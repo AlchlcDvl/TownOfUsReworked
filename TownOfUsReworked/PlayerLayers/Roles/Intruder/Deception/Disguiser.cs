@@ -18,8 +18,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Disguiser(PlayerControl player) : base(player)
         {
             Name = "Disguiser";
-            StartText = "Disguise The <color=#8CFFFFFF>Crew</color> To Frame Them";
-            AbilitiesText = $"- You can disguise a player into someone else's appearance\n{AbilitiesText}";
+            StartText = () => "Disguise The <color=#8CFFFFFF>Crew</color> To Frame Them";
+            AbilitiesText = () => $"- You can disguise a player into someone else's appearance\n{AbilitiesText()}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Disguiser : Colors.Intruder;
             RoleType = RoleEnum.Disguiser;
             RoleAlignment = RoleAlignment.IntruderDecep;
@@ -30,6 +30,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             DisguisePlayer = null;
             DisguisedPlayer = null;
             InspectorResults = InspectorResults.CreatesConfusion;
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public void Disguise()

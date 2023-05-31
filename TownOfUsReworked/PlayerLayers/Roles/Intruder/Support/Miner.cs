@@ -9,14 +9,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Miner(PlayerControl player) : base(player)
         {
             Name = "Miner";
-            StartText = "From The Top, Make It Drop, Boom, That's A Vent";
-            AbilitiesText = $"- You can mine a vent, forming a vent system of your own\n{AbilitiesText}";
+            StartText = () => "From The Top, Make It Drop, Boom, That's A Vent";
+            AbilitiesText = () => $"- You can mine a vent, forming a vent system of your own\n{AbilitiesText()}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Miner : Colors.Intruder;
             RoleType = RoleEnum.Miner;
             RoleAlignment = RoleAlignment.IntruderSupport;
             Type = LayerEnum.Miner;
             MineButton = new(this, "Mine", AbilityTypes.Effect, "Secondary", Mine);
             InspectorResults = InspectorResults.NewLens;
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float MineTimer()

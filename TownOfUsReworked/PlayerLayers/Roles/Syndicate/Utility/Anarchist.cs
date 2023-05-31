@@ -6,11 +6,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Anarchist";
             RoleType = RoleEnum.Anarchist;
-            StartText = "Wreck Everyone With A Passion";
+            StartText = () => "Wreck Everyone With A Passion";
             RoleAlignment = RoleAlignment.SyndicateUtil;
-            Base = true;
             Type = LayerEnum.Anarchist;
             InspectorResults = InspectorResults.IsBasic;
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
     }
 }

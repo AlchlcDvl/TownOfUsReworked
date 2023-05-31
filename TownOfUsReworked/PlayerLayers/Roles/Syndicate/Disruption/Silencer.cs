@@ -12,10 +12,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Silencer(PlayerControl player) : base(player)
         {
             Name = "Silencer";
-            StartText = "You Are The One Who Screams";
-            AbilitiesText = "- You can silence players to ensure they cannot hear what others say\n" + (CustomGameOptions.SilenceRevealed ? "- Everyone will be alerted at the start of " +
-                "the meeting that someone has been silenced " : "") + (CustomGameOptions.WhispersNotPrivateSilencer ? "\n- You can read whispers during meetings" : "") +
-                $"\n{AbilitiesText}";
+            StartText = () => "You Are The One Who Screams";
+            AbilitiesText = () => "- You can silence players to ensure they cannot hear what others say\n" + (CustomGameOptions.SilenceRevealed ? "- Everyone will be alerted at the start "
+                + "of the meeting that someone has been silenced " : "") + (CustomGameOptions.WhispersNotPrivateSilencer ? "\n- You can read whispers during meetings" : "") +
+                $"\n{AbilitiesText()}";
             Color = CustomGameOptions.CustomSynColors ? Colors.Silencer : Colors.Syndicate;
             RoleType = RoleEnum.Silencer;
             RoleAlignment = RoleAlignment.SyndicateDisrup;
@@ -23,6 +23,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             SilencedPlayer = null;
             Type = LayerEnum.Silencer;
             SilenceButton = new(this, "Silence", AbilityTypes.Direct, "Secondary", Silence, Exception1);
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float SilenceTimer()

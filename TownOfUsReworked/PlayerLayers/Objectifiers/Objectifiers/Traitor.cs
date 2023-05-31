@@ -11,11 +11,15 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         {
             Name = "Traitor";
             Symbol = "♣";
-            TaskText = "- Finish your tasks to switch sides to either <color=#FF0000FF>Intruders</color> or the <color=#008000FF>Syndicate</color>";
+            TaskText = () => !Turned ? "- Finish your tasks to switch sides to either <color=#FF0000FF>Intruders</color> or the <color=#008000FF>Syndicate</color>" : (Side ==
+                Faction.Intruder ? Role.IntrudersWinCon : (Side == Faction.Syndicate ? Role.SyndicateWinCon : "- You feel conflicted"));
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Traitor : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Traitor;
             Hidden = !CustomGameOptions.TraitorKnows && !Turned;
             Type = LayerEnum.Traitor;
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public void TurnBetrayer()

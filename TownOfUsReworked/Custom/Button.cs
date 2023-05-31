@@ -20,9 +20,9 @@ namespace TownOfUsReworked.Custom
         public Exclude Exception;
         public delegate void Click();
         public delegate bool Exclude(PlayerControl player);
-        private bool SetAliveActive => !Owner.IsDead && Owner.Player.Is(Owner.Type, Owner.LayerType) && ConstantVariables.IsRoaming && Owner.Player == PlayerControl.LocalPlayer &&
+        private bool SetAliveActive => !Owner.IsDead && Owner.Player.Is(Owner.Type, Owner.LayerType) && ConstantVariables.IsRoaming && Owner.Local &&
             (HudManager.Instance.UseButton.isActiveAndEnabled || HudManager.Instance.PetButton.isActiveAndEnabled);
-        private bool SetDeadActive => Owner.IsDead && Owner.Player.Is(Owner.Type, Owner.LayerType) && ConstantVariables.IsRoaming && Owner.Player == PlayerControl.LocalPlayer &&
+        private bool SetDeadActive => Owner.IsDead && Owner.Player.Is(Owner.Type, Owner.LayerType) && ConstantVariables.IsRoaming && Owner.Local &&
             (HudManager.Instance.UseButton.isActiveAndEnabled || HudManager.Instance.PetButton.isActiveAndEnabled) && PostDeath;
 
         public CustomButton(PlayerLayer owner, string button, AbilityTypes type, string keybind, Click click, Exclude exception, bool hasUses = false, bool postDeath = false)
@@ -145,8 +145,7 @@ namespace TownOfUsReworked.Custom
 
         public void Update(string label, float timer, float maxTimer, int uses, bool effectActive, float effectTimer, float maxDuration, bool condition = true, bool usable = true)
         {
-            if (Owner.Player != PlayerControl.LocalPlayer || ConstantVariables.IsLobby || (HasUses && uses <= 0) || MeetingHud.Instance || ConstantVariables.Inactive || !usable ||
-                (!PostDeath && Owner.IsDead))
+            if (!Owner.Local || ConstantVariables.IsLobby || (HasUses && uses <= 0) || MeetingHud.Instance || ConstantVariables.Inactive || !usable || (!PostDeath && Owner.IsDead))
             {
                 Disable();
                 return;

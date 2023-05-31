@@ -28,17 +28,17 @@ namespace TownOfUsReworked.CustomOptions
             else if (SettingsPage == 1)
                 builder.AppendLine("\n<color=#8CFFFFFF>Crew</color>");
             else if (SettingsPage == 2)
-                builder.AppendLine("\n<color=#B3B3B3FF>Neutral</color>");
+                builder.AppendLine("\n<color=#B3B3B3FF>Neutrals</color>");
             else if (SettingsPage == 3)
-                builder.AppendLine("\n<color=#FF0000FF>Intruder</color>");
+                builder.AppendLine("\n<color=#FF0000FF>Intruders</color>");
             else if (SettingsPage == 4)
                 builder.AppendLine("\n<color=#008000FF>Syndicate</color>");
             else if (SettingsPage == 5)
-                builder.AppendLine("\n<color=#7F7F7FFF>Modifier</color>");
+                builder.AppendLine("\n<color=#7F7F7FFF>Modifiers</color>");
             else if (SettingsPage == 6)
-                builder.AppendLine("\n<color=#DD585BFF>Objectifier</color>");
+                builder.AppendLine("\n<color=#DD585BFF>Objectifiers</color>");
             else if (SettingsPage == 7)
-                builder.AppendLine("\n<color=#FF9900FF>Ability</color>");
+                builder.AppendLine("\n<color=#FF9900FF>Abilities</color>");
 
             foreach (var option in CustomOption.AllOptions.Where(x => x.Menu == (MultiMenu)SettingsPage))
             {

@@ -12,8 +12,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Janitor(PlayerControl player) : base(player)
         {
             Name = "Janitor";
-            StartText = "Sanitise The Ship, By Any Means Neccessary";
-            AbilitiesText = $"- You can clean up dead bodies, making them disappear from sight\n- You can drag bodies away to prevent them from getting reported\n{AbilitiesText}";
+            StartText = () => "Sanitise The Ship, By Any Means Neccessary";
+            AbilitiesText = () => $"- You can clean up dead bodies, making them disappear from sight\n- You can drag bodies away to prevent them from getting reported\n{AbilitiesText()}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Janitor : Colors.Intruder;
             RoleType = RoleEnum.Janitor;
             RoleAlignment = RoleAlignment.IntruderConceal;
@@ -23,6 +23,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             CleanButton = new(this, "Clean", AbilityTypes.Dead, "Secondary", Clean);
             DragButton = new(this, "Drag", AbilityTypes.Dead, "Tertiary", Drag);
             DropButton = new(this, "Drop", AbilityTypes.Effect, "Tertiary", Drop);
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float CleanTimer()

@@ -6,6 +6,10 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
         {
             Name = "None";
             Hidden = true;
+            Type = LayerEnum.None;
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
     }
 }

@@ -13,9 +13,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Jester(PlayerControl player) : base(player)
         {
             Name = "Jester";
-            StartText = "It Was Jest A Prank Bro";
-            AbilitiesText = "- After you get ejected, you can haunt those who voted for you";
-            Objectives = "- Get ejected";
+            StartText = () => "It Was Jest A Prank Bro";
+            AbilitiesText = () => "- After you get ejected, you can haunt those who voted for you";
+            Objectives = () => "- Get ejected";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Jester : Colors.Neutral;
             RoleType = RoleEnum.Jester;
             RoleAlignment = RoleAlignment.NeutralEvil;
@@ -24,6 +24,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Type = LayerEnum.Jester;
             HauntButton = new(this, "Haunt", AbilityTypes.Direct, "ActionSecondary", Haunt, Exception, true, true);
             InspectorResults = InspectorResults.Manipulative;
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public override void VoteComplete(MeetingHud __instance)

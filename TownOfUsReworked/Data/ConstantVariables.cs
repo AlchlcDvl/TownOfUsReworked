@@ -5,7 +5,7 @@ namespace TownOfUsReworked.Data
     public static class ConstantVariables
     {
         public static bool IsCountDown => GameStartManager.Instance && GameStartManager.Instance.startState == GameStartManager.StartingStates.Countdown;
-        public static bool IsInGame => GameManager.Instance.GameHasStarted && !LobbyBehaviour.Instance;
+        public static bool IsInGame => (AmongUsClient.Instance.GameState == InnerNetClient.GameStates.Started || GameManager.Instance?.GameHasStarted ==  true) && !LobbyBehaviour.Instance;
         public static bool IsLobby => AmongUsClient.Instance.GameState == InnerNetClient.GameStates.Joined || LobbyBehaviour.Instance;
         public static bool IsEnded => AmongUsClient.Instance.GameState == InnerNetClient.GameStates.Ended;
         public static bool IsHnS => GameOptionsManager.Instance.CurrentGameOptions.GameMode == GameModes.HideNSeek;
@@ -39,13 +39,13 @@ namespace TownOfUsReworked.Data
         public static bool AllNeutralsWin => (!PlayerControl.AllPlayerControls.Any(x => !x.Data.IsDead && !x.Data.Disconnected && (x.NotOnTheSameSide() || x.Is(Faction.Crew) ||
             x.Is(Faction.Syndicate) || x.Is(Faction.Intruder)))) && CustomGameOptions.NoSolo == NoSolo.AllNeutrals;
 
-        public static bool PestOrPBWins => !PlayerControl.AllPlayerControls.Any(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) ||
-            (x.Is(RoleAlignment.NeutralKill) && !x.Is(RoleEnum.Plaguebearer)) || x.Is(RoleAlignment.NeutralNeo) || x.Is(Faction.Syndicate) || (x.Is(RoleAlignment.NeutralPros) &&
-            !x.Is(RoleEnum.Pestilence)) || x.Is(ObjectifierEnum.Allied) || x.Is(Faction.Crew) || x.NotOnTheSameSide()));
+        public static bool PestOrPBWins => !PlayerControl.AllPlayerControls.Any(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) || x.Is(Faction.Crew) ||
+            (x.Is(RoleAlignment.NeutralKill) && !x.Is(RoleEnum.Plaguebearer)) || x.Is(RoleAlignment.NeutralNeo) || x.Is(Faction.Syndicate) || x.Is(RoleAlignment.NeutralPros) ||
+            x.Is(ObjectifierEnum.Allied) || x.NotOnTheSameSide()));
 
-        public static bool AllNKsWin => (!PlayerControl.AllPlayerControls.Any(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) ||
-            x.Is(RoleAlignment.NeutralNeo) || x.Is(Faction.Syndicate) || x.Is(RoleAlignment.NeutralPros) || x.Is(Faction.Crew) || x.Is(ObjectifierEnum.Allied) || x.NotOnTheSameSide()))) &&
-            CustomGameOptions.NoSolo == NoSolo.AllNKs;
+        public static bool AllNKsWin => (!PlayerControl.AllPlayerControls.Any(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) || x.Is(RoleAlignment.NeutralNeo) ||
+            x.Is(Faction.Syndicate) || x.Is(RoleAlignment.NeutralPros) || x.Is(Faction.Crew) || x.Is(ObjectifierEnum.Allied) || x.NotOnTheSameSide()))) && CustomGameOptions.NoSolo ==
+            NoSolo.AllNKs;
 
         public static bool NoOneWins => !PlayerControl.AllPlayerControls.Any(x => !x.Data.IsDead && !x.Data.Disconnected);
 
@@ -75,18 +75,11 @@ namespace TownOfUsReworked.Data
             (x.Is(RoleAlignment.NeutralKill) && x != player) || x.Is(RoleAlignment.NeutralNeo) || x.Is(Faction.Syndicate) || x.Is(RoleAlignment.NeutralPros) || x.Is(Faction.Crew) ||
             x.NotOnTheSameSide())) && CustomGameOptions.NoSolo == NoSolo.Never;
 
-        public static bool CorruptedWin(PlayerControl player) => !PlayerControl.AllPlayerControls.Any(x => !x.Data.IsDead && !x.Data.Disconnected &&
-            !x.Is(ObjectifierEnum.Corrupted) && ((x != player && !CustomGameOptions.AllCorruptedWin) || CustomGameOptions.AllCorruptedWin));
+        public static bool CorruptedWin(PlayerControl player) => !PlayerControl.AllPlayerControls.Any(x => !x.Data.IsDead && !x.Data.Disconnected && !x.Is(ObjectifierEnum.Corrupted) &&
+            ((x != player && !CustomGameOptions.AllCorruptedWin) || CustomGameOptions.AllCorruptedWin));
 
-        public static bool LoversWin(PlayerControl player)
-        {
-            if (!player.Is(ObjectifierEnum.Lovers))
-                return false;
-
-            var flag1 = PlayerControl.AllPlayerControls.Count(x => !x.Data.IsDead && !x.Data.Disconnected) <= 3;
-            var flag2 = Objectifier.GetObjectifier<Lovers>(player).LoversAlive();
-            return flag1 && flag2;
-        }
+        public static bool LoversWin(PlayerControl player) => PlayerControl.AllPlayerControls.Count(x => !x.Data.IsDead && !x.Data.Disconnected) <= 3 &&
+            Objectifier.GetObjectifiers<Lovers>(ObjectifierEnum.Lovers).Any(x => x.LoversAlive && x == player);
 
         public static bool RivalsWin(PlayerControl player) => PlayerControl.AllPlayerControls.Count(x => !x.Data.IsDead && !x.Data.Disconnected) <= 2 &&
             Objectifier.GetObjectifiers<Rivals>(ObjectifierEnum.Rivals).Any(x => x.IsWinningRival && x == player);

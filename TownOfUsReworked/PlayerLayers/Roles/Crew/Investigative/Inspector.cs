@@ -10,14 +10,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Inspector";
             RoleType = RoleEnum.Inspector;
-            StartText = "Inspect Players For Their Roles";
-            AbilitiesText = "- You can check a player to get a role list of what they could be";
+            StartText = () => "Inspect Players For Their Roles";
+            AbilitiesText = () => "- You can check a player to get a role list of what they could be";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Inspector : Colors.Crew;
             RoleAlignment = RoleAlignment.CrewInvest;
             Inspected = new();
             InspectorResults = InspectorResults.GainsInfo;
             Type = LayerEnum.Inspector;
             InspectButton = new(this, "Inspect", AbilityTypes.Direct, "ActionSecondary", Inspect, Exception);
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float InspectTimer()

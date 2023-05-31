@@ -8,15 +8,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Pestilence(PlayerControl owner) : base(owner)
         {
             Name = "Pestilence";
-            StartText = "The Horseman Of The Apocalypse Has Arrived!";
-            AbilitiesText = "- You are on forever alert, anyone who interacts with you will be killed";
-            Objectives = "- Obliterate anyone who can oppose you";
+            StartText = () => "The Horseman Of The Apocalypse Has Arrived!";
+            AbilitiesText = () => "- You are on forever alert, anyone who interacts with you will be killed";
+            Objectives = () => "- Obliterate anyone who can oppose you";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Pestilence : Colors.Neutral;
             RoleType = RoleEnum.Pestilence;
             RoleAlignment = RoleAlignment.NeutralApoc;
             Type = LayerEnum.Pestilence;
             ObliterateButton = new(this, "Obliterate", AbilityTypes.Direct, "ActionSecondary", Obliterate, Exception);
             InspectorResults = InspectorResults.LeadsTheGroup;
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float ObliterateTimer()

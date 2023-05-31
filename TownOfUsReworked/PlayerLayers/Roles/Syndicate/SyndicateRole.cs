@@ -11,11 +11,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Faction = Faction.Syndicate;
             FactionColor = Colors.Syndicate;
             Color = Colors.Syndicate;
-            Objectives = SyndicateWinCon;
+            Objectives = () => SyndicateWinCon;
             BaseFaction = Faction.Syndicate;
-            AbilitiesText = (RoleType is not RoleEnum.Anarchist and not RoleEnum.Sidekick && RoleAlignment != RoleAlignment.SyndicateKill ? "- With the Chaos Drive, you can kill " +
-                "players directly" : "- You can kill") + (CustomGameOptions.AltImps ? "- You can sabotage the systems to distract the <color=#8CFFFFFF>Crew</color>" : "");
+            AbilitiesText = () => (RoleType is not RoleEnum.Anarchist and not RoleEnum.Sidekick && RoleAlignment != RoleAlignment.SyndicateKill ? "- With the Chaos Drive, you can kill " +
+                "players directly" : "- You can kill") + (CustomGameOptions.AltImps && CustomGameOptions.IntrudersCanSabotage ? "- You can sabotage the systems to distract the " +
+                "<color=#8CFFFFFF>Crew</color>" : "");
             KillButton = new(this, "SyndicateKill", AbilityTypes.Direct, "ActionSecondary", Kill, Exception);
+            Player.Data.SetImpostor(true);
         }
 
         public float KillTimer()
@@ -28,7 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public override void IntroPrefix(IntroCutscene._ShowTeam_d__36 __instance)
         {
-            if (Player != PlayerControl.LocalPlayer)
+            if (!Local)
                 return;
 
             var team = new List<PlayerControl> { PlayerControl.LocalPlayer };

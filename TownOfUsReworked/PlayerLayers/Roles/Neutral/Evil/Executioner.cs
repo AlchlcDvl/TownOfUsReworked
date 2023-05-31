@@ -15,17 +15,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Executioner(PlayerControl player) : base(player)
         {
             Name = "Executioner";
-            StartText = "Eject Your Target";
-            Objectives = "- Eject your target";
+            StartText = () => $"Eject {TargetPlayer?.name}";
+            Objectives = () => $"- Eject {TargetPlayer?.name}";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Executioner : Colors.Neutral;
             RoleType = RoleEnum.Executioner;
             RoleAlignment = RoleAlignment.NeutralEvil;
             ToDoom = new();
             UsesLeft = CustomGameOptions.DoomCount;
-            AbilitiesText = "- After your target has been ejected, you can doom players who voted for them\n- If your target dies, you will become a <color=#F7B3DAFF>Jester</color>";
+            AbilitiesText = () => $"- After {TargetPlayer?.name} has been ejected, you can doom players who voted for them\n- If {TargetPlayer?.name} dies, you will become a " +
+                "<color=#F7B3DAFF>Jester</color>";
             Type = LayerEnum.Executioner;
             DoomButton = new(this, "Doom", AbilityTypes.Direct, "ActionSecondary", Doom, Exception, true);
             InspectorResults = InspectorResults.Manipulative;
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public override void VoteComplete(MeetingHud __instance)
@@ -67,7 +71,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var newRole = new Jester(Player);
             newRole.RoleUpdate(this);
 
-            if (Player == PlayerControl.LocalPlayer)
+            if (Local)
                 Utils.Flash(Colors.Jester);
 
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))

@@ -233,7 +233,8 @@ namespace TownOfUsReworked.Data
     {
         Normal,
         Fixed,
-        RandomSynchronized
+        RandomSynchronized,
+        Meeting
     }
 
     public enum MoveAdmin
@@ -484,6 +485,7 @@ namespace TownOfUsReworked.Data
 
     public enum ModifierEnum
     {
+        Astral,
         Bait,
         Coward,
         Diseased,
@@ -496,6 +498,7 @@ namespace TownOfUsReworked.Data
         Shy,
         VIP,
         Volatile,
+        Yeller,
 
         None
     }
@@ -604,6 +607,7 @@ namespace TownOfUsReworked.Data
         TimeKeeper,
         Warper,
 
+        Astral,
         Bait,
         Coward,
         Diseased,
@@ -616,6 +620,7 @@ namespace TownOfUsReworked.Data
         Shy,
         VIP,
         Volatile,
+        Yeller,
 
         Allied,
         Corrupted,

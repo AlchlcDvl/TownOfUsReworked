@@ -7,13 +7,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Faction = Faction.Crew;
             FactionColor = Colors.Crew;
             Color = Colors.Crew;
-            Objectives = CrewWinCon;
+            Objectives = () => CrewWinCon;
             BaseFaction = Faction.Crew;
+            Player.Data.SetImpostor(false);
         }
 
         public override void IntroPrefix(IntroCutscene._ShowTeam_d__36 __instance)
         {
-            if (Player != PlayerControl.LocalPlayer)
+            if (!Local)
                 return;
 
             var team = new List<PlayerControl> { PlayerControl.LocalPlayer };

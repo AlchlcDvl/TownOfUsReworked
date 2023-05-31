@@ -12,18 +12,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Cannibal(PlayerControl player) : base(player)
         {
             Name = "Cannibal";
-            StartText = "Eat The Bodies Of The Dead";
+            StartText = () => "Eat The Bodies Of The Dead";
             RoleType = RoleEnum.Cannibal;
-            AbilitiesText = "- You can consume a body, making it disappear from the game" + (CustomGameOptions.EatArrows ? "\n- When someone dies, you get an arrow pointing to their body" :
-                "");
+            AbilitiesText = () => "- You can consume a body, making it disappear from the game" + (CustomGameOptions.EatArrows ? "\n- When someone dies, you get an arrow pointing to their"
+                + " body" : "");
             RoleAlignment = RoleAlignment.NeutralEvil;
             Color = CustomGameOptions.CustomNeutColors ? Colors.Cannibal : Colors.Neutral;
-            Objectives = $"- Eat {EatNeed} {(EatNeed == 1 ? "body" : "bodies")}";
+            Objectives = () => $"- Eat {EatNeed} {(EatNeed == 1 ? "body" : "bodies")}";
             BodyArrows = new();
             EatNeed = CustomGameOptions.CannibalBodyCount >= PlayerControl.AllPlayerControls.Count / 2 ? PlayerControl.AllPlayerControls.Count / 2 : CustomGameOptions.CannibalBodyCount;
             Type = LayerEnum.Cannibal;
             EatButton = new(this, "Eat", AbilityTypes.Dead, "ActionSecondary", Eat);
             InspectorResults = InspectorResults.DealsWithDead;
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float EatTimer()

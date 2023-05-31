@@ -14,9 +14,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Poisoner(PlayerControl player) : base(player)
         {
             Name = "Poisoner";
-            StartText = "Delay A Kill To Decieve The <color=#8CFFFFFF>Crew</color>";
-            AbilitiesText = $"- You can poison players\n- Poisoned players will die after {CustomGameOptions.PoisonDuration}s\n- With the Chaos Drive, you can poison players from anywhere"
-                + $"occur concurrently\n{AbilitiesText}";
+            StartText = () => "Delay A Kill To Decieve The <color=#8CFFFFFF>Crew</color>";
+            AbilitiesText = () => $"- You can poison players\n- Poisoned players will die after {CustomGameOptions.PoisonDuration}s\n- With the Chaos Drive, you can poison players from " +
+                $"anywhere\n{AbilitiesText()}";
             Color = CustomGameOptions.CustomSynColors? Colors.Poisoner : Colors.Syndicate;
             RoleType = RoleEnum.Poisoner;
             PoisonedPlayer = null;
@@ -26,6 +26,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             PoisonButton = new(this, "Poison", AbilityTypes.Direct, "ActionSecondary", HitPoison, Exception1);
             GlobalPoisonButton = new(this, "Poison", AbilityTypes.Effect, "ActionSecondary", HitGlobalPoison);
             InspectorResults = InspectorResults.Unseen;
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public void Poison()

@@ -6,11 +6,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Impostor";
             RoleType = RoleEnum.Impostor;
-            StartText = "Sabotage And Kill Everyone";
+            StartText = () => "Sabotage And Kill Everyone";
             RoleAlignment = RoleAlignment.IntruderUtil;
-            Base = true;
             Type = LayerEnum.Impostor;
             InspectorResults = InspectorResults.IsBasic;
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
     }
 }

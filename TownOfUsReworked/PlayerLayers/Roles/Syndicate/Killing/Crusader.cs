@@ -12,8 +12,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Crusader(PlayerControl player) : base(player)
         {
             Name = "Crusader";
-            StartText = "Ambush";
-            AbilitiesText = $"- You can crusade players\n- Ambushed players will be forced to be on alert, and will kill whoever interacts with then\n{AbilitiesText}";
+            StartText = () => "Ambush";
+            AbilitiesText = () => $"- You can crusade players\n- Ambushed players will be forced to be on alert, and will kill whoever interacts with then\n{AbilitiesText()}";
             Color = CustomGameOptions.CustomSynColors ? Colors.Crusader : Colors.Syndicate;
             RoleType = RoleEnum.Crusader;
             RoleAlignment = RoleAlignment.SyndicateKill;
@@ -21,6 +21,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Type = LayerEnum.Crusader;
             CrusadedPlayer = null;
             CrusadeButton = new(this, "Crusade", AbilityTypes.Direct, "ActionSecondary", HitCrusade, Exception1);
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float CrusadeTimer()

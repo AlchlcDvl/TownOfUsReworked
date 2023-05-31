@@ -62,10 +62,7 @@ namespace TownOfUsReworked.CustomOptions
         public void ToDo()
         {
             SlotButtons.Clear();
-
-            for (var j = 1; j < 11; j++)
-                SlotButtons.Add(new(MultiMenu.external, $"Slot {j}", delegate { ImportSlot(j); }));
-
+            AssetManager.Slots.Keys.ToList().ForEach(x => SlotButtons.Add(new(MultiMenu.external, $"Slot {x}", delegate { ImportSlot(x); })));
             SlotButtons.Add(new(MultiMenu.external, "Cancel", delegate { Cancel(FlashWhite); }));
 
             var options = CreateOptions();
@@ -87,17 +84,22 @@ namespace TownOfUsReworked.CustomOptions
 
         private void ImportSlot(int slotId)
         {
-            Utils.LogSomething($"Loading Slot - {slotId}");
-            string text;
+            Utils.LogSomething($"Loading - Slot {slotId}");
+            string text = null;
 
             try
             {
-                var path = Path.Combine(Application.persistentDataPath, $"GameSettings-Slot{slotId}-ToU-Rew");
-                text = File.ReadAllText(path);
+                text = AssetManager.Slots[slotId];
             }
             catch
             {
+                text = "";
+            }
+
+            if (string.IsNullOrEmpty(text))
+            {
                 Cancel(FlashRed);
+                Utils.LogSomething("Slot no exist");
                 return;
             }
 

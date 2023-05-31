@@ -10,8 +10,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Detective(PlayerControl player) : base(player)
         {
             Name = "Detective";
-            StartText = "Examine Players To Find Bloody Hands";
-            AbilitiesText = "- You can examine players to see if they have killed recently\n- Your screen will flash red if your target has killed in the " +
+            StartText = () => "Examine Players To Find Bloody Hands";
+            AbilitiesText = () => "- You can examine players to see if they have killed recently\n- Your screen will flash red if your target has killed in the " +
                 $"last {CustomGameOptions.RecentKill}s\n- You can view everyone's footprints to see where they go or where they came from";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Detective : Colors.Crew;
             RoleType = RoleEnum.Detective;
@@ -19,6 +19,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             InspectorResults = InspectorResults.GainsInfo;
             Type = LayerEnum.Detective;
             ExamineButton = new(this, "Examine", AbilityTypes.Direct, "ActionSecondary", Examine);
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float ExamineTimer()

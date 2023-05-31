@@ -11,11 +11,15 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         {
             Name = "Fanatic";
             Symbol = "♠";
-            TaskText = "- Get attacked by either an <color=#FF0000FF>Intruder</color> or a <color=#008000FF>Syndicate</color> to join their side";
+            TaskText = () => !Turned ? "- Get attacked by either an <color=#FF0000FF>Intruder</color> or a <color=#008000FF>Syndicate</color> to join their side" : (Side ==
+                Faction.Intruder ? Role.IntrudersWinCon : (Side == Faction.Syndicate ? Role.SyndicateWinCon : "- You feel conflicted"));
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Fanatic : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Fanatic;
             Hidden = !CustomGameOptions.FanaticKnows && !Turned;
             Type = LayerEnum.Fanatic;
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public void TurnFanatic(Faction faction)
@@ -32,14 +36,14 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
                 Color = Colors.Syndicate;
                 fanaticRole.IsSynFanatic = true;
                 fanaticRole.FactionColor = Colors.Syndicate;
-                fanaticRole.Objectives = Role.SyndicateWinCon;
+                fanaticRole.Objectives = () => Role.SyndicateWinCon;
             }
             else if (faction == Faction.Intruder)
             {
                 Color = Colors.Intruder;
                 fanaticRole.IsIntFanatic = true;
                 fanaticRole.FactionColor = Colors.Intruder;
-                fanaticRole.Objectives = Role.IntrudersWinCon;
+                fanaticRole.Objectives = () => Role.IntrudersWinCon;
             }
 
             Side = faction;
@@ -51,7 +55,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             {
                 if (CustomGameOptions.SnitchSeesFanatic)
                 {
-                    if (snitch.TasksLeft <= CustomGameOptions.SnitchTasksRemaining && PlayerControl.LocalPlayer == Player)
+                    if (snitch.TasksLeft <= CustomGameOptions.SnitchTasksRemaining && Local)
                         Role.LocalRole.AllArrows.Add(snitch.PlayerId, new(Player, Colors.Snitch, 0));
                     else if (snitch.TasksDone && PlayerControl.LocalPlayer == snitch.Player)
                         Role.GetRole(snitch.Player).AllArrows.Add(PlayerId, new(snitch.Player, Colors.Snitch));
@@ -60,7 +64,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
 
             foreach (var revealer in Role.GetRoles<Revealer>(RoleEnum.Revealer))
             {
-                if (revealer.Revealed && CustomGameOptions.RevealerRevealsTraitor && Player == PlayerControl.LocalPlayer)
+                if (revealer.Revealed && CustomGameOptions.RevealerRevealsTraitor && Local)
                     Role.LocalRole.AllArrows.Add(revealer.PlayerId, new(Player, revealer.Color));
             }
         }

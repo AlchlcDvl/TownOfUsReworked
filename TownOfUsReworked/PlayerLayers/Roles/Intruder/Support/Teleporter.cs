@@ -7,20 +7,23 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public DateTime LastMarked;
         public CustomButton MarkButton;
         public bool CanMark;
-        public Vector3 TeleportPoint = new(0, 0, 0);
+        public Vector3 TeleportPoint = Vector3.zero;
 
         public Teleporter(PlayerControl player) : base(player)
         {
             Name = "Teleporter";
-            StartText = "X Marks The Spot";
-            AbilitiesText = $"- You can mark a spot to teleport to later\n{AbilitiesText}";
+            StartText = () => "X Marks The Spot";
+            AbilitiesText = () => $"- You can mark a spot to teleport to later\n{AbilitiesText()}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Teleporter : Colors.Intruder;
             RoleType = RoleEnum.Teleporter;
             Type = LayerEnum.Teleporter;
-            TeleportPoint = new(0, 0, 0);
+            TeleportPoint = Vector3.zero;
             MarkButton = new(this, "Mark", AbilityTypes.Effect, "Secondary", Mark);
             TeleportButton = new(this, "Teleport", AbilityTypes.Effect, "Secondary", Teleport);
             InspectorResults = InspectorResults.MovesAround;
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float TeleportTimer()
@@ -75,7 +78,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             hits = hits.Where(c => (c.name.Contains("Vent") || !c.isTrigger) && c.gameObject.layer != 8 && c.gameObject.layer != 5).ToArray();
             CanMark = hits.Count == 0 && Player.moveable && !ModCompatibility.GetPlayerElevator(Player).Item1 && TeleportPoint != Player.transform.position;
             MarkButton.Update("MARK", MarkTimer(), CustomGameOptions.MarkCooldown, CanMark);
-            TeleportButton.Update("TELEPORT", TeleportTimer(), CustomGameOptions.TeleportCd, true, TeleportPoint != new Vector3(0, 0, 0));
+            TeleportButton.Update("TELEPORT", TeleportTimer(), CustomGameOptions.TeleportCd, true, TeleportPoint != Vector3.zero);
         }
     }
 }

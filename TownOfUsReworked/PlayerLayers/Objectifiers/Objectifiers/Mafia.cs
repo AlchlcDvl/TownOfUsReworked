@@ -6,11 +6,14 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         {
             Name = "Mafia";
             Symbol = "ω";
-            TaskText = "- Eliminate anyone who opposes the Mafia";
+            TaskText = () => "- Eliminate anyone who opposes the Mafia";
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Mafia : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Mafia;
             Type = LayerEnum.Mafia;
             Role.GetRole(Player).RoleAlignment = Role.GetRole(Player).RoleAlignment.GetNewAlignment(Faction.Neutral);
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
     }
 }

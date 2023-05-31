@@ -13,14 +13,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Chameleon(PlayerControl player) : base(player)
         {
             Name = "Chameleon";
-            StartText = "Go Invisible To Stalk Players";
-            AbilitiesText = "- You can turn invisible";
+            StartText = () => "Go Invisible To Stalk Players";
+            AbilitiesText = () => "- You can turn invisible";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Chameleon : Colors.Crew;
             RoleType = RoleEnum.Chameleon;
             InspectorResults = InspectorResults.Unseen;
             UsesLeft = CustomGameOptions.SwoopCount;
             Type = LayerEnum.Chameleon;
             SwoopButton = new(this, "Swoop", AbilityTypes.Direct, "ActionSecondary", HitSwoop, true);
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float SwoopTimer()

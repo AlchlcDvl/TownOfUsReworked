@@ -11,16 +11,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Camouflager(PlayerControl player) : base(player)
         {
             Name = "Camouflager";
-            StartText = "Hinder The <color=#8CFFFFFF>Crew</color>'s Recognition";
-            AbilitiesText = "- You can disrupt everyone's vision, causing them to be unable to tell players apart\n- When camouflaged, everyone will appear grey with fluctuating names " +
-                $"and no cosmetics{(CustomGameOptions.MeetingColourblind ? "\n- This effect carries over into the meeting if a meeting is called during a camouflage" : "")}\n" +
-                $"{AbilitiesText}";
+            StartText = () => "Hinder The <color=#8CFFFFFF>Crew</color>'s Recognition";
+            AbilitiesText = () => "- You can disrupt everyone's vision, causing them to be unable to tell players apart\n- When camouflaged, everyone will appear grey with fluctuating " +
+                $"names and no cosmetics{(CustomGameOptions.MeetingColourblind ? "\n- This effect carries over into the meeting if a meeting is called during a camouflage" : "")}\n" +
+                $"{AbilitiesText()}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Camouflager : Colors.Intruder;
             RoleType = RoleEnum.Camouflager;
             RoleAlignment = RoleAlignment.IntruderConceal;
             InspectorResults = InspectorResults.BringsChaos;
             Type = LayerEnum.Camouflager;
             CamouflageButton = new(this, "Camouflage", AbilityTypes.Effect, "Secondary", HitCamouflage);
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public void Camouflage()

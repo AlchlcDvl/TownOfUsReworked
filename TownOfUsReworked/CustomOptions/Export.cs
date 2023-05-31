@@ -62,10 +62,7 @@ namespace TownOfUsReworked.CustomOptions
         public void ToDo()
         {
             SlotButtons.Clear();
-
-            for (var j = 1; j < 11; j++)
-                SlotButtons.Add(new(MultiMenu.external, $"Slot {j}", delegate { ExportSlot(j); }));
-
+            AssetManager.Slots.Keys.ToList().ForEach(x => SlotButtons.Add(new(MultiMenu.external, $"Slot {x}", delegate { ExportSlot(x); })));
             SlotButtons.Add(new(MultiMenu.external, "Cancel", delegate { Cancel(FlashWhite); }));
 
             var options = CreateOptions();
@@ -88,25 +85,11 @@ namespace TownOfUsReworked.CustomOptions
         private void ExportSlot(int slotId)
         {
             Utils.LogSomething($"Saving Slot - {slotId}");
-            var builder = new StringBuilder();
-
-            foreach (var option in AllOptions)
-            {
-                if (option.Type is CustomOptionType.Button or CustomOptionType.Header or CustomOptionType.Nested)
-                    continue;
-
-                builder.AppendLine(option.Name);
-                builder.AppendLine(option.Value.ToString());
-            }
-
-            var text = Path.Combine(Application.persistentDataPath, $"GameSettings-Slot{slotId}-ToU-Rew-temp");
 
             try
             {
-                File.WriteAllText(text, builder.ToString());
-                var text2 = Path.Combine(Application.persistentDataPath, $"GameSettings-Slot{slotId}-ToU-Rew");
-                File.Delete(text2);
-                File.Move(text, text2);
+                SaveSettings($"GameSettings-Slot{slotId}-ToU-Rew");
+                AssetManager.Slots[slotId] = AssetManager.TryLoadingSlotSettings(slotId);
                 Cancel(FlashGreen);
             }
             catch

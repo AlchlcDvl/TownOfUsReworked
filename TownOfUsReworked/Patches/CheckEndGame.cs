@@ -9,14 +9,6 @@ namespace TownOfUsReworked.Patches
             if (!AmongUsClient.Instance.AmHost || ConstantVariables.IsFreePlay)
                 return false;
 
-            var crewexists = false;
-
-            foreach (var player in PlayerControl.AllPlayerControls)
-            {
-                if (player.Is(Faction.Crew) && player.CanDoTasks())
-                    crewexists = true;
-            }
-
             if (ConstantVariables.NoOneWins)
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
@@ -25,7 +17,7 @@ namespace TownOfUsReworked.Patches
                 PlayerLayer.NobodyWins = true;
                 Utils.EndGame();
             }
-            else if ((LayerExtentions.TasksDone() || GameData.Instance.TotalTasks <= GameData.Instance.CompletedTasks) && crewexists)
+            else if (LayerExtentions.TasksDone() && Role.GetRoles(Faction.Crew).Any(x => x.Player.CanDoTasks()))
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.CrewWin);
@@ -55,12 +47,14 @@ namespace TownOfUsReworked.Patches
             {
                 foreach (var layer in PlayerLayer.AllLayers)
                     layer.GameEnd();
+
+                DetectStalemate();
             }
 
-            return ConstantVariables.GameHasEnded;
+            return false;
         }
 
-        public static void DetectStalemate()
+        private static void DetectStalemate()
         {
             var notDead = PlayerControl.AllPlayerControls.Where(x => !x.Data.IsDead && !x.Data.Disconnected);
             var pureCrew = notDead.Count(x => x.Is(Faction.Crew) && x.Is(SubFaction.None));

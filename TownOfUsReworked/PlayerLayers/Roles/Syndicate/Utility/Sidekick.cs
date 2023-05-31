@@ -10,12 +10,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Sidekick";
             RoleType = RoleEnum.Sidekick;
-            StartText = "Succeed The <color=#FFFCCEFF>Rebel</color>";
-            AbilitiesText = "- When the <color=#FFFCCEFF>Rebel</color> dies, you will become the new <color=#FFFCCEFF>Rebel</color> with boosted abilities of your former ";
+            StartText = () => "Succeed The <color=#FFFCCEFF>Rebel</color>";
+            AbilitiesText = () => "- When the <color=#FFFCCEFF>Rebel</color> dies, you will become the new <color=#FFFCCEFF>Rebel</color> with boosted abilities of your former " +
+                $"role\n{AbilitiesText()}";
             Color = CustomGameOptions.CustomSynColors ? Colors.Sidekick : Colors.Syndicate;
             RoleAlignment = RoleAlignment.SyndicateUtil;
             Type = LayerEnum.Sidekick;
             InspectorResults = InspectorResults.IsCold;
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public void TurnRebel()
@@ -29,7 +33,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             newRole.RoleUpdate(this);
 
-            if (Player == PlayerControl.LocalPlayer)
+            if (Local)
                 Utils.Flash(Colors.Rebel);
 
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))

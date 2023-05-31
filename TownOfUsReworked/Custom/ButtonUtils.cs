@@ -460,7 +460,7 @@ namespace TownOfUsReworked.Custom
 
                     case RoleEnum.Teleporter:
                         role2.LastTeleport = DateTime.UtcNow;
-                        role2.TeleportPoint = new(0, 0, 0);
+                        role2.TeleportPoint = Vector3.zero;
                         break;
 
                     case RoleEnum.Wraith:
@@ -547,7 +547,7 @@ namespace TownOfUsReworked.Custom
             else if (local.Is(RoleEnum.Teleporter))
             {
                 var role2 = (Teleporter)role;
-                role2.TeleportPoint = new(0, 0, 0);
+                role2.TeleportPoint = Vector3.zero;
 
                 if (start)
                 {
@@ -595,6 +595,16 @@ namespace TownOfUsReworked.Custom
                     role2.LastConcealed = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ConcealCooldown);
                 else
                     role2.LastConcealed = DateTime.UtcNow;
+            }
+            else if (local.Is(RoleEnum.Silencer))
+            {
+                var role2 = (Silencer)role;
+                role2.SilencedPlayer = null;
+
+                if (start)
+                    role2.LastSilenced = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.SilenceCooldown);
+                else
+                    role2.LastSilenced = DateTime.UtcNow;
             }
             else if (local.Is(RoleEnum.Spellslinger))
             {
@@ -732,6 +742,15 @@ namespace TownOfUsReworked.Custom
                     case RoleEnum.Crusader:
                         role2.LastCrusaded = DateTime.UtcNow;
                         role2.CrusadedPlayer = null;
+                        break;
+
+                    case RoleEnum.Silencer:
+                        role2.LastSilenced = DateTime.UtcNow;
+                        role2.SilencedPlayer = null;
+                        break;
+
+                    case RoleEnum.TimeKeeper:
+                        role2.LastTimed = DateTime.UtcNow;
                         break;
                 }
             }
@@ -1024,7 +1043,6 @@ namespace TownOfUsReworked.Custom
             }
         }
 
-        public static bool ButtonUsable(this ActionButton button) => button.isActiveAndEnabled && !button.isCoolingDown && !PlayerControl.LocalPlayer.CannotUse() &&
-            !MeetingHud.Instance;
+        public static bool ButtonUsable(this ActionButton button) => button.isActiveAndEnabled && !button.isCoolingDown && !PlayerControl.LocalPlayer.CannotUse() && !MeetingHud.Instance;
     }
 }

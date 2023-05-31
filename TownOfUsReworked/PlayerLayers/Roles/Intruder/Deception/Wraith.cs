@@ -11,14 +11,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Wraith(PlayerControl player) : base(player)
         {
             Name = "Wraith";
-            StartText = "Sneaky Sneaky";
-            AbilitiesText = $"- You can turn invisible\n{AbilitiesText}";
+            StartText = () => "Sneaky Sneaky";
+            AbilitiesText = () => $"- You can turn invisible\n{AbilitiesText()}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Wraith : Colors.Intruder;
             RoleType = RoleEnum.Wraith;
             RoleAlignment = RoleAlignment.IntruderDecep;
             Type = LayerEnum.Wraith;
             InvisButton = new(this, "Invis", AbilityTypes.Effect, "Secondary", HitInvis);
             InspectorResults = InspectorResults.Unseen;
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float InvisTimer()

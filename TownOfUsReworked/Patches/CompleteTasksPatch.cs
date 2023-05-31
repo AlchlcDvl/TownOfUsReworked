@@ -195,7 +195,7 @@ namespace TownOfUsReworked.Patches
                 traitorObj.Color = Colors.Intruder;
                 traitorRole.IsIntTraitor = true;
                 traitorRole.FactionColor = Colors.Intruder;
-                traitorRole.Objectives = Role.IntrudersWinCon;
+                traitorRole.Objectives = () => Role.IntrudersWinCon;
             }
             else if (turnSyndicate)
             {
@@ -203,7 +203,7 @@ namespace TownOfUsReworked.Patches
                 traitorRole.IsSynTraitor = true;
                 traitorObj.Color = Colors.Syndicate;
                 traitorRole.FactionColor = Colors.Syndicate;
-                traitorRole.Objectives = Role.SyndicateWinCon;
+                traitorRole.Objectives = () => Role.SyndicateWinCon;
             }
 
             traitorObj.Side = traitorRole.Faction;

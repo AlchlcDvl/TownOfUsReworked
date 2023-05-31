@@ -9,14 +9,9 @@
             writer.Write(__instance.PlayerId);
             writer.Write(colorId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
+            __instance.SetColor(colorId);
             return false;
         }
-    }
-
-    [HarmonyPatch(typeof(PlayerTab), nameof(PlayerTab.Update))]
-    public static class IsSelectedItemEquippedPatch
-    {
-        public static void Postfix(PlayerTab __instance) => __instance.currentColorIsEquipped = true;
     }
 
     [HarmonyPatch(typeof(PlayerTab), nameof(PlayerTab.UpdateAvailableColors))]

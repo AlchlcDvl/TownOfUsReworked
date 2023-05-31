@@ -17,8 +17,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Thief(PlayerControl player) : base(player)
         {
             Name = "Thief";
-            StartText = "Steal From The Killers";
-            AbilitiesText = "- You can kill players to steal their roles\n- You cannot steal roles from players who cannot kill.";
+            StartText = () => "Steal From The Killers";
+            AbilitiesText = () => "- You can kill players to steal their roles\n- You cannot steal roles from players who cannot kill.";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Thief : Colors.Neutral;
             RoleType = RoleEnum.Thief;
             RoleAlignment = RoleAlignment.NeutralBen;
@@ -26,6 +26,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             StealButton = new(this, "Steal", AbilityTypes.Direct, "ActionSecondary", Steal);
             InspectorResults = InspectorResults.BringsChaos;
             SetLists();
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         private void SetLists()
@@ -442,8 +445,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var leader = other.GetLeader();
             thief.DisableButtons();
             other.DisableButtons();
-            other.DisableArrows();
-            thief.DisableArrows();
 
             if (PlayerControl.LocalPlayer == other || PlayerControl.LocalPlayer == thief)
             {
@@ -456,7 +457,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 RoleEnum.Anarchist => new Anarchist(thief),
                 RoleEnum.Arsonist => new Arsonist(thief) { Doused = ((Arsonist)role).Doused },
-                RoleEnum.Blackmailer => new Blackmailer(thief),
+                RoleEnum.Blackmailer => new Blackmailer(thief) { BlackmailedPlayer = ((Blackmailer)role).BlackmailedPlayer },
                 RoleEnum.Bomber => new Bomber(thief),
                 RoleEnum.Camouflager => new Camouflager(thief),
                 RoleEnum.Concealer => new Concealer(thief),
@@ -473,7 +474,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 RoleEnum.Impostor => new Impostor(thief),
                 RoleEnum.Juggernaut => new Juggernaut(thief) { JuggKills = ((Juggernaut)role).JuggKills },
                 RoleEnum.Mafioso => new Mafioso(thief) { Godfather = (Godfather)leader },
-                RoleEnum.PromotedGodfather => new PromotedGodfather(thief) { Investigated = ((PromotedGodfather)role).Investigated },
+                RoleEnum.PromotedGodfather => new PromotedGodfather(thief)
+                {
+                    Investigated = ((PromotedGodfather)role).Investigated,
+                    BlackmailedPlayer = ((PromotedGodfather)role).BlackmailedPlayer
+                },
                 RoleEnum.Miner => new Miner(thief),
                 RoleEnum.Morphling => new Morphling(thief),
                 RoleEnum.Rebel => new Rebel(thief),
@@ -644,7 +649,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     RpcMurderPlayer(otherLover, guess);
             }
 
-            if (Player == PlayerControl.LocalPlayer)
+            if (Local)
             {
                 if (Player != player)
                     hudManager.Chat.AddChat(PlayerControl.LocalPlayer, $"You guessed {player.name} as {guess}!");

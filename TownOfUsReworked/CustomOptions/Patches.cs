@@ -17,7 +17,7 @@ namespace TownOfUsReworked.CustomOptions
             var options = new List<OptionBehaviour>();
             var togglePrefab = UObject.FindObjectOfType<ToggleOption>();
             var numberPrefab = UObject.FindObjectOfType<NumberOption>();
-            var stringPrefab = UObject.FindObjectOfType<StringOption>();
+            var keyValPrefab = UObject.FindObjectOfType<KeyValueOption>();
 
             if (type == MultiMenu.main)
             {
@@ -87,7 +87,7 @@ namespace TownOfUsReworked.CustomOptions
                         break;
 
                     case CustomOptionType.String:
-                        var str = UObject.Instantiate(stringPrefab, stringPrefab.transform.parent);
+                        var str = UObject.Instantiate(keyValPrefab, keyValPrefab.transform.parent);
                         option.Setting = str;
                         options.Add(str);
                         break;
@@ -219,8 +219,7 @@ namespace TownOfUsReworked.CustomOptions
                     var hatIcon = hatButton.GetChild(0);
                     var tabBackground = hatButton.GetChild(1);
 
-                    var renderer = hatIcon.GetComponent<SpriteRenderer>();
-                    renderer.sprite = AssetManager.GetSprite(GetSettingSprite(index));
+                    hatIcon.GetComponent<SpriteRenderer>().sprite = AssetManager.GetSprite(GetSettingSprite(index));
                     MenuG.Add(touSettings);
                     MenuS.Add(tabBackground.GetComponent<SpriteRenderer>());
 
@@ -289,6 +288,12 @@ namespace TownOfUsReworked.CustomOptions
             }
         }
 
+        [HarmonyPatch(typeof(GameSettingMenu), nameof(GameSettingMenu.Close))]
+        public static class OptionsMenuBehaviour_Close
+        {
+            public static void Postfix() => CustomOption.SaveSettings("LastUsedSettings");
+        }
+
         public static void ToggleButtonVoid(int id)
         {
             if (MenuG.Count <= id)
@@ -349,8 +354,8 @@ namespace TownOfUsReworked.CustomOptions
                     return;
 
                 var y = __instance.GetComponentsInChildren<OptionBehaviour>().Max(option => option.transform.localPosition.y);
-                var s = __instance.Children.Length == 1;
-                var (x, z) = (__instance.Children[s ? 0 : 1].transform.localPosition.x, __instance.Children[s ? 0 : 1].transform.localPosition.z);
+                var s = __instance.Children.Length == 1 ? 0 : 1;
+                var (x, z) = (__instance.Children[s].transform.localPosition.x, __instance.Children[s].transform.localPosition.z);
                 var i = 0;
 
                 foreach (var option in __instance.Children)
@@ -370,10 +375,10 @@ namespace TownOfUsReworked.CustomOptions
             public static bool Prefix(NumberOption __instance) => OnEnable(__instance);
         }
 
-        [HarmonyPatch(typeof(StringOption), nameof(StringOption.OnEnable))]
+        [HarmonyPatch(typeof(KeyValueOption), nameof(KeyValueOption.OnEnable))]
         public static class StringOption_OnEnable
         {
-            public static bool Prefix(StringOption __instance) => OnEnable(__instance);
+            public static bool Prefix(KeyValueOption __instance) => OnEnable(__instance);
         }
 
         [HarmonyPatch(typeof(ToggleOption), nameof(ToggleOption.Toggle))]
@@ -513,13 +518,13 @@ namespace TownOfUsReworked.CustomOptions
             }
         }
 
-        [HarmonyPatch(typeof(StringOption), nameof(StringOption.Increase))]
-        public static class StringOptionPatchIncrease
+        [HarmonyPatch(typeof(KeyValueOption), nameof(KeyValueOption.Increase))]
+        public static class KeyValueOptionPatchIncrease
         {
-            public static bool Prefix(StringOption __instance)
+            public static bool Prefix(KeyValueOption __instance)
             {
                 var option = CustomOption.AllOptions.Find(option => option.Setting == __instance);
-                // Works but may need to change to gameObject.name check
+                //Works but may need to change to gameObject.name check
 
                 if (option is CustomStringOption str)
                 {
@@ -531,10 +536,10 @@ namespace TownOfUsReworked.CustomOptions
             }
         }
 
-        [HarmonyPatch(typeof(StringOption), nameof(StringOption.Decrease))]
-        public static class StringOptionPatchDecrease
+        [HarmonyPatch(typeof(KeyValueOption), nameof(KeyValueOption.Decrease))]
+        public static class KeyValueOptionOptionPatchDecrease
         {
-            public static bool Prefix(StringOption __instance)
+            public static bool Prefix(KeyValueOption __instance)
             {
                 var option = CustomOption.AllOptions.Find(option => option.Setting == __instance);
                 //Works but may need to change to gameObject.name check
@@ -558,6 +563,7 @@ namespace TownOfUsReworked.CustomOptions
                     return;
 
                 RPC.SendRPC();
+                CustomOption.SaveSettings("LastUsedSettings");
             }
         }
 

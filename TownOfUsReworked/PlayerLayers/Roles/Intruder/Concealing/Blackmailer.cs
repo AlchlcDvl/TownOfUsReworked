@@ -12,9 +12,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Blackmailer(PlayerControl player) : base(player)
         {
             Name = "Blackmailer";
-            StartText = "You Know Their Secrets";
-            AbilitiesText = "- You can silence players to ensure they cannot hear what others say\n" + (CustomGameOptions.BMRevealed ? "- Everyone will be alerted at the start of the " +
-                "meeting that someone has been silenced " : "") + (CustomGameOptions.WhispersNotPrivate ? "\n- You can read whispers during meetings" : "") + $"\n{AbilitiesText}";
+            StartText = () => "You Know Their Secrets";
+            AbilitiesText = () => "- You can silence players to ensure they cannot hear what others say\n" + (CustomGameOptions.BMRevealed ? "- Everyone will be alerted at the start of " +
+                "the meeting that someone has been silenced " : "") + (CustomGameOptions.WhispersNotPrivate ? "\n- You can read whispers during meetings" : "") + $"\n{AbilitiesText()}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Blackmailer : Colors.Intruder;
             RoleType = RoleEnum.Blackmailer;
             RoleAlignment = RoleAlignment.IntruderConceal;
@@ -22,6 +22,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             BlackmailedPlayer = null;
             Type = LayerEnum.Blackmailer;
             BlackmailButton = new(this, "Blackmail", AbilityTypes.Direct, "Secondary", Blackmail, Exception1);
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float BlackmailTimer()

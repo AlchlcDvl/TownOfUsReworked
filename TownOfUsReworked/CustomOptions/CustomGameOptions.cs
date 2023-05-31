@@ -53,7 +53,6 @@ namespace TownOfUsReworked.CustomOptions
         //QOL Changes
         public static bool DeadSeeEverything => Generate.DeadSeeEverything.Get();
         public static bool DisableLevels => Generate.DisableLevels.Get();
-        public static bool SeeTasks => Generate.SeeTasks.Get();
         public static bool CustomEject => Generate.CustomEject.Get();
         public static bool WhiteNameplates => Generate.WhiteNameplates.Get();
         public static bool LighterDarker => Generate.LighterDarker.Get();
@@ -101,7 +100,6 @@ namespace TownOfUsReworked.CustomOptions
         //public static float OxygenTimer => Generate.OxygenTimer.Get();
 
         //Airship Settings
-        public static bool MeetingSpawnChoice => Generate.MeetingSpawnChoice.Get();
         public static bool MoveDivert => Generate.MoveDivert.Get();
         public static bool MoveFuel => Generate.MoveFuel.Get();
         public static bool MoveVitals => Generate.MoveVitals.Get();
@@ -240,6 +238,8 @@ namespace TownOfUsReworked.CustomOptions
         public static int VIPOn => (int)Generate.VIPOn.Get();
         public static int ShyOn => (int)Generate.ShyOn.Get();
         public static int IndomitableOn => (int)Generate.IndomitableOn.Get();
+        public static int AstralOn => (int)Generate.AstralOn.Get();
+        public static int YellerOn => (int)Generate.YellerOn.Get();
 
         //Crew Options
         public static float CrewVision => Generate.CrewVision.Get();
@@ -960,6 +960,7 @@ namespace TownOfUsReworked.CustomOptions
         public static bool AssassinGuessAbilities => Generate.AssassinGuessAbilities.Get();
         public static bool AssassinMultiKill => Generate.AssassinMultiKill.Get();
         public static bool AssassinateAfterVoting => Generate.AssassinateAfterVoting.Get();
+        public static bool AssassinGuessInvestigative => Generate.AssassinGuessInvestigative.Get();
         public static bool UniqueAssassin => Generate.UniqueAssassin.Get();
 
         //Underdog Settings
@@ -1126,6 +1127,14 @@ namespace TownOfUsReworked.CustomOptions
         //Shy Settings
         public static int ShyCount => (int)Generate.ShyCount.Get();
         public static bool UniqueShy => Generate.UniqueShy.Get();
+
+        //Astral Settings
+        public static int AstralCount => (int)Generate.AstralCount.Get();
+        public static bool UniqueAstral => Generate.UniqueAstral.Get();
+
+        //Yeller Settings
+        public static int YellerCount => (int)Generate.YellerCount.Get();
+        public static bool UniqueYeller => Generate.UniqueYeller.Get();
 
         //VIP Settings
         public static bool VIPKnows => Generate.VIPKnows.Get();

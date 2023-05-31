@@ -10,7 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
         public Swapper(PlayerControl player) : base(player)
         {
             Name = "Swapper";
-            TaskText = "- You can swap the votes against 2 players in meetings";
+            TaskText = () => "- You can swap the votes against 2 players in meetings";
             Color = CustomGameOptions.CustomAbilityColors ? Colors.Swapper : Colors.Ability;
             AbilityType = AbilityEnum.Swapper;
             MoarButtons = new();
@@ -18,6 +18,9 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             Swap1 = null;
             Swap2 = null;
             Type = LayerEnum.Swapper;
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public void GenButton(PlayerVoteArea voteArea, MeetingHud __instance)

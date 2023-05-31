@@ -9,13 +9,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public DateTime LastKnighted;
         public int UsesLeft;
         public bool ButtonUsable => UsesLeft > 0;
-        public bool Protected => Knighted.Count > 0 && Knighted.Any(x => Utils.PlayerById(x).Is(Faction.Crew));
+        public bool Protected => Knighted.Count > 0;
 
         public Monarch(PlayerControl player) : base(player)
         {
             Name = "Monarch";
-            StartText = "Knight Those Who You Trust";
-            AbilitiesText = $"- You can knight players\n- Knighted players will have their votes count {CustomGameOptions.KnightVoteCount + 1} times";
+            StartText = () => "Knight Those Who You Trust";
+            AbilitiesText = () => $"- You can knight players\n- Knighted players will have their votes count {CustomGameOptions.KnightVoteCount + 1} times";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Monarch : Colors.Crew;
             RoleType = RoleEnum.Monarch;
             RoleAlignment = RoleAlignment.CrewSov;
@@ -25,6 +25,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             ToBeKnighted = new();
             UsesLeft = CustomGameOptions.KnightCount;
             KnightButton = new(this, "Knight", AbilityTypes.Direct, "ActionSecondary", Knight, Exception, true);
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float KnightTimer()

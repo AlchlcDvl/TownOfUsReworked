@@ -6,11 +6,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Crewmate";
             RoleType = RoleEnum.Crewmate;
-            StartText = "Do Your Tasks";
+            StartText = () => "Do Your Tasks";
             RoleAlignment = RoleAlignment.CrewUtil;
-            Base = true;
             InspectorResults = InspectorResults.IsBasic;
             Type = LayerEnum.Crewmate;
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
     }
 }

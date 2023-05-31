@@ -12,12 +12,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleType = RoleEnum.Mystic;
             Color = CustomGameOptions.CustomCrewColors ? Colors.Mystic : Colors.Crew;
             RoleAlignment = RoleAlignment.CrewAudit;
-            StartText = "You Know When Converts Happen";
-            AbilitiesText = "- You can investigate players to see if they have been converted\n- Whenever someone has been converted, you will be alerted to it\n- When all converted" +
-                " and converters die, you will become a <color=#71368AFF>Seer</color>";
+            StartText = () => "You Know When Converts Happen";
+            AbilitiesText = () => "- You can investigate players to see if they have been converted\n- Whenever someone has been converted, you will be alerted to it\n- When all converted"
+                + " and converters die, you will become a <color=#71368AFF>Seer</color>";
             InspectorResults = InspectorResults.TracksOthers;
             Type = LayerEnum.Mystic;
-            RevealButton = new(this, "Reveal", AbilityTypes.Direct, "ActionSecondary", Reveal);
+            RevealButton = new(this, "Reveal", AbilityTypes.Direct, "ActionSecondary", Reveal, Exception);
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float RevealTimer()
@@ -61,8 +64,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (interact[3])
             {
-                if ((!RevealButton.TargetPlayer.Is(SubFaction.None) && !RevealButton.TargetPlayer.Is(RoleAlignment.NeutralNeo)) || RevealButton.TargetPlayer.IsFramed())
+                if ((!RevealButton.TargetPlayer.Is(SubFaction) && SubFaction != SubFaction.None && !RevealButton.TargetPlayer.Is(RoleAlignment.NeutralNeo)) ||
+                    RevealButton.TargetPlayer.IsFramed())
+                {
                     Utils.Flash(new(255, 0, 0, 255));
+                }
                 else
                     Utils.Flash(new(0, 255, 0, 255));
             }
@@ -72,5 +78,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             else if (interact[1])
                 LastRevealed.AddSeconds(CustomGameOptions.ProtectKCReset);
         }
+
+        public bool Exception(PlayerControl player) => player.Is(SubFaction) && SubFaction != SubFaction.None;
     }
 }

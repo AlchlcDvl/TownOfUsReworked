@@ -114,7 +114,7 @@ namespace TownOfUsReworked.Monos
                         PlayerControl.LocalPlayer.CmdReportDeadBody(null);
 
                     if (GUILayout.Button("End Meeting") && MeetingHud.Instance)
-                        PlayerControl.AllPlayerControls.ForEach(x => MeetingHud.Instance.CmdCastVote(x.PlayerId, x.PlayerId));
+                        MeetingHud.Instance.RpcClose();
 
                     if (GUILayout.Button("Kill Self"))
                         Utils.RpcMurderPlayer(PlayerControl.LocalPlayer, PlayerControl.LocalPlayer);
@@ -132,6 +132,7 @@ namespace TownOfUsReworked.Monos
                     {
                         PlayerLayer.LocalLayers.ForEach(x => Utils.LogSomething(x.Name));
                         Utils.LogSomething("Is Dead - " + PlayerControl.LocalPlayer.Data.IsDead);
+                        Utils.LogSomething("Location - " + PlayerControl.LocalPlayer.transform.position);
                     }
                 }
 
@@ -168,7 +169,7 @@ namespace TownOfUsReworked.Monos
             if (Input.GetKeyDown(KeyCode.F1))
             {
                 TestWindow.Enabled = !TestWindow.Enabled;
-                SettingsPatches.PresetButton.LoadPreset("LastUsed", true);
+                SettingsPatches.PresetButton.LoadPreset("Last Used", true);
 
                 if (!TestWindow.Enabled)
                 {

@@ -14,8 +14,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Drunkard(PlayerControl player) : base(player)
         {
             Name = "Drunkard";
-            StartText = "*Burp*";
-            AbilitiesText = "- You can confuse a player\n- Confused players will have their controls reverse\n- With the Chaos Drive, you reverse everyone's controls";
+            StartText = () => "*Burp*";
+            AbilitiesText = () => "- You can confuse a player\n- Confused players will have their controls reverse\n- With the Chaos Drive, you reverse everyone's controls";
             Color = CustomGameOptions.CustomSynColors ? Colors.Drunkard : Colors.Syndicate;
             RoleType = RoleEnum.Drunkard;
             RoleAlignment = RoleAlignment.SyndicateDisrup;
@@ -24,6 +24,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Type = LayerEnum.Drunkard;
             ConfuseButton = new(this, "Confuse", AbilityTypes.Effect, "Secondary", HitConfuse);
             InspectorResults = InspectorResults.HindersOthers;
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public void Confuse()

@@ -21,7 +21,7 @@ namespace TownOfUsReworked.Objects
             AllItems.Add(this);
         }
 
-        public void Destroy()
+        public void Destroy(bool remove = true)
         {
             if (Item == null)
                 return;
@@ -29,7 +29,9 @@ namespace TownOfUsReworked.Objects
             Item.SetActive(false);
             Item.Destroy();
             Stop();
-            AllItems.Remove(this);
+
+            if (remove)
+                AllItems.Remove(this);
         }
 
         public virtual IEnumerator Timer() => null;
@@ -41,7 +43,7 @@ namespace TownOfUsReworked.Objects
         public static void DestroyAll()
         {
             foreach (var pile in AllItems)
-                pile.Destroy();
+                pile.Destroy(false);
 
             AllItems.Clear();
         }

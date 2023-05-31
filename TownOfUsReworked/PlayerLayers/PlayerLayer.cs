@@ -13,6 +13,8 @@ namespace TownOfUsReworked.PlayerLayers
         public AbilityEnum AbilityType = AbilityEnum.None;
         public LayerEnum Type = LayerEnum.None;
 
+        public bool Local => Player == PlayerControl.LocalPlayer;
+
         public bool IsBlocked;
 
         public static bool NobodyWins;
@@ -138,8 +140,8 @@ namespace TownOfUsReworked.PlayerLayers
 
         public PlayerControl Player;
 
-        public bool IsDead => Player != null && Player.Data.IsDead;
-        public bool Disconnected => Player != null && Player.Data.Disconnected;
+        public bool IsDead => Player.Data.IsDead;
+        public bool Disconnected => Player.Data.Disconnected;
 
         public string PlayerName => Player?.Data.PlayerName;
         public byte PlayerId => Player.PlayerId;
@@ -165,29 +167,32 @@ namespace TownOfUsReworked.PlayerLayers
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.EndGame();
                 }
-                else if (Type == LayerEnum.Jester && ((Jester)(Role)this).VotedOut)
+                else if (LayerType == PlayerLayerEnum.Role && ((Role)this).RoleAlignment == RoleAlignment.NeutralEvil && CustomGameOptions.NeutralEvilsEndGame)
                 {
-                    Role.JesterWins = true;
-                    Winner = true;
-                    Utils.EndGame();
-                }
-                else if (Type == LayerEnum.Executioner && ((Executioner)(Role)this).TargetVotedOut)
-                {
-                    Role.ExecutionerWins = true;
-                    Winner = true;
-                    Utils.EndGame();
-                }
-                else if (Type == LayerEnum.Actor && ((Actor)(Role)this).Guessed)
-                {
-                    Role.ActorWins = true;
-                    Winner = true;
-                    Utils.EndGame();
-                }
-                else if (Type == LayerEnum.Troll && ((Troll)(Role)this).Killed)
-                {
-                    Role.TrollWins = true;
-                    Winner = true;
-                    Utils.EndGame();
+                    if (Type == LayerEnum.Jester && ((Jester)(Role)this).VotedOut)
+                    {
+                        Role.JesterWins = true;
+                        Winner = true;
+                        Utils.EndGame();
+                    }
+                    else if (Type == LayerEnum.Executioner && ((Executioner)(Role)this).TargetVotedOut)
+                    {
+                        Role.ExecutionerWins = true;
+                        Winner = true;
+                        Utils.EndGame();
+                    }
+                    else if (Type == LayerEnum.Actor && ((Actor)(Role)this).Guessed)
+                    {
+                        Role.ActorWins = true;
+                        Winner = true;
+                        Utils.EndGame();
+                    }
+                    else if (Type == LayerEnum.Troll && ((Troll)(Role)this).Killed)
+                    {
+                        Role.TrollWins = true;
+                        Winner = true;
+                        Utils.EndGame();
+                    }
                 }
 
                 return;
@@ -465,6 +470,8 @@ namespace TownOfUsReworked.PlayerLayers
         }
 
         public override int GetHashCode() => HashCode.Combine(Player, (int)Type);
+
+        public override string ToString() => Name;
 
         public static void DeleteAll()
         {

@@ -17,18 +17,23 @@ namespace TownOfUsReworked.Custom
         public CustomArrow(PlayerControl owner, UColor color, float interval = 0f)
         {
             Owner = owner;
+            Interval = interval;
+            ArrowColor = color;
+            _time = DateTime.UnixEpoch;
+            Instantiate();
+            AllArrows.Add(this);
+        }
+
+        private void Instantiate()
+        {
             ArrowObj = new("CustomArrow") { layer = 5 };
             ArrowObj.transform.SetParent(Owner.gameObject.transform);
             Arrow = ArrowObj.AddComponent<ArrowBehaviour>();
             Render = ArrowObj.AddComponent<SpriteRenderer>();
             Render.sprite = AssetManager.GetSprite("Arrow");
-            Render.color = color;
+            Render.color = ArrowColor;
             Arrow.image = Render;
             Arrow.target = Owner.transform.position;
-            Interval = interval;
-            ArrowColor = color;
-            _time = DateTime.UnixEpoch;
-            AllArrows.Add(this);
         }
 
         public void NewSprite(string sprite) => Arrow.image.sprite = AssetManager.GetSprite(sprite);
@@ -61,29 +66,10 @@ namespace TownOfUsReworked.Custom
             }
         }
 
-        public void Disable()
+        public void Disable() => Destroy(false);
+
+        public void Destroy(bool remove = true)
         {
-            ArrowObj.SetActive(false);
-            Arrow.gameObject.SetActive(false);
-            Arrow.target = default;
-
-            if (MapBehaviour.Instance)
-                Point.gameObject.SetActive(false);
-        }
-
-        public void Enable()
-        {
-            ArrowObj.SetActive(true);
-            Arrow.gameObject.SetActive(true);
-            Arrow.target = Target;
-
-            if (MapBehaviour.Instance)
-                Point.gameObject.SetActive(true);
-        }
-
-        public void Destroy()
-        {
-            Disable();
             ArrowObj.Destroy();
             Arrow.Destroy();
             Render.Destroy();
@@ -92,8 +78,12 @@ namespace TownOfUsReworked.Custom
             Arrow = null;
             Render = null;
             Point = null;
-            AllArrows.Remove(this);
+
+            if (remove)
+                AllArrows.Remove(this);
         }
+
+        public void Enable() => Instantiate();
 
         public void UpdateArrowBlip(MapBehaviour __instance)
         {

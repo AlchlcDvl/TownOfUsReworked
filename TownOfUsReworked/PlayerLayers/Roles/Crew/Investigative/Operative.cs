@@ -13,9 +13,9 @@
         public Operative(PlayerControl player) : base(player)
         {
             Name = "Operative";
-            StartText = "Detect Which Roles Are Here";
-            AbilitiesText = "- You can place bugs around the map\n- Upon triggering the bugs, the player's role will be included in a list to be shown in the next meeting\n- " +
-                "You can see which colors are where on the admin table\n- On Vitals, the time of death for each player will be shown";
+            StartText = () => "Detect Which Roles Are Here";
+            AbilitiesText = () => "- You can place bugs around the map\n- Upon triggering the bugs, the player's role will be included in a list to be shown in the next meeting\n- You can"
+                + "see which colors are where on the admin table\n- On Vitals, the time of death for each player will be shown";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Operative : Colors.Crew;
             RoleType = RoleEnum.Operative;
             BuggedPlayers = new();
@@ -26,6 +26,9 @@
             PlayerNumbers = new();
             Type = LayerEnum.Operative;
             BugButton = new(this, "Bug", AbilityTypes.Effect, "ActionSecondary", PlaceBug, true);
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public override void OnLobby()

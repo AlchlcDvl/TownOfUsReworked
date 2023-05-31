@@ -31,13 +31,18 @@ namespace TownOfUsReworked.CustomOptions
 
         public override string ToString() => Format(Value);
 
-        public virtual void OptionCreated() => Setting.name = Setting.gameObject.name = Name;
+        public virtual void OptionCreated()
+        {
+            Setting.name = Setting.gameObject.name = Name;
+            Setting.Title = (StringNames)(999000 - ID);
+            Setting.OnValueChanged = new Action<OptionBehaviour>(_ => {});
+        }
 
         public void Set(object value)
         {
             Value = value;
 
-            if (Setting != null && AmongUsClient.Instance.AmHost)
+            if (Setting && AmongUsClient.Instance.AmHost)
                 RPC.SendRPC(this);
 
             if (Setting is ToggleOption toggle)
@@ -51,17 +56,39 @@ namespace TownOfUsReworked.CustomOptions
             else if (Setting is NumberOption number)
             {
                 var newValue = (float)Value;
-
                 number.Value = number.oldValue = newValue;
                 number.ValueText.text = ToString();
             }
-            else if (Setting is StringOption str)
+            else if (Setting is KeyValueOption str)
             {
                 var newValue = (int)Value;
-
-                str.Value = str.oldValue = newValue;
+                str.Selected = str.oldValue = newValue;
                 str.ValueText.text = ToString();
             }
+        }
+
+        public static void SaveSettings(string fileName)
+        {
+            var builder = new StringBuilder();
+
+            foreach (var option in AllOptions)
+            {
+                if (option.Type is CustomOptionType.Button or CustomOptionType.Header or CustomOptionType.Nested)
+                    continue;
+
+                builder.AppendLine(option.Name);
+                builder.AppendLine(option.Value.ToString());
+            }
+
+            var text = Path.Combine(Application.persistentDataPath, $"{fileName}-temp");
+
+            try
+            {
+                File.WriteAllText(text, builder.ToString());
+                var text2 = Path.Combine(Application.persistentDataPath, fileName);
+                File.Delete(text2);
+                File.Move(text, text2);
+            } catch {}
         }
     }
 }

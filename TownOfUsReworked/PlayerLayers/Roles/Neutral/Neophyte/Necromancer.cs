@@ -22,13 +22,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Necromancer(PlayerControl player) : base(player)
         {
             Name = "Necromancer";
-            StartText = "Resurrect The Dead Into Doing Your Bidding";
-            AbilitiesText = "- You can resurrect a dead body and bring them into the <color=#E6108AFF>Reanimated</color>\n- You can kill players to speed up the process";
-            Objectives = "- Resurrect or kill anyone who can oppose the <color=#E6108AFF>Reanimated</color>";
+            StartText = () => "Resurrect The Dead Into Doing Your Bidding";
+            AbilitiesText = () => "- You can resurrect a dead body and bring them into the <color=#E6108AFF>Reanimated</color>\n- You can kill players to speed up the process";
+            Objectives = () => "- Resurrect or kill anyone who can oppose the <color=#E6108AFF>Reanimated</color>";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Necromancer : Colors.Neutral;
             RoleType = RoleEnum.Necromancer;
             RoleAlignment = RoleAlignment.NeutralNeo;
-            Objectives = "- Resurrect the dead into helping you gain control of the crew";
+            Objectives = () => "- Resurrect the dead into helping you gain control of the crew";
             SubFaction = SubFaction.Reanimated;
             SubFactionColor = Colors.Reanimated;
             ResurrectUsesLeft = CustomGameOptions.ResurrectCount;
@@ -40,6 +40,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             ResurrectButton = new(this, "Ressurect", AbilityTypes.Dead, "ActionSecondary", HitResurrect, true);
             KillButton = new(this, "NecroKill", AbilityTypes.Direct, "Secondary", Kill, Exception, true);
             InspectorResults = InspectorResults.PreservesLife;
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float ResurrectTimer()

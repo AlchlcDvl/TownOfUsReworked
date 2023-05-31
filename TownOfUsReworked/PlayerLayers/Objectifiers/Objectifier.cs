@@ -26,7 +26,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         }
 
         public string Symbol = "φ";
-        public string TaskText = "- None";
+        public Func<string> TaskText = () => "- None";
         public bool Hidden;
 
         public string ColoredSymbol => $"{ColorString}{Symbol}</color>";

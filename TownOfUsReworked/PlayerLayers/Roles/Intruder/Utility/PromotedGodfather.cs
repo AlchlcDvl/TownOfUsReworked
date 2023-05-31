@@ -6,14 +6,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "PromotedGodfather";
             RoleType = RoleEnum.PromotedGodfather;
-            StartText = "Promote Your Fellow <color=#FF0000FF>Intruders</color> To Do Better";
-            AbilitiesText = $"- You have succeeded the former <color=#404C08FF>Godfather</color> and have a shorter cooldown on your former role's abilities\n{FormerRole?.AbilitiesText}" +
-                $"\n{AbilitiesText}";
+            StartText = () => "Promote Your Fellow <color=#FF0000FF>Intruders</color> To Do Better";
+            AbilitiesText = () => "- You have succeeded the former <color=#404C08FF>Godfather</color> and have a shorter cooldown on your former role's abilities\n" +
+                $"{FormerRole?.AbilitiesText()}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Godfather : Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderSupport;
             BlockMenu = new(Player, ConsClick, Exception1);
             Type = LayerEnum.PromotedGodfather;
-            TeleportPoint = new(0, 0, 0);
+            TeleportPoint = Vector3.zero;
             Investigated = new();
             DisguisePlayer = null;
             DisguisedPlayer = null;
@@ -42,6 +42,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             MarkButton = new(this, "Mark", AbilityTypes.Effect, "Secondary", Mark);
             TeleportButton = new(this, "Teleport", AbilityTypes.Effect, "Secondary", Teleport);
             InspectorResults = InspectorResults.LeadsTheGroup;
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         //PromotedGodfather Stuff
@@ -87,7 +90,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             CanPlace = hits.Count == 0 && Player.moveable && !ModCompatibility.GetPlayerElevator(Player).Item1;
             CanMark = CanPlace && TeleportPoint != Player.transform.position;
             MarkButton.Update("MARK", MarkTimer(), CustomGameOptions.MarkCooldown, CanMark, IsTele);
-            TeleportButton.Update("TELEPORT", TeleportTimer(), CustomGameOptions.TeleportCd, true, TeleportPoint != new Vector3(0, 0, 0) && IsTele);
+            TeleportButton.Update("TELEPORT", TeleportTimer(), CustomGameOptions.TeleportCd, true, TeleportPoint != Vector3.zero && IsTele);
             MineButton.Update("MINE", MineTimer(), CustomGameOptions.MineCd, CanPlace, IsMiner);
             BlockButton.Update(flag ? "SET TARGET" : "ROLEBLOCK", RoleblockTimer(), CustomGameOptions.ConsRoleblockCooldown, OnEffect, TimeRemaining,
                 CustomGameOptions.ConsRoleblockDuration, true, IsCons);
@@ -822,7 +825,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         //Teleporter Stuff
         public CustomButton TeleportButton;
         public DateTime LastTeleport;
-        public Vector3 TeleportPoint = new(0, 0, 0);
+        public Vector3 TeleportPoint = Vector3.zero;
         public DateTime LastMarked;
         public CustomButton MarkButton;
         public bool CanMark;

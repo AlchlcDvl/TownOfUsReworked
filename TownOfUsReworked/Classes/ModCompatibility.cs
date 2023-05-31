@@ -77,7 +77,7 @@
         private static Type SubmarineElevator;
         private static MethodInfo GetInElevator;
         private static MethodInfo GetMovementStageFromTime;
-        private static FieldInfo getSubElevatorSystem;
+        private static FieldInfo GetSubElevatorSystem;
 
         private static Type SubmarineElevatorSystem;
         private static FieldInfo UpperDeckIsTargetFloor;
@@ -85,9 +85,11 @@
         private static FieldInfo SubmergedInstance;
         private static FieldInfo SubmergedElevators;
 
+        private readonly static Harmony SubHarmony = new("tourew.subcompat.patch");
+
         public static void InitializeSubmerged()
         {
-            SubLoaded = IL2CPPChainloader.Instance.Plugins.TryGetValue(SUBMERGED_GUID, out PluginInfo subPlugin);
+            SubLoaded = IL2CPPChainloader.Instance.Plugins.TryGetValue(SUBMERGED_GUID, out var subPlugin);
 
             if (!SubLoaded)
                 return;
@@ -133,49 +135,13 @@
             SubmarineElevator = SubTypes.First(t => t.Name == "SubmarineElevator");
             GetInElevator = AccessTools.Method(SubmarineElevator, "GetInElevator", new[] { typeof(PlayerControl) });
             GetMovementStageFromTime = AccessTools.Method(SubmarineElevator, "GetMovementStageFromTime");
-            getSubElevatorSystem = AccessTools.Field(SubmarineElevator, "System");
+            GetSubElevatorSystem = AccessTools.Field(SubmarineElevator, "System");
 
             SubmarineElevatorSystem = SubTypes.First(t => t.Name == "SubmarineElevatorSystem");
             UpperDeckIsTargetFloor = AccessTools.Field(SubmarineElevatorSystem, "UpperDeckIsTargetFloor");
 
             //I tried patching normally but it would never work
-            Harmony _harmony = new("tourew.subcompat.patch");
-            var exilerolechangePostfix = SymbolExtensions.GetMethodInfo(() => ExileRoleChangePostfix());
-            _harmony.Patch(SubmergedExileWrapUpMethod, null, new(exilerolechangePostfix));
-        }
-
-        public const string LI_GUID = "com.DigiWorm.LevelImposter";
-        public const ShipStatus.MapType LI_MAP_TYPE = (ShipStatus.MapType)6;
-
-        public static SemanticVersioning.Version LIVersion { get; private set; }
-        public static bool LILoaded { get; private set; }
-        public static BasePlugin LIPlugin { get; private set; }
-        public static Assembly LIAssembly { get; private set; }
-        public static Type[] LITypes { get; private set; }
-        public static Dictionary<string, Type> LIInjectedTypes { get; private set; }
-
-        public static bool IsLIEnabled => LILoaded && ShipStatus.Instance && ShipStatus.Instance.Type == LI_MAP_TYPE;
-
-        public static void InitializeLevelImpostor()
-        {
-            LILoaded = IL2CPPChainloader.Instance.Plugins.TryGetValue(LI_GUID, out PluginInfo liPlugin);
-
-            if (!LILoaded)
-                return;
-
-            LIPlugin = liPlugin!.Instance as BasePlugin;
-            LIVersion = liPlugin.Metadata.Version;
-            Utils.LogSomething(LIVersion);
-
-            LIAssembly = SubPlugin!.GetType().Assembly;
-            LITypes = AccessTools.GetTypesFromAssembly(LIAssembly);
-
-            LIInjectedTypes = (Dictionary<string, Type>)AccessTools.PropertyGetter(Array.Find(SubTypes, t => t.Name == "ComponentExtensions"), "RegisteredTypes").Invoke(null,
-                Array.Empty<object>());
-
-            /*//I tried patching normally but it would never work
-            Harmony _harmony = new("tourew.licompat.patch");
-            _harmony.Patch(SubmergedExileWrapUpMethod, null, new(exilerolechangePostfix));*/
+            SubHarmony.Patch(SubmergedExileWrapUpMethod, null, new(SymbolExtensions.GetMethodInfo(() => ExileRoleChangePostfix())));
         }
 
         public static void CheckOutOfBoundsElevator(PlayerControl player)
@@ -188,11 +154,12 @@
             if (!elevator.Item1)
                 return;
 
-            var CurrentFloor = (bool)UpperDeckIsTargetFloor.GetValue(getSubElevatorSystem.GetValue(elevator.Item2)); //true is top, false is bottom
-            var PlayerFloor = player.transform.position.y > -7f;
+            //True is top, false is bottom
+            var currentFloor = (bool)UpperDeckIsTargetFloor.GetValue(GetSubElevatorSystem.GetValue(elevator.Item2));
+            var playerFloor = player.transform.position.y > -7f;
 
-            if (CurrentFloor != PlayerFloor)
-                ChangeFloor(CurrentFloor);
+            if (currentFloor != playerFloor)
+                ChangeFloor(currentFloor);
         }
 
         public static void MoveDeadPlayerElevator(PlayerControl player)
@@ -205,13 +172,12 @@
             if (!elevator.Item1)
                 return;
 
-            var MovementStage = (int)GetMovementStageFromTime.Invoke(elevator.Item2, null);
-
-            if (MovementStage >= 5)
+            if ((int)GetMovementStageFromTime.Invoke(elevator.Item2, null) >= 5)
             {
                 //Fade to clear
-                var topfloortarget = (bool)UpperDeckIsTargetFloor.GetValue(getSubElevatorSystem.GetValue(elevator.Item2)); //true is top, false is bottom
-                var topintendedtarget = player.transform.position.y > -7f; //true is top, false is bottom
+                //True is top, false is bottom
+                var topfloortarget = (bool)UpperDeckIsTargetFloor.GetValue(GetSubElevatorSystem.GetValue(elevator.Item2));
+                var topintendedtarget = player.transform.position.y > -7f;
 
                 if (topfloortarget != topintendedtarget)
                     ChangeFloor(!topintendedtarget);
@@ -280,8 +246,7 @@
                 ChangeFloor(startingVent.transform.position.y > -7f);
                 var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPos, SendOption.Reliable);
                 writer2.Write(PlayerControl.LocalPlayer.PlayerId);
-                writer2.Write(startingVent.transform.position.x);
-                writer2.Write(startingVent.transform.position.y);
+                writer2.Write(startingVent.transform.position);
                 AmongUsClient.Instance.FinishRpcImmediately(writer2);
                 PlayerControl.LocalPlayer.NetTransform.RpcSnapTo(new(startingVent.transform.position.x, startingVent.transform.position.y + 0.3636f));
                 PlayerControl.LocalPlayer.MyPhysics.RpcEnterVent(startingVent.Id);
@@ -356,5 +321,86 @@
                 RepairDamageMethod.Invoke(SubmarineOxygenSystemInstanceField.GetValue(null), new object[] { PlayerControl.LocalPlayer, 64 });
             } catch (NullReferenceException) {}
         }
+
+        public const string LI_GUID = "com.DigiWorm.LevelImposter";
+        public const ShipStatus.MapType LI_MAP_TYPE = (ShipStatus.MapType)6;
+
+        public static SemanticVersioning.Version LIVersion { get; private set; }
+        public static bool LILoaded { get; private set; }
+        public static BasePlugin LIPlugin { get; private set; }
+        /*public static Assembly LIAssembly { get; private set; }
+        public static Type[] LITypes { get; private set; }
+        public static Dictionary<string, Type> LIInjectedTypes { get; private set; }*/
+
+        public static bool IsLIEnabled => LILoaded && ShipStatus.Instance && ShipStatus.Instance.Type == LI_MAP_TYPE;
+
+        /*private static MonoBehaviour _liStatus;
+
+        public static MonoBehaviour LevelImpostorStatus
+        {
+            get
+            {
+                if (!LILoaded)
+                    return null;
+
+                if (_liStatus?.WasCollected == true || !_liStatus || _liStatus == null)
+                {
+                    if (ShipStatus.Instance?.WasCollected == true || !ShipStatus.Instance || ShipStatus.Instance == null)
+                        return _liStatus = null;
+                    else if (ShipStatus.Instance.Type == LI_MAP_TYPE)
+                        return _liStatus = ShipStatus.Instance.GetComponent(Il2CppType.From(LIStatusType))?.TryCast(LIStatusType) as MonoBehaviour;
+                    else
+                        return _liStatus = null;
+                }
+                else
+                    return _liStatus;
+            }
+        }
+
+        private static Type LIStatusType;
+
+        private static Type ChangeMapsType;
+        private static MethodInfo ChangeMapsMethod;
+
+        private readonly static Harmony LIHarmony = new("tourew.licompat.patch");*/
+
+        public static void InitializeLevelImpostor()
+        {
+            LILoaded = IL2CPPChainloader.Instance.Plugins.TryGetValue(LI_GUID, out var liPlugin);
+
+            if (!LILoaded)
+                return;
+
+            LIPlugin = liPlugin!.Instance as BasePlugin;
+            LIVersion = liPlugin.Metadata.Version;
+            Utils.LogSomething(LIVersion);
+
+            /*LIAssembly = SubPlugin!.GetType().Assembly;
+            LITypes = AccessTools.GetTypesFromAssembly(LIAssembly);
+
+            LIInjectedTypes = (Dictionary<string, Type>)AccessTools.PropertyGetter(Array.Find(LITypes, t => t.Name == "ComponentExtensions"), "RegisteredTypes").Invoke(null,
+                Array.Empty<object>());
+
+            LIStatusType = LITypes.First(t => t.Name == "LIShipStatus");
+
+            ChangeMapsType = LITypes.First(t => t.Name == "MapNameValuePatch");
+            ChangeMapsMethod = AccessTools.Method(ChangeMapsType, "IncrementFix");
+
+            //I have no idea what I'm doing lmao
+            //LIHarmony.Patch(ChangeMapsMethod, null, new(SymbolExtensions.GetMethodInfo(() => SetLIMap())));*/
+        }
+
+        /*public static MonoBehaviour AddLevelImpostorComponent(this GameObject obj, string typeName)
+        {
+            if (!LILoaded)
+                return obj.AddComponent<MissingLIBehaviour>();
+
+            var validType = LIInjectedTypes.TryGetValue(typeName, out Type type);
+            return validType ? obj.AddComponent(Il2CppType.From(type)).TryCast<MonoBehaviour>() : obj.AddComponent<MissingLIBehaviour>();
+        }*/
+
+        public static void SetLIMap() => Generate.Map.Set(Generate.Map.Values.Length - 1);
+
+        public const string RD_GUID = "gg.reactor.debugger";
     }
 }

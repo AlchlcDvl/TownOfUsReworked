@@ -14,9 +14,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Consort";
             RoleType = RoleEnum.Consort;
-            StartText = "Roleblock The <color=#8CFFFFFF>Crew</color> From Progressing";
-            AbilitiesText = "- You can seduce players\n- Seduction blocks your target from being able to use their abilities for a short while\n- You are immune to blocks\n" +
-                $"- If you block a <color=#336EFFFF>Serial Killer</color>, they will be forced to kill you\n{AbilitiesText}";
+            StartText = () => "Roleblock The <color=#8CFFFFFF>Crew</color> From Progressing";
+            AbilitiesText = () => "- You can seduce players\n- Seduction blocks your target from being able to use their abilities for a short while\n- You are immune to blocks\n" +
+                $"- If you block a <color=#336EFFFF>Serial Killer</color>, they will be forced to kill you\n{AbilitiesText()}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Consort : Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderSupport;
             RoleBlockImmune = true;
@@ -25,6 +25,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             BlockTarget = null;
             BlockButton = new(this, "ConsortRoleblock", AbilityTypes.Effect, "Secondary", Roleblock);
             InspectorResults = InspectorResults.HindersOthers;
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public void UnBlock()

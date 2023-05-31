@@ -15,12 +15,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleType = RoleEnum.Seer;
             Color = CustomGameOptions.CustomCrewColors ? Colors.Seer : Colors.Crew;
             RoleAlignment = RoleAlignment.CrewInvest;
-            AbilitiesText = "- You can investigate players to see if their roles have changed\n- If all players whose roles changed have died, you will become a <color=#FFCC80FF>" +
+            AbilitiesText = () => "- You can investigate players to see if their roles have changed\n- If all players whose roles changed have died, you will become a <color=#FFCC80FF>" +
                 "Sheriff</color>";
-            StartText = "You Can See People's Histories";
+            StartText = () => "You Can See People's Histories";
             InspectorResults = InspectorResults.GainsInfo;
             Type = LayerEnum.Seer;
             SeerButton = new(this, "Seer", AbilityTypes.Direct, "ActionSecondary", See);
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float SeerTimer()

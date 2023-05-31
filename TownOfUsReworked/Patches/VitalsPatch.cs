@@ -1,12 +1,3 @@
-using System;
-using System.Linq;
-using HarmonyLib;
-using UnityEngine;
-using TownOfUsReworked.Data;
-using TownOfUsReworked.Extensions;
-using TownOfUsReworked.PlayerLayers.Roles;
-using TownOfUsReworked.CustomOptions;
-
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch(typeof(VitalsMinigame), nameof(VitalsMinigame.Update))]

@@ -22,9 +22,9 @@ namespace TownOfUsReworked.Patches
     {
         public static void Postfix(Vent __instance, [HarmonyArgument(1)] ref bool mainTarget)
         {
-            var active = PlayerControl.LocalPlayer != null && !MeetingHud.Instance && PlayerControl.LocalPlayer.CanVent();
+            var active = PlayerControl.LocalPlayer && !MeetingHud.Instance && PlayerControl.LocalPlayer.CanVent();
 
-            if (Role.LocalRole == null || !active)
+            if (!Role.LocalRole || !active)
                 return;
 
             __instance.myRend.material.SetColor("_OutlineColor", Role.LocalRole.Color);
@@ -110,11 +110,30 @@ namespace TownOfUsReworked.Patches
         public static void Postfix(VitalsMinigame __instance) => __instance.gameObject.AddComponent<VitalsPagingBehaviour>().vitalsMinigame = __instance;
     }
 
-    [HarmonyPatch(typeof(MapBehaviour), nameof(MapBehaviour.ShowSabotageMap))]
-    public static class Sabotage
+    [HarmonyPatch(typeof(MapBehaviour), nameof(MapBehaviour.Show))]
+    public static class OpenMapMenuPatch
     {
-        public static bool Prefix() => (PlayerControl.LocalPlayer.Is(Faction.Intruder) && CustomGameOptions.IntrudersCanSabotage) || (PlayerControl.LocalPlayer.Is(Faction.Syndicate) &&
-            CustomGameOptions.AltImps);
+        public static bool Prefix(MapBehaviour __instance, ref MapOptions opts)
+        {
+            var notmodified = true;
+            var player = PlayerControl.LocalPlayer;
+
+            if (opts.Mode is not MapOptions.Modes.None and not MapOptions.Modes.CountOverlay)
+            {
+                if (((player.Is(Faction.Syndicate) && CustomGameOptions.AltImps) || player.Is(Faction.Intruder)) && CustomGameOptions.IntrudersCanSabotage)
+                    __instance.ShowSabotageMap();
+                else
+                    __instance.ShowNormalMap();
+
+                __instance.taskOverlay.gameObject.SetActive(player.Is(Faction.Crew));
+                notmodified = false;
+            }
+
+            foreach (var layer in PlayerLayer.LocalLayers)
+                layer?.UpdateMap(__instance);
+
+            return notmodified;
+        }
     }
 
     [HarmonyPatch(typeof(GameData), nameof(GameData.HandleDisconnect), typeof(PlayerControl), typeof(DisconnectReasons))]
@@ -207,5 +226,37 @@ namespace TownOfUsReworked.Patches
             ControllerManager.Instance.OpenOverlayMenu(__instance.name, __instance.BackButton, __instance.DefaultButtonSelected, list2);
             return false;
         }
+    }
+
+    [HarmonyPatch(typeof(SpawnInMinigame), nameof(SpawnInMinigame.Close))]
+    public static class AirshipSpawnInPatch
+    {
+        public static void Postfix()
+        {
+            if (PlayerControl.LocalPlayer.Is(ModifierEnum.Astral) && Modifier.GetModifier<Astral>(PlayerControl.LocalPlayer).LastPosition != Vector3.zero)
+                Modifier.GetModifier<Astral>(PlayerControl.LocalPlayer).SetPosition();
+        }
+    }
+
+    [HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.ExitGame))]
+    public static class ExitGamePatch
+    {
+        public static void Prefix() => CustomOption.SaveSettings("LastUsedSettings");
+    }
+
+    [HarmonyPatch(typeof(PlayerPurchasesData), nameof(PlayerPurchasesData.GetPurchase))]
+    public static class GetPurchasePatch
+    {
+        public static bool Prefix(out bool __result)
+        {
+            __result = true;
+            return false;
+        }
+    }
+
+    [HarmonyPatch(typeof(PlayerPurchasesData), nameof(PlayerPurchasesData.SetPurchased))]
+    public static class SetPurchasedPatch
+    {
+        public static bool Prefix() => false;
     }
 }

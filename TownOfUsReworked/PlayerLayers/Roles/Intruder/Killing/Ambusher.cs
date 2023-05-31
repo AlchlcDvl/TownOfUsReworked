@@ -12,8 +12,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Ambusher(PlayerControl player) : base(player)
         {
             Name = "Ambusher";
-            StartText = "Spook The <color=#8CFFFFFF>Crew</color>";
-            AbilitiesText = $"- You can ambush players\n- Ambushed players will be forced to be on alert and kill whoever interacts with them\n{AbilitiesText}";
+            StartText = () => "Spook The <color=#8CFFFFFF>Crew</color>";
+            AbilitiesText = () => $"- You can ambush players\n- Ambushed players will be forced to be on alert and kill whoever interacts with them\n{AbilitiesText()}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Ambusher : Colors.Intruder;
             RoleType = RoleEnum.Ambusher;
             RoleAlignment = RoleAlignment.IntruderKill;
@@ -21,6 +21,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Type = LayerEnum.Ambusher;
             AmbushedPlayer = null;
             AmbushButton = new(this, "Ambush", AbilityTypes.Direct, "Secondary", HitAmbush, Exception1);
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float AmbushTimer()

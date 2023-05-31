@@ -12,13 +12,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Ghoul";
             RoleType = RoleEnum.Ghoul;
-            StartText = "BOO!";
-            AbilitiesText = "- You can mark a player for death every round\n- Marked players will be announced to all players and will die at the end of the next meeting if you are not" +
-                " clicked";
+            StartText = () => "BOO!";
+            AbilitiesText = () => "- You can mark a player for death every round\n- Marked players will be announced to all players and will die at the end of the next meeting if you are "
+                + "not clicked";
             RoleAlignment = RoleAlignment.IntruderUtil;
             InspectorResults = InspectorResults.Ghostly;
             Color = CustomGameOptions.CustomIntColors ? Colors.Ghoul : Colors.Intruder;
             MarkedPlayer = null;
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
+
             Type = LayerEnum.Ghoul;
             MarkButton = new(this, "GhoulMark", AbilityTypes.Direct, "ActionSecondary", Mark, Exception1, false, true);
         }
@@ -48,16 +52,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             color.a = Mathf.Lerp(color.a, 0, distPercent);
 
             if (Player.GetCustomOutfitType() != CustomPlayerOutfitType.PlayerNameOnly)
-            {
-                Player.SetOutfit(CustomPlayerOutfitType.PlayerNameOnly, new GameData.PlayerOutfit()
-                {
-                    ColorId = Player.GetDefaultOutfit().ColorId,
-                    HatId = "",
-                    SkinId = "",
-                    VisorId = "",
-                    PlayerName = ""
-                });
-            }
+                Player.SetOutfit(CustomPlayerOutfitType.PlayerNameOnly, Utils.SpookyOutfit(Player));
 
             Player.MyRend().color = color;
             Player.NameText().color = new(0f, 0f, 0f, 0f);

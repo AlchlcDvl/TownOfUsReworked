@@ -12,8 +12,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Consigliere(PlayerControl player) : base(player)
         {
             Name = "Consigliere";
-            StartText = "See The <color=#8CFFFFFF>Crew</color> For Who They Really Are";
-            AbilitiesText = $"- You can reveal a player's {role}{CanAssassinate}\n{AbilitiesText}";
+            StartText = () => "See The <color=#8CFFFFFF>Crew</color> For Who They Really Are";
+            AbilitiesText = () => $"- You can reveal a player's {role}{CanAssassinate}\n{AbilitiesText()}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Consigliere : Colors.Intruder;
             RoleType = RoleEnum.Consigliere;
             RoleAlignment = RoleAlignment.IntruderSupport;
@@ -21,6 +21,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Type = LayerEnum.Consigliere;
             InvestigateButton = new(this, "Investigate", AbilityTypes.Direct, "Secondary", Investigate, Exception1);
             InspectorResults = InspectorResults.GainsInfo;
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float ConsigliereTimer()

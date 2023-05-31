@@ -3,8 +3,8 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
     public class Rivals : Objectifier
     {
         public PlayerControl OtherRival;
-        public bool RivalDead => OtherRival?.Data?.IsDead == true || OtherRival?.Data?.Disconnected == true;
-        public bool IsDeadRival => IsDead || Disconnected;
+        public bool RivalDead => OtherRival == null || OtherRival.Data.IsDead || OtherRival.Data.Disconnected;
+        public bool IsDeadRival => Player == null || IsDead || Disconnected;
         public bool BothRivalsDead => IsDeadRival && RivalDead;
         public bool IsWinningRival =>  RivalDead && !IsDeadRival;
 
@@ -12,10 +12,13 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         {
             Name = "Rival";
             Symbol = "α";
-            TaskText = "- Get your rival killed and then live to the final 2.";
+            TaskText = () => $"- Live to the final 3 with {OtherRival.name}";
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Rivals : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Rivals;
             Type = LayerEnum.Rivals;
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public override void UpdateHud(HudManager __instance)

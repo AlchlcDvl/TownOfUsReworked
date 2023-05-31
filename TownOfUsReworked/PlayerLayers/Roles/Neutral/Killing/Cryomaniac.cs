@@ -17,10 +17,10 @@
         public Cryomaniac(PlayerControl player) : base(player)
         {
             Name = "Cryomaniac";
-            StartText = "Who Likes Ice Cream?";
-            AbilitiesText = "- You can douse players in coolant\n- Doused players can be frozen, which kills all of them at once at the start of the next meeting\n- People who " +
+            StartText = () => "Who Likes Ice Cream?";
+            AbilitiesText = () => "- You can douse players in coolant\n- Doused players can be frozen, which kills all of them at once at the start of the next meeting\n- People who " +
                 "interact with you will also get doused";
-            Objectives = "- Freeze anyone who can oppose you";
+            Objectives = () => "- Freeze anyone who can oppose you";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Cryomaniac : Colors.Neutral;
             RoleType = RoleEnum.Cryomaniac;
             RoleAlignment = RoleAlignment.NeutralKill;
@@ -30,6 +30,9 @@
             FreezeButton = new(this, "Freeze", AbilityTypes.Effect, "Secondary", Freeze);
             KillButton = new(this, "CryoKill", AbilityTypes.Direct, "Tertiary", Kill, Exception);
             InspectorResults = InspectorResults.SeeksToDestroy;
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float DouseTimer()

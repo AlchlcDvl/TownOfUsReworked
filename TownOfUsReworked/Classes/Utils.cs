@@ -160,6 +160,15 @@
             PlayerName = " "
         };
 
+        public static GameData.PlayerOutfit SpookyOutfit(PlayerControl player) => new()
+        {
+            ColorId = player.GetDefaultOutfit().ColorId,
+            HatId = "",
+            SkinId = "",
+            VisorId = "",
+            PlayerName = " "
+        };
+
         public static void Shapeshift()
         {
             if (!Shapeshifted)
@@ -195,6 +204,26 @@
                 self.Add(item);
         }
 
+        public static Color GetShadowColor(this PlayerControl player, bool camoCondition = true, bool otherCondition = false)
+        {
+            if ((DoUndo.IsCamoed && camoCondition) || otherCondition)
+                return new Color32(125, 125, 125, 255);
+            else if (ColorUtils.IsRainbow(player.GetDefaultOutfit().ColorId))
+                return ColorUtils.RainbowShadow;
+            else if (ColorUtils.IsChroma(player.GetDefaultOutfit().ColorId))
+                return ColorUtils.ChromaShadow;
+            else if (ColorUtils.IsMonochrome(player.GetDefaultOutfit().ColorId))
+                return ColorUtils.MonochromeShadow;
+            else if (ColorUtils.IsMantle(player.GetDefaultOutfit().ColorId))
+                return ColorUtils.MantleShadow;
+            else if (ColorUtils.IsFire(player.GetDefaultOutfit().ColorId))
+                return ColorUtils.FireShadow;
+            else if (ColorUtils.IsGalaxy(player.GetDefaultOutfit().ColorId))
+                return ColorUtils.GalaxyShadow;
+            else
+                return Palette.ShadowColors[player.GetDefaultOutfit().ColorId];
+        }
+
         public static Color GetPlayerColor(this PlayerControl player, bool camoCondition = true, bool otherCondition = false)
         {
             if ((DoUndo.IsCamoed && camoCondition) || otherCondition)
@@ -228,7 +257,7 @@
             return impostors;
         }
 
-        public static PlayerControl PlayerById(byte id) => PlayerControl.AllPlayerControls.ToArray().ToList().Find(x => x.PlayerId == id);
+        public static PlayerControl PlayerById(byte id) => PlayerControl.AllPlayerControls.Find(x => x.PlayerId == id);
 
         public static PlayerVoteArea VoteAreaById(byte id) => MeetingHud.Instance.playerStates.ToList().Find(x => x.TargetPlayerId == id);
 
@@ -591,7 +620,7 @@
                     {
                         var votesRegained = mayor.ExtraVotes.RemoveAll(x => x == target.PlayerId);
 
-                        if (mayor.Player == PlayerControl.LocalPlayer)
+                        if (mayor.Local)
                             mayor.VoteBank += votesRegained;
 
                         var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AddVoteBank, SendOption.Reliable);
@@ -683,6 +712,8 @@
         {
             Ash.DestroyAll();
             Objects.Range.DestroyAll();
+            RoleCardsPatch.Zooming = true;
+            RoleCardsPatch.Zoom();
             GameManager.Instance.RpcEndGame(GameOverReason.ImpostorByVote, false);
         }
 
@@ -877,7 +908,7 @@
             else if (target.IsProtected() && (toKill || toConvert) && !bypass)
                 gaReset = true;
             else if (target.IsProtectedMonarch() && (toKill || toConvert) && !bypass)
-                gaReset = true;
+                fullReset = true;
             else if (player.IsOtherRival(target) && (toKill || toConvert))
                 fullReset = true;
             else
@@ -897,6 +928,8 @@
                     else
                         RpcMurderPlayer(player, target);
                 }
+                else if (toConvert && !target.Is(SubFaction.None))
+                    RpcMurderPlayer(player, target, DeathReasonEnum.Failed);
 
                 abilityUsed = true;
                 fullReset = true;
@@ -1021,11 +1054,11 @@
 
         public static void ShareGameVersion()
         {
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.VersionHandshake, Hazel.SendOption.Reliable);
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.VersionHandshake, SendOption.Reliable);
             writer.Write((byte)TownOfUsReworked.Version.Major);
             writer.Write((byte)TownOfUsReworked.Version.Minor);
             writer.Write((byte)TownOfUsReworked.Version.Build);
-            writer.Write(TownOfUsReworked.Version.Revision);
+            writer.Write((byte)TownOfUsReworked.Version.Revision);
             writer.Write(TownOfUsReworked.Executing.ManifestModule.ModuleVersionId.ToByteArray());
             writer.WritePacked(AmongUsClient.Instance.ClientId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -1035,10 +1068,8 @@
 
         public static void VersionHandshake(int major, int minor, int build, int revision, Guid guid, int clientId)
         {
-            var ver = new Version(major, minor, build, revision);
-
             if (!GameStartManagerPatch.PlayerVersions.ContainsKey(clientId))
-                GameStartManagerPatch.PlayerVersions.Add(clientId, new(ver, guid));
+                GameStartManagerPatch.PlayerVersions.Add(clientId, new(new(major, minor, build, revision), guid));
         }
 
         public static string GetRandomisedName()

@@ -10,9 +10,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Plaguebearer(PlayerControl player) : base(player)
         {
             Name = "Plaguebearer";
-            StartText = "Spread Disease To Become Pestilence";
-            AbilitiesText = "- You can infect players\n- When all players are infected, you will turn into <color=#424242FF>Pestilence</color>";
-            Objectives = "- Infect everyone to become <color=#424242FF>Pestilence</color>\n- Kill off anyone who can oppose you";
+            StartText = () => "Spread Disease To Become Pestilence";
+            AbilitiesText = () => "- You can infect players\n- When all players are infected, you will turn into <color=#424242FF>Pestilence</color>";
+            Objectives = () => "- Infect everyone to become <color=#424242FF>Pestilence</color>\n- Kill off anyone who can oppose you";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Plaguebearer : Colors.Neutral;
             RoleType = RoleEnum.Plaguebearer;
             RoleAlignment = RoleAlignment.NeutralHarb;
@@ -20,6 +20,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Type = LayerEnum.Plaguebearer;
             InfectButton = new(this, "Infect", AbilityTypes.Direct, "ActionSecondary", Infect, Exception);
             InspectorResults = InspectorResults.SeeksToDestroy;
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float InfectTimer()
@@ -77,7 +80,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var newRole = new Pestilence(Player);
             newRole.RoleUpdate(this);
 
-            if (Player == PlayerControl.LocalPlayer || CustomGameOptions.PlayersAlerted)
+            if (Local || CustomGameOptions.PlayersAlerted)
                 Utils.Flash(Colors.Pestilence);
 
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))

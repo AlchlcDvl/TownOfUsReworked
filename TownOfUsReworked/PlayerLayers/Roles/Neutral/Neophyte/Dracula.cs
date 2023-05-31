@@ -10,12 +10,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Dracula";
             RoleType = RoleEnum.Dracula;
-            StartText = "Lead The <color=#7B8968FF>Undead</color> To Victory";
-            AbilitiesText = "- You can convert the <color=#8CFFFFFF>Crew</color> into your own sub faction\n- If the target cannot be converted or the number of alive " +
+            StartText = () => "Lead The <color=#7B8968FF>Undead</color> To Victory";
+            AbilitiesText = () => "- You can convert the <color=#8CFFFFFF>Crew</color> into your own sub faction\n- If the target cannot be converted or the number of alive " +
                 $"<color=#7B8968FF>Undead</color> exceeds {CustomGameOptions.AliveVampCount}, you will kill them instead\n- Attempting to convert a <color=#C0C0C0FF>Vampire Hunter" +
                 "</color> will force them to kill you";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Dracula : Colors.Neutral;
-            Objectives = "- Convert or kill anyone who can oppose the <color=#7B8968FF>Undead</color>";
+            Objectives = () => "- Convert or kill anyone who can oppose the <color=#7B8968FF>Undead</color>";
             SubFaction = SubFaction.Undead;
             RoleAlignment = RoleAlignment.NeutralNeo;
             SubFactionColor = Colors.Undead;
@@ -23,6 +23,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Type = LayerEnum.Dracula;
             BiteButton = new(this, "Bite", AbilityTypes.Direct, "ActionSecondary", Convert);
             InspectorResults = InspectorResults.NewLens;
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float ConvertTimer()
@@ -41,16 +44,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var interact = Utils.Interact(Player, BiteButton.TargetPlayer, false, true);
 
             if (interact[3])
-            {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                writer.Write((byte)ActionsRPC.Convert);
-                writer.Write(PlayerId);
-                writer.Write(BiteButton.TargetPlayer.PlayerId);
-                writer.Write((byte)SubFaction.Undead);
-                writer.Write(Converted.Count >= CustomGameOptions.AliveVampCount);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                RoleGen.Convert(BiteButton.TargetPlayer.PlayerId, Player.PlayerId, SubFaction.Undead, Converted.Count >= CustomGameOptions.AliveVampCount);
-            }
+                RoleGen.RpcConvert(BiteButton.TargetPlayer.PlayerId, Player.PlayerId, SubFaction.Undead, Converted.Count >= CustomGameOptions.AliveVampCount);
 
             if (interact[0])
                 LastBitten = DateTime.UtcNow;

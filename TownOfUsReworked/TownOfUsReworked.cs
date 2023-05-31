@@ -62,25 +62,25 @@ namespace TownOfUsReworked
     [BepInDependency(ReactorPlugin.Id)]
     [BepInDependency(ModCompatibility.SUBMERGED_GUID, BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency(ModCompatibility.LI_GUID, BepInDependency.DependencyFlags.SoftDependency)]
-    [BepInDependency("gg.reactor.debugger", BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInDependency(ModCompatibility.RD_GUID, BepInDependency.DependencyFlags.SoftDependency)]
     [ReactorModFlags(ModFlags.RequireOnAllClients)]
     [BepInProcess("Among Us.exe")]
     public class TownOfUsReworked : BasePlugin
     {
         public const string Id = "me.alchlcdvl.reworked";
         public const string Name = "TownOfUsReworked";
-        public const string VersionString = "0.2.5.0";
-        private const string CompleteVersionString = "0.2.5.0";
+        public const string VersionString = "0.3.0.0";
+        private const string CompleteVersionString = "0.3.0.0";
         public readonly static Version Version = new(VersionString);
 
-        private readonly static string dev = VersionString[6..];
-        private readonly static string test = CompleteVersionString[7..];
-        private readonly static string version = VersionString.Length == 8 ? VersionString.Remove(VersionString.Length - 3) : VersionString.Remove(VersionString.Length - 2);
-        private readonly static bool isDev = dev != "0";
-        public readonly static bool isTest = VersionString != CompleteVersionString && test != "";
-        private readonly static string devString = isDev ? $"-dev{dev}" : "";
-        private readonly static string testString = isTest ? "_test" : "";
-        public readonly static string versionFinal = $"v{version}{devString}{testString}";
+        private static string Dev => VersionString[6..];
+        private static string Test => CompleteVersionString[7..];
+        private static string VersionS => VersionString.Length == 8 ? VersionString.Remove(VersionString.Length - 3) : VersionString.Remove(VersionString.Length - 2);
+        private static bool IsDev => Dev != "0";
+        public static bool IsTest => VersionString != CompleteVersionString && Test != "";
+        private static string DevString => IsDev ? $"-dev{Dev}" : "";
+        private static string TestString => IsTest ? "_test" : "";
+        public static string VersionFinal => $"v{VersionS}{DevString}{TestString}";
 
         public const string Resources = "TownOfUsReworked.Resources.";
         public const string Buttons = $"{Resources}Buttons.";
@@ -136,14 +136,13 @@ namespace TownOfUsReworked
             ClassInjector.RegisterTypeInIl2Cpp<MeetingHudPagingBehaviour>();
             ClassInjector.RegisterTypeInIl2Cpp<VitalsPagingBehaviour>();
             ClassInjector.RegisterTypeInIl2Cpp<ColorBehaviour>();
-            //ClassInjector.RegisterTypeInIl2Cpp<AutoUpdater>();
             ClassInjector.RegisterTypeInIl2Cpp<Debugger>();
             ClassInjector.RegisterTypeInIl2Cpp<Tasks>();
 
             Debugger = AddComponent<Debugger>();
 
             Utils.LogSomething("Mod Loaded!");
-            Utils.LogSomething($"Mod Version {versionFinal}");
+            Utils.LogSomething($"Mod Version {VersionFinal} & {Version}");
         }
     }
 }

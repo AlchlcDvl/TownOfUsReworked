@@ -11,7 +11,8 @@
         {
             public static bool Prefix(SpawnInMinigame __instance)
             {
-                if (PlayerControl.LocalPlayer.IsPostmortal() && !PlayerControl.LocalPlayer.Caught())
+                if ((PlayerControl.LocalPlayer.IsPostmortal() && !PlayerControl.LocalPlayer.Caught()) || (PlayerControl.LocalPlayer.Is(ModifierEnum.Astral) &&
+                    Modifier.GetModifier<Astral>(PlayerControl.LocalPlayer).LastPosition != Vector3.zero))
                 {
                     __instance.Close();
                     return false;
@@ -30,7 +31,7 @@
                     }
                 }
 
-                if (CustomGameOptions.MeetingSpawnChoice || !GameStarted)
+                if (!GameStarted && CustomGameOptions.SpawnType != AirshipSpawnType.Meeting)
                 {
                     GameStarted = true;
                     var Spawn = __instance.Locations.ToArray();

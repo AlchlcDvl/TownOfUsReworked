@@ -29,9 +29,6 @@ namespace TownOfUsReworked.Patches
                 var sprite = icon.GetComponent<SpriteRenderer>();
                 var text = icon.GetComponentInChildren<TextMeshPro>(true);
 
-                if (ModCompatibility.SubLoaded)
-                    sprite.color = new(1, 1, 1, 1);
-
                 if (DoUndo.IsCamoed)
                     sprite.color = Color.grey;
 
@@ -43,7 +40,7 @@ namespace TownOfUsReworked.Patches
                         PlayerMaterial.SetColors(new Color(0.8793f, 1, 0, 1), sprite);
                 }
 
-                if (text != null)
+                if (text != null && isOP)
                 {
                     text.gameObject.SetActive(true);
                     text.text = colorMapping[i].ToString();
@@ -109,9 +106,7 @@ namespace TownOfUsReworked.Patches
 
             if (!isOP)
             {
-                var isRet = localPlayer.Is(RoleEnum.Retributionist);
-
-                if (isRet)
+                if (localPlayer.Is(RoleEnum.Retributionist))
                     isOP = ((Retributionist)Role.LocalRole).IsOP;
             }
 

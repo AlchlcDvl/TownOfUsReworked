@@ -16,6 +16,11 @@ namespace TownOfUsReworked.Patches
 
             if (obj.name.Contains("ExileCutscene"))
                 SetPostmortals.ExileControllerPostfix(ConfirmEjects.LastExiled);
+            else if (obj.name.Contains("SpawnInMinigame"))
+            {
+                if (PlayerControl.LocalPlayer.Is(ModifierEnum.Astral))
+                    Modifier.GetModifier<Astral>(PlayerControl.LocalPlayer).SetPosition();
+            }
         }
     }
 
@@ -30,6 +35,9 @@ namespace TownOfUsReworked.Patches
         {
             if (PlayerControl.LocalPlayer.Data.Disconnected)
                 return;
+
+            if (PlayerControl.LocalPlayer.Is(ModifierEnum.Astral))
+                Modifier.GetModifier<Astral>(PlayerControl.LocalPlayer).SetPosition();
 
             foreach (var player in AssassinatedPlayers)
             {
@@ -67,7 +75,7 @@ namespace TownOfUsReworked.Patches
 
             foreach (var dict in Role.GetRoles<Dictator>(RoleEnum.Dictator))
             {
-                if (dict.Revealed && dict.ToBeEjected.Count > 0)
+                if (dict.Revealed && dict.ToBeEjected.Count > 0 && !dict.ToBeEjected.Any(x => x == 255))
                 {
                     foreach (var exiled1 in dict.ToBeEjected)
                     {
@@ -89,6 +97,7 @@ namespace TownOfUsReworked.Patches
                     }
 
                     dict.Ejected = true;
+                    dict.ToBeEjected.Clear();
                 }
             }
         }
@@ -140,8 +149,7 @@ namespace TownOfUsReworked.Patches
 
             var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPos, SendOption.Reliable);
             writer2.Write(player.PlayerId);
-            writer2.Write(startingVent.transform.position.x);
-            writer2.Write(startingVent.transform.position.y + 0.3636f);
+            writer2.Write(startingVent.transform.position);
             AmongUsClient.Instance.FinishRpcImmediately(writer2);
 
             player.NetTransform.RpcSnapTo(new(startingVent.transform.position.x, startingVent.transform.position.y + 0.3636f));

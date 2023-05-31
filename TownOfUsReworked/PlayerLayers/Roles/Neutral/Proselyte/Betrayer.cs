@@ -8,14 +8,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Betrayer(PlayerControl player) : base(player)
         {
             Name = "Betrayer";
-            StartText = "Those Guys Backs Are Ripe For Some Backstabbing";
-            Objectives = $"- Kill anyone who opposes the {FactionName}";
+            StartText = () => "Those Guys Backs Are Ripe For Some Backstabbing";
+            Objectives = () => $"- Kill anyone who opposes the {FactionName}";
             RoleType = RoleEnum.Betrayer;
             Color = CustomGameOptions.CustomNeutColors ? Colors.Betrayer : Colors.Neutral;
             RoleAlignment = RoleAlignment.NeutralPros;
             Type = LayerEnum.Betrayer;
             KillButton = new(this, "BetKill", AbilityTypes.Direct, "ActionSecondary", Kill, Exception);
             InspectorResults = InspectorResults.IsAggressive;
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float KillTimer()

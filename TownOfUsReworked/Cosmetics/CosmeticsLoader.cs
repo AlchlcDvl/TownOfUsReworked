@@ -7,7 +7,7 @@ namespace TownOfUsReworked.Cosmetics
 {
     public static class CosmeticsLoader
     {
-        private const string REPO = "https://raw.githubusercontent.com/AlchlcDvl/ReworkedHats/master";
+        private const string REPO = "https://raw.githubusercontent.com/AlchlcDvl/ReworkedAssets/master";
         private static bool HatsRunning;
         private static bool NameplatesRunning;
         private static bool VisorsRunning;
@@ -15,48 +15,48 @@ namespace TownOfUsReworked.Cosmetics
         public readonly static List<CustomHat> HatDetails = new();
         public readonly static List<CustomVisor> VisorDetails = new();
 
-        public static void LaunchFetchers()
+        public static void LaunchFetchers(bool update)
         {
-            LaunchHatFetcher();
-            LaunchNameplateFetcher();
-            LaunchVisorFetcher();
+            LaunchHatFetcher(update);
+            LaunchNameplateFetcher(update);
+            LaunchVisorFetcher(update);
         }
 
-        private static void LaunchHatFetcher()
+        private static void LaunchHatFetcher(bool update)
         {
             if (HatsRunning)
                 return;
 
             HatsRunning = true;
-            _ = LaunchHatFetcherAsync();
+            _ = LaunchHatFetcherAsync(update);
             Utils.LogSomething("Fetched hats");
         }
 
-        private static void LaunchNameplateFetcher()
+        private static void LaunchNameplateFetcher(bool update)
         {
             if (NameplatesRunning)
                 return;
 
             NameplatesRunning = true;
-            _ = LaunchNameplateFetcherAsync();
+            _ = LaunchNameplateFetcherAsync(update);
             Utils.LogSomething("Fetched nameplates");
         }
 
-        private static void LaunchVisorFetcher()
+        private static void LaunchVisorFetcher(bool update)
         {
             if (VisorsRunning)
                 return;
 
             VisorsRunning = true;
-            _ = LaunchVisorFetcherAsync();
+            _ = LaunchVisorFetcherAsync(update);
             Utils.LogSomething("Fetched visors");
         }
 
-        private static async Task LaunchHatFetcherAsync()
+        private static async Task LaunchHatFetcherAsync(bool update)
         {
             try
             {
-                var status = await FetchHats();
+                var status = await FetchHats(update);
 
                 if (status != HttpStatusCode.OK)
                     Utils.LogSomething("Custom Hats could not be loaded");
@@ -69,11 +69,11 @@ namespace TownOfUsReworked.Cosmetics
             HatsRunning = false;
         }
 
-        private static async Task LaunchNameplateFetcherAsync()
+        private static async Task LaunchNameplateFetcherAsync(bool update)
         {
             try
             {
-                var status = await FetchNameplates();
+                var status = await FetchNameplates(update);
 
                 if (status != HttpStatusCode.OK)
                     Utils.LogSomething("Custom Nameplates could not be loaded");
@@ -86,11 +86,11 @@ namespace TownOfUsReworked.Cosmetics
             NameplatesRunning = false;
         }
 
-        private static async Task LaunchVisorFetcherAsync()
+        private static async Task LaunchVisorFetcherAsync(bool update)
         {
             try
             {
-                var status = await FetchVisors();
+                var status = await FetchVisors(update);
 
                 if (status != HttpStatusCode.OK)
                     Utils.LogSomething("Custom Visors could not be loaded");
@@ -103,7 +103,7 @@ namespace TownOfUsReworked.Cosmetics
             VisorsRunning = false;
         }
 
-        public static async Task<HttpStatusCode> FetchHats()
+        public static async Task<HttpStatusCode> FetchHats(bool update)
         {
             var http = new HttpClient();
             http.DefaultRequestHeaders.CacheControl = new() { NoCache = true };
@@ -157,7 +157,14 @@ namespace TownOfUsReworked.Cosmetics
                 var markedfordownload = new List<string>();
                 var filePath = Path.GetDirectoryName(Application.dataPath) + "\\CustomHats\\";
 
-                if (!Directory.Exists(filePath))
+                if (update)
+                {
+                    if (Directory.Exists(filePath))
+                        Directory.Delete(filePath, true);
+
+                    Directory.CreateDirectory(filePath);
+                }
+                else if (!Directory.Exists(filePath))
                     Directory.CreateDirectory(filePath);
 
                 foreach (var data in hatdatas)
@@ -201,7 +208,7 @@ namespace TownOfUsReworked.Cosmetics
             return HttpStatusCode.OK;
         }
 
-        public static async Task<HttpStatusCode> FetchVisors()
+        public static async Task<HttpStatusCode> FetchVisors(bool update)
         {
             var http = new HttpClient();
             http.DefaultRequestHeaders.CacheControl = new() { NoCache = true };
@@ -236,7 +243,7 @@ namespace TownOfUsReworked.Cosmetics
                             ID = current["id"]?.ToString()
                         };
 
-                        if (info.ID == null || info.Name == null) // required
+                        if (info.ID == null || info.Name == null) //Required
                             continue;
 
                         info.FlipID = current["flipid"]?.ToString();
@@ -250,7 +257,14 @@ namespace TownOfUsReworked.Cosmetics
                 var markedfordownload = new List<string>();
                 var filePath = Path.GetDirectoryName(Application.dataPath) + "\\CustomVisors\\";
 
-                if (!Directory.Exists(filePath))
+                if (update)
+                {
+                    if (Directory.Exists(filePath))
+                        Directory.Delete(filePath, true);
+
+                    Directory.CreateDirectory(filePath);
+                }
+                else if (!Directory.Exists(filePath))
                     Directory.CreateDirectory(filePath);
 
                 foreach (var data in visorDatas)
@@ -285,7 +299,7 @@ namespace TownOfUsReworked.Cosmetics
             return HttpStatusCode.OK;
         }
 
-        public static async Task<HttpStatusCode> FetchNameplates()
+        public static async Task<HttpStatusCode> FetchNameplates(bool update)
         {
             var http = new HttpClient();
             http.DefaultRequestHeaders.CacheControl = new() { NoCache = true };
@@ -320,7 +334,7 @@ namespace TownOfUsReworked.Cosmetics
                             ID = current["id"]?.ToString()
                         };
 
-                        if (info.ID == null || info.Name == null) // required
+                        if (info.ID == null || info.Name == null) //Required
                             continue;
 
                         info.Artist = current["artist"]?.ToString();
@@ -332,7 +346,14 @@ namespace TownOfUsReworked.Cosmetics
                 var markedfordownload = new List<string>();
                 var filePath = Path.GetDirectoryName(Application.dataPath) + "\\CustomNameplates\\";
 
-                if (!Directory.Exists(filePath))
+                if (update)
+                {
+                    if (Directory.Exists(filePath))
+                        Directory.Delete(filePath, true);
+
+                    Directory.CreateDirectory(filePath);
+                }
+                else if (!Directory.Exists(filePath))
                     Directory.CreateDirectory(filePath);
 
                 foreach (var data in namePlateDatas)

@@ -27,8 +27,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Transporter(PlayerControl player) : base(player)
         {
             Name = "Transporter";
-            StartText = "Swap Locations Of Players For Maximum Confusion";
-            AbilitiesText = "- You can swap the locations of 2 players of your choice";
+            StartText = () => "Swap Locations Of Players For Maximum Confusion";
+            AbilitiesText = () => "- You can swap the locations of 2 players of your choice";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Transporter : Colors.Crew;
             RoleType = RoleEnum.Transporter;
             TransportPlayer1 = null;
@@ -61,6 +61,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AnimationPlaying2.material = HatManager.Instance.PlayerMaterial;
             Transport1.SetActive(true);
             Transport2.SetActive(true);
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float TransportTimer()

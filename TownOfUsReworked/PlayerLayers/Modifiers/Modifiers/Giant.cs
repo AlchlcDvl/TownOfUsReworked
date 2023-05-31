@@ -9,10 +9,13 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
         public Giant(PlayerControl player) : base(player)
         {
             Name = !Chonk && !Snail ? "Useless" : (!Chonk ? "Sloth" : (Snail ? "Chonker" : "Giant"));
-            TaskText = !Chonk && !Snail ? "- Why" : $"- You are tiny {Text}";
+            TaskText = () => !Chonk && !Snail ? "- Why" : $"- You are tiny {Text}";
             Color = CustomGameOptions.CustomModifierColors ? Colors.Giant : Colors.Modifier;
             ModifierType = ModifierEnum.Giant;
             Type = LayerEnum.Giant;
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
     }
 }

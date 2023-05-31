@@ -8,22 +8,25 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public int UsesLeft;
         public bool ButtonUsable => UsesLeft > 0;
         public bool Vesting => TimeRemaining > 0f;
-        public bool Alive => Player != null && !Disconnected && !IsDead;
+        public bool Alive => !Disconnected && !IsDead;
         public CustomButton VestButton;
 
         public Survivor(PlayerControl player) : base(player)
         {
             Name = "Survivor";
-            StartText = "Do Whatever It Takes To Live";
-            AbilitiesText = "- You can put on a vest, which makes you unkillable for a short duration of time";
+            StartText = () => "Do Whatever It Takes To Live";
+            AbilitiesText = () => "- You can put on a vest, which makes you unkillable for a short duration of time";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Survivor : Colors.Neutral;
             RoleType = RoleEnum.Survivor;
             UsesLeft = CustomGameOptions.MaxVests;
             RoleAlignment = RoleAlignment.NeutralBen;
-            Objectives = "- Live to the end of the game";
+            Objectives = () => "- Live to the end of the game";
             InspectorResults = InspectorResults.LeadsTheGroup;
             Type = LayerEnum.Survivor;
             VestButton = new(this, "Vest", AbilityTypes.Effect, "ActionSecondary", HitVest, true);
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float VestTimer()

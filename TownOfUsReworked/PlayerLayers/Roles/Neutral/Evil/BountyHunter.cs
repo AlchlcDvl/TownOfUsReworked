@@ -20,10 +20,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public BountyHunter(PlayerControl player) : base(player)
         {
             Name = "Bounty Hunter";
-            StartText = "Find And Kill Your Target";
-            Objectives = "- Find and kill your target";
-            AbilitiesText = "- You can guess a player to be your bounty\n- Upon finding the bounty, you can kill them\n- After your bounty has been killed by you, you can kill others as " +
-                "many times as you want\n- If your target dies not by your hands, you will become a <color=#678D36FF>Troll</color>";
+            StartText = () => "Find And Kill Your Target";
+            Objectives = () => "- Find and kill your target";
+            AbilitiesText = () => "- You can guess a player to be your bounty\n- Upon finding the bounty, you can kill them\n- After your bounty has been killed by you, you can kill " +
+                "others as many times as you want\n- If your target dies not by your hands, you will become a <color=#678D36FF>Troll</color>";
             Color = CustomGameOptions.CustomNeutColors ? Colors.BountyHunter : Colors.Neutral;
             RoleType = RoleEnum.BountyHunter;
             RoleAlignment = RoleAlignment.NeutralEvil;
@@ -33,6 +33,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             GuessButton = new(this, "BHGuess", AbilityTypes.Direct, "Secondary", Guess, true);
             HuntButton = new(this, "Hunt", AbilityTypes.Direct, "ActionSecondary", Hunt);
             InspectorResults = InspectorResults.TracksOthers;
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float CheckTimer()
@@ -48,7 +51,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var newRole = new Troll(Player);
             newRole.RoleUpdate(this);
 
-            if (Player == PlayerControl.LocalPlayer)
+            if (Local)
                 Utils.Flash(Colors.Troll);
 
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))

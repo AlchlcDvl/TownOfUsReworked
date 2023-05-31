@@ -1,31 +1,27 @@
-- New Role: Silencer [Syndicate (Disruption)]
-- Return: Time Lord and Time Master are back, and more vengeful then ever as the Time Keeper [Syndicate (Power)]!
-- Return: Neutral (Evil) roles now end the game again, but this is togglable
-- Addition: Added a credits button to the main menu
-- Finished: Role cards are now complete
-- Buff: Players with the Torch ability can now see the silhouette of invisible players
-- Buff: VIP dying will now create an arrow pointing towards the VIP's body
-- Buff: Thief can now guess players as killing roles to steal their roles (yes, I took the idea from The Other Roles)
-- Change: Collider's Inspector results are now Unseen rather than MovesAround
-- Recode: Medium has been recoded a little bit for better functionality
-- Recode: Shapeshifts have been recoded again along with appearances being handled even better than before
-- Improvement: Transport and Warp animation sizes now scale with the size of the teleported player
-- Improvement: Improved how arrows and map blips are handled
-- Improvement: Some parts were improved internally
-- Improvement: Improved how kills are handled
-- Improvement: Improved Level Impostor compatibility (WIP)
-- Visual Fix: Fixed the intro messages being clipped off screen for some roles
-- Critical Fix: Fixed Giant and Dwarf crashing the game upon game start
-- Critical Fix: Fixed cosmetics not loading correctly
-- Bug Fix: Fixed Radar and Tiebreaker not being assigned
-- Bug Fix: Fixed only one player being shaken when blackmailed players are revealed
-- Bug Fix: Fixed some rpc spamming regarding kills
-- Role Fix: Fixed Glitch being unable to hack
-- Role Fix: Fixed Drunkard-Rebels not inverting players' controls
-- Role Fix: Fixed Drunkard inverting controls of players forever
-- Role Fix: Fixed winning Cannibals not showing up on the win screen
-- Role Fix: Guardian Angel, Bounty Hunter, Execuioner and Guesser can no longer get their Lover/Rival as targets
-- Role Fix: Fixed Dictator not dying for all players upon misfiring on Crew
-- Objectifier Fix: Fixed Syndicate defected Intruders being able to see the sabotage button
-- Objectifier Fix: Fixed Defectors not letting the games end properly
-- Objectifier Fix: Fixed only 1 Mafia spawning
+- New Modifiers: Astral, Yeller
+- Buff: Dead bodies are now camouflaged along with players
+- Buff: Jackal can now spawn with Neutral (Benign) roles as the good recruits and Neutral (Evil) and (Harbinger) roles as the evil recruits
+- Nerf: Assassin and Guesser can no longer guess Crew (Investigative) roles and has been made optional for Assassin (to actually make the game social deduction and not "stfu and play")
+- Change: Monarch protection now extends to as long as someone is knighted and not that any of the knighted players is Crew
+- Change: Guardian Angels can no longer have Neutral (Evil) targets
+- Change: Guesser can no longer get Crew (Investigative) targets
+- Change: Mystic's subfaction checks now compare to the Mystic's own subfaction, rather than the default one (in case of a converted Mystic)
+- Improvement: Swapping animation now swaps everything
+- Improvement: Minor improvements were made to the role card and the task
+- Improvement: Custom cosmetics now update (in case I ever decide to change up how a hat appears)
+- Improvement: Improved how roles with targets are assigned their targets
+- Improvement: String options now looks like the vanilla map option
+- Improvement: Improved how Role Cards are handled
+- Visual Fix: Fixed the sabotage button being visible when in a meeting
+- Critical Fix: Fixed the mod sometimes not loading
+- Bug Fix: Fixed being able to see the roles of players right after dying using the Haunt Menu
+- Bug Fix: Fixed colorblind support for Operative being applied to all roles
+- Bug Fix: Fixed the issue where the options menu would spasm out of control and then stop letting you switch tabs
+- Bug Fix: Fixed some Neutral (Evil) roles ending the game even with the Neutral Evils End Game setting is off
+- Bug Fix: Fixed Lovers and Rivals not spawning
+- Bug Fix: Fixed the local player's colors not updating for themselves but for everyone else
+- Role Fix: Fixed Silencer and Promoted Rebel cooldowns from not resetting correctly
+- Role Fix: Fixed Actor getting role lists that cannot be guessed
+- Role Fix: Fixed Survivors and Guardian Angels not winning
+- Potential Fix: Fixed the updater not working as intended
+- Removed: Removed the outline around the role names because it makes them look a little bloated during the intro scene

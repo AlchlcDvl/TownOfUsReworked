@@ -10,10 +10,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Faction = Faction.Intruder;
             FactionColor = Colors.Intruder;
             Color = Colors.Intruder;
-            Objectives = IntrudersWinCon;
+            Objectives = () => IntrudersWinCon;
             BaseFaction = Faction.Intruder;
-            AbilitiesText = "- You can kill players\n- You can call sabotages to distract the <color=#8CFFFFFF>Crew</color>";
+            AbilitiesText = () => "- You can kill players" + (CustomGameOptions.IntrudersCanSabotage ? "\n- You can call sabotages to distract the <color=#8CFFFFFF>Crew</color>" : "");
             KillButton = new(this, "IntruderKill", AbilityTypes.Direct, "ActionSecondary", Kill, Exception);
+            Player.Data.SetImpostor(true);
         }
 
         public float KillTimer()
@@ -26,7 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public override void IntroPrefix(IntroCutscene._ShowTeam_d__36 __instance)
         {
-            if (Player != PlayerControl.LocalPlayer)
+            if (!Local)
                 return;
 
             var team = new List<PlayerControl> { PlayerControl.LocalPlayer };

@@ -66,20 +66,20 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 | [Modifiers](#modifiers)       | [Abilities](#abilities)       | [Objectifiers](#objectifiers) |
 |-------------------------------|-------------------------------|-------------------------------|
-| [Bait](#bait)                 | [Assassin](#assassin)         | [Allied](#allied)             |
-| [Coward](#coward)             | [Button Barry](#button-barry) | [Corrupted](#corrupted)       |
-| [Diseased](#diseased)         | [Insider](#insider)           | [Defector](#defector)         |
-| [Drunk](#drunk)               | [Multitasker](#multitasker)   | [Fanatic](#fanatic)           |
-| [Dwarf](#dwarf)               | [Ninja](#ninja)               | [Lovers](#lovers)             |
-| [Flincher](#flincher)         | [Politician](#politician)     | [Mafia](#mafia)               |
-| [Giant](#giant)               | [Radar](#radar)               | [Overlord](#overlord)         |
-| [Indomitable](#indomitable)   | [Ruthless](#ruthless)         | [Rivals](#rivals)             |
-| [Professional](#professional) | [Snitch](#snitch)             | [Taskmaster](#taskmaster)     |
-| [Shy](#shy)                   | [Swapper](#swapper)           | [Traitor](#traitor)           |
-| [VIP](#vip)                   | [Tiebreaker](#tiebreaker)     |                               |
-| [Volatile](#volatile)         | [Torch](#torch)               |                               |
-|                               | [Tunneler](#tunneler)         |                               |
-|                               | [Underdog](#underdog)         |                               |
+| [Astral](#astral)             | [Assassin](#assassin)         | [Allied](#allied)             |
+| [Bait](#bait)                 | [Button Barry](#button-barry) | [Corrupted](#corrupted)       |
+| [Coward](#coward)             | [Insider](#insider)           | [Defector](#defector)         |
+| [Diseased](#diseased)         | [Multitasker](#multitasker)   | [Fanatic](#fanatic)           |
+| [Drunk](#drunk)               | [Ninja](#ninja)               | [Lovers](#lovers)             |
+| [Dwarf](#dwarf)               | [Politician](#politician)     | [Mafia](#mafia)               |
+| [Flincher](#flincher)         | [Radar](#radar)               | [Overlord](#overlord)         |
+| [Giant](#giant)               | [Ruthless](#ruthless)         | [Rivals](#rivals)             |
+| [Indomitable](#indomitable)   | [Snitch](#snitch)             | [Taskmaster](#taskmaster)     |
+| [Professional](#professional) | [Swapper](#swapper)           | [Traitor](#traitor)           |
+| [Shy](#shy)                   | [Tiebreaker](#tiebreaker)     |                               |
+| [VIP](#vip)                   | [Torch](#torch)               |                               |
+| [Volatile](#volatile)         | [Tunneler](#tunneler)         |                               |
+| [Yeller](#yeller)             | [Underdog](#underdog)         |                               |
 
 [**Custom Game Settings**](#custom-game-settings)
 - [Common Settings](#common-settings)
@@ -126,18 +126,19 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 | Among Us | Mod Version | Link |
 |----------|-------------|------|
-| 2023.3.28 (s & e) | v0.2.5 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.2.5/TownOfUsReworked.zip) |
-| 2023.3.28 (s & e) | v0.2.4 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.2.4/TownOfUsReworked.zip) |
-| 2023.3.28 (s & e) | v0.2.3 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.2.3/TownOfUsReworked.zip) |
-| 2023.3.28 (s & e) | v0.2.2 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.2.2/TownOfUsReworked.zip) |
-| 2023.3.28 (s & e) | v0.2.1 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.2.1/TownOfUsReworked.zip) |
-| 2023.3.28 (s & e) | v0.2.0 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.2.0/TownOfUsReworked.zip) |
+| 2023.3.28 (s & e) | v0.3.0 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.3.0/TownOfUsReworked.zip) |
 
 <details>
 <summary>Older Versions</summary>
 
 | Among Us | Mod Version | Link |
 |----------|-------------|------|
+| 2023.3.28 (s & e) | v0.2.5 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.2.5/TownOfUsReworked.zip) |
+| 2023.3.28 (s & e) | v0.2.4 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.2.4/TownOfUsReworked.zip) |
+| 2023.3.28 (s & e) | v0.2.3 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.2.3/TownOfUsReworked.zip) |
+| 2023.3.28 (s & e) | v0.2.2 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.2.2/TownOfUsReworked.zip) |
+| 2023.3.28 (s & e) | v0.2.1 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.2.1/TownOfUsReworked.zip) |
+| 2023.3.28 (s & e) | v0.2.0 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.2.0/TownOfUsReworked.zip) |
 | 2023.3.28 (s & e) | v0.1.0-dev1 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.1.0-dev1/TownOfUsReworked.zip) |
 | 2023.3.28 (s & e) | v0.0.4-dev2 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.4-dev2/TownOfUsReworked.zip) |
 | 2023.3.28 (s & e) | v0.0.4-dev1 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.4-dev1/TownOfUsReworked.zip) |
@@ -171,6 +172,36 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 <details>
 <summary>Changelog</summary>
+<details>
+<summary>v0.3.0</summary>
+<ul> <li>New Modifiers: Astral, Yeller</li> </ul>
+<ul> <li>Buff: Dead bodies are now camouflaged along with players</li> </ul>
+<ul> <li>Buff: Jackal can now spawn with Neutral (Benign) roles as the good recruits and Neutral (Evil) and (Harbinger) roles as the evil recruits</li> </ul>
+<ul> <li>Nerf: Assassin and Guesser can no longer guess Crew (Investigative) roles and has been made optional for Assassin (to actually make the game social deduction and not "stfu and play")</li> </ul>
+<ul> <li>Change: Monarch protection now extends to as long as someone is knighted and not that any of the knighted players is Crew</li> </ul>
+<ul> <li>Change: Guardian Angels can no longer have Neutral (Evil) targets</li> </ul>
+<ul> <li>Change: Guesser can no longer get Crew (Investigative) targets</li> </ul>
+<ul> <li>Change: Mystic's subfaction checks now compare to the Mystic's own subfaction, rather than the default one (in case of a converted Mystic)</li> </ul>
+<ul> <li>Improvement: Swapping animation now swaps everything</li> </ul>
+<ul> <li>Improvement: Minor improvements were made to the role card and the task</li> </ul>
+<ul> <li>Improvement: Custom cosmetics now update (in case I ever decide to change up how a hat appears)</li> </ul>
+<ul> <li>Improvement: Improved how roles with targets are assigned their targets</li> </ul>
+<ul> <li>Improvement: String options now looks like the vanilla map option</li> </ul>
+<ul> <li>Improvement: Improved how Role Cards are handled</li> </ul>
+<ul> <li>Visual Fix: Fixed the sabotage button being visible when in a meeting</li> </ul>
+<ul> <li>Critical Fix: Fixed the mod sometimes not loading</li> </ul>
+<ul> <li>Bug Fix: Fixed being able to see the roles of players right after dying using the Haunt Menu</li> </ul>
+<ul> <li>Bug Fix: Fixed colorblind support for Operative being applied to all roles</li> </ul>
+<ul> <li>Bug Fix: Fixed the issue where the options menu would spasm out of control and then stop letting you switch tabs</li> </ul>
+<ul> <li>Bug Fix: Fixed some Neutral (Evil) roles ending the game even with the Neutral Evils End Game setting is off</li> </ul>
+<ul> <li>Bug Fix: Fixed Lovers and Rivals not spawning</li> </ul>
+<ul> <li>Bug Fix: Fixed the local player's colors not updating for themselves but for everyone else</li> </ul>
+<ul> <li>Role Fix: Fixed Silencer and Promoted Rebel cooldowns from not resetting correctly</li> </ul>
+<ul> <li>Role Fix: Fixed Actor getting role lists that cannot be guessed</li> </ul>
+<ul> <li>Role Fix: Fixed Survivors and Guardian Angels not winning</li> </ul>
+<ul> <li>Potential Fix: Fixed the updater not working as intended</li> </ul>
+<ul> <li>Removed: Removed the outline around the role names because it makes them look a little bloated during the intro scene</li> </ul>
+</details>
 <details>
 <summary>v0.2.5</summary>
 <ul> <li>New Role: Silencer [Syndicate (Disruption)]</li> </ul>

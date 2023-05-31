@@ -9,8 +9,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Stalker(PlayerControl player) : base(player)
         {
             Name = "Stalker";
-            StartText = "Stalk Everyone To Monitor Their Movements";
-            AbilitiesText = $"- You always know where your targets are\n{AbilitiesText}";
+            StartText = () => "Stalk Everyone To Monitor Their Movements";
+            AbilitiesText = () => $"- You always know where your targets are\n{AbilitiesText()}";
             Color = CustomGameOptions.CustomSynColors ? Colors.Stalker : Colors.Syndicate;
             RoleType = RoleEnum.Stalker;
             StalkerArrows = new();
@@ -18,6 +18,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             InspectorResults = InspectorResults.TracksOthers;
             Type = LayerEnum.Stalker;
             StalkButton = new(this, "Stalk", AbilityTypes.Direct, "ActionSecondary", Stalk, Exception1);
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float StalkTimer()

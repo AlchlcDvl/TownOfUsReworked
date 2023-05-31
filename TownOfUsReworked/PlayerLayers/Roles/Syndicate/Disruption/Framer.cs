@@ -10,9 +10,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Framer(PlayerControl player) : base(player)
         {
             Name = "Framer";
-            StartText = "Make Everyone Suspicious";
-            AbilitiesText = "- You can frame players\n- Framed players will die very easily to killing roles and will appear to have the wrong results to investigative roles till you" +
-                $" are dead\n- With the Chaos Drive, you can frame all players within a{CustomGameOptions.ChaosDriveFrameRadius}m radius\n{AbilitiesText}";
+            StartText = () => "Make Everyone Suspicious";
+            AbilitiesText = () => "- You can frame players\n- Framed players will die very easily to killing roles and will appear to have the wrong results to investigative roles till " +
+                $"you are dead\n- With the Chaos Drive, you can frame all players within a{CustomGameOptions.ChaosDriveFrameRadius}m radius\n{AbilitiesText()}";
             RoleType = RoleEnum.Framer;
             RoleAlignment = RoleAlignment.SyndicateDisrup;
             Color = CustomGameOptions.CustomSynColors ? Colors.Framer : Colors.Syndicate;
@@ -21,6 +21,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             FrameButton = new(this, "Frame", AbilityTypes.Direct, "Secondary", HitFrame, Exception1);
             RadialFrameButton = new(this, "Frame", AbilityTypes.Effect, "Secondary", RadialFrame);
             InspectorResults = InspectorResults.Manipulative;
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float FrameTimer()

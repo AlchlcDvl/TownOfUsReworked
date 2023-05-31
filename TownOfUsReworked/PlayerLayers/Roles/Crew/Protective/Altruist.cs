@@ -15,8 +15,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Altruist(PlayerControl player) : base(player)
         {
             Name = "Altruist";
-            StartText = "Sacrifice Yourself To Save Another";
-            AbilitiesText = $"- You can revive a dead body\n- Reviving someone takes {CustomGameOptions.AltReviveDuration}s\n- If a meeting is called during your revive, the revive fails";
+            StartText = () => "Sacrifice Yourself To Save Another";
+            AbilitiesText = () => $"- You can revive a dead body\n- Reviving someone takes {CustomGameOptions.AltReviveDuration}s\n- If a meeting is called during your revive, the revive "
+                + "fails";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Altruist : Colors.Crew;
             RoleType = RoleEnum.Altruist;
             RoleAlignment = RoleAlignment.CrewProt;
@@ -24,6 +25,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Type = LayerEnum.Altruist;
             UsesLeft = CustomGameOptions.ReviveCount;
             ReviveButton = new(this, "Revive", AbilityTypes.Dead, "ActionSecondary", HitRevive, true);
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public override void UpdateHud(HudManager __instance)

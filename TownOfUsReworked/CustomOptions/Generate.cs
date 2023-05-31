@@ -62,7 +62,6 @@ namespace TownOfUsReworked.CustomOptions
         public static CustomToggleOption DeadSeeEverything;
         public static CustomToggleOption DisableLevels;
         public static CustomToggleOption WhiteNameplates;
-        public static CustomToggleOption SeeTasks;
         public static CustomToggleOption CustomEject;
         public static CustomToggleOption LighterDarker;
         public static CustomToggleOption ObstructNames;
@@ -85,7 +84,6 @@ namespace TownOfUsReworked.CustomOptions
         public static CustomStringOption SpawnType;
         public static CustomStringOption MoveAdmin;
         public static CustomStringOption MoveElectrical;
-        public static CustomToggleOption MeetingSpawnChoice;
         public static CustomNumberOption MinDoorSwipeTime;
         public static CustomToggleOption CallPlatform;
         public static CustomToggleOption MoveDivert;
@@ -285,8 +283,10 @@ namespace TownOfUsReworked.CustomOptions
         public static CustomNumberOption DrunkOn;
         public static CustomNumberOption FlincherOn;
         public static CustomNumberOption IndomitableOn;
+        public static CustomNumberOption AstralOn;
         public static CustomNumberOption VolatileOn;
         public static CustomNumberOption ProfessionalOn;
+        public static CustomNumberOption YellerOn;
 
         //Ability Spawn
         public static CustomHeaderOption Abilities;
@@ -1233,6 +1233,7 @@ namespace TownOfUsReworked.CustomOptions
         public static CustomToggleOption AssassinGuessModifiers;
         public static CustomToggleOption AssassinGuessObjectifiers;
         public static CustomToggleOption AssassinGuessAbilities;
+        public static CustomToggleOption AssassinGuessInvestigative;
         public static CustomToggleOption AssassinateAfterVoting;
         public static CustomToggleOption UniqueAssassin;
         public static CustomToggleOption AssassinNotification;
@@ -1452,6 +1453,16 @@ namespace TownOfUsReworked.CustomOptions
         public static CustomNumberOption ShyCount;
         public static CustomToggleOption UniqueShy;
 
+        //Astral Options
+        public static CustomHeaderOption Astral;
+        public static CustomNumberOption AstralCount;
+        public static CustomToggleOption UniqueAstral;
+
+        //Yeller Options
+        public static CustomHeaderOption Yeller;
+        public static CustomNumberOption YellerCount;
+        public static CustomToggleOption UniqueYeller;
+
         //Indomitable Options
         public static CustomHeaderOption Indomitable;
         public static CustomNumberOption IndomitableCount;
@@ -1478,7 +1489,6 @@ namespace TownOfUsReworked.CustomOptions
         public static CustomToggleOption UniqueVolatile;
 
         /*//For Testing
-        public static CustomNestedOption ExampleNested;
         public static CustomToggleOption ExampleToggle;
         public static CustomNumberOption ExampleNumber;
         public static CustomStringOption ExampleString;
@@ -1503,12 +1513,10 @@ namespace TownOfUsReworked.CustomOptions
 
             var num = 0;
 
-            /*ExampleNested = new(MultiMenu.main, "Example Nested Option");
-            ExampleHeader = new(num++, MultiMenu.external, "Example Header Option");
-            ExampleToggle = new(num++, MultiMenu.external, "Example Toggle Option");
+            /*ExampleHeader = new(num++, MultiMenu.external, "Example Header Option");
+            ExampleToggle = new(num++, MultiMenu.external, "Example Toggle Option", true);
             ExampleNumber = new(num++, MultiMenu.external, "Example Number Option", 1, 1, 5, 1, MultiplierFormat);
-            ExampleString = new(num++, MultiMenu.external, "Example String Option", new[] { "Something", "Something Else", "Something Else Else" });
-            ExampleNested.AddOptions(ExampleHeader, ExampleNumber, ExampleString, ExampleToggle);*/
+            ExampleString = new(num++, MultiMenu.external, "Example String Option", new[] { "Something", "Something Else", "Something Else Else" });*/
 
             GameSettings = new(MultiMenu.main, "Game Settings");
             PlayerSpeed = new(num++, MultiMenu.main, "Player Speed", 1.25f, 0.25f, 10, 0.25f, MultiplierFormat);
@@ -1540,19 +1548,19 @@ namespace TownOfUsReworked.CustomOptions
 
             GameModifiers = new(MultiMenu.main, "Game Modifiers");
             WhoCanVent = new(num++, MultiMenu.main, "Serial Venters", new[] { "Default", "Everyone", "Never" });
-            AnonymousVoting = new(num++, MultiMenu.main, "Anonymous Voting");
+            AnonymousVoting = new(num++, MultiMenu.main, "Anonymous Voting", true);
             SkipButtonDisable = new(num++, MultiMenu.main, "No Skipping", new[] { "Never", "Emergency", "Always" });
-            FactionSeeRoles = new(num++, MultiMenu.main, "Factioned Evils See The <color=#FFD700FF>Roles</color> Of Their Team");
+            FactionSeeRoles = new(num++, MultiMenu.main, "Factioned Evils See The <color=#FFD700FF>Roles</color> Of Their Team", true);
             VisualTasks = new(num++, MultiMenu.main, "Visual Tasks", false);
             NoNames = new(num++, MultiMenu.main, "No Player Names", false);
-            Whispers = new(num++, MultiMenu.main, "PSSST *Whispers*");
-            WhispersAnnouncement = new(num++, MultiMenu.main, "Everyone Is Alerted To Whispers");
-            AppearanceAnimation = new(num++, MultiMenu.main, "Kill Animations Show Modified Player");
+            Whispers = new(num++, MultiMenu.main, "PSSST *Whispers*", true);
+            WhispersAnnouncement = new(num++, MultiMenu.main, "Everyone Is Alerted To Whispers", true);
+            AppearanceAnimation = new(num++, MultiMenu.main, "Kill Animations Show Modified Player", true);
             RandomSpawns = new(num++, MultiMenu.main, "Random Player Spawns", false);
-            EnableAbilities = new(num++, MultiMenu.main, "Enable <color=#FF9900FF>Abilities</color>");
-            EnableModifiers = new(num++, MultiMenu.main, "Enable <color=#7F7F7FFF>Modifiers</color>");
-            EnableObjectifiers = new(num++, MultiMenu.main, "Enable <color=#DD585BFF>Objectifiers</color>");
-            VentTargetting = new(num++, MultiMenu.main, "Players In Vents Can Be Targetted");
+            EnableAbilities = new(num++, MultiMenu.main, "Enable <color=#FF9900FF>Abilities</color>", true);
+            EnableModifiers = new(num++, MultiMenu.main, "Enable <color=#7F7F7FFF>Modifiers</color>", true);
+            EnableObjectifiers = new(num++, MultiMenu.main, "Enable <color=#DD585BFF>Objectifiers</color>", true);
+            VentTargetting = new(num++, MultiMenu.main, "Players In Vents Can Be Targetted", true);
 
             GameAnnouncementsSettings = new(MultiMenu.main, "Game Announcement Settings");
             GameAnnouncements = new(num++, MultiMenu.main, "Enable Game Announcements", false);
@@ -1561,14 +1569,13 @@ namespace TownOfUsReworked.CustomOptions
             KillerReports = new(num++, MultiMenu.main, "Every Body's Killer's Role/Faction Is Announced", new[] { "Never", "Roles", "Factions" });
 
             QualityChanges = new(MultiMenu.main, "Quality Additions");
-            DeadSeeEverything = new(num++, MultiMenu.main, "Dead Can See Everything");
+            DeadSeeEverything = new(num++, MultiMenu.main, "Dead Can See Everything", true);
             ParallelMedScans = new(num++, MultiMenu.main, "Parallel Medbay Scans", false);
             DisableLevels = new(num++, MultiMenu.main, "Disable Level Icons", false);
             WhiteNameplates = new(num++, MultiMenu.main, "Disable Player Nameplates", false);
-            SeeTasks = new(num++, MultiMenu.main, "See Tasks During The Game");
-            CustomEject = new(num++, MultiMenu.main, "Custom Ejection Messages");
-            LighterDarker = new(num++, MultiMenu.main, "Enable Lighter Darker Colors");
-            ObstructNames = new(num++, MultiMenu.main, "Hide Obstructed Player Names");
+            CustomEject = new(num++, MultiMenu.main, "Custom Ejection Messages", true);
+            LighterDarker = new(num++, MultiMenu.main, "Enable Lighter Darker Colors", true);
+            ObstructNames = new(num++, MultiMenu.main, "Hide Obstructed Player Names", true);
 
             MapSettings = new(MultiMenu.main, "Map Settings");
             Map = new(num++, MultiMenu.main, "Map", Maps);
@@ -1581,6 +1588,9 @@ namespace TownOfUsReworked.CustomOptions
             if (ModCompatibility.SubLoaded)
                 RandomMapSubmerged = new(num++, MultiMenu.main, "Submerged Chance", 0, 0, 100, 10, PercentFormat);
 
+            if (ModCompatibility.LILoaded)
+                RandomMapSubmerged = new(num++, MultiMenu.main, "Level Impostor Chance", 0, 0, 100, 10, PercentFormat);
+
             //RandomMapdlekS = new(num++, MultiMenu.main, "dlekS Chance", 0, 0, 100, 10, PercentFormat); for when it comes back lol
             AutoAdjustSettings = new(num++, MultiMenu.main, "Auto Adjust Settings", false);
             SmallMapHalfVision = new(num++, MultiMenu.main, "Half Vision On Skeld/Mira HQ", false);
@@ -1592,11 +1602,11 @@ namespace TownOfUsReworked.CustomOptions
             LargeMapDecreasedLongTasks = new(num++, MultiMenu.main, "Airship/Submerged Decreased Long Tasks", 0, 0, 3, 1);
 
             BetterSabotages = new(MultiMenu.main, "Better Sabotages Settings");
-            ColourblindComms = new(num++, MultiMenu.main, "Camouflaged Comms");
+            ColourblindComms = new(num++, MultiMenu.main, "Camouflaged Comms", true);
             MeetingColourblind = new(num++, MultiMenu.main, "Camouflaged Meetings", false);
             //NightVision = new(num++, MultiMenu.main, "Night Vision Cameras", false);
             //EvilsIgnoreNV = new(num++, MultiMenu.main, "High Vision Evils Ignore Vision", false);
-            OxySlow = new(num++, MultiMenu.main, "Oxygen Sabotage Slows Down Players");
+            OxySlow = new(num++, MultiMenu.main, "Oxygen Sabotage Slows Down Players", true);
             ReactorShake = new(num++, MultiMenu.main, "Reactor Sabotage Shakes The Screen By", 30, 0, 100, 1, PercentFormat);
 
             BetterSkeld = new(MultiMenu.main, "Better Skeld Settings");
@@ -1610,8 +1620,7 @@ namespace TownOfUsReworked.CustomOptions
             SeismicTimer = new(num++, MultiMenu.main, "Seimic Stabliser Malfunction Countdown", 60f, 30f, 90f, 5f, CooldownFormat);
 
             BetterAirshipSettings = new(MultiMenu.main, "Airship Settings");
-            SpawnType = new(num++, MultiMenu.main, "Spawn Type", new[] { "Normal", "Fixed", "Random Synchronised" });
-            MeetingSpawnChoice = new(num++, MultiMenu.main, "Spawn Near Meeting Table", false);
+            SpawnType = new(num++, MultiMenu.main, "Spawn Type", new[] { "Normal", "Fixed", "Random Synchronised", "Meeting" });
             CallPlatform = new(num++, MultiMenu.main, "Add Call Platform Button", false);
             AddTeleporters = new(num++, MultiMenu.main, "Add Meeting To Security Room Teleporter", false);
             MoveVitals = new(num++, MultiMenu.main, "Move Vitals", false);
@@ -1748,6 +1757,7 @@ namespace TownOfUsReworked.CustomOptions
             BansheeOn = new(num++, MultiMenu.syndicate, "<color=#E67E22FF>Banshee</color>", 0, 0, 100, 10, PercentFormat);
 
             Modifiers = new(MultiMenu.modifier, "<color=#7F7F7FFF>Modifiers</color>");
+            AstralOn = new(num++, MultiMenu.modifier, "<color=#612BEFFF>Astral</color>", 0, 0, 100, 10, PercentFormat);
             BaitOn = new(num++, MultiMenu.modifier, "<color=#00B3B3FF>Bait</color>", 0, 0, 100, 10, PercentFormat);
             CowardOn = new(num++, MultiMenu.modifier, "<color=#456BA8FF>Coward</color>", 0, 0, 100, 10, PercentFormat);
             DiseasedOn = new(num++, MultiMenu.modifier, "<color=#374D1EFF>Diseased</color>", 0, 0, 100, 10, PercentFormat);
@@ -1760,6 +1770,7 @@ namespace TownOfUsReworked.CustomOptions
             ShyOn = new(num++, MultiMenu.modifier, "<color=#1002C5FF>Shy</color>", 0, 0, 100, 10, PercentFormat);
             VIPOn = new(num++, MultiMenu.modifier, "<color=#DCEE85FF>VIP</color>", 0, 0, 100, 10, PercentFormat);
             VolatileOn = new(num++, MultiMenu.modifier, "<color=#FFA60AFF>Volatile</color>", 0, 0, 100, 10, PercentFormat);
+            YellerOn = new(num++, MultiMenu.modifier, "<color=#F6AAB7FF>Yeller</color>", 0, 0, 100, 10, PercentFormat);
 
             Objectifiers = new(MultiMenu.objectifier, "<color=#DD585BFF>Objectifiers</color>");
             AlliedOn = new(num++, MultiMenu.objectifier, "<color=#4545A9FF>Allied</color>", 0, 0, 100, 10, PercentFormat);
@@ -1793,11 +1804,11 @@ namespace TownOfUsReworked.CustomOptions
             UnderdogOn = new(num++, MultiMenu.ability, "<color=#841A7FFF>Underdog</color>", 0, 0, 100, 10, PercentFormat);
 
             CrewSettings = new(MultiMenu.crew, "<color=#8CFFFFFF>Crew</color> Settings");
-            CustomCrewColors = new(num++, MultiMenu.crew, "Enable Custom <color=#8CFFFFFF>Crew</color> Colors");
+            CustomCrewColors = new(num++, MultiMenu.crew, "Enable Custom <color=#8CFFFFFF>Crew</color> Colors", true);
             CommonTasks = new(num++, MultiMenu.crew, "Common Tasks", 2, 0, 100, 1);
             LongTasks = new(num++, MultiMenu.crew, "Long Tasks", 1, 0, 100, 1);
             ShortTasks = new(num++, MultiMenu.crew, "Short Tasks", 4, 0, 100, 1);
-            //GhostTasksCountToWin = new(num++, MultiMenu.crew, "<color=#8CFFFFFF>Crew</color> Ghost Tasks Count To Win");
+            //GhostTasksCountToWin = new(num++, MultiMenu.crew, "<color=#8CFFFFFF>Crew</color> Ghost Tasks Count To Win", true);
             CrewVision = new(num++, MultiMenu.crew, "<color=#8CFFFFFF>Crew</color> Vision", 1f, 0.25f, 5f, 0.25f, MultiplierFormat);
             CrewMax = new(num++, MultiMenu.crew, "Max <color=#8CFFFFFF>Crew</color> <color=#FFD700FF>Roles</color>", 5, 0, 14, 1);
             CrewMin = new(num++, MultiMenu.crew, "Min <color=#8CFFFFFF>Crew</color> <color=#FFD700FF>Roles</color>", 5, 0, 14, 1);
@@ -1850,7 +1861,7 @@ namespace TownOfUsReworked.CustomOptions
             MediumCount = new(num++, MultiMenu.crew, "<color=#A680FFFF>Medium</color> Count", 1, 1, 14, 1);
             UniqueMedium = new(num++, MultiMenu.crew, "<color=#A680FFFF>Medium</color> Is Unique In All Any", false);
             MediateCooldown = new(num++, MultiMenu.crew, "Mediate Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
-            ShowMediatePlayer = new(num++, MultiMenu.crew, "Reveal Appearance Of Mediate Target");
+            ShowMediatePlayer = new(num++, MultiMenu.crew, "Reveal Appearance Of Mediate Target", true);
             ShowMediumToDead = new(num++, MultiMenu.crew, "Reveal The <color=#A680FFFF>Medium</color> To The Mediate Target", new[] { "No", "Target", "All Dead" });
             DeadRevealed = new(num++, MultiMenu.crew, "Who Is Revealed With Mediate", new[] { "Oldest Dead", "Newest Dead", "All Dead", "Random" });
 
@@ -1879,9 +1890,9 @@ namespace TownOfUsReworked.CustomOptions
             UniqueOperative = new(num++, MultiMenu.crew, "<color=#A7D1B3FF>Operative</color> Is Unique In All Any", false);
             BugCooldown = new(num++, MultiMenu.crew, "Bug Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
             MinAmountOfTimeInBug = new(num++, MultiMenu.crew, "Min Amount Of Time In Bug To Trigger", 0f, 0f, 15f, 0.5f, CooldownFormat);
-            BugsRemoveOnNewRound = new(num++, MultiMenu.crew, "Bugs Are Removed Each Round");
+            BugsRemoveOnNewRound = new(num++, MultiMenu.crew, "Bugs Are Removed Each Round", true);
             MaxBugs = new(num++, MultiMenu.crew, "Bug Count", 5, 1, 15, 1);
-            BugRange = new(num++, MultiMenu.crew, "Bug Range", 2, 0.5f, 5, 0.5f, DistanceFormat);
+            BugRange = new(num++, MultiMenu.crew, "Bug Radius", 1.5f, 0.5f, 5f, 0.25f, DistanceFormat);
             MinAmountOfPlayersInBug = new(num++, MultiMenu.crew, "Number Of <color=#FFD700FF>Roles</color> Required To Trigger Bug", 1, 1, 5, 1);
             WhoSeesDead = new(num++, MultiMenu.crew, "Who Sees Dead Bodies On Admin", new[] { "Nobody", "Operative", "Everyone But Operative", "Everyone" });
 
@@ -1899,9 +1910,9 @@ namespace TownOfUsReworked.CustomOptions
             Vigilante = new(MultiMenu.crew, "<color=#FFFF00FF>Vigilante</color>");
             VigilanteCount = new(num++, MultiMenu.crew, "<color=#FFFF00FF>Vigilante</color> Count", 1, 1, 14, 1);
             UniqueVigilante = new(num++, MultiMenu.crew, "<color=#FFFF00FF>Vigilante</color> Is Unique In All Any", false);
-            MisfireKillsInno = new(num++, MultiMenu.crew, "Misfire Kills The Target");
-            VigiKillAgain = new(num++, MultiMenu.crew, "<color=#FFFF00FF>Vigilante</color> Can Kill Again If Target Was Innocent");
-            RoundOneNoShot = new(num++, MultiMenu.crew, "<color=#FFFF00FF>Vigilante</color> Cannot Shoot On The First Round");
+            MisfireKillsInno = new(num++, MultiMenu.crew, "Misfire Kills The Target", true);
+            VigiKillAgain = new(num++, MultiMenu.crew, "<color=#FFFF00FF>Vigilante</color> Can Kill Again If Target Was Innocent", true);
+            RoundOneNoShot = new(num++, MultiMenu.crew, "<color=#FFFF00FF>Vigilante</color> Cannot Shoot On The First Round", true);
             VigiNotifOptions = new(num++, MultiMenu.crew, "How Is The <color=#FFFF00FF>Vigilante</color> Notified Of Their Target's Innocence", new[] { "Never", "Flash", "Message" });
             VigiOptions = new(num++, MultiMenu.crew, "How Does <color=#FFFF00FF>Vigilante</color> Die", new[] { "Immediately", "Before Meeting", "After Meeting" });
             VigiKillCd = new(num++, MultiMenu.crew, "Shoot Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
@@ -1924,7 +1935,7 @@ namespace TownOfUsReworked.CustomOptions
             UniqueMedic = new(num++, MultiMenu.crew, "<color=#006600FF>Medic</color> Is Unique In All Any", false);
             ShowShielded = new(num++, MultiMenu.crew, "Show Shielded Player", new[] { "Self", "Medic", "Self And Medic", "Everyone" });
             WhoGetsNotification = new(num++, MultiMenu.crew, "Who Gets Murder Attempt Indicator", new[] { "Medic", "Self", "Self And Medic", "Everyone", "Nobody" });
-            ShieldBreaks = new(num++, MultiMenu.crew, "Shield Breaks On Murder Attempt");
+            ShieldBreaks = new(num++, MultiMenu.crew, "Shield Breaks On Murder Attempt", true);
 
             CrewSovereignSettings = new(MultiMenu.crew, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Sovereign</color> Settings");
             CSvMax = new(num++, MultiMenu.crew, "Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Sovereign</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
@@ -1935,23 +1946,24 @@ namespace TownOfUsReworked.CustomOptions
             UniqueDictator = new(num++, MultiMenu.crew, "<color=#00CB97FF>Dictator</color> Is Unique In All Any", false);
             RoundOneNoDictReveal = new(num++, MultiMenu.crew, "<color=#00CB97FF>Dictator</color> Cannot Reveal Round One", false);
             RoundOneNoDictReveal = new(num++, MultiMenu.crew, "<color=#00CB97FF>Dictator</color> Can Dictate After Voting", false);
-            DictatorButton = new(num++, MultiMenu.crew, "<color=#00CB97FF>Dictator</color> Can Button");
+            DictatorButton = new(num++, MultiMenu.crew, "<color=#00CB97FF>Dictator</color> Can Button", true);
 
             Mayor = new(MultiMenu.crew, "<color=#704FA8FF>Mayor</color>");
             MayorCount = new(num++, MultiMenu.crew, "<color=#704FA8FF>Mayor</color> Count", 1, 1, 14, 1);
             UniqueMayor = new(num++, MultiMenu.crew, "<color=#704FA8FF>Mayor</color> Is Unique In All Any", false);
             MayorVoteCount = new(num++, MultiMenu.crew, "Revealed <color=#704FA8FF>Mayor</color> Votes Count As", 2, 1, 10, 1);
             RoundOneNoReveal = new(num++, MultiMenu.crew, "<color=#704FA8FF>Mayor</color> Cannot Reveal Round One", false);
-            MayorButton = new(num++, MultiMenu.crew, "<color=#704FA8FF>Mayor</color> Can Button");
+            MayorButton = new(num++, MultiMenu.crew, "<color=#704FA8FF>Mayor</color> Can Button", true);
 
             Monarch = new(MultiMenu.crew, "<color=#FF004EFF>Monarch</color>");
             MonarchCount = new(num++, MultiMenu.crew, "<color=#FF004EFF>Monarch</color> Count", 1, 1, 14, 1);
             UniqueMonarch = new(num++, MultiMenu.crew, "<color=#FF004EFF>Monarch</color> Is Unique In All Any", false);
             KnightingCooldown = new(num++, MultiMenu.crew, "Knighting Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
             RoundOneNoKnighting = new(num++, MultiMenu.crew, "<color=#FF004EFF>Monarch</color> Cannot Knight Round One", false);
+            KnightCount = new(num++, MultiMenu.crew, "Knight Count", 2, 1, 14, 1);
             KnightVoteCount = new(num++, MultiMenu.crew, "Knighted Votes Count As", 1, 1, 10, 1);
-            MonarchButton = new(num++, MultiMenu.crew, "<color=#FF004EFF>Monarch</color> Can Button");
-            KnightButton = new(num++, MultiMenu.crew, "Knights Can Button");
+            MonarchButton = new(num++, MultiMenu.crew, "<color=#FF004EFF>Monarch</color> Can Button", true);
+            KnightButton = new(num++, MultiMenu.crew, "Knights Can Button", true);
 
             CrewSupportSettings = new(MultiMenu.crew, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Support</color> Settings");
             CSMax = new(num++, MultiMenu.crew, "Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
@@ -1968,7 +1980,7 @@ namespace TownOfUsReworked.CustomOptions
             EngineerCount = new(num++, MultiMenu.crew, "<color=#FFA60AFF>Engineer</color> Count", 1, 1, 14, 1);
             UniqueEngineer = new(num++, MultiMenu.crew, "<color=#FFA60AFF>Engineer</color> Is Unique In All Any", false);
             FixCooldown = new(num++, MultiMenu.crew, "Fix Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
-            MaxFixes = new(num++, MultiMenu.crew, "Max Fixes", 5, 1, 14, 1);
+            MaxFixes = new(num++, MultiMenu.crew, "Max Fixes", 5, 1, 15, 1);
 
             Escort = new(MultiMenu.crew, "<color=#803333FF>Escort</color>");
             EscortCount = new(num++, MultiMenu.crew, "<color=#803333FF>Escort</color> Count", 1, 1, 14, 1);
@@ -1979,7 +1991,7 @@ namespace TownOfUsReworked.CustomOptions
             Retributionist = new(MultiMenu.crew, "<color=#8D0F8CFF>Retributionist</color>");
             RetributionistCount = new(num++, MultiMenu.crew, "<color=#8D0F8CFF>Retributionist</color> Count", 1, 1, 14, 1);
             UniqueRetributionist = new(num++, MultiMenu.crew, "<color=#8D0F8CFF>Retributionist</color> Is Unique In All Any", false);
-            ReviveAfterVoting = new(num++, MultiMenu.crew, "<color=#8D0F8CFF>Retributionist</color> Can Mimic After Voting");
+            ReviveAfterVoting = new(num++, MultiMenu.crew, "<color=#8D0F8CFF>Retributionist</color> Can Mimic After Voting", true);
             MaxUses = new(num++, MultiMenu.crew, "Max Uses", 5, 1, 15, 1);
 
             Shifter = new(MultiMenu.crew, "<color=#DF851FFF>Shifter</color>");
@@ -1994,7 +2006,7 @@ namespace TownOfUsReworked.CustomOptions
             TransportCooldown = new(num++, MultiMenu.crew, "Transport Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
             TransportDuration = new(num++, MultiMenu.crew, "Transport Duration", 5f, 1f, 20f, 1f, CooldownFormat);
             TransportMaxUses = new(num++, MultiMenu.crew, "Max Transports", 5, 1, 15, 1);
-            TransSelf = new(num++, MultiMenu.crew, "<color=#00EEFFFF>Transporter</color> Can Transport Themselves");
+            TransSelf = new(num++, MultiMenu.crew, "<color=#00EEFFFF>Transporter</color> Can Transport Themselves", true);
 
             CrewUtilitySettings = new(MultiMenu.crew, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Utility</color> Settings");
 
@@ -2010,25 +2022,25 @@ namespace TownOfUsReworked.CustomOptions
             RevealerCanBeClickedBy = new(num++, MultiMenu.crew, "Who Can Click <color=#D3D3D3FF>Revealer</color>", new[] { "All", "Non Crew", "Evils Only" });
 
             NeutralSettings = new(MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> Settings");
-            CustomNeutColors = new(num++, MultiMenu.neutral, "Enable Custom <color=#B3B3B3FF>Neutral</color> Colors");
+            CustomNeutColors = new(num++, MultiMenu.neutral, "Enable Custom <color=#B3B3B3FF>Neutral</color> Colors", true);
             NeutralVision = new(num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> Vision", 1.5f, 0.25f, 5f, 0.25f, MultiplierFormat);
             NeutralMax = new(num++, MultiMenu.neutral, "Max <color=#B3B3B3FF>Neutral</color> <color=#FFD700FF>Roles</color>", 5, 1, 14, 1);
             NeutralMin = new(num++, MultiMenu.neutral, "Min <color=#B3B3B3FF>Neutral</color> <color=#FFD700FF>Roles</color>", 5, 1, 14, 1);
-            LightsAffectNeutrals = new(num++, MultiMenu.neutral, "Lights Sabotage Affects <color=#B3B3B3FF>Neutrals</color> Vision");
+            LightsAffectNeutrals = new(num++, MultiMenu.neutral, "Lights Sabotage Affects <color=#B3B3B3FF>Neutrals</color> Vision", true);
             NoSolo = new(num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutrals</color> Together, Strong", new[] { "Never", "Same NKs", "Same Roles", "All NKs", "All Neutrals" });
-            VigiKillsNB = new(num++, MultiMenu.neutral, "<color=#FFFF00FF>Vigilante</color> Kills <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Benigns</color>");
-            NKHasImpVision = new(num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color> Have <color=#FF0000FF>Intruder</color> Vision");
+            VigiKillsNB = new(num++, MultiMenu.neutral, "<color=#FFFF00FF>Vigilante</color> Kills <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Benigns</color>", true);
+            NKHasImpVision = new(num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color> Have <color=#FF0000FF>Intruder</color> Vision", true);
             NKsKnow = new(num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color> Know Each Other", false);
             NeutralEvilsEndGame = new(num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Evils</color> End The Game When Winning", false);
-            NeutralsVent = new(num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutrals</color> Can Vent");
+            NeutralsVent = new(num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutrals</color> Can Vent", true);
 
             NeutralApocalypseSettings = new(MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Apocalypse</color> Settings");
 
             Pestilence = new(MultiMenu.neutral, "<color=#424242FF>Pestilence</color>");
             PestSpawn = new(num++, MultiMenu.neutral, "<color=#424242FF>Pestilence</color> Can Spawn Directly", false);
-            PlayersAlerted = new(num++, MultiMenu.neutral, "<color=#424242FF>Pestilence</color> Transformation Alerts Everyone");
+            PlayersAlerted = new(num++, MultiMenu.neutral, "<color=#424242FF>Pestilence</color> Transformation Alerts Everyone", true);
             PestKillCooldown = new(num++, MultiMenu.neutral, "Obliterate Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
-            PestVent = new(num++, MultiMenu.neutral, "<color=#424242FF>Pestilence</color> Can Vent");
+            PestVent = new(num++, MultiMenu.neutral, "<color=#424242FF>Pestilence</color> Can Vent", true);
 
             NeutralBenignSettings = new(MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Benign</color> Settings");
             NBMax = new(num++, MultiMenu.neutral, "Max <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Benign</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
@@ -2080,7 +2092,7 @@ namespace TownOfUsReworked.CustomOptions
             Actor = new(MultiMenu.neutral, "<color=#00ACC2FF>Actor</color>");
             ActorCount = new(num++, MultiMenu.neutral, "<color=#00ACC2FF>Actor</color> Count", 1, 1, 14, 1);
             UniqueActor= new(num++, MultiMenu.neutral, "<color=#00ACC2FF>Actor</color> Is Unique In All Any", false);
-            ActorButton = new(num++, MultiMenu.neutral, "<color=#00ACC2FF>Actor</color> Can Button");
+            ActorButton = new(num++, MultiMenu.neutral, "<color=#00ACC2FF>Actor</color> Can Button", true);
             ActorVent = new(num++, MultiMenu.neutral, "<color=#00ACC2FF>Actor</color> Can Hide In Vents", false);
             ActSwitchVent = new(num++, MultiMenu.neutral, "<color=#00ACC2FF>Actor</color> Can Switch Vents", false);
             VigiKillsActor = new(num++, MultiMenu.neutral, "<color=#FFFF00FF>Vigilante</color> Kills <color=#00ACC2FF>Actor</color>", false);
@@ -2108,7 +2120,7 @@ namespace TownOfUsReworked.CustomOptions
             UniqueExecutioner = new(num++, MultiMenu.neutral, "<color=#CCCCCCFF>Executioner</color> Is Unique In All Any", false);
             DoomCooldown = new(num++, MultiMenu.neutral, "Doom Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
             DoomCount = new(num++, MultiMenu.neutral, "Doom Count", 5, 1, 14, 1);
-            ExecutionerButton = new(num++, MultiMenu.neutral, "<color=#CCCCCCFF>Executioner</color> Can Button");
+            ExecutionerButton = new(num++, MultiMenu.neutral, "<color=#CCCCCCFF>Executioner</color> Can Button", true);
             ExeVent = new(num++, MultiMenu.neutral, "<color=#CCCCCCFF>Executioner</color> Can Hide In Vents", false);
             ExeSwitchVent = new(num++, MultiMenu.neutral, "<color=#CCCCCCFF>Executioner</color> Can Switch Vents", false);
             ExeTargetKnows = new(num++, MultiMenu.neutral, "Target Knows <color=#CCCCCCFF>Executioner</color> Exists", false);
@@ -2123,24 +2135,24 @@ namespace TownOfUsReworked.CustomOptions
             Guesser = new(MultiMenu.neutral, "<color=#EEE5BEFF>Guesser</color>");
             GuesserCount = new(num++, MultiMenu.neutral, "<color=#EEE5BEFF>Guesser</color> Count", 1, 1, 14, 1);
             UniqueGuesser = new(num++, MultiMenu.neutral, "<color=#EEE5BEFF>Guesser</color> Is Unique In All Any", false);
-            GuesserButton = new(num++, MultiMenu.neutral, "<color=#EEE5BEFF>Guesser</color> Can Button");
+            GuesserButton = new(num++, MultiMenu.neutral, "<color=#EEE5BEFF>Guesser</color> Can Button", true);
             GuessVent = new(num++, MultiMenu.neutral, "<color=#EEE5BEFF>Guesser</color> Can Hide In Vents", false);
             GuessSwitchVent = new(num++, MultiMenu.neutral, "<color=#EEE5BEFF>Guesser</color> Can Switch Vents", false);
             GuessTargetKnows = new(num++, MultiMenu.neutral, "Target Knows <color=#EEE5BEFF>Guesser</color> Exists", false);
-            MultipleGuesses = new(num++, MultiMenu.neutral, "<color=#EEE5BEFF>Guesser</color> Can Guess Multiple Times");
-            GuessCount = new(num++, MultiMenu.neutral, "Max Guesses", 5, 1, 14, 1);
+            MultipleGuesses = new(num++, MultiMenu.neutral, "<color=#EEE5BEFF>Guesser</color> Can Guess Multiple Times", true);
+            GuessCount = new(num++, MultiMenu.neutral, "Max Guesses", 5, 1, 15, 1);
             GuesserAfterVoting = new(num++, MultiMenu.neutral, "<color=#EEE5BEFF>Guesser</color> Can Guess After Voting", false);
             VigiKillsGuesser = new(num++, MultiMenu.neutral, "<color=#FFFF00FF>Vigilante</color> Kills <color=#EEE5BEFF>Guesser</color>", false);
 
             Jester = new(MultiMenu.neutral, "<color=#F7B3DAFF>Jester</color>");
             JesterCount = new(num++, MultiMenu.neutral, "<color=#F7B3DAFF>Jester</color> Count", 1, 1, 14, 1);
             UniqueJester= new(num++, MultiMenu.neutral, "<color=#F7B3DAFF>Jester</color> Is Unique In All Any", false);
-            JesterButton = new(num++, MultiMenu.neutral, "<color=#F7B3DAFF>Jester</color> Can Button");
+            JesterButton = new(num++, MultiMenu.neutral, "<color=#F7B3DAFF>Jester</color> Can Button", true);
             HauntCooldown = new(num++, MultiMenu.neutral, "Haunt Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
             HauntCount = new(num++, MultiMenu.neutral, "Haunt Count", 5, 1, 14, 1);
             JesterVent = new(num++, MultiMenu.neutral, "<color=#F7B3DAFF>Jester</color> Can Hide In Vents", false);
             JestSwitchVent = new(num++, MultiMenu.neutral, "<color=#F7B3DAFF>Jester</color> Can Switch Vents", false);
-            JestEjectScreen = new(num++, MultiMenu.neutral, "<color=#F7B3DAFF>Jester</color> Target Ejection Reveals Existence Of <color=#F7B3DAFF>Jester</color>", false);
+            JestEjectScreen = new(num++, MultiMenu.neutral, "<color=#F7B3DAFF>Jester</color> Ejection Reveals Existence Of <color=#F7B3DAFF>Jester</color>", false);
             VigiKillsJester = new(num++, MultiMenu.neutral, "<color=#FFFF00FF>Vigilante</color> Kills <color=#F7B3DAFF>Jester</color>", false);
 
             Troll = new(MultiMenu.neutral, "<color=#678D36FF>Troll</color>");
@@ -2217,7 +2229,7 @@ namespace TownOfUsReworked.CustomOptions
             WerewolfCount = new(num++, MultiMenu.neutral, "<color=#9F703AFF>Werewolf</color> Count", 1, 1, 14, 1);
             UniqueWerewolf = new(num++, MultiMenu.neutral, "<color=#9F703AFF>Werewolf</color> Is Unique In All Any", false);
             MaulCooldown = new(num++, MultiMenu.neutral, "Maul Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
-            MaulRadius = new(num++, MultiMenu.neutral, "Maul Radius", 1f, 0.25f, 5f, 0.25f, DistanceFormat);
+            MaulRadius = new(num++, MultiMenu.neutral, "Maul Radius", 1.5f, 0.5f, 5f, 0.25f, DistanceFormat);
             WerewolfVent = new(num++, MultiMenu.neutral, "<color=#9F703AFF>Werewolf</color> Can Vent", false);
 
             NeutralNeophyteSettings = new(MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Neophyte</color> Settings");
@@ -2259,7 +2271,7 @@ namespace TownOfUsReworked.CustomOptions
             UniqueWhisperer = new(num++, MultiMenu.neutral, "<color=#2D6AA5FF>Whisperer</color> Is Unique In All Any", false);
             WhisperCooldown = new(num++, MultiMenu.neutral, "Whisper Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
             WhisperCooldownIncrease = new(num++, MultiMenu.neutral, "Whisper Cooldown Increases By", 5f, 2.5f, 30f, 2.5f, CooldownFormat);
-            WhisperRadius = new(num++, MultiMenu.neutral, "Whisper Radius", 1f, 0.25f, 5f, 0.25f, DistanceFormat);
+            WhisperRadius = new(num++, MultiMenu.neutral, "Whisper Radius", 1.5f, 0.5f, 5f, 0.25f, DistanceFormat);
             InitialWhisperRate = new(num++, MultiMenu.neutral, "Whisper Rate", 5, 5, 50, 5, PercentFormat);
             WhisperRateDecreases = new(num++, MultiMenu.neutral, "Whisper Rate Decreases Each Whisper", false);
             WhisperRateDecrease = new(num++, MultiMenu.neutral, "Whisper Rate Decrease", 5, 5, 50, 5, CooldownFormat);
@@ -2270,19 +2282,19 @@ namespace TownOfUsReworked.CustomOptions
 
             Betrayer = new(MultiMenu.neutral, "<color=#11806AFF>Betrayer</color>");
             BetrayerKillCooldown = new(num++, MultiMenu.neutral, "Kill Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
-            BetrayerVent = new(num++, MultiMenu.neutral, "<color=#11806AFF>Betrayer</color> Can Vent");
+            BetrayerVent = new(num++, MultiMenu.neutral, "<color=#11806AFF>Betrayer</color> Can Vent", true);
 
             Phantom = new(MultiMenu.neutral, "<color=#662962FF>Phantom</color>");
             PhantomTasksRemaining = new(num++, MultiMenu.neutral, "Tasks Remaining When <color=#662962FF>Phantom</color> Can Be Clicked", 5, 1, 10, 1);
             PhantomPlayersAlerted = new(num++, MultiMenu.neutral, "Players Are Alerted When <color=#662962FF>Phantom</color> Is Clickable", false);
 
             IntruderSettings = new(MultiMenu.intruder, "<color=#FF0000FF>Intruder</color> Settings");
-            CustomIntColors = new(num++, MultiMenu.intruder, "Enable Custom <color=#FF0000FF>Intruder</color> Colors");
+            CustomIntColors = new(num++, MultiMenu.intruder, "Enable Custom <color=#FF0000FF>Intruder</color> Colors", true);
             IntruderCount = new(num++, MultiMenu.intruder, "<color=#FF0000FF>Intruder</color> Count", 1, 0, 4, 1);
             IntruderVision = new(num++, MultiMenu.intruder, "<color=#FF0000FF>Intruder</color> Vision", 2f, 0.25f, 5f, 0.25f, MultiplierFormat);
             IntruderKillCooldown = new(num++, MultiMenu.intruder, "<color=#FF0000FF>Intruder</color> Kill Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
-            IntrudersVent = new(num++, MultiMenu.intruder, "<color=#FF0000FF>Intruder</color> Can Vent");
-            IntrudersCanSabotage = new(num++, MultiMenu.intruder, "<color=#FF0000FF>Intruder</color> Can Sabotage");
+            IntrudersVent = new(num++, MultiMenu.intruder, "<color=#FF0000FF>Intruder</color> Can Vent", true);
+            IntrudersCanSabotage = new(num++, MultiMenu.intruder, "<color=#FF0000FF>Intruder</color> Can Sabotage", true);
             IntruderMax = new(num++, MultiMenu.intruder, "Max <color=#FF0000FF>Intruder</color> <color=#FFD700FF>Roles</color>", 5, 1, 14, 1);
             IntruderMin = new(num++, MultiMenu.intruder, "Min <color=#FF0000FF>Intruder</color> <color=#FFD700FF>Roles</color>", 5, 1, 14, 1);
 
@@ -2294,9 +2306,9 @@ namespace TownOfUsReworked.CustomOptions
             BlackmailerCount = new(num++, MultiMenu.intruder, "<color=#02A752FF>Blackmailer</color> Count", 1, 1, 14, 1);
             UniqueBlackmailer = new(num++, MultiMenu.intruder, "<color=#02A752FF>Blackmailer</color> Is Unique In All Any", false);
             BlackmailCooldown = new(num++, MultiMenu.intruder, "Blackmail Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
-            WhispersNotPrivate = new(num++, MultiMenu.intruder, "<color=#02A752FF>Blackmailer</color> Can Read Whispers");
+            WhispersNotPrivate = new(num++, MultiMenu.intruder, "<color=#02A752FF>Blackmailer</color> Can Read Whispers", true);
             BlackmailMates = new(num++, MultiMenu.intruder, "<color=#02A752FF>Blackmailer</color> Can Blackmail Teammates", false);
-            BMRevealed = new(num++, MultiMenu.intruder, "Blackmail Is Revealed To Everyone");
+            BMRevealed = new(num++, MultiMenu.intruder, "Blackmail Is Revealed To Everyone", true);
 
             Camouflager = new(MultiMenu.intruder, "<color=#378AC0FF>Camouflager</color>");
             CamouflagerCount = new(num++, MultiMenu.intruder, "<color=#378AC0FF>Camouflager</color> Count", 1, 1, 14, 1);
@@ -2311,7 +2323,7 @@ namespace TownOfUsReworked.CustomOptions
             UniqueGrenadier = new(num++, MultiMenu.intruder, "<color=#85AA5BFF>Grenadier</color> Is Unique In All Any", false);
             GrenadeCooldown = new(num++, MultiMenu.intruder, "Flash Grenade Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
             GrenadeDuration = new(num++, MultiMenu.intruder, "Flash Grenade Duration", 10f, 5f, 30f, 1f, CooldownFormat);
-            FlashRadius = new(num++, MultiMenu.intruder, "Flash Radius", 1f, 0.25f, 5f, 0.25f, DistanceFormat);
+            FlashRadius = new(num++, MultiMenu.intruder, "Flash Radius", 1.5f, 0.5f, 5f, 0.25f, DistanceFormat);
             GrenadierIndicators = new(num++, MultiMenu.intruder, "Indicate Flashed Players", false);
             GrenadierVent = new(num++, MultiMenu.intruder, "<color=#85AA5BFF>Grenadier</color> Can Vent", false);
 
@@ -2372,7 +2384,7 @@ namespace TownOfUsReworked.CustomOptions
             EnforceCooldown = new(num++, MultiMenu.intruder, "Enforce Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
             EnforceDuration = new(num++, MultiMenu.intruder, "Enforce Duration", 10f, 5f, 30f, 1f, CooldownFormat);
             EnforceDelay = new(num++, MultiMenu.intruder, "Enforce Delay", 5f, 1f, 15f, 1f, CooldownFormat);
-            EnforceRadius = new(num++, MultiMenu.intruder, "Enforce Explosion Radius", 0.25f, 0.05f, 1f, 0.05f, DistanceFormat);
+            EnforceRadius = new(num++, MultiMenu.intruder, "Enforce Explosion Radius", 1.5f, 0.5f, 5f, 0.25f, DistanceFormat);
 
             IntruderSupportSettings = new(MultiMenu.intruder, "<color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Support</color> Settings");
             ISMax = new(num++, MultiMenu.intruder, "Max <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
@@ -2417,7 +2429,7 @@ namespace TownOfUsReworked.CustomOptions
             ImpCount = new(num++, MultiMenu.intruder, "<color=#FF0000FF>Impostor</color> Count", 1, 1, 14, 1);
 
             SyndicateSettings = new(MultiMenu.syndicate, "<color=#008000FF>Syndicate</color> Settings");
-            CustomSynColors = new(num++, MultiMenu.syndicate, "Enable Custom <color=#008000FF>Syndicate</color> Colors");
+            CustomSynColors = new(num++, MultiMenu.syndicate, "Enable Custom <color=#008000FF>Syndicate</color> Colors", true);
             SyndicateCount = new(num++, MultiMenu.syndicate, "<color=#008000FF>Syndicate</color> Count", 1, 0, 4, 1);
             SyndicateVision = new(num++, MultiMenu.syndicate, "<color=#008000FF>Syndicate</color> Vision", 2f, 0.25f, 5f, 0.25f, MultiplierFormat);
             ChaosDriveMeetingCount = new(num++, MultiMenu.syndicate, "Chaos Drive Timer", 3, 1, 10, 1);
@@ -2444,13 +2456,13 @@ namespace TownOfUsReworked.CustomOptions
             UniqueDrunkard = new(num++, MultiMenu.syndicate, "<color=#FF7900FF>Drunkard</color> Is Unique In All Any", false);
             ConfuseCooldown = new(num++, MultiMenu.syndicate, "Confuse Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
             ConfuseDuration = new(num++, MultiMenu.syndicate, "Confuse Duration", 10f, 5f, 30f, 1f, CooldownFormat);
-            ConfuseImmunity = new(num++, MultiMenu.syndicate, "<color=#008000FF>Syndicate</color> Are Immune To Confuse");
+            ConfuseImmunity = new(num++, MultiMenu.syndicate, "<color=#008000FF>Syndicate</color> Are Immune To Confuse", true);
 
             Framer = new(MultiMenu.syndicate, "<color=#00FFFFFF>Framer</color>");
             FramerCount = new(num++, MultiMenu.syndicate, "<color=#00FFFFFF>Framer</color> Count", 1, 1, 14, 1);
             UniqueFramer = new(num++, MultiMenu.syndicate, "<color=#00FFFFFF>Framer</color> Is Unique In All Any", false);
             FrameCooldown = new(num++, MultiMenu.syndicate, "Frame Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
-            ChaosDriveFrameRadius = new(num++, MultiMenu.syndicate, "Chaos Drive Frame Radius", 0.25f, 0.05f, 1f, 0.05f, DistanceFormat);
+            ChaosDriveFrameRadius = new(num++, MultiMenu.syndicate, "Chaos Drive Frame Radius", 1.5f, 0.5f, 5f, 0.25f, DistanceFormat);
 
             Shapeshifter = new(MultiMenu.syndicate, "<color=#2DFF00FF>Shapeshifter</color>");
             ShapeshifterCount = new(num++, MultiMenu.syndicate, "<color=#2DFF00FF>Shapeshifter</color> Count", 1, 1, 14, 1);
@@ -2463,9 +2475,9 @@ namespace TownOfUsReworked.CustomOptions
             SilencerCount = new(num++, MultiMenu.syndicate, "<color=#AAB43EFF>Silencer</color> Count", 1, 1, 14, 1);
             UniqueSilencer = new(num++, MultiMenu.syndicate, "<color=#AAB43EFF>Silencer</color> Is Unique In All Any", false);
             SilenceCooldown = new(num++, MultiMenu.syndicate, "Silence Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
-            WhispersNotPrivateSilencer = new(num++, MultiMenu.syndicate, "<color=#AAB43EFF>Silencer</color> Can Read Whispers");
+            WhispersNotPrivateSilencer = new(num++, MultiMenu.syndicate, "<color=#AAB43EFF>Silencer</color> Can Read Whispers", true);
             SilenceMates = new(num++, MultiMenu.syndicate, "<color=#AAB43EFF>Silencer</color> Can Silence Teammates", false);
-            SilenceRevealed = new(num++, MultiMenu.syndicate, "Silence Is Revealed To Everyone");
+            SilenceRevealed = new(num++, MultiMenu.syndicate, "Silence Is Revealed To Everyone", true);
 
             SyndicateKillingSettings = new(MultiMenu.syndicate, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Killing</color> Settings");
             SyKMax = new(num++, MultiMenu.syndicate, "Max <color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
@@ -2479,23 +2491,23 @@ namespace TownOfUsReworked.CustomOptions
             BombCooldownsLinked = new(num++, MultiMenu.syndicate, "Place And Detonate Cooldowns Are Linked", false);
             BombsRemoveOnNewRound = new(num++, MultiMenu.syndicate, "Bombs Are Cleared Every Meeting", false);
             BombsDetonateOnMeetingStart = new(num++, MultiMenu.syndicate, "Bombs Detonate Everytime A Meeting Is Called", false);
-            BombRange = new(num++, MultiMenu.syndicate, "Bomb Radius", 2, 0.5f, 5, 0.5f, DistanceFormat);
-            ChaosDriveBombRange = new(num++, MultiMenu.syndicate, "Chaos Drive Bomb Radius Increase", 0.1f, 0.05f, 0.25f, 0.05f, DistanceFormat);
-            BombKillsSyndicate = new(num++, MultiMenu.syndicate, "Bomb Detonation Kills Members Of The <color=#008000FF>Syndicate</color>");
+            BombRange = new(num++, MultiMenu.syndicate, "Bomb Radius", 1.5f, 0.5f, 5f, 0.25f, DistanceFormat);
+            ChaosDriveBombRange = new(num++, MultiMenu.syndicate, "Chaos Drive Bomb Radius Increase", 0.5f, 0.5f, 5f, 0.25f, DistanceFormat);
+            BombKillsSyndicate = new(num++, MultiMenu.syndicate, "Bomb Detonation Kills Members Of The <color=#008000FF>Syndicate</color>", true);
 
             Collider = new(MultiMenu.syndicate, "<color=#B345FFFF>Collider</color>");
             ColliderCount = new(num++, MultiMenu.syndicate, "<color=#B345FFFF>Collider</color> Count", 1, 1, 14, 1);
             UniqueCollider = new(num++, MultiMenu.syndicate, "<color=#B345FFFF>Collider</color> Is Unique In All Any", false);
             CollideCooldown = new(num++, MultiMenu.syndicate, "Collide Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
-            CollideRange = new(num++, MultiMenu.syndicate, "Collide Radius", 1f, 0.25f, 5f, 0.05f, DistanceFormat);
-            CollideRangeIncrease = new(num++, MultiMenu.syndicate, "Chaos Drive Collide Radius Increase", 0.5f, 0.5f, 0.2f, 0.25f, DistanceFormat);
+            CollideRange = new(num++, MultiMenu.syndicate, "Collide Radius", 1.5f, 0.5f, 5f, 0.25f, DistanceFormat);
+            CollideRangeIncrease = new(num++, MultiMenu.syndicate, "Chaos Drive Collide Radius Increase", 0.5f, 0.5f, 5f, 0.25f, DistanceFormat);
 
             Crusader = new(MultiMenu.syndicate, "<color=#DF7AE8FF>Crusader</color>");
             CrusaderCount = new(num++, MultiMenu.syndicate, "<color=#DF7AE8FF>Crusader</color> Count", 1, 1, 14, 1);
             UniqueCrusader = new(num++, MultiMenu.syndicate, "<color=#DF7AE8FF>Crusader</color> Is Unique In All Any", false);
             CrusadeCooldown = new(num++, MultiMenu.syndicate, "Crusade Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
             CrusadeDuration = new(num++, MultiMenu.syndicate, "Crusade Duration", 10f, 5f, 30f, 1f, CooldownFormat);
-            ChaosDriveCrusadeRadius = new(num++, MultiMenu.syndicate, "Chaos Drive Crusade Radius", 1f, 0.1f, 5f, 0.1f, DistanceFormat);
+            ChaosDriveCrusadeRadius = new(num++, MultiMenu.syndicate, "Chaos Drive Crusade Radius", 1.5f, 0.5f, 5f, 0.25f, DistanceFormat);
             CrusadeMates = new(num++, MultiMenu.syndicate, "<color=#DF7AE8FF>Crusader</color> Can Crusade Teammates", false);
 
             Poisoner = new(MultiMenu.syndicate, "<color=#B5004CFF>Poisoner</color>");
@@ -2519,8 +2531,8 @@ namespace TownOfUsReworked.CustomOptions
             UniqueTimeKeeper = new(num++, MultiMenu.syndicate, "<color=#3769FEFF>Time Keeper</color> Is Unique In All Any", false);
             TimeControlCooldown = new(num++, MultiMenu.syndicate, "Time Control Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
             TimeControlDuration = new(num++, MultiMenu.syndicate, "Time Control Duration", 10f, 5f, 30f, 1f, CooldownFormat);
-            TimeFreezeImmunity = new(num++, MultiMenu.syndicate, "<color=#008000FF>Syndicate</color> Are Immune To Freeze");
-            TimeRewindImmunity = new(num++, MultiMenu.syndicate, "<color=#008000FF>Syndicate</color> Are Immune To Rewind");
+            TimeFreezeImmunity = new(num++, MultiMenu.syndicate, "<color=#008000FF>Syndicate</color> Are Immune To Freeze", true);
+            TimeRewindImmunity = new(num++, MultiMenu.syndicate, "<color=#008000FF>Syndicate</color> Are Immune To Rewind", true);
 
             SyndicateSupportSettings = new(MultiMenu.syndicate, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Support</color> Settings");
             SSuMax = new(num++, MultiMenu.syndicate, "Max <color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
@@ -2541,7 +2553,7 @@ namespace TownOfUsReworked.CustomOptions
             UniqueWarper = new(num++, MultiMenu.syndicate, "<color=#8C7140FF>Warper</color> Is Unique In All Any", false);
             WarpCooldown = new(num++, MultiMenu.syndicate, "Warp Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
             WarpDuration = new(num++, MultiMenu.syndicate, "Warp Duration", 5f, 1f, 20f, 1f, CooldownFormat);
-            WarpSelf = new(num++, MultiMenu.syndicate, "<color=#8C7140FF>Warper</color> Can Warp Themselves");
+            WarpSelf = new(num++, MultiMenu.syndicate, "<color=#8C7140FF>Warper</color> Can Warp Themselves", true);
 
             SyndicateUtilitySettings = new(MultiMenu.syndicate, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Utility</color> Settings");
 
@@ -2554,14 +2566,18 @@ namespace TownOfUsReworked.CustomOptions
             ScreamDuration = new(num++, MultiMenu.syndicate, "Scream Duration", 10f, 5f, 30f, 1f, CooldownFormat);
 
             ModifierSettings = new(MultiMenu.modifier, "<color=#7F7F7FFF>Modifier</color> Settings");
-            CustomModifierColors = new(num++, MultiMenu.modifier, "Enable Custom <color=#7F7F7FFF>Modifier</color> Colors");
+            CustomModifierColors = new(num++, MultiMenu.modifier, "Enable Custom <color=#7F7F7FFF>Modifier</color> Colors", true);
             MaxModifiers = new(num++, MultiMenu.modifier, "Max <color=#7F7F7FFF>Modifiers</color>", 5, 1, 14, 1);
             MinModifiers = new(num++, MultiMenu.modifier, "Min <color=#7F7F7FFF>Modifiers</color>", 5, 1, 14, 1);
+
+            Astral = new(MultiMenu.modifier, "<color=#612BEFFF>Astral</color>");
+            AstralCount = new(num++, MultiMenu.modifier, "<color=#612BEFFF>Astral</color> Count", 1, 1, 14, 1);
+            UniqueAstral = new(num++, MultiMenu.modifier, "<color=#612BEFFF>Astral</color> Is Unique In All Any", false);
 
             Bait = new(MultiMenu.modifier, "<color=#00B3B3FF>Bait</color>");
             BaitCount = new(num++, MultiMenu.modifier, "<color=#00B3B3FF>Bait</color> Count", 1, 1, 14, 1);
             UniqueBait = new(num++, MultiMenu.modifier, "<color=#00B3B3FF>Bait</color> Is Unique In All Any", false);
-            BaitKnows = new(num++, MultiMenu.modifier, "<color=#00B3B3FF>Bait</color> Knows Who They Are");
+            BaitKnows = new(num++, MultiMenu.modifier, "<color=#00B3B3FF>Bait</color> Knows Who They Are", true);
             BaitMinDelay = new(num++, MultiMenu.modifier, "Minimum Delay for <color=#00B3B3FF>Bait</color> Self Report", 0f, 0f, 15f, 0.5f, CooldownFormat);
             BaitMaxDelay = new(num++, MultiMenu.modifier, "Maximum Delay for <color=#00B3B3FF>Bait</color> Self Report", 1f, 0f, 15f, 0.5f, CooldownFormat);
 
@@ -2572,7 +2588,7 @@ namespace TownOfUsReworked.CustomOptions
             Diseased = new(MultiMenu.modifier, "<color=#374D1EFF>Diseased</color>");
             DiseasedCount = new(num++, MultiMenu.modifier, "<color=#374D1EFF>Diseased</color> Count", 1, 1, 14, 1);
             UniqueDiseased = new(num++, MultiMenu.modifier, "<color=#374D1EFF>Diseased</color> Is Unique In All Any", false);
-            DiseasedKnows = new(num++, MultiMenu.modifier, "<color=#374D1EFF>Diseased</color> Knows Who They Are");
+            DiseasedKnows = new(num++, MultiMenu.modifier, "<color=#374D1EFF>Diseased</color> Knows Who They Are", true);
             DiseasedKillMultiplier = new(num++, MultiMenu.modifier, "<color=#374D1EFF>Diseased</color> Kill Multiplier", 3f, 1.5f, 5f, 0.5f, MultiplierFormat);
 
             Drunk = new(MultiMenu.modifier, "<color=#758000FF>Drunk</color>");
@@ -2601,12 +2617,12 @@ namespace TownOfUsReworked.CustomOptions
             Indomitable = new(MultiMenu.modifier, "<color=#2DE5BEFF>Indomitable</color>");
             IndomitableCount = new(num++, MultiMenu.modifier, "<color=#2DE5BEFF>Indomitable</color> Count", 1, 1, 14, 1);
             UniqueIndomitable = new(num++, MultiMenu.modifier, "<color=#2DE5BEFF>Indomitable</color> Is Unique In All Any", false);
-            IndomitableKnows = new(num++, MultiMenu.modifier, "<color=#2DE5BEFF>Indomitable</color> Knows Who They Are");
+            IndomitableKnows = new(num++, MultiMenu.modifier, "<color=#2DE5BEFF>Indomitable</color> Knows Who They Are", true);
 
             Professional = new(MultiMenu.modifier, "<color=#860B7AFF>Professional</color>");
             ProfessionalCount = new(num++, MultiMenu.modifier, "<color=#860B7AFF>Professional</color> Count", 1, 1, 14, 1);
             UniqueProfessional = new(num++, MultiMenu.modifier, "<color=#860B7AFF>Professional</color> Is Unique In All Any", false);
-            ProfessionalKnows = new(num++, MultiMenu.modifier, "<color=#860B7AFF>Professional</color> Knows Who They Are");
+            ProfessionalKnows = new(num++, MultiMenu.modifier, "<color=#860B7AFF>Professional</color> Knows Who They Are", true);
 
             Shy = new(MultiMenu.modifier, "<color=#1002C5FF>Shy</color>");
             ShyCount = new(num++, MultiMenu.modifier, "<color=#1002C5FF>Shy</color> Count", 1, 1, 14, 1);
@@ -2615,16 +2631,20 @@ namespace TownOfUsReworked.CustomOptions
             VIP = new(MultiMenu.modifier, "<color=#DCEE85FF>VIP</color>");
             VIPCount = new(num++, MultiMenu.modifier, "<color=#DCEE85FF>VIP</color> Count", 1, 1, 14, 1);
             UniqueVIP = new(num++, MultiMenu.modifier, "<color=#DCEE85FF>VIP</color> Is Unique In All Any", false);
-            VIPKnows = new(num++, MultiMenu.modifier, "<color=#DCEE85FF>VIP</color> Knows Who They Are");
+            VIPKnows = new(num++, MultiMenu.modifier, "<color=#DCEE85FF>VIP</color> Knows Who They Are", true);
 
             Volatile = new(MultiMenu.modifier, "<color=#FFA60AFF>Volatile</color>");
             VolatileCount = new(num++, MultiMenu.modifier, "<color=#FFA60AFF>Volatile</color> Count", 1, 1, 14, 1);
             UniqueVolatile = new(num++, MultiMenu.modifier, "<color=#FFA60AFF>Volatile</color> Is Unique In All Any", false);
             VolatileInterval = new(num++, MultiMenu.modifier, "<color=#FFA60AFF>Volatile</color> Interval", 15f, 10f, 30f, 1f, CooldownFormat);
-            VolatileKnows = new(num++, MultiMenu.modifier, "<color=#FFA60AFF>Volatile</color> Knows Who They Are");
+            VolatileKnows = new(num++, MultiMenu.modifier, "<color=#FFA60AFF>Volatile</color> Knows Who They Are", true);
+
+            Yeller = new(MultiMenu.modifier, "<color=#F6AAB7FF>Yeller</color>");
+            YellerCount = new(num++, MultiMenu.modifier, "<color=#F6AAB7FF>Yeller</color> Count", 1, 1, 14, 1);
+            UniqueYeller = new(num++, MultiMenu.modifier, "<color=#F6AAB7FF>Yeller</color> Is Unique In All Any", false);
 
             AbilitySettings = new(MultiMenu.ability, "<color=#FF9900FF>Ability</color> Settings");
-            CustomAbilityColors = new(num++, MultiMenu.ability, "Enable Custom <color=#FF9900FF>Ability</color> Colors");
+            CustomAbilityColors = new(num++, MultiMenu.ability, "Enable Custom <color=#FF9900FF>Ability</color> Colors", true);
             MaxAbilities = new(num++, MultiMenu.ability, "Max <color=#FF9900FF>Abilities</color>", 5, 1, 14, 1);
             MinAbilities = new(num++, MultiMenu.ability, "Min <color=#FF9900FF>Abilities</color>", 5, 1, 14, 1);
 
@@ -2642,6 +2662,7 @@ namespace TownOfUsReworked.CustomOptions
             AssassinGuessModifiers = new(num++, MultiMenu.ability, "<color=#073763FF>Assassin</color> Can Guess Select <color=#7F7F7FFF>Modifiers</color>", false);
             AssassinGuessObjectifiers = new(num++, MultiMenu.ability, "<color=#073763FF>Assassin</color> Can Guess Select <color=#DD585BFF>Objectifiers</color>", false);
             AssassinGuessAbilities = new(num++, MultiMenu.ability, "<color=#073763FF>Assassin</color> Can Guess <color=#FF9900FF>Abilities</color>", false);
+            AssassinGuessInvestigative = new(num++, MultiMenu.ability, "<color=#073763FF>Assassin</color> Can Guess <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Investigatives</color>", false);
             AssassinateAfterVoting = new(num++, MultiMenu.ability, "<color=#073763FF>Assassin</color> Can Guess After Voting", false);
 
             ButtonBarry = new(MultiMenu.ability, "<color=#E600FFFF>Button Barry</color>");
@@ -2652,7 +2673,7 @@ namespace TownOfUsReworked.CustomOptions
             Insider = new(MultiMenu.ability, "<color=#26FCFBFF>Insider</color>");
             InsiderCount = new(num++, MultiMenu.ability, "<color=#26FCFBFF>Insider</color> Count", 1, 1, 14, 1);
             UniqueInsider = new(num++, MultiMenu.ability, "<color=#26FCFBFF>Insider</color> Is Unique In All Any", false);
-            InsiderKnows = new(num++, MultiMenu.ability, "<color=#26FCFBFF>Insider</color> Knows Who They Are");
+            InsiderKnows = new(num++, MultiMenu.ability, "<color=#26FCFBFF>Insider</color> Knows Who They Are", true);
 
             Multitasker = new(MultiMenu.ability, "<color=#FF804DFF>Multitasker</color>");
             MultitaskerCount = new(num++, MultiMenu.ability, "<color=#FF804DFF>Multitasker</color> Count", 1, 1, 14, 1);
@@ -2668,7 +2689,7 @@ namespace TownOfUsReworked.CustomOptions
             UniquePolitician = new(num++, MultiMenu.ability, "<color=#CCA3CCFF>Politician</color> Is Unique In All Any", false);
             PoliticianVoteBank = new(num++, MultiMenu.ability, "Initial <color=#CCA3CCFF>Politician</color> Initial Vote Bank", 0, 0, 10, 1);
             PoliticianAnonymous = new(num++, MultiMenu.ability, "Anonymous <color=#CCA3CCFF>Politician</color> Votes", false);
-            PoliticianButton = new(num++, MultiMenu.ability, "<color=#CCA3CCFF>Politician</color> Can Button");
+            PoliticianButton = new(num++, MultiMenu.ability, "<color=#CCA3CCFF>Politician</color> Can Button", true);
 
             Radar = new(MultiMenu.ability, "<color=#FF0080FF>Radar</color>");
             RadarCount = new(num++, MultiMenu.ability, "<color=#FF0080FF>Radar</color> Count", 1, 1, 14, 1);
@@ -2677,29 +2698,29 @@ namespace TownOfUsReworked.CustomOptions
             Ruthless = new(MultiMenu.ability, "<color=#2160DDFF>Ruthless</color>");
             RuthlessCount = new(num++, MultiMenu.ability, "<color=#2160DDFF>Ruthless</color> Count", 1, 1, 14, 1);
             UniqueRuthless = new(num++, MultiMenu.ability, "<color=#2160DDFF>Ruthless</color> Is Unique In All Any", false);
-            RuthlessKnows = new(num++, MultiMenu.ability, "<color=#2160DDFF>Ruthless</color> Knows Who They Are");
+            RuthlessKnows = new(num++, MultiMenu.ability, "<color=#2160DDFF>Ruthless</color> Knows Who They Are", true);
 
             Snitch = new(MultiMenu.ability, "<color=#D4AF37FF>Snitch</color>");
             SnitchCount = new(num++, MultiMenu.ability, "<color=#D4AF37FF>Snitch</color> Count", 1, 1, 14, 1);
             UniqueSnitch = new(num++, MultiMenu.ability, "<color=#D4AF37FF>Snitch</color> Is Unique In All Any", false);
-            SnitchKnows = new(num++, MultiMenu.ability, "<color=#D4AF37FF>Snitch</color> Knows Who They Are");
+            SnitchKnows = new(num++, MultiMenu.ability, "<color=#D4AF37FF>Snitch</color> Knows Who They Are", true);
             SnitchSeesNeutrals = new(num++, MultiMenu.ability, "<color=#D4AF37FF>Snitch</color> Sees <color=#B3B3B3FF>Neutrals</color>", false);
             SnitchSeesCrew = new(num++, MultiMenu.ability, "<color=#D4AF37FF>Snitch</color> Sees <color=#8CFFFFFF>Crew</color>", false);
             SnitchSeesRoles = new(num++, MultiMenu.ability, "<color=#D4AF37FF>Snitch</color> Sees Exact <color=#FFD700FF>Roles</color>", false);
             SnitchTasksRemaining = new(num++, MultiMenu.ability, "Tasks Remaining When Revealed", 1, 1, 5, 1);
-            SnitchSeestargetsInMeeting = new(num++, MultiMenu.ability, "<color=#D4AF37FF>Snitch</color> Sees Evils In Meetings");
+            SnitchSeestargetsInMeeting = new(num++, MultiMenu.ability, "<color=#D4AF37FF>Snitch</color> Sees Evils In Meetings", true);
 
             Swapper = new(MultiMenu.ability, "<color=#66E666FF>Swapper</color>");
             SwapperCount = new(num++, MultiMenu.ability, "<color=#66E666FF>Swapper</color> Count", 1, 1, 14, 1);
             UniqueSwapper = new(num++, MultiMenu.ability, "<color=#66E666FF>Swapper</color> Is Unique In All Any", false);
-            SwapperButton = new(num++, MultiMenu.ability, "<color=#66E666FF>Swapper</color> Can Button");
+            SwapperButton = new(num++, MultiMenu.ability, "<color=#66E666FF>Swapper</color> Can Button", true);
             SwapAfterVoting = new(num++, MultiMenu.ability, "<color=#66E666FF>Swapper</color> Can Swap After Voting", false);
-            SwapSelf = new(num++, MultiMenu.ability, "<color=#66E666FF>Swapper</color> Can Swap Themself");
+            SwapSelf = new(num++, MultiMenu.ability, "<color=#66E666FF>Swapper</color> Can Swap Themself", true);
 
             Tiebreaker = new(MultiMenu.ability, "<color=#99E699FF>Tiebreaker</color>");
             TiebreakerCount = new(num++, MultiMenu.ability, "<color=#99E699FF>Tiebreaker</color> Count", 1, 1, 14, 1);
             UniqueTiebreaker = new(num++, MultiMenu.ability, "<color=#99E699FF>Tiebreaker</color> Is Unique In All Any", false);
-            TiebreakerKnows = new(num++, MultiMenu.ability, "<color=#99E699FF>Tiebreaker</color> Knows Who They Are");
+            TiebreakerKnows = new(num++, MultiMenu.ability, "<color=#99E699FF>Tiebreaker</color> Knows Who They Are", true);
 
             Torch = new(MultiMenu.ability, "<color=#FFFF99FF>Torch</color>");
             TorchCount = new(num++, MultiMenu.ability, "<color=#FFFF99FF>Torch</color> Count", 1, 1, 14, 1);
@@ -2708,17 +2729,17 @@ namespace TownOfUsReworked.CustomOptions
             Tunneler = new(MultiMenu.ability, "<color=#E91E63FF>Tunneler</color>");
             TunnelerCount = new(num++, MultiMenu.ability, "<color=#E91E63FF>Tunneler</color> Count", 1, 1, 14, 1);
             UniqueTunneler = new(num++, MultiMenu.ability, "<color=#E91E63FF>Tunneler</color> Is Unique In All Any", false);
-            TunnelerKnows = new(num++, MultiMenu.ability, "<color=#E91E63FF>Tunneler</color> Knows Who They Are");
+            TunnelerKnows = new(num++, MultiMenu.ability, "<color=#E91E63FF>Tunneler</color> Knows Who They Are", true);
 
             Underdog = new(MultiMenu.ability, "<color=#841A7FFF>Underdog</color>");
             UnderdogCount = new(num++, MultiMenu.ability, "<color=#841A7FFF>Underdog</color> Count", 1, 1, 14, 1);
             UniqueUnderdog = new(num++, MultiMenu.ability, "<color=#841A7FFF>Underdog</color> Is Unique In All Any", false);
-            UnderdogKnows = new(num++, MultiMenu.ability, "<color=#841A7FFF>Underdog</color> Knows Who They Are");
+            UnderdogKnows = new(num++, MultiMenu.ability, "<color=#841A7FFF>Underdog</color> Knows Who They Are", true);
             UnderdogKillBonus = new(num++, MultiMenu.ability, "Kill Cooldown Bonus", 5f, 2.5f, 30f, 2.5f, CooldownFormat);
-            UnderdogIncreasedKC = new(num++, MultiMenu.ability, "Increased Kill Cooldown When 2+ Teammates");
+            UnderdogIncreasedKC = new(num++, MultiMenu.ability, "Increased Kill Cooldown When 2+ Teammates", true);
 
             ObjectifierSettings = new(MultiMenu.objectifier, "<color=#DD585BFF>Objectifier</color> Settings");
-            CustomObjectifierColors = new(num++, MultiMenu.objectifier, "Enable Custom <color=#DD585BFF>Objectifier</color> Colors");
+            CustomObjectifierColors = new(num++, MultiMenu.objectifier, "Enable Custom <color=#DD585BFF>Objectifier</color> Colors", true);
             MaxObjectifiers = new(num++, MultiMenu.objectifier, "Max <color=#DD585BFF>Objectifiers</color>", 5, 1, 14, 1);
             MinObjectifiers = new(num++, MultiMenu.objectifier, "Min <color=#DD585BFF>Objectifiers</color>", 5, 1, 14, 1);
 
@@ -2737,43 +2758,43 @@ namespace TownOfUsReworked.CustomOptions
             Defector = new(MultiMenu.objectifier, "<color=#E1C849FF>Defector</color>");
             DefectorCount = new(num++, MultiMenu.objectifier, "<color=#E1C849FF>Defector</color> Count", 1, 1, 14, 1);
             UniqueDefector = new(num++, MultiMenu.objectifier, "<color=#E1C849FF>Defector</color> Is Unique In All Any", false);
-            DefectorKnows = new(num++, MultiMenu.objectifier, "<color=#E1C849FF>Defector</color> Knows Who They Are");
+            DefectorKnows = new(num++, MultiMenu.objectifier, "<color=#E1C849FF>Defector</color> Knows Who They Are", true);
             DefectorFaction = new(num++, MultiMenu.objectifier, "<color=#E1C849FF>Defector</color> Faction", new[] { "Random", "Opposing Evil", "Crew" });
 
             Fanatic = new(MultiMenu.objectifier, "<color=#678D36FF>Fanatic</color>");
             FanaticCount = new(num++, MultiMenu.objectifier, "<color=#678D36FF>Fanatic</color> Count", 1, 1, 14, 1);
             UniqueFanatic = new(num++, MultiMenu.objectifier, "<color=#678D36FF>Fanatic</color> Is Unique In All Any", false);
-            FanaticKnows = new(num++, MultiMenu.objectifier, "<color=#678D36FF>Fanatic</color> Knows Who They Are");
+            FanaticKnows = new(num++, MultiMenu.objectifier, "<color=#678D36FF>Fanatic</color> Knows Who They Are", true);
             FanaticColourSwap = new(num++, MultiMenu.objectifier, "Turned <color=#678D36FF>Fanatic</color> Swaps Colours For Investigative <color=#FFD700FF>Roles</color>", false);
-            SnitchSeesFanatic = new(num++, MultiMenu.objectifier, "<color=#D4AF37FF>Snitch</color> Sees Turned <color=#678D36FF>Fanatic</color>");
+            SnitchSeesFanatic = new(num++, MultiMenu.objectifier, "<color=#D4AF37FF>Snitch</color> Sees Turned <color=#678D36FF>Fanatic</color>", true);
             RevealerRevealsFanatic = new(num++, MultiMenu.objectifier, "<color=#D3D3D3FF>Revealer</color> Reveals Turned <color=#678D36FF>Fanatic</color>", false);
 
             Lovers = new(MultiMenu.objectifier, "<color=#FF66CCFF>Lovers</color>");
             LoversCount = new(num++, MultiMenu.objectifier, "<color=#FF66CCFF>Lovers</color> Count", 1, 1, 14, 1);
             UniqueLovers = new(num++, MultiMenu.objectifier, "<color=#FF66CCFF>Lovers</color> Is Unique In All Any", false);
-            BothLoversDie = new(num++, MultiMenu.objectifier, "Both <color=#FF66CCFF>Lovers</color> Die");
-            LoversChat = new(num++, MultiMenu.objectifier, "Enable <color=#FF66CCFF>Lovers</color> Chat");
-            LoversFaction = new(num++, MultiMenu.objectifier, "<color=#FF66CCFF>Lovers</color> Can Be From The Same Faction");
-            LoversRoles = new(num++, MultiMenu.objectifier, "<color=#FF66CCFF>Lovers</color> Know Each Other's <color=#FFD700FF>Roles</color>");
+            BothLoversDie = new(num++, MultiMenu.objectifier, "Both <color=#FF66CCFF>Lovers</color> Die", true);
+            LoversChat = new(num++, MultiMenu.objectifier, "Enable <color=#FF66CCFF>Lovers</color> Chat", true);
+            LoversFaction = new(num++, MultiMenu.objectifier, "<color=#FF66CCFF>Lovers</color> Can Be From The Same Faction", true);
+            LoversRoles = new(num++, MultiMenu.objectifier, "<color=#FF66CCFF>Lovers</color> Know Each Other's <color=#FFD700FF>Roles</color>", true);
 
             Mafia = new(MultiMenu.objectifier, "<color=#00EEFFFF>Mafia</color>");
             MafiaCount = new(num++, MultiMenu.objectifier, "<color=#00EEFFFF>Mafia</color> Count", 2, 2, 14, 1);
             UniqueMafia = new(num++, MultiMenu.objectifier, "<color=#00EEFFFF>Mafia</color> Is Unique In All Any", false);
-            MafiaRoles = new(num++, MultiMenu.objectifier, "<color=#00EEFFFF>Mafia</color> Know Each Other's <color=#FFD700FF>Roles</color>");
+            MafiaRoles = new(num++, MultiMenu.objectifier, "<color=#00EEFFFF>Mafia</color> Know Each Other's <color=#FFD700FF>Roles</color>", true);
             MafVent = new(num++, MultiMenu.objectifier, "<color=#00EEFFFF>Mafia</color> Can Vent", false);
 
             Overlord = new(MultiMenu.objectifier, "<color=#008080FF>Overlord</color>");
             OverlordCount = new(num++, MultiMenu.objectifier, "<color=#008080FF>Overlord</color> Count", 1, 1, 14, 1);
             UniqueOverlord = new(num++, MultiMenu.objectifier, "<color=#008080FF>Overlord</color> Is Unique In All Any", false);
-            OverlordKnows = new(num++, MultiMenu.objectifier, "<color=#008080FF>Overlord</color> Knows Who They Are");
+            OverlordKnows = new(num++, MultiMenu.objectifier, "<color=#008080FF>Overlord</color> Knows Who They Are", true);
             OverlordMeetingWinCount = new(num++, MultiMenu.objectifier, "<color=#008080FF>Overlord</color> Meeting Timer", 2, 1, 20, 1);
 
             Rivals = new(MultiMenu.objectifier, "<color=#3D2D2CFF>Rivals</color>");
             RivalsCount = new(num++, MultiMenu.objectifier, "<color=#3D2D2CFF>Rivals</color> Count", 1, 1, 14, 1);
             UniqueRivals = new(num++, MultiMenu.objectifier, "<color=#3D2D2CFF>Rivals</color> Is Unique In All Any", false);
-            RivalsChat = new(num++, MultiMenu.objectifier, "Enable <color=#3D2D2CFF>Rivals</color> Chat");
-            RivalsFaction = new(num++, MultiMenu.objectifier, "<color=#3D2D2CFF>Rivals</color> Can Be From The Same Faction");
-            RivalsRoles = new(num++, MultiMenu.objectifier, "<color=#3D2D2CFF>Rivals</color> Know Each Other's <color=#FFD700FF>Roles</color>");
+            RivalsChat = new(num++, MultiMenu.objectifier, "Enable <color=#3D2D2CFF>Rivals</color> Chat", true);
+            RivalsFaction = new(num++, MultiMenu.objectifier, "<color=#3D2D2CFF>Rivals</color> Can Be From The Same Faction", true);
+            RivalsRoles = new(num++, MultiMenu.objectifier, "<color=#3D2D2CFF>Rivals</color> Know Each Other's <color=#FFD700FF>Roles</color>", true);
 
             Taskmaster = new(MultiMenu.objectifier, "<color=#ABABFFFF>Taskmaster</color>");
             TaskmasterCount = new(num++, MultiMenu.objectifier, "<color=#ABABFFFF>Taskmaster</color> Count", 1, 1, 14, 1);
@@ -2783,31 +2804,12 @@ namespace TownOfUsReworked.CustomOptions
             Traitor = new(MultiMenu.objectifier, "<color=#370D43FF>Traitor</color>");
             TraitorCount = new(num++, MultiMenu.objectifier, "<color=#370D43FF>Traitor</color> Count", 1, 1, 14, 1);
             UniqueTraitor = new(num++, MultiMenu.objectifier, "<color=#370D43FF>Traitor</color> Is Unique In All Any", false);
-            TraitorKnows = new(num++, MultiMenu.objectifier, "<color=#370D43FF>Traitor</color> Knows Who They Are");
-            SnitchSeesTraitor = new(num++, MultiMenu.objectifier, "<color=#D4AF37FF>Snitch</color> Sees Turned <color=#370D43FF>Traitor</color>");
+            TraitorKnows = new(num++, MultiMenu.objectifier, "<color=#370D43FF>Traitor</color> Knows Who They Are", true);
+            SnitchSeesTraitor = new(num++, MultiMenu.objectifier, "<color=#D4AF37FF>Snitch</color> Sees Turned <color=#370D43FF>Traitor</color>", true);
             RevealerRevealsTraitor = new(num++, MultiMenu.objectifier, "<color=#D3D3D3FF>Revealer</color> Reveals Turned <color=#370D43FF>Traitor</color>", false);
             TraitorColourSwap = new(num++, MultiMenu.objectifier, "Turned <color=#370D43FF>Traitor</color> Swaps Colours For Investigative <color=#FFD700FF>Roles</color>", false);
 
-            var builder = new StringBuilder();
-
-            foreach (var option in CustomOption.AllOptions)
-            {
-                if (option.Type is CustomOptionType.Button or CustomOptionType.Header or CustomOptionType.Nested)
-                    continue;
-
-                builder.AppendLine(option.Name);
-                builder.AppendLine(option.Value.ToString());
-            }
-
-            var text = Path.Combine(Application.persistentDataPath, "DefaultSettings-temp");
-
-            try
-            {
-                File.WriteAllText(text, builder.ToString());
-                var text2 = Path.Combine(Application.persistentDataPath, "DefaultSettings");
-                File.Delete(text2);
-                File.Move(text, text2);
-            } catch {}
+            CustomOption.SaveSettings("DefaultSettings");
         }
     }
 }

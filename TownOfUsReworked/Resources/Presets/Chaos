@@ -82,8 +82,6 @@ Disable Level Icons
 False
 Disable Player Nameplates
 False
-See Tasks During The Game
-True
 Custom Ejection Messages
 True
 Enable Lighter Darker Colors
@@ -129,7 +127,7 @@ Reactor Sabotage Shakes The Screen By
 Changed Vent Layout
 True
 Changed Vent Layout
-False
+True
 Vitals Moved To Lab
 True
 Cold Temp Moved To Death Valley
@@ -140,8 +138,6 @@ Seimic Stabliser Malfunction Countdown
 60
 Spawn Type
 2
-Spawn Near Meeting Table
-True
 Add Call Platform Button
 True
 Add Meeting To Security Room Teleporter
@@ -318,6 +314,8 @@ Move Electrical Outlet
 100
 <color=#E67E22FF>Banshee</color>
 100
+<color=#612BEFFF>Astral</color>
+100
 <color=#00B3B3FF>Bait</color>
 100
 <color=#456BA8FF>Coward</color>
@@ -341,6 +339,8 @@ Move Electrical Outlet
 <color=#DCEE85FF>VIP</color>
 100
 <color=#FFA60AFF>Volatile</color>
+100
+<color=#F6AAB7FF>Yeller</color>
 100
 <color=#4545A9FF>Allied</color>
 100
@@ -509,7 +509,7 @@ Track Cooldown
 <color=#009900FF>Tracker</color> Arrows Reset After Each Round
 False
 Max Tracks
-5
+15
 <color=#A7D1B3FF>Operative</color> Count
 14
 <color=#A7D1B3FF>Operative</color> Is Unique In All Any
@@ -522,10 +522,10 @@ Bugs Are Removed Each Round
 True
 Bug Count
 15
-Bug Range
-1
+Bug Radius
+5
 Number Of <color=#FFD700FF>Roles</color> Required To Trigger Bug
-3
+1
 Who Sees Dead Bodies On Admin
 3
 Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>
@@ -553,9 +553,9 @@ True
 <color=#FFFF00FF>Vigilante</color> Cannot Shoot On The First Round
 True
 How Is The <color=#FFFF00FF>Vigilante</color> Notified Of Their Target's Innocence
-0
+1
 How Does <color=#FFFF00FF>Vigilante</color> Die
-0
+2
 Shoot Cooldown
 10
 Max Bullets
@@ -618,6 +618,8 @@ Knighting Cooldown
 10
 <color=#FF004EFF>Monarch</color> Cannot Knight Round One
 False
+Knight Count
+14
 Knighted Votes Count As
 10
 <color=#FF004EFF>Monarch</color> Can Button
@@ -651,7 +653,7 @@ Max Fixes
 <color=#803333FF>Escort</color> Is Unique In All Any
 False
 Roleblock Cooldown
-10
+25
 Roleblock Duration
 10
 <color=#8D0F8CFF>Retributionist</color> Count
@@ -815,7 +817,7 @@ False
 Guess Cooldown
 10
 Max Guesses
-14
+15
 <color=#B51E39FF>Bounty Hunter</color> Can Vent
 True
 <color=#FFFF00FF>Vigilante</color> Kills <color=#B51E39FF>Bounty Hunter</color>
@@ -831,7 +833,7 @@ Bodies Needed To Win
 <color=#8C4005FF>Cannibal</color> Gets Arrows To Dead Bodies
 True
 Arrow Appearance Delay
-5
+0
 <color=#8C4005FF>Cannibal</color> Can Vent
 True
 <color=#FFFF00FF>Vigilante</color> Kills <color=#8C4005FF>Cannibal</color>
@@ -881,7 +883,7 @@ True
 <color=#EEE5BEFF>Guesser</color> Can Guess Multiple Times
 True
 Max Guesses
-5
+14
 <color=#EEE5BEFF>Guesser</color> Can Guess After Voting
 True
 <color=#FFFF00FF>Vigilante</color> Kills <color=#EEE5BEFF>Guesser</color>
@@ -900,7 +902,7 @@ Haunt Count
 True
 <color=#F7B3DAFF>Jester</color> Can Switch Vents
 True
-<color=#F7B3DAFF>Jester</color> Target Ejection Reveals Existence Of <color=#F7B3DAFF>Jester</color>
+<color=#F7B3DAFF>Jester</color> Ejection Reveals Existence Of <color=#F7B3DAFF>Jester</color>
 True
 <color=#FFFF00FF>Vigilante</color> Kills <color=#F7B3DAFF>Jester</color>
 True
@@ -953,7 +955,7 @@ True
 <color=#642DEAFF>Cryomaniac</color> Is Unique In All Any
 False
 Douse Cooldown
-25
+10
 <color=#642DEAFF>Cryomaniac</color> Freeze Freezes All Doused Players
 True
 <color=#642DEAFF>Cryomaniac</color> Can Vent
@@ -1011,7 +1013,7 @@ False
 Maul Cooldown
 10
 Maul Radius
-1.5
+5
 <color=#9F703AFF>Werewolf</color> Can Vent
 True
 Max <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Neophyte</color> <color=#FFD700FF>Roles</color>
@@ -1027,7 +1029,7 @@ Bite Cooldown
 <color=#AC8A00FF>Dracula</color> Can Vent
 True
 Alive <color=#7B8968FF>Undead</color> Count
-4
+14
 Undead Can Vent
 True
 <color=#45076AFF>Jackal</color> Count
@@ -1087,7 +1089,7 @@ True
 Persuaded Can Vent
 True
 Kill Cooldown
-25
+10
 <color=#11806AFF>Betrayer</color> Can Vent
 True
 Tasks Remaining When <color=#662962FF>Phantom</color> Can Be Clicked
@@ -1099,7 +1101,7 @@ True
 <color=#FF0000FF>Intruder</color> Count
 1
 <color=#FF0000FF>Intruder</color> Vision
-2
+5
 <color=#FF0000FF>Intruder</color> Kill Cooldown
 10
 <color=#FF0000FF>Intruder</color> Can Vent
@@ -1147,7 +1149,7 @@ Flash Grenade Cooldown
 Flash Grenade Duration
 10
 Flash Radius
-1
+5
 Indicate Flashed Players
 True
 <color=#85AA5BFF>Grenadier</color> Can Vent
@@ -1165,7 +1167,7 @@ True
 Drag Cooldown
 10
 Drag Speed
-1
+2
 <color=#2647A2FF>Janitor</color> Can Vent
 3
 Max <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Deception</color> <color=#FFD700FF>Roles</color>
@@ -1223,7 +1225,7 @@ False
 Ambush Cooldown
 10
 Ambush Duration
-30
+10
 <color=#2BD29CFF>Ambusher</color> Can Ambush Teammates
 True
 <color=#005643FF>Enforcer</color> Count
@@ -1233,11 +1235,11 @@ False
 Enforce Cooldown
 10
 Enforce Duration
-30
+10
 Enforce Delay
 5
 Enforce Explosion Radius
-1
+5
 Max <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>
 14
 Min <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>
@@ -1255,7 +1257,7 @@ Info That <color=#FFFF99FF>Consigliere</color> Sees
 <color=#801780FF>Consort</color> Is Unique In All Any
 False
 Roleblock Cooldown
-25
+10
 Roleblock Duration
 10
 <color=#404C08FF>Godfather</color> Count
@@ -1263,7 +1265,7 @@ Roleblock Duration
 <color=#404C08FF>Godfather</color> Is Unique In All Any
 False
 Ability Cooldown Bonus
-0.75
+0.25
 <color=#AA7632FF>Miner</color> Count
 14
 <color=#AA7632FF>Miner</color> Is Unique In All Any
@@ -1283,7 +1285,7 @@ False
 <color=#939593FF>Teleporter</color> Can Vent
 True
 Mark Cooldown
-25
+10
 <color=#FF0000FF>Impostor</color> Count
 14
 Enable Custom <color=#008000FF>Syndicate</color> Colors
@@ -1291,7 +1293,7 @@ True
 <color=#008000FF>Syndicate</color> Count
 1
 <color=#008000FF>Syndicate</color> Vision
-2
+5
 Chaos Drive Timer
 1
 Chaos Drive Holder Kill Cooldown
@@ -1321,7 +1323,7 @@ Conceal Duration
 <color=#C02525FF>Concealer</color> Can Conceal Teammates
 True
 <color=#FF7900FF>Drunkard</color> Count
-1
+14
 <color=#FF7900FF>Drunkard</color> Is Unique In All Any
 False
 Confuse Cooldown
@@ -1337,7 +1339,7 @@ False
 Frame Cooldown
 10
 Chaos Drive Frame Radius
-1
+5
 <color=#2DFF00FF>Shapeshifter</color> Count
 14
 <color=#2DFF00FF>Shapeshifter</color> Is Unique In All Any
@@ -1349,7 +1351,7 @@ Shapeshift Duration
 <color=#2DFF00FF>Shapeshifter</color> Can Shapeshift Teammates
 True
 <color=#AAB43EFF>Silencer</color> Count
-1
+14
 <color=#AAB43EFF>Silencer</color> Is Unique In All Any
 False
 Silence Cooldown
@@ -1379,21 +1381,21 @@ True
 Bombs Detonate Everytime A Meeting Is Called
 True
 Bomb Radius
-0.25
+5
 Chaos Drive Bomb Radius Increase
-0.1
+5
 Bomb Detonation Kills Members Of The <color=#008000FF>Syndicate</color>
 True
 <color=#B345FFFF>Collider</color> Count
-1
+14
 <color=#B345FFFF>Collider</color> Is Unique In All Any
 False
 Collide Cooldown
 10
 Collide Radius
-1
+5
 Chaos Drive Collide Radius Increase
-0.5
+5
 <color=#DF7AE8FF>Crusader</color> Count
 14
 <color=#DF7AE8FF>Crusader</color> Is Unique In All Any
@@ -1403,7 +1405,7 @@ Crusade Cooldown
 Crusade Duration
 10
 Chaos Drive Crusade Radius
-0.1
+5
 <color=#DF7AE8FF>Crusader</color> Can Crusade Teammates
 True
 <color=#B5004CFF>Poisoner</color> Count
@@ -1415,17 +1417,17 @@ Poison Cooldown
 Poison Kill Delay
 1
 Max <color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Power</color> <color=#FFD700FF>Roles</color>
-1
+14
 Min <color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Power</color> <color=#FFD700FF>Roles</color>
-1
+14
 <color=#0028F5FF>Spellslinger</color> Count
-1
+14
 <color=#0028F5FF>Spellslinger</color> Is Unique In All Any
 False
 Spell Cooldown
 10
 Spell Cooldown Increase
-5
+2.5
 <color=#3769FEFF>Time Keeper</color> Count
 14
 <color=#3769FEFF>Time Keeper</color> Is Unique In All Any
@@ -1434,9 +1436,9 @@ Time Control Cooldown
 10
 Time Control Duration
 10
-<color=#008000FF>Syndicate</color> Are Immune To Time Freeze
+<color=#008000FF>Syndicate</color> Are Immune To Freeze
 True
-<color=#008000FF>Syndicate</color> Are Immune To Time Rewind
+<color=#008000FF>Syndicate</color> Are Immune To Rewind
 True
 Max <color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>
 14
@@ -1447,7 +1449,7 @@ Min <color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Support</color> <color=#
 <color=#FFFCCEFF>Rebel</color> Is Unique In All Any
 False
 Ability Cooldown Bonus
-0.75
+0.25
 <color=#7E4D00FF>Stalker</color> Count
 1
 <color=#7E4D00FF>Stalker</color> Is Unique In All Any
@@ -1467,7 +1469,7 @@ True
 <color=#008000FF>Anarchist</color> Count
 14
 Kill Cooldown
-25
+10
 Scream Cooldown
 10
 Scream Duration
@@ -1478,6 +1480,10 @@ Max <color=#7F7F7FFF>Modifiers</color>
 14
 Min <color=#7F7F7FFF>Modifiers</color>
 14
+<color=#612BEFFF>Astral</color> Count
+14
+<color=#612BEFFF>Astral</color> Is Unique In All Any
+False
 <color=#00B3B3FF>Bait</color> Count
 14
 <color=#00B3B3FF>Bait</color> Is Unique In All Any
@@ -1560,6 +1566,10 @@ False
 10
 <color=#FFA60AFF>Volatile</color> Knows Who They Are
 True
+<color=#F6AAB7FF>Yeller</color> Count
+14
+<color=#F6AAB7FF>Yeller</color> Is Unique In All Any
+False
 Enable Custom <color=#FF9900FF>Ability</color> Colors
 True
 Max <color=#FF9900FF>Abilities</color>
@@ -1711,7 +1721,7 @@ False
 <color=#4545FFFF>Corrupted</color> Can Vent
 True
 <color=#E1C849FF>Defector</color> Count
-1
+14
 <color=#E1C849FF>Defector</color> Is Unique In All Any
 False
 <color=#E1C849FF>Defector</color> Knows Who They Are
@@ -1743,7 +1753,7 @@ True
 <color=#FF66CCFF>Lovers</color> Know Each Other's <color=#FFD700FF>Roles</color>
 True
 <color=#00EEFFFF>Mafia</color> Count
-4
+14
 <color=#00EEFFFF>Mafia</color> Is Unique In All Any
 False
 <color=#00EEFFFF>Mafia</color> Know Each Other's <color=#FFD700FF>Roles</color>

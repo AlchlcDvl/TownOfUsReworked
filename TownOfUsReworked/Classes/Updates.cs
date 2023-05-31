@@ -8,30 +8,30 @@ namespace TownOfUsReworked.Classes
     [HarmonyPatch]
     public static class ModUpdater
     {
-        public static bool running;
-        public static bool hasREWUpdate;
-        public static bool hasSubmergedUpdate;
-        public static string updateREWURI;
-        public static string updateSubmergedURI;
-        private static Task updateREWTask;
-        private static Task updateSubmergedTask;
+        public static bool Running;
+        public static bool HasReworkedUpdate;
+        public static bool HasSubmergedUpdate;
+        public static string UpdateReworkedURI;
+        public static string UpdateSubmergedURI;
+        private static Task UpdateReworkedTask;
+        private static Task UpdateSubmergedTask;
         public static GenericPopup InfoPopup;
 
         public static void LaunchUpdater()
         {
-            if (running)
+            if (Running)
                 return;
 
-            running = true;
+            Running = true;
 
             try
             {
-                CheckForUpdate("REW").GetAwaiter().GetResult();
+                CheckForUpdate("Reworked").GetAwaiter().GetResult();
             } catch {}
 
-            //Only check of Submerged update if Submerged is already installed
+            //Only check of Submerged/LevelImpostor update if Submerged/LevelImpostor is already installed
             var codeBase = TownOfUsReworked.Executing.Location;
-            UriBuilder uri = new(codeBase);
+            var uri = new UriBuilder(codeBase);
 
             if (ModCompatibility.SubLoaded)
             {
@@ -53,15 +53,15 @@ namespace TownOfUsReworked.Classes
         {
             var info = "";
 
-            if (updateType == "REW")
+            if (updateType == "Reworked")
             {
                 info = "Updating Town Of Us Reworked\nPlease wait...";
                 InfoPopup.Show(info);
 
-                if (updateREWTask == null)
+                if (UpdateReworkedTask == null)
                 {
-                    if (updateREWURI != null)
-                        updateREWTask = DownloadUpdate("REW");
+                    if (UpdateReworkedURI != null)
+                        UpdateReworkedTask = DownloadUpdate("Reworked");
                     else
                         info = "Unable to auto-update\nPlease update manually";
                 }
@@ -73,10 +73,10 @@ namespace TownOfUsReworked.Classes
                 info = "Updating Submerged\nPlease wait...";
                 InfoPopup.Show(info);
 
-                if (updateSubmergedTask == null)
+                if (UpdateSubmergedTask == null)
                 {
-                    if (updateSubmergedURI != null)
-                        updateSubmergedTask = DownloadUpdate("SUB");
+                    if (UpdateSubmergedURI != null)
+                        UpdateSubmergedTask = DownloadUpdate("Submerged");
                     else
                         info = "Unable to auto-update\nPlease update manually";
                 }
@@ -101,24 +101,24 @@ namespace TownOfUsReworked.Classes
             }
             catch (Exception e)
             {
-                Utils.LogSomething("Exception occured when clearing old versions:\n" + e);
+                Utils.LogSomething(e);
             }
         }
 
-        public static async Task<bool> CheckForUpdate(string updateType = "REW")
+        public static async Task<bool> CheckForUpdate(string updateType = "Reworked")
         {
             //Checks the github api for Town Of Us Reworked tags. Compares current version (from VersionString in TownOfUsReworked.cs) to the latest tag version (on GitHub)
             try
             {
-                string githubURI = "";
+                var githubURI = "";
 
-                if (updateType == "REW")
+                if (updateType == "Reworked")
                     githubURI = "https://api.github.com/repos/AlchlcDvl/TownOfUsReworked/releases/latest";
                 else if (updateType == "Submerged")
                     githubURI = "https://api.github.com/repos/SubmergedAmongUs/Submerged/releases/latest";
 
                 HttpClient http = new();
-                http.DefaultRequestHeaders.Add("User-Agent", "Reworked Updater");
+                http.DefaultRequestHeaders.Add("User-Agent", $"{updateType} Updater");
                 var response = await http.GetAsync(new Uri(githubURI), HttpCompletionOption.ResponseContentRead);
 
                 if (response.StatusCode != HttpStatusCode.OK || response.Content == null)
@@ -132,27 +132,27 @@ namespace TownOfUsReworked.Classes
                 var tagname = data.tag_name;
 
                 if (tagname == null)
-                    return false; // Something went wrong
+                    return false; //Something went wrong
 
                 var diff = 0;
                 var ver = Version.Parse(tagname.Replace("v", ""));
 
-                if (updateType == "REW")
+                if (updateType == "Reworked")
                 {
-                    //Check REW version
+                    //Check Reworked version
                     diff = TownOfUsReworked.Version.CompareTo(ver);
 
                     if (diff < 0)
                     {
                         //Reworked update required
-                        hasREWUpdate = true;
+                        HasReworkedUpdate = true;
                     }
                 }
                 else if (updateType == "Submerged")
                 {
                     //Accounts for broken version
                     if (ModCompatibility.SubVersion == null)
-                        hasSubmergedUpdate = true;
+                        HasSubmergedUpdate = true;
                     else
                     {
                         diff = ModCompatibility.SubVersion.CompareTo(SemanticVersioning.Version.Parse(tagname.Replace("v", "")));
@@ -160,7 +160,7 @@ namespace TownOfUsReworked.Classes
                         if (diff < 0)
                         {
                             //Submerged update required
-                            hasSubmergedUpdate = true;
+                            HasSubmergedUpdate = true;
                         }
                     }
                 }
@@ -177,10 +177,10 @@ namespace TownOfUsReworked.Classes
 
                     if (asset.browser_download_url.EndsWith(".dll"))
                     {
-                        if (updateType == "REW")
-                            updateREWURI = asset.browser_download_url;
-                        else if (updateType == "SUB")
-                            updateSubmergedURI = asset.browser_download_url;
+                        if (updateType == "Reworked")
+                            UpdateReworkedURI = asset.browser_download_url;
+                        else if (updateType == "Submerged")
+                            UpdateSubmergedURI = asset.browser_download_url;
 
                         return true;
                     }
@@ -196,25 +196,25 @@ namespace TownOfUsReworked.Classes
 
         public static async Task<bool> DownloadUpdate(string updateType)
         {
-            //Downloads the new Reworked/Submerged dll from GitHub into the plugins folder
+            //Downloads the new dll from GitHub into the plugins folder
             var downloadDLL= "";
             var info = "";
 
-            if (updateType == "REW")
+            if (updateType == "Reworked")
             {
-                downloadDLL = updateREWURI;
+                downloadDLL = UpdateReworkedURI;
                 info = "Town Of Us Reworked\nupdated successfully.\nPlease RESTART the game.";
             }
-            else if (updateType == "SUB")
+            else if (updateType == "Submerged")
             {
-                downloadDLL = updateSubmergedURI;
+                downloadDLL = UpdateSubmergedURI;
                 info = "Submerged\nupdated successfully.\nPlease RESTART the game.";
             }
 
             try
             {
                 HttpClient http = new();
-                http.DefaultRequestHeaders.Add("User-Agent", "Reworked Updater");
+                http.DefaultRequestHeaders.Add("User-Agent", $"{updateType} Updater");
                 var response = await http.GetAsync(new Uri(downloadDLL), HttpCompletionOption.ResponseContentRead);
 
                 if (response.StatusCode != HttpStatusCode.OK || response.Content == null)
@@ -227,10 +227,12 @@ namespace TownOfUsReworked.Classes
                 var uri = new UriBuilder(codeBase);
                 var fullname = Uri.UnescapeDataString(uri.Path);
 
-                if (updateType == "Submerged")
-                    fullname = fullname.Replace("Reworked", "Submerged"); //TODO A better solution than this to correctly name the dll files
+                //TODO: A better solution than this to correctly name the dll files
 
-                if (File.Exists(fullname + ".old")) //Clear old file in case it wasnt;
+                if (updateType == "Submerged")
+                    fullname = fullname.Replace("Reworked", "Submerged");
+
+                if (File.Exists(fullname + ".old")) //Clear old file in case it wasnt
                     File.Delete(fullname + ".old");
 
                 File.Move(fullname, fullname + ".old"); //Rename current executable to old

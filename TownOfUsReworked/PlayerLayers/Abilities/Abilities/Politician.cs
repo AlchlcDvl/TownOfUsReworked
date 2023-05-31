@@ -13,7 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
         public Politician(PlayerControl player) : base(player)
         {
             Name = "Politician";
-            TaskText = "- You can save your votes into your vote bank, so you can vote multiple times later\n- You can vote multiple times as long as you haven't abstained or " +
+            TaskText = () => "- You can save your votes into your vote bank, so you can vote multiple times later\n- You can vote multiple times as long as you haven't abstained or " +
                 "are the last player voting";
             Color = CustomGameOptions.CustomAbilityColors ? Colors.Politician : Colors.Ability;
             AbilityType = AbilityEnum.Politician;
@@ -22,6 +22,9 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             Type = LayerEnum.Politician;
             CanKill = player.Is(Faction.Intruder) || player.Is(Faction.Syndicate) || player.Is(RoleAlignment.NeutralKill) || player.Is(ObjectifierEnum.Corrupted) ||
                 player.Is(ObjectifierEnum.Traitor) || player.Is(ObjectifierEnum.Fanatic) || player.Is(RoleAlignment.CrewKill);
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public void UpdateButton(MeetingHud __instance)

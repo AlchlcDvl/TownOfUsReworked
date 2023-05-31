@@ -10,12 +10,15 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         {
             Name = "Defector";
             Symbol = "ε";
-            TaskText = "- Be the last one of your faction to switch sides";
+            TaskText = () => "- Be the last one of your faction to switch sides";
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Defector : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Defector;
             Type = LayerEnum.Defector;
             Hidden = !CustomGameOptions.DefectorKnows;
             Side = Player.GetFaction();
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public void TurnSides()

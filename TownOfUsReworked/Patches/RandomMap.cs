@@ -18,7 +18,7 @@ namespace TownOfUsReworked.Patches
                 var map = maps[(int)CustomGameOptions.Map];
                 byte[] tbMode = { 1, 0, 2 };
 
-                if (CustomGameOptions.RandomMapEnabled || (map == 5 && !ModCompatibility.SubLoaded))
+                if (CustomGameOptions.RandomMapEnabled || (map == 5 && !ModCompatibility.SubLoaded) || (map == 6 && !ModCompatibility.LILoaded))
                     map = GetRandomMap();
 
                 TownOfUsReworked.VanillaOptions.RoleOptions.SetRoleRate(RoleTypes.Scientist, 0, 0);
@@ -90,6 +90,9 @@ namespace TownOfUsReworked.Patches
             if (ModCompatibility.SubLoaded)
                 totalWeight += CustomGameOptions.RandomMapSubmerged;
 
+            /*if (ModCompatibility.LILoaded)
+                totalWeight += CustomGameOptions.RandomMapSubmerged;*/
+
             if (totalWeight == 0)
                 return (byte)((int)CustomGameOptions.Map == 3 ? 4 : ((int)CustomGameOptions.Map == 4 ? 5 : (int)CustomGameOptions.Map));
 
@@ -145,43 +148,11 @@ namespace TownOfUsReworked.Patches
 
         public static void AdjustCooldowns(float change)
         {
-            Generate.InterrogateCooldown.Set((float)Generate.InterrogateCooldown.Value + change);
-            Generate.TrackCooldown.Set((float)Generate.TrackCooldown.Value + change);
-            Generate.BugCooldown.Set((float)Generate.BugCooldown.Value + change);
-            Generate.VigiKillCd.Set((float)Generate.VigiKillCd.Value + change);
-            Generate.AlertCooldown.Set((float)Generate.AlertCooldown.Value + change);
-            Generate.TransportCooldown.Set((float)Generate.TransportCooldown.Value + change);
-            Generate.ProtectCd.Set((float)Generate.ProtectCd.Value + change);
-            Generate.VestCd.Set((float)Generate.VestCd.Value + change);
-            Generate.DouseCooldown.Set((float)Generate.DouseCooldown.Value + change);
-            Generate.InfectCooldown.Set((float)Generate.InfectCooldown.Value + change);
-            Generate.PestKillCooldown.Set((float)Generate.PestKillCooldown.Value + change);
-            Generate.HackCooldown.Set((float)Generate.HackCooldown.Value + change);
-            Generate.MimicCooldown.Set((float)Generate.MimicCooldown.Value + change);
-            Generate.GlitchKillCooldown.Set((float)Generate.GlitchKillCooldown.Value + change);
-            Generate.JuggKillCooldown.Set((float)Generate.JuggKillCooldown.Value + change);
-            Generate.BloodlustCooldown.Set((float)Generate.BloodlustCooldown.Value + change);
-            Generate.GrenadeCooldown.Set((float)Generate.GrenadeCooldown.Value + change);
-            Generate.MorphlingCooldown.Set((float)Generate.MorphlingCooldown.Value + change);
-            Generate.InvisCooldown.Set((float)Generate.InvisCooldown.Value + change);
-            Generate.PoisonCooldown.Set((float)Generate.PoisonCooldown.Value + change);
-            Generate.MineCooldown.Set((float)Generate.MineCooldown.Value + change);
-            Generate.DragCooldown.Set((float)Generate.DragCooldown.Value + change);
-            Generate.JanitorCleanCd.Set((float)Generate.JanitorCleanCd.Value + change);
-            Generate.DisguiseCooldown.Set((float)Generate.DisguiseCooldown.Value + change);
-            Generate.IgniteCooldown.Set((float)Generate.IgniteCooldown.Value + change);
-            Generate.RevealCooldown.Set((float)Generate.RevealCooldown.Value + change);
-            Generate.IntruderKillCooldown.Set((float)Generate.IntruderKillCooldown.Value + change);
-
-            if (change % 5 != 0)
+            foreach (var option in CustomOption.AllOptions.Where(x => x.Name.Contains("Cooldown")))
             {
-                if (change > 0)
-                    change -= 2.5f;
-                else if (change < 0)
-                    change += 2.5f;
+                if (option.Type == CustomOptionType.Number)
+                    option.Set((float)option.Value + change);
             }
-
-            Generate.EmergencyButtonCooldown.Set((float)Generate.EmergencyButtonCooldown.Value + change);
         }
     }
 }

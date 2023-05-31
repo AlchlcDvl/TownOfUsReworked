@@ -15,9 +15,9 @@
         public Arsonist(PlayerControl player) : base(player)
         {
             Name = "Arsonist";
-            StartText = "PYROMANIAAAAAAAAAAAAAA";
-            AbilitiesText = "- You can douse players in gasoline\n- Doused players can be ignited, killing them all at once\n- People who interact with you will also get doused";
-            Objectives = "- Burn anyone who can oppose you";
+            StartText = () => "PYROMANIAAAAAAAAAAAAAA";
+            AbilitiesText = () => "- You can douse players in gasoline\n- Doused players can be ignited, killing them all at once\n- People who interact with you will also get doused";
+            Objectives = () => "- Burn anyone who can oppose you";
             RoleType = RoleEnum.Arsonist;
             RoleAlignment = RoleAlignment.NeutralKill;
             Color = CustomGameOptions.CustomNeutColors ? Colors.Arsonist : Colors.Neutral;
@@ -26,6 +26,9 @@
             DouseButton = new(this, "ArsoDouse", AbilityTypes.Direct, "ActionSecondary", Douse, Exception);
             IgniteButton = new(this, "Ignite", AbilityTypes.Effect, "Secondary", Ignite);
             InspectorResults = InspectorResults.SeeksToDestroy;
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float DouseTimer()

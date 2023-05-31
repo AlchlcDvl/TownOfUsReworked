@@ -21,8 +21,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Warper(PlayerControl player) : base(player)
         {
             Name = "Warper";
-            StartText = "Warp The <color=#8CFFFFFF>Crew</color> Away From Each Other";
-            AbilitiesText = $"- You can warp all players, forcing them to be teleported to random locations\n- With the Chaos Drive, more locations are opened to you\n{AbilitiesText}";
+            StartText = () => "Warp The <color=#8CFFFFFF>Crew</color> Away From Each Other";
+            AbilitiesText = () => "- You can warp all players, forcing them to be teleported to random locations\n- With the Chaos Drive, more locations are opened to you\n" +
+                $"{AbilitiesText()}";
             Color = CustomGameOptions.CustomSynColors ? Colors.Warper : Colors.Syndicate;
             RoleType = RoleEnum.Warper;
             WarpPlayer1 = null;
@@ -30,6 +31,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             UnwarpablePlayers = new();
             WarpMenu1 = new(Player, Click1, Exception1);
             WarpMenu2 = new(Player, Click2, Exception2);
+
             Type = LayerEnum.Warper;
             WarpButton = new(this, "Warp", AbilityTypes.Effect, "Secondary", Warp);
             InspectorResults = InspectorResults.MovesAround;
@@ -44,6 +46,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AnimationPlaying.sprite = AssetManager.PortalAnimation[0];
             AnimationPlaying.material = HatManager.Instance.PlayerMaterial;
             WarpObj.SetActive(true);
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float WarpTimer()

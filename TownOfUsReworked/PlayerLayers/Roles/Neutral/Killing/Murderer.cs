@@ -8,15 +8,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Murderer(PlayerControl player) : base(player)
         {
             Name = "Murderer";
-            StartText = "Imagine Getting Boring Murderer";
-            Objectives = "- Murder anyone who can oppose you";
-            AbilitiesText = "- You can kill";
+            StartText = () => "Imagine Getting Boring Murderer";
+            Objectives = () => "- Murder anyone who can oppose you";
+            AbilitiesText = () => "- You can kill";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Murderer : Colors.Neutral;
             RoleType = RoleEnum.Murderer;
             RoleAlignment = RoleAlignment.NeutralKill;
             Type = LayerEnum.Murderer;
             MurderButton = new(this, "Murder", AbilityTypes.Direct, "ActionSecondary", Murder, Exception);
             InspectorResults = InspectorResults.IsBasic;
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float MurderTimer()

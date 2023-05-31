@@ -6,8 +6,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Rebel";
             RoleType = RoleEnum.PromotedRebel;
-            StartText = "Promote Your Fellow <color=#008000FF>Syndicate</color> To Do Better";
-            AbilitiesText = "- You have succeeded the former <color=#FFFCCEFF>Rebel</color> and have a shorter cooldown on your former role's abilities";
+            StartText = () => "Promote Your Fellow <color=#008000FF>Syndicate</color> To Do Better";
+            AbilitiesText = () => "- You have succeeded the former <color=#FFFCCEFF>Rebel</color> and have a shorter cooldown on your former role's abilities\n" +
+                $"{FormerRole?.AbilitiesText()}";
             Color = CustomGameOptions.CustomSynColors ? Colors.Rebel : Colors.Syndicate;
             RoleAlignment = RoleAlignment.SyndicateSupport;
             Type = LayerEnum.PromotedRebel;
@@ -62,6 +63,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             TimeButton = new(this, "Time", AbilityTypes.Effect, "Secondary", TimeControl);
             SilenceButton = new(this, "Silence", AbilityTypes.Direct, "Secondary", Silence, Exception13);
             InspectorResults = InspectorResults.LeadsTheGroup;
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         //Rebel Stuff

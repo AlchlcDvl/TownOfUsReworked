@@ -8,7 +8,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public int UsesLeft;
         public bool ButtonUsable => UsesLeft > 0;
         public PlayerControl TargetPlayer;
-        public bool TargetAlive => Player != null && TargetPlayer != null && !Disconnected && !TargetPlayer.Data.IsDead && !TargetPlayer.Data.Disconnected;
+        public bool TargetAlive => !Disconnected && !TargetPlayer.Data.IsDead && !TargetPlayer.Data.Disconnected;
         public bool Protecting => TimeRemaining > 0f;
         public CustomButton ProtectButton;
         public CustomButton GraveProtectButton;
@@ -16,13 +16,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public GuardianAngel(PlayerControl player) : base(player)
         {
             Name = "Guardian Angel";
-            StartText = "Protect Your Target With Your Life";
-            Objectives = "- Have your target live to the end of the game";
+            StartText = () => $"Protect {TargetPlayer?.name} With Your Life";
+            Objectives = () => $"- Have {TargetPlayer?.name} live to the end of the game";
             Color = CustomGameOptions.CustomNeutColors ? Colors.GuardianAngel : Colors.Neutral;
             RoleType = RoleEnum.GuardianAngel;
             UsesLeft = CustomGameOptions.MaxProtects;
             RoleAlignment = RoleAlignment.NeutralBen;
-            AbilitiesText = "- You can protect your target from death for a short while\n- If your target dies, you will be a <color=#DDDD00FF>Survivor</color>";
+            AbilitiesText = () => $"- You can protect {TargetPlayer?.name} from death for a short while\n- If {TargetPlayer?.name} dies, you will be a <color=#DDDD00FF>Survivor</color>";
             InspectorResults = InspectorResults.PreservesLife;
             Type = LayerEnum.GuardianAngel;
             TargetPlayer = null;
@@ -30,6 +30,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (CustomGameOptions.ProtectBeyondTheGrave)
                 GraveProtectButton = new(this, "Protect", AbilityTypes.Effect, "ActionSecondary", HitProtect, true, true);
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float ProtectTimer()
@@ -54,7 +57,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var newRole = new Survivor(Player) { UsesLeft = UsesLeft };
             newRole.RoleUpdate(this);
 
-            if (Player == PlayerControl.LocalPlayer)
+            if (Local)
                 Utils.Flash(Colors.Survivor);
 
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))

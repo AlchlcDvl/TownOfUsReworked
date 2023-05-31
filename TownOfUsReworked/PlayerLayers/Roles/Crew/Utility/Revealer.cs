@@ -12,11 +12,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Revealer";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Revealer : Colors.Crew;
-            AbilitiesText = "- You can reveal evils players to the <color=#8CFFFFFF>Crew</color> once you finish your tasks without getting clicked.";
+            AbilitiesText = () => "- You can reveal evils players to the <color=#8CFFFFFF>Crew</color> once you finish your tasks without getting clicked.";
             RoleType = RoleEnum.Revealer;
             RoleAlignment = RoleAlignment.CrewUtil;
             InspectorResults = InspectorResults.Ghostly;
             Type = LayerEnum.Revealer;
+            StartText = () => "ooooooo";
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public void Fade()
@@ -36,16 +40,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             color.a = Mathf.Lerp(color.a, 0, distPercent);
 
             if (Player.GetCustomOutfitType() != CustomPlayerOutfitType.PlayerNameOnly)
-            {
-                Player.SetOutfit(CustomPlayerOutfitType.PlayerNameOnly, new GameData.PlayerOutfit()
-                {
-                    ColorId = Player.GetDefaultOutfit().ColorId,
-                    HatId = "",
-                    SkinId = "",
-                    VisorId = "",
-                    PlayerName = ""
-                });
-            }
+                Player.SetOutfit(CustomPlayerOutfitType.PlayerNameOnly, Utils.SpookyOutfit(Player));
 
             Player.MyRend().color = color;
             Player.NameText().color = new(0f, 0f, 0f, 0f);

@@ -11,14 +11,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public TimeKeeper(PlayerControl player) : base(player)
         {
             Name = "Time Keeper";
-            StartText = "Bend Time To Your Will";
-            AbilitiesText = $"- You can freeze time, making people unable to move\n- With the Chaos Drive, you rewind players instead\n{AbilitiesText}";
+            StartText = () => "Bend Time To Your Will";
+            AbilitiesText = () => $"- You can freeze time, making people unable to move\n- With the Chaos Drive, you rewind players instead\n{AbilitiesText()}";
             RoleType = RoleEnum.TimeKeeper;
             RoleAlignment = RoleAlignment.SyndicatePower;
             Color = CustomGameOptions.CustomSynColors ? Colors.TimeKeeper : Colors.Syndicate;
             Type = LayerEnum.TimeKeeper;
             TimeButton = new(this, "Time", AbilityTypes.Effect, "Secondary", TimeControl);
             InspectorResults = InspectorResults.MovesAround;
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float TimeTimer()

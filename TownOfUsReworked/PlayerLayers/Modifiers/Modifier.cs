@@ -16,7 +16,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
             AllModifiers.Add(this);
         }
 
-        public string TaskText = "- None";
+        public Func<string> TaskText = () => "- None";
         public bool Hidden;
 
         public static Modifier GetModifier(PlayerControl player) => AllModifiers.Find(x => x.Player == player);

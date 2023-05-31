@@ -1,4 +1,5 @@
 using Assets.InnerNet;
+using Twitch;
 
 namespace TownOfUsReworked.Patches
 {
@@ -9,7 +10,9 @@ namespace TownOfUsReworked.Patches
 
         public static void Prefix(MainMenuManager __instance)
         {
-            CosmeticsLoader.LaunchFetchers();
+            ModUpdater.LaunchUpdater();
+            CosmeticsLoader.LaunchFetchers(ModUpdater.HasReworkedUpdate);
+
             var amongUsLogo = GameObject.Find("bannerLogo_AmongUs");
 
             if (amongUsLogo != null)
@@ -174,6 +177,56 @@ namespace TownOfUsReworked.Patches
             {
                 freeplay.transform.localScale = new(0.8f, 0.8f, 0.8f);
                 freeplay.transform.position = new(2.4f, -1.71f, 0f);
+            }
+
+            var template = GameObject.Find("ExitGameButton");
+
+            if (template != null)
+            {
+                var i = 1;
+                var pos = template.transform.localPosition;
+
+                if (ModUpdater.HasReworkedUpdate)
+                {
+                    var touButton = UObject.Instantiate(template, null);
+                    pos.y += 0.6f * i;
+                    touButton.transform.localPosition = pos;
+                    touButton.GetComponent<SpriteRenderer>().sprite = AssetManager.GetSprite("UpdateToUButton");
+                    var passiveTOUButton = touButton.GetComponent<PassiveButton>();
+                    passiveTOUButton.OnClick = new();
+                    passiveTOUButton.OnClick.AddListener((Action)(() =>
+                    {
+                        ModUpdater.ExecuteUpdate("Reworked");
+                        touButton.SetActive(false);
+                    }));
+                    var text = touButton.transform.GetChild(0).GetComponent<TMP_Text>();
+                    __instance.StartCoroutine(Effects.Lerp(0.1f, new Action<float>(_ => text.SetText(""))));
+                    ModUpdater.InfoPopup = UObject.Instantiate(TwitchManager.Instance.TwitchPopup);
+                    ModUpdater.InfoPopup.TextAreaTMP.fontSize *= 0.7f;
+                    ModUpdater.InfoPopup.TextAreaTMP.enableAutoSizing = false;
+                    i++;
+                }
+
+                if (ModUpdater.HasSubmergedUpdate)
+                {
+                    var submergedButton = UObject.Instantiate(template, null);
+                    pos.y += 0.6f * i;
+                    submergedButton.transform.localPosition = pos;
+                    submergedButton.GetComponent<SpriteRenderer>().sprite = AssetManager.GetSprite("UpdateSubmergedButton");
+                    var passiveSubmergedButton = submergedButton.GetComponent<PassiveButton>();
+                    passiveSubmergedButton.OnClick = new();
+                    passiveSubmergedButton.OnClick.AddListener((Action)(() =>
+                    {
+                        ModUpdater.ExecuteUpdate("Submerged");
+                        submergedButton.SetActive(false);
+                    }));
+                    var text = submergedButton.transform.GetChild(0).GetComponent<TMP_Text>();
+                    __instance.StartCoroutine(Effects.Lerp(0.1f, new Action<float>(_ => text.SetText(""))));
+                    ModUpdater.InfoPopup = UObject.Instantiate(TwitchManager.Instance.TwitchPopup);
+                    ModUpdater.InfoPopup.TextAreaTMP.fontSize *= 0.7f;
+                    ModUpdater.InfoPopup.TextAreaTMP.enableAutoSizing = false;
+                    i++;
+                }
             }
         }
     }

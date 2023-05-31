@@ -39,6 +39,9 @@ namespace TownOfUsReworked.CustomOptions
 
         private IEnumerator CancelCoro(Func<IEnumerator> flashCoro)
         {
+            if (SlotButtons.Count == 0)
+                yield break;
+
             var __instance = UObject.FindObjectOfType<GameOptionsMenu>();
 
             foreach (var option in SlotButtons.Skip(1))

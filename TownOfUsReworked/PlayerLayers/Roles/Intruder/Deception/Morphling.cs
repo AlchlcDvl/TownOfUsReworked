@@ -15,8 +15,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Morphling(PlayerControl player) : base(player)
         {
             Name = "Morphling";
-            StartText = "Fool The <color=#8CFFFFFF>Crew</color> With Your Appearances";
-            AbilitiesText = $"- You can morph into other players, taking up their appearances as your own\n{AbilitiesText}";
+            StartText = () => "Fool The <color=#8CFFFFFF>Crew</color> With Your Appearances";
+            AbilitiesText = () => $"- You can morph into other players, taking up their appearances as your own\n{AbilitiesText()}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Morphling : Colors.Intruder;
             RoleType = RoleEnum.Morphling;
             RoleAlignment = RoleAlignment.IntruderDecep;
@@ -26,6 +26,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             MorphButton = new(this, "Morph", AbilityTypes.Effect, "Secondary", HitMorph);
             SampleButton = new(this, "Sample", AbilityTypes.Direct, "Tertiary", Sample, Exception1);
             InspectorResults = InspectorResults.CreatesConfusion;
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public void Morph()

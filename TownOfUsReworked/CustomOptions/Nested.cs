@@ -36,14 +36,14 @@ namespace TownOfUsReworked.CustomOptions
             foreach (var option in options)
                 option.transform.localPosition = new(x, y - (i++ * 0.5f), z);
 
-            __instance.Children = new Il2CppReferenceArray<OptionBehaviour>(options.ToArray());
+            __instance.Children = new(options.ToArray());
         }
 
         public void AddOptions(params CustomOption[] options)
         {
             AllInternalOptions.RemoveRange(InternalOptions);
 
-            foreach (var option in options)
+            foreach (var option in options.Where(x => x.Type != CustomOptionType.Nested))
                 InternalOptions.Insert(1, option);
 
             AllInternalOptions.AddRange(InternalOptions);
@@ -53,14 +53,14 @@ namespace TownOfUsReworked.CustomOptions
         {
             var options = new List<OptionBehaviour>();
             var togglePrefab = UObject.FindObjectOfType<ToggleOption>();
-            var stringPrefab = UObject.FindObjectOfType<StringOption>();
             var numberPrefab = UObject.FindObjectOfType<NumberOption>();
+            var keyValPrefab = UObject.FindObjectOfType<KeyValueOption>();
 
             if (togglePrefab == null)
                 Utils.LogSomething("Toggle DNE");
 
-            if (stringPrefab == null)
-                Utils.LogSomething("String DNE");
+            if (keyValPrefab == null)
+                Utils.LogSomething("Key Value DNE");
 
             if (numberPrefab == null)
                 Utils.LogSomething("Number DNE");
@@ -83,7 +83,7 @@ namespace TownOfUsReworked.CustomOptions
                         break;
 
                     case CustomOptionType.String:
-                        var str = UObject.Instantiate(stringPrefab, stringPrefab.transform.parent);
+                        var str = UObject.Instantiate(keyValPrefab, keyValPrefab.transform.parent);
                         option.Setting = str;
                         options.Add(str);
                         break;

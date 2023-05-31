@@ -3,7 +3,7 @@
     <AssemblyName>Reworked</AssemblyName>
     <RootNamespace>TownOfUsReworked</RootNamespace>
     <TargetFramework>net6.0</TargetFramework>
-    <Version>0.2.5.0</Version>
+    <Version>0.3.0.0</Version>
     <DebugType>embedded</DebugType>
     <LangVersion>latest</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>

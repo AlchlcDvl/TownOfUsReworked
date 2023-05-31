@@ -5,10 +5,13 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
         public Coward(PlayerControl player) : base(player)
         {
             Name = "Coward";
-            TaskText = "- You can't report bodies.";
+            TaskText = () => "- You can't report bodies";
             Color = CustomGameOptions.CustomModifierColors ? Colors.Coward : Colors.Modifier;
             ModifierType = ModifierEnum.Coward;
             Type = LayerEnum.Coward;
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public override void UpdateHud(HudManager __instance)

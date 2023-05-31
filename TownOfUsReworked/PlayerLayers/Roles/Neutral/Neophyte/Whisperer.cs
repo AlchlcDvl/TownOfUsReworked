@@ -14,9 +14,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Whisperer";
             Color = Colors.Whisperer;
-            AbilitiesText = "- You can whisper to players around, slowly bending them to your ideals\n- When a player reaches 100% conversion, they will defect and join the " +
+            AbilitiesText = () => "- You can whisper to players around, slowly bending them to your ideals\n- When a player reaches 100% conversion, they will defect and join the " +
                 "<color=#F995FCFF>Sect</color>";
-            Objectives = "- Persuade or kill anyone who can oppose the <color=#F995FCFF>Sect</color>";
+            Objectives = () => "- Persuade or kill anyone who can oppose the <color=#F995FCFF>Sect</color>";
             RoleType = RoleEnum.Whisperer;
             RoleAlignment = RoleAlignment.NeutralNeo;
             SubFaction = SubFaction.Sect;
@@ -27,6 +27,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Type = LayerEnum.Whisperer;
             WhisperButton = new(this, "Whisper", AbilityTypes.Effect, "ActionSecondary", Whisper);
             InspectorResults = InspectorResults.BringsChaos;
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float WhisperTimer()
@@ -91,14 +94,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     if (WhisperConversion < 2.5f)
                         WhisperConversion = 2.5f;
 
-                    RoleGen.Convert(playerConversion.Item1, Player.PlayerId, SubFaction.Sect, false);
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                    writer.Write((byte)ActionsRPC.Convert);
-                    writer.Write(PlayerId);
-                    writer.Write(playerConversion.Item1);
-                    writer.Write((byte)SubFaction.Sect);
-                    writer.Write(false);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    RoleGen.RpcConvert(playerConversion.Item1, Player.PlayerId, SubFaction.Sect);
                     removals.Add(playerConversion);
                 }
             }

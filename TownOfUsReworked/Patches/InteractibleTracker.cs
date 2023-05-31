@@ -11,10 +11,13 @@ namespace TownOfUsReworked.Patches
                 Role.GetRole<Retributionist>(PlayerControl.LocalPlayer).UntransportablePlayers.Add(__instance.myPlayer.PlayerId, DateTime.UtcNow);
             else if (PlayerControl.LocalPlayer.Is(RoleEnum.Warper))
                 Role.GetRole<Warper>(PlayerControl.LocalPlayer).UnwarpablePlayers.Add(__instance.myPlayer.PlayerId, DateTime.UtcNow);
+
+            if (PlayerControl.LocalPlayer.Is(ModifierEnum.Astral))
+                Modifier.GetModifier<Astral>(PlayerControl.LocalPlayer).LastPosition = PlayerControl.LocalPlayer.transform.position;
         }
     }
 
-    [HarmonyPatch(typeof(MovingPlatformBehaviour), nameof(MovingPlatformBehaviour.Use), new Type[] {})]
+    [HarmonyPatch(typeof(MovingPlatformBehaviour), nameof(MovingPlatformBehaviour.UsePlatform))]
     public static class SavePlatformPlayer
     {
         public static void Prefix()
@@ -32,6 +35,9 @@ namespace TownOfUsReworked.Patches
                 writer.Write(PlayerControl.LocalPlayer.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
             }
+
+            if (PlayerControl.LocalPlayer.Is(ModifierEnum.Astral))
+                Modifier.GetModifier<Astral>(PlayerControl.LocalPlayer).LastPosition = PlayerControl.LocalPlayer.transform.position;
         }
     }
 }

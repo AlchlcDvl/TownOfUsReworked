@@ -11,14 +11,53 @@ namespace TownOfUsReworked.Classes
         //private readonly static string[] TranslationKeys = Utils.CreateText("Keys", "Languages").Split("\n");
         public readonly static Sprite[] PortalAnimation = new Sprite[205];
         public static Sprite Use;
-        public static Dictionary<string, string> Presets = new()
+        public readonly static Dictionary<string, string> Presets = new()
         {
-            { "Casual", Utils.CreateText("Casual", "Presets")},
-            { "Chaos", Utils.CreateText("Chaos", "Presets")},
-            { "Default", File.ReadAllText(Path.Combine(Application.persistentDataPath, "DefaultSettings"))},
-            { "Last Used", File.ReadAllText(Path.Combine(Application.persistentDataPath, "LastUsedSettings"))},
-            { "Ranked", Utils.CreateText("Ranked", "Presets")}
+            { "Casual", Utils.CreateText("Casual", "Presets") },
+            { "Chaos", Utils.CreateText("Chaos", "Presets") },
+            { "Default", TryLoadingDataPreset("Default") },
+            { "Last Used", TryLoadingDataPreset("LastUsed") },
+            { "Ranked", Utils.CreateText("Ranked", "Presets") }
         };
+        public readonly static Dictionary<int, string> Slots = new()
+        {
+            { 1, TryLoadingSlotSettings(1) },
+            { 2, TryLoadingSlotSettings(2) },
+            { 3, TryLoadingSlotSettings(3) },
+            { 4, TryLoadingSlotSettings(4) },
+            { 5, TryLoadingSlotSettings(5) },
+            { 6, TryLoadingSlotSettings(6) },
+            { 7, TryLoadingSlotSettings(7) },
+            { 8, TryLoadingSlotSettings(8) },
+            { 9, TryLoadingSlotSettings(9) },
+            { 10, TryLoadingSlotSettings(10) }
+        };
+
+        public static string TryLoadingDataPreset(string itemName)
+        {
+            try
+            {
+                return File.ReadAllText(Path.Combine(Application.persistentDataPath, $"{itemName}Settings"));
+            }
+            catch
+            {
+                Utils.LogSomething($"Error Loading {itemName}");
+                return "";
+            }
+        }
+
+        public static string TryLoadingSlotSettings(int slotId)
+        {
+            try
+            {
+                return File.ReadAllText(Path.Combine(Application.persistentDataPath, $"GameSettings-Slot{slotId}-ToU-Rew"));
+            }
+            catch
+            {
+                Utils.LogSomething($"Error Loading Slot {slotId}");
+                return "";
+            }
+        }
 
         public static AudioClip GetAudio(string path)
         {
@@ -199,13 +238,6 @@ namespace TownOfUsReworked.Classes
 
             foreach (var resourceName in TownOfUsReworked.Assembly.GetManifestResourceNames())
             {
-                /*if (resourceName.StartsWith(TownOfUsReworked.Sounds) && resourceName.EndsWith(".raw"))
-                {
-                    var name = resourceName.Replace(".raw", "").Replace(TownOfUsReworked.Sounds, "");
-                    SoundEffects.Add(name, CreateAudio(resourceName));
-                    Sounds.Add(name);
-                }*/
-
                 if ((resourceName.StartsWith(TownOfUsReworked.Buttons) || resourceName.StartsWith(TownOfUsReworked.Misc)) && resourceName.EndsWith(".png"))
                 {
                     var name = resourceName.Replace(".png", "").Replace(TownOfUsReworked.Buttons, "").Replace(TownOfUsReworked.Misc, "");
@@ -219,20 +251,6 @@ namespace TownOfUsReworked.Classes
                     position2++;
                 }
             }
-
-            /*var translation = Utils.CreateText(GetLanguage(), "Languages").Split("\n");
-
-            if (TranslationKeys.Length > 0 && translation.Length > 0 && TranslationKeys.Length == translation.Length)
-            {
-                var position = 0;
-                Translations.Clear();
-
-                foreach (var key in TranslationKeys)
-                {
-                    Translations.Add(key, translation[position]);
-                    position++;
-                }
-            }*/
         }
     }
 }

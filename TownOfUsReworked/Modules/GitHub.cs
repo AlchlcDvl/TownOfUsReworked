@@ -21,7 +21,7 @@ namespace TownOfUsReworked.Modules
         public override string ToString() => name;
     }*/
 
-    class GitHubApiObject
+    public class GitHubApiObject
     {
         [JsonPropertyName("tag_name")]
         public string tag_name;
@@ -29,7 +29,7 @@ namespace TownOfUsReworked.Modules
         public GitHubApiAsset[] assets;
     }
 
-    class GitHubApiAsset
+    public class GitHubApiAsset
     {
         [JsonPropertyName("browser_download_url")]
         public string browser_download_url;

@@ -2,18 +2,21 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
 {
     public class Volatile : Modifier
     {
-        private static float _time;
-        private static int randomNumber;
-        private static int otherNumber;
+        private float _time;
+        private int randomNumber;
+        private int otherNumber;
 
         public Volatile(PlayerControl player) : base(player)
         {
             Name = "Volatile";
-            TaskText = "- You experience a lot of hallucinations and lash out.";
+            TaskText = () => "- You experience a lot of hallucinations and lash out";
             Color = CustomGameOptions.CustomModifierColors ? Colors.Volatile : Colors.Modifier;
             ModifierType = ModifierEnum.Volatile;
             Hidden = !CustomGameOptions.VolatileKnows;
             Type = LayerEnum.Volatile;
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public override void UpdateHud(HudManager __instance)

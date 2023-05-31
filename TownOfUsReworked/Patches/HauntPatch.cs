@@ -5,8 +5,14 @@ namespace TownOfUsReworked.Patches
     {
         public static bool Prefix(HauntMenuMinigame __instance)
         {
-            if (ConstantVariables.IsHnS || !CustomGameOptions.DeadSeeEverything)
+            if (ConstantVariables.IsHnS)
                 return true;
+
+            if (!ConstantVariables.DeadSeeEverything)
+            {
+                __instance.FilterText.text = " ";
+                return false;
+            }
 
             var role = Role.GetRole(__instance.HauntTarget);
             var modifier = Modifier.GetModifier(__instance.HauntTarget);
@@ -59,7 +65,7 @@ namespace TownOfUsReworked.Patches
     {
         public static bool Prefix(HauntMenuMinigame __instance)
         {
-            if (!ConstantVariables.IsNormal || Role.LocalRole.Zooming)
+            if (!ConstantVariables.IsNormal)
                 return true;
 
             __instance.FilterButtons[0].gameObject.SetActive(true);

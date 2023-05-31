@@ -18,7 +18,7 @@
         {
             public static void Postfix(HudManager __instance)
             {
-                if (ModCompatibility.IsSubmerged && PlayerControl.LocalPlayer.Data.IsDead && PlayerControl.LocalPlayer.IsPostmortal())
+                if (ModCompatibility.IsSubmerged && PlayerControl.LocalPlayer.IsPostmortal())
                     __instance.MapButton.transform.parent.Find(__instance.MapButton.name + "(Clone)").gameObject.SetActive(PlayerControl.LocalPlayer.Caught());
             }
         }

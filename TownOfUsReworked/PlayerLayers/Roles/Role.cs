@@ -46,6 +46,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public static bool RoleWins => UndeadWin || CabalWin || InfectorsWin || ReanimatedWin || SectWin || NKWins || CrewWin || IntruderWin || SyndicateWin || AllNeutralsWin || GlitchWins
             || JuggernautWins || SerialKillerWins || ArsonistWins || CryomaniacWins || MurdererWins || PhantomWins || WerewolfWins || ActorWins || BountyHunterWins || CannibalWins ||
             ExecutionerWins || GuesserWins || JesterWins || TrollWins;
+        public static bool NBCanWin => CrewWin || UndeadWin || CabalWin || ReanimatedWin || SectWin || InfectorsWin || NKWins || IntruderWin || SyndicateWin || AllNeutralsWin ||
+            GlitchWins || JuggernautWins || SerialKillerWins || CryomaniacWins || ArsonistWins || MurdererWins || WerewolfWins || !CustomGameOptions.NeutralEvilsEndGame;
 
         public static int ChaosDriveMeetingTimerCount;
         public static bool SyndicateHasChaosDrive;
@@ -66,6 +68,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Dictionary<byte, CustomArrow> DeadArrows = new();
         public Dictionary<PointInTime, DateTime> Positions = new();
         public List<PointInTime> PointsInTime => Positions.Keys.ToList();
+        public Dictionary<byte, CustomArrow> YellerArrows = new();
 
         public string FactionColorString => $"<color=#{FactionColor.ToHtmlStringRGBA()}>";
         public string SubFactionColorString => $"<color=#{SubFactionColor.ToHtmlStringRGBA()}>";
@@ -73,9 +76,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public string IntroSound => $"{Name}Intro";
         public bool IntroPlayed;
 
-        public string StartText = "Woah The Game Started";
-        public string AbilitiesText = "- None";
-        public string Objectives = "- None";
+        public Func<string> StartText = () => "Woah The Game Started";
+        public Func<string> AbilitiesText = () => "- None";
+        public Func<string> Objectives = () => "- None";
 
         public string FactionName => $"{Faction}";
         public string SubFactionName => $"{SubFaction}";
@@ -89,23 +92,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public bool Bombed;
         public bool Diseased;
-        public bool Base;
 
         public CustomButton BombKillButton;
-
-        public GameObject SettingsButton;
-        public bool SettingsActive;
-        public Vector3 Pos;
-
-        public GameObject RoleCardButton;
-        public bool RoleCardActive;
-        public TextMeshPro RoleInfo;
-        public GameObject RoleCard;
-        public Vector3 Pos2;
-
-        public GameObject ZoomButton;
-        public Vector3 Pos3;
-        public bool Zooming;
 
         public bool TrulyDead;
 
@@ -135,8 +123,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             __instance.PetButton.buttonLabelText.SetOutlineColor(FactionColor);
             __instance.ImpostorVentButton.buttonLabelText.SetOutlineColor(FactionColor);
             __instance.SabotageButton.buttonLabelText.SetOutlineColor(FactionColor);
-            __instance.SabotageButton.gameObject.SetActive(((BaseFaction == Faction.Intruder && Faction == Faction.Intruder) || (BaseFaction == Faction.Syndicate && Faction ==
-                Faction.Syndicate && CustomGameOptions.AltImps)) && Player.Data.IsImpostor());
+            __instance.SabotageButton.gameObject.SetActive(BaseFaction == Faction && ((Faction == Faction.Intruder && CustomGameOptions.IntrudersCanSabotage) || (Faction ==
+                Faction.Syndicate && CustomGameOptions.AltImps)) && !MeetingHud.Instance);
             Player.RegenTask();
             __instance.GameSettings.text = GameSettings.Settings();
 
@@ -242,6 +230,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 }
             }
 
+            foreach (var yeller in Modifier.GetModifiers<Yeller>(ModifierEnum.Yeller))
+            {
+                if (yeller.Player != Player)
+                {
+                    if (!YellerArrows.ContainsKey(yeller.PlayerId))
+                        YellerArrows.Add(yeller.PlayerId, new(Player, Colors.Yeller));
+                    else
+                        YellerArrows[yeller.PlayerId].Update(yeller.Player.transform.position, Colors.Yeller);
+                }
+            }
+
             foreach (var pair in AllArrows)
             {
                 var player = Utils.PlayerById(pair.Key);
@@ -258,43 +257,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             BombKillButton.Update("KILL", true, Bombed);
 
-            if (!SettingsButton)
-            {
-                SettingsButton = UObject.Instantiate(__instance.MapButton.gameObject, __instance.MapButton.transform.parent);
-                SettingsButton.GetComponent<SpriteRenderer>().sprite = AssetManager.GetSprite("CurrentSettings");
-                SettingsButton.GetComponent<PassiveButton>().OnClick = new();
-                SettingsButton.GetComponent<PassiveButton>().OnClick.AddListener((Action)(() => OpenSettings(__instance)));
-            }
-
-            Pos = __instance.MapButton.transform.localPosition + new Vector3(0, -0.66f, 0f);
-            SettingsButton.SetActive(__instance.MapButton.gameObject.active && !(MapBehaviour.Instance && MapBehaviour.Instance.IsOpen) && ConstantVariables.IsNormal);
-            SettingsButton.transform.localPosition = Pos;
-
-            if (!RoleCardButton)
-            {
-                RoleCardButton = UObject.Instantiate(__instance.MapButton.gameObject, __instance.MapButton.transform.parent);
-                RoleCardButton.GetComponent<SpriteRenderer>().sprite = AssetManager.GetSprite("Help");
-                RoleCardButton.GetComponent<PassiveButton>().OnClick = new();
-                RoleCardButton.GetComponent<PassiveButton>().OnClick.AddListener((Action)(() => OpenRoleCard(__instance)));
-            }
-
-            Pos2 = Pos + new Vector3(0, -0.66f, 0f);
-            RoleCardButton.SetActive(__instance.MapButton.gameObject.active && !(MapBehaviour.Instance && MapBehaviour.Instance.IsOpen) && ConstantVariables.IsNormal);
-            RoleCardButton.transform.localPosition = Pos2;
-
-            if (!ZoomButton)
-            {
-                ZoomButton = UObject.Instantiate(__instance.MapButton.gameObject, __instance.MapButton.transform.parent);
-                ZoomButton.GetComponent<PassiveButton>().OnClick = new();
-                ZoomButton.GetComponent<PassiveButton>().OnClick.AddListener(new Action(Zoom));
-            }
-
-            Pos3 = Pos2 + new Vector3(0, -0.66f, 0f);
-            ZoomButton.SetActive(__instance.MapButton.gameObject.active && !(MapBehaviour.Instance && MapBehaviour.Instance.IsOpen) && ConstantVariables.IsNormal &&
-                (!Player.IsPostmortal() || (Player.IsPostmortal() && Player.Caught())) && IsDead);
-            ZoomButton.transform.localPosition = Pos3;
-            ZoomButton.GetComponent<SpriteRenderer>().sprite = AssetManager.GetSprite(Zooming ? "Plus" : "Minus");
-
             if (__instance.TaskPanel)
             {
                 if (Player.CanDoTasks())
@@ -309,12 +271,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
                     tabText.SetText($"Tasks <color=#{color}>({TasksCompleted}/{TotalTasks})</color>");
                 }
+                else
+                    __instance.TaskPanel.tab.transform.FindChild("TabText_TMP").GetComponent<TextMeshPro>().SetText("Fake Tasks");
 
-                __instance.TaskPanel.gameObject.SetActive(!RoleCardActive && !SettingsActive && !Zooming);
+                __instance.TaskPanel.gameObject.SetActive(!RoleCardsPatch.RoleCardActive && !RoleCardsPatch.SettingsActive && !RoleCardsPatch.Zooming && !MeetingHud.Instance);
             }
-
-            if (RoleCardActive)
-                RoleInfo.text = Player.RoleCardInfo();
 
             if (!IsDead && !(Faction == Faction.Syndicate && CustomGameOptions.TimeRewindImmunity))
             {
@@ -369,40 +330,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AllArrows.Clear();
         }
 
-        public void OpenSettings(HudManager __instance)
-        {
-            SettingsActive = !SettingsActive;
-            __instance.GameSettings.gameObject.SetActive(SettingsActive);
-        }
-
-        public void OpenRoleCard(HudManager __instance)
-        {
-            if (!RoleInfo)
-            {
-                RoleInfo = UObject.Instantiate(__instance.KillButton.cooldownTimerText, __instance.transform);
-                RoleInfo.enableWordWrapping = false;
-                RoleInfo.transform.localScale = Vector3.one * 0.5f;
-                RoleInfo.transform.localPosition = new(0, 0, -1f);
-                RoleInfo.alignment = TextAlignmentOptions.Center;
-                RoleInfo.gameObject.layer = 5;
-            }
-
-            if (!RoleCard)
-            {
-                RoleCard = new GameObject("RoleCard") { layer = 5 };
-                RoleCard.AddComponent<SpriteRenderer>().sprite = AssetManager.GetSprite("RoleCard");
-                RoleCard.transform.SetParent(__instance.transform);
-                RoleCard.transform.localPosition = new(0, 0, 0);
-                RoleCard.transform.localScale *= 4f;
-                RoleCard.layer = 5;
-            }
-
-            RoleCardActive = !RoleCardActive;
-            RoleInfo.text = Player.RoleCardInfo();
-            RoleInfo.gameObject.SetActive(RoleCardActive);
-            RoleCard.SetActive(RoleCardActive);
-        }
-
         public override void UpdateMap(MapBehaviour __instance)
         {
             base.UpdateMap(__instance);
@@ -416,7 +343,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         private static bool IsExempt(PlayerVoteArea voteArea)
         {
             var player = Utils.PlayerByVoteArea(voteArea);
-            return player?.Data.Disconnected == true || !CustomGameOptions.LighterDarker;
+            return player == null || player.Data.Disconnected || !CustomGameOptions.LighterDarker;
         }
 
         public static void GenButton(PlayerVoteArea voteArea)
@@ -447,21 +374,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void OnMeetingStart(MeetingHud __instance)
         {
             base.OnMeetingStart(__instance);
-            SettingsActive = false;
-            HudManager.Instance.GameSettings.gameObject.SetActive(false);
-            RoleCardActive = false;
-            RoleInfo?.gameObject?.SetActive(false);
-            RoleCard?.SetActive(false);
-            Zooming = false;
-            Camera.main.orthographicSize = 3f;
-
-            foreach (var cam in Camera.allCameras)
-            {
-                if (cam?.gameObject.name == "UI Camera")
-                    cam.orthographicSize = 3f;
-            }
-
-            ResolutionManager.ResolutionChanged.Invoke((float)Screen.width / Screen.height);
+            RoleCardsPatch.SettingsActive = true;
+            RoleCardsPatch.OpenSettings(HudManager.Instance);
+            RoleCardsPatch.RoleCardActive = true;
+            RoleCardsPatch.OpenRoleCard(HudManager.Instance);
+            RoleCardsPatch.Zooming = true;
+            RoleCardsPatch.Zoom();
             TrulyDead = IsDead;
 
             if (CustomGameOptions.LighterDarker)
@@ -559,22 +477,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = Colors.Layer;
             LayerType = PlayerLayerEnum.Role;
             BombKillButton = new(this, "BombKill", AbilityTypes.Direct, "ActionSecondary", BombKill);
+            RoleHistory = new();
+            Vents = new();
+            AllPrints = new();
+            AllArrows = new();
+            DeadArrows = new();
+            Positions = new();
+            YellerArrows = new();
             AllRoles.Add(this);
-        }
-
-        public void Zoom()
-        {
-            Zooming = !Zooming;
-            var size = Zooming ? 12f : 3f;
-            Camera.main.orthographicSize = size;
-
-            foreach (var cam in Camera.allCameras)
-            {
-                if (cam?.gameObject.name == "UI Camera")
-                    cam.orthographicSize = size;
-            }
-
-            ResolutionManager.ResolutionChanged.Invoke((float)Screen.width / Screen.height);
         }
 
         public void BombKill()
@@ -651,9 +561,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public static List<T> GetRoles<T>(RoleEnum roletype) where T : Role => GetRoles(roletype).Cast<T>().ToList();
 
-        public static List<Role> GetRoles(Faction faction) => AllRoles.Where(x => x.Faction == faction && x.Faithful).ToList();
+        public static List<Role> GetRoles(Faction faction) => AllRoles.Where(x => x.Faction == faction).ToList();
 
-        public static List<Role> GetRoles(RoleAlignment ra) => AllRoles.Where(x => x.RoleAlignment == ra && x.Faithful).ToList();
+        public static List<Role> GetRoles(RoleAlignment ra) => AllRoles.Where(x => x.RoleAlignment == ra).ToList();
 
         public static List<Role> GetRoles(SubFaction subfaction) => AllRoles.Where(x => x.SubFaction == subfaction).ToList();
 

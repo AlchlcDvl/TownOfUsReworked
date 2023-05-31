@@ -8,18 +8,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Amnesiac(PlayerControl player) : base(player)
         {
             Name = "Amnesiac";
-            StartText = "You Forgor :skull:";
-            AbilitiesText = "- You can copy over a player's role should you find their body" + (CustomGameOptions.RememberArrows ? "\n- When someone dies, you get an arrow pointing to " +
-                "their body" : "");
+            StartText = () => "You Forgor :skull:";
+            AbilitiesText = () => "- You can copy over a player's role should you find their body" + (CustomGameOptions.RememberArrows ? "\n- When someone dies, you get an arrow pointing "
+                + "to their body" : "");
             RoleType = RoleEnum.Amnesiac;
             RoleAlignment = RoleAlignment.NeutralBen;
             Color = CustomGameOptions.CustomNeutColors ? Colors.Amnesiac : Colors.Neutral;
-            Objectives = "- Find a dead body, remember their role and then fulfill the win condition for that role\n- If there are less than 7 players alive, you will become a " +
+            Objectives = () => "- Find a dead body, remember their role and then fulfill the win condition for that role\n- If there are less than 7 players alive, you will become a " +
                 "<color=#80FF00FF>Thief</color>";
             BodyArrows = new();
             InspectorResults = InspectorResults.DealsWithDead;
             Type = LayerEnum.Amnesiac;
             RememberButton = new(this, "Remember", AbilityTypes.Dead, "ActionSecondary", Remember);
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public void DestroyArrow(byte targetPlayerId)
@@ -41,7 +44,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var newRole = new Thief(Player);
             newRole.RoleUpdate(this);
 
-            if (Player == PlayerControl.LocalPlayer)
+            if (Local)
                 Utils.Flash(Colors.Thief);
 
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
@@ -95,7 +98,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 RoleEnum.Anarchist => new Anarchist(amnesiac),
                 RoleEnum.Arsonist => new Arsonist(amnesiac) { Doused = ((Arsonist)role).Doused },
-                RoleEnum.Blackmailer => new Blackmailer(amnesiac),
+                RoleEnum.Blackmailer => new Blackmailer(amnesiac) { BlackmailedPlayer = ((Blackmailer)role).BlackmailedPlayer },
                 RoleEnum.Bomber => new Bomber(amnesiac),
                 RoleEnum.Camouflager => new Camouflager(amnesiac),
                 RoleEnum.Cannibal => new Cannibal(amnesiac) { EatNeed = ((Cannibal)role).EatNeed },
@@ -113,7 +116,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 RoleEnum.Framer => new Framer(amnesiac) { Framed = ((Framer)role).Framed },
                 RoleEnum.Glitch => new Glitch(amnesiac),
                 RoleEnum.Godfather => new Godfather(amnesiac),
-                RoleEnum.PromotedGodfather => new PromotedGodfather(amnesiac) { Investigated = ((PromotedGodfather)role).Investigated },
+                RoleEnum.PromotedGodfather => new PromotedGodfather(amnesiac)
+                {
+                    Investigated = ((PromotedGodfather)role).Investigated,
+                    BlackmailedPlayer = ((PromotedGodfather)role).BlackmailedPlayer
+                },
                 RoleEnum.Grenadier => new Grenadier(amnesiac),
                 RoleEnum.GuardianAngel => new GuardianAngel(amnesiac) { TargetPlayer = target },
                 RoleEnum.Impostor => new Impostor(amnesiac),

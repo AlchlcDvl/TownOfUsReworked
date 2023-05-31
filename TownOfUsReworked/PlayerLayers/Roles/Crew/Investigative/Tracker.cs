@@ -11,8 +11,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Tracker(PlayerControl player) : base(player)
         {
             Name = "Tracker";
-            StartText = "Stalk Everyone To Monitor Their Movements";
-            AbilitiesText = "- You can track players which creates arrows that update every now and then";
+            StartText = () => "Stalk Everyone To Monitor Their Movements";
+            AbilitiesText = () => "- You can track players which creates arrows that update every now and then";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Tracker : Colors.Crew;
             RoleType = RoleEnum.Tracker;
             UsesLeft = CustomGameOptions.MaxTracks;
@@ -21,6 +21,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             InspectorResults = InspectorResults.TracksOthers;
             Type = LayerEnum.Tracker;
             TrackButton = new(this, "Track", AbilityTypes.Direct, "ActionSecondary", Track, Exception, true);
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float TrackerTimer()

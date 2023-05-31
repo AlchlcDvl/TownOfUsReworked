@@ -15,8 +15,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Shapeshifter(PlayerControl player) : base(player)
         {
             Name = "Shapeshifter";
-            StartText = "Change Everyone's Appearances";
-            AbilitiesText = $"- You can shuffle everyone's appearances\n{AbilitiesText}";
+            StartText = () => "Change Everyone's Appearances";
+            AbilitiesText = () => $"- You can shuffle everyone's appearances\n{AbilitiesText()}";
             Color = CustomGameOptions.CustomSynColors ? Colors.Shapeshifter : Colors.Syndicate;
             RoleType = RoleEnum.Shapeshifter;
             RoleAlignment = RoleAlignment.SyndicateDisrup;
@@ -27,6 +27,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Type = LayerEnum.Shapeshifter;
             ShapeshiftButton = new(this, "Shapeshift", AbilityTypes.Effect, "Secondary", HitShapeshift);
             InspectorResults = InspectorResults.CreatesConfusion;
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public void Shapeshift()

@@ -16,8 +16,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Grenadier(PlayerControl player) : base(player)
         {
             Name = "Grenadier";
-            StartText = "Blind The <color=#8CFFFFFF>Crew</color> With Your Magnificent Figure";
-            AbilitiesText = $"- You can drop a flashbang, which blinds players around you\n{AbilitiesText}";
+            StartText = () => "Blind The <color=#8CFFFFFF>Crew</color> With Your Magnificent Figure";
+            AbilitiesText = () => $"- You can drop a flashbang, which blinds players around you\n{AbilitiesText()}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Grenadier : Colors.Intruder;
             RoleType = RoleEnum.Grenadier;
             RoleAlignment = RoleAlignment.IntruderConceal;
@@ -26,6 +26,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             FlashedPlayers = new();
             Type = LayerEnum.Grenadier;
             FlashButton = new(this, "Flash", AbilityTypes.Effect, "Secondary", HitFlash);
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float FlashTimer()

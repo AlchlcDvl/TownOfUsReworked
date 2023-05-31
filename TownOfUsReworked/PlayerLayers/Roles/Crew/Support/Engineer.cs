@@ -10,8 +10,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Engineer(PlayerControl player) : base(player)
         {
             Name = "Engineer";
-            StartText = "Just Fix It";
-            AbilitiesText = "- You can fix sabotages at any time during the game\n- You can vent";
+            StartText = () => "Just Fix It";
+            AbilitiesText = () => "- You can fix sabotages at any time during the game\n- You can vent";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Engineer : Colors.Crew;
             RoleType = RoleEnum.Engineer;
             RoleAlignment = RoleAlignment.CrewSupport;
@@ -19,6 +19,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             UsesLeft = CustomGameOptions.MaxFixes;
             Type = LayerEnum.Engineer;
             FixButton = new(this, "Fix", AbilityTypes.Effect, "ActionSecondary", Fix, true);
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float FixTimer()

@@ -10,9 +10,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Medic(PlayerControl player) : base(player)
         {
             Name = "Medic";
-            StartText = "Shield A Player To Protect Them";
-            AbilitiesText = "- You can shield a player to prevent them from dying to others\n- If your target is attacked, you will be notified of it by default\n- Your shield does " +
-                "not save your target from suicides";
+            StartText = () => "Shield A Player To Protect Them";
+            AbilitiesText = () => "- You can shield a player to prevent them from dying to others\n- If your target is attacked, you will be notified of it by default\n- Your shield does "
+                + "not save your target from suicides";
             Color = CustomGameOptions.CustomCrewColors ? Colors.Medic : Colors.Crew;
             RoleType = RoleEnum.Medic;
             ShieldedPlayer = null;
@@ -21,6 +21,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             InspectorResults = InspectorResults.PreservesLife;
             Type = LayerEnum.Medic;
             ShieldButton = new(this, "Shield", AbilityTypes.Direct, "ActionSecondary", Protect, Exception);
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public void Protect()

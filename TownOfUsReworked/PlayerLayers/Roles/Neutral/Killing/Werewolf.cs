@@ -9,15 +9,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Werewolf(PlayerControl player) : base(player)
         {
             Name = "Werewolf";
-            StartText = "AWOOOOOOOOOO";
-            AbilitiesText = $"- You kill everyone within {CustomGameOptions.MaulRadius}m";
-            Objectives = "- Maul anyone who can oppose you";
+            StartText = () => "AWOOOOOOOOOO";
+            AbilitiesText = () => $"- You kill everyone within {CustomGameOptions.MaulRadius}m";
+            Objectives = () => "- Maul anyone who can oppose you";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Werewolf : Colors.Neutral;
             RoleType = RoleEnum.Werewolf;
             RoleAlignment = RoleAlignment.NeutralKill;
             Type = LayerEnum.Werewolf;
             MaulButton = new(this, "Maul", AbilityTypes.Direct, "ActionSecondary", HitMaul, Exception);
             InspectorResults = InspectorResults.IsAggressive;
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float MaulTimer()
@@ -35,7 +38,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 Utils.Spread(Player, player);
 
                 if (player.IsVesting() || player.IsProtected() || Player.IsOtherRival(player) || Player == player || MaulButton.TargetPlayer == player || player.IsShielded() ||
-                    player.IsRetShielded())
+                    player.IsRetShielded() || player.IsProtectedMonarch())
                 {
                     continue;
                 }

@@ -9,12 +9,15 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         {
             Name = "Corrupted";
             Symbol = "δ";
-            TaskText = "- Corrupt everyone";
+            TaskText = () => "- Corrupt everyone";
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Corrupted : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Corrupted;
             Type = LayerEnum.Corrupted;
-            CorruptButton = new(this, "CorruptedCorrupt", AbilityTypes.Direct, "Quarternary", Corrupt);
+            CorruptButton = new(this, "Corrupt", AbilityTypes.Direct, "Quarternary", Corrupt);
             Role.GetRole(Player).RoleAlignment = Role.GetRole(Player).RoleAlignment.GetNewAlignment(Faction.Neutral);
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float CorruptTimer()

@@ -13,8 +13,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Concealer(PlayerControl player) : base(player)
         {
             Name = "Concealer";
-            StartText = "Make The <color=#8CFFFFFF>Crew</color> Invisible For Some Chaos";
-            AbilitiesText = "- You can make a player invisible\n- With the Chaos Drive, you make everyone invisible";
+            StartText = () => "Make The <color=#8CFFFFFF>Crew</color> Invisible For Some Chaos";
+            AbilitiesText = () => "- You can make a player invisible\n- With the Chaos Drive, you make everyone invisible";
             Color = CustomGameOptions.CustomSynColors ? Colors.Concealer : Colors.Syndicate;
             RoleType = RoleEnum.Concealer;
             RoleAlignment = RoleAlignment.SyndicateDisrup;
@@ -23,6 +23,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Type = LayerEnum.Concealer;
             ConcealButton = new(this, "Conceal", AbilityTypes.Effect, "Secondary", HitConceal);
             InspectorResults = InspectorResults.Unseen;
+
+            if (TownOfUsReworked.IsTest)
+                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public void Conceal()
