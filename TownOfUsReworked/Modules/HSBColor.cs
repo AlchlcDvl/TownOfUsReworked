@@ -1,4 +1,4 @@
-namespace TownOfUsReworked.Cosmetics
+namespace TownOfUsReworked.Modules
 {
     [Serializable]
     public struct HSBColor
@@ -64,9 +64,7 @@ namespace TownOfUsReworked.Cosmetics
                     ret.h += 360f;
             }
             else
-            {
                 ret.h = 0;
-            }
 
             ret.h *= 1f / 360f;
             ret.s = dif / max * 1f;
@@ -159,13 +157,9 @@ namespace TownOfUsReworked.Cosmetics
             else
             {
                 if (a.s == 0)
-                {
                     h = b.h;
-                }
                 else if (b.s == 0)
-                {
                     h = a.h;
-                }
                 else
                 {
                     var angle = Mathf.LerpAngle(a.h * 360f, b.h * 360f, t);

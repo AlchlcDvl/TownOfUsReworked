@@ -12,7 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         {
             Name = "Rival";
             Symbol = "α";
-            TaskText = () => $"- Live to the final 3 with {OtherRival.name}";
+            TaskText = () => $"- Get {OtherRival.name} killed and then live to the final 2";
             Color = CustomGameOptions.CustomObjectifierColors ? Colors.Rivals : Colors.Objectifier;
             ObjectifierType = ObjectifierEnum.Rivals;
             Type = LayerEnum.Rivals;

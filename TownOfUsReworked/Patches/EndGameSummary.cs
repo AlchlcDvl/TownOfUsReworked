@@ -27,7 +27,7 @@ namespace TownOfUsReworked.Patches
                 PlayerRoles.Clear();
 
                 //There's a better way of doing this e.g. switch statement or dictionary. But this works for now.
-                //AD says - Done.
+                //AD says "Done".
                 foreach (var playerControl in PlayerControl.AllPlayerControls)
                 {
                     var summary = "";
@@ -54,30 +54,12 @@ namespace TownOfUsReworked.Patches
 
                         summary += role.ColorString + role.Name + "</color>";
                         cache += role.Name;
-                    }
 
-                    if (playerControl.IsRecruit())
-                    {
-                        summary += " <color=#575657FF>$</color>";
-                        cache += " $";
-                    }
-
-                    if (playerControl.IsPersuaded())
-                    {
-                        summary += " <color=#F995FCFF>Λ</color>";
-                        cache += " Λ";
-                    }
-
-                    if (playerControl.IsResurrected())
-                    {
-                        summary += " <color=#E6108AFF>Σ</color>";
-                        cache += " Σ";
-                    }
-
-                    if (playerControl.IsBitten())
-                    {
-                        summary += " <color=#7B8968FF>γ</color>";
-                        cache += " γ";
+                        if (role.SubFaction != SubFaction.None && !playerControl.Is(RoleAlignment.NeutralNeo))
+                        {
+                            summary += " " + role.SubFactionColorString + role.SubFactionSymbol + "</color>";
+                            cache += " " + role.SubFactionSymbol;
+                        }
                     }
 
                     if (objectifier?.ObjectifierType != ObjectifierEnum.None)
@@ -122,7 +104,7 @@ namespace TownOfUsReworked.Patches
                         cache += " π";
                     }
 
-                    if (playerControl == Role.DriveHolder)
+                    if (playerControl == Role.DriveHolder && !CustomGameOptions.GlobalDrive)
                     {
                         summary += " <color=#008000FF>Δ</color>";
                         cache += " Δ";
@@ -134,8 +116,8 @@ namespace TownOfUsReworked.Patches
                         cache += $" <{role.TasksCompleted}/{role.TotalTasks}>";
                     }
 
-                    summary += $" | {playerControl.DeathReason()}";
-                    cache += $" | {playerControl.DeathReason()}";
+                    summary += playerControl.DeathReason();
+                    cache += playerControl.DeathReason();
                     PlayerRoles.Add(new(playerControl.Data.PlayerName, summary, cache));
                 }
             }
@@ -217,10 +199,8 @@ namespace TownOfUsReworked.Patches
                 roleSummaryTextMesh.fontSizeMin = 1.5f;
                 roleSummaryTextMesh.fontSizeMax = 1.5f;
                 roleSummaryTextMesh.fontSize = 1.5f;
-
-                var roleSummaryTextMeshRectTransform = roleSummaryTextMesh.GetComponent<RectTransform>();
-                roleSummaryTextMeshRectTransform.anchoredPosition = new(position.x + 3.5f, position.y - 0.1f);
                 roleSummaryTextMesh.text = $"{roleSummaryText}";
+                roleSummaryTextMesh.GetComponent<RectTransform>().anchoredPosition = new(position.x + 3.5f, position.y - 0.1f);
 
                 var text = Path.Combine(Application.persistentDataPath, "Summary-temp");
 
@@ -250,7 +230,7 @@ namespace TownOfUsReworked.Patches
             if (role == null)
                 return "";
 
-            var die = $"{role.DeathReason}";
+            var die = role.DeathReason is not DeathReasonEnum.Alive ? $" | {role.DeathReason}" : "";
             var killedBy = "";
 
             if (role.DeathReason is not DeathReasonEnum.Alive and not DeathReasonEnum.Ejected and not DeathReasonEnum.Suicide)

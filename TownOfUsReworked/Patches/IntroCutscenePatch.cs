@@ -1,5 +1,6 @@
 namespace TownOfUsReworked.Patches
 {
+    [HarmonyPatch]
     public static class IntroCutScenePatch
     {
         [HarmonyPatch(typeof(IntroCutscene._ShowTeam_d__36), nameof(IntroCutscene._ShowTeam_d__36.MoveNext))]
@@ -48,13 +49,6 @@ namespace TownOfUsReworked.Patches
                 __instance.__4__this.YouAreText.text = "You Are The";
                 __instance.__4__this.RoleBlurbText.text = role.StartText() + statusString;
                 __instance.__4__this.RoleBlurbText.color = role.Color;
-
-                /*if (AssetManager.Sounds.Contains(role.IntroSound) && !role.IntroPlayed)
-                {
-                    SoundManager.Instance.StopSound(PlayerControl.LocalPlayer.Data.Role.IntroSound);
-                    AssetManager.Play(role.IntroSound);
-                    role.IntroPlayed = true;
-                }*/
             }
         }
     }

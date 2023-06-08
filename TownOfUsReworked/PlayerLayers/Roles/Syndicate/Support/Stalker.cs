@@ -10,7 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Stalker";
             StartText = () => "Stalk Everyone To Monitor Their Movements";
-            AbilitiesText = () => $"- You always know where your targets are\n{AbilitiesText()}";
+            AbilitiesText = () => $"- You always know where your targets are\n{CommonAbilities}";
             Color = CustomGameOptions.CustomSynColors ? Colors.Stalker : Colors.Syndicate;
             RoleType = RoleEnum.Stalker;
             StalkerArrows = new();

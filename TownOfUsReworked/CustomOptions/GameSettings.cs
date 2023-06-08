@@ -112,7 +112,8 @@ namespace TownOfUsReworked.CustomOptions
                 if (Input.GetKeyDown(KeyCode.Alpha8) || Input.GetKeyDown(KeyCode.Keypad8))
                     SettingsPage = 7;
 
-                AssetManager.Use = __instance.UseButton.graphic.sprite;
+                if (!AssetManager.Sprites.ContainsKey("Use"))
+                    AssetManager.Sprites.Add("Use", __instance.UseButton.graphic.sprite);
             }
         }
     }

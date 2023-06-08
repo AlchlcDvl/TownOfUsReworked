@@ -17,6 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             UnwarpablePlayers = new();
             StalkerArrows = new();
             Spelled = new();
+            Bombs = new();
             ConcealedPlayer = null;
             ShapeshiftPlayer1 = null;
             ShapeshiftPlayer2 = null;
@@ -85,10 +86,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public bool Exception4(PlayerControl player) => player == PoisonedPlayer || player.Is(Faction) || (player.Is(SubFaction) && SubFaction != SubFaction.None);
 
         public bool Exception5(PlayerControl player) => (player == Player && !CustomGameOptions.WarpSelf) || UnwarpablePlayers.ContainsKey(player.PlayerId) || player == WarpPlayer2 ||
-            (Utils.BodyById(player.PlayerId) == null && player.Data.IsDead);
+            (Utils.BodyById(player.PlayerId) == null && player.Data.IsDead) || player.IsMoving();
 
         public bool Exception6(PlayerControl player) => (player == Player && !CustomGameOptions.WarpSelf) || UnwarpablePlayers.ContainsKey(player.PlayerId) || player == WarpPlayer1 ||
-            (Utils.BodyById(player.PlayerId) == null && player.Data.IsDead);
+            (Utils.BodyById(player.PlayerId) == null && player.Data.IsDead) || player.IsMoving();
 
         public bool Exception7(PlayerControl player) => Framed.Contains(player.PlayerId) || player.Is(Faction) || (player.Is(SubFaction) && SubFaction != SubFaction.None);
 
@@ -116,7 +117,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var flag5 = ShapeshiftPlayer1 == null && !HoldsDrive;
             var flag6 = ShapeshiftPlayer2 == null && !HoldsDrive;
             var flag7 = ConfusedPlayer == null && !HoldsDrive;
-            ConfuseButton.Update(flag7 ? "SET TARGET" : "CONFUSE", ConfuseTimer(), CustomGameOptions.ConfuseCooldown, OnEffect, TimeRemaining, CustomGameOptions.ConfuseDuration);
+            ConfuseButton.Update(flag7 ? "SET TARGET" : "CONFUSE", ConfuseTimer(), CustomGameOptions.ConfuseCooldown, OnEffect, TimeRemaining, CustomGameOptions.ConfuseDuration, true,
+                IsDrunk);
             StalkButton.Update("STALK", StalkTimer(), CustomGameOptions.StalkCd, true, !HoldsDrive && IsStalk);
             SpellButton.Update("SPELL", SpellTimer(), CustomGameOptions.SpellCooldown + (SpellCount * CustomGameOptions.SpellCooldownIncrease), true, IsSpell);
             PositiveButton.Update("SET POSITIVE", PositiveTimer(), CustomGameOptions.CollideCooldown, true, IsCol);
@@ -132,7 +134,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             ConcealButton.Update(flag ? "SET TARGET" : "CONCEAL", ConcealTimer(), CustomGameOptions.ConcealCooldown, OnEffect, TimeRemaining, CustomGameOptions.ConcealDuration, true,
                 IsConc);
             BombButton.Update("PLACE", BombTimer(), CustomGameOptions.BombCooldown, true, IsBomb);
-            DetonateButton.Update("DETONATE", DetonateTimer(), CustomGameOptions.DetonateCooldown, true, Bombs.Count > 0 && IsBomb);
+            DetonateButton.Update("DETONATE", DetonateTimer(), CustomGameOptions.DetonateCooldown, true, Bombs?.Count > 0 && IsBomb);
             TimeButton.Update(HoldsDrive ? "REWIND" : "FREEZE", TimeTimer(), CustomGameOptions.TimeControlCooldown, OnEffect, TimeRemaining, CustomGameOptions.TimeControlDuration, true,
                 IsTK);
             SilenceButton.Update("SILENCE", SilenceTimer(), CustomGameOptions.SilenceCooldown, true, IsSil);
@@ -151,6 +153,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                             ConcealedPlayer = null;
                         else if (ConfusedPlayer != null)
                             ConfusedPlayer = null;
+                        else if (WarpPlayer2 != null)
+                            WarpPlayer2 = null;
+                        else if (WarpPlayer1 != null)
+                            WarpPlayer1 = null;
                     }
                     else if (PoisonedPlayer != null)
                         PoisonedPlayer = null;
@@ -169,7 +175,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (IsDead)
                 OnLobby();
-            else
+            else if (IsStalk)
             {
                 foreach (var pair in StalkerArrows)
                 {
@@ -329,7 +335,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             writer.Write((byte)ActionsRPC.RebelAction);
             writer.Write((byte)RebelActionsRPC.Frame);
             writer.Write(PlayerId);
-            writer.Write(PlayerId);
+            writer.Write(player.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
 
@@ -379,18 +385,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void PoisonKill()
         {
-            if (!PoisonedPlayer.Is(RoleEnum.Pestilence))
-            {
+            if (!(PoisonedPlayer.Data.IsDead || PoisonedPlayer.Data.Disconnected || PoisonedPlayer.Is(RoleEnum.Pestilence)))
                 Utils.RpcMurderPlayer(Player, PoisonedPlayer, DeathReasonEnum.Poisoned, false);
-
-                if (!PoisonedPlayer.Data.IsDead)
-                {
-                    try
-                    {
-                        SoundManager.Instance.PlaySound(PlayerControl.LocalPlayer.KillSfx, false);
-                    } catch {}
-                }
-            }
 
             PoisonedPlayer = null;
             Enabled = false;
@@ -418,7 +414,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             var interact = Utils.Interact(Player, PoisonButton.TargetPlayer);
 
-            if (interact[3])
+            if (interact[3] && !PoisonButton.TargetPlayer.IsProtected() && !PoisonButton.TargetPlayer.IsVesting() && !PoisonButton.TargetPlayer.IsProtectedMonarch())
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.RebelAction);
@@ -430,10 +426,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 TimeRemaining = CustomGameOptions.PoisonDuration;
                 Poison();
             }
+            else if (interact[1] || PoisonButton.TargetPlayer.IsProtected())
+                LastPoisoned.AddSeconds(CustomGameOptions.ProtectKCReset);
             else if (interact[0])
                 LastPoisoned = DateTime.UtcNow;
-            else if (interact[1])
-                LastPoisoned.AddSeconds(CustomGameOptions.ProtectKCReset);
             else if (interact[2])
                 LastPoisoned.AddSeconds(CustomGameOptions.VestKCReset);
         }

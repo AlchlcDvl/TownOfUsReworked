@@ -13,7 +13,7 @@ namespace TownOfUsReworked.Patches
                 var playerInfo = __instance.AllPlayers.ToArray()[i];
 
                 if (!playerInfo.Disconnected && playerInfo.Object != null && playerInfo.Tasks != null && playerInfo.Object.CanDoTasks() && !(playerInfo.IsDead &&
-                    playerInfo.Object.Is(RoleEnum.Revealer)))
+                    playerInfo.Object.Is(RoleEnum.Revealer)) && !(playerInfo.IsDead && !CustomGameOptions.GhostTasksCountToWin))
                 {
                     for (var j = 0; j < playerInfo.Tasks.Count; j++)
                     {

@@ -1,27 +1,25 @@
-- New Modifiers: Astral, Yeller
-- Buff: Dead bodies are now camouflaged along with players
-- Buff: Jackal can now spawn with Neutral (Benign) roles as the good recruits and Neutral (Evil) and (Harbinger) roles as the evil recruits
-- Nerf: Assassin and Guesser can no longer guess Crew (Investigative) roles and has been made optional for Assassin (to actually make the game social deduction and not "stfu and play")
-- Change: Monarch protection now extends to as long as someone is knighted and not that any of the knighted players is Crew
-- Change: Guardian Angels can no longer have Neutral (Evil) targets
-- Change: Guesser can no longer get Crew (Investigative) targets
-- Change: Mystic's subfaction checks now compare to the Mystic's own subfaction, rather than the default one (in case of a converted Mystic)
-- Improvement: Swapping animation now swaps everything
-- Improvement: Minor improvements were made to the role card and the task
-- Improvement: Custom cosmetics now update (in case I ever decide to change up how a hat appears)
-- Improvement: Improved how roles with targets are assigned their targets
-- Improvement: String options now looks like the vanilla map option
-- Improvement: Improved how Role Cards are handled
-- Visual Fix: Fixed the sabotage button being visible when in a meeting
-- Critical Fix: Fixed the mod sometimes not loading
-- Bug Fix: Fixed being able to see the roles of players right after dying using the Haunt Menu
-- Bug Fix: Fixed colorblind support for Operative being applied to all roles
-- Bug Fix: Fixed the issue where the options menu would spasm out of control and then stop letting you switch tabs
-- Bug Fix: Fixed some Neutral (Evil) roles ending the game even with the Neutral Evils End Game setting is off
-- Bug Fix: Fixed Lovers and Rivals not spawning
-- Bug Fix: Fixed the local player's colors not updating for themselves but for everyone else
-- Role Fix: Fixed Silencer and Promoted Rebel cooldowns from not resetting correctly
-- Role Fix: Fixed Actor getting role lists that cannot be guessed
-- Role Fix: Fixed Survivors and Guardian Angels not winning
-- Potential Fix: Fixed the updater not working as intended
-- Removed: Removed the outline around the role names because it makes them look a little bloated during the intro scene
+- Addition: Added /subfactioninfo and /otherinfo commands for more details about the mod
+- Addition: Added an FPS tracker
+- Change: Players being transported/warped are now susceptible to everything during the animation (that means team killing is possible)
+- Improvement: Improved how body reports, role cards and colors are handled
+- Improvement: Added more parameters to customise cosmetics
+- Improvement: Updated the info in the in-game wiki to include meanings of the symbols next to players' names
+- Improvement: Improved how shield breaking is handled
+- Critical Fix: Fixed role cards crashing the game upon opening
+- Critical Fix: Fixed the end game summary not showing sometimes and therefore making the game unplayable
+- Vanilla Fix: Fixed the horrid log spam during games and potential stuttering
+- Bug Fix: Fixed being able to zoom out on game start
+- Bug Fix: Fixed non-role layers having their texts appear strange in the role card
+- Bug Fix: Fixed roles not changing when they are supposed to (Like Executioner to Jester)
+- Bug Fix: Fixed postmortal roles sometimes weirding out while doing tasks
+- Bug Fix: Fixed arrow blips being updated on other people's maps
+- Visual Fix: Fixed the skip button always being visible
+- Visual Fix: Fixed typos in the wiki
+- Visual Fix: Fixed Dictator hammer icons being the other way round
+- Role Fix: Fixed Thief not stealing the roles of those they guessed
+- Role Fix: Fixed Monarch knighting cooldown not resetting
+- Role Fix: Fixed the incorrect scaling of the transport animation
+- Role Fix: Fixed Rebel/Godfather promotions behaving weirdly
+- Role Fix: Fixed non former Drunkard Rebels being able to confuse players
+- Role Fix; Fixed Banshee's role history being spammed
+- Ability Fix: Fixed Assassins being unable to guess after playing for a while

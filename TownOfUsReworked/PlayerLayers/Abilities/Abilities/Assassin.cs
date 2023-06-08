@@ -4,7 +4,7 @@
     {
         public Dictionary<string, Color> ColorMapping = new();
         public Dictionary<string, Color> SortedColorMapping = new();
-        private static int RemainingKills = CustomGameOptions.AssassinKills;
+        public static int RemainingKills = CustomGameOptions.AssassinKills;
         private static bool AssassinOn => CustomGameOptions.CrewAssassinOn > 0 || CustomGameOptions.IntruderAssassinOn > 0 || CustomGameOptions.SyndicateAssassinOn > 0 ||
             CustomGameOptions.NeutralAssassinOn > 0;
         public GameObject Phone;
@@ -288,13 +288,13 @@
                 label.transform.localScale *= 1.7f;
                 label.text = Sorted[k].Key;
                 label.color = Sorted[k].Value;
-                button.GetComponent<PassiveButton>().OnMouseOver = new();
-                button.GetComponent<PassiveButton>().OnMouseOver.AddListener((Action)(() => button.GetComponent<SpriteRenderer>().color = UColor.green));
-                button.GetComponent<PassiveButton>().OnMouseOut = new();
-                button.GetComponent<PassiveButton>().OnMouseOut.AddListener((Action)(() => button.GetComponent<SpriteRenderer>().color = SelectedButton == button ? UColor.red :
-                    UColor.white));
-                button.GetComponent<PassiveButton>().OnClick = new();
-                button.GetComponent<PassiveButton>().OnClick.AddListener((Action)(() =>
+                var passive = button.GetComponent<PassiveButton>();
+                passive.OnMouseOver = new();
+                passive.OnMouseOver.AddListener((Action)(() => button.GetComponent<SpriteRenderer>().color = UColor.green));
+                passive.OnMouseOut = new();
+                passive.OnMouseOut.AddListener((Action)(() => button.GetComponent<SpriteRenderer>().color = SelectedButton == button ? UColor.red : UColor.white));
+                passive.OnClick = new();
+                passive.OnClick.AddListener((Action)(() =>
                 {
                     if (IsDead)
                         return;
@@ -332,13 +332,8 @@
                         if (targetPlayer.Is(RoleEnum.Actor) && currentGuess != "Actor")
                         {
                             var actor = Role.GetRole<Actor>(targetPlayer);
-                            var results = Role.GetRoles(actor.PretendRoles);
-                            var names = new List<string>();
 
-                            foreach (var role in results)
-                                names.Add(role.Name);
-
-                            if (names.Contains(currentGuess))
+                            if (Role.GetRoles(actor.PretendRoles).Any(x => x.Name == currentGuess))
                             {
                                 actor.Guessed = true;
                                 actGuessed = true;
@@ -417,7 +412,6 @@
                 return;
 
             __instance.playerStates.ToList().ForEach(x => x.gameObject.SetActive(false));
-            __instance.SkipVoteButton.gameObject.SetActive(false);
             __instance.TimerText.gameObject.SetActive(false);
             HudManager.Instance.Chat.SetVisible(false);
             Page = 0;
@@ -439,7 +433,6 @@
         {
             Phone.Destroy();
             HudManager.Instance.Chat.SetVisible(true);
-            __instance.SkipVoteButton.gameObject.SetActive(true);
             __instance.TimerText.gameObject.SetActive(true);
             __instance.playerStates.ToList().ForEach(x => x.gameObject.SetActive(true));
 

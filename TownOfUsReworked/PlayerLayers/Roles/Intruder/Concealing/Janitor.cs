@@ -13,7 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Janitor";
             StartText = () => "Sanitise The Ship, By Any Means Neccessary";
-            AbilitiesText = () => $"- You can clean up dead bodies, making them disappear from sight\n- You can drag bodies away to prevent them from getting reported\n{AbilitiesText()}";
+            AbilitiesText = () => $"- You can clean up dead bodies, making them disappear from sight\n- You can drag bodies away to prevent them from getting reported\n{CommonAbilities}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Janitor : Colors.Intruder;
             RoleType = RoleEnum.Janitor;
             RoleAlignment = RoleAlignment.IntruderConceal;

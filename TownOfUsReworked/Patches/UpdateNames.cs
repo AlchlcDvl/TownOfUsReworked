@@ -8,6 +8,9 @@ namespace TownOfUsReworked.Patches
 
         public static void Postfix()
         {
+            if (!AssetManager.SoundEffects.ContainsKey("Kill"))
+                AssetManager.SoundEffects.Add("Kill", PlayerControl.LocalPlayer.KillSfx);
+
             if (ConstantVariables.Inactive || ConstantVariables.IsHnS || MeetingHud.Instance || LobbyBehaviour.Instance)
                 return;
 
@@ -365,8 +368,6 @@ namespace TownOfUsReworked.Patches
                     }
                     else
                         color = jackal.SubFactionColor;
-
-                    player.MyRend().material.SetColor("_VisorColor", Colors.Cabal);
                 }
             }
             else if (PlayerControl.LocalPlayer.Is(RoleEnum.Necromancer) && !ConstantVariables.DeadSeeEverything)
@@ -384,8 +385,6 @@ namespace TownOfUsReworked.Patches
                     }
                     else
                         color = necromancer.SubFactionColor;
-
-                    player.MyRend().material.SetColor("_VisorColor", Colors.Reanimated);
                 }
             }
 
@@ -412,8 +411,6 @@ namespace TownOfUsReworked.Patches
                     }
                     else
                         color = dracula.SubFactionColor;
-
-                    player.MyRend().material.SetColor("_VisorColor", Colors.Undead);
                 }
             }
             else if (PlayerControl.LocalPlayer.IsRecruit() && !ConstantVariables.DeadSeeEverything)
@@ -439,8 +436,6 @@ namespace TownOfUsReworked.Patches
                     }
                     else
                         color = jackal.SubFactionColor;
-
-                    player.MyRend().material.SetColor("_VisorColor", Colors.Cabal);
                 }
             }
             else if (PlayerControl.LocalPlayer.IsResurrected() && !ConstantVariables.DeadSeeEverything)
@@ -466,8 +461,6 @@ namespace TownOfUsReworked.Patches
                     }
                     else
                         color = necromancer.SubFactionColor;
-
-                    player.MyRend().material.SetColor("_VisorColor", Colors.Reanimated);
                 }
             }
             else if (PlayerControl.LocalPlayer.IsPersuaded() && !ConstantVariables.DeadSeeEverything)
@@ -493,8 +486,6 @@ namespace TownOfUsReworked.Patches
                     }
                     else
                         color = whisperer.SubFactionColor;
-
-                    player.MyRend().material.SetColor("_VisorColor", Colors.Sect);
                 }
             }
             else if (PlayerControl.LocalPlayer.Is(RoleEnum.Blackmailer))
@@ -505,7 +496,6 @@ namespace TownOfUsReworked.Patches
                 {
                     name += " <color=#02A752FF>Φ</color>";
                     color = blackmailer.Color;
-                    player.MyRend().material.SetColor("_VisorColor", blackmailer.Color);
                 }
             }
             else if (PlayerControl.LocalPlayer.Is(RoleEnum.Inspector))
@@ -679,8 +669,11 @@ namespace TownOfUsReworked.Patches
                     name += $" {role.FactionColorString}ξ</color>";
             }
 
-            if (PlayerControl.LocalPlayer.Is(Faction.Syndicate) && player == Role.DriveHolder)
+            if ((PlayerControl.LocalPlayer.Is(Faction.Syndicate) || ConstantVariables.DeadSeeEverything) && (player == Role.DriveHolder || (CustomGameOptions.GlobalDrive &&
+                Role.SyndicateHasChaosDrive && player.Is(Faction.Syndicate))))
+            {
                 name += " <color=#008000FF>Δ</color>";
+            }
 
             if (Role.GetRoles<Revealer>(RoleEnum.Revealer).Any(x => x.CompletedTasks) && PlayerControl.LocalPlayer.Is(Faction.Crew))
             {
@@ -713,6 +706,9 @@ namespace TownOfUsReworked.Patches
                     roleRevealed = true;
                 }
             }
+
+            if ((player == PlayerControl.LocalPlayer || ConstantVariables.DeadSeeEverything) && player.IsVesting())
+                name += " <color=#DDDD00FF>υ</color>";
 
             if (player == PlayerControl.LocalPlayer && !ConstantVariables.DeadSeeEverything)
             {
@@ -778,9 +774,6 @@ namespace TownOfUsReworked.Patches
 
                 if (player.IsPersuaded())
                     name += " <color=#F995FCFF>Λ</color>";
-
-                if (player == Role.DriveHolder)
-                    name += " <color=#008000FF>Δ</color>";
 
                 if (player.IsFramed())
                     name += " <color=#00FFFFFF>ς</color>";

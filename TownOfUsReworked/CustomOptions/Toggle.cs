@@ -1,6 +1,5 @@
 namespace TownOfUsReworked.CustomOptions
 {
-    [HarmonyPatch]
     public class CustomToggleOption : CustomOption
     {
         public CustomToggleOption(int id, MultiMenu menu, string name, bool value) : base(id, menu, name, CustomOptionType.Toggle, value) => Format = val => (bool)val ? "True" : "False";

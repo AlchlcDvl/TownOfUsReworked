@@ -1,6 +1,5 @@
 ﻿namespace TownOfUsReworked.Objects
 {
-    [HarmonyPatch]
     public class Bug : Range
     {
         public Dictionary<byte, float> Players = new();

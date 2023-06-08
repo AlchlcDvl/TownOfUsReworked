@@ -1,6 +1,5 @@
 namespace TownOfUsReworked.CustomOptions
 {
-    [HarmonyPatch]
     public class CustomOption
     {
         public readonly static List<CustomOption> AllOptions = new();

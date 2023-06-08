@@ -4,6 +4,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     {
         public DateTime LastKilled;
         public CustomButton KillButton;
+        public string CommonAbilities;
 
         protected IntruderRole(PlayerControl player) : base(player)
         {
@@ -12,7 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = Colors.Intruder;
             Objectives = () => IntrudersWinCon;
             BaseFaction = Faction.Intruder;
-            AbilitiesText = () => "- You can kill players" + (CustomGameOptions.IntrudersCanSabotage ? "\n- You can call sabotages to distract the <color=#8CFFFFFF>Crew</color>" : "");
+            CommonAbilities = "- You can kill players" + (CustomGameOptions.IntrudersCanSabotage ? "\n- You can call sabotages to distract the <color=#8CFFFFFF>Crew</color>" : "");
             KillButton = new(this, "IntruderKill", AbilityTypes.Direct, "ActionSecondary", Kill, Exception);
             Player.Data.SetImpostor(true);
         }

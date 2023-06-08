@@ -1,6 +1,5 @@
 namespace TownOfUsReworked.CustomOptions
 {
-    [HarmonyPatch]
     public class CustomButtonOption : CustomOption
     {
         public Action Do;

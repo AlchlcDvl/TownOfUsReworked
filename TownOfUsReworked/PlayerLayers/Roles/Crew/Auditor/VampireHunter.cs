@@ -47,11 +47,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (VampsDead && !IsDead)
             {
-                TurnVigilante();
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
                 writer.Write((byte)TurnRPC.TurnVigilante);
                 writer.Write(PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
+                TurnVigilante();
             }
         }
 

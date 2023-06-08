@@ -208,40 +208,16 @@
         {
             if ((DoUndo.IsCamoed && camoCondition) || otherCondition)
                 return new Color32(125, 125, 125, 255);
-            else if (ColorUtils.IsRainbow(player.GetDefaultOutfit().ColorId))
-                return ColorUtils.RainbowShadow;
-            else if (ColorUtils.IsChroma(player.GetDefaultOutfit().ColorId))
-                return ColorUtils.ChromaShadow;
-            else if (ColorUtils.IsMonochrome(player.GetDefaultOutfit().ColorId))
-                return ColorUtils.MonochromeShadow;
-            else if (ColorUtils.IsMantle(player.GetDefaultOutfit().ColorId))
-                return ColorUtils.MantleShadow;
-            else if (ColorUtils.IsFire(player.GetDefaultOutfit().ColorId))
-                return ColorUtils.FireShadow;
-            else if (ColorUtils.IsGalaxy(player.GetDefaultOutfit().ColorId))
-                return ColorUtils.GalaxyShadow;
             else
-                return Palette.ShadowColors[player.GetDefaultOutfit().ColorId];
+                return ColorUtils.GetColor(player.GetDefaultOutfit().ColorId, true);
         }
 
         public static Color GetPlayerColor(this PlayerControl player, bool camoCondition = true, bool otherCondition = false)
         {
             if ((DoUndo.IsCamoed && camoCondition) || otherCondition)
                 return Color.grey;
-            else if (ColorUtils.IsRainbow(player.GetDefaultOutfit().ColorId))
-                return ColorUtils.Rainbow;
-            else if (ColorUtils.IsChroma(player.GetDefaultOutfit().ColorId))
-                return ColorUtils.Chroma;
-            else if (ColorUtils.IsMonochrome(player.GetDefaultOutfit().ColorId))
-                return ColorUtils.Monochrome;
-            else if (ColorUtils.IsMantle(player.GetDefaultOutfit().ColorId))
-                return ColorUtils.Mantle;
-            else if (ColorUtils.IsFire(player.GetDefaultOutfit().ColorId))
-                return ColorUtils.Fire;
-            else if (ColorUtils.IsGalaxy(player.GetDefaultOutfit().ColorId))
-                return ColorUtils.Galaxy;
             else
-                return Palette.PlayerColors[player.GetDefaultOutfit().ColorId];
+                return ColorUtils.GetColor(player.GetDefaultOutfit().ColorId, false);
         }
 
         public static List<PlayerControl> GetCrewmates(List<PlayerControl> impostors) => PlayerControl.AllPlayerControls.Where(player => !impostors.Any(imp => imp ==
@@ -337,7 +313,7 @@
                 return;
 
             if (killer == PlayerControl.LocalPlayer)
-                SoundManager.Instance.PlaySound(PlayerControl.LocalPlayer.KillSfx, false);
+                AssetManager.Play("Kill");
 
             if (FirstDead == null)
                 FirstDead = target;
@@ -432,10 +408,7 @@
 
         public static void MarkMeetingDead(PlayerControl target, PlayerControl killer, bool doesKill = true)
         {
-            try
-            {
-                SoundManager.Instance.PlaySound(PlayerControl.LocalPlayer.KillSfx, false);
-            } catch {}
+            AssetManager.Play("Kill");
 
             if (target == PlayerControl.LocalPlayer)
             {
@@ -447,7 +420,7 @@
 
                 if (target.Is(AbilityEnum.Swapper))
                 {
-                    var swapper = Ability.GetAbility<Swapper>(PlayerControl.LocalPlayer);
+                    var swapper = Ability.GetAbility<Swapper>(target);
                     swapper.Swap1 = null;
                     swapper.Swap2 = null;
                     swapper.HideButtons();
@@ -458,9 +431,6 @@
                     writer.Write(255);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
-
-                if (target.Is(RoleEnum.Guesser))
-                    Role.GetRole<Guesser>(target).HideButtons();
 
                 if (target.Is(RoleEnum.Dictator))
                 {
@@ -481,8 +451,23 @@
 
                 if (target.Is(AbilityEnum.Assassin))
                 {
-                    Ability.GetAbility<Assassin>(target).Exit(MeetingHud.Instance);
-                    Ability.GetAbility<Assassin>(target).HideButtons();
+                    var assassin = Ability.GetAbility<Assassin>(target);
+                    assassin.Exit(MeetingHud.Instance);
+                    assassin.HideButtons();
+                }
+
+                if (target.Is(RoleEnum.Guesser))
+                {
+                    var guesser = Role.GetRole<Guesser>(PlayerControl.LocalPlayer);
+                    guesser.Exit(MeetingHud.Instance);
+                    guesser.HideButtons();
+                }
+
+                if (target.Is(RoleEnum.Thief))
+                {
+                    var thief = Role.GetRole<Thief>(PlayerControl.LocalPlayer);
+                    thief.Exit(MeetingHud.Instance);
+                    thief.HideButtons();
                 }
             }
 
@@ -498,13 +483,13 @@
 
             voteArea.AmDead = true;
             voteArea.Overlay.gameObject.SetActive(true);
-            voteArea.Overlay.color = UColor.white;
+            voteArea.Overlay.color = Color.white;
             voteArea.XMark.gameObject.SetActive(true);
             voteArea.XMark.transform.localScale = Vector3.one;
 
             foreach (var role in Role.GetRoles<Blackmailer>(RoleEnum.Blackmailer))
             {
-                if (target.PlayerId == role.BlackmailedPlayer?.PlayerId && role.PrevOverlay != null)
+                if (target == role.BlackmailedPlayer && role.PrevOverlay != null)
                 {
                     voteArea.Overlay.sprite = role.PrevOverlay;
                     voteArea.Overlay.color = role.PrevColor;
@@ -513,7 +498,7 @@
 
             foreach (var role in Role.GetRoles<Silencer>(RoleEnum.Silencer))
             {
-                if (target.PlayerId == role.SilencedPlayer?.PlayerId && role.PrevOverlay != null)
+                if (target == role.SilencedPlayer && role.PrevOverlay != null)
                 {
                     voteArea.Overlay.sprite = role.PrevOverlay;
                     voteArea.Overlay.color = role.PrevColor;
@@ -522,7 +507,7 @@
 
             foreach (var role in Role.GetRoles<PromotedGodfather>(RoleEnum.PromotedGodfather))
             {
-                if (target.PlayerId == role.BlackmailedPlayer?.PlayerId && role.PrevOverlay != null && role.IsBM)
+                if (target == role.BlackmailedPlayer && role.PrevOverlay != null && role.IsBM)
                 {
                     voteArea.Overlay.sprite = role.PrevOverlay;
                     voteArea.Overlay.color = role.PrevColor;
@@ -531,7 +516,7 @@
 
             foreach (var role in Role.GetRoles<PromotedRebel>(RoleEnum.PromotedRebel))
             {
-                if (target.PlayerId == role.SilencedPlayer?.PlayerId && role.PrevOverlay != null && role.IsSil)
+                if (target == role.SilencedPlayer && role.PrevOverlay != null && role.IsSil)
                 {
                     voteArea.Overlay.sprite = role.PrevOverlay;
                     voteArea.Overlay.color = role.PrevColor;
@@ -539,17 +524,31 @@
             }
 
             if (PlayerControl.LocalPlayer.Is(AbilityEnum.Assassin) && !PlayerControl.LocalPlayer.Data.IsDead)
-                Ability.GetAbility<Assassin>(PlayerControl.LocalPlayer).HideSingle(target.PlayerId);
+            {
+                var assassin = Ability.GetAbility<Assassin>(PlayerControl.LocalPlayer);
+                assassin.Exit(MeetingHud.Instance);
+                assassin.HideSingle(target.PlayerId);
+            }
 
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Guesser) && !PlayerControl.LocalPlayer.Data.IsDead)
-                Role.GetRole<Guesser>(PlayerControl.LocalPlayer).HideSingle(target.PlayerId);
+            {
+                var guesser = Role.GetRole<Guesser>(PlayerControl.LocalPlayer);
+                guesser.Exit(MeetingHud.Instance);
+                guesser.HideSingle(target.PlayerId);
+            }
+
+            if (PlayerControl.LocalPlayer.Is(RoleEnum.Thief) && !PlayerControl.LocalPlayer.Data.IsDead)
+            {
+                var thief = Role.GetRole<Thief>(PlayerControl.LocalPlayer);
+                thief.Exit(MeetingHud.Instance);
+                thief.HideSingle(target.PlayerId);
+            }
 
             if (PlayerControl.LocalPlayer.Is(AbilityEnum.Swapper) && !PlayerControl.LocalPlayer.Data.IsDead)
             {
                 var swapper = Ability.GetAbility<Swapper>(PlayerControl.LocalPlayer);
-                var active = swapper.Actives[target.PlayerId];
 
-                if (active)
+                if (swapper.Actives.Any(x => x.Key == target.PlayerId && x.Value))
                 {
                     if (swapper.Swap1 == voteArea)
                         swapper.Swap1 = null;
@@ -571,9 +570,8 @@
             if (PlayerControl.LocalPlayer.Is(RoleEnum.Dictator) && !PlayerControl.LocalPlayer.Data.IsDead)
             {
                 var dictator = Role.GetRole<Dictator>(PlayerControl.LocalPlayer);
-                var active = dictator.Actives[target.PlayerId];
 
-                if (active)
+                if (dictator.Actives.Any(x => x.Key == target.PlayerId && x.Value))
                 {
                     dictator.ToBeEjected.Clear();
 
@@ -712,8 +710,8 @@
         {
             Ash.DestroyAll();
             Objects.Range.DestroyAll();
-            RoleCardsPatch.Zooming = true;
-            RoleCardsPatch.Zoom();
+            OtherButtonsPatch.Zooming = true;
+            OtherButtonsPatch.Zoom();
             GameManager.Instance.RpcEndGame(GameOverReason.ImpostorByVote, false);
         }
 
@@ -735,121 +733,61 @@
             {
                 if (player.Is(RoleEnum.Pestilence))
                 {
-                    if (target.IsShielded() && (toKill || toConvert))
+                    if ((target.IsShielded() || target.IsRetShielded()) && (toKill || toConvert))
                     {
-                        var medic = target.GetMedic().PlayerId;
                         var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable);
-                        writer.Write(medic);
                         writer.Write(target.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
                         fullReset = CustomGameOptions.ShieldBreaks;
-                        Medic.BreakShield(medic, target.PlayerId, CustomGameOptions.ShieldBreaks);
-                    }
-                    else if (target.IsRetShielded() && (toKill || toConvert))
-                    {
-                        var medic = target.GetRetMedic().PlayerId;
-                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable);
-                        writer.Write(medic);
-                        writer.Write(target.PlayerId);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                        fullReset = CustomGameOptions.ShieldBreaks;
-                        Retributionist.BreakShield(medic, target.PlayerId, CustomGameOptions.ShieldBreaks);
+                        Role.BreakShield(target.PlayerId, CustomGameOptions.ShieldBreaks);
                     }
                     else if (target.IsProtected())
                         gaReset = true;
                 }
-                else if (player.IsShielded() && !target.Is(AbilityEnum.Ruthless))
+                else if ((player.IsShielded() || player.IsRetShielded()) && !target.Is(AbilityEnum.Ruthless))
                 {
-                    var medic = player.GetMedic().PlayerId;
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable);
-                    writer.Write(medic);
                     writer.Write(player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     fullReset = CustomGameOptions.ShieldBreaks;
-                    Medic.BreakShield(medic, player.PlayerId, CustomGameOptions.ShieldBreaks);
-                }
-                else if (player.IsRetShielded() && !target.Is(AbilityEnum.Ruthless))
-                {
-                    var medic = target.GetRetMedic().PlayerId;
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable);
-                    writer.Write(medic);
-                    writer.Write(target.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    fullReset = CustomGameOptions.ShieldBreaks;
-                    Retributionist.BreakShield(medic, target.PlayerId, CustomGameOptions.ShieldBreaks);
+                    Role.BreakShield(player.PlayerId, CustomGameOptions.ShieldBreaks);
                 }
                 else if (player.IsProtected() && !target.Is(AbilityEnum.Ruthless))
                     gaReset = true;
                 else
                     RpcMurderPlayer(target, player, target.IsAmbushed() ? DeathReasonEnum.Ambushed : DeathReasonEnum.Killed);
 
-                if (target.IsShielded() && (toKill || toConvert))
+                if ((target.IsShielded() || target.IsRetShielded()) && (toKill || toConvert))
                 {
-                    var medic = target.GetMedic().PlayerId;
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable);
-                    writer.Write(medic);
                     writer.Write(target.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     fullReset = CustomGameOptions.ShieldBreaks;
-                    Medic.BreakShield(medic, target.PlayerId, CustomGameOptions.ShieldBreaks);
-                }
-                else if (target.IsRetShielded() && (toKill || toConvert))
-                {
-                    var medic = target.GetRetMedic().PlayerId;
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable);
-                    writer.Write(medic);
-                    writer.Write(target.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    fullReset = CustomGameOptions.ShieldBreaks;
-                    Retributionist.BreakShield(medic, target.PlayerId, CustomGameOptions.ShieldBreaks);
+                    Role.BreakShield(target.PlayerId, CustomGameOptions.ShieldBreaks);
                 }
             }
             else if ((target.IsCrusaded() || target.IsRebCrusaded()) && (!player.Is(Faction.Syndicate) || (player.Is(Faction.Syndicate) && CustomGameOptions.CrusadeMates)) && !bypass)
             {
                 if (player.Is(RoleEnum.Pestilence))
                 {
-                    if (target.IsShielded() && (toKill || toConvert))
+                    if ((target.IsShielded() || target.IsRetShielded()) && (toKill || toConvert))
                     {
-                        var medic = target.GetMedic().PlayerId;
                         var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable);
-                        writer.Write(medic);
                         writer.Write(target.PlayerId);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
                         fullReset = CustomGameOptions.ShieldBreaks;
-                        Medic.BreakShield(medic, target.PlayerId, CustomGameOptions.ShieldBreaks);
-                    }
-                    else if (target.IsRetShielded() && (toKill || toConvert))
-                    {
-                        var medic = target.GetRetMedic().PlayerId;
-                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable);
-                        writer.Write(medic);
-                        writer.Write(target.PlayerId);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
-                        fullReset = CustomGameOptions.ShieldBreaks;
-                        Retributionist.BreakShield(medic, target.PlayerId, CustomGameOptions.ShieldBreaks);
+                        Role.BreakShield(target.PlayerId, CustomGameOptions.ShieldBreaks);
                     }
                     else if (target.IsProtected())
                         gaReset = true;
                 }
-                else if (player.IsShielded() && !target.Is(AbilityEnum.Ruthless))
+                else if ((player.IsShielded() || player.IsRetShielded()) && !target.Is(AbilityEnum.Ruthless))
                 {
-                    var medic = player.GetMedic().PlayerId;
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable);
-                    writer.Write(medic);
                     writer.Write(player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     fullReset = CustomGameOptions.ShieldBreaks;
-                    Medic.BreakShield(medic, player.PlayerId, CustomGameOptions.ShieldBreaks);
-                }
-                else if (player.IsRetShielded() && !target.Is(AbilityEnum.Ruthless))
-                {
-                    var medic = player.GetRetMedic().PlayerId;
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable);
-                    writer.Write(medic);
-                    writer.Write(player.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    fullReset = CustomGameOptions.ShieldBreaks;
-                    Retributionist.BreakShield(medic, player.PlayerId, CustomGameOptions.ShieldBreaks);
+                    Role.BreakShield(player.PlayerId, CustomGameOptions.ShieldBreaks);
                 }
                 else if (player.IsProtected() && !target.Is(AbilityEnum.Ruthless))
                     gaReset = true;
@@ -864,52 +802,28 @@
                         RpcMurderPlayer(target, player, DeathReasonEnum.Crusaded);
                 }
 
-                if (target.IsShielded() && (toKill || toConvert))
+                if ((target.IsShielded() || target.IsRetShielded()) && (toKill || toConvert))
                 {
-                    var medic = target.GetMedic().PlayerId;
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable);
-                    writer.Write(medic);
                     writer.Write(target.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     fullReset = CustomGameOptions.ShieldBreaks;
-                    Medic.BreakShield(medic, target.PlayerId, CustomGameOptions.ShieldBreaks);
-                }
-                else if (target.IsRetShielded() && (toKill || toConvert))
-                {
-                    var medic = target.GetRetMedic().PlayerId;
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable);
-                    writer.Write(medic);
-                    writer.Write(target.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    fullReset = CustomGameOptions.ShieldBreaks;
-                    Retributionist.BreakShield(medic, target.PlayerId, CustomGameOptions.ShieldBreaks);
+                    Role.BreakShield(target.PlayerId, CustomGameOptions.ShieldBreaks);
                 }
             }
-            else if (target.IsShielded() && (toKill || toConvert) && !bypass)
+            else if ((target.IsShielded() || target.IsRetShielded()) && (toKill || toConvert) && !bypass)
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable);
-                writer.Write(target.GetMedic().PlayerId);
                 writer.Write(target.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 fullReset = CustomGameOptions.ShieldBreaks;
-                Medic.BreakShield(target.GetMedic().PlayerId, target.PlayerId, CustomGameOptions.ShieldBreaks);
-            }
-            else if (target.IsRetShielded() && (toKill || toConvert) && !bypass)
-            {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AttemptSound, SendOption.Reliable);
-                writer.Write(target.GetRetMedic().PlayerId);
-                writer.Write(target.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                fullReset = CustomGameOptions.ShieldBreaks;
-                Retributionist.BreakShield(target.GetMedic().PlayerId, target.PlayerId, CustomGameOptions.ShieldBreaks);
+                Role.BreakShield(target.PlayerId, CustomGameOptions.ShieldBreaks);
             }
             else if (target.IsVesting() && (toKill || toConvert) && !bypass)
                 survReset = true;
             else if (target.IsProtected() && (toKill || toConvert) && !bypass)
                 gaReset = true;
-            else if (target.IsProtectedMonarch() && (toKill || toConvert) && !bypass)
-                fullReset = true;
-            else if (player.IsOtherRival(target) && (toKill || toConvert))
+            else if ((target.IsProtectedMonarch() || player.IsOtherRival(target)) && (toKill || toConvert))
                 fullReset = true;
             else
             {
@@ -933,6 +847,15 @@
 
                 abilityUsed = true;
                 fullReset = true;
+            }
+
+            if ((target.IsOnAlert() || ((target.IsAmbushed() || target.IsGFAmbushed()) && (!player.Is(Faction.Intruder) || (player.Is(Faction.Intruder) &&
+                CustomGameOptions.AmbushMates))) || target.Is(RoleEnum.Pestilence) || (target.Is(RoleEnum.VampireHunter) && player.Is(SubFaction.Undead)) ||
+                (target.Is(RoleEnum.SerialKiller) && (player.Is(RoleEnum.Escort) || player.Is(RoleEnum.Consort) || (player.Is(RoleEnum.Glitch) && !toKill))) || ((target.IsCrusaded() ||
+                target.IsRebCrusaded()) && (!player.Is(Faction.Syndicate) || (player.Is(Faction.Syndicate) && CustomGameOptions.CrusadeMates)))) && bypass &&
+                !target.Is(RoleEnum.Pestilence))
+            {
+                RpcMurderPlayer(target, player);
             }
 
             return new() { fullReset, gaReset, survReset, abilityUsed };
@@ -1184,7 +1107,7 @@
                 fullscreen.color = color;
             }
 
-            // Message Text
+            //Message Text
             var messageText = UObject.Instantiate(HudManager.Instance.KillButton.cooldownTimerText, HudManager.Instance.transform);
             messageText.text = $"<size={size}%>{message}</size>";
             messageText.enableWordWrapping = false;
@@ -1203,36 +1126,39 @@
 
                 var fs = false;
 
-                switch (TownOfUsReworked.VanillaOptions.MapId)
+                if (ShipStatus.Instance)
                 {
-                    case 0:
-                    case 1:
-                    case 3:
-                        var reactor1 = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
-                        var oxygen1 = ShipStatus.Instance.Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
-                        fs = reactor1.IsActive || oxygen1.IsActive;
-                        break;
+                    switch (TownOfUsReworked.VanillaOptions.MapId)
+                    {
+                        case 0:
+                        case 1:
+                        case 3:
+                            var reactor1 = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
+                            var oxygen1 = ShipStatus.Instance.Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
+                            fs = reactor1.IsActive || oxygen1.IsActive;
+                            break;
 
-                    case 2:
-                        var seismic = ShipStatus.Instance.Systems[SystemTypes.Laboratory].Cast<ReactorSystemType>();
-                        fs = seismic.IsActive;
-                        break;
+                        case 2:
+                            var seismic = ShipStatus.Instance.Systems[SystemTypes.Laboratory].Cast<ReactorSystemType>();
+                            fs = seismic.IsActive;
+                            break;
 
-                    case 4:
-                        var reactor = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<HeliSabotageSystem>();
-                        fs = reactor.IsActive;
-                        break;
+                        case 4:
+                            var reactor = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<HeliSabotageSystem>();
+                            fs = reactor.IsActive;
+                            break;
 
-                    case 5:
-                        fs = PlayerControl.LocalPlayer.myTasks.Any(x => x.TaskType == ModCompatibility.RetrieveOxygenMask);
-                        break;
+                        case 5:
+                            fs = PlayerControl.LocalPlayer.myTasks.Any(x => x.TaskType == ModCompatibility.RetrieveOxygenMask);
+                            break;
 
-                    case 6:
-                        var reactor3 = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
-                        var oxygen3 = ShipStatus.Instance.Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
-                        var seismic2 = ShipStatus.Instance.Systems[SystemTypes.Laboratory].Cast<ReactorSystemType>();
-                        fs = reactor3.IsActive || seismic2.IsActive || oxygen3.IsActive;
-                        break;
+                        case 6:
+                            var reactor3 = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
+                            var oxygen3 = ShipStatus.Instance.Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
+                            var seismic2 = ShipStatus.Instance.Systems[SystemTypes.Laboratory].Cast<ReactorSystemType>();
+                            fs = reactor3.IsActive || seismic2.IsActive || oxygen3.IsActive;
+                            break;
+                    }
                 }
 
                 fullscreen.enabled = fs;
@@ -1300,159 +1226,159 @@
 
             var SkeldPositions = new List<Vector3>()
             {
-                new(-2.2f, 2.2f, 0f), //cafeteria. botton. top left.
-                new(0.7f, 2.2f, 0f), //caffeteria. button. top right.
-                new(-2.2f, -0.2f, 0f), //caffeteria. button. bottom left.
-                new(0.7f, -0.2f, 0f), //caffeteria. button. bottom right.
-                new(10.0f, 3.0f, 0f), //weapons top
-                new(9.0f, 1.0f, 0f), //weapons bottom
+                new(-2.2f, 2.2f, 0f), //Cafeteria. botton. top left.
+                new(0.7f, 2.2f, 0f), //Caffeteria. button. top right.
+                new(-2.2f, -0.2f, 0f), //Caffeteria. button. bottom left.
+                new(0.7f, -0.2f, 0f), //Caffeteria. button. bottom right.
+                new(10.0f, 3.0f, 0f), //Weapons top
+                new(9.0f, 1.0f, 0f), //Weapons bottom
                 new(6.5f, -3.5f, 0f), //O2
                 new(11.5f, -3.5f, 0f), //O2-nav hall
-                new(17.0f, -3.5f, 0f), //navigation top
-                new(18.2f, -5.7f, 0f), //navigation bottom
-                new(11.5f, -6.5f, 0f), //nav-shields top
-                new(9.5f, -8.5f, 0f), //nav-shields bottom
-                new(9.2f, -12.2f, 0f), //shields top
-                new(8.0f, -14.3f, 0f), //shields bottom
-                new(2.5f, -16f, 0f), //coms left
-                new(4.2f, -16.4f, 0f), //coms middle
-                new(5.5f, -16f, 0f), //coms right
-                new(-1.5f, -10.0f, 0f), //storage top
-                new(-1.5f, -15.5f, 0f), //storage bottom
-                new(-4.5f, -12.5f, 0f), //storrage left
-                new(0.3f, -12.5f, 0f), //storrage right
-                new(4.5f, -7.5f, 0f), //admin top
-                new(4.5f, -9.5f, 0f), //admin bottom
-                new(-9.0f, -8.0f, 0f), //elec top left
-                new(-6.0f, -8.0f, 0f), //elec top right
-                new(-8.0f, -11.0f, 0f), //elec bottom
-                new(-12.0f, -13.0f, 0f), //elec-lower hall
-                new(-17f, -10f, 0f), //lower engine top
-                new(-17.0f, -13.0f, 0f), //lower engine bottom
-                new(-21.5f, -3.0f, 0f), //reactor top
-                new(-21.5f, -8.0f, 0f), //reactor bottom
-                new(-13.0f, -3.0f, 0f), //security top
-                new(-12.6f, -5.6f, 0f), // security bottom
-                new(-17.0f, 2.5f, 0f), //upper engibe top
-                new(-17.0f, -1.0f, 0f), //upper engine bottom
-                new(-10.5f, 1.0f, 0f), //upper-mad hall
-                new(-10.5f, -2.0f, 0f), //medbay top
-                new(-6.5f, -4.5f, 0f) //medbay bottom
+                new(17.0f, -3.5f, 0f), //Navigation top
+                new(18.2f, -5.7f, 0f), //Navigation bottom
+                new(11.5f, -6.5f, 0f), //Nav-shields top
+                new(9.5f, -8.5f, 0f), //Nav-shields bottom
+                new(9.2f, -12.2f, 0f), //Shields top
+                new(8.0f, -14.3f, 0f), //Shields bottom
+                new(2.5f, -16f, 0f), //Comms left
+                new(4.2f, -16.4f, 0f), //Comms middle
+                new(5.5f, -16f, 0f), //Comms right
+                new(-1.5f, -10.0f, 0f), //Storage top
+                new(-1.5f, -15.5f, 0f), //Storage bottom
+                new(-4.5f, -12.5f, 0f), //Storrage left
+                new(0.3f, -12.5f, 0f), //Storrage right
+                new(4.5f, -7.5f, 0f), //Admin top
+                new(4.5f, -9.5f, 0f), //Admin bottom
+                new(-9.0f, -8.0f, 0f), //Elec top left
+                new(-6.0f, -8.0f, 0f), //Elec top right
+                new(-8.0f, -11.0f, 0f), //Elec bottom
+                new(-12.0f, -13.0f, 0f), //Elec-lower hall
+                new(-17f, -10f, 0f), //Lower engine top
+                new(-17.0f, -13.0f, 0f), //Lower engine bottom
+                new(-21.5f, -3.0f, 0f), //Reactor top
+                new(-21.5f, -8.0f, 0f), //Reactor bottom
+                new(-13.0f, -3.0f, 0f), //Security top
+                new(-12.6f, -5.6f, 0f), //Security bottom
+                new(-17.0f, 2.5f, 0f), //Upper engibe top
+                new(-17.0f, -1.0f, 0f), //Upper engine bottom
+                new(-10.5f, 1.0f, 0f), //Upper-mad hall
+                new(-10.5f, -2.0f, 0f), //Medbay top
+                new(-6.5f, -4.5f, 0f) //Medbay bottom
             };
 
             var MiraPositions = new List<Vector3>()
             {
-                new(-4.5f, 3.5f, 0f), //launchpad top
-                new(-4.5f, -1.4f, 0f), //launchpad bottom
-                new(8.5f, -1f, 0f), //launchpad- med hall
-                new(14f, -1.5f, 0f), //medbay
-                new(16.5f, 3f, 0f), // comms
-                new(10f, 5f, 0f), //lockers
-                new(6f, 1.5f, 0f), //locker room
-                new(2.5f, 13.6f, 0f), //reactor
-                new(6f, 12f, 0f), //reactor middle
-                new(9.5f, 13f, 0f), //lab
-                new(15f, 9f, 0f), //bottom left cross
-                new(17.9f, 11.5f, 0f), //middle cross
-                new(14f, 17.3f, 0f), //office
-                new(19.5f, 21f, 0f), //admin
-                new(14f, 24f, 0f), //greenhouse left
-                new(22f, 24f, 0f), //greenhouse right
-                new(21f, 8.5f, 0f), //bottom right cross
-                new(28f, 3f, 0f), //caf right
-                new(22f, 3f, 0f), //caf left
-                new(19f, 4f, 0f), //storage
-                new(22f, -2f, 0f), //balcony
+                new(-4.5f, 3.5f, 0f), //Launchpad top
+                new(-4.5f, -1.4f, 0f), //Launchpad bottom
+                new(8.5f, -1f, 0f), //Launchpad- med hall
+                new(14f, -1.5f, 0f), //Medbay
+                new(16.5f, 3f, 0f), //Comms
+                new(10f, 5f, 0f), //Lockers
+                new(6f, 1.5f, 0f), //Locker room
+                new(2.5f, 13.6f, 0f), //Reactor
+                new(6f, 12f, 0f), //Reactor middle
+                new(9.5f, 13f, 0f), //Lab
+                new(15f, 9f, 0f), //Bottom left cross
+                new(17.9f, 11.5f, 0f), //Middle cross
+                new(14f, 17.3f, 0f), //Office
+                new(19.5f, 21f, 0f), //Admin
+                new(14f, 24f, 0f), //Greenhouse left
+                new(22f, 24f, 0f), //Greenhouse right
+                new(21f, 8.5f, 0f), //Bottom right cross
+                new(28f, 3f, 0f), //Caf right
+                new(22f, 3f, 0f), //Caf left
+                new(19f, 4f, 0f), //Storage
+                new(22f, -2f, 0f), //Balcony
             };
 
             var PolusPositions = new List<Vector3>()
             {
-                new(16.6f, -1f, 0f), //dropship top
-                new(16.6f, -5f, 0f), //dropship bottom
-                new(20f, -9f, 0f), //above storrage
-                new(22f, -7f, 0f), //right fuel
-                new(25.5f, -6.9f, 0f), //drill
-                new(29f, -9.5f, 0f), //lab lockers
-                new(29.5f, -8f, 0f), //lab weather notes
-                new(35f, -7.6f, 0f), //lab table
-                new(40.4f, -8f, 0f), //lab scan
-                new(33f, -10f, 0f), //lab toilet
-                new(39f, -15f, 0f), //specimen hall top
-                new(36.5f, -19.5f, 0f), //specimen top
-                new(36.5f, -21f, 0f), //specimen bottom
-                new(28f, -21f, 0f), //specimen hall bottom
-                new(24f, -20.5f, 0f), //admin tv
-                new(22f, -25f, 0f), //admin books
-                new(16.6f, -17.5f, 0f), //office coffe
-                new(22.5f, -16.5f, 0f), //office projector
-                new(24f, -17f, 0f), //office figure
-                new(27f, -16.5f, 0f), //office lifelines
-                new(32.7f, -15.7f, 0f), //lavapool
-                new(31.5f, -12f, 0f), //snowmad below lab
-                new(10f, -14f, 0f), //below storrage
-                new(21.5f, -12.5f, 0f), //storrage vent
-                new(19f, -11f, 0f), //storrage toolrack
-                new(12f, -7f, 0f), //left fuel
-                new(5f, -7.5f, 0f), //above elec
-                new(10f, -12f, 0f), //elec fence
-                new(9f, -9f, 0f), //elec lockers
-                new(5f, -9f, 0f), //elec window
-                new(4f, -11.2f, 0f), //elec tapes
-                new(5.5f, -16f, 0f), //elec-O2 hall
+                new(16.6f, -1f, 0f), //Dropship top
+                new(16.6f, -5f, 0f), //Dropship bottom
+                new(20f, -9f, 0f), //Above storrage
+                new(22f, -7f, 0f), //Right fuel
+                new(25.5f, -6.9f, 0f), //Drill
+                new(29f, -9.5f, 0f), //Lab lockers
+                new(29.5f, -8f, 0f), //Lab weather notes
+                new(35f, -7.6f, 0f), //Lab table
+                new(40.4f, -8f, 0f), //Lab scan
+                new(33f, -10f, 0f), //Lab toilet
+                new(39f, -15f, 0f), //Specimen hall top
+                new(36.5f, -19.5f, 0f), //Specimen top
+                new(36.5f, -21f, 0f), //Specimen bottom
+                new(28f, -21f, 0f), //Specimen hall bottom
+                new(24f, -20.5f, 0f), //Admin tv
+                new(22f, -25f, 0f), //Admin books
+                new(16.6f, -17.5f, 0f), //Office coffe
+                new(22.5f, -16.5f, 0f), //Office projector
+                new(24f, -17f, 0f), //Office figure
+                new(27f, -16.5f, 0f), //Office lifelines
+                new(32.7f, -15.7f, 0f), //Lavapool
+                new(31.5f, -12f, 0f), //Snowmad below lab
+                new(10f, -14f, 0f), //Below storrage
+                new(21.5f, -12.5f, 0f), //Storrage vent
+                new(19f, -11f, 0f), //Storrage toolrack
+                new(12f, -7f, 0f), //Left fuel
+                new(5f, -7.5f, 0f), //Above elec
+                new(10f, -12f, 0f), //Elec fence
+                new(9f, -9f, 0f), //Elec lockers
+                new(5f, -9f, 0f), //Elec window
+                new(4f, -11.2f, 0f), //Elec tapes
+                new(5.5f, -16f, 0f), //Elec-O2 hall
                 new(1f, -17.5f, 0f), //O2 tree hayball
                 new(3f, -21f, 0f), //O2 middle
                 new(2f, -19f, 0f), //O2 gas
                 new(1f, -24f, 0f), //O2 water
-                new(7f, -24f, 0f), //under O2
-                new(9f, -20f, 0f), //right outside of O2
-                new(7f, -15.8f, 0f), //snowman under elec
-                new(11f, -17f, 0f), //comms table
-                new(12.7f, -15.5f, 0f), //coms antenna pult
-                new(13f, -24.5f, 0f), //weapons window
-                new(15f, -17f, 0f), //between coms-office
-                new(17.5f, -25.7f, 0f), //snowman under office
+                new(7f, -24f, 0f), //Under O2
+                new(9f, -20f, 0f), //Right outside of O2
+                new(7f, -15.8f, 0f), //Snowman under elec
+                new(11f, -17f, 0f), //Comms table
+                new(12.7f, -15.5f, 0f), //Comms antenna pult
+                new(13f, -24.5f, 0f), //Weapons window
+                new(15f, -17f, 0f), //Between coms-office
+                new(17.5f, -25.7f, 0f), //Snowman under office
             };
 
             var dlekSPositions = new List<Vector3>()
             {
-                new(2.2f, 2.2f, 0f), //cafeteria. botton. top left.
-                new(-0.7f, 2.2f, 0f), //caffeteria. button. top right.
-                new(2.2f, -0.2f, 0f), //caffeteria. button. bottom left.
-                new(-0.7f, -0.2f, 0f), //caffeteria. button. bottom right.
-                new(-10.0f, 3.0f, 0f), //weapons top
-                new(-9.0f, 1.0f, 0f), //weapons bottom
+                new(2.2f, 2.2f, 0f), //Cafeteria. botton. top left.
+                new(-0.7f, 2.2f, 0f), //Caffeteria. button. top right.
+                new(2.2f, -0.2f, 0f), //Caffeteria. button. bottom left.
+                new(-0.7f, -0.2f, 0f), //Caffeteria. button. bottom right.
+                new(-10.0f, 3.0f, 0f), //Weapons top
+                new(-9.0f, 1.0f, 0f), //Weapons bottom
                 new(-6.5f, -3.5f, 0f), //O2
                 new(-11.5f, -3.5f, 0f), //O2-nav hall
-                new(-17.0f, -3.5f, 0f), //navigation top
-                new(-18.2f, -5.7f, 0f), //navigation bottom
-                new(-11.5f, -6.5f, 0f), //nav-shields top
-                new(-9.5f, -8.5f, 0f), //nav-shields bottom
-                new(-9.2f, -12.2f, 0f), //shields top
-                new(-8.0f, -14.3f, 0f), //shields bottom
-                new(-2.5f, -16f, 0f), //coms left
-                new(-4.2f, -16.4f, 0f), //coms middle
-                new(-5.5f, -16f, 0f), //coms right
-                new(1.5f, -10.0f, 0f), //storage top
-                new(1.5f, -15.5f, 0f), //storage bottom
-                new(4.5f, -12.5f, 0f), //storrage left
-                new(-0.3f, -12.5f, 0f), //storrage right
-                new(-4.5f, -7.5f, 0f), //admin top
-                new(-4.5f, -9.5f, 0f), //admin bottom
-                new(9.0f, -8.0f, 0f), //elec top left
-                new(6.0f, -8.0f, 0f), //elec top right
-                new(8.0f, -11.0f, 0f), //elec bottom
-                new(12.0f, -13.0f, 0f), //elec-lower hall
-                new(17f, -10f, 0f), //lower engine top
-                new(17.0f, -13.0f, 0f), //lower engine bottom
-                new(21.5f, -3.0f, 0f), //reactor top
-                new(21.5f, -8.0f, 0f), //reactor bottom
-                new(13.0f, -3.0f, 0f), //security top
-                new(12.6f, -5.6f, 0f), // security bottom
-                new(17.0f, 2.5f, 0f), //upper engibe top
-                new(17.0f, -1.0f, 0f), //upper engine bottom
-                new(10.5f, 1.0f, 0f), //upper-mad hall
-                new(10.5f, -2.0f, 0f), //medbay top
-                new(6.5f, -4.5f, 0f) //medbay bottom
+                new(-17.0f, -3.5f, 0f), //Navigation top
+                new(-18.2f, -5.7f, 0f), //Navigation bottom
+                new(-11.5f, -6.5f, 0f), //Nav-shields top
+                new(-9.5f, -8.5f, 0f), //Nav-shields bottom
+                new(-9.2f, -12.2f, 0f), //Shields top
+                new(-8.0f, -14.3f, 0f), //Shields bottom
+                new(-2.5f, -16f, 0f), //Comms left
+                new(-4.2f, -16.4f, 0f), //Comms middle
+                new(-5.5f, -16f, 0f), //Comms right
+                new(1.5f, -10.0f, 0f), //Storage top
+                new(1.5f, -15.5f, 0f), //Storage bottom
+                new(4.5f, -12.5f, 0f), //Storrage left
+                new(-0.3f, -12.5f, 0f), //Storrage right
+                new(-4.5f, -7.5f, 0f), //Admin top
+                new(-4.5f, -9.5f, 0f), //Admin bottom
+                new(9.0f, -8.0f, 0f), //Elec top left
+                new(6.0f, -8.0f, 0f), //Elec top right
+                new(8.0f, -11.0f, 0f), //Elec bottom
+                new(12.0f, -13.0f, 0f), //Elec-lower hall
+                new(17f, -10f, 0f), //Lower engine top
+                new(17.0f, -13.0f, 0f), //Lower engine bottom
+                new(21.5f, -3.0f, 0f), //Reactor top
+                new(21.5f, -8.0f, 0f), //Reactor bottom
+                new(13.0f, -3.0f, 0f), //Security top
+                new(12.6f, -5.6f, 0f), //Security bottom
+                new(17.0f, 2.5f, 0f), //Upper engibe top
+                new(17.0f, -1.0f, 0f), //Upper engine bottom
+                new(10.5f, 1.0f, 0f), //Upper-mad hall
+                new(10.5f, -2.0f, 0f), //Medbay top
+                new(6.5f, -4.5f, 0f) //Medbay bottom
             };
 
             var allLocations = new List<Vector3>();
@@ -1515,7 +1441,7 @@
             Role.Cleaned.Remove(player);
             ReassignPostmortals(player);
             player.Data.SetImpostor(player.Data.IsImpostor());
-            player.NetTransform.SnapTo(new(position.x, position.y + 0.3636f));
+            player.NetTransform.RpcSnapTo(new(position.x, position.y + 0.3636f));
 
             if (ModCompatibility.IsSubmerged && PlayerControl.LocalPlayer == player)
                 ModCompatibility.ChangeFloor(player.transform.position.y > -7);
@@ -1536,7 +1462,7 @@
 
             if (fadeAway)
             {
-                for (float i = 1; i >= 0; i -= Time.deltaTime)
+                for (var i = 1f; i >= 0; i -= Time.deltaTime)
                 {
                     HudManager.Instance.FullScreen.color = new(0, 0, 0, i);
                     yield return null;
@@ -1544,7 +1470,7 @@
             }
             else
             {
-                for (float i = 0; i <= 1; i += Time.deltaTime)
+                for (var i = 0f; i <= 1; i += Time.deltaTime)
                 {
                     HudManager.Instance.FullScreen.color = new(0, 0, 0, i);
                     yield return null;

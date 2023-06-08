@@ -214,7 +214,9 @@ namespace TownOfUsReworked.Patches
                 role.RoleUpdate(former);
                 RemoveTasks(PlayerControl.LocalPlayer);
                 WillBeRevealer.gameObject.layer = LayerMask.NameToLayer("Players");
-                WillBeRevealer.MyPhysics.ResetMoveState();
+
+                if (PlayerControl.LocalPlayer != WillBeRevealer)
+                    PlayerControl.LocalPlayer.MyPhysics.ResetMoveState();
             }
 
             if (WillBeRevealer == PlayerControl.LocalPlayer)
@@ -324,7 +326,7 @@ namespace TownOfUsReworked.Patches
             if (!WillBeGhoul.Data.IsDead)
                 return;
 
-            if (!WillBeGhoul.Is(RoleEnum.Banshee))
+            if (!WillBeGhoul.Is(RoleEnum.Ghoul))
             {
                 var former = Role.GetRole(WillBeGhoul);
                 var role = new Ghoul(WillBeGhoul);

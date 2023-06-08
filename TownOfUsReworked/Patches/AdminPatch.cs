@@ -105,10 +105,7 @@ namespace TownOfUsReworked.Patches
             var isOP = localPlayer.Is(RoleEnum.Operative) || (PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything);
 
             if (!isOP)
-            {
-                if (localPlayer.Is(RoleEnum.Retributionist))
-                    isOP = ((Retributionist)Role.LocalRole).IsOP;
-            }
+                isOP = localPlayer.Is(RoleEnum.Retributionist) && ((Retributionist)Role.LocalRole).IsOP;
 
             __instance.timer += Time.deltaTime;
 

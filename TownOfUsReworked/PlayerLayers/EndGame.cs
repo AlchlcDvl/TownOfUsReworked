@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers
 {
-    [HarmonyPatch]
+    [HarmonyPatch(typeof(GameManager), nameof(GameManager.RpcEndGame))]
     public static class EndGame
     {
         public static void Reset()
@@ -12,14 +12,6 @@ namespace TownOfUsReworked.PlayerLayers
             }
         }
 
-        [HarmonyPatch(typeof(GameManager), nameof(GameManager.RpcEndGame))]
-        public static class ShipStatusPatch
-        {
-            public static bool Prefix()
-            {
-                Reset();
-                return true;
-            }
-        }
+        public static void Prefix() => Reset();
     }
 }

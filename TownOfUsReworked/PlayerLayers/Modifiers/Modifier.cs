@@ -1,6 +1,5 @@
 namespace TownOfUsReworked.PlayerLayers.Modifiers
 {
-    [HarmonyPatch]
     public class Modifier : PlayerLayer
     {
         public static readonly List<Modifier> AllModifiers = new();

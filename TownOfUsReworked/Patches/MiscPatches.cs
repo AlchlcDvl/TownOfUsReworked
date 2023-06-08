@@ -120,8 +120,11 @@ namespace TownOfUsReworked.Patches
 
             if (opts.Mode is not MapOptions.Modes.None and not MapOptions.Modes.CountOverlay)
             {
-                if (((player.Is(Faction.Syndicate) && CustomGameOptions.AltImps) || player.Is(Faction.Intruder)) && CustomGameOptions.IntrudersCanSabotage)
+                if (((player.Is(Faction.Syndicate) && CustomGameOptions.AltImps) || player.Is(Faction.Intruder)) && CustomGameOptions.IntrudersCanSabotage && (!player.Data.IsDead ||
+                    (player.Data.IsDead && CustomGameOptions.GhostsCanSabotage)))
+                {
                     __instance.ShowSabotageMap();
+                }
                 else
                     __instance.ShowNormalMap();
 
@@ -131,6 +134,9 @@ namespace TownOfUsReworked.Patches
 
             foreach (var layer in PlayerLayer.LocalLayers)
                 layer?.UpdateMap(__instance);
+
+            foreach (var arrow in CustomArrow.AllArrows)
+                arrow?.UpdateArrowBlip(__instance);
 
             return notmodified;
         }
@@ -180,6 +186,16 @@ namespace TownOfUsReworked.Patches
                 return;
 
             value = !__instance.inVent;
+        }
+    }
+
+    [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.ResetMoveState))]
+    public static class ResetMoveState
+    {
+        public static void Postfix(PlayerPhysics __instance)
+        {
+            if (__instance.myPlayer.IsPostmortal())
+                __instance.myPlayer.Collider.enabled = !__instance.myPlayer.Caught();
         }
     }
 
@@ -258,5 +274,43 @@ namespace TownOfUsReworked.Patches
     public static class SetPurchasedPatch
     {
         public static bool Prefix() => false;
+    }
+
+    [HarmonyPatch(typeof(UseButton), nameof(UseButton.SetTarget))]
+    public static class UseButtonSetTargetPatch
+    {
+        public static bool Prefix(UseButton __instance)
+        {
+            Tasks.ClosestTasks(PlayerControl.LocalPlayer);
+
+            if (__instance.isActiveAndEnabled && PlayerControl.LocalPlayer && Tasks.NearestTask != null && Tasks.AllCustomPlateform.Count > 0)
+            {
+                __instance.graphic.color = new(1f, 1f, 1f, 1f);
+                return false;
+            }
+
+            return true;
+        }
+    }
+
+    [HarmonyPatch(typeof(OverlayKillAnimation), nameof(OverlayKillAnimation.Initialize))]
+    public static class OverlayKillAnimationPatch
+    {
+        private static int CurrentOutfitTypeCache;
+
+        public static void Prefix(GameData.PlayerInfo kInfo)
+        {
+            var playerControl = PlayerControl.AllPlayerControls.ToArray().FirstOrDefault(p => p.PlayerId == kInfo.PlayerId);
+            CurrentOutfitTypeCache = (int)playerControl.CurrentOutfitType;
+
+            if (!CustomGameOptions.AppearanceAnimation)
+                playerControl.CurrentOutfitType = PlayerOutfitType.Default;
+        }
+
+        public static void Postfix(GameData.PlayerInfo kInfo)
+        {
+            var playerControl = PlayerControl.AllPlayerControls.ToArray().FirstOrDefault(p => p.PlayerId == kInfo.PlayerId);
+            playerControl.CurrentOutfitType = (PlayerOutfitType)CurrentOutfitTypeCache;
+        }
     }
 }

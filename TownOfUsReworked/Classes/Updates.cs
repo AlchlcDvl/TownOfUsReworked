@@ -29,7 +29,7 @@ namespace TownOfUsReworked.Classes
                 CheckForUpdate("Reworked").GetAwaiter().GetResult();
             } catch {}
 
-            //Only check of Submerged/LevelImpostor update if Submerged/LevelImpostor is already installed
+            //Only check of Submerged update if Submerged is already installed
             var codeBase = TownOfUsReworked.Executing.Location;
             var uri = new UriBuilder(codeBase);
 

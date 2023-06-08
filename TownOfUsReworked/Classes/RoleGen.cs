@@ -3213,7 +3213,6 @@ namespace TownOfUsReworked.Classes
             Utils.KilledPlayers.Clear();
 
             Role.Buttons.Clear();
-            Role.SetColors();
 
             UpdateNames.PlayerNames.Clear();
 
@@ -3281,6 +3280,8 @@ namespace TownOfUsReworked.Classes
             Objects.Range.AllItems.Clear();
 
             GameSettings.SettingsPage = 0;
+
+            Assassin.RemainingKills = CustomGameOptions.AssassinKills;
         }
 
         public static void BeginRoleGen(List<GameData.PlayerInfo> infected)
@@ -3777,7 +3778,7 @@ namespace TownOfUsReworked.Classes
             var converter = Utils.PlayerById(convert);
 
             if (condition || Convertible <= 0 || PureCrew == converted)
-                Utils.Interact(converter, converted, false, true);
+                Utils.Interact(converter, converted, true, true);
             else
             {
                 var role1 = Role.GetRole(converted);
@@ -3785,18 +3786,9 @@ namespace TownOfUsReworked.Classes
                 var converts = converted.Is(SubFaction.None);
 
                 if (!converts && !converted.Is(sub))
-                    Utils.Interact(converter, converted, false, true);
+                    Utils.Interact(converter, converted, true, true);
                 else
                 {
-                    var flash = sub switch
-                    {
-                        SubFaction.Undead => Colors.Undead,
-                        SubFaction.Cabal => Colors.Cabal,
-                        SubFaction.Reanimated => Colors.Reanimated,
-                        SubFaction.Sect => Colors.Sect,
-                        _ => Colors.Stalemate
-                    };
-
                     if (converter.Is(RoleEnum.Dracula))
                     {
                         if (converts)
@@ -3859,9 +3851,28 @@ namespace TownOfUsReworked.Classes
                         }
                     }
 
+                    var flash = sub switch
+                    {
+                        SubFaction.Undead => Colors.Undead,
+                        SubFaction.Cabal => Colors.Cabal,
+                        SubFaction.Reanimated => Colors.Reanimated,
+                        SubFaction.Sect => Colors.Sect,
+                        _ => Colors.Stalemate
+                    };
+
+                    var symbol = sub switch
+                    {
+                        SubFaction.Undead => "γ",
+                        SubFaction.Cabal => "$",
+                        SubFaction.Reanimated => "Σ",
+                        SubFaction.Sect => "Λ",
+                        _ => "φ"
+                    };
+
                     role1.SubFaction = sub;
                     role1.SubFactionColor = flash;
                     role1.RoleAlignment = role1.RoleAlignment.GetNewAlignment(Faction.Neutral);
+                    role1.SubFactionSymbol = symbol;
                     Convertible--;
 
                     if (PlayerControl.LocalPlayer == converted)

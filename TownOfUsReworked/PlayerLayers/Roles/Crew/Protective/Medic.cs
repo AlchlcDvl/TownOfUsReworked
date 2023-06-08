@@ -51,34 +51,5 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             base.UpdateHud(__instance);
             ShieldButton.Update("SHIELD", !UsedAbility, !UsedAbility);
         }
-
-        public static void BreakShield(byte medicId, byte playerId, bool flag)
-        {
-            var role = GetRole<Medic>(Utils.PlayerById(medicId));
-
-            if ((PlayerControl.LocalPlayer.PlayerId == playerId && (int)CustomGameOptions.NotificationShield is 1 or 2) || (PlayerControl.LocalPlayer.PlayerId == medicId &&
-                (int)CustomGameOptions.NotificationShield is 0 or 2) || CustomGameOptions.NotificationShield == NotificationOptions.Everyone)
-            {
-                Utils.Flash(role.Color);
-            }
-
-            if (!flag)
-                return;
-
-            var player = Utils.PlayerById(playerId);
-
-            foreach (var role2 in GetRoles<Medic>(RoleEnum.Medic))
-            {
-                if (role2.ShieldedPlayer.PlayerId == playerId)
-                {
-                    role2.ShieldedPlayer = null;
-                    role2.ExShielded = player;
-                    Utils.LogSomething(player.name + " Is Ex-Shielded");
-                }
-            }
-
-            player.MyRend().material.SetColor("_VisorColor", Palette.VisorColor);
-            player.MyRend().material.SetFloat("_Outline", 0f);
-        }
     }
 }

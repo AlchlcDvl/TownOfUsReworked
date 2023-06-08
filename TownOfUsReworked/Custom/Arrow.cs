@@ -1,6 +1,5 @@
 namespace TownOfUsReworked.Custom
 {
-    [HarmonyPatch]
     public class CustomArrow
     {
         public ArrowBehaviour Arrow;
@@ -87,7 +86,7 @@ namespace TownOfUsReworked.Custom
 
         public void UpdateArrowBlip(MapBehaviour __instance)
         {
-            if (!__instance || ArrowObj == null || Arrow == null || Render == null || ArrowColor == default || MeetingHud.Instance)
+            if (!__instance || ArrowObj == null || Arrow == null || Render == null || ArrowColor == default || MeetingHud.Instance || Owner != PlayerControl.LocalPlayer)
                 return;
 
             var v = Target;

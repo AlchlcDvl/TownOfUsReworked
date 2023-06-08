@@ -1,6 +1,5 @@
 namespace TownOfUsReworked.CustomOptions
 {
-    [HarmonyPatch]
     public class CustomStringOption : CustomOption
     {
         public CustomStringOption(int id, MultiMenu menu, string name, string[] values) : base(id, menu, name, CustomOptionType.String, 0)

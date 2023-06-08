@@ -1,6 +1,5 @@
 namespace TownOfUsReworked.Modules
 {
-    [HarmonyPatch]
     public class PointInTime
     {
         public Vector3 Position;

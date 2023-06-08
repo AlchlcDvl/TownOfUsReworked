@@ -1,6 +1,5 @@
 namespace TownOfUsReworked.Monos
 {
-    [HarmonyPatch]
     public class MeetingHudPagingBehaviour : AbstractPagingBehaviour
     {
         public MeetingHudPagingBehaviour(IntPtr ptr) : base(ptr) {}

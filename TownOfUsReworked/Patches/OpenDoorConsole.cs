@@ -9,9 +9,7 @@ namespace TownOfUsReworked.Patches
             __state = false;
             var playerControl = playerInfo.Object;
 
-            if ((playerControl.Is(RoleEnum.Phantom) && !Role.GetRole<Phantom>(playerControl).Caught) || (playerControl.Is(RoleEnum.Revealer) && playerInfo.IsDead &&
-                !Role.GetRole<Revealer>(playerControl).Caught) || (playerControl.Is(RoleEnum.Ghoul) && !Role.GetRole<Ghoul>(playerControl).Caught) ||
-                (playerControl.Is(RoleEnum.Banshee) && !Role.GetRole<Banshee>(playerControl).Caught))
+            if (playerControl.IsPostmortal() && !playerControl.Caught() && playerInfo.IsDead)
             {
                 playerInfo.IsDead = false;
                 __state = true;
@@ -32,10 +30,9 @@ namespace TownOfUsReworked.Patches
         {
             __instance.CanUse(PlayerControl.LocalPlayer.Data, out var canUse, out _);
 
-            if (!canUse)
-                return false;
+            if (canUse)
+                __instance.MyDoor.SetDoorway(true);
 
-            __instance.MyDoor.SetDoorway(true);
             return false;
         }
     }
@@ -50,9 +47,7 @@ namespace TownOfUsReworked.Patches
             __state = false;
             var playerControl = playerInfo.Object;
 
-            if ((playerControl.Is(RoleEnum.Phantom) && !Role.GetRole<Phantom>(playerControl).Caught) || (playerControl.Is(RoleEnum.Revealer) &&
-                !Role.GetRole<Revealer>(playerControl).Caught && playerInfo.IsDead) || (playerControl.Is(RoleEnum.Ghoul) && !Role.GetRole<Ghoul>(playerControl).Caught) ||
-                (playerControl.Is(RoleEnum.Banshee) && !Role.GetRole<Banshee>(playerControl).Caught))
+            if (playerControl.IsPostmortal() && !playerControl.Caught() && playerInfo.IsDead)
             {
                 playerInfo.IsDead = false;
                 __state = true;
@@ -100,8 +95,7 @@ namespace TownOfUsReworked.Patches
             __state = false;
             var playerControl = playerInfo.Object;
 
-            if ((playerControl.Is(RoleEnum.Phantom) && !Role.GetRole<Phantom>(playerControl).Caught) || (playerControl.Is(RoleEnum.Revealer) &&
-                !Role.GetRole<Revealer>(playerControl).Caught && playerInfo.IsDead))
+            if (playerControl.IsPostmortal() && !playerControl.Caught() && playerInfo.IsDead)
             {
                 playerInfo.IsDead = false;
                 __state = true;
@@ -140,9 +134,7 @@ namespace TownOfUsReworked.Patches
             __state = false;
             var playerControl = playerInfo.Object;
 
-            if ((playerControl.Is(RoleEnum.Phantom) && !Role.GetRole<Phantom>(playerControl).Caught) || (playerControl.Is(RoleEnum.Revealer) &&
-                !Role.GetRole<Revealer>(playerControl).Caught && playerInfo.IsDead) || (playerControl.Is(RoleEnum.Ghoul) && !Role.GetRole<Ghoul>(playerControl).Caught) ||
-                (playerControl.Is(RoleEnum.Banshee) && !Role.GetRole<Banshee>(playerControl).Caught))
+            if (playerControl.IsPostmortal() && !playerControl.Caught())
             {
                 playerInfo.IsDead = false;
                 __state = true;
@@ -166,9 +158,7 @@ namespace TownOfUsReworked.Patches
             __state = false;
             var playerControl = playerInfo.Object;
 
-            if ((playerControl.Is(RoleEnum.Phantom) && !Role.GetRole<Phantom>(playerControl).Caught) || (playerControl.Is(RoleEnum.Revealer) &&
-                !Role.GetRole<Revealer>(playerControl).Caught && playerInfo.IsDead) || (playerControl.Is(RoleEnum.Ghoul) && !Role.GetRole<Ghoul>(playerControl).Caught) ||
-                (playerControl.Is(RoleEnum.Banshee) && !Role.GetRole<Banshee>(playerControl).Caught))
+            if (playerControl.IsPostmortal() && !playerControl.Caught() && playerInfo.IsDead)
             {
                 playerInfo.IsDead = false;
                 __state = true;
@@ -192,9 +182,7 @@ namespace TownOfUsReworked.Patches
             __state = false;
             var playerControl = playerInfo.Object;
 
-            if ((playerControl.Is(RoleEnum.Phantom) && !Role.GetRole<Phantom>(playerControl).Caught) || (playerControl.Is(RoleEnum.Revealer) &&
-                !Role.GetRole<Revealer>(playerControl).Caught && playerInfo.IsDead) || (playerControl.Is(RoleEnum.Ghoul) && !Role.GetRole<Ghoul>(playerControl).Caught) ||
-                (playerControl.Is(RoleEnum.Banshee) && !Role.GetRole<Banshee>(playerControl).Caught))
+            if (playerControl.IsPostmortal() && !playerControl.Caught())
             {
                 playerInfo.IsDead = false;
                 __state = true;

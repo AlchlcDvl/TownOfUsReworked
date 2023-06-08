@@ -71,11 +71,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (ChangedDead && !IsDead)
             {
-                TurnSheriff();
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
                 writer.Write((byte)TurnRPC.TurnSheriff);
                 writer.Write(PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
+                TurnSheriff();
             }
         }
     }

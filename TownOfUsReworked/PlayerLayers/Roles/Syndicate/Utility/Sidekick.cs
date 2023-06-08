@@ -12,7 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleType = RoleEnum.Sidekick;
             StartText = () => "Succeed The <color=#FFFCCEFF>Rebel</color>";
             AbilitiesText = () => "- When the <color=#FFFCCEFF>Rebel</color> dies, you will become the new <color=#FFFCCEFF>Rebel</color> with boosted abilities of your former " +
-                $"role\n{AbilitiesText()}";
+                $"role\n{CommonAbilities}";
             Color = CustomGameOptions.CustomSynColors ? Colors.Sidekick : Colors.Syndicate;
             RoleAlignment = RoleAlignment.SyndicateUtil;
             Type = LayerEnum.Sidekick;
@@ -32,7 +32,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             };
 
             newRole.RoleUpdate(this);
-
             if (Local)
                 Utils.Flash(Colors.Rebel);
 
@@ -46,11 +45,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (CanPromote)
             {
-                TurnRebel();
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
                 writer.Write((byte)TurnRPC.TurnRebel);
                 writer.Write(PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
+                TurnRebel();
             }
         }
     }

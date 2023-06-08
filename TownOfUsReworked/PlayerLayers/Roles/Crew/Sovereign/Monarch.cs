@@ -50,6 +50,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AmongUsClient.Instance.FinishRpcImmediately(writer);
             ToBeKnighted.Add(KnightButton.TargetPlayer.PlayerId);
             UsesLeft--;
+            LastKnighted = DateTime.UtcNow;
         }
 
         public bool Exception(PlayerControl player) => ToBeKnighted.Contains(player.PlayerId) || player.IsKnighted();

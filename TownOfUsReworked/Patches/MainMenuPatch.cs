@@ -4,9 +4,10 @@ using Twitch;
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.Start))]
-    public static class MainMenuPatch
+    public static class MainMenuStartPatch
     {
         private static AnnouncementPopUp popUp;
+        public static GameObject Logo;
 
         public static void Prefix(MainMenuManager __instance)
         {
@@ -15,16 +16,19 @@ namespace TownOfUsReworked.Patches
 
             var amongUsLogo = GameObject.Find("bannerLogo_AmongUs");
 
-            if (amongUsLogo != null)
+            if (amongUsLogo)
             {
                 amongUsLogo.transform.localScale *= 0.75f;
                 amongUsLogo.transform.position += Vector3.up * 0.25f;
             }
 
-            var tourewLogo = new GameObject("bannerLogo_TownOfUsReworked");
-            tourewLogo.transform.position = new (0, 0.7f, 0);
-            var renderer = tourewLogo.AddComponent<SpriteRenderer>();
-            renderer.sprite = AssetManager.GetSprite("TownOfUsReworkedBanner");
+            if (!Logo)
+            {
+                Logo = new GameObject("bannerLogo_TownOfUsReworked");
+                Logo.transform.position = new (0, 0.7f, 0);
+                Logo.transform.SetParent(amongUsLogo.transform);
+                Logo.AddComponent<SpriteRenderer>().sprite = AssetManager.GetSprite("TownOfUsReworkedBanner");
+            }
 
             var InvButton = GameObject.Find("InventoryButton");
 
@@ -32,16 +36,14 @@ namespace TownOfUsReworked.Patches
                 return;
 
             var discObj = UObject.Instantiate(InvButton, InvButton.transform.parent);
-            var iconrenderer1 = discObj.GetComponent<SpriteRenderer>();
-            iconrenderer1.sprite = AssetManager.GetSprite("Discord");
+            discObj.GetComponent<SpriteRenderer>().sprite = AssetManager.GetSprite("Discord");
 
             var button1 = discObj.GetComponent<PassiveButton>();
             button1.OnClick = new();
             button1.OnClick.AddListener((Action)(() => Application.OpenURL("https://discord.gg/cd27aDQDY9")));
 
             var announceObj = UObject.Instantiate(InvButton, InvButton.transform.parent);
-            var iconrenderer2 = announceObj.GetComponent<SpriteRenderer>();
-            iconrenderer2.sprite = AssetManager.GetSprite("Update");
+            announceObj.GetComponent<SpriteRenderer>().sprite = AssetManager.GetSprite("Update");
 
             var button2 = announceObj.GetComponent<PassiveButton>();
             button2.OnClick = new();
@@ -91,8 +93,7 @@ namespace TownOfUsReworked.Patches
             }));
 
             var credObj = UObject.Instantiate(InvButton, InvButton.transform.parent);
-            /*var iconrenderer3 = discObj.GetComponent<SpriteRenderer>();
-            iconrenderer3.sprite = AssetManager.GetSprite("Credits");*/
+            credObj.GetComponent<SpriteRenderer>().sprite = AssetManager.GetSprite("Credits");
 
             var button3 = credObj.GetComponent<PassiveButton>();
             button3.OnClick = new();
@@ -149,7 +150,7 @@ namespace TownOfUsReworked.Patches
 
             var local = GameObject.Find("PlayLocalButton");
 
-            if (local != null)
+            if (local)
             {
                 local.transform.localScale = new(0.8f, 0.8f, 0.8f);
                 local.transform.position = new(-0.8f, -1.6f, 0f);
@@ -157,7 +158,7 @@ namespace TownOfUsReworked.Patches
 
             var online = GameObject.Find("PlayOnlineButton");
 
-            if (online != null)
+            if (online)
             {
                 online.transform.localScale = new(0.8f, 0.8f, 0.8f);
                 online.transform.position = new(0.8f, -1.6f, 0f);
@@ -165,7 +166,7 @@ namespace TownOfUsReworked.Patches
 
             var howTo = GameObject.Find("HowToPlayButton");
 
-            if (howTo != null)
+            if (howTo)
             {
                 howTo.transform.localScale = new(0.8f, 0.8f, 0.8f);
                 howTo.transform.position = new(-2.4f, -1.71f, 0f);
@@ -181,7 +182,7 @@ namespace TownOfUsReworked.Patches
 
             var template = GameObject.Find("ExitGameButton");
 
-            if (template != null)
+            if (template)
             {
                 var i = 1;
                 var pos = template.transform.localPosition;
@@ -227,6 +228,32 @@ namespace TownOfUsReworked.Patches
                     ModUpdater.InfoPopup.TextAreaTMP.enableAutoSizing = false;
                     i++;
                 }
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.LateUpdate))]
+    public static class MainMenuUpdatePatch
+    {
+        private static int Flip = 1;
+        private static float _time;
+        private static bool Started;
+
+        public static void Postfix()
+        {
+            MainMenuStartPatch.Logo?.transform.Rotate(Vector3.forward * 2 * Time.fixedDeltaTime * Flip);
+            _time += Time.deltaTime;
+
+            if (_time > 0.5f && !Started)
+            {
+                _time--;
+                Flip *= -1;
+                Started = true;
+            }
+            else if (_time > 1f)
+            {
+                _time--;
+                Flip *= -1;
             }
         }
     }

@@ -32,17 +32,14 @@ namespace TownOfUsReworked.Patches
                     break;
 
                 case CustomRPC.SetPhantom:
-                    var will = reader.ReadByte();
                     SetPostmortals.WillBePhantom = Utils.PlayerById(reader.ReadByte());
                     break;
 
                 case CustomRPC.SetBanshee:
-                    var will2 = reader.ReadByte();
                     SetPostmortals.WillBeBanshee = Utils.PlayerById(reader.ReadByte());
                     break;
 
                 case CustomRPC.SetGhoul:
-                    var will3 = reader.ReadByte();
                     SetPostmortals.WillBeGhoul = Utils.PlayerById(reader.ReadByte());
                     break;
 
@@ -56,10 +53,10 @@ namespace TownOfUsReworked.Patches
 
                     if (whispered == PlayerControl.LocalPlayer)
                         HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, $"{whisperer.name} whispers to you:{message}");
-                    else if ((PlayerControl.LocalPlayer.Is(RoleEnum.Blackmailer) && CustomGameOptions.WhispersNotPrivate) || (PlayerControl.LocalPlayer.Data.IsDead &&
-                        CustomGameOptions.DeadSeeEverything) || (PlayerControl.LocalPlayer.Is(RoleEnum.Silencer) && CustomGameOptions.WhispersNotPrivateSilencer))
+                    else if ((PlayerControl.LocalPlayer.Is(RoleEnum.Blackmailer) && CustomGameOptions.WhispersNotPrivate) || ConstantVariables.DeadSeeEverything ||
+                        (PlayerControl.LocalPlayer.Is(RoleEnum.Silencer) && CustomGameOptions.WhispersNotPrivateSilencer))
                     {
-                        HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, $"{whisperer.name} is whispering to {whispered.name}:{message}");
+                        HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, $"{whisperer.name} is whispering to {whispered.name}: {message}");
                     }
                     else if (CustomGameOptions.WhispersAnnouncement)
                         HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, $"{whisperer.name} is whispering to {whispered.name}.");
@@ -83,14 +80,7 @@ namespace TownOfUsReworked.Patches
                     break;
 
                 case CustomRPC.AttemptSound:
-                    var medicId = reader.ReadByte();
-                    var shielded = reader.ReadByte();
-
-                    if (Utils.PlayerById(medicId).Is(RoleEnum.Retributionist))
-                        Retributionist.BreakShield(medicId, shielded, CustomGameOptions.ShieldBreaks);
-                    else if (Utils.PlayerById(medicId).Is(RoleEnum.Medic))
-                        Medic.BreakShield(medicId, shielded, CustomGameOptions.ShieldBreaks);
-
+                    Role.BreakShield(reader.ReadByte(), CustomGameOptions.ShieldBreaks);
                     break;
 
                 case CustomRPC.CatchRevealer:
@@ -114,8 +104,7 @@ namespace TownOfUsReworked.Patches
                     break;
 
                 case CustomRPC.DoorSyncToilet:
-                    var doorToSync = UObject.FindObjectsOfType<PlainDoor>().FirstOrDefault(door => door.Id == reader.ReadInt32());
-                    doorToSync.SetDoorway(true);
+                    UObject.FindObjectsOfType<PlainDoor>().FirstOrDefault(door => door.Id == reader.ReadInt32())?.SetDoorway(true);
                     break;
 
                 case CustomRPC.SyncPlateform:
@@ -170,7 +159,7 @@ namespace TownOfUsReworked.Patches
 
                 case CustomRPC.SetSettings:
                     var map = reader.ReadByte();
-                    TownOfUsReworked.VanillaOptions.MapId = GameOptionsManager.Instance.currentNormalGameOptions.MapId == 6 ? (byte)6 : (map == 255 ? (byte)0 : map);
+                    TownOfUsReworked.VanillaOptions.MapId = map == 255 ? (byte)0 : map;
                     TownOfUsReworked.VanillaOptions.RoleOptions.SetRoleRate(RoleTypes.Scientist, 0, 0);
                     TownOfUsReworked.VanillaOptions.RoleOptions.SetRoleRate(RoleTypes.Engineer, 0, 0);
                     TownOfUsReworked.VanillaOptions.RoleOptions.SetRoleRate(RoleTypes.GuardianAngel, 0, 0);
@@ -181,7 +170,6 @@ namespace TownOfUsReworked.Patches
                     TownOfUsReworked.VanillaOptions.VisualTasks = CustomGameOptions.VisualTasks;
                     TownOfUsReworked.VanillaOptions.PlayerSpeedMod = CustomGameOptions.PlayerSpeed;
                     TownOfUsReworked.VanillaOptions.NumImpostors = CustomGameOptions.IntruderCount;
-                    //TownOfUsReworked.VanillaOptions.GhostsDoTasks = CustomGameOptions.GhostTasksCountToWin;
                     TownOfUsReworked.VanillaOptions.TaskBarMode = (AmongUs.GameOptions.TaskBarMode)CustomGameOptions.TaskBarMode;
                     TownOfUsReworked.VanillaOptions.ConfirmImpostor = CustomGameOptions.ConfirmEjects;
                     TownOfUsReworked.VanillaOptions.VotingTime = CustomGameOptions.VotingTime;
@@ -191,10 +179,11 @@ namespace TownOfUsReworked.Patches
                     TownOfUsReworked.VanillaOptions.NumEmergencyMeetings = CustomGameOptions.EmergencyButtonCount;
                     TownOfUsReworked.VanillaOptions.KillCooldown = CustomGameOptions.IntKillCooldown;
                     TownOfUsReworked.VanillaOptions.GhostsDoTasks = CustomGameOptions.GhostTasksCountToWin;
+                    TownOfUsReworked.VanillaOptions.MaxPlayers = CustomGameOptions.LobbySize;
                     GameOptionsManager.Instance.currentNormalGameOptions = TownOfUsReworked.VanillaOptions;
 
-                    if (CustomGameOptions.AutoAdjustSettings)
-                        RandomMap.AdjustSettings(map);
+                    foreach (var player in PlayerControl.AllPlayerControls)
+                        player.MaxReportDistance = CustomGameOptions.ReportDistance;
 
                     break;
 
@@ -243,6 +232,10 @@ namespace TownOfUsReworked.Patches
                             Role.GetRole<Executioner>(Utils.PlayerById(reader.ReadByte())).TurnJest();
                             break;
 
+                        case TurnRPC.TurnTraitor:
+                            Objectifier.GetObjectifier<Traitor>(Utils.PlayerById(reader.ReadByte()));
+                            break;
+
                         case TurnRPC.TurnRebel:
                             Role.GetRole<Sidekick>(Utils.PlayerById(reader.ReadByte())).TurnRebel();
                             break;
@@ -261,10 +254,6 @@ namespace TownOfUsReworked.Patches
 
                         case TurnRPC.TurnSeer:
                             Role.GetRole<Mystic>(Utils.PlayerById(reader.ReadByte())).TurnSeer();
-                            break;
-
-                        case TurnRPC.TurnTraitor:
-                            CompleteTasksPatch.TurnTraitor(Utils.PlayerById(reader.ReadByte()));
                             break;
                     }
 
@@ -982,19 +971,7 @@ namespace TownOfUsReworked.Patches
                             var mayorRole = Role.GetRole<Mayor>(mayor);
                             mayorRole.Revealed = true;
                             Utils.Flash(Colors.Mayor);
-
-                            foreach (var medic1 in Role.GetRoles<Medic>(RoleEnum.Medic))
-                            {
-                                if (medic1.ShieldedPlayer == mayor)
-                                    Medic.BreakShield(medic1.PlayerId, mayor.PlayerId, true);
-                            }
-
-                            foreach (var ret1 in Role.GetRoles<Retributionist>(RoleEnum.Retributionist))
-                            {
-                                if (ret1.ShieldedPlayer == mayor)
-                                    Retributionist.BreakShield(ret1.PlayerId, mayor.PlayerId, true);
-                            }
-
+                            Role.BreakShield(mayor.PlayerId, true);
                             break;
 
                         case ActionsRPC.DictatorReveal:
@@ -1002,19 +979,7 @@ namespace TownOfUsReworked.Patches
                             var dictatorRole = Role.GetRole<Dictator>(dictator);
                             dictatorRole.Revealed = true;
                             Utils.Flash(Colors.Dictator);
-
-                            foreach (var medic1 in Role.GetRoles<Medic>(RoleEnum.Medic))
-                            {
-                                if (medic1.ShieldedPlayer == dictator)
-                                    Medic.BreakShield(medic1.PlayerId, dictator.PlayerId, true);
-                            }
-
-                            foreach (var ret1 in Role.GetRoles<Retributionist>(RoleEnum.Retributionist))
-                            {
-                                if (ret1.ShieldedPlayer == dictator)
-                                    Retributionist.BreakShield(ret1.PlayerId, dictator.PlayerId, true);
-                            }
-
+                            Role.BreakShield(dictator.PlayerId, true);
                             break;
 
                         case ActionsRPC.SetExiles:

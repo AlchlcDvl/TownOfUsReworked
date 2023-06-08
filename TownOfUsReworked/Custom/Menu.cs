@@ -1,6 +1,5 @@
 namespace TownOfUsReworked.Custom
 {
-    [HarmonyPatch]
     public class CustomMenu
     {
         public ShapeshifterMinigame Menu;

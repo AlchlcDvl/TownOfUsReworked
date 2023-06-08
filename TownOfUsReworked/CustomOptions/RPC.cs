@@ -50,7 +50,7 @@ namespace TownOfUsReworked.CustomOptions
                 if (customOption == null)
                     continue;
 
-                // Works but may need to change to gameObject.name check
+                //Works but may need to change to gameObject.name check
                 object value = null;
 
                 if (customOption.Type == CustomOptionType.Toggle)

@@ -37,7 +37,7 @@ jobs:
     - name: Restore the application
       run: msbuild $env:Test_Project_Path /t:restore /p:Configuration=$env:Configuration
 
-    - name: publish the application
+    - name: Publish the application
       run: msbuild $env:Test_Project_Path /t:publish /p:Configuration=$env:Configuration
       env:
         Configuration: ${{ matrix.configuration }}
@@ -50,5 +50,5 @@ jobs:
 
     - uses: actions/upload-artifact@v3.1.2
       with:
-        name: TownOfUsReworked.dll
-        path: TownOfUsReworked/bin/Debug/net6.0/TownOfUsReworked.dll
+        name: Reworked.dll
+        path: TownOfUsReworked/bin/Debug/net6.0/Reworked.dll

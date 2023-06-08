@@ -23,7 +23,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Name = "Warper";
             StartText = () => "Warp The <color=#8CFFFFFF>Crew</color> Away From Each Other";
             AbilitiesText = () => "- You can warp all players, forcing them to be teleported to random locations\n- With the Chaos Drive, more locations are opened to you\n" +
-                $"{AbilitiesText()}";
+                $"{CommonAbilities}";
             Color = CustomGameOptions.CustomSynColors ? Colors.Warper : Colors.Syndicate;
             RoleType = RoleEnum.Warper;
             WarpPlayer1 = null;
@@ -214,10 +214,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         }
 
         public bool Exception1(PlayerControl player) => (player == Player && !CustomGameOptions.WarpSelf) || UnwarpablePlayers.ContainsKey(player.PlayerId) || player == WarpPlayer2 ||
-            (Utils.BodyById(player.PlayerId) == null && player.Data.IsDead);
+            (Utils.BodyById(player.PlayerId) == null && player.Data.IsDead) || player.IsMoving();
 
         public bool Exception2(PlayerControl player) => (player == Player && !CustomGameOptions.WarpSelf) || UnwarpablePlayers.ContainsKey(player.PlayerId) || player == WarpPlayer1 ||
-            (Utils.BodyById(player.PlayerId) == null && player.Data.IsDead);
+            (Utils.BodyById(player.PlayerId) == null && player.Data.IsDead) || player.IsMoving();
 
         public void AnimateWarp()
         {

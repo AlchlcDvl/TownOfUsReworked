@@ -16,7 +16,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Morphling";
             StartText = () => "Fool The <color=#8CFFFFFF>Crew</color> With Your Appearances";
-            AbilitiesText = () => $"- You can morph into other players, taking up their appearances as your own\n{AbilitiesText()}";
+            AbilitiesText = () => $"- You can morph into other players, taking up their appearances as your own\n{CommonAbilities}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Morphling : Colors.Intruder;
             RoleType = RoleEnum.Morphling;
             RoleAlignment = RoleAlignment.IntruderDecep;

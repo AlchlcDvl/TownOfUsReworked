@@ -13,7 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Consigliere";
             StartText = () => "See The <color=#8CFFFFFF>Crew</color> For Who They Really Are";
-            AbilitiesText = () => $"- You can reveal a player's {role}{CanAssassinate}\n{AbilitiesText()}";
+            AbilitiesText = () => $"- You can reveal a player's {role}{CanAssassinate}\n{CommonAbilities}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Consigliere : Colors.Intruder;
             RoleType = RoleEnum.Consigliere;
             RoleAlignment = RoleAlignment.IntruderSupport;

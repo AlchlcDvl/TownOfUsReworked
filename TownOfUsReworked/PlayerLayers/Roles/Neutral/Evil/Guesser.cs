@@ -216,13 +216,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 label.transform.localScale *= 1.7f;
                 label.text = Sorted[k].Key;
                 label.color = Sorted[k].Value;
-                button.GetComponent<PassiveButton>().OnMouseOver = new();
-                button.GetComponent<PassiveButton>().OnMouseOver.AddListener((Action)(() => button.GetComponent<SpriteRenderer>().color = UColor.green));
-                button.GetComponent<PassiveButton>().OnMouseOut = new();
-                button.GetComponent<PassiveButton>().OnMouseOut.AddListener((Action)(() => button.GetComponent<SpriteRenderer>().color = SelectedButton == button ? UColor.red :
-                    UColor.white));
-                button.GetComponent<PassiveButton>().OnClick = new();
-                button.GetComponent<PassiveButton>().OnClick.AddListener((Action)(() =>
+                var passive = button.GetComponent<PassiveButton>();
+                passive.OnMouseOver = new();
+                passive.OnMouseOver.AddListener((Action)(() => button.GetComponent<SpriteRenderer>().color = UColor.green));
+                passive.OnMouseOut = new();
+                passive.OnMouseOut.AddListener((Action)(() => button.GetComponent<SpriteRenderer>().color = SelectedButton == button ? UColor.red : UColor.white));
+                passive.OnClick = new();
+                passive.OnClick.AddListener((Action)(() =>
                 {
                     if (IsDead)
                         return;
@@ -291,11 +291,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (Failed && !IsDead)
             {
-                TurnAct();
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
                 writer.Write((byte)TurnRPC.TurnAct);
                 writer.Write(PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
+                TurnAct();
             }
         }
 
@@ -467,7 +467,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 return;
 
             __instance.playerStates.ToList().ForEach(x => x.gameObject.SetActive(false));
-            __instance.SkipVoteButton.gameObject.SetActive(false);
             __instance.TimerText.gameObject.SetActive(false);
             HudManager.Instance.Chat.SetVisible(false);
             Page = 0;
@@ -491,7 +490,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Phone.Destroy();
             HudManager.Instance.Chat.SetVisible(true);
-            __instance.SkipVoteButton.gameObject.SetActive(true);
             __instance.TimerText.gameObject.SetActive(true);
             __instance.playerStates.ToList().ForEach(x => x.gameObject.SetActive(true));
 

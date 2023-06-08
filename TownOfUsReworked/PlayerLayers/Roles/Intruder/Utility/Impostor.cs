@@ -7,6 +7,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Name = "Impostor";
             RoleType = RoleEnum.Impostor;
             StartText = () => "Sabotage And Kill Everyone";
+            AbilitiesText = () => CommonAbilities;
             RoleAlignment = RoleAlignment.IntruderUtil;
             Type = LayerEnum.Impostor;
             InspectorResults = InspectorResults.IsBasic;

@@ -10,7 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Miner";
             StartText = () => "From The Top, Make It Drop, Boom, That's A Vent";
-            AbilitiesText = () => $"- You can mine a vent, forming a vent system of your own\n{AbilitiesText()}";
+            AbilitiesText = () => $"- You can mine a vent, forming a vent system of your own\n{CommonAbilities}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Miner : Colors.Intruder;
             RoleType = RoleEnum.Miner;
             RoleAlignment = RoleAlignment.IntruderSupport;

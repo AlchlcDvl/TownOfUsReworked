@@ -47,11 +47,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (ConvertedDead && !IsDead)
             {
-                TurnSeer();
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
                 writer.Write((byte)TurnRPC.TurnSeer);
                 writer.Write(PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
+                TurnSeer();
             }
         }
 

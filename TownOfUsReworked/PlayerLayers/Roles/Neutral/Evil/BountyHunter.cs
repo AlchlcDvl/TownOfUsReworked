@@ -13,9 +13,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public bool ButtonUsable => UsesLeft > 0;
         public bool Failed => TargetPlayer == null || (UsesLeft <= 0 && !TargetFound) || (!TargetKilled && (TargetPlayer.Data.IsDead || TargetPlayer.Data.Disconnected));
         public int UsesLeft;
-        private static int lettersGiven;
-        private static bool lettersExhausted;
-        private static readonly List<string> letters = new();
+        private int lettersGiven;
+        private bool lettersExhausted;
+        private readonly List<string> letters = new();
 
         public BountyHunter(PlayerControl player) : base(player)
         {
@@ -110,7 +110,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
                     something = $"Your target's name has the letter {targetName[random]} in it!";
                 }
-                else if (lettersGiven == targetName.Length)
+                else if (lettersGiven == targetName.Length && !lettersExhausted)
                     lettersExhausted = true;
 
                 if (!lettersExhausted)
@@ -138,53 +138,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 }
                 else if (!ColorHintGiven)
                 {
-                    var colors = new Dictionary<int, string>
-                    {
-                        {0, "darker"},// red
-                        {1, "darker"},// blue
-                        {2, "darker"},// green
-                        {3, "lighter"},// pink
-                        {4, "lighter"},// orange
-                        {5, "lighter"},// yellow
-                        {6, "darker"},// black
-                        {7, "lighter"},// white
-                        {8, "darker"},// purple
-                        {9, "darker"},// brown
-                        {10, "lighter"},// cyan
-                        {11, "lighter"},// lime
-                        {12, "darker"},// maroon
-                        {13, "lighter"},// rose
-                        {14, "lighter"},// banana
-                        {15, "darker"},// gray
-                        {16, "darker"},// tan
-                        {17, "lighter"},// coral
-                        {18, "darker"},// watermelon
-                        {19, "darker"},// chocolate
-                        {20, "lighter"},// sky blue
-                        {21, "lighter"},// beige
-                        {22, "darker"},// magenta
-                        {23, "lighter"},// turquoise
-                        {24, "lighter"},// lilac
-                        {25, "darker"},// olive
-                        {26, "lighter"},// azure
-                        {27, "darker"},// plum
-                        {28, "darker"},// jungle
-                        {29, "lighter"},// mint
-                        {30, "lighter"},// chartreuse
-                        {31, "darker"},// macau
-                        {32, "darker"},// tawny
-                        {33, "lighter"},// gold
-                        {34, "lighter"},// panda
-                        {35, "darker"},// contrast
-                        {36, "lighter"},// chroma
-                        {37, "darker"},// mantle
-                        {38, "lighter"},// fire
-                        {39, "lighter"},// galaxy
-                        {40, "lighter"},// monochrome
-                        {41, "lighter"},// rainbow
-                    };
-
-                    something = $"Your target is a {colors[TargetPlayer.CurrentOutfit.ColorId]} color!";
+                    something = $"Your target is a {ColorUtils.LightDarkColors[TargetPlayer.CurrentOutfit.ColorId].ToLower()} color!";
                     ColorHintGiven = true;
                 }
             }
@@ -205,11 +159,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (Failed && !IsDead)
             {
-                TurnTroll();
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
                 writer.Write((byte)TurnRPC.TurnTroll);
                 writer.Write(PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
+                TurnTroll();
             }
         }
 

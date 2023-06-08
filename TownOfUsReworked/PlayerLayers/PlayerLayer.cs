@@ -1,6 +1,5 @@
 namespace TownOfUsReworked.PlayerLayers
 {
-    [HarmonyPatch]
     public abstract class PlayerLayer
     {
         public Color32 Color = Colors.Layer;
@@ -62,7 +61,7 @@ namespace TownOfUsReworked.PlayerLayers
                 __instance.ReportButton.SetEnabled();
 
             __instance.ReportButton.buttonLabelText.text = IsBlocked ? "BLOCKED" : "REPORT";
-            __instance.ReportButton.graphic.sprite = IsBlocked ? AssetManager.GetSprite("Blocked") : AssetManager.GetSprite("Report");
+            __instance.ReportButton.graphic.sprite = AssetManager.GetSprite(IsBlocked ? "Blocked" : "Report");
             __instance.ReportButton.buttonLabelText.fontSharedMaterial = __instance.SabotageButton.buttonLabelText.fontSharedMaterial;
 
             //var closestUsable = Player.GetClosestConsole();
@@ -73,7 +72,7 @@ namespace TownOfUsReworked.PlayerLayers
                 __instance.UseButton.SetEnabled();
 
             __instance.UseButton.buttonLabelText.text = IsBlocked ? "BLOCKED" : "USE";
-            __instance.UseButton.graphic.sprite = IsBlocked ? AssetManager.GetSprite("Blocked") : AssetManager.Use;
+            __instance.UseButton.graphic.sprite = AssetManager.GetSprite(IsBlocked ? "Blocked" : "Use");
             __instance.UseButton.buttonLabelText.fontSharedMaterial = __instance.SabotageButton.buttonLabelText.fontSharedMaterial;
 
             if (IsBlocked)
@@ -82,7 +81,7 @@ namespace TownOfUsReworked.PlayerLayers
                 __instance.PetButton.SetEnabled();
 
             __instance.PetButton.buttonLabelText.text = IsBlocked ? "BLOCKED" : "PET";
-            __instance.PetButton.graphic.sprite = IsBlocked ? AssetManager.GetSprite("Blocked") : AssetManager.GetSprite("Pet");
+            __instance.PetButton.graphic.sprite = AssetManager.GetSprite(IsBlocked ? "Blocked" : "Pet");
             __instance.PetButton.buttonLabelText.fontSharedMaterial = __instance.SabotageButton.buttonLabelText.fontSharedMaterial;
 
             if (Player.CannotUse())
@@ -90,8 +89,7 @@ namespace TownOfUsReworked.PlayerLayers
             else
                 __instance.SabotageButton.SetEnabled();
 
-            __instance.SabotageButton.graphic.sprite = IsBlocked ? AssetManager.GetSprite("Blocked") : (Player.Is(Faction.Syndicate) ? AssetManager.GetSprite("SyndicateSabotage") :
-                AssetManager.GetSprite("Sabotage"));
+            __instance.SabotageButton.graphic.sprite = AssetManager.GetSprite(IsBlocked ? "Blocked" : (Player.Is(Faction.Syndicate) ? "SyndicateSabotage" : "Sabotage"));
 
             if (IsBlocked && Minigame.Instance)
                 Minigame.Instance.Close();
@@ -104,9 +102,9 @@ namespace TownOfUsReworked.PlayerLayers
 
         public virtual void VoteComplete(MeetingHud __instance) {}
 
-        public virtual void ConfirmVotePrefix(MeetingHud __instance) => __instance.SkipVoteButton.gameObject.SetActive(false);
+        public virtual void ConfirmVotePrefix(MeetingHud __instance) {}
 
-        public virtual void ConfirmVotePostfix(MeetingHud __instance) => __instance.SkipVoteButton.gameObject.SetActive(false);
+        public virtual void ConfirmVotePostfix(MeetingHud __instance) {}
 
         public virtual void ClearVote(MeetingHud __instance) {}
 
@@ -144,7 +142,7 @@ namespace TownOfUsReworked.PlayerLayers
         public bool Disconnected => Player.Data.Disconnected;
 
         public string PlayerName => Player?.Data.PlayerName;
-        public byte PlayerId => Player.PlayerId;
+        public byte PlayerId => (byte)Player?.PlayerId;
         public int TasksLeft => Player.Data.Tasks.Count(x => !x.Complete);
         public int TasksCompleted => Player.Data.Tasks.Count(x => x.Complete);
         public int TotalTasks => Player.Data.Tasks.ToArray().Length;

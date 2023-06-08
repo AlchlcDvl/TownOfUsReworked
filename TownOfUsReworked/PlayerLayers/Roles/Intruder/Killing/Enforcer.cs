@@ -18,7 +18,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleType = RoleEnum.Enforcer;
             StartText = () => "Force The <color=#8CFFFFFF>Crew</color> To Do Your Bidding";
             AbilitiesText = () => $"- You can plant bombs on players and force them to kill others\n- If the player is unable to kill someone within {CustomGameOptions.EnforceDuration}s" +
-                $", the bomb will detonate and kill everyone within a {CustomGameOptions.EnforceRadius}m radius\n{AbilitiesText()}";
+                $", the bomb will detonate and kill everyone within a {CustomGameOptions.EnforceRadius}m radius\n{CommonAbilities}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Enforcer : Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderKill;
             Type = LayerEnum.Enforcer;

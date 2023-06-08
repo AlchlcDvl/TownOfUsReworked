@@ -1,6 +1,5 @@
 namespace TownOfUsReworked.Objects
 {
-    [HarmonyPatch]
     public class Range
     {
         public readonly static List<Range> AllItems = new();

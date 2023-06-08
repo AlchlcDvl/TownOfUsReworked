@@ -99,11 +99,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (Failed && !IsDead)
             {
-                TurnJest();
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
                 writer.Write((byte)TurnRPC.TurnJest);
                 writer.Write(PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
+                TurnJest();
             }
         }
     }

@@ -7,6 +7,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Name = "Anarchist";
             RoleType = RoleEnum.Anarchist;
             StartText = () => "Wreck Everyone With A Passion";
+            AbilitiesText = () => CommonAbilities;
             RoleAlignment = RoleAlignment.SyndicateUtil;
             Type = LayerEnum.Anarchist;
             InspectorResults = InspectorResults.IsBasic;

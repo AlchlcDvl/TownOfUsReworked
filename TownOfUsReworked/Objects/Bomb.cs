@@ -1,6 +1,5 @@
 ﻿namespace TownOfUsReworked.Objects
 {
-    [HarmonyPatch]
     public class Bomb : Range
     {
         public List<PlayerControl> Players;
@@ -68,6 +67,9 @@
 
         public static void Clear(List<Bomb> obj)
         {
+            if (obj == null || obj.Count == 0)
+                return;
+
             foreach (var t in obj)
                 t.Destroy();
         }

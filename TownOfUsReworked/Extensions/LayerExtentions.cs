@@ -181,6 +181,11 @@ namespace TownOfUsReworked.Extensions
             return flag1 || flag2 || flag3 || flag4;
         }
 
+        public static bool IsMoving(this PlayerControl player) => Role.GetRoles<Transporter>(RoleEnum.Transporter).Any(x => (x.TransportPlayer1 == player || x.TransportPlayer2) &&
+            x.Transporting) || Role.GetRoles<Retributionist>(RoleEnum.Retributionist).Any(x => (x.TransportPlayer1 == player || x.TransportPlayer2) && x.OnEffect) ||
+            Role.GetRoles<Warper>(RoleEnum.Warper).Any(x => x.WarpPlayer1 == player && x.Warping) || Role.GetRoles<PromotedRebel>(RoleEnum.PromotedRebel).Any(x => x.WarpPlayer1 == player
+            && x.OnEffect);
+
         public static bool IsGATarget(this PlayerControl player) => Role.GetRoles<GuardianAngel>(RoleEnum.GuardianAngel).Any(x => x.TargetPlayer == player);
 
         public static bool IsExeTarget(this PlayerControl player) => Role.GetRoles<Executioner>(RoleEnum.Executioner).Any(x => x.TargetPlayer == player);
@@ -441,7 +446,7 @@ namespace TownOfUsReworked.Extensions
 
             foreach (var player in PlayerControl.AllPlayerControls)
             {
-                if (player.CanDoTasks() && player.Is(Faction.Crew))
+                if (player.CanDoTasks() && player.Is(Faction.Crew) && (!player.Data.IsDead || (player.Data.IsDead && CustomGameOptions.GhostTasksCountToWin)))
                 {
                     allCrew.Add(player);
 
@@ -884,7 +889,7 @@ namespace TownOfUsReworked.Extensions
                 roleName += $"{role.ColorString}{role.Name}</color>";
                 objectives += $"\n{role.ColorString}{role.Objectives()}</color>";
                 alignment += $"{role.RoleAlignment.AlignmentName(true)}";
-                subfaction += $"{role.SubFactionColorString}{role.SubFactionName}</color>";
+                subfaction += $"{role.SubFactionColorString}{role.SubFactionName} {role.SubFactionSymbol}</color>";
             }
             else
             {
@@ -899,7 +904,7 @@ namespace TownOfUsReworked.Extensions
 
             if (info[3] && !objectifier.Hidden)
             {
-                objectives += $"\n{objectifier.ColorString}{objectifier.TaskText}</color>";
+                objectives += $"\n{objectifier.ColorString}{objectifier.TaskText()}</color>";
                 objectifierName += $"{objectifier.ColorString}{objectifier.Name} {objectifier.Symbol}</color>";
             }
             else
@@ -924,23 +929,23 @@ namespace TownOfUsReworked.Extensions
             if (player.IsRecruit())
             {
                 var jackal = player.GetJackal();
-                objectives += $"\n<color=#{Colors.Cabal.ToHtmlStringRGBA()}>- You are a member of the Cabal. Help {jackal.PlayerName} in taking over the mission</color>";
+                objectives += $"\n<color=#{Colors.Cabal.ToHtmlStringRGBA()}>- You are a member of the Cabal. Help {jackal.PlayerName} in taking over the mission $</color>";
             }
             else if (player.IsResurrected())
             {
                 var necromancer = player.GetNecromancer();
-                objectives += $"\n<color=#{Colors.Reanimated.ToHtmlStringRGBA()}>- You are a member of the Reanimated. Help {necromancer.PlayerName} in taking over the mission</color>";
+                objectives += $"\n<color=#{Colors.Reanimated.ToHtmlStringRGBA()}>- You are a member of the Reanimated. Help {necromancer.PlayerName} in taking over the mission Σ</color>";
             }
             else if (player.IsPersuaded())
             {
                 var whisperer = player.GetWhisperer();
-                objectives += $"\n<color=#{Colors.Sect.ToHtmlStringRGBA()}>- You are a member of the Sect. Help {whisperer.PlayerName} in taking over the mission</color>";
+                objectives += $"\n<color=#{Colors.Sect.ToHtmlStringRGBA()}>- You are a member of the Sect. Help {whisperer.PlayerName} in taking over the mission Λ</color>";
             }
             else if (player.IsBitten())
             {
                 var dracula = player.GetDracula();
-                objectives += $"\n<color=#{Colors.Undead.ToHtmlStringRGBA()}>- You are a member of the Undead. Help {dracula.PlayerName} in taking over the mission</color>";
-                abilities += "\n- Attempting to interact with a <color=#C0C0C0FF>Vampire Hunter</color> will force them to kill you</color>";
+                objectives += $"\n<color=#{Colors.Undead.ToHtmlStringRGBA()}>- You are a member of the Undead. Help {dracula.PlayerName} in taking over the mission γ</color>";
+                abilities += $"\n{role.ColorString}- Attempting to interact with a <color=#C0C0C0FF>Vampire Hunter</color> will force them to kill you</color>";
             }
 
             if (objectives == $"{ObjectivesColorString}Objectives:")
@@ -952,7 +957,7 @@ namespace TownOfUsReworked.Extensions
                 abilities += $"\n{role.ColorString}{role.AbilitiesText()}</color>";
 
             if (info[2] && !ability.Hidden && ability.AbilityType != AbilityEnum.None)
-                abilities += $"\n{ability.ColorString}{ability.TaskText}</color>";
+                abilities += $"\n{ability.ColorString}{ability.TaskText()}</color>";
 
             if (abilities == $"{AbilitiesColorString}Abilities:")
                 abilities += "\n- None";
@@ -960,31 +965,34 @@ namespace TownOfUsReworked.Extensions
             abilities += "</color>";
 
             if (info[1] && !modifier.Hidden && modifier.ModifierType != ModifierEnum.None)
-                attributes += $"\n{modifier.ColorString}- {modifier.TaskText}</color>";
+                attributes += $"\n{modifier.ColorString}{modifier.TaskText()}</color>";
 
             if (player.IsGuessTarget() && CustomGameOptions.GuesserTargetKnows)
-                attributes += "\n<color=#EEE5BEFF>- Someone wants to guess you</color>";
+                attributes += "\n<color=#EEE5BEFF>- Someone wants to guess you π</color>";
 
             if (player.IsExeTarget() && CustomGameOptions.ExeTargetKnows)
-                attributes += "\n<color=#CCCCCCFF>- Someone wants you ejected</color>";
+                attributes += "\n<color=#CCCCCCFF>- Someone wants you ejected §</color>";
 
             if (player.IsGATarget() && CustomGameOptions.GATargetKnows)
-                attributes += "\n<color=#FFFFFFFF>- Someone wants to protect you</color>";
+                attributes += "\n<color=#FFFFFFFF>- Someone wants to protect you ★</color>";
 
             if (player.IsBHTarget())
-                attributes += "\n<color=#B51E39FF>- There is a bounty on your head</color>";
+                attributes += "\n<color=#B51E39FF>- There is a bounty on your head Θ</color>";
 
-            if (player.Data.IsDead)
-                attributes += "\n<color=#FF0000FF>- You are dead</color>";
+            if (player.Is(Faction.Syndicate) && ((SyndicateRole)role).HoldsDrive)
+                attributes += "\n<color=#008000FF>- You have the power of the Chaos Drive Δ</color>";
 
             if (!player.CanDoTasks())
                 attributes += "\n<color=#ABCDEFFF>- Your tasks are fake</color>";
+
+            if (player.Data.IsDead)
+                attributes += "\n<color=#FF0000FF>- You are dead</color>";
 
             if (attributes == $"{AttributesColorString}Attributes:")
                 attributes += "\n- None";
 
             attributes += "</color>";
-            return $"{roleName}\n{objectifierName}\n{abilityName}\n{modifierName}\n{alignment}\n{subfaction}\n{objectives}\n{abilities}\n{attributes}";
+            return $"{roleName}\n{alignment}\n{subfaction}\n{objectifierName}\n{abilityName}\n{modifierName}\n{objectives}\n{abilities}\n{attributes}";
         }
 
         public static void RegenTask(this PlayerControl player)
@@ -993,7 +1001,7 @@ namespace TownOfUsReworked.Extensions
             {
                 foreach (var task2 in player.myTasks)
                 {
-                    var task3 = task2.TryCast<ImportantTextTask>();
+                    var task3 = task2?.TryCast<ImportantTextTask>();
 
                     if (task3.Text.Contains("Sabotage and kill everyone") || task3.Text.Contains("Fake Tasks") || task3.Text.Contains("tasks to win"))
                         player.myTasks.Remove(task3);
@@ -1003,8 +1011,14 @@ namespace TownOfUsReworked.Extensions
 
         public static void RoleUpdate(this Role newRole, Role former)
         {
-            former.Player.DisableButtons();
+            if (!newRole || !former)
+                return;
+
+            CustomButton.AllButtons.Where(x => x.Owner == former).ToList().ForEach(x => x.Destroy());
+            CustomArrow.AllArrows.Where(x => x.Owner == former.Player).ToList().ForEach(x => x.Destroy());
             former.OnLobby();
+            former.Ignore = true;
+            former.Player = null;
             newRole.RoleHistory.Add(former);
             newRole.RoleHistory.AddRange(former.RoleHistory);
             newRole.Faction = former.Faction;
@@ -1031,11 +1045,8 @@ namespace TownOfUsReworked.Extensions
             newRole.IsCrewDefect = former.IsCrewDefect;
             newRole.IsNeutDefect = former.IsNeutDefect;
             newRole.AllArrows = former.AllArrows;
-            newRole.Player.RegenTask();
-            newRole.OnLobby();
             Role.AllRoles.Remove(former);
             PlayerLayer.AllLayers.Remove(former);
-            newRole.Player.EnableButtons();
 
             if (newRole.Local || former.Local)
                 ButtonUtils.ResetCustomTimers(false);

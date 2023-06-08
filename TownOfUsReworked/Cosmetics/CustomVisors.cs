@@ -14,6 +14,8 @@ namespace TownOfUsReworked.Cosmetics
         public string Name { get; set; }
         public string ID { get; set; }
         public string FlipID { get; set; }
+        public string FloorID { get; set; }
+        public string ClimbID { get; set; }
         public bool Adaptive { get; set; }
     }
 
@@ -54,6 +56,12 @@ namespace TownOfUsReworked.Cosmetics
 
                 if (cv.FlipID != null)
                     cv.FlipID = filePath + cv.FlipID + ".png";
+
+                if (cv.FloorID != null)
+                    cv.FloorID = filePath + cv.FloorID + ".png";
+
+                if (cv.ClimbID != null)
+                    cv.ClimbID = filePath + cv.ClimbID + ".png";
             }
 
             var visor = ScriptableObject.CreateInstance<VisorData>();
@@ -62,6 +70,12 @@ namespace TownOfUsReworked.Cosmetics
 
             if (cv.FlipID != null)
                 visor.viewData.viewData.LeftIdleFrame = CreateVisorSprite(cv.FlipID, fromDisk);
+
+            if (cv.FloorID != null)
+                visor.viewData.viewData.FloorFrame = CreateVisorSprite(cv.FloorID, fromDisk);
+
+            if (cv.ClimbID != null)
+                visor.viewData.viewData.ClimbFrame = CreateVisorSprite(cv.ClimbID, fromDisk);
 
             visor.name = cv.Name;
             visor.displayOrder = 99;
@@ -228,7 +242,7 @@ namespace TownOfUsReworked.Cosmetics
 
                 foreach (var visorBehaviour in array)
                 {
-                    VisorExtension ext = visorBehaviour.GetVisorExtension();
+                    var ext = visorBehaviour.GetVisorExtension();
 
                     if (ext != null)
                     {

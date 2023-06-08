@@ -126,6 +126,7 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 | Among Us | Mod Version | Link |
 |----------|-------------|------|
+| 2023.3.28 (s & e) | v0.3.1 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.3.1/TownOfUsReworked.zip) |
 | 2023.3.28 (s & e) | v0.3.0 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.3.0/TownOfUsReworked.zip) |
 
 <details>
@@ -172,6 +173,34 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 <details>
 <summary>Changelog</summary>
+<details>
+<summary>v0.3.1</summary>
+<ul> <li>Addition: Added /subfactioninfo and /otherinfo commands for more details about the mod</li> </ul>
+<ul> <li>Addition: Added an FPS tracker</li> </ul>
+<ul> <li>Change: Players being transported/warped are now susceptible to everything during the animation (that means team killing is possible)</li> </ul>
+<ul> <li>Improvement: Improved how body reports, role cards and colors are handled</li> </ul>
+<ul> <li>Improvement: Added more parameters to customise cosmetics</li> </ul>
+<ul> <li>Improvement: Updated the info in the in-game wiki to include meanings of the symbols next to players' names</li> </ul>
+<ul> <li>Improvement: Improved how shield breaking is handled</li> </ul>
+<ul> <li>Critical Fix: Fixed role cards crashing the game upon opening</li> </ul>
+<ul> <li>Critical Fix: Fixed the end game summary not showing sometimes and therefore making the game unplayable</li> </ul>
+<ul> <li>Vanilla Fix: Fixed the horrid log spam during games and potential stuttering</li> </ul>
+<ul> <li>Bug Fix: Fixed being able to zoom out on game start</li> </ul>
+<ul> <li>Bug Fix: Fixed non-role layers having their texts appear strange in the role card</li> </ul>
+<ul> <li>Bug Fix: Fixed roles not changing when they are supposed to (Like Executioner to Jester)</li> </ul>
+<ul> <li>Bug Fix: Fixed postmortal roles sometimes weirding out while doing tasks</li> </ul>
+<ul> <li>Bug Fix: Fixed arrow blips being updated on other people's maps</li> </ul>
+<ul> <li>Visual Fix: Fixed the skip button always being visible</li> </ul>
+<ul> <li>Visual Fix: Fixed typos in the wiki</li> </ul>
+<ul> <li>Visual Fix: Fixed Dictator hammer icons being the other way round</li> </ul>
+<ul> <li>Role Fix: Fixed Thief not stealing the roles of those they guessed</li> </ul>
+<ul> <li>Role Fix: Fixed Monarch knighting cooldown not resetting</li> </ul>
+<ul> <li>Role Fix: Fixed the incorrect scaling of the transport animation</li> </ul>
+<ul> <li>Role Fix: Fixed Rebel/Godfather promotions behaving weirdly</li> </ul>
+<ul> <li>Role Fix: Fixed non former Drunkard Rebels being able to confuse players</li> </ul>
+<ul> <li>Role Fix; Fixed Banshee's role history being spammed</li> </ul>
+<ul> <li>Ability Fix: Fixed Assassins being unable to guess after playing for a while</li> </ul>
+</details>
 <details>
 <summary>v0.3.0</summary>
 <ul> <li>New Modifiers: Astral, Yeller</li> </ul>
@@ -961,7 +990,7 @@ The Chameleon can go invisible to stalk players and see what they do when no one
 ## Coroner
 ### Alignment: Crew (Investigative)
 
-The Coroner gets an alert when someone dies. On top of this, the Coroner briefly gets an arrow pointing in the direction of the body. They can autopsy bodies to get some information. They can then compare that information with players to see if they killed the body or not. The Coroner also gets a body report from the player they reported. The report will include the cause and time of death, player's faction/role, the killer's faction/role and (according to the settings) the killer's name.
+The Coroner gets an alert when someone dies and briefly gets an arrow pointing in the direction of the body. They can autopsy bodies to get some information. They can then compare that information with players to see if they killed the body or not. The Coroner also gets a body report from the player they reported. The report will include the cause and time of death, player's faction/role, the killer's faction/role and (according to the settings) the killer's name.
 
 ### Game Options
 
@@ -998,7 +1027,7 @@ The Detective can examine other players for bloody hands. If the examined player
 ## Dictator
 ### Alignment: Crew (Sovereign)
 
-The Dictator has no active ability aside from revealing themselves as the Dictator to all players. When revealed, in the next meeting they can pick up to 3 players to be ejected. All 3 players will be killed at the end of the meeting, along with the chosen 4th player everyone else votes on (if any). If any of the 3 killed players happens to be Crew, the Dictator goes out the airlock with them. After that meeting, the Dictator has no post ejection ability.
+The Dictator has no active ability aside from revealing themselves as the Dictator to all players. When revealed, in the next meeting they can pick up to 3 players to be ejected. All 3 players will be killed at the end of the meeting, along with the chosen 4th player everyone else votes on (if any). If any of the 3 killed players happens to be Crew, the Dictator dies with them. After that meeting, the Dictator has no post ejection ability.
 
 ### Game Options
 
@@ -1035,7 +1064,7 @@ The Escort can roleblock players and prevent them from doing anything for a shor
 ## Inspector
 ### Alignment: Crew (Investigative)
 
-The Inspector can check players for their roles. Upon being checked, the targets' names will be updated to give a list of what roles could the target possibly be.
+The Inspector can inspect players for their roles. Upon being inspected, the target's name will be updated to give a list of what roles could the target possibly be.
 
 ### Game Options
 
@@ -1046,7 +1075,7 @@ The Inspector can check players for their roles. Upon being checked, the targets
 ## Mayor
 ### Alignment: Crew (Sovereign)
 
-The Mayor has no active ability aside from being able to reveal themselves as the Mayor to other players. Upon doing so, their vote counts as extra.
+The Mayor has no active ability aside from being able to reveal themselves as the Mayor to other players. Upon doing so, the value of their vote increases.
 
 ### Game Options
 
@@ -1059,7 +1088,7 @@ The Mayor has no active ability aside from being able to reveal themselves as th
 ## Medic
 ### Alignment: Crew (Protective)
 
-The Medic can give any player a shield that will make them immortal until the Medic is dead. A shielded player cannot be killed by anyone, unless it's a suicide.
+The Medic can give any player a shield that will make them largely immortal as long as the Medic is alive. Some ways of death still go through, like assassination and ignition. Shielded players have a green ✚ next to their names.
 
 ### Game Options
 
@@ -1086,7 +1115,7 @@ The Medium can mediate to be able to see ghosts. If the Medium uses this ability
 ## Monarch
 ### Alignment: Crew (Sovereign)
 
-The Monarch can appoint players as knights. When the next meeting is called, all knighted players will be announced. Knighted players will have their votes count as extra.
+The Monarch can appoint players as knights. When the next meeting is called, all knighted players will be announced. Knighted players will have the value of their votes increased. As long as a Knight is alive, the Monarch cannot be killed. Knighted players have a pinkish red κ next to their names.
 
 ### Game Options
 
@@ -1102,7 +1131,7 @@ The Monarch can appoint players as knights. When the next meeting is called, all
 ## Mystic
 ### Alignment: Crew (Auditor)
 
-The Mystic only spawns when there is at least one Neutral (Neophyte) role present in the game. Whenever someone's subfaction is changed, the Mystic will be alerted about it. The Mystic can also investigate players to see if their subfactions have been changed. If the target has a different subfaction, the Mystic's screen will flash red, otherwise it will flash green. It will not, however, work on the Neutral (Neophyte) roles themselves so even people who flashed green might be a converter. Once all subfactions are dead, the Mystic becomes a Seer.
+The Mystic only spawns when there is at least one Neutral (Neophyte) role present in the game. Whenever someone's subfaction is changed, the Mystic will be alerted about it. The Mystic can also investigate players to see if their subfactions have been changed. If the target has a different subfaction from the Mystic's, the Mystic's screen will flash red, otherwise it will flash green. It will not, however, work on the Neutral (Neophyte) roles themselves so even people who flashed green might be a converter. Once all subfactions are dead, the Mystic becomes a Seer. If the player is framed, they will appear to have their subfactions changed.
 
 ### Game Options
 
@@ -1113,7 +1142,7 @@ The Mystic only spawns when there is at least one Neutral (Neophyte) role presen
 ## Operative
 ### Alignment: Crew (Investigative)
 
-The Operative can place bugs around the map. When players enter the range of the bug, they trigger it. In the following meeting, all players who triggered a bug will have their role displayed to the Operative. However, this is done so in a random order, not stating who entered the bug, nor what role a specific player is. The Operative also gains more information when on Admin Table and on Vitals. On Admin Table, the Operative can see the colors of every person on the map. When on Vitals, the Operative is shown how long someone has been dead for.
+The Operative can place bugs around the map. When players enter the range of the bug and stay within it for a certain amount of time, they trigger it. In the following meeting, all players who triggered a bug will have their role displayed to the Operative. However, this is done so in a random order, not stating who entered the bug, nor what role a specific player is. The Operative also gains more information when on Admin Table and on Vitals. On Admin Table, the Operative can see the colors of every person on the map. When on Vitals, the Operative is shown how long someone has been dead for.
 
 ### Game Options
 
@@ -1130,7 +1159,7 @@ The Operative can place bugs around the map. When players enter the range of the
 ## Retributionist
 ### Alignment: Crew (Support)
 
-The Retributionist can resurrect dead crewmates. During meetings, the Retributionist can select who they are going to ressurect and use for the following round from the dead. They can choose to use each dead players only once. It should be noted the Retributionist can not use all Crew roles and cannot use any Non-Crew role. The cooldowns, limits and everything will be set by the settings for their respective roles.
+The Retributionist can mimic dead crewmates. During meetings, the Retributionist can select who they are going to mimic for the following round from the dead. It should be noted the Retributionist can not use all Crew roles and cannot use any Non-Crew role. The cooldowns, limits and everything will be set by the settings for their respective roles.
 
 ### Game Options
 
@@ -1142,7 +1171,7 @@ The Retributionist can resurrect dead crewmates. During meetings, the Retributio
 ## Revealer
 ### Alignment: Crew (Utility)
 
-The Revealer can reveal evils if they finish all their tasks. Upon finishing all of their tasks, Intruders, Syndicate and sometimes Neutrals are revealed to alive Crew after a meeting is called. However, if the Revealer is clicked they lose their ability to reveal evils and are once again a normal ghost.
+The Revealer is the first dead Crew. Upon finishing all their tasks, the evils, and possibly their roles, will be revealed to all other alive players. However, if the Revealer is clicked they lose their ability to reveal evils and are once again a normal ghost.
 
 ### Game Options
 
@@ -1158,7 +1187,7 @@ The Revealer can reveal evils if they finish all their tasks. Upon finishing all
 ## Seer
 ### Alignment: Crew (Investigative)
 
-The Seer only spawns if there are roles capable of changing their initial roles. The Seer can investigate players to see if their role is different from what they started out as. If a player's role has been changed, the Seer's screen will flash red, otherwise it will flash green. This, however, does not work on those whose subfactions have changed so those who flashed green might still be evil. If all players capable of changing or have changed their initial roles are dead, the Seer becomes a Sheriff.
+The Seer only spawns if there are roles capable of changing their initial roles or if there's a [Traitor](#traitor) or [Fanatic](#fanatic) in the game. The Seer can investigate players to see if their role is different from what they started out as. If a player's role has been changed, the Seer's screen will flash red, otherwise it will flash green. This, however, does not work on those whose subfactions have changed so those who flashed green might still be evil. If all players capable of changing or have changed their initial roles are dead, the Seer becomes a Sheriff. If the player is framed, they will appear to have their role changed.
 
 ### Game Options
 
@@ -1169,7 +1198,7 @@ The Seer only spawns if there are roles capable of changing their initial roles.
 ## Sheriff
 ### Alignment: Crew (Investigative)
 
-The Sheriff can reveal the alliance of other players. Based on settings, the Sheriff can find out whether a role is Good or Evil. A player's name will change color according to their results.
+The Sheriff can reveal the alliance of other players. Based on settings, the Sheriff can find out whether a player is Good or Evil. The Sheriff's screen will flash green or red depending on the results. If the player is framed, they will appear to be evil.
 
 ### Game Options
 
@@ -1182,7 +1211,7 @@ The Sheriff can reveal the alliance of other players. Based on settings, the She
 ## Shifter
 ### Alignment: Crew (Support)
 
-The Shifter can swap roles with someone, as long as they are Crew. If the shift is unsuccessful, the Shifter will die.
+The Shifter can swap roles with someone, as long as they are Crew. If the shift is unsuccessful, the Shifter dies.
 
 ### Game Options
 
@@ -1194,7 +1223,7 @@ The Shifter can swap roles with someone, as long as they are Crew. If the shift 
 ## Tracker
 ### Alignment: Crew (Investigative)
 
-The Tracker can track other during a round. Once they track someone, an arrow is continuously pointing to them, which updates in set intervals.
+The Tracker can track others during a round. Once they track someone, an arrow is continuously pointing to them, which updates in set intervals.
 
 ### Game Options
 
@@ -1208,7 +1237,7 @@ The Tracker can track other during a round. Once they track someone, an arrow is
 ## Transporter
 ### Alignment: Crew (Support)
 
-The Transporter can swap the locations of two players at will. Players who have been transported are alerted with a blue flash on their screen.
+The Transporter can swap the locations of two players at will. Being transported plays an animation that's visible to all players and renderers the targets immobile. During the transportation, they can be targetted by anyone, even those of their own team. This means that the Transporter is capable of making evils attack each other.
 
 ### Game Options
 
@@ -1221,7 +1250,7 @@ The Transporter can swap the locations of two players at will. Players who have 
 ## Vampire Hunter
 ### Alignment: Crew (Auditor)
 
-The Vampire Hunter only spawns if there are Undead in the game. They can check players to see if they are an Undead. When the Vampire Hunter finds them, the target is killed. Otherwise they only interact and nothing else happens. When all Undead are dead, the Vampire Hunter turns into a Vigilante.
+The Vampire Hunter only spawns if there are Undead in the game. They can check players to see if they are an Undead. When the Vampire Hunter finds them, the target is killed. Otherwise they only interact and nothing else happens. When all Undead are dead, the Vampire Hunter turns into a Vigilante. Interacting with a Vampire Hunter as an Undead will force the Vampire Hunter to kill you.
 
 ### Game Options
 
@@ -1294,7 +1323,7 @@ The Actor gets a list of roles at the start of the game. This list of roles depe
 ### Alignment: Neutral (Benign)
 ### Win Condition: Find a dead body, take their role and then win as that role
 
-The Amnesiac is essentially roleless and cannot win without remembering the role of a dead player.
+The Amnesiac is essentially roleless and cannot win without remembering the role of a dead player. When there is only 6 players left, the Amnesiac becomes a Thief.
 
 ### Game Options
 
@@ -1309,7 +1338,7 @@ The Amnesiac is essentially roleless and cannot win without remembering the role
 ### Alignment: Neutral (Killing)
 ### Win Condition: Ignite anyone who opposes them
 
-The Arsonist can douse other players with gasoline. After dousing, the Arsonist can choose to ignite all doused players which kills all doused players at once. Doused players have an orange Ξ next to their names.
+The Arsonist can douse players with gasoline. After dousing, the Arsonist can choose to ignite all doused players which kills all doused players at once. Doused players have an orange Ξ next to their names.
 
 ### Game Options
 
@@ -1327,7 +1356,7 @@ The Arsonist can douse other players with gasoline. After dousing, the Arsonist 
 ### Alignment: Neutral (Proselyte)
 ### Win Condition: Kill anyone who opposes the faction they defected to
 
-The Betrayer is a simple killer, who turned after a turned Traitor/Fanatic was the only member of their new faction remaning. This role does not spawn directly.
+The Betrayer is a simple killer, who appears after a turned Traitor/Fanatic was the only member of their new faction remaning. This role does not spawn directly.
 
 ### Game Options
 
@@ -1340,7 +1369,7 @@ The Betrayer is a simple killer, who turned after a turned Traitor/Fanatic was t
 ### Alignment: Neutral (Evil)
 ### Win Condition: Find and kill thier target
 
-The Bounty Hunter is assigned a target as the start of the game. Every meeting, the Bounty Hunter is given clue to who their target might be. They do not know who the target is and must find them via a series of clues and limited guesses. Upon finding their target within the set amount of guesses, the guess button becomes a kill button. The Bounty Hunter's target always knows that there is a bounty on their head. If the Bounty Hunter is unable to find their target within the number of guesses or their target dies not by the Bounty Hunter's hands, the Bounty Hunter turns into a Troll. The target has a red Θ next to their names.
+The Bounty Hunter is assigned a target as the start of the game. Every meeting, the Bounty Hunter is given clue to who their target might be. They do not know who the target is and must find them via a series of clues and limited guesses. Upon finding their target within the set amount of guesses, the guess button becomes a kill button. The Bounty Hunter's target always knows that there is a bounty on their head. If the Bounty Hunter is unable to find their target within the number of guesses or their target dies not by the Bounty Hunter's hands, the Bounty Hunter becomes a Troll. The target has a red Θ next to their names.
 
 ### Game Options
 
@@ -1372,7 +1401,7 @@ The Cannibal can eat the body which wipes away the body, like the Janitor.
 ### Alignment: Neutral (Killing)
 ### Win Condition: Freeze anyone who opposes them
 
-The Cryomaniac can douse in coolant and freeze players similar to the Arsonist's dousing in gasoline and ignite. Freezing players does not immediately kill doused targets, instead when the next meeting is called, all currently doused players will die. When the Cryomaniac is the last killer or when the final number of players reaches a certain threshold, the Cryomaniac can also directly kill. Doused players have a purple λ next to their names.
+The Cryomaniac can douse players in coolant and freeze them similar to the Arsonist's dousing in gasoline and ignite. Freezing players does not immediately kill doused targets, instead when the next meeting is called, all currently doused players will die. When the Cryomaniac is the last killer or when the final number of players reaches a certain threshold, the Cryomaniac can also directly kill. Doused players have a purple λ next to their names.
 
 ### Game Options
 
@@ -1386,7 +1415,7 @@ The Cryomaniac can douse in coolant and freeze players similar to the Arsonist's
 ### Alignment: Neutral (Neophyte)
 ### Win Condition: Convert or kill anyone who can oppose them
 
-The Dracula is the only Undead that spawns in. The Dracula is the leader of the Undead who can convert others into Undead. If the target cannot be converted, they will be attacked instead. The Dracula must watch out for the Vampire Hunter as attempting to convert them will cause the Vampire Hunter to kill the Dracula.
+The Dracula is the only Undead that spawns in. The Dracula is the leader of the Undead who can convert others into an Undead. If the target cannot be converted, they will be attacked instead. The Dracula must watch out for the Vampire Hunter as attempting to convert them will cause the Vampire Hunter to kill the Dracula. Members of the Undead have a grey γ next to their names.
 
 ### Game Options
 
@@ -1463,7 +1492,7 @@ The Guardian Angel more or less aligns themselves with the faction of their targ
 ### Alignment: Neutral (Evil)
 ### Win Condition: Guess your target's role
 
-The Guesser has no abilities aside from guessing only their target. Every meeting, the Guesser is told a hint regarding their target's role. Targets have a beige π next to their names.
+The Guesser has no abilities aside from guessing only their target. Every meeting, the Guesser is told a hint regarding their target's role. If the target dies not by the Gusser's hands, the Guesser becomes an Actor with the target role list that of their target's role. Upon guessing their target, the Guesser can freely guess anyone. Targets have a beige π next to their names.
 
 ### Game Options
 
@@ -1482,7 +1511,7 @@ The Guesser has no abilities aside from guessing only their target. Every meetin
 ### Alignment: Neutral (Neophyte)
 ### Win Condition: Bribe the crew into joining your side and eliminate any threats
 
-The Jackal is the leader of the Cabal. They spawn in with 2 recruits at the start of the game. One of the recruits is the "good" one, meaning they are Crew. The other is the "evil" recruit, who can be either Intruder, Syndicate or Neutral (Killing). When both recruits die, the Jackal can then recruit another player to join the Cabal and become the backup recruit. If the target happens to be a member of a rival subfaction, they will be attacked instead.
+The Jackal is the leader of the Cabal. They spawn in with 2 recruits at the start of the game. One of the recruits is the "good" one, meaning they are Crew or Neutral (Benign). The other is the "evil" recruit, who can be either Intruder, Syndicate or Neutral (Killing) or (Harbinger). When both recruits die, the Jackal can then recruit another player to join the Cabal and become the backup recruit. If the target happens to be a member of a rival subfaction, they will be attacked instead. Members of the Cabal have a dark grey $ next to their names.
 
 ### Game Options
 
@@ -1541,7 +1570,7 @@ The Murderer is a simple Neutral Killer with no special abilities.
 ### Alignment: Neutral (Neophyte)
 ### Win Condition: Bring the undead to your side
 
-The Necromancer is essentially an evil Altruist. They can revive dead players and make them join the Necromancer's team, the Reanimated. There is a limit to how many times can the Necromancer can kill and revive players.
+The Necromancer is essentially an evil Altruist. They can resurrect dead players and make them join the Necromancer's team, the Reanimated. There is a limit to how many times can the Necromancer can kill and resurrect players. Members of the Reanimated have a dark pink Σ next to their names.
 
 ### Game Options
 
@@ -1561,9 +1590,9 @@ The Necromancer is essentially an evil Altruist. They can revive dead players an
 
 ## Pestilence
 ### Alignment: Neutral (Apocalypse)
-### Win Condition: Kill all non-Neutral Benign roles
+### Win Condition: Obliterate anyone who opposes them
 
-Pestilence is always on permanent alert, where anyone who tries to interact with them will die. Pestilence does not spawn in-game and instead gets converted from Plaguebearer after they infect everyone. Pestilence cannot die unless they have been voted out, and they can't be guessed (usually). This role does not spawn directly, unless it's set to, in which case it will replace the Plaguebearer.
+The Pestilence is always on permanent alert, where anyone who tries to interact with them will die. Pestilence does not spawn in-game and instead gets converted from Plaguebearer after they infect everyone. Pestilence cannot die unless they have been voted out, and they can't be guessed (usually). This role does not spawn directly, unless it's set to, in which case it will replace the Plaguebearer.
 
 ### Game Options
 
@@ -1591,7 +1620,7 @@ The Phantom spawns when a Neutral player dies withouth accomplishing their objec
 ### Alignment: Neutral (Harbinger)
 ### Win Condition: Infect everyone and turn into Pestilence or live to the end by killing off anyone who opposes them
 
-The Plaguebearer can infect other players. Once infected, the infected player can go and infect other players via interacting with them. Once all players are infected, the Plaguebearer becomes Pestilence.
+The Plaguebearer can infect other players. Once infected, the infected player can go and infect other players via interacting with them. Once all players are infected, the Plaguebearer becomes Pestilence. Infected players have a pale lime ρ next to their names.
 
 ### Game Options
 
@@ -1619,7 +1648,7 @@ Although the Serial Killer has a kill button, they can't use it unless they are 
 ### Alignment: Neutral (Benign)
 ### Win Condition: Live to see the end of the game
 
-The Survivor wins by simply surviving. They can vest which makes them immortal for a short duration.
+The Survivor wins by simply surviving. They can vest which makes them immortal for a short duration. Vesting Survivors have a yellow υ next to their names.
 
 ### Game Options
 
@@ -1636,7 +1665,7 @@ The Survivor wins by simply surviving. They can vest which makes them immortal f
 ### Alignment: Neutral (Benign)
 ### Win Condition: Kill a killer and win as their role
 
-The Thief can kill players to steal their roles. The player, however, must be a role with the ability to kill otherwise the Thief will die. After stealing their target's role, the Thief can now win as whatever role they have become.
+The Thief can kill players to steal their roles. The player, however, must be a role with the ability to kill otherwise the Thief will die. After stealing their target's role, the Thief can now win as whatever role they have become. The Thief can also guess players in-meeting to steal their roles.
 
 ### Game Options
 
@@ -1650,7 +1679,7 @@ The Thief can kill players to steal their roles. The player, however, must be a 
 ### Alignment: Neutral (Evil)
 ### Win Condition: Get killed
 
-The Troll just wants to be killed, but not ejected. The Troll can "interact" with players. This interaction does nothing, it just triggers any interaction sensitive roles like Veteran and Pestilence.
+The Troll just wants to be killed, but not ejected. The Troll can "interact" with players. This interaction does nothing, it just triggers any interaction sensitive roles like Veteran and Pestilence. Killing the Troll makes the Troll kill their killer.
 
 ### Game Options
 
@@ -1710,7 +1739,7 @@ Each member of this faction has the ability to kill alongside an ability pertain
 ## Ambusher
 ### Alignment: Intruder (Killing)
 
-The Ambusher can temporaily force anyone to go on alert, killing anyone who interacts with the Ambusher's target.
+The Ambusher can temporarily force anyone to go on alert, killing anyone who interacts with the Ambusher's target.
 
 ### Game Options
 
@@ -1737,7 +1766,7 @@ The Blackmailer can blackmail people. Blackmailed players cannot speak during th
 ## Camouflager
 ### Alignment: Intruder (Concealing)
 
-The Camouflager does the same thing as the Comms Sabotage, but their camouflage can be stacked on top other sabotages. Camouflaged players can kill in front everyone and no one will know who it is.
+The Camouflager does the same thing as the Better Comms Sabotage, but their camouflage can be stacked on top other sabotages. Camouflaged players can kill in front everyone and no one will know who it is.
 
 ### Game Options
 
@@ -1751,7 +1780,7 @@ The Camouflager does the same thing as the Comms Sabotage, but their camouflage 
 ## Consigliere
 ### Alignment: Intruder (Support)
 
-The Consigliere can reveal people's roles. They cannot get Assassin unless they see factions for obvious reasons.
+The Consigliere can reveal people's roles. They cannot guess those they revealed for obvious reasons.
 
 ### Game Options
 
@@ -1763,7 +1792,7 @@ The Consigliere can reveal people's roles. They cannot get Assassin unless they 
 ## Consort
 ### Alignment: Intruder (Support)
 
-The Consort can roleblock players and prevent them from doing anything for a short while.
+The Consort can roleblock players and prevent them from doing anything for a short while. They behave just like an [Escort](#escort) but the Consort can roleblock from any range.
 
 ### Game Options
 
@@ -1775,7 +1804,7 @@ The Consort can roleblock players and prevent them from doing anything for a sho
 ## Disguiser
 ### Alignment: Intruder (Deception)
 
-The Disguiser can disguise into other players. At the beginning of each, they can choose someone to measure. They can then disguise the next nearest person into the measured person for a limited amount of time after a short delay.
+The Disguiser can disguise other players. At the beginning of each, they can choose someone to measure. They can then disguise the next nearest person into the measured person for a limited amount of time after a short delay.
 
 ### Game Options
 
@@ -1791,7 +1820,7 @@ The Disguiser can disguise into other players. At the beginning of each, they ca
 ## Enforcer
 ### Alignment: Intruder (Killing)
 
-The Enforcer can plant bombs on players. After a short while, their target will be alerted to the bomb's presence and must kill someone to get rid of it. If they fail to do so in a time limit, the bomb will explode, killing everyone within its vicinity.
+The Enforcer can plant bombs on players. After a short while, their target will be alerted to the bomb's presence and must kill someone to get rid of it. If they fail to do so within a certain time limit, the bomb will explode, killing everyone within its vicinity.
 
 ### Game Options
 
@@ -1805,7 +1834,7 @@ The Enforcer can plant bombs on players. After a short while, their target will 
 ## Ghoul
 ### Alignment: Intruder (Utility)
 
-Every round, the Ghoul can mark a player for death. All players are told who is marked and the marked player will die at the end of the next meeting. The only way to save a marked player is to click the Ghoul that marked them.
+The Ghoul is the first dead Intruder. Every round, the Ghoul can mark a player for death. All players are told who is marked and the marked player will die at the end of the next meeting. The only way to save a marked player is to click the Ghoul that marked them. Marked players have a yellow χ next to their names.
 
 ### Game Options
 
@@ -1879,7 +1908,7 @@ The Miner can create new vents. These vents only connect to each other, forming 
 ## Morphling
 ### Alignment: Intruder (Deception)
 
-The Morphling can morph into another player. At the beginning of each round, they can choose someone to sample. They can then morph into that person at any time for a limited amount of time.
+The Morphling can morph into another player. During the round, they can choose someone to sample. They can then morph into the sampled person at any time for a limited amount of time.
 
 ### Game Options
 
@@ -1894,7 +1923,7 @@ The Morphling can morph into another player. At the beginning of each round, the
 ## Teleporter
 ### Alignment: Intruder (Support)
 
-The Teleporter can teleport to a marked positions. The Teleporter can mark a location which they can then teleport to later.
+The Teleporter can mark a location which they can then teleport to later.
 
 ### Game Options
 
@@ -1949,14 +1978,14 @@ Just a plain Syndicate with no abilities and only spawns if all the other roles 
 ## Banshee
 ### Alignment: Syndicate (Utility)
 
-The Banshee can block every non-Syndicate player every once in a while. This role cannot get the Chaos Drive.
+The Banshee is the first dead Syndicate. The Banshee can block every non-Syndicate player every once in a while. This role cannot get the Chaos Drive.
 
 ### Game Options
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Scream Cooldown | The cooldown on the Banshee's Scream button | Time | 25s |
-| Scream Duration | The duration of the scream | Time | 25s |
+| Scream Duration | The duration of the scream | Time | 10s |
 
 ## Bomber
 ### Alignment: Syndicate (Killing)"
@@ -2030,7 +2059,7 @@ The Drunkard can reverse a player's controls for a short while. With the Chaos D
 ## Framer
 ### Alignment: Syndicate (Disruption)
 
-The Framer can frame players, making them appear to have wrong results and be easily killed by Vigilantes and Assassins. This effects lasts as long as the Framer is alive. With the Chaos Drive, the Framer can frame players within a certain radius.
+The Framer can frame players, making them appear to be evil or have wrong results. This effects lasts as long as the Framer is alive. With the Chaos Drive, the Framer can frame players within a certain radius.
 
 ### Game Options
 
@@ -2042,7 +2071,7 @@ The Framer can frame players, making them appear to have wrong results and be ea
 ## Poisoner
 ### Alignment: Syndicate (Killing)
 
-The Poisoner can poison another player instead of killing. When they poison a player, the poisoned player dies either upon the start of the next meeting or after a set duration. With the Chaos Drive, the Poisoner can poison a player from anywhere.
+The Poisoner can poison a player instead of killing them. When they poison a player, the poisoned player dies either upon the start of the next meeting or after a set duration. With the Chaos Drive, the Poisoner can poison a player from anywhere.
 
 ### Game Options
 
@@ -2054,7 +2083,7 @@ The Poisoner can poison another player instead of killing. When they poison a pl
 ## Rebel
 ### Alignment: Syndicate (Support)
 
-The Rebel can only spawn in 3+ Syndicate games. They can choose to promote a fellow Syndicate to Sidekick. When the Rebel dies, the Sidekick becomes the new Rebel and has lowered cooldowns. With the Chaos Drive, the Rebel's gains the improved abilities of their former role. A promoted Rebel has the highest priority when recieving the Chaos Drive and the original Rebel as the lowest priority.
+The Rebel can only spawn in 3+ Syndicate games. They can choose to promote a fellow Syndicate to Sidekick. When the Rebel dies, the Sidekick becomes the new Rebel and has lowered cooldowns. With the Chaos Drive, the Rebel's gains the improved abilities of their former role.
 
 ### Game Options
 
@@ -2097,7 +2126,7 @@ The Silencer can silencer people. Silenced plaeyrs cannot see the messages being
 ## Spellslinger
 ### Alignment: Syndicate (Power)
 
-The Spellslinger is a powerful role who can cast curses on players. When all non-Syndicate players are cursed, the game ends in a Syndicate victory. With each curse cast, the spell cooldown increases. This effect is negated by the Chaos Drive.
+The Spellslinger is a powerful role who can cast curses on players. When all non-Syndicate players are cursed, the game ends in a Syndicate victory. With each curse cast, the spell cooldown increases. This effect is negated by the Chaos Drive. Spelled players have a blue ø next to their names during a meeting.
 
 ### Game Options
 
@@ -2109,7 +2138,7 @@ The Spellslinger is a powerful role who can cast curses on players. When all non
 ## Stalker
 ### Alignment: Syndicate (Support)
 
-The Stalker is a buffed Tracker with no update interval. With the Chaos Drive, the arrows are no longer affected by camouflages and all players instantly have an arrow pointing at them upon receiving the Chaos Drive.
+The Stalker is a buffed Tracker with no update interval. With the Chaos Drive, the arrows are no longer affected by camouflages and all players instantly have an arrow pointing at them.
 
 ### Game Options
 
@@ -2120,7 +2149,7 @@ The Stalker is a buffed Tracker with no update interval. With the Chaos Drive, t
 ## Time Keeper
 ### Alignment: Syndicate (Power)
 
-The Time Keeper can control time. Without the Chaos Drive, the Time Keeper can freeze time, making everyone unable to move. With the Chaos Drive, the Time Keeper rewinds players instead.
+The Time Keeper can control time. Without the Chaos Drive, the Time Keeper can freeze time, making everyone unable to move and with it, the Time Keeper rewinds players instead.
 
 ### Game Options
 
@@ -2134,7 +2163,7 @@ The Time Keeper can control time. Without the Chaos Drive, the Time Keeper can f
 ## Warper
 ### Alignment: Syndicate (Support)
 
-The Warper can teleport a player to another player. With the Chaos Drive, the Warper teleports everyone to random positions on the map.
+The Warper can teleport a player to another player. With the Chaos Drive, the Warper teleports everyone to random positions on the map. Warping a player makes them unable to move and play an animation. During warping, they can be targetted by anyone, opening up the possibility of team killing.
 
 ### Game Options
 
@@ -2146,13 +2175,14 @@ The Warper can teleport a player to another player. With the Chaos Drive, the Wa
 -----------------------
 
 # Objectifiers
+
 Objectifiers are basically a second objective for the player. They can either choose to win the regular way, or win via their Objectifier's condition.
 
 ## Allied
 ### Applied To: Neutral (Killing)
 ### Win Condition: Win with whichever faction they are aligned with
 
-An Allied Neutral Killer now sides with either the Crew, the Intruders or the Syndicate. In the case of the latter two, all faction members are shown the Allied player's role, and can no longer kill them.
+An Allied Neutral Killer now sides with either the Crew, Intruders or the Syndicate. In the case of the latter two, all faction members are shown who is their Ally, and can no longer kill them. A Crew-Allied will have tasks that they must complete.
 
 ### Game Options
 
@@ -2164,7 +2194,7 @@ An Allied Neutral Killer now sides with either the Crew, the Intruders or the Sy
 ### Applied to: Crew
 ### Win Condition: Kill everyone
 
-The Corrupted is a Crewmate with the alignment of a Neutral Killer. On top of their base role's attributes, they also gain a kill button. Their win condition is so strict that not even Neutral Benigns or Evils can be spared.
+The Corrupted is a member of the Crew with the alignment of a Neutral Killer. On top of their base role's attributes, they also gain a kill button. Their win condition is so strict that not even Neutral Benigns or Evils can be spared.
 
 ### Game Options
 
@@ -2206,7 +2236,7 @@ When attacked, the Fanatic joins whichever faction their attacker belongs to. Fr
 ### Applied To: Everyone
 ### Win Condition: Be 2 of the 3 final players
 
-The Lovers are two players who are linked together. They gain the primary objective to stay alive together. If they are both among the last 3 players, they win as a Lover pair. In order to so, they gain access to a private chat, only visible by them in between meetings. However, they can also win with their respective team, hence why the Lovers do not know the role of the other Lover.
+The Lovers are two players who are linked together. They gain the primary objective to stay alive together. In order to so, they gain access to a private chat, only visible by them in between meetings. However, they can also win with their respective team.
 
 ### Game Options
 
@@ -2234,7 +2264,7 @@ The Mafia are a group of players with a linked win condition. They must kill any
 ### Applied To: Neutrals
 ### Win Condition: Survive a set amount of meetings
 
-Every meeting, for as long as an Overlord is alive, players will be alerted to their existence. The game ends if the Overlord lives long enough.
+Every meeting, for as long as an Overlord is alive, players will be alerted to their existence. The game ends if the Overlord lives long enough. All alive Overlords win together.
 
 ### Game Options
 
@@ -2270,10 +2300,10 @@ The Taskmaster is basically a living Phantom. When a certain number of tasks are
 | Tasks Remaining When Revealed | How many tasks be remain when the Taskmaster's existence is revealed | Number | 1 |
 
 ## Traitor
-### Applies To: Crew
+### Applied To: Crew
 ### Win Condition: Finish tasks to join either the Intruders or Syndicate
 
-The Traitor is a Crewmate who must finish their tasks to switch sides. Upon doing so, they will either join the Intruders or the Syndicate, and will win with that faction. If the Traitor is the only person in their new faction, they become a Betrayer, losing their original role's abilities and gaining the ability to kill in the process.
+The Traitor is a member of the Crew who must finish their tasks to switch sides. Upon doing so, they will either join the Intruders or the Syndicate, and will win with that faction. If the Traitor is the only person in their new faction, they become a Betrayer, losing their original role's abilities and gaining the ability to kill in the process.
 
 ### Game Options
 
@@ -2287,12 +2317,18 @@ The Traitor is a Crewmate who must finish their tasks to switch sides. Upon doin
 -----------------------
 
 # Modifiers
+
 Modifiers are passive afflictions that change a player's gameplay.
+
+## Astral
+### Applied To: Everyone
+
+An Astral player is not teleported to the meeting table.
 
 ## Bait
 ### Applied To: Everyone
 
-Killing the Bait makes the killer auto self-report.
+Killing the Bait makes the killer auto self-report the Bait's body.
 
 ### Game Options
 
@@ -2310,19 +2346,26 @@ The Coward cannot report bodies.
 ## Diseased
 ### Applied To: Everyone
 
-Killing the Diseased increases the killer's kill cooldown.
+Killing the Diseased increases all of the killer's cooldowns.
 
 ### Game Options
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Diseased Knows Who They Are | Whether the Bait knows who they are | Toggle | True |
-| Kill Multiplier | How much the Kill Cooldown of the killer is increased by | Factor | 3x |
+| Cooldown Multiplier | How much the Cooldowns of the killer is increased by | Factor | 3x |
 
 ## Drunk
 ### Applied To: Everyone
 
 The Drunk player's controls are inverted.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|------|-------------|------|---------|
+| Drunk Controls Swap Over Time | Self explanatory | Toggle | True |
+| Swap Interval | How much time must pass before the controls swap | Time | 15s |
 
 ## Dwarf
 ### Applied To: Everyone
@@ -2339,7 +2382,7 @@ The Dwarf travels at increased speed and has a much smaller body.
 ## Flincher
 ### Applied To: Everyone
 
-Every now and then, the Flincher flinches.
+Every now and then, the Flincher flinches. Fun Fact: The Flincher is actually a bug regarding the Drunk controls swapping which I turned into a modifier.
 
 ### Game Options
 
@@ -2362,7 +2405,7 @@ The Giant is a gigantic player that has a decreased walk speed.
 ## Indomitable
 ### Applied To: Everyone
 
-You cannot be guessed/assassinated in meetings.
+The Indomitable player cannot be guessed.
 
 ### Game Options
 
@@ -2373,7 +2416,7 @@ You cannot be guessed/assassinated in meetings.
 ## Professional
 ### Applied To: Assassins
 
-You have one extra life used when you guess incorrectly.
+The Professional has an extra life when guessing.
 
 ### Game Options
 
@@ -2389,7 +2432,7 @@ The Shy player cannot call meetings.
 ## VIP
 ### Applied To: Everyone
 
-Everyone is alerted of the VIP's death through a flash of the VIP's role color.
+Everyone is alerted of the VIP's death through a flash of the VIP's role color and will have an arrow poiting towards the VIP's body.
 
 ### Game Options
 
@@ -2400,7 +2443,7 @@ Everyone is alerted of the VIP's death through a flash of the VIP's role color.
 ## Volatile
 ### Applied To: Everyone
 
-You see and hear things and might lash out on others.
+A Volatile player will see random things happen to them and cannot distinguish real kill and flashes from the fake ones.
 
 ### Game Options
 
@@ -2408,15 +2451,21 @@ You see and hear things and might lash out on others.
 |------|-------------|------|---------|
 | Volatile Interval | How much time must pass before something happens | Time | 10s |
 
+## Yeller
+### Applied To: Everyone
+
+The Yeller's location is always revealed to others.
+
 -----------------------
 
 # Abilities
+
 Abilities give you extra perks on top of your role's regular powers.
 
 ## Assassin
 ### Applied To: Intruders, Crew, Syndicate, Neutral (Killing) and Neutral (Neophyte)
 
-The Assassin is given to a certain number of Intruders, Syndicate and/or Neutral Killers. This ability gives the Intruder, Syndicate or Neutral a chance to kill during meetings by guessing the roles or modifiers of others. If they guess wrong, they die instead.
+The Assassin can guess the layers of others. If they guess right, the target is killed mid-meeting and if they guess wrong, they die instead.
 
 ### Game Options
 
@@ -2439,7 +2488,7 @@ The Assassin is given to a certain number of Intruders, Syndicate and/or Neutral
 ## Button Barry
 ### Applied To: Everyone
 
-Button Barry has the ability to call a meeting from anywhere on the map, even during sabotages. Calling a meeting during a non-critical sabotage will fix the sabotage.
+The Button Barry can call a meeting from anywhere on the map, even during sabotages. Calling a meeting during a sabotage will fix the sabotage.
 
 ### Game Options
 
@@ -2476,7 +2525,7 @@ Ninjas don't lunge when killing.
 ## Politician
 ### Applied To: Crew, Intruders, Syndicate, Neutral Killers
 
-The Politician can vote multiple times. If the Politician cannot kill, they gain a new button called the abstain button which stores their vote for later use. On the other hand, if the Politician can kill, they lose the Abstain button ans instead gain a vote for each player they kill.
+The Politician can vote multiple times. If the Politician cannot kill, they gain a new button called the abstain button which stores their vote for later use. On the other hand, if the Politician can kill, they lose the Abstain button and instead gain a vote for each player they kill.
 
 ### Game Options
 
@@ -2503,9 +2552,9 @@ A Ruthless killer can bypass all forms of protection. Although they bypass alert
 | Ruthless Knows Who They Are | Whether a player knows they are a Ruthless at the start of a game | Toggle | True |
 
 ## Snitch
-### Applied To: Crew
+### Applied To: non-Traitor or Fanatic Crew
 
-The Snitch is an ability which allows any Crewmate to get arrows pointing towards the Intruders once all their tasks are finished. The names of the Intruders will also show up as red on their screen. However, when they only have a single task left, the Intruders get an arrow pointing towards the Snitch.
+The Snitch is an ability which allows any member of the Crew to get arrows pointing towards the Intruders and the Syndicate once all their tasks are finished. The names of the Intruders and Syndicate will also show up as red on their screen. However, when they only have a certain amount of tasks left, the Intruders and the Syndicate get an arrow pointing towards the Snitch.
 
 ### Game Options
 
@@ -2519,7 +2568,7 @@ The Snitch is an ability which allows any Crewmate to get arrows pointing toward
 | Snitch Sees Evils in Meetings | Whether the Snitch sees the evil players' names red in Meetings | Toggle | True |
 
 ## Swapper
-### Applies To: Crew
+### Applied To: Crew
 
 The Swapper can swap the votes on 2 players during a meeting. All the votes for the first player will instead be counted towards the second player and vice versa.
 
@@ -2534,7 +2583,7 @@ The Swapper can swap the votes on 2 players during a meeting. All the votes for 
 ## Tiebreaker
 ### Applied To: Everyone
 
-If any vote is a draw, the Tiebreaker's vote will go through. If they voted another player, they will get voted out. If the Tiebreaker is the Mayor, it applies to the Mayor's __first__ vote.
+During the event of a tie vote, the tied player who the Tiebreaker voted for will be ejected. In the case of a Politician, this applies to their *first* vote.
 
 ### Game Options
 
@@ -2545,7 +2594,7 @@ If any vote is a draw, the Tiebreaker's vote will go through. If they voted anot
 ## Torch
 ### Applied To: Non-Killers
 
-The Torch has Intruder vision at all times.
+The Torch has Intruder vision at all times and can see the silhouettes of invisible players.
 
 ## Tunneler
 ### Applied To: Crew excluding Engineer
@@ -2559,9 +2608,9 @@ The Tunneler will be able to vent when they finish their tasks.
 | Tunneler Knows Who They Are | Whether a player knows they are a Tunneler at the start of a game | Toggle | True |
 
 ## Underdog
-### Applied To: Intruders
+### Applied To: Intruders and Syndicate
 
-The Underdog is an Intruder with a prolonged kill cooldown when with a teammate. When they are the only remaining Intruder, they will have their kill cooldown shortened.
+The Underdog is an Intruder or Syndicate with prolonged cooldowns when with a teammate. When they are the only remaining member, they will have their cooldowns shortened.
 
 ### Game Options
 
@@ -2765,12 +2814,12 @@ The Underdog is an Intruder with a prolonged kill cooldown when with a teammate.
 ### Inspector Results
 - Deals With Dead - Coroner, Amnesiac, Retributionist, Janitor, Cannibal
 - Preserves Life - Medic, Guardian Angel, Altruist, Necromancer, Crusader
-- Leads The Group - Mayor, Godfather (Promoted and Original), Rebel (Promoted and Original), Pestilence, Survivor
+- Leads The Group - Mayor, Godfather (Original), Rebel (Original), Pestilence, Survivor
 - Brings Chaos - Shifter, Thief, Camouflager, Whisperer, Jackal
 - Seeks To Destroy - Arsonist, Cryomaniac, Plaguebearer, Spellslinger
 - Wants To Explore - Transporter, Teleporter, Warper, Time Keeper
 - New Lens - Engineer, Miner, Seer, Dracula, Medium, Monarch
-- Gains Information - Sheriff, Consigliere, Blackmailer, Detective, Inspector
+- Gains Information - Sheriff, Consigliere, Blackmailer, Detective, Inspector, Silencer
 - Is Manipulative - Jester, Executioner, Actor, Troll, Framer, Dictator
 - Unseen - Chameleon, Wraith, Concealer, Poisoner, Collider
 - Is Cold - Veteran, Vigilante, Sidekick, Guesser, Mafioso
@@ -2781,6 +2830,8 @@ The Underdog is an Intruder with a prolonged kill cooldown when with a teammate.
 - Hinders Others - Escort, Consort, Glitch, Ambusher, Drunkard
 - Is Basic - Crewmate, Impostor, Murderer, Anarchist
 - Ghostly - Revealer, Phantom, Ghoul, Banshee
+
+Note: A Promoted Godfather/Rebel's Inspector results will match that of their former roles.
 
 ## Subfactions
 
@@ -2821,7 +2872,7 @@ The Underdog is an Intruder with a prolonged kill cooldown when with a teammate.
 This mod has a lot of different modes which greatly change how the game continues!
 
 **Vanilla**
-- Nothing special, eveyone is either a basic [Crewmate](#crewmate) or [Impostor](#impostor)
+- Nothing special, everyone is either a basic [Crewmate](#crewmate) or [Impostor](#impostor)
 
 **Classic**
 - This is the main mode of the game

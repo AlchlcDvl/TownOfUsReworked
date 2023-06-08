@@ -14,6 +14,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Name = "Collider";
             RoleType = RoleEnum.Collider;
             StartText = () => "FUUUUUUUUUUUUUUUUUUUUUUUUUUSION!";
+            AbilitiesText = () => "- You can mark a player as positive or negative\n- When the marked players are within " +
+                $"{CustomGameOptions.CollideRange + (HoldsDrive ? CustomGameOptions.CollideRangeIncrease : 0)}m, they will die together\n{CommonAbilities}";
             Color = CustomGameOptions.CustomSynColors ? Colors.Collider : Colors.Syndicate;
             RoleAlignment = RoleAlignment.SyndicateKill;
             Type = LayerEnum.Collider;

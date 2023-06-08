@@ -10,6 +10,9 @@
             GameSettings.SettingsPage = 0;
             RoleGen.ResetEverything();
             PlayerLayer.DeleteAll();
+            AssetManager.StopAll();
+            TownOfUsReworked.IsTest = ConstantVariables.IsLocalGame && (TownOfUsReworked.IsDev || TownOfUsReworked.MCIActive);
+            Utils.DefaultOutfitAll();
 
             if (!ConstantVariables.IsLocalGame)
                 return;

@@ -13,7 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Teleporter";
             StartText = () => "X Marks The Spot";
-            AbilitiesText = () => $"- You can mark a spot to teleport to later\n{AbilitiesText()}";
+            AbilitiesText = () => $"- You can mark a spot to teleport to later\n{CommonAbilities}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Teleporter : Colors.Intruder;
             RoleType = RoleEnum.Teleporter;
             Type = LayerEnum.Teleporter;

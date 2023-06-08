@@ -332,6 +332,7 @@ namespace TownOfUsReworked.CustomOptions
         public static CustomToggleOption GhostTasksCountToWin;
         public static CustomNumberOption CrewMax;
         public static CustomNumberOption CrewMin;
+        public static CustomToggleOption CrewFlashlight;
 
         //CSv Options
         public static CustomHeaderOption CrewSovereignSettings;
@@ -586,6 +587,8 @@ namespace TownOfUsReworked.CustomOptions
         public static CustomNumberOption IntruderCount;
         public static CustomNumberOption IntruderMax;
         public static CustomNumberOption IntruderMin;
+        public static CustomToggleOption GhostsCanSabotage;
+        public static CustomToggleOption IntruderFlashlight;
 
         //IC Options
         public static CustomHeaderOption IntruderConcealingSettings;
@@ -750,6 +753,7 @@ namespace TownOfUsReworked.CustomOptions
         public static CustomToggleOption GlobalDrive;
         public static CustomNumberOption SyndicateMax;
         public static CustomNumberOption SyndicateMin;
+        public static CustomToggleOption SyndicateFlashlight;
 
         //SD Options
         public static CustomHeaderOption SyndicateDisruptionSettings;
@@ -907,6 +911,7 @@ namespace TownOfUsReworked.CustomOptions
         public static CustomNumberOption NeutralMin;
         public static CustomToggleOption NeutralsVent;
         public static CustomToggleOption NeutralEvilsEndGame;
+        public static CustomToggleOption NeutralFlashlight;
 
         //NA Options
         public static CustomHeaderOption NeutralApocalypseSettings;
@@ -1489,15 +1494,16 @@ namespace TownOfUsReworked.CustomOptions
         public static CustomToggleOption UniqueVolatile;
 
         /*//For Testing
+        public static CustomNestedOption ExampleNested;
         public static CustomToggleOption ExampleToggle;
         public static CustomNumberOption ExampleNumber;
         public static CustomStringOption ExampleString;
         public static CustomHeaderOption ExampleHeader;*/
 
-        public static Func<object, string> PercentFormat { get; } = value => $"{value:0}%";
-        public static Func<object, string> CooldownFormat { get; } = value => $"{value:0.0#}s";
-        public static Func<object, string> DistanceFormat { get; } = value => $"{value:0.0#}m";
-        public static Func<object, string> MultiplierFormat { get; } = value => $"{value:0.0#}x";
+        private static Func<object, string> PercentFormat { get; } = value => $"{value:0}%";
+        private static Func<object, string> CooldownFormat { get; } = value => $"{value:0.0#}s";
+        private static Func<object, string> DistanceFormat { get; } = value => $"{value:0.0#}m";
+        private static Func<object, string> MultiplierFormat { get; } = value => $"{value:0.0#}x";
 
         public static void GenerateAll()
         {
@@ -1513,10 +1519,12 @@ namespace TownOfUsReworked.CustomOptions
 
             var num = 0;
 
-            /*ExampleHeader = new(num++, MultiMenu.external, "Example Header Option");
+            /*ExampleNested = new(MultiMenu.main, "Exampled Nested Option");
+            ExampleHeader = new(num++, MultiMenu.external, "Example Header Option");
             ExampleToggle = new(num++, MultiMenu.external, "Example Toggle Option", true);
             ExampleNumber = new(num++, MultiMenu.external, "Example Number Option", 1, 1, 5, 1, MultiplierFormat);
-            ExampleString = new(num++, MultiMenu.external, "Example String Option", new[] { "Something", "Something Else", "Something Else Else" });*/
+            ExampleString = new(num++, MultiMenu.external, "Example String Option", new[] { "Something", "Something Else", "Something Else Else" });
+            ExampleNested.AddOptions(ExampleHeader, ExampleToggle, ExampleNumber, ExampleString);*/
 
             GameSettings = new(MultiMenu.main, "Game Settings");
             PlayerSpeed = new(num++, MultiMenu.main, "Player Speed", 1.25f, 0.25f, 10, 0.25f, MultiplierFormat);
@@ -1808,8 +1816,9 @@ namespace TownOfUsReworked.CustomOptions
             CommonTasks = new(num++, MultiMenu.crew, "Common Tasks", 2, 0, 100, 1);
             LongTasks = new(num++, MultiMenu.crew, "Long Tasks", 1, 0, 100, 1);
             ShortTasks = new(num++, MultiMenu.crew, "Short Tasks", 4, 0, 100, 1);
-            //GhostTasksCountToWin = new(num++, MultiMenu.crew, "<color=#8CFFFFFF>Crew</color> Ghost Tasks Count To Win", true);
+            GhostTasksCountToWin = new(num++, MultiMenu.crew, "<color=#8CFFFFFF>Crew</color> Ghost Tasks Count To Win", true);
             CrewVision = new(num++, MultiMenu.crew, "<color=#8CFFFFFF>Crew</color> Vision", 1f, 0.25f, 5f, 0.25f, MultiplierFormat);
+            //CrewFlashlight = new(num++, MultiMenu.crew, "<color=#8CFFFFFF>Crew</color> Uses A Flashlight", false);
             CrewMax = new(num++, MultiMenu.crew, "Max <color=#8CFFFFFF>Crew</color> <color=#FFD700FF>Roles</color>", 5, 0, 14, 1);
             CrewMin = new(num++, MultiMenu.crew, "Min <color=#8CFFFFFF>Crew</color> <color=#FFD700FF>Roles</color>", 5, 0, 14, 1);
             CrewVent = new(num++, MultiMenu.crew, "<color=#8CFFFFFF>Crew</color> Can Vent", false);
@@ -2024,9 +2033,10 @@ namespace TownOfUsReworked.CustomOptions
             NeutralSettings = new(MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> Settings");
             CustomNeutColors = new(num++, MultiMenu.neutral, "Enable Custom <color=#B3B3B3FF>Neutral</color> Colors", true);
             NeutralVision = new(num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> Vision", 1.5f, 0.25f, 5f, 0.25f, MultiplierFormat);
+            LightsAffectNeutrals = new(num++, MultiMenu.neutral, "Lights Sabotage Affects <color=#B3B3B3FF>Neutral</color> Vision", true);
+            //NeutralFlashlight = new(num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutrals</color> Use A Flashlight", false);
             NeutralMax = new(num++, MultiMenu.neutral, "Max <color=#B3B3B3FF>Neutral</color> <color=#FFD700FF>Roles</color>", 5, 1, 14, 1);
             NeutralMin = new(num++, MultiMenu.neutral, "Min <color=#B3B3B3FF>Neutral</color> <color=#FFD700FF>Roles</color>", 5, 1, 14, 1);
-            LightsAffectNeutrals = new(num++, MultiMenu.neutral, "Lights Sabotage Affects <color=#B3B3B3FF>Neutrals</color> Vision", true);
             NoSolo = new(num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutrals</color> Together, Strong", new[] { "Never", "Same NKs", "Same Roles", "All NKs", "All Neutrals" });
             VigiKillsNB = new(num++, MultiMenu.neutral, "<color=#FFFF00FF>Vigilante</color> Kills <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Benigns</color>", true);
             NKHasImpVision = new(num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color> Have <color=#FF0000FF>Intruder</color> Vision", true);
@@ -2292,9 +2302,11 @@ namespace TownOfUsReworked.CustomOptions
             CustomIntColors = new(num++, MultiMenu.intruder, "Enable Custom <color=#FF0000FF>Intruder</color> Colors", true);
             IntruderCount = new(num++, MultiMenu.intruder, "<color=#FF0000FF>Intruder</color> Count", 1, 0, 4, 1);
             IntruderVision = new(num++, MultiMenu.intruder, "<color=#FF0000FF>Intruder</color> Vision", 2f, 0.25f, 5f, 0.25f, MultiplierFormat);
+            //IntruderFlashlight = new(num++, MultiMenu.intruder, "<color=#FF0000FF>Intruders</color> Use A Flashlight", false);
             IntruderKillCooldown = new(num++, MultiMenu.intruder, "<color=#FF0000FF>Intruder</color> Kill Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
             IntrudersVent = new(num++, MultiMenu.intruder, "<color=#FF0000FF>Intruder</color> Can Vent", true);
             IntrudersCanSabotage = new(num++, MultiMenu.intruder, "<color=#FF0000FF>Intruder</color> Can Sabotage", true);
+            GhostsCanSabotage = new(num++, MultiMenu.intruder, "Dead <color=#FF0000FF>Intruders</color> Can Sabotage", false);
             IntruderMax = new(num++, MultiMenu.intruder, "Max <color=#FF0000FF>Intruder</color> <color=#FFD700FF>Roles</color>", 5, 1, 14, 1);
             IntruderMin = new(num++, MultiMenu.intruder, "Min <color=#FF0000FF>Intruder</color> <color=#FFD700FF>Roles</color>", 5, 1, 14, 1);
 
@@ -2432,6 +2444,7 @@ namespace TownOfUsReworked.CustomOptions
             CustomSynColors = new(num++, MultiMenu.syndicate, "Enable Custom <color=#008000FF>Syndicate</color> Colors", true);
             SyndicateCount = new(num++, MultiMenu.syndicate, "<color=#008000FF>Syndicate</color> Count", 1, 0, 4, 1);
             SyndicateVision = new(num++, MultiMenu.syndicate, "<color=#008000FF>Syndicate</color> Vision", 2f, 0.25f, 5f, 0.25f, MultiplierFormat);
+            //SyndicateFlashlight = new(num++, MultiMenu.syndicate, "<color=#008000FF>Syndicate</color> Uses A Flashlight", false);
             ChaosDriveMeetingCount = new(num++, MultiMenu.syndicate, "Chaos Drive Timer", 3, 1, 10, 1);
             ChaosDriveKillCooldown = new(num++, MultiMenu.syndicate, "Chaos Drive Holder Kill Cooldown", 15f, 10f, 45f, 2.5f, CooldownFormat);
             SyndicateVent = new(num++, MultiMenu.syndicate, "<color=#008000FF>Syndicate</color> Can Vent", new[] { "Always", "Chaos Drive", "Never" });
@@ -2808,8 +2821,6 @@ namespace TownOfUsReworked.CustomOptions
             SnitchSeesTraitor = new(num++, MultiMenu.objectifier, "<color=#D4AF37FF>Snitch</color> Sees Turned <color=#370D43FF>Traitor</color>", true);
             RevealerRevealsTraitor = new(num++, MultiMenu.objectifier, "<color=#D3D3D3FF>Revealer</color> Reveals Turned <color=#370D43FF>Traitor</color>", false);
             TraitorColourSwap = new(num++, MultiMenu.objectifier, "Turned <color=#370D43FF>Traitor</color> Swaps Colours For Investigative <color=#FFD700FF>Roles</color>", false);
-
-            CustomOption.SaveSettings("DefaultSettings");
         }
     }
 }

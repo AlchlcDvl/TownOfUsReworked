@@ -29,8 +29,9 @@ namespace TownOfUsReworked.Patches
                 if (text.StartsWith("/help") || text == "/h" || text.StartsWith("/h "))
                 {
                     chatHandled = true;
-                    hudManager.AddChat(player, "Commands available all the time:\n/modinfo /roleinfo, /modifierinfo, /abilityinfo, /objectifierinfo, /factioninfo, /alignmentinfo," +
-                        $" /quote, /controls, /lore\n\nCommands available in lobby:\n/summary{setColor}{kickBan}\n\nCommands available in game:\n/mystate{whisper}");
+                    hudManager.AddChat(player, "Commands available all the time:\n/modinfo /roleinfo, /modifierinfo, /abilityinfo, /objectifierinfo, /factioninfo, /alignmentinfo, " +
+                        $"/subfactioninfo, /otherinfo, /quote, /controls, /lore\n\nCommands available in lobby:\n/summary{setColor}{kickBan}\n\nCommands available in game:\n/mystate" +
+                        whisper);
                 }
                 //Display a message (Information about the mod)
                 else if (text.StartsWith("/modinfo") || text.StartsWith("/mi"))
@@ -82,7 +83,19 @@ namespace TownOfUsReworked.Patches
                 else if (text is "/factioninfo" or "/factioninfo " or "/fi" or "/fi ")
                 {
                     chatHandled = true;
-                    hudManager.AddChat(player, "Usage: /factioninfo <faction name or abbreviation>");
+                    hudManager.AddChat(player, "Usage: /<factioninfo or fi> <faction name or abbreviation>");
+                }
+                //SubFactionInfo help
+                else if (text is "/subfactioninfo" or "/subfactioninfo " or "/si" or "/si ")
+                {
+                    chatHandled = true;
+                    hudManager.AddChat(player, "Usage: /<subfactioninfo or si> <subfaction name or abbreviation>");
+                }
+                //OtherInfo help
+                else if (text is "/otherinfo" or "/otherinfo " or "/oti" or "/oti ")
+                {
+                    chatHandled = true;
+                    hudManager.AddChat(player, "Usage: /<otherinfo or oti> <name or abbreviation>");
                 }
                 //Quote help
                 else if (text is "/quote" or "/quote " or "/q" or "/q ")
@@ -112,6 +125,15 @@ namespace TownOfUsReworked.Patches
                     inputText = text.StartsWith("/fi ") ? text[4..] : text[13..];
                     chatText = LayerInfo.AllFactions.FirstOrDefault(x => string.Equals(inputText, x.Name, StringComparison.OrdinalIgnoreCase) || string.Equals(inputText, x.Short,
                         StringComparison.OrdinalIgnoreCase), LayerInfo.AllFactions[0]).ToString();
+                    hudManager.AddChat(player, chatText);
+                }
+                //Gives information regarding subfactions
+                else if (text.StartsWith("/subfactioninfo ") || text.StartsWith("/si "))
+                {
+                    chatHandled = true;
+                    inputText = text.StartsWith("/si ") ? text[4..] : text[16..];
+                    chatText = LayerInfo.AllSubFactions.FirstOrDefault(x => string.Equals(inputText, x.Name, StringComparison.OrdinalIgnoreCase) || string.Equals(inputText, x.Short,
+                        StringComparison.OrdinalIgnoreCase), LayerInfo.AllSubFactions[0]).ToString();
                     hudManager.AddChat(player, chatText);
                 }
                 //Gives information regarding alignments
@@ -157,6 +179,15 @@ namespace TownOfUsReworked.Patches
                     inputText = text.StartsWith("/l ") ? text[3..] : text[6..];
                     chatText = LayerInfo.AllLore.FirstOrDefault(x => string.Equals(x.Name, inputText, StringComparison.OrdinalIgnoreCase) || string.Equals(x.Short, inputText,
                         StringComparison.OrdinalIgnoreCase), LayerInfo.AllLore[0]).ToString();
+                    hudManager.AddChat(player, chatText);
+                }
+                //Gives information regarding other things
+                else if (text.StartsWith("/otherinfo ") || text.StartsWith("/oti "))
+                {
+                    chatHandled = true;
+                    inputText = text.StartsWith("/oti ") ? text[5..] : text[10..];
+                    chatText = LayerInfo.AllOthers.FirstOrDefault(x => string.Equals(inputText, x.Name, StringComparison.OrdinalIgnoreCase) || string.Equals(inputText, x.Short,
+                        StringComparison.OrdinalIgnoreCase), LayerInfo.AllOthers[0]).ToString();
                     hudManager.AddChat(player, chatText);
                 }
                 //Quotes
@@ -479,22 +510,6 @@ namespace TownOfUsReworked.Patches
                         __instance.TextArea.SetText("");
                         CurrentHistorySelection = 0;
                     }
-                }
-            }
-        }
-
-        [HarmonyPatch(typeof(ControllerManager), nameof(ControllerManager.Update))]
-        public static class ControllerManagerUpdatePatch
-        {
-            public static void Postfix()
-            {
-                if (AmongUsClient.Instance.AmHost)
-                {
-                    if (Input.GetKeyDown(KeyCode.LeftShift) && ConstantVariables.IsCountDown)
-                        GameStartManager.Instance.countDownTimer = 0;
-
-                    if (Input.GetKeyDown(KeyCode.LeftControl) && ConstantVariables.IsCountDown)
-                        GameStartManager.Instance.ResetStartState();
                 }
             }
         }

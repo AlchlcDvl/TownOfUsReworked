@@ -16,9 +16,8 @@
             firstButtonButton.OnClick = new();
             firstButtonButton.OnClick.AddListener((Action)(() =>
             {
-                for (var i = 1; i < 11; i++)
+                foreach (var playerButton in __instance.MaxPlayerButtons)
                 {
-                    var playerButton = __instance.MaxPlayerButtons[i];
                     var tmp = playerButton.GetComponentInChildren<TextMeshPro>();
                     var newValue = Mathf.Max(byte.Parse(tmp.text) - 10, byte.Parse(playerButton.name));
                     tmp.text = newValue.ToString();
@@ -37,9 +36,8 @@
             lastButtonButton.OnClick = new();
             lastButtonButton.OnClick.AddListener((Action)(() =>
             {
-                for (var i = 1; i < 11; i++)
+                foreach (var playerButton in __instance.MaxPlayerButtons)
                 {
-                    var playerButton = __instance.MaxPlayerButtons[i];
                     var tmp = playerButton.GetComponentInChildren<TextMeshPro>();
                     var newValue = Mathf.Min(byte.Parse(tmp.text) + 10, 113 + byte.Parse(playerButton.name));
                     tmp.text = newValue.ToString();

@@ -12,7 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Name = "Spellslinger";
             StartText = () => "Place the <color=#8CFFFFFF>Crew</color> Under A Curse";
             AbilitiesText = () => "- You can place a spell on players\n- When all non-<color=#008000FF>Syndicate</color> players are spelled the game ends in a <color=#008000FF>Syndicate" +
-                $"</color> win\n- With the Chaos Drive, your spells are astral\n{AbilitiesText()}";
+                $"</color> win\n- With the Chaos Drive, your spells are astral\n{CommonAbilities}";
             RoleType = RoleEnum.Spellslinger;
             RoleAlignment = RoleAlignment.SyndicatePower;
             Color = CustomGameOptions.CustomSynColors ? Colors.Spellslinger : Colors.Syndicate;

@@ -12,7 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Wraith";
             StartText = () => "Sneaky Sneaky";
-            AbilitiesText = () => $"- You can turn invisible\n{AbilitiesText()}";
+            AbilitiesText = () => $"- You can turn invisible\n{CommonAbilities}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Wraith : Colors.Intruder;
             RoleType = RoleEnum.Wraith;
             RoleAlignment = RoleAlignment.IntruderDecep;

@@ -228,6 +228,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public bool Exception6(PlayerControl player) => player == BlockTarget;
 
+        public bool Exception7(PlayerControl player) => (player == Player && !CustomGameOptions.TransSelf) || UntransportablePlayers.ContainsKey(player.PlayerId) ||
+            (Utils.BodyById(player.PlayerId) == null && player.Data.IsDead) || player == TransportPlayer2 || player.IsMoving();
+
+        public bool Exception8(PlayerControl player) => (player == Player && !CustomGameOptions.TransSelf) || UntransportablePlayers.ContainsKey(player.PlayerId) ||
+            (Utils.BodyById(player.PlayerId) == null && player.Data.IsDead) || player == TransportPlayer1 || player.IsMoving();
+
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
@@ -505,26 +511,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 return;
 
             base.OnBodyReport(info);
-            var matches = Utils.KilledPlayers.Where(x => x.PlayerId == info.PlayerId).ToArray();
-            DeadPlayer killer = null;
+            var body = Utils.KilledPlayers.Find(x => x.PlayerId == info.PlayerId);
 
-            if (matches.Length > 0)
-                killer = matches[0];
-
-            if (killer == null)
+            if (body == null)
                 return;
 
             Reported.Add(info.PlayerId);
-
-            var br = new BodyReport
-            {
-                Killer = Utils.PlayerById(killer.KillerId),
-                Body = Utils.PlayerById(killer.PlayerId),
-                Reporter = Player,
-                KillAge = (float)(DateTime.UtcNow - killer.KillTime).TotalMilliseconds
-            };
-
-            var reportMsg = br.ParseBodyReport();
+            body.Reporter = Player;
+            body.KillAge = (float)(DateTime.UtcNow - body.KillTime).TotalMilliseconds;
+            var reportMsg = body.ParseBodyReport();
 
             if (string.IsNullOrWhiteSpace(reportMsg))
                 return;
@@ -992,35 +987,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
         }
 
-        public static void BreakShield(byte retId, byte playerId, bool flag)
-        {
-            var role = GetRole<Retributionist>(Utils.PlayerById(retId));
-
-            if ((PlayerControl.LocalPlayer.PlayerId == playerId && (int)CustomGameOptions.NotificationShield is 1 or 2) || (PlayerControl.LocalPlayer.PlayerId == retId &&
-                (int)CustomGameOptions.NotificationShield is 0 or 2) || CustomGameOptions.NotificationShield == NotificationOptions.Everyone)
-            {
-                Utils.Flash(role.Color);
-            }
-
-            if (!flag)
-                return;
-
-            var player = Utils.PlayerById(playerId);
-
-            foreach (var role2 in GetRoles<Retributionist>(RoleEnum.Retributionist))
-            {
-                if (role2.ShieldedPlayer.PlayerId == playerId)
-                {
-                    role2.ShieldedPlayer = null;
-                    role2.ExShielded = player;
-                    Utils.LogSomething(player.name + " Is Ex-Shielded");
-                }
-            }
-
-            player.MyRend().material.SetColor("_VisorColor", Palette.VisorColor);
-            player.MyRend().material.SetFloat("_Outline", 0f);
-        }
-
         //Chameleon Stuff
         public DateTime LastSwooped;
         public CustomButton SwoopButton;
@@ -1426,7 +1392,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Transport1.transform.position = new(TransportPlayer1.GetTruePosition().x, TransportPlayer1.GetTruePosition().y + 0.35f, (TransportPlayer1.GetTruePosition().y / 1000f) + 0.01f);
             AnimationPlaying1.flipX = TransportPlayer1.MyRend().flipX;
-            AnimationPlaying1.transform.localScale *= 0.9f * TransportPlayer2.GetModifiedSize();
+            AnimationPlaying1.transform.localScale *= 0.9f * TransportPlayer1.GetModifiedSize();
 
             HudManager.Instance.StartCoroutine(Effects.Lerp(CustomGameOptions.TransportDuration, new Action<float>(p =>
             {
@@ -1481,12 +1447,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             else if (interact[1])
                 LastTransported.AddSeconds(CustomGameOptions.ProtectKCReset);
         }
-
-        public bool Exception7(PlayerControl player) => (player == Player && !CustomGameOptions.TransSelf) || UntransportablePlayers.ContainsKey(player.PlayerId) ||
-            (Utils.BodyById(player.PlayerId) == null && player.Data.IsDead) || player == TransportPlayer2;
-
-        public bool Exception8(PlayerControl player) => (player == Player && !CustomGameOptions.TransSelf) || UntransportablePlayers.ContainsKey(player.PlayerId) ||
-            (Utils.BodyById(player.PlayerId) == null && player.Data.IsDead) || player == TransportPlayer1;
 
         public void Transport()
         {

@@ -1,6 +1,5 @@
 namespace TownOfUsReworked.Objects
 {
-    [HarmonyPatch]
     public class Ash
     {
         public readonly static List<Ash> AllPiles = new();

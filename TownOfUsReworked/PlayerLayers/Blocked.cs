@@ -91,4 +91,11 @@ namespace TownOfUsReworked.PlayerLayers
             return PlayerLayer.LocalLayers.All(x => !x.IsBlocked); //No petting for you lmao
         }
     }
+
+    [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
+    [HarmonyPriority(Priority.First)]
+    public static class PerformKill
+    {
+        public static bool Prefix() => false;
+    }
 }

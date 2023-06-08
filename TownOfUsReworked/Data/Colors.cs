@@ -71,7 +71,7 @@
         public static Color32 Cryomaniac => new(100, 45, 234, 255); //#642DEAFF
         public static Color32 Thief => new(128, 255, 0, 255); //#80FF00FF
         public static Color32 Troll => new(103, 141, 54, 255); //#678D36FF
-        public static Color32 Pirate => new(237, 194, 64, 255); //#EDC240FF
+        //public static Color32 Pirate => new(237, 194, 64, 255); //#EDC240FF
         public static Color32 Jackal => new(69, 7, 106, 255); //#45076AFF
         public static Color32 Phantom => new(102, 41, 98, 255); //#662962FF
         public static Color32 Necromancer => new(191, 95, 255, 255); //#BF5FFFFF
@@ -178,6 +178,6 @@
         //#1E300B #06DF0C #F3A6D3
 
         //Symbol Storage
-        //⟡ ☆ ♡ ♧ ♤ ▶ ❥ ✔ Γ ι ν σ τ υ ψ Ψ ✧ ¢
+        //⟡ ☆ ♡ ♧ ♤ ▶ ❥ ✔ Γ ι ν σ τ ψ Ψ ✧ ¢
     }
 }

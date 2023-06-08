@@ -25,7 +25,7 @@ namespace TownOfUsReworked.Patches
                 Role.CrewWin = true;
                 Utils.EndGame();
             }
-            else if (LayerExtentions.Sabotaged())
+            else if (LayerExtentions.Sabotaged() && CustomGameOptions.IntrudersCanSabotage)
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
 

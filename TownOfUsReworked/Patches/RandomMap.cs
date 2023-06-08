@@ -3,8 +3,8 @@ namespace TownOfUsReworked.Patches
     [HarmonyPatch]
     public static class RandomMap
     {
-        private static byte previousMap;
-        private static float vision;
+        private static byte PreviousMap;
+        private static float Vision;
 
         [HarmonyPatch(typeof(GameStartManager), nameof(GameStartManager.BeginGame))]
         public static bool Prefix()
@@ -12,15 +12,15 @@ namespace TownOfUsReworked.Patches
             if (AmongUsClient.Instance.AmHost)
             {
                 RoleGen.ResetEverything();
-                previousMap = TownOfUsReworked.VanillaOptions.MapId;
-                vision = CustomGameOptions.CrewVision;
+                PreviousMap = TownOfUsReworked.VanillaOptions.MapId;
+                Vision = CustomGameOptions.CrewVision;
                 byte[] maps = { 0, 1, 2, 4, 5, 6 };
                 var map = maps[(int)CustomGameOptions.Map];
-                byte[] tbMode = { 1, 0, 2 };
 
                 if (CustomGameOptions.RandomMapEnabled || (map == 5 && !ModCompatibility.SubLoaded) || (map == 6 && !ModCompatibility.LILoaded))
                     map = GetRandomMap();
 
+                TownOfUsReworked.VanillaOptions.MapId = map;
                 TownOfUsReworked.VanillaOptions.RoleOptions.SetRoleRate(RoleTypes.Scientist, 0, 0);
                 TownOfUsReworked.VanillaOptions.RoleOptions.SetRoleRate(RoleTypes.Engineer, 0, 0);
                 TownOfUsReworked.VanillaOptions.RoleOptions.SetRoleRate(RoleTypes.GuardianAngel, 0, 0);
@@ -31,8 +31,7 @@ namespace TownOfUsReworked.Patches
                 TownOfUsReworked.VanillaOptions.VisualTasks = CustomGameOptions.VisualTasks;
                 TownOfUsReworked.VanillaOptions.PlayerSpeedMod = CustomGameOptions.PlayerSpeed;
                 TownOfUsReworked.VanillaOptions.NumImpostors = CustomGameOptions.IntruderCount;
-                //TownOfUsReworked.VanillaOptions.GhostsDoTasks = CustomGameOptions.GhostTasksCountToWin;
-                TownOfUsReworked.VanillaOptions.TaskBarMode = (AmongUs.GameOptions.TaskBarMode)tbMode[(int)CustomGameOptions.TaskBarMode];
+                TownOfUsReworked.VanillaOptions.TaskBarMode = (AmongUs.GameOptions.TaskBarMode)CustomGameOptions.TaskBarMode;
                 TownOfUsReworked.VanillaOptions.ConfirmImpostor = CustomGameOptions.ConfirmEjects;
                 TownOfUsReworked.VanillaOptions.VotingTime = CustomGameOptions.VotingTime;
                 TownOfUsReworked.VanillaOptions.DiscussionTime = CustomGameOptions.DiscussionTime;
@@ -40,10 +39,8 @@ namespace TownOfUsReworked.Patches
                 TownOfUsReworked.VanillaOptions.EmergencyCooldown = CustomGameOptions.EmergencyButtonCooldown;
                 TownOfUsReworked.VanillaOptions.NumEmergencyMeetings = CustomGameOptions.EmergencyButtonCount;
                 TownOfUsReworked.VanillaOptions.KillCooldown = CustomGameOptions.IntKillCooldown;
-                TownOfUsReworked.VanillaOptions.NumShortTasks = CustomGameOptions.ShortTasks;
-                TownOfUsReworked.VanillaOptions.NumLongTasks = CustomGameOptions.LongTasks;
-                TownOfUsReworked.VanillaOptions.NumCommonTasks = CustomGameOptions.ShortTasks;
-                TownOfUsReworked.VanillaOptions.MapId = GameOptionsManager.Instance.currentNormalGameOptions.MapId == 6 ? (byte)6 : map;
+                TownOfUsReworked.VanillaOptions.GhostsDoTasks = CustomGameOptions.GhostTasksCountToWin;
+                TownOfUsReworked.VanillaOptions.MaxPlayers = CustomGameOptions.LobbySize;
                 GameOptionsManager.Instance.currentNormalGameOptions = TownOfUsReworked.VanillaOptions;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetSettings, SendOption.Reliable);
                 writer.Write(map);
@@ -64,7 +61,7 @@ namespace TownOfUsReworked.Patches
                 if (CustomGameOptions.AutoAdjustSettings)
                 {
                     if (CustomGameOptions.SmallMapHalfVision)
-                        TownOfUsReworked.VanillaOptions.CrewLightMod = vision;
+                        TownOfUsReworked.VanillaOptions.CrewLightMod = Vision;
 
                     if (TownOfUsReworked.VanillaOptions.MapId == 1)
                         AdjustCooldowns(CustomGameOptions.SmallMapDecreasedCooldown);
@@ -74,7 +71,7 @@ namespace TownOfUsReworked.Patches
                 }
 
                 if (CustomGameOptions.RandomMapEnabled)
-                    TownOfUsReworked.VanillaOptions.MapId = previousMap;
+                    TownOfUsReworked.VanillaOptions.MapId = PreviousMap;
             }
         }
 
@@ -91,7 +88,7 @@ namespace TownOfUsReworked.Patches
                 totalWeight += CustomGameOptions.RandomMapSubmerged;
 
             /*if (ModCompatibility.LILoaded)
-                totalWeight += CustomGameOptions.RandomMapSubmerged;*/
+                totalWeight += CustomGameOptions.RandomLevelImpostor;*/
 
             if (totalWeight == 0)
                 return (byte)((int)CustomGameOptions.Map == 3 ? 4 : ((int)CustomGameOptions.Map == 4 ? 5 : (int)CustomGameOptions.Map));

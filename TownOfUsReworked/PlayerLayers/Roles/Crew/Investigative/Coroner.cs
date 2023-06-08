@@ -147,26 +147,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (info == null || !Local)
                 return;
 
-            var matches = Utils.KilledPlayers.Where(x => x.PlayerId == info.PlayerId).ToArray();
-            DeadPlayer killer = null;
+            var body = Utils.KilledPlayers.Find(x => x.PlayerId == info.PlayerId);
 
-            if (matches.Length > 0)
-                killer = matches[0];
-
-            if (killer == null)
+            if (body == null)
                 return;
 
             Reported.Add(info.PlayerId);
-
-            var br = new BodyReport
-            {
-                Killer = Utils.PlayerById(killer.KillerId),
-                Body = Utils.PlayerById(killer.PlayerId),
-                Reporter = Player,
-                KillAge = (float)(DateTime.UtcNow - killer.KillTime).TotalMilliseconds
-            };
-
-            var reportMsg = br.ParseBodyReport();
+            body.Reporter = Player;
+            body.KillAge = (float)(DateTime.UtcNow - body.KillTime).TotalMilliseconds;
+            var reportMsg = body.ParseBodyReport();
 
             if (string.IsNullOrWhiteSpace(reportMsg))
                 return;

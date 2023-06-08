@@ -16,7 +16,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Shapeshifter";
             StartText = () => "Change Everyone's Appearances";
-            AbilitiesText = () => $"- You can shuffle everyone's appearances\n{AbilitiesText()}";
+            AbilitiesText = () => $"- You can shuffle everyone's appearances\n{CommonAbilities}";
             Color = CustomGameOptions.CustomSynColors ? Colors.Shapeshifter : Colors.Syndicate;
             RoleType = RoleEnum.Shapeshifter;
             RoleAlignment = RoleAlignment.SyndicateDisrup;

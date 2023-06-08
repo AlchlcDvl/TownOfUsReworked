@@ -12,7 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Name = "Framer";
             StartText = () => "Make Everyone Suspicious";
             AbilitiesText = () => "- You can frame players\n- Framed players will die very easily to killing roles and will appear to have the wrong results to investigative roles till " +
-                $"you are dead\n- With the Chaos Drive, you can frame all players within a{CustomGameOptions.ChaosDriveFrameRadius}m radius\n{AbilitiesText()}";
+                $"you are dead\n- With the Chaos Drive, you can frame all players within a{CustomGameOptions.ChaosDriveFrameRadius}m radius\n{CommonAbilities}";
             RoleType = RoleEnum.Framer;
             RoleAlignment = RoleAlignment.SyndicateDisrup;
             Color = CustomGameOptions.CustomSynColors ? Colors.Framer : Colors.Syndicate;
@@ -43,7 +43,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
             writer.Write((byte)ActionsRPC.Frame);
             writer.Write(PlayerId);
-            writer.Write(PlayerId);
+            writer.Write(player.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
 

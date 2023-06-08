@@ -133,7 +133,6 @@ namespace TownOfUsReworked.Cosmetics
                 for (var i = 0; i < nameplates.Count; i++)
                 {
                     var nameplate = nameplates[i].Item1;
-                    var ext = nameplates[i].Item2;
                     var xpos = __instance.XRange.Lerp(i % __instance.NumPerRow / (__instance.NumPerRow - 1f));
                     var ypos = offset - (i / __instance.NumPerRow * __instance.YOffset);
                     var colorChip = UObject.Instantiate(__instance.ColorTabPrefab, __instance.scroller.Inner);

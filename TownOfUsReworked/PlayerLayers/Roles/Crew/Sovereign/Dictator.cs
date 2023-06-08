@@ -41,18 +41,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AmongUsClient.Instance.FinishRpcImmediately(writer);
             Revealed = true;
             Utils.Flash(Color);
-
-            foreach (var medic in GetRoles<Medic>(RoleEnum.Medic))
-            {
-                if (medic.ShieldedPlayer == Player)
-                    Medic.BreakShield(medic.PlayerId, PlayerId, true);
-            }
-
-            foreach (var ret in GetRoles<Retributionist>(RoleEnum.Retributionist))
-            {
-                if (ret.ShieldedPlayer == Player)
-                    Retributionist.BreakShield(ret.PlayerId, PlayerId, true);
-            }
+            BreakShield(PlayerId, true);
         }
 
         public override void UpdateHud(HudManager __instance)

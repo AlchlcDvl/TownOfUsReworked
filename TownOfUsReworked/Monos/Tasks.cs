@@ -1,6 +1,5 @@
 ﻿namespace TownOfUsReworked.Monos
 {
-    [HarmonyPatch]
     public class Tasks : MonoBehaviour
     {
         public Tasks(IntPtr ptr) : base(ptr) {}
@@ -77,23 +76,6 @@
                     }
                 }
             }
-        }
-    }
-
-    [HarmonyPatch(typeof(UseButton), nameof(UseButton.SetTarget))]
-    public static class UseButtonSetTargetPatch
-    {
-        public static bool Prefix(UseButton __instance)
-        {
-            Tasks.ClosestTasks(PlayerControl.LocalPlayer);
-
-            if (__instance.isActiveAndEnabled && PlayerControl.LocalPlayer && Tasks.NearestTask != null && Tasks.AllCustomPlateform != null)
-            {
-                __instance.graphic.color = new(1f, 1f, 1f, 1f);
-                return false;
-            }
-
-            return true;
         }
     }
 }

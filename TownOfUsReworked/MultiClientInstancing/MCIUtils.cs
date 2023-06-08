@@ -77,6 +77,7 @@ namespace TownOfUsReworked.MultiClientInstancing
                 return;
 
             PlayerControl.LocalPlayer.DisableButtons();
+            PlayerControl.LocalPlayer.DisableArrows();
 
             PlayerControl.LocalPlayer.NetTransform.RpcSnapTo(PlayerControl.LocalPlayer.transform.position);
             PlayerControl.LocalPlayer.moveable = false;
@@ -104,6 +105,7 @@ namespace TownOfUsReworked.MultiClientInstancing
             KillAnimation.SetMovement(PlayerControl.LocalPlayer, true);
 
             PlayerControl.LocalPlayer.EnableButtons();
+            PlayerControl.LocalPlayer.EnableArrows();
         }
 
         public static void SwitchTo(int clientId)

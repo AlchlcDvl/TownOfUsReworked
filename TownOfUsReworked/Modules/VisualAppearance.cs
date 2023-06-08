@@ -1,6 +1,5 @@
 ﻿namespace TownOfUsReworked.Modules
 {
-    [HarmonyPatch]
     public class VisualAppearance
     {
         public float SpeedFactor => Player.Data.IsDead && !Player.Caught() ? CustomGameOptions.GhostSpeed : (CustomGameOptions.PlayerSpeed * Player.GetModifiedSpeed());

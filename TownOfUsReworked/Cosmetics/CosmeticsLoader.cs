@@ -5,6 +5,7 @@ using Newtonsoft.Json.Linq;
 
 namespace TownOfUsReworked.Cosmetics
 {
+    [HarmonyPatch]
     public static class CosmeticsLoader
     {
         private const string REPO = "https://raw.githubusercontent.com/AlchlcDvl/ReworkedAssets/master";
@@ -147,6 +148,7 @@ namespace TownOfUsReworked.Cosmetics
                         info.BackflipID = current["backflipid"]?.ToString();
                         info.Artist = current["artist"]?.ToString();
                         info.Condition = current["condition"]?.ToString();
+                        info.FloorID = current["floorid"]?.ToString();
                         info.NoBouce = current["nobounce"] != null;
                         info.Adaptive = current["adaptive"] != null;
                         info.Behind = current["behind"] != null;
@@ -183,6 +185,9 @@ namespace TownOfUsReworked.Cosmetics
 
                     if (data.BackflipID != null && !File.Exists(filePath + data.BackflipID + ".png"))
                         markedfordownload.Add(data.BackflipID);
+
+                    if (data.FloorID != null && !File.Exists(filePath + data.FloorID + ".png"))
+                        markedfordownload.Add(data.FloorID);
                 }
 
                 foreach (var file in markedfordownload)
@@ -249,6 +254,8 @@ namespace TownOfUsReworked.Cosmetics
                         info.FlipID = current["flipid"]?.ToString();
                         info.Artist = current["artist"]?.ToString();
                         info.Condition = current["condition"]?.ToString();
+                        info.FloorID = current["floorid"]?.ToString();
+                        info.ClimbID = current["climbid"]?.ToString();
                         info.Adaptive = current["adaptive"] != null;
                         visorDatas.Add(info);
                     }
@@ -274,6 +281,12 @@ namespace TownOfUsReworked.Cosmetics
 
                     if (data.FlipID != null && !File.Exists(filePath + data.FlipID + ".png"))
                         markedfordownload.Add(data.FlipID);
+
+                    if (data.ClimbID != null && !File.Exists(filePath + data.ClimbID + ".png"))
+                        markedfordownload.Add(data.ClimbID);
+
+                    if (data.FloorID != null && !File.Exists(filePath + data.FloorID + ".png"))
+                        markedfordownload.Add(data.FloorID);
                 }
 
                 foreach (var file in markedfordownload)

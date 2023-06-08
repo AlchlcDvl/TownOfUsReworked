@@ -18,6 +18,7 @@ namespace TownOfUsReworked.Cosmetics
         public string BackflipID { get; set; }
         public string BackID { get; set; }
         public string ClimbID { get; set; }
+        public string FloorID { get; set; }
         public bool NoBouce { get; set; }
         public bool Adaptive { get; set; }
         public bool Behind { get; set; }
@@ -37,6 +38,7 @@ namespace TownOfUsReworked.Cosmetics
             var fronts = new Dictionary<string, CustomHat>();
             var backs = new Dictionary<string, string>();
             var flips = new Dictionary<string, string>();
+            var floors = new Dictionary<string, string>();
             var backflips = new Dictionary<string, string>();
             var climbs = new Dictionary<string, string>();
 
@@ -57,6 +59,8 @@ namespace TownOfUsReworked.Cosmetics
                     backs.Add(p[0], h);
                 else if (options.Contains("flip"))
                     flips.Add(p[0], h);
+                else if (options.Contains("floor"))
+                    floors.Add(p[0], h);
                 else
                 {
                     var custom = new CustomHat
@@ -81,6 +85,7 @@ namespace TownOfUsReworked.Cosmetics
                 climbs.TryGetValue(k, out var cr);
                 flips.TryGetValue(k, out var fr);
                 backflips.TryGetValue(k, out var bfr);
+                floors.TryGetValue(k, out var fl);
 
                 if (br != null)
                     hat.BackID = br;
@@ -93,6 +98,9 @@ namespace TownOfUsReworked.Cosmetics
 
                 if (bfr != null)
                     hat.BackflipID = bfr;
+
+                if (fl != null)
+                    hat.FloorID = fl;
 
                 if (hat.BackID != null)
                     hat.Behind = true;
@@ -139,6 +147,9 @@ namespace TownOfUsReworked.Cosmetics
                 if (ch.FlipID != null)
                     ch.FlipID = filePath + ch.FlipID + ".png";
 
+                if (ch.FloorID != null)
+                    ch.FloorID = filePath + ch.FloorID + ".png";
+
                 if (ch.BackflipID != null)
                     ch.BackflipID = filePath + ch.BackflipID + ".png";
             }
@@ -155,6 +166,9 @@ namespace TownOfUsReworked.Cosmetics
 
             if (ch.ClimbID != null)
                 hat.hatViewData.viewData.ClimbImage = CreateHatSprite(ch.ClimbID, fromDisk);
+
+            if (ch.FloorID != null)
+                hat.hatViewData.viewData.FloorImage = CreateHatSprite(ch.FloorID, fromDisk);
 
             hat.name = ch.Name;
             hat.displayOrder = 99;
@@ -175,6 +189,9 @@ namespace TownOfUsReworked.Cosmetics
 
             if (ch.FlipID != null)
                 extend.FlipImage = CreateHatSprite(ch.FlipID, fromDisk);
+
+            if (ch.FloorID != null)
+                extend.FlipImage = CreateHatSprite(ch.FloorID, fromDisk);
 
             if (ch.BackflipID != null)
                 extend.BackFlipImage = CreateHatSprite(ch.BackflipID, fromDisk);
@@ -200,7 +217,7 @@ namespace TownOfUsReworked.Cosmetics
                 if (Running)
                     return;
 
-                Running = true; // prevent simultanious execution
+                Running = true;
                 AllHats = __instance.allHats.ToList();
 
                 try
@@ -272,7 +289,7 @@ namespace TownOfUsReworked.Cosmetics
                                 Directory.CreateDirectory(filePath);
 
                             var d = new DirectoryInfo(filePath);
-                            var filePaths = d.GetFiles("*.png").Select(x => x.FullName).ToArray(); // Getting Text files
+                            var filePaths = d.GetFiles("*.png").Select(x => x.FullName).ToArray();
                             var hats = CreateCustomHatDetails(filePaths, true);
 
                             if (hats.Count > 0)

@@ -42,14 +42,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             //Adds all the roles that have a non-zero chance of being in the game
             if (CustomGameOptions.CrewMax > 0 && CustomGameOptions.CrewMin > 0)
             {
-                if (CustomGameOptions.VeteranOn > 0)
-                    ColorMapping.Add("Veteran", Colors.Veteran);
-
-                if (CustomGameOptions.VigilanteOn > 0)
-                    ColorMapping.Add("Vigilante", Colors.Vigilante);
-
-                if (CustomGameOptions.VampireHunterOn > 0 && CustomGameOptions.DraculaOn > 0)
-                    ColorMapping.Add("Vampire Hunter", Colors.VampireHunter);
+                if (CustomGameOptions.VeteranOn > 0) ColorMapping.Add("Veteran", Colors.Veteran);
+                if (CustomGameOptions.VigilanteOn > 0) ColorMapping.Add("Vigilante", Colors.Vigilante);
+                if (CustomGameOptions.VampireHunterOn > 0 && CustomGameOptions.DraculaOn > 0) ColorMapping.Add("Vampire Hunter", Colors.VampireHunter);
             }
 
             if (!CustomGameOptions.AltImps && CustomGameOptions.IntruderCount > 0)
@@ -58,35 +53,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
                 if (CustomGameOptions.IntruderMax > 0 && CustomGameOptions.IntruderMin > 0)
                 {
-                    if (CustomGameOptions.JanitorOn > 0)
-                        ColorMapping.Add("Janitor", Colors.Janitor);
-
-                    if (CustomGameOptions.MorphlingOn > 0)
-                        ColorMapping.Add("Morphling", Colors.Morphling);
-
-                    if (CustomGameOptions.MinerOn > 0)
-                        ColorMapping.Add("Miner", Colors.Miner);
-
-                    if (CustomGameOptions.WraithOn > 0)
-                        ColorMapping.Add("Wraith", Colors.Wraith);
-
-                    if (CustomGameOptions.GrenadierOn > 0)
-                        ColorMapping.Add("Grenadier", Colors.Grenadier);
-
-                    if (CustomGameOptions.BlackmailerOn > 0)
-                        ColorMapping.Add("Blackmailer", Colors.Blackmailer);
-
-                    if (CustomGameOptions.CamouflagerOn > 0)
-                        ColorMapping.Add("Camouflager", Colors.Camouflager);
-
-                    if (CustomGameOptions.DisguiserOn > 0)
-                        ColorMapping.Add("Disguiser", Colors.Disguiser);
-
-                    if (CustomGameOptions.DisguiserOn > 0)
-                        ColorMapping.Add("Consigliere", Colors.Consigliere);
-
-                    if (CustomGameOptions.ConsortOn > 0)
-                        ColorMapping.Add("Consort", Colors.Consort);
+                    if (CustomGameOptions.JanitorOn > 0) ColorMapping.Add("Janitor", Colors.Janitor);
+                    if (CustomGameOptions.MorphlingOn > 0) ColorMapping.Add("Morphling", Colors.Morphling);
+                    if (CustomGameOptions.MinerOn > 0) ColorMapping.Add("Miner", Colors.Miner);
+                    if (CustomGameOptions.WraithOn > 0) ColorMapping.Add("Wraith", Colors.Wraith);
+                    if (CustomGameOptions.GrenadierOn > 0) ColorMapping.Add("Grenadier", Colors.Grenadier);
+                    if (CustomGameOptions.BlackmailerOn > 0) ColorMapping.Add("Blackmailer", Colors.Blackmailer);
+                    if (CustomGameOptions.CamouflagerOn > 0) ColorMapping.Add("Camouflager", Colors.Camouflager);
+                    if (CustomGameOptions.DisguiserOn > 0) ColorMapping.Add("Disguiser", Colors.Disguiser);
+                    if (CustomGameOptions.DisguiserOn > 0) ColorMapping.Add("Consigliere", Colors.Consigliere);
+                    if (CustomGameOptions.ConsortOn > 0) ColorMapping.Add("Consort", Colors.Consort);
 
                     if (CustomGameOptions.GodfatherOn > 0)
                     {
@@ -102,41 +78,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
                 if (CustomGameOptions.SyndicateMax > 0 && CustomGameOptions.SyndicateMin > 0)
                 {
-                    if (CustomGameOptions.WarperOn > 0)
-                        ColorMapping.Add("Warper", Colors.Warper);
-
-                    if (CustomGameOptions.ConcealerOn > 0)
-                        ColorMapping.Add("Concealer", Colors.Concealer);
-
-                    if (CustomGameOptions.ShapeshifterOn > 0)
-                        ColorMapping.Add("Shapeshifter", Colors.Shapeshifter);
-
-                    if (CustomGameOptions.FramerOn > 0)
-                        ColorMapping.Add("Framer", Colors.Framer);
-
-                    if (CustomGameOptions.BomberOn > 0)
-                        ColorMapping.Add("Bomber", Colors.Bomber);
-
-                    if (CustomGameOptions.PoisonerOn > 0)
-                        ColorMapping.Add("Poisoner", Colors.Poisoner);
-
-                    if (CustomGameOptions.CrusaderOn > 0)
-                        ColorMapping.Add("Crusader", Colors.Crusader);
-
-                    if (CustomGameOptions.StalkerOn > 0)
-                        ColorMapping.Add("Stalker", Colors.Stalker);
-
-                    if (CustomGameOptions.ColliderOn > 0)
-                        ColorMapping.Add("Collider", Colors.Collider);
-
-                    if (CustomGameOptions.SpellslingerOn > 0)
-                        ColorMapping.Add("Spellslinger", Colors.Spellslinger);
-
-                    if (CustomGameOptions.TimeKeeperOn > 0)
-                        ColorMapping.Add("Time Keeper", Colors.TimeKeeper);
-
-                    if (CustomGameOptions.SilencerOn > 0)
-                        ColorMapping.Add("Silencer", Colors.Silencer);
+                    if (CustomGameOptions.WarperOn > 0) ColorMapping.Add("Warper", Colors.Warper);
+                    if (CustomGameOptions.ConcealerOn > 0) ColorMapping.Add("Concealer", Colors.Concealer);
+                    if (CustomGameOptions.ShapeshifterOn > 0) ColorMapping.Add("Shapeshifter", Colors.Shapeshifter);
+                    if (CustomGameOptions.FramerOn > 0) ColorMapping.Add("Framer", Colors.Framer);
+                    if (CustomGameOptions.BomberOn > 0) ColorMapping.Add("Bomber", Colors.Bomber);
+                    if (CustomGameOptions.PoisonerOn > 0) ColorMapping.Add("Poisoner", Colors.Poisoner);
+                    if (CustomGameOptions.CrusaderOn > 0) ColorMapping.Add("Crusader", Colors.Crusader);
+                    if (CustomGameOptions.StalkerOn > 0) ColorMapping.Add("Stalker", Colors.Stalker);
+                    if (CustomGameOptions.ColliderOn > 0) ColorMapping.Add("Collider", Colors.Collider);
+                    if (CustomGameOptions.SpellslingerOn > 0) ColorMapping.Add("Spellslinger", Colors.Spellslinger);
+                    if (CustomGameOptions.TimeKeeperOn > 0) ColorMapping.Add("Time Keeper", Colors.TimeKeeper);
+                    if (CustomGameOptions.SilencerOn > 0) ColorMapping.Add("Silencer", Colors.Silencer);
 
                     if (CustomGameOptions.RebelOn > 0)
                     {
@@ -148,35 +101,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (CustomGameOptions.NeutralMax > 0 && CustomGameOptions.NeutralMin > 0)
             {
-                if (CustomGameOptions.ArsonistOn > 0)
-                    ColorMapping.Add("Arsonist", Colors.Arsonist);
-
-                if (CustomGameOptions.GlitchOn > 0)
-                    ColorMapping.Add("Glitch", Colors.Glitch);
-
-                if (CustomGameOptions.SerialKillerOn > 0)
-                    ColorMapping.Add("Serial Killer", Colors.SerialKiller);
-
-                if (CustomGameOptions.JuggernautOn > 0)
-                    ColorMapping.Add("Juggernaut", Colors.Juggernaut);
-
-                if (CustomGameOptions.MurdererOn > 0)
-                    ColorMapping.Add("Murderer", Colors.Murderer);
-
-                if (CustomGameOptions.CryomaniacOn > 0)
-                    ColorMapping.Add("Cryomaniac", Colors.Cryomaniac);
-
-                if (CustomGameOptions.WerewolfOn > 0)
-                    ColorMapping.Add("Werewolf", Colors.Werewolf);
-
-                if (CustomGameOptions.PlaguebearerOn > 0)
-                    ColorMapping.Add("Plaguebearer", Colors.Plaguebearer);
-
-                if (CustomGameOptions.ThiefOn > 0)
-                    ColorMapping.Add("Thief", Colors.Thief);
-
-                if (CustomGameOptions.BountyHunterOn > 0)
-                    ColorMapping.Add("Bounty Hunter", Colors.BountyHunter);
+                if (CustomGameOptions.ArsonistOn > 0) ColorMapping.Add("Arsonist", Colors.Arsonist);
+                if (CustomGameOptions.GlitchOn > 0) ColorMapping.Add("Glitch", Colors.Glitch);
+                if (CustomGameOptions.SerialKillerOn > 0) ColorMapping.Add("Serial Killer", Colors.SerialKiller);
+                if (CustomGameOptions.JuggernautOn > 0) ColorMapping.Add("Juggernaut", Colors.Juggernaut);
+                if (CustomGameOptions.MurdererOn > 0) ColorMapping.Add("Murderer", Colors.Murderer);
+                if (CustomGameOptions.CryomaniacOn > 0) ColorMapping.Add("Cryomaniac", Colors.Cryomaniac);
+                if (CustomGameOptions.WerewolfOn > 0) ColorMapping.Add("Werewolf", Colors.Werewolf);
+                if (CustomGameOptions.PlaguebearerOn > 0) ColorMapping.Add("Plaguebearer", Colors.Plaguebearer);
+                if (CustomGameOptions.ThiefOn > 0) ColorMapping.Add("Thief", Colors.Thief);
+                if (CustomGameOptions.BountyHunterOn > 0) ColorMapping.Add("Bounty Hunter", Colors.BountyHunter);
             }
 
             //Sorts the list alphabetically.
@@ -240,13 +174,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 label.transform.localScale *= 1.7f;
                 label.text = Sorted[k].Key;
                 label.color = Sorted[k].Value;
-                button.GetComponent<PassiveButton>().OnMouseOver = new();
-                button.GetComponent<PassiveButton>().OnMouseOver.AddListener((Action)(() => button.GetComponent<SpriteRenderer>().color = UColor.green));
-                button.GetComponent<PassiveButton>().OnMouseOut = new();
-                button.GetComponent<PassiveButton>().OnMouseOut.AddListener((Action)(() => button.GetComponent<SpriteRenderer>().color = SelectedButton == button ? UColor.red :
-                    UColor.white));
-                button.GetComponent<PassiveButton>().OnClick = new();
-                button.GetComponent<PassiveButton>().OnClick.AddListener((Action)(() =>
+                var passive = button.GetComponent<PassiveButton>();
+                passive.OnMouseOver = new();
+                passive.OnMouseOver.AddListener((Action)(() => button.GetComponent<SpriteRenderer>().color = UColor.green));
+                passive.OnMouseOut = new();
+                passive.OnMouseOut.AddListener((Action)(() => button.GetComponent<SpriteRenderer>().color = SelectedButton == button ? UColor.red : UColor.white));
+                passive.OnClick = new();
+                passive.OnClick.AddListener((Action)(() =>
                 {
                     if (IsDead)
                         return;
@@ -330,7 +264,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 return;
 
             __instance.playerStates.ToList().ForEach(x => x.gameObject.SetActive(false));
-            __instance.SkipVoteButton.gameObject.SetActive(false);
             __instance.TimerText.gameObject.SetActive(false);
             HudManager.Instance.Chat.SetVisible(false);
             Page = 0;
@@ -354,7 +287,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Phone.Destroy();
             HudManager.Instance.Chat.SetVisible(true);
-            __instance.SkipVoteButton.gameObject.SetActive(true);
             __instance.TimerText.gameObject.SetActive(true);
             __instance.playerStates.ToList().ForEach(x => x.gameObject.SetActive(true));
 
@@ -652,7 +584,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (Local)
             {
                 if (Player != player)
+                {
                     hudManager.Chat.AddChat(PlayerControl.LocalPlayer, $"You guessed {player.name} as {guess}!");
+                    Steal(this, player);
+                    HideButtons();
+                }
                 else
                     hudManager.Chat.AddChat(PlayerControl.LocalPlayer, $"You incorrectly guessed {player.name} as {guess} and died!");
             }

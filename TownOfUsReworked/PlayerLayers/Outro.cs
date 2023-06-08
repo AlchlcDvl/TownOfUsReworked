@@ -5,10 +5,20 @@ namespace TownOfUsReworked.PlayerLayers
     {
         public static void Postfix(EndGameManager __instance)
         {
+            if (!AssetManager.SoundEffects.ContainsKey("CrewWin"))
+                AssetManager.SoundEffects.Add("CrewWin", __instance.CrewStinger);
+
+            if (!AssetManager.SoundEffects.ContainsKey("IntruderWin"))
+                AssetManager.SoundEffects.Add("IntruderWin", __instance.ImpostorStinger);
+
+            if (!AssetManager.SoundEffects.ContainsKey("Stalemate"))
+                AssetManager.SoundEffects.Add("Stalemate", __instance.DisconnectStinger);
+
             if (!ConstantVariables.GameHasEnded)
                 return;
 
             var text = UObject.Instantiate(__instance.WinText);
+            SoundManager.Instance.StopSound(__instance.ImpostorStinger);
 
             foreach (var player in UObject.FindObjectsOfType<PoolablePlayer>())
             {
@@ -21,8 +31,7 @@ namespace TownOfUsReworked.PlayerLayers
                 __instance.BackgroundBar.material.color = Colors.Stalemate;
                 text.text = "Stalemate";
                 text.color = Colors.Stalemate;
-                SoundManager.Instance.StopSound(__instance.ImpostorStinger);
-                SoundManager.Instance.PlaySound(__instance.DisconnectStinger, false);
+                AssetManager.Play("Stalemate");
             }
             else if (Role.SyndicateWin)
             {
@@ -45,6 +54,7 @@ namespace TownOfUsReworked.PlayerLayers
                 __instance.BackgroundBar.material.color = role.FactionColor;
                 text.text = "Intruders Win";
                 text.color = role.FactionColor;
+                AssetManager.Play("IntruderWin");
             }
             else if (Role.AllNeutralsWin)
             {
@@ -67,8 +77,7 @@ namespace TownOfUsReworked.PlayerLayers
                 __instance.BackgroundBar.material.color = role.FactionColor;
                 text.text = "Crew Wins";
                 text.color = role.FactionColor;
-                SoundManager.Instance.StopSound(__instance.ImpostorStinger);
-                SoundManager.instance.PlaySound(__instance.CrewStinger, false);
+                AssetManager.Play("CrewWin");
             }
             else if (Role.NKWins)
             {
@@ -168,6 +177,7 @@ namespace TownOfUsReworked.PlayerLayers
                 __instance.BackgroundBar.material.color = role.Color;
                 text.text = "Glitch Wins";
                 text.color = role.Color;
+                AssetManager.Play("GlitchWin");
             }
             else if (Role.JuggernautWins)
             {

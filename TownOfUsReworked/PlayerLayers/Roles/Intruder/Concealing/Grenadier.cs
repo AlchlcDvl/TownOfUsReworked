@@ -17,7 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Grenadier";
             StartText = () => "Blind The <color=#8CFFFFFF>Crew</color> With Your Magnificent Figure";
-            AbilitiesText = () => $"- You can drop a flashbang, which blinds players around you\n{AbilitiesText()}";
+            AbilitiesText = () => $"- You can drop a flashbang, which blinds players around you\n{CommonAbilities}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Grenadier : Colors.Intruder;
             RoleType = RoleEnum.Grenadier;
             RoleAlignment = RoleAlignment.IntruderConceal;

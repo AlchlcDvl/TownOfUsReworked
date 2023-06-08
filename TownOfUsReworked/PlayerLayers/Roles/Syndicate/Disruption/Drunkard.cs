@@ -15,7 +15,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Drunkard";
             StartText = () => "*Burp*";
-            AbilitiesText = () => "- You can confuse a player\n- Confused players will have their controls reverse\n- With the Chaos Drive, you reverse everyone's controls";
+            AbilitiesText = () => "- You can confuse a player\n- Confused players will have their controls reverse\n- With the Chaos Drive, you reverse everyone's controls\n" +
+                $"{CommonAbilities}";
             Color = CustomGameOptions.CustomSynColors ? Colors.Drunkard : Colors.Syndicate;
             RoleType = RoleEnum.Drunkard;
             RoleAlignment = RoleAlignment.SyndicateDisrup;

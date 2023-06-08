@@ -1,11 +1,9 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    [HarmonyPatch]
     public class Role : PlayerLayer
     {
         public static readonly List<Role> AllRoles = new();
         public static readonly List<GameObject> Buttons = new();
-        public static readonly Dictionary<int, string> LightDarkColors = new();
         public static readonly List<PlayerControl> Cleaned = new();
 
         public static Role LocalRole => GetRole(PlayerControl.LocalPlayer);
@@ -46,8 +44,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public static bool RoleWins => UndeadWin || CabalWin || InfectorsWin || ReanimatedWin || SectWin || NKWins || CrewWin || IntruderWin || SyndicateWin || AllNeutralsWin || GlitchWins
             || JuggernautWins || SerialKillerWins || ArsonistWins || CryomaniacWins || MurdererWins || PhantomWins || WerewolfWins || ActorWins || BountyHunterWins || CannibalWins ||
             ExecutionerWins || GuesserWins || JesterWins || TrollWins;
-        public static bool NBCanWin => CrewWin || UndeadWin || CabalWin || ReanimatedWin || SectWin || InfectorsWin || NKWins || IntruderWin || SyndicateWin || AllNeutralsWin ||
-            GlitchWins || JuggernautWins || SerialKillerWins || CryomaniacWins || ArsonistWins || MurdererWins || WerewolfWins || !CustomGameOptions.NeutralEvilsEndGame;
 
         public static int ChaosDriveMeetingTimerCount;
         public static bool SyndicateHasChaosDrive;
@@ -70,6 +66,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public List<PointInTime> PointsInTime => Positions.Keys.ToList();
         public Dictionary<byte, CustomArrow> YellerArrows = new();
 
+        public bool Ignore;
+
         public string FactionColorString => $"<color=#{FactionColor.ToHtmlStringRGBA()}>";
         public string SubFactionColorString => $"<color=#{SubFactionColor.ToHtmlStringRGBA()}>";
 
@@ -82,6 +80,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public string FactionName => $"{Faction}";
         public string SubFactionName => $"{SubFaction}";
+        public string SubFactionSymbol = "φ";
 
         public string KilledBy = "";
         public DeathReasonEnum DeathReason = DeathReasonEnum.Alive;
@@ -123,111 +122,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             __instance.PetButton.buttonLabelText.SetOutlineColor(FactionColor);
             __instance.ImpostorVentButton.buttonLabelText.SetOutlineColor(FactionColor);
             __instance.SabotageButton.buttonLabelText.SetOutlineColor(FactionColor);
-            __instance.SabotageButton.gameObject.SetActive(BaseFaction == Faction && ((Faction == Faction.Intruder && CustomGameOptions.IntrudersCanSabotage) || (Faction ==
-                Faction.Syndicate && CustomGameOptions.AltImps)) && !MeetingHud.Instance);
+            __instance.SabotageButton.gameObject.SetActive(BaseFaction == Faction && !MeetingHud.Instance && !Player.inVent && !Player.inMovingPlat && ((Faction == Faction.Intruder &&
+                CustomGameOptions.IntrudersCanSabotage) || (Faction == Faction.Syndicate && CustomGameOptions.AltImps)));
             Player.RegenTask();
-            __instance.GameSettings.text = GameSettings.Settings();
 
-            foreach (var ret in GetRoles<Retributionist>(RoleEnum.Retributionist))
+            foreach (var pair in DeadArrows)
             {
-                if (!ret.IsMedic)
-                    continue;
-
-                var exPlayer = ret.ExShielded;
-
-                if (exPlayer != null)
-                {
-                    Utils.LogSomething(exPlayer.name + " is ex-Shielded and unvisored");
-                    exPlayer.MyRend().material.SetFloat("_Outline", 0f);
-                    ret.ExShielded = null;
-                    continue;
-                }
-
-                var player = ret.ShieldedPlayer;
-
-                if (player == null)
-                    continue;
-
-                if (player.Data.IsDead || ret.IsDead || ret.Disconnected)
-                {
-                    Retributionist.BreakShield(ret.PlayerId, player.PlayerId, true);
-                    continue;
-                }
-
-                var showShielded = (int)CustomGameOptions.ShowShielded;
-
-                if (showShielded is 3 || (Player == player && showShielded is 0 or 2) || (Player.Is(RoleEnum.Medic) && showShielded is 1 or 2))
-                    player.MyRend().material.SetFloat("_Outline", 1f);
-            }
-
-            foreach (var medic in GetRoles<Medic>(RoleEnum.Medic))
-            {
-                var exPlayer = medic.ExShielded;
-
-                if (exPlayer != null)
-                {
-                    Utils.LogSomething(exPlayer.name + " is ex-Shielded and unvisored");
-                    exPlayer.MyRend().material.SetFloat("_Outline", 0f);
-                    medic.ExShielded = null;
-                    continue;
-                }
-
-                var player = medic.ShieldedPlayer;
-
-                if (player == null)
-                    continue;
-
-                if (player.Data.IsDead || medic.IsDead || medic.Disconnected)
-                {
-                    Medic.BreakShield(medic.PlayerId, player.PlayerId, true);
-                    continue;
-                }
-
-                var showShielded = (int)CustomGameOptions.ShowShielded;
-
-                if (showShielded is 3 || (Player == player && showShielded is 0 or 2) || (Player.Is(RoleEnum.Medic) && showShielded is 1 or 2))
-                    player.MyRend().material.SetFloat("_Outline", 1f);
-            }
-
-            foreach (var ga in GetRoles<GuardianAngel>(RoleEnum.GuardianAngel))
-            {
-                var player = ga.TargetPlayer;
-
-                if (player == null)
-                    continue;
-
-                if (ga.Protecting)
-                {
-                    var showProtected = (int)CustomGameOptions.ShowProtect;
-
-                    if (showProtected is 3 || (Player == player && showProtected is 0 or 2) || (Player.Is(RoleEnum.GuardianAngel) && showProtected is 1
-                        or 2))
-                    {
-                        player.MyRend().material.SetFloat("_Outline", 1f);
-                    }
-                    else
-                        player.MyRend().material.SetFloat("_Outline", 0f);
-                }
-                else if (ga.TargetPlayer.IsShielded())
-                {
-                    var showShielded = (int)CustomGameOptions.ShowShielded;
-
-                    if (showShielded is 3 || (Player == player && showShielded is 0 or 2) || (Player.Is(RoleEnum.Medic) && showShielded is 1 or 2))
-                        player.MyRend().material.SetFloat("_Outline", 1f);
-                    else
-                        player.MyRend().material.SetFloat("_Outline", 0f);
-                }
-                else
-                    player.MyRend().material.SetFloat("_Outline", 0f);
-            }
-
-            if (IsDead)
-            {
-                foreach (var pair in DeadArrows)
-                {
-                    var player = Utils.PlayerById(pair.Key);
-                    pair.Value.Update(player.transform.position);
-                }
+                var player = Utils.PlayerById(pair.Key);
+                pair.Value.Update(player.transform.position);
             }
 
             foreach (var yeller in Modifier.GetModifiers<Yeller>(ModifierEnum.Yeller))
@@ -273,8 +175,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 }
                 else
                     __instance.TaskPanel.tab.transform.FindChild("TabText_TMP").GetComponent<TextMeshPro>().SetText("Fake Tasks");
-
-                __instance.TaskPanel.gameObject.SetActive(!RoleCardsPatch.RoleCardActive && !RoleCardsPatch.SettingsActive && !RoleCardsPatch.Zooming && !MeetingHud.Instance);
             }
 
             if (!IsDead && !(Faction == Faction.Syndicate && CustomGameOptions.TimeRewindImmunity))
@@ -353,16 +253,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             var colorButton = voteArea.Buttons.transform.GetChild(0).gameObject;
             var newButton = UObject.Instantiate(colorButton, voteArea.transform);
-            var renderer = newButton.GetComponent<SpriteRenderer>();
-
             var playerControl = Utils.PlayerByVoteArea(voteArea);
-            var ColorString = LightDarkColors[playerControl.GetDefaultOutfit().ColorId];
-
-            if (ColorString == "lighter")
-                renderer.sprite = AssetManager.GetSprite("Lighter");
-            else if (ColorString == "darker")
-                renderer.sprite = AssetManager.GetSprite("Darker");
-
+            newButton.GetComponent<SpriteRenderer>().sprite = AssetManager.GetSprite(ColorUtils.LightDarkColors[playerControl.GetDefaultOutfit().ColorId]);
             newButton.transform.position = colorButton.transform.position - new Vector3(-0.8f, 0.2f, -2f);
             newButton.transform.localScale *= 0.8f;
             newButton.layer = 5;
@@ -374,12 +266,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void OnMeetingStart(MeetingHud __instance)
         {
             base.OnMeetingStart(__instance);
-            RoleCardsPatch.SettingsActive = true;
-            RoleCardsPatch.OpenSettings(HudManager.Instance);
-            RoleCardsPatch.RoleCardActive = true;
-            RoleCardsPatch.OpenRoleCard(HudManager.Instance);
-            RoleCardsPatch.Zooming = true;
-            RoleCardsPatch.Zoom();
             TrulyDead = IsDead;
 
             if (CustomGameOptions.LighterDarker)
@@ -394,9 +280,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 }
 
                 Buttons.Clear();
-
-                foreach (var voteArea in __instance.playerStates)
-                    GenButton(voteArea);
+                __instance.playerStates.ToList().ForEach(GenButton);
             }
 
             foreach (var role in AllRoles)
@@ -414,6 +298,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 guesser.HideButtons();
                 guesser.OtherButtons.Clear();
+            }
+
+            foreach (var thief in GetRoles<Thief>(RoleEnum.Thief))
+            {
+                thief.HideButtons();
+                thief.OtherButtons.Clear();
             }
 
             foreach (var arso in GetRoles<Arsonist>(RoleEnum.Arsonist))
@@ -474,7 +364,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (GetRole(player))
                 GetRole(player).Player = null;
 
-            Color = Colors.Layer;
+            Color = Colors.Role;
             LayerType = PlayerLayerEnum.Role;
             BombKillButton = new(this, "BombKill", AbilityTypes.Direct, "ActionSecondary", BombKill);
             RoleHistory = new();
@@ -485,6 +375,58 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Positions = new();
             YellerArrows = new();
             AllRoles.Add(this);
+        }
+
+        public static void BreakShield(byte playerId, bool flag)
+        {
+            foreach (var role2 in GetRoles<Retributionist>(RoleEnum.Retributionist))
+            {
+                if (!role2.IsMedic)
+                    continue;
+
+                if (role2.ShieldedPlayer.PlayerId == playerId && ((role2.Local && (int)CustomGameOptions.NotificationShield is 0 or 2) || CustomGameOptions.NotificationShield ==
+                    NotificationOptions.Everyone || (PlayerControl.LocalPlayer.PlayerId == playerId && (int)CustomGameOptions.NotificationShield is 1 or 2)))
+                {
+                    Utils.Flash(role2.Color);
+                }
+            }
+
+            foreach (var role2 in GetRoles<Medic>(RoleEnum.Medic))
+            {
+                if (role2.ShieldedPlayer.PlayerId == playerId && ((role2.Local && (int)CustomGameOptions.NotificationShield is 0 or 2) || CustomGameOptions.NotificationShield ==
+                    NotificationOptions.Everyone || (PlayerControl.LocalPlayer.PlayerId == playerId && (int)CustomGameOptions.NotificationShield is 1 or 2)))
+                {
+                    Utils.Flash(role2.Color);
+                }
+            }
+
+            if (!flag)
+                return;
+
+            var player = Utils.PlayerById(playerId);
+
+            foreach (var role2 in GetRoles<Retributionist>(RoleEnum.Retributionist))
+            {
+                if (!role2.IsMedic)
+                    continue;
+
+                if (role2.ShieldedPlayer.PlayerId == playerId)
+                {
+                    role2.ShieldedPlayer = null;
+                    role2.ExShielded = player;
+                    Utils.LogSomething(player.name + " Is Ex-Shielded");
+                }
+            }
+
+            foreach (var role2 in GetRoles<Medic>(RoleEnum.Medic))
+            {
+                if (role2.ShieldedPlayer.PlayerId == playerId)
+                {
+                    role2.ShieldedPlayer = null;
+                    role2.ExShielded = player;
+                    Utils.LogSomething(player.name + " Is Ex-Shielded");
+                }
+            }
         }
 
         public void BombKill()
@@ -502,53 +444,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
 
-        public static void SetColors()
-        {
-            LightDarkColors.Clear();
-            LightDarkColors.Add(0, "darker"); // Red
-            LightDarkColors.Add(1, "darker"); // Blue
-            LightDarkColors.Add(2, "darker"); // Green
-            LightDarkColors.Add(3, "lighter"); // Pink
-            LightDarkColors.Add(4, "lighter"); // Orange
-            LightDarkColors.Add(5, "lighter"); // Yellow
-            LightDarkColors.Add(6, "darker"); // Black
-            LightDarkColors.Add(7, "lighter"); // White
-            LightDarkColors.Add(8, "darker"); // Purple
-            LightDarkColors.Add(9, "darker"); // Brown
-            LightDarkColors.Add(10, "lighter"); // Cyan
-            LightDarkColors.Add(11, "lighter"); // Lime
-            LightDarkColors.Add(12, "darker"); // Maroon
-            LightDarkColors.Add(13, "lighter"); // Rose
-            LightDarkColors.Add(14, "lighter"); // Banana
-            LightDarkColors.Add(15, "darker"); // Grey
-            LightDarkColors.Add(16, "darker"); // Tan
-            LightDarkColors.Add(17, "lighter"); // Coral
-            LightDarkColors.Add(18, "darker"); // Watermelon
-            LightDarkColors.Add(19, "darker"); // Chocolate
-            LightDarkColors.Add(20, "lighter"); // Sky Blue
-            LightDarkColors.Add(21, "lighter"); // Biege
-            LightDarkColors.Add(22, "lighter"); // Hot Pink
-            LightDarkColors.Add(23, "lighter"); // Turquoise
-            LightDarkColors.Add(24, "lighter"); // Lilac
-            LightDarkColors.Add(25, "darker"); // Olive
-            LightDarkColors.Add(26, "lighter"); //Azure
-            LightDarkColors.Add(27, "darker"); // Plum
-            LightDarkColors.Add(28, "darker"); // Jungle
-            LightDarkColors.Add(29, "lighter"); // Mint
-            LightDarkColors.Add(30, "lighter"); // Chartreuse
-            LightDarkColors.Add(31, "darker"); // Macau
-            LightDarkColors.Add(32, "darker"); // Tawny
-            LightDarkColors.Add(33, "lighter"); // Gold
-            LightDarkColors.Add(34, "lighter"); // Panda
-            LightDarkColors.Add(35, "darker"); // Contrast
-            LightDarkColors.Add(36, "darker"); // Chroma
-            LightDarkColors.Add(37, "darker"); // Mantle
-            LightDarkColors.Add(38, "lighter"); // Fire
-            LightDarkColors.Add(39, "lighter"); // Galaxy
-            LightDarkColors.Add(40, "lighter"); // Monochrome
-            LightDarkColors.Add(41, "lighter"); // Rainbow
-        }
-
         public static Role GetRole(PlayerControl player) => AllRoles.Find(x => x.Player == player);
 
         public static Role GetRoleFromName(string name) => AllRoles.Find(x => x.Name == name);
@@ -557,16 +452,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public static Role GetRole(PlayerVoteArea area) => GetRole(Utils.PlayerByVoteArea(area));
 
-        public static List<Role> GetRoles(RoleEnum roletype) => AllRoles.Where(x => x.RoleType == roletype).ToList();
+        public static List<Role> GetRoles(RoleEnum roletype) => AllRoles.Where(x => x.RoleType == roletype && !x.Ignore).ToList();
 
         public static List<T> GetRoles<T>(RoleEnum roletype) where T : Role => GetRoles(roletype).Cast<T>().ToList();
 
-        public static List<Role> GetRoles(Faction faction) => AllRoles.Where(x => x.Faction == faction).ToList();
+        public static List<Role> GetRoles(Faction faction) => AllRoles.Where(x => x.Faction == faction && !x.Ignore).ToList();
 
-        public static List<Role> GetRoles(RoleAlignment ra) => AllRoles.Where(x => x.RoleAlignment == ra).ToList();
+        public static List<Role> GetRoles(RoleAlignment ra) => AllRoles.Where(x => x.RoleAlignment == ra && !x.Ignore).ToList();
 
-        public static List<Role> GetRoles(SubFaction subfaction) => AllRoles.Where(x => x.SubFaction == subfaction).ToList();
+        public static List<Role> GetRoles(SubFaction subfaction) => AllRoles.Where(x => x.SubFaction == subfaction && !x.Ignore).ToList();
 
-        public static List<Role> GetRoles(InspectorResults results) => AllRoles.Where(x => x.InspectorResults == results).ToList();
+        public static List<Role> GetRoles(InspectorResults results) => AllRoles.Where(x => x.InspectorResults == results && !x.Ignore).ToList();
     }
 }

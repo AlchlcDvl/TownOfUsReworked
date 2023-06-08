@@ -247,6 +247,7 @@ namespace TownOfUsReworked.CustomOptions
         public static int LongTasks => (int)Generate.LongTasks.Get();
         public static int CommonTasks => (int)Generate.CommonTasks.Get();
         public static bool GhostTasksCountToWin => Generate.GhostTasksCountToWin.Get();
+        public static bool CrewFlashlight => Generate.CrewFlashlight.Get();
         public static bool CustomCrewColors => Generate.CustomCrewColors.Get();
         public static bool CrewVent => Generate.CrewVent.Get();
         public static int CrewMax => (int)Generate.CrewMax.Get();
@@ -262,6 +263,8 @@ namespace TownOfUsReworked.CustomOptions
         public static float IntruderSabotageCooldown => Generate.IntruderSabotageCooldown.Get();
         public static int IntruderMax => (int)Generate.IntruderMax.Get();
         public static int IntruderMin => (int)Generate.IntruderMin.Get();
+        public static bool IntruderFlashlight => Generate.IntruderFlashlight.Get();
+        public static bool GhostsCanSabotage => Generate.GhostsCanSabotage.Get();
 
         //Syndicate Options
         public static float SyndicateVision => Generate.SyndicateVision.Get();
@@ -274,6 +277,7 @@ namespace TownOfUsReworked.CustomOptions
         public static int ChaosDriveMeetingCount => (int)Generate.ChaosDriveMeetingCount.Get();
         public static int SyndicateMax => (int)Generate.SyndicateMax.Get();
         public static int SyndicateMin => (int)Generate.SyndicateMin.Get();
+        public static bool SyndicateFlashlight => Generate.SyndicateFlashlight.Get();
 
         //Neutral Options
         public static float NeutralVision => Generate.NeutralVision.Get();
@@ -284,6 +288,7 @@ namespace TownOfUsReworked.CustomOptions
         public static bool NeutralEvilsEndGame => Generate.NeutralEvilsEndGame.Get();
         public static int NeutralMax => (int)Generate.NeutralMax.Get();
         public static int NeutralMin => (int)Generate.NeutralMin.Get();
+        public static bool NeutralFlashlight => Generate.NeutralFlashlight.Get();
 
         //Vampire Hunter Settings
         public static int VampireHunterCount => (int)Generate.VampireHunterCount.Get();

@@ -266,7 +266,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Transport1.transform.position = new(TransportPlayer1.GetTruePosition().x, TransportPlayer1.GetTruePosition().y + 0.35f, (TransportPlayer1.GetTruePosition().y / 1000f) + 0.01f);
             AnimationPlaying1.flipX = TransportPlayer1.MyRend().flipX;
-            AnimationPlaying1.transform.localScale *= 0.9f * TransportPlayer2.GetModifiedSize();
+            AnimationPlaying1.transform.localScale *= 0.9f * TransportPlayer1.GetModifiedSize();
 
             HudManager.Instance.StartCoroutine(Effects.Lerp(CustomGameOptions.TransportDuration, new Action<float>(p =>
             {
@@ -299,10 +299,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         }
 
         public bool Exception1(PlayerControl player) => (player == Player && !CustomGameOptions.TransSelf) || UntransportablePlayers.ContainsKey(player.PlayerId) ||
-            (Utils.BodyById(player.PlayerId) == null && player.Data.IsDead) || player == TransportPlayer2;
+            (Utils.BodyById(player.PlayerId) == null && player.Data.IsDead) || player == TransportPlayer2 || player.IsMoving();
 
         public bool Exception2(PlayerControl player) => (player == Player && !CustomGameOptions.TransSelf) || UntransportablePlayers.ContainsKey(player.PlayerId) ||
-            (Utils.BodyById(player.PlayerId) == null && player.Data.IsDead) || player == TransportPlayer1;
+            (Utils.BodyById(player.PlayerId) == null && player.Data.IsDead) || player == TransportPlayer1 || player.IsMoving();
 
         public void Transport()
         {

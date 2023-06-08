@@ -1,11 +1,9 @@
 namespace TownOfUsReworked.CustomOptions
 {
-    [HarmonyPatch]
     public class CustomNestedOption : CustomOption
     {
         private List<OptionBehaviour> OldButtons = new();
         public List<CustomOption> InternalOptions = new();
-        public readonly static List<CustomOption> AllInternalOptions = new();
         public readonly static List<CustomButtonOption> AllCancelButtons = new();
         private readonly CustomButtonOption CancelButton;
         private readonly CustomHeaderOption Header;
@@ -41,12 +39,8 @@ namespace TownOfUsReworked.CustomOptions
 
         public void AddOptions(params CustomOption[] options)
         {
-            AllInternalOptions.RemoveRange(InternalOptions);
-
             foreach (var option in options.Where(x => x.Type != CustomOptionType.Nested))
                 InternalOptions.Insert(1, option);
-
-            AllInternalOptions.AddRange(InternalOptions);
         }
 
         private List<OptionBehaviour> CreateOptions()
@@ -71,46 +65,47 @@ namespace TownOfUsReworked.CustomOptions
                 {
                     option.Setting.gameObject.SetActive(true);
                     options.Add(option.Setting);
-                    continue;
                 }
-
-                switch (option.Type)
+                else
                 {
-                    case CustomOptionType.Number:
-                        var number = UObject.Instantiate(numberPrefab, numberPrefab.transform.parent);
-                        option.Setting = number;
-                        options.Add(number);
-                        break;
+                    switch (option.Type)
+                    {
+                        case CustomOptionType.Number:
+                            var number = UObject.Instantiate(numberPrefab, numberPrefab.transform.parent);
+                            option.Setting = number;
+                            options.Add(number);
+                            break;
 
-                    case CustomOptionType.String:
-                        var str = UObject.Instantiate(keyValPrefab, keyValPrefab.transform.parent);
-                        option.Setting = str;
-                        options.Add(str);
-                        break;
+                        case CustomOptionType.String:
+                            var str = UObject.Instantiate(keyValPrefab, keyValPrefab.transform.parent);
+                            option.Setting = str;
+                            options.Add(str);
+                            break;
 
-                    case CustomOptionType.Toggle:
-                    case CustomOptionType.Nested:
-                    case CustomOptionType.Button:
-                    case CustomOptionType.Header:
-                        var toggle = UObject.Instantiate(togglePrefab, togglePrefab.transform.parent);
+                        case CustomOptionType.Toggle:
+                        case CustomOptionType.Nested:
+                        case CustomOptionType.Button:
+                        case CustomOptionType.Header:
+                            var toggle = UObject.Instantiate(togglePrefab, togglePrefab.transform.parent);
 
-                        if (option.Type == CustomOptionType.Header)
-                        {
-                            toggle.transform.GetChild(1).gameObject.SetActive(false);
-                            toggle.transform.GetChild(2).gameObject.SetActive(false);
-                        }
-                        else if (option.Type is CustomOptionType.Button or CustomOptionType.Nested)
-                        {
-                            toggle.transform.GetChild(2).gameObject.SetActive(false);
-                            toggle.transform.GetChild(0).localPosition += new Vector3(1f, 0f, 0f);
-                        }
+                            if (option.Type == CustomOptionType.Header)
+                            {
+                                toggle.transform.GetChild(1).gameObject.SetActive(false);
+                                toggle.transform.GetChild(2).gameObject.SetActive(false);
+                            }
+                            else if (option.Type is CustomOptionType.Button or CustomOptionType.Nested)
+                            {
+                                toggle.transform.GetChild(2).gameObject.SetActive(false);
+                                toggle.transform.GetChild(0).localPosition += new Vector3(1f, 0f, 0f);
+                            }
 
-                        option.Setting = toggle;
-                        options.Add(toggle);
-                        break;
+                            option.Setting = toggle;
+                            options.Add(toggle);
+                            break;
+                    }
+
+                    option.OptionCreated();
                 }
-
-                option.OptionCreated();
             }
 
             return options;

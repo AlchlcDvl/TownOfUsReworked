@@ -16,7 +16,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Name = "Poisoner";
             StartText = () => "Delay A Kill To Decieve The <color=#8CFFFFFF>Crew</color>";
             AbilitiesText = () => $"- You can poison players\n- Poisoned players will die after {CustomGameOptions.PoisonDuration}s\n- With the Chaos Drive, you can poison players from " +
-                $"anywhere\n{AbilitiesText()}";
+                $"anywhere\n{CommonAbilities}";
             Color = CustomGameOptions.CustomSynColors? Colors.Poisoner : Colors.Syndicate;
             RoleType = RoleEnum.Poisoner;
             PoisonedPlayer = null;
@@ -62,7 +62,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var interact = Utils.Interact(Player, player);
 
-            if (interact[3] && !player.IsProtected() && !player.IsVesting())
+            if (interact[3] && !player.IsProtected() && !player.IsVesting() && !player.IsProtectedMonarch())
                 PoisonedPlayer = player;
             else if (interact[0])
                 LastPoisoned = DateTime.UtcNow;
@@ -98,7 +98,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             var interact = Utils.Interact(Player, PoisonButton.TargetPlayer);
 
-            if (interact[3])
+            if (interact[3] && !PoisonButton.TargetPlayer.IsProtected() && !PoisonButton.TargetPlayer.IsVesting() && !PoisonButton.TargetPlayer.IsProtectedMonarch())
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                 writer.Write((byte)ActionsRPC.Poison);
@@ -109,10 +109,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 TimeRemaining = CustomGameOptions.PoisonDuration;
                 Poison();
             }
+            else if (interact[1] || PoisonButton.TargetPlayer.IsProtected())
+                LastPoisoned.AddSeconds(CustomGameOptions.ProtectKCReset);
             else if (interact[0])
                 LastPoisoned = DateTime.UtcNow;
-            else if (interact[1])
-                LastPoisoned.AddSeconds(CustomGameOptions.ProtectKCReset);
             else if (interact[2])
                 LastPoisoned.AddSeconds(CustomGameOptions.VestKCReset);
         }

@@ -15,7 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             StartText = () => "You Are The One Who Screams";
             AbilitiesText = () => "- You can silence players to ensure they cannot hear what others say\n" + (CustomGameOptions.SilenceRevealed ? "- Everyone will be alerted at the start "
                 + "of the meeting that someone has been silenced " : "") + (CustomGameOptions.WhispersNotPrivateSilencer ? "\n- You can read whispers during meetings" : "") +
-                $"\n{AbilitiesText()}";
+                $"\n{CommonAbilities}";
             Color = CustomGameOptions.CustomSynColors ? Colors.Silencer : Colors.Syndicate;
             RoleType = RoleEnum.Silencer;
             RoleAlignment = RoleAlignment.SyndicateDisrup;

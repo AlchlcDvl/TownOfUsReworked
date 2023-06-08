@@ -12,7 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleType = RoleEnum.Mafioso;
             StartText = () => "Succeed The <color=#404C08FF>Godfather</color>";
             AbilitiesText = () => "- When the <color=#404C08FF>Godfather</color> dies, you will become the new <color=#404C08FF>Godfather</color> with boosted abilities of your former " +
-                $"role\n{AbilitiesText()}";
+                $"role\n{CommonAbilities}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Mafioso : Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderUtil;
             Type = LayerEnum.Mafioso;
@@ -46,11 +46,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (CanPromote)
             {
-                TurnGodfather();
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
                 writer.Write((byte)TurnRPC.TurnGodfather);
                 writer.Write(PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
+                TurnGodfather();
             }
         }
     }

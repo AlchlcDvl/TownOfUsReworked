@@ -1,6 +1,5 @@
 namespace TownOfUsReworked.CustomOptions
 {
-    [HarmonyPatch]
     public class Export : CustomButtonOption
     {
         public CustomButtonOption Loading;

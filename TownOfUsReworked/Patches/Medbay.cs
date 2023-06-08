@@ -3,11 +3,12 @@ namespace TownOfUsReworked.Patches
     [HarmonyPatch(typeof(MedScanMinigame), nameof(MedScanMinigame.Begin))]
     public static class MedScanMinigamePatch
     {
+        private const float oldHeightFeet = 3f;
+        private const float oldHeightInch = 6f;
+        private const float oldWeight = 92f;
+
         public static void Postfix(MedScanMinigame __instance)
         {
-            const float oldHeightFeet = 3f;
-            const float oldHeightInch = 6f;
-            const float oldWeight = 92f;
             var scale = 1f;
 
             //Update medical details for Giant and Dwarf modifiers based on game options

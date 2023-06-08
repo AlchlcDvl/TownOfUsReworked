@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.CalculateLightRadius))]
-    public static class LowLights
+    public static class CalculateLightRadiusPatch
     {
         public static bool Prefix(ShipStatus __instance, [HarmonyArgument(0)] GameData.PlayerInfo player, ref float __result)
         {
@@ -35,13 +35,21 @@ namespace TownOfUsReworked.Patches
                 __result = __instance.MaxLightRadius * CustomGameOptions.NeutralVision;
             else if (player != null)
             {
-                var switchSystem = __instance.Systems[SystemTypes.Electrical].Cast<SwitchSystem>();
-                var t = switchSystem.Value / 255f;
-                __result = Mathf.Lerp(__instance.MinLightRadius, __instance.MaxLightRadius, t) * (player.Object.Is(Faction.Neutral) ? CustomGameOptions.NeutralVision :
-                    CustomGameOptions.CrewVision);
+                __result = Mathf.Lerp(__instance.MinLightRadius, __instance.MaxLightRadius, __instance.Systems[SystemTypes.Electrical].Cast<SwitchSystem>().Value / 255f) *
+                    (player.Object.Is(Faction.Neutral) ? CustomGameOptions.NeutralVision : CustomGameOptions.CrewVision);
             }
 
             return false;
+        }
+    }
+
+    [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.AdjustLighting))]
+    public static class AdjustLightingPatch
+    {
+        public static bool Prefix(PlayerControl __instance)
+        {
+            //Planning on making flashlight available all the time
+            return __instance != null;
         }
     }
 }

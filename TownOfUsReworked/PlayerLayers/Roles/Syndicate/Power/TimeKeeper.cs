@@ -12,7 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Time Keeper";
             StartText = () => "Bend Time To Your Will";
-            AbilitiesText = () => $"- You can freeze time, making people unable to move\n- With the Chaos Drive, you rewind players instead\n{AbilitiesText()}";
+            AbilitiesText = () => $"- You can freeze time, making people unable to move\n- With the Chaos Drive, you rewind players instead\n{CommonAbilities}";
             RoleType = RoleEnum.TimeKeeper;
             RoleAlignment = RoleAlignment.SyndicatePower;
             Color = CustomGameOptions.CustomSynColors ? Colors.TimeKeeper : Colors.Syndicate;

@@ -1,6 +1,5 @@
 namespace TownOfUsReworked.Custom
 {
-    [HarmonyPatch]
     public class CustomButton
     {
         public readonly static List<CustomButton> AllButtons = new();
@@ -22,15 +21,15 @@ namespace TownOfUsReworked.Custom
         public delegate bool Exclude(PlayerControl player);
         private bool SetAliveActive => !Owner.IsDead && Owner.Player.Is(Owner.Type, Owner.LayerType) && ConstantVariables.IsRoaming && Owner.Local &&
             (HudManager.Instance.UseButton.isActiveAndEnabled || HudManager.Instance.PetButton.isActiveAndEnabled);
-        private bool SetDeadActive => Owner.IsDead && Owner.Player.Is(Owner.Type, Owner.LayerType) && ConstantVariables.IsRoaming && Owner.Local &&
-            (HudManager.Instance.UseButton.isActiveAndEnabled || HudManager.Instance.PetButton.isActiveAndEnabled) && PostDeath;
+        private bool SetDeadActive => Owner.IsDead && Owner.Player.Is(Owner.Type, Owner.LayerType) && ConstantVariables.IsRoaming && Owner.Local && PostDeath &&
+            (HudManager.Instance.UseButton.isActiveAndEnabled || HudManager.Instance.PetButton.isActiveAndEnabled);
 
         public CustomButton(PlayerLayer owner, string button, AbilityTypes type, string keybind, Click click, Exclude exception, bool hasUses = false, bool postDeath = false)
         {
             Owner = owner;
             Button = AssetManager.GetSprite(button);
             Type = type;
-            DoClick = click;
+            DoClick = click ?? Blank;
             Keybind = keybind;
             HasUses = hasUses;
             PostDeath = postDeath;
@@ -78,7 +77,8 @@ namespace TownOfUsReworked.Custom
                 return;
             }
 
-            TargetPlayer = Owner.Player.GetClosestPlayer(PlayerControl.AllPlayerControls.Where(x => !Exception(x) && x != Owner.Player && !x.IsPostmortal() && !x.Data.IsDead).ToList());
+            TargetPlayer = Owner.Player.GetClosestPlayer(PlayerControl.AllPlayerControls.Where(x => x != Owner.Player && !x.IsPostmortal() && !x.Data.IsDead && (!Exception(x) ||
+                x.IsMoving())).ToList());
 
             foreach (var player in PlayerControl.AllPlayerControls)
             {
@@ -88,9 +88,8 @@ namespace TownOfUsReworked.Custom
 
             if (TargetPlayer != null && !Base.isCoolingDown && condition && !Owner.Player.CannotUse())
             {
-                var component = TargetPlayer.MyRend();
-                component.material.SetFloat("_Outline", 1f);
-                component.material.SetColor("_OutlineColor", Owner.Color);
+                TargetPlayer.MyRend().material.SetFloat("_Outline", 1f);
+                TargetPlayer.MyRend().material.SetColor("_OutlineColor", Owner.Color);
                 Base?.SetEnabled();
             }
             else
@@ -132,15 +131,6 @@ namespace TownOfUsReworked.Custom
                 Base?.SetEnabled();
             else
                 Base?.SetDisabled();
-        }
-
-        public IEnumerator ButtonUpdate()
-        {
-            while (Base != null)
-            {
-                yield return 0;
-                Update();
-            }
         }
 
         public void Update(string label, float timer, float maxTimer, int uses, bool effectActive, float effectTimer, float maxDuration, bool condition = true, bool usable = true)

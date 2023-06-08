@@ -11,7 +11,7 @@ namespace TownOfUsReworked.Monos
 
         public Debugger(IntPtr ptr) : base(ptr)
         {
-            TestWindow = new(new(20, 20, 0, 0), "MCI Debugger", () =>
+            TestWindow = new(new(20, 20, 0, 0), "Reworked Debugger", () =>
             {
                 GUILayout.Label("Name: " + DataManager.Player.Customization.Name);
 
@@ -23,6 +23,7 @@ namespace TownOfUsReworked.Monos
 
                 if (ConstantVariables.IsLobby)
                 {
+                    TownOfUsReworked.IsTest = GUILayout.Toggle(TownOfUsReworked.IsTest, "Toggle Test Mode");
                     TownOfUsReworked.LobbyCapped = GUILayout.Toggle(TownOfUsReworked.LobbyCapped, "Toggle Lobby Cap");
                     TownOfUsReworked.Persistence = GUILayout.Toggle(TownOfUsReworked.Persistence, "Toggle Bot Persistence");
 
@@ -111,7 +112,10 @@ namespace TownOfUsReworked.Monos
                     }
 
                     if (GUILayout.Button("Start Meeting") && !MeetingHud.Instance)
+                    {
+                        PlayerControl.LocalPlayer.RemainingEmergencies++;
                         PlayerControl.LocalPlayer.CmdReportDeadBody(null);
+                    }
 
                     if (GUILayout.Button("End Meeting") && MeetingHud.Instance)
                         MeetingHud.Instance.RpcClose();

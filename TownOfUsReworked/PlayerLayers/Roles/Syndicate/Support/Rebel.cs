@@ -13,7 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             StartText = () => "Promote Your Fellow <color=#008000FF>Syndicate</color> To Do Better";
             AbilitiesText = () => "- You can promote a fellow <color=#008000FF>Syndicate</color> into becoming your successor\n- Promoting an <color=#008000FF>Syndicate</color> turns " +
                 "them into a <color=#979C9FFF>Sidekick</color>\n- If you die, the <color=#979C9FFF>Sidekick</color> become the new <color=#FFFCCEFF>Rebel</color>\nand inherits better " +
-                $"abilities of their former role\n{AbilitiesText()}";
+                $"abilities of their former role\n{CommonAbilities}";
             Color = CustomGameOptions.CustomSynColors ? Colors.Rebel : Colors.Syndicate;
             RoleAlignment = RoleAlignment.SyndicateSupport;
             Type = LayerEnum.Rebel;
@@ -27,7 +27,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public static void Sidekick(Rebel reb, PlayerControl target)
         {
             reb.HasDeclared = true;
-            target.DisableButtons();
             var formerRole = GetRole(target);
 
             var sidekick = new Sidekick(target)
@@ -37,7 +36,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             };
 
             sidekick.RoleUpdate(formerRole);
-            target.EnableButtons();
 
             if (target == PlayerControl.LocalPlayer)
                 Utils.Flash(Colors.Rebel);

@@ -1,6 +1,5 @@
 namespace TownOfUsReworked.CustomOptions
 {
-    [HarmonyPatch]
     public class CustomHeaderOption : CustomOption
     {
         public CustomHeaderOption(MultiMenu menu, string name) : base(-1, menu, name, CustomOptionType.Header, 0) {}

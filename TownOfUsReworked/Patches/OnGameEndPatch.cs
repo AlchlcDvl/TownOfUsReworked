@@ -285,20 +285,17 @@ namespace TownOfUsReworked.Patches
 
                 if (!Objectifier.ObjectifierWins)
                 {
-                    if (Role.NBCanWin)
+                    if (!(Role.ActorWins || Role.BountyHunterWins || Role.CannibalWins || Role.ExecutionerWins || Role.GuesserWins || Role.JesterWins || Role.TrollWins) ||
+                        !CustomGameOptions.NeutralEvilsEndGame)
                     {
                         foreach (var surv in Role.GetRoles<Survivor>(RoleEnum.Survivor))
                         {
-                            Utils.LogSomething(surv.Alive);
-
                             if (surv.Alive)
                                 winners.Add(PotentialWinners.Find(x => x.PlayerName == surv.PlayerName));
                         }
 
                         foreach (var ga in Role.GetRoles<GuardianAngel>(RoleEnum.GuardianAngel))
                         {
-                            Utils.LogSomething(ga.TargetAlive);
-
                             if (ga.TargetAlive)
                                 winners.Add(PotentialWinners.Find(x => x.PlayerName == ga.PlayerName));
                         }

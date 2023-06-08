@@ -4,6 +4,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     {
         public DateTime LastKilled;
         public CustomButton KillButton;
+        public string CommonAbilities;
         public bool HoldsDrive => Player == DriveHolder || (CustomGameOptions.GlobalDrive && SyndicateHasChaosDrive);
 
         protected SyndicateRole(PlayerControl player) : base(player)
@@ -13,7 +14,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = Colors.Syndicate;
             Objectives = () => SyndicateWinCon;
             BaseFaction = Faction.Syndicate;
-            AbilitiesText = () => (RoleType is not RoleEnum.Anarchist and not RoleEnum.Sidekick && RoleAlignment != RoleAlignment.SyndicateKill ? "- With the Chaos Drive, you can kill " +
+            CommonAbilities = (RoleType is not RoleEnum.Anarchist and not RoleEnum.Sidekick && RoleAlignment != RoleAlignment.SyndicateKill ? "- With the Chaos Drive, you can kill " +
                 "players directly" : "- You can kill") + (CustomGameOptions.AltImps && CustomGameOptions.IntrudersCanSabotage ? "- You can sabotage the systems to distract the " +
                 "<color=#8CFFFFFF>Crew</color>" : "");
             KillButton = new(this, "SyndicateKill", AbilityTypes.Direct, "ActionSecondary", Kill, Exception);

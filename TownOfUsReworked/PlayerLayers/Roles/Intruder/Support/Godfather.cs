@@ -13,7 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             StartText = () => "Promote Your Fellow <color=#FF0000FF>Intruder</color> To Do Better";
             AbilitiesText = () => "- You can promote a fellow <color=#FF0000FF>Intruder</color> into becoming your successor\n- Promoting an <color=#FF0000FF>Intruder</color> turns them " +
                 "into a <color=#6400FFFF>Mafioso</color>\n- If you die, the <color=#6400FFFF>Mafioso</color> will become the new <color=#404C08FF>Godfather</color>\nand inherits better " +
-                $"abilities of their former role\n{AbilitiesText()}";
+                $"abilities of their former role\n{CommonAbilities}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Godfather : Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderSupport;
             Type = LayerEnum.Godfather;
@@ -27,7 +27,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public static void Declare(Godfather gf, PlayerControl target)
         {
             gf.HasDeclared = true;
-            target.DisableButtons();
             var formerRole = GetRole(target);
 
             var mafioso = new Mafioso(target)
@@ -37,7 +36,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             };
 
             mafioso.RoleUpdate(formerRole);
-            target.EnableButtons();
 
             if (target == PlayerControl.LocalPlayer)
                 Utils.Flash(Colors.Mafioso);

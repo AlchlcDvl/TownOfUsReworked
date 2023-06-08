@@ -402,5 +402,7 @@
         public static void SetLIMap() => Generate.Map.Set(Generate.Map.Values.Length - 1);
 
         public const string RD_GUID = "gg.reactor.debugger";
+
+        public const string TM_GUID = "me.toppatcrew.toppatmod";
     }
 }

@@ -12,7 +12,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Bomber";
             StartText = () => "Make People Go Boom";
-            AbilitiesText = () => $"- You can place bombs which you can detonate at any time to kill anyone within a certain radius\n{AbilitiesText()}";
+            AbilitiesText = () => $"- You can place bombs which you can detonate at any time to kill anyone within a certain radius\n{CommonAbilities}";
             Color = CustomGameOptions.CustomSynColors ? Colors.Bomber : Colors.Syndicate;
             RoleType = RoleEnum.Bomber;
             RoleAlignment = RoleAlignment.SyndicateKill;

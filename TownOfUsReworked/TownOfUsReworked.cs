@@ -4,53 +4,54 @@ global using AmongUs.GameOptions;
 global using BepInEx;
 global using BepInEx.Unity.IL2CPP;
 
-global using HarmonyLib;
 global using Hazel;
 
+global using HarmonyLib;
+
 global using Il2CppInterop.Runtime;
+global using Il2CppInterop.Runtime.Injection;
 global using Il2CppInterop.Runtime.Attributes;
 global using Il2CppInterop.Runtime.InteropTypes;
 global using Il2CppInterop.Runtime.InteropTypes.Arrays;
-global using Il2CppInterop.Runtime.Injection;
 
 global using Reactor;
 global using Reactor.Utilities;
+global using Reactor.Networking;
 global using Reactor.Utilities.Extensions;
 global using Reactor.Networking.Attributes;
 global using Reactor.Networking.Extensions;
-global using Reactor.Networking;
 
-global using TownOfUsReworked.Classes;
 global using TownOfUsReworked.Data;
-global using TownOfUsReworked.CustomOptions;
-global using TownOfUsReworked.Cosmetics;
 global using TownOfUsReworked.Monos;
-global using TownOfUsReworked.Patches;
 global using TownOfUsReworked.Custom;
-global using TownOfUsReworked.MultiClientInstancing;
+global using TownOfUsReworked.Classes;
+global using TownOfUsReworked.Patches;
 global using TownOfUsReworked.Objects;
 global using TownOfUsReworked.Modules;
+global using TownOfUsReworked.Cosmetics;
 global using TownOfUsReworked.Extensions;
 global using TownOfUsReworked.PlayerLayers;
+global using TownOfUsReworked.CustomOptions;
 global using TownOfUsReworked.PlayerLayers.Roles;
+global using TownOfUsReworked.BetterMaps.Airship;
+global using TownOfUsReworked.MultiClientInstancing;
 global using TownOfUsReworked.PlayerLayers.Abilities;
 global using TownOfUsReworked.PlayerLayers.Modifiers;
 global using TownOfUsReworked.PlayerLayers.Objectifiers;
-global using TownOfUsReworked.BetterMaps.Airship;
 
-global using System.Linq;
 global using System;
 global using System.IO;
 global using System.Text;
-global using SRandom = System.Random;
+global using System.Linq;
 global using System.Reflection;
-global using System.Collections.Generic;
 global using System.Collections;
+global using SRandom = System.Random;
+global using System.Collections.Generic;
 
 global using UnityEngine;
+global using UColor = UnityEngine.Color;
 global using URandom = UnityEngine.Random;
 global using UObject = UnityEngine.Object;
-global using UColor = UnityEngine.Color;
 
 global using TMPro;
 
@@ -69,24 +70,20 @@ namespace TownOfUsReworked
     {
         public const string Id = "me.alchlcdvl.reworked";
         public const string Name = "TownOfUsReworked";
-        public const string VersionString = "0.3.0.0";
-        private const string CompleteVersionString = "0.3.0.0";
+        private const string VersionString = "0.3.1.0";
         public readonly static Version Version = new(VersionString);
 
         private static string Dev => VersionString[6..];
-        private static string Test => CompleteVersionString[7..];
         private static string VersionS => VersionString.Length == 8 ? VersionString.Remove(VersionString.Length - 3) : VersionString.Remove(VersionString.Length - 2);
-        private static bool IsDev => Dev != "0";
-        public static bool IsTest => VersionString != CompleteVersionString && Test != "";
+        public static bool IsDev => Dev != "0";
         private static string DevString => IsDev ? $"-dev{Dev}" : "";
         private static string TestString => IsTest ? "_test" : "";
         public static string VersionFinal => $"v{VersionS}{DevString}{TestString}";
 
         public const string Resources = "TownOfUsReworked.Resources.";
         public const string Buttons = $"{Resources}Buttons.";
-        //public const string Sounds = $"{Resources}Sounds.";
+        public const string Sounds = $"{Resources}Sounds.";
         public const string Misc = $"{Resources}Misc.";
-        //public const string Presets = $"{Resources}Presets.";
         //public const string Languages = $"{Resources}Languages.";
         public const string Portal = $"{Resources}Portal.";
 
@@ -97,10 +94,13 @@ namespace TownOfUsReworked
 
         public static bool LobbyCapped = true;
         public static bool Persistence = true;
+        public static bool IsTest;
         public static bool MCIActive;
         public static Debugger Debugger;
 
-        private readonly Harmony Harmony = new(Id);
+        private static Harmony Harmony => new(Id);
+
+        public override string ToString() => $"{Id} {Name} {VersionFinal} {Version}";
 
         public override void Load()
         {
@@ -121,6 +121,8 @@ namespace TownOfUsReworked
 
             Harmony.PatchAll();
 
+            DataManager.Player.Onboarding.ViewedHideAndSeekHowToPlay = true;
+
             ModCompatibility.InitializeSubmerged();
             ModCompatibility.InitializeLevelImpostor();
             PalettePatch.Load();
@@ -128,6 +130,7 @@ namespace TownOfUsReworked
             UpdateNames.PlayerNames.Clear();
             AssetManager.Load();
             RoleGen.ResetEverything();
+            CustomOption.SaveSettings("DefaultSettings");
 
             ClassInjector.RegisterTypeInIl2Cpp<MissingSubmergedBehaviour>();
             ClassInjector.RegisterTypeInIl2Cpp<MissingLIBehaviour>();
@@ -141,8 +144,7 @@ namespace TownOfUsReworked
 
             Debugger = AddComponent<Debugger>();
 
-            Utils.LogSomething("Mod Loaded!");
-            Utils.LogSomething($"Mod Version {VersionFinal} & {Version}");
+            Utils.LogSomething($"Mod Loaded - {ToString()}");
         }
     }
 }

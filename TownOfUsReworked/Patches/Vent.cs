@@ -46,13 +46,13 @@ namespace TownOfUsReworked.Patches
                         __result = float.MaxValue;
                         return;
 
-                    case 14: // Lower Central
+                    case 14: //Lower Central
                         __result = float.MaxValue;
 
                         if (canUse)
                         {
-                            Vector3 center = playerControl.Collider.bounds.center;
-                            Vector3 position = __instance.transform.position;
+                            var center = playerControl.Collider.bounds.center;
+                            var position = __instance.transform.position;
                             __result = Vector2.Distance(center, position);
                             canUse &= __result <= __instance.UsableDistance;
                         }
@@ -100,7 +100,7 @@ namespace TownOfUsReworked.Patches
             else if (player.IsPostmortal())
                 return false;
             else
-                return true;
+                return !player.IsMoving();
         }
     }
 }

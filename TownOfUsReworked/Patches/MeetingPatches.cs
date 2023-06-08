@@ -5,9 +5,9 @@ namespace TownOfUsReworked.Patches
     {
         private static GameData.PlayerInfo VoteTarget;
         public static int MeetingCount;
-        private static GameData.PlayerInfo Reported = null;
-        public static bool GivingAnnouncements = false;
-        private static DeadBody ReportedBody = null;
+        private static GameData.PlayerInfo Reported;
+        public static bool GivingAnnouncements;
+        private static DeadBody ReportedBody;
 
         [HarmonyPatch(typeof(PlayerVoteArea), nameof(PlayerVoteArea.SetCosmetics))]
         public static class PlayerStates
@@ -79,6 +79,12 @@ namespace TownOfUsReworked.Patches
             public static void Postfix(MeetingHud __instance)
             {
                 __instance.gameObject.AddComponent<MeetingHudPagingBehaviour>().meetingHud = __instance;
+                OtherButtonsPatch.SettingsActive = true;
+                OtherButtonsPatch.OpenSettings(HudManager.Instance);
+                OtherButtonsPatch.RoleCardActive = true;
+                OtherButtonsPatch.OpenRoleCard(HudManager.Instance);
+                OtherButtonsPatch.Zooming = true;
+                OtherButtonsPatch.Zoom();
                 MeetingCount++;
                 Coroutines.Start(Announcements());
 
@@ -121,7 +127,7 @@ namespace TownOfUsReworked.Patches
                         yield return new WaitForSeconds(2f);
 
                         if (CustomGameOptions.LocationReports)
-                            report = $"Their body was found in {GetLocation(Utils.BodyById(player.PlayerId).TruePosition)}.";
+                            report = $"Their body was found in {GetLocation(ReportedBody.TruePosition)}.";
                         else
                             report = "It is unknown where they died.";
 
@@ -434,7 +440,7 @@ namespace TownOfUsReworked.Patches
             {
                 VoteTarget = meetingTarget;
 
-                if (PlayerControl.LocalPlayer.Is(ModifierEnum.Astral))
+                if (PlayerControl.LocalPlayer.Is(ModifierEnum.Astral) && !PlayerControl.LocalPlayer.inMovingPlat)
                     Modifier.GetModifier<Astral>(PlayerControl.LocalPlayer).LastPosition = PlayerControl.LocalPlayer.transform.position;
             }
         }
@@ -447,7 +453,8 @@ namespace TownOfUsReworked.Patches
             {
                 //Deactivate skip Button if skipping on emergency meetings is disabled
                 __instance.SkipVoteButton.gameObject.SetActive(!((VoteTarget == null && CustomGameOptions.SkipButtonDisable == DisableSkipButtonMeetings.Emergency) ||
-                    (CustomGameOptions.SkipButtonDisable == DisableSkipButtonMeetings.Always)));
+                    (CustomGameOptions.SkipButtonDisable == DisableSkipButtonMeetings.Always)) && __instance.state == MeetingHud.VoteStates.NotVoted &&
+                    !Ability.GetAbilities<Assassin>(AbilityEnum.Assassin).Any(x => x.Phone != null) && !Role.GetRoles<Guesser>(RoleEnum.Guesser).Any(x => x.Phone != null));
 
                 if (CustomGameOptions.MeetingColourblind && DoUndo.IsCamoed)
                 {
@@ -464,11 +471,6 @@ namespace TownOfUsReworked.Patches
 
                 foreach (var layer in PlayerLayer.LocalLayers)
                     layer.UpdateMeeting(__instance);
-
-                if (!PlayerControl.LocalPlayer.Is(AbilityEnum.Politician) || PlayerControl.LocalPlayer.Data.IsDead || __instance.TimerText.text.Contains("Can Vote"))
-                    return;
-
-                __instance.TimerText.text = $"Can Vote: {Ability.GetAbility<Politician>(PlayerControl.LocalPlayer).VoteBank} time(s) | {__instance.TimerText.text}";
             }
         }
 
@@ -698,6 +700,9 @@ namespace TownOfUsReworked.Patches
 
             if (player.IsSpelled())
                 name += " <color=#0028F5FF>ø</color>";
+
+            if (player.IsMarked())
+                name += " <color=#F1C40FFF>χ</color>";
 
             if (player.Is(RoleEnum.Mayor) && !ConstantVariables.DeadSeeEverything && PlayerControl.LocalPlayer.PlayerId != player.TargetPlayerId)
             {
@@ -1353,9 +1358,6 @@ namespace TownOfUsReworked.Patches
                     inspector.Inspected.Clear();
                 }
             }
-
-            if (player.IsMarked())
-                name += " <color=#F1C40FFF>χ</color>";
 
             if (ConstantVariables.DeadSeeEverything || player.TargetPlayerId == PlayerControl.LocalPlayer.PlayerId)
             {

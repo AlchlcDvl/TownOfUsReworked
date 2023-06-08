@@ -1,6 +1,5 @@
 namespace TownOfUsReworked.PlayerLayers.Objectifiers
 {
-    [HarmonyPatch]
     public class Objectifier : PlayerLayer
     {
         public static readonly List<Objectifier> AllObjectifiers = new();

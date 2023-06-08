@@ -3,7 +3,7 @@ namespace TownOfUsReworked.CustomOptions
     [HarmonyPatch]
     public static class SettingsPatches
     {
-        private static readonly string[] Menus = { "Game", "Crew", "Neutral", "Intruder", "Syndicate", "Modifier", "Objectifier", "Ability" };
+        private static readonly string[] Menus = { "Global", "Crew", "Neutral", "Intruder", "Syndicate", "Modifier", "Objectifier", "Ability" };
         private static int LastPage;
         private static readonly List<GameObject> MenuG = new();
         private static readonly List<SpriteRenderer> MenuS = new();
@@ -160,12 +160,7 @@ namespace TownOfUsReworked.CustomOptions
                             customOption = CustomNestedOption.AllCancelButtons.Find(option => option.Setting == opt);
 
                             if (customOption == null)
-                            {
-                                customOption = CustomNestedOption.AllInternalOptions.Find(option => option.Setting == opt);
-
-                                if (customOption == null)
-                                    return true;
-                            }
+                                return true;
                         }
                     }
                 }
@@ -285,6 +280,14 @@ namespace TownOfUsReworked.CustomOptions
 
                 if (Input.GetKeyDown(KeyCode.Alpha8) || Input.GetKeyDown(KeyCode.Keypad8))
                     ToggleButtonVoid(7);
+
+                if (TownOfUsReworked.VanillaOptions.MaxPlayers != CustomGameOptions.LobbySize)
+                {
+                    TownOfUsReworked.VanillaOptions.MaxPlayers = CustomGameOptions.LobbySize;
+                    GameStartManager.Instance.LastPlayerCount = CustomGameOptions.LobbySize;
+                    GameOptionsManager.Instance.currentNormalGameOptions = TownOfUsReworked.VanillaOptions;
+                    PlayerControl.LocalPlayer.RpcSyncSettings(GameOptionsManager.Instance.gameOptionsFactory.ToBytes(GameOptionsManager.Instance.currentGameOptions));
+                }
             }
         }
 
@@ -331,10 +334,8 @@ namespace TownOfUsReworked.CustomOptions
                         for (var k = 0; k < childeren.Length; k++)
                             childeren[k].gameObject.Destroy();
 
-                        var i = 0;
-
-                        foreach (var option in customOptions)
-                            option.transform.localPosition = new(x, y - (i++ * 0.5f), z);
+                        for (var i = 0; i < customOptions.Count; i++)
+                            customOptions[i].transform.localPosition = new(x, y - (i * 0.5f), z);
 
                         __instance.Children = new(customOptions.ToArray());
                         return false;
@@ -356,10 +357,11 @@ namespace TownOfUsReworked.CustomOptions
                 var y = __instance.GetComponentsInChildren<OptionBehaviour>().Max(option => option.transform.localPosition.y);
                 var s = __instance.Children.Length == 1 ? 0 : 1;
                 var (x, z) = (__instance.Children[s].transform.localPosition.x, __instance.Children[s].transform.localPosition.z);
-                var i = 0;
 
-                foreach (var option in __instance.Children)
-                    option.transform.localPosition = new(x, y - (i++ * 0.5f), z);
+                for (var i = 0; i < __instance.Children.Count; i++)
+                    __instance.Children[i].transform.localPosition = new(x, y - (i * 0.5f), z);
+
+                __instance.GetComponentInParent<Scroller>().ContentYBounds.max = (__instance.Children.Length - 6.5f) / 2;
             }
         }
 
@@ -619,7 +621,7 @@ namespace TownOfUsReworked.CustomOptions
 
                 Scroller.ContentYBounds = new(MinY, maxY);
 
-                // Prevent scrolling when the player is interacting with a menu
+                //Prevent scrolling when the player is interacting with a menu
                 if (PlayerControl.LocalPlayer?.CanMove == false)
                 {
                     __instance.GameSettings.transform.localPosition = LastPosition;
@@ -634,7 +636,7 @@ namespace TownOfUsReworked.CustomOptions
 
             private static void CreateScroller(HudManager __instance)
             {
-                if (Scroller != null)
+                if (Scroller)
                     return;
 
                 Scroller = new GameObject("SettingsScroller") { layer = 5 }.AddComponent<Scroller>();
@@ -651,20 +653,6 @@ namespace TownOfUsReworked.CustomOptions
 
                 Scroller.Inner = __instance.GameSettings.transform;
                 __instance.GameSettings.transform.SetParent(Scroller.transform);
-            }
-        }
-
-        [HarmonyPatch(typeof(GameSettingMenu), nameof(GameSettingMenu.Update))]
-        public static class GameSettingMenuUpdatePatch
-        {
-            public static void Postfix()
-            {
-                if (TownOfUsReworked.VanillaOptions.MaxPlayers != CustomGameOptions.LobbySize)
-                {
-                    TownOfUsReworked.VanillaOptions.MaxPlayers = CustomGameOptions.LobbySize;
-                    GameStartManager.Instance.LastPlayerCount = CustomGameOptions.LobbySize;
-                    PlayerControl.LocalPlayer.RpcSyncSettings(GameOptionsManager.Instance.gameOptionsFactory.ToBytes(GameOptionsManager.Instance.currentGameOptions));
-                }
             }
         }
     }

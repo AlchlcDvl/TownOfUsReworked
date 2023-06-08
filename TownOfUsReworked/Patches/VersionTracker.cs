@@ -23,12 +23,17 @@ namespace TownOfUsReworked.Patches
     [HarmonyPatch(typeof(PingTracker), nameof(PingTracker.Update))]
     public static class PingTracker_Update
     {
+        private static float deltaTime;
+
         public static void Postfix(PingTracker __instance)
         {
+            deltaTime += (Time.deltaTime - deltaTime) * 0.1f;
+            var fps = Mathf.Ceil(1.0f / deltaTime);
+
             __instance.text.text = "<size=80%><b><color=#00FF00FF>TownOfUs</color><color=#FF00FFFF>Reworked</color></b>\n" +
                 $"{(!MeetingHud.Instance ? $"<color=#0000FFFF>{TownOfUsReworked.VersionFinal}</color>\n" : "")}" +
                 $"{(!MeetingHud.Instance ? "<color=#C50000FF>By: AlchlcDvl</color>\n" : "")}" +
-                $"Ping: {AmongUsClient.Instance.Ping}ms\n" + (TownOfUsReworked.MCIActive ? (ConstantVariables.IsLobby ?
+                $"Ping: {AmongUsClient.Instance.Ping}ms\nFPS: {fps}\n" + (TownOfUsReworked.MCIActive ? (ConstantVariables.IsLobby ?
                 $"Lobby {(TownOfUsReworked.LobbyCapped ? "C" : "Unc")}apped\nRobots{(TownOfUsReworked.Persistence ? "" : " Don't")} Persist" : "") : "") + "</size>";
         }
 

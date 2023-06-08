@@ -217,7 +217,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 },
                 _ => new Amnesiac(amnesiac),
             };
-
             newRole.RoleUpdate(amneRole);
 
             if (other.Is(RoleEnum.Dracula))
@@ -289,11 +288,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (PlayerControl.AllPlayerControls.Count <= 4 && !IsDead)
             {
-                TurnThief();
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
                 writer.Write((byte)TurnRPC.TurnThief);
                 writer.Write(PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
+                TurnThief();
             }
         }
     }

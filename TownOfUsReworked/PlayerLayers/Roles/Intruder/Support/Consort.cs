@@ -16,7 +16,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleType = RoleEnum.Consort;
             StartText = () => "Roleblock The <color=#8CFFFFFF>Crew</color> From Progressing";
             AbilitiesText = () => "- You can seduce players\n- Seduction blocks your target from being able to use their abilities for a short while\n- You are immune to blocks\n" +
-                $"- If you block a <color=#336EFFFF>Serial Killer</color>, they will be forced to kill you\n{AbilitiesText()}";
+                $"- If you block a <color=#336EFFFF>Serial Killer</color>, they will be forced to kill you\n{CommonAbilities}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Consort : Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderSupport;
             RoleBlockImmune = true;

@@ -90,11 +90,11 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
 
             if (Betray && Turned)
             {
-                TurnBetrayer();
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
                 writer.Write((byte)TurnRPC.TurnFanaticBetrayer);
                 writer.Write(PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
+                TurnBetrayer();
             }
         }
     }

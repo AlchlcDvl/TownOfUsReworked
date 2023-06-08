@@ -13,7 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Name = "Ambusher";
             StartText = () => "Spook The <color=#8CFFFFFF>Crew</color>";
-            AbilitiesText = () => $"- You can ambush players\n- Ambushed players will be forced to be on alert and kill whoever interacts with them\n{AbilitiesText()}";
+            AbilitiesText = () => $"- You can ambush players\n- Ambushed players will be forced to be on alert and kill whoever interacts with them\n{CommonAbilities}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Ambusher : Colors.Intruder;
             RoleType = RoleEnum.Ambusher;
             RoleAlignment = RoleAlignment.IntruderKill;

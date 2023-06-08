@@ -1,6 +1,5 @@
 namespace TownOfUsReworked.PlayerLayers.Abilities
 {
-    [HarmonyPatch]
     public class Ability : PlayerLayer
     {
         public static readonly List<Ability> AllAbilities = new();

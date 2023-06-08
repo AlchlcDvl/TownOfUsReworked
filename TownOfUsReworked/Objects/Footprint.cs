@@ -1,6 +1,5 @@
 namespace TownOfUsReworked.Objects
 {
-    [HarmonyPatch]
     public class Footprint
     {
         public readonly PlayerControl Player;

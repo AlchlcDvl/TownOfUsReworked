@@ -4,10 +4,10 @@ namespace TownOfUsReworked.Patches
     public static class GameStartManagerPatch
     {
         //The code is from The Other Roles; link :- https://github.com/TheOtherRolesAU/TheOtherRoles/blob/main/TheOtherRoles/Patches/GameStartManagerPatch.cs under GPL v3 with some
-        //modifications from me to account for MCI
+        //Modifications from me to account for MCI and the horrid vanilla spam in the logs
         public readonly static Dictionary<int, PlayerVersion> PlayerVersions = new();
-        private static float kickingTimer;
-        private static bool versionSent;
+        private static float KickingTimer;
+        private static bool VersionSent;
 
         [HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.OnPlayerJoined))]
         public static class AmongUsClientOnPlayerJoinedPatch
@@ -24,16 +24,17 @@ namespace TownOfUsReworked.Patches
         {
             public static void Postfix(GameStartManager __instance)
             {
-                if (__instance == null)
+                if (!__instance)
                     return;
 
                 //Trigger version refresh
-                versionSent = false;
+                VersionSent = false;
                 //Reset kicking timer
-                kickingTimer = 0f;
+                KickingTimer = 0f;
                 //Copy lobby code
                 GUIUtility.systemCopyBuffer = GameCode.IntToGameName(AmongUsClient.Instance.GameId);
                 //Lobby size
+                __instance.MinPlayers = 1;
                 Generate.LobbySize.Set((float)TownOfUsReworked.VanillaOptions.MaxPlayers);
             }
         }
@@ -41,38 +42,73 @@ namespace TownOfUsReworked.Patches
         [HarmonyPatch(typeof(GameStartManager), nameof(GameStartManager.Update))]
         public static class GameStartManagerUpdatePatch
         {
-            private static float startingTimer;
+            private static int Seconds;
 
-            public static void Prefix(GameStartManager __instance)
+            public static bool Prefix(GameStartManager __instance)
             {
-                if (!__instance || !GameData.Instance || ConstantVariables.NoLobby || ConstantVariables.IsInGame)
-                    return;
-
-                __instance.MinPlayers = 1;
+                UpdatePrefix(__instance);
+                return false;
             }
 
-            public static void Postfix(GameStartManager __instance)
+            private static void UpdatePrefix(GameStartManager __instance)
             {
-                if (!__instance || !GameData.Instance || ConstantVariables.NoLobby || ConstantVariables.IsInGame)
+                if (!GameData.Instance || !GameManager.Instance || ConstantVariables.IsInGame)
                     return;
+
+                __instance.MakePublicButton.sprite = AmongUsClient.Instance.IsGamePublic ? __instance.PublicGameImage : __instance.PrivateGameImage;
+                __instance.privatePublicText.text = AmongUsClient.Instance.IsGamePublic ? TranslationController.Instance.GetString(StringNames.PublicHeader) :
+                    TranslationController.Instance.GetString(StringNames.PrivateHeader);
+
+                if ((Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) && Input.GetKeyDown(KeyCode.C) && !HudManager.Instance.Chat)
+                    ClipboardHelper.PutClipboardString(GameCode.IntToGameName(AmongUsClient.Instance.GameId));
+
+                if (DiscordManager.InstanceExists)
+                {
+                    __instance.ShareOnDiscordButton.gameObject.SetActive(AmongUsClient.Instance.AmHost && ConstantVariables.IsOnlineGame &&
+                        DiscordManager.Instance.CanShareGameOnDiscord() && DiscordManager.Instance.HasValidPartyID());
+                }
+
+                if (GameData.Instance.PlayerCount != __instance.LastPlayerCount)
+                {
+                    __instance.LastPlayerCount = GameData.Instance.PlayerCount;
+                    var str = "<color=#FF0000FF>";
+
+                    if (__instance.LastPlayerCount > __instance.MinPlayers)
+                        str = "<color=#00FF00FF>";
+                    else if (__instance.LastPlayerCount == __instance.MinPlayers)
+                        str = "<color=#FFFF00FF>";
+
+                    __instance.PlayerCounter.text = $"{str}{__instance.LastPlayerCount}/{CustomGameOptions.LobbySize}";
+                    __instance.StartButton.color = __instance.LastPlayerCount >= __instance.MinPlayers ? Palette.EnabledColor : Palette.DisabledClear;
+                    __instance.startLabelText.color = __instance.LastPlayerCount >= __instance.MinPlayers ? Palette.EnabledColor : Palette.DisabledClear;
+                    __instance.StartButtonGlyph?.SetColor(__instance.LastPlayerCount >= __instance.MinPlayers ? Palette.EnabledColor : Palette.DisabledClear);
+
+                    if (DiscordManager.InstanceExists)
+                    {
+                        if (AmongUsClient.Instance.AmHost && ConstantVariables.IsOnlineGame)
+                            DiscordManager.Instance.SetInLobbyHost(__instance.LastPlayerCount, CustomGameOptions.LobbySize, AmongUsClient.Instance.GameId);
+                        else
+                            DiscordManager.Instance.SetInLobbyClient(__instance.LastPlayerCount, CustomGameOptions.LobbySize, AmongUsClient.Instance.GameId);
+                    }
+                }
 
                 if (__instance.LastPlayerCount != TownOfUsReworked.VanillaOptions.MaxPlayers)
                     __instance.LastPlayerCount = TownOfUsReworked.VanillaOptions.MaxPlayers;
 
+                //Check version handshake infos
+                var versionMismatch = false;
+                var message = "";
+
                 if (!TownOfUsReworked.MCIActive)
                 {
                     //Send version as soon as PlayerControl.LocalPlayer exists
-                    if (PlayerControl.LocalPlayer != null && !versionSent)
+                    if (PlayerControl.LocalPlayer && !VersionSent)
                     {
-                        versionSent = true;
+                        VersionSent = true;
                         Utils.ShareGameVersion();
                     }
 
-                    //Check version handshake infos
-                    var versionMismatch = false;
-                    var message = "";
-
-                    foreach (var client in AmongUsClient.Instance.allClients.ToArray())
+                    foreach (var client in AmongUsClient.Instance.allClients)
                     {
                         if (client.Character == null)
                             continue;
@@ -115,61 +151,54 @@ namespace TownOfUsReworked.Patches
                             __instance.GameStartText.text = message;
                             __instance.GameStartText.transform.localPosition = __instance.StartButton.transform.localPosition + (Vector3.up * 2);
                         }
-                        else
-                        {
-                            __instance.StartButton.color = __instance.startLabelText.color = (__instance.LastPlayerCount >= __instance.MinPlayers) ? Palette.EnabledColor :
-                                Palette.DisabledClear;
-                            __instance.GameStartText.transform.localPosition = __instance.StartButton.transform.localPosition;
-                        }
                     }
                     //Client update with handshake infos
                     else if (!PlayerVersions.ContainsKey(AmongUsClient.Instance.HostId) || TownOfUsReworked.Version.CompareTo(PlayerVersions[AmongUsClient.Instance.HostId].Version) != 0)
                     {
-                        kickingTimer += Time.deltaTime;
+                        KickingTimer += Time.deltaTime;
 
-                        if (kickingTimer > 10)
+                        if (KickingTimer > 10)
                         {
-                            kickingTimer = 0;
+                            KickingTimer = 0;
                             AmongUsClient.Instance.ExitGame(DisconnectReasons.ExitGame);
                             SceneChanger.ChangeScene("MainMenu");
                         }
 
-                        __instance.GameStartText.text = $"You or the host has no or a different version of Town Of Us Reworked\nYou will be kicked in {Math.Round(10 - kickingTimer)}s.";
+                        __instance.GameStartText.text = $"You or the host has no or a different version of Town Of Us Reworked\nYou will be kicked in {Math.Round(10 - KickingTimer)}s";
                         __instance.GameStartText.transform.localPosition = __instance.StartButton.transform.localPosition + (Vector3.up * 2);
                     }
                     else if (versionMismatch)
                     {
-                        __instance.GameStartText.text = "Players With Different Versions:\n" + message;
+                        __instance.GameStartText.text = "Players with different versions:\n" + message;
                         __instance.GameStartText.transform.localPosition = __instance.StartButton.transform.localPosition + (Vector3.up * 2);
-                    }
-                    else
-                    {
-                        __instance.GameStartText.transform.localPosition = __instance.StartButton.transform.localPosition;
-
-                        if (__instance.startState != GameStartManager.StartingStates.Countdown && startingTimer <= 0)
-                            __instance.GameStartText.text = string.Empty;
-                        else
-                        {
-                            __instance.GameStartText.text = $"Starting in {(int)startingTimer + 1}";
-
-                            if (startingTimer <= 0)
-                                __instance.GameStartText.text = string.Empty;
-                        }
                     }
                 }
 
-                //Start Timer
-                if (startingTimer > 0)
-                    startingTimer -= Time.deltaTime;
+                if (!versionMismatch)
+                    __instance.GameStartText.text = ConstantVariables.IsCountDown ? TranslationController.Instance.GetString(StringNames.GameStarting, Seconds) : "";
 
-                var hex = "FF0000FF";
+                if (!AmongUsClient.Instance.AmHost)
+                    return;
 
-                if (__instance.LastPlayerCount > __instance.MinPlayers)
-                    hex = "FFFF00FF";
-                else if (__instance.LastPlayerCount == __instance.MinPlayers)
-                    hex = "FF0000FF";
+                if (ConstantVariables.IsCountDown)
+                {
+                    var num = Mathf.CeilToInt(__instance.countDownTimer);
+                    __instance.countDownTimer -= Time.deltaTime;
+                    var secondsLeft = Mathf.CeilToInt(__instance.countDownTimer);
+                    Seconds = secondsLeft;
 
-                __instance.PlayerCounter.text = $"<color=#{hex}>{GameData.Instance.PlayerCount}/{CustomGameOptions.LobbySize}</color>";
+                    if (Input.GetKeyDown(KeyCode.LeftShift))
+                        __instance.countDownTimer = 0;
+
+                    if (Input.GetKeyDown(KeyCode.LeftControl))
+                        __instance.ResetStartState();
+
+                    if (num != secondsLeft)
+                        PlayerControl.LocalPlayer.RpcSetStartCounter(secondsLeft);
+
+                    if (secondsLeft <= 0)
+                        __instance.FinallyBegin();
+                }
             }
         }
 
