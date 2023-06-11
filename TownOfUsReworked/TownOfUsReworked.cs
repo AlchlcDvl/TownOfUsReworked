@@ -143,6 +143,8 @@ namespace TownOfUsReworked
             ClassInjector.RegisterTypeInIl2Cpp<Tasks>();
 
             Debugger = AddComponent<Debugger>();
+            Language.Init();
+            LanguagePack.Init();
 
             Utils.LogSomething($"Mod Loaded - {ToString()}");
         }
