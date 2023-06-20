@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Whisperer : NeutralRole
+    public class Whisperer : Neutral
     {
         public CustomButton WhisperButton;
         public DateTime LastWhispered;
@@ -27,6 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Type = LayerEnum.Whisperer;
             WhisperButton = new(this, "Whisper", AbilityTypes.Effect, "ActionSecondary", Whisper);
             InspectorResults = InspectorResults.BringsChaos;
+            SubFactionSymbol = "Λ";
 
             if (TownOfUsReworked.IsTest)
                 Utils.LogSomething($"{Player.name} is {Name}");
@@ -44,7 +45,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var playerList = new List<(byte, int)>();
 
-            foreach (var player in PlayerControl.AllPlayerControls)
+            foreach (var player in CustomPlayer.AllPlayers)
             {
                 if (Player != player)
                     playerList.Add((player.PlayerId, 100));

@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Shapeshifter : SyndicateRole
+    public class Shapeshifter : Syndicate
     {
         public CustomButton ShapeshiftButton;
         public bool Enabled;

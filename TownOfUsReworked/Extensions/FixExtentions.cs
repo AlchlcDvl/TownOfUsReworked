@@ -25,14 +25,12 @@ namespace TownOfUsReworked.Extensions
         {
             ModCompatibility.RepairOxygen();
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SubmergedFixOxygen, SendOption.Reliable);
-            writer.Write(PlayerControl.LocalPlayer.NetId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
 
         public static void FixLights(SwitchSystem lights)
         {
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-            writer.Write((byte)ActionsRPC.FixLights);
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.FixLights, SendOption.Reliable);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
             lights.ActualSwitches = lights.ExpectedSwitches;
         }
@@ -154,7 +152,7 @@ namespace TownOfUsReworked.Extensions
                     if (comms5.IsActive)
                         FixComms();
 
-                    foreach (var i in PlayerControl.LocalPlayer.myTasks)
+                    foreach (var i in CustomPlayer.Local.myTasks)
                     {
                         if (i.TaskType == ModCompatibility.RetrieveOxygenMask)
                             FixSubOxygen();

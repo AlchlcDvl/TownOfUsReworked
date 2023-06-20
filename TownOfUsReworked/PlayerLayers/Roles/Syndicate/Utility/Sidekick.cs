@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Sidekick : SyndicateRole
+    public class Sidekick : Syndicate
     {
         public Role FormerRole;
         public Rebel Rebel;
@@ -30,12 +30,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 RoleBlockImmune = FormerRole.RoleBlockImmune,
                 RoleAlignment = FormerRole.RoleAlignment
             };
-
             newRole.RoleUpdate(this);
-            if (Local)
+
+            if (Local && !IntroCutscene.Instance)
                 Utils.Flash(Colors.Rebel);
 
-            if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
+            if (CustomPlayer.Local.Is(RoleEnum.Seer) && !IntroCutscene.Instance)
                 Utils.Flash(Colors.Seer);
         }
 

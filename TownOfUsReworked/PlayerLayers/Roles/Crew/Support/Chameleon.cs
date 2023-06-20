@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Chameleon : CrewRole
+    public class Chameleon : Crew
     {
         public bool Enabled;
         public DateTime LastSwooped;

@@ -38,6 +38,19 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             Abstain.GetComponentsInChildren<TextMeshPro>()[0].text = "Abstain";
         }
 
+        public void DestroyAbstain()
+        {
+            if (CanKill || Abstain == null)
+                return;
+
+            Abstain.ClearButtons();
+            Abstain.gameObject.SetActive(false);
+            Abstain.Destroy();
+            Abstain = null;
+            VotedOnce = false;
+            ExtraVotes.Clear();
+        }
+
         public void GenButton(MeetingHud __instance)
         {
             if (CanKill)

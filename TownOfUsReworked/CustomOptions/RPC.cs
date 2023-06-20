@@ -33,6 +33,12 @@ namespace TownOfUsReworked.CustomOptions
                     writer.Write((float)option.Value);
                 else if (option.Type == CustomOptionType.String)
                     writer.Write((int)option.Value);
+                else if (option.Type == CustomOptionType.Layers)
+                {
+                    var layer = (CustomLayersOption)option;
+                    writer.Write(layer.GetChance());
+                    writer.Write(layer.GetCount());
+                }
             }
 
             AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -52,6 +58,7 @@ namespace TownOfUsReworked.CustomOptions
 
                 //Works but may need to change to gameObject.name check
                 object value = null;
+                object val = null;
 
                 if (customOption.Type == CustomOptionType.Toggle)
                     value = reader.ReadBoolean();
@@ -59,9 +66,14 @@ namespace TownOfUsReworked.CustomOptions
                     value = reader.ReadSingle();
                 else if (customOption.Type == CustomOptionType.String)
                     value = reader.ReadInt32();
+                else if (customOption.Type == CustomOptionType.Layers)
+                {
+                    value = reader.ReadInt32();
+                    val = reader.ReadInt32();
+                }
 
-                customOption.Set(value);
-                Utils.LogSomething($"{customOption?.Name} : {customOption}");
+                customOption.Set(value, val);
+                Utils.LogSomething($"{customOption.Name} : {customOption}");
             }
 
             CustomOption.SaveSettings("LastUsedSettings");

@@ -22,7 +22,7 @@ namespace TownOfUsReworked.Patches
     {
         public static void Postfix(Vent __instance, [HarmonyArgument(1)] ref bool mainTarget)
         {
-            var active = PlayerControl.LocalPlayer && !MeetingHud.Instance && PlayerControl.LocalPlayer.CanVent();
+            var active = CustomPlayer.Local && !MeetingHud.Instance && CustomPlayer.Local.CanVent();
 
             if (!Role.LocalRole || !active)
                 return;
@@ -116,7 +116,7 @@ namespace TownOfUsReworked.Patches
         public static bool Prefix(MapBehaviour __instance, ref MapOptions opts)
         {
             var notmodified = true;
-            var player = PlayerControl.LocalPlayer;
+            var player = CustomPlayer.Local;
 
             if (opts.Mode is not MapOptions.Modes.None and not MapOptions.Modes.CountOverlay)
             {
@@ -151,6 +151,7 @@ namespace TownOfUsReworked.Patches
         {
             Utils.ReassignPostmortals(player);
             Disconnected.Add(player);
+            Summary.AddSummaryInfo(player, true);
         }
     }
 
@@ -204,7 +205,7 @@ namespace TownOfUsReworked.Patches
     {
         public static void Postfix(Minigame __instance)
         {
-            if (!__instance || !PlayerControl.LocalPlayer.Is(AbilityEnum.Multitasker))
+            if (!__instance || ! CustomPlayer.Local.Is(AbilityEnum.Multitasker))
                 return;
 
             foreach (var rend in __instance.GetComponentsInChildren<SpriteRenderer>())
@@ -218,7 +219,7 @@ namespace TownOfUsReworked.Patches
         public static bool Prefix(ShapeshifterMinigame __instance)
         {
             __instance.gameObject.AddComponent<ShapeShifterPagingBehaviour>().shapeshifterMinigame = __instance;
-            var menu = CustomMenu.AllMenus.Find(x => x.Menu == __instance && x.Owner == PlayerControl.LocalPlayer);
+            var menu = CustomMenu.AllMenus.Find(x => x.Menu == __instance && x.Owner == CustomPlayer.Local);
 
             if (menu == null)
                 return true;
@@ -234,7 +235,7 @@ namespace TownOfUsReworked.Patches
                 var panel = UObject.Instantiate(__instance.PanelPrefab, __instance.transform);
                 panel.transform.localPosition = new(__instance.XStart + (num * __instance.XOffset), __instance.YStart + (num2 * __instance.YOffset), -1f);
                 panel.SetPlayer(i, player.Data, (Action)(() => menu.Clicked(player)));
-                panel.NameText.color = PlayerControl.LocalPlayer == player ? Role.GetRole(menu.Owner).Color : Color.white;
+                panel.NameText.color = CustomPlayer.Local == player ? Role.GetRole(menu.Owner).Color : Color.white;
                 __instance.potentialVictims.Add(panel);
                 list2.Add(panel.Button);
             }
@@ -249,8 +250,8 @@ namespace TownOfUsReworked.Patches
     {
         public static void Postfix()
         {
-            if (PlayerControl.LocalPlayer.Is(ModifierEnum.Astral) && Modifier.GetModifier<Astral>(PlayerControl.LocalPlayer).LastPosition != Vector3.zero)
-                Modifier.GetModifier<Astral>(PlayerControl.LocalPlayer).SetPosition();
+            if (CustomPlayer.Local.Is(ModifierEnum.Astral) && Modifier.GetModifier<Astral>(CustomPlayer.Local).LastPosition != Vector3.zero)
+                Modifier.GetModifier<Astral>(CustomPlayer.Local).SetPosition();
         }
     }
 
@@ -281,9 +282,9 @@ namespace TownOfUsReworked.Patches
     {
         public static bool Prefix(UseButton __instance)
         {
-            Tasks.ClosestTasks(PlayerControl.LocalPlayer);
+            InteractableBehaviour.ClosestTasks(CustomPlayer.Local);
 
-            if (__instance.isActiveAndEnabled && PlayerControl.LocalPlayer && Tasks.NearestTask != null && Tasks.AllCustomPlateform.Count > 0)
+            if (__instance.isActiveAndEnabled && CustomPlayer.LocalCustom && InteractableBehaviour.NearestTask != null && InteractableBehaviour.AllCustomPlateform.Count > 0)
             {
                 __instance.graphic.color = new(1f, 1f, 1f, 1f);
                 return false;
@@ -300,7 +301,7 @@ namespace TownOfUsReworked.Patches
 
         public static void Prefix(GameData.PlayerInfo kInfo)
         {
-            var playerControl = PlayerControl.AllPlayerControls.ToArray().FirstOrDefault(p => p.PlayerId == kInfo.PlayerId);
+            var playerControl = CustomPlayer.AllPlayers.Find(p => p.PlayerId == kInfo.PlayerId);
             CurrentOutfitTypeCache = (int)playerControl.CurrentOutfitType;
 
             if (!CustomGameOptions.AppearanceAnimation)
@@ -309,8 +310,111 @@ namespace TownOfUsReworked.Patches
 
         public static void Postfix(GameData.PlayerInfo kInfo)
         {
-            var playerControl = PlayerControl.AllPlayerControls.ToArray().FirstOrDefault(p => p.PlayerId == kInfo.PlayerId);
+            var playerControl = CustomPlayer.AllPlayers.Find(p => p.PlayerId == kInfo.PlayerId);
             playerControl.CurrentOutfitType = (PlayerOutfitType)CurrentOutfitTypeCache;
+        }
+    }
+
+    [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.Awake))]
+    public static class AddCustomPlayerPatch
+    {
+        public static void Postfix(PlayerControl __instance)
+        {
+            if (!CustomPlayer.AllCustomPlayers.Any(x => x.Player == __instance))
+                _ = new CustomPlayer(__instance);
+        }
+    }
+
+    [HarmonyPatch(typeof(SabotageButton), nameof(SabotageButton.Refresh))]
+    [HarmonyPriority(Priority.First)]
+    public static class RefreshPatch
+    {
+        public static bool Prefix() => false;
+    }
+
+    //The code is from The Other Roles; link :- https://github.com/TheOtherRolesAU/TheOtherRoles/blob/main/TheOtherRoles/Modules/DynamicLobbies.cs under GPL v3
+    [HarmonyPatch(typeof(InnerNetClient), nameof(InnerNetClient.JoinGame))]
+    public static class InnerNetClientJoinPatch
+    {
+        public static void Prefix() => DataManager.Settings.Multiplayer.ChatMode = QuickChatModes.FreeChatOrQuickChat;
+    }
+
+    [HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.OnPlayerJoined))]
+    public static class AmongUsClientOnPlayerJoined
+    {
+        public static bool Prefix(AmongUsClient __instance, [HarmonyArgument(0)] ClientData client)
+        {
+            if (CustomGameOptions.LobbySize < __instance.allClients.Count)
+            {
+                DisconnectPlayer(__instance, client.Id);
+                return false;
+            }
+
+            return true;
+        }
+
+        private static void DisconnectPlayer(InnerNetClient _this, int clientId)
+        {
+            if (!_this.AmHost)
+                return;
+
+            var writer = MessageWriter.Get(SendOption.Reliable);
+            writer.StartMessage(4);
+            writer.Write(_this.GameId);
+            writer.WritePacked(clientId);
+            writer.Write((byte)DisconnectReasons.GameFull);
+            writer.EndMessage();
+            _this.SendOrDisconnect(writer);
+            writer.Recycle();
+        }
+    }
+
+    [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
+    public static class SizePatch
+    {
+        public static void Postfix()
+        {
+            foreach (var player in CustomPlayer.AllPlayers.ToArray())
+                player.transform.localScale = !(player.Data.IsDead || player.Data.Disconnected) ? CustomPlayer.Custom(player).SizeFactor : new(0.7f, 0.7f, 1f);
+
+            foreach (var body in Utils.AllBodies)
+                body.transform.localScale = CustomPlayer.Custom(Utils.PlayerByBody(body)).SizeFactor;
+        }
+    }
+
+    [HarmonyPatch]
+    public static class SpeedPatch
+    {
+        private static float _time;
+
+        [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.FixedUpdate))]
+        [HarmonyPostfix]
+        public static void PostfixPhysics(PlayerPhysics __instance)
+        {
+            if (__instance.AmOwner && GameData.Instance && __instance.myPlayer.CanMove)
+                __instance.body.velocity *= CustomPlayer.Custom(__instance.myPlayer).SpeedFactor;
+
+            if (__instance.myPlayer.Is(ModifierEnum.Flincher) && !__instance.myPlayer.Data.IsDead && __instance.myPlayer.CanMove && !MeetingHud.Instance)
+            {
+                _time += Time.deltaTime;
+
+                if (_time >= CustomGameOptions.FlinchInterval && __instance.AmOwner)
+                {
+                    __instance.body.velocity *= -1;
+                    _time -= CustomGameOptions.FlinchInterval;
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(CustomNetworkTransform), nameof(CustomNetworkTransform.FixedUpdate))]
+        [HarmonyPostfix]
+        public static void PostfixNetwork(CustomNetworkTransform __instance)
+        {
+            if (!__instance.AmOwner && __instance.interpolateMovement != 0 && GameData.Instance)
+            {
+                var player = __instance.gameObject.GetComponent<PlayerControl>();
+                __instance.body.velocity *= ConstantVariables.IsLobby ? CustomGameOptions.PlayerSpeed : CustomPlayer.Custom(player).SpeedFactor;
+            }
         }
     }
 }

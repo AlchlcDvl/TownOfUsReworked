@@ -5,9 +5,9 @@ namespace TownOfUsReworked.Classes
     {
         public readonly static Dictionary<string, AudioClip> SoundEffects = new();
         public readonly static Dictionary<string, Sprite> Sprites = new();
-        private readonly static Dictionary<string, string> Translations = new();
-        private readonly static Dictionary<string, float> Sizes = new();
-        //private readonly static string[] TranslationKeys = Utils.CreateText("Keys", "Languages").Split("\n");
+        //private static readonly Dictionary<string, string> Translations = new();
+        private static readonly Dictionary<string, float> Sizes = new();
+        //private static readonly string[] TranslationKeys = Utils.CreateText("Keys", "Languages").Split("\n");
         public readonly static Sprite[] PortalAnimation = new Sprite[205];
         public readonly static Dictionary<string, string> Presets = new()
         {
@@ -70,13 +70,10 @@ namespace TownOfUsReworked.Classes
 
         public static Sprite GetSprite(string path)
         {
-            if (!Sprites.ContainsKey(path))
-                return MeetingHud.Instance ? Sprites["MeetingPlaceholder"] : Sprites["Placeholder"];
-            else
-                return Sprites[path];
+            return !Sprites.ContainsKey(path) ? MeetingHud.Instance ? Sprites["MeetingPlaceholder"] : Sprites["Placeholder"] : Sprites[path];
         }
 
-        public static string Translate(string id)
+        /*public static string Translate(string id)
         {
             if (!Translations.ContainsKey(id))
             {
@@ -85,7 +82,7 @@ namespace TownOfUsReworked.Classes
             }
             else
                 return Translations[id];
-        }
+        }*/
 
         public static void Play(string path)
         {
@@ -115,21 +112,7 @@ namespace TownOfUsReworked.Classes
 
         public static string GetLanguage() => (uint)DataManager.Settings.Language.CurrentLanguage switch
         {
-            1U => "Latam",
-            2U => "Brazilian",
-            3U => "Portuguese",
-            4U => "Korean",
-            5U => "Russian",
-            6U => "Dutch",
-            7U => "Filipino",
-            8U => "French",
-            9U => "German",
-            10U => "Italian",
-            11U => "Japanese",
-            12U => "Spanish",
             13U => "SChinese",
-            14U => "TChinese",
-            15U => "Irish",
             _ => "English",
         };
 
@@ -196,7 +179,8 @@ namespace TownOfUsReworked.Classes
         {
             try
             {
-                var sname = name.Replace(".png", "").Replace(TownOfUsReworked.Buttons, "").Replace(TownOfUsReworked.Misc, "").Replace(TownOfUsReworked.Portal, "");
+                var sname = name.Replace(".png", "").Replace(TownOfUsReworked.Buttons, "").Replace(TownOfUsReworked.Misc, "").Replace(TownOfUsReworked.Portal, "")
+                    .Replace(TownOfUsReworked.Icons, "");
                 var tex = LoadResourceTexture(name);
                 var sprite = Sprite.Create(tex, new(0, 0, tex.width, tex.height), new(0.5f, 0.5f), Sizes[sname]);
                 sprite.name = sname;
@@ -216,14 +200,16 @@ namespace TownOfUsReworked.Classes
             SoundEffects.Clear();
             Sizes.Clear();
             Sprites.Clear();
+            //Translations.Clear();
 
             foreach (var resourceName in TownOfUsReworked.Assembly.GetManifestResourceNames())
             {
                 if (resourceName.EndsWith(".png"))
                 {
-                    var name = resourceName.Replace(".png", "").Replace(TownOfUsReworked.Buttons, "").Replace(TownOfUsReworked.Misc, "").Replace(TownOfUsReworked.Portal, "");
+                    var name = resourceName.Replace(".png", "").Replace(TownOfUsReworked.Buttons, "").Replace(TownOfUsReworked.Misc, "").Replace(TownOfUsReworked.Portal, "")
+                        .Replace(TownOfUsReworked.Icons, "");
 
-                    if (name is "CurrentSettings" or "Help" or "Cross" or "Plus" or "Minus")
+                    if (name is "CurrentSettings" or "Help" or "Plus" or "Minus")
                         Sizes.Add(name, 180);
                     else if (name == "RoleCard")
                         Sizes.Add(name, 200);
@@ -236,9 +222,10 @@ namespace TownOfUsReworked.Classes
 
             foreach (var resourceName in TownOfUsReworked.Assembly.GetManifestResourceNames())
             {
-                if ((resourceName.StartsWith(TownOfUsReworked.Buttons) || resourceName.StartsWith(TownOfUsReworked.Misc)) && resourceName.EndsWith(".png"))
+                if ((resourceName.StartsWith(TownOfUsReworked.Buttons) || resourceName.StartsWith(TownOfUsReworked.Misc) || resourceName.StartsWith(TownOfUsReworked.Icons)) &&
+                    resourceName.EndsWith(".png"))
                 {
-                    var name = resourceName.Replace(".png", "").Replace(TownOfUsReworked.Buttons, "").Replace(TownOfUsReworked.Misc, "");
+                    var name = resourceName.Replace(".png", "").Replace(TownOfUsReworked.Buttons, "").Replace(TownOfUsReworked.Misc, "").Replace(TownOfUsReworked.Icons, "");
                     Sprites.Add(name, CreateSprite(resourceName));
                 }
                 else if (resourceName.StartsWith(TownOfUsReworked.Portal) && resourceName.EndsWith(".png"))
@@ -254,6 +241,19 @@ namespace TownOfUsReworked.Classes
                     SoundEffects.Add(name, CreateAudio(resourceName));
                 }
             }
+
+            /*var translation = Utils.CreateText(GetLanguage(), "Languages").Split("\n");
+
+            if (TranslationKeys.Length != 0 && translation.Length != 0 && TranslationKeys.Length == translation.Length)
+            {
+                var position = 0;
+
+                foreach (var key in TranslationKeys)
+                {
+                    Translations.Add(key, translation[position]);
+                    position++;
+                }
+            }*/
         }
     }
 }

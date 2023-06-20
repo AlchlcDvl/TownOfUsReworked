@@ -56,11 +56,11 @@ namespace TownOfUsReworked.CustomOptions
                         if (option2.Type == CustomOptionType.Header)
                             builder.AppendLine($"\n{option2.Name}");
                         else if (option2.Type != CustomOptionType.Button)
-                            builder.AppendLine($"    {option2.Name} - {option2}");
+                            builder.AppendLine($"    {option2.Name}: {option2}");
                     }
                 }
                 else
-                    builder.AppendLine($"    {option.Name} - {option}");
+                    builder.AppendLine($"    {option.Name}: {option}");
             }
 
             return $"<size=1.25>{builder}</size>";
@@ -111,9 +111,6 @@ namespace TownOfUsReworked.CustomOptions
 
                 if (Input.GetKeyDown(KeyCode.Alpha8) || Input.GetKeyDown(KeyCode.Keypad8))
                     SettingsPage = 7;
-
-                if (!AssetManager.Sprites.ContainsKey("Use"))
-                    AssetManager.Sprites.Add("Use", __instance.UseButton.graphic.sprite);
             }
         }
     }

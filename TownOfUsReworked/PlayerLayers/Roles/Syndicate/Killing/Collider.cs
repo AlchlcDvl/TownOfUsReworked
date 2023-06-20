@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Collider : SyndicateRole
+    public class Collider : Syndicate
     {
         public CustomButton PositiveButton;
         public CustomButton NegativeButton;
@@ -59,6 +59,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 LastPositive = DateTime.UtcNow;
             else if (interact[1])
                 LastPositive.AddSeconds(CustomGameOptions.ProtectKCReset);
+
+            if (CustomGameOptions.ChargeCooldownsLinked)
+            {
+                if (interact[0])
+                    LastNegative = DateTime.UtcNow;
+                else if (interact[1])
+                    LastNegative.AddSeconds(CustomGameOptions.ProtectKCReset);
+            }
         }
 
         public void SetNegative()
@@ -75,6 +83,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 LastNegative = DateTime.UtcNow;
             else if (interact[1])
                 LastNegative.AddSeconds(CustomGameOptions.ProtectKCReset);
+
+            if (CustomGameOptions.ChargeCooldownsLinked)
+            {
+                if (interact[0])
+                    LastPositive = DateTime.UtcNow;
+                else if (interact[1])
+                    LastPositive.AddSeconds(CustomGameOptions.ProtectKCReset);
+            }
         }
 
         public bool Exception1(PlayerControl player) => player == Negative || player.Is(Faction) || (player.Is(SubFaction) && SubFaction != SubFaction.None);
@@ -94,6 +110,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 Utils.RpcMurderPlayer(Player, Negative, DeathReasonEnum.Collided, false);
                 Positive = null;
                 Negative = null;
+
+                if (CustomGameOptions.CollideResetsCooldown)
+                {
+                    LastPositive = DateTime.UtcNow;
+                    LastNegative = DateTime.UtcNow;
+                }
             }
         }
 

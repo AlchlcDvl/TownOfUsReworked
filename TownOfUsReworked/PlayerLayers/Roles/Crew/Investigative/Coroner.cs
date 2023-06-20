@@ -1,15 +1,13 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Coroner : CrewRole
+    public class Coroner : Crew
     {
         public Dictionary<byte, CustomArrow> BodyArrows = new();
         public List<byte> Reported = new();
         public CustomButton CompareButton;
-        public DeadPlayer ReferenceBody;
+        public List<DeadPlayer> ReferenceBodies = new();
         public DateTime LastCompared;
         public DateTime LastAutopsied;
-        public int UsesLeft;
-        public bool ButtonUsable => UsesLeft > 0;
         public CustomButton AutopsyButton;
 
         public Coroner(PlayerControl player) : base(player)
@@ -23,11 +21,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleAlignment = RoleAlignment.CrewInvest;
             BodyArrows = new();
             Reported = new();
+            ReferenceBodies = new();
             InspectorResults = InspectorResults.DealsWithDead;
-            UsesLeft = 0;
             Type = LayerEnum.Coroner;
             AutopsyButton = new(this, "Autopsy", AbilityTypes.Dead, "ActionSecondary", Autopsy);
-            CompareButton = new(this, "Compare", AbilityTypes.Direct, "Secondary", Compare, true);
+            CompareButton = new(this, "Compare", AbilityTypes.Direct, "Secondary", Compare);
 
             if (TownOfUsReworked.IsTest)
                 Utils.LogSomething($"{Player.name} is {Name}");
@@ -51,9 +49,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void DestroyArrow(byte targetPlayerId)
         {
-            var arrow = BodyArrows.FirstOrDefault(x => x.Key == targetPlayerId);
-            arrow.Value?.Destroy();
-            BodyArrows.Remove(arrow.Key);
+            BodyArrows.FirstOrDefault(x => x.Key == targetPlayerId).Value?.Destroy();
+            BodyArrows.Remove(targetPlayerId);
         }
 
         public override void OnLobby()
@@ -67,9 +64,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             base.UpdateHud(__instance);
             AutopsyButton.Update("AUTOPSY", AutopsyTimer(), CustomGameOptions.AutopsyCooldown);
-            CompareButton.Update("COMPARE", CompareTimer(), CustomGameOptions.CompareCooldown, UsesLeft, ButtonUsable, ReferenceBody != null && ButtonUsable);
+            CompareButton.Update("COMPARE", CompareTimer(), CustomGameOptions.CompareCooldown, true, ReferenceBodies.Count > 0);
 
-            if (!PlayerControl.LocalPlayer.Data.IsDead)
+            if (!CustomPlayer.LocalCustom.IsDead)
             {
                 var validBodies = Utils.AllBodies.Where(x => Utils.KilledPlayers.Any(y => y.PlayerId == x.ParentId && DateTime.UtcNow <
                     y.KillTime.AddSeconds(CustomGameOptions.CoronerArrowDuration)));
@@ -85,7 +82,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     if (!BodyArrows.ContainsKey(body.ParentId))
                         BodyArrows.Add(body.ParentId, new(Player, Color));
 
-                    BodyArrows[body.ParentId].Update(body.TruePosition);
+                    BodyArrows[body.ParentId]?.Update(body.TruePosition);
                 }
             }
             else if (BodyArrows.Count != 0)
@@ -110,8 +107,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 Utils.Flash(new(255, 0, 0, 255));
             else
             {
-                ReferenceBody = killed;
-                UsesLeft = CustomGameOptions.CompareLimit;
+                ReferenceBodies.Add(killed);
                 LastAutopsied = DateTime.UtcNow;
                 Utils.Flash(Color);
             }
@@ -119,19 +115,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Compare()
         {
-            if (ReferenceBody == null || Utils.IsTooFar(Player, CompareButton.TargetPlayer) || CompareTimer() != 0f)
+            if (ReferenceBodies.Count == 0 || Utils.IsTooFar(Player, CompareButton.TargetPlayer) || CompareTimer() != 0f)
                 return;
 
             var interact = Utils.Interact(Player, CompareButton.TargetPlayer);
 
             if (interact[3])
             {
-                if (CompareButton.TargetPlayer.PlayerId == ReferenceBody.KillerId || CompareButton.TargetPlayer.IsFramed())
+                if (ReferenceBodies.Any(x => CompareButton.TargetPlayer.PlayerId == x.KillerId) || CompareButton.TargetPlayer.IsFramed())
                     Utils.Flash(new(255, 0, 0, 255));
                 else
                     Utils.Flash(new(0, 255, 0, 255));
-
-                UsesLeft--;
             }
 
             if (interact[0])

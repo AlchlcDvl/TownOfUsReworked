@@ -5,7 +5,7 @@ namespace TownOfUsReworked.Custom
         public readonly static List<CustomButton> AllButtons = new();
         public AbilityButton Base;
         public PlayerLayer Owner;
-        public Sprite Button;
+        public string Button;
         public AbilityTypes Type;
         public string Keybind;
         public bool PostDeath;
@@ -17,6 +17,7 @@ namespace TownOfUsReworked.Custom
         public Vent TargetVent;
         public Special TargetSpecial;
         public Exclude Exception;
+        private GameObject Block;
         public delegate void Click();
         public delegate bool Exclude(PlayerControl player);
         private bool SetAliveActive => !Owner.IsDead && Owner.Player.Is(Owner.Type, Owner.LayerType) && ConstantVariables.IsRoaming && Owner.Local &&
@@ -27,7 +28,7 @@ namespace TownOfUsReworked.Custom
         public CustomButton(PlayerLayer owner, string button, AbilityTypes type, string keybind, Click click, Exclude exception, bool hasUses = false, bool postDeath = false)
         {
             Owner = owner;
-            Button = AssetManager.GetSprite(button);
+            Button = button;
             Type = type;
             DoClick = click ?? Blank;
             Keybind = keybind;
@@ -35,14 +36,15 @@ namespace TownOfUsReworked.Custom
             PostDeath = postDeath;
             Exception = exception ?? BlankBool;
             Base = InstantiateButton();
-            Base.graphic.sprite = Button;
+            Base.graphic.sprite = AssetManager.GetSprite(Button);
+            Base.gameObject.name = Button + Owner.PlayerName;
             Base.GetComponent<PassiveButton>().OnClick.AddListener(new Action(Clicked));
             Disable();
             AllButtons.Add(this);
         }
 
-        public CustomButton(PlayerLayer owner, string button, AbilityTypes type, string keybind, Click click, bool hasUses = false, bool postDeath = false) : this(owner,
-            button, type, keybind, click, null, hasUses, postDeath) {}
+        public CustomButton(PlayerLayer owner, string button, AbilityTypes type, string keybind, Click click, bool hasUses = false, bool postDeath = false) : this(owner, button, type,
+            keybind, click, null, hasUses, postDeath) {}
 
         private static AbilityButton InstantiateButton()
         {
@@ -52,14 +54,14 @@ namespace TownOfUsReworked.Custom
             button.buttonLabelText.enabled = true;
             button.usesRemainingText.enabled = true;
             button.usesRemainingSprite.enabled = true;
-            button.commsDown?.SetActive(false);
+            button.commsDown.SetActive(false);
             button.GetComponent<PassiveButton>().OnClick = new();
             return button;
         }
 
-        public static void Blank() {}
+        private static void Blank() {}
 
-        public static bool BlankBool(PlayerControl player) => false;
+        private static bool BlankBool(PlayerControl player) => false;
 
         public void Clicked()
         {
@@ -71,16 +73,16 @@ namespace TownOfUsReworked.Custom
         {
             if ((Owner.IsDead && !PostDeath) || !usable)
             {
-                foreach (var player in PlayerControl.AllPlayerControls)
+                foreach (var player in CustomPlayer.AllPlayers)
                     player.MyRend().material.SetFloat("_Outline", 0f);
 
                 return;
             }
 
-            TargetPlayer = Owner.Player.GetClosestPlayer(PlayerControl.AllPlayerControls.Where(x => x != Owner.Player && !x.IsPostmortal() && !x.Data.IsDead && (!Exception(x) ||
+            TargetPlayer = Owner.Player.GetClosestPlayer(CustomPlayer.AllPlayers.Where(x => x != Owner.Player && !x.IsPostmortal() && !x.Data.IsDead && (!Exception(x) ||
                 x.IsMoving())).ToList());
 
-            foreach (var player in PlayerControl.AllPlayerControls)
+            foreach (var player in CustomPlayer.AllPlayers)
             {
                 if (player != TargetPlayer)
                     player.MyRend().material.SetFloat("_Outline", 0f);
@@ -125,6 +127,33 @@ namespace TownOfUsReworked.Custom
                 Base?.SetDisabled();
         }
 
+        public void SetVentActive(bool usable, bool condition)
+        {
+            if ((Owner.IsDead && !PostDeath) || !usable)
+            {
+                foreach (var vent in Utils.AllVents)
+                {
+                    vent.myRend.material.SetFloat("_Outline", 0f);
+                    vent.myRend.material.SetFloat("_AddColor", 0f);
+                }
+
+                return;
+            }
+
+            TargetVent = Owner.Player.GetClosestVent();
+
+            if (TargetVent != null && !Base.isCoolingDown && condition && !Owner.Player.CannotUse())
+            {
+                var component = TargetVent.myRend;
+                component.material.SetFloat("_Outline", 1f);
+                component.material.SetColor("_OutlineColor", Owner.Color);
+                component.material.SetColor("_AddColor", Owner.Color);
+                Base?.SetEnabled();
+            }
+            else
+                Base?.SetDisabled();
+        }
+
         public void SetEffectTarget(bool effectActive, bool condition = true)
         {
             if ((!Base.isCoolingDown && condition && !Owner.Player.CannotUse()) || effectActive)
@@ -148,13 +177,25 @@ namespace TownOfUsReworked.Custom
             else if (Type == AbilityTypes.Effect)
                 SetEffectTarget(effectActive, condition);
 
-            Base.graphic.sprite = Owner.IsBlocked ? AssetManager.GetSprite("Blocked") : (Button ?? AssetManager.GetSprite("Placeholder"));
+            if (!Block && Base.isActiveAndEnabled)
+            {
+                Block = new("CustomBlock");
+                Block.AddComponent<SpriteRenderer>().sprite = AssetManager.GetSprite("Blocked");
+            }
+
+            if (Block)
+            {
+                var pos = Base.transform.position;
+                pos.z = -50f;
+                Block.transform.position = pos;
+                Block.SetActive(Owner.IsBlocked && Base.isActiveAndEnabled && SetAliveActive);
+            }
+
             Base.buttonLabelText.text = Owner.IsBlocked ? "BLOCKED" : label;
-            Base.commsDown?.gameObject?.SetActive(false);
+            Base.commsDown.SetActive(false);
             Base.buttonLabelText.SetOutlineColor(Owner.Color);
             Base.gameObject.SetActive(PostDeath ? SetDeadActive : SetAliveActive);
-            Clickable = Base != null && !effectActive && usable && condition && Base.ButtonUsable() && !(HasUses && uses <= 0) && !MeetingHud.Instance && !Owner.IsBlocked &&
-                Owner.Player.CanMove;
+            Clickable = Base && !effectActive && usable && condition && Base.ButtonUsable() && !(HasUses && uses <= 0) && !MeetingHud.Instance && !Owner.IsBlocked && Owner.Player.CanMove;
 
             if (effectActive)
                 Base.SetFillUp(effectTimer, maxDuration);
@@ -186,7 +227,7 @@ namespace TownOfUsReworked.Custom
 
         public void Enable() => Base?.gameObject?.SetActive(true);
 
-        public void Destroy()
+        public void Destroy(bool remove = true)
         {
             if (Base == null)
                 return;
@@ -200,6 +241,9 @@ namespace TownOfUsReworked.Custom
             Base?.gameObject?.Destroy();
             Base.Destroy();
             Base = null;
+
+            if (remove)
+                AllButtons.Remove(this);
         }
 
         public static void DisableAll() => AllButtons.ForEach(x => x.Disable());

@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Crewmate : CrewRole
+    public class Crewmate : Crew
     {
         public Crewmate(PlayerControl player) : base(player)
         {

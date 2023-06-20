@@ -5,71 +5,62 @@
     {
         public static void Postfix()
         {
-            var AdminTable = UObject.FindObjectOfType<MapConsole>();
+            var adminTable = UObject.FindObjectOfType<MapConsole>();
 
             if (CustomGameOptions.MoveAdmin != 0)
             {
-                var MapFloating = GameObject.Find("Cockpit/cockpit_mapfloating");
+                var mapFloating = GameObject.Find("Cockpit/cockpit_mapfloating");
 
                 if ((int)CustomGameOptions.MoveAdmin == 1)
                 {
-                    AdminTable.transform.position = new(-17.269f, 1.375f);
-                    AdminTable.transform.rotation = Quaternion.Euler(new(0, 0, 350.316f));
-                    AdminTable.transform.localScale = new(1, 1, 1);
+                    adminTable.transform.position = new(-17.269f, 1.375f);
+                    adminTable.transform.rotation = Quaternion.Euler(new(0, 0, 350.316f));
+                    adminTable.transform.localScale = new(1, 1, 1);
 
-                    MapFloating.transform.position = new(-17.736f, 2.36f);
-                    MapFloating.transform.rotation = Quaternion.Euler(new(0, 0, 350));
-                    MapFloating.transform.localScale = new(1, 1, 1);
+                    mapFloating.transform.position = new(-17.736f, 2.36f);
+                    mapFloating.transform.rotation = Quaternion.Euler(new(0, 0, 350));
+                    mapFloating.transform.localScale = new(1, 1, 1);
                 }
                 else if ((int)CustomGameOptions.MoveAdmin == 2)
                 {
                     //New Admin
-                    AdminTable.transform.position = new(5.078f, 3.4f, 1);
-                    AdminTable.transform.rotation = Quaternion.Euler(new(0, 0, 76.1f));
-                    AdminTable.transform.localScale = new(1.200f, 1.700f, 1);
-                    MapFloating.transform.localScale = new(0, 0, 0);
+                    adminTable.transform.position = new(5.078f, 3.4f, 1);
+                    adminTable.transform.rotation = Quaternion.Euler(new(0, 0, 76.1f));
+                    adminTable.transform.localScale = new(1.200f, 1.700f, 1);
+                    mapFloating.transform.localScale = new(0, 0, 0);
                 }
             }
 
             if (CustomGameOptions.MoveElectrical != 0)
             {
-                var Electrical = GameObject.Find("GapRoom/task_lightssabotage (gap)");
+                var electrical = GameObject.Find("GapRoom/task_lightssabotage (gap)");
 
                 if ((int)CustomGameOptions.MoveElectrical == 1)
                 {
-                    Electrical.transform.position = new(-8.818f, 13.184f);
-                    Electrical.transform.localScale = new(0.909f, 0.818f, 1);
+                    electrical.transform.position = new(-8.818f, 13.184f);
+                    electrical.transform.localScale = new(0.909f, 0.818f, 1);
 
-                    var OriginalSupport = GameObject.Find("Vault/cockpit_comms");
-                    var SupportElectrical = UObject.Instantiate(OriginalSupport, OriginalSupport.transform);
+                    var originalSupport = GameObject.Find("Vault/cockpit_comms");
+                    var supportElectrical = UObject.Instantiate(originalSupport, originalSupport.transform);
 
-                    SupportElectrical.transform.position = new(-8.792f, 13.242f);
-                    SupportElectrical.transform.localScale = new(1, 1, 1);
+                    supportElectrical.transform.position = new(-8.792f, 13.242f);
+                    supportElectrical.transform.localScale = new(1, 1, 1);
                 }
-                else if ((int)CustomGameOptions.MoveElectrical == 2)
-                    Electrical.transform.position = new(19.339f, -3.665f);
+                else if ((int) CustomGameOptions.MoveElectrical == 2)
+                    electrical.transform.position = new(19.339f, -3.665f);
             }
 
             if (CustomGameOptions.MoveVitals)
             {
-                var Vitals = GameObject.Find("Medbay/panel_vitals");
-                Vitals.transform.position = new(24.55f, -4.780f);
-
-                var MedbayDownload = GameObject.Find("Medbay/panel_data");
-                MedbayDownload.transform.position = new(25.240f, -7.938f);
+                GameObject.Find("Medbay/panel_vitals").transform.position = new(24.55f, -4.780f);
+                GameObject.Find("Medbay/panel_data").transform.position = new(25.240f, -7.938f);
             }
 
             if (CustomGameOptions.MoveFuel)
-            {
-                var Fuel = GameObject.Find("Storage/task_gas");
-                Fuel.transform.position = new(36.070f, 1.897f);
-            }
+                GameObject.Find("Storage/task_gas").transform.position = new(36.070f, 1.897f);
 
             if (CustomGameOptions.MoveDivert)
-            {
-                var DivertRecieve = GameObject.Find("HallwayMain/DivertRecieve");
-                DivertRecieve.transform.position = new(13.35f, -1.659f);
-            }
+                GameObject.Find("HallwayMain/DivertRecieve").transform.position = new(13.35f, -1.659f);
         }
     }
 }

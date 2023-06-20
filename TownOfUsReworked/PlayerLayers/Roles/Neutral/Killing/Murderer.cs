@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Murderer : NeutralRole
+    public class Murderer : Neutral
     {
         public DateTime LastKilled;
         public CustomButton MurderButton;

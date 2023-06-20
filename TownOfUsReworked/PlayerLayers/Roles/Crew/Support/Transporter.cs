@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Transporter : CrewRole
+    public class Transporter : Crew
     {
         public DateTime LastTransported;
         public PlayerControl TransportPlayer1;
@@ -125,7 +125,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             TransportPlayer1.NetTransform.Halt();
             TransportPlayer2.NetTransform.Halt();
 
-            if (PlayerControl.LocalPlayer == TransportPlayer1 || PlayerControl.LocalPlayer == TransportPlayer2)
+            if (CustomPlayer.Local == TransportPlayer1 || CustomPlayer.Local == TransportPlayer2)
                 Utils.Flash(Color, CustomGameOptions.TransportDuration);
 
             if (Player1Body == null && !WasInVent1)
@@ -163,16 +163,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
                 if (ModCompatibility.IsSubmerged)
                 {
-                    if (PlayerControl.LocalPlayer == TransportPlayer1)
+                    if (CustomPlayer.Local == TransportPlayer1)
                     {
                         ModCompatibility.ChangeFloor(TransportPlayer1.GetTruePosition().y > -7);
-                        ModCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
+                        ModCompatibility.CheckOutOfBoundsElevator(CustomPlayer.Local);
                     }
 
-                    if (PlayerControl.LocalPlayer == TransportPlayer2)
+                    if (CustomPlayer.Local == TransportPlayer2)
                     {
                         ModCompatibility.ChangeFloor(TransportPlayer2.GetTruePosition().y > -7);
-                        ModCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
+                        ModCompatibility.CheckOutOfBoundsElevator(CustomPlayer.Local);
                     }
                 }
 
@@ -190,10 +190,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 Player1Body.transform.position = TransportPlayer2.GetTruePosition();
                 TransportPlayer2.NetTransform.SnapTo(new(TempPosition.x, TempPosition.y + 0.3636f));
 
-                if (ModCompatibility.IsSubmerged && PlayerControl.LocalPlayer == TransportPlayer2)
+                if (ModCompatibility.IsSubmerged && CustomPlayer.Local == TransportPlayer2)
                 {
                     ModCompatibility.ChangeFloor(TransportPlayer2.GetTruePosition().y > -7);
-                    ModCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
+                    ModCompatibility.CheckOutOfBoundsElevator(CustomPlayer.Local);
                 }
             }
             else if (Player1Body == null && Player2Body != null)
@@ -204,10 +204,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 TransportPlayer1.NetTransform.SnapTo(new(Player2Body.TruePosition.x, Player2Body.TruePosition.y + 0.3636f));
                 Player2Body.transform.position = TempPosition;
 
-                if (ModCompatibility.IsSubmerged && PlayerControl.LocalPlayer == TransportPlayer1)
+                if (ModCompatibility.IsSubmerged && CustomPlayer.Local == TransportPlayer1)
                 {
                     ModCompatibility.ChangeFloor(TransportPlayer1.GetTruePosition().y > -7);
-                    ModCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
+                    ModCompatibility.CheckOutOfBoundsElevator(CustomPlayer.Local);
                 }
             }
             else if (Player1Body != null && Player2Body != null)
@@ -217,7 +217,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 (Player1Body.transform.position, Player2Body.transform.position) = (Player2Body.TruePosition, Player1Body.TruePosition);
             }
 
-            if (PlayerControl.LocalPlayer == TransportPlayer1 || PlayerControl.LocalPlayer == TransportPlayer2)
+            if (CustomPlayer.Local == TransportPlayer1 || CustomPlayer.Local == TransportPlayer2)
             {
                 if (Minigame.Instance)
                     Minigame.Instance.Close();

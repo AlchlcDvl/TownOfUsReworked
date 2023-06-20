@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Dictator : CrewRole
+    public class Dictator : Crew
     {
         public bool RoundOne;
         public bool Revealed;
@@ -24,7 +24,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             ToBeEjected = new();
             Ejected = false;
             ToDie = false;
-            RevealButton = new(this, "DictatorReveal", AbilityTypes.Effect, "ActionSecondary", Reveal);
+            RevealButton = new(this, "DictReveal", AbilityTypes.Effect, "ActionSecondary", Reveal);
 
             if (TownOfUsReworked.IsTest)
                 Utils.LogSomething($"{Player.name} is {Name}");
@@ -84,6 +84,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             base.VoteComplete(__instance);
             HideButtons();
+
+            if (ToBeEjected.Count == 0)
+                return;
+
             ToDie = ToBeEjected.Any(x => Utils.PlayerById(x).Is(Faction.Crew));
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
             writer.Write((byte)ActionsRPC.SetExiles);
@@ -149,7 +153,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 return true;
 
             var player = Utils.PlayerByVoteArea(voteArea);
-            return player.Data.IsDead || player.Data.Disconnected || (player == Player && player == PlayerControl.LocalPlayer) || IsDead || !Revealed || Ejected;
+            return player.Data.IsDead || player.Data.Disconnected || (player == Player && player == CustomPlayer.Local) || IsDead || !Revealed || Ejected;
         }
 
         public override void ConfirmVotePrefix(MeetingHud __instance)
@@ -159,7 +163,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (MeetingHud.Instance.playerStates.Any(x => x.TargetPlayerId == Player.PlayerId && x.DidVote && !CustomGameOptions.DictateAfterVoting))
                 HideButtons();
 
-            if (ToBeEjected.Count != 0)
+            if (ToBeEjected.Count == 0)
                 return;
 
             ToDie = ToBeEjected.Any(x => Utils.PlayerById(x).Is(Faction.Crew));

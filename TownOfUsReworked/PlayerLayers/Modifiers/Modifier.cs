@@ -2,8 +2,8 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
 {
     public class Modifier : PlayerLayer
     {
-        public static readonly List<Modifier> AllModifiers = new();
-        public static Modifier LocalModifier => GetModifier(PlayerControl.LocalPlayer);
+        public readonly static List<Modifier> AllModifiers = new();
+        public static Modifier LocalModifier => GetModifier(CustomPlayer.Local);
 
         public Modifier(PlayerControl player) : base(player)
         {

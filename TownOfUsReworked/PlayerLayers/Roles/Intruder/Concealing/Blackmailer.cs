@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Blackmailer : IntruderRole
+    public class Blackmailer : Intruder
     {
         public CustomButton BlackmailButton;
         public PlayerControl BlackmailedPlayer;

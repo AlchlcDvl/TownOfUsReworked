@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Escort : CrewRole
+    public class Escort : Crew
     {
         public PlayerControl BlockTarget;
         public bool Enabled;

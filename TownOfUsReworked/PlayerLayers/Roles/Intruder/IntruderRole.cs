@@ -1,12 +1,12 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class IntruderRole : Role
+    public class Intruder : Role
     {
         public DateTime LastKilled;
         public CustomButton KillButton;
         public string CommonAbilities;
 
-        protected IntruderRole(PlayerControl player) : base(player)
+        protected Intruder(PlayerControl player) : base(player)
         {
             Faction = Faction.Intruder;
             FactionColor = Colors.Intruder;
@@ -31,7 +31,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (!Local)
                 return;
 
-            var team = new List<PlayerControl> { PlayerControl.LocalPlayer };
+            var team = new List<PlayerControl> { CustomPlayer.Local };
 
             if (IsRecruit)
             {
@@ -41,9 +41,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 team.Add(jackal.GoodRecruit);
             }
 
-            foreach (var player in PlayerControl.AllPlayerControls)
+            foreach (var player in CustomPlayer.AllPlayers)
             {
-                if (player.Is(Faction) && player != PlayerControl.LocalPlayer)
+                if (player.Is(Faction) && player != CustomPlayer.Local)
                     team.Add(player);
             }
 
@@ -53,7 +53,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 team.Add(Player.GetOtherRival());
             else if (Player.Is(ObjectifierEnum.Mafia))
             {
-                foreach (var player in PlayerControl.AllPlayerControls)
+                foreach (var player in CustomPlayer.AllPlayers)
                 {
                     if (player != Player && player.Is(ObjectifierEnum.Mafia))
                         team.Add(player);

@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Jester : NeutralRole
+    public class Jester : Neutral
     {
         public bool VotedOut;
         public List<byte> ToHaunt = new();
@@ -8,14 +8,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public CustomButton HauntButton;
         public DateTime LastHaunted;
         public int UsesLeft;
-        public bool CanHaunt => VotedOut && !HasHaunted && UsesLeft > 0 && ToHaunt.Count > 0;
+        public bool CanHaunt => VotedOut && !HasHaunted && UsesLeft > 0 && ToHaunt.Count > 0 && !CustomGameOptions.AvoidNeutralKingmakers;
 
         public Jester(PlayerControl player) : base(player)
         {
             Name = "Jester";
             StartText = () => "It Was Jest A Prank Bro";
             AbilitiesText = () => "- After you get ejected, you can haunt those who voted for you";
-            Objectives = () => "- Get ejected";
+            Objectives = () => VotedOut ? "- You have been ejected" : "- Get ejected";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Jester : Colors.Neutral;
             RoleType = RoleEnum.Jester;
             RoleAlignment = RoleAlignment.NeutralEvil;

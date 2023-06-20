@@ -1,9 +1,9 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Mystic : CrewRole
+    public class Mystic : Crew
     {
         public DateTime LastRevealed;
-        public static bool ConvertedDead => !PlayerControl.AllPlayerControls.Any(x => !x.Data.IsDead && !x.Data.Disconnected && !x.Is(SubFaction.None));
+        public static bool ConvertedDead => !CustomPlayer.AllPlayers.Any(x => !x.Data.IsDead && !x.Data.Disconnected && !x.Is(SubFaction.None));
         public CustomButton RevealButton;
 
         public Mystic(PlayerControl player) : base(player)
@@ -36,7 +36,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var newRole = new Seer(Player);
             newRole.RoleUpdate(this);
 
-            if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
+            if (CustomPlayer.Local.Is(RoleEnum.Seer) && !IntroCutscene.Instance)
                 Utils.Flash(Colors.Seer);
         }
 

@@ -106,76 +106,78 @@ namespace TownOfUsReworked.BetterMaps.Polus
 
         private static void FindVents()
         {
-            var ventsList = UObject.FindObjectsOfType<Vent>().ToList();
-
             if (ElectricBuildingVent == null)
-                ElectricBuildingVent = ventsList.Find(vent => vent.gameObject.name == "ElectricBuildingVent");
+                ElectricBuildingVent = Utils.AllVents.Find(vent => vent.gameObject.name == "ElectricBuildingVent");
 
             if (ElectricalVent == null)
-                ElectricalVent = ventsList.Find(vent => vent.gameObject.name == "ElectricalVent");
+                ElectricalVent = Utils.AllVents.Find(vent => vent.gameObject.name == "ElectricalVent");
 
             if (ScienceBuildingVent == null)
-                ScienceBuildingVent = ventsList.Find(vent => vent.gameObject.name == "ScienceBuildingVent");
+                ScienceBuildingVent = Utils.AllVents.Find(vent => vent.gameObject.name == "ScienceBuildingVent");
 
             if (StorageVent == null)
-                StorageVent = ventsList.Find(vent => vent.gameObject.name == "StorageVent");
+                StorageVent = Utils.AllVents.Find(vent => vent.gameObject.name == "StorageVent");
 
             if (LightCageVent == null)
-                LightCageVent = ventsList.Find(vent => vent.gameObject.name == "ElecFenceVent");
+                LightCageVent = Utils.AllVents.Find(vent => vent.gameObject.name == "ElecFenceVent");
 
             if (AdminVent == null)
-                AdminVent = ventsList.Find(vent => vent.gameObject.name == "AdminVent");
+                AdminVent = Utils.AllVents.Find(vent => vent.gameObject.name == "AdminVent");
 
             if (BathroomVent == null)
-                BathroomVent = ventsList.Find(vent => vent.gameObject.name == "BathroomVent");
+                BathroomVent = Utils.AllVents.Find(vent => vent.gameObject.name == "BathroomVent");
 
             if (SpeciVent == null)
+            {
                 SpeciVent = UObject.Instantiate(AdminVent, AdminVent.transform);
+                SpeciVent.Right = null;
+                SpeciVent.Left = null;
+                SpeciVent.Center = null;
+            }
 
-            IsVentsFetched = ElectricBuildingVent != null && ElectricalVent != null && ScienceBuildingVent != null && StorageVent != null &&
-                LightCageVent != null;
+            IsVentsFetched = ElectricBuildingVent && ElectricalVent && ScienceBuildingVent && StorageVent && LightCageVent;
         }
 
         private static void FindRooms()
         {
             if (Comms == null)
-                Comms = UObject.FindObjectsOfType<GameObject>().ToList().Find(o => o.name == "Comms");
+                Comms = Utils.AllObjects.Find(o => o.name == "Comms");
 
             if (DropShip == null)
-                DropShip = UObject.FindObjectsOfType<GameObject>().ToList().Find(o => o.name == "Dropship");
+                DropShip = Utils.AllObjects.Find(o => o.name == "Dropship");
 
             if (Outside == null)
-                Outside = UObject.FindObjectsOfType<GameObject>().ToList().Find(o => o.name == "Outside");
+                Outside = Utils.AllObjects.Find(o => o.name == "Outside");
 
             if (Science == null)
-                Science = UObject.FindObjectsOfType<GameObject>().ToList().Find(o => o.name == "Science");
+                Science = Utils.AllObjects.Find(o => o.name == "Science");
 
-            IsRoomsFetched = Comms != null && DropShip != null && Outside != null && Science != null;
+            IsRoomsFetched = Comms && DropShip && Outside && Science;
         }
 
         private static void FindObjects()
         {
             if (WifiConsole == null)
-                WifiConsole = UObject.FindObjectsOfType<Console>().ToList().Find(console => console.name == "panel_wifi");
+                WifiConsole = Utils.AllConsoles.Find(console => console.name == "panel_wifi");
 
             if (NavConsole == null)
-                NavConsole = UObject.FindObjectsOfType<Console>().ToList().Find(console => console.name == "panel_nav");
+                NavConsole = Utils.AllConsoles.Find(console => console.name == "panel_nav");
 
             if (Vitals == null)
-                Vitals = UObject.FindObjectsOfType<SystemConsole>().ToList().Find(console => console.name == "panel_vitals");
+                Vitals = Utils.AllSystemConsoles.Find(console => console.name == "panel_vitals");
 
             if (DvdScreenOffice == null)
             {
-                var DvdScreenAdmin = UObject.FindObjectsOfType<GameObject>().ToList().Find(o => o.name == "dvdscreen");
+                var dvdScreenAdmin = Utils.AllObjects.Find(o => o.name == "dvdscreen");
 
-                if (DvdScreenAdmin != null)
-                    DvdScreenOffice = UObject.Instantiate(DvdScreenAdmin);
+                if (dvdScreenAdmin)
+                    DvdScreenOffice = UObject.Instantiate(dvdScreenAdmin);
             }
 
             if (TempCold == null)
-                TempCold = UObject.FindObjectsOfType<Console>().ToList().Find(console => console.name == "panel_tempcold");
+                TempCold = Utils.AllConsoles.Find(console => console.name == "panel_tempcold");
 
-            IsObjectsFetched = WifiConsole != null && NavConsole != null && Vitals != null && DvdScreenOffice != null && TempCold != null;
+            IsObjectsFetched = WifiConsole && NavConsole && Vitals && DvdScreenOffice && TempCold;
         }
 
         private static void AdjustVents()
@@ -191,7 +193,6 @@ namespace TownOfUsReworked.BetterMaps.Polus
                 AdminVent.Center = SpeciVent;
                 SpeciVent.Left = AdminVent;
                 SpeciVent.Center = BathroomVent;
-                SpeciVent.Right = null;
                 BathroomVent.Left = SpeciVent;
             }
         }
@@ -209,7 +210,7 @@ namespace TownOfUsReworked.BetterMaps.Polus
                 var tempColdTransform = TempCold.transform;
                 tempColdTransform.parent = Outside.transform;
                 tempColdTransform.position = TempColdNewPos;
-                BoxCollider2D collider = TempCold.GetComponent<BoxCollider2D>();
+                var collider = TempCold.GetComponent<BoxCollider2D>();
                 collider.isTrigger = false;
                 collider.size += new Vector2(0f, -0.3f);
             }
@@ -222,7 +223,7 @@ namespace TownOfUsReworked.BetterMaps.Polus
                 var tempColdTransform = TempCold.transform;
                 tempColdTransform.parent = Outside.transform;
                 tempColdTransform.position = TempColdNewPosDV;
-                BoxCollider2D collider = TempCold.GetComponent<BoxCollider2D>();
+                var collider = TempCold.GetComponent<BoxCollider2D>();
                 collider.isTrigger = false;
                 collider.size += new Vector2(0f, -0.3f);
             }

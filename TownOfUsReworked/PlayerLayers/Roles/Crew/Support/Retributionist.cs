@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Retributionist : CrewRole
+    public class Retributionist : Crew
     {
         public Retributionist(PlayerControl player) : base(player)
         {
@@ -21,6 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             UntransportablePlayers = new();
             Reported = new();
             PlayerNumbers = new();
+            ReferenceBodies = new();
             Selected = null;
             TransportPlayer1 = null;
             TransportPlayer2 = null;
@@ -33,8 +34,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             WasInVent2 = false;
             Vent1 = null;
             Vent2 = null;
-            Transport1 = new("Transport1") { layer = 5 };
-            Transport2 = new("Transport2") { layer = 5 };
+            Transport1 = new("RetTransport1") { layer = 5 };
+            Transport2 = new("RetTransport2") { layer = 5 };
             Transport1.AddSubmergedComponent("ElevatorMover");
             Transport2.AddSubmergedComponent("ElevatorMover");
             Transport1.transform.position = new(Player.GetTruePosition().x, Player.GetTruePosition().y, (Player.GetTruePosition().y / 1000f) + 0.01f);
@@ -52,7 +53,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RevealButton = new(this, "Reveal", AbilityTypes.Direct, "ActionSecondary", Reveal);
             StakeButton = new(this, "Stake", AbilityTypes.Direct, "ActionSecondary", Stake);
             AutopsyButton = new(this, "Autopsy", AbilityTypes.Dead, "ActionSecondary", Autopsy);
-            CompareButton = new(this, "Compare", AbilityTypes.Direct, "Secondary", Compare, true);
+            CompareButton = new(this, "Compare", AbilityTypes.Direct, "Secondary", Compare);
             ExamineButton = new(this, "Examine", AbilityTypes.Direct, "ActionSecondary", Examine);
             InspectButton = new(this, "Inspect", AbilityTypes.Direct, "ActionSecondary", Inspect, Exception1);
             MediateButton = new(this, "Mediate", AbilityTypes.Effect, "ActionSecondary", Mediate);
@@ -107,21 +108,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             if (IsTrack)
             {
-                var arrow = TrackerArrows.FirstOrDefault(x => x.Key == targetPlayerId);
-                arrow.Value?.Destroy();
-                TrackerArrows.Remove(arrow.Key);
+                TrackerArrows.FirstOrDefault(x => x.Key == targetPlayerId).Value?.Destroy();
+                TrackerArrows.Remove(targetPlayerId);
             }
             else if (IsCor)
             {
-                var arrow = BodyArrows.FirstOrDefault(x => x.Key == targetPlayerId);
-                arrow.Value?.Destroy();
-                BodyArrows.Remove(arrow.Key);
-            }
-            else if (IsMed)
-            {
-                var arrow = MediateArrows.FirstOrDefault(x => x.Key == targetPlayerId);
-                arrow.Value?.Destroy();
-                MediatedPlayers.Remove(arrow.Key);
+                BodyArrows.FirstOrDefault(x => x.Key == targetPlayerId).Value?.Destroy();
+                BodyArrows.Remove(targetPlayerId);
             }
         }
 
@@ -250,7 +243,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RevealButton.Update("REVEAL", RevealTimer(), CustomGameOptions.RevealCooldown, true, IsMys);
             StakeButton.Update("STAKE", StakeTimer(), CustomGameOptions.StakeCooldown, true, IsVH);
             AutopsyButton.Update("AUTOPSY", AutopsyTimer(), CustomGameOptions.AutopsyCooldown, true, IsCor);
-            CompareButton.Update("COMPARE", CompareTimer(), CustomGameOptions.CompareCooldown, UsesLeft, ButtonUsable, ReferenceBody != null && IsCor && ButtonUsable);
+            CompareButton.Update("COMPARE", CompareTimer(), CustomGameOptions.CompareCooldown, true, ReferenceBodies.Count > 0 && IsCor);
             ExamineButton.Update("EXAMINE", ExamineTimer(), CustomGameOptions.ExamineCd, true, IsDet);
             InspectButton.Update("INSPECT", InspectTimer(), CustomGameOptions.InspectCooldown, true, IsInsp);
             MediateButton.Update("MEDIATE", MediateTimer(), CustomGameOptions.MediateCooldown, true, IsMed);
@@ -283,21 +276,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         if (!BodyArrows.ContainsKey(body.ParentId))
                             BodyArrows.Add(body.ParentId, new(Player, Color));
 
-                        BodyArrows[body.ParentId].Update(body.TruePosition);
+                        BodyArrows[body.ParentId]?.Update(body.TruePosition);
                     }
                 }
                 else if (IsMed)
                 {
-                    foreach (var player in PlayerControl.AllPlayerControls)
+                    foreach (var player in CustomPlayer.AllPlayers)
                     {
                         if (MediateArrows.ContainsKey(player.PlayerId))
                         {
-                            MediateArrows[player.PlayerId].Update(player.transform.position, player.GetPlayerColor(false, CustomGameOptions.ShowMediatePlayer));
+                            MediateArrows[player.PlayerId]?.Update(player.transform.position, player.GetPlayerColor(false, CustomGameOptions.ShowMediatePlayer));
                             player.Visible = true;
 
                             if (!CustomGameOptions.ShowMediatePlayer)
                             {
-                                player.SetOutfit(CustomPlayerOutfitType.Camouflage, Utils.CamoOutfit(player));
+                                player.SetOutfit(CustomPlayerOutfitType.Camouflage, Utils.BlankOutfit(player));
                                 PlayerMaterial.SetColors(UColor.grey, player.MyRend());
                             }
                         }
@@ -310,13 +303,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         var player = Utils.PlayerById(pair.Key);
                         var body = Utils.BodyById(pair.Key);
 
-                        if (player.Data.Disconnected || (player.Data.IsDead && !body))
+                        if (player == null || player.Data.Disconnected || (player.Data.IsDead && !body))
                         {
                             DestroyArrow(pair.Key);
                             continue;
                         }
 
-                        pair.Value.Update(player.Data.IsDead ? player.GetTruePosition() : body.TruePosition, player.GetPlayerColor());
+                        pair.Value?.Update(player.Data.IsDead ? player.transform.position : body.transform.position, player.GetPlayerColor());
                     }
                 }
                 else if (IsDet)
@@ -328,9 +321,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         Time2 -= CustomGameOptions.FootprintInterval;
                         Even++;
 
-                        foreach (var player in PlayerControl.AllPlayerControls)
+                        foreach (var player in CustomPlayer.AllPlayers)
                         {
-                            if (player.Data.IsDead || player.Data.Disconnected || player == PlayerControl.LocalPlayer)
+                            if (player.Data.IsDead || player.Data.Disconnected || player == CustomPlayer.Local)
                                 continue;
 
                             if (!AllPrints.Any(print => Vector3.Distance(print.Position, Position(player)) < 0.5f && print.Color.a > 0.5 && print.PlayerId == player.PlayerId))
@@ -436,7 +429,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public CustomButton AutopsyButton;
         public CustomButton CompareButton;
         public DateTime LastAutopsied;
-        public DeadPlayer ReferenceBody;
+        public List<DeadPlayer> ReferenceBodies = new();
         public DateTime LastCompared;
         public List<byte> Reported = new();
         public bool IsCor => RevivedRole?.RoleType == RoleEnum.Coroner;
@@ -475,8 +468,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 Utils.Flash(new(255, 0, 0, 255));
             else
             {
-                ReferenceBody = killed;
-                UsesLeft = CustomGameOptions.CompareLimit;
+                ReferenceBodies.Add(killed);
                 LastAutopsied = DateTime.UtcNow;
                 Utils.Flash(Color);
             }
@@ -484,19 +476,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Compare()
         {
-            if (ReferenceBody == null || Utils.IsTooFar(Player, CompareButton.TargetPlayer) || CompareTimer() != 0f)
+            if (ReferenceBodies.Count == 0 || Utils.IsTooFar(Player, CompareButton.TargetPlayer) || CompareTimer() != 0f)
                 return;
 
             var interact = Utils.Interact(Player, CompareButton.TargetPlayer);
 
             if (interact[3])
             {
-                if (CompareButton.TargetPlayer.PlayerId == ReferenceBody.KillerId || CompareButton.TargetPlayer.IsFramed())
+                if (ReferenceBodies.Any(x => CompareButton.TargetPlayer.PlayerId == x.KillerId) || CompareButton.TargetPlayer.IsFramed())
                     Utils.Flash(new(255, 0, 0, 255));
                 else
                     Utils.Flash(new(0, 255, 0, 255));
-
-                UsesLeft--;
             }
 
             if (interact[0])
@@ -885,7 +875,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Revive()
         {
-            if (!Reviving && PlayerControl.LocalPlayer.PlayerId == ReviveButton.TargetBody.ParentId)
+            if (!Reviving && CustomPlayer.Local.PlayerId == ReviveButton.TargetBody.ParentId)
             {
                 Utils.Flash(Color);
 
@@ -934,7 +924,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (UsesLeft == 0)
                 Utils.RpcMurderPlayer(Player, Player);
 
-            if (formerKiller.Contains(PlayerControl.LocalPlayer.Data.PlayerName))
+            if (formerKiller.Contains(CustomPlayer.LocalCustom.Data.PlayerName))
             {
                 LocalRole.AllArrows.Add(player.PlayerId, new(PlayerControl.LocalPlayer, Color));
                 Utils.Flash(Color);
@@ -1275,7 +1265,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             TransportPlayer1.NetTransform.Halt();
             TransportPlayer2.NetTransform.Halt();
 
-            if (PlayerControl.LocalPlayer == TransportPlayer1 || PlayerControl.LocalPlayer == TransportPlayer2)
+            if (CustomPlayer.Local == TransportPlayer1 || CustomPlayer.Local == TransportPlayer2)
                 Utils.Flash(Color, CustomGameOptions.TransportDuration);
 
             if (Player1Body == null && !WasInVent1)
@@ -1313,16 +1303,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
                 if (ModCompatibility.IsSubmerged)
                 {
-                    if (PlayerControl.LocalPlayer == TransportPlayer1)
+                    if (CustomPlayer.Local == TransportPlayer1)
                     {
                         ModCompatibility.ChangeFloor(TransportPlayer1.GetTruePosition().y > -7);
-                        ModCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
+                        ModCompatibility.CheckOutOfBoundsElevator(CustomPlayer.Local);
                     }
 
-                    if (PlayerControl.LocalPlayer == TransportPlayer2)
+                    if (CustomPlayer.Local == TransportPlayer2)
                     {
                         ModCompatibility.ChangeFloor(TransportPlayer2.GetTruePosition().y > -7);
-                        ModCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
+                        ModCompatibility.CheckOutOfBoundsElevator(CustomPlayer.Local);
                     }
                 }
 
@@ -1340,10 +1330,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 Player1Body.transform.position = TransportPlayer2.GetTruePosition();
                 TransportPlayer2.NetTransform.SnapTo(new(TempPosition.x, TempPosition.y + 0.3636f));
 
-                if (ModCompatibility.IsSubmerged && PlayerControl.LocalPlayer == TransportPlayer2)
+                if (ModCompatibility.IsSubmerged && CustomPlayer.Local == TransportPlayer2)
                 {
                     ModCompatibility.ChangeFloor(TransportPlayer2.GetTruePosition().y > -7);
-                    ModCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
+                    ModCompatibility.CheckOutOfBoundsElevator(CustomPlayer.Local);
                 }
             }
             else if (Player1Body == null && Player2Body != null)
@@ -1354,10 +1344,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 TransportPlayer1.NetTransform.SnapTo(new(Player2Body.TruePosition.x, Player2Body.TruePosition.y + 0.3636f));
                 Player2Body.transform.position = TempPosition;
 
-                if (ModCompatibility.IsSubmerged && PlayerControl.LocalPlayer == TransportPlayer1)
+                if (ModCompatibility.IsSubmerged && CustomPlayer.Local == TransportPlayer1)
                 {
                     ModCompatibility.ChangeFloor(TransportPlayer1.GetTruePosition().y > -7);
-                    ModCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
+                    ModCompatibility.CheckOutOfBoundsElevator(CustomPlayer.Local);
                 }
             }
             else if (Player1Body != null && Player2Body != null)
@@ -1367,7 +1357,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 (Player1Body.transform.position, Player2Body.transform.position) = (Player2Body.TruePosition, Player1Body.TruePosition);
             }
 
-            if (PlayerControl.LocalPlayer == TransportPlayer1 || PlayerControl.LocalPlayer == TransportPlayer2)
+            if (CustomPlayer.Local == TransportPlayer1 || CustomPlayer.Local == TransportPlayer2)
             {
                 if (Minigame.Instance)
                     Minigame.Instance.Close();

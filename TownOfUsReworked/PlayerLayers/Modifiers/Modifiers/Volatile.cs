@@ -3,8 +3,8 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
     public class Volatile : Modifier
     {
         private float _time;
-        private int randomNumber;
-        private int otherNumber;
+        private int RandomNumber;
+        private int OtherNumber;
 
         public Volatile(PlayerControl player) : base(player)
         {
@@ -23,39 +23,39 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
         {
             base.UpdateHud(__instance);
 
-            if (Minigame.Instance)
+            if (Minigame.Instance || IntroCutscene.Instance)
                 return;
 
             _time += Time.deltaTime;
 
             if (_time >= CustomGameOptions.VolatileInterval)
             {
-                randomNumber = URandom.RandomRangeInt(0, 3);
+                RandomNumber = URandom.RandomRangeInt(0, 3);
                 _time -= CustomGameOptions.VolatileInterval;
                 Hidden = false;
                 Player.RegenTask();
 
-                if (randomNumber == 0)
+                if (RandomNumber == 0)
                 {
                     //Flashes
-                    otherNumber = URandom.RandomRangeInt(0, 256);
+                    OtherNumber = URandom.RandomRangeInt(0, 256);
                     var otherNumber2 = URandom.RandomRangeInt(0, 256);
                     var otherNumber3 = URandom.RandomRangeInt(0, 256);
-                    var flashColor = new Color32((byte)otherNumber, (byte)otherNumber2, (byte)otherNumber3, 255);
+                    var flashColor = new Color32((byte)OtherNumber, (byte)otherNumber2, (byte)otherNumber3, 255);
                     Utils.Flash(flashColor);
                 }
-                else if (randomNumber == 1)
+                else if (RandomNumber == 1)
                 {
                     //Fake someone killing you
-                    var fakePlayer = PlayerControl.AllPlayerControls.ToArray().ToList().Random();
+                    var fakePlayer = CustomPlayer.AllPlayers.ToArray().ToList().Random();
                     Player.NetTransform.Halt();
                     __instance.KillOverlay.ShowKillAnimation(fakePlayer.Data, Player.Data);
                 }
-                /*else if (randomNumber == 2)
+                /*else if (RandomNumber == 2)
                 {
                     //Hearing things
-                    otherNumber = URandom.RandomRangeInt(0, AssetManager.Sounds.Count);
-                    var sound = AssetManager.Sounds[otherNumber];
+                    OtherNumber = URandom.RandomRangeInt(0, AssetManager.Sounds.Count);
+                    var sound = AssetManager.Sounds[OtherNumber];
                     AssetManager.Play(sound);
                 }*/
             }

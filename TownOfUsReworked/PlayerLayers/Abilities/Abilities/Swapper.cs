@@ -135,7 +135,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
                 return true;
 
             var player = Utils.PlayerByVoteArea(voteArea);
-            return player.Data.IsDead || player.Data.Disconnected || (player == Player && player == PlayerControl.LocalPlayer && !CustomGameOptions.SwapSelf) || IsDead;
+            return player.Data.IsDead || player.Data.Disconnected || (player == Player && player == CustomPlayer.Local && !CustomGameOptions.SwapSelf) || IsDead;
         }
 
         public override void ConfirmVotePrefix(MeetingHud __instance)

@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Veteran : CrewRole
+    public class Veteran : Crew
     {
         public bool Enabled;
         public DateTime LastAlerted;

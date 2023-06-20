@@ -4,9 +4,9 @@ namespace TownOfUsReworked.CustomOptions
     public static class SettingsPatches
     {
         private static readonly string[] Menus = { "Global", "Crew", "Neutral", "Intruder", "Syndicate", "Modifier", "Objectifier", "Ability" };
-        private static int LastPage;
         private static readonly List<GameObject> MenuG = new();
         private static readonly List<SpriteRenderer> MenuS = new();
+        //private static readonly List<RolesSettingsMenu> MenuR = new();
 
         public static Export ExportButton;
         public static Import ImportButton;
@@ -18,6 +18,7 @@ namespace TownOfUsReworked.CustomOptions
             var togglePrefab = UObject.FindObjectOfType<ToggleOption>();
             var numberPrefab = UObject.FindObjectOfType<NumberOption>();
             var keyValPrefab = UObject.FindObjectOfType<KeyValueOption>();
+            var rolePrefab = UObject.FindObjectOfType<RoleOptionSetting>();
 
             if (type == MultiMenu.main)
             {
@@ -92,6 +93,13 @@ namespace TownOfUsReworked.CustomOptions
                         options.Add(str);
                         break;
 
+                    case CustomOptionType.Layers:
+                        var layer = UObject.Instantiate(rolePrefab, keyValPrefab.transform.parent);
+                        layer.transform.GetChild(8).gameObject.SetActive(false);
+                        option.Setting = layer;
+                        options.Add(layer);
+                        break;
+
                     case CustomOptionType.Toggle:
                     case CustomOptionType.Nested:
                     case CustomOptionType.Button:
@@ -160,7 +168,12 @@ namespace TownOfUsReworked.CustomOptions
                             customOption = CustomNestedOption.AllCancelButtons.Find(option => option.Setting == opt);
 
                             if (customOption == null)
-                                return true;
+                            {
+                                customOption = CustomLayersOption.AllRoleOptions.Find(option => option.Setting == opt);
+
+                                if (customOption == null)
+                                    return true;
+                            }
                         }
                     }
                 }
@@ -187,10 +200,7 @@ namespace TownOfUsReworked.CustomOptions
                 {
                     var touSettings = UObject.Instantiate(__instance.RegularGameSettings, __instance.RegularGameSettings.transform.parent);
                     touSettings.SetActive(false);
-                    touSettings.name = "ToU-RewSettings" + Menus[index];
-
-                    //Fix for scrollbar (bug in among us)
-                    touSettings.GetComponentInChildren<Scrollbar>().parent = touSettings.GetComponentInChildren<Scroller>();
+                    touSettings.name = $"ToU-Rew{Menus[index]}Settings";
 
                     var gameGroup = touSettings.transform.FindChild("GameGroup");
                     var title = gameGroup?.FindChild("Text");
@@ -223,7 +233,17 @@ namespace TownOfUsReworked.CustomOptions
                     passiveButton.OnClick.AddListener(ToggleButton(index));
                 }
 
-                ToggleButtonVoid(LastPage);
+                __instance.RegularGameSettings.SetActive(false);
+                __instance.RolesSettings.gameObject.SetActive(false);
+                __instance.GameSettingsHightlight.gameObject.SetActive(false);
+                __instance.RolesSettingsHightlight.gameObject.SetActive(false);
+                __instance.GameSettingsHightlight.enabled = false;
+                __instance.RolesSettingsHightlight.enabled = false;
+                __instance.RolesSettingsHightlight.gameObject.transform.parent.parent.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
+                __instance.GameSettingsHightlight.gameObject.transform.parent.parent.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
+                __instance.RolesSettingsHightlight.gameObject.transform.parent.parent.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().gameObject.SetActive(false);
+                __instance.GameSettingsHightlight.gameObject.transform.parent.parent.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().gameObject.SetActive(false);
+                ToggleButtonVoid(GameSettings.SettingsPage);
             }
 
             private static string GetSettingSprite(int index) => index switch
@@ -286,7 +306,7 @@ namespace TownOfUsReworked.CustomOptions
                     TownOfUsReworked.VanillaOptions.MaxPlayers = CustomGameOptions.LobbySize;
                     GameStartManager.Instance.LastPlayerCount = CustomGameOptions.LobbySize;
                     GameOptionsManager.Instance.currentNormalGameOptions = TownOfUsReworked.VanillaOptions;
-                    PlayerControl.LocalPlayer.RpcSyncSettings(GameOptionsManager.Instance.gameOptionsFactory.ToBytes(GameOptionsManager.Instance.currentGameOptions));
+                    CustomPlayer.Local.RpcSyncSettings(GameOptionsManager.Instance.gameOptionsFactory.ToBytes(GameOptionsManager.Instance.currentGameOptions));
                 }
             }
         }
@@ -304,11 +324,14 @@ namespace TownOfUsReworked.CustomOptions
 
             foreach (var g in MenuG)
             {
+                if (!g)
+                    continue;
+
                 g.SetActive(MenuG[id] == g);
                 MenuS[id].enabled = MenuG[id] == g;
             }
 
-            LastPage = id;
+            GameSettings.SettingsPage = id;
         }
 
         [HarmonyPatch(typeof(GameOptionsMenu), nameof(GameOptionsMenu.Start))]
@@ -556,12 +579,131 @@ namespace TownOfUsReworked.CustomOptions
             }
         }
 
+        [HarmonyPatch(typeof(RoleOptionSetting), nameof(RoleOptionSetting.SetRole))]
+        public static class RoleOptionOptionPatchSetRole
+        {
+            public static bool Prefix(RoleOptionSetting __instance)
+            {
+                var option = CustomOption.AllOptions.Find(option => option.Setting == __instance);
+                //Works but may need to change to gameObject.name check
+                return option == null;
+            }
+        }
+
+        [HarmonyPatch(typeof(RoleOptionSetting), nameof(RoleOptionSetting.ShowRoleDetails))]
+        public static class RoleOptionOptionPatchShowRoleDetails
+        {
+            public static bool Prefix(RoleOptionSetting __instance)
+            {
+                var option = CustomOption.AllOptions.Find(option => option.Setting == __instance);
+                //Works but may need to change to gameObject.name check
+
+                if (option is CustomLayersOption layer)
+                {
+                    layer.ShowRoleDetails();
+                    return false;
+                }
+
+                return true;
+            }
+        }
+
+        [HarmonyPatch(typeof(RoleOptionSetting), nameof(RoleOptionSetting.ShowAdvancedOptions))]
+        public static class RoleOptionOptionPatchShowAdvancedOptions
+        {
+            public static bool Prefix(RoleOptionSetting __instance)
+            {
+                var option = CustomOption.AllOptions.Find(option => option.Setting == __instance);
+                //Works but may need to change to gameObject.name check
+
+                if (option is CustomLayersOption layer)
+                {
+                    layer.ShowAdvancedOptions();
+                    return false;
+                }
+
+                return true;
+            }
+        }
+
+        [HarmonyPatch(typeof(RoleOptionSetting), nameof(RoleOptionSetting.IncreaseChance))]
+        public static class RoleOptionOptionPatchIncreaseChance
+        {
+            public static bool Prefix(RoleOptionSetting __instance)
+            {
+                var option = CustomOption.AllOptions.Find(option => option.Setting == __instance);
+                //Works but may need to change to gameObject.name check
+
+                if (option is CustomLayersOption layer)
+                {
+                    layer.IncreaseChance();
+                    return false;
+                }
+
+                return true;
+            }
+        }
+
+        [HarmonyPatch(typeof(RoleOptionSetting), nameof(RoleOptionSetting.DecreaseChance))]
+        public static class RoleOptionOptionPatchDecreaseChance
+        {
+            public static bool Prefix(RoleOptionSetting __instance)
+            {
+                var option = CustomOption.AllOptions.Find(option => option.Setting == __instance);
+                //Works but may need to change to gameObject.name check
+
+                if (option is CustomLayersOption layer)
+                {
+                    layer.DecreaseChance();
+                    return false;
+                }
+
+                return true;
+            }
+        }
+
+        [HarmonyPatch(typeof(RoleOptionSetting), nameof(RoleOptionSetting.IncreaseCount))]
+        public static class RoleOptionOptionPatchIncreaseCount
+        {
+            public static bool Prefix(RoleOptionSetting __instance)
+            {
+                var option = CustomOption.AllOptions.Find(option => option.Setting == __instance);
+                //Works but may need to change to gameObject.name check
+
+                if (option is CustomLayersOption layer)
+                {
+                    layer.IncreaseCount();
+                    return false;
+                }
+
+                return true;
+            }
+        }
+
+        [HarmonyPatch(typeof(RoleOptionSetting), nameof(RoleOptionSetting.DecreaseCount))]
+        public static class RoleOptionOptionPatchDecreaseCount
+        {
+            public static bool Prefix(RoleOptionSetting __instance)
+            {
+                var option = CustomOption.AllOptions.Find(option => option.Setting == __instance);
+                //Works but may need to change to gameObject.name check
+
+                if (option is CustomLayersOption layer)
+                {
+                    layer.DecreaseCount();
+                    return false;
+                }
+
+                return true;
+            }
+        }
+
         [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.RpcSyncSettings))]
         public static class PlayerControlPatch
         {
             public static void Postfix()
             {
-                if (PlayerControl.AllPlayerControls.Count < 1 || !AmongUsClient.Instance || !PlayerControl.LocalPlayer || !AmongUsClient.Instance.AmHost)
+                if (CustomPlayer.AllPlayers.Count < 1 || !AmongUsClient.Instance || !CustomPlayer.Local || !AmongUsClient.Instance.AmHost)
                     return;
 
                 RPC.SendRPC();
@@ -574,7 +716,7 @@ namespace TownOfUsReworked.CustomOptions
         {
             public static void Postfix()
             {
-                if (PlayerControl.AllPlayerControls.Count < 1 || !AmongUsClient.Instance || !PlayerControl.LocalPlayer || !AmongUsClient.Instance.AmHost)
+                if (CustomPlayer.AllPlayers.Count < 1 || !AmongUsClient.Instance || !CustomPlayer.Local || !AmongUsClient.Instance.AmHost)
                     return;
 
                 RPC.SendRPC();
@@ -584,7 +726,8 @@ namespace TownOfUsReworked.CustomOptions
         [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
         public static class HudManagerUpdate
         {
-            private static float MinX = -5.233334f, MinY = 2.9f;
+            private static float MinX = -5.233334f;
+            private const float MinY = 2.9f;
             private static Scroller Scroller;
             private static Vector3 LastPosition;
             private static float LastAspect;

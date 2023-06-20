@@ -1,11 +1,12 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class BountyHunter : NeutralRole
+    public class BountyHunter : Neutral
     {
         public PlayerControl TargetPlayer;
         public bool TargetKilled;
         public bool ColorHintGiven;
         public bool LetterHintGiven;
+        public bool RoleHintGiven;
         public bool TargetFound;
         public DateTime LastChecked;
         public CustomButton GuessButton;
@@ -13,15 +14,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public bool ButtonUsable => UsesLeft > 0;
         public bool Failed => TargetPlayer == null || (UsesLeft <= 0 && !TargetFound) || (!TargetKilled && (TargetPlayer.Data.IsDead || TargetPlayer.Data.Disconnected));
         public int UsesLeft;
-        private int lettersGiven;
-        private bool lettersExhausted;
-        private readonly List<string> letters = new();
+        private int LettersGiven;
+        private bool LettersExhausted;
+        private readonly List<string> Letters = new();
+        public bool CanHunt => (TargetFound && !TargetPlayer.Data.IsDead && !TargetPlayer.Data.Disconnected) || (TargetKilled && !CustomGameOptions.AvoidNeutralKingmakers);
 
         public BountyHunter(PlayerControl player) : base(player)
         {
             Name = "Bounty Hunter";
             StartText = () => "Find And Kill Your Target";
-            Objectives = () => "- Find and kill your target";
+            Objectives = () => TargetKilled ? "- You have completed the bounty" : "- Find and kill your target";
             AbilitiesText = () => "- You can guess a player to be your bounty\n- Upon finding the bounty, you can kill them\n- After your bounty has been killed by you, you can kill " +
                 "others as many times as you want\n- If your target dies not by your hands, you will become a <color=#678D36FF>Troll</color>";
             Color = CustomGameOptions.CustomNeutColors ? Colors.BountyHunter : Colors.Neutral;
@@ -51,10 +53,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var newRole = new Troll(Player);
             newRole.RoleUpdate(this);
 
-            if (Local)
+            if (Local && !IntroCutscene.Instance)
                 Utils.Flash(Colors.Troll);
 
-            if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
+            if (CustomPlayer.Local.Is(RoleEnum.Seer) && !IntroCutscene.Instance)
                 Utils.Flash(Colors.Seer);
         }
 
@@ -64,74 +66,74 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var targetName = TargetPlayer.name;
             var something = "";
 
-            if (!lettersExhausted)
+            if (!LettersExhausted)
             {
                 var random = URandom.RandomRangeInt(0, targetName.Length);
                 var random2 = URandom.RandomRangeInt(0, targetName.Length);
                 var random3 = URandom.RandomRangeInt(0, targetName.Length);
 
-                if (lettersGiven <= targetName.Length - 3)
+                if (LettersGiven <= targetName.Length - 3)
                 {
-                    while (random == random2 || random2 == random3 || random == random3 || letters.Contains($"{targetName[random]}") || letters.Contains($"{targetName[random2]}") ||
-                        letters.Contains($"{targetName[random3]}"))
+                    while (random == random2 || random2 == random3 || random == random3 || Letters.Contains($"{targetName[random]}") || Letters.Contains($"{targetName[random2]}") ||
+                        Letters.Contains($"{targetName[random3]}"))
                     {
-                        if (random == random2 || letters.Contains($"{targetName[random2]}"))
+                        if (random == random2 || Letters.Contains($"{targetName[random2]}"))
                             random2 = URandom.RandomRangeInt(0, targetName.Length);
 
-                        if (random2 == random3 || letters.Contains($"{targetName[random3]}"))
+                        if (random2 == random3 || Letters.Contains($"{targetName[random3]}"))
                             random3 = URandom.RandomRangeInt(0, targetName.Length);
 
-                        if (random == random3 || letters.Contains($"{targetName[random]}"))
+                        if (random == random3 || Letters.Contains($"{targetName[random]}"))
                             random = URandom.RandomRangeInt(0, targetName.Length);
                     }
 
-                    something = $"Your target's name has the letters {targetName[random]}, {targetName[random2]} and {targetName[random3]} in it!";
+                    something = $"Your target's name has the Letters {targetName[random]}, {targetName[random2]} and {targetName[random3]} in it!";
                 }
-                else if (lettersGiven == targetName.Length - 2)
+                else if (LettersGiven == targetName.Length - 2)
                 {
-                    while (random == random2 || letters.Contains($"{targetName[random]}") || letters.Contains($"{targetName[random2]}"))
+                    while (random == random2 || Letters.Contains($"{targetName[random]}") || Letters.Contains($"{targetName[random2]}"))
                     {
-                        if (letters.Contains($"{targetName[random2]}"))
+                        if (Letters.Contains($"{targetName[random2]}"))
                             random2 = URandom.RandomRangeInt(0, targetName.Length);
 
-                        if (letters.Contains($"{targetName[random]}"))
+                        if (Letters.Contains($"{targetName[random]}"))
                             random = URandom.RandomRangeInt(0, targetName.Length);
 
                         if (random == random2)
                             random = URandom.RandomRangeInt(0, targetName.Length);
                     }
 
-                    something = $"Your target's name has the letters {targetName[random]} and {targetName[random2]} in it!";
+                    something = $"Your target's name has the Letters {targetName[random]} and {targetName[random2]} in it!";
                 }
-                else if (lettersGiven == targetName.Length - 1)
+                else if (LettersGiven == targetName.Length - 1)
                 {
-                    while (letters.Contains($"{targetName[random]}"))
+                    while (Letters.Contains($"{targetName[random]}"))
                         random = URandom.RandomRangeInt(0, targetName.Length);
 
                     something = $"Your target's name has the letter {targetName[random]} in it!";
                 }
-                else if (lettersGiven == targetName.Length && !lettersExhausted)
-                    lettersExhausted = true;
+                else if (LettersGiven == targetName.Length && !LettersExhausted)
+                    LettersExhausted = true;
 
-                if (!lettersExhausted)
+                if (!LettersExhausted)
                 {
-                    if (lettersGiven <= targetName.Length - 3)
+                    if (LettersGiven <= targetName.Length - 3)
                     {
-                        letters.Add($"{targetName[random]}");
-                        letters.Add($"{targetName[random2]}");
-                        letters.Add($"{targetName[random3]}");
-                        lettersGiven += 3;
+                        Letters.Add($"{targetName[random]}");
+                        Letters.Add($"{targetName[random2]}");
+                        Letters.Add($"{targetName[random3]}");
+                        LettersGiven += 3;
                     }
-                    else if (lettersGiven == targetName.Length - 2)
+                    else if (LettersGiven == targetName.Length - 2)
                     {
-                        letters.Add($"{targetName[random]}");
-                        letters.Add($"{targetName[random2]}");
-                        lettersGiven += 2;
+                        Letters.Add($"{targetName[random]}");
+                        Letters.Add($"{targetName[random2]}");
+                        LettersGiven += 2;
                     }
-                    else if (lettersGiven == targetName.Length - 1)
+                    else if (LettersGiven == targetName.Length - 1)
                     {
-                        letters.Add($"{targetName[random]}");
-                        lettersGiven++;
+                        Letters.Add($"{targetName[random]}");
+                        LettersGiven++;
                     }
 
                     LetterHintGiven = true;
@@ -140,6 +142,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 {
                     something = $"Your target is a {ColorUtils.LightDarkColors[TargetPlayer.CurrentOutfit.ColorId].ToLower()} color!";
                     ColorHintGiven = true;
+                }
+                else if (!RoleHintGiven)
+                {
+                    something = $"Your target is the {GetRole(TargetPlayer)}!";
+                    RoleHintGiven = true;
                 }
             }
 
@@ -155,7 +162,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             base.UpdateHud(__instance);
             GuessButton.Update("GUESS", CheckTimer(), CustomGameOptions.BountyHunterCooldown, UsesLeft, true, !TargetFound);
-            HuntButton.Update("HUNT", CheckTimer(), CustomGameOptions.BountyHunterCooldown, true, TargetFound);
+            HuntButton.Update("HUNT", CheckTimer(), CustomGameOptions.BountyHunterCooldown, true, CanHunt);
 
             if (Failed && !IsDead)
             {

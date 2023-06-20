@@ -5,11 +5,11 @@ namespace TownOfUsReworked.Patches
     {
         public static bool Prefix(PlayerVoteArea __instance)
         {
-            if (!PlayerControl.LocalPlayer.Is(AbilityEnum.Politician))
+            if (! CustomPlayer.Local.Is(AbilityEnum.Politician))
                 return true;
 
-            var flag = PlayerControl.LocalPlayer.Is(AbilityEnum.Politician) && !((Politician)Ability.LocalAbility).CanVote;
-            __instance.Buttons.SetActive(!(PlayerControl.LocalPlayer.Data.IsDead || __instance.AmDead || !__instance.Parent.Select(__instance.TargetPlayerId) || flag));
+            var flag = CustomPlayer.Local.Is(AbilityEnum.Politician) && !((Politician)Ability.LocalAbility).CanVote;
+            __instance.Buttons.SetActive(!(CustomPlayer.LocalCustom.IsDead || __instance.AmDead || !__instance.Parent.Select(__instance.TargetPlayerId) || flag));
             return false;
         }
     }
@@ -19,13 +19,13 @@ namespace TownOfUsReworked.Patches
     {
         public static bool Prefix(PlayerVoteArea __instance)
         {
-            if (!PlayerControl.LocalPlayer.Is(AbilityEnum.Politician))
+            if (! CustomPlayer.Local.Is(AbilityEnum.Politician))
                 return true;
 
             if (__instance.Parent.state is MeetingHud.VoteStates.Proceeding or MeetingHud.VoteStates.Results)
                 return false;
 
-            if (PlayerControl.LocalPlayer.Is(AbilityEnum.Politician))
+            if (CustomPlayer.Local.Is(AbilityEnum.Politician))
             {
                 var pol = (Politician)Ability.LocalAbility;
 

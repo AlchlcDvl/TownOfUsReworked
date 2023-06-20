@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Survivor : NeutralRole
+    public class Survivor : Neutral
     {
         public bool Enabled;
         public DateTime LastVested;
@@ -65,7 +65,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
             writer.Write((byte)ActionsRPC.Vest);
-            writer.Write(PlayerControl.LocalPlayer.PlayerId);
+            writer.Write(CustomPlayer.Local.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
             TimeRemaining = CustomGameOptions.VestDuration;
             UsesLeft--;

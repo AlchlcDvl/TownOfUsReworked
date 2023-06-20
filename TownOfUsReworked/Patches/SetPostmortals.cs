@@ -18,8 +18,8 @@ namespace TownOfUsReworked.Patches
                 SetPostmortals.ExileControllerPostfix(ConfirmEjects.LastExiled);
             else if (obj.name.Contains("SpawnInMinigame"))
             {
-                if (PlayerControl.LocalPlayer.Is(ModifierEnum.Astral))
-                    Modifier.GetModifier<Astral>(PlayerControl.LocalPlayer).SetPosition();
+                if (CustomPlayer.Local.Is(ModifierEnum.Astral))
+                    Modifier.GetModifier<Astral>(CustomPlayer.Local).SetPosition();
             }
         }
     }
@@ -33,11 +33,11 @@ namespace TownOfUsReworked.Patches
 
         public static void ExileControllerPostfix(ExileController __instance)
         {
-            if (PlayerControl.LocalPlayer.Data.Disconnected)
+            if (CustomPlayer.LocalCustom.Data.Disconnected)
                 return;
 
-            if (PlayerControl.LocalPlayer.Is(ModifierEnum.Astral))
-                Modifier.GetModifier<Astral>(PlayerControl.LocalPlayer).SetPosition();
+            if (CustomPlayer.Local.Is(ModifierEnum.Astral))
+                Modifier.GetModifier<Astral>(CustomPlayer.Local).SetPosition();
 
             foreach (var player in AssassinatedPlayers)
             {
@@ -100,6 +100,42 @@ namespace TownOfUsReworked.Patches
                     dict.ToBeEjected.Clear();
                 }
             }
+
+            foreach (var bh in Role.GetRoles<BountyHunter>(RoleEnum.BountyHunter))
+            {
+                if (bh.TargetKilled && !bh.IsDead)
+                {
+                    bh.Player.Exiled();
+                    bh.DeathReason = DeathReasonEnum.Escaped;
+                }
+            }
+
+            foreach (var exe in Role.GetRoles<Executioner>(RoleEnum.Executioner))
+            {
+                if (exe.TargetVotedOut && !exe.IsDead)
+                {
+                    exe.Player.Exiled();
+                    exe.DeathReason = DeathReasonEnum.Escaped;
+                }
+            }
+
+            foreach (var guess in Role.GetRoles<Guesser>(RoleEnum.Guesser))
+            {
+                if (guess.TargetGuessed && !guess.IsDead)
+                {
+                    guess.Player.Exiled();
+                    guess.DeathReason = DeathReasonEnum.Escaped;
+                }
+            }
+
+            foreach (var cann in Role.GetRoles<Cannibal>(RoleEnum.Cannibal))
+            {
+                if (cann.Eaten && !cann.IsDead)
+                {
+                    cann.Player.Exiled();
+                    cann.DeathReason = DeathReasonEnum.Escaped;
+                }
+            }
         }
 
         public static void Reassign(PlayerControl player)
@@ -156,40 +192,6 @@ namespace TownOfUsReworked.Patches
             player.MyPhysics.RpcEnterVent(startingVent.Id);
         }
 
-        public static void RemoveTasks(PlayerControl player)
-        {
-            foreach (var task in player.myTasks)
-            {
-                if (task.TryCast<NormalPlayerTask>() != null)
-                {
-                    var normalPlayerTask = task.Cast<NormalPlayerTask>();
-                    var updateArrow = normalPlayerTask.taskStep > 0;
-                    normalPlayerTask.taskStep = 0;
-                    normalPlayerTask.Initialize();
-
-                    if (normalPlayerTask.TaskType == TaskTypes.PickUpTowels)
-                    {
-                        foreach (var console in UObject.FindObjectsOfType<TowelTaskConsole>())
-                            console.Image.color = Color.white;
-                    }
-
-                    normalPlayerTask.taskStep = 0;
-
-                    if (normalPlayerTask.TaskType == TaskTypes.UploadData)
-                        normalPlayerTask.taskStep = 1;
-
-                    if ((normalPlayerTask.TaskType is TaskTypes.EmptyGarbage or TaskTypes.EmptyChute) && (TownOfUsReworked.VanillaOptions.MapId is 0 or 3 or 4))
-                        normalPlayerTask.taskStep = 1;
-
-                    if (updateArrow)
-                        normalPlayerTask.UpdateArrow();
-
-                    var taskInfo = player.Data.FindTaskById(task.Id);
-                    taskInfo.Complete = false;
-                }
-            }
-        }
-
         public static PlayerControl WillBeRevealer;
         public static bool RevealerOn;
 
@@ -212,14 +214,14 @@ namespace TownOfUsReworked.Patches
                 var former = Role.GetRole(WillBeRevealer);
                 var role = new Revealer(WillBeRevealer) { FormerRole = former };
                 role.RoleUpdate(former);
-                RemoveTasks(PlayerControl.LocalPlayer);
+                Utils.RemoveTasks(CustomPlayer.Local);
                 WillBeRevealer.gameObject.layer = LayerMask.NameToLayer("Players");
 
-                if (PlayerControl.LocalPlayer != WillBeRevealer)
-                    PlayerControl.LocalPlayer.MyPhysics.ResetMoveState();
+                if (CustomPlayer.Local != WillBeRevealer)
+                    CustomPlayer.Local.MyPhysics.ResetMoveState();
             }
 
-            if (WillBeRevealer == PlayerControl.LocalPlayer)
+            if (WillBeRevealer == CustomPlayer.Local)
             {
                 if (Role.GetRole<Revealer>(WillBeRevealer).Caught)
                     return;
@@ -250,14 +252,14 @@ namespace TownOfUsReworked.Patches
                 var former = Role.GetRole(WillBePhantom);
                 var role = new Phantom(WillBePhantom);
                 role.RoleUpdate(former);
-                RemoveTasks(WillBePhantom);
+                Utils.RemoveTasks(WillBePhantom);
                 WillBePhantom.gameObject.layer = LayerMask.NameToLayer("Players");
 
-                if (PlayerControl.LocalPlayer != WillBePhantom)
-                    PlayerControl.LocalPlayer.MyPhysics.ResetMoveState();
+                if (CustomPlayer.Local != WillBePhantom)
+                    CustomPlayer.Local.MyPhysics.ResetMoveState();
             }
 
-            if (WillBePhantom == PlayerControl.LocalPlayer)
+            if (WillBePhantom == CustomPlayer.Local)
             {
                 if (Role.GetRole<Phantom>(WillBePhantom).Caught)
                     return;
@@ -293,11 +295,11 @@ namespace TownOfUsReworked.Patches
                 role.RoleUpdate(former);
                 WillBeBanshee.gameObject.layer = LayerMask.NameToLayer("Players");
 
-                if (PlayerControl.LocalPlayer != WillBeBanshee)
-                    PlayerControl.LocalPlayer.MyPhysics.ResetMoveState();
+                if (CustomPlayer.Local != WillBeBanshee)
+                    CustomPlayer.Local.MyPhysics.ResetMoveState();
             }
 
-            if (WillBeBanshee == PlayerControl.LocalPlayer)
+            if (WillBeBanshee == CustomPlayer.Local)
             {
                 if (Role.GetRole<Banshee>(WillBeBanshee).Caught)
                     return;
@@ -333,11 +335,11 @@ namespace TownOfUsReworked.Patches
                 role.RoleUpdate(former);
                 WillBeGhoul.gameObject.layer = LayerMask.NameToLayer("Players");
 
-                if (PlayerControl.LocalPlayer != WillBeGhoul)
-                    PlayerControl.LocalPlayer.MyPhysics.ResetMoveState();
+                if (CustomPlayer.Local != WillBeGhoul)
+                    CustomPlayer.Local.MyPhysics.ResetMoveState();
             }
 
-            if (WillBeGhoul == PlayerControl.LocalPlayer)
+            if (WillBeGhoul == CustomPlayer.Local)
             {
                 if (Role.GetRole<Ghoul>(WillBeGhoul).Caught)
                     return;

@@ -12,9 +12,9 @@ namespace TownOfUsReworked.Patches
             var scale = 1f;
 
             //Update medical details for Giant and Dwarf modifiers based on game options
-            if (PlayerControl.LocalPlayer.Is(ModifierEnum.Giant))
+            if (CustomPlayer.Local.Is(ModifierEnum.Giant))
                 scale = CustomGameOptions.GiantScale;
-            else if (PlayerControl.LocalPlayer.Is(ModifierEnum.Dwarf))
+            else if (CustomPlayer.Local.Is(ModifierEnum.Dwarf))
                 scale = CustomGameOptions.DwarfScale;
 
             var newHeightFeet = oldHeightFeet * scale;
@@ -51,7 +51,7 @@ namespace TownOfUsReworked.Patches
             if (CustomGameOptions.ParallelMedScans)
             {
                 //Allows multiple medbay scans at once
-                __instance.medscan.CurrentUser = PlayerControl.LocalPlayer.PlayerId;
+                __instance.medscan.CurrentUser = CustomPlayer.Local.PlayerId;
                 __instance.medscan.UsersList.Clear();
             }
         }

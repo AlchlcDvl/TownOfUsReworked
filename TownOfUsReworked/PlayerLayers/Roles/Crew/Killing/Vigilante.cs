@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Vigilante : CrewRole
+    public class Vigilante : Crew
     {
         public DateTime LastKilled;
         public bool KilledInno;

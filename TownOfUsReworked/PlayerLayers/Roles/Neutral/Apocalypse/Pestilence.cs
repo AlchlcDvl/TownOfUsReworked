@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Pestilence : NeutralRole
+    public class Pestilence : Neutral
     {
         public DateTime LastKilled;
         public CustomButton ObliterateButton;

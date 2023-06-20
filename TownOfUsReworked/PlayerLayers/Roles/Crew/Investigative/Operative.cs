@@ -1,6 +1,6 @@
 ﻿namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Operative : CrewRole
+    public class Operative : Crew
     {
         public List<Bug> Bugs = new();
         public DateTime LastBugged;

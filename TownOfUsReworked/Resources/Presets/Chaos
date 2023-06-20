@@ -29,7 +29,7 @@ Lobby Size
 Game Mode
 1
 <color=#B3B3B3FF>Neutrals</color> Count
-1
+13
 Add <color=#EE7600FF>Arsonist</color>
 True
 Add <color=#642DEAFF>Cryomaniac</color>
@@ -404,6 +404,8 @@ Long Tasks
 1
 Short Tasks
 1
+<color=#8CFFFFFF>Crew</color> Ghost Tasks Count To Win
+True
 <color=#8CFFFFFF>Crew</color> Vision
 0.5
 Max <color=#8CFFFFFF>Crew</color> <color=#FFD700FF>Roles</color>
@@ -413,8 +415,6 @@ Min <color=#8CFFFFFF>Crew</color> <color=#FFD700FF>Roles</color>
 <color=#8CFFFFFF>Crew</color> Can Vent
 True
 Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Auditor</color> <color=#FFD700FF>Roles</color>
-14
-Min <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Auditor</color> <color=#FFD700FF>Roles</color>
 14
 <color=#708EEFFF>Mystic</color> Count
 14
@@ -429,8 +429,6 @@ False
 Stake Cooldown
 10
 Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Investigative</color> <color=#FFD700FF>Roles</color>
-14
-Min <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Investigative</color> <color=#FFD700FF>Roles</color>
 14
 <color=#4D99E6FF>Coroner</color> Count
 14
@@ -448,8 +446,6 @@ Compare Cooldown
 10
 Autopsy Cooldown
 10
-Compare Limit
-15
 <color=#4D4DFFFF>Detective</color> Count
 14
 <color=#4D4DFFFF>Detective</color> Is Unique In All Any
@@ -530,8 +526,6 @@ Who Sees Dead Bodies On Admin
 3
 Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>
 14
-Min <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>
-14
 <color=#998040FF>Veteran</color> Count
 14
 <color=#998040FF>Veteran</color> Is Unique In All Any
@@ -562,8 +556,6 @@ Max Bullets
 15
 Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Protective</color> <color=#FFD700FF>Roles</color>
 14
-Min <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Protective</color> <color=#FFD700FF>Roles</color>
-14
 <color=#660000FF>Altruist</color> Count
 14
 <color=#660000FF>Altruist</color> Is Unique In All Any
@@ -587,8 +579,6 @@ Who Gets Murder Attempt Indicator
 Shield Breaks On Murder Attempt
 True
 Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Sovereign</color> <color=#FFD700FF>Roles</color>
-14
-Min <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Sovereign</color> <color=#FFD700FF>Roles</color>
 14
 <color=#00CB97FF>Dictator</color> Count
 1
@@ -628,8 +618,6 @@ Knights Can Button
 True
 Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>
 14
-Min <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>
-14
 <color=#5411F8FF>Chameleon</color> Count
 14
 <color=#5411F8FF>Chameleon</color> Is Unique In All Any
@@ -653,7 +641,7 @@ Max Fixes
 <color=#803333FF>Escort</color> Is Unique In All Any
 False
 Roleblock Cooldown
-25
+10
 Roleblock Duration
 10
 <color=#8D0F8CFF>Retributionist</color> Count
@@ -702,21 +690,15 @@ Enable Custom <color=#B3B3B3FF>Neutral</color> Colors
 True
 <color=#B3B3B3FF>Neutral</color> Vision
 1
+Lights Sabotage Affects <color=#B3B3B3FF>Neutral</color> Vision
+True
 Max <color=#B3B3B3FF>Neutral</color> <color=#FFD700FF>Roles</color>
 14
 Min <color=#B3B3B3FF>Neutral</color> <color=#FFD700FF>Roles</color>
 14
-Lights Sabotage Affects <color=#B3B3B3FF>Neutrals</color> Vision
-True
 <color=#B3B3B3FF>Neutrals</color> Together, Strong
 0
-<color=#FFFF00FF>Vigilante</color> Kills <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Benigns</color>
-True
-<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color> Have <color=#FF0000FF>Intruder</color> Vision
-True
-<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color> Know Each Other
-True
-<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Evils</color> End The Game When Winning
+Avoid <color=#B3B3B3FF>Neutral</color> Kingmakers
 False
 <color=#B3B3B3FF>Neutrals</color> Can Vent
 True
@@ -730,8 +712,8 @@ Obliterate Cooldown
 True
 Max <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Benign</color> <color=#FFD700FF>Roles</color>
 14
-Min <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Benign</color> <color=#FFD700FF>Roles</color>
-14
+<color=#FFFF00FF>Vigilante</color> Kills <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Benigns</color>
+True
 <color=#22FFFFFF>Amnesiac</color> Count
 14
 <color=#22FFFFFF>Amnesiac</color> Is Unique In All Any
@@ -796,8 +778,8 @@ True
 True
 Max <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Evil</color> <color=#FFD700FF>Roles</color>
 14
-Min <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Evil</color> <color=#FFD700FF>Roles</color>
-14
+<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Evils</color> End The Game When Winning
+False
 <color=#00ACC2FF>Actor</color> Count
 14
 <color=#00ACC2FF>Actor</color> Is Unique In All Any
@@ -817,7 +799,7 @@ False
 Guess Cooldown
 10
 Max Guesses
-15
+5
 <color=#B51E39FF>Bounty Hunter</color> Can Vent
 True
 <color=#FFFF00FF>Vigilante</color> Kills <color=#B51E39FF>Bounty Hunter</color>
@@ -833,7 +815,7 @@ Bodies Needed To Win
 <color=#8C4005FF>Cannibal</color> Gets Arrows To Dead Bodies
 True
 Arrow Appearance Delay
-0
+5
 <color=#8C4005FF>Cannibal</color> Can Vent
 True
 <color=#FFFF00FF>Vigilante</color> Kills <color=#8C4005FF>Cannibal</color>
@@ -858,12 +840,6 @@ True
 True
 Target Ejection Reveals Existence Of <color=#CCCCCCFF>Executioner</color>
 True
-<color=#CCCCCCFF>Executioner</color> Can Have <color=#FF0000FF>Intruder</color> Targets
-True
-<color=#CCCCCCFF>Executioner</color> Can Have <color=#008000FF>Syndicate</color> Targets
-True
-<color=#CCCCCCFF>Executioner</color> Can Have <color=#B3B3B3FF>Neutral</color> Targets
-True
 <color=#CCCCCCFF>Executioner</color> Can Win After Death
 True
 <color=#FFFF00FF>Vigilante</color> Kills <color=#CCCCCCFF>Executioner</color>
@@ -883,7 +859,7 @@ True
 <color=#EEE5BEFF>Guesser</color> Can Guess Multiple Times
 True
 Max Guesses
-14
+5
 <color=#EEE5BEFF>Guesser</color> Can Guess After Voting
 True
 <color=#FFFF00FF>Vigilante</color> Kills <color=#EEE5BEFF>Guesser</color>
@@ -918,8 +894,6 @@ True
 True
 Max <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Harbinger</color> <color=#FFD700FF>Roles</color>
 14
-Min <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Harbinger</color> <color=#FFD700FF>Roles</color>
-14
 <color=#CFFE61FF>Plaguebearer</color> Count
 14
 <color=#CFFE61FF>Plaguebearer</color> Is Unique In All Any
@@ -930,8 +904,10 @@ Infect Cooldown
 True
 Max <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>
 14
-Min <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>
-14
+<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color> Have <color=#FF0000FF>Intruder</color> Vision
+True
+<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color> Know Each Other
+True
 <color=#EE7600FF>Arsonist</color> Count
 14
 <color=#EE7600FF>Arsonist</color> Is Unique In All Any
@@ -1001,7 +977,7 @@ False
 Bloodlust Cooldown
 10
 Bloodlust Duration
-60
+10
 Stab Cooldown
 0.5
 <color=#336EFFFF>Serial Killer</color> Can Vent
@@ -1018,8 +994,8 @@ Maul Radius
 True
 Max <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Neophyte</color> <color=#FFD700FF>Roles</color>
 14
-Min <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Neophyte</color> <color=#FFD700FF>Roles</color>
-14
+<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Neophytes</color> Have <color=#FF0000FF>Intruder</color> Vision
+True
 <color=#AC8A00FF>Dracula</color> Count
 14
 <color=#AC8A00FF>Dracula</color> Is Unique In All Any
@@ -1063,7 +1039,7 @@ False
 Target's Body Disappears On Beginning Of Resurrect
 True
 Resurrect Duration
-10
+1
 <color=#BF5FFFFF>Necromancer</color> Can Vent
 True
 Resurrected Can Vent
@@ -1093,7 +1069,7 @@ Kill Cooldown
 <color=#11806AFF>Betrayer</color> Can Vent
 True
 Tasks Remaining When <color=#662962FF>Phantom</color> Can Be Clicked
-3
+1
 Players Are Alerted When <color=#662962FF>Phantom</color> Is Clickable
 True
 Enable Custom <color=#FF0000FF>Intruder</color> Colors
@@ -1108,13 +1084,13 @@ True
 True
 <color=#FF0000FF>Intruder</color> Can Sabotage
 True
+Dead <color=#FF0000FF>Intruders</color> Can Sabotage
+False
 Max <color=#FF0000FF>Intruder</color> <color=#FFD700FF>Roles</color>
 14
 Min <color=#FF0000FF>Intruder</color> <color=#FFD700FF>Roles</color>
 14
 Max <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Concealing</color> <color=#FFD700FF>Roles</color>
-14
-Min <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Concealing</color> <color=#FFD700FF>Roles</color>
 14
 <color=#02A752FF>Blackmailer</color> Count
 14
@@ -1172,8 +1148,6 @@ Drag Speed
 3
 Max <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Deception</color> <color=#FFD700FF>Roles</color>
 14
-Min <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Deception</color> <color=#FFD700FF>Roles</color>
-14
 <color=#40B4FFFF>Disguiser</color> Count
 14
 <color=#40B4FFFF>Disguiser</color> Is Unique In All Any
@@ -1216,8 +1190,6 @@ Invis Duration
 True
 Max <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>
 14
-Min <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>
-14
 <color=#2BD29CFF>Ambusher</color> Count
 14
 <color=#2BD29CFF>Ambusher</color> Is Unique In All Any
@@ -1242,8 +1214,6 @@ Enforce Explosion Radius
 5
 Max <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>
 14
-Min <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>
-14
 <color=#FFFF99FF>Consigliere</color> Count
 14
 <color=#FFFF99FF>Consigliere</color> Is Unique In All Any
@@ -1265,7 +1235,7 @@ Roleblock Duration
 <color=#404C08FF>Godfather</color> Is Unique In All Any
 False
 Ability Cooldown Bonus
-0.25
+0.75
 <color=#AA7632FF>Miner</color> Count
 14
 <color=#AA7632FF>Miner</color> Is Unique In All Any
@@ -1309,8 +1279,6 @@ Max <color=#008000FF>Syndicate</color> <color=#FFD700FF>Roles</color>
 Min <color=#008000FF>Syndicate</color> <color=#FFD700FF>Roles</color>
 14
 Max <color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Disruption</color> <color=#FFD700FF>Roles</color>
-14
-Min <color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Disruption</color> <color=#FFD700FF>Roles</color>
 14
 <color=#C02525FF>Concealer</color> Count
 14
@@ -1364,8 +1332,6 @@ Silence Is Revealed To Everyone
 True
 Max <color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>
 14
-Min <color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>
-14
 <color=#C9CC3FFF>Bomber</color> Count
 14
 <color=#C9CC3FFF>Bomber</color> Is Unique In All Any
@@ -1390,12 +1356,16 @@ True
 14
 <color=#B345FFFF>Collider</color> Is Unique In All Any
 False
-Collide Cooldown
+Charge Cooldown
 10
 Collide Radius
 5
 Chaos Drive Collide Radius Increase
 5
+Charge Cooldowns Are Linked
+False
+Collision Resets Charge Cooldowns
+True
 <color=#DF7AE8FF>Crusader</color> Count
 14
 <color=#DF7AE8FF>Crusader</color> Is Unique In All Any
@@ -1417,8 +1387,6 @@ Poison Cooldown
 Poison Kill Delay
 1
 Max <color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Power</color> <color=#FFD700FF>Roles</color>
-14
-Min <color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Power</color> <color=#FFD700FF>Roles</color>
 14
 <color=#0028F5FF>Spellslinger</color> Count
 14
@@ -1442,14 +1410,12 @@ True
 True
 Max <color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>
 14
-Min <color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>
-14
 <color=#FFFCCEFF>Rebel</color> Count
 14
 <color=#FFFCCEFF>Rebel</color> Is Unique In All Any
 False
 Ability Cooldown Bonus
-0.25
+0.75
 <color=#7E4D00FF>Stalker</color> Count
 1
 <color=#7E4D00FF>Stalker</color> Is Unique In All Any
@@ -1511,9 +1477,9 @@ True
 <color=#758000FF>Drunk</color> Is Unique In All Any
 False
 Controls Reverse Over Time
-False
+True
 Reversed Controls Interval
-1
+20
 <color=#FF8080FF>Dwarf</color> Count
 14
 <color=#FF8080FF>Dwarf</color> Is Unique In All Any
@@ -1601,6 +1567,8 @@ True
 <color=#073763FF>Assassin</color> Can Guess Select <color=#DD585BFF>Objectifiers</color>
 True
 <color=#073763FF>Assassin</color> Can Guess <color=#FF9900FF>Abilities</color>
+True
+<color=#073763FF>Assassin</color> Can Guess <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Investigatives</color>
 True
 <color=#073763FF>Assassin</color> Can Guess After Voting
 True

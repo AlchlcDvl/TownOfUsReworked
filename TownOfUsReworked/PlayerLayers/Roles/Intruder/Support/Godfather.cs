@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Godfather : IntruderRole
+    public class Godfather : Intruder
     {
         public bool HasDeclared;
         public CustomButton DeclareButton;
@@ -37,10 +37,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             mafioso.RoleUpdate(formerRole);
 
-            if (target == PlayerControl.LocalPlayer)
+            if (target == CustomPlayer.Local)
                 Utils.Flash(Colors.Mafioso);
 
-            if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
+            if (CustomPlayer.Local.Is(RoleEnum.Seer))
                 Utils.Flash(Colors.Seer);
         }
 
@@ -66,7 +66,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 LastDeclared.AddSeconds(CustomGameOptions.ProtectKCReset);
         }
 
-        public bool Exception1(PlayerControl player) => !player.Is(Faction) || player.GetRole() is RoleEnum.PromotedGodfather or RoleEnum.Mafioso or RoleEnum.Godfather;
+        public bool Exception1(PlayerControl player) => !player.Is(Faction) || (!(player.GetRole() is RoleEnum.PromotedGodfather or RoleEnum.Mafioso or RoleEnum.Godfather) &&
+            player.Is(Faction));
 
         public override void UpdateHud(HudManager __instance)
         {

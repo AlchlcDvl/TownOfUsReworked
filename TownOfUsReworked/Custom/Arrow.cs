@@ -44,7 +44,7 @@ namespace TownOfUsReworked.Custom
             if (ArrowObj == null || Arrow == null || Render == null)
                 return;
 
-            if (Owner != PlayerControl.LocalPlayer)
+            if (Owner != CustomPlayer.Local)
             {
                 Disable();
                 return;
@@ -59,6 +59,7 @@ namespace TownOfUsReworked.Custom
             if (_time <= DateTime.UtcNow.AddSeconds(-Interval))
             {
                 Target = target;
+                Arrow.image.color = ArrowColor;
                 Arrow.target = target;
                 Arrow.Update();
                 _time = DateTime.UtcNow;
@@ -86,7 +87,7 @@ namespace TownOfUsReworked.Custom
 
         public void UpdateArrowBlip(MapBehaviour __instance)
         {
-            if (!__instance || ArrowObj == null || Arrow == null || Render == null || ArrowColor == default || MeetingHud.Instance || Owner != PlayerControl.LocalPlayer)
+            if (!__instance || ArrowObj == null || Arrow == null || Render == null || ArrowColor == default || MeetingHud.Instance || Owner != CustomPlayer.Local)
                 return;
 
             var v = Target;

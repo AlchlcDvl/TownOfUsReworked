@@ -1,28 +1,9 @@
 namespace TownOfUsReworked.Cosmetics
 {
-    public class VisorExtension
-    {
-        public string Artist { get; set; }
-        public string Condition { get; set; }
-        public Sprite FlipImage { get; set; }
-    }
-
-    public class CustomVisor
-    {
-        public string Artist { get; set; }
-        public string Condition { get; set; }
-        public string Name { get; set; }
-        public string ID { get; set; }
-        public string FlipID { get; set; }
-        public string FloorID { get; set; }
-        public string ClimbID { get; set; }
-        public bool Adaptive { get; set; }
-    }
-
     [HarmonyPatch]
     public static class CustomVisors
     {
-        private static bool SubLoaded;
+        /*private static bool SubLoaded;
         private static bool Running;
         private static Material Shader;
         public readonly static Dictionary<string, VisorExtension> CustomVisorRegistry = new();
@@ -65,17 +46,18 @@ namespace TownOfUsReworked.Cosmetics
             }
 
             var visor = ScriptableObject.CreateInstance<VisorData>();
-            visor.viewData.viewData = ScriptableObject.CreateInstance<VisorViewData>();
-            visor.viewData.viewData.IdleFrame = CreateVisorSprite(cv.ID, fromDisk);
+            var viewData = visor.CreateAddressableAsset().GetAsset();
+            viewData = ScriptableObject.CreateInstance<VisorViewData>();
+            viewData.IdleFrame = CreateVisorSprite(cv.ID, fromDisk);
 
             if (cv.FlipID != null)
-                visor.viewData.viewData.LeftIdleFrame = CreateVisorSprite(cv.FlipID, fromDisk);
+                viewData.LeftIdleFrame = CreateVisorSprite(cv.FlipID, fromDisk);
 
             if (cv.FloorID != null)
-                visor.viewData.viewData.FloorFrame = CreateVisorSprite(cv.FloorID, fromDisk);
+                viewData.FloorFrame = CreateVisorSprite(cv.FloorID, fromDisk);
 
             if (cv.ClimbID != null)
-                visor.viewData.viewData.ClimbFrame = CreateVisorSprite(cv.ClimbID, fromDisk);
+                viewData.ClimbFrame = CreateVisorSprite(cv.ClimbID, fromDisk);
 
             visor.name = cv.Name;
             visor.displayOrder = 99;
@@ -84,7 +66,7 @@ namespace TownOfUsReworked.Cosmetics
             visor.Free = true;
 
             if (cv.Adaptive && Shader != null)
-                visor.viewData.viewData.AltShader = Shader;
+                viewData.AltShader = Shader;
 
             var extend = new VisorExtension
             {
@@ -219,11 +201,11 @@ namespace TownOfUsReworked.Cosmetics
                     colorChip.ProductId = visor.ProductId;
                     colorChip.Tag = visor.ProdId;
                     colorChip.SelectionHighlight.gameObject.SetActive(false);
-                    var color = __instance.HasLocalPlayer() ? PlayerControl.LocalPlayer.Data.DefaultOutfit.ColorId : DataManager.Player.Customization.Color;
-                    __instance.StartCoroutine(visor.CoLoadViewData(new Action<VisorViewData>(x =>
+                    var color = __instance.HasLocalPlayer() ? CustomPlayer.LocalCustom.Data.DefaultOutfit.ColorId : DataManager.Player.Customization.Color;
+                    __instance.StartCoroutine(visor.CoLoadIcon(new Action<Sprite, AddressableAsset>((_, _) =>
                     {
-                        colorChip.Inner.FrontLayer.sprite = x.IdleFrame;
-                        __instance.UpdateSpriteMaterialColor(colorChip, x, color);
+                        colorChip.Inner.FrontLayer.sprite = visor.CreateAddressableAsset().GetAsset().IdleFrame;
+                        __instance.UpdateMaterials(colorChip.Inner.FrontLayer, visor);
                     })));
                     __instance.ColorChips.Add(colorChip);
                 }
@@ -273,7 +255,7 @@ namespace TownOfUsReworked.Cosmetics
                     return 500;
                 });
 
-                foreach (string key in keys)
+                foreach (var key in keys)
                     YOffset = CreateVisorPackage(packages[key], key, YOffset, __instance);
 
                 __instance.scroller.ContentYBounds.max = -(YOffset + 4.1f);
@@ -285,6 +267,6 @@ namespace TownOfUsReworked.Cosmetics
         {
             CustomVisorRegistry.TryGetValue(visor.name, out var ret);
             return ret;
-        }
+        }*/
     }
 }

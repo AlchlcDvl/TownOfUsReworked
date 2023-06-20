@@ -13,7 +13,7 @@ namespace TownOfUsReworked.Patches
 
                     if (lifeSuppSystemType.IsActive && CustomGameOptions.OxySlow)
                     {
-                        foreach (var player in PlayerControl.AllPlayerControls)
+                        foreach (var player in CustomPlayer.AllPlayers)
                         {
                             if (!player.Data.IsDead)
                                 player.MyPhysics.Speed = Math.Clamp(2.5f * lifeSuppSystemType.Countdown / lifeSuppSystemType.LifeSuppDuration, 1f, CustomGameOptions.PlayerSpeed);
@@ -28,6 +28,18 @@ namespace TownOfUsReworked.Patches
                     {
                         __instance.PlayerCam.ShakeScreen(400, CustomGameOptions.ReactorShake * (reactorSystemType.ReactorDuration - reactorSystemType.Countdown) / 75f /
                             reactorSystemType.ReactorDuration);
+                    }
+                    else
+                        __instance.PlayerCam.ShakeScreen(0, 0);
+                }
+                else if (ShipStatus.Instance.Systems.ContainsKey(SystemTypes.Reactor) && TownOfUsReworked.VanillaOptions.MapId is 4)
+                {
+                    var reactorSystemType = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<HeliSabotageSystem>();
+
+                    if (reactorSystemType.IsActive && CustomGameOptions.ReactorShake != 0f)
+                    {
+                        __instance.PlayerCam.ShakeScreen(400, CustomGameOptions.ReactorShake * (reactorSystemType.Countdown - reactorSystemType.Countdown) / 100f /
+                            reactorSystemType.Countdown);
                     }
                     else
                         __instance.PlayerCam.ShakeScreen(0, 0);

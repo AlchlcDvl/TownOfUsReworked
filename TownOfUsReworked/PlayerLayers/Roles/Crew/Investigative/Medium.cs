@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Medium : CrewRole
+    public class Medium : Crew
     {
         public DateTime LastMediated;
         public Dictionary<byte, CustomArrow> MediateArrows = new();
@@ -38,13 +38,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         private static void Seance() { /* Currently blank, gonna work on this later */ }
 
-        public void DestroyArrow(byte targetPlayerId)
-        {
-            var arrow = MediateArrows.FirstOrDefault(x => x.Key == targetPlayerId);
-            arrow.Value?.Destroy();
-            MediateArrows.Remove(arrow.Key);
-        }
-
         public override void OnLobby()
         {
             base.OnLobby();
@@ -61,16 +54,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (!IsDead)
             {
-                foreach (var player in PlayerControl.AllPlayerControls)
+                foreach (var player in CustomPlayer.AllPlayers)
                 {
                     if (MediateArrows.ContainsKey(player.PlayerId))
                     {
-                        MediateArrows[player.PlayerId].Update(player.transform.position, player.GetPlayerColor(false, CustomGameOptions.ShowMediatePlayer));
+                        MediateArrows[player.PlayerId]?.Update(player.transform.position, player.GetPlayerColor(false, CustomGameOptions.ShowMediatePlayer));
                         player.Visible = true;
 
                         if (!CustomGameOptions.ShowMediatePlayer)
                         {
-                            player.SetOutfit(CustomPlayerOutfitType.Camouflage, Utils.CamoOutfit(player));
+                            player.SetOutfit(CustomPlayerOutfitType.Camouflage, Utils.BlankOutfit(player));
                             PlayerMaterial.SetColors(UColor.grey, player.MyRend());
                         }
                     }

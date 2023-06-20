@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Bomber : SyndicateRole
+    public class Bomber : Syndicate
     {
         public DateTime LastPlaced;
         public DateTime LastDetonated;

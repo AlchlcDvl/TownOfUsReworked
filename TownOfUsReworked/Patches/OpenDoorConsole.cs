@@ -28,7 +28,7 @@ namespace TownOfUsReworked.Patches
     {
         public static bool Prefix(OpenDoorConsole __instance)
         {
-            __instance.CanUse(PlayerControl.LocalPlayer.Data, out var canUse, out _);
+            __instance.CanUse(CustomPlayer.LocalCustom.Data, out var canUse, out _);
 
             if (canUse)
                 __instance.MyDoor.SetDoorway(true);
@@ -66,12 +66,12 @@ namespace TownOfUsReworked.Patches
     {
         public static bool Prefix(DoorConsole __instance)
         {
-            __instance.CanUse(PlayerControl.LocalPlayer.Data, out var canUse, out _);
+            __instance.CanUse(CustomPlayer.LocalCustom.Data, out var canUse, out _);
 
             if (!canUse)
                 return false;
 
-            PlayerControl.LocalPlayer.NetTransform.Halt();
+            CustomPlayer.Local.NetTransform.Halt();
             var minigame = UObject.Instantiate(__instance.MinigamePrefab, Camera.main.transform);
             minigame.transform.localPosition = new(0f, 0f, -50f);
 
@@ -114,11 +114,11 @@ namespace TownOfUsReworked.Patches
     {
         public static bool Prefix(Ladder __instance)
         {
-            var data = PlayerControl.LocalPlayer.Data;
+            var data = CustomPlayer.LocalCustom.Data;
             __instance.CanUse(data, out var flag, out var _);
 
             if (flag)
-                PlayerControl.LocalPlayer.MyPhysics.RpcClimbLadder(__instance);
+                CustomPlayer.Local.MyPhysics.RpcClimbLadder(__instance);
 
             return false;
         }
@@ -201,11 +201,11 @@ namespace TownOfUsReworked.Patches
     {
         public static bool Prefix(Console __instance)
         {
-            __instance.CanUse(PlayerControl.LocalPlayer.Data, out var canUse, out _);
+            __instance.CanUse(CustomPlayer.LocalCustom.Data, out var canUse, out _);
 
             if (canUse)
             {
-                var playerTask = __instance.FindTask(PlayerControl.LocalPlayer);
+                var playerTask = __instance.FindTask(CustomPlayer.Local);
 
                 if (playerTask.MinigamePrefab)
                 {

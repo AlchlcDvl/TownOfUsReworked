@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class PromotedGodfather : IntruderRole
+    public class PromotedGodfather : Intruder
     {
         public PromotedGodfather(PlayerControl player) : base(player)
         {
@@ -81,9 +81,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var dummyActive = system.dummy.IsActive;
             var sabActive = system.specials.Any(s => s.IsActive);
             var condition = !dummyActive && !sabActive;
-            var notSampled = PlayerControl.AllPlayerControls.Where(x => SampledPlayer != x).ToList();
-            var notAmbushed = PlayerControl.AllPlayerControls.Where(x => x != AmbushedPlayer).ToList();
-            var notBombed = PlayerControl.AllPlayerControls.Where(x => x != BombedPlayer).ToList();
+            var notSampled = CustomPlayer.AllPlayers.Where(x => SampledPlayer != x).ToList();
+            var notAmbushed = CustomPlayer.AllPlayers.Where(x => x != AmbushedPlayer).ToList();
+            var notBombed = CustomPlayer.AllPlayers.Where(x => x != BombedPlayer).ToList();
             var flag = BlockTarget == null;
             var hits = Physics2D.OverlapBoxAll(Player.transform.position, Utils.GetSize(), 0);
             hits = hits.Where(c => (c.name.Contains("Vent") || !c.isTrigger) && c.gameObject.layer != 8 && c.gameObject.layer != 5).ToArray();
@@ -244,14 +244,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             foreach (var player in ClosestPlayers)
             {
-                if (PlayerControl.LocalPlayer == player)
+                if (CustomPlayer.Local == player)
                 {
                     HudManager.Instance.FullScreen.enabled = true;
                     HudManager.Instance.FullScreen.gameObject.active = true;
 
                     if (TimeRemaining > CustomGameOptions.GrenadeDuration - 0.5f)
                     {
-                        float fade = (TimeRemaining - CustomGameOptions.GrenadeDuration) * (-2f);
+                        var fade = (TimeRemaining - CustomGameOptions.GrenadeDuration) * (-2f);
 
                         if (ShouldPlayerBeBlinded(player))
                             HudManager.Instance.FullScreen.color = Color32.Lerp(NormalVision, BlindVision, fade);
@@ -274,7 +274,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     }
                     else if (TimeRemaining < 0.5f)
                     {
-                        float fade2 = (TimeRemaining * -2.0f) + 1.0f;
+                        var fade2 = (TimeRemaining * -2.0f) + 1.0f;
 
                         if (ShouldPlayerBeBlinded(player))
                             HudManager.Instance.FullScreen.color = Color32.Lerp(BlindVision, NormalVision, fade2);
@@ -331,7 +331,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     break;
 
                 case 5:
-                    fs = PlayerControl.LocalPlayer.myTasks.Any(x => x.TaskType == ModCompatibility.RetrieveOxygenMask);
+                    fs = CustomPlayer.Local.myTasks.Any(x => x.TaskType == ModCompatibility.RetrieveOxygenMask);
                     break;
 
                 case 6:
@@ -380,61 +380,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
-        public static void DragBody(PlayerControl __instance)
-        {
-            if (!__instance.Is(RoleEnum.PromotedGodfather))
-                return;
-
-            var role = GetRole<PromotedGodfather>(__instance);
-
-            if (role.FormerRole?.RoleType != RoleEnum.Janitor)
-                return;
-
-            var body = role.CurrentlyDragging;
-
-            if (body == null)
-                return;
-
-            if (__instance.Data.IsDead)
-            {
-                role.CurrentlyDragging = null;
-
-                foreach (var component in body?.bodyRenderers)
-                    component.material.SetFloat("_Outline", 0f);
-
-                return;
-            }
-
-            var truePosition = __instance.GetTruePosition();
-            var velocity = __instance.gameObject.GetComponent<Rigidbody2D>().velocity.normalized;
-            Vector3 newPos = ((Vector2)__instance.transform.position) - (velocity / 3f) + body.myCollider.offset;
-            newPos.z = 0.02f;
-
-            //WHY ARE THERE DIFFERENT LOCAL Z INDEXS FOR DIFFERENT DECALS ON DIFFERENT LEVELS?!?!?!
-            //AD: idk ¯\_(ツ)_/¯
-            if (ModCompatibility.IsSubmerged)
-            {
-                if (newPos.y > -7f)
-                    newPos.z = 0.0208f;
-                else
-                    newPos.z = -0.0273f;
-            }
-
-            if (!PhysicsHelpers.AnythingBetween(truePosition, newPos, Constants.ShipAndObjectsMask, false))
-                body.transform.position = newPos;
-
-            if (!__instance.AmOwner)
-                return;
-
-            foreach (var component in body?.bodyRenderers)
-            {
-                component.material.SetColor("_OutlineColor", UColor.green);
-                component.material.SetFloat("_Outline", 1f);
-            }
-
-            __instance.moveable = true;
-        }
-
         public void Clean()
         {
             if (CleanTimer() != 0f || Utils.IsTooFar(Player, CleanButton.TargetBody))
@@ -456,7 +401,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Drag()
         {
-            if (Utils.IsTooFar(Player, DragButton.TargetBody) || CurrentlyDragging != null)
+            if (Utils.IsTooFar(Player, DragButton.TargetBody) || CurrentlyDragging)
                 return;
 
             var playerId = DragButton.TargetBody.ParentId;
@@ -469,33 +414,24 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             writer.Write(playerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
             CurrentlyDragging = DragButton.TargetBody;
+            var drag = CurrentlyDragging.gameObject.AddComponent<DragBehaviour>();
+            drag.Source = Player;
+            drag.Body = CurrentlyDragging.gameObject.AddComponent<Rigidbody2D>();
+            drag.Collider = CurrentlyDragging.gameObject.GetComponent<Collider2D>();
+            drag.Dragged = CurrentlyDragging;
         }
 
         public void Drop()
         {
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-            writer.Write((byte)ActionsRPC.GodfatherAction);
-            writer.Write((byte)GodfatherActionsRPC.Drop);
-            writer.Write(PlayerId);
-            Vector3 position = PlayerControl.LocalPlayer.GetTruePosition();
-
-            if (ModCompatibility.IsSubmerged)
-            {
-                if (position.y > -7f)
-                    position.z = 0.0208f;
-                else
-                    position.z = -0.0273f;
-            }
-
-            position.y -= 0.3636f;
-            writer.Write(position);
-            writer.Write(position.z);
+            writer.Write((byte)ActionsRPC.Drop);
+            writer.Write(CurrentlyDragging.ParentId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
 
             foreach (var component in CurrentlyDragging?.bodyRenderers)
                 component.material.SetFloat("_Outline", 0f);
 
-            CurrentlyDragging.transform.position = position;
+            CurrentlyDragging.gameObject.GetComponent<DragBehaviour>().Destroy();
             CurrentlyDragging = null;
             LastDragged = DateTime.UtcNow;
         }
@@ -733,7 +669,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
-            Utils.Invis(Player, PlayerControl.LocalPlayer.Is(Faction.Intruder));
+            Utils.Invis(Player, CustomPlayer.Local.Is(Faction.Intruder));
 
             if (IsDead || MeetingHud.Instance)
                 TimeRemaining = 0f;
@@ -1020,7 +956,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Boom()
         {
-            if (!Enabled && PlayerControl.LocalPlayer == BombedPlayer)
+            if (!Enabled && CustomPlayer.Local == BombedPlayer)
             {
                 Utils.Flash(Color);
                 GetRole(BombedPlayer).Bombed = true;

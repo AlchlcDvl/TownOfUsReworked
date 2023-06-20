@@ -30,7 +30,7 @@ namespace TownOfUsReworked.Patches
             var a_or_an2 = factionflag ? "an" : "a";
             var a_or_an3 = subfactionflag ? "an" : "a";
 
-            var totalEvilsCount = PlayerControl.AllPlayerControls.Count(x => ((!x.Is(Faction.Crew) && !x.Is(RoleAlignment.NeutralBen) && !x.Is(RoleAlignment.NeutralEvil)) ||
+            var totalEvilsCount = CustomPlayer.AllPlayers.Count(x => ((!x.Is(Faction.Crew) && !x.Is(RoleAlignment.NeutralBen) && !x.Is(RoleAlignment.NeutralEvil)) ||
                 x.NotOnTheSameSide()) && !(x.Data.IsDead || x.Data.Disconnected));
             var totalEvilsRemaining = ConstantVariables.IsAA ? "an unknown number of" : $"{totalEvilsCount}";
             var evils = totalEvilsCount > 1 ? "evils" : "evil";

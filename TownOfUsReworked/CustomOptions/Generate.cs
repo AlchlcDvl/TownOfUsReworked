@@ -18,6 +18,7 @@ namespace TownOfUsReworked.CustomOptions
         public static CustomStringOption TaskBarMode;
         public static CustomNumberOption ReportDistance;
         public static CustomNumberOption ChatCooldown;
+        public static CustomNumberOption ChatCharacterLimit;
         public static CustomNumberOption LobbySize;
 
         //Map Settings
@@ -337,7 +338,6 @@ namespace TownOfUsReworked.CustomOptions
         //CSv Options
         public static CustomHeaderOption CrewSovereignSettings;
         public static CustomNumberOption CSvMax;
-        public static CustomNumberOption CSvMin;
 
         //Mayor Options
         public static CustomHeaderOption Mayor;
@@ -369,7 +369,6 @@ namespace TownOfUsReworked.CustomOptions
         //CA Options
         public static CustomHeaderOption CrewAuditorSettings;
         public static CustomNumberOption CAMax;
-        public static CustomNumberOption CAMin;
 
         //Mystic Options
         public static CustomHeaderOption MysticSettings;
@@ -386,7 +385,6 @@ namespace TownOfUsReworked.CustomOptions
         //CK Options
         public static CustomHeaderOption CrewKillingSettings;
         public static CustomNumberOption CKMax;
-        public static CustomNumberOption CKMin;
 
         //Vigilante Options
         public static CustomHeaderOption Vigilante;
@@ -411,7 +409,6 @@ namespace TownOfUsReworked.CustomOptions
         //CS Options
         public static CustomHeaderOption CrewSupportSettings;
         public static CustomNumberOption CSMax;
-        public static CustomNumberOption CSMin;
 
         //Engineer Options
         public static CustomHeaderOption Engineer;
@@ -461,7 +458,6 @@ namespace TownOfUsReworked.CustomOptions
         //CI Options
         public static CustomHeaderOption CrewInvestigativeSettings;
         public static CustomNumberOption CIMax;
-        public static CustomNumberOption CIMin;
 
         //Tracker Options
         public static CustomHeaderOption Tracker;
@@ -510,7 +506,6 @@ namespace TownOfUsReworked.CustomOptions
         public static CustomNumberOption CoronerKillerNameTime;
         public static CustomNumberOption CompareCooldown;
         public static CustomNumberOption AutopsyCooldown;
-        public static CustomNumberOption CompareLimit;
 
         //Inspector Options
         public static CustomHeaderOption Inspector;
@@ -539,7 +534,6 @@ namespace TownOfUsReworked.CustomOptions
         //CP Options
         public static CustomHeaderOption CrewProtectiveSettings;
         public static CustomNumberOption CPMax;
-        public static CustomNumberOption CPMin;
 
         //Altruist Options
         public static CustomHeaderOption Altruist;
@@ -593,7 +587,6 @@ namespace TownOfUsReworked.CustomOptions
         //IC Options
         public static CustomHeaderOption IntruderConcealingSettings;
         public static CustomNumberOption ICMax;
-        public static CustomNumberOption ICMin;
 
         //Janitor Options
         public static CustomHeaderOption Janitor;
@@ -637,7 +630,6 @@ namespace TownOfUsReworked.CustomOptions
         //ID Options
         public static CustomHeaderOption IntruderDeceptionSettings;
         public static CustomNumberOption IDMax;
-        public static CustomNumberOption IDMin;
 
         //Morphling Options
         public static CustomHeaderOption Morphling;
@@ -671,7 +663,6 @@ namespace TownOfUsReworked.CustomOptions
         //IS Options
         public static CustomHeaderOption IntruderSupportSettings;
         public static CustomNumberOption ISMax;
-        public static CustomNumberOption ISMin;
 
         //Teleporter Options
         public static CustomHeaderOption Teleporter;
@@ -711,7 +702,6 @@ namespace TownOfUsReworked.CustomOptions
         //IK Options
         public static CustomHeaderOption IntruderKillingSettings;
         public static CustomNumberOption IKMax;
-        public static CustomNumberOption IKMin;
 
         //Ambusher Options
         public static CustomHeaderOption Ambusher;
@@ -758,7 +748,6 @@ namespace TownOfUsReworked.CustomOptions
         //SD Options
         public static CustomHeaderOption SyndicateDisruptionSettings;
         public static CustomNumberOption SDMax;
-        public static CustomNumberOption SDMin;
 
         //Shapeshifter Options
         public static CustomHeaderOption Shapeshifter;
@@ -803,7 +792,6 @@ namespace TownOfUsReworked.CustomOptions
         //SyK Options
         public static CustomHeaderOption SyndicateKillingSettings;
         public static CustomNumberOption SyKMax;
-        public static CustomNumberOption SyKMin;
 
         //Crusader Options
         public static CustomHeaderOption Crusader;
@@ -841,11 +829,12 @@ namespace TownOfUsReworked.CustomOptions
         public static CustomNumberOption CollideCooldown;
         public static CustomNumberOption CollideRange;
         public static CustomNumberOption CollideRangeIncrease;
+        public static CustomToggleOption ChargeCooldownsLinked;
+        public static CustomToggleOption CollideResetsCooldown;
 
         //SSu Options
         public static CustomHeaderOption SyndicateSupportSettings;
         public static CustomNumberOption SSuMax;
-        public static CustomNumberOption SSuMin;
 
         //Rebel Options
         public static CustomHeaderOption Rebel;
@@ -883,7 +872,6 @@ namespace TownOfUsReworked.CustomOptions
         //SP Options
         public static CustomHeaderOption SyndicatePowerSettings;
         public static CustomNumberOption SPMax;
-        public static CustomNumberOption SPMin;
 
         //Spellslinger Options
         public static CustomHeaderOption Spellslinger;
@@ -910,7 +898,7 @@ namespace TownOfUsReworked.CustomOptions
         public static CustomNumberOption NeutralMax;
         public static CustomNumberOption NeutralMin;
         public static CustomToggleOption NeutralsVent;
-        public static CustomToggleOption NeutralEvilsEndGame;
+        public static CustomToggleOption AvoidNeutralKingmakers;
         public static CustomToggleOption NeutralFlashlight;
 
         //NA Options
@@ -926,7 +914,6 @@ namespace TownOfUsReworked.CustomOptions
         //NB Options
         public static CustomHeaderOption NeutralBenignSettings;
         public static CustomNumberOption NBMax;
-        public static CustomNumberOption NBMin;
         public static CustomToggleOption VigiKillsNB;
 
         //Amnesiac Options
@@ -976,7 +963,7 @@ namespace TownOfUsReworked.CustomOptions
         //NE Options
         public static CustomHeaderOption NeutralEvilSettings;
         public static CustomNumberOption NEMax;
-        public static CustomNumberOption NEMin;
+        public static CustomToggleOption NeutralEvilsEndGame;
 
         //Jester Options
         public static CustomHeaderOption Jester;
@@ -1027,9 +1014,6 @@ namespace TownOfUsReworked.CustomOptions
         public static CustomToggleOption ExeSwitchVent;
         public static CustomToggleOption ExeTargetKnows;
         public static CustomToggleOption ExeKnowsTargetRole;
-        public static CustomToggleOption ExeCanHaveIntruderTargets;
-        public static CustomToggleOption ExeCanHaveSyndicateTargets;
-        public static CustomToggleOption ExeCanHaveNeutralTargets;
         public static CustomToggleOption ExeEjectScreen;
         public static CustomToggleOption ExeCanWinBeyondDeath;
         public static CustomToggleOption VigiKillsExecutioner;
@@ -1063,7 +1047,6 @@ namespace TownOfUsReworked.CustomOptions
         //NH Options
         public static CustomHeaderOption NeutralHarbingerSettings;
         public static CustomNumberOption NHMax;
-        public static CustomNumberOption NHMin;
 
         //Plaguebearer Options
         public static CustomHeaderOption Plaguebearer;
@@ -1075,7 +1058,6 @@ namespace TownOfUsReworked.CustomOptions
         //NK Options
         public static CustomHeaderOption NeutralKillingSettings;
         public static CustomNumberOption NKMax;
-        public static CustomNumberOption NKMin;
         public static CustomToggleOption NKHasImpVision;
         public static CustomToggleOption NKsKnow;
 
@@ -1145,7 +1127,7 @@ namespace TownOfUsReworked.CustomOptions
         //NN Options
         public static CustomHeaderOption NeutralNeophyteSettings;
         public static CustomNumberOption NNMax;
-        public static CustomNumberOption NNMin;
+        public static CustomToggleOption NNHasImpVision;
 
         //Dracula Options
         public static CustomHeaderOption Dracula;
@@ -1178,6 +1160,7 @@ namespace TownOfUsReworked.CustomOptions
         public static CustomNumberOption WhisperCooldown;
         public static CustomNumberOption WhisperRadius;
         public static CustomNumberOption WhisperCooldownIncrease;
+        public static CustomToggleOption WhisperCooldownIncreases;
         public static CustomNumberOption WhisperRateDecrease;
         public static CustomNumberOption InitialWhisperRate;
         public static CustomToggleOption WhisperRateDecreases;
@@ -1493,17 +1476,18 @@ namespace TownOfUsReworked.CustomOptions
         public static CustomToggleOption VolatileKnows;
         public static CustomToggleOption UniqueVolatile;
 
-        /*//For Testing
+        /*For Testing
         public static CustomNestedOption ExampleNested;
         public static CustomToggleOption ExampleToggle;
         public static CustomNumberOption ExampleNumber;
         public static CustomStringOption ExampleString;
-        public static CustomHeaderOption ExampleHeader;*/
+        public static CustomHeaderOption ExampleHeader;
+        public static CustomLayersOption ExampleLayers;*/
 
-        private static Func<object, string> PercentFormat { get; } = value => $"{value:0}%";
-        private static Func<object, string> CooldownFormat { get; } = value => $"{value:0.0#}s";
-        private static Func<object, string> DistanceFormat { get; } = value => $"{value:0.0#}m";
-        private static Func<object, string> MultiplierFormat { get; } = value => $"{value:0.0#}x";
+        private static Func<object, string> PercentFormat => value => $"{value:0}%";
+        private static Func<object, string> CooldownFormat => value => $"{value:0.0#}s";
+        private static Func<object, string> DistanceFormat => value => $"{value:0.0#}m";
+        private static Func<object, string> MultiplierFormat => value => $"{value:0.0#}x";
 
         public static void GenerateAll()
         {
@@ -1524,7 +1508,8 @@ namespace TownOfUsReworked.CustomOptions
             ExampleToggle = new(num++, MultiMenu.external, "Example Toggle Option", true);
             ExampleNumber = new(num++, MultiMenu.external, "Example Number Option", 1, 1, 5, 1, MultiplierFormat);
             ExampleString = new(num++, MultiMenu.external, "Example String Option", new[] { "Something", "Something Else", "Something Else Else" });
-            ExampleNested.AddOptions(ExampleHeader, ExampleToggle, ExampleNumber, ExampleString);*/
+            ExampleNested.AddOptions(ExampleHeader, ExampleToggle, ExampleNumber, ExampleString);
+            ExampleLayers.AddOptions(ExampleHeader, ExampleToggle, ExampleNumber, ExampleString);*/
 
             GameSettings = new(MultiMenu.main, "Game Settings");
             PlayerSpeed = new(num++, MultiMenu.main, "Player Speed", 1.25f, 0.25f, 10, 0.25f, MultiplierFormat);
@@ -1540,6 +1525,7 @@ namespace TownOfUsReworked.CustomOptions
             InitialCooldowns = new(num++, MultiMenu.main, "Game Start Cooldowns", 10, 0, 30, 2.5f, CooldownFormat);
             ReportDistance = new(num++, MultiMenu.main, "Player Report Distance", 3.5f, 1, 20, 0.25f, DistanceFormat);
             ChatCooldown = new(num++, MultiMenu.main, "Chat Cooldown", 3, 0, 3, 0.1f, CooldownFormat);
+            ChatCharacterLimit = new(num++, MultiMenu.main, "Chat Character Limit", 200, 50, 2000, 50);
             LobbySize = new(num++, MultiMenu.main, "Lobby Size", 15, 2, 127, 1);
 
             GameModeSettings = new(MultiMenu.main, "Game Mode Settings");
@@ -1825,7 +1811,6 @@ namespace TownOfUsReworked.CustomOptions
 
             CrewAuditorSettings = new(MultiMenu.crew, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Auditor</color> Settings");
             CAMax = new(num++, MultiMenu.crew, "Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Auditor</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
-            CAMin = new(num++, MultiMenu.crew, "Min <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Auditor</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
 
             MysticSettings = new(MultiMenu.crew, "<color=#708EEFFF>Mystic</color>");
             MysticCount = new(num++, MultiMenu.crew, "<color=#708EEFFF>Mystic</color> Count", 1, 1, 14, 1);
@@ -1839,8 +1824,6 @@ namespace TownOfUsReworked.CustomOptions
 
             CrewInvestigativeSettings = new(MultiMenu.crew, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Investigative</color> Settings");
             CIMax = new(num++, MultiMenu.crew, "Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Investigative</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
-            CIMin = new(num++, MultiMenu.crew, "Min <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Investigative</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
-
             Coroner = new(MultiMenu.crew, "<color=#4D99E6FF>Coroner</color>");
             CoronerCount = new(num++, MultiMenu.crew, "<color=#4D99E6FF>Coroner</color> Count", 1, 1, 14, 1);
             UniqueCoroner = new(num++, MultiMenu.crew, "<color=#4D99E6FF>Coroner</color> Is Unique In All Any", false);
@@ -1850,7 +1833,6 @@ namespace TownOfUsReworked.CustomOptions
             CoronerKillerNameTime = new(num++, MultiMenu.crew, "<color=#4D99E6FF>Coroner</color> Gets Killer's Name Under", 1f, 0.5f, 15f, 0.5f, CooldownFormat);
             CompareCooldown = new(num++, MultiMenu.crew, "Compare Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
             AutopsyCooldown = new(num++, MultiMenu.crew, "Autopsy Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
-            CompareLimit = new(num++, MultiMenu.crew, "Compare Limit", 5, 1, 15, 1);
 
             Detective = new(MultiMenu.crew, "<color=#4D4DFFFF>Detective</color>");
             DetectiveCount = new(num++, MultiMenu.crew, "<color=#4D4DFFFF>Detective</color> Count", 1, 1, 14, 1);
@@ -1907,7 +1889,6 @@ namespace TownOfUsReworked.CustomOptions
 
             CrewKillingSettings = new(MultiMenu.crew, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Killing</color> Settings");
             CKMax = new(num++, MultiMenu.crew, "Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
-            CKMin = new(num++, MultiMenu.crew, "Min <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
 
             Veteran = new(MultiMenu.crew, "<color=#998040FF>Veteran</color>");
             VeteranCount = new(num++, MultiMenu.crew, "<color=#998040FF>Veteran</color> Count", 1, 1, 14, 1);
@@ -1929,7 +1910,6 @@ namespace TownOfUsReworked.CustomOptions
 
             CrewProtectiveSettings = new(MultiMenu.crew, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Protective</color> Settings");
             CPMax = new(num++, MultiMenu.crew, "Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Protective</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
-            CPMin = new(num++, MultiMenu.crew, "Min <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Protective</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
 
             Altruist = new(MultiMenu.crew, "<color=#660000FF>Altruist</color>");
             AltruistCount = new(num++, MultiMenu.crew, "<color=#660000FF>Altruist</color> Count", 1, 1, 14, 1);
@@ -1948,7 +1928,6 @@ namespace TownOfUsReworked.CustomOptions
 
             CrewSovereignSettings = new(MultiMenu.crew, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Sovereign</color> Settings");
             CSvMax = new(num++, MultiMenu.crew, "Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Sovereign</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
-            CSvMin = new(num++, MultiMenu.crew, "Min <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Sovereign</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
 
             Dictator = new(MultiMenu.crew, "<color=#00CB97FF>Dictator</color>");
             DictatorCount = new(num++, MultiMenu.crew, "<color=#00CB97FF>Dictator</color> Count", 1, 1, 14, 1);
@@ -1976,7 +1955,6 @@ namespace TownOfUsReworked.CustomOptions
 
             CrewSupportSettings = new(MultiMenu.crew, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Support</color> Settings");
             CSMax = new(num++, MultiMenu.crew, "Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
-            CSMin = new(num++, MultiMenu.crew, "Min <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
 
             Chameleon = new(MultiMenu.crew, "<color=#5411F8FF>Chameleon</color>");
             ChameleonCount = new(num++, MultiMenu.crew, "<color=#5411F8FF>Chameleon</color> Count", 1, 1, 14, 1);
@@ -2038,10 +2016,7 @@ namespace TownOfUsReworked.CustomOptions
             NeutralMax = new(num++, MultiMenu.neutral, "Max <color=#B3B3B3FF>Neutral</color> <color=#FFD700FF>Roles</color>", 5, 1, 14, 1);
             NeutralMin = new(num++, MultiMenu.neutral, "Min <color=#B3B3B3FF>Neutral</color> <color=#FFD700FF>Roles</color>", 5, 1, 14, 1);
             NoSolo = new(num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutrals</color> Together, Strong", new[] { "Never", "Same NKs", "Same Roles", "All NKs", "All Neutrals" });
-            VigiKillsNB = new(num++, MultiMenu.neutral, "<color=#FFFF00FF>Vigilante</color> Kills <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Benigns</color>", true);
-            NKHasImpVision = new(num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color> Have <color=#FF0000FF>Intruder</color> Vision", true);
-            NKsKnow = new(num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color> Know Each Other", false);
-            NeutralEvilsEndGame = new(num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Evils</color> End The Game When Winning", false);
+            AvoidNeutralKingmakers = new(num++, MultiMenu.neutral, "Avoid <color=#B3B3B3FF>Neutral</color> Kingmakers", false);
             NeutralsVent = new(num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutrals</color> Can Vent", true);
 
             NeutralApocalypseSettings = new(MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Apocalypse</color> Settings");
@@ -2054,7 +2029,7 @@ namespace TownOfUsReworked.CustomOptions
 
             NeutralBenignSettings = new(MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Benign</color> Settings");
             NBMax = new(num++, MultiMenu.neutral, "Max <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Benign</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
-            NBMin = new(num++, MultiMenu.neutral, "Min <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Benign</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
+            VigiKillsNB = new(num++, MultiMenu.neutral, "<color=#FFFF00FF>Vigilante</color> Kills <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Benigns</color>", true);
 
             Amnesiac = new(MultiMenu.neutral, "<color=#22FFFFFF>Amnesiac</color>");
             AmnesiacCount = new(num++, MultiMenu.neutral, "<color=#22FFFFFF>Amnesiac</color> Count", 1, 1, 14, 1);
@@ -2097,7 +2072,7 @@ namespace TownOfUsReworked.CustomOptions
 
             NeutralEvilSettings = new(MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Evil</color> Settings");
             NEMax = new(num++, MultiMenu.neutral, "Max <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Evil</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
-            NEMin = new(num++, MultiMenu.neutral, "Min <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Evil</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
+            NeutralEvilsEndGame = new(num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Evils</color> End The Game When Winning", false);
 
             Actor = new(MultiMenu.neutral, "<color=#00ACC2FF>Actor</color>");
             ActorCount = new(num++, MultiMenu.neutral, "<color=#00ACC2FF>Actor</color> Count", 1, 1, 14, 1);
@@ -2136,9 +2111,6 @@ namespace TownOfUsReworked.CustomOptions
             ExeTargetKnows = new(num++, MultiMenu.neutral, "Target Knows <color=#CCCCCCFF>Executioner</color> Exists", false);
             ExeKnowsTargetRole = new(num++, MultiMenu.neutral, "<color=#CCCCCCFF>Executioner</color> Knows Target's <color=#FFD700FF>Role</color>", false);
             ExeEjectScreen = new(num++, MultiMenu.neutral, "Target Ejection Reveals Existence Of <color=#CCCCCCFF>Executioner</color>", false);
-            ExeCanHaveIntruderTargets = new(num++, MultiMenu.neutral, "<color=#CCCCCCFF>Executioner</color> Can Have <color=#FF0000FF>Intruder</color> Targets", false);
-            ExeCanHaveSyndicateTargets = new(num++, MultiMenu.neutral, "<color=#CCCCCCFF>Executioner</color> Can Have <color=#008000FF>Syndicate</color> Targets", false);
-            ExeCanHaveNeutralTargets = new(num++, MultiMenu.neutral, "<color=#CCCCCCFF>Executioner</color> Can Have <color=#B3B3B3FF>Neutral</color> Targets", false);
             ExeCanWinBeyondDeath = new(num++, MultiMenu.neutral, "<color=#CCCCCCFF>Executioner</color> Can Win After Death", false);
             VigiKillsExecutioner = new(num++, MultiMenu.neutral, "<color=#FFFF00FF>Vigilante</color> Kills <color=#CCCCCCFF>Executioner</color>", false);
 
@@ -2174,7 +2146,6 @@ namespace TownOfUsReworked.CustomOptions
 
             NeutralHarbingerSettings = new(MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Harbinger</color> Settings");
             NHMax = new(num++, MultiMenu.neutral, "Max <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Harbinger</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
-            NHMin = new(num++, MultiMenu.neutral, "Min <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Harbinger</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
 
             Plaguebearer = new(MultiMenu.neutral, "<color=#CFFE61FF>Plaguebearer</color>");
             PlaguebearerCount = new(num++, MultiMenu.neutral, "<color=#CFFE61FF>Plaguebearer</color> Count", 1, 1, 14, 1);
@@ -2184,7 +2155,8 @@ namespace TownOfUsReworked.CustomOptions
 
             NeutralKillingSettings = new(MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killing</color> Settings");
             NKMax = new(num++, MultiMenu.neutral, "Max <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
-            NKMin = new(num++, MultiMenu.neutral, "Min <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
+            NKHasImpVision = new(num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color> Have <color=#FF0000FF>Intruder</color> Vision", true);
+            NKsKnow = new(num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color> Know Each Other", false);
 
             Arsonist = new(MultiMenu.neutral, "<color=#EE7600FF>Arsonist</color>");
             ArsonistCount = new(num++, MultiMenu.neutral, "<color=#EE7600FF>Arsonist</color> Count", 1, 1, 14, 1);
@@ -2244,7 +2216,7 @@ namespace TownOfUsReworked.CustomOptions
 
             NeutralNeophyteSettings = new(MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Neophyte</color> Settings");
             NNMax = new(num++, MultiMenu.neutral, "Max <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Neophyte</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
-            NNMin = new(num++, MultiMenu.neutral, "Min <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Neophyte</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
+            NNHasImpVision = new(num++, MultiMenu.neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Neophytes</color> Have <color=#FF0000FF>Intruder</color> Vision", true);
 
             Dracula = new(MultiMenu.neutral, "<color=#AC8A00FF>Dracula</color>");
             DraculaCount = new(num++, MultiMenu.neutral, "<color=#AC8A00FF>Dracula</color> Count", 1, 1, 14, 1);
@@ -2280,11 +2252,12 @@ namespace TownOfUsReworked.CustomOptions
             WhispererCount = new(num++, MultiMenu.neutral, "<color=#2D6AA5FF>Whisperer</color> Count", 1, 1, 14, 1);
             UniqueWhisperer = new(num++, MultiMenu.neutral, "<color=#2D6AA5FF>Whisperer</color> Is Unique In All Any", false);
             WhisperCooldown = new(num++, MultiMenu.neutral, "Whisper Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            WhisperCooldownIncreases = new(num++, MultiMenu.neutral, "Whisper Rate Increases Each Whisper", false);
             WhisperCooldownIncrease = new(num++, MultiMenu.neutral, "Whisper Cooldown Increases By", 5f, 2.5f, 30f, 2.5f, CooldownFormat);
             WhisperRadius = new(num++, MultiMenu.neutral, "Whisper Radius", 1.5f, 0.5f, 5f, 0.25f, DistanceFormat);
             InitialWhisperRate = new(num++, MultiMenu.neutral, "Whisper Rate", 5, 5, 50, 5, PercentFormat);
             WhisperRateDecreases = new(num++, MultiMenu.neutral, "Whisper Rate Decreases Each Whisper", false);
-            WhisperRateDecrease = new(num++, MultiMenu.neutral, "Whisper Rate Decrease", 5, 5, 50, 5, CooldownFormat);
+            WhisperRateDecrease = new(num++, MultiMenu.neutral, "Whisper Rate Decrease", 5, 5, 50, 5, PercentFormat);
             WhispVent = new(num++, MultiMenu.neutral, "<color=#2D6AA5FF>Whisperer</color> Can Vent", false);
             PersuadedVent = new(num++, MultiMenu.neutral, "Persuaded Can Vent", false);
 
@@ -2312,7 +2285,6 @@ namespace TownOfUsReworked.CustomOptions
 
             IntruderConcealingSettings = new(MultiMenu.intruder, "<color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Concealing</color> Settings");
             ICMax = new(num++, MultiMenu.intruder, "Max <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Concealing</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
-            ICMin = new(num++, MultiMenu.intruder, "Min <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Concealing</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
 
             Blackmailer = new(MultiMenu.intruder, "<color=#02A752FF>Blackmailer</color>");
             BlackmailerCount = new(num++, MultiMenu.intruder, "<color=#02A752FF>Blackmailer</color> Count", 1, 1, 14, 1);
@@ -2346,12 +2318,11 @@ namespace TownOfUsReworked.CustomOptions
             JaniCooldownsLinked = new(num++, MultiMenu.intruder, "Kill And Clean Cooldowns Are Linked", false);
             SoloBoost = new(num++, MultiMenu.intruder, "<color=#2647A2FF>Janitor</color> Has Lower Cooldown When Solo", false);
             DragCooldown = new(num++, MultiMenu.intruder, "Drag Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
-            DragModifier = new(num++, MultiMenu.intruder, "Drag Speed", 0.5f, 0.5f, 2f, 0.5f, MultiplierFormat);
+            DragModifier = new(num++, MultiMenu.intruder, "Drag Speed", 0.5f, 0.25f, 3f, 0.25f, MultiplierFormat);
             JanitorVentOptions = new(num++, MultiMenu.intruder, "<color=#2647A2FF>Janitor</color> Can Vent", new[] { "Never", "Body", "Bodyless", "Always" });
 
             IntruderDeceptionSettings = new(MultiMenu.intruder, "<color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Deception</color> Settings");
             IDMax = new(num++, MultiMenu.intruder, "Max <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Deception</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
-            IDMin = new(num++, MultiMenu.intruder, "Min <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Deception</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
 
             Disguiser = new(MultiMenu.intruder, "<color=#40B4FFFF>Disguiser</color>");
             DisguiserCount = new(num++, MultiMenu.intruder, "<color=#40B4FFFF>Disguiser</color> Count", 1, 1, 14, 1);
@@ -2381,7 +2352,6 @@ namespace TownOfUsReworked.CustomOptions
 
             IntruderKillingSettings = new(MultiMenu.intruder, "<color=#FF0000FF>Impostor</color> <color=#1D7CF2FF>Killing</color> Settings");
             IKMax = new(num++, MultiMenu.intruder, "Max <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
-            IKMin = new(num++, MultiMenu.intruder, "Min <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
 
             Ambusher = new(MultiMenu.intruder, "<color=#2BD29CFF>Ambusher</color>");
             AmbusherCount = new(num++, MultiMenu.intruder, "<color=#2BD29CFF>Ambusher</color> Count", 1, 1, 14, 1);
@@ -2400,7 +2370,6 @@ namespace TownOfUsReworked.CustomOptions
 
             IntruderSupportSettings = new(MultiMenu.intruder, "<color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Support</color> Settings");
             ISMax = new(num++, MultiMenu.intruder, "Max <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
-            ISMin = new(num++, MultiMenu.intruder, "Min <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
 
             Consigliere = new(MultiMenu.intruder, "<color=#FFFF99FF>Consigliere</color>");
             ConsigCount = new(num++, MultiMenu.intruder, "<color=#FFFF99FF>Consigliere</color> Count", 1, 1, 14, 1);
@@ -2455,7 +2424,6 @@ namespace TownOfUsReworked.CustomOptions
 
             SyndicateDisruptionSettings = new(MultiMenu.syndicate, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Disruption</color> Settings");
             SDMax = new(num++, MultiMenu.syndicate, "Max <color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Disruption</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
-            SDMin = new(num++, MultiMenu.syndicate, "Min <color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Disruption</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
 
             Concealer = new(MultiMenu.syndicate, "<color=#C02525FF>Concealer</color>");
             ConcealerCount = new(num++, MultiMenu.syndicate, "<color=#C02525FF>Concealer</color> Count", 1, 1, 14, 1);
@@ -2494,7 +2462,6 @@ namespace TownOfUsReworked.CustomOptions
 
             SyndicateKillingSettings = new(MultiMenu.syndicate, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Killing</color> Settings");
             SyKMax = new(num++, MultiMenu.syndicate, "Max <color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
-            SyKMin = new(num++, MultiMenu.syndicate, "Min <color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
 
             Bomber = new(MultiMenu.syndicate, "<color=#C9CC3FFF>Bomber</color>");
             BomberCount = new(num++, MultiMenu.syndicate, "<color=#C9CC3FFF>Bomber</color> Count", 1, 1, 14, 1);
@@ -2511,9 +2478,11 @@ namespace TownOfUsReworked.CustomOptions
             Collider = new(MultiMenu.syndicate, "<color=#B345FFFF>Collider</color>");
             ColliderCount = new(num++, MultiMenu.syndicate, "<color=#B345FFFF>Collider</color> Count", 1, 1, 14, 1);
             UniqueCollider = new(num++, MultiMenu.syndicate, "<color=#B345FFFF>Collider</color> Is Unique In All Any", false);
-            CollideCooldown = new(num++, MultiMenu.syndicate, "Collide Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
+            CollideCooldown = new(num++, MultiMenu.syndicate, "Charge Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat);
             CollideRange = new(num++, MultiMenu.syndicate, "Collide Radius", 1.5f, 0.5f, 5f, 0.25f, DistanceFormat);
             CollideRangeIncrease = new(num++, MultiMenu.syndicate, "Chaos Drive Collide Radius Increase", 0.5f, 0.5f, 5f, 0.25f, DistanceFormat);
+            ChargeCooldownsLinked = new(num++, MultiMenu.syndicate, "Charge Cooldowns Are Linked", false);
+            CollideResetsCooldown = new(num++, MultiMenu.syndicate, "Collision Resets Charge Cooldowns", false);
 
             Crusader = new(MultiMenu.syndicate, "<color=#DF7AE8FF>Crusader</color>");
             CrusaderCount = new(num++, MultiMenu.syndicate, "<color=#DF7AE8FF>Crusader</color> Count", 1, 1, 14, 1);
@@ -2531,7 +2500,6 @@ namespace TownOfUsReworked.CustomOptions
 
             SyndicatePowerSettings = new(MultiMenu.syndicate, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Power</color> Settings");
             SPMax = new(num++, MultiMenu.syndicate, "Max <color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Power</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
-            SPMin = new(num++, MultiMenu.syndicate, "Min <color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Power</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
 
             Spellslinger = new(MultiMenu.syndicate, "<color=#0028F5FF>Spellslinger</color>");
             SpellslingerCount = new(num++, MultiMenu.syndicate, "<color=#0028F5FF>Spellslinger</color> Count", 1, 1, 14, 1);
@@ -2549,7 +2517,6 @@ namespace TownOfUsReworked.CustomOptions
 
             SyndicateSupportSettings = new(MultiMenu.syndicate, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Support</color> Settings");
             SSuMax = new(num++, MultiMenu.syndicate, "Max <color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
-            SSuMin = new(num++, MultiMenu.syndicate, "Min <color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1);
 
             Rebel = new(MultiMenu.syndicate, "<color=#FFFCCEFF>Rebel</color>");
             RebelCount = new(num++, MultiMenu.syndicate, "<color=#FFFCCEFF>Rebel</color> Count", 1, 1, 14, 1);

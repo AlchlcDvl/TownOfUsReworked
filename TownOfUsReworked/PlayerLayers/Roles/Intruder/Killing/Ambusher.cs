@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Ambusher : IntruderRole
+    public class Ambusher : Intruder
     {
         public bool Enabled;
         public DateTime LastAmbushed;

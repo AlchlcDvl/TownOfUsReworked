@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class TimeKeeper : SyndicateRole
+    public class TimeKeeper : Syndicate
     {
         public DateTime LastTimed;
         public CustomButton TimeButton;
@@ -42,7 +42,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (HoldsDrive)
             {
-                foreach (var player in PlayerControl.AllPlayerControls)
+                foreach (var player in CustomPlayer.AllPlayers)
                     GetRole(player).Rewinding = true;
             }
 
@@ -55,7 +55,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Enabled = false;
             LastTimed = DateTime.UtcNow;
 
-            foreach (var player in PlayerControl.AllPlayerControls)
+            foreach (var player in CustomPlayer.AllPlayers)
                 GetRole(player).Rewinding = false;
         }
 

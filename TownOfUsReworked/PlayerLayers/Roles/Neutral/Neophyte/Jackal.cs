@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Jackal : NeutralRole
+    public class Jackal : Neutral
     {
         public PlayerControl EvilRecruit;
         public PlayerControl GoodRecruit;
@@ -29,6 +29,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Type = LayerEnum.Jackal;
             RecruitButton = new(this, "Recruit", AbilityTypes.Direct, "ActionSecondary", Recruit, Exception);
             InspectorResults = InspectorResults.BringsChaos;
+            SubFactionSymbol = "$";
 
             if (TownOfUsReworked.IsTest)
                 Utils.LogSomething($"{Player.name} is {Name}");

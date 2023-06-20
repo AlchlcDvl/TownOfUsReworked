@@ -19,7 +19,7 @@
         {
             base.Update();
 
-            foreach (var player in PlayerControl.AllPlayerControls)
+            foreach (var player in CustomPlayer.AllPlayers)
             {
                 if (player.Data.IsDead)
                     continue;

@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Enforcer : IntruderRole
+    public class Enforcer : Intruder
     {
         public CustomButton BombButton;
         public PlayerControl BombedPlayer;
@@ -40,7 +40,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Boom()
         {
-            if (!Enabled && PlayerControl.LocalPlayer == BombedPlayer)
+            if (!Enabled && CustomPlayer.Local == BombedPlayer)
             {
                 Utils.Flash(Color);
                 GetRole(BombedPlayer).Bombed = true;

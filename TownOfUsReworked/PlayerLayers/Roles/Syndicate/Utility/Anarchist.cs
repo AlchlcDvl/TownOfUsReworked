@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Anarchist : SyndicateRole
+    public class Anarchist : Syndicate
     {
         public Anarchist(PlayerControl player) : base(player)
         {

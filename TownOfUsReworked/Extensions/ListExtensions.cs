@@ -38,6 +38,18 @@ namespace TownOfUsReworked.Extensions
             }
         }
 
+        public static void AddRanges<T>(this List<T> main, params List<T>[] items)
+        {
+            foreach (var list in items)
+                main.AddRange(list);
+        }
+
+        public static void RemoveRanges<T>(this List<T> main, params List<T>[] items)
+        {
+            foreach (var list in items)
+                main.RemoveRange(list);
+        }
+
         public static List<T> Il2CppToSystem<T>(this Il2CppSystem.Collections.Generic.List<T> list) => list.ToArray().ToList();
 
         public static Il2CppSystem.Collections.Generic.List<T> SystemToIl2Cpp<T>(this List<T> list)

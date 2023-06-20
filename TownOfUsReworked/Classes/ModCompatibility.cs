@@ -85,7 +85,7 @@
         private static FieldInfo SubmergedInstance;
         private static FieldInfo SubmergedElevators;
 
-        private readonly static Harmony SubHarmony = new("tourew.subcompat.patch");
+        private static readonly Harmony SubHarmony = new("tourew.subcompat.patch");
 
         public static void InitializeSubmerged()
         {
@@ -220,7 +220,7 @@
 
         public static IEnumerator WaitMeeting(Action next)
         {
-            while (!PlayerControl.LocalPlayer.moveable)
+            while (!CustomPlayer.Local.moveable)
                 yield return null;
 
             yield return new WaitForSeconds(0.5f);
@@ -233,10 +233,10 @@
 
         public static void GhostRoleBegin()
         {
-            if (!PlayerControl.LocalPlayer.Data.IsDead)
+            if (!CustomPlayer.LocalCustom.IsDead)
                 return;
 
-            if (PlayerControl.LocalPlayer.IsPostmortal() && !PlayerControl.LocalPlayer.Caught())
+            if (CustomPlayer.Local.IsPostmortal() && !CustomPlayer.Local.Caught())
             {
                 var startingVent = ShipStatus.Instance.AllVents[URandom.RandomRangeInt(0, ShipStatus.Instance.AllVents.Count)];
 
@@ -245,11 +245,11 @@
 
                 ChangeFloor(startingVent.transform.position.y > -7f);
                 var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPos, SendOption.Reliable);
-                writer2.Write(PlayerControl.LocalPlayer.PlayerId);
+                writer2.Write(CustomPlayer.Local.PlayerId);
                 writer2.Write(startingVent.transform.position);
                 AmongUsClient.Instance.FinishRpcImmediately(writer2);
-                PlayerControl.LocalPlayer.NetTransform.RpcSnapTo(new(startingVent.transform.position.x, startingVent.transform.position.y + 0.3636f));
-                PlayerControl.LocalPlayer.MyPhysics.RpcEnterVent(startingVent.Id);
+                CustomPlayer.Local.NetTransform.RpcSnapTo(new(startingVent.transform.position.x, startingVent.transform.position.y + 0.3636f));
+                CustomPlayer.Local.MyPhysics.RpcEnterVent(startingVent.Id);
             }
         }
 
@@ -281,7 +281,7 @@
             if (!SubLoaded)
                 return obj.AddComponent<MissingSubmergedBehaviour>();
 
-            var validType = SubInjectedTypes.TryGetValue(typeName, out Type type);
+            var validType = SubInjectedTypes.TryGetValue(typeName, out var type);
             return validType ? obj.AddComponent(Il2CppType.From(type)).TryCast<MonoBehaviour>() : obj.AddComponent<MissingSubmergedBehaviour>();
         }
 
@@ -298,7 +298,7 @@
             if (!SubLoaded)
                 return;
 
-            var _floorHandler = ((Component)GetFloorHandlerMethod.Invoke(null, new[] { PlayerControl.LocalPlayer })).TryCast(FloorHandlerType) as MonoBehaviour;
+            var _floorHandler = ((Component)GetFloorHandlerMethod.Invoke(null, new[] { CustomPlayer.Local })).TryCast(FloorHandlerType) as MonoBehaviour;
             RpcRequestChangeFloorMethod.Invoke(_floorHandler, new object[] { toUpper });
         }
 
@@ -318,7 +318,7 @@
             try
             {
                 ShipStatus.Instance.RpcRepairSystem((SystemTypes)130, 64);
-                RepairDamageMethod.Invoke(SubmarineOxygenSystemInstanceField.GetValue(null), new object[] { PlayerControl.LocalPlayer, 64 });
+                RepairDamageMethod.Invoke(SubmarineOxygenSystemInstanceField.GetValue(null), new object[] { CustomPlayer.Local, 64 });
             } catch (NullReferenceException) {}
         }
 
@@ -362,7 +362,7 @@
         private static Type ChangeMapsType;
         private static MethodInfo ChangeMapsMethod;
 
-        private readonly static Harmony LIHarmony = new("tourew.licompat.patch");*/
+        private static readonly Harmony LIHarmony = new("tourew.licompat.patch");*/
 
         public static void InitializeLevelImpostor()
         {
@@ -403,6 +403,6 @@
 
         public const string RD_GUID = "gg.reactor.debugger";
 
-        public const string TM_GUID = "me.toppatcrew.toppatmod";
+        //public const string TM_GUID = "me.toppatcrew.toppatmod";
     }
 }

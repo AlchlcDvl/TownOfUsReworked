@@ -4,6 +4,7 @@ namespace TownOfUsReworked.PlayerLayers
     {
         public Color32 Color = Colors.Layer;
         public string Name = "Layerless";
+        public string Short => Info.AllInfo.Find(x => x.Name == Name)?.Short;
 
         public PlayerLayerEnum LayerType = PlayerLayerEnum.None;
         public RoleEnum RoleType = RoleEnum.None;
@@ -12,7 +13,7 @@ namespace TownOfUsReworked.PlayerLayers
         public AbilityEnum AbilityType = AbilityEnum.None;
         public LayerEnum Type = LayerEnum.None;
 
-        public bool Local => Player == PlayerControl.LocalPlayer;
+        public bool Local => Player == CustomPlayer.Local;
 
         public bool IsBlocked;
 
@@ -21,20 +22,15 @@ namespace TownOfUsReworked.PlayerLayers
         public bool Winner;
 
         public readonly static List<PlayerLayer> AllLayers = new();
-        public static List<PlayerLayer> LocalLayers => GetLayers(PlayerControl.LocalPlayer);
+        public static List<PlayerLayer> LocalLayers => GetLayers(CustomPlayer.Local);
 
         public virtual void OnLobby() => EndGame.Reset();
 
         public virtual void UpdateHud(HudManager __instance)
         {
-            __instance.KillButton.SetTarget(null);
-            __instance.KillButton.gameObject.SetActive(false);
-
             var Vent = __instance.ImpostorVentButton.graphic.sprite;
 
-            if (IsBlocked)
-                Vent = AssetManager.GetSprite("Blocked");
-            else if (Player.Is(Faction.Intruder))
+            if (Player.Is(Faction.Intruder))
                 Vent = AssetManager.GetSprite("IntruderVent");
             else if (Player.Is(Faction.Syndicate))
                 Vent = AssetManager.GetSprite("SyndicateVent");
@@ -61,10 +57,7 @@ namespace TownOfUsReworked.PlayerLayers
                 __instance.ReportButton.SetEnabled();
 
             __instance.ReportButton.buttonLabelText.text = IsBlocked ? "BLOCKED" : "REPORT";
-            __instance.ReportButton.graphic.sprite = AssetManager.GetSprite(IsBlocked ? "Blocked" : "Report");
             __instance.ReportButton.buttonLabelText.fontSharedMaterial = __instance.SabotageButton.buttonLabelText.fontSharedMaterial;
-
-            //var closestUsable = Player.GetClosestConsole();
 
             if (Player.closest == null || IsBlocked)
                 __instance.UseButton.SetDisabled();
@@ -72,7 +65,6 @@ namespace TownOfUsReworked.PlayerLayers
                 __instance.UseButton.SetEnabled();
 
             __instance.UseButton.buttonLabelText.text = IsBlocked ? "BLOCKED" : "USE";
-            __instance.UseButton.graphic.sprite = AssetManager.GetSprite(IsBlocked ? "Blocked" : "Use");
             __instance.UseButton.buttonLabelText.fontSharedMaterial = __instance.SabotageButton.buttonLabelText.fontSharedMaterial;
 
             if (IsBlocked)
@@ -81,7 +73,6 @@ namespace TownOfUsReworked.PlayerLayers
                 __instance.PetButton.SetEnabled();
 
             __instance.PetButton.buttonLabelText.text = IsBlocked ? "BLOCKED" : "PET";
-            __instance.PetButton.graphic.sprite = AssetManager.GetSprite(IsBlocked ? "Blocked" : "Pet");
             __instance.PetButton.buttonLabelText.fontSharedMaterial = __instance.SabotageButton.buttonLabelText.fontSharedMaterial;
 
             if (Player.CannotUse())
@@ -89,7 +80,15 @@ namespace TownOfUsReworked.PlayerLayers
             else
                 __instance.SabotageButton.SetEnabled();
 
-            __instance.SabotageButton.graphic.sprite = AssetManager.GetSprite(IsBlocked ? "Blocked" : (Player.Is(Faction.Syndicate) ? "SyndicateSabotage" : "Sabotage"));
+            var Sabo = __instance.SabotageButton.graphic.sprite;
+
+            if (Player.Is(Faction.Syndicate))
+                Sabo = AssetManager.GetSprite("SyndicateSabotage");
+            else if (Player.Is(Faction.Intruder))
+                Sabo = AssetManager.GetSprite("Sabotage");
+
+            __instance.SabotageButton.graphic.sprite = Sabo;
+            __instance.SabotageButton.buttonLabelText.text = IsBlocked ? "BLOCKED" : "SABOTAGE";
 
             if (IsBlocked && Minigame.Instance)
                 Minigame.Instance.Close();
@@ -167,25 +166,25 @@ namespace TownOfUsReworked.PlayerLayers
                 }
                 else if (LayerType == PlayerLayerEnum.Role && ((Role)this).RoleAlignment == RoleAlignment.NeutralEvil && CustomGameOptions.NeutralEvilsEndGame)
                 {
-                    if (Type == LayerEnum.Jester && ((Jester)(Role)this).VotedOut)
+                    if (Type == LayerEnum.Jester && ((Jester)this).VotedOut)
                     {
                         Role.JesterWins = true;
                         Winner = true;
                         Utils.EndGame();
                     }
-                    else if (Type == LayerEnum.Executioner && ((Executioner)(Role)this).TargetVotedOut)
+                    else if (Type == LayerEnum.Executioner && ((Executioner)this).TargetVotedOut)
                     {
                         Role.ExecutionerWins = true;
                         Winner = true;
                         Utils.EndGame();
                     }
-                    else if (Type == LayerEnum.Actor && ((Actor)(Role)this).Guessed)
+                    else if (Type == LayerEnum.Actor && ((Actor)this).Guessed)
                     {
                         Role.ActorWins = true;
                         Winner = true;
                         Utils.EndGame();
                     }
-                    else if (Type == LayerEnum.Troll && ((Troll)(Role)this).Killed)
+                    else if (Type == LayerEnum.Troll && ((Troll)this).Killed)
                     {
                         Role.TrollWins = true;
                         Winner = true;

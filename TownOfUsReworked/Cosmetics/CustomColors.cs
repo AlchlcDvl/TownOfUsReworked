@@ -37,16 +37,17 @@ namespace TownOfUsReworked.Cosmetics
 
         public static float PPR(float min, float max, float mul) => max - Mathf.PingPong(Time.time * mul, max - min);
 
-        public static Color Shadow(Color color) => new(color.r - 0.3f < 0 ? 0f : color.r - 0.3f, color.g - 0.3f < 0 ? 0f : color.g - 0.3f, color.b - 0.3f < 0 ? 0f : color.b - 0.3f,
+        public static Color Shadow(Color color) => new(color.r - 0.2f < 0 ? 0f : color.r - 0.2f, color.g - 0.2f < 0 ? 0f : color.g - 0.2f, color.b - 0.2f < 0 ? 0f : color.b - 0.2f,
             color.a);
 
         public static void SetColor(Renderer rend, int id)
         {
             rend.material.SetColor("_BackColor", GetColor(id, true));
             rend.material.SetColor("_BodyColor", GetColor(id, false));
+            rend.material.SetColor("_VisorColor", Palette.VisorColor);
         }
 
-        private static bool OutOfBounds(int id) => id < 0 || id >= Palette.ColorNames.Count;
+        public static bool OutOfBounds(int id) => id < 0 || id >= Palette.ColorNames.Count;
 
         public static bool IsRainbow(int id) => !OutOfBounds(id) && (int)Palette.ColorNames[id] == 999999;
 
@@ -88,7 +89,7 @@ namespace TownOfUsReworked.Cosmetics
             _ => shadow ? Palette.ShadowColors[id] : Palette.PlayerColors[id]
         };
 
-        public static readonly Dictionary<int, string> LightDarkColors = new()
+        public readonly static Dictionary<int, string> LightDarkColors = new()
         {
             { 0, "Darker" }, //Red
             { 1, "Darker" }, //Blue
@@ -443,7 +444,7 @@ namespace TownOfUsReworked.Cosmetics
 
             for (var i = 0; i < Palette.PlayerColors.Count; i++)
             {
-                if (!PlayerControl.LocalPlayer || PlayerControl.LocalPlayer.CurrentOutfit.ColorId != i)
+                if (!CustomPlayer.Local || CustomPlayer.Local.CurrentOutfit.ColorId != i)
                     __instance.AvailableColors.Add(i);
             }
 

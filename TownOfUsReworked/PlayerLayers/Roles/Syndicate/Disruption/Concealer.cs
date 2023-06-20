@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Concealer : SyndicateRole
+    public class Concealer : Syndicate
     {
         public CustomButton ConcealButton;
         public bool Enabled;
@@ -36,7 +36,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (HoldsDrive)
                 Utils.Conceal();
             else
-                Utils.Invis(ConcealedPlayer, PlayerControl.LocalPlayer.Is(Faction.Syndicate));
+                Utils.Invis(ConcealedPlayer, CustomPlayer.Local.Is(Faction.Syndicate));
 
             if (MeetingHud.Instance || (ConcealedPlayer == null && !HoldsDrive))
                 TimeRemaining = 0f;
@@ -101,7 +101,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 TimeRemaining = CustomGameOptions.ConcealDuration;
                 Conceal();
-                Utils.Invis(ConcealedPlayer, PlayerControl.LocalPlayer.Is(Faction.Syndicate));
+                Utils.Invis(ConcealedPlayer, CustomPlayer.Local.Is(Faction.Syndicate));
             }
         }
 

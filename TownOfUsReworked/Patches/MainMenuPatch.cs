@@ -1,12 +1,9 @@
-using Assets.InnerNet;
-using Twitch;
-
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.Start))]
     public static class MainMenuStartPatch
     {
-        private static AnnouncementPopUp popUp;
+        //private static AnnouncementPopUp PopUp;
         public static GameObject Logo;
 
         public static void Prefix(MainMenuManager __instance)
@@ -14,185 +11,132 @@ namespace TownOfUsReworked.Patches
             ModUpdater.LaunchUpdater();
             CosmeticsLoader.LaunchFetchers(ModUpdater.HasReworkedUpdate);
 
-            var amongUsLogo = GameObject.Find("bannerLogo_AmongUs");
-
-            if (amongUsLogo)
-            {
-                amongUsLogo.transform.localScale *= 0.75f;
-                amongUsLogo.transform.position += Vector3.up * 0.25f;
-            }
-
             if (!Logo)
             {
-                Logo = new GameObject("bannerLogo_TownOfUsReworked");
-                Logo.transform.position = new (0, 0.7f, 0);
-                Logo.transform.SetParent(amongUsLogo.transform);
+                Logo = new GameObject("TownOfUsReworkedLogo");
+                Logo.transform.position = new (2f, -0.1f, 100f);
                 Logo.AddComponent<SpriteRenderer>().sprite = AssetManager.GetSprite("TownOfUsReworkedBanner");
+                Logo.transform.SetParent(__instance.rightPanelMask.transform);
             }
+        }
 
-            var InvButton = GameObject.Find("InventoryButton");
+        public static void Postfix(MainMenuManager __instance)
+        {
+            var scale = __instance.newsButton.transform.localScale;
+            var pos = __instance.newsButton.transform.position;
+            var diff = __instance.newsButton.transform.position.y - __instance.myAccountButton.transform.position.y;
+            pos.x = __instance.creditsButton.transform.position.x;
+            scale.x /= 2.1f;
+            scale.y *= 0.95f;
+            __instance.newsButton.transform.localScale = scale;
+            __instance.settingsButton.transform.localScale = scale;
+            __instance.myAccountButton.transform.localScale = scale;
+            __instance.newsButton.transform.position = pos;
+            pos.y -= diff;
+            __instance.settingsButton.transform.position = pos;
+            pos.y -= diff;
+            __instance.myAccountButton.transform.position = pos;
+            pos.y = __instance.newsButton.transform.localPosition.y;
+            pos.x = __instance.quitButton.transform.localPosition.x;
+            GameObject.Find("NewsButton").transform.GetChild(0).GetChild(0).transform.localScale = new(scale.x * 3.4f, scale.y, scale.z);
+            GameObject.Find("NewsButton").transform.GetChild(1).GetChild(0).transform.localScale = new(scale.x * 1.9f, scale.y / 1.5f, scale.z);
+            GameObject.Find("NewsButton").transform.GetChild(2).GetChild(0).transform.localScale = new(scale.x * 1.9f, scale.y / 1.5f, scale.z);
+            GameObject.Find("AcountButton").transform.GetChild(0).GetChild(0).transform.localScale = new(scale.x * 3.4f, scale.y, scale.z);
+            GameObject.Find("AcountButton").transform.GetChild(1).GetChild(0).transform.localScale = new(scale.x * 1.9f, scale.y / 1.5f, scale.z);
+            GameObject.Find("AcountButton").transform.GetChild(2).GetChild(0).transform.localScale = new(scale.x * 1.9f, scale.y / 1.5f, scale.z);
+            GameObject.Find("SettingsButton").transform.GetChild(0).GetChild(0).transform.localScale = new(scale.x * 3.4f, scale.y, scale.z);
+            GameObject.Find("SettingsButton").transform.GetChild(1).GetChild(0).transform.localScale = new(scale.x * 1.9f, scale.y / 1.5f, scale.z);
+            GameObject.Find("SettingsButton").transform.GetChild(2).GetChild(0).transform.localScale = new(scale.x * 1.9f, scale.y / 1.5f, scale.z);
 
-            if (InvButton == null)
-                return;
+            var ghObj = UObject.Instantiate(__instance.newsButton, __instance.newsButton.transform.parent);
+            ghObj.gameObject.name = "ReworkedGitHub";
+            ghObj.OnClick = new();
+            ghObj.OnClick.AddListener((Action)(() => Application.OpenURL(TownOfUsReworked.GitHubLink)));
+            ghObj.transform.localPosition = pos;
+            pos.y = __instance.settingsButton.transform.localPosition.y;
 
-            var discObj = UObject.Instantiate(InvButton, InvButton.transform.parent);
-            discObj.GetComponent<SpriteRenderer>().sprite = AssetManager.GetSprite("Discord");
+            var discObj = UObject.Instantiate(__instance.settingsButton, __instance.settingsButton.transform.parent);
+            discObj.gameObject.name = "ReworkedDiscord";
+            discObj.OnClick = new();
+            discObj.OnClick.AddListener((Action)(() => Application.OpenURL(TownOfUsReworked.DiscordInvite)));
+            discObj.transform.localPosition = pos;
+            pos.y = __instance.myAccountButton.transform.localPosition.y;
 
-            var button1 = discObj.GetComponent<PassiveButton>();
-            button1.OnClick = new();
-            button1.OnClick.AddListener((Action)(() => Application.OpenURL("https://discord.gg/cd27aDQDY9")));
-
-            var announceObj = UObject.Instantiate(InvButton, InvButton.transform.parent);
-            announceObj.GetComponent<SpriteRenderer>().sprite = AssetManager.GetSprite("Update");
-
-            var button2 = announceObj.GetComponent<PassiveButton>();
-            button2.OnClick = new();
-            button2.OnClick.AddListener((Action)(() =>
+            var credObj = UObject.Instantiate(__instance.myAccountButton, __instance.myAccountButton.transform.parent);
+            credObj.gameObject.name = "BlankForNow";
+            credObj.OnClick = new();
+            /*credObj.OnClick.AddListener((Action)(() =>
             {
-                popUp?.Destroy();
-                popUp = UObject.Instantiate(UObject.FindObjectOfType<AnnouncementPopUp>(true));
-                popUp.gameObject.SetActive(true);
+                PopUp?.Destroy();
+                PopUp = UObject.Instantiate(UObject.FindObjectOfType<AnnouncementPopUp>(true));
+                PopUp.gameObject.SetActive(true);
 
                 var changesAnnouncement = new Announcement
                 {
                     Id = "tourewChanges",
                     Language = 0,
                     Number = 500,
-                    Title = "Town Of Us Reworked Changes",
+                    Title = "Town Of Us Reworked",
                     ShortTitle = "Changes",
                     SubTitle = "No idea what I'm doing anymore lmao",
                     PinState = false,
                     Date = "30.04.2023",
-                    Text = $"<size=75%>{Utils.CreateText("Changelog")}</size>"
+                    Text = $"<size=75%>{Utils.CreateText("Changelog")}\n\n{Utils.CreateText("Credits")}</size>"
                 };
 
                 __instance.StartCoroutine(Effects.Lerp(0.01f, new Action<float>(_ =>
                 {
                     var backup = DataManager.Player.Announcements.allAnnouncements;
-                    popUp.Init(false);
+                    PopUp.Init(false);
                     DataManager.Player.Announcements.allAnnouncements = new();
                     DataManager.Player.Announcements.allAnnouncements.Insert(0, changesAnnouncement);
 
-                    foreach (var item in popUp.visibleAnnouncements)
+                    foreach (var item in PopUp.visibleAnnouncements)
                         item.Destroy();
 
                     foreach (var item in UObject.FindObjectsOfType<AnnouncementPanel>())
                     {
-                        if (item != popUp.ErrorPanel)
+                        if (item != PopUp.ErrorPanel)
                             item.gameObject.Destroy();
                     }
 
-                    popUp.CreateAnnouncementList();
-                    popUp.visibleAnnouncements[0].PassiveButton.OnClick = new();
+                    PopUp.CreateAnnouncementList();
+                    PopUp.visibleAnnouncements[0].PassiveButton.OnClick = new();
                     DataManager.Player.Announcements.allAnnouncements = backup;
                     var titleText = GameObject.Find("Title_Text").GetComponent<TextMeshPro>();
 
                     if (titleText != null)
                         titleText.text = "";
                 })));
-            }));
-
-            var credObj = UObject.Instantiate(InvButton, InvButton.transform.parent);
-            credObj.GetComponent<SpriteRenderer>().sprite = AssetManager.GetSprite("Credits");
-
-            var button3 = credObj.GetComponent<PassiveButton>();
-            button3.OnClick = new();
-            button3.OnClick.AddListener((Action)(() =>
-            {
-                popUp?.Destroy();
-                popUp = UObject.Instantiate(UObject.FindObjectOfType<AnnouncementPopUp>(true));
-                popUp.gameObject.SetActive(true);
-
-                var creditsAnnouncement = new Announcement
-                {
-                    Id = "tourewCredits",
-                    Language = 0,
-                    Number = 500,
-                    Title = "Town Of Us Reworked Credits",
-                    ShortTitle = "Credits",
-                    SubTitle = "This mod wasn't possible without these people!",
-                    PinState = false,
-                    Date = "30.04.2023",
-                    Text = $"<size=75%>{Utils.CreateText("Credits")}</size>"
-                };
-
-                __instance.StartCoroutine(Effects.Lerp(0.01f, new Action<float>(_ =>
-                {
-                    var backup = DataManager.Player.Announcements.allAnnouncements;
-                    popUp.Init(false);
-                    DataManager.Player.Announcements.allAnnouncements = new();
-                    DataManager.Player.Announcements.allAnnouncements.Insert(0, creditsAnnouncement);
-
-                    foreach (var item in popUp.visibleAnnouncements)
-                        item.Destroy();
-
-                    foreach (var item in UObject.FindObjectsOfType<AnnouncementPanel>())
-                    {
-                        if (item != popUp.ErrorPanel)
-                            item.gameObject.Destroy();
-                    }
-
-                    popUp.CreateAnnouncementList();
-                    popUp.visibleAnnouncements[0].PassiveButton.OnClick = new();
-                    DataManager.Player.Announcements.allAnnouncements = backup;
-                    var titleText = GameObject.Find("Title_Text").GetComponent<TextMeshPro>();
-
-                    if (titleText != null)
-                        titleText.text = "";
-                })));
-            }));
+            }));*/
+            credObj.transform.localPosition = pos;
+            GameObject.Find("BlankForNow").transform.GetChild(1).GetChild(0).gameObject.SetActive(false);
+            GameObject.Find("BlankForNow").transform.GetChild(2).GetChild(0).gameObject.SetActive(false);
 
             __instance.StartCoroutine(Effects.Lerp(0.01f, new Action<float>(_ =>
             {
-                foreach (var tf in InvButton.transform.parent.GetComponentsInChildren<Transform>())
-                    tf.localPosition = new(tf.localPosition.x * 0.7f, tf.localPosition.y);
+                GameObject.Find("ReworkedDiscord").transform.GetChild(0).GetChild(0).GetComponent<TMP_Text>().SetText("Mod Discord");
+                GameObject.Find("ReworkedGitHub").transform.GetChild(0).GetChild(0).GetComponent<TMP_Text>().SetText("Mod GitHub");
+                GameObject.Find("BlankForNow").transform.GetChild(0).GetChild(0).GetComponent<TMP_Text>().SetText("");
             })));
-
-            var local = GameObject.Find("PlayLocalButton");
-
-            if (local)
-            {
-                local.transform.localScale = new(0.8f, 0.8f, 0.8f);
-                local.transform.position = new(-0.8f, -1.6f, 0f);
-            }
-
-            var online = GameObject.Find("PlayOnlineButton");
-
-            if (online)
-            {
-                online.transform.localScale = new(0.8f, 0.8f, 0.8f);
-                online.transform.position = new(0.8f, -1.6f, 0f);
-            }
-
-            var howTo = GameObject.Find("HowToPlayButton");
-
-            if (howTo)
-            {
-                howTo.transform.localScale = new(0.8f, 0.8f, 0.8f);
-                howTo.transform.position = new(-2.4f, -1.71f, 0f);
-            }
-
-            var freeplay = GameObject.Find("FreePlayButton");
-
-            if (freeplay)
-            {
-                freeplay.transform.localScale = new(0.8f, 0.8f, 0.8f);
-                freeplay.transform.position = new(2.4f, -1.71f, 0f);
-            }
 
             var template = GameObject.Find("ExitGameButton");
 
             if (template)
             {
-                var i = 1;
-                var pos = template.transform.localPosition;
+                var pos2 = template.transform.localPosition;
 
                 if (ModUpdater.HasReworkedUpdate)
                 {
                     var touButton = UObject.Instantiate(template, null);
-                    pos.y += 0.6f * i;
-                    touButton.transform.localPosition = pos;
-                    touButton.GetComponent<SpriteRenderer>().sprite = AssetManager.GetSprite("UpdateToUButton");
+                    pos2.y += 0.6f;
+                    touButton.transform.localPosition = pos2;
+                    touButton.transform.localScale = new Vector3(0.44f, 0.84f, 1f);
+                    touButton.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = AssetManager.GetSprite("UpdateToUButton");
+                    touButton.transform.SetParent(GameObject.Find("RightPanel").transform);
+                    var aspect = touButton.GetComponent<AspectPosition>();
+                    aspect.Alignment = AspectPosition.EdgeAlignments.LeftBottom;
+                    aspect.DistanceFromEdge = new Vector3(1.5f,1f,0f);
                     var passiveTOUButton = touButton.GetComponent<PassiveButton>();
                     passiveTOUButton.OnClick = new();
                     passiveTOUButton.OnClick.AddListener((Action)(() =>
@@ -200,33 +144,42 @@ namespace TownOfUsReworked.Patches
                         ModUpdater.ExecuteUpdate("Reworked");
                         touButton.SetActive(false);
                     }));
-                    var text = touButton.transform.GetChild(0).GetComponent<TMP_Text>();
-                    __instance.StartCoroutine(Effects.Lerp(0.1f, new Action<float>(_ => text.SetText(""))));
+                    __instance.StartCoroutine(Effects.Lerp(0.1f, new Action<float>(_ =>
+                    {
+                        touButton.transform.GetChild(2).GetChild(0).GetComponent<TMP_Text>().SetText("");
+                        aspect.AdjustPosition();
+                    })));
                     ModUpdater.InfoPopup = UObject.Instantiate(TwitchManager.Instance.TwitchPopup);
                     ModUpdater.InfoPopup.TextAreaTMP.fontSize *= 0.7f;
                     ModUpdater.InfoPopup.TextAreaTMP.enableAutoSizing = false;
-                    i++;
                 }
 
                 if (ModUpdater.HasSubmergedUpdate)
                 {
                     var submergedButton = UObject.Instantiate(template, null);
-                    pos.y += 0.6f * i;
-                    submergedButton.transform.localPosition = pos;
-                    submergedButton.GetComponent<SpriteRenderer>().sprite = AssetManager.GetSprite("UpdateSubmergedButton");
-                    var passiveSubmergedButton = submergedButton.GetComponent<PassiveButton>();
-                    passiveSubmergedButton.OnClick = new();
-                    passiveSubmergedButton.OnClick.AddListener((Action)(() =>
+                    pos2.y += 0.6f;
+                    submergedButton.transform.localPosition = pos2;
+                    submergedButton.transform.localScale = new Vector3(0.44f, 0.84f, 1f);
+                    submergedButton.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = AssetManager.GetSprite("UpdateToUButton");
+                    submergedButton.transform.SetParent(GameObject.Find("RightPanel").transform);
+                    var aspect = submergedButton.GetComponent<AspectPosition>();
+                    aspect.Alignment = AspectPosition.EdgeAlignments.LeftBottom;
+                    aspect.DistanceFromEdge = new Vector3(1.5f,1f,0f);
+                    var passiveTOUButton = submergedButton.GetComponent<PassiveButton>();
+                    passiveTOUButton.OnClick = new();
+                    passiveTOUButton.OnClick.AddListener((Action)(() =>
                     {
                         ModUpdater.ExecuteUpdate("Submerged");
                         submergedButton.SetActive(false);
                     }));
-                    var text = submergedButton.transform.GetChild(0).GetComponent<TMP_Text>();
-                    __instance.StartCoroutine(Effects.Lerp(0.1f, new Action<float>(_ => text.SetText(""))));
+                    __instance.StartCoroutine(Effects.Lerp(0.1f, new Action<float>(_ =>
+                    {
+                        submergedButton.transform.GetChild(2).GetChild(0).GetComponent<TMP_Text>().SetText("");
+                        aspect.AdjustPosition();
+                    })));
                     ModUpdater.InfoPopup = UObject.Instantiate(TwitchManager.Instance.TwitchPopup);
                     ModUpdater.InfoPopup.TextAreaTMP.fontSize *= 0.7f;
                     ModUpdater.InfoPopup.TextAreaTMP.enableAutoSizing = false;
-                    i++;
                 }
             }
         }
@@ -235,26 +188,31 @@ namespace TownOfUsReworked.Patches
     [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.LateUpdate))]
     public static class MainMenuUpdatePatch
     {
-        private static int Flip = 1;
-        private static float _time;
-        private static bool Started;
-
-        public static void Postfix()
+        public static void Postfix(MainMenuManager __instance)
         {
-            MainMenuStartPatch.Logo?.transform.Rotate(Vector3.forward * 2 * Time.fixedDeltaTime * Flip);
-            _time += Time.deltaTime;
-
-            if (_time > 0.5f && !Started)
+            try
             {
-                _time--;
-                Flip *= -1;
-                Started = true;
-            }
-            else if (_time > 1f)
-            {
-                _time--;
-                Flip *= -1;
-            }
+                var pos = GameObject.Find("NewsButton").transform.GetChild(0).GetChild(0).transform.position;
+                pos.x -= 0.1f;
+                GameObject.Find("NewsButton").transform.GetChild(0).GetChild(0).transform.position = pos;
+                var pos2 = GameObject.Find("AcountButton").transform.GetChild(0).GetChild(0).transform.position;
+                pos2.x -= 0.1f;
+                GameObject.Find("AcountButton").transform.GetChild(0).GetChild(0).transform.position = pos2;
+                var pos3 = GameObject.Find("SettingsButton").transform.GetChild(0).GetChild(0).transform.position;
+                pos3.x -= 0.1f;
+                GameObject.Find("SettingsButton").transform.GetChild(0).GetChild(0).transform.position = pos3;
+                var pos4 = GameObject.Find("ReworkedDiscord").transform.GetChild(0).GetChild(0).transform.position;
+                pos4.x -= 0.1f;
+                GameObject.Find("ReworkedDiscord").transform.GetChild(0).GetChild(0).transform.position = pos4;
+                var pos5 = GameObject.Find("ReworkedGitHub").transform.GetChild(0).GetChild(0).transform.position;
+                pos5.x -= 0.1f;
+                GameObject.Find("ReworkedGitHub").transform.GetChild(0).GetChild(0).transform.position = pos5;
+                var pos6 = GameObject.Find("BlankForNow").transform.GetChild(0).GetChild(0).transform.position;
+                pos6.x -= 0.1f;
+                GameObject.Find("BlankForNow").transform.GetChild(0).GetChild(0).transform.position = pos6;
+                MainMenuStartPatch.Logo.SetActive(!__instance.playLocalButton.isActiveAndEnabled);
+                VersionShowerPatch.ModVersion.gameObject.SetActive(!__instance.playLocalButton.isActiveAndEnabled);
+            } catch {}
         }
     }
 }

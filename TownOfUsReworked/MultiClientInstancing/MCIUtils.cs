@@ -3,14 +3,14 @@ namespace TownOfUsReworked.MultiClientInstancing
     [HarmonyPatch]
     public static class MCIUtils
     {
-        public static readonly Dictionary<int, ClientData> Clients = new();
-        public static readonly Dictionary<byte, int> PlayerIdClientId = new();
+        public readonly static Dictionary<int, ClientData> Clients = new();
+        public readonly static Dictionary<byte, int> PlayerIdClientId = new();
 
         public static int AvailableId()
         {
             for (var i = 1; i < 128; i++)
             {
-                if (!Clients.ContainsKey(i) && PlayerControl.LocalPlayer.OwnerId != i)
+                if (!Clients.ContainsKey(i) && CustomPlayer.Local.OwnerId != i)
                     return i;
             }
 
@@ -43,6 +43,7 @@ namespace TownOfUsReworked.MultiClientInstancing
             sampleC.Character.SetName($"Robot {sampleC.Character.PlayerId}");
             sampleC.Character.SetSkin(HatManager.Instance.allSkins[URandom.Range(0, HatManager.Instance.allSkins.Count)].ProdId, 0);
             sampleC.Character.SetNamePlate(HatManager.Instance.allNamePlates[URandom.Range(0, HatManager.Instance.allNamePlates.Count)].ProdId);
+            sampleC.Character.SetPet(HatManager.Instance.allPets[URandom.Range(0, HatManager.Instance.allPets.Count)].ProdId);
             sampleC.Character.SetHat("hat_NoHat", 0);
             sampleC.Character.SetColor(URandom.Range(0, Palette.PlayerColors.Length));
 
@@ -65,10 +66,8 @@ namespace TownOfUsReworked.MultiClientInstancing
 
         public static void RemoveAllPlayers()
         {
-            foreach (var playerId in PlayerIdClientId.Keys)
-                RemovePlayer(playerId);
-
-            SwitchTo(AmongUsClient.Instance.allClients[0].Character.PlayerId);
+            PlayerIdClientId.Keys.ToList().ForEach(RemovePlayer);
+            SwitchTo(0);
         }
 
         public static void SwitchTo(byte playerId)
@@ -76,19 +75,76 @@ namespace TownOfUsReworked.MultiClientInstancing
             if (!TownOfUsReworked.MCIActive)
                 return;
 
-            PlayerControl.LocalPlayer.DisableButtons();
-            PlayerControl.LocalPlayer.DisableArrows();
+            CustomPlayer.Local.DisableButtons();
+            CustomPlayer.Local.DisableArrows();
 
-            PlayerControl.LocalPlayer.NetTransform.RpcSnapTo(PlayerControl.LocalPlayer.transform.position);
-            PlayerControl.LocalPlayer.moveable = false;
+            if (MeetingHud.Instance)
+            {
+                switch (CustomPlayer.Local.GetRole())
+                {
+                    case RoleEnum.Retributionist:
+                        var ret = (Retributionist)Role.LocalRole;
+                        ret.HideButtons();
+                        ret.PlayerNumbers.Clear();
+                        ret.Actives.Clear();
+                        ret.MoarButtons.Clear();
+                        break;
 
-            var light = PlayerControl.LocalPlayer.lightSource;
+                    case RoleEnum.Guesser:
+                        var guesser = (Guesser)Role.LocalRole;
+                        guesser.HideButtons();
+                        guesser.OtherButtons.Clear();
+                        guesser.Exit(MeetingHud.Instance);
+                        break;
+
+                    case RoleEnum.Thief:
+                        var thief = (Thief)Role.LocalRole;
+                        thief.HideButtons();
+                        thief.OtherButtons.Clear();
+                        thief.Exit(MeetingHud.Instance);
+                        break;
+
+                    case RoleEnum.Dictator:
+                        var dict = (Dictator)Role.LocalRole;
+                        dict.HideButtons();
+                        dict.Actives.Clear();
+                        dict.MoarButtons.Clear();
+                        dict.ToBeEjected.Clear();
+                        break;
+                }
+
+                switch (CustomPlayer.Local.GetAbility())
+                {
+                    case AbilityEnum.Assassin:
+                        var assassin = (Assassin)Ability.LocalAbility;
+                        assassin.HideButtons();
+                        assassin.OtherButtons.Clear();
+                        assassin.Exit(MeetingHud.Instance);
+                        break;
+
+                    case AbilityEnum.Swapper:
+                        var swapper = (Swapper)Ability.LocalAbility;
+                        swapper.HideButtons();
+                        swapper.Actives.Clear();
+                        swapper.MoarButtons.Clear();
+                        break;
+
+                    case AbilityEnum.Politician:
+                        ((Politician)Ability.LocalAbility).DestroyAbstain();
+                        break;
+                }
+            }
+
+            CustomPlayer.Local.NetTransform.RpcSnapTo(CustomPlayer.Local.transform.position);
+            CustomPlayer.Local.moveable = false;
+
+            var light = CustomPlayer.Local.lightSource;
 
             //Setup new player
             var newPlayer = Utils.PlayerById(playerId);
             PlayerControl.LocalPlayer = newPlayer;
-            PlayerControl.LocalPlayer.lightSource = light;
-            PlayerControl.LocalPlayer.moveable = true;
+            CustomPlayer.Local.lightSource = light;
+            CustomPlayer.Local.moveable = true;
 
             AmongUsClient.Instance.ClientId = newPlayer.OwnerId;
             AmongUsClient.Instance.HostId = newPlayer.OwnerId;
@@ -97,23 +153,85 @@ namespace TownOfUsReworked.MultiClientInstancing
 
             HudManager.Instance.ShadowQuad.gameObject.SetActive(!newPlayer.Data.IsDead);
 
-            light.transform.SetParent(PlayerControl.LocalPlayer.transform);
-            light.transform.localPosition = PlayerControl.LocalPlayer.Collider.offset;
+            light.transform.SetParent(CustomPlayer.Local.transform);
+            light.transform.localPosition = CustomPlayer.Local.Collider.offset;
 
             Camera.main!.GetComponent<FollowerCamera>().SetTarget(newPlayer);
-            PlayerControl.LocalPlayer.MyPhysics.ResetMoveState(true);
+            CustomPlayer.Local.MyPhysics.ResetMoveState(true);
             KillAnimation.SetMovement(PlayerControl.LocalPlayer, true);
 
-            PlayerControl.LocalPlayer.EnableButtons();
-            PlayerControl.LocalPlayer.EnableArrows();
+            CustomPlayer.Local.EnableButtons();
+            CustomPlayer.Local.EnableArrows();
+
+            if (MeetingHud.Instance)
+            {
+                if (!CustomPlayer.LocalCustom.IsDead)
+                    MeetingHud.Instance.SetForegroundForAlive();
+
+                switch (CustomPlayer.Local.GetRole())
+                {
+                    case RoleEnum.Retributionist:
+                        var ret = (Retributionist)Role.LocalRole;
+                        ret.HideButtons();
+                        ret.PlayerNumbers.Clear();
+                        ret.Actives.Clear();
+                        ret.MoarButtons.Clear();
+                        Utils.AllVoteAreas.ForEach(x => ret.GenButtons(x, MeetingHud.Instance));
+                        break;
+
+                    case RoleEnum.Guesser:
+                        var guesser = (Guesser)Role.LocalRole;
+                        guesser.HideButtons();
+                        guesser.OtherButtons.Clear();
+                        Utils.AllVoteAreas.ForEach(x => guesser.GenButton(x, MeetingHud.Instance));
+                        break;
+
+                    case RoleEnum.Thief:
+                        var thief = (Thief)Role.LocalRole;
+                        thief.HideButtons();
+                        thief.OtherButtons.Clear();
+                        Utils.AllVoteAreas.ForEach(x => thief.GenButton(x, MeetingHud.Instance));
+                        break;
+
+                    case RoleEnum.Dictator:
+                        var dict = (Dictator)Role.LocalRole;
+                        dict.HideButtons();
+                        dict.Actives.Clear();
+                        dict.MoarButtons.Clear();
+                        Utils.AllVoteAreas.ForEach(x => dict.GenButton(x, MeetingHud.Instance));
+                        break;
+                }
+
+                switch (CustomPlayer.Local.GetAbility())
+                {
+                    case AbilityEnum.Assassin:
+                        var assassin = (Assassin)Ability.LocalAbility;
+                        assassin.HideButtons();
+                        assassin.OtherButtons.Clear();
+                        Utils.AllVoteAreas.ForEach(x => assassin.GenButton(x, MeetingHud.Instance));
+                        break;
+
+                    case AbilityEnum.Swapper:
+                        var swapper = (Swapper)Ability.LocalAbility;
+                        swapper.HideButtons();
+                        swapper.Actives.Clear();
+                        swapper.MoarButtons.Clear();
+                        Utils.AllVoteAreas.ForEach(x => swapper.GenButton(x, MeetingHud.Instance));
+                        break;
+
+                    case AbilityEnum.Politician:
+                        ((Politician)Ability.LocalAbility).GenButton(MeetingHud.Instance);
+                        break;
+                }
+            }
         }
 
-        public static void SwitchTo(int clientId)
+        public static void SetForegroundForAlive(this MeetingHud __instance)
         {
-            byte? id = PlayerIdClientId.Keys.FirstOrDefault(x => PlayerIdClientId[x] == clientId);
-
-            if (id != null)
-                SwitchTo((byte)id);
+            __instance.amDead = false;
+            __instance.SkipVoteButton.gameObject.SetActive(true);
+            __instance.SkipVoteButton.AmDead = false;
+            __instance.Glass.gameObject.SetActive(false);
         }
     }
 }

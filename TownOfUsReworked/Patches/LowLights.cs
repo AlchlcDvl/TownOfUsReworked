@@ -27,8 +27,11 @@ namespace TownOfUsReworked.Patches
 
             if (player.IsDead)
                 __result = __instance.MaxLightRadius;
-            else if (player.Object.Is(Faction.Intruder) || (player.Object.Is(RoleAlignment.NeutralKill) && CustomGameOptions.NKHasImpVision) || player.Object.Is(AbilityEnum.Torch))
+            else if (player.Object.Is(Faction.Intruder) || (player.Object.Is(RoleAlignment.NeutralKill) && CustomGameOptions.NKHasImpVision) ||
+                (player.Object.Is(RoleAlignment.NeutralNeo) && CustomGameOptions.NNHasImpVision) || player.Object.Is(AbilityEnum.Torch))
+            {
                 __result = __instance.MaxLightRadius * CustomGameOptions.IntruderVision;
+            }
             else if (player.Object.Is(Faction.Syndicate))
                 __result = __instance.MaxLightRadius * CustomGameOptions.SyndicateVision;
             else if (player.Object.Is(Faction.Neutral) && !CustomGameOptions.LightsAffectNeutrals)

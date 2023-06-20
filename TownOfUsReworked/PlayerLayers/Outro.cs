@@ -19,6 +19,7 @@ namespace TownOfUsReworked.PlayerLayers
 
             var text = UObject.Instantiate(__instance.WinText);
             SoundManager.Instance.StopSound(__instance.ImpostorStinger);
+            AssetManager.Play("IntruderWin");
 
             foreach (var player in UObject.FindObjectsOfType<PoolablePlayer>())
             {
@@ -31,6 +32,7 @@ namespace TownOfUsReworked.PlayerLayers
                 __instance.BackgroundBar.material.color = Colors.Stalemate;
                 text.text = "Stalemate";
                 text.color = Colors.Stalemate;
+                AssetManager.Stop("IntruderWin");
                 AssetManager.Play("Stalemate");
             }
             else if (Role.SyndicateWin)
@@ -54,7 +56,6 @@ namespace TownOfUsReworked.PlayerLayers
                 __instance.BackgroundBar.material.color = role.FactionColor;
                 text.text = "Intruders Win";
                 text.color = role.FactionColor;
-                AssetManager.Play("IntruderWin");
             }
             else if (Role.AllNeutralsWin)
             {
@@ -77,6 +78,7 @@ namespace TownOfUsReworked.PlayerLayers
                 __instance.BackgroundBar.material.color = role.FactionColor;
                 text.text = "Crew Wins";
                 text.color = role.FactionColor;
+                AssetManager.Stop("IntruderWin");
                 AssetManager.Play("CrewWin");
             }
             else if (Role.NKWins)

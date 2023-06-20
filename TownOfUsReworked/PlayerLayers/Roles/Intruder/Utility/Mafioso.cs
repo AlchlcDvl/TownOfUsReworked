@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Mafioso : IntruderRole
+    public class Mafioso : Intruder
     {
         public Role FormerRole;
         public Godfather Godfather;
@@ -33,10 +33,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             newRole.RoleUpdate(this);
 
-            if (Local)
+            if (Local && !IntroCutscene.Instance)
                 Utils.Flash(Colors.Godfather);
 
-            if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
+            if (CustomPlayer.Local.Is(RoleEnum.Seer) && !IntroCutscene.Instance)
                 Utils.Flash(Colors.Seer);
         }
 

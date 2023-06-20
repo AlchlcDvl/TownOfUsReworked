@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Dracula : NeutralRole
+    public class Dracula : Neutral
     {
         public DateTime LastBitten;
         public CustomButton BiteButton;
@@ -23,6 +23,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Type = LayerEnum.Dracula;
             BiteButton = new(this, "Bite", AbilityTypes.Direct, "ActionSecondary", Convert);
             InspectorResults = InspectorResults.NewLens;
+            SubFactionSymbol = "γ";
 
             if (TownOfUsReworked.IsTest)
                 Utils.LogSomething($"{Player.name} is {Name}");

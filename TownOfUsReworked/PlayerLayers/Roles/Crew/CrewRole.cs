@@ -1,8 +1,8 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class CrewRole : Role
+    public class Crew : Role
     {
-        protected CrewRole(PlayerControl player) : base(player)
+        protected Crew(PlayerControl player) : base(player)
         {
             Faction = Faction.Crew;
             FactionColor = Colors.Crew;
@@ -17,7 +17,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (!Local)
                 return;
 
-            var team = new List<PlayerControl> { PlayerControl.LocalPlayer };
+            var team = new List<PlayerControl> { CustomPlayer.Local };
 
             if (IsRecruit)
             {
@@ -33,7 +33,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 team.Add(Player.GetOtherRival());
             else if (Player.Is(ObjectifierEnum.Mafia))
             {
-                foreach (var player in PlayerControl.AllPlayerControls)
+                foreach (var player in CustomPlayer.AllPlayers)
                 {
                     if (player != Player && player.Is(ObjectifierEnum.Mafia))
                         team.Add(player);

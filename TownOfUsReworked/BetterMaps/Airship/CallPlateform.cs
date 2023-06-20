@@ -7,12 +7,12 @@
 
         public static void Postfix()
         {
-            Tasks.AllCustomPlateform.Clear();
-            Tasks.NearestTask = null;
+            InteractableBehaviour.AllCustomPlateform.Clear();
+            InteractableBehaviour.NearestTask = null;
 
             if (CustomGameOptions.CallPlatform)
             {
-                Tasks.CreateThisTask(new(5.531f, 9.788f, 1f), new(0f, 0f, 0f), () =>
+                InteractableBehaviour.CreateThisTask(new(5.531f, 9.788f, 1f), new(0f, 0f, 0f), () =>
                 {
                     var Plateform = UObject.FindObjectOfType<MovingPlatformBehaviour>();
 
@@ -20,7 +20,7 @@
                         UsePlateforRpc(Plateform, false);
                 });
 
-                Tasks.CreateThisTask(new(10.148f, 9.806f, 1f), new(0f, 180f, 0f), () =>
+                InteractableBehaviour.CreateThisTask(new(10.148f, 9.806f, 1f), new(0f, 180f, 0f), () =>
                 {
                     var Plateform = UObject.FindObjectOfType<MovingPlatformBehaviour>();
 
@@ -55,7 +55,7 @@
             var targetPos = !Plateform.IsLeft ? Plateform.LeftPosition : Plateform.RightPosition;
             yield return Effects.Wait(0.1f);
 
-            yield return Effects.Slide3D(Plateform.transform, sourcePos, targetPos, PlayerControl.LocalPlayer.MyPhysics.Speed);
+            yield return Effects.Slide3D(Plateform.transform, sourcePos, targetPos, CustomPlayer.Local.MyPhysics.Speed);
 
             Plateform.IsLeft = !Plateform.IsLeft;
             yield return Effects.Wait(0.1f);

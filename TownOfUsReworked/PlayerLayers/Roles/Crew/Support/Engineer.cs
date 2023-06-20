@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Engineer : CrewRole
+    public class Engineer : Crew
     {
         public CustomButton FixButton;
         public int UsesLeft;

@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Troll : NeutralRole
+    public class Troll : Neutral
     {
         public bool Killed;
         public DateTime LastInteracted;
@@ -14,7 +14,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = CustomGameOptions.CustomNeutColors ? Colors.Troll : Colors.Neutral;
             RoleType = RoleEnum.Troll;
             RoleAlignment = RoleAlignment.NeutralEvil;
-            Objectives = () => "- Get killed";
+            Objectives = () => Killed ? "- You have successfully trolled someone" : "- Get killed";
             Type = LayerEnum.Troll;
             InteractButton = new(this, "Placeholder", AbilityTypes.Direct, "ActionSecondary", Interact);
             InspectorResults = InspectorResults.Manipulative;

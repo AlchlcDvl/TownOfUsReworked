@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Ghoul : IntruderRole
+    public class Ghoul : Intruder
     {
         public CustomButton MarkButton;
         public bool Caught;
@@ -42,7 +42,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var color = new Color(1f, 1f, 1f, 0f);
 
             var maxDistance = ShipStatus.Instance.MaxLightRadius * TownOfUsReworked.VanillaOptions.CrewLightMod;
-            var distance = (PlayerControl.LocalPlayer.GetTruePosition() - Player.GetTruePosition()).magnitude;
+            var distance = (CustomPlayer.Local.GetTruePosition() - Player.GetTruePosition()).magnitude;
 
             var distPercent = distance / maxDistance;
             distPercent = Mathf.Max(0, distPercent - 1);
@@ -52,7 +52,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             color.a = Mathf.Lerp(color.a, 0, distPercent);
 
             if (Player.GetCustomOutfitType() != CustomPlayerOutfitType.PlayerNameOnly)
-                Player.SetOutfit(CustomPlayerOutfitType.PlayerNameOnly, Utils.SpookyOutfit(Player));
+                Player.SetOutfit(CustomPlayerOutfitType.PlayerNameOnly, Utils.BlankOutfit(Player));
 
             Player.MyRend().color = color;
             Player.NameText().color = new(0f, 0f, 0f, 0f);

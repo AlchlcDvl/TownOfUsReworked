@@ -14,6 +14,9 @@ namespace TownOfUsReworked.PlayerLayers
             if (ConstantVariables.IsLobby || ConstantVariables.IsEnded || ConstantVariables.Inactive)
                 return;
 
+            __instance.KillButton.SetTarget(null);
+            __instance.KillButton.gameObject.SetActive(false);
+
             foreach (var layer in PlayerLayer.LocalLayers)
                 layer.UpdateHud(__instance);
 

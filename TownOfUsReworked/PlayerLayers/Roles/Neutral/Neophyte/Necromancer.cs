@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Necromancer : NeutralRole
+    public class Necromancer : Neutral
     {
         public DeadBody ResurrectingBody;
         public bool Success;
@@ -40,6 +40,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             ResurrectButton = new(this, "Ressurect", AbilityTypes.Dead, "ActionSecondary", HitResurrect, true);
             KillButton = new(this, "NecroKill", AbilityTypes.Direct, "Secondary", Kill, Exception, true);
             InspectorResults = InspectorResults.PreservesLife;
+            SubFactionSymbol = "Σ";
 
             if (TownOfUsReworked.IsTest)
                 Utils.LogSomething($"{Player.name} is {Name}");
@@ -63,7 +64,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Resurrect()
         {
-            if (!Resurrecting && PlayerControl.LocalPlayer.PlayerId == ResurrectButton.TargetBody.ParentId)
+            if (!Resurrecting && CustomPlayer.Local.PlayerId == ResurrectButton.TargetBody.ParentId)
             {
                 Utils.Flash(Colors.Reanimated, CustomGameOptions.NecroResurrectDuration);
 

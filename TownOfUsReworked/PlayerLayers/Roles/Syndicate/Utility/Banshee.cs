@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Banshee : SyndicateRole
+    public class Banshee : Syndicate
     {
         public CustomButton ScreamButton;
         public bool Enabled;
@@ -80,7 +80,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var color = new Color(1f, 1f, 1f, 0f);
 
             var maxDistance = ShipStatus.Instance.MaxLightRadius * TownOfUsReworked.VanillaOptions.CrewLightMod;
-            var distance = (PlayerControl.LocalPlayer.GetTruePosition() - Player.GetTruePosition()).magnitude;
+            var distance = (CustomPlayer.Local.GetTruePosition() - Player.GetTruePosition()).magnitude;
 
             var distPercent = distance / maxDistance;
             distPercent = Mathf.Max(0, distPercent - 1);
@@ -118,7 +118,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             TimeRemaining = CustomGameOptions.ScreamDuration;
             Scream();
 
-            foreach (var player in PlayerControl.AllPlayerControls)
+            foreach (var player in CustomPlayer.AllPlayers)
             {
                 if (!player.Data.IsDead && !player.Data.Disconnected && !player.Is(Faction.Syndicate))
                     Blocked.Add(player.PlayerId);

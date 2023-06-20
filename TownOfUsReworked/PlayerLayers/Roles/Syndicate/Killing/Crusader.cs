@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Crusader : SyndicateRole
+    public class Crusader : Syndicate
     {
         public bool Enabled;
         public DateTime LastCrusaded;

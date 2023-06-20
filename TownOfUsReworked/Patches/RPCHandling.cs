@@ -51,10 +51,10 @@ namespace TownOfUsReworked.Patches
                     var whispered = Utils.PlayerById(reader.ReadByte());
                     var message = reader.ReadString();
 
-                    if (whispered == PlayerControl.LocalPlayer)
+                    if (whispered == CustomPlayer.Local)
                         HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, $"{whisperer.name} whispers to you:{message}");
-                    else if ((PlayerControl.LocalPlayer.Is(RoleEnum.Blackmailer) && CustomGameOptions.WhispersNotPrivate) || ConstantVariables.DeadSeeEverything ||
-                        (PlayerControl.LocalPlayer.Is(RoleEnum.Silencer) && CustomGameOptions.WhispersNotPrivateSilencer))
+                    else if ((CustomPlayer.Local.Is(RoleEnum.Blackmailer) && CustomGameOptions.WhispersNotPrivate) || ConstantVariables.DeadSeeEverything ||
+                        (CustomPlayer.Local.Is(RoleEnum.Silencer) && CustomGameOptions.WhispersNotPrivateSilencer))
                     {
                         HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, $"{whisperer.name} is whispering to {whispered.name}: {message}");
                     }
@@ -64,15 +64,21 @@ namespace TownOfUsReworked.Patches
                     break;
 
                 case CustomRPC.CatchPhantom:
-                    Role.GetRole<Phantom>(Utils.PlayerById(reader.ReadByte())).Caught = true;
+                    var phan = Utils.PlayerById(reader.ReadByte());
+                    Role.GetRole<Phantom>(phan).Caught = true;
+                    phan.Exiled();
                     break;
 
                 case CustomRPC.CatchBanshee:
-                    Role.GetRole<Banshee>(Utils.PlayerById(reader.ReadByte())).Caught = true;
+                    var ban = Utils.PlayerById(reader.ReadByte());
+                    Role.GetRole<Banshee>(ban).Caught = true;
+                    ban.Exiled();
                     break;
 
                 case CustomRPC.CatchGhoul:
-                    Role.GetRole<Ghoul>(Utils.PlayerById(reader.ReadByte())).Caught = true;
+                    var gho = Utils.PlayerById(reader.ReadByte());
+                    Role.GetRole<Ghoul>(gho).Caught = true;
+                    gho.Exiled();
                     break;
 
                 case CustomRPC.Start:
@@ -88,6 +94,7 @@ namespace TownOfUsReworked.Patches
                     var revRole = Role.GetRole<Revealer>(rev);
                     revRole.Caught = true;
                     revRole.CompletedTasks = false;
+                    rev.Exiled();
                     break;
 
                 case CustomRPC.AddVoteBank:
@@ -98,7 +105,7 @@ namespace TownOfUsReworked.Patches
                     foreach (var body in Utils.AllBodies)
                         body.gameObject.Destroy();
 
-                    foreach (var player10 in PlayerControl.AllPlayerControls)
+                    foreach (var player10 in CustomPlayer.AllPlayers)
                         player10.MyPhysics.ResetAnimState();
 
                     break;
@@ -128,8 +135,17 @@ namespace TownOfUsReworked.Patches
                     ModCompatibility.RepairOxygen();
                     break;
 
+                case CustomRPC.FixLights:
+                    var lights = ShipStatus.Instance.Systems[SystemTypes.Electrical].Cast<SwitchSystem>();
+                    lights.ActualSwitches = lights.ExpectedSwitches;
+                    break;
+
                 case CustomRPC.RemoveMeetings:
                     Utils.PlayerById(reader.ReadByte()).RemainingEmergencies = 0;
+                    break;
+
+                case CustomRPC.SetReports:
+                    Utils.PlayerById(reader.ReadByte()).MaxReportDistance = CustomGameOptions.ReportDistance;
                     break;
 
                 case CustomRPC.SetSpawnAirship:
@@ -182,7 +198,7 @@ namespace TownOfUsReworked.Patches
                     TownOfUsReworked.VanillaOptions.MaxPlayers = CustomGameOptions.LobbySize;
                     GameOptionsManager.Instance.currentNormalGameOptions = TownOfUsReworked.VanillaOptions;
 
-                    foreach (var player in PlayerControl.AllPlayerControls)
+                    foreach (var player in CustomPlayer.AllPlayers)
                         player.MaxReportDistance = CustomGameOptions.ReportDistance;
 
                     break;
@@ -265,38 +281,23 @@ namespace TownOfUsReworked.Patches
                     switch ((TargetRPC)id2)
                     {
                         case TargetRPC.SetExeTarget:
-                            var exe = Utils.PlayerById(reader.ReadByte());
-                            var exeTarget = Utils.PlayerById(reader.ReadByte());
-                            var exeRole = Role.GetRole<Executioner>(exe);
-                            exeRole.TargetPlayer = exeTarget;
+                            Role.GetRole<Executioner>(Utils.PlayerById(reader.ReadByte())).TargetPlayer = Utils.PlayerById(reader.ReadByte());
                             break;
 
                         case TargetRPC.SetGuessTarget:
-                            var guess = Utils.PlayerById(reader.ReadByte());
-                            var guessTarget = Utils.PlayerById(reader.ReadByte());
-                            var guessRole = Role.GetRole<Guesser>(guess);
-                            guessRole.TargetPlayer = guessTarget;
+                            Role.GetRole<Guesser>(Utils.PlayerById(reader.ReadByte())).TargetPlayer = Utils.PlayerById(reader.ReadByte());
                             break;
 
                         case TargetRPC.SetGATarget:
-                            var ga = Utils.PlayerById(reader.ReadByte());
-                            var gaTarget = Utils.PlayerById(reader.ReadByte());
-                            var gaRole = Role.GetRole<GuardianAngel>(ga);
-                            gaRole.TargetPlayer = gaTarget;
+                            Role.GetRole<GuardianAngel>(Utils.PlayerById(reader.ReadByte())).TargetPlayer = Utils.PlayerById(reader.ReadByte());
                             break;
 
                         case TargetRPC.SetBHTarget:
-                            var bh = Utils.PlayerById(reader.ReadByte());
-                            var bhTarget = Utils.PlayerById(reader.ReadByte());
-                            var bhRole = Role.GetRole<BountyHunter>(bh);
-                            bhRole.TargetPlayer = bhTarget;
+                            Role.GetRole<BountyHunter>(Utils.PlayerById(reader.ReadByte())).TargetPlayer = Utils.PlayerById(reader.ReadByte());
                             break;
 
                         case TargetRPC.SetActPretendList:
-                            var act = Utils.PlayerById(reader.ReadByte());
-                            var targetRoles = reader.ReadByte();
-                            var actRole = Role.GetRole<Actor>(act);
-                            actRole.PretendRoles = (InspectorResults)targetRoles;
+                            Role.GetRole<Actor>(Utils.PlayerById(reader.ReadByte())).PretendRoles = (InspectorResults)reader.ReadByte();
                             break;
 
                         case TargetRPC.SetGoodRecruit:
@@ -424,7 +425,7 @@ namespace TownOfUsReworked.Patches
                                     var playerid2 = reader.ReadByte();
                                     ret.MediatedPlayers.Add(playerid2);
 
-                                    if (PlayerControl.LocalPlayer.PlayerId == playerid2 || (PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.ShowMediumToDead ==
+                                    if (CustomPlayer.Local.PlayerId == playerid2 || (CustomPlayer.LocalCustom.IsDead && CustomGameOptions.ShowMediumToDead ==
                                         ShowMediumToDead.AllDead))
                                     {
                                         Role.LocalRole.DeadArrows.Add(retId2, new(PlayerControl.LocalPlayer, Colors.Retributionist));
@@ -482,15 +483,15 @@ namespace TownOfUsReworked.Patches
                                     break;
 
                                 case GodfatherActionsRPC.Drag:
-                                    Role.GetRole<PromotedGodfather>(Utils.PlayerById(reader.ReadByte())).CurrentlyDragging = Utils.BodyById(reader.ReadByte());
-                                    break;
-
-                                case GodfatherActionsRPC.Drop:
-                                    var gfRole10 = Role.GetRole<PromotedGodfather>(Utils.PlayerById(reader.ReadByte()));
-                                    var v2_1 = reader.ReadVector2();
-                                    var v2z_1 = reader.ReadSingle();
-                                    gfRole10.CurrentlyDragging.transform.position = new(v2_1.x, v2_1.y, v2z_1);
-                                    gfRole10.CurrentlyDragging = null;
+                                    var gf = Utils.PlayerById(reader.ReadByte());
+                                    var gfRole7 = Role.GetRole<PromotedGodfather>(gf);
+                                    var dragged2 = Utils.BodyById(reader.ReadByte());
+                                    gfRole7.CurrentlyDragging = dragged2;
+                                    var drag3 = dragged2.gameObject.AddComponent<DragBehaviour>();
+                                    drag3.Source = gf;
+                                    drag3.Body = dragged2.gameObject.AddComponent<Rigidbody2D>();
+                                    drag3.Collider = dragged2.gameObject.GetComponent<Collider2D>();
+                                    drag3.Dragged = dragged2;
                                     break;
 
                                 case GodfatherActionsRPC.Camouflage:
@@ -611,11 +612,6 @@ namespace TownOfUsReworked.Patches
                             Coroutines.Start(Utils.FadeBody(Utils.BodyById(reader.ReadByte())));
                             break;
 
-                        case ActionsRPC.FixLights:
-                            var lights = ShipStatus.Instance.Systems[SystemTypes.Electrical].Cast<SwitchSystem>();
-                            lights.ActualSwitches = lights.ExpectedSwitches;
-                            break;
-
                         case ActionsRPC.SetExtraVotes:
                             var politian = Utils.PlayerById(reader.ReadByte());
                             var polRole = Ability.GetAbility<Politician>(politian);
@@ -706,7 +702,7 @@ namespace TownOfUsReworked.Patches
                             var bansheeRole2 = Role.GetRole<Banshee>(Utils.PlayerById(reader.ReadByte()));
                             bansheeRole2.TimeRemaining = CustomGameOptions.ScreamDuration;
 
-                            foreach (var player8 in PlayerControl.AllPlayerControls)
+                            foreach (var player8 in CustomPlayer.AllPlayers)
                             {
                                 if (!player8.Data.IsDead && !player8.Data.Disconnected && !player8.Is(Faction.Syndicate))
                                     bansheeRole2.Blocked.Add(player8.PlayerId);
@@ -793,12 +789,12 @@ namespace TownOfUsReworked.Patches
                             break;
 
                         case ActionsRPC.SetUninteractable:
-                            if (PlayerControl.LocalPlayer.Is(RoleEnum.Transporter))
-                                Role.GetRole<Transporter>(PlayerControl.LocalPlayer).UntransportablePlayers.Add(reader.ReadByte(), DateTime.UtcNow);
-                            else if (PlayerControl.LocalPlayer.Is(RoleEnum.Warper))
-                                Role.GetRole<Warper>(PlayerControl.LocalPlayer).UnwarpablePlayers.Add(reader.ReadByte(), DateTime.UtcNow);
-                            else if (PlayerControl.LocalPlayer.Is(RoleEnum.Retributionist))
-                                Role.GetRole<Retributionist>(PlayerControl.LocalPlayer).UntransportablePlayers.Add(reader.ReadByte(), DateTime.UtcNow);
+                            if (CustomPlayer.Local.Is(RoleEnum.Transporter))
+                                Role.GetRole<Transporter>(CustomPlayer.Local).UntransportablePlayers.Add(reader.ReadByte(), DateTime.UtcNow);
+                            else if (CustomPlayer.Local.Is(RoleEnum.Warper))
+                                Role.GetRole<Warper>(CustomPlayer.Local).UnwarpablePlayers.Add(reader.ReadByte(), DateTime.UtcNow);
+                            else if (CustomPlayer.Local.Is(RoleEnum.Retributionist))
+                                Role.GetRole<Retributionist>(CustomPlayer.Local).UntransportablePlayers.Add(reader.ReadByte(), DateTime.UtcNow);
 
                             break;
 
@@ -815,7 +811,7 @@ namespace TownOfUsReworked.Patches
                             var playerid = reader.ReadByte();
                             med.MediatedPlayers.Add(playerid);
 
-                            if (PlayerControl.LocalPlayer.PlayerId == playerid || (PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.ShowMediumToDead == ShowMediumToDead.AllDead))
+                            if (CustomPlayer.Local.PlayerId == playerid || (CustomPlayer.LocalCustom.IsDead && CustomGameOptions.ShowMediumToDead == ShowMediumToDead.AllDead))
                                 Role.LocalRole.DeadArrows.Add(medid, new(PlayerControl.LocalPlayer, Colors.Medium));
 
                             break;
@@ -883,16 +879,19 @@ namespace TownOfUsReworked.Patches
                             break;
 
                         case ActionsRPC.Drag:
-                            Role.GetRole<Janitor>(Utils.PlayerById(reader.ReadByte())).CurrentlyDragging = Utils.BodyById(reader.ReadByte());
+                            var jani = Utils.PlayerById(reader.ReadByte());
+                            var janiRole = Role.GetRole<Janitor>(jani);
+                            var dragged = Utils.BodyById(reader.ReadByte());
+                            janiRole.CurrentlyDragging = dragged;
+                            var drag = dragged.gameObject.AddComponent<DragBehaviour>();
+                            drag.Source = jani;
+                            drag.Body = dragged.gameObject.AddComponent<Rigidbody2D>();
+                            drag.Collider = dragged.gameObject.GetComponent<Collider2D>();
+                            drag.Dragged = dragged;
                             break;
 
                         case ActionsRPC.Drop:
-                            var dienerRole2 = Role.GetRole<Janitor>(Utils.PlayerById(reader.ReadByte()));
-                            var v2 = reader.ReadVector2();
-                            var v2z = reader.ReadSingle();
-                            var body3 = dienerRole2.CurrentlyDragging;
-                            dienerRole2.CurrentlyDragging = null;
-                            body3.transform.position = new(v2.x, v2.y, v2z);
+                            Utils.BodyById(reader.ReadByte()).gameObject.GetComponent<DragBehaviour>().Destroy();
                             break;
 
                         case ActionsRPC.Camouflage:

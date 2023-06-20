@@ -2,7 +2,7 @@ How to contribute:
 
 There are multiple ways one can contribute on this mod. It's mainly a passion project so help from anyone is welcome. Some ways you can contribute are as follows
 
-Features: You can add in your own features to the mod! You do need some prior coding experience though.
+Features: You can add in your own features to the mod! You do need some prior coding experience though
 - Make a fork of this mod on your own
 - Make your additions and commit them
 - Create a pull request and detail what it adds

@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Sheriff : CrewRole
+    public class Sheriff : Crew
     {
         public CustomButton InterrogateButton;
         public DateTime LastInterrogated;

@@ -7,9 +7,18 @@
         public readonly static Dictionary<PlayerControl, PlayerControl> CachedMorphs = new();
         public readonly static List<DeadPlayer> KilledPlayers = new();
         public static List<DeadBody> AllBodies => UObject.FindObjectsOfType<DeadBody>().ToList();
+        public static List<Vent> AllVents => UObject.FindObjectsOfType<Vent>().ToList();
+        public static List<GameObject> AllObjects => UObject.FindObjectsOfType<GameObject>().ToList();
+        public static List<Console> AllConsoles => UObject.FindObjectsOfType<Console>().ToList();
+        public static List<SystemConsole> AllSystemConsoles => UObject.FindObjectsOfType<SystemConsole>().ToList();
+        public static List<PlayerVoteArea> AllVoteAreas => MeetingHud.Instance.playerStates.ToList();
         private static bool Shapeshifted;
         public static PlayerControl FirstDead;
         public static bool RoundOne;
+        private readonly static Dictionary<string, string> KeyWords = new()
+        {
+            { "%modversion%", TownOfUsReworked.VersionFinal }
+        };
 
         public static TextMeshPro NameText(this PlayerControl p) => p.cosmetics.nameText;
 
@@ -18,8 +27,6 @@
         public static TextMeshPro NameText(this PoolablePlayer p) => p.cosmetics.nameText;
 
         public static SpriteRenderer MyRend(this PlayerControl p) => p.cosmetics.currentBodySprite.BodySprite;
-
-        public static VisualAppearance GetAppearance(this PlayerControl player) => VisualAppearance.AllAppearances.Find(x => x.Player == player) ?? new(player);
 
         public static bool IsImpostor(this GameData.PlayerInfo playerinfo) => playerinfo?.Role?.TeamType == RoleTeamTypes.Impostor;
 
@@ -40,10 +47,9 @@
 
             var outfitType = (PlayerOutfitType)CustomOutfitType;
 
-            if (!playerControl.Data.Outfits.ContainsKey(outfitType))
+            if (!playerControl.Data.Outfits.TryGetValue(outfitType, out var newOutfit))
                 return;
 
-            var newOutfit = playerControl.Data.Outfits[outfitType];
             playerControl.CurrentOutfitType = outfitType;
             playerControl.RawSetName(newOutfit.PlayerName);
             playerControl.RawSetColor(newOutfit.ColorId);
@@ -89,16 +95,16 @@
             yield return null;
         }
 
-        public static void Camouflage() => PlayerControl.AllPlayerControls.ForEach(CamoSingle);
+        public static void Camouflage() => CustomPlayer.AllPlayers.ForEach(CamoSingle);
 
         public static void CamoSingle(PlayerControl player) => Coroutines.Start(CamoSingleCoro(player));
 
         public static IEnumerator CamoSingleCoro(PlayerControl player)
         {
             if (player.GetCustomOutfitType() is not CustomPlayerOutfitType.Camouflage and not CustomPlayerOutfitType.Invis and not CustomPlayerOutfitType.PlayerNameOnly &&
-                !player.Data.IsDead && !PlayerControl.LocalPlayer.Data.IsDead && player != PlayerControl.LocalPlayer)
+                !player.Data.IsDead && !CustomPlayer.LocalCustom.IsDead && player != CustomPlayer.Local)
             {
-                player.SetOutfit(CustomPlayerOutfitType.Camouflage, CamoOutfit(player));
+                player.SetOutfit(CustomPlayerOutfitType.Camouflage, BlankOutfit(player));
                 PlayerMaterial.SetColors(Color.grey, player.MyRend());
 
                 HudManager.Instance.StartCoroutine(Effects.Lerp(1, new Action<float>(p =>
@@ -111,14 +117,14 @@
             yield return null;
         }
 
-        public static void Conceal() => PlayerControl.AllPlayerControls.ForEach(x => Invis(x, PlayerControl.LocalPlayer.Is(Faction.Syndicate)));
+        public static void Conceal() => CustomPlayer.AllPlayers.ForEach(x => Invis(x, CustomPlayer.Local.Is(Faction.Syndicate)));
 
         public static void Invis(PlayerControl player, bool condition = false) => Coroutines.Start(InvisCoro(player, condition));
 
-        public static IEnumerator InvisCoro(PlayerControl player, bool condition = false)
+        public static IEnumerator InvisCoro(PlayerControl player, bool condition)
         {
             var color = Color.clear;
-            color.a = condition || PlayerControl.LocalPlayer.Data.IsDead || player == PlayerControl.LocalPlayer || PlayerControl.LocalPlayer.Is(AbilityEnum.Torch) ? 0.1f : 0f;
+            color.a = condition || CustomPlayer.LocalCustom.IsDead || player == CustomPlayer.Local || CustomPlayer.Local.Is(AbilityEnum.Torch) ? 0.1f : 0f;
 
             if (player.GetCustomOutfitType() != CustomPlayerOutfitType.Invis && !player.Data.IsDead)
             {
@@ -151,16 +157,7 @@
             PlayerName = " "
         };
 
-        public static GameData.PlayerOutfit CamoOutfit(PlayerControl player) => new()
-        {
-            ColorId = player.GetDefaultOutfit().ColorId,
-            HatId = "",
-            SkinId = "",
-            VisorId = "",
-            PlayerName = " "
-        };
-
-        public static GameData.PlayerOutfit SpookyOutfit(PlayerControl player) => new()
+        public static GameData.PlayerOutfit BlankOutfit(PlayerControl player) => new()
         {
             ColorId = player.GetDefaultOutfit().ColorId,
             HatId = "",
@@ -174,8 +171,8 @@
             if (!Shapeshifted)
             {
                 Shapeshifted = true;
-                var allPlayers = PlayerControl.AllPlayerControls;
-                var shuffledPlayers = PlayerControl.AllPlayerControls.Il2CppToSystem();
+                var allPlayers = CustomPlayer.AllPlayers;
+                var shuffledPlayers = CustomPlayer.AllPlayers;
                 shuffledPlayers.Shuffle();
 
                 for (var i = 0; i < allPlayers.Count; i++)
@@ -188,7 +185,7 @@
             }
             else
             {
-                PlayerControl.AllPlayerControls.ForEach(x =>
+                CustomPlayer.AllPlayers.ForEach(x =>
                 {
                     if (CachedMorphs.ContainsKey(x))
                         Morph(x, CachedMorphs[x]);
@@ -196,7 +193,7 @@
             }
         }
 
-        public static void DefaultOutfitAll() => PlayerControl.AllPlayerControls.ForEach(DefaultOutfit);
+        public static void DefaultOutfitAll() => CustomPlayer.AllPlayers.ForEach(DefaultOutfit);
 
         public static void AddUnique<T>(this Il2CppSystem.Collections.Generic.List<T> self, T item) where T : IDisconnectHandler
         {
@@ -220,22 +217,9 @@
                 return ColorUtils.GetColor(player.GetDefaultOutfit().ColorId, false);
         }
 
-        public static List<PlayerControl> GetCrewmates(List<PlayerControl> impostors) => PlayerControl.AllPlayerControls.Where(player => !impostors.Any(imp => imp ==
-            player)).ToList();
+        public static PlayerControl PlayerById(byte id) => CustomPlayer.AllPlayers.Find(x => x.PlayerId == id);
 
-        public static List<PlayerControl> GetImpostors(List<GameData.PlayerInfo> infected)
-        {
-            var impostors = new List<PlayerControl>();
-
-            foreach (var impData in infected)
-                impostors.Add(impData.Object);
-
-            return impostors;
-        }
-
-        public static PlayerControl PlayerById(byte id) => PlayerControl.AllPlayerControls.Find(x => x.PlayerId == id);
-
-        public static PlayerVoteArea VoteAreaById(byte id) => MeetingHud.Instance.playerStates.ToList().Find(x => x.TargetPlayerId == id);
+        public static PlayerVoteArea VoteAreaById(byte id) => AllVoteAreas.Find(x => x.TargetPlayerId == id);
 
         public static DeadBody BodyById(byte id) => AllBodies.Find(x => x.ParentId == id);
 
@@ -245,12 +229,11 @@
 
         public static PlayerVoteArea VoteAreaByPlayer(PlayerControl player) => VoteAreaById(player.PlayerId);
 
-        public static Vent VentById(int id) => UObject.FindObjectsOfType<Vent>().ToArray().ToList().Find(x => x.Id == id);
+        public static Vent VentById(int id) => AllVents.Find(x => x.Id == id);
 
         public static PlayerControl PlayerByVoteArea(PlayerVoteArea state) => PlayerById(state.TargetPlayerId);
 
-        public static Vector2 GetSize() => Vector2.Scale(UObject.FindObjectsOfType<Vent>()[0].GetComponent<BoxCollider2D>().size, UObject.FindObjectsOfType<Vent>()[0].transform.localScale)
-            * 0.75f;
+        public static Vector2 GetSize() => Vector2.Scale(AllVents[0].GetComponent<BoxCollider2D>().size, AllVents[0].transform.localScale) * 0.75f;
 
         public static double GetDistBetweenPlayers(PlayerControl player, PlayerControl refplayer)
         {
@@ -312,7 +295,7 @@
             if (data.IsDead)
                 return;
 
-            if (killer == PlayerControl.LocalPlayer)
+            if (killer == CustomPlayer.Local)
                 AssetManager.Play("Kill");
 
             if (FirstDead == null)
@@ -321,10 +304,10 @@
             target.gameObject.layer = LayerMask.NameToLayer("Ghost");
             target.Visible = false;
 
-            if (PlayerControl.LocalPlayer.Is(RoleEnum.Coroner) && !PlayerControl.LocalPlayer.Data.IsDead)
+            if (CustomPlayer.Local.Is(RoleEnum.Coroner) && !CustomPlayer.LocalCustom.IsDead)
                 Flash(Colors.Coroner);
 
-            if (PlayerControl.LocalPlayer.Data.IsDead)
+            if (CustomPlayer.LocalCustom.IsDead)
                 Flash(Colors.Stalemate);
 
             var targetRole = Role.GetRole(target);
@@ -393,14 +376,18 @@
 
             if (target.Is(RoleEnum.Troll) && AmongUsClient.Instance.AmHost)
             {
-                var troll = Role.GetRole<Troll>(target);
-                troll.Killed = true;
-                RpcMurderPlayer(target, killer, DeathReasonEnum.Trolled, false);
+                Role.GetRole<Troll>(target).Killed = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer.Write((byte)WinLoseRPC.TrollWin);
                 writer.Write(target.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
+
+                if (!CustomGameOptions.AvoidNeutralKingmakers)
+                    RpcMurderPlayer(target, killer, DeathReasonEnum.Trolled, false);
             }
+
+            if (MeetingHud.Instance)
+                MarkMeetingDead(target, killer);
 
             target.RegenTask();
             killer.RegenTask();
@@ -410,7 +397,7 @@
         {
             AssetManager.Play("Kill");
 
-            if (target == PlayerControl.LocalPlayer)
+            if (target == CustomPlayer.Local)
             {
                 HudManager.Instance.KillOverlay.ShowKillAnimation(killer.Data, target.Data);
                 HudManager.Instance.ShadowQuad.gameObject.SetActive(false);
@@ -458,14 +445,14 @@
 
                 if (target.Is(RoleEnum.Guesser))
                 {
-                    var guesser = Role.GetRole<Guesser>(PlayerControl.LocalPlayer);
+                    var guesser = Role.GetRole<Guesser>(CustomPlayer.Local);
                     guesser.Exit(MeetingHud.Instance);
                     guesser.HideButtons();
                 }
 
                 if (target.Is(RoleEnum.Thief))
                 {
-                    var thief = Role.GetRole<Thief>(PlayerControl.LocalPlayer);
+                    var thief = Role.GetRole<Thief>(CustomPlayer.Local);
                     thief.Exit(MeetingHud.Instance);
                     thief.HideButtons();
                 }
@@ -474,9 +461,6 @@
             target.Die(DeathReason.Kill, false);
             KilledPlayers.Add(new(killer.PlayerId, target.PlayerId));
             var voteArea = VoteAreaByPlayer(target);
-
-            if (voteArea == null)
-                return;
 
             if (voteArea.DidVote)
                 voteArea.UnsetVote();
@@ -523,30 +507,30 @@
                 }
             }
 
-            if (PlayerControl.LocalPlayer.Is(AbilityEnum.Assassin) && !PlayerControl.LocalPlayer.Data.IsDead)
+            if (CustomPlayer.Local.Is(AbilityEnum.Assassin) && !CustomPlayer.LocalCustom.IsDead)
             {
-                var assassin = Ability.GetAbility<Assassin>(PlayerControl.LocalPlayer);
+                var assassin = Ability.GetAbility<Assassin>(CustomPlayer.Local);
                 assassin.Exit(MeetingHud.Instance);
                 assassin.HideSingle(target.PlayerId);
             }
 
-            if (PlayerControl.LocalPlayer.Is(RoleEnum.Guesser) && !PlayerControl.LocalPlayer.Data.IsDead)
+            if (CustomPlayer.Local.Is(RoleEnum.Guesser) && !CustomPlayer.LocalCustom.IsDead)
             {
-                var guesser = Role.GetRole<Guesser>(PlayerControl.LocalPlayer);
+                var guesser = Role.GetRole<Guesser>(CustomPlayer.Local);
                 guesser.Exit(MeetingHud.Instance);
                 guesser.HideSingle(target.PlayerId);
             }
 
-            if (PlayerControl.LocalPlayer.Is(RoleEnum.Thief) && !PlayerControl.LocalPlayer.Data.IsDead)
+            if (CustomPlayer.Local.Is(RoleEnum.Thief) && !CustomPlayer.LocalCustom.IsDead)
             {
-                var thief = Role.GetRole<Thief>(PlayerControl.LocalPlayer);
+                var thief = Role.GetRole<Thief>(CustomPlayer.Local);
                 thief.Exit(MeetingHud.Instance);
                 thief.HideSingle(target.PlayerId);
             }
 
-            if (PlayerControl.LocalPlayer.Is(AbilityEnum.Swapper) && !PlayerControl.LocalPlayer.Data.IsDead)
+            if (CustomPlayer.Local.Is(AbilityEnum.Swapper) && !CustomPlayer.LocalCustom.IsDead)
             {
-                var swapper = Ability.GetAbility<Swapper>(PlayerControl.LocalPlayer);
+                var swapper = Ability.GetAbility<Swapper>(CustomPlayer.Local);
 
                 if (swapper.Actives.Any(x => x.Key == target.PlayerId && x.Value))
                 {
@@ -558,7 +542,7 @@
                     swapper.Actives[target.PlayerId] = false;
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                     writer.Write((byte)ActionsRPC.SetSwaps);
-                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                    writer.Write(CustomPlayer.Local.PlayerId);
                     writer.Write(255);
                     writer.Write(255);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -567,9 +551,9 @@
                 swapper.HideSingle(target.PlayerId);
             }
 
-            if (PlayerControl.LocalPlayer.Is(RoleEnum.Dictator) && !PlayerControl.LocalPlayer.Data.IsDead)
+            if (CustomPlayer.Local.Is(RoleEnum.Dictator) && !CustomPlayer.LocalCustom.IsDead)
             {
-                var dictator = Role.GetRole<Dictator>(PlayerControl.LocalPlayer);
+                var dictator = Role.GetRole<Dictator>(CustomPlayer.Local);
 
                 if (dictator.Actives.Any(x => x.Key == target.PlayerId && x.Value))
                 {
@@ -581,7 +565,7 @@
                     dictator.Actives[target.PlayerId] = false;
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                     writer.Write((byte)ActionsRPC.SetExiles);
-                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                    writer.Write(CustomPlayer.Local.PlayerId);
                     writer.Write(false);
                     writer.WriteBytesAndSize(new List<byte>() { 255, 255, 255 }.ToArray());
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -590,9 +574,9 @@
                 dictator.HideSingle(target.PlayerId);
             }
 
-            if (PlayerControl.LocalPlayer.Is(RoleEnum.Retributionist) && !PlayerControl.LocalPlayer.Data.IsDead)
+            if (CustomPlayer.Local.Is(RoleEnum.Retributionist) && !CustomPlayer.LocalCustom.IsDead)
             {
-                var ret = Role.GetRole<Retributionist>(PlayerControl.LocalPlayer);
+                var ret = Role.GetRole<Retributionist>(CustomPlayer.Local);
                 ret.MoarButtons.Remove(target.PlayerId);
                 ret.GenButtons(voteArea, MeetingHud.Instance);
             }
@@ -604,7 +588,7 @@
 
                 area.UnsetVote();
 
-                if (target == PlayerControl.LocalPlayer)
+                if (target == CustomPlayer.Local)
                     MeetingHud.Instance.ClearVote();
             }
 
@@ -831,12 +815,12 @@
                 {
                     if (target.Is(ObjectifierEnum.Fanatic) && (player.Is(Faction.Intruder) || player.Is(Faction.Syndicate)) && target.IsUnturnedFanatic() && !bypass)
                     {
-                        var role = Role.GetRole(player);
-                        Objectifier.GetObjectifier<Fanatic>(target).TurnFanatic(role.Faction);
+                        var fact = player.GetFaction();
+                        Objectifier.GetObjectifier<Fanatic>(target).TurnFanatic(fact);
                         var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
                         writer.Write((byte)TurnRPC.TurnFanatic);
                         writer.Write(target.PlayerId);
-                        writer.Write((byte)role.Faction);
+                        writer.Write((byte)fact);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
                     }
                     else
@@ -861,7 +845,7 @@
             return new() { fullReset, gaReset, survReset, abilityUsed };
         }
 
-        public static List<PlayerControl> GetClosestPlayers(Vector2 truePosition, float radius) => PlayerControl.AllPlayerControls.Where(x => Vector2.Distance(truePosition,
+        public static List<PlayerControl> GetClosestPlayers(Vector2 truePosition, float radius) => CustomPlayer.AllPlayers.Where(x => Vector2.Distance(truePosition,
             x.GetTruePosition()) <= radius).ToList();
 
         public static bool IsTooFar(PlayerControl player, PlayerControl target)
@@ -891,20 +875,20 @@
             return GetDistBetweenPlayers(player, target) > maxDistance;
         }
 
-        public static bool NoButton(PlayerControl target, RoleEnum role) => PlayerControl.AllPlayerControls.Count <= 1 || target == null || target.Data == null || !target.CanMove ||
-            !target.Is(role) || !ConstantVariables.IsRoaming || MeetingHud.Instance || target != PlayerControl.LocalPlayer;
+        public static bool NoButton(PlayerControl target, RoleEnum role) => CustomPlayer.AllPlayers.Count <= 1 || target == null || target.Data == null || !target.CanMove ||
+            !target.Is(role) || !ConstantVariables.IsRoaming || MeetingHud.Instance || target != CustomPlayer.Local;
 
-        public static bool NoButton(PlayerControl target, ModifierEnum mod) => PlayerControl.AllPlayerControls.Count <= 1 || target == null || target.Data == null || !target.CanMove ||
-            !target.Is(mod) || !ConstantVariables.IsRoaming || MeetingHud.Instance || target != PlayerControl.LocalPlayer;
+        public static bool NoButton(PlayerControl target, ModifierEnum mod) => CustomPlayer.AllPlayers.Count <= 1 || target == null || target.Data == null || !target.CanMove ||
+            !target.Is(mod) || !ConstantVariables.IsRoaming || MeetingHud.Instance || target != CustomPlayer.Local;
 
-        public static bool NoButton(PlayerControl target, Faction faction) => PlayerControl.AllPlayerControls.Count <= 1 || target == null || target.Data == null || !target.CanMove ||
-            !target.Is(faction) || !ConstantVariables.IsRoaming || MeetingHud.Instance || target != PlayerControl.LocalPlayer;
+        public static bool NoButton(PlayerControl target, Faction faction) => CustomPlayer.AllPlayers.Count <= 1 || target == null || target.Data == null || !target.CanMove ||
+            !target.Is(faction) || !ConstantVariables.IsRoaming || MeetingHud.Instance || target != CustomPlayer.Local;
 
-        public static bool NoButton(PlayerControl target, ObjectifierEnum obj) => PlayerControl.AllPlayerControls.Count <= 1 || target == null || target.Data == null || !target.CanMove ||
-            !target.Is(obj) || !ConstantVariables.IsRoaming || MeetingHud.Instance || target != PlayerControl.LocalPlayer;
+        public static bool NoButton(PlayerControl target, ObjectifierEnum obj) => CustomPlayer.AllPlayers.Count <= 1 || target == null || target.Data == null || !target.CanMove ||
+            !target.Is(obj) || !ConstantVariables.IsRoaming || MeetingHud.Instance || target != CustomPlayer.Local;
 
-        public static bool NoButton(PlayerControl target, AbilityEnum ability) => PlayerControl.AllPlayerControls.Count <= 1 || target == null || target.Data == null || !target.CanMove ||
-            !target.Is(ability) || !ConstantVariables.IsRoaming || MeetingHud.Instance || target != PlayerControl.LocalPlayer;
+        public static bool NoButton(PlayerControl target, AbilityEnum ability) => CustomPlayer.AllPlayers.Count <= 1 || target == null || target.Data == null || !target.CanMove ||
+            !target.Is(ability) || !ConstantVariables.IsRoaming || MeetingHud.Instance || target != CustomPlayer.Local;
 
         public static void Spread(PlayerControl interacter, PlayerControl target)
         {
@@ -945,7 +929,7 @@
         {
             try
             {
-                string resourceName;
+                var resourceName = "";
 
                 if (folder != "")
                     resourceName = $"{TownOfUsReworked.Resources}{folder}.{itemName}";
@@ -954,7 +938,12 @@
 
                 var stream = TownOfUsReworked.Executing.GetManifestResourceStream(resourceName);
                 var reader = new StreamReader(stream);
-                return reader.ReadToEnd();
+                var text = reader.ReadToEnd();
+
+                foreach (var (key, value) in KeyWords)
+                    text = text.Replace(key, value);
+
+                return text;
             }
             catch
             {
@@ -1093,9 +1082,11 @@
             }
         }
 
-        public static void Flash(Color32 color, float duration = 2f, string message = "", float size = 100f) => Coroutines.Start(FlashCoroutine(color, duration, message, size));
+        public static void Flash(Color32 color, string message, float duration = 0.5f, float size = 100f) => Flash(color, duration, message, size);
 
-        public static IEnumerator FlashCoroutine(Color color, float duration, string message, float size)
+        public static void Flash(Color32 color, float duration = 0.5f, string message = "", float size = 100f) => Coroutines.Start(FlashCoro(color, duration, message, size));
+
+        public static IEnumerator FlashCoro(Color color, float duration, string message, float size)
         {
             color.a = 0.3f;
 
@@ -1107,13 +1098,7 @@
                 fullscreen.color = color;
             }
 
-            //Message Text
-            var messageText = UObject.Instantiate(HudManager.Instance.KillButton.cooldownTimerText, HudManager.Instance.transform);
-            messageText.text = $"<size={size}%>{message}</size>";
-            messageText.enableWordWrapping = false;
-            messageText.transform.localScale = Vector3.one * 0.5f;
-            messageText.transform.localPosition = new(0, 0, 0);
-            messageText.gameObject.SetActive(true);
+            HudManager.Instance.Notifier.AddItem($"<color=#FFFFFFFF><size={size}%>{message}</size></color>");
 
             yield return new WaitForSeconds(duration);
 
@@ -1149,7 +1134,7 @@
                             break;
 
                         case 5:
-                            fs = PlayerControl.LocalPlayer.myTasks.Any(x => x.TaskType == ModCompatibility.RetrieveOxygenMask);
+                            fs = CustomPlayer.Local.myTasks.Any(x => x.TaskType == ModCompatibility.RetrieveOxygenMask);
                             break;
 
                         case 6:
@@ -1163,8 +1148,6 @@
 
                 fullscreen.enabled = fs;
                 fullscreen.gameObject.active = fs;
-                messageText.gameObject.SetActive(false);
-                messageText.gameObject.Destroy();
             }
         }
 
@@ -1187,7 +1170,7 @@
 
         public static void WarpPlayersToCoordinates(Dictionary<byte, Vector2> coordinates)
         {
-            if (coordinates.ContainsKey(PlayerControl.LocalPlayer.PlayerId))
+            if (coordinates.ContainsKey(CustomPlayer.Local.PlayerId))
             {
                 Flash(Colors.Warper);
 
@@ -1197,10 +1180,10 @@
                 if (MapBehaviour.Instance)
                     MapBehaviour.Instance.Close();
 
-                if (PlayerControl.LocalPlayer.inVent)
+                if (CustomPlayer.Local.inVent)
                 {
-                    PlayerControl.LocalPlayer.MyPhysics.RpcExitVent(Vent.currentVent.Id);
-                    PlayerControl.LocalPlayer.MyPhysics.ExitAllVents();
+                    CustomPlayer.Local.MyPhysics.RpcExitVent(Vent.currentVent.Id);
+                    CustomPlayer.Local.MyPhysics.ExitAllVents();
                 }
             }
 
@@ -1208,20 +1191,24 @@
             {
                 var player = PlayerById(key);
                 player.transform.position = value;
-                LogSomething($"Warping {player.Data.PlayerName} to ({value.x}, {value.y})");
+
+                if (TownOfUsReworked.IsTest)
+                    LogSomething($"Warping {player.Data.PlayerName} to ({value.x}, {value.y})");
             }
 
-            foreach (var janitor in Role.GetRoles<Janitor>(RoleEnum.Janitor).Where(x => x.CurrentlyDragging != null))
-                janitor.Drop();
+            if (AmongUsClient.Instance.AmHost)
+            {
+                foreach (var janitor in Role.GetRoles<Janitor>(RoleEnum.Janitor).Where(x => x.CurrentlyDragging != null))
+                    janitor.Drop();
 
-            foreach (var godfather in Role.GetRoles<PromotedGodfather>(RoleEnum.PromotedGodfather).Where(x => x.CurrentlyDragging != null))
-                godfather.Drop();
+                foreach (var godfather in Role.GetRoles<PromotedGodfather>(RoleEnum.PromotedGodfather).Where(x => x.CurrentlyDragging != null))
+                    godfather.Drop();
+            }
         }
 
         public static Dictionary<byte, Vector2> GenerateWarpCoordinates()
         {
-            var targets = PlayerControl.AllPlayerControls.Where(player => !player.Data.IsDead && !player.Data.Disconnected).ToList();
-            var vents = UObject.FindObjectsOfType<Vent>();
+            var targets = CustomPlayer.AllPlayers.Where(player => !player.Data.IsDead && !player.Data.Disconnected).ToList();
             var coordinates = new Dictionary<byte, Vector2>(targets.Count);
 
             var SkeldPositions = new List<Vector3>()
@@ -1383,10 +1370,13 @@
 
             var allLocations = new List<Vector3>();
 
-            foreach (var player in PlayerControl.AllPlayerControls)
-                allLocations.Add(player.transform.position);
+            foreach (var player in CustomPlayer.AllPlayers)
+            {
+                if (!player.onLadder && !player.inMovingPlat)
+                    allLocations.Add(player.transform.position);
+            }
 
-            foreach (var vent in vents)
+            foreach (var vent in AllVents)
                 allLocations.Add(GetVentPosition(vent));
 
             switch (TownOfUsReworked.VanillaOptions.MapId)
@@ -1409,10 +1399,7 @@
             }
 
             foreach (var target in targets)
-            {
-                var destination = allLocations.Random();
-                coordinates.Add(target.PlayerId, destination);
-            }
+                coordinates.Add(target.PlayerId, allLocations.Random());
 
             return coordinates;
         }
@@ -1443,7 +1430,7 @@
             player.Data.SetImpostor(player.Data.IsImpostor());
             player.NetTransform.RpcSnapTo(new(position.x, position.y + 0.3636f));
 
-            if (ModCompatibility.IsSubmerged && PlayerControl.LocalPlayer == player)
+            if (ModCompatibility.IsSubmerged && CustomPlayer.Local == player)
                 ModCompatibility.ChangeFloor(player.transform.position.y > -7);
 
             if (player.Data.IsImpostor())
@@ -1492,15 +1479,15 @@
         public static void Teleport(PlayerControl player, Vector3 position)
         {
             player.MyPhysics.ResetMoveState();
-            player.NetTransform.SnapTo(new(position.x, position.y));
+            player.NetTransform.RpcSnapTo(new(position.x, position.y));
 
-            if (ModCompatibility.IsSubmerged && PlayerControl.LocalPlayer == player)
+            if (ModCompatibility.IsSubmerged && CustomPlayer.Local == player)
             {
                 ModCompatibility.ChangeFloor(player.GetTruePosition().y > -7);
-                ModCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
+                ModCompatibility.CheckOutOfBoundsElevator(CustomPlayer.Local);
             }
 
-            if (PlayerControl.LocalPlayer == player)
+            if (CustomPlayer.Local == player)
             {
                 Flash(Colors.Teleporter);
 
@@ -1551,7 +1538,7 @@
                     if (dictionary.TryGetValue(role.Voted, out var num))
                         dictionary[role.Voted] = num + CustomGameOptions.MayorVoteCount;
                     else
-                        dictionary[role.Voted] = CustomGameOptions.MayorVoteCount;
+                        dictionary[role.Voted] = 1 + CustomGameOptions.MayorVoteCount;
                 }
             }
 
@@ -1568,7 +1555,7 @@
                         if (dictionary.TryGetValue(area.VotedFor, out var num))
                             dictionary[area.VotedFor] = num + CustomGameOptions.KnightVoteCount;
                         else
-                            dictionary[area.VotedFor] = CustomGameOptions.KnightVoteCount;
+                            dictionary[area.VotedFor] = 1 + CustomGameOptions.KnightVoteCount;
 
                         knighted.Add(id);
                     }
@@ -1608,9 +1595,7 @@
                     if (!player.DidVote || player.AmDead || player.VotedFor == PlayerVoteArea.MissedVote || player.VotedFor == PlayerVoteArea.DeadVote)
                         continue;
 
-                    var ability = Ability.GetAbility(player);
-
-                    if (ability.AbilityType == AbilityEnum.Tiebreaker)
+                    if (PlayerByVoteArea(player).Is(AbilityEnum.Tiebreaker))
                     {
                         if (dictionary.TryGetValue(player.VotedFor, out var num))
                             dictionary[player.VotedFor] = num + 1;
@@ -1649,7 +1634,7 @@
             {
                 if (SetPostmortals.WillBeRevealer == player)
                 {
-                    var toChooseFrom = PlayerControl.AllPlayerControls.Where(x => x.Is(Faction.Crew) && x.Data.IsDead && !x.Data.Disconnected).ToList();
+                    var toChooseFrom = CustomPlayer.AllPlayers.Where(x => x.Is(Faction.Crew) && x.Data.IsDead && !x.Data.Disconnected).ToList();
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetRevealer, SendOption.Reliable);
                     SetPostmortals.WillBeRevealer = null;
 
@@ -1667,7 +1652,7 @@
                 }
                 else if (SetPostmortals.WillBePhantom == player)
                 {
-                    var toChooseFrom = PlayerControl.AllPlayerControls.Where(x => x.Is(Faction.Neutral) && x.Data.IsDead && !x.Data.Disconnected).ToList();
+                    var toChooseFrom = CustomPlayer.AllPlayers.Where(x => x.Is(Faction.Neutral) && x.Data.IsDead && !x.Data.Disconnected).ToList();
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPhantom, SendOption.Reliable);
                     SetPostmortals.WillBePhantom = null;
 
@@ -1685,7 +1670,7 @@
                 }
                 else if (SetPostmortals.WillBeBanshee == player)
                 {
-                    var toChooseFrom = PlayerControl.AllPlayerControls.Where(x => x.Is(Faction.Syndicate) && x.Data.IsDead && !x.Data.Disconnected).ToList();
+                    var toChooseFrom = CustomPlayer.AllPlayers.Where(x => x.Is(Faction.Syndicate) && x.Data.IsDead && !x.Data.Disconnected).ToList();
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetBanshee, SendOption.Reliable);
                     SetPostmortals.WillBeBanshee = null;
 
@@ -1703,7 +1688,7 @@
                 }
                 else if (SetPostmortals.WillBeGhoul == player)
                 {
-                    var toChooseFrom = PlayerControl.AllPlayerControls.Where(x => x.Is(Faction.Neutral) && x.Data.IsDead && !x.Data.Disconnected).ToList();
+                    var toChooseFrom = CustomPlayer.AllPlayers.Where(x => x.Is(Faction.Neutral) && x.Data.IsDead && !x.Data.Disconnected).ToList();
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetGhoul, SendOption.Reliable);
                     SetPostmortals.WillBeGhoul = null;
 
@@ -1722,7 +1707,7 @@
             }
         }
 
-        public static PlayerControl GetClosestPlayer(this PlayerControl refPlayer, List<PlayerControl> AllPlayers = null, float maxDistance = 0f, bool ignoreWalls = false)
+        public static PlayerControl GetClosestPlayer(this PlayerControl refPlayer, List<PlayerControl> allPlayers = null, float maxDistance = 0f, bool ignoreWalls = false)
         {
             if (refPlayer.Data.IsDead && !refPlayer.Is(RoleEnum.Jester) && !refPlayer.Is(RoleEnum.Ghoul))
                 return null;
@@ -1730,14 +1715,14 @@
             var truePosition = refPlayer.GetTruePosition();
             var closestDistance = double.MaxValue;
             PlayerControl closestPlayer = null;
-            AllPlayers ??= PlayerControl.AllPlayerControls.Il2CppToSystem();
+            allPlayers ??= CustomPlayer.AllPlayers;
 
             if (maxDistance == 0f)
                 maxDistance = CustomGameOptions.InteractionDistance;
 
-            foreach (var player in AllPlayers)
+            foreach (var player in allPlayers)
             {
-                if (player.Data.IsDead || player == refPlayer || !player.Collider.enabled || player.inMovingPlat || (player.inVent && !CustomGameOptions.VentTargetting))
+                if (player.Data.IsDead || player == refPlayer || !player.Collider.enabled || player.onLadder || player.inMovingPlat || (player.inVent && !CustomGameOptions.VentTargetting))
                     continue;
 
                 var distance = Vector2.Distance(truePosition, player.GetTruePosition());
@@ -1763,7 +1748,7 @@
             var closestDistance = double.MaxValue;
             Vent closestVent = null;
 
-            foreach (var vent in UObject.FindObjectsOfType<Vent>())
+            foreach (var vent in AllVents)
             {
                 var distance = Vector2.Distance(truePosition, new(vent.transform.position.x, vent.transform.position.y));
                 var vector = new Vector2(vent.transform.position.x, vent.transform.position.y) - truePosition;
@@ -1806,6 +1791,40 @@
             }
 
             return closestBody;
+        }
+
+        public static void RemoveTasks(PlayerControl player)
+        {
+            foreach (var task in player.myTasks)
+            {
+                if (task.TryCast<NormalPlayerTask>() != null)
+                {
+                    var normalPlayerTask = task.Cast<NormalPlayerTask>();
+                    var updateArrow = normalPlayerTask.taskStep > 0;
+                    normalPlayerTask.taskStep = 0;
+                    normalPlayerTask.Initialize();
+
+                    if (normalPlayerTask.TaskType == TaskTypes.PickUpTowels)
+                    {
+                        foreach (var console in UObject.FindObjectsOfType<TowelTaskConsole>())
+                            console.Image.color = Color.white;
+                    }
+
+                    normalPlayerTask.taskStep = 0;
+
+                    if (normalPlayerTask.TaskType == TaskTypes.UploadData)
+                        normalPlayerTask.taskStep = 1;
+
+                    if ((normalPlayerTask.TaskType is TaskTypes.EmptyGarbage or TaskTypes.EmptyChute) && (TownOfUsReworked.VanillaOptions.MapId is 0 or 3 or 4))
+                        normalPlayerTask.taskStep = 1;
+
+                    if (updateArrow)
+                        normalPlayerTask.UpdateArrow();
+
+                    var taskInfo = player.Data.FindTaskById(task.Id);
+                    taskInfo.Complete = false;
+                }
+            }
         }
 
         /*public static void CallRpc(params object[] data)

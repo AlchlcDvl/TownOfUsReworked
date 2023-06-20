@@ -1,33 +1,9 @@
 namespace TownOfUsReworked.Cosmetics
 {
-    public class HatExtension
-    {
-        public string Artist { get; set; }
-        public string Condition { get; set; }
-        public Sprite FlipImage { get; set; }
-        public Sprite BackFlipImage { get; set; }
-    }
-
-    public class CustomHat
-    {
-        public string Artist { get; set; }
-        public string Condition { get; set; }
-        public string Name { get; set; }
-        public string ID { get; set; }
-        public string FlipID { get; set; }
-        public string BackflipID { get; set; }
-        public string BackID { get; set; }
-        public string ClimbID { get; set; }
-        public string FloorID { get; set; }
-        public bool NoBouce { get; set; }
-        public bool Adaptive { get; set; }
-        public bool Behind { get; set; }
-    }
-
     [HarmonyPatch]
     public static class CustomHats
     {
-        private static bool SubLoaded;
+        /*private static bool SubLoaded;
         private static bool Running;
         private static Material Shader;
         public readonly static Dictionary<string, HatExtension> CustomHatRegistry = new();
@@ -155,20 +131,20 @@ namespace TownOfUsReworked.Cosmetics
             }
 
             var hat = ScriptableObject.CreateInstance<HatData>();
-            hat.hatViewData.viewData = ScriptableObject.CreateInstance<HatViewData>();
-            hat.hatViewData.viewData.MainImage = CreateHatSprite(ch.ID, fromDisk);
+            var viewData = hat.CreateAddressableAsset().GetAsset();
+            viewData.MainImage = CreateHatSprite(ch.ID, fromDisk);
 
             if (ch.BackID != null)
             {
-                hat.hatViewData.viewData.BackImage = CreateHatSprite(ch.BackID, fromDisk);
+                viewData.BackImage = CreateHatSprite(ch.BackID, fromDisk);
                 ch.Behind = true; //Required to view backresource
             }
 
             if (ch.ClimbID != null)
-                hat.hatViewData.viewData.ClimbImage = CreateHatSprite(ch.ClimbID, fromDisk);
+                viewData.ClimbImage = CreateHatSprite(ch.ClimbID, fromDisk);
 
             if (ch.FloorID != null)
-                hat.hatViewData.viewData.FloorImage = CreateHatSprite(ch.FloorID, fromDisk);
+                viewData.FloorImage = CreateHatSprite(ch.FloorID, fromDisk);
 
             hat.name = ch.Name;
             hat.displayOrder = 99;
@@ -179,7 +155,7 @@ namespace TownOfUsReworked.Cosmetics
             hat.Free = true;
 
             if (ch.Adaptive && Shader != null)
-                hat.hatViewData.viewData.AltShader = Shader;
+                viewData.AltShader = Shader;
 
             var extend = new HatExtension
             {
@@ -263,83 +239,82 @@ namespace TownOfUsReworked.Cosmetics
                 if (extend == null)
                     return;
 
+                hp.hatDataAsset = hp.Hat.CreateAddressableAsset();
+                var asset = hp.hatDataAsset.GetAsset();
+
                 if (extend.FlipImage != null)
-                    hp.FrontLayer.sprite = __instance.FlipX ? extend.FlipImage : hp.hatView.MainImage;
+                    hp.FrontLayer.sprite = __instance.FlipX ? extend.FlipImage : asset.MainImage;
 
                 if (extend.BackFlipImage != null)
                     hp.BackLayer.sprite = __instance.FlipX ? extend.BackFlipImage : hp.hatView.BackImage;
             }
         }
 
-        [HarmonyPatch]
-        public static class FreeplayHatTestingPatches
+        [HarmonyPatch(typeof(HatParent), nameof(HatParent.SetHat), typeof(int))]
+        public static class HatParentSetHatPatchColor
         {
-            [HarmonyPatch(typeof(HatParent), nameof(HatParent.SetHat), typeof(int))]
-            public static class HatParentSetHatPatchColor
+            public static void Prefix(HatParent __instance)
             {
-                public static void Prefix(HatParent __instance)
+                if (TutorialManager.InstanceExists)
                 {
-                    if (TutorialManager.InstanceExists)
-                    {
-                        try
-                        {
-                            var filePath = Path.GetDirectoryName(Application.dataPath) + "\\CustomHats\\Test";
-
-                            if (!Directory.Exists(filePath))
-                                Directory.CreateDirectory(filePath);
-
-                            var d = new DirectoryInfo(filePath);
-                            var filePaths = d.GetFiles("*.png").Select(x => x.FullName).ToArray();
-                            var hats = CreateCustomHatDetails(filePaths, true);
-
-                            if (hats.Count > 0)
-                                __instance.Hat = CreateHatBehaviour(hats[0], true, true);
-                        }
-                        catch (Exception e)
-                        {
-                            Utils.LogSomething("Unable to create test hat\n" + e);
-                        }
-                    }
-                }
-            }
-
-            [HarmonyPatch(typeof(HatParent), nameof(HatParent.SetHat), typeof(HatData), typeof(HatViewData), typeof(int))]
-            public static class HatParentSetHatPatchExtra
-            {
-                public static bool Prefix(HatParent __instance, HatData hat, HatViewData hatViewData, int color)
-                {
-                    if (!TutorialManager.InstanceExists)
-                        return true;
-
                     try
                     {
-                        __instance.Hat = hat;
-                        __instance.hatView = hatViewData;
                         var filePath = Path.GetDirectoryName(Application.dataPath) + "\\CustomHats\\Test";
 
                         if (!Directory.Exists(filePath))
-                            return true;
+                            Directory.CreateDirectory(filePath);
 
                         var d = new DirectoryInfo(filePath);
                         var filePaths = d.GetFiles("*.png").Select(x => x.FullName).ToArray();
                         var hats = CreateCustomHatDetails(filePaths, true);
 
                         if (hats.Count > 0)
-                        {
                             __instance.Hat = CreateHatBehaviour(hats[0], true, true);
-                            __instance.hatView = __instance.Hat.hatViewData.viewData;
-                        }
                     }
                     catch (Exception e)
                     {
                         Utils.LogSomething("Unable to create test hat\n" + e);
-                        return true;
                     }
-
-                    __instance.PopulateFromHatViewData();
-                    __instance.SetMaterialColor(color);
-                    return false;
                 }
+            }
+        }
+
+        [HarmonyPatch(typeof(HatParent), nameof(HatParent.SetHat), typeof(HatData), typeof(HatViewData), typeof(int))]
+        public static class HatParentSetHatPatchExtra
+        {
+            public static bool Prefix(HatParent __instance, HatData hat, HatViewData hatViewData, int color)
+            {
+                if (!TutorialManager.InstanceExists)
+                    return true;
+
+                try
+                {
+                    __instance.Hat = hat;
+                    __instance.hatView = hatViewData;
+                    var filePath = Path.GetDirectoryName(Application.dataPath) + "\\CustomHats\\Test";
+
+                    if (!Directory.Exists(filePath))
+                        return true;
+
+                    var d = new DirectoryInfo(filePath);
+                    var filePaths = d.GetFiles("*.png").Select(x => x.FullName).ToArray();
+                    var hats = CreateCustomHatDetails(filePaths, true);
+
+                    if (hats.Count > 0)
+                    {
+                        __instance.Hat = CreateHatBehaviour(hats[0], true, true);
+                        __instance.hatView = __instance.Hat.hatViewData.viewData;
+                    }
+                }
+                catch (Exception e)
+                {
+                    Utils.LogSomething("Unable to create test hat\n" + e);
+                    return true;
+                }
+
+                __instance.PopulateFromHatViewData();
+                __instance.SetMaterialColor(color);
+                return false;
             }
         }
 
@@ -358,7 +333,7 @@ namespace TownOfUsReworked.Cosmetics
 
                 var offset = YStart;
 
-                if (Template != null)
+                if (Template)
                 {
                     var title = UObject.Instantiate(Template, __instance.scroller.Inner);
                     title.transform.localPosition = new(2.25f, YStart, -1f);
@@ -393,16 +368,16 @@ namespace TownOfUsReworked.Cosmetics
 
                     if (ext != null)
                     {
-                        if (background != null)
+                        if (background)
                         {
                             background.localPosition = Vector3.down * 0.243f;
                             background.localScale = new(background.localScale.x, 0.8f, background.localScale.y);
                         }
 
-                        if (foreground != null)
+                        if (foreground)
                             foreground.localPosition = Vector3.down * 0.243f;
 
-                        if (Template != null)
+                        if (Template)
                         {
                             var description = UObject.Instantiate(Template, colorChip.transform);
                             description.transform.localPosition = new(0f, -0.65f, -1f);
@@ -413,7 +388,7 @@ namespace TownOfUsReworked.Cosmetics
                     }
 
                     colorChip.transform.localPosition = new(xpos, ypos, -1f);
-                    colorChip.Inner.SetHat(hat, __instance.HasLocalPlayer() ? PlayerControl.LocalPlayer.Data.DefaultOutfit.ColorId : DataManager.Player.Customization.Color);
+                    colorChip.Inner.SetHat(hat, __instance.HasLocalPlayer() ? CustomPlayer.LocalCustom.Data.DefaultOutfit.ColorId : DataManager.Player.Customization.Color);
                     colorChip.Inner.transform.localPosition = hat.ChipOffset;
                     colorChip.Tag = hat;
                     colorChip.SelectionHighlight.gameObject.SetActive(false);
@@ -492,6 +467,6 @@ namespace TownOfUsReworked.Cosmetics
 
             CustomHatRegistry.TryGetValue(hat.name, out var ret);
             return ret;
-        }
+        }*/
     }
 }

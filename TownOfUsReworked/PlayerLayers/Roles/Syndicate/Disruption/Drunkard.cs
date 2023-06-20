@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Drunkard : SyndicateRole
+    public class Drunkard : Syndicate
     {
         public CustomButton ConfuseButton;
         public bool Enabled;
@@ -32,7 +32,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Confuse()
         {
-            if (!Enabled && (PlayerControl.LocalPlayer == ConfusedPlayer || HoldsDrive))
+            if (!Enabled && (CustomPlayer.Local == ConfusedPlayer || HoldsDrive))
                 Utils.Flash(Color);
 
             Enabled = true;

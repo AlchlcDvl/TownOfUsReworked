@@ -80,54 +80,51 @@ namespace TownOfUsReworked.BetterMaps.Skeld
 
         private static void FindVents()
         {
-            var ventsList = UObject.FindObjectsOfType<Vent>().ToList();
-
             if (NavVentSouth == null)
-                NavVentSouth = ventsList.Find(vent => vent.gameObject.name == "NavVentSouth");
+                NavVentSouth = Utils.AllVents.Find(vent => vent.gameObject.name == "NavVentSouth");
 
             if (NavVentNorth == null)
-                NavVentNorth = ventsList.Find(vent => vent.gameObject.name == "NavVentNorth");
+                NavVentNorth = Utils.AllVents.Find(vent => vent.gameObject.name == "NavVentNorth");
 
             if (ShieldsVent == null)
-                ShieldsVent = ventsList.Find(vent => vent.gameObject.name == "ShieldsVent");
+                ShieldsVent = Utils.AllVents.Find(vent => vent.gameObject.name == "ShieldsVent");
 
             if (WeaponsVent == null)
-                WeaponsVent = ventsList.Find(vent => vent.gameObject.name == "WeaponsVent");
+                WeaponsVent = Utils.AllVents.Find(vent => vent.gameObject.name == "WeaponsVent");
 
             if (REngineVent == null)
-                REngineVent = ventsList.Find(vent => vent.gameObject.name == "REngineVent");
+                REngineVent = Utils.AllVents.Find(vent => vent.gameObject.name == "REngineVent");
 
             if (UpperReactorVent == null)
-                UpperReactorVent = ventsList.Find(vent => vent.gameObject.name == "UpperReactorVent");
+                UpperReactorVent = Utils.AllVents.Find(vent => vent.gameObject.name == "UpperReactorVent");
 
             if (LEngineVent == null)
-                LEngineVent = ventsList.Find(vent => vent.gameObject.name == "LEngineVent");
+                LEngineVent = Utils.AllVents.Find(vent => vent.gameObject.name == "LEngineVent");
 
             if (ReactorVent == null)
-                ReactorVent = ventsList.Find(vent => vent.gameObject.name == "ReactorVent");
+                ReactorVent = Utils.AllVents.Find(vent => vent.gameObject.name == "ReactorVent");
 
-            IsVentsFetched = NavVentSouth != null && NavVentNorth != null && ShieldsVent != null && WeaponsVent != null && REngineVent != null && UpperReactorVent != null &&
-                LEngineVent != null && ReactorVent != null;
+            IsVentsFetched = NavVentSouth && NavVentNorth && ShieldsVent && WeaponsVent && REngineVent && UpperReactorVent && LEngineVent && ReactorVent;
         }
 
         private static void FindObjects()
         {
             if (ReactorVent == null)
-                ReactorVent = UObject.FindObjectsOfType<Vent>().ToList().Find(vent => vent.gameObject.name == "ReactorVent");
+                ReactorVent = Utils.AllVents.Find(vent => vent.gameObject.name == "ReactorVent");
 
             if (ShieldsVent == null)
-                ShieldsVent = UObject.FindObjectsOfType<Vent>().ToList().Find(vent => vent.gameObject.name == "ShieldsVent");
+                ShieldsVent = Utils.AllVents.Find(vent => vent.gameObject.name == "ShieldsVent");
 
             if (BigYVent == null)
-                BigYVent = UObject.FindObjectsOfType<Vent>().ToList().Find(vent => vent.gameObject.name == "BigYVent");
+                BigYVent = Utils.AllVents.Find(vent => vent.gameObject.name == "BigYVent");
 
             if (NavVentNorth == null)
-                NavVentNorth = UObject.FindObjectsOfType<Vent>().ToList().Find(vent => vent.gameObject.name == "NavVentNorth");
+                NavVentNorth = Utils.AllVents.Find(vent => vent.gameObject.name == "NavVentNorth");
 
             if (CafeVent == null)
-                CafeVent = UObject.FindObjectsOfType<Vent>().ToList().Find(vent => vent.gameObject.name == "CafeVent");
+                CafeVent = Utils.AllVents.Find(vent => vent.gameObject.name == "CafeVent");
 
-            IsObjectsFetched = ReactorVent != null && ShieldsVent != null && BigYVent != null && NavVentNorth != null && CafeVent != null;
+            IsObjectsFetched = ReactorVent && ShieldsVent && BigYVent && NavVentNorth && CafeVent;
         }
 
         private static void AdjustVents()

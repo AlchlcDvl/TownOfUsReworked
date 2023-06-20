@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Rebel : SyndicateRole
+    public class Rebel : Syndicate
     {
         public bool HasDeclared;
         public CustomButton SidekickButton;
@@ -37,10 +37,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             sidekick.RoleUpdate(formerRole);
 
-            if (target == PlayerControl.LocalPlayer)
+            if (target == CustomPlayer.Local)
                 Utils.Flash(Colors.Rebel);
 
-            if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
+            if (CustomPlayer.Local.Is(RoleEnum.Seer))
                 Utils.Flash(Colors.Seer);
         }
 
@@ -66,7 +66,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 LastDeclared.AddSeconds(CustomGameOptions.ProtectKCReset);
         }
 
-        public bool Exception1(PlayerControl player) => !player.Is(Faction) || player.GetRole() is RoleEnum.PromotedRebel or RoleEnum.Sidekick or RoleEnum.Rebel;
+        public bool Exception1(PlayerControl player) => !player.Is(Faction) || (!(player.GetRole() is RoleEnum.PromotedRebel or RoleEnum.Sidekick or RoleEnum.Rebel) && player.Is(Faction));
 
         public override void UpdateHud(HudManager __instance)
         {

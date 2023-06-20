@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Thief : NeutralRole
+    public class Thief : Neutral
     {
         public DateTime LastStolen;
         public CustomButton StealButton;
@@ -160,7 +160,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 var button = UObject.Instantiate(buttonTemplate, buttonParent);
                 UObject.Instantiate(maskTemplate, buttonParent);
                 var label = UObject.Instantiate(textTemplate, button);
-                button.GetComponent<SpriteRenderer>().sprite = HatManager.Instance.GetNamePlateById("nameplate_NoPlate")?.viewData?.viewData?.Image;
+                button.GetComponent<SpriteRenderer>().sprite = HatManager.Instance.GetNamePlateById("nameplate_NoPlate").CreateAddressableAsset().GetAsset().Image;
 
                 if (!GuessButtons.ContainsKey(i))
                     GuessButtons.Add(i, new());
@@ -227,7 +227,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var player = Utils.PlayerByVoteArea(voteArea);
             return player.Data.IsDead || player.Data.Disconnected || (voteArea.NameText.text.Contains('\n') && Player.GetFaction() != player.GetFaction()) || (player == Player &&
-                player == PlayerControl.LocalPlayer) || Player.GetFaction() == player.GetFaction() || player == Player.GetOtherLover() || player == Player.GetOtherRival() || IsDead;
+                player == CustomPlayer.Local) || Player.GetFaction() == player.GetFaction() || player == Player.GetOtherLover() || player == Player.GetOtherRival() || IsDead;
         }
 
         public void GenButton(PlayerVoteArea voteArea, MeetingHud __instance)
@@ -350,7 +350,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 {
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
                     writer.Write((byte)ActionsRPC.Steal);
-                    writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                    writer.Write(CustomPlayer.Local.PlayerId);
                     writer.Write(StealButton.TargetPlayer.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                     Utils.RpcMurderPlayer(Player, StealButton.TargetPlayer);
@@ -375,10 +375,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var thief = thiefRole.Player;
             var target = other.GetTarget();
             var leader = other.GetLeader();
-            thief.DisableButtons();
-            other.DisableButtons();
 
-            if (PlayerControl.LocalPlayer == other || PlayerControl.LocalPlayer == thief)
+            if (CustomPlayer.Local == other || CustomPlayer.Local == thief)
             {
                 Utils.Flash(thiefRole.Color);
                 role.OnLobby();
@@ -477,7 +475,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (CustomGameOptions.ThiefSteals)
             {
-                if (PlayerControl.LocalPlayer == other && other.Is(Faction.Intruder))
+                if (CustomPlayer.Local == other && other.Is(Faction.Intruder))
                 {
                     HudManager.Instance.SabotageButton.gameObject.SetActive(false);
                     other.Data.Role.TeamType = RoleTeamTypes.Crewmate;
@@ -491,21 +489,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 foreach (var snitch in Ability.GetAbilities<Snitch>(AbilityEnum.Snitch))
                 {
-                    if (snitch.TasksLeft <= CustomGameOptions.SnitchTasksRemaining && PlayerControl.LocalPlayer == thief)
+                    if (snitch.TasksLeft <= CustomGameOptions.SnitchTasksRemaining && CustomPlayer.Local == thief)
                         LocalRole.AllArrows.Add(snitch.PlayerId, new(thief, Colors.Snitch, 0));
-                    else if (snitch.TasksDone && PlayerControl.LocalPlayer == snitch.Player)
+                    else if (snitch.TasksDone && CustomPlayer.Local == snitch.Player)
                         GetRole(snitch.Player).AllArrows.Add(thief.PlayerId, new(snitch.Player, Colors.Snitch));
                 }
 
                 foreach (var revealer in GetRoles<Revealer>(RoleEnum.Revealer))
                 {
-                    if (revealer.Revealed && PlayerControl.LocalPlayer == thief)
+                    if (revealer.Revealed && CustomPlayer.Local == thief)
                         LocalRole.AllArrows.Add(revealer.PlayerId, new(thief, Colors.Revealer, 0));
                 }
             }
-
-            thief.EnableButtons();
-            other.EnableButtons();
         }
 
         public override void UpdateHud(HudManager __instance)
@@ -565,13 +560,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (player != Player && player.Is(ModifierEnum.Indomitable))
             {
-                if (player == PlayerControl.LocalPlayer)
+                if (player == CustomPlayer.Local)
                     Utils.Flash(Colors.Indomitable);
 
                 return;
             }
 
             Utils.MarkMeetingDead(player, Player);
+
+            if (Player != player)
+                Steal(this, player);
 
             if (AmongUsClient.Instance.AmHost && player.Is(ObjectifierEnum.Lovers) && CustomGameOptions.BothLoversDie)
             {
@@ -586,21 +584,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 if (Player != player)
                 {
                     hudManager.Chat.AddChat(PlayerControl.LocalPlayer, $"You guessed {player.name} as {guess}!");
-                    Steal(this, player);
                     HideButtons();
                 }
                 else
                     hudManager.Chat.AddChat(PlayerControl.LocalPlayer, $"You incorrectly guessed {player.name} as {guess} and died!");
             }
-            else if (Player != player && PlayerControl.LocalPlayer == player)
+            else if (Player != player && CustomPlayer.Local == player)
                 hudManager.Chat.AddChat(PlayerControl.LocalPlayer, $"{Player.name} guessed you as {guess}!");
-            else if ((Player.GetFaction() == PlayerControl.LocalPlayer.GetFaction() && (Player.GetFaction() is Faction.Intruder or Faction.Syndicate)) ||
-                ConstantVariables.DeadSeeEverything)
+            else if (ConstantVariables.DeadSeeEverything)
             {
                 if (Player != player)
-                    hudManager.Chat.AddChat(PlayerControl.LocalPlayer, $"{Player.name} guessed {player.name} as {player}!");
+                    hudManager.Chat.AddChat(PlayerControl.LocalPlayer, $"{Player.name} guessed {player.name} as {guess} and stole their role!");
                 else
-                    hudManager.Chat.AddChat(PlayerControl.LocalPlayer, $"{Player.name} incorrectly guessed {player.name} as {player} and died!");
+                    hudManager.Chat.AddChat(PlayerControl.LocalPlayer, $"{Player.name} incorrectly guessed {player.name} as {guess} and died!");
             }
         }
 

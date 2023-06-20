@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Impostor : IntruderRole
+    public class Impostor : Intruder
     {
         public Impostor(PlayerControl player) : base(player)
         {

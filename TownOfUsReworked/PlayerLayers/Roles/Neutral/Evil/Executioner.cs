@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Executioner : NeutralRole
+    public class Executioner : Neutral
     {
         public PlayerControl TargetPlayer;
         public bool TargetVotedOut;
@@ -9,14 +9,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public CustomButton DoomButton;
         public DateTime LastDoomed;
         public int UsesLeft;
-        public bool CanDoom => TargetVotedOut && !HasDoomed && UsesLeft > 0 && ToDoom.Count > 0;
-        public bool Failed => TargetPlayer == null || (!TargetVotedOut && (TargetPlayer.Data.IsDead || TargetPlayer.Data.Disconnected));
+        public bool CanDoom => TargetVotedOut && !HasDoomed && UsesLeft > 0 && ToDoom.Count > 0 && !CustomGameOptions.AvoidNeutralKingmakers;
+        public bool Failed => TargetPlayer != null && !TargetVotedOut && (TargetPlayer.Data.IsDead || TargetPlayer.Data.Disconnected);
+        public int Rounds;
+        public CustomButton TargetButton;
+        public bool TargetFailed => TargetPlayer == null && Rounds > 2;
 
         public Executioner(PlayerControl player) : base(player)
         {
             Name = "Executioner";
-            StartText = () => $"Eject {TargetPlayer?.name}";
-            Objectives = () => $"- Eject {TargetPlayer?.name}";
+            StartText = () => "Find Someone To Eject";
+            Objectives = () => TargetVotedOut ? $"- {TargetPlayer?.name} has been ejected" : (TargetPlayer == null ? "- Find a target to eject" : $"- Eject {TargetPlayer?.name}");
             Color = CustomGameOptions.CustomNeutColors ? Colors.Executioner : Colors.Neutral;
             RoleType = RoleEnum.Executioner;
             RoleAlignment = RoleAlignment.NeutralEvil;
@@ -26,10 +29,25 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 "<color=#F7B3DAFF>Jester</color>";
             Type = LayerEnum.Executioner;
             DoomButton = new(this, "Doom", AbilityTypes.Direct, "ActionSecondary", Doom, Exception, true);
+            TargetButton = new(this, "ExeTarget", AbilityTypes.Direct, "ActionSecondary", SelectTarget);
+            Rounds = 0;
             InspectorResults = InspectorResults.Manipulative;
 
             if (TownOfUsReworked.IsTest)
                 Utils.LogSomething($"{Player.name} is {Name}");
+        }
+
+        public void SelectTarget()
+        {
+            if (TargetPlayer != null)
+                return;
+
+            TargetPlayer = TargetButton.TargetPlayer;
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Target, SendOption.Reliable);
+            writer.Write((byte)TargetRPC.SetExeTarget);
+            writer.Write(PlayerId);
+            writer.Write(TargetPlayer.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
 
         public override void VoteComplete(MeetingHud __instance)
@@ -71,10 +89,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var newRole = new Jester(Player);
             newRole.RoleUpdate(this);
 
-            if (Local)
+            if (Local && !IntroCutscene.Instance)
                 Utils.Flash(Colors.Jester);
 
-            if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
+            if (CustomPlayer.Local.Is(RoleEnum.Seer) && !IntroCutscene.Instance)
                 Utils.Flash(Colors.Seer);
         }
 
@@ -95,9 +113,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            DoomButton.Update("DOOM", DoomTimer(), CustomGameOptions.DoomCooldown, UsesLeft, CanDoom, CanDoom);
+            DoomButton.Update("DOOM", DoomTimer(), CustomGameOptions.DoomCooldown, UsesLeft, CanDoom, CanDoom && TargetPlayer != null);
+            TargetButton.Update("SET TARGET", 0, 1, true, TargetPlayer == null);
 
-            if (Failed && !IsDead)
+            if ((TargetFailed || Failed) && !IsDead)
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
                 writer.Write((byte)TurnRPC.TurnJest);

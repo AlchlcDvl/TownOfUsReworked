@@ -3,7 +3,7 @@ namespace TownOfUsReworked.Patches
     [HarmonyPatch]
     public static class OnGameEndPatch
     {
-        private readonly static List<WinningPlayerData> PotentialWinners = new();
+        private static readonly List<WinningPlayerData> PotentialWinners = new();
 
         [HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.OnGameEnd))]
         public static class AmongUsClient_OnGameEnd
@@ -12,7 +12,7 @@ namespace TownOfUsReworked.Patches
             {
                 PotentialWinners.Clear();
 
-                foreach (var player in PlayerControl.AllPlayerControls)
+                foreach (var player in CustomPlayer.AllPlayers)
                     PotentialWinners.Add(new(player.Data));
             }
         }
@@ -228,7 +228,7 @@ namespace TownOfUsReworked.Patches
                 }
                 else if (Role.PhantomWins)
                 {
-                    foreach (Phantom role2 in Role.GetRoles<Phantom>(RoleEnum.Phantom))
+                    foreach (var role2 in Role.GetRoles<Phantom>(RoleEnum.Phantom))
                     {
                         if (!role2.Disconnected && role2.Faithful && role2.CompletedTasks)
                             winners.Add(PotentialWinners.Find(x => x.PlayerName == role2.PlayerName));

@@ -2,7 +2,6 @@ namespace TownOfUsReworked.Data
 {
     public enum ActionsRPC
     {
-        FixLights,
         SetExtraVotes,
         SetSwaps,
         Shift,
@@ -192,6 +191,7 @@ namespace TownOfUsReworked.Data
         Number,
         String,
         Button,
+        Layers,
         Nested
     }
 
@@ -346,6 +346,8 @@ namespace TownOfUsReworked.Data
         SetColor,
         VersionHandshake,
         ChaosDrive,
+        FixLights,
+        SetReports,
 
         None
     }
@@ -697,6 +699,7 @@ namespace TownOfUsReworked.Data
         Doomed,
         Dictated,
         Collided,
+        Escaped,
 
         None
     }
@@ -848,7 +851,6 @@ namespace TownOfUsReworked.Data
         Invis,
         Disguise,
         Drag,
-        Drop,
         FlashGrenade,
         Blackmail,
         Infect,

@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Shifter : CrewRole
+    public class Shifter : Crew
     {
         public DateTime LastShifted;
         public CustomButton ShiftButton;
@@ -57,8 +57,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var role = GetRole(other);
             var shifter = shifterRole.Player;
-            other.DestroyButtons();
-            shifter.DestroyButtons();
 
             if (!other.Is(Faction.Crew) || other.IsFramed())
             {
@@ -66,14 +64,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 return;
             }
 
-            if (PlayerControl.LocalPlayer == other)
+            if (CustomPlayer.Local == other)
             {
                 Utils.Flash(shifterRole.Color);
                 role.OnLobby();
                 ButtonUtils.ResetCustomTimers(false);
             }
 
-            if (PlayerControl.LocalPlayer == shifter)
+            if (CustomPlayer.Local == shifter)
             {
                 Utils.Flash(shifterRole.Color);
                 shifterRole.OnLobby();
@@ -114,8 +112,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 },
                 RoleEnum.Coroner => new Coroner(shifter)
                 {
-                    UsesLeft = ((Coroner)role).UsesLeft,
-                    ReferenceBody = ((Coroner)role).ReferenceBody,
+                    ReferenceBodies = ((Coroner)role).ReferenceBodies,
                     Reported = ((Coroner)role).Reported
                 },
                 RoleEnum.Retributionist => new Retributionist(shifter)
@@ -125,7 +122,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     Selected = ((Retributionist)role).Selected,
                     UsesLeft = ((Retributionist)role).UsesLeft,
                     Reported = ((Retributionist)role).Reported,
-                    ReferenceBody = ((Retributionist)role).ReferenceBody,
+                    ReferenceBodies = ((Retributionist)role).ReferenceBodies
                 },
                 _ => new Shifter(shifter),
             };
@@ -133,8 +130,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             newRole.RoleUpdate(shifterRole);
             Role newRole2 = CustomGameOptions.ShiftedBecomes == BecomeEnum.Shifter ? new Shifter(other) : new Crewmate(other);
             newRole2.RoleUpdate(role);
-            other.EnableButtons();
-            shifter.EnableButtons();
         }
 
         public bool Exception(PlayerControl player) => Faction is Faction.Intruder or Faction.Syndicate && player.Is(Faction);

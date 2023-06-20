@@ -1,6 +1,6 @@
 ﻿namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Juggernaut : NeutralRole
+    public class Juggernaut : Neutral
     {
         public DateTime LastKilled;
         public int JuggKills;
