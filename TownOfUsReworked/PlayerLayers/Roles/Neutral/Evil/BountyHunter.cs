@@ -154,8 +154,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 return;
 
             //Ensures only the Bounty Hunter sees this
-            if (HudManager.Instance && something != "")
-                HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, something);
+            if (Utils.HUD && something != "")
+                Utils.HUD.Chat.AddChat(PlayerControl.LocalPlayer, something);
         }
 
         public override void UpdateHud(HudManager __instance)

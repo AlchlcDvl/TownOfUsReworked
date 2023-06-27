@@ -6,7 +6,7 @@ namespace TownOfUsReworked.Patches
         public static void Postfix(VitalsMinigame __instance)
         {
             var localPlayer = CustomPlayer.Local;
-            var isOP = localPlayer.Is(RoleEnum.Operative) || (CustomPlayer.LocalCustom.IsDead && CustomGameOptions.DeadSeeEverything);
+            var isOP = localPlayer.Is(RoleEnum.Operative) || ConstantVariables.DeadSeeEverything;
 
             if (!isOP)
                 isOP = localPlayer.Is(RoleEnum.Retributionist) && ((Retributionist)Role.LocalRole).IsOP;

@@ -5,7 +5,7 @@ namespace TownOfUsReworked.Patches
     {
         public static void Prefix([HarmonyArgument(0)] PlayerControl player)
         {
-            if (AmongUsClient.Instance.AmHost && MeetingHud.Instance)
+            if (AmongUsClient.Instance.AmHost && Utils.Meeting)
             {
                 foreach (var pol in Ability.GetAbilities<Politician>(AbilityEnum.Politician))
                 {

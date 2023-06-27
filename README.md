@@ -126,6 +126,7 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 | Among Us | Mod Version | Link |
 |----------|-------------|------|
+| 2023.6.13 (s & e) | v0.4.1 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.4.1/Reworked.zip) |
 | 2023.6.13 (s & e) | v0.4.0 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.4.0/Reworked.zip) |
 
 <details>
@@ -174,6 +175,32 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 <details>
 <summary>Changelog</summary>
+<details>
+<summary>v0.4.1</summary>
+<ul> <li>Update: Updated MCI</li> </ul>
+<ul> <li>Addition: A lot more buttons have their sprites now</li> </ul>
+<ul> <li>Addition: There can now be multiple Revealers, Banshees, Ghouls and Phantoms</li> </ul>
+<ul> <li>Buff: Actor now becomes a role from the role list they were supposed to be guessed as when all guessing capable players have died</li> </ul>
+<ul> <li>Improvement: Layer count and chance settings have been merged into one setting type</li> </ul>
+<ul> <li>Critical Fix: Fixed Crew-Allied Neutral Killers being shown who the other Crew are in the intro screen</li> </ul>
+<ul> <li>Critical Fix: Fixed Spellslinger not ending the game when needed</li> </ul>
+<ul> <li>Critical Fix: Fixed games not ending with a Guardian Angel without a target active</li> </ul>
+<ul> <li>Visual Fix: Fixed the vent button disappearing when role blocked</li> </ul>
+<ul> <li>Visual Fix: Fixed the Engrish in some parts of the mod</li> </ul>
+<ul> <li>Visual Fix: Fixed outlines persisting on targets after death</li> </ul>
+<ul> <li>Bug Fix: Fixed decreasing the lobby size not kicking players when needed</li> </ul>
+<ul> <li>Bug Fix: Fixed arrows not updating correctly</li> </ul>
+<ul> <li>Bug Fix: Fixed being unable to change the lobby size when opening up a lobby</li> </ul>
+<ul> <li>Bug Fix: Fixed Footprints only spawning the left/right foot for each person</li> </ul>
+<ul> <li>Bug Fix: Fixed some issues with button targeting</li> </ul>
+<ul> <li>Bug Fix: Fixed the Chat Cooldown option not actually changing up the chat cooldown</li> </ul>
+<ul> <li>Role Fix: Fixed Neutral (Neophyte) roles being appointed as the Jackal's Recruits</li> </ul>
+<ul> <li>Role Fix: Fixed Ghouls not spawning in</li> </ul>
+<ul> <li>Role Fix: Fixed Shifters constantly dying upon failing to shift</li> </ul>
+<ul> <li>Objectifier Fix: Fixed unturned Defectors appearing twice on the Victory screen</li> </ul>
+<ul> <li>Ability Fix: Fixed the sheer amount of Assassins being assigned in All Any</li> </ul>
+<ul> <li>Ability Fix: Fixed Neutral Assassins not spawning</li> </ul>
+</details>
 <details>
 <summary>v0.4.0</summary>
 <ul> <li>Update: Merged changes from v4.0.6 of ToU-R</li> </ul>
@@ -359,7 +386,7 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 <ul> <li>Improvement: Turned Traitors and Fanatics with the Assassin ability now have their guessing menus updated to their new factions</li> </ul>
 <ul> <li>Improvement: Added a paging behaviour for the guessing menu, to prevent guess buttons going off-screen</li> </ul>
 <ul> <li>Improvement: The mod's weight has been heavily reduced</li> </ul>
-<ul> <li>Improvement: Improved player targetting some more</li> </ul>
+<ul> <li>Improvement: Improved player targeting some more</li> </ul>
 <ul> <li>Change: Teleporter's color was changed because it was too close to the Grenadier's green</li> </ul>
 <ul> <li>Critical Fix: Fixed Airship crashing players when loading in</li> </ul>
 <ul> <li>Bug Fix: Fixed the weird issue with blank abilities appearing</li> </ul>
@@ -437,7 +464,7 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 <ul> <li>Buff: Altruist can now revive players multiple times and sacrifices themselves on the last revive</li> </ul>
 <ul> <li>Update: Updated Crowded to fix the double click issue</li> </ul>
 <ul> <li>Update: Updated the role info from the recent updates in the in-game wiki</li> </ul>
-<ul> <li>Improvement: Improved player targetting</li> </ul>
+<ul> <li>Improvement: Improved player targeting</li> </ul>
 <ul> <li>Improvement: Settings now open to the last tab you were on, and keybinds for page jumping also work in there</li> </ul>
 <ul> <li>Critical Fix: Fixed the Haunt button not working</li> </ul>
 <ul> <li>Visual Fix: Fixed Poisoner having 2 buttons</li> </ul>
@@ -2791,8 +2818,8 @@ The Underdog is an Intruder or Syndicate with prolonged cooldowns when with a te
 | Add Meeting To Security Room Teleporter | Self Descriptive | Toggle | False |
 | Move Fuel | Moves the refuel station elsewhere on the map | Toggle | False |
 | Move Vitals | Moves vitals elsewhere on the map | Toggle | False |
-| Move Divert | Moves the divert power station elsewhere on the map | Toggle | False |
-| Move Admin | Moves admin map elsewhere on the map | String | Don't Move |
+| Move Divert Power | Moves the divert power station elsewhere on the map | Toggle | False |
+| Move Admin Table | Moves admin map elsewhere on the map | String | Don't Move |
 | Move Electrical | Moves the electrical lights staion elsewhere on the map | String | Don't Move |
 
 -----------------------
@@ -2996,7 +3023,7 @@ After that, it's gaming time.
 [The Other Roles: Community Edition](https://github.com/JustASysAdmin/TheOtherRoles2) - For the random spawns option\
 [Las Monjas](https://github.com/KiraYamato94/LasMonjas) - For the inspiration of the VIP modifier\
 [5up](https://www.twitch.tv/5uppp) and the Submarine Team - For the inspiration of the Grenadier role\
-[MyDragonBreath](https://github.com/MyDragonBreath) - For Submerged Compatibility, MultiClientInstancing and partially the Operative role\
+[MyDragonBreath](https://github.com/MyDragonBreath) - For Submerged Compatibility, basis for mod debugging, partially the Operative role and moral support\
 [Guus](https://github.com/OhMyGuus) - For support for the old Among Us versions (v2021.11.9.5 and v2021.12.15)\
 [ItsTheNumberH](https://github.com/itsTheNumberH/Town-Of-H) - For Coward, Volatile and Bait modifiers, Poisoner and Cannibal roles, partially for Tracker and Coroner roles and bug fixes\
 [Ruiner](https://github.com/ruiner189/Town-Of-Us-Redux) - For Lovers being changed into an objectifier and Task Tracking\

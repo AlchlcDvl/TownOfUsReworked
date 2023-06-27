@@ -34,7 +34,7 @@
             foreach (var player in Players)
             {
                 if (player.Is(RoleEnum.Pestilence) || player.IsOnAlert() || player.IsProtected() || player.IsShielded() || player.IsRetShielded() || player.IsProtectedMonarch() ||
-                    (player.Is(Faction.Syndicate) && !CustomGameOptions.BombKillsSyndicate))
+                    (player.Is(Faction.Syndicate) && CustomGameOptions.BombKillsSyndicate))
                 {
                     continue;
                 }

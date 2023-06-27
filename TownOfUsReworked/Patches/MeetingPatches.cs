@@ -16,7 +16,7 @@ namespace TownOfUsReworked.Patches
             {
                 if (CustomGameOptions.MeetingColourblind && DoUndo.IsCamoed)
                 {
-                    __instance.Background.sprite = HatManager.Instance.GetNamePlateById("nameplate_NoPlate").CreateAddressableAsset().GetAsset().Image;
+                    __instance.Background.sprite = HatManager.Instance.GetNamePlateById("nameplate_NoPlate")?.CreateAddressableAsset()?.GetAsset()?.Image;
                     __instance.LevelNumberText.GetComponentInParent<SpriteRenderer>().enabled = false;
                     __instance.LevelNumberText.GetComponentInParent<SpriteRenderer>().gameObject.SetActive(false);
                     __instance.NameText.color = Palette.White;
@@ -24,7 +24,7 @@ namespace TownOfUsReworked.Patches
                 else
                 {
                     if (CustomGameOptions.WhiteNameplates)
-                        __instance.Background.sprite = HatManager.Instance.GetNamePlateById("nameplate_NoPlate").CreateAddressableAsset().GetAsset().Image;
+                        __instance.Background.sprite = HatManager.Instance.GetNamePlateById("nameplate_NoPlate")?.CreateAddressableAsset()?.GetAsset()?.Image;
 
                     if (CustomGameOptions.DisableLevels)
                     {
@@ -53,7 +53,7 @@ namespace TownOfUsReworked.Patches
             {
                 if (CustomGameOptions.MeetingColourblind && DoUndo.IsCamoed)
                 {
-                    __instance.Background.sprite = HatManager.Instance.GetNamePlateById("nameplate_NoPlate").CreateAddressableAsset().GetAsset().Image;
+                    __instance.Background.sprite = HatManager.Instance.GetNamePlateById("nameplate_NoPlate")?.CreateAddressableAsset()?.GetAsset()?.Image;
                     __instance.LevelNumberText.GetComponentInParent<SpriteRenderer>().enabled = false;
                     __instance.LevelNumberText.GetComponentInParent<SpriteRenderer>().gameObject.SetActive(false);
                     __instance.NameText.color = Palette.White;
@@ -61,7 +61,7 @@ namespace TownOfUsReworked.Patches
                 else
                 {
                     if (CustomGameOptions.WhiteNameplates)
-                        __instance.Background.sprite = HatManager.Instance.GetNamePlateById("nameplate_NoPlate").CreateAddressableAsset().GetAsset().Image;
+                        __instance.Background.sprite = HatManager.Instance.GetNamePlateById("nameplate_NoPlate")?.CreateAddressableAsset()?.GetAsset()?.Image;
 
                     if (CustomGameOptions.DisableLevels)
                     {
@@ -122,7 +122,7 @@ namespace TownOfUsReworked.Patches
                         var player = Reported.Object;
                         check = player;
                         var report = $"{player.name} was found dead last round.";
-                        HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, report);
+                        Utils.HUD.Chat.AddChat(PlayerControl.LocalPlayer, report);
 
                         yield return new WaitForSeconds(2f);
 
@@ -131,7 +131,7 @@ namespace TownOfUsReworked.Patches
                         else
                             report = "It is unknown where they died.";
 
-                        HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, report);
+                        Utils.HUD.Chat.AddChat(PlayerControl.LocalPlayer, report);
 
                         yield return new WaitForSeconds(2f);
 
@@ -150,7 +150,7 @@ namespace TownOfUsReworked.Patches
                         else
                             report = "They were killed by an unknown assailant.";
 
-                        HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, report);
+                        Utils.HUD.Chat.AddChat(PlayerControl.LocalPlayer, report);
 
                         yield return new WaitForSeconds(2f);
 
@@ -166,10 +166,10 @@ namespace TownOfUsReworked.Patches
                         else
                             report = "It is unknown what they were.";
 
-                        HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, report);
+                        Utils.HUD.Chat.AddChat(PlayerControl.LocalPlayer, report);
                     }
                     else
-                        HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, "A meeting has been called.");
+                        Utils.HUD.Chat.AddChat(PlayerControl.LocalPlayer, "A meeting has been called.");
 
                     yield return new WaitForSeconds(2f);
 
@@ -178,12 +178,12 @@ namespace TownOfUsReworked.Patches
                         if (player != check)
                         {
                             var report = $"{player.name} was found dead last round.";
-                            HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, report);
+                            Utils.HUD.Chat.AddChat(PlayerControl.LocalPlayer, report);
 
                             yield return new WaitForSeconds(2f);
 
                             report = "It is unknown where they died.";
-                            HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, report);
+                            Utils.HUD.Chat.AddChat(PlayerControl.LocalPlayer, report);
 
                             yield return new WaitForSeconds(2f);
 
@@ -203,7 +203,7 @@ namespace TownOfUsReworked.Patches
                             else
                                 report = "They were killed by an unknown assailant.";
 
-                            HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, report);
+                            Utils.HUD.Chat.AddChat(PlayerControl.LocalPlayer, report);
 
                             yield return new WaitForSeconds(2f);
 
@@ -222,7 +222,7 @@ namespace TownOfUsReworked.Patches
                             else
                                 report = $"We could not determine what {player.name} was.";
 
-                            HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, report);
+                            Utils.HUD.Chat.AddChat(PlayerControl.LocalPlayer, report);
 
                             yield return new WaitForSeconds(2f);
                         }
@@ -232,7 +232,7 @@ namespace TownOfUsReworked.Patches
                     {
                         if (player != check)
                         {
-                            HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, $"{player.name} escaped the ship last round.");
+                            Utils.HUD.Chat.AddChat(PlayerControl.LocalPlayer, $"{player.name} escaped the ship last round.");
 
                             yield return new WaitForSeconds(2f);
                         }
@@ -250,7 +250,7 @@ namespace TownOfUsReworked.Patches
                 else
                     message = "The Syndicate possesses the Chaos Drive.";
 
-                HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, message);
+                Utils.HUD.Chat.AddChat(PlayerControl.LocalPlayer, message);
 
                 yield return new WaitForSeconds(2f);
 
@@ -262,7 +262,7 @@ namespace TownOfUsReworked.Patches
                         message = "There seems to be an Overlord bent on dominating the mission! Kill them before they are successful!";
 
                     if (message != "")
-                        HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, message);
+                        Utils.HUD.Chat.AddChat(PlayerControl.LocalPlayer, message);
 
                     yield return new WaitForSeconds(2f);
                 }
@@ -277,9 +277,13 @@ namespace TownOfUsReworked.Patches
 
                         if (!knighted.Contains(id))
                         {
-                            message = $"{Utils.PlayerById(id).name} was knighted by a Monarch!";
-                            HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, message);
+                            var knight = Utils.PlayerById(id);
+                            message = $"{knight.name} was knighted by a Monarch!";
+                            Utils.HUD.Chat.AddChat(PlayerControl.LocalPlayer, message);
                             knighted.Add(id);
+
+                            if (!CustomGameOptions.KnightButton)
+                                knight.RemainingEmergencies = 0;
                         }
 
                         yield return new WaitForSeconds(2f);
@@ -1021,6 +1025,28 @@ namespace TownOfUsReworked.Patches
                         color = necromancer.SubFactionColor;
                 }
             }
+            else if (CustomPlayer.Local.Is(RoleAlignment.NeutralKill) && !ConstantVariables.DeadSeeEverything && CustomGameOptions.NKsKnow)
+            {
+                if ((player.GetRole() == CustomPlayer.Local.GetRole() && CustomGameOptions.NoSolo == NoSolo.SameNKs) || (player.GetAlignment() == CustomPlayer.Local.GetAlignment() &&
+                    CustomGameOptions.NoSolo == NoSolo.AllNKs))
+                {
+                    var role = info[0] as Role;
+                    color = role.Color;
+                    name += $"\n{role.Name}";
+                    roleRevealed = true;
+                }
+            }
+            else if (CustomPlayer.Local.Is(RoleEnum.Inspector))
+            {
+                var inspector = localinfo[0] as Inspector;
+
+                if (inspector.Inspected.Contains(player.TargetPlayerId))
+                {
+                    name += $"\n{player.GetInspResults()}";
+                    color = inspector.Color;
+                    roleRevealed = true;
+                }
+            }
 
             if (CustomPlayer.Local.IsBitten() && !ConstantVariables.DeadSeeEverything)
             {
@@ -1408,7 +1434,7 @@ namespace TownOfUsReworked.Patches
 
             if (ConstantVariables.DeadSeeEverything || player.TargetPlayerId == CustomPlayer.Local.PlayerId)
             {
-                if (info[3] != null)
+                if (info[3])
                 {
                     var objectifier = info[3] as Objectifier;
 

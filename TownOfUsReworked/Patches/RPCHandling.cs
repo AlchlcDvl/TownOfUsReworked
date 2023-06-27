@@ -28,23 +28,23 @@ namespace TownOfUsReworked.Patches
                     break;
 
                 case CustomRPC.SetRevealer:
-                    SetPostmortals.WillBeRevealer = Utils.PlayerById(reader.ReadByte());
+                    SetPostmortals.WillBeRevealers.Add(Utils.PlayerById(reader.ReadByte()));
                     break;
 
                 case CustomRPC.SetPhantom:
-                    SetPostmortals.WillBePhantom = Utils.PlayerById(reader.ReadByte());
+                    SetPostmortals.WillBePhantoms.Add(Utils.PlayerById(reader.ReadByte()));
                     break;
 
                 case CustomRPC.SetBanshee:
-                    SetPostmortals.WillBeBanshee = Utils.PlayerById(reader.ReadByte());
+                    SetPostmortals.WillBeBanshees.Add(Utils.PlayerById(reader.ReadByte()));
                     break;
 
                 case CustomRPC.SetGhoul:
-                    SetPostmortals.WillBeGhoul = Utils.PlayerById(reader.ReadByte());
+                    SetPostmortals.WillBeGhouls.Add(Utils.PlayerById(reader.ReadByte()));
                     break;
 
                 case CustomRPC.Whisper:
-                    if (!HudManager.Instance.Chat)
+                    if (!Utils.HUD.Chat)
                         break;
 
                     var whisperer = Utils.PlayerById(reader.ReadByte());
@@ -52,14 +52,14 @@ namespace TownOfUsReworked.Patches
                     var message = reader.ReadString();
 
                     if (whispered == CustomPlayer.Local)
-                        HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, $"{whisperer.name} whispers to you:{message}");
+                        Utils.HUD.Chat.AddChat(PlayerControl.LocalPlayer, $"{whisperer.name} whispers to you:{message}");
                     else if ((CustomPlayer.Local.Is(RoleEnum.Blackmailer) && CustomGameOptions.WhispersNotPrivate) || ConstantVariables.DeadSeeEverything ||
                         (CustomPlayer.Local.Is(RoleEnum.Silencer) && CustomGameOptions.WhispersNotPrivateSilencer))
                     {
-                        HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, $"{whisperer.name} is whispering to {whispered.name}: {message}");
+                        Utils.HUD.Chat.AddChat(PlayerControl.LocalPlayer, $"{whisperer.name} is whispering to {whispered.name}: {message}");
                     }
                     else if (CustomGameOptions.WhispersAnnouncement)
-                        HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, $"{whisperer.name} is whispering to {whispered.name}.");
+                        Utils.HUD.Chat.AddChat(PlayerControl.LocalPlayer, $"{whisperer.name} is whispering to {whispered.name}.");
 
                     break;
 
@@ -166,7 +166,7 @@ namespace TownOfUsReworked.Patches
                     break;
 
                 case CustomRPC.SyncCustomSettings:
-                    RPC.ReceiveRPC(reader);
+                    RPC.ReceiveOptionRPC(reader);
                     break;
 
                 case CustomRPC.Notify:
@@ -271,6 +271,10 @@ namespace TownOfUsReworked.Patches
                         case TurnRPC.TurnSeer:
                             Role.GetRole<Mystic>(Utils.PlayerById(reader.ReadByte())).TurnSeer();
                             break;
+
+                        case TurnRPC.TurnRole:
+                            Role.GetRole<Actor>(Utils.PlayerById(reader.ReadByte())).TurnRole();
+                            break;
                     }
 
                     break;
@@ -297,29 +301,7 @@ namespace TownOfUsReworked.Patches
                             break;
 
                         case TargetRPC.SetActPretendList:
-                            Role.GetRole<Actor>(Utils.PlayerById(reader.ReadByte())).PretendRoles = (InspectorResults)reader.ReadByte();
-                            break;
-
-                        case TargetRPC.SetGoodRecruit:
-                            var jackal = Utils.PlayerById(reader.ReadByte());
-                            var goodRecruit = Utils.PlayerById(reader.ReadByte());
-                            var jackalRole = Role.GetRole<Jackal>(jackal);
-                            jackalRole.GoodRecruit = goodRecruit;
-                            jackalRole.Recruited.Add(goodRecruit.PlayerId);
-                            Role.GetRole(goodRecruit).SubFaction = SubFaction.Cabal;
-                            Role.GetRole(goodRecruit).SubFactionColor = Colors.Cabal;
-                            Role.GetRole(goodRecruit).IsRecruit = true;
-                            break;
-
-                        case TargetRPC.SetEvilRecruit:
-                            var jackal2 = Utils.PlayerById(reader.ReadByte());
-                            var evilRecruit = Utils.PlayerById(reader.ReadByte());
-                            var jackalRole2 = Role.GetRole<Jackal>(jackal2);
-                            jackalRole2.EvilRecruit = evilRecruit;
-                            jackalRole2.Recruited.Add(evilRecruit.PlayerId);
-                            Role.GetRole(evilRecruit).SubFactionColor = Colors.Cabal;
-                            Role.GetRole(evilRecruit).SubFaction = SubFaction.Cabal;
-                            Role.GetRole(evilRecruit).IsRecruit = true;
+                            Role.GetRole<Actor>(Utils.PlayerById(reader.ReadByte())).TargetRole = Role.GetRole(Utils.PlayerById(reader.ReadByte()));
                             break;
 
                         case TargetRPC.SetAlliedFaction:
@@ -868,7 +850,7 @@ namespace TownOfUsReworked.Patches
                                 MeetingRoomManager.Instance.reporter = buttonBarry;
                                 MeetingRoomManager.Instance.target = null;
                                 AmongUsClient.Instance.DisconnectHandlers.AddUnique(MeetingRoomManager.Instance.Cast<IDisconnectHandler>());
-                                HudManager.Instance.OpenMeetingRoom(buttonBarry);
+                                Utils.HUD.OpenMeetingRoom(buttonBarry);
                                 buttonBarry.RpcStartMeeting(null);
                             }
 

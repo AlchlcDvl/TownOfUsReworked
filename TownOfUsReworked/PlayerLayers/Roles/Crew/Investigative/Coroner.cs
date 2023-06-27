@@ -155,8 +155,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 return;
 
             //Only Coroner can see this
-            if (HudManager.Instance)
-                HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, reportMsg);
+            if (Utils.HUD)
+                Utils.HUD.Chat.AddChat(PlayerControl.LocalPlayer, reportMsg);
         }
     }
 }

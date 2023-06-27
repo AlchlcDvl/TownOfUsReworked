@@ -32,7 +32,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             TimeRemaining -= Time.deltaTime;
             Utils.Camouflage();
 
-            if (MeetingHud.Instance)
+            if (Utils.Meeting)
                 TimeRemaining = 0f;
         }
 

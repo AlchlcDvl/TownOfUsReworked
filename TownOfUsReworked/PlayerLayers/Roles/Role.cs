@@ -111,9 +111,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public bool IsIntDefect;
         public bool IsSynDefect;
         public bool IsNeutDefect;
-        public bool Faithful => !IsRecruit && !IsResurrected && !IsPersuaded && !IsBitten && !IsIntAlly && !IsIntFanatic && !IsIntTraitor && !IsSynAlly && !IsSynTraitor && !IsSynFanatic &&
-            !IsCrewAlly && !IsCrewDefect && !IsIntDefect && !IsSynDefect && !IsNeutDefect && !Player.Is(ObjectifierEnum.Corrupted) && !Player.Is(ObjectifierEnum.Mafia) &&
-            !Player.IsWinningRival() && !Player.HasAliveLover();
+        public bool Faithful => !IsRecruit && !IsResurrected && !IsPersuaded && !IsBitten && !Player.Is(ObjectifierEnum.Allied) && !IsIntFanatic && !IsIntTraitor && !IsSynTraitor &&
+            !IsSynFanatic && !IsCrewDefect && !IsIntDefect && !IsSynDefect && !IsNeutDefect && !Player.Is(ObjectifierEnum.Corrupted) && !Player.Is(ObjectifierEnum.Mafia) &&
+            !Player.IsWinningRival() && !Player.HasAliveLover() && BaseFaction == Faction;
 
         public override void UpdateHud(HudManager __instance)
         {
@@ -123,8 +123,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             __instance.PetButton.buttonLabelText.SetOutlineColor(FactionColor);
             __instance.ImpostorVentButton.buttonLabelText.SetOutlineColor(FactionColor);
             __instance.SabotageButton.buttonLabelText.SetOutlineColor(FactionColor);
-            __instance.SabotageButton.gameObject.SetActive(BaseFaction == Faction && !MeetingHud.Instance && CustomGameOptions.IntrudersCanSabotage && (Faction == Faction.Intruder ||
-                (Faction == Faction.Syndicate && CustomGameOptions.AltImps)));
+            __instance.SabotageButton.gameObject.SetActive(!Utils.Meeting && CustomGameOptions.IntrudersCanSabotage && (Faction == Faction.Intruder || (Faction ==
+                Faction.Syndicate && CustomGameOptions.AltImps)));
             Player.RegenTask();
 
             foreach (var pair in DeadArrows)
@@ -167,7 +167,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     continue;
                 }
 
-                pair.Value?.Update(player.Data.IsDead ? player.transform.position : body.transform.position);
+                pair.Value?.Update(player.Data.IsDead ? body.transform.position  : player.transform.position);
             }
 
             BombKillButton.Update("KILL", true, Bombed);
@@ -443,7 +443,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             foreach (var role2 in GetRoles<Retributionist>(RoleEnum.Retributionist))
             {
-                if (!role2.IsMedic)
+                if (!role2.IsMedic || role2.ShieldedPlayer == null)
                     continue;
 
                 if (role2.ShieldedPlayer.PlayerId == playerId)
@@ -456,6 +456,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             foreach (var role2 in GetRoles<Medic>(RoleEnum.Medic))
             {
+                if (role2.ShieldedPlayer == null)
+                    continue;
+
                 if (role2.ShieldedPlayer.PlayerId == playerId)
                 {
                     role2.ShieldedPlayer = null;

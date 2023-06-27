@@ -34,10 +34,10 @@ namespace TownOfUsReworked.Patches
             deltaTime += (Time.deltaTime - deltaTime) * 0.1f;
             var fps = Mathf.Ceil(1.0f / deltaTime);
 
-            __instance.text.text = $"Ping: {AmongUsClient.Instance.Ping}ms FPS: {fps}\n" +
-                "<size=80%><b><color=#00FF00FF>TownOfUs</color><color=#FF00FFFF>Reworked</color></b>\n" +
-                $"{(!MeetingHud.Instance ? $"<color=#0000FFFF>{TownOfUsReworked.VersionFinal}</color>\n" : "")}" +
-                $"{(!MeetingHud.Instance ? "<color=#C50000FF>By: AlchlcDvl</color>\n" : "")}" + (TownOfUsReworked.MCIActive ? (ConstantVariables.IsLobby ?
+            __instance.text.text = $"<size=80%>Ping: {AmongUsClient.Instance.Ping}ms FPS: {fps}\n" +
+                "<b><color=#00FF00FF>TownOfUs</color><color=#FF00FFFF>Reworked</color></b>\n" +
+                $"{(!Utils.Meeting ? $"<color=#0000FFFF>{TownOfUsReworked.VersionFinal}</color>\n" : "")}" +
+                $"{(!Utils.Meeting ? "<color=#C50000FF>By: AlchlcDvl</color>\n" : "")}" + (TownOfUsReworked.MCIActive ? (ConstantVariables.IsLobby ?
                 $"Lobby {(TownOfUsReworked.LobbyCapped ? "C" : "Unc")}apped\nRobots{(TownOfUsReworked.Persistence ? "" : " Don't")} Persist" : "") : "") + "</size>";
         }
 

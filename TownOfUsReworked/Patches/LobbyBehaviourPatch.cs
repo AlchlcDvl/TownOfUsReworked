@@ -6,7 +6,7 @@
         public static void Postfix()
         {
             //Fix Grenadier and screwed blind in lobby
-            HudManager.Instance.FullScreen.gameObject.active = false;
+            Utils.HUD.FullScreen.gameObject.active = false;
             GameSettings.SettingsPage = 0;
             RoleGen.ResetEverything();
             PlayerLayer.DeleteAll();

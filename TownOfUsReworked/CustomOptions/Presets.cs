@@ -139,6 +139,12 @@ namespace TownOfUsReworked.CustomOptions
                         case CustomOptionType.String:
                             option.Set(int.Parse(value));
                             break;
+
+                        case CustomOptionType.Layers:
+                            var value2 = splitText[0];
+                            splitText.RemoveAt(0);
+                            option.Set(int.Parse(value), int.Parse(value2));
+                            break;
                     }
                 }
                 catch
@@ -147,7 +153,7 @@ namespace TownOfUsReworked.CustomOptions
                 }
             }
 
-            RPC.SendRPC();
+            RPC.SendOptionRPC();
 
             if (!inLobby)
                 Cancel(FlashGreen);

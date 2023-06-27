@@ -9,17 +9,9 @@ namespace TownOfUsReworked.Patches
 
         public static void Postfix(MedScanMinigame __instance)
         {
-            var scale = 1f;
-
-            //Update medical details for Giant and Dwarf modifiers based on game options
-            if (CustomPlayer.Local.Is(ModifierEnum.Giant))
-                scale = CustomGameOptions.GiantScale;
-            else if (CustomPlayer.Local.Is(ModifierEnum.Dwarf))
-                scale = CustomGameOptions.DwarfScale;
-
-            var newHeightFeet = oldHeightFeet * scale;
-            var newHeightInch = oldHeightInch * scale;
-            var newWeight = oldWeight * scale;
+            var newHeightFeet = oldHeightFeet * CustomPlayer.Local.GetModifiedSize();
+            var newHeightInch = oldHeightInch * CustomPlayer.Local.GetModifiedSize();
+            var newWeight = oldWeight * CustomPlayer.Local.GetModifiedSize();
 
             while (newHeightFeet.IsInRange(0, 1))
             {

@@ -5,7 +5,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public DateTime LastExamined;
         public CustomButton ExamineButton;
         private static float Time2;
-        private static int Even;
 
         public Detective(PlayerControl player) : base(player)
         {
@@ -35,7 +34,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void OnMeetingStart(MeetingHud __instance)
         {
             base.OnMeetingStart(__instance);
-            Footprint.DestroyAll(this);
+            AllPrints.ForEach(x => x.Destroy());
+            AllPrints.Clear();
         }
 
         private static Vector2 Position(PlayerControl player) => player.GetTruePosition() + new Vector2(0, 0.366667f);
@@ -81,7 +81,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 if (Time2 >= CustomGameOptions.FootprintInterval)
                 {
                     Time2 -= CustomGameOptions.FootprintInterval;
-                    Even++;
 
                     foreach (var player in CustomPlayer.AllPlayers)
                     {
@@ -89,7 +88,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                             continue;
 
                         if (!AllPrints.Any(print => Vector3.Distance(print.Position, Position(player)) < 0.5f && print.Color.a > 0.5 && print.PlayerId == player.PlayerId))
-                            _ = new Footprint(player, this, Even % 2 == 0);
+                            AllPrints.Add(new(player));
                     }
 
                     for (var i = 0; i < AllPrints.Count; i++)

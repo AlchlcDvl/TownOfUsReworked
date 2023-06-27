@@ -73,7 +73,7 @@
             HackEnabled = true;
             TimeRemaining -= Time.deltaTime;
 
-            if (MeetingHud.Instance || IsDead || HackTarget.Data.IsDead || HackTarget.Data.Disconnected)
+            if (Utils.Meeting || IsDead || HackTarget.Data.IsDead || HackTarget.Data.Disconnected)
                 TimeRemaining = 0f;
         }
 
@@ -83,7 +83,7 @@
             Utils.Morph(Player, MimicTarget);
             MimicEnabled = true;
 
-            if (IsDead || MeetingHud.Instance)
+            if (IsDead || Utils.Meeting)
                 TimeRemaining2 = 0f;
         }
 

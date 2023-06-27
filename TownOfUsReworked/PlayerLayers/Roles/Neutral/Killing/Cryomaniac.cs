@@ -19,7 +19,7 @@
             Name = "Cryomaniac";
             StartText = () => "Who Likes Ice Cream?";
             AbilitiesText = () => "- You can douse players in coolant\n- Doused players can be frozen, which kills all of them at once at the start of the next meeting\n- People who " +
-                "interact with you will also get doused";
+                $"interact with you will also get doused{(LastKiller ? "\n- You can kill normally" : "")}";
             Objectives = () => "- Freeze anyone who can oppose you";
             Color = CustomGameOptions.CustomNeutColors ? Colors.Cryomaniac : Colors.Neutral;
             RoleType = RoleEnum.Cryomaniac;
@@ -103,7 +103,7 @@
             }
         }
 
-        public bool Exception(PlayerControl player) => !Doused.Contains(player.PlayerId) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction
+        public bool Exception(PlayerControl player) => Doused.Contains(player.PlayerId) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction
             is Faction.Intruder or Faction.Syndicate) || player == Player.GetOtherLover() || player == Player.GetOtherRival() || (player.Is(ObjectifierEnum.Mafia) &&
             Player.Is(ObjectifierEnum.Mafia));
 

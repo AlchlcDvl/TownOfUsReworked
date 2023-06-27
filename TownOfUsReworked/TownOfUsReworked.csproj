@@ -3,7 +3,7 @@
         <AssemblyName>Reworked</AssemblyName>
         <RootNamespace>TownOfUsReworked</RootNamespace>
         <TargetFramework>net6.0</TargetFramework>
-        <Version>0.4.0.0</Version>
+        <Version>0.4.1.0</Version>
         <DebugType>embedded</DebugType>
         <LangVersion>latest</LangVersion>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -11,6 +11,8 @@
         <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
         <EnableDynamicLoading>true</EnableDynamicLoading>
         <Configurations>Debug;Release</Configurations>
+        <RepositoryType>git</RepositoryType>
+        <RepositoryUrl>https://github.com/AlchlcDvl/TownOfUsReworked.git</RepositoryUrl>
     </PropertyGroup>
 
     <ItemGroup>
@@ -25,12 +27,9 @@
 
     <ItemGroup>
         <EmbeddedResource Include="Resources\*" />
-        <!-- <EmbeddedResource Include="Resources\Sounds\**" /> !-->
         <EmbeddedResource Include="Resources\Misc\**" />
         <EmbeddedResource Include="Resources\Buttons\**" />
         <EmbeddedResource Include="Resources\Presets\**" />
-        <!-- <EmbeddedResource Include="Resources\Languages\**" /> !-->
         <EmbeddedResource Include="Resources\Portal\**" />
-        <EmbeddedResource Include="Resources\Icons\**" />
     </ItemGroup>
 </Project>

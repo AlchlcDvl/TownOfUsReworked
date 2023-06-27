@@ -21,9 +21,9 @@ namespace TownOfUsReworked.Custom
         public delegate void Click();
         public delegate bool Exclude(PlayerControl player);
         private bool SetAliveActive => !Owner.IsDead && Owner.Player.Is(Owner.Type, Owner.LayerType) && ConstantVariables.IsRoaming && Owner.Local &&
-            (HudManager.Instance.UseButton.isActiveAndEnabled || HudManager.Instance.PetButton.isActiveAndEnabled);
+            (Utils.HUD.UseButton.isActiveAndEnabled || Utils.HUD.PetButton.isActiveAndEnabled);
         private bool SetDeadActive => Owner.IsDead && Owner.Player.Is(Owner.Type, Owner.LayerType) && ConstantVariables.IsRoaming && Owner.Local && PostDeath &&
-            (HudManager.Instance.UseButton.isActiveAndEnabled || HudManager.Instance.PetButton.isActiveAndEnabled);
+            (Utils.HUD.UseButton.isActiveAndEnabled || Utils.HUD.PetButton.isActiveAndEnabled);
 
         public CustomButton(PlayerLayer owner, string button, AbilityTypes type, string keybind, Click click, Exclude exception, bool hasUses = false, bool postDeath = false)
         {
@@ -48,8 +48,8 @@ namespace TownOfUsReworked.Custom
 
         private static AbilityButton InstantiateButton()
         {
-            var button = UObject.Instantiate(HudManager.Instance.AbilityButton, HudManager.Instance.AbilityButton.transform.parent);
-            button.buttonLabelText.fontSharedMaterial = HudManager.Instance.SabotageButton.buttonLabelText.fontSharedMaterial;
+            var button = UObject.Instantiate(Utils.HUD.AbilityButton, Utils.HUD.AbilityButton.transform.parent);
+            button.buttonLabelText.fontSharedMaterial = Utils.HUD.SabotageButton.buttonLabelText.fontSharedMaterial;
             button.graphic.enabled = true;
             button.buttonLabelText.enabled = true;
             button.usesRemainingText.enabled = true;
@@ -115,19 +115,16 @@ namespace TownOfUsReworked.Custom
 
             if (TargetBody != null && !Base.isCoolingDown && condition && !Owner.Player.CannotUse())
             {
-                foreach (var component in TargetBody.bodyRenderers)
-                {
-                    component.material.SetFloat("_Outline", 1f);
-                    component.material.SetColor("_OutlineColor", Owner.Color);
-                }
-
+                var component = TargetBody.bodyRenderers.FirstOrDefault();
+                component.material.SetFloat("_Outline", 1f);
+                component.material.SetColor("_OutlineColor", Owner.Color);
                 Base?.SetEnabled();
             }
             else
                 Base?.SetDisabled();
         }
 
-        public void SetVentActive(bool usable, bool condition)
+        public void SetVentTarget(bool usable, bool condition)
         {
             if ((Owner.IsDead && !PostDeath) || !usable)
             {
@@ -164,7 +161,7 @@ namespace TownOfUsReworked.Custom
 
         public void Update(string label, float timer, float maxTimer, int uses, bool effectActive, float effectTimer, float maxDuration, bool condition = true, bool usable = true)
         {
-            if (!Owner.Local || ConstantVariables.IsLobby || (HasUses && uses <= 0) || MeetingHud.Instance || ConstantVariables.Inactive || !usable || (!PostDeath && Owner.IsDead))
+            if (!Owner.Local || ConstantVariables.IsLobby || (HasUses && uses <= 0) || Utils.Meeting || ConstantVariables.Inactive || !usable || (!PostDeath && Owner.IsDead))
             {
                 Disable();
                 return;
@@ -176,6 +173,8 @@ namespace TownOfUsReworked.Custom
                 SetDeadTarget(usable, condition);
             else if (Type == AbilityTypes.Effect)
                 SetEffectTarget(effectActive, condition);
+            else if (Type == AbilityTypes.Vent)
+                SetVentTarget(usable, condition);
 
             if (!Block && Base.isActiveAndEnabled)
             {
@@ -195,7 +194,8 @@ namespace TownOfUsReworked.Custom
             Base.commsDown.SetActive(false);
             Base.buttonLabelText.SetOutlineColor(Owner.Color);
             Base.gameObject.SetActive(PostDeath ? SetDeadActive : SetAliveActive);
-            Clickable = Base && !effectActive && usable && condition && Base.ButtonUsable() && !(HasUses && uses <= 0) && !MeetingHud.Instance && !Owner.IsBlocked && Owner.Player.CanMove;
+            Clickable = Base && !effectActive && usable && condition && Base.ButtonUsable() && !(HasUses && uses <= 0) && !Utils.Meeting && !Owner.IsBlocked && Owner.Player.CanMove &&
+                Base.isActiveAndEnabled;
 
             if (effectActive)
                 Base.SetFillUp(effectTimer, maxDuration);
@@ -223,7 +223,39 @@ namespace TownOfUsReworked.Custom
         public void Update(string label, float timer, float maxTimer, bool effectActive, float effectTimer, float maxDuration, bool condition = true, bool usable = true) => Update(label,
             timer, maxTimer, 0, effectActive, effectTimer, maxDuration, condition, usable);
 
-        public void Disable() => Base?.gameObject?.SetActive(false);
+        public void Disable()
+        {
+            Base?.gameObject?.SetActive(false);
+
+            switch (Type)
+            {
+                case AbilityTypes.Direct:
+                    TargetPlayer?.MyRend().material.SetFloat("_Outline", 0f);
+                    TargetPlayer = null;
+                    break;
+
+                case AbilityTypes.Dead:
+                    if (TargetBody != null)
+                    {
+                        var component = TargetBody.bodyRenderers.FirstOrDefault();
+                        component.material.SetFloat("_Outline", 1f);
+                        component.material.SetColor("_OutlineColor", Owner.Color);
+                    }
+
+                    TargetBody = null;
+                    break;
+
+                case AbilityTypes.Vent:
+                    if (TargetVent != null)
+                    {
+                        TargetVent.myRend.material.SetFloat("_Outline", 0f);
+                        TargetVent.myRend.material.SetFloat("_AddColor", 0f);
+                    }
+
+                    TargetVent = null;
+                    break;
+            }
+        }
 
         public void Enable() => Base?.gameObject?.SetActive(true);
 
@@ -233,6 +265,7 @@ namespace TownOfUsReworked.Custom
                 return;
 
             Base?.SetCoolDown(0, 0);
+            Base?.SetDisabled();
             Base?.buttonLabelText?.gameObject?.SetActive(false);
             Base?.gameObject?.SetActive(false);
             Base?.commsDown?.SetActive(false);

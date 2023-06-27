@@ -66,11 +66,11 @@
                 GenNumber(voteArea);
 
             if (BuggedPlayers.Count == 0)
-                HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, "No one triggered your bugs.");
+                Utils.HUD.Chat.AddChat(PlayerControl.LocalPlayer, "No one triggered your bugs.");
             else if (BuggedPlayers.Count < CustomGameOptions.MinAmountOfPlayersInBug)
-                HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, "Not enough players triggered your bugs.");
+                Utils.HUD.Chat.AddChat(PlayerControl.LocalPlayer, "Not enough players triggered your bugs.");
             else if (BuggedPlayers.Count == 1)
-                HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, $"A {BuggedPlayers[0]} triggered your bug.");
+                Utils.HUD.Chat.AddChat(PlayerControl.LocalPlayer, $"A {BuggedPlayers[0]} triggered your bug.");
             else
             {
                 var message = "The following roles triggered your bug: ";
@@ -87,7 +87,7 @@
                     position++;
                 }
 
-                HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, message);
+                Utils.HUD.Chat.AddChat(PlayerControl.LocalPlayer, message);
             }
         }
 

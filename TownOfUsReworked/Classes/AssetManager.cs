@@ -9,6 +9,7 @@ namespace TownOfUsReworked.Classes
         private static readonly Dictionary<string, float> Sizes = new();
         //private static readonly string[] TranslationKeys = Utils.CreateText("Keys", "Languages").Split("\n");
         public readonly static Sprite[] PortalAnimation = new Sprite[205];
+        //public readonly static Dictionary<string, Material> Materials = new();
         public readonly static Dictionary<string, string> Presets = new()
         {
             { "Casual", Utils.CreateText("Casual", "Presets") },
@@ -30,6 +31,7 @@ namespace TownOfUsReworked.Classes
             { 9, TryLoadingSlotSettings(9) },
             { 10, TryLoadingSlotSettings(10) }
         };
+        //public readonly static Dictionary<string, string> MaterialNames = new() { {"Vision", "GlitchedPlayer"} };
 
         public static string TryLoadingDataPreset(string itemName)
         {
@@ -68,10 +70,18 @@ namespace TownOfUsReworked.Classes
                 return SoundEffects[path];
         }
 
-        public static Sprite GetSprite(string path)
+        /*public static Material GetMaterial(string path)
         {
-            return !Sprites.ContainsKey(path) ? MeetingHud.Instance ? Sprites["MeetingPlaceholder"] : Sprites["Placeholder"] : Sprites[path];
-        }
+            if (!Materials.ContainsKey(path))
+            {
+                Utils.LogSomething($"{path} does not exist");
+                return null;
+            }
+            else
+                return Materials[path];
+        }*/
+
+        public static Sprite GetSprite(string path) => !Sprites.ContainsKey(path) ? Utils.Meeting ? Sprites["MeetingPlaceholder"] : Sprites["Placeholder"] : Sprites[path];
 
         /*public static string Translate(string id)
         {
@@ -151,7 +161,7 @@ namespace TownOfUsReworked.Classes
             }
         }
 
-        public static AudioClip CreateAudio(string path)
+        /*public static AudioClip CreateAudio(string path)
         {
             try
             {
@@ -173,14 +183,14 @@ namespace TownOfUsReworked.Classes
                 Utils.LogSomething($"Error loading {path}");
                 return null;
             }
-        }
+        }*/
 
         public static Sprite CreateSprite(string name)
         {
             try
             {
                 var sname = name.Replace(".png", "").Replace(TownOfUsReworked.Buttons, "").Replace(TownOfUsReworked.Misc, "").Replace(TownOfUsReworked.Portal, "")
-                    .Replace(TownOfUsReworked.Icons, "");
+                    /*.Replace(TownOfUsReworked.Icons, "")*/;
                 var tex = LoadResourceTexture(name);
                 var sprite = Sprite.Create(tex, new(0, 0, tex.width, tex.height), new(0.5f, 0.5f), Sizes[sname]);
                 sprite.name = sname;
@@ -195,6 +205,24 @@ namespace TownOfUsReworked.Classes
             }
         }
 
+        /*public static Material CreateMaterial(string path, string materialName)
+        {
+            try
+            {
+                var stream = TownOfUsReworked.Executing.GetManifestResourceStream(path);
+                var assets = stream.ReadFully();
+                var bundle = AssetBundle.LoadFromMemory(assets);
+                var mat = bundle.LoadAsset<Material>(materialName).DontUnload();
+                mat.name = materialName;
+                return mat;
+            }
+            catch
+            {
+                Utils.LogSomething("Unable to load material: " + path);
+                return null;
+            }
+        }*/
+
         public static void Load()
         {
             SoundEffects.Clear();
@@ -207,7 +235,7 @@ namespace TownOfUsReworked.Classes
                 if (resourceName.EndsWith(".png"))
                 {
                     var name = resourceName.Replace(".png", "").Replace(TownOfUsReworked.Buttons, "").Replace(TownOfUsReworked.Misc, "").Replace(TownOfUsReworked.Portal, "")
-                        .Replace(TownOfUsReworked.Icons, "");
+                        /*.Replace(TownOfUsReworked.Icons, "")*/;
 
                     if (name is "CurrentSettings" or "Help" or "Plus" or "Minus")
                         Sizes.Add(name, 180);
@@ -222,10 +250,10 @@ namespace TownOfUsReworked.Classes
 
             foreach (var resourceName in TownOfUsReworked.Assembly.GetManifestResourceNames())
             {
-                if ((resourceName.StartsWith(TownOfUsReworked.Buttons) || resourceName.StartsWith(TownOfUsReworked.Misc) || resourceName.StartsWith(TownOfUsReworked.Icons)) &&
+                if ((resourceName.StartsWith(TownOfUsReworked.Buttons) || resourceName.StartsWith(TownOfUsReworked.Misc)/* || resourceName.StartsWith(TownOfUsReworked.Icons)*/) &&
                     resourceName.EndsWith(".png"))
                 {
-                    var name = resourceName.Replace(".png", "").Replace(TownOfUsReworked.Buttons, "").Replace(TownOfUsReworked.Misc, "").Replace(TownOfUsReworked.Icons, "");
+                    var name = resourceName.Replace(".png", "").Replace(TownOfUsReworked.Buttons, "").Replace(TownOfUsReworked.Misc, "")/*.Replace(TownOfUsReworked.Icons, "")*/;
                     Sprites.Add(name, CreateSprite(resourceName));
                 }
                 else if (resourceName.StartsWith(TownOfUsReworked.Portal) && resourceName.EndsWith(".png"))
@@ -235,11 +263,16 @@ namespace TownOfUsReworked.Classes
 
                     position2++;
                 }
+                /*else if (resourceName.StartsWith(TownOfUsReworked.Materials))
+                {
+                    var name = resourceName.Replace(TownOfUsReworked.Materials, "");
+                    Materials.Add(name, CreateMaterial(resourceName, MaterialNames[name]));
+                }
                 else if (resourceName.StartsWith(TownOfUsReworked.Sounds) && resourceName.EndsWith(".raw"))
                 {
                     var name = resourceName.Replace(TownOfUsReworked.Sounds, "").Replace(".raw", "");
                     SoundEffects.Add(name, CreateAudio(resourceName));
-                }
+                }*/
             }
 
             /*var translation = Utils.CreateText(GetLanguage(), "Languages").Split("\n");

@@ -25,7 +25,7 @@
                         if (!player.Data.PlayerName.Contains("Robot"))
                             continue;
 
-                        var rand = new SRandom().Next(0, __instance.Locations.Count);
+                        var rand = URandom.Range(0, __instance.Locations.Count);
                         player.gameObject.SetActive(true);
                         player.NetTransform.RpcSnapTo(__instance.Locations[rand].Location);
                     }

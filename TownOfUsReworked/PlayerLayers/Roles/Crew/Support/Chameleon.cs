@@ -40,7 +40,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             TimeRemaining -= Time.deltaTime;
             Utils.Invis(Player);
 
-            if (MeetingHud.Instance || IsDead)
+            if (Utils.Meeting || IsDead)
                 TimeRemaining = 0f;
         }
 

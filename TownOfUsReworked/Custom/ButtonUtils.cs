@@ -1052,6 +1052,6 @@ namespace TownOfUsReworked.Custom
             }
         }
 
-        public static bool ButtonUsable(this ActionButton button) => button.isActiveAndEnabled && !button.isCoolingDown && !CustomPlayer.Local.CannotUse() && !MeetingHud.Instance;
+        public static bool ButtonUsable(this ActionButton button) => button.isActiveAndEnabled && !button.isCoolingDown && !CustomPlayer.Local.CannotUse() && !Utils.Meeting;
     }
 }

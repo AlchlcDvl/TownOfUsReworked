@@ -72,25 +72,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 else if (interact[1])
                     LastSpelled.AddSeconds(CustomGameOptions.ProtectKCReset);
             }
-
-            if (Spelled.Count >= CustomPlayer.AllPlayers.Count(x => !x.Data.IsDead && !x.Data.Disconnected && !x.Is(Faction)))
-            {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-
-                if (Faction == Faction.Intruder)
-                {
-                    writer.Write((byte)WinLoseRPC.IntruderWin);
-                    IntruderWin = true;
-                }
-                else if (Faction == Faction.Syndicate)
-                {
-                    writer.Write((byte)WinLoseRPC.SyndicateWin);
-                    SyndicateWin = true;
-                }
-
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
-            }
         }
 
         public bool Exception1(PlayerControl player) => Spelled.Contains(player.PlayerId) || player.Is(Faction);

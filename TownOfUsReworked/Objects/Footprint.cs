@@ -10,29 +10,24 @@ namespace TownOfUsReworked.Objects
         private readonly Vector2 Velocity;
         public Color Color;
         public Vector3 Position;
-        public Role Role;
-        public bool Even;
-        public static bool Grey => CustomGameOptions.AnonymousFootPrint || DoUndo.IsCamoed;
+        private static bool Grey => CustomGameOptions.AnonymousFootPrint || DoUndo.IsCamoed;
+        public readonly static Dictionary<PlayerControl, int> OddEven = new();
+        private readonly static List<Footprint> AllPrints = new();
 
-        public Footprint(PlayerControl player, Role role, bool even)
+        public Footprint(PlayerControl player)
         {
-            Role = role;
             Position = player.transform.position;
             Velocity = player.gameObject.GetComponent<Rigidbody2D>().velocity;
             Player = player;
             Time2 = (int)Time.time;
             Color = Color.black;
             Start();
-            Even = even;
-            role.AllPrints.Add(this);
-        }
+            AllPrints.Add(this);
 
-        public static void DestroyAll(Role role)
-        {
-            foreach (var print in role.AllPrints)
-                print.Destroy();
-
-            role.AllPrints.Clear();
+            if (!OddEven.ContainsKey(Player))
+                OddEven.Add(Player, 0);
+            else
+                OddEven[Player]++;
         }
 
         private void Start()
@@ -40,18 +35,23 @@ namespace TownOfUsReworked.Objects
             GObject = new("Footprint") { layer = 11 };
             GObject.AddSubmergedComponent(ModCompatibility.ElevatorMover);
             GObject.transform.position = Position;
+            GObject.transform.localScale *= Player.GetModifiedSize();
             GObject.transform.Rotate(Vector3.forward * Vector2.SignedAngle(Vector2.up, Velocity));
             GObject.transform.SetParent(Player.transform.parent);
+            GObject.SetActive(true);
 
             Sprite = GObject.AddComponent<SpriteRenderer>();
-            Sprite.sprite = Even ? AssetManager.GetSprite("FootprintLeft") : AssetManager.GetSprite("FootprintRight");
+            Sprite.sprite = OddEven[Player] % 2 == 0 ? AssetManager.GetSprite("FootprintLeft") : AssetManager.GetSprite("FootprintRight");
             Sprite.color = Color;
-            GObject.transform.localScale *= Player.GetModifiedSize();
-
-            GObject.SetActive(true);
         }
 
-        private void Destroy() => GObject.Destroy();
+        public void Destroy(bool remove = true)
+        {
+            GObject.Destroy();
+
+            if (remove)
+                AllPrints.Remove(this);
+        }
 
         public bool Update()
         {
@@ -68,6 +68,7 @@ namespace TownOfUsReworked.Objects
             if (Time2 + CustomGameOptions.FootprintDuration < currentTime)
             {
                 Destroy();
+                Role.AllRoles.ForEach(x => x.AllPrints.Remove(this));
                 return true;
             }
             else

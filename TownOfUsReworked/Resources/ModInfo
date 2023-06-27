@@ -5,31 +5,29 @@ Town Of Us Reworked is essentially a weird mishmash of code from Town Of Us Reac
 Now that you know the basic info, if you want to know more try using the other info commands, visiting the GitHub page or joining my discord. Happy ejections!
 
 Changelog
-- Update: Merged changes from v4.0.6 of ToU-R
-- Update: Updated the mod to v2023.6.13
-- Update: Updated BepInEx to be.670
-- Update: Updated Reactor to 2.2.0-ci.234
-- Addition: Added the "Avoid Neutral Kingmakers" option which disables Survivors and Guardian Angels and kills off any Neutral (Evil) role after finishing their objective
-- Recode: Role generation and Chat commands have been recoded
-- Recode: Roleblocks have also received a slight recode
-- Buff: Coroner reference bodies now stack on top of each other and there is no longer a compare limit
-- Buff: Executioners, Guessers and Guardian Angels can pick their own targets within the first 2 rounds (to avoid having their chosen targets die early)
-- Nerf: Medics who haven't shielded yet can no longer shield revealed Mayors and Dictators
-- Improvement: Improved how players and chat messages are handled
-- Improvement: Added meeting compatibility to MCI so that switching between players during meetings is possible
-- Improvement: Disconnected players are now also added to the end game summary
-- Visual Fix: Fixed player visors sometimes being blue in color in meetings
-- Visual Fix: Fixed the Use button inverting colors when near a non-task interactable
-- Visual Fix: Fixed the intro fade sometimes disappearing
-- Bug Fix: Fixed shields not breaking properly
-- Bug Fix: Fixed colors occasionally bugging out
-- Bug Fix: Fixed Janitor and Godfather-Janitors teleporting bodies when dragging them
-- Bug Fix: Fixed incorrect guessing results being displayed
-- Bug Fix: Fixed players being warped into walls
-- Role Fix: Fixed Amnesiac, Shifter and Thief role changing bugging out buttons
-- Role Fix: Fixed Godfather and Rebel being able promote those they shouldn't
-- Temporary Removal: Custom cosmetics have been removed on account of the update, they'll return when I can fix the bugs relating to them
-- Removal: Removed the "Min" setting for all role alignments, they bug out role gen a lot so only the min setting for the factions and layers exist
+- Update: Updated MCI
+- Addition: A lot more buttons have their sprites now
+- Addition: There can now be multiple Revealers, Banshees, Ghouls and Phantoms
+- Buff: Actor now becomes a role from the role list they were supposed to be guessed as when all guessing capable players have died
+- Improvement: Layer count and chance settings have been merged into one setting type
+- Critical Fix: Fixed Crew-Allied Neutral Killers being shown who the other Crew are in the intro screen
+- Critical Fix: Fixed Spellslinger not ending the game when needed
+- Critical Fix: Fixed games not ending with a Guardian Angel without a target active
+- Visual Fix: Fixed the vent button disappearing when role blocked
+- Visual Fix: Fixed the Engrish in some parts of the mod
+- Visual Fix: Fixed outlines persisting on targets after death
+- Bug Fix: Fixed decreasing the lobby size not kicking players when needed
+- Bug Fix: Fixed arrows not updating correctly
+- Bug Fix: Fixed being unable to change the lobby size when opening up a lobby
+- Bug Fix: Fixed Footprints only spawning the left/right foot for each person
+- Bug Fix: Fixed some issues with button targeting
+- Bug Fix: Fixed the Chat Cooldown option not actually changing up the chat cooldown
+- Role Fix: Fixed Neutral (Neophyte) roles being appointed as the Jackal's Recruits
+- Role Fix: Fixed Ghouls not spawning in
+- Role Fix: Fixed Shifters constantly dying upon failing to shift
+- Objectifier Fix: Fixed unturned Defectors appearing twice on the Victory screen
+- Ability Fix: Fixed the sheer amount of Assassins being assigned in All Any
+- Ability Fix: Fixed Neutral Assassins not spawning
 
 NOTE: THE MOD IS NOT YET COMPATIBLE WITH SUBMERGED
 
@@ -41,11 +39,15 @@ Reworked Artists - Kara, lotty, Gun, XiezibanWrite, Ramces
 Moral Support - MyDragonBreath
 
 Base Mod Creator - Slushiegoose
-Base And Reactivated Maintainers - eDonnes, -H, MyDragonBreath, Term
-Base And Reactivated Contributors - XtraCube, OhMyGuus, Ruiner
+Base And Reactivated Maintainers - eDonnes/Donners, MyDragonBreath
+Base And Reactivated Contributors - XtraCube, OhMyGuus, Ruiner, -H, Term
 
 Derived Ideas (And Code) From - Woodi, NotHunter101, Evan91380, Hardel-DW, tomozbot, Eisbison, Malloris, K3ndo, Gendelo, Bavari, Scoom, Zeo, 5up, Brybry16, DorCoMaNdO, Galster, przebor, VincentVision, Lunastellia, Allul, Ottomated, BlankMediaGames, Submerged, DigiWorm0
 
 Hosting Modded Servers - miniduikboot, GD
 
 Full credits are on the GitHub page!
+
+This mod is not affiliated with Among Us or Innersloth LLC, and the content contained therein is not endorsed or otherwise sponsored by Innersloth LLC. Portions of the materials contained herein are property of Innersloth LLC.
+
+© Innersloth LLC.

@@ -46,7 +46,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     GetRole(player).Rewinding = true;
             }
 
-            if (MeetingHud.Instance)
+            if (Utils.Meeting)
                 TimeRemaining = 0f;
         }
 

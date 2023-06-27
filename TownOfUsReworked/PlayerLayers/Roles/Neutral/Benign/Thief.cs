@@ -160,7 +160,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 var button = UObject.Instantiate(buttonTemplate, buttonParent);
                 UObject.Instantiate(maskTemplate, buttonParent);
                 var label = UObject.Instantiate(textTemplate, button);
-                button.GetComponent<SpriteRenderer>().sprite = HatManager.Instance.GetNamePlateById("nameplate_NoPlate").CreateAddressableAsset().GetAsset().Image;
+                button.GetComponent<SpriteRenderer>().sprite = HatManager.Instance.GetNamePlateById("nameplate_NoPlate")?.CreateAddressableAsset()?.GetAsset()?.Image;
 
                 if (!GuessButtons.ContainsKey(i))
                     GuessButtons.Add(i, new());
@@ -265,7 +265,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             __instance.playerStates.ToList().ForEach(x => x.gameObject.SetActive(false));
             __instance.TimerText.gameObject.SetActive(false);
-            HudManager.Instance.Chat.SetVisible(false);
+            Utils.HUD.Chat.SetVisible(false);
             Page = 0;
             var PhoneUI = UObject.FindObjectsOfType<Transform>().FirstOrDefault(x => x.name == "PhoneUI");
             var container = UObject.Instantiate(PhoneUI, __instance.transform);
@@ -286,7 +286,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public void Exit(MeetingHud __instance)
         {
             Phone.Destroy();
-            HudManager.Instance.Chat.SetVisible(true);
+            Utils.HUD.Chat.SetVisible(true);
             __instance.TimerText.gameObject.SetActive(true);
             __instance.playerStates.ToList().ForEach(x => x.gameObject.SetActive(true));
 
@@ -477,7 +477,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 if (CustomPlayer.Local == other && other.Is(Faction.Intruder))
                 {
-                    HudManager.Instance.SabotageButton.gameObject.SetActive(false);
+                    Utils.HUD.SabotageButton.gameObject.SetActive(false);
                     other.Data.Role.TeamType = RoleTeamTypes.Crewmate;
                 }
 
@@ -556,7 +556,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void MurderPlayer(PlayerControl player, string guess)
         {
-            var hudManager = HudManager.Instance;
+            var hudManager = Utils.HUD;
 
             if (player != Player && player.Is(ModifierEnum.Indomitable))
             {

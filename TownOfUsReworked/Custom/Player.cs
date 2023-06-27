@@ -7,7 +7,8 @@ namespace TownOfUsReworked.Custom
         public GameData.PlayerInfo Data => Player.Data;
         public bool IsDead => Data.IsDead;
         public bool Disconnected => Data.Disconnected;
-        public float SpeedFactor => Player.Data.IsDead && !Player.Caught() ? CustomGameOptions.GhostSpeed : (CustomGameOptions.PlayerSpeed * Player.GetModifiedSpeed());
+        public float SpeedFactor => IsDead && (!Player.IsPostmortal() || (Player.IsPostmortal() && Player.Caught())) ? CustomGameOptions.GhostSpeed : (CustomGameOptions.PlayerSpeed *
+            Player.GetModifiedSpeed());
         public Vector3 SizeFactor => new Vector3(0.7f, 0.7f, 1f) * Player.GetModifiedSize();
 
         public static PlayerControl Local => PlayerControl.LocalPlayer;

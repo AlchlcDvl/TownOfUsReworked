@@ -160,7 +160,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             base.ConfirmVotePrefix(__instance);
 
-            if (MeetingHud.Instance.playerStates.Any(x => x.TargetPlayerId == Player.PlayerId && x.DidVote && !CustomGameOptions.DictateAfterVoting))
+            if (Utils.Meeting.playerStates.Any(x => x.TargetPlayerId == Player.PlayerId && x.DidVote && !CustomGameOptions.DictateAfterVoting))
                 HideButtons();
 
             if (ToBeEjected.Count == 0)

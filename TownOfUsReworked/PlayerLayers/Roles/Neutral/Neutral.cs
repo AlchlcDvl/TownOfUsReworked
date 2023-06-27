@@ -22,11 +22,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 var jackal = Player.GetJackal();
                 team.Add(jackal.Player);
-
-                if (Player.Is(RoleAlignment.NeutralKill))
-                    team.Add(jackal.GoodRecruit);
-                else
-                    team.Add(jackal.EvilRecruit);
+                team.Add(Player.Is(RoleAlignment.NeutralKill) ? jackal.GoodRecruit : jackal.EvilRecruit);
             }
             else if (Player.Is(RoleEnum.Jackal))
             {
@@ -50,7 +46,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         team.Add(player);
                 }
             }
-            else if (Player.Is(ObjectifierEnum.Allied))
+            else if (Player.Is(ObjectifierEnum.Allied) && !Player.Is(Faction.Crew))
             {
                 foreach (var player in CustomPlayer.AllPlayers)
                 {

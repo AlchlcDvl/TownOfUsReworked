@@ -22,7 +22,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (IsRecruit)
             {
                 var jackal = Player.GetJackal();
-
                 team.Add(jackal.Player);
                 team.Add(jackal.EvilRecruit);
             }

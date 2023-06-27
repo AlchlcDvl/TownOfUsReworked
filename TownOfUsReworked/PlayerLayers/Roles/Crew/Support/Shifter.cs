@@ -60,7 +60,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (!other.Is(Faction.Crew) || other.IsFramed())
             {
-                Utils.RpcMurderPlayer(shifter, shifter);
+                if (AmongUsClient.Instance.AmHost)
+                    Utils.RpcMurderPlayer(shifter, shifter);
+
                 return;
             }
 

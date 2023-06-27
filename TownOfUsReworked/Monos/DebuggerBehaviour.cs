@@ -108,18 +108,18 @@ namespace TownOfUsReworked.Monos
 
                     if (GUILayout.Button("Redo Intro Sequence"))
                     {
-                        HudManager.Instance.StartCoroutine(HudManager.Instance.CoFadeFullScreen(Color.clear, Color.black));
-                        HudManager.Instance.StartCoroutine(HudManager.Instance.CoShowIntro());
+                        Utils.HUD.StartCoroutine(Utils.HUD.CoFadeFullScreen(Color.clear, Color.black));
+                        Utils.HUD.StartCoroutine(Utils.HUD.CoShowIntro());
                     }
 
-                    if (GUILayout.Button("Start Meeting") && !MeetingHud.Instance)
+                    if (GUILayout.Button("Start Meeting") && !Utils.Meeting)
                     {
                         CustomPlayer.Local.RemainingEmergencies++;
                         CustomPlayer.Local.CmdReportDeadBody(null);
                     }
 
-                    if (GUILayout.Button("End Meeting") && MeetingHud.Instance)
-                        MeetingHud.Instance.RpcClose();
+                    if (GUILayout.Button("End Meeting") && Utils.Meeting)
+                        Utils.Meeting.RpcClose();
 
                     if (GUILayout.Button("Kill Self"))
                         Utils.RpcMurderPlayer(PlayerControl.LocalPlayer, CustomPlayer.Local);

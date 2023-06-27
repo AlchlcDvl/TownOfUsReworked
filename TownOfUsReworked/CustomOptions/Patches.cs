@@ -18,7 +18,7 @@ namespace TownOfUsReworked.CustomOptions
             var togglePrefab = UObject.FindObjectOfType<ToggleOption>();
             var numberPrefab = UObject.FindObjectOfType<NumberOption>();
             var keyValPrefab = UObject.FindObjectOfType<KeyValueOption>();
-            var rolePrefab = UObject.FindObjectOfType<RoleOptionSetting>();
+            var rolePrefab = UObject.FindObjectOfType<RoleOptionSetting>(true);
 
             if (type == MultiMenu.main)
             {
@@ -70,7 +70,7 @@ namespace TownOfUsReworked.CustomOptions
 
             options.AddRange(__instance.Children);
 
-            foreach (var option in CustomOption.AllOptions.Where(x => x.Menu == type))
+            foreach (var option in CustomOption.AllOptions.Where(x => x.Menu == type && x.Active))
             {
                 if (option.Setting != null)
                 {
@@ -125,6 +125,7 @@ namespace TownOfUsReworked.CustomOptions
                 option.OptionCreated();
             }
 
+            CustomOption.GetOptions<CustomLayersOption>(CustomOptionType.Layers).ForEach(x => x.Set(x.Value, x.OtherValue)); //A band-aid fix lmao
             return options;
         }
 
@@ -339,33 +340,39 @@ namespace TownOfUsReworked.CustomOptions
         {
             public static bool Prefix(GameOptionsMenu __instance)
             {
-                for (var index = 0; index < Menus.Length; index++)
+                StartPrefix(__instance, out var notmodded);
+                return notmodded;
+            }
+        }
+
+        public static void StartPrefix(GameOptionsMenu __instance, out bool notmodded)
+        {
+            notmodded = true;
+
+            for (var index = 0; index < Menus.Length; index++)
+            {
+                if (__instance.name == $"ToU-Rew{Menus[index]}OptionsMenu")
                 {
-                    if (__instance.name == $"ToU-Rew{Menus[index]}OptionsMenu")
-                    {
-                        __instance.Children = new(Array.Empty<OptionBehaviour>());
-                        var childeren = new Transform[__instance.gameObject.transform.childCount];
+                    __instance.Children = new(Array.Empty<OptionBehaviour>());
+                    var childeren = new Transform[__instance.gameObject.transform.childCount];
 
-                        for (var k = 0; k < childeren.Length; k++)
-                            childeren[k] = __instance.gameObject.transform.GetChild(k);
+                    for (var k = 0; k < childeren.Length; k++)
+                        childeren[k] = __instance.gameObject.transform.GetChild(k);
 
-                        //TODO: Make a better fix for this for example caching the options or creating it ourself.
-                        var startOption = __instance.gameObject.transform.GetChild(0);
-                        var customOptions = CreateOptions(__instance, (MultiMenu)index);
-                        var (x, y, z) = (startOption.localPosition.x, startOption.localPosition.y, startOption.localPosition.z);
+                    //TODO: Make a better fix for this for example caching the options or creating it ourself.
+                    var startOption = __instance.gameObject.transform.GetChild(0);
+                    var customOptions = CreateOptions(__instance, (MultiMenu)index);
+                    var (x, y, z) = (startOption.localPosition.x, startOption.localPosition.y, startOption.localPosition.z);
 
-                        for (var k = 0; k < childeren.Length; k++)
-                            childeren[k].gameObject.Destroy();
+                    for (var k = 0; k < childeren.Length; k++)
+                        childeren[k].gameObject.Destroy();
 
-                        for (var i = 0; i < customOptions.Count; i++)
-                            customOptions[i].transform.localPosition = new(x, y - (i * 0.5f), z);
+                    for (var i = 0; i < customOptions.Count; i++)
+                        customOptions[i].transform.localPosition = new(x, y - (i * 0.5f), z);
 
-                        __instance.Children = new(customOptions.ToArray());
-                        return false;
-                    }
+                    __instance.Children = new(customOptions.ToArray());
+                    notmodded = false;
                 }
-
-                return true;
             }
         }
 
@@ -706,7 +713,7 @@ namespace TownOfUsReworked.CustomOptions
                 if (CustomPlayer.AllPlayers.Count < 1 || !AmongUsClient.Instance || !CustomPlayer.Local || !AmongUsClient.Instance.AmHost)
                     return;
 
-                RPC.SendRPC();
+                RPC.SendOptionRPC();
                 CustomOption.SaveSettings("LastUsedSettings");
             }
         }
@@ -719,7 +726,7 @@ namespace TownOfUsReworked.CustomOptions
                 if (CustomPlayer.AllPlayers.Count < 1 || !AmongUsClient.Instance || !CustomPlayer.Local || !AmongUsClient.Instance.AmHost)
                     return;
 
-                RPC.SendRPC();
+                RPC.SendOptionRPC();
             }
         }
 

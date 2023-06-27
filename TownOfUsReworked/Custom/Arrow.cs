@@ -2,15 +2,15 @@ namespace TownOfUsReworked.Custom
 {
     public class CustomArrow
     {
-        public ArrowBehaviour Arrow;
-        public SpriteRenderer Render;
-        public GameObject ArrowObj;
+        private ArrowBehaviour Arrow;
+        private SpriteRenderer Render;
+        private GameObject ArrowObj;
         public PlayerControl Owner;
-        public float Interval;
+        private readonly float Interval;
         private DateTime _time;
-        public Vector3 Target;
-        public SpriteRenderer Point;
-        public UColor ArrowColor;
+        private Vector3 Target;
+        private SpriteRenderer Point;
+        private UColor ArrowColor;
         public readonly static List<CustomArrow> AllArrows = new();
 
         public CustomArrow(PlayerControl owner, UColor color, float interval = 0f)
@@ -35,32 +35,28 @@ namespace TownOfUsReworked.Custom
             Arrow.target = Owner.transform.position;
         }
 
-        public void NewSprite(string sprite) => Arrow.image.sprite = AssetManager.GetSprite(sprite);
+        public void NewSprite(string sprite) => Render.sprite = AssetManager.GetSprite(sprite);
 
         public void Update(UColor? color = null) => Update(Target, color);
 
         public void Update(Vector3 target, UColor? color = null)
         {
-            if (ArrowObj == null || Arrow == null || Render == null)
-                return;
+            if (ArrowObj == null || Arrow == null || Render == null || ArrowColor == default)
+                Instantiate();
 
             if (Owner != CustomPlayer.Local)
             {
-                Disable();
+                Arrow.target = CustomPlayer.Local.transform.position;
+                Arrow.Update();
                 return;
             }
 
             if (color.HasValue)
-            {
-                Render.color = color.Value;
-                ArrowColor = color.Value;
-            }
+                Render.color = ArrowColor = color.Value;
 
             if (_time <= DateTime.UtcNow.AddSeconds(-Interval))
             {
-                Target = target;
-                Arrow.image.color = ArrowColor;
-                Arrow.target = target;
+                Arrow.target = Target = target;
                 Arrow.Update();
                 _time = DateTime.UtcNow;
             }
@@ -87,7 +83,7 @@ namespace TownOfUsReworked.Custom
 
         public void UpdateArrowBlip(MapBehaviour __instance)
         {
-            if (!__instance || ArrowObj == null || Arrow == null || Render == null || ArrowColor == default || MeetingHud.Instance || Owner != CustomPlayer.Local)
+            if (!__instance || ArrowObj == null || Arrow == null || Render == null || ArrowColor == default || Utils.Meeting || Owner != CustomPlayer.Local)
                 return;
 
             var v = Target;

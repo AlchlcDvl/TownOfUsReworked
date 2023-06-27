@@ -5,10 +5,12 @@ namespace TownOfUsReworked.Extensions
     {
         public static void Shuffle<T>(this List<T> list)
         {
-            var count = list.Count;
-            var last = count - 1;
+            if (list.Count is 1 or 0)
+                return;
 
-            for (var i = 0; i <= last; ++i)
+            var count = list.Count;
+
+            for (var i = 0; i <= count - 1; ++i)
             {
                 var r = URandom.RandomRangeInt(i, count);
                 (list[r], list[i]) = (list[i], list[r]);
@@ -48,6 +50,18 @@ namespace TownOfUsReworked.Extensions
         {
             foreach (var list in items)
                 main.RemoveRange(list);
+        }
+
+        public static bool Replace<T>(this List<T> list, T item1, T item2)
+        {
+            if (list.Contains(item1))
+            {
+                var index = list.IndexOf(item1);
+                list.Remove(item1);
+                list.Insert(index, item2);
+            }
+
+            return list.Contains(item1);
         }
 
         public static List<T> Il2CppToSystem<T>(this Il2CppSystem.Collections.Generic.List<T> list) => list.ToArray().ToList();

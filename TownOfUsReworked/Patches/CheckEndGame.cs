@@ -9,6 +9,9 @@ namespace TownOfUsReworked.Patches
             if (!AmongUsClient.Instance.AmHost || ConstantVariables.IsFreePlay)
                 return false;
 
+            var spell = Role.GetRoles<Spellslinger>(RoleEnum.Spellslinger).Find(x => x.Spelled.Count >= CustomPlayer.AllPlayers.Count(y => !y.Data.IsDead && !y.Data.Disconnected &&
+                !y.Is(x.Faction)));
+
             if (ConstantVariables.NoOneWins)
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
@@ -23,6 +26,34 @@ namespace TownOfUsReworked.Patches
                 writer.Write((byte)WinLoseRPC.CrewWin);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 Role.CrewWin = true;
+                Utils.EndGame();
+            }
+            else if (spell)
+            {
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
+
+                if (spell.Faction == Faction.Syndicate)
+                {
+                    writer.Write((byte)WinLoseRPC.SyndicateWin);
+                    Role.SyndicateWin = true;
+                }
+                else if (spell.Faction == Faction.Intruder)
+                {
+                    writer.Write((byte)WinLoseRPC.IntruderWin);
+                    Role.IntruderWin = true;
+                }
+                else if (spell.Faction == Faction.Crew)
+                {
+                    writer.Write((byte)WinLoseRPC.CrewWin);
+                    Role.CrewWin = true;
+                }
+                else if (spell.Faction == Faction.Neutral)
+                {
+                    writer.Write((byte)WinLoseRPC.AllNeutralsWin);
+                    Role.AllNeutralsWin = true;
+                }
+
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
                 Utils.EndGame();
             }
             else if (LayerExtentions.Sabotaged() && CustomGameOptions.IntrudersCanSabotage)

@@ -75,8 +75,9 @@ namespace TownOfUsReworked.Modules
         private const string CrewDescription = "Each member has a special ability which determines who’s who and can help weed out the evils. The main theme of this faction is " +
             "deduction and goodwill. This faction is an uninformed majority meaning they make up most of the players and don't who the other members are. The Crew can do tasks which " +
             "sort of act like a timer for non-Crew roles.";
-        private const string IntruderDescription = "minority meaning they make up a tiny fraction of the crew and know who the other members are. All members can sabotage to distract "
-            + "the Crew from their tasks.";
+        private const string IntruderDescription = "Each member of this faction has the ability to kill alongside an ability pertaining to their role. The main theme of this faction is " +
+            "destruction and raw power. This faction is an informed minority meaning they make up a tiny fraction of the crew and know who the other members are. All members can sabotage "
+            + "to distract the Crew from their tasks.";
         private const string NeutralDescription = "Neutrals are essentially factionless. Each member of this faction has their own unique way to win, seperate from the other roles in" +
             " the same faction. The main theme of this faction is free for all. This faction is an uninformed minority of the game, meaning they make up a small part of the crew " +
             "while not knowing who the other members are. Each role is unique in its own way, some can be helpful, some exist to destroy others and some just exist for the sake of " +
@@ -98,10 +99,10 @@ namespace TownOfUsReworked.Modules
     public class SubFactionInfo : Info
     {
         private const string CabalDescription = "The Cabal is an oraganisation that's similar to the Syndicate. They, however, operate covertly by secretly recruiting people to join their"
-            + " group. The Cabal starts of very strong so they are of a higher priority when dealing with enemies. The Cabal is led by the Jackal.";
+            + " group. The Cabal starts off very strong so they are of a higher priority when dealing with enemies. The Cabal is led by the Jackal.";
         private const string UndeadDescription = "The Undead are a group of bloodthirsty vampires who closely grow their numbers. The longer the game goes on, the higher their priority" +
-            " on the elimination list. If a member of this subfaction interacts with a Vapire Hunter, the interactor will be killed by the Vampire Hunter in question. The Undead is led " +
-            "by the Dracula.";
+            " on the elimination list. If a member of this subfaction interacts with a Vampire Hunter, the interactor will be killed by the Vampire Hunter in question. The Undead are led "
+            + "by the Dracula.";
         private const string ReanimatedDescription = "The Reanimated are a bunch of players who have died yet hold a grudge agaisnt the living. Their grudge is made possible by the " +
             "Necromancer, who leads them. The longer the game goes on with no deaths, the higher the chances of a Necromancer at work.";
         private const string SectDescription = "The Sect is a cult which can gain massive amounts of followers in one go. It may be weak at the start, but do not understimate their " +

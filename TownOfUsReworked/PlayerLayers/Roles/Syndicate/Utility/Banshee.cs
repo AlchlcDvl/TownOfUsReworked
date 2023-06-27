@@ -42,7 +42,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     layer.IsBlocked = !GetRole(player).RoleBlockImmune;
             }
 
-            if (MeetingHud.Instance || Caught)
+            if (Utils.Meeting || Caught)
                 TimeRemaining = 0f;
         }
 

@@ -73,7 +73,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             base.UpdateHud(__instance);
             TrackButton.Update("TRACK", TrackerTimer(), CustomGameOptions.TrackCd, UsesLeft, ButtonUsable, ButtonUsable);
 
-            if (CustomPlayer.LocalCustom.IsDead)
+            if (IsDead)
                 OnLobby();
             else
             {
@@ -82,13 +82,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     var player = Utils.PlayerById(pair.Key);
                     var body = Utils.BodyById(pair.Key);
 
-                    if (player == null || player.Data.Disconnected || (player.Data.IsDead && !body))
+                    if (player == null || player.Data.Disconnected || (player.Data.IsDead && body == null))
                     {
                         DestroyArrow(pair.Key);
                         continue;
                     }
 
-                    pair.Value?.Update(player.Data.IsDead ? player.transform.position : body.transform.position, player.GetPlayerColor());
+                    pair.Value?.Update(player.Data.IsDead ? body.transform.position  : player.transform.position, player.GetPlayerColor());
                 }
             }
         }

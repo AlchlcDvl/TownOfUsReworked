@@ -19,9 +19,6 @@ namespace TownOfUsReworked.Patches
 
         private static void UpdateCharCounter(ChatController __instance)
         {
-            if (!__instance)
-                return;
-
             var length = __instance.TextArea.text.Length;
             __instance.CharCount.text = $"{length}/{CustomGameOptions.ChatCharacterLimit}";
 
@@ -29,15 +26,12 @@ namespace TownOfUsReworked.Patches
                 __instance.CharCount.color = UColor.black;
             else if (length < CustomGameOptions.ChatCharacterLimit)
                 __instance.CharCount.color = UColor.yellow;
-            else if (length > CustomGameOptions.ChatCharacterLimit)
+            else if (length >= CustomGameOptions.ChatCharacterLimit)
                 __instance.CharCount.color = UColor.red;
         }
 
         private static void UpdateChatTimer(ChatController __instance)
         {
-            if (!__instance)
-                return;
-
             var flag = DataManager.Settings.Multiplayer.ChatMode != QuickChatModes.QuickChatOnly;
             __instance.OpenKeyboardButton.SetActive(flag);
             __instance.TextArea.enabled = flag;
@@ -49,7 +43,7 @@ namespace TownOfUsReworked.Patches
 
             var f = CustomGameOptions.ChatCooldown - __instance.TimeSinceLastMessage;
 
-            if (f < 0)
+            if (f <= 0 || CustomGameOptions.ChatCooldown == 0)
                 __instance.SendRateMessage.gameObject.SetActive(false);
             else
                 __instance.SendRateMessage.text = TranslationController.Instance.GetString(StringNames.ChatRateLimit, Mathf.CeilToInt(f));
@@ -57,9 +51,6 @@ namespace TownOfUsReworked.Patches
 
         private static void UpdateAlignment(ChatController __instance)
         {
-            if (!__instance)
-                return;
-
             foreach (var bubble in __instance.chatBubPool.activeChildren)
             {
                 var chat = bubble.Cast<ChatBubble>();
@@ -74,7 +65,7 @@ namespace TownOfUsReworked.Patches
 
         private static void UpdateBubbles(ChatController __instance)
         {
-            if (ConstantVariables.IsLobby || !__instance)
+            if (ConstantVariables.IsLobby)
                 return;
 
             foreach (var bubble in __instance.chatBubPool.activeChildren)
@@ -170,5 +161,38 @@ namespace TownOfUsReworked.Patches
     public static class OverrideCharCountPatch
     {
         public static bool Prefix() => false;
+    }
+
+    [HarmonyPatch(typeof(ChatController), nameof(ChatController.SendChat))]
+    public static class OverrideSendChatPatch
+    {
+        public static bool Prefix(ChatController __instance)
+        {
+            SendPatch(__instance);
+            return false;
+        }
+
+        private static void SendPatch(ChatController __instance)
+        {
+            var f = CustomGameOptions.ChatCooldown - __instance.TimeSinceLastMessage;
+
+            if (f > 0 && CustomGameOptions.ChatCooldown > 0)
+            {
+                __instance.SendRateMessage.gameObject.SetActive(true);
+                __instance.SendRateMessage.text = DestroyableSingleton<TranslationController>.Instance.GetString(StringNames.ChatRateLimit, Mathf.CeilToInt(f));
+            }
+            else
+            {
+                if (__instance.quickChatData.qcType != QuickChatNetType.None)
+                    __instance.SendQuickChat();
+                else if (DataManager.Settings.Multiplayer.ChatMode == QuickChatModes.FreeChatOrQuickChat)
+                    __instance.SendFreeChat();
+
+                __instance.TimeSinceLastMessage = 0f;
+                __instance.TextArea.Clear();
+                __instance.quickChatMenu.ResetGlyphs();
+                __instance.quickChatData.qcType = QuickChatNetType.None;
+            }
+        }
     }
 }

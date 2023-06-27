@@ -7,7 +7,7 @@ namespace TownOfUsReworked.PlayerLayers
         {
             foreach (var role in Role.AllRoles)
             {
-                Footprint.DestroyAll(role);
+                role.AllPrints.ForEach(x => x.Destroy());
                 role.AllPrints.Clear();
             }
         }

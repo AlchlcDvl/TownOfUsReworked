@@ -274,7 +274,7 @@
                 var button = UObject.Instantiate(buttonTemplate, buttonParent);
                 UObject.Instantiate(maskTemplate, buttonParent);
                 var label = UObject.Instantiate(textTemplate, button);
-                button.GetComponent<SpriteRenderer>().sprite = HatManager.Instance.GetNamePlateById("nameplate_NoPlate").CreateAddressableAsset().GetAsset().Image;
+                button.GetComponent<SpriteRenderer>().sprite = HatManager.Instance.GetNamePlateById("nameplate_NoPlate")?.CreateAddressableAsset()?.GetAsset()?.Image;
 
                 if (!Buttons.ContainsKey(i))
                     Buttons.Add(i, new());
@@ -413,7 +413,7 @@
 
             __instance.playerStates.ToList().ForEach(x => x.gameObject.SetActive(false));
             __instance.TimerText.gameObject.SetActive(false);
-            HudManager.Instance.Chat.SetVisible(false);
+            Utils.HUD.Chat.SetVisible(false);
             Page = 0;
             var container = UObject.Instantiate(UObject.FindObjectsOfType<Transform>().FirstOrDefault(x => x.name == "PhoneUI"), __instance.transform);
             container.transform.localPosition = new(0, 0, -5f);
@@ -432,7 +432,7 @@
         public void Exit(MeetingHud __instance)
         {
             Phone.Destroy();
-            HudManager.Instance.Chat.SetVisible(true);
+            Utils.HUD.Chat.SetVisible(true);
             __instance.TimerText.gameObject.SetActive(true);
             __instance.playerStates.ToList().ForEach(x => x.gameObject.SetActive(true));
 
@@ -531,7 +531,7 @@
 
         public void MurderPlayer(PlayerControl player, string guess)
         {
-            var hudManager = HudManager.Instance;
+            var hudManager = Utils.HUD;
 
             if (player != Player && player.Is(ModifierEnum.Indomitable))
             {

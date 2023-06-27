@@ -142,7 +142,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
         {
             base.ConfirmVotePrefix(__instance);
 
-            if (MeetingHud.Instance.playerStates.Any(x => x.TargetPlayerId == Player.PlayerId && x.DidVote && !CustomGameOptions.SwapAfterVoting))
+            if (Utils.Meeting.playerStates.Any(x => x.TargetPlayerId == Player.PlayerId && x.DidVote && !CustomGameOptions.SwapAfterVoting))
                 HideButtons();
 
             if (Swap1 == null || Swap2 == null)

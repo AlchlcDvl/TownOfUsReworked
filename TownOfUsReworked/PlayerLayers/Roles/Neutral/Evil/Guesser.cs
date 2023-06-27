@@ -221,7 +221,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 var button = UObject.Instantiate(buttonTemplate, buttonParent);
                 UObject.Instantiate(maskTemplate, buttonParent);
                 var label = UObject.Instantiate(textTemplate, button);
-                button.GetComponent<SpriteRenderer>().sprite = HatManager.Instance.GetNamePlateById("nameplate_NoPlate").CreateAddressableAsset().GetAsset().Image;
+                button.GetComponent<SpriteRenderer>().sprite = HatManager.Instance.GetNamePlateById("nameplate_NoPlate")?.CreateAddressableAsset()?.GetAsset()?.Image;
 
                 if (!GuessButtons.ContainsKey(i))
                     GuessButtons.Add(i, new());
@@ -293,9 +293,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void TurnAct()
         {
-            var targetRole = GetRole(TargetPlayer);
-            var newRole  = new Actor(Player) { PretendRoles = targetRole == null || targetRole.InspectorResults == InspectorResults.None ? InspectorResults.IsBasic :
-                targetRole.InspectorResults };
+            var newRole  = new Actor(Player) { TargetRole = GetRole(TargetPlayer) };
             newRole.RoleUpdate(this);
 
             if (Local && !IntroCutscene.Instance)
@@ -443,8 +441,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 return;
 
             //Ensures only the Guesser sees this
-            if (HudManager.Instance && something != "")
-                HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, something);
+            if (Utils.HUD && something != "")
+                Utils.HUD.Chat.AddChat(PlayerControl.LocalPlayer, something);
 
             foreach (var state in __instance.playerStates)
                 GenButton(state, __instance);
@@ -492,7 +490,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             __instance.playerStates.ToList().ForEach(x => x.gameObject.SetActive(false));
             __instance.TimerText.gameObject.SetActive(false);
-            HudManager.Instance.Chat.SetVisible(false);
+            Utils.HUD.Chat.SetVisible(false);
             Page = 0;
             var PhoneUI = UObject.FindObjectsOfType<Transform>().FirstOrDefault(x => x.name == "PhoneUI");
             var container = UObject.Instantiate(PhoneUI, __instance.transform);
@@ -513,7 +511,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public void Exit(MeetingHud __instance)
         {
             Phone.Destroy();
-            HudManager.Instance.Chat.SetVisible(true);
+            Utils.HUD.Chat.SetVisible(true);
             __instance.TimerText.gameObject.SetActive(true);
             __instance.playerStates.ToList().ForEach(x => x.gameObject.SetActive(true));
 
@@ -614,7 +612,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
             else
             {
-                var hudManager = HudManager.Instance;
+                var hudManager = Utils.HUD;
 
                 if (Player == player)
                 {

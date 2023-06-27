@@ -36,7 +36,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public float WhisperTimer()
         {
             var timespan = DateTime.UtcNow - LastWhispered;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.WhisperCooldown, CustomGameOptions.WhisperCooldownIncrease * WhisperCount) * 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.WhisperCooldown, CustomGameOptions.WhisperCooldownIncreases ? (CustomGameOptions.WhisperCooldownIncrease * WhisperCount) :
+                0) * 1000f;
             var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
@@ -108,7 +109,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            WhisperButton.Update("WHISPER", WhisperTimer(), CustomGameOptions.WhisperCooldown + (WhisperCount * CustomGameOptions.WhisperCooldownIncrease));
+            WhisperButton.Update("WHISPER", WhisperTimer(), CustomGameOptions.WhisperCooldown + (CustomGameOptions.WhisperCooldownIncreases ? (CustomGameOptions.WhisperCooldownIncrease *
+                WhisperCount) : 0));
         }
     }
 }

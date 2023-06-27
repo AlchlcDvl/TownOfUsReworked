@@ -4,7 +4,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     {
         public DateTime LastKilled;
         public CustomButton KillButton;
-        public string CommonAbilities;
+        public string CommonAbilities => "- You can kill players" + (CustomGameOptions.IntrudersCanSabotage || (IsDead && CustomGameOptions.GhostsCanSabotage) ? ("\n- You can call " +
+            "sabotages to distract the <color=#8CFFFFFF>Crew</color>") : "");
 
         protected Intruder(PlayerControl player) : base(player)
         {
@@ -13,7 +14,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = Colors.Intruder;
             Objectives = () => IntrudersWinCon;
             BaseFaction = Faction.Intruder;
-            CommonAbilities = "- You can kill players" + (CustomGameOptions.IntrudersCanSabotage ? "\n- You can call sabotages to distract the <color=#8CFFFFFF>Crew</color>" : "");
             KillButton = new(this, "IntruderKill", AbilityTypes.Direct, "ActionSecondary", Kill, Exception);
             Player.Data.SetImpostor(true);
         }
@@ -36,7 +36,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (IsRecruit)
             {
                 var jackal = Player.GetJackal();
-
                 team.Add(jackal.Player);
                 team.Add(jackal.GoodRecruit);
             }

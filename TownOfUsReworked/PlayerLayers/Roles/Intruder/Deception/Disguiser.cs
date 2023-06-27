@@ -41,7 +41,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Utils.Morph(DisguisedPlayer, DisguisePlayer);
             Enabled = true;
 
-            if (IsDead || DisguisedPlayer.Data.IsDead || DisguisedPlayer.Data.Disconnected || MeetingHud.Instance)
+            if (IsDead || DisguisedPlayer.Data.IsDead || DisguisedPlayer.Data.Disconnected || Utils.Meeting)
                 TimeRemaining = 0f;
         }
 
@@ -146,7 +146,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         }
 
         public bool Exception1(PlayerControl player) => (player.Is(Faction) && CustomGameOptions.DisguiseTarget == DisguiserTargets.NonIntruders) || (!player.Is(Faction) &&
-            CustomGameOptions.DisguiseTarget == DisguiserTargets.Intruders);
+            CustomGameOptions.DisguiseTarget == DisguiserTargets.Intruders) || Exception2(player);
 
         public bool Exception2(PlayerControl player) => player == MeasuredPlayer;
 

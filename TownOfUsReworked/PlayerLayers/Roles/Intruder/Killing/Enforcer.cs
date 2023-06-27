@@ -49,7 +49,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
 
-            if (IsDead || MeetingHud.Instance || BombedPlayer.Data.IsDead || BombedPlayer.Data.Disconnected || BombSuccessful)
+            if (IsDead || Utils.Meeting || BombedPlayer.Data.IsDead || BombedPlayer.Data.Disconnected || BombSuccessful)
                 TimeRemaining = 0f;
         }
 
@@ -57,7 +57,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             TimeRemaining2 -= Time.deltaTime;
 
-            if (IsDead || MeetingHud.Instance || BombedPlayer.Data.IsDead || BombedPlayer.Data.Disconnected)
+            if (IsDead || Utils.Meeting || BombedPlayer.Data.IsDead || BombedPlayer.Data.Disconnected)
                 TimeRemaining2 = 0f;
         }
 

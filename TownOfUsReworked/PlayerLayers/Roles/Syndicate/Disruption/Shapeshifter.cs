@@ -45,7 +45,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             else
                 Utils.Shapeshift();
 
-            if (MeetingHud.Instance)
+            if (Utils.Meeting)
                 TimeRemaining = 0f;
         }
 

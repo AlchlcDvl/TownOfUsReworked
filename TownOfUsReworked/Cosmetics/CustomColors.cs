@@ -47,6 +47,16 @@ namespace TownOfUsReworked.Cosmetics
             rend.material.SetColor("_VisorColor", Palette.VisorColor);
         }
 
+        public static void SetChangingColor(Renderer rend, int id)
+        {
+            if (!IsChanging(id))
+                return;
+
+            rend.material.SetColor("_BackColor", GetColor(id, true));
+            rend.material.SetColor("_BodyColor", GetColor(id, false));
+            rend.material.SetColor("_VisorColor", Palette.VisorColor);
+        }
+
         public static bool OutOfBounds(int id) => id < 0 || id >= Palette.ColorNames.Count;
 
         public static bool IsRainbow(int id) => !OutOfBounds(id) && (int)Palette.ColorNames[id] == 999999;

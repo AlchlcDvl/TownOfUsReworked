@@ -124,7 +124,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 else
                     break;
 
-                if (MeetingHud.Instance)
+                if (Utils.Meeting)
                     yield break;
             }
 
@@ -225,7 +225,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AnimationPlaying.flipX = WarpPlayer1.MyRend().flipX;
             AnimationPlaying.transform.localScale *= 0.9f * WarpPlayer1.GetModifiedSize();
 
-            HudManager.Instance.StartCoroutine(Effects.Lerp(CustomGameOptions.WarpDuration, new Action<float>(p =>
+            Utils.HUD.StartCoroutine(Effects.Lerp(CustomGameOptions.WarpDuration, new Action<float>(p =>
             {
                 var index = (int)(p * AssetManager.PortalAnimation.Length);
                 index = Mathf.Clamp(index, 0, AssetManager.PortalAnimation.Length - 1);

@@ -46,6 +46,10 @@ namespace TownOfUsReworked.MultiClientInstancing
             sampleC.Character.SetPet(HatManager.Instance.allPets[URandom.Range(0, HatManager.Instance.allPets.Count)].ProdId);
             sampleC.Character.SetHat("hat_NoHat", 0);
             sampleC.Character.SetColor(URandom.Range(0, Palette.PlayerColors.Length));
+            sampleC.Character.MyPhysics.ResetMoveState();
+
+            if (ModCompatibility.SubLoaded)
+                ModCompatibility.ImpartSub(sampleC.Character);
 
             Clients.Add(sampleId, sampleC);
             PlayerIdClientId.Add(sampleC.Character.PlayerId, sampleId);
@@ -78,7 +82,7 @@ namespace TownOfUsReworked.MultiClientInstancing
             CustomPlayer.Local.DisableButtons();
             CustomPlayer.Local.DisableArrows();
 
-            if (MeetingHud.Instance)
+            if (Utils.Meeting)
             {
                 switch (CustomPlayer.Local.GetRole())
                 {
@@ -94,14 +98,14 @@ namespace TownOfUsReworked.MultiClientInstancing
                         var guesser = (Guesser)Role.LocalRole;
                         guesser.HideButtons();
                         guesser.OtherButtons.Clear();
-                        guesser.Exit(MeetingHud.Instance);
+                        guesser.Exit(Utils.Meeting);
                         break;
 
                     case RoleEnum.Thief:
                         var thief = (Thief)Role.LocalRole;
                         thief.HideButtons();
                         thief.OtherButtons.Clear();
-                        thief.Exit(MeetingHud.Instance);
+                        thief.Exit(Utils.Meeting);
                         break;
 
                     case RoleEnum.Dictator:
@@ -119,7 +123,7 @@ namespace TownOfUsReworked.MultiClientInstancing
                         var assassin = (Assassin)Ability.LocalAbility;
                         assassin.HideButtons();
                         assassin.OtherButtons.Clear();
-                        assassin.Exit(MeetingHud.Instance);
+                        assassin.Exit(Utils.Meeting);
                         break;
 
                     case AbilityEnum.Swapper:
@@ -149,9 +153,9 @@ namespace TownOfUsReworked.MultiClientInstancing
             AmongUsClient.Instance.ClientId = newPlayer.OwnerId;
             AmongUsClient.Instance.HostId = newPlayer.OwnerId;
 
-            HudManager.Instance.SetHudActive(true);
+            Utils.HUD.SetHudActive(true);
 
-            HudManager.Instance.ShadowQuad.gameObject.SetActive(!newPlayer.Data.IsDead);
+            Utils.HUD.ShadowQuad.gameObject.SetActive(!newPlayer.Data.IsDead);
 
             light.transform.SetParent(CustomPlayer.Local.transform);
             light.transform.localPosition = CustomPlayer.Local.Collider.offset;
@@ -163,10 +167,10 @@ namespace TownOfUsReworked.MultiClientInstancing
             CustomPlayer.Local.EnableButtons();
             CustomPlayer.Local.EnableArrows();
 
-            if (MeetingHud.Instance)
+            if (Utils.Meeting)
             {
                 if (!CustomPlayer.LocalCustom.IsDead)
-                    MeetingHud.Instance.SetForegroundForAlive();
+                    Utils.Meeting.SetForegroundForAlive();
 
                 switch (CustomPlayer.Local.GetRole())
                 {
@@ -176,21 +180,21 @@ namespace TownOfUsReworked.MultiClientInstancing
                         ret.PlayerNumbers.Clear();
                         ret.Actives.Clear();
                         ret.MoarButtons.Clear();
-                        Utils.AllVoteAreas.ForEach(x => ret.GenButtons(x, MeetingHud.Instance));
+                        Utils.AllVoteAreas.ForEach(x => ret.GenButtons(x, Utils.Meeting));
                         break;
 
                     case RoleEnum.Guesser:
                         var guesser = (Guesser)Role.LocalRole;
                         guesser.HideButtons();
                         guesser.OtherButtons.Clear();
-                        Utils.AllVoteAreas.ForEach(x => guesser.GenButton(x, MeetingHud.Instance));
+                        Utils.AllVoteAreas.ForEach(x => guesser.GenButton(x, Utils.Meeting));
                         break;
 
                     case RoleEnum.Thief:
                         var thief = (Thief)Role.LocalRole;
                         thief.HideButtons();
                         thief.OtherButtons.Clear();
-                        Utils.AllVoteAreas.ForEach(x => thief.GenButton(x, MeetingHud.Instance));
+                        Utils.AllVoteAreas.ForEach(x => thief.GenButton(x, Utils.Meeting));
                         break;
 
                     case RoleEnum.Dictator:
@@ -198,7 +202,7 @@ namespace TownOfUsReworked.MultiClientInstancing
                         dict.HideButtons();
                         dict.Actives.Clear();
                         dict.MoarButtons.Clear();
-                        Utils.AllVoteAreas.ForEach(x => dict.GenButton(x, MeetingHud.Instance));
+                        Utils.AllVoteAreas.ForEach(x => dict.GenButton(x, Utils.Meeting));
                         break;
                 }
 
@@ -208,7 +212,7 @@ namespace TownOfUsReworked.MultiClientInstancing
                         var assassin = (Assassin)Ability.LocalAbility;
                         assassin.HideButtons();
                         assassin.OtherButtons.Clear();
-                        Utils.AllVoteAreas.ForEach(x => assassin.GenButton(x, MeetingHud.Instance));
+                        Utils.AllVoteAreas.ForEach(x => assassin.GenButton(x, Utils.Meeting));
                         break;
 
                     case AbilityEnum.Swapper:
@@ -216,11 +220,11 @@ namespace TownOfUsReworked.MultiClientInstancing
                         swapper.HideButtons();
                         swapper.Actives.Clear();
                         swapper.MoarButtons.Clear();
-                        Utils.AllVoteAreas.ForEach(x => swapper.GenButton(x, MeetingHud.Instance));
+                        Utils.AllVoteAreas.ForEach(x => swapper.GenButton(x, Utils.Meeting));
                         break;
 
                     case AbilityEnum.Politician:
-                        ((Politician)Ability.LocalAbility).GenButton(MeetingHud.Instance);
+                        ((Politician)Ability.LocalAbility).GenButton(Utils.Meeting);
                         break;
                 }
             }

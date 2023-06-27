@@ -16,6 +16,7 @@ namespace TownOfUsReworked.PlayerLayers
 
             __instance.KillButton.SetTarget(null);
             __instance.KillButton.gameObject.SetActive(false);
+            CustomArrow.AllArrows.Where(x => x.Owner != CustomPlayer.Local).ToList().ForEach(x => x.Update());
 
             foreach (var layer in PlayerLayer.LocalLayers)
                 layer.UpdateHud(__instance);

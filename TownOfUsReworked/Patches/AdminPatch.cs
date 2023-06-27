@@ -85,7 +85,7 @@ namespace TownOfUsReworked.Patches
                     var data = player?.Data;
 
                     if (collider.tag == "DeadBody" && ((isOP && (int)CustomGameOptions.WhoSeesDead is 1) || (!isOP && (int)CustomGameOptions.WhoSeesDead is 2) || (int)CustomGameOptions.
-                        WhoSeesDead is 0 || (CustomPlayer.LocalCustom.IsDead && CustomGameOptions.DeadSeeEverything)))
+                        WhoSeesDead is 0 || ConstantVariables.DeadSeeEverything))
                     {
                         var playerId = collider.GetComponent<DeadBody>().ParentId;
                         colorMap.Add(GameData.Instance.GetPlayerById(playerId).DefaultOutfit.ColorId);
@@ -111,7 +111,7 @@ namespace TownOfUsReworked.Patches
         public static bool Prefix(MapCountOverlay __instance)
         {
             var localPlayer = CustomPlayer.Local;
-            var isOP = localPlayer.Is(RoleEnum.Operative) || (CustomPlayer.LocalCustom.IsDead && CustomGameOptions.DeadSeeEverything);
+            var isOP = localPlayer.Is(RoleEnum.Operative) || ConstantVariables.DeadSeeEverything;
 
             if (!isOP)
                 isOP = localPlayer.Is(RoleEnum.Retributionist) && ((Retributionist)Role.LocalRole).IsOP;

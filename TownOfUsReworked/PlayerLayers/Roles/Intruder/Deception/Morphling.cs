@@ -37,7 +37,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Utils.Morph(Player, MorphedPlayer);
             Enabled = true;
 
-            if (IsDead || MeetingHud.Instance)
+            if (IsDead || Utils.Meeting)
                 TimeRemaining = 0f;
         }
 

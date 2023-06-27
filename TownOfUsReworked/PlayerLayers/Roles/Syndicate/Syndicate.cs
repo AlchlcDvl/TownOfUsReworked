@@ -4,7 +4,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     {
         public DateTime LastKilled;
         public CustomButton KillButton;
-        public string CommonAbilities;
+        public string CommonAbilities => (RoleType is not RoleEnum.Anarchist and not RoleEnum.Sidekick && RoleAlignment != RoleAlignment.SyndicateKill ? "- With the Chaos Drive, you can " +
+            "kill players directly" : "- You can kill") + (CustomGameOptions.AltImps && (CustomGameOptions.IntrudersCanSabotage || (IsDead && CustomGameOptions.GhostsCanSabotage)) ?
+            "- You can sabotage the systems to distract the <color=#8CFFFFFF>Crew</color>" : "");
         public bool HoldsDrive => Player == DriveHolder || (CustomGameOptions.GlobalDrive && SyndicateHasChaosDrive);
 
         protected Syndicate(PlayerControl player) : base(player)
@@ -14,9 +16,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Color = Colors.Syndicate;
             Objectives = () => SyndicateWinCon;
             BaseFaction = Faction.Syndicate;
-            CommonAbilities = (RoleType is not RoleEnum.Anarchist and not RoleEnum.Sidekick && RoleAlignment != RoleAlignment.SyndicateKill ? "- With the Chaos Drive, you can kill " +
-                "players directly" : "- You can kill") + (CustomGameOptions.AltImps && CustomGameOptions.IntrudersCanSabotage ? "- You can sabotage the systems to distract the " +
-                "<color=#8CFFFFFF>Crew</color>" : "");
             KillButton = new(this, "SyndicateKill", AbilityTypes.Direct, "ActionSecondary", Kill, Exception);
             Player.Data.SetImpostor(true);
         }
@@ -39,7 +38,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (IsRecruit)
             {
                 var jackal = Player.GetJackal();
-
                 team.Add(jackal.Player);
                 team.Add(jackal.GoodRecruit);
             }

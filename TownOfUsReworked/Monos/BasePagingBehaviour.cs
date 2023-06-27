@@ -1,8 +1,8 @@
 ﻿namespace TownOfUsReworked.Monos
 {
-    public class AbstractPagingBehaviour : MonoBehaviour
+    public class BasePagingBehaviour : MonoBehaviour
     {
-        public AbstractPagingBehaviour(IntPtr ptr) : base(ptr) {}
+        public BasePagingBehaviour(IntPtr ptr) : base(ptr) {}
 
         private int _page;
         public virtual int MaxPerPage => 15;

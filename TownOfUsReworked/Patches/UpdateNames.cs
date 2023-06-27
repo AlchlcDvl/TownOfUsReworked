@@ -11,7 +11,7 @@ namespace TownOfUsReworked.Patches
             if (!AssetManager.SoundEffects.ContainsKey("Kill") && CustomPlayer.Local)
                 AssetManager.SoundEffects.Add("Kill", CustomPlayer.Local.KillSfx);
 
-            if (ConstantVariables.Inactive || ConstantVariables.IsHnS || MeetingHud.Instance || LobbyBehaviour.Instance)
+            if (ConstantVariables.Inactive || ConstantVariables.IsHnS || Utils.Meeting || LobbyBehaviour.Instance)
                 return;
 
             CustomPlayer.AllPlayers.ForEach(x => x.SetName());

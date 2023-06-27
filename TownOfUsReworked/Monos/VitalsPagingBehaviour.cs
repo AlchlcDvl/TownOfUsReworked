@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Monos
 {
-    public class VitalsPagingBehaviour : AbstractPagingBehaviour
+    public class VitalsPagingBehaviour : BasePagingBehaviour
     {
         public VitalsPagingBehaviour(IntPtr ptr) : base(ptr) {}
 

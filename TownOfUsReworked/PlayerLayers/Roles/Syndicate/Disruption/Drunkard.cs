@@ -38,7 +38,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
 
-            if (MeetingHud.Instance || (ConfusedPlayer == null && !HoldsDrive))
+            if (Utils.Meeting || (ConfusedPlayer == null && !HoldsDrive))
                 TimeRemaining = 0f;
         }
 

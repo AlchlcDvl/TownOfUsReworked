@@ -92,6 +92,8 @@ namespace TownOfUsReworked.Extensions
             return role.RoleType;
         }
 
+        public static RoleEnum GetRole(this PlayerVoteArea player) => Utils.PlayerByVoteArea(player).GetRole();
+
         public static AbilityEnum GetAbility(this PlayerControl player)
         {
             if (player == null)
@@ -117,6 +119,8 @@ namespace TownOfUsReworked.Extensions
 
             return role.RoleAlignment;
         }
+
+        public static RoleAlignment GetAlignment(this PlayerVoteArea player) => Utils.PlayerByVoteArea(player).GetAlignment();
 
         public static Faction GetFaction(this PlayerVoteArea player) => Utils.PlayerByVoteArea(player).GetFaction();
 
@@ -244,20 +248,20 @@ namespace TownOfUsReworked.Extensions
             return null;
         }
 
-        public static InspectorResults GetActorList(this PlayerControl player)
+        public static Role GetActorList(this PlayerControl player)
         {
             if (!player.Is(RoleEnum.Actor))
-                return InspectorResults.None;
+                return null;
 
             var role = Role.GetRole(player);
 
             if (role == null)
-                return InspectorResults.None;
+                return null;
 
             if (player.Is(RoleEnum.Actor))
-                return ((Actor)role).PretendRoles;
+                return ((Actor)role).TargetRole;
 
-            return InspectorResults.IsBasic;
+            return null;
         }
 
         public static bool IsGATarget(this PlayerVoteArea player) => Utils.PlayerByVoteArea(player).IsGATarget();
@@ -301,6 +305,8 @@ namespace TownOfUsReworked.Extensions
         public static bool IsCryoDoused(this PlayerControl player) => Role.GetRoles<Cryomaniac>(RoleEnum.Cryomaniac).Any(role => role.Doused.Contains(player.PlayerId));
 
         public static bool IsProtectedMonarch(this PlayerControl player) => Role.GetRoles<Monarch>(RoleEnum.Monarch).Any(role => role.Protected && role.Player == player);
+
+        public static bool IsFaithful(this PlayerControl player) => Role.GetRole(player).Faithful;
 
         public static bool IsBlackmailed(this PlayerControl player)
         {
@@ -679,7 +685,7 @@ namespace TownOfUsReworked.Extensions
             if (ConstantVariables.IsHnS)
                 return playerInfo?.IsImpostor() == true;
             else if (player == null || playerInfo == null || (playerInfo.IsDead && !player.IsPostmortal()) || playerInfo.Disconnected || (int)CustomGameOptions.WhoCanVent is 3 ||
-                player.inMovingPlat || player.onLadder || MeetingHud.Instance || ConstantVariables.Inactive)
+                player.inMovingPlat || player.onLadder || Utils.Meeting || ConstantVariables.Inactive)
             {
                 return false;
             }
@@ -691,8 +697,6 @@ namespace TownOfUsReworked.Extensions
 
             if (playerRole == null)
                 mainflag = playerInfo.IsImpostor();
-            else if (playerRole.IsBlocked)
-                mainflag = false;
             else if (player.Is(ObjectifierEnum.Mafia))
                 mainflag = CustomGameOptions.MafVent;
             else if (player.Is(ObjectifierEnum.Corrupted))
@@ -1017,9 +1021,6 @@ namespace TownOfUsReworked.Extensions
 
         public static void RoleUpdate(this Role newRole, Role former)
         {
-            if (!newRole || !former)
-                return;
-
             CustomButton.AllButtons.Where(x => x.Owner == former).ToList().ForEach(x => x.Destroy());
             CustomArrow.AllArrows.Where(x => x.Owner == former.Player).ToList().ForEach(x => x.Destroy());
             former.OnLobby();

@@ -72,7 +72,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             MarkedPlayer = MarkButton.TargetPlayer;
         }
 
-        public bool Exception1(PlayerControl player) => player == MarkedPlayer || player.Is(Faction) || player.Is(SubFaction);
+        public bool Exception1(PlayerControl player) => player == MarkedPlayer || player.Is(Faction) || (player.Is(SubFaction) && SubFaction != SubFaction.None);
 
         public override void UpdateHud(HudManager __instance)
         {
