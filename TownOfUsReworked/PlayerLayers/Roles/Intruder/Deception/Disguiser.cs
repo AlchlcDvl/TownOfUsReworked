@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Disguiser : IntruderRole
+    public class Disguiser : Intruder
     {
         public CustomButton DisguiseButton;
         public CustomButton MeasureButton;

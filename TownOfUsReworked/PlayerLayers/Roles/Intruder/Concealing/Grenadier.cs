@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Grenadier : IntruderRole
+    public class Grenadier : Intruder
     {
         public CustomButton FlashButton;
         public bool Enabled;
@@ -63,14 +63,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             foreach (var player in ClosestPlayers)
             {
-                if (PlayerControl.LocalPlayer == player)
+                if (CustomPlayer.Local == player)
                 {
                     HudManager.Instance.FullScreen.enabled = true;
                     HudManager.Instance.FullScreen.gameObject.active = true;
 
                     if (TimeRemaining > CustomGameOptions.GrenadeDuration - 0.5f)
                     {
-                        float fade = (TimeRemaining - CustomGameOptions.GrenadeDuration) * (-2f);
+                        var fade = (TimeRemaining - CustomGameOptions.GrenadeDuration) * (-2f);
 
                         if (ShouldPlayerBeBlinded(player))
                             HudManager.Instance.FullScreen.color = Color32.Lerp(NormalVision, BlindVision, fade);
@@ -93,7 +93,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     }
                     else if (TimeRemaining < 0.5f)
                     {
-                        float fade2 = (TimeRemaining * -2.0f) + 1.0f;
+                        var fade2 = (TimeRemaining * -2.0f) + 1.0f;
 
                         if (ShouldPlayerBeBlinded(player))
                             HudManager.Instance.FullScreen.color = Color32.Lerp(BlindVision, NormalVision, fade2);
@@ -150,7 +150,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     break;
 
                 case 5:
-                    fs = PlayerControl.LocalPlayer.myTasks.Any(x => x.TaskType == ModCompatibility.RetrieveOxygenMask);
+                    fs = CustomPlayer.Local.myTasks.Any(x => x.TaskType == ModCompatibility.RetrieveOxygenMask);
                     break;
 
                 case 6:

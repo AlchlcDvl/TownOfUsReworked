@@ -1,6 +1,6 @@
 ﻿namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class SerialKiller : NeutralRole
+    public class SerialKiller : Neutral
     {
         public CustomButton BloodlustButton;
         public CustomButton StabButton;

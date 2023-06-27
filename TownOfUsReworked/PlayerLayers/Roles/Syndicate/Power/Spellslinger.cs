@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Spellslinger : SyndicateRole
+    public class Spellslinger : Syndicate
     {
         public CustomButton SpellButton;
         public List<byte> Spelled = new();
@@ -40,12 +40,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 return;
 
             Spelled.Add(player.PlayerId);
-            Spelled.RemoveAll(x => Utils.PlayerById(x).Data.IsDead || Utils.PlayerById(x).Data.Disconnected);
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
             writer.Write((byte)ActionsRPC.Spell);
             writer.Write(PlayerId);
             writer.Write(player.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
+
+            if (!HoldsDrive)
+                SpellCount++;
         }
 
         public void HitSpell()
@@ -63,10 +65,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 var interact = Utils.Interact(Player, SpellButton.TargetPlayer);
 
                 if (interact[3])
-                {
                     Spell(SpellButton.TargetPlayer);
-                    SpellCount++;
-                }
 
                 if (interact[0])
                     LastSpelled = DateTime.UtcNow;
@@ -74,7 +73,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     LastSpelled.AddSeconds(CustomGameOptions.ProtectKCReset);
             }
 
-            if (Spelled.Count >= PlayerControl.AllPlayerControls.Count(x => !x.Data.IsDead && !x.Data.Disconnected && !x.Is(Faction)))
+            if (Spelled.Count >= CustomPlayer.AllPlayers.Count(x => !x.Data.IsDead && !x.Data.Disconnected && !x.Is(Faction)))
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
 

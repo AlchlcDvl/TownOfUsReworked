@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Consort : IntruderRole
+    public class Consort : Intruder
     {
         public DateTime LastBlock;
         public float TimeRemaining;

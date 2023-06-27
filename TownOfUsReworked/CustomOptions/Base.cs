@@ -33,11 +33,11 @@ namespace TownOfUsReworked.CustomOptions
         public virtual void OptionCreated()
         {
             Setting.name = Setting.gameObject.name = Name;
-            Setting.Title = (StringNames)(999000 - ID);
+            Setting.Title = (StringNames)(9999000 - ID);
             Setting.OnValueChanged = new Action<OptionBehaviour>(_ => {});
         }
 
-        public void Set(object value)
+        public void Set(object value, object otherValue = null)
         {
             Value = value;
 
@@ -63,6 +63,11 @@ namespace TownOfUsReworked.CustomOptions
                 var newValue = (int)Value;
                 str.Selected = str.oldValue = newValue;
                 str.ValueText.text = ToString();
+            }
+            else if (Setting is RoleOptionSetting role)
+            {
+                role.ChanceText.text = value.ToString() + "%";
+                role.CountText.text = otherValue.ToString();
             }
         }
 

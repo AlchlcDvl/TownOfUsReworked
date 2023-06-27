@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Teleporter : IntruderRole
+    public class Teleporter : Intruder
     {
         public CustomButton TeleportButton;
         public DateTime LastTeleport;

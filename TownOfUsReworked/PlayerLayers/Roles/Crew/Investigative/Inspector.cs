@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Inspector : CrewRole
+    public class Inspector : Crew
     {
         public DateTime LastInspected;
         public List<byte> Inspected = new();

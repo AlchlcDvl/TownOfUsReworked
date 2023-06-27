@@ -64,6 +64,12 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
 
             Side = role.Faction;
             role.RoleAlignment = role.RoleAlignment.GetNewAlignment(role.Faction);
+
+            if (Local && !IntroCutscene.Instance)
+                Utils.Flash(Color);
+
+            if (CustomPlayer.Local.Is(RoleEnum.Mystic) && !IntroCutscene.Instance)
+                Utils.Flash(Colors.Mystic);
         }
 
         public override void UpdateHud(HudManager __instance)
@@ -72,11 +78,11 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
 
             if (Defect && !Turned)
             {
-                TurnSides();
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
                 writer.Write((byte)TurnRPC.TurnSides);
                 writer.Write(PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
+                TurnSides();
             }
         }
     }

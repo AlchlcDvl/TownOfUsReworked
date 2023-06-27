@@ -13,6 +13,7 @@ namespace TownOfUsReworked.CustomOptions
         public static float InitialCooldowns => Generate.InitialCooldowns.Get();
         public static float ReportDistance => Generate.ReportDistance.Get();
         public static float ChatCooldown => Generate.ChatCooldown.Get();
+        public static int ChatCharacterLimit => (int)Generate.ChatCharacterLimit.Get();
         public static int DiscussionTime => (int)Generate.DiscussionTime.Get();
         public static int VotingTime => (int)Generate.VotingTime.Get();
         public static TaskBarMode TaskBarMode => (TaskBarMode)Generate.TaskBarMode.Get();
@@ -285,7 +286,7 @@ namespace TownOfUsReworked.CustomOptions
         public static NoSolo NoSolo => (NoSolo)Generate.NoSolo.Get();
         public static bool CustomNeutColors => Generate.CustomNeutColors.Get();
         public static bool NeutralsVent => Generate.NeutralsVent.Get();
-        public static bool NeutralEvilsEndGame => Generate.NeutralEvilsEndGame.Get();
+        public static bool AvoidNeutralKingmakers => Generate.AvoidNeutralKingmakers.Get();
         public static int NeutralMax => (int)Generate.NeutralMax.Get();
         public static int NeutralMin => (int)Generate.NeutralMin.Get();
         public static bool NeutralFlashlight => Generate.NeutralFlashlight.Get();
@@ -333,7 +334,6 @@ namespace TownOfUsReworked.CustomOptions
         public static float CoronerArrowDuration => Generate.CoronerArrowDuration.Get();
         public static bool UniqueCoroner => Generate.UniqueCoroner.Get();
         public static int CoronerCount => (int)Generate.CoronerCount.Get();
-        public static int CompareLimit => (int)Generate.CompareLimit.Get();
         public static float CoronerKillerNameTime => Generate.CoronerKillerNameTime.Get();
         public static float CompareCooldown => Generate.CompareCooldown.Get();
         public static float AutopsyCooldown => Generate.AutopsyCooldown.Get();
@@ -560,9 +560,6 @@ namespace TownOfUsReworked.CustomOptions
 
         //Executioner Settings
         public static int ExecutionerCount => (int)Generate.ExecutionerCount.Get();
-        public static bool ExeCanHaveNeutralTargets => Generate.ExeCanHaveNeutralTargets.Get();
-        public static bool ExeCanHaveIntruderTargets => Generate.ExeCanHaveIntruderTargets.Get();
-        public static bool ExeCanHaveSyndicateTargets => Generate.ExeCanHaveSyndicateTargets.Get();
         public static bool ExeCanWinBeyondDeath => Generate.ExeCanWinBeyondDeath.Get();
         public static bool VigiKillsExecutioner => Generate.VigiKillsExecutioner.Get();
         public static bool ExeVent => Generate.ExeVent.Get();
@@ -835,6 +832,8 @@ namespace TownOfUsReworked.CustomOptions
         public static float CollideRange => Generate.CollideRange.Get();
         public static float CollideRangeIncrease => Generate.CollideRangeIncrease.Get();
         public static bool UniqueCollider => Generate.UniqueCollider.Get();
+        public static bool CollideResetsCooldown => Generate.CollideResetsCooldown.Get();
+        public static bool ChargeCooldownsLinked => Generate.ChargeCooldownsLinked.Get();
 
         //Shapeshifter Settings
         public static int ShapeshifterCount => (int)Generate.ShapeshifterCount.Get();
@@ -1168,81 +1167,64 @@ namespace TownOfUsReworked.CustomOptions
 
         //NB Settings
         public static int NBMax => (int)Generate.NBMax.Get();
-        public static int NBMin => (int)Generate.NBMin.Get();
         public static bool VigiKillsNB => Generate.VigiKillsNB.Get();
 
         //NK Settings
         public static int NKMax => (int)Generate.NKMax.Get();
-        public static int NKMin => (int)Generate.NKMin.Get();
         public static bool NKHasImpVision => Generate.NKHasImpVision.Get();
         public static bool NKsKnow => Generate.NKsKnow.Get();
 
         //CSv Settings
         public static int CSvMax => (int)Generate.CSvMax.Get();
-        public static int CSvMin => (int)Generate.CSvMin.Get();
 
         //CA Settings
         public static int CAMax => (int)Generate.CAMax.Get();
-        public static int CAMin => (int)Generate.CAMin.Get();
 
         //CK Settings
         public static int CKMax => (int)Generate.CKMax.Get();
-        public static int CKMin => (int)Generate.CKMin.Get();
 
         //CS Settings
         public static int CSMax => (int)Generate.CSMax.Get();
-        public static int CSMin => (int)Generate.CSMin.Get();
 
         //CI Settings
         public static int CIMax => (int)Generate.CIMax.Get();
-        public static int CIMin => (int)Generate.CIMin.Get();
 
         //CP Settings
         public static int CPMax => (int)Generate.CPMax.Get();
-        public static int CPMin => (int)Generate.CPMin.Get();
 
         //IC Settings
         public static int ICMax => (int)Generate.ICMax.Get();
-        public static int ICMin => (int)Generate.ICMin.Get();
 
         //ID Settings
         public static int IDMax => (int)Generate.IDMax.Get();
-        public static int IDMin => (int)Generate.IDMin.Get();
 
         //IS Settings
         public static int ISMax => (int)Generate.ISMax.Get();
-        public static int ISMin => (int)Generate.ISMin.Get();
 
         //IK Settings
         public static int IKMax => (int)Generate.IKMax.Get();
-        public static int IKMin => (int)Generate.IKMin.Get();
 
         //SD Settings
         public static int SDMax => (int)Generate.SDMax.Get();
-        public static int SDMin => (int)Generate.SDMin.Get();
 
         //SyK Settings
         public static int SyKMax => (int)Generate.SyKMax.Get();
-        public static int SyKMin => (int)Generate.SyKMin.Get();
 
         //SSu Settings
         public static int SSuMax => (int)Generate.SSuMax.Get();
-        public static int SSuMin => (int)Generate.SSuMin.Get();
 
         //SP Settings
         public static int SPMax => (int)Generate.SPMax.Get();
-        public static int SPMin => (int)Generate.SPMin.Get();
 
         //NE Settings
         public static int NEMax => (int)Generate.NEMax.Get();
-        public static int NEMin => (int)Generate.NEMin.Get();
+        public static bool NeutralEvilsEndGame => Generate.NeutralEvilsEndGame.Get();
 
         //NN Settings
         public static int NNMax => (int)Generate.NNMax.Get();
-        public static int NNMin => (int)Generate.NNMin.Get();
+        public static bool NNHasImpVision => Generate.NNHasImpVision.Get();
 
         //NH Settings
         public static int NHMax => (int)Generate.NHMax.Get();
-        public static int NHMin => (int)Generate.NHMin.Get();
     }
 }

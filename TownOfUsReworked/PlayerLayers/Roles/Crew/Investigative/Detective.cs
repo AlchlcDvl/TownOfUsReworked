@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Detective : CrewRole
+    public class Detective : Crew
     {
         public DateTime LastExamined;
         public CustomButton ExamineButton;
@@ -74,7 +74,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             base.UpdateHud(__instance);
             ExamineButton.Update("EXAMINE", ExamineTimer(), CustomGameOptions.ExamineCd);
 
-            if (!PlayerControl.LocalPlayer.Data.IsDead)
+            if (!IsDead)
             {
                 Time2 += Time.deltaTime;
 
@@ -83,9 +83,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     Time2 -= CustomGameOptions.FootprintInterval;
                     Even++;
 
-                    foreach (var player in PlayerControl.AllPlayerControls)
+                    foreach (var player in CustomPlayer.AllPlayers)
                     {
-                        if (player.Data.IsDead || player.Data.Disconnected || player == PlayerControl.LocalPlayer)
+                        if (player.Data.IsDead || player.Data.Disconnected || player == CustomPlayer.Local)
                             continue;
 
                         if (!AllPrints.Any(print => Vector3.Distance(print.Position, Position(player)) < 0.5f && print.Color.a > 0.5 && print.PlayerId == player.PlayerId))

@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Tracker : CrewRole
+    public class Tracker : Crew
     {
         public Dictionary<byte, CustomArrow> TrackerArrows = new();
         public DateTime LastTracked;
@@ -36,9 +36,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void DestroyArrow(byte targetPlayerId)
         {
-            var arrow = TrackerArrows.FirstOrDefault(x => x.Key == targetPlayerId);
-            arrow.Value?.Destroy();
-            TrackerArrows.Remove(arrow.Key);
+            TrackerArrows.FirstOrDefault(x => x.Key == targetPlayerId).Value?.Destroy();
+            TrackerArrows.Remove(targetPlayerId);
         }
 
         public override void OnLobby()
@@ -74,7 +73,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             base.UpdateHud(__instance);
             TrackButton.Update("TRACK", TrackerTimer(), CustomGameOptions.TrackCd, UsesLeft, ButtonUsable, ButtonUsable);
 
-            if (PlayerControl.LocalPlayer.Data.IsDead)
+            if (CustomPlayer.LocalCustom.IsDead)
                 OnLobby();
             else
             {
@@ -83,13 +82,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     var player = Utils.PlayerById(pair.Key);
                     var body = Utils.BodyById(pair.Key);
 
-                    if (player.Data.Disconnected || (player.Data.IsDead && !body))
+                    if (player == null || player.Data.Disconnected || (player.Data.IsDead && !body))
                     {
                         DestroyArrow(pair.Key);
                         continue;
                     }
 
-                    pair.Value.Update(player.Data.IsDead ? player.GetTruePosition() : body.TruePosition, player.GetPlayerColor());
+                    pair.Value?.Update(player.Data.IsDead ? player.transform.position : body.transform.position, player.GetPlayerColor());
                 }
             }
         }

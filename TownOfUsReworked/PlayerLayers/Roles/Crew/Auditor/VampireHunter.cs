@@ -1,9 +1,9 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class VampireHunter : CrewRole
+    public class VampireHunter : Crew
     {
         public DateTime LastStaked;
-        public static bool VampsDead => !PlayerControl.AllPlayerControls.Any(x => !x.Data.IsDead && !x.Data.Disconnected && x.Is(SubFaction.Undead));
+        public static bool VampsDead => !CustomPlayer.AllPlayers.Any(x => !x.Data.IsDead && !x.Data.Disconnected && x.Is(SubFaction.Undead));
         public CustomButton StakeButton;
 
         public VampireHunter(PlayerControl player) : base(player)
@@ -36,7 +36,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var newRole = new Vigilante(Player);
             newRole.RoleUpdate(this);
 
-            if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
+            if (Local && !IntroCutscene.Instance)
+                Utils.Flash(Colors.Vigilante);
+
+            if (CustomPlayer.Local.Is(RoleEnum.Seer) && !IntroCutscene.Instance)
                 Utils.Flash(Colors.Seer);
         }
 

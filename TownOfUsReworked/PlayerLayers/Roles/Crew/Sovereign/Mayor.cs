@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Mayor : CrewRole
+    public class Mayor : Crew
     {
         public bool RoundOne;
         public CustomButton RevealButton;

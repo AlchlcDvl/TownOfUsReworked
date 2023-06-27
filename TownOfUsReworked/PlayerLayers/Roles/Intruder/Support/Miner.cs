@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Miner : IntruderRole
+    public class Miner : Intruder
     {
         public CustomButton MineButton;
         public DateTime LastMined;

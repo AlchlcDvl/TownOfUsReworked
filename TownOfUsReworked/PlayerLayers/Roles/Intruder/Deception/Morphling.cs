@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Morphling : IntruderRole
+    public class Morphling : Intruder
     {
         public CustomButton MorphButton;
         public CustomButton SampleButton;

@@ -37,7 +37,7 @@ namespace TownOfUsReworked.Objects
 
         private void Start()
         {
-            GObject = new("Footprint");
+            GObject = new("Footprint") { layer = 11 };
             GObject.AddSubmergedComponent(ModCompatibility.ElevatorMover);
             GObject.transform.position = Position;
             GObject.transform.Rotate(Vector3.forward * Vector2.SignedAngle(Vector2.up, Velocity));
@@ -51,11 +51,7 @@ namespace TownOfUsReworked.Objects
             GObject.SetActive(true);
         }
 
-        private void Destroy()
-        {
-            GObject.Destroy();
-            Role.AllPrints.Remove(this);
-        }
+        private void Destroy() => GObject.Destroy();
 
         public bool Update()
         {

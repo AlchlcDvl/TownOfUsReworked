@@ -1,10 +1,10 @@
 ﻿namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Arsonist : NeutralRole
+    public class Arsonist : Neutral
     {
         public CustomButton IgniteButton;
         public CustomButton DouseButton;
-        public bool LastKiller => !PlayerControl.AllPlayerControls.Any(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) ||
+        public bool LastKiller => !CustomPlayer.AllPlayers.Any(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) ||
             x.Is(RoleAlignment.CrewKill) || x.Is(RoleAlignment.CrewAudit) || x.Is(RoleAlignment.NeutralPros) || (x.Is(RoleAlignment.NeutralKill) && x != Player))) &&
             CustomGameOptions.ArsoLastKillerBoost;
         public List<byte> Doused = new();

@@ -34,7 +34,7 @@ namespace TownOfUsReworked.Patches
                 SettingsButton = UObject.Instantiate(__instance.MapButton.gameObject, __instance.MapButton.transform.parent);
                 SettingsButton.GetComponent<SpriteRenderer>().sprite = AssetManager.GetSprite("CurrentSettings");
                 SettingsButton.GetComponent<PassiveButton>().OnClick = new();
-                SettingsButton.GetComponent<PassiveButton>().OnClick.AddListener((Action)(() => OpenSettings(__instance)));
+                SettingsButton.GetComponent<PassiveButton>().OnClick.AddListener(new Action(OpenSettings));
             }
 
             Pos = __instance.MapButton.transform.localPosition + new Vector3(0, -0.66f, 0f);
@@ -47,10 +47,10 @@ namespace TownOfUsReworked.Patches
                 RoleCardButton = UObject.Instantiate(__instance.MapButton.gameObject, __instance.MapButton.transform.parent);
                 RoleCardButton.GetComponent<SpriteRenderer>().sprite = AssetManager.GetSprite("Help");
                 RoleCardButton.GetComponent<PassiveButton>().OnClick = new();
-                RoleCardButton.GetComponent<PassiveButton>().OnClick.AddListener((Action)(() => OpenRoleCard(__instance)));
+                RoleCardButton.GetComponent<PassiveButton>().OnClick.AddListener(new Action(OpenRoleCard));
             }
 
-            Pos2 = Pos + new Vector3(0, -0.66f, 0f);
+            Pos2 = Pos + new Vector3(0, -0.66f, -51f);
             RoleCardButton.SetActive(__instance.MapButton.gameObject.active && !(MapBehaviour.Instance && MapBehaviour.Instance.IsOpen) && ConstantVariables.IsNormal &&
                 !IntroCutscene.Instance);
             RoleCardButton.transform.localPosition = Pos2;
@@ -59,18 +59,17 @@ namespace TownOfUsReworked.Patches
             {
                 ZoomButton = UObject.Instantiate(__instance.MapButton.gameObject, __instance.MapButton.transform.parent);
                 ZoomButton.GetComponent<PassiveButton>().OnClick = new();
-                ZoomButton.GetComponent<PassiveButton>().OnClick.AddListener(new Action(Zoom));
+                ZoomButton.GetComponent<PassiveButton>().OnClick.AddListener(new Action(ClickZoom));
             }
 
             Pos3 = Pos2 + new Vector3(0, -0.66f, 0f);
             ZoomButton.SetActive(__instance.MapButton.gameObject.active && !(MapBehaviour.Instance && MapBehaviour.Instance.IsOpen) && ConstantVariables.IsNormal &&
-                PlayerControl.LocalPlayer.Data.IsDead && (!PlayerControl.LocalPlayer.IsPostmortal() || (PlayerControl.LocalPlayer.IsPostmortal() && PlayerControl.LocalPlayer.Caught())) &&
-                !IntroCutscene.Instance);
+                CustomPlayer.LocalCustom.IsDead && (! CustomPlayer.Local.IsPostmortal() || (CustomPlayer.Local.IsPostmortal() && CustomPlayer.Local.Caught())) && !IntroCutscene.Instance);
             ZoomButton.transform.localPosition = Pos3;
             ZoomButton.GetComponent<SpriteRenderer>().sprite = AssetManager.GetSprite(Zooming ? "Plus" : "Minus");
 
             if (RoleInfo)
-                RoleInfo.text = PlayerControl.LocalPlayer.RoleCardInfo();
+                RoleInfo.text = CustomPlayer.Local.RoleCardInfo();
         }
 
         public static void Zoom()
@@ -87,20 +86,26 @@ namespace TownOfUsReworked.Patches
             ResolutionManager.ResolutionChanged.Invoke((float)Screen.width / Screen.height);
         }
 
-        public static void OpenSettings(HudManager __instance)
+        private static void ClickZoom()
         {
-            SettingsActive = !SettingsActive;
-            __instance.GameSettings.gameObject.SetActive(SettingsActive);
+            if (!MeetingHud.Instance)
+                Zoom();
         }
 
-        public static void OpenRoleCard(HudManager __instance)
+        public static void OpenSettings()
+        {
+            SettingsActive = !SettingsActive;
+            HudManager.Instance.GameSettings.gameObject.SetActive(SettingsActive);
+        }
+
+        public static void OpenRoleCard()
         {
             if (!RoleInfo)
             {
-                RoleInfo = UObject.Instantiate(__instance.KillButton.cooldownTimerText, __instance.transform);
+                RoleInfo = UObject.Instantiate(HudManager.Instance.KillButton.cooldownTimerText, HudManager.Instance.transform);
                 RoleInfo.enableWordWrapping = false;
                 RoleInfo.transform.localScale = Vector3.one * 0.4f;
-                RoleInfo.transform.localPosition = new(0, 0, -1f);
+                RoleInfo.transform.localPosition = new(0, 0, -50f);
                 RoleInfo.alignment = TextAlignmentOptions.Center;
                 RoleInfo.gameObject.layer = 5;
             }
@@ -109,13 +114,13 @@ namespace TownOfUsReworked.Patches
             {
                 RoleCard = new GameObject("RoleCard") { layer = 5 }.AddComponent<SpriteRenderer>();
                 RoleCard.sprite = AssetManager.GetSprite("RoleCard");
-                RoleCard.transform.SetParent(__instance.transform);
-                RoleCard.transform.localPosition = new(0, 0, 0);
+                RoleCard.transform.SetParent(HudManager.Instance.transform);
+                RoleCard.transform.localPosition = new(0, 0, -49f);
                 RoleCard.transform.localScale *= 1.25f;
             }
 
             RoleCardActive = !RoleCardActive;
-            RoleInfo.text = PlayerControl.LocalPlayer.RoleCardInfo();
+            RoleInfo.text = CustomPlayer.Local.RoleCardInfo();
             RoleInfo.gameObject.SetActive(RoleCardActive);
             RoleCard.gameObject.SetActive(RoleCardActive);
         }

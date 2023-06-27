@@ -15,7 +15,7 @@
 
         public void Update()
         {
-            if (Renderer == null)
+            if (!Renderer || ColorUtils.OutOfBounds(Id))
                 return;
 
             ColorUtils.SetColor(Renderer, Id);

@@ -2,11 +2,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Role : PlayerLayer
     {
-        public static readonly List<Role> AllRoles = new();
-        public static readonly List<GameObject> Buttons = new();
-        public static readonly List<PlayerControl> Cleaned = new();
+        public readonly static List<Role> AllRoles = new();
+        public readonly static List<GameObject> Buttons = new();
+        public readonly static List<PlayerControl> Cleaned = new();
 
-        public static Role LocalRole => GetRole(PlayerControl.LocalPlayer);
+        public static Role LocalRole => GetRole(CustomPlayer.Local);
 
         public virtual void IntroPrefix(IntroCutscene._ShowTeam_d__36 __instance) {}
 
@@ -112,7 +112,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public bool IsSynDefect;
         public bool IsNeutDefect;
         public bool Faithful => !IsRecruit && !IsResurrected && !IsPersuaded && !IsBitten && !IsIntAlly && !IsIntFanatic && !IsIntTraitor && !IsSynAlly && !IsSynTraitor && !IsSynFanatic &&
-            !IsCrewAlly && !IsCrewDefect && !IsIntDefect && !IsSynDefect && !IsNeutDefect && !Player.Is(ObjectifierEnum.Corrupted) && !Player.Is(ObjectifierEnum.Mafia);
+            !IsCrewAlly && !IsCrewDefect && !IsIntDefect && !IsSynDefect && !IsNeutDefect && !Player.Is(ObjectifierEnum.Corrupted) && !Player.Is(ObjectifierEnum.Mafia) &&
+            !Player.IsWinningRival() && !Player.HasAliveLover();
 
         public override void UpdateHud(HudManager __instance)
         {
@@ -122,24 +123,36 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             __instance.PetButton.buttonLabelText.SetOutlineColor(FactionColor);
             __instance.ImpostorVentButton.buttonLabelText.SetOutlineColor(FactionColor);
             __instance.SabotageButton.buttonLabelText.SetOutlineColor(FactionColor);
-            __instance.SabotageButton.gameObject.SetActive(BaseFaction == Faction && !MeetingHud.Instance && !Player.inVent && !Player.inMovingPlat && ((Faction == Faction.Intruder &&
-                CustomGameOptions.IntrudersCanSabotage) || (Faction == Faction.Syndicate && CustomGameOptions.AltImps)));
+            __instance.SabotageButton.gameObject.SetActive(BaseFaction == Faction && !MeetingHud.Instance && CustomGameOptions.IntrudersCanSabotage && (Faction == Faction.Intruder ||
+                (Faction == Faction.Syndicate && CustomGameOptions.AltImps)));
             Player.RegenTask();
 
             foreach (var pair in DeadArrows)
             {
                 var player = Utils.PlayerById(pair.Key);
-                pair.Value.Update(player.transform.position);
+
+                if (player == null)
+                {
+                    DestroyArrowD(pair.Key);
+                    continue;
+                }
+
+                pair.Value?.Update(player.transform.position);
             }
 
             foreach (var yeller in Modifier.GetModifiers<Yeller>(ModifierEnum.Yeller))
             {
                 if (yeller.Player != Player)
                 {
-                    if (!YellerArrows.ContainsKey(yeller.PlayerId))
-                        YellerArrows.Add(yeller.PlayerId, new(Player, Colors.Yeller));
+                    if (!yeller.IsDead)
+                    {
+                        if (!YellerArrows.ContainsKey(yeller.PlayerId))
+                            YellerArrows.Add(yeller.PlayerId, new(Player, Colors.Yeller));
+                        else
+                            YellerArrows[yeller.PlayerId].Update(yeller.Player.transform.position, Colors.Yeller);
+                    }
                     else
-                        YellerArrows[yeller.PlayerId].Update(yeller.Player.transform.position, Colors.Yeller);
+                        DestroyArrowY(yeller.PlayerId);
                 }
             }
 
@@ -148,22 +161,24 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 var player = Utils.PlayerById(pair.Key);
                 var body = Utils.BodyById(pair.Key);
 
-                if (player.Data.Disconnected || (player.Data.IsDead && !body))
+                if (player == null || player.Data.Disconnected || (player.Data.IsDead && !body))
                 {
                     DestroyArrowR(pair.Key);
                     continue;
                 }
 
-                pair.Value.Update(player.Data.IsDead ? player.transform.position : body.transform.position);
+                pair.Value?.Update(player.Data.IsDead ? player.transform.position : body.transform.position);
             }
 
             BombKillButton.Update("KILL", true, Bombed);
 
             if (__instance.TaskPanel)
             {
+                var tabText = __instance.TaskPanel.tab.transform.FindChild("TabText_TMP").GetComponent<TextMeshPro>();
+                var text = "";
+
                 if (Player.CanDoTasks())
                 {
-                    var tabText = __instance.TaskPanel.tab.transform.FindChild("TabText_TMP").GetComponent<TextMeshPro>();
                     var color = "FF0000FF";
 
                     if (TasksDone)
@@ -171,10 +186,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     else if (TasksCompleted > 0)
                         color = "FFFF00FF";
 
-                    tabText.SetText($"Tasks <color=#{color}>({TasksCompleted}/{TotalTasks})</color>");
+                    text = $"Tasks <color=#{color}>({TasksCompleted}/{TotalTasks})</color>";
                 }
                 else
-                    __instance.TaskPanel.tab.transform.FindChild("TabText_TMP").GetComponent<TextMeshPro>().SetText("Fake Tasks");
+                    text = "Fake Tasks";
+
+                tabText.SetText(text);
             }
 
             if (!IsDead && !(Faction == Faction.Syndicate && CustomGameOptions.TimeRewindImmunity))
@@ -208,9 +225,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void DestroyArrowR(byte targetPlayerId)
         {
-            var arrow = AllArrows.FirstOrDefault(x => x.Key == targetPlayerId);
-            arrow.Value?.Destroy();
-            AllArrows.Remove(arrow.Key);
+            AllArrows.FirstOrDefault(x => x.Key == targetPlayerId).Value?.Destroy();
+            AllArrows.Remove(targetPlayerId);
+        }
+
+        public void DestroyArrowY(byte targetPlayerId)
+        {
+            YellerArrows.FirstOrDefault(x => x.Key == targetPlayerId).Value?.Destroy();
+            YellerArrows.Remove(targetPlayerId);
+        }
+
+        public void DestroyArrowD(byte targetPlayerId)
+        {
+            DeadArrows.FirstOrDefault(x => x.Key == targetPlayerId).Value?.Destroy();
+            DeadArrows.Remove(targetPlayerId);
         }
 
         public override void OnMeetingEnd(MeetingHud __instance)
@@ -286,12 +314,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             foreach (var role in AllRoles)
                 role.CurrentChannel = ChatChannel.All;
 
-            foreach (var role2 in GetRoles<Retributionist>(RoleEnum.Retributionist))
+            foreach (var ret in GetRoles<Retributionist>(RoleEnum.Retributionist))
             {
-                role2.PlayerNumbers.Clear();
-                role2.Actives.Clear();
-                role2.MoarButtons.Clear();
-                role2.Selected = null;
+                ret.HideButtons();
+                ret.PlayerNumbers.Clear();
+                ret.Actives.Clear();
+                ret.MoarButtons.Clear();
+                ret.Selected = null;
             }
 
             foreach (var guesser in GetRoles<Guesser>(RoleEnum.Guesser))
@@ -304,6 +333,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 thief.HideButtons();
                 thief.OtherButtons.Clear();
+            }
+
+            foreach (var dict in GetRoles<Dictator>(RoleEnum.Dictator))
+            {
+                dict.HideButtons();
+                dict.Actives.Clear();
+                dict.MoarButtons.Clear();
+                dict.ToBeEjected.Clear();
             }
 
             foreach (var arso in GetRoles<Arsonist>(RoleEnum.Arsonist))
@@ -345,19 +382,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 if (spell.IsDead)
                     spell.Spelled.Clear();
             }
-
-            foreach (var dict in GetRoles<Dictator>(RoleEnum.Dictator))
-            {
-                dict.Actives.Clear();
-                dict.MoarButtons.Clear();
-                dict.ToBeEjected.Clear();
-            }
         }
 
-        public static readonly string IntrudersWinCon = "- Have a critical sabotage reach 0 seconds\n- Kill anyone who opposes the <color=#FF0000FF>Intruders</color>";
-        public static readonly string SyndicateWinCon = (CustomGameOptions.AltImps ? "- Have a critical sabotage reach 0 seconds\n" : "") + "- Cause chaos and kill off anyone who opposes "
+        public const string IntrudersWinCon = "- Have a critical sabotage reach 0 seconds\n- Kill anyone who opposes the <color=#FF0000FF>Intruders</color>";
+        public static string SyndicateWinCon => (CustomGameOptions.AltImps ? "- Have a critical sabotage reach 0 seconds\n" : "") + "- Cause chaos and kill off anyone who opposes "
             + "the <color=#008000FF>Syndicate</color>";
-        public static readonly string CrewWinCon = "- Finish all tasks\n- Eject all <color=#FF0000FF>evildoers</color>";
+        public const string CrewWinCon = "- Finish all tasks\n- Eject all <color=#FF0000FF>evildoers</color>";
 
         protected Role(PlayerControl player) : base(player)
         {
@@ -384,8 +414,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 if (!role2.IsMedic)
                     continue;
 
+                if (role2.ShieldedPlayer == null)
+                    continue;
+
                 if (role2.ShieldedPlayer.PlayerId == playerId && ((role2.Local && (int)CustomGameOptions.NotificationShield is 0 or 2) || CustomGameOptions.NotificationShield ==
-                    NotificationOptions.Everyone || (PlayerControl.LocalPlayer.PlayerId == playerId && (int)CustomGameOptions.NotificationShield is 1 or 2)))
+                    NotificationOptions.Everyone || (CustomPlayer.Local.PlayerId == playerId && (int)CustomGameOptions.NotificationShield is 1 or 2)))
                 {
                     Utils.Flash(role2.Color);
                 }
@@ -393,8 +426,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             foreach (var role2 in GetRoles<Medic>(RoleEnum.Medic))
             {
+                if (role2.ShieldedPlayer == null)
+                    continue;
+
                 if (role2.ShieldedPlayer.PlayerId == playerId && ((role2.Local && (int)CustomGameOptions.NotificationShield is 0 or 2) || CustomGameOptions.NotificationShield ==
-                    NotificationOptions.Everyone || (PlayerControl.LocalPlayer.PlayerId == playerId && (int)CustomGameOptions.NotificationShield is 1 or 2)))
+                    NotificationOptions.Everyone || (CustomPlayer.Local.PlayerId == playerId && (int)CustomGameOptions.NotificationShield is 1 or 2)))
                 {
                     Utils.Flash(role2.Color);
                 }

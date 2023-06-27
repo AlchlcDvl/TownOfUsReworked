@@ -1,0 +1,51 @@
+Welcome to Town Of Us Reworked %modversion%!
+
+Town Of Us Reworked is essentially a weird mishmash of code from Town Of Us Reactivated and its forks plus some of my own code. Credits to the parties have already been given. This mod has several reworks and additions which I believe fit the mod better. Plus, the more layers there are, the more unique a player's experience will be each game. If I've missed anything, let me know via Discord.
+
+Now that you know the basic info, if you want to know more try using the other info commands, visiting the GitHub page or joining my discord. Happy ejections!
+
+Changelog
+- Update: Merged changes from v4.0.6 of ToU-R
+- Update: Updated the mod to v2023.6.13
+- Update: Updated BepInEx to be.670
+- Update: Updated Reactor to 2.2.0-ci.234
+- Addition: Added the "Avoid Neutral Kingmakers" option which disables Survivors and Guardian Angels and kills off any Neutral (Evil) role after finishing their objective
+- Recode: Role generation and Chat commands have been recoded
+- Recode: Roleblocks have also received a slight recode
+- Buff: Coroner reference bodies now stack on top of each other and there is no longer a compare limit
+- Buff: Executioners, Guessers and Guardian Angels can pick their own targets within the first 2 rounds (to avoid having their chosen targets die early)
+- Nerf: Medics who haven't shielded yet can no longer shield revealed Mayors and Dictators
+- Improvement: Improved how players and chat messages are handled
+- Improvement: Added meeting compatibility to MCI so that switching between players during meetings is possible
+- Improvement: Disconnected players are now also added to the end game summary
+- Visual Fix: Fixed player visors sometimes being blue in color in meetings
+- Visual Fix: Fixed the Use button inverting colors when near a non-task interactable
+- Visual Fix: Fixed the intro fade sometimes disappearing
+- Bug Fix: Fixed shields not breaking properly
+- Bug Fix: Fixed colors occasionally bugging out
+- Bug Fix: Fixed Janitor and Godfather-Janitors teleporting bodies when dragging them
+- Bug Fix: Fixed incorrect guessing results being displayed
+- Bug Fix: Fixed players being warped into walls
+- Role Fix: Fixed Amnesiac, Shifter and Thief role changing bugging out buttons
+- Role Fix: Fixed Godfather and Rebel being able promote those they shouldn't
+- Temporary Removal: Custom cosmetics have been removed on account of the update, they'll return when I can fix the bugs relating to them
+- Removal: Removed the "Min" setting for all role alignments, they bug out role gen a lot so only the min setting for the factions and layers exist
+
+NOTE: THE MOD IS NOT YET COMPATIBLE WITH SUBMERGED
+
+Credits
+Reworked Creator - AlchlcDvl
+Reworked Contributors - Det, Oper, xerminator, TheGodOfAr0n, twix, Discussions, Jsushi
+Reworked Testers - DarkFedora, 50 IQ, shiftyrose, TheRealLordDragon, Adrian D, Halloween Apple, MadeBiJax, yes, Yeetus, BF
+Reworked Artists - Kara, lotty, Gun, XiezibanWrite, Ramces
+Moral Support - MyDragonBreath
+
+Base Mod Creator - Slushiegoose
+Base And Reactivated Maintainers - eDonnes, -H, MyDragonBreath, Term
+Base And Reactivated Contributors - XtraCube, OhMyGuus, Ruiner
+
+Derived Ideas (And Code) From - Woodi, NotHunter101, Evan91380, Hardel-DW, tomozbot, Eisbison, Malloris, K3ndo, Gendelo, Bavari, Scoom, Zeo, 5up, Brybry16, DorCoMaNdO, Galster, przebor, VincentVision, Lunastellia, Allul, Ottomated, BlankMediaGames, Submerged, DigiWorm0
+
+Hosting Modded Servers - miniduikboot, GD
+
+Full credits are on the GitHub page!

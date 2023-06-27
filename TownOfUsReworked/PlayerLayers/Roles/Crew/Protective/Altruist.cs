@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Altruist : CrewRole
+    public class Altruist : Crew
     {
         public CustomButton ReviveButton;
         public int UsesLeft;
@@ -46,7 +46,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Revive()
         {
-            if (!Reviving && PlayerControl.LocalPlayer.PlayerId == ReviveButton.TargetBody.ParentId)
+            if (!Reviving && CustomPlayer.Local.PlayerId == ReviveButton.TargetBody.ParentId)
             {
                 Utils.Flash(Color, CustomGameOptions.AltReviveDuration);
 
@@ -95,7 +95,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (UsesLeft == 0)
                 Utils.RpcMurderPlayer(Player, Player);
 
-            if (formerKiller.Contains(PlayerControl.LocalPlayer.Data.PlayerName))
+            if (formerKiller.Contains(CustomPlayer.LocalCustom.Data.PlayerName))
             {
                 LocalRole.AllArrows.Add(player.PlayerId, new(PlayerControl.LocalPlayer, Color));
                 Utils.Flash(Color);

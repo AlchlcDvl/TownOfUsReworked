@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Poisoner : SyndicateRole
+    public class Poisoner : Syndicate
     {
         public CustomButton PoisonButton;
         public CustomButton GlobalPoisonButton;

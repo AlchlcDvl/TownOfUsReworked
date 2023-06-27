@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Cannibal : NeutralRole
+    public class Cannibal : Neutral
     {
         public CustomButton EatButton;
         public int EatNeed;
@@ -8,6 +8,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public DateTime LastEaten;
         public Dictionary<byte, CustomArrow> BodyArrows = new();
         public bool EatWin => EatNeed == 0;
+        public bool CanEat => !Eaten || (Eaten && !CustomGameOptions.AvoidNeutralKingmakers);
 
         public Cannibal(PlayerControl player) : base(player)
         {
@@ -18,9 +19,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 + " body" : "");
             RoleAlignment = RoleAlignment.NeutralEvil;
             Color = CustomGameOptions.CustomNeutColors ? Colors.Cannibal : Colors.Neutral;
-            Objectives = () => $"- Eat {EatNeed} {(EatNeed == 1 ? "body" : "bodies")}";
+            Objectives = () => Eaten ? "- You are satiated" : $"- Eat {EatNeed} {(EatNeed == 1 ? "body" : "bodies")}";
             BodyArrows = new();
-            EatNeed = CustomGameOptions.CannibalBodyCount >= PlayerControl.AllPlayerControls.Count / 2 ? PlayerControl.AllPlayerControls.Count / 2 : CustomGameOptions.CannibalBodyCount;
+            EatNeed = CustomGameOptions.CannibalBodyCount >= CustomPlayer.AllPlayers.Count / 2 ? CustomPlayer.AllPlayers.Count / 2 : CustomGameOptions.CannibalBodyCount;
             Type = LayerEnum.Cannibal;
             EatButton = new(this, "Eat", AbilityTypes.Dead, "ActionSecondary", Eat);
             InspectorResults = InspectorResults.DealsWithDead;
@@ -39,9 +40,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void DestroyArrow(byte targetPlayerId)
         {
-            var arrow = BodyArrows.FirstOrDefault(x => x.Key == targetPlayerId);
-            arrow.Value?.Destroy();
-            BodyArrows.Remove(arrow.Key);
+            BodyArrows.FirstOrDefault(x => x.Key == targetPlayerId).Value?.Destroy();
+            BodyArrows.Remove(targetPlayerId);
         }
 
         public override void OnLobby()
@@ -54,7 +54,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            EatButton.Update("EAT", EatTimer(), CustomGameOptions.CannibalCd);
+            EatButton.Update("EAT", EatTimer(), CustomGameOptions.CannibalCd, true, CanEat);
 
             if (CustomGameOptions.EatArrows && !IsDead)
             {
@@ -72,7 +72,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     if (!BodyArrows.ContainsKey(body.ParentId))
                         BodyArrows.Add(body.ParentId, new(Player, Color));
 
-                    BodyArrows[body.ParentId].Update(body.TruePosition);
+                    BodyArrows[body.ParentId]?.Update(body.TruePosition);
                 }
             }
             else if (BodyArrows.Count != 0)
@@ -94,7 +94,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             EatNeed--;
             Coroutines.Start(Utils.FadeBody(EatButton.TargetBody));
 
-            if (EatWin)
+            if (EatWin && !Eaten)
             {
                 var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
                 writer2.Write((byte)WinLoseRPC.CannibalWin);

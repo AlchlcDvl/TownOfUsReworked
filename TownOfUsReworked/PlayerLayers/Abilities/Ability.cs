@@ -2,8 +2,8 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
 {
     public class Ability : PlayerLayer
     {
-        public static readonly List<Ability> AllAbilities = new();
-        public static Ability LocalAbility => GetAbility(PlayerControl.LocalPlayer);
+        public readonly static List<Ability> AllAbilities = new();
+        public static Ability LocalAbility => GetAbility(CustomPlayer.Local);
 
         public Ability(PlayerControl player) : base(player)
         {
@@ -30,6 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
 
             foreach (var swapper in GetAbilities<Swapper>(AbilityEnum.Swapper))
             {
+                swapper.HideButtons();
                 swapper.Actives.Clear();
                 swapper.MoarButtons.Clear();
                 swapper.Swap1 = null;
@@ -38,6 +39,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
 
             foreach (var pol in GetAbilities<Politician>(AbilityEnum.Politician))
             {
+                pol.DestroyAbstain();
                 pol.ExtraVotes.Clear();
 
                 if (pol.VoteBank < 0)

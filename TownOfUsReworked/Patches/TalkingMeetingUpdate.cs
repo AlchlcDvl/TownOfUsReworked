@@ -10,7 +10,7 @@ namespace TownOfUsReworked.Patches
                 if (role.BlackmailedPlayer == null)
                     continue;
 
-                if (role.BlackmailedPlayer == PlayerControl.LocalPlayer && !role.BlackmailedPlayer.Data.IsDead)
+                if (role.BlackmailedPlayer == CustomPlayer.Local && !role.BlackmailedPlayer.Data.IsDead)
                     Coroutines.Start(BlackmailShhh());
 
                 role.ShookAlready = false;
@@ -21,7 +21,7 @@ namespace TownOfUsReworked.Patches
                 if (role.BlackmailedPlayer == null || !role.IsBM)
                     continue;
 
-                if (role.BlackmailedPlayer == PlayerControl.LocalPlayer && !role.BlackmailedPlayer.Data.IsDead)
+                if (role.BlackmailedPlayer == CustomPlayer.Local && !role.BlackmailedPlayer.Data.IsDead)
                     Coroutines.Start(BlackmailShhh());
 
                 role.ShookAlready = false;
@@ -32,7 +32,7 @@ namespace TownOfUsReworked.Patches
                 if (role.SilencedPlayer == null)
                     continue;
 
-                if (role.SilencedPlayer == PlayerControl.LocalPlayer && !role.SilencedPlayer.Data.IsDead)
+                if (role.SilencedPlayer == CustomPlayer.Local && !role.SilencedPlayer.Data.IsDead)
                     Coroutines.Start(SilencedShhh());
 
                 role.ShookAlready = false;
@@ -43,7 +43,7 @@ namespace TownOfUsReworked.Patches
                 if (role.SilencedPlayer == null || !role.IsSil)
                     continue;
 
-                if (role.SilencedPlayer == PlayerControl.LocalPlayer && !role.SilencedPlayer.Data.IsDead)
+                if (role.SilencedPlayer == CustomPlayer.Local && !role.SilencedPlayer.Data.IsDead)
                     Coroutines.Start(BlackmailShhh());
 
                 role.ShookAlready = false;

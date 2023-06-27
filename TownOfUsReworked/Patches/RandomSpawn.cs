@@ -181,7 +181,7 @@ namespace TownOfUsReworked.Patches
                 new(6.5f, -4.5f, 0f) //Medbay bottom
             };
 
-            foreach (var player in PlayerControl.AllPlayerControls)
+            foreach (var player in CustomPlayer.AllPlayers)
             {
                 if (player.Data.Disconnected || player.Data.IsDead)
                     continue;
@@ -195,7 +195,7 @@ namespace TownOfUsReworked.Patches
                     _ => throw new NotImplementedException(),
                 };
 
-                player.NetTransform.SnapTo(new(location.x, location.y));
+                player.NetTransform.RpcSnapTo(new(location.x, location.y));
             }
         }
     }

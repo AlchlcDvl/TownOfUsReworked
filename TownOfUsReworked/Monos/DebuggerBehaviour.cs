@@ -3,22 +3,22 @@ using Reactor.Utilities.ImGui;
 namespace TownOfUsReworked.Monos
 {
     //Based off of Reactor.Debugger but merged with MCI and added some functions of my own for testing
-    public class Debugger : MonoBehaviour
+    public class DebuggerBehaviour : MonoBehaviour
     {
         [HideFromIl2Cpp]
         public DragWindow TestWindow { get; }
         private static int ControllingFigure;
 
-        public Debugger(IntPtr ptr) : base(ptr)
+        public DebuggerBehaviour(IntPtr ptr) : base(ptr)
         {
             TestWindow = new(new(20, 20, 0, 0), "Reworked Debugger", () =>
             {
                 GUILayout.Label("Name: " + DataManager.Player.Customization.Name);
 
-                if (PlayerControl.LocalPlayer != null && !ConstantVariables.NoLobby && !PlayerControl.LocalPlayer.Data.IsDead && !ConstantVariables.IsEnded &&
+                if (CustomPlayer.Local != null && !ConstantVariables.NoLobby && !CustomPlayer.LocalCustom.IsDead && !ConstantVariables.IsEnded &&
                     !ConstantVariables.GameHasEnded)
                 {
-                    PlayerControl.LocalPlayer.Collider.enabled = GUILayout.Toggle(PlayerControl.LocalPlayer.Collider.enabled, "Enable Player Collider");
+                    CustomPlayer.Local.Collider.enabled = GUILayout.Toggle(CustomPlayer.Local.Collider.enabled, "Enable Player Collider");
                 }
 
                 if (ConstantVariables.IsLobby)
@@ -29,7 +29,7 @@ namespace TownOfUsReworked.Monos
 
                     if (GUILayout.Button("Spawn Bot"))
                     {
-                        if ((PlayerControl.AllPlayerControls.Count < CustomGameOptions.LobbySize && TownOfUsReworked.LobbyCapped) || !TownOfUsReworked.LobbyCapped)
+                        if ((CustomPlayer.AllPlayers.Count < CustomGameOptions.LobbySize && TownOfUsReworked.LobbyCapped) || !TownOfUsReworked.LobbyCapped)
                         {
                             MCIUtils.CleanUpLoad();
                             MCIUtils.CreatePlayerInstance();
@@ -53,7 +53,8 @@ namespace TownOfUsReworked.Monos
                 }
                 else if (TownOfUsReworked.MCIActive)
                 {
-                    Role.SyndicateHasChaosDrive = GUILayout.Toggle(Role.SyndicateHasChaosDrive, "Enable Chaos Drive");
+                    TownOfUsReworked.SameVote = GUILayout.Toggle(TownOfUsReworked.SameVote, "Toggle All Bots Vote");
+                    Role.SyndicateHasChaosDrive = GUILayout.Toggle(Role.SyndicateHasChaosDrive, "Toggle Chaos Drive");
 
                     if (Role.SyndicateHasChaosDrive)
                         RoleGen.AssignChaosDrive();
@@ -64,7 +65,7 @@ namespace TownOfUsReworked.Monos
                     {
                         ControllingFigure++;
 
-                        if (ControllingFigure == PlayerControl.AllPlayerControls.Count)
+                        if (ControllingFigure == CustomPlayer.AllPlayers.Count)
                             ControllingFigure = 0;
 
                         MCIUtils.SwitchTo((byte)ControllingFigure);
@@ -74,7 +75,7 @@ namespace TownOfUsReworked.Monos
                         ControllingFigure--;
 
                         if (ControllingFigure < 0)
-                            ControllingFigure = PlayerControl.AllPlayerControls.Count - 1;
+                            ControllingFigure = CustomPlayer.AllPlayers.Count - 1;
 
                         MCIUtils.SwitchTo((byte)ControllingFigure);
                     }
@@ -103,7 +104,7 @@ namespace TownOfUsReworked.Monos
                     }
 
                     if (GUILayout.Button("Complete Tasks"))
-                        PlayerControl.LocalPlayer.myTasks.ForEach(x => PlayerControl.LocalPlayer.RpcCompleteTask(x.Id));
+                        CustomPlayer.Local.myTasks.ForEach(x => CustomPlayer.Local.RpcCompleteTask(x.Id));
 
                     if (GUILayout.Button("Redo Intro Sequence"))
                     {
@@ -113,45 +114,45 @@ namespace TownOfUsReworked.Monos
 
                     if (GUILayout.Button("Start Meeting") && !MeetingHud.Instance)
                     {
-                        PlayerControl.LocalPlayer.RemainingEmergencies++;
-                        PlayerControl.LocalPlayer.CmdReportDeadBody(null);
+                        CustomPlayer.Local.RemainingEmergencies++;
+                        CustomPlayer.Local.CmdReportDeadBody(null);
                     }
 
                     if (GUILayout.Button("End Meeting") && MeetingHud.Instance)
                         MeetingHud.Instance.RpcClose();
 
                     if (GUILayout.Button("Kill Self"))
-                        Utils.RpcMurderPlayer(PlayerControl.LocalPlayer, PlayerControl.LocalPlayer);
+                        Utils.RpcMurderPlayer(PlayerControl.LocalPlayer, CustomPlayer.Local);
 
                     if (GUILayout.Button("Kill All"))
-                        PlayerControl.AllPlayerControls.ForEach(x => Utils.RpcMurderPlayer(x, x));
+                        CustomPlayer.AllPlayers.ForEach(x => Utils.RpcMurderPlayer(x, x));
 
                     if (GUILayout.Button("Revive Self"))
-                        Utils.Revive(PlayerControl.LocalPlayer);
+                        Utils.Revive(CustomPlayer.Local);
 
                     if (GUILayout.Button("Revive All"))
-                        PlayerControl.AllPlayerControls.ForEach(x => Utils.Revive(x));
+                        CustomPlayer.AllPlayers.ForEach(x => Utils.Revive(x));
 
                     if (GUILayout.Button("Log Dump"))
                     {
                         PlayerLayer.LocalLayers.ForEach(x => Utils.LogSomething(x.Name));
-                        Utils.LogSomething("Is Dead - " + PlayerControl.LocalPlayer.Data.IsDead);
-                        Utils.LogSomething("Location - " + PlayerControl.LocalPlayer.transform.position);
+                        Utils.LogSomething("Is Dead - " + CustomPlayer.LocalCustom.IsDead);
+                        Utils.LogSomething("Location - " + CustomPlayer.Local.transform.position);
+                    }
+
+                    if (GUILayout.Button("Flash"))
+                    {
+                        var r = (byte)URandom.RandomRangeInt(0, 256);
+                        var g = (byte)URandom.RandomRangeInt(0, 256);
+                        var b = (byte)URandom.RandomRangeInt(0, 256);
+                        var flashColor = new Color32(r, g, b, 255);
+                        Utils.Flash(flashColor, "Flash!");
                     }
                 }
 
-                if (GUILayout.Button("Flash"))
+                if (CustomPlayer.Local)
                 {
-                    var r = (byte)URandom.RandomRangeInt(0, 256);
-                    var g = (byte)URandom.RandomRangeInt(0, 256);
-                    var b = (byte)URandom.RandomRangeInt(0, 256);
-                    var flashColor = new Color32(r, g, b, 255);
-                    Utils.Flash(flashColor);
-                }
-
-                if (PlayerControl.LocalPlayer)
-                {
-                    var position = PlayerControl.LocalPlayer.transform.position;
+                    var position = CustomPlayer.Local.transform.position;
                     GUILayout.Label($"x: {position.x:00.00}");
                     GUILayout.Label($"y: {position.y:00.00}");
                     GUILayout.Label($"z: {position.z:00.00}");

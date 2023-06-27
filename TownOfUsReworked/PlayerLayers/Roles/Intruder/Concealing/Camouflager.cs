@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Camouflager : IntruderRole
+    public class Camouflager : Intruder
     {
         public CustomButton CamouflageButton;
         public bool Enabled;

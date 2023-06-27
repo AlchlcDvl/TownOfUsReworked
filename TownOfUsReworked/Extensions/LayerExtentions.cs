@@ -86,10 +86,23 @@ namespace TownOfUsReworked.Extensions
 
             var role = Role.GetRole(player);
 
-            if (role == null)
+            if (!role)
                 return RoleEnum.None;
 
             return role.RoleType;
+        }
+
+        public static AbilityEnum GetAbility(this PlayerControl player)
+        {
+            if (player == null)
+                return AbilityEnum.None;
+
+            var ability = Ability.GetAbility(player);
+
+            if (!ability)
+                return AbilityEnum.None;
+
+            return ability.AbilityType;
         }
 
         public static RoleAlignment GetAlignment(this PlayerControl player)
@@ -369,13 +382,7 @@ namespace TownOfUsReworked.Extensions
 
         public static bool IsMarked(this PlayerVoteArea player) => Utils.PlayerByVoteArea(player).IsMarked();
 
-        public static bool IsWinningRival(this PlayerControl player)
-        {
-            if (!player.Is(ObjectifierEnum.Rivals))
-                return false;
-
-            return Objectifier.GetObjectifier<Rivals>(player).RivalDead;
-        }
+        public static bool IsWinningRival(this PlayerControl player) => player.Is(ObjectifierEnum.Rivals) && Objectifier.GetObjectifier<Rivals>(player).RivalDead;
 
         public static bool IsTurnedTraitor(this PlayerControl player) => player.IsIntTraitor() || player.IsSynTraitor();
 
@@ -444,7 +451,7 @@ namespace TownOfUsReworked.Extensions
             var allCrew = new List<PlayerControl>();
             var crewWithNoTasks = new List<PlayerControl>();
 
-            foreach (var player in PlayerControl.AllPlayerControls)
+            foreach (var player in CustomPlayer.AllPlayers)
             {
                 if (player.CanDoTasks() && player.Is(Faction.Crew) && (!player.Data.IsDead || (player.Data.IsDead && CustomGameOptions.GhostTasksCountToWin)))
                 {
@@ -518,7 +525,7 @@ namespace TownOfUsReworked.Extensions
         {
             var result = 1f;
 
-            if (DoUndo.IsCamoed && CustomGameOptions.CamoHideSpeed)
+            if (LobbyBehaviour.Instance || (DoUndo.IsCamoed && CustomGameOptions.CamoHideSize))
                 return result;
 
             if (player.Is(ModifierEnum.Dwarf))
@@ -567,7 +574,7 @@ namespace TownOfUsReworked.Extensions
 
         public static float GetSize(this PlayerControl player)
         {
-            if (DoUndo.IsCamoed && CustomGameOptions.CamoHideSize)
+            if (LobbyBehaviour.Instance || (DoUndo.IsCamoed && CustomGameOptions.CamoHideSize))
                 return 1f;
             else if (player.Is(ModifierEnum.Dwarf))
                 return CustomGameOptions.DwarfScale;
@@ -672,7 +679,7 @@ namespace TownOfUsReworked.Extensions
             if (ConstantVariables.IsHnS)
                 return playerInfo?.IsImpostor() == true;
             else if (player == null || playerInfo == null || (playerInfo.IsDead && !player.IsPostmortal()) || playerInfo.Disconnected || (int)CustomGameOptions.WhoCanVent is 3 ||
-                player.inMovingPlat || MeetingHud.Instance || ConstantVariables.Inactive)
+                player.inMovingPlat || player.onLadder || MeetingHud.Instance || ConstantVariables.Inactive)
             {
                 return false;
             }
@@ -699,7 +706,7 @@ namespace TownOfUsReworked.Extensions
             else if (player.IsBitten())
                 mainflag = CustomGameOptions.UndeadVent;
             else if (player.Is(Faction.Syndicate) && !player.SyndicateSided())
-                mainflag = (((SyndicateRole)playerRole).HoldsDrive && (int)CustomGameOptions.SyndicateVent is 1) || (int)CustomGameOptions.SyndicateVent is 0;
+                mainflag = (((Syndicate)playerRole).HoldsDrive && (int)CustomGameOptions.SyndicateVent is 1) || (int)CustomGameOptions.SyndicateVent is 0;
             else if (player.Is(Faction.Intruder) && !player.IntruderSided())
             {
                 var flag = (player.Is(RoleEnum.Morphling) && !CustomGameOptions.MorphlingVent) || (player.Is(RoleEnum.Wraith) && !CustomGameOptions.WraithVent) ||
@@ -797,14 +804,13 @@ namespace TownOfUsReworked.Extensions
 
         public static bool HasTarget(this Role role) => role.RoleType is RoleEnum.Executioner or RoleEnum.GuardianAngel or RoleEnum.Guesser or RoleEnum.BountyHunter;
 
-        public static List<PlayerLayer> AllPlayerInfo(this PlayerControl player)
+        public static List<PlayerLayer> AllPlayerInfo(this PlayerControl player) => new()
         {
-            var role = Role.GetRole(player);
-            var modifier = Modifier.GetModifier(player);
-            var ability = Ability.GetAbility(player);
-            var objectifier = Objectifier.GetObjectifier(player);
-            return new() { role, modifier, ability, objectifier };
-        }
+            Role.GetRole(player),
+            Modifier.GetModifier(player),
+            Ability.GetAbility(player),
+            Objectifier.GetObjectifier(player)
+        };
 
         public static List<PlayerLayer> AllPlayerInfo(this PlayerVoteArea player) => Utils.PlayerByVoteArea(player).AllPlayerInfo();
 
@@ -979,7 +985,7 @@ namespace TownOfUsReworked.Extensions
             if (player.IsBHTarget())
                 attributes += "\n<color=#B51E39FF>- There is a bounty on your head Θ</color>";
 
-            if (player.Is(Faction.Syndicate) && ((SyndicateRole)role).HoldsDrive)
+            if (player.Is(Faction.Syndicate) && ((Syndicate)role).HoldsDrive)
                 attributes += "\n<color=#008000FF>- You have the power of the Chaos Drive Δ</color>";
 
             if (!player.CanDoTasks())

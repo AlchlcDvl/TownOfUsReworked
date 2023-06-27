@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Medic : CrewRole
+    public class Medic : Crew
     {
         public bool UsedAbility => ShieldedPlayer != null || ExShielded != null;
         public PlayerControl ShieldedPlayer;
@@ -44,7 +44,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
         }
 
-        public bool Exception(PlayerControl player) => player == ShieldedPlayer;
+        public bool Exception(PlayerControl player) => player == ShieldedPlayer || (player.Is(RoleEnum.Mayor) && GetRole<Mayor>(player).Revealed) || (player.Is(RoleEnum.Dictator) &&
+            GetRole<Dictator>(player).Revealed);
 
         public override void UpdateHud(HudManager __instance)
         {

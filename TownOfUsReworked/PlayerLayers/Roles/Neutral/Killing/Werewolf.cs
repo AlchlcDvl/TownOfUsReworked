@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Werewolf : NeutralRole
+    public class Werewolf : Neutral
     {
         public DateTime LastMauled;
         public bool CanMaul;

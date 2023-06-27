@@ -274,7 +274,7 @@
                 var button = UObject.Instantiate(buttonTemplate, buttonParent);
                 UObject.Instantiate(maskTemplate, buttonParent);
                 var label = UObject.Instantiate(textTemplate, button);
-                button.GetComponent<SpriteRenderer>().sprite = HatManager.Instance.GetNamePlateById("nameplate_NoPlate")?.viewData?.viewData?.Image;
+                button.GetComponent<SpriteRenderer>().sprite = HatManager.Instance.GetNamePlateById("nameplate_NoPlate").CreateAddressableAsset().GetAsset().Image;
 
                 if (!Buttons.ContainsKey(i))
                     Buttons.Add(i, new());
@@ -344,11 +344,11 @@
                             }
                         }
 
-                        var flag = roleflag || modifierflag || abilityflag || objectifierflag || recruitflag || sectflag || reanimatedflag || undeadflag || framedflag;
+                        var flag = roleflag || modifierflag || abilityflag || objectifierflag || recruitflag || sectflag || reanimatedflag || undeadflag || framedflag || actGuessed;
                         var toDie = flag ? playerRole.Player : Player;
                         RpcMurderPlayer(toDie, currentGuess);
 
-                        if (actGuessed)
+                        if (actGuessed && !CustomGameOptions.AvoidNeutralKingmakers)
                             RpcMurderPlayer(Player, currentGuess);
 
                         Exit(__instance);
@@ -375,7 +375,7 @@
         {
             var player = Utils.PlayerByVoteArea(voteArea);
             return player.Data.IsDead || player.Data.Disconnected || (voteArea.NameText.text.Contains('\n') && Player.GetFaction() != player.GetFaction()) || (player == Player &&
-                player == PlayerControl.LocalPlayer) || Player.GetFaction() == player.GetFaction() || player == Player.GetOtherLover() || player == Player.GetOtherRival() ||
+                player == CustomPlayer.Local) || Player.GetFaction() == player.GetFaction() || player == Player.GetOtherLover() || player == Player.GetOtherRival() ||
                 RemainingKills <= 0 || IsDead;
         }
 
@@ -535,7 +535,7 @@
 
             if (player != Player && player.Is(ModifierEnum.Indomitable))
             {
-                if (player == PlayerControl.LocalPlayer)
+                if (player == CustomPlayer.Local)
                     Utils.Flash(Colors.Indomitable);
 
                 return;
@@ -569,21 +569,21 @@
                 if (Player != player)
                     hudManager.Chat.AddChat(PlayerControl.LocalPlayer, $"You guessed {player.name} as {guess}!");
                 else if (Player.Is(ModifierEnum.Professional))
-                    hudManager.Chat.AddChat(PlayerControl.LocalPlayer, $"You incorrectly guessed {player.name} as {player} and lost a life!");
+                    hudManager.Chat.AddChat(PlayerControl.LocalPlayer, $"You incorrectly guessed {player.name} as {guess} and lost a life!");
                 else
                     hudManager.Chat.AddChat(PlayerControl.LocalPlayer, $"You incorrectly guessed {player.name} as {guess} and died!");
             }
-            else if (Player != player && PlayerControl.LocalPlayer == player)
+            else if (Player != player && CustomPlayer.Local == player)
                 hudManager.Chat.AddChat(PlayerControl.LocalPlayer, $"{Player.name} guessed you as {guess}!");
-            else if ((Player.GetFaction() == PlayerControl.LocalPlayer.GetFaction() && (Player.GetFaction() is Faction.Intruder or Faction.Syndicate)) ||
+            else if ((Player.GetFaction() == CustomPlayer.Local.GetFaction() && (Player.GetFaction() is Faction.Intruder or Faction.Syndicate)) ||
                 ConstantVariables.DeadSeeEverything)
             {
                 if (Player != player)
-                    hudManager.Chat.AddChat(PlayerControl.LocalPlayer, $"{Player.name} guessed {player.name} as {player}!");
+                    hudManager.Chat.AddChat(PlayerControl.LocalPlayer, $"{Player.name} guessed {player.name} as {guess}!");
                 else if (Player.Is(ModifierEnum.Professional))
-                    hudManager.Chat.AddChat(PlayerControl.LocalPlayer, $"{Player.name} incorrectly guessed {player.name} as {player} and lost a life!");
+                    hudManager.Chat.AddChat(PlayerControl.LocalPlayer, $"{Player.name} incorrectly guessed {player.name} as {guess} and lost a life!");
                 else
-                    hudManager.Chat.AddChat(PlayerControl.LocalPlayer, $"{Player.name} incorrectly guessed {player.name} as {player} and died!");
+                    hudManager.Chat.AddChat(PlayerControl.LocalPlayer, $"{Player.name} incorrectly guessed {player.name} as {guess} and died!");
             }
         }
 

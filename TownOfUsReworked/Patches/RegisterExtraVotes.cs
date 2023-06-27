@@ -71,7 +71,7 @@ namespace TownOfUsReworked.Patches
             {
                 playerVoteArea.SetVote(suspectPlayerId);
                 playerVoteArea.Flag.enabled = true;
-                PlayerControl.LocalPlayer.RpcSendChatNote(srcPlayerId, ChatNoteTypes.DidVote);
+                CustomPlayer.Local.RpcSendChatNote(srcPlayerId, ChatNoteTypes.DidVote);
             }
 
             __instance.Cast<InnerNetObject>().SetDirtyBit(1U);

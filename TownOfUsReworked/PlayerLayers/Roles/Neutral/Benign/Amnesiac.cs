@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Amnesiac : NeutralRole
+    public class Amnesiac : Neutral
     {
         public Dictionary<byte, CustomArrow> BodyArrows = new();
         public CustomButton RememberButton;
@@ -27,9 +27,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void DestroyArrow(byte targetPlayerId)
         {
-            var arrow = BodyArrows.FirstOrDefault(x => x.Key == targetPlayerId);
-            arrow.Value?.Destroy();
-            BodyArrows.Remove(arrow.Key);
+            BodyArrows.FirstOrDefault(x => x.Key == targetPlayerId).Value?.Destroy();
+            BodyArrows.Remove(targetPlayerId);
         }
 
         public override void OnLobby()
@@ -44,10 +43,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var newRole = new Thief(Player);
             newRole.RoleUpdate(this);
 
-            if (Local)
+            if (Local && !IntroCutscene.Instance)
                 Utils.Flash(Colors.Thief);
 
-            if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
+            if (CustomPlayer.Local.Is(RoleEnum.Seer) && !IntroCutscene.Instance)
                 Utils.Flash(Colors.Seer);
         }
 
@@ -74,10 +73,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var target = other.GetTarget();
             var leader = other.GetLeader();
             var actor = other.GetActorList();
-            amnesiac.DisableButtons();
-            other.DisableButtons();
 
-            if (PlayerControl.LocalPlayer == amnesiac)
+            if (CustomPlayer.Local == amnesiac)
             {
                 foreach (var component in amneRole.RememberButton.TargetBody?.bodyRenderers)
                     component.material.SetFloat("_Outline", 0f);
@@ -87,7 +84,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 ButtonUtils.ResetCustomTimers(false);
             }
 
-            if (PlayerControl.LocalPlayer == other)
+            if (CustomPlayer.Local == other)
             {
                 Utils.Flash(amneRole.Color);
                 role.OnLobby();
@@ -196,8 +193,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 RoleEnum.Chameleon => new Chameleon(amnesiac) { UsesLeft = ((Chameleon)role).UsesLeft },
                 RoleEnum.Coroner => new Coroner(amnesiac)
                 {
-                    UsesLeft = ((Coroner)role).UsesLeft,
-                    ReferenceBody = ((Coroner)role).ReferenceBody,
+                    ReferenceBodies = ((Coroner)role).ReferenceBodies,
                     Reported = ((Coroner)role).Reported
                 },
                 RoleEnum.Monarch => new Monarch(amnesiac)
@@ -213,10 +209,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     Selected = ((Retributionist)role).Selected,
                     UsesLeft = ((Retributionist)role).UsesLeft,
                     Reported = ((Retributionist)role).Reported,
-                    ReferenceBody = ((Retributionist)role).ReferenceBody,
+                    ReferenceBodies = ((Retributionist)role).ReferenceBodies
                 },
                 _ => new Amnesiac(amnesiac),
             };
+
             newRole.RoleUpdate(amneRole);
 
             if (other.Is(RoleEnum.Dracula))
@@ -239,23 +236,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 foreach (var snitch in Ability.GetAbilities<Snitch>(AbilityEnum.Snitch))
                 {
-                    if (snitch.TasksLeft <= CustomGameOptions.SnitchTasksRemaining && PlayerControl.LocalPlayer == amnesiac)
+                    if (snitch.TasksLeft <= CustomGameOptions.SnitchTasksRemaining && CustomPlayer.Local == amnesiac)
                         LocalRole.AllArrows.Add(snitch.PlayerId, new(amnesiac, Colors.Snitch, 0));
-                    else if (snitch.TasksDone && PlayerControl.LocalPlayer == snitch.Player)
+                    else if (snitch.TasksDone && CustomPlayer.Local == snitch.Player)
                         GetRole(snitch.Player).AllArrows.Add(amnesiac.PlayerId, new(snitch.Player, Colors.Snitch));
                 }
 
                 foreach (var revealer in GetRoles<Revealer>(RoleEnum.Revealer))
                 {
-                    if (revealer.Revealed && PlayerControl.LocalPlayer == amnesiac)
+                    if (revealer.Revealed && CustomPlayer.Local == amnesiac)
                         LocalRole.AllArrows.Add(revealer.PlayerId, new(amnesiac, Colors.Revealer, 0));
                 }
             }
 
-            amnesiac.EnableButtons();
-            other.EnableButtons();
-
-            if (PlayerControl.LocalPlayer == amnesiac)
+            if (CustomPlayer.Local == amnesiac)
                 ButtonUtils.ResetCustomTimers(false);
         }
 
@@ -264,7 +258,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             base.UpdateHud(__instance);
             RememberButton.Update("REMEMBER");
 
-            if (CustomGameOptions.RememberArrows && !PlayerControl.LocalPlayer.Data.IsDead)
+            if (CustomGameOptions.RememberArrows && !CustomPlayer.LocalCustom.IsDead)
             {
                 var validBodies = Utils.AllBodies.Where(x => Utils.KilledPlayers.Any(y => y.PlayerId == x.ParentId &&
                     y.KillTime.AddSeconds(CustomGameOptions.RememberArrowDelay) < System.DateTime.UtcNow));
@@ -280,13 +274,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     if (!BodyArrows.ContainsKey(body.ParentId))
                         BodyArrows.Add(body.ParentId, new(Player, Color));
 
-                    BodyArrows[body.ParentId].Update(body.TruePosition);
+                    BodyArrows[body.ParentId]?.Update(body.TruePosition);
                 }
             }
-            else if (BodyArrows.Count != 0 || PlayerControl.AllPlayerControls.Count <= 4)
+            else if (BodyArrows.Count != 0 || CustomPlayer.AllPlayers.Count <= 4)
                 OnLobby();
 
-            if (PlayerControl.AllPlayerControls.Count <= 4 && !IsDead)
+            if (CustomPlayer.AllPlayers.Count <= 4 && !IsDead)
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
                 writer.Write((byte)TurnRPC.TurnThief);

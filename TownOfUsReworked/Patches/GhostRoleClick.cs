@@ -5,7 +5,7 @@ namespace TownOfUsReworked.Patches
     {
         public static void Prefix(PlayerControl __instance)
         {
-            if (__instance == null || MeetingHud.Instance || PlayerControl.LocalPlayer.Data.IsDead || __instance == PlayerControl.LocalPlayer)
+            if (__instance == null || MeetingHud.Instance || CustomPlayer.LocalCustom.IsDead || __instance == CustomPlayer.Local || LobbyBehaviour.Instance)
                 return;
 
             var taskinfos = __instance.Data.Tasks.ToArray();
@@ -25,9 +25,9 @@ namespace TownOfUsReworked.Patches
             }
             else if (__instance.Is(RoleEnum.Revealer))
             {
-                if ((CustomGameOptions.RevealerCanBeClickedBy == RevealerCanBeClickedBy.EvilsOnly && !(PlayerControl.LocalPlayer.Is(Faction.Intruder) ||
-                    PlayerControl.LocalPlayer.Is(Faction.Syndicate))) || (CustomGameOptions.RevealerCanBeClickedBy == RevealerCanBeClickedBy.NonCrew &&
-                    PlayerControl.LocalPlayer.Is(Faction.Crew)))
+                if ((CustomGameOptions.RevealerCanBeClickedBy == RevealerCanBeClickedBy.EvilsOnly && !(CustomPlayer.Local.Is(Faction.Intruder) ||
+                    CustomPlayer.Local.Is(Faction.Syndicate))) || (CustomGameOptions.RevealerCanBeClickedBy == RevealerCanBeClickedBy.NonCrew &&
+                    CustomPlayer.Local.Is(Faction.Crew)))
                 {
                     return;
                 }
@@ -45,7 +45,7 @@ namespace TownOfUsReworked.Patches
             }
             else if (__instance.Is(RoleEnum.Banshee))
             {
-                if (!PlayerControl.LocalPlayer.Is(Faction.Syndicate))
+                if (! CustomPlayer.Local.Is(Faction.Syndicate))
                 {
                     var role = Role.GetRole<Banshee>(__instance);
                     role.Caught = true;
@@ -57,7 +57,7 @@ namespace TownOfUsReworked.Patches
             }
             else if (__instance.Is(RoleEnum.Ghoul))
             {
-                if (!PlayerControl.LocalPlayer.Is(Faction.Intruder))
+                if (! CustomPlayer.Local.Is(Faction.Intruder))
                 {
                     var role = Role.GetRole<Ghoul>(__instance);
                     role.Caught = true;

@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Seer : CrewRole
+    public class Seer : Crew
     {
         public DateTime LastSeered;
         public bool ChangedDead => !AllRoles.Any(x => x.Player != null && !x.IsDead && !x.Disconnected && (x.RoleHistory.Count > 0 || x.Is(RoleEnum.Amnesiac) || x.Is(RoleEnum.Thief) ||
@@ -39,7 +39,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var role = new Sheriff(Player);
             role.RoleUpdate(this);
 
-            if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
+            if (Local && !IntroCutscene.Instance)
+                Utils.Flash(Colors.Sheriff);
+
+            if (CustomPlayer.Local.Is(RoleEnum.Seer) && !IntroCutscene.Instance)
                 Utils.Flash(Color);
         }
 

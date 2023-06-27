@@ -57,6 +57,12 @@ global using TMPro;
 
 global using InnerNet;
 
+//global using Innersloth.Assets;
+
+global using Twitch;
+
+//global using Assets.InnerNet;
+
 namespace TownOfUsReworked
 {
     [BepInPlugin(Id, Name, VersionString)]
@@ -70,7 +76,7 @@ namespace TownOfUsReworked
     {
         public const string Id = "me.alchlcdvl.reworked";
         public const string Name = "TownOfUsReworked";
-        private const string VersionString = "0.3.1.0";
+        private const string VersionString = "0.4.0.0";
         public readonly static Version Version = new(VersionString);
 
         private static string Dev => VersionString[6..];
@@ -82,10 +88,14 @@ namespace TownOfUsReworked
 
         public const string Resources = "TownOfUsReworked.Resources.";
         public const string Buttons = $"{Resources}Buttons.";
+        public const string Icons = $"{Resources}Icons.";
         public const string Sounds = $"{Resources}Sounds.";
         public const string Misc = $"{Resources}Misc.";
         //public const string Languages = $"{Resources}Languages.";
         public const string Portal = $"{Resources}Portal.";
+
+        public const string DiscordInvite = "https://discord.gg/cd27aDQDY9";
+        public const string GitHubLink = "https://github.com/AlchlcDvl/TownOfUsReworked";
 
         public static Assembly Assembly => typeof(TownOfUsReworked).Assembly;
         public static Assembly Executing => Assembly.GetExecutingAssembly();
@@ -94,9 +104,10 @@ namespace TownOfUsReworked
 
         public static bool LobbyCapped = true;
         public static bool Persistence = true;
+        public static bool SameVote = true;
         public static bool IsTest;
         public static bool MCIActive;
-        public static Debugger Debugger;
+        public static DebuggerBehaviour Debugger;
 
         private static Harmony Harmony => new(Id);
 
@@ -109,16 +120,6 @@ namespace TownOfUsReworked
             if (!File.Exists("steam_appid.txt"))
                 File.WriteAllText("steam_appid.txt", "945360");
 
-            var maxImpostors = (Il2CppStructArray<int>)Enumerable.Repeat(255, 255).ToArray();
-            GameOptionsData.MaxImpostors = maxImpostors;
-            NormalGameOptionsV07.MaxImpostors = maxImpostors;
-            HideNSeekGameOptionsV07.MaxImpostors = maxImpostors;
-
-            var minPlayers = (Il2CppStructArray<int>)Enumerable.Repeat(1, 1).ToArray();
-            GameOptionsData.MinPlayers = minPlayers;
-            NormalGameOptionsV07.MinPlayers = minPlayers;
-            HideNSeekGameOptionsV07.MinPlayers = minPlayers;
-
             Harmony.PatchAll();
 
             DataManager.Player.Onboarding.ViewedHideAndSeekHowToPlay = true;
@@ -130,6 +131,7 @@ namespace TownOfUsReworked
             UpdateNames.PlayerNames.Clear();
             AssetManager.Load();
             RoleGen.ResetEverything();
+            ChatCommand.Load();
             CustomOption.SaveSettings("DefaultSettings");
 
             ClassInjector.RegisterTypeInIl2Cpp<MissingSubmergedBehaviour>();
@@ -139,14 +141,15 @@ namespace TownOfUsReworked
             ClassInjector.RegisterTypeInIl2Cpp<MeetingHudPagingBehaviour>();
             ClassInjector.RegisterTypeInIl2Cpp<VitalsPagingBehaviour>();
             ClassInjector.RegisterTypeInIl2Cpp<ColorBehaviour>();
-            ClassInjector.RegisterTypeInIl2Cpp<Debugger>();
-            ClassInjector.RegisterTypeInIl2Cpp<Tasks>();
+            ClassInjector.RegisterTypeInIl2Cpp<DebuggerBehaviour>();
+            ClassInjector.RegisterTypeInIl2Cpp<InteractableBehaviour>();
+            ClassInjector.RegisterTypeInIl2Cpp<DragBehaviour>();
 
-            Debugger = AddComponent<Debugger>();
+            Debugger = AddComponent<DebuggerBehaviour>();
             Language.Init();
             LanguagePack.Init();
 
-            Utils.LogSomething($"Mod Loaded - {ToString()}");
+            Utils.LogSomething($"Mod Loaded - {this}");
         }
     }
 }

@@ -8,15 +8,28 @@ namespace TownOfUsReworked.Patches
             if (__instance != HudManager.Instance.Chat)
                 return true;
 
-            var localPlayer = PlayerControl.LocalPlayer;
+            var localPlayer = CustomPlayer.Local;
 
             if (localPlayer == null)
                 return true;
 
             var sourcerole = Role.GetRole(sourcePlayer);
-            return (MeetingHud.Instance || LobbyBehaviour.Instance || localPlayer.Data.IsDead || sourcePlayer == localPlayer || (sourcePlayer.GetOtherLover() == localPlayer
-                && CustomGameOptions.LoversChat && sourcerole.CurrentChannel == ChatChannel.Lovers) || (sourcePlayer.GetOtherRival() == localPlayer && CustomGameOptions.RivalsChat &&
-                sourcerole.CurrentChannel == ChatChannel.Rivals) || sourcerole.CurrentChannel == ChatChannel.All) && !(MeetingHud.Instance && PlayerControl.LocalPlayer.IsSilenced());
+            var shouldSeeMessage = (sourcePlayer.GetOtherLover() == localPlayer && CustomGameOptions.LoversChat && sourcerole.CurrentChannel == ChatChannel.Lovers) ||
+                (sourcePlayer.GetOtherRival() == localPlayer && CustomGameOptions.RivalsChat && sourcerole.CurrentChannel == ChatChannel.Rivals);
+
+            if (DateTime.UtcNow - MeetingStart.MeetingStartTime < TimeSpan.FromSeconds(1))
+                return shouldSeeMessage;
+
+            return (MeetingHud.Instance || LobbyBehaviour.Instance || localPlayer.Data.IsDead || sourcePlayer == localPlayer || sourcerole.CurrentChannel == ChatChannel.All ||
+                shouldSeeMessage) && !(MeetingHud.Instance && CustomPlayer.Local.IsSilenced());
         }
+    }
+
+    [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
+    public static class MeetingStart
+    {
+        public static DateTime MeetingStartTime = DateTime.MinValue;
+
+        public static void Prefix() => MeetingStartTime = DateTime.UtcNow;
     }
 }

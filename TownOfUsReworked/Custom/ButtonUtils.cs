@@ -60,7 +60,7 @@ namespace TownOfUsReworked.Custom
 
         public static void ResetCustomTimers(bool start)
         {
-            var local = PlayerControl.LocalPlayer;
+            var local = CustomPlayer.Local;
             var role = Role.LocalRole;
             local.RegenTask();
             Utils.RoundOne = start;
@@ -122,9 +122,6 @@ namespace TownOfUsReworked.Custom
                     role2.LastCompared = DateTime.UtcNow;
                     role2.LastAutopsied = DateTime.UtcNow;
                 }
-
-                if (role2.UsesLeft == 0)
-                    role2.ReferenceBody = null;
             }
             else if (local.Is(RoleEnum.Medium))
             {
@@ -286,6 +283,11 @@ namespace TownOfUsReworked.Custom
 
                     case RoleEnum.VampireHunter:
                         role2.LastStaked = DateTime.UtcNow;
+                        break;
+
+                    case RoleEnum.Coroner:
+                        role2.LastAutopsied = DateTime.UtcNow;
+                        role2.LastCompared = DateTime.UtcNow;
                         break;
 
                     case RoleEnum.Veteran:
@@ -847,6 +849,7 @@ namespace TownOfUsReworked.Custom
             else if (local.Is(RoleEnum.GuardianAngel))
             {
                 var role2 = (GuardianAngel)role;
+                role2.Rounds++;
 
                 if (start)
                     role2.LastProtected = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ProtectCd);
@@ -994,11 +997,17 @@ namespace TownOfUsReworked.Custom
             {
                 var role2 = (Executioner)role;
                 role2.LastDoomed = DateTime.UtcNow;
+                role2.Rounds++;
+            }
+            else if (local.Is(RoleEnum.Guesser))
+            {
+                var role2 = (Guesser)role;
+                role2.Rounds++;
             }
 
             if (role.BaseFaction == Faction.Intruder)
             {
-                var role2 = (IntruderRole)role;
+                var role2 = (Intruder)role;
 
                 if (start)
                     role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.IntKillCooldown);
@@ -1007,7 +1016,7 @@ namespace TownOfUsReworked.Custom
             }
             else if (role.BaseFaction == Faction.Syndicate)
             {
-                var role2 = (SyndicateRole)role;
+                var role2 = (Syndicate)role;
 
                 if (start)
                 {
@@ -1043,6 +1052,6 @@ namespace TownOfUsReworked.Custom
             }
         }
 
-        public static bool ButtonUsable(this ActionButton button) => button.isActiveAndEnabled && !button.isCoolingDown && !PlayerControl.LocalPlayer.CannotUse() && !MeetingHud.Instance;
+        public static bool ButtonUsable(this ActionButton button) => button.isActiveAndEnabled && !button.isCoolingDown && !CustomPlayer.Local.CannotUse() && !MeetingHud.Instance;
     }
 }

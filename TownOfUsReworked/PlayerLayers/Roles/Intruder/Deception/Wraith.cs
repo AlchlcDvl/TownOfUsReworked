@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Wraith : IntruderRole
+    public class Wraith : Intruder
     {
         public CustomButton InvisButton;
         public bool Enabled;
@@ -36,7 +36,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
-            Utils.Invis(Player, PlayerControl.LocalPlayer.Is(Faction.Intruder));
+            Utils.Invis(Player, CustomPlayer.Local.Is(Faction.Intruder));
 
             if (IsDead || MeetingHud.Instance)
                 TimeRemaining = 0f;

@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Betrayer : NeutralRole
+    public class Betrayer : Neutral
     {
         public CustomButton KillButton;
         public DateTime LastKilled;

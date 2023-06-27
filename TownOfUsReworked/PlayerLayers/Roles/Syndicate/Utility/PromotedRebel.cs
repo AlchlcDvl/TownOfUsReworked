@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class PromotedRebel : SyndicateRole
+    public class PromotedRebel : Syndicate
     {
         public PromotedRebel(PlayerControl player) : base(player)
         {
@@ -182,18 +182,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     var player = Utils.PlayerById(pair.Key);
                     var body = Utils.BodyById(pair.Key);
 
-                    if (player.Data.Disconnected || (player.Data.IsDead && !body))
+                    if (player == null || player.Data.Disconnected || (player.Data.IsDead && !body))
                     {
                         DestroyArrow(pair.Key);
                         continue;
                     }
 
-                    pair.Value.Update(player.Data.IsDead ? player.GetTruePosition() : body.TruePosition, player.GetPlayerColor(!HoldsDrive));
+                    pair.Value?.Update(player.Data.IsDead ? player.transform.position : body.transform.position, player.GetPlayerColor(!HoldsDrive));
                 }
 
                 if (HoldsDrive)
                 {
-                    foreach (var player in PlayerControl.AllPlayerControls)
+                    foreach (var player in CustomPlayer.AllPlayers)
                     {
                         if (!StalkerArrows.ContainsKey(player.PlayerId))
                             StalkerArrows.Add(player.PlayerId, new(Player, player.GetPlayerColor(false)));
@@ -241,7 +241,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (HoldsDrive)
                 Utils.Conceal();
             else
-                Utils.Invis(ConcealedPlayer, PlayerControl.LocalPlayer.Is(Faction.Syndicate));
+                Utils.Invis(ConcealedPlayer, CustomPlayer.Local.Is(Faction.Syndicate));
 
             if (MeetingHud.Instance || (ConcealedPlayer == null && !HoldsDrive))
                 TimeRemaining = 0f;
@@ -306,7 +306,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 TimeRemaining = CustomGameOptions.ConcealDuration;
                 Conceal();
-                Utils.Invis(ConcealedPlayer, PlayerControl.LocalPlayer.Is(Faction.Syndicate));
+                Utils.Invis(ConcealedPlayer, CustomPlayer.Local.Is(Faction.Syndicate));
             }
         }
 
@@ -360,7 +360,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (FrameTimer() != 0f || !HoldsDrive)
                 return;
 
-            foreach (var player in Utils.GetClosestPlayers(PlayerControl.LocalPlayer.GetTruePosition(), CustomGameOptions.ChaosDriveFrameRadius))
+            foreach (var player in Utils.GetClosestPlayers(CustomPlayer.Local.GetTruePosition(), CustomGameOptions.ChaosDriveFrameRadius))
                 Frame(player);
 
             LastFramed = DateTime.UtcNow;
@@ -687,7 +687,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             WarpPlayer1.moveable = false;
             WarpPlayer1.NetTransform.Halt();
 
-            if (PlayerControl.LocalPlayer == WarpPlayer1)
+            if (CustomPlayer.Local == WarpPlayer1)
                 Utils.Flash(Color, CustomGameOptions.WarpDuration);
 
             if (Player1Body == null && !WasInVent)
@@ -717,10 +717,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 WarpPlayer1.MyPhysics.ResetMoveState();
                 WarpPlayer1.NetTransform.SnapTo(new(WarpPlayer2.GetTruePosition().x, WarpPlayer2.GetTruePosition().y + 0.3636f));
 
-                if (ModCompatibility.IsSubmerged && PlayerControl.LocalPlayer == WarpPlayer1)
+                if (ModCompatibility.IsSubmerged && CustomPlayer.Local == WarpPlayer1)
                 {
                     ModCompatibility.ChangeFloor(WarpPlayer1.GetTruePosition().y > -7);
-                    ModCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
+                    ModCompatibility.CheckOutOfBoundsElevator(CustomPlayer.Local);
                 }
 
                 if (WarpPlayer1.CanVent() && Vent != null && WasInVent)
@@ -731,10 +731,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 Utils.StopDragging(Player1Body.ParentId);
                 Player1Body.transform.position = WarpPlayer2.GetTruePosition();
 
-                if (ModCompatibility.IsSubmerged && PlayerControl.LocalPlayer == WarpPlayer2)
+                if (ModCompatibility.IsSubmerged && CustomPlayer.Local == WarpPlayer2)
                 {
                     ModCompatibility.ChangeFloor(WarpPlayer2.GetTruePosition().y > -7);
-                    ModCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
+                    ModCompatibility.CheckOutOfBoundsElevator(CustomPlayer.Local);
                 }
             }
             else if (Player1Body == null && Player2Body != null)
@@ -742,10 +742,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 WarpPlayer1.MyPhysics.ResetMoveState();
                 WarpPlayer1.NetTransform.SnapTo(new(Player2Body.TruePosition.x, Player2Body.TruePosition.y + 0.3636f));
 
-                if (ModCompatibility.IsSubmerged && PlayerControl.LocalPlayer == WarpPlayer1)
+                if (ModCompatibility.IsSubmerged && CustomPlayer.Local == WarpPlayer1)
                 {
                     ModCompatibility.ChangeFloor(WarpPlayer1.GetTruePosition().y > -7);
-                    ModCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
+                    ModCompatibility.CheckOutOfBoundsElevator(CustomPlayer.Local);
                 }
             }
             else if (Player1Body != null && Player2Body != null)
@@ -754,7 +754,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 Player1Body.transform.position = Player2Body.TruePosition;
             }
 
-            if (PlayerControl.LocalPlayer == WarpPlayer1)
+            if (CustomPlayer.Local == WarpPlayer1)
             {
                 if (Minigame.Instance)
                     Minigame.Instance.Close();
@@ -1010,7 +1010,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     LastSpelled.AddSeconds(CustomGameOptions.ProtectKCReset);
             }
 
-            if (Spelled.Count >= PlayerControl.AllPlayerControls.Count(x => !x.Data.IsDead && !x.Data.Disconnected && !x.Is(Faction.Syndicate)))
+            if (Spelled.Count >= CustomPlayer.AllPlayers.Count(x => !x.Data.IsDead && !x.Data.Disconnected && !x.Is(Faction.Syndicate)))
             {
                 SyndicateWin = true;
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
@@ -1036,9 +1036,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void DestroyArrow(byte targetPlayerId)
         {
-            var arrow = StalkerArrows.FirstOrDefault(x => x.Key == targetPlayerId);
-            arrow.Value?.Destroy();
-            StalkerArrows.Remove(arrow.Key);
+            StalkerArrows.FirstOrDefault(x => x.Key == targetPlayerId).Value?.Destroy();
+            StalkerArrows.Remove(targetPlayerId);
         }
 
         public void Stalk()
@@ -1067,7 +1066,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Confuse()
         {
-            if (!Enabled && (PlayerControl.LocalPlayer == ConfusedPlayer || HoldsDrive))
+            if (!Enabled && (CustomPlayer.Local == ConfusedPlayer || HoldsDrive))
                 Utils.Flash(Color);
 
             Enabled = true;
@@ -1157,7 +1156,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (HoldsDrive)
             {
-                foreach (var player in PlayerControl.AllPlayerControls)
+                foreach (var player in CustomPlayer.AllPlayers)
                     GetRole(player).Rewinding = true;
             }
 
@@ -1170,7 +1169,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Enabled = false;
             LastTimed = DateTime.UtcNow;
 
-            foreach (var player in PlayerControl.AllPlayerControls)
+            foreach (var player in CustomPlayer.AllPlayers)
                 GetRole(player).Rewinding = false;
         }
 

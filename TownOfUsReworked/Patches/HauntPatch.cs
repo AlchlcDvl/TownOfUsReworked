@@ -51,11 +51,11 @@ namespace TownOfUsReworked.Patches
             if (!ConstantVariables.IsInGame)
                 HudManager.Instance.AbilityButton.gameObject.SetActive(false);
             else if (ConstantVariables.IsHnS)
-                HudManager.Instance.AbilityButton.gameObject.SetActive(!PlayerControl.LocalPlayer.Data.IsImpostor());
+                HudManager.Instance.AbilityButton.gameObject.SetActive(!CustomPlayer.LocalCustom.Data.IsImpostor());
             else
             {
-                var ghostRole = PlayerControl.LocalPlayer.IsPostmortal() && !PlayerControl.LocalPlayer.Caught();
-                HudManager.Instance.AbilityButton.gameObject.SetActive(!ghostRole && !MeetingHud.Instance && PlayerControl.LocalPlayer.Data.IsDead);
+                var ghostRole = CustomPlayer.Local.IsPostmortal() && !CustomPlayer.Local.Caught();
+                HudManager.Instance.AbilityButton.gameObject.SetActive(!ghostRole && !MeetingHud.Instance && CustomPlayer.LocalCustom.IsDead);
             }
         }
     }

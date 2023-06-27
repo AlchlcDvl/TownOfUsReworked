@@ -14,7 +14,7 @@ namespace TownOfUsReworked.Patches
         {
             public static void Postfix()
             {
-                if (PlayerControl.LocalPlayer && !TownOfUsReworked.MCIActive)
+                if (CustomPlayer.Local && !TownOfUsReworked.MCIActive)
                     Utils.ShareGameVersion();
             }
         }
@@ -60,7 +60,7 @@ namespace TownOfUsReworked.Patches
                     TranslationController.Instance.GetString(StringNames.PrivateHeader);
 
                 if ((Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) && Input.GetKeyDown(KeyCode.C) && !HudManager.Instance.Chat)
-                    ClipboardHelper.PutClipboardString(GameCode.IntToGameName(AmongUsClient.Instance.GameId));
+                    GUIUtility.systemCopyBuffer = GameCode.IntToGameName(AmongUsClient.Instance.GameId);
 
                 if (DiscordManager.InstanceExists)
                 {
@@ -101,8 +101,8 @@ namespace TownOfUsReworked.Patches
 
                 if (!TownOfUsReworked.MCIActive)
                 {
-                    //Send version as soon as PlayerControl.LocalPlayer exists
-                    if (PlayerControl.LocalPlayer && !VersionSent)
+                    //Send version as soon as CustomPlayer.Local exists
+                    if (CustomPlayer.Local && !VersionSent)
                     {
                         VersionSent = true;
                         Utils.ShareGameVersion();
@@ -194,7 +194,7 @@ namespace TownOfUsReworked.Patches
                         __instance.ResetStartState();
 
                     if (num != secondsLeft)
-                        PlayerControl.LocalPlayer.RpcSetStartCounter(secondsLeft);
+                        CustomPlayer.Local.RpcSetStartCounter(secondsLeft);
 
                     if (secondsLeft <= 0)
                         __instance.FinallyBegin();

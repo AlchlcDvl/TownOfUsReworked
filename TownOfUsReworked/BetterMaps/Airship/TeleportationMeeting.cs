@@ -1,22 +1,19 @@
 ﻿namespace TownOfUsReworked.BetterMaps.Airship
 {
-    [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.FixedUpdate))]
+    [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
     public static class TeleportationMeeting
     {
         private static bool TeleportationStarted;
 
-        public static void Prefix(PlayerControl __instance)
+        public static void Prefix()
         {
-            if (LobbyBehaviour.Instance || __instance == null || __instance.Data == null || PlayerControl.LocalPlayer == null || PlayerControl.LocalPlayer.Data == null)
+            if (CustomPlayer.Local == null || CustomPlayer.LocalCustom.Data == null)
                 return;
 
-            if (__instance.PlayerId != PlayerControl.LocalPlayer.PlayerId)
-                return;
-
-            if (CustomGameOptions.AddTeleporters && !TeleportationStarted && Vector2.Distance(__instance.transform.position, new(17.331f, 15.236f)) < 0.5f &&
+            if (CustomGameOptions.AddTeleporters && !TeleportationStarted && Vector2.Distance(CustomPlayer.Local.transform.position, new(17.331f, 15.236f)) < 0.5f &&
                 UObject.FindObjectOfType<AirshipStatus>() != null)
             {
-                Coroutines.Start(CoTeleportPlayer(__instance));
+                Coroutines.Start(CoTeleportPlayer(CustomPlayer.Local));
             }
         }
 

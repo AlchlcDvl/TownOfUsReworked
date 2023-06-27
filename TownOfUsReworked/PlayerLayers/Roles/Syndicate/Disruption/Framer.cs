@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Framer : SyndicateRole
+    public class Framer : Syndicate
     {
         public CustomButton FrameButton;
         public CustomButton RadialFrameButton;
@@ -68,7 +68,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (FrameTimer() != 0f || !HoldsDrive)
                 return;
 
-            foreach (var player in Utils.GetClosestPlayers(PlayerControl.LocalPlayer.GetTruePosition(), CustomGameOptions.ChaosDriveFrameRadius))
+            foreach (var player in Utils.GetClosestPlayers(CustomPlayer.Local.GetTruePosition(), CustomGameOptions.ChaosDriveFrameRadius))
                 Frame(player);
 
             LastFramed = DateTime.UtcNow;

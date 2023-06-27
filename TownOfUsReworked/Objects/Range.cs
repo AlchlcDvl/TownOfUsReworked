@@ -9,10 +9,10 @@ namespace TownOfUsReworked.Objects
         public Range(Vector2 position, Color color, float scale, string name)
         {
             Item = new(name) { layer = 11 };
-            Item.AddSubmergedComponent("ElevatorMover");
-            Item.transform.position = new(position.x, position.y, (position.y / 1000f) + 0.001f);
-            Item.transform.localScale = new(scale * 0.25f, scale * 0.25f, 1f);
+            Item.AddSubmergedComponent(ModCompatibility.ElevatorMover);
             Transform = Item.transform;
+            Transform.position = new(position.x, position.y, (position.y / 1000f) + 0.001f);
+            Transform.localScale = new(scale * 0.25f, scale * 0.25f, 1f);
             var rend = Item.AddComponent<SpriteRenderer>();
             rend.sprite = AssetManager.GetSprite("Range");
             rend.color = color;
@@ -35,7 +35,7 @@ namespace TownOfUsReworked.Objects
 
         public virtual IEnumerator Timer() => null;
 
-        public virtual void Update() => Item?.transform.Rotate(Vector3.forward * 6 * Time.fixedDeltaTime);
+        public virtual void Update() => Transform.Rotate(Vector3.forward * 6 * Time.fixedDeltaTime);
 
         public virtual void Stop() => Coroutines.Stop(Timer());
 

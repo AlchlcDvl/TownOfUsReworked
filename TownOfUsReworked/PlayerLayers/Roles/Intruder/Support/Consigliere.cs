@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Consigliere : IntruderRole
+    public class Consigliere : Intruder
     {
         public List<byte> Investigated = new();
         public CustomButton InvestigateButton;

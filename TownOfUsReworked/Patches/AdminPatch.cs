@@ -62,6 +62,7 @@ namespace TownOfUsReworked.Patches
         public static void UpdateBlips(MapCountOverlay __instance, bool isOP)
         {
             var rooms = ShipStatus.Instance.FastRooms;
+            var colorMapDuplicate = new List<int>();
 
             foreach (var area in __instance.CountAreas)
             {
@@ -84,15 +85,23 @@ namespace TownOfUsReworked.Patches
                     var data = player?.Data;
 
                     if (collider.tag == "DeadBody" && ((isOP && (int)CustomGameOptions.WhoSeesDead is 1) || (!isOP && (int)CustomGameOptions.WhoSeesDead is 2) || (int)CustomGameOptions.
-                        WhoSeesDead is 0 || (PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything)))
+                        WhoSeesDead is 0 || (CustomPlayer.LocalCustom.IsDead && CustomGameOptions.DeadSeeEverything)))
                     {
                         var playerId = collider.GetComponent<DeadBody>().ParentId;
                         colorMap.Add(GameData.Instance.GetPlayerById(playerId).DefaultOutfit.ColorId);
-                        continue;
+                        colorMapDuplicate.Add(GameData.Instance.GetPlayerById(playerId).DefaultOutfit.ColorId);
                     }
+                    else
+                    {
+                        var component = collider.GetComponent<PlayerControl>();
 
-                    if (data?.Disconnected == false && !data.IsDead && !colorMap.Contains(data.DefaultOutfit.ColorId))
-                        colorMap.Add(data.DefaultOutfit.ColorId);
+                        if (component && component.Data != null && !component.Data.Disconnected && !component.Data.IsDead && (__instance.showLivePlayerPosition || !component.AmOwner) &&
+                            !colorMapDuplicate.Contains(data.DefaultOutfit.ColorId))
+                        {
+                            colorMap.Add(data.DefaultOutfit.ColorId);
+                            colorMapDuplicate.Add(data.DefaultOutfit.ColorId);
+                        }
+                    }
                 }
 
                 UpdateBlips(area, colorMap, isOP);
@@ -101,8 +110,8 @@ namespace TownOfUsReworked.Patches
 
         public static bool Prefix(MapCountOverlay __instance)
         {
-            var localPlayer = PlayerControl.LocalPlayer;
-            var isOP = localPlayer.Is(RoleEnum.Operative) || (PlayerControl.LocalPlayer.Data.IsDead && CustomGameOptions.DeadSeeEverything);
+            var localPlayer = CustomPlayer.Local;
+            var isOP = localPlayer.Is(RoleEnum.Operative) || (CustomPlayer.LocalCustom.IsDead && CustomGameOptions.DeadSeeEverything);
 
             if (!isOP)
                 isOP = localPlayer.Is(RoleEnum.Retributionist) && ((Retributionist)Role.LocalRole).IsOP;

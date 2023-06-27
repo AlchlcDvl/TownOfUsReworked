@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Guesser : NeutralRole
+    public class Guesser : Neutral
     {
         public PlayerControl TargetPlayer;
         public bool TargetGuessed;
@@ -8,11 +8,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public bool FactionHintGiven;
         public bool AlignmentHintGiven;
         public bool InspectorGiven;
-        public bool Failed => TargetPlayer == null || (!TargetGuessed && (RemainingGuesses <= 0f || TargetPlayer.Data.IsDead || TargetPlayer.Data.Disconnected));
-        private int lettersGiven;
-        private bool lettersExhausted;
-        private string roleName = "";
-        public List<string> letters = new();
+        public bool Failed => TargetPlayer != null && !TargetGuessed && (RemainingGuesses <= 0 || TargetPlayer.Data.IsDead || TargetPlayer.Data.Disconnected);
+        private int LettersGiven;
+        private bool LettersExhausted;
+        private string RoleName = "";
+        public List<string> Letters = new();
         public Dictionary<string, Color> ColorMapping = new();
         public Dictionary<string, Color> SortedColorMapping = new();
         public GameObject Phone;
@@ -22,11 +22,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public int MaxPage;
         public Dictionary<int, List<Transform>> GuessButtons = new();
         public Dictionary<int, KeyValuePair<string, Color>> Sorted = new();
+        public int Rounds;
+        public CustomButton TargetButton;
+        public bool TargetFailed => TargetPlayer == null && Rounds > 2;
 
         public Guesser(PlayerControl player) : base(player)
         {
             Name = "Guesser";
-            StartText = () => $"Guess What {TargetPlayer?.name} Might Be";
+            StartText = () => "Guess What Someone Might Be";
             RoleType = RoleEnum.Guesser;
             RoleAlignment = RoleAlignment.NeutralEvil;
             Color = CustomGameOptions.CustomNeutColors ? Colors.Guesser : Colors.Neutral;
@@ -39,15 +42,31 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             GuessButtons = new();
             Sorted = new();
             ColorMapping = new();
-            Objectives = () => $"- Guess {TargetPlayer?.name}'s role";
-            AbilitiesText = () => $"- You can guess player's roles without penalties after you have successfully guessed {TargetPlayer?.name}'s role\n- If {TargetPlayer?.name} dies " +
-                "without getting guessed by you, you will become an <color=#00ACC2FF>Actor</color>";
+            Objectives = () => TargetGuessed ? $"- You have found out what {TargetPlayer?.name} was" : (TargetPlayer == null ? "- Find someone to be guessed by you" : ("- Guess " +
+                $"{TargetPlayer?.name}'s role"));
+            AbilitiesText = () => "- You can guess player's roles without penalties after you have successfully guessed your target's role\n- If your target dies without getting guessed " +
+                "by you, you will become an <color=#00ACC2FF>Actor</color>";
             Type = LayerEnum.Guesser;
             InspectorResults = InspectorResults.IsCold;
             SetLists();
+            TargetButton = new(this, "GuessTarget", AbilityTypes.Direct, "ActionSecondary", SelectTarget);
+            Rounds = 0;
 
             if (TownOfUsReworked.IsTest)
                 Utils.LogSomething($"{Player.name} is {Name}");
+        }
+
+        public void SelectTarget()
+        {
+            if (TargetPlayer != null)
+                return;
+
+            TargetPlayer = TargetButton.TargetPlayer;
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Target, SendOption.Reliable);
+            writer.Write((byte)TargetRPC.SetGuessTarget);
+            writer.Write(PlayerId);
+            writer.Write(TargetPlayer.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
 
         private void SetLists()
@@ -202,7 +221,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 var button = UObject.Instantiate(buttonTemplate, buttonParent);
                 UObject.Instantiate(maskTemplate, buttonParent);
                 var label = UObject.Instantiate(textTemplate, button);
-                button.GetComponent<SpriteRenderer>().sprite = HatManager.Instance.GetNamePlateById("nameplate_NoPlate")?.viewData?.viewData?.Image;
+                button.GetComponent<SpriteRenderer>().sprite = HatManager.Instance.GetNamePlateById("nameplate_NoPlate").CreateAddressableAsset().GetAsset().Image;
 
                 if (!GuessButtons.ContainsKey(i))
                     GuessButtons.Add(i, new());
@@ -275,21 +294,23 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public void TurnAct()
         {
             var targetRole = GetRole(TargetPlayer);
-            var newRole  = new Actor(Player) { PretendRoles = targetRole == null ? InspectorResults.IsBasic : targetRole.InspectorResults };
+            var newRole  = new Actor(Player) { PretendRoles = targetRole == null || targetRole.InspectorResults == InspectorResults.None ? InspectorResults.IsBasic :
+                targetRole.InspectorResults };
             newRole.RoleUpdate(this);
 
-            if (Local)
+            if (Local && !IntroCutscene.Instance)
                 Utils.Flash(Colors.Actor);
 
-            if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
+            if (CustomPlayer.Local.Is(RoleEnum.Seer) && !IntroCutscene.Instance)
                 Utils.Flash(Colors.Seer);
         }
 
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
+            TargetButton.Update("SET TARGET", 0, 1, true, TargetPlayer == null);
 
-            if (Failed && !IsDead)
+            if ((TargetFailed || Failed) && !IsDead)
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
                 writer.Write((byte)TurnRPC.TurnAct);
@@ -303,7 +324,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             base.OnMeetingStart(__instance);
 
-            if (RemainingGuesses <= 0)
+            if (Failed)
                 return;
 
             var targetRole = GetRole(TargetPlayer);
@@ -311,109 +332,112 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var newRoleName = targetRole.Name;
             var rolechanged = false;
 
-            if (roleName != newRoleName && roleName != "")
+            if (RoleName != newRoleName && RoleName != "")
             {
                 rolechanged = true;
-                roleName = newRoleName;
+                RoleName = newRoleName;
             }
-            else if (roleName?.Length == 0)
-                roleName = newRoleName;
+            else if (RoleName?.Length == 0)
+                RoleName = newRoleName;
 
             if (rolechanged)
             {
                 something = "Your target's role changed!";
-                lettersGiven = 0;
-                lettersExhausted = false;
-                letters.Clear();
+                LettersGiven = 0;
+                LettersExhausted = false;
+                Letters.Clear();
                 FactionHintGiven = false;
                 InspectorGiven = false;
             }
-            else if (!lettersExhausted)
+            else if (!LettersExhausted)
             {
-                var random = URandom.RandomRangeInt(0, roleName.Length);
-                var random2 = URandom.RandomRangeInt(0, roleName.Length);
-                var random3 = URandom.RandomRangeInt(0, roleName.Length);
+                var random = URandom.RandomRangeInt(0, RoleName.Length);
+                var random2 = URandom.RandomRangeInt(0, RoleName.Length);
+                var random3 = URandom.RandomRangeInt(0, RoleName.Length);
 
-                if (lettersGiven <= roleName.Length - 3)
+                if (LettersGiven <= RoleName.Length - 3)
                 {
-                    while (random == random2 || random2 == random3 || random == random3 || letters.Contains($"{roleName[random]}") || letters.Contains($"{roleName[random2]}") ||
-                        letters.Contains($"{roleName[random3]}"))
+                    while (random == random2 || random2 == random3 || random == random3 || Letters.Contains($"{RoleName[random]}") || Letters.Contains($"{RoleName[random2]}") ||
+                        Letters.Contains($"{RoleName[random3]}"))
                     {
-                        if (random == random2 || letters.Contains($"{roleName[random2]}"))
-                            random2 = URandom.RandomRangeInt(0, roleName.Length);
+                        if (random == random2 || Letters.Contains($"{RoleName[random2]}"))
+                            random2 = URandom.RandomRangeInt(0, RoleName.Length);
 
-                        if (random2 == random3 || letters.Contains($"{roleName[random3]}"))
-                            random3 = URandom.RandomRangeInt(0, roleName.Length);
+                        if (random2 == random3 || Letters.Contains($"{RoleName[random3]}"))
+                            random3 = URandom.RandomRangeInt(0, RoleName.Length);
 
-                        if (random == random3 || letters.Contains($"{roleName[random]}"))
-                            random = URandom.RandomRangeInt(0, roleName.Length);
+                        if (random == random3 || Letters.Contains($"{RoleName[random]}"))
+                            random = URandom.RandomRangeInt(0, RoleName.Length);
                     }
 
-                    something = $"Your target's role as the letters {roleName[random]}, {roleName[random2]} and {roleName[random3]} in it!";
+                    something = $"Your target's role as the Letters {RoleName[random]}, {RoleName[random2]} and {RoleName[random3]} in it!";
                 }
-                else if (lettersGiven == roleName.Length - 2)
+                else if (LettersGiven == RoleName.Length - 2)
                 {
-                    while (random == random2 || letters.Contains($"{roleName[random]}") || letters.Contains($"{roleName[random2]}"))
+                    while (random == random2 || Letters.Contains($"{RoleName[random]}") || Letters.Contains($"{RoleName[random2]}"))
                     {
-                        if (letters.Contains($"{roleName[random2]}"))
-                            random2 = URandom.RandomRangeInt(0, roleName.Length);
+                        if (Letters.Contains($"{RoleName[random2]}"))
+                            random2 = URandom.RandomRangeInt(0, RoleName.Length);
 
-                        if (letters.Contains($"{roleName[random]}"))
-                            random = URandom.RandomRangeInt(0, roleName.Length);
+                        if (Letters.Contains($"{RoleName[random]}"))
+                            random = URandom.RandomRangeInt(0, RoleName.Length);
 
                         if (random == random2)
-                            random = URandom.RandomRangeInt(0, roleName.Length);
+                            random = URandom.RandomRangeInt(0, RoleName.Length);
                     }
 
-                    something = $"Your target's role as the letters {roleName[random]} and {roleName[random2]} in it!";
+                    something = $"Your target's role as the Letters {RoleName[random]} and {RoleName[random2]} in it!";
                 }
-                else if (lettersGiven == roleName.Length - 1)
+                else if (LettersGiven == RoleName.Length - 1)
                 {
-                    while (letters.Contains($"{roleName[random]}"))
-                        random = URandom.RandomRangeInt(0, roleName.Length);
+                    while (Letters.Contains($"{RoleName[random]}"))
+                        random = URandom.RandomRangeInt(0, RoleName.Length);
 
-                    something = $"Your target's role as the letter {roleName[random]} in it!";
+                    something = $"Your target's role as the letter {RoleName[random]} in it!";
                 }
-                else if (lettersGiven == roleName.Length)
-                    lettersExhausted = true;
+                else if (LettersGiven == RoleName.Length)
+                    LettersExhausted = true;
 
-                if (!lettersExhausted)
+                if (!LettersExhausted)
                 {
-                    if (lettersGiven <= roleName.Length - 3)
+                    if (LettersGiven <= RoleName.Length - 3)
                     {
-                        letters.Add($"{roleName[random]}");
-                        letters.Add($"{roleName[random2]}");
-                        letters.Add($"{roleName[random3]}");
-                        lettersGiven += 3;
+                        Letters.Add($"{RoleName[random]}");
+                        Letters.Add($"{RoleName[random2]}");
+                        Letters.Add($"{RoleName[random3]}");
+                        LettersGiven += 3;
                     }
-                    else if (lettersGiven == roleName.Length - 2)
+                    else if (LettersGiven == RoleName.Length - 2)
                     {
-                        letters.Add($"{roleName[random]}");
-                        letters.Add($"{roleName[random2]}");
-                        lettersGiven += 2;
+                        Letters.Add($"{RoleName[random]}");
+                        Letters.Add($"{RoleName[random2]}");
+                        LettersGiven += 2;
                     }
-                    else if (lettersGiven == roleName.Length - 1)
+                    else if (LettersGiven == RoleName.Length - 1)
                     {
-                        letters.Add($"{roleName[random]}");
-                        lettersGiven++;
+                        Letters.Add($"{RoleName[random]}");
+                        LettersGiven++;
                     }
                 }
             }
-            else if (!FactionHintGiven && lettersExhausted)
+            else if (!FactionHintGiven && LettersExhausted)
             {
                 something = $"Your target belongs to the {targetRole.FactionName}!";
                 FactionHintGiven = true;
             }
-            else if (!AlignmentHintGiven && lettersExhausted)
+            else if (!AlignmentHintGiven && LettersExhausted)
             {
                 something = $"Your target's role belongs to {targetRole.RoleAlignment.AlignmentName()} alignment!";
                 AlignmentHintGiven = true;
             }
-            else if (!InspectorGiven && lettersExhausted)
+            else if (!InspectorGiven && LettersExhausted)
             {
                 something = $"Your target belongs to the {targetRole.InspectorResults} role list!";
                 InspectorGiven = true;
             }
+
+            foreach (var state in __instance.playerStates)
+                GenButton(state, __instance);
 
             if (string.IsNullOrEmpty(something))
                 return;
@@ -429,8 +453,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         private bool IsExempt(PlayerVoteArea voteArea)
         {
             var player = Utils.PlayerByVoteArea(voteArea);
-            return player.Data.IsDead || player.Data.Disconnected || (player != TargetPlayer && !TargetGuessed) || player == PlayerControl.LocalPlayer || RemainingGuesses <= 0 ||
-                IsDead || player == Player.GetOtherLover() || player == Player.GetOtherRival();
+            return player.Data.IsDead || player.Data.Disconnected || (player != TargetPlayer && !TargetGuessed) || player == CustomPlayer.Local || RemainingGuesses <= 0 ||
+                IsDead || player == Player.GetOtherLover() || player == Player.GetOtherRival() || (TargetGuessed && CustomGameOptions.AvoidNeutralKingmakers);
         }
 
         public void GenButton(PlayerVoteArea voteArea, MeetingHud __instance)
@@ -532,7 +556,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             base.UpdateMeeting(__instance);
 
-            if (Phone != null)
+            if (Phone)
             {
                 if ((Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.LeftArrow) || Input.mouseScrollDelta.y > 0f) && MaxPage != 0)
                 {
@@ -559,16 +583,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
                     GuessButtons[Page].ForEach(x => x.GetComponent<SpriteRenderer>().color = x == SelectedButton ? UColor.red : UColor.white);
                 }
-            }
-
-            if (Failed && !IsDead)
-            {
-                Exit(__instance);
-                TurnAct();
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
-                writer.Write((byte)TurnRPC.TurnAct);
-                writer.Write(PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
             }
         }
 
@@ -613,7 +627,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         else if (Local && !TargetGuessed)
                             hudManager.Chat.AddChat(PlayerControl.LocalPlayer, $"You incorrectly guessed {player.name} as {guess} and lost a guess!");
                     }
-                    else if (ConstantVariables.DeadSeeEverything && !Local)
+                    else if (ConstantVariables.DeadSeeEverything)
                         hudManager.Chat.AddChat(PlayerControl.LocalPlayer, $"{PlayerName} incorrectly guessed {player.name} as {guess}!");
                     else if (Local && !TargetGuessed)
                         hudManager.Chat.AddChat(PlayerControl.LocalPlayer, $"You incorrectly guessed {player.name} as {guess}!");

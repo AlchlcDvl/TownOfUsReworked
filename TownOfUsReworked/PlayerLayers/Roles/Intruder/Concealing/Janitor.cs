@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Janitor : IntruderRole
+    public class Janitor : Intruder
     {
         public CustomButton CleanButton;
         public CustomButton DragButton;
@@ -45,57 +45,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
         }
 
-        public static void DragBody(PlayerControl __instance)
-        {
-            if (!__instance.Is(RoleEnum.Janitor))
-                return;
-
-            var role = GetRole<Janitor>(__instance);
-            var body = role.CurrentlyDragging;
-
-            if (body == null)
-                return;
-
-            if (__instance.Data.IsDead)
-            {
-                role.CurrentlyDragging = null;
-
-                foreach (var component in body?.bodyRenderers)
-                    component.material.SetFloat("_Outline", 0f);
-
-                return;
-            }
-
-            var truePosition = __instance.GetTruePosition();
-            var velocity = __instance.gameObject.GetComponent<Rigidbody2D>().velocity.normalized;
-            Vector3 newPos = ((Vector2)__instance.transform.position) - (velocity / 3f) + body.myCollider.offset;
-            newPos.z = 0.02f;
-
-            //WHY ARE THERE DIFFERENT LOCAL Z INDEXS FOR DIFFERENT DECALS ON DIFFERENT LEVELS?!?!?!
-            //AD: idk ¯\_(ツ)_/¯
-            if (ModCompatibility.IsSubmerged)
-            {
-                if (newPos.y > -7f)
-                    newPos.z = 0.0208f;
-                else
-                    newPos.z = -0.0273f;
-            }
-
-            if (!PhysicsHelpers.AnythingBetween(truePosition, newPos, Constants.ShipAndObjectsMask, false))
-                body.transform.position = newPos;
-
-            if (!__instance.AmOwner)
-                return;
-
-            foreach (var component in body?.bodyRenderers)
-            {
-                component.material.SetColor("_OutlineColor", UColor.green);
-                component.material.SetFloat("_Outline", 1f);
-            }
-
-            __instance.moveable = true;
-        }
-
         public void Clean()
         {
             if (CleanTimer() != 0f || Utils.IsTooFar(Player, CleanButton.TargetBody))
@@ -117,7 +66,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Drag()
         {
-            if (Utils.IsTooFar(Player, DragButton.TargetBody) || CurrentlyDragging != null)
+            if (Utils.IsTooFar(Player, DragButton.TargetBody) || CurrentlyDragging)
                 return;
 
             var playerId = DragButton.TargetBody.ParentId;
@@ -129,32 +78,24 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             writer.Write(playerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
             CurrentlyDragging = DragButton.TargetBody;
+            var drag = CurrentlyDragging.gameObject.AddComponent<DragBehaviour>();
+            drag.Source = Player;
+            drag.Dragged = CurrentlyDragging;
+            drag.Body = CurrentlyDragging.gameObject.AddComponent<Rigidbody2D>();
+            drag.Collider = CurrentlyDragging.gameObject.GetComponent<Collider2D>();
         }
 
         public void Drop()
         {
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
             writer.Write((byte)ActionsRPC.Drop);
-            writer.Write(PlayerId);
-            Vector3 position = PlayerControl.LocalPlayer.GetTruePosition();
-
-            if (ModCompatibility.IsSubmerged)
-            {
-                if (position.y > -7f)
-                    position.z = 0.0208f;
-                else
-                    position.z = -0.0273f;
-            }
-
-            position.y -= 0.3636f;
-            writer.Write(position);
-            writer.Write(position.z);
+            writer.Write(CurrentlyDragging.ParentId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
 
             foreach (var component in CurrentlyDragging?.bodyRenderers)
                 component.material.SetFloat("_Outline", 0f);
 
-            CurrentlyDragging.transform.position = position;
+            CurrentlyDragging.gameObject.GetComponent<DragBehaviour>().Destroy();
             CurrentlyDragging = null;
             LastDragged = DateTime.UtcNow;
         }

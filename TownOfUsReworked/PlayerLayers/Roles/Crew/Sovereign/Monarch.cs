@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Monarch : CrewRole
+    public class Monarch : Crew
     {
         public bool RoundOne;
         public CustomButton KnightButton;

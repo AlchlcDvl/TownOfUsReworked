@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Warper : SyndicateRole
+    public class Warper : Syndicate
     {
         public CustomButton WarpButton;
         public DateTime LastWarped;
@@ -103,7 +103,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             WarpPlayer1.moveable = false;
             WarpPlayer1.NetTransform.Halt();
 
-            if (PlayerControl.LocalPlayer == WarpPlayer1)
+            if (CustomPlayer.Local == WarpPlayer1)
                 Utils.Flash(Color, CustomGameOptions.WarpDuration);
 
             if (Player1Body == null && !WasInVent)
@@ -133,10 +133,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 WarpPlayer1.MyPhysics.ResetMoveState();
                 WarpPlayer1.NetTransform.SnapTo(new(WarpPlayer2.GetTruePosition().x, WarpPlayer2.GetTruePosition().y + 0.3636f));
 
-                if (ModCompatibility.IsSubmerged && PlayerControl.LocalPlayer == WarpPlayer1)
+                if (ModCompatibility.IsSubmerged && CustomPlayer.Local == WarpPlayer1)
                 {
                     ModCompatibility.ChangeFloor(WarpPlayer1.GetTruePosition().y > -7);
-                    ModCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
+                    ModCompatibility.CheckOutOfBoundsElevator(CustomPlayer.Local);
                 }
 
                 if (WarpPlayer1.CanVent() && Vent != null && WasInVent)
@@ -147,10 +147,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 Utils.StopDragging(Player1Body.ParentId);
                 Player1Body.transform.position = WarpPlayer2.GetTruePosition();
 
-                if (ModCompatibility.IsSubmerged && PlayerControl.LocalPlayer == WarpPlayer2)
+                if (ModCompatibility.IsSubmerged && CustomPlayer.Local == WarpPlayer2)
                 {
                     ModCompatibility.ChangeFloor(WarpPlayer2.GetTruePosition().y > -7);
-                    ModCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
+                    ModCompatibility.CheckOutOfBoundsElevator(CustomPlayer.Local);
                 }
             }
             else if (Player1Body == null && Player2Body != null)
@@ -158,10 +158,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 WarpPlayer1.MyPhysics.ResetMoveState();
                 WarpPlayer1.NetTransform.SnapTo(new(Player2Body.TruePosition.x, Player2Body.TruePosition.y + 0.3636f));
 
-                if (ModCompatibility.IsSubmerged && PlayerControl.LocalPlayer == WarpPlayer1)
+                if (ModCompatibility.IsSubmerged && CustomPlayer.Local == WarpPlayer1)
                 {
                     ModCompatibility.ChangeFloor(WarpPlayer1.GetTruePosition().y > -7);
-                    ModCompatibility.CheckOutOfBoundsElevator(PlayerControl.LocalPlayer);
+                    ModCompatibility.CheckOutOfBoundsElevator(CustomPlayer.Local);
                 }
             }
             else if (Player1Body != null && Player2Body != null)
@@ -170,7 +170,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 Player1Body.transform.position = Player2Body.TruePosition;
             }
 
-            if (PlayerControl.LocalPlayer == WarpPlayer1)
+            if (CustomPlayer.Local == WarpPlayer1)
             {
                 if (Minigame.Instance)
                     Minigame.Instance.Close();

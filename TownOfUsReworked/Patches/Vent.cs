@@ -40,7 +40,7 @@ namespace TownOfUsReworked.Patches
                 switch (__instance.Id)
                 {
                     case 9:  //Engine Room Exit Only Vent
-                        if (PlayerControl.LocalPlayer.inVent)
+                        if (CustomPlayer.Local.inVent)
                             break;
 
                         __result = float.MaxValue;
@@ -79,7 +79,7 @@ namespace TownOfUsReworked.Patches
     {
         public static bool Prefix()
         {
-            var player = PlayerControl.LocalPlayer;
+            var player = CustomPlayer.Local;
 
             if (player.Is(RoleEnum.Jester) && CustomGameOptions.JesterVent)
                 return CustomGameOptions.JestVentSwitch;

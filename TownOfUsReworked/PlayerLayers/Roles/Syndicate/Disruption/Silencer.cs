@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Silencer : SyndicateRole
+    public class Silencer : Syndicate
     {
         public CustomButton SilenceButton;
         public PlayerControl SilencedPlayer;

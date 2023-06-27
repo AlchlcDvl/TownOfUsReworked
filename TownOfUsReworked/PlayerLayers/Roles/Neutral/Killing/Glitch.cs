@@ -1,6 +1,6 @@
 ﻿namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Glitch : NeutralRole
+    public class Glitch : Neutral
     {
         public DateTime LastMimic;
         public DateTime LastHack;

@@ -3,19 +3,23 @@ namespace TownOfUsReworked.Patches
     [HarmonyPatch(typeof(VersionShower), nameof(VersionShower.Start))]
     public static class VersionShowerPatch
     {
+        public static TextMeshPro ModVersion;
+
         public static void Postfix(VersionShower __instance)
         {
-            var gameObject = GameObject.Find("bannerLogo_AmongUs");
+            var gameObject = GameObject.Find("LOGO-AU");
 
-            if (gameObject != null)
+            if (gameObject && !ModVersion)
             {
-                var textMeshPro = UObject.Instantiate(__instance.text);
-                textMeshPro.transform.position = new(0f, -0.85f, 0f);
-                textMeshPro.text = $"{TownOfUsReworked.VersionFinal}\n<size=85%>Created by <color=#C50000FF>AlchlcDvl</color></size>";
-                textMeshPro.alignment = TextAlignmentOptions.Center;
-                textMeshPro.fontSize *= 0.75f;
-                textMeshPro.fontStyle = FontStyles.Bold;
-                textMeshPro.transform.SetParent(gameObject.transform);
+                ModVersion = UObject.Instantiate(__instance.text);
+                var pos = MainMenuStartPatch.Logo.transform.position;
+                pos.y -= 2f;
+                ModVersion.transform.position = pos;
+                ModVersion.text = $"<size=175%><b>{TownOfUsReworked.VersionFinal}\nCreated by <color=#C50000FF>AlchlcDvl</color></b></size>";
+                ModVersion.alignment = TextAlignmentOptions.Center;
+                ModVersion.fontStyle = FontStyles.Bold;
+                ModVersion.name = "ModVersion";
+                ModVersion.transform.SetParent(MainMenuStartPatch.Logo.transform.parent);
             }
         }
     }
@@ -30,10 +34,10 @@ namespace TownOfUsReworked.Patches
             deltaTime += (Time.deltaTime - deltaTime) * 0.1f;
             var fps = Mathf.Ceil(1.0f / deltaTime);
 
-            __instance.text.text = "<size=80%><b><color=#00FF00FF>TownOfUs</color><color=#FF00FFFF>Reworked</color></b>\n" +
+            __instance.text.text = $"Ping: {AmongUsClient.Instance.Ping}ms FPS: {fps}\n" +
+                "<size=80%><b><color=#00FF00FF>TownOfUs</color><color=#FF00FFFF>Reworked</color></b>\n" +
                 $"{(!MeetingHud.Instance ? $"<color=#0000FFFF>{TownOfUsReworked.VersionFinal}</color>\n" : "")}" +
-                $"{(!MeetingHud.Instance ? "<color=#C50000FF>By: AlchlcDvl</color>\n" : "")}" +
-                $"Ping: {AmongUsClient.Instance.Ping}ms\nFPS: {fps}\n" + (TownOfUsReworked.MCIActive ? (ConstantVariables.IsLobby ?
+                $"{(!MeetingHud.Instance ? "<color=#C50000FF>By: AlchlcDvl</color>\n" : "")}" + (TownOfUsReworked.MCIActive ? (ConstantVariables.IsLobby ?
                 $"Lobby {(TownOfUsReworked.LobbyCapped ? "C" : "Unc")}apped\nRobots{(TownOfUsReworked.Persistence ? "" : " Don't")} Persist" : "") : "") + "</size>";
         }
 

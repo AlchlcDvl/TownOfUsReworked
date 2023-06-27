@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Stalker : SyndicateRole
+    public class Stalker : Syndicate
     {
         public Dictionary<byte, CustomArrow> StalkerArrows = new();
         public DateTime LastStalked;
@@ -33,9 +33,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void DestroyArrow(byte targetPlayerId)
         {
-            var arrow = StalkerArrows.FirstOrDefault(x => x.Key == targetPlayerId);
-            arrow.Value?.Destroy();
-            StalkerArrows.Remove(arrow.Key);
+            StalkerArrows.FirstOrDefault(x => x.Key == targetPlayerId).Value?.Destroy();
+            StalkerArrows.Remove(targetPlayerId);
         }
 
         public override void OnLobby()
@@ -77,18 +76,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     var player = Utils.PlayerById(pair.Key);
                     var body = Utils.BodyById(pair.Key);
 
-                    if (player.Data.Disconnected || (player.Data.IsDead && !body))
+                    if (player == null || player.Data.Disconnected || (player.Data.IsDead && !body))
                     {
                         DestroyArrow(pair.Key);
                         continue;
                     }
 
-                    pair.Value.Update(player.Data.IsDead ? player.GetTruePosition() : body.TruePosition, player.GetPlayerColor(!HoldsDrive));
+                    pair.Value?.Update(player.Data.IsDead ? player.transform.position : body.transform.position, player.GetPlayerColor(!HoldsDrive));
                 }
 
                 if (HoldsDrive)
                 {
-                    foreach (var player in PlayerControl.AllPlayerControls)
+                    foreach (var player in CustomPlayer.AllPlayers)
                     {
                         if (!StalkerArrows.ContainsKey(player.PlayerId))
                             StalkerArrows.Add(player.PlayerId, new(Player, player.GetPlayerColor(false)));

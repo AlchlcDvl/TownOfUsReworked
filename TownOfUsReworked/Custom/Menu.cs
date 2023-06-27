@@ -21,7 +21,7 @@ namespace TownOfUsReworked.Custom
 
         public void Open()
         {
-            Targets = PlayerControl.AllPlayerControls.Where(x => !Exception(x) && !x.IsPostmortal() && !x.Data.IsDead).ToList();
+            Targets = CustomPlayer.AllPlayers.Where(x => !Exception(x) && !x.IsPostmortal() && !x.Data.IsDead).ToList();
 
             if (Menu == null)
             {

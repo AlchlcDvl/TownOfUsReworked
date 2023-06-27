@@ -33,7 +33,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             betrayer.RoleUpdate(role);
             Betrayed = true;
 
-            if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
+            if (CustomPlayer.Local.Is(RoleEnum.Seer))
                 Utils.Flash(Colors.Seer);
         }
 
@@ -41,8 +41,8 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         {
             var traitorRole = Role.GetRole(Player);
 
-            var IntrudersAlive = PlayerControl.AllPlayerControls.Count(x => x.Is(Faction.Intruder) && !x.Data.IsDead && !x.Data.Disconnected);
-            var SyndicateAlive = PlayerControl.AllPlayerControls.Count(x => x.Is(Faction.Syndicate) && !x.Data.IsDead && !x.Data.Disconnected);
+            var IntrudersAlive = CustomPlayer.AllPlayers.Count(x => x.Is(Faction.Intruder) && !x.Data.IsDead && !x.Data.Disconnected);
+            var SyndicateAlive = CustomPlayer.AllPlayers.Count(x => x.Is(Faction.Syndicate) && !x.Data.IsDead && !x.Data.Disconnected);
 
             var turnIntruder = false;
             var turnSyndicate = false;
@@ -101,23 +101,23 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             {
                 if (CustomGameOptions.SnitchSeesTraitor)
                 {
-                    if (snitch.TasksLeft <= CustomGameOptions.SnitchTasksRemaining && PlayerControl.LocalPlayer == Player)
+                    if (snitch.TasksLeft <= CustomGameOptions.SnitchTasksRemaining && CustomPlayer.Local == Player)
                         Role.LocalRole.AllArrows.Add(snitch.PlayerId, new(Player, Colors.Snitch, 0));
-                    else if (snitch.TasksDone && PlayerControl.LocalPlayer == snitch.Player)
+                    else if (snitch.TasksDone && CustomPlayer.Local == snitch.Player)
                         Role.GetRole(snitch.Player).AllArrows.Add(Player.PlayerId, new(snitch.Player, Colors.Snitch));
                 }
             }
 
             foreach (var revealer in Role.GetRoles<Revealer>(RoleEnum.Revealer))
             {
-                if (revealer.Revealed && CustomGameOptions.RevealerRevealsTraitor && Player == PlayerControl.LocalPlayer)
+                if (revealer.Revealed && CustomGameOptions.RevealerRevealsTraitor && Local)
                     Role.LocalRole.AllArrows.Add(revealer.PlayerId, new(Player, revealer.Color));
             }
 
-            if (PlayerControl.LocalPlayer.Is(RoleEnum.Mystic) && Player != PlayerControl.LocalPlayer)
+            if (CustomPlayer.Local.Is(RoleEnum.Mystic) && !Local && !IntroCutscene.Instance)
                 Utils.Flash(Colors.Mystic);
 
-            if (Player == PlayerControl.LocalPlayer || PlayerControl.LocalPlayer.Is(traitorRole.Faction))
+            if ((Local || CustomPlayer.Local.Is(traitorRole.Faction)) && !IntroCutscene.Instance)
                 Utils.Flash(Colors.Traitor);
         }
 

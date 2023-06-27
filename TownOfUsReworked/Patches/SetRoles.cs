@@ -10,10 +10,7 @@ namespace TownOfUsReworked.Patches
             var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Start, SendOption.Reliable);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
             Utils.LogSomething("Cleared Variables");
-            RoleGen.BeginRoleGen(GameData.Instance.AllPlayers.Where(o => o.IsImpostor()).ToList());
-
-            foreach (var player in PlayerControl.AllPlayerControls)
-                player.MaxReportDistance = CustomGameOptions.ReportDistance;
+            RoleGen.BeginRoleGen();
         }
     }
 }

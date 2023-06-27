@@ -122,18 +122,19 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 # Releases
 
-**Disclaimer: The mod is *not* guaranteed to work on the latest versions of Among Us when it updates.**
+**Disclaimer: The mod is *not* guaranteed to work on the latest versions of Among Us when the game updates.**
 
 | Among Us | Mod Version | Link |
 |----------|-------------|------|
-| 2023.3.28 (s & e) | v0.3.1 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.3.1/Reworked.zip) |
-| 2023.3.28 (s & e) | v0.3.0 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.3.0/TownOfUsReworked.zip) |
+| 2023.6.13 (s & e) | v0.4.0 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.4.0/Reworked.zip) |
 
 <details>
 <summary>Older Versions</summary>
 
 | Among Us | Mod Version | Link |
 |----------|-------------|------|
+| 2023.3.28 (s & e) | v0.3.1 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.3.1/Reworked.zip) |
+| 2023.3.28 (s & e) | v0.3.0 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.3.0/TownOfUsReworked.zip) |
 | 2023.3.28 (s & e) | v0.2.5 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.2.5/TownOfUsReworked.zip) |
 | 2023.3.28 (s & e) | v0.2.4 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.2.4/TownOfUsReworked.zip) |
 | 2023.3.28 (s & e) | v0.2.3 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.2.3/TownOfUsReworked.zip) |
@@ -173,6 +174,34 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 
 <details>
 <summary>Changelog</summary>
+<details>
+<summary>v0.4.0</summary>
+<ul> <li>Update: Merged changes from v4.0.6 of ToU-R</li> </ul>
+<ul> <li>Update: Updated the mod to v2023.6.13</li> </ul>
+<ul> <li>Update: Updated BepInEx to be.670</li> </ul>
+<ul> <li>Update: Updated Reactor to 2.2.0-ci.234</li> </ul>
+<ul> <li>Addition: Added the "Avoid Neutral Kingmakers" option which disables Survivors and Guardian Angels and kills off any Neutral (Evil) role after finishing their objective</li> </ul>
+<ul> <li>Recode: Role generation and Chat commands have been recoded</li> </ul>
+<ul> <li>Recode: Roleblocks have also received a slight recode</li> </ul>
+<ul> <li>Buff: Coroner reference bodies now stack on top of each other and there is no longer a compare limit</li> </ul>
+<ul> <li>Buff: Executioners, Guessers and Guardian Angels can pick their own targets within the first 2 rounds (to avoid having their chosen targets die early)</li> </ul>
+<ul> <li>Nerf: Medics who haven't shielded yet can no longer shield revealed Mayors and Dictators</li> </ul>
+<ul> <li>Improvement: Improved how players and chat messages are handled</li> </ul>
+<ul> <li>Improvement: Added meeting compatibility to MCI so that switching between players during meetings is possible</li> </ul>
+<ul> <li>Improvement: Disconnected players are now also added to the end game summary</li> </ul>
+<ul> <li>Visual Fix: Fixed player visors sometimes being blue in color in meetings</li> </ul>
+<ul> <li>Visual Fix: Fixed the Use button inverting colors when near a non-task interactable</li> </ul>
+<ul> <li>Visual Fix: Fixed the intro fade sometimes disappearing</li> </ul>
+<ul> <li>Bug Fix: Fixed shields not breaking properly</li> </ul>
+<ul> <li>Bug Fix: Fixed colors occasionally bugging out</li> </ul>
+<ul> <li>Bug Fix: Fixed Janitor and Godfather-Janitors teleporting bodies when dragging them</li> </ul>
+<ul> <li>Bug Fix: Fixed incorrect guessing results being displayed</li> </ul>
+<ul> <li>Bug Fix: Fixed players being warped into walls</li> </ul>
+<ul> <li>Role Fix: Fixed Amnesiac, Shifter and Thief role changing bugging out buttons</li> </ul>
+<ul> <li>Role Fix: Fixed Godfather and Rebel being able promote those they shouldn't</li> </ul>
+<ul> <li>Temporary Removal: Custom cosmetics have been removed on account of the update, they'll return when I can fix the bugs relating to them</li> </ul>
+<ul> <li>Removal: Removed the "Min" setting for all role alignments, they bug out role gen a lot so only the min setting for the factions and layers exist</li> </ul>
+</details>
 <details>
 <summary>v0.3.1</summary>
 <ul> <li>Addition: Added /subfactioninfo and /otherinfo commands for more details about the mod</li> </ul>
@@ -281,7 +310,7 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 <ul> <li>Improvement: Improved the layout of the main menu (inspired by the main menu changes made by @Zeo666 in All The Roles)</li> </ul>
 <ul> <li>Improvement: The task counter has been moved from your name to the task tab</li> </ul>
 <ul> <li>Improvement: The zooming buttons are now smaller and moved to a different location</li> </ul>
-<ul> <li>Improvement: The in-game wiki has recieved a slight recode</li> </ul>
+<ul> <li>Improvement: The in-game wiki has received a slight recode</li> </ul>
 <ul> <li>Improvement: You no longer know the status of players until the meeting after your death (to avoid players coming back to life and ratting everyone out)</li> </ul>
 <ul> <li>Improvement: Improved the footprint graphics for Detectives and Retributionist-Detectives</li> </ul>
 <ul> <li>Bug Fix: Fixed the spectate button opening up the haunting menu</li> </ul>
@@ -754,7 +783,7 @@ Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or wa
 <ul> <li>Addition: You minimap now reflects the color of your role</li> </ul>
 <ul> <li>Addition: Polus Reactor countdown can be changed now</li> </ul>
 <ul> <li>Improvement: The end game screen shows your role under your name if you win</li> </ul>
-<ul> <li>Internal: The code recieved yet another restructuring</li> </ul>
+<ul> <li>Internal: The code received yet another restructuring</li> </ul>
 <ul> <li>Internal: The code for custom hats and role names was changed</li> </ul>
 <ul> <li>Changes: Some buttons have their art now</li> </ul>
 <ul> <li>Bug Fix: Fixed Seer not spawning when Godfather and Plaguebearer are on</li> </ul>
@@ -919,6 +948,7 @@ In this mod, we have :-
 -----------------------
 
 # Common Settings
+
 ## Each role, modifier, objectifier and ability has these settings
 
 | Name | Description | Type | Default |
@@ -932,7 +962,6 @@ In this mod, we have :-
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Max Count | Dictates the maximum number of roles from the alignment will spawn | Number | 5 |
-| Min Count | Dictates the minimum number of roles from the alignment will spawn | Number | 5 |
 
 ## Each faction has these settings
 
@@ -943,6 +972,14 @@ In this mod, we have :-
 | Faction Can Vent | Dictates whether members of this faction can vent, this is overriden by the specific venting settings for the roles | Toggle | True if not Crew |
 | Custom Faction Colors | Purely a visual thing, dictates whether players want each role color to only match the color of their respective factions | Toggle | True |
 | Vision | How far can members of the faction see | Factor | 1x for Crew, 2x for Intruders and Syndicate, 1.5x for Neutrals |
+
+## Each non-role layer has these settings
+
+| Name | Description | Type | Default |
+|------|-------------|------|---------|
+| Max Abilties/Modifiers/Objectifiers | Dictates the maximum number of layers of the mentioned type will spawn | Number | 5 |
+| Min Abilties/Modifiers/Objectifiers | Dictates the minimum number of layers of the mentioned type will spawn | Number | 5 |
+| Custom Abilties/Modifiers/Objectifiers Colors | Purely a visual thing, dictates whether players want each layer has their own color | Toggle | True |
 
 -----------------------
 
@@ -990,7 +1027,7 @@ The Chameleon can go invisible to stalk players and see what they do when no one
 ## Coroner
 ### Alignment: Crew (Investigative)
 
-The Coroner gets an alert when someone dies and briefly gets an arrow pointing in the direction of the body. They can autopsy bodies to get some information. They can then compare that information with players to see if they killed the body or not. The Coroner also gets a body report from the player they reported. The report will include the cause and time of death, player's faction/role, the killer's faction/role and (according to the settings) the killer's name.
+The Coroner gets an alert when someone dies and briefly gets an arrow pointing in the direction of the body. They can autopsy bodies to get some information. They can then compare that information with players to see if they killed the body or not. The Coroner also gets a body report from the body they reported. The report will include the cause and time of death, player's faction/role, the killer's faction/role and (according to the settings) the killer's name.
 
 ### Game Options
 
@@ -1002,7 +1039,6 @@ The Coroner gets an alert when someone dies and briefly gets an arrow pointing i
 | Coroner Gets Killer's Name Under | This dictates how old must a body be for the Coroner to get the killer's name | Time | 1s |
 | Compare Cooldown | The cooldown on the Coroner's Compare button | Time | 25s |
 | Autopsy Cooldown | The cooldown on the Coroner's Autopsy button | Time | 25s |
-| Compare Limit | The number of times the Coroner can compare players to a body before it goes stale | Number | 5 |
 
 ## Crewmate
 ### Alignment: Crew (Utility)
@@ -1444,9 +1480,6 @@ The Executioner has no abilities and instead must use gas-lighting techniques to
 | Target Knows Executioner Exists | Whether the Executioner's target knows that they have an Executioner for them | Toggle | False |
 | Executioner Knows Target's Role | Whether the Executioner knows their target's role | Toggle | False |
 | Target Ejection Reveals Existence Of Executioner | Decides if the target is ejected, it will reveal the fact that they were an Executioner's target | Toggle | False |
-| Executioner Can Have Intruder Targets | Decides if the Executioner can have an Intruder as a target | Toggle | False |
-| Executioner Can Have Syndicate Targets | Decides if the Executioner can have a Syndicate as a target | Toggle | False |
-| Executioner Can Have Neutral Targets | Decides if the Executioner can have a Neutral as a target | Toggle | False |
 | Executioner Can Win After Death | Decides if the Executioner can still win if their target has been ejected after they died | Toggle | False |
 | Vigilante Kills Executioner | Whether the Vigilante is able to kill the Executioner | Toggle | False |
 
@@ -2912,9 +2945,9 @@ A player's identity in the game is divided into 4 classifications, or Player Lay
 
 The first and most important one is a [Role](#roles). It decides your abilities and goals for the game. Every game, you are guaranteed to have a role as not having one basically means you cannot play the game.
 
-The next one is an [Objectifier](#objectifiers). It provides and alternate way for you to win, and sometimes it may override the your original win condition (see [Corrupted](#corrupted) and [Mafia](#mafia)) or change your win condition mid-game (see [Traitor](#traitor) and [Fanatic](#fanatic)).
+The next one is an [Objectifier](#objectifiers). It provides an alternate way for you to win, and sometimes it may override the your original win condition (see [Corrupted](#corrupted) and [Mafia](#mafia)) or change your win condition mid-game (see [Traitor](#traitor) and [Fanatic](#fanatic)).
 
-The third layer is an [Ability](#abilities). It gives you can additional ability on top of your original abilities, to help boost your chances of winning.
+The third layer is an [Ability](#abilities). It gives you an additional ability on top of your original abilities, to help boost your chances of winning.
 
 The last layer is a [Modifier](#modifiers). It is a passive affliction, usually negative or benign in nature, that serves no purpose and is there for fun. It cam alter a player's gameplay based on what they might have. For example, [Baits](#bait) and [Diseased](#diseased) players would want to die for their modifiers to take effect.
 
@@ -2959,7 +2992,7 @@ After that, it's gaming time.
 [Evan91380](https://github.com/Evan91380/BetterAirShip) & [Hardel](https://github.com/Hardel-DW) - For Better Airship code\
 [TorchMod](https://github.com/tomozbot/TorchMod) - For the inspiration of the Torch ability\
 [XtraCube](https://github.com/XtraCube) - For the custom colors\
-[The Other Roles](https://github.com/Eisbison/TheOtherRoles) - For the inspiration of the Tracker role and the Bait modifier, cosmetics system, teleport animation and version control\
+[The Other Roles](https://github.com/Eisbison/TheOtherRoles) - For the inspiration of the Tracker role and the Astral and Bait modifiers, cosmetics system, teleport animation and version control\
 [The Other Roles: Community Edition](https://github.com/JustASysAdmin/TheOtherRoles2) - For the random spawns option\
 [Las Monjas](https://github.com/KiraYamato94/LasMonjas) - For the inspiration of the VIP modifier\
 [5up](https://www.twitch.tv/5uppp) and the Submarine Team - For the inspiration of the Grenadier role\

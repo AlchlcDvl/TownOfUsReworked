@@ -1,23 +1,9 @@
 namespace TownOfUsReworked.Cosmetics
 {
-    public class NameplateExtension
-    {
-        public string Artist { get; set; }
-        public string Condition { get; set; }
-    }
-
-    public class CustomNameplate
-    {
-        public string Artist { get; set; }
-        public string Condition { get; set; }
-        public string Name { get; set; }
-        public string ID { get; set; }
-    }
-
     [HarmonyPatch]
     public static class CustomNameplates
     {
-        private static bool SubLoaded;
+        /*private static bool SubLoaded;
         private static bool Running;
         public readonly static Dictionary<string, NameplateExtension> CustomNameplateRegistry = new();
 
@@ -47,8 +33,9 @@ namespace TownOfUsReworked.Cosmetics
             }
 
             var nameplate = ScriptableObject.CreateInstance<NamePlateData>();
-            nameplate.viewData.viewData = ScriptableObject.CreateInstance<NamePlateViewData>();
-            nameplate.viewData.viewData.Image = CreateNameplateSprite(cn.ID, fromDisk);
+            var viewData = nameplate.CreateAddressableAsset().GetAsset();
+            viewData = ScriptableObject.CreateInstance<NamePlateViewData>();
+            viewData.Image = CreateNameplateSprite(cn.ID, fromDisk);
             nameplate.name = cn.Name;
             nameplate.displayOrder = 99;
             nameplate.ProductId = "nameplate_" + cn.Name.Replace(' ', '_');
@@ -149,9 +136,9 @@ namespace TownOfUsReworked.Cosmetics
 
                     colorChip.Button.ClickMask = __instance.scroller.Hitbox;
                     colorChip.transform.localPosition = new(xpos, ypos, -1f);
-                    __instance.StartCoroutine(nameplate.CoLoadViewData(new Action<NamePlateViewData>(x =>
+                    __instance.StartCoroutine(nameplate.CoLoadIcon(new Action<Sprite, AddressableAsset>((_, _) =>
                     {
-                        colorChip.gameObject.GetComponent<NameplateChip>().image.sprite = x.Image;
+                        colorChip.gameObject.GetComponent<NameplateChip>().image.sprite = nameplate.CreateAddressableAsset().GetAsset().Image;
                         colorChip.gameObject.GetComponent<NameplateChip>().ProductId = nameplate.ProductId;
                     })));
                     __instance.ColorChips.Add(colorChip);
@@ -202,7 +189,7 @@ namespace TownOfUsReworked.Cosmetics
                     return 500;
                 });
 
-                foreach (string key in keys)
+                foreach (var key in keys)
                     YOffset = CreateNameplatePackage(packages[key], key, YOffset, __instance);
 
                 __instance.scroller.ContentYBounds.max = -(YOffset + 3.8f);
@@ -214,6 +201,6 @@ namespace TownOfUsReworked.Cosmetics
         {
             CustomNameplateRegistry.TryGetValue(Nameplate.name, out var ret);
             return ret;
-        }
+        }*/
     }
 }

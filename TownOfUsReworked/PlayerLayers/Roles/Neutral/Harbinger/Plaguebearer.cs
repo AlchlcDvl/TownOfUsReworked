@@ -1,10 +1,10 @@
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
-    public class Plaguebearer : NeutralRole
+    public class Plaguebearer : Neutral
     {
         public DateTime LastInfected;
         public List<byte> Infected = new();
-        public bool CanTransform => PlayerControl.AllPlayerControls.Count(x => !x.Data.IsDead && !x.Data.Disconnected) <= Infected.Count;
+        public bool CanTransform => CustomPlayer.AllPlayers.Count(x => !x.Data.IsDead && !x.Data.Disconnected) <= Infected.Count || CustomGameOptions.PestSpawn;
         public CustomButton InfectButton;
 
         public Plaguebearer(PlayerControl player) : base(player)
@@ -80,10 +80,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var newRole = new Pestilence(Player);
             newRole.RoleUpdate(this);
 
-            if (Local || CustomGameOptions.PlayersAlerted)
+            if ((Local || CustomGameOptions.PlayersAlerted) && !IntroCutscene.Instance)
                 Utils.Flash(Colors.Pestilence);
 
-            if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
+            if (CustomPlayer.Local.Is(RoleEnum.Seer) && !CustomGameOptions.PlayersAlerted && !IntroCutscene.Instance)
                 Utils.Flash(Colors.Seer);
         }
 
@@ -98,7 +98,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
                 writer.Write((byte)TurnRPC.TurnPestilence);
-                writer.Write(PlayerControl.LocalPlayer.PlayerId);
+                writer.Write(CustomPlayer.Local.PlayerId);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
                 TurnPestilence();
             }

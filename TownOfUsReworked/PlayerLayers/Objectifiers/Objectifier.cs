@@ -2,8 +2,8 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
 {
     public class Objectifier : PlayerLayer
     {
-        public static readonly List<Objectifier> AllObjectifiers = new();
-        public static Objectifier LocalObjectifier => GetObjectifier(PlayerControl.LocalPlayer);
+        public readonly static List<Objectifier> AllObjectifiers = new();
+        public static Objectifier LocalObjectifier => GetObjectifier(CustomPlayer.Local);
 
         public static bool LoveWins;
         public static bool RivalWins;

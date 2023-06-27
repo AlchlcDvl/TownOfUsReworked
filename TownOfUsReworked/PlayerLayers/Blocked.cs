@@ -9,7 +9,7 @@ namespace TownOfUsReworked.PlayerLayers
             if (ConstantVariables.Inactive)
                 return true;
 
-            if (!PlayerControl.LocalPlayer.CanVent())
+            if (!CustomPlayer.Local.CanVent())
                 return false;
 
             return PlayerLayer.LocalLayers.All(x => !x.IsBlocked);
@@ -25,7 +25,7 @@ namespace TownOfUsReworked.PlayerLayers
             if (ConstantVariables.Inactive)
                 return true;
 
-            if (PlayerControl.LocalPlayer.Is(ModifierEnum.Coward))
+            if (CustomPlayer.Local.Is(ModifierEnum.Coward))
                 return false;
 
             return PlayerLayer.LocalLayers.All(x => !x.IsBlocked);
@@ -43,9 +43,9 @@ namespace TownOfUsReworked.PlayerLayers
 
             var notBlocked = PlayerLayer.LocalLayers.All(x => !x.IsBlocked);
 
-            if (__instance.isActiveAndEnabled && PlayerControl.LocalPlayer && Tasks.NearestTask != null && Tasks.AllCustomPlateform != null && notBlocked)
+            if (__instance.isActiveAndEnabled && CustomPlayer.Local && InteractableBehaviour.NearestTask != null && InteractableBehaviour.AllCustomPlateform != null && notBlocked)
             {
-                Tasks.NearestTask.Use();
+                InteractableBehaviour.NearestTask.Use();
                 return false;
             }
 
@@ -97,5 +97,103 @@ namespace TownOfUsReworked.PlayerLayers
     public static class PerformKill
     {
         public static bool Prefix() => false;
+    }
+
+    [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
+    public static class Blocked
+    {
+        private static GameObject UseBlock;
+        private static GameObject PetBlock;
+        private static GameObject SaboBlock;
+        private static GameObject VentBlock;
+        private static GameObject ReportBlock;
+        private static GameObject AdminBlock;
+
+        public static void Postfix(HudManager __instance)
+        {
+            if (!UseBlock && __instance.UseButton.isActiveAndEnabled)
+            {
+                UseBlock = new("UseBlock");
+                UseBlock.AddComponent<SpriteRenderer>().sprite = AssetManager.GetSprite("Blocked");
+            }
+
+            if (UseBlock)
+            {
+                var pos = __instance.UseButton.transform.position;
+                pos.z = -50f;
+                UseBlock.transform.position = pos;
+                UseBlock.SetActive(CustomPlayer.Local.IsBlocked() && __instance.UseButton.isActiveAndEnabled);
+            }
+
+            if (!PetBlock && __instance.PetButton.isActiveAndEnabled)
+            {
+                PetBlock = new("PetBlock");
+                PetBlock.AddComponent<SpriteRenderer>().sprite = AssetManager.GetSprite("Blocked");
+            }
+
+            if (PetBlock)
+            {
+                var pos = __instance.PetButton.transform.position;
+                pos.z = -50f;
+                PetBlock.transform.position = pos;
+                PetBlock.SetActive(CustomPlayer.Local.IsBlocked() && __instance.PetButton.isActiveAndEnabled);
+            }
+
+            if (!SaboBlock && __instance.SabotageButton.isActiveAndEnabled)
+            {
+                SaboBlock = new("SaboBlock");
+                SaboBlock.AddComponent<SpriteRenderer>().sprite = AssetManager.GetSprite("Blocked");
+            }
+
+            if (SaboBlock)
+            {
+                var pos = __instance.SabotageButton.transform.position;
+                pos.z = -50f;
+                SaboBlock.transform.position = pos;
+                SaboBlock.SetActive(CustomPlayer.Local.IsBlocked() && __instance.SabotageButton.isActiveAndEnabled);
+            }
+
+            if (!VentBlock && __instance.ImpostorVentButton.isActiveAndEnabled)
+            {
+                VentBlock = new("VentBlock");
+                VentBlock.AddComponent<SpriteRenderer>().sprite = AssetManager.GetSprite("Blocked");
+            }
+
+            if (VentBlock)
+            {
+                var pos = __instance.ImpostorVentButton.transform.position;
+                pos.z = -50f;
+                VentBlock.transform.position = pos;
+                VentBlock.SetActive(CustomPlayer.Local.IsBlocked() && __instance.ImpostorVentButton.isActiveAndEnabled);
+            }
+
+            if (!ReportBlock && __instance.ReportButton.isActiveAndEnabled)
+            {
+                ReportBlock = new("ReportBlock");
+                ReportBlock.AddComponent<SpriteRenderer>().sprite = AssetManager.GetSprite("Blocked");
+            }
+
+            if (ReportBlock)
+            {
+                var pos = __instance.ReportButton.transform.position;
+                pos.z = -50f;
+                ReportBlock.transform.position = pos;
+                ReportBlock.SetActive(CustomPlayer.Local.IsBlocked() && __instance.ReportButton.isActiveAndEnabled);
+            }
+
+            if (!AdminBlock && __instance.AdminButton.isActiveAndEnabled)
+            {
+                AdminBlock = new("AdminBlock");
+                AdminBlock.AddComponent<SpriteRenderer>().sprite = AssetManager.GetSprite("Blocked");
+            }
+
+            if (AdminBlock)
+            {
+                var pos = __instance.AdminButton.transform.position;
+                pos.z = -50f;
+                AdminBlock.transform.position = pos;
+                AdminBlock.SetActive(CustomPlayer.Local.IsBlocked() && __instance.AdminButton.isActiveAndEnabled);
+            }
+        }
     }
 }

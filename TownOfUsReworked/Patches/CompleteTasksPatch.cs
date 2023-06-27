@@ -11,29 +11,29 @@ namespace TownOfUsReworked.Patches
 
                 if (role.TasksLeft == CustomGameOptions.SnitchTasksRemaining)
                 {
-                    if (PlayerControl.LocalPlayer == __instance)
+                    if (CustomPlayer.Local == __instance)
                         Utils.Flash(role.Color);
-                    else if (PlayerControl.LocalPlayer.Is(Faction.Intruder) || (PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralKill) && CustomGameOptions.SnitchSeesNeutrals) ||
-                        PlayerControl.LocalPlayer.Is(Faction.Syndicate))
+                    else if (CustomPlayer.Local.Is(Faction.Intruder) || (CustomPlayer.Local.Is(RoleAlignment.NeutralKill) && CustomGameOptions.SnitchSeesNeutrals) ||
+                        CustomPlayer.Local.Is(Faction.Syndicate))
                     {
                         Utils.Flash(role.Color);
                         Role.LocalRole.AllArrows.Add(role.PlayerId, new(PlayerControl.LocalPlayer, role.Color));
                     }
                 }
-                else if (PlayerControl.LocalPlayer.Is(AbilityEnum.Snitch) && role.TasksDone)
+                else if (CustomPlayer.Local.Is(AbilityEnum.Snitch) && role.TasksDone)
                 {
-                    if (PlayerControl.LocalPlayer == __instance)
+                    if (CustomPlayer.Local == __instance)
                     {
                         Utils.Flash(Color.green);
 
-                        foreach (var imp in PlayerControl.AllPlayerControls.Where(x => x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) || (x.Is(RoleAlignment.NeutralKill) &&
+                        foreach (var imp in CustomPlayer.AllPlayers.Where(x => x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) || (x.Is(RoleAlignment.NeutralKill) &&
                             CustomGameOptions.SnitchSeesNeutrals)))
                         {
                             Role.LocalRole.AllArrows.Add(imp.PlayerId, new(__instance, role.Color));
                         }
                     }
-                    else if (PlayerControl.LocalPlayer.Is(Faction.Intruder) || (PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralKill) && CustomGameOptions.SnitchSeesNeutrals) ||
-                        PlayerControl.LocalPlayer.Is(Faction.Syndicate))
+                    else if (CustomPlayer.Local.Is(Faction.Intruder) || (CustomPlayer.Local.Is(RoleAlignment.NeutralKill) && CustomGameOptions.SnitchSeesNeutrals) ||
+                        CustomPlayer.Local.Is(Faction.Syndicate))
                     {
                         Utils.Flash(Color.red);
                     }
@@ -46,11 +46,11 @@ namespace TownOfUsReworked.Patches
 
                 if (traitor.TasksDone)
                 {
-                    traitor.TurnTraitor();
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
                     writer.Write((byte)TurnRPC.TurnTraitor);
                     writer.Write(__instance.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    traitor.TurnTraitor();
                 }
             }
             else if (__instance.Is(ObjectifierEnum.Taskmaster) && !__instance.Data.IsDead)
@@ -59,13 +59,13 @@ namespace TownOfUsReworked.Patches
 
                 if (role.TasksLeft == CustomGameOptions.TMTasksRemaining)
                 {
-                    if (PlayerControl.LocalPlayer == __instance || PlayerControl.LocalPlayer.Is(Faction.Crew) || PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralBen) ||
-                        PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralEvil))
+                    if (CustomPlayer.Local == __instance || CustomPlayer.Local.Is(Faction.Crew) || CustomPlayer.Local.Is(RoleAlignment.NeutralBen) ||
+                        CustomPlayer.Local.Is(RoleAlignment.NeutralEvil))
                     {
                         Utils.Flash(role.Color);
                     }
-                    else if (PlayerControl.LocalPlayer.Is(Faction.Intruder) || PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralKill) || PlayerControl.LocalPlayer.Is(Faction.Syndicate) ||
-                        PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralNeo) || PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralPros))
+                    else if (CustomPlayer.Local.Is(Faction.Intruder) || CustomPlayer.Local.Is(RoleAlignment.NeutralKill) || CustomPlayer.Local.Is(Faction.Syndicate) ||
+                        CustomPlayer.Local.Is(RoleAlignment.NeutralNeo) || CustomPlayer.Local.Is(RoleAlignment.NeutralPros))
                     {
                         Utils.Flash(role.Color);
                         Role.LocalRole.AllArrows.Add(role.PlayerId, new(PlayerControl.LocalPlayer, role.Color));
@@ -73,7 +73,7 @@ namespace TownOfUsReworked.Patches
                 }
                 else if (role.TasksDone)
                 {
-                    if (PlayerControl.LocalPlayer.Is(ObjectifierEnum.Taskmaster))
+                    if (CustomPlayer.Local.Is(ObjectifierEnum.Taskmaster))
                         Utils.Flash(role.Color);
 
                     role.WinTasksDone = true;
@@ -96,9 +96,9 @@ namespace TownOfUsReworked.Patches
 
                 if (role.TasksLeft == CustomGameOptions.RevealerTasksRemainingAlert && !role.Caught)
                 {
-                    if (PlayerControl.LocalPlayer.Is(RoleEnum.Revealer))
+                    if (CustomPlayer.Local.Is(RoleEnum.Revealer))
                         Utils.Flash(role.Color);
-                    else if (PlayerControl.LocalPlayer.Is(Faction.Intruder) || PlayerControl.LocalPlayer.Is(Faction.Syndicate) || (PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralKill) &&
+                    else if (CustomPlayer.Local.Is(Faction.Intruder) || CustomPlayer.Local.Is(Faction.Syndicate) || (CustomPlayer.Local.Is(RoleAlignment.NeutralKill) &&
                         CustomGameOptions.RevealerRevealsNeutrals))
                     {
                         role.Revealed = true;
@@ -110,8 +110,8 @@ namespace TownOfUsReworked.Patches
                 {
                     role.CompletedTasks = role.TasksDone;
 
-                    if (PlayerControl.LocalPlayer.Is(RoleEnum.Revealer) || PlayerControl.LocalPlayer.Is(Faction.Intruder) || PlayerControl.LocalPlayer.Is(Faction.Syndicate) ||
-                        (PlayerControl.LocalPlayer.Is(RoleAlignment.NeutralKill) && CustomGameOptions.RevealerRevealsNeutrals))
+                    if (CustomPlayer.Local.Is(RoleEnum.Revealer) || CustomPlayer.Local.Is(Faction.Intruder) || CustomPlayer.Local.Is(Faction.Syndicate) ||
+                        (CustomPlayer.Local.Is(RoleAlignment.NeutralKill) && CustomGameOptions.RevealerRevealsNeutrals))
                     {
                         Utils.Flash(role.Color);
                     }
@@ -140,11 +140,6 @@ namespace TownOfUsReworked.Patches
                     ((Engineer)role1).UsesLeft++;
                 else if (__instance.Is(RoleEnum.Retributionist))
                     ((Retributionist)role1).UsesLeft++;
-                else if (__instance.Is(RoleEnum.Coroner))
-                {
-                    if (((Coroner)role1).ReferenceBody != null)
-                        ((Coroner)role1).UsesLeft++;
-                }
             }
         }
     }

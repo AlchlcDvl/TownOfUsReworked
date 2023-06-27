@@ -28,7 +28,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             fanaticRole.Faction = faction;
             Turned = true;
 
-            if (PlayerControl.LocalPlayer.Is(RoleEnum.Mystic))
+            if (CustomPlayer.Local.Is(RoleEnum.Mystic))
                 Utils.Flash(Colors.Mystic);
 
             if (faction == Faction.Syndicate)
@@ -57,7 +57,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
                 {
                     if (snitch.TasksLeft <= CustomGameOptions.SnitchTasksRemaining && Local)
                         Role.LocalRole.AllArrows.Add(snitch.PlayerId, new(Player, Colors.Snitch, 0));
-                    else if (snitch.TasksDone && PlayerControl.LocalPlayer == snitch.Player)
+                    else if (snitch.TasksDone && CustomPlayer.Local == snitch.Player)
                         Role.GetRole(snitch.Player).AllArrows.Add(PlayerId, new(snitch.Player, Colors.Snitch));
                 }
             }
@@ -67,6 +67,12 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
                 if (revealer.Revealed && CustomGameOptions.RevealerRevealsTraitor && Local)
                     Role.LocalRole.AllArrows.Add(revealer.PlayerId, new(Player, revealer.Color));
             }
+
+            if (CustomPlayer.Local.Is(RoleEnum.Mystic) && !Local && !IntroCutscene.Instance)
+                Utils.Flash(Colors.Mystic);
+
+            if ((Local || CustomPlayer.Local.Is(faction)) && !IntroCutscene.Instance)
+                Utils.Flash(Colors.Fanatic);
         }
 
         public void TurnBetrayer()
@@ -80,7 +86,10 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             betrayer.RoleUpdate(role);
             Betrayed = true;
 
-            if (PlayerControl.LocalPlayer.Is(RoleEnum.Seer))
+            if (Local && !IntroCutscene.Instance)
+                Utils.Flash(Colors.Betrayer);
+
+            if (CustomPlayer.Local.Is(RoleEnum.Seer) && !IntroCutscene.Instance)
                 Utils.Flash(Colors.Seer);
         }
 
