@@ -46,18 +46,10 @@ namespace TownOfUsReworked.CustomOptions
         private List<OptionBehaviour> CreateOptions()
         {
             var options = new List<OptionBehaviour>();
-            var togglePrefab = UObject.FindObjectOfType<ToggleOption>();
-            var numberPrefab = UObject.FindObjectOfType<NumberOption>();
-            var keyValPrefab = UObject.FindObjectOfType<KeyValueOption>();
-
-            if (togglePrefab == null)
-                Utils.LogSomething("Toggle DNE");
-
-            if (keyValPrefab == null)
-                Utils.LogSomething("Key Value DNE");
-
-            if (numberPrefab == null)
-                Utils.LogSomething("Number DNE");
+            var togglePrefab = UObject.FindObjectOfType<ToggleOption>(true);
+            var numberPrefab = UObject.FindObjectOfType<NumberOption>(true);
+            var keyValPrefab = UObject.FindObjectOfType<KeyValueOption>(true);
+            var rolePrefab = UObject.FindObjectOfType<RoleOptionSetting>(true);
 
             foreach (var option in InternalOptions)
             {
@@ -65,49 +57,55 @@ namespace TownOfUsReworked.CustomOptions
                 {
                     option.Setting.gameObject.SetActive(true);
                     options.Add(option.Setting);
+                    continue;
                 }
-                else
+
+                switch (option.Type)
                 {
-                    switch (option.Type)
-                    {
-                        case CustomOptionType.Number:
-                            var number = UObject.Instantiate(numberPrefab, numberPrefab.transform.parent);
-                            option.Setting = number;
-                            options.Add(number);
-                            break;
+                    case CustomOptionType.Number:
+                        var number = UObject.Instantiate(numberPrefab, numberPrefab.transform.parent);
+                        option.Setting = number;
+                        options.Add(number);
+                        break;
 
-                        case CustomOptionType.String:
-                            var str = UObject.Instantiate(keyValPrefab, keyValPrefab.transform.parent);
-                            option.Setting = str;
-                            options.Add(str);
-                            break;
+                    case CustomOptionType.String:
+                        var str = UObject.Instantiate(keyValPrefab, keyValPrefab.transform.parent);
+                        option.Setting = str;
+                        options.Add(str);
+                        break;
 
-                        case CustomOptionType.Toggle:
-                        case CustomOptionType.Nested:
-                        case CustomOptionType.Button:
-                        case CustomOptionType.Header:
-                            var toggle = UObject.Instantiate(togglePrefab, togglePrefab.transform.parent);
+                    case CustomOptionType.Layers:
+                        var layer = UObject.Instantiate(rolePrefab, keyValPrefab.transform.parent);
+                        option.Setting = layer;
+                        options.Add(layer);
+                        break;
 
-                            if (option.Type == CustomOptionType.Header)
-                            {
-                                toggle.transform.GetChild(1).gameObject.SetActive(false);
-                                toggle.transform.GetChild(2).gameObject.SetActive(false);
-                            }
-                            else if (option.Type is CustomOptionType.Button or CustomOptionType.Nested)
-                            {
-                                toggle.transform.GetChild(2).gameObject.SetActive(false);
-                                toggle.transform.GetChild(0).localPosition += new Vector3(1f, 0f, 0f);
-                            }
+                    case CustomOptionType.Toggle:
+                    case CustomOptionType.Nested:
+                    case CustomOptionType.Button:
+                    case CustomOptionType.Header:
+                        var toggle = UObject.Instantiate(togglePrefab, togglePrefab.transform.parent);
 
-                            option.Setting = toggle;
-                            options.Add(toggle);
-                            break;
-                    }
+                        if (option.Type == CustomOptionType.Header)
+                        {
+                            toggle.transform.GetChild(1).gameObject.SetActive(false);
+                            toggle.transform.GetChild(2).gameObject.SetActive(false);
+                        }
+                        else if (option.Type is CustomOptionType.Button or CustomOptionType.Nested)
+                        {
+                            toggle.transform.GetChild(2).gameObject.SetActive(false);
+                            toggle.transform.GetChild(0).localPosition += new Vector3(1f, 0f, 0f);
+                        }
 
-                    option.OptionCreated();
+                        option.Setting = toggle;
+                        options.Add(toggle);
+                        break;
                 }
+
+                option.OptionCreated();
             }
 
+            CustomOption.GetOptions<CustomLayersOption>(CustomOptionType.Layers).ForEach(x => x.Set(x.Value, x.OtherValue));
             return options;
         }
 

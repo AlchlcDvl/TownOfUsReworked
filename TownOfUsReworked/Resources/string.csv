@@ -1,0 +1,140 @@
+id,0
+
+# This file is for mod translation
+# Lines with "#" as the first character are not recognized
+# A one-byte comma "," may not be used except for delimitation.
+# So，please use a full-width comma "，"
+
+# Crew Roles
+Mystic,Mystic
+MysticStartText,You Know When Converts Happen
+MysticAbilitiesText1,- You can investigate players to see if they have been converted\n- Whenever someone has been converted， you will be alerted to it\n- When all converted
+MysticAbilitiesText2, and converters die， you will become a <color=#71368AFF>Seer</color>
+
+
+VampireHunter,Vampire Hunter
+VampireHunterStartText,Stake The <color=#7B8968FF>Undead</color>
+VampireHunterAbilitiesText1,- You can stake players to see if they have been turned\n- When you stake a turned person， or an <color=#7B8968FF>Undead</color> tries to interact with 
+VampireHunterAbilitiesText2,you，you will kill them\n- When all <color=#7B8968FF>Undead</color> players die， you will become a <color=#FFFF00FF>Vigilante</color>
+
+Coroner,Coroner
+CoronerStartText,Examine The Dead For Info
+CoronerAbilitiesText1,- You know when players die and will be notified to as to where their body is for a brief period of time\n- You will get a report when you report a body
+CoronerAbilitiesText2,\n- You can perform an autopsy on bodies， to get a reference\n- You can compare the autopsy reference with players to see if they killed the body you examined
+
+Detective,Detective
+DetectiveStartText,Examine Players To Find Bloody Hands
+DetectiveAbilitiesText,- You can examine players to see if they have killed recently\n- Your screen will flash red if your target has killed in the last %duration% s\n- You can view everyone's footprints to see where they go or where they came from
+
+
+Inspector,Inspector
+InspectorStartText,Inspect Players For Their Roles
+InspectorAbilitiesText,- You can check a player to get a role list of what they could be
+
+Medium,Medium
+MediumStartText,Spooky Scary Ghosties Send Shivers Down Your Spine
+MediumAbilitiesText1,- You can mediate which makes ghosts visible to you
+MediumAbilitiesText2,\n- When mediating， dead players will be able to see you
+
+Operative,Operative
+OperativeStartText,Detect Which Roles Are Here
+OperativeAbilitiesText1,- You can place bugs around the map\n- Upon triggering the bugs， the player's role will be included in a list to be shown in the next meeting\n- You can
+OperativeAbilitiesText2,see which colors are where on the admin table\n- On Vitals， the time of death for each player will be shown
+OperativeBugChat1,No one triggered your bugs.
+OperativeBugChat2,Not enough players triggered your bugs.
+OperativeBugChat3,A %BuggedPlayers% triggered your bug.
+OperativeMessage,The following roles triggered your bug:
+OperativeMessageAndRole,And %role%
+
+Seer,Seer
+SeerAbilitiesText1,- You can investigate players to see if their roles have changed\n- If all players whose roles changed have died， you will become a <color=#FFCC80FF>Sheriff</color>
+SeerStartText,You Can See People's Histories
+
+Sheriff,Sheriff
+SheriffStartText,Reveal The Alignment Of Other Players
+SheriffAbilitiesText,- You can reveal alignments of other players relative to the <color=#8CFFFFFF>Crew</color>
+
+Tracker,Tracker
+TrackerStartText,Stalk Everyone To Monitor Their Movements
+TrackerAbilitiesText,- You can track players which creates arrows that update every now and then
+
+Veteran,Veteran
+VeteranStartText,Alert To Kill Anyone Who Touches You
+VeteranAbilitiesText,- You can go on alert\n- When on alert， you will kill whoever interacts with you
+
+Vigilante,Vigilante
+VigilanteStartText,Shoot The <color=#FF0000FF>Evildoers</color>
+VigilanteAbilitiesText,- You can shoot players\n- You you shoot someone you are not supposed to，you will die to guilt
+VigilanteMessageKillWrong,You killed an innocent an innocent crew! You have put your gun away out of guilt.
+
+Altruist,Altruist
+AltruistStartText,Sacrifice Yourself To Save Another
+AltruistAbilitiesText1,- You can revive a dead body\n- Reviving someone takes %AltReviveDuration%s\n- If a meeting is called during your revive， the revive 
+AltruistAbilitiesText2,fails
+ByText, By 
+
+
+Medic,Medic
+MedicStartText,Shield A Player To Protect Them
+MedicAbilitiesText,- You can shield a player to prevent them from dying to others\n- If your target is attacked， you will be notified of it by default\n- Your shield does not save your target from suicides
+
+
+Dictator,Dictator
+DictatorStartText,You Have The Final Say
+DictatorAbilitiesText,- You can reveal yourself to the crew to eject up to 3 players in a meeting\n- When revealed， you cannot be protected
+
+Mayor,Mayor
+MayorStartText,Reveal Yourself To Commit Voter Fraud
+MayorAbilitiesText,- You can reveal yourself to the crew\n- When revealed， your votes count %MayorVoteCount% times but you cannot be protected
+
+
+
+Monarch,Monarch
+MonarchStartText,Knight Those Who You Trust
+MonarchAbilitiesText,- You can knight players\n- Knighted players will have their votes count %KnightVoteCount% times
+
+
+Chameleon,Chameleon
+ChameleonStartText,Go Invisible To Stalk Players
+ChameleonAbilitiesText,- You can turn invisible
+
+Engineer,Engineer
+EngineerStartText,Just Fix It
+EngineerAbilitiesText,- You can fix sabotages at any time during the game\n- You can vent
+
+Escort,Escort
+EscortStartText,Roleblock Players From Harming The <color=#8CFFFFFF>Crew</color>
+EscortAbilitiesText,- You can seduce players\n- Seduction blocks your target from being able to use their abilities for a short while\n- You are immune to blocks\n- If you attempt to block a <color=#336EFFFF>Serial Killer</color>， they will be forced to kill you
+
+
+Retributionist,Retributionist
+RetributionistStartText,Mimic the Dead
+RetributionistAbilitiesText,- You can mimic the abilities of dead <color=#8CFFFFFF>Crew</color>
+
+Shifter,Shifter
+ShifterStartText,Shift Around Roles
+ShifterAbilitiesText,- You can steal another player's role\n- You can only shift with <color=#8CFFFFFF>Crew</color>\n- Shifting with non-<color=#8CFFFFFF>Crew</color> will cause you to kill yourself
+
+
+Transporter,Transporter
+TransporterStartText,Swap Locations Of Players For Maximum Confusion
+TransporterAbilitiesText,- You can swap the locations of 2 players of your choice
+
+Crewmate,Crewmate
+CrewmateStartText,Do Your Tasks
+
+Revealer,Revealer
+RevealerAbilitiesText,- You can reveal evils players to the <color=#8CFFFFFF>Crew</color> once you finish your tasks without getting clicked.
+RevealerStartText,ooooooo
+
+
+
+
+# Others Roles
+None,None
+
+#GameEnd Texts
+Stalemate,Stalemate
+
+# Settings
+GameSettings,Game Settings

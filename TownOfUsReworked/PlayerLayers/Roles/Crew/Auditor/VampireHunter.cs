@@ -1,3 +1,4 @@
+using static TownOfUsReworked.Languages.Language;
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class VampireHunter : Crew
@@ -8,10 +9,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public VampireHunter(PlayerControl player) : base(player)
         {
-            Name = "Vampire Hunter";
-            StartText = () => "Stake The <color=#7B8968FF>Undead</color>";
-            AbilitiesText = () => "- You can stake players to see if they have been turned\n- When you stake a turned person, or an <color=#7B8968FF>Undead</color> tries to interact with "
-                + "you, you will kill them\n- When all <color=#7B8968FF>Undead</color> players die, you will become a <color=#FFFF00FF>Vigilante</color>";
+            Name = GetString("VampireHunter");
+            StartText = () => GetString("VampireHunterStartText");
+            AbilitiesText = () => GetString("VampireHunterAbilitiesText1")
+                + GetString("VampireHunterAbilitiesText2");
             Color = CustomGameOptions.CustomCrewColors ? Colors.VampireHunter : Colors.Crew;
             RoleType = RoleEnum.VampireHunter;
             RoleAlignment = RoleAlignment.CrewAudit;
@@ -46,7 +47,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            StakeButton.Update("STAKE", StakeTimer(), CustomGameOptions.StakeCooldown);
+            StakeButton.Update("Stake", StakeTimer(), CustomGameOptions.StakeCooldown);
 
             if (VampsDead && !IsDead)
             {

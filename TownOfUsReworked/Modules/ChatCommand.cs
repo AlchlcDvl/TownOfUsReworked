@@ -42,8 +42,8 @@ namespace TownOfUsReworked.Modules
             _ = new ChatCommand("/info", "/i", Info);
             _ = new ChatCommand("/help", "/h", Help);
             _ = new ChatCommand("/mystate", "/ms", MyState);
-            _ = new ChatCommand("/kick", "/k", Kick);
-            _ = new ChatCommand("/ban", "/b", Ban);
+            _ = new ChatCommand("/kick", "/k", KickBan);
+            _ = new ChatCommand("/ban", "/b", KickBan);
             _ = new ChatCommand("/clearlobby", "/cl", Clear);
             _ = new ChatCommand("/summary", "/sum", Summary);
             _ = new ChatCommand("/setname", "/sn", SetName);
@@ -243,7 +243,7 @@ namespace TownOfUsReworked.Modules
             __instance.AddChat(CustomPlayer.Local, "Lobby cleared!");
         }
 
-        private static void Kick(string[] args, ChatController __instance)
+        private static void KickBan(string[] args, ChatController __instance)
         {
             if (!ConstantVariables.IsLobby)
             {
@@ -261,9 +261,11 @@ namespace TownOfUsReworked.Modules
                 return;
             }
 
+            var ban = args[0].Replace("/", "") is "ban" or "b";
+
             if (args.Length < 2 || string.IsNullOrEmpty(args[1]))
             {
-                __instance.AddChat(CustomPlayer.Local, "Usage: /<kick | k> <player name>");
+                __instance.AddChat(CustomPlayer.Local, $"Usage: /{(ban ? "<ban | b>" : "<kick | k>")} <player name>");
                 return;
             }
 
@@ -275,9 +277,9 @@ namespace TownOfUsReworked.Modules
                 return;
             }
 
-            if ( target == CustomPlayer.Local)
+            if (target == CustomPlayer.Local)
             {
-                __instance.AddChat(CustomPlayer.Local, "Don't kick yourself.");
+                __instance.AddChat(CustomPlayer.Local, $"Don't {(ban ? "ban" : "kick")} yourself.");
                 return;
             }
 
@@ -289,58 +291,8 @@ namespace TownOfUsReworked.Modules
                 return;
             }
 
-            AmongUsClient.Instance.KickPlayer(client.Id, false);
-            __instance.AddChat(CustomPlayer.Local, $"{target.name} Kicked!");
-        }
-
-        private static void Ban(string[] args, ChatController __instance)
-        {
-            if (!ConstantVariables.IsLobby)
-            {
-                __instance.AddChat(CustomPlayer.Local, "Invalid command.");
-
-                if (!BubbleModifications.ContainsKey("Invalid command."))
-                    BubbleModifications.Add("Invalid command.", ("Error", UColor.red));
-
-                return;
-            }
-
-            if (!AmongUsClient.Instance.CanBan() || !AmongUsClient.Instance.AmHost)
-            {
-                __instance.AddChat(CustomPlayer.Local, "You can't use this command.");
-                return;
-            }
-
-            if (args.Length < 2 || string.IsNullOrEmpty(args[1]))
-            {
-                __instance.AddChat(CustomPlayer.Local, "Usage: /<ban | b> <player name>");
-                return;
-            }
-
-            var target = CustomPlayer.AllPlayers.Find(x => x.Data.PlayerName == args[1]);
-
-            if (target == null)
-            {
-                __instance.AddChat(CustomPlayer.Local, $"Could not find {args[1]}.");
-                return;
-            }
-
-            if ( target == CustomPlayer.Local)
-            {
-                __instance.AddChat(CustomPlayer.Local, "Don't ban yourself.");
-                return;
-            }
-
-            var client = AmongUsClient.Instance.GetClient(target.OwnerId);
-
-            if (client == null)
-            {
-                __instance.AddChat(CustomPlayer.Local, $"Could not find {args[1]}.");
-                return;
-            }
-
-            AmongUsClient.Instance.KickPlayer(client.Id, true);
-            __instance.AddChat(CustomPlayer.Local, $"{target.name} Banned!");
+            AmongUsClient.Instance.KickPlayer(client.Id, ban);
+            __instance.AddChat(CustomPlayer.Local, $"{target.name} {(ban ? "Bann" : "Kick")}ed!");
         }
 
         private static void MyState(ChatController __instance)
@@ -387,7 +339,7 @@ namespace TownOfUsReworked.Modules
 
         private static void Info(string[] args, ChatController __instance)
         {
-            if ((args.Length < 3 && args[1] is not "mod" or "controls" or "ctrl") || string.IsNullOrEmpty(args[1]))
+            if ((args.Length == 2 && args[1] is not "mod" or "controls" or "ctrl") || args.Length < 2 || string.IsNullOrEmpty(args[1]))
             {
                 __instance.AddChat(CustomPlayer.Local, "Usage: /<info | i> <role | modifier | objectifier | ability | faction | subfaction | alignment | mod | lore | controls | other | r |"
                     + " m | obj | ab | f | sf | al | mod | l | ctrl | ot> <name | abbreviation>");

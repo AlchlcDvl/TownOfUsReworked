@@ -1,3 +1,4 @@
+using static TownOfUsReworked.Languages.Language;
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Mayor : Crew
@@ -9,9 +10,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public Mayor(PlayerControl player) : base(player)
         {
-            Name = "Mayor";
-            StartText = () => "Reveal Yourself To Commit Voter Fraud";
-            AbilitiesText = () => $"- You can reveal yourself to the crew\n- When revealed, your votes count {CustomGameOptions.MayorVoteCount + 1} times but you cannot be protected";
+            Name = GetString("Mayor");
+            StartText = () => GetString("MayorStartText");
+            AbilitiesText = () => GetString("MayorAbilitiesText").Replace("%MayorVoteCount%", $"{CustomGameOptions.MayorVoteCount + 1}");
             Color = CustomGameOptions.CustomCrewColors ? Colors.Mayor : Colors.Crew;
             RoleType = RoleEnum.Mayor;
             RoleAlignment = RoleAlignment.CrewSov;

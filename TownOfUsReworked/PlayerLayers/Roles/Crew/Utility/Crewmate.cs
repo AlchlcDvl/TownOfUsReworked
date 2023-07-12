@@ -1,12 +1,13 @@
+using static TownOfUsReworked.Languages.Language;
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Crewmate : Crew
     {
         public Crewmate(PlayerControl player) : base(player)
         {
-            Name = "Crewmate";
+            Name = GetString("Crewmate");
             RoleType = RoleEnum.Crewmate;
-            StartText = () => "Do Your Tasks";
+            StartText = () => GetString("CrewmateStartText");
             RoleAlignment = RoleAlignment.CrewUtil;
             InspectorResults = InspectorResults.IsBasic;
             Type = LayerEnum.Crewmate;

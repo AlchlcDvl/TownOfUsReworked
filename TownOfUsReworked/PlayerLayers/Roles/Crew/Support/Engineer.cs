@@ -1,3 +1,4 @@
+using static TownOfUsReworked.Languages.Language;
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Engineer : Crew
@@ -9,9 +10,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public Engineer(PlayerControl player) : base(player)
         {
-            Name = "Engineer";
-            StartText = () => "Just Fix It";
-            AbilitiesText = () => "- You can fix sabotages at any time during the game\n- You can vent";
+            Name = GetString("Engineer");
+            StartText = () => GetString("EngineerStartText");
+            AbilitiesText = () => GetString("EngineerAbilitiesText");
             Color = CustomGameOptions.CustomCrewColors ? Colors.Engineer : Colors.Crew;
             RoleType = RoleEnum.Engineer;
             RoleAlignment = RoleAlignment.CrewSupport;

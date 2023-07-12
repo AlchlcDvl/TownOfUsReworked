@@ -36,7 +36,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
 
-            if (MeetingHud.Instance || PoisonedPlayer.Data.IsDead || PoisonedPlayer.Data.Disconnected || IsDead)
+            if (Utils.Meeting || PoisonedPlayer.Data.IsDead || PoisonedPlayer.Data.Disconnected || IsDead)
                 TimeRemaining = 0f;
         }
 

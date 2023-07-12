@@ -1,3 +1,4 @@
+using static TownOfUsReworked.Languages.Language;
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Inspector : Crew
@@ -8,10 +9,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public Inspector(PlayerControl player) : base(player)
         {
-            Name = "Inspector";
+            Name = GetString("Inspector");
             RoleType = RoleEnum.Inspector;
-            StartText = () => "Inspect Players For Their Roles";
-            AbilitiesText = () => "- You can check a player to get a role list of what they could be";
+            StartText = () => GetString("InspectorStartText");
+            AbilitiesText = () => GetString("InspectorAbilitiesText");
             Color = CustomGameOptions.CustomCrewColors ? Colors.Inspector : Colors.Crew;
             RoleAlignment = RoleAlignment.CrewInvest;
             Inspected = new();

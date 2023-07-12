@@ -1,3 +1,4 @@
+using static TownOfUsReworked.Languages.Language;
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Veteran : Crew
@@ -12,9 +13,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public Veteran(PlayerControl player) : base(player)
         {
-            Name = "Veteran";
-            StartText = () => "Alert To Kill Anyone Who Touches You";
-            AbilitiesText = () => "- You can go on alert\n- When on alert, you will kill whoever interacts with you";
+            Name = GetString("Veteran");
+            StartText = () => GetString("VeteranStartText");
+            AbilitiesText = () => GetString("VeteranAbilitiesText");
             Color = CustomGameOptions.CustomCrewColors ? Colors.Veteran : Colors.Crew;
             RoleType = RoleEnum.Veteran;
             UsesLeft = CustomGameOptions.MaxAlerts;
@@ -40,7 +41,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
 
-            if (MeetingHud.Instance)
+            if (Utils.Meeting)
                 TimeRemaining = 0f;
         }
 

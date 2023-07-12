@@ -16,8 +16,9 @@
             firstButtonButton.OnClick = new();
             firstButtonButton.OnClick.AddListener((Action)(() =>
             {
-                foreach (var playerButton in __instance.MaxPlayerButtons)
+                for (var i = 1; i < 11; i++)
                 {
+                    var playerButton = __instance.MaxPlayerButtons[i];
                     var tmp = playerButton.GetComponentInChildren<TextMeshPro>();
                     var newValue = Mathf.Max(byte.Parse(tmp.text) - 10, byte.Parse(playerButton.name));
                     tmp.text = newValue.ToString();
@@ -36,8 +37,9 @@
             lastButtonButton.OnClick = new();
             lastButtonButton.OnClick.AddListener((Action)(() =>
             {
-                foreach (var playerButton in __instance.MaxPlayerButtons)
+                for (var i = 1; i < 11; i++)
                 {
+                    var playerButton = __instance.MaxPlayerButtons[i];
                     var tmp = playerButton.GetComponentInChildren<TextMeshPro>();
                     var newValue = Mathf.Min(byte.Parse(tmp.text) + 10, 113 + byte.Parse(playerButton.name));
                     tmp.text = newValue.ToString();
@@ -52,7 +54,6 @@
             {
                 var playerButton = __instance.MaxPlayerButtons[i].GetComponent<PassiveButton>();
                 var text = playerButton.GetComponentInChildren<TextMeshPro>();
-
                 playerButton.OnClick = new();
                 playerButton.OnClick.AddListener((Action)(() =>
                 {
@@ -62,46 +63,23 @@
                     __instance.ImpostorButtons[1].TextMesh.text = maxImp.ToString();
                     __instance.SetMaxPlayersButtons(maxPlayers);
                 }));
-
-                foreach (var button in __instance.MaxPlayerButtons)
-                    button.enabled = button.GetComponentInChildren<TextMeshPro>().text == __instance.GetTargetOptions().MaxPlayers.ToString();
             }
 
-            var secondButton = __instance.ImpostorButtons[1];
-            secondButton.SpriteRenderer.enabled = false;
-            secondButton.transform.FindChild("ConsoleHighlight").gameObject.Destroy();
-            secondButton.PassiveButton.Destroy();
-            secondButton.BoxCollider.Destroy();
+            foreach (var button in __instance.MaxPlayerButtons)
+                button.enabled = button.GetComponentInChildren<TextMeshPro>().text == __instance.GetTargetOptions().MaxPlayers.ToString();
 
-            var secondButtonText = secondButton.TextMesh;
-            secondButtonText.text = __instance.GetTargetOptions().NumImpostors.ToString();
+            foreach (var imp in __instance.ImpostorButtons)
+                imp.gameObject.Destroy();
 
-            var firstButton = __instance.ImpostorButtons[0];
-            firstButton.SpriteRenderer.enabled = false;
-            firstButton.TextMesh.text = "-";
-
-            var firstPassiveButton = firstButton.PassiveButton;
-            firstPassiveButton.OnClick = new();
-            firstPassiveButton.OnClick.AddListener((Action)(() =>
-            {
-                var newVal = Mathf.Clamp(byte.Parse(secondButtonText.text) - 1, 1, __instance.GetTargetOptions().MaxPlayers / 2);
-                __instance.SetImpostorButtons(newVal);
-                secondButtonText.text = newVal.ToString();
-            }));
-
-            var thirdButton = __instance.ImpostorButtons[2];
-            thirdButton.SpriteRenderer.enabled = false;
-            thirdButton.TextMesh.text = "+";
-
-            var thirdPassiveButton = thirdButton.PassiveButton;
-            thirdPassiveButton.OnClick = new();
-            thirdPassiveButton.OnClick.AddListener((Action)(() =>
-            {
-                var newVal = Mathf.Clamp(byte.Parse(secondButtonText.text) + 1, 1, __instance.GetTargetOptions().MaxPlayers / 2);
-                __instance.SetImpostorButtons(newVal);
-                secondButtonText.text = newVal.ToString();
-            }));
+            __instance.ImpostorText.gameObject.Destroy();
+            __instance.SetLanguageFilter((uint)DataManager.Settings.Language.CurrentLanguage);
         }
+    }
+
+    [HarmonyPatch(typeof(MapPickerMenu), nameof(MapPickerMenu.SetMap))]
+    public static class MapPickerPatch
+    {
+        public static void Postfix(ref int mapId) => Generate.Map.Set(mapId);
     }
 
     [HarmonyPatch(typeof(CreateOptionsPicker), nameof(CreateOptionsPicker.UpdateMaxPlayersButtons))]
@@ -125,5 +103,22 @@
     public static class CreateOptionsPicker_UpdateImpostorsButtons
     {
         public static bool Prefix() => false;
+    }
+
+    [HarmonyPatch(typeof(GameOptionsMenu), nameof(GameOptionsMenu.Start))]
+    public static class GameOptionsMenu_Start2
+    {
+        public static void Postfix(ref GameOptionsMenu __instance) => __instance.GetComponentsInChildren<NumberOption>().First(o => o.Title == StringNames.GameNumImpostors).ValidRange =
+            new(1, 127 / 2);
+    }
+
+    [HarmonyPatch(typeof(GameOptionsData), nameof(GameOptionsData.AreInvalid))]
+    public static class InvalidOptionsPatches
+    {
+        public static bool Prefix(GameOptionsData __instance, [HarmonyArgument(0)] int maxExpectedPlayers)
+        {
+            return __instance.MaxPlayers > maxExpectedPlayers || __instance.NumImpostors < 1 || __instance.NumImpostors + 1 > maxExpectedPlayers / 2 || __instance.KillDistance is < 0 or >
+                2 || __instance.PlayerSpeedMod is <= 0f or > 3f;
+        }
     }
 }

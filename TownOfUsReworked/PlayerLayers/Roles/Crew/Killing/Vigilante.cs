@@ -1,3 +1,4 @@
+using static TownOfUsReworked.Languages.Language;
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Vigilante : Crew
@@ -14,9 +15,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public Vigilante(PlayerControl player) : base(player)
         {
-            Name = "Vigilante";
-            StartText = () => "Shoot The <color=#FF0000FF>Evildoers</color>";
-            AbilitiesText = () => "- You can shoot players\n- You you shoot someone you are not supposed to, you will die to guilt";
+            Name = GetString("Vigilante");
+            StartText = () => GetString("VigilanteStartText");
+            AbilitiesText = () => GetString("VigilanteAbilitiesText");
             Color = CustomGameOptions.CustomCrewColors ? Colors.Vigilante : Colors.Crew;
             RoleType = RoleEnum.Vigilante;
             RoleAlignment = RoleAlignment.CrewKill;
@@ -41,24 +42,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             base.OnMeetingStart(__instance);
 
-            foreach (var vigi in GetRoles<Vigilante>(RoleEnum.Vigilante))
-            {
-                if (vigi.PreMeetingDie)
-                    Utils.RpcMurderPlayer(vigi.Player, vigi.Player);
-                else if (vigi.Local && vigi.InnoMessage)
-                    HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, "You killed an innocent an innocent crew! You have put your gun away out of guilt.");
-            }
-        }
-
-        public override void OnMeetingEnd(MeetingHud __instance)
-        {
-            base.OnMeetingEnd(__instance);
-
-            foreach (var vigi in GetRoles<Vigilante>(RoleEnum.Vigilante))
-            {
-                if (vigi.PostMeetingDie)
-                    vigi.Player.Exiled();
-            }
+            if (PreMeetingDie)
+                Utils.RpcMurderPlayer(Player, Player);
+            else if (InnoMessage)
+                Utils.HUD.Chat.AddChat(PlayerControl.LocalPlayer, GetString("VigilanteMessageKillWrong"));
         }
 
         public bool Exception(PlayerControl player) => player.Is(Faction) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || player == Player.GetOtherLover() || player ==
@@ -81,7 +68,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 CustomGameOptions.VigiKillsCannibal) || (target.Is(RoleAlignment.NeutralBen) && CustomGameOptions.VigiKillsNB) || target.Is(RoleAlignment.NeutralNeo) ||
                 target.Is(RoleAlignment.NeutralPros) || target.IsFramed() || Player.IsFramed() || Player.NotOnTheSameSide() || target.NotOnTheSameSide() ||
                 Player.Is(ObjectifierEnum.Corrupted) || (target.Is(RoleEnum.BountyHunter) && CustomGameOptions.VigiKillsBH) || (target.Is(RoleEnum.Actor) &&
-                CustomGameOptions.VigiKillsActor);
+                CustomGameOptions.VigiKillsActor) || target.Is(RoleAlignment.NeutralHarb);
             var interact = Utils.Interact(Player, target, flag4);
 
             if (interact[3])

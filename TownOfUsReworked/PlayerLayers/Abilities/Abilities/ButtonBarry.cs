@@ -45,7 +45,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
                 MeetingRoomManager.Instance.reporter = Player;
                 MeetingRoomManager.Instance.target = null;
                 AmongUsClient.Instance.DisconnectHandlers.AddUnique(MeetingRoomManager.Instance.Cast<IDisconnectHandler>());
-                HudManager.Instance.OpenMeetingRoom(Player);
+                Utils.HUD.OpenMeetingRoom(Player);
                 Player.RpcStartMeeting(null);
             }
         }

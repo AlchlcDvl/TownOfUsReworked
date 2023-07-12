@@ -1,3 +1,4 @@
+using static TownOfUsReworked.Languages.Language;
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Altruist : Crew
@@ -14,10 +15,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public Altruist(PlayerControl player) : base(player)
         {
-            Name = "Altruist";
-            StartText = () => "Sacrifice Yourself To Save Another";
-            AbilitiesText = () => $"- You can revive a dead body\n- Reviving someone takes {CustomGameOptions.AltReviveDuration}s\n- If a meeting is called during your revive, the revive "
-                + "fails";
+            Name = GetString("Altruist");
+            StartText = () => GetString("AltruistStartText");
+            AbilitiesText = () => GetString("AltruistAbilitiesText1").Replace("%AltReviveDuration%", $"{CustomGameOptions.AltReviveDuration}")
+                + GetString("AltruistAbilitiesText2");
             Color = CustomGameOptions.CustomCrewColors ? Colors.Altruist : Colors.Crew;
             RoleType = RoleEnum.Altruist;
             RoleAlignment = RoleAlignment.CrewProt;
@@ -57,7 +58,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Reviving = true;
             TimeRemaining -= Time.deltaTime;
 
-            if (MeetingHud.Instance || IsDead)
+            if (Utils.Meeting || IsDead)
             {
                 Success = false;
                 TimeRemaining = 0f;
@@ -79,7 +80,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var targetRole = GetRole(player);
             var formerKiller = targetRole.KilledBy;
             targetRole.DeathReason = DeathReasonEnum.Revived;
-            targetRole.KilledBy = " By " + PlayerName;
+            targetRole.KilledBy = GetString("ByText") + PlayerName;
             Utils.Revive(player);
             UsesLeft--;
 
@@ -88,7 +89,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 var lover = player.GetOtherLover();
                 var loverRole = GetRole(lover);
                 loverRole.DeathReason = DeathReasonEnum.Revived;
-                loverRole.KilledBy = " By " + PlayerName;
+                loverRole.KilledBy = GetString("ByText") + PlayerName;
                 Utils.Revive(lover);
             }
 

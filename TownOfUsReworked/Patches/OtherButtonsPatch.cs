@@ -25,7 +25,7 @@ namespace TownOfUsReworked.Patches
 
             if (__instance.TaskPanel)
             {
-                __instance.TaskPanel.gameObject.SetActive(!RoleCardActive && !SettingsActive && !Zooming && !MeetingHud.Instance && !(MapBehaviour.Instance &&
+                __instance.TaskPanel.gameObject.SetActive(!RoleCardActive && !SettingsActive && !Zooming && !Utils.Meeting && !(MapBehaviour.Instance &&
                     MapBehaviour.Instance.IsOpen));
             }
 
@@ -88,21 +88,21 @@ namespace TownOfUsReworked.Patches
 
         private static void ClickZoom()
         {
-            if (!MeetingHud.Instance)
+            if (!Utils.Meeting)
                 Zoom();
         }
 
         public static void OpenSettings()
         {
             SettingsActive = !SettingsActive;
-            HudManager.Instance.GameSettings.gameObject.SetActive(SettingsActive);
+            Utils.HUD.GameSettings.gameObject.SetActive(SettingsActive);
         }
 
         public static void OpenRoleCard()
         {
             if (!RoleInfo)
             {
-                RoleInfo = UObject.Instantiate(HudManager.Instance.KillButton.cooldownTimerText, HudManager.Instance.transform);
+                RoleInfo = UObject.Instantiate(Utils.HUD.KillButton.cooldownTimerText, Utils.HUD.transform);
                 RoleInfo.enableWordWrapping = false;
                 RoleInfo.transform.localScale = Vector3.one * 0.4f;
                 RoleInfo.transform.localPosition = new(0, 0, -50f);
@@ -114,7 +114,7 @@ namespace TownOfUsReworked.Patches
             {
                 RoleCard = new GameObject("RoleCard") { layer = 5 }.AddComponent<SpriteRenderer>();
                 RoleCard.sprite = AssetManager.GetSprite("RoleCard");
-                RoleCard.transform.SetParent(HudManager.Instance.transform);
+                RoleCard.transform.SetParent(Utils.HUD.transform);
                 RoleCard.transform.localPosition = new(0, 0, -49f);
                 RoleCard.transform.localScale *= 1.25f;
             }

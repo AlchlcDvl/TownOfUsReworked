@@ -40,13 +40,13 @@ namespace TownOfUsReworked.CustomOptions
             else if (SettingsPage == 7)
                 builder.AppendLine("\n<color=#FF9900FF>Abilities</color>");
 
-            foreach (var option in CustomOption.AllOptions.Where(x => x.Menu == (MultiMenu)SettingsPage))
+            foreach (var option in CustomOption.AllOptions.Where(x => x.Menu == (MultiMenu)SettingsPage && x.Active))
             {
                 if (option.Type == CustomOptionType.Button)
                     continue;
 
                 if (option.Type == CustomOptionType.Header)
-                    builder.AppendLine($"\n{option.Name}");
+                    builder.AppendLine($"\n");
                 else if (option.Type == CustomOptionType.Nested)
                 {
                     var nested = (CustomNestedOption)option;
@@ -60,7 +60,7 @@ namespace TownOfUsReworked.CustomOptions
                     }
                 }
                 else
-                    builder.AppendLine($"    {option.Name}: {option}");
+                    builder.AppendLine($"    : {option}");
             }
 
             return $"<size=1.25>{builder}</size>";

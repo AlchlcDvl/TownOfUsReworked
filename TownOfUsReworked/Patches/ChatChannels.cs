@@ -5,7 +5,7 @@ namespace TownOfUsReworked.Patches
     {
         public static bool Prefix(ChatController __instance, [HarmonyArgument(0)] PlayerControl sourcePlayer)
         {
-            if (__instance != HudManager.Instance.Chat)
+            if (__instance != Utils.HUD.Chat)
                 return true;
 
             var localPlayer = CustomPlayer.Local;
@@ -20,8 +20,8 @@ namespace TownOfUsReworked.Patches
             if (DateTime.UtcNow - MeetingStart.MeetingStartTime < TimeSpan.FromSeconds(1))
                 return shouldSeeMessage;
 
-            return (MeetingHud.Instance || LobbyBehaviour.Instance || localPlayer.Data.IsDead || sourcePlayer == localPlayer || sourcerole.CurrentChannel == ChatChannel.All ||
-                shouldSeeMessage) && !(MeetingHud.Instance && CustomPlayer.Local.IsSilenced());
+            return (Utils.Meeting || LobbyBehaviour.Instance || localPlayer.Data.IsDead || sourcePlayer == localPlayer || sourcerole.CurrentChannel == ChatChannel.All ||
+                shouldSeeMessage) && !(Utils.Meeting && CustomPlayer.Local.IsSilenced());
         }
     }
 

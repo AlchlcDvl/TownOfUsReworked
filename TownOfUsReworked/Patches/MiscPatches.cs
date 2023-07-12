@@ -15,6 +15,12 @@ namespace TownOfUsReworked.Patches
         public static void Postfix(ref bool __result) => __result = false;
     }
 
+    [HarmonyPatch(typeof(GameSettingMenu), nameof(GameSettingMenu.OnEnable))]
+    public static class GameSettingMenuOnEnable
+    {
+        public static void Prefix(ref GameSettingMenu __instance) => __instance.HideForOnline = new(0);
+    }
+
     //Vent and kill shit
     //Yes thank you Discussions - AD
     [HarmonyPatch(typeof(Vent), nameof(Vent.SetOutline))]
@@ -22,7 +28,7 @@ namespace TownOfUsReworked.Patches
     {
         public static void Postfix(Vent __instance, [HarmonyArgument(1)] ref bool mainTarget)
         {
-            var active = CustomPlayer.Local && !MeetingHud.Instance && CustomPlayer.Local.CanVent();
+            var active = CustomPlayer.Local && !Utils.Meeting && CustomPlayer.Local.CanVent();
 
             if (!Role.LocalRole || !active)
                 return;
@@ -149,6 +155,11 @@ namespace TownOfUsReworked.Patches
 
         public static void Prefix([HarmonyArgument(0)] PlayerControl player)
         {
+            CustomPlayer.AllCustomPlayers.RemoveAll(x => x.Player == player);
+
+            if (ConstantVariables.IsLobby)
+                return;
+
             Utils.ReassignPostmortals(player);
             Disconnected.Add(player);
             Summary.AddSummaryInfo(player, true);
@@ -160,9 +171,9 @@ namespace TownOfUsReworked.Patches
     {
         public static bool Prefix(PlayerControl __instance, ref bool __result)
         {
-            __result = __instance.moveable && !Minigame.Instance && !__instance.shapeshifting && (!HudManager.InstanceExists || (!HudManager.Instance.Chat.IsOpen &&
-                !HudManager.Instance.KillOverlay.IsOpen && !HudManager.Instance.GameMenu.IsOpen)) && (!MapBehaviour.Instance || !MapBehaviour.Instance.IsOpenStopped) &&
-                !MeetingHud.Instance && !PlayerCustomizationMenu.Instance && !IntroCutscene.Instance;
+            __result = __instance.moveable && !Minigame.Instance && !__instance.shapeshifting && (!HudManager.InstanceExists || (!Utils.HUD.Chat.IsOpen &&
+                !Utils.HUD.KillOverlay.IsOpen && !Utils.HUD.GameMenu.IsOpen)) && (!MapBehaviour.Instance || !MapBehaviour.Instance.IsOpenStopped) &&
+                !Utils.Meeting && !PlayerCustomizationMenu.Instance && !IntroCutscene.Instance;
 
             return false;
         }
@@ -332,40 +343,20 @@ namespace TownOfUsReworked.Patches
         public static bool Prefix() => false;
     }
 
-    //The code is from The Other Roles; link :- https://github.com/TheOtherRolesAU/TheOtherRoles/blob/main/TheOtherRoles/Modules/DynamicLobbies.cs under GPL v3
-    [HarmonyPatch(typeof(InnerNetClient), nameof(InnerNetClient.JoinGame))]
-    public static class InnerNetClientJoinPatch
+    [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
+    public static class LobbySizePatch
     {
-        public static void Prefix() => DataManager.Settings.Multiplayer.ChatMode = QuickChatModes.FreeChatOrQuickChat;
-    }
-
-    [HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.OnPlayerJoined))]
-    public static class AmongUsClientOnPlayerJoined
-    {
-        public static bool Prefix(AmongUsClient __instance, [HarmonyArgument(0)] ClientData client)
+        public static void Postfix()
         {
-            if (CustomGameOptions.LobbySize < __instance.allClients.Count)
+            if (GameStartManager.Instance.LastPlayerCount > CustomGameOptions.LobbySize && AmongUsClient.Instance.AmHost && AmongUsClient.Instance.CanBan())
             {
-                DisconnectPlayer(__instance, client.Id);
-                return false;
+                while (CustomPlayer.AllPlayers.Count > CustomGameOptions.LobbySize)
+                {
+                    var player = CustomPlayer.AllPlayers[^1];
+                    var client = AmongUsClient.Instance.GetClient(player.OwnerId);
+                    AmongUsClient.Instance.KickPlayer(client.Id, false);
+                }
             }
-
-            return true;
-        }
-
-        private static void DisconnectPlayer(InnerNetClient _this, int clientId)
-        {
-            if (!_this.AmHost)
-                return;
-
-            var writer = MessageWriter.Get(SendOption.Reliable);
-            writer.StartMessage(4);
-            writer.Write(_this.GameId);
-            writer.WritePacked(clientId);
-            writer.Write((byte)DisconnectReasons.GameFull);
-            writer.EndMessage();
-            _this.SendOrDisconnect(writer);
-            writer.Recycle();
         }
     }
 
@@ -394,7 +385,7 @@ namespace TownOfUsReworked.Patches
             if (__instance.AmOwner && GameData.Instance && __instance.myPlayer.CanMove)
                 __instance.body.velocity *= CustomPlayer.Custom(__instance.myPlayer).SpeedFactor;
 
-            if (__instance.myPlayer.Is(ModifierEnum.Flincher) && !__instance.myPlayer.Data.IsDead && __instance.myPlayer.CanMove && !MeetingHud.Instance)
+            if (__instance.myPlayer.Is(ModifierEnum.Flincher) && !__instance.myPlayer.Data.IsDead && __instance.myPlayer.CanMove && !Utils.Meeting)
             {
                 _time += Time.deltaTime;
 

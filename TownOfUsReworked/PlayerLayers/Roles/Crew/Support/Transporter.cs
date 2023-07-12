@@ -1,3 +1,4 @@
+using static TownOfUsReworked.Languages.Language;
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Transporter : Crew
@@ -26,9 +27,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public Transporter(PlayerControl player) : base(player)
         {
-            Name = "Transporter";
-            StartText = () => "Swap Locations Of Players For Maximum Confusion";
-            AbilitiesText = () => "- You can swap the locations of 2 players of your choice";
+            Name = GetString("Transporter");
+            StartText = () => GetString("TransporterStartText");
+            AbilitiesText = () => GetString("TransporterAbilitiesText");
             Color = CustomGameOptions.CustomCrewColors ? Colors.Transporter : Colors.Crew;
             RoleType = RoleEnum.Transporter;
             TransportPlayer1 = null;
@@ -149,7 +150,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 else
                     break;
 
-                if (MeetingHud.Instance)
+                if (Utils.Meeting)
                     yield break;
             }
 
@@ -268,7 +269,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AnimationPlaying1.flipX = TransportPlayer1.MyRend().flipX;
             AnimationPlaying1.transform.localScale *= 0.9f * TransportPlayer1.GetModifiedSize();
 
-            HudManager.Instance.StartCoroutine(Effects.Lerp(CustomGameOptions.TransportDuration, new Action<float>(p =>
+            Utils.HUD.StartCoroutine(Effects.Lerp(CustomGameOptions.TransportDuration, new Action<float>(p =>
             {
                 var index = (int)(p * AssetManager.PortalAnimation.Length);
                 index = Mathf.Clamp(index, 0, AssetManager.PortalAnimation.Length - 1);
@@ -286,7 +287,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AnimationPlaying2.flipX = TransportPlayer2.MyRend().flipX;
             AnimationPlaying2.transform.localScale *= 0.9f * TransportPlayer2.GetModifiedSize();
 
-            HudManager.Instance.StartCoroutine(Effects.Lerp(CustomGameOptions.TransportDuration, new Action<float>(p =>
+            Utils.HUD.StartCoroutine(Effects.Lerp(CustomGameOptions.TransportDuration, new Action<float>(p =>
             {
                 var index = (int)(p * AssetManager.PortalAnimation.Length);
                 index = Mathf.Clamp(index, 0, AssetManager.PortalAnimation.Length - 1);

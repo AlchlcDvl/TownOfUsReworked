@@ -2,13 +2,16 @@ namespace TownOfUsReworked.CustomOptions
 {
     public class CustomNumberOption : CustomOption
     {
-        public CustomNumberOption(int id, MultiMenu menu, string name, float defaultValue, float min, float max, float increment, Func<object, string> format = null) : base(id, menu, name,
-            CustomOptionType.Number, defaultValue, format)
+        public CustomNumberOption(int id, MultiMenu menu, string name, float defaultValue, float min, float max, float increment, Func<object, object, string> format = null) : base(id,
+            menu, name, CustomOptionType.Number, defaultValue)
         {
             Min = min;
             Max = max;
             Increment = increment;
+            Format = format ?? Blank;
         }
+
+        private static Func<object, object, string> Blank => (val, _) => $"{val}";
 
         protected float Min;
         protected float Max;

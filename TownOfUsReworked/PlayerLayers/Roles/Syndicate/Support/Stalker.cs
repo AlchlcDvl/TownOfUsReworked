@@ -82,7 +82,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         continue;
                     }
 
-                    pair.Value?.Update(player.Data.IsDead ? player.transform.position : body.transform.position, player.GetPlayerColor(!HoldsDrive));
+                    pair.Value?.Update(player.Data.IsDead ? body.transform.position  : player.transform.position, player.GetPlayerColor(!HoldsDrive));
                 }
 
                 if (HoldsDrive)

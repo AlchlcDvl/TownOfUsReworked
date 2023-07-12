@@ -158,7 +158,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 RoleEnum.Mystic => new Mystic(amnesiac),
                 RoleEnum.Dictator => new Dictator(amnesiac),
                 RoleEnum.Seer => new Seer(amnesiac),
-                RoleEnum.Actor => new Actor(amnesiac) { PretendRoles = actor },
+                RoleEnum.Actor => new Actor(amnesiac) { TargetRole = actor },
                 RoleEnum.BountyHunter => new BountyHunter(amnesiac) { TargetPlayer = target },
                 RoleEnum.Guesser => new Guesser(amnesiac) { TargetPlayer = target },
                 RoleEnum.Necromancer => new Necromancer(amnesiac)

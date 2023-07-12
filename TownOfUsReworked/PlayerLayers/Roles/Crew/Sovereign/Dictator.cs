@@ -1,3 +1,4 @@
+using static TownOfUsReworked.Languages.Language;
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Dictator : Crew
@@ -13,9 +14,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public Dictator(PlayerControl player) : base(player)
         {
-            Name = "Dictator";
-            StartText = () => "You Have The Final Say";
-            AbilitiesText = () => "- You can reveal yourself to the crew to eject up to 3 players in a meeting\n- When revealed, you cannot be protected";
+            Name = GetString("Dictator");
+            StartText = () => GetString("DictatorStartText");
+            AbilitiesText = () => GetString("DictatorAbilitiesText");
             Color = CustomGameOptions.CustomCrewColors ? Colors.Dictator : Colors.Crew;
             RoleType = RoleEnum.Dictator;
             RoleAlignment = RoleAlignment.CrewSov;
@@ -160,7 +161,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             base.ConfirmVotePrefix(__instance);
 
-            if (MeetingHud.Instance.playerStates.Any(x => x.TargetPlayerId == Player.PlayerId && x.DidVote && !CustomGameOptions.DictateAfterVoting))
+            if (Utils.Meeting.playerStates.Any(x => x.TargetPlayerId == Player.PlayerId && x.DidVote && !CustomGameOptions.DictateAfterVoting))
                 HideButtons();
 
             if (ToBeEjected.Count == 0)

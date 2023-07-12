@@ -15,10 +15,10 @@
 
         public void Update()
         {
-            if (!Renderer || ColorUtils.OutOfBounds(Id))
+            if (!Renderer)
                 return;
 
-            ColorUtils.SetColor(Renderer, Id);
+            ColorUtils.SetChangingColor(Renderer, Id);
         }
     }
 }

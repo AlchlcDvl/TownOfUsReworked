@@ -5,7 +5,7 @@ namespace TownOfUsReworked.CustomOptions
         public CustomStringOption(int id, MultiMenu menu, string name, string[] values) : base(id, menu, name, CustomOptionType.String, 0)
         {
             Values = values;
-            Format = value => Values[(int)value];
+            Format = (value, _) => Values[(int)value];
         }
 
         public string[] Values;

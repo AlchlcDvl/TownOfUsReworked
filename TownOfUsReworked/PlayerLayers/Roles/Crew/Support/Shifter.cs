@@ -1,3 +1,4 @@
+using static TownOfUsReworked.Languages.Language;
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Shifter : Crew
@@ -7,10 +8,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public Shifter(PlayerControl player) : base(player)
         {
-            Name = "Shifter";
-            StartText = () => "Shift Around Roles";
-            AbilitiesText = () => "- You can steal another player's role\n- You can only shift with <color=#8CFFFFFF>Crew</color>\n- Shifting with non-<color=#8CFFFFFF>Crew</color> will " +
-                "cause you to kill yourself";
+            Name = GetString("Shifter");
+            StartText = () => GetString("ShifterStartText");
+            AbilitiesText = () => GetString("ShifterAbilitiesText");
             Color = CustomGameOptions.CustomCrewColors ? Colors.Shifter : Colors.Crew;
             RoleType = RoleEnum.Shifter;
             RoleAlignment = RoleAlignment.CrewSupport;
@@ -60,7 +60,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (!other.Is(Faction.Crew) || other.IsFramed())
             {
-                Utils.RpcMurderPlayer(shifter, shifter);
+                if (AmongUsClient.Instance.AmHost)
+                    Utils.RpcMurderPlayer(shifter, shifter);
+
                 return;
             }
 

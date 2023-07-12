@@ -51,7 +51,7 @@ namespace TownOfUsReworked.Patches
     {
         public static bool Prefix(PlayerControl __instance)
         {
-            //Planning on making flashlight available all the time
+            //Planning on making flashlights available all the time
             return __instance != null;
         }
     }

@@ -38,7 +38,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             else
                 Utils.Invis(ConcealedPlayer, CustomPlayer.Local.Is(Faction.Syndicate));
 
-            if (MeetingHud.Instance || (ConcealedPlayer == null && !HoldsDrive))
+            if (Utils.Meeting || (ConcealedPlayer == null && !HoldsDrive))
                 TimeRemaining = 0f;
         }
 

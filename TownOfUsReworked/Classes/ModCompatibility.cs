@@ -3,7 +3,7 @@
     [HarmonyPatch]
     public static class ModCompatibility
     {
-        public const string SUBMERGED_GUID = "Submerged";
+        public const string SM_GUID = "Submerged";
         public const string ElevatorMover = "ElevatorMover";
         public const ShipStatus.MapType SUBMERGED_MAP_TYPE = (ShipStatus.MapType)5;
 
@@ -85,11 +85,17 @@
         private static FieldInfo SubmergedInstance;
         private static FieldInfo SubmergedElevators;
 
+        public static Type CustomPlayerData;
+        public static FieldInfo hasMap;
+
+        public static Type SpawnInState;
+        public static FieldInfo CurrentState;
+
         private static readonly Harmony SubHarmony = new("tourew.subcompat.patch");
 
         public static void InitializeSubmerged()
         {
-            SubLoaded = IL2CPPChainloader.Instance.Plugins.TryGetValue(SUBMERGED_GUID, out var subPlugin);
+            SubLoaded = IL2CPPChainloader.Instance.Plugins.TryGetValue(SM_GUID, out var subPlugin);
 
             if (!SubLoaded)
                 return;
@@ -140,8 +146,18 @@
             SubmarineElevatorSystem = SubTypes.First(t => t.Name == "SubmarineElevatorSystem");
             UpperDeckIsTargetFloor = AccessTools.Field(SubmarineElevatorSystem, "UpperDeckIsTargetFloor");
 
+            CustomPlayerData = SubInjectedTypes.Where(t => t.Key == "CustomPlayerData").Select(x => x.Value).First();
+            hasMap = AccessTools.Field(CustomPlayerData, "hasMap");
+
+            SpawnInState = SubTypes.First(t => t.Name == "SpawnInState");
+
+            var subSpawnSystem = SubTypes.First(t => t.Name == "SubmarineSpawnInSystem");
+            var GetReadyPlayerAmount = AccessTools.Method(subSpawnSystem, "GetReadyPlayerAmount");
+            CurrentState = AccessTools.Field(subSpawnSystem, "currentState");
+
             //I tried patching normally but it would never work
             SubHarmony.Patch(SubmergedExileWrapUpMethod, null, new(SymbolExtensions.GetMethodInfo(() => ExileRoleChangePostfix())));
+            SubHarmony.Patch(GetReadyPlayerAmount, new(AccessTools.Method(typeof(ModCompatibility), nameof(ReadyPlayerAmount))));
         }
 
         public static void CheckOutOfBoundsElevator(PlayerControl player)
@@ -207,12 +223,12 @@
 
         public static IEnumerator WaitStart(Action next)
         {
-            while (HudManager.Instance.UICamera.transform.Find("SpawnInMinigame(Clone)") == null)
+            while (Utils.HUD.UICamera.transform.Find("SpawnInMinigame(Clone)") == null)
                 yield return null;
 
             yield return new WaitForSeconds(0.5f);
 
-            while (HudManager.Instance.UICamera.transform.Find("SpawnInMinigame(Clone)") != null)
+            while (Utils.HUD.UICamera.transform.Find("SpawnInMinigame(Clone)") != null)
                 yield return null;
 
             next();
@@ -225,7 +241,7 @@
 
             yield return new WaitForSeconds(0.5f);
 
-            while (HudManager.Instance.PlayerCam.transform.Find("SpawnInMinigame(Clone)") != null)
+            while (Utils.HUD.PlayerCam.transform.Find("SpawnInMinigame(Clone)") != null)
                 yield return null;
 
             next();
@@ -322,6 +338,31 @@
             } catch (NullReferenceException) {}
         }
 
+        public static bool ReadyPlayerAmount(dynamic __instance, ref int __result)
+        {
+            if (!SubLoaded)
+                return true;
+
+            if (TownOfUsReworked.MCIActive)
+            {
+                __result = __instance.GetTotalPlayerAmount();
+                Enum.TryParse(SpawnInState, "Done", true, out var e);
+                CurrentState.SetValue(__instance, e);
+                return false;
+            }
+
+            return true;
+        }
+
+        public static void ImpartSub(PlayerControl bot)
+        {
+            var comp = TryCast(bot.gameObject.AddComponent(Il2CppType.From(CustomPlayerData)), CustomPlayerData);
+            hasMap.SetValue(comp, true);
+        }
+
+        public static object TryCast(Il2CppObjectBase self, Type type) => AccessTools.Method(self.GetType(), nameof(Il2CppObjectBase.TryCast)).MakeGenericMethod(type).Invoke(self,
+            Array.Empty<object>());
+
         public const string LI_GUID = "com.DigiWorm.LevelImposter";
         public const ShipStatus.MapType LI_MAP_TYPE = (ShipStatus.MapType)6;
 
@@ -404,5 +445,11 @@
         public const string RD_GUID = "gg.reactor.debugger";
 
         //public const string TM_GUID = "me.toppatcrew.toppatmod";
+
+        public static void Init()
+        {
+            InitializeLevelImpostor();
+            InitializeSubmerged();
+        }
     }
 }

@@ -1,3 +1,4 @@
+using static TownOfUsReworked.Languages.Language;
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Sheriff : Crew
@@ -7,9 +8,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public Sheriff(PlayerControl player) : base(player)
         {
-            Name = "Sheriff";
-            StartText = () => "Reveal The Alignment Of Other Players";
-            AbilitiesText = () => "- You can reveal alignments of other players relative to the <color=#8CFFFFFF>Crew</color>";
+            Name = GetString("Sheriff");
+            StartText = () => GetString("SheriffStartText");
+            AbilitiesText = () => GetString("SheriffAbilitiesText");
             Color = CustomGameOptions.CustomCrewColors ? Colors.Sheriff : Colors.Crew;
             RoleType = RoleEnum.Sheriff;
             RoleAlignment = RoleAlignment.CrewKill;

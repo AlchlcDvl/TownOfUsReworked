@@ -1,3 +1,4 @@
+using static TownOfUsReworked.Languages.Language;
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Seer : Crew
@@ -11,13 +12,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public Seer(PlayerControl player) : base(player)
         {
-            Name = "Seer";
+            Name = GetString("Seer");
             RoleType = RoleEnum.Seer;
             Color = CustomGameOptions.CustomCrewColors ? Colors.Seer : Colors.Crew;
             RoleAlignment = RoleAlignment.CrewInvest;
-            AbilitiesText = () => "- You can investigate players to see if their roles have changed\n- If all players whose roles changed have died, you will become a <color=#FFCC80FF>" +
-                "Sheriff</color>";
-            StartText = () => "You Can See People's Histories";
+            AbilitiesText = () => GetString("SeerAbilitiesText1");
+            StartText = () => GetString("SeerStartText");
             InspectorResults = InspectorResults.GainsInfo;
             Type = LayerEnum.Seer;
             SeerButton = new(this, "Seer", AbilityTypes.Direct, "ActionSecondary", See);

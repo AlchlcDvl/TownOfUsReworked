@@ -3,10 +3,16 @@ namespace TownOfUsReworked.CustomOptions
     public class CustomLayersOption : CustomOption
     {
         public string Layer;
-        public List<CustomOption> RoleOptions = new();
+        private int CachedCount;
+        private int CachedChance;
+        //private List<CustomOption> RoleOptions = new();
         public static readonly List<CustomOption> AllRoleOptions = new();
 
-        public CustomLayersOption(int id, MultiMenu menu, string name, string layer) : base(id, menu, name, CustomOptionType.Layers, 0) => Layer = layer;
+        public CustomLayersOption(int id, MultiMenu menu, string name, string layer = "") : base(id, menu, name, CustomOptionType.Layers, 0)
+        {
+            Layer = layer; //This will be used later but we'll see how it goes
+            Format = (val, otherVal) => $"{val}% (x{otherVal})";
+        }
 
         public override void OptionCreated()
         {
@@ -16,24 +22,25 @@ namespace TownOfUsReworked.CustomOptions
             role.RoleMaxCount = 15;
             role.ChanceText.text = "0%";
             role.CountText.text = "0";
-        }
-
-        public override string ToString() => GetChance().ToString() + "% + " + GetCount().ToString();
-
-        public void AddOptions(params CustomOption[] list)
-        {
-            RoleOptions = list.ToList();
-            AllRoleOptions.AddRange(RoleOptions);
+            role.Role = null;
+            role.RoleChance = 0;
         }
 
         public void ShowAdvancedOptions()
         {
-            ShowRoleDetails();
+            /*ShowRoleDetails();
             var tab = GameSettingMenu.Instance.RolesSettings.AllAdvancedSettingTabs[0];
             GameSettingMenu.Instance.RolesSettings.RoleChancesSettings.SetActive(false);
             GameSettingMenu.Instance.RolesSettings.AdvancedRolesSettings.SetActive(true);
             GameSettingMenu.Instance.RolesSettings.RefreshChildren();
-            ControllerManager.Instance.CurrentUiState.BackButton = GameSettingMenu.Instance.AdvancedSettingsBackButton;
+            ControllerManager.Instance.CurrentUiState.BackButton = GameSettingMenu.Instance.AdvancedSettingsBackButton;*/
+        }
+
+        /*//I'll get to these later
+        public void AddOptions(params CustomOption[] list)
+        {
+            RoleOptions = list.ToList();
+            AllRoleOptions.AddRange(RoleOptions);
         }
 
         public void CloseAdvancedSettings()
@@ -41,83 +48,105 @@ namespace TownOfUsReworked.CustomOptions
             ShowRoleDetails();
             GameSettingMenu.Instance.RolesSettings.CloseAdvancedSettings();
             ControllerManager.Instance.CurrentUiState.BackButton = GameSettingMenu.Instance.BackButton;
-        }
+        }*/
 
-        public int GetChance() => int.Parse(Setting.Cast<RoleOptionSetting>().ChanceText.text.Replace("%", ""));
+        public int GetChance() => (int)Value;
 
-        public int GetCount() => int.Parse(Setting.Cast<RoleOptionSetting>().CountText.text);
+        public int GetCount() => (int)OtherValue;
 
         public void IncreaseCount()
         {
-            var count = GetCount();
-
-            if (count + 1 > 15)
-                count = 0;
+            if ((GetCount() + 1 > 15 && ConstantVariables.IsCustom) || (GetCount() + 1 > 1 && !ConstantVariables.IsCustom))
+                Set(Value, 0);
             else
-                count++;
+                Set(Value, GetCount() + 1);
 
-            Setting.Cast<RoleOptionSetting>().CountText.text = count.ToString();
-            ShowRoleDetails();
+            if (GetChance() == 0 && GetCount() > 0)
+                Set(CachedChance == 0 ? 5 : CachedChance, OtherValue);
+            else if (GetCount() == 0 && GetChance() > 0)
+            {
+                CachedChance = GetChance();
+                Set(0, 0);
+            }
+
+            //ShowRoleDetails();
         }
 
         public void DecreaseCount()
         {
-            var count = GetCount();
-
-            if (count - 1 < 0)
-                count = 15;
+            if (GetCount() - 1 < 0)
+                Set(Value, ConstantVariables.IsCustom ? 15 : 1);
             else
-                count--;
+                Set(Value, GetCount() - 1);
 
-            Setting.Cast<RoleOptionSetting>().CountText.text = count.ToString();
-            ShowRoleDetails();
+            if (GetChance() == 0 && GetCount() > 0)
+                Set(CachedChance == 0 ? 5 : CachedChance, OtherValue);
+            else if (GetCount() == 0 && GetChance() > 0)
+            {
+                CachedChance = GetChance();
+                Set(0, 0);
+            }
+
+            //ShowRoleDetails();
         }
 
         public void IncreaseChance()
         {
             var chance = GetChance();
-            var increment = Input.GetKeyDown(KeyCode.LeftShift) ? 5 : 10;
+            var count = GetCount();
+            var increment = Input.GetKeyInt(KeyCode.LeftShift) ? 5 : 10;
 
             if (chance + increment > 100)
                 chance = 0;
             else
                 chance += increment;
 
-            Setting.Cast<RoleOptionSetting>().ChanceText.text = chance.ToString() + "%";
+            if (chance == 0 && count > 0)
+            {
+                CachedCount = count;
+                count = 0;
+            }
+            else if (count == 0 && chance > 0)
+                count = CachedCount == 0 || (!ConstantVariables.IsCustom && CachedCount > 1) ? 1 : CachedCount;
 
-            if (GetCount() <= 0 && GetChance() > 0)
-                Setting.Cast<RoleOptionSetting>().CountText.text = "1";
-
-            ShowRoleDetails();
+            //ShowRoleDetails();
+            Set(chance, count);
         }
 
         public void DecreaseChance()
         {
             var chance = GetChance();
-            var increment = Input.GetKeyDown(KeyCode.LeftShift) ? 5 : 10;
+            var count = GetCount();
+            var decrement = Input.GetKeyInt(KeyCode.LeftShift) ? 5 : 10;
 
-            if (chance - increment < 0)
+            if (chance - decrement < 0)
                 chance = 100;
             else
-                chance -= increment;
+                chance -= decrement;
 
-            Setting.Cast<RoleOptionSetting>().ChanceText.text = chance.ToString() + "%";
+            if (chance == 0 && count > 0)
+            {
+                CachedCount = count;
+                count = 0;
+            }
+            else if (count == 0 && chance > 0)
+                count = CachedCount == 0 || (!ConstantVariables.IsCustom && CachedCount > 1) ? 1 : CachedCount;
 
-            if (GetCount() > 0 && GetChance() <= 0)
-                Setting.Cast<RoleOptionSetting>().CountText.text = "0";
-
-            ShowRoleDetails();
+            //ShowRoleDetails();
+            Set(chance, count);
         }
 
         public void ShowRoleDetails()
         {
-            if (!Info.AllInfo.Any(x => x.Name == Layer || x.Short == Layer))
+            //This will be worked on later, when I figure out why the custom options aren't spawning in the Role menu instead
+            /*var layer = Info.AllInfo.Find(x => x.Name == Layer || x.Short == Layer);
+            
+            if (layer == null)
                 return;
 
-            var layer = Info.AllInfo.Find(x => x.Name == Layer || x.Short == Layer);
             GameSettingMenu.Instance.RoleName.text = layer.Name;
             GameSettingMenu.Instance.RoleBlurb.text = layer.Description;
-            GameSettingMenu.Instance.RoleIcon.sprite = AssetManager.GetSprite(Layer == layer.Short ? layer.Name : Layer);
+            GameSettingMenu.Instance.RoleIcon.sprite = AssetManager.GetSprite(Layer == layer.Short ? layer.Name : Layer);*/
         }
     }
 }

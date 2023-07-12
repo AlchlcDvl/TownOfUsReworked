@@ -1,3 +1,4 @@
+using static TownOfUsReworked.Languages.Language;
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Escort : Crew
@@ -11,11 +12,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public Escort(PlayerControl player) : base(player)
         {
-            Name = "Escort";
+            Name = GetString("Escort");
             RoleType = RoleEnum.Escort;
-            StartText = () => "Roleblock Players From Harming The <color=#8CFFFFFF>Crew</color>";
-            AbilitiesText = () => "- You can seduce players\n- Seduction blocks your target from being able to use their abilities for a short while\n- You are immune to blocks\n" +
-                "- If you attempt to block a <color=#336EFFFF>Serial Killer</color>, they will be forced to kill you";
+            StartText = () => GetString("EscortStartText");
+            AbilitiesText = () => GetString("EscortAbilitiesText");
             Color = CustomGameOptions.CustomCrewColors ? Colors.Escort : Colors.Crew;
             RoleAlignment = RoleAlignment.CrewSupport;
             RoleBlockImmune = true;
@@ -47,7 +47,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             foreach (var layer in GetLayers(BlockTarget))
                 layer.IsBlocked = !GetRole(BlockTarget).RoleBlockImmune;
 
-            if (MeetingHud.Instance || IsDead || BlockTarget.Data.IsDead || BlockTarget.Data.Disconnected)
+            if (Utils.Meeting || IsDead || BlockTarget.Data.IsDead || BlockTarget.Data.Disconnected)
                 TimeRemaining = 0f;
         }
 

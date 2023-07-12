@@ -31,7 +31,7 @@ namespace TownOfUsReworked.Patches
             var ability = info[2] as Ability;
             var objectifier = info[3] as Objectifier;
 
-            if (info[0] != null)
+            if (info[0])
             {
                 if (role.RoleHistory.Count != 0)
                 {
@@ -44,13 +44,13 @@ namespace TownOfUsReworked.Patches
                     }
                 }
 
-                summary += role.ColorString + role.Name + "</color>";
+                summary += $"{role?.ColorString}{role?.Name}</color>";
                 cache += role.Name;
 
                 if (role.SubFaction != SubFaction.None && !player.Is(RoleAlignment.NeutralNeo))
                 {
-                    summary += " " + role.SubFactionColorString + role.SubFactionSymbol + "</color>";
-                    cache += " " + role.SubFactionSymbol;
+                    summary += $" {role?.SubFactionColorString}{role?.SubFactionSymbol}</color>";
+                    cache += $" {role?.SubFactionSymbol}";
                 }
             }
 
@@ -124,7 +124,6 @@ namespace TownOfUsReworked.Patches
             public static void Postfix()
             {
                 PlayerRoles.Clear();
-
                 //There's a better way of doing this e.g. switch statement or dictionary. But this works for now.
                 //AD says "Done".
                 CustomPlayer.AllPlayers.ForEach(x => AddSummaryInfo(x));
@@ -166,7 +165,7 @@ namespace TownOfUsReworked.Patches
                 discText.AppendLine("<size=105%><b>Disconnected</b></size>");
                 winnersCache.AppendLine("Winners");
                 losersCache.AppendLine("Losers");
-                discCache.AppendLine("Disconnect");
+                discCache.AppendLine("Disconnected");
 
                 foreach (var data in PlayerRoles)
                 {
@@ -243,6 +242,7 @@ namespace TownOfUsReworked.Patches
                 } catch {}
 
                 PlayerRoles.Clear();
+                Disconnected.Clear();
 
                 SpawnInMinigamePatch.ResetGlobalVariable();
             }

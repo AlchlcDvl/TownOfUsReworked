@@ -1,3 +1,4 @@
+using static TownOfUsReworked.Languages.Language;
 namespace TownOfUsReworked.PlayerLayers
 {
     [HarmonyPatch(typeof(EndGameManager), nameof(EndGameManager.Start))]
@@ -30,7 +31,7 @@ namespace TownOfUsReworked.PlayerLayers
             if (PlayerLayer.NobodyWins)
             {
                 __instance.BackgroundBar.material.color = Colors.Stalemate;
-                text.text = "Stalemate";
+                text.text = GetString("Stalemate");
                 text.color = Colors.Stalemate;
                 AssetManager.Stop("IntruderWin");
                 AssetManager.Play("Stalemate");

@@ -1,3 +1,4 @@
+using static TownOfUsReworked.Languages.Language;
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Tracker : Crew
@@ -10,9 +11,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public Tracker(PlayerControl player) : base(player)
         {
-            Name = "Tracker";
-            StartText = () => "Stalk Everyone To Monitor Their Movements";
-            AbilitiesText = () => "- You can track players which creates arrows that update every now and then";
+            Name = GetString("Tracker");
+            StartText = () => GetString("TrackerStartText");
+            AbilitiesText = () => GetString("TrackerAbilitiesText");
             Color = CustomGameOptions.CustomCrewColors ? Colors.Tracker : Colors.Crew;
             RoleType = RoleEnum.Tracker;
             UsesLeft = CustomGameOptions.MaxTracks;
@@ -73,7 +74,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             base.UpdateHud(__instance);
             TrackButton.Update("TRACK", TrackerTimer(), CustomGameOptions.TrackCd, UsesLeft, ButtonUsable, ButtonUsable);
 
-            if (CustomPlayer.LocalCustom.IsDead)
+            if (IsDead)
                 OnLobby();
             else
             {
@@ -82,13 +83,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     var player = Utils.PlayerById(pair.Key);
                     var body = Utils.BodyById(pair.Key);
 
-                    if (player == null || player.Data.Disconnected || (player.Data.IsDead && !body))
+                    if (player == null || player.Data.Disconnected || (player.Data.IsDead && body == null))
                     {
                         DestroyArrow(pair.Key);
                         continue;
                     }
 
-                    pair.Value?.Update(player.Data.IsDead ? player.transform.position : body.transform.position, player.GetPlayerColor());
+                    pair.Value?.Update(player.Data.IsDead ? body.transform.position  : player.transform.position, player.GetPlayerColor());
                 }
             }
         }

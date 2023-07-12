@@ -11,10 +11,12 @@
         public static List<GameObject> AllObjects => UObject.FindObjectsOfType<GameObject>().ToList();
         public static List<Console> AllConsoles => UObject.FindObjectsOfType<Console>().ToList();
         public static List<SystemConsole> AllSystemConsoles => UObject.FindObjectsOfType<SystemConsole>().ToList();
-        public static List<PlayerVoteArea> AllVoteAreas => MeetingHud.Instance.playerStates.ToList();
+        public static List<PlayerVoteArea> AllVoteAreas => Meeting.playerStates.ToList();
         private static bool Shapeshifted;
         public static PlayerControl FirstDead;
         public static bool RoundOne;
+        public static HudManager HUD => HudManager.Instance;
+        public static MeetingHud Meeting => MeetingHud.Instance;
         private readonly static Dictionary<string, string> KeyWords = new()
         {
             { "%modversion%", TownOfUsReworked.VersionFinal }
@@ -34,10 +36,10 @@
 
         public static GameData.PlayerOutfit GetDefaultOutfit(this PlayerControl playerControl) => playerControl.Data.DefaultOutfit;
 
-        public static void SetOutfit(this PlayerControl playerControl, CustomPlayerOutfitType CustomOutfitType, GameData.PlayerOutfit outfit)
+        public static void SetOutfit(this PlayerControl playerControl, CustomPlayerOutfitType customOutfitType, GameData.PlayerOutfit outfit)
         {
-            playerControl.Data.SetOutfit((PlayerOutfitType)CustomOutfitType, outfit);
-            playerControl.SetOutfit(CustomOutfitType);
+            playerControl.Data.SetOutfit((PlayerOutfitType)customOutfitType, outfit);
+            playerControl.SetOutfit(customOutfitType);
         }
 
         public static void SetOutfit(this PlayerControl playerControl, CustomPlayerOutfitType CustomOutfitType)
@@ -77,7 +79,7 @@
         {
             if (player.GetCustomOutfitType() == CustomPlayerOutfitType.Invis)
             {
-                HudManager.Instance.StartCoroutine(Effects.Lerp(1, new Action<float>(p =>
+                HUD.StartCoroutine(Effects.Lerp(1, new Action<float>(p =>
                 {
                     var rend = player.MyRend();
                     rend.color = new(255, 255, 255, p);
@@ -107,7 +109,7 @@
                 player.SetOutfit(CustomPlayerOutfitType.Camouflage, BlankOutfit(player));
                 PlayerMaterial.SetColors(Color.grey, player.MyRend());
 
-                HudManager.Instance.StartCoroutine(Effects.Lerp(1, new Action<float>(p =>
+                HUD.StartCoroutine(Effects.Lerp(1, new Action<float>(p =>
                 {
                     var cbtext = player.ColorBlindText();
                     cbtext.color = new(cbtext.color.a, cbtext.color.a, cbtext.color.a, 1 - p);
@@ -130,7 +132,7 @@
             {
                 player.SetOutfit(CustomPlayerOutfitType.Invis, InvisOutfit(player));
 
-                HudManager.Instance.StartCoroutine(Effects.Lerp(1, new Action<float>(p =>
+                HUD.StartCoroutine(Effects.Lerp(1, new Action<float>(p =>
                 {
                     var rend = player.MyRend();
                     var a = Mathf.Clamp(1 - p, color.a, 1);
@@ -332,8 +334,8 @@
                 if (MapBehaviour.Instance)
                     MapBehaviour.Instance.Close();
 
-                HudManager.Instance.KillOverlay.ShowKillAnimation(killer.Data, data);
-                HudManager.Instance.ShadowQuad.gameObject.SetActive(false);
+                HUD.KillOverlay.ShowKillAnimation(killer.Data, data);
+                HUD.ShadowQuad.gameObject.SetActive(false);
                 target.NameText().GetComponent<MeshRenderer>().material.SetInt("_Mask", 0);
                 target.RpcSetScanner(false);
             }
@@ -386,7 +388,7 @@
                     RpcMurderPlayer(target, killer, DeathReasonEnum.Trolled, false);
             }
 
-            if (MeetingHud.Instance)
+            if (Meeting)
                 MarkMeetingDead(target, killer);
 
             target.RegenTask();
@@ -399,11 +401,11 @@
 
             if (target == CustomPlayer.Local)
             {
-                HudManager.Instance.KillOverlay.ShowKillAnimation(killer.Data, target.Data);
-                HudManager.Instance.ShadowQuad.gameObject.SetActive(false);
+                HUD.KillOverlay.ShowKillAnimation(killer.Data, target.Data);
+                HUD.ShadowQuad.gameObject.SetActive(false);
                 target.NameText().GetComponent<MeshRenderer>().material.SetInt("_Mask", 0);
                 target.RpcSetScanner(false);
-                MeetingHud.Instance.SetForegroundForDead();
+                Meeting.SetForegroundForDead();
 
                 if (target.Is(AbilityEnum.Swapper))
                 {
@@ -439,21 +441,21 @@
                 if (target.Is(AbilityEnum.Assassin))
                 {
                     var assassin = Ability.GetAbility<Assassin>(target);
-                    assassin.Exit(MeetingHud.Instance);
+                    assassin.Exit(Meeting);
                     assassin.HideButtons();
                 }
 
                 if (target.Is(RoleEnum.Guesser))
                 {
                     var guesser = Role.GetRole<Guesser>(CustomPlayer.Local);
-                    guesser.Exit(MeetingHud.Instance);
+                    guesser.Exit(Meeting);
                     guesser.HideButtons();
                 }
 
                 if (target.Is(RoleEnum.Thief))
                 {
                     var thief = Role.GetRole<Thief>(CustomPlayer.Local);
-                    thief.Exit(MeetingHud.Instance);
+                    thief.Exit(Meeting);
                     thief.HideButtons();
                 }
             }
@@ -510,21 +512,21 @@
             if (CustomPlayer.Local.Is(AbilityEnum.Assassin) && !CustomPlayer.LocalCustom.IsDead)
             {
                 var assassin = Ability.GetAbility<Assassin>(CustomPlayer.Local);
-                assassin.Exit(MeetingHud.Instance);
+                assassin.Exit(Meeting);
                 assassin.HideSingle(target.PlayerId);
             }
 
             if (CustomPlayer.Local.Is(RoleEnum.Guesser) && !CustomPlayer.LocalCustom.IsDead)
             {
                 var guesser = Role.GetRole<Guesser>(CustomPlayer.Local);
-                guesser.Exit(MeetingHud.Instance);
+                guesser.Exit(Meeting);
                 guesser.HideSingle(target.PlayerId);
             }
 
             if (CustomPlayer.Local.Is(RoleEnum.Thief) && !CustomPlayer.LocalCustom.IsDead)
             {
                 var thief = Role.GetRole<Thief>(CustomPlayer.Local);
-                thief.Exit(MeetingHud.Instance);
+                thief.Exit(Meeting);
                 thief.HideSingle(target.PlayerId);
             }
 
@@ -578,10 +580,10 @@
             {
                 var ret = Role.GetRole<Retributionist>(CustomPlayer.Local);
                 ret.MoarButtons.Remove(target.PlayerId);
-                ret.GenButtons(voteArea, MeetingHud.Instance);
+                ret.GenButtons(voteArea, Meeting);
             }
 
-            foreach (var area in MeetingHud.Instance.playerStates)
+            foreach (var area in Meeting.playerStates)
             {
                 if (area.VotedFor != target.PlayerId)
                     continue;
@@ -589,7 +591,7 @@
                 area.UnsetVote();
 
                 if (target == CustomPlayer.Local)
-                    MeetingHud.Instance.ClearVote();
+                    Meeting.ClearVote();
             }
 
             if (AmongUsClient.Instance.AmHost)
@@ -612,40 +614,9 @@
                     }
                 }
 
-                if (SetPostmortals.RevealerOn && SetPostmortals.WillBeRevealer == null && target.Is(Faction.Crew))
-                {
-                    SetPostmortals.WillBeRevealer = target;
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetRevealer, SendOption.Reliable);
-                    writer.Write(target.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                }
-
-                if (SetPostmortals.PhantomOn && SetPostmortals.WillBePhantom == null && target.Is(Faction.Neutral) && !LayerExtentions.NeutralHasUnfinishedBusiness(target))
-                {
-                    SetPostmortals.WillBePhantom = target;
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPhantom, SendOption.Reliable);
-                    writer.Write(target.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                }
-
-                if (SetPostmortals.BansheeOn && SetPostmortals.WillBeBanshee == null && target.Is(Faction.Syndicate))
-                {
-                    SetPostmortals.WillBeBanshee = target;
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetBanshee, SendOption.Reliable);
-                    writer.Write(target.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                }
-
-                if (SetPostmortals.GhoulOn && SetPostmortals.WillBeGhoul == null && target.Is(Faction.Intruder))
-                {
-                    SetPostmortals.WillBeGhoul = target;
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetGhoul, SendOption.Reliable);
-                    writer.Write(target.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                }
-
+                AssignPostmortals(target);
                 SetPostmortals.AssassinatedPlayers.Add(target);
-                MeetingHud.Instance.CheckForEndVoting();
+                Meeting.CheckForEndVoting();
             }
 
             var role2 = Role.GetRole(target);
@@ -876,19 +847,19 @@
         }
 
         public static bool NoButton(PlayerControl target, RoleEnum role) => CustomPlayer.AllPlayers.Count <= 1 || target == null || target.Data == null || !target.CanMove ||
-            !target.Is(role) || !ConstantVariables.IsRoaming || MeetingHud.Instance || target != CustomPlayer.Local;
+            !target.Is(role) || !ConstantVariables.IsRoaming || Meeting || target != CustomPlayer.Local;
 
         public static bool NoButton(PlayerControl target, ModifierEnum mod) => CustomPlayer.AllPlayers.Count <= 1 || target == null || target.Data == null || !target.CanMove ||
-            !target.Is(mod) || !ConstantVariables.IsRoaming || MeetingHud.Instance || target != CustomPlayer.Local;
+            !target.Is(mod) || !ConstantVariables.IsRoaming || Meeting || target != CustomPlayer.Local;
 
         public static bool NoButton(PlayerControl target, Faction faction) => CustomPlayer.AllPlayers.Count <= 1 || target == null || target.Data == null || !target.CanMove ||
-            !target.Is(faction) || !ConstantVariables.IsRoaming || MeetingHud.Instance || target != CustomPlayer.Local;
+            !target.Is(faction) || !ConstantVariables.IsRoaming || Meeting || target != CustomPlayer.Local;
 
         public static bool NoButton(PlayerControl target, ObjectifierEnum obj) => CustomPlayer.AllPlayers.Count <= 1 || target == null || target.Data == null || !target.CanMove ||
-            !target.Is(obj) || !ConstantVariables.IsRoaming || MeetingHud.Instance || target != CustomPlayer.Local;
+            !target.Is(obj) || !ConstantVariables.IsRoaming || Meeting || target != CustomPlayer.Local;
 
         public static bool NoButton(PlayerControl target, AbilityEnum ability) => CustomPlayer.AllPlayers.Count <= 1 || target == null || target.Data == null || !target.CanMove ||
-            !target.Is(ability) || !ConstantVariables.IsRoaming || MeetingHud.Instance || target != CustomPlayer.Local;
+            !target.Is(ability) || !ConstantVariables.IsRoaming || Meeting || target != CustomPlayer.Local;
 
         public static void Spread(PlayerControl interacter, PlayerControl target)
         {
@@ -953,6 +924,18 @@
         }
 
         public static bool IsInRange(this float num, float min, float max, bool minInclusive = false, bool maxInclusive = false)
+        {
+            if (minInclusive && maxInclusive)
+                return num >= min && num <= max;
+            else if (minInclusive)
+                return num >= min && num < max;
+            else if (maxInclusive)
+                return num > min && num <= max;
+            else
+                return num > min && num < max;
+        }
+
+        public static bool IsInRange(this int num, float min, float max, bool minInclusive = false, bool maxInclusive = false)
         {
             if (minInclusive && maxInclusive)
                 return num >= min && num <= max;
@@ -1090,21 +1073,21 @@
         {
             color.a = 0.3f;
 
-            if (HudManager.InstanceExists && HudManager.Instance.FullScreen)
+            if (HudManager.InstanceExists && HUD.FullScreen)
             {
-                var fullscreen = HudManager.Instance.FullScreen;
+                var fullscreen = HUD.FullScreen;
                 fullscreen.enabled = true;
                 fullscreen.gameObject.active = true;
                 fullscreen.color = color;
             }
 
-            HudManager.Instance.Notifier.AddItem($"<color=#FFFFFFFF><size={size}%>{message}</size></color>");
+            HUD.Notifier.AddItem($"<color=#FFFFFFFF><size={size}%>{message}</size></color>");
 
             yield return new WaitForSeconds(duration);
 
-            if (HudManager.InstanceExists && HudManager.Instance.FullScreen)
+            if (HudManager.InstanceExists && HUD.FullScreen)
             {
-                var fullscreen = HudManager.Instance.FullScreen;
+                var fullscreen = HUD.FullScreen;
 
                 if (fullscreen.color.Equals(color))
                     fullscreen.color = new(1f, 0f, 0f, 0.37254903f);
@@ -1445,13 +1428,13 @@
 
         public static IEnumerator Fade(bool fadeAway, bool enableAfterFade)
         {
-            HudManager.Instance.FullScreen.enabled = true;
+            HUD.FullScreen.enabled = true;
 
             if (fadeAway)
             {
                 for (var i = 1f; i >= 0; i -= Time.deltaTime)
                 {
-                    HudManager.Instance.FullScreen.color = new(0, 0, 0, i);
+                    HUD.FullScreen.color = new(0, 0, 0, i);
                     yield return null;
                 }
             }
@@ -1459,7 +1442,7 @@
             {
                 for (var i = 0f; i <= 1; i += Time.deltaTime)
                 {
-                    HudManager.Instance.FullScreen.color = new(0, 0, 0, i);
+                    HUD.FullScreen.color = new(0, 0, 0, i);
                     yield return null;
                 }
             }
@@ -1472,7 +1455,7 @@
                 if (reactor.IsActive)
                     fs = true;
 
-                HudManager.Instance.FullScreen.enabled = fs;
+                HUD.FullScreen.enabled = fs;
             }
         }
 
@@ -1628,83 +1611,127 @@
             return result;
         }
 
-        public static void ReassignPostmortals(PlayerControl player)
+        public static void AssignPostmortals(bool revealer, bool ghoul, bool banshee, bool phantom, PlayerControl player = null)
         {
-            if (AmongUsClient.Instance.AmHost)
+            if (!AmongUsClient.Instance.AmHost)
+                return;
+
+            if (player != null)
             {
-                if (SetPostmortals.WillBeRevealer == player)
+                if (SetPostmortals.RevealerOn && !SetPostmortals.WillBeRevealers.Contains(player) && player.Is(Faction.Crew) && SetPostmortals.WillBeRevealers.Count <
+                    CustomGameOptions.RevealerCount)
                 {
-                    var toChooseFrom = CustomPlayer.AllPlayers.Where(x => x.Is(Faction.Crew) && x.Data.IsDead && !x.Data.Disconnected).ToList();
+                    SetPostmortals.WillBeRevealers.Add(player);
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetRevealer, SendOption.Reliable);
-                    SetPostmortals.WillBeRevealer = null;
-
-                    if (toChooseFrom.Count == 0)
-                        writer.Write(255);
-                    else
-                    {
-                        var rand = URandom.RandomRangeInt(0, toChooseFrom.Count);
-                        var pc = toChooseFrom[rand];
-                        SetPostmortals.WillBeRevealer = pc;
-                        writer.Write(pc.PlayerId);
-                    }
-
+                    writer.Write(player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
-                else if (SetPostmortals.WillBePhantom == player)
+                else if (SetPostmortals.PhantomOn && !SetPostmortals.WillBeRevealers.Contains(player) && player.Is(Faction.Neutral) && SetPostmortals.WillBePhantoms.Count <
+                    CustomGameOptions.PhantomCount && !LayerExtentions.NeutralHasUnfinishedBusiness(player))
                 {
-                    var toChooseFrom = CustomPlayer.AllPlayers.Where(x => x.Is(Faction.Neutral) && x.Data.IsDead && !x.Data.Disconnected).ToList();
+                    SetPostmortals.WillBePhantoms.Add(player);
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPhantom, SendOption.Reliable);
-                    SetPostmortals.WillBePhantom = null;
-
-                    if (toChooseFrom.Count == 0)
-                        writer.Write(255);
-                    else
-                    {
-                        var rand = URandom.RandomRangeInt(0, toChooseFrom.Count);
-                        var pc = toChooseFrom[rand];
-                        SetPostmortals.WillBePhantom = pc;
-                        writer.Write(pc.PlayerId);
-                    }
-
+                    writer.Write(player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
-                else if (SetPostmortals.WillBeBanshee == player)
+                else if (SetPostmortals.BansheeOn && !SetPostmortals.WillBeRevealers.Contains(player) && player.Is(Faction.Syndicate) && SetPostmortals.WillBeBanshees.Count <
+                    CustomGameOptions.BansheeCount)
                 {
-                    var toChooseFrom = CustomPlayer.AllPlayers.Where(x => x.Is(Faction.Syndicate) && x.Data.IsDead && !x.Data.Disconnected).ToList();
+                    SetPostmortals.WillBeBanshees.Add(player);
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetBanshee, SendOption.Reliable);
-                    SetPostmortals.WillBeBanshee = null;
-
-                    if (toChooseFrom.Count == 0)
-                        writer.Write(255);
-                    else
-                    {
-                        var rand = URandom.RandomRangeInt(0, toChooseFrom.Count);
-                        var pc = toChooseFrom[rand];
-                        SetPostmortals.WillBeBanshee = pc;
-                        writer.Write(pc.PlayerId);
-                    }
-
+                    writer.Write(player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
-                else if (SetPostmortals.WillBeGhoul == player)
+                else if (SetPostmortals.GhoulOn && !SetPostmortals.WillBeRevealers.Contains(player) && player.Is(Faction.Intruder) && SetPostmortals.WillBeGhouls.Count <
+                    CustomGameOptions.GhoulCount)
                 {
-                    var toChooseFrom = CustomPlayer.AllPlayers.Where(x => x.Is(Faction.Neutral) && x.Data.IsDead && !x.Data.Disconnected).ToList();
+                    SetPostmortals.WillBeGhouls.Add(player);
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetGhoul, SendOption.Reliable);
-                    SetPostmortals.WillBeGhoul = null;
-
-                    if (toChooseFrom.Count == 0)
-                        writer.Write(255);
-                    else
-                    {
-                        var rand = URandom.RandomRangeInt(0, toChooseFrom.Count);
-                        var pc = toChooseFrom[rand];
-                        SetPostmortals.WillBeGhoul = pc;
-                        writer.Write(pc.PlayerId);
-                    }
-
+                    writer.Write(player.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
                 }
             }
+            else if (revealer)
+            {
+                var toChooseFrom = CustomPlayer.AllPlayers.Where(x => x.Is(Faction.Crew) && x.Data.IsDead && !x.Data.Disconnected).ToList();
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetRevealer, SendOption.Reliable);
+
+                if (toChooseFrom.Count == 0)
+                    writer.Write(255);
+                else
+                {
+                    var pc = toChooseFrom.Random();
+                    SetPostmortals.WillBeRevealers.Add(pc);
+                    writer.Write(pc.PlayerId);
+                }
+
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+            }
+            else if (phantom)
+            {
+                var toChooseFrom = CustomPlayer.AllPlayers.Where(x => x.Is(Faction.Neutral) && x.Data.IsDead && !x.Data.Disconnected).ToList();
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPhantom, SendOption.Reliable);
+
+                if (toChooseFrom.Count == 0)
+                    writer.Write(255);
+                else
+                {
+                    var pc = toChooseFrom.Random();
+                    SetPostmortals.WillBePhantoms.Add(pc);
+                    writer.Write(pc.PlayerId);
+                }
+
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+            }
+            else if (banshee)
+            {
+                var toChooseFrom = CustomPlayer.AllPlayers.Where(x => x.Is(Faction.Syndicate) && x.Data.IsDead && !x.Data.Disconnected).ToList();
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetBanshee, SendOption.Reliable);
+
+                if (toChooseFrom.Count == 0)
+                    writer.Write(255);
+                else
+                {
+                    var pc = toChooseFrom.Random();
+                    SetPostmortals.WillBeBanshees.Add(pc);
+                    writer.Write(pc.PlayerId);
+                }
+
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+            }
+            else if (ghoul)
+            {
+                var toChooseFrom = CustomPlayer.AllPlayers.Where(x => x.Is(Faction.Neutral) && x.Data.IsDead && !x.Data.Disconnected).ToList();
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetGhoul, SendOption.Reliable);
+
+                if (toChooseFrom.Count == 0)
+                    writer.Write(255);
+                else
+                {
+                    var pc = toChooseFrom.Random();
+                    SetPostmortals.WillBeGhouls.Add(pc);
+                    writer.Write(pc.PlayerId);
+                }
+
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+            }
+        }
+
+        public static void AssignPostmortals(PlayerControl player) => AssignPostmortals(false, false, false, false, player);
+
+        public static void ReassignPostmortals(PlayerControl player)
+        {
+            var revealer = SetPostmortals.WillBeRevealers.Remove(player) && SetPostmortals.WillBeRevealers.Count < CustomGameOptions.RevealerCount;
+            var phantom = SetPostmortals.WillBePhantoms.Remove(player) && SetPostmortals.WillBePhantoms.Count < CustomGameOptions.PhantomCount;
+            var banshee = SetPostmortals.WillBeBanshees.Remove(player) && SetPostmortals.WillBeBanshees.Count < CustomGameOptions.BansheeCount;
+            var ghoul = SetPostmortals.WillBeGhouls.Remove(player) && SetPostmortals.WillBeGhouls.Count < CustomGameOptions.GhoulCount;
+
+            SetPostmortals.WillBeRevealers.RemoveAll(x => x == null);
+            SetPostmortals.WillBePhantoms.RemoveAll(x => x == null);
+            SetPostmortals.WillBeBanshees.RemoveAll(x => x == null);
+            SetPostmortals.WillBeGhouls.RemoveAll(x => x == null);
+
+            AssignPostmortals(revealer, ghoul, banshee, phantom);
         }
 
         public static PlayerControl GetClosestPlayer(this PlayerControl refPlayer, List<PlayerControl> allPlayers = null, float maxDistance = 0f, bool ignoreWalls = false)
@@ -1826,76 +1853,5 @@
                 }
             }
         }
-
-        /*public static void CallRpc(params object[] data)
-        {
-            if (data[0] is not CustomRPC)
-                throw new ArgumentException("First param should be a custom rpc");
-
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)(CustomRPC)data[0], SendOption.Reliable);
-
-            if (data.Length > 1)
-            {
-                foreach (var item in data[1..])
-                {
-                    if (item is bool boolean)
-                        writer.Write(boolean);
-                    else if (item is int integer)
-                        writer.Write(integer);
-                    else if (item is uint uinteger)
-                        writer.Write(uinteger);
-                    else if (item is float Float)
-                        writer.Write(Float);
-                    else if (item is byte Byte)
-                        writer.Write(Byte);
-                    else if (item is sbyte sByte)
-                        writer.Write(sByte);
-                    else if (item is Vector2 vector)
-                        writer.Write(vector);
-                    else if (item is Vector3 vector3)
-                        writer.Write(vector3);
-                    else if (item is ulong Ulong)
-                        writer.Write(Ulong);
-                    else if (item is ushort Ushort)
-                        writer.Write(Ushort);
-                    else if (item is short Short)
-                        writer.Write(Short);
-                    else if (item is long Long)
-                        writer.Write(Long);
-                    else if (item is byte[] array)
-                        writer.WriteBytesAndSize(array);
-                    else if (item is TargetRPC target)
-                        writer.Write((byte)target);
-                    else if (item is ActionsRPC action)
-                        writer.Write((byte)action);
-                    else if (item is TurnRPC turn)
-                        writer.Write((byte)turn);
-                    else if (item is Faction faction)
-                        writer.Write((byte)faction);
-                    else if (item is RoleAlignment alignment)
-                        writer.Write((byte)alignment);
-                    else if (item is SubFaction subfaction)
-                        writer.Write((byte)subfaction);
-                    else if (item is PlayerLayerEnum layer)
-                        writer.Write((byte)layer);
-                    else if (item is InspectorResults results)
-                        writer.Write((byte)results);
-                    else if (item is DeathReasonEnum death)
-                        writer.Write((byte)death);
-                    else if (item is WinLoseRPC winlose)
-                        writer.Write((byte)winlose);
-                    else if (item is RetributionistActionsRPC retAction)
-                        writer.Write((byte)retAction);
-                    else if (item is GodfatherActionsRPC gfAction)
-                        writer.Write((byte)gfAction);
-                    else if (item is RebelActionsRPC rebAction)
-                        writer.Write((byte)rebAction);
-                    else
-                        LogSomething($"Unknown data type used in the rpc: item - {nameof(item)}, rpc - {data[0]}");
-                }
-            }
-
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
-        }*/
     }
 }

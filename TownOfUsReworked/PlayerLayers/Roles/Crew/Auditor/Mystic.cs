@@ -1,3 +1,4 @@
+using static TownOfUsReworked.Languages.Language;
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Mystic : Crew
@@ -8,13 +9,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public Mystic(PlayerControl player) : base(player)
         {
-            Name = "Mystic";
+            Name = GetString("Mystic");
             RoleType = RoleEnum.Mystic;
             Color = CustomGameOptions.CustomCrewColors ? Colors.Mystic : Colors.Crew;
             RoleAlignment = RoleAlignment.CrewAudit;
-            StartText = () => "You Know When Converts Happen";
-            AbilitiesText = () => "- You can investigate players to see if they have been converted\n- Whenever someone has been converted, you will be alerted to it\n- When all converted"
-                + " and converters die, you will become a <color=#71368AFF>Seer</color>";
+            StartText = () => GetString("MysticStartText");
+            AbilitiesText = () => GetString("MysticAbilitiesText1")
+                + GetString("MysticAbilitiesText2");
             InspectorResults = InspectorResults.TracksOthers;
             Type = LayerEnum.Mystic;
             RevealButton = new(this, "Reveal", AbilityTypes.Direct, "ActionSecondary", Reveal, Exception);
@@ -43,7 +44,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            RevealButton.Update("REVEAL", RevealTimer(), CustomGameOptions.RevealCooldown);
+            RevealButton.Update("Reveal", RevealTimer(), CustomGameOptions.RevealCooldown);
 
             if (ConvertedDead && !IsDead)
             {

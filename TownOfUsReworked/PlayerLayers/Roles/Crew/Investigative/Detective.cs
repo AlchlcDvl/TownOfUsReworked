@@ -1,3 +1,4 @@
+using static TownOfUsReworked.Languages.Language;
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Detective : Crew
@@ -5,14 +6,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public DateTime LastExamined;
         public CustomButton ExamineButton;
         private static float Time2;
-        private static int Even;
 
         public Detective(PlayerControl player) : base(player)
         {
-            Name = "Detective";
-            StartText = () => "Examine Players To Find Bloody Hands";
-            AbilitiesText = () => "- You can examine players to see if they have killed recently\n- Your screen will flash red if your target has killed in the " +
-                $"last {CustomGameOptions.RecentKill}s\n- You can view everyone's footprints to see where they go or where they came from";
+            Name = GetString("Detective");
+            StartText = () => GetString("DetectiveStartText");
+            AbilitiesText = () => GetString("DetectiveAbilitiesText").Replace("%duration%", $"{CustomGameOptions.RecentKill}");
             Color = CustomGameOptions.CustomCrewColors ? Colors.Detective : Colors.Crew;
             RoleType = RoleEnum.Detective;
             RoleAlignment = RoleAlignment.CrewInvest;
@@ -35,7 +34,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void OnMeetingStart(MeetingHud __instance)
         {
             base.OnMeetingStart(__instance);
-            Footprint.DestroyAll(this);
+            AllPrints.ForEach(x => x.Destroy());
+            AllPrints.Clear();
         }
 
         private static Vector2 Position(PlayerControl player) => player.GetTruePosition() + new Vector2(0, 0.366667f);
@@ -81,7 +81,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 if (Time2 >= CustomGameOptions.FootprintInterval)
                 {
                     Time2 -= CustomGameOptions.FootprintInterval;
-                    Even++;
 
                     foreach (var player in CustomPlayer.AllPlayers)
                     {
@@ -89,7 +88,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                             continue;
 
                         if (!AllPrints.Any(print => Vector3.Distance(print.Position, Position(player)) < 0.5f && print.Color.a > 0.5 && print.PlayerId == player.PlayerId))
-                            _ = new Footprint(player, this, Even % 2 == 0);
+                            AllPrints.Add(new(player));
                     }
 
                     for (var i = 0; i < AllPrints.Count; i++)

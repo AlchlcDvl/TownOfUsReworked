@@ -168,7 +168,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             TimeRemaining -= Time.deltaTime;
             Utils.Camouflage();
 
-            if (MeetingHud.Instance)
+            if (Utils.Meeting)
                 TimeRemaining = 0f;
         }
 
@@ -231,7 +231,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
 
-            if (MeetingHud.Instance)
+            if (Utils.Meeting)
                 TimeRemaining = 0f;
 
             //To stop the scenario where the flash and sabotage are called at the same time.
@@ -246,46 +246,46 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 if (CustomPlayer.Local == player)
                 {
-                    HudManager.Instance.FullScreen.enabled = true;
-                    HudManager.Instance.FullScreen.gameObject.active = true;
+                    Utils.HUD.FullScreen.enabled = true;
+                    Utils.HUD.FullScreen.gameObject.active = true;
 
                     if (TimeRemaining > CustomGameOptions.GrenadeDuration - 0.5f)
                     {
                         var fade = (TimeRemaining - CustomGameOptions.GrenadeDuration) * (-2f);
 
                         if (ShouldPlayerBeBlinded(player))
-                            HudManager.Instance.FullScreen.color = Color32.Lerp(NormalVision, BlindVision, fade);
+                            Utils.HUD.FullScreen.color = Color32.Lerp(NormalVision, BlindVision, fade);
                         else if (ShouldPlayerBeDimmed(player))
-                            HudManager.Instance.FullScreen.color = Color32.Lerp(NormalVision, DimVision, fade);
+                            Utils.HUD.FullScreen.color = Color32.Lerp(NormalVision, DimVision, fade);
                         else
-                            HudManager.Instance.FullScreen.color = NormalVision;
+                            Utils.HUD.FullScreen.color = NormalVision;
                     }
                     else if (TimeRemaining <= (CustomGameOptions.GrenadeDuration - 0.5f) && TimeRemaining >= 0.5f)
                     {
-                        HudManager.Instance.FullScreen.enabled = true;
-                        HudManager.Instance.FullScreen.gameObject.active = true;
+                        Utils.HUD.FullScreen.enabled = true;
+                        Utils.HUD.FullScreen.gameObject.active = true;
 
                         if (ShouldPlayerBeBlinded(player))
-                            HudManager.Instance.FullScreen.color = BlindVision;
+                            Utils.HUD.FullScreen.color = BlindVision;
                         else if (ShouldPlayerBeDimmed(player))
-                            HudManager.Instance.FullScreen.color = DimVision;
+                            Utils.HUD.FullScreen.color = DimVision;
                         else
-                            HudManager.Instance.FullScreen.color = NormalVision;
+                            Utils.HUD.FullScreen.color = NormalVision;
                     }
                     else if (TimeRemaining < 0.5f)
                     {
                         var fade2 = (TimeRemaining * -2.0f) + 1.0f;
 
                         if (ShouldPlayerBeBlinded(player))
-                            HudManager.Instance.FullScreen.color = Color32.Lerp(BlindVision, NormalVision, fade2);
+                            Utils.HUD.FullScreen.color = Color32.Lerp(BlindVision, NormalVision, fade2);
                         else if (ShouldPlayerBeDimmed(player))
-                            HudManager.Instance.FullScreen.color = Color32.Lerp(DimVision, NormalVision, fade2);
+                            Utils.HUD.FullScreen.color = Color32.Lerp(DimVision, NormalVision, fade2);
                         else
-                            HudManager.Instance.FullScreen.color = NormalVision;
+                            Utils.HUD.FullScreen.color = NormalVision;
                     }
                     else
                     {
-                        HudManager.Instance.FullScreen.color = NormalVision;
+                        Utils.HUD.FullScreen.color = NormalVision;
                         TimeRemaining = 0f;
                     }
 
@@ -298,15 +298,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
         }
 
-        private static bool ShouldPlayerBeDimmed(PlayerControl player) => (player.Is(Faction.Intruder) || player.Data.IsDead) && !MeetingHud.Instance;
+        private static bool ShouldPlayerBeDimmed(PlayerControl player) => (player.Is(Faction.Intruder) || player.Data.IsDead) && !Utils.Meeting;
 
-        private static bool ShouldPlayerBeBlinded(PlayerControl player) => !(player.Is(Faction.Intruder) || player.Data.IsDead || MeetingHud.Instance);
+        private static bool ShouldPlayerBeBlinded(PlayerControl player) => !(player.Is(Faction.Intruder) || player.Data.IsDead || Utils.Meeting);
 
         public void UnFlash()
         {
             Enabled = false;
             LastFlashed = DateTime.UtcNow;
-            HudManager.Instance.FullScreen.color = NormalVision;
+            Utils.HUD.FullScreen.color = NormalVision;
             FlashedPlayers.Clear();
             var fs = false;
 
@@ -342,7 +342,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     break;
             }
 
-            HudManager.Instance.FullScreen.enabled = fs;
+            Utils.HUD.FullScreen.enabled = fs;
         }
 
         public void HitFlash()
@@ -460,7 +460,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             TimeRemaining -= Time.deltaTime;
             Utils.Morph(DisguisedPlayer, DisguisePlayer);
 
-            if (IsDead || DisguisedPlayer.Data.IsDead || DisguisedPlayer.Data.Disconnected || MeetingHud.Instance)
+            if (IsDead || DisguisedPlayer.Data.IsDead || DisguisedPlayer.Data.Disconnected || Utils.Meeting)
                 TimeRemaining = 0f;
         }
 
@@ -468,7 +468,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             TimeRemaining2 -= Time.deltaTime;
 
-            if (IsDead || DisguisedPlayer.Data.IsDead || DisguisedPlayer.Data.Disconnected || MeetingHud.Instance)
+            if (IsDead || DisguisedPlayer.Data.IsDead || DisguisedPlayer.Data.Disconnected || Utils.Meeting)
                 TimeRemaining2 = 0f;
         }
 
@@ -579,7 +579,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             TimeRemaining -= Time.deltaTime;
             Utils.Morph(Player, MorphedPlayer);
 
-            if (IsDead || MeetingHud.Instance)
+            if (IsDead || Utils.Meeting)
                 TimeRemaining = 0f;
         }
 
@@ -671,7 +671,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             TimeRemaining -= Time.deltaTime;
             Utils.Invis(Player, CustomPlayer.Local.Is(Faction.Intruder));
 
-            if (IsDead || MeetingHud.Instance)
+            if (IsDead || Utils.Meeting)
                 TimeRemaining = 0f;
         }
 
@@ -831,7 +831,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
 
-            if (IsDead || AmbushedPlayer.Data.IsDead || AmbushedPlayer.Data.Disconnected || MeetingHud.Instance)
+            if (IsDead || AmbushedPlayer.Data.IsDead || AmbushedPlayer.Data.Disconnected || Utils.Meeting)
                 TimeRemaining = 0f;
         }
 
@@ -894,7 +894,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             foreach (var layer in GetLayers(BlockTarget))
                 layer.IsBlocked = !GetRole(BlockTarget).RoleBlockImmune;
 
-            if (IsDead || BlockTarget.Data.IsDead || BlockTarget.Data.Disconnected || MeetingHud.Instance || !BlockTarget.IsBlocked())
+            if (IsDead || BlockTarget.Data.IsDead || BlockTarget.Data.Disconnected || Utils.Meeting || !BlockTarget.IsBlocked())
                 TimeRemaining = 0f;
         }
 
@@ -965,7 +965,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
 
-            if (IsDead || MeetingHud.Instance || BombSuccessful)
+            if (IsDead || Utils.Meeting || BombSuccessful)
                 TimeRemaining = 0f;
         }
 
@@ -973,7 +973,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             TimeRemaining2 -= Time.deltaTime;
 
-            if (IsDead || MeetingHud.Instance)
+            if (IsDead || Utils.Meeting)
                 TimeRemaining2 = 0f;
         }
 

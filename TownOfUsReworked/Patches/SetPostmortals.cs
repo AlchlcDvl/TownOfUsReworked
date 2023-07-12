@@ -18,7 +18,7 @@ namespace TownOfUsReworked.Patches
                 SetPostmortals.ExileControllerPostfix(ConfirmEjects.LastExiled);
             else if (obj.name.Contains("SpawnInMinigame"))
             {
-                if (CustomPlayer.Local.Is(ModifierEnum.Astral))
+                if (CustomPlayer.Local.Is(ModifierEnum.Astral) && !CustomPlayer.LocalCustom.IsDead)
                     Modifier.GetModifier<Astral>(CustomPlayer.Local).SetPosition();
             }
         }
@@ -36,7 +36,7 @@ namespace TownOfUsReworked.Patches
             if (CustomPlayer.LocalCustom.Data.Disconnected)
                 return;
 
-            if (CustomPlayer.Local.Is(ModifierEnum.Astral))
+            if (CustomPlayer.Local.Is(ModifierEnum.Astral) && !CustomPlayer.LocalCustom.IsDead)
                 Modifier.GetModifier<Astral>(CustomPlayer.Local).SetPosition();
 
             foreach (var player in AssassinatedPlayers)
@@ -69,8 +69,6 @@ namespace TownOfUsReworked.Patches
                     if (!lover.Is(RoleEnum.Pestilence) && CustomGameOptions.BothLoversDie)
                         lover?.Exiled();
                 }
-
-                Reassign(exiled);
             }
 
             foreach (var dict in Role.GetRoles<Dictator>(RoleEnum.Dictator))
@@ -136,14 +134,25 @@ namespace TownOfUsReworked.Patches
                     cann.DeathReason = DeathReasonEnum.Escaped;
                 }
             }
+
+            foreach (var vigi in Role.GetRoles<Vigilante>(RoleEnum.Vigilante))
+            {
+                if (vigi.PostMeetingDie)
+                {
+                    vigi.Player.Exiled();
+                    vigi.DeathReason = DeathReasonEnum.Suicide;
+                }
+            }
+
+            BeginPostmortals(exiled);
         }
 
-        public static void Reassign(PlayerControl player)
+        private static void BeginPostmortals(PlayerControl player)
         {
-            SetRevealer(player);
-            SetPhantom(player);
-            SetBanshee(player);
-            SetGhoul(player);
+            SetRevealers(player);
+            SetPhantoms(player);
+            SetBanshees(player);
+            SetGhouls(player);
         }
 
         private static void JesterWin(PlayerControl player)
@@ -179,7 +188,7 @@ namespace TownOfUsReworked.Patches
             }
         }
 
-        public static void SetStartingVent(PlayerControl player)
+        private static void SetStartingVent(PlayerControl player)
         {
             var startingVent = ShipStatus.Instance.AllVents[URandom.RandomRangeInt(0, ShipStatus.Instance.AllVents.Count)];
 
@@ -192,159 +201,156 @@ namespace TownOfUsReworked.Patches
             player.MyPhysics.RpcEnterVent(startingVent.Id);
         }
 
-        public static PlayerControl WillBeRevealer;
+        public static List<PlayerControl> WillBeRevealers = new();
         public static bool RevealerOn;
 
-        public static void SetRevealer(PlayerControl exiled)
+        private static void SetRevealers(PlayerControl exiled)
         {
-            if (!RevealerOn || !exiled.Is(Faction.Crew))
+            if (!RevealerOn)
                 return;
 
-            if (WillBeRevealer == null)
-                WillBeRevealer = exiled;
+            if (!WillBeRevealers.Contains(exiled) && WillBeRevealers.Count < CustomGameOptions.RevealerCount && exiled.Is(Faction.Crew))
+                WillBeRevealers.Add(exiled);
 
-            if (WillBeRevealer.Data.Disconnected)
-                Utils.ReassignPostmortals(WillBeRevealer);
-
-            if (!WillBeRevealer.Data.IsDead)
-                return;
-
-            if (!WillBeRevealer.Is(RoleEnum.Revealer))
+            foreach (var rev in WillBeRevealers)
             {
-                var former = Role.GetRole(WillBeRevealer);
-                var role = new Revealer(WillBeRevealer) { FormerRole = former };
-                role.RoleUpdate(former);
-                Utils.RemoveTasks(CustomPlayer.Local);
-                WillBeRevealer.gameObject.layer = LayerMask.NameToLayer("Players");
+                if (!rev.Data.IsDead)
+                    continue;
 
-                if (CustomPlayer.Local != WillBeRevealer)
-                    CustomPlayer.Local.MyPhysics.ResetMoveState();
-            }
+                if (!rev.Is(RoleEnum.Revealer))
+                {
+                    var former = Role.GetRole(rev);
+                    var role = new Revealer(rev) { FormerRole = former };
+                    role.RoleUpdate(former);
+                    Utils.RemoveTasks(CustomPlayer.Local);
+                    rev.gameObject.layer = LayerMask.NameToLayer("Players");
 
-            if (WillBeRevealer == CustomPlayer.Local)
-            {
-                if (Role.GetRole<Revealer>(WillBeRevealer).Caught)
-                    return;
+                    if (CustomPlayer.Local != rev)
+                        CustomPlayer.Local.MyPhysics.ResetMoveState();
+                }
 
-                SetStartingVent(WillBeRevealer);
+                if (rev == CustomPlayer.Local)
+                {
+                    if (Role.GetRole<Revealer>(rev).Caught)
+                        continue;
+
+                    SetStartingVent(rev);
+                }
             }
         }
 
-        public static PlayerControl WillBePhantom;
+        public static List<PlayerControl> WillBePhantoms = new();
         public static bool PhantomOn;
 
-        public static void SetPhantom(PlayerControl exiled)
+        private static void SetPhantoms(PlayerControl exiled)
         {
-            if (!PhantomOn || LayerExtentions.NeutralHasUnfinishedBusiness(exiled) || !exiled.Is(Faction.Neutral))
+            if (!PhantomOn)
                 return;
 
-            if (WillBePhantom == null)
-                WillBePhantom = exiled;
-
-            if (WillBePhantom.Data.Disconnected)
-                Utils.ReassignPostmortals(WillBePhantom);
-
-            if (!WillBePhantom.Data.IsDead)
-                return;
-
-            if (!WillBePhantom.Is(RoleEnum.Phantom))
+            if (!WillBePhantoms.Contains(exiled) && WillBePhantoms.Count < CustomGameOptions.PhantomCount && exiled.Is(Faction.Neutral) &&
+                !LayerExtentions.NeutralHasUnfinishedBusiness(exiled))
             {
-                var former = Role.GetRole(WillBePhantom);
-                var role = new Phantom(WillBePhantom);
-                role.RoleUpdate(former);
-                Utils.RemoveTasks(WillBePhantom);
-                WillBePhantom.gameObject.layer = LayerMask.NameToLayer("Players");
-
-                if (CustomPlayer.Local != WillBePhantom)
-                    CustomPlayer.Local.MyPhysics.ResetMoveState();
+                WillBePhantoms.Add(exiled);
             }
 
-            if (WillBePhantom == CustomPlayer.Local)
+            foreach (var phan in WillBePhantoms)
             {
-                if (Role.GetRole<Phantom>(WillBePhantom).Caught)
-                    return;
+                if (!phan.Data.IsDead)
+                    continue;
 
-                SetStartingVent(WillBePhantom);
+                if (!phan.Is(RoleEnum.Phantom))
+                {
+                    var former = Role.GetRole(phan);
+                    var role = new Phantom(phan);
+                    role.RoleUpdate(former);
+                    Utils.RemoveTasks(phan);
+                    phan.gameObject.layer = LayerMask.NameToLayer("Players");
+
+                    if (CustomPlayer.Local != phan)
+                        CustomPlayer.Local.MyPhysics.ResetMoveState();
+                }
+
+                if (phan == CustomPlayer.Local)
+                {
+                    if (Role.GetRole<Phantom>(phan).Caught)
+                        continue;
+
+                    SetStartingVent(phan);
+                }
             }
         }
 
-        public static PlayerControl WillBeBanshee;
+        public static List<PlayerControl> WillBeBanshees = new();
         public static bool BansheeOn;
 
-        public static void SetBanshee(PlayerControl exiled)
+        private static void SetBanshees(PlayerControl exiled)
         {
-            if (!BansheeOn || !exiled.Is(Faction.Syndicate))
+            if (!BansheeOn)
                 return;
 
-            if (WillBeBanshee == null)
-                WillBeBanshee = exiled;
+            if (!WillBeBanshees.Contains(exiled) && WillBeBanshees.Count < CustomGameOptions.BansheeCount && exiled.Is(Faction.Syndicate))
+                WillBeBanshees.Add(exiled);
 
-            if (WillBeBanshee == null)
-                WillBeBanshee = exiled;
-
-            if (WillBeBanshee.Data.Disconnected)
-                Utils.ReassignPostmortals(WillBeBanshee);
-
-            if (!WillBeBanshee.Data.IsDead)
-                return;
-
-            if (!WillBeBanshee.Is(RoleEnum.Banshee))
+            foreach (var ban in WillBeBanshees)
             {
-                var former = Role.GetRole(WillBeBanshee);
-                var role = new Banshee(WillBeBanshee);
-                role.RoleUpdate(former);
-                WillBeBanshee.gameObject.layer = LayerMask.NameToLayer("Players");
+                if (!ban.Data.IsDead)
+                    continue;
 
-                if (CustomPlayer.Local != WillBeBanshee)
-                    CustomPlayer.Local.MyPhysics.ResetMoveState();
-            }
+                if (!ban.Is(RoleEnum.Banshee))
+                {
+                    var former = Role.GetRole(ban);
+                    var role = new Banshee(ban);
+                    role.RoleUpdate(former);
+                    ban.gameObject.layer = LayerMask.NameToLayer("Players");
 
-            if (WillBeBanshee == CustomPlayer.Local)
-            {
-                if (Role.GetRole<Banshee>(WillBeBanshee).Caught)
-                    return;
+                    if (CustomPlayer.Local != ban)
+                        CustomPlayer.Local.MyPhysics.ResetMoveState();
+                }
 
-                SetStartingVent(WillBeBanshee);
+                if (ban == CustomPlayer.Local)
+                {
+                    if (Role.GetRole<Banshee>(ban).Caught)
+                        continue;
+
+                    SetStartingVent(ban);
+                }
             }
         }
 
-        public static PlayerControl WillBeGhoul;
+        public static List<PlayerControl> WillBeGhouls = new();
         public static bool GhoulOn;
 
-        public static void SetGhoul(PlayerControl exiled)
+        private static void SetGhouls(PlayerControl exiled)
         {
-            if (!GhoulOn || !exiled.Is(Faction.Syndicate))
+            if (!GhoulOn)
                 return;
 
-            if (WillBeGhoul == null)
-                WillBeGhoul = exiled;
+            if (!WillBeGhouls.Contains(exiled) && WillBeGhouls.Count < CustomGameOptions.GhoulCount && exiled.Is(Faction.Intruder))
+                WillBeGhouls.Add(exiled);
 
-            if (WillBeGhoul == null)
-                WillBeGhoul = exiled;
-
-            if (WillBeGhoul.Data.Disconnected)
-                Utils.ReassignPostmortals(WillBeGhoul);
-
-            if (!WillBeGhoul.Data.IsDead)
-                return;
-
-            if (!WillBeGhoul.Is(RoleEnum.Ghoul))
+            foreach (var ghoul in WillBeGhouls)
             {
-                var former = Role.GetRole(WillBeGhoul);
-                var role = new Ghoul(WillBeGhoul);
-                role.RoleUpdate(former);
-                WillBeGhoul.gameObject.layer = LayerMask.NameToLayer("Players");
+                if (!ghoul.Data.IsDead)
+                    continue;
 
-                if (CustomPlayer.Local != WillBeGhoul)
-                    CustomPlayer.Local.MyPhysics.ResetMoveState();
-            }
+                if (!ghoul.Is(RoleEnum.Ghoul))
+                {
+                    var former = Role.GetRole(ghoul);
+                    var role = new Ghoul(ghoul);
+                    role.RoleUpdate(former);
+                    ghoul.gameObject.layer = LayerMask.NameToLayer("Players");
 
-            if (WillBeGhoul == CustomPlayer.Local)
-            {
-                if (Role.GetRole<Ghoul>(WillBeGhoul).Caught)
-                    return;
+                    if (CustomPlayer.Local != ghoul)
+                        CustomPlayer.Local.MyPhysics.ResetMoveState();
+                }
 
-                SetStartingVent(WillBeGhoul);
+                if (ghoul == CustomPlayer.Local)
+                {
+                    if (Role.GetRole<Ghoul>(ghoul).Caught)
+                        continue;
+
+                    SetStartingVent(ghoul);
+                }
             }
         }
     }

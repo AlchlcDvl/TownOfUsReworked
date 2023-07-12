@@ -1,3 +1,4 @@
+using static TownOfUsReworked.Languages.Language;
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Medic : Crew
@@ -9,10 +10,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public Medic(PlayerControl player) : base(player)
         {
-            Name = "Medic";
-            StartText = () => "Shield A Player To Protect Them";
-            AbilitiesText = () => "- You can shield a player to prevent them from dying to others\n- If your target is attacked, you will be notified of it by default\n- Your shield does "
-                + "not save your target from suicides";
+            Name = GetString("Medic");
+            StartText = () => GetString("MedicStartText");
+            AbilitiesText = () => GetString("MedicAbilitiesText");
             Color = CustomGameOptions.CustomCrewColors ? Colors.Medic : Colors.Crew;
             RoleType = RoleEnum.Medic;
             ShieldedPlayer = null;

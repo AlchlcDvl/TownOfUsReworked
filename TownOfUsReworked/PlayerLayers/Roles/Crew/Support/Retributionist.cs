@@ -1,12 +1,13 @@
+using static TownOfUsReworked.Languages.Language;
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Retributionist : Crew
     {
         public Retributionist(PlayerControl player) : base(player)
         {
-            Name = "Retributionist";
-            StartText = () => "Mimic the Dead";
-            AbilitiesText = () => "- You can mimic the abilities of dead <color=#8CFFFFFF>Crew</color>";
+            Name = GetString("Retributionist");
+            StartText = () => GetString("RetributionistStartText");
+            AbilitiesText = () => GetString("RetributionistAbilitiesText");
             Color = CustomGameOptions.CustomCrewColors ? Colors.Retributionist : Colors.Crew;
             RoleType = RoleEnum.Retributionist;
             RoleAlignment = RoleAlignment.CrewSupport;
@@ -102,6 +103,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             Bug.Clear(Bugs);
             Bugs.Clear();
+
+            AllPrints.ForEach(x => x.Destroy());
+            AllPrints.Clear();
         }
 
         public void DestroyArrow(byte targetPlayerId)
@@ -309,7 +313,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                             continue;
                         }
 
-                        pair.Value?.Update(player.Data.IsDead ? player.transform.position : body.transform.position, player.GetPlayerColor());
+                        pair.Value?.Update(player.Data.IsDead ? body.transform.position  : player.transform.position, player.GetPlayerColor());
                     }
                 }
                 else if (IsDet)
@@ -319,7 +323,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     if (Time2 >= CustomGameOptions.FootprintInterval)
                     {
                         Time2 -= CustomGameOptions.FootprintInterval;
-                        Even++;
 
                         foreach (var player in CustomPlayer.AllPlayers)
                         {
@@ -327,7 +330,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                                 continue;
 
                             if (!AllPrints.Any(print => Vector3.Distance(print.Position, Position(player)) < 0.5f && print.Color.a > 0.5 && print.PlayerId == player.PlayerId))
-                                _ = new Footprint(player, this, Even % 2 == 0);
+                                AllPrints.Add(new(player));
                         }
 
                         for (var i = 0; i < AllPrints.Count; i++)
@@ -396,11 +399,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (IsOP)
             {
                 if (BuggedPlayers.Count == 0)
-                    HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, "No one triggered your bugs.");
+                    Utils.HUD.Chat.AddChat(PlayerControl.LocalPlayer, "No one triggered your bugs.");
                 else if (BuggedPlayers.Count < CustomGameOptions.MinAmountOfPlayersInBug)
-                    HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, "Not enough players triggered your bugs.");
+                    Utils.HUD.Chat.AddChat(PlayerControl.LocalPlayer, "Not enough players triggered your bugs.");
                 else if (BuggedPlayers.Count == 1)
-                    HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, $"A {BuggedPlayers[0]} triggered your bug.");
+                    Utils.HUD.Chat.AddChat(PlayerControl.LocalPlayer, $"A {BuggedPlayers[0]} triggered your bug.");
                 else
                 {
                     var message = "The following roles triggered your bug: ";
@@ -417,11 +420,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         position++;
                     }
 
-                    HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, message);
+                    Utils.HUD.Chat.AddChat(PlayerControl.LocalPlayer, message);
                 }
             }
             else if (IsDet)
-                Footprint.DestroyAll(this);
+                AllPrints.ForEach(x => x.Destroy());
         }
 
         //Coroner Stuff
@@ -515,8 +518,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 return;
 
             //Only Coroner can see this
-            if (HudManager.Instance)
-                HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, reportMsg);
+            if (Utils.HUD)
+                Utils.HUD.Chat.AddChat(PlayerControl.LocalPlayer, reportMsg);
         }
 
         //Detective Stuff
@@ -524,7 +527,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public CustomButton ExamineButton;
         public bool IsDet => RevivedRole?.RoleType == RoleEnum.Detective;
         private static float Time2;
-        private static int Even;
 
         public float ExamineTimer()
         {
@@ -847,7 +849,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
 
-            if (MeetingHud.Instance)
+            if (Utils.Meeting)
                 TimeRemaining = 0f;
         }
 
@@ -886,7 +888,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Reviving = true;
             TimeRemaining -= Time.deltaTime;
 
-            if (MeetingHud.Instance || IsDead)
+            if (Utils.Meeting || IsDead)
             {
                 Success = false;
                 TimeRemaining = 0f;
@@ -1011,7 +1013,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             TimeRemaining -= Time.deltaTime;
             Utils.Invis(Player);
 
-            if (MeetingHud.Instance || IsDead)
+            if (Utils.Meeting || IsDead)
                 TimeRemaining = 0f;
         }
 
@@ -1149,7 +1151,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             foreach (var layer in GetLayers(BlockTarget))
                 layer.IsBlocked = !GetRole(BlockTarget).RoleBlockImmune;
 
-            if (MeetingHud.Instance || IsDead || BlockTarget.Data.IsDead || BlockTarget.Data.Disconnected)
+            if (Utils.Meeting || IsDead || BlockTarget.Data.IsDead || BlockTarget.Data.Disconnected)
                 TimeRemaining = 0f;
         }
 
@@ -1289,7 +1291,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 else
                     break;
 
-                if (MeetingHud.Instance)
+                if (Utils.Meeting)
                     yield break;
             }
 
@@ -1384,7 +1386,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AnimationPlaying1.flipX = TransportPlayer1.MyRend().flipX;
             AnimationPlaying1.transform.localScale *= 0.9f * TransportPlayer1.GetModifiedSize();
 
-            HudManager.Instance.StartCoroutine(Effects.Lerp(CustomGameOptions.TransportDuration, new Action<float>(p =>
+            Utils.HUD.StartCoroutine(Effects.Lerp(CustomGameOptions.TransportDuration, new Action<float>(p =>
             {
                 var index = (int)(p * AssetManager.PortalAnimation.Length);
                 index = Mathf.Clamp(index, 0, AssetManager.PortalAnimation.Length - 1);
@@ -1402,7 +1404,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AnimationPlaying2.flipX = TransportPlayer2.MyRend().flipX;
             AnimationPlaying2.transform.localScale *= 0.9f * TransportPlayer2.GetModifiedSize();
 
-            HudManager.Instance.StartCoroutine(Effects.Lerp(CustomGameOptions.TransportDuration, new Action<float>(p =>
+            Utils.HUD.StartCoroutine(Effects.Lerp(CustomGameOptions.TransportDuration, new Action<float>(p =>
             {
                 var index = (int)(p * AssetManager.PortalAnimation.Length);
                 index = Mathf.Clamp(index, 0, AssetManager.PortalAnimation.Length - 1);

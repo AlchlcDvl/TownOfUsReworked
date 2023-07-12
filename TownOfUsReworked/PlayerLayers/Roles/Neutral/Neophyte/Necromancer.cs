@@ -75,7 +75,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Resurrecting = true;
             TimeRemaining -= Time.deltaTime;
 
-            if (MeetingHud.Instance || IsDead)
+            if (Utils.Meeting || IsDead)
             {
                 Success = false;
                 TimeRemaining = 0f;

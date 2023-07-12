@@ -1,3 +1,4 @@
+using static TownOfUsReworked.Languages.Language;
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Coroner : Crew
@@ -12,10 +13,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public Coroner(PlayerControl player) : base(player)
         {
-            Name = "Coroner";
-            StartText = () => "Examine The Dead For Info";
-            AbilitiesText = () => "- You know when players die and will be notified to as to where their body is for a brief period of time\n- You will get a report when you report a body"
-                + "\n- You can perform an autopsy on bodies, to get a reference\n- You can compare the autopsy reference with players to see if they killed the body you examined";
+            Name = GetString("Coroner");
+            StartText = () => GetString("CoronerStartText");
+            AbilitiesText = () => GetString("CoronerAbilitiesText1")
+                + GetString("CoronerAbilitiesText2");
             Color = CustomGameOptions.CustomCrewColors ? Colors.Coroner : Colors.Crew;
             RoleType = RoleEnum.Coroner;
             RoleAlignment = RoleAlignment.CrewInvest;
@@ -155,8 +156,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 return;
 
             //Only Coroner can see this
-            if (HudManager.Instance)
-                HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, reportMsg);
+            if (Utils.HUD)
+                Utils.HUD.Chat.AddChat(PlayerControl.LocalPlayer, reportMsg);
         }
     }
 }

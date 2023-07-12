@@ -64,7 +64,7 @@ namespace TownOfUsReworked.Patches
 
         public static void Notify(byte targetPlayerId)
         {
-            if (!MeetingHud.Instance || Chat)
+            if (!Utils.Meeting || Chat)
                 return;
 
             var playerVoteArea = Utils.VoteAreaById(targetPlayerId);
@@ -73,7 +73,7 @@ namespace TownOfUsReworked.Patches
             Chat.transform.localPosition = new(-2f, 0.1f, -1f);
             Chat.sprite = AssetManager.GetSprite("Chat");
             Chat.gameObject.SetActive(true);
-            HudManager.Instance.StartCoroutine(Effects.Lerp(2, new Action<float>(p =>
+            Utils.HUD.StartCoroutine(Effects.Lerp(2, new Action<float>(p =>
             {
                 if (p == 1)
                 {

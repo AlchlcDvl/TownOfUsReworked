@@ -101,6 +101,7 @@ namespace TownOfUsReworked.Data
         TurnTroll,
         TurnThief,
         TurnSides,
+        TurnRole,
 
         None
     }
@@ -266,7 +267,8 @@ namespace TownOfUsReworked.Data
         MiraHQ,
         Polus,
         Airship,
-        Submerged
+        Submerged,
+        LevelImpostor
     }
 
     public enum TaskBarMode
@@ -300,8 +302,6 @@ namespace TownOfUsReworked.Data
         SetDuo,
         SetAlliedFaction,
 
-        SetGoodRecruit,
-        SetEvilRecruit,
         SetExeTarget,
         SetGATarget,
         SetGuessTarget,

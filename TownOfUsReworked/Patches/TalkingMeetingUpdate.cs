@@ -52,34 +52,34 @@ namespace TownOfUsReworked.Patches
 
         public static IEnumerator BlackmailShhh()
         {
-            yield return HudManager.Instance.CoFadeFullScreen(UColor.clear, new(0f, 0f, 0f, 0.98f));
-            var TempPosition = HudManager.Instance.shhhEmblem.transform.localPosition;
-            var TempDuration = HudManager.Instance.shhhEmblem.HoldDuration;
-            var pos = HudManager.Instance.shhhEmblem.transform.localPosition;
+            yield return Utils.HUD.CoFadeFullScreen(UColor.clear, new(0f, 0f, 0f, 0.98f));
+            var TempPosition = Utils.HUD.shhhEmblem.transform.localPosition;
+            var TempDuration = Utils.HUD.shhhEmblem.HoldDuration;
+            var pos = Utils.HUD.shhhEmblem.transform.localPosition;
             pos.z++;
-            HudManager.Instance.shhhEmblem.transform.localPosition = pos;
-            HudManager.Instance.shhhEmblem.TextImage.text = "YOU ARE BLACKMAILED";
-            HudManager.Instance.shhhEmblem.HoldDuration = 2.5f;
-            yield return HudManager.Instance.ShowEmblem(true);
-            HudManager.Instance.shhhEmblem.transform.localPosition = TempPosition;
-            HudManager.Instance.shhhEmblem.HoldDuration = TempDuration;
-            yield return HudManager.Instance.CoFadeFullScreen(new(0f, 0f, 0f, 0.98f), UColor.clear);
+            Utils.HUD.shhhEmblem.transform.localPosition = pos;
+            Utils.HUD.shhhEmblem.TextImage.text = "YOU ARE BLACKMAILED";
+            Utils.HUD.shhhEmblem.HoldDuration = 2.5f;
+            yield return Utils.HUD.ShowEmblem(true);
+            Utils.HUD.shhhEmblem.transform.localPosition = TempPosition;
+            Utils.HUD.shhhEmblem.HoldDuration = TempDuration;
+            yield return Utils.HUD.CoFadeFullScreen(new(0f, 0f, 0f, 0.98f), UColor.clear);
         }
 
         public static IEnumerator SilencedShhh()
         {
-            yield return HudManager.Instance.CoFadeFullScreen(UColor.clear, new(0f, 0f, 0f, 0.98f));
-            var TempPosition = HudManager.Instance.shhhEmblem.transform.localPosition;
-            var TempDuration = HudManager.Instance.shhhEmblem.HoldDuration;
-            var pos = HudManager.Instance.shhhEmblem.transform.localPosition;
+            yield return Utils.HUD.CoFadeFullScreen(UColor.clear, new(0f, 0f, 0f, 0.98f));
+            var TempPosition = Utils.HUD.shhhEmblem.transform.localPosition;
+            var TempDuration = Utils.HUD.shhhEmblem.HoldDuration;
+            var pos = Utils.HUD.shhhEmblem.transform.localPosition;
             pos.z++;
-            HudManager.Instance.shhhEmblem.transform.localPosition = pos;
-            HudManager.Instance.shhhEmblem.TextImage.text = "YOU ARE SILENCED";
-            HudManager.Instance.shhhEmblem.HoldDuration = 2.5f;
-            yield return HudManager.Instance.ShowEmblem(true);
-            HudManager.Instance.shhhEmblem.transform.localPosition = TempPosition;
-            HudManager.Instance.shhhEmblem.HoldDuration = TempDuration;
-            yield return HudManager.Instance.CoFadeFullScreen(new(0f, 0f, 0f, 0.98f), UColor.clear);
+            Utils.HUD.shhhEmblem.transform.localPosition = pos;
+            Utils.HUD.shhhEmblem.TextImage.text = "YOU ARE SILENCED";
+            Utils.HUD.shhhEmblem.HoldDuration = 2.5f;
+            yield return Utils.HUD.ShowEmblem(true);
+            Utils.HUD.shhhEmblem.transform.localPosition = TempPosition;
+            Utils.HUD.shhhEmblem.HoldDuration = TempDuration;
+            yield return Utils.HUD.CoFadeFullScreen(new(0f, 0f, 0f, 0.98f), UColor.clear);
         }
     }
 

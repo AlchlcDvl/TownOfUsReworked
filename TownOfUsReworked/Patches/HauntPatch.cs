@@ -49,13 +49,13 @@ namespace TownOfUsReworked.Patches
         public static void Postfix()
         {
             if (!ConstantVariables.IsInGame)
-                HudManager.Instance.AbilityButton.gameObject.SetActive(false);
+                Utils.HUD.AbilityButton.gameObject.SetActive(false);
             else if (ConstantVariables.IsHnS)
-                HudManager.Instance.AbilityButton.gameObject.SetActive(!CustomPlayer.LocalCustom.Data.IsImpostor());
+                Utils.HUD.AbilityButton.gameObject.SetActive(!CustomPlayer.LocalCustom.Data.IsImpostor());
             else
             {
                 var ghostRole = CustomPlayer.Local.IsPostmortal() && !CustomPlayer.Local.Caught();
-                HudManager.Instance.AbilityButton.gameObject.SetActive(!ghostRole && !MeetingHud.Instance && CustomPlayer.LocalCustom.IsDead);
+                Utils.HUD.AbilityButton.gameObject.SetActive(!ghostRole && !Utils.Meeting && CustomPlayer.LocalCustom.IsDead);
             }
         }
     }

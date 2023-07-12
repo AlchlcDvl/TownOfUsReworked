@@ -188,7 +188,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         continue;
                     }
 
-                    pair.Value?.Update(player.Data.IsDead ? player.transform.position : body.transform.position, player.GetPlayerColor(!HoldsDrive));
+                    pair.Value?.Update(player.Data.IsDead ? body.transform.position  : player.transform.position, player.GetPlayerColor(!HoldsDrive));
                 }
 
                 if (HoldsDrive)
@@ -243,7 +243,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             else
                 Utils.Invis(ConcealedPlayer, CustomPlayer.Local.Is(Faction.Syndicate));
 
-            if (MeetingHud.Instance || (ConcealedPlayer == null && !HoldsDrive))
+            if (Utils.Meeting || (ConcealedPlayer == null && !HoldsDrive))
                 TimeRemaining = 0f;
         }
 
@@ -379,7 +379,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
 
-            if (MeetingHud.Instance || IsDead || PoisonedPlayer.Data.IsDead || PoisonedPlayer.Data.Disconnected)
+            if (Utils.Meeting || IsDead || PoisonedPlayer.Data.IsDead || PoisonedPlayer.Data.Disconnected)
                 TimeRemaining = 0f;
         }
 
@@ -484,7 +484,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             else
                 Utils.Shapeshift();
 
-            if (MeetingHud.Instance)
+            if (Utils.Meeting)
                 TimeRemaining = 0f;
         }
 
@@ -708,7 +708,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 else
                     break;
 
-                if (MeetingHud.Instance)
+                if (Utils.Meeting)
                     yield break;
             }
 
@@ -779,7 +779,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AnimationPlaying.flipX = WarpPlayer1.MyRend().flipX;
             AnimationPlaying.transform.localScale *= 0.9f * WarpPlayer1.GetModifiedSize();
 
-            HudManager.Instance.StartCoroutine(Effects.Lerp(CustomGameOptions.WarpDuration, new Action<float>(p =>
+            Utils.HUD.StartCoroutine(Effects.Lerp(CustomGameOptions.WarpDuration, new Action<float>(p =>
             {
                 var index = (int)(p * AssetManager.PortalAnimation.Length);
                 index = Mathf.Clamp(index, 0, AssetManager.PortalAnimation.Length - 1);
@@ -862,7 +862,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
 
-            if (IsDead || CrusadedPlayer.Data.IsDead || CrusadedPlayer.Data.Disconnected || MeetingHud.Instance)
+            if (IsDead || CrusadedPlayer.Data.IsDead || CrusadedPlayer.Data.Disconnected || Utils.Meeting)
                 TimeRemaining = 0f;
         }
 
@@ -1072,7 +1072,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
 
-            if (MeetingHud.Instance || (ConfusedPlayer == null && !HoldsDrive))
+            if (Utils.Meeting || (ConfusedPlayer == null && !HoldsDrive))
                 TimeRemaining = 0f;
         }
 
@@ -1160,7 +1160,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     GetRole(player).Rewinding = true;
             }
 
-            if (MeetingHud.Instance)
+            if (Utils.Meeting)
                 TimeRemaining = 0f;
         }
 

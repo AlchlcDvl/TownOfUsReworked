@@ -44,7 +44,7 @@
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
 
-            if (IsDead || MeetingHud.Instance)
+            if (IsDead || Utils.Meeting)
                 TimeRemaining = 0f;
         }
 

@@ -50,7 +50,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             foreach (var layer in GetLayers(BlockTarget))
                 layer.IsBlocked = !GetRole(BlockTarget).RoleBlockImmune;
 
-            if (IsDead || BlockTarget.Data.IsDead || BlockTarget.Data.Disconnected || MeetingHud.Instance)
+            if (IsDead || BlockTarget.Data.IsDead || BlockTarget.Data.Disconnected || Utils.Meeting)
                 TimeRemaining = 0f;
         }
 

@@ -46,20 +46,23 @@ namespace TownOfUsReworked.Patches
 
             public static bool Prefix(GameStartManager __instance)
             {
-                UpdatePrefix(__instance);
+                try
+                {
+                    UpdatePrefix(__instance);
+                } catch {}
+
                 return false;
             }
 
             private static void UpdatePrefix(GameStartManager __instance)
             {
-                if (!GameData.Instance || !GameManager.Instance || ConstantVariables.IsInGame)
+                if (!__instance || !AmongUsClient.Instance || !GameData.Instance || !GameManager.Instance || ConstantVariables.IsInGame)
                     return;
 
                 __instance.MakePublicButton.sprite = AmongUsClient.Instance.IsGamePublic ? __instance.PublicGameImage : __instance.PrivateGameImage;
-                __instance.privatePublicText.text = AmongUsClient.Instance.IsGamePublic ? TranslationController.Instance.GetString(StringNames.PublicHeader) :
-                    TranslationController.Instance.GetString(StringNames.PrivateHeader);
+                __instance.privatePublicText.text = TranslationController.Instance.GetString(AmongUsClient.Instance.IsGamePublic ? StringNames.PublicHeader : StringNames.PrivateHeader);
 
-                if ((Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) && Input.GetKeyDown(KeyCode.C) && !HudManager.Instance.Chat)
+                if ((Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) && Input.GetKeyDown(KeyCode.C) && !Utils.HUD.Chat)
                     GUIUtility.systemCopyBuffer = GameCode.IntToGameName(AmongUsClient.Instance.GameId);
 
                 if (DiscordManager.InstanceExists)
@@ -120,8 +123,8 @@ namespace TownOfUsReworked.Patches
                         }
                         else
                         {
-                            var PV = PlayerVersions[client.Id];
-                            var diff = TownOfUsReworked.Version.CompareTo(PV.Version);
+                            var pv = PlayerVersions[client.Id];
+                            var diff = TownOfUsReworked.Version.CompareTo(pv.Version);
 
                             if (diff > 0)
                             {
@@ -133,11 +136,11 @@ namespace TownOfUsReworked.Patches
                                 versionMismatch = true;
                                 message += $"{client.Character.Data.PlayerName} has a newer version of Town Of Us Reworked (v{PlayerVersions[client.Id].Version})\n";
                             }
-                            else if (!PV.GuidMatches)
+                            else if (!pv.GuidMatches)
                             {
                                 //Version presumably matches, check if Guid matches
                                 versionMismatch = true;
-                                message += $"{client.Character.Data.PlayerName} has a modified version of Town Of Us Reworked v{PlayerVersions[client.Id].Version} ({PV.Guid})\n";
+                                message += $"{client.Character.Data.PlayerName} has a modified version of Town Of Us Reworked v{PlayerVersions[client.Id].Version} ({pv.Guid})\n";
                             }
                         }
                     }

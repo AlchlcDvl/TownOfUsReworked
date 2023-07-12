@@ -40,7 +40,7 @@ namespace TownOfUsReworked.Classes
 
         private static void Sort(this List<(int, int, bool)> items, int max, int min)
         {
-            if (items.Count is 1 or 0)
+            if (items.Count == 0)
                 return;
 
             items.Shuffle();
@@ -133,13 +133,8 @@ namespace TownOfUsReworked.Classes
 
                     var (chance, _, _) = (item.Item1, item.Item2, item.Item3);
 
-                    if (chance < 100)
-                    {
-                        var random = URandom.RandomRangeInt(0, 100);
-
-                        if (random < chance)
-                            newList.Add(item);
-                    }
+                    if (chance < 100 && URandom.RandomRangeInt(0, 100) < chance)
+                        newList.Add(item);
                 }
 
                 newList.Shuffle();
@@ -521,6 +516,7 @@ namespace TownOfUsReworked.Classes
                 AllRoles.Add((100, 20, false));
 
             spawnList = AllRoles;
+            spawnList.Shuffle();
 
             Utils.LogSomething("Layers Sorted");
 
@@ -531,10 +527,10 @@ namespace TownOfUsReworked.Classes
                 foreach (var (_, id, _) in spawnList)
                     ids += $" {id}";
 
-                Utils.LogSomething("Roles in the game " + ids);
+                Utils.LogSomething("Roles in the game: " + ids);
             }
 
-            while (AllRoles.Count > 0 && spawnList.Count > 0)
+            while (players.Count > 0 && spawnList.Count > 0)
             {
                 var id = spawnList.TakeFirst().Item2;
                 Gen(players.TakeFirst(), id, PlayerLayerEnum.Role);
@@ -598,7 +594,7 @@ namespace TownOfUsReworked.Classes
                 NeutralRoles.Add((CustomGameOptions.CryomaniacOn, 29, CustomGameOptions.UniqueCryomaniac));
 
             if (CustomGameOptions.AddPlaguebearer)
-                NeutralRoles.Add((CustomGameOptions.PlaguebearerOn, CustomGameOptions.PestSpawn ? 33 : 34, CustomGameOptions.UniquePlaguebearer));
+                NeutralRoles.Add((CustomGameOptions.PlaguebearerOn, CustomGameOptions.PestSpawn ? 34 : 33, CustomGameOptions.UniquePlaguebearer));
 
             NeutralRoles.Sort(neutrals);
 
@@ -643,10 +639,11 @@ namespace TownOfUsReworked.Classes
                 foreach (var (_, id, _) in AllRoles)
                     ids += $" {id}";
 
-                Utils.LogSomething("Roles in the game " + ids);
+                Utils.LogSomething("Roles in the game: " + ids);
             }
 
             spawnList = AllRoles;
+            spawnList.Shuffle();
 
             while (players.Count > 0 && spawnList.Count > 0)
             {
@@ -1952,16 +1949,24 @@ namespace TownOfUsReworked.Classes
             while (spawnList.Count < players.Count)
                 spawnList.Add((100, 20, false));
 
-            if (!spawnList.Any(CrewRoles.Contains) && !spawnList.Contains((100, 20, false)))
+            if (!spawnList.Any(x => CrewRoles.Contains(x) || x.Item2 == 20))
             {
                 spawnList.Remove(spawnList.Random());
+                spawnList.Add(CrewRoles.Count > 0 ? CrewRoles.Random() : (100, 20, false));
 
-                if (CrewRoles.Count > 0)
-                    spawnList.Add(CrewRoles.Random());
-                else
-                    spawnList.Add((100, 20, false));
+                if (TownOfUsReworked.IsTest)
+                    Utils.LogSomething("Added Solo Crew");
+            }
 
-                Utils.LogSomething("Added Solo Crew");
+            if (!spawnList.Any(x => x.Item2 == 39) && spawnList.Any(x => x.Item2 == 21))
+            {
+                var count = spawnList.RemoveAll(x => x.Item2 == 21);
+
+                while (count > 0)
+                {
+                    spawnList.Add((CustomGameOptions.VigilanteOn, 3, CustomGameOptions.UniqueVigilante));
+                    count--;
+                }
             }
 
             spawnList.Shuffle();
@@ -1974,7 +1979,7 @@ namespace TownOfUsReworked.Classes
                 foreach (var (_, id, _) in spawnList)
                     ids += $" {id}";
 
-                Utils.LogSomething("Roles in the game " + ids);
+                Utils.LogSomething("Roles in the game: " + ids);
             }
 
             while (players.Count > 0 && spawnList.Count > 0)
@@ -1993,7 +1998,7 @@ namespace TownOfUsReworked.Classes
 
             if (CustomGameOptions.CrewAssassinOn > 0)
             {
-                num = CustomGameOptions.NumberOfCrewAssassins;
+                num = ConstantVariables.IsCustom ? CustomGameOptions.NumberOfCrewAssassins : 1;
 
                 while (num > 0)
                 {
@@ -2006,7 +2011,7 @@ namespace TownOfUsReworked.Classes
 
             if (CustomGameOptions.SyndicateAssassinOn > 0)
             {
-                num = CustomGameOptions.NumberOfSyndicateAssassins;
+                num = ConstantVariables.IsCustom ? CustomGameOptions.NumberOfSyndicateAssassins : 1;
 
                 while (num > 0)
                 {
@@ -2019,7 +2024,7 @@ namespace TownOfUsReworked.Classes
 
             if (CustomGameOptions.IntruderAssassinOn > 0)
             {
-                num = CustomGameOptions.NumberOfImpostorAssassins;
+                num = ConstantVariables.IsCustom ? CustomGameOptions.NumberOfIntruderAssassins : 1;
 
                 while (num > 0)
                 {
@@ -2032,11 +2037,11 @@ namespace TownOfUsReworked.Classes
 
             if (CustomGameOptions.NeutralAssassinOn > 0)
             {
-                num = CustomGameOptions.NumberOfNeutralAssassins;
+                num = ConstantVariables.IsCustom ? CustomGameOptions.NumberOfNeutralAssassins : 1;
 
                 while (num > 0)
                 {
-                    AllAbilities.Add((CustomGameOptions.NeutralAssassinOn, 14, CustomGameOptions.UniqueAssassin));
+                    AllAbilities.Add((CustomGameOptions.NeutralAssassinOn, 13, CustomGameOptions.UniqueAssassin));
                     num--;
                 }
 
@@ -2272,6 +2277,7 @@ namespace TownOfUsReworked.Classes
 
             AllAbilities.Sort(allCount);
             var spawnList = AllAbilities;
+            spawnList.Shuffle();
 
             if (TownOfUsReworked.IsTest)
             {
@@ -2280,7 +2286,7 @@ namespace TownOfUsReworked.Classes
                 foreach (var (_, id, _) in spawnList)
                     ids += $" {id}";
 
-                Utils.LogSomething("Abilities in the game " + ids);
+                Utils.LogSomething("Abilities in the game: " + ids);
             }
 
             while (canHaveSnitch.Count > 0 || (CustomGameOptions.WhoCanVent == WhoCanVentOptions.Default && canHaveTunnelerAbility.Count > 0) || canHaveIntruderAbility.Count > 0 ||
@@ -2526,8 +2532,8 @@ namespace TownOfUsReworked.Classes
             canHaveDefector.Shuffle();
 
             AllObjectifiers.Sort(allCount);
-
             var spawnList = AllObjectifiers;
+            spawnList.Shuffle();
 
             if (TownOfUsReworked.IsTest)
             {
@@ -2536,7 +2542,7 @@ namespace TownOfUsReworked.Classes
                 foreach (var (_, id, _) in spawnList)
                     ids += $" {id}";
 
-                Utils.LogSomething("Objectifiers in the game " + ids);
+                Utils.LogSomething("Objectifiers in the game: " + ids);
             }
 
             while (canHaveNeutralObjectifier.Count > 0 || canHaveCrewObjectifier.Count > 0 || canHaveLoverorRival.Count > 1 || canHaveObjectifier.Count > 0 || canHaveDefector.Count > 0)
@@ -2800,6 +2806,7 @@ namespace TownOfUsReworked.Classes
 
             AllModifiers.Sort(allCount);
             var spawnList = AllModifiers;
+            spawnList.Shuffle();
 
             if (TownOfUsReworked.IsTest)
             {
@@ -2808,7 +2815,7 @@ namespace TownOfUsReworked.Classes
                 foreach (var (_, id, _) in spawnList)
                     ids += $" {id}";
 
-                Utils.LogSomething("Modifiers in the game " + ids);
+                Utils.LogSomething("Modifiers in the game: " + ids);
             }
 
             while (canHaveBait.Count > 0 || canHaveDiseased.Count > 0 || canHaveProfessional.Count > 0 || canHaveModifier.Count > 0)
@@ -3056,15 +3063,13 @@ namespace TownOfUsReworked.Classes
             {
                 foreach (var act in Role.GetRoles<Actor>(RoleEnum.Actor))
                 {
-                    act.PretendRoles = InspectorResults.None;
-
-                    while (act.PretendRoles == InspectorResults.None || act.PretendRoles == act.InspectorResults)
-                        act.PretendRoles = Role.GetRole(CustomPlayer.AllPlayers.Random()).InspectorResults;
+                    while (act.TargetRole == null || act.PretendRoles == InspectorResults.None || act.PretendRoles == act.InspectorResults || act.TargetRole.RoleType == RoleEnum.Actor)
+                        act.TargetRole = Role.GetRole(CustomPlayer.AllPlayers.Random());
 
                     var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Target, SendOption.Reliable);
                     writer.Write((byte)TargetRPC.SetActPretendList);
                     writer.Write(act.PlayerId);
-                    writer.Write((byte)act.PretendRoles);
+                    writer.Write(act.TargetRole.PlayerId);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
 
                     if (TownOfUsReworked.IsTest)
@@ -3083,33 +3088,19 @@ namespace TownOfUsReworked.Classes
                     jackal.BackupRecruit = null;
 
                     while (jackal.GoodRecruit == null || jackal.GoodRecruit == jackal.Player || jackal.GoodRecruit.Is(RoleAlignment.NeutralKill) ||
-                        jackal.GoodRecruit.Is(Faction.Intruder) || jackal.GoodRecruit.Is(Faction.Syndicate))
+                        jackal.GoodRecruit.Is(Faction.Intruder) || jackal.GoodRecruit.Is(Faction.Syndicate) || jackal.GoodRecruit.Is(RoleAlignment.NeutralNeo))
                     {
                         jackal.GoodRecruit = CustomPlayer.AllPlayers.Random();
                     }
 
-                    Role.GetRole(jackal.GoodRecruit).SubFaction = SubFaction.Cabal;
-                    Role.GetRole(jackal.GoodRecruit).SubFactionColor = Colors.Cabal;
-                    Role.GetRole(jackal.GoodRecruit).IsRecruit = true;
-                    jackal.Recruited.Add(jackal.GoodRecruit.PlayerId);
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Target, SendOption.Reliable);
-                    writer.Write((byte)TargetRPC.SetGoodRecruit);
-                    writer.Write(jackal.PlayerId);
-                    writer.Write(jackal.GoodRecruit.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-
-                    while (jackal.EvilRecruit == null || jackal.EvilRecruit == jackal.Player || jackal.EvilRecruit.Is(Faction.Crew) || jackal.EvilRecruit.Is(RoleAlignment.NeutralBen))
+                    while (jackal.EvilRecruit == null || jackal.EvilRecruit == jackal.Player || jackal.EvilRecruit.Is(Faction.Crew) || jackal.EvilRecruit.Is(RoleAlignment.NeutralBen) ||
+                        jackal.GoodRecruit.Is(RoleAlignment.NeutralNeo))
+                    {
                         jackal.EvilRecruit = CustomPlayer.AllPlayers.Random();
+                    }
 
-                    Role.GetRole(jackal.EvilRecruit).SubFaction = SubFaction.Cabal;
-                    Role.GetRole(jackal.EvilRecruit).IsRecruit = true;
-                    jackal.Recruited.Add(jackal.EvilRecruit.PlayerId);
-                    Role.GetRole(jackal.EvilRecruit).SubFactionColor = Colors.Cabal;
-                    var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Target, SendOption.Reliable);
-                    writer2.Write((byte)TargetRPC.SetEvilRecruit);
-                    writer2.Write(jackal.PlayerId);
-                    writer2.Write(jackal.EvilRecruit.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer2);
+                    RpcConvert(jackal.GoodRecruit.PlayerId, jackal.PlayerId, SubFaction.Cabal);
+                    RpcConvert(jackal.EvilRecruit.PlayerId, jackal.PlayerId, SubFaction.Cabal);
 
                     if (TownOfUsReworked.IsTest)
                         Utils.LogSomething($"Recruits = {jackal.GoodRecruit.name} (Good) & {jackal.EvilRecruit.name} (Evil)");
@@ -3253,10 +3244,10 @@ namespace TownOfUsReworked.Classes
             SetPostmortals.BansheeOn = false;
             SetPostmortals.GhoulOn = false;
 
-            SetPostmortals.WillBeBanshee = null;
-            SetPostmortals.WillBeGhoul = null;
-            SetPostmortals.WillBeRevealer = null;
-            SetPostmortals.WillBePhantom = null;
+            SetPostmortals.WillBeBanshees.Clear();
+            SetPostmortals.WillBeGhouls.Clear();
+            SetPostmortals.WillBeRevealers.Clear();
+            SetPostmortals.WillBePhantoms.Clear();
 
             PureCrew = null;
             Convertible = 0;
@@ -3278,6 +3269,8 @@ namespace TownOfUsReworked.Classes
             Assassin.RemainingKills = CustomGameOptions.AssassinKills;
 
             Summary.Disconnected.Clear();
+
+            Footprint.OddEven.Clear();
         }
 
         public static void BeginRoleGen()
@@ -3825,9 +3818,16 @@ namespace TownOfUsReworked.Classes
                     {
                         if (converts)
                         {
-                            ((Jackal)role2).Recruited.Add(target);
-                            ((Jackal)role2).BackupRecruit = converted;
+                            var jackal = (Jackal)role2;
+                            jackal.Recruited.Add(target);
                             role1.IsRecruit = true;
+
+                            if (jackal.GoodRecruit == null)
+                                jackal.GoodRecruit = converted;
+                            else if (jackal.EvilRecruit == null)
+                                jackal.EvilRecruit = converted;
+                            else if (jackal.BackupRecruit == null)
+                                jackal.BackupRecruit = converted;
                         }
                         else if (converted.IsRecruit())
                             ((Jackal)role2).Recruited.Add(target);

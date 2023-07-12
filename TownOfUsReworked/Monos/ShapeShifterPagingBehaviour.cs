@@ -1,6 +1,6 @@
 ﻿namespace TownOfUsReworked.Monos
 {
-    public class ShapeShifterPagingBehaviour : AbstractPagingBehaviour
+    public class ShapeShifterPagingBehaviour : BasePagingBehaviour
     {
         public ShapeShifterPagingBehaviour(IntPtr ptr) : base(ptr) {}
 

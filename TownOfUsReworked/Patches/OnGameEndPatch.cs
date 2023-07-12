@@ -56,7 +56,7 @@ namespace TownOfUsReworked.Patches
 
                     foreach (var defect in Objectifier.GetObjectifiers<Defector>(ObjectifierEnum.Defector))
                     {
-                        if (!defect.Disconnected && defect.Side == Faction.Crew)
+                        if (!defect.Disconnected && defect.Side == Faction.Crew && Role.GetRole(defect.Player).BaseFaction != defect.Side)
                             winners.Add(PotentialWinners.Find(x => x.PlayerName == defect.PlayerName));
                     }
                 }
@@ -88,7 +88,7 @@ namespace TownOfUsReworked.Patches
 
                     foreach (var defect in Objectifier.GetObjectifiers<Defector>(ObjectifierEnum.Defector))
                     {
-                        if (!defect.Disconnected && defect.Side == Faction.Intruder)
+                        if (!defect.Disconnected && defect.Side == Faction.Intruder && Role.GetRole(defect.Player).BaseFaction != defect.Side)
                             winners.Add(PotentialWinners.Find(x => x.PlayerName == defect.PlayerName));
                     }
                 }
@@ -120,7 +120,7 @@ namespace TownOfUsReworked.Patches
 
                     foreach (var defect in Objectifier.GetObjectifiers<Defector>(ObjectifierEnum.Defector))
                     {
-                        if (!defect.Disconnected && defect.Side == Faction.Syndicate)
+                        if (!defect.Disconnected && defect.Side == Faction.Syndicate && Role.GetRole(defect.Player).BaseFaction != defect.Side)
                             winners.Add(PotentialWinners.Find(x => x.PlayerName == defect.PlayerName));
                     }
                 }
@@ -296,7 +296,7 @@ namespace TownOfUsReworked.Patches
 
                         foreach (var ga in Role.GetRoles<GuardianAngel>(RoleEnum.GuardianAngel))
                         {
-                            if (ga.TargetAlive)
+                            if (!ga.Failed && ga.TargetPlayer != null && ga.TargetAlive)
                                 winners.Add(PotentialWinners.Find(x => x.PlayerName == ga.PlayerName));
                         }
                     }

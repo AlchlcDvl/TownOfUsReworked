@@ -1,3 +1,4 @@
+using static TownOfUsReworked.Languages.Language;
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Chameleon : Crew
@@ -12,9 +13,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public Chameleon(PlayerControl player) : base(player)
         {
-            Name = "Chameleon";
-            StartText = () => "Go Invisible To Stalk Players";
-            AbilitiesText = () => "- You can turn invisible";
+            Name = GetString("Chameleon");
+            StartText = () => GetString("ChameleonStartText");
+            AbilitiesText = () => GetString("ChameleonAbilitiesText");
             Color = CustomGameOptions.CustomCrewColors ? Colors.Chameleon : Colors.Crew;
             RoleType = RoleEnum.Chameleon;
             InspectorResults = InspectorResults.Unseen;
@@ -40,7 +41,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             TimeRemaining -= Time.deltaTime;
             Utils.Invis(Player);
 
-            if (MeetingHud.Instance || IsDead)
+            if (Utils.Meeting || IsDead)
                 TimeRemaining = 0f;
         }
 

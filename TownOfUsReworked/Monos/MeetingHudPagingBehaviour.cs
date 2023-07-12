@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Monos
 {
-    public class MeetingHudPagingBehaviour : AbstractPagingBehaviour
+    public class MeetingHudPagingBehaviour : BasePagingBehaviour
     {
         public MeetingHudPagingBehaviour(IntPtr ptr) : base(ptr) {}
 

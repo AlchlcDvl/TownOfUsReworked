@@ -1,3 +1,4 @@
+using static TownOfUsReworked.Languages.Language;
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Revealer : Crew
@@ -10,14 +11,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public Revealer(PlayerControl player) : base(player)
         {
-            Name = "Revealer";
+            Name = GetString("Revealer");
             Color = CustomGameOptions.CustomCrewColors ? Colors.Revealer : Colors.Crew;
-            AbilitiesText = () => "- You can reveal evils players to the <color=#8CFFFFFF>Crew</color> once you finish your tasks without getting clicked.";
+            AbilitiesText = () => GetString("RevealerAbilitiesText");
             RoleType = RoleEnum.Revealer;
             RoleAlignment = RoleAlignment.CrewUtil;
             InspectorResults = InspectorResults.Ghostly;
             Type = LayerEnum.Revealer;
-            StartText = () => "ooooooo";
+            StartText = () => GetString("RevealerStartText");
 
             if (TownOfUsReworked.IsTest)
                 Utils.LogSomething($"{Player.name} is {Name}");

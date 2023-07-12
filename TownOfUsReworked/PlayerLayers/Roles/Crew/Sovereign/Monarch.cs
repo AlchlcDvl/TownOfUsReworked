@@ -1,3 +1,4 @@
+using static TownOfUsReworked.Languages.Language;
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Monarch : Crew
@@ -13,9 +14,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public Monarch(PlayerControl player) : base(player)
         {
-            Name = "Monarch";
-            StartText = () => "Knight Those Who You Trust";
-            AbilitiesText = () => $"- You can knight players\n- Knighted players will have their votes count {CustomGameOptions.KnightVoteCount + 1} times";
+            Name = GetString("Monarch");
+            StartText = () => GetString("MonarchStartText");
+            AbilitiesText = () => GetString("MonarchAbilitiesText").Replace("%KnightVoteCount%", $"{CustomGameOptions.KnightVoteCount + 1}");
             Color = CustomGameOptions.CustomCrewColors ? Colors.Monarch : Colors.Crew;
             RoleType = RoleEnum.Monarch;
             RoleAlignment = RoleAlignment.CrewSov;

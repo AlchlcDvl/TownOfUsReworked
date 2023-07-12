@@ -1,4 +1,6 @@
-﻿namespace TownOfUsReworked.PlayerLayers.Roles
+using static TownOfUsReworked.Languages.Language;
+
+namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Operative : Crew
     {
@@ -12,10 +14,10 @@
 
         public Operative(PlayerControl player) : base(player)
         {
-            Name = "Operative";
-            StartText = () => "Detect Which Roles Are Here";
-            AbilitiesText = () => "- You can place bugs around the map\n- Upon triggering the bugs, the player's role will be included in a list to be shown in the next meeting\n- You can"
-                + "see which colors are where on the admin table\n- On Vitals, the time of death for each player will be shown";
+            Name = GetString("Operative");
+            StartText = () => GetString("OperativeStartText");
+            AbilitiesText = () => GetString("OperativeAbilitiesText1")
+                + GetString("OperativeAbilitiesText2");
             Color = CustomGameOptions.CustomCrewColors ? Colors.Operative : Colors.Crew;
             RoleType = RoleEnum.Operative;
             BuggedPlayers = new();
@@ -66,14 +68,14 @@
                 GenNumber(voteArea);
 
             if (BuggedPlayers.Count == 0)
-                HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, "No one triggered your bugs.");
+                Utils.HUD.Chat.AddChat(PlayerControl.LocalPlayer, GetString("OperativeBugChat1"));
             else if (BuggedPlayers.Count < CustomGameOptions.MinAmountOfPlayersInBug)
-                HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, "Not enough players triggered your bugs.");
+                Utils.HUD.Chat.AddChat(PlayerControl.LocalPlayer, GetString("OperativeBugChat2"));
             else if (BuggedPlayers.Count == 1)
-                HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, $"A {BuggedPlayers[0]} triggered your bug.");
+                Utils.HUD.Chat.AddChat(PlayerControl.LocalPlayer, GetString("OperativeBugChat3").Replace("%BuggedPlayers%", $"{BuggedPlayers}"));
             else
             {
-                var message = "The following roles triggered your bug: ";
+                var message = GetString("OperativeMessage");
                 var position = 0;
                 BuggedPlayers.Shuffle();
 
@@ -82,12 +84,12 @@
                     if (position < BuggedPlayers.Count - 1)
                         message += $" {role},";
                     else
-                        message += $" and {role}.";
+                        message += GetString("OperativeMessageAndRole").Replace("%role%", $"{role}");
 
                     position++;
                 }
 
-                HudManager.Instance.Chat.AddChat(PlayerControl.LocalPlayer, message);
+                Utils.HUD.Chat.AddChat(PlayerControl.LocalPlayer, message);
             }
         }
 

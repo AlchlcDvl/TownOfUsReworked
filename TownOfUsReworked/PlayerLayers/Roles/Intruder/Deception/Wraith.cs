@@ -38,7 +38,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             TimeRemaining -= Time.deltaTime;
             Utils.Invis(Player, CustomPlayer.Local.Is(Faction.Intruder));
 
-            if (IsDead || MeetingHud.Instance)
+            if (IsDead || Utils.Meeting)
                 TimeRemaining = 0f;
         }
 
