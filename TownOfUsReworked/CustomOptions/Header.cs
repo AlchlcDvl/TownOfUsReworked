@@ -1,3 +1,4 @@
+using static TownOfUsReworked.Languages.Language;
 namespace TownOfUsReworked.CustomOptions
 {
     public class CustomHeaderOption : CustomOption
@@ -7,7 +8,7 @@ namespace TownOfUsReworked.CustomOptions
         public override void OptionCreated()
         {
             base.OptionCreated();
-            Setting.Cast<ToggleOption>().TitleText.text = Name;
+            Setting.Cast<ToggleOption>().TitleText.text = GetString(Name);
         }
     }
 }

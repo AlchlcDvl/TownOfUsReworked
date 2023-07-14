@@ -72,7 +72,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             else if (BuggedPlayers.Count < CustomGameOptions.MinAmountOfPlayersInBug)
                 Utils.HUD.Chat.AddChat(PlayerControl.LocalPlayer, GetString("OperativeBugChat2"));
             else if (BuggedPlayers.Count == 1)
-                Utils.HUD.Chat.AddChat(PlayerControl.LocalPlayer, GetString("OperativeBugChat3").Replace("%BuggedPlayers%", $"{BuggedPlayers}"));
+                Utils.HUD.Chat.AddChat(PlayerControl.LocalPlayer, GetString("OperativeBugChat3").Replace("%BuggedPlayers%", $"{BuggedPlayers[0]}"));
             else
             {
                 var message = GetString("OperativeMessage");

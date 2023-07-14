@@ -44,7 +44,7 @@ namespace TownOfUsReworked.PlayerLayers
                     return;
 
                 __instance.BackgroundBar.material.color = role.FactionColor;
-                text.text = "The Syndicate Wins";
+                text.text = GetString("SyndicateWins");
                 text.color = role.FactionColor;
             }
             else if (Role.IntruderWin)
@@ -55,7 +55,7 @@ namespace TownOfUsReworked.PlayerLayers
                     return;
 
                 __instance.BackgroundBar.material.color = role.FactionColor;
-                text.text = "Intruders Win";
+                text.text = GetString("IntrudersWin");
                 text.color = role.FactionColor;
             }
             else if (Role.AllNeutralsWin)
@@ -66,7 +66,7 @@ namespace TownOfUsReworked.PlayerLayers
                     return;
 
                 __instance.BackgroundBar.material.color = role.FactionColor;
-                text.text = "Neutrals Win";
+                text.text = GetString("NeutralsWin");
                 text.color = role.FactionColor;
             }
             else if (Role.CrewWin)
@@ -77,7 +77,7 @@ namespace TownOfUsReworked.PlayerLayers
                     return;
 
                 __instance.BackgroundBar.material.color = role.FactionColor;
-                text.text = "Crew Wins";
+                text.text = GetString("CrewWins");
                 text.color = role.FactionColor;
                 AssetManager.Stop("IntruderWin");
                 AssetManager.Play("CrewWin");
@@ -90,7 +90,7 @@ namespace TownOfUsReworked.PlayerLayers
                     return;
 
                 __instance.BackgroundBar.material.color = Colors.Alignment;
-                text.text = "Neutral Killers Win";
+                text.text = GetString("NKWin");
                 text.color = Colors.Alignment;
             }
             else if (Role.InfectorsWin)
@@ -101,7 +101,7 @@ namespace TownOfUsReworked.PlayerLayers
                     return;
 
                 __instance.BackgroundBar.material.color = Colors.Infector;
-                text.text = "Infectors Win";
+                text.text = GetString("IFWin");
                 text.color = Colors.Infector;
             }
             else if (Role.UndeadWin)
@@ -112,7 +112,7 @@ namespace TownOfUsReworked.PlayerLayers
                     return;
 
                 __instance.BackgroundBar.material.color = role.SubFactionColor;
-                text.text = "The Undead Win";
+                text.text = GetString("TUWin");
                 text.color = role.SubFactionColor;
             }
             else if (Role.CabalWin)
@@ -123,7 +123,7 @@ namespace TownOfUsReworked.PlayerLayers
                     return;
 
                 __instance.BackgroundBar.material.color = role.SubFactionColor;
-                text.text = "The Cabal Wins";
+                text.text = GetString("TheCabalWins");
                 text.color = role.SubFactionColor;
             }
             else if (Role.SectWin)
@@ -134,7 +134,7 @@ namespace TownOfUsReworked.PlayerLayers
                     return;
 
                 __instance.BackgroundBar.material.color = role.SubFactionColor;
-                text.text = "The Sect Wins";
+                text.text = GetString("TSWin");
                 text.color = role.SubFactionColor;
             }
             else if (Role.ReanimatedWin)
@@ -145,7 +145,7 @@ namespace TownOfUsReworked.PlayerLayers
                     return;
 
                 __instance.BackgroundBar.material.color = role.SubFactionColor;
-                text.text = "The Reanimated Win";
+                text.text = GetString("TheReanimatedWin");
                 text.color = role.SubFactionColor;
             }
             else if (Role.CryomaniacWins)
@@ -156,7 +156,7 @@ namespace TownOfUsReworked.PlayerLayers
                     return;
 
                 __instance.BackgroundBar.material.color = role.Color;
-                text.text = "Cryomaniac Wins";
+                text.text = GetString("CryomaniacWins");
                 text.color = role.Color;
             }
             else if (Role.ArsonistWins)
@@ -167,7 +167,7 @@ namespace TownOfUsReworked.PlayerLayers
                     return;
 
                 __instance.BackgroundBar.material.color = role.Color;
-                text.text = "Aronist Wins";
+                text.text = GetString("zhfWin");
                 text.color = role.Color;
             }
             else if (Role.GlitchWins)
@@ -178,7 +178,7 @@ namespace TownOfUsReworked.PlayerLayers
                     return;
 
                 __instance.BackgroundBar.material.color = role.Color;
-                text.text = "Glitch Wins";
+                text.text = GetString("GlitchWins");
                 text.color = role.Color;
                 AssetManager.Play("GlitchWin");
             }
@@ -190,7 +190,7 @@ namespace TownOfUsReworked.PlayerLayers
                     return;
 
                 __instance.BackgroundBar.material.color = role.Color;
-                text.text = "Juggernaut Wins";
+                text.text = GetString("JuggernautWins");
                 text.color = role.Color;
             }
             else if (Role.MurdererWins)
@@ -201,7 +201,7 @@ namespace TownOfUsReworked.PlayerLayers
                     return;
 
                 __instance.BackgroundBar.material.color = role.Color;
-                text.text = "Murderer Wins";
+                text.text = GetString("MurdererWins");
                 text.color = role.Color;
             }
             else if (Role.SerialKillerWins)
@@ -212,7 +212,7 @@ namespace TownOfUsReworked.PlayerLayers
                     return;
 
                 __instance.BackgroundBar.material.color = role.Color;
-                text.text = "Serial Killer Wins";
+                text.text = GetString("SerialKillerWins");
                 text.color = role.Color;
             }
             else if (Role.WerewolfWins)
@@ -223,7 +223,7 @@ namespace TownOfUsReworked.PlayerLayers
                     return;
 
                 __instance.BackgroundBar.material.color = role.Color;
-                text.text = "Werewolf Wins";
+                text.text = GetString("WerewolfWins");
                 text.color = role.Color;
             }
             else if (Role.PhantomWins)
@@ -234,7 +234,7 @@ namespace TownOfUsReworked.PlayerLayers
                     return;
 
                 __instance.BackgroundBar.material.color = role.Color;
-                text.text = "Phantom Wins";
+                text.text = GetString("PhantomWins");
                 text.color = role.Color;
             }
             else if (Role.ActorWins)
@@ -245,7 +245,7 @@ namespace TownOfUsReworked.PlayerLayers
                     return;
 
                 __instance.BackgroundBar.material.color = role.Color;
-                text.text = "Actor Wins";
+                text.text = GetString("ActorWins");
                 text.color = role.Color;
             }
             else if (Role.BountyHunterWins)
@@ -256,7 +256,7 @@ namespace TownOfUsReworked.PlayerLayers
                     return;
 
                 __instance.BackgroundBar.material.color = role.Color;
-                text.text = "Bounty Hunter Wins";
+                text.text = GetString("BountyHunterWins");
                 text.color = role.Color;
             }
             else if (Role.CannibalWins)
@@ -267,7 +267,7 @@ namespace TownOfUsReworked.PlayerLayers
                     return;
 
                 __instance.BackgroundBar.material.color = role.Color;
-                text.text = "Cannibal Wins";
+                text.text = GetString("CannibalWins");
                 text.color = role.Color;
             }
             else if (Role.ExecutionerWins)
@@ -278,7 +278,7 @@ namespace TownOfUsReworked.PlayerLayers
                     return;
 
                 __instance.BackgroundBar.material.color = role.Color;
-                text.text = "Executioner Wins";
+                text.text = GetString("ExecutionerWins");
                 text.color = role.Color;
             }
             else if (Role.GuesserWins)
@@ -289,7 +289,7 @@ namespace TownOfUsReworked.PlayerLayers
                     return;
 
                 __instance.BackgroundBar.material.color = role.Color;
-                text.text = "Guesser Wins";
+                text.text = GetString("GuesserWins");
                 text.color = role.Color;
             }
             else if (Role.JesterWins)
@@ -300,7 +300,7 @@ namespace TownOfUsReworked.PlayerLayers
                     return;
 
                 __instance.BackgroundBar.material.color = role.Color;
-                text.text = "Jester Wins";
+                text.text = GetString("JesterWins");
                 text.color = role.Color;
             }
             else if (Role.TrollWins)
@@ -311,7 +311,7 @@ namespace TownOfUsReworked.PlayerLayers
                     return;
 
                 __instance.BackgroundBar.material.color = role.Color;
-                text.text = "Troll Wins";
+                text.text = GetString("TrollWins");
                 text.color = role.Color;
             }
             else if (Objectifier.CorruptedWins)
@@ -322,7 +322,7 @@ namespace TownOfUsReworked.PlayerLayers
                     return;
 
                 __instance.BackgroundBar.material.color = obj.Color;
-                text.text = "Corrupted Wins";
+                text.text = GetString("CorruptedWins");
                 text.color = obj.Color;
             }
             else if (Objectifier.LoveWins)
@@ -333,7 +333,7 @@ namespace TownOfUsReworked.PlayerLayers
                     return;
 
                 __instance.BackgroundBar.material.color = obj.Color;
-                text.text = "Love Wins";
+                text.text = GetString("LoWin");
                 text.color = obj.Color;
             }
             else if (Objectifier.RivalWins)
@@ -344,7 +344,7 @@ namespace TownOfUsReworked.PlayerLayers
                     return;
 
                 __instance.BackgroundBar.material.color = obj.Color;
-                text.text = "Rival Wins";
+                text.text = GetString("RivalWins");
                 text.color = obj.Color;
             }
             else if (Objectifier.TaskmasterWins)
@@ -355,7 +355,7 @@ namespace TownOfUsReworked.PlayerLayers
                     return;
 
                 __instance.BackgroundBar.material.color = obj.Color;
-                text.text = "Taskmaster Wins";
+                text.text = GetString("TaskmasterWins");
                 text.color = obj.Color;
             }
             else if (Objectifier.OverlordWins)
@@ -366,7 +366,7 @@ namespace TownOfUsReworked.PlayerLayers
                     return;
 
                 __instance.BackgroundBar.material.color = obj.Color;
-                text.text = "Overlord Wins";
+                text.text = GetString("OverlordWins");
                 text.color = obj.Color;
             }
             else if (Objectifier.MafiaWins)
@@ -377,7 +377,7 @@ namespace TownOfUsReworked.PlayerLayers
                     return;
 
                 __instance.BackgroundBar.material.color = obj.Color;
-                text.text = "The Mafia Wins";
+                text.text = GetString("MafiaWin");
                 text.color = obj.Color;
             }
 

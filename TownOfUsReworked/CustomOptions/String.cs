@@ -1,3 +1,4 @@
+using static TownOfUsReworked.Languages.Language;
 namespace TownOfUsReworked.CustomOptions
 {
     public class CustomStringOption : CustomOption
@@ -5,7 +6,7 @@ namespace TownOfUsReworked.CustomOptions
         public CustomStringOption(int id, MultiMenu menu, string name, string[] values) : base(id, menu, name, CustomOptionType.String, 0)
         {
             Values = values;
-            Format = (value, _) => Values[(int)value];
+            Format = (value, _) => GetString(Values[(int)value]);
         }
 
         public string[] Values;
@@ -32,7 +33,7 @@ namespace TownOfUsReworked.CustomOptions
         {
             base.OptionCreated();
             var str = Setting.Cast<KeyValueOption>();
-            str.TitleText.text = Name;
+            str.TitleText.text = GetString(Name);
             str.Selected = str.oldValue = Get();
             str.ValueText.text = ToString();
         }

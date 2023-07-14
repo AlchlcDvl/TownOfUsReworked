@@ -63,7 +63,7 @@ namespace TownOfUsReworked.CustomOptions
             {
                 var newValue = (int)Value;
                 str.Selected = str.oldValue = newValue;
-                str.ValueText.text = ToString();
+                str.ValueText.text = GetString(ToString());
             }
             else if (Setting is RoleOptionSetting role)
             {

@@ -1,3 +1,4 @@
+using static TownOfUsReworked.Languages.Language;
 namespace TownOfUsReworked.CustomOptions
 {
     public class CustomLayersOption : CustomOption
@@ -18,7 +19,7 @@ namespace TownOfUsReworked.CustomOptions
         {
             base.OptionCreated();
             var role = Setting.Cast<RoleOptionSetting>();
-            role.TitleText.text = Name;
+            role.TitleText.text = GetString(Name);
             role.RoleMaxCount = 15;
             role.ChanceText.text = "0%";
             role.CountText.text = "0";

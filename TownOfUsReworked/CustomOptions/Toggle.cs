@@ -1,3 +1,4 @@
+using static TownOfUsReworked.Languages.Language;
 namespace TownOfUsReworked.CustomOptions
 {
     public class CustomToggleOption : CustomOption
@@ -12,7 +13,7 @@ namespace TownOfUsReworked.CustomOptions
         {
             base.OptionCreated();
             var toggle = Setting.Cast<ToggleOption>();
-            toggle.TitleText.text = Name;
+            toggle.TitleText.text = GetString(Name);
             toggle.CheckMark.enabled = Get();
         }
     }

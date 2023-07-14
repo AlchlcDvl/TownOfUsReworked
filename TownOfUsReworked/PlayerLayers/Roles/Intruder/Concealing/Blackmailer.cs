@@ -1,3 +1,4 @@
+using static TownOfUsReworked.Languages.Language;
 namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Blackmailer : Intruder
@@ -11,10 +12,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public Blackmailer(PlayerControl player) : base(player)
         {
-            Name = "Blackmailer";
-            StartText = () => "You Know Their Secrets";
-            AbilitiesText = () => "- You can silence players to ensure they cannot hear what others say\n" + (CustomGameOptions.BMRevealed ? "- Everyone will be alerted at the start of " +
-                "the meeting that someone has been silenced " : "") + (CustomGameOptions.WhispersNotPrivate ? "\n- You can read whispers during meetings" : "") + $"\n{CommonAbilities}";
+            Name = GetString("Blackmailer");
+            StartText = () => GetString("BlackmailerStartText");
+            AbilitiesText = () => GetString("BlackmailerAbilitiesText1") + (CustomGameOptions.BMRevealed ? GetString("BlackmailerAbilitiesText2") +
+                GetString("BlackmailerAbilitiesText3") : "") + (CustomGameOptions.WhispersNotPrivate ? GetString("BlackmailerAbilitiesText4") : "") + $"\n{CommonAbilities}";
             Color = CustomGameOptions.CustomIntColors ? Colors.Blackmailer : Colors.Intruder;
             RoleType = RoleEnum.Blackmailer;
             RoleAlignment = RoleAlignment.IntruderConceal;
@@ -64,7 +65,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            BlackmailButton.Update("BLACKMAIL", BlackmailTimer(), CustomGameOptions.BlackmailCd);
+            BlackmailButton.Update(GetString("BlackmailerButtonBLACKMAIL"), BlackmailTimer(), CustomGameOptions.BlackmailCd);
         }
     }
 }

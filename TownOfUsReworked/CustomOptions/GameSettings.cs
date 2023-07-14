@@ -45,22 +45,18 @@ namespace TownOfUsReworked.CustomOptions
                 if (option.Type == CustomOptionType.Button)
                     continue;
 
-                if (option.Type == CustomOptionType.Header)
-                    builder.AppendLine($"\n");
-                else if (option.Type == CustomOptionType.Nested)
+                if (option is CustomNestedOption nested)
                 {
-                    var nested = (CustomNestedOption)option;
+                 
 
                     foreach (var option2 in nested.InternalOptions)
                     {
-                        if (option2.Type == CustomOptionType.Header)
-                            builder.AppendLine($"\n{option2.Name}");
-                        else if (option2.Type != CustomOptionType.Button)
-                            builder.AppendLine($"    {option2.Name}: {option2}");
+                        if (option2.Type is not CustomOptionType.Button and not CustomOptionType.Nested)
+                            builder.AppendLine($"{option2}");
                     }
                 }
                 else
-                    builder.AppendLine($"    : {option}");
+                    builder.AppendLine($"{option}");
             }
 
             return $"<size=1.25>{builder}</size>";

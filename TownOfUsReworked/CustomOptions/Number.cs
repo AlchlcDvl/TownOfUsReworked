@@ -1,3 +1,4 @@
+using static TownOfUsReworked.Languages.Language;
 namespace TownOfUsReworked.CustomOptions
 {
     public class CustomNumberOption : CustomOption
@@ -43,7 +44,7 @@ namespace TownOfUsReworked.CustomOptions
         {
             base.OptionCreated();
             var number = Setting.Cast<NumberOption>();
-            number.TitleText.text = Name;
+            number.TitleText.text = GetString(Name);
             number.ValidRange = new(Min, Max);
             number.Increment = Increment;
             number.Value = number.oldValue = Get();

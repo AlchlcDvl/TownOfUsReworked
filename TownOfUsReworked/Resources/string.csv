@@ -1,4 +1,4 @@
-id,0
+id,0,13
 
 # This file is for mod translation
 # Lines with "#" as the first character are not recognized
@@ -128,6 +128,16 @@ RevealerAbilitiesText,- You can reveal evils players to the <color=#8CFFFFFF>Cre
 RevealerStartText,ooooooo
 
 
+# Intruder Roles
+Blackmailer,Blackmailer
+BlackmailerStartText,You Know Their Secrets
+BlackmailerAbilitiesText1,- You can silence players to ensure they cannot hear what others say\n
+BlackmailerAbilitiesText2,- Everyone will be alerted at the start of 
+BlackmailerAbilitiesText3,the meeting that someone has been silenced 
+BlackmailerAbilitiesText4,\n- You can read whispers during meetings
+BlackmailerButtonBLACKMAIL,BLACKMAIL
+
+
 
 
 # Others Roles
@@ -135,6 +145,78 @@ None,None
 
 #GameEnd Texts
 Stalemate,Stalemate
+SyndicateWins,The Syndicate Wins
+IntrudersWin,Intruders Win
+NeutralsWin,Neutrals Win
+CrewWins,Crew Wins
+NKWin,Neutral Killers Win
+IFWin,Infectors Win
+TUWin,The Undead Win
+TSWin,The Sect Wins
+TheCabalWins,The Cabal Wins
+TheReanimatedWin,The Reanimated Win
+CryomaniacWins,Cryomaniac Wins
+zhfWin,Arsonist Wins
+GlitchWins,Glitch Wins
+JuggernautWins,Juggernaut Wins
+MurdererWins,Murderer Wins
+SerialKillerWins,Serial Killer Wins
+WerewolfWins,Werewolf Wins
+PhantomWins,Phantom Wins
+ActorWins,Actor Wins
+BountyHunterWins,Bounty Hunter Wins
+CannibalWins,Cannibal Wins
+ExecutionerWins,Executioner Wins
+GuesserWins,Guesser Wins
+JesterWins,Jester Wins
+TrollWins,Troll Wins
+CorruptedWins,Corrupted Wins
+LoWin,Love Wins
+RivalWins,Rival Wins
+TaskmasterWins,Taskmaster Wins
+OverlordWins,Overlord Wins
+MafiaWin,The Mafia Wins
 
 # Settings
 GameSettings,Game Settings
+PlayerSpeed,Player Speed
+GhostSpeed,Ghost Speed
+InteractionDistance,Interaction Distance
+EmergencyButtonCount,Emergency Button Count
+EmergencyButtonCooldown,Emergency Button Cooldown
+DiscussionTime,Discussion Time
+VotingTime,Voting Time
+TaskbarUpdates,Taskbar Updates
+MeetingOnly,Meeting Only
+Normal,Normal
+Invisible,Invisible
+ConfirmEjects,Confirm Ejects
+EjectionRevealsRole,Ejection Reveals <color=#FFD700FF>Roles</color>
+GameStartCooldowns,Game Start Cooldowns
+ReportDistance,Player Report Distance
+ChatCooldown,Chat Cooldown
+ChatCharacterLimit,Chat Character Limit
+LobbySize,Lobby Size
+GMoSettings,Game Mode Settings
+GameMode,Game Mode
+Classic,Classic,基础
+AllAny,All Any
+KillingOnly,Killing Only
+Custom,Custom
+Vanilla,Vanilla
+KillingOnlySettings,<color=#1D7CF2FF>Killing</color> Only Settings
+NeutralRoles,<color=#B3B3B3FF>Neutrals</color> Count
+AddArsonist,Add <color=#EE7600FF>Arsonist</color>
+AddCryomaniac,Add <color=#642DEAFF>Cryomaniac</color>
+AddPlaguebearer,Add <color=#CFFE61FF>Plaguebearer</color>
+AllAnySettings,All Any Settings
+EnableUniques,Enable Uniques
+GameModifiers,Game Modifiers
+WhoCanVent,Serial Venters
+Default,Default
+Everyone,Everyone
+Never,Never
+AnonymousVoting,Anonymous Voting
+NoSkipping,No Skipping
+Emergency,Emergency
+Always,Always

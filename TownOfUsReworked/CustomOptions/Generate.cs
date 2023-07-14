@@ -1,4 +1,3 @@
-using static TownOfUsReworked.Languages.Language;
 namespace TownOfUsReworked.CustomOptions
 {
     [HarmonyPatch]
@@ -1394,39 +1393,39 @@ namespace TownOfUsReworked.CustomOptions
             ExampleLayers.AddOptions(ExampleHeader, ExampleToggle, ExampleNumber, ExampleString);
             ExampleNested.AddOptions(ExampleHeader, ExampleToggle, ExampleNumber, ExampleString, ExampleLayers);*/
 
-            GameSettings = new(MultiMenu.main, GetString("GameSettings"));
-            PlayerSpeed = new(num++, MultiMenu.main, "Player Speed", 1.25f, 0.25f, 10, 0.25f, MultiplierFormat);
-            GhostSpeed = new(num++, MultiMenu.main, "Ghost Speed", 3, 0.25f, 10, 0.25f, MultiplierFormat);
-            InteractionDistance = new(num++, MultiMenu.main, "Interaction Distance", 2, 0.5f, 5, 0.5f, DistanceFormat);
-            EmergencyButtonCount = new(num++, MultiMenu.main, "Emergency Button Count", 1, 0, 100, 1);
-            EmergencyButtonCooldown = new(num++, MultiMenu.main, "Emergency Button Cooldown", 25, 0, 300, 5, CooldownFormat);
-            DiscussionTime = new(num++, MultiMenu.main, "Discussion Time", 30, 0, 300, 5, CooldownFormat);
-            VotingTime = new(num++, MultiMenu.main, "Voting Time", 60, 5, 600, 15, CooldownFormat);
-            TaskBarMode = new(num++, MultiMenu.main, "Taskbar Updates", new[] { "Meeting Only", "Normal", "Invisible" });
-            ConfirmEjects = new(num++, MultiMenu.main, "Confirm Ejects", false);
-            EjectionRevealsRole = new(num++, MultiMenu.main, "Ejection Reveals <color=#FFD700FF>Roles</color>", false);
-            InitialCooldowns = new(num++, MultiMenu.main, "Game Start Cooldowns", 10, 0, 30, 2.5f, CooldownFormat);
-            ReportDistance = new(num++, MultiMenu.main, "Player Report Distance", 3.5f, 1, 20, 0.25f, DistanceFormat);
-            ChatCooldown = new(num++, MultiMenu.main, "Chat Cooldown", 3, 0, 3, 0.1f, CooldownFormat);
-            ChatCharacterLimit = new(num++, MultiMenu.main, "Chat Character Limit", 200, 50, 2000, 50);
-            LobbySize = new(num++, MultiMenu.main, "Lobby Size", 15, 3, 127, 1);
+            GameSettings = new(MultiMenu.main, "GameSettings");
+            PlayerSpeed = new(num++, MultiMenu.main, "PlayerSpeed", 1.25f, 0.25f, 10, 0.25f, MultiplierFormat);
+            GhostSpeed = new(num++, MultiMenu.main, "GhostSpeed", 3, 0.25f, 10, 0.25f, MultiplierFormat);
+            InteractionDistance = new(num++, MultiMenu.main, "InteractionDistance", 2, 0.5f, 5, 0.5f, DistanceFormat);
+            EmergencyButtonCount = new(num++, MultiMenu.main, "EmergencyButtonCount", 1, 0, 100, 1);
+            EmergencyButtonCooldown = new(num++, MultiMenu.main, "EmergencyButtonCooldown", 25, 0, 300, 5, CooldownFormat);
+            DiscussionTime = new(num++, MultiMenu.main, "DiscussionTime", 30, 0, 300, 5, CooldownFormat);
+            VotingTime = new(num++, MultiMenu.main, "VotingTime", 60, 5, 600, 15, CooldownFormat);
+            TaskBarMode = new(num++, MultiMenu.main, "TaskbarUpdates", new[] { "MeetingOnly", "Normal", "Invisible" });
+            ConfirmEjects = new(num++, MultiMenu.main, "ConfirmEjects", false);
+            EjectionRevealsRole = new(num++, MultiMenu.main, "EjectionRevealsRole", false);
+            InitialCooldowns = new(num++, MultiMenu.main, "GameStartCooldowns", 10, 0, 30, 2.5f, CooldownFormat);
+            ReportDistance = new(num++, MultiMenu.main, "ReportDistance", 3.5f, 1, 20, 0.25f, DistanceFormat);
+            ChatCooldown = new(num++, MultiMenu.main, "ChatCooldown", 3, 0, 3, 0.1f, CooldownFormat);
+            ChatCharacterLimit = new(num++, MultiMenu.main, "ChatCharacterLimit", 200, 50, 2000, 50);
+            LobbySize = new(num++, MultiMenu.main, "LobbySize", 15, 3, 127, 1);
 
-            GameModeSettings = new(MultiMenu.main, "Game Mode Settings");
-            GameMode = new(num++, MultiMenu.main, "Game Mode", new[] { "Classic", "All Any", "Killing Only", "Custom", "Vanilla" });
+            GameModeSettings = new(MultiMenu.main, "GMoSettings");
+            GameMode = new(num++, MultiMenu.main, "GameMode", new[] { "Classic", "AllAny", "KillingOnly", "Custom", "Vanilla" });
 
-            KillingOnlySettings = new(MultiMenu.main, "<color=#1D7CF2FF>Killing</color> Only Settings");
-            NeutralRoles = new(num++, MultiMenu.main, "<color=#B3B3B3FF>Neutrals</color> Count", 1, 0, 13, 1);
-            AddArsonist = new(num++, MultiMenu.main, "Add <color=#EE7600FF>Arsonist</color>", false);
-            AddCryomaniac = new(num++, MultiMenu.main, "Add <color=#642DEAFF>Cryomaniac</color>", false);
-            AddPlaguebearer = new(num++, MultiMenu.main, "Add <color=#CFFE61FF>Plaguebearer</color>", false);
+            KillingOnlySettings = new(MultiMenu.main, "KillingOnlySettings");
+            NeutralRoles = new(num++, MultiMenu.main, "NeutralRoles", 1, 0, 13, 1);
+            AddArsonist = new(num++, MultiMenu.main, "AddArsonist", false);
+            AddCryomaniac = new(num++, MultiMenu.main, "AddCryomaniac", false);
+            AddPlaguebearer = new(num++, MultiMenu.main, "AddPlaguebearer", false);
 
-            AllAnySettings = new(MultiMenu.main, "All Any Settings");
-            EnableUniques = new(num++, MultiMenu.main, "Enable Uniques", false);
+            AllAnySettings = new(MultiMenu.main, "AllAnySettings");
+            EnableUniques = new(num++, MultiMenu.main, "EnableUniques", false);
 
-            GameModifiers = new(MultiMenu.main, "Game Modifiers");
-            WhoCanVent = new(num++, MultiMenu.main, "Serial Venters", new[] { "Default", "Everyone", "Never" });
-            AnonymousVoting = new(num++, MultiMenu.main, "Anonymous Voting", true);
-            SkipButtonDisable = new(num++, MultiMenu.main, "No Skipping", new[] { "Never", "Emergency", "Always" });
+            GameModifiers = new(MultiMenu.main, "GameModifiers");
+            WhoCanVent = new(num++, MultiMenu.main, "Serial Venters", new[] {"Default", "Everyone", "Never" });
+            AnonymousVoting = new(num++, MultiMenu.main, "AnonymousVoting", true);
+            SkipButtonDisable = new(num++, MultiMenu.main, "NoSkipping", new[] { "Never", "Emergency", "Always" });
             FactionSeeRoles = new(num++, MultiMenu.main, "Factioned Evils See The <color=#FFD700FF>Roles</color> Of Their Team", true);
             VisualTasks = new(num++, MultiMenu.main, "Visual Tasks", false);
             NoNames = new(num++, MultiMenu.main, "No Player Names", false);
