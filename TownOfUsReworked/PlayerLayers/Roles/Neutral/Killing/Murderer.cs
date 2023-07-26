@@ -5,37 +5,36 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public DateTime LastKilled;
         public CustomButton MurderButton;
 
+        public override Color32 Color => ClientGameOptions.CustomNeutColors ? Colors.Murderer : Colors.Neutral;
+        public override string Name => "Murderer";
+        public override LayerEnum Type => LayerEnum.Murderer;
+        public override RoleEnum RoleType => RoleEnum.Murderer;
+        public override Func<string> StartText => () => "I Got Murder On My Mind";
+        public override Func<string> AbilitiesText => () => "- You can kill";
+        public override InspectorResults InspectorResults => InspectorResults.IsBasic;
+
         public Murderer(PlayerControl player) : base(player)
         {
-            Name = "Murderer";
-            StartText = () => "Imagine Getting Boring Murderer";
             Objectives = () => "- Murder anyone who can oppose you";
-            AbilitiesText = () => "- You can kill";
-            Color = CustomGameOptions.CustomNeutColors ? Colors.Murderer : Colors.Neutral;
-            RoleType = RoleEnum.Murderer;
             RoleAlignment = RoleAlignment.NeutralKill;
-            Type = LayerEnum.Murderer;
             MurderButton = new(this, "Murder", AbilityTypes.Direct, "ActionSecondary", Murder, Exception);
-            InspectorResults = InspectorResults.IsBasic;
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float MurderTimer()
         {
             var timespan = DateTime.UtcNow - LastKilled;
             var num = Player.GetModifiedCooldown(CustomGameOptions.MurdKCD) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void Murder()
         {
-            if (Utils.IsTooFar(Player, MurderButton.TargetPlayer) || MurderTimer() != 0f)
+            if (IsTooFar(Player, MurderButton.TargetPlayer) || MurderTimer() != 0f)
                 return;
 
-            var interact = Utils.Interact(Player, MurderButton.TargetPlayer, true);
+            var interact = Interact(Player, MurderButton.TargetPlayer, true);
 
             if (interact[3] || interact[0])
                 LastKilled = DateTime.UtcNow;
@@ -45,8 +44,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
         }
 
-        public bool Exception(PlayerControl player) => (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) ||
-            player == Player.GetOtherLover() || player == Player.GetOtherRival() || (player.Is(ObjectifierEnum.Mafia) && Player.Is(ObjectifierEnum.Mafia));
+        public bool Exception(PlayerControl player) => (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate)
+            || Player.IsLinkedTo(player);
 
         public override void UpdateHud(HudManager __instance)
         {

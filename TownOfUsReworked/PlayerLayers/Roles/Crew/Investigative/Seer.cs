@@ -9,29 +9,28 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             x.Is(RoleEnum.BountyHunter) || x.Player.Is(ObjectifierEnum.Fanatic)));
         public CustomButton SeerButton;
 
+        public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Seer : Colors.Crew;
+        public override string Name => "Seer";
+        public override LayerEnum Type => LayerEnum.Seer;
+        public override RoleEnum RoleType => RoleEnum.Seer;
+        public override Func<string> StartText => () => "You Can See People's Histories";
+        public override Func<string> AbilitiesText => () => "- You can investigate players to see if their roles have changed\n- If all players whose roles changed have died, you will " +
+            "become a <color=#FFCC80FF>Sheriff</color>";
+        public override InspectorResults InspectorResults => InspectorResults.GainsInfo;
+
         public Seer(PlayerControl player) : base(player)
         {
-            Name = "Seer";
-            RoleType = RoleEnum.Seer;
-            Color = CustomGameOptions.CustomCrewColors ? Colors.Seer : Colors.Crew;
             RoleAlignment = RoleAlignment.CrewInvest;
-            AbilitiesText = () => "- You can investigate players to see if their roles have changed\n- If all players whose roles changed have died, you will become a <color=#FFCC80FF>" +
-                "Sheriff</color>";
-            StartText = () => "You Can See People's Histories";
-            InspectorResults = InspectorResults.GainsInfo;
-            Type = LayerEnum.Seer;
             SeerButton = new(this, "Seer", AbilityTypes.Direct, "ActionSecondary", See);
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float SeerTimer()
         {
             var timespan = DateTime.UtcNow - LastSeered;
             var num = Player.GetModifiedCooldown(CustomGameOptions.SeerCooldown) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void TurnSheriff()
@@ -39,26 +38,26 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var role = new Sheriff(Player);
             role.RoleUpdate(this);
 
-            if (Local && !IntroCutscene.Instance)
-                Utils.Flash(Colors.Sheriff);
+            if (Local)
+                Flash(Colors.Sheriff);
 
-            if (CustomPlayer.Local.Is(RoleEnum.Seer) && !IntroCutscene.Instance)
-                Utils.Flash(Color);
+            if (CustomPlayer.Local.Is(RoleEnum.Seer))
+                Flash(Color);
         }
 
         public void See()
         {
-            if (SeerTimer() != 0f || Utils.IsTooFar(Player, SeerButton.TargetPlayer))
+            if (SeerTimer() != 0f || IsTooFar(Player, SeerButton.TargetPlayer))
                 return;
 
-            var interact = Utils.Interact(Player, SeerButton.TargetPlayer);
+            var interact = Interact(Player, SeerButton.TargetPlayer);
 
             if (interact[3])
             {
                 if (GetRole(SeerButton.TargetPlayer).RoleHistory.Count > 0 || SeerButton.TargetPlayer.IsFramed())
-                    Utils.Flash(new(255, 0, 0, 255));
+                    Flash(new(255, 0, 0, 255));
                 else
-                    Utils.Flash(new(0, 255, 0, 255));
+                    Flash(new(0, 255, 0, 255));
             }
 
             if (interact[0])
@@ -74,10 +73,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (ChangedDead && !IsDead)
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
-                writer.Write((byte)TurnRPC.TurnSheriff);
-                writer.Write(PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                CallRpc(CustomRPC.Change, TurnRPC.TurnSheriff, this);
                 TurnSheriff();
             }
         }

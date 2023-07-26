@@ -231,11 +231,6 @@ namespace TownOfUsReworked.Patches
     [HarmonyPatch(typeof(OpenDoorConsole), nameof(OpenDoorConsole.Use))]
     public static class SyncToiletDoor
     {
-        public static void Prefix(OpenDoorConsole __instance)
-        {
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.DoorSyncToilet, SendOption.Reliable);
-            writer.Write(__instance.MyDoor.Id);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
-        }
+        public static void Prefix(OpenDoorConsole __instance) => CallRpc(CustomRPC.Misc, MiscRPC.DoorSyncToilet, __instance.MyDoor.Id);
     }
 }

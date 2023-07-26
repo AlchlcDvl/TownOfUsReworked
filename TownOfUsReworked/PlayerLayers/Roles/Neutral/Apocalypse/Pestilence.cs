@@ -5,37 +5,36 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public DateTime LastKilled;
         public CustomButton ObliterateButton;
 
+        public override Color32 Color => ClientGameOptions.CustomNeutColors ? Colors.Pestilence : Colors.Neutral;
+        public override string Name => "Pestilence";
+        public override LayerEnum Type => LayerEnum.Pestilence;
+        public override RoleEnum RoleType => RoleEnum.Pestilence;
+        public override Func<string> StartText => () => "THE APOCALYPSE IS NIGH";
+        public override Func<string> AbilitiesText => () => "- You are on forever alert, anyone who interacts with you will be killed";
+        public override InspectorResults InspectorResults => InspectorResults.LeadsTheGroup;
+
         public Pestilence(PlayerControl owner) : base(owner)
         {
-            Name = "Pestilence";
-            StartText = () => "The Horseman Of The Apocalypse Has Arrived!";
-            AbilitiesText = () => "- You are on forever alert, anyone who interacts with you will be killed";
             Objectives = () => "- Obliterate anyone who can oppose you";
-            Color = CustomGameOptions.CustomNeutColors ? Colors.Pestilence : Colors.Neutral;
-            RoleType = RoleEnum.Pestilence;
             RoleAlignment = RoleAlignment.NeutralApoc;
-            Type = LayerEnum.Pestilence;
             ObliterateButton = new(this, "Obliterate", AbilityTypes.Direct, "ActionSecondary", Obliterate, Exception);
-            InspectorResults = InspectorResults.LeadsTheGroup;
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float ObliterateTimer()
         {
             var timespan = DateTime.UtcNow - LastKilled;
             var num = Player.GetModifiedCooldown(CustomGameOptions.PestKillCd) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void Obliterate()
         {
-            if (Utils.IsTooFar(Player, ObliterateButton.TargetPlayer) || ObliterateTimer() != 0f)
+            if (IsTooFar(Player, ObliterateButton.TargetPlayer) || ObliterateTimer() != 0f)
                 return;
 
-            var interact = Utils.Interact(Player, ObliterateButton.TargetPlayer, true);
+            var interact = Interact(Player, ObliterateButton.TargetPlayer, true);
 
             if (interact[3] || interact[0])
                 LastKilled = DateTime.UtcNow;
@@ -45,8 +44,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
         }
 
-        public bool Exception(PlayerControl player) => (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) ||
-            player == Player.GetOtherLover() || player == Player.GetOtherRival() || (player.Is(ObjectifierEnum.Mafia) && Player.Is(ObjectifierEnum.Mafia));
+        public bool Exception(PlayerControl player) => (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate)
+            || Player.IsLinkedTo(player);
 
         public override void UpdateHud(HudManager __instance)
         {

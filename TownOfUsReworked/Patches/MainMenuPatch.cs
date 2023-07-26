@@ -1,27 +1,41 @@
+using Assets.InnerNet;
+
 namespace TownOfUsReworked.Patches
 {
     [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.Start))]
     public static class MainMenuStartPatch
     {
-        //private static AnnouncementPopUp PopUp;
+        private static AnnouncementPopUp PopUp;
+        private static readonly Announcement ModInfo = new()
+        {
+            Id = "tourewInfo",
+            Language = 0,
+            Number = 500,
+            Title = "Town Of Us Reworked Info",
+            ShortTitle = "Mod Info",
+            SubTitle = "",
+            PinState = false,
+            Date = "16.07.2023",
+            Text = $"<size=75%>{CreateText("ModInfo")}</size>"
+        };
         public static GameObject Logo;
 
         public static void Prefix(MainMenuManager __instance)
         {
             ModUpdater.LaunchUpdater();
-            CosmeticsLoader.LaunchFetchers(ModUpdater.HasReworkedUpdate);
 
             if (!Logo)
             {
                 Logo = new GameObject("TownOfUsReworkedLogo");
                 Logo.transform.position = new (2f, -0.1f, 100f);
-                Logo.AddComponent<SpriteRenderer>().sprite = AssetManager.GetSprite("TownOfUsReworkedBanner");
+                Logo.AddComponent<SpriteRenderer>().sprite = GetSprite("TownOfUsReworkedBanner");
                 Logo.transform.SetParent(__instance.rightPanelMask.transform);
             }
         }
 
         public static void Postfix(MainMenuManager __instance)
         {
+            CosmeticsLoader.LaunchFetchers(ModUpdater.HasReworkedUpdate);
             var scale = __instance.newsButton.transform.localScale;
             var pos = __instance.newsButton.transform.position;
             var diff = __instance.newsButton.transform.position.y - __instance.myAccountButton.transform.position.y;
@@ -38,13 +52,13 @@ namespace TownOfUsReworked.Patches
             __instance.myAccountButton.transform.position = pos;
             pos.y = __instance.newsButton.transform.localPosition.y;
             pos.x = __instance.quitButton.transform.localPosition.x;
-            GameObject.Find("NewsButton").transform.GetChild(0).GetChild(0).transform.localScale = new(scale.x * 3.4f, scale.y, scale.z);
+            GameObject.Find("NewsButton").transform.GetChild(0).GetChild(0).transform.localScale = new(scale.x * 3.5f, scale.y, scale.z);
             GameObject.Find("NewsButton").transform.GetChild(1).GetChild(0).transform.localScale = new(scale.x * 1.9f, scale.y / 1.5f, scale.z);
             GameObject.Find("NewsButton").transform.GetChild(2).GetChild(0).transform.localScale = new(scale.x * 1.9f, scale.y / 1.5f, scale.z);
-            GameObject.Find("AcountButton").transform.GetChild(0).GetChild(0).transform.localScale = new(scale.x * 3.4f, scale.y, scale.z);
+            GameObject.Find("AcountButton").transform.GetChild(0).GetChild(0).transform.localScale = new(scale.x * 3.5f, scale.y, scale.z);
             GameObject.Find("AcountButton").transform.GetChild(1).GetChild(0).transform.localScale = new(scale.x * 1.9f, scale.y / 1.5f, scale.z);
             GameObject.Find("AcountButton").transform.GetChild(2).GetChild(0).transform.localScale = new(scale.x * 1.9f, scale.y / 1.5f, scale.z);
-            GameObject.Find("SettingsButton").transform.GetChild(0).GetChild(0).transform.localScale = new(scale.x * 3.4f, scale.y, scale.z);
+            GameObject.Find("SettingsButton").transform.GetChild(0).GetChild(0).transform.localScale = new(scale.x * 3.5f, scale.y, scale.z);
             GameObject.Find("SettingsButton").transform.GetChild(1).GetChild(0).transform.localScale = new(scale.x * 1.9f, scale.y / 1.5f, scale.z);
             GameObject.Find("SettingsButton").transform.GetChild(2).GetChild(0).transform.localScale = new(scale.x * 1.9f, scale.y / 1.5f, scale.z);
 
@@ -63,61 +77,45 @@ namespace TownOfUsReworked.Patches
             pos.y = __instance.myAccountButton.transform.localPosition.y;
 
             var credObj = UObject.Instantiate(__instance.myAccountButton, __instance.myAccountButton.transform.parent);
-            credObj.gameObject.name = "BlankForNow";
+            credObj.gameObject.name = "ReworkedModInfo";
             credObj.OnClick = new();
-            /*credObj.OnClick.AddListener((Action)(() =>
+            credObj.OnClick.AddListener((Action)(() =>
             {
                 PopUp?.Destroy();
-                PopUp = UObject.Instantiate(UObject.FindObjectOfType<AnnouncementPopUp>(true));
+                var template = UObject.FindObjectOfType<AnnouncementPopUp>(true);
+
+                if (template == null)
+                {
+                    LogSomething("Pop up was null");
+                    return;
+                }
+
+                PopUp = UObject.Instantiate(template);
                 PopUp.gameObject.SetActive(true);
 
-                var changesAnnouncement = new Announcement
+                __instance.StartCoroutine(Effects.Lerp(0.1f, new Action<float>(p =>
                 {
-                    Id = "tourewChanges",
-                    Language = 0,
-                    Number = 500,
-                    Title = "Town Of Us Reworked",
-                    ShortTitle = "Changes",
-                    SubTitle = "No idea what I'm doing anymore lmao",
-                    PinState = false,
-                    Date = "30.04.2023",
-                    Text = $"<size=75%>{Utils.CreateText("Changelog")}\n\n{Utils.CreateText("Credits")}</size>"
-                };
-
-                __instance.StartCoroutine(Effects.Lerp(0.01f, new Action<float>(_ =>
-                {
-                    var backup = DataManager.Player.Announcements.allAnnouncements;
-                    PopUp.Init(false);
-                    DataManager.Player.Announcements.allAnnouncements = new();
-                    DataManager.Player.Announcements.allAnnouncements.Insert(0, changesAnnouncement);
-
-                    foreach (var item in PopUp.visibleAnnouncements)
-                        item.Destroy();
-
-                    foreach (var item in UObject.FindObjectsOfType<AnnouncementPanel>())
+                    if (p == 1)
                     {
-                        if (item != PopUp.ErrorPanel)
-                            item.gameObject.Destroy();
+                        var backup = DataManager.Player.Announcements.allAnnouncements;
+                        DataManager.Player.Announcements.allAnnouncements = new();
+                        PopUp.Init(false);
+                        DataManager.Player.Announcements.SetAnnouncements(new[] { ModInfo });
+                        var copy = DataManager.Player.Announcements.allAnnouncements;
+                        PopUp.CreateAnnouncementList();
+                        PopUp.UpdateAnnouncementText(ModInfo.Number);
+                        PopUp.visibleAnnouncements[0].PassiveButton.OnClick = new();
+                        DataManager.Player.Announcements.allAnnouncements = backup;
                     }
-
-                    PopUp.CreateAnnouncementList();
-                    PopUp.visibleAnnouncements[0].PassiveButton.OnClick = new();
-                    DataManager.Player.Announcements.allAnnouncements = backup;
-                    var titleText = GameObject.Find("Title_Text").GetComponent<TextMeshPro>();
-
-                    if (titleText != null)
-                        titleText.text = "";
                 })));
-            }));*/
+            }));
             credObj.transform.localPosition = pos;
-            GameObject.Find("BlankForNow").transform.GetChild(1).GetChild(0).gameObject.SetActive(false);
-            GameObject.Find("BlankForNow").transform.GetChild(2).GetChild(0).gameObject.SetActive(false);
 
             __instance.StartCoroutine(Effects.Lerp(0.01f, new Action<float>(_ =>
             {
                 GameObject.Find("ReworkedDiscord").transform.GetChild(0).GetChild(0).GetComponent<TMP_Text>().SetText("Mod Discord");
                 GameObject.Find("ReworkedGitHub").transform.GetChild(0).GetChild(0).GetComponent<TMP_Text>().SetText("Mod GitHub");
-                GameObject.Find("BlankForNow").transform.GetChild(0).GetChild(0).GetComponent<TMP_Text>().SetText("");
+                GameObject.Find("ReworkedModInfo").transform.GetChild(0).GetChild(0).GetComponent<TMP_Text>().SetText("Mod Info");
             })));
 
             var template = GameObject.Find("ExitGameButton");
@@ -130,13 +128,14 @@ namespace TownOfUsReworked.Patches
                 {
                     var touButton = UObject.Instantiate(template, null);
                     pos2.y += 0.6f;
+                    touButton.name = "ReworkedUpdater";
                     touButton.transform.localPosition = pos2;
-                    touButton.transform.localScale = new Vector3(0.44f, 0.84f, 1f);
-                    touButton.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = AssetManager.GetSprite("UpdateToUButton");
+                    touButton.transform.localScale = new(0.44f, 0.84f, 1f);
+                    touButton.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = GetSprite("UpdateToUButton");
                     touButton.transform.SetParent(GameObject.Find("RightPanel").transform);
                     var aspect = touButton.GetComponent<AspectPosition>();
                     aspect.Alignment = AspectPosition.EdgeAlignments.LeftBottom;
-                    aspect.DistanceFromEdge = new Vector3(1.5f,1f,0f);
+                    aspect.DistanceFromEdge = new(1.5f, 1f, 0f);
                     var passiveTOUButton = touButton.GetComponent<PassiveButton>();
                     passiveTOUButton.OnClick = new();
                     passiveTOUButton.OnClick.AddListener((Action)(() =>
@@ -158,13 +157,14 @@ namespace TownOfUsReworked.Patches
                 {
                     var submergedButton = UObject.Instantiate(template, null);
                     pos2.y += 0.6f;
+                    submergedButton.name = "SubmergedUpdater";
                     submergedButton.transform.localPosition = pos2;
-                    submergedButton.transform.localScale = new Vector3(0.44f, 0.84f, 1f);
-                    submergedButton.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = AssetManager.GetSprite("UpdateToUButton");
+                    submergedButton.transform.localScale = new(0.44f, 0.84f, 1f);
+                    submergedButton.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = GetSprite("UpdateToUButton");
                     submergedButton.transform.SetParent(GameObject.Find("RightPanel").transform);
                     var aspect = submergedButton.GetComponent<AspectPosition>();
                     aspect.Alignment = AspectPosition.EdgeAlignments.LeftBottom;
-                    aspect.DistanceFromEdge = new Vector3(1.5f,1f,0f);
+                    aspect.DistanceFromEdge = new(1.5f, 1f, 0f);
                     var passiveTOUButton = submergedButton.GetComponent<PassiveButton>();
                     passiveTOUButton.OnClick = new();
                     passiveTOUButton.OnClick.AddListener((Action)(() =>
@@ -207,9 +207,9 @@ namespace TownOfUsReworked.Patches
                 var pos5 = GameObject.Find("ReworkedGitHub").transform.GetChild(0).GetChild(0).transform.position;
                 pos5.x -= 0.1f;
                 GameObject.Find("ReworkedGitHub").transform.GetChild(0).GetChild(0).transform.position = pos5;
-                var pos6 = GameObject.Find("BlankForNow").transform.GetChild(0).GetChild(0).transform.position;
+                var pos6 = GameObject.Find("ReworkedModInfo").transform.GetChild(0).GetChild(0).transform.position;
                 pos6.x -= 0.1f;
-                GameObject.Find("BlankForNow").transform.GetChild(0).GetChild(0).transform.position = pos6;
+                GameObject.Find("ReworkedModInfo").transform.GetChild(0).GetChild(0).transform.position = pos6;
                 MainMenuStartPatch.Logo.SetActive(!__instance.playLocalButton.isActiveAndEnabled);
                 VersionShowerPatch.ModVersion.gameObject.SetActive(!__instance.playLocalButton.isActiveAndEnabled);
             } catch {}

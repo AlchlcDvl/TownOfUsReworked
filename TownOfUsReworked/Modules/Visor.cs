@@ -1,4 +1,4 @@
-namespace TownOfUsReworked.Modules
+/*namespace TownOfUsReworked.Modules
 {
     public class VisorExtension
     {
@@ -18,4 +18,4 @@ namespace TownOfUsReworked.Modules
         public string ClimbID { get; set; }
         public bool Adaptive { get; set; }
     }
-}
+}*/

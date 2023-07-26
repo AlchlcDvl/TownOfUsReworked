@@ -2,16 +2,12 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
 {
     public class Flincher : Modifier
     {
-        public Flincher(PlayerControl player) : base(player)
-        {
-            Name = "Flincher";
-            TaskText = () => "- You will randomly flinch while walking";
-            Color = CustomGameOptions.CustomModifierColors ? Colors.Flincher : Colors.Modifier;
-            ModifierType = ModifierEnum.Flincher;
-            Type = LayerEnum.Flincher;
+        public override Color32 Color => ClientGameOptions.CustomModColors ? Colors.Flincher : Colors.Modifier;
+        public override string Name => "Flincher";
+        public override LayerEnum Type => LayerEnum.Flincher;
+        public override ModifierEnum ModifierType => ModifierEnum.Flincher;
+        public override Func<string> TaskText => () => "- You are quick to flinch";
 
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
-        }
+        public Flincher(PlayerControl player) : base(player) {}
     }
 }

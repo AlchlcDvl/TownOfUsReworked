@@ -10,29 +10,28 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public bool OnAlert => TimeRemaining > 0f;
         public CustomButton AlertButton;
 
+        public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Veteran : Colors.Crew;
+        public override string Name => "Veteran";
+        public override LayerEnum Type => LayerEnum.Veteran;
+        public override RoleEnum RoleType => RoleEnum.Veteran;
+        public override Func<string> StartText => () => "Alert To Kill Anyone Who Dares To Touches You";
+        public override Func<string> AbilitiesText => () => "- You can go on alert\n- When on alert, you will kill whoever interacts with you";
+        public override InspectorResults InspectorResults => InspectorResults.IsCold;
+
         public Veteran(PlayerControl player) : base(player)
         {
-            Name = "Veteran";
-            StartText = () => "Alert To Kill Anyone Who Touches You";
-            AbilitiesText = () => "- You can go on alert\n- When on alert, you will kill whoever interacts with you";
-            Color = CustomGameOptions.CustomCrewColors ? Colors.Veteran : Colors.Crew;
-            RoleType = RoleEnum.Veteran;
             UsesLeft = CustomGameOptions.MaxAlerts;
             RoleAlignment = RoleAlignment.CrewKill;
-            InspectorResults = InspectorResults.IsCold;
-            Type = LayerEnum.Veteran;
             AlertButton = new(this, "Alert", AbilityTypes.Effect, "ActionSecondary", HitAlert, true);
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float AlertTimer()
         {
             var timespan = DateTime.UtcNow - LastAlerted;
             var num = Player.GetModifiedCooldown(CustomGameOptions.AlertCd) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void Alert()
@@ -40,7 +39,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
 
-            if (Utils.Meeting)
+            if (Meeting)
                 TimeRemaining = 0f;
         }
 
@@ -58,10 +57,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             TimeRemaining = CustomGameOptions.AlertDuration;
             UsesLeft--;
             Alert();
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-            writer.Write((byte)ActionsRPC.Alert);
-            writer.Write(PlayerId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            CallRpc(CustomRPC.Action, ActionsRPC.Alert, this);
         }
 
         public override void UpdateHud(HudManager __instance)

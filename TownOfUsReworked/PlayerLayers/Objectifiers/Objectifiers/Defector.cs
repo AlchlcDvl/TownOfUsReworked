@@ -4,21 +4,39 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
     {
         public bool Turned;
         public Faction Side;
-        public bool Defect => ((Side == Faction.Intruder && ConstantVariables.LastImp) || (Side == Faction.Syndicate && ConstantVariables.LastSyn)) && !IsDead && !Turned;
+        public bool Defect => ((Side == Faction.Intruder && LastImp) || (Side == Faction.Syndicate && LastSyn)) && !IsDead && !Turned;
+
+        public override Color32 Color
+        {
+            get
+            {
+                if (Turned)
+                {
+                    if (Side == Faction.Crew)
+                        return Colors.Crew;
+                    else if (Side == Faction.Syndicate)
+                        return Colors.Syndicate;
+                    else if (Side == Faction.Intruder)
+                        return Colors.Intruder;
+                    else if (Side == Faction.Neutral)
+                        return Colors.Neutral;
+                    else
+                        return ClientGameOptions.CustomObjColors ? Colors.Defector : Colors.Objectifier;
+                }
+                else
+                    return ClientGameOptions.CustomObjColors ? Colors.Defector : Colors.Objectifier;
+            }
+        }
+        public override string Name => "Defector";
+        public override string Symbol => "ε";
+        public override LayerEnum Type => LayerEnum.Defector;
+        public override ObjectifierEnum ObjectifierType => ObjectifierEnum.Defector;
+        public override Func<string> TaskText => () => "- Be the last one of your faction to switch sides";
 
         public Defector(PlayerControl player) : base(player)
         {
-            Name = "Defector";
-            Symbol = "ε";
-            TaskText = () => "- Be the last one of your faction to switch sides";
-            Color = CustomGameOptions.CustomObjectifierColors ? Colors.Defector : Colors.Objectifier;
-            ObjectifierType = ObjectifierEnum.Defector;
-            Type = LayerEnum.Defector;
-            Hidden = !CustomGameOptions.DefectorKnows;
+            Hidden = !CustomGameOptions.DefectorKnows && !Turned;
             Side = Player.GetFaction();
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public void TurnSides()
@@ -42,7 +60,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
                 role.Faction = Faction.Crew;
                 role.FactionColor = Colors.Crew;
                 role.IsCrewDefect = true;
-                Color = Colors.Crew;
             }
             else if (evil)
             {
@@ -50,14 +67,12 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
                 {
                     role.Faction = Faction.Syndicate;
                     role.FactionColor = Colors.Syndicate;
-                    Color = Colors.Syndicate;
                     role.IsSynDefect = true;
                 }
                 else if (Side == Faction.Intruder)
                 {
                     role.Faction = Faction.Intruder;
                     role.FactionColor = Colors.Intruder;
-                    Color = Colors.Intruder;
                     role.IsIntDefect = true;
                 }
             }
@@ -65,11 +80,11 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             Side = role.Faction;
             role.RoleAlignment = role.RoleAlignment.GetNewAlignment(role.Faction);
 
-            if (Local && !IntroCutscene.Instance)
-                Utils.Flash(Color);
+            if (Local)
+                Flash(Color);
 
-            if (CustomPlayer.Local.Is(RoleEnum.Mystic) && !IntroCutscene.Instance)
-                Utils.Flash(Colors.Mystic);
+            if (CustomPlayer.Local.Is(RoleEnum.Mystic))
+                Flash(Colors.Mystic);
         }
 
         public override void UpdateHud(HudManager __instance)
@@ -78,10 +93,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
 
             if (Defect && !Turned)
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
-                writer.Write((byte)TurnRPC.TurnSides);
-                writer.Write(PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                CallRpc(CustomRPC.Change, TurnRPC.TurnSides, this);
                 TurnSides();
             }
         }

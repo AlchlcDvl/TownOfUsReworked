@@ -8,30 +8,29 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public bool ButtonUsable => UsesLeft > 0;
         public CustomButton TrackButton;
 
+        public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Tracker : Colors.Crew;
+        public override string Name => "Tracker";
+        public override LayerEnum Type => LayerEnum.Tracker;
+        public override RoleEnum RoleType => RoleEnum.Tracker;
+        public override Func<string> StartText => () => "Track Everyone's Movements";
+        public override Func<string> AbilitiesText => () => "- You can track players which creates arrows that update every now and then with the target's position";
+        public override InspectorResults InspectorResults => InspectorResults.TracksOthers;
+
         public Tracker(PlayerControl player) : base(player)
         {
-            Name = "Tracker";
-            StartText = () => "Stalk Everyone To Monitor Their Movements";
-            AbilitiesText = () => "- You can track players which creates arrows that update every now and then";
-            Color = CustomGameOptions.CustomCrewColors ? Colors.Tracker : Colors.Crew;
-            RoleType = RoleEnum.Tracker;
             UsesLeft = CustomGameOptions.MaxTracks;
             TrackerArrows = new();
             RoleAlignment = RoleAlignment.CrewInvest;
-            InspectorResults = InspectorResults.TracksOthers;
-            Type = LayerEnum.Tracker;
             TrackButton = new(this, "Track", AbilityTypes.Direct, "ActionSecondary", Track, Exception, true);
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float TrackerTimer()
         {
             var timespan = DateTime.UtcNow - LastTracked;
             var num = Player.GetModifiedCooldown(CustomGameOptions.TrackCd) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void DestroyArrow(byte targetPlayerId)
@@ -51,10 +50,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Track()
         {
-            if (Utils.IsTooFar(Player, TrackButton.TargetPlayer) || TrackerTimer() != 0f)
+            if (IsTooFar(Player, TrackButton.TargetPlayer) || TrackerTimer() != 0f)
                 return;
 
-            var interact = Utils.Interact(Player, TrackButton.TargetPlayer);
+            var interact = Interact(Player, TrackButton.TargetPlayer);
 
             if (interact[3])
             {
@@ -79,16 +78,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 foreach (var pair in TrackerArrows)
                 {
-                    var player = Utils.PlayerById(pair.Key);
-                    var body = Utils.BodyById(pair.Key);
+                    var player = PlayerById(pair.Key);
+                    var body = BodyById(pair.Key);
 
                     if (player == null || player.Data.Disconnected || (player.Data.IsDead && body == null))
-                    {
                         DestroyArrow(pair.Key);
-                        continue;
-                    }
-
-                    pair.Value?.Update(player.Data.IsDead ? body.transform.position  : player.transform.position, player.GetPlayerColor());
+                    else
+                        pair.Value?.Update(player.Data.IsDead ? body.transform.position : player.transform.position, player.GetPlayerColor());
                 }
             }
         }

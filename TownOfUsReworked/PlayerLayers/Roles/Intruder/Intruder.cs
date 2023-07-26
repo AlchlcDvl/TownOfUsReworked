@@ -7,13 +7,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public string CommonAbilities => "- You can kill players" + (CustomGameOptions.IntrudersCanSabotage || (IsDead && CustomGameOptions.GhostsCanSabotage) ? ("\n- You can call " +
             "sabotages to distract the <color=#8CFFFFFF>Crew</color>") : "");
 
+        public override Color32 Color => Colors.Intruder;
+        public override Faction BaseFaction => Faction.Intruder;
+
         protected Intruder(PlayerControl player) : base(player)
         {
             Faction = Faction.Intruder;
             FactionColor = Colors.Intruder;
-            Color = Colors.Intruder;
             Objectives = () => IntrudersWinCon;
-            BaseFaction = Faction.Intruder;
             KillButton = new(this, "IntruderKill", AbilityTypes.Direct, "ActionSecondary", Kill, Exception);
             Player.Data.SetImpostor(true);
         }
@@ -22,8 +23,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var timespan = DateTime.UtcNow - LastKilled;
             var num = Player.GetModifiedCooldown(CustomGameOptions.IntKillCooldown) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public override void IntroPrefix(IntroCutscene._ShowTeam_d__36 __instance)
@@ -64,10 +66,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Kill()
         {
-            if (Utils.IsTooFar(Player, KillButton.TargetPlayer) || KillTimer() != 0f)
+            if (IsTooFar(Player, KillButton.TargetPlayer) || KillTimer() != 0f)
                 return;
 
-            var interact = Utils.Interact(Player, KillButton.TargetPlayer, true);
+            var interact = Interact(Player, KillButton.TargetPlayer, true);
 
             if (Player.Is(RoleEnum.Janitor))
             {
@@ -118,12 +120,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
         }
 
-        public bool Exception(PlayerControl player) =>  (player.Is(Faction) && Faction != Faction.Crew) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || player ==
-            Player.GetOtherLover() || player == Player.GetOtherRival() || (player.Is(ObjectifierEnum.Mafia) && Player.Is(ObjectifierEnum.Mafia));
+        public bool Exception(PlayerControl player) =>  (player.Is(Faction) && Faction != Faction.Crew) || (player.Is(SubFaction) && SubFaction != SubFaction.None) ||
+            Player.IsLinkedTo(player);
 
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
+            __instance.SabotageButton.gameObject.SetActive(CustomGameOptions.IntrudersCanSabotage);
             KillButton.Update("KILL", KillTimer(), CustomGameOptions.IntKillCooldown);
         }
     }

@@ -107,25 +107,25 @@ namespace TownOfUsReworked.BetterMaps.Polus
         private static void FindVents()
         {
             if (ElectricBuildingVent == null)
-                ElectricBuildingVent = Utils.AllVents.Find(vent => vent.gameObject.name == "ElectricBuildingVent");
+                ElectricBuildingVent = AllVents.Find(vent => vent.gameObject.name == "ElectricBuildingVent");
 
             if (ElectricalVent == null)
-                ElectricalVent = Utils.AllVents.Find(vent => vent.gameObject.name == "ElectricalVent");
+                ElectricalVent = AllVents.Find(vent => vent.gameObject.name == "ElectricalVent");
 
             if (ScienceBuildingVent == null)
-                ScienceBuildingVent = Utils.AllVents.Find(vent => vent.gameObject.name == "ScienceBuildingVent");
+                ScienceBuildingVent = AllVents.Find(vent => vent.gameObject.name == "ScienceBuildingVent");
 
             if (StorageVent == null)
-                StorageVent = Utils.AllVents.Find(vent => vent.gameObject.name == "StorageVent");
+                StorageVent = AllVents.Find(vent => vent.gameObject.name == "StorageVent");
 
             if (LightCageVent == null)
-                LightCageVent = Utils.AllVents.Find(vent => vent.gameObject.name == "ElecFenceVent");
+                LightCageVent = AllVents.Find(vent => vent.gameObject.name == "ElecFenceVent");
 
             if (AdminVent == null)
-                AdminVent = Utils.AllVents.Find(vent => vent.gameObject.name == "AdminVent");
+                AdminVent = AllVents.Find(vent => vent.gameObject.name == "AdminVent");
 
             if (BathroomVent == null)
-                BathroomVent = Utils.AllVents.Find(vent => vent.gameObject.name == "BathroomVent");
+                BathroomVent = AllVents.Find(vent => vent.gameObject.name == "BathroomVent");
 
             if (SpeciVent == null)
             {
@@ -141,16 +141,16 @@ namespace TownOfUsReworked.BetterMaps.Polus
         private static void FindRooms()
         {
             if (Comms == null)
-                Comms = Utils.AllObjects.Find(o => o.name == "Comms");
+                Comms = AllObjects.Find(o => o.name == "Comms");
 
             if (DropShip == null)
-                DropShip = Utils.AllObjects.Find(o => o.name == "Dropship");
+                DropShip = AllObjects.Find(o => o.name == "Dropship");
 
             if (Outside == null)
-                Outside = Utils.AllObjects.Find(o => o.name == "Outside");
+                Outside = AllObjects.Find(o => o.name == "Outside");
 
             if (Science == null)
-                Science = Utils.AllObjects.Find(o => o.name == "Science");
+                Science = AllObjects.Find(o => o.name == "Science");
 
             IsRoomsFetched = Comms && DropShip && Outside && Science;
         }
@@ -158,24 +158,24 @@ namespace TownOfUsReworked.BetterMaps.Polus
         private static void FindObjects()
         {
             if (WifiConsole == null)
-                WifiConsole = Utils.AllConsoles.Find(console => console.name == "panel_wifi");
+                WifiConsole = AllConsoles.Find(console => console.name == "panel_wifi");
 
             if (NavConsole == null)
-                NavConsole = Utils.AllConsoles.Find(console => console.name == "panel_nav");
+                NavConsole = AllConsoles.Find(console => console.name == "panel_nav");
 
             if (Vitals == null)
-                Vitals = Utils.AllSystemConsoles.Find(console => console.name == "panel_vitals");
+                Vitals = AllSystemConsoles.Find(console => console.name == "panel_vitals");
 
             if (DvdScreenOffice == null)
             {
-                var dvdScreenAdmin = Utils.AllObjects.Find(o => o.name == "dvdscreen");
+                var dvdScreenAdmin = AllObjects.Find(o => o.name == "dvdscreen");
 
                 if (dvdScreenAdmin)
                     DvdScreenOffice = UObject.Instantiate(dvdScreenAdmin);
             }
 
             if (TempCold == null)
-                TempCold = Utils.AllConsoles.Find(console => console.name == "panel_tempcold");
+                TempCold = AllConsoles.Find(console => console.name == "panel_tempcold");
 
             IsObjectsFetched = WifiConsole && NavConsole && Vitals && DvdScreenOffice && TempCold;
         }

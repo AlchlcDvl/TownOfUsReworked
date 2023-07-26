@@ -11,7 +11,7 @@ namespace TownOfUsReworked.PlayerLayers
 
         public static void Postfix(HudManager __instance)
         {
-            if (ConstantVariables.IsLobby || ConstantVariables.IsEnded || ConstantVariables.Inactive)
+            if (IsLobby || IsEnded || Inactive || IsHnS)
                 return;
 
             __instance.KillButton.SetTarget(null);
@@ -107,7 +107,7 @@ namespace TownOfUsReworked.PlayerLayers
                 }
             }
 
-            foreach (var gf in Role.GetRoles<PromotedGodfather>(RoleEnum.Godfather))
+            foreach (var gf in Role.GetRoles<PromotedGodfather>(RoleEnum.PromotedGodfather))
             {
                 if (gf.FormerRole == null || gf.IsImp)
                     continue;
@@ -265,8 +265,8 @@ namespace TownOfUsReworked.PlayerLayers
                     phantom.Fade();
                 else if (phantom.Faded)
                 {
-                    Utils.DefaultOutfit(phantom.Player);
-                    phantom.Player.MyRend().color = Color.white;
+                    DefaultOutfit(phantom.Player);
+                    phantom.Player.MyRend().color = UColor.white;
                     phantom.Player.gameObject.layer = LayerMask.NameToLayer("Ghost");
                     phantom.Faded = false;
                     phantom.Player.MyPhysics.ResetMoveState();
@@ -284,8 +284,8 @@ namespace TownOfUsReworked.PlayerLayers
                     banshee.Fade();
                 else if (banshee.Faded)
                 {
-                    Utils.DefaultOutfit(banshee.Player);
-                    banshee.Player.MyRend().color = Color.white;
+                    DefaultOutfit(banshee.Player);
+                    banshee.Player.MyRend().color = UColor.white;
                     banshee.Player.gameObject.layer = LayerMask.NameToLayer("Ghost");
                     banshee.Faded = false;
                     banshee.Player.MyPhysics.ResetMoveState();
@@ -308,8 +308,8 @@ namespace TownOfUsReworked.PlayerLayers
                     ghoul.Fade();
                 else if (ghoul.Faded)
                 {
-                    Utils.DefaultOutfit(ghoul.Player);
-                    ghoul.Player.MyRend().color = Color.white;
+                    DefaultOutfit(ghoul.Player);
+                    ghoul.Player.MyRend().color = UColor.white;
                     ghoul.Player.gameObject.layer = LayerMask.NameToLayer("Ghost");
                     ghoul.Faded = false;
                     ghoul.Player.MyPhysics.ResetMoveState();
@@ -327,8 +327,8 @@ namespace TownOfUsReworked.PlayerLayers
                     haunter.Fade();
                 else if (haunter.Faded)
                 {
-                    Utils.DefaultOutfit(haunter.Player);
-                    haunter.Player.MyRend().color = Color.white;
+                    DefaultOutfit(haunter.Player);
+                    haunter.Player.MyRend().color = UColor.white;
                     haunter.Player.gameObject.layer = LayerMask.NameToLayer("Ghost");
                     haunter.Faded = false;
                     haunter.Player.MyPhysics.ResetMoveState();
@@ -367,6 +367,14 @@ namespace TownOfUsReworked.PlayerLayers
                     tk.UnControl();
             }
 
+            foreach (var coll in Role.GetRoles<Roles.Collider>(RoleEnum.Collider))
+            {
+                if (coll.Charged)
+                    coll.ChargeSelf();
+                else if (coll.Enabled)
+                    coll.DischargeSelf();
+            }
+
             foreach (var drunk in Role.GetRoles<Drunkard>(RoleEnum.Drunkard))
             {
                 if (drunk.Confused)
@@ -392,6 +400,8 @@ namespace TownOfUsReworked.PlayerLayers
                         reb.Confuse();
                     else if (reb.IsTK)
                         reb.Control();
+                    else if (reb.IsCol)
+                        reb.ChargeSelf();
                 }
                 else if (reb.Enabled)
                 {
@@ -405,6 +415,8 @@ namespace TownOfUsReworked.PlayerLayers
                         reb.UnConfuse();
                     else if (reb.IsTK)
                         reb.UnControl();
+                    else if (reb.IsCol)
+                        reb.DischargeSelf();
                 }
             }
 
@@ -416,16 +428,16 @@ namespace TownOfUsReworked.PlayerLayers
                     ss.UnShapeshift();
             }
 
-            foreach (var body in Utils.AllBodies)
+            foreach (var body in AllBodies)
             {
                 var renderer = body.bodyRenderers.FirstOrDefault();
 
                 if (IsCamoed)
-                    PlayerMaterial.SetColors(Color.grey, renderer);
+                    PlayerMaterial.SetColors(UColor.grey, renderer);
                 else
                 {
-                    renderer.material.SetColor("_BackColor", Utils.PlayerByBody(body).GetShadowColor());
-                    renderer.material.SetColor("_BodyColor", Utils.PlayerByBody(body).GetPlayerColor());
+                    renderer.material.SetColor("_BackColor", PlayerByBody(body).GetShadowColor());
+                    renderer.material.SetColor("_BodyColor", PlayerByBody(body).GetPlayerColor());
                 }
             }
 
@@ -433,7 +445,7 @@ namespace TownOfUsReworked.PlayerLayers
             {
                 if (ShipStatus.Instance)
                 {
-                    switch (TownOfUsReworked.VanillaOptions.MapId)
+                    switch (TownOfUsReworked.NormalOptions.MapId)
                     {
                         case 0:
                         case 2:
@@ -446,7 +458,7 @@ namespace TownOfUsReworked.PlayerLayers
                             if (comms5.IsActive)
                             {
                                 CommsEnabled = true;
-                                Utils.Camouflage();
+                                Camouflage();
                                 return;
                             }
 
@@ -458,7 +470,7 @@ namespace TownOfUsReworked.PlayerLayers
                             if (comms2.IsActive)
                             {
                                 CommsEnabled = true;
-                                Utils.Camouflage();
+                                Camouflage();
                                 return;
                             }
 
@@ -471,7 +483,7 @@ namespace TownOfUsReworked.PlayerLayers
                     CommsEnabled = false;
                     CamouflagerEnabled = false;
                     GodfatherEnabled = false;
-                    Utils.DefaultOutfitAll();
+                    DefaultOutfitAll();
                 }
             }
         }

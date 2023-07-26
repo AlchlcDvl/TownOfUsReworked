@@ -10,23 +10,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public int UsesLeft;
         public bool CanHaunt => VotedOut && !HasHaunted && UsesLeft > 0 && ToHaunt.Count > 0 && !CustomGameOptions.AvoidNeutralKingmakers;
 
+        public override Color32 Color => ClientGameOptions.CustomNeutColors ? Colors.Jester : Colors.Neutral;
+        public override string Name => "Jester";
+        public override LayerEnum Type => LayerEnum.Jester;
+        public override RoleEnum RoleType => RoleEnum.Jester;
+        public override Func<string> StartText => () => "It Was Jest A Prank Bro";
+        public override Func<string> AbilitiesText => () => VotedOut ? "- You can haunt those who voted for you" : "- None";
+        public override InspectorResults InspectorResults => InspectorResults.Manipulative;
+
         public Jester(PlayerControl player) : base(player)
         {
-            Name = "Jester";
-            StartText = () => "It Was Jest A Prank Bro";
-            AbilitiesText = () => "- After you get ejected, you can haunt those who voted for you";
             Objectives = () => VotedOut ? "- You have been ejected" : "- Get ejected";
-            Color = CustomGameOptions.CustomNeutColors ? Colors.Jester : Colors.Neutral;
-            RoleType = RoleEnum.Jester;
             RoleAlignment = RoleAlignment.NeutralEvil;
             ToHaunt = new();
             UsesLeft = CustomGameOptions.HauntCount;
-            Type = LayerEnum.Jester;
             HauntButton = new(this, "Haunt", AbilityTypes.Direct, "ActionSecondary", Haunt, Exception, true, true);
-            InspectorResults = InspectorResults.Manipulative;
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public override void VoteComplete(MeetingHud __instance)
@@ -40,7 +38,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             foreach (var state in __instance.playerStates)
             {
-                if (state.AmDead || Utils.PlayerById(state.TargetPlayerId).Data.Disconnected || state.VotedFor != Player.PlayerId || state.TargetPlayerId == Player.PlayerId)
+                var player = PlayerByVoteArea(state);
+
+                if (state.AmDead || player.Data.Disconnected || state.VotedFor != PlayerId || state.TargetPlayerId == PlayerId || Player.IsLinkedTo(player))
                     continue;
 
                 ToHaunt.Add(state.TargetPlayerId);
@@ -58,13 +58,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public float HauntTimer()
         {
             var timespan = DateTime.UtcNow - LastHaunted;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.HauntCooldown) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var num = CustomGameOptions.HauntCooldown * 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
-        public bool Exception(PlayerControl player) => !ToHaunt.Contains(player.PlayerId) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(ObjectifierEnum.Mafia) &&
-            Player.Is(ObjectifierEnum.Mafia));
+        public bool Exception(PlayerControl player) => !ToHaunt.Contains(player.PlayerId) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || Player.IsLinkedTo(player);
 
         public override void UpdateHud(HudManager __instance)
         {
@@ -74,10 +74,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Haunt()
         {
-            if (Utils.IsTooFar(Player, HauntButton.TargetPlayer) || HauntTimer() != 0f || !CanHaunt)
+            if (IsTooFar(Player, HauntButton.TargetPlayer) || HauntTimer() != 0f || !CanHaunt)
                 return;
 
-            Utils.RpcMurderPlayer(Player, HauntButton.TargetPlayer, DeathReasonEnum.Haunted, false);
+            RpcMurderPlayer(Player, HauntButton.TargetPlayer, DeathReasonEnum.Haunted, false);
             HasHaunted = true;
             UsesLeft--;
             LastHaunted = DateTime.UtcNow;

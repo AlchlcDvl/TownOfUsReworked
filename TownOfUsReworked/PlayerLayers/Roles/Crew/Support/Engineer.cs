@@ -7,29 +7,28 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public bool ButtonUsable => UsesLeft > 0;
         public DateTime LastFixed;
 
+        public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Engineer : Colors.Crew;
+        public override string Name => "Engineer";
+        public override LayerEnum Type => LayerEnum.Engineer;
+        public override RoleEnum RoleType => RoleEnum.Engineer;
+        public override Func<string> StartText => () => "Just Fix It";
+        public override Func<string> AbilitiesText => () => "- You can fix sabotages at any time from anywhere\n- You can vent";
+        public override InspectorResults InspectorResults => InspectorResults.NewLens;
+
         public Engineer(PlayerControl player) : base(player)
         {
-            Name = "Engineer";
-            StartText = () => "Just Fix It";
-            AbilitiesText = () => "- You can fix sabotages at any time during the game\n- You can vent";
-            Color = CustomGameOptions.CustomCrewColors ? Colors.Engineer : Colors.Crew;
-            RoleType = RoleEnum.Engineer;
             RoleAlignment = RoleAlignment.CrewSupport;
-            InspectorResults = InspectorResults.NewLens;
             UsesLeft = CustomGameOptions.MaxFixes;
-            Type = LayerEnum.Engineer;
             FixButton = new(this, "Fix", AbilityTypes.Effect, "ActionSecondary", Fix, true);
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float FixTimer()
         {
             var timespan = DateTime.UtcNow - LastFixed;
             var num = Player.GetModifiedCooldown(CustomGameOptions.FixCooldown) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void Fix()

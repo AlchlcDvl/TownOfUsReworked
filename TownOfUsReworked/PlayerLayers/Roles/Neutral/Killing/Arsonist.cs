@@ -5,46 +5,47 @@
         public CustomButton IgniteButton;
         public CustomButton DouseButton;
         public bool LastKiller => !CustomPlayer.AllPlayers.Any(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) ||
-            x.Is(RoleAlignment.CrewKill) || x.Is(RoleAlignment.CrewAudit) || x.Is(RoleAlignment.NeutralPros) || (x.Is(RoleAlignment.NeutralKill) && x != Player))) &&
-            CustomGameOptions.ArsoLastKillerBoost;
+            x.Is(RoleAlignment.CrewKill) || x.Is(RoleAlignment.CrewAudit) || x.Is(RoleAlignment.NeutralPros) || x.Is(RoleAlignment.NeutralNeo) || (x.Is(RoleAlignment.NeutralKill) && x !=
+            Player))) && CustomGameOptions.ArsoLastKillerBoost;
         public List<byte> Doused = new();
         public DateTime LastDoused;
         public DateTime LastIgnited;
         public int DousedAlive => Doused.Count;
 
+        public override Color32 Color => ClientGameOptions.CustomNeutColors ? Colors.Arsonist : Colors.Neutral;
+        public override string Name => "Arsonist";
+        public override LayerEnum Type => LayerEnum.Arsonist;
+        public override RoleEnum RoleType => RoleEnum.Arsonist;
+        public override Func<string> StartText => () => "PYROMANIAAAAAAAAAAAAAA";
+        public override Func<string> AbilitiesText => () => "- You can douse players in gasoline\n- Doused players can be ignited, killing them all at once\n- Players who interact with " +
+            "you will get doused";
+        public override InspectorResults InspectorResults => InspectorResults.SeeksToDestroy;
+
         public Arsonist(PlayerControl player) : base(player)
         {
-            Name = "Arsonist";
-            StartText = () => "PYROMANIAAAAAAAAAAAAAA";
-            AbilitiesText = () => "- You can douse players in gasoline\n- Doused players can be ignited, killing them all at once\n- People who interact with you will also get doused";
             Objectives = () => "- Burn anyone who can oppose you";
-            RoleType = RoleEnum.Arsonist;
             RoleAlignment = RoleAlignment.NeutralKill;
-            Color = CustomGameOptions.CustomNeutColors ? Colors.Arsonist : Colors.Neutral;
             Doused = new();
-            Type = LayerEnum.Arsonist;
             DouseButton = new(this, "ArsoDouse", AbilityTypes.Direct, "ActionSecondary", Douse, Exception);
             IgniteButton = new(this, "Ignite", AbilityTypes.Effect, "Secondary", Ignite);
-            InspectorResults = InspectorResults.SeeksToDestroy;
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float DouseTimer()
         {
             var timespan = DateTime.UtcNow - LastDoused;
             var num = Player.GetModifiedCooldown(CustomGameOptions.DouseCd) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public float IgniteTimer()
         {
             var timespan = DateTime.UtcNow - LastIgnited;
             var num = Player.GetModifiedCooldown(CustomGameOptions.IgniteCd) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void Ignite()
@@ -59,26 +60,23 @@
 
                 foreach (var playerId in arso.Doused)
                 {
-                    var player = Utils.PlayerById(playerId);
+                    var player = PlayerById(playerId);
 
                     if (player?.Data.Disconnected == true || player.Data.IsDead || player.Is(RoleEnum.Pestilence) || player.IsProtected())
                         continue;
 
-                    Utils.RpcMurderPlayer(Player, player, DeathReasonEnum.Ignited, false);
+                    RpcMurderPlayer(Player, player, DeathReasonEnum.Ignited, false);
                 }
 
                 if (CustomGameOptions.IgnitionCremates)
                 {
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                    writer.Write((byte)ActionsRPC.Burn);
-                    writer.Write(arso.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    CallRpc(CustomRPC.Action, ActionsRPC.Burn, arso);
 
-                    foreach (var body in Utils.AllBodies)
+                    foreach (var body in AllBodies)
                     {
-                        if (arso.Doused.Contains(body.ParentId) && Utils.PlayerById(body.ParentId).Data.IsDead)
+                        if (arso.Doused.Contains(body.ParentId) && PlayerById(body.ParentId).Data.IsDead)
                         {
-                            Coroutines.Start(Utils.FadeBody(body));
+                            Coroutines.Start(FadeBody(body));
                             _ = new Ash(body.TruePosition);
                         }
                     }
@@ -96,10 +94,10 @@
 
         public void Douse()
         {
-            if (Utils.IsTooFar(Player, DouseButton.TargetPlayer) || DouseTimer() != 0f || Doused.Contains(DouseButton.TargetPlayer.PlayerId))
+            if (IsTooFar(Player, DouseButton.TargetPlayer) || DouseTimer() != 0f || Doused.Contains(DouseButton.TargetPlayer.PlayerId))
                 return;
 
-            var interact = Utils.Interact(Player, DouseButton.TargetPlayer);
+            var interact = Interact(Player, DouseButton.TargetPlayer);
 
             if (interact[3])
                 RpcSpreadDouse(Player, DouseButton.TargetPlayer);
@@ -122,20 +120,15 @@
 
         public void RpcSpreadDouse(PlayerControl source, PlayerControl target)
         {
-            if (!source.Is(RoleType) || Doused.Contains(target.PlayerId))
+            if (!source.Is(RoleType) || Doused.Contains(target.PlayerId) || source != Player)
                 return;
 
             Doused.Add(target.PlayerId);
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-            writer.Write((byte)ActionsRPC.Douse);
-            writer.Write(PlayerId);
-            writer.Write(target.PlayerId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            CallRpc(CustomRPC.Action, ActionsRPC.Douse, this, target);
         }
 
         public bool Exception(PlayerControl player) => Doused.Contains(player.PlayerId) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction
-            is Faction.Intruder or Faction.Syndicate) || player == Player.GetOtherLover() || player == Player.GetOtherRival() || (player.Is(ObjectifierEnum.Mafia) &&
-            Player.Is(ObjectifierEnum.Mafia));
+            is Faction.Intruder or Faction.Syndicate) || Player.IsLinkedTo(player);
 
         public override void UpdateHud(HudManager __instance)
         {

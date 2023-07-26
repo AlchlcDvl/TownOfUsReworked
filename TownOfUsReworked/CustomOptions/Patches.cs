@@ -3,14 +3,14 @@ namespace TownOfUsReworked.CustomOptions
     [HarmonyPatch]
     public static class SettingsPatches
     {
-        private static readonly string[] Menus = { "Global", "Crew", "Neutral", "Intruder", "Syndicate", "Modifier", "Objectifier", "Ability" };
+        private static readonly string[] Menus = { "Global", "Crew", "Neutral", "Intruder", "Syndicate", "Modifier", "Objectifier", "Ability", "Role List" };
         private static readonly List<GameObject> MenuG = new();
         private static readonly List<SpriteRenderer> MenuS = new();
         //private static readonly List<RolesSettingsMenu> MenuR = new();
 
         public static Export ExportButton;
         public static Import ImportButton;
-        public static Presets PresetButton;
+        public static Preset PresetButton;
 
         private static List<OptionBehaviour> CreateOptions(GameOptionsMenu __instance, MultiMenu type)
         {
@@ -70,7 +70,7 @@ namespace TownOfUsReworked.CustomOptions
 
             options.AddRange(__instance.Children);
 
-            foreach (var option in CustomOption.AllOptions.Where(x => x.Menu == type && x.Active))
+            foreach (var option in CustomOption.AllOptions.Where(x => x.Menu == type))
             {
                 if (option.Setting != null)
                 {
@@ -104,18 +104,16 @@ namespace TownOfUsReworked.CustomOptions
                     case CustomOptionType.Nested:
                     case CustomOptionType.Button:
                     case CustomOptionType.Header:
+                    case CustomOptionType.Entry:
                         var toggle = UObject.Instantiate(togglePrefab, togglePrefab.transform.parent);
 
+                        if (option.Type != CustomOptionType.Toggle)
+                            toggle.transform.GetChild(2).gameObject.SetActive(false);
+
                         if (option.Type == CustomOptionType.Header)
-                        {
                             toggle.transform.GetChild(1).gameObject.SetActive(false);
-                            toggle.transform.GetChild(2).gameObject.SetActive(false);
-                        }
                         else if (option.Type is CustomOptionType.Button or CustomOptionType.Nested)
-                        {
-                            toggle.transform.GetChild(2).gameObject.SetActive(false);
                             toggle.transform.GetChild(0).localPosition += new Vector3(1f, 0f, 0f);
-                        }
 
                         option.Setting = toggle;
                         options.Add(toggle);
@@ -125,7 +123,6 @@ namespace TownOfUsReworked.CustomOptions
                 option.OptionCreated();
             }
 
-            CustomOption.GetOptions<CustomLayersOption>(CustomOptionType.Layers).ForEach(x => x.Set(x.Value, x.OtherValue)); //A band-aid fix lmao
             return options;
         }
 
@@ -153,32 +150,25 @@ namespace TownOfUsReworked.CustomOptions
             var customOption = CustomOption.AllOptions.Find(option => option.Setting == opt);
 
             if (customOption == null)
-            {
                 customOption = ExportButton.SlotButtons.Find(option => option.Setting == opt);
 
-                if (customOption == null)
-                {
-                    customOption = ImportButton.SlotButtons.Find(option => option.Setting == opt);
+            if (customOption == null)
+                customOption = ImportButton.SlotButtons.Find(option => option.Setting == opt);
 
-                    if (customOption == null)
-                    {
-                        customOption = PresetButton.SlotButtons.Find(option => option.Setting == opt);
+            if (customOption == null)
+                customOption = PresetButton.SlotButtons.Find(option => option.Setting == opt);
 
-                        if (customOption == null)
-                        {
-                            customOption = CustomNestedOption.AllCancelButtons.Find(option => option.Setting == opt);
+            if (customOption == null)
+                customOption = CustomNestedOption.AllCancelButtons.Find(option => option.Setting == opt);
 
-                            if (customOption == null)
-                            {
-                                customOption = CustomLayersOption.AllRoleOptions.Find(option => option.Setting == opt);
+            if (customOption == null)
+                customOption = CustomLayersOption.AllRoleOptions.Find(option => option.Setting == opt);
 
-                                if (customOption == null)
-                                    return true;
-                            }
-                        }
-                    }
-                }
-            }
+            if (customOption == null)
+                customOption = RoleListEntryOption.EntryButtons.Find(option => option.Setting == opt);
+
+            if (customOption == null)
+                return true;
 
             customOption.OptionCreated();
             return false;
@@ -189,6 +179,9 @@ namespace TownOfUsReworked.CustomOptions
         {
             public static void Postfix(GameSettingMenu __instance)
             {
+                if (IsHnS)
+                    return;
+
                 var obj = __instance.RolesSettingsHightlight.gameObject.transform.parent.parent;
                 var diff = (0.7f * Menus.Length) - 2;
                 obj.transform.localPosition = new(obj.transform.localPosition.x - diff, obj.transform.localPosition.y, obj.transform.localPosition.z);
@@ -225,7 +218,7 @@ namespace TownOfUsReworked.CustomOptions
                     var hatIcon = hatButton.GetChild(0);
                     var tabBackground = hatButton.GetChild(1);
 
-                    hatIcon.GetComponent<SpriteRenderer>().sprite = AssetManager.GetSprite(GetSettingSprite(index));
+                    hatIcon.GetComponent<SpriteRenderer>().sprite = GetSprite(GetSettingSprite(index));
                     MenuG.Add(touSettings);
                     MenuS.Add(tabBackground.GetComponent<SpriteRenderer>());
 
@@ -256,6 +249,7 @@ namespace TownOfUsReworked.CustomOptions
                 5 => "Modifiers",
                 6 => "Objectifiers",
                 7 => "Abilities",
+                8 => "RoleLists",
                 _ => "SettingsButton"
             };
         }
@@ -267,6 +261,9 @@ namespace TownOfUsReworked.CustomOptions
         {
             public static void Postfix(GameSettingMenu __instance)
             {
+                if (IsHnS)
+                    return;
+
                 __instance.RegularGameSettings.SetActive(false);
                 __instance.RolesSettings.gameObject.SetActive(false);
                 __instance.GameSettingsHightlight.gameObject.SetActive(false);
@@ -277,36 +274,17 @@ namespace TownOfUsReworked.CustomOptions
                 __instance.GameSettingsHightlight.gameObject.transform.parent.parent.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
                 __instance.RolesSettingsHightlight.gameObject.transform.parent.parent.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().gameObject.SetActive(false);
                 __instance.GameSettingsHightlight.gameObject.transform.parent.parent.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().gameObject.SetActive(false);
+                var cachedPage = GameSettings.SettingsPage;
+                GameSettings.UpdatePageNumber();
 
-                if (Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1))
-                    ToggleButtonVoid(0);
+                if (cachedPage != GameSettings.SettingsPage)
+                    ToggleButtonVoid(GameSettings.SettingsPage);
 
-                if (Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Keypad2))
-                    ToggleButtonVoid(1);
-
-                if (Input.GetKeyDown(KeyCode.Alpha3) || Input.GetKeyDown(KeyCode.Keypad3))
-                    ToggleButtonVoid(2);
-
-                if (Input.GetKeyDown(KeyCode.Alpha4) || Input.GetKeyDown(KeyCode.Keypad4))
-                    ToggleButtonVoid(3);
-
-                if (Input.GetKeyDown(KeyCode.Alpha5) || Input.GetKeyDown(KeyCode.Keypad5))
-                    ToggleButtonVoid(4);
-
-                if (Input.GetKeyDown(KeyCode.Alpha6) || Input.GetKeyDown(KeyCode.Keypad6))
-                    ToggleButtonVoid(5);
-
-                if (Input.GetKeyDown(KeyCode.Alpha7) || Input.GetKeyDown(KeyCode.Keypad7))
-                    ToggleButtonVoid(6);
-
-                if (Input.GetKeyDown(KeyCode.Alpha8) || Input.GetKeyDown(KeyCode.Keypad8))
-                    ToggleButtonVoid(7);
-
-                if (TownOfUsReworked.VanillaOptions.MaxPlayers != CustomGameOptions.LobbySize)
+                if (TownOfUsReworked.NormalOptions.MaxPlayers != CustomGameOptions.LobbySize)
                 {
-                    TownOfUsReworked.VanillaOptions.MaxPlayers = CustomGameOptions.LobbySize;
+                    TownOfUsReworked.NormalOptions.MaxPlayers = CustomGameOptions.LobbySize;
                     GameStartManager.Instance.LastPlayerCount = CustomGameOptions.LobbySize;
-                    GameOptionsManager.Instance.currentNormalGameOptions = TownOfUsReworked.VanillaOptions;
+                    GameOptionsManager.Instance.currentNormalGameOptions = TownOfUsReworked.NormalOptions;
                     CustomPlayer.Local.RpcSyncSettings(GameOptionsManager.Instance.gameOptionsFactory.ToBytes(GameOptionsManager.Instance.currentGameOptions));
                 }
             }
@@ -315,7 +293,7 @@ namespace TownOfUsReworked.CustomOptions
         [HarmonyPatch(typeof(GameSettingMenu), nameof(GameSettingMenu.Close))]
         public static class OptionsMenuBehaviour_Close
         {
-            public static void Postfix() => CustomOption.SaveSettings("LastUsedSettings");
+            public static void Prefix() => CustomOption.SaveSettings("LastUsedSettings");
         }
 
         public static void ToggleButtonVoid(int id)
@@ -340,6 +318,9 @@ namespace TownOfUsReworked.CustomOptions
         {
             public static bool Prefix(GameOptionsMenu __instance)
             {
+                if (IsHnS)
+                    return true;
+
                 StartPrefix(__instance, out var notmodded);
                 return notmodded;
             }
@@ -379,11 +360,21 @@ namespace TownOfUsReworked.CustomOptions
         [HarmonyPatch(typeof(GameOptionsMenu), nameof(GameOptionsMenu.Update))]
         public static class GameOptionsMenu_Update
         {
+            private static float Timer = 1f;
+
             public static void Postfix(GameOptionsMenu __instance)
             {
-                if (__instance.Children == null || __instance.Children.Length == 0)
+                var gameSettingMenu = UObject.FindObjectsOfType<GameSettingMenu>().FirstOrDefault();
+
+                if (gameSettingMenu.RegularGameSettings.active || gameSettingMenu.RolesSettings.gameObject.active || __instance.Children == null || __instance.Children.Length == 0)
                     return;
 
+                Timer += Time.deltaTime;
+
+                if (Timer < 0.1f)
+                    return;
+
+                Timer = 0f;
                 var y = __instance.GetComponentsInChildren<OptionBehaviour>().Max(option => option.transform.localPosition.y);
                 var s = __instance.Children.Length == 1 ? 0 : 1;
                 var (x, z) = (__instance.Children[s].transform.localPosition.x, __instance.Children[s].transform.localPosition.z);
@@ -391,7 +382,24 @@ namespace TownOfUsReworked.CustomOptions
                 for (var i = 0; i < __instance.Children.Count; i++)
                     __instance.Children[i].transform.localPosition = new(x, y - (i * 0.5f), z);
 
-                __instance.GetComponentInParent<Scroller>().ContentYBounds.max = (__instance.Children.Length - 6.5f) / 2;
+                /*for (var index = 0; index < Menus.Length; index++)
+                {
+                    if (__instance.name == $"ToU-Rew{Menus[index]}OptionsMenu")
+                    {
+                        foreach (var option in CustomOption.AllOptions.Where(x => x.Active))
+                        {
+                            if (option.Setting != null && option.Setting.gameObject != null)
+                            {
+                                option.Setting.gameObject.SetActive(true);
+                                var cache = option.Setting.transform.localPosition;
+                                y -= 0.5f;
+                                option.Setting.transform.localPosition = new(cache.x, y, cache.z);
+                            }
+                        }
+                    }
+                }*/
+
+                __instance.GetComponentInParent<Scroller>().ContentYBounds.max = (__instance.Children.Length - 6.5f) / 2f;
             }
         }
 
@@ -433,6 +441,15 @@ namespace TownOfUsReworked.CustomOptions
                         return false;
 
                     nested.ToDo();
+                    return false;
+                }
+
+                if (option is RoleListEntryOption role)
+                {
+                    if (!AmongUsClient.Instance.AmHost)
+                        return false;
+
+                    role.ToDo();
                     return false;
                 }
 
@@ -507,6 +524,17 @@ namespace TownOfUsReworked.CustomOptions
                         return false;
 
                     button4.Do();
+                    return false;
+                }
+
+                var option6 = RoleListEntryOption.EntryButtons.Find(option => option.Setting == __instance);
+
+                if (option6 is CustomButtonOption button5)
+                {
+                    if (!AmongUsClient.Instance.AmHost)
+                        return false;
+
+                    button5.Do();
                     return false;
                 }
 
@@ -713,20 +741,33 @@ namespace TownOfUsReworked.CustomOptions
                 if (CustomPlayer.AllPlayers.Count < 1 || !AmongUsClient.Instance || !CustomPlayer.Local || !AmongUsClient.Instance.AmHost)
                     return;
 
-                RPC.SendOptionRPC();
+                SendOptionRPC();
                 CustomOption.SaveSettings("LastUsedSettings");
+
+                if (CachedFirstDead != null)
+                    CallRpc(CustomRPC.Misc, MiscRPC.SetFirstKilled, CachedFirstDead);
             }
         }
 
         [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.CoSpawnPlayer))]
         public static class PlayerJoinPatch
         {
-            public static void Postfix()
+            public static void Postfix(PlayerPhysics __instance)
             {
-                if (CustomPlayer.AllPlayers.Count < 1 || !AmongUsClient.Instance || !CustomPlayer.Local || !AmongUsClient.Instance.AmHost)
+                if (CustomPlayer.AllPlayers.Count < 1 || !AmongUsClient.Instance || !CustomPlayer.Local)
                     return;
 
-                RPC.SendOptionRPC();
+                if (__instance.myPlayer == CustomPlayer.Local)
+                    HUD.Chat.AddChat(CustomPlayer.Local, "Welcome to Town Of Us Reworked! Type /help to get started!");
+
+                if (!AmongUsClient.Instance.AmHost)
+                    return;
+
+                SendOptionRPC();
+                CustomOption.SaveSettings("LastUsedSettings");
+
+                if (CachedFirstDead != null)
+                    CallRpc(CustomRPC.Misc, MiscRPC.SetFirstKilled, CachedFirstDead);
             }
         }
 
@@ -767,12 +808,12 @@ namespace TownOfUsReworked.CustomOptions
                     return;
 
                 var rows = __instance.GameSettings.text.Count(c => c == '\n');
-                var maxY = Mathf.Max(MinY, (rows * 0.081f) + ((rows - 38) * 0.081f));
+                var maxY = Mathf.Max(MinY, (rows * 0.081f) + ((rows - 30) * 0.081f * (__instance.GameSettings.text.Contains('┣') ? 1.9f : 1f)));
 
                 Scroller.ContentYBounds = new(MinY, maxY);
 
                 //Prevent scrolling when the player is interacting with a menu
-                if (PlayerControl.LocalPlayer?.CanMove == false)
+                if (CustomPlayer.Local?.CanMove == false)
                 {
                     __instance.GameSettings.transform.localPosition = LastPosition;
                     return;

@@ -8,28 +8,27 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public float TimeRemaining;
         public bool IsInvis => TimeRemaining > 0f;
 
+        public override Color32 Color => ClientGameOptions.CustomIntColors ? Colors.Wraith : Colors.Intruder;
+        public override string Name => "Wraith";
+        public override LayerEnum Type => LayerEnum.Wraith;
+        public override RoleEnum RoleType => RoleEnum.Wraith;
+        public override Func<string> StartText => () => "Sneaky Sneaky";
+        public override Func<string> AbilitiesText => () => $"- You can turn invisible\n{CommonAbilities}";
+        public override InspectorResults InspectorResults => InspectorResults.Unseen;
+
         public Wraith(PlayerControl player) : base(player)
         {
-            Name = "Wraith";
-            StartText = () => "Sneaky Sneaky";
-            AbilitiesText = () => $"- You can turn invisible\n{CommonAbilities}";
-            Color = CustomGameOptions.CustomIntColors ? Colors.Wraith : Colors.Intruder;
-            RoleType = RoleEnum.Wraith;
             RoleAlignment = RoleAlignment.IntruderDecep;
-            Type = LayerEnum.Wraith;
             InvisButton = new(this, "Invis", AbilityTypes.Effect, "Secondary", HitInvis);
-            InspectorResults = InspectorResults.Unseen;
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float InvisTimer()
         {
             var timespan = DateTime.UtcNow - LastInvis;
             var num = Player.GetModifiedCooldown(CustomGameOptions.InvisCd) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void Invis()
@@ -38,7 +37,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             TimeRemaining -= Time.deltaTime;
             Utils.Invis(Player, CustomPlayer.Local.Is(Faction.Intruder));
 
-            if (IsDead || Utils.Meeting)
+            if (IsDead || Meeting)
                 TimeRemaining = 0f;
         }
 
@@ -46,7 +45,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Enabled = false;
             LastInvis = DateTime.UtcNow;
-            Utils.DefaultOutfit(Player);
+            DefaultOutfit(Player);
         }
 
         public void HitInvis()
@@ -54,10 +53,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (InvisTimer() != 0f || IsInvis)
                 return;
 
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-            writer.Write((byte)ActionsRPC.Invis);
-            writer.Write(PlayerId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            CallRpc(CustomRPC.Action, ActionsRPC.Invis, this);
             TimeRemaining = CustomGameOptions.InvisDuration;
             Invis();
         }

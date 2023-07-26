@@ -11,38 +11,45 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public bool Caught;
         public bool Faded;
 
+        public override Color32 Color => ClientGameOptions.CustomSynColors ? Colors.Banshee : Colors.Syndicate;
+        public override string Name => "Banshee";
+        public override LayerEnum Type => LayerEnum.Banshee;
+        public override RoleEnum RoleType => RoleEnum.Banshee;
+        public override Func<string> StartText => () => "AAAAAAAAAAAAAAAAAAAAAAAAA";
+        public override Func<string> AbilitiesText => () => "- You can scream loudly, blocking all players as long as you are not clicked";
+        public override InspectorResults InspectorResults => InspectorResults.Ghostly;
+
         public Banshee(PlayerControl player) : base(player)
         {
-            Name = "Banshee";
-            RoleType = RoleEnum.Banshee;
-            StartText = () => "AAAAAAAAAAAAAAAAAAAAAAAAA";
-            AbilitiesText = () => "- You can scream loudly, blocking all players as long as you are not clicked";
             RoleAlignment = RoleAlignment.SyndicateUtil;
-            Color = CustomGameOptions.CustomSynColors ? Colors.Banshee : Colors.Syndicate;
             Blocked = new();
-            Type = LayerEnum.Banshee;
             RoleBlockImmune = true; //Not taking chances
             ScreamButton = new(this, "Scream", AbilityTypes.Effect, "ActionSecondary", HitScream);
-            InspectorResults = InspectorResults.Ghostly;
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public void Scream()
         {
+            if (!Enabled)
+            {
+                foreach (var player8 in CustomPlayer.AllPlayers)
+                {
+                    if (!player8.Data.IsDead && !player8.Data.Disconnected && !player8.Is(Faction.Syndicate))
+                        Blocked.Add(player8.PlayerId);
+                }
+            }
+
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
 
             foreach (var id in Blocked)
             {
-                var player = Utils.PlayerById(id);
+                var player = PlayerById(id);
 
                 foreach (var layer in GetLayers(player))
                     layer.IsBlocked = !GetRole(player).RoleBlockImmune;
             }
 
-            if (Utils.Meeting || Caught)
+            if (Meeting || Caught)
                 TimeRemaining = 0f;
         }
 
@@ -53,7 +60,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             foreach (var id in Blocked)
             {
-                var player = Utils.PlayerById(id);
+                var player = PlayerById(id);
 
                 if (player?.Data.Disconnected == true)
                     continue;
@@ -69,8 +76,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var timespan = DateTime.UtcNow - LastScreamed;
             var num = CustomGameOptions.ScreamCooldown * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void Fade()
@@ -79,7 +87,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Player.Visible = true;
             var color = new Color(1f, 1f, 1f, 0f);
 
-            var maxDistance = ShipStatus.Instance.MaxLightRadius * TownOfUsReworked.VanillaOptions.CrewLightMod;
+            var maxDistance = ShipStatus.Instance.MaxLightRadius * TownOfUsReworked.NormalOptions.CrewLightMod;
             var distance = (CustomPlayer.Local.GetTruePosition() - Player.GetTruePosition()).magnitude;
 
             var distPercent = distance / maxDistance;
@@ -111,12 +119,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (ScreamTimer() != 0f)
                 return;
 
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-            writer.Write((byte)ActionsRPC.Scream);
-            writer.Write(PlayerId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
             TimeRemaining = CustomGameOptions.ScreamDuration;
             Scream();
+            CallRpc(CustomRPC.Action, ActionsRPC.Scream, this);
 
             foreach (var player in CustomPlayer.AllPlayers)
             {

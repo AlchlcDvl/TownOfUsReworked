@@ -2,18 +2,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Anarchist : Syndicate
     {
-        public Anarchist(PlayerControl player) : base(player)
-        {
-            Name = "Anarchist";
-            RoleType = RoleEnum.Anarchist;
-            StartText = () => "Wreck Everyone With A Passion";
-            AbilitiesText = () => CommonAbilities;
-            RoleAlignment = RoleAlignment.SyndicateUtil;
-            Type = LayerEnum.Anarchist;
-            InspectorResults = InspectorResults.IsBasic;
+        public override string Name => "Anarchist";
+        public override LayerEnum Type => LayerEnum.Anarchist;
+        public override RoleEnum RoleType => RoleEnum.Anarchist;
+        public override Func<string> StartText => () => "Wreck Everyone With A Passion";
+        public override Func<string> AbilitiesText => () => CommonAbilities;
+        public override InspectorResults InspectorResults => InspectorResults.IsBasic;
 
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
-        }
+        public Anarchist(PlayerControl player) : base(player) => RoleAlignment = RoleAlignment.SyndicateUtil;
     }
 }

@@ -1,4 +1,3 @@
-using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Text.Json;
@@ -33,7 +32,7 @@ namespace TownOfUsReworked.Classes
             var codeBase = TownOfUsReworked.Executing.Location;
             var uri = new UriBuilder(codeBase);
 
-            if (ModCompatibility.SubLoaded)
+            if (SubLoaded)
             {
                 var submergedPath = Uri.UnescapeDataString(uri.Path.Replace("Reworked", "Submerged"));
 
@@ -94,14 +93,14 @@ namespace TownOfUsReworked.Classes
             //Removes any old versions (Denoted by the suffix `.old`)
             try
             {
-                DirectoryInfo d = new(Path.GetDirectoryName(Application.dataPath) + @"\BepInEx\plugins");
+                var d = new DirectoryInfo(TownOfUsReworked.DataPath + "\\BepInEx\\plugins");
 
                 foreach (var f in d.GetFiles("*.old").Select(x => x.FullName).ToArray())
                     File.Delete(f);
             }
             catch (Exception e)
             {
-                Utils.LogSomething(e);
+                LogSomething(e);
             }
         }
 
@@ -116,6 +115,8 @@ namespace TownOfUsReworked.Classes
                     githubURI = "https://api.github.com/repos/AlchlcDvl/TownOfUsReworked/releases/latest";
                 else if (updateType == "Submerged")
                     githubURI = "https://api.github.com/repos/SubmergedAmongUs/Submerged/releases/latest";
+                else
+                    return false;
 
                 HttpClient http = new();
                 http.DefaultRequestHeaders.Add("User-Agent", $"{updateType} Updater");
@@ -123,7 +124,7 @@ namespace TownOfUsReworked.Classes
 
                 if (response.StatusCode != HttpStatusCode.OK || response.Content == null)
                 {
-                    Utils.LogSomething("Server returned no data: " + response.StatusCode.ToString());
+                    LogSomething("Server returned no data: " + response.StatusCode.ToString());
                     return false;
                 }
 
@@ -151,11 +152,11 @@ namespace TownOfUsReworked.Classes
                 else if (updateType == "Submerged")
                 {
                     //Accounts for broken version
-                    if (ModCompatibility.SubVersion == null)
+                    if (SubVersion == null)
                         HasSubmergedUpdate = true;
                     else
                     {
-                        diff = ModCompatibility.SubVersion.CompareTo(SemanticVersioning.Version.Parse(tagname.Replace("v", "")));
+                        diff = SubVersion.CompareTo(SemanticVersioning.Version.Parse(tagname.Replace("v", "")));
 
                         if (diff < 0)
                         {
@@ -188,7 +189,7 @@ namespace TownOfUsReworked.Classes
             }
             catch (Exception ex)
             {
-                Utils.LogSomething(ex);
+                LogSomething(ex);
             }
 
             return false;
@@ -219,7 +220,7 @@ namespace TownOfUsReworked.Classes
 
                 if (response.StatusCode != HttpStatusCode.OK || response.Content == null)
                 {
-                    Utils.LogSomething("Server returned no data: " + response.StatusCode.ToString());
+                    LogSomething("Server returned no data: " + response.StatusCode.ToString());
                     return false;
                 }
 
@@ -244,7 +245,7 @@ namespace TownOfUsReworked.Classes
             }
             catch (Exception ex)
             {
-                Utils.LogSomething(ex);
+                LogSomething(ex);
             }
 
             ShowPopup("Update wasn't successful\nTry again later,\nor update manually.");

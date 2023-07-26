@@ -3,6 +3,9 @@ namespace TownOfUsReworked.Patches
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
     public static class MeetingHudStart
     {
+        private static bool BeingBlackmailed;
+        private static bool BeingSilenced;
+
         public static void Postfix()
         {
             foreach (var role in Role.GetRoles<Blackmailer>(RoleEnum.Blackmailer))
@@ -10,7 +13,7 @@ namespace TownOfUsReworked.Patches
                 if (role.BlackmailedPlayer == null)
                     continue;
 
-                if (role.BlackmailedPlayer == CustomPlayer.Local && !role.BlackmailedPlayer.Data.IsDead)
+                if (role.BlackmailedPlayer == CustomPlayer.Local && !CustomPlayer.LocalCustom.IsDead)
                     Coroutines.Start(BlackmailShhh());
 
                 role.ShookAlready = false;
@@ -21,7 +24,7 @@ namespace TownOfUsReworked.Patches
                 if (role.BlackmailedPlayer == null || !role.IsBM)
                     continue;
 
-                if (role.BlackmailedPlayer == CustomPlayer.Local && !role.BlackmailedPlayer.Data.IsDead)
+                if (role.BlackmailedPlayer == CustomPlayer.Local && !CustomPlayer.LocalCustom.IsDead)
                     Coroutines.Start(BlackmailShhh());
 
                 role.ShookAlready = false;
@@ -32,7 +35,7 @@ namespace TownOfUsReworked.Patches
                 if (role.SilencedPlayer == null)
                     continue;
 
-                if (role.SilencedPlayer == CustomPlayer.Local && !role.SilencedPlayer.Data.IsDead)
+                if (role.SilencedPlayer == CustomPlayer.Local && !CustomPlayer.LocalCustom.IsDead)
                     Coroutines.Start(SilencedShhh());
 
                 role.ShookAlready = false;
@@ -43,7 +46,7 @@ namespace TownOfUsReworked.Patches
                 if (role.SilencedPlayer == null || !role.IsSil)
                     continue;
 
-                if (role.SilencedPlayer == CustomPlayer.Local && !role.SilencedPlayer.Data.IsDead)
+                if (role.SilencedPlayer == CustomPlayer.Local && !CustomPlayer.LocalCustom.IsDead)
                     Coroutines.Start(BlackmailShhh());
 
                 role.ShookAlready = false;
@@ -52,34 +55,44 @@ namespace TownOfUsReworked.Patches
 
         public static IEnumerator BlackmailShhh()
         {
-            yield return Utils.HUD.CoFadeFullScreen(UColor.clear, new(0f, 0f, 0f, 0.98f));
-            var TempPosition = Utils.HUD.shhhEmblem.transform.localPosition;
-            var TempDuration = Utils.HUD.shhhEmblem.HoldDuration;
-            var pos = Utils.HUD.shhhEmblem.transform.localPosition;
+            if (BeingSilenced)
+                yield break;
+
+            BeingBlackmailed = true;
+            yield return HUD.CoFadeFullScreen(UColor.clear, new(0f, 0f, 0f, 0.98f));
+            var TempPosition = HUD.shhhEmblem.transform.localPosition;
+            var TempDuration = HUD.shhhEmblem.HoldDuration;
+            var pos = HUD.shhhEmblem.transform.localPosition;
             pos.z++;
-            Utils.HUD.shhhEmblem.transform.localPosition = pos;
-            Utils.HUD.shhhEmblem.TextImage.text = "YOU ARE BLACKMAILED";
-            Utils.HUD.shhhEmblem.HoldDuration = 2.5f;
-            yield return Utils.HUD.ShowEmblem(true);
-            Utils.HUD.shhhEmblem.transform.localPosition = TempPosition;
-            Utils.HUD.shhhEmblem.HoldDuration = TempDuration;
-            yield return Utils.HUD.CoFadeFullScreen(new(0f, 0f, 0f, 0.98f), UColor.clear);
+            HUD.shhhEmblem.transform.localPosition = pos;
+            HUD.shhhEmblem.TextImage.text = "YOU ARE BLACKMAILED";
+            HUD.shhhEmblem.HoldDuration = 2.5f;
+            yield return HUD.ShowEmblem(true);
+            HUD.shhhEmblem.transform.localPosition = TempPosition;
+            HUD.shhhEmblem.HoldDuration = TempDuration;
+            yield return HUD.CoFadeFullScreen(new(0f, 0f, 0f, 0.98f), UColor.clear);
+            BeingBlackmailed = false;
         }
 
         public static IEnumerator SilencedShhh()
         {
-            yield return Utils.HUD.CoFadeFullScreen(UColor.clear, new(0f, 0f, 0f, 0.98f));
-            var TempPosition = Utils.HUD.shhhEmblem.transform.localPosition;
-            var TempDuration = Utils.HUD.shhhEmblem.HoldDuration;
-            var pos = Utils.HUD.shhhEmblem.transform.localPosition;
+            if (BeingBlackmailed)
+                yield break;
+
+            BeingSilenced = true;
+            yield return HUD.CoFadeFullScreen(UColor.clear, new(0f, 0f, 0f, 0.98f));
+            var TempPosition = HUD.shhhEmblem.transform.localPosition;
+            var TempDuration = HUD.shhhEmblem.HoldDuration;
+            var pos = HUD.shhhEmblem.transform.localPosition;
             pos.z++;
-            Utils.HUD.shhhEmblem.transform.localPosition = pos;
-            Utils.HUD.shhhEmblem.TextImage.text = "YOU ARE SILENCED";
-            Utils.HUD.shhhEmblem.HoldDuration = 2.5f;
-            yield return Utils.HUD.ShowEmblem(true);
-            Utils.HUD.shhhEmblem.transform.localPosition = TempPosition;
-            Utils.HUD.shhhEmblem.HoldDuration = TempDuration;
-            yield return Utils.HUD.CoFadeFullScreen(new(0f, 0f, 0f, 0.98f), UColor.clear);
+            HUD.shhhEmblem.transform.localPosition = pos;
+            HUD.shhhEmblem.TextImage.text = "YOU ARE SILENCED";
+            HUD.shhhEmblem.HoldDuration = 2.5f;
+            yield return HUD.ShowEmblem(true);
+            HUD.shhhEmblem.transform.localPosition = TempPosition;
+            HUD.shhhEmblem.HoldDuration = TempDuration;
+            yield return HUD.CoFadeFullScreen(new(0f, 0f, 0f, 0.98f), UColor.clear);
+            BeingSilenced = false;
         }
     }
 
@@ -115,7 +128,7 @@ namespace TownOfUsReworked.Patches
                         if (role.PrevColor == default)
                             role.PrevColor = CachedColor;
 
-                        playerState.Overlay.sprite = AssetManager.GetSprite("Overlay");
+                        playerState.Overlay.sprite = GetSprite("Overlay");
                         playerState.Overlay.color = role.BlackmailedPlayer.IsSilenced() ? Colors.What : Colors.Blackmailer;
 
                         if (__instance.state != MeetingHud.VoteStates.Animating && !role.ShookAlready)
@@ -148,7 +161,7 @@ namespace TownOfUsReworked.Patches
                         if (role.PrevColor == default)
                             role.PrevColor = CachedColor;
 
-                        playerState.Overlay.sprite = AssetManager.GetSprite("Overlay");
+                        playerState.Overlay.sprite = GetSprite("Overlay");
                         playerState.Overlay.color = role.BlackmailedPlayer.IsSilenced() ? Colors.What : Colors.Blackmailer;
 
                         if (__instance.state != MeetingHud.VoteStates.Animating && !role.ShookAlready)
@@ -184,7 +197,7 @@ namespace TownOfUsReworked.Patches
                         if (role.PrevColor == default)
                             role.PrevColor = CachedColor;
 
-                        playerState.Overlay.sprite = AssetManager.GetSprite("Overlay");
+                        playerState.Overlay.sprite = GetSprite("Overlay");
                         playerState.Overlay.color = role.SilencedPlayer.IsBlackmailed() ? Colors.What : Colors.Silencer;
 
                         if (__instance.state != MeetingHud.VoteStates.Animating && !role.ShookAlready)
@@ -217,7 +230,7 @@ namespace TownOfUsReworked.Patches
                         if (role.PrevColor == default)
                             role.PrevColor = CachedColor;
 
-                        playerState.Overlay.sprite = AssetManager.GetSprite("Overlay");
+                        playerState.Overlay.sprite = GetSprite("Overlay");
                         playerState.Overlay.color = role.SilencedPlayer.IsBlackmailed() ? Colors.What : Colors.Silencer;
 
                         if (__instance.state != MeetingHud.VoteStates.Animating && !role.ShookAlready)

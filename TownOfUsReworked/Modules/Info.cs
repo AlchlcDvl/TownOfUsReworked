@@ -5,30 +5,55 @@ namespace TownOfUsReworked.Modules
         public string Name;
         public string Short;
         public string Description;
+        public Color Color;
+        public InfoType Type;
 
         public static readonly List<Info> AllInfo = new();
 
-        public Info(string name, string shortF, string description)
+        public Info(string name, string shortF, string description, Color color, InfoType type)
         {
             Name = name;
             Short = shortF;
             Description = description;
-            AllInfo.Add(this);
+            Color = color;
+            Type = type;
         }
 
         public override string ToString()
         {
             var builder = new StringBuilder();
-            builder.Append("Name: ").AppendLine(Name)
-                .Append("Short Form: ").AppendLine(Short)
-                .Append("Description: ").AppendLine(Description);
+            builder.AppendLine($"Name: {Name}")
+                .AppendLine($"Short Form: {Short}")
+                .AppendLine($"Description: {Description}");
             return builder.ToString();
         }
+
+        public static List<Info> ConvertToBase<T>(List<T> list) where T : Info => list.Cast<Info>().ToList();
+
+        public static void SetAllInfo()
+        {
+            AllInfo.AddRanges(ConvertToBase(LayerInfo.AllRoles), ConvertToBase(LayerInfo.AllModifiers), ConvertToBase(LayerInfo.AllAbilities), ConvertToBase(LayerInfo.AllObjectifiers),
+                ConvertToBase(LayerInfo.AllFactions), ConvertToBase(LayerInfo.AllSubFactions), ConvertToBase(LayerInfo.AllOthers));
+        }
+
+        public static string ColorIt(string result)
+        {
+            foreach (var info in AllInfo.Where(x => x.Type is not InfoType.Alignment and not InfoType.Lore))
+                result = result.Replace(info.Name, $"<b><color=#{info.Color.ToHtmlStringRGBA()}>{info.Name}</color></b>");
+
+            for (var i = 0; i < 50; i++)
+                result = result.Replace(((RoleAlignment)i).AlignmentName(), $"<b>{((RoleAlignment)i).AlignmentName(true)}</b>");
+
+            return result;
+        }
+
+        public virtual void WikiEntry(out string result) => result = "";
     }
 
     public class RoleInfo : Info
     {
         public string Alignment;
+        public string ColoredAlignment;
         public string WinCon;
         public string Quote;
 
@@ -38,10 +63,12 @@ namespace TownOfUsReworked.Modules
             + "Neutrals.";
         private const string CrewObjective = "Finish tasks along with other Crew or kill off all Intruders, Syndicate, Unfaithful Crew, and opposing Neutrals.";
 
-        public RoleInfo(string name, string shortF, string description, RoleAlignment alignmentEnum, Faction faction, string quote, string wincon = "") : base(name, shortF, description)
+        public RoleInfo(string name, string shortF, string description, RoleAlignment alignmentEnum, Faction faction, string quote, Color color, string wincon = "") : base(name, shortF,
+            description, color, InfoType.Role)
         {
             Quote = quote;
             Alignment = alignmentEnum.AlignmentName();
+            ColoredAlignment = alignmentEnum.AlignmentName(true);
             WinCon = faction switch
             {
                 Faction.Syndicate => SyndicateObjective,
@@ -55,14 +82,24 @@ namespace TownOfUsReworked.Modules
         public override string ToString()
         {
             var builder = new StringBuilder();
-            builder.Append("Name: ").AppendLine(Name)
-                .Append("Short Form: ").AppendLine(Short)
-                .Append("Alignment: ").AppendLine(Alignment)
-                .Append("Win Condition: ").AppendLine(WinCon)
-                .Append("Description: ").AppendLine(Description)
-                .AppendLine()
-                .Append('"').Append(Quote).AppendLine("\"");
+            builder.AppendLine($"Name: {Name}")
+                .AppendLine($"Short Form: {Short}")
+                .AppendLine($"Alignment: {Alignment}")
+                .AppendLine($"Win Condition: {WinCon}")
+                .AppendLine($"Description: {Description}")
+                .AppendLine($"\n{Quote}");
             return builder.ToString();
+        }
+
+        public override void WikiEntry(out string result)
+        {
+            base.WikiEntry(out result);
+            result += ColorIt($"Name: {Name}");
+            result += "\n" + ColorIt($"Short Form: {Short}");
+            result += $"\nAlignment: {ColoredAlignment}";
+            result += "\n" + ColorIt(WrapText($"Win Condition: {WinCon}"));
+            result += "\n" + ColorIt(WrapText($"Description: {Description}"));
+            result += "\n\n" + ColorIt(WrapText(Quote));
         }
     }
 
@@ -83,7 +120,7 @@ namespace TownOfUsReworked.Modules
             "while not knowing who the other members are. Each role is unique in its own way, some can be helpful, some exist to destroy others and some just exist for the sake of " +
             "existing.";
 
-        public FactionInfo(Faction faction) : base($"{faction}", "", "")
+        public FactionInfo(Faction faction, Color color) : base($"{faction}", "", "", color, InfoType.Faction)
         {
             (Description, Short) = faction switch
             {
@@ -93,6 +130,14 @@ namespace TownOfUsReworked.Modules
                 Faction.Neutral => (NeutralDescription, "Neut"),
                 _ => ("Invalid", "Invalid")
             };
+        }
+
+        public override void WikiEntry(out string result)
+        {
+            base.WikiEntry(out result);
+            result += ColorIt($"Name: {Name}");
+            result += "\n" + ColorIt($"Short Form: {Short}");
+            result += "\n" + ColorIt(WrapText($"Description: {Description}"));
         }
     }
 
@@ -108,7 +153,7 @@ namespace TownOfUsReworked.Modules
         private const string SectDescription = "The Sect is a cult which can gain massive amounts of followers in one go. It may be weak at the start, but do not understimate their " +
             "powerful growth as it may overrun you. The Sect is led by the Whisperer.";
 
-        public SubFactionInfo(SubFaction sub) : base($"{sub}", "", "")
+        public SubFactionInfo(SubFaction sub, Color color) : base($"{sub}", "", "", color, InfoType.SubFaction)
         {
             (Description, Short) = sub switch
             {
@@ -118,6 +163,14 @@ namespace TownOfUsReworked.Modules
                 SubFaction.Sect => (SectDescription, "Sect"),
                 _ => ("Invalid", "Invalid")
             };
+        }
+
+        public override void WikiEntry(out string result)
+        {
+            base.WikiEntry(out result);
+            result += ColorIt($"Name: {Name}");
+            result += "\n" + ColorIt($"Short Form: {Short}");
+            result += "\n" + ColorIt(WrapText($"Description: {Description}"));
         }
     }
 
@@ -191,62 +244,83 @@ namespace TownOfUsReworked.Modules
         private const string NUDescription = "Neutral (Utility) roles are defected Crew, Intruder or Syndicate (Utility) roles who have broken away from their respective faction.";
         private const string NSDescription = "Neutral (Support) roles are defected Crew, Intruder or Syndicate (Support) roles who have broken away from their respective faction.";
 
-        public AlignmentInfo(RoleAlignment alignmentEnum) : base(alignmentEnum.AlignmentName(), "", "")
+        public string Alignment;
+        public RoleAlignment Base;
+
+        public AlignmentInfo(RoleAlignment alignmentEnum) : base(alignmentEnum.AlignmentName(), "", "", Colors.Alignment, InfoType.Alignment)
         {
-            (Short, Description) = alignmentEnum switch
+            Base = alignmentEnum;
+            (Short, Description, Alignment) = alignmentEnum switch
             {
-                RoleAlignment.CrewSupport => ("CS", CSDescription),
-                RoleAlignment.CrewInvest => ("CI", CIDescription),
-                RoleAlignment.CrewProt => ("CP", CPDescription),
-                RoleAlignment.CrewKill => ("CK", CKDescription),
-                RoleAlignment.CrewUtil => ("CU", CUDescription),
-                RoleAlignment.CrewSov => ("CSv", CSvDescription),
-                RoleAlignment.CrewAudit => ("CA", CADescription),
-                RoleAlignment.CrewConceal => ("CC", CCDescription),
-                RoleAlignment.CrewDecep => ("CD", CDDescription),
-                RoleAlignment.CrewPower => ("CPow", CPowDescription),
-                RoleAlignment.CrewDisrup => ("CDi", CDiDescription),
-                RoleAlignment.IntruderSupport => ("IS", ISDescription),
-                RoleAlignment.IntruderConceal => ("IC", ICDescription),
-                RoleAlignment.IntruderDecep => ("ID", IDDescription),
-                RoleAlignment.IntruderKill => ("IK", IKDescription),
-                RoleAlignment.IntruderUtil => ("IU", IUDescription),
-                RoleAlignment.IntruderInvest => ("II", IIDescription),
-                RoleAlignment.IntruderProt => ("IP", IPDescription),
-                RoleAlignment.IntruderSov => ("ISv", ISvDescription),
-                RoleAlignment.IntruderAudit => ("IA", IADescription),
-                RoleAlignment.IntruderPower => ("IPow", IPowDescription),
-                RoleAlignment.IntruderDisrup => ("IDi", IDiDescription),
-                RoleAlignment.NeutralKill => ("NK", NKDescription),
-                RoleAlignment.NeutralNeo => ("NN", NNDescription),
-                RoleAlignment.NeutralEvil => ("NE", NEDescription),
-                RoleAlignment.NeutralBen => ("NB", NBDescription),
-                RoleAlignment.NeutralPros => ("NP", NPDescription),
-                RoleAlignment.NeutralApoc => ("NA", NADescription),
-                RoleAlignment.NeutralHarb => ("NH", NHDescription),
-                RoleAlignment.NeutralInvest => ("NI", NIDescription),
-                RoleAlignment.NeutralAudit => ("NAud", NAudDescription),
-                RoleAlignment.NeutralSov => ("NSv", NSvDescription),
-                RoleAlignment.NeutralProt => ("NProt", NProtDescription),
-                RoleAlignment.NeutralSupport => ("NS", NSDescription),
-                RoleAlignment.NeutralUtil => ("NU", NUDescription),
-                RoleAlignment.NeutralConceal => ("NC", NCDescription),
-                RoleAlignment.NeutralDecep => ("ND", NDDescription),
-                RoleAlignment.NeutralDisrup => ("NDi", NDiDescription),
-                RoleAlignment.NeutralPower => ("NPow", NPowDescription),
-                RoleAlignment.SyndicateKill => ("SyK", SyKDescription),
-                RoleAlignment.SyndicateSupport => ("SSu", SSuDescription),
-                RoleAlignment.SyndicateDisrup => ("SD", SDDescription),
-                RoleAlignment.SyndicatePower => ("SP", SPDescription),
-                RoleAlignment.SyndicateUtil => ("SU", SUDescription),
-                RoleAlignment.SyndicateInvest => ("SI", SIDescription),
-                RoleAlignment.SyndicateProt => ("SProt", SProtDescription),
-                RoleAlignment.SyndicateSov => ("SSv", SSvDescription),
-                RoleAlignment.SyndicateAudit => ("SA", SADescription),
-                RoleAlignment.SyndicateConceal => ("SC", SCDescription),
-                RoleAlignment.SyndicateDecep => ("SDe", SDeDescription),
-                _ => ("Invalid", "Invalid")
+                RoleAlignment.CrewSupport => ("CS", CSDescription, "Support"),
+                RoleAlignment.CrewInvest => ("CI", CIDescription, "Investigative"),
+                RoleAlignment.CrewProt => ("CP", CPDescription, "Protective"),
+                RoleAlignment.CrewKill => ("CK", CKDescription, "Killing"),
+                RoleAlignment.CrewUtil => ("CU", CUDescription, "Utility"),
+                RoleAlignment.CrewSov => ("CSv", CSvDescription, "Sovereign"),
+                RoleAlignment.CrewAudit => ("CA", CADescription, "Auditor"),
+                RoleAlignment.CrewConceal => ("CC", CCDescription, "Concealing"),
+                RoleAlignment.CrewDecep => ("CD", CDDescription, "Deception"),
+                RoleAlignment.CrewPower => ("CPow", CPowDescription, "Power"),
+                RoleAlignment.CrewDisrup => ("CDi", CDiDescription, "Disruption"),
+                RoleAlignment.IntruderSupport => ("IS", ISDescription, "Support"),
+                RoleAlignment.IntruderConceal => ("IC", ICDescription, "Conceal"),
+                RoleAlignment.IntruderDecep => ("ID", IDDescription, "Depection"),
+                RoleAlignment.IntruderKill => ("IK", IKDescription, "Killing"),
+                RoleAlignment.IntruderUtil => ("IU", IUDescription, "Utility"),
+                RoleAlignment.IntruderInvest => ("II", IIDescription, "Investigative"),
+                RoleAlignment.IntruderProt => ("IP", IPDescription, "Protective"),
+                RoleAlignment.IntruderSov => ("ISv", ISvDescription, "Sovereign"),
+                RoleAlignment.IntruderAudit => ("IA", IADescription, "Auditor"),
+                RoleAlignment.IntruderPower => ("IPow", IPowDescription, "Power"),
+                RoleAlignment.IntruderDisrup => ("IDi", IDiDescription, "Disruption"),
+                RoleAlignment.NeutralKill => ("NK", NKDescription, "Killing"),
+                RoleAlignment.NeutralNeo => ("NN", NNDescription, "Neophyte"),
+                RoleAlignment.NeutralEvil => ("NE", NEDescription, "Evil"),
+                RoleAlignment.NeutralBen => ("NB", NBDescription, "Benign"),
+                RoleAlignment.NeutralPros => ("NP", NPDescription, "Proselyte"),
+                RoleAlignment.NeutralApoc => ("NA", NADescription, "Apocalypse"),
+                RoleAlignment.NeutralHarb => ("NH", NHDescription, "Harbinger"),
+                RoleAlignment.NeutralInvest => ("NI", NIDescription, "Investigative"),
+                RoleAlignment.NeutralAudit => ("NAud", NAudDescription, "Auditor"),
+                RoleAlignment.NeutralSov => ("NSv", NSvDescription, "Sovereign"),
+                RoleAlignment.NeutralProt => ("NProt", NProtDescription, "Protective"),
+                RoleAlignment.NeutralSupport => ("NS", NSDescription, "Support"),
+                RoleAlignment.NeutralUtil => ("NU", NUDescription, "Utility"),
+                RoleAlignment.NeutralConceal => ("NC", NCDescription, "Conceal"),
+                RoleAlignment.NeutralDecep => ("ND", NDDescription, "Deception"),
+                RoleAlignment.NeutralDisrup => ("NDi", NDiDescription, "Disruption"),
+                RoleAlignment.NeutralPower => ("NPow", NPowDescription, "Power"),
+                RoleAlignment.SyndicateKill => ("SyK", SyKDescription, "Killing"),
+                RoleAlignment.SyndicateSupport => ("SSu", SSuDescription, "Support"),
+                RoleAlignment.SyndicateDisrup => ("SD", SDDescription, "Disruption"),
+                RoleAlignment.SyndicatePower => ("SP", SPDescription, "Power"),
+                RoleAlignment.SyndicateUtil => ("SU", SUDescription, "Utility"),
+                RoleAlignment.SyndicateInvest => ("SI", SIDescription, "Investigative"),
+                RoleAlignment.SyndicateProt => ("SProt", SProtDescription, "Protective"),
+                RoleAlignment.SyndicateSov => ("SSv", SSvDescription, "Soveriegn"),
+                RoleAlignment.SyndicateAudit => ("SA", SADescription, "Auditor"),
+                RoleAlignment.SyndicateConceal => ("SC", SCDescription, "Concealing"),
+                RoleAlignment.SyndicateDecep => ("SDe", SDeDescription, "Deception"),
+                _ => ("Invalid", "Invalid", "Invalid")
             };
+        }
+
+        public override string ToString()
+        {
+            var builder = new StringBuilder();
+            builder.AppendLine($"Name: {Base.AlignmentName(true)}")
+                .AppendLine($"Short Form: {Short}")
+                .AppendLine($"Description: {Description}");
+            return builder.ToString();
+        }
+
+        public override void WikiEntry(out string result)
+        {
+            base.WikiEntry(out result);
+            result += ColorIt($"Name: {Base.AlignmentName(true)}");
+            result += "\n" + ColorIt($"Short Form: {Short}");
+            result += "\n" + ColorIt(WrapText($"Description: {Description}"));
         }
     }
 
@@ -254,16 +328,25 @@ namespace TownOfUsReworked.Modules
     {
         public string AppliesTo;
 
-        public ModifierInfo(string name, string shortF, string description, string applies) : base(name, shortF, description) => AppliesTo = applies;
+        public ModifierInfo(string name, string shortF, string description, string applies, Color color) : base(name, shortF, description, color, InfoType.Modifier) => AppliesTo = applies;
 
         public override string ToString()
         {
             var builder = new StringBuilder();
-            builder.Append("Name: ").AppendLine(Name)
-                .Append("Short Form: ").AppendLine(Short)
-                .Append("Applies To: ").AppendLine(AppliesTo)
-                .Append("Description: ").AppendLine(Description);
+            builder.AppendLine($"Name: {Name}")
+                .AppendLine($"Short Form: {Short}")
+                .AppendLine($"Applies To: {AppliesTo}")
+                .AppendLine($"Description: {Description}");
             return builder.ToString();
+        }
+
+        public override void WikiEntry(out string result)
+        {
+            base.WikiEntry(out result);
+            result += ColorIt($"Name: {Name}");
+            result += "\n" + ColorIt($"Short Form: {Short}");
+            result += "\n" + ColorIt(WrapText($"Applies To: {AppliesTo}"));
+            result += "\n" + ColorIt(WrapText($"Description: {Description}"));
         }
     }
 
@@ -273,7 +356,8 @@ namespace TownOfUsReworked.Modules
         public string WinCon;
         public string Symbol;
 
-        public ObjectifierInfo(string name, string shortF, string description, string wincon, string applies, string symbol) : base(name, shortF, description)
+        public ObjectifierInfo(string name, string shortF, string description, string wincon, string applies, string symbol, Color color) : base(name, shortF, description, color,
+            InfoType.Objectifier)
         {
             AppliesTo = applies;
             WinCon = wincon;
@@ -283,13 +367,23 @@ namespace TownOfUsReworked.Modules
         public override string ToString()
         {
             var builder = new StringBuilder();
-            builder.Append("Name: ").AppendLine(Name)
-                .Append("Short Form: ").AppendLine(Short)
-                .Append("Symbol: ").AppendLine(Symbol)
-                .Append("Applies To: ").AppendLine(AppliesTo)
-                .Append("Win Condition: ").AppendLine(WinCon)
-                .Append("Description: ").AppendLine(Description);
+            builder.AppendLine($"Name: {Name}")
+                .AppendLine($"Short Form: {Short}")
+                .AppendLine($"Symbol: {Symbol}")
+                .AppendLine($"Applies To: {AppliesTo}")
+                .AppendLine($"Win Condition: {WinCon}")
+                .AppendLine($"Description: {Description}");
             return builder.ToString();
+        }
+
+        public override void WikiEntry(out string result)
+        {
+            base.WikiEntry(out result);
+            result += ColorIt($"Name: {Name}");
+            result += "\n" + ColorIt($"Short Form: {Short}");
+            result += "\n" + ColorIt($"Symbol: {Symbol}");
+            result += "\n" + ColorIt(WrapText($"Applies To: {AppliesTo}"));
+            result += "\n" + ColorIt(WrapText($"Description: {Description}"));
         }
     }
 
@@ -297,31 +391,38 @@ namespace TownOfUsReworked.Modules
     {
         public string AppliesTo;
 
-        public AbilityInfo(string name, string shortF, string description, string applies) : base(name, shortF, description) => AppliesTo = applies;
+        public AbilityInfo(string name, string shortF, string description, string applies, Color color) : base(name, shortF, description, color, InfoType.Ability) => AppliesTo = applies;
 
         public override string ToString()
         {
             var builder = new StringBuilder();
-            builder.Append("Name: ").AppendLine(Name)
-                .Append("Short Form: ").AppendLine(Short)
-                .Append("Applies To: ").AppendLine(AppliesTo)
-                .Append("Description: ").AppendLine(Description);
+            builder.AppendLine($"Name: {Name}")
+                .AppendLine($"Short Form: {Short}")
+                .AppendLine($"Applies To: {AppliesTo}")
+                .AppendLine($"Description: {Description}");
             return builder.ToString();
+        }
+
+        public override void WikiEntry(out string result)
+        {
+            base.WikiEntry(out result);
+            result += ColorIt($"Name: {Name}");
+            result += "\n" + ColorIt($"Short Form: {Short}");
+            result += "\n" + ColorIt(WrapText($"Applies To: {AppliesTo}"));
+            result += "\n" + ColorIt(WrapText($"Description: {Description}"));
         }
     }
 
     public class Lore : Info
     {
-        public string Story;
+        public Lore(string name, string story, string shortF, Color color) : base(name, shortF, story, color, InfoType.Lore) {}
 
-        public Lore(string name, string story, string shortF) : base(name, shortF, "") => Story = story;
+        public override string ToString() => Description;
 
-        public override string ToString()
+        public override void WikiEntry(out string result)
         {
-            var builder = new StringBuilder();
-            builder.Append("Name: ").AppendLine(Name)
-                .Append("Lore: ").AppendLine(Story);
-            return builder.ToString();
+            base.WikiEntry(out result);
+            result += "\n" + ColorIt(WrapText($"Description: {Description}"));
         }
     }
 
@@ -329,19 +430,27 @@ namespace TownOfUsReworked.Modules
     {
         public string OtherNotes;
 
-        public OtherInfo(string name, string shortF, string description, string otherNotes = "") : base(name, shortF, description) => OtherNotes = otherNotes;
+        public OtherInfo(string name, string shortF, string description, Color color, string otherNotes = "") : base(name, shortF, description, color, InfoType.Other) => OtherNotes =
+            otherNotes;
 
         public override string ToString()
         {
             var builder = new StringBuilder();
-            builder.Append("Name: ").AppendLine(Name)
-                .Append("Short Form: ").AppendLine(Short)
-                .Append("Description: ").AppendLine(Description);
-
-            if (OtherNotes != "")
-                builder.AppendLine(OtherNotes);
+            builder.AppendLine($"Name: {Name}")
+                .AppendLine($"Short Form: {Short}")
+                .AppendLine($"Description: {Description}")
+                .Append($"\n{OtherNotes}");
 
             return builder.ToString();
+        }
+
+        public override void WikiEntry(out string result)
+        {
+            base.WikiEntry(out result);
+            result += ColorIt($"Name: {Name}");
+            result += "\n" + ColorIt($"Short Form: {Short}");
+            result += "\n" + ColorIt(WrapText($"Description: {Description}"));
+            result += "\n" + ColorIt(WrapTexts(OtherNotes.Split('\n').ToList()));
         }
     }
 }

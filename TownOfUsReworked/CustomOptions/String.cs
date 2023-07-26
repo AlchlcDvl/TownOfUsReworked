@@ -2,31 +2,26 @@ namespace TownOfUsReworked.CustomOptions
 {
     public class CustomStringOption : CustomOption
     {
-        public CustomStringOption(int id, MultiMenu menu, string name, string[] values) : base(id, menu, name, CustomOptionType.String, 0)
+        public readonly string[] Values;
+
+        public CustomStringOption(int id, MultiMenu menu, string name, string[] values, CustomLayersOption parent = null) : base(id, menu, name, CustomOptionType.String, 0, parent)
         {
             Values = values;
             Format = (value, _) => Values[(int)value];
         }
 
-        public string[] Values;
+        public CustomStringOption(int id, MultiMenu menu, string name, string[] values, CustomLayersOption[] parents, bool all = false) : base(id, menu, name, CustomOptionType.String, 0,
+            parents, all)
+        {
+            Values = values;
+            Format = (value, _) => Values[(int)value];
+        }
 
         public int Get() => (int)Value;
 
-        public void Increase()
-        {
-            if (Get() + 1 >= Values.Length)
-                Set(0);
-            else
-                Set(Get() + 1);
-        }
+        public void Increase() => Set(CycleInt(Values.Length - 1, 0, Get(), true));
 
-        public void Decrease()
-        {
-            if (Get() - 1 < 0)
-                Set(Values.Length - 1);
-            else
-                Set(Get() - 1);
-        }
+        public void Decrease() => Set(CycleInt(Values.Length - 1, 0, Get(), false));
 
         public override void OptionCreated()
         {
@@ -34,7 +29,7 @@ namespace TownOfUsReworked.CustomOptions
             var str = Setting.Cast<KeyValueOption>();
             str.TitleText.text = Name;
             str.Selected = str.oldValue = Get();
-            str.ValueText.text = ToString();
+            str.ValueText.text = Format(Value, OtherValue);
         }
     }
 }

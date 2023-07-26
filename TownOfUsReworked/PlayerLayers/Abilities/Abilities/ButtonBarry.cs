@@ -7,25 +7,21 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
         public DateTime LastButtoned;
         public bool ButtonUsable => !ButtonUsed && Player.RemainingEmergencies > 0;
 
-        public ButtonBarry(PlayerControl player) : base(player)
-        {
-            Name = "Button Barry";
-            TaskText = () => "- You can call a button from anywhere";
-            Color = CustomGameOptions.CustomAbilityColors ? Colors.ButtonBarry : Colors.Ability;
-            AbilityType = AbilityEnum.ButtonBarry;
-            Type = LayerEnum.ButtonBarry;
-            ButtonButton = new(this, "Button", AbilityTypes.Effect, "Quarternary", Call);
+        public override Color32 Color => ClientGameOptions.CustomAbColors ? Colors.ButtonBarry : Colors.Ability;
+        public override string Name => "Button Barry";
+        public override LayerEnum Type => LayerEnum.ButtonBarry;
+        public override AbilityEnum AbilityType => AbilityEnum.ButtonBarry;
+        public override Func<string> TaskText => () => "- You can call a button from anywhere";
 
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
-        }
+        public ButtonBarry(PlayerControl player) : base(player) => ButtonButton = new(this, "Button", AbilityTypes.Effect, "Quarternary", Call);
 
         public float StartTimer()
         {
             var timespan = DateTime.UtcNow - LastButtoned;
             var num = Player.GetModifiedCooldown(CustomGameOptions.ButtonCooldown) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void Call()
@@ -34,10 +30,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
                 return;
 
             ButtonUsed = true;
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-            writer.Write((byte)ActionsRPC.BarryButton);
-            writer.Write(PlayerId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            CallRpc(CustomRPC.Action, ActionsRPC.BarryButton, Player);
             FixExtentions.Fix();
 
             if (AmongUsClient.Instance.AmHost)
@@ -45,7 +38,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
                 MeetingRoomManager.Instance.reporter = Player;
                 MeetingRoomManager.Instance.target = null;
                 AmongUsClient.Instance.DisconnectHandlers.AddUnique(MeetingRoomManager.Instance.Cast<IDisconnectHandler>());
-                Utils.HUD.OpenMeetingRoom(Player);
+                HUD.OpenMeetingRoom(Player);
                 Player.RpcStartMeeting(null);
             }
         }

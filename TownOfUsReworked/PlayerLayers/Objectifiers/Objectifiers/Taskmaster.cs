@@ -5,17 +5,13 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         public bool Revealed => TasksLeft <= CustomGameOptions.TMTasksRemaining;
         public bool WinTasksDone;
 
-        public Taskmaster(PlayerControl player) : base(player)
-        {
-            Name = "Taskmaster";
-            TaskText = () => "- Finish your tasks before the game ends";
-            Symbol = "µ";
-            Color = CustomGameOptions.CustomObjectifierColors ? Colors.Taskmaster : Colors.Objectifier;
-            ObjectifierType = ObjectifierEnum.Taskmaster;
-            Type = LayerEnum.Taskmaster;
+        public override Color32 Color => ClientGameOptions.CustomObjColors ? Colors.Taskmaster : Colors.Objectifier;
+        public override string Name => "Taskmaster";
+        public override string Symbol => "µ";
+        public override LayerEnum Type => LayerEnum.Taskmaster;
+        public override ObjectifierEnum ObjectifierType => ObjectifierEnum.Taskmaster;
+        public override Func<string> TaskText => () => "- Finish your tasks before the game ends";
 
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
-        }
+        public Taskmaster(PlayerControl player) : base(player) {}
     }
 }

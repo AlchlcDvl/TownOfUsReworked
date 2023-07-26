@@ -13,7 +13,7 @@ namespace TownOfUsReworked.Patches
             var newHeightInch = oldHeightInch * CustomPlayer.Local.GetModifiedSize();
             var newWeight = oldWeight * CustomPlayer.Local.GetModifiedSize();
 
-            while (newHeightFeet.IsInRange(0, 1))
+            while (IsInRange(newHeightFeet, 0, 1))
             {
                 newHeightInch += 12 * newHeightFeet;
                 newHeightFeet--;
@@ -28,8 +28,8 @@ namespace TownOfUsReworked.Patches
                 newHeightInch -= 12;
             }
 
-            var weightString = $"{newWeight}lb";
-            var heightString = $"{newHeightFeet}' {newHeightInch}\"";
+            var weightString = $"{(int)newWeight}lb";
+            var heightString = $"{(int)newHeightFeet}' {(int)newHeightInch}\"";
 
             __instance.completeString = __instance.completeString.Replace("3' 6\"", heightString).Replace("92lb", weightString);
         }

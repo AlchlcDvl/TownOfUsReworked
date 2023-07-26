@@ -11,15 +11,12 @@ namespace TownOfUsReworked.Patches
 
             if (gameObject && !ModVersion)
             {
-                ModVersion = UObject.Instantiate(__instance.text);
-                var pos = MainMenuStartPatch.Logo.transform.position;
-                pos.y -= 2f;
-                ModVersion.transform.position = pos;
+                ModVersion = UObject.Instantiate(__instance.text, MainMenuStartPatch.Logo.transform);
+                ModVersion.transform.localPosition = new(0, -2f, 0);
                 ModVersion.text = $"<size=175%><b>{TownOfUsReworked.VersionFinal}\nCreated by <color=#C50000FF>AlchlcDvl</color></b></size>";
                 ModVersion.alignment = TextAlignmentOptions.Center;
                 ModVersion.fontStyle = FontStyles.Bold;
                 ModVersion.name = "ModVersion";
-                ModVersion.transform.SetParent(MainMenuStartPatch.Logo.transform.parent);
             }
         }
     }
@@ -36,8 +33,8 @@ namespace TownOfUsReworked.Patches
 
             __instance.text.text = $"<size=80%>Ping: {AmongUsClient.Instance.Ping}ms FPS: {fps}\n" +
                 "<b><color=#00FF00FF>TownOfUs</color><color=#FF00FFFF>Reworked</color></b>\n" +
-                $"{(!Utils.Meeting ? $"<color=#0000FFFF>{TownOfUsReworked.VersionFinal}</color>\n" : "")}" +
-                $"{(!Utils.Meeting ? "<color=#C50000FF>By: AlchlcDvl</color>\n" : "")}" + (TownOfUsReworked.MCIActive ? (ConstantVariables.IsLobby ?
+                $"{(!Meeting ? $"<color=#0000FFFF>{TownOfUsReworked.VersionFinal}</color>\n" : "")}" +
+                $"{(!Meeting ? "<color=#C50000FF>By: AlchlcDvl</color>\n" : "")}" + (TownOfUsReworked.MCIActive ? (IsLobby ?
                 $"Lobby {(TownOfUsReworked.LobbyCapped ? "C" : "Unc")}apped\nRobots{(TownOfUsReworked.Persistence ? "" : " Don't")} Persist" : "") : "") + "</size>";
         }
 
@@ -46,7 +43,7 @@ namespace TownOfUsReworked.Patches
             if (!__instance.GetComponentInChildren<SpriteRenderer>())
             {
                 var logo = new GameObject("Logo") { layer = 5 };
-                logo.AddComponent<SpriteRenderer>().sprite = AssetManager.GetSprite("SettingsButton");
+                logo.AddComponent<SpriteRenderer>().sprite = GetSprite("SettingsButton");
                 logo.transform.SetParent(__instance.transform);
                 logo.transform.localPosition = new(-1f, -0.5f, -1);
                 logo.transform.localScale *= 0.5f;

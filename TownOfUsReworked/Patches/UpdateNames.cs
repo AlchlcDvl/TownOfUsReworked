@@ -4,14 +4,14 @@ namespace TownOfUsReworked.Patches
     [HarmonyPriority(Priority.Last)]
     public static class UpdateNames
     {
-        public readonly static Dictionary<byte, string> PlayerNames = new();
+        public static readonly Dictionary<byte, string> PlayerNames = new();
 
         public static void Postfix()
         {
-            if (!AssetManager.SoundEffects.ContainsKey("Kill") && CustomPlayer.Local)
-                AssetManager.SoundEffects.Add("Kill", CustomPlayer.Local.KillSfx);
+            if (!SoundEffects.ContainsKey("Kill") && CustomPlayer.Local)
+                SoundEffects.Add("Kill", CustomPlayer.Local.KillSfx);
 
-            if (ConstantVariables.Inactive || ConstantVariables.IsHnS || Utils.Meeting || LobbyBehaviour.Instance)
+            if (Inactive || IsHnS || Meeting || LobbyBehaviour.Instance)
                 return;
 
             CustomPlayer.AllPlayers.ForEach(x => x.SetName());
@@ -39,21 +39,21 @@ namespace TownOfUsReworked.Patches
                 return ("", Color.clear);
             }
 
-            var name = CustomGameOptions.NoNames && !ConstantVariables.IsLobby ? "" : player.Data.PlayerName;
-            var color = Color.white;
+            var name = CustomGameOptions.NoNames && !IsLobby ? "" : player.Data.PlayerName;
+            var color = UColor.white;
             var info = player.AllPlayerInfo();
             var localinfo = CustomPlayer.Local.AllPlayerInfo();
             var roleRevealed = false;
 
-            if (DoUndo.IsCamoed && player != CustomPlayer.Local && !CustomPlayer.LocalCustom.IsDead && !ConstantVariables.IsLobby)
-                name = Utils.GetRandomisedName();
+            if (DoUndo.IsCamoed && player != CustomPlayer.Local && !CustomPlayer.LocalCustom.IsDead && !IsLobby)
+                name = GetRandomisedName();
             else
-                name = CustomGameOptions.NoNames && !ConstantVariables.IsLobby ? "" : PlayerNames.FirstOrDefault(x => x.Key == player.PlayerId).Value;
+                name = CustomGameOptions.NoNames && !IsLobby ? "" : PlayerNames.FirstOrDefault(x => x.Key == player.PlayerId).Value;
 
             if (info[0] == null || localinfo[0] == null)
                 return (name, color);
 
-            if (player.CanDoTasks() && ConstantVariables.DeadSeeEverything)
+            if (player.CanDoTasks() && DeadSeeEverything)
             {
                 var role = info[0] as Role;
                 name += $" ({role.TasksCompleted}/{role.TotalTasks})";
@@ -66,7 +66,10 @@ namespace TownOfUsReworked.Patches
             if (player.IsMarked())
                 name += " <color=#F1C40FFF>χ</color>";
 
-            if (player.Is(RoleEnum.Mayor) && !ConstantVariables.DeadSeeEverything && CustomPlayer.Local != player)
+            if (player == CachedFirstDead && ((player == CustomPlayer.Local && (int)CustomGameOptions.WhoSeesFirstKillShield == 1) || CustomGameOptions.WhoSeesFirstKillShield == 0))
+                name += " <color=#C2185BFF>Γ</color>";
+
+            if (player.Is(RoleEnum.Mayor) && !DeadSeeEverything && CustomPlayer.Local != player)
             {
                 var mayor = info[0] as Mayor;
 
@@ -106,7 +109,7 @@ namespace TownOfUsReworked.Patches
                     }
                 }
             }
-            else if (player.Is(RoleEnum.Dictator) && !ConstantVariables.DeadSeeEverything && CustomPlayer.Local != player)
+            else if (player.Is(RoleEnum.Dictator) && !DeadSeeEverything && CustomPlayer.Local != player)
             {
                 var dict = info[0] as Dictator;
 
@@ -147,7 +150,7 @@ namespace TownOfUsReworked.Patches
                 }
             }
 
-            if (CustomPlayer.Local.Is(RoleEnum.Consigliere) && !ConstantVariables.DeadSeeEverything)
+            if (CustomPlayer.Local.Is(RoleEnum.Consigliere) && !DeadSeeEverything)
             {
                 var consigliere = localinfo[0] as Consigliere;
 
@@ -159,7 +162,7 @@ namespace TownOfUsReworked.Patches
                     if (CustomGameOptions.ConsigInfo == ConsigInfo.Role)
                     {
                         color = role.Color;
-                        name += $"\n{role.Name}";
+                        name += $"\n{role}";
 
                         if (consigliere.Player.GetSubFaction() == player.GetSubFaction() && player.GetSubFaction() != SubFaction.None)
                             consigliere.Investigated.Remove(player.PlayerId);
@@ -171,7 +174,7 @@ namespace TownOfUsReworked.Patches
                     }
                 }
             }
-            else if (CustomPlayer.Local.Is(RoleEnum.PromotedGodfather) && !ConstantVariables.DeadSeeEverything)
+            else if (CustomPlayer.Local.Is(RoleEnum.PromotedGodfather) && !DeadSeeEverything)
             {
                 var godfather = localinfo[0] as PromotedGodfather;
 
@@ -183,7 +186,7 @@ namespace TownOfUsReworked.Patches
                     if (CustomGameOptions.ConsigInfo == ConsigInfo.Role)
                     {
                         color = role.Color;
-                        name += $"\n{role.Name}";
+                        name += $"\n{role}";
 
                         if (godfather.Player.GetSubFaction() == player.GetSubFaction() && player.GetSubFaction() != SubFaction.None)
                             godfather.Investigated.Remove(player.PlayerId);
@@ -223,42 +226,42 @@ namespace TownOfUsReworked.Patches
                     }
                 }
             }
-            else if (CustomPlayer.Local.Is(RoleEnum.Arsonist) && !ConstantVariables.DeadSeeEverything)
+            else if (CustomPlayer.Local.Is(RoleEnum.Arsonist) && !DeadSeeEverything)
             {
                 var arsonist = localinfo[0] as Arsonist;
 
                 if (arsonist.Doused.Contains(player.PlayerId))
                     name += " <color=#EE7600FF>Ξ</color>";
             }
-            else if (CustomPlayer.Local.Is(RoleEnum.Plaguebearer) && !ConstantVariables.DeadSeeEverything)
+            else if (CustomPlayer.Local.Is(RoleEnum.Plaguebearer) && !DeadSeeEverything)
             {
                 var plaguebearer = localinfo[0] as Plaguebearer;
 
                 if (plaguebearer.Infected.Contains(player.PlayerId) && CustomPlayer.Local != player)
                     name += " <color=#CFFE61FF>ρ</color>";
             }
-            else if (CustomPlayer.Local.Is(RoleEnum.Cryomaniac) && !ConstantVariables.DeadSeeEverything)
+            else if (CustomPlayer.Local.Is(RoleEnum.Cryomaniac) && !DeadSeeEverything)
             {
                 var cryomaniac = localinfo[0] as Cryomaniac;
 
                 if (cryomaniac.Doused.Contains(player.PlayerId))
                     name += " <color=#642DEAFF>λ</color>";
             }
-            else if (CustomPlayer.Local.Is(RoleEnum.Framer) && !ConstantVariables.DeadSeeEverything)
+            else if (CustomPlayer.Local.Is(RoleEnum.Framer) && !DeadSeeEverything)
             {
                 var framer = localinfo[0] as Framer;
 
                 if (framer.Framed.Contains(player.PlayerId))
                     name += " <color=#00FFFFFF>ς</color>";
             }
-            else if (CustomPlayer.Local.Is(RoleEnum.Spellslinger) && !ConstantVariables.DeadSeeEverything)
+            else if (CustomPlayer.Local.Is(RoleEnum.Spellslinger) && !DeadSeeEverything)
             {
                 var spellslinger = localinfo[0] as Spellslinger;
 
                 if (spellslinger.Spelled.Contains(player.PlayerId))
                     name += " <color=#0028F5FF>ø</color>";
             }
-            else if (CustomPlayer.Local.Is(RoleEnum.Executioner) && !ConstantVariables.DeadSeeEverything)
+            else if (CustomPlayer.Local.Is(RoleEnum.Executioner) && !DeadSeeEverything)
             {
                 var executioner = localinfo[0] as Executioner;
 
@@ -270,14 +273,14 @@ namespace TownOfUsReworked.Patches
                     {
                         var role = info[0] as Role;
                         color = role.Color;
-                        name += $"\n{role.Name}";
+                        name += $"\n{role}";
                         roleRevealed = true;
                     }
                     else
                         color = executioner.Color;
                 }
             }
-            else if (CustomPlayer.Local.Is(RoleEnum.Guesser) && !ConstantVariables.DeadSeeEverything)
+            else if (CustomPlayer.Local.Is(RoleEnum.Guesser) && !DeadSeeEverything)
             {
                 var guesser = localinfo[0] as Guesser;
 
@@ -287,7 +290,7 @@ namespace TownOfUsReworked.Patches
                     name += " <color=#EEE5BEFF>π</color>";
                 }
             }
-            else if (CustomPlayer.Local.Is(RoleEnum.GuardianAngel) && !ConstantVariables.DeadSeeEverything)
+            else if (CustomPlayer.Local.Is(RoleEnum.GuardianAngel) && !DeadSeeEverything)
             {
                 var guardianAngel = localinfo[0] as GuardianAngel;
 
@@ -302,14 +305,14 @@ namespace TownOfUsReworked.Patches
                     {
                         var role = info[0] as Role;
                         color = role.Color;
-                        name += $"\n{role.Name}";
+                        name += $"\n{role}";
                         roleRevealed = true;
                     }
                     else
                         color = guardianAngel.Color;
                 }
             }
-            else if (CustomPlayer.Local.Is(RoleEnum.Whisperer) && !ConstantVariables.DeadSeeEverything)
+            else if (CustomPlayer.Local.Is(RoleEnum.Whisperer) && !DeadSeeEverything)
             {
                 var whisperer = localinfo[0] as Whisperer;
 
@@ -319,7 +322,7 @@ namespace TownOfUsReworked.Patches
                     {
                         var role = info[0] as Role;
                         color = role.Color;
-                        name += $" <color=#F995FCFF>Λ</color>\n{role.Name}";
+                        name += $" <color=#F995FCFF>Λ</color>\n{role}";
                         roleRevealed = true;
                     }
                     else
@@ -329,14 +332,14 @@ namespace TownOfUsReworked.Patches
                 {
                     foreach (var stats in whisperer.PlayerConversion)
                     {
-                        var color2 = (int)(stats.Item2 / 100f * 256);
+                        var color2 = (int)(stats.Value / 100f * 256);
 
-                        if (color2 > 0 && player.PlayerId == stats.Item1)
+                        if (color2 > 0 && player.PlayerId == stats.Key)
                             color = new(255, 255, color2, 255);
                     }
                 }
             }
-            else if (CustomPlayer.Local.Is(RoleEnum.Dracula) && !ConstantVariables.DeadSeeEverything)
+            else if (CustomPlayer.Local.Is(RoleEnum.Dracula) && !DeadSeeEverything)
             {
                 var dracula = localinfo[0] as Dracula;
 
@@ -346,14 +349,14 @@ namespace TownOfUsReworked.Patches
                     {
                         var role = info[0] as Role;
                         color = role.Color;
-                        name += $" <color=#7B8968FF>γ</color>\n{role.Name}";
+                        name += $" <color=#7B8968FF>γ</color>\n{role}";
                         roleRevealed = true;
                     }
                     else
                         color = dracula.SubFactionColor;
                 }
             }
-            else if (CustomPlayer.Local.Is(RoleEnum.Jackal) && !ConstantVariables.DeadSeeEverything)
+            else if (CustomPlayer.Local.Is(RoleEnum.Jackal) && !DeadSeeEverything)
             {
                 var jackal = localinfo[0] as Jackal;
 
@@ -363,14 +366,14 @@ namespace TownOfUsReworked.Patches
                     {
                         var role = info[0] as Role;
                         color = role.Color;
-                        name += $" <color=#575657FF>$</color>\n{role.Name}";
+                        name += $" <color=#575657FF>$</color>\n{role}";
                         roleRevealed = true;
                     }
                     else
                         color = jackal.SubFactionColor;
                 }
             }
-            else if (CustomPlayer.Local.Is(RoleEnum.Necromancer) && !ConstantVariables.DeadSeeEverything)
+            else if (CustomPlayer.Local.Is(RoleEnum.Necromancer) && !DeadSeeEverything)
             {
                 var necromancer = localinfo[0] as Necromancer;
 
@@ -380,21 +383,21 @@ namespace TownOfUsReworked.Patches
                     {
                         var role = info[0] as Role;
                         color = role.Color;
-                        name += $" <color=#E6108AFF>Σ</color>\n{role.Name}";
+                        name += $" <color=#E6108AFF>Σ</color>\n{role}";
                         roleRevealed = true;
                     }
                     else
                         color = necromancer.SubFactionColor;
                 }
             }
-            else if (CustomPlayer.Local.Is(RoleAlignment.NeutralKill) && !ConstantVariables.DeadSeeEverything && CustomGameOptions.NKsKnow)
+            else if (CustomPlayer.Local.Is(RoleAlignment.NeutralKill) && !DeadSeeEverything && CustomGameOptions.NKsKnow)
             {
                 if ((player.GetRole() == CustomPlayer.Local.GetRole() && CustomGameOptions.NoSolo == NoSolo.SameNKs) || (player.GetAlignment() == CustomPlayer.Local.GetAlignment() &&
                     CustomGameOptions.NoSolo == NoSolo.AllNKs))
                 {
                     var role = info[0] as Role;
                     color = role.Color;
-                    name += $"\n{role.Name}";
+                    name += $"\n{role}";
                     roleRevealed = true;
                 }
             }
@@ -420,7 +423,7 @@ namespace TownOfUsReworked.Patches
                 }
             }
 
-            if (CustomPlayer.Local.IsBitten() && !ConstantVariables.DeadSeeEverything)
+            if (CustomPlayer.Local.IsBitten() && !DeadSeeEverything)
             {
                 var dracula = CustomPlayer.Local.GetDracula();
 
@@ -430,7 +433,7 @@ namespace TownOfUsReworked.Patches
                     {
                         var role = info[0] as Role;
                         color = role.Color;
-                        name += $" <color=#7B8968FF>γ</color>\n{role.Name}";
+                        name += $" <color=#7B8968FF>γ</color>\n{role}";
                         roleRevealed = true;
 
                         if (CustomPlayer.Local.Is(RoleEnum.Consigliere))
@@ -445,7 +448,7 @@ namespace TownOfUsReworked.Patches
                         color = dracula.SubFactionColor;
                 }
             }
-            else if (CustomPlayer.Local.IsRecruit() && !ConstantVariables.DeadSeeEverything)
+            else if (CustomPlayer.Local.IsRecruit() && !DeadSeeEverything)
             {
                 var jackal = CustomPlayer.Local.GetJackal();
 
@@ -455,7 +458,7 @@ namespace TownOfUsReworked.Patches
                     {
                         var role = info[0] as Role;
                         color = role.Color;
-                        name += $" <color=#575657FF>$</color>\n{role.Name}";
+                        name += $" <color=#575657FF>$</color>\n{role}";
                         roleRevealed = true;
 
                         if (CustomPlayer.Local.Is(RoleEnum.Consigliere))
@@ -470,7 +473,7 @@ namespace TownOfUsReworked.Patches
                         color = jackal.SubFactionColor;
                 }
             }
-            else if (CustomPlayer.Local.IsResurrected() && !ConstantVariables.DeadSeeEverything)
+            else if (CustomPlayer.Local.IsResurrected() && !DeadSeeEverything)
             {
                 var necromancer = CustomPlayer.Local.GetNecromancer();
 
@@ -480,7 +483,7 @@ namespace TownOfUsReworked.Patches
                     {
                         var role = info[0] as Role;
                         color = role.Color;
-                        name += $" <color=#E6108AFF>Σ</color>\n{role.Name}";
+                        name += $" <color=#E6108AFF>Σ</color>\n{role}";
                         roleRevealed = true;
 
                         if (CustomPlayer.Local.Is(RoleEnum.Consigliere))
@@ -495,7 +498,7 @@ namespace TownOfUsReworked.Patches
                         color = necromancer.SubFactionColor;
                 }
             }
-            else if (CustomPlayer.Local.IsPersuaded() && !ConstantVariables.DeadSeeEverything)
+            else if (CustomPlayer.Local.IsPersuaded() && !DeadSeeEverything)
             {
                 var whisperer = CustomPlayer.Local.GetWhisperer();
 
@@ -505,7 +508,7 @@ namespace TownOfUsReworked.Patches
                     {
                         var role = info[0] as Role;
                         color = role.Color;
-                        name += $" <color=#F995FCFF>Λ</color>\n{role.Name}";
+                        name += $" <color=#F995FCFF>Λ</color>\n{role}";
                         roleRevealed = true;
 
                         if (CustomPlayer.Local.Is(RoleEnum.Consigliere))
@@ -521,7 +524,7 @@ namespace TownOfUsReworked.Patches
                 }
             }
 
-            if (CustomPlayer.Local.Is(ObjectifierEnum.Lovers) && !ConstantVariables.DeadSeeEverything)
+            if (CustomPlayer.Local.Is(ObjectifierEnum.Lovers) && !DeadSeeEverything)
             {
                 var lover = localinfo[3] as Objectifier;
                 var otherLover = CustomPlayer.Local.GetOtherLover();
@@ -534,7 +537,7 @@ namespace TownOfUsReworked.Patches
                     {
                         var role = info[0] as Role;
                         color = role.Color;
-                        name += $"\n{role.Name}";
+                        name += $"\n{role}";
                         roleRevealed = true;
 
                         if (CustomPlayer.Local.Is(RoleEnum.Consigliere))
@@ -544,10 +547,31 @@ namespace TownOfUsReworked.Patches
                             if (consigliere.Investigated.Contains(player.PlayerId))
                                 consigliere.Investigated.Remove(player.PlayerId);
                         }
+                        else if (CustomPlayer.Local.Is(RoleEnum.PromotedGodfather))
+                        {
+                            var godfather = localinfo[0] as PromotedGodfather;
+
+                            if (godfather.Investigated.Contains(player.PlayerId))
+                                godfather.Investigated.Remove(player.PlayerId);
+                        }
+                        else if (CustomPlayer.Local.Is(RoleEnum.Inspector))
+                        {
+                            var inspector = localinfo[0] as Inspector;
+
+                            if (inspector.Inspected.Contains(player.PlayerId))
+                                inspector.Inspected.Remove(player.PlayerId);
+                        }
+                        else if (CustomPlayer.Local.Is(RoleEnum.Retributionist))
+                        {
+                            var retributionist = localinfo[0] as Retributionist;
+
+                            if (retributionist.Inspected.Contains(player.PlayerId))
+                                retributionist.Inspected.Remove(player.PlayerId);
+                        }
                     }
                 }
             }
-            else if (CustomPlayer.Local.Is(ObjectifierEnum.Rivals) && !ConstantVariables.DeadSeeEverything)
+            else if (CustomPlayer.Local.Is(ObjectifierEnum.Rivals) && !DeadSeeEverything)
             {
                 var rival = localinfo[3] as Objectifier;
                 var otherRival = CustomPlayer.Local.GetOtherRival();
@@ -560,7 +584,7 @@ namespace TownOfUsReworked.Patches
                     {
                         var role = info[0] as Role;
                         color = role.Color;
-                        name += $"\n{role.Name}";
+                        name += $"\n{role}";
                         roleRevealed = true;
 
                         if (CustomPlayer.Local.Is(RoleEnum.Consigliere))
@@ -570,10 +594,78 @@ namespace TownOfUsReworked.Patches
                             if (consigliere.Investigated.Contains(player.PlayerId))
                                 consigliere.Investigated.Remove(player.PlayerId);
                         }
+                        else if (CustomPlayer.Local.Is(RoleEnum.PromotedGodfather))
+                        {
+                            var godfather = localinfo[0] as PromotedGodfather;
+
+                            if (godfather.Investigated.Contains(player.PlayerId))
+                                godfather.Investigated.Remove(player.PlayerId);
+                        }
+                        else if (CustomPlayer.Local.Is(RoleEnum.Inspector))
+                        {
+                            var inspector = localinfo[0] as Inspector;
+
+                            if (inspector.Inspected.Contains(player.PlayerId))
+                                inspector.Inspected.Remove(player.PlayerId);
+                        }
+                        else if (CustomPlayer.Local.Is(RoleEnum.Retributionist))
+                        {
+                            var retributionist = localinfo[0] as Retributionist;
+
+                            if (retributionist.Inspected.Contains(player.PlayerId))
+                                retributionist.Inspected.Remove(player.PlayerId);
+                        }
                     }
                 }
             }
-            else if (CustomPlayer.Local.Is(ObjectifierEnum.Mafia) && !ConstantVariables.DeadSeeEverything)
+            else if (CustomPlayer.Local.Is(ObjectifierEnum.Linked) && !DeadSeeEverything)
+            {
+                var link = localinfo[3] as Objectifier;
+                var otherLink = CustomPlayer.Local.GetOtherLink();
+
+                if (otherLink == player)
+                {
+                    name += $" {link.ColoredSymbol}";
+
+                    if (CustomGameOptions.LinkedRoles)
+                    {
+                        var role = info[0] as Role;
+                        color = role.Color;
+                        name += $"\n{role}";
+                        roleRevealed = true;
+
+                        if (CustomPlayer.Local.Is(RoleEnum.Consigliere))
+                        {
+                            var consigliere = localinfo[0] as Consigliere;
+
+                            if (consigliere.Investigated.Contains(player.PlayerId))
+                                consigliere.Investigated.Remove(player.PlayerId);
+                        }
+                        else if (CustomPlayer.Local.Is(RoleEnum.PromotedGodfather))
+                        {
+                            var godfather = localinfo[0] as PromotedGodfather;
+
+                            if (godfather.Investigated.Contains(player.PlayerId))
+                                godfather.Investigated.Remove(player.PlayerId);
+                        }
+                        else if (CustomPlayer.Local.Is(RoleEnum.Inspector))
+                        {
+                            var inspector = localinfo[0] as Inspector;
+
+                            if (inspector.Inspected.Contains(player.PlayerId))
+                                inspector.Inspected.Remove(player.PlayerId);
+                        }
+                        else if (CustomPlayer.Local.Is(RoleEnum.Retributionist))
+                        {
+                            var retributionist = localinfo[0] as Retributionist;
+
+                            if (retributionist.Inspected.Contains(player.PlayerId))
+                                retributionist.Inspected.Remove(player.PlayerId);
+                        }
+                    }
+                }
+            }
+            else if (CustomPlayer.Local.Is(ObjectifierEnum.Mafia) && !DeadSeeEverything)
             {
                 var mafia = localinfo[3] as Mafia;
 
@@ -585,7 +677,7 @@ namespace TownOfUsReworked.Patches
                     {
                         var role = info[0] as Role;
                         color = role.Color;
-                        name += $"\n{role.Name}";
+                        name += $"\n{role}";
                         roleRevealed = true;
 
                         if (CustomPlayer.Local.Is(RoleEnum.Consigliere))
@@ -595,11 +687,32 @@ namespace TownOfUsReworked.Patches
                             if (consigliere.Investigated.Contains(player.PlayerId))
                                 consigliere.Investigated.Remove(player.PlayerId);
                         }
+                        else if (CustomPlayer.Local.Is(RoleEnum.PromotedGodfather))
+                        {
+                            var godfather = localinfo[0] as PromotedGodfather;
+
+                            if (godfather.Investigated.Contains(player.PlayerId))
+                                godfather.Investigated.Remove(player.PlayerId);
+                        }
+                        else if (CustomPlayer.Local.Is(RoleEnum.Inspector))
+                        {
+                            var inspector = localinfo[0] as Inspector;
+
+                            if (inspector.Inspected.Contains(player.PlayerId))
+                                inspector.Inspected.Remove(player.PlayerId);
+                        }
+                        else if (CustomPlayer.Local.Is(RoleEnum.Retributionist))
+                        {
+                            var retributionist = localinfo[0] as Retributionist;
+
+                            if (retributionist.Inspected.Contains(player.PlayerId))
+                                retributionist.Inspected.Remove(player.PlayerId);
+                        }
                     }
                 }
             }
 
-            if (CustomPlayer.Local.Is(AbilityEnum.Snitch) && !ConstantVariables.DeadSeeEverything)
+            if (CustomPlayer.Local.Is(AbilityEnum.Snitch) && !DeadSeeEverything)
             {
                 var role = localinfo[0] as Role;
 
@@ -636,7 +749,7 @@ namespace TownOfUsReworked.Patches
                 }
             }
 
-            if (player.Is(AbilityEnum.Snitch) && !ConstantVariables.DeadSeeEverything && player != CustomPlayer.Local)
+            if (player.Is(AbilityEnum.Snitch) && !DeadSeeEverything && player != CustomPlayer.Local)
             {
                 var role = info[0] as Role;
 
@@ -650,14 +763,14 @@ namespace TownOfUsReworked.Patches
             }
 
             if (CustomPlayer.Local.GetFaction() == player.GetFaction() && player != CustomPlayer.Local && (player.GetFaction() == Faction.Intruder || player.GetFaction() ==
-                Faction.Syndicate) && !ConstantVariables.DeadSeeEverything)
+                Faction.Syndicate) && !DeadSeeEverything)
             {
                 var role = info[0] as Role;
 
                 if (CustomGameOptions.FactionSeeRoles)
                 {
                     color = role.Color;
-                    name += $"\n{role.Name}";
+                    name += $"\n{role}";
                     roleRevealed = true;
 
                     if (CustomPlayer.Local.Is(RoleEnum.Consigliere))
@@ -680,7 +793,7 @@ namespace TownOfUsReworked.Patches
                     name += $" {role.FactionColorString}ξ</color>";
             }
 
-            if ((CustomPlayer.Local.Is(Faction.Syndicate) || ConstantVariables.DeadSeeEverything) && (player == Role.DriveHolder || (CustomGameOptions.GlobalDrive &&
+            if ((CustomPlayer.Local.Is(Faction.Syndicate) || DeadSeeEverything) && (player == Role.DriveHolder || (CustomGameOptions.GlobalDrive &&
                 Role.SyndicateHasChaosDrive && player.Is(Faction.Syndicate))))
             {
                 name += " <color=#008000FF>Δ</color>";
@@ -696,7 +809,7 @@ namespace TownOfUsReworked.Patches
                         && CustomGameOptions.RevealerRevealsCrew))
                     {
                         color = role.Color;
-                        name += $"\n{role.Name}";
+                        name += $"\n{role}";
                         roleRevealed = true;
                     }
                 }
@@ -718,10 +831,10 @@ namespace TownOfUsReworked.Patches
                 }
             }
 
-            if ((player == CustomPlayer.Local || ConstantVariables.DeadSeeEverything) && player.IsVesting())
+            if ((player == CustomPlayer.Local || DeadSeeEverything) && player.IsVesting())
                 name += " <color=#DDDD00FF>υ</color>";
 
-            if (player == CustomPlayer.Local && !ConstantVariables.DeadSeeEverything)
+            if (player == CustomPlayer.Local && !DeadSeeEverything)
             {
                 if ((player.IsShielded() || player.IsRetShielded()) && (int)CustomGameOptions.ShowShielded is 0 or 2)
                     name += " <color=#006600FF>✚</color>";
@@ -754,7 +867,7 @@ namespace TownOfUsReworked.Patches
                     name += " <color=#F995FCFF>Λ</color>";
             }
 
-            if (ConstantVariables.DeadSeeEverything)
+            if (DeadSeeEverything)
             {
                 if ((player.IsShielded() || player.IsRetShielded()) && CustomGameOptions.ShowShielded != ShieldOptions.Everyone)
                     name += " <color=#006600FF>✚</color>";
@@ -814,13 +927,13 @@ namespace TownOfUsReworked.Patches
                 }
             }
 
-            if ((player.IsShielded() || player.IsRetShielded()) && (int)CustomGameOptions.ShowShielded is 3 && !ConstantVariables.DeadSeeEverything)
+            if ((player.IsShielded() || player.IsRetShielded()) && (int)CustomGameOptions.ShowShielded is 3 && !DeadSeeEverything)
                 name += " <color=#006600FF>✚</color>";
 
-            if (player.IsProtected() && CustomGameOptions.ShowProtect == ProtectOptions.Everyone && !ConstantVariables.DeadSeeEverything)
+            if (player.IsProtected() && CustomGameOptions.ShowProtect == ProtectOptions.Everyone && !DeadSeeEverything)
                 name += " <color=#FFFFFFFF>η</color>";
 
-            if (ConstantVariables.DeadSeeEverything || player == CustomPlayer.Local)
+            if (DeadSeeEverything || player == CustomPlayer.Local)
             {
                 if (info[3] != null)
                 {
@@ -832,7 +945,7 @@ namespace TownOfUsReworked.Patches
 
                 var role = info[0] as Role;
                 color = role.Color;
-                name += $"\n{role.Name}";
+                name += $"\n{role}";
                 roleRevealed = true;
             }
 

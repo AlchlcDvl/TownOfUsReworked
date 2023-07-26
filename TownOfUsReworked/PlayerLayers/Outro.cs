@@ -5,26 +5,26 @@ namespace TownOfUsReworked.PlayerLayers
     {
         public static void Postfix(EndGameManager __instance)
         {
-            if (!AssetManager.SoundEffects.ContainsKey("CrewWin"))
-                AssetManager.SoundEffects.Add("CrewWin", __instance.CrewStinger);
+            if (!SoundEffects.ContainsKey("CrewWin"))
+                SoundEffects.Add("CrewWin", __instance.CrewStinger);
 
-            if (!AssetManager.SoundEffects.ContainsKey("IntruderWin"))
-                AssetManager.SoundEffects.Add("IntruderWin", __instance.ImpostorStinger);
+            if (!SoundEffects.ContainsKey("IntruderWin"))
+                SoundEffects.Add("IntruderWin", __instance.ImpostorStinger);
 
-            if (!AssetManager.SoundEffects.ContainsKey("Stalemate"))
-                AssetManager.SoundEffects.Add("Stalemate", __instance.DisconnectStinger);
+            if (!SoundEffects.ContainsKey("Stalemate"))
+                SoundEffects.Add("Stalemate", __instance.DisconnectStinger);
 
-            if (!ConstantVariables.GameHasEnded)
+            if (!GameHasEnded)
                 return;
 
             var text = UObject.Instantiate(__instance.WinText);
             SoundManager.Instance.StopSound(__instance.ImpostorStinger);
-            AssetManager.Play("IntruderWin");
+            Play("IntruderWin");
 
             foreach (var player in UObject.FindObjectsOfType<PoolablePlayer>())
             {
                 var role = Role.AllRoles.Find(x => x.PlayerName == player.NameText().text);
-                player.NameText().text = $"{role.ColorString}<size=75%>{role.Name}</size>\n<size=90%>{player.NameText().text}</size></color>";
+                player.NameText().text = $"{role.ColorString}<size=75%>{role}</size>\n<size=90%>{player.NameText().text}</size></color>";
             }
 
             if (PlayerLayer.NobodyWins)
@@ -32,8 +32,8 @@ namespace TownOfUsReworked.PlayerLayers
                 __instance.BackgroundBar.material.color = Colors.Stalemate;
                 text.text = "Stalemate";
                 text.color = Colors.Stalemate;
-                AssetManager.Stop("IntruderWin");
-                AssetManager.Play("Stalemate");
+                Stop("IntruderWin");
+                Play("Stalemate");
             }
             else if (Role.SyndicateWin)
             {
@@ -78,8 +78,8 @@ namespace TownOfUsReworked.PlayerLayers
                 __instance.BackgroundBar.material.color = role.FactionColor;
                 text.text = "Crew Wins";
                 text.color = role.FactionColor;
-                AssetManager.Stop("IntruderWin");
-                AssetManager.Play("CrewWin");
+                Stop("IntruderWin");
+                Play("CrewWin");
             }
             else if (Role.NKWins)
             {
@@ -179,7 +179,7 @@ namespace TownOfUsReworked.PlayerLayers
                 __instance.BackgroundBar.material.color = role.Color;
                 text.text = "Glitch Wins";
                 text.color = role.Color;
-                AssetManager.Play("GlitchWin");
+                Play("GlitchWin");
             }
             else if (Role.JuggernautWins)
             {

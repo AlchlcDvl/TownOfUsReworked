@@ -7,21 +7,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public bool Revealed;
         public byte Voted;
 
+        public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Mayor : Colors.Crew;
+        public override string Name => "Mayor";
+        public override LayerEnum Type => LayerEnum.Mayor;
+        public override RoleEnum RoleType => RoleEnum.Mayor;
+        public override Func<string> StartText => () => "Reveal Yourself To Commit Voter Fraud";
+        public override Func<string> AbilitiesText => () => $"- You can reveal yourself to the crew\n- When revealed, your votes count {CustomGameOptions.MayorVoteCount + 1} times but you "
+            + "cannot be protected";
+        public override InspectorResults InspectorResults => InspectorResults.LeadsTheGroup;
+
         public Mayor(PlayerControl player) : base(player)
         {
-            Name = "Mayor";
-            StartText = () => "Reveal Yourself To Commit Voter Fraud";
-            AbilitiesText = () => $"- You can reveal yourself to the crew\n- When revealed, your votes count {CustomGameOptions.MayorVoteCount + 1} times but you cannot be protected";
-            Color = CustomGameOptions.CustomCrewColors ? Colors.Mayor : Colors.Crew;
-            RoleType = RoleEnum.Mayor;
             RoleAlignment = RoleAlignment.CrewSov;
-            InspectorResults = InspectorResults.LeadsTheGroup;
-            Type = LayerEnum.Mayor;
             Voted = 255;
             RevealButton = new(this, "MayorReveal", AbilityTypes.Effect, "ActionSecondary", Reveal);
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public void Reveal()
@@ -29,19 +28,22 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (RoundOne)
                 return;
 
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-            writer.Write((byte)ActionsRPC.MayorReveal);
-            writer.Write(PlayerId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            CallRpc(CustomRPC.Action, ActionsRPC.MayorReveal, this);
             Revealed = true;
-            Utils.Flash(Color);
-            BreakShield(PlayerId, true);
+            Flash(Color);
+            BreakShield(Player, true);
         }
 
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
             RevealButton.Update("REVEAL", !Revealed, !Revealed && !RoundOne);
+        }
+
+        public override void OnMeetingEnd(MeetingHud __instance)
+        {
+            base.OnMeetingEnd(__instance);
+            Voted = 255;
         }
     }
 }

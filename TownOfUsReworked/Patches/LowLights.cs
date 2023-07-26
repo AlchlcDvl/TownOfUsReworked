@@ -8,19 +8,14 @@ namespace TownOfUsReworked.Patches
             if (player == null)
                 return false;
 
-            if (ConstantVariables.IsHnS)
+            if (IsHnS)
             {
-                if (GameOptionsManager.Instance.currentHideNSeekGameOptions.useFlashlight)
-                {
-                    if (player.IsImpostor())
-                        __result = __instance.MaxLightRadius * GameOptionsManager.Instance.currentHideNSeekGameOptions.ImpostorFlashlightSize;
-                    else
-                        __result = __instance.MaxLightRadius * GameOptionsManager.Instance.currentHideNSeekGameOptions.CrewmateFlashlightSize;
-                }
-                else if (player.IsImpostor())
-                    __result = __instance.MaxLightRadius * GameOptionsManager.Instance.currentHideNSeekGameOptions.ImpostorLightMod;
+                var hns = GameOptionsManager.Instance.currentHideNSeekGameOptions;
+
+                if (hns.useFlashlight)
+                    __result = __instance.MaxLightRadius * (player.IsImpostor() ? hns.ImpostorFlashlightSize : hns.CrewmateFlashlightSize);
                 else
-                    __result = __instance.MaxLightRadius * GameOptionsManager.Instance.currentHideNSeekGameOptions.CrewLightMod;
+                    __result = __instance.MaxLightRadius * (player.IsImpostor() ? hns.ImpostorLightMod : hns.CrewLightMod);
 
                 return false;
             }
@@ -52,7 +47,44 @@ namespace TownOfUsReworked.Patches
         public static bool Prefix(PlayerControl __instance)
         {
             //Planning on making flashlights available all the time
-            return __instance != null;
+            AdjustLighting(__instance);
+            return false;
+        }
+
+        private static void AdjustLighting(PlayerControl __instance)
+        {
+            if (CustomPlayer.Local != __instance)
+                return;
+
+            var flashlights = false;
+            var size = ShipStatus.Instance.CalculateLightRadius(__instance.Data);
+
+            if (__instance.Is(Faction.Crew))
+                flashlights = CustomGameOptions.CrewFlashlight;
+            else if (__instance.Is(Faction.Intruder))
+                flashlights = CustomGameOptions.IntruderFlashlight;
+            else if (__instance.Is(Faction.Syndicate))
+                flashlights = CustomGameOptions.SyndicateFlashlight;
+            else if (__instance.Is(Faction.Neutral))
+                flashlights = CustomGameOptions.NeutralFlashlight;
+
+            if (flashlights)
+                size /= ShipStatus.Instance.MaxLightRadius;
+
+            flashlights = flashlights && !__instance.Data.IsDead;
+
+            if (!flashlights)
+            {
+                __instance.TargetFlashlight.gameObject.SetActive(false);
+                __instance.StartCoroutine(__instance.EnableRightJoystick(false));
+            }
+            else
+            {
+                __instance.TargetFlashlight?.gameObject.SetActive(false);
+                __instance.StartCoroutine(__instance.EnableRightJoystick(true));
+            }
+
+            __instance.lightSource.SetupLightingForGameplay(flashlights, size, __instance.TargetFlashlight.transform);
         }
     }
 }

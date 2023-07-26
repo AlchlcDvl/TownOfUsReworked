@@ -9,39 +9,38 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public float TimeRemaining;
         public float TimeRemaining2;
         public PlayerControl MeasuredPlayer;
-        public PlayerControl DisguisePlayer;
+        public PlayerControl CopiedPlayer;
         public PlayerControl DisguisedPlayer;
         public bool DelayActive => TimeRemaining2 > 0f;
         public bool Disguised => TimeRemaining > 0f;
         public bool Enabled;
 
+        public override Color32 Color => ClientGameOptions.CustomIntColors ? Colors.Disguiser : Colors.Intruder;
+        public override string Name => "Disguiser";
+        public override LayerEnum Type => LayerEnum.Disguiser;
+        public override RoleEnum RoleType => RoleEnum.Disguiser;
+        public override Func<string> StartText => () => "Disguise The <color=#8CFFFFFF>Crew</color> To Frame Them";
+        public override Func<string> AbilitiesText => () => $"- You can disguise a player into someone else's appearance\n{CommonAbilities}";
+        public override InspectorResults InspectorResults => InspectorResults.CreatesConfusion;
+
         public Disguiser(PlayerControl player) : base(player)
         {
-            Name = "Disguiser";
-            StartText = () => "Disguise The <color=#8CFFFFFF>Crew</color> To Frame Them";
-            AbilitiesText = () => $"- You can disguise a player into someone else's appearance\n{CommonAbilities}";
-            Color = CustomGameOptions.CustomIntColors ? Colors.Disguiser : Colors.Intruder;
-            RoleType = RoleEnum.Disguiser;
             RoleAlignment = RoleAlignment.IntruderDecep;
             MeasuredPlayer = null;
-            Type = LayerEnum.Disguiser;
             DisguiseButton = new(this, "Disguise", AbilityTypes.Direct, "Secondary", HitDisguise, Exception1);
             MeasureButton = new(this, "Measure", AbilityTypes.Direct, "Tertiary", Measure, Exception2);
-            DisguisePlayer = null;
             DisguisedPlayer = null;
-            InspectorResults = InspectorResults.CreatesConfusion;
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
+            MeasuredPlayer = null;
+            CopiedPlayer = null;
         }
 
         public void Disguise()
         {
             TimeRemaining -= Time.deltaTime;
-            Utils.Morph(DisguisedPlayer, DisguisePlayer);
+            Morph(DisguisedPlayer, CopiedPlayer);
             Enabled = true;
 
-            if (IsDead || DisguisedPlayer.Data.IsDead || DisguisedPlayer.Data.Disconnected || Utils.Meeting)
+            if (IsDead || DisguisedPlayer.Data.IsDead || DisguisedPlayer.Data.Disconnected || Meeting)
                 TimeRemaining = 0f;
         }
 
@@ -56,7 +55,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public void UnDisguise()
         {
             Enabled = false;
-            Utils.DefaultOutfit(DisguisedPlayer);
+            DefaultOutfit(DisguisedPlayer);
             LastDisguised = DateTime.UtcNow;
 
             if (CustomGameOptions.DisgCooldownsLinked)
@@ -67,38 +66,35 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var timespan = DateTime.UtcNow - LastDisguised;
             var num = Player.GetModifiedCooldown(CustomGameOptions.DisguiseCooldown) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public float MeasureTimer()
         {
             var timespan = DateTime.UtcNow - LastMeasured;
             var num = Player.GetModifiedCooldown(CustomGameOptions.MeasureCooldown) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void HitDisguise()
         {
-            if (DisguiseTimer() != 0f || Utils.IsTooFar(Player, DisguiseButton.TargetPlayer) || DisguiseButton.TargetPlayer == MeasuredPlayer || Disguised || DelayActive)
+            if (DisguiseTimer() != 0f || IsTooFar(Player, DisguiseButton.TargetPlayer) || DisguiseButton.TargetPlayer == MeasuredPlayer || Disguised || DelayActive)
                 return;
 
-            var interact = Utils.Interact(Player, DisguiseButton.TargetPlayer);
+            var interact = Interact(Player, DisguiseButton.TargetPlayer);
 
             if (interact[3])
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                writer.Write((byte)ActionsRPC.Disguise);
-                writer.Write(PlayerId);
-                writer.Write(MeasuredPlayer.PlayerId);
-                writer.Write(DisguiseButton.TargetPlayer.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
                 TimeRemaining = CustomGameOptions.DisguiseDuration;
                 TimeRemaining2 = CustomGameOptions.TimeToDisguise;
-                DisguisePlayer = MeasuredPlayer;
+                CopiedPlayer = MeasuredPlayer;
                 DisguisedPlayer = DisguiseButton.TargetPlayer;
                 Delay();
+                CallRpc(CustomRPC.Action, ActionsRPC.Disguise, this, CopiedPlayer, DisguisedPlayer);
 
                 if (CustomGameOptions.DisgCooldownsLinked)
                     LastMeasured = DateTime.UtcNow;
@@ -121,10 +117,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Measure()
         {
-            if (MeasureTimer() != 0f || Utils.IsTooFar(Player, MeasureButton.TargetPlayer) || MeasureButton.TargetPlayer == MeasuredPlayer)
+            if (MeasureTimer() != 0f || IsTooFar(Player, MeasureButton.TargetPlayer) || MeasureButton.TargetPlayer == MeasuredPlayer)
                 return;
 
-            var interact = Utils.Interact(Player, MeasureButton.TargetPlayer);
+            var interact = Interact(Player, MeasureButton.TargetPlayer);
 
             if (interact[3])
                 MeasuredPlayer = MeasureButton.TargetPlayer;

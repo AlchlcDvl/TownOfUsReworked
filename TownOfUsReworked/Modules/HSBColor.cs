@@ -16,13 +16,7 @@ namespace TownOfUsReworked.Modules
             this.a = a;
         }
 
-        public HSBColor(float h, float s, float b)
-        {
-            this.h = h;
-            this.s = s;
-            this.b = b;
-            a = 1f;
-        }
+        public HSBColor(float h, float s, float b) : this(h, s, b, 1f) {}
 
         public HSBColor(Color col)
         {
@@ -69,7 +63,6 @@ namespace TownOfUsReworked.Modules
             ret.h *= 1f / 360f;
             ret.s = dif / max * 1f;
             ret.b = max;
-
             return ret;
         }
 
@@ -179,27 +172,27 @@ namespace TownOfUsReworked.Modules
             return new(h, s, Mathf.Lerp(a.b, b.b, t), Mathf.Lerp(a.a, b.a, t));
         }
 
-        public static void Test()
+        /*public static void Test()
         {
-            var color = new HSBColor(Color.red);
+            var color = new HSBColor(UColor.red);
             Debug.Log("red: " + color);
 
-            color = new(Color.green);
+            color = new(UColor.green);
             Debug.Log("green: " + color);
 
             color = new(Color.blue);
             Debug.Log("blue: " + color);
 
-            color = new(Color.grey);
+            color = new(UColor.grey);
             Debug.Log("grey: " + color);
 
-            color = new(Color.white);
+            color = new(UColor.white);
             Debug.Log("white: " + color);
 
             color = new(new(0.4f, 1f, 0.84f, 1f));
             Debug.Log("0.4, 1f, 0.84: " + color);
 
-            Debug.Log("164,82,84   .... 0.643137f, 0.321568f, 0.329411f  :" + ToColor(new(new(0.643137f, 0.321568f, 0.329411f))));
-        }
+            Debug.Log("164,82,84   .... 0.643137f, 0.321568f, 0.329411f :" + ToColor(new(new(0.643137f, 0.321568f, 0.329411f))));
+        }*/
     }
 }

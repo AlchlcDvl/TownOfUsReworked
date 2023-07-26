@@ -17,6 +17,20 @@ namespace TownOfUsReworked.Extensions
             }
         }
 
+        public static void Shuffle<T>(this Il2CppSystem.Collections.Generic.List<T> list)
+        {
+            if (list.Count is 1 or 0)
+                return;
+
+            var count = list.Count;
+
+            for (var i = 0; i <= count - 1; ++i)
+            {
+                var r = URandom.RandomRangeInt(i, count);
+                (list[r], list[i]) = (list[i], list[r]);
+            }
+        }
+
         public static T TakeFirst<T>(this List<T> list)
         {
             var item = list[0];
@@ -31,6 +45,8 @@ namespace TownOfUsReworked.Extensions
             return item;
         }
 
+        public static T TakeFirst<T>(this Il2CppSystem.Collections.Generic.List<T> list) => list.Il2CppToSystem().TakeFirst();
+
         public static void RemoveRange<T>(this List<T> list, List<T> list2)
         {
             foreach (var item in list2)
@@ -40,28 +56,23 @@ namespace TownOfUsReworked.Extensions
             }
         }
 
-        public static void AddRanges<T>(this List<T> main, params List<T>[] items)
-        {
-            foreach (var list in items)
-                main.AddRange(list);
-        }
+        public static void AddRanges<T>(this List<T> main, params List<T>[] items) => items.ToList().ForEach(main.AddRange);
 
-        public static void RemoveRanges<T>(this List<T> main, params List<T>[] items)
-        {
-            foreach (var list in items)
-                main.RemoveRange(list);
-        }
+        public static void RemoveRanges<T>(this List<T> main, params List<T>[] items) => items.ToList().ForEach(main.RemoveRange);
 
         public static bool Replace<T>(this List<T> list, T item1, T item2)
         {
+            var contains = false;
+
             if (list.Contains(item1))
             {
                 var index = list.IndexOf(item1);
                 list.Remove(item1);
                 list.Insert(index, item2);
+                contains = true;
             }
 
-            return list.Contains(item1);
+            return contains;
         }
 
         public static List<T> Il2CppToSystem<T>(this Il2CppSystem.Collections.Generic.List<T> list) => list.ToArray().ToList();

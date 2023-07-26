@@ -4,18 +4,13 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
     {
         public CustomArrow RadarArrow;
 
-        public Radar(PlayerControl player) : base(player)
-        {
-            Name = "Radar";
-            TaskText = () => "- You are aware of those close to you";
-            Color = CustomGameOptions.CustomAbilityColors ? Colors.Radar : Colors.Ability;
-            AbilityType = AbilityEnum.Radar;
-            RadarArrow = new(Player, Color);
-            Type = LayerEnum.Radar;
+        public override Color32 Color => ClientGameOptions.CustomAbColors ? Colors.Radar : Colors.Ability;
+        public override string Name => "Radar";
+        public override LayerEnum Type => LayerEnum.Radar;
+        public override AbilityEnum AbilityType => AbilityEnum.Radar;
+        public override Func<string> TaskText => () => "- You are aware of those close to you";
 
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
-        }
+        public Radar(PlayerControl player) : base(player) => RadarArrow = new(Player, Color);
 
         public override void OnLobby()
         {
@@ -30,7 +25,13 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
             if (IsDead)
                 OnLobby();
             else
-                RadarArrow.Update(Player.GetClosestPlayer(null, float.MaxValue, true).transform.position);
+            {
+                var closest = Player.GetClosestPlayer(null, float.MaxValue, true);
+                var body = Player.GetClosestBody(0, true);
+                var transform = body != null && Vector2.Distance(closest.transform.position, Player.transform.position) > Vector2.Distance(body.transform.position,
+                    Player.transform.position) ? body.transform : closest.transform;
+                RadarArrow.Update(transform.position);
+            }
         }
     }
 }

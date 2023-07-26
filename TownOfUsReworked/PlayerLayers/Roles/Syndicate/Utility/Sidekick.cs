@@ -6,21 +6,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Rebel Rebel;
         public bool CanPromote => (Rebel.IsDead || Rebel.Disconnected) && !IsDead;
 
-        public Sidekick(PlayerControl player) : base(player)
-        {
-            Name = "Sidekick";
-            RoleType = RoleEnum.Sidekick;
-            StartText = () => "Succeed The <color=#FFFCCEFF>Rebel</color>";
-            AbilitiesText = () => "- When the <color=#FFFCCEFF>Rebel</color> dies, you will become the new <color=#FFFCCEFF>Rebel</color> with boosted abilities of your former " +
-                $"role\n{CommonAbilities}";
-            Color = CustomGameOptions.CustomSynColors ? Colors.Sidekick : Colors.Syndicate;
-            RoleAlignment = RoleAlignment.SyndicateUtil;
-            Type = LayerEnum.Sidekick;
-            InspectorResults = InspectorResults.IsCold;
+        public override Color32 Color => ClientGameOptions.CustomSynColors ? Colors.Sidekick : Colors.Syndicate;
+        public override string Name => "Sidekick";
+        public override LayerEnum Type => LayerEnum.Sidekick;
+        public override RoleEnum RoleType => RoleEnum.Sidekick;
+        public override Func<string> StartText => () => "Succeed The <color=#FFFCCEFF>Rebel</color>";
+        public override Func<string> AbilitiesText => () => "- When the <color=#FFFCCEFF>Rebel</color> dies, you will become the new <color=#FFFCCEFF>Rebel</color> with boosted abilities "
+            + $"of your former role\n{CommonAbilities}";
+        public override InspectorResults InspectorResults => InspectorResults.IsCold;
 
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
-        }
+        public Sidekick(PlayerControl player) : base(player) => RoleAlignment = RoleAlignment.SyndicateUtil;
 
         public void TurnRebel()
         {
@@ -32,11 +27,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             };
             newRole.RoleUpdate(this);
 
-            if (Local && !IntroCutscene.Instance)
-                Utils.Flash(Colors.Rebel);
+            if (Local)
+                Flash(Colors.Rebel);
 
-            if (CustomPlayer.Local.Is(RoleEnum.Seer) && !IntroCutscene.Instance)
-                Utils.Flash(Colors.Seer);
+            if (CustomPlayer.Local.Is(RoleEnum.Seer))
+                Flash(Colors.Seer);
         }
 
         public override void UpdateHud(HudManager __instance)
@@ -45,10 +40,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (CanPromote)
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
-                writer.Write((byte)TurnRPC.TurnRebel);
-                writer.Write(PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                CallRpc(CustomRPC.Change, TurnRPC.TurnRebel, this);
                 TurnRebel();
             }
         }

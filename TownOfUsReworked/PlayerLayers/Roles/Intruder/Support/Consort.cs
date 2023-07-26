@@ -10,24 +10,22 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public bool Blocking => TimeRemaining > 0f;
         public CustomMenu BlockMenu;
 
+        public override Color32 Color => ClientGameOptions.CustomIntColors ? Colors.Consort : Colors.Intruder;
+        public override string Name => "Consort";
+        public override LayerEnum Type => LayerEnum.Consort;
+        public override RoleEnum RoleType => RoleEnum.Consort;
+        public override Func<string> StartText => () => "Roleblock The <color=#8CFFFFFF>Crew</color> From Progressing";
+        public override Func<string> AbilitiesText => () => "- You can seduce players\n- Seduction blocks your target from being able to use their abilities for a short while\n- You are " +
+            $"immune to blocks\n- If you block a <color=#336EFFFF>Serial Killer</color>, they will be forced to kill you\n{CommonAbilities}";
+        public override InspectorResults InspectorResults => InspectorResults.HindersOthers;
+
         public Consort(PlayerControl player) : base(player)
         {
-            Name = "Consort";
-            RoleType = RoleEnum.Consort;
-            StartText = () => "Roleblock The <color=#8CFFFFFF>Crew</color> From Progressing";
-            AbilitiesText = () => "- You can seduce players\n- Seduction blocks your target from being able to use their abilities for a short while\n- You are immune to blocks\n" +
-                $"- If you block a <color=#336EFFFF>Serial Killer</color>, they will be forced to kill you\n{CommonAbilities}";
-            Color = CustomGameOptions.CustomIntColors ? Colors.Consort : Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderSupport;
             RoleBlockImmune = true;
             BlockMenu = new(Player, Click, Exception1);
-            Type = LayerEnum.Consort;
             BlockTarget = null;
             BlockButton = new(this, "ConsortRoleblock", AbilityTypes.Effect, "Secondary", Roleblock);
-            InspectorResults = InspectorResults.HindersOthers;
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public void UnBlock()
@@ -39,7 +37,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             BlockTarget = null;
             LastBlock = DateTime.UtcNow;
-            Utils.DefaultOutfit(Player);
         }
 
         public void Block()
@@ -50,7 +47,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             foreach (var layer in GetLayers(BlockTarget))
                 layer.IsBlocked = !GetRole(BlockTarget).RoleBlockImmune;
 
-            if (IsDead || BlockTarget.Data.IsDead || BlockTarget.Data.Disconnected || Utils.Meeting)
+            if (IsDead || BlockTarget.Data.IsDead || BlockTarget.Data.Disconnected || Meeting || !BlockTarget.IsBlocked())
                 TimeRemaining = 0f;
         }
 
@@ -58,13 +55,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var timespan = DateTime.UtcNow - LastBlock;
             var num = Player.GetModifiedCooldown(CustomGameOptions.ConsRoleblockCooldown) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void Click(PlayerControl player)
         {
-            var interact = Utils.Interact(Player, player);
+            var interact = Interact(Player, player);
 
             if (interact[3])
                 BlockTarget = player;
@@ -83,13 +81,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 BlockMenu.Open();
             else
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                writer.Write((byte)ActionsRPC.ConsRoleblock);
-                writer.Write(PlayerId);
-                writer.Write(BlockTarget.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
                 TimeRemaining = CustomGameOptions.ConsRoleblockDuration;
                 Block();
+                CallRpc(CustomRPC.Action, ActionsRPC.ConsRoleblock, this, BlockTarget);
             }
         }
 
@@ -98,9 +92,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            var flag = BlockTarget == null;
-            BlockButton.Update(flag ? "SET TARGET" : "ROLEBLOCK", RoleblockTimer(), CustomGameOptions.ConsRoleblockCooldown, Blocking, TimeRemaining,
+            BlockButton.Update(BlockTarget == null ? "SET TARGET" : "ROLEBLOCK", RoleblockTimer(), CustomGameOptions.ConsRoleblockCooldown, Blocking, TimeRemaining,
                 CustomGameOptions.ConsRoleblockDuration);
+
+            if (Input.GetKeyDown(KeyCode.Backspace))
+            {
+                if (BlockTarget != null && !Blocking)
+                    BlockTarget = null;
+
+                LogSomething("Removed a target");
+            }
         }
     }
 }

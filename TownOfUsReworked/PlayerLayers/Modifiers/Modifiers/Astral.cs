@@ -4,18 +4,13 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
     {
         public Vector3 LastPosition = Vector3.zero;
 
-        public Astral(PlayerControl player) : base(player)
-        {
-            Name = "Astral";
-            TaskText = () => "- You will not teleport to the meeting button";
-            Color = CustomGameOptions.CustomModifierColors ? Colors.Astral : Colors.Modifier;
-            ModifierType = ModifierEnum.Astral;
-            Type = LayerEnum.Astral;
-            LastPosition = Vector3.zero;
+        public override Color32 Color => ClientGameOptions.CustomModColors ? Colors.Astral : Colors.Modifier;
+        public override string Name => "Astral";
+        public override LayerEnum Type => LayerEnum.Astral;
+        public override ModifierEnum ModifierType => ModifierEnum.Astral;
+        public override Func<string> TaskText => () => "- You will not teleport to the meeting button";
 
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
-        }
+        public Astral(PlayerControl player) : base(player) => LastPosition = Vector3.zero;
 
         public void SetPosition()
         {
@@ -24,8 +19,8 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
 
             Player.NetTransform.RpcSnapTo(LastPosition);
 
-            if (ModCompatibility.IsSubmerged)
-                ModCompatibility.ChangeFloor(LastPosition.y > -7);
+            if (IsSubmerged)
+                ChangeFloor(LastPosition.y > -7);
         }
     }
 }

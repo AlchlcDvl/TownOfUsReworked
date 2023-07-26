@@ -7,19 +7,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public bool PhantomWin;
         public bool Faded;
 
+        public override Color32 Color => ClientGameOptions.CustomNeutColors ? Colors.Phantom : Colors.Neutral;
+        public override string Name => "Phantom";
+        public override LayerEnum Type => LayerEnum.Phantom;
+        public override RoleEnum RoleType => RoleEnum.Phantom;
+        public override Func<string> StartText => () => "Peek-A-Boo!";
+        public override Func<string> AbilitiesText => () => "- You end the game upon finishing your objective";
+        public override InspectorResults InspectorResults => InspectorResults.Ghostly;
+
         public Phantom(PlayerControl player) : base(player)
         {
-            Name = "Phantom";
-            StartText = () => "Peek-A-Boo!";
-            Color = CustomGameOptions.CustomNeutColors ? Colors.Phantom : Colors.Neutral;
             Objectives = () => "- Finish your tasks without getting clicked";
-            RoleType = RoleEnum.Phantom;
             RoleAlignment = RoleAlignment.NeutralPros;
-            Type = LayerEnum.Phantom;
-            InspectorResults = InspectorResults.Ghostly;
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public void Fade()
@@ -28,7 +27,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Player.Visible = true;
             var color = new Color(1f, 1f, 1f, 0f);
 
-            var maxDistance = ShipStatus.Instance.MaxLightRadius * TownOfUsReworked.VanillaOptions.CrewLightMod;
+            var maxDistance = ShipStatus.Instance.MaxLightRadius * TownOfUsReworked.NormalOptions.CrewLightMod;
             var distance = (CustomPlayer.Local.GetTruePosition() - Player.GetTruePosition()).magnitude;
 
             var distPercent = distance / maxDistance;
@@ -39,7 +38,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             color.a = Mathf.Lerp(color.a, 0, distPercent);
 
             if (Player.GetCustomOutfitType() != CustomPlayerOutfitType.PlayerNameOnly)
-                Player.SetOutfit(CustomPlayerOutfitType.PlayerNameOnly, Utils.BlankOutfit(Player));
+                Player.SetOutfit(CustomPlayerOutfitType.PlayerNameOnly, BlankOutfit(Player));
 
             Player.MyRend().color = color;
             Player.NameText().color = new(0f, 0f, 0f, 0f);

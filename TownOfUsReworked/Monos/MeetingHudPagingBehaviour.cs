@@ -4,20 +4,19 @@ namespace TownOfUsReworked.Monos
     {
         public MeetingHudPagingBehaviour(IntPtr ptr) : base(ptr) {}
 
-        public MeetingHud meetingHud = null!;
-
         [HideFromIl2Cpp]
-        public IEnumerable<PlayerVoteArea> Targets => meetingHud.playerStates.OrderBy(p => p.AmDead);
+        public IEnumerable<PlayerVoteArea> Targets => Menu.playerStates.OrderBy(p => p.AmDead);
         public override int MaxPageIndex => (Targets.Count() - 1) / MaxPerPage;
+        public MeetingHud Menu;
 
         public override void Update()
         {
             base.Update();
 
-            if (meetingHud.state is MeetingHud.VoteStates.Animating or MeetingHud.VoteStates.Proceeding)
-                return; //TimerText does not update there
+            if (Menu.state is MeetingHud.VoteStates.Animating or MeetingHud.VoteStates.Proceeding)
+                return;
 
-            meetingHud.TimerText.text += $" ({PageIndex + 1}/{MaxPageIndex + 1})";
+            Menu.TimerText.text += $" ({PageIndex + 1}/{MaxPageIndex + 1})";
         }
 
         public override void OnPageChanged()
@@ -26,16 +25,14 @@ namespace TownOfUsReworked.Monos
 
             foreach (var button in Targets)
             {
-                if (i >= PageIndex * MaxPerPage && i < (PageIndex + 1) * MaxPerPage && !Ability.GetAbilities<Assassin>(AbilityEnum.Assassin).Any(x => x.Phone != null) &&
-                    !Role.GetRoles<Guesser>(RoleEnum.Guesser).Any(x => x.Phone != null))
+                if (i >= PageIndex * MaxPerPage && i < (PageIndex + 1) * MaxPerPage && !PlayerLayer.GetLayers<Assassin>(LayerEnum.Assassin).Any(x => x.Phone) &&
+                    !Role.GetRoles<Guesser>(RoleEnum.Guesser).Any(x => x.Phone))
                 {
                     button.gameObject.SetActive(true);
                     var relativeIndex = i % MaxPerPage;
                     var row = relativeIndex / 3;
                     var col = relativeIndex % 3;
-                    var buttonTransform = button.transform;
-                    buttonTransform.localPosition = meetingHud.VoteOrigin + new Vector3(meetingHud.VoteButtonOffsets.x * col, meetingHud.VoteButtonOffsets.y * row,
-                        buttonTransform.localPosition.z);
+                    button.transform.localPosition = Menu.VoteOrigin + new Vector3(Menu.VoteButtonOffsets.x * col, Menu.VoteButtonOffsets.y * row, button.transform.localPosition.z);
                 }
                 else
                     button.gameObject.SetActive(false);

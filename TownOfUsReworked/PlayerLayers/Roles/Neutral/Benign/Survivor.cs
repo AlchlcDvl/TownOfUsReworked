@@ -11,30 +11,29 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public bool Alive => !Disconnected && !IsDead;
         public CustomButton VestButton;
 
+        public override Color32 Color => ClientGameOptions.CustomNeutColors ? Colors.Survivor : Colors.Neutral;
+        public override string Name => "Survivor";
+        public override LayerEnum Type => LayerEnum.Survivor;
+        public override RoleEnum RoleType => RoleEnum.Survivor;
+        public override Func<string> StartText => () => "Do Whatever It Takes To Live";
+        public override Func<string> AbilitiesText => () => "- You can put on a vest, which makes you unkillable for a short duration of time";
+        public override InspectorResults InspectorResults => InspectorResults.LeadsTheGroup;
+
         public Survivor(PlayerControl player) : base(player)
         {
-            Name = "Survivor";
-            StartText = () => "Do Whatever It Takes To Live";
-            AbilitiesText = () => "- You can put on a vest, which makes you unkillable for a short duration of time";
-            Color = CustomGameOptions.CustomNeutColors ? Colors.Survivor : Colors.Neutral;
-            RoleType = RoleEnum.Survivor;
             UsesLeft = CustomGameOptions.MaxVests;
             RoleAlignment = RoleAlignment.NeutralBen;
             Objectives = () => "- Live to the end of the game";
-            InspectorResults = InspectorResults.LeadsTheGroup;
-            Type = LayerEnum.Survivor;
             VestButton = new(this, "Vest", AbilityTypes.Effect, "ActionSecondary", HitVest, true);
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float VestTimer()
         {
             var timespan = DateTime.UtcNow - LastVested;
             var num = Player.GetModifiedCooldown(CustomGameOptions.VestCd) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void Vest()
@@ -42,7 +41,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
 
-            if (Utils.Meeting)
+            if (Meeting)
                 TimeRemaining = 0f;
         }
 
@@ -63,13 +62,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (!ButtonUsable || VestTimer() != 0f || Vesting)
                 return;
 
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-            writer.Write((byte)ActionsRPC.Vest);
-            writer.Write(CustomPlayer.Local.PlayerId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
             TimeRemaining = CustomGameOptions.VestDuration;
             UsesLeft--;
             Vest();
+            CallRpc(CustomRPC.Action, ActionsRPC.Vest, this);
         }
     }
 }

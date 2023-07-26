@@ -18,23 +18,23 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public bool WasInVent;
         public Vent Vent;
 
+        public override Color32 Color => ClientGameOptions.CustomSynColors ? Colors.Warper : Colors.Syndicate;
+        public override string Name => "Warper";
+        public override LayerEnum Type => LayerEnum.Warper;
+        public override RoleEnum RoleType => RoleEnum.Warper;
+        public override Func<string> StartText => () => "Warp The <color=#8CFFFFFF>Crew</color> Away From Each Other";
+        public override Func<string> AbilitiesText => () => "- You can warp " +
+            $"{(HoldsDrive ? "all players, forcing them to be teleported to random locations" : "a player to another player of your choice")}\n{CommonAbilities}";
+        public override InspectorResults InspectorResults => InspectorResults.MovesAround;
+
         public Warper(PlayerControl player) : base(player)
         {
-            Name = "Warper";
-            StartText = () => "Warp The <color=#8CFFFFFF>Crew</color> Away From Each Other";
-            AbilitiesText = () => "- You can warp all players, forcing them to be teleported to random locations\n- With the Chaos Drive, more locations are opened to you\n" +
-                $"{CommonAbilities}";
-            Color = CustomGameOptions.CustomSynColors ? Colors.Warper : Colors.Syndicate;
-            RoleType = RoleEnum.Warper;
             WarpPlayer1 = null;
             WarpPlayer2 = null;
             UnwarpablePlayers = new();
             WarpMenu1 = new(Player, Click1, Exception1);
             WarpMenu2 = new(Player, Click2, Exception2);
-
-            Type = LayerEnum.Warper;
             WarpButton = new(this, "Warp", AbilityTypes.Effect, "Secondary", Warp);
-            InspectorResults = InspectorResults.MovesAround;
             Player1Body = null;
             Player2Body = null;
             WasInVent = false;
@@ -43,20 +43,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             WarpObj.AddSubmergedComponent("ElevatorMover");
             WarpObj.transform.position = new(Player.GetTruePosition().x, Player.GetTruePosition().y, (Player.GetTruePosition().y / 1000f) + 0.01f);
             AnimationPlaying = WarpObj.AddComponent<SpriteRenderer>();
-            AnimationPlaying.sprite = AssetManager.PortalAnimation[0];
+            AnimationPlaying.sprite = PortalAnimation[0];
             AnimationPlaying.material = HatManager.Instance.PlayerMaterial;
             WarpObj.SetActive(true);
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float WarpTimer()
         {
             var timespan = DateTime.UtcNow - LastWarped;
             var num = Player.GetModifiedCooldown(CustomGameOptions.WarpCooldown) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public IEnumerator WarpPlayers()
@@ -69,7 +67,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (WarpPlayer1.Data.IsDead)
             {
-                Player1Body = Utils.BodyById(WarpPlayer1.PlayerId);
+                Player1Body = BodyById(WarpPlayer1.PlayerId);
 
                 if (Player1Body == null)
                     yield break;
@@ -77,7 +75,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (WarpPlayer2.Data.IsDead)
             {
-                Player2Body = Utils.BodyById(WarpPlayer2.PlayerId);
+                Player2Body = BodyById(WarpPlayer2.PlayerId);
 
                 if (Player2Body == null)
                     yield break;
@@ -85,7 +83,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (WarpPlayer1.inVent)
             {
-                while (ModCompatibility.GetInTransition())
+                while (GetInTransition())
                     yield return null;
 
                 WarpPlayer1.MyPhysics.ExitAllVents();
@@ -93,7 +91,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (WarpPlayer2.inVent)
             {
-                while (ModCompatibility.GetInTransition())
+                while (GetInTransition())
                     yield return null;
 
                 Vent = WarpPlayer2.GetClosestVent();
@@ -104,7 +102,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             WarpPlayer1.NetTransform.Halt();
 
             if (CustomPlayer.Local == WarpPlayer1)
-                Utils.Flash(Color, CustomGameOptions.WarpDuration);
+                Flash(Color, CustomGameOptions.WarpDuration);
 
             if (Player1Body == null && !WasInVent)
                 AnimateWarp();
@@ -124,7 +122,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 else
                     break;
 
-                if (Utils.Meeting)
+                if (Meeting)
                     yield break;
             }
 
@@ -133,10 +131,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 WarpPlayer1.MyPhysics.ResetMoveState();
                 WarpPlayer1.NetTransform.SnapTo(new(WarpPlayer2.GetTruePosition().x, WarpPlayer2.GetTruePosition().y + 0.3636f));
 
-                if (ModCompatibility.IsSubmerged && CustomPlayer.Local == WarpPlayer1)
+                if (IsSubmerged && CustomPlayer.Local == WarpPlayer1)
                 {
-                    ModCompatibility.ChangeFloor(WarpPlayer1.GetTruePosition().y > -7);
-                    ModCompatibility.CheckOutOfBoundsElevator(CustomPlayer.Local);
+                    ChangeFloor(WarpPlayer1.GetTruePosition().y > -7);
+                    CheckOutOfBoundsElevator(CustomPlayer.Local);
                 }
 
                 if (WarpPlayer1.CanVent() && Vent != null && WasInVent)
@@ -144,13 +142,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
             else if (Player1Body != null && Player2Body == null)
             {
-                Utils.StopDragging(Player1Body.ParentId);
+                StopDragging(Player1Body.ParentId);
                 Player1Body.transform.position = WarpPlayer2.GetTruePosition();
 
-                if (ModCompatibility.IsSubmerged && CustomPlayer.Local == WarpPlayer2)
+                if (IsSubmerged && CustomPlayer.Local == WarpPlayer2)
                 {
-                    ModCompatibility.ChangeFloor(WarpPlayer2.GetTruePosition().y > -7);
-                    ModCompatibility.CheckOutOfBoundsElevator(CustomPlayer.Local);
+                    ChangeFloor(WarpPlayer2.GetTruePosition().y > -7);
+                    CheckOutOfBoundsElevator(CustomPlayer.Local);
                 }
             }
             else if (Player1Body == null && Player2Body != null)
@@ -158,15 +156,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 WarpPlayer1.MyPhysics.ResetMoveState();
                 WarpPlayer1.NetTransform.SnapTo(new(Player2Body.TruePosition.x, Player2Body.TruePosition.y + 0.3636f));
 
-                if (ModCompatibility.IsSubmerged && CustomPlayer.Local == WarpPlayer1)
+                if (IsSubmerged && CustomPlayer.Local == WarpPlayer1)
                 {
-                    ModCompatibility.ChangeFloor(WarpPlayer1.GetTruePosition().y > -7);
-                    ModCompatibility.CheckOutOfBoundsElevator(CustomPlayer.Local);
+                    ChangeFloor(WarpPlayer1.GetTruePosition().y > -7);
+                    CheckOutOfBoundsElevator(CustomPlayer.Local);
                 }
             }
             else if (Player1Body != null && Player2Body != null)
             {
-                Utils.StopDragging(Player1Body.ParentId);
+                StopDragging(Player1Body.ParentId);
                 Player1Body.transform.position = Player2Body.TruePosition;
             }
 
@@ -191,7 +189,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Click1(PlayerControl player)
         {
-            var interact = Utils.Interact(Player, player);
+            var interact = Interact(Player, player);
 
             if (interact[3])
                 WarpPlayer1 = player;
@@ -203,7 +201,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Click2(PlayerControl player)
         {
-            var interact = Utils.Interact(Player, player);
+            var interact = Interact(Player, player);
 
             if (interact[3])
                 WarpPlayer2 = player;
@@ -214,10 +212,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         }
 
         public bool Exception1(PlayerControl player) => (player == Player && !CustomGameOptions.WarpSelf) || UnwarpablePlayers.ContainsKey(player.PlayerId) || player == WarpPlayer2 ||
-            (Utils.BodyById(player.PlayerId) == null && player.Data.IsDead) || player.IsMoving();
+            (BodyById(player.PlayerId) == null && player.Data.IsDead) || player.IsMoving();
 
         public bool Exception2(PlayerControl player) => (player == Player && !CustomGameOptions.WarpSelf) || UnwarpablePlayers.ContainsKey(player.PlayerId) || player == WarpPlayer1 ||
-            (Utils.BodyById(player.PlayerId) == null && player.Data.IsDead) || player.IsMoving();
+            (BodyById(player.PlayerId) == null && player.Data.IsDead) || player.IsMoving();
 
         public void AnimateWarp()
         {
@@ -225,11 +223,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AnimationPlaying.flipX = WarpPlayer1.MyRend().flipX;
             AnimationPlaying.transform.localScale *= 0.9f * WarpPlayer1.GetModifiedSize();
 
-            Utils.HUD.StartCoroutine(Effects.Lerp(CustomGameOptions.WarpDuration, new Action<float>(p =>
+            HUD.StartCoroutine(Effects.Lerp(CustomGameOptions.WarpDuration, new Action<float>(p =>
             {
-                var index = (int)(p * AssetManager.PortalAnimation.Length);
-                index = Mathf.Clamp(index, 0, AssetManager.PortalAnimation.Length - 1);
-                AnimationPlaying.sprite = AssetManager.PortalAnimation[index];
+                var index = (int)(p * PortalAnimation.Length);
+                index = Mathf.Clamp(index, 0, PortalAnimation.Length - 1);
+                AnimationPlaying.sprite = PortalAnimation[index];
                 WarpPlayer1.SetPlayerMaterialColors(AnimationPlaying);
 
                 if (p == 1)
@@ -253,12 +251,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 WarpMenu2.Open();
             else
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                writer.Write((byte)ActionsRPC.Warp);
-                writer.Write(PlayerId);
-                writer.Write(WarpPlayer1.PlayerId);
-                writer.Write(WarpPlayer2.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                CallRpc(CustomRPC.Action, ActionsRPC.Warp, this, WarpPlayer1, WarpPlayer2);
                 Coroutines.Start(WarpPlayers());
             }
         }
@@ -281,12 +274,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         WarpPlayer1 = null;
                 }
 
-                Utils.LogSomething("Removed a target");
+                LogSomething("Removed a target");
             }
 
             foreach (var entry in UnwarpablePlayers)
             {
-                var player = Utils.PlayerById(entry.Key);
+                var player = PlayerById(entry.Key);
 
                 if (player?.Data.IsDead == true || player.Data.Disconnected)
                     continue;

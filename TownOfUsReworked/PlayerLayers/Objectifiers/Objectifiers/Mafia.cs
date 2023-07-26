@@ -2,18 +2,13 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
 {
     public class Mafia : Objectifier
     {
-        public Mafia(PlayerControl player) : base(player)
-        {
-            Name = "Mafia";
-            Symbol = "ω";
-            TaskText = () => "- Eliminate anyone who opposes the Mafia";
-            Color = CustomGameOptions.CustomObjectifierColors ? Colors.Mafia : Colors.Objectifier;
-            ObjectifierType = ObjectifierEnum.Mafia;
-            Type = LayerEnum.Mafia;
-            Role.GetRole(Player).RoleAlignment = Role.GetRole(Player).RoleAlignment.GetNewAlignment(Faction.Neutral);
+        public override Color32 Color => ClientGameOptions.CustomObjColors ? Colors.Mafia : Colors.Objectifier;
+        public override string Name => "Mafia";
+        public override string Symbol => "ω";
+        public override LayerEnum Type => LayerEnum.Mafia;
+        public override ObjectifierEnum ObjectifierType => ObjectifierEnum.Mafia;
+        public override Func<string> TaskText => () => "- Eliminate anyone who opposes the Mafia";
 
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
-        }
+        public Mafia(PlayerControl player) : base(player) => Role.GetRole(Player).RoleAlignment = Role.GetRole(Player).RoleAlignment.GetNewAlignment(Faction.Neutral);
     }
 }

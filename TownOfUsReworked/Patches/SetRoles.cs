@@ -5,11 +5,10 @@ namespace TownOfUsReworked.Patches
     {
         public static void Postfix()
         {
-            Utils.LogSomething("RPC SET ROLE");
+            LogSomething("RPC SET ROLE");
             RoleGen.ResetEverything();
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Start, SendOption.Reliable);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
-            Utils.LogSomething("Cleared Variables");
+            CallRpc(CustomRPC.Misc, MiscRPC.Start);
+            LogSomething("Cleared Variables");
             RoleGen.BeginRoleGen();
         }
     }

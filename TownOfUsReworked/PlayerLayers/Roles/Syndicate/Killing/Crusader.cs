@@ -9,29 +9,29 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public PlayerControl CrusadedPlayer;
         public CustomButton CrusadeButton;
 
+        public override Color32 Color => ClientGameOptions.CustomSynColors ? Colors.Crusader : Colors.Syndicate;
+        public override string Name => "Crusader";
+        public override LayerEnum Type => LayerEnum.Crusader;
+        public override RoleEnum RoleType => RoleEnum.Crusader;
+        public override Func<string> StartText => () => "Cleanse This Land Of The Unholy Filth";
+        public override Func<string> AbilitiesText => () => "- You can crusade players\n- Crusaded players will be forced to be on alert, and will kill whoever interacts with then" +
+            $"{(HoldsDrive ? $"\n- Crusaded players will also kill anyone within a {CustomGameOptions.ChaosDriveCrusadeRadius}m radies" : "")}\n{CommonAbilities}";
+        public override InspectorResults InspectorResults => InspectorResults.PreservesLife;
+
         public Crusader(PlayerControl player) : base(player)
         {
-            Name = "Crusader";
-            StartText = () => "Ambush";
-            AbilitiesText = () => $"- You can crusade players\n- Ambushed players will be forced to be on alert, and will kill whoever interacts with then\n{CommonAbilities}";
-            Color = CustomGameOptions.CustomSynColors ? Colors.Crusader : Colors.Syndicate;
-            RoleType = RoleEnum.Crusader;
             RoleAlignment = RoleAlignment.SyndicateKill;
-            InspectorResults = InspectorResults.PreservesLife;
-            Type = LayerEnum.Crusader;
             CrusadedPlayer = null;
             CrusadeButton = new(this, "Crusade", AbilityTypes.Direct, "ActionSecondary", HitCrusade, Exception1);
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float CrusadeTimer()
         {
             var timespan = DateTime.UtcNow - LastCrusaded;
             var num = Player.GetModifiedCooldown(CustomGameOptions.CrusadeCooldown) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void Crusade()
@@ -39,7 +39,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
 
-            if (IsDead || CrusadedPlayer.Data.IsDead || CrusadedPlayer.Data.Disconnected || Utils.Meeting)
+            if (IsDead || CrusadedPlayer.Data.IsDead || CrusadedPlayer.Data.Disconnected || Meeting)
                 TimeRemaining = 0f;
         }
 
@@ -52,44 +52,40 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public static void RadialCrusade(PlayerControl player2)
         {
-            foreach (var player in Utils.GetClosestPlayers(player2.GetTruePosition(), CustomGameOptions.ChaosDriveCrusadeRadius))
+            foreach (var player in GetClosestPlayers(player2.GetTruePosition(), CustomGameOptions.ChaosDriveCrusadeRadius))
             {
-                Utils.Spread(player2, player);
+                Spread(player2, player);
 
-                if (player.IsVesting() || player.IsProtected() || player2.IsOtherRival(player) || player.IsShielded() || player.IsRetShielded() || (player.Is(Faction.Syndicate) &&
+                if (player.IsVesting() || player.IsProtected() || player2.IsLinkedTo(player) || player.IsShielded() || player.IsRetShielded() || (player.Is(Faction.Syndicate) &&
                     !CustomGameOptions.CrusadeMates))
                 {
                     continue;
                 }
 
                 if (!player.Is(RoleEnum.Pestilence))
-                    Utils.RpcMurderPlayer(player2, player, DeathReasonEnum.Crusaded, false);
+                    RpcMurderPlayer(player2, player, DeathReasonEnum.Crusaded, false);
 
                 if (player.IsOnAlert() || player.Is(RoleEnum.Pestilence))
-                    Utils.RpcMurderPlayer(player, player2);
+                    RpcMurderPlayer(player, player2);
                 else if (player.IsAmbushed() || player.IsGFAmbushed())
-                    Utils.RpcMurderPlayer(player, player2, DeathReasonEnum.Ambushed);
+                    RpcMurderPlayer(player, player2, DeathReasonEnum.Ambushed);
                 else if (player.IsCrusaded() || player.IsRebCrusaded())
-                    Utils.RpcMurderPlayer(player, player2, DeathReasonEnum.Crusaded);
+                    RpcMurderPlayer(player, player2, DeathReasonEnum.Crusaded);
             }
         }
 
         public void HitCrusade()
         {
-            if (CrusadeTimer() != 0f || Utils.IsTooFar(Player, CrusadeButton.TargetPlayer))
+            if (CrusadeTimer() != 0f || IsTooFar(Player, CrusadeButton.TargetPlayer))
                 return;
 
-            var interact = Utils.Interact(Player, CrusadeButton.TargetPlayer);
+            var interact = Interact(Player, CrusadeButton.TargetPlayer);
 
             if (interact[3])
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                writer.Write((byte)ActionsRPC.Crusade);
-                writer.Write(PlayerId);
-                writer.Write(CrusadeButton.TargetPlayer.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                TimeRemaining = CustomGameOptions.CrusadeDuration;
                 CrusadedPlayer = CrusadeButton.TargetPlayer;
+                CallRpc(CustomRPC.Action, ActionsRPC.Crusade, this, CrusadedPlayer);
+                TimeRemaining = CustomGameOptions.CrusadeDuration;
                 Crusade();
             }
             else if (interact[0])
@@ -98,8 +94,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 LastCrusaded.AddSeconds(CustomGameOptions.ProtectKCReset);
         }
 
-        public bool Exception1(PlayerControl player) => player == CrusadedPlayer || (player.Is(Faction) && !CustomGameOptions.CrusadeMates) || (player.Is(SubFaction) &&
-            SubFaction != SubFaction.None);
+        public bool Exception1(PlayerControl player) => player == CrusadedPlayer || (player.Is(Faction) && !CustomGameOptions.CrusadeMates) || (player.Is(SubFaction) && SubFaction !=
+            SubFaction.None && !CustomGameOptions.CrusadeMates);
 
         public override void UpdateHud(HudManager __instance)
         {

@@ -1,16 +1,19 @@
+/*using Innersloth.Assets;
+
 namespace TownOfUsReworked.Cosmetics
 {
     [HarmonyPatch]
     public static class CustomVisors
     {
-        /*private static bool SubLoaded;
+        private static bool SubLoaded;
         private static bool Running;
         private static Material Shader;
-        public readonly static Dictionary<string, VisorExtension> CustomVisorRegistry = new();
+        public static readonly Dictionary<string, VisorExtension> CustomVisorRegistry = new();
+        public static readonly Dictionary<string, VisorViewData> CustomVisorViewDatas = new();
 
         private static Sprite CreateVisorSprite(string path, bool fromDisk = false)
         {
-            var texture = fromDisk ? AssetManager.LoadDiskTexture(path) : AssetManager.LoadResourceTexture(path);
+            var texture = fromDisk ? LoadDiskTexture(path) : LoadResourceTexture(path);
 
             if (texture == null)
                 return null;
@@ -32,26 +35,26 @@ namespace TownOfUsReworked.Cosmetics
 
             if (fromDisk)
             {
-                var filePath = Path.GetDirectoryName(Application.dataPath) + "\\CustomVisors\\";
-                cv.ID = filePath + cv.ID + ".png";
+                cv.ID = TownOfUsReworked.Visors + cv.ID + ".png";
 
                 if (cv.FlipID != null)
-                    cv.FlipID = filePath + cv.FlipID + ".png";
+                    cv.FlipID = TownOfUsReworked.Visors + cv.FlipID + ".png";
 
                 if (cv.FloorID != null)
-                    cv.FloorID = filePath + cv.FloorID + ".png";
+                    cv.FloorID = TownOfUsReworked.Visors + cv.FloorID + ".png";
 
                 if (cv.ClimbID != null)
-                    cv.ClimbID = filePath + cv.ClimbID + ".png";
+                    cv.ClimbID = TownOfUsReworked.Visors + cv.ClimbID + ".png";
             }
 
             var visor = ScriptableObject.CreateInstance<VisorData>();
-            var viewData = visor.CreateAddressableAsset().GetAsset();
-            viewData = ScriptableObject.CreateInstance<VisorViewData>();
+            var viewData = ScriptableObject.CreateInstance<VisorViewData>();
             viewData.IdleFrame = CreateVisorSprite(cv.ID, fromDisk);
 
             if (cv.FlipID != null)
                 viewData.LeftIdleFrame = CreateVisorSprite(cv.FlipID, fromDisk);
+            else
+                viewData.LeftIdleFrame = viewData.IdleFrame;
 
             if (cv.FloorID != null)
                 viewData.FloorFrame = CreateVisorSprite(cv.FloorID, fromDisk);
@@ -80,6 +83,11 @@ namespace TownOfUsReworked.Cosmetics
             if (!CustomVisorRegistry.ContainsKey(visor.name))
                 CustomVisorRegistry.Add(visor.name, extend);
 
+            if (!CustomVisorViewDatas.ContainsKey(visor.name))
+                CustomVisorViewDatas.Add(visor.name, viewData);
+
+            visor.ViewDataRef = new(viewData.Pointer);
+            visor.CreateAddressableAsset();
             return visor;
         }
 
@@ -90,7 +98,7 @@ namespace TownOfUsReworked.Cosmetics
 
             public static void Prefix(HatManager __instance)
             {
-                if (Running)
+                if (Running || SubLoaded)
                     return;
 
                 Running = true;
@@ -106,14 +114,13 @@ namespace TownOfUsReworked.Cosmetics
                     }
 
                     __instance.allVisors = allVisors.ToArray();
+                    SubLoaded = true; //Only loaded if the operation was successful
                 }
                 catch (Exception e)
                 {
                     if (!SubLoaded)
-                        Utils.LogSomething("Unable to add Custom Visors\n" + e);
+                        LogSomething("Unable to add Custom Visors\n" + e);
                 }
-
-                SubLoaded = true;
             }
 
             public static void Postfix() => Running = false;
@@ -263,10 +270,89 @@ namespace TownOfUsReworked.Cosmetics
             }
         }
 
+        [HarmonyPatch(typeof(CosmeticsCache), nameof(CosmeticsCache.GetVisor))]
+        public static class CosmeticsCacheGetVisorPatch
+        {
+            public static bool Prefix(CosmeticsCache __instance, string id, ref VisorViewData __result)
+            {
+                if (!CustomVisorViewDatas.TryGetValue(id, out __result))
+                    return true;
+
+                if (__result == null)
+                    __result = __instance.visors["visor_EmptyVisor"].GetAsset();
+
+                return false;
+            }
+        }
+
+        [HarmonyPatch(typeof(VisorLayer), nameof(VisorLayer.UpdateMaterial))]
+        public static class VisorLayerUpdateMaterialPatch
+        {
+            public static bool Prefix(VisorLayer __instance)
+            {
+                if (__instance.currentVisor == null || !CustomVisorViewDatas.TryGetValue(__instance.currentVisor.ProductId, out var asset))
+                    return true;
+
+                __instance.Image.sharedMaterial = asset.AltShader ? asset.AltShader : HatManager.Instance.DefaultShader;
+                PlayerMaterial.SetColors(__instance.matProperties.ColorId, __instance.Image);
+                __instance.Image.maskInteraction = __instance.matProperties.MaskType switch
+                {
+                    PlayerMaterial.MaskType.SimpleUI or PlayerMaterial.MaskType.ScrollingUI => (SpriteMaskInteraction)1,
+                    PlayerMaterial.MaskType.Exile => (SpriteMaskInteraction)2,
+                    _ => 0,
+                };
+                return false;
+            }
+        }
+
+        [HarmonyPatch(typeof(VisorLayer), nameof(VisorLayer.SetFlipX))]
+        public static class VisorLayerSetFlipXPatch
+        {
+            public static bool Prefix(VisorLayer __instance, bool flipX)
+            {
+                if (__instance.currentVisor == null || !CustomVisorViewDatas.TryGetValue(__instance.currentVisor.ProductId, out var asset))
+                    return true;
+
+                __instance.Image.flipX = flipX;
+                __instance.Image.sprite = flipX && asset.LeftIdleFrame ? asset.LeftIdleFrame : asset.IdleFrame;
+                return false;
+            }
+        }
+
+        [HarmonyPatch(typeof(VisorLayer), nameof(VisorLayer.SetVisor), typeof(VisorData), typeof(VisorViewData), typeof(int))]
+        public static class VisorLayerSetVisorPositionPatch
+        {
+            public static bool Prefix(VisorLayer __instance, VisorData data, VisorViewData visorView, int colorId)
+            {
+                if (!CustomVisorViewDatas.ContainsKey(data.ProductId))
+                    return true;
+
+                __instance.currentVisor = data;
+                __instance.transform.SetLocalZ(__instance.ZIndexSpacing * (data.BehindHats ? -1.5f : -3f));
+                __instance.SetFlipX(__instance.Image.flipX);
+                __instance.SetMaterialColor(colorId);
+                return false;
+            }
+        }
+
+        [HarmonyPatch(typeof(VisorLayer), nameof(VisorLayer.SetVisor), typeof(VisorData), typeof(int))]
+        public static class VisorLayerSetVisorPatch
+        {
+            public static bool Prefix(VisorLayer __instance, VisorData data, int colorId)
+            {
+                if (!CustomVisorViewDatas.TryGetValue(data.ProductId, out var asset))
+                    return true;
+
+                __instance.currentVisor = data;
+                __instance.SetVisor(__instance.currentVisor, asset, colorId);
+                return false;
+            }
+        }
+
         public static VisorExtension GetVisorExtension(this VisorData visor)
         {
             CustomVisorRegistry.TryGetValue(visor.name, out var ret);
             return ret;
-        }*/
+        }
     }
-}
+}*/

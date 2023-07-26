@@ -46,7 +46,7 @@
                     supportElectrical.transform.position = new(-8.792f, 13.242f);
                     supportElectrical.transform.localScale = new(1, 1, 1);
                 }
-                else if ((int) CustomGameOptions.MoveElectrical == 2)
+                else if ((int)CustomGameOptions.MoveElectrical == 2)
                     electrical.transform.position = new(19.339f, -3.665f);
             }
 

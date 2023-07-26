@@ -2,12 +2,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Neutral : Role
     {
+        public override Color32 Color => Colors.Neutral;
+        public override Faction BaseFaction => Faction.Neutral;
+
         protected Neutral(PlayerControl player) : base(player)
         {
             Faction = Faction.Neutral;
             FactionColor = Colors.Neutral;
-            Color = Colors.Neutral;
-            BaseFaction = Faction.Neutral;
             Player.Data.SetImpostor(false);
         }
 
@@ -22,22 +23,24 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 var jackal = Player.GetJackal();
                 team.Add(jackal.Player);
-                team.Add(Player.Is(RoleAlignment.NeutralKill) ? jackal.GoodRecruit : jackal.EvilRecruit);
+                team.Add(Player == jackal.EvilRecruit ? jackal.GoodRecruit : jackal.EvilRecruit);
             }
-            else if (Player.Is(RoleEnum.Jackal))
+            else if (RoleType == RoleEnum.Jackal)
             {
                 var jackal = (Jackal)this;
                 team.Add(jackal.GoodRecruit);
                 team.Add(jackal.EvilRecruit);
             }
 
-            if (this.HasTarget() && RoleType != RoleEnum.BountyHunter)
+            if (HasTarget && RoleType != RoleEnum.BountyHunter)
                 team.Add(Player.GetTarget());
 
             if (Player.Is(ObjectifierEnum.Lovers))
                 team.Add(Player.GetOtherLover());
             else if (Player.Is(ObjectifierEnum.Rivals))
                 team.Add(Player.GetOtherRival());
+            else if (Player.Is(ObjectifierEnum.Linked))
+                team.Add(Player.GetOtherLink());
             else if (Player.Is(ObjectifierEnum.Mafia))
             {
                 foreach (var player in CustomPlayer.AllPlayers)
@@ -50,7 +53,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 foreach (var player in CustomPlayer.AllPlayers)
                 {
-                    if (player.Is(Faction) && player != CustomPlayer.Local)
+                    if (player.Is(Faction) && player != Player)
                         team.Add(player);
                 }
             }

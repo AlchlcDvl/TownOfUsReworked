@@ -11,10 +11,10 @@ namespace TownOfUsReworked.Patches
     {
         public static void Prefix(GameObject obj)
         {
-            if (!ModCompatibility.SubLoaded || TownOfUsReworked.VanillaOptions.MapId != 5)
+            if (!SubLoaded || TownOfUsReworked.NormalOptions?.MapId != 5)
                 return;
 
-            if (obj.name.Contains("ExileCutscene"))
+            if (obj.name?.Contains("ExileCutscene") == true)
                 SetPostmortals.ExileControllerPostfix(ConfirmEjects.LastExiled);
             else if (obj.name.Contains("SpawnInMinigame"))
             {
@@ -27,7 +27,8 @@ namespace TownOfUsReworked.Patches
     [HarmonyPatch(typeof(ExileController), nameof(ExileController.WrapUp))]
     public static class SetPostmortals
     {
-        public readonly static List<PlayerControl> AssassinatedPlayers = new();
+        public static readonly List<PlayerControl> AssassinatedPlayers = new();
+        public static readonly List<PlayerControl> EscapedPlayers = new();
 
         public static void Postfix(ExileController __instance) => ExileControllerPostfix(__instance);
 
@@ -77,7 +78,7 @@ namespace TownOfUsReworked.Patches
                 {
                     foreach (var exiled1 in dict.ToBeEjected)
                     {
-                        var player = Utils.PlayerById(exiled1);
+                        var player = PlayerById(exiled1);
 
                         if (player == null)
                             continue;
@@ -105,6 +106,7 @@ namespace TownOfUsReworked.Patches
                 {
                     bh.Player.Exiled();
                     bh.DeathReason = DeathReasonEnum.Escaped;
+                    EscapedPlayers.Add(bh.Player);
                 }
             }
 
@@ -114,6 +116,7 @@ namespace TownOfUsReworked.Patches
                 {
                     exe.Player.Exiled();
                     exe.DeathReason = DeathReasonEnum.Escaped;
+                    EscapedPlayers.Add(exe.Player);
                 }
             }
 
@@ -123,6 +126,7 @@ namespace TownOfUsReworked.Patches
                 {
                     guess.Player.Exiled();
                     guess.DeathReason = DeathReasonEnum.Escaped;
+                    EscapedPlayers.Add(guess.Player);
                 }
             }
 
@@ -132,6 +136,7 @@ namespace TownOfUsReworked.Patches
                 {
                     cann.Player.Exiled();
                     cann.DeathReason = DeathReasonEnum.Escaped;
+                    EscapedPlayers.Add(cann.Player);
                 }
             }
 
@@ -141,6 +146,7 @@ namespace TownOfUsReworked.Patches
                 {
                     vigi.Player.Exiled();
                     vigi.DeathReason = DeathReasonEnum.Suicide;
+                    RecentlyKilled.Add(vigi.Player);
                 }
             }
 
@@ -162,10 +168,7 @@ namespace TownOfUsReworked.Patches
                 if (jest.Player == player)
                 {
                     jest.VotedOut = true;
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                    writer.Write((byte)WinLoseRPC.JesterWin);
-                    writer.Write(jest.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    CallRpc(CustomRPC.WinLose, WinLoseRPC.JesterWin, jest);
                 }
             }
         }
@@ -180,10 +183,7 @@ namespace TownOfUsReworked.Patches
                 if (player == exe.TargetPlayer)
                 {
                     exe.TargetVotedOut = true;
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                    writer.Write((byte)WinLoseRPC.ExecutionerWin);
-                    writer.Write(exe.PlayerId);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    CallRpc(CustomRPC.WinLose, WinLoseRPC.ExecutionerWin, exe);
                 }
             }
         }
@@ -191,12 +191,6 @@ namespace TownOfUsReworked.Patches
         private static void SetStartingVent(PlayerControl player)
         {
             var startingVent = ShipStatus.Instance.AllVents[URandom.RandomRangeInt(0, ShipStatus.Instance.AllVents.Count)];
-
-            var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetPos, SendOption.Reliable);
-            writer2.Write(player.PlayerId);
-            writer2.Write(startingVent.transform.position);
-            AmongUsClient.Instance.FinishRpcImmediately(writer2);
-
             player.NetTransform.RpcSnapTo(new(startingVent.transform.position.x, startingVent.transform.position.y + 0.3636f));
             player.MyPhysics.RpcEnterVent(startingVent.Id);
         }
@@ -222,7 +216,7 @@ namespace TownOfUsReworked.Patches
                     var former = Role.GetRole(rev);
                     var role = new Revealer(rev) { FormerRole = former };
                     role.RoleUpdate(former);
-                    Utils.RemoveTasks(CustomPlayer.Local);
+                    RemoveTasks(CustomPlayer.Local);
                     rev.gameObject.layer = LayerMask.NameToLayer("Players");
 
                     if (CustomPlayer.Local != rev)
@@ -248,7 +242,7 @@ namespace TownOfUsReworked.Patches
                 return;
 
             if (!WillBePhantoms.Contains(exiled) && WillBePhantoms.Count < CustomGameOptions.PhantomCount && exiled.Is(Faction.Neutral) &&
-                !LayerExtentions.NeutralHasUnfinishedBusiness(exiled))
+                !NeutralHasUnfinishedBusiness(exiled))
             {
                 WillBePhantoms.Add(exiled);
             }
@@ -263,7 +257,7 @@ namespace TownOfUsReworked.Patches
                     var former = Role.GetRole(phan);
                     var role = new Phantom(phan);
                     role.RoleUpdate(former);
-                    Utils.RemoveTasks(phan);
+                    RemoveTasks(phan);
                     phan.gameObject.layer = LayerMask.NameToLayer("Players");
 
                     if (CustomPlayer.Local != phan)

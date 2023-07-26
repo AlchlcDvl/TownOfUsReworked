@@ -12,7 +12,13 @@ namespace TownOfUsReworked.Monos
 
         public void Start()
         {
-            if (Application.targetFrameRate <= 30)
+            if (Body == null)
+                Body = Dragged?.gameObject.AddComponent<Rigidbody2D>();
+
+            if (Collider == null)
+                Collider = Dragged?.gameObject.GetComponent<Collider2D>();
+
+            if (Application.targetFrameRate <= 30 || Body == null)
                 return;
 
             Body.interpolation = RigidbodyInterpolation2D.Interpolate;
@@ -20,14 +26,23 @@ namespace TownOfUsReworked.Monos
 
         public void Update()
         {
-            if (!Dragged || !Body)
+            if (!Dragged)
                 return;
+
+            if (Body == null)
+                Body = Dragged.gameObject.AddComponent<Rigidbody2D>();
+
+            if (Collider == null)
+                Collider = Dragged?.gameObject.GetComponent<Collider2D>();
+
+            if (Application.targetFrameRate <= 30 && Body.interpolation != RigidbodyInterpolation2D.Interpolate)
+                Body.interpolation = RigidbodyInterpolation2D.Interpolate;
 
             UpdateInSubmerged();
 
             if (!Source)
                 Body.velocity = Vector2.zero;
-            else
+            else if (!Source.Data.IsDead)
             {
                 var truePosition1 = Source.GetTruePosition();
                 var truePosition2 = (Vector2)transform.position + (Collider.offset * 0.7f);
@@ -44,7 +59,7 @@ namespace TownOfUsReworked.Monos
                 {
                     if (vector2_1.sqrMagnitude > 2.0)
                     {
-                        transform.position = (Vector3) truePosition1;
+                        transform.position = (Vector3)truePosition1;
                         return;
                     }
 
@@ -69,24 +84,25 @@ namespace TownOfUsReworked.Monos
         {
             Vector3 position = Source.GetTruePosition();
 
-            if (ModCompatibility.IsSubmerged)
-                position.z = position.y > -7f ? 0.0208f :  -0.0273f;
+            if (IsSubmerged)
+                position.z = position.y > -7f ? 0.0208f : -0.0273f;
 
             position.y -= 0.3636f;
             Dragged.transform.position = position;
             Body.velocity = Vector2.zero;
             Body.Destroy();
+            Body = null;
         }
 
         private void UpdateInSubmerged()
         {
-            if (!ModCompatibility.IsSubmerged)
+            if (!IsSubmerged)
                 return;
 
             var position1 = transform.position;
             var position2 = Source.transform.position;
 
-            if (Mathf.Abs(position2.y - position1.y) <= 28.871400833129883)
+            if (Mathf.Abs(position2.y - position1.y) <= 28.871400833129883f)
                 return;
 
             position1.y += position2.y > -6.0 ? 48.119f : -48.119f;

@@ -99,7 +99,7 @@ namespace TownOfUsReworked.Cosmetics
             _ => shadow ? Palette.ShadowColors[id] : Palette.PlayerColors[id]
         };
 
-        public readonly static Dictionary<int, string> LightDarkColors = new()
+        public static readonly Dictionary<int, string> LightDarkColors = new()
         {
             { 0, "Darker" }, //Red
             { 1, "Darker" }, //Blue
@@ -159,7 +159,7 @@ namespace TownOfUsReworked.Cosmetics
     [HarmonyPatch]
     public static class PalettePatch
     {
-        public static void Load()
+        public static void LoadColors()
         {
             Palette.ColorNames = new[]
             {
@@ -436,10 +436,7 @@ namespace TownOfUsReworked.Cosmetics
     {
         public static bool Prefix(PlayerControl __instance, [HarmonyArgument(0)] byte colorId)
         {
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetColor, SendOption.Reliable);
-            writer.Write(__instance.PlayerId);
-            writer.Write(colorId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            CallRpc(CustomRPC.Misc, MiscRPC.SetColor, __instance, colorId);
             __instance.SetColor(colorId);
             return false;
         }

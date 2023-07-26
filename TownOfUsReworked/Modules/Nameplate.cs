@@ -1,4 +1,4 @@
-namespace TownOfUsReworked.Modules
+/*namespace TownOfUsReworked.Modules
 {
     public class NameplateExtension
     {
@@ -13,4 +13,4 @@ namespace TownOfUsReworked.Modules
         public string Name { get; set; }
         public string ID { get; set; }
     }
-}
+}*/

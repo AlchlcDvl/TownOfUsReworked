@@ -4,18 +4,21 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
     {
         public bool IsAlive => !(IsDead || Disconnected);
 
-        public Overlord(PlayerControl player) : base(player)
-        {
-            Name = "Overlord";
-            Symbol = "β";
-            TaskText = () => $"- Stay alive for {CustomGameOptions.OverlordMeetingWinCount} meetings";
-            Color = CustomGameOptions.CustomObjectifierColors ? Colors.Overlord : Colors.Objectifier;
-            ObjectifierType = ObjectifierEnum.Overlord;
-            Hidden = !CustomGameOptions.OverlordKnows && !IsDead;
-            Type = LayerEnum.Overlord;
+        public override Color32 Color => ClientGameOptions.CustomObjColors ? Colors.Overlord : Colors.Objectifier;
+        public override string Name => "Overlord";
+        public override string Symbol => "β";
+        public override LayerEnum Type => LayerEnum.Overlord;
+        public override ObjectifierEnum ObjectifierType => ObjectifierEnum.Overlord;
+        public override Func<string> TaskText => () => $"- Stay alive for {CustomGameOptions.OverlordMeetingWinCount} rounds";
 
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
+        public Overlord(PlayerControl player) : base(player) => Hidden = !CustomGameOptions.OverlordKnows && !IsDead;
+
+        public override void UpdateHud(HudManager __instance)
+        {
+            base.UpdateHud(__instance);
+
+            if (Hidden && IsDead)
+                Hidden = false;
         }
     }
 }

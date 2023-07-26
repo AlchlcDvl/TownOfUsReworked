@@ -11,34 +11,32 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public PlayerControl ConfusedPlayer;
         public CustomMenu ConfuseMenu;
 
+        public override Color32 Color => ClientGameOptions.CustomSynColors ? Colors.Drunkard : Colors.Syndicate;
+        public override string Name => "Drunkard";
+        public override LayerEnum Type => LayerEnum.Drunkard;
+        public override RoleEnum RoleType => RoleEnum.Drunkard;
+        public override Func<string> StartText => () => "<i>Burp</i>";
+        public override Func<string> AbilitiesText => () => $"- You can confuse {(HoldsDrive ? "everyone" : "a player")}\n- Confused players will have their controls reverse\n" +
+            CommonAbilities;
+        public override InspectorResults InspectorResults => InspectorResults.HindersOthers;
+
         public Drunkard(PlayerControl player) : base(player)
         {
-            Name = "Drunkard";
-            StartText = () => "*Burp*";
-            AbilitiesText = () => "- You can confuse a player\n- Confused players will have their controls reverse\n- With the Chaos Drive, you reverse everyone's controls\n" +
-                $"{CommonAbilities}";
-            Color = CustomGameOptions.CustomSynColors ? Colors.Drunkard : Colors.Syndicate;
-            RoleType = RoleEnum.Drunkard;
             RoleAlignment = RoleAlignment.SyndicateDisrup;
             ConfuseMenu = new(Player, Click, Exception1);
             ConfusedPlayer = null;
-            Type = LayerEnum.Drunkard;
             ConfuseButton = new(this, "Confuse", AbilityTypes.Effect, "Secondary", HitConfuse);
-            InspectorResults = InspectorResults.HindersOthers;
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public void Confuse()
         {
             if (!Enabled && (CustomPlayer.Local == ConfusedPlayer || HoldsDrive))
-                Utils.Flash(Color);
+                Flash(Color);
 
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
 
-            if (Utils.Meeting || (ConfusedPlayer == null && !HoldsDrive))
+            if (Meeting || (ConfusedPlayer == null && !HoldsDrive))
                 TimeRemaining = 0f;
         }
 
@@ -53,13 +51,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var timespan = DateTime.UtcNow - LastConfused;
             var num = Player.GetModifiedCooldown(CustomGameOptions.ConfuseCooldown) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void Click(PlayerControl player)
         {
-            var interact = Utils.Interact(Player, player);
+            var interact = Interact(Player, player);
 
             if (interact[3])
                 ConfusedPlayer = player;
@@ -76,22 +75,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (HoldsDrive)
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                writer.Write((byte)ActionsRPC.Confuse);
-                writer.Write(PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
                 TimeRemaining = CustomGameOptions.ConfuseDuration;
                 Confuse();
+                CallRpc(CustomRPC.Action, ActionsRPC.Confuse, this);
             }
             else if (ConfusedPlayer == null)
                 ConfuseMenu.Open();
             else
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                writer.Write((byte)ActionsRPC.Confuse);
-                writer.Write(PlayerId);
-                writer.Write(ConfusedPlayer.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                CallRpc(CustomRPC.Action, ActionsRPC.Confuse, this, ConfusedPlayer);
                 TimeRemaining = CustomGameOptions.ConfuseDuration;
                 Confuse();
             }
@@ -110,7 +102,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 if (ConfusedPlayer != null && !HoldsDrive && !Confused)
                     ConfusedPlayer = null;
 
-                Utils.LogSomething("Removed a target");
+                LogSomething("Removed a target");
             }
         }
     }

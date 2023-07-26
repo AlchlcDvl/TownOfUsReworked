@@ -5,35 +5,34 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         public DateTime LastCorrupted;
         public CustomButton CorruptButton;
 
+        public override Color32 Color => ClientGameOptions.CustomObjColors ? Colors.Corrupted : Colors.Objectifier;
+        public override string Name => "Corrupted";
+        public override string Symbol => "δ";
+        public override LayerEnum Type => LayerEnum.Corrupted;
+        public override ObjectifierEnum ObjectifierType => ObjectifierEnum.Corrupted;
+        public override Func<string> TaskText => () => "- Corrupt everyone";
+
         public Corrupted(PlayerControl player) : base(player)
         {
-            Name = "Corrupted";
-            Symbol = "δ";
-            TaskText = () => "- Corrupt everyone";
-            Color = CustomGameOptions.CustomObjectifierColors ? Colors.Corrupted : Colors.Objectifier;
-            ObjectifierType = ObjectifierEnum.Corrupted;
-            Type = LayerEnum.Corrupted;
             CorruptButton = new(this, "Corrupt", AbilityTypes.Direct, "Quarternary", Corrupt);
             Role.GetRole(Player).RoleAlignment = Role.GetRole(Player).RoleAlignment.GetNewAlignment(Faction.Neutral);
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float CorruptTimer()
         {
             var timespan = DateTime.UtcNow - LastCorrupted;
-            var num = CustomGameOptions.CorruptedKillCooldown * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.CorruptedKillCooldown) * 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void Corrupt()
         {
-            if (CorruptTimer() != 0f || Utils.IsTooFar(Player, CorruptButton.TargetPlayer))
+            if (CorruptTimer() != 0f || IsTooFar(Player, CorruptButton.TargetPlayer))
                 return;
 
-            var interact = Utils.Interact(Player, CorruptButton.TargetPlayer, true);
+            var interact = Interact(Player, CorruptButton.TargetPlayer, true);
 
             if (interact[3] || interact[0])
                 LastCorrupted = DateTime.UtcNow;

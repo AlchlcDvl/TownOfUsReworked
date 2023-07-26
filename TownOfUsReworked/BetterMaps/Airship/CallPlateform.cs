@@ -12,52 +12,41 @@
 
             if (CustomGameOptions.CallPlatform)
             {
-                InteractableBehaviour.CreateThisTask(new(5.531f, 9.788f, 1f), new(0f, 0f, 0f), () =>
-                {
-                    var Plateform = UObject.FindObjectOfType<MovingPlatformBehaviour>();
-
-                    if (!Plateform.IsLeft && !PlateformIsUsed)
-                        UsePlateforRpc(Plateform, false);
-                });
-
-                InteractableBehaviour.CreateThisTask(new(10.148f, 9.806f, 1f), new(0f, 180f, 0f), () =>
-                {
-                    var Plateform = UObject.FindObjectOfType<MovingPlatformBehaviour>();
-
-                    if (Plateform.IsLeft && !PlateformIsUsed)
-                        UsePlateforRpc(Plateform, true);
-                });
+                InteractableBehaviour.CreateThisTask(new(5.531f, 9.788f, 1f), new(0f, 0f, 0f), () => UsePlatform(false));
+                InteractableBehaviour.CreateThisTask(new(10.148f, 9.806f, 1f), new(0f, 180f, 0f), () => UsePlatform(true));
             }
         }
 
-        public static void SyncPlateform(bool isLeft)
+        private static void UsePlatform(bool isLeft)
         {
-            var Plateform = UObject.FindObjectOfType<MovingPlatformBehaviour>();
-            Coroutines.Start(UsePlatform(Plateform, isLeft));
+            var platform = UObject.FindObjectOfType<MovingPlatformBehaviour>();
+
+            if (platform.IsLeft && !PlateformIsUsed)
+                UsePlateforRpc(platform, isLeft);
         }
 
-        private static void UsePlateforRpc(MovingPlatformBehaviour Plateform, bool isLeft)
+        public static void SyncPlateform(bool isLeft) => Coroutines.Start(UsePlatform(UObject.FindObjectOfType<MovingPlatformBehaviour>(), isLeft));
+
+        private static void UsePlateforRpc(MovingPlatformBehaviour platform, bool isLeft)
         {
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SyncPlateform, SendOption.Reliable);
-            writer.Write(isLeft);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
-            Coroutines.Start(UsePlatform(Plateform, isLeft));
+            Coroutines.Start(UsePlatform(platform, isLeft));
+            CallRpc(CustomRPC.Misc, MiscRPC.SyncPlateform, isLeft);
         }
 
-        private static IEnumerator UsePlatform(MovingPlatformBehaviour Plateform, bool isLeft)
+        private static IEnumerator UsePlatform(MovingPlatformBehaviour platform, bool isLeft)
         {
             PlateformIsUsed = true;
-            Plateform.IsLeft = isLeft;
-            Plateform.transform.localPosition = Plateform.IsLeft ? Plateform.LeftPosition : Plateform.RightPosition;
-            Plateform.IsDirty = true;
+            platform.IsLeft = isLeft;
+            platform.transform.localPosition = platform.IsLeft ? platform.LeftPosition : platform.RightPosition;
+            platform.IsDirty = true;
 
-            var sourcePos = Plateform.IsLeft ? Plateform.LeftPosition : Plateform.RightPosition;
-            var targetPos = !Plateform.IsLeft ? Plateform.LeftPosition : Plateform.RightPosition;
+            var sourcePos = platform.IsLeft ? platform.LeftPosition : platform.RightPosition;
+            var targetPos = !platform.IsLeft ? platform.LeftPosition : platform.RightPosition;
             yield return Effects.Wait(0.1f);
 
-            yield return Effects.Slide3D(Plateform.transform, sourcePos, targetPos, CustomPlayer.Local.MyPhysics.Speed);
+            yield return Effects.Slide3D(platform.transform, sourcePos, targetPos, CustomPlayer.Local.MyPhysics.Speed);
 
-            Plateform.IsLeft = !Plateform.IsLeft;
+            platform.IsLeft = !platform.IsLeft;
             yield return Effects.Wait(0.1f);
             PlateformIsUsed = false;
         }

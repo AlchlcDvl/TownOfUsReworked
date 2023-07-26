@@ -6,18 +6,19 @@
         public static void Postfix()
         {
             //Fix Grenadier and screwed blind in lobby
-            Utils.HUD.FullScreen.gameObject.active = false;
+            HUD.FullScreen.gameObject.active = false;
+            DataManager.Settings.Gameplay.ScreenShake = false;
             GameSettings.SettingsPage = 0;
             RoleGen.ResetEverything();
             PlayerLayer.DeleteAll();
-            AssetManager.StopAll();
-            TownOfUsReworked.IsTest = ConstantVariables.IsLocalGame && (TownOfUsReworked.IsDev || TownOfUsReworked.MCIActive);
-            Utils.DefaultOutfitAll();
+            TownOfUsReworked.IsTest = IsLocalGame && (TownOfUsReworked.IsDev || TownOfUsReworked.MCIActive);
+            StopAll();
+            DefaultOutfitAll();
 
-            if (!ConstantVariables.IsLocalGame)
+            if (!IsLocalGame)
                 return;
 
-            if (MCIUtils.Clients.Count != 0 && TownOfUsReworked.MCIActive && ConstantVariables.IsLocalGame)
+            if (MCIUtils.Clients.Count != 0 && TownOfUsReworked.MCIActive && IsLocalGame)
             {
                 var count = MCIUtils.Clients.Count;
                 TownOfUsReworked.Debugger.TestWindow.Enabled = true;

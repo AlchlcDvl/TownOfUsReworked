@@ -9,47 +9,43 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Sprite PrevOverlay;
         public Color PrevColor;
 
+        public override Color32 Color => ClientGameOptions.CustomIntColors ? Colors.Blackmailer : Colors.Intruder;
+        public override string Name => "Blackmailer";
+        public override LayerEnum Type => LayerEnum.Blackmailer;
+        public override RoleEnum RoleType => RoleEnum.Blackmailer;
+        public override Func<string> StartText => () => "You Know Their Secrets";
+        public override Func<string> AbilitiesText => () => "- You can silence players to ensure they cannot hear what others say\n" + (CustomGameOptions.BMRevealed ? "- Everyone will be "
+            + "alerted at the start of the meeting that someone has been silenced " : "") + (CustomGameOptions.WhispersNotPrivate ? "\n- You can read whispers during meetings" : "") +
+            $"\n{CommonAbilities}";
+        public override InspectorResults InspectorResults => InspectorResults.GainsInfo;
+
         public Blackmailer(PlayerControl player) : base(player)
         {
-            Name = "Blackmailer";
-            StartText = () => "You Know Their Secrets";
-            AbilitiesText = () => "- You can silence players to ensure they cannot hear what others say\n" + (CustomGameOptions.BMRevealed ? "- Everyone will be alerted at the start of " +
-                "the meeting that someone has been silenced " : "") + (CustomGameOptions.WhispersNotPrivate ? "\n- You can read whispers during meetings" : "") + $"\n{CommonAbilities}";
-            Color = CustomGameOptions.CustomIntColors ? Colors.Blackmailer : Colors.Intruder;
-            RoleType = RoleEnum.Blackmailer;
             RoleAlignment = RoleAlignment.IntruderConceal;
-            InspectorResults = InspectorResults.GainsInfo;
             BlackmailedPlayer = null;
-            Type = LayerEnum.Blackmailer;
             BlackmailButton = new(this, "Blackmail", AbilityTypes.Direct, "Secondary", Blackmail, Exception1);
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float BlackmailTimer()
         {
             var timespan = DateTime.UtcNow - LastBlackmailed;
             var num = Player.GetModifiedCooldown(CustomGameOptions.BlackmailCd) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void Blackmail()
         {
-            if (BlackmailTimer() != 0f || Utils.IsTooFar(Player, BlackmailButton.TargetPlayer) || BlackmailButton.TargetPlayer == BlackmailedPlayer)
+            if (BlackmailTimer() != 0f || IsTooFar(Player, BlackmailButton.TargetPlayer) || BlackmailButton.TargetPlayer == BlackmailedPlayer)
                 return;
 
-            var interact = Utils.Interact(Player, BlackmailButton.TargetPlayer);
+            var interact = Interact(Player, BlackmailButton.TargetPlayer);
 
             if (interact[3])
             {
                 BlackmailedPlayer = BlackmailButton.TargetPlayer;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                writer.Write((byte)ActionsRPC.Blackmail);
-                writer.Write(PlayerId);
-                writer.Write(BlackmailButton.TargetPlayer.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                CallRpc(CustomRPC.Action, ActionsRPC.Blackmail, this, BlackmailedPlayer);
             }
 
             if (interact[0])

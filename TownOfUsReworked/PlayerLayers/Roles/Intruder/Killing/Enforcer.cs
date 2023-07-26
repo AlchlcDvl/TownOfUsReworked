@@ -12,44 +12,43 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public bool DelayActive => TimeRemaining2 > 0f;
         public bool BombSuccessful;
 
+        public override Color32 Color => ClientGameOptions.CustomIntColors ? Colors.Enforcer : Colors.Intruder;
+        public override string Name => "Enforcer";
+        public override LayerEnum Type => LayerEnum.Enforcer;
+        public override RoleEnum RoleType => RoleEnum.Enforcer;
+        public override Func<string> StartText => () => "Force The <color=#8CFFFFFF>Crew</color> To Do Your Bidding";
+        public override Func<string> AbilitiesText => () => "- You can plant bombs on players and force them to kill others\n- If the player is unable to kill someone within " +
+            $"{CustomGameOptions.EnforceDuration}s, the bomb will detonate and kill everyone within a {CustomGameOptions.EnforceRadius}m radius\n{CommonAbilities}";
+        public override InspectorResults InspectorResults => InspectorResults.DropsItems;
+
         public Enforcer(PlayerControl player) : base(player)
         {
-            Name = "Enforcer";
-            RoleType = RoleEnum.Enforcer;
-            StartText = () => "Force The <color=#8CFFFFFF>Crew</color> To Do Your Bidding";
-            AbilitiesText = () => $"- You can plant bombs on players and force them to kill others\n- If the player is unable to kill someone within {CustomGameOptions.EnforceDuration}s" +
-                $", the bomb will detonate and kill everyone within a {CustomGameOptions.EnforceRadius}m radius\n{CommonAbilities}";
-            Color = CustomGameOptions.CustomIntColors ? Colors.Enforcer : Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderKill;
-            Type = LayerEnum.Enforcer;
             BombedPlayer = null;
             BombButton = new(this, "Enforce", AbilityTypes.Direct, "Secondary", Bomb, Exception1);
-            InspectorResults = InspectorResults.DropsItems;
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float BombTimer()
         {
             var timespan = DateTime.UtcNow - LastBombed;
             var num = Player.GetModifiedCooldown(CustomGameOptions.EnforceCooldown) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void Boom()
         {
             if (!Enabled && CustomPlayer.Local == BombedPlayer)
             {
-                Utils.Flash(Color);
+                Flash(Color);
                 GetRole(BombedPlayer).Bombed = true;
             }
 
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
 
-            if (IsDead || Utils.Meeting || BombedPlayer.Data.IsDead || BombedPlayer.Data.Disconnected || BombSuccessful)
+            if (IsDead || Meeting || BombedPlayer.Data.IsDead || BombedPlayer.Data.Disconnected || BombSuccessful)
                 TimeRemaining = 0f;
         }
 
@@ -57,7 +56,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             TimeRemaining2 -= Time.deltaTime;
 
-            if (IsDead || Utils.Meeting || BombedPlayer.Data.IsDead || BombedPlayer.Data.Disconnected)
+            if (IsDead || Meeting || BombedPlayer.Data.IsDead || BombedPlayer.Data.Disconnected)
                 TimeRemaining2 = 0f;
         }
 
@@ -75,35 +74,33 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         private void Explode()
         {
-            foreach (var player in Utils.GetClosestPlayers(BombedPlayer.GetTruePosition(), CustomGameOptions.EnforceRadius))
+            foreach (var player in GetClosestPlayers(BombedPlayer.GetTruePosition(), CustomGameOptions.EnforceRadius))
             {
-                Utils.Spread(BombedPlayer, player);
+                Spread(BombedPlayer, player);
 
-                if (player.IsVesting() || player.IsProtected() || player.IsOnAlert() || player.IsShielded() || player.IsRetShielded() || player.IsProtectedMonarch())
+                if (player.IsVesting() || player.IsProtected() || player.IsOnAlert() || player.IsShielded() || player.IsRetShielded() || player.IsProtectedMonarch() ||
+                    player.Is(RoleEnum.Pestilence))
+                {
                     continue;
+                }
 
-                if (!player.Is(RoleEnum.Pestilence))
-                    Utils.RpcMurderPlayer(Player, player, DeathReasonEnum.Bombed, false);
+                RpcMurderPlayer(Player, player, DeathReasonEnum.Bombed, false);
             }
         }
 
         public void Bomb()
         {
-            if (BombTimer() != 0f || Utils.IsTooFar(Player, BombButton.TargetPlayer) || BombedPlayer == BombButton.TargetPlayer)
+            if (BombTimer() != 0f || IsTooFar(Player, BombButton.TargetPlayer) || BombedPlayer == BombButton.TargetPlayer)
                 return;
 
-            var interact = Utils.Interact(Player, BombButton.TargetPlayer);
+            var interact = Interact(Player, BombButton.TargetPlayer);
 
             if (interact[3])
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                writer.Write((byte)ActionsRPC.SetBomb);
-                writer.Write(PlayerId);
-                writer.Write(BombButton.TargetPlayer.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
                 TimeRemaining = CustomGameOptions.EnforceDuration;
                 TimeRemaining2 = CustomGameOptions.EnforceDelay;
                 BombedPlayer = BombButton.TargetPlayer;
+                CallRpc(CustomRPC.Action, ActionsRPC.SetBomb, this, BombedPlayer);
                 Delay();
             }
             else if (interact[0])
@@ -112,7 +109,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 LastBombed.AddSeconds(CustomGameOptions.ProtectKCReset);
         }
 
-        public bool Exception1(PlayerControl player) => player == BombedPlayer || player.Is(Faction) || (player.Is(SubFaction) && SubFaction != SubFaction.None);
+        public bool Exception1(PlayerControl player) => player == BombedPlayer || player.Is(Faction) || (player.Is(SubFaction) && SubFaction != SubFaction.None) ||
+            Player.IsLinkedTo(player);
 
         public override void UpdateHud(HudManager __instance)
         {

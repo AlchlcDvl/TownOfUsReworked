@@ -5,47 +5,57 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public PlayerControl TargetPlayer;
         public bool TargetKilled;
         public bool ColorHintGiven;
-        public bool LetterHintGiven;
         public bool RoleHintGiven;
         public bool TargetFound;
         public DateTime LastChecked;
         public CustomButton GuessButton;
         public CustomButton HuntButton;
+        public CustomButton RequestButton;
+        public PlayerControl RequestingPlayer;
+        public PlayerControl TentativeTarget;
         public bool ButtonUsable => UsesLeft > 0;
-        public bool Failed => TargetPlayer == null || (UsesLeft <= 0 && !TargetFound) || (!TargetKilled && (TargetPlayer.Data.IsDead || TargetPlayer.Data.Disconnected));
+        public bool Failed => (UsesLeft <= 0 && !TargetFound) || (!TargetKilled && (TargetPlayer.Data.IsDead || TargetPlayer.Data.Disconnected));
         public int UsesLeft;
         private int LettersGiven;
         private bool LettersExhausted;
         private readonly List<string> Letters = new();
         public bool CanHunt => (TargetFound && !TargetPlayer.Data.IsDead && !TargetPlayer.Data.Disconnected) || (TargetKilled && !CustomGameOptions.AvoidNeutralKingmakers);
+        public bool CanRequest => (RequestingPlayer == null || RequestingPlayer.Data.IsDead || RequestingPlayer.Data.Disconnected) && TargetPlayer == null;
+        public bool Assigned;
+        public int Rounds;
+        public bool TargetFailed => TargetPlayer == null && Rounds > 2;
+
+        public override Color32 Color => ClientGameOptions.CustomNeutColors ? Colors.BountyHunter : Colors.Neutral;
+        public override string Name => "Bounty Hunter";
+        public override LayerEnum Type => LayerEnum.BountyHunter;
+        public override RoleEnum RoleType => RoleEnum.BountyHunter;
+        public override Func<string> StartText => () => "Find And Kill Your Target";
+        public override Func<string> AbilitiesText => () => TargetPlayer == null ? "- You can request a hit from a player to set your bounty" : ("- You can guess a player to be your " +
+            "bounty\n- Upon finding the bounty, you can kill them\n- After your bounty has been killed by you, you can kill others as many times as you want\n- If your target dies not by "
+            + "your hands, you will become a <color=#678D36FF>Troll</color>");
+        public override InspectorResults InspectorResults => InspectorResults.TracksOthers;
 
         public BountyHunter(PlayerControl player) : base(player)
         {
-            Name = "Bounty Hunter";
-            StartText = () => "Find And Kill Your Target";
-            Objectives = () => TargetKilled ? "- You have completed the bounty" : "- Find and kill your target";
-            AbilitiesText = () => "- You can guess a player to be your bounty\n- Upon finding the bounty, you can kill them\n- After your bounty has been killed by you, you can kill " +
-                "others as many times as you want\n- If your target dies not by your hands, you will become a <color=#678D36FF>Troll</color>";
-            Color = CustomGameOptions.CustomNeutColors ? Colors.BountyHunter : Colors.Neutral;
-            RoleType = RoleEnum.BountyHunter;
+            Objectives = () => TargetKilled ? "- You have completed the bounty" : (TargetPlayer == null ? "- Recieve a bounty" : "- Find and kill your target");
             RoleAlignment = RoleAlignment.NeutralEvil;
             UsesLeft = CustomGameOptions.BountyHunterGuesses;
-            Type = LayerEnum.BountyHunter;
             TargetPlayer = null;
             GuessButton = new(this, "BHGuess", AbilityTypes.Direct, "Secondary", Guess, true);
             HuntButton = new(this, "Hunt", AbilityTypes.Direct, "ActionSecondary", Hunt);
-            InspectorResults = InspectorResults.TracksOthers;
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
+            RequestButton = new(this, "Request", AbilityTypes.Direct, "Tertiary", Request, Exception);
         }
+
+        public bool Exception(PlayerControl player) => player == TargetPlayer || player.IsLinkedTo(Player) || GetRole(player).Requesting || (player.Is(SubFaction) && SubFaction !=
+            SubFaction.None);
 
         public float CheckTimer()
         {
             var timespan = DateTime.UtcNow - LastChecked;
             var num = Player.GetModifiedCooldown(CustomGameOptions.BountyHunterCooldown) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void TurnTroll()
@@ -53,16 +63,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var newRole = new Troll(Player);
             newRole.RoleUpdate(this);
 
-            if (Local && !IntroCutscene.Instance)
-                Utils.Flash(Colors.Troll);
+            if (Local)
+                Flash(Colors.Troll);
 
-            if (CustomPlayer.Local.Is(RoleEnum.Seer) && !IntroCutscene.Instance)
-                Utils.Flash(Colors.Seer);
+            if (CustomPlayer.Local.Is(RoleEnum.Seer))
+                Flash(Colors.Seer);
         }
 
         public override void OnMeetingStart(MeetingHud __instance)
         {
             base.OnMeetingStart(__instance);
+
+            if (TargetPlayer == null)
+                return;
+
             var targetName = TargetPlayer.name;
             var something = "";
 
@@ -135,59 +149,66 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         Letters.Add($"{targetName[random]}");
                         LettersGiven++;
                     }
-
-                    LetterHintGiven = true;
                 }
-                else if (!ColorHintGiven)
-                {
-                    something = $"Your target is a {ColorUtils.LightDarkColors[TargetPlayer.CurrentOutfit.ColorId].ToLower()} color!";
-                    ColorHintGiven = true;
-                }
-                else if (!RoleHintGiven)
-                {
-                    something = $"Your target is the {GetRole(TargetPlayer)}!";
-                    RoleHintGiven = true;
-                }
+            }
+            else if (!ColorHintGiven)
+            {
+                something = $"Your target is a {ColorUtils.LightDarkColors[TargetPlayer.CurrentOutfit.ColorId].ToLower()} color!";
+                ColorHintGiven = true;
+            }
+            else if (!RoleHintGiven)
+            {
+                something = $"Your target is the {GetRole(TargetPlayer)}!";
+                RoleHintGiven = true;
             }
 
             if (string.IsNullOrEmpty(something))
                 return;
 
             //Ensures only the Bounty Hunter sees this
-            if (Utils.HUD && something != "")
-                Utils.HUD.Chat.AddChat(PlayerControl.LocalPlayer, something);
+            if (HUD && something != "")
+                HUD.Chat.AddChat(CustomPlayer.Local, something);
         }
 
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            GuessButton.Update("GUESS", CheckTimer(), CustomGameOptions.BountyHunterCooldown, UsesLeft, true, !TargetFound);
-            HuntButton.Update("HUNT", CheckTimer(), CustomGameOptions.BountyHunterCooldown, true, CanHunt);
+            GuessButton.Update("GUESS", CheckTimer(), CustomGameOptions.BountyHunterCooldown, UsesLeft, true, !TargetFound && TargetPlayer != null);
+            HuntButton.Update("HUNT", CheckTimer(), CustomGameOptions.BountyHunterCooldown, true, TargetPlayer != null && CanHunt);
+            RequestButton.Update("REQUEST HIT", true, CanRequest);
 
-            if (Failed && !IsDead)
+            if ((TargetFailed || (TargetPlayer != null && Failed)) && !IsDead)
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
-                writer.Write((byte)TurnRPC.TurnTroll);
-                writer.Write(PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                CallRpc(CustomRPC.Change, TurnRPC.TurnTroll, this);
                 TurnTroll();
             }
         }
 
+        public void Request()
+        {
+            if (IsTooFar(Player, RequestButton.TargetPlayer))
+                return;
+
+            RequestingPlayer = RequestButton.TargetPlayer;
+            GetRole(RequestingPlayer).Requesting = true;
+            GetRole(RequestingPlayer).Requestor = Player;
+            CallRpc(CustomRPC.Action, ActionsRPC.RequestHit, this, RequestingPlayer);
+        }
+
         public void Guess()
         {
-            if (Utils.IsTooFar(Player, GuessButton.TargetPlayer) || CheckTimer() != 0f)
+            if (IsTooFar(Player, GuessButton.TargetPlayer) || CheckTimer() != 0f)
                 return;
 
             if (GuessButton.TargetPlayer != TargetPlayer)
             {
-                Utils.Flash(new(255, 0, 0, 255));
+                Flash(new(255, 0, 0, 255));
                 UsesLeft--;
             }
             else
             {
                 TargetFound = true;
-                Utils.Flash(new(0, 255, 0, 255));
+                Flash(new(0, 255, 0, 255));
             }
 
             LastChecked = DateTime.UtcNow;
@@ -195,28 +216,28 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Hunt()
         {
+            if (IsTooFar(Player, HuntButton.TargetPlayer) || CheckTimer() != 0f || !TargetFound)
+                return;
+
             if (HuntButton.TargetPlayer != TargetPlayer && !TargetKilled)
             {
-                Utils.Flash(new(255, 0, 0, 255));
+                Flash(new(255, 0, 0, 255));
                 LastChecked = DateTime.UtcNow;
             }
             else if (HuntButton.TargetPlayer == TargetPlayer && !TargetKilled)
             {
-                var interact = Utils.Interact(Player, HuntButton.TargetPlayer, true);
+                var interact = Interact(Player, HuntButton.TargetPlayer, true);
 
                 if (!interact[3])
-                    Utils.RpcMurderPlayer(Player, HuntButton.TargetPlayer);
+                    RpcMurderPlayer(Player, HuntButton.TargetPlayer);
 
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.BountyHunterWin);
-                writer.Write(PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
                 TargetKilled = true;
                 LastChecked = DateTime.UtcNow;
+                CallRpc(CustomRPC.WinLose, WinLoseRPC.BountyHunterWin, this);
             }
             else
             {
-                var interact = Utils.Interact(Player, HuntButton.TargetPlayer, true);
+                var interact = Interact(Player, HuntButton.TargetPlayer, true);
 
                 if (interact[0] || interact[3])
                     LastChecked = DateTime.UtcNow;

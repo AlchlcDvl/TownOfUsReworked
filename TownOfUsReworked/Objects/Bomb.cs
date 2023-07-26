@@ -26,7 +26,7 @@
         public override void Update()
         {
             base.Update();
-            Players = Utils.GetClosestPlayers(Transform.position, CustomGameOptions.BombRange + (Drived ? CustomGameOptions.ChaosDriveBombRange : 0f));
+            Players = GetClosestPlayers(Transform.position, CustomGameOptions.BombRange + (Drived ? CustomGameOptions.ChaosDriveBombRange : 0f));
         }
 
         public void Detonate()
@@ -34,12 +34,12 @@
             foreach (var player in Players)
             {
                 if (player.Is(RoleEnum.Pestilence) || player.IsOnAlert() || player.IsProtected() || player.IsShielded() || player.IsRetShielded() || player.IsProtectedMonarch() ||
-                    (player.Is(Faction.Syndicate) && CustomGameOptions.BombKillsSyndicate))
+                    (player.Is(Faction.Syndicate) && !CustomGameOptions.BombKillsSyndicate) || Bomber.IsLinkedTo(player))
                 {
                     continue;
                 }
 
-                Utils.RpcMurderPlayer(Bomber, player, DeathReasonEnum.Bombed, false);
+                RpcMurderPlayer(Bomber, player, DeathReasonEnum.Bombed, false);
             }
 
             Destroy();
@@ -67,11 +67,10 @@
 
         public static void Clear(List<Bomb> obj)
         {
-            if (obj == null || obj.Count == 0)
-                return;
-
             foreach (var t in obj)
                 t.Destroy();
+
+            obj.Clear();
         }
     }
 }

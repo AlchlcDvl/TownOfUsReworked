@@ -2,16 +2,12 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
 {
     public class Yeller : Modifier
     {
-        public Yeller(PlayerControl player) : base(player)
-        {
-            Name = "Yeller";
-            TaskText = () => "- Everyone knows where you are";
-            Color = CustomGameOptions.CustomModifierColors ? Colors.Yeller : Colors.Modifier;
-            ModifierType = ModifierEnum.Yeller;
-            Type = LayerEnum.Yeller;
+        public override Color32 Color => ClientGameOptions.CustomModColors ? Colors.Yeller : Colors.Modifier;
+        public override string Name => "Yeller";
+        public override LayerEnum Type => LayerEnum.Yeller;
+        public override ModifierEnum ModifierType => ModifierEnum.Yeller;
+        public override Func<string> TaskText => () => "- Everyone knows where you are";
 
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
-        }
+        public Yeller(PlayerControl player) : base(player) {}
     }
 }

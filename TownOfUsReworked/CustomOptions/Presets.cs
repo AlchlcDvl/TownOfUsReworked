@@ -1,12 +1,12 @@
 namespace TownOfUsReworked.CustomOptions
 {
-    public class Presets : CustomButtonOption
+    public class Preset : CustomButtonOption
     {
         public CustomButtonOption Loading;
         public List<OptionBehaviour> OldButtons;
         public List<CustomButtonOption> SlotButtons = new();
 
-        public Presets() : base(MultiMenu.main, "Load Preset Settings") => Do = ToDo;
+        public Preset() : base(MultiMenu.main, "Load Preset Settings") => Do = ToDo;
 
         private List<OptionBehaviour> CreateOptions()
         {
@@ -64,7 +64,7 @@ namespace TownOfUsReworked.CustomOptions
         public void ToDo()
         {
             SlotButtons.Clear();
-            AssetManager.Presets.Keys.ToList().ForEach(x => SlotButtons.Add(new(MultiMenu.external, x, delegate { LoadPreset(x); })));
+            Presets.Keys.ToList().ForEach(x => SlotButtons.Add(new(MultiMenu.external, x, delegate { LoadPreset(x); })));
             SlotButtons.Add(new(MultiMenu.external, "Cancel", delegate { Cancel(FlashWhite); }));
             var options = CreateOptions();
             var __instance = UObject.FindObjectOfType<GameOptionsMenu>();
@@ -85,12 +85,12 @@ namespace TownOfUsReworked.CustomOptions
 
         public void LoadPreset(string presetName, bool inLobby = false)
         {
-            Utils.LogSomething($"Loading - {presetName}");
+            LogSomething($"Loading - {presetName}");
             string text = null;
 
             try
             {
-                text = AssetManager.Presets[presetName];
+                text = Presets[presetName];
             }
             catch
             {
@@ -100,7 +100,7 @@ namespace TownOfUsReworked.CustomOptions
             if (string.IsNullOrEmpty(text))
             {
                 Cancel(FlashRed);
-                Utils.LogSomething("Preset no exist");
+                LogSomething("Preset no exist");
                 return;
             }
 
@@ -108,8 +108,9 @@ namespace TownOfUsReworked.CustomOptions
 
             while (splitText.Count > 0)
             {
-                var option = AllOptions.Find(o => o.Name.Equals(splitText[0].Trim(), StringComparison.Ordinal));
+                var name = splitText[0].Trim();
                 splitText.RemoveAt(0);
+                var option = AllOptions.Find(o => o.Name.Equals(name, StringComparison.Ordinal));
 
                 if (option == null)
                 {
@@ -140,6 +141,10 @@ namespace TownOfUsReworked.CustomOptions
                             option.Set(int.Parse(value));
                             break;
 
+                        case CustomOptionType.Entry:
+                            option.Set((RoleEnum)int.Parse(value));
+                            break;
+
                         case CustomOptionType.Layers:
                             var value2 = splitText[0];
                             splitText.RemoveAt(0);
@@ -147,13 +152,13 @@ namespace TownOfUsReworked.CustomOptions
                             break;
                     }
                 }
-                catch
+                catch (Exception e)
                 {
-                    Utils.LogSomething("Unable to set - " + option.Name + " : " + value);
+                    LogSomething("Unable to set - " + option.Name + " : " + value + " " + splitText[0] + "\nException: " + e);
                 }
             }
 
-            RPC.SendOptionRPC();
+            SendOptionRPC();
 
             if (!inLobby)
                 Cancel(FlashGreen);
@@ -161,16 +166,16 @@ namespace TownOfUsReworked.CustomOptions
 
         private IEnumerator FlashGreen()
         {
-            Setting.Cast<ToggleOption>().TitleText.color = Color.green;
+            Setting.Cast<ToggleOption>().TitleText.color = UColor.green;
             yield return new WaitForSeconds(0.5f);
-            Setting.Cast<ToggleOption>().TitleText.color = Color.white;
+            Setting.Cast<ToggleOption>().TitleText.color = UColor.white;
         }
 
         private IEnumerator FlashRed()
         {
-            Setting.Cast<ToggleOption>().TitleText.color = Color.red;
+            Setting.Cast<ToggleOption>().TitleText.color = UColor.red;
             yield return new WaitForSeconds(0.5f);
-            Setting.Cast<ToggleOption>().TitleText.color = Color.white;
+            Setting.Cast<ToggleOption>().TitleText.color = UColor.white;
         }
 
         private IEnumerator FlashWhite() => null;

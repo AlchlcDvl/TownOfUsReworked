@@ -44,7 +44,7 @@
                         {
                             if (t.Bugs.Contains(this))
                             {
-                                var playerrole = Role.GetRole(Utils.PlayerById(entry.PlayerId)).RoleType;
+                                var playerrole = Role.GetRole(PlayerById(entry.PlayerId)).RoleType;
 
                                 if (!t.BuggedPlayers.Contains(playerrole) && entry != t.Player)
                                     t.BuggedPlayers.Add(playerrole);
@@ -58,7 +58,7 @@
 
                             if (t.Bugs.Contains(this))
                             {
-                                var playerrole = Role.GetRole(Utils.PlayerById(entry.PlayerId)).RoleType;
+                                var playerrole = Role.GetRole(PlayerById(entry.PlayerId)).RoleType;
 
                                 if (!t.BuggedPlayers.Contains(playerrole) && entry != t.Player)
                                     t.BuggedPlayers.Add(playerrole);
@@ -73,6 +73,8 @@
         {
             foreach (var t in obj)
                 t.Destroy();
+
+            obj.Clear();
         }
     }
 }

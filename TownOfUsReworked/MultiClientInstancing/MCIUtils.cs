@@ -3,8 +3,8 @@ namespace TownOfUsReworked.MultiClientInstancing
     [HarmonyPatch]
     public static class MCIUtils
     {
-        public readonly static Dictionary<int, ClientData> Clients = new();
-        public readonly static Dictionary<byte, int> PlayerIdClientId = new();
+        public static readonly Dictionary<int, ClientData> Clients = new();
+        public static readonly Dictionary<byte, int> PlayerIdClientId = new();
 
         public static int AvailableId()
         {
@@ -48,8 +48,8 @@ namespace TownOfUsReworked.MultiClientInstancing
             sampleC.Character.SetColor(URandom.Range(0, Palette.PlayerColors.Length));
             sampleC.Character.MyPhysics.ResetMoveState();
 
-            if (ModCompatibility.SubLoaded)
-                ModCompatibility.ImpartSub(sampleC.Character);
+            if (SubLoaded)
+                ImpartSub(sampleC.Character);
 
             Clients.Add(sampleId, sampleC);
             PlayerIdClientId.Add(sampleC.Character.PlayerId, sampleId);
@@ -82,70 +82,20 @@ namespace TownOfUsReworked.MultiClientInstancing
             CustomPlayer.Local.DisableButtons();
             CustomPlayer.Local.DisableArrows();
 
-            if (Utils.Meeting)
-            {
-                switch (CustomPlayer.Local.GetRole())
-                {
-                    case RoleEnum.Retributionist:
-                        var ret = (Retributionist)Role.LocalRole;
-                        ret.HideButtons();
-                        ret.PlayerNumbers.Clear();
-                        ret.Actives.Clear();
-                        ret.MoarButtons.Clear();
-                        break;
+            if (Meeting)
+                PlayerLayer.LocalLayers.ForEach(x => x.OnMeetingEnd(Meeting));
 
-                    case RoleEnum.Guesser:
-                        var guesser = (Guesser)Role.LocalRole;
-                        guesser.HideButtons();
-                        guesser.OtherButtons.Clear();
-                        guesser.Exit(Utils.Meeting);
-                        break;
-
-                    case RoleEnum.Thief:
-                        var thief = (Thief)Role.LocalRole;
-                        thief.HideButtons();
-                        thief.OtherButtons.Clear();
-                        thief.Exit(Utils.Meeting);
-                        break;
-
-                    case RoleEnum.Dictator:
-                        var dict = (Dictator)Role.LocalRole;
-                        dict.HideButtons();
-                        dict.Actives.Clear();
-                        dict.MoarButtons.Clear();
-                        dict.ToBeEjected.Clear();
-                        break;
-                }
-
-                switch (CustomPlayer.Local.GetAbility())
-                {
-                    case AbilityEnum.Assassin:
-                        var assassin = (Assassin)Ability.LocalAbility;
-                        assassin.HideButtons();
-                        assassin.OtherButtons.Clear();
-                        assassin.Exit(Utils.Meeting);
-                        break;
-
-                    case AbilityEnum.Swapper:
-                        var swapper = (Swapper)Ability.LocalAbility;
-                        swapper.HideButtons();
-                        swapper.Actives.Clear();
-                        swapper.MoarButtons.Clear();
-                        break;
-
-                    case AbilityEnum.Politician:
-                        ((Politician)Ability.LocalAbility).DestroyAbstain();
-                        break;
-                }
-            }
-
-            CustomPlayer.Local.NetTransform.RpcSnapTo(CustomPlayer.Local.transform.position);
+            CustomPlayer.Local.NetTransform.RpcSnapTo(CustomPlayer.LocalCustom.Position);
             CustomPlayer.Local.moveable = false;
 
             var light = CustomPlayer.Local.lightSource;
 
             //Setup new player
-            var newPlayer = Utils.PlayerById(playerId);
+            var newPlayer = PlayerById(playerId);
+
+            if (newPlayer == null)
+                return;
+
             PlayerControl.LocalPlayer = newPlayer;
             CustomPlayer.Local.lightSource = light;
             CustomPlayer.Local.moveable = true;
@@ -153,81 +103,23 @@ namespace TownOfUsReworked.MultiClientInstancing
             AmongUsClient.Instance.ClientId = newPlayer.OwnerId;
             AmongUsClient.Instance.HostId = newPlayer.OwnerId;
 
-            Utils.HUD.SetHudActive(true);
+            HUD.SetHudActive(true);
+            HUD.ShadowQuad.gameObject.SetActive(!newPlayer.Data.IsDead);
 
-            Utils.HUD.ShadowQuad.gameObject.SetActive(!newPlayer.Data.IsDead);
-
-            light.transform.SetParent(CustomPlayer.Local.transform);
+            light.transform.SetParent(CustomPlayer.LocalCustom.Transform);
             light.transform.localPosition = CustomPlayer.Local.Collider.offset;
 
             Camera.main!.GetComponent<FollowerCamera>().SetTarget(newPlayer);
             CustomPlayer.Local.MyPhysics.ResetMoveState(true);
-            KillAnimation.SetMovement(PlayerControl.LocalPlayer, true);
+            KillAnimation.SetMovement(CustomPlayer.Local, true);
 
             CustomPlayer.Local.EnableButtons();
             CustomPlayer.Local.EnableArrows();
 
-            if (Utils.Meeting)
-            {
-                if (!CustomPlayer.LocalCustom.IsDead)
-                    Utils.Meeting.SetForegroundForAlive();
+            if (Meeting)
+                PlayerLayer.LocalLayers.ForEach(x => x.OnMeetingStart(Meeting));
 
-                switch (CustomPlayer.Local.GetRole())
-                {
-                    case RoleEnum.Retributionist:
-                        var ret = (Retributionist)Role.LocalRole;
-                        ret.HideButtons();
-                        ret.PlayerNumbers.Clear();
-                        ret.Actives.Clear();
-                        ret.MoarButtons.Clear();
-                        Utils.AllVoteAreas.ForEach(x => ret.GenButtons(x, Utils.Meeting));
-                        break;
-
-                    case RoleEnum.Guesser:
-                        var guesser = (Guesser)Role.LocalRole;
-                        guesser.HideButtons();
-                        guesser.OtherButtons.Clear();
-                        Utils.AllVoteAreas.ForEach(x => guesser.GenButton(x, Utils.Meeting));
-                        break;
-
-                    case RoleEnum.Thief:
-                        var thief = (Thief)Role.LocalRole;
-                        thief.HideButtons();
-                        thief.OtherButtons.Clear();
-                        Utils.AllVoteAreas.ForEach(x => thief.GenButton(x, Utils.Meeting));
-                        break;
-
-                    case RoleEnum.Dictator:
-                        var dict = (Dictator)Role.LocalRole;
-                        dict.HideButtons();
-                        dict.Actives.Clear();
-                        dict.MoarButtons.Clear();
-                        Utils.AllVoteAreas.ForEach(x => dict.GenButton(x, Utils.Meeting));
-                        break;
-                }
-
-                switch (CustomPlayer.Local.GetAbility())
-                {
-                    case AbilityEnum.Assassin:
-                        var assassin = (Assassin)Ability.LocalAbility;
-                        assassin.HideButtons();
-                        assassin.OtherButtons.Clear();
-                        Utils.AllVoteAreas.ForEach(x => assassin.GenButton(x, Utils.Meeting));
-                        break;
-
-                    case AbilityEnum.Swapper:
-                        var swapper = (Swapper)Ability.LocalAbility;
-                        swapper.HideButtons();
-                        swapper.Actives.Clear();
-                        swapper.MoarButtons.Clear();
-                        Utils.AllVoteAreas.ForEach(x => swapper.GenButton(x, Utils.Meeting));
-                        break;
-
-                    case AbilityEnum.Politician:
-                        ((Politician)Ability.LocalAbility).GenButton(Utils.Meeting);
-                        break;
-                }
-            }
+            HUD.Chat.SetVisible(CustomPlayer.Local.CanChat());
         }
 
         public static void SetForegroundForAlive(this MeetingHud __instance)

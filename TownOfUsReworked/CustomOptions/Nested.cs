@@ -4,7 +4,7 @@ namespace TownOfUsReworked.CustomOptions
     {
         private List<OptionBehaviour> OldButtons = new();
         public List<CustomOption> InternalOptions = new();
-        public readonly static List<CustomButtonOption> AllCancelButtons = new();
+        public static readonly List<CustomButtonOption> AllCancelButtons = new();
         private readonly CustomButtonOption CancelButton;
         private readonly CustomHeaderOption Header;
 
@@ -76,6 +76,7 @@ namespace TownOfUsReworked.CustomOptions
 
                     case CustomOptionType.Layers:
                         var layer = UObject.Instantiate(rolePrefab, keyValPrefab.transform.parent);
+                        layer.transform.GetChild(8).gameObject.SetActive(false);
                         option.Setting = layer;
                         options.Add(layer);
                         break;
@@ -86,16 +87,13 @@ namespace TownOfUsReworked.CustomOptions
                     case CustomOptionType.Header:
                         var toggle = UObject.Instantiate(togglePrefab, togglePrefab.transform.parent);
 
+                        if (option.Type != CustomOptionType.Toggle)
+                            toggle.transform.GetChild(2).gameObject.SetActive(false);
+
                         if (option.Type == CustomOptionType.Header)
-                        {
                             toggle.transform.GetChild(1).gameObject.SetActive(false);
-                            toggle.transform.GetChild(2).gameObject.SetActive(false);
-                        }
                         else if (option.Type is CustomOptionType.Button or CustomOptionType.Nested)
-                        {
-                            toggle.transform.GetChild(2).gameObject.SetActive(false);
                             toggle.transform.GetChild(0).localPosition += new Vector3(1f, 0f, 0f);
-                        }
 
                         option.Setting = toggle;
                         options.Add(toggle);

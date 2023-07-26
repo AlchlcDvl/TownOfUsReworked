@@ -2,8 +2,8 @@ namespace TownOfUsReworked.CustomOptions
 {
     public class Import : CustomButtonOption
     {
-        public CustomButtonOption Loading;
-        public List<OptionBehaviour> OldButtons;
+        private CustomButtonOption Loading;
+        private List<OptionBehaviour> OldButtons = new();
         public List<CustomButtonOption> SlotButtons = new();
 
         public Import() : base(MultiMenu.main, "Load Custom Settings") => Do = ToDo;
@@ -46,7 +46,7 @@ namespace TownOfUsReworked.CustomOptions
             Loading = SlotButtons[0];
             Loading.Do = () => {};
             Loading.Setting.Cast<ToggleOption>().TitleText.text = "Loading...";
-            __instance.Children = new[] {Loading.Setting};
+            __instance.Children = new[] { Loading.Setting };
             yield return new WaitForSeconds(0.5f);
             Loading.Setting.gameObject.Destroy();
 
@@ -61,7 +61,7 @@ namespace TownOfUsReworked.CustomOptions
         public void ToDo()
         {
             SlotButtons.Clear();
-            AssetManager.Slots.Keys.ToList().ForEach(x => SlotButtons.Add(new(MultiMenu.external, $"Slot {x}", delegate { ImportSlot(x); })));
+            Slots.Keys.ToList().ForEach(x => SlotButtons.Add(new(MultiMenu.external, $"Slot {x}", delegate { ImportSlot(x); })));
             SlotButtons.Add(new(MultiMenu.external, "Cancel", delegate { Cancel(FlashWhite); }));
 
             var options = CreateOptions();
@@ -83,12 +83,12 @@ namespace TownOfUsReworked.CustomOptions
 
         private void ImportSlot(int slotId)
         {
-            Utils.LogSomething($"Loading - Slot {slotId}");
+            LogSomething($"Loading - Slot {slotId}");
             string text = null;
 
             try
             {
-                text = AssetManager.Slots[slotId];
+                text = Slots[slotId];
             }
             catch
             {
@@ -98,7 +98,7 @@ namespace TownOfUsReworked.CustomOptions
             if (string.IsNullOrEmpty(text))
             {
                 Cancel(FlashRed);
-                Utils.LogSomething("Slot no exist");
+                LogSomething("Slot no exist");
                 return;
             }
 
@@ -139,6 +139,10 @@ namespace TownOfUsReworked.CustomOptions
                             option.Set(int.Parse(value));
                             break;
 
+                        case CustomOptionType.Entry:
+                            option.Set((RoleEnum)int.Parse(value));
+                            break;
+
                         case CustomOptionType.Layers:
                             var value2 = splitText[0];
                             splitText.RemoveAt(0);
@@ -146,28 +150,28 @@ namespace TownOfUsReworked.CustomOptions
                             break;
                     }
                 }
-                catch
+                catch (Exception e)
                 {
-                    Utils.LogSomething("Unable to set - " + option.Name + " : " + value);
+                    LogSomething("Unable to set - " + option.Name + " : " + value + " " + splitText[0] + "\nException: " + e);
                 }
             }
 
-            RPC.SendOptionRPC();
+            SendOptionRPC();
             Cancel(FlashGreen);
         }
 
         private IEnumerator FlashGreen()
         {
-            Setting.Cast<ToggleOption>().TitleText.color = Color.green;
+            Setting.Cast<ToggleOption>().TitleText.color = UColor.green;
             yield return new WaitForSeconds(0.5f);
-            Setting.Cast<ToggleOption>().TitleText.color = Color.white;
+            Setting.Cast<ToggleOption>().TitleText.color = UColor.white;
         }
 
         private IEnumerator FlashRed()
         {
-            Setting.Cast<ToggleOption>().TitleText.color = Color.red;
+            Setting.Cast<ToggleOption>().TitleText.color = UColor.red;
             yield return new WaitForSeconds(0.5f);
-            Setting.Cast<ToggleOption>().TitleText.color = Color.white;
+            Setting.Cast<ToggleOption>().TitleText.color = UColor.white;
         }
 
         private IEnumerator FlashWhite() => null;

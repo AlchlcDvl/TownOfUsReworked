@@ -2,17 +2,13 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
 {
     public class Coward : Modifier
     {
-        public Coward(PlayerControl player) : base(player)
-        {
-            Name = "Coward";
-            TaskText = () => "- You can't report bodies";
-            Color = CustomGameOptions.CustomModifierColors ? Colors.Coward : Colors.Modifier;
-            ModifierType = ModifierEnum.Coward;
-            Type = LayerEnum.Coward;
+        public override Color32 Color => ClientGameOptions.CustomModColors ? Colors.Coward : Colors.Modifier;
+        public override string Name => "Coward";
+        public override LayerEnum Type => LayerEnum.Coward;
+        public override ModifierEnum ModifierType => ModifierEnum.Coward;
+        public override Func<string> TaskText => () => "- You cannot report bodies";
 
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
-        }
+        public Coward(PlayerControl player) : base(player) {}
 
         public override void UpdateHud(HudManager __instance)
         {

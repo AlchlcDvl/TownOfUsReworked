@@ -4,7 +4,7 @@
     public static class SpawnInMinigamePatch
     {
         private static bool GameStarted;
-        public readonly static List<byte> SpawnPoints = new();
+        public static readonly List<byte> SpawnPoints = new();
 
         [HarmonyPatch(typeof(SpawnInMinigame), nameof(SpawnInMinigame.Begin))]
         public static class SpawnInMiningameBeginPatch
@@ -39,26 +39,32 @@
 
                     if (AmongUsClient.Instance.AmHost)
                     {
-                        var random = (byte) URandom.RandomRangeInt(0, spawn.Length);
-                        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetSpawnAirship, SendOption.Reliable);
-                        writer.Write(CustomPlayer.Local.PlayerId);
+                        var random = (byte)URandom.RandomRangeInt(0, spawn.Length);
 
                         while (SpawnPoints.Count < 3)
                         {
-                            random = (byte) URandom.RandomRangeInt(0, spawn.Length);
+                            random = (byte)URandom.RandomRangeInt(0, spawn.Length);
 
                             if (!SpawnPoints.Contains(random))
                                 SpawnPoints.Add(random);
                         }
 
-                        writer.WriteBytesAndSize(SpawnPoints.ToArray());
-                        AmongUsClient.Instance.FinishRpcImmediately(writer);
+                        CallRpc(CustomRPC.Misc, MiscRPC.SetSpawnAirship, SpawnPoints.ToArray());
                     }
 
                     if (CustomGameOptions.SpawnType == AirshipSpawnType.Fixed)
                         __instance.Locations = new[] { spawn[3], spawn[2], spawn[5] };
                     else if (CustomGameOptions.SpawnType == AirshipSpawnType.RandomSynchronized)
-                        __instance.Locations = new[] { spawn[SpawnPoints[0]], spawn[SpawnPoints[1]], spawn[SpawnPoints[2]] };
+                    {
+                        try
+                        {
+                            __instance.Locations = new[] { spawn[SpawnPoints[0]], spawn[SpawnPoints[1]], spawn[SpawnPoints[2]] };
+                        }
+                        catch
+                        {
+                            __instance.Locations = new[] { spawn[3], spawn[2], spawn[5] };
+                        }
+                    }
 
                     return true;
                 }

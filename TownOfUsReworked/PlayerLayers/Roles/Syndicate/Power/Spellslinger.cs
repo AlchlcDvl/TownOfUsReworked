@@ -7,31 +7,30 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public DateTime LastSpelled;
         public int SpellCount;
 
+        public override Color32 Color => ClientGameOptions.CustomSynColors ? Colors.Spellslinger : Colors.Syndicate;
+        public override string Name => "Spellslinger";
+        public override LayerEnum Type => LayerEnum.Spellslinger;
+        public override RoleEnum RoleType => RoleEnum.Spellslinger;
+        public override Func<string> StartText => () => "Place the <color=#8CFFFFFF>Crew</color> Under A Curse";
+        public override Func<string> AbilitiesText => () => $"- You can place a spell on players\n- When all non-{FactionColorString} players are spelled the game ends in a " +
+            $"{FactionColorString} win{(HoldsDrive ? "\n- Your spells don't trigger interaction sensitive roles and your cooldown does not increase" : "")}\n{CommonAbilities}";
+        public override InspectorResults InspectorResults => InspectorResults.SeeksToDestroy;
+
         public Spellslinger(PlayerControl player) : base(player)
         {
-            Name = "Spellslinger";
-            StartText = () => "Place the <color=#8CFFFFFF>Crew</color> Under A Curse";
-            AbilitiesText = () => "- You can place a spell on players\n- When all non-<color=#008000FF>Syndicate</color> players are spelled the game ends in a <color=#008000FF>Syndicate" +
-                $"</color> win\n- With the Chaos Drive, your spells are astral\n{CommonAbilities}";
-            RoleType = RoleEnum.Spellslinger;
             RoleAlignment = RoleAlignment.SyndicatePower;
-            Color = CustomGameOptions.CustomSynColors ? Colors.Spellslinger : Colors.Syndicate;
             Spelled = new();
             SpellCount = 0;
-            Type = LayerEnum.Spellslinger;
             SpellButton = new(this, "Spell", AbilityTypes.Direct, "Secondary", HitSpell, Exception1);
-            InspectorResults = InspectorResults.SeeksToDestroy;
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float SpellTimer()
         {
             var timespan = DateTime.UtcNow - LastSpelled;
             var num = Player.GetModifiedCooldown(CustomGameOptions.SpellCooldown, SpellCount * CustomGameOptions.SpellCooldownIncrease) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void Spell(PlayerControl player)
@@ -40,19 +39,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 return;
 
             Spelled.Add(player.PlayerId);
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-            writer.Write((byte)ActionsRPC.Spell);
-            writer.Write(PlayerId);
-            writer.Write(player.PlayerId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            CallRpc(CustomRPC.Action, ActionsRPC.Spell, this, player);
 
             if (!HoldsDrive)
                 SpellCount++;
+            else
+                SpellCount = 0;
         }
 
         public void HitSpell()
         {
-            if (SpellTimer() != 0f || Utils.IsTooFar(Player, SpellButton.TargetPlayer))
+            if (SpellTimer() != 0f || IsTooFar(Player, SpellButton.TargetPlayer))
                 return;
 
             if (HoldsDrive)
@@ -62,7 +59,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
             else
             {
-                var interact = Utils.Interact(Player, SpellButton.TargetPlayer);
+                var interact = Interact(Player, SpellButton.TargetPlayer);
 
                 if (interact[3])
                     Spell(SpellButton.TargetPlayer);
@@ -79,7 +76,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            SpellButton.Update("SPELL", SpellTimer(), CustomGameOptions.SpellCooldown + (SpellCount * CustomGameOptions.SpellCooldownIncrease));
+            SpellButton.Update("SPELL", SpellTimer(), CustomGameOptions.SpellCooldown, SpellCount * CustomGameOptions.SpellCooldownIncrease);
         }
     }
 }

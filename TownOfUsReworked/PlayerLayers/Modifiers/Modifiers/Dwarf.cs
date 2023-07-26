@@ -6,16 +6,12 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
         private static bool Sped => CustomGameOptions.DwarfSpeed != 1;
         private static string Text => Smol && Sped ? "tiny and speedy" : (Smol ? "tiny" : (Sped ? "speedy" : ""));
 
-        public Dwarf(PlayerControl player) : base(player)
-        {
-            Name = !Smol && !Sped ? "Useless" : (!Smol ? "Flash" : (Sped ? "Gremlin" : "Dwarf"));
-            TaskText = () => !Smol && !Sped ? "- Why" : $"- You are {Text}";
-            Color = CustomGameOptions.CustomModifierColors ? Colors.Dwarf : Colors.Modifier;
-            ModifierType = ModifierEnum.Dwarf;
-            Type = LayerEnum.Dwarf;
+        public override Color32 Color => ClientGameOptions.CustomModColors ? Colors.Dwarf : Colors.Modifier;
+        public override string Name => !Smol && !Sped ? "Useless" : (!Smol ? "Flash" : (Sped ? "Gremlin" : "Dwarf"));
+        public override LayerEnum Type => LayerEnum.Dwarf;
+        public override ModifierEnum ModifierType => ModifierEnum.Dwarf;
+        public override Func<string> TaskText => () => !Smol && !Sped ? "- Why" : $"- You are {Text}";
 
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
-        }
+        public Dwarf(PlayerControl player) : base(player) {}
     }
 }

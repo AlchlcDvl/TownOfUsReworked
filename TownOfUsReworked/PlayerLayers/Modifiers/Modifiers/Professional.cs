@@ -4,18 +4,24 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
     {
         public bool LifeUsed;
 
+        public override Color32 Color => ClientGameOptions.CustomModColors ? Colors.Professional : Colors.Modifier;
+        public override string Name => "Professional";
+        public override LayerEnum Type => LayerEnum.Professional;
+        public override ModifierEnum ModifierType => ModifierEnum.Professional;
+        public override Func<string> TaskText => () => "- You have an extra life when assassinating";
+
         public Professional(PlayerControl player) : base(player)
         {
-            Name = "Professional";
-            TaskText = () => "- You have an extra life when assassinating";
-            Color = CustomGameOptions.CustomModifierColors ? Colors.Professional : Colors.Modifier;
-            ModifierType = ModifierEnum.Professional;
             Hidden = !CustomGameOptions.ProfessionalKnows && !LifeUsed;
             LifeUsed = false;
-            Type = LayerEnum.Professional;
+        }
 
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
+        public override void UpdateHud(HudManager __instance)
+        {
+            base.UpdateHud(__instance);
+
+            if (Hidden && (IsDead || LifeUsed))
+                Hidden = false;
         }
     }
 }

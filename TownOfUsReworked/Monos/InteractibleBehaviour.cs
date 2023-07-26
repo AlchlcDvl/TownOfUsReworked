@@ -4,7 +4,7 @@
     {
         public InteractableBehaviour(IntPtr ptr) : base(ptr) {}
 
-        public readonly static List<GameObject> AllCustomPlateform = new();
+        public static readonly List<GameObject> AllCustomPlateform = new();
         public byte Id;
         public Action OnClick;
         public static InteractableBehaviour NearestTask;
@@ -35,8 +35,8 @@
             if (renderer)
             {
                 renderer.material.SetFloat("_Outline", on ? 1 : 0);
-                renderer.material.SetColor("_OutlineColor", Color.white);
-                renderer.material.SetColor("_AddColor", on ? Color.white : Color.clear);
+                renderer.material.SetColor("_OutlineColor", UColor.white);
+                renderer.material.SetColor("_AddColor", on ? UColor.white : Color.clear);
             }
         }
 
@@ -64,12 +64,12 @@
                 var component = customElectrical.GetComponent<InteractableBehaviour>();
                 component.SetOutline(false);
 
-                if (component != null && ((!player.Data.IsDead && (!AmongUsClient.Instance || !AmongUsClient.Instance.IsGameOver) && player.CanMove) || !player.inVent ||
-                    !player.inMovingPlat || !player.onLadder))
+                if (component && ((!player.Data.IsDead && (!AmongUsClient.Instance || !AmongUsClient.Instance.IsGameOver) && player.CanMove) || !player.inVent || !player.inMovingPlat ||
+                    !player.onLadder))
                 {
                     var distance = component.CanUse(player.Data, out var canUse);
 
-                    if (canUse && distance <= CustomGameOptions.InteractionDistance)
+                    if (canUse)
                     {
                         NearestTask = component;
                         component.SetOutline(true);

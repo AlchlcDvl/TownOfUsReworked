@@ -2,16 +2,12 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
 {
     public class Ninja : Ability
     {
-        public Ninja(PlayerControl player) : base(player)
-        {
-            Name = "Ninja";
-            TaskText = () => "- You do not lunge";
-            Color = CustomGameOptions.CustomAbilityColors ? Colors.Ninja : Colors.Ability;
-            AbilityType = AbilityEnum.Ninja;
-            Type = LayerEnum.Ninja;
+        public override Color32 Color => ClientGameOptions.CustomAbColors ? Colors.Ninja : Colors.Ability;
+        public override string Name => "Ninja";
+        public override LayerEnum Type => LayerEnum.Ninja;
+        public override AbilityEnum AbilityType => AbilityEnum.Ninja;
+        public override Func<string> TaskText => () => "- You do not lunge when killing";
 
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
-        }
+        public Ninja(PlayerControl player) : base(player) {}
     }
 }

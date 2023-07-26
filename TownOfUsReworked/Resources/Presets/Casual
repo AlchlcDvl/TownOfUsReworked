@@ -540,17 +540,17 @@ Min <color=#8CFFFFFF>Crew</color> <color=#FFD700FF>Roles</color>
 False
 Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Auditor</color> <color=#FFD700FF>Roles</color>
 1
-<color=#708EEFFF>Mystic</color> Is Unique In All Any
+<color=#708EEFFF>Mystic</color> Is Unique
 False
 Reveal Cooldown
 25
-<color=#C0C0C0FF>Vampire Hunter</color> Is Unique In All Any
+<color=#C0C0C0FF>Vampire Hunter</color> Is Unique
 False
 Stake Cooldown
 25
 Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Investigative</color> <color=#FFD700FF>Roles</color>
 1
-<color=#4D99E6FF>Coroner</color> Is Unique In All Any
+<color=#4D99E6FF>Coroner</color> Is Unique
 False
 Dead Body Arrow Duration
 0.1
@@ -564,7 +564,7 @@ Compare Cooldown
 25
 Autopsy Cooldown
 25
-<color=#4D4DFFFF>Detective</color> Is Unique In All Any
+<color=#4D4DFFFF>Detective</color> Is Unique
 False
 Examine Cooldown
 10
@@ -576,11 +576,11 @@ Footprint Duration
 10
 Anonymous Footprint
 False
-<color=#7E3C64FF>Inspector</color> Is Unique In All Any
+<color=#7E3C64FF>Inspector</color> Is Unique
 False
 Inspect Cooldown
 25
-<color=#A680FFFF>Medium</color> Is Unique In All Any
+<color=#A680FFFF>Medium</color> Is Unique
 False
 Mediate Cooldown
 10
@@ -590,11 +590,11 @@ Reveal The <color=#A680FFFF>Medium</color> To The Mediate Target
 1
 Who Is Revealed With Mediate
 0
-<color=#71368AFF>Seer</color> Is Unique In All Any
+<color=#71368AFF>Seer</color> Is Unique
 False
 Seer Cooldown
 25
-<color=#FFCC80FF>Sheriff</color> Is Unique In All Any
+<color=#FFCC80FF>Sheriff</color> Is Unique
 False
 Interrogate Cooldown
 25
@@ -602,7 +602,7 @@ Interrogate Cooldown
 True
 <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killings</color> Show Evil
 True
-<color=#009900FF>Tracker</color> Is Unique In All Any
+<color=#009900FF>Tracker</color> Is Unique
 False
 Arrow Update Interval
 5
@@ -612,7 +612,7 @@ Track Cooldown
 False
 Max Tracks
 5
-<color=#A7D1B3FF>Operative</color> Is Unique In All Any
+<color=#A7D1B3FF>Operative</color> Is Unique
 False
 Bug Cooldown
 25
@@ -630,7 +630,7 @@ Who Sees Dead Bodies On Admin
 1
 Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>
 1
-<color=#998040FF>Veteran</color> Is Unique In All Any
+<color=#998040FF>Veteran</color> Is Unique
 False
 Alert Cooldown
 25
@@ -638,7 +638,7 @@ Alert Duration
 10
 Max Alerts
 5
-<color=#FFFF00FF>Vigilante</color> Is Unique In All Any
+<color=#FFFF00FF>Vigilante</color> Is Unique
 False
 Misfire Kills The Target
 True
@@ -656,7 +656,7 @@ Max Bullets
 5
 Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Protective</color> <color=#FFD700FF>Roles</color>
 1
-<color=#660000FF>Altruist</color> Is Unique In All Any
+<color=#660000FF>Altruist</color> Is Unique
 False
 Revive Count
 2
@@ -666,7 +666,7 @@ Revive Cooldown
 2
 Target's Body Disappears On Beginning Of Revive
 True
-<color=#006600FF>Medic</color> Is Unique In All Any
+<color=#006600FF>Medic</color> Is Unique
 False
 Show Shielded Player
 2
@@ -676,7 +676,7 @@ Shield Breaks On Murder Attempt
 True
 Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Sovereign</color> <color=#FFD700FF>Roles</color>
 1
-<color=#00CB97FF>Dictator</color> Is Unique In All Any
+<color=#00CB97FF>Dictator</color> Is Unique
 False
 <color=#00CB97FF>Dictator</color> Cannot Reveal Round One
 True
@@ -684,7 +684,7 @@ True
 True
 <color=#00CB97FF>Dictator</color> Can Button
 True
-<color=#704FA8FF>Mayor</color> Is Unique In All Any
+<color=#704FA8FF>Mayor</color> Is Unique
 False
 Revealed <color=#704FA8FF>Mayor</color> Votes Count As
 3
@@ -692,7 +692,7 @@ Revealed <color=#704FA8FF>Mayor</color> Votes Count As
 True
 <color=#704FA8FF>Mayor</color> Can Button
 True
-<color=#FF004EFF>Monarch</color> Is Unique In All Any
+<color=#FF004EFF>Monarch</color> Is Unique
 False
 Knighting Cooldown
 25
@@ -708,7 +708,7 @@ Knights Can Button
 True
 Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>
 1
-<color=#5411F8FF>Chameleon</color> Is Unique In All Any
+<color=#5411F8FF>Chameleon</color> Is Unique
 False
 Swoop Cooldown
 25
@@ -716,31 +716,31 @@ Swoop Duration
 10
 Max Swoops
 5
-<color=#FFA60AFF>Engineer</color> Is Unique In All Any
+<color=#FFA60AFF>Engineer</color> Is Unique
 False
 Fix Cooldown
 25
 Max Fixes
 5
-<color=#803333FF>Escort</color> Is Unique In All Any
+<color=#803333FF>Escort</color> Is Unique
 False
 Roleblock Cooldown
 25
 Roleblock Duration
 10
-<color=#8D0F8CFF>Retributionist</color> Is Unique In All Any
+<color=#8D0F8CFF>Retributionist</color> Is Unique
 False
 <color=#8D0F8CFF>Retributionist</color> Can Mimic After Voting
 True
 Max Uses
 5
-<color=#DF851FFF>Shifter</color> Is Unique In All Any
+<color=#DF851FFF>Shifter</color> Is Unique
 True
 Shift Cooldown
 15
 Shifted Becomes
 0
-<color=#00EEFFFF>Transporter</color> Is Unique In All Any
+<color=#00EEFFFF>Transporter</color> Is Unique
 False
 Transport Cooldown
 25
@@ -790,7 +790,7 @@ Max <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Benign</color> <color=#FFD
 1
 <color=#FFFF00FF>Vigilante</color> Kills <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Benigns</color>
 False
-<color=#22FFFFFF>Amnesiac</color> Is Unique In All Any
+<color=#22FFFFFF>Amnesiac</color> Is Unique
 False
 <color=#22FFFFFF>Amnesiac</color> Gets Arrows To Dead Bodies
 True
@@ -800,7 +800,7 @@ Arrow Appearance Delay
 False
 <color=#22FFFFFF>Amnesiac</color> Can Switch Vents
 False
-<color=#FFFFFFFF>Guardian Angel</color> Is Unique In All Any
+<color=#FFFFFFFF>Guardian Angel</color> Is Unique
 True
 Protect Cooldown
 25
@@ -822,7 +822,7 @@ True
 False
 <color=#FFFFFFFF>Guardian Angel</color> Can Switch Vents
 False
-<color=#DDDD00FF>Survivor</color> Is Unique In All Any
+<color=#DDDD00FF>Survivor</color> Is Unique
 False
 Vest Cooldown
 25
@@ -836,7 +836,7 @@ Max Vests
 True
 <color=#DDDD00FF>Survivor</color> Can Switch Vents
 False
-<color=#80FF00FF>Thief</color> Is Unique In All Any
+<color=#80FF00FF>Thief</color> Is Unique
 True
 Steal Cooldown
 25
@@ -848,7 +848,7 @@ Max <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Evil</color> <color=#FFD70
 2
 <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Evils</color> End The Game When Winning
 False
-<color=#00ACC2FF>Actor</color> Is Unique In All Any
+<color=#00ACC2FF>Actor</color> Is Unique
 True
 <color=#00ACC2FF>Actor</color> Can Button
 True
@@ -858,7 +858,7 @@ False
 False
 <color=#FFFF00FF>Vigilante</color> Kills <color=#00ACC2FF>Actor</color>
 True
-<color=#B51E39FF>Bounty Hunter</color> Is Unique In All Any
+<color=#B51E39FF>Bounty Hunter</color> Is Unique
 False
 Guess Cooldown
 25
@@ -868,7 +868,7 @@ Max Guesses
 False
 <color=#FFFF00FF>Vigilante</color> Kills <color=#B51E39FF>Bounty Hunter</color>
 True
-<color=#8C4005FF>Cannibal</color> Is Unique In All Any
+<color=#8C4005FF>Cannibal</color> Is Unique
 True
 Eat Cooldown
 15
@@ -882,7 +882,7 @@ Arrow Appearance Delay
 False
 <color=#FFFF00FF>Vigilante</color> Kills <color=#8C4005FF>Cannibal</color>
 True
-<color=#CCCCCCFF>Executioner</color> Is Unique In All Any
+<color=#CCCCCCFF>Executioner</color> Is Unique
 True
 Doom Cooldown
 25
@@ -904,7 +904,7 @@ False
 True
 <color=#FFFF00FF>Vigilante</color> Kills <color=#CCCCCCFF>Executioner</color>
 False
-<color=#EEE5BEFF>Guesser</color> Is Unique In All Any
+<color=#EEE5BEFF>Guesser</color> Is Unique
 True
 <color=#EEE5BEFF>Guesser</color> Can Button
 True
@@ -922,7 +922,7 @@ Max Guesses
 True
 <color=#FFFF00FF>Vigilante</color> Kills <color=#EEE5BEFF>Guesser</color>
 False
-<color=#F7B3DAFF>Jester</color> Is Unique In All Any
+<color=#F7B3DAFF>Jester</color> Is Unique
 False
 <color=#F7B3DAFF>Jester</color> Can Button
 True
@@ -938,7 +938,7 @@ False
 False
 <color=#FFFF00FF>Vigilante</color> Kills <color=#F7B3DAFF>Jester</color>
 True
-<color=#678D36FF>Troll</color> Is Unique In All Any
+<color=#678D36FF>Troll</color> Is Unique
 True
 Interact Cooldown
 20
@@ -948,7 +948,7 @@ True
 False
 Max <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Harbinger</color> <color=#FFD700FF>Roles</color>
 1
-<color=#CFFE61FF>Plaguebearer</color> Is Unique In All Any
+<color=#CFFE61FF>Plaguebearer</color> Is Unique
 False
 Infect Cooldown
 25
@@ -960,7 +960,7 @@ Max <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killing</color> <color=#FF
 True
 <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color> Know Each Other
 False
-<color=#EE7600FF>Arsonist</color> Is Unique In All Any
+<color=#EE7600FF>Arsonist</color> Is Unique
 False
 Douse Cooldown
 25
@@ -976,7 +976,7 @@ Ignition Cremates Bodies
 True
 <color=#EE7600FF>Arsonist</color> Can Vent
 False
-<color=#642DEAFF>Cryomaniac</color> Is Unique In All Any
+<color=#642DEAFF>Cryomaniac</color> Is Unique
 False
 Douse Cooldown
 25
@@ -984,7 +984,7 @@ Douse Cooldown
 False
 <color=#642DEAFF>Cryomaniac</color> Can Vent
 False
-<color=#00FF00FF>Glitch</color> Is Unique In All Any
+<color=#00FF00FF>Glitch</color> Is Unique
 True
 Mimic Cooldown
 20
@@ -998,7 +998,7 @@ Neutralise Cooldown
 25
 <color=#00FF00FF>Glitch</color> Can Vent
 False
-<color=#A12B56FF>Juggernaut</color> Is Unique In All Any
+<color=#A12B56FF>Juggernaut</color> Is Unique
 False
 Assault Cooldown
 25
@@ -1006,13 +1006,13 @@ Assault Cooldown Bonus
 5
 <color=#A12B56FF>Juggernaut</color> Can Vent
 True
-<color=#6F7BEAFF>Murderer</color> Is Unique In All Any
+<color=#6F7BEAFF>Murderer</color> Is Unique
 False
 Murder Cooldown
 25
 <color=#6F7BEAFF>Murderer</color> Can Vent
 True
-<color=#336EFFFF>Serial Killer</color> Is Unique In All Any
+<color=#336EFFFF>Serial Killer</color> Is Unique
 False
 Bloodlust Cooldown
 25
@@ -1022,7 +1022,7 @@ Stab Cooldown
 2.5
 <color=#336EFFFF>Serial Killer</color> Can Vent
 1
-<color=#9F703AFF>Werewolf</color> Is Unique In All Any
+<color=#9F703AFF>Werewolf</color> Is Unique
 False
 Maul Cooldown
 25
@@ -1034,7 +1034,7 @@ Max <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Neophyte</color> <color=#F
 1
 <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Neophytes</color> Have <color=#FF0000FF>Intruder</color> Vision
 True
-<color=#AC8A00FF>Dracula</color> Is Unique In All Any
+<color=#AC8A00FF>Dracula</color> Is Unique
 False
 Bite Cooldown
 25
@@ -1044,7 +1044,7 @@ Alive <color=#7B8968FF>Undead</color> Count
 4
 Undead Can Vent
 False
-<color=#45076AFF>Jackal</color> Is Unique In All Any
+<color=#45076AFF>Jackal</color> Is Unique
 False
 Recruit Cooldown
 25
@@ -1052,18 +1052,22 @@ Recruit Cooldown
 False
 Recruits Can Vent
 False
-<color=#BF5FFFFF>Necromancer</color> Is Unique In All Any
+<color=#BF5FFFFF>Necromancer</color> Is Unique
 False
 Resurrect Cooldown
 10
 Resurrect Cooldown Increases By
 2.5
+Resurrect Cooldown Increases
+True
 Resurrect Count
 3
 Kill Cooldown
 25
 Kill Cooldown Increases By
 2.5
+Kill Cooldown Increases
+True
 Kill Count
 8
 Kill And Resurrect Cooldowns Are Linked
@@ -1076,7 +1080,7 @@ Resurrect Duration
 False
 Resurrected Can Vent
 False
-<color=#2D6AA5FF>Whisperer</color> Is Unique In All Any
+<color=#2D6AA5FF>Whisperer</color> Is Unique
 False
 Whisper Cooldown
 20
@@ -1124,7 +1128,7 @@ Min <color=#FF0000FF>Intruder</color> <color=#FFD700FF>Roles</color>
 2
 Max <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Concealing</color> <color=#FFD700FF>Roles</color>
 1
-<color=#02A752FF>Blackmailer</color> Is Unique In All Any
+<color=#02A752FF>Blackmailer</color> Is Unique
 False
 Blackmail Cooldown
 15
@@ -1134,7 +1138,7 @@ True
 False
 Blackmail Is Revealed To Everyone
 True
-<color=#378AC0FF>Camouflager</color> Is Unique In All Any
+<color=#378AC0FF>Camouflager</color> Is Unique
 False
 Camouflage Cooldown
 20
@@ -1144,7 +1148,7 @@ Camouflage Hides Player Size
 True
 Camouflage Hides Player Speed
 True
-<color=#85AA5BFF>Grenadier</color> Is Unique In All Any
+<color=#85AA5BFF>Grenadier</color> Is Unique
 False
 Flash Grenade Cooldown
 25
@@ -1156,7 +1160,7 @@ Indicate Flashed Players
 True
 <color=#85AA5BFF>Grenadier</color> Can Vent
 False
-<color=#2647A2FF>Janitor</color> Is Unique In All Any
+<color=#2647A2FF>Janitor</color> Is Unique
 False
 Clean Cooldown
 25
@@ -1172,7 +1176,7 @@ Drag Speed
 0
 Max <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Deception</color> <color=#FFD700FF>Roles</color>
 1
-<color=#40B4FFFF>Disguiser</color> Is Unique In All Any
+<color=#40B4FFFF>Disguiser</color> Is Unique
 False
 Disguise Cooldown
 25
@@ -1186,7 +1190,7 @@ Measure And Disguise Cooldowns Are Linked
 False
 <color=#40B4FFFF>Disguiser</color> Can Disguise
 0
-<color=#BB45B0FF>Morphling</color> Is Unique In All Any
+<color=#BB45B0FF>Morphling</color> Is Unique
 False
 Morph Cooldown
 22.5
@@ -1198,7 +1202,7 @@ Sample And Morph Cooldowns Are Linked
 False
 <color=#BB45B0FF>Morphling</color> Can Vent
 False
-<color=#5C4F75FF>Wraith</color> Is Unique In All Any
+<color=#5C4F75FF>Wraith</color> Is Unique
 False
 Invis Cooldown
 22.5
@@ -1208,7 +1212,7 @@ Invis Duration
 False
 Max <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>
 1
-<color=#2BD29CFF>Ambusher</color> Is Unique In All Any
+<color=#2BD29CFF>Ambusher</color> Is Unique
 False
 Ambush Cooldown
 25
@@ -1216,7 +1220,7 @@ Ambush Duration
 15
 <color=#2BD29CFF>Ambusher</color> Can Ambush Teammates
 False
-<color=#005643FF>Enforcer</color> Is Unique In All Any
+<color=#005643FF>Enforcer</color> Is Unique
 False
 Enforce Cooldown
 25
@@ -1228,27 +1232,27 @@ Enforce Explosion Radius
 0.25
 Max <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>
 1
-<color=#FFFF99FF>Consigliere</color> Is Unique In All Any
+<color=#FFFF99FF>Consigliere</color> Is Unique
 False
 Investigate Cooldown
 25
 Info That <color=#FFFF99FF>Consigliere</color> Sees
 0
-<color=#801780FF>Consort</color> Is Unique In All Any
+<color=#801780FF>Consort</color> Is Unique
 False
 Roleblock Cooldown
 25
 Roleblock Duration
 10
-<color=#404C08FF>Godfather</color> Is Unique In All Any
+<color=#404C08FF>Godfather</color> Is Unique
 False
 Ability Cooldown Bonus
 0.75
-<color=#AA7632FF>Miner</color> Is Unique In All Any
+<color=#AA7632FF>Miner</color> Is Unique
 False
 Mine Cooldown
 17.5
-<color=#939593FF>Teleporter</color> Is Unique In All Any
+<color=#939593FF>Teleporter</color> Is Unique
 False
 Teleport Cooldown
 22.5
@@ -1282,7 +1286,7 @@ Min <color=#008000FF>Syndicate</color> <color=#FFD700FF>Roles</color>
 2
 Max <color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Disruption</color> <color=#FFD700FF>Roles</color>
 1
-<color=#C02525FF>Concealer</color> Is Unique In All Any
+<color=#C02525FF>Concealer</color> Is Unique
 False
 Conceal Cooldown
 25
@@ -1290,7 +1294,7 @@ Conceal Duration
 10
 <color=#C02525FF>Concealer</color> Can Conceal Teammates
 False
-<color=#FF7900FF>Drunkard</color> Is Unique In All Any
+<color=#FF7900FF>Drunkard</color> Is Unique
 False
 Confuse Cooldown
 25
@@ -1298,13 +1302,13 @@ Confuse Duration
 20
 <color=#008000FF>Syndicate</color> Are Immune To Confuse
 True
-<color=#00FFFFFF>Framer</color> Is Unique In All Any
+<color=#00FFFFFF>Framer</color> Is Unique
 False
 Frame Cooldown
 25
 Chaos Drive Frame Radius
 0.25
-<color=#2DFF00FF>Shapeshifter</color> Is Unique In All Any
+<color=#2DFF00FF>Shapeshifter</color> Is Unique
 False
 Shapeshift Cooldown
 25
@@ -1312,7 +1316,7 @@ Shapeshift Duration
 10
 <color=#2DFF00FF>Shapeshifter</color> Can Shapeshift Teammates
 False
-<color=#AAB43EFF>Silencer</color> Is Unique In All Any
+<color=#AAB43EFF>Silencer</color> Is Unique
 False
 Silence Cooldown
 25
@@ -1324,7 +1328,7 @@ Silence Is Revealed To Everyone
 True
 Max <color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>
 1
-<color=#C9CC3FFF>Bomber</color> Is Unique In All Any
+<color=#C9CC3FFF>Bomber</color> Is Unique
 False
 Bomb Cooldown
 25
@@ -1342,7 +1346,7 @@ Chaos Drive Bomb Radius Increase
 0.1
 Bomb Detonation Kills Members Of The <color=#008000FF>Syndicate</color>
 True
-<color=#B345FFFF>Collider</color> Is Unique In All Any
+<color=#B345FFFF>Collider</color> Is Unique
 False
 Charge Cooldown
 25
@@ -1354,7 +1358,7 @@ Charge Cooldowns Are Linked
 False
 Collision Resets Charge Cooldowns
 True
-<color=#DF7AE8FF>Crusader</color> Is Unique In All Any
+<color=#DF7AE8FF>Crusader</color> Is Unique
 False
 Crusade Cooldown
 25
@@ -1364,7 +1368,7 @@ Chaos Drive Crusade Radius
 0.2
 <color=#DF7AE8FF>Crusader</color> Can Crusade Teammates
 False
-<color=#B5004CFF>Poisoner</color> Is Unique In All Any
+<color=#B5004CFF>Poisoner</color> Is Unique
 False
 Poison Cooldown
 25
@@ -1372,13 +1376,13 @@ Poison Kill Delay
 5
 Max <color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Power</color> <color=#FFD700FF>Roles</color>
 1
-<color=#0028F5FF>Spellslinger</color> Is Unique In All Any
+<color=#0028F5FF>Spellslinger</color> Is Unique
 False
 Spell Cooldown
 10
 Spell Cooldown Increase
 5
-<color=#3769FEFF>Time Keeper</color> Is Unique In All Any
+<color=#3769FEFF>Time Keeper</color> Is Unique
 False
 Time Control Cooldown
 25
@@ -1390,15 +1394,15 @@ True
 True
 Max <color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>
 1
-<color=#FFFCCEFF>Rebel</color> Is Unique In All Any
+<color=#FFFCCEFF>Rebel</color> Is Unique
 False
 Ability Cooldown Bonus
 0.75
-<color=#7E4D00FF>Stalker</color> Is Unique In All Any
+<color=#7E4D00FF>Stalker</color> Is Unique
 False
 Stalk Cooldown
 25
-<color=#8C7140FF>Warper</color> Is Unique In All Any
+<color=#8C7140FF>Warper</color> Is Unique
 False
 Warp Cooldown
 25
@@ -1418,9 +1422,9 @@ Max <color=#7F7F7FFF>Modifiers</color>
 5
 Min <color=#7F7F7FFF>Modifiers</color>
 5
-<color=#612BEFFF>Astral</color> Is Unique In All Any
+<color=#612BEFFF>Astral</color> Is Unique
 False
-<color=#00B3B3FF>Bait</color> Is Unique In All Any
+<color=#00B3B3FF>Bait</color> Is Unique
 False
 <color=#00B3B3FF>Bait</color> Knows Who They Are
 True
@@ -1428,57 +1432,57 @@ Minimum Delay for <color=#00B3B3FF>Bait</color> Self Report
 0
 Maximum Delay for <color=#00B3B3FF>Bait</color> Self Report
 1
-<color=#456BA8FF>Coward</color> Is Unique In All Any
+<color=#456BA8FF>Coward</color> Is Unique
 False
-<color=#374D1EFF>Diseased</color> Is Unique In All Any
+<color=#374D1EFF>Diseased</color> Is Unique
 False
 <color=#374D1EFF>Diseased</color> Knows Who They Are
 True
 <color=#374D1EFF>Diseased</color> Kill Multiplier
 3
-<color=#758000FF>Drunk</color> Is Unique In All Any
+<color=#758000FF>Drunk</color> Is Unique
 False
 Controls Reverse Over Time
 False
 Reversed Controls Interval
 1
-<color=#FF8080FF>Dwarf</color> Is Unique In All Any
+<color=#FF8080FF>Dwarf</color> Is Unique
 False
 <color=#FF8080FF>Dwarf</color> Speed
 1.5
 <color=#FF8080FF>Dwarf</color> Scale
 0.5
-<color=#80B3FFFF>Flincher</color> Is Unique In All Any
+<color=#80B3FFFF>Flincher</color> Is Unique
 False
 Flinch Interval
 5
-<color=#FFB34DFF>Giant</color> Is Unique In All Any
+<color=#FFB34DFF>Giant</color> Is Unique
 False
 <color=#FFB34DFF>Giant</color> Speed
 0.75
 <color=#FFB34DFF>Giant</color> Scale
 1.5
-<color=#2DE5BEFF>Indomitable</color> Is Unique In All Any
+<color=#2DE5BEFF>Indomitable</color> Is Unique
 False
 <color=#2DE5BEFF>Indomitable</color> Knows Who They Are
 True
-<color=#860B7AFF>Professional</color> Is Unique In All Any
+<color=#860B7AFF>Professional</color> Is Unique
 False
 <color=#860B7AFF>Professional</color> Knows Who They Are
 True
-<color=#1002C5FF>Shy</color> Is Unique In All Any
+<color=#1002C5FF>Shy</color> Is Unique
 False
-<color=#DCEE85FF>VIP</color> Is Unique In All Any
+<color=#DCEE85FF>VIP</color> Is Unique
 False
 <color=#DCEE85FF>VIP</color> Knows Who They Are
 True
-<color=#FFA60AFF>Volatile</color> Is Unique In All Any
+<color=#FFA60AFF>Volatile</color> Is Unique
 False
 <color=#FFA60AFF>Volatile</color> Interval
 15
 <color=#FFA60AFF>Volatile</color> Knows Who They Are
 True
-<color=#F6AAB7FF>Yeller</color> Is Unique In All Any
+<color=#F6AAB7FF>Yeller</color> Is Unique
 False
 Enable Custom <color=#FF9900FF>Ability</color> Colors
 True
@@ -1486,7 +1490,7 @@ Max <color=#FF9900FF>Abilities</color>
 5
 Min <color=#FF9900FF>Abilities</color>
 5
-<color=#073763FF>Assassin</color> Is Unique In All Any
+<color=#073763FF>Assassin</color> Is Unique
 False
 <color=#073763FF>Assassin</color> Guess Limit
 15
@@ -1508,21 +1512,21 @@ True
 False
 <color=#073763FF>Assassin</color> Can Guess After Voting
 False
-<color=#E600FFFF>Button Barry</color> Is Unique In All Any
+<color=#E600FFFF>Button Barry</color> Is Unique
 False
 Button Cooldown
 25
-<color=#26FCFBFF>Insider</color> Is Unique In All Any
+<color=#26FCFBFF>Insider</color> Is Unique
 False
 <color=#26FCFBFF>Insider</color> Knows Who They Are
 True
-<color=#FF804DFF>Multitasker</color> Is Unique In All Any
+<color=#FF804DFF>Multitasker</color> Is Unique
 False
 Task Transparancy
 50
-<color=#A84300FF>Ninja</color> Is Unique In All Any
+<color=#A84300FF>Ninja</color> Is Unique
 False
-<color=#CCA3CCFF>Politician</color> Is Unique In All Any
+<color=#CCA3CCFF>Politician</color> Is Unique
 False
 Initial <color=#CCA3CCFF>Politician</color> Initial Vote Bank
 1
@@ -1530,13 +1534,13 @@ Anonymous <color=#CCA3CCFF>Politician</color> Votes
 True
 <color=#CCA3CCFF>Politician</color> Can Button
 True
-<color=#FF0080FF>Radar</color> Is Unique In All Any
+<color=#FF0080FF>Radar</color> Is Unique
 False
-<color=#2160DDFF>Ruthless</color> Is Unique In All Any
+<color=#2160DDFF>Ruthless</color> Is Unique
 False
 <color=#2160DDFF>Ruthless</color> Knows Who They Are
 True
-<color=#D4AF37FF>Snitch</color> Is Unique In All Any
+<color=#D4AF37FF>Snitch</color> Is Unique
 False
 <color=#D4AF37FF>Snitch</color> Knows Who They Are
 True
@@ -1550,7 +1554,7 @@ Tasks Remaining When Revealed
 1
 <color=#D4AF37FF>Snitch</color> Sees Evils In Meetings
 True
-<color=#66E666FF>Swapper</color> Is Unique In All Any
+<color=#66E666FF>Swapper</color> Is Unique
 False
 <color=#66E666FF>Swapper</color> Can Button
 True
@@ -1558,17 +1562,17 @@ True
 False
 <color=#66E666FF>Swapper</color> Can Swap Themself
 True
-<color=#99E699FF>Tiebreaker</color> Is Unique In All Any
+<color=#99E699FF>Tiebreaker</color> Is Unique
 False
 <color=#99E699FF>Tiebreaker</color> Knows Who They Are
 True
-<color=#FFFF99FF>Torch</color> Is Unique In All Any
+<color=#FFFF99FF>Torch</color> Is Unique
 False
-<color=#E91E63FF>Tunneler</color> Is Unique In All Any
+<color=#E91E63FF>Tunneler</color> Is Unique
 False
 <color=#E91E63FF>Tunneler</color> Knows Who They Are
 True
-<color=#841A7FFF>Underdog</color> Is Unique In All Any
+<color=#841A7FFF>Underdog</color> Is Unique
 False
 <color=#841A7FFF>Underdog</color> Knows Who They Are
 True
@@ -1582,11 +1586,11 @@ Max <color=#DD585BFF>Objectifiers</color>
 5
 Min <color=#DD585BFF>Objectifiers</color>
 5
-<color=#4545A9FF>Allied</color> Is Unique In All Any
+<color=#4545A9FF>Allied</color> Is Unique
 False
 <color=#4545A9FF>Allied</color> Faction
 0
-<color=#4545FFFF>Corrupted</color> Is Unique In All Any
+<color=#4545FFFF>Corrupted</color> Is Unique
 False
 Corrupt Cooldown
 25
@@ -1594,13 +1598,13 @@ All <color=#4545FFFF>Corrupted</color> Win Together
 False
 <color=#4545FFFF>Corrupted</color> Can Vent
 False
-<color=#E1C849FF>Defector</color> Is Unique In All Any
+<color=#E1C849FF>Defector</color> Is Unique
 False
 <color=#E1C849FF>Defector</color> Knows Who They Are
 True
 <color=#E1C849FF>Defector</color> Faction
 0
-<color=#678D36FF>Fanatic</color> Is Unique In All Any
+<color=#678D36FF>Fanatic</color> Is Unique
 False
 <color=#678D36FF>Fanatic</color> Knows Who They Are
 True
@@ -1610,7 +1614,7 @@ False
 True
 <color=#D3D3D3FF>Revealer</color> Reveals Turned <color=#678D36FF>Fanatic</color>
 False
-<color=#FF66CCFF>Lovers</color> Is Unique In All Any
+<color=#FF66CCFF>Lovers</color> Is Unique
 False
 Both <color=#FF66CCFF>Lovers</color> Die
 True
@@ -1620,29 +1624,29 @@ True
 True
 <color=#FF66CCFF>Lovers</color> Know Each Other's <color=#FFD700FF>Roles</color>
 True
-<color=#00EEFFFF>Mafia</color> Is Unique In All Any
+<color=#00EEFFFF>Mafia</color> Is Unique
 False
 <color=#00EEFFFF>Mafia</color> Know Each Other's <color=#FFD700FF>Roles</color>
 True
 <color=#00EEFFFF>Mafia</color> Can Vent
 False
-<color=#008080FF>Overlord</color> Is Unique In All Any
+<color=#008080FF>Overlord</color> Is Unique
 False
 <color=#008080FF>Overlord</color> Knows Who They Are
 True
 <color=#008080FF>Overlord</color> Meeting Timer
 2
-<color=#3D2D2CFF>Rivals</color> Is Unique In All Any
+<color=#3D2D2CFF>Rivals</color> Is Unique
 False
 <color=#3D2D2CFF>Rivals</color> Can Be From The Same Faction
 True
 <color=#3D2D2CFF>Rivals</color> Know Each Other's <color=#FFD700FF>Roles</color>
 True
-<color=#ABABFFFF>Taskmaster</color> Is Unique In All Any
+<color=#ABABFFFF>Taskmaster</color> Is Unique
 False
 Tasks Remaining When Revealed
 1
-<color=#370D43FF>Traitor</color> Is Unique In All Any
+<color=#370D43FF>Traitor</color> Is Unique
 False
 <color=#370D43FF>Traitor</color> Knows Who They Are
 False

@@ -8,22 +8,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public float TimeRemaining;
         public bool Camouflaged => TimeRemaining > 0f;
 
+        public override Color32 Color => ClientGameOptions.CustomIntColors ? Colors.Camouflager : Colors.Intruder;
+        public override string Name => "Camouflager";
+        public override LayerEnum Type => LayerEnum.Camouflager;
+        public override RoleEnum RoleType => RoleEnum.Camouflager;
+        public override Func<string> StartText => () => "Hinder The <color=#8CFFFFFF>Crew</color>'s Recognition";
+        public override Func<string> AbilitiesText => () => "- You can disrupt everyone's vision, causing them to be unable to tell players apart\n- When camouflaged, everyone will appear "
+            + $"grey with fluctuating names and no cosmetics\n{CommonAbilities}";
+        public override InspectorResults InspectorResults => InspectorResults.BringsChaos;
+
         public Camouflager(PlayerControl player) : base(player)
         {
-            Name = "Camouflager";
-            StartText = () => "Hinder The <color=#8CFFFFFF>Crew</color>'s Recognition";
-            AbilitiesText = () => "- You can disrupt everyone's vision, causing them to be unable to tell players apart\n- When camouflaged, everyone will appear grey with fluctuating " +
-                $"names and no cosmetics{(CustomGameOptions.MeetingColourblind ? "\n- This effect carries over into the meeting if a meeting is called during a camouflage" : "")}\n" +
-                $"{CommonAbilities}";
-            Color = CustomGameOptions.CustomIntColors ? Colors.Camouflager : Colors.Intruder;
-            RoleType = RoleEnum.Camouflager;
             RoleAlignment = RoleAlignment.IntruderConceal;
-            InspectorResults = InspectorResults.BringsChaos;
-            Type = LayerEnum.Camouflager;
             CamouflageButton = new(this, "Camouflage", AbilityTypes.Effect, "Secondary", HitCamouflage);
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public void Camouflage()
@@ -32,7 +29,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             TimeRemaining -= Time.deltaTime;
             Utils.Camouflage();
 
-            if (Utils.Meeting)
+            if (Meeting)
                 TimeRemaining = 0f;
         }
 
@@ -40,15 +37,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Enabled = false;
             LastCamouflaged = DateTime.UtcNow;
-            Utils.DefaultOutfitAll();
+            DefaultOutfitAll();
         }
 
         public float CamouflageTimer()
         {
             var timespan = DateTime.UtcNow - LastCamouflaged;
             var num = Player.GetModifiedCooldown(CustomGameOptions.CamouflagerCd) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void HitCamouflage()
@@ -56,13 +54,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (CamouflageTimer() != 0f || DoUndo.IsCamoed)
                 return;
 
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-            writer.Write((byte)ActionsRPC.Camouflage);
-            writer.Write(PlayerId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            CallRpc(CustomRPC.Action, ActionsRPC.Camouflage, this);
             TimeRemaining = CustomGameOptions.CamouflagerDuration;
             Camouflage();
-            Utils.Camouflage();
         }
 
         public override void UpdateHud(HudManager __instance)

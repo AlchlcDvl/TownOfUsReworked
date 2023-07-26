@@ -5,18 +5,13 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
         private static float _time;
         public int Modify = -1;
 
-        public Drunk(PlayerControl player) : base(player)
-        {
-            Name = "Drunk";
-            TaskText = () => CustomGameOptions.DrunkControlsSwap ? "- Your controls swap over time" : "- Your controls are inverted";
-            Color = CustomGameOptions.CustomModifierColors ? Colors.Drunk : Colors.Modifier;
-            ModifierType = ModifierEnum.Drunk;
-            Type = LayerEnum.Drunk;
-            Modify = -1;
+        public override Color32 Color => ClientGameOptions.CustomModColors ? Colors.Drunk : Colors.Modifier;
+        public override string Name => "Drunk";
+        public override LayerEnum Type => LayerEnum.Drunk;
+        public override ModifierEnum ModifierType => ModifierEnum.Drunk;
+        public override Func<string> TaskText => () => CustomGameOptions.DrunkControlsSwap ? "- Your controls swap over time" : "- Your controls are inverted";
 
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
-        }
+        public Drunk(PlayerControl player) : base(player) => Modify = -1;
 
         public override void UpdateHud(HudManager __instance)
         {
@@ -26,7 +21,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
             {
                 _time += Time.deltaTime;
 
-                if (_time > CustomGameOptions.DrunkInterval)
+                if (_time >= CustomGameOptions.DrunkInterval)
                 {
                     _time -= CustomGameOptions.DrunkInterval;
                     Modify *= -1;

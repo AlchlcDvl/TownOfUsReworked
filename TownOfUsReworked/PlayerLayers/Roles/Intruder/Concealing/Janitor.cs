@@ -9,55 +9,50 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public DeadBody CurrentlyDragging;
         public DateTime LastCleaned;
 
+        public override Color32 Color => ClientGameOptions.CustomIntColors ? Colors.Janitor : Colors.Intruder;
+        public override string Name => "Janitor";
+        public override LayerEnum Type => LayerEnum.Janitor;
+        public override RoleEnum RoleType => RoleEnum.Janitor;
+        public override Func<string> StartText => () => "You Know Their Secrets";
+        public override Func<string> AbilitiesText => () => "- You can clean up dead bodies, making them disappear from sight\n- You can drag bodies away to prevent them from getting " +
+            $"reported\n{CommonAbilities}";
+        public override InspectorResults InspectorResults => InspectorResults.DealsWithDead;
+
         public Janitor(PlayerControl player) : base(player)
         {
-            Name = "Janitor";
-            StartText = () => "Sanitise The Ship, By Any Means Neccessary";
-            AbilitiesText = () => $"- You can clean up dead bodies, making them disappear from sight\n- You can drag bodies away to prevent them from getting reported\n{CommonAbilities}";
-            Color = CustomGameOptions.CustomIntColors ? Colors.Janitor : Colors.Intruder;
-            RoleType = RoleEnum.Janitor;
             RoleAlignment = RoleAlignment.IntruderConceal;
-            InspectorResults = InspectorResults.DealsWithDead;
             CurrentlyDragging = null;
-            Type = LayerEnum.Janitor;
             CleanButton = new(this, "Clean", AbilityTypes.Dead, "Secondary", Clean);
             DragButton = new(this, "Drag", AbilityTypes.Dead, "Tertiary", Drag);
             DropButton = new(this, "Drop", AbilityTypes.Effect, "Tertiary", Drop);
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float CleanTimer()
         {
             var timespan = DateTime.UtcNow - LastCleaned;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.JanitorCleanCd, ConstantVariables.LastImp && CustomGameOptions.SoloBoost ? -CustomGameOptions.UnderdogKillBonus : 0) *
-                1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.JanitorCleanCd, LastImp && CustomGameOptions.SoloBoost ? -CustomGameOptions.UnderdogKillBonus : 0) * 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public float DragTimer()
         {
             var timespan = DateTime.UtcNow - LastDragged;
             var num = Player.GetModifiedCooldown(CustomGameOptions.DragCd) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void Clean()
         {
-            if (CleanTimer() != 0f || Utils.IsTooFar(Player, CleanButton.TargetBody))
+            if (CleanTimer() != 0f || IsTooFar(Player, CleanButton.TargetBody))
                 return;
 
-            var playerId = CleanButton.TargetBody.ParentId;
-            var player = Utils.PlayerById(playerId);
-            Utils.Spread(Player, player);
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-            writer.Write((byte)ActionsRPC.FadeBody);
-            writer.Write(playerId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
-            Coroutines.Start(Utils.FadeBody(CleanButton.TargetBody));
+            Spread(Player, PlayerByBody(CleanButton.TargetBody));
+            CallRpc(CustomRPC.Action, ActionsRPC.FadeBody, this, CleanButton.TargetBody);
+            Coroutines.Start(FadeBody(CleanButton.TargetBody));
             LastCleaned = DateTime.UtcNow;
 
             if (CustomGameOptions.JaniCooldownsLinked)
@@ -66,31 +61,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Drag()
         {
-            if (Utils.IsTooFar(Player, DragButton.TargetBody) || CurrentlyDragging)
+            if (IsTooFar(Player, DragButton.TargetBody) || CurrentlyDragging)
                 return;
 
-            var playerId = DragButton.TargetBody.ParentId;
-            var player = Utils.PlayerById(playerId);
-            Utils.Spread(Player, player);
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-            writer.Write((byte)ActionsRPC.Drag);
-            writer.Write(PlayerId);
-            writer.Write(playerId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
             CurrentlyDragging = DragButton.TargetBody;
+            Spread(Player, PlayerByBody(CurrentlyDragging));
+            CallRpc(CustomRPC.Action, ActionsRPC.Drag, this, CurrentlyDragging);
             var drag = CurrentlyDragging.gameObject.AddComponent<DragBehaviour>();
             drag.Source = Player;
             drag.Dragged = CurrentlyDragging;
-            drag.Body = CurrentlyDragging.gameObject.AddComponent<Rigidbody2D>();
-            drag.Collider = CurrentlyDragging.gameObject.GetComponent<Collider2D>();
         }
 
         public void Drop()
         {
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-            writer.Write((byte)ActionsRPC.Drop);
-            writer.Write(CurrentlyDragging.ParentId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            CallRpc(CustomRPC.Action, ActionsRPC.Drop, CurrentlyDragging);
 
             foreach (var component in CurrentlyDragging?.bodyRenderers)
                 component.material.SetFloat("_Outline", 0f);
@@ -103,7 +87,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            CleanButton.Update("CLEAN", CleanTimer(), CustomGameOptions.JanitorCleanCd, true, CurrentlyDragging == null);
+            CleanButton.Update("CLEAN", CleanTimer(), CustomGameOptions.JanitorCleanCd, LastImp && CustomGameOptions.SoloBoost ? -CustomGameOptions.UnderdogKillBonus : 0, true,
+                CurrentlyDragging == null);
             DragButton.Update("DRAG", DragTimer(), CustomGameOptions.DragCd, true, CurrentlyDragging == null);
             DropButton.Update("DROP", true, CurrentlyDragging != null);
         }

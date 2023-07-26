@@ -5,10 +5,10 @@ namespace TownOfUsReworked.Patches
     {
         public static bool Prefix(HauntMenuMinigame __instance)
         {
-            if (ConstantVariables.IsHnS)
+            if (IsHnS)
                 return true;
 
-            if (!ConstantVariables.DeadSeeEverything)
+            if (!DeadSeeEverything)
             {
                 __instance.FilterText.text = " ";
                 return false;
@@ -46,16 +46,18 @@ namespace TownOfUsReworked.Patches
     [HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.Update))]
     public static class HauntUpdatePatch
     {
+        public static bool Prefix(AbilityButton __instance) => CustomButton.AllButtons.Find(x => x.Base == __instance) == null;
+
         public static void Postfix()
         {
-            if (!ConstantVariables.IsInGame)
-                Utils.HUD.AbilityButton.gameObject.SetActive(false);
-            else if (ConstantVariables.IsHnS)
-                Utils.HUD.AbilityButton.gameObject.SetActive(!CustomPlayer.LocalCustom.Data.IsImpostor());
+            if (!IsInGame)
+                HUD.AbilityButton.gameObject.SetActive(false);
+            else if (IsHnS)
+                HUD.AbilityButton.gameObject.SetActive(!CustomPlayer.LocalCustom.Data.IsImpostor());
             else
             {
                 var ghostRole = CustomPlayer.Local.IsPostmortal() && !CustomPlayer.Local.Caught();
-                Utils.HUD.AbilityButton.gameObject.SetActive(!ghostRole && !Utils.Meeting && CustomPlayer.LocalCustom.IsDead);
+                HUD.AbilityButton.gameObject.SetActive(!ghostRole && !Meeting && CustomPlayer.LocalCustom.IsDead);
             }
         }
     }
@@ -65,7 +67,7 @@ namespace TownOfUsReworked.Patches
     {
         public static bool Prefix(HauntMenuMinigame __instance)
         {
-            if (!ConstantVariables.IsNormal)
+            if (!IsNormal)
                 return true;
 
             __instance.FilterButtons[0].gameObject.SetActive(true);

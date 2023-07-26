@@ -5,36 +5,47 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         public bool Turned;
         public bool Betrayed;
         public Faction Side = Faction.Crew;
-        public bool Betray => ((Side == Faction.Intruder && ConstantVariables.LastImp) || (Side == Faction.Syndicate && ConstantVariables.LastSyn)) && !IsDead && Turned && !Betrayed;
+        public bool Betray => ((Side == Faction.Intruder && LastImp) || (Side == Faction.Syndicate && LastSyn)) && !IsDead && Turned && !Betrayed;
 
-        public Traitor(PlayerControl player) : base(player)
+        public override Color32 Color
         {
-            Name = "Traitor";
-            Symbol = "♣";
-            TaskText = () => !Turned ? "- Finish your tasks to switch sides to either <color=#FF0000FF>Intruders</color> or the <color=#008000FF>Syndicate</color>" : (Side ==
-                Faction.Intruder ? Role.IntrudersWinCon : (Side == Faction.Syndicate ? Role.SyndicateWinCon : "- You feel conflicted"));
-            Color = CustomGameOptions.CustomObjectifierColors ? Colors.Traitor : Colors.Objectifier;
-            ObjectifierType = ObjectifierEnum.Traitor;
-            Hidden = !CustomGameOptions.TraitorKnows && !Turned;
-            Type = LayerEnum.Traitor;
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
+            get
+            {
+                if (Turned)
+                {
+                    if (Side == Faction.Syndicate)
+                        return Colors.Syndicate;
+                    else if (Side == Faction.Intruder)
+                        return Colors.Intruder;
+                    else
+                        return ClientGameOptions.CustomObjColors ? Colors.Traitor : Colors.Objectifier;
+                }
+                else
+                    return ClientGameOptions.CustomObjColors ? Colors.Traitor : Colors.Objectifier;
+            }
         }
+        public override string Name => "Traitor";
+        public override string Symbol => "♣";
+        public override LayerEnum Type => LayerEnum.Traitor;
+        public override ObjectifierEnum ObjectifierType => ObjectifierEnum.Traitor;
+        public override Func<string> TaskText => () => !Turned ? "- Finish your tasks to switch sides to either <color=#FF0000FF>Intruders</color> or the <color=#008000FF>Syndicate</color>"
+            : "";
+
+        public Traitor(PlayerControl player) : base(player) => Hidden = !CustomGameOptions.TraitorKnows && !Turned;
 
         public void TurnBetrayer()
         {
             var role = Role.GetRole(Player);
+            Betrayed = true;
 
             if (role.RoleType == RoleEnum.Betrayer)
                 return;
 
             var betrayer = new Betrayer(Player) { Objectives = role.Objectives };
             betrayer.RoleUpdate(role);
-            Betrayed = true;
 
             if (CustomPlayer.Local.Is(RoleEnum.Seer))
-                Utils.Flash(Colors.Seer);
+                Flash(Colors.Seer);
         }
 
         public void TurnTraitor()
@@ -77,7 +88,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             if (turnIntruder)
             {
                 traitorRole.Faction = Faction.Intruder;
-                Color = Colors.Intruder;
                 traitorRole.IsIntTraitor = true;
                 traitorRole.FactionColor = Colors.Intruder;
                 traitorRole.Objectives = () => Role.IntrudersWinCon;
@@ -86,7 +96,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             {
                 traitorRole.Faction = Faction.Syndicate;
                 traitorRole.IsSynTraitor = true;
-                Color = Colors.Syndicate;
                 traitorRole.FactionColor = Colors.Syndicate;
                 traitorRole.Objectives = () => Role.SyndicateWinCon;
             }
@@ -95,14 +104,13 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             Turned = true;
             Hidden = false;
             traitorRole.RoleAlignment = traitorRole.RoleAlignment.GetNewAlignment(traitorRole.Faction);
-            Player.RegenTask();
 
             foreach (var snitch in Ability.GetAbilities<Snitch>(AbilityEnum.Snitch))
             {
                 if (CustomGameOptions.SnitchSeesTraitor)
                 {
                     if (snitch.TasksLeft <= CustomGameOptions.SnitchTasksRemaining && CustomPlayer.Local == Player)
-                        Role.LocalRole.AllArrows.Add(snitch.PlayerId, new(Player, Colors.Snitch, 0));
+                        Role.LocalRole.AllArrows.Add(snitch.PlayerId, new(Player, Colors.Snitch));
                     else if (snitch.TasksDone && CustomPlayer.Local == snitch.Player)
                         Role.GetRole(snitch.Player).AllArrows.Add(Player.PlayerId, new(snitch.Player, Colors.Snitch));
                 }
@@ -114,11 +122,11 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
                     Role.LocalRole.AllArrows.Add(revealer.PlayerId, new(Player, revealer.Color));
             }
 
-            if (CustomPlayer.Local.Is(RoleEnum.Mystic) && !Local && !IntroCutscene.Instance)
-                Utils.Flash(Colors.Mystic);
+            if (CustomPlayer.Local.Is(RoleEnum.Mystic) && !Local)
+                Flash(Colors.Mystic);
 
-            if ((Local || CustomPlayer.Local.Is(traitorRole.Faction)) && !IntroCutscene.Instance)
-                Utils.Flash(Colors.Traitor);
+            if (Local || CustomPlayer.Local.Is(traitorRole.Faction))
+                Flash(Colors.Traitor);
         }
 
         public override void UpdateHud(HudManager __instance)
@@ -127,10 +135,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
 
             if (Betray && Turned)
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
-                writer.Write((byte)TurnRPC.TurnTraitorBetrayer);
-                writer.Write(PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                CallRpc(CustomRPC.Change, TurnRPC.TurnTraitorBetrayer, this);
                 TurnBetrayer();
             }
         }

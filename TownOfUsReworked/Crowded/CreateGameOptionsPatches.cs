@@ -20,7 +20,7 @@
                 {
                     var playerButton = __instance.MaxPlayerButtons[i];
                     var tmp = playerButton.GetComponentInChildren<TextMeshPro>();
-                    var newValue = Mathf.Max(byte.Parse(tmp.text) - 10, byte.Parse(playerButton.name));
+                    var newValue = Mathf.Max(byte.Parse(tmp.text) - 10, byte.Parse(playerButton.name) - 2);
                     tmp.text = newValue.ToString();
                 }
 
@@ -41,7 +41,7 @@
                 {
                     var playerButton = __instance.MaxPlayerButtons[i];
                     var tmp = playerButton.GetComponentInChildren<TextMeshPro>();
-                    var newValue = Mathf.Min(byte.Parse(tmp.text) + 10, 113 + byte.Parse(playerButton.name));
+                    var newValue = Mathf.Min(byte.Parse(tmp.text) + 10, byte.Parse(playerButton.name) + 113);
                     tmp.text = newValue.ToString();
                 }
 
@@ -103,13 +103,6 @@
     public static class CreateOptionsPicker_UpdateImpostorsButtons
     {
         public static bool Prefix() => false;
-    }
-
-    [HarmonyPatch(typeof(GameOptionsMenu), nameof(GameOptionsMenu.Start))]
-    public static class GameOptionsMenu_Start2
-    {
-        public static void Postfix(ref GameOptionsMenu __instance) => __instance.GetComponentsInChildren<NumberOption>().First(o => o.Title == StringNames.GameNumImpostors).ValidRange =
-            new(1, 127 / 2);
     }
 
     [HarmonyPatch(typeof(GameOptionsData), nameof(GameOptionsData.AreInvalid))]

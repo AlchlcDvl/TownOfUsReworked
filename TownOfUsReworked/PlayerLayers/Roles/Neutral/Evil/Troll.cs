@@ -6,34 +6,34 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public DateTime LastInteracted;
         public CustomButton InteractButton;
 
+        public override Color32 Color => ClientGameOptions.CustomNeutColors ? Colors.Troll : Colors.Neutral;
+        public override string Name => "Troll";
+        public override LayerEnum Type => LayerEnum.Troll;
+        public override RoleEnum RoleType => RoleEnum.Troll;
+        public override Func<string> StartText => () => "Troll Everyone With Your Death";
+        public override Func<string> AbilitiesText => () => "- You can interact with players\n- Your interactions do nothing except spread infection and possibly kill you via touch " +
+            "sensitive roles\n- If you are killed, you will also kill your killer";
+        public override InspectorResults InspectorResults => InspectorResults.Manipulative;
+
         public Troll(PlayerControl player) : base(player)
         {
-            Name = "Troll";
-            StartText = () => "Troll Everyone With Your Death";
-            AbilitiesText = () => "- You can interact with players\n- Your interactions do nothing except spread infection and possibly kill you via touch sensitive roles";
-            Color = CustomGameOptions.CustomNeutColors ? Colors.Troll : Colors.Neutral;
-            RoleType = RoleEnum.Troll;
             RoleAlignment = RoleAlignment.NeutralEvil;
             Objectives = () => Killed ? "- You have successfully trolled someone" : "- Get killed";
-            Type = LayerEnum.Troll;
             InteractButton = new(this, "Placeholder", AbilityTypes.Direct, "ActionSecondary", Interact);
-            InspectorResults = InspectorResults.Manipulative;
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float InteractTimer()
         {
             var timespan = DateTime.UtcNow - LastInteracted;
-            var num = CustomGameOptions.InteractCooldown * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.InteractCooldown) * 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void Interact()
         {
-            if (InteractTimer() != 0f || Utils.IsTooFar(Player, InteractButton.TargetPlayer))
+            if (InteractTimer() != 0f || IsTooFar(Player, InteractButton.TargetPlayer))
                 return;
 
             var interact = Utils.Interact(Player, InteractButton.TargetPlayer);

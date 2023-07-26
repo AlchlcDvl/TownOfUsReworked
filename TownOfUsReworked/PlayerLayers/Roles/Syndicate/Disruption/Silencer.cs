@@ -9,48 +9,43 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Sprite PrevOverlay;
         public Color PrevColor;
 
+        public override Color32 Color => ClientGameOptions.CustomSynColors ? Colors.Silencer : Colors.Syndicate;
+        public override string Name => "Silencer";
+        public override LayerEnum Type => LayerEnum.Silencer;
+        public override RoleEnum RoleType => RoleEnum.Silencer;
+        public override Func<string> StartText => () => "You Are The One Who Hushes";
+        public override Func<string> AbilitiesText => () => "- You can silence players to ensure they cannot hear what others say" + (CustomGameOptions.SilenceRevealed ? "\n- Everyone will"
+            + " be alerted at the start of the meeting that someone has been silenced " : "") + (CustomGameOptions.WhispersNotPrivateSilencer ? "\n- You can read whispers during meetings"
+            : "") + CommonAbilities;
+        public override InspectorResults InspectorResults => InspectorResults.GainsInfo;
+
         public Silencer(PlayerControl player) : base(player)
         {
-            Name = "Silencer";
-            StartText = () => "You Are The One Who Screams";
-            AbilitiesText = () => "- You can silence players to ensure they cannot hear what others say\n" + (CustomGameOptions.SilenceRevealed ? "- Everyone will be alerted at the start "
-                + "of the meeting that someone has been silenced " : "") + (CustomGameOptions.WhispersNotPrivateSilencer ? "\n- You can read whispers during meetings" : "") +
-                $"\n{CommonAbilities}";
-            Color = CustomGameOptions.CustomSynColors ? Colors.Silencer : Colors.Syndicate;
-            RoleType = RoleEnum.Silencer;
             RoleAlignment = RoleAlignment.SyndicateDisrup;
-            InspectorResults = InspectorResults.GainsInfo;
             SilencedPlayer = null;
-            Type = LayerEnum.Silencer;
             SilenceButton = new(this, "Silence", AbilityTypes.Direct, "Secondary", Silence, Exception1);
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float SilenceTimer()
         {
             var timespan = DateTime.UtcNow - LastSilenced;
             var num = Player.GetModifiedCooldown(CustomGameOptions.SilenceCooldown) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void Silence()
         {
-            if (SilenceTimer() != 0f || Utils.IsTooFar(Player, SilenceButton.TargetPlayer) || SilenceButton.TargetPlayer == SilencedPlayer)
+            if (SilenceTimer() != 0f || IsTooFar(Player, SilenceButton.TargetPlayer) || SilenceButton.TargetPlayer == SilencedPlayer)
                 return;
 
-            var interact = Utils.Interact(Player, SilenceButton.TargetPlayer);
+            var interact = Interact(Player, SilenceButton.TargetPlayer);
 
             if (interact[3])
             {
                 SilencedPlayer = SilenceButton.TargetPlayer;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                writer.Write((byte)ActionsRPC.Silence);
-                writer.Write(PlayerId);
-                writer.Write(SilenceButton.TargetPlayer.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                CallRpc(CustomRPC.Action, ActionsRPC.Silence, this, SilencedPlayer);
             }
 
             if (interact[0])

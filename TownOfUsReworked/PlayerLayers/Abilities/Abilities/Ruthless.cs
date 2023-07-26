@@ -2,17 +2,12 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
 {
     public class Ruthless : Ability
     {
-        public Ruthless(PlayerControl player) : base(player)
-        {
-            Name = "Ruthless";
-            TaskText = () => "- Your attacks cannot be stopped";
-            Color = CustomGameOptions.CustomAbilityColors ? Colors.Ruthless : Colors.Ability;
-            AbilityType = AbilityEnum.Ruthless;
-            Hidden = !CustomGameOptions.RuthlessKnows;
-            Type = LayerEnum.Ruthless;
+        public override Color32 Color => ClientGameOptions.CustomAbColors ? Colors.Ruthless : Colors.Ability;
+        public override string Name => "Ruthless";
+        public override LayerEnum Type => LayerEnum.Ruthless;
+        public override AbilityEnum AbilityType => AbilityEnum.Ruthless;
+        public override Func<string> TaskText => () => "- Your attacks cannot be stopped";
 
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
-        }
+        public Ruthless(PlayerControl player) : base(player) => Hidden = !CustomGameOptions.RuthlessKnows;
     }
 }

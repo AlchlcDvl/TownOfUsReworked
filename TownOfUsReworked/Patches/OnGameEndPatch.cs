@@ -342,6 +342,12 @@ namespace TownOfUsReworked.Patches
                         if (troll.Killed && !troll.Disconnected)
                             winners.Add(PotentialWinners.Find(x => x.PlayerName == troll.PlayerName));
                     }
+
+                    foreach (var link in Objectifier.GetObjectifiers<Linked>(ObjectifierEnum.Linked))
+                    {
+                        if (winners.Any(x => x.PlayerName == link.PlayerName) && !winners.Any(x => x.PlayerName == link.OtherLink.Data.PlayerName))
+                            winners.Add(PotentialWinners.Find(x => x.PlayerName == link.OtherLink.Data.PlayerName));
+                    }
                 }
 
                 TempData.winners.Clear();

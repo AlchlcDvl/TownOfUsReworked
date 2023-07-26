@@ -6,8 +6,8 @@ namespace TownOfUsReworked.Objects
         public byte PlayerId;
         public DateTime KillTime;
 
-        public PlayerControl Killer => Utils.PlayerById(KillerId);
-        public PlayerControl Body => Utils.PlayerById(PlayerId);
+        public PlayerControl Killer => PlayerById(KillerId);
+        public PlayerControl Body => PlayerById(PlayerId);
         public PlayerControl Reporter;
         public float KillAge;
 
@@ -20,14 +20,14 @@ namespace TownOfUsReworked.Objects
 
         public string ParseBodyReport()
         {
-            var report = $"{Body.Data.PlayerName}'s Report:\n";
+            var report = $"{Body.name}'s Report:\n";
             var killerRole = Role.GetRole(Killer);
             var bodyRole = Role.GetRole(Body);
 
             if (!(Role.GetRoles<Grenadier>(RoleEnum.Grenadier).Any(x => x.Flashed && x.FlashedPlayers.Contains(Reporter)) ||
                 Role.GetRoles<PromotedGodfather>(RoleEnum.PromotedGodfather).Any(x => x.OnEffect && x.IsGren && x.FlashedPlayers.Contains(Reporter))))
             {
-                report += $"They died approximately {Math.Round(KillAge / 1000)}s ago!\n";
+                report += $"They died approximately {Math.Round(KillAge / 1000f)}s ago!\n";
                 report += $"They were a {bodyRole.Name}!\n";
 
                 if (Body == Killer)
@@ -48,7 +48,7 @@ namespace TownOfUsReworked.Objects
                     report += $"The killer is a {ColorUtils.LightDarkColors[Killer.CurrentOutfit.ColorId].ToLower()} color!\n";
 
                     if (CustomGameOptions.CoronerReportName && CustomGameOptions.CoronerKillerNameTime <= Math.Round(KillAge / 1000))
-                        report += $"They were killed by {Killer.Data.PlayerName}!";
+                        report += $"They were killed by {Killer.name}!";
                 }
             }
             else

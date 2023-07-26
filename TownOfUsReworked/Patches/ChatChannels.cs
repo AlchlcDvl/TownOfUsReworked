@@ -5,7 +5,7 @@ namespace TownOfUsReworked.Patches
     {
         public static bool Prefix(ChatController __instance, [HarmonyArgument(0)] PlayerControl sourcePlayer)
         {
-            if (__instance != Utils.HUD.Chat)
+            if (__instance != HUD.Chat)
                 return true;
 
             var localPlayer = CustomPlayer.Local;
@@ -14,14 +14,15 @@ namespace TownOfUsReworked.Patches
                 return true;
 
             var sourcerole = Role.GetRole(sourcePlayer);
-            var shouldSeeMessage = (sourcePlayer.GetOtherLover() == localPlayer && CustomGameOptions.LoversChat && sourcerole.CurrentChannel == ChatChannel.Lovers) ||
-                (sourcePlayer.GetOtherRival() == localPlayer && CustomGameOptions.RivalsChat && sourcerole.CurrentChannel == ChatChannel.Rivals);
+            var shouldSeeMessage = (sourcePlayer.IsOtherLover(localPlayer) && CustomGameOptions.LoversChat && sourcerole.CurrentChannel == ChatChannel.Lovers) ||
+                (sourcePlayer.IsOtherRival(localPlayer) && CustomGameOptions.RivalsChat && sourcerole.CurrentChannel == ChatChannel.Rivals) || (sourcePlayer.IsOtherLink(localPlayer) &&
+                CustomGameOptions.LinkedChat && sourcerole.CurrentChannel == ChatChannel.Linked);
 
             if (DateTime.UtcNow - MeetingStart.MeetingStartTime < TimeSpan.FromSeconds(1))
                 return shouldSeeMessage;
 
-            return (Utils.Meeting || LobbyBehaviour.Instance || localPlayer.Data.IsDead || sourcePlayer == localPlayer || sourcerole.CurrentChannel == ChatChannel.All ||
-                shouldSeeMessage) && !(Utils.Meeting && CustomPlayer.Local.IsSilenced());
+            return (Meeting || LobbyBehaviour.Instance || localPlayer.Data.IsDead || sourcePlayer == localPlayer || sourcerole.CurrentChannel == ChatChannel.All ||
+                shouldSeeMessage) && !(Meeting && CustomPlayer.Local.IsSilenced());
         }
     }
 

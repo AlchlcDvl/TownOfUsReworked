@@ -8,20 +8,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public bool Faded;
         public Role FormerRole;
 
-        public Revealer(PlayerControl player) : base(player)
-        {
-            Name = "Revealer";
-            Color = CustomGameOptions.CustomCrewColors ? Colors.Revealer : Colors.Crew;
-            AbilitiesText = () => "- You can reveal evils players to the <color=#8CFFFFFF>Crew</color> once you finish your tasks without getting clicked.";
-            RoleType = RoleEnum.Revealer;
-            RoleAlignment = RoleAlignment.CrewUtil;
-            InspectorResults = InspectorResults.Ghostly;
-            Type = LayerEnum.Revealer;
-            StartText = () => "ooooooo";
+        public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Revealer : Colors.Crew;
+        public override string Name => "Revealer";
+        public override LayerEnum Type => LayerEnum.Revealer;
+        public override RoleEnum RoleType => RoleEnum.Revealer;
+        public override Func<string> StartText => () => "OOOOOOO";
+        public override Func<string> AbilitiesText => () => "- You can reveal evils players to the <color=#8CFFFFFF>Crew</color> once you finish your tasks without getting clicked.";
+        public override InspectorResults InspectorResults => InspectorResults.Ghostly;
 
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
-        }
+        public Revealer(PlayerControl player) : base(player) => RoleAlignment = RoleAlignment.CrewUtil;
 
         public void Fade()
         {
@@ -29,7 +24,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Player.Visible = true;
             var color = new Color(1f, 1f, 1f, 0f);
 
-            var maxDistance = ShipStatus.Instance.MaxLightRadius * TownOfUsReworked.VanillaOptions.CrewLightMod;
+            var maxDistance = ShipStatus.Instance.MaxLightRadius * TownOfUsReworked.NormalOptions.CrewLightMod;
             var distance = (CustomPlayer.Local.GetTruePosition() - Player.GetTruePosition()).magnitude;
 
             var distPercent = distance / maxDistance;
@@ -40,7 +35,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             color.a = Mathf.Lerp(color.a, 0, distPercent);
 
             if (Player.GetCustomOutfitType() != CustomPlayerOutfitType.PlayerNameOnly)
-                Player.SetOutfit(CustomPlayerOutfitType.PlayerNameOnly, Utils.BlankOutfit(Player));
+                Player.SetOutfit(CustomPlayerOutfitType.PlayerNameOnly, BlankOutfit(Player));
 
             Player.MyRend().color = color;
             Player.NameText().color = new(0f, 0f, 0f, 0f);

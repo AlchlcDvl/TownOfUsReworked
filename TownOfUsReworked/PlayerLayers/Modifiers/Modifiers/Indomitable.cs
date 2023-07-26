@@ -2,17 +2,26 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
 {
     public class Indomitable : Modifier
     {
+        public bool AttemptedGuess;
+
+        public override Color32 Color => ClientGameOptions.CustomModColors ? Colors.Indomitable : Colors.Modifier;
+        public override string Name => "Indomitable";
+        public override LayerEnum Type => LayerEnum.Indomitable;
+        public override ModifierEnum ModifierType => ModifierEnum.Indomitable;
+        public override Func<string> TaskText => () => "- You cannot be guessed";
+
         public Indomitable(PlayerControl player) : base(player)
         {
-            Name = "Indomitable";
-            TaskText = () => "- You cannot be guessed";
-            Color = CustomGameOptions.CustomModifierColors ? Colors.Indomitable : Colors.Modifier;
-            ModifierType = ModifierEnum.Indomitable;
-            Hidden = !CustomGameOptions.IndomitableKnows;
-            Type = LayerEnum.Indomitable;
+            Hidden = !CustomGameOptions.IndomitableKnows && !AttemptedGuess;
+            AttemptedGuess = false;
+        }
 
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
+        public override void UpdateHud(HudManager __instance)
+        {
+            base.UpdateHud(__instance);
+
+            if (Hidden && (IsDead || AttemptedGuess))
+                Hidden = false;
         }
     }
 }

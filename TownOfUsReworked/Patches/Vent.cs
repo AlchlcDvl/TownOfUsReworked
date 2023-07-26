@@ -9,9 +9,9 @@ namespace TownOfUsReworked.Patches
             var num = float.MaxValue;
             var playerControl = playerInfo.Object;
 
-            if (ConstantVariables.IsNormal)
+            if (IsNormal)
                 couldUse = (playerControl.CanVent() && !playerControl.MustCleanVent(__instance.Id)) || playerControl.inVent;
-            else if (ConstantVariables.IsHnS && playerControl.Data.IsImpostor())
+            else if (IsHnS && playerControl.Data.IsImpostor())
                 couldUse = false;
             else
                 couldUse = canUse;
@@ -29,9 +29,9 @@ namespace TownOfUsReworked.Patches
 
             canUse = couldUse;
 
-            if (ModCompatibility.IsSubmerged)
+            if (IsSubmerged)
             {
-                if (ModCompatibility.GetInTransition())
+                if (GetInTransition())
                 {
                     __result = float.MaxValue;
                     return;
@@ -101,6 +101,23 @@ namespace TownOfUsReworked.Patches
                 return false;
             else
                 return !player.IsMoving();
+        }
+    }
+
+    //Vent and kill shit
+    //Yes thank you Discussions - AD
+    [HarmonyPatch(typeof(Vent), nameof(Vent.SetOutline))]
+    public static class SetVentOutlinePatch
+    {
+        public static void Postfix(Vent __instance, [HarmonyArgument(1)] ref bool mainTarget)
+        {
+            var active = CustomPlayer.Local && !Meeting && CustomPlayer.Local.CanVent();
+
+            if (!Role.LocalRole || !active)
+                return;
+
+            __instance.myRend.material.SetColor("_OutlineColor", Role.LocalRole.Color);
+            __instance.myRend.material.SetColor("_AddColor", mainTarget ? Role.LocalRole.Color : Color.clear);
         }
     }
 }

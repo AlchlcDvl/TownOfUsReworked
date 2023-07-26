@@ -2,16 +2,12 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
 {
     public class Multitasker : Ability
     {
-        public Multitasker(PlayerControl player) : base(player)
-        {
-            Name = "Multitasker";
-            TaskText = () => "- Your task windows are transparent";
-            Color = CustomGameOptions.CustomAbilityColors ? Colors.Multitasker : Colors.Ability;
-            AbilityType = AbilityEnum.Multitasker;
-            Type = LayerEnum.Multitasker;
+        public override Color32 Color => ClientGameOptions.CustomAbColors ? Colors.Multitasker : Colors.Ability;
+        public override string Name => "Multitasker";
+        public override LayerEnum Type => LayerEnum.Multitasker;
+        public override AbilityEnum AbilityType => AbilityEnum.Multitasker;
+        public override Func<string> TaskText => () => "- Your task windows are transparent";
 
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
-        }
+        public Multitasker(PlayerControl player) : base(player) {}
     }
 }

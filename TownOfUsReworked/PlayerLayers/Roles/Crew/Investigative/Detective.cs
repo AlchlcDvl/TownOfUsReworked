@@ -6,29 +6,35 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public CustomButton ExamineButton;
         private static float Time2;
 
+        public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Detective : Colors.Crew;
+        public override string Name => "Detective";
+        public override LayerEnum Type => LayerEnum.Detective;
+        public override RoleEnum RoleType => RoleEnum.Detective;
+        public override Func<string> StartText => () => "Examine Players For <color=#FF0000FF>Blood</color>";
+        public override Func<string> AbilitiesText => () => "- You can examine players to see if they have killed recently\n- Your screen will flash red if your target has killed in the " +
+            $"last {CustomGameOptions.RecentKill}s\n- You can view everyone's footprints to see where they go or where they came from";
+        public override InspectorResults InspectorResults => InspectorResults.GainsInfo;
+
         public Detective(PlayerControl player) : base(player)
         {
-            Name = "Detective";
-            StartText = () => "Examine Players To Find Bloody Hands";
-            AbilitiesText = () => "- You can examine players to see if they have killed recently\n- Your screen will flash red if your target has killed in the " +
-                $"last {CustomGameOptions.RecentKill}s\n- You can view everyone's footprints to see where they go or where they came from";
-            Color = CustomGameOptions.CustomCrewColors ? Colors.Detective : Colors.Crew;
-            RoleType = RoleEnum.Detective;
             RoleAlignment = RoleAlignment.CrewInvest;
-            InspectorResults = InspectorResults.GainsInfo;
-            Type = LayerEnum.Detective;
             ExamineButton = new(this, "Examine", AbilityTypes.Direct, "ActionSecondary", Examine);
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float ExamineTimer()
         {
             var timespan = DateTime.UtcNow - LastExamined;
             var num = Player.GetModifiedCooldown(CustomGameOptions.ExamineCd) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
+        }
+
+        public override void OnLobby()
+        {
+            base.OnLobby();
+            AllPrints.ForEach(x => x.Destroy());
+            AllPrints.Clear();
         }
 
         public override void OnMeetingStart(MeetingHud __instance)
@@ -42,25 +48,25 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Examine()
         {
-            if (ExamineTimer() != 0f || Utils.IsTooFar(Player, ExamineButton.TargetPlayer))
+            if (ExamineTimer() != 0f || IsTooFar(Player, ExamineButton.TargetPlayer))
                 return;
 
-            var interact = Utils.Interact(Player, ExamineButton.TargetPlayer);
+            var interact = Interact(Player, ExamineButton.TargetPlayer);
 
             if (interact[3])
             {
                 var hasKilled = ExamineButton.TargetPlayer.IsFramed();
 
-                foreach (var player in Utils.KilledPlayers)
+                foreach (var player in KilledPlayers)
                 {
                     if (player.KillerId == ExamineButton.TargetPlayer.PlayerId && (DateTime.UtcNow - player.KillTime).TotalSeconds <= CustomGameOptions.RecentKill)
                         hasKilled = true;
                 }
 
                 if (hasKilled)
-                    Utils.Flash(new(255, 0, 0, 255));
+                    Flash(new(255, 0, 0, 255));
                 else
-                    Utils.Flash(new(0, 255, 0, 255));
+                    Flash(new(0, 255, 0, 255));
             }
 
             if (interact[0])

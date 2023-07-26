@@ -6,7 +6,7 @@ namespace TownOfUsReworked.Patches
         public static void SetSabotaged(MapCountOverlay __instance, bool sabotaged)
         {
             __instance.isSab = sabotaged;
-            __instance.BackgroundColor.SetColor(sabotaged ? Palette.DisabledGrey : Color.green);
+            __instance.BackgroundColor.SetColor(sabotaged ? Palette.DisabledGrey : UColor.green);
             __instance.SabotageText.gameObject.SetActive(sabotaged);
 
             if (sabotaged)
@@ -30,7 +30,7 @@ namespace TownOfUsReworked.Patches
                 var text = icon.GetComponentInChildren<TextMeshPro>(true);
 
                 if (DoUndo.IsCamoed)
-                    sprite.color = Color.grey;
+                    sprite.color = UColor.grey;
 
                 if (sprite != null)
                 {
@@ -85,7 +85,7 @@ namespace TownOfUsReworked.Patches
                     var data = player?.Data;
 
                     if (collider.tag == "DeadBody" && ((isOP && (int)CustomGameOptions.WhoSeesDead is 1) || (!isOP && (int)CustomGameOptions.WhoSeesDead is 2) || (int)CustomGameOptions.
-                        WhoSeesDead is 0 || ConstantVariables.DeadSeeEverything))
+                        WhoSeesDead is 0 || DeadSeeEverything))
                     {
                         var playerId = collider.GetComponent<DeadBody>().ParentId;
                         colorMap.Add(GameData.Instance.GetPlayerById(playerId).DefaultOutfit.ColorId);
@@ -111,7 +111,7 @@ namespace TownOfUsReworked.Patches
         public static bool Prefix(MapCountOverlay __instance)
         {
             var localPlayer = CustomPlayer.Local;
-            var isOP = localPlayer.Is(RoleEnum.Operative) || ConstantVariables.DeadSeeEverything;
+            var isOP = localPlayer.Is(RoleEnum.Operative) || DeadSeeEverything;
 
             if (!isOP)
                 isOP = localPlayer.Is(RoleEnum.Retributionist) && ((Retributionist)Role.LocalRole).IsOP;

@@ -4,30 +4,28 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     {
         public bool RoundOne;
         public bool Revealed;
-        public List<byte> ToBeEjected;
-        public readonly Dictionary<byte, GameObject> MoarButtons = new();
-        public readonly Dictionary<byte, bool> Actives = new();
+        public List<byte> ToBeEjected = new();
         public CustomButton RevealButton;
         public bool Ejected;
         public bool ToDie;
+        public CustomMeeting DictMenu;
+
+        public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Dictator : Colors.Crew;
+        public override string Name => "Dictator";
+        public override LayerEnum Type => LayerEnum.Dictator;
+        public override RoleEnum RoleType => RoleEnum.Dictator;
+        public override Func<string> StartText => () => "You Have The Final Say";
+        public override Func<string> AbilitiesText => () => "- You can reveal yourself to the crew to eject up to 3 players for one meeting\n- When revealed, you cannot be protected";
+        public override InspectorResults InspectorResults => InspectorResults.Manipulative;
 
         public Dictator(PlayerControl player) : base(player)
         {
-            Name = "Dictator";
-            StartText = () => "You Have The Final Say";
-            AbilitiesText = () => "- You can reveal yourself to the crew to eject up to 3 players in a meeting\n- When revealed, you cannot be protected";
-            Color = CustomGameOptions.CustomCrewColors ? Colors.Dictator : Colors.Crew;
-            RoleType = RoleEnum.Dictator;
             RoleAlignment = RoleAlignment.CrewSov;
-            InspectorResults = InspectorResults.Manipulative;
-            Type = LayerEnum.Dictator;
             ToBeEjected = new();
             Ejected = false;
             ToDie = false;
             RevealButton = new(this, "DictReveal", AbilityTypes.Effect, "ActionSecondary", Reveal);
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
+            DictMenu = new(Player, "DictActive", "DictDisabled", MeetingTypes.Toggle, CustomGameOptions.DictateAfterVoting, SetActive, IsExempt) { Position = new(-0.4f, 0.03f, -1.3f) };
         }
 
         public void Reveal()
@@ -35,13 +33,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (RoundOne)
                 return;
 
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-            writer.Write((byte)ActionsRPC.DictatorReveal);
-            writer.Write(PlayerId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            CallRpc(CustomRPC.Action, ActionsRPC.DictatorReveal, this);
             Revealed = true;
-            Utils.Flash(Color);
-            BreakShield(PlayerId, true);
+            Flash(Color);
+            BreakShield(Player, true);
         }
 
         public override void UpdateHud(HudManager __instance)
@@ -50,150 +45,71 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RevealButton.Update("REVEAL", !Revealed, !Revealed && !RoundOne);
         }
 
-        public void GenButton(PlayerVoteArea voteArea, MeetingHud __instance)
-        {
-            if (IsExempt(voteArea))
-            {
-                MoarButtons.Add(voteArea.TargetPlayerId, null);
-                Actives.Add(voteArea.TargetPlayerId, false);
-                return;
-            }
-
-            var template = voteArea.Buttons.transform.Find("CancelButton").gameObject;
-            var targetBox = UObject.Instantiate(template, voteArea.transform);
-            targetBox.name = "DictateButton";
-            targetBox.transform.localPosition = new(-0.4f, 0.03f, -1.3f);
-            var renderer = targetBox.GetComponent<SpriteRenderer>();
-            renderer.sprite = AssetManager.GetSprite("DictDisabled");
-            var button = targetBox.GetComponent<PassiveButton>();
-            button.OnClick = new();
-            button.OnClick.AddListener(SetActive(voteArea, __instance));
-            button.OnMouseOut = new();
-            button.OnMouseOut.AddListener((Action)(() => renderer.color = Actives[voteArea.TargetPlayerId] ? UColor.green : UColor.white));
-            button.OnMouseOver = new();
-            button.OnMouseOver.AddListener((Action)(() => renderer.color = UColor.red));
-            var component2 = targetBox.GetComponent<BoxCollider2D>();
-            component2.size = renderer.sprite.bounds.size;
-            component2.offset = Vector2.zero;
-            targetBox.transform.GetChild(0).gameObject.Destroy();
-            MoarButtons.Add(voteArea.TargetPlayerId, targetBox);
-            Actives.Add(voteArea.TargetPlayerId, false);
-        }
-
         public override void VoteComplete(MeetingHud __instance)
         {
             base.VoteComplete(__instance);
-            HideButtons();
+            DictMenu.HideButtons();
 
-            if (ToBeEjected.Count == 0)
-                return;
-
-            ToDie = ToBeEjected.Any(x => Utils.PlayerById(x).Is(Faction.Crew));
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-            writer.Write((byte)ActionsRPC.SetExiles);
-            writer.Write(PlayerId);
-            writer.Write(ToDie);
-            writer.WriteBytesAndSize(ToBeEjected.ToArray());
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            if (ToBeEjected.Count > 0 && !Ejected)
+            {
+                ToDie = ToBeEjected.Any(x => PlayerById(x).Is(Faction.Crew));
+                CallRpc(CustomRPC.Action, ActionsRPC.SetExiles, this, ToDie, ToBeEjected.ToArray());
+            }
         }
 
-        private Action SetActive(PlayerVoteArea voteArea, MeetingHud __instance)
+        private void SetActive(PlayerVoteArea voteArea, MeetingHud __instance)
         {
-            void Listener()
+            if (__instance.state == MeetingHud.VoteStates.Discussion || !Revealed || Ejected || ToDie)
+                return;
+
+            var id = voteArea.TargetPlayerId;
+
+            if (ToBeEjected.Contains(id))
             {
-                if (__instance.playerStates.Any(x => x.TargetPlayerId == Player.PlayerId && x.DidVote && !CustomGameOptions.DictateAfterVoting) || __instance.state ==
-                    MeetingHud.VoteStates.Discussion || !Revealed || Ejected || ToDie)
-                {
-                    return;
-                }
-
-                var id = voteArea.TargetPlayerId;
-
-                if (ToBeEjected.Contains(id))
-                {
-                    ToBeEjected.Remove(id);
-                    Actives[id] = false;
-                }
-                else
-                {
-                    ToBeEjected.Add(id);
-                    Actives[id] = true;
-                }
-
-                if (ToBeEjected.Count > 3)
-                {
-                    Actives[ToBeEjected[0]] = false;
-                    ToBeEjected.Remove(ToBeEjected[0]);
-                }
-
-                foreach (var pair in MoarButtons)
-                {
-                    if (MoarButtons[pair.Key] == null)
-                        continue;
-
-                    MoarButtons[pair.Key].GetComponent<SpriteRenderer>().sprite = Actives[pair.Key] ? AssetManager.GetSprite("DictActive") : AssetManager.GetSprite("DictDisabled");
-                    MoarButtons[pair.Key].GetComponent<SpriteRenderer>().color = Actives[pair.Key] ? UColor.green : UColor.white;
-                }
+                ToBeEjected.Remove(id);
+                DictMenu.Actives[id] = false;
+            }
+            else
+            {
+                ToBeEjected.Add(id);
+                DictMenu.Actives[id] = true;
             }
 
-            return Listener;
+            if (ToBeEjected.Count > 3)
+            {
+                DictMenu.Actives[ToBeEjected[0]] = false;
+                ToBeEjected.Remove(ToBeEjected[0]);
+            }
         }
 
         public override void OnMeetingStart(MeetingHud __instance)
         {
             base.OnMeetingStart(__instance);
-
-            foreach (var area in __instance.playerStates)
-                GenButton(area, __instance);
+            DictMenu.GenButtons(__instance, Revealed && !Ejected && !ToDie);
         }
 
         private bool IsExempt(PlayerVoteArea voteArea)
         {
-            if (voteArea.AmDead)
-                return true;
-
-            var player = Utils.PlayerByVoteArea(voteArea);
+            var player = PlayerByVoteArea(voteArea);
             return player.Data.IsDead || player.Data.Disconnected || (player == Player && player == CustomPlayer.Local) || IsDead || !Revealed || Ejected;
         }
 
         public override void ConfirmVotePrefix(MeetingHud __instance)
         {
             base.ConfirmVotePrefix(__instance);
+            DictMenu.Voted();
 
-            if (Utils.Meeting.playerStates.Any(x => x.TargetPlayerId == Player.PlayerId && x.DidVote && !CustomGameOptions.DictateAfterVoting))
-                HideButtons();
-
-            if (ToBeEjected.Count == 0)
-                return;
-
-            ToDie = ToBeEjected.Any(x => Utils.PlayerById(x).Is(Faction.Crew));
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-            writer.Write((byte)ActionsRPC.SetExiles);
-            writer.Write(PlayerId);
-            writer.Write(ToDie);
-            writer.WriteBytesAndSize(ToBeEjected.ToArray());
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            if (ToBeEjected.Count > 0 && !Ejected)
+            {
+                ToDie = ToBeEjected.Any(x => PlayerById(x).Is(Faction.Crew));
+                CallRpc(CustomRPC.Action, ActionsRPC.SetExiles, this, ToDie, ToBeEjected.ToArray());
+            }
         }
 
-        public void HideSingle(byte targetId)
+        public override void UpdateMeeting(MeetingHud __instance)
         {
-            var button = MoarButtons[targetId];
-
-            if (button == null)
-                return;
-
-            button.SetActive(false);
-            button.GetComponent<PassiveButton>().OnClick = new();
-            button.GetComponent<PassiveButton>().OnMouseOver = new();
-            button.GetComponent<PassiveButton>().OnMouseOut = new();
-            button.Destroy();
-            MoarButtons[targetId] = null;
-        }
-
-        public void HideButtons()
-        {
-            for (byte i = 0; i < MoarButtons.Count; i++)
-                HideSingle(i);
+            base.UpdateMeeting(__instance);
+            DictMenu.Update();
         }
     }
 }

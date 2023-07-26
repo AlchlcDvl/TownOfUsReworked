@@ -6,22 +6,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public CustomButton SidekickButton;
         public DateTime LastDeclared;
 
+        public override Color32 Color => ClientGameOptions.CustomSynColors ? Colors.Rebel : Colors.Syndicate;
+        public override string Name => "Rebel";
+        public override LayerEnum Type => LayerEnum.Rebel;
+        public override RoleEnum RoleType => RoleEnum.Rebel;
+        public override Func<string> StartText => () => "Promote Your Fellow <color=#008000FF>Syndicate</color> To Do Better";
+        public override Func<string> AbilitiesText => () => "- You can promote a fellow <color=#008000FF>Syndicate</color> into becoming your successor\n- Promoting a " +
+            "<color=#008000FF>Syndicate</color> turns them into a <color=#979C9FFF>Sidekick</color>\n- If you die, the <color=#979C9FFF>Sidekick</color> become the new <color=#FFFCCEFF>" +
+            $"Rebel</color>\nand inherits better abilities of their former role\n{CommonAbilities}";
+        public override InspectorResults InspectorResults => InspectorResults.LeadsTheGroup;
+
         public Rebel(PlayerControl player) : base(player)
         {
-            Name = "Rebel";
-            RoleType = RoleEnum.Rebel;
-            StartText = () => "Promote Your Fellow <color=#008000FF>Syndicate</color> To Do Better";
-            AbilitiesText = () => "- You can promote a fellow <color=#008000FF>Syndicate</color> into becoming your successor\n- Promoting an <color=#008000FF>Syndicate</color> turns " +
-                "them into a <color=#979C9FFF>Sidekick</color>\n- If you die, the <color=#979C9FFF>Sidekick</color> become the new <color=#FFFCCEFF>Rebel</color>\nand inherits better " +
-                $"abilities of their former role\n{CommonAbilities}";
-            Color = CustomGameOptions.CustomSynColors ? Colors.Rebel : Colors.Syndicate;
             RoleAlignment = RoleAlignment.SyndicateSupport;
-            Type = LayerEnum.Rebel;
             SidekickButton = new(this, "Sidekick", AbilityTypes.Direct, "Secondary", Sidekick);
-            InspectorResults = InspectorResults.LeadsTheGroup;
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public static void Sidekick(Rebel reb, PlayerControl target)
@@ -38,26 +36,22 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             sidekick.RoleUpdate(formerRole);
 
             if (target == CustomPlayer.Local)
-                Utils.Flash(Colors.Rebel);
+                Flash(Colors.Rebel);
 
             if (CustomPlayer.Local.Is(RoleEnum.Seer))
-                Utils.Flash(Colors.Seer);
+                Flash(Colors.Seer);
         }
 
         public void Sidekick()
         {
-            if (Utils.IsTooFar(Player, SidekickButton.TargetPlayer) || HasDeclared)
+            if (IsTooFar(Player, SidekickButton.TargetPlayer) || HasDeclared)
                 return;
 
-            var interact = Utils.Interact(Player, SidekickButton.TargetPlayer);
+            var interact = Interact(Player, SidekickButton.TargetPlayer);
 
             if (interact[3])
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                writer.Write((byte)ActionsRPC.Sidekick);
-                writer.Write(PlayerId);
-                writer.Write(SidekickButton.TargetPlayer.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                CallRpc(CustomRPC.Action, ActionsRPC.Sidekick, this, SidekickButton.TargetPlayer);
                 Sidekick(this, SidekickButton.TargetPlayer);
             }
             else if (interact[0])

@@ -11,24 +11,22 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public bool Poisoned => TimeRemaining > 0f;
         public CustomMenu PoisonMenu;
 
+        public override Color32 Color => ClientGameOptions.CustomSynColors ? Colors.Poisoner : Colors.Syndicate;
+        public override string Name => "Poisoner";
+        public override LayerEnum Type => LayerEnum.Poisoner;
+        public override RoleEnum RoleType => RoleEnum.Poisoner;
+        public override Func<string> StartText => () => "Delay A Kill To Decieve The <color=#8CFFFFFF>Crew</color>";
+        public override Func<string> AbilitiesText => () => $"- You can poison players{(HoldsDrive ? " from afar" : "")}\n- Poisoned players will die after " +
+            $"{CustomGameOptions.PoisonDuration}s\n{CommonAbilities}";
+        public override InspectorResults InspectorResults => InspectorResults.Unseen;
+
         public Poisoner(PlayerControl player) : base(player)
         {
-            Name = "Poisoner";
-            StartText = () => "Delay A Kill To Decieve The <color=#8CFFFFFF>Crew</color>";
-            AbilitiesText = () => $"- You can poison players\n- Poisoned players will die after {CustomGameOptions.PoisonDuration}s\n- With the Chaos Drive, you can poison players from " +
-                $"anywhere\n{CommonAbilities}";
-            Color = CustomGameOptions.CustomSynColors? Colors.Poisoner : Colors.Syndicate;
-            RoleType = RoleEnum.Poisoner;
             PoisonedPlayer = null;
             RoleAlignment = RoleAlignment.SyndicateKill;
             PoisonMenu = new(Player, Click, Exception1);
-            Type = LayerEnum.Poisoner;
             PoisonButton = new(this, "Poison", AbilityTypes.Direct, "ActionSecondary", HitPoison, Exception1);
-            GlobalPoisonButton = new(this, "Poison", AbilityTypes.Effect, "ActionSecondary", HitGlobalPoison);
-            InspectorResults = InspectorResults.Unseen;
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
+            GlobalPoisonButton = new(this, "GlobalPoison", AbilityTypes.Effect, "ActionSecondary", HitGlobalPoison);
         }
 
         public void Poison()
@@ -36,14 +34,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
 
-            if (Utils.Meeting || PoisonedPlayer.Data.IsDead || PoisonedPlayer.Data.Disconnected || IsDead)
+            if (Meeting || PoisonedPlayer.Data.IsDead || PoisonedPlayer.Data.Disconnected || IsDead)
                 TimeRemaining = 0f;
         }
 
         public void PoisonKill()
         {
             if (!(PoisonedPlayer.Data.IsDead || PoisonedPlayer.Data.Disconnected || PoisonedPlayer.Is(RoleEnum.Pestilence)))
-                Utils.RpcMurderPlayer(Player, PoisonedPlayer, DeathReasonEnum.Poisoned, false);
+                RpcMurderPlayer(Player, PoisonedPlayer, DeathReasonEnum.Poisoned, false);
 
             PoisonedPlayer = null;
             Enabled = false;
@@ -54,13 +52,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var timespan = DateTime.UtcNow - LastPoisoned;
             var num = Player.GetModifiedCooldown(CustomGameOptions.PoisonCd) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void Click(PlayerControl player)
         {
-            var interact = Utils.Interact(Player, player);
+            var interact = Interact(Player, player);
 
             if (interact[3] && !player.IsProtected() && !player.IsVesting() && !player.IsProtectedMonarch())
                 PoisonedPlayer = player;
@@ -85,7 +84,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 if (PoisonedPlayer != null && HoldsDrive && !Poisoned)
                     PoisonedPlayer = null;
 
-                Utils.LogSomething("Removed a target");
+                LogSomething("Removed a target");
             }
         }
 
@@ -93,19 +92,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void HitPoison()
         {
-            if (PoisonTimer() != 0f || Poisoned || HoldsDrive || Utils.IsTooFar(Player, PoisonButton.TargetPlayer))
+            if (PoisonTimer() != 0f || Poisoned || HoldsDrive || IsTooFar(Player, PoisonButton.TargetPlayer))
                 return;
 
-            var interact = Utils.Interact(Player, PoisonButton.TargetPlayer);
+            var interact = Interact(Player, PoisonButton.TargetPlayer);
 
             if (interact[3] && !PoisonButton.TargetPlayer.IsProtected() && !PoisonButton.TargetPlayer.IsVesting() && !PoisonButton.TargetPlayer.IsProtectedMonarch())
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                writer.Write((byte)ActionsRPC.Poison);
-                writer.Write(Player.PlayerId);
-                writer.Write(PoisonButton.TargetPlayer.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
                 PoisonedPlayer = PoisonButton.TargetPlayer;
+                CallRpc(CustomRPC.Action, ActionsRPC.Poison, this, PoisonedPlayer);
                 TimeRemaining = CustomGameOptions.PoisonDuration;
                 Poison();
             }
@@ -126,11 +121,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 PoisonMenu.Open();
             else
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                writer.Write((byte)ActionsRPC.Poison);
-                writer.Write(Player.PlayerId);
-                writer.Write(PoisonedPlayer.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                CallRpc(CustomRPC.Action, ActionsRPC.Poison, this, PoisonedPlayer);
                 TimeRemaining = CustomGameOptions.PoisonDuration;
                 Poison();
             }

@@ -1,5 +1,33 @@
 ﻿namespace TownOfUsReworked.PlayerLayers.Abilities
 {
+    public class CrewAssassin : Assassin
+    {
+        public override AbilityEnum AbilityType => AbilityEnum.CrewAssassin;
+
+        public CrewAssassin(PlayerControl player) : base(player) {}
+    }
+
+    public class IntruderAssassin : Assassin
+    {
+        public override AbilityEnum AbilityType => AbilityEnum.IntruderAssassin;
+
+        public IntruderAssassin(PlayerControl player) : base(player) {}
+    }
+
+    public class NeutralAssassin : Assassin
+    {
+        public override AbilityEnum AbilityType => AbilityEnum.NeutralAssassin;
+
+        public NeutralAssassin(PlayerControl player) : base(player) {}
+    }
+
+    public class SyndicateAssassin : Assassin
+    {
+        public override AbilityEnum AbilityType => AbilityEnum.NeutralAssassin;
+
+        public SyndicateAssassin(PlayerControl player) : base(player) {}
+    }
+
     public class Assassin : Ability
     {
         public Dictionary<string, Color> ColorMapping = new();
@@ -8,31 +36,48 @@
         private static bool AssassinOn => CustomGameOptions.CrewAssassinOn > 0 || CustomGameOptions.IntruderAssassinOn > 0 || CustomGameOptions.SyndicateAssassinOn > 0 ||
             CustomGameOptions.NeutralAssassinOn > 0;
         public GameObject Phone;
-        public Dictionary<byte, GameObject> OtherButtons = new();
         public Transform SelectedButton;
         public int Page;
         public int MaxPage;
         public Dictionary<int, List<Transform>> Buttons = new();
         public Dictionary<int, KeyValuePair<string, Color>> Sorted = new();
+        public CustomMeeting AssassinMenu;
+        private static readonly Dictionary<string, List<string>> Actors = new()
+        {
+            { "DealsWithDead", new() { "Coroner", "Amnesiac", "Retributionist", "Janitor", "Cannibal" } },
+            { "PreservesLife", new() { "Medic", "Guardian Angel", "Altruist", "Necromancer", "Crusader" } },
+            { "LeadsTheGroup", new() { "Mayor", "Godfather", "Rebel", "Pestilence", "Survivor" } },
+            { "BringsChaos", new() { "Shifter", "Thief", "Camouflager", "Whisperer", "Jackal" } },
+            { "SeeksToDestroy", new() { "Arsonist", "Cryomaniac", "Plaguebearer", "Spellslinger" } },
+            { "MovesAround", new() { "Transporter", "Teleporter", "Warper", "Time Keeper" } },
+            { "NewLens", new() { "Engineer", "Miner", "Seer", "Dracula", "Medium", "Monarch" } },
+            { "GainsInfo", new() { "Sheriff", "Consigliere", "Blackmailer", "Detective", "Inspector", "Silencer" } },
+            { "Manipulative", new() { "Jester", "Executioner", "Actor", "Troll", "Framer", "Dictator" } },
+            { "Unseen", new() { "Chameleon", "Wraith", "Concealer", "Poisoner", "Collider" } },
+            { "IsCold", new() { "Veteran", "Vigilante", "Sidekick", "Guesser", "Mafioso" } },
+            { "TracksOthers", new() { "Tracker", "Mystic", "Vampire Hunter", "Bounty Hunter", "Stalker" } },
+            { "IsAggressive", new() { "Betrayer", "Werewolf", "Juggernaut", "Serial Kilelr" } },
+            { "CreatesConfusion", new() { "Morphling", "Disguiser", "Shapeshifter" } },
+            { "DropsItems", new() { "Bomber", "Operative", "Grenadier", "Enforcer" } },
+            { "HindersOthers", new() { "Escort", "Consort", "Glitch", "Ambusher", "Drunkard" } },
+            { "IsBasic", new() { "Crewmate", "Impostor", "Anarchist", "Murderer" } }
+        };
+
+        public override Color32 Color => ClientGameOptions.CustomAbColors ? Colors.Assassin : Colors.Ability;
+        public override string Name => "Assassin";
+        public override LayerEnum Type => LayerEnum.Assassin;
+        public override Func<string> TaskText => () => "- You can guess players mid-meetings";
 
         public Assassin(PlayerControl player) : base(player)
         {
-            Name = "Assassin";
-            TaskText = () => "- You can guess players mid-meetings";
-            Color = CustomGameOptions.CustomAbilityColors ? Colors.Assassin : Colors.Ability;
-            AbilityType = AbilityEnum.Assassin;
             ColorMapping = new();
             SortedColorMapping = new();
             SelectedButton = null;
             Page = 0;
             MaxPage = 0;
             Buttons = new();
-            OtherButtons = new();
             Sorted = new();
-            Type = LayerEnum.Assassin;
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
+            AssassinMenu = new(Player, "Guess", MeetingTypes.Click, CustomGameOptions.AssassinateAfterVoting, Guess, IsExempt, SetLists);
         }
 
         private void SetLists()
@@ -42,7 +87,7 @@
             Sorted.Clear();
 
             //Adds all the roles that have a non-zero chance of being in the game
-            if (!Player.Is(Faction.Crew))
+            if (!Player.Is(Faction.Crew) || !Player.Is(SubFaction.None))
             {
                 ColorMapping.Add("Crewmate", Colors.Crew);
 
@@ -78,7 +123,7 @@
                 }
             }
 
-            if (!(Player.Is(Faction.Intruder) || CustomGameOptions.AltImps))
+            if (!(Player.Is(Faction.Intruder) || !Player.Is(SubFaction.None)) && !CustomGameOptions.AltImps && CustomGameOptions.IntruderCount > 0)
             {
                 ColorMapping.Add("Impostor", Colors.Intruder);
 
@@ -104,7 +149,7 @@
                 }
             }
 
-            if (!Player.Is(Faction.Syndicate) && CustomGameOptions.SyndicateCount > 0)
+            if ((!Player.Is(Faction.Syndicate) || !Player.Is(SubFaction.None)) && CustomGameOptions.SyndicateCount > 0)
             {
                 ColorMapping.Add("Anarchist", Colors.Syndicate);
 
@@ -215,6 +260,7 @@
                 if (CustomGameOptions.RivalsOn > 0 && !Player.Is(ObjectifierEnum.Rivals)) ColorMapping.Add("Rival", Colors.Rivals);
                 if (CustomGameOptions.OverlordOn > 0) ColorMapping.Add("Overlord", Colors.Overlord);
                 if (CustomGameOptions.AlliedOn > 0) ColorMapping.Add("Allied", Colors.Allied);
+                if (CustomGameOptions.LinkedOn > 0 && !Player.Is(ObjectifierEnum.Linked)) ColorMapping.Add("Linked", Colors.Linked);
                 if (CustomGameOptions.MafiaOn > 0 && !Player.Is(ObjectifierEnum.Mafia)) ColorMapping.Add("Mafia", Colors.Mafia);
                 if (CustomGameOptions.DefectorOn > 0) ColorMapping.Add("Defector", Colors.Defector);
             }
@@ -260,9 +306,9 @@
 
         private void SetButtons(MeetingHud __instance, PlayerVoteArea voteArea)
         {
-            var buttonTemplate = __instance.playerStates[0].transform.FindChild("votePlayerBase");
-            var maskTemplate = __instance.playerStates[0].transform.FindChild("MaskArea");
-            var textTemplate = __instance.playerStates[0].NameText;
+            var buttonTemplate = voteArea.transform.FindChild("votePlayerBase");
+            var maskTemplate = voteArea.transform.FindChild("MaskArea");
+            var textTemplate = voteArea.NameText;
             SelectedButton = null;
             var i = 0;
             var j = 0;
@@ -274,7 +320,7 @@
                 var button = UObject.Instantiate(buttonTemplate, buttonParent);
                 UObject.Instantiate(maskTemplate, buttonParent);
                 var label = UObject.Instantiate(textTemplate, button);
-                button.GetComponent<SpriteRenderer>().sprite = HatManager.Instance.GetNamePlateById("nameplate_NoPlate")?.CreateAddressableAsset()?.GetAsset()?.Image;
+                button.GetComponent<SpriteRenderer>().sprite = ShipStatus.Instance.CosmeticsCache.GetNameplate("nameplate_NoPlate").Image;
 
                 if (!Buttons.ContainsKey(i))
                     Buttons.Add(i, new());
@@ -303,14 +349,14 @@
                         SelectedButton = button;
                     else
                     {
-                        var focusedTarget = Utils.PlayerByVoteArea(voteArea);
+                        var focusedTarget = PlayerByVoteArea(voteArea);
 
                         if (__instance.state == MeetingHud.VoteStates.Discussion || focusedTarget == null || RemainingKills <= 0 )
                             return;
 
                         var targetId = voteArea.TargetPlayerId;
                         var currentGuess = label.text;
-                        var targetPlayer = Utils.PlayerById(targetId);
+                        var targetPlayer = PlayerById(targetId);
 
                         var playerRole = Role.GetRole(voteArea);
                         var playerAbility = GetAbility(voteArea);
@@ -333,30 +379,27 @@
                         {
                             var actor = Role.GetRole<Actor>(targetPlayer);
 
-                            if (Role.GetRoles(actor.PretendRoles).Any(x => x.Name == currentGuess))
+                            if (Actors.TryGetValue($"{actor.PretendRoles}", out var results) && results.Any(x => x == currentGuess))
                             {
                                 actor.Guessed = true;
                                 actGuessed = true;
-                                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                                writer.Write((byte)WinLoseRPC.ActorWin);
-                                writer.Write(targetPlayer.PlayerId);
-                                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                                CallRpc(CustomRPC.WinLose, WinLoseRPC.ActorWin, actor);
                             }
                         }
 
                         var flag = roleflag || modifierflag || abilityflag || objectifierflag || recruitflag || sectflag || reanimatedflag || undeadflag || framedflag || actGuessed;
-                        var toDie = flag ? playerRole.Player : Player;
-                        RpcMurderPlayer(toDie, currentGuess);
+                        var toDie = flag ? targetPlayer : Player;
+                        RpcMurderPlayer(toDie, currentGuess, targetPlayer);
 
                         if (actGuessed && !CustomGameOptions.AvoidNeutralKingmakers)
-                            RpcMurderPlayer(Player, currentGuess);
+                            RpcMurderPlayer(Player, currentGuess, targetPlayer);
 
                         Exit(__instance);
 
                         if (RemainingKills < 0 || !CustomGameOptions.AssassinMultiKill)
-                            HideButtons();
+                            AssassinMenu.HideButtons();
                         else
-                            HideSingle(targetId);
+                            AssassinMenu.HideSingle(targetId);
                     }
                 }));
 
@@ -373,47 +416,20 @@
 
         private bool IsExempt(PlayerVoteArea voteArea)
         {
-            var player = Utils.PlayerByVoteArea(voteArea);
-            return player.Data.IsDead || player.Data.Disconnected || (voteArea.NameText.text.Contains('\n') && Player.GetFaction() != player.GetFaction()) || (player == Player &&
-                player == CustomPlayer.Local) || Player.GetFaction() == player.GetFaction() || player == Player.GetOtherLover() || player == Player.GetOtherRival() ||
-                RemainingKills <= 0 || IsDead;
-        }
-
-        public void GenButton(PlayerVoteArea voteArea, MeetingHud __instance)
-        {
-            if (IsExempt(voteArea))
-            {
-                OtherButtons.Add(voteArea.TargetPlayerId, null);
-                return;
-            }
-
-            var targetBox = UObject.Instantiate(voteArea.Buttons.transform.Find("CancelButton").gameObject, voteArea.transform);
-            targetBox.name = "GuessButton";
-            targetBox.transform.localPosition = new(-0.95f, 0.03f, -1.3f);
-            var renderer = targetBox.GetComponent<SpriteRenderer>();
-            renderer.sprite = AssetManager.GetSprite("Guess");
-            var button = targetBox.GetComponent<PassiveButton>();
-            button.OnClick = new();
-            button.OnClick.AddListener((Action)(() => Guess(voteArea, __instance)));
-            button.OnMouseOut = new();
-            button.OnMouseOut.AddListener((Action)(() => renderer.color = UColor.white));
-            button.OnMouseOver = new();
-            button.OnMouseOver.AddListener((Action)(() => renderer.color = UColor.red));
-            var collider = targetBox.GetComponent<BoxCollider2D>();
-            collider.size = renderer.sprite.bounds.size;
-            collider.offset = Vector2.zero;
-            targetBox.transform.GetChild(0).gameObject.Destroy();
-            OtherButtons.Add(voteArea.TargetPlayerId, targetBox);
+            var player = PlayerByVoteArea(voteArea);
+            return player.Data.IsDead || player.Data.Disconnected || (voteArea.NameText.text.Contains('\n') && ((Player.GetFaction() != player.GetFaction()) || (Player.GetSubFaction() !=
+                Player.GetSubFaction()))) || IsDead || (player == Player && player == CustomPlayer.Local) || (Player.GetFaction() == player.GetFaction() && Player.GetFaction() !=
+                Faction.Crew) || RemainingKills <= 0 || (Player.GetSubFaction() == player.GetSubFaction() && Player.GetSubFaction() != SubFaction.None) || Player.IsLinkedTo(player);
         }
 
         private void Guess(PlayerVoteArea voteArea, MeetingHud __instance)
         {
-            if (Phone != null || __instance.state == MeetingHud.VoteStates.Discussion || IsExempt(voteArea))
+            if (Phone || __instance.state == MeetingHud.VoteStates.Discussion || IsExempt(voteArea))
                 return;
 
-            __instance.playerStates.ToList().ForEach(x => x.gameObject.SetActive(false));
+            AllVoteAreas.ForEach(x => x.gameObject.SetActive(false));
             __instance.TimerText.gameObject.SetActive(false);
-            Utils.HUD.Chat.SetVisible(false);
+            HUD.Chat.SetVisible(false);
             Page = 0;
             var container = UObject.Instantiate(UObject.FindObjectsOfType<Transform>().FirstOrDefault(x => x.name == "PhoneUI"), __instance.transform);
             container.transform.localPosition = new(0, 0, -5f);
@@ -424,17 +440,20 @@
             var exitButtonMask = UObject.Instantiate(voteArea.transform.FindChild("MaskArea"), exitButtonParent);
             exitButton.gameObject.GetComponent<SpriteRenderer>().sprite = voteArea.Buttons.transform.Find("CancelButton").GetComponent<SpriteRenderer>().sprite;
             exitButtonParent.transform.localPosition = new(2.725f, 2.1f, -5);
-            exitButton.GetComponent<PassiveButton>().OnClick = new();
-            exitButton.GetComponent<PassiveButton>().OnClick.AddListener((Action)(() => Exit(__instance)));
+            exitButtonParent.transform.localScale = new(0.217f, 0.9f, 1);
+            var button = exitButton.GetComponent<PassiveButton>();
+            button.OnClick = new();
+            button.OnClick.AddListener((Action)(() => Exit(__instance)));
             SetButtons(__instance, voteArea);
         }
 
         public void Exit(MeetingHud __instance)
         {
             Phone.Destroy();
-            Utils.HUD.Chat.SetVisible(true);
+            HUD.Chat.SetVisible(true);
+            SelectedButton = null;
             __instance.TimerText.gameObject.SetActive(true);
-            __instance.playerStates.ToList().ForEach(x => x.gameObject.SetActive(true));
+            AllVoteAreas.ForEach(x => x.gameObject.SetActive(true));
 
             foreach (var pair in Buttons)
             {
@@ -452,93 +471,51 @@
             Buttons.Clear();
         }
 
-        public void HideButtons()
-        {
-            foreach (var pair in OtherButtons)
-                HideSingle(pair.Key);
-        }
-
-        public void HideSingle(byte targetId)
-        {
-            var button = OtherButtons[targetId];
-
-            if (button == null)
-                return;
-
-            button.SetActive(false);
-            button.GetComponent<PassiveButton>().OnClick = new();
-            button.Destroy();
-            OtherButtons[targetId] = null;
-        }
-
         public override void OnMeetingStart(MeetingHud __instance)
         {
             base.OnMeetingStart(__instance);
-
-            if (RemainingKills <= 0)
-                return;
-
-            SetLists();
-
-            foreach (var voteArea in __instance.playerStates)
-                GenButton(voteArea, __instance);
+            AssassinMenu.GenButtons(__instance, RemainingKills > 0);
         }
 
         public override void UpdateMeeting(MeetingHud __instance)
         {
             base.UpdateMeeting(__instance);
+            AssassinMenu.Update();
 
             if (Phone != null)
             {
                 if ((Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.LeftArrow) || Input.mouseScrollDelta.y > 0f) && MaxPage != 0)
-                {
-                    Page++;
-
-                    if (Page > MaxPage)
-                        Page = 0;
-                }
+                    Page = CycleInt(MaxPage, 0, Page, true);
                 else if ((Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.RightArrow) || Input.mouseScrollDelta.y < 0f) && MaxPage != 0)
-                {
-                    Page--;
-
-                    if (Page < 0)
-                        Page = MaxPage;
-                }
+                    Page = CycleInt(MaxPage, 0, Page, false);
 
                 foreach (var pair in Buttons)
                 {
                     if (pair.Value.Count > 0)
-                    {
-                        foreach (var item in pair.Value)
-                            item?.gameObject?.SetActive(Page == pair.Key);
-                    }
+                        pair.Value.ForEach(x => x?.gameObject?.SetActive(Page == pair.Key));
 
                     Buttons[Page].ForEach(x => x.GetComponent<SpriteRenderer>().color = x == SelectedButton ? UColor.red : UColor.white);
                 }
             }
         }
 
-        public void RpcMurderPlayer(PlayerControl player, string guess)
+        public void RpcMurderPlayer(PlayerControl player, string guess, PlayerControl guessTarget)
         {
-            MurderPlayer(player, guess);
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-            writer.Write((byte)ActionsRPC.AssassinKill);
-            writer.Write(PlayerId);
-            writer.Write(player.PlayerId);
-            writer.Write(guess);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            MurderPlayer(player, guess, guessTarget);
+            CallRpc(CustomRPC.Action, ActionsRPC.AssassinKill, this, player, guess, guessTarget);
         }
 
-        public void MurderPlayer(PlayerControl player, string guess)
+        public void MurderPlayer(PlayerControl player, string guess, PlayerControl guessTarget)
         {
-            var hudManager = Utils.HUD;
-
-            if (player != Player && player.Is(ModifierEnum.Indomitable))
+            if (player.Is(ModifierEnum.Indomitable))
             {
-                if (player == CustomPlayer.Local)
-                    Utils.Flash(Colors.Indomitable);
+                if (player == CustomPlayer.Local || Local)
+                    Flash(Colors.Indomitable);
 
-                return;
+                Modifier.GetModifier<Indomitable>(player).AttemptedGuess = true;
+
+                if (player != Player)
+                    return;
             }
 
             if (Player.Is(ModifierEnum.Professional) && Player == player)
@@ -548,57 +525,55 @@
                 if (!modifier.LifeUsed)
                 {
                     modifier.LifeUsed = true;
-                    Utils.Flash(modifier.Color);
+                    Flash(modifier.Color);
                     return;
                 }
             }
 
             RemainingKills--;
-            Utils.MarkMeetingDead(player, Player);
+            MarkMeetingDead(player, Player);
 
             if (AmongUsClient.Instance.AmHost && player.Is(ObjectifierEnum.Lovers) && CustomGameOptions.BothLoversDie)
             {
                 var otherLover = player.GetOtherLover();
 
                 if (!otherLover.Is(RoleEnum.Pestilence))
-                    RpcMurderPlayer(otherLover, guess);
+                    RpcMurderPlayer(otherLover, guess, guessTarget);
             }
 
             if (Local)
             {
                 if (Player != player)
-                    hudManager.Chat.AddChat(PlayerControl.LocalPlayer, $"You guessed {player.name} as {guess}!");
+                    HUD.Chat.AddChat(CustomPlayer.Local, $"You guessed {guessTarget.name} as {guess}!");
                 else if (Player.Is(ModifierEnum.Professional))
-                    hudManager.Chat.AddChat(PlayerControl.LocalPlayer, $"You incorrectly guessed {player.name} as {guess} and lost a life!");
+                    HUD.Chat.AddChat(CustomPlayer.Local, $"You incorrectly guessed {guessTarget.name} as {guess} and lost a life!");
                 else
-                    hudManager.Chat.AddChat(PlayerControl.LocalPlayer, $"You incorrectly guessed {player.name} as {guess} and died!");
+                    HUD.Chat.AddChat(CustomPlayer.Local, $"You incorrectly guessed {guessTarget.name} as {guess} and died!");
             }
             else if (Player != player && CustomPlayer.Local == player)
-                hudManager.Chat.AddChat(PlayerControl.LocalPlayer, $"{Player.name} guessed you as {guess}!");
-            else if ((Player.GetFaction() == CustomPlayer.Local.GetFaction() && (Player.GetFaction() is Faction.Intruder or Faction.Syndicate)) ||
-                ConstantVariables.DeadSeeEverything)
+                HUD.Chat.AddChat(CustomPlayer.Local, $"{Player.name} guessed you as {guess}!");
+            else if ((Player.GetFaction() == CustomPlayer.Local.GetFaction() && (Player.GetFaction() is Faction.Intruder or Faction.Syndicate)) || DeadSeeEverything)
             {
                 if (Player != player)
-                    hudManager.Chat.AddChat(PlayerControl.LocalPlayer, $"{Player.name} guessed {player.name} as {guess}!");
+                    HUD.Chat.AddChat(CustomPlayer.Local, $"{Player.name} guessed {guessTarget.name} as {guess}!");
                 else if (Player.Is(ModifierEnum.Professional))
-                    hudManager.Chat.AddChat(PlayerControl.LocalPlayer, $"{Player.name} incorrectly guessed {player.name} as {guess} and lost a life!");
+                    HUD.Chat.AddChat(CustomPlayer.Local, $"{Player.name} incorrectly guessed {guessTarget.name} as {guess} and lost a life!");
                 else
-                    hudManager.Chat.AddChat(PlayerControl.LocalPlayer, $"{Player.name} incorrectly guessed {player.name} as {guess} and died!");
+                    HUD.Chat.AddChat(CustomPlayer.Local, $"{Player.name} incorrectly guessed {guessTarget.name} as {guess} and died!");
             }
         }
 
         public override void VoteComplete(MeetingHud __instance)
         {
             base.VoteComplete(__instance);
-            HideButtons();
+            AssassinMenu.HideButtons();
         }
 
         public override void ConfirmVotePrefix(MeetingHud __instance)
         {
             base.ConfirmVotePrefix(__instance);
-
-            if (!CustomGameOptions.AssassinateAfterVoting)
-                HideButtons();
+            AssassinMenu.Voted();
+            Exit(__instance);
         }
     }
 }

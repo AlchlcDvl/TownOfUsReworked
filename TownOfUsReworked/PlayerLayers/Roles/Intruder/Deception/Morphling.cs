@@ -12,23 +12,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public bool Enabled;
         public bool Morphed => TimeRemaining > 0f;
 
+        public override Color32 Color => ClientGameOptions.CustomIntColors ? Colors.Morphling : Colors.Intruder;
+        public override string Name => "Morphling";
+        public override LayerEnum Type => LayerEnum.Morphling;
+        public override RoleEnum RoleType => RoleEnum.Morphling;
+        public override Func<string> StartText => () => "Fool The <color=#8CFFFFFF>Crew</color> With Your Appearances";
+        public override Func<string> AbilitiesText => () => $"- You can morph into other players, taking up their appearances as your own\n{CommonAbilities}";
+        public override InspectorResults InspectorResults => InspectorResults.CreatesConfusion;
+
         public Morphling(PlayerControl player) : base(player)
         {
-            Name = "Morphling";
-            StartText = () => "Fool The <color=#8CFFFFFF>Crew</color> With Your Appearances";
-            AbilitiesText = () => $"- You can morph into other players, taking up their appearances as your own\n{CommonAbilities}";
-            Color = CustomGameOptions.CustomIntColors ? Colors.Morphling : Colors.Intruder;
-            RoleType = RoleEnum.Morphling;
             RoleAlignment = RoleAlignment.IntruderDecep;
             SampledPlayer = null;
             MorphedPlayer = null;
-            Type = LayerEnum.Morphling;
             MorphButton = new(this, "Morph", AbilityTypes.Effect, "Secondary", HitMorph);
             SampleButton = new(this, "Sample", AbilityTypes.Direct, "Tertiary", Sample, Exception1);
-            InspectorResults = InspectorResults.CreatesConfusion;
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public void Morph()
@@ -37,7 +35,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Utils.Morph(Player, MorphedPlayer);
             Enabled = true;
 
-            if (IsDead || Utils.Meeting)
+            if (IsDead || Meeting)
                 TimeRemaining = 0f;
         }
 
@@ -45,7 +43,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             MorphedPlayer = null;
             Enabled = false;
-            Utils.DefaultOutfit(Player);
+            DefaultOutfit(Player);
             LastMorphed = DateTime.UtcNow;
 
             if (CustomGameOptions.MorphCooldownsLinked)
@@ -56,16 +54,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var timespan = DateTime.UtcNow - LastMorphed;
             var num = Player.GetModifiedCooldown(CustomGameOptions.MorphlingCd) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public float SampleTimer()
         {
             var timespan = DateTime.UtcNow - LastSampled;
             var num = Player.GetModifiedCooldown(CustomGameOptions.SampleCooldown) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void HitMorph()
@@ -73,22 +73,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (MorphTimer() != 0f || SampledPlayer == null || Morphed)
                 return;
 
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-            writer.Write((byte)ActionsRPC.Morph);
-            writer.Write(PlayerId);
-            writer.Write(SampledPlayer.PlayerId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
             TimeRemaining = CustomGameOptions.MorphlingDuration;
             MorphedPlayer = SampledPlayer;
+            CallRpc(CustomRPC.Action, ActionsRPC.Morph, this, MorphedPlayer);
             Morph();
         }
 
         public void Sample()
         {
-            if (SampleTimer() != 0f || Utils.IsTooFar(Player, SampleButton.TargetPlayer) || SampledPlayer == SampleButton.TargetPlayer)
+            if (SampleTimer() != 0f || IsTooFar(Player, SampleButton.TargetPlayer) || SampledPlayer == SampleButton.TargetPlayer)
                 return;
 
-            var interact = Utils.Interact(Player, SampleButton.TargetPlayer);
+            var interact = Interact(Player, SampleButton.TargetPlayer);
 
             if (interact[3])
                 SampledPlayer = SampleButton.TargetPlayer;

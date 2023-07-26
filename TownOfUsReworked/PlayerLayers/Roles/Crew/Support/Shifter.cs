@@ -5,45 +5,40 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public DateTime LastShifted;
         public CustomButton ShiftButton;
 
+        public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Shifter : Colors.Crew;
+        public override string Name => "Shifter";
+        public override LayerEnum Type => LayerEnum.Shifter;
+        public override RoleEnum RoleType => RoleEnum.Shifter;
+        public override Func<string> StartText => () => "Shift Around Roles";
+        public override Func<string> AbilitiesText => () => "- You can steal another player's role\n- You can only shift with <color=#8CFFFFFF>Crew</color>\n- Shifting withn on-" +
+            "<color=#8CFFFFFF>Crew</color> will cause you to kill yourself";
+        public override InspectorResults InspectorResults => InspectorResults.BringsChaos;
+
         public Shifter(PlayerControl player) : base(player)
         {
-            Name = "Shifter";
-            StartText = () => "Shift Around Roles";
-            AbilitiesText = () => "- You can steal another player's role\n- You can only shift with <color=#8CFFFFFF>Crew</color>\n- Shifting with non-<color=#8CFFFFFF>Crew</color> will " +
-                "cause you to kill yourself";
-            Color = CustomGameOptions.CustomCrewColors ? Colors.Shifter : Colors.Crew;
-            RoleType = RoleEnum.Shifter;
             RoleAlignment = RoleAlignment.CrewSupport;
-            InspectorResults = InspectorResults.BringsChaos;
-            Type = LayerEnum.Shifter;
             ShiftButton = new(this, "Shift", AbilityTypes.Direct, "ActionSecondary", Shift);
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float ShiftTimer()
         {
             var timespan = DateTime.UtcNow - LastShifted;
             var num = Player.GetModifiedCooldown(CustomGameOptions.ShifterCd) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void Shift()
         {
-            if (ShiftTimer() != 0f || Utils.IsTooFar(Player, ShiftButton.TargetPlayer))
+            if (ShiftTimer() != 0f || IsTooFar(Player, ShiftButton.TargetPlayer))
                 return;
 
-            var interact = Utils.Interact(Player, ShiftButton.TargetPlayer);
+            var interact = Interact(Player, ShiftButton.TargetPlayer);
 
             if (interact[3])
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                writer.Write((byte)ActionsRPC.Shift);
-                writer.Write(PlayerId);
-                writer.Write(ShiftButton.TargetPlayer.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                CallRpc(CustomRPC.Action, ActionsRPC.Shift, this, ShiftButton.TargetPlayer);
                 Shift(this, ShiftButton.TargetPlayer);
             }
 
@@ -61,21 +56,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (!other.Is(Faction.Crew) || other.IsFramed())
             {
                 if (AmongUsClient.Instance.AmHost)
-                    Utils.RpcMurderPlayer(shifter, shifter);
+                    RpcMurderPlayer(shifter, shifter);
 
                 return;
             }
 
             if (CustomPlayer.Local == other)
             {
-                Utils.Flash(shifterRole.Color);
+                Flash(shifterRole.Color);
                 role.OnLobby();
                 ButtonUtils.ResetCustomTimers(false);
             }
 
             if (CustomPlayer.Local == shifter)
             {
-                Utils.Flash(shifterRole.Color);
+                Flash(shifterRole.Color);
                 shifterRole.OnLobby();
                 ButtonUtils.ResetCustomTimers(false);
             }

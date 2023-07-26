@@ -8,7 +8,7 @@ namespace TownOfUsReworked.PlayerLayers
             if (ExileController.Instance == null || obj != ExileController.Instance.gameObject)
                 return;
 
-            ButtonUtils.ResetCustomTimers(false);
+            ButtonUtils.ResetCustomTimers();
         }
     }
 

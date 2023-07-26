@@ -2,16 +2,12 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
 {
     public class Torch : Ability
     {
-        public Torch(PlayerControl player) : base(player)
-        {
-            Name = "Torch";
-            TaskText = () => "- You can see in the dark";
-            Color = CustomGameOptions.CustomAbilityColors ? Colors.Torch : Colors.Ability;
-            AbilityType = AbilityEnum.Torch;
-            Type = LayerEnum.Torch;
+        public override Color32 Color => ClientGameOptions.CustomAbColors ? Colors.Torch : Colors.Ability;
+        public override string Name => "Torch";
+        public override LayerEnum Type => LayerEnum.Torch;
+        public override AbilityEnum AbilityType => AbilityEnum.Torch;
+        public override Func<string> TaskText => () => "- You can see in the dark";
 
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
-        }
+        public Torch(PlayerControl player) : base(player) {}
     }
 }

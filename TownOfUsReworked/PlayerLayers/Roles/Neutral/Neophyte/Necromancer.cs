@@ -19,14 +19,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public float TimeRemaining;
         public bool IsResurrecting => TimeRemaining > 0f;
 
+        public override Color32 Color => ClientGameOptions.CustomNeutColors ? Colors.Necromancer : Colors.Neutral;
+        public override string Name => "Necromancer";
+        public override LayerEnum Type => LayerEnum.Necromancer;
+        public override RoleEnum RoleType => RoleEnum.Necromancer;
+        public override Func<string> StartText => () => "Resurrect The Dead Into Doing Your Bidding";
+        public override Func<string> AbilitiesText => () => "- You can resurrect a dead body and bring them into the <color=#E6108AFF>Reanimated</color>\n- You can kill players to speed " +
+            "up the process";
+        public override InspectorResults InspectorResults => InspectorResults.PreservesLife;
+
         public Necromancer(PlayerControl player) : base(player)
         {
-            Name = "Necromancer";
-            StartText = () => "Resurrect The Dead Into Doing Your Bidding";
-            AbilitiesText = () => "- You can resurrect a dead body and bring them into the <color=#E6108AFF>Reanimated</color>\n- You can kill players to speed up the process";
             Objectives = () => "- Resurrect or kill anyone who can oppose the <color=#E6108AFF>Reanimated</color>";
-            Color = CustomGameOptions.CustomNeutColors ? Colors.Necromancer : Colors.Neutral;
-            RoleType = RoleEnum.Necromancer;
             RoleAlignment = RoleAlignment.NeutralNeo;
             Objectives = () => "- Resurrect the dead into helping you gain control of the crew";
             SubFaction = SubFaction.Reanimated;
@@ -36,37 +40,34 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             ResurrectedCount = 0;
             KillCount = 0;
             Resurrected = new() { Player.PlayerId };
-            Type = LayerEnum.Necromancer;
-            ResurrectButton = new(this, "Ressurect", AbilityTypes.Dead, "ActionSecondary", HitResurrect, true);
-            KillButton = new(this, "NecroKill", AbilityTypes.Direct, "Secondary", Kill, Exception, true);
-            InspectorResults = InspectorResults.PreservesLife;
+            ResurrectButton = new(this, "Ressurect", AbilityTypes.Dead, "ActionSecondary", HitResurrect, Exception2, true);
+            KillButton = new(this, "NecroKill", AbilityTypes.Direct, "Secondary", Kill, Exception1, true);
             SubFactionSymbol = "Σ";
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float ResurrectTimer()
         {
             var timespan = DateTime.UtcNow - LastResurrected;
             var num = Player.GetModifiedCooldown(CustomGameOptions.ResurrectCooldown, ResurrectedCount * CustomGameOptions.ResurrectCooldownIncrease) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public float KillTimer()
         {
             var timespan = DateTime.UtcNow - LastKilled;
             var num = Player.GetModifiedCooldown(CustomGameOptions.NecroKillCooldown, KillCount * CustomGameOptions.NecroKillCooldownIncrease) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void Resurrect()
         {
             if (!Resurrecting && CustomPlayer.Local.PlayerId == ResurrectButton.TargetBody.ParentId)
             {
-                Utils.Flash(Colors.Reanimated, CustomGameOptions.NecroResurrectDuration);
+                Flash(Colors.Reanimated, CustomGameOptions.NecroResurrectDuration);
 
                 if (CustomGameOptions.NecromancerTargetBody)
                     ResurrectButton.TargetBody?.gameObject.Destroy();
@@ -75,7 +76,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Resurrecting = true;
             TimeRemaining -= Time.deltaTime;
 
-            if (Utils.Meeting || IsDead)
+            if (Meeting || IsDead)
             {
                 Success = false;
                 TimeRemaining = 0f;
@@ -93,14 +94,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         private void FinishResurrect()
         {
-            var player = Utils.PlayerByBody(ResurrectingBody);
+            var player = PlayerByBody(ResurrectingBody);
+
+            if (!player.Data.IsDead)
+                return;
+
             var targetRole = GetRole(player);
             targetRole.DeathReason = DeathReasonEnum.Revived;
             targetRole.KilledBy = " By " + PlayerName;
             RoleGen.Convert(player.PlayerId, Player.PlayerId, SubFaction.Reanimated, false);
             ResurrectedCount++;
             ResurrectUsesLeft--;
-            Utils.Revive(player);
+            player.Revive();
 
             if (player.Is(ObjectifierEnum.Lovers) && CustomGameOptions.BothLoversDie)
             {
@@ -109,42 +114,38 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 loverRole.DeathReason = DeathReasonEnum.Revived;
                 loverRole.KilledBy = " By " + PlayerName;
                 RoleGen.Convert(lover.PlayerId, Player.PlayerId, SubFaction.Reanimated, false);
-                Utils.Revive(lover);
+                lover.Revive();
             }
         }
 
-        public bool Exception(PlayerControl player) => Resurrected.Contains(player.PlayerId) || player == Player.GetOtherLover() || player == Player.GetOtherRival() ||
-            (player.Is(ObjectifierEnum.Mafia) && Player.Is(ObjectifierEnum.Mafia));
+        public bool Exception1(PlayerControl player) => Resurrected.Contains(player.PlayerId) || Player.IsLinkedTo(player);
+
+        public bool Exception2(PlayerControl player) => Resurrected.Contains(player.PlayerId);
 
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            KillButton.Update("KILL", KillTimer(), CustomGameOptions.NecroKillCooldown + (KillCount * CustomGameOptions.NecroKillCooldownIncrease), KillUsesLeft, true, KillButtonUsable);
-            ResurrectButton.Update("RESURRECT", ResurrectTimer(), CustomGameOptions.ResurrectCooldown + (ResurrectedCount * CustomGameOptions.ResurrectCooldownIncrease), ResurrectUsesLeft,
-                IsResurrecting, TimeRemaining, CustomGameOptions.NecroResurrectDuration, true, ResurrectButtonUsable);
+            KillButton.Update("KILL", KillTimer(), CustomGameOptions.NecroKillCooldown, KillUsesLeft, CustomGameOptions.NecroKillCooldownIncreases ? KillCount *
+                CustomGameOptions.NecroKillCooldownIncrease : 0, true, KillButtonUsable);
+            ResurrectButton.Update("RESURRECT", ResurrectTimer(), CustomGameOptions.ResurrectCooldown, ResurrectUsesLeft, IsResurrecting, TimeRemaining,
+                CustomGameOptions.NecroResurrectDuration, CustomGameOptions.ResurrectCooldownIncreases ? ResurrectedCount * CustomGameOptions.ResurrectCooldownIncrease : 0, true,
+                ResurrectButtonUsable);
         }
 
         public void HitResurrect()
         {
-            if (Utils.IsTooFar(Player, ResurrectButton.TargetBody) || ResurrectTimer() != 0f || !ResurrectButtonUsable)
+            if (IsTooFar(Player, ResurrectButton.TargetBody) || ResurrectTimer() != 0f || !ResurrectButtonUsable)
                 return;
 
-            if (RoleGen.Convertible <= 0 || !Utils.PlayerByBody(ResurrectButton.TargetBody).Is(SubFaction.None))
+            if (RoleGen.Convertible <= 0 || !PlayerByBody(ResurrectButton.TargetBody).Is(SubFaction.None))
             {
-                Utils.Flash(new(255, 0, 0, 255));
+                Flash(new(255, 0, 0, 255));
                 LastResurrected = DateTime.UtcNow;
             }
             else
             {
-                var playerId = ResurrectButton.TargetBody.ParentId;
-                ResurrectingBody = ResurrectButton.TargetBody;
-                var player = Utils.PlayerById(playerId);
-                Utils.Spread(Player, player);
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                writer.Write((byte)ActionsRPC.NecromancerResurrect);
-                writer.Write(PlayerId);
-                writer.Write(playerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                Spread(Player, PlayerByBody(ResurrectingBody));
+                CallRpc(CustomRPC.Action, ActionsRPC.NecromancerResurrect, this, ResurrectingBody);
                 TimeRemaining = CustomGameOptions.NecroResurrectDuration;
                 Success = true;
                 Resurrect();
@@ -156,10 +157,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Kill()
         {
-            if (KillTimer() != 0f || Utils.IsTooFar(Player, KillButton.TargetPlayer) || !KillButtonUsable)
+            if (KillTimer() != 0f || IsTooFar(Player, KillButton.TargetPlayer) || !KillButtonUsable)
                 return;
 
-            var interact = Utils.Interact(Player, KillButton.TargetPlayer, true);
+            var interact = Interact(Player, KillButton.TargetPlayer, true);
 
             if (interact[3])
             {

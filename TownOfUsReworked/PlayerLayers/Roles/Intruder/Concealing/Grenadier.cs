@@ -13,44 +13,43 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public List<PlayerControl> FlashedPlayers = new();
         public bool Flashed => TimeRemaining > 0f;
 
+        public override Color32 Color => ClientGameOptions.CustomIntColors ? Colors.Grenadier : Colors.Intruder;
+        public override string Name => "Grenadier";
+        public override LayerEnum Type => LayerEnum.Grenadier;
+        public override RoleEnum RoleType => RoleEnum.Grenadier;
+        public override Func<string> StartText => () => "Blind The <color=#8CFFFFFF>Crew</color> With Your Magnificent Figure";
+        public override Func<string> AbilitiesText => () => $"- You can drop a flashbang, which blinds players around you\n{CommonAbilities}";
+        public override InspectorResults InspectorResults => InspectorResults.DropsItems;
+
         public Grenadier(PlayerControl player) : base(player)
         {
-            Name = "Grenadier";
-            StartText = () => "Blind The <color=#8CFFFFFF>Crew</color> With Your Magnificent Figure";
-            AbilitiesText = () => $"- You can drop a flashbang, which blinds players around you\n{CommonAbilities}";
-            Color = CustomGameOptions.CustomIntColors ? Colors.Grenadier : Colors.Intruder;
-            RoleType = RoleEnum.Grenadier;
             RoleAlignment = RoleAlignment.IntruderConceal;
-            InspectorResults = InspectorResults.DropsItems;
             ClosestPlayers = new();
             FlashedPlayers = new();
-            Type = LayerEnum.Grenadier;
             FlashButton = new(this, "Flash", AbilityTypes.Effect, "Secondary", HitFlash);
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float FlashTimer()
         {
             var timespan = DateTime.UtcNow - LastFlashed;
             var num = Player.GetModifiedCooldown(CustomGameOptions.GrenadeCd) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void Flash()
         {
             if (!Enabled)
             {
-                ClosestPlayers = Utils.GetClosestPlayers(Player.GetTruePosition(), CustomGameOptions.FlashRadius);
+                ClosestPlayers = GetClosestPlayers(Player.GetTruePosition(), CustomGameOptions.FlashRadius);
                 FlashedPlayers = ClosestPlayers;
             }
 
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
 
-            if (Utils.Meeting)
+            if (Meeting)
                 TimeRemaining = 0f;
 
             //To stop the scenario where the flash and sabotage are called at the same time.
@@ -65,46 +64,46 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 if (CustomPlayer.Local == player)
                 {
-                    Utils.HUD.FullScreen.enabled = true;
-                    Utils.HUD.FullScreen.gameObject.active = true;
+                    HUD.FullScreen.enabled = true;
+                    HUD.FullScreen.gameObject.active = true;
 
                     if (TimeRemaining > CustomGameOptions.GrenadeDuration - 0.5f)
                     {
                         var fade = (TimeRemaining - CustomGameOptions.GrenadeDuration) * (-2f);
 
                         if (ShouldPlayerBeBlinded(player))
-                            Utils.HUD.FullScreen.color = Color32.Lerp(NormalVision, BlindVision, fade);
+                            HUD.FullScreen.color = Color32.Lerp(NormalVision, BlindVision, fade);
                         else if (ShouldPlayerBeDimmed(player))
-                            Utils.HUD.FullScreen.color = Color32.Lerp(NormalVision, DimVision, fade);
+                            HUD.FullScreen.color = Color32.Lerp(NormalVision, DimVision, fade);
                         else
-                            Utils.HUD.FullScreen.color = NormalVision;
+                            HUD.FullScreen.color = NormalVision;
                     }
                     else if (TimeRemaining <= (CustomGameOptions.GrenadeDuration - 0.5f) && TimeRemaining >= 0.5f)
                     {
-                        Utils.HUD.FullScreen.enabled = true;
-                        Utils.HUD.FullScreen.gameObject.active = true;
+                        HUD.FullScreen.enabled = true;
+                        HUD.FullScreen.gameObject.active = true;
 
                         if (ShouldPlayerBeBlinded(player))
-                            Utils.HUD.FullScreen.color = BlindVision;
+                            HUD.FullScreen.color = BlindVision;
                         else if (ShouldPlayerBeDimmed(player))
-                            Utils.HUD.FullScreen.color = DimVision;
+                            HUD.FullScreen.color = DimVision;
                         else
-                            Utils.HUD.FullScreen.color = NormalVision;
+                            HUD.FullScreen.color = NormalVision;
                     }
                     else if (TimeRemaining < 0.5f)
                     {
                         var fade2 = (TimeRemaining * -2.0f) + 1.0f;
 
                         if (ShouldPlayerBeBlinded(player))
-                            Utils.HUD.FullScreen.color = Color32.Lerp(BlindVision, NormalVision, fade2);
+                            HUD.FullScreen.color = Color32.Lerp(BlindVision, NormalVision, fade2);
                         else if (ShouldPlayerBeDimmed(player))
-                            Utils.HUD.FullScreen.color = Color32.Lerp(DimVision, NormalVision, fade2);
+                            HUD.FullScreen.color = Color32.Lerp(DimVision, NormalVision, fade2);
                         else
-                            Utils.HUD.FullScreen.color = NormalVision;
+                            HUD.FullScreen.color = NormalVision;
                     }
                     else
                     {
-                        Utils.HUD.FullScreen.color = NormalVision;
+                        HUD.FullScreen.color = NormalVision;
                         TimeRemaining = 0f;
                     }
 
@@ -117,51 +116,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
         }
 
-        private static bool ShouldPlayerBeDimmed(PlayerControl player) => (player.Is(Faction.Intruder) || player.Data.IsDead) && !Utils.Meeting;
+        private static bool ShouldPlayerBeDimmed(PlayerControl player) => (player.Is(Faction.Intruder) || player.Data.IsDead) && !Meeting;
 
-        private static bool ShouldPlayerBeBlinded(PlayerControl player) => !(player.Is(Faction.Intruder) || player.Data.IsDead || Utils.Meeting);
+        private static bool ShouldPlayerBeBlinded(PlayerControl player) => !(player.Is(Faction.Intruder) || player.Data.IsDead || Meeting);
 
         public void UnFlash()
         {
             Enabled = false;
             LastFlashed = DateTime.UtcNow;
-            Utils.HUD.FullScreen.color = NormalVision;
+            HUD.FullScreen.color = NormalVision;
             FlashedPlayers.Clear();
-            var fs = false;
-
-            switch (TownOfUsReworked.VanillaOptions.MapId)
-            {
-                case 0:
-                case 1:
-                case 3:
-                    var reactor1 = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
-                    var oxygen1 = ShipStatus.Instance.Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
-                    fs = reactor1.IsActive || oxygen1.IsActive;
-                    break;
-
-                case 2:
-                    var seismic = ShipStatus.Instance.Systems[SystemTypes.Laboratory].Cast<ReactorSystemType>();
-                    fs = seismic.IsActive;
-                    break;
-
-                case 4:
-                    var reactor = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<HeliSabotageSystem>();
-                    fs = reactor.IsActive;
-                    break;
-
-                case 5:
-                    fs = CustomPlayer.Local.myTasks.Any(x => x.TaskType == ModCompatibility.RetrieveOxygenMask);
-                    break;
-
-                case 6:
-                    var reactor3 = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
-                    var oxygen3 = ShipStatus.Instance.Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
-                    var seismic2 = ShipStatus.Instance.Systems[SystemTypes.Laboratory].Cast<ReactorSystemType>();
-                    fs = reactor3.IsActive || seismic2.IsActive || oxygen3.IsActive;
-                    break;
-            }
-
-            Utils.HUD.FullScreen.enabled = fs;
+            SetFullScreenHUD();
         }
 
         public void HitFlash()
@@ -173,10 +138,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (sabActive || dummyActive || FlashTimer() != 0f)
                 return;
 
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-            writer.Write((byte)ActionsRPC.FlashGrenade);
-            writer.Write(PlayerId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            CallRpc(CustomRPC.Action, ActionsRPC.FlashGrenade, this);
             TimeRemaining = CustomGameOptions.GrenadeDuration;
             Flash();
         }

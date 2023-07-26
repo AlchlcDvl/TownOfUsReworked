@@ -8,23 +8,19 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
         public bool VotedOnce;
         public PlayerVoteArea Abstain;
         public bool CanVote => VoteBank > 0 && !SelfVote;
-        public bool CanKill;
+        public bool CanKill => Player.CanKill();
+
+        public override Color32 Color => ClientGameOptions.CustomAbColors ? Colors.Politician : Colors.Ability;
+        public override string Name => "Politician";
+        public override LayerEnum Type => LayerEnum.Politician;
+        public override AbilityEnum AbilityType => AbilityEnum.Politician;
+        public override Func<string> TaskText => () => $"- You can vote multiple times as long as you{(CanKill ? "" : " haven't abstained or")} are the last player voting\n" + (CanKill ?
+            "- When you kill players, you take their" : "- You can abstain in meetings to gain more") + " votes for use later";
 
         public Politician(PlayerControl player) : base(player)
         {
-            Name = "Politician";
-            Color = CustomGameOptions.CustomAbilityColors ? Colors.Politician : Colors.Ability;
-            AbilityType = AbilityEnum.Politician;
             VoteBank = CustomGameOptions.PoliticianVoteBank;
             ExtraVotes = new();
-            Type = LayerEnum.Politician;
-            CanKill = player.Is(Faction.Intruder) || player.Is(Faction.Syndicate) || player.Is(RoleAlignment.NeutralKill) || player.Is(ObjectifierEnum.Corrupted) ||
-                player.Is(ObjectifierEnum.Traitor) || player.Is(ObjectifierEnum.Fanatic) || player.Is(RoleAlignment.CrewKill);
-            TaskText = () => $"- You can vote multiple times as long as you{(CanKill ? "" : " haven't abstained or")} are the last player voting\n" + (CanKill ? ("- When you kill players, "
-                + "you take their") : "- You can abstain in meetings to gain more") + " votes for use later";
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public void UpdateButton(MeetingHud __instance)

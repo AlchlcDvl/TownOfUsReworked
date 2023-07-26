@@ -10,31 +10,29 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public DateTime LastDoomed;
         public int UsesLeft;
         public bool CanDoom => TargetVotedOut && !HasDoomed && UsesLeft > 0 && ToDoom.Count > 0 && !CustomGameOptions.AvoidNeutralKingmakers;
-        public bool Failed => TargetPlayer != null && !TargetVotedOut && (TargetPlayer.Data.IsDead || TargetPlayer.Data.Disconnected);
+        public bool Failed => !TargetVotedOut && (TargetPlayer.Data.IsDead || TargetPlayer.Data.Disconnected);
         public int Rounds;
         public CustomButton TargetButton;
         public bool TargetFailed => TargetPlayer == null && Rounds > 2;
 
+        public override Color32 Color => ClientGameOptions.CustomNeutColors ? Colors.Executioner : Colors.Neutral;
+        public override string Name => "Executioner";
+        public override LayerEnum Type => LayerEnum.Executioner;
+        public override RoleEnum RoleType => RoleEnum.Executioner;
+        public override Func<string> StartText => () => "Find Someone To Eject";
+        public override Func<string> AbilitiesText => () => TargetPlayer == null ? "- You can select a player to eject" : ((TargetVotedOut ? "- You can doom those who voted for " +
+            $"{TargetPlayer?.name}\n" : "") + $"- If {TargetPlayer?.name} dies, you will become a <color=#F7B3DAFF>Jester</color>");
+        public override InspectorResults InspectorResults => InspectorResults.Manipulative;
+
         public Executioner(PlayerControl player) : base(player)
         {
-            Name = "Executioner";
-            StartText = () => "Find Someone To Eject";
             Objectives = () => TargetVotedOut ? $"- {TargetPlayer?.name} has been ejected" : (TargetPlayer == null ? "- Find a target to eject" : $"- Eject {TargetPlayer?.name}");
-            Color = CustomGameOptions.CustomNeutColors ? Colors.Executioner : Colors.Neutral;
-            RoleType = RoleEnum.Executioner;
             RoleAlignment = RoleAlignment.NeutralEvil;
             ToDoom = new();
             UsesLeft = CustomGameOptions.DoomCount;
-            AbilitiesText = () => $"- After {TargetPlayer?.name} has been ejected, you can doom players who voted for them\n- If {TargetPlayer?.name} dies, you will become a " +
-                "<color=#F7B3DAFF>Jester</color>";
-            Type = LayerEnum.Executioner;
-            DoomButton = new(this, "Doom", AbilityTypes.Direct, "ActionSecondary", Doom, Exception, true);
-            TargetButton = new(this, "ExeTarget", AbilityTypes.Direct, "ActionSecondary", SelectTarget);
+            DoomButton = new(this, "Doom", AbilityTypes.Direct, "ActionSecondary", Doom, Exception1, true);
+            TargetButton = new(this, "ExeTarget", AbilityTypes.Direct, "ActionSecondary", SelectTarget, Exception2);
             Rounds = 0;
-            InspectorResults = InspectorResults.Manipulative;
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public void SelectTarget()
@@ -43,11 +41,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 return;
 
             TargetPlayer = TargetButton.TargetPlayer;
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Target, SendOption.Reliable);
-            writer.Write((byte)TargetRPC.SetExeTarget);
-            writer.Write(PlayerId);
-            writer.Write(TargetPlayer.PlayerId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            CallRpc(CustomRPC.Target, TargetRPC.SetExeTarget, this, TargetPlayer);
         }
 
         public override void VoteComplete(MeetingHud __instance)
@@ -61,7 +55,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             foreach (var state in __instance.playerStates)
             {
-                if (state.AmDead || Utils.PlayerByVoteArea(state).Data.Disconnected || state.VotedFor != TargetPlayer.PlayerId || state.TargetPlayerId == Player.PlayerId)
+                var player = PlayerByVoteArea(state);
+
+                if (state.AmDead || player.Data.Disconnected || state.VotedFor != TargetPlayer.PlayerId || state.TargetPlayerId == PlayerId || Player.IsLinkedTo(player))
                     continue;
 
                 ToDoom.Add(state.TargetPlayerId);
@@ -80,8 +76,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var timespan = DateTime.UtcNow - LastDoomed;
             var num = Player.GetModifiedCooldown(CustomGameOptions.DoomCooldown) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void TurnJest()
@@ -89,39 +86,38 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var newRole = new Jester(Player);
             newRole.RoleUpdate(this);
 
-            if (Local && !IntroCutscene.Instance)
-                Utils.Flash(Colors.Jester);
+            if (Local)
+                Flash(Colors.Jester);
 
-            if (CustomPlayer.Local.Is(RoleEnum.Seer) && !IntroCutscene.Instance)
-                Utils.Flash(Colors.Seer);
+            if (CustomPlayer.Local.Is(RoleEnum.Seer))
+                Flash(Colors.Seer);
         }
 
         public void Doom()
         {
-            if (Utils.IsTooFar(Player, DoomButton.TargetPlayer) || DoomTimer() != 0f || !CanDoom)
+            if (IsTooFar(Player, DoomButton.TargetPlayer) || DoomTimer() != 0f || !CanDoom)
                 return;
 
-            Utils.RpcMurderPlayer(Player, DoomButton.TargetPlayer, DeathReasonEnum.Doomed, false);
+            RpcMurderPlayer(Player, DoomButton.TargetPlayer, DeathReasonEnum.Doomed, false);
             HasDoomed = true;
             UsesLeft--;
             LastDoomed = DateTime.UtcNow;
         }
 
-        public bool Exception(PlayerControl player) => !ToDoom.Contains(player.PlayerId) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(ObjectifierEnum.Mafia) &&
-            Player.Is(ObjectifierEnum.Mafia));
+        public bool Exception1(PlayerControl player) => !ToDoom.Contains(player.PlayerId) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || player.IsLinkedTo(Player);
+
+        public bool Exception2(PlayerControl player) => player == TargetPlayer || player.IsLinkedTo(Player) || player.Is(RoleAlignment.CrewSov) || (player.Is(SubFaction) && SubFaction !=
+            SubFaction.None);
 
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
             DoomButton.Update("DOOM", DoomTimer(), CustomGameOptions.DoomCooldown, UsesLeft, CanDoom, CanDoom && TargetPlayer != null);
-            TargetButton.Update("SET TARGET", 0, 1, true, TargetPlayer == null);
+            TargetButton.Update("TORMENT", true, TargetPlayer == null);
 
-            if ((TargetFailed || Failed) && !IsDead)
+            if ((TargetFailed || (TargetPlayer != null && Failed)) && !IsDead)
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
-                writer.Write((byte)TurnRPC.TurnJest);
-                writer.Write(PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                CallRpc(CustomRPC.Change, TurnRPC.TurnJest, this);
                 TurnJest();
             }
         }

@@ -5,7 +5,7 @@ namespace TownOfUsReworked.Patches
     {
         public static void Prefix([HarmonyArgument(0)] PlayerControl player)
         {
-            if (AmongUsClient.Instance.AmHost && Utils.Meeting)
+            if (AmongUsClient.Instance.AmHost && Meeting)
             {
                 foreach (var pol in Ability.GetAbilities<Politician>(AbilityEnum.Politician))
                 {
@@ -14,14 +14,16 @@ namespace TownOfUsReworked.Patches
                     if (pol.Local)
                         pol.VoteBank += votesRegained;
 
-                    var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.AddVoteBank, SendOption.Reliable);
-                    writer.Write(pol.PlayerId);
-                    writer.Write(votesRegained);
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    CallRpc(CustomRPC.Misc, MiscRPC.AddVoteBank, pol, votesRegained);
                 }
             }
 
             DisconnectHandler.Disconnected.Add(player);
+            ReassignPostmortals(player);
+            MarkMeetingDead(player, player, false, true);
+
+            if (!Summary.Disconnected.Any(x => x.PlayerName == player.name))
+                Summary.AddSummaryInfo(player, true);
         }
     }
 
@@ -29,12 +31,10 @@ namespace TownOfUsReworked.Patches
     [HarmonyPriority(Priority.First)]
     public static class Confirm
     {
-        public static bool Prefix(MeetingHud __instance)
+        public static void Prefix(MeetingHud __instance)
         {
             foreach (var layer in PlayerLayer.LocalLayers)
                 layer.ConfirmVotePrefix(__instance);
-
-            return true;
         }
 
         public static void Postfix(MeetingHud __instance)
@@ -49,7 +49,7 @@ namespace TownOfUsReworked.Patches
     {
         public static bool Prefix(MeetingHud __instance, [HarmonyArgument(0)] byte srcPlayerId, [HarmonyArgument(1)] byte suspectPlayerId)
         {
-            var player = Utils.PlayerById(srcPlayerId);
+            var player = PlayerById(srcPlayerId);
 
             if (player.Is(RoleEnum.Mayor))
                 Role.GetRole<Mayor>(player).Voted = suspectPlayerId;
@@ -57,7 +57,7 @@ namespace TownOfUsReworked.Patches
             if (!player.Is(AbilityEnum.Politician))
                 return true;
 
-            var playerVoteArea = Utils.VoteAreaById(srcPlayerId);
+            var playerVoteArea = VoteAreaById(srcPlayerId);
 
             if (playerVoteArea.AmDead)
                 return false;

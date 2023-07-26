@@ -1,13 +1,16 @@
+using PowerTools;
+
 namespace TownOfUsReworked.Cosmetics
 {
     [HarmonyPatch]
     public static class CustomHats
     {
-        /*private static bool SubLoaded;
+        private static bool SubLoaded;
         private static bool Running;
         private static Material Shader;
-        public readonly static Dictionary<string, HatExtension> CustomHatRegistry = new();
+        public static readonly Dictionary<string, HatExtension> CustomHatRegistry = new();
         public static HatExtension TestExt;
+        public static readonly Dictionary<string, HatViewData> CustomHatViewDatas = new();
 
         private static List<CustomHat> CreateCustomHatDetails(string[] hats, bool fromDisk = false)
         {
@@ -73,7 +76,7 @@ namespace TownOfUsReworked.Cosmetics
                     hat.FlipID = fr;
 
                 if (bfr != null)
-                    hat.BackflipID = bfr;
+                    hat.BackFlipID = bfr;
 
                 if (fl != null)
                     hat.FloorID = fl;
@@ -89,7 +92,7 @@ namespace TownOfUsReworked.Cosmetics
 
         private static Sprite CreateHatSprite(string path, bool fromDisk = false)
         {
-            var texture = fromDisk ? AssetManager.LoadDiskTexture(path) : AssetManager.LoadResourceTexture(path);
+            var texture = fromDisk ? LoadDiskTexture(path) : LoadResourceTexture(path);
 
             if (texture == null)
                 return null;
@@ -111,40 +114,52 @@ namespace TownOfUsReworked.Cosmetics
 
             if (fromDisk)
             {
-                var filePath = Path.GetDirectoryName(Application.dataPath) + "\\CustomHats\\";
-                ch.ID = filePath + ch.ID + ".png";
+                ch.ID = TownOfUsReworked.Hats + ch.ID + ".png";
 
                 if (ch.BackID != null)
-                    ch.BackID = filePath + ch.BackID + ".png";
+                    ch.BackID = TownOfUsReworked.Hats + ch.BackID + ".png";
 
                 if (ch.ClimbID != null)
-                    ch.ClimbID = filePath + ch.ClimbID + ".png";
+                    ch.ClimbID = TownOfUsReworked.Hats + ch.ClimbID + ".png";
 
                 if (ch.FlipID != null)
-                    ch.FlipID = filePath + ch.FlipID + ".png";
+                    ch.FlipID = TownOfUsReworked.Hats + ch.FlipID + ".png";
 
                 if (ch.FloorID != null)
-                    ch.FloorID = filePath + ch.FloorID + ".png";
+                    ch.FloorID = TownOfUsReworked.Hats + ch.FloorID + ".png";
 
-                if (ch.BackflipID != null)
-                    ch.BackflipID = filePath + ch.BackflipID + ".png";
+                if (ch.BackFlipID != null)
+                    ch.BackFlipID = TownOfUsReworked.Hats + ch.BackFlipID + ".png";
             }
 
             var hat = ScriptableObject.CreateInstance<HatData>();
-            var viewData = hat.CreateAddressableAsset().GetAsset();
+            var viewData = ScriptableObject.CreateInstance<HatViewData>();
             viewData.MainImage = CreateHatSprite(ch.ID, fromDisk);
+            ch.Behind = ch.BackID != null || ch.BackFlipID != null; //Required to view backresource
 
             if (ch.BackID != null)
-            {
                 viewData.BackImage = CreateHatSprite(ch.BackID, fromDisk);
-                ch.Behind = true; //Required to view backresource
-            }
+
+            if (ch.BackFlipID != null)
+                viewData.LeftBackImage = CreateHatSprite(ch.BackID, fromDisk);
 
             if (ch.ClimbID != null)
                 viewData.ClimbImage = CreateHatSprite(ch.ClimbID, fromDisk);
 
+            if (ch.ClimbFlipID != null)
+                viewData.LeftClimbImage = CreateHatSprite(ch.ClimbID, fromDisk);
+            else
+                viewData.LeftClimbImage = viewData.ClimbImage;
+
             if (ch.FloorID != null)
                 viewData.FloorImage = CreateHatSprite(ch.FloorID, fromDisk);
+            else
+                viewData.FloorImage = viewData.MainImage;
+
+            if (ch.FloorFlipID != null)
+                viewData.LeftFloorImage = CreateHatSprite(ch.FloorID, fromDisk);
+            else
+                viewData.LeftFloorImage = viewData.FloorImage;
 
             hat.name = ch.Name;
             hat.displayOrder = 99;
@@ -167,19 +182,25 @@ namespace TownOfUsReworked.Cosmetics
                 extend.FlipImage = CreateHatSprite(ch.FlipID, fromDisk);
 
             if (ch.FloorID != null)
-                extend.FlipImage = CreateHatSprite(ch.FloorID, fromDisk);
+                extend.FloorImage = CreateHatSprite(ch.FloorID, fromDisk);
 
-            if (ch.BackflipID != null)
-                extend.BackFlipImage = CreateHatSprite(ch.BackflipID, fromDisk);
+            if (ch.BackFlipID != null)
+                extend.BackFlipImage = CreateHatSprite(ch.BackFlipID, fromDisk);
 
             if (testOnly)
             {
                 TestExt = extend;
                 TestExt.Condition = hat.name;
             }
-            else if (!CustomHatRegistry.ContainsKey(hat.name))
+
+            if (!CustomHatRegistry.ContainsKey(hat.name))
                 CustomHatRegistry.Add(hat.name, extend);
 
+            if (!CustomHatViewDatas.ContainsKey(hat.name))
+                CustomHatViewDatas.Add(hat.name, viewData);
+
+            hat.ViewDataRef = new(viewData.Pointer);
+            hat.CreateAddressableAsset();
             return hat;
         }
 
@@ -190,7 +211,7 @@ namespace TownOfUsReworked.Cosmetics
 
             public static void Prefix(HatManager __instance)
             {
-                if (Running)
+                if (Running || SubLoaded)
                     return;
 
                 Running = true;
@@ -206,14 +227,13 @@ namespace TownOfUsReworked.Cosmetics
                     }
 
                     __instance.allHats = AllHats.ToArray();
+                    SubLoaded = true; //Only loaded if the operation was successful
                 }
                 catch (Exception e)
                 {
                     if (!SubLoaded)
-                        Utils.LogSomething("Unable to add Custom Hats\n" + e);
+                        LogSomething("Unable to add Custom Hats\n" + e);
                 }
-
-                SubLoaded = true;
             }
 
             public static void Postfix() => Running = false;
@@ -224,6 +244,10 @@ namespace TownOfUsReworked.Cosmetics
         {
             public static void Postfix(PlayerPhysics __instance)
             {
+                if (!CustomHatViewDatas.ContainsKey(__instance.myPlayer.cosmetics.hat.Hat.name))
+                    return;
+
+                var viewData = CustomHatViewDatas[__instance.myPlayer.cosmetics.hat.Hat.name];
                 var currentAnimation = __instance.Animations.Animator.GetCurrentAnimation();
 
                 if (currentAnimation == __instance.Animations.group.ClimbUpAnim || currentAnimation == __instance.Animations.group.ClimbDownAnim)
@@ -231,7 +255,7 @@ namespace TownOfUsReworked.Cosmetics
 
                 var hp = __instance.myPlayer.cosmetics.hat;
 
-                if (hp.Hat == null)
+                if (hp == null || hp.Hat == null)
                     return;
 
                 var extend = hp.Hat.GetHatExtension();
@@ -239,14 +263,11 @@ namespace TownOfUsReworked.Cosmetics
                 if (extend == null)
                     return;
 
-                hp.hatDataAsset = hp.Hat.CreateAddressableAsset();
-                var asset = hp.hatDataAsset.GetAsset();
-
                 if (extend.FlipImage != null)
-                    hp.FrontLayer.sprite = __instance.FlipX ? extend.FlipImage : asset.MainImage;
+                    hp.FrontLayer.sprite = __instance.FlipX ? extend.FlipImage : viewData.MainImage;
 
                 if (extend.BackFlipImage != null)
-                    hp.BackLayer.sprite = __instance.FlipX ? extend.BackFlipImage : hp.hatView.BackImage;
+                    hp.BackLayer.sprite = __instance.FlipX ? extend.BackFlipImage : viewData.BackImage;
             }
         }
 
@@ -273,16 +294,16 @@ namespace TownOfUsReworked.Cosmetics
                     }
                     catch (Exception e)
                     {
-                        Utils.LogSomething("Unable to create test hat\n" + e);
+                        LogSomething("Unable to create test hat\n" + e);
                     }
                 }
             }
         }
 
-        [HarmonyPatch(typeof(HatParent), nameof(HatParent.SetHat), typeof(HatData), typeof(HatViewData), typeof(int))]
+        [HarmonyPatch(typeof(HatParent), nameof(HatParent.SetHat), typeof(HatData), typeof(int))]
         public static class HatParentSetHatPatchExtra
         {
-            public static bool Prefix(HatParent __instance, HatData hat, HatViewData hatViewData, int color)
+            public static bool Prefix(HatParent __instance, HatData hat, int color)
             {
                 if (!TutorialManager.InstanceExists)
                     return true;
@@ -290,8 +311,8 @@ namespace TownOfUsReworked.Cosmetics
                 try
                 {
                     __instance.Hat = hat;
-                    __instance.hatView = hatViewData;
-                    var filePath = Path.GetDirectoryName(Application.dataPath) + "\\CustomHats\\Test";
+                    __instance.hatDataAsset = __instance.Hat.CreateAddressableAsset();
+                    var filePath = TownOfUsReworked.Hats + "Test";
 
                     if (!Directory.Exists(filePath))
                         return true;
@@ -303,17 +324,245 @@ namespace TownOfUsReworked.Cosmetics
                     if (hats.Count > 0)
                     {
                         __instance.Hat = CreateHatBehaviour(hats[0], true, true);
-                        __instance.hatView = __instance.Hat.hatViewData.viewData;
+                        __instance.hatDataAsset = __instance.Hat.CreateAddressableAsset();
                     }
                 }
                 catch (Exception e)
                 {
-                    Utils.LogSomething("Unable to create test hat\n" + e);
+                    LogSomething("Unable to create test hat\n" + e);
                     return true;
                 }
 
                 __instance.PopulateFromHatViewData();
                 __instance.SetMaterialColor(color);
+                return false;
+            }
+        }
+
+        [HarmonyPatch(typeof(HatParent), nameof(HatParent.SetHat), typeof(int))]
+        public static class SetHatPatch
+        {
+            public static bool Prefix(HatParent __instance, int color)
+            {
+                if (!CustomHatRegistry.ContainsKey(__instance.Hat.name))
+                    return true;
+
+                __instance.hatDataAsset = null;
+                __instance.PopulateFromHatViewData();
+                __instance.SetMaterialColor(color);
+                return false;
+            }
+        }
+
+        [HarmonyPatch(typeof(HatParent), nameof(HatParent.UpdateMaterial))]
+        public static class UpdateMaterialPatch
+        {
+            public static bool Prefix(HatParent __instance)
+            {
+                HatViewData asset;
+
+                try
+                {
+                    _ = __instance.hatDataAsset.GetAsset();
+                    return true;
+                }
+                catch
+                {
+                    try
+                    {
+                       asset = CustomHatViewDatas[__instance.Hat.name];
+                    }
+                    catch
+                    {
+                        return false;
+                    }
+                }
+
+                __instance.FrontLayer.sharedMaterial = asset.AltShader ? asset.AltShader : HatManager.Instance.DefaultShader;
+
+                if (__instance.BackLayer)
+                    __instance.BackLayer.sharedMaterial = asset.AltShader ? asset.AltShader : HatManager.Instance.DefaultShader;
+
+                var colorId = __instance.matProperties.ColorId;
+                PlayerMaterial.SetColors(colorId, __instance.FrontLayer);
+
+                if (__instance.BackLayer)
+                    PlayerMaterial.SetColors(colorId, __instance.BackLayer);
+
+                __instance.FrontLayer.material.SetInt(PlayerMaterial.MaskLayer, __instance.matProperties.MaskLayer);
+
+                if (__instance.BackLayer)
+                    __instance.BackLayer.material.SetInt(PlayerMaterial.MaskLayer, __instance.matProperties.MaskLayer);
+
+                var maskType = __instance.matProperties.MaskType;
+
+                if (maskType == PlayerMaterial.MaskType.ScrollingUI)
+                {
+                    if (__instance.FrontLayer)
+                        __instance.FrontLayer.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
+
+                    if (__instance.BackLayer)
+                    {
+                        __instance.BackLayer.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
+                        return false;
+                    }
+                }
+                else if (maskType == PlayerMaterial.MaskType.Exile)
+                {
+                    if (__instance.FrontLayer)
+                        __instance.FrontLayer.maskInteraction = SpriteMaskInteraction.VisibleOutsideMask;
+
+                    if (__instance.BackLayer)
+                    {
+                        __instance.BackLayer.maskInteraction = SpriteMaskInteraction.VisibleOutsideMask;
+                        return false;
+                    }
+                }
+                else
+                {
+                    if (__instance.FrontLayer)
+                        __instance.FrontLayer.maskInteraction = SpriteMaskInteraction.None;
+
+                    if (__instance.BackLayer)
+                        __instance.BackLayer.maskInteraction = SpriteMaskInteraction.None;
+                }
+
+                return false;
+            }
+        }
+
+        [HarmonyPatch(typeof(HatParent), nameof(HatParent.SetFloorAnim))]
+        public static class HatParentSetFloorAnimPatch
+        {
+            public static bool Prefix(HatParent __instance)
+            {
+                try
+                {
+                    _ = __instance.hatDataAsset.GetAsset();
+                    return true;
+                } catch {}
+
+                if (!CustomHatRegistry.TryGetValue(__instance.Hat.name, out var hatViewData))
+                    return true;
+
+                __instance.BackLayer.enabled = false;
+                __instance.FrontLayer.enabled = true;
+                __instance.FrontLayer.sprite = hatViewData.FloorImage;
+                return false;
+            }
+        }
+
+        [HarmonyPatch(typeof(HatParent), nameof(HatParent.SetIdleAnim))]
+        public static class HatParentSetIdleAnimPatch
+        {
+            public static bool Prefix(HatParent __instance, int colorId)
+            {
+                if (!__instance.Hat)
+                    return false;
+
+                if (!CustomHatRegistry.TryGetValue(__instance.Hat.name, out var hatViewData))
+                    return true;
+
+                __instance.hatDataAsset = null;
+                __instance.PopulateFromHatViewData();
+                __instance.SetMaterialColor(colorId);
+                return false;
+            }
+        }
+
+        [HarmonyPatch(typeof(HatParent), nameof(HatParent.SetClimbAnim))]
+        public static class HatParentSetClimbAnimPatch
+        {
+            public static bool Prefix(HatParent __instance)
+            {
+                try
+                {
+                    _ = __instance.hatDataAsset.GetAsset();
+                    return true;
+                } catch {}
+
+                if (!CustomHatRegistry.TryGetValue(__instance.Hat.name, out var hatViewData))
+                    return true;
+
+                if (!__instance.options.ShowForClimb)
+                    return false;
+
+                __instance.BackLayer.enabled = false;
+                __instance.FrontLayer.enabled = true;
+                __instance.FrontLayer.sprite = hatViewData.ClimbImage;
+                return false;
+            }
+        }
+
+        [HarmonyPatch(typeof(HatParent), nameof(HatParent.PopulateFromHatViewData))]
+        public static class PopulateFromHatViewDataPatch
+        {
+            public static bool Prefix(HatParent __instance)
+            {
+                try
+                {
+                    _ = __instance.hatDataAsset.GetAsset();
+                    return true;
+                }
+                catch
+                {
+                    if (__instance.Hat && !CustomHatViewDatas.ContainsKey(__instance.Hat.name))
+                        return true;
+                }
+
+                var asset = CustomHatViewDatas[__instance.Hat.name];
+
+                if (!asset)
+                    return true;
+
+                __instance.UpdateMaterial();
+                var spriteAnimNodeSync = __instance.SpriteSyncNode ?? __instance.GetComponent<SpriteAnimNodeSync>();
+
+                if (spriteAnimNodeSync)
+                    spriteAnimNodeSync.NodeId = __instance.Hat.NoBounce ? 1 : 0;
+
+                if (__instance.Hat.InFront)
+                {
+                    __instance.BackLayer.enabled = false;
+                    __instance.FrontLayer.enabled = true;
+                    __instance.FrontLayer.sprite = asset.MainImage;
+                }
+                else if (asset.BackImage)
+                {
+                    __instance.BackLayer.enabled = true;
+                    __instance.FrontLayer.enabled = true;
+                    __instance.BackLayer.sprite = asset.BackImage;
+                    __instance.FrontLayer.sprite = asset.MainImage;
+                }
+                else
+                {
+                    __instance.BackLayer.enabled = true;
+                    __instance.FrontLayer.enabled = false;
+                    __instance.FrontLayer.sprite = null;
+                    __instance.BackLayer.sprite = asset.MainImage;
+                }
+
+                if (__instance.options.Initialized && __instance.HideHat())
+                {
+                    __instance.FrontLayer.enabled = false;
+                    __instance.BackLayer.enabled = false;
+                }
+
+                return false;
+            }
+        }
+
+        [HarmonyPatch(typeof(CosmeticsCache), nameof(CosmeticsCache.GetHat))]
+        public static class CosmeticsCacheGetVisorPatch
+        {
+            public static bool Prefix(CosmeticsCache __instance, string id, ref HatViewData __result)
+            {
+                if (!CustomHatViewDatas.TryGetValue(id, out __result))
+                    return true;
+
+                if (__result == null)
+                    __result = __instance.hats["hat_NoHat"].GetAsset();
+
                 return false;
             }
         }
@@ -467,6 +716,6 @@ namespace TownOfUsReworked.Cosmetics
 
             CustomHatRegistry.TryGetValue(hat.name, out var ret);
             return ret;
-        }*/
+        }
     }
 }

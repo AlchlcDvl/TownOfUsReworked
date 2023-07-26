@@ -2,17 +2,20 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
 {
     public class Tunneler : Ability
     {
-        public Tunneler(PlayerControl player) : base(player)
-        {
-            Name = "Tunneler";
-            TaskText = () => "- You can finish tasks to be able to vent";
-            Color = CustomGameOptions.CustomAbilityColors ? Colors.Tunneler : Colors.Ability;
-            AbilityType = AbilityEnum.Tunneler;
-            Hidden = !CustomGameOptions.TunnelerKnows && !TasksDone;
-            Type = LayerEnum.Tunneler;
+        public override Color32 Color => ClientGameOptions.CustomAbColors ? Colors.Tunneler : Colors.Ability;
+        public override string Name => "Tunneler";
+        public override LayerEnum Type => LayerEnum.Tunneler;
+        public override AbilityEnum AbilityType => AbilityEnum.Tunneler;
+        public override Func<string> TaskText => () => "- You can finish tasks to be able to vent";
 
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
+        public Tunneler(PlayerControl player) : base(player) => Hidden = !CustomGameOptions.TunnelerKnows && !TasksDone;
+
+        public override void UpdateHud(HudManager __instance)
+        {
+            base.UpdateHud(__instance);
+
+            if (Hidden && TasksDone)
+                Hidden = false;
         }
     }
 }

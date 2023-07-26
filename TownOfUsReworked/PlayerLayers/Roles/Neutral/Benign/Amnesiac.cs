@@ -5,24 +5,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public Dictionary<byte, CustomArrow> BodyArrows = new();
         public CustomButton RememberButton;
 
+        public override Color32 Color => ClientGameOptions.CustomNeutColors ? Colors.Amnesiac : Colors.Intruder;
+        public override string Name => "Amnesiac";
+        public override LayerEnum Type => LayerEnum.Amnesiac;
+        public override RoleEnum RoleType => RoleEnum.Amnesiac;
+        public override Func<string> StartText => () => "You Forgor <i>:skull:</i>";
+        public override Func<string> AbilitiesText => () => "- You can copy over a player's role should you find their body" + (CustomGameOptions.RememberArrows ? ("\n- When someone dies, "
+            + "you get an arrow pointing to their body") : "") + "\n- If there are less than 7 players alive, you will become a <color=#80FF00FF>Thief</color>";
+        public override InspectorResults InspectorResults => InspectorResults.LeadsTheGroup;
+
         public Amnesiac(PlayerControl player) : base(player)
         {
-            Name = "Amnesiac";
-            StartText = () => "You Forgor :skull:";
-            AbilitiesText = () => "- You can copy over a player's role should you find their body" + (CustomGameOptions.RememberArrows ? "\n- When someone dies, you get an arrow pointing "
-                + "to their body" : "");
-            RoleType = RoleEnum.Amnesiac;
             RoleAlignment = RoleAlignment.NeutralBen;
-            Color = CustomGameOptions.CustomNeutColors ? Colors.Amnesiac : Colors.Neutral;
-            Objectives = () => "- Find a dead body, remember their role and then fulfill the win condition for that role\n- If there are less than 7 players alive, you will become a " +
-                "<color=#80FF00FF>Thief</color>";
+            Objectives = () => "- Find a dead body, remember their role and then fulfill the win condition for that role";
             BodyArrows = new();
-            InspectorResults = InspectorResults.DealsWithDead;
-            Type = LayerEnum.Amnesiac;
             RememberButton = new(this, "Remember", AbilityTypes.Dead, "ActionSecondary", Remember);
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public void DestroyArrow(byte targetPlayerId)
@@ -43,26 +40,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var newRole = new Thief(Player);
             newRole.RoleUpdate(this);
 
-            if (Local && !IntroCutscene.Instance)
-                Utils.Flash(Colors.Thief);
+            if (Local)
+                Flash(Colors.Thief);
 
-            if (CustomPlayer.Local.Is(RoleEnum.Seer) && !IntroCutscene.Instance)
-                Utils.Flash(Colors.Seer);
+            if (CustomPlayer.Local.Is(RoleEnum.Seer))
+                Flash(Colors.Seer);
         }
 
         public void Remember()
         {
-            if (Utils.IsTooFar(Player, RememberButton.TargetBody))
+            if (IsTooFar(Player, RememberButton.TargetBody))
                 return;
 
-            var playerId = RememberButton.TargetBody.ParentId;
-            var player = Utils.PlayerById(playerId);
-            Utils.Spread(Player, player);
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-            writer.Write((byte)ActionsRPC.Remember);
-            writer.Write(PlayerId);
-            writer.Write(playerId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            var player = PlayerByBody(RememberButton.TargetBody);
+            Spread(Player, player);
+            CallRpc(CustomRPC.Action, ActionsRPC.Morph, this, player);
             Remember(this, player);
         }
 
@@ -79,14 +71,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 foreach (var component in amneRole.RememberButton.TargetBody?.bodyRenderers)
                     component.material.SetFloat("_Outline", 0f);
 
-                Utils.Flash(amneRole.Color);
+                Flash(amneRole.Color);
                 amneRole.OnLobby();
                 ButtonUtils.ResetCustomTimers(false);
             }
 
             if (CustomPlayer.Local == other)
             {
-                Utils.Flash(amneRole.Color);
+                Flash(amneRole.Color);
                 role.OnLobby();
                 ButtonUtils.ResetCustomTimers(false);
             }
@@ -237,7 +229,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 foreach (var snitch in Ability.GetAbilities<Snitch>(AbilityEnum.Snitch))
                 {
                     if (snitch.TasksLeft <= CustomGameOptions.SnitchTasksRemaining && CustomPlayer.Local == amnesiac)
-                        LocalRole.AllArrows.Add(snitch.PlayerId, new(amnesiac, Colors.Snitch, 0));
+                        LocalRole.AllArrows.Add(snitch.PlayerId, new(amnesiac, Colors.Snitch));
                     else if (snitch.TasksDone && CustomPlayer.Local == snitch.Player)
                         GetRole(snitch.Player).AllArrows.Add(amnesiac.PlayerId, new(snitch.Player, Colors.Snitch));
                 }
@@ -245,7 +237,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 foreach (var revealer in GetRoles<Revealer>(RoleEnum.Revealer))
                 {
                     if (revealer.Revealed && CustomPlayer.Local == amnesiac)
-                        LocalRole.AllArrows.Add(revealer.PlayerId, new(amnesiac, Colors.Revealer, 0));
+                        LocalRole.AllArrows.Add(revealer.PlayerId, new(amnesiac, Colors.Revealer));
                 }
             }
 
@@ -260,7 +252,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (CustomGameOptions.RememberArrows && !CustomPlayer.LocalCustom.IsDead)
             {
-                var validBodies = Utils.AllBodies.Where(x => Utils.KilledPlayers.Any(y => y.PlayerId == x.ParentId &&
+                var validBodies = AllBodies.Where(x => KilledPlayers.Any(y => y.PlayerId == x.ParentId &&
                     y.KillTime.AddSeconds(CustomGameOptions.RememberArrowDelay) < System.DateTime.UtcNow));
 
                 foreach (var bodyArrow in BodyArrows.Keys)
@@ -282,10 +274,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (CustomPlayer.AllPlayers.Count <= 4 && !IsDead)
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
-                writer.Write((byte)TurnRPC.TurnThief);
-                writer.Write(PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                CallRpc(CustomRPC.Change, TurnRPC.TurnThief, this);
                 TurnThief();
             }
         }

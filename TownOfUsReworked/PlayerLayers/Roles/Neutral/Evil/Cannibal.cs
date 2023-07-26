@@ -10,32 +10,31 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public bool EatWin => EatNeed == 0;
         public bool CanEat => !Eaten || (Eaten && !CustomGameOptions.AvoidNeutralKingmakers);
 
+        public override Color32 Color => ClientGameOptions.CustomNeutColors ? Colors.Cannibal : Colors.Neutral;
+        public override string Name => "Cannibal";
+        public override LayerEnum Type => LayerEnum.Cannibal;
+        public override RoleEnum RoleType => RoleEnum.Cannibal;
+        public override Func<string> StartText => () => "Eat The Bodies Of The Dead";
+        public override Func<string> AbilitiesText => () => "- You can consume a body, making it disappear from the game" + (CustomGameOptions.EatArrows ? "\n- When someone dies, you get "
+            + "an arrow pointing to their body" : "");
+        public override InspectorResults InspectorResults => InspectorResults.DealsWithDead;
+
         public Cannibal(PlayerControl player) : base(player)
         {
-            Name = "Cannibal";
-            StartText = () => "Eat The Bodies Of The Dead";
-            RoleType = RoleEnum.Cannibal;
-            AbilitiesText = () => "- You can consume a body, making it disappear from the game" + (CustomGameOptions.EatArrows ? "\n- When someone dies, you get an arrow pointing to their"
-                + " body" : "");
             RoleAlignment = RoleAlignment.NeutralEvil;
-            Color = CustomGameOptions.CustomNeutColors ? Colors.Cannibal : Colors.Neutral;
             Objectives = () => Eaten ? "- You are satiated" : $"- Eat {EatNeed} {(EatNeed == 1 ? "body" : "bodies")}";
             BodyArrows = new();
             EatNeed = CustomGameOptions.CannibalBodyCount >= CustomPlayer.AllPlayers.Count / 2 ? CustomPlayer.AllPlayers.Count / 2 : CustomGameOptions.CannibalBodyCount;
-            Type = LayerEnum.Cannibal;
             EatButton = new(this, "Eat", AbilityTypes.Dead, "ActionSecondary", Eat);
-            InspectorResults = InspectorResults.DealsWithDead;
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float EatTimer()
         {
             var timespan = DateTime.UtcNow - LastEaten;
             var num = Player.GetModifiedCooldown(CustomGameOptions.CannibalCd) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void DestroyArrow(byte targetPlayerId)
@@ -58,7 +57,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (CustomGameOptions.EatArrows && !IsDead)
             {
-                var validBodies = Utils.AllBodies.Where(x => Utils.KilledPlayers.Any(y => y.PlayerId == x.ParentId &&
+                var validBodies = AllBodies.Where(x => KilledPlayers.Any(y => y.PlayerId == x.ParentId &&
                     y.KillTime.AddSeconds(CustomGameOptions.EatArrowDelay) < DateTime.UtcNow));
 
                 foreach (var bodyArrow in BodyArrows.Keys)
@@ -81,26 +80,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Eat()
         {
-            if (Utils.IsTooFar(Player, EatButton.TargetBody) || EatTimer() != 0f)
+            if (IsTooFar(Player, EatButton.TargetBody) || EatTimer() != 0f)
                 return;
 
-            var player = Utils.PlayerById(EatButton.TargetBody.ParentId);
-            Utils.Spread(Player, player);
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-            writer.Write((byte)ActionsRPC.FadeBody);
-            writer.Write(EatButton.TargetBody.ParentId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            Spread(Player, PlayerByBody(EatButton.TargetBody));
+            CallRpc(CustomRPC.Action, ActionsRPC.FadeBody, EatButton.TargetBody);
             LastEaten = DateTime.UtcNow;
             EatNeed--;
-            Coroutines.Start(Utils.FadeBody(EatButton.TargetBody));
+            Coroutines.Start(FadeBody(EatButton.TargetBody));
 
             if (EatWin && !Eaten)
             {
-                var writer2 = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer2.Write((byte)WinLoseRPC.CannibalWin);
-                writer2.Write(PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer2);
                 Eaten = true;
+                CallRpc(CustomRPC.WinLose, WinLoseRPC.CannibalWin, this);
             }
         }
     }

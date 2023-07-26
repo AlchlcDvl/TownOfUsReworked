@@ -23,15 +23,13 @@ namespace TownOfUsReworked.Extensions
 
         public static void FixSubOxygen()
         {
-            ModCompatibility.RepairOxygen();
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SubmergedFixOxygen, SendOption.Reliable);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            RepairOxygen();
+            CallRpc(CustomRPC.Misc, MiscRPC.SubmergedFixOxygen);
         }
 
         public static void FixLights(SwitchSystem lights)
         {
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.FixLights, SendOption.Reliable);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            CallRpc(CustomRPC.Misc, MiscRPC.FixLights);
             lights.ActualSwitches = lights.ExpectedSwitches;
         }
 
@@ -48,7 +46,7 @@ namespace TownOfUsReworked.Extensions
             if (!sabActive || dummyActive)
                 return;
 
-            switch (TownOfUsReworked.VanillaOptions.MapId)
+            switch (TownOfUsReworked.NormalOptions.MapId)
             {
                 case 1:
                     var comms2 = ShipStatus.Instance.Systems[SystemTypes.Comms].Cast<HqHudSystemType>();
@@ -134,7 +132,7 @@ namespace TownOfUsReworked.Extensions
                     break;
 
                 case 5:
-                    if (!ModCompatibility.SubLoaded)
+                    if (!SubLoaded)
                         break;
 
                     var reactor5 = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
@@ -154,7 +152,7 @@ namespace TownOfUsReworked.Extensions
 
                     foreach (var i in CustomPlayer.Local.myTasks)
                     {
-                        if (i.TaskType == ModCompatibility.RetrieveOxygenMask)
+                        if (i.TaskType == RetrieveOxygenMask)
                             FixSubOxygen();
                     }
 

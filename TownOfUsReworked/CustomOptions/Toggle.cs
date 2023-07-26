@@ -2,7 +2,11 @@ namespace TownOfUsReworked.CustomOptions
 {
     public class CustomToggleOption : CustomOption
     {
-        public CustomToggleOption(int id, MultiMenu menu, string name, bool value) : base(id, menu, name, CustomOptionType.Toggle, value) => Format = (val, _) => (bool)val ? "On" : "Off";
+        public CustomToggleOption(int id, MultiMenu menu, string name, bool value, CustomLayersOption parent = null) : base(id, menu, name, CustomOptionType.Toggle, value, parent) =>
+            Format = (val, _) => (bool)val ? "On" : "Off";
+
+        public CustomToggleOption(int id, MultiMenu menu, string name, bool value, CustomLayersOption[] parents, bool all = false) : base(id, menu, name, CustomOptionType.Toggle, value,
+            parents, all) => Format = (val, _) => (bool)val ? "On" : "Off";
 
         public bool Get() => (bool)Value;
 

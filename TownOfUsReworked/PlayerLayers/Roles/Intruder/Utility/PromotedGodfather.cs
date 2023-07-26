@@ -4,18 +4,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     {
         public PromotedGodfather(PlayerControl player) : base(player)
         {
-            Name = "PromotedGodfather";
-            RoleType = RoleEnum.PromotedGodfather;
-            StartText = () => "Promote Your Fellow <color=#FF0000FF>Intruders</color> To Do Better";
-            AbilitiesText = () => "- You have succeeded the former <color=#404C08FF>Godfather</color> and have a shorter cooldown on your former role's abilities\n" +
-                $"{FormerRole?.AbilitiesText()}";
-            Color = CustomGameOptions.CustomIntColors ? Colors.Godfather : Colors.Intruder;
             RoleAlignment = RoleAlignment.IntruderSupport;
             BlockMenu = new(Player, ConsClick, Exception1);
-            Type = LayerEnum.PromotedGodfather;
             TeleportPoint = Vector3.zero;
             Investigated = new();
-            DisguisePlayer = null;
+            ClosestPlayers = new();
+            FlashedPlayers = new();
+            Vents = new();
+            CopiedPlayer = null;
             DisguisedPlayer = null;
             MorphedPlayer = null;
             SampledPlayer = null;
@@ -41,10 +37,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             MineButton = new(this, "Mine", AbilityTypes.Effect, "Secondary", Mine);
             MarkButton = new(this, "Mark", AbilityTypes.Effect, "Secondary", Mark);
             TeleportButton = new(this, "Teleport", AbilityTypes.Effect, "Secondary", Teleport);
-            InspectorResults = InspectorResults.LeadsTheGroup;
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         //PromotedGodfather Stuff
@@ -55,10 +47,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public bool DelayActive => TimeRemaining2 > 0f;
         public bool Enabled;
 
+        public override Color32 Color => ClientGameOptions.CustomIntColors ? Colors.Godfather : Colors.Intruder;
+        public override string Name => "Godfather";
+        public override LayerEnum Type => LayerEnum.PromotedGodfather;
+        public override RoleEnum RoleType => RoleEnum.PromotedGodfather;
+        public override Func<string> StartText => () => "Lead The <color=#FF0000FF>Intruders</color>";
+        public override Func<string> AbilitiesText => () => "- You have succeeded the former <color=#404C08FF>Godfather</color> and have a shorter cooldown on your former role's abilities"
+            + (FormerRole == null ? "" : $"\n{FormerRole.AbilitiesText()}");
+        public override InspectorResults InspectorResults => FormerRole == null ? InspectorResults.LeadsTheGroup : FormerRole.InspectorResults;
+
         public bool Exception1(PlayerControl player) => player == BlockTarget || player == Player || player.Is(Faction) || (player.Is(SubFaction) && SubFaction != SubFaction.None);
 
-        public bool Exception2(PlayerControl player) => player == BlackmailedPlayer || (player.Is(Faction) && Faction != Faction.Crew && CustomGameOptions.BlackmailMates) ||
-            (player.Is(SubFaction) && SubFaction != SubFaction.None && CustomGameOptions.BlackmailMates);
+        public bool Exception2(PlayerControl player) => player == BlackmailedPlayer || ((player.Is(Faction) || (player.Is(SubFaction) && SubFaction != SubFaction.None)) &&
+            CustomGameOptions.BlackmailMates);
 
         public bool Exception3(PlayerControl player) => (player.Is(Faction) && CustomGameOptions.DisguiseTarget == DisguiserTargets.NonIntruders) || (!player.Is(Faction) &&
             CustomGameOptions.DisguiseTarget == DisguiserTargets.Intruders);
@@ -71,8 +72,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public bool Exception7(PlayerControl player) => player == BombedPlayer || player.Is(Faction) || (player.Is(SubFaction) && SubFaction != SubFaction.None);
 
-        public bool Exception8(PlayerControl player) => Investigated.Contains(player.PlayerId) || ((player.Is(Faction) || (player.Is(SubFaction) && SubFaction != SubFaction.None)) &&
-            CustomGameOptions.FactionSeeRoles);
+        public bool Exception8(PlayerControl player) => Investigated.Contains(player.PlayerId) || (((Faction is Faction.Intruder or Faction.Syndicate && player.Is(Faction)) ||
+            (player.Is(SubFaction) && SubFaction != SubFaction.None)) && CustomGameOptions.FactionSeeRoles) || (Player.IsOtherLover(player) && CustomGameOptions.LoversRoles) ||
+            (Player.IsOtherRival(player) && CustomGameOptions.RivalsRoles) || (player.Is(ObjectifierEnum.Mafia) && Player.Is(ObjectifierEnum.Mafia) && CustomGameOptions.MafiaRoles) ||
+            (Player.IsOtherLink(player) && CustomGameOptions.LinkedRoles);
 
         public override void UpdateHud(HudManager __instance)
         {
@@ -81,13 +84,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var dummyActive = system.dummy.IsActive;
             var sabActive = system.specials.Any(s => s.IsActive);
             var condition = !dummyActive && !sabActive;
-            var notSampled = CustomPlayer.AllPlayers.Where(x => SampledPlayer != x).ToList();
-            var notAmbushed = CustomPlayer.AllPlayers.Where(x => x != AmbushedPlayer).ToList();
-            var notBombed = CustomPlayer.AllPlayers.Where(x => x != BombedPlayer).ToList();
             var flag = BlockTarget == null;
-            var hits = Physics2D.OverlapBoxAll(Player.transform.position, Utils.GetSize(), 0);
-            hits = hits.Where(c => (c.name.Contains("Vent") || !c.isTrigger) && c.gameObject.layer != 8 && c.gameObject.layer != 5).ToArray();
-            CanPlace = hits.Count == 0 && Player.moveable && !ModCompatibility.GetPlayerElevator(Player).Item1;
+            var hits = Physics2D.OverlapBoxAll(Player.transform.position, GetSize(), 0);
+            hits = hits.Where(c => (c.name.Contains("Vent") || !c.isTrigger) && c.gameObject.layer is not 8 and not 5).ToArray();
+            CanPlace = hits.Count == 0 && Player.moveable && !GetPlayerElevator(Player).IsInElevator;
             CanMark = CanPlace && TeleportPoint != Player.transform.position;
             MarkButton.Update("MARK", MarkTimer(), CustomGameOptions.MarkCooldown, CanMark, IsTele);
             TeleportButton.Update("TELEPORT", TeleportTimer(), CustomGameOptions.TeleportCd, true, TeleportPoint != Vector3.zero && IsTele);
@@ -101,16 +101,25 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             MorphButton.Update("MORPH", MorphTimer(), CustomGameOptions.MorphlingCd, OnEffect, TimeRemaining, CustomGameOptions.MorphlingDuration, true, SampledPlayer != null && IsMorph);
             SampleButton.Update("SAMPLE", SampleTimer(), CustomGameOptions.MeasureCooldown, true, IsMorph);
             FlashButton.Update("FLASH", FlashTimer(), CustomGameOptions.GrenadeCd, OnEffect, TimeRemaining, CustomGameOptions.GrenadeDuration, condition, IsGren);
-            DisguiseButton.Update("DISGUISE", DisguiseTimer(), CustomGameOptions.DisguiseCooldown, DelayActive || OnEffect, DelayActive ? TimeRemaining2 : TimeRemaining,
-                DelayActive ? CustomGameOptions.TimeToDisguise : CustomGameOptions.DisguiseDuration, true, MeasuredPlayer != null && IsDisg);
+            DisguiseButton.Update("DISGUISE", DisguiseTimer(), CustomGameOptions.DisguiseCooldown, DelayActive || OnEffect, DelayActive ? TimeRemaining2 : TimeRemaining, DelayActive ?
+                CustomGameOptions.TimeToDisguise : CustomGameOptions.DisguiseDuration, true, MeasuredPlayer != null && IsDisg);
             MeasureButton.Update("MEASURE", MeasureTimer(), CustomGameOptions.MeasureCooldown, true, IsDisg);
             BlackmailButton.Update("BLACKMAIL", BlackmailTimer(), CustomGameOptions.BlackmailCd, true, IsBM);
             CamouflageButton.Update("CAMOUFLAGE", CamouflageTimer(), CustomGameOptions.CamouflagerCd, OnEffect, TimeRemaining, CustomGameOptions.CamouflagerDuration, !DoUndo.IsCamoed,
                 IsCamo);
-            CleanButton.Update("CLEAN", CleanTimer(), CustomGameOptions.JanitorCleanCd, true, CurrentlyDragging == null && IsJani);
+            CleanButton.Update("CLEAN", CleanTimer(), CustomGameOptions.JanitorCleanCd, LastImp && CustomGameOptions.SoloBoost ? -CustomGameOptions.UnderdogKillBonus : 0, true,
+                CurrentlyDragging == null && IsJani);
             DragButton.Update("DRAG", DragTimer(), CustomGameOptions.DragCd, true, CurrentlyDragging == null && IsJani);
             DropButton.Update("DROP", true, CurrentlyDragging != null && IsJani);
             InvisButton.Update("INVIS", InvisTimer(), CustomGameOptions.InvisCd, OnEffect, TimeRemaining, CustomGameOptions.InvisDuration, true, IsWraith);
+
+            if (Input.GetKeyDown(KeyCode.Backspace))
+            {
+                if (BlockTarget != null && !OnEffect && IsCons)
+                    BlockTarget = null;
+
+                LogSomething("Removed a target");
+            }
         }
 
         //Impostor Stuff
@@ -129,26 +138,22 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var timespan = DateTime.UtcNow - LastBlackmailed;
             var num = Player.GetModifiedCooldown(CustomGameOptions.BlackmailCd) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void Blackmail()
         {
-            if (BlackmailTimer() != 0f || Utils.IsTooFar(Player, BlackmailButton.TargetPlayer) || BlackmailButton.TargetPlayer == BlackmailedPlayer)
+            if (BlackmailTimer() != 0f || IsTooFar(Player, BlackmailButton.TargetPlayer) || BlackmailButton.TargetPlayer == BlackmailedPlayer)
                 return;
 
-            var interact = Utils.Interact(Player, BlackmailButton.TargetPlayer);
+            var interact = Interact(Player, BlackmailButton.TargetPlayer);
 
             if (interact[3])
             {
                 BlackmailedPlayer = BlackmailButton.TargetPlayer;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                writer.Write((byte)ActionsRPC.GodfatherAction);
-                writer.Write((byte)GodfatherActionsRPC.Blackmail);
-                writer.Write(PlayerId);
-                writer.Write(BlackmailButton.TargetPlayer.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                CallRpc(CustomRPC.Action, ActionsRPC.GodfatherAction, GodfatherActionsRPC.Blackmail, this, BlackmailedPlayer);
             }
 
             if (interact[0])
@@ -168,7 +173,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             TimeRemaining -= Time.deltaTime;
             Utils.Camouflage();
 
-            if (Utils.Meeting)
+            if (Meeting)
                 TimeRemaining = 0f;
         }
 
@@ -176,7 +181,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Enabled = false;
             LastCamouflaged = DateTime.UtcNow;
-            Utils.DefaultOutfitAll();
+            DefaultOutfitAll();
         }
 
         public void HitCamouflage()
@@ -184,31 +189,27 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (CamouflageTimer() != 0f || DoUndo.IsCamoed)
                 return;
 
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-            writer.Write((byte)ActionsRPC.GodfatherAction);
-            writer.Write((byte)GodfatherActionsRPC.Camouflage);
-            writer.Write(PlayerId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            CallRpc(CustomRPC.Action, ActionsRPC.GodfatherAction, GodfatherActionsRPC.Camouflage, this);
             TimeRemaining = CustomGameOptions.CamouflagerDuration;
             Camouflage();
-            Utils.Camouflage();
         }
 
         public float CamouflageTimer()
         {
             var timespan = DateTime.UtcNow - LastCamouflaged;
             var num = Player.GetModifiedCooldown(CustomGameOptions.CamouflagerCd) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         //Grenadier Stuff
         public CustomButton FlashButton;
         public DateTime LastFlashed;
         private static List<PlayerControl> ClosestPlayers = new();
-        private static readonly Color32 NormalVision = new(212, 212, 212, 0);
-        private static readonly Color32 DimVision = new(212, 212, 212, 51);
-        private static readonly Color32 BlindVision = new(212, 212, 212, 255);
+        private static Color32 NormalVision => new(212, 212, 212, 0);
+        private static Color32 DimVision => new(212, 212, 212, 51);
+        private static Color32 BlindVision => new(212, 212, 212, 255);
         public List<PlayerControl> FlashedPlayers;
         public bool IsGren => FormerRole?.RoleType == RoleEnum.Grenadier;
 
@@ -216,22 +217,23 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var timespan = DateTime.UtcNow - LastFlashed;
             var num = Player.GetModifiedCooldown(CustomGameOptions.GrenadeCd) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void Flash()
         {
             if (!Enabled)
             {
-                ClosestPlayers = Utils.GetClosestPlayers(Player.GetTruePosition(), CustomGameOptions.FlashRadius);
+                ClosestPlayers = GetClosestPlayers(Player.GetTruePosition(), CustomGameOptions.FlashRadius);
                 FlashedPlayers = ClosestPlayers;
             }
 
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
 
-            if (Utils.Meeting)
+            if (Meeting)
                 TimeRemaining = 0f;
 
             //To stop the scenario where the flash and sabotage are called at the same time.
@@ -246,46 +248,46 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 if (CustomPlayer.Local == player)
                 {
-                    Utils.HUD.FullScreen.enabled = true;
-                    Utils.HUD.FullScreen.gameObject.active = true;
+                    HUD.FullScreen.enabled = true;
+                    HUD.FullScreen.gameObject.active = true;
 
                     if (TimeRemaining > CustomGameOptions.GrenadeDuration - 0.5f)
                     {
                         var fade = (TimeRemaining - CustomGameOptions.GrenadeDuration) * (-2f);
 
                         if (ShouldPlayerBeBlinded(player))
-                            Utils.HUD.FullScreen.color = Color32.Lerp(NormalVision, BlindVision, fade);
+                            HUD.FullScreen.color = Color32.Lerp(NormalVision, BlindVision, fade);
                         else if (ShouldPlayerBeDimmed(player))
-                            Utils.HUD.FullScreen.color = Color32.Lerp(NormalVision, DimVision, fade);
+                            HUD.FullScreen.color = Color32.Lerp(NormalVision, DimVision, fade);
                         else
-                            Utils.HUD.FullScreen.color = NormalVision;
+                            HUD.FullScreen.color = NormalVision;
                     }
                     else if (TimeRemaining <= (CustomGameOptions.GrenadeDuration - 0.5f) && TimeRemaining >= 0.5f)
                     {
-                        Utils.HUD.FullScreen.enabled = true;
-                        Utils.HUD.FullScreen.gameObject.active = true;
+                        HUD.FullScreen.enabled = true;
+                        HUD.FullScreen.gameObject.active = true;
 
                         if (ShouldPlayerBeBlinded(player))
-                            Utils.HUD.FullScreen.color = BlindVision;
+                            HUD.FullScreen.color = BlindVision;
                         else if (ShouldPlayerBeDimmed(player))
-                            Utils.HUD.FullScreen.color = DimVision;
+                            HUD.FullScreen.color = DimVision;
                         else
-                            Utils.HUD.FullScreen.color = NormalVision;
+                            HUD.FullScreen.color = NormalVision;
                     }
                     else if (TimeRemaining < 0.5f)
                     {
                         var fade2 = (TimeRemaining * -2.0f) + 1.0f;
 
                         if (ShouldPlayerBeBlinded(player))
-                            Utils.HUD.FullScreen.color = Color32.Lerp(BlindVision, NormalVision, fade2);
+                            HUD.FullScreen.color = Color32.Lerp(BlindVision, NormalVision, fade2);
                         else if (ShouldPlayerBeDimmed(player))
-                            Utils.HUD.FullScreen.color = Color32.Lerp(DimVision, NormalVision, fade2);
+                            HUD.FullScreen.color = Color32.Lerp(DimVision, NormalVision, fade2);
                         else
-                            Utils.HUD.FullScreen.color = NormalVision;
+                            HUD.FullScreen.color = NormalVision;
                     }
                     else
                     {
-                        Utils.HUD.FullScreen.color = NormalVision;
+                        HUD.FullScreen.color = NormalVision;
                         TimeRemaining = 0f;
                     }
 
@@ -298,51 +300,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
         }
 
-        private static bool ShouldPlayerBeDimmed(PlayerControl player) => (player.Is(Faction.Intruder) || player.Data.IsDead) && !Utils.Meeting;
+        private static bool ShouldPlayerBeDimmed(PlayerControl player) => (player.Is(Faction.Intruder) || player.Data.IsDead) && !Meeting;
 
-        private static bool ShouldPlayerBeBlinded(PlayerControl player) => !(player.Is(Faction.Intruder) || player.Data.IsDead || Utils.Meeting);
+        private static bool ShouldPlayerBeBlinded(PlayerControl player) => !(player.Is(Faction.Intruder) || player.Data.IsDead || Meeting);
 
         public void UnFlash()
         {
             Enabled = false;
             LastFlashed = DateTime.UtcNow;
-            Utils.HUD.FullScreen.color = NormalVision;
+            HUD.FullScreen.color = NormalVision;
             FlashedPlayers.Clear();
-            var fs = false;
-
-            switch (TownOfUsReworked.VanillaOptions.MapId)
-            {
-                case 0:
-                case 1:
-                case 3:
-                    var reactor1 = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
-                    var oxygen1 = ShipStatus.Instance.Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
-                    fs = reactor1.IsActive || oxygen1.IsActive;
-                    break;
-
-                case 2:
-                    var seismic = ShipStatus.Instance.Systems[SystemTypes.Laboratory].Cast<ReactorSystemType>();
-                    fs = seismic.IsActive;
-                    break;
-
-                case 4:
-                    var reactor = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<HeliSabotageSystem>();
-                    fs = reactor.IsActive;
-                    break;
-
-                case 5:
-                    fs = CustomPlayer.Local.myTasks.Any(x => x.TaskType == ModCompatibility.RetrieveOxygenMask);
-                    break;
-
-                case 6:
-                    var reactor3 = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
-                    var oxygen3 = ShipStatus.Instance.Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
-                    var seismic2 = ShipStatus.Instance.Systems[SystemTypes.Laboratory].Cast<ReactorSystemType>();
-                    fs = reactor3.IsActive || seismic2.IsActive || oxygen3.IsActive;
-                    break;
-            }
-
-            Utils.HUD.FullScreen.enabled = fs;
+            SetFullScreenHUD();
         }
 
         public void HitFlash()
@@ -354,11 +322,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (sabActive || dummyActive || FlashTimer() != 0f)
                 return;
 
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-            writer.Write((byte)ActionsRPC.GodfatherAction);
-            writer.Write((byte)GodfatherActionsRPC.FlashGrenade);
-            writer.Write(PlayerId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            CallRpc(CustomRPC.Action, ActionsRPC.GodfatherAction, GodfatherActionsRPC.FlashGrenade, this);
             TimeRemaining = CustomGameOptions.GrenadeDuration;
             Flash();
         }
@@ -376,23 +340,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var timespan = DateTime.UtcNow - LastDragged;
             var num = Player.GetModifiedCooldown(CustomGameOptions.DragCd) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void Clean()
         {
-            if (CleanTimer() != 0f || Utils.IsTooFar(Player, CleanButton.TargetBody))
+            if (CleanTimer() != 0f || IsTooFar(Player, CleanButton.TargetBody))
                 return;
 
-            var playerId = CleanButton.TargetBody.ParentId;
-            var player = Utils.PlayerById(playerId);
-            Utils.Spread(Player, player);
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-            writer.Write((byte)ActionsRPC.FadeBody);
-            writer.Write(playerId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
-            Coroutines.Start(Utils.FadeBody(CleanButton.TargetBody));
+            Spread(Player, PlayerByBody(CleanButton.TargetBody));
+            CallRpc(CustomRPC.Action, ActionsRPC.FadeBody, this, CleanButton.TargetBody);
+            Coroutines.Start(FadeBody(CleanButton.TargetBody));
             LastCleaned = DateTime.UtcNow;
 
             if (CustomGameOptions.JaniCooldownsLinked)
@@ -401,32 +361,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Drag()
         {
-            if (Utils.IsTooFar(Player, DragButton.TargetBody) || CurrentlyDragging)
+            if (IsTooFar(Player, DragButton.TargetBody) || CurrentlyDragging)
                 return;
 
-            var playerId = DragButton.TargetBody.ParentId;
-            var player = Utils.PlayerById(playerId);
-            Utils.Spread(Player, player);
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-            writer.Write((byte)ActionsRPC.GodfatherAction);
-            writer.Write((byte)GodfatherActionsRPC.Drag);
-            writer.Write(PlayerId);
-            writer.Write(playerId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
             CurrentlyDragging = DragButton.TargetBody;
+            Spread(Player, PlayerByBody(CurrentlyDragging));
+            CallRpc(CustomRPC.Action, ActionsRPC.GodfatherAction, GodfatherActionsRPC.Drag, this, CurrentlyDragging);
             var drag = CurrentlyDragging.gameObject.AddComponent<DragBehaviour>();
             drag.Source = Player;
-            drag.Body = CurrentlyDragging.gameObject.AddComponent<Rigidbody2D>();
-            drag.Collider = CurrentlyDragging.gameObject.GetComponent<Collider2D>();
             drag.Dragged = CurrentlyDragging;
         }
 
         public void Drop()
         {
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-            writer.Write((byte)ActionsRPC.Drop);
-            writer.Write(CurrentlyDragging.ParentId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            CallRpc(CustomRPC.Action, ActionsRPC.Drop, CurrentlyDragging);
 
             foreach (var component in CurrentlyDragging?.bodyRenderers)
                 component.material.SetFloat("_Outline", 0f);
@@ -439,10 +387,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public float CleanTimer()
         {
             var timespan = DateTime.UtcNow - LastCleaned;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.JanitorCleanCd, ConstantVariables.LastImp && CustomGameOptions.SoloBoost ? -CustomGameOptions.UnderdogKillBonus : 0) *
-                1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.JanitorCleanCd, LastImp && CustomGameOptions.SoloBoost ? -CustomGameOptions.UnderdogKillBonus : 0) * 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         //Disguiser Stuff
@@ -450,7 +398,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public DateTime LastDisguised;
         public PlayerControl MeasuredPlayer;
         public PlayerControl DisguisedPlayer;
-        public PlayerControl DisguisePlayer;
+        public PlayerControl CopiedPlayer;
         public CustomButton MeasureButton;
         public DateTime LastMeasured;
         public bool IsDisg => FormerRole?.RoleType == RoleEnum.Disguiser;
@@ -458,9 +406,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public void Disguise()
         {
             TimeRemaining -= Time.deltaTime;
-            Utils.Morph(DisguisedPlayer, DisguisePlayer);
+            Utils.Morph(DisguisedPlayer, CopiedPlayer);
 
-            if (IsDead || DisguisedPlayer.Data.IsDead || DisguisedPlayer.Data.Disconnected || Utils.Meeting)
+            if (IsDead || DisguisedPlayer.Data.IsDead || DisguisedPlayer.Data.Disconnected || Meeting)
                 TimeRemaining = 0f;
         }
 
@@ -468,13 +416,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             TimeRemaining2 -= Time.deltaTime;
 
-            if (IsDead || DisguisedPlayer.Data.IsDead || DisguisedPlayer.Data.Disconnected || Utils.Meeting)
+            if (IsDead || DisguisedPlayer.Data.IsDead || DisguisedPlayer.Data.Disconnected || Meeting)
                 TimeRemaining2 = 0f;
         }
 
         public void UnDisguise()
         {
-            Utils.DefaultOutfit(DisguisedPlayer);
+            DefaultOutfit(DisguisedPlayer);
             LastDisguised = DateTime.UtcNow;
 
             if (CustomGameOptions.DisgCooldownsLinked)
@@ -485,39 +433,35 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var timespan = DateTime.UtcNow - LastDisguised;
             var num = Player.GetModifiedCooldown(CustomGameOptions.DisguiseCooldown) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public float MeasureTimer()
         {
             var timespan = DateTime.UtcNow - LastMeasured;
             var num = Player.GetModifiedCooldown(CustomGameOptions.MeasureCooldown) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void HitDisguise()
         {
-            if (DisguiseTimer() != 0f || Utils.IsTooFar(Player, DisguiseButton.TargetPlayer) || DisguiseButton.TargetPlayer == MeasuredPlayer || OnEffect || DelayActive)
+            if (DisguiseTimer() != 0f || IsTooFar(Player, DisguiseButton.TargetPlayer) || DisguiseButton.TargetPlayer == MeasuredPlayer || OnEffect || DelayActive)
                 return;
 
-            var interact = Utils.Interact(Player, DisguiseButton.TargetPlayer);
+            var interact = Interact(Player, DisguiseButton.TargetPlayer);
 
             if (interact[3])
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                writer.Write((byte)ActionsRPC.GodfatherAction);
-                writer.Write((byte)GodfatherActionsRPC.Disguise);
-                writer.Write(PlayerId);
-                writer.Write(MeasuredPlayer.PlayerId);
-                writer.Write(DisguiseButton.TargetPlayer.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
                 TimeRemaining = CustomGameOptions.DisguiseDuration;
                 TimeRemaining2 = CustomGameOptions.TimeToDisguise;
-                DisguisePlayer = MeasuredPlayer;
+                CopiedPlayer = MeasuredPlayer;
                 DisguisedPlayer = DisguiseButton.TargetPlayer;
                 DisgDelay();
+                CallRpc(CustomRPC.Action, ActionsRPC.GodfatherAction, GodfatherActionsRPC.Disguise, this, CopiedPlayer, DisguisedPlayer);
 
                 if (CustomGameOptions.DisgCooldownsLinked)
                     LastMeasured = DateTime.UtcNow;
@@ -540,10 +484,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Measure()
         {
-            if (MeasureTimer() != 0f || Utils.IsTooFar(Player, MeasureButton.TargetPlayer) || MeasureButton.TargetPlayer == MeasuredPlayer)
+            if (MeasureTimer() != 0f || IsTooFar(Player, MeasureButton.TargetPlayer) || MeasureButton.TargetPlayer == MeasuredPlayer)
                 return;
 
-            var interact = Utils.Interact(Player, MeasureButton.TargetPlayer);
+            var interact = Interact(Player, MeasureButton.TargetPlayer);
 
             if (interact[3])
                 MeasuredPlayer = MeasureButton.TargetPlayer;
@@ -579,7 +523,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             TimeRemaining -= Time.deltaTime;
             Utils.Morph(Player, MorphedPlayer);
 
-            if (IsDead || Utils.Meeting)
+            if (IsDead || Meeting)
                 TimeRemaining = 0f;
         }
 
@@ -587,7 +531,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Enabled = false;
             MorphedPlayer = null;
-            Utils.DefaultOutfit(Player);
+            DefaultOutfit(Player);
             LastMorphed = DateTime.UtcNow;
 
             if (CustomGameOptions.MorphCooldownsLinked)
@@ -598,16 +542,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var timespan = DateTime.UtcNow - LastMorphed;
             var num = Player.GetModifiedCooldown(CustomGameOptions.MorphlingCd) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public float SampleTimer()
         {
             var timespan = DateTime.UtcNow - LastSampled;
             var num = Player.GetModifiedCooldown(CustomGameOptions.SampleCooldown) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void HitMorph()
@@ -615,23 +561,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (MorphTimer() != 0f || SampledPlayer == null || OnEffect)
                 return;
 
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-            writer.Write((byte)ActionsRPC.GodfatherAction);
-            writer.Write((byte)GodfatherActionsRPC.Morph);
-            writer.Write(PlayerId);
-            writer.Write(SampledPlayer.PlayerId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
             TimeRemaining = CustomGameOptions.MorphlingDuration;
             MorphedPlayer = SampledPlayer;
+            CallRpc(CustomRPC.Action, ActionsRPC.GodfatherAction, GodfatherActionsRPC.Morph, this, MorphedPlayer);
             Morph();
         }
 
         public void Sample()
         {
-            if (SampleTimer() != 0f || Utils.IsTooFar(Player, SampleButton.TargetPlayer) || SampledPlayer == SampleButton.TargetPlayer)
+            if (SampleTimer() != 0f || IsTooFar(Player, SampleButton.TargetPlayer) || SampledPlayer == SampleButton.TargetPlayer)
                 return;
 
-            var interact = Utils.Interact(Player, SampleButton.TargetPlayer);
+            var interact = Interact(Player, SampleButton.TargetPlayer);
 
             if (interact[3])
                 SampledPlayer = SampleButton.TargetPlayer;
@@ -661,8 +602,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var timespan = DateTime.UtcNow - LastInvis;
             var num = Player.GetModifiedCooldown(CustomGameOptions.InvisCd) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void Invis()
@@ -671,7 +613,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             TimeRemaining -= Time.deltaTime;
             Utils.Invis(Player, CustomPlayer.Local.Is(Faction.Intruder));
 
-            if (IsDead || Utils.Meeting)
+            if (IsDead || Meeting)
                 TimeRemaining = 0f;
         }
 
@@ -679,7 +621,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Enabled = false;
             LastInvis = DateTime.UtcNow;
-            Utils.DefaultOutfit(Player);
+            DefaultOutfit(Player);
         }
 
         public void HitInvis()
@@ -687,11 +629,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (InvisTimer() != 0f || OnEffect)
                 return;
 
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-            writer.Write((byte)ActionsRPC.GodfatherAction);
-            writer.Write((byte)GodfatherActionsRPC.Invis);
-            writer.Write(PlayerId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            CallRpc(CustomRPC.Action, ActionsRPC.GodfatherAction, GodfatherActionsRPC.Invis, this);
             TimeRemaining = CustomGameOptions.InvisDuration;
             Invis();
         }
@@ -706,16 +644,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var timespan = DateTime.UtcNow - LastInvestigated;
             var num = Player.GetModifiedCooldown(CustomGameOptions.ConsigCd) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void Investigate()
         {
-            if (ConsigliereTimer() != 0f || Utils.IsTooFar(Player, InvestigateButton.TargetPlayer) || Investigated.Contains(InvestigateButton.TargetPlayer.PlayerId))
+            if (ConsigliereTimer() != 0f || IsTooFar(Player, InvestigateButton.TargetPlayer) || Investigated.Contains(InvestigateButton.TargetPlayer.PlayerId))
                 return;
 
-            var interact = Utils.Interact(Player, InvestigateButton.TargetPlayer);
+            var interact = Interact(Player, InvestigateButton.TargetPlayer);
 
             if (interact[3])
                 Investigated.Add(InvestigateButton.TargetPlayer.PlayerId);
@@ -730,14 +669,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public CustomButton MineButton;
         public DateTime LastMined;
         public bool CanPlace;
+        public List<Vent> Vents = new();
         public bool IsMiner => FormerRole?.RoleType == RoleEnum.Miner;
 
         public float MineTimer()
         {
             var timespan = DateTime.UtcNow - LastMined;
             var num = Player.GetModifiedCooldown(CustomGameOptions.MineCd) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void Mine()
@@ -745,16 +686,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (!CanPlace || MineTimer() != 0f)
                 return;
 
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-            writer.Write((byte)ActionsRPC.Mine);
-            var position = Player.transform.position;
-            var id = Utils.GetAvailableId();
-            writer.Write(id);
-            writer.Write(PlayerId);
-            writer.Write(position);
-            writer.Write(position.z + 0.01f);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
-            Utils.SpawnVent(id, this, position, position.z + 0.01f);
+            RpcSpawnVent(this);
             LastMined = DateTime.UtcNow;
         }
 
@@ -771,16 +703,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var timespan = DateTime.UtcNow - LastMarked;
             var num = Player.GetModifiedCooldown(CustomGameOptions.MarkCooldown) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public float TeleportTimer()
         {
             var timespan = DateTime.UtcNow - LastTeleport;
             var num = Player.GetModifiedCooldown(CustomGameOptions.TeleportCd) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void Mark()
@@ -800,11 +734,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (TeleportTimer() != 0f || TeleportPoint == Player.transform.position)
                 return;
 
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-            writer.Write((byte)ActionsRPC.Teleport);
-            writer.Write(PlayerId);
-            writer.Write(TeleportPoint);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            CallRpc(CustomRPC.Action, ActionsRPC.Teleport, this, TeleportPoint);
             LastTeleport = DateTime.UtcNow;
             Utils.Teleport(Player, TeleportPoint);
 
@@ -822,8 +752,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var timespan = DateTime.UtcNow - LastAmbushed;
             var num = Player.GetModifiedCooldown(CustomGameOptions.AmbushCooldown) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void Ambush()
@@ -831,7 +762,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
 
-            if (IsDead || AmbushedPlayer.Data.IsDead || AmbushedPlayer.Data.Disconnected || Utils.Meeting)
+            if (IsDead || AmbushedPlayer.Data.IsDead || AmbushedPlayer.Data.Disconnected || Meeting)
                 TimeRemaining = 0f;
         }
 
@@ -844,22 +775,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void HitAmbush()
         {
-            if (AmbushTimer() != 0f || Utils.IsTooFar(Player, AmbushButton.TargetPlayer) || AmbushButton.TargetPlayer == AmbushedPlayer)
+            if (AmbushTimer() != 0f || IsTooFar(Player, AmbushButton.TargetPlayer) || AmbushButton.TargetPlayer == AmbushedPlayer)
                 return;
 
-            var interact = Utils.Interact(Player, AmbushButton.TargetPlayer);
+            var interact = Interact(Player, AmbushButton.TargetPlayer);
 
             if (interact[3])
             {
                 TimeRemaining = CustomGameOptions.AmbushDuration;
                 AmbushedPlayer = AmbushButton.TargetPlayer;
                 Ambush();
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                writer.Write((byte)ActionsRPC.GodfatherAction);
-                writer.Write((byte)GodfatherActionsRPC.Ambush);
-                writer.Write(PlayerId);
-                writer.Write(AmbushButton.TargetPlayer.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                CallRpc(CustomRPC.Action, ActionsRPC.GodfatherAction, GodfatherActionsRPC.Ambush, this, AmbushedPlayer);
             }
             else if (interact[0])
                 LastAmbushed = DateTime.UtcNow;
@@ -883,7 +809,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             BlockTarget = null;
             LastBlock = DateTime.UtcNow;
-            Utils.DefaultOutfit(Player);
         }
 
         public void Block()
@@ -894,22 +819,22 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             foreach (var layer in GetLayers(BlockTarget))
                 layer.IsBlocked = !GetRole(BlockTarget).RoleBlockImmune;
 
-            if (IsDead || BlockTarget.Data.IsDead || BlockTarget.Data.Disconnected || Utils.Meeting || !BlockTarget.IsBlocked())
+            if (IsDead || BlockTarget.Data.IsDead || BlockTarget.Data.Disconnected || Meeting || !BlockTarget.IsBlocked())
                 TimeRemaining = 0f;
         }
 
         public float RoleblockTimer()
         {
             var timespan = DateTime.UtcNow - LastBlock;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.ConsRoleblockCooldown)
-                * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.ConsRoleblockCooldown) * 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void ConsClick(PlayerControl player)
         {
-            var interact = Utils.Interact(Player, player);
+            var interact = Interact(Player, player);
 
             if (interact[3])
                 BlockTarget = player;
@@ -928,14 +853,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 BlockMenu.Open();
             else
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                writer.Write((byte)ActionsRPC.GodfatherAction);
-                writer.Write((byte)GodfatherActionsRPC.ConsRoleblock);
-                writer.Write(PlayerId);
-                writer.Write(BlockTarget.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
                 TimeRemaining = CustomGameOptions.ConsRoleblockDuration;
                 Block();
+                CallRpc(CustomRPC.Action, ActionsRPC.GodfatherAction, GodfatherActionsRPC.ConsRoleblock, this, BlockTarget);
             }
         }
 
@@ -950,8 +870,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var timespan = DateTime.UtcNow - LastBombed;
             var num = Player.GetModifiedCooldown(CustomGameOptions.EnforceCooldown) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void Boom()
@@ -965,7 +886,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
 
-            if (IsDead || Utils.Meeting || BombSuccessful)
+            if (IsDead || Meeting || BombSuccessful)
                 TimeRemaining = 0f;
         }
 
@@ -973,7 +894,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             TimeRemaining2 -= Time.deltaTime;
 
-            if (IsDead || Utils.Meeting)
+            if (IsDead || Meeting)
                 TimeRemaining2 = 0f;
         }
 
@@ -991,36 +912,31 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         private void Explode()
         {
-            foreach (var player in Utils.GetClosestPlayers(BombedPlayer.GetTruePosition(), CustomGameOptions.EnforceRadius))
+            foreach (var player in GetClosestPlayers(BombedPlayer.GetTruePosition(), CustomGameOptions.EnforceRadius))
             {
-                Utils.Spread(BombedPlayer, player);
+                Spread(BombedPlayer, player);
 
                 if (player.IsVesting() || player.IsProtected() || player.IsOnAlert() || player.IsShielded() || player.IsRetShielded())
                     continue;
 
                 if (!player.Is(RoleEnum.Pestilence))
-                    Utils.RpcMurderPlayer(BombedPlayer, player, DeathReasonEnum.Bombed, false);
+                    RpcMurderPlayer(BombedPlayer, player, DeathReasonEnum.Bombed, false);
             }
         }
 
         public void Bomb()
         {
-            if (BombTimer() != 0f || Utils.IsTooFar(Player, BombButton.TargetPlayer) || BombedPlayer == BombButton.TargetPlayer)
+            if (BombTimer() != 0f || IsTooFar(Player, BombButton.TargetPlayer) || BombedPlayer == BombButton.TargetPlayer)
                 return;
 
-            var interact = Utils.Interact(Player, BombButton.TargetPlayer);
+            var interact = Interact(Player, BombButton.TargetPlayer);
 
             if (interact[3])
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                writer.Write((byte)ActionsRPC.GodfatherAction);
-                writer.Write((byte)GodfatherActionsRPC.SetBomb);
-                writer.Write(PlayerId);
-                writer.Write(BombButton.TargetPlayer.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
                 TimeRemaining = CustomGameOptions.EnforceDuration;
                 TimeRemaining2 = CustomGameOptions.EnforceDelay;
                 BombedPlayer = BombButton.TargetPlayer;
+                CallRpc(CustomRPC.Action, ActionsRPC.GodfatherAction, GodfatherActionsRPC.SetBomb, this, BombedPlayer);
                 BombDelay();
             }
             else if (interact[0])

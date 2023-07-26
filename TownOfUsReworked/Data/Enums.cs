@@ -70,6 +70,8 @@ namespace TownOfUsReworked.Data
         Confuse,
         TimeControl,
         Silence,
+        RequestHit,
+        PlaceHit,
 
         None
     }
@@ -81,6 +83,27 @@ namespace TownOfUsReworked.Data
         Effect,
         Vent,
         Special
+    }
+
+    public enum MeetingTypes
+    {
+        Toggle,
+        Click
+    }
+
+    public enum InfoType
+    {
+        Role,
+        Objectifier,
+        Ability,
+        Modifier,
+        Lore,
+        Faction,
+        SubFaction,
+        Alignment,
+        Other,
+
+        None
     }
 
     public enum TurnRPC
@@ -193,7 +216,8 @@ namespace TownOfUsReworked.Data
         String,
         Button,
         Layers,
-        Nested
+        Nested,
+        Entry
     }
 
     public enum MultiMenu
@@ -206,6 +230,7 @@ namespace TownOfUsReworked.Data
         modifier,
         objectifier,
         ability,
+        rolelist,
         external
     }
 
@@ -257,6 +282,7 @@ namespace TownOfUsReworked.Data
         Classic,
         AllAny,
         KillingOnly,
+        RoleList,
         Custom,
         Vanilla
     }
@@ -266,12 +292,13 @@ namespace TownOfUsReworked.Data
         Skeld,
         MiraHQ,
         Polus,
+        //dlekS,
         Airship,
         Submerged,
         LevelImpostor
     }
 
-    public enum TaskBarMode
+    public enum TaskBar
     {
         MeetingOnly,
         Normal,
@@ -300,22 +327,21 @@ namespace TownOfUsReworked.Data
     {
         SetCouple,
         SetDuo,
+        SetLinked,
         SetAlliedFaction,
 
         SetExeTarget,
         SetGATarget,
         SetGuessTarget,
         SetBHTarget,
-        SetActPretendList
+        SetActPretendList,
+
+        None
     }
 
-    public enum CustomRPC
+    public enum MiscRPC
     {
-        SetLayer = 100,
-        NullModifier,
-        NullObjectifier,
-        NullAbility,
-        NullRole,
+        SetLayer,
         SetPhantom,
         CatchPhantom,
         SetRevealer,
@@ -324,10 +350,6 @@ namespace TownOfUsReworked.Data
         CatchGhoul,
         SetBanshee,
         CatchBanshee,
-        Action,
-        WinLose,
-        Change,
-        Target,
         AttemptSound,
         Start,
         SyncCustomSettings,
@@ -348,15 +370,30 @@ namespace TownOfUsReworked.Data
         ChaosDrive,
         FixLights,
         SetReports,
+        SetFirstKilled,
+
+        None
+    }
+
+    public enum CustomRPC
+    {
+        Action,
+        WinLose,
+        Change,
+        Target,
+        Misc,
+        Test,
 
         None
     }
 
     public enum AbilityEnum
     {
-        Assassin,
+        CrewAssassin,
+        IntruderAssassin,
+        NeutralAssassin,
+        SyndicateAssassin,
         ButtonBarry,
-        Diener,
         Insider,
         Multitasker,
         Ninja,
@@ -379,6 +416,7 @@ namespace TownOfUsReworked.Data
         Corrupted,
         Defector,
         Fanatic,
+        Linked,
         Lovers,
         Mafia,
         Overlord,
@@ -481,6 +519,37 @@ namespace TownOfUsReworked.Data
         Stalker,
         TimeKeeper,
         Warper,
+
+        Any,
+
+        RandomCrew,
+        CrewSupport,
+        CrewInvest,
+        CrewProt,
+        CrewKill,
+        CrewSov,
+        CrewAudit,
+
+        RandomIntruder,
+        IntruderSupport,
+        IntruderConceal,
+        IntruderDecep,
+        IntruderKill,
+
+        RandomNeutral,
+        NeutralKill,
+        NeutralNeo,
+        NeutralEvil,
+        NeutralBen,
+        NeutralPros,
+        NeutralApoc,
+        NeutralHarb,
+
+        RandomSyndicate,
+        SyndicateKill,
+        SyndicateSupport,
+        SyndicateDisrup,
+        SyndicatePower,
 
         None
     }
@@ -628,6 +697,7 @@ namespace TownOfUsReworked.Data
         Corrupted,
         Defector,
         Fanatic,
+        Linked,
         Lovers,
         Mafia,
         Overlord,
@@ -908,6 +978,7 @@ namespace TownOfUsReworked.Data
     {
         Lovers,
         Rivals,
+        Linked,
         Intruders,
         Syndicate,
         Undead,
@@ -929,5 +1000,15 @@ namespace TownOfUsReworked.Data
         No,
         Target,
         AllDead
+    }
+
+    public enum ModLogType
+    {
+        Message,
+        Fatal,
+        Error,
+        Debug,
+        Info,
+        Warning
     }
 }

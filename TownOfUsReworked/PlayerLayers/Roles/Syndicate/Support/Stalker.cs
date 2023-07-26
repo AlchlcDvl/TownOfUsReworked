@@ -6,29 +6,28 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public DateTime LastStalked;
         public CustomButton StalkButton;
 
+        public override Color32 Color => ClientGameOptions.CustomSynColors ? Colors.Stalker : Colors.Syndicate;
+        public override string Name => "Stalker";
+        public override LayerEnum Type => LayerEnum.Stalker;
+        public override RoleEnum RoleType => RoleEnum.Stalker;
+        public override Func<string> StartText => () => "Stalk Everyone To Monitor Their Movements";
+        public override Func<string> AbilitiesText => () => $"- You always know where your targets are\n{CommonAbilities}";
+        public override InspectorResults InspectorResults => InspectorResults.TracksOthers;
+
         public Stalker(PlayerControl player) : base(player)
         {
-            Name = "Stalker";
-            StartText = () => "Stalk Everyone To Monitor Their Movements";
-            AbilitiesText = () => $"- You always know where your targets are\n{CommonAbilities}";
-            Color = CustomGameOptions.CustomSynColors ? Colors.Stalker : Colors.Syndicate;
-            RoleType = RoleEnum.Stalker;
             StalkerArrows = new();
             RoleAlignment = RoleAlignment.SyndicateSupport;
-            InspectorResults = InspectorResults.TracksOthers;
-            Type = LayerEnum.Stalker;
             StalkButton = new(this, "Stalk", AbilityTypes.Direct, "ActionSecondary", Stalk, Exception1);
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float StalkTimer()
         {
             var timespan = DateTime.UtcNow - LastStalked;
             var num = Player.GetModifiedCooldown(CustomGameOptions.StalkCd) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void DestroyArrow(byte targetPlayerId)
@@ -46,10 +45,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Stalk()
         {
-            if (Utils.IsTooFar(Player, StalkButton.TargetPlayer) || StalkTimer() != 0f)
+            if (IsTooFar(Player, StalkButton.TargetPlayer) || StalkTimer() != 0f)
                 return;
 
-            var interact = Utils.Interact(Player, StalkButton.TargetPlayer);
+            var interact = Interact(Player, StalkButton.TargetPlayer);
 
             if (interact[3])
                 StalkerArrows.Add(StalkButton.TargetPlayer.PlayerId, new(Player, StalkButton.TargetPlayer.GetPlayerColor(!HoldsDrive)));
@@ -73,16 +72,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 foreach (var pair in StalkerArrows)
                 {
-                    var player = Utils.PlayerById(pair.Key);
-                    var body = Utils.BodyById(pair.Key);
+                    var player = PlayerById(pair.Key);
+                    var body = BodyById(pair.Key);
 
                     if (player == null || player.Data.Disconnected || (player.Data.IsDead && !body))
-                    {
                         DestroyArrow(pair.Key);
-                        continue;
-                    }
-
-                    pair.Value?.Update(player.Data.IsDead ? body.transform.position  : player.transform.position, player.GetPlayerColor(!HoldsDrive));
+                    else
+                        pair.Value?.Update(player.Data.IsDead ? body.transform.position : player.transform.position, player.GetPlayerColor(!HoldsDrive));
                 }
 
                 if (HoldsDrive)

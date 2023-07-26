@@ -7,55 +7,50 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public List<byte> Framed = new();
         public DateTime LastFramed;
 
+        public override Color32 Color => ClientGameOptions.CustomSynColors ? Colors.Framer : Colors.Syndicate;
+        public override string Name => "Framer";
+        public override LayerEnum Type => LayerEnum.Framer;
+        public override RoleEnum RoleType => RoleEnum.Framer;
+        public override Func<string> StartText => () => "Make Everyone Suspicious";
+        public override Func<string> AbilitiesText => () => $"- You can frame {(HoldsDrive ? $"all players within a {CustomGameOptions.ChaosDriveFrameRadius}m radius" : "a player")}\n- " +
+            $"Framed players will die very easily to killing roles and will appear to have the wrong results to investigative roles till you are dead\n{CommonAbilities}";
+        public override InspectorResults InspectorResults => InspectorResults.Manipulative;
+
         public Framer(PlayerControl player) : base(player)
         {
-            Name = "Framer";
-            StartText = () => "Make Everyone Suspicious";
-            AbilitiesText = () => "- You can frame players\n- Framed players will die very easily to killing roles and will appear to have the wrong results to investigative roles till " +
-                $"you are dead\n- With the Chaos Drive, you can frame all players within a{CustomGameOptions.ChaosDriveFrameRadius}m radius\n{CommonAbilities}";
-            RoleType = RoleEnum.Framer;
             RoleAlignment = RoleAlignment.SyndicateDisrup;
-            Color = CustomGameOptions.CustomSynColors ? Colors.Framer : Colors.Syndicate;
             Framed = new();
-            Type = LayerEnum.Framer;
-            FrameButton = new(this, "Frame", AbilityTypes.Direct, "Secondary", HitFrame, Exception1);
-            RadialFrameButton = new(this, "Frame", AbilityTypes.Effect, "Secondary", RadialFrame);
-            InspectorResults = InspectorResults.Manipulative;
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
+            FrameButton = new(this, "Frame", AbilityTypes.Direct, "Secondary", Frame, Exception1);
+            RadialFrameButton = new(this, "RadialFrame", AbilityTypes.Effect, "Secondary", RadialFrame);
         }
 
         public float FrameTimer()
         {
             var timespan = DateTime.UtcNow - LastFramed;
             var num = Player.GetModifiedCooldown(CustomGameOptions.FrameCooldown) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
-        public void Frame(PlayerControl player)
+        public void RpcFrame(PlayerControl player)
         {
-            if (player.Is(Faction.Syndicate) || Framed.Contains(player.PlayerId))
+            if ((player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || Framed.Contains(player.PlayerId))
                 return;
 
             Framed.Add(player.PlayerId);
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-            writer.Write((byte)ActionsRPC.Frame);
-            writer.Write(PlayerId);
-            writer.Write(player.PlayerId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            CallRpc(CustomRPC.Action, ActionsRPC.Frame, this, player);
         }
 
-        public void HitFrame()
+        public void Frame()
         {
-            if (FrameTimer() != 0f || Utils.IsTooFar(Player, FrameButton.TargetPlayer) || HoldsDrive)
+            if (FrameTimer() != 0f || IsTooFar(Player, FrameButton.TargetPlayer) || HoldsDrive)
                 return;
 
-            var interact = Utils.Interact(Player, FrameButton.TargetPlayer);
+            var interact = Interact(Player, FrameButton.TargetPlayer);
 
             if (interact[3])
-                Frame(FrameButton.TargetPlayer);
+                RpcFrame(FrameButton.TargetPlayer);
 
             if (interact[0])
                 LastFramed = DateTime.UtcNow;
@@ -68,8 +63,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (FrameTimer() != 0f || !HoldsDrive)
                 return;
 
-            foreach (var player in Utils.GetClosestPlayers(CustomPlayer.Local.GetTruePosition(), CustomGameOptions.ChaosDriveFrameRadius))
-                Frame(player);
+            foreach (var player in GetClosestPlayers(CustomPlayer.Local.GetTruePosition(), CustomGameOptions.ChaosDriveFrameRadius))
+                RpcFrame(player);
 
             LastFramed = DateTime.UtcNow;
         }

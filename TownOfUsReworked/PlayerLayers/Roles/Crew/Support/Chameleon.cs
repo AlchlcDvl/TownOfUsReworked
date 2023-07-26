@@ -10,28 +10,27 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public int UsesLeft;
         public bool ButtonUsable => UsesLeft > 0;
 
+        public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Chameleon : Colors.Crew;
+        public override string Name => "Chameleon";
+        public override LayerEnum Type => LayerEnum.Chameleon;
+        public override RoleEnum RoleType => RoleEnum.Chameleon;
+        public override Func<string> StartText => () => "Go Invisible To Stalk Players";
+        public override Func<string> AbilitiesText => () => "- You can turn invisible";
+        public override InspectorResults InspectorResults => InspectorResults.Unseen;
+
         public Chameleon(PlayerControl player) : base(player)
         {
-            Name = "Chameleon";
-            StartText = () => "Go Invisible To Stalk Players";
-            AbilitiesText = () => "- You can turn invisible";
-            Color = CustomGameOptions.CustomCrewColors ? Colors.Chameleon : Colors.Crew;
-            RoleType = RoleEnum.Chameleon;
-            InspectorResults = InspectorResults.Unseen;
             UsesLeft = CustomGameOptions.SwoopCount;
-            Type = LayerEnum.Chameleon;
-            SwoopButton = new(this, "Swoop", AbilityTypes.Direct, "ActionSecondary", HitSwoop, true);
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
+            SwoopButton = new(this, "Swoop", AbilityTypes.Effect, "ActionSecondary", HitSwoop, true);
         }
 
         public float SwoopTimer()
         {
             var timespan = DateTime.UtcNow - LastSwooped;
             var num = Player.GetModifiedCooldown(CustomGameOptions.SwoopCooldown) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void Invis()
@@ -40,7 +39,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             TimeRemaining -= Time.deltaTime;
             Utils.Invis(Player);
 
-            if (Utils.Meeting || IsDead)
+            if (Meeting || IsDead)
                 TimeRemaining = 0f;
         }
 
@@ -48,7 +47,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Enabled = false;
             LastSwooped = DateTime.UtcNow;
-            Utils.DefaultOutfit(Player);
+            DefaultOutfit(Player);
         }
 
         public void HitSwoop()
@@ -59,10 +58,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             TimeRemaining = CustomGameOptions.SwoopDuration;
             Invis();
             UsesLeft--;
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-            writer.Write((byte)ActionsRPC.Swoop);
-            writer.Write(PlayerId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            CallRpc(CustomRPC.Action, ActionsRPC.Swoop, this);
         }
 
         public override void UpdateHud(HudManager __instance)

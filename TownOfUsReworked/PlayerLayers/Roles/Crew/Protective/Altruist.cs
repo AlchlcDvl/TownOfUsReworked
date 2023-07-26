@@ -12,22 +12,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public bool Success;
         public DateTime LastRevived;
 
+        public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Altruist : Colors.Crew;
+        public override string Name => "Altruist";
+        public override LayerEnum Type => LayerEnum.Altruist;
+        public override RoleEnum RoleType => RoleEnum.Altruist;
+        public override Func<string> StartText => () => "Sacrifice Yourself To Save Another";
+        public override Func<string> AbilitiesText => () => $"- You can revive a dead body\n- Reviving someone takes {CustomGameOptions.AltReviveDuration}s\n- If a meeting is called during"
+            + " your revive, the revive fails";
+        public override InspectorResults InspectorResults => InspectorResults.PreservesLife;
+
         public Altruist(PlayerControl player) : base(player)
         {
-            Name = "Altruist";
-            StartText = () => "Sacrifice Yourself To Save Another";
-            AbilitiesText = () => $"- You can revive a dead body\n- Reviving someone takes {CustomGameOptions.AltReviveDuration}s\n- If a meeting is called during your revive, the revive "
-                + "fails";
-            Color = CustomGameOptions.CustomCrewColors ? Colors.Altruist : Colors.Crew;
-            RoleType = RoleEnum.Altruist;
             RoleAlignment = RoleAlignment.CrewProt;
-            InspectorResults = InspectorResults.PreservesLife;
-            Type = LayerEnum.Altruist;
             UsesLeft = CustomGameOptions.ReviveCount;
             ReviveButton = new(this, "Revive", AbilityTypes.Dead, "ActionSecondary", HitRevive, true);
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public override void UpdateHud(HudManager __instance)
@@ -40,15 +38,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var timespan = DateTime.UtcNow - LastRevived;
             var num = Player.GetModifiedCooldown(CustomGameOptions.ReviveCooldown) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void Revive()
         {
             if (!Reviving && CustomPlayer.Local.PlayerId == ReviveButton.TargetBody.ParentId)
             {
-                Utils.Flash(Color, CustomGameOptions.AltReviveDuration);
+                Flash(Color, CustomGameOptions.AltReviveDuration);
 
                 if (CustomGameOptions.AltruistTargetBody)
                     ReviveButton.TargetBody?.gameObject.Destroy();
@@ -57,7 +56,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Reviving = true;
             TimeRemaining -= Time.deltaTime;
 
-            if (Utils.Meeting || IsDead)
+            if (Meeting || IsDead)
             {
                 Success = false;
                 TimeRemaining = 0f;
@@ -75,12 +74,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         private void FinishRevive()
         {
-            var player = Utils.PlayerByBody(RevivingBody);
+            var player = PlayerByBody(RevivingBody);
+
+            if (!player.Data.IsDead)
+                return;
+
             var targetRole = GetRole(player);
             var formerKiller = targetRole.KilledBy;
             targetRole.DeathReason = DeathReasonEnum.Revived;
             targetRole.KilledBy = " By " + PlayerName;
-            Utils.Revive(player);
+            player.Revive();
             UsesLeft--;
 
             if (player.Is(ObjectifierEnum.Lovers) && CustomGameOptions.BothLoversDie)
@@ -89,33 +92,27 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 var loverRole = GetRole(lover);
                 loverRole.DeathReason = DeathReasonEnum.Revived;
                 loverRole.KilledBy = " By " + PlayerName;
-                Utils.Revive(lover);
+                lover.Revive();
             }
 
             if (UsesLeft == 0)
-                Utils.RpcMurderPlayer(Player, Player);
+                RpcMurderPlayer(Player, Player);
 
             if (formerKiller.Contains(CustomPlayer.LocalCustom.Data.PlayerName))
             {
-                LocalRole.AllArrows.Add(player.PlayerId, new(PlayerControl.LocalPlayer, Color));
-                Utils.Flash(Color);
+                LocalRole.AllArrows.Add(player.PlayerId, new(CustomPlayer.Local, Color));
+                Flash(Color);
             }
         }
 
         public void HitRevive()
         {
-            if (Utils.IsTooFar(Player, ReviveButton.TargetBody) || ReviveTimer() != 0f || !ButtonUsable)
+            if (IsTooFar(Player, ReviveButton.TargetBody) || ReviveTimer() != 0f || !ButtonUsable)
                 return;
 
-            var playerId = ReviveButton.TargetBody.ParentId;
             RevivingBody = ReviveButton.TargetBody;
-            var player = Utils.PlayerById(playerId);
-            Utils.Spread(Player, player);
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-            writer.Write((byte)ActionsRPC.AltruistRevive);
-            writer.Write(PlayerId);
-            writer.Write(playerId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            Spread(Player, PlayerByBody(RevivingBody));
+            CallRpc(CustomRPC.Action, ActionsRPC.AltruistRevive, this, RevivingBody);
             TimeRemaining = CustomGameOptions.AltReviveDuration;
             Success = true;
             Revive();

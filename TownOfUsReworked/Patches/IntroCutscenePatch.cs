@@ -43,7 +43,6 @@ namespace TownOfUsReworked.Patches
             __instance.__4__this.RoleText.text = role.Name;
             __instance.__4__this.RoleText.color = role.Color;
             __instance.__4__this.YouAreText.color = role.Color;
-            __instance.__4__this.YouAreText.text = "You Are The";
             __instance.__4__this.RoleBlurbText.text = role.StartText() + statusString;
             __instance.__4__this.RoleBlurbText.color = role.Color;
         }

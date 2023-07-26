@@ -1,200 +1,68 @@
 namespace TownOfUsReworked.Patches
 {
     //The code is from The Other Roles: Community Edition with slight modifications; link :- https://github.com/JustASysAdmin/TheOtherRoles2/blob/main/TheOtherRoles/Patches/IntroPatch.cs
-    //Under GPL v3
+    //Under GPL v3 with some modifications
     [HarmonyPatch]
     public static class RandomSpawns
     {
         [HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.OnDestroy))]
         public static class IntroCutsceneOnDestroyPatch
         {
-            public static void Prefix() => RandomSpawn();
+            public static void Prefix()
+            {
+                HUD.GameSettings.gameObject.SetActive(false);
+                DataManager.Settings.Gameplay.ScreenShake = true;
+
+                if (!HUD.Chat.isActiveAndEnabled)
+                    HUD.Chat.SetVisible(CustomPlayer.Local.CanChat());
+
+                RandomSpawn();
+            }
         }
 
         [HarmonyPatch(typeof(ExileController), nameof(ExileController.WrapUp))]
         public static class BaseExileControllerPatch
         {
-            public static void Postfix() => RandomSpawn();
+            public static void Postfix()
+            {
+                HUD.GameSettings.gameObject.SetActive(false);
+                DataManager.Settings.Gameplay.ScreenShake = true;
+
+                if (!HUD.Chat.isActiveAndEnabled)
+                    HUD.Chat.SetVisible(CustomPlayer.Local.CanChat());
+
+                RandomSpawn();
+            }
         }
 
         private static void RandomSpawn()
         {
-            if (!AmongUsClient.Instance.AmHost || !CustomGameOptions.RandomSpawns || TownOfUsReworked.VanillaOptions.MapId is 4 or 5)
+            if (!AmongUsClient.Instance.AmHost || !CustomGameOptions.RandomSpawns || TownOfUsReworked.NormalOptions.MapId is 4 or 5)
                 return;
 
-            var skeldSpawn = new List<Vector3>()
+            var allLocations = new List<Vector3>();
+
+            foreach (var vent in AllVents)
+                allLocations.Add(GetVentPosition(vent));
+
+            var tobeadded = TownOfUsReworked.NormalOptions.MapId switch
             {
-                new(-2.2f, 2.2f, 0f), //Cafeteria. botton. top left.
-                new(0.7f, 2.2f, 0f), //Caffeteria. button. top right.
-                new(-2.2f, -0.2f, 0f), //Caffeteria. button. bottom left.
-                new(0.7f, -0.2f, 0f), //Caffeteria. button. bottom right.
-                new(4.3f, 0f, 0f), //Cafeteria vent
-                new(10f, 3f, 0f), //Weapons top
-                new(9.5f, -1f, 0f), //Weapons bottom
-                new(6.5f, -3.5f, 0f), //O2
-                new(11.5f, -3.5f, 0f), //O2-nav hall
-                new(17.0f, -3.5f, 0f), //Navigation top
-                new(18.2f, -5.7f, 0f), //Navigation bottom
-                new(16f, -2f, 0f), //Navigation vent
-                new(11.5f, -6.5f, 0f), //Nav-shields top
-                new(9.5f, -8.5f, 0f), //Nav-shields bottom
-                new(9.2f, -12.2f, 0f), //Shields top
-                new(8.0f, -14.3f, 0f), //Shields bottom
-                new(2.5f, -16f, 0f), //Comms left
-                new(4.2f, -16.4f, 0f), //Comms middle
-                new(5.5f, -16f, 0f), //Comms right
-                new(-1.5f, -10.0f, 0f), //Storage top
-                new(-1.5f, -15.5f, 0f), //Storage bottom
-                new(-4.5f, -12.5f, 0f), //Storrage left
-                new(0.3f, -12.5f, 0f), //Storrage right
-                new(4.5f, -7.5f, 0f), //Admin top
-                new(4.5f, -9.5f, 0f), //Admin bottom
-                new(-9.0f, -8.0f, 0f), //Elec top left
-                new(-6.0f, -8.0f, 0f), //Elec top right
-                new(-8.0f, -11.0f, 0f), //Elec bottom
-                new(-12.0f, -13.0f, 0f), //Elec-lower hall
-                new(-17f, -10f, 0f), //Lower engine top
-                new(-17.0f, -13.0f, 0f), //Lower engine bottom
-                new(-21.5f, -3.0f, 0f), //Reactor top
-                new(-21.5f, -8.0f, 0f), //Reactor bottom
-                new(-13.0f, -3.0f, 0f), //Security top
-                new(-12.6f, -5.6f, 0f), //Security bottom
-                new(-17.0f, 2.5f, 0f), //Upper engibe top
-                new(-17.0f, -1.0f, 0f), //Upper engine bottom
-                new(-10.5f, 1.0f, 0f), //Upper-mad hall
-                new(-10.5f, -2.0f, 0f), //Medbay top
-                new(-6.5f, -4.5f, 0f) //Medbay bottom
+                0 => SkeldSpawns,
+                1 => MiraSpawns,
+                2 => PolusSpawns,
+                3 => dlekSSpawns,
+                _ => null
             };
 
-            var miraSpawn = new List<Vector3>()
-            {
-                new(-4.5f, 3.5f, 0f), //Launchpad top
-                new(-4.5f, -1.4f, 0f), //Launchpad bottom
-                new(8.5f, -1f, 0f), //Launchpad- med hall
-                new(14f, -1.5f, 0f), //Medbay
-                new(16.5f, 3f, 0f), //Comms
-                new(10f, 5f, 0f), //Lockers
-                new(6f, 1.5f, 0f), //Locker room
-                new(2.5f, 13.6f, 0f), //Reactor
-                new(6f, 12f, 0f), //Reactor middle
-                new(9.5f, 13f, 0f), //Lab
-                new(15f, 9f, 0f), //Bottom left cross
-                new(17.9f, 11.5f, 0f), //Middle cross
-                new(14f, 17.3f, 0f), //Office
-                new(19.5f, 21f, 0f), //Admin
-                new(14f, 24f, 0f), //Greenhouse left
-                new(22f, 24f, 0f), //Greenhouse right
-                new(21f, 8.5f, 0f), //Bottom right cross
-                new(28f, 3f, 0f), //Caf right
-                new(22f, 3f, 0f), //Caf left
-                new(19f, 4f, 0f), //Storage
-                new(22f, -2f, 0f), //Balcony
-            };
-
-            var polusSpawn = new List<Vector3>()
-            {
-                new(16.6f, -1f, 0f), //Dropship top
-                new(16.6f, -5f, 0f), //Dropship bottom
-                new(20f, -9f, 0f), //Above storrage
-                new(22f, -7f, 0f), //Right fuel
-                new(25.5f, -6.9f, 0f), //Drill
-                new(29f, -9.5f, 0f), //Lab lockers
-                new(29.5f, -8f, 0f), //Lab weather notes
-                new(35f, -7.6f, 0f), //Lab table
-                new(40.4f, -8f, 0f), //Lab scan
-                new(33f, -10f, 0f), //Lab toilet
-                new(39f, -15f, 0f), //Specimen hall top
-                new(36.5f, -19.5f, 0f), //Specimen top
-                new(36.5f, -21f, 0f), //Specimen bottom
-                new(28f, -21f, 0f), //Specimen hall bottom
-                new(24f, -20.5f, 0f), //Admin tv
-                new(22f, -25f, 0f), //Admin books
-                new(16.6f, -17.5f, 0f), //Office coffe
-                new(22.5f, -16.5f, 0f), //Office projector
-                new(24f, -17f, 0f), //Office figure
-                new(27f, -16.5f, 0f), //Office lifelines
-                new(32.7f, -15.7f, 0f), //Lavapool
-                new(31.5f, -12f, 0f), //Snowmad below lab
-                new(10f, -14f, 0f), //Below storrage
-                new(21.5f, -12.5f, 0f), //Storrage vent
-                new(19f, -11f, 0f), //Storrage toolrack
-                new(12f, -7f, 0f), //Left fuel
-                new(5f, -7.5f, 0f), //Above elec
-                new(10f, -12f, 0f), //Elec fence
-                new(9f, -9f, 0f), //Elec lockers
-                new(5f, -9f, 0f), //Elec window
-                new(4f, -11.2f, 0f), //Elec tapes
-                new(5.5f, -16f, 0f), //Elec-O2 hall
-                new(1f, -17.5f, 0f), //O2 tree hayball
-                new(3f, -21f, 0f), //O2 middle
-                new(2f, -19f, 0f), //O2 gas
-                new(1f, -24f, 0f), //O2 water
-                new(7f, -24f, 0f), //Under O2
-                new(9f, -20f, 0f), //Right outside of O2
-                new(7f, -15.8f, 0f), //Snowman under elec
-                new(11f, -17f, 0f), //Comms table
-                new(12.7f, -15.5f, 0f), //Comms antenna pult
-                new(13f, -24.5f, 0f), //Weapons window
-                new(15f, -17f, 0f), //Between coms-office
-                new(17.5f, -25.7f, 0f), //Snowman under office
-            };
-
-            var dleksSpawn = new List<Vector3>()
-            {
-                new(2.2f, 2.2f, 0f), //Cafeteria. botton. top left.
-                new(-0.7f, 2.2f, 0f), //Caffeteria. button. top right.
-                new(2.2f, -0.2f, 0f), //Caffeteria. button. bottom left.
-                new(-0.7f, -0.2f, 0f), //Caffeteria. button. bottom right.
-                new(-10.0f, 3.0f, 0f), //Weapons top
-                new(-9.0f, 1.0f, 0f), //Weapons bottom
-                new(-6.5f, -3.5f, 0f), //O2
-                new(-11.5f, -3.5f, 0f), //O2-nav hall
-                new(-17.0f, -3.5f, 0f), //Navigation top
-                new(-18.2f, -5.7f, 0f), //Navigation bottom
-                new(-11.5f, -6.5f, 0f), //Nav-shields top
-                new(-9.5f, -8.5f, 0f), //Nav-shields bottom
-                new(-9.2f, -12.2f, 0f), //Shields top
-                new(-8.0f, -14.3f, 0f), //Shields bottom
-                new(-2.5f, -16f, 0f), //Comms left
-                new(-4.2f, -16.4f, 0f), //Comms middle
-                new(-5.5f, -16f, 0f), //Comms right
-                new(1.5f, -10.0f, 0f), //Storage top
-                new(1.5f, -15.5f, 0f), //Storage bottom
-                new(4.5f, -12.5f, 0f), //Storrage left
-                new(-0.3f, -12.5f, 0f), //Storrage right
-                new(-4.5f, -7.5f, 0f), //Admin top
-                new(-4.5f, -9.5f, 0f), //Admin bottom
-                new(9.0f, -8.0f, 0f), //Elec top left
-                new(6.0f, -8.0f, 0f), //Elec top right
-                new(8.0f, -11.0f, 0f), //Elec bottom
-                new(12.0f, -13.0f, 0f), //Elec-lower hall
-                new(17f, -10f, 0f), //Lower engine top
-                new(17.0f, -13.0f, 0f), //Lower engine bottom
-                new(21.5f, -3.0f, 0f), //Reactor top
-                new(21.5f, -8.0f, 0f), //Reactor bottom
-                new(13.0f, -3.0f, 0f), //Security top
-                new(12.6f, -5.6f, 0f), //Security bottom
-                new(17.0f, 2.5f, 0f), //Upper engibe top
-                new(17.0f, -1.0f, 0f), //Upper engine bottom
-                new(10.5f, 1.0f, 0f), //Upper-mad hall
-                new(10.5f, -2.0f, 0f), //Medbay top
-                new(6.5f, -4.5f, 0f) //Medbay bottom
-            };
+            if (tobeadded != null)
+                allLocations.AddRange(tobeadded);
 
             foreach (var player in CustomPlayer.AllPlayers)
             {
                 if (player.Data.Disconnected || player.Data.IsDead)
                     continue;
 
-                var location = TownOfUsReworked.VanillaOptions.MapId switch
-                {
-                    0 => skeldSpawn.Random(),
-                    1 => miraSpawn.Random(),
-                    2 => polusSpawn.Random(),
-                    3 => dleksSpawn.Random(),
-                    _ => throw new NotImplementedException(),
-                };
-
+                var location = allLocations.Random();
                 player.NetTransform.RpcSnapTo(new(location.x, location.y));
             }
         }

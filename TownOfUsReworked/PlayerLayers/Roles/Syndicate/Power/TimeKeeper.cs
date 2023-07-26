@@ -8,34 +8,33 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public float TimeRemaining;
         public bool Controlling => TimeRemaining > 0f;
 
+        public override Color32 Color => ClientGameOptions.CustomSynColors ? Colors.TimeKeeper : Colors.Syndicate;
+        public override string Name => "Time Keeper";
+        public override LayerEnum Type => LayerEnum.TimeKeeper;
+        public override RoleEnum RoleType => RoleEnum.TimeKeeper;
+        public override Func<string> StartText => () => "Bend Time To Your Will";
+        public override Func<string> AbilitiesText => () => $"- You can {(HoldsDrive ? "rewind players" : "freeze time, making people unable to move")}\n{CommonAbilities}";
+        public override InspectorResults InspectorResults => InspectorResults.MovesAround;
+
         public TimeKeeper(PlayerControl player) : base(player)
         {
-            Name = "Time Keeper";
-            StartText = () => "Bend Time To Your Will";
-            AbilitiesText = () => $"- You can freeze time, making people unable to move\n- With the Chaos Drive, you rewind players instead\n{CommonAbilities}";
-            RoleType = RoleEnum.TimeKeeper;
             RoleAlignment = RoleAlignment.SyndicatePower;
-            Color = CustomGameOptions.CustomSynColors ? Colors.TimeKeeper : Colors.Syndicate;
-            Type = LayerEnum.TimeKeeper;
             TimeButton = new(this, "Time", AbilityTypes.Effect, "Secondary", TimeControl);
-            InspectorResults = InspectorResults.MovesAround;
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float TimeTimer()
         {
             var timespan = DateTime.UtcNow - LastTimed;
             var num = Player.GetModifiedCooldown(CustomGameOptions.TimeControlCooldown) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void Control()
         {
             if (!Enabled)
-                Utils.Flash(Color, CustomGameOptions.TimeControlDuration);
+                Flash(Color, CustomGameOptions.TimeControlDuration);
 
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
@@ -46,7 +45,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     GetRole(player).Rewinding = true;
             }
 
-            if (Utils.Meeting)
+            if (Meeting)
                 TimeRemaining = 0f;
         }
 
@@ -61,12 +60,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void TimeControl()
         {
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-            writer.Write((byte)ActionsRPC.TimeControl);
-            writer.Write(PlayerId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
             TimeRemaining = CustomGameOptions.TimeControlDuration;
             Control();
+            CallRpc(CustomRPC.Action, ActionsRPC.TimeControl, this);
         }
 
         public override void UpdateHud(HudManager __instance)

@@ -10,25 +10,23 @@
         public CustomButton BugButton;
         public Dictionary<byte, TMP_Text> PlayerNumbers = new();
 
+        public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Operative : Colors.Crew;
+        public override string Name => "Operative";
+        public override LayerEnum Type => LayerEnum.Operative;
+        public override RoleEnum RoleType => RoleEnum.Operative;
+        public override Func<string> StartText => () => "Detect Which Roles Are Here";
+        public override Func<string> AbilitiesText => () => "- You can place bugs around the map\n- Upon triggering the bugs, the player's role will be included in a list to be shown in " +
+            "the next meeting\n- You cansee which colors are where on the admin table\n- On Vitals, the time of death for each player will be shown";
+        public override InspectorResults InspectorResults => InspectorResults.DropsItems;
+
         public Operative(PlayerControl player) : base(player)
         {
-            Name = "Operative";
-            StartText = () => "Detect Which Roles Are Here";
-            AbilitiesText = () => "- You can place bugs around the map\n- Upon triggering the bugs, the player's role will be included in a list to be shown in the next meeting\n- You can"
-                + "see which colors are where on the admin table\n- On Vitals, the time of death for each player will be shown";
-            Color = CustomGameOptions.CustomCrewColors ? Colors.Operative : Colors.Crew;
-            RoleType = RoleEnum.Operative;
-            BuggedPlayers = new();
             UsesLeft = CustomGameOptions.MaxBugs;
             RoleAlignment = RoleAlignment.CrewInvest;
-            Bugs = new();
-            InspectorResults = InspectorResults.DropsItems;
             PlayerNumbers = new();
-            Type = LayerEnum.Operative;
+            BuggedPlayers = new();
+            Bugs = new();
             BugButton = new(this, "Bug", AbilityTypes.Effect, "ActionSecondary", PlaceBug, true);
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public override void OnLobby()
@@ -42,8 +40,9 @@
         {
             var timespan = DateTime.UtcNow - LastBugged;
             var num = Player.GetModifiedCooldown(CustomGameOptions.BugCooldown) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void GenNumber(PlayerVoteArea voteArea)
@@ -66,11 +65,11 @@
                 GenNumber(voteArea);
 
             if (BuggedPlayers.Count == 0)
-                Utils.HUD.Chat.AddChat(PlayerControl.LocalPlayer, "No one triggered your bugs.");
+                HUD.Chat.AddChat(CustomPlayer.Local, "No one triggered your bugs.");
             else if (BuggedPlayers.Count < CustomGameOptions.MinAmountOfPlayersInBug)
-                Utils.HUD.Chat.AddChat(PlayerControl.LocalPlayer, "Not enough players triggered your bugs.");
+                HUD.Chat.AddChat(CustomPlayer.Local, "Not enough players triggered your bugs.");
             else if (BuggedPlayers.Count == 1)
-                Utils.HUD.Chat.AddChat(PlayerControl.LocalPlayer, $"A {BuggedPlayers[0]} triggered your bug.");
+                HUD.Chat.AddChat(CustomPlayer.Local, $"A {BuggedPlayers[0]} triggered your bug.");
             else
             {
                 var message = "The following roles triggered your bug: ";
@@ -87,7 +86,7 @@
                     position++;
                 }
 
-                Utils.HUD.Chat.AddChat(PlayerControl.LocalPlayer, message);
+                HUD.Chat.AddChat(CustomPlayer.Local, message);
             }
         }
 

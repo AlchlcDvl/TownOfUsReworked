@@ -9,29 +9,29 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public PlayerControl AmbushedPlayer;
         public CustomButton AmbushButton;
 
+        public override Color32 Color => ClientGameOptions.CustomIntColors ? Colors.Ambusher : Colors.Intruder;
+        public override string Name => "Ambusher";
+        public override LayerEnum Type => LayerEnum.Ambusher;
+        public override RoleEnum RoleType => RoleEnum.Ambusher;
+        public override Func<string> StartText => () => "Spook The <color=#8CFFFFFF>Crew</color>";
+        public override Func<string> AbilitiesText => () => "- You can ambush players\n- Ambushed players will be forced to be on alert and kill whoever interacts with them\n" +
+            CommonAbilities;
+        public override InspectorResults InspectorResults => InspectorResults.HindersOthers;
+
         public Ambusher(PlayerControl player) : base(player)
         {
-            Name = "Ambusher";
-            StartText = () => "Spook The <color=#8CFFFFFF>Crew</color>";
-            AbilitiesText = () => $"- You can ambush players\n- Ambushed players will be forced to be on alert and kill whoever interacts with them\n{CommonAbilities}";
-            Color = CustomGameOptions.CustomIntColors ? Colors.Ambusher : Colors.Intruder;
-            RoleType = RoleEnum.Ambusher;
             RoleAlignment = RoleAlignment.IntruderKill;
-            InspectorResults = InspectorResults.HindersOthers;
-            Type = LayerEnum.Ambusher;
             AmbushedPlayer = null;
             AmbushButton = new(this, "Ambush", AbilityTypes.Direct, "Secondary", HitAmbush, Exception1);
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float AmbushTimer()
         {
             var timespan = DateTime.UtcNow - LastAmbushed;
             var num = Player.GetModifiedCooldown(CustomGameOptions.AmbushCooldown) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void Ambush()
@@ -39,7 +39,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
 
-            if (IsDead || AmbushedPlayer.Data.IsDead || AmbushedPlayer.Data.Disconnected || Utils.Meeting)
+            if (IsDead || AmbushedPlayer.Data.IsDead || AmbushedPlayer.Data.Disconnected || Meeting)
                 TimeRemaining = 0f;
         }
 
@@ -52,21 +52,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void HitAmbush()
         {
-            if (AmbushTimer() != 0f || Utils.IsTooFar(Player, AmbushButton.TargetPlayer) || AmbushButton.TargetPlayer == AmbushedPlayer)
+            if (AmbushTimer() != 0f || IsTooFar(Player, AmbushButton.TargetPlayer) || AmbushButton.TargetPlayer == AmbushedPlayer)
                 return;
 
-            var interact = Utils.Interact(Player, AmbushButton.TargetPlayer);
+            var interact = Interact(Player, AmbushButton.TargetPlayer);
 
             if (interact[3])
             {
                 TimeRemaining = CustomGameOptions.AmbushDuration;
                 AmbushedPlayer = AmbushButton.TargetPlayer;
+                CallRpc(CustomRPC.Action, ActionsRPC.Ambush, this, AmbushedPlayer);
                 Ambush();
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                writer.Write((byte)ActionsRPC.Ambush);
-                writer.Write(PlayerId);
-                writer.Write(AmbushedPlayer.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
             }
             else if (interact[0])
                 LastAmbushed = DateTime.UtcNow;
@@ -75,7 +71,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         }
 
         public bool Exception1(PlayerControl player) => player == AmbushedPlayer || (player.Is(Faction) && !CustomGameOptions.AmbushMates) || (player.Is(SubFaction) &&
-            SubFaction != SubFaction.None);
+            SubFaction != SubFaction.None && !CustomGameOptions.AmbushMates);
 
         public override void UpdateHud(HudManager __instance)
         {

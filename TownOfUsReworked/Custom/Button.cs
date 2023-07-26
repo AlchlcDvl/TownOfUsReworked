@@ -2,28 +2,28 @@ namespace TownOfUsReworked.Custom
 {
     public class CustomButton
     {
-        public readonly static List<CustomButton> AllButtons = new();
+        public static readonly List<CustomButton> AllButtons = new();
         public AbilityButton Base;
-        public PlayerLayer Owner;
-        public string Button;
-        public AbilityTypes Type;
-        public string Keybind;
-        public bool PostDeath;
-        public bool HasUses;
-        public Click DoClick;
+        public readonly PlayerLayer Owner;
+        public readonly string Button;
+        public readonly AbilityTypes Type;
+        public readonly string Keybind;
+        public readonly bool PostDeath;
+        public readonly bool HasUses;
+        public readonly Click DoClick;
         public bool Clickable;
         public PlayerControl TargetPlayer;
         public DeadBody TargetBody;
         public Vent TargetVent;
-        public Special TargetSpecial;
         public Exclude Exception;
         private GameObject Block;
+        private bool Local => Owner.Local || TownOfUsReworked.MCIActive;
+        private bool Disabled;
         public delegate void Click();
         public delegate bool Exclude(PlayerControl player);
-        private bool SetAliveActive => !Owner.IsDead && Owner.Player.Is(Owner.Type, Owner.LayerType) && ConstantVariables.IsRoaming && Owner.Local &&
-            (Utils.HUD.UseButton.isActiveAndEnabled || Utils.HUD.PetButton.isActiveAndEnabled);
-        private bool SetDeadActive => Owner.IsDead && Owner.Player.Is(Owner.Type, Owner.LayerType) && ConstantVariables.IsRoaming && Owner.Local && PostDeath &&
-            (Utils.HUD.UseButton.isActiveAndEnabled || Utils.HUD.PetButton.isActiveAndEnabled);
+        private bool SetAliveActive => !Owner.IsDead && Owner.Player.Is(Owner.Type, Owner.LayerType) && IsRoaming && Owner.Local && ButtonsActive;
+        private bool SetDeadActive => Owner.IsDead && Owner.Player.Is(Owner.Type, Owner.LayerType) && IsRoaming && Owner.Local && PostDeath && ButtonsActive;
+        private static bool ButtonsActive => HUD.UseButton.isActiveAndEnabled || HUD.PetButton.isActiveAndEnabled;
 
         public CustomButton(PlayerLayer owner, string button, AbilityTypes type, string keybind, Click click, Exclude exception, bool hasUses = false, bool postDeath = false)
         {
@@ -35,12 +35,23 @@ namespace TownOfUsReworked.Custom
             HasUses = hasUses;
             PostDeath = postDeath;
             Exception = exception ?? BlankBool;
-            Base = InstantiateButton();
-            Base.graphic.sprite = AssetManager.GetSprite(Button);
-            Base.gameObject.name = Button + Owner.PlayerName;
-            Base.GetComponent<PassiveButton>().OnClick.AddListener(new Action(Clicked));
-            Disable();
             AllButtons.Add(this);
+
+            if (Local)
+                CreateButton();
+        }
+
+        private void CreateButton()
+        {
+            Base = InstantiateButton();
+            Base.graphic.sprite = GetSprite(Button);
+            Base.gameObject.name = Base.name = Button + Owner.Name + Owner.PlayerName;
+            Base.GetComponent<PassiveButton>().OnClick.AddListener(new Action(Clicked));
+            Block = new($"{Base}Block");
+            Block.AddComponent<SpriteRenderer>().sprite = GetSprite("Blocked");
+            Block.transform.localScale *= 0.75f;
+            Block.SetActive(false);
+            Block.transform.SetParent(Base.transform);
         }
 
         public CustomButton(PlayerLayer owner, string button, AbilityTypes type, string keybind, Click click, bool hasUses = false, bool postDeath = false) : this(owner, button, type,
@@ -48,13 +59,14 @@ namespace TownOfUsReworked.Custom
 
         private static AbilityButton InstantiateButton()
         {
-            var button = UObject.Instantiate(Utils.HUD.AbilityButton, Utils.HUD.AbilityButton.transform.parent);
-            button.buttonLabelText.fontSharedMaterial = Utils.HUD.SabotageButton.buttonLabelText.fontSharedMaterial;
+            var button = UObject.Instantiate(HUD.AbilityButton, HUD.AbilityButton.transform.parent);
+            button.buttonLabelText.fontSharedMaterial = HUD.SabotageButton.buttonLabelText.fontSharedMaterial;
             button.graphic.enabled = true;
             button.buttonLabelText.enabled = true;
             button.usesRemainingText.enabled = true;
             button.usesRemainingSprite.enabled = true;
-            button.commsDown.SetActive(false);
+            button.commsDown.Destroy();
+            button.commsDown = null;
             button.GetComponent<PassiveButton>().OnClick = new();
             return button;
         }
@@ -69,13 +81,11 @@ namespace TownOfUsReworked.Custom
                 DoClick();
         }
 
-        private void SetAliveTarget(bool usable, bool condition)
+        private void SetAliveTarget(bool effectActive)
         {
-            if ((Owner.IsDead && !PostDeath) || !usable)
+            if (!Clickable)
             {
-                foreach (var player in CustomPlayer.AllPlayers)
-                    player.MyRend().material.SetFloat("_Outline", 0f);
-
+                DisableTarget();
                 return;
             }
 
@@ -88,119 +98,119 @@ namespace TownOfUsReworked.Custom
                     player.MyRend().material.SetFloat("_Outline", 0f);
             }
 
-            if (TargetPlayer != null && !Base.isCoolingDown && condition && !Owner.Player.CannotUse())
+            if ((Clickable && TargetPlayer != null) || effectActive)
             {
-                TargetPlayer.MyRend().material.SetFloat("_Outline", 1f);
-                TargetPlayer.MyRend().material.SetColor("_OutlineColor", Owner.Color);
+                if (TargetPlayer != null)
+                {
+                    var component = TargetPlayer.MyRend();
+                    component.material.SetFloat("_Outline", 1f);
+                    component.material.SetColor("_OutlineColor", Owner.Color);
+                }
+
                 Base?.SetEnabled();
             }
             else
                 Base?.SetDisabled();
         }
 
-        private void SetDeadTarget(bool usable, bool condition)
+        private void SetDeadTarget(bool effectActive)
         {
-            if ((Owner.IsDead && !PostDeath) || !usable)
+            if (!Clickable)
             {
-                foreach (var body in Utils.AllBodies)
-                {
-                    foreach (var oldComponent in body?.bodyRenderers)
-                        oldComponent?.material.SetFloat("_Outline", 0f);
-                }
-
+                DisableTarget();
                 return;
             }
 
-            TargetBody = Owner.Player.GetClosestDeadPlayer();
+            TargetBody = Owner.Player.GetClosestBody();
 
-            if (TargetBody != null && !Base.isCoolingDown && condition && !Owner.Player.CannotUse())
+            if (effectActive || (Clickable && TargetBody != null))
             {
-                var component = TargetBody.bodyRenderers.FirstOrDefault();
-                component.material.SetFloat("_Outline", 1f);
-                component.material.SetColor("_OutlineColor", Owner.Color);
+                if (TargetBody != null && !Exception(PlayerByBody(TargetBody)))
+                {
+                    var component = TargetBody.bodyRenderers.FirstOrDefault();
+                    component.material.SetFloat("_Outline", 1f);
+                    component.material.SetColor("_OutlineColor", Owner.Color);
+                }
+
                 Base?.SetEnabled();
             }
             else
                 Base?.SetDisabled();
         }
 
-        public void SetVentTarget(bool usable, bool condition)
+        private void SetVentTarget(bool effectActive)
         {
-            if ((Owner.IsDead && !PostDeath) || !usable)
+            if (!Clickable)
             {
-                foreach (var vent in Utils.AllVents)
-                {
-                    vent.myRend.material.SetFloat("_Outline", 0f);
-                    vent.myRend.material.SetFloat("_AddColor", 0f);
-                }
-
+                DisableTarget();
                 return;
             }
 
             TargetVent = Owner.Player.GetClosestVent();
 
-            if (TargetVent != null && !Base.isCoolingDown && condition && !Owner.Player.CannotUse())
+            if ((Clickable && TargetVent != null) || effectActive)
             {
-                var component = TargetVent.myRend;
-                component.material.SetFloat("_Outline", 1f);
-                component.material.SetColor("_OutlineColor", Owner.Color);
-                component.material.SetColor("_AddColor", Owner.Color);
+                if (TargetVent != null)
+                {
+                    var component = TargetVent.myRend;
+                    component.material.SetFloat("_Outline", 1f);
+                    component.material.SetColor("_OutlineColor", Owner.Color);
+                    component.material.SetColor("_AddColor", Owner.Color);
+                }
+
                 Base?.SetEnabled();
             }
             else
                 Base?.SetDisabled();
         }
 
-        public void SetEffectTarget(bool effectActive, bool condition = true)
+        private void SetEffectTarget(bool effectActive)
         {
-            if ((!Base.isCoolingDown && condition && !Owner.Player.CannotUse()) || effectActive)
+            if (effectActive || Clickable)
                 Base?.SetEnabled();
             else
                 Base?.SetDisabled();
         }
 
-        public void Update(string label, float timer, float maxTimer, int uses, bool effectActive, float effectTimer, float maxDuration, bool condition = true, bool usable = true)
+        private void SetTarget(bool effectActive)
         {
-            if (!Owner.Local || ConstantVariables.IsLobby || (HasUses && uses <= 0) || Utils.Meeting || ConstantVariables.Inactive || !usable || (!PostDeath && Owner.IsDead))
-            {
-                Disable();
-                return;
-            }
-
             if (Type == AbilityTypes.Direct)
-                SetAliveTarget(usable, condition);
+                SetAliveTarget(effectActive);
             else if (Type == AbilityTypes.Dead)
-                SetDeadTarget(usable, condition);
+                SetDeadTarget(effectActive);
             else if (Type == AbilityTypes.Effect)
-                SetEffectTarget(effectActive, condition);
+                SetEffectTarget(effectActive);
             else if (Type == AbilityTypes.Vent)
-                SetVentTarget(usable, condition);
+                SetVentTarget(effectActive);
+        }
 
-            if (!Block && Base.isActiveAndEnabled)
-            {
-                Block = new("CustomBlock");
-                Block.AddComponent<SpriteRenderer>().sprite = AssetManager.GetSprite("Blocked");
-            }
+        public void Update(string label, float timer, float maxTimer, int uses, bool effectActive, float effectTimer, float maxDuration, float cooldownDiff, float cooldownMult, bool
+            condition = true, bool usable = true)
+        {
+            if ((!Local || IsLobby || (HasUses && uses <= 0) || Meeting || Inactive || !usable || (!PostDeath && Owner.IsDead)) && !Disabled)
+                Disable();
 
-            if (Block)
-            {
-                var pos = Base.transform.position;
-                pos.z = -50f;
-                Block.transform.position = pos;
-                Block.SetActive(Owner.IsBlocked && Base.isActiveAndEnabled && SetAliveActive);
-            }
+            if (usable && Disabled)
+                Enable();
 
+            if (!Local || Disabled)
+                return;
+
+            var pos = Base.transform.position;
+            pos.z = -50f;
+            Block.transform.position = pos;
+            Block.SetActive(Owner.IsBlocked && Base.isActiveAndEnabled && SetAliveActive);
+            SetTarget(effectActive);
             Base.buttonLabelText.text = Owner.IsBlocked ? "BLOCKED" : label;
-            Base.commsDown.SetActive(false);
             Base.buttonLabelText.SetOutlineColor(Owner.Color);
             Base.gameObject.SetActive(PostDeath ? SetDeadActive : SetAliveActive);
-            Clickable = Base && !effectActive && usable && condition && Base.ButtonUsable() && !(HasUses && uses <= 0) && !Utils.Meeting && !Owner.IsBlocked && Owner.Player.CanMove &&
-                Base.isActiveAndEnabled;
+            Clickable = Base && !effectActive && usable && condition && !(HasUses && uses <= 0) && !Meeting && !Owner.IsBlocked && Owner.Player.CanMove && !Base.isCoolingDown &&
+                Base.isActiveAndEnabled && !Owner.Player.CannotUse() && (PostDeath ? SetDeadActive : SetAliveActive) && !LobbyBehaviour.Instance;
 
             if (effectActive)
                 Base.SetFillUp(effectTimer, maxDuration);
             else
-                Base.SetCoolDown(timer, Owner.Player.GetModifiedCooldown(maxTimer));
+                Base.SetCoolDown(timer, PostDeath ? maxTimer : Owner.Player.GetModifiedCooldown(maxTimer, cooldownDiff, cooldownMult));
 
             if (HasUses)
                 Base.SetUsesRemaining(uses);
@@ -217,15 +227,39 @@ namespace TownOfUsReworked.Custom
 
         public void Update(string label, float timer, float maxTimer, bool condition = true, bool usable = true) => Update(label, timer, maxTimer, 0, condition, usable);
 
-        public void Update(string label, float timer, float maxTimer, int uses, bool condition = true, bool usable = true) => Update(label, timer, maxTimer, uses, false, 0, 1, condition,
-            usable);
+        public void Update(string label, float timer, float maxTimer, int uses, bool condition = true, bool usable = true) => Update(label, timer, maxTimer, uses, false, 0, 1, 0, 1,
+            condition, usable);
+
+        public void Update(string label, float timer, float maxTimer, float cooldownDiff, bool condition = true, bool usable = true) => Update(label, timer, maxTimer, 0, cooldownDiff, 1,
+            condition, usable);
+
+        public void Update(string label, float timer, float maxTimer, float cooldownDiff, float cooldownMult, bool condition = true, bool usable = true) => Update(label, timer, maxTimer, 0,
+            cooldownDiff, cooldownMult, condition, usable);
+
+        public void Update(string label, float timer, float maxTimer, int uses, float cooldownDiff, bool condition = true, bool usable = true) => Update(label, timer, maxTimer, uses,
+            false, 0, 1, cooldownDiff, 1, condition, usable);
+
+        public void Update(string label, float timer, float maxTimer, int uses, float cooldownDiff, float cooldownMult, bool condition = true, bool usable = true) => Update(label, timer,
+            maxTimer, uses, false, 0, 1, cooldownDiff, cooldownMult, condition, usable);
 
         public void Update(string label, float timer, float maxTimer, bool effectActive, float effectTimer, float maxDuration, bool condition = true, bool usable = true) => Update(label,
-            timer, maxTimer, 0, effectActive, effectTimer, maxDuration, condition, usable);
+            timer, maxTimer, 0, effectActive, effectTimer, maxDuration, 0, 1, condition, usable);
 
-        public void Disable()
+        public void Update(string label, float timer, float maxTimer, int uses, bool effectActive, float effectTimer, float maxDuration, bool condition = true, bool usable = true) =>
+            Update(label, timer, maxTimer, uses, effectActive, effectTimer, maxDuration, 0, 1, condition, usable);
+
+        public void Update(string label, float timer, float maxTimer, bool effectActive, float effectTimer, float maxDuration, float cooldownDiff, bool condition = true, bool usable = true)
+            => Update(label, timer, maxTimer, 0, effectActive, effectTimer, maxDuration, cooldownDiff, 1, condition, usable);
+
+        public void Update(string label, float timer, float maxTimer, int uses, bool effectActive, float effectTimer, float maxDuration, float cooldownDiff, bool condition = true, bool
+            usable = true) => Update(label, timer, maxTimer, uses, effectActive, effectTimer, maxDuration, cooldownDiff, 1, condition, usable);
+
+        public void Update(string label, float timer, float maxTimer, bool effectActive, float effectTimer, float maxDuration, float cooldownDiff, float cooldownMult, bool condition = true,
+            bool usable = true) => Update(label, timer, maxTimer, 0, effectActive, effectTimer, maxDuration, cooldownDiff, cooldownMult, condition, usable);
+
+        private void DisableTarget()
         {
-            Base?.gameObject?.SetActive(false);
+            Base?.SetDisabled();
 
             switch (Type)
             {
@@ -257,7 +291,24 @@ namespace TownOfUsReworked.Custom
             }
         }
 
-        public void Enable() => Base?.gameObject?.SetActive(true);
+        public void Disable()
+        {
+            if (Disabled)
+                return;
+
+            Disabled = true;
+            Base?.gameObject?.SetActive(false);
+            DisableTarget();
+        }
+
+        public void Enable()
+        {
+            if (!Disabled)
+                return;
+
+            Disabled = false;
+            Base?.gameObject?.SetActive(true);
+        }
 
         public void Destroy(bool remove = true)
         {
@@ -267,13 +318,12 @@ namespace TownOfUsReworked.Custom
             Base?.SetCoolDown(0, 0);
             Base?.SetDisabled();
             Base?.buttonLabelText?.gameObject?.SetActive(false);
-            Base?.gameObject?.SetActive(false);
-            Base?.commsDown?.SetActive(false);
             Base?.buttonLabelText?.gameObject.Destroy();
-            Base?.commsDown?.Destroy();
+            Base?.gameObject?.SetActive(false);
             Base?.gameObject?.Destroy();
             Base.Destroy();
             Base = null;
+            Disabled = true;
 
             if (remove)
                 AllButtons.Remove(this);

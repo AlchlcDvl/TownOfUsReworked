@@ -135,7 +135,7 @@ namespace TownOfUsReworked.Patches
         {
             public static void Postfix(EndGameManager __instance)
             {
-                if (ConstantVariables.IsHnS)
+                if (IsHnS)
                     return;
 
                 var position = Camera.main.ViewportToWorldPoint(new(0f, 1f, Camera.main.nearClipPlane));
@@ -224,7 +224,7 @@ namespace TownOfUsReworked.Patches
 
                 var roleSummaryTextMesh = roleSummary.GetComponent<TMP_Text>();
                 roleSummaryTextMesh.alignment = TextAlignmentOptions.TopLeft;
-                roleSummaryTextMesh.color = Color.white;
+                roleSummaryTextMesh.color = UColor.white;
                 roleSummaryTextMesh.fontSizeMin = 1.5f;
                 roleSummaryTextMesh.fontSizeMax = 1.5f;
                 roleSummaryTextMesh.fontSize = 1.5f;

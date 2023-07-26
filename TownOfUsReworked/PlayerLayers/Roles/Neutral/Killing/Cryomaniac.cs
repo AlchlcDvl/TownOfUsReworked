@@ -11,52 +11,52 @@
         public DateTime LastKilled;
         public bool LastKiller => !CustomPlayer.AllPlayers.Any(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) ||
             x.Is(RoleAlignment.CrewKill) || x.Is(RoleAlignment.CrewAudit) || x.Is(RoleAlignment.NeutralPros) || x.Is(RoleAlignment.NeutralNeo) || (x.Is(RoleAlignment.NeutralKill) && x !=
-            Player)));
-        public int DousedAlive => Doused.Count(x => !Utils.PlayerById(x).Data.IsDead && !Utils.PlayerById(x).Data.Disconnected);
+            Player))) && CustomGameOptions.CryoLastKillerBoost;
+        public int DousedAlive => Doused.Count(x => !PlayerById(x).Data.IsDead && !PlayerById(x).Data.Disconnected);
+
+        public override Color32 Color => ClientGameOptions.CustomNeutColors ? Colors.Cryomaniac : Colors.Neutral;
+        public override string Name => "Cryomaniac";
+        public override LayerEnum Type => LayerEnum.Cryomaniac;
+        public override RoleEnum RoleType => RoleEnum.Cryomaniac;
+        public override Func<string> StartText => () => "Who Likes Ice Cream?";
+        public override Func<string> AbilitiesText => () => "- You can douse players in coolant\n- Doused players can be frozen, which kills all of them at once at the start of the next " +
+            $"meeting\n- People who interact with you will also get doused{(LastKiller ? "\n- You can kill normally" : "")}";
+        public override InspectorResults InspectorResults => InspectorResults.SeeksToDestroy;
 
         public Cryomaniac(PlayerControl player) : base(player)
         {
-            Name = "Cryomaniac";
-            StartText = () => "Who Likes Ice Cream?";
-            AbilitiesText = () => "- You can douse players in coolant\n- Doused players can be frozen, which kills all of them at once at the start of the next meeting\n- People who " +
-                $"interact with you will also get doused{(LastKiller ? "\n- You can kill normally" : "")}";
             Objectives = () => "- Freeze anyone who can oppose you";
-            Color = CustomGameOptions.CustomNeutColors ? Colors.Cryomaniac : Colors.Neutral;
-            RoleType = RoleEnum.Cryomaniac;
             RoleAlignment = RoleAlignment.NeutralKill;
             Doused = new();
-            Type = LayerEnum.Cryomaniac;
             DouseButton = new(this, "CryoDouse", AbilityTypes.Direct, "ActionSecondary", Douse, Exception);
             FreezeButton = new(this, "Freeze", AbilityTypes.Effect, "Secondary", Freeze);
             KillButton = new(this, "CryoKill", AbilityTypes.Direct, "Tertiary", Kill, Exception);
-            InspectorResults = InspectorResults.SeeksToDestroy;
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float DouseTimer()
         {
             var timespan = DateTime.UtcNow - LastDoused;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.DouseCd) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.CryoDouseCooldown) * 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public float KillTimer()
         {
             var timespan = DateTime.UtcNow - LastKilled;
             var num = Player.GetModifiedCooldown(CustomGameOptions.DouseCd) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void Kill()
         {
-            if (Utils.IsTooFar(Player, KillButton.TargetPlayer) || KillTimer() != 0f)
+            if (IsTooFar(Player, KillButton.TargetPlayer) || KillTimer() != 0f)
                 return;
 
-            var interact = Utils.Interact(Player, KillButton.TargetPlayer, true);
+            var interact = Interact(Player, KillButton.TargetPlayer, true);
 
             if (interact[0] || interact[3])
                 LastKilled = DateTime.UtcNow;
@@ -68,15 +68,11 @@
 
         public void RpcSpreadDouse(PlayerControl source, PlayerControl target)
         {
-            if (!source.Is(RoleType) || Doused.Contains(target.PlayerId))
+            if (!source.Is(RoleType) || Doused.Contains(target.PlayerId) || source != Player)
                 return;
 
             Doused.Add(target.PlayerId);
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-            writer.Write((byte)ActionsRPC.FreezeDouse);
-            writer.Write(PlayerId);
-            writer.Write(target.PlayerId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            CallRpc(CustomRPC.Action, ActionsRPC.FreezeDouse, this, target);
         }
 
         public override void OnMeetingStart(MeetingHud __instance)
@@ -89,12 +85,12 @@
                 {
                     foreach (var player in cryo.Doused)
                     {
-                        var player2 = Utils.PlayerById(player);
+                        var player2 = PlayerById(player);
 
                         if (player2.Data.IsDead || player2.Data.Disconnected || player2.Is(RoleEnum.Pestilence) || player2.IsProtected())
                             continue;
 
-                        Utils.RpcMurderPlayer(Player, player2, DeathReasonEnum.Frozen);
+                        RpcMurderPlayer(Player, player2, DeathReasonEnum.Frozen);
                     }
 
                     cryo.Doused.Clear();
@@ -104,8 +100,7 @@
         }
 
         public bool Exception(PlayerControl player) => Doused.Contains(player.PlayerId) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction
-            is Faction.Intruder or Faction.Syndicate) || player == Player.GetOtherLover() || player == Player.GetOtherRival() || (player.Is(ObjectifierEnum.Mafia) &&
-            Player.Is(ObjectifierEnum.Mafia));
+            is Faction.Intruder or Faction.Syndicate) || Player.IsLinkedTo(player);
 
         public override void UpdateHud(HudManager __instance)
         {
@@ -117,10 +112,10 @@
 
         public void Douse()
         {
-            if (Utils.IsTooFar(Player, DouseButton.TargetPlayer) || DouseTimer() != 0f || Doused.Contains(DouseButton.TargetPlayer.PlayerId))
+            if (IsTooFar(Player, DouseButton.TargetPlayer) || DouseTimer() != 0f || Doused.Contains(DouseButton.TargetPlayer.PlayerId))
                 return;
 
-            var interact = Utils.Interact(Player, DouseButton.TargetPlayer, LastKiller);
+            var interact = Interact(Player, DouseButton.TargetPlayer, LastKiller);
 
             if (interact[3])
                 RpcSpreadDouse(Player, DouseButton.TargetPlayer);

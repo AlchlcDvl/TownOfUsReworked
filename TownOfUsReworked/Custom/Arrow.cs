@@ -5,54 +5,65 @@ namespace TownOfUsReworked.Custom
         private ArrowBehaviour Arrow;
         private SpriteRenderer Render;
         private GameObject ArrowObj;
-        public PlayerControl Owner;
+        public readonly PlayerControl Owner;
         private readonly float Interval;
         private DateTime _time;
         private Vector3 Target;
         private SpriteRenderer Point;
-        private UColor ArrowColor;
-        public readonly static List<CustomArrow> AllArrows = new();
+        private Color? ArrowColor;
+        private bool Disabled;
+        public static readonly List<CustomArrow> AllArrows = new();
 
-        public CustomArrow(PlayerControl owner, UColor color, float interval = 0f)
+        public CustomArrow(PlayerControl owner, Color color, float interval = 0f)
         {
             Owner = owner;
             Interval = interval;
             ArrowColor = color;
             _time = DateTime.UnixEpoch;
-            Instantiate();
             AllArrows.Add(this);
+
+            if (Owner == CustomPlayer.Local)
+                Instantiate();
+            else
+                Disabled = true;
         }
 
         private void Instantiate()
         {
+            if (Owner != CustomPlayer.Local)
+                return;
+
             ArrowObj = new("CustomArrow") { layer = 5 };
-            ArrowObj.transform.SetParent(Owner.gameObject.transform);
+            ArrowObj.transform.SetParent(Owner?.gameObject?.transform);
             Arrow = ArrowObj.AddComponent<ArrowBehaviour>();
             Render = ArrowObj.AddComponent<SpriteRenderer>();
-            Render.sprite = AssetManager.GetSprite("Arrow");
-            Render.color = ArrowColor;
+            Render.sprite = GetSprite("Arrow");
+            Render.color = ArrowColor.Value;
             Arrow.image = Render;
             Arrow.target = Owner.transform.position;
         }
 
-        public void NewSprite(string sprite) => Render.sprite = AssetManager.GetSprite(sprite);
+        public void NewSprite(string sprite) => Render.sprite = GetSprite(sprite);
 
-        public void Update(UColor? color = null) => Update(Target, color);
+        public void Update(Color? color = null) => Update(Target, color);
 
-        public void Update(Vector3 target, UColor? color = null)
+        public void Update(Vector3 target, Color? color = null)
         {
-            if (ArrowObj == null || Arrow == null || Render == null || ArrowColor == default)
-                Instantiate();
+            if (ArrowObj == null || Arrow == null || Render == null || ArrowColor == null || ArrowColor.Value == default || Disabled)
+                return;
 
             if (Owner != CustomPlayer.Local)
             {
-                Arrow.target = CustomPlayer.Local.transform.position;
+                Arrow.target = CustomPlayer.LocalCustom.Position;
                 Arrow.Update();
+                Disable();
                 return;
             }
 
             if (color.HasValue)
-                Render.color = ArrowColor = color.Value;
+                Render.color = color.Value;
+
+            ArrowColor = color;
 
             if (_time <= DateTime.UtcNow.AddSeconds(-Interval))
             {
@@ -66,6 +77,9 @@ namespace TownOfUsReworked.Custom
 
         public void Destroy(bool remove = true)
         {
+            if (Disabled)
+                return;
+
             ArrowObj.Destroy();
             Arrow.Destroy();
             Render.Destroy();
@@ -74,6 +88,7 @@ namespace TownOfUsReworked.Custom
             Arrow = null;
             Render = null;
             Point = null;
+            Disabled = true;
 
             if (remove)
                 AllArrows.Remove(this);
@@ -83,7 +98,7 @@ namespace TownOfUsReworked.Custom
 
         public void UpdateArrowBlip(MapBehaviour __instance)
         {
-            if (!__instance || ArrowObj == null || Arrow == null || Render == null || ArrowColor == default || Utils.Meeting || Owner != CustomPlayer.Local)
+            if (!__instance || ArrowObj == null || Arrow == null || Render == null || ArrowColor == default || Meeting || Owner != CustomPlayer.Local)
                 return;
 
             var v = Target;
@@ -98,7 +113,7 @@ namespace TownOfUsReworked.Custom
             }
 
             Point.transform.localPosition = v;
-            PlayerMaterial.SetColors(ArrowColor, Point);
+            PlayerMaterial.SetColors(ArrowColor.Value, Point);
         }
     }
 }

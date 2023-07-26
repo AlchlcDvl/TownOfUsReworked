@@ -11,8 +11,8 @@ namespace TownOfUsReworked.Objects
         public Color Color;
         public Vector3 Position;
         private static bool Grey => CustomGameOptions.AnonymousFootPrint || DoUndo.IsCamoed;
-        public readonly static Dictionary<PlayerControl, int> OddEven = new();
-        private readonly static List<Footprint> AllPrints = new();
+        public static readonly Dictionary<PlayerControl, int> OddEven = new();
+        private static readonly List<Footprint> AllPrints = new();
 
         public Footprint(PlayerControl player)
         {
@@ -21,19 +21,20 @@ namespace TownOfUsReworked.Objects
             Player = player;
             Time2 = (int)Time.time;
             Color = Color.black;
-            Start();
             AllPrints.Add(this);
 
             if (!OddEven.ContainsKey(Player))
                 OddEven.Add(Player, 0);
             else
                 OddEven[Player]++;
+
+            Start();
         }
 
         private void Start()
         {
             GObject = new("Footprint") { layer = 11 };
-            GObject.AddSubmergedComponent(ModCompatibility.ElevatorMover);
+            GObject.AddSubmergedComponent("ElevatorMover");
             GObject.transform.position = Position;
             GObject.transform.localScale *= Player.GetModifiedSize();
             GObject.transform.Rotate(Vector3.forward * Vector2.SignedAngle(Vector2.up, Velocity));
@@ -41,7 +42,7 @@ namespace TownOfUsReworked.Objects
             GObject.SetActive(true);
 
             Sprite = GObject.AddComponent<SpriteRenderer>();
-            Sprite.sprite = OddEven[Player] % 2 == 0 ? AssetManager.GetSprite("FootprintLeft") : AssetManager.GetSprite("FootprintRight");
+            Sprite.sprite = OddEven[Player] % 2 == 0 ? GetSprite("FootprintLeft") : GetSprite("FootprintRight");
             Sprite.color = Color;
         }
 

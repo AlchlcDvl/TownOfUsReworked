@@ -5,58 +5,66 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         public bool Turned;
         public bool Betrayed;
         public Faction Side = Faction.Crew;
-        public bool Betray => ((Side == Faction.Intruder && ConstantVariables.LastImp) || (Side == Faction.Syndicate && ConstantVariables.LastSyn)) && !IsDead && Turned && !Betrayed;
+        public bool Betray => ((Side == Faction.Intruder && LastImp) || (Side == Faction.Syndicate && LastSyn)) && !IsDead && Turned && !Betrayed;
 
-        public Fanatic(PlayerControl player) : base(player)
+        public override Color32 Color
         {
-            Name = "Fanatic";
-            Symbol = "♠";
-            TaskText = () => !Turned ? "- Get attacked by either an <color=#FF0000FF>Intruder</color> or a <color=#008000FF>Syndicate</color> to join their side" : (Side ==
-                Faction.Intruder ? Role.IntrudersWinCon : (Side == Faction.Syndicate ? Role.SyndicateWinCon : "- You feel conflicted"));
-            Color = CustomGameOptions.CustomObjectifierColors ? Colors.Fanatic : Colors.Objectifier;
-            ObjectifierType = ObjectifierEnum.Fanatic;
-            Hidden = !CustomGameOptions.FanaticKnows && !Turned;
-            Type = LayerEnum.Fanatic;
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
+            get
+            {
+                if (Turned)
+                {
+                    if (Side == Faction.Syndicate)
+                        return Colors.Syndicate;
+                    else if (Side == Faction.Intruder)
+                        return Colors.Intruder;
+                    else
+                        return ClientGameOptions.CustomObjColors ? Colors.Fanatic : Colors.Objectifier;
+                }
+                else
+                    return ClientGameOptions.CustomObjColors ? Colors.Fanatic : Colors.Objectifier;
+            }
         }
+        public override string Name => "Fanatic";
+        public override string Symbol => "♠";
+        public override LayerEnum Type => LayerEnum.Fanatic;
+        public override ObjectifierEnum ObjectifierType => ObjectifierEnum.Fanatic;
+        public override Func<string> TaskText => () => !Turned ? "- Get attacked by either an <color=#FF0000FF>Intruder</color> or a <color=#008000FF>Syndicate</color> to join their side" :
+            "";
+
+        public Fanatic(PlayerControl player) : base(player) => Hidden = !CustomGameOptions.FanaticKnows && !Turned;
 
         public void TurnFanatic(Faction faction)
         {
             var fanaticRole = Role.GetRole(Player);
             fanaticRole.Faction = faction;
             Turned = true;
+            Hidden = false;
 
-            if (CustomPlayer.Local.Is(RoleEnum.Mystic))
-                Utils.Flash(Colors.Mystic);
+            if (CustomPlayer.Local.Is(RoleEnum.Mystic) || CustomPlayer.Local.Is(faction))
+                Flash(Colors.Mystic);
 
             if (faction == Faction.Syndicate)
             {
-                Color = Colors.Syndicate;
                 fanaticRole.IsSynFanatic = true;
                 fanaticRole.FactionColor = Colors.Syndicate;
                 fanaticRole.Objectives = () => Role.SyndicateWinCon;
             }
             else if (faction == Faction.Intruder)
             {
-                Color = Colors.Intruder;
                 fanaticRole.IsIntFanatic = true;
                 fanaticRole.FactionColor = Colors.Intruder;
                 fanaticRole.Objectives = () => Role.IntrudersWinCon;
             }
 
             Side = faction;
-            Hidden = false;
             fanaticRole.RoleAlignment = fanaticRole.RoleAlignment.GetNewAlignment(fanaticRole.Faction);
-            Player.RegenTask();
 
             foreach (var snitch in Ability.GetAbilities<Snitch>(AbilityEnum.Snitch))
             {
                 if (CustomGameOptions.SnitchSeesFanatic)
                 {
                     if (snitch.TasksLeft <= CustomGameOptions.SnitchTasksRemaining && Local)
-                        Role.LocalRole.AllArrows.Add(snitch.PlayerId, new(Player, Colors.Snitch, 0));
+                        Role.LocalRole.AllArrows.Add(snitch.PlayerId, new(Player, Colors.Snitch));
                     else if (snitch.TasksDone && CustomPlayer.Local == snitch.Player)
                         Role.GetRole(snitch.Player).AllArrows.Add(PlayerId, new(snitch.Player, Colors.Snitch));
                 }
@@ -68,29 +76,29 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
                     Role.LocalRole.AllArrows.Add(revealer.PlayerId, new(Player, revealer.Color));
             }
 
-            if (CustomPlayer.Local.Is(RoleEnum.Mystic) && !Local && !IntroCutscene.Instance)
-                Utils.Flash(Colors.Mystic);
+            if (CustomPlayer.Local.Is(RoleEnum.Mystic) && !Local)
+                Flash(Colors.Mystic);
 
-            if ((Local || CustomPlayer.Local.Is(faction)) && !IntroCutscene.Instance)
-                Utils.Flash(Colors.Fanatic);
+            if (Local || CustomPlayer.Local.Is(faction))
+                Flash(Colors.Fanatic);
         }
 
         public void TurnBetrayer()
         {
             var role = Role.GetRole(Player);
+            Betrayed = true;
 
             if (role.RoleType == RoleEnum.Betrayer)
                 return;
 
             var betrayer = new Betrayer(Player) { Objectives = role.Objectives };
             betrayer.RoleUpdate(role);
-            Betrayed = true;
 
-            if (Local && !IntroCutscene.Instance)
-                Utils.Flash(Colors.Betrayer);
+            if (Local)
+                Flash(Colors.Betrayer);
 
-            if (CustomPlayer.Local.Is(RoleEnum.Seer) && !IntroCutscene.Instance)
-                Utils.Flash(Colors.Seer);
+            if (CustomPlayer.Local.Is(RoleEnum.Seer))
+                Flash(Colors.Seer);
         }
 
         public override void UpdateHud(HudManager __instance)
@@ -99,10 +107,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
 
             if (Betray && Turned)
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
-                writer.Write((byte)TurnRPC.TurnFanaticBetrayer);
-                writer.Write(PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                CallRpc(CustomRPC.Change, TurnRPC.TurnFanaticBetrayer, this);
                 TurnBetrayer();
             }
         }

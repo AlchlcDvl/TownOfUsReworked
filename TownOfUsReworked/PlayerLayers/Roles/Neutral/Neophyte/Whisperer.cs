@@ -6,31 +6,30 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public DateTime LastWhispered;
         public int WhisperCount;
         public int ConversionCount;
-        public List<(byte, int)> PlayerConversion = new();
+        public Dictionary<byte, int> PlayerConversion = new();
         public float WhisperConversion;
         public List<byte> Persuaded = new();
 
+        public override Color32 Color => ClientGameOptions.CustomNeutColors ? Colors.Whisperer : Colors.Neutral;
+        public override string Name => "Whisperer";
+        public override LayerEnum Type => LayerEnum.Whisperer;
+        public override RoleEnum RoleType => RoleEnum.Whisperer;
+        public override Func<string> StartText => () => "PSST";
+        public override Func<string> AbilitiesText => () => "- You can whisper to players around, slowly bending them to your ideals\n- When a player reaches 100% conversion, they will " +
+            "defect and join the <color=#F995FCFF>Sect</color>";
+        public override InspectorResults InspectorResults => InspectorResults.BringsChaos;
+
         public Whisperer(PlayerControl player) : base(player)
         {
-            Name = "Whisperer";
-            Color = Colors.Whisperer;
-            AbilitiesText = () => "- You can whisper to players around, slowly bending them to your ideals\n- When a player reaches 100% conversion, they will defect and join the " +
-                "<color=#F995FCFF>Sect</color>";
             Objectives = () => "- Persuade or kill anyone who can oppose the <color=#F995FCFF>Sect</color>";
-            RoleType = RoleEnum.Whisperer;
             RoleAlignment = RoleAlignment.NeutralNeo;
             SubFaction = SubFaction.Sect;
             SubFactionColor = Colors.Sect;
             PlayerConversion = new();
             WhisperConversion = CustomGameOptions.InitialWhisperRate;
             Persuaded = new() { Player.PlayerId };
-            Type = LayerEnum.Whisperer;
             WhisperButton = new(this, "Whisper", AbilityTypes.Effect, "ActionSecondary", Whisper);
-            InspectorResults = InspectorResults.BringsChaos;
             SubFactionSymbol = "Λ";
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float WhisperTimer()
@@ -38,18 +37,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var timespan = DateTime.UtcNow - LastWhispered;
             var num = Player.GetModifiedCooldown(CustomGameOptions.WhisperCooldown, CustomGameOptions.WhisperCooldownIncreases ? (CustomGameOptions.WhisperCooldownIncrease * WhisperCount) :
                 0) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
-        public List<(byte, int)> GetPlayers()
+        public Dictionary<byte, int> GetPlayers()
         {
-            var playerList = new List<(byte, int)>();
+            var playerList = new Dictionary<byte, int>();
 
             foreach (var player in CustomPlayer.AllPlayers)
             {
                 if (Player != player)
-                    playerList.Add((player.PlayerId, 100));
+                    playerList.Add(player.PlayerId, 100);
             }
 
             return playerList;
@@ -61,7 +61,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 return;
 
             var truePosition = Player.GetTruePosition();
-            var closestPlayers = Utils.GetClosestPlayers(truePosition, CustomGameOptions.WhisperRadius);
+            var closestPlayers = GetClosestPlayers(truePosition, CustomGameOptions.WhisperRadius);
             closestPlayers.Remove(Player);
 
             if (PlayerConversion.Count == 0)
@@ -70,23 +70,22 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var oldStats = PlayerConversion;
             PlayerConversion.Clear();
 
-            foreach (var conversionRate in oldStats)
+            foreach (var (player, stats) in oldStats)
             {
-                var player = conversionRate.Item1;
-                var stats = conversionRate.Item2;
+                var stat = stats;
 
-                if (closestPlayers.Contains(Utils.PlayerById(player)))
-                    stats -= (int)WhisperConversion;
+                if (closestPlayers.Contains(PlayerById(player)))
+                    stat -= (int)WhisperConversion;
 
-                if (!Utils.PlayerById(player).Data.IsDead)
-                    PlayerConversion.Add((player, stats));
+                if (!PlayerById(player).Data.IsDead)
+                    PlayerConversion.Add(player, stat);
             }
 
-            var removals = new List<(byte, int)>();
+            var removals = new Dictionary<byte, int>();
 
             foreach (var playerConversion in PlayerConversion)
             {
-                if (playerConversion.Item2 <= 0)
+                if (playerConversion.Value <= 0)
                 {
                     ConversionCount++;
 
@@ -96,21 +95,23 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     if (WhisperConversion < 2.5f)
                         WhisperConversion = 2.5f;
 
-                    RoleGen.RpcConvert(playerConversion.Item1, Player.PlayerId, SubFaction.Sect);
-                    removals.Add(playerConversion);
+                    RoleGen.RpcConvert(playerConversion.Key, Player.PlayerId, SubFaction.Sect);
+                    removals.Add(playerConversion.Key, playerConversion.Value);
                 }
             }
 
-            PlayerConversion.RemoveRange(removals);
             LastWhispered = DateTime.UtcNow;
             WhisperCount++;
+
+            foreach (var (key, _) in removals)
+                PlayerConversion.Remove(key);
         }
 
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            WhisperButton.Update("WHISPER", WhisperTimer(), CustomGameOptions.WhisperCooldown + (CustomGameOptions.WhisperCooldownIncreases ? (CustomGameOptions.WhisperCooldownIncrease *
-                WhisperCount) : 0));
+            WhisperButton.Update("WHISPER", WhisperTimer(), CustomGameOptions.WhisperCooldown, CustomGameOptions.WhisperCooldownIncreases ? (CustomGameOptions.WhisperCooldownIncrease *
+                WhisperCount) : 0);
         }
     }
 }

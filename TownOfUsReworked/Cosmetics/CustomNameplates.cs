@@ -1,15 +1,18 @@
+/*using Innersloth.Assets;
+
 namespace TownOfUsReworked.Cosmetics
 {
     [HarmonyPatch]
     public static class CustomNameplates
     {
-        /*private static bool SubLoaded;
+        private static bool SubLoaded;
         private static bool Running;
-        public readonly static Dictionary<string, NameplateExtension> CustomNameplateRegistry = new();
+        public static readonly Dictionary<string, NameplateExtension> CustomNameplateRegistry = new();
+        public static readonly Dictionary<string, NamePlateViewData> CustomNameplateViewDatas = new();
 
         private static Sprite CreateNameplateSprite(string path, bool fromDisk = false)
         {
-            var texture = fromDisk ? AssetManager.LoadDiskTexture(path) : AssetManager.LoadResourceTexture(path);
+            var texture = fromDisk ? LoadDiskTexture(path) : LoadResourceTexture(path);
 
             if (texture == null)
                 return null;
@@ -27,14 +30,10 @@ namespace TownOfUsReworked.Cosmetics
         private static NamePlateData CreateNameplateBehaviour(CustomNameplate cn, bool fromDisk = false)
         {
             if (fromDisk)
-            {
-                var filePath = Path.GetDirectoryName(Application.dataPath) + "\\CustomNameplates\\";
-                cn.ID = filePath + cn.ID + ".png";
-            }
+                cn.ID = TownOfUsReworked.Nameplates + cn.ID + ".png";
 
             var nameplate = ScriptableObject.CreateInstance<NamePlateData>();
-            var viewData = nameplate.CreateAddressableAsset().GetAsset();
-            viewData = ScriptableObject.CreateInstance<NamePlateViewData>();
+            var viewData = ScriptableObject.CreateInstance<NamePlateViewData>();
             viewData.Image = CreateNameplateSprite(cn.ID, fromDisk);
             nameplate.name = cn.Name;
             nameplate.displayOrder = 99;
@@ -51,6 +50,11 @@ namespace TownOfUsReworked.Cosmetics
             if (!CustomNameplateRegistry.ContainsKey(nameplate.name))
                 CustomNameplateRegistry.Add(nameplate.name, extend);
 
+            if (!CustomNameplateViewDatas.ContainsKey(nameplate.name))
+                CustomNameplateViewDatas.Add(nameplate.name, viewData);
+
+            nameplate.ViewDataRef = new(viewData.Pointer);
+            nameplate.CreateAddressableAsset();
             return nameplate;
         }
 
@@ -61,7 +65,7 @@ namespace TownOfUsReworked.Cosmetics
 
             public static void Prefix(HatManager __instance)
             {
-                if (Running)
+                if (Running || SubLoaded)
                     return;
 
                 Running = true;
@@ -77,14 +81,13 @@ namespace TownOfUsReworked.Cosmetics
                     }
 
                     __instance.allNamePlates = allPlates.ToArray();
+                    SubLoaded = true; //Only loaded if the operation was successful
                 }
                 catch (Exception e)
                 {
                     if (!SubLoaded)
-                        Utils.LogSomething("Unable to add Custom Nameplates\n" + e);
+                        LogSomething("Unable to add Custom Nameplates\n" + e);
                 }
-
-                SubLoaded = true;
             }
 
             public static void Postfix() => Running = false;
@@ -138,7 +141,8 @@ namespace TownOfUsReworked.Cosmetics
                     colorChip.transform.localPosition = new(xpos, ypos, -1f);
                     __instance.StartCoroutine(nameplate.CoLoadIcon(new Action<Sprite, AddressableAsset>((_, _) =>
                     {
-                        colorChip.gameObject.GetComponent<NameplateChip>().image.sprite = nameplate.CreateAddressableAsset().GetAsset().Image;
+                        colorChip.gameObject.GetComponent<NameplateChip>().image.sprite = CustomNameplateViewDatas.TryGetValue(nameplate.name, out var data) ? data.Image :
+                            ShipStatus.Instance.CosmeticsCache.GetNameplate(nameplate.ProdId).Image;
                         colorChip.gameObject.GetComponent<NameplateChip>().ProductId = nameplate.ProductId;
                     })));
                     __instance.ColorChips.Add(colorChip);
@@ -197,10 +201,42 @@ namespace TownOfUsReworked.Cosmetics
             }
         }
 
+        [HarmonyPatch(typeof(PlayerVoteArea), nameof(PlayerVoteArea.PreviewNameplate))]
+        public static class PreviewNameplatePatch
+        {
+            public static void Postfix(PlayerVoteArea __instance, string plateID)
+            {
+                if (!CustomNameplateViewDatas.ContainsKey(plateID))
+                    return;
+
+                var npvd = CustomNameplateViewDatas[plateID];
+
+                if (npvd != null)
+                    __instance.Background.sprite = npvd.Image;
+            }
+        }
+
+        [HarmonyPatch(typeof(CosmeticsCache), nameof(CosmeticsCache.GetNameplate))]
+        public static class CosmeticsCacheGetPlatePatch
+        {
+            public static bool Prefix(CosmeticsCache __instance, string id, ref NamePlateViewData __result)
+            {
+                if (!CustomNameplateViewDatas.ContainsKey(id))
+                    return true;
+
+                __result = CustomNameplateViewDatas[id];
+
+                if (__result == null)
+                    __result = __instance.nameplates["nameplate_NoPlate"].GetAsset();
+
+                return false;
+            }
+        }
+
         public static NameplateExtension GetNameplateExtension(this NamePlateData Nameplate)
         {
             CustomNameplateRegistry.TryGetValue(Nameplate.name, out var ret);
             return ret;
-        }*/
+        }
     }
-}
+}*/

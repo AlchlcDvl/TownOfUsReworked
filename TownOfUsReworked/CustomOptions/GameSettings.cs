@@ -10,7 +10,7 @@ namespace TownOfUsReworked.CustomOptions
         {
             public static void Postfix(ref string __result)
             {
-                if (ConstantVariables.IsHnS)
+                if (IsHnS)
                     return;
 
                 __result = Settings();
@@ -20,7 +20,7 @@ namespace TownOfUsReworked.CustomOptions
         public static string Settings()
         {
             var builder = new StringBuilder();
-            builder.AppendLine($"Currently Viewing Page ({SettingsPage + 1}/8)");
+            builder.AppendLine($"Currently Viewing Page ({SettingsPage + 1}/9)");
             builder.AppendLine("Press The Tab/Page Number To Change Pages");
 
             if (SettingsPage == 0)
@@ -39,37 +39,65 @@ namespace TownOfUsReworked.CustomOptions
                 builder.AppendLine("\n<color=#DD585BFF>Objectifiers</color>");
             else if (SettingsPage == 7)
                 builder.AppendLine("\n<color=#FF9900FF>Abilities</color>");
+            else if (SettingsPage == 8)
+                builder.AppendLine("\nRole Lists");
 
-            foreach (var option in CustomOption.AllOptions.Where(x => x.Menu == (MultiMenu)SettingsPage && x.Active))
+            var tobedisplayed = CustomOption.AllOptions.Where(x => x.Menu == (MultiMenu)SettingsPage && x.Active).ToList();
+
+            foreach (var option in tobedisplayed)
             {
                 if (option.Type == CustomOptionType.Button)
                     continue;
 
-                if (option.Type == CustomOptionType.Header)
-                    builder.AppendLine($"\n{option.Name}");
-                else if (option.Type == CustomOptionType.Nested)
-                {
-                    var nested = (CustomNestedOption)option;
+                var index = tobedisplayed.IndexOf(option);
+                var thing = option.Type != CustomOptionType.Header ? (index == tobedisplayed.Count - 1 || tobedisplayed[index + 1].Type == CustomOptionType.Header ? "┗ " : "┣ ") : "";
 
-                    foreach (var option2 in nested.InternalOptions)
-                    {
-                        if (option2.Type == CustomOptionType.Header)
-                            builder.AppendLine($"\n{option2.Name}");
-                        else if (option2.Type != CustomOptionType.Button)
-                            builder.AppendLine($"    {option2.Name}: {option2}");
-                    }
-                }
+                if (option is CustomNestedOption nested)
+                    nested.InternalOptions.ForEach(x => builder.AppendLine($"{thing}{x}"));
                 else
-                    builder.AppendLine($"    {option.Name}: {option}");
+                    builder.AppendLine($"{thing}{option}");
             }
 
             return $"<size=1.25>{builder}</size>";
         }
 
-        [HarmonyPatch(typeof(GameOptionsMenu), nameof(GameOptionsMenu.Update))]
-        public static class Update
+        public static void UpdatePageNumber()
         {
-            public static void Postfix(ref GameOptionsMenu __instance) => __instance.GetComponentInParent<Scroller>().ContentYBounds.max = (__instance.Children.Length - 6.5f) / 2;
+            if (HUD.Chat.freeChatField.textArea.hasFocus || HUD.Chat.quickChatMenu.IsOpen)
+                return;
+
+            if (Input.GetKeyDown(KeyCode.Tab) && !GameSettingMenu.Instance)
+                SettingsPage = CycleInt(8, 0, SettingsPage, true);
+
+            if (Input.GetKeyDown(KeyCode.Backspace) && !GameSettingMenu.Instance)
+                SettingsPage = CycleInt(8, 0, SettingsPage, false);
+
+            if (Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1))
+                SettingsPage = 0;
+
+            if (Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Keypad2))
+                SettingsPage = 1;
+
+            if (Input.GetKeyDown(KeyCode.Alpha3) || Input.GetKeyDown(KeyCode.Keypad3))
+                SettingsPage = 2;
+
+            if (Input.GetKeyDown(KeyCode.Alpha4) || Input.GetKeyDown(KeyCode.Keypad4))
+                SettingsPage = 3;
+
+            if (Input.GetKeyDown(KeyCode.Alpha5) || Input.GetKeyDown(KeyCode.Keypad5))
+                SettingsPage = 4;
+
+            if (Input.GetKeyDown(KeyCode.Alpha6) || Input.GetKeyDown(KeyCode.Keypad6))
+                SettingsPage = 5;
+
+            if (Input.GetKeyDown(KeyCode.Alpha7) || Input.GetKeyDown(KeyCode.Keypad7))
+                SettingsPage = 6;
+
+            if (Input.GetKeyDown(KeyCode.Alpha8) || Input.GetKeyDown(KeyCode.Keypad8))
+                SettingsPage = 7;
+
+            if (Input.GetKeyDown(KeyCode.Alpha9) || Input.GetKeyDown(KeyCode.Keypad9))
+                SettingsPage = 8;
         }
 
         [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
@@ -77,40 +105,10 @@ namespace TownOfUsReworked.CustomOptions
         {
             public static void Postfix(HudManager __instance)
             {
-                if (ConstantVariables.IsLobby)
+                if (IsLobby)
                     __instance.ReportButton.gameObject.SetActive(false);
 
-                if (Input.GetKeyDown(KeyCode.Tab))
-                {
-                    if (SettingsPage >= 7)
-                        SettingsPage = 0;
-                    else
-                        SettingsPage++;
-                }
-
-                if (Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1))
-                    SettingsPage = 0;
-
-                if (Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Keypad2))
-                    SettingsPage = 1;
-
-                if (Input.GetKeyDown(KeyCode.Alpha3) || Input.GetKeyDown(KeyCode.Keypad3))
-                    SettingsPage = 2;
-
-                if (Input.GetKeyDown(KeyCode.Alpha4) || Input.GetKeyDown(KeyCode.Keypad4))
-                    SettingsPage = 3;
-
-                if (Input.GetKeyDown(KeyCode.Alpha5) || Input.GetKeyDown(KeyCode.Keypad5))
-                    SettingsPage = 4;
-
-                if (Input.GetKeyDown(KeyCode.Alpha6) || Input.GetKeyDown(KeyCode.Keypad6))
-                    SettingsPage = 5;
-
-                if (Input.GetKeyDown(KeyCode.Alpha7) || Input.GetKeyDown(KeyCode.Keypad7))
-                    SettingsPage = 6;
-
-                if (Input.GetKeyDown(KeyCode.Alpha8) || Input.GetKeyDown(KeyCode.Keypad8))
-                    SettingsPage = 7;
+                UpdatePageNumber();
             }
         }
     }

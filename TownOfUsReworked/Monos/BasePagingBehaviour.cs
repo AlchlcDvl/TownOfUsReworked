@@ -1,8 +1,8 @@
 ﻿namespace TownOfUsReworked.Monos
 {
-    public class BasePagingBehaviour : MonoBehaviour
+    public abstract class BasePagingBehaviour : MonoBehaviour
     {
-        public BasePagingBehaviour(IntPtr ptr) : base(ptr) {}
+        protected BasePagingBehaviour(IntPtr ptr) : base(ptr) {}
 
         private int _page;
         public virtual int MaxPerPage => 15;
@@ -18,24 +18,14 @@
             }
         }
 
-        public void Start() => OnPageChanged();
+        public virtual void Start() => OnPageChanged();
 
         public virtual void Update()
         {
             if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.LeftArrow) || Input.mouseScrollDelta.y > 0f)
-            {
-                if (PageIndex == 0)
-                    PageIndex = MaxPageIndex;
-                else
-                    PageIndex--;
-            }
+                PageIndex = CycleInt(MaxPageIndex, 0, PageIndex, false);
             else if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.RightArrow) || Input.mouseScrollDelta.y < 0f)
-            {
-                if (PageIndex == MaxPageIndex)
-                    PageIndex = 0;
-                else
-                    PageIndex++;
-            }
+                PageIndex = CycleInt(MaxPageIndex, 0, PageIndex, true);
         }
     }
 }

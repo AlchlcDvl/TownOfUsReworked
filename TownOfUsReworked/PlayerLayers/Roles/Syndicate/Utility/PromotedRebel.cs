@@ -4,14 +4,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     {
         public PromotedRebel(PlayerControl player) : base(player)
         {
-            Name = "Rebel";
-            RoleType = RoleEnum.PromotedRebel;
-            StartText = () => "Promote Your Fellow <color=#008000FF>Syndicate</color> To Do Better";
-            AbilitiesText = () => "- You have succeeded the former <color=#FFFCCEFF>Rebel</color> and have a shorter cooldown on your former role's abilities\n" +
-                $"{FormerRole?.AbilitiesText()}";
-            Color = CustomGameOptions.CustomSynColors ? Colors.Rebel : Colors.Syndicate;
             RoleAlignment = RoleAlignment.SyndicateSupport;
-            Type = LayerEnum.PromotedRebel;
             SpellCount = 0;
             Framed = new();
             UnwarpablePlayers = new();
@@ -36,7 +29,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             WarpObj.AddSubmergedComponent("ElevatorMover");
             WarpObj.transform.position = new(Player.GetTruePosition().x, Player.GetTruePosition().y, (Player.GetTruePosition().y / 1000f) + 0.01f);
             AnimationPlaying = WarpObj.AddComponent<SpriteRenderer>();
-            AnimationPlaying.sprite = AssetManager.PortalAnimation[0];
+            AnimationPlaying.sprite = PortalAnimation[0];
             AnimationPlaying.material = HatManager.Instance.PlayerMaterial;
             WarpObj.SetActive(true);
             ConfuseMenu = new(Player, ConfuseClick, Exception12);
@@ -51,22 +44,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             PositiveButton = new(this, "Positive", AbilityTypes.Direct, "ActionSecondary", SetPositive, Exception10);
             NegativeButton = new(this, "Negative", AbilityTypes.Direct, "Secondary", SetNegative, Exception11);
             ConcealButton = new(this, "Conceal", AbilityTypes.Effect, "Secondary", HitConceal);
-            FrameButton = new(this, "Frame", AbilityTypes.Direct, "Secondary", HitFrame, Exception7);
-            RadialFrameButton = new(this, "Frame", AbilityTypes.Effect, "Secondary", RadialFrame);
+            FrameButton = new(this, "Frame", AbilityTypes.Direct, "Secondary", Frame, Exception7);
+            RadialFrameButton = new(this, "RadialFrame", AbilityTypes.Effect, "Secondary", RadialFrame);
             ShapeshiftButton = new(this, "Shapeshift", AbilityTypes.Effect, "Secondary", HitShapeshift);
             BombButton = new(this, "Plant", AbilityTypes.Effect, "Secondary", Place);
             DetonateButton = new(this, "Detonate", AbilityTypes.Effect, "Tertiary", Detonate);
             CrusadeButton = new(this, "Crusade", AbilityTypes.Direct, "Secondary", HitCrusade);
             PoisonButton = new(this, "Poison", AbilityTypes.Direct, "ActionSecondary", HitPoison, Exception4);
-            GlobalPoisonButton = new(this, "Poison", AbilityTypes.Effect, "ActionSecondary", HitGlobalPoison);
+            GlobalPoisonButton = new(this, "GlobalPoison", AbilityTypes.Effect, "ActionSecondary", HitGlobalPoison, Exception14);
             WarpButton = new(this, "Warp", AbilityTypes.Effect, "Secondary", Warp);
             ConfuseButton = new(this, "Confuse", AbilityTypes.Effect, "Secondary", HitConfuse);
             TimeButton = new(this, "Time", AbilityTypes.Effect, "Secondary", TimeControl);
             SilenceButton = new(this, "Silence", AbilityTypes.Direct, "Secondary", Silence, Exception13);
-            InspectorResults = InspectorResults.LeadsTheGroup;
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
+            ChargeButton = new(this, "Charge", AbilityTypes.Effect, "Tertiary", Charge);
         }
 
         //Rebel Stuff
@@ -75,21 +65,30 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public float TimeRemaining;
         public bool OnEffect => TimeRemaining > 0f;
 
+        public override Color32 Color => ClientGameOptions.CustomSynColors ? Colors.Rebel : Colors.Syndicate;
+        public override string Name => "Rebel";
+        public override LayerEnum Type => LayerEnum.PromotedRebel;
+        public override RoleEnum RoleType => RoleEnum.PromotedRebel;
+        public override Func<string> StartText => () => "Lead The <color=#008000FF>Syndicate</color>";
+        public override Func<string> AbilitiesText => () => "- You have succeeded the former <color=#FFFCCEFF>Rebel</color> and have a shorter cooldown on your former role's abilities\n" +
+            (FormerRole == null ? "" : $"\n{FormerRole.AbilitiesText()}");
+        public override InspectorResults InspectorResults => FormerRole == null ? InspectorResults.LeadsTheGroup : FormerRole.InspectorResults;
+
         public bool Exception1(PlayerControl player) => player == ConcealedPlayer || player == Player || (player.Is(Faction) && !CustomGameOptions.ConcealMates);
 
-        public bool Exception2(PlayerControl player) => player == Player || player == ShapeshiftPlayer2 || (player.Data.IsDead && Utils.BodyByPlayer(player) == null) || (player.Is(Faction)
+        public bool Exception2(PlayerControl player) => player == Player || player == ShapeshiftPlayer2 || (player.Data.IsDead && BodyByPlayer(player) == null) || (player.Is(Faction)
             && !CustomGameOptions.ShapeshiftMates);
 
-        public bool Exception3(PlayerControl player) => player == Player || player == ShapeshiftPlayer1 || (player.Data.IsDead && Utils.BodyByPlayer(player) == null) || (player.Is(Faction)
+        public bool Exception3(PlayerControl player) => player == Player || player == ShapeshiftPlayer1 || (player.Data.IsDead && BodyByPlayer(player) == null) || (player.Is(Faction)
             && !CustomGameOptions.ShapeshiftMates);
 
         public bool Exception4(PlayerControl player) => player == PoisonedPlayer || player.Is(Faction) || (player.Is(SubFaction) && SubFaction != SubFaction.None);
 
         public bool Exception5(PlayerControl player) => (player == Player && !CustomGameOptions.WarpSelf) || UnwarpablePlayers.ContainsKey(player.PlayerId) || player == WarpPlayer2 ||
-            (Utils.BodyById(player.PlayerId) == null && player.Data.IsDead) || player.IsMoving();
+            (BodyById(player.PlayerId) == null && player.Data.IsDead) || player.IsMoving();
 
         public bool Exception6(PlayerControl player) => (player == Player && !CustomGameOptions.WarpSelf) || UnwarpablePlayers.ContainsKey(player.PlayerId) || player == WarpPlayer1 ||
-            (Utils.BodyById(player.PlayerId) == null && player.Data.IsDead) || player.IsMoving();
+            (BodyById(player.PlayerId) == null && player.Data.IsDead) || player.IsMoving();
 
         public bool Exception7(PlayerControl player) => Framed.Contains(player.PlayerId) || player.Is(Faction) || (player.Is(SubFaction) && SubFaction != SubFaction.None);
 
@@ -97,14 +96,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public bool Exception9(PlayerControl player) => Spelled.Contains(player.PlayerId) || player.Is(Faction);
 
-        public bool Exception10(PlayerControl player) => player == Negative || player.Is(Faction) || (player.Is(SubFaction) && SubFaction != SubFaction.None);
+        public bool Exception10(PlayerControl player) => player == Negative || player.Is(Faction) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || Player.IsLinkedTo(player);
 
-        public bool Exception11(PlayerControl player) => player == Positive || player.Is(Faction) || (player.Is(SubFaction) && SubFaction != SubFaction.None);
+        public bool Exception11(PlayerControl player) => player == Positive || player.Is(Faction) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || Player.IsLinkedTo(player);
 
         public bool Exception12(PlayerControl player) => player == ConfusedPlayer || player == Player || (player.Is(Faction) && !CustomGameOptions.ConfuseImmunity);
 
-        public bool Exception13(PlayerControl player) => player == SilencedPlayer || (player.Is(Faction) && Faction != Faction.Crew && CustomGameOptions.SilenceMates) ||
-            (player.Is(SubFaction) && SubFaction != SubFaction.None && CustomGameOptions.SilenceMates);
+        public bool Exception13(PlayerControl player) => player == SilencedPlayer || (player.Is(Faction) && Faction != Faction.Crew && !CustomGameOptions.SilenceMates) ||
+            (player.Is(SubFaction) && SubFaction != SubFaction.None && !CustomGameOptions.SilenceMates);
+
+        public bool Exception14(PlayerControl player) => player == PoisonedPlayer || (player.Is(Faction) && Faction != Faction.Crew) || (player.Is(SubFaction) && SubFaction !=
+            SubFaction.None) || Player.IsLinkedTo(player);
 
         public override void UpdateHud(HudManager __instance)
         {
@@ -120,7 +122,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             ConfuseButton.Update(flag7 ? "SET TARGET" : "CONFUSE", ConfuseTimer(), CustomGameOptions.ConfuseCooldown, OnEffect, TimeRemaining, CustomGameOptions.ConfuseDuration, true,
                 IsDrunk);
             StalkButton.Update("STALK", StalkTimer(), CustomGameOptions.StalkCd, true, !HoldsDrive && IsStalk);
-            SpellButton.Update("SPELL", SpellTimer(), CustomGameOptions.SpellCooldown + (SpellCount * CustomGameOptions.SpellCooldownIncrease), true, IsSpell);
+            SpellButton.Update("SPELL", SpellTimer(), CustomGameOptions.SpellCooldown, SpellCount * CustomGameOptions.SpellCooldownIncrease, true, IsSpell);
             PositiveButton.Update("SET POSITIVE", PositiveTimer(), CustomGameOptions.CollideCooldown, true, IsCol);
             NegativeButton.Update("SET NEGATIVE", NegativeTimer(), CustomGameOptions.CollideCooldown, true, IsCol);
             ShapeshiftButton.Update(flag5 ? "FIRST TARGET" : (flag6 ? "SECOND TARGET": "SHAPESHIFT"), ShapeshiftTimer(), CustomGameOptions.ShapeshiftCooldown, OnEffect, TimeRemaining,
@@ -138,6 +140,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             TimeButton.Update(HoldsDrive ? "REWIND" : "FREEZE", TimeTimer(), CustomGameOptions.TimeControlCooldown, OnEffect, TimeRemaining, CustomGameOptions.TimeControlDuration, true,
                 IsTK);
             SilenceButton.Update("SILENCE", SilenceTimer(), CustomGameOptions.SilenceCooldown, true, IsSil);
+            ChargeButton.Update("CHARGE", ChargeTimer(), CustomGameOptions.ChargeCooldown, OnEffect, TimeRemaining, CustomGameOptions.ChargeDuration, true, HoldsDrive && IsCol);
 
             if (Input.GetKeyDown(KeyCode.Backspace))
             {
@@ -162,15 +165,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         PoisonedPlayer = null;
                 }
 
-                Utils.LogSomething("Removed a target");
-            }
-
-            var range = CustomGameOptions.CollideRange + (HoldsDrive ? CustomGameOptions.CollideRangeIncrease : 0);
-
-            if (Utils.GetDistBetweenPlayers(Positive, Negative) <= range)
-            {
-                Utils.RpcMurderPlayer(Player, Positive, DeathReasonEnum.Collided, false);
-                Utils.RpcMurderPlayer(Player, Negative, DeathReasonEnum.Collided, false);
+                LogSomething("Removed a target");
             }
 
             if (IsDead)
@@ -179,16 +174,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 foreach (var pair in StalkerArrows)
                 {
-                    var player = Utils.PlayerById(pair.Key);
-                    var body = Utils.BodyById(pair.Key);
+                    var player = PlayerById(pair.Key);
+                    var body = BodyById(pair.Key);
 
                     if (player == null || player.Data.Disconnected || (player.Data.IsDead && !body))
-                    {
                         DestroyArrow(pair.Key);
-                        continue;
-                    }
-
-                    pair.Value?.Update(player.Data.IsDead ? body.transform.position  : player.transform.position, player.GetPlayerColor(!HoldsDrive));
+                    else
+                        pair.Value?.Update(player.Data.IsDead ? body.transform.position : player.transform.position, player.GetPlayerColor(!HoldsDrive));
                 }
 
                 if (HoldsDrive)
@@ -197,6 +189,64 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     {
                         if (!StalkerArrows.ContainsKey(player.PlayerId))
                             StalkerArrows.Add(player.PlayerId, new(Player, player.GetPlayerColor(false)));
+                    }
+                }
+            }
+            else if (IsCol)
+            {
+                if (GetDistBetweenPlayers(Positive, Negative) <= Range)
+                {
+                    if (!(Negative.IsShielded() || Negative.IsProtected() || Negative.IsProtectedMonarch() || Negative.Is(RoleEnum.Pestilence) || Negative.IsOnAlert() ||
+                        Negative.IsRetShielded() || Negative.IsVesting()))
+                    {
+                        RpcMurderPlayer(Player, Negative, DeathReasonEnum.Collided, false);
+                    }
+
+                    if (!(Positive.IsShielded() || Positive.IsProtected() || Positive.IsProtectedMonarch() || Positive.Is(RoleEnum.Pestilence) || Positive.IsOnAlert() ||
+                        Positive.IsRetShielded() || Positive.IsVesting()))
+                    {
+                        RpcMurderPlayer(Player, Positive, DeathReasonEnum.Collided, false);
+                    }
+
+                    Positive = null;
+                    Negative = null;
+
+                    if (CustomGameOptions.CollideResetsCooldown)
+                    {
+                        LastPositive = DateTime.UtcNow;
+                        LastNegative = DateTime.UtcNow;
+                    }
+                }
+                else if (GetDistBetweenPlayers(Player, Negative) <= Range && HoldsDrive && OnEffect)
+                {
+                    if (!(Negative.IsShielded() || Negative.IsProtected() || Negative.IsProtectedMonarch() || Negative.Is(RoleEnum.Pestilence) || Negative.IsOnAlert() ||
+                        Negative.IsRetShielded() || Negative.IsVesting()))
+                    {
+                        RpcMurderPlayer(Player, Negative, DeathReasonEnum.Collided, false);
+                    }
+
+                    Negative = null;
+
+                    if (CustomGameOptions.CollideResetsCooldown)
+                    {
+                        LastPositive = DateTime.UtcNow;
+                        LastNegative = DateTime.UtcNow;
+                    }
+                }
+                else if (GetDistBetweenPlayers(Player, Positive) <= Range && HoldsDrive && OnEffect)
+                {
+                    if (!(Positive.IsShielded() || Positive.IsProtected() || Positive.IsProtectedMonarch() || Positive.Is(RoleEnum.Pestilence) || Positive.IsOnAlert() ||
+                        Positive.IsRetShielded() || Positive.IsVesting()))
+                    {
+                        RpcMurderPlayer(Player, Positive, DeathReasonEnum.Collided, false);
+                    }
+
+                    Positive = null;
+
+                    if (CustomGameOptions.CollideResetsCooldown)
+                    {
+                        LastPositive = DateTime.UtcNow;
+                        LastNegative = DateTime.UtcNow;
                     }
                 }
             }
@@ -239,11 +289,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             TimeRemaining -= Time.deltaTime;
 
             if (HoldsDrive)
-                Utils.Conceal();
+                Conceal();
             else
-                Utils.Invis(ConcealedPlayer, CustomPlayer.Local.Is(Faction.Syndicate));
+                Invis(ConcealedPlayer, CustomPlayer.Local.Is(Faction.Syndicate));
 
-            if (Utils.Meeting || (ConcealedPlayer == null && !HoldsDrive))
+            if (Meeting || (ConcealedPlayer == null && !HoldsDrive))
                 TimeRemaining = 0f;
         }
 
@@ -253,22 +303,23 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             LastConcealed = DateTime.UtcNow;
 
             if (SyndicateHasChaosDrive)
-                Utils.DefaultOutfitAll();
+                DefaultOutfitAll();
             else
-                Utils.DefaultOutfit(ConcealedPlayer);
+                DefaultOutfit(ConcealedPlayer);
         }
 
         public float ConcealTimer()
         {
             var timespan = DateTime.UtcNow - LastConcealed;
             var num = Player.GetModifiedCooldown(CustomGameOptions.ConcealCooldown) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void ConcealClick(PlayerControl player)
         {
-            var interact = Utils.Interact(Player, player);
+            var interact = Interact(Player, player);
 
             if (interact[3])
                 ConcealedPlayer = player;
@@ -285,28 +336,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (HoldsDrive)
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                writer.Write((byte)ActionsRPC.RebelAction);
-                writer.Write((byte)RebelActionsRPC.Conceal);
-                writer.Write(PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
                 TimeRemaining = CustomGameOptions.ConcealDuration;
                 Conceal();
-                Utils.Conceal();
+                CallRpc(CustomRPC.Action, ActionsRPC.RebelAction, RebelActionsRPC.Conceal, this);
             }
             else if (ConcealedPlayer == null)
                 ConcealMenu.Open();
             else
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                writer.Write((byte)ActionsRPC.RebelAction);
-                writer.Write((byte)RebelActionsRPC.Conceal);
-                writer.Write(PlayerId);
-                writer.Write(ConcealedPlayer.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
                 TimeRemaining = CustomGameOptions.ConcealDuration;
+                CallRpc(CustomRPC.Action, ActionsRPC.RebelAction, RebelActionsRPC.Conceal, this, ConcealedPlayer);
                 Conceal();
-                Utils.Invis(ConcealedPlayer, CustomPlayer.Local.Is(Faction.Syndicate));
             }
         }
 
@@ -321,33 +361,29 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var timespan = DateTime.UtcNow - LastFramed;
             var num = Player.GetModifiedCooldown(CustomGameOptions.FrameCooldown) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
-        public void Frame(PlayerControl player)
+        public void RpcFrame(PlayerControl player)
         {
-            if (player.Is(Faction) || Framed.Contains(player.PlayerId))
+            if ((player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || Framed.Contains(player.PlayerId))
                 return;
 
             Framed.Add(player.PlayerId);
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-            writer.Write((byte)ActionsRPC.RebelAction);
-            writer.Write((byte)RebelActionsRPC.Frame);
-            writer.Write(PlayerId);
-            writer.Write(player.PlayerId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            CallRpc(CustomRPC.Action, ActionsRPC.RebelAction, RebelActionsRPC.Frame, this, player);
         }
 
-        public void HitFrame()
+        public void Frame()
         {
-            if (FrameTimer() != 0f || Utils.IsTooFar(Player, FrameButton.TargetPlayer) || HoldsDrive)
+            if (FrameTimer() != 0f || IsTooFar(Player, FrameButton.TargetPlayer) || HoldsDrive)
                 return;
 
-            var interact = Utils.Interact(Player, FrameButton.TargetPlayer);
+            var interact = Interact(Player, FrameButton.TargetPlayer);
 
             if (interact[3])
-                Frame(FrameButton.TargetPlayer);
+                RpcFrame(FrameButton.TargetPlayer);
 
             if (interact[0])
                 LastFramed = DateTime.UtcNow;
@@ -360,8 +396,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (FrameTimer() != 0f || !HoldsDrive)
                 return;
 
-            foreach (var player in Utils.GetClosestPlayers(CustomPlayer.Local.GetTruePosition(), CustomGameOptions.ChaosDriveFrameRadius))
-                Frame(player);
+            foreach (var player in GetClosestPlayers(CustomPlayer.Local.GetTruePosition(), CustomGameOptions.ChaosDriveFrameRadius))
+                RpcFrame(player);
 
             LastFramed = DateTime.UtcNow;
         }
@@ -379,14 +415,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
 
-            if (Utils.Meeting || IsDead || PoisonedPlayer.Data.IsDead || PoisonedPlayer.Data.Disconnected)
+            if (Meeting || IsDead || PoisonedPlayer.Data.IsDead || PoisonedPlayer.Data.Disconnected)
                 TimeRemaining = 0f;
         }
 
         public void PoisonKill()
         {
             if (!(PoisonedPlayer.Data.IsDead || PoisonedPlayer.Data.Disconnected || PoisonedPlayer.Is(RoleEnum.Pestilence)))
-                Utils.RpcMurderPlayer(Player, PoisonedPlayer, DeathReasonEnum.Poisoned, false);
+                RpcMurderPlayer(Player, PoisonedPlayer, DeathReasonEnum.Poisoned, false);
 
             PoisonedPlayer = null;
             Enabled = false;
@@ -395,7 +431,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void PoisonClick(PlayerControl player)
         {
-            var interact = Utils.Interact(Player, player);
+            var interact = Interact(Player, player);
 
             if (interact[3] && !player.IsProtected() && !player.IsVesting())
                 PoisonedPlayer = player;
@@ -409,20 +445,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void HitPoison()
         {
-            if (PoisonTimer() != 0f || OnEffect || HoldsDrive || Utils.IsTooFar(Player, PoisonButton.TargetPlayer))
+            if (PoisonTimer() != 0f || OnEffect || HoldsDrive || IsTooFar(Player, PoisonButton.TargetPlayer))
                 return;
 
-            var interact = Utils.Interact(Player, PoisonButton.TargetPlayer);
+            var interact = Interact(Player, PoisonButton.TargetPlayer);
 
             if (interact[3] && !PoisonButton.TargetPlayer.IsProtected() && !PoisonButton.TargetPlayer.IsVesting() && !PoisonButton.TargetPlayer.IsProtectedMonarch())
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                writer.Write((byte)ActionsRPC.RebelAction);
-                writer.Write((byte)RebelActionsRPC.Poison);
-                writer.Write(PlayerId);
-                writer.Write(PoisonButton.TargetPlayer.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
                 PoisonedPlayer = PoisonButton.TargetPlayer;
+                CallRpc(CustomRPC.Action, ActionsRPC.RebelAction, RebelActionsRPC.Poison, this, PoisonedPlayer);
                 TimeRemaining = CustomGameOptions.PoisonDuration;
                 Poison();
             }
@@ -443,12 +474,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 PoisonMenu.Open();
             else
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                writer.Write((byte)ActionsRPC.RebelAction);
-                writer.Write((byte)RebelActionsRPC.Poison);
-                writer.Write(PlayerId);
-                writer.Write(PoisonedPlayer.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                CallRpc(CustomRPC.Action, ActionsRPC.RebelAction, RebelActionsRPC.Poison, this, PoisonedPlayer);
                 TimeRemaining = CustomGameOptions.PoisonDuration;
                 Poison();
             }
@@ -458,8 +484,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var timespan = DateTime.UtcNow - LastPoisoned;
             var num = Player.GetModifiedCooldown(CustomGameOptions.PoisonCd) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         //Shapeshifter Stuff
@@ -478,13 +505,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (!SyndicateHasChaosDrive)
             {
-                Utils.Morph(ShapeshiftPlayer1, ShapeshiftPlayer2);
-                Utils.Morph(ShapeshiftPlayer2, ShapeshiftPlayer1);
+                Morph(ShapeshiftPlayer1, ShapeshiftPlayer2);
+                Morph(ShapeshiftPlayer2, ShapeshiftPlayer1);
             }
             else
                 Utils.Shapeshift();
 
-            if (Utils.Meeting)
+            if (Meeting)
                 TimeRemaining = 0f;
         }
 
@@ -494,11 +521,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             LastShapeshifted = DateTime.UtcNow;
 
             if (SyndicateHasChaosDrive)
-                Utils.DefaultOutfitAll();
+                DefaultOutfitAll();
             else
             {
-                Utils.DefaultOutfit(ShapeshiftPlayer1);
-                Utils.DefaultOutfit(ShapeshiftPlayer2);
+                DefaultOutfit(ShapeshiftPlayer1);
+                DefaultOutfit(ShapeshiftPlayer2);
             }
 
             ShapeshiftPlayer1 = null;
@@ -509,13 +536,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var timespan = DateTime.UtcNow - LastShapeshifted;
             var num = Player.GetModifiedCooldown(CustomGameOptions.ShapeshiftCooldown) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void ShapeshiftClick1(PlayerControl player)
         {
-            var interact = Utils.Interact(Player, player);
+            var interact = Interact(Player, player);
 
             if (interact[3])
                 ShapeshiftPlayer1 = player;
@@ -527,7 +555,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void ShapeshiftClick2(PlayerControl player)
         {
-            var interact = Utils.Interact(Player, player);
+            var interact = Interact(Player, player);
 
             if (interact[3])
                 ShapeshiftPlayer2 = player;
@@ -544,14 +572,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (HoldsDrive)
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                writer.Write((byte)ActionsRPC.RebelAction);
-                writer.Write((byte)RebelActionsRPC.Shapeshift);
-                writer.Write(PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
                 TimeRemaining = CustomGameOptions.ShapeshiftDuration;
                 Shapeshift();
-                Utils.Shapeshift();
+                CallRpc(CustomRPC.Action, ActionsRPC.RebelAction, RebelActionsRPC.Shapeshift, this);
             }
             else if (ShapeshiftPlayer1 == null)
                 ShapeshiftMenu1.Open();
@@ -559,13 +582,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 ShapeshiftMenu2.Open();
             else
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                writer.Write((byte)ActionsRPC.RebelAction);
-                writer.Write((byte)RebelActionsRPC.Shapeshift);
-                writer.Write(PlayerId);
-                writer.Write(ShapeshiftPlayer1.PlayerId);
-                writer.Write(ShapeshiftPlayer2.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                CallRpc(CustomRPC.Action, ActionsRPC.RebelAction, RebelActionsRPC.Shapeshift, this, ShapeshiftPlayer1, ShapeshiftPlayer2);
                 TimeRemaining = CustomGameOptions.ShapeshiftDuration;
                 Shapeshift();
             }
@@ -583,16 +600,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var timespan = DateTime.UtcNow - LastPlaced;
             var num = Player.GetModifiedCooldown(CustomGameOptions.BombCooldown) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public float DetonateTimer()
         {
             var timespan = DateTime.UtcNow - LastDetonated;
             var num = Player.GetModifiedCooldown(CustomGameOptions.DetonateCooldown) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void Place()
@@ -639,8 +658,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var timespan = DateTime.UtcNow - LastWarped;
             var num = Player.GetModifiedCooldown(CustomGameOptions.WarpCooldown) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public IEnumerator WarpPlayers()
@@ -653,7 +673,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (WarpPlayer1.Data.IsDead)
             {
-                Player1Body = Utils.BodyById(WarpPlayer1.PlayerId);
+                Player1Body = BodyById(WarpPlayer1.PlayerId);
 
                 if (Player1Body == null)
                     yield break;
@@ -661,7 +681,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (WarpPlayer2.Data.IsDead)
             {
-                Player2Body = Utils.BodyById(WarpPlayer2.PlayerId);
+                Player2Body = BodyById(WarpPlayer2.PlayerId);
 
                 if (Player2Body == null)
                     yield break;
@@ -669,7 +689,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (WarpPlayer1.inVent)
             {
-                while (ModCompatibility.GetInTransition())
+                while (GetInTransition())
                     yield return null;
 
                 WarpPlayer1.MyPhysics.ExitAllVents();
@@ -677,7 +697,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (WarpPlayer2.inVent)
             {
-                while (ModCompatibility.GetInTransition())
+                while (GetInTransition())
                     yield return null;
 
                 Vent = WarpPlayer2.GetClosestVent();
@@ -688,7 +708,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             WarpPlayer1.NetTransform.Halt();
 
             if (CustomPlayer.Local == WarpPlayer1)
-                Utils.Flash(Color, CustomGameOptions.WarpDuration);
+                Flash(Color, CustomGameOptions.WarpDuration);
 
             if (Player1Body == null && !WasInVent)
                 AnimateWarp();
@@ -708,7 +728,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 else
                     break;
 
-                if (Utils.Meeting)
+                if (Meeting)
                     yield break;
             }
 
@@ -717,10 +737,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 WarpPlayer1.MyPhysics.ResetMoveState();
                 WarpPlayer1.NetTransform.SnapTo(new(WarpPlayer2.GetTruePosition().x, WarpPlayer2.GetTruePosition().y + 0.3636f));
 
-                if (ModCompatibility.IsSubmerged && CustomPlayer.Local == WarpPlayer1)
+                if (IsSubmerged && CustomPlayer.Local == WarpPlayer1)
                 {
-                    ModCompatibility.ChangeFloor(WarpPlayer1.GetTruePosition().y > -7);
-                    ModCompatibility.CheckOutOfBoundsElevator(CustomPlayer.Local);
+                    ChangeFloor(WarpPlayer1.GetTruePosition().y > -7);
+                    CheckOutOfBoundsElevator(CustomPlayer.Local);
                 }
 
                 if (WarpPlayer1.CanVent() && Vent != null && WasInVent)
@@ -728,13 +748,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
             else if (Player1Body != null && Player2Body == null)
             {
-                Utils.StopDragging(Player1Body.ParentId);
+                StopDragging(Player1Body.ParentId);
                 Player1Body.transform.position = WarpPlayer2.GetTruePosition();
 
-                if (ModCompatibility.IsSubmerged && CustomPlayer.Local == WarpPlayer2)
+                if (IsSubmerged && CustomPlayer.Local == WarpPlayer2)
                 {
-                    ModCompatibility.ChangeFloor(WarpPlayer2.GetTruePosition().y > -7);
-                    ModCompatibility.CheckOutOfBoundsElevator(CustomPlayer.Local);
+                    ChangeFloor(WarpPlayer2.GetTruePosition().y > -7);
+                    CheckOutOfBoundsElevator(CustomPlayer.Local);
                 }
             }
             else if (Player1Body == null && Player2Body != null)
@@ -742,15 +762,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 WarpPlayer1.MyPhysics.ResetMoveState();
                 WarpPlayer1.NetTransform.SnapTo(new(Player2Body.TruePosition.x, Player2Body.TruePosition.y + 0.3636f));
 
-                if (ModCompatibility.IsSubmerged && CustomPlayer.Local == WarpPlayer1)
+                if (IsSubmerged && CustomPlayer.Local == WarpPlayer1)
                 {
-                    ModCompatibility.ChangeFloor(WarpPlayer1.GetTruePosition().y > -7);
-                    ModCompatibility.CheckOutOfBoundsElevator(CustomPlayer.Local);
+                    ChangeFloor(WarpPlayer1.GetTruePosition().y > -7);
+                    CheckOutOfBoundsElevator(CustomPlayer.Local);
                 }
             }
             else if (Player1Body != null && Player2Body != null)
             {
-                Utils.StopDragging(Player1Body.ParentId);
+                StopDragging(Player1Body.ParentId);
                 Player1Body.transform.position = Player2Body.TruePosition;
             }
 
@@ -779,11 +799,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AnimationPlaying.flipX = WarpPlayer1.MyRend().flipX;
             AnimationPlaying.transform.localScale *= 0.9f * WarpPlayer1.GetModifiedSize();
 
-            Utils.HUD.StartCoroutine(Effects.Lerp(CustomGameOptions.WarpDuration, new Action<float>(p =>
+            HUD.StartCoroutine(Effects.Lerp(CustomGameOptions.WarpDuration, new Action<float>(p =>
             {
-                var index = (int)(p * AssetManager.PortalAnimation.Length);
-                index = Mathf.Clamp(index, 0, AssetManager.PortalAnimation.Length - 1);
-                AnimationPlaying.sprite = AssetManager.PortalAnimation[index];
+                var index = (int)(p * PortalAnimation.Length);
+                index = Mathf.Clamp(index, 0, PortalAnimation.Length - 1);
+                AnimationPlaying.sprite = PortalAnimation[index];
                 WarpPlayer1.SetPlayerMaterialColors(AnimationPlaying);
 
                 if (p == 1)
@@ -793,7 +813,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void WarpClick1(PlayerControl player)
         {
-            var interact = Utils.Interact(Player, player);
+            var interact = Interact(Player, player);
 
             if (interact[3])
                 WarpPlayer1 = player;
@@ -805,7 +825,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void WarpClick2(PlayerControl player)
         {
-            var interact = Utils.Interact(Player, player);
+            var interact = Interact(Player, player);
 
             if (interact[3])
                 WarpPlayer2 = player;
@@ -822,7 +842,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (HoldsDrive)
             {
-                Utils.Warp();
+                Warp();
                 LastWarped = DateTime.UtcNow;
             }
             else if (WarpPlayer1 == null)
@@ -831,15 +851,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 WarpMenu2.Open();
             else
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                writer.Write((byte)ActionsRPC.RebelAction);
-                writer.Write((byte)RebelActionsRPC.Warp);
-                writer.Write(PlayerId);
-                writer.Write(WarpPlayer1.PlayerId);
-                writer.Write(WarpPlayer2.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                CallRpc(CustomRPC.Action, ActionsRPC.RebelAction, RebelActionsRPC.Warp, this, WarpPlayer1, WarpPlayer2);
                 Coroutines.Start(WarpPlayers());
-                LastWarped = DateTime.UtcNow;
             }
         }
 
@@ -853,8 +866,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var timespan = DateTime.UtcNow - LastCrusaded;
             var num = Player.GetModifiedCooldown(CustomGameOptions.CrusadeCooldown) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void Crusade()
@@ -862,7 +876,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
 
-            if (IsDead || CrusadedPlayer.Data.IsDead || CrusadedPlayer.Data.Disconnected || Utils.Meeting)
+            if (IsDead || CrusadedPlayer.Data.IsDead || CrusadedPlayer.Data.Disconnected || Meeting)
                 TimeRemaining = 0f;
         }
 
@@ -875,21 +889,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void HitCrusade()
         {
-            if (CrusadeTimer() != 0f || Utils.IsTooFar(Player, CrusadeButton.TargetPlayer))
+            if (CrusadeTimer() != 0f || IsTooFar(Player, CrusadeButton.TargetPlayer))
                 return;
 
-            var interact = Utils.Interact(Player, CrusadeButton.TargetPlayer);
+            var interact = Interact(Player, CrusadeButton.TargetPlayer);
 
             if (interact[3])
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                writer.Write((byte)ActionsRPC.RebelAction);
-                writer.Write((byte)RebelActionsRPC.Crusade);
-                writer.Write(PlayerId);
-                writer.Write(CrusadeButton.TargetPlayer.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                TimeRemaining = CustomGameOptions.CrusadeDuration;
                 CrusadedPlayer = CrusadeButton.TargetPlayer;
+                CallRpc(CustomRPC.Action, ActionsRPC.RebelAction, RebelActionsRPC.Crusade, this, CrusadedPlayer);
+                TimeRemaining = CustomGameOptions.CrusadeDuration;
                 Crusade();
             }
             else if (interact[0])
@@ -901,34 +910,48 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         //Collider Stuff
         public CustomButton PositiveButton;
         public CustomButton NegativeButton;
+        public CustomButton ChargeButton;
         public DateTime LastPositive;
         public DateTime LastNegative;
+        public DateTime LastCharged;
         public PlayerControl Positive;
         public PlayerControl Negative;
+        private float Range => CustomGameOptions.CollideRange + (HoldsDrive ? CustomGameOptions.CollideRangeIncrease : 0);
         public bool IsCol => FormerRole?.RoleType == RoleEnum.Collider;
 
         public float PositiveTimer()
         {
             var timespan = DateTime.UtcNow - LastPositive;
             var num = Player.GetModifiedCooldown(CustomGameOptions.CollideCooldown) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public float NegativeTimer()
         {
             var timespan = DateTime.UtcNow - LastNegative;
             var num = Player.GetModifiedCooldown(CustomGameOptions.CollideCooldown) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
+        }
+
+        public float ChargeTimer()
+        {
+            var timespan = DateTime.UtcNow - LastCharged;
+            var num = Player.GetModifiedCooldown(CustomGameOptions.ChargeCooldown) * 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void SetPositive()
         {
-            if (HoldsDrive || Utils.IsTooFar(Player, PositiveButton.TargetPlayer) || PositiveTimer() != 0f)
+            if (HoldsDrive || IsTooFar(Player, PositiveButton.TargetPlayer) || PositiveTimer() != 0f)
                 return;
 
-            var interact = Utils.Interact(Player, PositiveButton.TargetPlayer);
+            var interact = Interact(Player, PositiveButton.TargetPlayer);
 
             if (interact[3])
                 Positive = PositiveButton.TargetPlayer;
@@ -941,10 +964,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void SetNegative()
         {
-            if (HoldsDrive || Utils.IsTooFar(Player, NegativeButton.TargetPlayer) || NegativeTimer() != 0f)
+            if (HoldsDrive || IsTooFar(Player, NegativeButton.TargetPlayer) || NegativeTimer() != 0f)
                 return;
 
-            var interact = Utils.Interact(Player, NegativeButton.TargetPlayer);
+            var interact = Interact(Player, NegativeButton.TargetPlayer);
 
             if (interact[3])
                 Negative = NegativeButton.TargetPlayer;
@@ -953,6 +976,30 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 LastNegative = DateTime.UtcNow;
             else if (interact[1])
                 LastNegative.AddSeconds(CustomGameOptions.ProtectKCReset);
+        }
+
+        public void Charge()
+        {
+            if (!HoldsDrive || OnEffect || ChargeTimer() != 0f)
+                return;
+
+            TimeRemaining = CustomGameOptions.ChargeDuration;
+            ChargeSelf();
+        }
+
+        public void ChargeSelf()
+        {
+            Enabled = true;
+            TimeRemaining -= Time.deltaTime;
+
+            if (IsDead || Meeting)
+                TimeRemaining = 0f;
+        }
+
+        public void DischargeSelf()
+        {
+            Enabled = false;
+            LastCharged = DateTime.UtcNow;
         }
 
         //Spellslinger Stuff
@@ -966,8 +1013,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var timespan = DateTime.UtcNow - LastSpelled;
             var num = Player.GetModifiedCooldown(CustomGameOptions.SpellCooldown, SpellCount * CustomGameOptions.SpellCooldownIncrease) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void Spell(PlayerControl player)
@@ -976,17 +1024,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 return;
 
             Spelled.Add(player.PlayerId);
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-            writer.Write((byte)ActionsRPC.RebelAction);
-            writer.Write((byte)RebelActionsRPC.Spell);
-            writer.Write(PlayerId);
-            writer.Write(PlayerId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            CallRpc(CustomRPC.Action, ActionsRPC.RebelAction, RebelActionsRPC.Spell, this, player);
+
+            if (!HoldsDrive)
+                SpellCount++;
+            else
+                SpellCount = 0;
         }
 
         public void HitSpell()
         {
-            if (SpellTimer() != 0f || Utils.IsTooFar(Player, SpellButton.TargetPlayer))
+            if (SpellTimer() != 0f || IsTooFar(Player, SpellButton.TargetPlayer))
                 return;
 
             if (HoldsDrive)
@@ -996,27 +1044,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
             else
             {
-                var interact = Utils.Interact(Player, SpellButton.TargetPlayer);
+                var interact = Interact(Player, SpellButton.TargetPlayer);
 
                 if (interact[3])
-                {
                     Spell(SpellButton.TargetPlayer);
-                    SpellCount++;
-                }
 
                 if (interact[0])
                     LastSpelled = DateTime.UtcNow;
                 else if (interact[1])
                     LastSpelled.AddSeconds(CustomGameOptions.ProtectKCReset);
-            }
-
-            if (Spelled.Count >= CustomPlayer.AllPlayers.Count(x => !x.Data.IsDead && !x.Data.Disconnected && !x.Is(Faction.Syndicate)))
-            {
-                SyndicateWin = true;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.WinLose, SendOption.Reliable);
-                writer.Write((byte)WinLoseRPC.SyndicateWin);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-                Utils.EndGame();
             }
         }
 
@@ -1030,8 +1066,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var timespan = DateTime.UtcNow - LastStalked;
             var num = Player.GetModifiedCooldown(CustomGameOptions.StalkCd) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void DestroyArrow(byte targetPlayerId)
@@ -1042,10 +1079,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Stalk()
         {
-            if (Utils.IsTooFar(Player, StalkButton.TargetPlayer) || StalkTimer() != 0f)
+            if (IsTooFar(Player, StalkButton.TargetPlayer) || StalkTimer() != 0f)
                 return;
 
-            var interact = Utils.Interact(Player, StalkButton.TargetPlayer);
+            var interact = Interact(Player, StalkButton.TargetPlayer);
 
             if (interact[3])
                 StalkerArrows.Add(StalkButton.TargetPlayer.PlayerId, new(Player, StalkButton.TargetPlayer.GetPlayerColor(!HoldsDrive)));
@@ -1067,12 +1104,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public void Confuse()
         {
             if (!Enabled && (CustomPlayer.Local == ConfusedPlayer || HoldsDrive))
-                Utils.Flash(Color);
+                Flash(Color);
 
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
 
-            if (Utils.Meeting || (ConfusedPlayer == null && !HoldsDrive))
+            if (Meeting || (ConfusedPlayer == null && !HoldsDrive))
                 TimeRemaining = 0f;
         }
 
@@ -1087,13 +1124,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var timespan = DateTime.UtcNow - LastConfused;
             var num = Player.GetModifiedCooldown(CustomGameOptions.ConfuseCooldown) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void ConfuseClick(PlayerControl player)
         {
-            var interact = Utils.Interact(Player, player);
+            var interact = Interact(Player, player);
 
             if (interact[3])
                 ConfusedPlayer = player;
@@ -1110,24 +1148,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (HoldsDrive)
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                writer.Write((byte)ActionsRPC.RebelAction);
-                writer.Write((byte)RebelActionsRPC.Confuse);
-                writer.Write(PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
                 TimeRemaining = CustomGameOptions.ConfuseDuration;
                 Confuse();
+                CallRpc(CustomRPC.Action, ActionsRPC.RebelAction, RebelActionsRPC.Confuse, this);
             }
             else if (ConfusedPlayer == null)
                 ConfuseMenu.Open();
             else
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                writer.Write((byte)ActionsRPC.RebelAction);
-                writer.Write((byte)RebelActionsRPC.Confuse);
-                writer.Write(PlayerId);
-                writer.Write(ConfusedPlayer.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                CallRpc(CustomRPC.Action, ActionsRPC.RebelAction, RebelActionsRPC.Confuse, this, ConfusedPlayer);
                 TimeRemaining = CustomGameOptions.ConfuseDuration;
                 Confuse();
             }
@@ -1142,14 +1171,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var timespan = DateTime.UtcNow - LastTimed;
             var num = Player.GetModifiedCooldown(CustomGameOptions.TimeControlCooldown) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void Control()
         {
             if (!Enabled)
-                Utils.Flash(Color, CustomGameOptions.TimeControlDuration);
+                Flash(Color, CustomGameOptions.TimeControlDuration);
 
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
@@ -1160,7 +1190,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     GetRole(player).Rewinding = true;
             }
 
-            if (Utils.Meeting)
+            if (Meeting)
                 TimeRemaining = 0f;
         }
 
@@ -1175,13 +1205,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void TimeControl()
         {
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-            writer.Write((byte)ActionsRPC.RebelAction);
-            writer.Write((byte)RebelActionsRPC.TimeControl);
-            writer.Write(PlayerId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
             TimeRemaining = CustomGameOptions.TimeControlDuration;
             Control();
+            CallRpc(CustomRPC.Action, ActionsRPC.RebelAction, RebelActionsRPC.TimeControl, this);
         }
 
         //Silencer Stuff
@@ -1197,26 +1223,22 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var timespan = DateTime.UtcNow - LastSilenced;
             var num = Player.GetModifiedCooldown(CustomGameOptions.SilenceCooldown) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void Silence()
         {
-            if (SilenceTimer() != 0f || Utils.IsTooFar(Player, SilenceButton.TargetPlayer) || SilenceButton.TargetPlayer == SilencedPlayer)
+            if (SilenceTimer() != 0f || IsTooFar(Player, SilenceButton.TargetPlayer) || SilenceButton.TargetPlayer == SilencedPlayer)
                 return;
 
-            var interact = Utils.Interact(Player, SilenceButton.TargetPlayer);
+            var interact = Interact(Player, SilenceButton.TargetPlayer);
 
             if (interact[3])
             {
                 SilencedPlayer = SilenceButton.TargetPlayer;
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                writer.Write((byte)ActionsRPC.RebelAction);
-                writer.Write((byte)RebelActionsRPC.Silence);
-                writer.Write(PlayerId);
-                writer.Write(SilenceButton.TargetPlayer.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                CallRpc(CustomRPC.Action, ActionsRPC.RebelAction, RebelActionsRPC.Silence, this, SilencedPlayer);
             }
 
             if (interact[0])

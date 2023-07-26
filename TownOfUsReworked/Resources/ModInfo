@@ -1,37 +1,83 @@
 Welcome to Town Of Us Reworked %modversion%!
 
-Town Of Us Reworked is essentially a weird mishmash of code from Town Of Us Reactivated and its forks plus some of my own code. Credits to the parties have already been given. This mod has several reworks and additions which I believe fit the mod better. Plus, the more layers there are, the more unique a player's experience will be each game. If I've missed anything, let me know via Discord.
+Town Of Us Reactivated but better! (hopefully)
 
-Now that you know the basic info, if you want to know more try using the other info commands, visiting the GitHub page or joining my discord. Happy ejections!
+This mod is a mish mash of code from different mods, mainly from Town Of Us Reactivated. Enjoy the chaos that comes out as a result.
 
-Changelog
-- Update: Updated MCI
-- Addition: A lot more buttons have their sprites now
-- Addition: There can now be multiple Revealers, Banshees, Ghouls and Phantoms
-- Buff: Actor now becomes a role from the role list they were supposed to be guessed as when all guessing capable players have died
-- Improvement: Layer count and chance settings have been merged into one setting type
-- Critical Fix: Fixed Crew-Allied Neutral Killers being shown who the other Crew are in the intro screen
-- Critical Fix: Fixed Spellslinger not ending the game when needed
-- Critical Fix: Fixed games not ending with a Guardian Angel without a target active
-- Visual Fix: Fixed the vent button disappearing when role blocked
-- Visual Fix: Fixed the Engrish in some parts of the mod
-- Visual Fix: Fixed outlines persisting on targets after death
-- Bug Fix: Fixed decreasing the lobby size not kicking players when needed
-- Bug Fix: Fixed arrows not updating correctly
-- Bug Fix: Fixed being unable to change the lobby size when opening up a lobby
-- Bug Fix: Fixed Footprints only spawning the left/right foot for each person
-- Bug Fix: Fixed some issues with button targeting
-- Bug Fix: Fixed the Chat Cooldown option not actually changing up the chat cooldown
-- Role Fix: Fixed Neutral (Neophyte) roles being appointed as the Jackal's Recruits
-- Role Fix: Fixed Ghouls not spawning in
-- Role Fix: Fixed Shifters constantly dying upon failing to shift
-- Objectifier Fix: Fixed unturned Defectors appearing twice on the Victory screen
-- Ability Fix: Fixed the sheer amount of Assassins being assigned in All Any
-- Ability Fix: Fixed Neutral Assassins not spawning
+Now that you know the basic info, if you want to know more try using the other info commands, visiting the %github% page or joining the %discord% server. Happy ejections!
 
-NOTE: THE MOD IS NOT YET COMPATIBLE WITH SUBMERGED
+Changelog-
+- New Game Mode: New way to edit the role generation yourself! Role Lists! (also includes the ability to ban the spawning of up to 5 roles)
+- New Objectifier: Linked
+- Addition: Added a custom cursor
+- Addition: Added a welcoming message to get started when joining a lobby
+- Addition: Added Warper lore
+- Addition: Added some more settings
+- Addition: Added even more parameters for hat customisation
+- Completion: Finished compatibility with LevelImpostor (Submerged refuses to work with the mod)
+- Update: Updated dependencies, updated mod to v2023.7.12 and merged fixes from v5.0.0
+- Merge: Merged the Region Install mod into this mod
+- Rework: Certain NE roles with targets now have toggle-able options for letting rng decide their targets
+- Buff: Assassin can now be given to Neutral (Harbinger) roles
+- Buff: With the Chaos Drive, the Collider can now charge themselves to kill those they marked
+- Buff: Blocking players now renders them unable to open anything, not just not letting them use their abilities (yes I just want to be a troll)
+- Buff: Bounty Hunters can now request players to set a target for them (only if the options for letting them pick a target is on)
+- Buff: Made Actor more likely to win by making them able to win by being guessed as a role that's not in the game and their inspector results change based on their target role
+- Nerf: Intruders/Syndicate can no longer sabotage if everyone from their faction is dead
+- Nerf: Crew can no longer win by tasks if all of them are dead
+- Change: Juggernaut can no longer get the Ruthless ability (because it already gets the ability when reaching 4 kills)
+- Change: Radar will now also point towards the closest body if it happens to be closer than the closest alive player
+- Change: Split the "Assassin Is Unique" setting into settings for each faction
+- Change: A Retributionist's inspector results now change based on the role they are mimicking
+- Recode: The in-game wiki has recieved a full recode (WIP)
+- Recode: The role gen has been slightly recoded again for like the 30th time (I promise they get better with each change)
+- Return: Executioner, Guardian Angel and Guesser automatically get their targets again, but can be toggled to pick their own targets
+- Return: Custom hats are back (nameplates and visors soon to follow)
+- Big Improvement: Added a stalemate detector to avoid unwinnable situations
+- Improvement: Improved how ability buttons are handled in online games and fixed a couple of bugs relating to them
+- Improvement: Slightly improved version control to be a bit more lightweight
+- Improvement: Added page counters to the custom player selection menus and the vitals menus (bottom right)
+- Improvement: Changed up how game settings look like in lobby (inspired by the game options in Project Lotus)
+- Improvement: You can now move backwards in the settings pages by pressing the Backspace button
+- Improvement: Clicking on players/dead bodies will trigger the first clickable button before executing the rest (for the mouse point and click players)
+- Improvement: Random Spawns now also include vent positions, so people are less likely to be sent to the same place
+- Improvement: Improved how custom meeting ability buttons and their cooldowns are handled
+- Improvement: Messages are now color coded if possible
+- Improvement: Settings now auto update their visibility based on which settings are active
+- Improvement: Heavily worked on how information between players are handled, hopefully this fixes some lag/desync issues
+- Optimisation: Improved some code here and there to smoothen out the mod
+- Critical Fix: Fixed several bugs with playing on Hide And Seek (not sure why you'd want to play Hide And Seek on this mod but ok)
+- Critical Fix: Added rate limits to role gen to prevent hosts from occasionally crashing on lower player numbers
+- Critical Fix: Fixed games ending even with Neutral (Harbinger) and (Apocalypse) roles still alive against other factions
+- Critical Fix: Fixed Syndicate (Killing) roles getting kills buttons when recieving the Chaos Drive
+- Vanilla Fix: Players who dc now update in the meeting correctly
+- Vanilla Fix: Fixed dying/game starting not updating the hud correctly
+- Bug Fix: Fixed a couple of underlying issues with button cooldowns
+- Bug Fix: Fixed being unable to set the lobby size below 5 in the lobby making menu
+- Bug Fix: Fixed Oxygen sabotage slowing down players forever
+- Bug Fix: Fixed random arrows appearing to trail you
+- Bug Fix: Fixed the count settings incorrectly updating for Lovers, Rivals and Mafia
+- Bug Fix: Fixed Bounty Hunters getting their own Mafia members as targets
+- Bug Fix: Fixed a couple of minor bugs here and there
+- Bug Fix: Fixed being able to talk before the game announcements begin
+- Bug Fix: Fixed switching between Robots not disabling the chat
+- Bug Fix: Fixed the 'Task Bar Updates' settings being wrong
+- Bug Fix: Fixed chat not disappearing when switching between dead and alive players
+- Bug Fix: Fixed the kick and ban chat commands from not working as intended
+- Bug Fix: Fixed Plaguebearer/Pestilence somehow spawning way too often
+- Visual Fix: The roleblock icons no longer appear to drag on the screen
+- Visual Fix: Fixed a couple of layering issues with the spectate, help and game settings buttons
+- Visual Fix: Fixed the intro screens for some roles being a little off
+- Visual Fix: Fixed player names sometimes not updating correctly for Mafia, Lovers and Rivals in meetings
+- Visual Fix: Fixed Assassin menus having transparent buttons and the exit button being blown out of proportion
+- Role Fix: Fixed Promoted Godfather effects never ending
+- Role Fix: Fixed Collider bypassing basically every form of defense
+- Role Fix: Fixed Consort and Consort-Godfathers not being able to deselect targets
+- Removal: Removed some debugging statements I forgot to remove earlier
 
-Credits
+NOTE: THE MOD IS NOT YET COMPATIBLE WITH SUBMERGED.
+
+Credits-
 Reworked Creator - AlchlcDvl
 Reworked Contributors - Det, Oper, xerminator, TheGodOfAr0n, twix, Discussions, Jsushi
 Reworked Testers - DarkFedora, 50 IQ, shiftyrose, TheRealLordDragon, Adrian D, Halloween Apple, MadeBiJax, yes, Yeetus, BF
@@ -46,8 +92,9 @@ Derived Ideas (And Code) From - Woodi, NotHunter101, Evan91380, Hardel-DW, tomoz
 
 Hosting Modded Servers - miniduikboot, GD
 
-Full credits are on the GitHub page!
+Full credits are on the %github% page!
 
+Disclaimer-
 This mod is not affiliated with Among Us or Innersloth LLC, and the content contained therein is not endorsed or otherwise sponsored by Innersloth LLC. Portions of the materials contained herein are property of Innersloth LLC.
 
 © Innersloth LLC.

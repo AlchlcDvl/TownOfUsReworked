@@ -3,61 +3,53 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
     public class Volatile : Modifier
     {
         private float _time;
-        private int RandomNumber;
         private int OtherNumber;
+        private bool RickRolled;
 
-        public Volatile(PlayerControl player) : base(player)
-        {
-            Name = "Volatile";
-            TaskText = () => "- You experience a lot of hallucinations and lash out";
-            Color = CustomGameOptions.CustomModifierColors ? Colors.Volatile : Colors.Modifier;
-            ModifierType = ModifierEnum.Volatile;
-            Hidden = !CustomGameOptions.VolatileKnows;
-            Type = LayerEnum.Volatile;
+        public override Color32 Color => ClientGameOptions.CustomModColors ? Colors.Volatile : Colors.Modifier;
+        public override string Name => "Volatile";
+        public override LayerEnum Type => LayerEnum.Volatile;
+        public override ModifierEnum ModifierType => ModifierEnum.Volatile;
+        public override Func<string> TaskText => () => "- You experience hallucinations";
 
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
-        }
+        public Volatile(PlayerControl player) : base(player) => Hidden = !CustomGameOptions.VolatileKnows;
 
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
 
-            if (Minigame.Instance || IntroCutscene.Instance)
+            if (Minigame.Instance || IntroCutscene.Instance || IsDead)
                 return;
 
             _time += Time.deltaTime;
 
             if (_time >= CustomGameOptions.VolatileInterval)
             {
-                RandomNumber = URandom.RandomRangeInt(0, 3);
+                var randomNumber = URandom.RandomRangeInt(0, 4);
                 _time -= CustomGameOptions.VolatileInterval;
                 Hidden = false;
-                Player.RegenTask();
 
-                if (RandomNumber == 0)
+                if (randomNumber == 0)
                 {
                     //Flashes
                     OtherNumber = URandom.RandomRangeInt(0, 256);
                     var otherNumber2 = URandom.RandomRangeInt(0, 256);
                     var otherNumber3 = URandom.RandomRangeInt(0, 256);
-                    var flashColor = new Color32((byte)OtherNumber, (byte)otherNumber2, (byte)otherNumber3, 255);
-                    Utils.Flash(flashColor);
+                    Flash(new((byte)OtherNumber, (byte)otherNumber2, (byte)otherNumber3, 255));
                 }
-                else if (RandomNumber == 1)
+                else if (randomNumber == 1)
                 {
                     //Fake someone killing you
-                    var fakePlayer = CustomPlayer.AllPlayers.ToArray().ToList().Random();
+                    var fakePlayer = CustomPlayer.AllPlayers.Random();
                     Player.NetTransform.Halt();
                     __instance.KillOverlay.ShowKillAnimation(fakePlayer.Data, Player.Data);
                 }
-                /*else if (RandomNumber == 2)
+                else if (randomNumber == 2 && !RickRolled)
                 {
-                    //Hearing things
-                    OtherNumber = URandom.RandomRangeInt(0, AssetManager.Sounds.Count);
-                    var sound = AssetManager.Sounds[OtherNumber];
-                    AssetManager.Play(sound);
-                }*/
+                    //Get rick rolled lmao
+                    RickRolled = true;
+                    Application.OpenURL("https://www.youtube.com/watch?v=xm3YgoEiEDc");
+                }
             }
         }
     }

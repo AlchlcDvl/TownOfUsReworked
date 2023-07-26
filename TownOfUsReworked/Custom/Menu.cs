@@ -3,11 +3,11 @@ namespace TownOfUsReworked.Custom
     public class CustomMenu
     {
         public ShapeshifterMinigame Menu;
-        public PlayerControl Owner;
-        public Select Click;
-        public Exclude Exception;
+        public readonly PlayerControl Owner;
+        public readonly Select Click;
+        public readonly Exclude Exception;
         public List<PlayerControl> Targets;
-        public readonly static List<CustomMenu> AllMenus = new();
+        public static readonly List<CustomMenu> AllMenus = new();
         public delegate void Select(PlayerControl player);
         public delegate bool Exclude(PlayerControl player);
 

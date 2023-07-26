@@ -8,25 +8,13 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         public bool BothRivalsDead => IsDeadRival && RivalDead;
         public bool IsWinningRival =>  RivalDead && !IsDeadRival;
 
-        public Rivals(PlayerControl player) : base(player)
-        {
-            Name = "Rival";
-            Symbol = "α";
-            TaskText = () => $"- Get {OtherRival.name} killed and then live to the final 2";
-            Color = CustomGameOptions.CustomObjectifierColors ? Colors.Rivals : Colors.Objectifier;
-            ObjectifierType = ObjectifierEnum.Rivals;
-            Type = LayerEnum.Rivals;
+        public override Color32 Color => ClientGameOptions.CustomObjColors ? Colors.Rivals : Colors.Objectifier;
+        public override string Name => "Rivals";
+        public override string Symbol => "α";
+        public override LayerEnum Type => LayerEnum.Rivals;
+        public override ObjectifierEnum ObjectifierType => ObjectifierEnum.Rivals;
+        public override Func<string> TaskText => () => $"- Get {OtherRival.name} killed and then live to the final 2";
 
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
-        }
-
-        public override void UpdateHud(HudManager __instance)
-        {
-            base.UpdateHud(__instance);
-
-            if (!__instance.Chat.isActiveAndEnabled)
-                __instance.Chat.SetVisible(CustomGameOptions.RivalsChat);
-        }
+        public Rivals(PlayerControl player) : base(player) {}
     }
 }

@@ -3,7 +3,7 @@ namespace TownOfUsReworked.CustomOptions
     public class Export : CustomButtonOption
     {
         public CustomButtonOption Loading;
-        public List<OptionBehaviour> OldButtons;
+        private List<OptionBehaviour> OldButtons = new();
         public List<CustomButtonOption> SlotButtons = new();
 
         public Export() : base(MultiMenu.main, "Save Custom Settings") => Do = ToDo;
@@ -61,7 +61,7 @@ namespace TownOfUsReworked.CustomOptions
         public void ToDo()
         {
             SlotButtons.Clear();
-            AssetManager.Slots.Keys.ToList().ForEach(x => SlotButtons.Add(new(MultiMenu.external, $"Slot {x}", delegate { ExportSlot(x); })));
+            Slots.Keys.ToList().ForEach(x => SlotButtons.Add(new(MultiMenu.external, $"Slot {x}", delegate { ExportSlot(x); })));
             SlotButtons.Add(new(MultiMenu.external, "Cancel", delegate { Cancel(FlashWhite); }));
 
             var options = CreateOptions();
@@ -83,12 +83,12 @@ namespace TownOfUsReworked.CustomOptions
 
         private void ExportSlot(int slotId)
         {
-            Utils.LogSomething($"Saving Slot - {slotId}");
+            LogSomething($"Saving Slot - {slotId}");
 
             try
             {
                 SaveSettings($"GameSettings-Slot{slotId}-ToU-Rew");
-                AssetManager.Slots[slotId] = AssetManager.TryLoadingSlotSettings(slotId);
+                Slots[slotId] = TryLoadingSlotSettings(slotId);
                 Cancel(FlashGreen);
             }
             catch
@@ -99,16 +99,16 @@ namespace TownOfUsReworked.CustomOptions
 
         private IEnumerator FlashGreen()
         {
-            Setting.Cast<ToggleOption>().TitleText.color = Color.green;
+            Setting.Cast<ToggleOption>().TitleText.color = UColor.green;
             yield return new WaitForSeconds(0.5f);
-            Setting.Cast<ToggleOption>().TitleText.color = Color.white;
+            Setting.Cast<ToggleOption>().TitleText.color = UColor.white;
         }
 
         private IEnumerator FlashRed()
         {
-            Setting.Cast<ToggleOption>().TitleText.color = Color.red;
+            Setting.Cast<ToggleOption>().TitleText.color = UColor.red;
             yield return new WaitForSeconds(0.5f);
-            Setting.Cast<ToggleOption>().TitleText.color = Color.white;
+            Setting.Cast<ToggleOption>().TitleText.color = UColor.white;
         }
 
         private IEnumerator FlashWhite() => null;

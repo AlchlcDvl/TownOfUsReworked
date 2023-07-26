@@ -6,7 +6,7 @@ namespace TownOfUsReworked.PlayerLayers
     {
         public static bool Prefix()
         {
-            if (ConstantVariables.Inactive)
+            if (Inactive)
                 return true;
 
             if (!CustomPlayer.Local.CanVent())
@@ -22,7 +22,7 @@ namespace TownOfUsReworked.PlayerLayers
     {
         public static bool Prefix()
         {
-            if (ConstantVariables.Inactive)
+            if (Inactive)
                 return true;
 
             if (CustomPlayer.Local.Is(ModifierEnum.Coward))
@@ -38,7 +38,7 @@ namespace TownOfUsReworked.PlayerLayers
     {
         public static bool Prefix(UseButton __instance)
         {
-            if (ConstantVariables.Inactive)
+            if (Inactive)
                 return true;
 
             var notBlocked = PlayerLayer.LocalLayers.All(x => !x.IsBlocked);
@@ -59,7 +59,7 @@ namespace TownOfUsReworked.PlayerLayers
     {
         public static bool Prefix()
         {
-            if (ConstantVariables.Inactive)
+            if (Inactive)
                 return true;
 
             return PlayerLayer.LocalLayers.All(x => !x.IsBlocked);
@@ -72,7 +72,7 @@ namespace TownOfUsReworked.PlayerLayers
     {
         public static bool Prefix()
         {
-            if (ConstantVariables.Inactive)
+            if (Inactive)
                 return true;
 
             return PlayerLayer.LocalLayers.All(x => !x.IsBlocked);
@@ -85,7 +85,7 @@ namespace TownOfUsReworked.PlayerLayers
     {
         public static bool Prefix()
         {
-            if (ConstantVariables.Inactive)
+            if (Inactive)
                 return true;
 
             return PlayerLayer.LocalLayers.All(x => !x.IsBlocked); //No petting for you lmao
@@ -107,14 +107,15 @@ namespace TownOfUsReworked.PlayerLayers
         private static GameObject SaboBlock;
         private static GameObject VentBlock;
         private static GameObject ReportBlock;
-        private static GameObject AdminBlock;
 
         public static void Postfix(HudManager __instance)
         {
             if (!UseBlock && __instance.UseButton.isActiveAndEnabled)
             {
                 UseBlock = new("UseBlock");
-                UseBlock.AddComponent<SpriteRenderer>().sprite = AssetManager.GetSprite("Blocked");
+                UseBlock.AddComponent<SpriteRenderer>().sprite = GetSprite("Blocked");
+                UseBlock.transform.localScale *= 0.75f;
+                UseBlock.transform.SetParent(__instance.UseButton.transform);
             }
 
             if (UseBlock)
@@ -128,7 +129,9 @@ namespace TownOfUsReworked.PlayerLayers
             if (!PetBlock && __instance.PetButton.isActiveAndEnabled)
             {
                 PetBlock = new("PetBlock");
-                PetBlock.AddComponent<SpriteRenderer>().sprite = AssetManager.GetSprite("Blocked");
+                PetBlock.AddComponent<SpriteRenderer>().sprite = GetSprite("Blocked");
+                PetBlock.transform.localScale *= 0.75f;
+                PetBlock.transform.SetParent(__instance.PetButton.transform);
             }
 
             if (PetBlock)
@@ -142,7 +145,9 @@ namespace TownOfUsReworked.PlayerLayers
             if (!SaboBlock && __instance.SabotageButton.isActiveAndEnabled)
             {
                 SaboBlock = new("SaboBlock");
-                SaboBlock.AddComponent<SpriteRenderer>().sprite = AssetManager.GetSprite("Blocked");
+                SaboBlock.AddComponent<SpriteRenderer>().sprite = GetSprite("Blocked");
+                SaboBlock.transform.localScale *= 0.75f;
+                SaboBlock.transform.SetParent(__instance.SabotageButton.transform);
             }
 
             if (SaboBlock)
@@ -156,7 +161,9 @@ namespace TownOfUsReworked.PlayerLayers
             if (!VentBlock && __instance.ImpostorVentButton.isActiveAndEnabled)
             {
                 VentBlock = new("VentBlock");
-                VentBlock.AddComponent<SpriteRenderer>().sprite = AssetManager.GetSprite("Blocked");
+                VentBlock.AddComponent<SpriteRenderer>().sprite = GetSprite("Blocked");
+                VentBlock.transform.localScale *= 0.75f;
+                VentBlock.transform.SetParent(__instance.ImpostorVentButton.transform);
             }
 
             if (VentBlock)
@@ -170,7 +177,9 @@ namespace TownOfUsReworked.PlayerLayers
             if (!ReportBlock && __instance.ReportButton.isActiveAndEnabled)
             {
                 ReportBlock = new("ReportBlock");
-                ReportBlock.AddComponent<SpriteRenderer>().sprite = AssetManager.GetSprite("Blocked");
+                ReportBlock.AddComponent<SpriteRenderer>().sprite = GetSprite("Blocked");
+                ReportBlock.transform.localScale *= 0.75f;
+                ReportBlock.transform.SetParent(__instance.ReportButton.transform);
             }
 
             if (ReportBlock)
@@ -179,20 +188,6 @@ namespace TownOfUsReworked.PlayerLayers
                 pos.z = -50f;
                 ReportBlock.transform.position = pos;
                 ReportBlock.SetActive(CustomPlayer.Local.IsBlocked() && __instance.ReportButton.isActiveAndEnabled);
-            }
-
-            if (!AdminBlock && __instance.AdminButton.isActiveAndEnabled)
-            {
-                AdminBlock = new("AdminBlock");
-                AdminBlock.AddComponent<SpriteRenderer>().sprite = AssetManager.GetSprite("Blocked");
-            }
-
-            if (AdminBlock)
-            {
-                var pos = __instance.AdminButton.transform.position;
-                pos.z = -50f;
-                AdminBlock.transform.position = pos;
-                AdminBlock.SetActive(CustomPlayer.Local.IsBlocked() && __instance.AdminButton.isActiveAndEnabled);
             }
         }
     }

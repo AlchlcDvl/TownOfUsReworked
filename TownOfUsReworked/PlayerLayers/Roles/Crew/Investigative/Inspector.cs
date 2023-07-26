@@ -6,37 +6,36 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public List<byte> Inspected = new();
         public CustomButton InspectButton;
 
+        public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Inspector : Colors.Crew;
+        public override string Name => "Inspector";
+        public override LayerEnum Type => LayerEnum.Inspector;
+        public override RoleEnum RoleType => RoleEnum.Inspector;
+        public override Func<string> StartText => () => "Inspect Players For Their Roles";
+        public override Func<string> AbilitiesText => () => "- You can check a player to get a role list of what they could be";
+        public override InspectorResults InspectorResults => InspectorResults.GainsInfo;
+
         public Inspector(PlayerControl player) : base(player)
         {
-            Name = "Inspector";
-            RoleType = RoleEnum.Inspector;
-            StartText = () => "Inspect Players For Their Roles";
-            AbilitiesText = () => "- You can check a player to get a role list of what they could be";
-            Color = CustomGameOptions.CustomCrewColors ? Colors.Inspector : Colors.Crew;
             RoleAlignment = RoleAlignment.CrewInvest;
             Inspected = new();
-            InspectorResults = InspectorResults.GainsInfo;
-            Type = LayerEnum.Inspector;
             InspectButton = new(this, "Inspect", AbilityTypes.Direct, "ActionSecondary", Inspect, Exception);
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float InspectTimer()
         {
             var timespan = DateTime.UtcNow - LastInspected;
             var num = Player.GetModifiedCooldown(CustomGameOptions.InspectCooldown) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void Inspect()
         {
-            if (InspectTimer() != 0f || Utils.IsTooFar(Player, InspectButton.TargetPlayer) || Inspected.Contains(InspectButton.TargetPlayer.PlayerId))
+            if (InspectTimer() != 0f || IsTooFar(Player, InspectButton.TargetPlayer) || Inspected.Contains(InspectButton.TargetPlayer.PlayerId))
                 return;
 
-            var interact = Utils.Interact(Player, InspectButton.TargetPlayer);
+            var interact = Interact(Player, InspectButton.TargetPlayer);
 
             if (interact[3])
                 Inspected.Add(InspectButton.TargetPlayer.PlayerId);
@@ -48,8 +47,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         }
 
         public bool Exception(PlayerControl player) => Inspected.Contains(player.PlayerId) || (((Faction is Faction.Intruder or Faction.Syndicate && player.Is(Faction)) ||
-            (player.Is(SubFaction) && SubFaction != SubFaction.None)) && CustomGameOptions.FactionSeeRoles) || (player == Player.GetOtherLover() && CustomGameOptions.LoversRoles) || (player
-            == Player.GetOtherRival() && CustomGameOptions.RivalsRoles) || (player.Is(ObjectifierEnum.Mafia) && Player.Is(ObjectifierEnum.Mafia) && CustomGameOptions.MafiaRoles);
+            (player.Is(SubFaction) && SubFaction != SubFaction.None)) && CustomGameOptions.FactionSeeRoles) || (Player.IsOtherLover(player) && CustomGameOptions.LoversRoles) ||
+            (Player.IsOtherRival(player) && CustomGameOptions.RivalsRoles) || (player.Is(ObjectifierEnum.Mafia) && Player.Is(ObjectifierEnum.Mafia) && CustomGameOptions.MafiaRoles) ||
+            (Player.IsOtherLink(player) && CustomGameOptions.LinkedRoles);
 
         public override void UpdateHud(HudManager __instance)
         {

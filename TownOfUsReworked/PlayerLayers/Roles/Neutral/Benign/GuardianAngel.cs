@@ -16,18 +16,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public CustomButton TargetButton;
         public bool Failed => TargetPlayer == null && Rounds > 2;
 
+        public override Color32 Color => ClientGameOptions.CustomNeutColors ? Colors.GuardianAngel : Colors.Neutral;
+        public override string Name => "Guardian Angel";
+        public override LayerEnum Type => LayerEnum.GuardianAngel;
+        public override RoleEnum RoleType => RoleEnum.GuardianAngel;
+        public override Func<string> StartText => () => "Find Someone To Protect";
+        public override Func<string> AbilitiesText => () => TargetPlayer == null ? "- You can select a player to be your target" : ($"- You can protect {TargetPlayer?.name} from death for "
+            + $"a short while\n- If {TargetPlayer?.name} dies, you will become a <color=#DDDD00FF>Survivor</color>");
+        public override InspectorResults InspectorResults => InspectorResults.PreservesLife;
+
         public GuardianAngel(PlayerControl player) : base(player)
         {
-            Name = "Guardian Angel";
-            StartText = () => $"Protect {TargetPlayer?.name} With Your Life";
             Objectives = () => TargetPlayer == null ? "- Find a target to protect" : $"- Have {TargetPlayer?.name} live to the end of the game";
-            Color = CustomGameOptions.CustomNeutColors ? Colors.GuardianAngel : Colors.Neutral;
-            RoleType = RoleEnum.GuardianAngel;
             UsesLeft = CustomGameOptions.MaxProtects;
             RoleAlignment = RoleAlignment.NeutralBen;
-            AbilitiesText = () => "- You can protect your target from death for a short while\n- If your target dies, you will be a <color=#DDDD00FF>Survivor</color>";
-            InspectorResults = InspectorResults.PreservesLife;
-            Type = LayerEnum.GuardianAngel;
             TargetPlayer = null;
             ProtectButton = new(this, "Protect", AbilityTypes.Effect, "ActionSecondary", HitProtect, true);
             TargetButton = new(this, "GATarget", AbilityTypes.Direct, "ActionSecondary", SelectTarget);
@@ -35,9 +37,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (CustomGameOptions.ProtectBeyondTheGrave)
                 GraveProtectButton = new(this, "Protect", AbilityTypes.Effect, "ActionSecondary", HitProtect, true, true);
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public void SelectTarget()
@@ -46,19 +45,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 return;
 
             TargetPlayer = TargetButton.TargetPlayer;
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Target, SendOption.Reliable);
-            writer.Write((byte)TargetRPC.SetGATarget);
-            writer.Write(PlayerId);
-            writer.Write(TargetPlayer.PlayerId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            CallRpc(CustomRPC.Target, TargetRPC.SetGATarget, this, TargetPlayer);
         }
 
         public float ProtectTimer()
         {
             var timespan = DateTime.UtcNow - LastProtected;
             var num = Player.GetModifiedCooldown(CustomGameOptions.ProtectCd) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void Protect()
@@ -66,7 +62,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
 
-            if (Utils.Meeting)
+            if (Meeting)
                 TimeRemaining = 0f;
         }
 
@@ -75,11 +71,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var newRole = new Survivor(Player) { UsesLeft = UsesLeft };
             newRole.RoleUpdate(this);
 
-            if (Local && !IntroCutscene.Instance)
-                Utils.Flash(Colors.Survivor);
+            if (Local)
+                Flash(Colors.Survivor);
 
-            if (CustomPlayer.Local.Is(RoleEnum.Seer) && !IntroCutscene.Instance)
-                Utils.Flash(Colors.Seer);
+            if (CustomPlayer.Local.Is(RoleEnum.Seer))
+                Flash(Colors.Seer);
         }
 
         public void UnProtect()
@@ -96,10 +92,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             TimeRemaining = CustomGameOptions.ProtectDuration;
             UsesLeft--;
             Protect();
-            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-            writer.Write((byte)ActionsRPC.GAProtect);
-            writer.Write(PlayerId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
+            CallRpc(CustomRPC.Action, ActionsRPC.GAProtect, this);
         }
 
         public override void UpdateHud(HudManager __instance)
@@ -107,7 +100,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             base.UpdateHud(__instance);
             ProtectButton.Update("PROTECT", ProtectTimer(), CustomGameOptions.ProtectCd, UsesLeft, Protecting, TimeRemaining, CustomGameOptions.ProtectDuration, true, !Failed &&
                 TargetPlayer != null && TargetAlive);
-            TargetButton.Update("SET TARGET", 0, 1, true, TargetPlayer == null);
+            TargetButton.Update("WATCH", true, TargetPlayer == null);
 
             if (CustomGameOptions.ProtectBeyondTheGrave)
             {
@@ -117,10 +110,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if ((Failed || (TargetPlayer != null && !TargetAlive)) && !IsDead)
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Change, SendOption.Reliable);
-                writer.Write((byte)TurnRPC.TurnSurv);
-                writer.Write(PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                CallRpc(CustomRPC.Change, TurnRPC.TurnSurv, this);
                 TurnSurv();
             }
         }

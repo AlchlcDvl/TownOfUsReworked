@@ -8,25 +8,13 @@
         public bool LoversLose => LoverDead && IsDeadLover;
         public bool LoversAlive => !IsDeadLover && !LoverDead;
 
-        public Lovers(PlayerControl player) : base(player)
-        {
-            Name = "Lover";
-            Symbol = "♥";
-            TaskText = () => $"- Live to the final 3 with {OtherLover.name}";
-            Color = CustomGameOptions.CustomObjectifierColors ? Colors.Lovers : Colors.Objectifier;
-            ObjectifierType = ObjectifierEnum.Lovers;
-            Type = LayerEnum.Lovers;
+        public override Color32 Color => ClientGameOptions.CustomObjColors ? Colors.Lovers : Colors.Objectifier;
+        public override string Name => "Lovers";
+        public override string Symbol => "♥";
+        public override LayerEnum Type => LayerEnum.Lovers;
+        public override ObjectifierEnum ObjectifierType => ObjectifierEnum.Lovers;
+        public override Func<string> TaskText => () => $"- Live to the final 3 with {OtherLover.name}";
 
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
-        }
-
-        public override void UpdateHud(HudManager __instance)
-        {
-            base.UpdateHud(__instance);
-
-            if (!__instance.Chat.isActiveAndEnabled)
-                __instance.Chat.SetVisible(CustomGameOptions.LoversChat);
-        }
+        public Lovers(PlayerControl player) : base(player) {}
     }
 }

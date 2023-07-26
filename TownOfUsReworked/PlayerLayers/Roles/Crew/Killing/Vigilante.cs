@@ -12,29 +12,28 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public bool ButtonUsable => UsesLeft > 0;
         public bool RoundOne;
 
+        public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Vigilante : Colors.Crew;
+        public override string Name => "Vigilante";
+        public override LayerEnum Type => LayerEnum.Vigilante;
+        public override RoleEnum RoleType => RoleEnum.Vigilante;
+        public override Func<string> StartText => () => "Shoot The <color=#FF0000FF>Evildoers</color>";
+        public override Func<string> AbilitiesText => () => "- You can shoot players\n- You you shoot someone you are not supposed to, you will die to guilt";
+        public override InspectorResults InspectorResults => InspectorResults.IsCold;
+
         public Vigilante(PlayerControl player) : base(player)
         {
-            Name = "Vigilante";
-            StartText = () => "Shoot The <color=#FF0000FF>Evildoers</color>";
-            AbilitiesText = () => "- You can shoot players\n- You you shoot someone you are not supposed to, you will die to guilt";
-            Color = CustomGameOptions.CustomCrewColors ? Colors.Vigilante : Colors.Crew;
-            RoleType = RoleEnum.Vigilante;
             RoleAlignment = RoleAlignment.CrewKill;
-            InspectorResults = InspectorResults.IsCold;
             UsesLeft = CustomGameOptions.VigiBulletCount;
-            Type = LayerEnum.Vigilante;
             ShootButton = new(this, "Shoot", AbilityTypes.Direct, "ActionSecondary", Shoot, true);
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public float KillTimer()
         {
             var timespan = DateTime.UtcNow - LastKilled;
             var num = Player.GetModifiedCooldown(CustomGameOptions.VigiKillCd) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public override void OnMeetingStart(MeetingHud __instance)
@@ -42,13 +41,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             base.OnMeetingStart(__instance);
 
             if (PreMeetingDie)
-                Utils.RpcMurderPlayer(Player, Player);
+                RpcMurderPlayer(Player, Player);
             else if (InnoMessage)
-                Utils.HUD.Chat.AddChat(PlayerControl.LocalPlayer, "You killed an innocent an innocent crew! You have put your gun away out of guilt.");
+                HUD.Chat.AddChat(CustomPlayer.Local, "You killed an innocent an innocent crew! You have put your gun away out of guilt.");
         }
 
-        public bool Exception(PlayerControl player) => player.Is(Faction) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || player == Player.GetOtherLover() || player ==
-            Player.GetOtherRival() || (player.Is(ObjectifierEnum.Mafia) && Player.Is(ObjectifierEnum.Mafia));
+        public bool Exception(PlayerControl player) => player.Is(Faction) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || Player.IsLinkedTo(player);
 
         public override void UpdateHud(HudManager __instance)
         {
@@ -58,7 +56,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Shoot()
         {
-            if (Utils.IsTooFar(Player, ShootButton.TargetPlayer) || KillTimer() != 0f || KilledInno || RoundOne)
+            if (IsTooFar(Player, ShootButton.TargetPlayer) || KillTimer() != 0f || KilledInno || RoundOne)
                 return;
 
             var target = ShootButton.TargetPlayer;
@@ -68,7 +66,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 target.Is(RoleAlignment.NeutralPros) || target.IsFramed() || Player.IsFramed() || Player.NotOnTheSameSide() || target.NotOnTheSameSide() ||
                 Player.Is(ObjectifierEnum.Corrupted) || (target.Is(RoleEnum.BountyHunter) && CustomGameOptions.VigiKillsBH) || (target.Is(RoleEnum.Actor) &&
                 CustomGameOptions.VigiKillsActor) || target.Is(RoleAlignment.NeutralHarb);
-            var interact = Utils.Interact(Player, target, flag4);
+            var interact = Interact(Player, target, flag4);
 
             if (interact[3])
             {
@@ -80,10 +78,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 else
                 {
                     if (CustomGameOptions.MisfireKillsInno)
-                        Utils.RpcMurderPlayer(Player, target);
+                        RpcMurderPlayer(Player, target);
 
                     if (Local && CustomGameOptions.VigiNotifOptions == VigiNotif.Flash && CustomGameOptions.VigiOptions != VigiOptions.Immediate)
-                        Utils.Flash(Color);
+                        Flash(Color);
                     else if (CustomGameOptions.VigiNotifOptions == VigiNotif.Message && CustomGameOptions.VigiOptions != VigiOptions.Immediate)
                         InnoMessage = true;
 
@@ -91,7 +89,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     KilledInno = !CustomGameOptions.VigiKillAgain;
 
                     if (CustomGameOptions.VigiOptions == VigiOptions.Immediate)
-                        Utils.RpcMurderPlayer(Player, Player);
+                        RpcMurderPlayer(Player, Player);
                     else if (CustomGameOptions.VigiOptions == VigiOptions.PreMeeting)
                         PreMeetingDie = true;
                     else if (CustomGameOptions.VigiOptions == VigiOptions.PostMeeting)

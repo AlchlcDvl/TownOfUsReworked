@@ -2,20 +2,16 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
 {
     public class Giant : Modifier
     {
-        private static bool Chonk => CustomGameOptions.DwarfScale != 1;
-        private static bool Snail => CustomGameOptions.DwarfSpeed != 1;
+        private static bool Chonk => CustomGameOptions.GiantScale != 1;
+        private static bool Snail => CustomGameOptions.GiantSpeed != 1;
         private static string Text => Chonk && Snail ? "big and slow" : (Chonk ? "big" : (Snail ? "slow" : ""));
 
-        public Giant(PlayerControl player) : base(player)
-        {
-            Name = !Chonk && !Snail ? "Useless" : (!Chonk ? "Sloth" : (Snail ? "Chonker" : "Giant"));
-            TaskText = () => !Chonk && !Snail ? "- Why" : $"- You are {Text}";
-            Color = CustomGameOptions.CustomModifierColors ? Colors.Giant : Colors.Modifier;
-            ModifierType = ModifierEnum.Giant;
-            Type = LayerEnum.Giant;
+        public override Color32 Color => ClientGameOptions.CustomModColors ? Colors.Giant : Colors.Modifier;
+        public override string Name => !Chonk && !Snail ? "Useless" : (!Chonk ? "Sloth" : (Snail ? "Chonker" : "Giant"));
+        public override LayerEnum Type => LayerEnum.Giant;
+        public override ModifierEnum ModifierType => ModifierEnum.Giant;
+        public override Func<string> TaskText => () => !Chonk && !Snail ? "- Why" : $"- You are {Text}";
 
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
-        }
+        public Giant(PlayerControl player) : base(player) {}
     }
 }

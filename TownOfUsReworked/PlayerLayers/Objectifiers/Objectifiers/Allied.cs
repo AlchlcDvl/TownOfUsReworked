@@ -4,18 +4,26 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
     {
         public Faction Side = Faction.Neutral;
 
-        public Allied(PlayerControl player) : base(player)
+        public override Color32 Color
         {
-            Name = "Allied";
-            Symbol = "ζ";
-            TaskText = () => Side == Faction.Crew ? Role.CrewWinCon : (Side == Faction.Intruder ? Role.IntrudersWinCon : (Side == Faction.Syndicate ? Role.SyndicateWinCon :
-                "- You are conflicted"));
-            Color = CustomGameOptions.CustomObjectifierColors ? Colors.Allied : Colors.Objectifier;
-            ObjectifierType = ObjectifierEnum.Allied;
-            Type = LayerEnum.Allied;
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
+            get
+            {
+                if (Side == Faction.Crew)
+                    return Colors.Crew;
+                else if (Side == Faction.Syndicate)
+                    return Colors.Syndicate;
+                else if (Side == Faction.Intruder)
+                    return Colors.Intruder;
+                else
+                    return ClientGameOptions.CustomObjColors ? Colors.Allied : Colors.Objectifier;
+            }
         }
+        public override string Name => "Allied";
+        public override string Symbol => "ζ";
+        public override LayerEnum Type => LayerEnum.Allied;
+        public override ObjectifierEnum ObjectifierType => ObjectifierEnum.Allied;
+        public override Func<string> TaskText => () => Side == Faction.Neutral ? "- You are conflicted" : "";
+
+        public Allied(PlayerControl player) : base(player) {}
     }
 }

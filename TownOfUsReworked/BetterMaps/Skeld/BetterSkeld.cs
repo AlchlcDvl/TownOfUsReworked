@@ -81,28 +81,28 @@ namespace TownOfUsReworked.BetterMaps.Skeld
         private static void FindVents()
         {
             if (NavVentSouth == null)
-                NavVentSouth = Utils.AllVents.Find(vent => vent.gameObject.name == "NavVentSouth");
+                NavVentSouth = AllVents.Find(vent => vent.gameObject.name == "NavVentSouth");
 
             if (NavVentNorth == null)
-                NavVentNorth = Utils.AllVents.Find(vent => vent.gameObject.name == "NavVentNorth");
+                NavVentNorth = AllVents.Find(vent => vent.gameObject.name == "NavVentNorth");
 
             if (ShieldsVent == null)
-                ShieldsVent = Utils.AllVents.Find(vent => vent.gameObject.name == "ShieldsVent");
+                ShieldsVent = AllVents.Find(vent => vent.gameObject.name == "ShieldsVent");
 
             if (WeaponsVent == null)
-                WeaponsVent = Utils.AllVents.Find(vent => vent.gameObject.name == "WeaponsVent");
+                WeaponsVent = AllVents.Find(vent => vent.gameObject.name == "WeaponsVent");
 
             if (REngineVent == null)
-                REngineVent = Utils.AllVents.Find(vent => vent.gameObject.name == "REngineVent");
+                REngineVent = AllVents.Find(vent => vent.gameObject.name == "REngineVent");
 
             if (UpperReactorVent == null)
-                UpperReactorVent = Utils.AllVents.Find(vent => vent.gameObject.name == "UpperReactorVent");
+                UpperReactorVent = AllVents.Find(vent => vent.gameObject.name == "UpperReactorVent");
 
             if (LEngineVent == null)
-                LEngineVent = Utils.AllVents.Find(vent => vent.gameObject.name == "LEngineVent");
+                LEngineVent = AllVents.Find(vent => vent.gameObject.name == "LEngineVent");
 
             if (ReactorVent == null)
-                ReactorVent = Utils.AllVents.Find(vent => vent.gameObject.name == "ReactorVent");
+                ReactorVent = AllVents.Find(vent => vent.gameObject.name == "ReactorVent");
 
             IsVentsFetched = NavVentSouth && NavVentNorth && ShieldsVent && WeaponsVent && REngineVent && UpperReactorVent && LEngineVent && ReactorVent;
         }
@@ -110,19 +110,19 @@ namespace TownOfUsReworked.BetterMaps.Skeld
         private static void FindObjects()
         {
             if (ReactorVent == null)
-                ReactorVent = Utils.AllVents.Find(vent => vent.gameObject.name == "ReactorVent");
+                ReactorVent = AllVents.Find(vent => vent.gameObject.name == "ReactorVent");
 
             if (ShieldsVent == null)
-                ShieldsVent = Utils.AllVents.Find(vent => vent.gameObject.name == "ShieldsVent");
+                ShieldsVent = AllVents.Find(vent => vent.gameObject.name == "ShieldsVent");
 
             if (BigYVent == null)
-                BigYVent = Utils.AllVents.Find(vent => vent.gameObject.name == "BigYVent");
+                BigYVent = AllVents.Find(vent => vent.gameObject.name == "BigYVent");
 
             if (NavVentNorth == null)
-                NavVentNorth = Utils.AllVents.Find(vent => vent.gameObject.name == "NavVentNorth");
+                NavVentNorth = AllVents.Find(vent => vent.gameObject.name == "NavVentNorth");
 
             if (CafeVent == null)
-                CafeVent = Utils.AllVents.Find(vent => vent.gameObject.name == "CafeVent");
+                CafeVent = AllVents.Find(vent => vent.gameObject.name == "CafeVent");
 
             IsObjectsFetched = ReactorVent && ShieldsVent && BigYVent && NavVentNorth && CafeVent;
         }
@@ -153,46 +153,31 @@ namespace TownOfUsReworked.BetterMaps.Skeld
         private static void MoveReactorVent()
         {
             if (ReactorVent.transform.position != ReactorVentNewPos)
-            {
-                var transform = ReactorVent.transform;
-                transform.position = ReactorVentNewPos;
-            }
+                ReactorVent.transform.position = ReactorVentNewPos;
         }
 
         private static void MoveShieldsVent()
         {
             if (ShieldsVent.transform.position != ShieldsVentNewPos)
-            {
-                var transform = ShieldsVent.transform;
-                transform.position = ShieldsVentNewPos;
-            }
+                ShieldsVent.transform.position = ShieldsVentNewPos;
         }
 
         private static void MoveBigYVent()
         {
             if (BigYVent.transform.position != BigYVentNewPos)
-            {
-                var transform = BigYVent.transform;
-                transform.position = BigYVentNewPos;
-            }
+                BigYVent.transform.position = BigYVentNewPos;
         }
 
         private static void MoveNavVentNorth()
         {
             if (NavVentNorth.transform.position != NavVentNorthNewPos)
-            {
-                var transform = NavVentNorth.transform;
-                transform.position = NavVentNorthNewPos;
-            }
+                NavVentNorth.transform.position = NavVentNorthNewPos;
         }
 
         private static void MoveCafeVent()
         {
             if (CafeVent.transform.position != CafeVentNewPos)
-            {
-                var transform = CafeVent.transform;
-                transform.position = CafeVentNewPos;
-            }
+                CafeVent.transform.position = CafeVentNewPos;
         }
     }
 }

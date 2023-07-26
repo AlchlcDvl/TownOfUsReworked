@@ -16,7 +16,7 @@ namespace TownOfUsReworked.MultiClientInstancing
     {
         public static void Postfix(MeetingHud __instance, ref byte suspectStateIdx)
         {
-            if (!ConstantVariables.IsLocalGame || !TownOfUsReworked.MCIActive || !TownOfUsReworked.SameVote)
+            if (!IsLocalGame || !TownOfUsReworked.MCIActive || !TownOfUsReworked.SameVote)
                 return;
 
             var sus = suspectStateIdx;

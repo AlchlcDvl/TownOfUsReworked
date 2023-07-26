@@ -10,22 +10,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public PlayerControl ConcealedPlayer;
         public CustomMenu ConcealMenu;
 
+        public override Color32 Color => ClientGameOptions.CustomSynColors ? Colors.Concealer : Colors.Syndicate;
+        public override string Name => "Concealer";
+        public override LayerEnum Type => LayerEnum.Concealer;
+        public override RoleEnum RoleType => RoleEnum.Concealer;
+        public override Func<string> StartText => () => "Turn The <color=#8CFFFFFF>Crew</color> Invisible For Some Chaos";
+        public override Func<string> AbilitiesText => () => $"- You can turn {(HoldsDrive ? "everyone" : "a player")} invisible\n{CommonAbilities}";
+        public override InspectorResults InspectorResults => InspectorResults.Unseen;
+
         public Concealer(PlayerControl player) : base(player)
         {
-            Name = "Concealer";
-            StartText = () => "Make The <color=#8CFFFFFF>Crew</color> Invisible For Some Chaos";
-            AbilitiesText = () => $"- You can make a player invisible\n- With the Chaos Drive, you make everyone invisible\n{CommonAbilities}";
-            Color = CustomGameOptions.CustomSynColors ? Colors.Concealer : Colors.Syndicate;
-            RoleType = RoleEnum.Concealer;
             RoleAlignment = RoleAlignment.SyndicateDisrup;
             ConcealMenu = new(Player, Click, Exception1);
             ConcealedPlayer = null;
-            Type = LayerEnum.Concealer;
             ConcealButton = new(this, "Conceal", AbilityTypes.Effect, "Secondary", HitConceal);
-            InspectorResults = InspectorResults.Unseen;
-
-            if (TownOfUsReworked.IsTest)
-                Utils.LogSomething($"{Player.name} is {Name}");
         }
 
         public void Conceal()
@@ -36,9 +34,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (HoldsDrive)
                 Utils.Conceal();
             else
-                Utils.Invis(ConcealedPlayer, CustomPlayer.Local.Is(Faction.Syndicate));
+                Invis(ConcealedPlayer, CustomPlayer.Local.Is(Faction.Syndicate));
 
-            if (Utils.Meeting || (ConcealedPlayer == null && !HoldsDrive))
+            if (Meeting || (ConcealedPlayer == null && !HoldsDrive))
                 TimeRemaining = 0f;
         }
 
@@ -48,9 +46,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             LastConcealed = DateTime.UtcNow;
 
             if (HoldsDrive)
-                Utils.DefaultOutfitAll();
+                DefaultOutfitAll();
             else
-                Utils.DefaultOutfit(ConcealedPlayer);
+                DefaultOutfit(ConcealedPlayer);
 
             ConcealedPlayer = null;
         }
@@ -59,13 +57,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             var timespan = DateTime.UtcNow - LastConcealed;
             var num = Player.GetModifiedCooldown(CustomGameOptions.ConcealCooldown) * 1000f;
-            var flag2 = num - (float)timespan.TotalMilliseconds < 0f;
-            return flag2 ? 0f : (num - (float)timespan.TotalMilliseconds) / 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void Click(PlayerControl player)
         {
-            var interact = Utils.Interact(Player, player);
+            var interact = Interact(Player, player);
 
             if (interact[3])
                 ConcealedPlayer = player;
@@ -82,26 +81,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (HoldsDrive)
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                writer.Write((byte)ActionsRPC.Conceal);
-                writer.Write(PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
                 TimeRemaining = CustomGameOptions.ConcealDuration;
                 Conceal();
-                Utils.Conceal();
+                CallRpc(CustomRPC.Action, ActionsRPC.Conceal, this);
             }
             else if (ConcealedPlayer == null)
                 ConcealMenu.Open();
             else
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Action, SendOption.Reliable);
-                writer.Write((byte)ActionsRPC.Conceal);
-                writer.Write(PlayerId);
-                writer.Write(ConcealedPlayer.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
                 TimeRemaining = CustomGameOptions.ConcealDuration;
+                CallRpc(CustomRPC.Action, ActionsRPC.Conceal, this, ConcealedPlayer);
                 Conceal();
-                Utils.Invis(ConcealedPlayer, CustomPlayer.Local.Is(Faction.Syndicate));
             }
         }
 
@@ -118,7 +108,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 if (ConcealedPlayer != null && !HoldsDrive && !Concealed)
                     ConcealedPlayer = null;
 
-                Utils.LogSomething("Removed a target");
+                LogSomething("Removed a target");
             }
         }
     }

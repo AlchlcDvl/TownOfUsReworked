@@ -6,7 +6,7 @@ namespace TownOfUsReworked.CustomOptions
 
         public CustomButtonOption(MultiMenu menu, string name, Action toDo = null) : base(-1, menu, name, CustomOptionType.Button, 0) => Do = toDo ?? BaseToDo;
 
-        public static void BaseToDo() {}
+        private static void BaseToDo() {}
 
         public override void OptionCreated()
         {

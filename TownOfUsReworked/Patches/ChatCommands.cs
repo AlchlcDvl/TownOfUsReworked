@@ -7,7 +7,7 @@ namespace TownOfUsReworked.Patches
 
         public static bool Prefix(ChatController __instance)
         {
-            var text = __instance.TextArea.text.ToLower();
+            var text = __instance.freeChatField.Text.ToLower();
             var chatHandled = false;
 
             if (ChatUpdate.ChatHistory.Count == 0 || ChatUpdate.ChatHistory[^1] != text)
@@ -17,7 +17,7 @@ namespace TownOfUsReworked.Patches
             if (text.StartsWith("/"))
             {
                 chatHandled = true;
-                var args = text.Split(' ');
+                var args = __instance.freeChatField.Text.Split(' ');
                 var command = ChatCommand.AllCommands.Find(x => x.Command == args[0] || x.Short == args[0]);
 
                 if (command == null)
@@ -47,16 +47,16 @@ namespace TownOfUsReworked.Patches
 
             if (chatHandled)
             {
-                __instance.TextArea.Clear();
-                __instance.quickChatMenu.ResetGlyphs();
+                __instance.freeChatField.Clear();
+                __instance.quickChatMenu.Clear();
+                __instance.quickChatField.Clear();
+                __instance.UpdateChatMode();
             }
 
             if (!CustomPlayer.Local.Data.IsDead && !chatHandled && !MeetingPatches.GivingAnnouncements && text != "")
             {
-                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.Notify, SendOption.Reliable);
-                writer.Write(CustomPlayer.Local.PlayerId);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
                 Notify(CustomPlayer.Local.PlayerId);
+                CallRpc(CustomRPC.Misc, MiscRPC.Notify, CustomPlayer.Local.PlayerId);
             }
 
             return !chatHandled;
@@ -64,16 +64,16 @@ namespace TownOfUsReworked.Patches
 
         public static void Notify(byte targetPlayerId)
         {
-            if (!Utils.Meeting || Chat)
+            if (!Meeting || Chat)
                 return;
 
-            var playerVoteArea = Utils.VoteAreaById(targetPlayerId);
+            var playerVoteArea = VoteAreaById(targetPlayerId);
             Chat = UObject.Instantiate(playerVoteArea.Megaphone, playerVoteArea.Megaphone.transform);
             Chat.name = "Notification";
             Chat.transform.localPosition = new(-2f, 0.1f, -1f);
-            Chat.sprite = AssetManager.GetSprite("Chat");
+            Chat.sprite = GetSprite("Chat");
             Chat.gameObject.SetActive(true);
-            Utils.HUD.StartCoroutine(Effects.Lerp(2, new Action<float>(p =>
+            HUD.StartCoroutine(Effects.Lerp(2, new Action<float>(p =>
             {
                 if (p == 1)
                 {
