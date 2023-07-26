@@ -1773,6 +1773,8 @@
 
         public static int CycleInt(int max, int min, int currentVal, bool increment, int change = 1) => (int)CycleFloat(max, min, currentVal, increment, change);
 
+        public static byte CycleByte(int max, int min, int currentVal, bool increment, int change = 1) => (byte)CycleFloat(max, min, currentVal, increment, change);
+
         public static string WrapText(string text, int width = 90, bool overflow = true)
         {
             var result = new StringBuilder();
@@ -1781,7 +1783,7 @@
 
             while (startIndex < text.Length)
             {
-                var num = text.IndexOfAny(new char[3] { ' ', '\t', '\r' }, startIndex);
+                var num = text.IndexOfAny(new char[] { ' ', '\t', '\r' }, startIndex);
 
                 if (num != -1)
                 {

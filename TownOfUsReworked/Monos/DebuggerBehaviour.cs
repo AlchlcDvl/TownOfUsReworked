@@ -60,12 +60,12 @@ namespace TownOfUsReworked.Monos
 
                     if (GUILayout.Button("Next Player"))
                     {
-                        ControllingFigure = (byte)CycleFloat(CustomPlayer.AllPlayers.Count - 1, 0, ControllingFigure, true);
+                        ControllingFigure = CycleByte(CustomPlayer.AllPlayers.Count - 1, 0, ControllingFigure, true);
                         MCIUtils.SwitchTo(ControllingFigure);
                     }
                     else if (GUILayout.Button("Previous Player"))
                     {
-                        ControllingFigure = (byte)CycleFloat(CustomPlayer.AllPlayers.Count - 1, 0, ControllingFigure, false);
+                        ControllingFigure = CycleByte(CustomPlayer.AllPlayers.Count - 1, 0, ControllingFigure, false);
                         MCIUtils.SwitchTo(ControllingFigure);
                     }
 

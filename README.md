@@ -179,8 +179,75 @@ Quick warning: This mod adds a LOT of stuff, and is currently not very beginner 
 <details>
 <summary>Changelog</summary>
 <details>
-<summary>v1.0.0</summary>
+<summary>v0.4.2</summary>
 <ul> <li>Update: Updated MCI</li> </ul>
+<ul> <li>New Game Mode: New way to edit the role generation yourself! Role Lists! (also includes the ability to ban the spawning of up to 5 roles)</li> </ul>
+<ul> <li>New Objectifier: Linked</li> </ul>
+<ul> <li>Addition: Added a custom cursor</li> </ul>
+<ul> <li>Addition: Added a welcoming message to get started when joining a lobby</li> </ul>
+<ul> <li>Addition: Added Warper lore</li> </ul>
+<ul> <li>Addition: Added some more settings</li> </ul>
+<ul> <li>Addition: Added even more parameters for hat customisation</li> </ul>
+<ul> <li>Completion: Finished compatibility with LevelImpostor (Submerged refuses to work with the mod)</li> </ul>
+<ul> <li>Update: Updated dependencies, updated mod to v2023.7.12 and merged fixes from v5.0.0</li> </ul>
+<ul> <li>Merge: Merged the Region Install mod into this mod</li> </ul>
+<ul> <li>Rework: Certain NE roles with targets now have toggle-able options for letting rng decide their targets</li> </ul>
+<ul> <li>Buff: Assassin can now be given to Neutral (Harbinger) roles</li> </ul>
+<ul> <li>Buff: With the Chaos Drive, the Collider can now charge themselves to kill those they marked</li> </ul>
+<ul> <li>Buff: Blocking players now renders them unable to open anything, not just not letting them use their abilities (yes I just want to be a troll)</li> </ul>
+<ul> <li>Buff: Bounty Hunters can now request players to set a target for them (only if the options for letting them pick a target is on)</li> </ul>
+<ul> <li>Buff: Made Actor more likely to win by making them able to win by being guessed as a role that's not in the game and their inspector results change based on their target role</li> </ul>
+<ul> <li>Nerf: Intruders/Syndicate can no longer sabotage if everyone from their faction is dead</li> </ul>
+<ul> <li>Nerf: Crew can no longer win by tasks if all of them are dead</li> </ul>
+<ul> <li>Change: Juggernaut can no longer get the Ruthless ability (because it already gets the ability when reaching 4 kills)</li> </ul>
+<ul> <li>Change: Radar will now also point towards the closest body if it happens to be closer than the closest alive player</li> </ul>
+<ul> <li>Change: Split the "Assassin Is Unique" setting into settings for each faction</li> </ul>
+<ul> <li>Change: A Retributionist's inspector results now change based on the role they are mimicking</li> </ul>
+<ul> <li>Recode: The in-game wiki has recieved a full recode (WIP)</li> </ul>
+<ul> <li>Recode: The role gen has been slightly recoded again for like the 30th time (I promise they get better with each change)</li> </ul>
+<ul> <li>Return: Executioner, Guardian Angel and Guesser automatically get their targets again, but can be toggled to pick their own targets</li> </ul>
+<ul> <li>Return: Custom hats are back (nameplates and visors soon to follow)</li> </ul>
+<ul> <li>Big Improvement: Added a stalemate detector to avoid unwinnable situations</li> </ul>
+<ul> <li>Improvement: Improved how ability buttons are handled in online games and fixed a couple of bugs relating to them</li> </ul>
+<ul> <li>Improvement: Slightly improved version control to be a bit more lightweight</li> </ul>
+<ul> <li>Improvement: Added page counters to the custom player selection menus and the vitals menus (bottom right)</li> </ul>
+<ul> <li>Improvement: Changed up how game settings look like in lobby (inspired by the game options in Project Lotus)</li> </ul>
+<ul> <li>Improvement: You can now move backwards in the settings pages by pressing the Backspace button</li> </ul>
+<ul> <li>Improvement: Clicking on players/dead bodies will trigger the first clickable button before executing the rest (for the mouse point and click players)</li> </ul>
+<ul> <li>Improvement: Random Spawns now also include vent positions, so people are less likely to be sent to the same place</li> </ul>
+<ul> <li>Improvement: Improved how custom meeting ability buttons and their cooldowns are handled</li> </ul>
+<ul> <li>Improvement: Messages are now color coded if possible</li> </ul>
+<ul> <li>Improvement: Settings now auto update their visibility based on which settings are active</li> </ul>
+<ul> <li>Improvement: Heavily worked on how information between players are handled, hopefully this fixes some lag/desync issues</li> </ul>
+<ul> <li>Optimisation: Improved some code here and there to smoothen out the mod</li> </ul>
+<ul> <li>Critical Fix: Fixed several bugs with playing on Hide And Seek (not sure why you'd want to play Hide And Seek on this mod but ok)</li> </ul>
+<ul> <li>Critical Fix: Added rate limits to role gen to prevent hosts from occasionally crashing on lower player numbers</li> </ul>
+<ul> <li>Critical Fix: Fixed games ending even with Neutral (Harbinger) and (Apocalypse) roles still alive against other factions</li> </ul>
+<ul> <li>Critical Fix: Fixed Syndicate (Killing) roles getting kills buttons when recieving the Chaos Drive</li> </ul>
+<ul> <li>Vanilla Fix: Players who dc now update in the meeting correctly</li> </ul>
+<ul> <li>Vanilla Fix: Fixed dying/game starting not updating the hud correctly</li> </ul>
+<ul> <li>Bug Fix: Fixed a couple of underlying issues with button cooldowns</li> </ul>
+<ul> <li>Bug Fix: Fixed being unable to set the lobby size below 5 in the lobby making menu</li> </ul>
+<ul> <li>Bug Fix: Fixed Oxygen sabotage slowing down players forever</li> </ul>
+<ul> <li>Bug Fix: Fixed random arrows appearing to trail you</li> </ul>
+<ul> <li>Bug Fix: Fixed the count settings incorrectly updating for Lovers, Rivals and Mafia</li> </ul>
+<ul> <li>Bug Fix: Fixed Bounty Hunters getting their own Mafia members as targets</li> </ul>
+<ul> <li>Bug Fix: Fixed a couple of minor bugs here and there</li> </ul>
+<ul> <li>Bug Fix: Fixed being able to talk before the game announcements begin</li> </ul>
+<ul> <li>Bug Fix: Fixed switching between Robots not disabling the chat</li> </ul>
+<ul> <li>Bug Fix: Fixed the 'Task Bar Updates' settings being wrong</li> </ul>
+<ul> <li>Bug Fix: Fixed chat not disappearing when switching between dead and alive players</li> </ul>
+<ul> <li>Bug Fix: Fixed the kick and ban chat commands from not working as intended</li> </ul>
+<ul> <li>Bug Fix: Fixed Plaguebearer/Pestilence somehow spawning way too often</li> </ul>
+<ul> <li>Visual Fix: The roleblock icons no longer appear to drag on the screen</li> </ul>
+<ul> <li>Visual Fix: Fixed a couple of layering issues with the spectate, help and game settings buttons</li> </ul>
+<ul> <li>Visual Fix: Fixed the intro screens for some roles being a little off</li> </ul>
+<ul> <li>Visual Fix: Fixed player names sometimes not updating correctly for Mafia, Lovers and Rivals in meetings</li> </ul>
+<ul> <li>Visual Fix: Fixed Assassin menus having transparent buttons and the exit button being blown out of proportion</li> </ul>
+<ul> <li>Role Fix: Fixed Promoted Godfather effects never ending</li> </ul>
+<ul> <li>Role Fix: Fixed Collider bypassing basically every form of defense</li> </ul>
+<ul> <li>Role Fix: Fixed Consort and Consort-Godfathers not being able to deselect targets</li> </ul>
+<ul> <li>Removal: Removed some debugging statements I forgot to remove earlier</li> </ul>
 </details>
 <details>
 <summary>v0.4.1</summary>
@@ -3176,7 +3243,7 @@ The Layer assignment is split into 7 phases.
 
 In the first phase, all required lists are cleared and all variables are reset.
 
-At the beginning of the phases 2 to 5, the spawn chances are handled. If the spawn chance is greater than 0%, the relevant layer is added to a list. If the mode is set to Custom, the same layer is added as many times as set by the count setting. For [Lovers](#lovers) and [Rivals](#rivals), they are added twice for each count as they depend on pairs, rather than singluar assignment. So setting them to spawn twice means that the list will contain up to 4 instances of Lovers/Rivals.
+At the beginning of the phases 2 to 5, the spawn chances are handled. If the spawn chance is greater than 0%, the relevant layer is added to a list. If the mode is set to Custom, the same layer is added as many times as set by the count setting. For [Lovers](#lovers), [Linked](#linked) and [Rivals](#rivals), they are added twice for each count as they depend on pairs, rather than singluar assignment. So setting them to spawn twice means that the list will contain up to 4 instances of that type.
 
 The list's size is then modified to whatever the Max and Min settings for the specific layer or its alignment or faction (in case of Roles).
 
@@ -3194,7 +3261,7 @@ After the roles are assigned, a random Crew aligned player will be designated as
 
 Anyways, for the next 3 phases, the assignment also includes another action. Before the layers are assigned, a list of players is made for every restricted type (like making a list of players which only includes Crew because the layer can only be assigned to Crew). After that, the layers are assigned corresponding to their set player lists, which each assigned player being removed from other player lists.
 
-The next phase is the handing out of targets. During this phase, layers with targets, such as Guesser, Lovers, Rivals and Executioner are given their targets. Lovers or Rivals who are left out will have that objectifier be removed.
+The next phase is the handing out of targets. During this phase, layers with targets, such as Guesser, Lovers, Rivals and Executioner are given their targets. Lovers, Linked or Rivals who are left out will have that objectifier be removed.
 
 The final phase is what I call "The Cleanup". During this phase, roles whose targets could not be assigned will be changed into roles that don't have targets. After that, empty layers are handed out to those who did not get any layer of that type prevent null errors during the game. Finally, certain variables for conversion are set, so that conversions are handled easier.
 
@@ -3216,15 +3283,14 @@ After that, it's gaming time.
 [The Other Roles](https://github.com/Eisbison/TheOtherRoles) - For the inspiration of the Tracker role and the Astral and Bait modifiers, cosmetics system, teleport animation and version control\
 [The Other Roles: Community Edition](https://github.com/JustASysAdmin/TheOtherRoles2) - For the random spawns option\
 [Las Monjas](https://github.com/KiraYamato94/LasMonjas) - For the inspiration of the VIP modifier\
-[5up](https://www.twitch.tv/5uppp) and the Submarine Team - For the inspiration of the Grenadier role\
 [MyDragonBreath](https://github.com/MyDragonBreath) - For Submerged Compatibility, basis for mod debugging, partially the Operative role, general help and moral support\
 [Guus](https://github.com/OhMyGuus) - For support for the old Among Us versions (v2021.11.9.5 and v2021.12.15)\
 [ItsTheNumberH](https://github.com/itsTheNumberH/Town-Of-H) - For Coward, Volatile and Bait modifiers, Poisoner and Cannibal roles, partially for Tracker and Coroner roles and bug fixes\
 [Ruiner](https://github.com/ruiner189/Town-Of-Us-Redux) - For Lovers being changed into an objectifier and Task Tracking\
-[Term](https://www.twitch.tv/termboii) - For creating Medium, Blackmailer and Plaguebearer, partially for Transporter and porting v2.5.0 to the new Among Us version (v2021.12.15)\
+[Term](https://www.twitch.tv/termboii) - For creating Medium, Blackmailer and Plaguebearer, partially for Transporter and porting to v2021.12.15\
 [Zeo](https://github.com/Zeo666/AllTheRoles) - For the idea of Ruthless and help with migrating to the use of shapeshifter menus\
 [BryBry16](https://github.com/Brybry16/BetterPolus) - For the code used for Better Polus\
-[Polus.gg Team](https://github.com/SubmergedAmongUs/Submerged) - For the Submerged map\
+[5up](https://www.twitch.tv/5uppp) and the [Submerine Team](https://github.com/SubmergedAmongUs/Submerged) - For the Submerged map and the inspiration of the Grenadier role\
 [Slushigoose](https://github.com/slushiegoose) - For making the mod in the first place\
 [eDonnes](https://github.com/eDonnes124/) - For continuing the mod after it was discontinued\
 [Det](https://github.com/FERTAILS) - For getting me into modding\

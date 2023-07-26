@@ -19,7 +19,31 @@ namespace TownOfUsReworked.Patches
                     __instance.Background.sprite = ShipStatus.Instance.CosmeticsCache.GetNameplate("nameplate_NoPlate").Image;
                     __instance.LevelNumberText.GetComponentInParent<SpriteRenderer>().enabled = false;
                     __instance.LevelNumberText.GetComponentInParent<SpriteRenderer>().gameObject.SetActive(false);
-                    __instance.NameText.color = Palette.White;
+                }
+                else
+                {
+                    if (ClientGameOptions.WhiteNameplates)
+                        __instance.Background.sprite = ShipStatus.Instance.CosmeticsCache.GetNameplate("nameplate_NoPlate").Image;
+
+                    if (ClientGameOptions.NoLevels)
+                    {
+                        __instance.LevelNumberText.GetComponentInParent<SpriteRenderer>().enabled = false;
+                        __instance.LevelNumberText.GetComponentInParent<SpriteRenderer>().gameObject.SetActive(false);
+                    }
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(PlayerVoteArea), nameof(PlayerVoteArea.PreviewNameplate))]
+        public static class PlayerPreviews
+        {
+            public static void Postfix(PlayerVoteArea __instance)
+            {
+                if (CustomGameOptions.MeetingColourblind && DoUndo.IsCamoed)
+                {
+                    __instance.Background.sprite = ShipStatus.Instance.CosmeticsCache.GetNameplate("nameplate_NoPlate").Image;
+                    __instance.LevelNumberText.GetComponentInParent<SpriteRenderer>().enabled = false;
+                    __instance.LevelNumberText.GetComponentInParent<SpriteRenderer>().gameObject.SetActive(false);
                 }
                 else
                 {
@@ -1032,7 +1056,7 @@ namespace TownOfUsReworked.Patches
             {
                 var dracula = CustomPlayer.Local.GetDracula();
 
-                if (dracula.Converted.Contains(player.TargetPlayerId))
+                if (dracula.Converted.Contains(player.TargetPlayerId) && !dracula.Local)
                 {
                     if (CustomGameOptions.FactionSeeRoles)
                     {
@@ -1057,7 +1081,7 @@ namespace TownOfUsReworked.Patches
             {
                 var jackal = CustomPlayer.Local.GetJackal();
 
-                if (jackal.Recruited.Contains(player.TargetPlayerId))
+                if (jackal.Recruited.Contains(player.TargetPlayerId) && !jackal.Local)
                 {
                     if (CustomGameOptions.FactionSeeRoles)
                     {
@@ -1082,7 +1106,7 @@ namespace TownOfUsReworked.Patches
             {
                 var necromancer = CustomPlayer.Local.GetNecromancer();
 
-                if (necromancer.Resurrected.Contains(player.TargetPlayerId))
+                if (necromancer.Resurrected.Contains(player.TargetPlayerId) && !necromancer.Local)
                 {
                     if (CustomGameOptions.FactionSeeRoles)
                     {
@@ -1107,7 +1131,7 @@ namespace TownOfUsReworked.Patches
             {
                 var whisperer = CustomPlayer.Local.GetWhisperer();
 
-                if (whisperer.Persuaded.Contains(player.TargetPlayerId))
+                if (whisperer.Persuaded.Contains(player.TargetPlayerId) && !whisperer.Local)
                 {
                     if (CustomGameOptions.FactionSeeRoles)
                     {
@@ -1317,8 +1341,7 @@ namespace TownOfUsReworked.Patches
                 }
             }
 
-            if (CustomPlayer.Local.Is(AbilityEnum.Snitch) && CustomGameOptions.SnitchSeestargetsInMeeting && !(CustomPlayer.LocalCustom.IsDead &&
-                CustomGameOptions.DeadSeeEverything) && player != CustomPlayer.Local)
+            if (CustomPlayer.Local.Is(AbilityEnum.Snitch) && CustomGameOptions.SnitchSeestargetsInMeeting && !DeadSeeEverything && player.TargetPlayerId != CustomPlayer.Local.PlayerId)
             {
                 var role = localinfo[0] as Role;
 
