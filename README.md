@@ -180,7 +180,6 @@ Quick warning: This mod adds a LOT of stuff, and is currently not very beginner 
 <summary>Changelog</summary>
 <details>
 <summary>v0.4.2</summary>
-<ul> <li>Update: Updated MCI</li> </ul>
 <ul> <li>New Game Mode: New way to edit the role generation yourself! Role Lists! (also includes the ability to ban the spawning of up to 5 roles)</li> </ul>
 <ul> <li>New Objectifier: Linked</li> </ul>
 <ul> <li>Addition: Added a custom cursor</li> </ul>
