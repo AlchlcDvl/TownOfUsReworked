@@ -37,14 +37,11 @@ namespace TownOfUsReworked.Patches
 
         private static void RandomSpawn()
         {
-            if (!AmongUsClient.Instance.AmHost || !CustomGameOptions.RandomSpawns || TownOfUsReworked.NormalOptions.MapId is 4 or 5)
+            if (!AmongUsClient.Instance.AmHost || !CustomGameOptions.RandomSpawns || TownOfUsReworked.NormalOptions.MapId is 4 or 5 or 6)
                 return;
 
             var allLocations = new List<Vector3>();
-
-            foreach (var vent in AllVents)
-                allLocations.Add(GetVentPosition(vent));
-
+            AllVents.ForEach(x => allLocations.Add(GetVentPosition(x)));
             var tobeadded = TownOfUsReworked.NormalOptions.MapId switch
             {
                 0 => SkeldSpawns,

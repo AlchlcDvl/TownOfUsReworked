@@ -96,9 +96,7 @@ namespace TownOfUsReworked.Patches
             }
             else
             {
-                foreach (var layer in PlayerLayer.AllLayers)
-                    layer.GameEnd();
-
+                PlayerLayer.AllLayers.ForEach(x => x?.GameEnd());
                 //Stalemate detector for unwinnable situations
                 DetectStalemate();
             }

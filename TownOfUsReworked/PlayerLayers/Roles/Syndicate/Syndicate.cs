@@ -4,9 +4,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     {
         public DateTime LastKilled;
         public CustomButton KillButton;
-        public string CommonAbilities => (RoleType is not RoleEnum.Anarchist and not RoleEnum.Sidekick && RoleAlignment != RoleAlignment.SyndicateKill && HoldsDrive ? "- You can kill " +
-            "players directly" : "- You can kill") + (CustomGameOptions.AltImps && ((CustomGameOptions.IntrudersCanSabotage && !IsDead) || (IsDead && CustomGameOptions.GhostsCanSabotage)) ?
-            "\n- You can sabotage the systems to distract the <color=#8CFFFFFF>Crew</color>" : "");
+        public string CommonAbilities => (RoleType is not RoleEnum.Anarchist and not RoleEnum.Sidekick && RoleAlignment != RoleAlignment.SyndicateKill && HoldsDrive ? ("- You can kill " +
+            "players directly") : "- You can kill") + (CustomGameOptions.AltImps && ((CustomGameOptions.IntrudersCanSabotage && !IsDead) || (IsDead &&
+            CustomGameOptions.GhostsCanSabotage)) ? "\n- You can sabotage the systems to distract the <color=#8CFFFFFF>Crew</color>" : "");
         public bool HoldsDrive => Player == DriveHolder || (CustomGameOptions.GlobalDrive && SyndicateHasChaosDrive);
 
         public override Color32 Color => Colors.Syndicate;
@@ -87,7 +87,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            __instance.SabotageButton.gameObject.SetActive(CustomGameOptions.AltImps && CustomGameOptions.IntrudersCanSabotage);
             KillButton.Update("KILL", KillTimer(), CustomGameOptions.ChaosDriveKillCooldown, true, (HoldsDrive && RoleAlignment != RoleAlignment.SyndicateKill) || Type is
                 LayerEnum.Anarchist or LayerEnum.Sidekick or LayerEnum.Rebel);
         }

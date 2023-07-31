@@ -375,6 +375,6 @@ Among Us/BepInEx/cache/
 Among Us/BepInEx/LogOutput.*
 Among Us/output_log.txt
 
-*.txt
+TODO.txt
 .vscode/
 packages.lock.json

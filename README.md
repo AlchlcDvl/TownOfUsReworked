@@ -128,6 +128,7 @@ Quick warning: This mod adds a LOT of stuff, and is currently not very beginner 
 
 | Among Us | Mod Version | Link |
 |----------|-------------|------|
+| 2023.7.12 (s & e) | v0.4.3 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.4.3/Reworked.zip) |
 | 2023.7.12 (s & e) | v0.4.2 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.4.2/Reworked.zip) |
 | 2023.6.13 (s & e) | v0.4.1 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.4.1/Reworked.zip) |
 | 2023.6.13 (s & e) | v0.4.0 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.4.0/Reworked.zip) |
@@ -179,6 +180,14 @@ Quick warning: This mod adds a LOT of stuff, and is currently not very beginner 
 <details>
 <summary>Changelog</summary>
 <details>
+<summary>v0.4.3</summary>
+<ul> <li>Update: Updated presets</li> </ul>
+<ul> <li>Optimisation: The code was optimised in certain parts</li> </ul>
+<ul> <li>Improvement: Improved how Operative bugs and Bomber bombs are handled</li> </ul>
+<ul> <li>Critical Fix: Fixed teleporting crashing games</li> </ul>
+<ul> <li>Bug Fix: Fixed meeting results not being sent to roles with meeting info (like Operative and Coroner)</li> </ul>
+</details>
+<details>
 <summary>v0.4.2</summary>
 <ul> <li>New Game Mode: New way to edit the role generation yourself! Role Lists! (also includes the ability to ban the spawning of up to 5 roles)</li> </ul>
 <ul> <li>New Objectifier: Linked</li> </ul>
@@ -202,7 +211,7 @@ Quick warning: This mod adds a LOT of stuff, and is currently not very beginner 
 <ul> <li>Change: Radar will now also point towards the closest body if it happens to be closer than the closest alive player</li> </ul>
 <ul> <li>Change: Split the "Assassin Is Unique" setting into settings for each faction</li> </ul>
 <ul> <li>Change: A Retributionist's inspector results now change based on the role they are mimicking</li> </ul>
-<ul> <li>Recode: The in-game wiki has recieved a full recode (WIP)</li> </ul>
+<ul> <li>Recode: The in-game wiki has received a full recode (WIP)</li> </ul>
 <ul> <li>Recode: The role gen has been slightly recoded again for like the 30th time (I promise they get better with each change)</li> </ul>
 <ul> <li>Return: Executioner, Guardian Angel and Guesser automatically get their targets again, but can be toggled to pick their own targets</li> </ul>
 <ul> <li>Return: Custom hats are back (nameplates and visors soon to follow)</li> </ul>
@@ -2389,7 +2398,7 @@ The Rebel can only spawn in 3+ Syndicate games. They can choose to promote a fel
 ## Shapeshifter
 ### Alignment: Syndicate (Support)
 
-The Shapeshifter can swap the appearances of 2 players. WIth the Chaos Drive, everyone's appearances are suffled.
+The Shapeshifter can swap the appearances of 2 players. With the Chaos Drive, everyone's appearances are suffled.
 
 ### Game Options
 

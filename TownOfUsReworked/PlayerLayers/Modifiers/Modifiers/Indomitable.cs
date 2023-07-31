@@ -9,19 +9,8 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
         public override LayerEnum Type => LayerEnum.Indomitable;
         public override ModifierEnum ModifierType => ModifierEnum.Indomitable;
         public override Func<string> TaskText => () => "- You cannot be guessed";
+        public override bool Hidden => !CustomGameOptions.IndomitableKnows && !AttemptedGuess && !IsDead;
 
-        public Indomitable(PlayerControl player) : base(player)
-        {
-            Hidden = !CustomGameOptions.IndomitableKnows && !AttemptedGuess;
-            AttemptedGuess = false;
-        }
-
-        public override void UpdateHud(HudManager __instance)
-        {
-            base.UpdateHud(__instance);
-
-            if (Hidden && (IsDead || AttemptedGuess))
-                Hidden = false;
-        }
+        public Indomitable(PlayerControl player) : base(player) => AttemptedGuess = false;
     }
 }

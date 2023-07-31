@@ -287,7 +287,7 @@ namespace TownOfUsReworked.Data
         Vanilla
     }
 
-    public enum Map
+    public enum MapEnum
     {
         Skeld,
         MiraHQ,
@@ -353,7 +353,6 @@ namespace TownOfUsReworked.Data
         AttemptSound,
         Start,
         SyncCustomSettings,
-        SetPos,
         SetSettings,
         AddVoteBank,
         MeetingStart,
@@ -369,7 +368,6 @@ namespace TownOfUsReworked.Data
         VersionHandshake,
         ChaosDrive,
         FixLights,
-        SetReports,
         SetFirstKilled,
 
         None
@@ -458,6 +456,7 @@ namespace TownOfUsReworked.Data
         Actor,
         Amnesiac,
         Arsonist,
+        Betrayer,
         BountyHunter,
         Cannibal,
         Cryomaniac,
@@ -480,7 +479,6 @@ namespace TownOfUsReworked.Data
         Troll,
         Werewolf,
         Whisperer,
-        Betrayer,
 
         Ambusher,
         Blackmailer,

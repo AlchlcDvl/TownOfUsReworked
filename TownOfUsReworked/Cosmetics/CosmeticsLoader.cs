@@ -163,9 +163,7 @@ namespace TownOfUsReworked.Cosmetics
                 if (update && Directory.Exists(TownOfUsReworked.Hats))
                 {
                     var d = new DirectoryInfo(TownOfUsReworked.Hats);
-
-                    foreach (var f in d.GetFiles("*.png").Select(x => x.FullName).ToArray())
-                        File.Delete(f);
+                    d.GetFiles("*.png").Select(x => x.FullName).ToArray().ToList().ForEach(File.Delete);
                 }
 
                 if (!Directory.Exists(TownOfUsReworked.Hats))
@@ -268,11 +266,8 @@ namespace TownOfUsReworked.Cosmetics
                 if (update && Directory.Exists(TownOfUsReworked.Visors))
                 {
                     var d = new DirectoryInfo(TownOfUsReworked.Visors);
-
-                    foreach (var f in d.GetFiles("*.png").Select(x => x.FullName).ToArray())
-                        File.Delete(f);
+                    d.GetFiles("*.png").Select(x => x.FullName).ToArray().ToList().ForEach(File.Delete);
                 }
-
 
                 if (!Directory.Exists(TownOfUsReworked.Visors))
                     Directory.CreateDirectory(TownOfUsReworked.Visors);
@@ -364,11 +359,8 @@ namespace TownOfUsReworked.Cosmetics
                 if (update && Directory.Exists(TownOfUsReworked.Nameplates))
                 {
                     var d = new DirectoryInfo(TownOfUsReworked.Nameplates);
-
-                    foreach (var f in d.GetFiles("*.png").Select(x => x.FullName).ToArray())
-                        File.Delete(f);
+                    d.GetFiles("*.png").Select(x => x.FullName).ToArray().ToList().ForEach(File.Delete);
                 }
-
 
                 if (!Directory.Exists(TownOfUsReworked.Nameplates))
                     Directory.CreateDirectory(TownOfUsReworked.Nameplates);

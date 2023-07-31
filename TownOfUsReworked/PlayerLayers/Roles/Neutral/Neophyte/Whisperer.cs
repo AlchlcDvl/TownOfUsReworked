@@ -81,7 +81,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                     PlayerConversion.Add(player, stat);
             }
 
-            var removals = new Dictionary<byte, int>();
+            var removals = new List<byte>();
 
             foreach (var playerConversion in PlayerConversion)
             {
@@ -96,15 +96,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         WhisperConversion = 2.5f;
 
                     RoleGen.RpcConvert(playerConversion.Key, Player.PlayerId, SubFaction.Sect);
-                    removals.Add(playerConversion.Key, playerConversion.Value);
+                    removals.Add(playerConversion.Key);
                 }
             }
 
             LastWhispered = DateTime.UtcNow;
             WhisperCount++;
-
-            foreach (var (key, _) in removals)
-                PlayerConversion.Remove(key);
+            removals.ForEach(x => PlayerConversion.Remove(x));
         }
 
         public override void UpdateHud(HudManager __instance)

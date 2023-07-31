@@ -42,20 +42,14 @@ namespace TownOfUsReworked.CustomOptions
                 yield break;
 
             var __instance = UObject.FindObjectOfType<GameOptionsMenu>();
-
-            foreach (var option in SlotButtons.Skip(1))
-                option.Setting?.gameObject?.Destroy();
-
+            SlotButtons.Skip(1).ToList().ForEach(x => x.Setting.gameObject.Destroy());
             Loading = SlotButtons[0];
             Loading.Do = () => {};
             Loading.Setting.Cast<ToggleOption>().TitleText.text = "Loading...";
             __instance.Children = new[] { Loading.Setting };
             yield return new WaitForSeconds(0.5f);
             Loading.Setting.gameObject.Destroy();
-
-            foreach (var option in OldButtons)
-                option.gameObject.SetActive(true);
-
+            OldButtons.ForEach(x => x.gameObject.SetActive(true));
             __instance.Children = OldButtons.ToArray();
             yield return new WaitForEndOfFrame();
             yield return flashCoro();
@@ -71,14 +65,11 @@ namespace TownOfUsReworked.CustomOptions
             var y = __instance.GetComponentsInChildren<OptionBehaviour>().Max(option => option.transform.localPosition.y);
             var x = __instance.Children[1].transform.localPosition.x;
             var z = __instance.Children[1].transform.localPosition.z;
-            var i = 0;
             OldButtons = __instance.Children.ToList();
+            OldButtons.ForEach(x => x.gameObject.SetActive(false));
 
-            foreach (var option in __instance.Children)
-                option.gameObject.SetActive(false);
-
-            foreach (var option in options)
-                option.transform.localPosition = new(x, y - (i++ * 0.5f), z);
+            for (var i = 0; i < options.Count; i++)
+                options[i].transform.localPosition = new(x, y - (i * 0.5f), z);
 
             __instance.Children = new(options.ToArray());
         }

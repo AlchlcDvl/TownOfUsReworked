@@ -106,13 +106,6 @@ namespace TownOfUsReworked.Classes
                 GameStartManagerPatch.PlayerVersions.Add(clientId, new(new(major, minor, build, revision), guid));
         }
 
-        public static void Write(this MessageWriter writer, Vector3 vector3)
-        {
-            var vector2 = new Vector2(vector3.x, vector3.y);
-            writer.Write(vector2);
-            writer.Write(vector3.z);
-        }
-
         public static Vector3 ReadVector3(this MessageReader reader)
         {
             var vector2 = reader.ReadVector2();
@@ -166,8 +159,6 @@ namespace TownOfUsReworked.Classes
                         writer.Write(sByte);
                     else if (item is Vector2 vector2)
                         writer.Write(vector2);
-                    else if (item is Vector3 vector3)
-                        writer.Write(vector3);
                     else if (item is ulong Ulong)
                         writer.Write(Ulong);
                     else if (item is ushort Ushort)

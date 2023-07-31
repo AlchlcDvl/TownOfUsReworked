@@ -291,8 +291,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         TimeRemaining = 0f;
                     }
 
-                    if (MapBehaviour.Instance)
-                        MapBehaviour.Instance.Close();
+                    if (Map)
+                        Map.Close();
 
                     if (Minigame.Instance)
                         Minigame.Instance.Close();
@@ -375,10 +375,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public void Drop()
         {
             CallRpc(CustomRPC.Action, ActionsRPC.Drop, CurrentlyDragging);
-
-            foreach (var component in CurrentlyDragging?.bodyRenderers)
-                component.material.SetFloat("_Outline", 0f);
-
             CurrentlyDragging.gameObject.GetComponent<DragBehaviour>().Destroy();
             CurrentlyDragging = null;
             LastDragged = DateTime.UtcNow;
@@ -803,10 +799,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public void UnBlock()
         {
             Enabled = false;
-
-            foreach (var layer in GetLayers(BlockTarget))
-                layer.IsBlocked = false;
-
+            GetLayers(BlockTarget).ForEach(x => x.IsBlocked = false);
             BlockTarget = null;
             LastBlock = DateTime.UtcNow;
         }
@@ -815,9 +808,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
-
-            foreach (var layer in GetLayers(BlockTarget))
-                layer.IsBlocked = !GetRole(BlockTarget).RoleBlockImmune;
+            GetLayers(BlockTarget).ForEach(x => x.IsBlocked = !GetRole(BlockTarget).RoleBlockImmune);
 
             if (IsDead || BlockTarget.Data.IsDead || BlockTarget.Data.Disconnected || Meeting || !BlockTarget.IsBlocked())
                 TimeRemaining = 0f;

@@ -107,8 +107,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         TimeRemaining = 0f;
                     }
 
-                    if (MapBehaviour.Instance)
-                        MapBehaviour.Instance.Close();
+                    if (Map)
+                        Map.Close();
 
                     if (Minigame.Instance)
                         Minigame.Instance.Close();

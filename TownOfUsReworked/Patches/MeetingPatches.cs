@@ -89,12 +89,13 @@ namespace TownOfUsReworked.Patches
 
                 if (OtherButtonsPatch.RoleCardActive)
                     OtherButtonsPatch.OpenRoleCard();
+
                 MeetingCount++;
                 Coroutines.Start(Announcements());
                 GivingAnnouncements = true;
-
-                foreach (var player in CustomPlayer.AllPlayers)
-                    player?.MyPhysics?.ResetAnimState();
+                CallRpc(CustomRPC.Misc, MiscRPC.MeetingStart);
+                CustomPlayer.AllPlayers.ForEach(x => x?.MyPhysics?.ResetAnimState());
+                AllBodies.ForEach(x => x.gameObject.Destroy());
 
                 if (Role.ChaosDriveMeetingTimerCount < CustomGameOptions.ChaosDriveMeetingCount)
                     Role.ChaosDriveMeetingTimerCount++;
@@ -104,16 +105,10 @@ namespace TownOfUsReworked.Patches
                     Role.SyndicateHasChaosDrive = true;
                     RoleGen.AssignChaosDrive();
                 }
-
-                foreach (var layer in PlayerLayer.LocalLayers)
-                    layer?.OnMeetingStart(__instance);
             }
 
             private static IEnumerator Announcements()
             {
-                foreach (var layer in PlayerLayer.LocalLayers)
-                    layer?.OnBodyReport(Reported);
-
                 yield return new WaitForSeconds(5f);
 
                 if (CustomGameOptions.GameAnnouncements)
@@ -321,6 +316,14 @@ namespace TownOfUsReworked.Patches
                 Reported = null;
                 ReportedBody = null;
                 DisconnectHandler.Disconnected.Clear();
+
+                foreach (var layer in PlayerLayer.LocalLayers)
+                {
+                    layer?.OnBodyReport(Reported);
+                    layer?.OnMeetingStart(Meeting);
+
+                    yield return new WaitForSeconds(0.5f);
+                }
             }
 
             private static string GetLocation(Vector2 position)
@@ -426,7 +429,7 @@ namespace TownOfUsReworked.Patches
 
                         break;
 
-                    case 5:
+                    case 5 or 6:
                         result = "Somewhere";
                         break;
                 }
@@ -440,17 +443,7 @@ namespace TownOfUsReworked.Patches
         {
             public static void Postfix(MeetingHud __instance)
             {
-                CallRpc(CustomRPC.Misc, MiscRPC.MeetingStart);
-
-                foreach (var body in AllBodies)
-                    body.gameObject.Destroy();
-
-                foreach (var player in CustomPlayer.AllPlayers)
-                    player.MyPhysics.ResetAnimState();
-
-                foreach (var layer in PlayerLayer.LocalLayers)
-                    layer?.OnMeetingEnd(__instance);
-
+                PlayerLayer.LocalLayers.ForEach(x => x?.OnMeetingEnd(__instance));
                 CachedFirstDead = null;
             }
         }
@@ -479,9 +472,7 @@ namespace TownOfUsReworked.Patches
                     !PlayerLayer.GetLayers<Assassin>(LayerEnum.Assassin).Any(x => x.Phone != null) && !Role.GetRoles<Guesser>(RoleEnum.Guesser).Any(x => x.Phone != null));
 
                 AllVoteAreas.ForEach(x => x.SetName());
-
-                foreach (var layer in PlayerLayer.LocalLayers)
-                    layer.UpdateMeeting(__instance);
+                PlayerLayer.LocalLayers.ForEach(x => x?.UpdateMeeting(__instance));
             }
         }
 
@@ -493,35 +484,21 @@ namespace TownOfUsReworked.Patches
                 var exiledString = exiled == null ? "null" : exiled.PlayerName;
                 LogSomething($"Exiled PlayerName = {exiledString}");
                 LogSomething($"Was a tie = {tie}");
-
-                foreach (var layer in PlayerLayer.LocalLayers)
-                    layer.VoteComplete(__instance);
-
+                PlayerLayer.LocalLayers.ForEach(x => x?.VoteComplete(__instance));
                 Coroutines.Start(PerformSwaps());
-
-                foreach (var layer in PlayerLayer.LocalLayers)
-                    layer?.OnMeetingEnd(__instance);
             }
         }
 
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Select))]
         public static class MeetingHudSelect
         {
-            public static void Postfix(MeetingHud __instance, int __0)
-            {
-                foreach (var layer in PlayerLayer.LocalLayers)
-                    layer.SelectVote(__instance, __0);
-            }
+            public static void Postfix(MeetingHud __instance, int __0) => PlayerLayer.LocalLayers.ForEach(x => x?.SelectVote(__instance, __0));
         }
 
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.ClearVote))]
         public static class MeetingHudClearVote
         {
-            public static void Postfix(MeetingHud __instance)
-            {
-                foreach (var layer in PlayerLayer.LocalLayers)
-                    layer.ClearVote(__instance);
-            }
+            public static void Postfix(MeetingHud __instance) => PlayerLayer.LocalLayers.ForEach(x => x?.ClearVote(__instance));
         }
 
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.CheckForEndVoting))]
@@ -568,9 +545,7 @@ namespace TownOfUsReworked.Patches
                     }
 
                     __instance.RpcVotingComplete(array, exiled, tie);
-
-                    foreach (var role in Ability.GetAbilities<Politician>(AbilityEnum.Politician))
-                        CallRpc(CustomRPC.Action, ActionsRPC.SetExtraVotes, role, role.ExtraVotes.ToArray());
+                    Ability.GetAbilities<Politician>(AbilityEnum.Politician).ForEach(x => CallRpc(CustomRPC.Action, ActionsRPC.SetExtraVotes, x, x.ExtraVotes.ToArray()));
                 }
 
                 return false;

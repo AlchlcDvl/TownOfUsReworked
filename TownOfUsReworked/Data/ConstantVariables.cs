@@ -26,6 +26,8 @@ namespace TownOfUsReworked.Data
         public static bool LastSyn => CustomPlayer.AllPlayers.Count(x => x.Is(Faction.Syndicate) && !(x.Data.IsDead || x.Data.Disconnected)) == 1;
         public static bool Inactive => CustomPlayer.AllPlayers.Count <= 1 || CustomPlayer.Local == null || CustomPlayer.LocalCustom.Data == null || NoLobby;
         public static bool NoPlayers => CustomPlayer.AllPlayers.Count < 1 || CustomPlayer.Local == null || CustomPlayer.LocalCustom.Data == null;
+        public static bool LocalBlocked => PlayerLayer.LocalLayers.Any(x => x.IsBlocked);
+        public static bool LocalNotBlocked => !LocalBlocked;
         public static bool DeadSeeEverything
         {
             get

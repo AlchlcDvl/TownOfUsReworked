@@ -26,11 +26,8 @@ namespace TownOfUsReworked.Patches
     {
         public static void Postfix(MapBehaviour __instance)
         {
-            foreach (var layer in PlayerLayer.LocalLayers)
-                layer?.UpdateMap(__instance);
-
-            foreach (var arrow in CustomArrow.AllArrows)
-                arrow?.UpdateArrowBlip(__instance);
+            PlayerLayer.LocalLayers.ForEach(x => x?.UpdateMap(__instance));
+            CustomArrow.AllArrows.ForEach(x => x?.UpdateArrowBlip(__instance));
         }
     }
 
@@ -118,12 +115,8 @@ namespace TownOfUsReworked.Patches
                 notmodified = false;
             }
 
-            foreach (var layer in PlayerLayer.LocalLayers)
-                layer?.UpdateMap(__instance);
-
-            foreach (var arrow in CustomArrow.AllArrows)
-                arrow?.UpdateArrowBlip(__instance);
-
+            PlayerLayer.LocalLayers.ForEach(x => x?.UpdateMap(__instance));
+            CustomArrow.AllArrows.ForEach(x => x?.UpdateArrowBlip(__instance));
             return notmodified;
         }
     }
@@ -155,8 +148,7 @@ namespace TownOfUsReworked.Patches
         public static bool Prefix(PlayerControl __instance, ref bool __result)
         {
             __result = __instance.moveable && !Minigame.Instance && !__instance.shapeshifting && (!HudManager.InstanceExists || (!HUD.Chat.IsOpenOrOpening &&
-                !HUD.KillOverlay.IsOpen && !HUD.GameMenu.IsOpen)) && (!MapBehaviour.Instance || !MapBehaviour.Instance.IsOpenStopped) && !Meeting &&
-                !IntroCutscene.Instance && !PlayerCustomizationMenu.Instance;
+                !HUD.KillOverlay.IsOpen && !HUD.GameMenu.IsOpen)) && (!Map || !Map.IsOpenStopped) && !Meeting && !IntroCutscene.Instance && !PlayerCustomizationMenu.Instance;
             return false;
         }
     }
@@ -201,8 +193,7 @@ namespace TownOfUsReworked.Patches
             if (!__instance || ! CustomPlayer.Local.Is(AbilityEnum.Multitasker))
                 return;
 
-            foreach (var rend in __instance.GetComponentsInChildren<SpriteRenderer>())
-                rend.color = new(rend.color.r, rend.color.g, rend.color.b, CustomGameOptions.Transparancy / 100f);
+            __instance.GetComponentsInChildren<SpriteRenderer>().ToList().ForEach(x => x.color = new(x.color.r, x.color.g, x.color.b, CustomGameOptions.Transparancy / 100f));
         }
     }
 
@@ -353,11 +344,8 @@ namespace TownOfUsReworked.Patches
     {
         public static void Postfix()
         {
-            foreach (var player in CustomPlayer.AllPlayers.ToArray())
-                player.transform.localScale = !(player.Data.IsDead || player.Data.Disconnected) ? CustomPlayer.Custom(player).SizeFactor : new(0.7f, 0.7f, 1f);
-
-            foreach (var body in AllBodies)
-                body.transform.localScale = CustomPlayer.Custom(PlayerByBody(body)).SizeFactor;
+            CustomPlayer.AllPlayers.ForEach(x => x.transform.localScale = CustomPlayer.Custom(x).SizeFactor);
+            AllBodies.ForEach(x => x.transform.localScale = CustomPlayer.Custom(PlayerByBody(x)).SizeFactor);
         }
     }
 

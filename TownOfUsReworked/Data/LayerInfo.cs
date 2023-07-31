@@ -62,7 +62,7 @@ namespace TownOfUsReworked.Data
             new("Vampire Hunter", "VH", "The Vampire Hunter only spawns if there are Undead in the game. They can check players to see if they are an Undead. When the Vampire Hunter finds "
                 + "them, the target is killed. Otherwise they only interact and nothing else happens. When all Undead are dead, the Vampire Hunter turns into a Vigilante. Interacting with "
                 + "a Vampire Hunter as an Undead will force the Vampire Hunter to kill you.", RoleAlignment.CrewAudit, Faction.Crew, "The Dracula could be any one of us! He could be you! "
-                + "He could be me! He could even be- <b>gets voted off</b>", Colors.VampireHunter),
+                + "He could be me! He could even be- <i>gets voted off</i>", Colors.VampireHunter),
             new("Veteran", "Vet", "The Veteran can go on alert. Anyone who interacts with a Veteran on alert will be killed by the Veteran in question.", RoleAlignment.CrewKill,
                 Faction.Crew, "Touch me, I dare you.", Colors.Veteran),
             new("Vigilante", "Vig", "The Vigilante can kill. However, if they kill someone they shouldn't, they instead die themselves.", RoleAlignment.CrewKill, Faction.Crew, "I AM THE "
@@ -127,13 +127,13 @@ namespace TownOfUsReworked.Data
             new("Pestilence", "Pest", "The Pestilence is always on permanent alert, where anyone who tries to interact with them will die. Pestilence does not spawn in-game and instead " +
                 "gets converted from Plaguebearer after they infect everyone. Pestilence cannot die unless they have been voted out, and they can't be guessed (usually). This role does not"
                 + " spawn directly, unless it's set to, in which case it will replace the Plaguebearer.", RoleAlignment.NeutralApoc, Faction.Neutral, "I am the god of disease, nothing can"
-                + "kill me. <b>Voice from the distance</b> Ejections can!", Colors.Pestilence, "Obliterate anyone who can oppose them"),
+                + "kill me. <i>Voice from the distance</i> Ejections can!", Colors.Pestilence, "Obliterate anyone who can oppose them"),
             new("Phantom", "Phan", "The Phantom spawns when a Neutral player dies withouth accomplishing their objective. They become half-invisible and have to complete all their tasks " +
-                "without getting clicked on to win.", RoleAlignment.NeutralPros, Faction.Neutral, "I'm the one who you should not have killed. <b>Voice from the distance</b> Get outta " +
+                "without getting clicked on to win.", RoleAlignment.NeutralPros, Faction.Neutral, "I'm the one who you should not have killed. <i>Voice from the distance</i> Get outta " +
                 "here! This is not FNAF!", Colors.Phantom, "Finish tasks without getting caught"),
             new("Plaguebearer", "PB", "The Plaguebearer can infect other players. Once infected, the infected player can go and infect other players via interacting with them. Once all " +
                 "players are infected, the Plaguebearer becomes Pestilence. Infected players have a pale lime ρ next to their names.", RoleAlignment.NeutralHarb, Faction.Neutral,
-                "<b>Cough</b> This should surely work, right? <b>Cough</b> I sure hope it does.", Colors.Plaguebearer, "Infect everyone to become Pestilence or kill off anyone who can " +
+                "<i>Cough</i> This should surely work, right? <i>Cough</i> I sure hope it does.", Colors.Plaguebearer, "Infect everyone to become Pestilence or kill off anyone who can " +
                 "oppose them"),
             new("Serial Killer", "SK", "Although the Serial Killer has a kill button, they can't use it unless they are in Bloodlust. Once the Serial Killer is in bloodlust they gain the "
                 + "ability to kill. However, unlike most killers, their kill cooldown is really short for the duration of the bloodlust.", RoleAlignment.NeutralKill, Faction.Neutral, "My "
@@ -182,7 +182,7 @@ namespace TownOfUsReworked.Data
             new("Miner", "Miner", "The Miner can create new vents. These vents only connect to each other, forming a new passageway.", RoleAlignment.IntruderSupport, Faction.Intruder,
                 "Dig, dig, diggin' some rave; making some loud sound waves; the only thing you'll be diggin' is your own grave.", Colors.Miner),
             new("Morphling", "Morph", "The Morphling can morph into another player. During the round, they can choose someone to sample. They can then morph into the sampled person at any"
-                + " time for a limited amount of time.", RoleAlignment.IntruderDecep, Faction.Intruder, "<b>Casually observing the chaos over Green seeing Red kill.</b> It was me.",
+                + " time for a limited amount of time.", RoleAlignment.IntruderDecep, Faction.Intruder, "<i>Casually observing the chaos over Green seeing Red kill.</i> It was me.",
                 Colors.Morphling),
             new("Teleporter", "Tele", "The Teleporter can mark a location which they can then teleport to later.", RoleAlignment.IntruderSupport, Faction.Intruder, "He's here, he's there, "
                 + "he's everywhere. Who are ya gonna call? Psychic friend Fr-", Colors.Teleporter),
@@ -206,7 +206,7 @@ namespace TownOfUsReworked.Data
             new("Rebel", "Reb", "The Rebel can only spawn in 3+ Syndicate games. They can choose to promote a fellow Syndicate to Sidekick. When the Rebel dies, the Sidekick becomes " +
                 "the new Rebel and has lowered cooldowns. With the Chaos Drive, the Rebel's gains the improved abilities of their former role.", RoleAlignment.SyndicateSupport,
                 Faction.Syndicate, "DOWN WITH THE GOVERNMENT!", Colors.Rebel),
-            new("Shapeshifter", "SS", "The Shapeshifter can swap the appearances of 2 players. WIth the Chaos Drive, everyone's appearances are suffled.", RoleAlignment.SyndicateDisrup,
+            new("Shapeshifter", "SS", "The Shapeshifter can swap the appearances of 2 players. With the Chaos Drive, everyone's appearances are suffled.", RoleAlignment.SyndicateDisrup,
                 Faction.Syndicate, "Everyone! We will be playing dress up! TOGETHER!", Colors.Shapeshifter),
             new("Sidekick", "Side", "The Sidekick is promoted from a random non-Rebel Syndicate role. The Sidekick by themselves is nothing special, but when the Rebel dies, the Sidekick" +
                 " becomes the new Rebel. As a result, the new Rebel has a lower cooldown on all of their original role's abilities.", RoleAlignment.SyndicateUtil, Faction.Syndicate,
@@ -247,7 +247,7 @@ namespace TownOfUsReworked.Data
                 "can't get their info through to the silenced player. With the Chaos Drive, silence prevents everyone except for the silenced player from talking.",
                 RoleAlignment.SyndicateDisrup, Faction.Syndicate, "QUIET.", Colors.Silencer),
             new("Drunkard", "Drunk", "The Drunkard can reverse a player's controls. With the Chaos Drive, this effect applies to everyone.", RoleAlignment.SyndicateDisrup,
-                Faction.Syndicate, "<b>Burp</b>", Colors.Drunkard)
+                Faction.Syndicate, "<i>Burp</i>", Colors.Drunkard)
         };
 
         public static readonly List<ModifierInfo> AllModifiers = new()
@@ -514,7 +514,7 @@ namespace TownOfUsReworked.Data
                 "matter of time before the identity of the mystery devil came to light. The Crewmate was walking down the hall when he noticed a suspicious person running up to someone " +
                 "else. Just as he got close, the Crewmate saw the knife in the suspicious person's hands. Using his quick typing skills, the Crewmate transported the target with someone " +
                 "else. \"This is it.\", the Godfather thought as he lunged towards his target. But just as he was about to attack, his target was surrounded by blinding light followed by,"
-                + " \"STOP! IT'S M-\" <b>slash</b> The Godfather dropped the knife down and knelt down in horror as he stared at the body. He had slashed his Janitor, his last surviving " +
+                + " \"STOP! IT'S M-\" <i>slash</i> The Godfather dropped the knife down and knelt down in horror as he stared at the body. He had slashed his Janitor, his last surviving " +
                 "teammate. The Crewmate knew what he had seen the Godfather do. The Crewmate quickly reported the body and called out the Godfather for killing someone. The Godfather, " +
                 "unable to form words due to the horror of what happened, couldn’t defend himself. Just as the Godfather was getting thrown into the airlock, he locked eyes with the " +
                 "Crewmate. The Crewmate, with a smirk, gave the Godfather a V from his fingers and only then did the Godfather realise who the Transporter was.", "Trans",

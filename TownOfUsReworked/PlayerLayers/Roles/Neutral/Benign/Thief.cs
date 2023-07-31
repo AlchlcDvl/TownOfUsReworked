@@ -433,10 +433,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (CustomGameOptions.ThiefSteals)
             {
                 if (CustomPlayer.Local == other && other.Is(Faction.Intruder))
-                {
-                    HUD.SabotageButton.gameObject.SetActive(false);
                     other.Data.Role.TeamType = RoleTeamTypes.Crewmate;
-                }
 
                 var newRole2 = new Thief(other);
                 newRole2.RoleUpdate(role);

@@ -31,17 +31,9 @@ namespace TownOfUsReworked.Patches
     [HarmonyPriority(Priority.First)]
     public static class Confirm
     {
-        public static void Prefix(MeetingHud __instance)
-        {
-            foreach (var layer in PlayerLayer.LocalLayers)
-                layer.ConfirmVotePrefix(__instance);
-        }
+        public static void Prefix(MeetingHud __instance) => PlayerLayer.LocalLayers.ForEach(x => x?.ConfirmVotePrefix(__instance));
 
-        public static void Postfix(MeetingHud __instance)
-        {
-            foreach (var layer in PlayerLayer.LocalLayers)
-                layer.ConfirmVotePostfix(__instance);
-        }
+        public static void Postfix(MeetingHud __instance) => PlayerLayer.LocalLayers.ForEach(x => x?.ConfirmVotePostfix(__instance));
     }
 
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.CastVote))]

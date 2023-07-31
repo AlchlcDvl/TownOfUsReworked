@@ -75,10 +75,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public void Drop()
         {
             CallRpc(CustomRPC.Action, ActionsRPC.Drop, CurrentlyDragging);
-
-            foreach (var component in CurrentlyDragging?.bodyRenderers)
-                component.material.SetFloat("_Outline", 0f);
-
             CurrentlyDragging.gameObject.GetComponent<DragBehaviour>().Destroy();
             CurrentlyDragging = null;
             LastDragged = DateTime.UtcNow;

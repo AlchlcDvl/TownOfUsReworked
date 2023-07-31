@@ -7,15 +7,8 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
         public override LayerEnum Type => LayerEnum.Diseased;
         public override ModifierEnum ModifierType => ModifierEnum.Diseased;
         public override Func<string> TaskText => () => $"- Your killer's cooldown increases by {CustomGameOptions.DiseasedMultiplier} times";
+        public override bool Hidden => !CustomGameOptions.DiseasedKnows && !IsDead;
 
-        public Diseased(PlayerControl player) : base(player) => Hidden = !CustomGameOptions.DiseasedKnows && !IsDead;
-
-        public override void UpdateHud(HudManager __instance)
-        {
-            base.UpdateHud(__instance);
-
-            if (Hidden && IsDead)
-                Hidden = false;
-        }
+        public Diseased(PlayerControl player) : base(player) {}
     }
 }

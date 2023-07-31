@@ -13,7 +13,8 @@ namespace TownOfUsReworked.Patches
             switch (rpc)
             {
                 case CustomRPC.Test:
-                    LogSomething("Recieved RPC!");
+                    LogSomething("Received RPC!");
+                    HUD.Chat.AddChat(CustomPlayer.Local, "Received RPC!");
                     break;
 
                 case CustomRPC.Misc:
@@ -103,12 +104,8 @@ namespace TownOfUsReworked.Patches
                             break;
 
                         case MiscRPC.MeetingStart:
-                            foreach (var body in AllBodies)
-                                body.gameObject.Destroy();
-
-                            foreach (var player10 in CustomPlayer.AllPlayers)
-                                player10.MyPhysics.ResetAnimState();
-
+                            AllBodies.ForEach(x => x.gameObject.Destroy());
+                            CustomPlayer.AllPlayers.ForEach(x => x.MyPhysics.ResetAnimState());
                             break;
 
                         case MiscRPC.DoorSyncToilet:
@@ -144,10 +141,6 @@ namespace TownOfUsReworked.Patches
                             reader.ReadPlayer().RemainingEmergencies = 0;
                             break;
 
-                        case MiscRPC.SetReports:
-                            reader.ReadPlayer().MaxReportDistance = CustomGameOptions.ReportDistance;
-                            break;
-
                         case MiscRPC.SetSpawnAirship:
                             SpawnInMinigamePatch.SpawnPoints.Clear();
                             SpawnInMinigamePatch.SpawnPoints.AddRange(reader.ReadBytesAndSize().ToList());
@@ -156,14 +149,6 @@ namespace TownOfUsReworked.Patches
                         case MiscRPC.ChaosDrive:
                             Role.DriveHolder = reader.ReadPlayer();
                             Role.SyndicateHasChaosDrive = true;
-                            break;
-
-                        case MiscRPC.SetPos:
-                            var setplayer = reader.ReadPlayer();
-
-                            if (IsSubmerged)
-                                ChangeFloor(setplayer.transform.position.y > -7f);
-
                             break;
 
                         case MiscRPC.SyncCustomSettings:
@@ -199,10 +184,7 @@ namespace TownOfUsReworked.Patches
                             TownOfUsReworked.NormalOptions.GhostsDoTasks = CustomGameOptions.GhostTasksCountToWin;
                             TownOfUsReworked.NormalOptions.MaxPlayers = CustomGameOptions.LobbySize;
                             GameOptionsManager.Instance.currentNormalGameOptions = TownOfUsReworked.NormalOptions;
-
-                            foreach (var player in CustomPlayer.AllPlayers)
-                                player.MaxReportDistance = CustomGameOptions.ReportDistance;
-
+                            CustomPlayer.AllPlayers.ForEach(x => x.MaxReportDistance = CustomGameOptions.ReportDistance);
                             break;
 
                         case MiscRPC.SetFirstKilled:
@@ -210,7 +192,7 @@ namespace TownOfUsReworked.Patches
                             break;
 
                         default:
-                            LogSomething($"Recieved unknown RPC - {nameof(misc)}");
+                            LogSomething($"Received unknown RPC - {nameof(misc)}");
                             break;
                     }
 
@@ -290,7 +272,7 @@ namespace TownOfUsReworked.Patches
                             break;
 
                         default:
-                            LogSomething($"Recieved unknown RPC - {nameof(turn)}");
+                            LogSomething($"Received unknown RPC - {nameof(turn)}");
                             break;
                     }
 
@@ -369,7 +351,7 @@ namespace TownOfUsReworked.Patches
                             break;
 
                         default:
-                            LogSomething($"Recieved unknown RPC - {nameof(target)}");
+                            LogSomething($"Received unknown RPC - {nameof(target)}");
                             break;
                     }
 
@@ -442,7 +424,7 @@ namespace TownOfUsReworked.Patches
                                     break;
 
                                 default:
-                                    LogSomething($"Recieved unknown RPC - {nameof(retAction)}");
+                                    LogSomething($"Received unknown RPC - {nameof(retAction)}");
                                     break;
                             }
 
@@ -524,7 +506,7 @@ namespace TownOfUsReworked.Patches
                                     break;
 
                                 default:
-                                    LogSomething($"Recieved unknown RPC - {nameof(gfAction)}");
+                                    LogSomething($"Received unknown RPC - {nameof(gfAction)}");
                                     break;
                             }
 
@@ -608,7 +590,7 @@ namespace TownOfUsReworked.Patches
                                     break;
 
                                 default:
-                                    LogSomething($"Recieved unknown RPC - {nameof(rebAction)}");
+                                    LogSomething($"Received unknown RPC - {nameof(rebAction)}");
                                     break;
                             }
 
@@ -1043,7 +1025,7 @@ namespace TownOfUsReworked.Patches
                             break;
 
                         default:
-                            LogSomething($"Recieved unknown RPC - {nameof(action)}");
+                            LogSomething($"Received unknown RPC - {nameof(action)}");
                             break;
                     }
 
@@ -1177,10 +1159,7 @@ namespace TownOfUsReworked.Patches
                             Objectifier.CorruptedWins = true;
 
                             if (CustomGameOptions.AllCorruptedWin)
-                            {
-                                foreach (var corr in Objectifier.GetObjectifiers(ObjectifierEnum.Corrupted))
-                                    corr.Winner = true;
-                            }
+                                Objectifier.GetObjectifiers(ObjectifierEnum.Corrupted).ForEach(x => x.Winner = true);
 
                             reader.ReadLayer().Winner = true;
                             break;
@@ -1194,10 +1173,7 @@ namespace TownOfUsReworked.Patches
 
                         case WinLoseRPC.OverlordWin:
                             Objectifier.OverlordWins = true;
-
-                            foreach (var ov in Objectifier.GetObjectifiers(ObjectifierEnum.Overlord))
-                                ov.Winner = true;
-
+                            Objectifier.GetObjectifiers<Overlord>(ObjectifierEnum.Overlord).Where(ov => ov.IsAlive).ToList().ForEach(x => x.Winner = true);
                             break;
 
                         case WinLoseRPC.MafiaWins:
@@ -1222,14 +1198,14 @@ namespace TownOfUsReworked.Patches
                             break;
 
                         default:
-                            LogSomething($"Recieved unknown RPC - {nameof(winlose)}");
+                            LogSomething($"Received unknown RPC - {nameof(winlose)}");
                             break;
                     }
 
                     break;
 
                 default:
-                    LogSomething($"Recieved unknown RPC - {nameof(rpc)}");
+                    LogSomething($"Received unknown RPC - {nameof(rpc)}");
                     break;
             }
         }

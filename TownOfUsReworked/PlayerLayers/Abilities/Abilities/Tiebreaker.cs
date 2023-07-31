@@ -7,7 +7,8 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
         public override LayerEnum Type => LayerEnum.Tiebreaker;
         public override AbilityEnum AbilityType => AbilityEnum.Tiebreaker;
         public override Func<string> TaskText => () => "- Your votes break ties";
+        public override bool Hidden => !CustomGameOptions.TiebreakerKnows && !IsDead;
 
-        public Tiebreaker(PlayerControl player) : base(player) => Hidden = !CustomGameOptions.TiebreakerKnows;
+        public Tiebreaker(PlayerControl player) : base(player) {}
     }
 }

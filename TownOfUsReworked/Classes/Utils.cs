@@ -19,6 +19,7 @@
         public static HudManager HUD => HudManager.Instance;
         public static MeetingHud Meeting => MeetingHud.Instance;
         public static ShipStatus Ship => ShipStatus.Instance;
+        public static MapBehaviour Map => MapBehaviour.Instance;
         private const string Everything = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*()|{}[],.<>;':\"-+=*/`~_\\ ⟡☆♡♧♤ø▶❥✔εΔΓικνστυφψΨωχӪζδ♠♥βαµ♣✚Ξρλς§π★ηΛ" +
             "γΣΦΘξ✧¢";
         private static readonly Dictionary<string, string> KeyWords = new()
@@ -487,8 +488,8 @@
                 if (Minigame.Instance)
                     Minigame.Instance.Close();
 
-                if (MapBehaviour.Instance)
-                    MapBehaviour.Instance.Close();
+                if (Map)
+                    Map.Close();
 
                 HUD.KillOverlay.ShowKillAnimation(killer.Data, data);
                 HUD.ShadowQuad.gameObject.SetActive(false);
@@ -715,7 +716,7 @@
                 ret.RetMenu.GenButtons(Meeting);
             }
 
-            foreach (var area in Meeting.playerStates)
+            foreach (var area in AllVoteAreas)
             {
                 if (area.VotedFor != target.PlayerId)
                     continue;
@@ -924,8 +925,8 @@
             return new() { fullReset, gaReset, survReset, abilityUsed };
         }
 
-        public static List<PlayerControl> GetClosestPlayers(Vector2 truePosition, float radius) => CustomPlayer.AllPlayers.Where(x => Vector2.Distance(truePosition,
-            x.GetTruePosition()) <= radius).ToList();
+        public static List<PlayerControl> GetClosestPlayers(Vector2 truePosition, float radius, bool includeDead = false) => CustomPlayer.AllPlayers.Where(x =>
+            Vector2.Distance(truePosition, x.GetTruePosition()) <= radius && (!x.Data.IsDead || (x.Data.IsDead && includeDead))).ToList();
 
         public static bool IsTooFar(PlayerControl player, PlayerControl target)
         {
@@ -968,14 +969,9 @@
 
         public static void Spread(PlayerControl interacter, PlayerControl target)
         {
-            foreach (var pb in Role.GetRoles<Plaguebearer>(RoleEnum.Plaguebearer))
-                pb.RpcSpreadInfection(interacter, target);
-
-            foreach (var arso in Role.GetRoles<Arsonist>(RoleEnum.Arsonist))
-                arso.RpcSpreadDouse(target, interacter);
-
-            foreach (var cryo in Role.GetRoles<Cryomaniac>(RoleEnum.Cryomaniac))
-                cryo.RpcSpreadDouse(target, interacter);
+            Role.GetRoles<Plaguebearer>(RoleEnum.Plaguebearer).ForEach(pb => pb.RpcSpreadInfection(interacter, target));
+            Role.GetRoles<Arsonist>(RoleEnum.Arsonist).ForEach(arso => arso.RpcSpreadDouse(target, interacter));
+            Role.GetRoles<Cryomaniac>(RoleEnum.Cryomaniac).ForEach(cryo => cryo.RpcSpreadDouse(target, interacter));
         }
 
         public static bool Check(int probability)
@@ -992,11 +988,8 @@
 
         public static void StopDragging(byte id)
         {
-            foreach (var janitor in Role.GetRoles<Janitor>(RoleEnum.Janitor).Where(x => x.CurrentlyDragging != null && x.CurrentlyDragging.ParentId == id))
-                janitor.Drop();
-
-            foreach (var godfather in Role.GetRoles<PromotedGodfather>(RoleEnum.PromotedGodfather).Where(x => x.CurrentlyDragging != null && x.CurrentlyDragging.ParentId == id))
-                godfather.Drop();
+            Role.GetRoles<Janitor>(RoleEnum.Janitor).Where(x => x.CurrentlyDragging != null && x.CurrentlyDragging.ParentId == id).ToList().ForEach(x => x.Drop());
+            Role.GetRoles<PromotedGodfather>(RoleEnum.PromotedGodfather).Where(x => x.CurrentlyDragging != null && x.CurrentlyDragging.ParentId == id).ToList().ForEach(x => x.Drop());
         }
 
         public static void LogSomething(object message, ModLogType type = ModLogType.Message)
@@ -1029,10 +1022,7 @@
                 var stream = TownOfUsReworked.Executing.GetManifestResourceStream(resourceName);
                 var reader = new StreamReader(stream);
                 var text = reader.ReadToEnd();
-
-                foreach (var (key, value) in KeyWords)
-                    text = text.Replace(key, value);
-
+                KeyWords.ToList().ForEach(x => text = text.Replace(x.Key, x.Value));
                 return text;
             }
             catch
@@ -1202,12 +1192,11 @@
 
         public static void SetFullScreenHUD()
         {
+            if (!(HudManager.InstanceExists && HudManager.Instance.FullScreen))
+                return;
+
             var fullscreen = HUD.FullScreen;
-            var red = new Color(1f, 0f, 0f, 0.37254903f);
-
-            if (fullscreen.color.Equals(red))
-                fullscreen.color = red;
-
+            fullscreen.color = new(0.6f, 0.6f, 0.6f, 0f);
             var fs = false;
 
             if (ShipStatus.Instance)
@@ -1245,8 +1234,11 @@
                 }
             }
 
-            fullscreen.enabled = fs;
-            fullscreen.gameObject.active = fs;
+            fullscreen.enabled = true;
+            fullscreen.gameObject.active = true;
+
+            if (fs)
+                fullscreen.color = new(1f, 0f, 0f, 0.37254903f);
         }
 
         public static void Warp()
@@ -1276,8 +1268,8 @@
                 if (Minigame.Instance)
                     Minigame.Instance.Close();
 
-                if (MapBehaviour.Instance)
-                    MapBehaviour.Instance.Close();
+                if (Map)
+                    Map.Close();
 
                 if (CustomPlayer.Local.inVent)
                 {
@@ -1297,11 +1289,8 @@
 
             if (AmongUsClient.Instance.AmHost)
             {
-                foreach (var janitor in Role.GetRoles<Janitor>(RoleEnum.Janitor).Where(x => x.CurrentlyDragging != null))
-                    janitor.Drop();
-
-                foreach (var godfather in Role.GetRoles<PromotedGodfather>(RoleEnum.PromotedGodfather).Where(x => x.CurrentlyDragging != null))
-                    godfather.Drop();
+                Role.GetRoles<Janitor>(RoleEnum.Janitor).Where(x => x.CurrentlyDragging != null).ToList().ForEach(x => x.Drop());
+                Role.GetRoles<PromotedGodfather>(RoleEnum.PromotedGodfather).Where(x => x.CurrentlyDragging != null).ToList().ForEach(x => x.Drop());
             }
         }
 
@@ -1317,9 +1306,7 @@
                     allLocations.Add(player.transform.position);
             }
 
-            foreach (var vent in AllVents)
-                allLocations.Add(GetVentPosition(vent));
-
+            AllVents.ForEach(x => allLocations.Add(GetVentPosition(x)));
             var tobeadded = TownOfUsReworked.NormalOptions.MapId switch
             {
                 0 => SkeldSpawns,
@@ -1332,9 +1319,7 @@
             if (tobeadded != null)
                 allLocations.AddRange(tobeadded);
 
-            foreach (var target in targets)
-                coordinates.Add(target.PlayerId, allLocations.Random());
-
+            targets.ForEach(x => coordinates.Add(x.PlayerId, allLocations.Random()));
             return coordinates;
         }
 
@@ -1396,8 +1381,8 @@
                 if (Minigame.Instance)
                     Minigame.Instance.Close();
 
-                if (MapBehaviour.Instance)
-                    MapBehaviour.Instance.Close();
+                if (Map)
+                    Map.Close();
             }
 
             player.moveable = true;
@@ -1734,10 +1719,7 @@
                     normalPlayerTask.Initialize();
 
                     if (normalPlayerTask.TaskType == TaskTypes.PickUpTowels)
-                    {
-                        foreach (var console in UObject.FindObjectsOfType<TowelTaskConsole>())
-                            console.Image.color = UColor.white;
-                    }
+                        UObject.FindObjectsOfType<TowelTaskConsole>().ToList().ForEach(x => x.Image.color = UColor.white);
 
                     normalPlayerTask.taskStep = 0;
 
@@ -1842,15 +1824,8 @@
 
         public static string WrapTexts(List<string> texts, int width = 90, bool overflow = true)
         {
-            var result = "";
-            var pos = 0;
-
-            foreach (var text in texts)
-            {
-                result += (pos == 0 ? "" : "\n") + WrapText(text, width, overflow);
-                pos++;
-            }
-
+            var result = WrapText(texts[0], width, overflow);
+            texts.Skip(1).ToList().ForEach(x => result += $"\n{WrapText(x, width, overflow)}");
             return result;
         }
     }

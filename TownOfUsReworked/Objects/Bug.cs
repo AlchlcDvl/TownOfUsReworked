@@ -2,9 +2,11 @@
 {
     public class Bug : Range
     {
-        public Dictionary<byte, float> Players = new();
+        private readonly Dictionary<byte, float> Players = new();
+        private List<PlayerControl> Closest = new();
+        public readonly Dictionary<PlayerControl, RoleEnum> Results = new();
 
-        public Bug(Vector2 position) : base(position, Colors.Operative, CustomGameOptions.BugRange, "Bug") => Coroutines.Start(Timer());
+        public Bug(PlayerControl owner) : base(owner, Colors.Operative, CustomGameOptions.BugRange, "Bug") => Coroutines.Start(Timer());
 
         public override IEnumerator Timer()
         {
@@ -18,62 +20,55 @@
         public override void Update()
         {
             base.Update();
+            Closest = GetClosestPlayers(Transform.position, Size);
+            var remove = new List<byte>();
 
-            foreach (var player in CustomPlayer.AllPlayers)
+            foreach (var player in Players.Keys)
             {
-                if (player.Data.IsDead)
-                    continue;
+                if (!Closest.Contains(PlayerById(player)))
+                    remove.Add(player);
+            }
 
-                if (Vector2.Distance(Transform.position, player.GetTruePosition()) < CustomGameOptions.BugRange)
+            remove.ForEach(x => Players.Remove(x));
+
+            foreach (var player in Closest)
+            {
+                if (!Players.ContainsKey(player.PlayerId))
+                    Players.Add(player.PlayerId, 0f);
+
+                Players[player.PlayerId] += Time.deltaTime;
+
+                if (Players[player.PlayerId] >= CustomGameOptions.MinAmountOfTimeInBug && player != Owner && !Results.ContainsKey(player))
                 {
-                    if (!Players.ContainsKey(player.PlayerId))
-                        Players.Add(player.PlayerId, 0f);
-                }
-                else if (Players.ContainsKey(player.PlayerId))
-                    Players.Remove(player.PlayerId);
+                    var type = Role.GetRole(player).RoleType;
+                    Results.Add(player, type);
 
-                var entry = player;
-
-                if (Players.ContainsKey(entry.PlayerId))
-                {
-                    Players[entry.PlayerId] += Time.deltaTime;
-
-                    if (Players[entry.PlayerId] >= CustomGameOptions.MinAmountOfTimeInBug)
-                    {
-                        foreach (var t in Role.GetRoles<Operative>(RoleEnum.Operative))
-                        {
-                            if (t.Bugs.Contains(this))
-                            {
-                                var playerrole = Role.GetRole(PlayerById(entry.PlayerId)).RoleType;
-
-                                if (!t.BuggedPlayers.Contains(playerrole) && entry != t.Player)
-                                    t.BuggedPlayers.Add(playerrole);
-                            }
-                        }
-
-                        foreach (var t in Role.GetRoles<Retributionist>(RoleEnum.Retributionist))
-                        {
-                            if (!t.IsOP)
-                                continue;
-
-                            if (t.Bugs.Contains(this))
-                            {
-                                var playerrole = Role.GetRole(PlayerById(entry.PlayerId)).RoleType;
-
-                                if (!t.BuggedPlayers.Contains(playerrole) && entry != t.Player)
-                                    t.BuggedPlayers.Add(playerrole);
-                            }
-                        }
-                    }
+                    if (Owner.Is(RoleEnum.Operative))
+                        Role.GetRole<Operative>(Owner).BuggedPlayers.Add(type);
+                    else if (Owner.Is(RoleEnum.Retributionist))
+                        Role.GetRole<Retributionist>(Owner).BuggedPlayers.Add(type);
                 }
             }
         }
 
+        public string GetResults()
+        {
+            var result = "";
+            var results = Results.Values.ToList();
+            results.Shuffle();
+            results.ForEach(role => result += $"{Role.GetRoles(role)[0]}, ");
+            result = result.Remove(result.Length - 2);
+
+            if (CustomGameOptions.PreciseOperativeInfo)
+                result = $"Bug {Number}: {result}";
+
+            Results.Clear();
+            return result;
+        }
+
         public static void Clear(List<Bug> obj)
         {
-            foreach (var t in obj)
-                t.Destroy();
-
+            obj.ForEach(b => b.Destroy());
             obj.Clear();
         }
     }

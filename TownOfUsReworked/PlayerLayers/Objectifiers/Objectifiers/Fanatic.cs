@@ -30,15 +30,15 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         public override ObjectifierEnum ObjectifierType => ObjectifierEnum.Fanatic;
         public override Func<string> TaskText => () => !Turned ? "- Get attacked by either an <color=#FF0000FF>Intruder</color> or a <color=#008000FF>Syndicate</color> to join their side" :
             "";
+        public override bool Hidden => !CustomGameOptions.FanaticKnows && !Turned && !IsDead;
 
-        public Fanatic(PlayerControl player) : base(player) => Hidden = !CustomGameOptions.FanaticKnows && !Turned;
+        public Fanatic(PlayerControl player) : base(player) {}
 
         public void TurnFanatic(Faction faction)
         {
             var fanaticRole = Role.GetRole(Player);
             fanaticRole.Faction = faction;
             Turned = true;
-            Hidden = false;
 
             if (CustomPlayer.Local.Is(RoleEnum.Mystic) || CustomPlayer.Local.Is(faction))
                 Flash(Colors.Mystic);

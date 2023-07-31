@@ -313,7 +313,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if ((TargetFailed || (TargetPlayer != null && Failed)) && !IsDead)
             {
-                var target = TargetPlayer ?? CustomPlayer.AllPlayers.Random();
+                var target = TargetPlayer ?? CustomPlayer.AllPlayers.Random(x => x != Player);
                 var role = GetRole(target);
                 CallRpc(CustomRPC.Change, TurnRPC.TurnSeer, this, role);
                 TurnAct(role);

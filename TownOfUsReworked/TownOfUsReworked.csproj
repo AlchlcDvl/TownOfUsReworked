@@ -3,7 +3,7 @@
         <AssemblyName>Reworked</AssemblyName>
         <RootNamespace>TownOfUsReworked</RootNamespace>
         <TargetFramework>net6.0</TargetFramework>
-        <Version>0.4.2.0</Version>
+        <Version>0.4.3.0</Version>
         <DebugType>embedded</DebugType>
         <LangVersion>latest</LangVersion>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -13,6 +13,7 @@
         <Configurations>Debug;Release</Configurations>
         <RepositoryType>git</RepositoryType>
         <RepositoryUrl>https://github.com/AlchlcDvl/TownOfUsReworked.git</RepositoryUrl>
+        <AmongUs>C:\Users\Guest User\Documents\GitHub\TownOfUsReworked\Test</AmongUs>
     </PropertyGroup>
 
     <ItemGroup>

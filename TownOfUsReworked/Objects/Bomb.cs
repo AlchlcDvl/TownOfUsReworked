@@ -2,15 +2,12 @@
 {
     public class Bomb : Range
     {
-        public List<PlayerControl> Players;
+        public List<PlayerControl> Players = new();
         public bool Drived;
-        public PlayerControl Bomber;
 
-        public Bomb(Vector2 position, bool drived, PlayerControl bomb) : base(position, Colors.Bomber, CustomGameOptions.BombRange + (drived ? CustomGameOptions.ChaosDriveBombRange : 0f),
-            "Bomb")
+        public Bomb(PlayerControl bomb, bool drived) : base(bomb, Colors.Bomber, CustomGameOptions.BombRange + (drived ? CustomGameOptions.ChaosDriveBombRange : 0f), "Bomb")
         {
             Drived = drived;
-            Bomber = bomb;
             Coroutines.Start(Timer());
         }
 
@@ -26,7 +23,7 @@
         public override void Update()
         {
             base.Update();
-            Players = GetClosestPlayers(Transform.position, CustomGameOptions.BombRange + (Drived ? CustomGameOptions.ChaosDriveBombRange : 0f));
+            Players = GetClosestPlayers(Transform.position, Size);
         }
 
         public void Detonate()
@@ -34,12 +31,12 @@
             foreach (var player in Players)
             {
                 if (player.Is(RoleEnum.Pestilence) || player.IsOnAlert() || player.IsProtected() || player.IsShielded() || player.IsRetShielded() || player.IsProtectedMonarch() ||
-                    (player.Is(Faction.Syndicate) && !CustomGameOptions.BombKillsSyndicate) || Bomber.IsLinkedTo(player))
+                    (player.Is(Faction.Syndicate) && !CustomGameOptions.BombKillsSyndicate) || Owner.IsLinkedTo(player))
                 {
                     continue;
                 }
 
-                RpcMurderPlayer(Bomber, player, DeathReasonEnum.Bombed, false);
+                RpcMurderPlayer(Owner, player, DeathReasonEnum.Bombed, false);
             }
 
             Destroy();
@@ -67,9 +64,7 @@
 
         public static void Clear(List<Bomb> obj)
         {
-            foreach (var t in obj)
-                t.Destroy();
-
+            obj.ForEach(b => b.Destroy());
             obj.Clear();
         }
     }

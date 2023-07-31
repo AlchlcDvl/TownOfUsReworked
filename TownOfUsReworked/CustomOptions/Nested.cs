@@ -7,6 +7,7 @@ namespace TownOfUsReworked.CustomOptions
         public static readonly List<CustomButtonOption> AllCancelButtons = new();
         private readonly CustomButtonOption CancelButton;
         private readonly CustomHeaderOption Header;
+        private CustomOption Loading;
 
         public CustomNestedOption(MultiMenu menu, string name) : base(-1, menu, name, CustomOptionType.Nested, 0)
         {
@@ -25,23 +26,16 @@ namespace TownOfUsReworked.CustomOptions
             var y = __instance.GetComponentsInChildren<OptionBehaviour>().Max(option => option.transform.localPosition.y);
             var x = __instance.Children[1].transform.localPosition.x;
             var z = __instance.Children[1].transform.localPosition.z;
-            var i = 0;
             OldButtons = __instance.Children.ToList();
+            OldButtons.ForEach(x => x.gameObject.SetActive(false));
 
-            foreach (var option in __instance.Children)
-                option.gameObject.SetActive(false);
-
-            foreach (var option in options)
-                option.transform.localPosition = new(x, y - (i++ * 0.5f), z);
+            for (var i = 0; i < options.Count; i++)
+                options[i].transform.localPosition = new(x, y - (i * 0.5f), z);
 
             __instance.Children = new(options.ToArray());
         }
 
-        public void AddOptions(params CustomOption[] options)
-        {
-            foreach (var option in options.Where(x => x.Type != CustomOptionType.Nested))
-                InternalOptions.Insert(1, option);
-        }
+        public void AddOptions(params CustomOption[] options) => options.Where(x => x.Type != CustomOptionType.Nested).ToList().ForEach(x => InternalOptions.Insert(1, x));
 
         private List<OptionBehaviour> CreateOptions()
         {
@@ -103,7 +97,6 @@ namespace TownOfUsReworked.CustomOptions
                 option.OptionCreated();
             }
 
-            CustomOption.GetOptions<CustomLayersOption>(CustomOptionType.Layers).ForEach(x => x.Set(x.Value, x.OtherValue));
             return options;
         }
 
@@ -113,20 +106,17 @@ namespace TownOfUsReworked.CustomOptions
 
         public IEnumerator CancelCoro(Func<IEnumerator> flashCoro)
         {
+            if (InternalOptions.Count == 0)
+                yield break;
+
             var __instance = UObject.FindObjectOfType<GameOptionsMenu>();
-
-            foreach (var option in InternalOptions.Skip(1))
-                option.Setting.gameObject.Destroy();
-
-            var Loading = InternalOptions[0];
+            InternalOptions.Skip(1).ToList().ForEach(x => x.Setting.gameObject.Destroy());
+            Loading = InternalOptions[0];
             Loading.Setting.Cast<ToggleOption>().TitleText.text = "Loading...";
             __instance.Children = new[] { Loading.Setting };
             yield return new WaitForSeconds(0.5f);
             Loading.Setting.gameObject.Destroy();
-
-            foreach (var option in OldButtons)
-                option.gameObject.SetActive(true);
-
+            OldButtons.ForEach(x => x.gameObject.SetActive(true));
             __instance.Children = OldButtons.ToArray();
             yield return new WaitForEndOfFrame();
             yield return flashCoro();

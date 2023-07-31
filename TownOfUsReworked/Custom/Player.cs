@@ -11,7 +11,7 @@ namespace TownOfUsReworked.Custom
         public bool Disconnected => Data.Disconnected;
         public float SpeedFactor => IsDead && (!Player.IsPostmortal() || (Player.IsPostmortal() && Player.Caught())) ? CustomGameOptions.GhostSpeed : (CustomGameOptions.PlayerSpeed *
             Player.GetModifiedSpeed());
-        public Vector3 SizeFactor => DefaultSize * Player.GetModifiedSize();
+        public Vector3 SizeFactor => DefaultSize * (IsDead || Disconnected ? 1f : Player.GetModifiedSize());
 
         public static PlayerControl Local => PlayerControl.LocalPlayer;
         public static CustomPlayer LocalCustom => Custom(Local);

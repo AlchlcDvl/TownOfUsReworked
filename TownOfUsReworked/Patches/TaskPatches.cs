@@ -76,8 +76,11 @@ namespace TownOfUsReworked.Patches
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.CompleteTask))]
     public static class CompleteTasksPatch
     {
-        public static void Postfix(PlayerControl __instance)
+        public static void Postfix(PlayerControl __instance, ref uint idx)
         {
+            var id = idx;
+            PlayerLayer.GetLayers(__instance).ForEach(x => x.UponTaskComplete(id));
+
             if (__instance.Is(AbilityEnum.Snitch) && !__instance.Data.IsDead)
             {
                 var role = Ability.GetAbility<Snitch>(__instance);
@@ -98,12 +101,8 @@ namespace TownOfUsReworked.Patches
                     if (CustomPlayer.Local == __instance)
                     {
                         Flash(UColor.green);
-
-                        foreach (var imp in CustomPlayer.AllPlayers.Where(x => x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) || (x.Is(RoleAlignment.NeutralKill) &&
-                            CustomGameOptions.SnitchSeesNeutrals)))
-                        {
-                            Role.LocalRole.AllArrows.Add(imp.PlayerId, new(__instance, role.Color));
-                        }
+                        CustomPlayer.AllPlayers.Where(x => x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) || (x.Is(RoleAlignment.NeutralKill) && CustomGameOptions.SnitchSeesNeutrals))
+                            .ToList().ForEach(x => Role.LocalRole.AllArrows.Add(x.PlayerId, new(__instance, role.Color)));
                     }
                     else if (CustomPlayer.Local.Is(Faction.Intruder) || (CustomPlayer.Local.Is(RoleAlignment.NeutralKill) && CustomGameOptions.SnitchSeesNeutrals) ||
                         CustomPlayer.Local.Is(Faction.Syndicate))

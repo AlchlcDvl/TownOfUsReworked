@@ -10,6 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
 
         public virtual ModifierEnum ModifierType => ModifierEnum.None;
         public virtual Func<string> TaskText => () => "- None";
+        public virtual bool Hidden => false;
 
         public Modifier(PlayerControl player) : base(player)
         {
@@ -18,8 +19,6 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
 
             AllModifiers.Add(this);
         }
-
-        public bool Hidden;
 
         public static Modifier GetModifier(PlayerControl player) => AllModifiers.Find(x => x.Player == player);
 

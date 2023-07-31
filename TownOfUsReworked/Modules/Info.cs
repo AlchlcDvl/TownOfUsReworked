@@ -44,7 +44,7 @@ namespace TownOfUsReworked.Modules
             for (var i = 0; i < 50; i++)
                 result = result.Replace(((RoleAlignment)i).AlignmentName(), $"<b>{((RoleAlignment)i).AlignmentName(true)}</b>");
 
-            return result;
+            return result.Replace("<color=#758000FF>Drunk</color>ard", "Drunkard");
         }
 
         public virtual void WikiEntry(out string result) => result = "";

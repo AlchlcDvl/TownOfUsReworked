@@ -27,9 +27,7 @@ namespace TownOfUsReworked.Objects
 
         public static void DestroyAll()
         {
-            foreach (var pile in AllPiles)
-                pile.Destroy();
-
+            AllPiles.ForEach(x => x.Destroy());
             AllPiles.Clear();
         }
     }

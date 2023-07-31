@@ -126,7 +126,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            __instance.SabotageButton.gameObject.SetActive(CustomGameOptions.IntrudersCanSabotage);
             KillButton.Update("KILL", KillTimer(), CustomGameOptions.IntKillCooldown);
         }
     }

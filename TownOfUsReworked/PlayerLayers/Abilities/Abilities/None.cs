@@ -2,6 +2,8 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
 {
     public class Abilityless : Ability
     {
-        public Abilityless(PlayerControl player) : base(player) => Hidden = true;
+        public override bool Hidden => true;
+
+        public Abilityless(PlayerControl player) : base(player) {}
     }
 }

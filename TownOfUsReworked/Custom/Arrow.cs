@@ -41,6 +41,7 @@ namespace TownOfUsReworked.Custom
             Render.color = ArrowColor.Value;
             Arrow.image = Render;
             Arrow.target = Owner.transform.position;
+            Disabled = false;
         }
 
         public void NewSprite(string sprite) => Render.sprite = GetSprite(sprite);
@@ -59,6 +60,8 @@ namespace TownOfUsReworked.Custom
                 Disable();
                 return;
             }
+            else if (Disabled)
+                Instantiate();
 
             if (color.HasValue)
                 Render.color = color.Value;

@@ -71,25 +71,25 @@ namespace TownOfUsReworked.CustomOptions
         public static bool EnableUniques => Generate.EnableUniques.Get();
 
         //Map Settings
-        public static Map Map
+        public static MapEnum Map
         {
             get
             {
                 var map = Generate.Map.Get();
 
                 if (map is 0 or 1 or 2 or 3)
-                    return (Map)map;
+                    return (MapEnum)map;
                 else if (map == 4)
                 {
                     if (SubLoaded)
-                        return Map.Submerged;
+                        return MapEnum.Submerged;
                     else if (LILoaded)
-                        return Map.LevelImpostor;
+                        return MapEnum.LevelImpostor;
                     else
                         throw new NotImplementedException();
                 }
                 else if (map == 5)
-                    return Map.LevelImpostor;
+                    return MapEnum.LevelImpostor;
                 else
                     throw new NotImplementedException();
             }
@@ -394,6 +394,7 @@ namespace TownOfUsReworked.CustomOptions
         public static bool BugsRemoveOnNewRound => Generate.BugsRemoveOnNewRound.Get();
         public static bool UniqueOperative => Generate.UniqueOperative.Get();
         public static AdminDeadPlayers WhoSeesDead => (AdminDeadPlayers)Generate.WhoSeesDead.Get();
+        public static bool PreciseOperativeInfo => Generate.PreciseOperativeInfo.Get();
 
         //Veteran Settings
         public static float AlertCd => Generate.AlertCooldown.Get();

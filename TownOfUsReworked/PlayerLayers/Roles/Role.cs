@@ -135,8 +135,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             __instance.PetButton.buttonLabelText.SetOutlineColor(FactionColor);
             __instance.ImpostorVentButton.buttonLabelText.SetOutlineColor(FactionColor);
             __instance.SabotageButton.buttonLabelText.SetOutlineColor(FactionColor);
-            __instance.SabotageButton.gameObject.SetActive(!Meeting && CustomGameOptions.IntrudersCanSabotage && (Faction == Faction.Intruder || (Faction ==
-                Faction.Syndicate && CustomGameOptions.AltImps)));
+            __instance.SabotageButton.gameObject.SetActive(Player.CanSabotage());
 
             foreach (var pair in DeadArrows)
             {
@@ -215,8 +214,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                             toBeRemoved.Add(pair.Key);
                     }
 
-                    foreach (var key in toBeRemoved)
-                        Positions.Remove(key);
+                    toBeRemoved.ForEach(x => Positions.Remove(x));
                 }
                 else if (Positions.Count > 0)
                 {
@@ -322,6 +320,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AllRoles.ForEach(x => x.CurrentChannel = ChatChannel.All);
             GetRoles<Thief>(RoleEnum.Thief).ForEach(x => x.GuessMenu.HideButtons());
             GetRoles<Guesser>(RoleEnum.Guesser).ForEach(x => x.GuessMenu.HideButtons());
+            GetRoles<Operative>(RoleEnum.Operative).ForEach(x => x.PlayerNumbers.Clear());
 
             if (Requesting && BountyTimer > 2)
             {
@@ -393,7 +392,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
                     //Ensures only the Bounty Hunter sees this
                     if (HUD && bh.Local)
-                        HUD.Chat.AddChat(CustomPlayer.Local, "Your bounty has been recieved! Prepare to hunt.");
+                        HUD.Chat.AddChat(CustomPlayer.Local, "Your bounty has been received! Prepare to hunt.");
                 }
             }
         }

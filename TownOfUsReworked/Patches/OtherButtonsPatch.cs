@@ -35,8 +35,10 @@ namespace TownOfUsReworked.Patches
         private static Info Selected;
         private static bool LoreActive;
         //private static readonly Dictionary<int, string> Entry = new();
+        //Max page line limit is 20, keeping this in mind for now
 
         private static Vector3 MapPos;
+        private static bool MapModified;
 
         public static float Size => Zooming ? 4f : 1f;
 
@@ -51,12 +53,15 @@ namespace TownOfUsReworked.Patches
                 __instance.GameSettings.text = GameSettings.Settings();
 
                 if (__instance.TaskPanel)
-                {
-                    __instance.TaskPanel.gameObject.SetActive(!RoleCardActive && !SettingsActive && !Zooming && !Meeting && !(MapBehaviour.Instance && MapBehaviour.Instance.IsOpen) &&
-                        !WikiActive);
-                }
+                    __instance.TaskPanel.gameObject.SetActive(!RoleCardActive && !SettingsActive && !Zooming && !Meeting && !(Map && Map.IsOpen) && !WikiActive);
 
                 MapPos = __instance.SettingsButton.transform.localPosition + new Vector3(0, -0.66f, -__instance.SettingsButton.transform.localPosition.z - 51f);
+
+                if (!MapModified)
+                {
+                    MapModified = true;
+                    __instance.MapButton.gameObject.GetComponent<PassiveButton>().OnClick.AddListener(new Action(CloseMenus));
+                }
 
                 if (!WikiButton)
                 {
@@ -141,7 +146,7 @@ namespace TownOfUsReworked.Patches
 
         public static void OpenSettings()
         {
-            if (CustomPlayer.Local.IsBlocked())
+            if (LocalBlocked)
                 return;
 
             SettingsActive = !SettingsActive;
@@ -153,10 +158,10 @@ namespace TownOfUsReworked.Patches
             if (WikiActive)
                 OpenWiki();
 
-            if (MapBehaviour.Instance)
-                MapBehaviour.Instance.Close();
+            if (Map)
+                Map.Close();
 
-            if (CustomPlayer.Local.IsBlocked())
+            if (LocalBlocked)
                 return;
 
             if (!Phone)
@@ -165,7 +170,7 @@ namespace TownOfUsReworked.Patches
                 Phone.sprite = GetSprite("Phone");
                 Phone.transform.SetParent(HUD.transform);
                 Phone.transform.localPosition = new(0, 0, -49f);
-                Phone.transform.localScale *= 1.35f;
+                Phone.transform.localScale *= 1.25f;
             }
 
             if (PhoneText)
@@ -200,10 +205,10 @@ namespace TownOfUsReworked.Patches
             if (RoleCardActive)
                 OpenRoleCard();
 
-            if (MapBehaviour.Instance)
-                MapBehaviour.Instance.Close();
+            if (Map)
+                Map.Close();
 
-            if (CustomPlayer.Local.IsBlocked())
+            if (LocalBlocked)
                 return;
 
             if (!Phone)
@@ -212,7 +217,7 @@ namespace TownOfUsReworked.Patches
                 Phone.sprite = GetSprite("Phone");
                 Phone.transform.SetParent(HUD.transform);
                 Phone.transform.localPosition = new(0, 0, -49f);
-                Phone.transform.localScale *= 1.35f;
+                Phone.transform.localScale *= 1.25f;
             }
 
             if (!PagesSet)
@@ -308,7 +313,7 @@ namespace TownOfUsReworked.Patches
                 {
                     LoreActive = !LoreActive;
                     PhoneText.text = Info.ColorIt(WrapText(LayerInfo.AllLore.Find(x => x.Name == Selected.Name || x.Short == Selected.Short).Description));
-                    PhoneText.transform.localPosition = new(-2.6f, 0.35f, -5f);
+                    PhoneText.transform.localPosition = new(-2.6f, 0.45f, -5f);
                 });
             }
 
@@ -420,7 +425,7 @@ namespace TownOfUsReworked.Patches
             PhoneText.text = result;
             PhoneText.enableWordWrapping = false;
             PhoneText.transform.localScale = Vector3.one * 0.75f;
-            PhoneText.transform.localPosition = new(-2.6f, 0.25f, -5f);
+            PhoneText.transform.localPosition = new(-2.6f, 0.45f, -5f);
             PhoneText.alignment = TextAlignmentOptions.TopLeft;
             PhoneText.fontStyle = FontStyles.Bold;
             PhoneText.gameObject.SetActive(true);
@@ -454,6 +459,15 @@ namespace TownOfUsReworked.Patches
             passive.OnMouseOut = new();
             passive.OnMouseOut.AddListener((Action)(() => rend.color = UColor.white));
             return button;
+        }
+
+        private static void CloseMenus()
+        {
+            if (WikiActive)
+                OpenWiki();
+
+            if (RoleCardActive)
+                OpenRoleCard();
         }
     }
 }

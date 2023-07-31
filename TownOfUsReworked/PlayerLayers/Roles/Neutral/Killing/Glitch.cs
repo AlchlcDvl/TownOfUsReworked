@@ -60,10 +60,7 @@
         public void UnHack()
         {
             HackEnabled = false;
-
-            foreach (var layer in GetLayers(HackTarget))
-                layer.IsBlocked = false;
-
+            GetLayers(HackTarget).ForEach(x => x.IsBlocked = false);
             HackTarget = null;
             LastHack = DateTime.UtcNow;
         }
@@ -72,6 +69,7 @@
         {
             HackEnabled = true;
             TimeRemaining -= Time.deltaTime;
+            GetLayers(HackTarget).ForEach(x => x.IsBlocked = !GetRole(HackTarget).RoleBlockImmune);
 
             if (Meeting || IsDead || HackTarget.Data.IsDead || HackTarget.Data.Disconnected)
                 TimeRemaining = 0f;
@@ -123,9 +121,6 @@
                 TimeRemaining = CustomGameOptions.HackDuration;
                 CallRpc(CustomRPC.Action, ActionsRPC.GlitchRoleblock, this, HackTarget);
                 Hack();
-
-                foreach (var layer in GetLayers(HackTarget))
-                    layer.IsBlocked = !GetRole(HackTarget).RoleBlockImmune;
             }
             else if (interact[0])
                 LastHack = DateTime.UtcNow;

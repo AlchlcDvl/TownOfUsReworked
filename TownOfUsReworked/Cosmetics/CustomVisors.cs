@@ -262,9 +262,7 @@ namespace TownOfUsReworked.Cosmetics
                     return 500;
                 });
 
-                foreach (var key in keys)
-                    YOffset = CreateVisorPackage(packages[key], key, YOffset, __instance);
-
+                orderedKeys.ToList().ForEach(key => YOffset = CreateHatPackage(packages[key], key, YOffset, __instance));
                 __instance.scroller.ContentYBounds.max = -(YOffset + 4.1f);
                 return false;
             }

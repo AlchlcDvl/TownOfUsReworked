@@ -7,15 +7,8 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
         public override LayerEnum Type => LayerEnum.Tunneler;
         public override AbilityEnum AbilityType => AbilityEnum.Tunneler;
         public override Func<string> TaskText => () => "- You can finish tasks to be able to vent";
+        public override bool Hidden => !CustomGameOptions.TunnelerKnows && !TasksDone && !IsDead;
 
-        public Tunneler(PlayerControl player) : base(player) => Hidden = !CustomGameOptions.TunnelerKnows && !TasksDone;
-
-        public override void UpdateHud(HudManager __instance)
-        {
-            base.UpdateHud(__instance);
-
-            if (Hidden && TasksDone)
-                Hidden = false;
-        }
+        public Tunneler(PlayerControl player) : base(player) {}
     }
 }

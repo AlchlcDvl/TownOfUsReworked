@@ -30,8 +30,9 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         public override ObjectifierEnum ObjectifierType => ObjectifierEnum.Traitor;
         public override Func<string> TaskText => () => !Turned ? "- Finish your tasks to switch sides to either <color=#FF0000FF>Intruders</color> or the <color=#008000FF>Syndicate</color>"
             : "";
+        public override bool Hidden => !CustomGameOptions.TraitorKnows && !Turned && !IsDead;
 
-        public Traitor(PlayerControl player) : base(player) => Hidden = !CustomGameOptions.TraitorKnows && !Turned;
+        public Traitor(PlayerControl player) : base(player) {}
 
         public void TurnBetrayer()
         {
@@ -102,7 +103,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
 
             Side = traitorRole.Faction;
             Turned = true;
-            Hidden = false;
             traitorRole.RoleAlignment = traitorRole.RoleAlignment.GetNewAlignment(traitorRole.Faction);
 
             foreach (var snitch in Ability.GetAbilities<Snitch>(AbilityEnum.Snitch))

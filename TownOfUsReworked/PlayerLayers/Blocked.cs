@@ -12,7 +12,7 @@ namespace TownOfUsReworked.PlayerLayers
             if (!CustomPlayer.Local.CanVent())
                 return false;
 
-            return PlayerLayer.LocalLayers.All(x => !x.IsBlocked);
+            return LocalNotBlocked;
         }
     }
 
@@ -28,7 +28,7 @@ namespace TownOfUsReworked.PlayerLayers
             if (CustomPlayer.Local.Is(ModifierEnum.Coward))
                 return false;
 
-            return PlayerLayer.LocalLayers.All(x => !x.IsBlocked);
+            return LocalNotBlocked;
         }
     }
 
@@ -41,15 +41,13 @@ namespace TownOfUsReworked.PlayerLayers
             if (Inactive)
                 return true;
 
-            var notBlocked = PlayerLayer.LocalLayers.All(x => !x.IsBlocked);
-
-            if (__instance.isActiveAndEnabled && CustomPlayer.Local && InteractableBehaviour.NearestTask != null && InteractableBehaviour.AllCustomPlateform != null && notBlocked)
+            if (__instance.isActiveAndEnabled && CustomPlayer.Local && InteractableBehaviour.NearestTask != null && InteractableBehaviour.AllCustomPlateform != null && LocalNotBlocked)
             {
                 InteractableBehaviour.NearestTask.Use();
                 return false;
             }
 
-            return notBlocked;
+            return LocalNotBlocked;
         }
     }
 
@@ -62,7 +60,7 @@ namespace TownOfUsReworked.PlayerLayers
             if (Inactive)
                 return true;
 
-            return PlayerLayer.LocalLayers.All(x => !x.IsBlocked);
+            return LocalNotBlocked;
         }
     }
 
@@ -75,7 +73,7 @@ namespace TownOfUsReworked.PlayerLayers
             if (Inactive)
                 return true;
 
-            return PlayerLayer.LocalLayers.All(x => !x.IsBlocked);
+            return LocalNotBlocked;
         }
     }
 
@@ -88,7 +86,7 @@ namespace TownOfUsReworked.PlayerLayers
             if (Inactive)
                 return true;
 
-            return PlayerLayer.LocalLayers.All(x => !x.IsBlocked); //No petting for you lmao
+            return LocalNotBlocked; //No petting for you lmao
         }
     }
 
@@ -123,7 +121,7 @@ namespace TownOfUsReworked.PlayerLayers
                 var pos = __instance.UseButton.transform.position;
                 pos.z = -50f;
                 UseBlock.transform.position = pos;
-                UseBlock.SetActive(CustomPlayer.Local.IsBlocked() && __instance.UseButton.isActiveAndEnabled);
+                UseBlock.SetActive(LocalBlocked && __instance.UseButton.isActiveAndEnabled);
             }
 
             if (!PetBlock && __instance.PetButton.isActiveAndEnabled)
@@ -139,7 +137,7 @@ namespace TownOfUsReworked.PlayerLayers
                 var pos = __instance.PetButton.transform.position;
                 pos.z = -50f;
                 PetBlock.transform.position = pos;
-                PetBlock.SetActive(CustomPlayer.Local.IsBlocked() && __instance.PetButton.isActiveAndEnabled);
+                PetBlock.SetActive(LocalBlocked && __instance.PetButton.isActiveAndEnabled);
             }
 
             if (!SaboBlock && __instance.SabotageButton.isActiveAndEnabled)
@@ -155,7 +153,7 @@ namespace TownOfUsReworked.PlayerLayers
                 var pos = __instance.SabotageButton.transform.position;
                 pos.z = -50f;
                 SaboBlock.transform.position = pos;
-                SaboBlock.SetActive(CustomPlayer.Local.IsBlocked() && __instance.SabotageButton.isActiveAndEnabled);
+                SaboBlock.SetActive(LocalBlocked && __instance.SabotageButton.isActiveAndEnabled);
             }
 
             if (!VentBlock && __instance.ImpostorVentButton.isActiveAndEnabled)
@@ -171,7 +169,7 @@ namespace TownOfUsReworked.PlayerLayers
                 var pos = __instance.ImpostorVentButton.transform.position;
                 pos.z = -50f;
                 VentBlock.transform.position = pos;
-                VentBlock.SetActive(CustomPlayer.Local.IsBlocked() && __instance.ImpostorVentButton.isActiveAndEnabled);
+                VentBlock.SetActive(LocalBlocked && __instance.ImpostorVentButton.isActiveAndEnabled);
             }
 
             if (!ReportBlock && __instance.ReportButton.isActiveAndEnabled)
@@ -187,7 +185,7 @@ namespace TownOfUsReworked.PlayerLayers
                 var pos = __instance.ReportButton.transform.position;
                 pos.z = -50f;
                 ReportBlock.transform.position = pos;
-                ReportBlock.SetActive(CustomPlayer.Local.IsBlocked() && __instance.ReportButton.isActiveAndEnabled);
+                ReportBlock.SetActive(LocalBlocked && __instance.ReportButton.isActiveAndEnabled);
             }
         }
     }

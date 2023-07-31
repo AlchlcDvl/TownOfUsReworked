@@ -68,9 +68,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (CustomPlayer.Local == amnesiac)
             {
-                foreach (var component in amneRole.RememberButton.TargetBody?.bodyRenderers)
-                    component.material.SetFloat("_Outline", 0f);
-
                 Flash(amneRole.Color);
                 amneRole.OnLobby();
                 ButtonUtils.ResetCustomTimers(false);

@@ -3974,9 +3974,6 @@ namespace TownOfUsReworked.Classes
 
                 if (TownOfUsReworked.IsTest)
                     LogSomething($"{player.name} -> {Role.GetRole(player)}, {Objectifier.GetObjectifier(player)}, {Modifier.GetModifier(player)}, {Ability.GetAbility(player)}");
-
-                player.MaxReportDistance = CustomGameOptions.ReportDistance;
-                CallRpc(CustomRPC.Misc, MiscRPC.SetReports, player);
             }
 
             LogSomething("Players Set");

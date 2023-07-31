@@ -9,19 +9,8 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
         public override LayerEnum Type => LayerEnum.Professional;
         public override ModifierEnum ModifierType => ModifierEnum.Professional;
         public override Func<string> TaskText => () => "- You have an extra life when assassinating";
+        public override bool Hidden => !CustomGameOptions.TraitorKnows && !LifeUsed && !IsDead;
 
-        public Professional(PlayerControl player) : base(player)
-        {
-            Hidden = !CustomGameOptions.ProfessionalKnows && !LifeUsed;
-            LifeUsed = false;
-        }
-
-        public override void UpdateHud(HudManager __instance)
-        {
-            base.UpdateHud(__instance);
-
-            if (Hidden && (IsDead || LifeUsed))
-                Hidden = false;
-        }
+        public Professional(PlayerControl player) : base(player) => LifeUsed = false;
     }
 }

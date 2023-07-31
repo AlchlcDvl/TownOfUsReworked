@@ -10,6 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
 
         public virtual AbilityEnum AbilityType => AbilityEnum.None;
         public virtual Func<string> TaskText => () => "- None";
+        public virtual bool Hidden => false;
 
         public Ability(PlayerControl player) : base(player)
         {
@@ -18,8 +19,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
 
             AllAbilities.Add(this);
         }
-
-        public bool Hidden;
 
         public override void OnMeetingStart(MeetingHud __instance)
         {

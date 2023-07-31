@@ -40,10 +40,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             TimeRemaining -= Time.deltaTime;
 
             if (HoldsDrive)
-            {
-                foreach (var player in CustomPlayer.AllPlayers)
-                    GetRole(player).Rewinding = true;
-            }
+                CustomPlayer.AllPlayers.ForEach(x => GetRole(x).Rewinding = true);
 
             if (Meeting)
                 TimeRemaining = 0f;
@@ -53,9 +50,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Enabled = false;
             LastTimed = DateTime.UtcNow;
-
-            foreach (var player in CustomPlayer.AllPlayers)
-                GetRole(player).Rewinding = false;
+            CustomPlayer.AllPlayers.ForEach(x => GetRole(x).Rewinding = false);
         }
 
         public void TimeControl()

@@ -125,7 +125,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void GenNumbers()
         {
-            foreach (var voteArea in Meeting.playerStates)
+            foreach (var voteArea in AllVoteAreas)
             {
                 var targetId = voteArea.TargetPlayerId;
                 var nameText = UObject.Instantiate(voteArea.NameText, voteArea.transform);
@@ -340,33 +340,40 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (IsOP)
             {
+                var message = "";
+
                 if (BuggedPlayers.Count == 0)
-                    HUD.Chat.AddChat(CustomPlayer.Local, "No one triggered your bugs.");
+                    message = "No one triggered your bugs.";
                 else if (BuggedPlayers.Count < CustomGameOptions.MinAmountOfPlayersInBug)
-                    HUD.Chat.AddChat(CustomPlayer.Local, "Not enough players triggered your bugs.");
+                    message = "Not enough players triggered your bugs.";
                 else if (BuggedPlayers.Count == 1)
-                    HUD.Chat.AddChat(CustomPlayer.Local, $"A {BuggedPlayers[0]} triggered your bug.");
+                {
+                    var result = BuggedPlayers[0];
+                    var a_an = result is RoleEnum.Altruist or RoleEnum.Engineer or RoleEnum.Escort or RoleEnum.Inspector or RoleEnum.Operative or RoleEnum.Actor or RoleEnum.Amnesiac or
+                        RoleEnum.Arsonist or RoleEnum.Executioner or RoleEnum.Ambusher or RoleEnum.Enforcer or RoleEnum.Impostor or RoleEnum.Anarchist ? "n" : "";
+                    message = $"A{a_an} {result} triggered your bug.";
+                }
+                else if (CustomGameOptions.PreciseOperativeInfo)
+                {
+                    message = "Your bugs returned the following results:";
+                    Bugs.ForEach(bug => message += $"\n{bug.GetResults()}");
+                }
                 else
                 {
-                    var message = "The following roles triggered your bug: ";
-                    var position = 0;
+                    message = "The following roles triggered your bugs: ";
                     BuggedPlayers.Shuffle();
-
-                    foreach (var role in BuggedPlayers)
-                    {
-                        if (position < BuggedPlayers.Count - 1)
-                            message += $" {role},";
-                        else
-                            message += $" and {role}.";
-
-                        position++;
-                    }
-
-                    HUD.Chat.AddChat(CustomPlayer.Local, message);
+                    BuggedPlayers.ForEach(role => message += $"{GetRoles(role)[0]}, ");
+                    message = message.Remove(message.Length - 2);
                 }
+
+                if (HUD)
+                    HUD.Chat.AddChat(CustomPlayer.Local, message);
             }
             else if (IsDet)
+            {
                 AllPrints.ForEach(x => x.Destroy());
+                AllPrints.Clear();
+            }
         }
 
         //Coroner Stuff
@@ -627,7 +634,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             UsesLeft--;
             LastBugged = DateTime.UtcNow;
-            Bugs.Add(new(Player.GetTruePosition()));
+            Bugs.Add(new(Player));
         }
 
         //Sheriff Stuff
@@ -1063,10 +1070,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public void UnBlock()
         {
             Enabled = false;
-
-            foreach (var layer in GetLayers(BlockTarget))
-                layer.IsBlocked = false;
-
+            GetLayers(BlockTarget).ForEach(x => x.IsBlocked = false);
             BlockTarget = null;
             LastBlock = DateTime.UtcNow;
         }
@@ -1075,9 +1079,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
-
-            foreach (var layer in GetLayers(BlockTarget))
-                layer.IsBlocked = !GetRole(BlockTarget).RoleBlockImmune;
+            GetLayers(BlockTarget).ForEach(x => x.IsBlocked = !GetRole(BlockTarget).RoleBlockImmune);
 
             if (Meeting || IsDead || BlockTarget.Data.IsDead || BlockTarget.Data.Disconnected)
                 TimeRemaining = 0f;
@@ -1289,8 +1291,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 if (Minigame.Instance)
                     Minigame.Instance.Close();
 
-                if (MapBehaviour.Instance)
-                    MapBehaviour.Instance.Close();
+                if (Map)
+                    Map.Close();
             }
 
             TransportPlayer1.moveable = true;

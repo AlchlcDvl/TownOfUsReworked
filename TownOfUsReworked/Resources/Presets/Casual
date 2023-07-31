@@ -20,6 +20,8 @@ Ejection Reveals <color=#FFD700FF>Roles</color>
 False
 Game Start Cooldowns
 10
+Meeting End Cooldowns
+15
 Player Report Distance
 5
 Chat Cooldown
@@ -45,6 +47,10 @@ Serial Venters
 Anonymous Voting
 True
 No Skipping
+0
+Enable First Kill Shield
+False
+Who Sees First Kill Shield
 0
 Factioned Evils See The <color=#FFD700FF>Roles</color> Of Their Team
 True
@@ -80,14 +86,6 @@ Dead Can See Everything
 True
 Parallel Medbay Scans
 False
-Disable Level Icons
-True
-Disable Player Nameplates
-True
-Custom Ejection Messages
-True
-Enable Lighter Darker Colors
-True
 Hide Obstructed Player Names
 True
 Map
@@ -126,10 +124,10 @@ Oxygen Sabotage Slows Down Players
 True
 Reactor Sabotage Shakes The Screen By
 50
-Changed Vent Layout
-False
-Changed Vent Layout
+Changed Skeld Vent Layout
 True
+Changed Polus Vent Layout
+False
 Vitals Moved To Lab
 False
 Cold Temp Moved To Death Valley
@@ -451,6 +449,9 @@ Move Electrical Outlet
 <color=#678D36FF>Fanatic</color>
 40
 1
+<color=#FF351FFF>Linked</color>
+30
+1
 <color=#FF66CCFF>Lovers</color>
 70
 1
@@ -520,8 +521,6 @@ Move Electrical Outlet
 <color=#841A7FFF>Underdog</color>
 30
 1
-Enable Custom <color=#8CFFFFFF>Crew</color> Colors
-True
 Common Tasks
 2
 Long Tasks
@@ -532,6 +531,8 @@ Short Tasks
 True
 <color=#8CFFFFFF>Crew</color> Vision
 1
+<color=#8CFFFFFF>Crew</color> Uses A Flashlight
+False
 Max <color=#8CFFFFFF>Crew</color> <color=#FFD700FF>Roles</color>
 10
 Min <color=#8CFFFFFF>Crew</color> <color=#FFD700FF>Roles</color>
@@ -628,6 +629,8 @@ Number Of <color=#FFD700FF>Roles</color> Required To Trigger Bug
 3
 Who Sees Dead Bodies On Admin
 1
+<color=#A7D1B3FF>Operative</color> Gets Precise Information
+False
 Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>
 1
 <color=#998040FF>Veteran</color> Is Unique
@@ -762,12 +765,12 @@ False
 False
 Who Can Click <color=#D3D3D3FF>Revealer</color>
 1
-Enable Custom <color=#B3B3B3FF>Neutral</color> Colors
-True
 <color=#B3B3B3FF>Neutral</color> Vision
 1
 Lights Sabotage Affects <color=#B3B3B3FF>Neutral</color> Vision
 True
+<color=#B3B3B3FF>Neutrals</color> Use A Flashlight
+False
 Max <color=#B3B3B3FF>Neutral</color> <color=#FFD700FF>Roles</color>
 6
 Min <color=#B3B3B3FF>Neutral</color> <color=#FFD700FF>Roles</color>
@@ -795,13 +798,15 @@ False
 <color=#22FFFFFF>Amnesiac</color> Gets Arrows To Dead Bodies
 True
 Arrow Appearance Delay
-2
+5
 <color=#22FFFFFF>Amnesiac</color> Can Hide In Vents
 False
 <color=#22FFFFFF>Amnesiac</color> Can Switch Vents
 False
 <color=#FFFFFFFF>Guardian Angel</color> Is Unique
 True
+<color=#FFFFFFFF>Guardian Angel</color> Can Pick Their Own Target
+False
 Protect Cooldown
 25
 Protect Duration
@@ -842,6 +847,10 @@ Steal Cooldown
 25
 <color=#80FF00FF>Thief</color> Assigns <color=#80FF00FF>Thief</color> <color=#FFD700FF>Role</color> To Target
 False
+<color=#80FF00FF>Thief</color> Can Guess To Steal Roles
+False
+<color=#80FF00FF>Thief</color> Can Guess After Voting
+False
 <color=#80FF00FF>Thief</color> Can Vent
 False
 Max <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Evil</color> <color=#FFD700FF>Roles</color>
@@ -850,6 +859,8 @@ Max <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Evil</color> <color=#FFD70
 False
 <color=#00ACC2FF>Actor</color> Is Unique
 True
+<color=#00ACC2FF>Actor</color> Can Choose A Target Role
+False
 <color=#00ACC2FF>Actor</color> Can Button
 True
 <color=#00ACC2FF>Actor</color> Can Hide In Vents
@@ -859,6 +870,8 @@ False
 <color=#FFFF00FF>Vigilante</color> Kills <color=#00ACC2FF>Actor</color>
 True
 <color=#B51E39FF>Bounty Hunter</color> Is Unique
+False
+<color=#B51E39FF>Bounty Hunter</color> Can Indirectly Pick Their Own Target
 False
 Guess Cooldown
 25
@@ -884,6 +897,8 @@ False
 True
 <color=#CCCCCCFF>Executioner</color> Is Unique
 True
+<color=#CCCCCCFF>Executioner</color> Can Pick Their Own Target
+False
 Doom Cooldown
 25
 Doom Count
@@ -906,6 +921,8 @@ True
 False
 <color=#EEE5BEFF>Guesser</color> Is Unique
 True
+<color=#EEE5BEFF>Guesser</color> Can Pick Their Own Target
+False
 <color=#EEE5BEFF>Guesser</color> Can Button
 True
 <color=#EEE5BEFF>Guesser</color> Can Hide In Vents
@@ -981,6 +998,8 @@ False
 Douse Cooldown
 25
 <color=#642DEAFF>Cryomaniac</color> Freeze Freezes All Doused Players
+False
+<color=#642DEAFF>Cryomaniac</color> Can Kill Normally When Last Killer
 False
 <color=#642DEAFF>Cryomaniac</color> Can Vent
 False
@@ -1108,12 +1127,12 @@ Tasks Remaining When <color=#662962FF>Phantom</color> Can Be Clicked
 2
 Players Are Alerted When <color=#662962FF>Phantom</color> Is Clickable
 True
-Enable Custom <color=#FF0000FF>Intruder</color> Colors
-True
 <color=#FF0000FF>Intruder</color> Count
 1
 <color=#FF0000FF>Intruder</color> Vision
 2
+<color=#FF0000FF>Intruders</color> Use A Flashlight
+False
 <color=#FF0000FF>Intruder</color> Kill Cooldown
 25
 <color=#FF0000FF>Intruder</color> Can Vent
@@ -1264,12 +1283,12 @@ False
 False
 Mark Cooldown
 25
-Enable Custom <color=#008000FF>Syndicate</color> Colors
-True
 <color=#008000FF>Syndicate</color> Count
 1
 <color=#008000FF>Syndicate</color> Vision
 1.25
+<color=#008000FF>Syndicate</color> Uses A Flashlight
+False
 Chaos Drive Timer
 3
 Chaos Drive Holder Kill Cooldown
@@ -1348,8 +1367,12 @@ Bomb Detonation Kills Members Of The <color=#008000FF>Syndicate</color>
 True
 <color=#B345FFFF>Collider</color> Is Unique
 False
-Charge Cooldown
+Set Charges Cooldown
 25
+Charge Cooldown With Chose Drive
+25
+Charge Duration
+10
 Collide Radius
 1.5
 Chaos Drive Collide Radius Increase
@@ -1416,8 +1439,6 @@ Scream Cooldown
 25
 Scream Duration
 20
-Enable Custom <color=#7F7F7FFF>Modifier</color> Colors
-True
 Max <color=#7F7F7FFF>Modifiers</color>
 5
 Min <color=#7F7F7FFF>Modifiers</color>
@@ -1484,13 +1505,17 @@ False
 True
 <color=#F6AAB7FF>Yeller</color> Is Unique
 False
-Enable Custom <color=#FF9900FF>Ability</color> Colors
-True
 Max <color=#FF9900FF>Abilities</color>
 5
 Min <color=#FF9900FF>Abilities</color>
 5
-<color=#073763FF>Assassin</color> Is Unique
+<color=#8CFFFFFF>Crew</color> <color=#073763FF>Assassin</color> Is Unique
+False
+<color=#B3B3B3FF>Neutral</color> <color=#073763FF>Assassin</color> Is Unique
+False
+<color=#FF0000FF>Intruder</color> <color=#073763FF>Assassin</color> Is Unique
+False
+<color=#008000FF>Syndicate</color> <color=#073763FF>Assassin</color> Is Unique
 False
 <color=#073763FF>Assassin</color> Guess Limit
 15
@@ -1500,6 +1525,8 @@ True
 True
 <color=#073763FF>Assassin</color> Can Guess <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Evils</color>
 True
+<color=#073763FF>Assassin</color> Can Guess <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Investigatives</color>
+False
 <color=#073763FF>Assassin</color> Can Guess <color=#424242FF>Pestilence</color>
 False
 <color=#073763FF>Assassin</color> Can Guess Select <color=#7F7F7FFF>Modifiers</color>
@@ -1508,8 +1535,6 @@ False
 True
 <color=#073763FF>Assassin</color> Can Guess <color=#FF9900FF>Abilities</color>
 True
-<color=#073763FF>Assassin</color> Can Guess <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Investigatives</color>
-False
 <color=#073763FF>Assassin</color> Can Guess After Voting
 False
 <color=#E600FFFF>Button Barry</color> Is Unique
@@ -1580,8 +1605,6 @@ Kill Cooldown Bonus
 5
 Increased Kill Cooldown When 2+ Teammates
 True
-Enable Custom <color=#DD585BFF>Objectifier</color> Colors
-True
 Max <color=#DD585BFF>Objectifiers</color>
 5
 Min <color=#DD585BFF>Objectifiers</color>
@@ -1614,6 +1637,12 @@ False
 True
 <color=#D3D3D3FF>Revealer</color> Reveals Turned <color=#678D36FF>Fanatic</color>
 False
+<color=#FF351FFF>Linked</color> Is Unique
+False
+Enable <color=#FF351FFF>Linked</color> Chat
+True
+<color=#FF351FFF>Linked</color> Know Each Other's <color=#FFD700FF>Roles</color>
+True
 <color=#FF66CCFF>Lovers</color> Is Unique
 False
 Both <color=#FF66CCFF>Lovers</color> Die
@@ -1638,6 +1667,8 @@ True
 2
 <color=#3D2D2CFF>Rivals</color> Is Unique
 False
+Enable <color=#3D2D2CFF>Rivals</color> Chat
+True
 <color=#3D2D2CFF>Rivals</color> Can Be From The Same Faction
 True
 <color=#3D2D2CFF>Rivals</color> Know Each Other's <color=#FFD700FF>Roles</color>
@@ -1656,3 +1687,43 @@ True
 True
 Turned <color=#370D43FF>Traitor</color> Swaps Colours For Investigative <color=#FFD700FF>Roles</color>
 False
+Entry 1
+9
+Entry 2
+18
+Entry 3
+24
+Entry 4
+3
+Entry 5
+90
+Entry 6
+91
+Entry 7
+89
+Entry 8
+88
+Entry 9
+61
+Entry 10
+98
+Entry 11
+69
+Entry 12
+109
+Entry 13
+103
+Entry 14
+101
+Entry 15
+100
+Ban 1
+19
+Ban 2
+47
+Ban 3
+48
+Ban 4
+113
+Ban 5
+113

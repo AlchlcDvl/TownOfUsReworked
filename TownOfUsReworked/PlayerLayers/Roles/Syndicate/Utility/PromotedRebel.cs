@@ -396,9 +396,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (FrameTimer() != 0f || !HoldsDrive)
                 return;
 
-            foreach (var player in GetClosestPlayers(CustomPlayer.Local.GetTruePosition(), CustomGameOptions.ChaosDriveFrameRadius))
-                RpcFrame(player);
-
+            GetClosestPlayers(CustomPlayer.Local.GetTruePosition(), CustomGameOptions.ChaosDriveFrameRadius).ForEach(RpcFrame);
             LastFramed = DateTime.UtcNow;
         }
 
@@ -619,7 +617,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (BombTimer() != 0f)
                 return;
 
-            Bombs.Add(new Bomb(Player.GetTruePosition(), HoldsDrive, Player));
+            Bombs.Add(new Bomb(Player, HoldsDrive));
             LastPlaced = DateTime.UtcNow;
 
             if (CustomGameOptions.BombCooldownsLinked)
@@ -779,8 +777,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 if (Minigame.Instance)
                     Minigame.Instance.Close();
 
-                if (MapBehaviour.Instance)
-                    MapBehaviour.Instance.Close();
+                if (Map)
+                    Map.Close();
             }
 
             WarpPlayer1.moveable = true;
@@ -1185,10 +1183,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             TimeRemaining -= Time.deltaTime;
 
             if (HoldsDrive)
-            {
-                foreach (var player in CustomPlayer.AllPlayers)
-                    GetRole(player).Rewinding = true;
-            }
+                CustomPlayer.AllPlayers.ForEach(x => GetRole(x).Rewinding = true);
 
             if (Meeting)
                 TimeRemaining = 0f;
@@ -1198,9 +1193,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Enabled = false;
             LastTimed = DateTime.UtcNow;
-
-            foreach (var player in CustomPlayer.AllPlayers)
-                GetRole(player).Rewinding = false;
+            CustomPlayer.AllPlayers.ForEach(x => GetRole(x).Rewinding = false);
         }
 
         public void TimeControl()

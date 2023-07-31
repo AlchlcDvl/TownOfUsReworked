@@ -221,8 +221,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 if (Minigame.Instance)
                     Minigame.Instance.Close();
 
-                if (MapBehaviour.Instance)
-                    MapBehaviour.Instance.Close();
+                if (Map)
+                    Map.Close();
             }
 
             TransportPlayer1.moveable = true;

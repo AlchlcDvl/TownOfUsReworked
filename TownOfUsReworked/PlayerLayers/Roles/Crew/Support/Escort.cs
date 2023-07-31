@@ -29,10 +29,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public void UnBlock()
         {
             Enabled = false;
-
-            foreach (var layer in GetLayers(BlockTarget))
-                layer.IsBlocked = false;
-
+            GetLayers(BlockTarget).ForEach(x => x.IsBlocked = false);
             BlockTarget = null;
             LastBlock = DateTime.UtcNow;
         }
@@ -41,9 +38,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
-
-            foreach (var layer in GetLayers(BlockTarget))
-                layer.IsBlocked = !GetRole(BlockTarget).RoleBlockImmune;
+            GetLayers(BlockTarget).ForEach(x => x.IsBlocked = !GetRole(BlockTarget).RoleBlockImmune);
 
             if (Meeting || IsDead || BlockTarget.Data.IsDead || BlockTarget.Data.Disconnected)
                 TimeRemaining = 0f;

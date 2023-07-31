@@ -39,7 +39,10 @@ namespace TownOfUsReworked.Patches
                 var chat = bubble.Cast<ChatBubble>();
 
                 if (chat.NameText != null)
+                {
+                    chat.NameText.alignment = TextAlignmentOptions.Left;
                     chat.TextArea.alignment = TextAlignmentOptions.TopLeft;
+                }
             }
         }
 

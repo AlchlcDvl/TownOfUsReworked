@@ -5,14 +5,16 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
         private float _time;
         private int OtherNumber;
         private bool RickRolled;
+        private bool Exposed;
 
         public override Color32 Color => ClientGameOptions.CustomModColors ? Colors.Volatile : Colors.Modifier;
         public override string Name => "Volatile";
         public override LayerEnum Type => LayerEnum.Volatile;
         public override ModifierEnum ModifierType => ModifierEnum.Volatile;
         public override Func<string> TaskText => () => "- You experience hallucinations";
+        public override bool Hidden => !CustomGameOptions.VolatileKnows && !Exposed && !IsDead;
 
-        public Volatile(PlayerControl player) : base(player) => Hidden = !CustomGameOptions.VolatileKnows;
+        public Volatile(PlayerControl player) : base(player) => Exposed = !CustomGameOptions.VolatileKnows;
 
         public override void UpdateHud(HudManager __instance)
         {
@@ -27,7 +29,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
             {
                 var randomNumber = URandom.RandomRangeInt(0, 4);
                 _time -= CustomGameOptions.VolatileInterval;
-                Hidden = false;
+                Exposed = true;
 
                 if (randomNumber == 0)
                 {

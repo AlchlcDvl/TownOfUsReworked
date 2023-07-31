@@ -170,6 +170,16 @@ namespace TownOfUsReworked.Extensions
                 !Role.GetRole(player).Faithful;
         }
 
+        public static bool CanSabotage(this PlayerControl player)
+        {
+            var result = (player.Is(Faction.Intruder) || (player.Is(Faction.Syndicate) && CustomGameOptions.AltImps)) && !Meeting && CustomGameOptions.IntrudersCanSabotage;
+
+            if (!player.Data.IsDead)
+                return result;
+            else
+                return result && CustomGameOptions.GhostsCanSabotage;
+        }
+
         public static bool HasAliveLover(this PlayerControl player) => player.Is(ObjectifierEnum.Lovers) && Objectifier.GetObjectifier<Lovers>(player).LoversAlive;
 
         public static bool CanDoTasks(this PlayerControl player)
@@ -768,7 +778,7 @@ namespace TownOfUsReworked.Extensions
 
         public static InspectorResults GetInspResults(this PlayerVoteArea player) => PlayerByVoteArea(player).GetInspResults();
 
-        public static bool IsBlocked(this PlayerControl player) => PlayerLayer.GetLayers(player)?.Any(x => x.IsBlocked) == true;
+        public static bool IsBlocked(this PlayerControl player) => PlayerLayer.GetLayers(player).Any(x => x.IsBlocked);
 
         public static bool SeemsEvil(this PlayerControl player)
         {

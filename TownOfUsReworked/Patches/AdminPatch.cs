@@ -10,10 +10,7 @@ namespace TownOfUsReworked.Patches
             __instance.SabotageText.gameObject.SetActive(sabotaged);
 
             if (sabotaged)
-            {
-                foreach (var area in __instance.CountAreas)
-                    area.UpdateCount(0);
-            }
+                __instance.CountAreas.ToList().ForEach(x => x.UpdateCount(0));
         }
 
         public static void UpdateBlips(CounterArea area, List<int> colorMapping, bool isOP)

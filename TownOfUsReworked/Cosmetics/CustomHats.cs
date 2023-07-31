@@ -691,11 +691,7 @@ namespace TownOfUsReworked.Cosmetics
                     return 500;
                 });
 
-                foreach (var key in orderedKeys)
-                {
-                    var value = packages[key];
-                    YOffset = CreateHatPackage(value, key, YOffset, __instance);
-                }
+                orderedKeys.ToList().ForEach(key => YOffset = CreateHatPackage(packages[key], key, YOffset, __instance));
 
                 foreach (var colorChip in __instance.ColorChips)
                 {

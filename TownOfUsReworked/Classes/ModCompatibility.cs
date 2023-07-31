@@ -270,7 +270,6 @@
                 startingVent = ShipStatus.Instance.AllVents[URandom.RandomRangeInt(0, ShipStatus.Instance.AllVents.Count)];
 
             ChangeFloor(startingVent.transform.position.y > -7f);
-            CallRpc(CustomRPC.Misc, MiscRPC.SetPos, CustomPlayer.Local);
             CustomPlayer.Local.NetTransform.RpcSnapTo(new(startingVent.transform.position.x, startingVent.transform.position.y + 0.3636f));
             CustomPlayer.Local.MyPhysics.RpcEnterVent(startingVent.Id);
         }

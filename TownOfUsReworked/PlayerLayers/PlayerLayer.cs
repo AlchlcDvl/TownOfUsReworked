@@ -88,8 +88,8 @@ namespace TownOfUsReworked.PlayerLayers
             if (IsBlocked && Minigame.Instance)
                 Minigame.Instance.Close();
 
-            if (MapBehaviour.Instance && IsBlocked)
-                MapBehaviour.Instance.Close();
+            if (Map && IsBlocked)
+                Map.Close();
         }
 
         public virtual void UpdateMeeting(MeetingHud __instance) => Player.DisableButtons();
@@ -121,6 +121,8 @@ namespace TownOfUsReworked.PlayerLayers
         }
 
         public virtual void OnBodyReport(GameData.PlayerInfo info) => EndGame.Reset();
+
+        public virtual void UponTaskComplete(uint taskId) {}
 
         protected PlayerLayer(PlayerControl player)
         {
@@ -191,10 +193,7 @@ namespace TownOfUsReworked.PlayerLayers
                     Objectifier.CorruptedWins = true;
 
                     if (CustomGameOptions.AllCorruptedWin)
-                    {
-                        foreach (var corr in Objectifier.GetObjectifiers<Corrupted>(ObjectifierEnum.Corrupted))
-                            corr.Winner = true;
-                    }
+                        Objectifier.GetObjectifiers(ObjectifierEnum.Corrupted).ForEach(x => x.Winner = true);
 
                     Winner = true;
                     CallRpc(CustomRPC.WinLose, WinLoseRPC.CorruptedWin, this);
@@ -232,14 +231,7 @@ namespace TownOfUsReworked.PlayerLayers
                 else if (Type == LayerEnum.Overlord && MeetingPatches.MeetingCount >= CustomGameOptions.OverlordMeetingWinCount && !IsDead && !Disconnected)
                 {
                     Objectifier.OverlordWins = true;
-
-                    foreach (var ov in Objectifier.GetObjectifiers<Overlord>(ObjectifierEnum.Overlord))
-                    {
-                        if (ov.IsAlive)
-                            ov.Winner = true;
-                    }
-
-                    Winner = true;
+                    Objectifier.GetObjectifiers<Overlord>(ObjectifierEnum.Overlord).Where(ov => ov.IsAlive).ToList().ForEach(x => x.Winner = true);
                     CallRpc(CustomRPC.WinLose, WinLoseRPC.OverlordWin);
                     EndGame();
                 }

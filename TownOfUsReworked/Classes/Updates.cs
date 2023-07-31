@@ -94,9 +94,7 @@ namespace TownOfUsReworked.Classes
             try
             {
                 var d = new DirectoryInfo(TownOfUsReworked.DataPath + "\\BepInEx\\plugins");
-
-                foreach (var f in d.GetFiles("*.old").Select(x => x.FullName).ToArray())
-                    File.Delete(f);
+                d.GetFiles("*.old").Select(x => x.FullName).ToList().ForEach(File.Delete);
             }
             catch (Exception e)
             {

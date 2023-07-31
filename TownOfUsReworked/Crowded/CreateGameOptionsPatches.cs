@@ -65,12 +65,8 @@
                 }));
             }
 
-            foreach (var button in __instance.MaxPlayerButtons)
-                button.enabled = button.GetComponentInChildren<TextMeshPro>().text == __instance.GetTargetOptions().MaxPlayers.ToString();
-
-            foreach (var imp in __instance.ImpostorButtons)
-                imp.gameObject.Destroy();
-
+            __instance.MaxPlayerButtons.ForEach(x => x.enabled = x.GetComponentInChildren<TextMeshPro>().text == __instance.GetTargetOptions().MaxPlayers.ToString());
+            __instance.ImpostorButtons.ToList().ForEach(x => x.gameObject.Destroy());
             __instance.ImpostorText.gameObject.Destroy();
             __instance.SetLanguageFilter((uint)DataManager.Settings.Language.CurrentLanguage);
         }

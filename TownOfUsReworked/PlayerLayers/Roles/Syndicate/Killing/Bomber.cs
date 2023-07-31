@@ -63,7 +63,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (BombTimer() != 0f)
                 return;
 
-            Bombs.Add(new(Player.GetTruePosition(), HoldsDrive, Player));
+            Bombs.Add(new(Player, HoldsDrive));
             LastPlaced = DateTime.UtcNow;
 
             if (CustomGameOptions.BombCooldownsLinked)

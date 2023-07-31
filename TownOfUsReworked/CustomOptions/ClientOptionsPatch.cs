@@ -1,14 +1,11 @@
 namespace TownOfUsReworked.CustomOptions
 {
-    [HarmonyPatch]
     //Adapted from The Other Roles
+    [HarmonyPatch]
     public static class ClientOptionsPatch
     {
         private static readonly SelectionBehaviour[] ClientOptions =
         {
-            new("Lighter Darker Colors", () => TownOfUsReworked.LighterDarker.Value = !TownOfUsReworked.LighterDarker.Value, TownOfUsReworked.LighterDarker.Value),
-            new("White Nameplates", () => TownOfUsReworked.WhiteNameplates.Value = !TownOfUsReworked.WhiteNameplates.Value, TownOfUsReworked.WhiteNameplates.Value),
-            new("No Levels", () => TownOfUsReworked.NoLevels.Value = !TownOfUsReworked.NoLevels.Value, TownOfUsReworked.NoLevels.Value),
             new("Custom Crew Colors", () => TownOfUsReworked.CustomCrewColors.Value = !TownOfUsReworked.CustomCrewColors.Value, TownOfUsReworked.CustomCrewColors.Value),
             new("Custom Neutral Colors", () => TownOfUsReworked.CustomNeutColors.Value = !TownOfUsReworked.CustomNeutColors.Value, TownOfUsReworked.CustomNeutColors.Value),
             new("Custom Intruder Colors", () => TownOfUsReworked.CustomIntColors.Value = !TownOfUsReworked.CustomIntColors.Value, TownOfUsReworked.CustomIntColors.Value),
@@ -16,7 +13,56 @@ namespace TownOfUsReworked.CustomOptions
             new("Custom Modifier Colors", () => TownOfUsReworked.CustomModColors.Value = !TownOfUsReworked.CustomModColors.Value, TownOfUsReworked.CustomModColors.Value),
             new("Custom Objectifier Colors", () => TownOfUsReworked.CustomObjColors.Value = !TownOfUsReworked.CustomObjColors.Value, TownOfUsReworked.CustomObjColors.Value),
             new("Custom Ability Colors", () => TownOfUsReworked.CustomAbColors.Value = !TownOfUsReworked.CustomAbColors.Value, TownOfUsReworked.CustomAbColors.Value),
-            new("Custom Ejects", () => TownOfUsReworked.CustomEjects.Value = !TownOfUsReworked.CustomEjects.Value, TownOfUsReworked.CustomEjects.Value)
+            new("Custom Ejects", () => TownOfUsReworked.CustomEjects.Value = !TownOfUsReworked.CustomEjects.Value, TownOfUsReworked.CustomEjects.Value),
+            new("Lighter Darker Colors", () =>
+            {
+                TownOfUsReworked.LighterDarker.Value = !TownOfUsReworked.LighterDarker.Value;
+
+                if (IsMeeting)
+                {
+                    if (!ClientGameOptions.LighterDarker)
+                    {
+                        foreach (var button in Role.Buttons)
+                        {
+                            if (button == null)
+                                continue;
+
+                            button.SetActive(false);
+                            button.Destroy();
+                        }
+
+                        Role.Buttons.Clear();
+                    }
+                    else
+                        AllVoteAreas.ForEach(Role.GenButton);
+                }
+
+                return ClientGameOptions.LighterDarker;
+            }, TownOfUsReworked.LighterDarker.Value),
+            new("White Nameplates", () =>
+            {
+                TownOfUsReworked.WhiteNameplates.Value = !TownOfUsReworked.WhiteNameplates.Value;
+
+                if (IsMeeting)
+                    AllVoteAreas.ForEach(x => x.SetCosmetics(PlayerByVoteArea(x).Data));
+
+                return ClientGameOptions.WhiteNameplates;
+            }, TownOfUsReworked.WhiteNameplates.Value),
+            new("No Levels", () =>
+            {
+                TownOfUsReworked.NoLevels.Value = !TownOfUsReworked.NoLevels.Value;
+
+                if (IsMeeting)
+                {
+                    foreach (var voteArea in AllVoteAreas)
+                    {
+                        voteArea.LevelNumberText.GetComponentInParent<SpriteRenderer>().enabled = ClientGameOptions.NoLevels;
+                        voteArea.LevelNumberText.GetComponentInParent<SpriteRenderer>().gameObject.SetActive(ClientGameOptions.NoLevels);
+                    }
+                }
+
+                return ClientGameOptions.NoLevels;
+            }, TownOfUsReworked.NoLevels.Value),
         };
 
         private static GameObject PopUp;
@@ -180,15 +226,13 @@ namespace TownOfUsReworked.CustomOptions
                 passiveButton.OnMouseOver.AddListener((Action) (() => button.Background.color = new Color32(34 ,139, 34, byte.MaxValue)));
                 passiveButton.OnMouseOut = new();
                 passiveButton.OnMouseOut.AddListener((Action) (() => button.Background.color = button.onState ? UColor.green : Palette.ImpostorRed));
-
-                foreach (var spr in button.gameObject.GetComponentsInChildren<SpriteRenderer>())
-                    spr.size = new Vector2(2.2f, .7f);
+                button.gameObject.GetComponentsInChildren<SpriteRenderer>().ToList().ForEach(x => x.size = new(2.2f, 0.7f));
             }
         }
 
         private static IEnumerable<GameObject> GetAllChildren(this GameObject Go)
         {
-            for (var i = 0; i< Go.transform.childCount; i++)
+            for (var i = 0; i < Go.transform.childCount; i++)
                 yield return Go.transform.GetChild(i).gameObject;
         }
     }

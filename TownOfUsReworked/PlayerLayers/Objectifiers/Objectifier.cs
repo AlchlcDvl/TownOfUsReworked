@@ -11,6 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         public virtual string Symbol => "φ";
         public virtual ObjectifierEnum ObjectifierType => ObjectifierEnum.None;
         public virtual Func<string> TaskText => () => "- None";
+        public virtual bool Hidden => false;
 
         public static bool LoveWins;
         public static bool RivalWins;
@@ -28,8 +29,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
 
             AllObjectifiers.Add(this);
         }
-
-        public bool Hidden;
 
         public string ColoredSymbol => $"{ColorString}{Symbol}</color>";
 

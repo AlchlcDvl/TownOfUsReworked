@@ -80,10 +80,7 @@ namespace TownOfUsReworked.Extensions
         public static Il2CppSystem.Collections.Generic.List<T> SystemToIl2Cpp<T>(this List<T> list)
         {
             var newList = new Il2CppSystem.Collections.Generic.List<T>();
-
-            foreach (var item in list)
-                newList.Add(item);
-
+            list.ForEach(newList.Add);
             return newList;
         }
 

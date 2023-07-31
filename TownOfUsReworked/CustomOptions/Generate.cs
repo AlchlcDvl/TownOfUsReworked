@@ -465,6 +465,7 @@ namespace TownOfUsReworked.CustomOptions
         public static CustomNumberOption BugRange;
         public static CustomNumberOption MinAmountOfPlayersInBug;
         public static CustomStringOption WhoSeesDead;
+        public static CustomToggleOption PreciseOperativeInfo;
 
         //Seer Options
         public static CustomHeaderOption Seer;
@@ -1527,10 +1528,10 @@ namespace TownOfUsReworked.CustomOptions
             ReactorShake = new(num++, MultiMenu.main, "Reactor Sabotage Shakes The Screen By", 30, 0, 100, 1, PercentFormat);
 
             BetterSkeld = new(MultiMenu.main, "Better Skeld Settings");
-            SkeldVentImprovements = new(num++, MultiMenu.main, "Changed Vent Layout", false);
+            SkeldVentImprovements = new(num++, MultiMenu.main, "Changed Skeld Vent Layout", false);
 
             BetterPolusSettings = new(MultiMenu.main, "Polus Settings");
-            PolusVentImprovements = new(num++, MultiMenu.main, "Changed Vent Layout", false);
+            PolusVentImprovements = new(num++, MultiMenu.main, "Changed Polus Vent Layout", false);
             VitalsLab = new(num++, MultiMenu.main, "Vitals Moved To Lab", false);
             ColdTempDeathValley = new(num++, MultiMenu.main, "Cold Temp Moved To Death Valley", false);
             WifiChartCourseSwap = new(num++, MultiMenu.main, "Reboot Wifi And Chart Course Swapped", false);
@@ -1781,6 +1782,17 @@ namespace TownOfUsReworked.CustomOptions
             UniqueSeer = new(num++, MultiMenu.crew, "<color=#71368AFF>Seer</color> Is Unique", false, SeerOn);
             SeerCooldown = new(num++, MultiMenu.crew, "Seer Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, SeerOn);
 
+            Operative = new(MultiMenu.crew, "<color=#A7D1B3FF>Operative</color>", OperativeOn);
+            UniqueOperative = new(num++, MultiMenu.crew, "<color=#A7D1B3FF>Operative</color> Is Unique", false, OperativeOn);
+            BugCooldown = new(num++, MultiMenu.crew, "Bug Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, OperativeOn);
+            MinAmountOfTimeInBug = new(num++, MultiMenu.crew, "Min Amount Of Time In Bug To Trigger", 0f, 0f, 15f, 0.5f, CooldownFormat, OperativeOn);
+            BugsRemoveOnNewRound = new(num++, MultiMenu.crew, "Bugs Are Removed Each Round", true, OperativeOn);
+            MaxBugs = new(num++, MultiMenu.crew, "Bug Count", 5, 1, 15, 1, OperativeOn);
+            BugRange = new(num++, MultiMenu.crew, "Bug Radius", 1.5f, 0.5f, 5f, 0.25f, DistanceFormat, OperativeOn);
+            MinAmountOfPlayersInBug = new(num++, MultiMenu.crew, "Number Of <color=#FFD700FF>Roles</color> Required To Trigger Bug", 1, 1, 5, 1, OperativeOn);
+            WhoSeesDead = new(num++, MultiMenu.crew, "Who Sees Dead Bodies On Admin", new[] { "Nobody", "Operative", "Everyone But Operative", "Everyone" }, OperativeOn);
+            PreciseOperativeInfo = new(num++, MultiMenu.crew, "<color=#A7D1B3FF>Operative</color> Gets Precise Information", false, OperativeOn);
+
             Sheriff = new(MultiMenu.crew, "<color=#FFCC80FF>Sheriff</color>", SheriffOn);
             UniqueSheriff = new(num++, MultiMenu.crew, "<color=#FFCC80FF>Sheriff</color> Is Unique", false, SheriffOn);
             InterrogateCooldown = new(num++, MultiMenu.crew, "Interrogate Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, SheriffOn);
@@ -1793,16 +1805,6 @@ namespace TownOfUsReworked.CustomOptions
             TrackCooldown = new(num++, MultiMenu.crew, "Track Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, TrackerOn);
             ResetOnNewRound = new(num++, MultiMenu.crew, "<color=#009900FF>Tracker</color> Arrows Reset After Each Round", false, TrackerOn);
             MaxTracks = new(num++, MultiMenu.crew, "Max Tracks", 5, 1, 15, 1, TrackerOn);
-
-            Operative = new(MultiMenu.crew, "<color=#A7D1B3FF>Operative</color>", OperativeOn);
-            UniqueOperative = new(num++, MultiMenu.crew, "<color=#A7D1B3FF>Operative</color> Is Unique", false, OperativeOn);
-            BugCooldown = new(num++, MultiMenu.crew, "Bug Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, OperativeOn);
-            MinAmountOfTimeInBug = new(num++, MultiMenu.crew, "Min Amount Of Time In Bug To Trigger", 0f, 0f, 15f, 0.5f, CooldownFormat, OperativeOn);
-            BugsRemoveOnNewRound = new(num++, MultiMenu.crew, "Bugs Are Removed Each Round", true, OperativeOn);
-            MaxBugs = new(num++, MultiMenu.crew, "Bug Count", 5, 1, 15, 1, OperativeOn);
-            BugRange = new(num++, MultiMenu.crew, "Bug Radius", 1.5f, 0.5f, 5f, 0.25f, DistanceFormat, OperativeOn);
-            MinAmountOfPlayersInBug = new(num++, MultiMenu.crew, "Number Of <color=#FFD700FF>Roles</color> Required To Trigger Bug", 1, 1, 5, 1, OperativeOn);
-            WhoSeesDead = new(num++, MultiMenu.crew, "Who Sees Dead Bodies On Admin", new[] { "Nobody", "Operative", "Everyone But Operative", "Everyone" }, OperativeOn);
 
             CrewKillingSettings = new(MultiMenu.crew, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Killing</color> Settings", new[] { VigilanteOn, VeteranOn });
             CKMax = new(num++, MultiMenu.crew, "Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>", 1, 1, 14, 1, new[] { VigilanteOn,
@@ -2393,7 +2395,7 @@ namespace TownOfUsReworked.CustomOptions
             Collider = new(MultiMenu.syndicate, "<color=#B345FFFF>Collider</color>", ColliderOn);
             UniqueCollider = new(num++, MultiMenu.syndicate, "<color=#B345FFFF>Collider</color> Is Unique", false, ColliderOn);
             CollideCooldown = new(num++, MultiMenu.syndicate, "Set Charges Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, ColliderOn);
-            ChargeCooldown = new(num++, MultiMenu.syndicate, "Charge Cooldown WIth Chose Drive", 25f, 10f, 60f, 2.5f, CooldownFormat, ColliderOn);
+            ChargeCooldown = new(num++, MultiMenu.syndicate, "Charge Cooldown With Chose Drive", 25f, 10f, 60f, 2.5f, CooldownFormat, ColliderOn);
             ChargeDuration = new(num++, MultiMenu.syndicate, "Charge Duration", 10f, 5f, 30f, 1f, CooldownFormat, ColliderOn);
             CollideRange = new(num++, MultiMenu.syndicate, "Collide Radius", 1.5f, 0.5f, 5f, 0.25f, DistanceFormat, ColliderOn);
             CollideRangeIncrease = new(num++, MultiMenu.syndicate, "Chaos Drive Collide Radius Increase", 0.5f, 0.5f, 5f, 0.25f, DistanceFormat, ColliderOn);

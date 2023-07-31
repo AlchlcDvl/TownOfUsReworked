@@ -32,16 +32,12 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         public override LayerEnum Type => LayerEnum.Defector;
         public override ObjectifierEnum ObjectifierType => ObjectifierEnum.Defector;
         public override Func<string> TaskText => () => "- Be the last one of your faction to switch sides";
+        public override bool Hidden => !CustomGameOptions.DefectorKnows && !Turned;
 
-        public Defector(PlayerControl player) : base(player)
-        {
-            Hidden = !CustomGameOptions.DefectorKnows && !Turned;
-            Side = Player.GetFaction();
-        }
+        public Defector(PlayerControl player) : base(player) => Side = Player.GetFaction();
 
         public void TurnSides()
         {
-            Hidden = false;
             Turned = true;
             var crew = CustomGameOptions.DefectorFaction == DefectorFaction.Crew;
             var evil = CustomGameOptions.DefectorFaction == DefectorFaction.OpposingEvil;

@@ -43,9 +43,8 @@ namespace TownOfUsReworked.Patches
 
             HUD.ShadowQuad.gameObject.SetActive(true);
             HUD.KillButton.ToggleVisible(false);
-            HUD.AdminButton.ToggleVisible(__instance.Data.IsImpostor() && ConstantVariables.IsHnS);
-            HUD.SabotageButton.ToggleVisible(((__instance.Is(Faction.Syndicate) && CustomGameOptions.AltImps) || __instance.Is(Faction.Intruder)) &&
-                CustomGameOptions.IntrudersCanSabotage);
+            HUD.AdminButton.ToggleVisible(__instance.Data.IsImpostor() && IsHnS);
+            HUD.SabotageButton.ToggleVisible(__instance.CanSabotage());
             HUD.ImpostorVentButton.ToggleVisible(__instance.CanVent());
 
             if (HUD.Chat.IsOpenOrOpening)

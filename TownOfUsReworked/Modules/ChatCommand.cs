@@ -82,10 +82,7 @@ namespace TownOfUsReworked.Modules
             }
 
             var message = "";
-
-            foreach (var arg in args.Skip(2))
-                message += $"{arg} ";
-
+            args[2..].ToList().ForEach(arg => message += $"{arg} ");
             message = message.Remove(message.Length - 1);
 
             if (CustomPlayer.Local.Data.IsDead)
@@ -187,9 +184,8 @@ namespace TownOfUsReworked.Modules
             }
 
             var arg = "";
-
-            foreach (var arg2 in args[1..])
-                arg += $"{arg2} ";
+            args[1..].ToList().ForEach(arg2 => arg += $"{arg2} ");
+            arg = arg.Remove(arg.Length - 1);
 
             if (arg.Any(disallowed.Contains))
                 __instance.AddChat(CustomPlayer.Local, "Name contains disallowed characters.");
@@ -293,9 +289,8 @@ namespace TownOfUsReworked.Modules
             }
 
             var arg = "";
-
-            foreach (var arg2 in args[1..])
-                arg += $"{arg2} ";
+            args[1..].ToList().ForEach(arg2 => arg += $"{arg2} ");
+            arg = arg.Remove(arg.Length - 1);
 
             var target = CustomPlayer.AllPlayers.Find(x => x.Data.PlayerName == arg);
 
@@ -367,10 +362,8 @@ namespace TownOfUsReworked.Modules
         private static void TestArgs(string[] args, ChatController __instance)
         {
             var message = "You entered the following params:\n";
-
-            foreach (var arg in args)
-                message += $"{arg} ";
-
+            args[1..].ToList().ForEach(arg => message += $"{arg}, ");
+            message = message.Remove(message.Length - 2);
             __instance.AddChat(CustomPlayer.Local, message);
 
             if (!BubbleModifications.ContainsKey(__instance.chatBubblePool.activeChildren[^1].Cast<ChatBubble>()))

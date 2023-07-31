@@ -90,11 +90,7 @@ namespace TownOfUsReworked.Classes
                 SoundManager.Instance.StopSound(GetAudio(path));
         }
 
-        public static void StopAll()
-        {
-            foreach (var path in SoundEffects.Keys)
-                Stop(path);
-        }
+        public static void StopAll() => SoundEffects.Keys.ToList().ForEach(Stop);
 
         public static string GetLanguage() => (uint)DataManager.Settings.Language.CurrentLanguage switch
         {

@@ -3,16 +3,39 @@ namespace TownOfUsReworked.Custom
     [HarmonyPatch]
     public static class ButtonUtils
     {
+        private static bool Use;
+
         public static void DisableButtons(this PlayerControl player)
         {
             foreach (var button in CustomButton.AllButtons.Where(x => x.Owner.Player == player))
                 button.Disable();
+
+            HUD.KillButton.gameObject.SetActive(false);
+            HUD.SabotageButton.gameObject.SetActive(false);
+            HUD.ReportButton.gameObject.SetActive(false);
+            HUD.ImpostorVentButton.gameObject.SetActive(false);
+            Use = HUD.UseButton.isActiveAndEnabled;
+
+            if (Use)
+                HUD.UseButton.gameObject.SetActive(false);
+            else
+                HUD.PetButton.gameObject.SetActive(false);
         }
 
         public static void EnableButtons(this PlayerControl player)
         {
             foreach (var button in CustomButton.AllButtons.Where(x => x.Owner.Player == player))
                 button.Enable();
+
+            HUD.KillButton.gameObject.SetActive(false);
+            HUD.SabotageButton.gameObject.SetActive(player.CanSabotage());
+            HUD.ReportButton.gameObject.SetActive(!player.Is(ModifierEnum.Coward));
+            HUD.ImpostorVentButton.gameObject.SetActive(player.CanVent());
+
+            if (Use)
+                HUD.UseButton.gameObject.SetActive(true);
+            else
+                HUD.PetButton.gameObject.SetActive(true);
         }
 
         public static void DestroyButtons(this PlayerControl player)
