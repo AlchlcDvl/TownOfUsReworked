@@ -315,7 +315,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 var target = TargetPlayer ?? CustomPlayer.AllPlayers.Random(x => x != Player);
                 var role = GetRole(target);
-                CallRpc(CustomRPC.Change, TurnRPC.TurnSeer, this, role);
+                CallRpc(CustomRPC.Change, TurnRPC.TurnAct, this, role);
                 TurnAct(role);
             }
         }

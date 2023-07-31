@@ -82,7 +82,7 @@ namespace TownOfUsReworked
         private const string VersionString = "0.4.3.0";
         public static readonly Version Version = new(VersionString);
 
-        public const bool IsDev = true;
+        public const bool IsDev = false;
         public static bool IsTest;
         private static string VersionS => VersionString.Remove(VersionString.Length - 2);
         private static string DevString => IsDev ? "-dev" : "";
