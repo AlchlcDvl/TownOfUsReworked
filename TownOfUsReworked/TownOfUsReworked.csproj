@@ -13,7 +13,6 @@
         <Configurations>Debug;Release</Configurations>
         <RepositoryType>git</RepositoryType>
         <RepositoryUrl>https://github.com/AlchlcDvl/TownOfUsReworked.git</RepositoryUrl>
-        <AmongUs>C:\Users\Guest User\Documents\GitHub\TownOfUsReworked\Test</AmongUs>
     </PropertyGroup>
 
     <ItemGroup>
