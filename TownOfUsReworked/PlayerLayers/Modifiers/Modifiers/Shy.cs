@@ -6,7 +6,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
         public override string Name => "Shy";
         public override LayerEnum Type => LayerEnum.Shy;
         public override ModifierEnum ModifierType => ModifierEnum.Shy;
-        public override Func<string> TaskText => () => "- You cannot call meetings";
+        public override Func<string> Description => () => "- You cannot call meetings";
 
         public Shy(PlayerControl player) : base(player) {}
     }

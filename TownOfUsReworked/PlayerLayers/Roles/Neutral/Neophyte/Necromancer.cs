@@ -2,21 +2,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Necromancer : Neutral
     {
-        public DeadBody ResurrectingBody;
-        public bool Success;
-        public CustomButton ResurrectButton;
-        public CustomButton KillButton;
-        public List<byte> Resurrected = new();
-        public int ResurrectUsesLeft;
+        public DeadBody ResurrectingBody { get; set; }
+        public bool Success { get; set; }
+        public CustomButton ResurrectButton { get; set; }
+        public CustomButton KillButton { get; set; }
+        public List<byte> Resurrected { get; set; }
+        public int ResurrectUsesLeft { get; set; }
         public bool ResurrectButtonUsable => ResurrectUsesLeft > 0;
-        public int KillUsesLeft;
+        public int KillUsesLeft { get; set; }
         public bool KillButtonUsable => KillUsesLeft > 0;
-        public DateTime LastKilled;
-        public DateTime LastResurrected;
-        public int ResurrectedCount;
-        public int KillCount;
-        public bool Resurrecting;
-        public float TimeRemaining;
+        public DateTime LastKilled { get; set; }
+        public DateTime LastResurrected { get; set; }
+        public int ResurrectedCount { get; set; }
+        public int KillCount { get; set; }
+        public bool Resurrecting { get; set; }
+        public float TimeRemaining { get; set; }
         public bool IsResurrecting => TimeRemaining > 0f;
 
         public override Color32 Color => ClientGameOptions.CustomNeutColors ? Colors.Necromancer : Colors.Neutral;
@@ -24,9 +24,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override LayerEnum Type => LayerEnum.Necromancer;
         public override RoleEnum RoleType => RoleEnum.Necromancer;
         public override Func<string> StartText => () => "Resurrect The Dead Into Doing Your Bidding";
-        public override Func<string> AbilitiesText => () => "- You can resurrect a dead body and bring them into the <color=#E6108AFF>Reanimated</color>\n- You can kill players to speed " +
+        public override Func<string> Description => () => "- You can resurrect a dead body and bring them into the <color=#E6108AFF>Reanimated</color>\n- You can kill players to speed " +
             "up the process";
         public override InspectorResults InspectorResults => InspectorResults.PreservesLife;
+        public float ResurrectTimer => ButtonUtils.Timer(Player, LastResurrected, CustomGameOptions.ResurrectCooldown, ResurrectedCount * CustomGameOptions.ResurrectCooldownIncrease);
+        public float KillTimer => ButtonUtils.Timer(Player, LastKilled, CustomGameOptions.NecroKillCooldown, KillCount * CustomGameOptions.NecroKillCooldownIncrease);
 
         public Necromancer(PlayerControl player) : base(player)
         {
@@ -43,24 +45,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             ResurrectButton = new(this, "Ressurect", AbilityTypes.Dead, "ActionSecondary", HitResurrect, Exception2, true);
             KillButton = new(this, "NecroKill", AbilityTypes.Direct, "Secondary", Kill, Exception1, true);
             SubFactionSymbol = "Σ";
-        }
-
-        public float ResurrectTimer()
-        {
-            var timespan = DateTime.UtcNow - LastResurrected;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.ResurrectCooldown, ResurrectedCount * CustomGameOptions.ResurrectCooldownIncrease) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
-        }
-
-        public float KillTimer()
-        {
-            var timespan = DateTime.UtcNow - LastKilled;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.NecroKillCooldown, KillCount * CustomGameOptions.NecroKillCooldownIncrease) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void Resurrect()
@@ -125,16 +109,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            KillButton.Update("KILL", KillTimer(), CustomGameOptions.NecroKillCooldown, KillUsesLeft, CustomGameOptions.NecroKillCooldownIncreases ? KillCount *
+            KillButton.Update("KILL", KillTimer, CustomGameOptions.NecroKillCooldown, KillUsesLeft, CustomGameOptions.NecroKillCooldownIncreases ? KillCount *
                 CustomGameOptions.NecroKillCooldownIncrease : 0, true, KillButtonUsable);
-            ResurrectButton.Update("RESURRECT", ResurrectTimer(), CustomGameOptions.ResurrectCooldown, ResurrectUsesLeft, IsResurrecting, TimeRemaining,
+            ResurrectButton.Update("RESURRECT", ResurrectTimer, CustomGameOptions.ResurrectCooldown, ResurrectUsesLeft, IsResurrecting, TimeRemaining,
                 CustomGameOptions.NecroResurrectDuration, CustomGameOptions.ResurrectCooldownIncreases ? ResurrectedCount * CustomGameOptions.ResurrectCooldownIncrease : 0, true,
                 ResurrectButtonUsable);
         }
 
         public void HitResurrect()
         {
-            if (IsTooFar(Player, ResurrectButton.TargetBody) || ResurrectTimer() != 0f || !ResurrectButtonUsable)
+            if (IsTooFar(Player, ResurrectButton.TargetBody) || ResurrectTimer != 0f || !ResurrectButtonUsable)
                 return;
 
             if (RoleGen.Convertible <= 0 || !PlayerByBody(ResurrectButton.TargetBody).Is(SubFaction.None))
@@ -157,7 +141,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Kill()
         {
-            if (KillTimer() != 0f || IsTooFar(Player, KillButton.TargetPlayer) || !KillButtonUsable)
+            if (KillTimer != 0f || IsTooFar(Player, KillButton.TargetPlayer) || !KillButtonUsable)
                 return;
 
             var interact = Interact(Player, KillButton.TargetPlayer, true);

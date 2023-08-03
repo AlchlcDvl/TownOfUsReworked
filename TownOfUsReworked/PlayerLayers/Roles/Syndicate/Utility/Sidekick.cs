@@ -2,8 +2,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Sidekick : Syndicate
     {
-        public Role FormerRole;
-        public Rebel Rebel;
+        public Role FormerRole { get; set; }
+        public Rebel Rebel { get; set; }
         public bool CanPromote => (Rebel.IsDead || Rebel.Disconnected) && !IsDead;
 
         public override Color32 Color => ClientGameOptions.CustomSynColors ? Colors.Sidekick : Colors.Syndicate;
@@ -11,7 +11,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override LayerEnum Type => LayerEnum.Sidekick;
         public override RoleEnum RoleType => RoleEnum.Sidekick;
         public override Func<string> StartText => () => "Succeed The <color=#FFFCCEFF>Rebel</color>";
-        public override Func<string> AbilitiesText => () => "- When the <color=#FFFCCEFF>Rebel</color> dies, you will become the new <color=#FFFCCEFF>Rebel</color> with boosted abilities "
+        public override Func<string> Description => () => "- When the <color=#FFFCCEFF>Rebel</color> dies, you will become the new <color=#FFFCCEFF>Rebel</color> with boosted abilities "
             + $"of your former role\n{CommonAbilities}";
         public override InspectorResults InspectorResults => InspectorResults.IsCold;
 

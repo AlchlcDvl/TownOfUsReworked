@@ -6,7 +6,7 @@ namespace TownOfUsReworked.Objects
         private readonly GameObject Item;
         public Transform Transform => Item?.transform;
         private static int Count;
-        public int Number;
+        public readonly int Number;
         private readonly TextMeshPro NumberText;
         public readonly PlayerControl Owner;
         public readonly float Size;

@@ -2,18 +2,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class GuardianAngel : Neutral
     {
-        public bool Enabled;
-        public DateTime LastProtected;
-        public float TimeRemaining;
-        public int UsesLeft;
+        public bool Enabled { get; set; }
+        public DateTime LastProtected { get; set; }
+        public float TimeRemaining { get; set; }
+        public int UsesLeft { get; set; }
         public bool ButtonUsable => UsesLeft > 0;
-        public PlayerControl TargetPlayer;
+        public PlayerControl TargetPlayer { get; set; }
         public bool TargetAlive => !Disconnected && !TargetPlayer.Data.IsDead && !TargetPlayer.Data.Disconnected;
         public bool Protecting => TimeRemaining > 0f;
-        public CustomButton ProtectButton;
-        public CustomButton GraveProtectButton;
-        public int Rounds;
-        public CustomButton TargetButton;
+        public CustomButton ProtectButton { get; set; }
+        public CustomButton GraveProtectButton { get; set; }
+        public int Rounds { get; set; }
+        public CustomButton TargetButton { get; set; }
         public bool Failed => TargetPlayer == null && Rounds > 2;
 
         public override Color32 Color => ClientGameOptions.CustomNeutColors ? Colors.GuardianAngel : Colors.Neutral;
@@ -21,9 +21,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override LayerEnum Type => LayerEnum.GuardianAngel;
         public override RoleEnum RoleType => RoleEnum.GuardianAngel;
         public override Func<string> StartText => () => "Find Someone To Protect";
-        public override Func<string> AbilitiesText => () => TargetPlayer == null ? "- You can select a player to be your target" : ($"- You can protect {TargetPlayer?.name} from death for "
+        public override Func<string> Description => () => TargetPlayer == null ? "- You can select a player to be your target" : ($"- You can protect {TargetPlayer?.name} from death for "
             + $"a short while\n- If {TargetPlayer?.name} dies, you will become a <color=#DDDD00FF>Survivor</color>");
         public override InspectorResults InspectorResults => InspectorResults.PreservesLife;
+        public float Timer => ButtonUtils.Timer(Player, LastProtected, CustomGameOptions.ProtectCd);
 
         public GuardianAngel(PlayerControl player) : base(player)
         {
@@ -46,15 +47,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             TargetPlayer = TargetButton.TargetPlayer;
             CallRpc(CustomRPC.Target, TargetRPC.SetGATarget, this, TargetPlayer);
-        }
-
-        public float ProtectTimer()
-        {
-            var timespan = DateTime.UtcNow - LastProtected;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.ProtectCd) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void Protect()
@@ -86,7 +78,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void HitProtect()
         {
-            if (!ButtonUsable || ProtectTimer() != 0f || !TargetAlive || Protecting)
+            if (!ButtonUsable || Timer != 0f || !TargetAlive || Protecting)
                 return;
 
             TimeRemaining = CustomGameOptions.ProtectDuration;
@@ -98,13 +90,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            ProtectButton.Update("PROTECT", ProtectTimer(), CustomGameOptions.ProtectCd, UsesLeft, Protecting, TimeRemaining, CustomGameOptions.ProtectDuration, true, !Failed &&
+            ProtectButton.Update("PROTECT", Timer, CustomGameOptions.ProtectCd, UsesLeft, Protecting, TimeRemaining, CustomGameOptions.ProtectDuration, true, !Failed &&
                 TargetPlayer != null && TargetAlive);
             TargetButton.Update("WATCH", true, TargetPlayer == null);
 
             if (CustomGameOptions.ProtectBeyondTheGrave)
             {
-                GraveProtectButton.Update("PROTECT", ProtectTimer(), CustomGameOptions.ProtectCd, UsesLeft, Protecting, TimeRemaining, CustomGameOptions.ProtectDuration, true, IsDead &&
+                GraveProtectButton.Update("PROTECT", Timer, CustomGameOptions.ProtectCd, UsesLeft, Protecting, TimeRemaining, CustomGameOptions.ProtectDuration, true, IsDead &&
                     !Failed && TargetPlayer != null && TargetAlive);
             }
 

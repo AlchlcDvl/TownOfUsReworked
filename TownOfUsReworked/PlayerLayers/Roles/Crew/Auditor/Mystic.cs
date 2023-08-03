@@ -2,16 +2,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Mystic : Crew
     {
-        public DateTime LastRevealed;
+        public DateTime LastRevealed { get; set; }
         public static bool ConvertedDead => !CustomPlayer.AllPlayers.Any(x => !x.Data.IsDead && !x.Data.Disconnected && !x.Is(SubFaction.None));
-        public CustomButton RevealButton;
+        public CustomButton RevealButton { get; set; }
+        public float Timer => ButtonUtils.Timer(Player, LastRevealed, CustomGameOptions.RevealCooldown);
 
         public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Mystic : Colors.Crew;
         public override string Name => "Mystic";
         public override LayerEnum Type => LayerEnum.Mystic;
         public override RoleEnum RoleType => RoleEnum.Mystic;
         public override Func<string> StartText => () => "You Know When Converts Happen";
-        public override Func<string> AbilitiesText => () => "- You can investigate players to see if they have been converted\n- Whenever someone has been converted, you will be alerted to"
+        public override Func<string> Description => () => "- You can investigate players to see if they have been converted\n- Whenever someone has been converted, you will be alerted to"
             + " it\n- When all converted and converters die, you will become a <color=#71368AFF>Seer</color>";
         public override InspectorResults InspectorResults => InspectorResults.TracksOthers;
 
@@ -19,15 +20,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             RoleAlignment = RoleAlignment.CrewAudit;
             RevealButton = new(this, "MysticReveal", AbilityTypes.Direct, "ActionSecondary", Reveal, Exception);
-        }
-
-        public float RevealTimer()
-        {
-            var timespan = DateTime.UtcNow - LastRevealed;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.RevealCooldown) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void TurnSeer()
@@ -42,7 +34,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            RevealButton.Update("REVEAL", RevealTimer(), CustomGameOptions.RevealCooldown);
+            RevealButton.Update("REVEAL", Timer, CustomGameOptions.RevealCooldown);
 
             if (ConvertedDead && !IsDead)
             {
@@ -53,7 +45,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Reveal()
         {
-            if (RevealTimer() != 0f || IsTooFar(Player, RevealButton.TargetPlayer))
+            if (Timer != 0f || IsTooFar(Player, RevealButton.TargetPlayer))
                 return;
 
             var interact = Interact(Player, RevealButton.TargetPlayer);

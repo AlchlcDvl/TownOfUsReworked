@@ -2,11 +2,11 @@ namespace TownOfUsReworked.Modules
 {
     public class Info
     {
-        public string Name;
-        public string Short;
-        public string Description;
-        public Color Color;
-        public InfoType Type;
+        public readonly string Name;
+        public string Short { get; set; }
+        public string Description { get; set; }
+        public readonly Color Color;
+        public readonly InfoType Type;
 
         public static readonly List<Info> AllInfo = new();
 
@@ -52,10 +52,10 @@ namespace TownOfUsReworked.Modules
 
     public class RoleInfo : Info
     {
-        public string Alignment;
-        public string ColoredAlignment;
-        public string WinCon;
-        public string Quote;
+        public readonly string Alignment;
+        public readonly string ColoredAlignment;
+        public readonly string WinCon;
+        public readonly string Quote;
 
         private const string IntruderObjective = "Have a critical sabotage set off by the Intruders reach 0 seconds or kill off all Syndicate, Unfaithful Intruders, Crew and opposing "
             + "Neutrals.";
@@ -244,8 +244,8 @@ namespace TownOfUsReworked.Modules
         private const string NUDescription = "Neutral (Utility) roles are defected Crew, Intruder or Syndicate (Utility) roles who have broken away from their respective faction.";
         private const string NSDescription = "Neutral (Support) roles are defected Crew, Intruder or Syndicate (Support) roles who have broken away from their respective faction.";
 
-        public string Alignment;
-        public RoleAlignment Base;
+        public readonly string Alignment;
+        public readonly RoleAlignment Base;
 
         public AlignmentInfo(RoleAlignment alignmentEnum) : base(alignmentEnum.AlignmentName(), "", "", Colors.Alignment, InfoType.Alignment)
         {
@@ -326,7 +326,7 @@ namespace TownOfUsReworked.Modules
 
     public class ModifierInfo : Info
     {
-        public string AppliesTo;
+        public readonly string AppliesTo;
 
         public ModifierInfo(string name, string shortF, string description, string applies, Color color) : base(name, shortF, description, color, InfoType.Modifier) => AppliesTo = applies;
 
@@ -352,9 +352,9 @@ namespace TownOfUsReworked.Modules
 
     public class ObjectifierInfo : Info
     {
-        public string AppliesTo;
-        public string WinCon;
-        public string Symbol;
+        public readonly string AppliesTo;
+        public readonly string WinCon;
+        public readonly string Symbol;
 
         public ObjectifierInfo(string name, string shortF, string description, string wincon, string applies, string symbol, Color color) : base(name, shortF, description, color,
             InfoType.Objectifier)
@@ -389,7 +389,7 @@ namespace TownOfUsReworked.Modules
 
     public class AbilityInfo : Info
     {
-        public string AppliesTo;
+        public readonly string AppliesTo;
 
         public AbilityInfo(string name, string shortF, string description, string applies, Color color) : base(name, shortF, description, color, InfoType.Ability) => AppliesTo = applies;
 
@@ -428,7 +428,7 @@ namespace TownOfUsReworked.Modules
 
     public class OtherInfo : Info
     {
-        public string OtherNotes;
+        public readonly string OtherNotes;
 
         public OtherInfo(string name, string shortF, string description, Color color, string otherNotes = "") : base(name, shortF, description, color, InfoType.Other) => OtherNotes =
             otherNotes;

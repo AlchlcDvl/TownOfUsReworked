@@ -2,16 +2,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Detective : Crew
     {
-        public DateTime LastExamined;
-        public CustomButton ExamineButton;
-        private static float Time2;
+        public DateTime LastExamined { get; set; }
+        public CustomButton ExamineButton { get; set; }
+        public float Timer => ButtonUtils.Timer(Player, LastExamined, CustomGameOptions.ExamineCd);
+        private static float _time;
 
         public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Detective : Colors.Crew;
         public override string Name => "Detective";
         public override LayerEnum Type => LayerEnum.Detective;
         public override RoleEnum RoleType => RoleEnum.Detective;
-        public override Func<string> StartText => () => "Examine Players For <color=#FF0000FF>Blood</color>";
-        public override Func<string> AbilitiesText => () => "- You can examine players to see if they have killed recently\n- Your screen will flash red if your target has killed in the " +
+        public override Func<string> StartText => () => "Examine Players For <color=#AA0000FF>Blood</color>";
+        public override Func<string> Description => () => "- You can examine players to see if they have killed recently\n- Your screen will flash red if your target has killed in the " +
             $"last {CustomGameOptions.RecentKill}s\n- You can view everyone's footprints to see where they go or where they came from";
         public override InspectorResults InspectorResults => InspectorResults.GainsInfo;
 
@@ -19,15 +20,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             RoleAlignment = RoleAlignment.CrewInvest;
             ExamineButton = new(this, "Examine", AbilityTypes.Direct, "ActionSecondary", Examine);
-        }
-
-        public float ExamineTimer()
-        {
-            var timespan = DateTime.UtcNow - LastExamined;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.ExamineCd) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
         }
 
         public override void OnLobby()
@@ -48,7 +40,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Examine()
         {
-            if (ExamineTimer() != 0f || IsTooFar(Player, ExamineButton.TargetPlayer))
+            if (Timer != 0f || IsTooFar(Player, ExamineButton.TargetPlayer))
                 return;
 
             var interact = Interact(Player, ExamineButton.TargetPlayer);
@@ -63,10 +55,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                         hasKilled = true;
                 }
 
-                if (hasKilled)
-                    Flash(new(255, 0, 0, 255));
-                else
-                    Flash(new(0, 255, 0, 255));
+                Flash(hasKilled ? UColor.red : UColor.green);
             }
 
             if (interact[0])
@@ -78,15 +67,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            ExamineButton.Update("EXAMINE", ExamineTimer(), CustomGameOptions.ExamineCd);
+            ExamineButton.Update("EXAMINE", Timer, CustomGameOptions.ExamineCd);
 
             if (!IsDead)
             {
-                Time2 += Time.deltaTime;
+                _time += Time.deltaTime;
 
-                if (Time2 >= CustomGameOptions.FootprintInterval)
+                if (_time >= CustomGameOptions.FootprintInterval)
                 {
-                    Time2 -= CustomGameOptions.FootprintInterval;
+                    _time -= CustomGameOptions.FootprintInterval;
 
                     foreach (var player in CustomPlayer.AllPlayers)
                     {

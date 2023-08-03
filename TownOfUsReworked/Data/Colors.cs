@@ -124,7 +124,6 @@
         public static Color32 Dwarf => new(255, 128, 128, 255); //#FF8080FF
         public static Color32 Giant => new(255, 179, 77, 255); //#FFB34DFF
         public static Color32 Volatile => new(255, 166, 10, 255); //#FFA60AFF
-        public static Color32 Flincher => new(128, 179, 255, 255); //#80B3FFFF
         public static Color32 VIP => new(220, 238, 133, 255); //#DCEE85FF
         public static Color32 Shy => new(16, 2, 197, 255); //#1002C5FF
         public static Color32 Professional => new(134, 11, 122, 255); //#860B7AFF
@@ -175,7 +174,7 @@
         //#dcee85 #6c29ab #800000 #808000 #008000 #800080 #000080 #e74c3c #992d22 #00FFFD #917ac0 #Eac1d2 #286e58 #db4f20 #abd432 #2e3b97 #ffd100 #fffcce #40b4ff #a82626 #8ff731 #942b3b
         //#4e4e4e #fffead #1abc9c #2ecc71 #1f8b4c #3498db #ad1457 #c27c0e #ffd2fb #805bc4 #95a5a6 #979c9f #888888 #ff7272 #f25ff1 #FF00FF #916640 #1AFF74 #2672FF #8637C2 #e7dae2 #9B7038
         //#6a1515 #569d29 #f1612b #7d86e1 #EC62A5 #78c689 #fccc52 #6b2d2a #FCBA03 #F8CD46 #FF4D00 #7EFBC2 #4d4d4d #38b553 #0000FF #0000A7 #f25e75 #5865F2 #0437EF #7FFF00 #FB9327 #FAE57E
-        //#1E300B #06DF0C #F3A6D3 #F9BFA7 #E1E4E4 #869919 #EDC240
+        //#1E300B #06DF0C #F3A6D3 #F9BFA7 #E1E4E4 #869919 #EDC240 #80B3FF
 
         //Symbol Storage
         //⟡ ☆ ♡ ♧ ♤ ▶ ❥ ✔ ι ν σ τ ψ ✧ ¢

@@ -6,7 +6,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
         public override string Name => "Ninja";
         public override LayerEnum Type => LayerEnum.Ninja;
         public override AbilityEnum AbilityType => AbilityEnum.Ninja;
-        public override Func<string> TaskText => () => "- You do not lunge when killing";
+        public override Func<string> Description => () => "- You do not lunge when killing";
 
         public Ninja(PlayerControl player) : base(player) {}
     }

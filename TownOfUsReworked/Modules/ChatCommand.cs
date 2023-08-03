@@ -2,16 +2,16 @@ namespace TownOfUsReworked.Modules
 {
     public class ChatCommand
     {
-        public string Command;
-        public string Short;
-        public ExecuteArgsCommand ExecuteArgs;
-        public ExecuteArglessCommand ExecuteArgless;
+        public readonly string Command;
+        public readonly string Short;
+        public readonly ExecuteArgsCommand ExecuteArgs;
+        public readonly ExecuteArglessCommand ExecuteArgless;
         public delegate void ExecuteArgsCommand(string[] args, ChatController __instance);
         public delegate void ExecuteArglessCommand(ChatController __instance);
 
         public static readonly List<ChatCommand> AllCommands = new()
         {
-            new("/info", "/i", Info),
+            new("/controls", "/ctrl", Controls),
             new("/kick", "/k", KickBan),
             new("/ban", "/b", KickBan),
             new("/summary", "/sum", Summary),
@@ -325,35 +325,18 @@ namespace TownOfUsReworked.Modules
         {
             var setColor = TownOfUsReworked.IsTest ? "/setcolour or /setcolor, /setname" : "";
             var whisper = CustomGameOptions.Whispers ? "/whisper" : "";
-            var comma = setColor?.Length == 0 ? "" : ", ";
+            var comma = setColor.Length == 0 ? "" : ", ";
             var kickBan = comma + (AmongUsClient.Instance.AmHost && AmongUsClient.Instance.CanBan() ? "/kick, /ban, /clearlobby" : "");
             var test = TownOfUsReworked.IsTest ? ", /testargs, /testargless, /rpc" : "";
-            __instance.AddChat(CustomPlayer.Local, $"Commands available all the time:\n/help, /info, /summary{test}\n\nCommands available in lobby:\n{setColor}{kickBan}\n\nCommands " +
-                $"available in game:\n{whisper}");
+            var lobby = setColor + kickBan != "" ? $"\n\nCommands available in lobby:\n{setColor}{kickBan}" : "";
+            __instance.AddChat(CustomPlayer.Local, $"Commands available all the time:\n/help, /controls, /summary{test}\n\nCommands available in game:\n{whisper}{lobby}");
         }
 
-        private static void Info(string[] args, ChatController __instance)
+        private static void Controls(ChatController __instance)
         {
-            if ((args.Length == 2 && args[1] is not "controls" and not "ctrl") || args.Length < 2 || string.IsNullOrEmpty(args[1]))
-            {
-                __instance.AddChat(CustomPlayer.Local, "Usage: /<info | i> <controls | ctrl>");
-
-                if (!BubbleModifications.ContainsKey(__instance.chatBubblePool.activeChildren[^1].Cast<ChatBubble>()))
-                    BubbleModifications.Add(__instance.chatBubblePool.activeChildren[^1].Cast<ChatBubble>(), ("Error", UColor.red));
-
-                return;
-            }
-
-            var message = args[1].ToLower() switch
-            {
-                "controls" => "Here are the controls:\nF1 - Start up the MCI control panel (local only)\nF2 - Toggle the visibility of the control panel (local only)\nTab/Backspace - " +
-                    "Change pages\nUp/Left Arrow - Go up a page when in a menu\nDown/Right Arrow - Go down a page when in a menu\n1-9 - Jump between setting pages (in lobby)",
-                "ctrl" => "Here are the controls:\nF1 - Start up the MCI control panel (local only)\nF2 - Toggle the visibility of the control panel (local only)\nTab/Backspace - Change " +
-                    "pages\nUp/Left Arrow - Go up a page when in a menu\nDown/Right Arrow - Go down a page when in a menu\n1-9 - Jump between setting pages (in lobby)",
-                _ => "Usage: /<info | i> <controls | ctrl>"
-            };
-
-            __instance.AddChat(CustomPlayer.Local, message);
+            __instance.AddChat(CustomPlayer.Local, "Here are the controls:\nF1 - Start up the MCI control panel (local only)\nF2 - Toggle the visibility of the control panel (local only)\n"
+                + "Tab/Backspace - Change pages\nUp/Left Arrow - Go up a page when in a menu\nDown/Right Arrow - Go down a page when in a menu\n1 - 9 - Jump between setting pages (in lobby"
+                + ")");
 
             if (!BubbleModifications.ContainsKey(__instance.chatBubblePool.activeChildren[^1].Cast<ChatBubble>()))
                 BubbleModifications.Add(__instance.chatBubblePool.activeChildren[^1].Cast<ChatBubble>(), ("Information", UColor.green));

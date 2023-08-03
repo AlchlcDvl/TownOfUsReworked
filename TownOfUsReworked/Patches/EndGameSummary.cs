@@ -6,20 +6,6 @@ namespace TownOfUsReworked.Patches
         private static readonly List<PlayerInfo> PlayerRoles = new();
         public static readonly List<PlayerInfo> Disconnected = new();
 
-        public class PlayerInfo
-        {
-            public string PlayerName;
-            public string History;
-            public string CachedHistory;
-
-            public PlayerInfo(string name, string history, string cache)
-            {
-                PlayerName = name;
-                History = history;
-                CachedHistory = cache;
-            }
-        }
-
         public static void AddSummaryInfo(PlayerControl player, bool disconnected = false)
         {
             var summary = "";
@@ -261,12 +247,11 @@ namespace TownOfUsReworked.Patches
                 return "";
 
             var die = role.DeathReason is not DeathReasonEnum.Alive ? $" | {role.DeathReason}" : "";
-            var killedBy = "";
 
             if (role.DeathReason is not DeathReasonEnum.Alive and not DeathReasonEnum.Ejected and not DeathReasonEnum.Suicide and not DeathReasonEnum.Escaped)
-                killedBy = role.KilledBy;
+                die += role.KilledBy;
 
-            return die + killedBy;
+            return die;
         }
     }
 }

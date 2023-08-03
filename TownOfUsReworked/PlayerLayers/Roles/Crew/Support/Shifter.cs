@@ -2,16 +2,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Shifter : Crew
     {
-        public DateTime LastShifted;
-        public CustomButton ShiftButton;
+        public DateTime LastShifted { get; set; }
+        public CustomButton ShiftButton { get; set; }
+        public float Timer => ButtonUtils.Timer(Player, LastShifted, CustomGameOptions.ShifterCd);
 
         public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Shifter : Colors.Crew;
         public override string Name => "Shifter";
         public override LayerEnum Type => LayerEnum.Shifter;
         public override RoleEnum RoleType => RoleEnum.Shifter;
         public override Func<string> StartText => () => "Shift Around Roles";
-        public override Func<string> AbilitiesText => () => "- You can steal another player's role\n- You can only shift with <color=#8CFFFFFF>Crew</color>\n- Shifting withn on-" +
-            "<color=#8CFFFFFF>Crew</color> will cause you to kill yourself";
+        public override Func<string> Description => () => "- You can steal another player's role\n- Shifting withn on-<color=#8CFFFFFF>Crew</color> will cause you to kill yourself";
         public override InspectorResults InspectorResults => InspectorResults.BringsChaos;
 
         public Shifter(PlayerControl player) : base(player)
@@ -20,18 +20,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             ShiftButton = new(this, "Shift", AbilityTypes.Direct, "ActionSecondary", Shift);
         }
 
-        public float ShiftTimer()
-        {
-            var timespan = DateTime.UtcNow - LastShifted;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.ShifterCd) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
-        }
-
         public void Shift()
         {
-            if (ShiftTimer() != 0f || IsTooFar(Player, ShiftButton.TargetPlayer))
+            if (Timer != 0f || IsTooFar(Player, ShiftButton.TargetPlayer))
                 return;
 
             var interact = Interact(Player, ShiftButton.TargetPlayer);
@@ -65,14 +56,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             {
                 Flash(shifterRole.Color);
                 role.OnLobby();
-                ButtonUtils.ResetCustomTimers(false);
+                ButtonUtils.ResetCustomTimers();
             }
 
             if (CustomPlayer.Local == shifter)
             {
                 Flash(shifterRole.Color);
                 shifterRole.OnLobby();
-                ButtonUtils.ResetCustomTimers(false);
+                ButtonUtils.ResetCustomTimers();
             }
 
             Role newRole = role.RoleType switch
@@ -134,7 +125,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            ShiftButton.Update("SHIFT", ShiftTimer(), CustomGameOptions.ShifterCd);
+            ShiftButton.Update("SHIFT", Timer, CustomGameOptions.ShifterCd);
         }
     }
 }

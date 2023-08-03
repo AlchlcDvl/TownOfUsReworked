@@ -6,7 +6,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
         public override string Name => "Ruthless";
         public override LayerEnum Type => LayerEnum.Ruthless;
         public override AbilityEnum AbilityType => AbilityEnum.Ruthless;
-        public override Func<string> TaskText => () => "- Your attacks cannot be stopped";
+        public override Func<string> Description => () => "- Your attacks cannot be stopped";
         public override bool Hidden => !CustomGameOptions.RuthlessKnows && !IsDead;
 
         public Ruthless(PlayerControl player) : base(player) {}

@@ -2,17 +2,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Executioner : Neutral
     {
-        public PlayerControl TargetPlayer;
-        public bool TargetVotedOut;
-        public List<byte> ToDoom = new();
-        public bool HasDoomed;
-        public CustomButton DoomButton;
-        public DateTime LastDoomed;
-        public int UsesLeft;
+        public PlayerControl TargetPlayer { get; set; }
+        public bool TargetVotedOut { get; set; }
+        public List<byte> ToDoom { get; set; }
+        public bool HasDoomed { get; set; }
+        public CustomButton DoomButton { get; set; }
+        public DateTime LastDoomed { get; set; }
+        public int UsesLeft { get; set; }
         public bool CanDoom => TargetVotedOut && !HasDoomed && UsesLeft > 0 && ToDoom.Count > 0 && !CustomGameOptions.AvoidNeutralKingmakers;
         public bool Failed => !TargetVotedOut && (TargetPlayer.Data.IsDead || TargetPlayer.Data.Disconnected);
-        public int Rounds;
-        public CustomButton TargetButton;
+        public int Rounds { get; set; }
+        public CustomButton TargetButton { get; set; }
         public bool TargetFailed => TargetPlayer == null && Rounds > 2;
 
         public override Color32 Color => ClientGameOptions.CustomNeutColors ? Colors.Executioner : Colors.Neutral;
@@ -20,9 +20,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override LayerEnum Type => LayerEnum.Executioner;
         public override RoleEnum RoleType => RoleEnum.Executioner;
         public override Func<string> StartText => () => "Find Someone To Eject";
-        public override Func<string> AbilitiesText => () => TargetPlayer == null ? "- You can select a player to eject" : ((TargetVotedOut ? "- You can doom those who voted for " +
+        public override Func<string> Description => () => TargetPlayer == null ? "- You can select a player to eject" : ((TargetVotedOut ? "- You can doom those who voted for " +
             $"{TargetPlayer?.name}\n" : "") + $"- If {TargetPlayer?.name} dies, you will become a <color=#F7B3DAFF>Jester</color>");
         public override InspectorResults InspectorResults => InspectorResults.Manipulative;
+        public float Timer => ButtonUtils.Timer(Player, LastDoomed, CustomGameOptions.DoomCooldown);
 
         public Executioner(PlayerControl player) : base(player)
         {
@@ -72,15 +73,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             UsesLeft = CustomGameOptions.DoomCount <= ToDoom.Count ? CustomGameOptions.DoomCount : ToDoom.Count;
         }
 
-        public float DoomTimer()
-        {
-            var timespan = DateTime.UtcNow - LastDoomed;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.DoomCooldown) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
-        }
-
         public void TurnJest()
         {
             var newRole = new Jester(Player);
@@ -95,7 +87,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Doom()
         {
-            if (IsTooFar(Player, DoomButton.TargetPlayer) || DoomTimer() != 0f || !CanDoom)
+            if (IsTooFar(Player, DoomButton.TargetPlayer) || Timer != 0f || !CanDoom)
                 return;
 
             RpcMurderPlayer(Player, DoomButton.TargetPlayer, DeathReasonEnum.Doomed, false);
@@ -112,7 +104,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            DoomButton.Update("DOOM", DoomTimer(), CustomGameOptions.DoomCooldown, UsesLeft, CanDoom, CanDoom && TargetPlayer != null);
+            DoomButton.Update("DOOM", Timer, CustomGameOptions.DoomCooldown, UsesLeft, CanDoom, CanDoom && TargetPlayer != null);
             TargetButton.Update("TORMENT", true, TargetPlayer == null);
 
             if ((TargetFailed || (TargetPlayer != null && Failed)) && !IsDead)

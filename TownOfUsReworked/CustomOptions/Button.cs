@@ -2,7 +2,7 @@ namespace TownOfUsReworked.CustomOptions
 {
     public class CustomButtonOption : CustomOption
     {
-        public Action Do;
+        public Action Do { get; set; }
 
         public CustomButtonOption(MultiMenu menu, string name, Action toDo = null) : base(-1, menu, name, CustomOptionType.Button, 0) => Do = toDo ?? BaseToDo;
 

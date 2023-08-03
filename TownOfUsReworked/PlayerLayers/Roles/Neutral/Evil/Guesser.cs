@@ -2,36 +2,36 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Guesser : Neutral
     {
-        public PlayerControl TargetPlayer;
-        public bool TargetGuessed;
-        public int RemainingGuesses;
-        public bool FactionHintGiven;
-        public bool AlignmentHintGiven;
-        public bool InspectorGiven;
+        public PlayerControl TargetPlayer { get; set; }
+        public bool TargetGuessed { get; set; }
+        public int RemainingGuesses { get; set; }
+        public bool FactionHintGiven { get; set; }
+        public bool AlignmentHintGiven { get; set; }
+        public bool InspectorGiven { get; set; }
         public bool Failed => TargetPlayer != null && !TargetGuessed && (RemainingGuesses <= 0 || TargetPlayer.Data.IsDead || TargetPlayer.Data.Disconnected);
-        private int LettersGiven;
-        private bool LettersExhausted;
-        private string RoleName = "";
-        public List<string> Letters = new();
-        public Dictionary<string, Color> ColorMapping = new();
-        public Dictionary<string, Color> SortedColorMapping = new();
-        public GameObject Phone;
-        public Transform SelectedButton;
-        public int Page;
-        public int MaxPage;
-        public Dictionary<int, List<Transform>> GuessButtons = new();
-        public Dictionary<int, KeyValuePair<string, Color>> Sorted = new();
-        public int Rounds;
-        public CustomButton TargetButton;
+        private int LettersGiven { get; set; }
+        private bool LettersExhausted { get; set; }
+        private string RoleName { get; set; }
+        public readonly List<string> Letters = new();
+        public Dictionary<string, Color> ColorMapping { get; set; }
+        public Dictionary<string, Color> SortedColorMapping { get; set; }
+        public GameObject Phone { get; set; }
+        public Transform SelectedButton { get; set; }
+        public int Page { get; set; }
+        public int MaxPage { get; set; }
+        public Dictionary<int, List<Transform>> GuessButtons { get; set; }
+        public Dictionary<int, KeyValuePair<string, Color>> Sorted { get; set; }
+        public int Rounds { get; set; }
+        public CustomButton TargetButton { get; set; }
         public bool TargetFailed => TargetPlayer == null && Rounds > 2;
-        public CustomMeeting GuessMenu;
+        public CustomMeeting GuessMenu { get; set; }
 
         public override Color32 Color => ClientGameOptions.CustomNeutColors ? Colors.Guesser : Colors.Neutral;
         public override string Name => "Guesser";
         public override LayerEnum Type => LayerEnum.Guesser;
         public override RoleEnum RoleType => RoleEnum.Guesser;
         public override Func<string> StartText => () => "Guess What Someone Might Be";
-        public override Func<string> AbilitiesText => () => TargetPlayer == null ? "- You can select a player to guess their role" : ((TargetGuessed ? "- You can guess player's roles " +
+        public override Func<string> Description => () => TargetPlayer == null ? "- You can select a player to guess their role" : ((TargetGuessed ? "- You can guess player's roles " +
             "without penalties" : $"- You can only try to guess {TargetPlayer?.name}") + $"\n- If {TargetPlayer?.name} dies without getting guessed by you, you will become an " +
             "<color=#00ACC2FF>Actor</color>");
         public override InspectorResults InspectorResults => InspectorResults.IsCold;

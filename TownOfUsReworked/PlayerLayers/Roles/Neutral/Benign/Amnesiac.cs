@@ -2,16 +2,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Amnesiac : Neutral
     {
-        public Dictionary<byte, CustomArrow> BodyArrows = new();
-        public CustomButton RememberButton;
+        public Dictionary<byte, CustomArrow> BodyArrows { get; set; }
+        public CustomButton RememberButton { get; set; }
 
         public override Color32 Color => ClientGameOptions.CustomNeutColors ? Colors.Amnesiac : Colors.Intruder;
         public override string Name => "Amnesiac";
         public override LayerEnum Type => LayerEnum.Amnesiac;
         public override RoleEnum RoleType => RoleEnum.Amnesiac;
         public override Func<string> StartText => () => "You Forgor <i>:skull:</i>";
-        public override Func<string> AbilitiesText => () => "- You can copy over a player's role should you find their body" + (CustomGameOptions.RememberArrows ? ("\n- When someone dies, "
-            + "you get an arrow pointing to their body") : "") + "\n- If there are less than 7 players alive, you will become a <color=#80FF00FF>Thief</color>";
+        public override Func<string> Description => () => "- You can copy over a player's role should you find their body" + (CustomGameOptions.RememberArrows ? ("\n- When someone dies, " +
+            "you get an arrow pointing to their body") : "") + "\n- If there are less than 6 players alive, you will become a <color=#80FF00FF>Thief</color>";
         public override InspectorResults InspectorResults => InspectorResults.LeadsTheGroup;
 
         public Amnesiac(PlayerControl player) : base(player)
@@ -249,8 +249,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (CustomGameOptions.RememberArrows && !CustomPlayer.LocalCustom.IsDead)
             {
-                var validBodies = AllBodies.Where(x => KilledPlayers.Any(y => y.PlayerId == x.ParentId &&
-                    y.KillTime.AddSeconds(CustomGameOptions.RememberArrowDelay) < System.DateTime.UtcNow));
+                var validBodies = AllBodies.Where(x => KilledPlayers.Any(y => y.PlayerId == x.ParentId && y.KillTime.AddSeconds(CustomGameOptions.RememberArrowDelay) < DateTime.UtcNow));
 
                 foreach (var bodyArrow in BodyArrows.Keys)
                 {
@@ -269,7 +268,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             else if (BodyArrows.Count != 0 || CustomPlayer.AllPlayers.Count <= 4)
                 OnLobby();
 
-            if (CustomPlayer.AllPlayers.Count <= 4 && !IsDead)
+            if (CustomPlayer.AllPlayers.Count <= 6 && !IsDead)
             {
                 CallRpc(CustomRPC.Change, TurnRPC.TurnThief, this);
                 TurnThief();

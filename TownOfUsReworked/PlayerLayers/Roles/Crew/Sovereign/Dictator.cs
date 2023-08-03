@@ -2,20 +2,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Dictator : Crew
     {
-        public bool RoundOne;
-        public bool Revealed;
-        public List<byte> ToBeEjected = new();
-        public CustomButton RevealButton;
-        public bool Ejected;
-        public bool ToDie;
-        public CustomMeeting DictMenu;
+        public bool RoundOne { get; set; }
+        public bool Revealed { get; set; }
+        public List<byte> ToBeEjected { get; set; }
+        public CustomButton RevealButton { get; set; }
+        public bool Ejected { get; set; }
+        public bool ToDie { get; set; }
+        public CustomMeeting DictMenu { get; set; }
 
         public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Dictator : Colors.Crew;
         public override string Name => "Dictator";
         public override LayerEnum Type => LayerEnum.Dictator;
         public override RoleEnum RoleType => RoleEnum.Dictator;
         public override Func<string> StartText => () => "You Have The Final Say";
-        public override Func<string> AbilitiesText => () => "- You can reveal yourself to the crew to eject up to 3 players for one meeting\n- When revealed, you cannot be protected";
+        public override Func<string> Description => () => "- You can reveal yourself to the crew to eject up to 3 players for one meeting\n- When revealed, you cannot be protected";
         public override InspectorResults InspectorResults => InspectorResults.Manipulative;
 
         public Dictator(PlayerControl player) : base(player)

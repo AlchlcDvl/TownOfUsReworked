@@ -2,36 +2,28 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Crusader : Syndicate
     {
-        public bool Enabled;
-        public DateTime LastCrusaded;
-        public float TimeRemaining;
+        public bool Enabled { get; set; }
+        public DateTime LastCrusaded { get; set; }
+        public float TimeRemaining { get; set; }
         public bool OnCrusade => TimeRemaining > 0f;
-        public PlayerControl CrusadedPlayer;
-        public CustomButton CrusadeButton;
+        public PlayerControl CrusadedPlayer { get; set; }
+        public CustomButton CrusadeButton { get; set; }
 
         public override Color32 Color => ClientGameOptions.CustomSynColors ? Colors.Crusader : Colors.Syndicate;
         public override string Name => "Crusader";
         public override LayerEnum Type => LayerEnum.Crusader;
         public override RoleEnum RoleType => RoleEnum.Crusader;
         public override Func<string> StartText => () => "Cleanse This Land Of The Unholy Filth";
-        public override Func<string> AbilitiesText => () => "- You can crusade players\n- Crusaded players will be forced to be on alert, and will kill whoever interacts with then" +
+        public override Func<string> Description => () => "- You can crusade players\n- Crusaded players will be forced to be on alert, and will kill whoever interacts with then" +
             $"{(HoldsDrive ? $"\n- Crusaded players will also kill anyone within a {CustomGameOptions.ChaosDriveCrusadeRadius}m radies" : "")}\n{CommonAbilities}";
         public override InspectorResults InspectorResults => InspectorResults.PreservesLife;
+        public float Timer => ButtonUtils.Timer(Player, LastCrusaded, CustomGameOptions.CrusadeCooldown);
 
         public Crusader(PlayerControl player) : base(player)
         {
             RoleAlignment = RoleAlignment.SyndicateKill;
             CrusadedPlayer = null;
             CrusadeButton = new(this, "Crusade", AbilityTypes.Direct, "ActionSecondary", HitCrusade, Exception1);
-        }
-
-        public float CrusadeTimer()
-        {
-            var timespan = DateTime.UtcNow - LastCrusaded;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.CrusadeCooldown) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void Crusade()
@@ -76,7 +68,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void HitCrusade()
         {
-            if (CrusadeTimer() != 0f || IsTooFar(Player, CrusadeButton.TargetPlayer))
+            if (Timer != 0f || IsTooFar(Player, CrusadeButton.TargetPlayer))
                 return;
 
             var interact = Interact(Player, CrusadeButton.TargetPlayer);
@@ -100,7 +92,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            CrusadeButton.Update("CRUSADE", CrusadeTimer(), CustomGameOptions.CrusadeCooldown, OnCrusade, TimeRemaining, CustomGameOptions.CrusadeDuration);
+            CrusadeButton.Update("CRUSADE", Timer, CustomGameOptions.CrusadeCooldown, OnCrusade, TimeRemaining, CustomGameOptions.CrusadeDuration);
         }
     }
 }

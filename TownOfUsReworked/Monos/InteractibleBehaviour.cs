@@ -36,7 +36,7 @@
             {
                 renderer.material.SetFloat("_Outline", on ? 1 : 0);
                 renderer.material.SetColor("_OutlineColor", UColor.white);
-                renderer.material.SetColor("_AddColor", on ? UColor.white : Color.clear);
+                renderer.material.SetColor("_AddColor", on ? UColor.white : UColor.clear);
             }
         }
 

@@ -9,7 +9,6 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
         public override PlayerLayerEnum LayerType => PlayerLayerEnum.Ability;
 
         public virtual AbilityEnum AbilityType => AbilityEnum.None;
-        public virtual Func<string> TaskText => () => "- None";
         public virtual bool Hidden => false;
 
         public Ability(PlayerControl player) : base(player)

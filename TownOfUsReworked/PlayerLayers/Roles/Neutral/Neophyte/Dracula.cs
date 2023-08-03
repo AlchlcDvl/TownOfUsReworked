@@ -2,9 +2,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Dracula : Neutral
     {
-        public DateTime LastBitten;
-        public CustomButton BiteButton;
-        public List<byte> Converted = new();
+        public DateTime LastBitten { get; set; }
+        public CustomButton BiteButton { get; set; }
+        public List<byte> Converted { get; set; }
         public int AliveCount => Converted.Count(x => PlayerById(x) != null && !PlayerById(x).Data.IsDead && !PlayerById(x).Data.Disconnected);
 
         public override Color32 Color => ClientGameOptions.CustomNeutColors ? Colors.Dracula : Colors.Neutral;
@@ -12,10 +12,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override LayerEnum Type => LayerEnum.Dracula;
         public override RoleEnum RoleType => RoleEnum.Dracula;
         public override Func<string> StartText => () => "Lead The <color=#7B8968FF>Undead</color> To Victory";
-        public override Func<string> AbilitiesText => () => "- You can convert the <color=#8CFFFFFF>Crew</color> into your own sub faction\n- If the target cannot be converted or the " +
+        public override Func<string> Description => () => "- You can convert the <color=#8CFFFFFF>Crew</color> into your own sub faction\n- If the target cannot be converted or the " +
             $"number of alive <color=#7B8968FF>Undead</color> exceeds {CustomGameOptions.AliveVampCount}, you will kill them instead\n- Attempting to convert a <color=#C0C0C0FF>Vampire " +
             "Hunter</color> will force them to kill you";
         public override InspectorResults InspectorResults => InspectorResults.NewLens;
+        public float Timer => ButtonUtils.Timer(Player, LastBitten, CustomGameOptions.BiteCd);
 
         public Dracula(PlayerControl player) : base(player)
         {
@@ -28,18 +29,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             SubFactionSymbol = "γ";
         }
 
-        public float ConvertTimer()
-        {
-            var timespan = DateTime.UtcNow - LastBitten;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.BiteCd) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
-        }
-
         public void Convert()
         {
-            if (IsTooFar(Player, BiteButton.TargetPlayer) || ConvertTimer() != 0f)
+            if (IsTooFar(Player, BiteButton.TargetPlayer) || Timer != 0f)
                 return;
 
             var interact = Interact(Player, BiteButton.TargetPlayer, false, true);
@@ -60,7 +52,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            BiteButton.Update("BITE", ConvertTimer(), CustomGameOptions.BiteCd);
+            BiteButton.Update("BITE", Timer, CustomGameOptions.BiteCd);
         }
     }
 }

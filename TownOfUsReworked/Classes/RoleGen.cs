@@ -2644,7 +2644,6 @@ namespace TownOfUsReworked.Classes
                 ModifierEnum.Diseased => (CustomGameOptions.DiseasedOn, CustomGameOptions.UniqueDiseased),
                 ModifierEnum.Drunk => (CustomGameOptions.DrunkOn, CustomGameOptions.UniqueDrunk),
                 ModifierEnum.Dwarf => (CustomGameOptions.DwarfOn, CustomGameOptions.UniqueDwarf),
-                ModifierEnum.Flincher => (CustomGameOptions.FlincherOn, CustomGameOptions.UniqueFlincher),
                 ModifierEnum.Giant => (CustomGameOptions.GiantOn, CustomGameOptions.UniqueGiant),
                 ModifierEnum.Indomitable => (CustomGameOptions.IndomitableOn, CustomGameOptions.UniqueIndomitable),
                 ModifierEnum.Professional => (CustomGameOptions.ProfessionalOn, CustomGameOptions.UniqueProfessional),
@@ -3399,19 +3398,6 @@ namespace TownOfUsReworked.Classes
                 LogSomething("Drunk Done");
             }
 
-            if (CustomGameOptions.FlincherOn > 0)
-            {
-                num = CustomGameOptions.FlincherCount;
-
-                while (num > 0)
-                {
-                    AllModifiers.Add(GenerateModifierSpawnItem(ModifierEnum.Flincher));
-                    num--;
-                }
-
-                LogSomething("Flincher Done");
-            }
-
             if (CustomGameOptions.CowardOn > 0)
             {
                 num = CustomGameOptions.CowardCount;
@@ -3539,8 +3525,8 @@ namespace TownOfUsReworked.Classes
                 ModifierEnum[] Bait = { ModifierEnum.Bait };
                 ModifierEnum[] Diseased = { ModifierEnum.Diseased };
                 ModifierEnum[] Professional = { ModifierEnum.Professional };
-                ModifierEnum[] Global = { ModifierEnum.Dwarf, ModifierEnum.VIP, ModifierEnum.Giant, ModifierEnum.Drunk, ModifierEnum.Flincher, ModifierEnum.Coward, ModifierEnum.Volatile,
-                    ModifierEnum.Indomitable, ModifierEnum.Astral, ModifierEnum.Yeller };
+                ModifierEnum[] Global = { ModifierEnum.Dwarf, ModifierEnum.VIP, ModifierEnum.Giant, ModifierEnum.Drunk, ModifierEnum.Coward, ModifierEnum.Volatile, ModifierEnum.Astral,
+                    ModifierEnum.Indomitable, ModifierEnum.Yeller };
                 ModifierEnum[] Shy = { ModifierEnum.Shy };
 
                 PlayerControl assigned = null;
@@ -3615,6 +3601,7 @@ namespace TownOfUsReworked.Classes
 
                     ally.Side = alliedRole.Faction = (Faction)faction;
                     alliedRole.RoleAlignment = alliedRole.RoleAlignment.GetNewAlignment((Faction)faction);
+                    ally.Data.SetImpostor((Faction)faction is Faction.Intruder or Faction.Syndicate);
                     CallRpc(CustomRPC.Target, TargetRPC.SetAlliedFaction, ally.Player, faction);
                 }
 
@@ -4283,7 +4270,6 @@ namespace TownOfUsReworked.Classes
             ModifierEnum.Diseased => new Diseased(player),
             ModifierEnum.Drunk => new Drunk(player),
             ModifierEnum.Dwarf => new Dwarf(player),
-            ModifierEnum.Flincher => new Flincher(player),
             ModifierEnum.Giant => new Giant(player),
             ModifierEnum.Indomitable => new Indomitable(player),
             ModifierEnum.Professional => new Professional(player),
@@ -4401,7 +4387,10 @@ namespace TownOfUsReworked.Classes
                         {
                             ((Whisperer)role2).Persuaded.AddRange(((Whisperer)role1).Persuaded);
                             ((Whisperer)role1).Persuaded.AddRange(((Whisperer)role2).Persuaded);
+                            ((Whisperer)role1).Persuaded.ForEach(x => ((Whisperer)role1).PlayerConversion.Remove(x));
                         }
+
+                        ((Whisperer)role2).Persuaded.ForEach(x => ((Whisperer)role2).PlayerConversion.Remove(x));
                     }
                     else if (converter.Is(RoleEnum.Necromancer))
                     {
@@ -4442,22 +4431,13 @@ namespace TownOfUsReworked.Classes
                         }
                     }
 
-                    var flash = sub switch
+                    var (flash, symbol) = sub switch
                     {
-                        SubFaction.Undead => Colors.Undead,
-                        SubFaction.Cabal => Colors.Cabal,
-                        SubFaction.Reanimated => Colors.Reanimated,
-                        SubFaction.Sect => Colors.Sect,
-                        _ => Colors.Stalemate
-                    };
-
-                    var symbol = sub switch
-                    {
-                        SubFaction.Undead => "γ",
-                        SubFaction.Cabal => "$",
-                        SubFaction.Reanimated => "Σ",
-                        SubFaction.Sect => "Λ",
-                        _ => "φ"
+                        SubFaction.Undead => (Colors.Undead, "γ"),
+                        SubFaction.Cabal => (Colors.Cabal, "$"),
+                        SubFaction.Reanimated => (Colors.Reanimated, "Σ"),
+                        SubFaction.Sect => (Colors.Sect, "Λ"),
+                        _ => (Colors.SubFaction, "φ")
                     };
 
                     role1.SubFaction = sub;

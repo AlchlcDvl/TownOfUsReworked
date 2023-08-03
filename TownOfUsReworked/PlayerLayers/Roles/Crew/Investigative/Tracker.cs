@@ -2,18 +2,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Tracker : Crew
     {
-        public Dictionary<byte, CustomArrow> TrackerArrows = new();
-        public DateTime LastTracked;
-        public int UsesLeft;
+        public Dictionary<byte, CustomArrow> TrackerArrows { get; set; }
+        public DateTime LastTracked { get; set; }
+        public int UsesLeft { get; set; }
         public bool ButtonUsable => UsesLeft > 0;
-        public CustomButton TrackButton;
+        public CustomButton TrackButton { get; set; }
+        public float Timer => ButtonUtils.Timer(Player, LastTracked, CustomGameOptions.TrackCd);
 
         public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Tracker : Colors.Crew;
         public override string Name => "Tracker";
         public override LayerEnum Type => LayerEnum.Tracker;
         public override RoleEnum RoleType => RoleEnum.Tracker;
         public override Func<string> StartText => () => "Track Everyone's Movements";
-        public override Func<string> AbilitiesText => () => "- You can track players which creates arrows that update every now and then with the target's position";
+        public override Func<string> Description => () => "- You can track players which creates arrows that update every now and then with the target's position";
         public override InspectorResults InspectorResults => InspectorResults.TracksOthers;
 
         public Tracker(PlayerControl player) : base(player)
@@ -22,15 +23,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             TrackerArrows = new();
             RoleAlignment = RoleAlignment.CrewInvest;
             TrackButton = new(this, "Track", AbilityTypes.Direct, "ActionSecondary", Track, Exception, true);
-        }
-
-        public float TrackerTimer()
-        {
-            var timespan = DateTime.UtcNow - LastTracked;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.TrackCd) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void DestroyArrow(byte targetPlayerId)
@@ -50,7 +42,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Track()
         {
-            if (IsTooFar(Player, TrackButton.TargetPlayer) || TrackerTimer() != 0f)
+            if (IsTooFar(Player, TrackButton.TargetPlayer) || Timer != 0f)
                 return;
 
             var interact = Interact(Player, TrackButton.TargetPlayer);
@@ -70,7 +62,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            TrackButton.Update("TRACK", TrackerTimer(), CustomGameOptions.TrackCd, UsesLeft, ButtonUsable, ButtonUsable);
+            TrackButton.Update("TRACK", Timer, CustomGameOptions.TrackCd, UsesLeft, ButtonUsable, ButtonUsable);
 
             if (IsDead)
                 OnLobby();

@@ -2,19 +2,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Escort : Crew
     {
-        public PlayerControl BlockTarget;
-        public bool Enabled;
-        public DateTime LastBlock;
-        public float TimeRemaining;
-        public CustomButton BlockButton;
+        public PlayerControl BlockTarget { get; set; }
+        public bool Enabled { get; set; }
+        public DateTime LastBlocked { get; set; }
+        public float TimeRemaining { get; set; }
+        public CustomButton BlockButton { get; set; }
         public bool Blocking => TimeRemaining > 0f;
+        public float Timer => ButtonUtils.Timer(Player, LastBlocked, CustomGameOptions.EscRoleblockCooldown);
 
         public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Escort : Colors.Crew;
         public override string Name => "Escort";
         public override LayerEnum Type => LayerEnum.Escort;
         public override RoleEnum RoleType => RoleEnum.Escort;
         public override Func<string> StartText => () => "Roleblock Players From Harming The <color=#8CFFFFFF>Crew</color>";
-        public override Func<string> AbilitiesText => () => "- You can seduce players\n- Seduction blocks your target from being able to use their abilities for a short while\n- You are " +
+        public override Func<string> Description => () => "- You can seduce players\n- Seduction blocks your target from being able to use their abilities for a short while\n- You are " +
             "immune to blocks\n- If you attempt to block a <color=#336EFFFF>Serial Killer</color>, they will be forced to kill you";
         public override InspectorResults InspectorResults => InspectorResults.HindersOthers;
 
@@ -31,7 +32,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Enabled = false;
             GetLayers(BlockTarget).ForEach(x => x.IsBlocked = false);
             BlockTarget = null;
-            LastBlock = DateTime.UtcNow;
+            LastBlocked = DateTime.UtcNow;
         }
 
         public void Block()
@@ -44,18 +45,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 TimeRemaining = 0f;
         }
 
-        public float RoleblockTimer()
-        {
-            var timespan = DateTime.UtcNow - LastBlock;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.EscRoleblockCooldown) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
-        }
-
         public void Roleblock()
         {
-            if (RoleblockTimer() != 0f || IsTooFar(Player, BlockButton.TargetPlayer))
+            if (Timer != 0f || IsTooFar(Player, BlockButton.TargetPlayer))
                 return;
 
             var interact = Interact(Player, BlockButton.TargetPlayer);
@@ -68,9 +60,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 CallRpc(CustomRPC.Action, ActionsRPC.EscRoleblock, this, BlockTarget);
             }
             else if (interact[0])
-                LastBlock = DateTime.UtcNow;
+                LastBlocked = DateTime.UtcNow;
             else if (interact[1])
-                LastBlock.AddSeconds(CustomGameOptions.ProtectKCReset);
+                LastBlocked.AddSeconds(CustomGameOptions.ProtectKCReset);
         }
 
         public bool Exception(PlayerControl player) => player == BlockTarget;
@@ -78,7 +70,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            BlockButton.Update("SEDUCE", RoleblockTimer(), CustomGameOptions.EscRoleblockCooldown, Blocking, TimeRemaining, CustomGameOptions.EscRoleblockDuration);
+            BlockButton.Update("SEDUCE", Timer, CustomGameOptions.EscRoleblockCooldown, Blocking, TimeRemaining, CustomGameOptions.EscRoleblockDuration);
         }
     }
 }

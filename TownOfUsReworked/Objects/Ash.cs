@@ -3,7 +3,7 @@ namespace TownOfUsReworked.Objects
     public class Ash
     {
         public static readonly List<Ash> AllPiles = new();
-        public GameObject Pile;
+        public GameObject Pile { get; set; }
 
         public Ash(Vector2 position)
         {
@@ -23,6 +23,7 @@ namespace TownOfUsReworked.Objects
 
             Pile.SetActive(false);
             Pile.Destroy();
+            Pile = null;
         }
 
         public static void DestroyAll()

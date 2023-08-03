@@ -5,7 +5,7 @@ namespace TownOfUsReworked.Patches
     {
         public static void Postfix([HarmonyArgument(0)] byte callId, [HarmonyArgument(1)] MessageReader reader)
         {
-            if (callId != 255)
+            if (callId != 254)
                 return;
 
             var rpc = (CustomRPC)reader.ReadByte();
@@ -100,7 +100,7 @@ namespace TownOfUsReworked.Patches
                             break;
 
                         case MiscRPC.AddVoteBank:
-                            ((Politician)reader.ReadLayer()).VoteBank += reader.ReadInt32();
+                            reader.ReadLayer<Politician>().VoteBank += reader.ReadInt32();
                             break;
 
                         case MiscRPC.MeetingStart:
@@ -203,72 +203,72 @@ namespace TownOfUsReworked.Patches
 
                     switch (turn)
                     {
-                        case TurnRPC.TurnFanatic:
-                            ((Fanatic)reader.ReadLayer()).TurnFanatic((Faction)reader.ReadByte());
-                            break;
-
-                        case TurnRPC.TurnAct:
-                            ((Guesser)reader.ReadLayer()).TurnAct((Role)reader.ReadLayer());
-                            break;
-
-                        case TurnRPC.TurnVigilante:
-                            ((VampireHunter)reader.ReadLayer()).TurnVigilante();
-                            break;
-
-                        case TurnRPC.TurnPestilence:
-                            ((Plaguebearer)reader.ReadLayer()).TurnPestilence();
-                            break;
-
-                        case TurnRPC.TurnTroll:
-                            ((BountyHunter)reader.ReadLayer()).TurnTroll();
-                            break;
-
-                        case TurnRPC.TurnSurv:
-                            ((GuardianAngel)reader.ReadLayer()).TurnSurv();
-                            break;
-
-                        case TurnRPC.TurnGodfather:
-                            ((Mafioso)reader.ReadLayer()).TurnGodfather();
-                            break;
-
-                        case TurnRPC.TurnJest:
-                            ((Executioner)reader.ReadLayer()).TurnJest();
-                            break;
-
-                        case TurnRPC.TurnTraitorBetrayer:
-                            ((Traitor)reader.ReadLayer()).TurnBetrayer();
-                            break;
-
-                        case TurnRPC.TurnFanaticBetrayer:
-                            ((Fanatic)reader.ReadLayer()).TurnBetrayer();
-                            break;
-
                         case TurnRPC.TurnTraitor:
-                            ((Traitor)reader.ReadLayer()).TurnTraitor();
+                            reader.ReadLayer<Traitor>().TurnTraitor(reader.ReadBoolean(), reader.ReadBoolean());
                             break;
 
                         case TurnRPC.TurnSides:
-                            ((Defector)reader.ReadLayer()).TurnSides();
+                            reader.ReadLayer<Defector>().TurnSides(reader.ReadBoolean(), reader.ReadBoolean());
+                            break;
+
+                        case TurnRPC.TurnFanatic:
+                            reader.ReadLayer<Fanatic>().TurnFanatic((Faction)reader.ReadByte());
+                            break;
+
+                        case TurnRPC.TurnAct:
+                            reader.ReadLayer<Guesser>().TurnAct(reader.ReadLayer<Role>());
+                            break;
+
+                        case TurnRPC.TurnVigilante:
+                            reader.ReadLayer<VampireHunter>().TurnVigilante();
+                            break;
+
+                        case TurnRPC.TurnPestilence:
+                            reader.ReadLayer<Plaguebearer>().TurnPestilence();
+                            break;
+
+                        case TurnRPC.TurnTroll:
+                            reader.ReadLayer<BountyHunter>().TurnTroll();
+                            break;
+
+                        case TurnRPC.TurnSurv:
+                            reader.ReadLayer<GuardianAngel>().TurnSurv();
+                            break;
+
+                        case TurnRPC.TurnGodfather:
+                            reader.ReadLayer<Mafioso>().TurnGodfather();
+                            break;
+
+                        case TurnRPC.TurnJest:
+                            reader.ReadLayer<Executioner>().TurnJest();
+                            break;
+
+                        case TurnRPC.TurnTraitorBetrayer:
+                            reader.ReadLayer<Traitor>().TurnBetrayer();
+                            break;
+
+                        case TurnRPC.TurnFanaticBetrayer:
+                            reader.ReadLayer<Fanatic>().TurnBetrayer();
                             break;
 
                         case TurnRPC.TurnRebel:
-                            ((Sidekick)reader.ReadLayer()).TurnRebel();
+                            reader.ReadLayer<Sidekick>().TurnRebel();
                             break;
 
                         case TurnRPC.TurnThief:
-                            ((Amnesiac)reader.ReadLayer()).TurnThief();
+                            reader.ReadLayer<Amnesiac>().TurnThief();
                             break;
 
                         case TurnRPC.TurnSheriff:
-                            ((Seer)reader.ReadLayer()).TurnSheriff();
+                            reader.ReadLayer<Seer>().TurnSheriff();
                             break;
 
                         case TurnRPC.TurnSeer:
-                            ((Mystic)reader.ReadLayer()).TurnSeer();
+                            reader.ReadLayer<Mystic>().TurnSeer();
                             break;
 
                         case TurnRPC.TurnRole:
-                            ((Actor)reader.ReadLayer()).TurnRole();
+                            reader.ReadLayer<Actor>().TurnRole();
                             break;
 
                         default:
@@ -284,23 +284,23 @@ namespace TownOfUsReworked.Patches
                     switch (target)
                     {
                         case TargetRPC.SetExeTarget:
-                            ((Executioner)reader.ReadLayer()).TargetPlayer = reader.ReadPlayer();
+                            reader.ReadLayer<Executioner>().TargetPlayer = reader.ReadPlayer();
                             break;
 
                         case TargetRPC.SetGuessTarget:
-                            ((Guesser)reader.ReadLayer()).TargetPlayer = reader.ReadPlayer();
+                            reader.ReadLayer<Guesser>().TargetPlayer = reader.ReadPlayer();
                             break;
 
                         case TargetRPC.SetGATarget:
-                            ((GuardianAngel)reader.ReadLayer()).TargetPlayer = reader.ReadPlayer();
+                            reader.ReadLayer<GuardianAngel>().TargetPlayer = reader.ReadPlayer();
                             break;
 
                         case TargetRPC.SetBHTarget:
-                            ((BountyHunter)reader.ReadLayer()).TargetPlayer = reader.ReadPlayer();
+                            reader.ReadLayer<BountyHunter>().TargetPlayer = reader.ReadPlayer();
                             break;
 
                         case TargetRPC.SetActPretendList:
-                            ((Actor)reader.ReadLayer()).TargetRole = (Role)reader.ReadLayer();
+                            reader.ReadLayer<Actor>().TargetRole = reader.ReadLayer<Role>();
                             break;
 
                         case TargetRPC.SetAlliedFaction:
@@ -309,6 +309,7 @@ namespace TownOfUsReworked.Patches
                             var ally = Objectifier.GetObjectifier<Allied>(player6);
                             var faction = (Faction)reader.ReadByte();
                             alliedRole.Faction = ally.Side = faction;
+                            player6.Data.SetImpostor(faction is Faction.Intruder or Faction.Syndicate);
                             alliedRole.RoleAlignment = alliedRole.RoleAlignment.GetNewAlignment(faction);
 
                             if (faction == Faction.Crew)
@@ -368,45 +369,45 @@ namespace TownOfUsReworked.Patches
                             switch (retAction)
                             {
                                 case RetributionistActionsRPC.RetributionistRevive:
-                                    var retRole2 = (Retributionist)reader.ReadLayer();
+                                    var retRole2 = reader.ReadLayer<Retributionist>();
                                     retRole2.Revived = reader.ReadPlayer();
                                     retRole2.RevivedRole = retRole2.Revived == null ? null : (retRole2.Revived.Is(RoleEnum.Revealer) ? Role.GetRole<Revealer>(retRole2.Revived).FormerRole :
                                         Role.GetRole(retRole2.Revived));
                                     break;
 
                                 case RetributionistActionsRPC.Transport:
-                                    var retRole3 = (Retributionist)reader.ReadLayer();
+                                    var retRole3 = reader.ReadLayer<Retributionist>();
                                     retRole3.TransportPlayer1 = reader.ReadPlayer();
                                     retRole3.TransportPlayer2 = reader.ReadPlayer();
                                     Coroutines.Start(retRole3.TransportPlayers());
                                     break;
 
                                 case RetributionistActionsRPC.Protect:
-                                    ((Retributionist)reader.ReadLayer()).ShieldedPlayer = reader.ReadPlayer();
+                                    reader.ReadLayer<Retributionist>().ShieldedPlayer = reader.ReadPlayer();
                                     break;
 
                                 case RetributionistActionsRPC.Alert:
-                                    var retRole7 = (Retributionist)reader.ReadLayer();
+                                    var retRole7 = reader.ReadLayer<Retributionist>();
                                     retRole7.TimeRemaining = CustomGameOptions.AlertDuration;
                                     retRole7.Alert();
                                     break;
 
                                 case RetributionistActionsRPC.AltruistRevive:
-                                    var retRole8 = (Retributionist)reader.ReadLayer();
+                                    var retRole8 = reader.ReadLayer<Retributionist>();
                                     retRole8.RevivingBody = reader.ReadBody();
                                     retRole8.TimeRemaining = CustomGameOptions.AltReviveDuration;
                                     retRole8.Revive();
                                     break;
 
                                 case RetributionistActionsRPC.Swoop:
-                                    var retRole9 = (Retributionist)reader.ReadLayer();
+                                    var retRole9 = reader.ReadLayer<Retributionist>();
                                     retRole9.TimeRemaining = CustomGameOptions.SwoopDuration;
                                     retRole9.Invis();
                                     break;
 
                                 case RetributionistActionsRPC.Mediate:
                                     var retId2 = reader.ReadByte();
-                                    var ret = Role.GetRole<Medium>(PlayerById(retId2));
+                                    var ret = Role.GetRole<Retributionist>(PlayerById(retId2));
                                     var playerid2 = reader.ReadByte();
                                     ret.MediatedPlayers.Add(playerid2);
 
@@ -416,7 +417,7 @@ namespace TownOfUsReworked.Patches
                                     break;
 
                                 case RetributionistActionsRPC.EscRoleblock:
-                                    var retRole1 = (Retributionist)reader.ReadLayer();
+                                    var retRole1 = reader.ReadLayer<Retributionist>();
                                     var blocked4 = reader.ReadPlayer();
                                     retRole1.BlockTarget = reader.ReadPlayer();
                                     retRole1.TimeRemaining = CustomGameOptions.EscRoleblockDuration;
@@ -436,14 +437,14 @@ namespace TownOfUsReworked.Patches
                             switch (gfAction)
                             {
                                 case GodfatherActionsRPC.Morph:
-                                    var gfRole3 = (PromotedGodfather)reader.ReadLayer();
+                                    var gfRole3 = reader.ReadLayer<PromotedGodfather>();
                                     gfRole3.TimeRemaining = CustomGameOptions.MorphlingDuration;
                                     gfRole3.MorphedPlayer = reader.ReadPlayer();
                                     gfRole3.Morph();
                                     break;
 
                                 case GodfatherActionsRPC.Disguise:
-                                    var gfRole4 = (PromotedGodfather)reader.ReadLayer();
+                                    var gfRole4 = reader.ReadLayer<PromotedGodfather>();
                                     gfRole4.TimeRemaining2 = CustomGameOptions.TimeToDisguise;
                                     gfRole4.TimeRemaining = CustomGameOptions.DisguiseDuration;
                                     gfRole4.DisguisedPlayer = reader.ReadPlayer();
@@ -452,18 +453,18 @@ namespace TownOfUsReworked.Patches
                                     break;
 
                                 case GodfatherActionsRPC.ConsRoleblock:
-                                    var gfRole5 = (PromotedGodfather)reader.ReadLayer();
+                                    var gfRole5 = reader.ReadLayer<PromotedGodfather>();
                                     gfRole5.BlockTarget = reader.ReadPlayer();
                                     gfRole5.TimeRemaining = CustomGameOptions.ConsRoleblockDuration;
                                     gfRole5.Block();
                                     break;
 
                                 case GodfatherActionsRPC.Blackmail:
-                                    ((PromotedGodfather)reader.ReadLayer()).BlackmailedPlayer = reader.ReadPlayer();
+                                    reader.ReadLayer<PromotedGodfather>().BlackmailedPlayer = reader.ReadPlayer();
                                     break;
 
                                 case GodfatherActionsRPC.Invis:
-                                    var gfRole8 = (PromotedGodfather)reader.ReadLayer();
+                                    var gfRole8 = reader.ReadLayer<PromotedGodfather>();
                                     gfRole8.TimeRemaining = CustomGameOptions.InvisDuration;
                                     gfRole8.Invis();
                                     break;
@@ -479,19 +480,19 @@ namespace TownOfUsReworked.Patches
                                     break;
 
                                 case GodfatherActionsRPC.Camouflage:
-                                    var gfRole11 = (PromotedGodfather)reader.ReadLayer();
+                                    var gfRole11 = reader.ReadLayer<PromotedGodfather>();
                                     gfRole11.TimeRemaining = CustomGameOptions.CamouflagerDuration;
                                     gfRole11.Camouflage();
                                     break;
 
                                 case GodfatherActionsRPC.FlashGrenade:
-                                    var gfRole12 = (PromotedGodfather)reader.ReadLayer();
+                                    var gfRole12 = reader.ReadLayer<PromotedGodfather>();
                                     gfRole12.TimeRemaining = CustomGameOptions.GrenadeDuration;
                                     gfRole12.Flash();
                                     break;
 
                                 case GodfatherActionsRPC.SetBomb:
-                                    var gfRole13 = (PromotedGodfather)reader.ReadLayer();
+                                    var gfRole13 = reader.ReadLayer<PromotedGodfather>();
                                     gfRole13.TimeRemaining = CustomGameOptions.EnforceDuration;
                                     gfRole13.TimeRemaining2 = CustomGameOptions.EnforceDelay;
                                     gfRole13.BombedPlayer = reader.ReadPlayer();
@@ -499,7 +500,7 @@ namespace TownOfUsReworked.Patches
                                     break;
 
                                 case GodfatherActionsRPC.Ambush:
-                                    var gfRole14 = (PromotedGodfather)reader.ReadLayer();
+                                    var gfRole14 = reader.ReadLayer<PromotedGodfather>();
                                     gfRole14.TimeRemaining = CustomGameOptions.AmbushDuration;
                                     gfRole14.AmbushedPlayer = reader.ReadPlayer();
                                     gfRole14.Ambush();
@@ -518,14 +519,14 @@ namespace TownOfUsReworked.Patches
                             switch (rebAction)
                             {
                                 case RebelActionsRPC.Poison:
-                                    var rebRole1 = (PromotedRebel)reader.ReadLayer();
+                                    var rebRole1 = reader.ReadLayer<PromotedRebel>();
                                     rebRole1.PoisonedPlayer = reader.ReadPlayer();
                                     rebRole1.TimeRemaining = CustomGameOptions.PoisonDuration;
                                     rebRole1.Poison();
                                     break;
 
                                 case RebelActionsRPC.Conceal:
-                                    var rebRole2 = (PromotedRebel)reader.ReadLayer();
+                                    var rebRole2 = reader.ReadLayer<PromotedRebel>();
 
                                     if (!rebRole2.HoldsDrive)
                                         rebRole2.ConcealedPlayer = reader.ReadPlayer();
@@ -535,7 +536,7 @@ namespace TownOfUsReworked.Patches
                                     break;
 
                                 case RebelActionsRPC.Shapeshift:
-                                    var rebRole3 = (PromotedRebel)reader.ReadLayer();
+                                    var rebRole3 = reader.ReadLayer<PromotedRebel>();
 
                                     if (!rebRole3.HoldsDrive)
                                     {
@@ -548,29 +549,29 @@ namespace TownOfUsReworked.Patches
                                     break;
 
                                 case RebelActionsRPC.Warp:
-                                    var rebRole4 = Role.GetRole<Warper>(reader.ReadPlayer());
+                                    var rebRole4 = reader.ReadLayer<PromotedRebel>();
                                     rebRole4.WarpPlayer1 = reader.ReadPlayer();
                                     rebRole4.WarpPlayer2 = reader.ReadPlayer();
                                     Coroutines.Start(rebRole4.WarpPlayers());
                                     break;
 
                                 case RebelActionsRPC.Frame:
-                                    ((PromotedRebel)reader.ReadLayer()).Framed.Add(reader.ReadByte());
+                                    reader.ReadLayer<PromotedRebel>().Framed.Add(reader.ReadByte());
                                     break;
 
                                 case RebelActionsRPC.Crusade:
-                                    var rebRole7 = (PromotedRebel)reader.ReadLayer();
+                                    var rebRole7 = reader.ReadLayer<PromotedRebel>();
                                     rebRole7.CrusadedPlayer = reader.ReadPlayer();
                                     rebRole7.TimeRemaining = CustomGameOptions.CrusadeDuration;
                                     rebRole7.Crusade();
                                     break;
 
                                 case RebelActionsRPC.Spell:
-                                    ((PromotedRebel)reader.ReadLayer()).Spelled.Add(reader.ReadByte());
+                                    reader.ReadLayer<PromotedRebel>().Spelled.Add(reader.ReadByte());
                                     break;
 
                                 case RebelActionsRPC.Confuse:
-                                    var rebRole6 = (PromotedRebel)reader.ReadLayer();
+                                    var rebRole6 = reader.ReadLayer<PromotedRebel>();
 
                                     if (!rebRole6.HoldsDrive)
                                         rebRole6.ConfusedPlayer = reader.ReadPlayer();
@@ -580,13 +581,13 @@ namespace TownOfUsReworked.Patches
                                     break;
 
                                 case RebelActionsRPC.TimeControl:
-                                    var rebRole5 = (PromotedRebel)reader.ReadLayer();
+                                    var rebRole5 = reader.ReadLayer<PromotedRebel>();
                                     rebRole5.TimeRemaining = CustomGameOptions.TimeControlDuration;
                                     rebRole5.Control();
                                     break;
 
                                 case RebelActionsRPC.Silence:
-                                    ((PromotedRebel)reader.ReadLayer()).SilencedPlayer = reader.ReadPlayer();
+                                    reader.ReadLayer<PromotedRebel>().SilencedPlayer = reader.ReadPlayer();
                                     break;
 
                                 default:
@@ -597,7 +598,7 @@ namespace TownOfUsReworked.Patches
                             break;
 
                         case ActionsRPC.FreezeDouse:
-                            ((Cryomaniac)reader.ReadLayer()).Doused.Add(reader.ReadByte());
+                            reader.ReadLayer<Cryomaniac>().Doused.Add(reader.ReadByte());
                             break;
 
                         case ActionsRPC.FadeBody:
@@ -605,27 +606,27 @@ namespace TownOfUsReworked.Patches
                             break;
 
                         case ActionsRPC.SetExtraVotes:
-                            var polRole = (Politician)reader.ReadLayer();
-                            polRole.ExtraVotes = reader.ReadBytesAndSize().ToList();
+                            var polRole = reader.ReadLayer<Politician>();
+                            polRole.ExtraVotes = reader.ReadByteList();
                             polRole.VoteBank -= polRole.ExtraVotes.Count;
                             break;
 
                         case ActionsRPC.SetSwaps:
-                            var swapper = (Swapper)reader.ReadLayer();
+                            var swapper = reader.ReadLayer<Swapper>();
                             swapper.Swap1 = reader.ReadVoteArea();
                             swapper.Swap2 = reader.ReadVoteArea();
                             break;
 
                         case ActionsRPC.Remember:
-                            Amnesiac.Remember((Amnesiac)reader.ReadLayer(), reader.ReadPlayer());
+                            Amnesiac.Remember(reader.ReadLayer<Amnesiac>(), reader.ReadPlayer());
                             break;
 
                         case ActionsRPC.Steal:
-                            Thief.Steal((Thief)reader.ReadLayer(), reader.ReadPlayer());
+                            Thief.Steal(reader.ReadLayer<Thief>(), reader.ReadPlayer());
                             break;
 
                         case ActionsRPC.Shift:
-                            Shifter.Shift((Shifter)reader.ReadLayer(), reader.ReadPlayer());
+                            Shifter.Shift(reader.ReadLayer<Shifter>(), reader.ReadPlayer());
                             break;
 
                         case ActionsRPC.Convert:
@@ -637,19 +638,19 @@ namespace TownOfUsReworked.Patches
                             break;
 
                         case ActionsRPC.Sidekick:
-                            Rebel.Sidekick((Rebel)reader.ReadLayer(), reader.ReadPlayer());
+                            Rebel.Sidekick(reader.ReadLayer<Rebel>(), reader.ReadPlayer());
                             break;
 
                         case ActionsRPC.Frame:
-                            ((Framer)reader.ReadLayer()).Framed.Add(reader.ReadByte());
+                            reader.ReadLayer<Framer>().Framed.Add(reader.ReadByte());
                             break;
 
                         case ActionsRPC.Declare:
-                            Godfather.Declare((Godfather)reader.ReadLayer(), reader.ReadPlayer());
+                            Godfather.Declare(reader.ReadLayer<Godfather>(), reader.ReadPlayer());
                             break;
 
                         case ActionsRPC.Protect:
-                            ((Medic)reader.ReadLayer()).ShieldedPlayer = reader.ReadPlayer();
+                            reader.ReadLayer<Medic>().ShieldedPlayer = reader.ReadPlayer();
                             break;
 
                         case ActionsRPC.BypassKill:
@@ -657,15 +658,15 @@ namespace TownOfUsReworked.Patches
                             break;
 
                         case ActionsRPC.AssassinKill:
-                            ((Assassin)reader.ReadLayer()).MurderPlayer(reader.ReadPlayer(), reader.ReadString(), reader.ReadPlayer());
+                            reader.ReadLayer<Assassin>().MurderPlayer(reader.ReadPlayer(), reader.ReadString(), reader.ReadPlayer());
                             break;
 
                         case ActionsRPC.GuesserKill:
-                            ((Guesser)reader.ReadLayer()).MurderPlayer(reader.ReadPlayer(), reader.ReadString(), reader.ReadPlayer());
+                            reader.ReadLayer<Guesser>().MurderPlayer(reader.ReadPlayer(), reader.ReadString(), reader.ReadPlayer());
                             break;
 
                         case ActionsRPC.ThiefKill:
-                            ((Thief)reader.ReadLayer()).MurderPlayer(reader.ReadPlayer(), reader.ReadString(), reader.ReadPlayer());
+                            reader.ReadLayer<Thief>().MurderPlayer(reader.ReadPlayer(), reader.ReadString(), reader.ReadPlayer());
                             break;
 
                         case ActionsRPC.ForceKill:
@@ -681,7 +682,7 @@ namespace TownOfUsReworked.Patches
                             break;
 
                         case ActionsRPC.SetBomb:
-                            var enfRole = (Enforcer)reader.ReadLayer();
+                            var enfRole = reader.ReadLayer<Enforcer>();
                             enfRole.TimeRemaining = CustomGameOptions.EnforceDuration;
                             enfRole.TimeRemaining2 = CustomGameOptions.EnforceDelay;
                             enfRole.BombedPlayer = reader.ReadPlayer();
@@ -689,24 +690,24 @@ namespace TownOfUsReworked.Patches
                             break;
 
                         case ActionsRPC.Morph:
-                            var morphRole = (Morphling)reader.ReadLayer();
+                            var morphRole = reader.ReadLayer<Morphling>();
                             morphRole.TimeRemaining = CustomGameOptions.MorphlingDuration;
                             morphRole.MorphedPlayer = reader.ReadPlayer();
                             morphRole.Morph();
                             break;
 
                         case ActionsRPC.Scream:
-                            var bansheeRole2 = (Banshee)reader.ReadLayer();
+                            var bansheeRole2 = reader.ReadLayer<Banshee>();
                             bansheeRole2.TimeRemaining = CustomGameOptions.ScreamDuration;
                             bansheeRole2.Scream();
                             break;
 
                         case ActionsRPC.Mark:
-                            ((Ghoul)reader.ReadLayer()).MarkedPlayer = reader.ReadPlayer();
+                            reader.ReadLayer<Ghoul>().MarkedPlayer = reader.ReadPlayer();
                             break;
 
                         case ActionsRPC.Disguise:
-                            var disguiseRole = (Disguiser)reader.ReadLayer();
+                            var disguiseRole = reader.ReadLayer<Disguiser>();
                             disguiseRole.TimeRemaining = CustomGameOptions.DisguiseDuration;
                             disguiseRole.TimeRemaining2 = CustomGameOptions.TimeToDisguise;
                             disguiseRole.CopiedPlayer = reader.ReadPlayer();
@@ -715,64 +716,64 @@ namespace TownOfUsReworked.Patches
                             break;
 
                         case ActionsRPC.Poison:
-                            var poisonerRole = (Poisoner)reader.ReadLayer();
+                            var poisonerRole = reader.ReadLayer<Poisoner>();
                             poisonerRole.TimeRemaining = CustomGameOptions.PoisonDuration;
                             poisonerRole.PoisonedPlayer = reader.ReadPlayer();
                             poisonerRole.Poison();
                             break;
 
                         case ActionsRPC.Blackmail:
-                            ((Blackmailer)reader.ReadLayer()).BlackmailedPlayer = reader.ReadPlayer();
+                            reader.ReadLayer<Blackmailer>().BlackmailedPlayer = reader.ReadPlayer();
                             break;
 
                         case ActionsRPC.Silence:
-                            ((Silencer)reader.ReadLayer()).SilencedPlayer = reader.ReadPlayer();
+                            reader.ReadLayer<Silencer>().SilencedPlayer = reader.ReadPlayer();
                             break;
 
                         case ActionsRPC.Mine:
-                            AddVent((Role)reader.ReadLayer(), reader.ReadVector3());
+                            AddVent(reader.ReadLayer<Role>(), reader.ReadVector3());
                             break;
 
                         case ActionsRPC.Invis:
-                            var wraithRole = (Wraith)reader.ReadLayer();
+                            var wraithRole = reader.ReadLayer<Wraith>();
                             wraithRole.TimeRemaining = CustomGameOptions.InvisDuration;
                             wraithRole.Invis();
                             break;
 
                         case ActionsRPC.Alert:
-                            var veteranRole = (Veteran)reader.ReadLayer();
+                            var veteranRole = reader.ReadLayer<Veteran>();
                             veteranRole.TimeRemaining = CustomGameOptions.AlertDuration;
                             veteranRole.Alert();
                             break;
 
                         case ActionsRPC.Vest:
-                            var survRole = (Survivor)reader.ReadLayer();
+                            var survRole = reader.ReadLayer<Survivor>();
                             survRole.TimeRemaining = CustomGameOptions.VestDuration;
                             survRole.Vest();
                             break;
 
                         case ActionsRPC.Ambush:
-                            var ambRole = (Ambusher)reader.ReadLayer();
+                            var ambRole = reader.ReadLayer<Ambusher>();
                             ambRole.TimeRemaining = CustomGameOptions.AmbushDuration;
                             ambRole.AmbushedPlayer = reader.ReadPlayer();
                             ambRole.Ambush();
                             break;
 
                         case ActionsRPC.Crusade:
-                            var crusRole = (Crusader)reader.ReadLayer();
+                            var crusRole = reader.ReadLayer<Crusader>();
                             crusRole.TimeRemaining = CustomGameOptions.CrusadeDuration;
                             crusRole.CrusadedPlayer = reader.ReadPlayer();
                             crusRole.Crusade();
                             break;
 
                         case ActionsRPC.GAProtect:
-                            var ga2Role = (GuardianAngel)reader.ReadLayer();
+                            var ga2Role = reader.ReadLayer<GuardianAngel>();
                             ga2Role.TimeRemaining = CustomGameOptions.ProtectDuration;
                             ga2Role.Protect();
                             break;
 
                         case ActionsRPC.Transport:
-                            var transRole = (Transporter)reader.ReadLayer();
+                            var transRole = reader.ReadLayer<Transporter>();
                             transRole.TransportPlayer1 = reader.ReadPlayer();
                             transRole.TransportPlayer2 = reader.ReadPlayer();
                             Coroutines.Start(transRole.TransportPlayers());
@@ -782,11 +783,13 @@ namespace TownOfUsReworked.Patches
                             try
                             {
                                 if (CustomPlayer.Local.Is(RoleEnum.Transporter))
-                                    ((Transporter)reader.ReadLayer()).UntransportablePlayers.Add(reader.ReadByte(), DateTime.UtcNow);
+                                    reader.ReadLayer<Transporter>().UntransportablePlayers.Add(reader.ReadByte(), DateTime.UtcNow);
                                 else if (CustomPlayer.Local.Is(RoleEnum.Warper))
-                                    ((Warper)reader.ReadLayer()).UnwarpablePlayers.Add(reader.ReadByte(), DateTime.UtcNow);
+                                    reader.ReadLayer<Warper>().UnwarpablePlayers.Add(reader.ReadByte(), DateTime.UtcNow);
                                 else if (CustomPlayer.Local.Is(RoleEnum.Retributionist))
-                                    ((Retributionist)reader.ReadLayer()).UntransportablePlayers.Add(reader.ReadByte(), DateTime.UtcNow);
+                                    reader.ReadLayer<Retributionist>().UntransportablePlayers.Add(reader.ReadByte(), DateTime.UtcNow);
+                                else if (CustomPlayer.Local.Is(RoleEnum.PromotedRebel))
+                                    reader.ReadLayer<PromotedRebel>().UnwarpablePlayers.Add(reader.ReadByte(), DateTime.UtcNow);
                             }
                             catch (Exception e)
                             {
@@ -796,7 +799,7 @@ namespace TownOfUsReworked.Patches
                             break;
 
                         case ActionsRPC.Warp:
-                            var warpRole = (Warper)reader.ReadLayer();
+                            var warpRole = reader.ReadLayer<Warper>();
                             warpRole.WarpPlayer1 = reader.ReadPlayer();
                             warpRole.WarpPlayer2 = reader.ReadPlayer();
                             Coroutines.Start(warpRole.WarpPlayers());
@@ -814,28 +817,28 @@ namespace TownOfUsReworked.Patches
                             break;
 
                         case ActionsRPC.FlashGrenade:
-                            var grenadierRole = (Grenadier)reader.ReadLayer();
+                            var grenadierRole = reader.ReadLayer<Grenadier>();
                             grenadierRole.TimeRemaining = CustomGameOptions.GrenadeDuration;
                             grenadierRole.Flash();
                             break;
 
                         case ActionsRPC.Douse:
-                            ((Arsonist)reader.ReadLayer()).Doused.Add(reader.ReadByte());
+                            reader.ReadLayer<Arsonist>().Doused.Add(reader.ReadByte());
                             break;
 
                         case ActionsRPC.Infect:
-                            ((Plaguebearer)reader.ReadLayer()).Infected.Add(reader.ReadByte());
+                            reader.ReadLayer<Plaguebearer>().Infected.Add(reader.ReadByte());
                             break;
 
                         case ActionsRPC.AltruistRevive:
-                            var altruistRole = (Altruist)reader.ReadLayer();
+                            var altruistRole = reader.ReadLayer<Altruist>();
                             altruistRole.RevivingBody = reader.ReadBody();
                             altruistRole.TimeRemaining = CustomGameOptions.AltReviveDuration;
                             altruistRole.Revive();
                             break;
 
                         case ActionsRPC.NecromancerResurrect:
-                            var necroRole = (Necromancer)reader.ReadLayer();
+                            var necroRole = reader.ReadLayer<Necromancer>();
                             necroRole.ResurrectingBody = reader.ReadBody();
                             necroRole.TimeRemaining = CustomGameOptions.NecroResurrectDuration;
                             necroRole.Resurrect();
@@ -852,7 +855,7 @@ namespace TownOfUsReworked.Patches
                             break;
 
                         case ActionsRPC.Swoop:
-                            var chameleonRole = (Chameleon)reader.ReadLayer();
+                            var chameleonRole = reader.ReadLayer<Chameleon>();
                             chameleonRole.TimeRemaining = CustomGameOptions.SwoopDuration;
                             chameleonRole.Invis();
                             break;
@@ -893,41 +896,41 @@ namespace TownOfUsReworked.Patches
                             break;
 
                         case ActionsRPC.Camouflage:
-                            var camouflagerRole = (Camouflager)reader.ReadLayer();
+                            var camouflagerRole = reader.ReadLayer<Camouflager>();
                             camouflagerRole.TimeRemaining = CustomGameOptions.CamouflagerDuration;
                             camouflagerRole.Camouflage();
                             break;
 
                         case ActionsRPC.EscRoleblock:
-                            var escortRole = (Escort)reader.ReadLayer();
+                            var escortRole = reader.ReadLayer<Escort>();
                             escortRole.BlockTarget = reader.ReadPlayer();
                             escortRole.TimeRemaining = CustomGameOptions.EscRoleblockDuration;
                             escortRole.Block();
                             break;
 
                         case ActionsRPC.GlitchRoleblock:
-                            var glitchRole = (Glitch)reader.ReadLayer();
+                            var glitchRole = reader.ReadLayer<Glitch>();
                             glitchRole.HackTarget = reader.ReadPlayer();
                             glitchRole.TimeRemaining = CustomGameOptions.HackDuration;
                             glitchRole.Hack();
                             break;
 
                         case ActionsRPC.ConsRoleblock:
-                            var consortRole = (Consort)reader.ReadLayer();
+                            var consortRole = reader.ReadLayer<Consort>();
                             consortRole.BlockTarget = reader.ReadPlayer();
                             consortRole.TimeRemaining = CustomGameOptions.ConsRoleblockDuration;
                             consortRole.Block();
                             break;
 
                         case ActionsRPC.Mimic:
-                            var glitchRole4 = (Glitch)reader.ReadLayer();
+                            var glitchRole4 = reader.ReadLayer<Glitch>();
                             glitchRole4.MimicTarget = reader.ReadPlayer();
                             glitchRole4.TimeRemaining2 = CustomGameOptions.MimicDuration;
                             glitchRole4.Mimic();
                             break;
 
                         case ActionsRPC.Conceal:
-                            var concealerRole = (Concealer)reader.ReadLayer();
+                            var concealerRole = reader.ReadLayer<Concealer>();
 
                             if (!concealerRole.HoldsDrive)
                                 concealerRole.ConcealedPlayer = reader.ReadPlayer();
@@ -937,7 +940,7 @@ namespace TownOfUsReworked.Patches
                             break;
 
                         case ActionsRPC.Shapeshift:
-                            var ssRole = (Shapeshifter)reader.ReadLayer();
+                            var ssRole = reader.ReadLayer<Shapeshifter>();
 
                             if (!ssRole.HoldsDrive)
                             {
@@ -950,7 +953,7 @@ namespace TownOfUsReworked.Patches
                             break;
 
                         case ActionsRPC.Burn:
-                            var arsoRole = (Arsonist)reader.ReadLayer();
+                            var arsoRole = reader.ReadLayer<Arsonist>();
 
                             foreach (var body in AllBodies)
                             {
@@ -980,21 +983,21 @@ namespace TownOfUsReworked.Patches
                             break;
 
                         case ActionsRPC.SetExiles:
-                            var dictRole = (Dictator)reader.ReadLayer();
+                            var dictRole = reader.ReadLayer<Dictator>();
                             dictRole.ToDie = reader.ReadBoolean();
-                            dictRole.ToBeEjected = reader.ReadBytesAndSize().ToList();
+                            dictRole.ToBeEjected = reader.ReadByteList();
                             break;
 
                         case ActionsRPC.Spell:
-                            ((Spellslinger)reader.ReadLayer()).Spelled.Add(reader.ReadByte());
+                            reader.ReadLayer<Spellslinger>().Spelled.Add(reader.ReadByte());
                             break;
 
                         case ActionsRPC.Knight:
-                            ((Monarch)reader.ReadLayer()).ToBeKnighted.Add(reader.ReadByte());
+                            reader.ReadLayer<Monarch>().ToBeKnighted.Add(reader.ReadByte());
                             break;
 
                         case ActionsRPC.Confuse:
-                            var drunkRole = (Drunkard)reader.ReadLayer();
+                            var drunkRole = reader.ReadLayer<Drunkard>();
 
                             if (!drunkRole.HoldsDrive)
                                 drunkRole.ConfusedPlayer = reader.ReadPlayer();
@@ -1004,7 +1007,7 @@ namespace TownOfUsReworked.Patches
                             break;
 
                         case ActionsRPC.TimeControl:
-                            var tkRole = (TimeKeeper)reader.ReadLayer();
+                            var tkRole = reader.ReadLayer<TimeKeeper>();
                             tkRole.TimeRemaining = CustomGameOptions.TimeControlDuration;
                             tkRole.Control();
                             break;
@@ -1078,7 +1081,7 @@ namespace TownOfUsReworked.Patches
 
                         case WinLoseRPC.SameNKWins:
                         case WinLoseRPC.SoloNKWins:
-                            var nkRole = (Role)reader.ReadLayer();
+                            var nkRole = reader.ReadLayer<Role>();
 
                             switch (nkRole.RoleType)
                             {
@@ -1128,31 +1131,31 @@ namespace TownOfUsReworked.Patches
                             break;
 
                         case WinLoseRPC.JesterWin:
-                            ((Jester)reader.ReadLayer()).VotedOut = true;
+                            reader.ReadLayer<Jester>().VotedOut = true;
                             break;
 
                         case WinLoseRPC.CannibalWin:
-                            ((Cannibal)reader.ReadLayer()).Eaten = true;
+                            reader.ReadLayer<Cannibal>().Eaten = true;
                             break;
 
                         case WinLoseRPC.ExecutionerWin:
-                            ((Executioner)reader.ReadLayer()).TargetVotedOut = true;
+                            reader.ReadLayer<Executioner>().TargetVotedOut = true;
                             break;
 
                         case WinLoseRPC.BountyHunterWin:
-                            ((BountyHunter)reader.ReadLayer()).TargetKilled = true;
+                            reader.ReadLayer<BountyHunter>().TargetKilled = true;
                             break;
 
                         case WinLoseRPC.TrollWin:
-                            ((Troll)reader.ReadLayer()).Killed = true;
+                            reader.ReadLayer<Troll>().Killed = true;
                             break;
 
                         case WinLoseRPC.ActorWin:
-                            ((Actor)reader.ReadLayer()).Guessed = true;
+                            reader.ReadLayer<Actor>().Guessed = true;
                             break;
 
                         case WinLoseRPC.GuesserWin:
-                            ((Guesser)reader.ReadLayer()).TargetGuessed = true;
+                            reader.ReadLayer<Guesser>().TargetGuessed = true;
                             break;
 
                         case WinLoseRPC.CorruptedWin:
@@ -1166,7 +1169,7 @@ namespace TownOfUsReworked.Patches
 
                         case WinLoseRPC.LoveWin:
                             Objectifier.LoveWins = true;
-                            var lover = (Lovers)reader.ReadLayer();
+                            var lover = reader.ReadLayer<Lovers>();
                             lover.Winner = true;
                             Objectifier.GetObjectifier(lover.OtherLover).Winner = true;
                             break;
@@ -1192,7 +1195,7 @@ namespace TownOfUsReworked.Patches
 
                         case WinLoseRPC.PhantomWin:
                             Role.PhantomWins = true;
-                            var phantom3 = (Phantom)reader.ReadLayer();
+                            var phantom3 = reader.ReadLayer<Phantom>();
                             phantom3.CompletedTasks = true;
                             phantom3.Winner = true;
                             break;

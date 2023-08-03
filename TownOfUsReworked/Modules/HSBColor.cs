@@ -3,10 +3,10 @@ namespace TownOfUsReworked.Modules
     [Serializable]
     public struct HSBColor
     {
-        public float h;
-        public float s;
-        public float b;
-        public float a;
+        public float h { get; set; }
+        public float s { get; set; }
+        public float b { get; set; }
+        public float a { get; set; }
 
         public HSBColor(float h, float s, float b, float a)
         {

@@ -117,7 +117,7 @@ namespace TownOfUsReworked.Patches
                 return;
 
             __instance.myRend.material.SetColor("_OutlineColor", Role.LocalRole.Color);
-            __instance.myRend.material.SetColor("_AddColor", mainTarget ? Role.LocalRole.Color : Color.clear);
+            __instance.myRend.material.SetColor("_AddColor", mainTarget ? Role.LocalRole.Color : UColor.clear);
         }
     }
 }

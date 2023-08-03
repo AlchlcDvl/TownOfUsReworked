@@ -2,13 +2,13 @@ namespace TownOfUsReworked.CustomOptions
 {
     public class RoleListEntryOption : CustomOption
     {
-        private CustomButtonOption Loading;
-        private List<OptionBehaviour> OldButtons;
+        private CustomButtonOption Loading { get; set; }
+        private List<OptionBehaviour> OldButtons { get; set; } = new();
         public List<CustomButtonOption> SlotButtons = new();
         private static int EntryNum;
         private static int BanNum;
         public static readonly List<CustomButtonOption> EntryButtons = new();
-        public static readonly Dictionary<RoleEnum, string> Entries = new()
+        public static Dictionary<RoleEnum, string> Entries => new()
         {
             { RoleEnum.None, "None"},
 
@@ -94,7 +94,7 @@ namespace TownOfUsReworked.CustomOptions
             { RoleEnum.TimeKeeper, "<color=#3769FEFF>Time Keeper</color>"},
             { RoleEnum.Warper, "<color=#8C7140FF>Warper</color>"}
         };
-        public static readonly Dictionary<RoleEnum, string> Alignments = new()
+        public static Dictionary<RoleEnum, string> Alignments => new()
         {
             { RoleEnum.None, "None"},
 

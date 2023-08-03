@@ -2,13 +2,13 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
 {
     public class Radar : Ability
     {
-        public CustomArrow RadarArrow;
+        public CustomArrow RadarArrow { get; set; }
 
         public override Color32 Color => ClientGameOptions.CustomAbColors ? Colors.Radar : Colors.Ability;
         public override string Name => "Radar";
         public override LayerEnum Type => LayerEnum.Radar;
         public override AbilityEnum AbilityType => AbilityEnum.Radar;
-        public override Func<string> TaskText => () => "- You are aware of those close to you";
+        public override Func<string> Description => () => "- You are aware of those close to you";
 
         public Radar(PlayerControl player) : base(player) => RadarArrow = new(Player, Color);
 

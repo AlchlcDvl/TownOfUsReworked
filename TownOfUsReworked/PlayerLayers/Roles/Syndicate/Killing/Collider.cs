@@ -2,16 +2,16 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Collider : Syndicate
     {
-        public CustomButton PositiveButton;
-        public CustomButton NegativeButton;
-        public CustomButton ChargeButton;
-        public DateTime LastPositive;
-        public DateTime LastNegative;
-        public DateTime LastCharged;
-        public PlayerControl Positive;
-        public PlayerControl Negative;
-        public bool Enabled;
-        public float TimeRemaining;
+        public CustomButton PositiveButton { get; set; }
+        public CustomButton NegativeButton { get; set; }
+        public CustomButton ChargeButton { get; set; }
+        public DateTime LastPositive { get; set; }
+        public DateTime LastNegative { get; set; }
+        public DateTime LastCharged { get; set; }
+        public PlayerControl Positive { get; set; }
+        public PlayerControl Negative { get; set; }
+        public bool Enabled { get; set; }
+        public float TimeRemaining { get; set; }
         public bool Charged => TimeRemaining > 0f;
         private float Range => CustomGameOptions.CollideRange + (HoldsDrive ? CustomGameOptions.CollideRangeIncrease : 0);
 
@@ -20,9 +20,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override LayerEnum Type => LayerEnum.Collider;
         public override RoleEnum RoleType => RoleEnum.Collider;
         public override Func<string> StartText => () => "FUUUUUUUUUUUUUUUUUUUUUUUUUUSION!";
-        public override Func<string> AbilitiesText => () => $"- You can mark a player as positive or negative\n- When the marked players are within {Range}m of each other, they will die " +
+        public override Func<string> Description => () => $"- You can mark a player as positive or negative\n- When the marked players are within {Range}m of each other, they will die " +
             $"together{(HoldsDrive ? "\n- You can charge yourself to kill those you marked" : "")}\n{CommonAbilities}";
         public override InspectorResults InspectorResults => InspectorResults.Unseen;
+        public float PositiveTimer => ButtonUtils.Timer(Player, LastPositive, CustomGameOptions.CollideCooldown);
+        public float NegativeTimer => ButtonUtils.Timer(Player, LastNegative, CustomGameOptions.CollideCooldown);
+        public float ChargeTimer => ButtonUtils.Timer(Player, LastCharged, CustomGameOptions.ChargeCooldown);
 
         public Collider(PlayerControl player) : base(player)
         {
@@ -34,36 +37,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             ChargeButton = new(this, "Charge", AbilityTypes.Effect, "Tertiary", Charge);
         }
 
-        public float PositiveTimer()
-        {
-            var timespan = DateTime.UtcNow - LastPositive;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.CollideCooldown) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
-        }
-
-        public float NegativeTimer()
-        {
-            var timespan = DateTime.UtcNow - LastNegative;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.CollideCooldown) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
-        }
-
-        public float ChargeTimer()
-        {
-            var timespan = DateTime.UtcNow - LastCharged;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.ChargeCooldown) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
-        }
-
         public void SetPositive()
         {
-            if (IsTooFar(Player, PositiveButton.TargetPlayer) || PositiveTimer() != 0f)
+            if (IsTooFar(Player, PositiveButton.TargetPlayer) || PositiveTimer != 0f)
                 return;
 
             var interact = Interact(Player, PositiveButton.TargetPlayer);
@@ -87,7 +63,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void SetNegative()
         {
-            if (IsTooFar(Player, NegativeButton.TargetPlayer) || NegativeTimer() != 0f)
+            if (IsTooFar(Player, NegativeButton.TargetPlayer) || NegativeTimer != 0f)
                 return;
 
             var interact = Interact(Player, NegativeButton.TargetPlayer);
@@ -111,7 +87,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Charge()
         {
-            if (!HoldsDrive || Charged || ChargeTimer() != 0f)
+            if (!HoldsDrive || Charged || ChargeTimer != 0f)
                 return;
 
             TimeRemaining = CustomGameOptions.ChargeDuration;
@@ -140,9 +116,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            PositiveButton.Update("SET POSITIVE", PositiveTimer(), CustomGameOptions.CollideCooldown);
-            NegativeButton.Update("SET NEGATIVE", NegativeTimer(), CustomGameOptions.CollideCooldown);
-            ChargeButton.Update("CHARGE", ChargeTimer(), CustomGameOptions.ChargeCooldown, Charged, TimeRemaining, CustomGameOptions.ChargeDuration, true, HoldsDrive);
+            PositiveButton.Update("SET POSITIVE", PositiveTimer, CustomGameOptions.CollideCooldown);
+            NegativeButton.Update("SET NEGATIVE", NegativeTimer, CustomGameOptions.CollideCooldown);
+            ChargeButton.Update("CHARGE", ChargeTimer, CustomGameOptions.ChargeCooldown, Charged, TimeRemaining, CustomGameOptions.ChargeDuration, true, HoldsDrive);
 
             if (GetDistBetweenPlayers(Positive, Negative) <= Range)
             {

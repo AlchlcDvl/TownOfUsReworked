@@ -2,16 +2,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Betrayer : Neutral
     {
-        public CustomButton KillButton;
-        public DateTime LastKilled;
+        public CustomButton KillButton { get; set; }
+        public DateTime LastKilled { get; set; }
 
         public override Color32 Color => ClientGameOptions.CustomNeutColors ? Colors.Betrayer : Colors.Neutral;
         public override string Name => "Betrayer";
         public override LayerEnum Type => LayerEnum.Betrayer;
         public override RoleEnum RoleType => RoleEnum.Betrayer;
         public override Func<string> StartText => () => "Those Backs Are Ripe For Some Stabbing";
-        public override Func<string> AbilitiesText => () => "- You can kill";
+        public override Func<string> Description => () => "- You can kill";
         public override InspectorResults InspectorResults => InspectorResults.IsAggressive;
+        public float Timer => ButtonUtils.Timer(Player, LastKilled, CustomGameOptions.BetrayerKillCooldown);
 
         public Betrayer(PlayerControl player) : base(player)
         {
@@ -20,18 +21,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             KillButton = new(this, "BetKill", AbilityTypes.Direct, "ActionSecondary", Kill, Exception);
         }
 
-        public float KillTimer()
-        {
-            var timespan = DateTime.UtcNow - LastKilled;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.BetrayerKillCooldown) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
-        }
-
         public void Kill()
         {
-            if (IsTooFar(Player, KillButton.TargetPlayer) || KillTimer() != 0f || Faction == Faction.Neutral)
+            if (IsTooFar(Player, KillButton.TargetPlayer) || Timer != 0f || Faction == Faction.Neutral)
                 return;
 
             var interact = Interact(Player, KillButton.TargetPlayer, true);
@@ -53,7 +45,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 return;
 
             base.UpdateHud(__instance);
-            KillButton.Update("KILL", KillTimer(), CustomGameOptions.BetrayerKillCooldown);
+            KillButton.Update("KILL", Timer, CustomGameOptions.BetrayerKillCooldown);
         }
     }
 }

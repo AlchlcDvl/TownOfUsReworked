@@ -2,32 +2,25 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Werewolf : Neutral
     {
-        public DateTime LastMauled;
-        public bool CanMaul;
-        public CustomButton MaulButton;
+        public DateTime LastMauled { get; set; }
+        public bool CanMaul => Rounds % 2 == 1 || Rounds > 3;
+        public CustomButton MaulButton { get; set; }
+        public int Rounds { get; set; }
 
         public override Color32 Color => ClientGameOptions.CustomNeutColors ? Colors.Werewolf : Colors.Neutral;
         public override string Name => "Werewolf";
         public override LayerEnum Type => LayerEnum.Werewolf;
         public override RoleEnum RoleType => RoleEnum.Werewolf;
         public override Func<string> StartText => () => "AWOOOOOOOOOO";
-        public override Func<string> AbilitiesText => () => $"- You kill everyone within {CustomGameOptions.MaulRadius}m";
+        public override Func<string> Description => () => $"- You kill everyone within {CustomGameOptions.MaulRadius}m";
         public override InspectorResults InspectorResults => InspectorResults.IsAggressive;
+        public float Timer => ButtonUtils.Timer(Player, LastMauled, CustomGameOptions.MaulCooldown);
 
         public Werewolf(PlayerControl player) : base(player)
         {
             Objectives = () => "- Maul anyone who can oppose you";
             RoleAlignment = RoleAlignment.NeutralKill;
             MaulButton = new(this, "Maul", AbilityTypes.Direct, "ActionSecondary", HitMaul, Exception);
-        }
-
-        public float MaulTimer()
-        {
-            var timespan = DateTime.UtcNow - LastMauled;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.MaulCooldown) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void Maul()
@@ -61,7 +54,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void HitMaul()
         {
-            if (MaulTimer() != 0f || IsTooFar(Player, MaulButton.TargetPlayer))
+            if (Timer != 0f || IsTooFar(Player, MaulButton.TargetPlayer))
                 return;
 
             var interact = Interact(Player, MaulButton.TargetPlayer, true);
@@ -83,7 +76,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            MaulButton.Update("MAUL", MaulTimer(), CustomGameOptions.MaulCooldown);
+            MaulButton.Update("MAUL", Timer, CustomGameOptions.MaulCooldown, CanMaul);
         }
     }
 }

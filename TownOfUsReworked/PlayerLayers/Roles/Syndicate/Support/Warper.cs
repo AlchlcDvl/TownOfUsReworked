@@ -2,30 +2,31 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Warper : Syndicate
     {
-        public CustomButton WarpButton;
-        public DateTime LastWarped;
-        public PlayerControl WarpPlayer1;
-        public PlayerControl WarpPlayer2;
-        public Dictionary<byte, DateTime> UnwarpablePlayers = new();
-        public CustomMenu WarpMenu1;
-        public CustomMenu WarpMenu2;
-        public SpriteRenderer AnimationPlaying;
-        public GameObject WarpObj;
-        public float TimeRemaining;
+        public CustomButton WarpButton { get; set; }
+        public DateTime LastWarped { get; set; }
+        public PlayerControl WarpPlayer1 { get; set; }
+        public PlayerControl WarpPlayer2 { get; set; }
+        public Dictionary<byte, DateTime> UnwarpablePlayers { get; set; }
+        public CustomMenu WarpMenu1 { get; set; }
+        public CustomMenu WarpMenu2 { get; set; }
+        public SpriteRenderer AnimationPlaying { get; set; }
+        public GameObject WarpObj { get; set; }
+        public float TimeRemaining { get; set; }
         public bool Warping => TimeRemaining > 0;
-        public DeadBody Player1Body;
-        public DeadBody Player2Body;
-        public bool WasInVent;
-        public Vent Vent;
+        public DeadBody Player1Body { get; set; }
+        public DeadBody Player2Body { get; set; }
+        public bool WasInVent { get; set; }
+        public Vent Vent { get; set; }
 
         public override Color32 Color => ClientGameOptions.CustomSynColors ? Colors.Warper : Colors.Syndicate;
         public override string Name => "Warper";
         public override LayerEnum Type => LayerEnum.Warper;
         public override RoleEnum RoleType => RoleEnum.Warper;
         public override Func<string> StartText => () => "Warp The <color=#8CFFFFFF>Crew</color> Away From Each Other";
-        public override Func<string> AbilitiesText => () => "- You can warp " +
+        public override Func<string> Description => () => "- You can warp " +
             $"{(HoldsDrive ? "all players, forcing them to be teleported to random locations" : "a player to another player of your choice")}\n{CommonAbilities}";
         public override InspectorResults InspectorResults => InspectorResults.MovesAround;
+        public float Timer => ButtonUtils.Timer(Player, LastWarped, CustomGameOptions.WarpCooldown);
 
         public Warper(PlayerControl player) : base(player)
         {
@@ -46,15 +47,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             AnimationPlaying.sprite = PortalAnimation[0];
             AnimationPlaying.material = HatManager.Instance.PlayerMaterial;
             WarpObj.SetActive(true);
-        }
-
-        public float WarpTimer()
-        {
-            var timespan = DateTime.UtcNow - LastWarped;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.WarpCooldown) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
         }
 
         public IEnumerator WarpPlayers()
@@ -237,7 +229,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Warp()
         {
-            if (WarpTimer() != 0f)
+            if (Timer != 0f)
                 return;
 
             if (HoldsDrive)
@@ -261,7 +253,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             base.UpdateHud(__instance);
             var flag1 = WarpPlayer1 == null && !HoldsDrive;
             var flag2 = WarpPlayer2 == null && !HoldsDrive;
-            WarpButton.Update(flag1 ? "FIRST TARGET" : (flag2 ? "SECOND TARGET" : "WARP"), WarpTimer(), CustomGameOptions.WarpCooldown, Warping, TimeRemaining,
+            WarpButton.Update(flag1 ? "FIRST TARGET" : (flag2 ? "SECOND TARGET" : "WARP"), Timer, CustomGameOptions.WarpCooldown, Warping, TimeRemaining,
                 CustomGameOptions.WarpDuration);
 
             if (Input.GetKeyDown(KeyCode.Backspace))

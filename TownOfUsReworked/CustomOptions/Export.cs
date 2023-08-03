@@ -2,8 +2,8 @@ namespace TownOfUsReworked.CustomOptions
 {
     public class Export : CustomButtonOption
     {
-        public CustomButtonOption Loading;
-        private List<OptionBehaviour> OldButtons = new();
+        private CustomButtonOption Loading { get; set; }
+        private List<OptionBehaviour> OldButtons { get; set; } = new();
         public List<CustomButtonOption> SlotButtons = new();
 
         public Export() : base(MultiMenu.main, "Save Custom Settings") => Do = ToDo;

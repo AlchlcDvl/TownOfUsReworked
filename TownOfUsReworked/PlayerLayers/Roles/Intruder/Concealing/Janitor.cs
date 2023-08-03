@@ -2,21 +2,24 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Janitor : Intruder
     {
-        public CustomButton CleanButton;
-        public CustomButton DragButton;
-        public CustomButton DropButton;
-        public DateTime LastDragged;
-        public DeadBody CurrentlyDragging;
-        public DateTime LastCleaned;
+        public CustomButton CleanButton { get; set; }
+        public CustomButton DragButton { get; set; }
+        public CustomButton DropButton { get; set; }
+        public DateTime LastDragged { get; set; }
+        public DeadBody CurrentlyDragging { get; set; }
+        public DateTime LastCleaned { get; set; }
 
         public override Color32 Color => ClientGameOptions.CustomIntColors ? Colors.Janitor : Colors.Intruder;
         public override string Name => "Janitor";
         public override LayerEnum Type => LayerEnum.Janitor;
         public override RoleEnum RoleType => RoleEnum.Janitor;
         public override Func<string> StartText => () => "You Know Their Secrets";
-        public override Func<string> AbilitiesText => () => "- You can clean up dead bodies, making them disappear from sight\n- You can drag bodies away to prevent them from getting " +
+        public override Func<string> Description => () => "- You can clean up dead bodies, making them disappear from sight\n- You can drag bodies away to prevent them from getting " +
             $"reported\n{CommonAbilities}";
         public override InspectorResults InspectorResults => InspectorResults.DealsWithDead;
+        public float CleanTimer => ButtonUtils.Timer(Player, LastCleaned, CustomGameOptions.JanitorCleanCd, LastImp && CustomGameOptions.SoloBoost ? -CustomGameOptions.UnderdogKillBonus :
+            0);
+        public float DragTimer => ButtonUtils.Timer(Player, LastDragged, CustomGameOptions.DragCd);
 
         public Janitor(PlayerControl player) : base(player)
         {
@@ -27,27 +30,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             DropButton = new(this, "Drop", AbilityTypes.Effect, "Tertiary", Drop);
         }
 
-        public float CleanTimer()
-        {
-            var timespan = DateTime.UtcNow - LastCleaned;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.JanitorCleanCd, LastImp && CustomGameOptions.SoloBoost ? -CustomGameOptions.UnderdogKillBonus : 0) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
-        }
-
-        public float DragTimer()
-        {
-            var timespan = DateTime.UtcNow - LastDragged;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.DragCd) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
-        }
-
         public void Clean()
         {
-            if (CleanTimer() != 0f || IsTooFar(Player, CleanButton.TargetBody))
+            if (CleanTimer != 0f || IsTooFar(Player, CleanButton.TargetBody))
                 return;
 
             Spread(Player, PlayerByBody(CleanButton.TargetBody));
@@ -61,7 +46,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Drag()
         {
-            if (IsTooFar(Player, DragButton.TargetBody) || CurrentlyDragging)
+            if (IsTooFar(Player, DragButton.TargetBody) || CurrentlyDragging || DragTimer != 0f)
                 return;
 
             CurrentlyDragging = DragButton.TargetBody;
@@ -83,9 +68,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            CleanButton.Update("CLEAN", CleanTimer(), CustomGameOptions.JanitorCleanCd, LastImp && CustomGameOptions.SoloBoost ? -CustomGameOptions.UnderdogKillBonus : 0, true,
+            CleanButton.Update("CLEAN", CleanTimer, CustomGameOptions.JanitorCleanCd, LastImp && CustomGameOptions.SoloBoost ? -CustomGameOptions.UnderdogKillBonus : 0, true,
                 CurrentlyDragging == null);
-            DragButton.Update("DRAG", DragTimer(), CustomGameOptions.DragCd, true, CurrentlyDragging == null);
+            DragButton.Update("DRAG", DragTimer, CustomGameOptions.DragCd, true, CurrentlyDragging == null);
             DropButton.Update("DROP", true, CurrentlyDragging != null);
         }
     }

@@ -99,19 +99,15 @@ namespace TownOfUsReworked.Patches
                 return false;
 
             var notmodified = true;
-            var player = CustomPlayer.Local;
 
             if (opts.Mode is not MapOptions.Modes.None and not MapOptions.Modes.CountOverlay)
             {
-                if (((player.Is(Faction.Syndicate) && CustomGameOptions.AltImps) || player.Is(Faction.Intruder)) && CustomGameOptions.IntrudersCanSabotage && (!player.Data.IsDead ||
-                    (player.Data.IsDead && CustomGameOptions.GhostsCanSabotage)) && Role.GetRoles(player.GetFaction()).Any(x => !x.IsDead))
-                {
+                if (CustomPlayer.Local.CanSabotage())
                     __instance.ShowSabotageMap();
-                }
                 else
                     __instance.ShowNormalMap();
 
-                __instance.taskOverlay.gameObject.SetActive(player.Is(Faction.Crew));
+                __instance.taskOverlay.gameObject.SetActive(CustomPlayer.Local.Is(Faction.Crew));
                 notmodified = false;
             }
 
@@ -190,7 +186,7 @@ namespace TownOfUsReworked.Patches
     {
         public static void Postfix(Minigame __instance)
         {
-            if (!__instance || ! CustomPlayer.Local.Is(AbilityEnum.Multitasker))
+            if (!__instance || !CustomPlayer.Local.Is(AbilityEnum.Multitasker))
                 return;
 
             __instance.GetComponentsInChildren<SpriteRenderer>().ToList().ForEach(x => x.color = new(x.color.r, x.color.g, x.color.b, CustomGameOptions.Transparancy / 100f));
@@ -219,7 +215,7 @@ namespace TownOfUsReworked.Patches
                 var panel = UObject.Instantiate(__instance.PanelPrefab, __instance.transform);
                 panel.transform.localPosition = new(__instance.XStart + (num * __instance.XOffset), __instance.YStart + (num2 * __instance.YOffset), -1f);
                 panel.SetPlayer(i, player.Data, (Action)(() => menu.Clicked(player)));
-                panel.NameText.color = CustomPlayer.Local == player ? Role.GetRole(menu.Owner).Color : UColor.white;
+                (panel.NameText.text, panel.NameText.color) = UpdateNames.UpdateGameName(player);
                 __instance.potentialVictims.Add(panel);
                 list2.Add(panel.Button);
             }
@@ -349,38 +345,25 @@ namespace TownOfUsReworked.Patches
         }
     }
 
-    [HarmonyPatch]
-    public static class SpeedPatch
+    [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.FixedUpdate))]
+    public static class SpeedPhysicsPatch
     {
-        private static float _time;
-
-        [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.FixedUpdate))]
-        [HarmonyPostfix]
-        public static void PostfixPhysics(PlayerPhysics __instance)
+        public static void Postfix(PlayerPhysics __instance)
         {
             if (__instance.AmOwner && GameData.Instance && __instance.myPlayer.CanMove)
                 __instance.body.velocity *= CustomPlayer.Custom(__instance.myPlayer).SpeedFactor;
-
-            if (__instance.myPlayer.Is(ModifierEnum.Flincher) && !__instance.myPlayer.Data.IsDead && __instance.myPlayer.CanMove && !Meeting)
-            {
-                _time += Time.deltaTime;
-
-                if (_time >= CustomGameOptions.FlinchInterval && __instance.AmOwner)
-                {
-                    __instance.body.velocity *= -1;
-                    _time -= CustomGameOptions.FlinchInterval;
-                }
-            }
         }
+    }
 
-        [HarmonyPatch(typeof(CustomNetworkTransform), nameof(CustomNetworkTransform.FixedUpdate))]
-        [HarmonyPostfix]
-        public static void PostfixNetwork(CustomNetworkTransform __instance)
+    [HarmonyPatch(typeof(CustomNetworkTransform), nameof(CustomNetworkTransform.FixedUpdate))]
+    public static class SpeedNetworkPatch
+    {
+        public static void Postfix(CustomNetworkTransform __instance)
         {
             if (!__instance.AmOwner && __instance.interpolateMovement != 0 && GameData.Instance)
             {
                 var player = __instance.gameObject.GetComponent<PlayerControl>();
-                __instance.body.velocity *= IsLobby ? CustomGameOptions.PlayerSpeed : CustomPlayer.Custom(player).SpeedFactor;
+                __instance.body.velocity *= CustomPlayer.Custom(player).SpeedFactor;
             }
         }
     }

@@ -2,27 +2,27 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class BountyHunter : Neutral
     {
-        public PlayerControl TargetPlayer;
-        public bool TargetKilled;
-        public bool ColorHintGiven;
-        public bool RoleHintGiven;
-        public bool TargetFound;
-        public DateTime LastChecked;
-        public CustomButton GuessButton;
-        public CustomButton HuntButton;
-        public CustomButton RequestButton;
-        public PlayerControl RequestingPlayer;
-        public PlayerControl TentativeTarget;
+        public PlayerControl TargetPlayer { get; set; }
+        public bool TargetKilled { get; set; }
+        public bool ColorHintGiven { get; set; }
+        public bool RoleHintGiven { get; set; }
+        public bool TargetFound { get; set; }
+        public DateTime LastChecked { get; set; }
+        public CustomButton GuessButton { get; set; }
+        public CustomButton HuntButton { get; set; }
+        public CustomButton RequestButton { get; set; }
+        public PlayerControl RequestingPlayer { get; set; }
+        public PlayerControl TentativeTarget { get; set; }
         public bool ButtonUsable => UsesLeft > 0;
         public bool Failed => (UsesLeft <= 0 && !TargetFound) || (!TargetKilled && (TargetPlayer.Data.IsDead || TargetPlayer.Data.Disconnected));
-        public int UsesLeft;
-        private int LettersGiven;
-        private bool LettersExhausted;
+        public int UsesLeft { get; set; }
+        private int LettersGiven { get; set; }
+        private bool LettersExhausted { get; set; }
         private readonly List<string> Letters = new();
         public bool CanHunt => (TargetFound && !TargetPlayer.Data.IsDead && !TargetPlayer.Data.Disconnected) || (TargetKilled && !CustomGameOptions.AvoidNeutralKingmakers);
         public bool CanRequest => (RequestingPlayer == null || RequestingPlayer.Data.IsDead || RequestingPlayer.Data.Disconnected) && TargetPlayer == null;
-        public bool Assigned;
-        public int Rounds;
+        public bool Assigned { get; set; }
+        public int Rounds { get; set; }
         public bool TargetFailed => TargetPlayer == null && Rounds > 2;
 
         public override Color32 Color => ClientGameOptions.CustomNeutColors ? Colors.BountyHunter : Colors.Neutral;
@@ -30,10 +30,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override LayerEnum Type => LayerEnum.BountyHunter;
         public override RoleEnum RoleType => RoleEnum.BountyHunter;
         public override Func<string> StartText => () => "Find And Kill Your Target";
-        public override Func<string> AbilitiesText => () => TargetPlayer == null ? "- You can request a hit from a player to set your bounty" : ("- You can guess a player to be your " +
+        public override Func<string> Description => () => TargetPlayer == null ? "- You can request a hit from a player to set your bounty" : ("- You can guess a player to be your " +
             "bounty\n- Upon finding the bounty, you can kill them\n- After your bounty has been killed by you, you can kill others as many times as you want\n- If your target dies not by "
             + "your hands, you will become a <color=#678D36FF>Troll</color>");
         public override InspectorResults InspectorResults => InspectorResults.TracksOthers;
+        public float Timer => ButtonUtils.Timer(Player, LastChecked, CustomGameOptions.BountyHunterCooldown);
 
         public BountyHunter(PlayerControl player) : base(player)
         {
@@ -48,15 +49,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public bool Exception(PlayerControl player) => player == TargetPlayer || player.IsLinkedTo(Player) || GetRole(player).Requesting || (player.Is(SubFaction) && SubFaction !=
             SubFaction.None);
-
-        public float CheckTimer()
-        {
-            var timespan = DateTime.UtcNow - LastChecked;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.BountyHunterCooldown) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
-        }
 
         public void TurnTroll()
         {
@@ -173,8 +165,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            GuessButton.Update("GUESS", CheckTimer(), CustomGameOptions.BountyHunterCooldown, UsesLeft, true, !TargetFound && TargetPlayer != null);
-            HuntButton.Update("HUNT", CheckTimer(), CustomGameOptions.BountyHunterCooldown, true, TargetPlayer != null && CanHunt);
+            GuessButton.Update("GUESS", Timer, CustomGameOptions.BountyHunterCooldown, UsesLeft, true, !TargetFound && TargetPlayer != null);
+            HuntButton.Update("HUNT", Timer, CustomGameOptions.BountyHunterCooldown, true, TargetPlayer != null && CanHunt);
             RequestButton.Update("REQUEST HIT", true, CanRequest);
 
             if ((TargetFailed || (TargetPlayer != null && Failed)) && !IsDead)
@@ -197,7 +189,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Guess()
         {
-            if (IsTooFar(Player, GuessButton.TargetPlayer) || CheckTimer() != 0f)
+            if (IsTooFar(Player, GuessButton.TargetPlayer) || Timer != 0f)
                 return;
 
             if (GuessButton.TargetPlayer != TargetPlayer)
@@ -216,7 +208,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Hunt()
         {
-            if (IsTooFar(Player, HuntButton.TargetPlayer) || CheckTimer() != 0f || !TargetFound)
+            if (IsTooFar(Player, HuntButton.TargetPlayer) || Timer != 0f || !TargetFound)
                 return;
 
             if (HuntButton.TargetPlayer != TargetPlayer && !TargetKilled)

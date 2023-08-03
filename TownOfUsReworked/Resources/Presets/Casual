@@ -413,9 +413,6 @@ Move Electrical Outlet
 <color=#FF8080FF>Dwarf</color>
 40
 1
-<color=#80B3FFFF>Flincher</color>
-10
-1
 <color=#FFB34DFF>Giant</color>
 40
 1
@@ -1473,10 +1470,6 @@ False
 1.5
 <color=#FF8080FF>Dwarf</color> Scale
 0.5
-<color=#80B3FFFF>Flincher</color> Is Unique
-False
-Flinch Interval
-5
 <color=#FFB34DFF>Giant</color> Is Unique
 False
 <color=#FFB34DFF>Giant</color> Speed

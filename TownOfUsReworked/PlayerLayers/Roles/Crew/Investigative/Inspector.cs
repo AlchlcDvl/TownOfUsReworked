@@ -2,16 +2,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Inspector : Crew
     {
-        public DateTime LastInspected;
-        public List<byte> Inspected = new();
-        public CustomButton InspectButton;
+        public DateTime LastInspected { get; set; }
+        public List<byte> Inspected { get; set; }
+        public CustomButton InspectButton { get; set; }
+        public float Timer => ButtonUtils.Timer(Player, LastInspected, CustomGameOptions.InspectCooldown);
 
         public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Inspector : Colors.Crew;
         public override string Name => "Inspector";
         public override LayerEnum Type => LayerEnum.Inspector;
         public override RoleEnum RoleType => RoleEnum.Inspector;
         public override Func<string> StartText => () => "Inspect Players For Their Roles";
-        public override Func<string> AbilitiesText => () => "- You can check a player to get a role list of what they could be";
+        public override Func<string> Description => () => "- You can check a player to get a role list of what they could be";
         public override InspectorResults InspectorResults => InspectorResults.GainsInfo;
 
         public Inspector(PlayerControl player) : base(player)
@@ -21,18 +22,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             InspectButton = new(this, "Inspect", AbilityTypes.Direct, "ActionSecondary", Inspect, Exception);
         }
 
-        public float InspectTimer()
-        {
-            var timespan = DateTime.UtcNow - LastInspected;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.InspectCooldown) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
-        }
-
         public void Inspect()
         {
-            if (InspectTimer() != 0f || IsTooFar(Player, InspectButton.TargetPlayer) || Inspected.Contains(InspectButton.TargetPlayer.PlayerId))
+            if (Timer != 0f || IsTooFar(Player, InspectButton.TargetPlayer) || Inspected.Contains(InspectButton.TargetPlayer.PlayerId))
                 return;
 
             var interact = Interact(Player, InspectButton.TargetPlayer);
@@ -54,7 +46,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            InspectButton.Update("INSPECT", InspectTimer(), CustomGameOptions.InspectCooldown);
+            InspectButton.Update("INSPECT", Timer, CustomGameOptions.InspectCooldown);
         }
     }
 }

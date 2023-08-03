@@ -2,7 +2,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
 {
     public class Allied : Objectifier
     {
-        public Faction Side = Faction.Neutral;
+        public Faction Side { get; set; }
 
         public override Color32 Color
         {
@@ -22,8 +22,8 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         public override string Symbol => "ζ";
         public override LayerEnum Type => LayerEnum.Allied;
         public override ObjectifierEnum ObjectifierType => ObjectifierEnum.Allied;
-        public override Func<string> TaskText => () => Side == Faction.Neutral ? "- You are conflicted" : "";
+        public override Func<string> Description => () => Side == Faction.Neutral ? "- You are conflicted" : "";
 
-        public Allied(PlayerControl player) : base(player) {}
+        public Allied(PlayerControl player) : base(player) => Side = Faction.Neutral;
     }
 }

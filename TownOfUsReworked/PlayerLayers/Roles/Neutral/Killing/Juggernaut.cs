@@ -2,17 +2,18 @@
 {
     public class Juggernaut : Neutral
     {
-        public DateTime LastKilled;
-        public int JuggKills;
-        public CustomButton AssaultButton;
+        public DateTime LastKilled { get; set; }
+        public int JuggKills { get; set; }
+        public CustomButton AssaultButton { get; set; }
 
         public override Color32 Color => ClientGameOptions.CustomNeutColors ? Colors.Juggernaut : Colors.Neutral;
         public override string Name => "Juggernaut";
         public override LayerEnum Type => LayerEnum.Juggernaut;
         public override RoleEnum RoleType => RoleEnum.Juggernaut;
         public override Func<string> StartText => () => "Your Power Grows With Every Kill";
-        public override Func<string> AbilitiesText => () => "- With each kill, your kill cooldown decreases" + (JuggKills >= 4 ? "\n- You can bypass all forms of protection" : "");
+        public override Func<string> Description => () => "- With each kill, your kill cooldown decreases" + (JuggKills >= 4 ? "\n- You can bypass all forms of protection" : "");
         public override InspectorResults InspectorResults => InspectorResults.IsAggressive;
+        public float Timer => ButtonUtils.Timer(Player, LastKilled, CustomGameOptions.JuggKillCooldown, -(CustomGameOptions.JuggKillBonus * JuggKills));
 
         public Juggernaut(PlayerControl player) : base(player)
         {
@@ -22,18 +23,9 @@
             AssaultButton = new(this, "Assault", AbilityTypes.Direct, "ActionSecondary", Assault, Exception);
         }
 
-        public float AssaultTimer()
-        {
-            var timespan = DateTime.UtcNow - LastKilled;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.JuggKillCooldown, -(CustomGameOptions.JuggKillBonus * JuggKills)) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
-        }
-
         public void Assault()
         {
-            if (IsTooFar(Player, AssaultButton.TargetPlayer) || AssaultTimer() != 0f)
+            if (IsTooFar(Player, AssaultButton.TargetPlayer) || Timer != 0f)
                 return;
 
             var interact = Interact(Player, AssaultButton.TargetPlayer, true, false, JuggKills >= 4);
@@ -58,7 +50,7 @@
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            AssaultButton.Update("ASSAULT", AssaultTimer(), CustomGameOptions.JuggKillCooldown, -(CustomGameOptions.JuggKillBonus * JuggKills));
+            AssaultButton.Update("ASSAULT", Timer, CustomGameOptions.JuggKillCooldown, -(CustomGameOptions.JuggKillBonus * JuggKills));
         }
     }
 }

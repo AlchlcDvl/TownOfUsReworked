@@ -2,9 +2,9 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
 {
     public class Fanatic : Objectifier
     {
-        public bool Turned;
-        public bool Betrayed;
-        public Faction Side = Faction.Crew;
+        public bool Turned { get; set; }
+        public bool Betrayed { get; set; }
+        public Faction Side { get; set; }
         public bool Betray => ((Side == Faction.Intruder && LastImp) || (Side == Faction.Syndicate && LastSyn)) && !IsDead && Turned && !Betrayed;
 
         public override Color32 Color
@@ -28,11 +28,11 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         public override string Symbol => "♠";
         public override LayerEnum Type => LayerEnum.Fanatic;
         public override ObjectifierEnum ObjectifierType => ObjectifierEnum.Fanatic;
-        public override Func<string> TaskText => () => !Turned ? "- Get attacked by either an <color=#FF0000FF>Intruder</color> or a <color=#008000FF>Syndicate</color> to join their side" :
-            "";
+        public override Func<string> Description => () => !Turned ? ("- Get attacked by either an <color=#FF0000FF>Intruder</color> or a <color=#008000FF>Syndicate</color> to join their " +
+            "side") : "";
         public override bool Hidden => !CustomGameOptions.FanaticKnows && !Turned && !IsDead;
 
-        public Fanatic(PlayerControl player) : base(player) {}
+        public Fanatic(PlayerControl player) : base(player) => Side = Faction.Crew;
 
         public void TurnFanatic(Faction faction)
         {

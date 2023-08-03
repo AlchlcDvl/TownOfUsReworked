@@ -60,9 +60,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         }
 
         //Rebel Stuff
-        public Role FormerRole;
-        public bool Enabled;
-        public float TimeRemaining;
+        public Role FormerRole { get; set; }
+        public bool Enabled { get; set; }
+        public float TimeRemaining { get; set; }
         public bool OnEffect => TimeRemaining > 0f;
 
         public override Color32 Color => ClientGameOptions.CustomSynColors ? Colors.Rebel : Colors.Syndicate;
@@ -70,8 +70,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override LayerEnum Type => LayerEnum.PromotedRebel;
         public override RoleEnum RoleType => RoleEnum.PromotedRebel;
         public override Func<string> StartText => () => "Lead The <color=#008000FF>Syndicate</color>";
-        public override Func<string> AbilitiesText => () => "- You have succeeded the former <color=#FFFCCEFF>Rebel</color> and have a shorter cooldown on your former role's abilities\n" +
-            (FormerRole == null ? "" : $"\n{FormerRole.AbilitiesText()}");
+        public override Func<string> Description => () => "- You have succeeded the former <color=#FFFCCEFF>Rebel</color> and have a shorter cooldown on your former role's abilities" +
+            (FormerRole == null ? "" : $"\n{FormerRole.Description()}");
         public override InspectorResults InspectorResults => FormerRole == null ? InspectorResults.LeadsTheGroup : FormerRole.InspectorResults;
 
         public bool Exception1(PlayerControl player) => player == ConcealedPlayer || player == Player || (player.Is(Faction) && !CustomGameOptions.ConcealMates);
@@ -119,28 +119,28 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var flag5 = ShapeshiftPlayer1 == null && !HoldsDrive;
             var flag6 = ShapeshiftPlayer2 == null && !HoldsDrive;
             var flag7 = ConfusedPlayer == null && !HoldsDrive;
-            ConfuseButton.Update(flag7 ? "SET TARGET" : "CONFUSE", ConfuseTimer(), CustomGameOptions.ConfuseCooldown, OnEffect, TimeRemaining, CustomGameOptions.ConfuseDuration, true,
+            ConfuseButton.Update(flag7 ? "SET TARGET" : "CONFUSE", ConfuseTimer, CustomGameOptions.ConfuseCooldown, OnEffect, TimeRemaining, CustomGameOptions.ConfuseDuration, true,
                 IsDrunk);
-            StalkButton.Update("STALK", StalkTimer(), CustomGameOptions.StalkCd, true, !HoldsDrive && IsStalk);
-            SpellButton.Update("SPELL", SpellTimer(), CustomGameOptions.SpellCooldown, SpellCount * CustomGameOptions.SpellCooldownIncrease, true, IsSpell);
-            PositiveButton.Update("SET POSITIVE", PositiveTimer(), CustomGameOptions.CollideCooldown, true, IsCol);
-            NegativeButton.Update("SET NEGATIVE", NegativeTimer(), CustomGameOptions.CollideCooldown, true, IsCol);
-            ShapeshiftButton.Update(flag5 ? "FIRST TARGET" : (flag6 ? "SECOND TARGET": "SHAPESHIFT"), ShapeshiftTimer(), CustomGameOptions.ShapeshiftCooldown, OnEffect, TimeRemaining,
+            StalkButton.Update("STALK", StalkTimer, CustomGameOptions.StalkCd, true, !HoldsDrive && IsStalk);
+            SpellButton.Update("SPELL", SpellTimer, CustomGameOptions.SpellCooldown, SpellCount * CustomGameOptions.SpellCooldownIncrease, true, IsSpell);
+            PositiveButton.Update("SET POSITIVE", PositiveTimer, CustomGameOptions.CollideCooldown, true, IsCol);
+            NegativeButton.Update("SET NEGATIVE", NegativeTimer, CustomGameOptions.CollideCooldown, true, IsCol);
+            ShapeshiftButton.Update(flag5 ? "FIRST TARGET" : (flag6 ? "SECOND TARGET": "SHAPESHIFT"), ShapeshiftTimer, CustomGameOptions.ShapeshiftCooldown, OnEffect, TimeRemaining,
                 CustomGameOptions.ShapeshiftDuration, true, IsSS);
-            WarpButton.Update(flag3 ? "FIRST TARGET" : (flag4 ? "SECOND TARGET" : "WARP"), WarpTimer(), CustomGameOptions.WarpCooldown, true, IsWarp);
-            PoisonButton.Update("POISON", PoisonTimer(), CustomGameOptions.PoisonCd, OnEffect, TimeRemaining, CustomGameOptions.PoisonDuration, true, !HoldsDrive && IsPois);
-            GlobalPoisonButton.Update(flag1 ? "SET TARGET" : "POISON", PoisonTimer(), CustomGameOptions.PoisonCd, OnEffect, TimeRemaining, CustomGameOptions.PoisonDuration, true,
+            WarpButton.Update(flag3 ? "FIRST TARGET" : (flag4 ? "SECOND TARGET" : "WARP"), WarpTimer, CustomGameOptions.WarpCooldown, true, IsWarp);
+            PoisonButton.Update("POISON", PoisonTimer, CustomGameOptions.PoisonCd, OnEffect, TimeRemaining, CustomGameOptions.PoisonDuration, true, !HoldsDrive && IsPois);
+            GlobalPoisonButton.Update(flag1 ? "SET TARGET" : "POISON", PoisonTimer, CustomGameOptions.PoisonCd, OnEffect, TimeRemaining, CustomGameOptions.PoisonDuration, true,
                 HoldsDrive && IsPois);
-            FrameButton.Update("FRAME", FrameTimer(), CustomGameOptions.FrameCooldown, true, !HoldsDrive && IsFram);
-            RadialFrameButton.Update("FRAME", FrameTimer(), CustomGameOptions.FrameCooldown, true, HoldsDrive && IsFram);
-            ConcealButton.Update(flag ? "SET TARGET" : "CONCEAL", ConcealTimer(), CustomGameOptions.ConcealCooldown, OnEffect, TimeRemaining, CustomGameOptions.ConcealDuration, true,
+            FrameButton.Update("FRAME", FrameTimer, CustomGameOptions.FrameCooldown, true, !HoldsDrive && IsFram);
+            RadialFrameButton.Update("FRAME", FrameTimer, CustomGameOptions.FrameCooldown, true, HoldsDrive && IsFram);
+            ConcealButton.Update(flag ? "SET TARGET" : "CONCEAL", ConcealTimer, CustomGameOptions.ConcealCooldown, OnEffect, TimeRemaining, CustomGameOptions.ConcealDuration, true,
                 IsConc);
-            BombButton.Update("PLACE", BombTimer(), CustomGameOptions.BombCooldown, true, IsBomb);
-            DetonateButton.Update("DETONATE", DetonateTimer(), CustomGameOptions.DetonateCooldown, true, Bombs?.Count > 0 && IsBomb);
-            TimeButton.Update(HoldsDrive ? "REWIND" : "FREEZE", TimeTimer(), CustomGameOptions.TimeControlCooldown, OnEffect, TimeRemaining, CustomGameOptions.TimeControlDuration, true,
+            BombButton.Update("PLACE", BombTimer, CustomGameOptions.BombCooldown, true, IsBomb);
+            DetonateButton.Update("DETONATE", DetonateTimer, CustomGameOptions.DetonateCooldown, true, Bombs?.Count > 0 && IsBomb);
+            TimeButton.Update(HoldsDrive ? "REWIND" : "FREEZE", TimeTimer, CustomGameOptions.TimeControlCooldown, OnEffect, TimeRemaining, CustomGameOptions.TimeControlDuration, true,
                 IsTK);
-            SilenceButton.Update("SILENCE", SilenceTimer(), CustomGameOptions.SilenceCooldown, true, IsSil);
-            ChargeButton.Update("CHARGE", ChargeTimer(), CustomGameOptions.ChargeCooldown, OnEffect, TimeRemaining, CustomGameOptions.ChargeDuration, true, HoldsDrive && IsCol);
+            SilenceButton.Update("SILENCE", SilenceTimer, CustomGameOptions.SilenceCooldown, true, IsSil);
+            ChargeButton.Update("CHARGE", ChargeTimer, CustomGameOptions.ChargeCooldown, OnEffect, TimeRemaining, CustomGameOptions.ChargeDuration, true, HoldsDrive && IsCol);
 
             if (Input.GetKeyDown(KeyCode.Backspace))
             {
@@ -277,11 +277,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public bool IsAnarch => FormerRole?.RoleType == RoleEnum.Anarchist;
 
         //Concealer Stuff
-        public CustomButton ConcealButton;
-        public DateTime LastConcealed;
-        public PlayerControl ConcealedPlayer;
-        public CustomMenu ConcealMenu;
+        public CustomButton ConcealButton { get; set; }
+        public DateTime LastConcealed { get; set; }
+        public PlayerControl ConcealedPlayer { get; set; }
+        public CustomMenu ConcealMenu { get; set; }
         public bool IsConc => FormerRole?.RoleType == RoleEnum.Concealer;
+        public float ConcealTimer => ButtonUtils.Timer(Player, LastConcealed, CustomGameOptions.ConcealCooldown);
 
         public void Conceal()
         {
@@ -308,15 +309,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 DefaultOutfit(ConcealedPlayer);
         }
 
-        public float ConcealTimer()
-        {
-            var timespan = DateTime.UtcNow - LastConcealed;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.ConcealCooldown) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
-        }
-
         public void ConcealClick(PlayerControl player)
         {
             var interact = Interact(Player, player);
@@ -331,7 +323,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void HitConceal()
         {
-            if (ConcealTimer() != 0f || OnEffect)
+            if (ConcealTimer != 0f || OnEffect)
                 return;
 
             if (HoldsDrive)
@@ -351,20 +343,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         }
 
         //Framer Stuff
-        public CustomButton FrameButton;
-        public List<byte> Framed = new();
-        public DateTime LastFramed;
-        public CustomButton RadialFrameButton;
+        public CustomButton FrameButton { get; set; }
+        public List<byte> Framed { get; set; }
+        public DateTime LastFramed { get; set; }
+        public CustomButton RadialFrameButton { get; set; }
         public bool IsFram => FormerRole?.RoleType == RoleEnum.Framer;
-
-        public float FrameTimer()
-        {
-            var timespan = DateTime.UtcNow - LastFramed;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.FrameCooldown) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
-        }
+        public float FrameTimer => ButtonUtils.Timer(Player, LastFramed, CustomGameOptions.FrameCooldown);
 
         public void RpcFrame(PlayerControl player)
         {
@@ -377,7 +361,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Frame()
         {
-            if (FrameTimer() != 0f || IsTooFar(Player, FrameButton.TargetPlayer) || HoldsDrive)
+            if (FrameTimer != 0f || IsTooFar(Player, FrameButton.TargetPlayer) || HoldsDrive)
                 return;
 
             var interact = Interact(Player, FrameButton.TargetPlayer);
@@ -393,7 +377,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void RadialFrame()
         {
-            if (FrameTimer() != 0f || !HoldsDrive)
+            if (FrameTimer != 0f || !HoldsDrive)
                 return;
 
             GetClosestPlayers(CustomPlayer.Local.GetTruePosition(), CustomGameOptions.ChaosDriveFrameRadius).ForEach(RpcFrame);
@@ -401,12 +385,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         }
 
         //Poisoner Stuff
-        public CustomButton PoisonButton;
-        public CustomButton GlobalPoisonButton;
-        public DateTime LastPoisoned;
-        public PlayerControl PoisonedPlayer;
-        public CustomMenu PoisonMenu;
+        public CustomButton PoisonButton { get; set; }
+        public CustomButton GlobalPoisonButton { get; set; }
+        public DateTime LastPoisoned { get; set; }
+        public PlayerControl PoisonedPlayer { get; set; }
+        public CustomMenu PoisonMenu { get; set; }
         public bool IsPois => FormerRole?.RoleType == RoleEnum.Poisoner;
+        public float PoisonTimer => ButtonUtils.Timer(Player, LastPoisoned, CustomGameOptions.PoisonCd);
 
         public void Poison()
         {
@@ -443,7 +428,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void HitPoison()
         {
-            if (PoisonTimer() != 0f || OnEffect || HoldsDrive || IsTooFar(Player, PoisonButton.TargetPlayer))
+            if (PoisonTimer != 0f || OnEffect || HoldsDrive || IsTooFar(Player, PoisonButton.TargetPlayer))
                 return;
 
             var interact = Interact(Player, PoisonButton.TargetPlayer);
@@ -465,7 +450,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void HitGlobalPoison()
         {
-            if (PoisonTimer() != 0f || OnEffect || !HoldsDrive)
+            if (PoisonTimer != 0f || OnEffect || !HoldsDrive)
                 return;
 
             if (PoisonedPlayer == null)
@@ -478,23 +463,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
         }
 
-        public float PoisonTimer()
-        {
-            var timespan = DateTime.UtcNow - LastPoisoned;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.PoisonCd) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
-        }
-
         //Shapeshifter Stuff
-        public CustomButton ShapeshiftButton;
-        public DateTime LastShapeshifted;
-        public PlayerControl ShapeshiftPlayer1;
-        public PlayerControl ShapeshiftPlayer2;
-        public CustomMenu ShapeshiftMenu1;
-        public CustomMenu ShapeshiftMenu2;
+        public CustomButton ShapeshiftButton { get; set; }
+        public DateTime LastShapeshifted { get; set; }
+        public PlayerControl ShapeshiftPlayer1 { get; set; }
+        public PlayerControl ShapeshiftPlayer2 { get; set; }
+        public CustomMenu ShapeshiftMenu1 { get; set; }
+        public CustomMenu ShapeshiftMenu2 { get; set; }
         public bool IsSS => FormerRole?.RoleType == RoleEnum.Shapeshifter;
+        public float ShapeshiftTimer => ButtonUtils.Timer(Player, LastShapeshifted, CustomGameOptions.ShapeshiftCooldown);
 
         public void Shapeshift()
         {
@@ -530,15 +507,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             ShapeshiftPlayer2 = null;
         }
 
-        public float ShapeshiftTimer()
-        {
-            var timespan = DateTime.UtcNow - LastShapeshifted;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.ShapeshiftCooldown) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
-        }
-
         public void ShapeshiftClick1(PlayerControl player)
         {
             var interact = Interact(Player, player);
@@ -565,7 +533,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void HitShapeshift()
         {
-            if (ShapeshiftTimer() != 0f)
+            if (ShapeshiftTimer != 0f || OnEffect)
                 return;
 
             if (HoldsDrive)
@@ -587,34 +555,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         }
 
         //Bomber Stuff
-        public DateTime LastPlaced;
-        public DateTime LastDetonated;
-        public CustomButton BombButton;
-        public CustomButton DetonateButton;
-        public List<Bomb> Bombs;
+        public DateTime LastPlaced { get; set; }
+        public DateTime LastDetonated { get; set; }
+        public CustomButton BombButton { get; set; }
+        public CustomButton DetonateButton { get; set; }
+        public List<Bomb> Bombs { get; set; }
         public bool IsBomb => FormerRole?.RoleType == RoleEnum.Bomber;
-
-        public float BombTimer()
-        {
-            var timespan = DateTime.UtcNow - LastPlaced;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.BombCooldown) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
-        }
-
-        public float DetonateTimer()
-        {
-            var timespan = DateTime.UtcNow - LastDetonated;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.DetonateCooldown) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
-        }
+        public float BombTimer => ButtonUtils.Timer(Player, LastPlaced, CustomGameOptions.BombCooldown);
+        public float DetonateTimer => ButtonUtils.Timer(Player, LastDetonated, CustomGameOptions.DetonateCooldown);
 
         public void Place()
         {
-            if (BombTimer() != 0f)
+            if (BombTimer != 0f)
                 return;
 
             Bombs.Add(new Bomb(Player, HoldsDrive));
@@ -626,7 +578,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Detonate()
         {
-            if (DetonateTimer() != 0f || Bombs.Count == 0)
+            if (DetonateTimer != 0f || Bombs.Count == 0)
                 return;
 
             Bomb.DetonateBombs(Bombs);
@@ -637,29 +589,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         }
 
         //Warper Stuff
-        public CustomButton WarpButton;
-        public DateTime LastWarped;
-        public PlayerControl WarpPlayer1;
-        public PlayerControl WarpPlayer2;
-        public CustomMenu WarpMenu1;
-        public CustomMenu WarpMenu2;
-        public Dictionary<byte, DateTime> UnwarpablePlayers = new();
-        public SpriteRenderer AnimationPlaying;
-        public GameObject WarpObj;
-        public DeadBody Player1Body;
-        public DeadBody Player2Body;
-        public bool WasInVent;
-        public Vent Vent;
+        public CustomButton WarpButton { get; set; }
+        public DateTime LastWarped { get; set; }
+        public PlayerControl WarpPlayer1 { get; set; }
+        public PlayerControl WarpPlayer2 { get; set; }
+        public CustomMenu WarpMenu1 { get; set; }
+        public CustomMenu WarpMenu2 { get; set; }
+        public Dictionary<byte, DateTime> UnwarpablePlayers { get; set; }
+        public SpriteRenderer AnimationPlaying { get; set; }
+        public GameObject WarpObj { get; set; }
+        public DeadBody Player1Body { get; set; }
+        public DeadBody Player2Body { get; set; }
+        public bool WasInVent { get; set; }
+        public Vent Vent { get; set; }
         public bool IsWarp => FormerRole?.RoleType == RoleEnum.Warper;
-
-        public float WarpTimer()
-        {
-            var timespan = DateTime.UtcNow - LastWarped;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.WarpCooldown) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
-        }
+        public float WarpTimer => ButtonUtils.Timer(Player, LastWarped, CustomGameOptions.WarpCooldown);
 
         public IEnumerator WarpPlayers()
         {
@@ -835,7 +779,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Warp()
         {
-            if (WarpTimer() != 0f)
+            if (WarpTimer != 0f)
                 return;
 
             if (HoldsDrive)
@@ -855,19 +799,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         }
 
         //Crusader Stuff
-        public DateTime LastCrusaded;
-        public PlayerControl CrusadedPlayer;
-        public CustomButton CrusadeButton;
+        public DateTime LastCrusaded { get; set; }
+        public PlayerControl CrusadedPlayer { get; set; }
+        public CustomButton CrusadeButton { get; set; }
         public bool IsCrus => FormerRole?.RoleType == RoleEnum.Crusader;
-
-        public float CrusadeTimer()
-        {
-            var timespan = DateTime.UtcNow - LastCrusaded;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.CrusadeCooldown) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
-        }
+        public float CrusadeTimer => ButtonUtils.Timer(Player, LastCrusaded, CustomGameOptions.CrusadeCooldown);
 
         public void Crusade()
         {
@@ -887,7 +823,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void HitCrusade()
         {
-            if (CrusadeTimer() != 0f || IsTooFar(Player, CrusadeButton.TargetPlayer))
+            if (CrusadeTimer != 0f || IsTooFar(Player, CrusadeButton.TargetPlayer))
                 return;
 
             var interact = Interact(Player, CrusadeButton.TargetPlayer);
@@ -906,47 +842,23 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         }
 
         //Collider Stuff
-        public CustomButton PositiveButton;
-        public CustomButton NegativeButton;
-        public CustomButton ChargeButton;
-        public DateTime LastPositive;
-        public DateTime LastNegative;
-        public DateTime LastCharged;
-        public PlayerControl Positive;
-        public PlayerControl Negative;
+        public CustomButton PositiveButton { get; set; }
+        public CustomButton NegativeButton { get; set; }
+        public CustomButton ChargeButton { get; set; }
+        public DateTime LastPositive { get; set; }
+        public DateTime LastNegative { get; set; }
+        public DateTime LastCharged { get; set; }
+        public PlayerControl Positive { get; set; }
+        public PlayerControl Negative { get; set; }
         private float Range => CustomGameOptions.CollideRange + (HoldsDrive ? CustomGameOptions.CollideRangeIncrease : 0);
         public bool IsCol => FormerRole?.RoleType == RoleEnum.Collider;
-
-        public float PositiveTimer()
-        {
-            var timespan = DateTime.UtcNow - LastPositive;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.CollideCooldown) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
-        }
-
-        public float NegativeTimer()
-        {
-            var timespan = DateTime.UtcNow - LastNegative;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.CollideCooldown) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
-        }
-
-        public float ChargeTimer()
-        {
-            var timespan = DateTime.UtcNow - LastCharged;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.ChargeCooldown) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
-        }
+        public float PositiveTimer => ButtonUtils.Timer(Player, LastPositive, CustomGameOptions.CollideCooldown);
+        public float NegativeTimer => ButtonUtils.Timer(Player, LastNegative, CustomGameOptions.CollideCooldown);
+        public float ChargeTimer => ButtonUtils.Timer(Player, LastCharged, CustomGameOptions.ChargeCooldown);
 
         public void SetPositive()
         {
-            if (HoldsDrive || IsTooFar(Player, PositiveButton.TargetPlayer) || PositiveTimer() != 0f)
+            if (HoldsDrive || IsTooFar(Player, PositiveButton.TargetPlayer) || PositiveTimer != 0f)
                 return;
 
             var interact = Interact(Player, PositiveButton.TargetPlayer);
@@ -962,7 +874,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void SetNegative()
         {
-            if (HoldsDrive || IsTooFar(Player, NegativeButton.TargetPlayer) || NegativeTimer() != 0f)
+            if (HoldsDrive || IsTooFar(Player, NegativeButton.TargetPlayer) || NegativeTimer != 0f)
                 return;
 
             var interact = Interact(Player, NegativeButton.TargetPlayer);
@@ -978,7 +890,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Charge()
         {
-            if (!HoldsDrive || OnEffect || ChargeTimer() != 0f)
+            if (!HoldsDrive || OnEffect || ChargeTimer != 0f)
                 return;
 
             TimeRemaining = CustomGameOptions.ChargeDuration;
@@ -1001,20 +913,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         }
 
         //Spellslinger Stuff
-        public CustomButton SpellButton;
-        public List<byte> Spelled = new();
-        public DateTime LastSpelled;
-        public int SpellCount;
+        public CustomButton SpellButton { get; set; }
+        public List<byte> Spelled { get; set; }
+        public DateTime LastSpelled { get; set; }
+        public int SpellCount { get; set; }
         public bool IsSpell => FormerRole?.RoleType == RoleEnum.Spellslinger;
-
-        public float SpellTimer()
-        {
-            var timespan = DateTime.UtcNow - LastSpelled;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.SpellCooldown, SpellCount * CustomGameOptions.SpellCooldownIncrease) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
-        }
+        public float SpellTimer => ButtonUtils.Timer(Player, LastSpelled, CustomGameOptions.SpellCooldown, SpellCount * CustomGameOptions.SpellCooldownIncrease);
 
         public void Spell(PlayerControl player)
         {
@@ -1032,7 +936,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void HitSpell()
         {
-            if (SpellTimer() != 0f || IsTooFar(Player, SpellButton.TargetPlayer))
+            if (SpellTimer != 0f || IsTooFar(Player, SpellButton.TargetPlayer))
                 return;
 
             if (HoldsDrive)
@@ -1055,19 +959,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         }
 
         //Stalker Stuff
-        public Dictionary<byte, CustomArrow> StalkerArrows = new();
-        public DateTime LastStalked;
-        public CustomButton StalkButton;
+        public Dictionary<byte, CustomArrow> StalkerArrows { get; set; }
+        public DateTime LastStalked { get; set; }
+        public CustomButton StalkButton { get; set; }
         public bool IsStalk => FormerRole?.RoleType == RoleEnum.Stalker;
-
-        public float StalkTimer()
-        {
-            var timespan = DateTime.UtcNow - LastStalked;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.StalkCd) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
-        }
+        public float StalkTimer => ButtonUtils.Timer(Player, LastStalked, CustomGameOptions.StalkCd);
 
         public void DestroyArrow(byte targetPlayerId)
         {
@@ -1077,7 +973,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Stalk()
         {
-            if (IsTooFar(Player, StalkButton.TargetPlayer) || StalkTimer() != 0f)
+            if (IsTooFar(Player, StalkButton.TargetPlayer) || StalkTimer != 0f)
                 return;
 
             var interact = Interact(Player, StalkButton.TargetPlayer);
@@ -1092,12 +988,13 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         }
 
         //Drunkard Stuff
-        public CustomButton ConfuseButton;
-        public DateTime LastConfused;
+        public CustomButton ConfuseButton { get; set; }
+        public DateTime LastConfused { get; set; }
         public float Modifier => OnEffect ? -1 : 1;
-        public PlayerControl ConfusedPlayer;
-        public CustomMenu ConfuseMenu;
+        public PlayerControl ConfusedPlayer { get; set; }
+        public CustomMenu ConfuseMenu { get; set; }
         public bool IsDrunk => FormerRole?.RoleType == RoleEnum.Drunkard;
+        public float ConfuseTimer => ButtonUtils.Timer(Player, LastConfused, CustomGameOptions.ConfuseCooldown);
 
         public void Confuse()
         {
@@ -1118,15 +1015,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             ConfusedPlayer = null;
         }
 
-        public float ConfuseTimer()
-        {
-            var timespan = DateTime.UtcNow - LastConfused;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.ConfuseCooldown) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
-        }
-
         public void ConfuseClick(PlayerControl player)
         {
             var interact = Interact(Player, player);
@@ -1141,7 +1029,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void HitConfuse()
         {
-            if (ConfuseTimer() != 0f || OnEffect)
+            if (ConfuseTimer != 0f || OnEffect)
                 return;
 
             if (HoldsDrive)
@@ -1161,18 +1049,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         }
 
         //Time Keeper Stuff
-        public DateTime LastTimed;
-        public CustomButton TimeButton;
+        public DateTime LastTimed { get; set; }
+        public CustomButton TimeButton { get; set; }
         public bool IsTK => FormerRole?.RoleType == RoleEnum.TimeKeeper;
-
-        public float TimeTimer()
-        {
-            var timespan = DateTime.UtcNow - LastTimed;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.TimeControlCooldown) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
-        }
+        public float TimeTimer => ButtonUtils.Timer(Player, LastTimed, CustomGameOptions.TimeControlCooldown);
 
         public void Control()
         {
@@ -1198,32 +1078,27 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void TimeControl()
         {
+            if (TimeTimer != 0f || OnEffect)
+                return;
+
             TimeRemaining = CustomGameOptions.TimeControlDuration;
             Control();
             CallRpc(CustomRPC.Action, ActionsRPC.RebelAction, RebelActionsRPC.TimeControl, this);
         }
 
         //Silencer Stuff
-        public CustomButton SilenceButton;
-        public PlayerControl SilencedPlayer;
-        public DateTime LastSilenced;
-        public bool ShookAlready;
-        public Sprite PrevOverlay;
-        public Color PrevColor;
+        public CustomButton SilenceButton { get; set; }
+        public PlayerControl SilencedPlayer { get; set; }
+        public DateTime LastSilenced { get; set; }
+        public bool ShookAlready { get; set; }
+        public Sprite PrevOverlay { get; set; }
+        public Color PrevColor { get; set; }
         public bool IsSil => FormerRole?.RoleType == RoleEnum.Silencer;
-
-        public float SilenceTimer()
-        {
-            var timespan = DateTime.UtcNow - LastSilenced;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.SilenceCooldown) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
-        }
+        public float SilenceTimer => ButtonUtils.Timer(Player, LastSilenced, CustomGameOptions.SilenceCooldown);
 
         public void Silence()
         {
-            if (SilenceTimer() != 0f || IsTooFar(Player, SilenceButton.TargetPlayer) || SilenceButton.TargetPlayer == SilencedPlayer)
+            if (SilenceTimer != 0f || IsTooFar(Player, SilenceButton.TargetPlayer) || SilenceButton.TargetPlayer == SilencedPlayer)
                 return;
 
             var interact = Interact(Player, SilenceButton.TargetPlayer);

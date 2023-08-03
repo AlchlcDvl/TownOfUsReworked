@@ -7,7 +7,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         public override string Symbol => "ω";
         public override LayerEnum Type => LayerEnum.Mafia;
         public override ObjectifierEnum ObjectifierType => ObjectifierEnum.Mafia;
-        public override Func<string> TaskText => () => "- Eliminate anyone who opposes the Mafia";
+        public override Func<string> Description => () => "- Eliminate anyone who opposes the Mafia";
 
         public Mafia(PlayerControl player) : base(player) => Role.GetRole(Player).RoleAlignment = Role.GetRole(Player).RoleAlignment.GetNewAlignment(Faction.Neutral);
     }

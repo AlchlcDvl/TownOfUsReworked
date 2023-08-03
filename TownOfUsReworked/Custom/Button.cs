@@ -3,7 +3,7 @@ namespace TownOfUsReworked.Custom
     public class CustomButton
     {
         public static readonly List<CustomButton> AllButtons = new();
-        public AbilityButton Base;
+        public AbilityButton Base { get; set; }
         public readonly PlayerLayer Owner;
         public readonly string Button;
         public readonly AbilityTypes Type;
@@ -11,14 +11,14 @@ namespace TownOfUsReworked.Custom
         public readonly bool PostDeath;
         public readonly bool HasUses;
         public readonly Click DoClick;
-        public bool Clickable;
-        public PlayerControl TargetPlayer;
-        public DeadBody TargetBody;
-        public Vent TargetVent;
-        public Exclude Exception;
-        private GameObject Block;
+        public bool Clickable { get; set; }
+        public PlayerControl TargetPlayer { get; set; }
+        public DeadBody TargetBody { get; set; }
+        public Vent TargetVent { get; set; }
+        public Exclude Exception { get; set; }
+        private GameObject Block { get; set; }
         private bool Local => Owner.Local || TownOfUsReworked.MCIActive;
-        private bool Disabled;
+        private bool Disabled { get; set; }
         public delegate void Click();
         public delegate bool Exclude(PlayerControl player);
         private bool SetAliveActive => !Owner.IsDead && Owner.Player.Is(Owner.Type, Owner.LayerType) && IsRoaming && Owner.Local && ButtonsActive;

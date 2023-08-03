@@ -13,6 +13,8 @@ namespace TownOfUsReworked.Patches
                     Role.GetRole<Retributionist>(CustomPlayer.Local).UntransportablePlayers.Add(__instance.myPlayer.PlayerId, DateTime.UtcNow);
                 else if (CustomPlayer.Local.Is(RoleEnum.Warper))
                     Role.GetRole<Warper>(CustomPlayer.Local).UnwarpablePlayers.Add(__instance.myPlayer.PlayerId, DateTime.UtcNow);
+                else if (CustomPlayer.Local.Is(RoleEnum.PromotedRebel))
+                    Role.GetRole<PromotedRebel>(CustomPlayer.Local).UnwarpablePlayers.Add(__instance.myPlayer.PlayerId, DateTime.UtcNow);
                 else
                     CallRpc(CustomRPC.Action, ActionsRPC.SetUninteractable, CustomPlayer.Local);
             }
@@ -39,6 +41,8 @@ namespace TownOfUsReworked.Patches
                     Role.GetRole<Retributionist>(CustomPlayer.Local).UntransportablePlayers.Add(CustomPlayer.Local.PlayerId, DateTime.UtcNow);
                 else if (CustomPlayer.Local.Is(RoleEnum.Warper))
                     Role.GetRole<Warper>(CustomPlayer.Local).UnwarpablePlayers.Add(CustomPlayer.Local.PlayerId, DateTime.UtcNow);
+                else if (CustomPlayer.Local.Is(RoleEnum.PromotedRebel))
+                    Role.GetRole<PromotedRebel>(CustomPlayer.Local).UnwarpablePlayers.Add(CustomPlayer.Local.PlayerId, DateTime.UtcNow);
                 else
                     CallRpc(CustomRPC.Action, ActionsRPC.SetUninteractable, CustomPlayer.Local);
             }

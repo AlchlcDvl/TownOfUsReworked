@@ -2,23 +2,24 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Drunkard : Syndicate
     {
-        public CustomButton ConfuseButton;
-        public bool Enabled;
-        public DateTime LastConfused;
-        public float TimeRemaining;
+        public CustomButton ConfuseButton { get; set; }
+        public bool Enabled { get; set; }
+        public DateTime LastConfused { get; set; }
+        public float TimeRemaining { get; set; }
         public bool Confused => TimeRemaining > 0f;
         public float Modifier => Confused ? -1 : 1;
-        public PlayerControl ConfusedPlayer;
-        public CustomMenu ConfuseMenu;
+        public PlayerControl ConfusedPlayer { get; set; }
+        public CustomMenu ConfuseMenu { get; set; }
 
         public override Color32 Color => ClientGameOptions.CustomSynColors ? Colors.Drunkard : Colors.Syndicate;
         public override string Name => "Drunkard";
         public override LayerEnum Type => LayerEnum.Drunkard;
         public override RoleEnum RoleType => RoleEnum.Drunkard;
         public override Func<string> StartText => () => "<i>Burp</i>";
-        public override Func<string> AbilitiesText => () => $"- You can confuse {(HoldsDrive ? "everyone" : "a player")}\n- Confused players will have their controls reverse\n" +
+        public override Func<string> Description => () => $"- You can confuse {(HoldsDrive ? "everyone" : "a player")}\n- Confused players will have their controls reverse\n" +
             CommonAbilities;
         public override InspectorResults InspectorResults => InspectorResults.HindersOthers;
+        public float Timer => ButtonUtils.Timer(Player, LastConfused, CustomGameOptions.ConfuseCooldown);
 
         public Drunkard(PlayerControl player) : base(player)
         {
@@ -47,15 +48,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             ConfusedPlayer = null;
         }
 
-        public float ConfuseTimer()
-        {
-            var timespan = DateTime.UtcNow - LastConfused;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.ConfuseCooldown) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
-        }
-
         public void Click(PlayerControl player)
         {
             var interact = Interact(Player, player);
@@ -70,7 +62,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void HitConfuse()
         {
-            if (ConfuseTimer() != 0f || Confused)
+            if (Timer != 0f || Confused)
                 return;
 
             if (HoldsDrive)
@@ -95,7 +87,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             base.UpdateHud(__instance);
             var flag = ConfusedPlayer == null && !HoldsDrive;
-            ConfuseButton.Update(flag ? "SET TARGET" : "CONFUSE", ConfuseTimer(), CustomGameOptions.ConfuseCooldown, Confused, TimeRemaining, CustomGameOptions.ConfuseDuration);
+            ConfuseButton.Update(flag ? "SET TARGET" : "CONFUSE", Timer, CustomGameOptions.ConfuseCooldown, Confused, TimeRemaining, CustomGameOptions.ConfuseDuration);
 
             if (Input.GetKeyDown(KeyCode.Backspace))
             {

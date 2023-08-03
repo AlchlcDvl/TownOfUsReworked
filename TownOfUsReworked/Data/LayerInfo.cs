@@ -265,8 +265,6 @@ namespace TownOfUsReworked.Data
             new("Chonker", "Chonk", "The Chonker's body is bigger and they are slower.", "Everyone", Colors.Giant),
             new("Useless", "UL", "The Useless modifier only appears when the Dwarf or Giant's speed and size multipliers have been set to 1. It literally does nothing.", "Everyone",
                 Colors.Modifier),
-            new("Flincher", "Flinch", "Every now and then, the Flincher flinches. Fun Fact: The Flincher is actually a bug regarding the Drunk controls swapping which I turned into a " +
-                "modifier.", "Everyone", Colors.Flincher),
             new("Shy", "Shy", "The Shy player cannot call meetings.", "Everyone except Button Barries and roles who cannot call meetings", Colors.Shy),
             new("Indomitable", "Ind", "The Indomitable player cannot be guessed.", "Everyone", Colors.Indomitable),
             new("VIP", "VIP", "Everyone is alerted of the VIP's death through a flash of the VIP's role color and will have an arrow poiting towards the VIP's body.", "Everyone",

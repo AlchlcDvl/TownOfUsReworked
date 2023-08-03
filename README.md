@@ -8,7 +8,7 @@
 
 <p align="center"><a href="https://github.com/AlchlcDvl/TownOfUsReworked/releases/"><img src="https://badgen.net/github/release/AlchlcDvl/TownOfUsReworked?icon=github"></a></p>
 
-An [Among Us](https://store.steampowered.com/app/945360/Among_Us) mod that adds a bunch of roles, modifiers, objectifiers, abilities, improvements and game modes, modifiers and settings.
+An [Among Us](https://store.steampowered.com/app/945360/Among_Us) mod that adds a bunch of roles, modifiers, objectifiers, abilities, improvements and game modes, modifiers and settings!
 
 Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or want to find people to play with!
 
@@ -74,14 +74,14 @@ Quick warning: This mod adds a LOT of stuff, and is currently not very beginner 
 | [Diseased](#diseased)         | [Multitasker](#multitasker)   | [Fanatic](#fanatic)           |
 | [Drunk](#drunk)               | [Ninja](#ninja)               | [Linked](#linked)             |
 | [Dwarf](#dwarf)               | [Politician](#politician)     | [Lovers](#lovers)             |
-| [Flincher](#flincher)         | [Radar](#radar)               | [Mafia](#mafia)               |
-| [Giant](#giant)               | [Ruthless](#ruthless)         | [Overlord](#overlord)         |
-| [Indomitable](#indomitable)   | [Snitch](#snitch)             | [Rivals](#rivals)             |
-| [Professional](#professional) | [Swapper](#swapper)           | [Taskmaster](#taskmaster)     |
-| [Shy](#shy)                   | [Tiebreaker](#tiebreaker)     | [Traitor](#traitor)           |
-| [VIP](#vip)                   | [Torch](#torch)               |                               |
-| [Volatile](#volatile)         | [Tunneler](#tunneler)         |                               |
-| [Yeller](#yeller)             | [Underdog](#underdog)         |                               |
+| [Giant](#giant)               | [Radar](#radar)               | [Mafia](#mafia)               |
+| [Indomitable](#indomitable)   | [Ruthless](#ruthless)         | [Overlord](#overlord)         |
+| [Professional](#professional) | [Snitch](#snitch)             | [Rivals](#rivals)             |
+| [Shy](#shy)                   | [Swapper](#swapper)           | [Taskmaster](#taskmaster)     |
+| [VIP](#vip)                   | [Tiebreaker](#tiebreaker)     | [Traitor](#traitor)           |
+| [Volatile](#volatile)         | [Torch](#torch)               |                               |
+| [Yeller](#yeller)             | [Tunneler](#tunneler)         |                               |
+|                               | [Underdog](#underdog)         |                               |
 
 [**Custom Game Settings**](#custom-game-settings)
 - [Common Settings](#common-settings)
@@ -128,6 +128,7 @@ Quick warning: This mod adds a LOT of stuff, and is currently not very beginner 
 
 | Among Us | Mod Version | Link |
 |----------|-------------|------|
+| 2023.7.12 (s & e) | v0.4.4 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.4.4/Reworked.zip) |
 | 2023.7.12 (s & e) | v0.4.3 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.4.3/Reworked.zip) |
 | 2023.7.12 (s & e) | v0.4.2 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.4.2/Reworked.zip) |
 | 2023.6.13 (s & e) | v0.4.1 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.4.1/Reworked.zip) |
@@ -179,6 +180,21 @@ Quick warning: This mod adds a LOT of stuff, and is currently not very beginner 
 
 <details>
 <summary>Changelog</summary>
+<details>
+<summary>v0.4.4</summary>
+<ul> <li>Change: The numbers on the admin table now reflect the player's ID rather than their outfit color for Operative and Retributionist (to avoid confusion with multiple same color players)</li> </ul>
+<ul> <li>Change: Operative and Retributionist color blind help is now tied to the vanilla colorblind setting</li> </ul>
+<ul> <li>Optimisation: The code for all layers have been improved</li> </ul>
+<ul> <li>Improvement: You are now told if you are recruited in the intro screen</li> </ul>
+<ul> <li>Improvement: Whisperers and members of the Sect now know how much percentage is left to convert someone</li> </ul>
+<ul> <li>Improvement: Improved how cooldowns are handled</li> </ul>
+<ul> <li>Big Critical Fix: Fixed being unable to play on any servers (only impostor servers right now, official servers fix is soon to come)</li> </ul>
+<ul> <li>Critical Fix: Fixed Whisperer being unable to convert players</li> </ul>
+<ul> <li>Visual Fix: Fixed some mod options layering issues in the main menu</li> </ul>
+<ul> <li>Objectifier Fix: Fixed Allied Neutral Killers being unable the sabotage when they should</li> </ul>
+<ul> <li>Objectifier Fix: Fixed Traitor and Defector conversions being inconsistent between players</li> </ul>
+<ul> <li>Removal: Removed FLincher because it's boring now, farewell soldier :saluting_face:</li> </ul>
+</details>
 <details>
 <summary>v0.4.3</summary>
 <ul> <li>Update: Updated presets</li> </ul>
@@ -1079,7 +1095,6 @@ In this mod, we have :-
 | Max Role Count | Dictates the maximum number of roles from the faction will spawn | Number | 5 |
 | Min Role Count | Dictates the minimum number of roles from the faction will spawn | Number | 5 |
 | Faction Can Vent | Dictates whether members of this faction can vent, this is overriden by the specific venting settings for the roles | Toggle | True if not Crew |
-| Custom Faction Colors | Purely a visual thing, dictates whether players want each role color to only match the color of their respective factions | Toggle | True |
 | Vision | How far can members of the faction see | Factor | 1x for Crew, 2x for Intruders and Syndicate, 1.5x for Neutrals |
 
 ## Each non-role layer has these settings
@@ -1088,7 +1103,6 @@ In this mod, we have :-
 |------|-------------|------|---------|
 | Max Abilties/Modifiers/Objectifiers | Dictates the maximum number of layers of the mentioned type will spawn | Number | 5 |
 | Min Abilties/Modifiers/Objectifiers | Dictates the minimum number of layers of the mentioned type will spawn | Number | 5 |
-| Custom Abilties/Modifiers/Objectifiers Colors | Purely a visual thing, dictates whether players want each layer has their own color | Toggle | True |
 
 -----------------------
 
@@ -2709,17 +2723,6 @@ The Dwarf travels at increased speed and has a much smaller body.
 |------|-------------|------|---------|
 | Dwarf Speed | How fast the Dwarf moves in comparison to normal | Factor | 1.3x |
 | Dwarf Scale | How small the Dwarf is in comparison to normal | Factor | 0.5x |
-
-## Flincher
-### Applied To: Everyone
-
-Every now and then, the Flincher flinches. Fun Fact: The Flincher is actually a bug regarding the Drunk controls swapping which I turned into a modifier.
-
-### Game Options
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Flinch Interval | How much time must pass before the flinch happens | Time | 10s |
 
 ## Giant
 ### Applied To: Everyone

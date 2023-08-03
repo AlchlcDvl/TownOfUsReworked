@@ -2,26 +2,27 @@
 {
     public class Cryomaniac : Neutral
     {
-        public CustomButton FreezeButton;
-        public CustomButton DouseButton;
-        public CustomButton KillButton;
-        public List<byte> Doused;
-        public bool FreezeUsed;
-        public DateTime LastDoused;
-        public DateTime LastKilled;
+        public CustomButton FreezeButton { get; set; }
+        public CustomButton DouseButton { get; set; }
+        public CustomButton KillButton { get; set; }
+        public List<byte> Doused { get; set; }
+        public bool FreezeUsed { get; set; }
+        public DateTime LastDoused { get; set; }
+        public DateTime LastKilled { get; set; }
         public bool LastKiller => !CustomPlayer.AllPlayers.Any(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) ||
             x.Is(RoleAlignment.CrewKill) || x.Is(RoleAlignment.CrewAudit) || x.Is(RoleAlignment.NeutralPros) || x.Is(RoleAlignment.NeutralNeo) || (x.Is(RoleAlignment.NeutralKill) && x !=
             Player))) && CustomGameOptions.CryoLastKillerBoost;
-        public int DousedAlive => Doused.Count(x => !PlayerById(x).Data.IsDead && !PlayerById(x).Data.Disconnected);
 
         public override Color32 Color => ClientGameOptions.CustomNeutColors ? Colors.Cryomaniac : Colors.Neutral;
         public override string Name => "Cryomaniac";
         public override LayerEnum Type => LayerEnum.Cryomaniac;
         public override RoleEnum RoleType => RoleEnum.Cryomaniac;
         public override Func<string> StartText => () => "Who Likes Ice Cream?";
-        public override Func<string> AbilitiesText => () => "- You can douse players in coolant\n- Doused players can be frozen, which kills all of them at once at the start of the next " +
+        public override Func<string> Description => () => "- You can douse players in coolant\n- Doused players can be frozen, which kills all of them at once at the start of the next " +
             $"meeting\n- People who interact with you will also get doused{(LastKiller ? "\n- You can kill normally" : "")}";
         public override InspectorResults InspectorResults => InspectorResults.SeeksToDestroy;
+        public float DouseTimer => ButtonUtils.Timer(Player, LastDoused, CustomGameOptions.CryoDouseCooldown);
+        public float KillTimer => ButtonUtils.Timer(Player, LastKilled, CustomGameOptions.CryoDouseCooldown);
 
         public Cryomaniac(PlayerControl player) : base(player)
         {
@@ -33,27 +34,9 @@
             KillButton = new(this, "CryoKill", AbilityTypes.Direct, "Tertiary", Kill, Exception);
         }
 
-        public float DouseTimer()
-        {
-            var timespan = DateTime.UtcNow - LastDoused;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.CryoDouseCooldown) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
-        }
-
-        public float KillTimer()
-        {
-            var timespan = DateTime.UtcNow - LastKilled;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.DouseCd) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
-        }
-
         public void Kill()
         {
-            if (IsTooFar(Player, KillButton.TargetPlayer) || KillTimer() != 0f)
+            if (IsTooFar(Player, KillButton.TargetPlayer) || KillTimer != 0f)
                 return;
 
             var interact = Interact(Player, KillButton.TargetPlayer, true);
@@ -105,14 +88,14 @@
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            DouseButton.Update("DOUSE", DouseTimer(), CustomGameOptions.DouseCd);
-            KillButton.Update("KILL", KillTimer(), CustomGameOptions.DouseCd, true, LastKiller);
-            FreezeButton.Update("FREEZE", true, DousedAlive > 0 && !FreezeUsed);
+            DouseButton.Update("DOUSE", DouseTimer, CustomGameOptions.CryoDouseCooldown);
+            KillButton.Update("KILL", KillTimer, CustomGameOptions.CryoDouseCooldown, true, LastKiller);
+            FreezeButton.Update("FREEZE", true, Doused.Count > 0 && !FreezeUsed);
         }
 
         public void Douse()
         {
-            if (IsTooFar(Player, DouseButton.TargetPlayer) || DouseTimer() != 0f || Doused.Contains(DouseButton.TargetPlayer.PlayerId))
+            if (IsTooFar(Player, DouseButton.TargetPlayer) || DouseTimer != 0f || Doused.Contains(DouseButton.TargetPlayer.PlayerId))
                 return;
 
             var interact = Interact(Player, DouseButton.TargetPlayer, LastKiller);
@@ -130,7 +113,7 @@
 
         public void Freeze()
         {
-            if (DousedAlive <= 0 || FreezeUsed)
+            if (Doused.Count == 0 || FreezeUsed)
                 return;
 
             FreezeUsed = true;

@@ -2,34 +2,35 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Transporter : Crew
     {
-        public DateTime LastTransported;
-        public PlayerControl TransportPlayer1;
-        public PlayerControl TransportPlayer2;
-        public int UsesLeft;
+        public DateTime LastTransported { get; set; }
+        public PlayerControl TransportPlayer1 { get; set; }
+        public PlayerControl TransportPlayer2 { get; set; }
+        public int UsesLeft { get; set; }
         public bool ButtonUsable => UsesLeft > 0;
-        public Dictionary<byte, DateTime> UntransportablePlayers = new();
-        public CustomButton TransportButton;
-        public CustomMenu TransportMenu1;
-        public CustomMenu TransportMenu2;
-        public SpriteRenderer AnimationPlaying1;
-        public SpriteRenderer AnimationPlaying2;
-        public GameObject Transport1;
-        public GameObject Transport2;
-        public float TimeRemaining;
+        public Dictionary<byte, DateTime> UntransportablePlayers { get; set; }
+        public CustomButton TransportButton { get; set; }
+        public CustomMenu TransportMenu1 { get; set; }
+        public CustomMenu TransportMenu2 { get; set; }
+        public SpriteRenderer AnimationPlaying1 { get; set; }
+        public SpriteRenderer AnimationPlaying2 { get; set; }
+        public GameObject Transport1 { get; set; }
+        public GameObject Transport2 { get; set; }
+        public float TimeRemaining { get; set; }
         public bool Transporting => TimeRemaining > 0;
-        public DeadBody Player1Body;
-        public DeadBody Player2Body;
-        public bool WasInVent1;
-        public bool WasInVent2;
-        public Vent Vent1;
-        public Vent Vent2;
+        public DeadBody Player1Body { get; set; }
+        public DeadBody Player2Body { get; set; }
+        public bool WasInVent1 { get; set; }
+        public bool WasInVent2 { get; set; }
+        public Vent Vent1 { get; set; }
+        public Vent Vent2 { get; set; }
+        public float Timer => ButtonUtils.Timer(Player, LastTransported, CustomGameOptions.TransportCooldown);
 
         public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Transporter : Colors.Crew;
         public override string Name => "Transporter";
         public override LayerEnum Type => LayerEnum.Transporter;
         public override RoleEnum RoleType => RoleEnum.Transporter;
         public override Func<string> StartText => () => "Swap Locations Of Players For Maximum Confusion";
-        public override Func<string> AbilitiesText => () => "- You can swap the locations of 2 players of your choice";
+        public override Func<string> Description => () => "- You can swap the locations of 2 players of your choice";
         public override InspectorResults InspectorResults => InspectorResults.MovesAround;
 
         public Transporter(PlayerControl player) : base(player)
@@ -56,21 +57,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Transport1.transform.position = new(Player.GetTruePosition().x, Player.GetTruePosition().y, (Player.GetTruePosition().y / 1000f) + 0.01f);
             AnimationPlaying1 = Transport1.AddComponent<SpriteRenderer>();
             AnimationPlaying2 = Transport2.AddComponent<SpriteRenderer>();
-            AnimationPlaying1.sprite = PortalAnimation[0];
-            AnimationPlaying2.sprite = PortalAnimation[0];
-            AnimationPlaying1.material = HatManager.Instance.PlayerMaterial;
-            AnimationPlaying2.material = HatManager.Instance.PlayerMaterial;
+            AnimationPlaying1.sprite = AnimationPlaying2.sprite = PortalAnimation[0];
+            AnimationPlaying1.material = AnimationPlaying2.material = HatManager.Instance.PlayerMaterial;
             Transport1.SetActive(true);
             Transport2.SetActive(true);
-        }
-
-        public float TransportTimer()
-        {
-            var timespan = DateTime.UtcNow - LastTransported;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.TransportCooldown) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
         }
 
         public IEnumerator TransportPlayers()
@@ -305,7 +295,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Transport()
         {
-            if (TransportTimer() != 0f)
+            if (Timer != 0f)
                 return;
 
             if (TransportPlayer1 == null)
@@ -325,7 +315,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             base.UpdateHud(__instance);
             var flag1 = TransportPlayer1 == null;
             var flag2 = TransportPlayer2 == null;
-            TransportButton.Update(flag1 ? "FIRST TARGET" : (flag2 ? "SECOND TARGET" : "TRANSPORT"), TransportTimer(), CustomGameOptions.TransportCooldown, UsesLeft, Transporting,
+            TransportButton.Update(flag1 ? "FIRST TARGET" : (flag2 ? "SECOND TARGET" : "TRANSPORT"), Timer, CustomGameOptions.TransportCooldown, UsesLeft, Transporting,
                 TimeRemaining, CustomGameOptions.TransportDuration, true, ButtonUsable);
 
             if (Input.GetKeyDown(KeyCode.Backspace))

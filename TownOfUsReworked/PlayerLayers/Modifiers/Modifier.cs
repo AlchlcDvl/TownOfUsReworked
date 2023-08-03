@@ -9,7 +9,6 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
         public override PlayerLayerEnum LayerType => PlayerLayerEnum.Modifier;
 
         public virtual ModifierEnum ModifierType => ModifierEnum.None;
-        public virtual Func<string> TaskText => () => "- None";
         public virtual bool Hidden => false;
 
         public Modifier(PlayerControl player) : base(player)

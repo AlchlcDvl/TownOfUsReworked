@@ -2,15 +2,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Grenadier : Intruder
     {
-        public CustomButton FlashButton;
-        public bool Enabled;
-        public DateTime LastFlashed;
-        public float TimeRemaining;
-        private static List<PlayerControl> ClosestPlayers = new();
+        public CustomButton FlashButton { get; set; }
+        public bool Enabled { get; set; }
+        public DateTime LastFlashed { get; set; }
+        public float TimeRemaining { get; set; }
         private static Color32 NormalVision => new(212, 212, 212, 0);
         private static Color32 DimVision => new(212, 212, 212, 51);
         private static Color32 BlindVision => new(212, 212, 212, 255);
-        public List<PlayerControl> FlashedPlayers = new();
+        public List<PlayerControl> FlashedPlayers { get; set; }
         public bool Flashed => TimeRemaining > 0f;
 
         public override Color32 Color => ClientGameOptions.CustomIntColors ? Colors.Grenadier : Colors.Intruder;
@@ -18,33 +17,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override LayerEnum Type => LayerEnum.Grenadier;
         public override RoleEnum RoleType => RoleEnum.Grenadier;
         public override Func<string> StartText => () => "Blind The <color=#8CFFFFFF>Crew</color> With Your Magnificent Figure";
-        public override Func<string> AbilitiesText => () => $"- You can drop a flashbang, which blinds players around you\n{CommonAbilities}";
+        public override Func<string> Description => () => $"- You can drop a flashbang, which blinds players around you\n{CommonAbilities}";
         public override InspectorResults InspectorResults => InspectorResults.DropsItems;
+        public float Timer => ButtonUtils.Timer(Player, LastFlashed, CustomGameOptions.GrenadeCd);
 
         public Grenadier(PlayerControl player) : base(player)
         {
             RoleAlignment = RoleAlignment.IntruderConceal;
-            ClosestPlayers = new();
             FlashedPlayers = new();
             FlashButton = new(this, "Flash", AbilityTypes.Effect, "Secondary", HitFlash);
-        }
-
-        public float FlashTimer()
-        {
-            var timespan = DateTime.UtcNow - LastFlashed;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.GrenadeCd) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void Flash()
         {
             if (!Enabled)
-            {
-                ClosestPlayers = GetClosestPlayers(Player.GetTruePosition(), CustomGameOptions.FlashRadius);
-                FlashedPlayers = ClosestPlayers;
-            }
+                FlashedPlayers = GetClosestPlayers(Player.GetTruePosition(), CustomGameOptions.FlashRadius);
 
             Enabled = true;
             TimeRemaining -= Time.deltaTime;
@@ -60,7 +47,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             if (sabActive || dummyActive)
                 return;
 
-            foreach (var player in ClosestPlayers)
+            foreach (var player in FlashedPlayers)
             {
                 if (CustomPlayer.Local == player)
                 {
@@ -135,7 +122,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var dummyActive = system.dummy.IsActive;
             var sabActive = system.specials.Any(s => s.IsActive);
 
-            if (sabActive || dummyActive || FlashTimer() != 0f)
+            if (sabActive || dummyActive || Timer != 0f)
                 return;
 
             CallRpc(CustomRPC.Action, ActionsRPC.FlashGrenade, this);
@@ -150,7 +137,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             var dummyActive = system.dummy.IsActive;
             var sabActive = system.specials.Any(s => s.IsActive);
             var condition = !dummyActive && !sabActive;
-            FlashButton.Update("FLASH", FlashTimer(), CustomGameOptions.GrenadeCd, Flashed, TimeRemaining, CustomGameOptions.GrenadeDuration, condition);
+            FlashButton.Update("FLASH", Timer, CustomGameOptions.GrenadeCd, Flashed, TimeRemaining, CustomGameOptions.GrenadeDuration, condition);
         }
     }
 }

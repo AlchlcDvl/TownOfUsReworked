@@ -2,39 +2,31 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Enforcer : Intruder
     {
-        public CustomButton BombButton;
-        public PlayerControl BombedPlayer;
-        public bool Enabled;
-        public DateTime LastBombed;
-        public float TimeRemaining;
-        public float TimeRemaining2;
+        public CustomButton BombButton { get; set; }
+        public PlayerControl BombedPlayer { get; set; }
+        public bool Enabled { get; set; }
+        public DateTime LastBombed { get; set; }
+        public float TimeRemaining { get; set; }
+        public float TimeRemaining2 { get; set; }
         public bool Bombing => TimeRemaining > 0f;
         public bool DelayActive => TimeRemaining2 > 0f;
-        public bool BombSuccessful;
+        public bool BombSuccessful { get; set; }
 
         public override Color32 Color => ClientGameOptions.CustomIntColors ? Colors.Enforcer : Colors.Intruder;
         public override string Name => "Enforcer";
         public override LayerEnum Type => LayerEnum.Enforcer;
         public override RoleEnum RoleType => RoleEnum.Enforcer;
         public override Func<string> StartText => () => "Force The <color=#8CFFFFFF>Crew</color> To Do Your Bidding";
-        public override Func<string> AbilitiesText => () => "- You can plant bombs on players and force them to kill others\n- If the player is unable to kill someone within " +
+        public override Func<string> Description => () => "- You can plant bombs on players and force them to kill others\n- If the player is unable to kill someone within " +
             $"{CustomGameOptions.EnforceDuration}s, the bomb will detonate and kill everyone within a {CustomGameOptions.EnforceRadius}m radius\n{CommonAbilities}";
         public override InspectorResults InspectorResults => InspectorResults.DropsItems;
+        public float Timer => ButtonUtils.Timer(Player, LastBombed, CustomGameOptions.EnforceCooldown);
 
         public Enforcer(PlayerControl player) : base(player)
         {
             RoleAlignment = RoleAlignment.IntruderKill;
             BombedPlayer = null;
             BombButton = new(this, "Enforce", AbilityTypes.Direct, "Secondary", Bomb, Exception1);
-        }
-
-        public float BombTimer()
-        {
-            var timespan = DateTime.UtcNow - LastBombed;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.EnforceCooldown) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void Boom()
@@ -90,7 +82,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Bomb()
         {
-            if (BombTimer() != 0f || IsTooFar(Player, BombButton.TargetPlayer) || BombedPlayer == BombButton.TargetPlayer)
+            if (Timer != 0f || IsTooFar(Player, BombButton.TargetPlayer) || BombedPlayer == BombButton.TargetPlayer)
                 return;
 
             var interact = Interact(Player, BombButton.TargetPlayer);
@@ -115,7 +107,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            BombButton.Update("BOMB", BombTimer(), CustomGameOptions.EnforceCooldown, DelayActive || Bombing, DelayActive ? TimeRemaining2 : TimeRemaining, DelayActive ?
+            BombButton.Update("BOMB", Timer, CustomGameOptions.EnforceCooldown, DelayActive || Bombing, DelayActive ? TimeRemaining2 : TimeRemaining, DelayActive ?
                 CustomGameOptions.EnforceDelay : CustomGameOptions.EnforceDuration);
         }
     }

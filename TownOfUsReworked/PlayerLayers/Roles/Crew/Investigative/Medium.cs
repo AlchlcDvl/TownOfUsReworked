@@ -2,19 +2,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Medium : Crew
     {
-        public DateTime LastMediated;
-        public Dictionary<byte, CustomArrow> MediateArrows = new();
-        public CustomButton MediateButton;
-        //public CustomButton SeanceButton;
-        public List<byte> MediatedPlayers = new();
+        public DateTime LastMediated { get; set; }
+        public Dictionary<byte, CustomArrow> MediateArrows { get; set; }
+        public CustomButton MediateButton { get; set; }
+        //public CustomButton SeanceButton { get; set; }
+        public List<byte> MediatedPlayers { get; set; }
+        public float Timer => ButtonUtils.Timer(Player, LastMediated, CustomGameOptions.MediateCooldown);
 
         public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Medium : Colors.Crew;
         public override string Name => "Medium";
         public override LayerEnum Type => LayerEnum.Medium;
         public override RoleEnum RoleType => RoleEnum.Medium;
         public override Func<string> StartText => () => "<size=80%>Spooky Scary Ghosties Send Shivers Down Your Spine</size>";
-        public override Func<string> AbilitiesText => () => "- You can mediate which makes ghosts visible to you" + (CustomGameOptions.ShowMediumToDead == ShowMediumToDead.No ? "" : "\n- "
-            + "When mediating, dead players will be able to see you");
+        public override Func<string> Description => () => "- You can mediate which makes ghosts visible to you" + (CustomGameOptions.ShowMediumToDead == ShowMediumToDead.No ? "" : ("\n- " +
+            "When mediating, dead players will be able to see you"));
         public override InspectorResults InspectorResults => InspectorResults.NewLens;
 
         public Medium(PlayerControl player) : base(player)
@@ -24,15 +25,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleAlignment = RoleAlignment.CrewInvest;
             MediateButton = new(this, "Mediate", AbilityTypes.Effect, "ActionSecondary", Mediate);
             //SeanceButton = new(this, "Seance", AbilityTypes.Effect, "ActionSecondary", Seance, false, true);
-        }
-
-        public float MediateTimer()
-        {
-            var timespan = DateTime.UtcNow - LastMediated;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.MediateCooldown) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
         }
 
         //private static void Seance() { Currently blank, gonna work on this later }
@@ -48,8 +40,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            MediateButton.Update("MEDIATE", MediateTimer(), CustomGameOptions.MediateCooldown);
-            //SeanceButton.Update("SEANCE", MediateTimer(), CustomGameOptions.MediateCooldown, true, false);
+            MediateButton.Update("MEDIATE", Timer, CustomGameOptions.MediateCooldown);
+            //SeanceButton.Update("SEANCE", Timer, CustomGameOptions.MediateCooldown, true, false);
 
             if (!IsDead)
             {
@@ -72,21 +64,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Mediate()
         {
-            if (MediateTimer() != 0f)
+            if (Timer != 0f)
                 return;
 
             LastMediated = DateTime.UtcNow;
-            var PlayersDead = KilledPlayers.GetRange(0, KilledPlayers.Count);
+            var playersDead = KilledPlayers.GetRange(0, KilledPlayers.Count);
 
-            if (PlayersDead.Count == 0)
+            if (playersDead.Count == 0)
                 return;
 
             if (CustomGameOptions.DeadRevealed != DeadRevealed.Random)
             {
                 if (CustomGameOptions.DeadRevealed == DeadRevealed.Newest)
-                    PlayersDead.Reverse();
+                    playersDead.Reverse();
 
-                foreach (var dead in PlayersDead)
+                foreach (var dead in playersDead)
                 {
                     if (AllBodies.Any(x => x.ParentId == dead.PlayerId && !MediateArrows.ContainsKey(x.ParentId)))
                     {
@@ -101,7 +93,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
             else
             {
-                var dead = PlayersDead.Random();
+                var dead = playersDead.Random();
 
                 if (AllBodies.Any(x => x.ParentId == dead.PlayerId && !MediateArrows.ContainsKey(x.ParentId)))
                 {

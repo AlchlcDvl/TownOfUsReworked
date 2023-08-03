@@ -2,14 +2,15 @@ namespace TownOfUsReworked.Objects
 {
     public class DeadPlayer
     {
-        public byte KillerId;
-        public byte PlayerId;
-        public DateTime KillTime;
+        public readonly byte KillerId;
+        public readonly byte PlayerId;
+        public readonly DateTime KillTime;
 
         public PlayerControl Killer => PlayerById(KillerId);
         public PlayerControl Body => PlayerById(PlayerId);
-        public PlayerControl Reporter;
-        public float KillAge;
+
+        public PlayerControl Reporter { get; set; }
+        public float KillAge { get; set; }
 
         public DeadPlayer(byte killer, byte player)
         {

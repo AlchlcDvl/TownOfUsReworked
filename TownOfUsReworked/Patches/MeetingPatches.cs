@@ -944,12 +944,10 @@ namespace TownOfUsReworked.Patches
                 }
                 else
                 {
-                    foreach (var stats in whisperer.PlayerConversion)
+                    foreach (var (key, value) in whisperer.PlayerConversion)
                     {
-                        var color2 = (int)(stats.Value / 100f * 256);
-
-                        if (color2 > 0 && player.TargetPlayerId == stats.Key)
-                            color = new(255, 255, color2, 255);
+                        if (player.TargetPlayerId == key)
+                            name += $" {value}%";
                     }
                 }
             }
@@ -1125,6 +1123,14 @@ namespace TownOfUsReworked.Patches
                     }
                     else
                         color = whisperer.SubFactionColor;
+                }
+                else
+                {
+                    foreach (var (key, value) in whisperer.PlayerConversion)
+                    {
+                        if (player.TargetPlayerId == key)
+                            name += $" {value}%";
+                    }
                 }
             }
 

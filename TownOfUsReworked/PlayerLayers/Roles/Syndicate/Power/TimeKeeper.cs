@@ -2,10 +2,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class TimeKeeper : Syndicate
     {
-        public DateTime LastTimed;
-        public CustomButton TimeButton;
-        public bool Enabled;
-        public float TimeRemaining;
+        public DateTime LastTimed { get; set; }
+        public CustomButton TimeButton { get; set; }
+        public bool Enabled { get; set; }
+        public float TimeRemaining { get; set; }
         public bool Controlling => TimeRemaining > 0f;
 
         public override Color32 Color => ClientGameOptions.CustomSynColors ? Colors.TimeKeeper : Colors.Syndicate;
@@ -13,22 +13,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override LayerEnum Type => LayerEnum.TimeKeeper;
         public override RoleEnum RoleType => RoleEnum.TimeKeeper;
         public override Func<string> StartText => () => "Bend Time To Your Will";
-        public override Func<string> AbilitiesText => () => $"- You can {(HoldsDrive ? "rewind players" : "freeze time, making people unable to move")}\n{CommonAbilities}";
+        public override Func<string> Description => () => $"- You can {(HoldsDrive ? "rewind players" : "freeze time, making people unable to move")}\n{CommonAbilities}";
         public override InspectorResults InspectorResults => InspectorResults.MovesAround;
+        public float Timer => ButtonUtils.Timer(Player, LastTimed, CustomGameOptions.TimeControlCooldown);
 
         public TimeKeeper(PlayerControl player) : base(player)
         {
             RoleAlignment = RoleAlignment.SyndicatePower;
             TimeButton = new(this, "Time", AbilityTypes.Effect, "Secondary", TimeControl);
-        }
-
-        public float TimeTimer()
-        {
-            var timespan = DateTime.UtcNow - LastTimed;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.TimeControlCooldown) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void Control()
@@ -55,6 +47,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void TimeControl()
         {
+            if (Timer != 0f || Controlling)
+                return;
+
             TimeRemaining = CustomGameOptions.TimeControlDuration;
             Control();
             CallRpc(CustomRPC.Action, ActionsRPC.TimeControl, this);
@@ -63,7 +58,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            TimeButton.Update(HoldsDrive ? "REWIND" : "FREEZE", TimeTimer(), CustomGameOptions.TimeControlCooldown, Controlling, TimeRemaining, CustomGameOptions.TimeControlDuration);
+            TimeButton.Update(HoldsDrive ? "REWIND" : "FREEZE", Timer, CustomGameOptions.TimeControlCooldown, Controlling, TimeRemaining, CustomGameOptions.TimeControlDuration);
         }
     }
 }

@@ -2,12 +2,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Jester : Neutral
     {
-        public bool VotedOut;
-        public List<byte> ToHaunt = new();
-        public bool HasHaunted;
-        public CustomButton HauntButton;
-        public DateTime LastHaunted;
-        public int UsesLeft;
+        public bool VotedOut { get; set; }
+        public List<byte> ToHaunt { get; set; }
+        public bool HasHaunted { get; set; }
+        public CustomButton HauntButton { get; set; }
+        public DateTime LastHaunted { get; set; }
+        public int UsesLeft { get; set; }
         public bool CanHaunt => VotedOut && !HasHaunted && UsesLeft > 0 && ToHaunt.Count > 0 && !CustomGameOptions.AvoidNeutralKingmakers;
 
         public override Color32 Color => ClientGameOptions.CustomNeutColors ? Colors.Jester : Colors.Neutral;
@@ -15,8 +15,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override LayerEnum Type => LayerEnum.Jester;
         public override RoleEnum RoleType => RoleEnum.Jester;
         public override Func<string> StartText => () => "It Was Jest A Prank Bro";
-        public override Func<string> AbilitiesText => () => VotedOut ? "- You can haunt those who voted for you" : "- None";
+        public override Func<string> Description => () => VotedOut ? "- You can haunt those who voted for you" : "- None";
         public override InspectorResults InspectorResults => InspectorResults.Manipulative;
+        public float Timer => ButtonUtils.Timer(Player, LastHaunted, CustomGameOptions.HauntCooldown, true);
 
         public Jester(PlayerControl player) : base(player)
         {

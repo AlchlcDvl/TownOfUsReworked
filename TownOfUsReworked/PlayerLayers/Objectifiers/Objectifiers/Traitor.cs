@@ -2,9 +2,9 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
 {
     public class Traitor : Objectifier
     {
-        public bool Turned;
-        public bool Betrayed;
-        public Faction Side = Faction.Crew;
+        public bool Turned { get; set; }
+        public bool Betrayed { get; set; }
+        public Faction Side { get; set; }
         public bool Betray => ((Side == Faction.Intruder && LastImp) || (Side == Faction.Syndicate && LastSyn)) && !IsDead && Turned && !Betrayed;
 
         public override Color32 Color
@@ -28,11 +28,11 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         public override string Symbol => "♣";
         public override LayerEnum Type => LayerEnum.Traitor;
         public override ObjectifierEnum ObjectifierType => ObjectifierEnum.Traitor;
-        public override Func<string> TaskText => () => !Turned ? "- Finish your tasks to switch sides to either <color=#FF0000FF>Intruders</color> or the <color=#008000FF>Syndicate</color>"
-            : "";
+        public override Func<string> Description => () => !Turned ? ("- Finish your tasks to switch sides to either <color=#FF0000FF>Intruders</color> or the <color=#008000FF>Syndicate" +
+            "</color>") : "";
         public override bool Hidden => !CustomGameOptions.TraitorKnows && !Turned && !IsDead;
 
-        public Traitor(PlayerControl player) : base(player) {}
+        public Traitor(PlayerControl player) : base(player) => Side = Faction.Crew;
 
         public void TurnBetrayer()
         {
@@ -49,15 +49,13 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
                 Flash(Colors.Seer);
         }
 
-        public void TurnTraitor()
+        public static void GetFactionChoice(out bool turnSyndicate, out bool turnIntruder)
         {
-            var traitorRole = Role.GetRole(Player);
+            turnIntruder = false;
+            turnSyndicate = false;
 
             var IntrudersAlive = CustomPlayer.AllPlayers.Count(x => x.Is(Faction.Intruder) && !x.Data.IsDead && !x.Data.Disconnected);
             var SyndicateAlive = CustomPlayer.AllPlayers.Count(x => x.Is(Faction.Syndicate) && !x.Data.IsDead && !x.Data.Disconnected);
-
-            var turnIntruder = false;
-            var turnSyndicate = false;
 
             if (IntrudersAlive > 0 && SyndicateAlive > 0)
             {
@@ -83,8 +81,11 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
                 turnIntruder = true;
             else if (SyndicateAlive > 0 && IntrudersAlive == 0)
                 turnSyndicate = true;
-            else
-                return;
+        }
+
+        public void TurnTraitor(bool turnSyndicate, bool turnIntruder)
+        {
+            var traitorRole = Role.GetRole(Player);
 
             if (turnIntruder)
             {

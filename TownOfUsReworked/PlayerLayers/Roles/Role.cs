@@ -10,117 +10,114 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public override Color32 Color => Colors.Role;
         public override PlayerLayerEnum LayerType => PlayerLayerEnum.Role;
-        public override LayerEnum Type => LayerEnum.None;
 
         public virtual RoleEnum RoleType => RoleEnum.None;
         public virtual Faction BaseFaction => Faction.None;
         public virtual Func<string> StartText => () => "Woah The Game Started";
-        public virtual Func<string> AbilitiesText => () => "- None";
         public virtual InspectorResults InspectorResults => InspectorResults.None;
 
         public virtual void IntroPrefix(IntroCutscene._ShowTeam_d__36 __instance) {}
 
-        public static bool UndeadWin;
-        public static bool CabalWin;
-        public static bool ReanimatedWin;
-        public static bool SectWin;
-        public static bool InfectorsWin;
+        public static bool UndeadWin { get; set; }
+        public static bool CabalWin { get; set; }
+        public static bool ReanimatedWin { get; set; }
+        public static bool SectWin { get; set; }
 
-        public static bool NKWins;
+        public static bool InfectorsWin { get; set; }
 
-        public static bool CrewWin;
-        public static bool IntruderWin;
-        public static bool SyndicateWin;
-        public static bool AllNeutralsWin;
+        public static bool NKWins { get; set; }
 
-        public static bool GlitchWins;
-        public static bool JuggernautWins;
-        public static bool SerialKillerWins;
-        public static bool ArsonistWins;
-        public static bool CryomaniacWins;
-        public static bool MurdererWins;
-        public static bool WerewolfWins;
+        public static bool CrewWin { get; set; }
+        public static bool IntruderWin { get; set; }
+        public static bool SyndicateWin { get; set; }
+        public static bool AllNeutralsWin { get; set; }
 
-        public static bool PhantomWins;
+        public static bool GlitchWins { get; set; }
+        public static bool JuggernautWins { get; set; }
+        public static bool SerialKillerWins { get; set; }
+        public static bool ArsonistWins { get; set; }
+        public static bool CryomaniacWins { get; set; }
+        public static bool MurdererWins { get; set; }
+        public static bool WerewolfWins { get; set; }
 
-        public static bool JesterWins;
-        public static bool ActorWins;
-        public static bool ExecutionerWins;
-        public static bool GuesserWins;
-        public static bool BountyHunterWins;
-        public static bool CannibalWins;
-        public static bool TrollWins;
+        public static bool PhantomWins { get; set; }
+
+        public static bool JesterWins { get; set; }
+        public static bool ActorWins { get; set; }
+        public static bool ExecutionerWins { get; set; }
+        public static bool GuesserWins { get; set; }
+        public static bool BountyHunterWins { get; set; }
+        public static bool CannibalWins { get; set; }
+        public static bool TrollWins { get; set; }
 
         public static bool RoleWins => UndeadWin || CabalWin || InfectorsWin || ReanimatedWin || SectWin || NKWins || CrewWin || IntruderWin || SyndicateWin || AllNeutralsWin || GlitchWins
             || JuggernautWins || SerialKillerWins || ArsonistWins || CryomaniacWins || MurdererWins || PhantomWins || WerewolfWins || ActorWins || BountyHunterWins || CannibalWins ||
             ExecutionerWins || GuesserWins || JesterWins || TrollWins;
 
-        public static int ChaosDriveMeetingTimerCount;
-        public static bool SyndicateHasChaosDrive;
-        public static PlayerControl DriveHolder;
+        public static int ChaosDriveMeetingTimerCount { get; set; }
+        public static bool SyndicateHasChaosDrive { get; set; }
+        public static PlayerControl DriveHolder { get; set; }
 
-        public Color32 FactionColor = Colors.Faction;
-        public Color32 SubFactionColor = Colors.SubFaction;
-        public Faction Faction = Faction.None;
-        public RoleAlignment RoleAlignment = RoleAlignment.None;
-        public SubFaction SubFaction = SubFaction.None;
-        public List<Role> RoleHistory = new();
-        public ChatChannel CurrentChannel = ChatChannel.All;
-        public List<Footprint> AllPrints = new();
-        public Dictionary<byte, CustomArrow> AllArrows = new();
-        public Dictionary<byte, CustomArrow> DeadArrows = new();
-        public Dictionary<PointInTime, DateTime> Positions = new();
+        public Color32 FactionColor { get; set; } = Colors.Faction;
+        public Color32 SubFactionColor { get; set; } = Colors.SubFaction;
+        public Faction Faction { get; set; } = Faction.None;
+        public RoleAlignment RoleAlignment { get; set; } = RoleAlignment.None;
+        public SubFaction SubFaction { get; set; } = SubFaction.None;
+        public List<Role> RoleHistory { get; set; } = new();
+        public ChatChannel CurrentChannel { get; set; } = ChatChannel.All;
+        public List<Footprint> AllPrints { get; set; } = new();
+        public Dictionary<byte, CustomArrow> AllArrows { get; set; } = new();
+        public Dictionary<byte, CustomArrow> DeadArrows { get; set; } = new();
+        public Dictionary<PointInTime, DateTime> Positions { get; set; } = new();
         public List<PointInTime> PointsInTime => Positions.Keys.ToList();
-        public Dictionary<byte, CustomArrow> YellerArrows = new();
-
-        public bool Ignore;
+        public Dictionary<byte, CustomArrow> YellerArrows { get; set; } = new();
 
         public string FactionColorString => $"<color=#{FactionColor.ToHtmlStringRGBA()}>";
         public string SubFactionColorString => $"<color=#{SubFactionColor.ToHtmlStringRGBA()}>";
 
         public string IntroSound => $"{Name}Intro";
-        public bool IntroPlayed;
+        public bool IntroPlayed { get; set; }
 
-        public Func<string> Objectives = () => "- None";
+        public Func<string> Objectives { get; set; } = () => "- None";
 
         public string FactionName => $"{Faction}";
         public string SubFactionName => $"{SubFaction}";
-        public string SubFactionSymbol = "φ";
+        public string SubFactionSymbol { get; set; } = "φ";
 
-        public string KilledBy = "";
-        public DeathReasonEnum DeathReason = DeathReasonEnum.Alive;
+        public string KilledBy { get; set; } = "";
+        public DeathReasonEnum DeathReason { get; set; } = DeathReasonEnum.Alive;
 
-        public bool RoleBlockImmune;
+        public bool RoleBlockImmune { get; set; }
 
-        public bool Rewinding;
+        public bool Rewinding { get; set; }
 
-        public bool Bombed;
-        public CustomButton BombKillButton;
+        public bool Bombed { get; set; }
+        public CustomButton BombKillButton { get; set; }
 
-        public bool Requesting;
-        public PlayerControl Requestor;
-        public CustomButton PlaceHitButton;
-        public int BountyTimer;
+        public bool Requesting { get; set; }
+        public PlayerControl Requestor { get; set; }
+        public CustomButton PlaceHitButton { get; set; }
+        public int BountyTimer { get; set; }
 
-        public bool TrulyDead;
+        public bool TrulyDead { get; set; }
 
-        public bool Diseased;
+        public bool Diseased { get; set; }
 
-        public bool IsRecruit;
-        public bool IsResurrected;
-        public bool IsPersuaded;
-        public bool IsBitten;
-        public bool IsIntTraitor;
-        public bool IsIntAlly;
-        public bool IsIntFanatic;
-        public bool IsSynTraitor;
-        public bool IsSynAlly;
-        public bool IsSynFanatic;
-        public bool IsCrewAlly;
-        public bool IsCrewDefect;
-        public bool IsIntDefect;
-        public bool IsSynDefect;
-        public bool IsNeutDefect;
+        public bool IsRecruit { get; set; }
+        public bool IsResurrected { get; set; }
+        public bool IsPersuaded { get; set; }
+        public bool IsBitten { get; set; }
+        public bool IsIntTraitor { get; set; }
+        public bool IsIntAlly { get; set; }
+        public bool IsIntFanatic { get; set; }
+        public bool IsSynTraitor { get; set; }
+        public bool IsSynAlly { get; set; }
+        public bool IsSynFanatic { get; set; }
+        public bool IsCrewAlly { get; set; }
+        public bool IsCrewDefect { get; set; }
+        public bool IsIntDefect { get; set; }
+        public bool IsSynDefect { get; set; }
+        public bool IsNeutDefect { get; set; }
         public bool Faithful => !IsRecruit && !IsResurrected && !IsPersuaded && !IsBitten && !Player.Is(ObjectifierEnum.Allied) && !IsCrewDefect && !IsIntDefect && !IsSynDefect &&
             !IsNeutDefect && !Player.Is(ObjectifierEnum.Corrupted) && !Player.Is(ObjectifierEnum.Mafia) && !Player.IsWinningRival() && !Player.HasAliveLover() && BaseFaction == Faction &&
             !Player.IsTurnedFanatic() && !Player.IsTurnedTraitor();
@@ -509,8 +506,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         }
 
         public static Role GetRole(PlayerControl player) => AllRoles.Find(x => x.Player == player);
-
-        public static Role GetRoleFromName(string name) => AllRoles.Find(x => x.Name == name);
 
         public static T GetRole<T>(PlayerControl player) where T : Role => GetRole(player) as T;
 

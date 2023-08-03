@@ -375,7 +375,7 @@ namespace TownOfUsReworked.Data
 
     public enum CustomRPC
     {
-        Action,
+        Action = 200,
         WinLose,
         Change,
         Target,
@@ -560,7 +560,6 @@ namespace TownOfUsReworked.Data
         Diseased,
         Drunk,
         Dwarf,
-        Flincher,
         Giant,
         Indomitable,
         Professional,
@@ -682,7 +681,6 @@ namespace TownOfUsReworked.Data
         Diseased,
         Drunk,
         Dwarf,
-        Flincher,
         Giant,
         Indomitable,
         Professional,

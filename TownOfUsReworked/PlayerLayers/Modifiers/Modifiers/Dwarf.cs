@@ -10,7 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
         public override string Name => !Smol && !Sped ? "Useless" : (!Smol ? "Flash" : (Sped ? "Gremlin" : "Dwarf"));
         public override LayerEnum Type => LayerEnum.Dwarf;
         public override ModifierEnum ModifierType => ModifierEnum.Dwarf;
-        public override Func<string> TaskText => () => !Smol && !Sped ? "- Why" : $"- You are {Text}";
+        public override Func<string> Description => () => !Smol && !Sped ? "- Why" : $"- You are {Text}";
 
         public Dwarf(PlayerControl player) : base(player) {}
     }

@@ -77,18 +77,7 @@ namespace TownOfUsReworked.Monos
 
                     if (GUILayout.Button("Fix All Sabotages"))
                     {
-                        ShipStatus.Instance.RpcRepairSystem(SystemTypes.Doors, 79);
-                        ShipStatus.Instance.RpcRepairSystem(SystemTypes.Doors, 80);
-                        ShipStatus.Instance.RpcRepairSystem(SystemTypes.Doors, 81);
-                        ShipStatus.Instance.RpcRepairSystem(SystemTypes.Doors, 82);
-                        ShipStatus.Instance.RpcRepairSystem(SystemTypes.LifeSupp, 16);
-                        ShipStatus.Instance.RpcRepairSystem(SystemTypes.Reactor, 16);
-                        ShipStatus.Instance.RpcRepairSystem(SystemTypes.Laboratory, 16);
-                        ShipStatus.Instance.RpcRepairSystem(SystemTypes.Reactor, 16 | 0);
-                        ShipStatus.Instance.RpcRepairSystem(SystemTypes.Reactor, 16 | 1);
-                        ShipStatus.Instance.RpcRepairSystem(SystemTypes.Comms, 16 | 0);
-                        ShipStatus.Instance.RpcRepairSystem(SystemTypes.Comms, 16 | 1);
-                        ShipStatus.Instance.RpcRepairSystem(SystemTypes.Comms, 0);
+                        FixExtentions.Fix();
                         DefaultOutfitAll();
                     }
 
@@ -100,7 +89,7 @@ namespace TownOfUsReworked.Monos
 
                     if (GUILayout.Button("Redo Intro Sequence"))
                     {
-                        HUD.StartCoroutine(HUD.CoFadeFullScreen(Color.clear, Color.black));
+                        HUD.StartCoroutine(HUD.CoFadeFullScreen(UColor.clear, UColor.black));
                         HUD.StartCoroutine(HUD.CoShowIntro());
                     }
 

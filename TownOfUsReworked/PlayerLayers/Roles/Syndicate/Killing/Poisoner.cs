@@ -2,23 +2,24 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Poisoner : Syndicate
     {
-        public CustomButton PoisonButton;
-        public CustomButton GlobalPoisonButton;
-        public DateTime LastPoisoned;
-        public PlayerControl PoisonedPlayer;
-        public float TimeRemaining;
-        public bool Enabled;
+        public CustomButton PoisonButton { get; set; }
+        public CustomButton GlobalPoisonButton { get; set; }
+        public DateTime LastPoisoned { get; set; }
+        public PlayerControl PoisonedPlayer { get; set; }
+        public float TimeRemaining { get; set; }
+        public bool Enabled { get; set; }
         public bool Poisoned => TimeRemaining > 0f;
-        public CustomMenu PoisonMenu;
+        public CustomMenu PoisonMenu { get; set; }
 
         public override Color32 Color => ClientGameOptions.CustomSynColors ? Colors.Poisoner : Colors.Syndicate;
         public override string Name => "Poisoner";
         public override LayerEnum Type => LayerEnum.Poisoner;
         public override RoleEnum RoleType => RoleEnum.Poisoner;
         public override Func<string> StartText => () => "Delay A Kill To Decieve The <color=#8CFFFFFF>Crew</color>";
-        public override Func<string> AbilitiesText => () => $"- You can poison players{(HoldsDrive ? " from afar" : "")}\n- Poisoned players will die after " +
-            $"{CustomGameOptions.PoisonDuration}s\n{CommonAbilities}";
+        public override Func<string> Description => () => $"- You can poison players{(HoldsDrive ? " from afar" : "")}\n- Poisoned players will die after {CustomGameOptions.PoisonDuration}"
+            + $"s\n{CommonAbilities}";
         public override InspectorResults InspectorResults => InspectorResults.Unseen;
+        public float Timer => ButtonUtils.Timer(Player, LastPoisoned, CustomGameOptions.PoisonCd);
 
         public Poisoner(PlayerControl player) : base(player)
         {
@@ -48,15 +49,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             LastPoisoned = DateTime.UtcNow;
         }
 
-        public float PoisonTimer()
-        {
-            var timespan = DateTime.UtcNow - LastPoisoned;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.PoisonCd) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
-        }
-
         public void Click(PlayerControl player)
         {
             var interact = Interact(Player, player);
@@ -75,9 +67,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             base.UpdateHud(__instance);
             var flag = PoisonedPlayer == null && HoldsDrive;
-            GlobalPoisonButton.Update(flag ? "SET TARGET" : "POISON", PoisonTimer(), CustomGameOptions.PoisonCd, Poisoned, TimeRemaining, CustomGameOptions.PoisonDuration, true,
+            GlobalPoisonButton.Update(flag ? "SET TARGET" : "POISON", Timer, CustomGameOptions.PoisonCd, Poisoned, TimeRemaining, CustomGameOptions.PoisonDuration, true,
                 HoldsDrive);
-            PoisonButton.Update("POISON", PoisonTimer(), CustomGameOptions.PoisonCd, Poisoned, TimeRemaining, CustomGameOptions.PoisonDuration, true, !HoldsDrive);
+            PoisonButton.Update("POISON", Timer, CustomGameOptions.PoisonCd, Poisoned, TimeRemaining, CustomGameOptions.PoisonDuration, true, !HoldsDrive);
 
             if (Input.GetKeyDown(KeyCode.Backspace))
             {
@@ -92,7 +84,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void HitPoison()
         {
-            if (PoisonTimer() != 0f || Poisoned || HoldsDrive || IsTooFar(Player, PoisonButton.TargetPlayer))
+            if (Timer != 0f || Poisoned || HoldsDrive || IsTooFar(Player, PoisonButton.TargetPlayer))
                 return;
 
             var interact = Interact(Player, PoisonButton.TargetPlayer);
@@ -114,7 +106,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void HitGlobalPoison()
         {
-            if (PoisonTimer() != 0f || Poisoned || !HoldsDrive)
+            if (Timer != 0f || Poisoned || !HoldsDrive)
                 return;
 
             if (PoisonedPlayer == null)

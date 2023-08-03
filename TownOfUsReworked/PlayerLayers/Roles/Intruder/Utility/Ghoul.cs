@@ -2,35 +2,27 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Ghoul : Intruder
     {
-        public CustomButton MarkButton;
-        public bool Caught;
-        public bool Faded;
-        public DateTime LastMarked;
-        public PlayerControl MarkedPlayer;
+        public CustomButton MarkButton { get; set; }
+        public bool Caught { get; set; }
+        public bool Faded { get; set; }
+        public DateTime LastMarked { get; set; }
+        public PlayerControl MarkedPlayer { get; set; }
 
         public override Color32 Color => ClientGameOptions.CustomIntColors ? Colors.Ghoul : Colors.Intruder;
         public override string Name => "Ghoul";
         public override LayerEnum Type => LayerEnum.Ghoul;
         public override RoleEnum RoleType => RoleEnum.Ghoul;
         public override Func<string> StartText => () => "BOO!";
-        public override Func<string> AbilitiesText => () => "- You can mark a player for death every round\n- Marked players will be announced to all players and will die at the end of the"
-            + " next meeting if you are not clicked";
+        public override Func<string> Description => () => "- You can mark a player for death every round\n- Marked players will be announced to all players and will die at the end of the "
+            + "next meeting if you are not clicked";
         public override InspectorResults InspectorResults => InspectorResults.Ghostly;
+        public float Timer => ButtonUtils.Timer(Player, LastMarked, CustomGameOptions.GhoulMarkCd, true);
 
         public Ghoul(PlayerControl player) : base(player)
         {
             RoleAlignment = RoleAlignment.IntruderUtil;
             MarkedPlayer = null;
             MarkButton = new(this, "GhoulMark", AbilityTypes.Direct, "ActionSecondary", Mark, Exception1, false, true);
-        }
-
-        public float MarkTimer()
-        {
-            var timespan = DateTime.UtcNow - LastMarked;
-            var num = CustomGameOptions.GhoulMarkCd * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void Fade()
@@ -59,7 +51,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Mark()
         {
-            if (MarkTimer() != 0f || IsTooFar(Player, MarkButton.TargetPlayer))
+            if (Timer != 0f || IsTooFar(Player, MarkButton.TargetPlayer))
                 return;
 
             MarkedPlayer = MarkButton.TargetPlayer;
@@ -72,7 +64,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             base.UpdateHud(__instance);
             KillButton.Disable();
-            MarkButton.Update("MARK", MarkTimer(), CustomGameOptions.GhoulMarkCd, true, MarkedPlayer == null);
+            MarkButton.Update("MARK", Timer, CustomGameOptions.GhoulMarkCd, true, MarkedPlayer == null);
         }
     }
 }

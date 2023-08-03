@@ -10,7 +10,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
         public override string Name => !Chonk && !Snail ? "Useless" : (!Chonk ? "Sloth" : (Snail ? "Chonker" : "Giant"));
         public override LayerEnum Type => LayerEnum.Giant;
         public override ModifierEnum ModifierType => ModifierEnum.Giant;
-        public override Func<string> TaskText => () => !Chonk && !Snail ? "- Why" : $"- You are {Text}";
+        public override Func<string> Description => () => !Chonk && !Snail ? "- Why" : $"- You are {Text}";
 
         public Giant(PlayerControl player) : base(player) {}
     }

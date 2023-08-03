@@ -9,9 +9,9 @@ namespace TownOfUsReworked.Custom
         public readonly string ActiveSprite;
         public readonly string DisabledSprite;
         public readonly MeetingTypes Type;
-        public Vector3 Position;
-        public Dictionary<byte, bool> Actives = new();
-        public Dictionary<byte, GameObject> Buttons = new();
+        public Vector3 Position { get; set; }
+        public Dictionary<byte, bool> Actives { get; set; }
+        public Dictionary<byte, GameObject> Buttons { get; set; }
         public readonly bool AfterVote;
         public delegate void OnClick(PlayerVoteArea voteArea, MeetingHud __instance);
         public delegate void ExtraFunction();
@@ -29,6 +29,8 @@ namespace TownOfUsReworked.Custom
             Type = type;
             Parallel = parallel ?? Blank;
             IsExempt = isExempt ?? BlankBool;
+            Actives = new();
+            Buttons = new();
             AllCustomMeetings.Add(this);
         }
 

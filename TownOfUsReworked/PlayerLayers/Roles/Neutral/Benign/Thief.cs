@@ -2,25 +2,26 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Thief : Neutral
     {
-        public DateTime LastStolen;
-        public CustomButton StealButton;
-        public Dictionary<string, Color> ColorMapping = new();
-        public Dictionary<string, Color> SortedColorMapping = new();
-        public GameObject Phone;
-        public Transform SelectedButton;
-        public int Page;
-        public int MaxPage;
-        public Dictionary<int, List<Transform>> GuessButtons = new();
-        public Dictionary<int, KeyValuePair<string, Color>> Sorted = new();
-        public CustomMeeting GuessMenu;
+        public DateTime LastStolen { get; set; }
+        public CustomButton StealButton { get; set; }
+        public Dictionary<string, Color> ColorMapping { get; set; }
+        public Dictionary<string, Color> SortedColorMapping { get; set; }
+        public GameObject Phone { get; set; }
+        public Transform SelectedButton { get; set; }
+        public int Page { get; set; }
+        public int MaxPage { get; set; }
+        public Dictionary<int, List<Transform>> GuessButtons { get; set; }
+        public Dictionary<int, KeyValuePair<string, Color>> Sorted { get; set; }
+        public CustomMeeting GuessMenu { get; set; }
 
         public override Color32 Color => ClientGameOptions.CustomNeutColors ? Colors.Thief : Colors.Neutral;
         public override string Name => "Thief";
         public override LayerEnum Type => LayerEnum.Thief;
         public override RoleEnum RoleType => RoleEnum.Thief;
         public override Func<string> StartText => () => "Steal From The Killers";
-        public override Func<string> AbilitiesText => () => "- You can kill players to steal their roles\n- You cannot steal roles from players who cannot kill";
+        public override Func<string> Description => () => "- You can kill players to steal their roles\n- You cannot steal roles from players who cannot kill";
         public override InspectorResults InspectorResults => InspectorResults.BringsChaos;
+        public float Timer => ButtonUtils.Timer(Player, LastStolen, CustomGameOptions.ThiefKillCooldown);
 
         public Thief(PlayerControl player) : base(player)
         {
@@ -140,15 +141,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             }
 
             MaxPage = i;
-        }
-
-        public float StealTimer()
-        {
-            var timespan = DateTime.UtcNow - LastStolen;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.ThiefKillCooldown) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
         }
 
         private void SetButtons(MeetingHud __instance, PlayerVoteArea voteArea)
@@ -295,7 +287,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Steal()
         {
-            if (IsTooFar(Player, StealButton.TargetPlayer) || StealTimer() != 0f)
+            if (IsTooFar(Player, StealButton.TargetPlayer) || Timer != 0f)
                 return;
 
             var interact = Interact(Player, StealButton.TargetPlayer, true);
@@ -460,7 +452,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            StealButton.Update("STEAL", StealTimer(), CustomGameOptions.ThiefKillCooldown);
+            StealButton.Update("STEAL", Timer, CustomGameOptions.ThiefKillCooldown);
         }
 
         public override void UpdateMeeting(MeetingHud __instance)

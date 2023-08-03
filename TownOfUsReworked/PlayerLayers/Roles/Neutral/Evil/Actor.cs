@@ -2,12 +2,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Actor : Neutral
     {
-        public bool Guessed;
+        public bool Guessed { get; set; }
         public InspectorResults PretendRoles => TargetRole.InspectorResults;
-        public Role TargetRole;
+        public Role TargetRole { get; set; }
         public bool Failed => !GetLayers<Assassin>(LayerEnum.Assassin).Any(x => !x.IsDead && !x.Disconnected);
-        public CustomButton RoleButton;
-        public int Rounds;
+        public CustomButton RoleButton { get; set; }
+        public int Rounds { get; set; }
         public bool TargetFailed => TargetRole == null && Rounds > 0;
 
         public override Color32 Color => ClientGameOptions.CustomNeutColors ? Colors.Actor : Colors.Neutral;
@@ -15,8 +15,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override LayerEnum Type => LayerEnum.Actor;
         public override RoleEnum RoleType => RoleEnum.Actor;
         public override Func<string> StartText => () => "Play Pretend With The Others";
-        public override Func<string> AbilitiesText => () => TargetRole == null ? "- You can select a player whose role you can pretend to be" : ("- Upon being guessed, you kill your " +
-            "guesser");
+        public override Func<string> Description => () => TargetRole == null ? "- You can select a player whose role you can pretend to be" : "- Upon being guessed, you kill your guesser";
         public override InspectorResults InspectorResults => TargetRole == null ? InspectorResults.Manipulative : TargetRole.InspectorResults;
 
         public Actor(PlayerControl player) : base(player)

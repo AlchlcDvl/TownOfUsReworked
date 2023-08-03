@@ -2,16 +2,15 @@ namespace TownOfUsReworked.CustomOptions
 {
     public class CustomNestedOption : CustomOption
     {
-        private List<OptionBehaviour> OldButtons = new();
-        public List<CustomOption> InternalOptions = new();
+        private List<OptionBehaviour> OldButtons { get; set; } = new();
+        public List<CustomOption> InternalOptions { get; set; } = new();
         public static readonly List<CustomButtonOption> AllCancelButtons = new();
         private readonly CustomButtonOption CancelButton;
         private readonly CustomHeaderOption Header;
-        private CustomOption Loading;
+        private CustomOption Loading { get; set; }
 
         public CustomNestedOption(MultiMenu menu, string name) : base(-1, menu, name, CustomOptionType.Nested, 0)
         {
-            InternalOptions = new();
             Header = new(MultiMenu.external, name);
             CancelButton = new(MultiMenu.external, "Cancel", delegate { Cancel(FlashWhite); });
             InternalOptions.Add(Header);

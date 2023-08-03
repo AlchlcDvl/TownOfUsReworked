@@ -2,7 +2,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
 {
     public class Rivals : Objectifier
     {
-        public PlayerControl OtherRival;
+        public PlayerControl OtherRival { get; set; }
         public bool RivalDead => OtherRival == null || OtherRival.Data.IsDead || OtherRival.Data.Disconnected;
         public bool IsDeadRival => Player == null || IsDead || Disconnected;
         public bool BothRivalsDead => IsDeadRival && RivalDead;
@@ -13,7 +13,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         public override string Symbol => "α";
         public override LayerEnum Type => LayerEnum.Rivals;
         public override ObjectifierEnum ObjectifierType => ObjectifierEnum.Rivals;
-        public override Func<string> TaskText => () => $"- Get {OtherRival.name} killed and then live to the final 2";
+        public override Func<string> Description => () => $"- Get {OtherRival.name} killed and then live to the final 2";
 
         public Rivals(PlayerControl player) : base(player) {}
     }

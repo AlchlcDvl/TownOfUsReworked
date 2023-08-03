@@ -2,18 +2,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Revealer : Crew
     {
-        public bool Caught;
-        public bool Revealed;
-        public bool CompletedTasks;
-        public bool Faded;
-        public Role FormerRole;
+        public bool Caught { get; set; }
+        public bool Revealed { get; set; }
+        public bool CompletedTasks { get; set; }
+        public bool Faded { get; set; }
+        public Role FormerRole { get; set; }
 
         public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Revealer : Colors.Crew;
         public override string Name => "Revealer";
         public override LayerEnum Type => LayerEnum.Revealer;
         public override RoleEnum RoleType => RoleEnum.Revealer;
         public override Func<string> StartText => () => "OOOOOOO";
-        public override Func<string> AbilitiesText => () => "- You can reveal evils players to the <color=#8CFFFFFF>Crew</color> once you finish your tasks without getting clicked.";
+        public override Func<string> Description => () => "- You can reveal evils players to the <color=#8CFFFFFF>Crew</color> once you finish your tasks without getting clicked.";
         public override InspectorResults InspectorResults => InspectorResults.Ghostly;
 
         public Revealer(PlayerControl player) : base(player) => RoleAlignment = RoleAlignment.CrewUtil;

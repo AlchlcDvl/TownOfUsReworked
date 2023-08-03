@@ -2,11 +2,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Cannibal : Neutral
     {
-        public CustomButton EatButton;
-        public int EatNeed;
-        public bool Eaten;
-        public DateTime LastEaten;
-        public Dictionary<byte, CustomArrow> BodyArrows = new();
+        public CustomButton EatButton { get; set; }
+        public int EatNeed { get; set; }
+        public bool Eaten { get; set; }
+        public DateTime LastEaten { get; set; }
+        public Dictionary<byte, CustomArrow> BodyArrows { get; set; }
         public bool EatWin => EatNeed == 0;
         public bool CanEat => !Eaten || (Eaten && !CustomGameOptions.AvoidNeutralKingmakers);
 
@@ -15,26 +15,18 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override LayerEnum Type => LayerEnum.Cannibal;
         public override RoleEnum RoleType => RoleEnum.Cannibal;
         public override Func<string> StartText => () => "Eat The Bodies Of The Dead";
-        public override Func<string> AbilitiesText => () => "- You can consume a body, making it disappear from the game" + (CustomGameOptions.EatArrows ? "\n- When someone dies, you get "
+        public override Func<string> Description => () => "- You can consume a body, making it disappear from the game" + (CustomGameOptions.EatArrows ? "\n- When someone dies, you get "
             + "an arrow pointing to their body" : "");
         public override InspectorResults InspectorResults => InspectorResults.DealsWithDead;
+        public float Timer => ButtonUtils.Timer(Player, LastEaten, CustomGameOptions.CannibalCd);
 
         public Cannibal(PlayerControl player) : base(player)
         {
             RoleAlignment = RoleAlignment.NeutralEvil;
-            Objectives = () => Eaten ? "- You are satiated" : $"- Eat {EatNeed} {(EatNeed == 1 ? "body" : "bodies")}";
+            Objectives = () => Eaten ? "- You are satiated" : $"- Eat {EatNeed} bod{(EatNeed == 1 ? "y" : "ies")}";
             BodyArrows = new();
             EatNeed = CustomGameOptions.CannibalBodyCount >= CustomPlayer.AllPlayers.Count / 2 ? CustomPlayer.AllPlayers.Count / 2 : CustomGameOptions.CannibalBodyCount;
             EatButton = new(this, "Eat", AbilityTypes.Dead, "ActionSecondary", Eat);
-        }
-
-        public float EatTimer()
-        {
-            var timespan = DateTime.UtcNow - LastEaten;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.CannibalCd) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void DestroyArrow(byte targetPlayerId)
@@ -53,12 +45,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            EatButton.Update("EAT", EatTimer(), CustomGameOptions.CannibalCd, true, CanEat);
+            EatButton.Update("EAT", Timer, CustomGameOptions.CannibalCd, true, CanEat);
 
             if (CustomGameOptions.EatArrows && !IsDead)
             {
-                var validBodies = AllBodies.Where(x => KilledPlayers.Any(y => y.PlayerId == x.ParentId &&
-                    y.KillTime.AddSeconds(CustomGameOptions.EatArrowDelay) < DateTime.UtcNow));
+                var validBodies = AllBodies.Where(x => KilledPlayers.Any(y => y.PlayerId == x.ParentId && y.KillTime.AddSeconds(CustomGameOptions.EatArrowDelay) < DateTime.UtcNow));
 
                 foreach (var bodyArrow in BodyArrows.Keys)
                 {
@@ -80,7 +71,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Eat()
         {
-            if (IsTooFar(Player, EatButton.TargetBody) || EatTimer() != 0f)
+            if (IsTooFar(Player, EatButton.TargetBody) || Timer != 0f)
                 return;
 
             Spread(Player, PlayerByBody(EatButton.TargetBody));

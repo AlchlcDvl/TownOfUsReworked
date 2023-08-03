@@ -2,22 +2,24 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Coroner : Crew
     {
-        public Dictionary<byte, CustomArrow> BodyArrows = new();
-        public List<byte> Reported = new();
-        public CustomButton CompareButton;
-        public List<DeadPlayer> ReferenceBodies = new();
-        public DateTime LastCompared;
-        public DateTime LastAutopsied;
-        public CustomButton AutopsyButton;
+        public Dictionary<byte, CustomArrow> BodyArrows { get; set; }
+        public List<byte> Reported { get; set; }
+        public CustomButton CompareButton { get; set; }
+        public List<DeadPlayer> ReferenceBodies { get; set; }
+        public DateTime LastCompared { get; set; }
+        public DateTime LastAutopsied { get; set; }
+        public CustomButton AutopsyButton { get; set; }
+        public float AutopsyTimer => ButtonUtils.Timer(Player, LastAutopsied, CustomGameOptions.AutopsyCooldown);
+        public float CompareTimer => ButtonUtils.Timer(Player, LastCompared, CustomGameOptions.CompareCooldown);
 
         public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Coroner : Colors.Crew;
         public override string Name => "Coroner";
         public override LayerEnum Type => LayerEnum.Coroner;
         public override RoleEnum RoleType => RoleEnum.Coroner;
         public override Func<string> StartText => () => "Examine The Dead For Information";
-        public override Func<string> AbilitiesText => () => "- You know when players die and will be notified to as to where their body is for a brief period of time\n- You will get a " +
-            "report when you report a body\n- You can perform an autopsy on bodies, to get a reference\n- You can compare the autopsy reference with players to see if they killed the body"
-            + " you examined";
+        public override Func<string> Description => () => "- You know when players die and will be notified to as to where their body is for a brief period of time\n- You will get a " +
+            "report when you report a body\n- You can perform an autopsy on bodies, to get a reference\n- You can compare the autopsy reference with players to see if they killed the body "
+            + "you examined";
         public override InspectorResults InspectorResults => InspectorResults.DealsWithDead;
 
         public Coroner(PlayerControl player) : base(player)
@@ -28,24 +30,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             ReferenceBodies = new();
             AutopsyButton = new(this, "Autopsy", AbilityTypes.Dead, "ActionSecondary", Autopsy);
             CompareButton = new(this, "Compare", AbilityTypes.Direct, "Secondary", Compare);
-        }
-
-        public float CompareTimer()
-        {
-            var timespan = DateTime.UtcNow - LastCompared;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.CompareCooldown) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
-        }
-
-        public float AutopsyTimer()
-        {
-            var timespan = DateTime.UtcNow - LastAutopsied;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.AutopsyCooldown) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void DestroyArrow(byte targetPlayerId)
@@ -64,13 +48,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            AutopsyButton.Update("AUTOPSY", AutopsyTimer(), CustomGameOptions.AutopsyCooldown);
-            CompareButton.Update("COMPARE", CompareTimer(), CustomGameOptions.CompareCooldown, true, ReferenceBodies.Count > 0);
+            AutopsyButton.Update("AUTOPSY", AutopsyTimer, CustomGameOptions.AutopsyCooldown);
+            CompareButton.Update("COMPARE", CompareTimer, CustomGameOptions.CompareCooldown, true, ReferenceBodies.Count > 0);
 
             if (!CustomPlayer.LocalCustom.IsDead)
             {
-                var validBodies = AllBodies.Where(x => KilledPlayers.Any(y => y.PlayerId == x.ParentId && DateTime.UtcNow <
-                    y.KillTime.AddSeconds(CustomGameOptions.CoronerArrowDuration)));
+                var validBodies = AllBodies.Where(x => KilledPlayers.Any(y => y.PlayerId == x.ParentId && DateTime.UtcNow < y.KillTime.AddSeconds(CustomGameOptions.CoronerArrowDuration)));
 
                 foreach (var bodyArrow in BodyArrows.Keys)
                 {
@@ -92,7 +75,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Autopsy()
         {
-            if (IsTooFar(Player, AutopsyButton.TargetBody) || AutopsyTimer() != 0f)
+            if (IsTooFar(Player, AutopsyButton.TargetBody) || AutopsyTimer != 0f)
                 return;
 
             var playerId = AutopsyButton.TargetBody.ParentId;
@@ -116,7 +99,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Compare()
         {
-            if (ReferenceBodies.Count == 0 || IsTooFar(Player, CompareButton.TargetPlayer) || CompareTimer() != 0f)
+            if (ReferenceBodies.Count == 0 || IsTooFar(Player, CompareButton.TargetPlayer) || CompareTimer != 0f)
                 return;
 
             var interact = Interact(Player, CompareButton.TargetPlayer);

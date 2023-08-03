@@ -2,16 +2,16 @@ namespace TownOfUsReworked.Custom
 {
     public class CustomArrow
     {
-        private ArrowBehaviour Arrow;
-        private SpriteRenderer Render;
-        private GameObject ArrowObj;
+        private ArrowBehaviour Arrow { get; set; }
+        private SpriteRenderer Render { get; set; }
+        private GameObject ArrowObj { get; set; }
         public readonly PlayerControl Owner;
         private readonly float Interval;
-        private DateTime _time;
-        private Vector3 Target;
-        private SpriteRenderer Point;
-        private Color? ArrowColor;
-        private bool Disabled;
+        private DateTime _time { get; set; }
+        private Vector3 Target { get; set; }
+        private SpriteRenderer Point { get; set; }
+        private Color? ArrowColor { get; set; }
+        private bool Disabled { get; set; }
         public static readonly List<CustomArrow> AllArrows = new();
 
         public CustomArrow(PlayerControl owner, Color color, float interval = 0f)

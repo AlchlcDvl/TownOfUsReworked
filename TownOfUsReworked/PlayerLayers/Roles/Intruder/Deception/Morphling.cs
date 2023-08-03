@@ -2,14 +2,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Morphling : Intruder
     {
-        public CustomButton MorphButton;
-        public CustomButton SampleButton;
-        public DateTime LastMorphed;
-        public DateTime LastSampled;
-        public PlayerControl MorphedPlayer;
-        public PlayerControl SampledPlayer;
-        public float TimeRemaining;
-        public bool Enabled;
+        public CustomButton MorphButton { get; set; }
+        public CustomButton SampleButton { get; set; }
+        public DateTime LastMorphed { get; set; }
+        public DateTime LastSampled { get; set; }
+        public PlayerControl MorphedPlayer { get; set; }
+        public PlayerControl SampledPlayer { get; set; }
+        public float TimeRemaining { get; set; }
+        public bool Enabled { get; set; }
         public bool Morphed => TimeRemaining > 0f;
 
         public override Color32 Color => ClientGameOptions.CustomIntColors ? Colors.Morphling : Colors.Intruder;
@@ -17,8 +17,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override LayerEnum Type => LayerEnum.Morphling;
         public override RoleEnum RoleType => RoleEnum.Morphling;
         public override Func<string> StartText => () => "Fool The <color=#8CFFFFFF>Crew</color> With Your Appearances";
-        public override Func<string> AbilitiesText => () => $"- You can morph into other players, taking up their appearances as your own\n{CommonAbilities}";
+        public override Func<string> Description => () => $"- You can morph into other players, taking up their appearances as your own\n{CommonAbilities}";
         public override InspectorResults InspectorResults => InspectorResults.CreatesConfusion;
+        public float SampleTimer => ButtonUtils.Timer(Player, LastSampled, CustomGameOptions.SampleCooldown);
+        public float MorphTimer => ButtonUtils.Timer(Player, LastMorphed, CustomGameOptions.MorphlingCd);
 
         public Morphling(PlayerControl player) : base(player)
         {
@@ -50,27 +52,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 LastSampled = DateTime.UtcNow;
         }
 
-        public float MorphTimer()
-        {
-            var timespan = DateTime.UtcNow - LastMorphed;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.MorphlingCd) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
-        }
-
-        public float SampleTimer()
-        {
-            var timespan = DateTime.UtcNow - LastSampled;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.SampleCooldown) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
-        }
-
         public void HitMorph()
         {
-            if (MorphTimer() != 0f || SampledPlayer == null || Morphed)
+            if (MorphTimer != 0f || SampledPlayer == null || Morphed)
                 return;
 
             TimeRemaining = CustomGameOptions.MorphlingDuration;
@@ -81,7 +65,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Sample()
         {
-            if (SampleTimer() != 0f || IsTooFar(Player, SampleButton.TargetPlayer) || SampledPlayer == SampleButton.TargetPlayer)
+            if (SampleTimer != 0f || IsTooFar(Player, SampleButton.TargetPlayer) || SampledPlayer == SampleButton.TargetPlayer)
                 return;
 
             var interact = Interact(Player, SampleButton.TargetPlayer);
@@ -110,8 +94,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            MorphButton.Update("MORPH", MorphTimer(), CustomGameOptions.MorphlingCd, Morphed, TimeRemaining, CustomGameOptions.MorphlingDuration, true, SampledPlayer != null);
-            SampleButton.Update("SAMPLE", SampleTimer(), CustomGameOptions.MeasureCooldown);
+            MorphButton.Update("MORPH", MorphTimer, CustomGameOptions.MorphlingCd, Morphed, TimeRemaining, CustomGameOptions.MorphlingDuration, true, SampledPlayer != null);
+            SampleButton.Update("SAMPLE", SampleTimer, CustomGameOptions.MeasureCooldown);
         }
     }
 }

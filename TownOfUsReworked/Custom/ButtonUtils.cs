@@ -38,11 +38,7 @@ namespace TownOfUsReworked.Custom
                 HUD.PetButton.gameObject.SetActive(true);
         }
 
-        public static void DestroyButtons(this PlayerControl player)
-        {
-            foreach (var button in CustomButton.AllButtons.Where(x => x.Owner.Player == player))
-                button.Destroy();
-        }
+        public static void DestroyButtons(this PlayerControl player) => CustomButton.AllButtons.Where(x => x.Owner.Player == player).ToList().ForEach(x => x.Destroy());
 
         public static bool CannotUse(this PlayerControl player) => player.onLadder || player.IsBlocked() || (player.inVent && !CustomGameOptions.VentTargetting) || player.inMovingPlat;
 
@@ -135,11 +131,11 @@ namespace TownOfUsReworked.Custom
                 role2.BlockTarget = null;
 
                 if (start)
-                    role2.LastBlock = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.EscRoleblockCooldown);
+                    role2.LastBlocked = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.EscRoleblockCooldown);
                 else if (meeting)
-                    role2.LastBlock = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.EscRoleblockCooldown);
+                    role2.LastBlocked = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.EscRoleblockCooldown);
                 else
-                    role2.LastBlock = DateTime.UtcNow;
+                    role2.LastBlocked = DateTime.UtcNow;
             }
             else if (local.Is(RoleEnum.Inspector))
             {
@@ -360,7 +356,7 @@ namespace TownOfUsReworked.Custom
                     role2.LastMediated = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.MediateCooldown);
                     role2.LastBugged = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.BugCooldown);
                     role2.LastInspected = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.InspectCooldown);
-                    role2.LastBlock = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.EscRoleblockCooldown);
+                    role2.LastBlocked = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.EscRoleblockCooldown);
                     role2.LastTransported = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.TransportCooldown);
                 }
                 else
@@ -377,7 +373,7 @@ namespace TownOfUsReworked.Custom
                     role2.LastMediated = DateTime.UtcNow;
                     role2.LastBugged = DateTime.UtcNow;
                     role2.LastInspected = DateTime.UtcNow;
-                    role2.LastBlock = DateTime.UtcNow;
+                    role2.LastBlocked = DateTime.UtcNow;
                     role2.LastTransported = DateTime.UtcNow;
                 }
 
@@ -452,11 +448,11 @@ namespace TownOfUsReworked.Custom
                 role2.BlockTarget = null;
 
                 if (start)
-                    role2.LastBlock = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ConsRoleblockCooldown);
+                    role2.LastBlocked = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ConsRoleblockCooldown);
                 else if (meeting)
-                    role2.LastBlock = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.ConsRoleblockCooldown);
+                    role2.LastBlocked = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.ConsRoleblockCooldown);
                 else
-                    role2.LastBlock = DateTime.UtcNow;
+                    role2.LastBlocked = DateTime.UtcNow;
             }
             else if (local.Is(RoleEnum.Disguiser))
             {
@@ -507,10 +503,10 @@ namespace TownOfUsReworked.Custom
                     role2.LastDragged = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.DragCd);
                     role2.LastMorphed = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.MorphlingCd);
                     role2.LastSampled = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.SampleCooldown);
-                    role2.LastTeleport = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.TeleportCd);
+                    role2.LastTeleported = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.TeleportCd);
                     role2.LastInvis = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.InvisCd);
                     role2.LastAmbushed = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.AmbushCooldown);
-                    role2.LastBlock = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.ConsRoleblockCooldown);
+                    role2.LastBlocked = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.ConsRoleblockCooldown);
                 }
                 else
                 {
@@ -526,28 +522,14 @@ namespace TownOfUsReworked.Custom
                     role2.LastDragged = DateTime.UtcNow;
                     role2.LastMorphed = DateTime.UtcNow;
                     role2.LastSampled = DateTime.UtcNow;
-                    role2.LastTeleport = DateTime.UtcNow;
+                    role2.LastTeleported = DateTime.UtcNow;
                     role2.LastInvis = DateTime.UtcNow;
                     role2.LastAmbushed = DateTime.UtcNow;
-                    role2.LastBlock = DateTime.UtcNow;
+                    role2.LastBlocked = DateTime.UtcNow;
                 }
 
                 if (local.Data.IsDead && DeadSeeEverything)
                     role2.Investigated.Clear();
-            }
-            else if (local.Is(RoleEnum.Godfather))
-            {
-                var role2 = (Godfather)role;
-
-                if (!role2.HasDeclared)
-                {
-                    if (start)
-                        role2.LastDeclared = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - 10f);
-                    else if (meeting)
-                        role2.LastDeclared = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - 10f);
-                    else
-                        role2.LastDeclared = DateTime.UtcNow;
-                }
             }
             else if (local.Is(RoleEnum.Grenadier))
             {
@@ -621,17 +603,17 @@ namespace TownOfUsReworked.Custom
 
                 if (start)
                 {
-                    role2.LastTeleport = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.TeleportCd);
+                    role2.LastTeleported = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.TeleportCd);
                     role2.LastMarked = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.MarkCooldown);
                 }
                 else if (meeting)
                 {
                     role2.LastMarked = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.MarkCooldown);
-                    role2.LastTeleport = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.TeleportCd);
+                    role2.LastTeleported = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.TeleportCd);
                 }
                 else
                 {
-                    role2.LastTeleport = DateTime.UtcNow;
+                    role2.LastTeleported = DateTime.UtcNow;
                     role2.LastMarked = DateTime.UtcNow;
                 }
             }
@@ -787,20 +769,6 @@ namespace TownOfUsReworked.Custom
                     role2.LastPoisoned = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.PoisonCd);
                 else
                     role2.LastPoisoned = DateTime.UtcNow;
-            }
-            else if (local.Is(RoleEnum.Rebel))
-            {
-                var role2 = (Rebel)role;
-
-                if (!role2.HasDeclared)
-                {
-                    if (start)
-                        role2.LastDeclared = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - 10f);
-                    else if (start)
-                        role2.LastDeclared = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - 10f);
-                    else
-                        role2.LastDeclared = DateTime.UtcNow;
-                }
             }
             else if (local.Is(RoleEnum.PromotedRebel))
             {
@@ -980,19 +948,19 @@ namespace TownOfUsReworked.Custom
                 if (start)
                 {
                     role2.LastMimic = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.MimicCooldown);
-                    role2.LastHack = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.HackCooldown);
+                    role2.LastHacked = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.HackCooldown);
                     role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.GlitchKillCooldown);
                 }
                 else if (meeting)
                 {
                     role2.LastMimic = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.MimicCooldown);
-                    role2.LastHack = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.HackCooldown);
+                    role2.LastHacked = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.HackCooldown);
                     role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.GlitchKillCooldown);
                 }
                 else
                 {
                     role2.LastMimic = DateTime.UtcNow;
-                    role2.LastHack = DateTime.UtcNow;
+                    role2.LastHacked = DateTime.UtcNow;
                     role2.LastKilled = DateTime.UtcNow;
                 }
             }
@@ -1255,5 +1223,16 @@ namespace TownOfUsReworked.Custom
                     ab2.LastButtoned = DateTime.UtcNow;
             }
         }
+
+        public static float Timer(PlayerControl player, DateTime lastUsed, float cooldown, float difference = 0, float factor = 1f, bool isDead = false)
+        {
+            var timespan = DateTime.UtcNow - lastUsed;
+            var num = (isDead ? cooldown : player.GetModifiedCooldown(cooldown, difference, factor)) * 1000f;
+            var time = num - (float)timespan.TotalMilliseconds;
+            var flag2 = time < 0f;
+            return (flag2 ? 0f : time) / 1000f;
+        }
+
+        public static float Timer(PlayerControl player, DateTime lastUsed, float cooldown, bool isDead) => Timer(player, lastUsed, cooldown, 0, 1, isDead);
     }
 }

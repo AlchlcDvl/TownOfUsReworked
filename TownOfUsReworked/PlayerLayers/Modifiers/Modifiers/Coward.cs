@@ -6,7 +6,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
         public override string Name => "Coward";
         public override LayerEnum Type => LayerEnum.Coward;
         public override ModifierEnum ModifierType => ModifierEnum.Coward;
-        public override Func<string> TaskText => () => "- You cannot report bodies";
+        public override Func<string> Description => () => "- You cannot report bodies";
 
         public Coward(PlayerControl player) : base(player) {}
 

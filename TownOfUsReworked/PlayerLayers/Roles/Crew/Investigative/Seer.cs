@@ -2,19 +2,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Seer : Crew
     {
-        public DateTime LastSeered;
+        public DateTime LastSeered { get; set; }
         public bool ChangedDead => !AllRoles.Any(x => x.Player != null && !x.IsDead && !x.Disconnected && (x.RoleHistory.Count > 0 || x.Is(RoleEnum.Amnesiac) || x.Is(RoleEnum.Thief) ||
             x.Player.Is(ObjectifierEnum.Traitor) || x.Is(RoleEnum.VampireHunter) || x.Is(RoleEnum.Godfather) || x.Is(RoleEnum.Mafioso) || x.Is(RoleEnum.Shifter) || x.Is(RoleEnum.Guesser) ||
             x.Is(RoleEnum.Rebel) || x.Is(RoleEnum.Mystic) || (x.Is(RoleEnum.Seer) && x != this) || x.Is(RoleEnum.Sidekick) || x.Is(RoleEnum.GuardianAngel) || x.Is(RoleEnum.Executioner) ||
             x.Is(RoleEnum.BountyHunter) || x.Player.Is(ObjectifierEnum.Fanatic)));
-        public CustomButton SeerButton;
+        public CustomButton SeerButton { get; set; }
+        public float Timer => ButtonUtils.Timer(Player, LastSeered, CustomGameOptions.SeerCooldown);
 
         public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Seer : Colors.Crew;
         public override string Name => "Seer";
         public override LayerEnum Type => LayerEnum.Seer;
         public override RoleEnum RoleType => RoleEnum.Seer;
         public override Func<string> StartText => () => "You Can See People's Histories";
-        public override Func<string> AbilitiesText => () => "- You can investigate players to see if their roles have changed\n- If all players whose roles changed have died, you will " +
+        public override Func<string> Description => () => "- You can investigate players to see if their roles have changed\n- If all players whose roles changed have died, you will " +
             "become a <color=#FFCC80FF>Sheriff</color>";
         public override InspectorResults InspectorResults => InspectorResults.GainsInfo;
 
@@ -24,15 +25,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             SeerButton = new(this, "Seer", AbilityTypes.Direct, "ActionSecondary", See);
         }
 
-        public float SeerTimer()
-        {
-            var timespan = DateTime.UtcNow - LastSeered;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.SeerCooldown) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
-        }
-
         public void TurnSheriff()
         {
             var role = new Sheriff(Player);
@@ -40,14 +32,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
             if (Local)
                 Flash(Colors.Sheriff);
-
-            if (CustomPlayer.Local.Is(RoleEnum.Seer))
-                Flash(Color);
         }
 
         public void See()
         {
-            if (SeerTimer() != 0f || IsTooFar(Player, SeerButton.TargetPlayer))
+            if (Timer != 0f || IsTooFar(Player, SeerButton.TargetPlayer))
                 return;
 
             var interact = Interact(Player, SeerButton.TargetPlayer);
@@ -69,7 +58,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            SeerButton.Update("SEE", SeerTimer(), CustomGameOptions.SeerCooldown);
+            SeerButton.Update("SEE", Timer, CustomGameOptions.SeerCooldown);
 
             if (ChangedDead && !IsDead)
             {

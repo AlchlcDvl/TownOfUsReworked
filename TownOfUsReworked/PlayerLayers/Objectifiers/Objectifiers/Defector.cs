@@ -2,8 +2,8 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
 {
     public class Defector : Objectifier
     {
-        public bool Turned;
-        public Faction Side;
+        public bool Turned { get; set; }
+        public Faction Side { get; set; }
         public bool Defect => ((Side == Faction.Intruder && LastImp) || (Side == Faction.Syndicate && LastSyn)) && !IsDead && !Turned;
 
         public override Color32 Color
@@ -31,16 +31,15 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         public override string Symbol => "ε";
         public override LayerEnum Type => LayerEnum.Defector;
         public override ObjectifierEnum ObjectifierType => ObjectifierEnum.Defector;
-        public override Func<string> TaskText => () => "- Be the last one of your faction to switch sides";
+        public override Func<string> Description => () => "- Be the last one of your faction to switch sides";
         public override bool Hidden => !CustomGameOptions.DefectorKnows && !Turned;
 
         public Defector(PlayerControl player) : base(player) => Side = Player.GetFaction();
 
-        public void TurnSides()
+        public static void GetFactionChoice(out bool crew, out bool evil)
         {
-            Turned = true;
-            var crew = CustomGameOptions.DefectorFaction == DefectorFaction.Crew;
-            var evil = CustomGameOptions.DefectorFaction == DefectorFaction.OpposingEvil;
+            crew = CustomGameOptions.DefectorFaction == DefectorFaction.Crew;
+            evil = CustomGameOptions.DefectorFaction == DefectorFaction.OpposingEvil;
 
             if (CustomGameOptions.DefectorFaction == DefectorFaction.Random)
             {
@@ -48,6 +47,11 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
                 evil = random == 0;
                 crew = random == 1;
             }
+        }
+
+        public void TurnSides(bool crew, bool evil)
+        {
+            Turned = true;
 
             var role = Role.GetRole(Player);
 
@@ -89,8 +93,9 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
 
             if (Defect && !Turned)
             {
-                CallRpc(CustomRPC.Change, TurnRPC.TurnSides, this);
-                TurnSides();
+                GetFactionChoice(out var crew, out var evil);
+                CallRpc(CustomRPC.Change, TurnRPC.TurnSides, this, crew, evil);
+                TurnSides(crew, evil);
             }
         }
     }

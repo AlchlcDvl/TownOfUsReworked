@@ -12,7 +12,7 @@ namespace TownOfUsReworked.Classes
             else
                 options = CustomOption.AllOptions;
 
-            var writer = AmongUsClient.Instance.StartRpcImmediately(CustomPlayer.Local.NetId, 255, SendOption.Reliable);
+            var writer = AmongUsClient.Instance.StartRpcImmediately(CustomPlayer.Local.NetId, 254, SendOption.Reliable);
             writer.Write((byte)CustomRPC.Misc);
             writer.Write((byte)MiscRPC.SyncCustomSettings);
 
@@ -21,7 +21,7 @@ namespace TownOfUsReworked.Classes
                 if (writer.Position > 1000)
                 {
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    writer = AmongUsClient.Instance.StartRpcImmediately(CustomPlayer.Local.NetId, 255, SendOption.Reliable);
+                    writer = AmongUsClient.Instance.StartRpcImmediately(CustomPlayer.Local.NetId, 254, SendOption.Reliable);
                     writer.Write((byte)CustomRPC.Misc);
                     writer.Write((byte)MiscRPC.SyncCustomSettings);
                 }
@@ -78,7 +78,7 @@ namespace TownOfUsReworked.Classes
                 }
 
                 customOption.Set(value, val);
-                LogSomething($"{customOption}");
+                LogSomething(customOption);
             }
 
             CustomOption.SaveSettings("LastUsedSettings");
@@ -86,7 +86,7 @@ namespace TownOfUsReworked.Classes
 
         public static void ShareGameVersion()
         {
-            var writer = AmongUsClient.Instance.StartRpcImmediately(CustomPlayer.Local.NetId, 255, SendOption.Reliable);
+            var writer = AmongUsClient.Instance.StartRpcImmediately(CustomPlayer.Local.NetId, 254, SendOption.Reliable);
             writer.Write((byte)CustomRPC.Misc);
             writer.Write((byte)MiscRPC.VersionHandshake);
             writer.Write((byte)TownOfUsReworked.Version.Major);
@@ -126,12 +126,16 @@ namespace TownOfUsReworked.Classes
             return PlayerLayer.AllLayers.Find(x => x.Player == player && x.Type == type);
         }
 
+        public static T ReadLayer<T>(this MessageReader reader) where T : PlayerLayer => reader.ReadLayer() as T;
+
+        public static List<byte> ReadByteList(this MessageReader reader) => reader.ReadBytesAndSize().ToList();
+
         public static void CallRpc(params object[] data)
         {
             if (data[0] is not CustomRPC)
                 throw new ArgumentException("The first param must be CustomRPC");
 
-            var writer = AmongUsClient.Instance.StartRpcImmediately(CustomPlayer.Local.NetId, 255, SendOption.Reliable);
+            var writer = AmongUsClient.Instance.StartRpcImmediately(CustomPlayer.Local.NetId, 254, SendOption.Reliable);
             writer.Write((byte)(CustomRPC)data[0]);
 
             if (data.Length > 1)
@@ -141,7 +145,7 @@ namespace TownOfUsReworked.Classes
                     if (writer.Position > 1000)
                     {
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
-                        writer = AmongUsClient.Instance.StartRpcImmediately(CustomPlayer.Local.NetId, 255, SendOption.Reliable);
+                        writer = AmongUsClient.Instance.StartRpcImmediately(CustomPlayer.Local.NetId, 254, SendOption.Reliable);
                         writer.Write((byte)(CustomRPC)data[0]);
                     }
 

@@ -7,13 +7,28 @@ namespace TownOfUsReworked.PlayerLayers
         public string Short => Info.AllInfo.Find(x => x.Name == Name)?.Short;
         public virtual PlayerLayerEnum LayerType => PlayerLayerEnum.None;
         public virtual LayerEnum Type => LayerEnum.None;
+        public virtual Func<string> Description => () => "- None";
 
+        public PlayerControl Player { get; set; }
+        public bool IsBlocked { get; set; }
+        public bool Winner { get; set; }
+        public bool Ignore { get; set; }
+
+        public bool IsDead => Data.IsDead;
+        public bool Disconnected => Data.Disconnected;
+
+        public GameData.PlayerInfo Data => Player.Data;
+        public string PlayerName => Data.PlayerName;
         public bool Local => Player == CustomPlayer.Local;
+        public byte PlayerId => Player.PlayerId;
+        public int TasksLeft => Data.Tasks.Count(x => !x.Complete);
+        public int TasksCompleted => Data.Tasks.Count(x => x.Complete);
+        public int TotalTasks => Data.Tasks.Count;
+        public bool TasksDone => Player != null && Player.CanDoTasks() && (TasksLeft <= 0 || TasksCompleted >= TotalTasks);
 
-        public static bool NobodyWins;
+        public string ColorString => $"<color=#{Color.ToHtmlStringRGBA()}>";
 
-        public bool IsBlocked;
-        public bool Winner;
+        public static bool NobodyWins { get; set; }
 
         public static readonly List<PlayerLayer> AllLayers = new();
         public static List<PlayerLayer> LocalLayers => GetLayers(CustomPlayer.Local);
@@ -122,27 +137,13 @@ namespace TownOfUsReworked.PlayerLayers
 
         public virtual void OnBodyReport(GameData.PlayerInfo info) => EndGame.Reset();
 
-        public virtual void UponTaskComplete(uint taskId) {}
+        public virtual void UponTaskComplete(PlayerControl player, uint taskId) {}
 
         protected PlayerLayer(PlayerControl player)
         {
             Player = player;
             AllLayers.Add(this);
         }
-
-        public PlayerControl Player;
-
-        public bool IsDead => Player.Data.IsDead;
-        public bool Disconnected => Player.Data.Disconnected;
-
-        public string PlayerName => Player?.Data.PlayerName;
-        public byte PlayerId => (byte)Player?.PlayerId;
-        public int TasksLeft => Player.Data.Tasks.Count(x => !x.Complete);
-        public int TasksCompleted => Player.Data.Tasks.Count(x => x.Complete);
-        public int TotalTasks => Player.Data.Tasks.Count;
-        public bool TasksDone => Player != null && (TasksLeft <= 0 || TasksCompleted >= TotalTasks);
-
-        public string ColorString => $"<color=#{Color.ToHtmlStringRGBA()}>";
 
         public void GameEnd()
         {

@@ -2,26 +2,28 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Disguiser : Intruder
     {
-        public CustomButton DisguiseButton;
-        public CustomButton MeasureButton;
-        public DateTime LastDisguised;
-        public DateTime LastMeasured;
-        public float TimeRemaining;
-        public float TimeRemaining2;
-        public PlayerControl MeasuredPlayer;
-        public PlayerControl CopiedPlayer;
-        public PlayerControl DisguisedPlayer;
+        public CustomButton DisguiseButton { get; set; }
+        public CustomButton MeasureButton { get; set; }
+        public DateTime LastDisguised { get; set; }
+        public DateTime LastMeasured { get; set; }
+        public float TimeRemaining { get; set; }
+        public float TimeRemaining2 { get; set; }
+        public PlayerControl MeasuredPlayer { get; set; }
+        public PlayerControl CopiedPlayer { get; set; }
+        public PlayerControl DisguisedPlayer { get; set; }
         public bool DelayActive => TimeRemaining2 > 0f;
         public bool Disguised => TimeRemaining > 0f;
-        public bool Enabled;
+        public bool Enabled { get; set; }
 
         public override Color32 Color => ClientGameOptions.CustomIntColors ? Colors.Disguiser : Colors.Intruder;
         public override string Name => "Disguiser";
         public override LayerEnum Type => LayerEnum.Disguiser;
         public override RoleEnum RoleType => RoleEnum.Disguiser;
         public override Func<string> StartText => () => "Disguise The <color=#8CFFFFFF>Crew</color> To Frame Them";
-        public override Func<string> AbilitiesText => () => $"- You can disguise a player into someone else's appearance\n{CommonAbilities}";
+        public override Func<string> Description => () => $"- You can disguise a player into someone else's appearance\n{CommonAbilities}";
         public override InspectorResults InspectorResults => InspectorResults.CreatesConfusion;
+        public float DisguiseTimer => ButtonUtils.Timer(Player, LastDisguised, CustomGameOptions.DisguiseCooldown);
+        public float MeasureTimer => ButtonUtils.Timer(Player, LastMeasured, CustomGameOptions.MeasureCooldown);
 
         public Disguiser(PlayerControl player) : base(player)
         {
@@ -62,27 +64,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 LastMeasured = DateTime.UtcNow;
         }
 
-        public float DisguiseTimer()
-        {
-            var timespan = DateTime.UtcNow - LastDisguised;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.DisguiseCooldown) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
-        }
-
-        public float MeasureTimer()
-        {
-            var timespan = DateTime.UtcNow - LastMeasured;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.MeasureCooldown) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
-        }
-
         public void HitDisguise()
         {
-            if (DisguiseTimer() != 0f || IsTooFar(Player, DisguiseButton.TargetPlayer) || DisguiseButton.TargetPlayer == MeasuredPlayer || Disguised || DelayActive)
+            if (DisguiseTimer != 0f || IsTooFar(Player, DisguiseButton.TargetPlayer) || DisguiseButton.TargetPlayer == MeasuredPlayer || Disguised || DelayActive)
                 return;
 
             var interact = Interact(Player, DisguiseButton.TargetPlayer);
@@ -117,7 +101,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Measure()
         {
-            if (MeasureTimer() != 0f || IsTooFar(Player, MeasureButton.TargetPlayer) || MeasureButton.TargetPlayer == MeasuredPlayer)
+            if (MeasureTimer != 0f || IsTooFar(Player, MeasureButton.TargetPlayer) || MeasureButton.TargetPlayer == MeasuredPlayer)
                 return;
 
             var interact = Interact(Player, MeasureButton.TargetPlayer);
@@ -149,9 +133,9 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            DisguiseButton.Update("DISGUISE", DisguiseTimer(), CustomGameOptions.DisguiseCooldown, DelayActive || Disguised, DelayActive ? TimeRemaining2 : TimeRemaining,
-                DelayActive ? CustomGameOptions.TimeToDisguise : CustomGameOptions.DisguiseDuration, true, MeasuredPlayer != null);
-            MeasureButton.Update("MEASURE", MeasureTimer(), CustomGameOptions.MeasureCooldown);
+            DisguiseButton.Update("DISGUISE", DisguiseTimer, CustomGameOptions.DisguiseCooldown, DelayActive || Disguised, DelayActive ? TimeRemaining2 : TimeRemaining, DelayActive ?
+                CustomGameOptions.TimeToDisguise : CustomGameOptions.DisguiseDuration, true, MeasuredPlayer != null);
+            MeasureButton.Update("MEASURE", MeasureTimer, CustomGameOptions.MeasureCooldown);
         }
     }
 }

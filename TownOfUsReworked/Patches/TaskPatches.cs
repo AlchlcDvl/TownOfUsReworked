@@ -79,7 +79,7 @@ namespace TownOfUsReworked.Patches
         public static void Postfix(PlayerControl __instance, ref uint idx)
         {
             var id = idx;
-            PlayerLayer.GetLayers(__instance).ForEach(x => x.UponTaskComplete(id));
+            PlayerLayer.AllLayers.ForEach(x => x.UponTaskComplete(__instance, id));
 
             if (__instance.Is(AbilityEnum.Snitch) && !__instance.Data.IsDead)
             {
@@ -118,8 +118,9 @@ namespace TownOfUsReworked.Patches
 
                 if (traitor.TasksDone)
                 {
-                    CallRpc(CustomRPC.Change, TurnRPC.TurnTraitor, traitor);
-                    traitor.TurnTraitor();
+                    Traitor.GetFactionChoice(out var syndicate, out var intruder);
+                    CallRpc(CustomRPC.Change, TurnRPC.TurnTraitor, traitor, syndicate, intruder);
+                    traitor.TurnTraitor(syndicate, intruder);
                 }
             }
             else if (__instance.Is(ObjectifierEnum.Taskmaster) && !__instance.Data.IsDead)
@@ -128,8 +129,8 @@ namespace TownOfUsReworked.Patches
 
                 if (role.TasksLeft == CustomGameOptions.TMTasksRemaining)
                 {
-                    if (CustomPlayer.Local == __instance || CustomPlayer.Local.Is(Faction.Crew) || CustomPlayer.Local.Is(RoleAlignment.NeutralBen) ||
-                        CustomPlayer.Local.Is(RoleAlignment.NeutralEvil))
+                    if (CustomPlayer.Local == __instance || CustomPlayer.Local.Is(Faction.Crew) || CustomPlayer.Local.GetAlignment() is RoleAlignment.NeutralBen or
+                        RoleAlignment.NeutralEvil)
                     {
                         Flash(role.Color);
                     }

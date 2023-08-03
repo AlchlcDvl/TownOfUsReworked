@@ -4,12 +4,12 @@ namespace TownOfUsReworked.Objects
     {
         public readonly PlayerControl Player;
         public byte PlayerId => Player.PlayerId;
-        private GameObject GObject;
-        private SpriteRenderer Sprite;
+        private readonly GameObject GObject;
+        private readonly SpriteRenderer Sprite;
         private readonly float Time2;
         private readonly Vector2 Velocity;
-        public Color Color;
-        public Vector3 Position;
+        public Color Color { get; set; }
+        public readonly Vector3 Position;
         private static bool Grey => CustomGameOptions.AnonymousFootPrint || DoUndo.IsCamoed;
         public static readonly Dictionary<PlayerControl, int> OddEven = new();
         private static readonly List<Footprint> AllPrints = new();
@@ -20,7 +20,7 @@ namespace TownOfUsReworked.Objects
             Velocity = player.gameObject.GetComponent<Rigidbody2D>().velocity;
             Player = player;
             Time2 = (int)Time.time;
-            Color = Color.black;
+            Color = UColor.black;
             AllPrints.Add(this);
 
             if (!OddEven.ContainsKey(Player))
@@ -28,11 +28,6 @@ namespace TownOfUsReworked.Objects
             else
                 OddEven[Player]++;
 
-            Start();
-        }
-
-        private void Start()
-        {
             GObject = new("Footprint") { layer = 11 };
             GObject.AddSubmergedComponent("ElevatorMover");
             GObject.transform.position = Position;

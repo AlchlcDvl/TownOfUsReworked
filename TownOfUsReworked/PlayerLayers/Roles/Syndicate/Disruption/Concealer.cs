@@ -2,21 +2,22 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Concealer : Syndicate
     {
-        public CustomButton ConcealButton;
-        public bool Enabled;
-        public DateTime LastConcealed;
-        public float TimeRemaining;
+        public CustomButton ConcealButton { get; set; }
+        public bool Enabled { get; set; }
+        public DateTime LastConcealed { get; set; }
+        public float TimeRemaining { get; set; }
         public bool Concealed => TimeRemaining > 0f;
-        public PlayerControl ConcealedPlayer;
-        public CustomMenu ConcealMenu;
+        public PlayerControl ConcealedPlayer { get; set; }
+        public CustomMenu ConcealMenu { get; set; }
 
         public override Color32 Color => ClientGameOptions.CustomSynColors ? Colors.Concealer : Colors.Syndicate;
         public override string Name => "Concealer";
         public override LayerEnum Type => LayerEnum.Concealer;
         public override RoleEnum RoleType => RoleEnum.Concealer;
         public override Func<string> StartText => () => "Turn The <color=#8CFFFFFF>Crew</color> Invisible For Some Chaos";
-        public override Func<string> AbilitiesText => () => $"- You can turn {(HoldsDrive ? "everyone" : "a player")} invisible\n{CommonAbilities}";
+        public override Func<string> Description => () => $"- You can turn {(HoldsDrive ? "everyone" : "a player")} invisible\n{CommonAbilities}";
         public override InspectorResults InspectorResults => InspectorResults.Unseen;
+        public float Timer => ButtonUtils.Timer(Player, LastConcealed, CustomGameOptions.ConcealCooldown);
 
         public Concealer(PlayerControl player) : base(player)
         {
@@ -53,15 +54,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             ConcealedPlayer = null;
         }
 
-        public float ConcealTimer()
-        {
-            var timespan = DateTime.UtcNow - LastConcealed;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.ConcealCooldown) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
-        }
-
         public void Click(PlayerControl player)
         {
             var interact = Interact(Player, player);
@@ -76,7 +68,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void HitConceal()
         {
-            if (ConcealTimer() != 0f || Concealed)
+            if (Timer != 0f || Concealed)
                 return;
 
             if (HoldsDrive)
@@ -101,7 +93,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         {
             base.UpdateHud(__instance);
             var flag = ConcealedPlayer == null && !HoldsDrive;
-            ConcealButton.Update(flag ? "SET TARGET" : "CONCEAL", ConcealTimer(), CustomGameOptions.ConcealCooldown, Concealed, TimeRemaining, CustomGameOptions.ConcealDuration);
+            ConcealButton.Update(flag ? "SET TARGET" : "CONCEAL", Timer, CustomGameOptions.ConcealCooldown, Concealed, TimeRemaining, CustomGameOptions.ConcealDuration);
 
             if (Input.GetKeyDown(KeyCode.Backspace))
             {

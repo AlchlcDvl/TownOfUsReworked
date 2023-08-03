@@ -2,22 +2,23 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Altruist : Crew
     {
-        public CustomButton ReviveButton;
-        public int UsesLeft;
+        public CustomButton ReviveButton { get; set; }
+        public int UsesLeft { get; set; }
         public bool ButtonUsable => UsesLeft > 0;
-        public bool Reviving;
-        public float TimeRemaining;
+        public bool Reviving { get; set; }
+        public float TimeRemaining { get; set; }
         public bool IsReviving => TimeRemaining > 0f;
-        public DeadBody RevivingBody;
-        public bool Success;
-        public DateTime LastRevived;
+        public DeadBody RevivingBody { get; set; }
+        public bool Success { get; set; }
+        public DateTime LastRevived { get; set; }
+        public float Timer => ButtonUtils.Timer(Player, LastRevived, CustomGameOptions.ReviveCooldown);
 
         public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Altruist : Colors.Crew;
         public override string Name => "Altruist";
         public override LayerEnum Type => LayerEnum.Altruist;
         public override RoleEnum RoleType => RoleEnum.Altruist;
         public override Func<string> StartText => () => "Sacrifice Yourself To Save Another";
-        public override Func<string> AbilitiesText => () => $"- You can revive a dead body\n- Reviving someone takes {CustomGameOptions.AltReviveDuration}s\n- If a meeting is called during"
+        public override Func<string> Description => () => $"- You can revive a dead body\n- Reviving someone takes {CustomGameOptions.AltReviveDuration}s\n- If a meeting is called during"
             + " your revive, the revive fails";
         public override InspectorResults InspectorResults => InspectorResults.PreservesLife;
 
@@ -31,16 +32,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            ReviveButton.Update("REVIVE", ReviveTimer(), CustomGameOptions.ReviveCooldown, UsesLeft, IsReviving, TimeRemaining, CustomGameOptions.AltReviveDuration, true, ButtonUsable);
-        }
-
-        public float ReviveTimer()
-        {
-            var timespan = DateTime.UtcNow - LastRevived;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.ReviveCooldown) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
+            ReviveButton.Update("REVIVE", Timer, CustomGameOptions.ReviveCooldown, UsesLeft, IsReviving, TimeRemaining, CustomGameOptions.AltReviveDuration, true, ButtonUsable);
         }
 
         public void Revive()
@@ -107,7 +99,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void HitRevive()
         {
-            if (IsTooFar(Player, ReviveButton.TargetBody) || ReviveTimer() != 0f || !ButtonUsable)
+            if (IsTooFar(Player, ReviveButton.TargetBody) || Timer != 0f || !ButtonUsable)
                 return;
 
             RevivingBody = ReviveButton.TargetBody;

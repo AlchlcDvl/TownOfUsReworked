@@ -3,8 +3,8 @@ namespace TownOfUsReworked.CustomOptions
     public class CustomLayersOption : CustomOption
     {
         public readonly string Layer;
-        private int CachedCount;
-        private int CachedChance;
+        private int CachedCount { get; set; }
+        private int CachedChance { get; set; }
         private readonly int Max;
         private readonly int Min;
         //private List<CustomOption> RoleOptions = new();

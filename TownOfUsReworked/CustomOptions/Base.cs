@@ -5,14 +5,14 @@ namespace TownOfUsReworked.CustomOptions
         public static readonly List<CustomOption> AllOptions = new();
         public readonly int ID;
         public readonly MultiMenu Menu;
-        public Func<object, object, string> Format;
+        public Func<object, object, string> Format { get; set; }
         public readonly string Name;
-        public object Value;
-        public object OtherValue;
-        public OptionBehaviour Setting;
+        public object Value { get; set; }
+        public object OtherValue { get; set; }
+        public OptionBehaviour Setting { get; set; }
         public readonly CustomOptionType Type;
-        public CustomOption[] Parent;
-        public bool All;
+        public readonly CustomOption[] Parent;
+        public readonly bool All;
         public bool Active => Parent == null || Parent.Any(x => x == null) || (All ? Parent.All(IsActive) : Parent.Any(IsActive)) || IsRoleList;
 
         public CustomOption(int id, MultiMenu menu, string name, CustomOptionType type, object defaultValue, object otherDefault, CustomOption[] parent, bool all = false)

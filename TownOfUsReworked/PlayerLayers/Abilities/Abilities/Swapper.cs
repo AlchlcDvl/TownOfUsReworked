@@ -2,15 +2,15 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
 {
     public class Swapper : Ability
     {
-        public PlayerVoteArea Swap1;
-        public PlayerVoteArea Swap2;
-        public CustomMeeting SwapMenu;
+        public PlayerVoteArea Swap1 { get; set; }
+        public PlayerVoteArea Swap2 { get; set; }
+        public CustomMeeting SwapMenu { get; set; }
 
         public override Color32 Color => ClientGameOptions.CustomAbColors ? Colors.Swapper : Colors.Ability;
         public override string Name => "Swapper";
         public override LayerEnum Type => LayerEnum.Swapper;
         public override AbilityEnum AbilityType => AbilityEnum.Swapper;
-        public override Func<string> TaskText => () => "- You can swap the votes against 2 players in meetings";
+        public override Func<string> Description => () => "- You can swap the votes against 2 players in meetings";
 
         public Swapper(PlayerControl player) : base(player)
         {

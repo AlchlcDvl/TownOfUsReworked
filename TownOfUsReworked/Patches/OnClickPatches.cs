@@ -56,7 +56,7 @@ namespace TownOfUsReworked.Patches
             }
             else if (__instance.Is(RoleEnum.Banshee))
             {
-                if (! CustomPlayer.Local.Is(Faction.Syndicate))
+                if (!CustomPlayer.Local.Is(Faction.Syndicate))
                 {
                     var ban = Role.GetRole<Banshee>(__instance);
                     ban.Caught = true;
@@ -67,7 +67,7 @@ namespace TownOfUsReworked.Patches
             }
             else if (__instance.Is(RoleEnum.Ghoul))
             {
-                if (! CustomPlayer.Local.Is(Faction.Intruder))
+                if (!CustomPlayer.Local.Is(Faction.Intruder))
                 {
                     Role.GetRole<Ghoul>(__instance).Caught = true;
                     __instance.Exiled();

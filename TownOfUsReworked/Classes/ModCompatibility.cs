@@ -94,8 +94,6 @@
         private static Type SubSpawnSystem;
         private static MethodInfo GetReadyPlayerAmount;
 
-        private static Harmony SubHarmony => new("tourew.subcompat.patch");
-
         public static void InitializeSubmerged()
         {
             SubLoaded = IL2CPPChainloader.Instance.Plugins.TryGetValue(SM_GUID, out var subPlugin);
@@ -162,8 +160,8 @@
                 CurrentState = AccessTools.Field(SubSpawnSystem, "currentState");
 
                 //I tried patching normally but it would never work
-                SubHarmony.Patch(SubmergedExileWrapUpMethod, null, new(AccessTools.Method(typeof(ModCompatibility), nameof(ExileRoleChangePostfix))));
-                SubHarmony.Patch(GetReadyPlayerAmount, new(AccessTools.Method(typeof(ModCompatibility), nameof(ReadyPlayerAmount))));
+                TownOfUsReworked.ModInstance.Harmony.Patch(SubmergedExileWrapUpMethod, null, new(AccessTools.Method(typeof(ModCompatibility), nameof(ExileRoleChangePostfix))));
+                TownOfUsReworked.ModInstance.Harmony.Patch(GetReadyPlayerAmount, new(AccessTools.Method(typeof(ModCompatibility), nameof(ReadyPlayerAmount))));
             }
             catch (Exception e)
             {

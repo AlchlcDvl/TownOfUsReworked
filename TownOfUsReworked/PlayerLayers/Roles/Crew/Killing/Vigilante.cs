@@ -2,22 +2,23 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Vigilante : Crew
     {
-        public DateTime LastKilled;
-        public bool KilledInno;
-        public bool PreMeetingDie;
-        public bool PostMeetingDie;
-        public bool InnoMessage;
-        public CustomButton ShootButton;
-        public int UsesLeft;
+        public DateTime LastKilled { get; set; }
+        public bool KilledInno { get; set; }
+        public bool PreMeetingDie { get; set; }
+        public bool PostMeetingDie { get; set; }
+        public bool InnoMessage { get; set; }
+        public CustomButton ShootButton { get; set; }
+        public int UsesLeft { get; set; }
         public bool ButtonUsable => UsesLeft > 0;
-        public bool RoundOne;
+        public bool RoundOne { get; set; }
+        public float Timer => ButtonUtils.Timer(Player, LastKilled, CustomGameOptions.VigiKillCd);
 
         public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Vigilante : Colors.Crew;
         public override string Name => "Vigilante";
         public override LayerEnum Type => LayerEnum.Vigilante;
         public override RoleEnum RoleType => RoleEnum.Vigilante;
         public override Func<string> StartText => () => "Shoot The <color=#FF0000FF>Evildoers</color>";
-        public override Func<string> AbilitiesText => () => "- You can shoot players\n- You you shoot someone you are not supposed to, you will die to guilt";
+        public override Func<string> Description => () => "- You can shoot players\n- You you shoot someone you are not supposed to, you will die to guilt";
         public override InspectorResults InspectorResults => InspectorResults.IsCold;
 
         public Vigilante(PlayerControl player) : base(player)
@@ -25,15 +26,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleAlignment = RoleAlignment.CrewKill;
             UsesLeft = CustomGameOptions.VigiBulletCount;
             ShootButton = new(this, "Shoot", AbilityTypes.Direct, "ActionSecondary", Shoot, true);
-        }
-
-        public float KillTimer()
-        {
-            var timespan = DateTime.UtcNow - LastKilled;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.VigiKillCd) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
         }
 
         public override void OnMeetingStart(MeetingHud __instance)
@@ -51,12 +43,12 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            ShootButton.Update("SHOOT", KillTimer(), CustomGameOptions.VigiKillCd, UsesLeft, ButtonUsable, ButtonUsable && !KilledInno && !RoundOne);
+            ShootButton.Update("SHOOT", Timer, CustomGameOptions.VigiKillCd, UsesLeft, ButtonUsable, ButtonUsable && !KilledInno && !RoundOne);
         }
 
         public void Shoot()
         {
-            if (IsTooFar(Player, ShootButton.TargetPlayer) || KillTimer() != 0f || KilledInno || RoundOne)
+            if (IsTooFar(Player, ShootButton.TargetPlayer) || Timer != 0f || KilledInno || RoundOne)
                 return;
 
             var target = ShootButton.TargetPlayer;

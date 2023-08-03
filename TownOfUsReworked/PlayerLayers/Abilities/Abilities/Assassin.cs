@@ -30,19 +30,19 @@
 
     public class Assassin : Ability
     {
-        public Dictionary<string, Color> ColorMapping = new();
-        public Dictionary<string, Color> SortedColorMapping = new();
-        public static int RemainingKills = CustomGameOptions.AssassinKills;
+        public Dictionary<string, Color> ColorMapping { get; set; }
+        public Dictionary<string, Color> SortedColorMapping { get; set; }
+        public static int RemainingKills { get; set; }
         private static bool AssassinOn => CustomGameOptions.CrewAssassinOn > 0 || CustomGameOptions.IntruderAssassinOn > 0 || CustomGameOptions.SyndicateAssassinOn > 0 ||
             CustomGameOptions.NeutralAssassinOn > 0;
-        public GameObject Phone;
-        public Transform SelectedButton;
-        public int Page;
-        public int MaxPage;
-        public Dictionary<int, List<Transform>> Buttons = new();
-        public Dictionary<int, KeyValuePair<string, Color>> Sorted = new();
-        public CustomMeeting AssassinMenu;
-        private static readonly Dictionary<string, List<string>> Actors = new()
+        public GameObject Phone { get; set; }
+        public Transform SelectedButton { get; set; }
+        public int Page { get; set; }
+        public int MaxPage { get; set; }
+        public Dictionary<int, List<Transform>> Buttons { get; set; }
+        public Dictionary<int, KeyValuePair<string, Color>> Sorted { get; set; }
+        public CustomMeeting AssassinMenu { get; set; }
+        private static Dictionary<string, List<string>> Actors => new()
         {
             { "DealsWithDead", new() { "Coroner", "Amnesiac", "Retributionist", "Janitor", "Cannibal" } },
             { "PreservesLife", new() { "Medic", "Guardian Angel", "Altruist", "Necromancer", "Crusader" } },
@@ -66,7 +66,7 @@
         public override Color32 Color => ClientGameOptions.CustomAbColors ? Colors.Assassin : Colors.Ability;
         public override string Name => "Assassin";
         public override LayerEnum Type => LayerEnum.Assassin;
-        public override Func<string> TaskText => () => "- You can guess players mid-meetings";
+        public override Func<string> Description => () => "- You can guess players mid-meetings";
 
         public Assassin(PlayerControl player) : base(player)
         {
@@ -138,7 +138,7 @@
                     if (CustomGameOptions.CamouflagerOn > 0) ColorMapping.Add("Camouflager", Colors.Camouflager);
                     if (CustomGameOptions.DisguiserOn > 0) ColorMapping.Add("Disguiser", Colors.Disguiser);
                     if (CustomGameOptions.EnforcerOn > 0) ColorMapping.Add("Enforcer", Colors.Enforcer);
-                    if (CustomGameOptions.DisguiserOn > 0) ColorMapping.Add("Consigliere", Colors.Consigliere);
+                    if (CustomGameOptions.ConsigliereOn > 0) ColorMapping.Add("Consigliere", Colors.Consigliere);
                     if (CustomGameOptions.ConsortOn > 0) ColorMapping.Add("Consort", Colors.Consort);
 
                     if (CustomGameOptions.GodfatherOn > 0)

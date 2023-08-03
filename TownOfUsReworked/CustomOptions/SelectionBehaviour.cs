@@ -1,10 +1,10 @@
-namespace TownOfUsReworked.Modules
+namespace TownOfUsReworked.CustomOptions
 {
     public class SelectionBehaviour
     {
-        public string Title;
-        public Func<bool> OnClick;
-        public bool DefaultValue;
+        public readonly string Title;
+        public readonly Func<bool> OnClick;
+        public readonly bool DefaultValue;
 
         public SelectionBehaviour(string title, Func<bool> onClick, bool defaultValue)
         {

@@ -2,23 +2,24 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Shapeshifter : Syndicate
     {
-        public CustomButton ShapeshiftButton;
-        public bool Enabled;
-        public DateTime LastShapeshifted;
-        public float TimeRemaining;
+        public CustomButton ShapeshiftButton { get; set; }
+        public bool Enabled { get; set; }
+        public DateTime LastShapeshifted { get; set; }
+        public float TimeRemaining { get; set; }
         public bool Shapeshifted => TimeRemaining > 0f;
-        public PlayerControl ShapeshiftPlayer1;
-        public PlayerControl ShapeshiftPlayer2;
-        public CustomMenu ShapeshiftMenu1;
-        public CustomMenu ShapeshiftMenu2;
+        public PlayerControl ShapeshiftPlayer1 { get; set; }
+        public PlayerControl ShapeshiftPlayer2 { get; set; }
+        public CustomMenu ShapeshiftMenu1 { get; set; }
+        public CustomMenu ShapeshiftMenu2 { get; set; }
 
         public override Color32 Color => ClientGameOptions.CustomSynColors ? Colors.Shapeshifter : Colors.Syndicate;
         public override string Name => "Shapeshifter";
         public override LayerEnum Type => LayerEnum.Shapeshifter;
         public override RoleEnum RoleType => RoleEnum.Shapeshifter;
         public override Func<string> StartText => () => "Change Everyone's Appearances";
-        public override Func<string> AbilitiesText => () => $"- You can {(HoldsDrive ? "shuffle everyone's appearances" : "swap the appearances of 2 players")}\n{CommonAbilities}";
+        public override Func<string> Description => () => $"- You can {(HoldsDrive ? "shuffle everyone's appearances" : "swap the appearances of 2 players")}\n{CommonAbilities}";
         public override InspectorResults InspectorResults => InspectorResults.CreatesConfusion;
+        public float Timer => ButtonUtils.Timer(Player, LastShapeshifted, CustomGameOptions.ShapeshiftCooldown);
 
         public Shapeshifter(PlayerControl player) : base(player)
         {
@@ -64,15 +65,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             ShapeshiftPlayer2 = null;
         }
 
-        public float ShapeshiftTimer()
-        {
-            var timespan = DateTime.UtcNow - LastShapeshifted;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.ShapeshiftCooldown) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
-        }
-
         public void Click1(PlayerControl player)
         {
             var interact = Interact(Player, player);
@@ -99,7 +91,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void HitShapeshift()
         {
-            if (ShapeshiftTimer() != 0f)
+            if (Timer != 0f)
                 return;
 
             if (HoldsDrive)
@@ -131,7 +123,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             base.UpdateHud(__instance);
             var flag1 = ShapeshiftPlayer1 == null && !HoldsDrive;
             var flag2 = ShapeshiftPlayer2 == null && !HoldsDrive;
-            ShapeshiftButton.Update(flag1 ? "FIRST TARGET" : (flag2 ? "SECOND TARGET": "SHAPESHIFT"), ShapeshiftTimer(), CustomGameOptions.ShapeshiftCooldown, Shapeshifted, TimeRemaining,
+            ShapeshiftButton.Update(flag1 ? "FIRST TARGET" : (flag2 ? "SECOND TARGET": "SHAPESHIFT"), Timer, CustomGameOptions.ShapeshiftCooldown, Shapeshifted, TimeRemaining,
                 CustomGameOptions.ShapeshiftDuration);
 
             if (Input.GetKeyDown(KeyCode.Backspace))

@@ -2,8 +2,8 @@
 {
     public class Bomb : Range
     {
-        public List<PlayerControl> Players = new();
-        public bool Drived;
+        public List<PlayerControl> Players { get; set; } = new();
+        public bool Drived { get; set; }
 
         public Bomb(PlayerControl bomb, bool drived) : base(bomb, Colors.Bomber, CustomGameOptions.BombRange + (drived ? CustomGameOptions.ChaosDriveBombRange : 0f), "Bomb")
         {

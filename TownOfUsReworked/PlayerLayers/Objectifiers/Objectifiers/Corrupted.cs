@@ -2,15 +2,16 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
 {
     public class Corrupted : Objectifier
     {
-        public DateTime LastCorrupted;
-        public CustomButton CorruptButton;
+        public DateTime LastCorrupted { get; set; }
+        public CustomButton CorruptButton { get; set; }
+        public float Timer => ButtonUtils.Timer(Player, LastCorrupted, CustomGameOptions.CorruptedKillCooldown);
 
         public override Color32 Color => ClientGameOptions.CustomObjColors ? Colors.Corrupted : Colors.Objectifier;
         public override string Name => "Corrupted";
         public override string Symbol => "δ";
         public override LayerEnum Type => LayerEnum.Corrupted;
         public override ObjectifierEnum ObjectifierType => ObjectifierEnum.Corrupted;
-        public override Func<string> TaskText => () => "- Corrupt everyone";
+        public override Func<string> Description => () => "- Corrupt everyone";
 
         public Corrupted(PlayerControl player) : base(player)
         {
@@ -18,18 +19,9 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
             Role.GetRole(Player).RoleAlignment = Role.GetRole(Player).RoleAlignment.GetNewAlignment(Faction.Neutral);
         }
 
-        public float CorruptTimer()
-        {
-            var timespan = DateTime.UtcNow - LastCorrupted;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.CorruptedKillCooldown) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
-        }
-
         public void Corrupt()
         {
-            if (CorruptTimer() != 0f || IsTooFar(Player, CorruptButton.TargetPlayer))
+            if (Timer != 0f || IsTooFar(Player, CorruptButton.TargetPlayer))
                 return;
 
             var interact = Interact(Player, CorruptButton.TargetPlayer, true);
@@ -45,7 +37,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            CorruptButton.Update("CORRUPT", CorruptTimer(), CustomGameOptions.CorruptedKillCooldown);
+            CorruptButton.Update("CORRUPT", Timer, CustomGameOptions.CorruptedKillCooldown);
         }
     }
 }

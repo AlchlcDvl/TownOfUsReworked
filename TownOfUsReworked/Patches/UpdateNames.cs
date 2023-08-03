@@ -14,10 +14,10 @@ namespace TownOfUsReworked.Patches
             if (Inactive || IsHnS || Meeting || LobbyBehaviour.Instance)
                 return;
 
-            CustomPlayer.AllPlayers.ForEach(x => x.SetName());
+            CustomPlayer.AllPlayers.ForEach(SetName);
         }
 
-        private static void SetName(this PlayerControl player)
+        private static void SetName(PlayerControl player)
         {
             if (!PlayerNames.ContainsKey(player.PlayerId))
                 PlayerNames.Add(player.PlayerId, player.Data.PlayerName);
@@ -25,10 +25,10 @@ namespace TownOfUsReworked.Patches
             (player.NameText().text, player.NameText().color) = UpdateGameName(player);
         }
 
-        private static (string, Color) UpdateGameName(PlayerControl player)
+        public static (string, Color) UpdateGameName(PlayerControl player)
         {
             if (player.GetCustomOutfitType() == CustomPlayerOutfitType.Invis && player != CustomPlayer.Local)
-                return ("", Color.clear);
+                return ("", UColor.clear);
 
             var distance = Vector2.Distance(CustomPlayer.Local.GetTruePosition(), player.GetTruePosition());
             var vector = player.GetTruePosition() - CustomPlayer.Local.GetTruePosition();
@@ -36,7 +36,7 @@ namespace TownOfUsReworked.Patches
             if (PhysicsHelpers.AnyNonTriggersBetween(CustomPlayer.Local.GetTruePosition(), vector.normalized, distance, Constants.ShipAndObjectsMask) &&
                 CustomGameOptions.ObstructNames && player != CustomPlayer.Local && !CustomPlayer.LocalCustom.IsDead)
             {
-                return ("", Color.clear);
+                return ("", UColor.clear);
             }
 
             var name = CustomGameOptions.NoNames && !IsLobby ? "" : player.Data.PlayerName;
@@ -330,12 +330,10 @@ namespace TownOfUsReworked.Patches
                 }
                 else
                 {
-                    foreach (var stats in whisperer.PlayerConversion)
+                    foreach (var (key, value) in whisperer.PlayerConversion)
                     {
-                        var color2 = (int)(stats.Value / 100f * 256);
-
-                        if (color2 > 0 && player.PlayerId == stats.Key)
-                            color = new(255, 255, color2, 255);
+                        if (player.PlayerId == key)
+                            name += $" {value}%";
                     }
                 }
             }
@@ -521,6 +519,14 @@ namespace TownOfUsReworked.Patches
                     }
                     else
                         color = whisperer.SubFactionColor;
+                }
+                else
+                {
+                    foreach (var (key, value) in whisperer.PlayerConversion)
+                    {
+                        if (player.PlayerId == key)
+                            name += $" {value}%";
+                    }
                 }
             }
 

@@ -2,19 +2,20 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Plaguebearer : Neutral
     {
-        public DateTime LastInfected;
-        public List<byte> Infected = new();
+        public DateTime LastInfected { get; set; }
+        public List<byte> Infected { get; set; }
         public bool CanTransform => CustomPlayer.AllPlayers.Count(x => !x.Data.IsDead && !x.Data.Disconnected) <= Infected.Count || CustomGameOptions.PestSpawn;
-        public CustomButton InfectButton;
+        public CustomButton InfectButton { get; set; }
 
         public override Color32 Color => ClientGameOptions.CustomNeutColors ? Colors.Plaguebearer : Colors.Neutral;
         public override string Name => "Plaguebearer";
         public override LayerEnum Type => LayerEnum.Plaguebearer;
         public override RoleEnum RoleType => RoleEnum.Plaguebearer;
         public override Func<string> StartText => () => "Spread Disease To Summon <color=#424242FF>Pestilence</color>";
-        public override Func<string> AbilitiesText => () => "- You can infect players\n- When all players are infected, you will turn into <color=#424242FF>Pestilence</color>d\n- Non-" +
+        public override Func<string> Description => () => "- You can infect players\n- When all players are infected, you will turn into <color=#424242FF>Pestilence</color>d\n- Non-" +
             "infected players will get infected if they interact with you or someone who's infected or are interacted with by an infected player";
         public override InspectorResults InspectorResults => InspectorResults.SeeksToDestroy;
+        public float Timer => ButtonUtils.Timer(Player, LastInfected, CustomGameOptions.InfectCd);
 
         public Plaguebearer(PlayerControl player) : base(player)
         {
@@ -22,15 +23,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             RoleAlignment = RoleAlignment.NeutralHarb;
             Infected = new() { Player.PlayerId };
             InfectButton = new(this, "Infect", AbilityTypes.Direct, "ActionSecondary", Infect, Exception);
-        }
-
-        public float InfectTimer()
-        {
-            var timespan = DateTime.UtcNow - LastInfected;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.InfectCd) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void RpcSpreadInfection(PlayerControl source, PlayerControl target)
@@ -54,7 +46,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void Infect()
         {
-            if (IsTooFar(Player, InfectButton.TargetPlayer) || InfectTimer() != 0f)
+            if (IsTooFar(Player, InfectButton.TargetPlayer) || Timer != 0f)
                 return;
 
             var interact = Interact(Player, InfectButton.TargetPlayer);
@@ -85,7 +77,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            InfectButton.Update("INFECT", InfectTimer(), CustomGameOptions.InfectCd, true, !CanTransform);
+            InfectButton.Update("INFECT", Timer, CustomGameOptions.InfectCd, true, !CanTransform);
 
             if (CanTransform && !IsDead)
             {

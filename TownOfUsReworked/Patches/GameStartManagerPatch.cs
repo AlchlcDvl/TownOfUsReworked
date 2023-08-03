@@ -71,7 +71,11 @@ namespace TownOfUsReworked.Patches
                     __instance.ShareOnDiscordButton.gameObject.SetActive(false);
                 }
 
-                if (!IsHnS)
+                //Lobby size
+                __instance.MinPlayers = 1;
+                Generate.LobbySize.Set((float)TownOfUsReworked.NormalOptions?.MaxPlayers);
+
+                if (!IsHnS && !IsLocalGame)
                 {
                     //Trigger version refresh
                     VersionSent = false;
@@ -79,9 +83,6 @@ namespace TownOfUsReworked.Patches
                     KickingTimer = 0f;
                     //Copy lobby code
                     GUIUtility.systemCopyBuffer = GameCode.IntToGameName(AmongUsClient.Instance.GameId);
-                    //Lobby size
-                    __instance.MinPlayers = 1;
-                    Generate.LobbySize.Set((float)TownOfUsReworked.NormalOptions?.MaxPlayers);
                     //Clear player versions
                     PlayerVersions.Clear();
                 }

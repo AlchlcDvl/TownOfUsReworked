@@ -2,20 +2,21 @@
 {
     public class Operative : Crew
     {
-        public List<Bug> Bugs = new();
-        public DateTime LastBugged;
-        public int UsesLeft;
-        public List<RoleEnum> BuggedPlayers = new();
+        public List<Bug> Bugs { get; set; }
+        public DateTime LastBugged { get; set; }
+        public int UsesLeft { get; set; }
+        public List<RoleEnum> BuggedPlayers { get; set; }
         public bool ButtonUsable => UsesLeft > 0;
-        public CustomButton BugButton;
-        public Dictionary<byte, TMP_Text> PlayerNumbers = new();
+        public CustomButton BugButton { get; set; }
+        public Dictionary<byte, TMP_Text> PlayerNumbers { get; set; }
+        public float Timer => ButtonUtils.Timer(Player, LastBugged, CustomGameOptions.BugCooldown);
 
         public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Operative : Colors.Crew;
         public override string Name => "Operative";
         public override LayerEnum Type => LayerEnum.Operative;
         public override RoleEnum RoleType => RoleEnum.Operative;
         public override Func<string> StartText => () => "Detect Which Roles Are Here";
-        public override Func<string> AbilitiesText => () => "- You can place bugs around the map\n- Upon triggering the bugs, the player's role will be included in a list to be shown in " +
+        public override Func<string> Description => () => "- You can place bugs around the map\n- Upon triggering the bugs, the player's role will be included in a list to be shown in " +
             "the next meeting\n- You cansee which colors are where on the admin table\n- On Vitals, the time of death for each player will be shown";
         public override InspectorResults InspectorResults => InspectorResults.DropsItems;
 
@@ -36,28 +37,25 @@
             Bugs.Clear();
         }
 
-        public float BugTimer()
+        public void GenNumbers()
         {
-            var timespan = DateTime.UtcNow - LastBugged;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.BugCooldown) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
-        }
+            if (!DataManager.Settings.Accessibility.ColorBlindMode)
+                return;
 
-        public void GenNumber(PlayerVoteArea voteArea)
-        {
-            var targetId = voteArea.TargetPlayerId;
-            var nameText = UObject.Instantiate(voteArea.NameText, voteArea.transform);
-            nameText.transform.localPosition = new(-1.211f, -0.18f, -0.1f);
-            nameText.text = GameData.Instance.GetPlayerById(targetId).DefaultOutfit.ColorId.ToString();
-            PlayerNumbers[targetId] = nameText;
+            foreach (var voteArea in AllVoteAreas)
+            {
+                var targetId = voteArea.TargetPlayerId;
+                var nameText = UObject.Instantiate(voteArea.NameText, voteArea.transform);
+                nameText.transform.localPosition = new(-1.211f, -0.18f, -0.1f);
+                nameText.text = $"{targetId}";
+                PlayerNumbers.Add(targetId, nameText);
+            }
         }
 
         public override void OnMeetingStart(MeetingHud __instance)
         {
             base.OnMeetingStart(__instance);
-            AllVoteAreas.ForEach(GenNumber);
+            GenNumbers();
             var message = "";
 
             if (BuggedPlayers.Count == 0)
@@ -91,12 +89,12 @@
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            BugButton.Update("BUG", BugTimer(), CustomGameOptions.BugCooldown, UsesLeft, ButtonUsable);
+            BugButton.Update("BUG", Timer, CustomGameOptions.BugCooldown, UsesLeft, ButtonUsable);
         }
 
         public void PlaceBug()
         {
-            if (BugTimer() != 0f || !ButtonUsable)
+            if (Timer != 0f || !ButtonUsable)
                 return;
 
             UsesLeft--;

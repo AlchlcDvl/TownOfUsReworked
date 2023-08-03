@@ -292,7 +292,7 @@
 
         public static IEnumerator InvisCoro(PlayerControl player, bool condition)
         {
-            var color = Color.clear;
+            var color = UColor.clear;
             color.a = condition || CustomPlayer.LocalCustom.IsDead || player == CustomPlayer.Local || CustomPlayer.Local.Is(AbilityEnum.Torch) ? 0.1f : 0f;
 
             if (player.GetCustomOutfitType() != CustomPlayerOutfitType.Invis && !player.Data.IsDead)
@@ -1047,14 +1047,12 @@
         public static string GetRandomisedName()
         {
             var length = URandom.RandomRangeInt(1, 11);
-            var position = 0;
             var name = "";
 
-            while (position < length)
+            while (name.Length < length)
             {
                 var random = URandom.RandomRangeInt(0, Everything.Length);
                 name += Everything[random];
-                position++;
             }
 
             return name;

@@ -5,7 +5,7 @@ namespace TownOfUsReworked.Patches
     {
         public static bool Prefix(PlayerVoteArea __instance)
         {
-            if (! CustomPlayer.Local.Is(AbilityEnum.Politician))
+            if (!CustomPlayer.Local.Is(AbilityEnum.Politician))
                 return true;
 
             var flag = CustomPlayer.Local.Is(AbilityEnum.Politician) && !((Politician)Ability.LocalAbility).CanVote;
@@ -19,7 +19,7 @@ namespace TownOfUsReworked.Patches
     {
         public static bool Prefix(PlayerVoteArea __instance)
         {
-            if (! CustomPlayer.Local.Is(AbilityEnum.Politician))
+            if (!CustomPlayer.Local.Is(AbilityEnum.Politician))
                 return true;
 
             if (__instance.Parent.state is MeetingHud.VoteStates.Proceeding or MeetingHud.VoteStates.Results)

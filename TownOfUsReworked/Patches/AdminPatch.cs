@@ -13,7 +13,7 @@ namespace TownOfUsReworked.Patches
                 __instance.CountAreas.ToList().ForEach(x => x.UpdateCount(0));
         }
 
-        public static void UpdateBlips(CounterArea area, List<int> colorMapping, bool isOP)
+        public static void UpdateBlips(CounterArea area, List<byte> colorMapping, bool isOP)
         {
             area.UpdateCount(colorMapping.Count);
             var icons = area.myIcons.ToArray();
@@ -37,7 +37,7 @@ namespace TownOfUsReworked.Patches
                         PlayerMaterial.SetColors(new Color(0.8793f, 1, 0, 1), sprite);
                 }
 
-                if (text != null && isOP)
+                if (text != null && isOP && DataManager.Settings.Accessibility.ColorBlindMode)
                 {
                     text.gameObject.SetActive(true);
                     text.text = colorMapping[i].ToString();
@@ -59,7 +59,7 @@ namespace TownOfUsReworked.Patches
         public static void UpdateBlips(MapCountOverlay __instance, bool isOP)
         {
             var rooms = ShipStatus.Instance.FastRooms;
-            var colorMapDuplicate = new List<int>();
+            var colorMapDuplicate = new List<byte>();
 
             foreach (var area in __instance.CountAreas)
             {
@@ -72,7 +72,7 @@ namespace TownOfUsReworked.Patches
                     continue;
 
                 var objectsInRoom = room.roomArea.OverlapCollider(__instance.filter, __instance.buffer);
-                var colorMap = new List<int>();
+                var colorMap = new List<byte>();
 
                 for (var i = 0; i < objectsInRoom; i++)
                 {
@@ -81,22 +81,22 @@ namespace TownOfUsReworked.Patches
                     var player = collider.GetComponent<PlayerControl>();
                     var data = player?.Data;
 
-                    if (collider.tag == "DeadBody" && ((isOP && (int)CustomGameOptions.WhoSeesDead is 1) || (!isOP && (int)CustomGameOptions.WhoSeesDead is 2) || (int)CustomGameOptions.
-                        WhoSeesDead is 0 || DeadSeeEverything))
+                    if (collider.tag == "DeadBody" && ((isOP && (int)CustomGameOptions.WhoSeesDead is 1) || (!isOP && (int)CustomGameOptions.WhoSeesDead is 2) || DeadSeeEverything ||
+                        CustomGameOptions.WhoSeesDead == 0))
                     {
                         var playerId = collider.GetComponent<DeadBody>().ParentId;
-                        colorMap.Add(GameData.Instance.GetPlayerById(playerId).DefaultOutfit.ColorId);
-                        colorMapDuplicate.Add(GameData.Instance.GetPlayerById(playerId).DefaultOutfit.ColorId);
+                        colorMap.Add(playerId);
+                        colorMapDuplicate.Add(playerId);
                     }
                     else
                     {
                         var component = collider.GetComponent<PlayerControl>();
 
                         if (component && component.Data != null && !component.Data.Disconnected && !component.Data.IsDead && (__instance.showLivePlayerPosition || !component.AmOwner) &&
-                            !colorMapDuplicate.Contains(data.DefaultOutfit.ColorId))
+                            !colorMapDuplicate.Contains(data.PlayerId))
                         {
-                            colorMap.Add(data.DefaultOutfit.ColorId);
-                            colorMapDuplicate.Add(data.DefaultOutfit.ColorId);
+                            colorMap.Add(data.PlayerId);
+                            colorMapDuplicate.Add(data.PlayerId);
                         }
                     }
                 }

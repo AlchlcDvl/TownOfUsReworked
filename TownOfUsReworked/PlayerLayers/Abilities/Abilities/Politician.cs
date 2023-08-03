@@ -2,11 +2,11 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
 {
     public class Politician : Ability
     {
-        public List<byte> ExtraVotes = new();
-        public int VoteBank;
-        public bool SelfVote;
-        public bool VotedOnce;
-        public PlayerVoteArea Abstain;
+        public List<byte> ExtraVotes { get; set; }
+        public int VoteBank { get; set; }
+        public bool SelfVote { get; set; }
+        public bool VotedOnce { get; set; }
+        public PlayerVoteArea Abstain { get; set; }
         public bool CanVote => VoteBank > 0 && !SelfVote;
         public bool CanKill => Player.CanKill();
 
@@ -14,8 +14,8 @@ namespace TownOfUsReworked.PlayerLayers.Abilities
         public override string Name => "Politician";
         public override LayerEnum Type => LayerEnum.Politician;
         public override AbilityEnum AbilityType => AbilityEnum.Politician;
-        public override Func<string> TaskText => () => $"- You can vote multiple times as long as you{(CanKill ? "" : " haven't abstained or")} are the last player voting\n" + (CanKill ?
-            "- When you kill players, you take their" : "- You can abstain in meetings to gain more") + " votes for use later";
+        public override Func<string> Description => () => $"- You can vote multiple times as long as you{(CanKill ? "" : " haven't abstained or")} are the last player voting\n- You can " +
+            (CanKill ? "players to take their" : "abstain in meetings to gain more") + " votes for use later";
 
         public Politician(PlayerControl player) : base(player)
         {

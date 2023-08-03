@@ -2,10 +2,10 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Wraith : Intruder
     {
-        public CustomButton InvisButton;
-        public bool Enabled;
-        public DateTime LastInvis;
-        public float TimeRemaining;
+        public CustomButton InvisButton { get; set; }
+        public bool Enabled { get; set; }
+        public DateTime LastInvis { get; set; }
+        public float TimeRemaining { get; set; }
         public bool IsInvis => TimeRemaining > 0f;
 
         public override Color32 Color => ClientGameOptions.CustomIntColors ? Colors.Wraith : Colors.Intruder;
@@ -13,22 +13,14 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override LayerEnum Type => LayerEnum.Wraith;
         public override RoleEnum RoleType => RoleEnum.Wraith;
         public override Func<string> StartText => () => "Sneaky Sneaky";
-        public override Func<string> AbilitiesText => () => $"- You can turn invisible\n{CommonAbilities}";
+        public override Func<string> Description => () => $"- You can turn invisible\n{CommonAbilities}";
         public override InspectorResults InspectorResults => InspectorResults.Unseen;
+        public float Timer => ButtonUtils.Timer(Player, LastInvis, CustomGameOptions.InvisCd);
 
         public Wraith(PlayerControl player) : base(player)
         {
             RoleAlignment = RoleAlignment.IntruderDecep;
             InvisButton = new(this, "Invis", AbilityTypes.Effect, "Secondary", HitInvis);
-        }
-
-        public float InvisTimer()
-        {
-            var timespan = DateTime.UtcNow - LastInvis;
-            var num = Player.GetModifiedCooldown(CustomGameOptions.InvisCd) * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
         }
 
         public void Invis()
@@ -50,7 +42,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void HitInvis()
         {
-            if (InvisTimer() != 0f || IsInvis)
+            if (Timer != 0f || IsInvis)
                 return;
 
             CallRpc(CustomRPC.Action, ActionsRPC.Invis, this);
@@ -61,7 +53,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            InvisButton.Update("INVIS", InvisTimer(), CustomGameOptions.InvisCd, IsInvis, TimeRemaining, CustomGameOptions.InvisDuration);
+            InvisButton.Update("INVIS", Timer, CustomGameOptions.InvisCd, IsInvis, TimeRemaining, CustomGameOptions.InvisDuration);
         }
     }
 }

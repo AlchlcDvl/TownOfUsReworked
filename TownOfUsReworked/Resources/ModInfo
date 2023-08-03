@@ -7,11 +7,18 @@ This mod is a mish mash of code from different mods, mainly from Town Of Us Reac
 If you want to know more try using the other info commands, visiting the %github% page or joining the %discord% server. Happy ejections!
 
 Changelog-
-- Update: Updated presets
-- Optimisation: The code was optimised in certain parts
-- Improvement: Improved how Operative bugs and Bomber bombs are handled
-- Critical Fix: Fixed teleporting crashing games
-- Bug Fix: Fixed meeting results not being sent to roles with meeting info (like Operative and Coroner)
+- Change: The numbers on the admin table now reflect the player's ID rather than their outfit color for Operative and Retributionist (to avoid confusion with multiple same color players)
+- Change: Operative and Retributionist color blind help is now tied to the vanilla colorblind setting
+- Optimisation: The code for all layers have been improved
+- Improvement: You are now told if you are recruited in the intro screen
+- Improvement: Whisperers and members of the Sect now know how much percentage is left to convert someone
+- Improvement: Improved how cooldowns are handled
+- Big Critical Fix: Fixed being unable to play on any servers (only impostor servers right now, official servers fix is soon to come)
+- Critical Fix: Fixed Whisperer being unable to convert players
+- Visual Fix: Fixed some mod options layering issues in the main menu
+- Objectifier Fix: Fixed Allied Neutral Killers being unable the sabotage when they should
+- Objectifier Fix: Fixed Traitor and Defector conversions being inconsistent between players
+- Removal: Removed Flincher because it's boring now, farewell soldier :saluting_face:
 
 NOTE: THE MOD IS NOT YET COMPATIBLE WITH SUBMERGED.
 

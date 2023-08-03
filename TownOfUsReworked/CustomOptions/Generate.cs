@@ -283,7 +283,6 @@ namespace TownOfUsReworked.CustomOptions
         public static CustomLayersOption VIPOn;
         public static CustomLayersOption ShyOn;
         public static CustomLayersOption DrunkOn;
-        public static CustomLayersOption FlincherOn;
         public static CustomLayersOption IndomitableOn;
         public static CustomLayersOption AstralOn;
         public static CustomLayersOption VolatileOn;
@@ -1328,6 +1327,7 @@ namespace TownOfUsReworked.CustomOptions
 
         //Drunk Options
         public static CustomHeaderOption Drunk;
+        public static CustomToggleOption DrunkKnows;
         public static CustomToggleOption DrunkControlsSwap;
         public static CustomNumberOption DrunkInterval;
         public static CustomToggleOption UniqueDrunk;
@@ -1362,11 +1362,6 @@ namespace TownOfUsReworked.CustomOptions
         public static CustomHeaderOption VIP;
         public static CustomToggleOption UniqueVIP;
         public static CustomToggleOption VIPKnows;
-
-        //Flincher Options
-        public static CustomHeaderOption Flincher;
-        public static CustomNumberOption FlinchInterval;
-        public static CustomToggleOption UniqueFlincher;
 
         //Volatile Options
         public static CustomHeaderOption Volatile;
@@ -1681,7 +1676,6 @@ namespace TownOfUsReworked.CustomOptions
             DiseasedOn = new(num++, MultiMenu.modifier, "<color=#374D1EFF>Diseased</color>");
             DrunkOn = new(num++, MultiMenu.modifier, "<color=#758000FF>Drunk</color>");
             DwarfOn = new(num++, MultiMenu.modifier, "<color=#FF8080FF>Dwarf</color>");
-            FlincherOn = new(num++, MultiMenu.modifier, "<color=#80B3FFFF>Flincher</color>");
             GiantOn = new(num++, MultiMenu.modifier, "<color=#FFB34DFF>Giant</color>");
             IndomitableOn = new(num++, MultiMenu.modifier, "<color=#2DE5BEFF>Indomitable</color>");
             ProfessionalOn = new(num++, MultiMenu.modifier, "<color=#860B7AFF>Professional</color>");
@@ -2457,12 +2451,12 @@ namespace TownOfUsReworked.CustomOptions
             ScreamCooldown = new(num++, MultiMenu.syndicate, "Scream Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, BansheeOn);
             ScreamDuration = new(num++, MultiMenu.syndicate, "Scream Duration", 10f, 5f, 30f, 1f, CooldownFormat, BansheeOn);
 
-            ModifierSettings = new(MultiMenu.modifier, "<color=#7F7F7FFF>Modifier</color> Settings", new[] { AstralOn, BaitOn, CowardOn, DiseasedOn, DrunkOn, DwarfOn, FlincherOn, GiantOn,
+            ModifierSettings = new(MultiMenu.modifier, "<color=#7F7F7FFF>Modifier</color> Settings", new[] { AstralOn, BaitOn, CowardOn, DiseasedOn, DrunkOn, DwarfOn, GiantOn,
                 IndomitableOn, ShyOn, VIPOn, ProfessionalOn, VolatileOn, YellerOn });
-            MaxModifiers = new(num++, MultiMenu.modifier, "Max <color=#7F7F7FFF>Modifiers</color>", 5, 1, 14, 1, new[] { AstralOn, BaitOn, CowardOn, DiseasedOn, DrunkOn, DwarfOn,
-                FlincherOn, GiantOn, IndomitableOn, ShyOn, VIPOn, ProfessionalOn, VolatileOn, YellerOn });
-            MinModifiers = new(num++, MultiMenu.modifier, "Min <color=#7F7F7FFF>Modifiers</color>", 5, 1, 14, 1, new[] { AstralOn, BaitOn, CowardOn, DiseasedOn, DrunkOn, DwarfOn,
-                FlincherOn, GiantOn, IndomitableOn, ShyOn, VIPOn, ProfessionalOn, VolatileOn, YellerOn });
+            MaxModifiers = new(num++, MultiMenu.modifier, "Max <color=#7F7F7FFF>Modifiers</color>", 5, 1, 14, 1, new[] { AstralOn, BaitOn, CowardOn, DiseasedOn, DrunkOn, DwarfOn, GiantOn,
+                IndomitableOn, ShyOn, VIPOn, ProfessionalOn, VolatileOn, YellerOn });
+            MinModifiers = new(num++, MultiMenu.modifier, "Min <color=#7F7F7FFF>Modifiers</color>", 5, 1, 14, 1, new[] { AstralOn, BaitOn, CowardOn, DiseasedOn, DrunkOn, DwarfOn, GiantOn,
+                IndomitableOn, ShyOn, VIPOn, ProfessionalOn, VolatileOn, YellerOn });
 
             Astral = new(MultiMenu.modifier, "<color=#612BEFFF>Astral</color>", AstralOn);
             UniqueAstral = new(num++, MultiMenu.modifier, "<color=#612BEFFF>Astral</color> Is Unique", false, AstralOn);
@@ -2484,16 +2478,13 @@ namespace TownOfUsReworked.CustomOptions
             Drunk = new(MultiMenu.modifier, "<color=#758000FF>Drunk</color>", DrunkOn);
             UniqueDrunk = new(num++, MultiMenu.modifier, "<color=#758000FF>Drunk</color> Is Unique", false, DrunkOn);
             DrunkControlsSwap = new(num++, MultiMenu.modifier, "Controls Reverse Over Time", false, DrunkOn);
+            DrunkKnows = new(num++, MultiMenu.modifier, "<color=#758000FF>Drunk</color> Knows Who They Are", true, DrunkOn);
             DrunkInterval = new(num++, MultiMenu.modifier, "Reversed Controls Interval", 10f, 1f, 20f, 1f, CooldownFormat, DrunkOn);
 
             Dwarf = new(MultiMenu.modifier, "<color=#FF8080FF>Dwarf</color>", DwarfOn);
             UniqueDwarf = new(num++, MultiMenu.modifier, "<color=#FF8080FF>Dwarf</color> Is Unique", false, DwarfOn);
             DwarfSpeed = new(num++, MultiMenu.modifier, "<color=#FF8080FF>Dwarf</color> Speed", 1.5f, 1f, 2f, 0.05f, MultiplierFormat, DwarfOn);
             DwarfScale = new(num++, MultiMenu.modifier, "<color=#FF8080FF>Dwarf</color> Scale", 0.5f, 0.3f, 1f, 0.025f, MultiplierFormat, DwarfOn);
-
-            Flincher = new(MultiMenu.modifier, "<color=#80B3FFFF>Flincher</color>", FlincherOn);
-            UniqueFlincher = new(num++, MultiMenu.modifier, "<color=#80B3FFFF>Flincher</color> Is Unique", false, FlincherOn);
-            FlinchInterval = new(num++, MultiMenu.modifier, "Flinch Interval", 10f, 1f, 20f, 1f, CooldownFormat, FlincherOn);
 
             Giant = new(MultiMenu.modifier, "<color=#FFB34DFF>Giant</color>", GiantOn);
             UniqueGiant = new(num++, MultiMenu.modifier, "<color=#FFB34DFF>Giant</color> Is Unique", false, GiantOn);

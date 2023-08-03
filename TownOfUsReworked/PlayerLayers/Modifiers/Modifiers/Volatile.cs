@@ -3,15 +3,15 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
     public class Volatile : Modifier
     {
         private float _time;
-        private int OtherNumber;
-        private bool RickRolled;
-        private bool Exposed;
+        private int OtherNumber { get; set; }
+        private static bool RickRolled;
+        public bool Exposed { get; set; }
 
         public override Color32 Color => ClientGameOptions.CustomModColors ? Colors.Volatile : Colors.Modifier;
         public override string Name => "Volatile";
         public override LayerEnum Type => LayerEnum.Volatile;
         public override ModifierEnum ModifierType => ModifierEnum.Volatile;
-        public override Func<string> TaskText => () => "- You experience hallucinations";
+        public override Func<string> Description => () => "- You experience hallucinations";
         public override bool Hidden => !CustomGameOptions.VolatileKnows && !Exposed && !IsDead;
 
         public Volatile(PlayerControl player) : base(player) => Exposed = !CustomGameOptions.VolatileKnows;
@@ -29,7 +29,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
             {
                 var randomNumber = URandom.RandomRangeInt(0, 4);
                 _time -= CustomGameOptions.VolatileInterval;
-                Exposed = true;
+                Exposed = !Exposed && randomNumber != 3;
 
                 if (randomNumber == 0)
                 {

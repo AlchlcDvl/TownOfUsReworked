@@ -2,8 +2,8 @@ namespace TownOfUsReworked.CustomOptions
 {
     public class Preset : CustomButtonOption
     {
-        public CustomButtonOption Loading;
-        public List<OptionBehaviour> OldButtons;
+        private CustomButtonOption Loading { get; set; }
+        private List<OptionBehaviour> OldButtons { get; set; } = new();
         public List<CustomButtonOption> SlotButtons = new();
 
         public Preset() : base(MultiMenu.main, "Load Preset Settings") => Do = ToDo;

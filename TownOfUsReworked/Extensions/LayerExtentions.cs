@@ -172,7 +172,8 @@ namespace TownOfUsReworked.Extensions
 
         public static bool CanSabotage(this PlayerControl player)
         {
-            var result = (player.Is(Faction.Intruder) || (player.Is(Faction.Syndicate) && CustomGameOptions.AltImps)) && !Meeting && CustomGameOptions.IntrudersCanSabotage;
+            var result = (player.Is(Faction.Intruder) || (player.Is(Faction.Syndicate) && CustomGameOptions.AltImps)) && !Meeting && CustomGameOptions.IntrudersCanSabotage &&
+                !Role.GetRoles(player.GetFaction()).All(x => x.IsDead);
 
             if (!player.Data.IsDead)
                 return result;
@@ -914,7 +915,7 @@ namespace TownOfUsReworked.Extensions
 
             if (info[3] && !objectifier.Hidden)
             {
-                objectives += $"\n{objectifier.ColorString}{objectifier.TaskText()}</color>";
+                objectives += $"\n{objectifier.ColorString}{objectifier.Description()}</color>";
                 objectifierName += $"{objectifier.ColorString}{objectifier.Name} {objectifier.Symbol}</color>";
             }
             else
@@ -964,10 +965,10 @@ namespace TownOfUsReworked.Extensions
             objectives += "</color>";
 
             if (info[0])
-                abilities += $"\n{role.ColorString}{role.AbilitiesText()}</color>";
+                abilities += $"\n{role.ColorString}{role.Description()}</color>";
 
             if (info[2] && !ability.Hidden && ability.AbilityType != AbilityEnum.None)
-                abilities += $"\n{ability.ColorString}{ability.TaskText()}</color>";
+                abilities += $"\n{ability.ColorString}{ability.Description()}</color>";
 
             if (abilities == $"{AbilitiesColorString}Abilities:")
                 abilities += "\n- None";
@@ -975,7 +976,7 @@ namespace TownOfUsReworked.Extensions
             abilities += "</color>";
 
             if (info[1] && !modifier.Hidden && modifier.ModifierType != ModifierEnum.None)
-                attributes += $"\n{modifier.ColorString}{modifier.TaskText()}</color>";
+                attributes += $"\n{modifier.ColorString}{modifier.Description()}</color>";
 
             if (player.IsGuessTarget() && CustomGameOptions.GuesserTargetKnows)
                 attributes += "\n<color=#EEE5BEFF>- Someone wants to guess you π</color>";

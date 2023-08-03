@@ -2,16 +2,15 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Godfather : Intruder
     {
-        public bool HasDeclared;
-        public CustomButton DeclareButton;
-        public DateTime LastDeclared;
+        public bool HasDeclared { get; set; }
+        public CustomButton DeclareButton { get; set; }
 
         public override Color32 Color => ClientGameOptions.CustomIntColors ? Colors.Godfather : Colors.Intruder;
         public override string Name => "Godfather";
         public override LayerEnum Type => LayerEnum.Godfather;
         public override RoleEnum RoleType => RoleEnum.Godfather;
         public override Func<string> StartText => () => "Promote Your Fellow <color=#FF0000FF>Intruder</color> To Do Better";
-        public override Func<string> AbilitiesText => () => "- You can promote a fellow <color=#FF0000FF>Intruder</color> into becoming your successor\n- Promoting an <color=#FF0000FF>" +
+        public override Func<string> Description => () => "- You can promote a fellow <color=#FF0000FF>Intruder</color> into becoming your successor\n- Promoting an <color=#FF0000FF>" +
             "Intruder</color> turns them into a <color=#6400FFFF>Mafioso</color>\n- If you die, the <color=#6400FFFF>Mafioso</color> will become the new <color=#404C08FF>Godfather</color>"
             + $"\nand inherits better abilities of their former role\n{CommonAbilities}";
         public override InspectorResults InspectorResults => InspectorResults.LeadsTheGroup;
@@ -54,10 +53,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
                 CallRpc(CustomRPC.Action, ActionsRPC.Declare, this, DeclareButton.TargetPlayer);
                 Declare(this, DeclareButton.TargetPlayer);
             }
-            else if (interact[0])
-                LastDeclared = DateTime.UtcNow;
-            else if (interact[1])
-                LastDeclared.AddSeconds(CustomGameOptions.ProtectKCReset);
         }
 
         public bool Exception1(PlayerControl player) => !player.Is(Faction) || (!(player.GetRole() is RoleEnum.PromotedGodfather or RoleEnum.Mafioso or RoleEnum.Godfather) &&

@@ -3,7 +3,7 @@
     public class Bug : Range
     {
         private readonly Dictionary<byte, float> Players = new();
-        private List<PlayerControl> Closest = new();
+        private List<PlayerControl> Closest { get; set; } = new();
         public readonly Dictionary<PlayerControl, RoleEnum> Results = new();
 
         public Bug(PlayerControl owner) : base(owner, Colors.Operative, CustomGameOptions.BugRange, "Bug") => Coroutines.Start(Timer());

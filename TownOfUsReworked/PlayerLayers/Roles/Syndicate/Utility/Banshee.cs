@@ -2,22 +2,23 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 {
     public class Banshee : Syndicate
     {
-        public CustomButton ScreamButton;
-        public bool Enabled;
-        public DateTime LastScreamed;
-        public float TimeRemaining;
+        public CustomButton ScreamButton { get; set; }
+        public bool Enabled { get; set; }
+        public DateTime LastScreamed { get; set; }
+        public float TimeRemaining { get; set; }
         public bool Screaming => TimeRemaining > 0f;
-        public List<byte> Blocked = new();
-        public bool Caught;
-        public bool Faded;
+        public List<byte> Blocked { get; set; }
+        public bool Caught { get; set; }
+        public bool Faded { get; set; }
 
         public override Color32 Color => ClientGameOptions.CustomSynColors ? Colors.Banshee : Colors.Syndicate;
         public override string Name => "Banshee";
         public override LayerEnum Type => LayerEnum.Banshee;
         public override RoleEnum RoleType => RoleEnum.Banshee;
         public override Func<string> StartText => () => "AAAAAAAAAAAAAAAAAAAAAAAAA";
-        public override Func<string> AbilitiesText => () => "- You can scream loudly, blocking all players as long as you are not clicked";
+        public override Func<string> Description => () => "- You can scream loudly, blocking all players as long as you are not clicked";
         public override InspectorResults InspectorResults => InspectorResults.Ghostly;
+        public float Timer => ButtonUtils.Timer(Player, LastScreamed, CustomGameOptions.ScreamCooldown, true);
 
         public Banshee(PlayerControl player) : base(player)
         {
@@ -72,15 +73,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles
             Blocked.Clear();
         }
 
-        public float ScreamTimer()
-        {
-            var timespan = DateTime.UtcNow - LastScreamed;
-            var num = CustomGameOptions.ScreamCooldown * 1000f;
-            var time = num - (float)timespan.TotalMilliseconds;
-            var flag2 = time < 0f;
-            return (flag2 ? 0f : time) / 1000f;
-        }
-
         public void Fade()
         {
             Faded = true;
@@ -116,7 +108,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
 
         public void HitScream()
         {
-            if (ScreamTimer() != 0f)
+            if (Timer != 0f)
                 return;
 
             TimeRemaining = CustomGameOptions.ScreamDuration;
@@ -133,7 +125,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles
         public override void UpdateHud(HudManager __instance)
         {
             base.UpdateHud(__instance);
-            ScreamButton.Update("SCREAM", ScreamTimer(), CustomGameOptions.ScreamCooldown, Screaming, TimeRemaining, CustomGameOptions.ScreamDuration, true, !Caught);
+            ScreamButton.Update("SCREAM", Timer, CustomGameOptions.ScreamCooldown, Screaming, TimeRemaining, CustomGameOptions.ScreamDuration, true, !Caught);
         }
     }
 }

@@ -3,17 +3,17 @@ namespace TownOfUsReworked.PlayerLayers.Roles
     public class Medic : Crew
     {
         public bool UsedAbility => ShieldedPlayer != null || ExShielded != null;
-        public PlayerControl ShieldedPlayer;
-        public PlayerControl ExShielded;
-        public CustomButton ShieldButton;
+        public PlayerControl ShieldedPlayer { get; set; }
+        public PlayerControl ExShielded { get; set; }
+        public CustomButton ShieldButton { get; set; }
 
         public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Medic : Colors.Crew;
         public override string Name => "Medic";
         public override LayerEnum Type => LayerEnum.Medic;
         public override RoleEnum RoleType => RoleEnum.Medic;
         public override Func<string> StartText => () => "Shield A Player To Protect Them";
-        public override Func<string> AbilitiesText => () => "- You can shield a player to prevent them from dying to others\n- If your target is attacked, you will be notified of it by " +
-            "default\n- Your shield does not save your target from suicides";
+        public override Func<string> Description => () => "- You can shield a player to prevent them from dying to others\n- If your target is attacked, you will be notified of it by " +
+            "default\n- Your shield does not save your target from suicides or ejections";
         public override InspectorResults InspectorResults => InspectorResults.PreservesLife;
 
         public Medic(PlayerControl player) : base(player)

@@ -79,7 +79,7 @@ namespace TownOfUsReworked
     {
         public const string Id = "me.alchlcdvl.reworked";
         public const string Name = "TownOfUsReworked";
-        private const string VersionString = "0.4.3.0";
+        private const string VersionString = "0.4.4.0";
         public static readonly Version Version = new(VersionString);
 
         public const bool IsDev = false;
@@ -115,7 +115,7 @@ namespace TownOfUsReworked
         public static bool MCIActive;
         public static DebuggerBehaviour Debugger;
 
-        public Harmony Harmony => new(Id);
+        public readonly Harmony Harmony = new(Id);
 
         public override string ToString() => $"{Id} {Name} {VersionFinal} {Version}";
 
@@ -190,6 +190,12 @@ namespace TownOfUsReworked
             Cursor.SetCursor(GetSprite("Cursor").texture, Vector2.zero, CursorMode.Auto);
 
             LogSomething($"Mod Loaded - {this}");
+        }
+
+        public override bool Unload()
+        {
+            ModInstance = null;
+            return base.Unload();
         }
     }
 }

@@ -251,7 +251,6 @@ namespace TownOfUsReworked.CustomOptions
 
         //Modifier Spawn
         public static int ProfessionalOn => Generate.ProfessionalOn.GetChance();
-        public static int FlincherOn => Generate.FlincherOn.GetChance();
         public static int DiseasedOn => Generate.DiseasedOn.GetChance();
         public static int GiantOn => Generate.GiantOn.GetChance();
         public static int DwarfOn => Generate.DwarfOn.GetChance();
@@ -705,8 +704,8 @@ namespace TownOfUsReworked.CustomOptions
         public static float WhisperRadius => Generate.WhisperRadius.Get();
         public static float WhisperCooldownIncrease => Generate.WhisperCooldownIncrease.Get();
         public static bool WhisperCooldownIncreases => Generate.WhisperCooldownIncreases.Get();
-        public static float InitialWhisperRate => Generate.InitialWhisperRate.Get();
-        public static float WhisperRateDecrease => Generate.WhisperRateDecrease.Get();
+        public static int InitialWhisperRate => (int)Generate.InitialWhisperRate.Get();
+        public static int WhisperRateDecrease => (int)Generate.WhisperRateDecrease.Get();
         public static bool WhisperRateDecreases => Generate.WhisperRateDecreases.Get();
         public static int WhispererCount => Generate.WhispererOn.GetCount();
         public static bool UniqueWhisperer => Generate.UniqueWhisperer.Get();
@@ -1155,6 +1154,7 @@ namespace TownOfUsReworked.CustomOptions
         public static bool DrunkControlsSwap => Generate.DrunkControlsSwap.Get();
         public static int DrunkCount => Generate.DrunkOn.GetCount();
         public static bool UniqueDrunk => Generate.UniqueDrunk.Get();
+        public static bool DrunkKnows => Generate.DrunkKnows.Get();
         public static float DrunkInterval => Generate.DrunkInterval.Get();
 
         //Bait Settings
@@ -1197,11 +1197,6 @@ namespace TownOfUsReworked.CustomOptions
         public static bool ProfessionalKnows => Generate.ProfessionalKnows.Get();
         public static bool UniqueProfessional => Generate.UniqueProfessional.Get();
         public static int ProfessionalCount => Generate.ProfessionalOn.GetCount();
-
-        //Flincher Settings
-        public static float FlinchInterval => Generate.FlinchInterval.Get();
-        public static int FlincherCount => Generate.FlincherOn.GetCount();
-        public static bool UniqueFlincher => Generate.UniqueFlincher.Get();
 
         //Coward Settings
         public static int CowardCount => Generate.CowardOn.GetCount();
