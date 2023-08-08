@@ -1,49 +1,47 @@
-namespace TownOfUsReworked.PlayerLayers.Roles
+namespace TownOfUsReworked.PlayerLayers.Roles;
+
+public class Mafioso : Intruder
 {
-    public class Mafioso : Intruder
+    public Role FormerRole { get; set; }
+    public Godfather Godfather { get; set; }
+    public bool CanPromote => (Godfather.IsDead || Godfather.Disconnected) && !IsDead;
+
+    public override Color32 Color => ClientGameOptions.CustomIntColors ? Colors.Mafioso : Colors.Intruder;
+    public override string Name => "Mafioso";
+    public override LayerEnum Type => LayerEnum.Mafioso;
+    public override Func<string> StartText => () => "Succeed The <color=#404C08FF>Godfather</color>";
+    public override Func<string> Description => () => "- When the <color=#404C08FF>Godfather</color> dies, you will become the new <color=#404C08FF>Godfather</color> with boosted " +
+        $"abilities of your former role\n{CommonAbilities}";
+    public override InspectorResults InspectorResults => InspectorResults.IsCold;
+
+    public Mafioso(PlayerControl player) : base(player) => RoleAlignment = RoleAlignment.IntruderUtil;
+
+    public void TurnGodfather()
     {
-        public Role FormerRole { get; set; }
-        public Godfather Godfather { get; set; }
-        public bool CanPromote => (Godfather.IsDead || Godfather.Disconnected) && !IsDead;
-
-        public override Color32 Color => ClientGameOptions.CustomIntColors ? Colors.Mafioso : Colors.Intruder;
-        public override string Name => "Mafioso";
-        public override LayerEnum Type => LayerEnum.Mafioso;
-        public override RoleEnum RoleType => RoleEnum.Mafioso;
-        public override Func<string> StartText => () => "Succeed The <color=#404C08FF>Godfather</color>";
-        public override Func<string> Description => () => "- When the <color=#404C08FF>Godfather</color> dies, you will become the new <color=#404C08FF>Godfather</color> with boosted " +
-            $"abilities of your former role\n{CommonAbilities}";
-        public override InspectorResults InspectorResults => InspectorResults.IsCold;
-
-        public Mafioso(PlayerControl player) : base(player) => RoleAlignment = RoleAlignment.IntruderUtil;
-
-        public void TurnGodfather()
+        var newRole = new PromotedGodfather(Player)
         {
-            var newRole = new PromotedGodfather(Player)
-            {
-                FormerRole = FormerRole,
-                RoleBlockImmune = FormerRole.RoleBlockImmune,
-                RoleAlignment = FormerRole.RoleAlignment
-            };
+            FormerRole = FormerRole,
+            RoleBlockImmune = FormerRole.RoleBlockImmune,
+            RoleAlignment = FormerRole.RoleAlignment
+        };
 
-            newRole.RoleUpdate(this);
+        newRole.RoleUpdate(this);
 
-            if (Local)
-                Flash(Colors.Godfather);
+        if (Local)
+            Flash(Colors.Godfather);
 
-            if (CustomPlayer.Local.Is(RoleEnum.Seer))
-                Flash(Colors.Seer);
-        }
+        if (CustomPlayer.Local.Is(LayerEnum.Seer))
+            Flash(Colors.Seer);
+    }
 
-        public override void UpdateHud(HudManager __instance)
+    public override void UpdateHud(HudManager __instance)
+    {
+        base.UpdateHud(__instance);
+
+        if (CanPromote)
         {
-            base.UpdateHud(__instance);
-
-            if (CanPromote)
-            {
-                CallRpc(CustomRPC.Change, TurnRPC.TurnGodfather, this);
-                TurnGodfather();
-            }
+            CallRpc(CustomRPC.Change, TurnRPC.TurnGodfather, this);
+            TurnGodfather();
         }
     }
 }

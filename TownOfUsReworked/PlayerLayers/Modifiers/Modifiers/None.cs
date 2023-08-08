@@ -1,9 +1,8 @@
-namespace TownOfUsReworked.PlayerLayers.Modifiers
-{
-    public class Modifierless : Modifier
-    {
-        public override bool Hidden => true;
+namespace TownOfUsReworked.PlayerLayers.Modifiers;
 
-        public Modifierless(PlayerControl player) : base(player) {}
-    }
+public class Modifierless : Modifier
+{
+    public override bool Hidden => true;
+
+    public Modifierless(PlayerControl player) : base(player) {}
 }

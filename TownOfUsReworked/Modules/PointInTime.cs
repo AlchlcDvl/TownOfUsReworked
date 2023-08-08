@@ -1,9 +1,8 @@
-namespace TownOfUsReworked.Modules
-{
-    public class PointInTime
-    {
-        public readonly Vector3 Position;
+namespace TownOfUsReworked.Modules;
 
-        public PointInTime(Vector3 position) => Position = position;
-    }
+public class PointInTime
+{
+    public readonly Vector3 Position;
+
+    public PointInTime(Vector3 position) => Position = position;
 }

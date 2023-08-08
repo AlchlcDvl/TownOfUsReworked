@@ -1,216 +1,215 @@
-namespace TownOfUsReworked.Patches
+namespace TownOfUsReworked.Patches;
+
+[HarmonyPatch(typeof(GameData), nameof(GameData.RecomputeTaskCounts))]
+public static class RecomputeTaskCounts
 {
-    [HarmonyPatch(typeof(GameData), nameof(GameData.RecomputeTaskCounts))]
-    public static class RecomputeTaskCounts
+    public static bool Prefix(GameData __instance)
     {
-        public static bool Prefix(GameData __instance)
+        __instance.TotalTasks = 0;
+        __instance.CompletedTasks = 0;
+
+        for (var i = 0; i < __instance.AllPlayers.Count; i++)
         {
-            __instance.TotalTasks = 0;
-            __instance.CompletedTasks = 0;
+            var playerInfo = __instance.AllPlayers[i];
+            var pc = playerInfo.Object;
 
-            for (var i = 0; i < __instance.AllPlayers.Count; i++)
+            if (!playerInfo.Disconnected && pc != null && playerInfo.Tasks != null && pc.CanDoTasks() && !(playerInfo.IsDead && pc.Is(LayerEnum.Revealer)) && !(playerInfo.IsDead &&
+                !CustomGameOptions.GhostTasksCountToWin))
             {
-                var playerInfo = __instance.AllPlayers[i];
-                var pc = playerInfo.Object;
-
-                if (!playerInfo.Disconnected && pc != null && playerInfo.Tasks != null && pc.CanDoTasks() && !(playerInfo.IsDead && pc.Is(RoleEnum.Revealer)) && !(playerInfo.IsDead &&
-                    !CustomGameOptions.GhostTasksCountToWin))
+                for (var j = 0; j < playerInfo.Tasks.Count; j++)
                 {
-                    for (var j = 0; j < playerInfo.Tasks.Count; j++)
-                    {
-                        __instance.TotalTasks++;
+                    __instance.TotalTasks++;
 
-                        if (playerInfo.Tasks[j].Complete)
-                            __instance.CompletedTasks++;
-                    }
+                    if (playerInfo.Tasks[j].Complete)
+                        __instance.CompletedTasks++;
                 }
             }
-
-            return __instance.TotalTasks != 0;
         }
+
+        return __instance.TotalTasks != 0;
     }
+}
 
-    [HarmonyPatch(typeof(Console), nameof(Console.CanUse))]
-    public static class CanUse
+[HarmonyPatch(typeof(Console), nameof(Console.CanUse))]
+public static class CanUse
+{
+    public static bool Prefix(Console __instance, [HarmonyArgument(0)] GameData.PlayerInfo playerInfo, ref float __result)
     {
-        public static bool Prefix(Console __instance, [HarmonyArgument(0)] GameData.PlayerInfo playerInfo, ref float __result)
+        var playerControl = playerInfo.Object;
+
+        var flag = !playerControl.CanDoTasks();
+
+        //If the console is not a sabotage repair console
+        if (flag && !__instance.AllowImpostor)
         {
-            var playerControl = playerInfo.Object;
-
-            var flag = !playerControl.CanDoTasks();
-
-            //If the console is not a sabotage repair console
-            if (flag && !__instance.AllowImpostor)
-            {
-                __result = float.MaxValue;
-                return false;
-            }
-
-            return true;
+            __result = float.MaxValue;
+            return false;
         }
-    }
 
-    [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.Begin))]
-    public static class BeginShip
+        return true;
+    }
+}
+
+[HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.Begin))]
+public static class BeginShip
+{
+    public static void Prefix()
     {
-        public static void Prefix()
+        TownOfUsReworked.NormalOptions.NumCommonTasks = CustomGameOptions.CommonTasks;
+        TownOfUsReworked.NormalOptions.NumShortTasks = CustomGameOptions.ShortTasks;
+        TownOfUsReworked.NormalOptions.NumLongTasks = CustomGameOptions.LongTasks;
+    }
+}
+
+[HarmonyPatch(typeof(PlayerControl._CoSetTasks_d__114), nameof(PlayerControl._CoSetTasks_d__114.MoveNext))]
+public static class PlayerControl_SetTasks
+{
+    public static void Postfix(PlayerControl._CoSetTasks_d__114 __instance)
+    {
+        if (__instance == null || IsHnS)
+            return;
+
+        __instance.__4__this.RegenTask();
+    }
+}
+
+[HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.CompleteTask))]
+public static class CompleteTasksPatch
+{
+    public static void Postfix(PlayerControl __instance, ref uint idx)
+    {
+        var id = idx;
+        PlayerLayer.AllLayers.ForEach(x => x.UponTaskComplete(__instance, id));
+
+        if (__instance.Is(LayerEnum.Snitch) && !__instance.Data.IsDead)
         {
-            TownOfUsReworked.NormalOptions.NumCommonTasks = CustomGameOptions.CommonTasks;
-            TownOfUsReworked.NormalOptions.NumShortTasks = CustomGameOptions.ShortTasks;
-            TownOfUsReworked.NormalOptions.NumLongTasks = CustomGameOptions.LongTasks;
+            var role = Ability.GetAbility<Snitch>(__instance);
+
+            if (role.TasksLeft == CustomGameOptions.SnitchTasksRemaining)
+            {
+                if (CustomPlayer.Local == __instance)
+                    Flash(role.Color);
+                else if (CustomPlayer.Local.Is(Faction.Intruder) || (CustomPlayer.Local.Is(RoleAlignment.NeutralKill) && CustomGameOptions.SnitchSeesNeutrals) ||
+                    CustomPlayer.Local.Is(Faction.Syndicate))
+                {
+                    Flash(role.Color);
+                    Role.LocalRole.AllArrows.Add(role.PlayerId, new(CustomPlayer.Local, role.Color));
+                }
+            }
+            else if (CustomPlayer.Local.Is(LayerEnum.Snitch) && role.TasksDone)
+            {
+                if (CustomPlayer.Local == __instance)
+                {
+                    Flash(UColor.green);
+                    CustomPlayer.AllPlayers.Where(x => x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) || (x.Is(RoleAlignment.NeutralKill) && CustomGameOptions.SnitchSeesNeutrals))
+                        .ToList().ForEach(x => Role.LocalRole.AllArrows.Add(x.PlayerId, new(__instance, role.Color)));
+                }
+                else if (CustomPlayer.Local.Is(Faction.Intruder) || (CustomPlayer.Local.Is(RoleAlignment.NeutralKill) && CustomGameOptions.SnitchSeesNeutrals) ||
+                    CustomPlayer.Local.Is(Faction.Syndicate))
+                {
+                    Flash(UColor.red);
+                }
+            }
         }
-    }
 
-    [HarmonyPatch(typeof(PlayerControl._CoSetTasks_d__114), nameof(PlayerControl._CoSetTasks_d__114.MoveNext))]
-    public static class PlayerControl_SetTasks
-    {
-        public static void Postfix(PlayerControl._CoSetTasks_d__114 __instance)
+        if (__instance.Is(LayerEnum.Traitor) && !__instance.Data.IsDead && AmongUsClient.Instance.AmHost)
         {
-            if (__instance == null || IsHnS)
-                return;
+            var traitor = Objectifier.GetObjectifier<Traitor>(__instance);
 
-            __instance.__4__this.RegenTask();
+            if (traitor.TasksDone)
+            {
+                Traitor.GetFactionChoice(out var syndicate, out var intruder);
+                CallRpc(CustomRPC.Change, TurnRPC.TurnTraitor, traitor, syndicate, intruder);
+                traitor.TurnTraitor(syndicate, intruder);
+            }
         }
-    }
-
-    [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.CompleteTask))]
-    public static class CompleteTasksPatch
-    {
-        public static void Postfix(PlayerControl __instance, ref uint idx)
+        else if (__instance.Is(LayerEnum.Taskmaster) && !__instance.Data.IsDead)
         {
-            var id = idx;
-            PlayerLayer.AllLayers.ForEach(x => x.UponTaskComplete(__instance, id));
+            var role = Objectifier.GetObjectifier<Taskmaster>(__instance);
 
-            if (__instance.Is(AbilityEnum.Snitch) && !__instance.Data.IsDead)
+            if (role.TasksLeft == CustomGameOptions.TMTasksRemaining)
             {
-                var role = Ability.GetAbility<Snitch>(__instance);
-
-                if (role.TasksLeft == CustomGameOptions.SnitchTasksRemaining)
+                if (CustomPlayer.Local == __instance || CustomPlayer.Local.Is(Faction.Crew) || CustomPlayer.Local.GetAlignment() is RoleAlignment.NeutralBen or
+                    RoleAlignment.NeutralEvil)
                 {
-                    if (CustomPlayer.Local == __instance)
-                        Flash(role.Color);
-                    else if (CustomPlayer.Local.Is(Faction.Intruder) || (CustomPlayer.Local.Is(RoleAlignment.NeutralKill) && CustomGameOptions.SnitchSeesNeutrals) ||
-                        CustomPlayer.Local.Is(Faction.Syndicate))
-                    {
-                        Flash(role.Color);
-                        Role.LocalRole.AllArrows.Add(role.PlayerId, new(CustomPlayer.Local, role.Color));
-                    }
+                    Flash(role.Color);
                 }
-                else if (CustomPlayer.Local.Is(AbilityEnum.Snitch) && role.TasksDone)
+                else if (CustomPlayer.Local.Is(Faction.Intruder) || CustomPlayer.Local.Is(RoleAlignment.NeutralKill) || CustomPlayer.Local.Is(Faction.Syndicate) ||
+                    CustomPlayer.Local.Is(RoleAlignment.NeutralNeo) || CustomPlayer.Local.Is(RoleAlignment.NeutralPros))
                 {
-                    if (CustomPlayer.Local == __instance)
-                    {
-                        Flash(UColor.green);
-                        CustomPlayer.AllPlayers.Where(x => x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) || (x.Is(RoleAlignment.NeutralKill) && CustomGameOptions.SnitchSeesNeutrals))
-                            .ToList().ForEach(x => Role.LocalRole.AllArrows.Add(x.PlayerId, new(__instance, role.Color)));
-                    }
-                    else if (CustomPlayer.Local.Is(Faction.Intruder) || (CustomPlayer.Local.Is(RoleAlignment.NeutralKill) && CustomGameOptions.SnitchSeesNeutrals) ||
-                        CustomPlayer.Local.Is(Faction.Syndicate))
-                    {
-                        Flash(UColor.red);
-                    }
+                    Flash(role.Color);
+                    Role.LocalRole.AllArrows.Add(role.PlayerId, new(CustomPlayer.Local, role.Color));
                 }
             }
-
-            if (__instance.Is(ObjectifierEnum.Traitor) && !__instance.Data.IsDead && AmongUsClient.Instance.AmHost)
+            else if (role.TasksDone)
             {
-                var traitor = Objectifier.GetObjectifier<Traitor>(__instance);
-
-                if (traitor.TasksDone)
-                {
-                    Traitor.GetFactionChoice(out var syndicate, out var intruder);
-                    CallRpc(CustomRPC.Change, TurnRPC.TurnTraitor, traitor, syndicate, intruder);
-                    traitor.TurnTraitor(syndicate, intruder);
-                }
-            }
-            else if (__instance.Is(ObjectifierEnum.Taskmaster) && !__instance.Data.IsDead)
-            {
-                var role = Objectifier.GetObjectifier<Taskmaster>(__instance);
-
-                if (role.TasksLeft == CustomGameOptions.TMTasksRemaining)
-                {
-                    if (CustomPlayer.Local == __instance || CustomPlayer.Local.Is(Faction.Crew) || CustomPlayer.Local.GetAlignment() is RoleAlignment.NeutralBen or
-                        RoleAlignment.NeutralEvil)
-                    {
-                        Flash(role.Color);
-                    }
-                    else if (CustomPlayer.Local.Is(Faction.Intruder) || CustomPlayer.Local.Is(RoleAlignment.NeutralKill) || CustomPlayer.Local.Is(Faction.Syndicate) ||
-                        CustomPlayer.Local.Is(RoleAlignment.NeutralNeo) || CustomPlayer.Local.Is(RoleAlignment.NeutralPros))
-                    {
-                        Flash(role.Color);
-                        Role.LocalRole.AllArrows.Add(role.PlayerId, new(CustomPlayer.Local, role.Color));
-                    }
-                }
-                else if (role.TasksDone)
-                {
-                    if (CustomPlayer.Local.Is(ObjectifierEnum.Taskmaster))
-                        Flash(role.Color);
-
-                    role.WinTasksDone = true;
-                }
-            }
-
-            if (__instance.Is(RoleEnum.Phantom))
-            {
-                var role = Role.GetRole<Phantom>(__instance);
-
-                if (role.TasksLeft == CustomGameOptions.PhantomTasksRemaining && CustomGameOptions.PhantomPlayersAlerted && !role.Caught)
+                if (CustomPlayer.Local.Is(LayerEnum.Taskmaster))
                     Flash(role.Color);
 
-                if (role.TasksDone && !role.Caught)
-                    role.CompletedTasks = true;
+                role.WinTasksDone = true;
             }
-            else if (__instance.Is(RoleEnum.Revealer))
+        }
+
+        if (__instance.Is(LayerEnum.Phantom))
+        {
+            var role = Role.GetRole<Phantom>(__instance);
+
+            if (role.TasksLeft == CustomGameOptions.PhantomTasksRemaining && CustomGameOptions.PhantomPlayersAlerted && !role.Caught)
+                Flash(role.Color);
+
+            if (role.TasksDone && !role.Caught)
+                role.CompletedTasks = true;
+        }
+        else if (__instance.Is(LayerEnum.Revealer))
+        {
+            var role = Role.GetRole<Revealer>(__instance);
+
+            if (role.TasksLeft == CustomGameOptions.RevealerTasksRemainingAlert && !role.Caught)
             {
-                var role = Role.GetRole<Revealer>(__instance);
-
-                if (role.TasksLeft == CustomGameOptions.RevealerTasksRemainingAlert && !role.Caught)
+                if (CustomPlayer.Local.Is(LayerEnum.Revealer))
+                    Flash(role.Color);
+                else if (CustomPlayer.Local.Is(Faction.Intruder) || CustomPlayer.Local.Is(Faction.Syndicate) || (CustomPlayer.Local.Is(RoleAlignment.NeutralKill) &&
+                    CustomGameOptions.RevealerRevealsNeutrals))
                 {
-                    if (CustomPlayer.Local.Is(RoleEnum.Revealer))
-                        Flash(role.Color);
-                    else if (CustomPlayer.Local.Is(Faction.Intruder) || CustomPlayer.Local.Is(Faction.Syndicate) || (CustomPlayer.Local.Is(RoleAlignment.NeutralKill) &&
-                        CustomGameOptions.RevealerRevealsNeutrals))
-                    {
-                        role.Revealed = true;
-                        Flash(role.Color);
-                        Role.LocalRole.DeadArrows.Add(role.PlayerId, new(CustomPlayer.Local, role.Color));
-                    }
-                }
-                else if (role.TasksDone && !role.Caught)
-                {
-                    role.CompletedTasks = role.TasksDone;
-
-                    if (CustomPlayer.Local.Is(RoleEnum.Revealer) || CustomPlayer.Local.Is(Faction.Intruder) || CustomPlayer.Local.Is(Faction.Syndicate) ||
-                        (CustomPlayer.Local.Is(RoleAlignment.NeutralKill) && CustomGameOptions.RevealerRevealsNeutrals))
-                    {
-                        Flash(role.Color);
-                    }
+                    role.Revealed = true;
+                    Flash(role.Color);
+                    Role.LocalRole.DeadArrows.Add(role.PlayerId, new(CustomPlayer.Local, role.Color));
                 }
             }
-
-            var role1 = Role.GetRole(__instance);
-
-            if (role1.TasksDone)
+            else if (role.TasksDone && !role.Caught)
             {
-                if (__instance.Is(RoleEnum.Tracker))
-                    ((Tracker)role1).UsesLeft++;
-                else if (__instance.Is(RoleEnum.Transporter))
-                    ((Transporter)role1).UsesLeft++;
-                else if (__instance.Is(RoleEnum.Vigilante))
-                    ((Vigilante)role1).UsesLeft++;
-                else if (__instance.Is(RoleEnum.Veteran))
-                    ((Veteran)role1).UsesLeft++;
-                else if (__instance.Is(RoleEnum.Altruist))
-                    ((Altruist)role1).UsesLeft++;
-                else if (__instance.Is(RoleEnum.Monarch))
-                    ((Monarch)role1).UsesLeft++;
-                else if (__instance.Is(RoleEnum.Chameleon))
-                    ((Chameleon)role1).UsesLeft++;
-                else if (__instance.Is(RoleEnum.Engineer))
-                    ((Engineer)role1).UsesLeft++;
-                else if (__instance.Is(RoleEnum.Retributionist))
-                    ((Retributionist)role1).UsesLeft++;
+                role.CompletedTasks = role.TasksDone;
+
+                if (CustomPlayer.Local.Is(LayerEnum.Revealer) || CustomPlayer.Local.Is(Faction.Intruder) || CustomPlayer.Local.Is(Faction.Syndicate) ||
+                    (CustomPlayer.Local.Is(RoleAlignment.NeutralKill) && CustomGameOptions.RevealerRevealsNeutrals))
+                {
+                    Flash(role.Color);
+                }
             }
+        }
+
+        var role1 = Role.GetRole(__instance);
+
+        if (role1.TasksDone)
+        {
+            if (__instance.Is(LayerEnum.Tracker))
+                ((Tracker)role1).UsesLeft++;
+            else if (__instance.Is(LayerEnum.Transporter))
+                ((Transporter)role1).UsesLeft++;
+            else if (__instance.Is(LayerEnum.Vigilante))
+                ((Vigilante)role1).UsesLeft++;
+            else if (__instance.Is(LayerEnum.Veteran))
+                ((Veteran)role1).UsesLeft++;
+            else if (__instance.Is(LayerEnum.Altruist))
+                ((Altruist)role1).UsesLeft++;
+            else if (__instance.Is(LayerEnum.Monarch))
+                ((Monarch)role1).UsesLeft++;
+            else if (__instance.Is(LayerEnum.Chameleon))
+                ((Chameleon)role1).UsesLeft++;
+            else if (__instance.Is(LayerEnum.Engineer))
+                ((Engineer)role1).UsesLeft++;
+            else if (__instance.Is(LayerEnum.Retributionist))
+                ((Retributionist)role1).UsesLeft++;
         }
     }
 }

@@ -1,26 +1,25 @@
-namespace TownOfUsReworked.MultiClientInstancing
+namespace TownOfUsReworked.MultiClientInstancing;
+
+[HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.CoStartGameHost))]
+public sealed class OnGameStart
 {
-    [HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.CoStartGameHost))]
-    public sealed class OnGameStart
+    public static void Prefix(AmongUsClient __instance)
     {
-        public static void Prefix(AmongUsClient __instance)
-        {
-            if (TownOfUsReworked.MCIActive)
-                __instance.allClients.ForEach(x => x.IsReady = true);
-        }
+        if (TownOfUsReworked.MCIActive)
+            __instance.allClients.ForEach(x => x.IsReady = true);
     }
+}
 
-    [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Confirm))]
-    [HarmonyPriority(Priority.Last)]
-    public sealed class SameVoteAll
+[HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Confirm))]
+[HarmonyPriority(Priority.Last)]
+public sealed class SameVoteAll
+{
+    public static void Postfix(MeetingHud __instance, ref byte suspectStateIdx)
     {
-        public static void Postfix(MeetingHud __instance, ref byte suspectStateIdx)
-        {
-            if (!IsLocalGame || !TownOfUsReworked.MCIActive || !TownOfUsReworked.SameVote)
-                return;
+        if (!IsLocalGame || !TownOfUsReworked.MCIActive || !TownOfUsReworked.SameVote)
+            return;
 
-            var sus = suspectStateIdx;
-            CustomPlayer.AllPlayers.ForEach(x => __instance.CmdCastVote(x.PlayerId, sus));
-        }
+        var sus = suspectStateIdx;
+        CustomPlayer.AllPlayers.ForEach(x => __instance.CmdCastVote(x.PlayerId, sus));
     }
 }

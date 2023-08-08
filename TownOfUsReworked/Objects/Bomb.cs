@@ -1,71 +1,71 @@
-﻿namespace TownOfUsReworked.Objects
+﻿namespace TownOfUsReworked.Objects;
+
+public class Bomb : Range
 {
-    public class Bomb : Range
+    public List<PlayerControl> Players { get; set; }
+    public bool Drived { get; set; }
+
+    public Bomb(PlayerControl bomb, bool drived) : base(bomb, Colors.Bomber, CustomGameOptions.BombRange + (drived ? CustomGameOptions.ChaosDriveBombRange : 0f), "Bomb")
     {
-        public List<PlayerControl> Players { get; set; } = new();
-        public bool Drived { get; set; }
+        Drived = drived;
+        Players = new();
+        Coroutines.Start(Timer());
+    }
 
-        public Bomb(PlayerControl bomb, bool drived) : base(bomb, Colors.Bomber, CustomGameOptions.BombRange + (drived ? CustomGameOptions.ChaosDriveBombRange : 0f), "Bomb")
+    public override IEnumerator Timer()
+    {
+        while (Transform)
         {
-            Drived = drived;
-            Coroutines.Start(Timer());
+            yield return 0;
+            Update();
         }
+    }
 
-        public override IEnumerator Timer()
+    public override void Update()
+    {
+        base.Update();
+        Players = GetClosestPlayers(Transform.position, Size);
+    }
+
+    public void Detonate()
+    {
+        foreach (var player in Players)
         {
-            while (Transform)
+            if (player.Is(LayerEnum.Pestilence) || player.IsOnAlert() || player.IsProtected() || player.IsShielded() || player.IsRetShielded() || player.IsProtectedMonarch() ||
+                (player.Is(Faction.Syndicate) && !CustomGameOptions.BombKillsSyndicate) || Owner.IsLinkedTo(player))
             {
-                yield return 0;
-                Update();
-            }
-        }
-
-        public override void Update()
-        {
-            base.Update();
-            Players = GetClosestPlayers(Transform.position, Size);
-        }
-
-        public void Detonate()
-        {
-            foreach (var player in Players)
-            {
-                if (player.Is(RoleEnum.Pestilence) || player.IsOnAlert() || player.IsProtected() || player.IsShielded() || player.IsRetShielded() || player.IsProtectedMonarch() ||
-                    (player.Is(Faction.Syndicate) && !CustomGameOptions.BombKillsSyndicate) || Owner.IsLinkedTo(player))
-                {
-                    continue;
-                }
-
-                RpcMurderPlayer(Owner, player, DeathReasonEnum.Bombed, false);
+                continue;
             }
 
-            Destroy();
+            RpcMurderPlayer(Owner, player, DeathReasonEnum.Bombed, false);
         }
 
-        public static void DetonateBombs(List<Bomb> obj)
+        Destroy();
+    }
+
+    public static void DetonateBombs(List<Bomb> obj)
+    {
+        if (obj.Any(x => x.Drived))
         {
-            if (obj.Any(x => x.Drived))
+            foreach (var t in obj)
             {
-                foreach (var t in obj)
-                {
-                    t.Detonate();
-                    obj.Remove(t);
-                }
+                t.Detonate();
+                obj.Remove(t);
+            }
 
-                Clear(obj);
-            }
-            else
-            {
-                var bomb = obj[^1];
-                bomb.Detonate();
-                obj.Remove(bomb);
-            }
+            Clear(obj);
         }
-
-        public static void Clear(List<Bomb> obj)
+        else
         {
-            obj.ForEach(b => b.Destroy());
-            obj.Clear();
+            var bomb = obj[^1];
+            bomb.Detonate();
+            obj.Remove(bomb);
         }
+    }
+
+    public static void Clear(List<Bomb> obj)
+    {
+        obj.ForEach(b => b.Destroy());
+        obj.Clear();
     }
 }

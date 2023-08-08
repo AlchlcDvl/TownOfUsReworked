@@ -1,23 +1,22 @@
-namespace TownOfUsReworked.CustomOptions
+namespace TownOfUsReworked.CustomOptions;
+
+public class CustomToggleOption : CustomOption
 {
-    public class CustomToggleOption : CustomOption
+    public CustomToggleOption(int id, MultiMenu menu, string name, bool value, CustomOption parent = null) : base(id, menu, name, CustomOptionType.Toggle, value, parent) => Format = (val,
+        _) => (bool)val ? "On" : "Off";
+
+    public CustomToggleOption(int id, MultiMenu menu, string name, bool value, CustomOption[] parents, bool all = false) : base(id, menu, name, CustomOptionType.Toggle, value, parents, all)
+        => Format = (val, _) => (bool)val ? "On" : "Off";
+
+    public bool Get() => (bool)Value;
+
+    public void Toggle() => Set(!Get());
+
+    public override void OptionCreated()
     {
-        public CustomToggleOption(int id, MultiMenu menu, string name, bool value, CustomLayersOption parent = null) : base(id, menu, name, CustomOptionType.Toggle, value, parent) =>
-            Format = (val, _) => (bool)val ? "On" : "Off";
-
-        public CustomToggleOption(int id, MultiMenu menu, string name, bool value, CustomLayersOption[] parents, bool all = false) : base(id, menu, name, CustomOptionType.Toggle, value,
-            parents, all) => Format = (val, _) => (bool)val ? "On" : "Off";
-
-        public bool Get() => (bool)Value;
-
-        public void Toggle() => Set(!Get());
-
-        public override void OptionCreated()
-        {
-            base.OptionCreated();
-            var toggle = Setting.Cast<ToggleOption>();
-            toggle.TitleText.text = Name;
-            toggle.CheckMark.enabled = Get();
-        }
+        base.OptionCreated();
+        var toggle = Setting.Cast<ToggleOption>();
+        toggle.TitleText.text = Name;
+        toggle.CheckMark.enabled = Get();
     }
 }

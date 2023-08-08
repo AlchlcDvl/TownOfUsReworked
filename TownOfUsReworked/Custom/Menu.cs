@@ -1,52 +1,51 @@
-namespace TownOfUsReworked.Custom
+namespace TownOfUsReworked.Custom;
+
+public class CustomMenu
 {
-    public class CustomMenu
+    public ShapeshifterMinigame Menu { get; set; }
+    public readonly PlayerControl Owner;
+    public readonly Select Click;
+    public readonly Exclude Exception;
+    public List<PlayerControl> Targets { get; set; }
+    public static readonly List<CustomMenu> AllMenus = new();
+    public delegate void Select(PlayerControl player);
+    public delegate bool Exclude(PlayerControl player);
+
+    public CustomMenu(PlayerControl owner, Select click, Exclude exception)
     {
-        public ShapeshifterMinigame Menu { get; set; }
-        public readonly PlayerControl Owner;
-        public readonly Select Click;
-        public readonly Exclude Exception;
-        public List<PlayerControl> Targets { get; set; }
-        public static readonly List<CustomMenu> AllMenus = new();
-        public delegate void Select(PlayerControl player);
-        public delegate bool Exclude(PlayerControl player);
+        Owner = owner;
+        Click = click;
+        Exception = exception;
+        Targets = new();
+        AllMenus.Add(this);
+    }
 
-        public CustomMenu(PlayerControl owner, Select click, Exclude exception)
+    public void Open()
+    {
+        Targets = CustomPlayer.AllPlayers.Where(x => !Exception(x) && !x.IsPostmortal() && !x.Data.IsDead).ToList();
+
+        if (Menu == null)
         {
-            Owner = owner;
-            Click = click;
-            Exception = exception;
-            Targets = new();
-            AllMenus.Add(this);
+            if (Camera.main == null)
+                return;
+
+            Menu = UObject.Instantiate(GetShapeshifterMenu(), Camera.main.transform, false);
         }
 
-        public void Open()
-        {
-            Targets = CustomPlayer.AllPlayers.Where(x => !Exception(x) && !x.IsPostmortal() && !x.Data.IsDead).ToList();
+        Menu.transform.SetParent(Camera.main.transform, false);
+        Menu.transform.localPosition = new(0f, 0f, -50f);
+        Menu.Begin(null);
+    }
 
-            if (Menu == null)
-            {
-                if (Camera.main == null)
-                    return;
+    private static ShapeshifterMinigame GetShapeshifterMenu()
+    {
+        var rolePrefab = RoleManager.Instance.AllRoles.First(r => r.Role == RoleTypes.Shapeshifter);
+        return UObject.Instantiate(rolePrefab?.Cast<ShapeshifterRole>(), GameData.Instance.transform).ShapeshifterMenu;
+    }
 
-                Menu = UObject.Instantiate(GetShapeshifterMenu(), Camera.main.transform, false);
-            }
-
-            Menu.transform.SetParent(Camera.main.transform, false);
-            Menu.transform.localPosition = new(0f, 0f, -50f);
-            Menu.Begin(null);
-        }
-
-        private static ShapeshifterMinigame GetShapeshifterMenu()
-        {
-            var rolePrefab = RoleManager.Instance.AllRoles.First(r => r.Role == RoleTypes.Shapeshifter);
-            return UObject.Instantiate(rolePrefab?.Cast<ShapeshifterRole>(), GameData.Instance.transform).ShapeshifterMenu;
-        }
-
-        public void Clicked(PlayerControl player)
-        {
-            Click(player);
-            Menu.Close();
-        }
+    public void Clicked(PlayerControl player)
+    {
+        Click(player);
+        Menu.Close();
     }
 }

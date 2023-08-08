@@ -128,6 +128,7 @@ Quick warning: This mod adds a LOT of stuff, and is currently not very beginner 
 
 | Among Us | Mod Version | Link |
 |----------|-------------|------|
+| 2023.7.12 (s & e) | v0.4.5 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.4.5/Reworked.zip) |
 | 2023.7.12 (s & e) | v0.4.4 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.4.4/Reworked.zip) |
 | 2023.7.12 (s & e) | v0.4.3 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.4.3/Reworked.zip) |
 | 2023.7.12 (s & e) | v0.4.2 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.4.2/Reworked.zip) |
@@ -136,7 +137,6 @@ Quick warning: This mod adds a LOT of stuff, and is currently not very beginner 
 
 <details>
 <summary>Older Versions</summary>
-
 | Among Us | Mod Version | Link |
 |----------|-------------|------|
 | 2023.3.28 (s & e) | v0.3.1 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.3.1/Reworked.zip) |
@@ -181,6 +181,29 @@ Quick warning: This mod adds a LOT of stuff, and is currently not very beginner 
 <details>
 <summary>Changelog</summary>
 <details>
+<summary>v0.4.5</summary>
+<ul> <li>Addition: Added Better Mira HQ options</li> </ul>
+<ul> <li>Addition: You are are told who is the host (for situations where people start asking who's the host)</li> </ul>
+<ul> <li>Buff: Vampire Hunters are now notified if the one they killed was actually an Undead or not</li> </ul>
+<ul> <li>Buff: Coroners are no longer fooled by frames</li> </ul>
+<ul> <li>Optimisation: The code was optimised a bit more</li> </ul>
+<ul> <li>Change: Random maps option has been merged into the Map option (it's the last one in the set of values)</li> </ul>
+<ul> <li>Completion: The mod is now fully compatible with Submerged</li> </ul>
+<ul> <li>Improvement: Role generation is now even more randomisable (meaning repetitive games are less likely to happen)</li> </ul>
+<ul> <li>Improvement: Your discord activity presence now reflects the mod being active</li> </ul>
+<ul> <li>Improvement: Improved how other better map options are handled</li> </ul>
+<ul> <li>General Fix: Fixed some inconsistencies within the settings</li> </ul>
+<ul> <li>Bug Fix: Fixed the win condition of objectifiers not showing up on their wiki pages</li> </ul>
+<ul> <li>Bug Fix: Fixed ability buttons stacking when switching between robots during a meeting</li> </ul>
+<ul> <li>Bug Fix: Fixed weird target assignment for Lovers, Linked and Rivals</li> </ul>
+<ul> <li>Bug Fix: Fixed being able to guess even after voting has been completed</li> </ul>
+<ul> <li>Bug Fix: Fixed the occasional log spam</li> </ul>
+<ul> <li>Visual Fix: Fixed Swapper swaps not appearing to swap</li> </ul>
+<ul> <li>Visual Fix: Fixed sabotage flashes not occurring after a custom flash</li> </ul>
+<ul> <li>Role Fix: Fixed Retributionist actions not being up to date with the roles they are mimicking</li> </ul>
+<ul> <li>Removal: Removed some Better Airship settings</li> </ul>
+</details>
+<details>
 <summary>v0.4.4</summary>
 <ul> <li>Change: The numbers on the admin table now reflect the player's ID rather than their outfit color for Operative and Retributionist (to avoid confusion with multiple same color players)</li> </ul>
 <ul> <li>Change: Operative and Retributionist color blind help is now tied to the vanilla colorblind setting</li> </ul>
@@ -193,7 +216,7 @@ Quick warning: This mod adds a LOT of stuff, and is currently not very beginner 
 <ul> <li>Visual Fix: Fixed some mod options layering issues in the main menu</li> </ul>
 <ul> <li>Objectifier Fix: Fixed Allied Neutral Killers being unable the sabotage when they should</li> </ul>
 <ul> <li>Objectifier Fix: Fixed Traitor and Defector conversions being inconsistent between players</li> </ul>
-<ul> <li>Removal: Removed FLincher because it's boring now, farewell soldier :saluting_face:</li> </ul>
+<ul> <li>Removal: Removed Flincher because it's boring now, farewell soldier :saluting_face:</li> </ul>
 </details>
 <details>
 <summary>v0.4.3</summary>
@@ -1316,7 +1339,7 @@ The Monarch can appoint players as knights. When the next meeting is called, all
 ## Mystic
 ### Alignment: Crew (Auditor)
 
-The Mystic only spawns when there is at least one Neutral (Neophyte) role present in the game. Whenever someone's subfaction is changed, the Mystic will be alerted about it. The Mystic can also investigate players to see if their subfactions have been changed. If the target has a different subfaction from the Mystic's, the Mystic's screen will flash red, otherwise it will flash green. It will not, however, work on the Neutral (Neophyte) roles themselves so even people who flashed green might be a converter. Once all subfactions are dead, the Mystic becomes a Seer. If the player is framed, they will appear to have their subfactions changed.
+The Mystic only spawns when there is at least one Neutral (Neophyte) role present in the game. Whenever someone's subfaction is changed, the Mystic will be alerted about it. The Mystic can also investigate players to see if their subfactions have been changed. If the target has a different subfaction from the Mystic's, the Mystic's screen will flash red, otherwise it will flash green. It will not, however, work on the Neutral (Neophyte) roles themselves so even people who flashed green might still be evil. Once all subfactions are dead, the Mystic becomes a Seer. If the player is framed, they will appear to have their subfactions changed.
 
 ### Game Options
 
@@ -1438,7 +1461,7 @@ The Tracker can track others during a round. Once they track someone, an arrow i
 ## Transporter
 ### Alignment: Crew (Support)
 
-The Transporter can swap the locations of two players at will. Being transported plays an animation that's visible to all players and renderers the targets immobile. During the transportation, they can be targetted by anyone, even those of their own team. This means that the Transporter is capable of making evils attack each other.
+The Transporter can swap the locations of two players at will. Being transported plays an animation that's visible to all players and renderers the targets immobile for the duration of the transportation. During the transportation, they can be targetted by anyone, even those of their own team. This means that the Transporter is capable of making evils attack each other.
 
 ### Game Options
 
@@ -3264,7 +3287,7 @@ As a side note, setting a layer to 100% does not guarantee its spawn. This is be
 
 In All Any mode, however, the sorting is done differently. Any layer with a spawn chance of greater than 0% is guaranteed to be added, regardless to what it actually was set to. With this list, is then sorted on uniqueness. As long as the spawning list's size is lower than the number of players, it will keep adding a random layer from the initial list to the spawning list. If the layer has been set to unique, that layer is then removed from the initial list so that it is never randomly pulled again.
 
-In Role Lists mode, the provided role list is sorted between confirmed roles, alignments, anies (i have no idea how to derive the plural form of any) and the role bans. First, every instance of a confirmed role is added to the list. After that the alignments have certain role IDs associated to them. A random ID is pulled from these alignments and crosschecked to see if it exists in the role list. If it does exist, then it checks for uniqueness. If the ID is unique, the process is repeated again. This also happens if the ID matches that of a banned role. If the ID does not exist in the list, or it exists in the list but is not unique, it is added to the list and the process repeats for the next item on the role list. The same process happens for the 'Any' slots. Any slots have all IDs and are cross checked yet again for existence, bans and uniqueness.
+In Role Lists mode, the provided role list is sorted between confirmed roles, alignments, anies (I have no idea how to derive the plural form of any) and the role bans. First, every instance of a confirmed role is added to the list. After that the alignments have certain role IDs associated to them. A random ID is pulled from these alignments and crosschecked to see if it exists in the role list. If it does exist, then it checks for uniqueness. If the ID is unique, the process is repeated again. This also happens if the ID matches that of a banned role. If the ID does not exist in the list, or it exists in the list but is not unique, it is added to the list and the process repeats for the next item on the role list. The same process happens for the 'Any' slots. Any slots have all IDs and are cross checked yet again for existence, bans and uniqueness.
 
 The second phase of layer assignment is Roles. The spawn list derived from the previous phase would be suffled. These have no special conditions as having a role is a requirement for other layers to spawn. If the number of assignable roles is less than the number of players, the outlying players will be assigned Crewmate, Impostor or Anarchist based on their faction.
 
@@ -3284,6 +3307,7 @@ After that, it's gaming time.
 
 [Reactor](https://github.com/NuclearPowered/Reactor) - The framework of the mod\
 [BepInEx](https://github.com/BepInEx) - For hooking game functions\
+[Harmony](https://github.com/BepInEx/HarmonyX) - For mod patching\
 [Among-Us-Sheriff-Mod](https://github.com/Woodi-dev/Among-Us-Sheriff-Mod) - For the Sheriff role\
 [Among-Us-Love-Couple-Mod](https://github.com/Woodi-dev/Among-Us-Love-Couple-Mod) - For the inspiration of Lovers objectifier\
 [ExtraRolesAmongUs](https://github.com/NotHunter101/ExtraRolesAmongUs) - For the Engineer & Medic roles\

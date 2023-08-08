@@ -1,43 +1,42 @@
-namespace TownOfUsReworked.Patches
+namespace TownOfUsReworked.Patches;
+
+[HarmonyPatch(typeof(VitalsMinigame), nameof(VitalsMinigame.Update))]
+public static class VitalsPatch
 {
-    [HarmonyPatch(typeof(VitalsMinigame), nameof(VitalsMinigame.Update))]
-    public static class VitalsPatch
+    public static void Postfix(VitalsMinigame __instance)
     {
-        public static void Postfix(VitalsMinigame __instance)
+        var localPlayer = CustomPlayer.Local;
+        var isOP = localPlayer.Is(LayerEnum.Operative) || DeadSeeEverything;
+
+        if (!isOP)
+            isOP = localPlayer.Is(LayerEnum.Retributionist) && ((Retributionist)Role.LocalRole).IsOP;
+
+        if (!isOP)
+            return;
+
+        for (var i = 0; i < __instance.vitals.Count; i++)
         {
-            var localPlayer = CustomPlayer.Local;
-            var isOP = localPlayer.Is(RoleEnum.Operative) || DeadSeeEverything;
+            var panel = __instance.vitals[i];
+            var info = GameData.Instance.AllPlayers[i];
 
-            if (!isOP)
-                isOP = localPlayer.Is(RoleEnum.Retributionist) && ((Retributionist)Role.LocalRole).IsOP;
+            if (!panel.IsDead)
+                continue;
 
-            if (!isOP)
-                return;
-
-            for (var i = 0; i < __instance.vitals.Count; i++)
-            {
-                var panel = __instance.vitals[i];
-                var info = GameData.Instance.AllPlayers[i];
-
-                if (!panel.IsDead)
-                    continue;
-
-                var deadBody = KilledPlayers.First(x => x.PlayerId == info.PlayerId);
-                var num = (float)(DateTime.UtcNow - deadBody.KillTime).TotalMilliseconds;
-                var tmp = panel.Cardio.gameObject.GetComponent<TextMeshPro>();
-                tmp.color = UColor.red;
-                tmp.text = Math.Ceiling(num / 1000) + "s";
-                var transform = tmp.transform;
-                transform.localPosition = new(-0.85f, -0.4f, 0);
-                transform.rotation = Quaternion.Euler(0, 0, 0);
-                transform.localScale = Vector3.one / 20;
-            }
+            var deadBody = KilledPlayers.First(x => x.PlayerId == info.PlayerId);
+            var num = (float)(DateTime.UtcNow - deadBody.KillTime).TotalMilliseconds;
+            var tmp = panel.Cardio.gameObject.GetComponent<TextMeshPro>();
+            tmp.color = UColor.red;
+            tmp.text = Math.Ceiling(num / 1000) + "s";
+            var transform = tmp.transform;
+            transform.localPosition = new(-0.85f, -0.4f, 0);
+            transform.rotation = Quaternion.Euler(0, 0, 0);
+            transform.localScale = Vector3.one / 20;
         }
     }
+}
 
-    [HarmonyPatch(typeof(VitalsMinigame), nameof(VitalsMinigame.Begin))]
-    public static class VitalsMinigameBeginPatch
-    {
-        public static void Postfix(VitalsMinigame __instance) => __instance.gameObject.AddComponent<VitalsPagingBehaviour>().Menu = __instance;
-    }
+[HarmonyPatch(typeof(VitalsMinigame), nameof(VitalsMinigame.Begin))]
+public static class VitalsMinigameBeginPatch
+{
+    public static void Postfix(VitalsMinigame __instance) => __instance.gameObject.AddComponent<VitalsPagingBehaviour>().Menu = __instance;
 }

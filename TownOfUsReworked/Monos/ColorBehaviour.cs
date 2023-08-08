@@ -1,24 +1,23 @@
-﻿namespace TownOfUsReworked.Monos
+﻿namespace TownOfUsReworked.Monos;
+
+public class ColorBehaviour : MonoBehaviour
 {
-    public class ColorBehaviour : MonoBehaviour
+    public Renderer Renderer;
+    public int Id;
+
+    public ColorBehaviour(IntPtr ptr) : base(ptr) {}
+
+    public void AddRend(Renderer rend, int id)
     {
-        public Renderer Renderer;
-        public int Id;
+        Renderer = rend;
+        Id = id;
+    }
 
-        public ColorBehaviour(IntPtr ptr) : base(ptr) {}
+    public void Update()
+    {
+        if (!Renderer)
+            return;
 
-        public void AddRend(Renderer rend, int id)
-        {
-            Renderer = rend;
-            Id = id;
-        }
-
-        public void Update()
-        {
-            if (!Renderer)
-                return;
-
-            ColorUtils.SetChangingColor(Renderer, Id);
-        }
+        ColorUtils.SetChangingColor(Renderer, Id);
     }
 }

@@ -10,7 +10,6 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
         public override Color32 Color => ClientGameOptions.CustomModColors ? Colors.Volatile : Colors.Modifier;
         public override string Name => "Volatile";
         public override LayerEnum Type => LayerEnum.Volatile;
-        public override ModifierEnum ModifierType => ModifierEnum.Volatile;
         public override Func<string> Description => () => "- You experience hallucinations";
         public override bool Hidden => !CustomGameOptions.VolatileKnows && !Exposed && !IsDead;
 

@@ -1,61 +1,60 @@
-namespace TownOfUsReworked.Objects
+namespace TownOfUsReworked.Objects;
+
+public class DeadPlayer
 {
-    public class DeadPlayer
+    public readonly byte KillerId;
+    public readonly byte PlayerId;
+    public readonly DateTime KillTime;
+
+    public PlayerControl Killer => PlayerById(KillerId);
+    public PlayerControl Body => PlayerById(PlayerId);
+
+    public PlayerControl Reporter { get; set; }
+    public float KillAge { get; set; }
+
+    public DeadPlayer(byte killer, byte player)
     {
-        public readonly byte KillerId;
-        public readonly byte PlayerId;
-        public readonly DateTime KillTime;
+        PlayerId = player;
+        KillerId = killer;
+        KillTime = DateTime.UtcNow;
+    }
 
-        public PlayerControl Killer => PlayerById(KillerId);
-        public PlayerControl Body => PlayerById(PlayerId);
+    public string ParseBodyReport()
+    {
+        var report = $"{Body.name}'s Report:\n";
+        var killerRole = Role.GetRole(Killer);
+        var bodyRole = Role.GetRole(Body);
 
-        public PlayerControl Reporter { get; set; }
-        public float KillAge { get; set; }
-
-        public DeadPlayer(byte killer, byte player)
+        if (!(Role.GetRoles<Grenadier>(LayerEnum.Grenadier).Any(x => x.Flashed && x.FlashedPlayers.Contains(Reporter)) ||
+            Role.GetRoles<PromotedGodfather>(LayerEnum.PromotedGodfather).Any(x => x.OnEffect && x.IsGren && x.FlashedPlayers.Contains(Reporter))))
         {
-            PlayerId = player;
-            KillerId = killer;
-            KillTime = DateTime.UtcNow;
-        }
+            report += $"They died approximately {Math.Round(KillAge / 1000f)}s ago!\n";
+            report += $"They were a {bodyRole.Name}!\n";
 
-        public string ParseBodyReport()
-        {
-            var report = $"{Body.name}'s Report:\n";
-            var killerRole = Role.GetRole(Killer);
-            var bodyRole = Role.GetRole(Body);
-
-            if (!(Role.GetRoles<Grenadier>(RoleEnum.Grenadier).Any(x => x.Flashed && x.FlashedPlayers.Contains(Reporter)) ||
-                Role.GetRoles<PromotedGodfather>(RoleEnum.PromotedGodfather).Any(x => x.OnEffect && x.IsGren && x.FlashedPlayers.Contains(Reporter))))
-            {
-                report += $"They died approximately {Math.Round(KillAge / 1000f)}s ago!\n";
-                report += $"They were a {bodyRole.Name}!\n";
-
-                if (Body == Killer)
-                    report += "There is evidence of self-harm!";
-                else
-                {
-                    if (CustomGameOptions.CoronerReportRole)
-                        report += $"They were killed by a {killerRole.Name}!\n";
-                    else if (Killer.Is(Faction.Crew))
-                        report += "The killer is from the Crew!\n";
-                    else if (Killer.Is(Faction.Neutral))
-                        report += "The killer is a Neutral!\n";
-                    else if (Killer.Is(Faction.Intruder))
-                        report += "The killer is an Intruder!\n";
-                    else if (Killer.Is(Faction.Syndicate))
-                        report += "The killer is from the Syndicate!\n";
-
-                    report += $"The killer is a {ColorUtils.LightDarkColors[Killer.CurrentOutfit.ColorId].ToLower()} color!\n";
-
-                    if (CustomGameOptions.CoronerReportName && CustomGameOptions.CoronerKillerNameTime <= Math.Round(KillAge / 1000))
-                        report += $"They were killed by {Killer.name}!";
-                }
-            }
+            if (Body == Killer)
+                report += "There is evidence of self-harm!";
             else
-                report += "You have been blinded so you cannot tell what happened to the body!";
+            {
+                if (CustomGameOptions.CoronerReportRole)
+                    report += $"They were killed by a {killerRole.Name}!\n";
+                else if (Killer.Is(Faction.Crew))
+                    report += "The killer is from the Crew!\n";
+                else if (Killer.Is(Faction.Neutral))
+                    report += "The killer is a Neutral!\n";
+                else if (Killer.Is(Faction.Intruder))
+                    report += "The killer is an Intruder!\n";
+                else if (Killer.Is(Faction.Syndicate))
+                    report += "The killer is from the Syndicate!\n";
 
-            return report;
+                report += $"The killer is a {ColorUtils.LightDarkColors[Killer.CurrentOutfit.ColorId].ToLower()} color!\n";
+
+                if (CustomGameOptions.CoronerReportName && CustomGameOptions.CoronerKillerNameTime <= Math.Round(KillAge / 1000))
+                    report += $"They were killed by {Killer.name}!";
+            }
         }
+        else
+            report += "You have been blinded so you cannot tell what happened to the body!";
+
+        return report;
     }
 }

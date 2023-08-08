@@ -1,46 +1,45 @@
-namespace TownOfUsReworked.PlayerLayers.Roles
+namespace TownOfUsReworked.PlayerLayers.Roles;
+
+public class Crew : Role
 {
-    public class Crew : Role
+    public override Color32 Color => Colors.Crew;
+    public override Faction BaseFaction => Faction.Crew;
+
+    protected Crew(PlayerControl player) : base(player)
     {
-        public override Color32 Color => Colors.Crew;
-        public override Faction BaseFaction => Faction.Crew;
+        Faction = Faction.Crew;
+        FactionColor = Colors.Crew;
+        Objectives = () => CrewWinCon;
+        Player.Data.SetImpostor(false);
+    }
 
-        protected Crew(PlayerControl player) : base(player)
+    public override void IntroPrefix(IntroCutscene._ShowTeam_d__36 __instance)
+    {
+        if (!Local)
+            return;
+
+        var team = new List<PlayerControl> { CustomPlayer.Local };
+
+        if (IsRecruit)
         {
-            Faction = Faction.Crew;
-            FactionColor = Colors.Crew;
-            Objectives = () => CrewWinCon;
-            Player.Data.SetImpostor(false);
+            var jackal = Player.GetJackal();
+            team.Add(jackal.Player);
+            team.Add(jackal.EvilRecruit);
         }
 
-        public override void IntroPrefix(IntroCutscene._ShowTeam_d__36 __instance)
+        if (Player.Is(LayerEnum.Lovers))
+            team.Add(Player.GetOtherLover());
+        else if (Player.Is(LayerEnum.Rivals))
+            team.Add(Player.GetOtherRival());
+        else if (Player.Is(LayerEnum.Mafia))
         {
-            if (!Local)
-                return;
-
-            var team = new List<PlayerControl> { CustomPlayer.Local };
-
-            if (IsRecruit)
+            foreach (var player in CustomPlayer.AllPlayers)
             {
-                var jackal = Player.GetJackal();
-                team.Add(jackal.Player);
-                team.Add(jackal.EvilRecruit);
+                if (player != Player && player.Is(LayerEnum.Mafia))
+                    team.Add(player);
             }
-
-            if (Player.Is(ObjectifierEnum.Lovers))
-                team.Add(Player.GetOtherLover());
-            else if (Player.Is(ObjectifierEnum.Rivals))
-                team.Add(Player.GetOtherRival());
-            else if (Player.Is(ObjectifierEnum.Mafia))
-            {
-                foreach (var player in CustomPlayer.AllPlayers)
-                {
-                    if (player != Player && player.Is(ObjectifierEnum.Mafia))
-                        team.Add(player);
-                }
-            }
-
-            __instance.teamToShow = team.SystemToIl2Cpp();
         }
+
+        __instance.teamToShow = team.SystemToIl2Cpp();
     }
 }

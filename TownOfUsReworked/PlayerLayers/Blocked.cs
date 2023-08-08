@@ -1,192 +1,188 @@
-namespace TownOfUsReworked.PlayerLayers
+namespace TownOfUsReworked.PlayerLayers;
+
+[HarmonyPatch(typeof(VentButton), nameof(VentButton.DoClick))]
+[HarmonyPriority(Priority.First)]
+public static class PerformVent
 {
-    [HarmonyPatch(typeof(VentButton), nameof(VentButton.DoClick))]
-    [HarmonyPriority(Priority.First)]
-    public static class PerformVent
+    public static bool Prefix()
     {
-        public static bool Prefix()
+        if (Inactive)
+            return true;
+
+        if (!CustomPlayer.Local.CanVent())
+            return false;
+
+        return LocalNotBlocked;
+    }
+}
+
+[HarmonyPatch(typeof(ReportButton), nameof(ReportButton.DoClick))]
+[HarmonyPriority(Priority.First)]
+public static class PerformReport
+{
+    public static bool Prefix()
+    {
+        if (Inactive)
+            return true;
+
+        if (CustomPlayer.Local.Is(LayerEnum.Coward))
+            return false;
+
+        return LocalNotBlocked;
+    }
+}
+
+[HarmonyPatch(typeof(UseButton), nameof(UseButton.DoClick))]
+[HarmonyPriority(Priority.First)]
+public static class PerformUse
+{
+    public static bool Prefix()
+    {
+        if (Inactive)
+            return true;
+
+        return LocalNotBlocked;
+    }
+}
+
+[HarmonyPatch(typeof(SabotageButton), nameof(SabotageButton.DoClick))]
+[HarmonyPriority(Priority.First)]
+public static class PerformSabotage
+{
+    public static bool Prefix()
+    {
+        if (Inactive)
+            return true;
+
+        return LocalNotBlocked;
+    }
+}
+
+[HarmonyPatch(typeof(AdminButton), nameof(AdminButton.DoClick))]
+[HarmonyPriority(Priority.First)]
+public static class PerformAdmin
+{
+    public static bool Prefix()
+    {
+        if (Inactive)
+            return true;
+
+        return LocalNotBlocked;
+    }
+}
+
+[HarmonyPatch(typeof(PetButton), nameof(PetButton.DoClick))]
+[HarmonyPriority(Priority.First)]
+public static class PerformPet
+{
+    public static bool Prefix()
+    {
+        if (Inactive)
+            return true;
+
+        return LocalNotBlocked; //No petting for you lmao
+    }
+}
+
+[HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
+[HarmonyPriority(Priority.First)]
+public static class PerformKill
+{
+    public static bool Prefix() => false;
+}
+
+[HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
+public static class Blocked
+{
+    private static GameObject UseBlock;
+    private static GameObject PetBlock;
+    private static GameObject SaboBlock;
+    private static GameObject VentBlock;
+    private static GameObject ReportBlock;
+
+    public static void Postfix(HudManager __instance)
+    {
+        if (IsEnded)
+            return;
+
+        if (!UseBlock && __instance.UseButton.isActiveAndEnabled)
         {
-            if (Inactive)
-                return true;
-
-            if (!CustomPlayer.Local.CanVent())
-                return false;
-
-            return LocalNotBlocked;
+            UseBlock = new("UseBlock");
+            UseBlock.AddComponent<SpriteRenderer>().sprite = GetSprite("Blocked");
+            UseBlock.transform.localScale *= 0.75f;
+            UseBlock.transform.SetParent(__instance.UseButton.transform);
         }
-    }
 
-    [HarmonyPatch(typeof(ReportButton), nameof(ReportButton.DoClick))]
-    [HarmonyPriority(Priority.First)]
-    public static class PerformReport
-    {
-        public static bool Prefix()
+        if (UseBlock)
         {
-            if (Inactive)
-                return true;
-
-            if (CustomPlayer.Local.Is(ModifierEnum.Coward))
-                return false;
-
-            return LocalNotBlocked;
+            var pos = __instance.UseButton.transform.position;
+            pos.z = -50f;
+            UseBlock.transform.position = pos;
+            UseBlock.SetActive(LocalBlocked && __instance.UseButton.isActiveAndEnabled);
         }
-    }
 
-    [HarmonyPatch(typeof(UseButton), nameof(UseButton.DoClick))]
-    [HarmonyPriority(Priority.First)]
-    public static class PerformUse
-    {
-        public static bool Prefix(UseButton __instance)
+        if (!PetBlock && __instance.PetButton.isActiveAndEnabled)
         {
-            if (Inactive)
-                return true;
-
-            if (__instance.isActiveAndEnabled && CustomPlayer.Local && InteractableBehaviour.NearestTask != null && InteractableBehaviour.AllCustomPlateform != null && LocalNotBlocked)
-            {
-                InteractableBehaviour.NearestTask.Use();
-                return false;
-            }
-
-            return LocalNotBlocked;
+            PetBlock = new("PetBlock");
+            PetBlock.AddComponent<SpriteRenderer>().sprite = GetSprite("Blocked");
+            PetBlock.transform.localScale *= 0.75f;
+            PetBlock.transform.SetParent(__instance.PetButton.transform);
         }
-    }
 
-    [HarmonyPatch(typeof(SabotageButton), nameof(SabotageButton.DoClick))]
-    [HarmonyPriority(Priority.First)]
-    public static class PerformSabotage
-    {
-        public static bool Prefix()
+        if (PetBlock)
         {
-            if (Inactive)
-                return true;
-
-            return LocalNotBlocked;
+            var pos = __instance.PetButton.transform.position;
+            pos.z = -50f;
+            PetBlock.transform.position = pos;
+            PetBlock.SetActive(LocalBlocked && __instance.PetButton.isActiveAndEnabled);
         }
-    }
 
-    [HarmonyPatch(typeof(AdminButton), nameof(AdminButton.DoClick))]
-    [HarmonyPriority(Priority.First)]
-    public static class PerformAdmin
-    {
-        public static bool Prefix()
+        if (!SaboBlock && __instance.SabotageButton.isActiveAndEnabled)
         {
-            if (Inactive)
-                return true;
-
-            return LocalNotBlocked;
+            SaboBlock = new("SaboBlock");
+            SaboBlock.AddComponent<SpriteRenderer>().sprite = GetSprite("Blocked");
+            SaboBlock.transform.localScale *= 0.75f;
+            SaboBlock.transform.SetParent(__instance.SabotageButton.transform);
         }
-    }
 
-    [HarmonyPatch(typeof(PetButton), nameof(PetButton.DoClick))]
-    [HarmonyPriority(Priority.First)]
-    public static class PerformPet
-    {
-        public static bool Prefix()
+        if (SaboBlock)
         {
-            if (Inactive)
-                return true;
-
-            return LocalNotBlocked; //No petting for you lmao
+            var pos = __instance.SabotageButton.transform.position;
+            pos.z = -50f;
+            SaboBlock.transform.position = pos;
+            SaboBlock.SetActive(LocalBlocked && __instance.SabotageButton.isActiveAndEnabled);
         }
-    }
 
-    [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
-    [HarmonyPriority(Priority.First)]
-    public static class PerformKill
-    {
-        public static bool Prefix() => false;
-    }
-
-    [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public static class Blocked
-    {
-        private static GameObject UseBlock;
-        private static GameObject PetBlock;
-        private static GameObject SaboBlock;
-        private static GameObject VentBlock;
-        private static GameObject ReportBlock;
-
-        public static void Postfix(HudManager __instance)
+        if (!VentBlock && __instance.ImpostorVentButton.isActiveAndEnabled)
         {
-            if (!UseBlock && __instance.UseButton.isActiveAndEnabled)
-            {
-                UseBlock = new("UseBlock");
-                UseBlock.AddComponent<SpriteRenderer>().sprite = GetSprite("Blocked");
-                UseBlock.transform.localScale *= 0.75f;
-                UseBlock.transform.SetParent(__instance.UseButton.transform);
-            }
+            VentBlock = new("VentBlock");
+            VentBlock.AddComponent<SpriteRenderer>().sprite = GetSprite("Blocked");
+            VentBlock.transform.localScale *= 0.75f;
+            VentBlock.transform.SetParent(__instance.ImpostorVentButton.transform);
+        }
 
-            if (UseBlock)
-            {
-                var pos = __instance.UseButton.transform.position;
-                pos.z = -50f;
-                UseBlock.transform.position = pos;
-                UseBlock.SetActive(LocalBlocked && __instance.UseButton.isActiveAndEnabled);
-            }
+        if (VentBlock)
+        {
+            var pos = __instance.ImpostorVentButton.transform.position;
+            pos.z = -50f;
+            VentBlock.transform.position = pos;
+            VentBlock.SetActive(LocalBlocked && __instance.ImpostorVentButton.isActiveAndEnabled);
+        }
 
-            if (!PetBlock && __instance.PetButton.isActiveAndEnabled)
-            {
-                PetBlock = new("PetBlock");
-                PetBlock.AddComponent<SpriteRenderer>().sprite = GetSprite("Blocked");
-                PetBlock.transform.localScale *= 0.75f;
-                PetBlock.transform.SetParent(__instance.PetButton.transform);
-            }
+        if (!ReportBlock && __instance.ReportButton.isActiveAndEnabled)
+        {
+            ReportBlock = new("ReportBlock");
+            ReportBlock.AddComponent<SpriteRenderer>().sprite = GetSprite("Blocked");
+            ReportBlock.transform.localScale *= 0.75f;
+            ReportBlock.transform.SetParent(__instance.ReportButton.transform);
+        }
 
-            if (PetBlock)
-            {
-                var pos = __instance.PetButton.transform.position;
-                pos.z = -50f;
-                PetBlock.transform.position = pos;
-                PetBlock.SetActive(LocalBlocked && __instance.PetButton.isActiveAndEnabled);
-            }
-
-            if (!SaboBlock && __instance.SabotageButton.isActiveAndEnabled)
-            {
-                SaboBlock = new("SaboBlock");
-                SaboBlock.AddComponent<SpriteRenderer>().sprite = GetSprite("Blocked");
-                SaboBlock.transform.localScale *= 0.75f;
-                SaboBlock.transform.SetParent(__instance.SabotageButton.transform);
-            }
-
-            if (SaboBlock)
-            {
-                var pos = __instance.SabotageButton.transform.position;
-                pos.z = -50f;
-                SaboBlock.transform.position = pos;
-                SaboBlock.SetActive(LocalBlocked && __instance.SabotageButton.isActiveAndEnabled);
-            }
-
-            if (!VentBlock && __instance.ImpostorVentButton.isActiveAndEnabled)
-            {
-                VentBlock = new("VentBlock");
-                VentBlock.AddComponent<SpriteRenderer>().sprite = GetSprite("Blocked");
-                VentBlock.transform.localScale *= 0.75f;
-                VentBlock.transform.SetParent(__instance.ImpostorVentButton.transform);
-            }
-
-            if (VentBlock)
-            {
-                var pos = __instance.ImpostorVentButton.transform.position;
-                pos.z = -50f;
-                VentBlock.transform.position = pos;
-                VentBlock.SetActive(LocalBlocked && __instance.ImpostorVentButton.isActiveAndEnabled);
-            }
-
-            if (!ReportBlock && __instance.ReportButton.isActiveAndEnabled)
-            {
-                ReportBlock = new("ReportBlock");
-                ReportBlock.AddComponent<SpriteRenderer>().sprite = GetSprite("Blocked");
-                ReportBlock.transform.localScale *= 0.75f;
-                ReportBlock.transform.SetParent(__instance.ReportButton.transform);
-            }
-
-            if (ReportBlock)
-            {
-                var pos = __instance.ReportButton.transform.position;
-                pos.z = -50f;
-                ReportBlock.transform.position = pos;
-                ReportBlock.SetActive(LocalBlocked && __instance.ReportButton.isActiveAndEnabled);
-            }
+        if (ReportBlock)
+        {
+            var pos = __instance.ReportButton.transform.position;
+            pos.z = -50f;
+            ReportBlock.transform.position = pos;
+            ReportBlock.SetActive(LocalBlocked && __instance.ReportButton.isActiveAndEnabled);
         }
     }
 }

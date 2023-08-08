@@ -7,26 +7,32 @@ This mod is a mish mash of code from different mods, mainly from Town Of Us Reac
 If you want to know more try using the other info commands, visiting the %github% page or joining the %discord% server. Happy ejections!
 
 Changelog-
-- Change: The numbers on the admin table now reflect the player's ID rather than their outfit color for Operative and Retributionist (to avoid confusion with multiple same color players)
-- Change: Operative and Retributionist color blind help is now tied to the vanilla colorblind setting
-- Optimisation: The code for all layers have been improved
-- Improvement: You are now told if you are recruited in the intro screen
-- Improvement: Whisperers and members of the Sect now know how much percentage is left to convert someone
-- Improvement: Improved how cooldowns are handled
-- Big Critical Fix: Fixed being unable to play on any servers (only impostor servers right now, official servers fix is soon to come)
-- Critical Fix: Fixed Whisperer being unable to convert players
-- Visual Fix: Fixed some mod options layering issues in the main menu
-- Objectifier Fix: Fixed Allied Neutral Killers being unable the sabotage when they should
-- Objectifier Fix: Fixed Traitor and Defector conversions being inconsistent between players
-- Removal: Removed Flincher because it's boring now, farewell soldier :saluting_face:
-
-NOTE: THE MOD IS NOT YET COMPATIBLE WITH SUBMERGED.
+- Addition: Added Better Mira HQ options
+- Addition: You are are told who is the host (for situations where people start asking who's the host)
+- Buff: Vampire Hunters are now notified if the one they killed was actually an Undead or not
+- Buff: Coroners are no longer fooled by frames
+- Optimisation: The code was optimised a bit more
+- Change: Random maps option has been merged into the Map option (it's the last one in the set of values)
+- Completion: The mod is now fully compatible with Submerged
+- Improvement: Role generation is now even more randomisable (meaning repetitive games are less likely to happen)
+- Improvement: Your discord activity presence now reflects the mod being active
+- Improvement: Improved how other better map options are handled
+- General Fix: Fixed some inconsistencies within the settings
+- Bug Fix: Fixed the win condition of objectifiers not showing up on their wiki pages
+- Bug Fix: Fixed ability buttons stacking when switching between robots during a meeting
+- Bug Fix: Fixed weird target assignment for Lovers, Linked and Rivals
+- Bug Fix: Fixed being able to guess even after voting has been completed
+- Bug Fix: Fixed the occasional log spam
+- Visual Fix: Fixed Swapper swaps not appearing to swap
+- Visual Fix: Fixed sabotage flashes not occurring after a custom flash
+- Role Fix: Fixed Retributionist actions not being up to date with the roles they are mimicking
+- Removal: Removed some Better Airship settings
 
 Credits-
 Reworked Creator - AlchlcDvl
 Reworked Contributors - Det, Oper, xerminator, TheGodOfAr0n, twix, Discussions, Jsushi
-Reworked Testers - DarkFedora, 50 IQ, shiftyrose, TheRealLordDragon, Adrian D, Halloween Apple, MadeBiJax, yes, Yeetus, BF
-Reworked Artists - Kara, lotty, Gun, XiezibanWrite, Ramces
+Reworked Testers - DarkFedora, 50 IQ, shiftyrose, TheRealLordDragon, Adrian D/i asked, Halloween Apple
+Reworked Artists - Kara, lotty, Gun, XiezibanWrite, Ramces, Det
 Moral Support - MyDragonBreath
 
 Base Mod Creator - Slushiegoose

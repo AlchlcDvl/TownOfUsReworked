@@ -1,7 +1,6 @@
-namespace TownOfUsReworked.Monos
+namespace TownOfUsReworked.Monos;
+
+public class MissingBehaviour : MonoBehaviour
 {
-    public class MissingBehaviour : MonoBehaviour
-    {
-        public MissingBehaviour(IntPtr ptr) : base(ptr) {}
-    }
+    public MissingBehaviour(IntPtr ptr) : base(ptr) {}
 }

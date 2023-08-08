@@ -8,7 +8,6 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
         public override Color32 Color => Colors.Modifier;
         public override PlayerLayerEnum LayerType => PlayerLayerEnum.Modifier;
 
-        public virtual ModifierEnum ModifierType => ModifierEnum.None;
         public virtual bool Hidden => false;
 
         public Modifier(PlayerControl player) : base(player)
@@ -25,8 +24,8 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers
 
         public static Modifier GetModifier(PlayerVoteArea area) => GetModifier(PlayerByVoteArea(area));
 
-        public static List<Modifier> GetModifiers(ModifierEnum modifierType) => AllModifiers.Where(x => x.ModifierType == modifierType).ToList();
+        public static List<Modifier> GetModifiers(LayerEnum modifierType) => AllModifiers.Where(x => x.Type == modifierType).ToList();
 
-        public static List<T> GetModifiers<T>(ModifierEnum modifierType) where T : Modifier => GetModifiers(modifierType).Cast<T>().ToList();
+        public static List<T> GetModifiers<T>(LayerEnum modifierType) where T : Modifier => GetModifiers(modifierType).Cast<T>().ToList();
     }
 }

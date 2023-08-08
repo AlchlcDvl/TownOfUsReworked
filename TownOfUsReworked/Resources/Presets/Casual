@@ -90,8 +90,6 @@ Hide Obstructed Player Names
 True
 Map
 2
-Choose Random Map
-False
 Skeld Chance
 0
 Mira Chance
@@ -1642,8 +1640,6 @@ Both <color=#FF66CCFF>Lovers</color> Die
 True
 Enable <color=#FF66CCFF>Lovers</color> Chat
 True
-<color=#FF66CCFF>Lovers</color> Can Be From The Same Faction
-True
 <color=#FF66CCFF>Lovers</color> Know Each Other's <color=#FFD700FF>Roles</color>
 True
 <color=#00EEFFFF>Mafia</color> Is Unique
@@ -1661,8 +1657,6 @@ True
 <color=#3D2D2CFF>Rivals</color> Is Unique
 False
 Enable <color=#3D2D2CFF>Rivals</color> Chat
-True
-<color=#3D2D2CFF>Rivals</color> Can Be From The Same Faction
 True
 <color=#3D2D2CFF>Rivals</color> Know Each Other's <color=#FFD700FF>Roles</color>
 True
