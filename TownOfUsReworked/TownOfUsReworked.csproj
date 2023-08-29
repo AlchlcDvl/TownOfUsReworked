@@ -14,7 +14,6 @@
         <RepositoryType>git</RepositoryType>
         <RepositoryUrl>https://github.com/AlchlcDvl/TownOfUsReworked.git</RepositoryUrl>
         <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
-        <AmongUs>C:\Users\Guest User\Documents\GitHub\TownOfUsReworked\Test</AmongUs>
     </PropertyGroup>
 
     <ItemGroup>

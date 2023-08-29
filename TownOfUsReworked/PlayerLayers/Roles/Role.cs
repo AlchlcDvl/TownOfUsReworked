@@ -124,7 +124,7 @@ public class Role : PlayerLayer
     public bool IsNeutDefect { get; set; }
     public bool Faithful => !IsRecruit && !IsResurrected && !IsPersuaded && !IsBitten && !Player.Is(LayerEnum.Allied) && !IsCrewDefect && !IsIntDefect && !IsSynDefect && !IsNeutDefect &&
         !Player.Is(LayerEnum.Corrupted) && !Player.Is(LayerEnum.Mafia) && !Player.IsWinningRival() && !Player.HasAliveLover() && BaseFaction == Faction && !Player.IsTurnedFanatic() &&
-        !Player.IsTurnedTraitor();
+        !Player.IsTurnedTraitor() && !Ignore;
 
     public bool HasTarget => Type is LayerEnum.Executioner or LayerEnum.GuardianAngel or LayerEnum.Guesser or LayerEnum.BountyHunter;
 

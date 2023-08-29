@@ -14,7 +14,7 @@ public class TownOfUsReworked : BasePlugin
     public const string VersionString = "0.5.0.0";
     public static readonly Version Version = new(VersionString);
 
-    public const bool IsDev = true;
+    public const bool IsDev = false;
     public static bool IsTest { get; set; }
     public static string VersionS => VersionString.Remove(VersionString.Length - 2);
     private static string DevString => IsDev ? "-dev" : "";
