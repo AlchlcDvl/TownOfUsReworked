@@ -181,25 +181,25 @@ public class Retributionist : Crew
         var condition = active == true && dummyActive == false;
         var flag1 = TransportPlayer1 == null;
         var flag2 = TransportPlayer2 == null;
-        TransportButton.Update(flag1 ? "FIRST TARGET" : (flag2 ? "SECOND TARGET" : "TRANSPORT"), TransportTimer, CustomGameOptions.TransportCooldown, UsesLeft, OnEffect,
-            TimeRemaining, CustomGameOptions.TransportDuration, true, ButtonUsable && IsTrans);
-        FixButton.Update("FIX", FixTimer, CustomGameOptions.FixCooldown, UsesLeft, condition && ButtonUsable, ButtonUsable && IsEngi);
+        TransportButton.Update(flag1 ? "FIRST TARGET" : (flag2 ? "SECOND TARGET" : "TRANSPORT"), TransportTimer, CustomGameOptions.TransportCd, UsesLeft, OnEffect, TimeRemaining,
+            CustomGameOptions.TransportDur, true, ButtonUsable && IsTrans);
+        FixButton.Update("FIX", FixTimer, CustomGameOptions.FixCd, UsesLeft, condition && ButtonUsable, ButtonUsable && IsEngi);
         ShieldButton.Update("SHIELD", !UsedMedicAbility, !UsedMedicAbility && IsMedic);
-        RevealButton.Update("REVEAL", RevealTimer, CustomGameOptions.RevealCooldown, true, IsMys);
-        StakeButton.Update("STAKE", StakeTimer, CustomGameOptions.StakeCooldown, true, IsVH);
-        AutopsyButton.Update("AUTOPSY", AutopsyTimer, CustomGameOptions.AutopsyCooldown, true, IsCor);
-        CompareButton.Update("COMPARE", CompareTimer, CustomGameOptions.CompareCooldown, true, ReferenceBodies.Count > 0 && IsCor);
+        RevealButton.Update("REVEAL", RevealTimer, CustomGameOptions.MysticRevealCd, true, IsMys);
+        StakeButton.Update("STAKE", StakeTimer, CustomGameOptions.StakeCd, true, IsVH);
+        AutopsyButton.Update("AUTOPSY", AutopsyTimer, CustomGameOptions.AutopsyCd, true, IsCor);
+        CompareButton.Update("COMPARE", CompareTimer, CustomGameOptions.CompareCd, true, ReferenceBodies.Count > 0 && IsCor);
         ExamineButton.Update("EXAMINE", ExamineTimer, CustomGameOptions.ExamineCd, true, IsDet);
-        InspectButton.Update("INSPECT", InspectTimer, CustomGameOptions.InspectCooldown, true, IsInsp);
-        MediateButton.Update("MEDIATE", MediateTimer, CustomGameOptions.MediateCooldown, true, IsMed);
-        BugButton.Update("BUG", BugTimer, CustomGameOptions.BugCooldown, UsesLeft, ButtonUsable, IsOP && ButtonUsable);
-        SeerButton.Update("SEE", SeerTimer, CustomGameOptions.SeerCooldown, true, IsSeer);
+        InspectButton.Update("INSPECT", InspectTimer, CustomGameOptions.InspectCd, true, IsInsp);
+        MediateButton.Update("MEDIATE", MediateTimer, CustomGameOptions.MediateCd, true, IsMed);
+        BugButton.Update("BUG", BugTimer, CustomGameOptions.BugCd, UsesLeft, ButtonUsable, IsOP && ButtonUsable);
+        SeerButton.Update("SEE", SeerTimer, CustomGameOptions.SeerCd, true, IsSeer);
         InterrogateButton.Update("INTERROGATE", InterrogateTimer, CustomGameOptions.InterrogateCd, true, IsSher);
-        AlertButton.Update("ALERT", AlertTimer, CustomGameOptions.AlertCd, UsesLeft, OnEffect, TimeRemaining, CustomGameOptions.AlertDuration, true, IsVet && ButtonUsable);
-        ShootButton.Update("SHOOT", KillTimer, CustomGameOptions.VigiKillCd, UsesLeft, ButtonUsable, ButtonUsable && IsVig);
-        ReviveButton.Update("REVIVE", ReviveTimer, CustomGameOptions.ReviveCooldown, UsesLeft, ButtonUsable,ButtonUsable && IsAlt);
-        SwoopButton.Update("SWOOP", SwoopTimer, CustomGameOptions.SwoopCooldown, UsesLeft, OnEffect, TimeRemaining, CustomGameOptions.SwoopDuration, true, IsCham);
-        BlockButton.Update("ROLEBLOCK", BlockTimer, CustomGameOptions.EscRoleblockCooldown, OnEffect, TimeRemaining, CustomGameOptions.EscRoleblockDuration, true, IsEsc);
+        AlertButton.Update("ALERT", AlertTimer, CustomGameOptions.AlertCd, UsesLeft, OnEffect, TimeRemaining, CustomGameOptions.AlertDur, true, IsVet && ButtonUsable);
+        ShootButton.Update("SHOOT", KillTimer, CustomGameOptions.ShootCd, UsesLeft, ButtonUsable, ButtonUsable && IsVig);
+        ReviveButton.Update("REVIVE", ReviveTimer, CustomGameOptions.ReviveCd, UsesLeft, ButtonUsable,ButtonUsable && IsAlt);
+        SwoopButton.Update("SWOOP", SwoopTimer, CustomGameOptions.SwoopCd, UsesLeft, OnEffect, TimeRemaining, CustomGameOptions.SwoopDur, true, IsCham);
+        BlockButton.Update("ROLEBLOCK", BlockTimer, CustomGameOptions.EscortCd, OnEffect, TimeRemaining, CustomGameOptions.EscortDur, true, IsEsc);
         TrackButton.Update("TRACK", TrackTimer, CustomGameOptions.TrackCd, UsesLeft, ButtonUsable, ButtonUsable && IsTrack);
 
         if (!IsDead)
@@ -207,7 +207,7 @@ public class Retributionist : Crew
             if (IsCor)
             {
                 var validBodies = AllBodies.Where(x => KilledPlayers.Any(y => y.PlayerId == x.ParentId && DateTime.UtcNow <
-                    y.KillTime.AddSeconds(CustomGameOptions.CoronerArrowDuration)));
+                    y.KillTime.AddSeconds(CustomGameOptions.CoronerArrowDur)));
 
                 foreach (var bodyArrow in BodyArrows.Keys)
                 {
@@ -368,7 +368,7 @@ public class Retributionist : Crew
             }
 
             if (HUD)
-                HUD.Chat.AddChat(CustomPlayer.Local, message);
+                Run(HUD.Chat, "<color=#8D0F8CFF>〖 Bug Results 〗</color>", message);
         }
         else if (IsDet)
         {
@@ -386,8 +386,8 @@ public class Retributionist : Crew
     public DateTime LastCompared { get; set; }
     public List<byte> Reported { get; set; }
     public bool IsCor => RevivedRole?.Type == LayerEnum.Coroner;
-    public float AutopsyTimer => ButtonUtils.Timer(Player, LastAutopsied, CustomGameOptions.AutopsyCooldown);
-    public float CompareTimer => ButtonUtils.Timer(Player, LastCompared, CustomGameOptions.CompareCooldown);
+    public float AutopsyTimer => ButtonUtils.Timer(Player, LastAutopsied, CustomGameOptions.AutopsyCd);
+    public float CompareTimer => ButtonUtils.Timer(Player, LastCompared, CustomGameOptions.CompareCd);
 
     public void Autopsy()
     {
@@ -438,7 +438,7 @@ public class Retributionist : Crew
 
         //Only Retributionist-Coroner can see this
         if (HUD)
-            HUD.Chat.AddChat(CustomPlayer.Local, reportMsg);
+            Run(HUD.Chat, "<color=#8D0F8CFF>〖 Autopsy Results 〗</color>", reportMsg);
     }
 
     //Detective Stuff
@@ -473,7 +473,7 @@ public class Retributionist : Crew
     public DateTime LastInspected { get; set; }
     public List<byte> Inspected { get; set; }
     public CustomButton InspectButton { get; set; }
-    public float InspectTimer => ButtonUtils.Timer(Player, LastInspected, CustomGameOptions.InspectCooldown);
+    public float InspectTimer => ButtonUtils.Timer(Player, LastInspected, CustomGameOptions.InspectCd);
     public bool IsInsp => RevivedRole?.Type == LayerEnum.Inspector;
 
     public void Inspect()
@@ -498,7 +498,7 @@ public class Retributionist : Crew
     public CustomButton MediateButton { get; set; }
     //public CustomButton SeanceButton { get; set; }
     public List<byte> MediatedPlayers { get; set; }
-    public float MediateTimer => ButtonUtils.Timer(Player, LastMediated, CustomGameOptions.MediateCooldown);
+    public float MediateTimer => ButtonUtils.Timer(Player, LastMediated, CustomGameOptions.MediateCd);
     public bool IsMed => RevivedRole?.Type == LayerEnum.Medium;
 
     public void Mediate()
@@ -551,7 +551,7 @@ public class Retributionist : Crew
     public CustomButton BugButton { get; set; }
     public Dictionary<byte, TMP_Text> PlayerNumbers { get; set; }
     public bool IsOP => RevivedRole?.Type == LayerEnum.Operative;
-    public float BugTimer => ButtonUtils.Timer(Player, LastBugged, CustomGameOptions.BugCooldown);
+    public float BugTimer => ButtonUtils.Timer(Player, LastBugged, CustomGameOptions.BugCd);
 
     public void PlaceBug()
     {
@@ -615,7 +615,7 @@ public class Retributionist : Crew
     public DateTime LastKilled { get; set; }
     public CustomButton ShootButton { get; set; }
     public bool IsVig => RevivedRole?.Type == LayerEnum.Vigilante;
-    public float KillTimer => ButtonUtils.Timer(Player, LastKilled, CustomGameOptions.VigiKillCd);
+    public float KillTimer => ButtonUtils.Timer(Player, LastKilled, CustomGameOptions.ShootCd);
 
     public void Shoot()
     {
@@ -625,7 +625,10 @@ public class Retributionist : Crew
         var interact = Interact(Player, ShootButton.TargetPlayer, true);
 
         if (interact[3] || interact[0])
+        {
             LastKilled = DateTime.UtcNow;
+            UsesLeft--;
+        }
         else if (interact[1])
             LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
         else if (interact[2])
@@ -636,7 +639,7 @@ public class Retributionist : Crew
     public DateTime LastStaked { get; set; }
     public CustomButton StakeButton { get; set; }
     public bool IsVH => RevivedRole?.Type == LayerEnum.VampireHunter;
-    public float StakeTimer => ButtonUtils.Timer(Player, LastStaked, CustomGameOptions.StakeCooldown);
+    public float StakeTimer => ButtonUtils.Timer(Player, LastStaked, CustomGameOptions.StakeCd);
 
     public void Stake()
     {
@@ -664,7 +667,7 @@ public class Retributionist : Crew
         if (!ButtonUsable || AlertTimer != 0f || OnEffect)
             return;
 
-        TimeRemaining = CustomGameOptions.AlertDuration;
+        TimeRemaining = CustomGameOptions.AlertDur;
         UsesLeft--;
         Alert();
         CallRpc(CustomRPC.Action, ActionsRPC.RetributionistAction, RetributionistActionsRPC.Alert, this);
@@ -692,7 +695,7 @@ public class Retributionist : Crew
     public DeadBody RevivingBody { get; set; }
     public bool Success { get; set; }
     public DateTime LastRevived { get; set; }
-    public float ReviveTimer => ButtonUtils.Timer(Player, LastRevived, CustomGameOptions.ReviveCooldown);
+    public float ReviveTimer => ButtonUtils.Timer(Player, LastRevived, CustomGameOptions.ReviveCd);
 
     public void Revive()
     {
@@ -760,7 +763,7 @@ public class Retributionist : Crew
         RevivingBody = ReviveButton.TargetBody;
         Spread(Player, PlayerByBody(RevivingBody));
         CallRpc(CustomRPC.Action, ActionsRPC.RetributionistAction, RetributionistActionsRPC.AltruistRevive, this, RevivingBody);
-        TimeRemaining = CustomGameOptions.AltReviveDuration;
+        TimeRemaining = CustomGameOptions.ReviveDur;
         Success = true;
         Revive();
     }
@@ -774,7 +777,7 @@ public class Retributionist : Crew
 
     public void Protect()
     {
-        if (IsTooFar(Player, ShieldButton.TargetPlayer))
+        if (IsTooFar(Player, ShieldButton.TargetPlayer) || UsedMedicAbility)
             return;
 
         var interact = Interact(Player, ShieldButton.TargetPlayer);
@@ -790,14 +793,14 @@ public class Retributionist : Crew
     public DateTime LastSwooped { get; set; }
     public CustomButton SwoopButton { get; set; }
     public bool IsCham => RevivedRole?.Type == LayerEnum.Chameleon;
-    public float SwoopTimer => ButtonUtils.Timer(Player, LastSwooped, CustomGameOptions.SwoopCooldown);
+    public float SwoopTimer => ButtonUtils.Timer(Player, LastSwooped, CustomGameOptions.SwoopCd);
 
     public void HitSwoop()
     {
         if (SwoopTimer != 0f || OnEffect || !ButtonUsable)
             return;
 
-        TimeRemaining = CustomGameOptions.SwoopDuration;
+        TimeRemaining = CustomGameOptions.SwoopDur;
         Invis();
         UsesLeft--;
         CallRpc(CustomRPC.Action, ActionsRPC.RetributionistAction, RetributionistActionsRPC.Swoop, this);
@@ -824,7 +827,7 @@ public class Retributionist : Crew
     public CustomButton FixButton { get; set; }
     public DateTime LastFixed { get; set; }
     public bool IsEngi => RevivedRole?.Type == LayerEnum.Engineer;
-    public float FixTimer => ButtonUtils.Timer(Player, LastFixed, CustomGameOptions.FixCooldown);
+    public float FixTimer => ButtonUtils.Timer(Player, LastFixed, CustomGameOptions.FixCd);
 
     public void Fix()
     {
@@ -850,7 +853,7 @@ public class Retributionist : Crew
     //Mystic Stuff
     public DateTime LastRevealed { get; set; }
     public CustomButton RevealButton { get; set; }
-    public float RevealTimer => ButtonUtils.Timer(Player, LastRevealed, CustomGameOptions.RevealCooldown);
+    public float RevealTimer => ButtonUtils.Timer(Player, LastRevealed, CustomGameOptions.MysticRevealCd);
     public bool IsMys => RevivedRole?.Type == LayerEnum.Mystic;
 
     public void Reveal()
@@ -876,7 +879,7 @@ public class Retributionist : Crew
     public DateTime LastSeered { get; set; }
     public CustomButton SeerButton { get; set; }
     public bool IsSeer => RevivedRole?.Type == LayerEnum.Seer;
-    public float SeerTimer => ButtonUtils.Timer(Player, LastSeered, CustomGameOptions.SeerCooldown);
+    public float SeerTimer => ButtonUtils.Timer(Player, LastSeered, CustomGameOptions.SeerCd);
 
     public void See()
     {
@@ -899,7 +902,7 @@ public class Retributionist : Crew
     public DateTime LastBlocked { get; set; }
     public CustomButton BlockButton { get; set; }
     public bool IsEsc => RevivedRole?.Type == LayerEnum.Escort;
-    public float BlockTimer => ButtonUtils.Timer(Player, LastBlocked, CustomGameOptions.EscRoleblockCooldown);
+    public float BlockTimer => ButtonUtils.Timer(Player, LastBlocked, CustomGameOptions.EscortCd);
 
     public void UnBlock()
     {
@@ -928,7 +931,7 @@ public class Retributionist : Crew
 
         if (interact[3])
         {
-            TimeRemaining = CustomGameOptions.EscRoleblockDuration;
+            TimeRemaining = CustomGameOptions.EscortDur;
             BlockTarget = BlockButton.TargetPlayer;
             Block();
             CallRpc(CustomRPC.Action, ActionsRPC.RetributionistAction, RetributionistActionsRPC.EscRoleblock, this, BlockTarget);
@@ -958,7 +961,7 @@ public class Retributionist : Crew
     public Vent Vent1 { get; set; }
     public Vent Vent2 { get; set; }
     public bool IsTrans => RevivedRole?.Type == LayerEnum.Transporter;
-    public float TransportTimer => ButtonUtils.Timer(Player, LastTransported, CustomGameOptions.TransportCooldown);
+    public float TransportTimer => ButtonUtils.Timer(Player, LastTransported, CustomGameOptions.TransportCd);
 
     public IEnumerator TransportPlayers()
     {
@@ -968,7 +971,7 @@ public class Retributionist : Crew
         WasInVent2 = false;
         Vent1 = null;
         Vent2 = null;
-        TimeRemaining = CustomGameOptions.TransportDuration;
+        TimeRemaining = CustomGameOptions.TransportDur;
 
         if (TransportPlayer1.Data.IsDead)
         {
@@ -1012,7 +1015,7 @@ public class Retributionist : Crew
         TransportPlayer2.NetTransform.Halt();
 
         if (CustomPlayer.Local == TransportPlayer1 || CustomPlayer.Local == TransportPlayer2)
-            Flash(Color, CustomGameOptions.TransportDuration);
+            Flash(Color, CustomGameOptions.TransportDur);
 
         if (Player1Body == null && !WasInVent1)
             AnimateTransport1();
@@ -1027,7 +1030,7 @@ public class Retributionist : Crew
             var now = DateTime.UtcNow;
             var seconds = (now - startTime).TotalSeconds;
 
-            if (seconds < CustomGameOptions.TransportDuration)
+            if (seconds < CustomGameOptions.TransportDur)
             {
                 TimeRemaining -= Time.deltaTime;
                 yield return null;
@@ -1036,7 +1039,10 @@ public class Retributionist : Crew
                 break;
 
             if (Meeting)
+            {
+                TimeRemaining = 0;
                 yield break;
+            }
         }
 
         if (Player1Body == null && Player2Body == null)
@@ -1130,7 +1136,7 @@ public class Retributionist : Crew
         AnimationPlaying1.flipX = TransportPlayer1.MyRend().flipX;
         AnimationPlaying1.transform.localScale *= 0.9f * TransportPlayer1.GetModifiedSize();
 
-        HUD.StartCoroutine(Effects.Lerp(CustomGameOptions.TransportDuration, new Action<float>(p =>
+        HUD.StartCoroutine(Effects.Lerp(CustomGameOptions.TransportDur, new Action<float>(p =>
         {
             var index = (int)(p * PortalAnimation.Length);
             index = Mathf.Clamp(index, 0, PortalAnimation.Length - 1);
@@ -1148,7 +1154,7 @@ public class Retributionist : Crew
         AnimationPlaying2.flipX = TransportPlayer2.MyRend().flipX;
         AnimationPlaying2.transform.localScale *= 0.9f * TransportPlayer2.GetModifiedSize();
 
-        HUD.StartCoroutine(Effects.Lerp(CustomGameOptions.TransportDuration, new Action<float>(p =>
+        HUD.StartCoroutine(Effects.Lerp(CustomGameOptions.TransportDur, new Action<float>(p =>
         {
             var index = (int)(p * PortalAnimation.Length);
             index = Mathf.Clamp(index, 0, PortalAnimation.Length - 1);

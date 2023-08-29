@@ -72,8 +72,8 @@ public static class SpawnInMinigamePatch
 
     public static bool Prefix(SpawnInMinigame __instance)
     {
-        if ((CustomPlayer.Local.IsPostmortal() && !CustomPlayer.Local.Caught()) || (CustomPlayer.Local.Is(LayerEnum.Astral) &&
-            Modifier.GetModifier<Astral>(CustomPlayer.Local).LastPosition != Vector3.zero))
+        if ((CustomPlayer.Local.IsPostmortal() && !CustomPlayer.Local.Caught()) || (CustomPlayer.Local.Is(LayerEnum.Astral) && Modifier.GetModifier<Astral>(CustomPlayer.Local).LastPosition
+            != Vector3.zero))
         {
             __instance.Close();
             return false;
@@ -141,15 +141,25 @@ public static class SpawnInMinigamePatch
 [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.Start))]
 static class GameEndedPatch
 {
-    public static void Postfix() => SpawnInMinigamePatch.GameStarted = false;
+    public static void Prefix() => SpawnInMinigamePatch.GameStarted = false;
 }
 
-[HarmonyPatch(typeof(HeliSabotageSystem), nameof(HeliSabotageSystem.UpdateHeliSize))]
+[HarmonyPatch(typeof(HeliSabotageSystem), nameof(HeliSabotageSystem.RepairDamage))]
 public static class HeliCountdownPatch
 {
-    public static void Prefix(HeliSabotageSystem __instance)
+    public static bool Prefix(HeliSabotageSystem __instance, ref byte amount)
     {
-        if (__instance.Countdown != CustomGameOptions.CrashTimer)
+        if ((HeliSabotageSystem.Tags)(amount & 240) == HeliSabotageSystem.Tags.DamageBit)
+        {
             __instance.Countdown = CustomGameOptions.CrashTimer;
+            HeliSabotageSystem.CharlesDuration = CustomGameOptions.CrashTimer;
+            __instance.CompletedConsoles.Clear();
+            __instance.ActiveConsoles.Clear();
+            __instance.codeResetTimer = -1f;
+            __instance.IsDirty = true;
+            return false;
+        }
+
+        return true;
     }
 }

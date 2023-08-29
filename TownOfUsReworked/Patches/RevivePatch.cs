@@ -38,6 +38,9 @@ public static class PlayerControlRevivePatch
         if (IsSubmerged && CustomPlayer.Local == __instance)
             ChangeFloor(__instance.transform.position.y > -7);
 
+        if (__instance.Is(LayerEnum.Troll))
+            Role.GetRole<Troll>(__instance).Killed = false;
+
         if (!__instance.AmOwner)
             return;
 

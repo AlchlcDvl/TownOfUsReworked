@@ -9,8 +9,14 @@ public class DebuggerBehaviour : MonoBehaviour
     public DragWindow TestWindow { get; }
     private static byte ControllingFigure;
 
+    public static DebuggerBehaviour Instance { get; private set; }
+
     public DebuggerBehaviour(IntPtr ptr) : base(ptr)
     {
+        if (Instance)
+            this.Destroy();
+
+        Instance = this;
         TestWindow = new(new(20, 20, 0, 0), "Reworked Debugger", () =>
         {
             GUILayout.Label("Name: " + DataManager.Player.Customization.Name);
@@ -47,6 +53,9 @@ public class DebuggerBehaviour : MonoBehaviour
                     MCIUtils.RemoveAllPlayers();
                     TownOfUsReworked.MCIActive = false;
                 }
+
+                if (GUILayout.Button("Load Last Settings"))
+                    SettingsPatches.PresetButton.LoadPreset("Last Used", true);
             }
             else if (TownOfUsReworked.MCIActive)
             {
@@ -70,10 +79,7 @@ public class DebuggerBehaviour : MonoBehaviour
                 }
 
                 if (GUILayout.Button("End Game"))
-                {
-                    PlayerLayer.NobodyWins = true;
-                    EndGame();
-                }
+                    CheckEndGame.PerformStalemate();
 
                 if (GUILayout.Button("Fix All Sabotages"))
                 {
@@ -116,9 +122,10 @@ public class DebuggerBehaviour : MonoBehaviour
 
                 if (GUILayout.Button("Log Dump"))
                 {
-                    PlayerLayer.LocalLayers.ForEach(x => LogSomething(x.Name));
-                    LogSomething("Is Dead - " + CustomPlayer.LocalCustom.IsDead);
-                    LogSomething("Location - " + CustomPlayer.LocalCustom.Position);
+                    LogInfo(CustomPlayer.Local.name);
+                    PlayerLayer.LocalLayers.ForEach(x => LogInfo(x.Name));
+                    LogInfo("Is Dead - " + CustomPlayer.LocalCustom.IsDead);
+                    LogInfo("Location - " + CustomPlayer.LocalCustom.Position);
                 }
 
                 if (GUILayout.Button("Flash"))
@@ -158,9 +165,8 @@ public class DebuggerBehaviour : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.F1))
         {
             TestWindow.Enabled = !TestWindow.Enabled;
-            SettingsPatches.PresetButton.LoadPreset("Last Used", true);
 
-            if (!TestWindow.Enabled)
+            if (!TestWindow.Enabled && IsLobby)
             {
                 MCIUtils.RemoveAllPlayers();
                 TownOfUsReworked.MCIActive = false;

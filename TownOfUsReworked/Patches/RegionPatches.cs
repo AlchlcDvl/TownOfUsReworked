@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.Patches;
 
-//Adapted from The Other Roles
+//Adapted from The Other Roles and Mini.RegionInstall
 [HarmonyPatch(typeof(RegionMenu), nameof(RegionMenu.Open))]
 public static class RegionInfoOpenPatch
 {
@@ -13,13 +13,8 @@ public static class RegionInfoOpenPatch
             return;
 
         var flag = ServerManager.Instance.CurrentRegion.Name == "Custom";
-
-        if (IPField != null && IPField.gameObject != null)
-            IPField.gameObject.SetActive(flag);
-
-        if (PortField != null && PortField.gameObject != null)
-            PortField.gameObject.SetActive(flag);
-
+        IPField?.gameObject?.SetActive(flag);
+        PortField?.gameObject?.SetActive(flag);
         var joinGameButton1 = DestroyableSingleton<JoinGameButton>.Instance;
 
         foreach (var joinGameButton2 in UObject.FindObjectsOfType<JoinGameButton>())
@@ -43,7 +38,7 @@ public static class RegionInfoOpenPatch
             if (child == null || child.gameObject == null)
                 return;
 
-            UObject.DestroyImmediate(child.gameObject);
+            child.gameObject.DestroyImmediate();
             IPField.transform.localPosition = new(-2.5f, -1.55f, -100f);
             IPField.characterLimit = 30;
             IPField.AllowSymbols = true;
@@ -57,7 +52,7 @@ public static class RegionInfoOpenPatch
             IPField.OnEnter = IPField.OnChange = new();
             IPField.OnFocusLost = new();
             IPField.OnChange.AddListener(new Action(ChangeIP));
-            IPField.OnFocusLost.AddListener(new Action(UpdateRegions));
+            IPField.OnFocusLost.AddListener(new Action(ExtraRegions.UpdateRegions));
             IPField.gameObject.SetActive(flag);
         }
 
@@ -71,7 +66,7 @@ public static class RegionInfoOpenPatch
         if (child1 == null || child1.gameObject == null)
             return;
 
-        UObject.DestroyImmediate(child1.gameObject);
+        child1.gameObject.DestroyImmediate();
         PortField.transform.localPosition = new(2.8f, -1.55f, -100f);
         PortField.characterLimit = 5;
         __instance.StartCoroutine(Effects.Lerp(0.1f, new Action<float>(_ =>
@@ -83,7 +78,7 @@ public static class RegionInfoOpenPatch
         PortField.OnEnter = PortField.OnChange = new();
         PortField.OnFocusLost = new();
         PortField.OnChange.AddListener(new Action(ChangePort));
-        PortField.OnFocusLost.AddListener(new Action(UpdateRegions));
+        PortField.OnFocusLost.AddListener(new Action(ExtraRegions.UpdateRegions));
         PortField.gameObject.SetActive(flag);
     }
 
@@ -98,43 +93,6 @@ public static class RegionInfoOpenPatch
         }
         else
             PortField.outputText.color = UColor.red;
-    }
-
-    public static void UpdateRegions()
-    {
-        var mna = new StaticHttpRegionInfo("Modded NA (MNA)", StringNames.NoTranslation, "www.aumods.xyz", new(new[]
-            { new ServerInfo("Http-1", "https://www.aumods.xyz", 443, false) })).Cast<IRegionInfo>();
-
-        var meu = new StaticHttpRegionInfo("Modded EU (MEU)", StringNames.NoTranslation, "au-eu.duikbo.at", new(new[]
-            { new ServerInfo("Http-1", "https://au-eu.duikbo.at", 443, false) })).Cast<IRegionInfo>();
-
-        var mas = new StaticHttpRegionInfo("Modded Asia (MAS)", StringNames.NoTranslation, "au-as.duikbo.at", new(new[]
-            { new ServerInfo("Http-1", "https://au-as.duikbo.at", 443, false) })).Cast<IRegionInfo>();
-
-        var custom = new StaticHttpRegionInfo("Custom", StringNames.NoTranslation, TownOfUsReworked.Ip.Value, new(new[]
-            { new ServerInfo("Custom", TownOfUsReworked.Ip.Value, TownOfUsReworked.Port.Value, false) })).Cast<IRegionInfo>();
-
-        var iregionInfoArray = new IRegionInfo[] { mna, meu, mas, custom };
-        var iregionInfo1 = ServerManager.Instance.CurrentRegion;
-
-        foreach (var iregionInfo2 in iregionInfoArray)
-        {
-            if (iregionInfo2 == null)
-                LogSomething("Could not add region");
-            else
-            {
-                if (iregionInfo1 != null && iregionInfo2.Name.Equals(iregionInfo1.Name, StringComparison.OrdinalIgnoreCase))
-                    iregionInfo1 = iregionInfo2;
-
-                ServerManager.Instance.AddOrUpdateRegion(iregionInfo2);
-            }
-        }
-
-        if (iregionInfo1 == null)
-            return;
-
-        LogSomething("Resetting previous region");
-        ServerManager.Instance.SetRegion(iregionInfo1);
     }
 }
 
@@ -157,5 +115,39 @@ public static class RegionMenuChooseOptionPatch
 
         __instance.Open();
         return false;
+    }
+}
+
+[HarmonyPatch(typeof(DnsRegionInfo), nameof(DnsRegionInfo.PopulateServers))]
+public static class DnsRegionInfoPatch
+{
+    public static void Postfix(DnsRegionInfo __instance)
+    {
+        LogInfo($"DRI Populate Servers: {__instance.Fqdn}");
+
+        foreach (var server in __instance.Servers)
+            LogInfo($"Configured server: {server.ToString()}");
+    }
+}
+
+[HarmonyPatch(typeof(ServerManager), nameof(ServerManager.ReselectServer))]
+public static class SMReselectPatch
+{
+    public static void Prefix(ServerManager __instance) => ExtraRegions.CorrectCurrentRegion(__instance);
+
+    public static void Postfix(ServerManager __instance)
+    {
+        var server = __instance.CurrentUdpServer;
+        LogInfo($"Current server: {server.ToString()}");
+    }
+}
+
+[HarmonyPatch(typeof(ServerManager), nameof(ServerManager.LoadServers))]
+public static class ServerManagerLoadServersPatch
+{
+    public static void Postfix(ServerManager __instance)
+    {
+        ExtraRegions.CorrectCurrentRegion(__instance);
+        __instance.CurrentUdpServer = __instance.CurrentRegion.Servers[0];
     }
 }

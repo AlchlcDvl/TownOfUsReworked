@@ -8,27 +8,20 @@ public static class ConfirmEjects
 
     public static void Prefix(ExileController __instance) => LastExiled = __instance;
 
-    public static void Postfix(ExileController __instance)
+    public static void Postfix(ExileController __instance, ref bool tie)
     {
         var exiled = LastExiled.exiled;
 
         if (exiled == null)
         {
-            __instance.completeString = "Everyone's safe...for now.";
+            if (ClientGameOptions.CustomEjects)
+                __instance.completeString = $"Everyone's safe...for now. ({(tie ? "Tie" : "Skipped")})";
+
             return;
         }
 
         var player = exiled.Object;
         var role = Role.GetRole(player);
-
-        var flag = player.Is(LayerEnum.Altruist) || player.Is(LayerEnum.Arsonist) || player.Is(LayerEnum.Amnesiac) || player.Is(LayerEnum.Executioner) || player.Is(LayerEnum.Engineer) ||
-            player.Is(LayerEnum.Escort) || player.Is(LayerEnum.Impostor) || player.Is(LayerEnum.Inspector) || player.Is(LayerEnum.Operative);
-        var factionflag = player.Is(Faction.Intruder);
-        var subfactionflag = player.Is(SubFaction.Undead);
-
-        var a_or_an = flag ? "an" : "a";
-        var a_or_an2 = factionflag ? "an" : "a";
-        var a_or_an3 = subfactionflag ? "an" : "a";
 
         var totalEvilsCount = CustomPlayer.AllPlayers.Count(x => ((!x.Is(Faction.Crew) && !x.Is(RoleAlignment.NeutralBen) && !x.Is(RoleAlignment.NeutralEvil)) ||
             x.NotOnTheSameSide()) && !(x.Data.IsDead || x.Data.Disconnected));
@@ -81,12 +74,12 @@ public static class ConfirmEjects
                 else if (target != null && CustomGameOptions.ExeEjectScreen)
                     ejectString = "The <color=#CCCCCCFF>Executioner</color> will avenge the fallen crew!";
                 else
-                    ejectString = $"{player.name} was {a_or_an} {role.ColorString + role.Name}</color>.";
+                    ejectString = $"{player.name} was the {role.ColorString + role.Name}</color>.";
             }
             else if (!player.Is(SubFaction.None))
-                ejectString = $"{player.name} was {a_or_an3} {role.SubFactionColorString + role.SubFactionName}</color>.";
+                ejectString = $"{player.name} was the {role.SubFactionColorString + role.SubFactionName}</color>.";
             else if (player.Is(Faction.Crew) || player.Is(Faction.Intruder) || player.Is(Faction.Syndicate))
-                ejectString = $"{player.name} was {a_or_an2} {role.FactionColorString + role.FactionName}</color>.";
+                ejectString = $"{player.name} was the {role.FactionColorString + role.FactionName}</color>.";
 
             __instance.ImpostorText.text = totalEvils;
         }

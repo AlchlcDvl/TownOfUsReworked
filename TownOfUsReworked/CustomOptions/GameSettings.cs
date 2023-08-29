@@ -4,43 +4,37 @@ namespace TownOfUsReworked.CustomOptions;
 public static class GameSettings
 {
     public static int SettingsPage;
+    public static int CurrentPage = 1;
 
     [HarmonyPatch(typeof(IGameOptionsExtensions), nameof(IGameOptionsExtensions.ToHudString))]
     public static class GameOptionsDataPatch
     {
-        public static void Postfix(ref string __result)
+        public static bool Prefix(ref string __result)
         {
             if (IsHnS)
-                return;
+                return true;
 
             __result = Settings();
+            return false;
+        }
+    }
+
+    [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
+    public static class LobbyBrowsing
+    {
+        public static void Postfix(HudManager __instance)
+        {
+            if (IsLobby)
+                __instance?.ReportButton?.gameObject?.SetActive(false);
+
+            UpdatePageNumber();
         }
     }
 
     public static string Settings()
     {
         var builder = new StringBuilder();
-        builder.AppendLine($"Currently Viewing Page ({SettingsPage + 1}/9)");
-        builder.AppendLine("Press The Tab/Page Number To Change Pages");
-
-        if (SettingsPage == 0)
-            builder.AppendLine("\nGlobal");
-        else if (SettingsPage == 1)
-            builder.AppendLine("\n<color=#8CFFFFFF>Crew</color>");
-        else if (SettingsPage == 2)
-            builder.AppendLine("\n<color=#B3B3B3FF>Neutrals</color>");
-        else if (SettingsPage == 3)
-            builder.AppendLine("\n<color=#FF0000FF>Intruders</color>");
-        else if (SettingsPage == 4)
-            builder.AppendLine("\n<color=#008000FF>Syndicate</color>");
-        else if (SettingsPage == 5)
-            builder.AppendLine("\n<color=#7F7F7FFF>Modifiers</color>");
-        else if (SettingsPage == 6)
-            builder.AppendLine("\n<color=#DD585BFF>Objectifiers</color>");
-        else if (SettingsPage == 7)
-            builder.AppendLine("\n<color=#FF9900FF>Abilities</color>");
-        else if (SettingsPage == 8)
-            builder.AppendLine("\nRole Lists");
+        builder.AppendLine($"<b><size=160%>{Translate($"GameSettings.Page{SettingsPage + 1}")}</size></b>");
 
         var tobedisplayed = CustomOption.AllOptions.Where(x => x.Menu == (MultiMenu)SettingsPage && x.Active).ToList();
 
@@ -50,69 +44,151 @@ public static class GameSettings
                 continue;
 
             var index = tobedisplayed.IndexOf(option);
-            var thing = option.Type != CustomOptionType.Header ? (index == tobedisplayed.Count - 1 || tobedisplayed[index + 1].Type == CustomOptionType.Header ? "┗ " : "┣ ") : "";
-
-            if (option is CustomNestedOption nested)
-                nested.InternalOptions.ForEach(x => builder.AppendLine($"{thing}{x}"));
-            else
-                builder.AppendLine($"{thing}{option}");
+            var thing = option is not CustomHeaderOption ? (index == tobedisplayed.Count - 1 || tobedisplayed[index + 1].Type == CustomOptionType.Header ? "┗ " : "┣ " ) : "";
+            builder.AppendLine($"{thing}{option}");
         }
 
+        builder.AppendLine();
+        builder.AppendLine(Translate("GameSettings.CurrentPage").Replace("%page1%", $"{CurrentPage}").Replace("%page2%", $"{MaxPages()}"));
+        builder.AppendLine(Translate("GameSettings.Instructions"));
         return $"<size=1.25>{builder}</size>";
+    }
+
+    private static int MaxPages()
+    {
+        var result = 9;
+
+        if (!CustomGameOptions.EnableAbilities && !IsRoleList)
+            result--;
+
+        if (!CustomGameOptions.EnableModifiers && !IsRoleList)
+            result--;
+
+        if (!CustomGameOptions.EnableObjectifiers && !IsRoleList)
+            result--;
+
+        if (!IsRoleList)
+            result--;
+        else
+            result -= 3;
+
+        return result;
     }
 
     public static void UpdatePageNumber()
     {
-        if (HUD.Chat.freeChatField.textArea.hasFocus || HUD.Chat.quickChatMenu.IsOpen)
+        if (HUD.Chat && HUD.Chat.IsOpenOrOpening)
             return;
-        
+
         var cached = SettingsPage;
 
-        if (Input.GetKeyDown(KeyCode.Tab) && !GameSettingMenu.Instance)
-            SettingsPage = CycleInt(8, 0, SettingsPage, true);
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            CurrentPage = CycleInt(MaxPages(), 1, CurrentPage, true);
+            SettingsPage++;
 
-        if (Input.GetKeyDown(KeyCode.Backspace) && !GameSettingMenu.Instance)
-            SettingsPage = CycleInt(8, 0, SettingsPage, false);
+            if (SettingsPage == 5 && (!CustomGameOptions.EnableModifiers || IsRoleList))
+                SettingsPage = 6;
+
+            if (SettingsPage == 6 && (!CustomGameOptions.EnableObjectifiers || IsRoleList))
+                SettingsPage = 7;
+
+            if (SettingsPage == 7 && (!CustomGameOptions.EnableAbilities || IsRoleList))
+                SettingsPage = 8;
+
+            if (SettingsPage == 8 && !IsRoleList)
+                SettingsPage = 0;
+
+            if (SettingsPage > 8)
+                SettingsPage = 0;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Backspace))
+        {
+            CurrentPage = CycleInt(MaxPages(), 1, CurrentPage, false);
+            SettingsPage--;
+
+            if (SettingsPage < 0)
+                SettingsPage = 8;
+
+            if (SettingsPage == 8 && !IsRoleList)
+                SettingsPage = 7;
+
+            if (SettingsPage == 7 && (!CustomGameOptions.EnableAbilities || IsRoleList))
+                SettingsPage = 6;
+
+            if (SettingsPage == 6 && (!CustomGameOptions.EnableObjectifiers || IsRoleList))
+                SettingsPage = 5;
+
+            if (SettingsPage == 5 && (!CustomGameOptions.EnableModifiers || IsRoleList))
+                SettingsPage = 4;
+        }
 
         if (Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Keypad1))
+        {
+            CurrentPage = 1;
             SettingsPage = 0;
+        }
 
         if (Input.GetKeyDown(KeyCode.Alpha2) || Input.GetKeyDown(KeyCode.Keypad2))
+        {
+            CurrentPage = 2;
             SettingsPage = 1;
+        }
 
         if (Input.GetKeyDown(KeyCode.Alpha3) || Input.GetKeyDown(KeyCode.Keypad3))
+        {
+            CurrentPage = 3;
             SettingsPage = 2;
+        }
 
         if (Input.GetKeyDown(KeyCode.Alpha4) || Input.GetKeyDown(KeyCode.Keypad4))
+        {
+            CurrentPage = 4;
             SettingsPage = 3;
+        }
 
         if (Input.GetKeyDown(KeyCode.Alpha5) || Input.GetKeyDown(KeyCode.Keypad5))
+        {
+            CurrentPage = 5;
             SettingsPage = 4;
+        }
 
         if (Input.GetKeyDown(KeyCode.Alpha6) || Input.GetKeyDown(KeyCode.Keypad6))
-            SettingsPage = 5;
+        {
+            if (IsRoleList)
+                SettingsPage = 8;
+            else if (CustomGameOptions.EnableModifiers)
+                SettingsPage = 5;
+            else if (CustomGameOptions.EnableObjectifiers)
+                SettingsPage = 6;
+            else if (CustomGameOptions.EnableAbilities)
+                SettingsPage = 7;
+
+            if (SettingsPage is 5 or 6 or 7 or 8)
+                CurrentPage = 6;
+        }
 
         if (Input.GetKeyDown(KeyCode.Alpha7) || Input.GetKeyDown(KeyCode.Keypad7))
-            SettingsPage = 6;
+        {
+            if (CustomGameOptions.EnableObjectifiers && !IsRoleList)
+                SettingsPage = 6;
+            else if (CustomGameOptions.EnableAbilities && !IsRoleList)
+                SettingsPage = 7;
+
+            if (SettingsPage is 6 or 7)
+                CurrentPage = 7;
+        }
 
         if (Input.GetKeyDown(KeyCode.Alpha8) || Input.GetKeyDown(KeyCode.Keypad8))
-            SettingsPage = 7;
-
-        if (Input.GetKeyDown(KeyCode.Alpha9) || Input.GetKeyDown(KeyCode.Keypad9))
-            SettingsPage = 8;
-        
-        SettingsPatches.Changed = cached != SettingsPage;
-    }
-
-    [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-    public static class LobbyBrowsing
-    {
-        public static void Postfix(HudManager __instance)
         {
-            if (IsLobby)
-                __instance.ReportButton.gameObject.SetActive(false);
+            if (CustomGameOptions.EnableAbilities && !IsRoleList)
+                SettingsPage = 7;
 
-            UpdatePageNumber();
+            if (SettingsPage == 7)
+                CurrentPage = 8;
         }
+
+        SettingsPatches.Changed = cached != SettingsPage;
     }
 }

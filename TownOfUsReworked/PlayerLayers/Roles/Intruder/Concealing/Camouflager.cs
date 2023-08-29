@@ -46,13 +46,13 @@ public class Camouflager : Intruder
             return;
 
         CallRpc(CustomRPC.Action, ActionsRPC.Camouflage, this);
-        TimeRemaining = CustomGameOptions.CamouflagerDuration;
+        TimeRemaining = CustomGameOptions.CamouflageDur;
         Camouflage();
     }
 
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        CamouflageButton.Update("CAMOUFLAGE", Timer, CustomGameOptions.CamouflagerCd, Camouflaged, TimeRemaining, CustomGameOptions.CamouflagerDuration, !DoUndo.IsCamoed);
+        CamouflageButton.Update("CAMOUFLAGE", Timer, CustomGameOptions.CamouflagerCd, Camouflaged, TimeRemaining, CustomGameOptions.CamouflageDur, !DoUndo.IsCamoed);
     }
 }

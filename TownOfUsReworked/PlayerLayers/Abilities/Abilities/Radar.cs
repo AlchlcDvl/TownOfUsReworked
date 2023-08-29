@@ -26,7 +26,7 @@ public class Radar : Ability
         else
         {
             var closest = Player.GetClosestPlayer(null, float.MaxValue, true);
-            var body = Player.GetClosestBody(0, true);
+            var body = Player.GetClosestBody(float.MaxValue, true);
             var transform = body != null && Vector2.Distance(closest.transform.position, Player.transform.position) > Vector2.Distance(body.transform.position,
                 Player.transform.position) ? body.transform : closest.transform;
             RadarArrow.Update(transform.position);

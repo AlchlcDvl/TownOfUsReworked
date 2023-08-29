@@ -18,7 +18,7 @@ public class Jackal : Neutral
         "Syndicate</color>, <color=#FF0000FF>Intruder</color> or a <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killer</color>\n- When both recruits die, you can recruit a third" +
         " member into the <color=#575657FF>Cabal</color>";
     public override InspectorResults InspectorResults => InspectorResults.BringsChaos;
-    public float Timer => ButtonUtils.Timer(Player, LastRecruited, CustomGameOptions.RecruitCooldown);
+    public float Timer => ButtonUtils.Timer(Player, LastRecruited, CustomGameOptions.RecruitCd);
 
     public Jackal(PlayerControl player) : base(player)
     {
@@ -40,7 +40,8 @@ public class Jackal : Neutral
 
         if (interact[3])
             RoleGen.RpcConvert(RecruitButton.TargetPlayer.PlayerId, Player.PlayerId, SubFaction.Cabal);
-        else if (interact[0])
+
+        if (interact[0])
             LastRecruited = DateTime.UtcNow;
         else if (interact[1])
             LastRecruited.AddSeconds(CustomGameOptions.ProtectKCReset);
@@ -51,6 +52,6 @@ public class Jackal : Neutral
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        RecruitButton.Update("RECRUIT", Timer, CustomGameOptions.RecruitCooldown, true, RecruitsDead);
+        RecruitButton.Update("RECRUIT", Timer, CustomGameOptions.RecruitCd, true, RecruitsDead);
     }
 }

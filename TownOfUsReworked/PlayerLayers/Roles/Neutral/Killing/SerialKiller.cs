@@ -19,7 +19,7 @@ public class SerialKiller : Neutral
         + " to roleblocks";
     public override InspectorResults InspectorResults => InspectorResults.IsAggressive;
     public float LustTimer => ButtonUtils.Timer(Player, LastLusted, CustomGameOptions.BloodlustCd);
-    public float StabTimer => ButtonUtils.Timer(Player, LastKilled, CustomGameOptions.LustKillCd);
+    public float StabTimer => ButtonUtils.Timer(Player, LastKilled, CustomGameOptions.StabCd);
 
     public SerialKiller(PlayerControl player) : base(player)
     {
@@ -50,7 +50,7 @@ public class SerialKiller : Neutral
         if (LustTimer != 0f || Lusted)
             return;
 
-        TimeRemaining = CustomGameOptions.BloodlustDuration;
+        TimeRemaining = CustomGameOptions.BloodlustDur;
         Bloodlust();
     }
 
@@ -75,7 +75,7 @@ public class SerialKiller : Neutral
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        StabButton.Update("STAB", StabTimer, CustomGameOptions.LustKillCd, Lusted, Lusted);
-        BloodlustButton.Update("BLOODLUST", LustTimer, CustomGameOptions.BloodlustCd, Lusted, TimeRemaining, CustomGameOptions.BloodlustDuration);
+        StabButton.Update("STAB", StabTimer, CustomGameOptions.StabCd, Lusted, Lusted);
+        BloodlustButton.Update("BLOODLUST", LustTimer, CustomGameOptions.BloodlustCd, Lusted, TimeRemaining, CustomGameOptions.BloodlustDur);
     }
 }

@@ -16,7 +16,7 @@ public class Concealer : Syndicate
     public override Func<string> StartText => () => "Turn The <color=#8CFFFFFF>Crew</color> Invisible For Some Chaos";
     public override Func<string> Description => () => $"- You can turn {(HoldsDrive ? "everyone" : "a player")} invisible\n{CommonAbilities}";
     public override InspectorResults InspectorResults => InspectorResults.Unseen;
-    public float Timer => ButtonUtils.Timer(Player, LastConcealed, CustomGameOptions.ConcealCooldown);
+    public float Timer => ButtonUtils.Timer(Player, LastConcealed, CustomGameOptions.ConcealCd);
 
     public Concealer(PlayerControl player) : base(player)
     {
@@ -72,7 +72,7 @@ public class Concealer : Syndicate
 
         if (HoldsDrive)
         {
-            TimeRemaining = CustomGameOptions.ConcealDuration;
+            TimeRemaining = CustomGameOptions.ConcealDur;
             Conceal();
             CallRpc(CustomRPC.Action, ActionsRPC.Conceal, this);
         }
@@ -80,7 +80,7 @@ public class Concealer : Syndicate
             ConcealMenu.Open();
         else
         {
-            TimeRemaining = CustomGameOptions.ConcealDuration;
+            TimeRemaining = CustomGameOptions.ConcealDur;
             CallRpc(CustomRPC.Action, ActionsRPC.Conceal, this, ConcealedPlayer);
             Conceal();
         }
@@ -92,14 +92,14 @@ public class Concealer : Syndicate
     {
         base.UpdateHud(__instance);
         var flag = ConcealedPlayer == null && !HoldsDrive;
-        ConcealButton.Update(flag ? "SET TARGET" : "CONCEAL", Timer, CustomGameOptions.ConcealCooldown, Concealed, TimeRemaining, CustomGameOptions.ConcealDuration);
+        ConcealButton.Update(flag ? "SET TARGET" : "CONCEAL", Timer, CustomGameOptions.ConcealCd, Concealed, TimeRemaining, CustomGameOptions.ConcealDur);
 
         if (Input.GetKeyDown(KeyCode.Backspace))
         {
             if (ConcealedPlayer != null && !HoldsDrive && !Concealed)
                 ConcealedPlayer = null;
 
-            LogSomething("Removed a target");
+            LogInfo("Removed a target");
         }
     }
 }

@@ -6,8 +6,7 @@ public abstract class BasePagingBehaviour : MonoBehaviour
 
     private int _page;
     public virtual int MaxPerPage => 15;
-    public virtual int MaxPageIndex => throw new NotImplementedException();
-    public virtual void OnPageChanged() => throw new NotImplementedException();
+    public virtual int MaxPageIndex => 0;
     public virtual int PageIndex
     {
         get => _page;
@@ -17,6 +16,8 @@ public abstract class BasePagingBehaviour : MonoBehaviour
             OnPageChanged();
         }
     }
+
+    public virtual void OnPageChanged() {}
 
     public virtual void Start() => OnPageChanged();
 

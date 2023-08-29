@@ -216,17 +216,7 @@ public static class Summary
             roleSummaryTextMesh.fontSize = 1.5f;
             roleSummaryTextMesh.text = $"{roleSummaryText}";
             roleSummaryTextMesh.GetComponent<RectTransform>().anchoredPosition = new(position.x + 3.5f, position.y - 0.1f);
-
-            var text = Path.Combine(Application.persistentDataPath, "Summary-temp");
-
-            try
-            {
-                File.WriteAllText(text, roleSummaryCache.ToString());
-                var text2 = Path.Combine(Application.persistentDataPath, "Summary");
-                File.Delete(text2);
-                File.Move(text, text2);
-            } catch {}
-
+            SaveText("Summary", roleSummaryCache.ToString());
             PlayerRoles.Clear();
             Disconnected.Clear();
         }

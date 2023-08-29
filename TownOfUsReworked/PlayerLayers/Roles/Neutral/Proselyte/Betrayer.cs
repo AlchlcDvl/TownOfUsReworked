@@ -11,7 +11,7 @@ public class Betrayer : Neutral
     public override Func<string> StartText => () => "Those Backs Are Ripe For Some Stabbing";
     public override Func<string> Description => () => "- You can kill";
     public override InspectorResults InspectorResults => InspectorResults.IsAggressive;
-    public float Timer => ButtonUtils.Timer(Player, LastKilled, CustomGameOptions.BetrayerKillCooldown);
+    public float Timer => ButtonUtils.Timer(Player, LastKilled, CustomGameOptions.BetrayCd);
 
     public Betrayer(PlayerControl player) : base(player)
     {
@@ -44,6 +44,6 @@ public class Betrayer : Neutral
             return;
 
         base.UpdateHud(__instance);
-        KillButton.Update("KILL", Timer, CustomGameOptions.BetrayerKillCooldown);
+        KillButton.Update("KILL", Timer, CustomGameOptions.BetrayCd);
     }
 }

@@ -7,39 +7,13 @@ public static class MeetingPatches
     public static int MeetingCount;
     private static GameData.PlayerInfo Reported;
     public static bool GivingAnnouncements;
-    private static DeadBody ReportedBody;
 
     [HarmonyPatch(typeof(PlayerVoteArea), nameof(PlayerVoteArea.SetCosmetics))]
     public static class PlayerStates
     {
         public static void Postfix(PlayerVoteArea __instance)
         {
-            if (CustomGameOptions.MeetingColourblind && DoUndo.IsCamoed)
-            {
-                __instance.Background.sprite = ShipStatus.Instance.CosmeticsCache.GetNameplate("nameplate_NoPlate").Image;
-                __instance.LevelNumberText.GetComponentInParent<SpriteRenderer>().enabled = false;
-                __instance.LevelNumberText.GetComponentInParent<SpriteRenderer>().gameObject.SetActive(false);
-            }
-            else
-            {
-                if (ClientGameOptions.WhiteNameplates)
-                    __instance.Background.sprite = ShipStatus.Instance.CosmeticsCache.GetNameplate("nameplate_NoPlate").Image;
-
-                if (ClientGameOptions.NoLevels)
-                {
-                    __instance.LevelNumberText.GetComponentInParent<SpriteRenderer>().enabled = false;
-                    __instance.LevelNumberText.GetComponentInParent<SpriteRenderer>().gameObject.SetActive(false);
-                }
-            }
-        }
-    }
-
-    [HarmonyPatch(typeof(PlayerVoteArea), nameof(PlayerVoteArea.PreviewNameplate))]
-    public static class PlayerPreviews
-    {
-        public static void Postfix(PlayerVoteArea __instance)
-        {
-            if (CustomGameOptions.MeetingColourblind && DoUndo.IsCamoed)
+            if (CustomGameOptions.CamouflagedMeetings && DoUndo.IsCamoed)
             {
                 __instance.Background.sprite = ShipStatus.Instance.CosmeticsCache.GetNameplate("nameplate_NoPlate").Image;
                 __instance.LevelNumberText.GetComponentInParent<SpriteRenderer>().enabled = false;
@@ -63,11 +37,7 @@ public static class MeetingPatches
     [HarmonyPriority(Priority.First)]
     public static class SetReported
     {
-        public static void Postfix([HarmonyArgument(0)] GameData.PlayerInfo target)
-        {
-            Reported = target;
-            ReportedBody = target == null ? null : BodyById(target.PlayerId);
-        }
+        public static void Postfix([HarmonyArgument(0)] GameData.PlayerInfo target) => Reported = target;
     }
 
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
@@ -77,25 +47,13 @@ public static class MeetingPatches
         public static void Postfix(MeetingHud __instance)
         {
             __instance.gameObject.AddComponent<MeetingHudPagingBehaviour>().Menu = __instance;
-
-            if (OtherButtonsPatch.SettingsActive)
-                OtherButtonsPatch.OpenSettings();
-
-            if (OtherButtonsPatch.Zooming)
-                OtherButtonsPatch.Zoom();
-
-            if (OtherButtonsPatch.WikiActive)
-                OtherButtonsPatch.OpenWiki();
-
-            if (OtherButtonsPatch.RoleCardActive)
-                OtherButtonsPatch.OpenRoleCard();
-
+            OtherButtonsPatch.CloseMenus();
             MeetingCount++;
             Coroutines.Start(Announcements());
             GivingAnnouncements = true;
             CallRpc(CustomRPC.Misc, MiscRPC.MeetingStart);
             CustomPlayer.AllPlayers.ForEach(x => x?.MyPhysics?.ResetAnimState());
-            AllBodies.ForEach(x => x.gameObject.Destroy());
+            AllBodies.ForEach(x => x?.gameObject?.Destroy());
 
             if (Role.ChaosDriveMeetingTimerCount < CustomGameOptions.ChaosDriveMeetingCount)
                 Role.ChaosDriveMeetingTimerCount++;
@@ -123,46 +81,41 @@ public static class MeetingPatches
                     var player = Reported.Object;
                     check = player;
                     var report = $"{player.name} was found dead last round.";
-                    HUD.Chat.AddChat(CustomPlayer.Local, report);
-
+                    Run(HUD.Chat, "<color=#6C29ABFF>》 Game Announcement 《</color>", report);
                     yield return new WaitForSeconds(2f);
 
                     if (CustomGameOptions.LocationReports)
-                        report = $"Their body was found in {GetLocation(ReportedBody.TruePosition)}.";
+                        report = $"Their body was found in {BodyLocations[Reported.PlayerId]}.";
                     else
                         report = "It is unknown where they died.";
 
-                    HUD.Chat.AddChat(CustomPlayer.Local, report);
-
+                    Run(HUD.Chat, "<color=#6C29ABFF>》 Game Announcement 《</color>", report);
                     yield return new WaitForSeconds(2f);
-
                     var killer = PlayerById(KilledPlayers.Find(x => x.PlayerId == player.PlayerId).KillerId);
                     var killerRole = Role.GetRole(killer);
 
                     if (CustomGameOptions.KillerReports == RoleFactionReports.Role)
-                        report = $"They were killed by {A_An(killerRole.Type)} <b>{killerRole}</b>.";
+                        report = $"They were killed by the <b>{killerRole}</b>.";
                     else if (CustomGameOptions.KillerReports == RoleFactionReports.Faction)
-                        report = $"They were killed by {A_An(killerRole.Faction)} <b>{killerRole.FactionName}</b>.";
+                        report = $"They were killed by the <b>{killerRole.FactionName}</b>.";
                     else
                         report = "They were killed by an unknown assailant.";
 
-                    HUD.Chat.AddChat(CustomPlayer.Local, report);
-
+                    Run(HUD.Chat, "<color=#6C29ABFF>》 Game Announcement 《</color>", report);
                     yield return new WaitForSeconds(2f);
-
                     var role = Role.GetRole(player);
 
                     if (CustomGameOptions.RoleFactionReports == RoleFactionReports.Role)
-                        report = $"They were {A_An(role.Type)} <b>{role}</b>.";
+                        report = $"They were the <b>{role}</b>.";
                     else if (CustomGameOptions.RoleFactionReports == RoleFactionReports.Faction)
-                        report = $"They were {A_An(role.Faction)} <b>{role.FactionName}</b>.";
+                        report = $"They were the <b>{role.FactionName}</b>.";
                     else
                         report = $"We could not determine what {player.name} was.";
 
-                    HUD.Chat.AddChat(CustomPlayer.Local, report);
+                    Run(HUD.Chat, "<color=#6C29ABFF>》 Game Announcement 《</color>", report);
                 }
                 else
-                    HUD.Chat.AddChat(CustomPlayer.Local, "A meeting has been called.");
+                    Run(HUD.Chat, "<color=#6C29ABFF>》 Game Announcement 《</color>", "A meeting has been called.");
 
                 yield return new WaitForSeconds(2f);
 
@@ -171,13 +124,10 @@ public static class MeetingPatches
                     if (player != check)
                     {
                         var report = $"{player.name} was found dead last round.";
-                        HUD.Chat.AddChat(CustomPlayer.Local, report);
-
+                        Run(HUD.Chat, "<color=#6C29ABFF>》 Game Announcement 《</color>", report);
                         yield return new WaitForSeconds(2f);
-
                         report = "It is unknown where they died.";
-                        HUD.Chat.AddChat(CustomPlayer.Local, report);
-
+                        Run(HUD.Chat, "<color=#6C29ABFF>》 Game Announcement 《</color>", report);
                         yield return new WaitForSeconds(2f);
 
                         var killer = PlayerById(KilledPlayers.Find(x => x.PlayerId == player.PlayerId).KillerId);
@@ -186,29 +136,26 @@ public static class MeetingPatches
                         if (Role.Cleaned.Contains(player))
                             report = "They were killed by an unknown assailant.";
                         else if (CustomGameOptions.KillerReports == RoleFactionReports.Role)
-                            report = $"They were killed by {A_An(killerRole.Type)} <b>{killerRole.Name}</b>.";
+                            report = $"They were killed by the <b>{killerRole.Name}</b>.";
                         else if (CustomGameOptions.KillerReports == RoleFactionReports.Faction)
-                            report = $"They were killed by {A_An(killerRole.Faction)} <b>{killerRole.FactionName}</b>.";
+                            report = $"They were killed by the <b>{killerRole.FactionName}</b>.";
                         else
                             report = "They were killed by an unknown assailant.";
 
-                        HUD.Chat.AddChat(CustomPlayer.Local, report);
-
+                        Run(HUD.Chat, "<color=#6C29ABFF>》 Game Announcement 《</color>", report);
                         yield return new WaitForSeconds(2f);
-
                         var role = Role.GetRole(player);
 
                         if (Role.Cleaned.Contains(player))
                             report = $"We could not determine what {player.name} was.";
                         else if (CustomGameOptions.RoleFactionReports == RoleFactionReports.Role)
-                            report = $"They were {A_An(role.Type)} <b>{role}</b>.";
+                            report = $"They were the <b>{role}</b>.";
                         else if (CustomGameOptions.RoleFactionReports == RoleFactionReports.Faction)
-                            report = $"They were {A_An(role.Faction)} <b>{role.FactionName}</b>.";
+                            report = $"They were the <b>{role.FactionName}</b>.";
                         else
                             report = $"We could not determine what {player.name} was.";
 
-                        HUD.Chat.AddChat(CustomPlayer.Local, report);
-
+                        Run(HUD.Chat, "<color=#6C29ABFF>》 Game Announcement 《</color>", report);
                         yield return new WaitForSeconds(2f);
                     }
                 }
@@ -217,8 +164,7 @@ public static class MeetingPatches
                 {
                     if (player != check)
                     {
-                        HUD.Chat.AddChat(CustomPlayer.Local, $"{player.name} escaped the ship last round.");
-
+                        Run(HUD.Chat, "<color=#6C29ABFF>》 Game Announcement 《</color>", $"{player.name} killed themselves last round.");
                         yield return new WaitForSeconds(2f);
                     }
                 }
@@ -227,8 +173,7 @@ public static class MeetingPatches
                 {
                     if (player != check)
                     {
-                        HUD.Chat.AddChat(CustomPlayer.Local, $"{player.name} escaped the ship last round.");
-
+                        Run(HUD.Chat, "<color=#6C29ABFF>》 Game Announcement 《</color>", $"{player.name} escaped last round.");
                         yield return new WaitForSeconds(2f);
                     }
                 }
@@ -240,12 +185,12 @@ public static class MeetingPatches
                 message = $"{CustomGameOptions.ChaosDriveMeetingCount - Role.ChaosDriveMeetingTimerCount} meetings remain till the <b>Syndicate</b> gets their hands on the Chaos Drive!";
             else if (Role.ChaosDriveMeetingTimerCount == CustomGameOptions.ChaosDriveMeetingCount - 1)
                 message = "This is the last meeting before the <b>Syndicate</b> gets their hands on the Chaos Drive!";
-            else if (Role.ChaosDriveMeetingTimerCount == CustomGameOptions.ChaosDriveMeetingCount)
+            else if (Role.ChaosDriveMeetingTimerCount == CustomGameOptions.ChaosDriveMeetingCount && MeetingCount == Role.ChaosDriveMeetingTimerCount)
                 message = "The <b>Syndicate</b> now possesses the Chaos Drive!";
             else
                 message = "The <b>Syndicate</b> possesses the Chaos Drive.";
 
-            HUD.Chat.AddChat(CustomPlayer.Local, message);
+            Run(HUD.Chat, "<color=#6C29ABFF>》 Game Announcement 《</color>", message);
 
             yield return new WaitForSeconds(2f);
 
@@ -257,7 +202,7 @@ public static class MeetingPatches
                     message = "There seems to be an <b>Overlord</b> bent on dominating the mission! Kill them before they are successful!";
 
                 if (message != "")
-                    HUD.Chat.AddChat(CustomPlayer.Local, message);
+                    Run(HUD.Chat, "<color=#6C29ABFF>》 Game Announcement 《</color>", message);
 
                 yield return new WaitForSeconds(2f);
             }
@@ -277,11 +222,8 @@ public static class MeetingPatches
                         if (!knight.Data.IsDead && !knight.Data.Disconnected)
                         {
                             message = $"{knight.name} was knighted by a <b>Monarch</b>!";
-                            HUD.Chat.AddChat(CustomPlayer.Local, message);
+                            Run(HUD.Chat, "<color=#6C29ABFF>》 Game Announcement 《</color>", message);
                             knighted.Add(id);
-
-                            if (!CustomGameOptions.KnightButton)
-                                knight.RemainingEmergencies = 0;
                         }
                     }
 
@@ -295,7 +237,6 @@ public static class MeetingPatches
             Role.Cleaned.Clear();
             GivingAnnouncements = false;
             Reported = null;
-            ReportedBody = null;
             DisconnectHandler.Disconnected.Clear();
 
             foreach (var layer in PlayerLayer.LocalLayers)
@@ -305,117 +246,6 @@ public static class MeetingPatches
 
                 yield return new WaitForSeconds(0.5f);
             }
-        }
-
-        private static string GetLocation(Vector2 position)
-        {
-            var result = "";
-
-            switch (TownOfUsReworked.NormalOptions.MapId)
-            {
-                case 0:
-
-                    if (position.x is < 5 and > -6 && position.y > -4.5f)
-                        result = "Cafeteria";
-                    else if (position.y is < -0.5f and > -5.4f && position.x is > -11 and < -5.4f)
-                        result = "Medbay";
-                    else if (position.y is < 3 and > -1.2f && position.x is > -19 and < -15)
-                        result = "Upper Engine";
-                    else if (position.y is < -1.7f and > -8.2f && position.x < -19.4f)
-                        result = "Reactor";
-                    else if (position.y is < -3 and > -6.9f && position.x is < -12 and > -14.4f)
-                        result = "Security";
-                    else if (position.y is < 6.2f and > -4.7f && position.x is < 8 and > 4.7f)
-                        result = "O2";
-                    else if (position.y is < -9.4f and > -13.6f && position.x is > -19 and < -15)
-                        result = "Upper Engine";
-                    else if (position.y is < -7.7f and > -13.5f && position.x is > -9.9f and < -5.4f)
-                        result = "Electrical";
-                    else if (position.y is < -8.7f and > -17 && position.x is > -5f and < 0.7f)
-                        result = "Storage";
-                    else if (position.y is < -6.5f and > -9.9f && position.x is > 2.2f and < 6.8f)
-                        result = "Admin";
-                    else if (position.y < -13.8f && position.x is > 1.7f and < 6.4f)
-                        result = "Communications";
-                    else if (position.y < -10 && position.x > 6.8f)
-                        result = "Shields";
-                    else if (position.y > -0.8f && position.x > 7.1f)
-                        result = "Weapons";
-                    else if (position.x > 15)
-                        result = "Navigation";
-                    else
-                        result = "Hallway";
-
-                    break;
-
-                case 1:
-
-                    if ((position.y is > -1 and < 6 && position.x is > 21.3f and < 29) || (position.x is > 18.1f and < 21.1f && position.y is < 1.3f and > -1))
-                        result = "Cafeteria";
-                    else if ((position.y is < 5.4f and > 0.6f && position.x is > 9 and < 11) || (position.x is < 8.5f and > 3.9f && position.y is > 0.5f and < 2.3f))
-                        result = "Locker";
-                    else if (position.y is < -0.5f and > -5.4f && position.x is > -11 and < -5.4f)
-                        result = "Medbay";
-                    else if (position.y is < 5.6f and > 2.8f && position.x is > 13.8f and < 17)
-                        result = "Communications";
-                    else if (position.y is < 10 and > 3.3f && position.x is > 5 and < 7.1f)
-                        result = "Decontamination";
-                    else if (position.y is < 21.2f and > 17.3f && position.x is > 19.2f and < 22.7f)
-                        result = "Admin";
-                    else if (position.y is < 21.2f and > 17.3f && position.x is > 13 and < 16.4f)
-                        result = "Office";
-                    else if (position.y is < 5.2f and > 2 && position.x is > 18.1f and < 20.9f)
-                        result = "Storage";
-                    else if (position.y > 10 && position.x is > 0.2f and < 5)
-                        result = "Reactor";
-                    else if (position.y > 10 && position.x is > 7.5f and < 12)
-                        result = "Laboratory";
-                    else if (position.y < -1 && position.x > 18)
-                        result = "Balcony";
-                    else if (position.y > 21.5f)
-                        result = "Greenhouse";
-                    else if (position.x < -2.7f)
-                        result = "Launchpad";
-                    else
-                        result = "Hallway";
-
-                    break;
-
-                case 2:
-
-                    if ((position.y is > -12.5f and < -10.6f && position.x is > 18.6f and < 22.5f) || (position.x is > -11.1f and < -10.6f && position.y is < 18.6f and > 17.4f))
-                        result = "Storage";
-                    else if ((position.y is < -15.6f and > -22.7f && position.x is > 0.5f and < 4.1f) || (position.x is < 6.7f and > 4.1f && position.y is < -18.6f and > -21.4f))
-                        result = "O2";
-                    else if (position.y is < -15.5f and > -18.2f && position.x is > 10.3f and < 13)
-                        result = "Communications";
-                    else if (position.y > -20.3f && position.x is > 16.1f and < 28.7f)
-                        result = "Office";
-                    else if (position.y < -20.3f && position.x is > 19.8f and < 25.2f)
-                        result = "Admin";
-                    else if (position.y is < -10.7f and > -12.6f && position.x < 4.2f)
-                        result = "Security";
-                    else if (position.y is < -8.8f and > -12.6f && position.x < 11.2f)
-                        result = "Electrical";
-                    else if (position.y < -22.7 && position.x < 4.2)
-                        result = "Boiler Room";
-                    else if (position.y < -18.7f && position.x > 33.7f)
-                        result = "Specimen";
-                    else if (position.y > -10.5f && position.x is > 24.7f)
-                        result = "Laboratory";
-                    else if (position.y > -6)
-                        result = "Dropship";
-                    else
-                        result = "Hallway or Outside";
-
-                    break;
-
-                case 5 or 6:
-                    result = "Somewhere";
-                    break;
-            }
-
-            return result;
         }
     }
 
@@ -463,8 +293,8 @@ public static class MeetingPatches
         public static void Postfix(MeetingHud __instance, [HarmonyArgument(1)] GameData.PlayerInfo exiled, [HarmonyArgument(2)] bool tie)
         {
             var exiledString = exiled == null ? "null" : exiled.PlayerName;
-            LogSomething($"Exiled PlayerName = {exiledString}");
-            LogSomething($"Was a tie = {tie}");
+            LogInfo($"Exiled PlayerName = {exiledString}");
+            LogInfo($"Was a tie = {tie}");
             PlayerLayer.LocalLayers.ForEach(x => x?.VoteComplete(__instance));
             Coroutines.Start(PerformSwaps());
         }
@@ -641,7 +471,7 @@ public static class MeetingPatches
         var roleRevealed = false;
 
         if (CustomGameOptions.Whispers)
-            name = $"[{player.TargetPlayerId}] " + name;
+            name = $"[{player.TargetPlayerId}] {name}";
 
         if (!info[0] || !localinfo[0])
             return (name, color);

@@ -22,9 +22,9 @@ public class Collider : Syndicate
     public override Func<string> Description => () => $"- You can mark a player as positive or negative\n- When the marked players are within {Range}m of each other, they will die " +
         $"together{(HoldsDrive ? "\n- You can charge yourself to kill those you marked" : "")}\n{CommonAbilities}";
     public override InspectorResults InspectorResults => InspectorResults.Unseen;
-    public float PositiveTimer => ButtonUtils.Timer(Player, LastPositive, CustomGameOptions.CollideCooldown);
-    public float NegativeTimer => ButtonUtils.Timer(Player, LastNegative, CustomGameOptions.CollideCooldown);
-    public float ChargeTimer => ButtonUtils.Timer(Player, LastCharged, CustomGameOptions.ChargeCooldown);
+    public float PositiveTimer => ButtonUtils.Timer(Player, LastPositive, CustomGameOptions.CollideCd);
+    public float NegativeTimer => ButtonUtils.Timer(Player, LastNegative, CustomGameOptions.CollideCd);
+    public float ChargeTimer => ButtonUtils.Timer(Player, LastCharged, CustomGameOptions.ChargeCd);
 
     public Collider(PlayerControl player) : base(player)
     {
@@ -89,7 +89,7 @@ public class Collider : Syndicate
         if (!HoldsDrive || Charged || ChargeTimer != 0f)
             return;
 
-        TimeRemaining = CustomGameOptions.ChargeDuration;
+        TimeRemaining = CustomGameOptions.ChargeDur;
         ChargeSelf();
     }
 
@@ -115,9 +115,9 @@ public class Collider : Syndicate
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        PositiveButton.Update("SET POSITIVE", PositiveTimer, CustomGameOptions.CollideCooldown);
-        NegativeButton.Update("SET NEGATIVE", NegativeTimer, CustomGameOptions.CollideCooldown);
-        ChargeButton.Update("CHARGE", ChargeTimer, CustomGameOptions.ChargeCooldown, Charged, TimeRemaining, CustomGameOptions.ChargeDuration, true, HoldsDrive);
+        PositiveButton.Update("SET POSITIVE", PositiveTimer, CustomGameOptions.CollideCd);
+        NegativeButton.Update("SET NEGATIVE", NegativeTimer, CustomGameOptions.CollideCd);
+        ChargeButton.Update("CHARGE", ChargeTimer, CustomGameOptions.ChargeCd, Charged, TimeRemaining, CustomGameOptions.ChargeDur, true, HoldsDrive);
 
         if (GetDistBetweenPlayers(Positive, Negative) <= Range)
         {

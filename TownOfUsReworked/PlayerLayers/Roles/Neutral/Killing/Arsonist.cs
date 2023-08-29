@@ -18,7 +18,7 @@ public class Arsonist : Neutral
     public override Func<string> Description => () => "- You can douse players in gasoline\n- Doused players can be ignited, killing them all at once\n- Players who interact with " +
         "you will get doused";
     public override InspectorResults InspectorResults => InspectorResults.SeeksToDestroy;
-    public float DouseTimer => ButtonUtils.Timer(Player, LastDoused, CustomGameOptions.DouseCd);
+    public float DouseTimer => ButtonUtils.Timer(Player, LastDoused, CustomGameOptions.ArsoDouseCd);
     public float IgniteTimer => ButtonUtils.Timer(Player, LastIgnited, CustomGameOptions.IgniteCd);
 
     public Arsonist(PlayerControl player) : base(player)
@@ -115,7 +115,7 @@ public class Arsonist : Neutral
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        DouseButton.Update("DOUSE", DouseTimer, CustomGameOptions.DouseCd);
+        DouseButton.Update("DOUSE", DouseTimer, CustomGameOptions.ArsoDouseCd);
         IgniteButton.Update("IGNITE", IgniteTimer, CustomGameOptions.IgniteCd, true, Doused.Count > 0);
     }
 }

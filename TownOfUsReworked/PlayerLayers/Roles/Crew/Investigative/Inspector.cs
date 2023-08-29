@@ -5,7 +5,7 @@ public class Inspector : Crew
     public DateTime LastInspected { get; set; }
     public List<byte> Inspected { get; set; }
     public CustomButton InspectButton { get; set; }
-    public float Timer => ButtonUtils.Timer(Player, LastInspected, CustomGameOptions.InspectCooldown);
+    public float Timer => ButtonUtils.Timer(Player, LastInspected, CustomGameOptions.InspectCd);
 
     public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Inspector : Colors.Crew;
     public override string Name => "Inspector";
@@ -45,6 +45,6 @@ public class Inspector : Crew
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        InspectButton.Update("INSPECT", Timer, CustomGameOptions.InspectCooldown);
+        InspectButton.Update("INSPECT", Timer, CustomGameOptions.InspectCd);
     }
 }

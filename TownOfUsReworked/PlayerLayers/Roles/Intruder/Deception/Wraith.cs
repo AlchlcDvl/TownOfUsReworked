@@ -45,13 +45,13 @@ public class Wraith : Intruder
             return;
 
         CallRpc(CustomRPC.Action, ActionsRPC.Invis, this);
-        TimeRemaining = CustomGameOptions.InvisDuration;
+        TimeRemaining = CustomGameOptions.InvisDur;
         Invis();
     }
 
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        InvisButton.Update("INVIS", Timer, CustomGameOptions.InvisCd, IsInvis, TimeRemaining, CustomGameOptions.InvisDuration);
+        InvisButton.Update("INVIS", Timer, CustomGameOptions.InvisCd, IsInvis, TimeRemaining, CustomGameOptions.InvisDur);
     }
 }

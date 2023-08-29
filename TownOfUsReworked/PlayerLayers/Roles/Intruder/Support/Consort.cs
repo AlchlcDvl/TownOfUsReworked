@@ -17,7 +17,7 @@ public class Consort : Intruder
     public override Func<string> Description => () => "- You can seduce players\n- Seduction blocks your target from being able to use their abilities for a short while\n- You are " +
         $"immune to blocks\n- If you block a <color=#336EFFFF>Serial Killer</color>, they will be forced to kill you\n{CommonAbilities}";
     public override InspectorResults InspectorResults => InspectorResults.HindersOthers;
-    public float Timer => ButtonUtils.Timer(Player, LastBlocked, CustomGameOptions.ConsRoleblockCooldown);
+    public float Timer => ButtonUtils.Timer(Player, LastBlocked, CustomGameOptions.ConsortCd);
 
     public Consort(PlayerControl player) : base(player)
     {
@@ -67,7 +67,7 @@ public class Consort : Intruder
             BlockMenu.Open();
         else
         {
-            TimeRemaining = CustomGameOptions.ConsRoleblockDuration;
+            TimeRemaining = CustomGameOptions.ConsortDur;
             Block();
             CallRpc(CustomRPC.Action, ActionsRPC.ConsRoleblock, this, BlockTarget);
         }
@@ -78,15 +78,15 @@ public class Consort : Intruder
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        BlockButton.Update(BlockTarget == null ? "SET TARGET" : "ROLEBLOCK", Timer, CustomGameOptions.ConsRoleblockCooldown, Blocking, TimeRemaining,
-            CustomGameOptions.ConsRoleblockDuration);
+        BlockButton.Update(BlockTarget == null ? "SET TARGET" : "ROLEBLOCK", Timer, CustomGameOptions.ConsortCd, Blocking, TimeRemaining,
+            CustomGameOptions.ConsortDur);
 
         if (Input.GetKeyDown(KeyCode.Backspace))
         {
             if (BlockTarget != null && !Blocking)
                 BlockTarget = null;
 
-            LogSomething("Removed a target");
+            LogInfo("Removed a target");
         }
     }
 }

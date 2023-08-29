@@ -18,7 +18,7 @@ public class Drunkard : Syndicate
     public override Func<string> Description => () => $"- You can confuse {(HoldsDrive ? "everyone" : "a player")}\n- Confused players will have their controls reverse\n" +
         CommonAbilities;
     public override InspectorResults InspectorResults => InspectorResults.HindersOthers;
-    public float Timer => ButtonUtils.Timer(Player, LastConfused, CustomGameOptions.ConfuseCooldown);
+    public float Timer => ButtonUtils.Timer(Player, LastConfused, CustomGameOptions.ConfuseCd);
 
     public Drunkard(PlayerControl player) : base(player)
     {
@@ -66,7 +66,7 @@ public class Drunkard : Syndicate
 
         if (HoldsDrive)
         {
-            TimeRemaining = CustomGameOptions.ConfuseDuration;
+            TimeRemaining = CustomGameOptions.ConfuseDur;
             Confuse();
             CallRpc(CustomRPC.Action, ActionsRPC.Confuse, this);
         }
@@ -75,7 +75,7 @@ public class Drunkard : Syndicate
         else
         {
             CallRpc(CustomRPC.Action, ActionsRPC.Confuse, this, ConfusedPlayer);
-            TimeRemaining = CustomGameOptions.ConfuseDuration;
+            TimeRemaining = CustomGameOptions.ConfuseDur;
             Confuse();
         }
     }
@@ -86,14 +86,14 @@ public class Drunkard : Syndicate
     {
         base.UpdateHud(__instance);
         var flag = ConfusedPlayer == null && !HoldsDrive;
-        ConfuseButton.Update(flag ? "SET TARGET" : "CONFUSE", Timer, CustomGameOptions.ConfuseCooldown, Confused, TimeRemaining, CustomGameOptions.ConfuseDuration);
+        ConfuseButton.Update(flag ? "SET TARGET" : "CONFUSE", Timer, CustomGameOptions.ConfuseCd, Confused, TimeRemaining, CustomGameOptions.ConfuseDur);
 
         if (Input.GetKeyDown(KeyCode.Backspace))
         {
             if (ConfusedPlayer != null && !HoldsDrive && !Confused)
                 ConfusedPlayer = null;
 
-            LogSomething("Removed a target");
+            LogInfo("Removed a target");
         }
     }
 }

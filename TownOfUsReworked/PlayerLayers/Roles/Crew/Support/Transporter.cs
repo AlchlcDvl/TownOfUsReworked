@@ -23,7 +23,7 @@ public class Transporter : Crew
     public bool WasInVent2 { get; set; }
     public Vent Vent1 { get; set; }
     public Vent Vent2 { get; set; }
-    public float Timer => ButtonUtils.Timer(Player, LastTransported, CustomGameOptions.TransportCooldown);
+    public float Timer => ButtonUtils.Timer(Player, LastTransported, CustomGameOptions.TransportCd);
 
     public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Transporter : Colors.Crew;
     public override string Name => "Transporter";
@@ -36,7 +36,7 @@ public class Transporter : Crew
     {
         TransportPlayer1 = null;
         TransportPlayer2 = null;
-        UsesLeft = CustomGameOptions.TransportMaxUses;
+        UsesLeft = CustomGameOptions.MaxTransports;
         RoleAlignment = RoleAlignment.CrewSupport;
         UntransportablePlayers = new();
         TransportMenu1 = new(Player, Click1, Exception1);
@@ -70,7 +70,7 @@ public class Transporter : Crew
         WasInVent2 = false;
         Vent1 = null;
         Vent2 = null;
-        TimeRemaining = CustomGameOptions.TransportDuration;
+        TimeRemaining = CustomGameOptions.TransportDur;
 
         if (TransportPlayer1.Data.IsDead)
         {
@@ -114,7 +114,7 @@ public class Transporter : Crew
         TransportPlayer2.NetTransform.Halt();
 
         if (CustomPlayer.Local == TransportPlayer1 || CustomPlayer.Local == TransportPlayer2)
-            Flash(Color, CustomGameOptions.TransportDuration);
+            Flash(Color, CustomGameOptions.TransportDur);
 
         if (Player1Body == null && !WasInVent1)
             AnimateTransport1();
@@ -129,7 +129,7 @@ public class Transporter : Crew
             var now = DateTime.UtcNow;
             var seconds = (now - startTime).TotalSeconds;
 
-            if (seconds < CustomGameOptions.TransportDuration)
+            if (seconds < CustomGameOptions.TransportDur)
             {
                 TimeRemaining -= Time.deltaTime;
                 yield return null;
@@ -138,7 +138,10 @@ public class Transporter : Crew
                 break;
 
             if (Meeting)
+            {
+                TimeRemaining = 0;
                 yield break;
+            }
         }
 
         if (Player1Body == null && Player2Body == null)
@@ -256,7 +259,7 @@ public class Transporter : Crew
         AnimationPlaying1.flipX = TransportPlayer1.MyRend().flipX;
         AnimationPlaying1.transform.localScale *= 0.9f * TransportPlayer1.GetModifiedSize();
 
-        HUD.StartCoroutine(Effects.Lerp(CustomGameOptions.TransportDuration, new Action<float>(p =>
+        HUD.StartCoroutine(Effects.Lerp(CustomGameOptions.TransportDur, new Action<float>(p =>
         {
             var index = (int)(p * PortalAnimation.Length);
             index = Mathf.Clamp(index, 0, PortalAnimation.Length - 1);
@@ -274,7 +277,7 @@ public class Transporter : Crew
         AnimationPlaying2.flipX = TransportPlayer2.MyRend().flipX;
         AnimationPlaying2.transform.localScale *= 0.9f * TransportPlayer2.GetModifiedSize();
 
-        HUD.StartCoroutine(Effects.Lerp(CustomGameOptions.TransportDuration, new Action<float>(p =>
+        HUD.StartCoroutine(Effects.Lerp(CustomGameOptions.TransportDur, new Action<float>(p =>
         {
             var index = (int)(p * PortalAnimation.Length);
             index = Mathf.Clamp(index, 0, PortalAnimation.Length - 1);
@@ -314,8 +317,8 @@ public class Transporter : Crew
         base.UpdateHud(__instance);
         var flag1 = TransportPlayer1 == null;
         var flag2 = TransportPlayer2 == null;
-        TransportButton.Update(flag1 ? "FIRST TARGET" : (flag2 ? "SECOND TARGET" : "TRANSPORT"), Timer, CustomGameOptions.TransportCooldown, UsesLeft, Transporting,
-            TimeRemaining, CustomGameOptions.TransportDuration, true, ButtonUsable);
+        TransportButton.Update(flag1 ? "FIRST TARGET" : (flag2 ? "SECOND TARGET" : "TRANSPORT"), Timer, CustomGameOptions.TransportCd, UsesLeft, Transporting,
+            TimeRemaining, CustomGameOptions.TransportDur, true, ButtonUsable);
 
         if (Input.GetKeyDown(KeyCode.Backspace))
         {
@@ -324,7 +327,7 @@ public class Transporter : Crew
             else if (TransportPlayer1 != null)
                 TransportPlayer1 = null;
 
-            LogSomething("Removed a target");
+            LogInfo("Removed a target");
         }
 
         foreach (var entry in UntransportablePlayers)

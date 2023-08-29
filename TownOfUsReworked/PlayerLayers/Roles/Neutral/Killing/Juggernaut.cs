@@ -12,7 +12,7 @@ public class Juggernaut : Neutral
     public override Func<string> StartText => () => "Your Power Grows With Every Kill";
     public override Func<string> Description => () => "- With each kill, your kill cooldown decreases" + (JuggKills >= 4 ? "\n- You can bypass all forms of protection" : "");
     public override InspectorResults InspectorResults => InspectorResults.IsAggressive;
-    public float Timer => ButtonUtils.Timer(Player, LastKilled, CustomGameOptions.JuggKillCooldown, -(CustomGameOptions.JuggKillBonus * JuggKills));
+    public float Timer => ButtonUtils.Timer(Player, LastKilled, CustomGameOptions.AssaultCd, -(CustomGameOptions.AssaultBonus * JuggKills));
 
     public Juggernaut(PlayerControl player) : base(player)
     {
@@ -49,6 +49,6 @@ public class Juggernaut : Neutral
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        AssaultButton.Update("ASSAULT", Timer, CustomGameOptions.JuggKillCooldown, -(CustomGameOptions.JuggKillBonus * JuggKills));
+        AssaultButton.Update("ASSAULT", Timer, CustomGameOptions.AssaultCd, -(CustomGameOptions.AssaultBonus * JuggKills));
     }
 }

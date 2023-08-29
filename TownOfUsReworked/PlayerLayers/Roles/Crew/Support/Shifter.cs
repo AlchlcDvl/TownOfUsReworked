@@ -4,7 +4,7 @@ public class Shifter : Crew
 {
     public DateTime LastShifted { get; set; }
     public CustomButton ShiftButton { get; set; }
-    public float Timer => ButtonUtils.Timer(Player, LastShifted, CustomGameOptions.ShifterCd);
+    public float Timer => ButtonUtils.Timer(Player, LastShifted, CustomGameOptions.ShiftCd);
 
     public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Shifter : Colors.Crew;
     public override string Name => "Shifter";
@@ -118,6 +118,6 @@ public class Shifter : Crew
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        ShiftButton.Update("SHIFT", Timer, CustomGameOptions.ShifterCd);
+        ShiftButton.Update("SHIFT", Timer, CustomGameOptions.ShiftCd);
     }
 }

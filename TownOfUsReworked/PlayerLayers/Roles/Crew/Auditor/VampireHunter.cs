@@ -5,7 +5,7 @@ public class VampireHunter : Crew
     public DateTime LastStaked { get; set; }
     public static bool VampsDead => !CustomPlayer.AllPlayers.Any(x => !x.Data.IsDead && !x.Data.Disconnected && x.Is(SubFaction.Undead));
     public CustomButton StakeButton { get; set; }
-    public float Timer => ButtonUtils.Timer(Player, LastStaked, CustomGameOptions.StakeCooldown);
+    public float Timer => ButtonUtils.Timer(Player, LastStaked, CustomGameOptions.StakeCd);
 
     public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.VampireHunter : Colors.Crew;
     public override string Name => "Vampire Hunter";
@@ -36,7 +36,7 @@ public class VampireHunter : Crew
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        StakeButton.Update("STAKE", Timer, CustomGameOptions.StakeCooldown);
+        StakeButton.Update("STAKE", Timer, CustomGameOptions.StakeCd);
 
         if (VampsDead && !IsDead)
         {

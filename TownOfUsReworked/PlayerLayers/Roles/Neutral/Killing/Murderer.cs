@@ -11,7 +11,7 @@ public class Murderer : Neutral
     public override Func<string> StartText => () => "I Got Murder On My Mind";
     public override Func<string> Description => () => "- You can kill";
     public override InspectorResults InspectorResults => InspectorResults.IsBasic;
-    public float Timer => ButtonUtils.Timer(Player, LastKilled, CustomGameOptions.MurdKCD);
+    public float Timer => ButtonUtils.Timer(Player, LastKilled, CustomGameOptions.MurderCd);
 
     public Murderer(PlayerControl player) : base(player)
     {
@@ -41,6 +41,6 @@ public class Murderer : Neutral
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        MurderButton.Update("MURDER", Timer, CustomGameOptions.MurdKCD);
+        MurderButton.Update("MURDER", Timer, CustomGameOptions.MurderCd);
     }
 }

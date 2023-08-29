@@ -9,8 +9,8 @@ public class Coroner : Crew
     public DateTime LastCompared { get; set; }
     public DateTime LastAutopsied { get; set; }
     public CustomButton AutopsyButton { get; set; }
-    public float AutopsyTimer => ButtonUtils.Timer(Player, LastAutopsied, CustomGameOptions.AutopsyCooldown);
-    public float CompareTimer => ButtonUtils.Timer(Player, LastCompared, CustomGameOptions.CompareCooldown);
+    public float AutopsyTimer => ButtonUtils.Timer(Player, LastAutopsied, CustomGameOptions.AutopsyCd);
+    public float CompareTimer => ButtonUtils.Timer(Player, LastCompared, CustomGameOptions.CompareCd);
 
     public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Coroner : Colors.Crew;
     public override string Name => "Coroner";
@@ -47,12 +47,12 @@ public class Coroner : Crew
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        AutopsyButton.Update("AUTOPSY", AutopsyTimer, CustomGameOptions.AutopsyCooldown);
-        CompareButton.Update("COMPARE", CompareTimer, CustomGameOptions.CompareCooldown, true, ReferenceBodies.Count > 0);
+        AutopsyButton.Update("AUTOPSY", AutopsyTimer, CustomGameOptions.AutopsyCd);
+        CompareButton.Update("COMPARE", CompareTimer, CustomGameOptions.CompareCd, true, ReferenceBodies.Count > 0);
 
         if (!CustomPlayer.LocalCustom.IsDead)
         {
-            var validBodies = AllBodies.Where(x => KilledPlayers.Any(y => y.PlayerId == x.ParentId && DateTime.UtcNow < y.KillTime.AddSeconds(CustomGameOptions.CoronerArrowDuration)));
+            var validBodies = AllBodies.Where(x => KilledPlayers.Any(y => y.PlayerId == x.ParentId && DateTime.UtcNow < y.KillTime.AddSeconds(CustomGameOptions.CoronerArrowDur)));
 
             foreach (var bodyArrow in BodyArrows.Keys)
             {
@@ -122,6 +122,6 @@ public class Coroner : Crew
 
         //Only Coroner can see this
         if (HUD)
-            HUD.Chat.AddChat(CustomPlayer.Local, reportMsg);
+            Run(HUD.Chat, "<color=#4D99E6FF>〖 Autopsy Results 〗</color>", reportMsg);
     }
 }

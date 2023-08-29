@@ -11,7 +11,7 @@ public class Pestilence : Neutral
     public override Func<string> StartText => () => "THE APOCALYPSE IS NIGH";
     public override Func<string> Description => () => "- You are on forever alert, anyone who interacts with you will be killed";
     public override InspectorResults InspectorResults => InspectorResults.LeadsTheGroup;
-    public float Timer => ButtonUtils.Timer(Player, LastKilled, CustomGameOptions.PestKillCd);
+    public float Timer => ButtonUtils.Timer(Player, LastKilled, CustomGameOptions.ObliterateCd);
 
     public Pestilence(PlayerControl owner) : base(owner)
     {
@@ -41,6 +41,6 @@ public class Pestilence : Neutral
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        ObliterateButton.Update("OBLITERATE", Timer, CustomGameOptions.PestKillCd);
+        ObliterateButton.Update("OBLITERATE", Timer, CustomGameOptions.ObliterateCd);
     }
 }

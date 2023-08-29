@@ -187,3 +187,39 @@ public static class MiraShipStatusPatch
             CommsVent.transform.position = CommsPos;
     }
 }
+
+[HarmonyPatch(typeof(ReactorSystemType), nameof(ReactorSystemType.RepairDamage))]
+public static class ReactorMira
+{
+    public static bool Prefix(ReactorSystemType __instance, ref byte opCode)
+    {
+        if (ShipStatus.Instance.Type == ShipStatus.MapType.Hq && opCode == 128 && !__instance.IsActive)
+        {
+            __instance.Countdown = CustomGameOptions.MiraReactorTimer;
+            __instance.ReactorDuration = CustomGameOptions.MiraReactorTimer;
+            __instance.UserConsolePairs.Clear();
+            __instance.IsDirty = true;
+            return false;
+        }
+
+        return true;
+    }
+}
+
+[HarmonyPatch(typeof(LifeSuppSystemType), nameof(LifeSuppSystemType.RepairDamage))]
+public static class O2Mira
+{
+    public static bool Prefix(LifeSuppSystemType __instance, ref byte opCode)
+    {
+        if (ShipStatus.Instance.Type == ShipStatus.MapType.Hq && opCode == 128 && !__instance.IsActive)
+        {
+            __instance.Countdown = CustomGameOptions.MiraO2Timer;
+            __instance.LifeSuppDuration = CustomGameOptions.MiraO2Timer;
+            __instance.CompletedConsoles.Clear();
+            __instance.IsDirty = true;
+            return false;
+        }
+
+        return true;
+    }
+}

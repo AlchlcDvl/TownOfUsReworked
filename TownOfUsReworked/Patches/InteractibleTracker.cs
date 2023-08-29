@@ -8,19 +8,19 @@ public static class SaveLadderPlayer
         try
         {
             if (CustomPlayer.Local.Is(LayerEnum.Transporter))
-                Role.GetRole<Transporter>(CustomPlayer.Local).UntransportablePlayers.Add(__instance.myPlayer.PlayerId, DateTime.UtcNow);
+                ((Transporter)Role.LocalRole).UntransportablePlayers.Add(__instance.myPlayer.PlayerId, DateTime.UtcNow);
             else if (CustomPlayer.Local.Is(LayerEnum.Retributionist))
-                Role.GetRole<Retributionist>(CustomPlayer.Local).UntransportablePlayers.Add(__instance.myPlayer.PlayerId, DateTime.UtcNow);
+                ((Retributionist)Role.LocalRole).UntransportablePlayers.Add(__instance.myPlayer.PlayerId, DateTime.UtcNow);
             else if (CustomPlayer.Local.Is(LayerEnum.Warper))
-                Role.GetRole<Warper>(CustomPlayer.Local).UnwarpablePlayers.Add(__instance.myPlayer.PlayerId, DateTime.UtcNow);
+                ((Warper)Role.LocalRole).UnwarpablePlayers.Add(__instance.myPlayer.PlayerId, DateTime.UtcNow);
             else if (CustomPlayer.Local.Is(LayerEnum.PromotedRebel))
-                Role.GetRole<PromotedRebel>(CustomPlayer.Local).UnwarpablePlayers.Add(__instance.myPlayer.PlayerId, DateTime.UtcNow);
+                ((PromotedRebel)Role.LocalRole).UnwarpablePlayers.Add(__instance.myPlayer.PlayerId, DateTime.UtcNow);
             else
                 CallRpc(CustomRPC.Action, ActionsRPC.SetUninteractable, CustomPlayer.Local);
         }
         catch (Exception e)
         {
-            LogSomething(e);
+            LogError(e);
         }
 
         if (CustomPlayer.Local.Is(LayerEnum.Astral))
@@ -36,19 +36,19 @@ public static class SavePlatformPlayer
         try
         {
             if (CustomPlayer.Local.Is(LayerEnum.Transporter))
-                Role.GetRole<Transporter>(CustomPlayer.Local).UntransportablePlayers.Add(CustomPlayer.Local.PlayerId, DateTime.UtcNow);
+                ((Transporter)Role.LocalRole).UntransportablePlayers.Add(CustomPlayer.Local.PlayerId, DateTime.UtcNow);
             else if (CustomPlayer.Local.Is(LayerEnum.Retributionist))
-                Role.GetRole<Retributionist>(CustomPlayer.Local).UntransportablePlayers.Add(CustomPlayer.Local.PlayerId, DateTime.UtcNow);
+                ((Retributionist)Role.LocalRole).UntransportablePlayers.Add(CustomPlayer.Local.PlayerId, DateTime.UtcNow);
             else if (CustomPlayer.Local.Is(LayerEnum.Warper))
-                Role.GetRole<Warper>(CustomPlayer.Local).UnwarpablePlayers.Add(CustomPlayer.Local.PlayerId, DateTime.UtcNow);
+                ((Warper)Role.LocalRole).UnwarpablePlayers.Add(CustomPlayer.Local.PlayerId, DateTime.UtcNow);
             else if (CustomPlayer.Local.Is(LayerEnum.PromotedRebel))
-                Role.GetRole<PromotedRebel>(CustomPlayer.Local).UnwarpablePlayers.Add(CustomPlayer.Local.PlayerId, DateTime.UtcNow);
+                ((PromotedRebel)Role.LocalRole).UnwarpablePlayers.Add(CustomPlayer.Local.PlayerId, DateTime.UtcNow);
             else
                 CallRpc(CustomRPC.Action, ActionsRPC.SetUninteractable, CustomPlayer.Local);
         }
         catch (Exception e)
         {
-            LogSomething(e);
+            LogError(e);
         }
 
         if (CustomPlayer.Local.Is(LayerEnum.Astral))

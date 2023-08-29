@@ -154,15 +154,15 @@ public static class OnGameEndPatch
                         winners.Add(PotentialWinners.First(x => x.PlayerName == role2.PlayerName));
                 }
             }
-            else if (Role.InfectorsWin)
+            else if (Role.ApocalypseWins)
             {
-                foreach (var role2 in Role.GetRoles<Plaguebearer>(LayerEnum.Plaguebearer))
+                foreach (var role2 in Role.GetRoles(RoleAlignment.NeutralApoc))
                 {
                     if (!role2.Disconnected && role2.Faithful)
                         winners.Add(PotentialWinners.First(x => x.PlayerName == role2.PlayerName));
                 }
 
-                foreach (var role2 in Role.GetRoles<Pestilence>(LayerEnum.Pestilence))
+                foreach (var role2 in Role.GetRoles(RoleAlignment.NeutralHarb))
                 {
                     if (!role2.Disconnected && role2.Faithful)
                         winners.Add(PotentialWinners.First(x => x.PlayerName == role2.PlayerName));
@@ -170,7 +170,7 @@ public static class OnGameEndPatch
             }
             else if (Role.GlitchWins)
             {
-                foreach (var role2 in Role.GetRoles<Glitch>(LayerEnum.Glitch))
+                foreach (var role2 in Role.GetRoles(LayerEnum.Glitch))
                 {
                     if (!role2.Disconnected && role2.Faithful && role2.Winner)
                         winners.Add(PotentialWinners.First(x => x.PlayerName == role2.PlayerName));
@@ -178,7 +178,7 @@ public static class OnGameEndPatch
             }
             else if (Role.JuggernautWins)
             {
-                foreach (var role2 in Role.GetRoles<Juggernaut>(LayerEnum.Juggernaut))
+                foreach (var role2 in Role.GetRoles(LayerEnum.Juggernaut))
                 {
                     if (!role2.Disconnected && role2.Faithful && role2.Winner)
                         winners.Add(PotentialWinners.First(x => x.PlayerName == role2.PlayerName));
@@ -186,7 +186,7 @@ public static class OnGameEndPatch
             }
             else if (Role.ArsonistWins)
             {
-                foreach (var role2 in Role.GetRoles<Arsonist>(LayerEnum.Arsonist))
+                foreach (var role2 in Role.GetRoles(LayerEnum.Arsonist))
                 {
                     if (!role2.Disconnected && role2.Faithful)
                         winners.Add(PotentialWinners.First(x => x.PlayerName == role2.PlayerName));
@@ -194,7 +194,7 @@ public static class OnGameEndPatch
             }
             else if (Role.SerialKillerWins)
             {
-                foreach (var role2 in Role.GetRoles<SerialKiller>(LayerEnum.SerialKiller))
+                foreach (var role2 in Role.GetRoles(LayerEnum.SerialKiller))
                 {
                     if (!role2.Disconnected && role2.Faithful && role2.Winner)
                         winners.Add(PotentialWinners.First(x => x.PlayerName == role2.PlayerName));
@@ -202,7 +202,7 @@ public static class OnGameEndPatch
             }
             else if (Role.MurdererWins)
             {
-                foreach (var role2 in Role.GetRoles<Murderer>(LayerEnum.Murderer))
+                foreach (var role2 in Role.GetRoles(LayerEnum.Murderer))
                 {
                     if (!role2.Disconnected && role2.Faithful)
                         winners.Add(PotentialWinners.First(x => x.PlayerName == role2.PlayerName));
@@ -210,7 +210,7 @@ public static class OnGameEndPatch
             }
             else if (Role.WerewolfWins)
             {
-                foreach (var role2 in Role.GetRoles<Werewolf>(LayerEnum.Werewolf))
+                foreach (var role2 in Role.GetRoles(LayerEnum.Werewolf))
                 {
                     if (!role2.Disconnected && role2.Faithful && role2.Winner)
                         winners.Add(PotentialWinners.First(x => x.PlayerName == role2.PlayerName));
@@ -218,7 +218,7 @@ public static class OnGameEndPatch
             }
             else if (Role.CryomaniacWins)
             {
-                foreach (var role2 in Role.GetRoles<Cryomaniac>(LayerEnum.Cryomaniac))
+                foreach (var role2 in Role.GetRoles(LayerEnum.Cryomaniac))
                 {
                     if (!role2.Disconnected && role2.Faithful && role2.Winner)
                         winners.Add(PotentialWinners.First(x => x.PlayerName == role2.PlayerName));
@@ -348,6 +348,7 @@ public static class OnGameEndPatch
                 }
             }
 
+            winners = winners.Distinct().ToList();
             TempData.winners.Clear();
             TempData.winners = winners.SystemToIl2Cpp();
         }

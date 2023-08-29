@@ -22,14 +22,14 @@ public class Executioner : Neutral
     public override Func<string> Description => () => TargetPlayer == null ? "- You can select a player to eject" : ((TargetVotedOut ? "- You can doom those who voted for " +
         $"{TargetPlayer?.name}\n" : "") + $"- If {TargetPlayer?.name} dies, you will become a <color=#F7B3DAFF>Jester</color>");
     public override InspectorResults InspectorResults => InspectorResults.Manipulative;
-    public float Timer => ButtonUtils.Timer(Player, LastDoomed, CustomGameOptions.DoomCooldown);
+    public float Timer => ButtonUtils.Timer(Player, LastDoomed, CustomGameOptions.DoomCd);
 
     public Executioner(PlayerControl player) : base(player)
     {
         Objectives = () => TargetVotedOut ? $"- {TargetPlayer?.name} has been ejected" : (TargetPlayer == null ? "- Find a target to eject" : $"- Eject {TargetPlayer?.name}");
         RoleAlignment = RoleAlignment.NeutralEvil;
         ToDoom = new();
-        UsesLeft = CustomGameOptions.DoomCount;
+        UsesLeft = CustomGameOptions.MaxDooms;
         DoomButton = new(this, "Doom", AbilityTypes.Direct, "ActionSecondary", Doom, Exception1, true);
         TargetButton = new(this, "ExeTarget", AbilityTypes.Direct, "ActionSecondary", SelectTarget, Exception2);
         Rounds = 0;
@@ -69,7 +69,7 @@ public class Executioner : Neutral
             ToDoom.Remove(ToDoom[^1]);
         }
 
-        UsesLeft = CustomGameOptions.DoomCount <= ToDoom.Count ? CustomGameOptions.DoomCount : ToDoom.Count;
+        UsesLeft = CustomGameOptions.MaxDooms <= ToDoom.Count ? CustomGameOptions.MaxDooms : ToDoom.Count;
     }
 
     public void TurnJest()
@@ -103,7 +103,7 @@ public class Executioner : Neutral
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        DoomButton.Update("DOOM", Timer, CustomGameOptions.DoomCooldown, UsesLeft, CanDoom, CanDoom && TargetPlayer != null);
+        DoomButton.Update("DOOM", Timer, CustomGameOptions.DoomCd, UsesLeft, CanDoom, CanDoom && TargetPlayer != null);
         TargetButton.Update("TORMENT", true, TargetPlayer == null);
 
         if ((TargetFailed || (TargetPlayer != null && Failed)) && !IsDead)

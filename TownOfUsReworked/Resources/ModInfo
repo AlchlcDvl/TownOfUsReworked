@@ -2,37 +2,58 @@ Welcome to Town Of Us Reworked %modversion%!
 
 Town Of Us Reactivated but better! (hopefully)
 
-This mod is a mish mash of code from different mods, mainly from Town Of Us Reactivated. Enjoy the chaos that comes out as a result!
+This mod is a mish mash of code and ideas from different mods and forks, mainly from Town Of Us Reactivated and The Other Roles. Enjoy the chaos that comes out as a result!
 
 If you want to know more try using the other info commands, visiting the %github% page or joining the %discord% server. Happy ejections!
 
 Changelog-
-- Addition: Added Better Mira HQ options
-- Addition: You are are told who is the host (for situations where people start asking who's the host)
-- Buff: Vampire Hunters are now notified if the one they killed was actually an Undead or not
-- Buff: Coroners are no longer fooled by frames
-- Optimisation: The code was optimised a bit more
-- Change: Random maps option has been merged into the Map option (it's the last one in the set of values)
-- Completion: The mod is now fully compatible with Submerged
-- Improvement: Role generation is now even more randomisable (meaning repetitive games are less likely to happen)
-- Improvement: Your discord activity presence now reflects the mod being active
-- Improvement: Improved how other better map options are handled
-- General Fix: Fixed some inconsistencies within the settings
-- Bug Fix: Fixed the win condition of objectifiers not showing up on their wiki pages
-- Bug Fix: Fixed ability buttons stacking when switching between robots during a meeting
-- Bug Fix: Fixed weird target assignment for Lovers, Linked and Rivals
-- Bug Fix: Fixed being able to guess even after voting has been completed
-- Bug Fix: Fixed the occasional log spam
-- Visual Fix: Fixed Swapper swaps not appearing to swap
-- Visual Fix: Fixed sabotage flashes not occurring after a custom flash
-- Role Fix: Fixed Retributionist actions not being up to date with the roles they are mimicking
-- Removal: Removed some Better Airship settings
+- Update: Updated BepInEx to 6.0.0-be.672
+- Mega Addition: Translations (WIP)
+- Addition: Added free ban slots for Crewmate, Impostor and Anarchist for the Role List game mode
+- Addition: Phantom, Ghoul, Banshee and Revealer spawns can now be toggled on for the Role List game mode
+- Addition: Added a game filter tag for modded games on the official servers
+- Overhaul: Overhauled how custom options work
+- Nerf: Retributionists using a Vigilante's ability will also decrease their ability usage upon killing someone
+- Nerf: Reviving a winning Troll now disables their win (meaning they have to be killed again to win :trol)
+- Change: Crewmate, Anarchist and Impostor are now included in the Random Faction slot
+- Change: Pestilence/Plaguebearer win screen has been changed (to make way for future roles of similar types)
+- Change: Dying and getting revived now resets your status as a doused/infected/spelled player
+- Change: Warper no longer spawns on Submerged or on Level Impostor maps (mainly because it's hard to set precise locations for post-CD warping there)
+- Improvement: Improved how the meeting button appears to those who cannot call a meeting
+- Improvement: Pressing A, D or the Right/Left arrows will now cycle through the cameras on Polus
+- Improvement: Improved how chat commands are handled (and are even dynamic now!)
+- Improvement: Task outlines now match the color of your role
+- Improvement: Improved how the auto updater works (and removed Submerged auto updater for now)
+- Improvement: Added an aborter for if the mod detects any other mods that are not Submerged or LevelImpostor (mainly to avoid having games breaking/corrupting because of conflicting mods)
+- Improvement: Added some code here and there to improve performance
+- Critical Fix: Fixed games not ending when everyone died
+- Critical Fix: Fixed the issue where the game would end in no one's victory when 0 crew spawned and a meeting is called
+- Vanilla Fix: The colorblind text now updates according properly regarding seeing them through walls
+- General Fix: Corrected some parts of the mod
+- Bug Fix: Fixed even more log spam
+- Bug Fix: Fixed failed conversions sometimes appearing to be converted to non-host players
+- Bug Fix: Fixed some issues with other win conditions
+- Bug Fix: Fixed chat messages not color coding properly when needed
+- Bug Fix: Fixed the chaos preset breaking settings if you don't have LevelImposter or Submerged
+- Bug Fix: Fixed the issue where the scrollbar would freak out
+- Bug Fix: Fixed the strange desync with rpcs and strings (like issues with whispering and guesses)
+- Bug Fix: Fixed shapeshifts not working (for like the 10th time)
+- Visual Fix: Fixed the highlight staying permanent for some reason on the role lists menu button in the game settings menu
+- Visual Fix: Fixed the mod logo being visible when the credits screen is active
+- Visual Fix: Fixed Drunkard appearing to have 2 colors in the wiki entries
+- Visual Fix: Fixed the Sabotage and Vent buttons not disappearing when the minimap is opened
+- Role Fix: Fixed Amnesiacs and Thieves from not winning or ending the game when they change roles
+- Role Fix: Fixed Rebel-Crusaders not actually being able to crusade
+- Role Fix: Fixed Spellslinger somehow winning the game beyond death without doing anything
+- Role Fix: Fixed Plaguebearers being unable to infect the host by any way (and thus being unable to transform into Pestilence)
+- Potential Fix: Attempted fix for the occasional "Fatal Error In GC" error
 
 Credits-
 Reworked Creator - AlchlcDvl
 Reworked Contributors - Det, Oper, xerminator, TheGodOfAr0n, twix, Discussions, Jsushi
 Reworked Testers - DarkFedora, 50 IQ, shiftyrose, TheRealLordDragon, Adrian D/i asked, Halloween Apple
-Reworked Artists - Kara, lotty, Gun, XiezibanWrite, Ramces, Det
+Reworked Artists - Kara, lotty, Gun, XiezibanWrite, Ramces, Det (their work can be found in %assets%)
+Reworked Translators - XiezibanWrite, CharlesQwQ
 Moral Support - MyDragonBreath
 
 Base Mod Creator - Slushiegoose

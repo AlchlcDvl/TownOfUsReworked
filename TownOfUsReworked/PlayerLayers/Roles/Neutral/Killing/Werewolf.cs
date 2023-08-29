@@ -13,7 +13,7 @@ public class Werewolf : Neutral
     public override Func<string> StartText => () => "AWOOOOOOOOOO";
     public override Func<string> Description => () => $"- You kill everyone within {CustomGameOptions.MaulRadius}m";
     public override InspectorResults InspectorResults => InspectorResults.IsAggressive;
-    public float Timer => ButtonUtils.Timer(Player, LastMauled, CustomGameOptions.MaulCooldown);
+    public float Timer => ButtonUtils.Timer(Player, LastMauled, CustomGameOptions.MaulCd);
 
     public Werewolf(PlayerControl player) : base(player)
     {
@@ -75,6 +75,6 @@ public class Werewolf : Neutral
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        MaulButton.Update("MAUL", Timer, CustomGameOptions.MaulCooldown, CanMaul);
+        MaulButton.Update("MAUL", Timer, CustomGameOptions.MaulCd, CanMaul);
     }
 }

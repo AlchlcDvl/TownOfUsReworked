@@ -6,7 +6,7 @@ public class Engineer : Crew
     public int UsesLeft { get; set; }
     public bool ButtonUsable => UsesLeft > 0;
     public DateTime LastFixed { get; set; }
-    public float Timer => ButtonUtils.Timer(Player, LastFixed, CustomGameOptions.FixCooldown);
+    public float Timer => ButtonUtils.Timer(Player, LastFixed, CustomGameOptions.FixCd);
 
     public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Engineer : Colors.Crew;
     public override string Name => "Engineer";
@@ -50,6 +50,6 @@ public class Engineer : Crew
         var dummyActive = system?.dummy.IsActive;
         var active = system?.specials.Any(s => s.IsActive);
         var condition = active == true && dummyActive == false;
-        FixButton.Update("FIX", Timer, CustomGameOptions.FixCooldown, UsesLeft, condition && ButtonUsable, ButtonUsable);
+        FixButton.Update("FIX", Timer, CustomGameOptions.FixCd, UsesLeft, condition && ButtonUsable, ButtonUsable);
     }
 }

@@ -55,7 +55,7 @@ public static class ButtonUtils
 
     public static void DestroyButtons(this PlayerControl player) => CustomButton.AllButtons.Where(x => x.Owner.Player == player).ToList().ForEach(x => x.Destroy());
 
-    public static bool CannotUse(this PlayerControl player) => player.onLadder || player.IsBlocked() || (player.inVent && !CustomGameOptions.VentTargetting) || player.inMovingPlat;
+    public static bool CannotUse(this PlayerControl player) => player.onLadder || player.IsBlocked() || (player.inVent && !CustomGameOptions.VentTargeting) || player.inMovingPlat;
 
     public static float GetModifiedCooldown(this PlayerControl player, float cooldown, float difference = 0f, float factor = 1f)
     {
@@ -96,9 +96,9 @@ public static class ButtonUtils
         var num = 1f;
 
         if (player.Is(LayerEnum.PromotedGodfather))
-            num *= CustomGameOptions.MafiosoAbilityCooldownDecrease;
+            num *= CustomGameOptions.GFPromotionCdDecrease;
         if (player.Is(LayerEnum.PromotedRebel))
-            num *= CustomGameOptions.SidekickAbilityCooldownDecrease;
+            num *= CustomGameOptions.RebPromotionCdDecrease;
 
         if (player.Diseased())
             num *= CustomGameOptions.DiseasedMultiplier;
@@ -123,9 +123,9 @@ public static class ButtonUtils
             var role2 = (Chameleon)role;
 
             if (start)
-                role2.LastSwooped = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.SwoopCooldown);
+                role2.LastSwooped = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.SwoopCd);
             else if (meeting)
-                role2.LastSwooped = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.SwoopCooldown);
+                role2.LastSwooped = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.SwoopCd);
             else
                 role2.LastSwooped = DateTime.UtcNow;
         }
@@ -146,9 +146,9 @@ public static class ButtonUtils
             role2.BlockTarget = null;
 
             if (start)
-                role2.LastBlocked = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.EscRoleblockCooldown);
+                role2.LastBlocked = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.EscortCd);
             else if (meeting)
-                role2.LastBlocked = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.EscRoleblockCooldown);
+                role2.LastBlocked = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.EscortCd);
             else
                 role2.LastBlocked = DateTime.UtcNow;
         }
@@ -157,9 +157,9 @@ public static class ButtonUtils
             var role2 = (Inspector)role;
 
             if (start)
-                role2.LastInspected = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.InspectCooldown);
+                role2.LastInspected = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.InspectCd);
             else if (meeting)
-                role2.LastInspected = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.InspectCooldown);
+                role2.LastInspected = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.InspectCd);
             else
                 role2.LastInspected = DateTime.UtcNow;
 
@@ -172,13 +172,13 @@ public static class ButtonUtils
 
             if (start)
             {
-                role2.LastCompared = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.CompareCooldown);
-                role2.LastAutopsied = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.AutopsyCooldown);
+                role2.LastCompared = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.CompareCd);
+                role2.LastAutopsied = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.AutopsyCd);
             }
             else if (meeting)
             {
-                role2.LastCompared = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.CompareCooldown);
-                role2.LastAutopsied = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.AutopsyCooldown);
+                role2.LastCompared = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.CompareCd);
+                role2.LastAutopsied = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.AutopsyCd);
             }
             else
             {
@@ -192,9 +192,9 @@ public static class ButtonUtils
             role2.OnLobby();
 
             if (start)
-                role2.LastMediated = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.MediateCooldown);
+                role2.LastMediated = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.MediateCd);
             else if (meeting)
-                role2.LastMediated = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.MediateCooldown);
+                role2.LastMediated = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.MediateCd);
             else
                 role2.LastMediated = DateTime.UtcNow;
         }
@@ -204,9 +204,9 @@ public static class ButtonUtils
             role2.BuggedPlayers.Clear();
 
             if (start)
-                role2.LastBugged = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.BugCooldown);
+                role2.LastBugged = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.BugCd);
             else if (meeting)
-                role2.LastBugged = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.BugCooldown);
+                role2.LastBugged = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.BugCd);
             else
                 role2.LastBugged = DateTime.UtcNow;
 
@@ -229,9 +229,9 @@ public static class ButtonUtils
             var role2 = (Shifter)role;
 
             if (start)
-                role2.LastShifted = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ShifterCd);
+                role2.LastShifted = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ShiftCd);
             else if (meeting)
-                role2.LastShifted = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.ShifterCd);
+                role2.LastShifted = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.ShiftCd);
             else
                 role2.LastShifted = DateTime.UtcNow;
         }
@@ -259,9 +259,9 @@ public static class ButtonUtils
             role2.TransportPlayer2 = null;
 
             if (start)
-                role2.LastTransported = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.TransportCooldown);
+                role2.LastTransported = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.TransportCd);
             else if (meeting)
-                role2.LastTransported = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.TransportCooldown);
+                role2.LastTransported = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.TransportCd);
             else
                 role2.LastTransported = DateTime.UtcNow;
         }
@@ -270,9 +270,9 @@ public static class ButtonUtils
             var role2 = (Altruist)role;
 
             if (start)
-                role2.LastRevived = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ReviveCooldown);
+                role2.LastRevived = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ReviveCd);
             else if (meeting)
-                role2.LastRevived = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.ReviveCooldown);
+                role2.LastRevived = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.ReviveCd);
             else
                 role2.LastRevived = DateTime.UtcNow;
         }
@@ -281,9 +281,9 @@ public static class ButtonUtils
             var role2 = (VampireHunter)role;
 
             if (start)
-                role2.LastStaked = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.StakeCooldown);
+                role2.LastStaked = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.StakeCd);
             else if (meeting)
-                role2.LastStaked = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.StakeCooldown);
+                role2.LastStaked = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.StakeCd);
             else
                 role2.LastStaked = DateTime.UtcNow;
         }
@@ -303,9 +303,9 @@ public static class ButtonUtils
             var role2 = (Mystic)role;
 
             if (start)
-                role2.LastRevealed = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.RevealCooldown);
+                role2.LastRevealed = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.MysticRevealCd);
             else if (meeting)
-                role2.LastRevealed = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.RevealCooldown);
+                role2.LastRevealed = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.MysticRevealCd);
             else
                 role2.LastRevealed = DateTime.UtcNow;
         }
@@ -314,9 +314,9 @@ public static class ButtonUtils
             var role2 = (Seer)role;
 
             if (start)
-                role2.LastSeered = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.SeerCooldown);
+                role2.LastSeered = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.SeerCd);
             else if (meeting)
-                role2.LastSeered = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.SeerCooldown);
+                role2.LastSeered = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.SeerCd);
             else
                 role2.LastSeered = DateTime.UtcNow;
         }
@@ -326,16 +326,16 @@ public static class ButtonUtils
             role2.RoundOne = start && CustomGameOptions.RoundOneNoShot;
 
             if (start)
-                role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.VigiKillCd);
+                role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ShootCd);
             else if (meeting)
-                role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.VigiKillCd);
+                role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.ShootCd);
             else
                 role2.LastKilled = DateTime.UtcNow;
         }
         else if (local.Is(LayerEnum.Mayor))
         {
             var role2 = (Mayor)role;
-            role2.RoundOne = start && CustomGameOptions.RoundOneNoReveal;
+            role2.RoundOne = start && CustomGameOptions.RoundOneNoMayorReveal;
         }
         else if (local.Is(LayerEnum.Monarch))
         {
@@ -343,9 +343,9 @@ public static class ButtonUtils
             role2.RoundOne = start && CustomGameOptions.RoundOneNoKnighting;
 
             if (start)
-                role2.LastKnighted = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.KnightingCooldown);
+                role2.LastKnighted = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.KnightingCd);
             else if (meeting)
-                role2.LastKnighted = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.KnightingCooldown);
+                role2.LastKnighted = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.KnightingCd);
             else
                 role2.LastKnighted = DateTime.UtcNow;
         }
@@ -359,20 +359,20 @@ public static class ButtonUtils
 
             if (role2.RevivedRole)
             {
-                role2.LastSwooped = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.SwoopCooldown);
+                role2.LastSwooped = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.SwoopCd);
                 role2.LastExamined = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.ExamineCd);
-                role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.VigiKillCd);
-                role2.LastStaked = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.StakeCooldown);
-                role2.LastAutopsied = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.AutopsyCooldown);
-                role2.LastCompared = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.CompareCooldown);
+                role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.ShootCd);
+                role2.LastStaked = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.StakeCd);
+                role2.LastAutopsied = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.AutopsyCd);
+                role2.LastCompared = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.CompareCd);
                 role2.LastAlerted = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.AlertCd);
                 role2.LastTracked = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.TrackCd);
                 role2.LastInterrogated = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.InterrogateCd);
-                role2.LastMediated = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.MediateCooldown);
-                role2.LastBugged = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.BugCooldown);
-                role2.LastInspected = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.InspectCooldown);
-                role2.LastBlocked = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.EscRoleblockCooldown);
-                role2.LastTransported = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.TransportCooldown);
+                role2.LastMediated = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.MediateCd);
+                role2.LastBugged = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.BugCd);
+                role2.LastInspected = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.InspectCd);
+                role2.LastBlocked = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.EscortCd);
+                role2.LastTransported = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.TransportCd);
             }
             else
             {
@@ -437,9 +437,9 @@ public static class ButtonUtils
             role2.BombedPlayer = null;
 
             if (start)
-                role2.LastBombed = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.EnforceCooldown);
+                role2.LastBombed = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.EnforceCd);
             else if (meeting)
-                role2.LastBombed = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.EnforceCooldown);
+                role2.LastBombed = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.EnforceCd);
             else
                 role2.LastBombed = DateTime.UtcNow;
         }
@@ -448,9 +448,9 @@ public static class ButtonUtils
             var role2 = (Consigliere)role;
 
             if (start)
-                role2.LastInvestigated = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ConsigCd);
+                role2.LastInvestigated = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.InvestigateCd);
             else if (meeting)
-                role2.LastInvestigated = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.ConsigCd);
+                role2.LastInvestigated = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.InvestigateCd);
             else
                 role2.LastInvestigated = DateTime.UtcNow;
 
@@ -463,9 +463,9 @@ public static class ButtonUtils
             role2.BlockTarget = null;
 
             if (start)
-                role2.LastBlocked = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ConsRoleblockCooldown);
+                role2.LastBlocked = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ConsortCd);
             else if (meeting)
-                role2.LastBlocked = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.ConsRoleblockCooldown);
+                role2.LastBlocked = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.ConsortCd);
             else
                 role2.LastBlocked = DateTime.UtcNow;
         }
@@ -478,13 +478,13 @@ public static class ButtonUtils
 
             if (start)
             {
-                role2.LastDisguised = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.DisguiseCooldown);
-                role2.LastMeasured = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.MeasureCooldown);
+                role2.LastDisguised = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.DisguiseCd);
+                role2.LastMeasured = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.MeasureCd);
             }
             else if (meeting)
             {
-                role2.LastDisguised = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.DisguiseCooldown);
-                role2.LastMeasured = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.MeasureCooldown);
+                role2.LastDisguised = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.DisguiseCd);
+                role2.LastMeasured = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.MeasureCd);
             }
             else
             {
@@ -509,19 +509,19 @@ public static class ButtonUtils
             {
                 role2.LastBlackmailed = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.BlackmailCd);
                 role2.LastCamouflaged = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.CamouflagerCd);
-                role2.LastInvestigated = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.ConsigCd);
-                role2.LastDisguised = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.DisguiseCooldown);
-                role2.LastMeasured = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.MeasureCooldown);
-                role2.LastFlashed = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.GrenadeCd);
+                role2.LastInvestigated = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.InvestigateCd);
+                role2.LastDisguised = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.DisguiseCd);
+                role2.LastMeasured = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.MeasureCd);
+                role2.LastFlashed = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.FlashCd);
                 role2.LastMined = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.MineCd);
-                role2.LastCleaned = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.JanitorCleanCd);
+                role2.LastCleaned = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.CleanCd);
                 role2.LastDragged = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.DragCd);
-                role2.LastMorphed = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.MorphlingCd);
-                role2.LastSampled = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.SampleCooldown);
+                role2.LastMorphed = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.MorphCd);
+                role2.LastSampled = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.SampleCd);
                 role2.LastTeleported = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.TeleportCd);
                 role2.LastInvis = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.InvisCd);
-                role2.LastAmbushed = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.AmbushCooldown);
-                role2.LastBlocked = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.ConsRoleblockCooldown);
+                role2.LastAmbushed = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.AmbushCd);
+                role2.LastBlocked = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.ConsortCd);
             }
             else
             {
@@ -551,9 +551,9 @@ public static class ButtonUtils
             var role2 = (Grenadier)role;
 
             if (start)
-                role2.LastFlashed = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.GrenadeCd);
+                role2.LastFlashed = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.FlashCd);
             else if (meeting)
-                role2.LastFlashed = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.GrenadeCd);
+                role2.LastFlashed = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.FlashCd);
             else
                 role2.LastFlashed = DateTime.UtcNow;
         }
@@ -564,12 +564,12 @@ public static class ButtonUtils
 
             if (start)
             {
-                role2.LastCleaned = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.JanitorCleanCd);
+                role2.LastCleaned = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.CleanCd);
                 role2.LastDragged = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.DragCd);
             }
             else if (meeting)
             {
-                role2.LastCleaned = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.JanitorCleanCd);
+                role2.LastCleaned = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.CleanCd);
                 role2.LastDragged = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.DragCd);
             }
             else
@@ -597,13 +597,13 @@ public static class ButtonUtils
 
             if (start)
             {
-                role2.LastMorphed = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.MorphlingCd);
-                role2.LastSampled = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.SampleCooldown);
+                role2.LastMorphed = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.MorphCd);
+                role2.LastSampled = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.SampleCd);
             }
             else if (meeting)
             {
-                role2.LastMorphed = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.MorphlingCd);
-                role2.LastSampled = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.SampleCooldown);
+                role2.LastMorphed = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.MorphCd);
+                role2.LastSampled = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.SampleCd);
             }
             else
             {
@@ -619,11 +619,11 @@ public static class ButtonUtils
             if (start)
             {
                 role2.LastTeleported = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.TeleportCd);
-                role2.LastMarked = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.MarkCooldown);
+                role2.LastMarked = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.TeleMarkCd);
             }
             else if (meeting)
             {
-                role2.LastMarked = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.MarkCooldown);
+                role2.LastMarked = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.TeleMarkCd);
                 role2.LastTeleported = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.TeleportCd);
             }
             else
@@ -649,9 +649,9 @@ public static class ButtonUtils
             role2.AmbushedPlayer = null;
 
             if (start)
-                role2.LastAmbushed = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.AmbushCooldown);
+                role2.LastAmbushed = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.AmbushCd);
             else if (meeting)
-                role2.LastAmbushed = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.AmbushCooldown);
+                role2.LastAmbushed = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.AmbushCd);
             else
                 role2.LastAmbushed = DateTime.UtcNow;
         }
@@ -673,9 +673,9 @@ public static class ButtonUtils
             role2.ConcealedPlayer = null;
 
             if (start)
-                role2.LastConcealed = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ConcealCooldown);
+                role2.LastConcealed = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ConcealCd);
             else if (meeting)
-                role2.LastConcealed = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.ConcealCooldown);
+                role2.LastConcealed = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.ConcealCd);
             else
                 role2.LastConcealed = DateTime.UtcNow;
         }
@@ -685,9 +685,9 @@ public static class ButtonUtils
             role2.SilencedPlayer = null;
 
             if (start)
-                role2.LastSilenced = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.SilenceCooldown);
+                role2.LastSilenced = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.SilenceCd);
             else if (meeting)
-                role2.LastSilenced = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.SilenceCooldown);
+                role2.LastSilenced = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.SilenceCd);
             else
                 role2.LastSilenced = DateTime.UtcNow;
         }
@@ -696,9 +696,9 @@ public static class ButtonUtils
             var role2 = (Spellslinger)role;
 
             if (start)
-                role2.LastSpelled = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.SpellCooldown);
+                role2.LastSpelled = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.SpellCd);
             else if (meeting)
-                role2.LastSpelled = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.SpellCooldown);
+                role2.LastSpelled = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.SpellCd);
             else
                 role2.LastSpelled = DateTime.UtcNow;
         }
@@ -707,9 +707,9 @@ public static class ButtonUtils
             var role2 = (TimeKeeper)role;
 
             if (start)
-                role2.LastTimed = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.TimeControlCooldown);
+                role2.LastTimed = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.TimeCd);
             else if (meeting)
-                role2.LastTimed = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.TimeControlCooldown);
+                role2.LastTimed = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.TimeCd);
             else
                 role2.LastTimed = DateTime.UtcNow;
         }
@@ -730,13 +730,13 @@ public static class ButtonUtils
 
             if (start)
             {
-                role2.LastDetonated = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.DetonateCooldown);
-                role2.LastPlaced = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.BombCooldown);
+                role2.LastDetonated = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.DetonateCd);
+                role2.LastPlaced = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.BombCd);
             }
             else if (meeting)
             {
-                role2.LastDetonated = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.DetonateCooldown);
-                role2.LastPlaced = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.BombCooldown);
+                role2.LastDetonated = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.DetonateCd);
+                role2.LastPlaced = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.BombCd);
             }
             else
             {
@@ -752,9 +752,9 @@ public static class ButtonUtils
             var role2 = (Framer)role;
 
             if (start)
-                role2.LastFramed = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.FrameCooldown);
+                role2.LastFramed = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.FrameCd);
             else if (meeting)
-                role2.LastFramed = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.FrameCooldown);
+                role2.LastFramed = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.FrameCd);
             else
                 role2.LastFramed = DateTime.UtcNow;
 
@@ -767,9 +767,9 @@ public static class ButtonUtils
             role2.CrusadedPlayer = null;
 
             if (start)
-                role2.LastCrusaded = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.CrusadeCooldown);
+                role2.LastCrusaded = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.CrusadeCd);
             else if (meeting)
-                role2.LastCrusaded = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.CrusadeCooldown);
+                role2.LastCrusaded = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.CrusadeCd);
             else
                 role2.LastCrusaded = DateTime.UtcNow;
         }
@@ -803,19 +803,19 @@ public static class ButtonUtils
             {
                 if (meeting)
                 {
-                    role2.LastConcealed = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.ConcealCooldown);
-                    role2.LastFramed = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.FrameCooldown);
+                    role2.LastConcealed = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.ConcealCd);
+                    role2.LastFramed = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.FrameCd);
                     role2.LastPoisoned = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.PoisonCd);
-                    role2.LastShapeshifted = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.ShapeshiftCooldown);
-                    role2.LastWarped = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.WarpCooldown);
-                    role2.LastPlaced = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.BombCooldown);
-                    role2.LastDetonated = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.DetonateCooldown);
-                    role2.LastCrusaded = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.CrusadeCooldown);
-                    role2.LastSilenced = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.SilenceCooldown);
-                    role2.LastTimed = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.TimeControlCooldown);
-                    role2.LastCharged = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.ChargeCooldown);
-                    role2.LastNegative = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.CollideCooldown);
-                    role2.LastPositive = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.CollideCooldown);
+                    role2.LastShapeshifted = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.ShapeshiftCd);
+                    role2.LastWarped = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.WarpCd);
+                    role2.LastPlaced = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.BombCd);
+                    role2.LastDetonated = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.DetonateCd);
+                    role2.LastCrusaded = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.CrusadeCd);
+                    role2.LastSilenced = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.SilenceCd);
+                    role2.LastTimed = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.TimeCd);
+                    role2.LastCharged = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.ChargeCd);
+                    role2.LastNegative = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.CollideCd);
+                    role2.LastPositive = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.CollideCd);
                 }
                 else
                 {
@@ -845,9 +845,9 @@ public static class ButtonUtils
             role2.ShapeshiftPlayer2 = null;
 
             if (start)
-                role2.LastShapeshifted = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ShapeshiftCooldown);
+                role2.LastShapeshifted = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ShapeshiftCd);
             else if (meeting)
-                role2.LastShapeshifted = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.ShapeshiftCooldown);
+                role2.LastShapeshifted = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.ShapeshiftCd);
             else
                 role2.LastShapeshifted = DateTime.UtcNow;
         }
@@ -858,9 +858,9 @@ public static class ButtonUtils
             role2.WarpPlayer2 = null;
 
             if (start)
-                role2.LastWarped = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.WarpCooldown);
+                role2.LastWarped = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.WarpCd);
             else if (meeting)
-                role2.LastWarped = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.WarpCooldown);
+                role2.LastWarped = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.WarpCd);
             else
                 role2.LastWarped = DateTime.UtcNow;
         }
@@ -872,15 +872,15 @@ public static class ButtonUtils
 
             if (start)
             {
-                role2.LastCharged = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ChargeCooldown);
-                role2.LastNegative = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.CollideCooldown);
-                role2.LastPositive = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.CollideCooldown);
+                role2.LastCharged = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ChargeCd);
+                role2.LastNegative = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.CollideCd);
+                role2.LastPositive = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.CollideCd);
             }
             else if (meeting)
             {
-                role2.LastCharged = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.ChargeCooldown);
-                role2.LastNegative = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.CollideCooldown);
-                role2.LastPositive = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.CollideCooldown);
+                role2.LastCharged = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.ChargeCd);
+                role2.LastNegative = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.CollideCd);
+                role2.LastPositive = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.CollideCd);
             }
             else
             {
@@ -896,7 +896,7 @@ public static class ButtonUtils
             if (!role2.Caught)
             {
                 if (meeting)
-                    role2.LastScreamed = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.ScreamCooldown);
+                    role2.LastScreamed = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.ScreamCd);
                 else
                     role2.LastScreamed = DateTime.UtcNow;
             }
@@ -907,12 +907,12 @@ public static class ButtonUtils
 
             if (start)
             {
-                role2.LastDoused = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.DouseCd);
+                role2.LastDoused = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ArsoDouseCd);
                 role2.LastIgnited = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.IgniteCd);
             }
             else if (meeting)
             {
-                role2.LastDoused = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.DouseCd);
+                role2.LastDoused = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.ArsoDouseCd);
                 role2.LastIgnited = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.IgniteCd);
             }
             else
@@ -926,9 +926,9 @@ public static class ButtonUtils
             var role2 = (Cannibal)role;
 
             if (start)
-                role2.LastEaten = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.CannibalCd);
+                role2.LastEaten = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.EatCd);
             else if (meeting)
-                role2.LastEaten = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.CannibalCd);
+                role2.LastEaten = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.EatCd);
             else
                 role2.LastEaten = DateTime.UtcNow;
         }
@@ -937,9 +937,9 @@ public static class ButtonUtils
             var role2 = (Cryomaniac)role;
 
             if (start)
-                role2.LastDoused = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.CryoDouseCooldown);
+                role2.LastDoused = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.CryoDouseCd);
             else if (meeting)
-                role2.LastDoused = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.CryoDouseCooldown);
+                role2.LastDoused = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.CryoDouseCd);
             else
                 role2.LastDoused = DateTime.UtcNow;
         }
@@ -962,15 +962,15 @@ public static class ButtonUtils
 
             if (start)
             {
-                role2.LastMimic = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.MimicCooldown);
-                role2.LastHacked = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.HackCooldown);
-                role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.GlitchKillCooldown);
+                role2.LastMimic = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.MimicCd);
+                role2.LastHacked = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.HackCd);
+                role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.NeutraliseCd);
             }
             else if (meeting)
             {
-                role2.LastMimic = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.MimicCooldown);
-                role2.LastHacked = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.HackCooldown);
-                role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.GlitchKillCooldown);
+                role2.LastMimic = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.MimicCd);
+                role2.LastHacked = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.HackCd);
+                role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.NeutraliseCd);
             }
             else
             {
@@ -1005,9 +1005,9 @@ public static class ButtonUtils
             var role2 = (Jackal)role;
 
             if (start)
-                role2.LastRecruited = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.RecruitCooldown);
+                role2.LastRecruited = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.RecruitCd);
             else if (meeting)
-                role2.LastRecruited = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.RecruitCooldown);
+                role2.LastRecruited = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.RecruitCd);
             else
                 role2.LastRecruited = DateTime.UtcNow;
         }
@@ -1017,13 +1017,13 @@ public static class ButtonUtils
 
             if (start)
             {
-                role2.LastResurrected = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ResurrectCooldown);
-                role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.NecroKillCooldown);
+                role2.LastResurrected = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ResurrectCd);
+                role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.NecroKillCd);
             }
             else if (meeting)
             {
-                role2.LastResurrected = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.ResurrectCooldown);
-                role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.NecroKillCooldown);
+                role2.LastResurrected = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.ResurrectCd);
+                role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.NecroKillCd);
             }
             else
             {
@@ -1036,7 +1036,7 @@ public static class ButtonUtils
             var role2 = (Jester)role;
 
             if (meeting)
-                role2.LastHaunted = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.HauntCooldown);
+                role2.LastHaunted = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.HauntCd);
             else
                 role2.LastHaunted = DateTime.UtcNow;
         }
@@ -1045,9 +1045,9 @@ public static class ButtonUtils
             var role2 = (Juggernaut)role;
 
             if (start)
-                role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.JuggKillCooldown);
+                role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.AssaultCd);
             else if (meeting)
-                role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.JuggKillCooldown);
+                role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.AssaultCd);
             else
                 role2.LastKilled = DateTime.UtcNow;
         }
@@ -1056,9 +1056,9 @@ public static class ButtonUtils
             var role2 = (Murderer)role;
 
             if (start)
-                role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.MurdKCD);
+                role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.MurderCd);
             else if (meeting)
-                role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.MurdKCD);
+                role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.MurderCd);
             else
                 role2.LastKilled = DateTime.UtcNow;
         }
@@ -1067,9 +1067,9 @@ public static class ButtonUtils
             var role2 = (Pestilence)role;
 
             if (start)
-                role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.PestKillCd);
+                role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ObliterateCd);
             else if (meeting)
-                role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.PestKillCd);
+                role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.ObliterateCd);
             else
                 role2.LastKilled = DateTime.UtcNow;
         }
@@ -1091,12 +1091,12 @@ public static class ButtonUtils
             if (start)
             {
                 role2.LastLusted = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.BloodlustCd);
-                role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.LustKillCd);
+                role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.StabCd);
             }
             else if (meeting)
             {
                 role2.LastLusted = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.BloodlustCd);
-                role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.LustKillCd);
+                role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.StabCd);
             }
             else
             {
@@ -1120,9 +1120,9 @@ public static class ButtonUtils
             var role2 = (Thief)role;
 
             if (start)
-                role2.LastStolen = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ThiefKillCooldown);
+                role2.LastStolen = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.StealCd);
             else if (meeting)
-                role2.LastStolen = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.ThiefKillCooldown);
+                role2.LastStolen = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.StealCd);
             else
                 role2.LastStolen = DateTime.UtcNow;
         }
@@ -1131,9 +1131,9 @@ public static class ButtonUtils
             var role2 = (Troll)role;
 
             if (start)
-                role2.LastInteracted = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.InteractCooldown);
+                role2.LastInteracted = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.InteractCd);
             else if (meeting)
-                role2.LastInteracted = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.InteractCooldown);
+                role2.LastInteracted = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.InteractCd);
             else
                 role2.LastInteracted = DateTime.UtcNow;
         }
@@ -1142,9 +1142,9 @@ public static class ButtonUtils
             var role2 = (Werewolf)role;
 
             if (start)
-                role2.LastMauled = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.MaulCooldown);
+                role2.LastMauled = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.MaulCd);
             else if (meeting)
-                role2.LastMauled = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.MaulCooldown);
+                role2.LastMauled = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.MaulCd);
             else
                 role2.LastMauled = DateTime.UtcNow;
         }
@@ -1153,9 +1153,9 @@ public static class ButtonUtils
             var role2 = (Whisperer)role;
 
             if (start)
-                role2.LastWhispered = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.WhisperCooldown);
+                role2.LastWhispered = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.WhisperCd);
             else if (meeting)
-                role2.LastWhispered = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.WhisperCooldown);
+                role2.LastWhispered = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.WhisperCd);
             else
                 role2.LastWhispered = DateTime.UtcNow;
         }
@@ -1164,9 +1164,9 @@ public static class ButtonUtils
             var role2 = (BountyHunter)role;
 
             if (start)
-                role2.LastChecked = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.BountyHunterCooldown);
+                role2.LastChecked = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.GuessCd);
             else if (meeting)
-                role2.LastChecked = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.BountyHunterCooldown);
+                role2.LastChecked = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.GuessCd);
             else
                 role2.LastChecked = DateTime.UtcNow;
         }
@@ -1175,7 +1175,7 @@ public static class ButtonUtils
             var role2 = (Executioner)role;
 
             if (meeting)
-                role2.LastDoomed = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.DoomCooldown);
+                role2.LastDoomed = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.DoomCd);
             else
                 role2.LastDoomed = DateTime.UtcNow;
 
@@ -1195,9 +1195,9 @@ public static class ButtonUtils
             var role2 = (Intruder)role;
 
             if (start)
-                role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.IntKillCooldown);
+                role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.IntKillCd);
             else if (meeting)
-                role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.IntKillCooldown);
+                role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.IntKillCd);
             else
                 role2.LastKilled = DateTime.UtcNow;
         }
@@ -1208,12 +1208,12 @@ public static class ButtonUtils
             if (start)
             {
                 role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - (role.Type is LayerEnum.Anarchist or LayerEnum.Sidekick or LayerEnum.Rebel &&
-                    !role2.HoldsDrive ? CustomGameOptions.AnarchKillCooldown : CustomGameOptions.ChaosDriveKillCooldown));
+                    !role2.HoldsDrive ? CustomGameOptions.AnarchKillCd : CustomGameOptions.CDKillCd));
             }
             else if (meeting)
             {
                 role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - (role.Type is LayerEnum.Anarchist or LayerEnum.Sidekick or LayerEnum.Rebel &&
-                    !role2.HoldsDrive ? CustomGameOptions.AnarchKillCooldown : CustomGameOptions.ChaosDriveKillCooldown));
+                    !role2.HoldsDrive ? CustomGameOptions.AnarchKillCd : CustomGameOptions.CDKillCd));
             }
             else
                 role2.LastKilled = DateTime.UtcNow;
@@ -1226,9 +1226,9 @@ public static class ButtonUtils
             var obj2 = (Corrupted)obj;
 
             if (start)
-                obj2.LastCorrupted = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.CorruptedKillCooldown);
+                obj2.LastCorrupted = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.CorruptCd);
             else if (meeting)
-                obj2.LastCorrupted = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.CorruptedKillCooldown);
+                obj2.LastCorrupted = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.CorruptCd);
             else
                 obj2.LastCorrupted = DateTime.UtcNow;
         }

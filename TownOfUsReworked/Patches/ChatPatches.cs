@@ -9,9 +9,11 @@ public static class ChatUpdate
 
     public static bool Prefix(ChatController __instance)
     {
+        if (!SoundEffects.ContainsKey("Chat"))
+            SoundEffects.Add("Chat", __instance.messageSound);
+
         UpdateHistory(__instance);
         UpdateBubbles(__instance);
-        UpdateAlignment(__instance);
         UpdateChatTimer(__instance);
         return false;
     }
@@ -32,20 +34,6 @@ public static class ChatUpdate
             __instance.sendRateMessageText.text = TranslationController.Instance.GetString(StringNames.ChatRateLimit, Mathf.CeilToInt(f));
     }
 
-    private static void UpdateAlignment(ChatController __instance)
-    {
-        foreach (var bubble in __instance.chatBubblePool.activeChildren)
-        {
-            var chat = bubble.Cast<ChatBubble>();
-
-            if (chat.NameText != null)
-            {
-                chat.NameText.alignment = TextAlignmentOptions.Left;
-                chat.TextArea.alignment = TextAlignmentOptions.TopLeft;
-            }
-        }
-    }
-
     private static void UpdateBubbles(ChatController __instance)
     {
         foreach (var bubble in __instance.chatBubblePool.activeChildren)
@@ -54,9 +42,7 @@ public static class ChatUpdate
 
             if (chat.NameText != null)
             {
-                if (ChatCommand.BubbleModifications.TryGetValue(chat, out var pair))
-                    (chat.NameText.text, chat.NameText.color) = (pair.Item1, pair.Item2);
-                else if (IsInGame)
+                if (IsInGame)
                 {
                     foreach (var player in CustomPlayer.AllPlayers)
                     {
@@ -88,12 +74,6 @@ public static class ChatUpdate
                         }
                     }
                 }
-            }
-
-            if (chat.TextArea != null && !chat.TextArea.richText)
-            {
-                chat.TextArea.richText = true;
-                chat.TextArea.text = Info.ColorIt(chat.TextArea.text);
             }
         }
     }
@@ -162,39 +142,164 @@ public static class OverrideCharCountPatch
     }
 }
 
-[HarmonyPatch(typeof(ChatController), nameof(ChatController.SendChat))]
-public static class OverrideSendChatPatch
+[HarmonyPatch(typeof(ChatController), nameof(ChatController.AddChat))]
+public static class ChatChannels
 {
+    public static bool Prefix(ChatController __instance, [HarmonyArgument(0)] PlayerControl sourcePlayer)
+    {
+        if (__instance != HUD.Chat)
+            return true;
+
+        var localPlayer = CustomPlayer.Local;
+
+        if (localPlayer == null)
+            return true;
+
+        var sourcerole = Role.GetRole(sourcePlayer);
+        var shouldSeeMessage = (sourcePlayer.IsOtherLover(localPlayer) && CustomGameOptions.LoversChat && sourcerole.CurrentChannel == ChatChannel.Lovers) ||
+            (sourcePlayer.IsOtherRival(localPlayer) && CustomGameOptions.RivalsChat && sourcerole.CurrentChannel == ChatChannel.Rivals) || (sourcePlayer.IsOtherLink(localPlayer) &&
+            CustomGameOptions.LinkedChat && sourcerole.CurrentChannel == ChatChannel.Linked);
+
+        if (DateTime.UtcNow - MeetingStart.MeetingStartTime < TimeSpan.FromSeconds(1))
+            return shouldSeeMessage;
+
+        return (Meeting || LobbyBehaviour.Instance || localPlayer.Data.IsDead || sourcePlayer == localPlayer || sourcerole.CurrentChannel == ChatChannel.All || shouldSeeMessage) && !(Meeting
+            && CustomPlayer.Local.IsSilenced());
+    }
+}
+
+[HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
+public static class MeetingStart
+{
+    public static DateTime MeetingStartTime = DateTime.MinValue;
+
+    public static void Prefix() => MeetingStartTime = DateTime.UtcNow;
+}
+
+[HarmonyPatch(typeof(ChatController), nameof(ChatController.SendChat))]
+public static class ChatCommands
+{
+    private static SpriteRenderer Chat;
+
     public static bool Prefix(ChatController __instance)
     {
-        if (__instance.freeChatField.Text.Length == 0 && __instance.quickChatField.text.text.Length == 0)
-            return false;
+        var text = __instance.freeChatField.Text.ToLower();
+        var chatHandled = false;
 
-        var f = CustomGameOptions.ChatCooldown - __instance.timeSinceLastMessage;
+        if ((ChatUpdate.ChatHistory.Count == 0 || ChatUpdate.ChatHistory[^1] != text) && !text.StartsWith("/"))
+            ChatUpdate.ChatHistory.Add(text);
 
-        if (f > 0 && CustomGameOptions.ChatCooldown > 0)
+        //Chat command system
+        if (text.StartsWith("/"))
         {
-            __instance.sendRateMessageText.gameObject.SetActive(true);
-            __instance.sendRateMessageText.text = TranslationController.Instance.GetString(StringNames.ChatRateLimit, Mathf.CeilToInt(f));
+            chatHandled = true;
+            var args = __instance.freeChatField.Text.Split(' ');
+            Execute(Find(args), __instance, args);
         }
+        else if (CustomPlayer.Local.IsBlackmailed() && text != "i am blackmailed.")
+        {
+            chatHandled = true;
+            Run(__instance, "<color=#02A752FF>米 Shhhh 米</color>", "You are blackmailed.");
+        }
+        else if (!CustomPlayer.Local.IsSilenced() && text != "i am silenced." && CustomPlayer.AllPlayers.Any(x => x.IsSilenced() && x.GetSilencer().HoldsDrive))
+        {
+            chatHandled = true;
+            Run(__instance, "<color=#AAB43EFF>米 Shhhh 米</color>", "You are silenced.");
+        }
+        else if (!CustomPlayer.Local.IsSilenced() && text != "i am silenced." && CustomPlayer.AllPlayers.Any(x => x.IsSilenced() && x.GetRebSilencer().HoldsDrive))
+        {
+            chatHandled = true;
+            Run(__instance, "<color=#AAB43EFF>米 Shhhh 米</color>", "You are silenced.");
+        }
+        else if (MeetingPatches.GivingAnnouncements && !CustomPlayer.Local.Data.IsDead)
+        {
+            chatHandled = true;
+            Run(__instance, "<color=#00CB97FF>米 Shhhh 米</color>", "You cannot talk right now.");
+        }
+        else if (!CustomPlayer.Local.Data.IsDead && !IsNullEmptyOrWhiteSpace(text))
+        {
+            Notify(CustomPlayer.Local.PlayerId);
+            CallRpc(CustomRPC.Misc, MiscRPC.Notify, CustomPlayer.Local.PlayerId);
+        }
+
+        if (chatHandled)
+            Clear(__instance);
         else
         {
-            if (__instance.quickChatMenu.CanSend)
-                __instance.SendQuickChat();
-            else
+            var f = CustomGameOptions.ChatCooldown - __instance.timeSinceLastMessage;
+
+            if (f > 0 && CustomGameOptions.ChatCooldown > 0)
             {
-                if (string.IsNullOrWhiteSpace(__instance.freeChatField.Text) || DataManager.Settings.Multiplayer.ChatMode != QuickChatModes.FreeChatOrQuickChat)
-                    return false;
-
-                __instance.SendFreeChat();
+                __instance.sendRateMessageText.gameObject.SetActive(true);
+                __instance.sendRateMessageText.text = TranslationController.Instance.GetString(StringNames.ChatRateLimit, Mathf.CeilToInt(f));
             }
+            else if (!IsNullEmptyOrWhiteSpace(text))
+            {
+                if (__instance.quickChatMenu.CanSend)
+                    __instance.SendQuickChat();
+                else
+                {
+                    if (IsNullEmptyOrWhiteSpace(__instance.freeChatField.Text) || DataManager.Settings.Multiplayer.ChatMode != QuickChatModes.FreeChatOrQuickChat)
+                        return false;
 
-            __instance.freeChatField.Clear();
-            __instance.quickChatMenu.Clear();
-            __instance.quickChatField.Clear();
-            __instance.UpdateChatMode();
+                    __instance.SendFreeChat();
+                }
+
+                Clear(__instance);
+            }
         }
 
         return false;
+    }
+
+    private static void Clear(ChatController __instance)
+    {
+        __instance.freeChatField.Clear();
+        __instance.quickChatMenu.Clear();
+        __instance.quickChatField.Clear();
+        __instance.UpdateChatMode();
+    }
+
+    public static void Notify(byte targetPlayerId)
+    {
+        if (!Meeting || Chat)
+            return;
+
+        var playerVoteArea = VoteAreaById(targetPlayerId);
+        Chat = UObject.Instantiate(playerVoteArea.Megaphone, playerVoteArea.Megaphone.transform.parent);
+        Chat.name = "Notification";
+        Chat.transform.localPosition = new(-2f, 0.1f, -1f);
+        Chat.sprite = GetSprite("Chat");
+        Chat.gameObject.SetActive(true);
+        HUD.StartCoroutine(Effects.Lerp(2, new Action<float>(p =>
+        {
+            if (p == 1)
+            {
+                Chat.gameObject.SetActive(false);
+                Chat.gameObject.Destroy();
+                Chat.Destroy();
+                Chat = null;
+            }
+        })));
+    }
+}
+
+[HarmonyPatch(typeof(ChatBubble), nameof(ChatBubble.SetText))]
+public static class ColorTheMessage
+{
+    public static void Postfix(ChatBubble __instance)
+    {
+        __instance.TextArea.richText = true;
+        __instance.TextArea.text = Info.ColorIt(__instance.TextArea.text);
+    }
+}
+
+[HarmonyPatch(typeof(ChatController), nameof(ChatController.Awake))]
+public static class ChatControllerAwakePatch
+{
+    public static void Prefix()
+    {
+        if (!EOSManager.Instance.isKWSMinor)
+            DataManager.Settings.Multiplayer.ChatMode = QuickChatModes.FreeChatOrQuickChat;
     }
 }

@@ -1,17 +1,17 @@
 namespace TownOfUsReworked.Patches;
 
 [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-[HarmonyPriority(Priority.Last)]
 public static class UpdateNames
 {
     public static readonly Dictionary<byte, string> PlayerNames = new();
+    public static readonly Dictionary<byte, string> ColorNames = new();
 
     public static void Postfix()
     {
         if (!SoundEffects.ContainsKey("Kill") && CustomPlayer.Local)
             SoundEffects.Add("Kill", CustomPlayer.Local.KillSfx);
 
-        if (Inactive || IsHnS || Meeting || LobbyBehaviour.Instance)
+        if (NoPlayers || IsHnS || Meeting || IsLobby)
             return;
 
         CustomPlayer.AllPlayers.ForEach(SetName);
@@ -22,7 +22,37 @@ public static class UpdateNames
         if (!PlayerNames.ContainsKey(player.PlayerId))
             PlayerNames.Add(player.PlayerId, player.Data.PlayerName);
 
+        if (!ColorNames.ContainsKey(player.PlayerId))
+            ColorNames.Add(player.PlayerId, TranslationController.Instance.GetString(Palette.ColorNames[player.CurrentOutfit.ColorId]));
+
         (player.NameText().text, player.NameText().color) = UpdateGameName(player);
+        player.ColorBlindText().text = UpdateColorblind(player);
+    }
+
+    private static string UpdateColorblind(PlayerControl player)
+    {
+        if (player.GetCustomOutfitType() == CustomPlayerOutfitType.Invis && player != CustomPlayer.Local)
+            return "";
+        
+        if (!DataManager.Settings.Accessibility.ColorBlindMode)
+            return "";
+
+        var distance = Vector2.Distance(CustomPlayer.Local.GetTruePosition(), player.GetTruePosition());
+        var vector = player.GetTruePosition() - CustomPlayer.Local.GetTruePosition();
+
+        if (PhysicsHelpers.AnyNonTriggersBetween(CustomPlayer.Local.GetTruePosition(), vector.normalized, distance, Constants.ShipAndObjectsMask) && CustomGameOptions.ObstructNames &&
+            player != CustomPlayer.Local && !CustomPlayer.LocalCustom.IsDead)
+        {
+            return "";
+        }
+
+        var name = ColorNames.FirstOrDefault(x => x.Key == player.PlayerId).Value;
+        var ld = ColorUtils.LightDarkColors[player.CurrentOutfit.ColorId] == "Lighter" ? "L" : "D";
+
+        if (ClientGameOptions.LighterDarker)
+            name += $" ({ld})";
+
+        return name;
     }
 
     public static (string, Color) UpdateGameName(PlayerControl player)
@@ -33,13 +63,13 @@ public static class UpdateNames
         var distance = Vector2.Distance(CustomPlayer.Local.GetTruePosition(), player.GetTruePosition());
         var vector = player.GetTruePosition() - CustomPlayer.Local.GetTruePosition();
 
-        if (PhysicsHelpers.AnyNonTriggersBetween(CustomPlayer.Local.GetTruePosition(), vector.normalized, distance, Constants.ShipAndObjectsMask) &&
-            CustomGameOptions.ObstructNames && player != CustomPlayer.Local && !CustomPlayer.LocalCustom.IsDead)
+        if (PhysicsHelpers.AnyNonTriggersBetween(CustomPlayer.Local.GetTruePosition(), vector.normalized, distance, Constants.ShipAndObjectsMask) && CustomGameOptions.ObstructNames &&
+            player != CustomPlayer.Local && !CustomPlayer.LocalCustom.IsDead)
         {
             return ("", UColor.clear);
         }
 
-        var name = CustomGameOptions.NoNames && !IsLobby ? "" : player.Data.PlayerName;
+        var name = "";
         var color = UColor.white;
         var info = player.AllPlayerInfo();
         var localinfo = CustomPlayer.Local.AllPlayerInfo();
@@ -47,8 +77,10 @@ public static class UpdateNames
 
         if (DoUndo.IsCamoed && player != CustomPlayer.Local && !CustomPlayer.LocalCustom.IsDead && !IsLobby)
             name = GetRandomisedName();
+        else if (CustomGameOptions.NoNames && !IsLobby)
+            name = "";
         else
-            name = CustomGameOptions.NoNames && !IsLobby ? "" : PlayerNames.FirstOrDefault(x => x.Key == player.PlayerId).Value;
+            name = PlayerNames.FirstOrDefault(x => x.Key == player.PlayerId).Value;
 
         if (info[0] == null || localinfo[0] == null)
             return (name, color);

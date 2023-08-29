@@ -9,7 +9,7 @@ public class Chameleon : Crew
     public CustomButton SwoopButton { get; set; }
     public int UsesLeft { get; set; }
     public bool ButtonUsable => UsesLeft > 0;
-    public float Timer => ButtonUtils.Timer(Player, LastSwooped, CustomGameOptions.SwoopCooldown);
+    public float Timer => ButtonUtils.Timer(Player, LastSwooped, CustomGameOptions.SwoopCd);
 
     public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Chameleon : Colors.Crew;
     public override string Name => "Chameleon";
@@ -20,7 +20,7 @@ public class Chameleon : Crew
 
     public Chameleon(PlayerControl player) : base(player)
     {
-        UsesLeft = CustomGameOptions.SwoopCount;
+        UsesLeft = CustomGameOptions.MaxSwoops;
         SwoopButton = new(this, "Swoop", AbilityTypes.Effect, "ActionSecondary", HitSwoop, true);
     }
 
@@ -46,7 +46,7 @@ public class Chameleon : Crew
         if (Timer != 0f || IsSwooped || !ButtonUsable)
             return;
 
-        TimeRemaining = CustomGameOptions.SwoopDuration;
+        TimeRemaining = CustomGameOptions.SwoopDur;
         Invis();
         UsesLeft--;
         CallRpc(CustomRPC.Action, ActionsRPC.Swoop, this);
@@ -55,6 +55,6 @@ public class Chameleon : Crew
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        SwoopButton.Update("SWOOP", Timer, CustomGameOptions.SwoopCooldown, UsesLeft, IsSwooped, TimeRemaining, CustomGameOptions.SwoopDuration);
+        SwoopButton.Update("SWOOP", Timer, CustomGameOptions.SwoopCd, UsesLeft, IsSwooped, TimeRemaining, CustomGameOptions.SwoopDur);
     }
 }

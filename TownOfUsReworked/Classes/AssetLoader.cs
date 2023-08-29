@@ -2,27 +2,39 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
-namespace TownOfUsReworked.Cosmetics;
+namespace TownOfUsReworked.Classes;
 
 [HarmonyPatch]
-public static class CosmeticsLoader
+public static class AssetLoader
 {
-    private const string REPO = "https://raw.githubusercontent.com/AlchlcDvl/ReworkedAssets/master";
+    private const string REPO = "https://raw.githubusercontent.com/AlchlcDvl/ReworkedAssets/main";
     private static bool HatsRunning;
-    /*private static bool NameplatesRunning;
-    private static bool VisorsRunning;
-    public static readonly List<CustomNameplate> NameplateDetails = new();*/
+    //private static bool NameplatesRunning;
+    //private static bool VisorsRunning;
+    private static bool LangRunning;
+    //public static readonly List<CustomNameplate> NameplateDetails = new();
     public static readonly List<CustomHat> HatDetails = new();
     //public static readonly List<CustomVisor> VisorDetails = new();
+    public static readonly List<Language> AllTranslations = new();
+    private static bool Loaded;
 
     public static void LaunchFetchers(bool update)
     {
         try
         {
-            LaunchHatFetcher(update);
-            /*LaunchNameplateFetcher(update);
-            LaunchVisorFetcher(update);*/
-        } catch {}
+            if (!Loaded)
+            {
+                LaunchHatFetcher(update);
+                //LaunchNameplateFetcher(update);
+                //LaunchVisorFetcher(update);
+                LaunchTranslationFetcher();
+                Loaded = true;
+            }
+        }
+        catch
+        {
+            Loaded = false;
+        }
     }
 
     private static void LaunchHatFetcher(bool update)
@@ -32,7 +44,7 @@ public static class CosmeticsLoader
 
         HatsRunning = true;
         _ = LaunchHatFetcherAsync(update);
-        LogSomething("Fetched hats");
+        LogMessage("Fetched hats");
     }
 
     /*private static void LaunchNameplateFetcher(bool update)
@@ -42,7 +54,7 @@ public static class CosmeticsLoader
 
         NameplatesRunning = true;
         _ = LaunchNameplateFetcherAsync(update);
-        LogSomething("Fetched nameplates");
+        LogMessage("Fetched nameplates");
     }
 
     private static void LaunchVisorFetcher(bool update)
@@ -52,8 +64,18 @@ public static class CosmeticsLoader
 
         VisorsRunning = true;
         _ = LaunchVisorFetcherAsync(update);
-        LogSomething("Fetched visors");
+        LogMessage("Fetched visors");
     }*/
+
+    private static void LaunchTranslationFetcher()
+    {
+        if (LangRunning)
+            return;
+
+        LangRunning = true;
+        _ = LaunchTranslationFetcherAsync();
+        LogMessage("Fetched translations");
+    }
 
     private static async Task LaunchHatFetcherAsync(bool update)
     {
@@ -62,11 +84,11 @@ public static class CosmeticsLoader
             var status = await FetchHats(update);
 
             if (status != HttpStatusCode.OK)
-                LogSomething("Custom Hats could not be loaded");
+                LogError("Custom Hats could not be loaded");
         }
         catch (Exception e)
         {
-            LogSomething("Unable to fetch hats\n" + e.Message);
+            LogError($"Unable to fetch hats\n{e}");
         }
 
         HatsRunning = false;
@@ -79,11 +101,11 @@ public static class CosmeticsLoader
             var status = await FetchNameplates(update);
 
             if (status != HttpStatusCode.OK)
-                LogSomething("Custom Nameplates could not be loaded");
+                LogError("Custom Nameplates could not be loaded");
         }
         catch (Exception e)
         {
-            LogSomething("Unable to fetch nameplates\n" + e.Message);
+            LogError($"Unable to fetch nameplates\n{e}");
         }
 
         NameplatesRunning = false;
@@ -96,15 +118,32 @@ public static class CosmeticsLoader
             var status = await FetchVisors(update);
 
             if (status != HttpStatusCode.OK)
-                LogSomething("Custom Visors could not be loaded");
+                LogError("Custom Visors could not be loaded");
         }
         catch (Exception e)
         {
-            LogSomething("Unable to fetch visors\n" + e.Message);
+            LogError($"Unable to fetch visors\n{e}");
         }
 
         VisorsRunning = false;
     }*/
+
+    private static async Task LaunchTranslationFetcherAsync()
+    {
+        try
+        {
+            var status = await FetchTranslations();
+
+            if (status != HttpStatusCode.OK)
+                LogError("Unable to fetch translations");
+        }
+        catch (Exception e)
+        {
+            LogError($"Unable to fetch translations\n{e}");
+        }
+
+        LangRunning = false;
+    }
 
     private static async Task<HttpStatusCode> FetchHats(bool update)
     {
@@ -119,7 +158,7 @@ public static class CosmeticsLoader
 
             if (response.Content == null)
             {
-                LogSomething("Server returned no data: " + response.StatusCode.ToString());
+                LogError($"Server returned no data: {response.StatusCode}");
                 return HttpStatusCode.ExpectationFailed;
             }
 
@@ -129,13 +168,13 @@ public static class CosmeticsLoader
             if (jobj == null || !jobj.HasValues)
                 return HttpStatusCode.ExpectationFailed;
 
-            var hatdatas = new List<CustomHat>();
+            HatDetails.Clear();
 
             for (var current = jobj.First; current != null; current = current.Next)
             {
                 if (current.HasValues)
                 {
-                    var info = new CustomHat
+                    var info = new CustomHat()
                     {
                         Name = current["name"]?.ToString(),
                         ID = current["id"]?.ToString()
@@ -154,7 +193,7 @@ public static class CosmeticsLoader
                     info.NoBouce = current["nobounce"] != null;
                     info.Adaptive = current["adaptive"] != null;
                     info.Behind = current["behind"] != null;
-                    hatdatas.Add(info);
+                    HatDetails.Add(info);
                 }
             }
 
@@ -169,7 +208,7 @@ public static class CosmeticsLoader
             if (!Directory.Exists(TownOfUsReworked.Hats))
                 Directory.CreateDirectory(TownOfUsReworked.Hats);
 
-            foreach (var data in hatdatas)
+            foreach (var data in HatDetails)
             {
                 if (!File.Exists(TownOfUsReworked.Hats + data.ID + ".png"))
                     markedfordownload.Add(data.ID);
@@ -197,17 +236,16 @@ public static class CosmeticsLoader
                 if (hatFileResponse.StatusCode != HttpStatusCode.OK)
                     continue;
 
-                var responseStream = await hatFileResponse.Content.ReadAsStreamAsync();
-                var fileStream = File.Create($"{TownOfUsReworked.Hats}{file}.png");
-                responseStream.CopyTo(fileStream);
+                using (var responseStream = await hatFileResponse.Content.ReadAsStreamAsync())
+                {
+                    using (var fileStream = File.Create($"{TownOfUsReworked.Hats}\\{file}.png"))
+                        responseStream.CopyTo(fileStream);
+                }
             }
-
-            HatDetails.Clear();
-            HatDetails.AddRange(hatdatas);
         }
         catch (Exception ex)
         {
-            LogSomething(ex);
+            LogError(ex);
         }
 
         return HttpStatusCode.OK;
@@ -226,7 +264,7 @@ public static class CosmeticsLoader
 
             if (response.Content == null)
             {
-                LogSomething("Server returned no data: " + response.StatusCode.ToString());
+                LogError($"Server returned no data: {response.StatusCode}");
                 return HttpStatusCode.ExpectationFailed;
             }
 
@@ -236,13 +274,13 @@ public static class CosmeticsLoader
             if (jobj == null || !jobj.HasValues)
                 return HttpStatusCode.ExpectationFailed;
 
-            var visorDatas = new List<CustomVisor>();
+            VisorDetails.Clear();
 
             for (var current = jobj.First; current != null; current = current.Next)
             {
                 if (current.HasValues)
                 {
-                    var info = new CustomVisor
+                    var info = new CustomVisor()
                     {
                         Name = current["name"]?.ToString(),
                         ID = current["id"]?.ToString()
@@ -257,7 +295,7 @@ public static class CosmeticsLoader
                     info.FloorID = current["floorid"]?.ToString();
                     info.ClimbID = current["climbid"]?.ToString();
                     info.Adaptive = current["adaptive"] != null;
-                    visorDatas.Add(info);
+                    VisorDetails.Add(info);
                 }
             }
 
@@ -272,7 +310,7 @@ public static class CosmeticsLoader
             if (!Directory.Exists(TownOfUsReworked.Visors))
                 Directory.CreateDirectory(TownOfUsReworked.Visors);
 
-            foreach (var data in visorDatas)
+            foreach (var data in VisorDetails)
             {
                 if (!File.Exists(TownOfUsReworked.Visors + data.ID + ".png"))
                     markedfordownload.Add(data.ID);
@@ -294,17 +332,16 @@ public static class CosmeticsLoader
                 if (hatFileResponse.StatusCode != HttpStatusCode.OK)
                     continue;
 
-                var responseStream = await hatFileResponse.Content.ReadAsStreamAsync();
-                var fileStream = File.Create($"{TownOfUsReworked.Visors}{file}.png");
-                responseStream.CopyTo(fileStream);
+                using (var responseStream = await hatFileResponse.Content.ReadAsStreamAsync())
+                {
+                    using (var fileStream = File.Create($"{TownOfUsReworked.Visors}\\{file}.png"))
+                        responseStream.CopyTo(fileStream);
+                }
             }
-
-            VisorDetails.Clear();
-            VisorDetails.AddRange(visorDatas);
         }
         catch (Exception ex)
         {
-            LogSomething(ex);
+            LogError(ex);
         }
 
         return HttpStatusCode.OK;
@@ -323,7 +360,7 @@ public static class CosmeticsLoader
 
             if (response.Content == null)
             {
-                LogSomething("Server returned no data: " + response.StatusCode.ToString());
+                LogError($"Server returned no data: {response.StatusCode}");
                 return HttpStatusCode.ExpectationFailed;
             }
 
@@ -333,13 +370,13 @@ public static class CosmeticsLoader
             if (jobj == null || !jobj.HasValues)
                 return HttpStatusCode.ExpectationFailed;
 
-            var namePlateDatas = new List<CustomNameplate>();
+            NameplateDetails.Clear();
 
             for (var current = jobj.First; current != null; current = current.Next)
             {
                 if (current.HasValues)
                 {
-                    var info = new CustomNameplate
+                    var info = new CustomNameplate()
                     {
                         Name = current["name"]?.ToString(),
                         ID = current["id"]?.ToString()
@@ -350,7 +387,7 @@ public static class CosmeticsLoader
 
                     info.Artist = current["artist"]?.ToString();
                     info.Condition = current["condition"]?.ToString();
-                    namePlateDatas.Add(info);
+                    NameplateDetails.Add(info);
                 }
             }
 
@@ -365,7 +402,7 @@ public static class CosmeticsLoader
             if (!Directory.Exists(TownOfUsReworked.Nameplates))
                 Directory.CreateDirectory(TownOfUsReworked.Nameplates);
 
-            foreach (var data in namePlateDatas)
+            foreach (var data in NameplateDetails)
             {
                 if (!File.Exists(TownOfUsReworked.Nameplates + data.ID + ".png"))
                     markedfordownload.Add(data.ID);
@@ -378,19 +415,66 @@ public static class CosmeticsLoader
                 if (NameplateFileResponse.StatusCode != HttpStatusCode.OK)
                     continue;
 
-                var responseStream = await NameplateFileResponse.Content.ReadAsStreamAsync();
-                var fileStream = File.Create($"{TownOfUsReworked.Nameplates}{file}.png");
-                responseStream.CopyTo(fileStream);
+                using (var responseStream = await hatFileResponse.Content.ReadAsStreamAsync())
+                {
+                    using (var fileStream = File.Create($"{TownOfUsReworked.Nameplates}\\{file}.png"))
+                        responseStream.CopyTo(fileStream);
+                }
             }
-
-            NameplateDetails.Clear();
-            NameplateDetails.AddRange(namePlateDatas);
         }
         catch (Exception ex)
         {
-            LogSomething(ex);
+            LogError(ex);
         }
 
         return HttpStatusCode.OK;
     }*/
+
+    private static async Task<HttpStatusCode> FetchTranslations()
+    {
+        var http = new HttpClient();
+        http.DefaultRequestHeaders.CacheControl = new() { NoCache = true };
+        var response = await http.GetAsync(new Uri($"{REPO}/Languages.json"), HttpCompletionOption.ResponseContentRead);
+
+        try
+        {
+            if (response.StatusCode != HttpStatusCode.OK)
+                return response.StatusCode;
+
+            if (response.Content == null)
+            {
+                LogError($"Server returned no data: {response.StatusCode}");
+                return HttpStatusCode.ExpectationFailed;
+            }
+
+            var json = await response.Content.ReadAsStringAsync();
+            var jobj = JObject.Parse(json)["languages"];
+
+            if (jobj == null || !jobj.HasValues)
+                return HttpStatusCode.ExpectationFailed;
+
+            AllTranslations.Clear();
+
+            for (var current = jobj.First; current != null; current = current.Next)
+            {
+                if (current.HasValues)
+                {
+                    var info = new Language() { ID = current["id"]?.ToString() };
+
+                    if (info.ID == null) //Required
+                        continue;
+
+                    info.English = current["english"]?.ToString();
+                    info.SChinese = current["schinese"]?.ToString();
+                    AllTranslations.Add(info);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            LogError(ex);
+        }
+
+        return HttpStatusCode.OK;
+    }
 }

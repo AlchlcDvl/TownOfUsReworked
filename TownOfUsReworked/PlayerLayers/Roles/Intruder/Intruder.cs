@@ -9,7 +9,7 @@ public class Intruder : Role
 
     public override Color32 Color => Colors.Intruder;
     public override Faction BaseFaction => Faction.Intruder;
-    public float KillTimer => ButtonUtils.Timer(Player, LastKilled, CustomGameOptions.IntKillCooldown);
+    public float KillTimer => ButtonUtils.Timer(Player, LastKilled, CustomGameOptions.IntKillCd);
 
     protected Intruder(PlayerControl player) : base(player)
     {
@@ -118,6 +118,6 @@ public class Intruder : Role
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        KillButton.Update("KILL", KillTimer, CustomGameOptions.IntKillCooldown);
+        KillButton.Update("KILL", KillTimer, CustomGameOptions.IntKillCd);
     }
 }

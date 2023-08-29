@@ -8,7 +8,7 @@ public class Escort : Crew
     public float TimeRemaining { get; set; }
     public CustomButton BlockButton { get; set; }
     public bool Blocking => TimeRemaining > 0f;
-    public float Timer => ButtonUtils.Timer(Player, LastBlocked, CustomGameOptions.EscRoleblockCooldown);
+    public float Timer => ButtonUtils.Timer(Player, LastBlocked, CustomGameOptions.EscortCd);
 
     public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Escort : Colors.Crew;
     public override string Name => "Escort";
@@ -53,7 +53,7 @@ public class Escort : Crew
 
         if (interact[3])
         {
-            TimeRemaining = CustomGameOptions.EscRoleblockDuration;
+            TimeRemaining = CustomGameOptions.EscortDur;
             BlockTarget = BlockButton.TargetPlayer;
             Block();
             CallRpc(CustomRPC.Action, ActionsRPC.EscRoleblock, this, BlockTarget);
@@ -69,6 +69,6 @@ public class Escort : Crew
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        BlockButton.Update("SEDUCE", Timer, CustomGameOptions.EscRoleblockCooldown, Blocking, TimeRemaining, CustomGameOptions.EscRoleblockDuration);
+        BlockButton.Update("SEDUCE", Timer, CustomGameOptions.EscortCd, Blocking, TimeRemaining, CustomGameOptions.EscortDur);
     }
 }

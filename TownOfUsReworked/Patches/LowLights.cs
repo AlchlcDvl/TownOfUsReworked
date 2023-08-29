@@ -37,6 +37,9 @@ public static class CalculateLightRadiusPatch
                 (player.Object.Is(Faction.Neutral) ? CustomGameOptions.NeutralVision : CustomGameOptions.CrewVision);
         }
 
+        if (MapPatches.CurrentMap is 0 or 3 or 6 && CustomGameOptions.SmallMapHalfVision)
+            __result *= 0.5f;
+
         return false;
     }
 }
@@ -72,18 +75,8 @@ public static class AdjustLightingPatch
             size /= ShipStatus.Instance.MaxLightRadius;
 
         flashlights = flashlights && !__instance.Data.IsDead;
-
-        if (!flashlights)
-        {
-            __instance.TargetFlashlight?.gameObject.SetActive(false);
-            __instance.StartCoroutine(__instance.EnableRightJoystick(false));
-        }
-        else
-        {
-            __instance.TargetFlashlight?.gameObject.SetActive(true);
-            __instance.StartCoroutine(__instance.EnableRightJoystick(true));
-        }
-
+        __instance.TargetFlashlight?.gameObject.SetActive(flashlights);
+        __instance.StartCoroutine(__instance.EnableRightJoystick(flashlights));
         __instance.lightSource.SetupLightingForGameplay(flashlights, size, __instance.TargetFlashlight.transform);
     }
 }

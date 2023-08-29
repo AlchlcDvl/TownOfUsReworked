@@ -133,4 +133,10 @@ public class CustomMeeting
         if (!AfterVote)
             HideButtons();
     }
+
+    public void Destroy()
+    {
+        HideButtons();
+        AllCustomMeetings.RemoveAll(x => x == this || x == null);
+    }
 }

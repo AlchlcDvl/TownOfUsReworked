@@ -33,7 +33,7 @@ public class BountyHunter : Neutral
         "bounty\n- Upon finding the bounty, you can kill them\n- After your bounty has been killed by you, you can kill others as many times as you want\n- If your target dies not by "
         + "your hands, you will become a <color=#678D36FF>Troll</color>");
     public override InspectorResults InspectorResults => InspectorResults.TracksOthers;
-    public float Timer => ButtonUtils.Timer(Player, LastChecked, CustomGameOptions.BountyHunterCooldown);
+    public float Timer => ButtonUtils.Timer(Player, LastChecked, CustomGameOptions.GuessCd);
 
     public BountyHunter(PlayerControl player) : base(player)
     {
@@ -158,14 +158,14 @@ public class BountyHunter : Neutral
 
         //Ensures only the Bounty Hunter sees this
         if (HUD && something != "")
-            HUD.Chat.AddChat(CustomPlayer.Local, something);
+            Run(HUD.Chat, "<color=#B51E39FF>〖 Bounty Hunt 〗</color>", something);
     }
 
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        GuessButton.Update("GUESS", Timer, CustomGameOptions.BountyHunterCooldown, UsesLeft, true, !TargetFound && TargetPlayer != null);
-        HuntButton.Update("HUNT", Timer, CustomGameOptions.BountyHunterCooldown, true, TargetPlayer != null && CanHunt);
+        GuessButton.Update("GUESS", Timer, CustomGameOptions.GuessCd, UsesLeft, true, !TargetFound && TargetPlayer != null);
+        HuntButton.Update("HUNT", Timer, CustomGameOptions.GuessCd, true, TargetPlayer != null && CanHunt);
         RequestButton.Update("REQUEST HIT", true, CanRequest);
 
         if ((TargetFailed || (TargetPlayer != null && Failed)) && !IsDead)

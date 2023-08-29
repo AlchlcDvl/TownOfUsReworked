@@ -16,7 +16,7 @@ public class Teleporter : Intruder
     public override Func<string> Description => () => $"- You can mark a spot to teleport to later\n{CommonAbilities}";
     public override InspectorResults InspectorResults => InspectorResults.MovesAround;
     public float TeleportTimer => ButtonUtils.Timer(Player, LastTeleported, CustomGameOptions.TeleportCd);
-    public float MarkTimer => ButtonUtils.Timer(Player, LastMarked, CustomGameOptions.MarkCooldown);
+    public float MarkTimer => ButtonUtils.Timer(Player, LastMarked, CustomGameOptions.TeleMarkCd);
 
     public Teleporter(PlayerControl player) : base(player)
     {
@@ -56,7 +56,7 @@ public class Teleporter : Intruder
         var hits = Physics2D.OverlapBoxAll(Player.transform.position, GetSize(), 0);
         hits = hits.Where(c => (c.name.Contains("Vent") || !c.isTrigger) && c.gameObject.layer is not 8 and not 5).ToArray();
         CanMark = hits.Count == 0 && Player.moveable && !GetPlayerElevator(Player).IsInElevator && TeleportPoint != Player.transform.position;
-        MarkButton.Update("MARK", MarkTimer, CustomGameOptions.MarkCooldown, CanMark);
+        MarkButton.Update("MARK", MarkTimer, CustomGameOptions.TeleMarkCd, CanMark);
         TeleportButton.Update("TELEPORT", TeleportTimer, CustomGameOptions.TeleportCd, true, TeleportPoint != Vector3.zero && TeleportPoint != Player.transform.position);
     }
 }

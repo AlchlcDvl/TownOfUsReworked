@@ -6,7 +6,7 @@ namespace TownOfUsReworked.Patches;
 public static class MainMenuStartPatch
 {
     private static AnnouncementPopUp PopUp;
-    private static readonly Announcement ModInfo = new()
+    private static Announcement ModInfo => new()
     {
         Id = "tourewInfo",
         Language = 0,
@@ -20,27 +20,14 @@ public static class MainMenuStartPatch
     };
     public static GameObject Logo;
 
-    public static void Prefix(MainMenuManager __instance)
+    public static void Prefix()
     {
-        ModUpdater.LaunchUpdater();
-        Init();
+        ModCompatibility.Init();
         Generate.GenerateAll();
-        RoleGen.ResetEverything();
-        Info.SetAllInfo();
-        UpdateNames.PlayerNames.Clear();
-
-        if (!Logo)
-        {
-            Logo = new GameObject("TownOfUsReworkedLogo");
-            Logo.transform.position = new (2f, -0.1f, 100f);
-            Logo.AddComponent<SpriteRenderer>().sprite = GetSprite("TownOfUsReworkedBanner");
-            Logo.transform.SetParent(__instance.rightPanelMask.transform);
-        }
     }
 
     public static void Postfix(MainMenuManager __instance)
     {
-        CosmeticsLoader.LaunchFetchers(ModUpdater.HasReworkedUpdate);
         var scale = __instance.newsButton.transform.localScale;
         var pos = __instance.newsButton.transform.position;
         var diff = __instance.newsButton.transform.position.y - __instance.myAccountButton.transform.position.y;
@@ -60,7 +47,7 @@ public static class MainMenuStartPatch
         GameObject.Find("NewsButton").transform.GetChild(0).GetChild(0).transform.localScale = new(scale.x * 3.5f, scale.y, scale.z);
         GameObject.Find("NewsButton").transform.GetChild(1).GetChild(0).transform.localScale = new(scale.x * 1.9f, scale.y / 1.5f, scale.z);
         GameObject.Find("NewsButton").transform.GetChild(2).GetChild(0).transform.localScale = new(scale.x * 1.9f, scale.y / 1.5f, scale.z);
-        GameObject.Find("AcountButton").transform.GetChild(0).GetChild(0).transform.localScale = new(scale.x * 3.5f, scale.y, scale.z);
+        GameObject.Find("AcountButton").transform.GetChild(0).GetChild(0).transform.localScale = new(scale.x * 3.5f, scale.y, scale.z); //WHY THE FUCK IS IT ACOUNT AND NOT ACCOUNT
         GameObject.Find("AcountButton").transform.GetChild(1).GetChild(0).transform.localScale = new(scale.x * 1.9f, scale.y / 1.5f, scale.z);
         GameObject.Find("AcountButton").transform.GetChild(2).GetChild(0).transform.localScale = new(scale.x * 1.9f, scale.y / 1.5f, scale.z);
         GameObject.Find("SettingsButton").transform.GetChild(0).GetChild(0).transform.localScale = new(scale.x * 3.5f, scale.y, scale.z);
@@ -91,7 +78,7 @@ public static class MainMenuStartPatch
 
             if (template == null)
             {
-                LogSomething("Pop up was null");
+                LogError("Pop up was null");
                 return;
             }
 
@@ -123,69 +110,12 @@ public static class MainMenuStartPatch
             GameObject.Find("ReworkedModInfo").transform.GetChild(0).GetChild(0).GetComponent<TMP_Text>().SetText("Mod Info");
         })));
 
-        var template = GameObject.Find("ExitGameButton");
-
-        if (template)
+        if (!Logo)
         {
-            var pos2 = template.transform.localPosition;
-
-            if (ModUpdater.HasReworkedUpdate)
-            {
-                var touButton = UObject.Instantiate(template, null);
-                pos2.y += 0.6f;
-                touButton.name = "ReworkedUpdater";
-                touButton.transform.localPosition = pos2;
-                touButton.transform.localScale = new(0.44f, 0.84f, 1f);
-                touButton.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = GetSprite("UpdateToUButton");
-                touButton.transform.SetParent(GameObject.Find("RightPanel").transform);
-                var aspect = touButton.GetComponent<AspectPosition>();
-                aspect.Alignment = AspectPosition.EdgeAlignments.LeftBottom;
-                aspect.DistanceFromEdge = new(1.5f, 1f, 0f);
-                var passiveTOUButton = touButton.GetComponent<PassiveButton>();
-                passiveTOUButton.OnClick = new();
-                passiveTOUButton.OnClick.AddListener((Action)(() =>
-                {
-                    ModUpdater.ExecuteUpdate("Reworked");
-                    touButton.SetActive(false);
-                }));
-                __instance.StartCoroutine(Effects.Lerp(0.1f, new Action<float>(_ =>
-                {
-                    touButton.transform.GetChild(2).GetChild(0).GetComponent<TMP_Text>().SetText("");
-                    aspect.AdjustPosition();
-                })));
-                ModUpdater.InfoPopup = UObject.Instantiate(TwitchManager.Instance.TwitchPopup);
-                ModUpdater.InfoPopup.TextAreaTMP.fontSize *= 0.7f;
-                ModUpdater.InfoPopup.TextAreaTMP.enableAutoSizing = false;
-            }
-
-            if (ModUpdater.HasSubmergedUpdate)
-            {
-                var submergedButton = UObject.Instantiate(template, null);
-                pos2.y += 0.6f;
-                submergedButton.name = "SubmergedUpdater";
-                submergedButton.transform.localPosition = pos2;
-                submergedButton.transform.localScale = new(0.44f, 0.84f, 1f);
-                submergedButton.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = GetSprite("UpdateToUButton");
-                submergedButton.transform.SetParent(GameObject.Find("RightPanel").transform);
-                var aspect = submergedButton.GetComponent<AspectPosition>();
-                aspect.Alignment = AspectPosition.EdgeAlignments.LeftBottom;
-                aspect.DistanceFromEdge = new(1.5f, 1f, 0f);
-                var passiveTOUButton = submergedButton.GetComponent<PassiveButton>();
-                passiveTOUButton.OnClick = new();
-                passiveTOUButton.OnClick.AddListener((Action)(() =>
-                {
-                    ModUpdater.ExecuteUpdate("Submerged");
-                    submergedButton.SetActive(false);
-                }));
-                __instance.StartCoroutine(Effects.Lerp(0.1f, new Action<float>(_ =>
-                {
-                    submergedButton.transform.GetChild(2).GetChild(0).GetComponent<TMP_Text>().SetText("");
-                    aspect.AdjustPosition();
-                })));
-                ModUpdater.InfoPopup = UObject.Instantiate(TwitchManager.Instance.TwitchPopup);
-                ModUpdater.InfoPopup.TextAreaTMP.fontSize *= 0.7f;
-                ModUpdater.InfoPopup.TextAreaTMP.enableAutoSizing = false;
-            }
+            Logo = new GameObject("ReworkedLogo");
+            Logo.transform.position = new(2f, -0.1f, 100f);
+            Logo.AddComponent<SpriteRenderer>().sprite = GetSprite("Banner");
+            Logo.transform.SetParent(GameObject.Find("RightPanel").transform);
         }
     }
 }
@@ -215,8 +145,7 @@ public static class MainMenuUpdatePatch
             var pos6 = GameObject.Find("ReworkedModInfo").transform.GetChild(0).GetChild(0).transform.position;
             pos6.x -= 0.1f;
             GameObject.Find("ReworkedModInfo").transform.GetChild(0).GetChild(0).transform.position = pos6;
-            MainMenuStartPatch.Logo.SetActive(!__instance.playLocalButton.isActiveAndEnabled);
-            VersionShowerPatch.ModVersion.gameObject.SetActive(!__instance.playLocalButton.isActiveAndEnabled);
+            MainMenuStartPatch.Logo.SetActive(!__instance.playLocalButton.isActiveAndEnabled && !__instance.creditsScreen.active);
         } catch {}
     }
 }

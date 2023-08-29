@@ -38,7 +38,7 @@ public class Guesser : Neutral
     public Guesser(PlayerControl player) : base(player)
     {
         RoleAlignment = RoleAlignment.NeutralEvil;
-        RemainingGuesses = CustomGameOptions.GuessCount;
+        RemainingGuesses = CustomGameOptions.MaxGuesses;
         SortedColorMapping = new();
         SelectedButton = null;
         Page = 0;
@@ -442,7 +442,7 @@ public class Guesser : Neutral
 
         //Ensures only the Guesser sees this
         if (HUD && something != "")
-            HUD.Chat.AddChat(CustomPlayer.Local, something);
+            Run(HUD.Chat, "<color=#EEE5BEFF>〖 Guess Hint 〗</color>", something);
     }
 
     private bool IsExempt(PlayerVoteArea voteArea)
@@ -535,6 +535,13 @@ public class Guesser : Neutral
 
             TargetGuessed = true;
             MarkMeetingDead(player, Player, false);
+
+            if (CustomPlayer.Local == player)
+                Run(HUD.Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} guessed you as {guess}!");
+            else if (DeadSeeEverything)
+                Run(HUD.Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} guessed {guessTarget.name} as {guess}!");
+            else
+                Run(HUD.Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"{player.name} has been assassinated!");
         }
         else if (Player == player)
         {
@@ -543,14 +550,14 @@ public class Guesser : Neutral
                 RemainingGuesses--;
 
                 if (DeadSeeEverything && !Local)
-                    HUD.Chat.AddChat(CustomPlayer.Local, $"{PlayerName} incorrectly guessed {guessTarget.name} as {guess} and lost a guess!");
+                    Run(HUD.Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"{PlayerName} incorrectly guessed {guessTarget.name} as {guess}!");
                 else if (Local && !TargetGuessed)
-                    HUD.Chat.AddChat(CustomPlayer.Local, $"You incorrectly guessed {guessTarget.name} as {guess} and lost a guess!");
+                    Run(HUD.Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"You incorrectly guessed {guessTarget.name} as {guess}!");
             }
             else if (DeadSeeEverything)
-                HUD.Chat.AddChat(CustomPlayer.Local, $"{PlayerName} incorrectly guessed {guessTarget.name} as {guess}!");
+                Run(HUD.Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"{PlayerName} incorrectly guessed {guessTarget.name} as {guess}!");
             else if (Local && !TargetGuessed)
-                HUD.Chat.AddChat(CustomPlayer.Local, $"You incorrectly guessed {guessTarget.name} as {guess}!");
+                Run(HUD.Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"You incorrectly guessed {guessTarget.name} as {guess}!");
         }
     }
 

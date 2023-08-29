@@ -2,82 +2,115 @@ namespace TownOfUsReworked.Modules;
 
 public class ChatCommand
 {
-    public readonly string Command;
-    public readonly string Short;
-    public readonly ExecuteArgsCommand ExecuteArgs;
-    public readonly ExecuteArglessCommand ExecuteArgless;
-    public delegate void ExecuteArgsCommand(string[] args, ChatController __instance);
-    public delegate void ExecuteArglessCommand(ChatController __instance);
+    private readonly string[] Aliases;
+    private readonly ExecuteArgsCommand ExecuteArgs;
+    private readonly ExecuteArglessCommand ExecuteArgless;
+    private delegate void ExecuteArgsCommand(string[] args, ChatController __instance);
+    private delegate void ExecuteArglessCommand(ChatController __instance);
 
-    public static readonly List<ChatCommand> AllCommands = new()
+    private static readonly List<ChatCommand> AllCommands = new()
     {
-        new("/controls", "/ctrl", Controls),
-        new("/kick", "/k", KickBan),
-        new("/ban", "/b", KickBan),
-        new("/summary", "/sum", Summary),
-        new("/clearlobby", "/cl", Clear),
-        new("/setname", "/sn", SetName),
-        new("/setcolor", "/sc", SetColor),
-        new("/setcolour", "/sc", SetColor),
-        new("/whisper", "/w", Whisper),
-        new("/testargs", "/targ", TestArgs),
-        new("/testargless", "/targless", TestArgless),
-        new("/help", "/h", Help),
-        new("/rpc", "/rpc", SendRPC)
+        new(new[] { "controls", "ctrl" }, Controls),
+        new(new[] { "kick", "k", "ban", "b" }, KickBan),
+        new(new[] { "summary", "sum" }, Summary),
+        new(new[] { "clearlobby", "cl", "clear" }, Clear),
+        new(new[] { "setname", "sn", "name" }, SetName),
+        new(new[] { "setcolor", "setcolour", "sc", "color", "colour" }, SetColor),
+        new(new[] { "whisper", "w" }, Whisper),
+        new(new[] { "testargs", "targ" }, TestArgs),
+        new(new[] { "testargless", "targless" }, TestArgless),
+        new(new[] { "help", "h" }, Help),
+        new(new[] { "translate", "trans" }, Translate),
+        new(new[] { "rpc" }, SendRPC)
     };
-    public static readonly Dictionary<ChatBubble, (string, Color)> BubbleModifications = new();
 
-    //As much as I hate to do this, people will take advatage of this function so we're better off doing this early
+    //As much as I hate to do this, people will take advantage of this function so we're better off doing this early
     private static readonly string[] profanities = { "fuck", "bastard", "cunt", "bitch", "ass", "nigg", "nig", "neg", "whore", "negro", "dick", "penis", "yiff", "rape", "rapist" };
     private const string disallowed = "@^[{(_-;:\"'.,\\|)}]+$!#$%^&&*?/";
 
-    public ChatCommand(string command, string shortF)
-    {
-        Command = command;
-        Short = shortF;
-    }
+    private ChatCommand(string[] aliases) => Aliases = aliases;
 
-    public ChatCommand(string command, string shortF, ExecuteArgsCommand executeArgs) : this(command, shortF)
+    private ChatCommand(string[] aliases, ExecuteArgsCommand executeArgs) : this(aliases)
     {
         ExecuteArgs = executeArgs;
         ExecuteArgless = null;
     }
 
-    public ChatCommand(string command, string shortF, ExecuteArglessCommand executeArgless) : this(command, shortF)
+    private ChatCommand(string[] aliases, ExecuteArglessCommand executeArgless) : this(aliases)
     {
         ExecuteArgless = executeArgless;
         ExecuteArgs = null;
+    }
+
+    public static void Execute(ChatCommand command, ChatController __instance, string[] args)
+    {
+        if (command == null)
+            Run(__instance, "<color=#FF0000FF>⚠ Invalid Command ⚠</color>", "This command does not exist.");
+        else if (command.ExecuteArgs == null)
+            command.ExecuteArgless(__instance);
+        else if (command.ExecuteArgless == null)
+            command.ExecuteArgs(args, __instance);
+        else
+            Run(__instance, "<color=#FFFF00FF>⚠ Huh? ⚠</color>", "Weird...");
+    }
+
+    public static ChatCommand Find(string[] args) => AllCommands.Find(x => x.Aliases.Any(x => args[0] == $"/{x}"));
+
+    public static void Run(ChatController __instance, string title, string text, bool withColor = true, bool hasColor = false)
+    {
+        var pooledBubble = __instance.GetPooledBubble();
+
+        try
+        {
+            pooledBubble.transform.SetParent(__instance.scroller.Inner);
+            pooledBubble.transform.localScale = Vector3.one;
+            pooledBubble.SetLeft();
+            pooledBubble.SetCosmetics(CustomPlayer.Local.Data);
+            pooledBubble.NameText.text = title;
+            pooledBubble.NameText.color = UColor.white;
+            pooledBubble.NameText.ForceMeshUpdate(true, true);
+            pooledBubble.votedMark.enabled = false;
+            pooledBubble.Xmark.enabled = false;
+            pooledBubble.TextArea.text = text;
+            pooledBubble.TextArea.ForceMeshUpdate(true, true);
+            pooledBubble.Background.size = new(5.52f, 0.2f + pooledBubble.NameText.GetNotDumbRenderedHeight() + pooledBubble.TextArea.GetNotDumbRenderedHeight());
+            pooledBubble.MaskArea.size = pooledBubble.Background.size - new Vector2(0.0f, 0.03f);
+            pooledBubble.TextArea.richText = withColor;
+
+            if (withColor && !hasColor)
+                pooledBubble.TextArea.text = Info.ColorIt(text);
+
+            pooledBubble.AlignChildren();
+            var pos = pooledBubble.NameText.transform.localPosition;
+            pos.y += 0.05f;
+            pooledBubble.NameText.transform.localPosition = pos;
+            __instance.AlignAllBubbles();
+            Play("Chat");
+        }
+        catch (Exception ex)
+        {
+            LogError(ex);
+            __instance.chatBubblePool.Reclaim(pooledBubble);
+        }
     }
 
     private static void Whisper(string[] args, ChatController __instance)
     {
         if (IsLobby)
         {
-            __instance.AddChat(CustomPlayer.Local, "Invalid command.");
-
-            if (!BubbleModifications.ContainsKey(__instance.chatBubblePool.activeChildren[^1].Cast<ChatBubble>()))
-                BubbleModifications.Add(__instance.chatBubblePool.activeChildren[^1].Cast<ChatBubble>(), ("Error", UColor.red));
-
+            Run(__instance, "<color=#FF0000FF>⚠ Invalid Command ⚠</color>", "This command does not exist.");
             return;
         }
 
         if (!CustomGameOptions.Whispers)
         {
-            __instance.AddChat(CustomPlayer.Local, "Whispering is not turned on.");
-
-            if (!BubbleModifications.ContainsKey(__instance.chatBubblePool.activeChildren[^1].Cast<ChatBubble>()))
-                BubbleModifications.Add(__instance.chatBubblePool.activeChildren[^1].Cast<ChatBubble>(), ("No Whispering", UColor.red));
-
+            Run(__instance, "<color=#00FF00FF>⚠ No Whispering ⚠</color>", "Whispering is not turned on.");
             return;
         }
 
         if (args.Length < 3 || string.IsNullOrEmpty(args[1]) || string.IsNullOrEmpty(args[2]))
         {
-            __instance.AddChat(CustomPlayer.Local, "Usage: /<whisper | w> <meeting number> <message>");
-
-            if (!BubbleModifications.ContainsKey(__instance.chatBubblePool.activeChildren[^1].Cast<ChatBubble>()))
-                BubbleModifications.Add(__instance.chatBubblePool.activeChildren[^1].Cast<ChatBubble>(), ("Whisper Help", UColor.green));
-
+            Run(__instance, "<color=#00FF00FF>★ Help ★</color>", "Usage: /<whisper | w> <meeting number> <message>");
             return;
         }
 
@@ -86,100 +119,78 @@ public class ChatCommand
         message = message.Remove(message.Length - 1);
 
         if (CustomPlayer.Local.Data.IsDead)
-            __instance.AddChat(CustomPlayer.Local, "You are dead.");
+            Run(__instance, "<color=#FFFF00FF>米 Shhhh 米</color>", "You are dead.");
         else if (CustomPlayer.Local.IsBlackmailed())
-            __instance.AddChat(CustomPlayer.Local, "You are blackmailed.");
-        else if (CustomPlayer.AllPlayers.Any(x => x.IsSilenced() && x.GetSilencer().HoldsDrive && x != CustomPlayer.Local))
-            __instance.AddChat(CustomPlayer.Local, "You are silenced.");
+            Run(__instance, "<color=#02A752FF>米 Shhhh 米</color>", "You are blackmailed.");
+        else if (CustomPlayer.AllPlayers.Any(x => x.IsSilenced() && x.GetSilencer()?.HoldsDrive == true && x != CustomPlayer.Local))
+            Run(__instance, "<color=#AAB43EFF>米 Shhhh 米</color>", "You are silenced.");
+        else if (CustomPlayer.AllPlayers.Any(x => x.IsSilenced() && x.GetRebSilencer()?.HoldsDrive == true && x != CustomPlayer.Local))
+            Run(__instance, "<color=#AAB43EFF>米 Shhhh 米</color>", "You are silenced.");
         else if (byte.TryParse(args[1], out var id))
         {
             var whispered = PlayerById(id);
 
             if (whispered == CustomPlayer.Local)
-                __instance.AddChat(CustomPlayer.Local, "Don't whisper to yourself, weirdo.");
+                Run(__instance, "<color=#FF0000FF>⚠ Whispering Error ⚠</color>", "Don't whisper to yourself, weirdo.");
             else if (whispered)
             {
                 if (whispered.Data.IsDead || whispered.Data.Disconnected)
-                    __instance.AddChat(CustomPlayer.Local, $"{whispered.name} is not in this world anymore.");
+                    Run(__instance, "<color=#FF0000FF>⚠ Whispering Error ⚠</color>", $"{whispered.name} is not in this world anymore.");
                 else
                 {
-                    __instance.AddChat(CustomPlayer.Local, $"You whisper to {whispered.name}: {message}");
+                    Run(__instance, "<color=#4D4DFFFF>「 Whispers 」</color>", $"You whisper to {whispered.name}: {message}");
                     CallRpc(CustomRPC.Misc, MiscRPC.Whisper, CustomPlayer.Local, whispered, message);
                 }
             }
             else
-                __instance.AddChat(CustomPlayer.Local, "Who are you trying to whisper?");
+                Run(__instance, "<color=#FF0000FF>⚠ Whispering Error ⚠</color>", "Who are you trying to whisper?");
         }
         else
-            __instance.AddChat(CustomPlayer.Local, $"{args[1]} is not a valid number.");
-
-        if (!BubbleModifications.ContainsKey(__instance.chatBubblePool.activeChildren[^1].Cast<ChatBubble>()))
-            BubbleModifications.Add(__instance.chatBubblePool.activeChildren[^1].Cast<ChatBubble>(), ("Whispers", UColor.blue));
+            Run(__instance, "<color=#FF0000FF>⚠ Whispering Error ⚠</color>", $"{args[1]} is not a valid number.");
     }
 
     private static void SetColor(string[] args, ChatController __instance)
     {
         if (!TownOfUsReworked.IsTest || !IsLobby)
         {
-            __instance.AddChat(CustomPlayer.Local, "Invalid command.");
-
-            if (!BubbleModifications.ContainsKey(__instance.chatBubblePool.activeChildren[^1].Cast<ChatBubble>()))
-                BubbleModifications.Add(__instance.chatBubblePool.activeChildren[^1].Cast<ChatBubble>(), ("Error", UColor.red));
-
+            Run(__instance, "<color=#FF0000FF>⚠ Invalid Command ⚠</color>", "This command does not exist.");
             return;
         }
 
         if (args.Length < 2 || string.IsNullOrEmpty(args[1]))
         {
-            __instance.AddChat(CustomPlayer.Local, "Usage: /<setcolour | setcolor | sc> <color id>");
-
-            if (!BubbleModifications.ContainsKey(__instance.chatBubblePool.activeChildren[^1].Cast<ChatBubble>()))
-                BubbleModifications.Add(__instance.chatBubblePool.activeChildren[^1].Cast<ChatBubble>(), ("Color Help", UColor.green));
-
+            Run(__instance, "<color=#00FF00FF>★ Help ★</color>", "Usage: /<setcolour | setcolor | sc> <color id>");
             return;
         }
 
-        var spelling = args[0].Replace("/set", "");
-        var changed = false;
+        var spelling = args[0].ToLower().Contains("color") ? "olor" : "olour";
 
-        if (!int.TryParse(args[1], out var col))
+        if (!byte.TryParse(args[1], out var col))
         {
-            __instance.AddChat(CustomPlayer.Local, $"{args[1]} is an invalid {spelling}.\nYou need to use the color ID for the color you want to be. To find out a color's ID, go into the" +
-                " color selection screen and count the number of colors starting from 0 to the position of the color you want to pick, from left to right. The range of colors is from 0 " +
-                "to 49 meaning Red to Rainbow respectively.");
+            Run(__instance, "<color=#FF0000FF>⚠ Color Error ⚠</color>", $"{args[1]} is an invalid c{spelling}.\nYou need to use the color ID for the color you want to be. To find out a " +
+                "color's ID, go into the color selection screen and count the number of colors starting from 0 to the position of the color you want to pick, from left to right. The range of"
+                + "colors is from 0 to 49 meaning Red to Rainbow respectively.");
         }
         else if (ColorUtils.OutOfBounds(col))
-            __instance.AddChat(CustomPlayer.Local, $"Invalid {spelling} id.");
+            Run(__instance, "<color=#FF0000FF>⚠ Color Error ⚠</color>", $"Invalid c{spelling} id.");
         else
         {
-            CustomPlayer.Local.CmdCheckColor((byte)col);
-            __instance.AddChat(CustomPlayer.Local, $"{spelling} changed!");
-            changed = true;
+            CustomPlayer.Local.CmdCheckColor(col);
+            Run(__instance, "<color=#B148E2FF>◈ Success ◈</color>", $"C{spelling} changed!");
         }
-
-        if (!BubbleModifications.ContainsKey(__instance.chatBubblePool.activeChildren[^1].Cast<ChatBubble>()))
-            BubbleModifications.Add(__instance.chatBubblePool.activeChildren[^1].Cast<ChatBubble>(), ("Set Color", changed ? UColor.green : UColor.red));
     }
 
     private static void SetName(string[] args, ChatController __instance)
     {
         if (!TownOfUsReworked.IsTest || !IsLobby)
         {
-            __instance.AddChat(CustomPlayer.Local, "Invalid command.");
-
-            if (!BubbleModifications.ContainsKey(__instance.chatBubblePool.activeChildren[^1].Cast<ChatBubble>()))
-                BubbleModifications.Add(__instance.chatBubblePool.activeChildren[^1].Cast<ChatBubble>(), ("Error", UColor.red));
-
+            Run(__instance, "<color=#FF0000FF>⚠ Invalid Command ⚠</color>", "This command does not exist.");
             return;
         }
 
         if (args.Length < 2 || string.IsNullOrEmpty(args[1]))
         {
-            __instance.AddChat(CustomPlayer.Local, "Usage: /<setname | sn> <name>");
-
-            if (!BubbleModifications.ContainsKey(__instance.chatBubblePool.activeChildren[^1].Cast<ChatBubble>()))
-                BubbleModifications.Add(__instance.chatBubblePool.activeChildren[^1].Cast<ChatBubble>(), ("Set Name Help", UColor.green));
-
+            Run(__instance, "<color=#00FF00FF>★ Help ★</color>", "Usage: /<setname | sn> <name>");
             return;
         }
 
@@ -188,59 +199,39 @@ public class ChatCommand
         arg = arg.Remove(arg.Length - 1);
 
         if (arg.Any(disallowed.Contains))
-            __instance.AddChat(CustomPlayer.Local, "Name contains disallowed characters.");
+            Run(__instance, "<color=#FF0000FF>⚠ Name Error ⚠</color>", "Name contains disallowed characters.");
         else if (profanities.Any(arg.Contains))
-            __instance.AddChat(CustomPlayer.Local, "Name contains unaccepted words.");
+            Run(__instance, "<color=#FF0000FF>⚠ Name Error ⚠</color>", "Name contains unaccepted words.");
         else if (arg.Length > 20)
-            __instance.AddChat(CustomPlayer.Local, "Name is too long.");
+            Run(__instance, "<color=#FF0000FF>⚠ Name Error ⚠</color>", "Name is too long.");
         else
         {
             CustomPlayer.Local.RpcSetName(arg);
-            __instance.AddChat(CustomPlayer.Local, "Name changed!");
+            Run(__instance, "<color=#B148E2FF>◈ Success ◈</color>", "Name changed!");
         }
-
-        if (!BubbleModifications.ContainsKey(__instance.chatBubblePool.activeChildren[^1].Cast<ChatBubble>()))
-            BubbleModifications.Add(__instance.chatBubblePool.activeChildren[^1].Cast<ChatBubble>(), ("Set Name", UColor.green));
     }
 
     private static void Summary(ChatController __instance)
     {
-        var summary = "";
+        var summary = ReadText("Summary");
 
-        try
-        {
-            summary = File.ReadAllText(Path.Combine(Application.persistentDataPath, "Summary"));
-        }
-        catch
-        {
-            summary = "Summary could not be found.";
-        }
-
-        __instance.AddChat(CustomPlayer.Local, summary);
-
-        if (!BubbleModifications.ContainsKey(__instance.chatBubblePool.activeChildren[^1].Cast<ChatBubble>()))
-            BubbleModifications.Add(__instance.chatBubblePool.activeChildren[^1].Cast<ChatBubble>(), ("Summary", UColor.yellow));
+        if (IsNullEmptyOrWhiteSpace(summary))
+            Run(__instance, "<color=#FF0000FF>⚠ Summary Error ⚠</color>", "Summary could not be found.");
+        else
+            Run(__instance, "<color=#FF0080FF>个 Previous Game Summary 个</color>", summary, false, true);   
     }
 
     private static void Clear(ChatController __instance)
     {
         if (!IsLobby)
         {
-            __instance.AddChat(CustomPlayer.Local, "Invalid command.");
-
-            if (!BubbleModifications.ContainsKey(__instance.chatBubblePool.activeChildren[^1].Cast<ChatBubble>()))
-                BubbleModifications.Add(__instance.chatBubblePool.activeChildren[^1].Cast<ChatBubble>(), ("Error", UColor.red));
-
+            Run(__instance, "<color=#FF0000FF>⚠ Invalid Command ⚠</color>", "This command does not exist.");
             return;
         }
 
         if (!AmongUsClient.Instance.CanBan() || !AmongUsClient.Instance.AmHost)
         {
-            __instance.AddChat(CustomPlayer.Local, "You can't use this command.");
-
-            if (!BubbleModifications.ContainsKey(__instance.chatBubblePool.activeChildren[^1].Cast<ChatBubble>()))
-                BubbleModifications.Add(__instance.chatBubblePool.activeChildren[^1].Cast<ChatBubble>(), ("Error", UColor.red));
-
+            Run(__instance, "<color=#FF0000FF>⚠ Not Allowed ⚠</color>", "This command is not for you to use.");
             return;
         }
 
@@ -255,28 +246,20 @@ public class ChatCommand
             }
         }
 
-        __instance.AddChat(CustomPlayer.Local, "Lobby cleared!");
+        Run(__instance, "<color=#B148E2FF>◈ Success ◈</color>", "Lobby cleared!");
     }
 
     private static void KickBan(string[] args, ChatController __instance)
     {
         if (!IsLobby)
         {
-            __instance.AddChat(CustomPlayer.Local, "Invalid command.");
-
-            if (!BubbleModifications.ContainsKey(__instance.chatBubblePool.activeChildren[^1].Cast<ChatBubble>()))
-                BubbleModifications.Add(__instance.chatBubblePool.activeChildren[^1].Cast<ChatBubble>(), ("Error", UColor.red));
-
+            Run(__instance, "<color=#FF0000FF>⚠ Invalid Command ⚠</color>", "This command does not exist.");
             return;
         }
 
         if (!AmongUsClient.Instance.CanBan() || !AmongUsClient.Instance.AmHost)
         {
-            __instance.AddChat(CustomPlayer.Local, "You can't use this command.");
-
-            if (!BubbleModifications.ContainsKey(__instance.chatBubblePool.activeChildren[^1].Cast<ChatBubble>()))
-                BubbleModifications.Add(__instance.chatBubblePool.activeChildren[^1].Cast<ChatBubble>(), ("Error", UColor.red));
-
+            Run(__instance, "<color=#FF0000FF>⚠ Not Allowed ⚠</color>", "This command is not for you to use.");
             return;
         }
 
@@ -284,7 +267,7 @@ public class ChatCommand
 
         if (args.Length < 2 || string.IsNullOrEmpty(args[1]))
         {
-            __instance.AddChat(CustomPlayer.Local, $"Usage: /{(ban ? "<ban | b>" : "<kick | k>")} <player name>");
+            Run(__instance, "<color=#00FF00FF>★ Help ★</color>", $"Usage: /{(ban ? "<ban | b>" : "<kick | k>")} <player name>");
             return;
         }
 
@@ -296,13 +279,13 @@ public class ChatCommand
 
         if (target == null)
         {
-            __instance.AddChat(CustomPlayer.Local, $"Could not find {arg}.");
+            Run(__instance, $"<color=#FF0000FF>⚠ {(ban ? "Ban" : "Kick")} Error ⚠</color>", $"Could not find {arg}.");
             return;
         }
 
         if (target == CustomPlayer.Local)
         {
-            __instance.AddChat(CustomPlayer.Local, $"Don't {(ban ? "ban" : "kick")} yourself.");
+            Run(__instance, $"<color=#FF0000FF>⚠ {(ban ? "Ban" : "Kick")} Error ⚠</color>", $"Don't {(ban ? "ban" : "kick")} yourself.");
             return;
         }
 
@@ -310,15 +293,12 @@ public class ChatCommand
 
         if (client == null)
         {
-            __instance.AddChat(CustomPlayer.Local, $"Could not find {arg}.");
+            Run(__instance, $"<color=#FF0000FF>⚠ {(ban ? "Ban" : "Kick")} Error ⚠</color>", $"Could not find {arg}.");
             return;
         }
 
         AmongUsClient.Instance.KickPlayer(client.Id, ban);
-        __instance.AddChat(CustomPlayer.Local, $"{target.name} {(ban ? "Bann" : "Kick")}ed!");
-
-        if (!BubbleModifications.ContainsKey(__instance.chatBubblePool.activeChildren[^1].Cast<ChatBubble>()))
-            BubbleModifications.Add(__instance.chatBubblePool.activeChildren[^1].Cast<ChatBubble>(), ("Sucess", UColor.green));
+        Run(__instance, "<color=#B148E2FF>◈ Success ◈</color>", $"{target.name} {(ban ? "Bann" : "Kick")}ed!");
     }
 
     private static void Help(ChatController __instance)
@@ -329,41 +309,38 @@ public class ChatCommand
         var kickBan = comma + (AmongUsClient.Instance.AmHost && AmongUsClient.Instance.CanBan() ? "/kick, /ban, /clearlobby" : "");
         var test = TownOfUsReworked.IsTest ? ", /testargs, /testargless, /rpc" : "";
         var lobby = setColor + kickBan != "" ? $"\n\nCommands available in lobby:\n{setColor}{kickBan}" : "";
-        __instance.AddChat(CustomPlayer.Local, $"Commands available all the time:\n/help, /controls, /summary{test}\n\nCommands available in game:\n{whisper}{lobby}");
+        Run(__instance, "<color=#0000FFFF>✿ Help Menu ✿</color>", $"Commands available all the time:\n/help, /controls, /summary{test}\n\nCommands available in game:\n{whisper}{lobby}");
     }
 
-    private static void Controls(ChatController __instance)
-    {
-        __instance.AddChat(CustomPlayer.Local, "Here are the controls:\nF1 - Start up the MCI control panel (local only)\nF2 - Toggle the visibility of the control panel (local only)\n" +
-            "Tab/Backspace - Change pages\nUp/Left Arrow - Go up a page when in a menu\nDown/Right Arrow - Go down a page when in a menu\n1 - 9 - Jump between setting pages (in lobby)");
-
-        if (!BubbleModifications.ContainsKey(__instance.chatBubblePool.activeChildren[^1].Cast<ChatBubble>()))
-            BubbleModifications.Add(__instance.chatBubblePool.activeChildren[^1].Cast<ChatBubble>(), ("Information", UColor.green));
-    }
+    private static void Controls(ChatController __instance) => Run(__instance, "<color=#6697FFFF>◆ Controls ◆</color>", "Here are the controls:\nF1 - Start up the MCI control panel (local "
+        + "only)\nF2 - Toggle the visibility of the control panel (local only)\nTab/Backspace - Change pages\nUp/Left Arrow - Go up a page when in a menu\nDown/Right Arrow - Go down a page "
+        + "when in a menu\n1 - 9 - Jump between setting pages (in lobby)");
 
     private static void TestArgs(string[] args, ChatController __instance)
     {
         var message = "You entered the following params:\n";
         args[1..].ToList().ForEach(arg => message += $"{arg}, ");
         message = message.Remove(message.Length - 2);
-        __instance.AddChat(CustomPlayer.Local, message);
-
-        if (!BubbleModifications.ContainsKey(__instance.chatBubblePool.activeChildren[^1].Cast<ChatBubble>()))
-            BubbleModifications.Add(__instance.chatBubblePool.activeChildren[^1].Cast<ChatBubble>(), ("Test Command With Arguments", UColor.cyan));
+        Run(__instance, "<color=#FF00FFFF>⚠ TEST ⚠</color>", message);
     }
 
-    private static void TestArgless(ChatController __instance)
-    {
-        __instance.AddChat(CustomPlayer.Local, "Test");
-
-        if (!BubbleModifications.ContainsKey(__instance.chatBubblePool.activeChildren[^1].Cast<ChatBubble>()))
-            BubbleModifications.Add(__instance.chatBubblePool.activeChildren[^1].Cast<ChatBubble>(), ("Test Command With No Arguments", UColor.cyan));
-    }
+    private static void TestArgless(ChatController __instance) => Run(__instance, "<color=#FF00FFFF>⚠ TEST ⚠</color>", "Test.");
 
     private static void SendRPC(ChatController __instance)
     {
         CallRpc(CustomRPC.Test);
-        __instance.AddChat(CustomPlayer.Local, "RPC Sent!");
-        LogSomething("RPC Sent!");
+        LogMessage("RPC Sent!");
+        Run(__instance, "<color=#FF00FFFF>⚠ RPC TEST ⚠</color>", "RPC Sent!");
+    }
+
+    private static void Translate(string[] args, ChatController __instance)
+    {
+        if (args.Length < 2 || string.IsNullOrEmpty(args[1]))
+        {
+            Run(__instance, "<color=#00FF00FF>★ Help ★</color>", "Usage: /<translate | trans> <text id>");
+            return;
+        }
+
+        Run(__instance, "<color=#B148E2FF>◈ Success ◈</color>", Test(args[1]));
     }
 }

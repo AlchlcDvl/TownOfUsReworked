@@ -30,6 +30,7 @@ public class CustomMenu
                 return;
 
             Menu = UObject.Instantiate(GetShapeshifterMenu(), Camera.main.transform, false);
+            Menu.name = Menu.gameObject.name = $"{Owner.name}AbilityMenu";
         }
 
         Menu.transform.SetParent(Camera.main.transform, false);
@@ -47,5 +48,11 @@ public class CustomMenu
     {
         Click(player);
         Menu.Close();
+    }
+
+    public void Destroy()
+    {
+        Menu?.Destroy();
+        Menu = null;
     }
 }

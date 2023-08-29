@@ -17,14 +17,14 @@ public class Cannibal : Neutral
     public override Func<string> Description => () => "- You can consume a body, making it disappear from the game" + (CustomGameOptions.EatArrows ? "\n- When someone dies, you get "
         + "an arrow pointing to their body" : "");
     public override InspectorResults InspectorResults => InspectorResults.DealsWithDead;
-    public float Timer => ButtonUtils.Timer(Player, LastEaten, CustomGameOptions.CannibalCd);
+    public float Timer => ButtonUtils.Timer(Player, LastEaten, CustomGameOptions.EatCd);
 
     public Cannibal(PlayerControl player) : base(player)
     {
         RoleAlignment = RoleAlignment.NeutralEvil;
         Objectives = () => Eaten ? "- You are satiated" : $"- Eat {EatNeed} bod{(EatNeed == 1 ? "y" : "ies")}";
         BodyArrows = new();
-        EatNeed = CustomGameOptions.CannibalBodyCount >= CustomPlayer.AllPlayers.Count / 2 ? CustomPlayer.AllPlayers.Count / 2 : CustomGameOptions.CannibalBodyCount;
+        EatNeed = CustomGameOptions.BodiesNeeded >= CustomPlayer.AllPlayers.Count / 2 ? CustomPlayer.AllPlayers.Count / 2 : CustomGameOptions.BodiesNeeded;
         EatButton = new(this, "Eat", AbilityTypes.Dead, "ActionSecondary", Eat);
     }
 
@@ -44,7 +44,7 @@ public class Cannibal : Neutral
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        EatButton.Update("EAT", Timer, CustomGameOptions.CannibalCd, true, CanEat);
+        EatButton.Update("EAT", Timer, CustomGameOptions.EatCd, true, CanEat);
 
         if (CustomGameOptions.EatArrows && !IsDead)
         {

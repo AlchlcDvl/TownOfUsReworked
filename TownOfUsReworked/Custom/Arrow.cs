@@ -10,7 +10,7 @@ public class CustomArrow
     private DateTime _time { get; set; }
     private Vector3 Target { get; set; }
     private SpriteRenderer Point { get; set; }
-    private Color? ArrowColor { get; set; }
+    private Color ArrowColor { get; set; }
     private bool Disabled { get; set; }
     public static readonly List<CustomArrow> AllArrows = new();
 
@@ -20,12 +20,9 @@ public class CustomArrow
         Interval = interval;
         ArrowColor = color;
         _time = DateTime.UnixEpoch;
+        Instantiate();
+        Disabled = Owner != CustomPlayer.Local;
         AllArrows.Add(this);
-
-        if (Owner == CustomPlayer.Local)
-            Instantiate();
-        else
-            Disabled = true;
     }
 
     private void Instantiate()
@@ -34,23 +31,21 @@ public class CustomArrow
             return;
 
         ArrowObj = new("CustomArrow") { layer = 5 };
-        ArrowObj.transform.SetParent(Owner?.gameObject?.transform);
+        ArrowObj.transform.SetParent(Owner.gameObject.transform);
+        ArrowObj.transform.localScale /= CustomPlayer.Custom(Owner).Size;
         Arrow = ArrowObj.AddComponent<ArrowBehaviour>();
         Render = ArrowObj.AddComponent<SpriteRenderer>();
         Render.sprite = GetSprite("Arrow");
-        Render.color = ArrowColor.Value;
+        Render.color = ArrowColor;
         Arrow.image = Render;
         Arrow.target = Owner.transform.position;
-        Disabled = false;
     }
-
-    public void NewSprite(string sprite) => Render.sprite = GetSprite(sprite);
 
     public void Update(Color? color = null) => Update(Target, color);
 
     public void Update(Vector3 target, Color? color = null)
     {
-        if (ArrowObj == null || Arrow == null || Render == null || ArrowColor == null || ArrowColor.Value == default || Disabled)
+        if (ArrowObj == null || Arrow == null || Render == null || (Owner != CustomPlayer.Local && Disabled))
             return;
 
         if (Owner != CustomPlayer.Local)
@@ -64,9 +59,7 @@ public class CustomArrow
             Instantiate();
 
         if (color.HasValue)
-            Render.color = color.Value;
-
-        ArrowColor = color;
+            Render.color = ArrowColor = color.Value;
 
         if (_time <= DateTime.UtcNow.AddSeconds(-Interval))
         {
@@ -76,13 +69,17 @@ public class CustomArrow
         }
     }
 
-    public void Disable() => Destroy(false);
-
-    public void Destroy(bool remove = true)
+    public void Disable()
     {
         if (Disabled)
             return;
 
+        Destroy(false);
+        Disabled = true;
+    }
+
+    public void Destroy(bool remove = true)
+    {
         ArrowObj.Destroy();
         Arrow.Destroy();
         Render.Destroy();
@@ -91,13 +88,19 @@ public class CustomArrow
         Arrow = null;
         Render = null;
         Point = null;
-        Disabled = true;
 
         if (remove)
             AllArrows.Remove(this);
     }
 
-    public void Enable() => Instantiate();
+    public void Enable()
+    {
+        if (!Disabled || Owner != CustomPlayer.Local)
+            return;
+
+        Instantiate();
+        Disabled = false;
+    }
 
     public void UpdateArrowBlip(MapBehaviour __instance)
     {
@@ -116,6 +119,6 @@ public class CustomArrow
         }
 
         Point.transform.localPosition = v;
-        PlayerMaterial.SetColors(ArrowColor.Value, Point);
+        PlayerMaterial.SetColors(ArrowColor, Point);
     }
 }

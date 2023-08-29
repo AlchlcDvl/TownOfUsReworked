@@ -8,7 +8,7 @@ public class Seer : Crew
         x.Is(LayerEnum.Rebel) || x.Is(LayerEnum.Mystic) || (x.Is(LayerEnum.Seer) && x != this) || x.Is(LayerEnum.Sidekick) || x.Is(LayerEnum.GuardianAngel) || x.Is(LayerEnum.Executioner) ||
         x.Is(LayerEnum.BountyHunter) || x.Player.Is(LayerEnum.Fanatic)));
     public CustomButton SeerButton { get; set; }
-    public float Timer => ButtonUtils.Timer(Player, LastSeered, CustomGameOptions.SeerCooldown);
+    public float Timer => ButtonUtils.Timer(Player, LastSeered, CustomGameOptions.SeerCd);
 
     public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Seer : Colors.Crew;
     public override string Name => "Seer";
@@ -52,7 +52,7 @@ public class Seer : Crew
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        SeerButton.Update("SEE", Timer, CustomGameOptions.SeerCooldown);
+        SeerButton.Update("SEE", Timer, CustomGameOptions.SeerCd);
 
         if (ChangedDead && !IsDead)
         {

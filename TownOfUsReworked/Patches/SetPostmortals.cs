@@ -190,7 +190,16 @@ public static class SetPostmortals
 
     private static void SetStartingVent(PlayerControl player)
     {
-        var startingVent = ShipStatus.Instance.AllVents[URandom.RandomRangeInt(0, ShipStatus.Instance.AllVents.Count)];
+        var vents = ShipStatus.Instance.AllVents.ToList();
+        var clean = PlayerControl.LocalPlayer.myTasks.ToArray().Where(x => x.TaskType == TaskTypes.VentCleaning).ToList();
+
+        if (clean != null)
+        {
+            var ids = clean.Where(x => !x.IsComplete).ToList().ConvertAll(x => x.FindConsoles()[0].ConsoleId);
+            vents = ShipStatus.Instance.AllVents.Where(x => !ids.Contains(x.Id)).ToList();
+        }
+
+        var startingVent = vents[URandom.RandomRangeInt(0, vents.Count)];
         player.NetTransform.RpcSnapTo(new(startingVent.transform.position.x, startingVent.transform.position.y + 0.3636f));
         player.MyPhysics.RpcEnterVent(startingVent.Id);
     }

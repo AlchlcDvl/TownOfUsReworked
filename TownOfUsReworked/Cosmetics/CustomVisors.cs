@@ -1,6 +1,4 @@
-/*using Innersloth.Assets;
-
-namespace TownOfUsReworked.Cosmetics;
+/*namespace TownOfUsReworked.Cosmetics;
 
 [HarmonyPatch]
 public static class CustomVisors
@@ -71,7 +69,7 @@ public static class CustomVisors
         if (cv.Adaptive && Shader != null)
             viewData.AltShader = Shader;
 
-        var extend = new VisorExtension
+        var extend = new VisorExtension()
         {
             Artist = cv.Artist ?? "Unknown",
             Condition = cv.Condition ?? "none"
@@ -80,12 +78,8 @@ public static class CustomVisors
         if (cv.FlipID != null)
             extend.FlipImage = CreateVisorSprite(cv.FlipID, fromDisk);
 
-        if (!CustomVisorRegistry.ContainsKey(visor.name))
-            CustomVisorRegistry.Add(visor.name, extend);
-
-        if (!CustomVisorViewDatas.ContainsKey(visor.name))
-            CustomVisorViewDatas.Add(visor.name, viewData);
-
+        CustomVisorRegistry.TryAdd(visor.name, extend);
+        CustomVisorViewDatas.TryAdd(visor.name, viewData);
         visor.ViewDataRef = new(viewData.Pointer);
         visor.CreateAddressableAsset();
         return visor;
@@ -106,11 +100,11 @@ public static class CustomVisors
 
             try
             {
-                while (CosmeticsLoader.VisorDetails.Count > 0)
+                while (AssetLoader.VisorDetails.Count > 0)
                 {
-                    var visorData = CreateVisorBehaviour(CosmeticsLoader.VisorDetails[0], true);
+                    var visorData = CreateVisorBehaviour(AssetLoader.VisorDetails[0], true);
                     allVisors.Add(visorData);
-                    CosmeticsLoader.VisorDetails.RemoveAt(0);
+                    AssetLoader.VisorDetails.RemoveAt(0);
                 }
 
                 __instance.allVisors = allVisors.ToArray();
@@ -119,7 +113,7 @@ public static class CustomVisors
             catch (Exception e)
             {
                 if (!SubLoaded)
-                    LogSomething("Unable to add Custom Visors\n" + e);
+                    LogError("Unable to add Custom Visors\n" + e);
             }
         }
 
@@ -132,7 +126,7 @@ public static class CustomVisors
         public const string InnerslothPackageName = "Innersloth";
         private static TMP_Text Template;
 
-        public static float CreateVisorPackage(List<Tuple<VisorData, VisorExtension>> visors, string packageName, float YStart, VisorsTab __instance)
+        public static float CreateVisorPackage(List<(VisorData, VisorExtension)> visors, string packageName, float YStart, VisorsTab __instance)
         {
             var isDefault = InnerslothPackageName == packageName;
 
@@ -158,7 +152,7 @@ public static class CustomVisors
             for (var i = 0; i < visors.Count; i++)
             {
                 var visor = visors[i].Item1;
-                var ext = visors[i].Item2 != null;
+                var ext = visors[i].Item2;
                 var xpos = __instance.XRange.Lerp(i % __instance.NumPerRow / (__instance.NumPerRow - 1f));
                 var ypos = offset - (i / __instance.NumPerRow * (isDefault ? 1f : 1.5f) * __instance.YOffset);
                 var colorChip = UObject.Instantiate(__instance.ColorTabPrefab, __instance.scroller.Inner);
@@ -176,7 +170,7 @@ public static class CustomVisors
                 var background = colorChip.transform.FindChild("Background");
                 var foreground = colorChip.transform.FindChild("ForeGround");
 
-                if (ext)
+                if (ext != null)
                 {
                     if (background != null)
                     {
@@ -209,11 +203,9 @@ public static class CustomVisors
                 colorChip.Tag = visor.ProdId;
                 colorChip.SelectionHighlight.gameObject.SetActive(false);
                 var color = __instance.HasLocalPlayer() ? CustomPlayer.LocalCustom.Data.DefaultOutfit.ColorId : DataManager.Player.Customization.Color;
-                __instance.StartCoroutine(visor.CoLoadIcon(new Action<Sprite, AddressableAsset>((_, _) =>
-                {
-                    colorChip.Inner.FrontLayer.sprite = visor.CreateAddressableAsset().GetAsset().IdleFrame;
-                    __instance.UpdateMaterials(colorChip.Inner.FrontLayer, visor);
-                })));
+                var cv = CustomVisorsDict[visor.name];
+                colorChip.Inner.FrontLayer.sharedMaterial = cv.Adaptive ? Shader : HatManager.Instance.DefaultShader;
+                visor.SetPreview(colorChip.Inner.FrontLayer, color);
                 __instance.ColorChips.Add(colorChip);
             }
 
@@ -227,7 +219,7 @@ public static class CustomVisors
 
             __instance.ColorChips = new();
             var array = HatManager.Instance.GetUnlockedVisors();
-            var packages = new Dictionary<string, List<Tuple<VisorData, VisorExtension>>>();
+            var packages = new Dictionary<string, List<(VisorData, VisorExtension)>>();
 
             foreach (var visorBehaviour in array)
             {
@@ -262,7 +254,7 @@ public static class CustomVisors
                 return 500;
             });
 
-            orderedKeys.ToList().ForEach(key => YOffset = CreateHatPackage(packages[key], key, YOffset, __instance));
+            keys.ToList().ForEach(key => YOffset = CreateVisorPackage(packages[key], key, YOffset, __instance));
             __instance.scroller.ContentYBounds.max = -(YOffset + 4.1f);
             return false;
         }
@@ -303,7 +295,7 @@ public static class CustomVisors
         }
     }
 
-    [HarmonyPatch(typeof(VisorLayer), nameof(VisorLayer.SetFlipX))]
+    [HarmonyPatch(typeof(VisorLayer), nameof(VisorLayer.SetFlipX), new[] { typeof(bool) })]
     public static class VisorLayerSetFlipXPatch
     {
         public static bool Prefix(VisorLayer __instance, bool flipX)

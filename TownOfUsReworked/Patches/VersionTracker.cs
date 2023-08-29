@@ -16,7 +16,7 @@ public static class VersionShowerPatch
             ModVersion.text = $"<size=175%><b>{TownOfUsReworked.VersionFinal}\nCreated by <color=#C50000FF>AlchlcDvl</color></b></size>";
             ModVersion.alignment = TextAlignmentOptions.Center;
             ModVersion.fontStyle = FontStyles.Bold;
-            ModVersion.name = "ModVersion";
+            ModVersion.name = "ModVersionText";
         }
     }
 }
@@ -26,35 +26,34 @@ public static class PingTracker_Update
 {
     private static float deltaTime;
 
-    public static void Prefix(PingTracker __instance)
+    public static bool Prefix(PingTracker __instance)
     {
+        if (!__instance || __instance.text == null || !AmongUsClient.Instance || IsFreePlay)
+            return true;
+
         if (!__instance.GetComponentInChildren<SpriteRenderer>())
         {
-            var logo = new GameObject("Logo") { layer = 5 };
+            var logo = new GameObject("PingLogo") { layer = 5 };
             logo.AddComponent<SpriteRenderer>().sprite = GetSprite("SettingsButton");
             logo.transform.SetParent(__instance.transform);
-            logo.transform.localPosition = new(-1f, -0.5f, -1);
+            logo.transform.localPosition = new(-1f, -0.5f, -1f);
             logo.transform.localScale *= 0.5f;
         }
-    }
-
-    public static void Postfix(PingTracker __instance)
-    {
-        if (!__instance || __instance.text == null)
-            return;
 
         deltaTime += (Time.deltaTime - deltaTime) * 0.1f;
-        var fps = Mathf.Ceil(1.0f / deltaTime);
-        var position = __instance.GetComponent<AspectPosition>();
-        position.DistanceFromEdge = new(3.6f, 0.1f, 0);
-        position.AdjustPosition();
+        var fps = Mathf.Ceil(1f / deltaTime);
         var host = GameData.Instance.GetHost();
 
-        __instance.text.text = $"<size=80%>Ping: {AmongUsClient.Instance?.Ping}ms FPS: {fps}\n" +
-            "<b><color=#00FF00FF>TownOfUs</color><color=#FF00FFFF>Reworked</color></b>\n" +
-            $"{(!Meeting ? $"<color=#0000FFFF>{TownOfUsReworked.VersionFinal}</color>\n" : "")}" +
-            $"{(!Meeting ? "<color=#C50000FF>By: AlchlcDvl</color>\n" : "")}" + (TownOfUsReworked.MCIActive ? (IsLobby ?
-            $"Lobby {(TownOfUsReworked.LobbyCapped ? "C" : "Unc")}apped\nRobots{(TownOfUsReworked.Persistence ? "" : " Don't")} Persist\n" : "") : "") +
-            $"Host: {host.PlayerName}</size>";
+        try
+        {
+            //try catch my beloved <3
+            __instance.text.text = $"<size=80%>Ping: {AmongUsClient.Instance.Ping}ms FPS: {fps}\n" +
+                "<b><color=#00FF00FF>TownOfUs</color><color=#FF00FFFF>Reworked</color></b>\n" +
+                $"{(!Meeting ? $"<color=#0000FFFF>{TownOfUsReworked.VersionFinal}</color>\n<color=#C50000FF>By: AlchlcDvl</color>\n" : "")}" +
+                (TownOfUsReworked.MCIActive ? (IsLobby ? $"Lobby {(TownOfUsReworked.LobbyCapped ? "C" : "Unc")}apped\nRobots{(TownOfUsReworked.Persistence ? "" : " Don't")} Persist\n" : "") :
+                "") + $"Host: {host.PlayerName}</size>";
+        } catch {}
+
+        return false;
     }
 }

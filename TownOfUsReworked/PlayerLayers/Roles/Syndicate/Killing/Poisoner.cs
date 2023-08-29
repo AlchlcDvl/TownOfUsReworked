@@ -15,7 +15,7 @@ public class Poisoner : Syndicate
     public override string Name => "Poisoner";
     public override LayerEnum Type => LayerEnum.Poisoner;
     public override Func<string> StartText => () => "Delay A Kill To Decieve The <color=#8CFFFFFF>Crew</color>";
-    public override Func<string> Description => () => $"- You can poison players{(HoldsDrive ? " from afar" : "")}\n- Poisoned players will die after {CustomGameOptions.PoisonDuration}"
+    public override Func<string> Description => () => $"- You can poison players{(HoldsDrive ? " from afar" : "")}\n- Poisoned players will die after {CustomGameOptions.PoisonDur}"
         + $"s\n{CommonAbilities}";
     public override InspectorResults InspectorResults => InspectorResults.Unseen;
     public float Timer => ButtonUtils.Timer(Player, LastPoisoned, CustomGameOptions.PoisonCd);
@@ -66,16 +66,16 @@ public class Poisoner : Syndicate
     {
         base.UpdateHud(__instance);
         var flag = PoisonedPlayer == null && HoldsDrive;
-        GlobalPoisonButton.Update(flag ? "SET TARGET" : "POISON", Timer, CustomGameOptions.PoisonCd, Poisoned, TimeRemaining, CustomGameOptions.PoisonDuration, true,
+        GlobalPoisonButton.Update(flag ? "SET TARGET" : "POISON", Timer, CustomGameOptions.PoisonCd, Poisoned, TimeRemaining, CustomGameOptions.PoisonDur, true,
             HoldsDrive);
-        PoisonButton.Update("POISON", Timer, CustomGameOptions.PoisonCd, Poisoned, TimeRemaining, CustomGameOptions.PoisonDuration, true, !HoldsDrive);
+        PoisonButton.Update("POISON", Timer, CustomGameOptions.PoisonCd, Poisoned, TimeRemaining, CustomGameOptions.PoisonDur, true, !HoldsDrive);
 
         if (Input.GetKeyDown(KeyCode.Backspace))
         {
             if (PoisonedPlayer != null && HoldsDrive && !Poisoned)
                 PoisonedPlayer = null;
 
-            LogSomething("Removed a target");
+            LogInfo("Removed a target");
         }
     }
 
@@ -92,7 +92,7 @@ public class Poisoner : Syndicate
         {
             PoisonedPlayer = PoisonButton.TargetPlayer;
             CallRpc(CustomRPC.Action, ActionsRPC.Poison, this, PoisonedPlayer);
-            TimeRemaining = CustomGameOptions.PoisonDuration;
+            TimeRemaining = CustomGameOptions.PoisonDur;
             Poison();
         }
         else if (interact[1] || PoisonButton.TargetPlayer.IsProtected())
@@ -113,7 +113,7 @@ public class Poisoner : Syndicate
         else
         {
             CallRpc(CustomRPC.Action, ActionsRPC.Poison, this, PoisonedPlayer);
-            TimeRemaining = CustomGameOptions.PoisonDuration;
+            TimeRemaining = CustomGameOptions.PoisonDur;
             Poison();
         }
     }

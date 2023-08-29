@@ -4,7 +4,7 @@ public class Corrupted : Objectifier
 {
     public DateTime LastCorrupted { get; set; }
     public CustomButton CorruptButton { get; set; }
-    public float Timer => ButtonUtils.Timer(Player, LastCorrupted, CustomGameOptions.CorruptedKillCooldown);
+    public float Timer => ButtonUtils.Timer(Player, LastCorrupted, CustomGameOptions.CorruptCd);
 
     public override Color32 Color => ClientGameOptions.CustomObjColors ? Colors.Corrupted : Colors.Objectifier;
     public override string Name => "Corrupted";
@@ -36,6 +36,6 @@ public class Corrupted : Objectifier
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        CorruptButton.Update("CORRUPT", Timer, CustomGameOptions.CorruptedKillCooldown);
+        CorruptButton.Update("CORRUPT", Timer, CustomGameOptions.CorruptCd);
     }
 }

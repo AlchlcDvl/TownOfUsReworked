@@ -11,14 +11,20 @@ public static class DoUndo
 
     public static void Postfix(HudManager __instance)
     {
-        if (IsLobby || IsEnded || Inactive || IsHnS)
+        if (IsLobby || IsEnded || NoPlayers || IsHnS)
             return;
+
+        if (!Sprites.ContainsKey("DefaultVent"))
+            Sprites.Add("DefaultVent", __instance.ImpostorVentButton.graphic.sprite);
+
+        if (!Sprites.ContainsKey("DefaultSabotage"))
+            Sprites.Add("DefaultSabotage", __instance.SabotageButton.graphic.sprite);
 
         __instance.KillButton.SetTarget(null);
         __instance.KillButton.gameObject.SetActive(false);
 
         CustomPlayer.Local.RegenTask();
-        var Vent = __instance.ImpostorVentButton.graphic.sprite;
+        var Vent = GetSprite("DefaultVent");
 
         if (CustomPlayer.Local.Is(Faction.Intruder))
             Vent = GetSprite("IntruderVent");
@@ -37,7 +43,7 @@ public static class DoUndo
         __instance.ImpostorVentButton.graphic.sprite = Vent;
         __instance.ImpostorVentButton.buttonLabelText.text = LocalBlocked ? "BLOCKED" : "VENT";
         __instance.ImpostorVentButton.buttonLabelText.fontSharedMaterial = __instance.SabotageButton.buttonLabelText.fontSharedMaterial;
-        __instance.ImpostorVentButton.gameObject.SetActive(CustomPlayer.Local.CanVent() || CustomPlayer.Local.inVent);
+        __instance.ImpostorVentButton.gameObject.SetActive((CustomPlayer.Local.CanVent() || CustomPlayer.Local.inVent) && !(Map && Map.IsOpen));
 
         var closestDead = CustomPlayer.Local.GetClosestBody(CustomGameOptions.ReportDistance);
 
@@ -70,7 +76,7 @@ public static class DoUndo
         else
             __instance.SabotageButton.SetEnabled();
 
-        var Sabo = __instance.SabotageButton.graphic.sprite;
+        var Sabo = GetSprite("DefaultSabotage");
 
         if (CustomPlayer.Local.Is(Faction.Syndicate))
             Sabo = GetSprite("SyndicateSabotage");
@@ -79,6 +85,7 @@ public static class DoUndo
 
         __instance.SabotageButton.graphic.sprite = Sabo;
         __instance.SabotageButton.buttonLabelText.text = LocalBlocked ? "BLOCKED" : "SABOTAGE";
+        __instance.SabotageButton.gameObject.SetActive(CustomPlayer.Local.CanSabotage() && !(Map && Map.IsOpen));
 
         if (LocalBlocked && Minigame.Instance)
             Minigame.Instance.Close();
@@ -509,7 +516,7 @@ public static class DoUndo
             }
         }
 
-        if (CustomGameOptions.ColourblindComms)
+        if (CustomGameOptions.CamouflagedComms)
         {
             if (ShipStatus.Instance)
             {

@@ -6,7 +6,7 @@ public class Preset : CustomButtonOption
     private List<OptionBehaviour> OldButtons { get; set; } = new();
     public List<CustomButtonOption> SlotButtons = new();
 
-    public Preset() : base(MultiMenu.main, "Load Preset Settings") => Do = ToDo;
+    public Preset() : base(MultiMenu.Main, "Load Preset Settings") => Do = ToDo;
 
     private List<OptionBehaviour> CreateOptions()
     {
@@ -51,6 +51,7 @@ public class Preset : CustomButtonOption
         Loading.Setting.gameObject.Destroy();
         OldButtons.ForEach(x => x.gameObject.SetActive(true));
         __instance.Children = OldButtons.ToArray();
+        GameSettings.SettingsPage = 0;
         yield return new WaitForEndOfFrame();
         yield return flashCoro();
     }
@@ -58,8 +59,8 @@ public class Preset : CustomButtonOption
     public void ToDo()
     {
         SlotButtons.Clear();
-        Presets.Keys.ToList().ForEach(x => SlotButtons.Add(new(MultiMenu.external, x, delegate { LoadPreset(x); })));
-        SlotButtons.Add(new(MultiMenu.external, "Cancel", delegate { Cancel(FlashWhite); }));
+        Presets.Keys.ToList().ForEach(x => SlotButtons.Add(new(MultiMenu.External, x, delegate { LoadPreset(x); })));
+        SlotButtons.Add(new(MultiMenu.External, "Cancel", delegate { Cancel(FlashWhite); }));
         var options = CreateOptions();
         var __instance = UObject.FindObjectOfType<GameOptionsMenu>();
         var y = __instance.GetComponentsInChildren<OptionBehaviour>().Max(option => option.transform.localPosition.y);
@@ -67,6 +68,7 @@ public class Preset : CustomButtonOption
         var z = __instance.Children[1].transform.localPosition.z;
         OldButtons = __instance.Children.ToList();
         OldButtons.ForEach(x => x.gameObject.SetActive(false));
+        GameSettings.SettingsPage = 9;
 
         for (var i = 0; i < options.Count; i++)
             options[i].transform.localPosition = new(x, y - (i * 0.5f), z);
@@ -76,7 +78,7 @@ public class Preset : CustomButtonOption
 
     public void LoadPreset(string presetName, bool inLobby = false)
     {
-        LogSomething($"Loading - {presetName}");
+        LogInfo($"Loading - {presetName}");
         string text = null;
 
         try
@@ -91,7 +93,7 @@ public class Preset : CustomButtonOption
         if (string.IsNullOrEmpty(text))
         {
             Cancel(FlashRed);
-            LogSomething("Preset no exist");
+            LogError($"{presetName} no exist");
             return;
         }
 
@@ -145,7 +147,7 @@ public class Preset : CustomButtonOption
             }
             catch (Exception e)
             {
-                LogSomething("Unable to set - " + option.Name + " : " + value + " " + splitText[0] + "\nException: " + e);
+                LogError("Unable to set - " + option.Name + " : " + value + " " + splitText[0] + "\nException: " + e);
             }
         }
 

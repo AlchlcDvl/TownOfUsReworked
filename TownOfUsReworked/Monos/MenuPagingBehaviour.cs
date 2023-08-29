@@ -12,13 +12,13 @@ public class MenuPagingBehaviour : BasePagingBehaviour
 
     public override void Start()
     {
-        base.Start();
         PageText = Instantiate(HUD.KillButton.cooldownTimerText, Menu.transform);
         PageText.name = "MenuPageCount";
         PageText.enableWordWrapping = false;
         PageText.gameObject.SetActive(true);
         PageText.transform.localPosition = new(4.1f, -2.36f, -1f);
         PageText.transform.localScale *= 0.5f;
+        OnPageChanged();
     }
 
     public override void OnPageChanged()

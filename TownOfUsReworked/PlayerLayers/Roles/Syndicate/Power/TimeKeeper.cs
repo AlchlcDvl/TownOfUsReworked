@@ -14,7 +14,7 @@ public class TimeKeeper : Syndicate
     public override Func<string> StartText => () => "Bend Time To Your Will";
     public override Func<string> Description => () => $"- You can {(HoldsDrive ? "rewind players" : "freeze time, making people unable to move")}\n{CommonAbilities}";
     public override InspectorResults InspectorResults => InspectorResults.MovesAround;
-    public float Timer => ButtonUtils.Timer(Player, LastTimed, CustomGameOptions.TimeControlCooldown);
+    public float Timer => ButtonUtils.Timer(Player, LastTimed, CustomGameOptions.TimeCd);
 
     public TimeKeeper(PlayerControl player) : base(player)
     {
@@ -25,7 +25,7 @@ public class TimeKeeper : Syndicate
     public void Control()
     {
         if (!Enabled)
-            Flash(Color, CustomGameOptions.TimeControlDuration);
+            Flash(Color, CustomGameOptions.TimeDur);
 
         Enabled = true;
         TimeRemaining -= Time.deltaTime;
@@ -49,7 +49,7 @@ public class TimeKeeper : Syndicate
         if (Timer != 0f || Controlling)
             return;
 
-        TimeRemaining = CustomGameOptions.TimeControlDuration;
+        TimeRemaining = CustomGameOptions.TimeDur;
         Control();
         CallRpc(CustomRPC.Action, ActionsRPC.TimeControl, this);
     }
@@ -57,6 +57,6 @@ public class TimeKeeper : Syndicate
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        TimeButton.Update(HoldsDrive ? "REWIND" : "FREEZE", Timer, CustomGameOptions.TimeControlCooldown, Controlling, TimeRemaining, CustomGameOptions.TimeControlDuration);
+        TimeButton.Update(HoldsDrive ? "REWIND" : "FREEZE", Timer, CustomGameOptions.TimeCd, Controlling, TimeRemaining, CustomGameOptions.TimeDur);
     }
 }

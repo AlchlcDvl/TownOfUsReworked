@@ -46,7 +46,7 @@ public static class PooledMapIconPatch
 
         if (text == null)
         {
-            text = new GameObject("Text").AddComponent<TextMeshPro>();
+            text = new GameObject("Text") { layer = 5 }.AddComponent<TextMeshPro>();
             text.transform.SetParent(__instance.transform, false);
             text.fontSize = 1.5f;
             text.fontSizeMin = 1;
@@ -55,7 +55,6 @@ public static class PooledMapIconPatch
             text.fontStyle = FontStyles.Bold;
             text.alignment = TextAlignmentOptions.Center;
             text.horizontalAlignment = HorizontalAlignmentOptions.Center;
-            text.gameObject.layer = 5;
             text.fontMaterial.EnableKeyword("OUTLINE_ON");
             text.fontMaterial.SetFloat("_OutlineWidth", 0.1745f);
             text.fontMaterial.SetFloat("_FaceDilate", 0.151f);
@@ -112,9 +111,13 @@ public static class OpenMapMenuPatch
             notmodified = false;
         }
 
+        return notmodified;
+    }
+
+    public static void Postfix(MapBehaviour __instance)
+    {
         PlayerLayer.LocalLayers.ForEach(x => x?.UpdateMap(__instance));
         CustomArrow.AllArrows.ForEach(x => x?.UpdateArrowBlip(__instance));
-        return notmodified;
     }
 }
 
@@ -141,8 +144,8 @@ public static class CanMove
 {
     public static bool Prefix(PlayerControl __instance, ref bool __result)
     {
-        __result = __instance.moveable && !Minigame.Instance && !__instance.shapeshifting && (!HudManager.InstanceExists || (!HUD.Chat.IsOpenOrOpening &&
-            !HUD.KillOverlay.IsOpen && !HUD.GameMenu.IsOpen)) && (!Map || !Map.IsOpenStopped) && !Meeting && !IntroCutscene.Instance && !PlayerCustomizationMenu.Instance;
+        __result = __instance.moveable && !Minigame.Instance && !__instance.shapeshifting && (!HudManager.InstanceExists || (!HUD.Chat.IsOpenOrOpening && !HUD.KillOverlay.IsOpen &&
+            !HUD.GameMenu.IsOpen)) && (!Map || !Map.IsOpenStopped) && !Meeting && !IntroCutscene.Instance && !PlayerCustomizationMenu.Instance;
         return false;
     }
 }
@@ -203,7 +206,7 @@ public static class CustomMenuPatch
             return true;
 
         __instance.potentialVictims = new();
-        var list2 = new Il2CppSystem.Collections.Generic.List<UiElement>();
+        var list2 = new ISystem.List<UiElement>();
 
         for (var i = 0; i < menu.Targets.Count; i++)
         {
@@ -342,22 +345,28 @@ public static class SpeedNetworkPatch
     public static void Postfix(CustomNetworkTransform __instance)
     {
         if (!__instance.AmOwner && __instance.interpolateMovement != 0 && GameData.Instance)
-        {
-            var player = __instance.gameObject.GetComponent<PlayerControl>();
-            __instance.body.velocity *= CustomPlayer.Custom(player).SpeedFactor;
-        }
+            __instance.body.velocity *= CustomPlayer.Custom(__instance.gameObject.GetComponent<PlayerControl>()).SpeedFactor;
     }
 }
 
 [HarmonyPatch(typeof(ModManager), nameof(ModManager.LateUpdate))]
 public static class BegoneModstamp
 {
-    public static void Postfix(ModManager __instance)
+    public static bool Prefix(ModManager __instance)
     {
-        if (__instance == null)
-            return;
+        if (__instance == null || __instance.ModStamp == null)
+            return true;
 
-        __instance?.ModStamp?.gameObject?.SetActive(NoPlayers || NoLobby || LobbyBehaviour.Instance || IsEnded);
+        try
+        {
+            //try catch my beloved <3
+            __instance.localCamera = !HudManager.InstanceExists ? Camera.main : HUD.GetComponentInChildren<Camera>();
+            __instance.ModStamp.transform.position = AspectPosition.ComputeWorldPosition(__instance.localCamera, AspectPosition.EdgeAlignments.RightTop, new(0.6f, 0.6f, 0.1f +
+                __instance.localCamera.nearClipPlane));
+        } catch {}
+
+        __instance.ModStamp.enabled = NoPlayers || IsEnded || NoLobby || LobbyBehaviour.Instance;
+        return false;
     }
 }
 
@@ -374,21 +383,77 @@ public static class ConstantsPatch
 [HarmonyPatch(typeof(ActivityManager), nameof(ActivityManager.UpdateActivity))]
 public static class DiscordPatch
 {
-    public static void Prefix([HarmonyArgument(0)] Activity activity) => activity.Details += $"Town Of Us Reworked";
+    public static void Prefix([HarmonyArgument(0)] Activity activity) => activity.Details += "Town Of Us Reworked";
 }
 
 [HarmonyPatch(typeof(RoleManager), nameof(RoleManager.SelectRoles))]
 public static class SetRoles
 {
-    public static void Postfix()
-    {
-        LogSomething("RPC SET ROLE");
-        RoleGen.BeginRoleGen();
-    }
+    public static void Postfix() => RoleGen.BeginRoleGen();
 }
 
 [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
 public static class FixHudNullRef
 {
     public static bool Prefix() => !IsEnded;
+}
+
+[HarmonyPatch(typeof(PlanetSurveillanceMinigame), nameof(PlanetSurveillanceMinigame.Update))]
+public static class PlanetSurveillanceMinigameUpdatePatch
+{
+    public static void Postfix(PlanetSurveillanceMinigame __instance)
+    {
+        if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D))
+            __instance.NextCamera(1);
+
+        if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A))
+            __instance.NextCamera(-1);
+    }
+}
+
+[HarmonyPatch(typeof(EmergencyMinigame), nameof(EmergencyMinigame.Update))]
+public static class EmergencyMinigameUpdatePatch
+{
+    public static void Postfix(EmergencyMinigame __instance)
+    {
+        if ((!CustomPlayer.Local.CanButton(out var name) || CustomPlayer.Local.RemainingEmergencies == 0) && !CustomPlayer.Local.myTasks.Any(PlayerTask.TaskIsEmergency))
+        {
+            var title = name == "Shy" && CustomPlayer.Local.RemainingEmergencies > 0 ? "You are too shy to call a meeting" :
+                $"{(CustomPlayer.Local.RemainingEmergencies == 0 ? "Y" : $"As the {name}, y")}ou cannot call any more meetings";
+            __instance.StatusText.text = title;
+            __instance.NumberText.text = string.Empty;
+            __instance.ClosedLid.gameObject.SetActive(true);
+            __instance.OpenLid.gameObject.SetActive(false);
+            __instance.ButtonActive = false;
+        }
+    }
+}
+
+[HarmonyPatch(typeof(LobbyBehaviour), nameof(LobbyBehaviour.Start))]
+public static class LobbyBehaviourPatch
+{
+    public static void Postfix()
+    {
+        //Fix Grenadier and screwed blind in lobby
+        HUD.FullScreen.gameObject.active = false;
+        DataManager.Settings.Gameplay.ScreenShake = false;
+        RoleGen.ResetEverything();
+        TownOfUsReworked.IsTest = IsLocalGame && (TownOfUsReworked.IsDev || (TownOfUsReworked.IsTest && TownOfUsReworked.MCIActive));
+        StopAll();
+        DefaultOutfitAll();
+
+        if (MCIUtils.Clients.Count != 0 && TownOfUsReworked.MCIActive && IsLocalGame)
+        {
+            var count = MCIUtils.Clients.Count;
+            DebuggerBehaviour.Instance.TestWindow.Enabled = true;
+            MCIUtils.Clients.Clear();
+            MCIUtils.PlayerIdClientId.Clear();
+
+            if (TownOfUsReworked.Persistence)
+            {
+                for (var i = 0; i < count; i++)
+                    MCIUtils.CreatePlayerInstance();
+            }
+        }
+    }
 }

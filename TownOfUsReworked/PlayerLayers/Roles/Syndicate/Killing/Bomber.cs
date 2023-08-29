@@ -15,8 +15,8 @@ public class Bomber : Syndicate
     public override Func<string> Description => () => $"- You can place bombs which you can detonate at any time to kill anyone within a {CustomGameOptions.BombRange}m radius\n" +
         CommonAbilities;
     public override InspectorResults InspectorResults => InspectorResults.DropsItems;
-    public float BombTimer => ButtonUtils.Timer(Player, LastPlaced, CustomGameOptions.BombCooldown);
-    public float DetonateTimer => ButtonUtils.Timer(Player, LastDetonated, CustomGameOptions.DetonateCooldown);
+    public float BombTimer => ButtonUtils.Timer(Player, LastPlaced, CustomGameOptions.BombCd);
+    public float DetonateTimer => ButtonUtils.Timer(Player, LastDetonated, CustomGameOptions.DetonateCd);
 
     public Bomber(PlayerControl player) : base(player)
     {
@@ -68,7 +68,7 @@ public class Bomber : Syndicate
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        BombButton.Update("PLACE", BombTimer, CustomGameOptions.BombCooldown);
-        DetonateButton.Update("DETONATE", DetonateTimer, CustomGameOptions.DetonateCooldown, true, Bombs.Count > 0);
+        BombButton.Update("PLACE", BombTimer, CustomGameOptions.BombCd);
+        DetonateButton.Update("DETONATE", DetonateTimer, CustomGameOptions.DetonateCd, true, Bombs.Count > 0);
     }
 }

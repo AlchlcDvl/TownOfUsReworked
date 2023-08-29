@@ -51,15 +51,8 @@ public static class MCIUtils
         Clients.Add(sampleId, sampleC);
         PlayerIdClientId.Add(sampleC.Character.PlayerId, sampleId);
 
-        try
-        {
-            if (SubLoaded)
-                ImpartSub(sampleC.Character);
-        }
-        catch (Exception ex)
-        {
-            LogSomething(ex);
-        }
+        if (SubLoaded)
+            ImpartSub(sampleC.Character);
 
         return sampleC.Character;
     }
@@ -72,7 +65,7 @@ public static class MCIUtils
         var clientId = Clients.FirstOrDefault(x => x.Value.Character.PlayerId == id).Key;
         Clients.Remove(clientId, out var outputData);
         PlayerIdClientId.Remove(id);
-        AmongUsClient.Instance.RemovePlayer(clientId, DisconnectReasons.ExitGame);
+        AmongUsClient.Instance.RemovePlayer(clientId, DisconnectReasons.Custom);
         AmongUsClient.Instance.allClients.Remove(outputData);
     }
 

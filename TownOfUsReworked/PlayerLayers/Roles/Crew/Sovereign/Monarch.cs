@@ -10,7 +10,7 @@ public class Monarch : Crew
     public int UsesLeft { get; set; }
     public bool ButtonUsable => UsesLeft > 0;
     public bool Protected => Knighted.Count > 0;
-    public float Timer => ButtonUtils.Timer(Player, LastKnighted, CustomGameOptions.KnightingCooldown);
+    public float Timer => ButtonUtils.Timer(Player, LastKnighted, CustomGameOptions.KnightingCd);
 
     public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Monarch : Colors.Crew;
     public override string Name => "Monarch";
@@ -45,6 +45,6 @@ public class Monarch : Crew
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        KnightButton.Update("KNIGHT", Timer, CustomGameOptions.KnightingCooldown, UsesLeft, ButtonUsable, !RoundOne && ButtonUsable);
+        KnightButton.Update("KNIGHT", Timer, CustomGameOptions.KnightingCd, UsesLeft, ButtonUsable, !RoundOne && ButtonUsable);
     }
 }

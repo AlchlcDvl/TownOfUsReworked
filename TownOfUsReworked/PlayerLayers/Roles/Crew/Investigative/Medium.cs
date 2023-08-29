@@ -7,7 +7,7 @@ public class Medium : Crew
     public CustomButton MediateButton { get; set; }
     //public CustomButton SeanceButton { get; set; }
     public List<byte> MediatedPlayers { get; set; }
-    public float Timer => ButtonUtils.Timer(Player, LastMediated, CustomGameOptions.MediateCooldown);
+    public float Timer => ButtonUtils.Timer(Player, LastMediated, CustomGameOptions.MediateCd);
 
     public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Medium : Colors.Crew;
     public override string Name => "Medium";
@@ -39,8 +39,8 @@ public class Medium : Crew
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        MediateButton.Update("MEDIATE", Timer, CustomGameOptions.MediateCooldown);
-        //SeanceButton.Update("SEANCE", Timer, CustomGameOptions.MediateCooldown, true, false);
+        MediateButton.Update("MEDIATE", Timer, CustomGameOptions.MediateCd);
+        //SeanceButton.Update("SEANCE", Timer, CustomGameOptions.MediateCd, true, false);
 
         if (!IsDead)
         {

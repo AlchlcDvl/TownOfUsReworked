@@ -79,9 +79,13 @@ public static class Utils
 
             yield return new WaitForSeconds(1f);
         }
+        else if (Shapeshifted)
+        {
+            CachedMorphs.Remove(player.PlayerId);
+            Shapeshifted = false;
+        }
 
         player.SetOutfit(CustomPlayerOutfitType.Default);
-        CachedMorphs.Remove(player);
         yield return null;
     }
 
@@ -172,22 +176,22 @@ public static class Utils
                 var morphed = allPlayers[i];
                 var morphTarget = shuffledPlayers[i];
                 Morph(morphed, morphTarget);
-                CachedMorphs.Add(morphed, morphTarget);
+                CachedMorphs.Add(morphed.PlayerId, morphTarget.PlayerId);
             }
         }
         else
         {
             CustomPlayer.AllPlayers.ForEach(x =>
             {
-                if (CachedMorphs.ContainsKey(x))
-                    Morph(x, CachedMorphs[x]);
+                if (CachedMorphs.ContainsKey(x.PlayerId))
+                    Morph(x, PlayerById(CachedMorphs[x.PlayerId]));
             });
         }
     }
 
     public static void DefaultOutfitAll() => CustomPlayer.AllPlayers.ForEach(DefaultOutfit);
 
-    public static void AddUnique<T>(this Il2CppSystem.Collections.Generic.List<T> self, T item) where T : IDisconnectHandler
+    public static void AddUnique<T>(this ISystem.List<T> self, T item) where T : IDisconnectHandler
     {
         if (!self.Contains(item))
             self.Add(item);
@@ -275,8 +279,16 @@ public static class Utils
         if (data.IsDead)
             return;
 
-        if (killer == CustomPlayer.Local)
+        if (killer == CustomPlayer.Local || target == CustomPlayer.Local)
             Play("Kill");
+
+        if (target == CustomPlayer.Local)
+        {
+            var tracker = DestroyableSingleton<RoomTracker>.Instance.text;
+            var location = tracker.transform.localPosition.y != -3.25f ? tracker.text : "an unknown location";
+            BodyLocations.TryAdd(target.PlayerId, location);
+            CallRpc(CustomRPC.Misc, MiscRPC.BodyLocation, target, location);
+        }
 
         if (FirstDead == null)
             FirstDead = target;
@@ -298,11 +310,8 @@ public static class Utils
         if (target.Is(LayerEnum.VIP))
         {
             Flash(targetRole.Color);
-
-            if (!Role.LocalRole.AllArrows.ContainsKey(target.PlayerId))
-                Role.LocalRole.AllArrows.Add(target.PlayerId, new(CustomPlayer.Local, Colors.VIP));
-            else
-                Role.LocalRole.AllArrows[target.PlayerId].Update(Colors.VIP);
+            Role.LocalRole.AllArrows.TryAdd(target.PlayerId, new(CustomPlayer.Local, Colors.VIP));
+            Role.LocalRole.AllArrows[target.PlayerId].Update(Colors.VIP);
         }
 
         var killerRole = Role.GetRole(killer);
@@ -602,11 +611,8 @@ public static class Utils
 
     public static void EndGame()
     {
-        Ash.DestroyAll();
-        Objects.Range.DestroyAll();
-        OtherButtonsPatch.Zooming = true;
-        OtherButtonsPatch.Zoom();
-        GameManager.Instance.RpcEndGame(GameOverReason.ImpostorByVote, false);
+        if (AmongUsClient.Instance.AmHost)
+            GameManager.Instance.RpcEndGame(GameOverReason.ImpostorByVote, false);
     }
 
     public static List<bool> Interact(PlayerControl player, PlayerControl target, bool toKill = false, bool toConvert = false, bool bypass = false)
@@ -620,9 +626,9 @@ public static class Utils
 
         if (target == CachedFirstDead && (toConvert || toKill))
             fullReset = true;
-        else if ((target.IsOnAlert() || ((target.IsAmbushed() || target.IsGFAmbushed()) && (!player.Is(Faction.Intruder) || (player.Is(Faction.Intruder) &&
-            CustomGameOptions.AmbushMates))) || target.Is(LayerEnum.Pestilence) || (target.Is(LayerEnum.VampireHunter) && player.Is(SubFaction.Undead)) ||
-            (target.Is(LayerEnum.SerialKiller) && (player.Is(LayerEnum.Escort) || player.Is(LayerEnum.Consort) || player.Is(LayerEnum.Glitch)) && !toKill)) && !bypass)
+        else if ((target.IsOnAlert() || ((target.IsAmbushed() || target.IsGFAmbushed()) && (!player.Is(Faction.Intruder) || (player.Is(Faction.Intruder) && CustomGameOptions.AmbushMates)))
+            || target.Is(LayerEnum.Pestilence) || (target.Is(LayerEnum.VampireHunter) && player.Is(SubFaction.Undead)) || (target.Is(LayerEnum.SerialKiller) && (player.Is(LayerEnum.Escort)
+            || player.Is(LayerEnum.Consort) || player.Is(LayerEnum.Glitch)) && !toKill)) && !bypass)
         {
             if (player.Is(LayerEnum.Pestilence))
             {
@@ -726,9 +732,9 @@ public static class Utils
         }
 
         if ((target.IsOnAlert() || ((target.IsAmbushed() || target.IsGFAmbushed()) && (!player.Is(Faction.Intruder) || (player.Is(Faction.Intruder) && CustomGameOptions.AmbushMates))) ||
-            target.Is(LayerEnum.Pestilence) || (target.Is(LayerEnum.VampireHunter) && player.Is(SubFaction.Undead)) || (target.Is(LayerEnum.SerialKiller) &&
-            (player.Is(LayerEnum.Escort) || player.Is(LayerEnum.Consort) || player.Is(LayerEnum.Glitch)) && !toKill) || ((target.IsCrusaded() || target.IsRebCrusaded()) &&
-            (!player.Is(Faction.Syndicate) || (player.Is(Faction.Syndicate) && CustomGameOptions.CrusadeMates)))) && bypass && !target.Is(LayerEnum.Pestilence))
+            target.Is(LayerEnum.Pestilence) || (target.Is(LayerEnum.VampireHunter) && player.Is(SubFaction.Undead)) || (target.Is(LayerEnum.SerialKiller) && (player.Is(LayerEnum.Escort) ||
+            player.Is(LayerEnum.Consort) || player.Is(LayerEnum.Glitch)) && !toKill) || ((target.IsCrusaded() || target.IsRebCrusaded()) && (!player.Is(Faction.Syndicate) ||
+            (player.Is(Faction.Syndicate) && CustomGameOptions.CrusadeMates)))) && bypass && !target.Is(LayerEnum.Pestilence))
         {
             RpcMurderPlayer(target, player);
         }
@@ -791,33 +797,11 @@ public static class Utils
         Role.GetRoles<PromotedGodfather>(LayerEnum.PromotedGodfather).Where(x => x.CurrentlyDragging != null && x.CurrentlyDragging.ParentId == id).ToList().ForEach(x => x.Drop());
     }
 
-    public static void LogSomething(object message, ModLogType type = ModLogType.Message)
-    {
-        if (type == ModLogType.Message)
-            PluginSingleton<TownOfUsReworked>.Instance.Log.LogMessage(message);
-        else if (type == ModLogType.Debug)
-            PluginSingleton<TownOfUsReworked>.Instance.Log.LogDebug(message);
-        else if (type == ModLogType.Fatal)
-            PluginSingleton<TownOfUsReworked>.Instance.Log.LogFatal(message);
-        else if (type == ModLogType.Info)
-            PluginSingleton<TownOfUsReworked>.Instance.Log.LogInfo(message);
-        else if (type == ModLogType.Warning)
-            PluginSingleton<TownOfUsReworked>.Instance.Log.LogWarning(message);
-        else if (type == ModLogType.Error)
-            PluginSingleton<TownOfUsReworked>.Instance.Log.LogError(message);
-    }
-
     public static string CreateText(string itemName, string folder = "")
     {
         try
         {
-            var resourceName = "";
-
-            if (folder != "")
-                resourceName = $"{TownOfUsReworked.Resources}{folder}.{itemName}";
-            else
-                resourceName = TownOfUsReworked.Resources + itemName;
-
+            var resourceName = $"{TownOfUsReworked.Resources}{(folder == "" ? "" : $"{folder}.")}{itemName}";
             var stream = TownOfUsReworked.Executing.GetManifestResourceStream(resourceName);
             var reader = new StreamReader(stream);
             var text = reader.ReadToEnd();
@@ -826,7 +810,7 @@ public static class Utils
         }
         catch
         {
-            LogSomething($"Error Loading {itemName}");
+            LogError($"Error Loading {itemName}");
             return "";
         }
     }
@@ -1081,7 +1065,7 @@ public static class Utils
             player.transform.position = value;
 
             if (TownOfUsReworked.IsTest)
-                LogSomething($"Warping {player.Data.PlayerName} to ({value.x}, {value.y})");
+                LogError($"Warping {player.Data.PlayerName} to ({value.x}, {value.y})");
         }
 
         if (AmongUsClient.Instance.AmHost)
@@ -1431,7 +1415,7 @@ public static class Utils
 
         foreach (var player in allPlayers)
         {
-            if (player.Data.IsDead || player == refPlayer || !player.Collider.enabled || player.onLadder || player.inMovingPlat || (player.inVent && !CustomGameOptions.VentTargetting))
+            if (player.Data.IsDead || player == refPlayer || !player.Collider.enabled || player.onLadder || player.inMovingPlat || (player.inVent && !CustomGameOptions.VentTargeting))
                 continue;
 
             var distance = Vector2.Distance(truePosition, player.GetTruePosition());
@@ -1461,7 +1445,7 @@ public static class Utils
 
         foreach (var player in allPlayers)
         {
-            if (player.Data.IsDead || !player.Collider.enabled || player.onLadder || player.inMovingPlat || (player.inVent && !CustomGameOptions.VentTargetting))
+            if (player.Data.IsDead || !player.Collider.enabled || player.onLadder || player.inMovingPlat || (player.inVent && !CustomGameOptions.VentTargeting))
                 continue;
 
             var distance = Vector2.Distance(position, player.GetTruePosition());
@@ -1567,22 +1551,20 @@ public static class Utils
 
     public static float CycleFloat(float max, float min, float currentVal, bool increment, float change = 1f)
     {
-        var result = currentVal;
-        var value = increment ? change : -change;
+        var value = change * (increment ? 1 : -1);
+        currentVal += value;
 
-        if (currentVal + value > max)
-            result = min;
-        else if (currentVal + value < min)
-            result = max;
-        else
-            result += value;
+        if (currentVal > max)
+            currentVal = min;
+        else if (currentVal < min)
+            currentVal = max;
 
-        return result;
+        return currentVal;
     }
 
     public static int CycleInt(int max, int min, int currentVal, bool increment, int change = 1) => (int)CycleFloat(max, min, currentVal, increment, change);
 
-    public static byte CycleByte(int max, int min, int currentVal, bool increment, int change = 1) => (byte)CycleFloat(max, min, currentVal, increment, change);
+    public static byte CycleByte(int max, int min, int currentVal, bool increment, int change = 1) => (byte)CycleInt(max, min, currentVal, increment, change);
 
     public static string WrapText(string text, int width = 90, bool overflow = true)
     {
@@ -1656,13 +1638,34 @@ public static class Utils
         return result;
     }
 
-    public static string A_An(string text)
+    public static bool IsNullEmptyOrWhiteSpace(string text) => text is null or "" || text.All(x => x == ' ');
+
+    public static void SaveText(string fileName, string textToSave)
     {
-        string[] vowels = { "a", "e", "i", "o", "u" };
-        return vowels.Any(text.ToLower().StartsWith) ? "an" : "a";
+        try
+        {
+            var text = Path.Combine(Application.persistentDataPath, $"{fileName}-temp");
+            File.WriteAllText(text, textToSave);
+            var text2 = Path.Combine(Application.persistentDataPath, fileName);
+            File.Delete(text2);
+            File.Move(text, text2);
+        }
+        catch
+        {
+            LogError($"Unable to save {textToSave} to {fileName}");
+        }
     }
 
-    public static string A_An(LayerEnum layer) => A_An($"{layer}");
-
-    public static string A_An(Faction faction) => A_An($"{faction}");
+    public static string ReadText(string fileName)
+    {
+        try
+        {
+            return File.ReadAllText(Path.Combine(Application.persistentDataPath, fileName));
+        }
+        catch
+        {
+            LogError($"Error Loading {fileName}");
+            return "";
+        }
+    }
 }

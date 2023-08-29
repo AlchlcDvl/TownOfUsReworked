@@ -15,7 +15,7 @@ public class Consigliere : Intruder
     public override Func<string> StartText => () => "See The <color=#8CFFFFFF>Crew</color> For Who They Really Are";
     public override Func<string> Description => () => $"- You can reveal a player's {Option}{CanAssassinate}\n{CommonAbilities}";
     public override InspectorResults InspectorResults => InspectorResults.GainsInfo;
-    public float Timer => ButtonUtils.Timer(Player, LastInvestigated, CustomGameOptions.ConsigCd);
+    public float Timer => ButtonUtils.Timer(Player, LastInvestigated, CustomGameOptions.InvestigateCd);
 
     public Consigliere(PlayerControl player) : base(player)
     {
@@ -48,6 +48,6 @@ public class Consigliere : Intruder
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        InvestigateButton.Update("INVESTIGATE", Timer, CustomGameOptions.ConsigCd);
+        InvestigateButton.Update("INVESTIGATE", Timer, CustomGameOptions.InvestigateCd);
     }
 }

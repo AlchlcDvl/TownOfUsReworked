@@ -196,7 +196,7 @@ public class Amnesiac : Neutral
             _ => new Amnesiac(amnesiac),
         };
 
-        newRole.RoleUpdate(amneRole);
+        newRole.RoleUpdate(amneRole, true);
 
         if (other.Is(LayerEnum.Dracula))
             ((Dracula)role).Converted.Clear();

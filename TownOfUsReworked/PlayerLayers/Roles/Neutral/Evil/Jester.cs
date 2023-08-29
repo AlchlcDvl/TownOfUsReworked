@@ -16,14 +16,14 @@ public class Jester : Neutral
     public override Func<string> StartText => () => "It Was Jest A Prank Bro";
     public override Func<string> Description => () => VotedOut ? "- You can haunt those who voted for you" : "- None";
     public override InspectorResults InspectorResults => InspectorResults.Manipulative;
-    public float Timer => ButtonUtils.Timer(Player, LastHaunted, CustomGameOptions.HauntCooldown, true);
+    public float Timer => ButtonUtils.Timer(Player, LastHaunted, CustomGameOptions.HauntCd, true);
 
     public Jester(PlayerControl player) : base(player)
     {
         Objectives = () => VotedOut ? "- You have been ejected" : "- Get ejected";
         RoleAlignment = RoleAlignment.NeutralEvil;
         ToHaunt = new();
-        UsesLeft = CustomGameOptions.HauntCount;
+        UsesLeft = CustomGameOptions.MaxHaunts;
         HauntButton = new(this, "Haunt", AbilityTypes.Direct, "ActionSecondary", Haunt, Exception, true, true);
     }
 
@@ -52,13 +52,13 @@ public class Jester : Neutral
             ToHaunt.Remove(ToHaunt[^1]);
         }
 
-        UsesLeft = CustomGameOptions.HauntCount <= ToHaunt.Count ? CustomGameOptions.HauntCount : ToHaunt.Count;
+        UsesLeft = CustomGameOptions.MaxHaunts <= ToHaunt.Count ? CustomGameOptions.MaxHaunts : ToHaunt.Count;
     }
 
     public float HauntTimer()
     {
         var timespan = DateTime.UtcNow - LastHaunted;
-        var num = CustomGameOptions.HauntCooldown * 1000f;
+        var num = CustomGameOptions.HauntCd * 1000f;
         var time = num - (float)timespan.TotalMilliseconds;
         var flag2 = time < 0f;
         return (flag2 ? 0f : time) / 1000f;
@@ -69,7 +69,7 @@ public class Jester : Neutral
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        HauntButton.Update("HAUNT", HauntTimer(), CustomGameOptions.HauntCooldown, UsesLeft, CanHaunt, CanHaunt);
+        HauntButton.Update("HAUNT", HauntTimer(), CustomGameOptions.HauntCd, UsesLeft, CanHaunt, CanHaunt);
     }
 
     public void Haunt()

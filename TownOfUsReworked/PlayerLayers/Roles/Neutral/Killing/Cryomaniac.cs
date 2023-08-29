@@ -20,8 +20,8 @@ public class Cryomaniac : Neutral
     public override Func<string> Description => () => "- You can douse players in coolant\n- Doused players can be frozen, which kills all of them at once at the start of the next " +
         $"meeting\n- People who interact with you will also get doused{(LastKiller ? "\n- You can kill normally" : "")}";
     public override InspectorResults InspectorResults => InspectorResults.SeeksToDestroy;
-    public float DouseTimer => ButtonUtils.Timer(Player, LastDoused, CustomGameOptions.CryoDouseCooldown);
-    public float KillTimer => ButtonUtils.Timer(Player, LastKilled, CustomGameOptions.CryoDouseCooldown);
+    public float DouseTimer => ButtonUtils.Timer(Player, LastDoused, CustomGameOptions.CryoDouseCd);
+    public float KillTimer => ButtonUtils.Timer(Player, LastKilled, CustomGameOptions.CryoDouseCd);
 
     public Cryomaniac(PlayerControl player) : base(player)
     {
@@ -87,8 +87,8 @@ public class Cryomaniac : Neutral
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        DouseButton.Update("DOUSE", DouseTimer, CustomGameOptions.CryoDouseCooldown);
-        KillButton.Update("KILL", KillTimer, CustomGameOptions.CryoDouseCooldown, true, LastKiller);
+        DouseButton.Update("DOUSE", DouseTimer, CustomGameOptions.CryoDouseCd);
+        KillButton.Update("KILL", KillTimer, CustomGameOptions.CryoDouseCd, true, LastKiller);
         FreezeButton.Update("FREEZE", true, Doused.Count > 0 && !FreezeUsed);
     }
 

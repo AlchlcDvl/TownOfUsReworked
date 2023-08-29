@@ -222,16 +222,16 @@ public enum CustomOptionType
 
 public enum MultiMenu
 {
-    main,
-    crew,
-    neutral,
-    intruder,
-    syndicate,
-    modifier,
-    objectifier,
-    ability,
-    rolelist,
-    external
+    Main,
+    Crew,
+    Neutral,
+    Intruder,
+    Syndicate,
+    Modifier,
+    Objectifier,
+    Ability,
+    RoleList,
+    External
 }
 
 public enum WhoCanVentOptions
@@ -357,18 +357,21 @@ public enum MiscRPC
     SetSettings,
     AddVoteBank,
     MeetingStart,
-    RemoveMeetings,
     Notify,
     SubmergedFixOxygen,
     Whisper,
     SetSpawnAirship,
     DoorSyncToilet,
-    SyncPlateform,
+    //SyncPlatform,
     SetColor,
     VersionHandshake,
     ChaosDrive,
     FixLights,
     SetFirstKilled,
+    SyncPureCrew,
+    SyncSummary,
+    //ShareFriendCode,
+    BodyLocation,
 
     None
 }
@@ -521,6 +524,10 @@ public enum LayerEnum
 
     None,
 
+    CrewUtil,
+    IntruderUtil,
+    SyndicateUtil,
+
     Astral,
     Bait,
     Coward,
@@ -641,7 +648,7 @@ public enum WinLoseRPC
     AllNKsWin,
     SoloNKWins,
     SameNKWins,
-    InfectorsWin,
+    ApocalypseWins,
 
     LoveWin,
     TaskmasterWin,
@@ -690,14 +697,6 @@ public enum ShieldOptions
     Self,
     Medic,
     SelfAndMedic,
-    Everyone
-}
-
-public enum NotificationOptions
-{
-    Medic,
-    Shielded,
-    ShieldedAndMedic,
     Everyone,
     Nobody
 }
@@ -798,7 +797,8 @@ public enum ProtectOptions
     Self,
     GA,
     SelfAndGA,
-    Everyone
+    Everyone,
+    Nobody
 }
 
 public enum NoSolo
@@ -843,14 +843,4 @@ public enum ShowMediumToDead
     No,
     Target,
     AllDead
-}
-
-public enum ModLogType
-{
-    Message,
-    Fatal,
-    Error,
-    Debug,
-    Info,
-    Warning
 }

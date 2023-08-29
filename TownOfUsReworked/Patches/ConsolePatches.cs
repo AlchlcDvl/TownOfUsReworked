@@ -29,10 +29,12 @@ public static class OpenDoorConsoleUse
     public static bool Prefix(OpenDoorConsole __instance)
     {
         __instance.CanUse(CustomPlayer.LocalCustom.Data, out var canUse, out _);
-        CallRpc(CustomRPC.Misc, MiscRPC.DoorSyncToilet, __instance.MyDoor.Id);
 
         if (canUse)
+        {
+            CallRpc(CustomRPC.Misc, MiscRPC.DoorSyncToilet, __instance.MyDoor.Id);
             __instance.MyDoor.SetDoorway(true);
+        }
 
         return false;
     }
@@ -227,4 +229,19 @@ public static class ConsoleUsePatch
 public static class DoorSwipePatch
 {
     public static void Prefix(DoorCardSwipeGame __instance) => __instance.minAcceptedTime = CustomGameOptions.MinDoorSwipeTime;
+}
+
+[HarmonyPatch(typeof(Console), nameof(Console.SetOutline))]
+public static class SetTaskOutline
+{
+    public static void Postfix(Console __instance, [HarmonyArgument(1)] ref bool mainTarget)
+    {
+        var active = CustomPlayer.Local && !Meeting && CustomPlayer.Local.CanDoTasks();
+
+        if (!Role.LocalRole || !active)
+            return;
+
+        __instance.Image.material.SetColor("_OutlineColor", Role.LocalRole.Color);
+        __instance.Image.material.SetColor("_AddColor", mainTarget ? Role.LocalRole.Color : Color.clear);
+    }
 }

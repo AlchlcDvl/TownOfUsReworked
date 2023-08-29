@@ -11,17 +11,17 @@ public class CustomOption
     public object OtherValue { get; set; }
     public OptionBehaviour Setting { get; set; }
     public readonly CustomOptionType Type;
-    public readonly CustomOption[] Parent;
+    public object[] Parents { get; set; }
     public readonly bool All;
-    public bool Active => Parent == null || Parent.Any(x => x == null) || (All ? Parent.All(IsActive) : Parent.Any(IsActive)) || IsRoleList;
+    public bool Active => Parents == null || (All ? Parents.All(IsActive) : Parents.Any(IsActive));
 
-    public CustomOption(int id, MultiMenu menu, string name, CustomOptionType type, object defaultValue, object otherDefault, CustomOption[] parent, bool all = false)
+    public CustomOption(int id, MultiMenu menu, string name, CustomOptionType type, object defaultValue, object otherDefault, object[] parent, bool all = false)
     {
         ID = id;
         Menu = menu;
         Name = name;
         Type = type;
-        Parent = parent;
+        Parents = parent;
         All = all;
         Value = defaultValue;
         OtherValue = otherDefault;
@@ -30,39 +30,49 @@ public class CustomOption
             AllOptions.Add(this);
     }
 
-    public CustomOption(int id, MultiMenu menu, string name, CustomOptionType type, object defaultValue, CustomOption parent = null) : this(id, menu, name, type, defaultValue, new[]
-        { parent }) {}
+    public CustomOption(int id, MultiMenu menu, string name, CustomOptionType type, object defaultValue, object parent = null) : this(id, menu, name, type, defaultValue, new[] { parent }) {}
 
-    public CustomOption(int id, MultiMenu menu, string name, CustomOptionType type, object defaultValue, CustomOption[] parent, bool all = false) : this(id, menu, name, type, defaultValue,
-        null, parent, all) {}
+    public CustomOption(int id, MultiMenu menu, string name, CustomOptionType type, object defaultValue, object[] parent, bool all = false) : this(id, menu, name, type, defaultValue, null,
+        parent, all) {}
 
-    public CustomOption(int id, MultiMenu menu, string name, CustomOptionType type, object defaultValue, object otherDefault, CustomOption parent = null) : this(id, menu, name, type,
-        defaultValue, otherDefault, new[] { parent }) {}
+    public CustomOption(int id, MultiMenu menu, string name, CustomOptionType type, object defaultValue, object otherDefault, object parent = null) : this(id, menu, name, type, defaultValue,
+        otherDefault, new[] { parent }) {}
 
     public override string ToString()
     {
-        var n = Type == CustomOptionType.Header ? "\n" : "";
-        var colon = Type == CustomOptionType.Header ? "" : ": ";
-        return n + Name + colon + Format(Value, OtherValue);
+        var n = this is CustomHeaderOption ? "\n" : "";
+        var colon = this is CustomHeaderOption ? "" : ": ";
+        var name = this is CustomHeaderOption ? $"<b>{Name}</b>" : Name;
+        return n + name + colon + Format(Value, OtherValue);
     }
 
-    private static bool IsActive(CustomOption option)
+    private static bool IsActive(object option)
     {
         if (option == null)
-            return false;
-        else if (option.Type == CustomOptionType.Toggle)
-            return ((CustomToggleOption)option).Get();
-        else if (option.Type == CustomOptionType.Layers)
-            return ((CustomLayersOption)option).GetChance() > 0;
+            return true;
+        else if (option is CustomToggleOption toggle)
+            return toggle.Get() && toggle.Active;
+        else if (option is CustomLayersOption layers)
+            return layers.GetChance() > 0 && !IsRoleList && !IsVanilla && layers.Active;
+        else if (option is CustomHeaderOption header)
+            return header.Active;
+        else if (option is MapEnum map)
+            return CustomGameOptions.Map == map;
+        else if (option is GameMode mode)
+            return CustomGameOptions.GameMode == mode;
+        else if (option is LayerEnum layer)
+            return GetOptions<RoleListEntryOption>(CustomOptionType.Entry).Any(x => x.Name.Contains("Entry") && (x.Get() == layer || x.Get() == LayerEnum.Any)) && IsRoleList;
+        else if (option is CustomOption custom)
+            return custom.Active;
 
         return false;
     }
 
     public virtual void OptionCreated()
     {
-        Setting.name = Setting.gameObject.name = Name;
-        Setting.Title = (StringNames)(999999999 - ID);
-        Setting.OnValueChanged = new Action<OptionBehaviour>(_ => {});
+        Setting.name = Setting.gameObject.name = Name.Replace(" ", "_");
+        Setting.Title = (StringNames)999999999;
+        Setting.OnValueChanged = (Action<OptionBehaviour>)(_ => {});
     }
 
     public void Set(object value, object otherValue = null)
@@ -76,7 +86,7 @@ public class CustomOption
         if (Setting is ToggleOption toggle)
         {
             if (Type == CustomOptionType.Entry)
-                toggle.TitleText.text = RoleListEntryOption.Alignments.TryGetValue((LayerEnum)Value, out var result) ? result : RoleListEntryOption.Entries[(LayerEnum)Value];
+                toggle.TitleText.text = RoleListEntryOption.GetString(Value);
             else
             {
                 var newValue = (bool)Value;
@@ -93,13 +103,14 @@ public class CustomOption
         }
         else if (Setting is KeyValueOption str)
         {
+            Value = Mathf.Clamp((int)Value, 0, ((CustomStringOption)this).Values.Length - 1);
             str.Selected = str.oldValue = (int)Value;
             str.ValueText.text = Format(Value, OtherValue);
         }
         else if (Setting is RoleOptionSetting role)
         {
             role.ChanceText.text = $"{Value}%";
-            role.CountText.text = $"{OtherValue}";
+            role.CountText.text = $"x{OtherValue}";
         }
     }
 
@@ -115,23 +126,15 @@ public class CustomOption
             builder.AppendLine(option.Name.Trim());
 
             if (option is RoleListEntryOption entry)
-                builder.AppendLine(((int)entry.Get()).ToString());
+                builder.AppendLine(((int)entry.Get()).ToString().Trim());
             else
-                builder.AppendLine(option.Value.ToString());
+                builder.AppendLine(option.Value.ToString().Trim());
 
             if (option.OtherValue != null)
-                builder.AppendLine(option.OtherValue?.ToString());
+                builder.AppendLine(option.OtherValue?.ToString().Trim());
         }
 
-        var text = Path.Combine(Application.persistentDataPath, $"{fileName}-temp");
-
-        try
-        {
-            File.WriteAllText(text, builder.ToString());
-            var text2 = Path.Combine(Application.persistentDataPath, fileName);
-            File.Delete(text2);
-            File.Move(text, text2);
-        } catch {}
+        SaveText(fileName, builder.ToString());
     }
 
     public static List<CustomOption> GetOptions(CustomOptionType type) => AllOptions.Where(x => x.Type == type).ToList();

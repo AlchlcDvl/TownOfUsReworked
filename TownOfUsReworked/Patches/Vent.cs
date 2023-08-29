@@ -13,7 +13,8 @@ public static class VentPatches
             couldUse = playerControl.CanVent();
         else if (IsHnS)
             couldUse = !playerInfo.IsImpostor();
-        else couldUse = canUse;
+        else
+            couldUse = canUse;
 
         var ventitaltionSystem = ShipStatus.Instance.Systems[SystemTypes.Ventilation].Cast<VentilationSystem>();
 
@@ -35,7 +36,6 @@ public static class VentPatches
                 canUse = ((canUse ? 1 : 0) & (num > __instance.UsableDistance ? 0 : (!PhysicsHelpers.AnythingBetween(playerControl.Collider, (Vector2)center, (Vector2)position,
                     Constants.ShipOnlyMask, false) ? 1 : 0))) != 0;
             }
-            
         }
 
         __result = num;

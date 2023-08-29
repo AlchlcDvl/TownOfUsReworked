@@ -17,8 +17,8 @@ public class Whisperer : Neutral
     public override Func<string> Description => () => "- You can whisper to players around, slowly bending them to your ideals\n- When a player reaches 100% conversion, they will " +
         "defect and join the <color=#F995FCFF>Sect</color>";
     public override InspectorResults InspectorResults => InspectorResults.BringsChaos;
-    public float Timer => ButtonUtils.Timer(Player, LastWhispered, CustomGameOptions.WhisperCooldown, CustomGameOptions.WhisperCooldownIncreases ?
-        (CustomGameOptions.WhisperCooldownIncrease * WhisperCount) : 0);
+    public float Timer => ButtonUtils.Timer(Player, LastWhispered, CustomGameOptions.WhisperCd, CustomGameOptions.WhisperCdIncreases ?
+        (CustomGameOptions.WhisperCdIncrease * WhisperCount) : 0);
 
     public Whisperer(PlayerControl player) : base(player)
     {
@@ -26,7 +26,7 @@ public class Whisperer : Neutral
         RoleAlignment = RoleAlignment.NeutralNeo;
         SubFaction = SubFaction.Sect;
         SubFactionColor = Colors.Sect;
-        WhisperConversion = CustomGameOptions.InitialWhisperRate;
+        WhisperConversion = CustomGameOptions.WhisperRate;
         Persuaded = new() { Player.PlayerId };
         WhisperButton = new(this, "Whisper", AbilityTypes.Effect, "ActionSecondary", Whisper);
         SubFactionSymbol = "Λ";
@@ -77,7 +77,7 @@ public class Whisperer : Neutral
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        WhisperButton.Update("WHISPER", Timer, CustomGameOptions.WhisperCooldown, CustomGameOptions.WhisperCooldownIncreases ? (CustomGameOptions.WhisperCooldownIncrease *
+        WhisperButton.Update("WHISPER", Timer, CustomGameOptions.WhisperCd, CustomGameOptions.WhisperCdIncreases ? (CustomGameOptions.WhisperCdIncrease *
             WhisperCount) : 0);
     }
 }

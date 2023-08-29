@@ -18,8 +18,8 @@ public class Morphling : Intruder
     public override Func<string> StartText => () => "Fool The <color=#8CFFFFFF>Crew</color> With Your Appearances";
     public override Func<string> Description => () => $"- You can morph into other players, taking up their appearances as your own\n{CommonAbilities}";
     public override InspectorResults InspectorResults => InspectorResults.CreatesConfusion;
-    public float SampleTimer => ButtonUtils.Timer(Player, LastSampled, CustomGameOptions.SampleCooldown);
-    public float MorphTimer => ButtonUtils.Timer(Player, LastMorphed, CustomGameOptions.MorphlingCd);
+    public float SampleTimer => ButtonUtils.Timer(Player, LastSampled, CustomGameOptions.SampleCd);
+    public float MorphTimer => ButtonUtils.Timer(Player, LastMorphed, CustomGameOptions.MorphCd);
 
     public Morphling(PlayerControl player) : base(player)
     {
@@ -56,7 +56,7 @@ public class Morphling : Intruder
         if (MorphTimer != 0f || SampledPlayer == null || Morphed)
             return;
 
-        TimeRemaining = CustomGameOptions.MorphlingDuration;
+        TimeRemaining = CustomGameOptions.MorphDur;
         MorphedPlayer = SampledPlayer;
         CallRpc(CustomRPC.Action, ActionsRPC.Morph, this, MorphedPlayer);
         Morph();
@@ -93,7 +93,7 @@ public class Morphling : Intruder
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        MorphButton.Update("MORPH", MorphTimer, CustomGameOptions.MorphlingCd, Morphed, TimeRemaining, CustomGameOptions.MorphlingDuration, true, SampledPlayer != null);
-        SampleButton.Update("SAMPLE", SampleTimer, CustomGameOptions.MeasureCooldown);
+        MorphButton.Update("MORPH", MorphTimer, CustomGameOptions.MorphCd, Morphed, TimeRemaining, CustomGameOptions.MorphDur, true, SampledPlayer != null);
+        SampleButton.Update("SAMPLE", SampleTimer, CustomGameOptions.SampleCd);
     }
 }

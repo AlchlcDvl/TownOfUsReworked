@@ -300,6 +300,7 @@ public static class Seismic
         if (ShipStatus.Instance.Type == ShipStatus.MapType.Pb && opCode == 128 && !__instance.IsActive)
         {
             __instance.Countdown = CustomGameOptions.SeismicTimer;
+            __instance.ReactorDuration = CustomGameOptions.SeismicTimer;
             __instance.UserConsolePairs.Clear();
             __instance.IsDirty = true;
             return false;

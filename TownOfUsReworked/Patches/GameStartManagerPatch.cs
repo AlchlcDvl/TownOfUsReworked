@@ -75,7 +75,7 @@ public static class GameStartManagerPatch
             __instance.MinPlayers = 1;
             Generate.LobbySize.Set((float)TownOfUsReworked.NormalOptions?.MaxPlayers);
 
-            if (!IsHnS && !IsLocalGame)
+            if (!IsHnS)
             {
                 //Trigger version refresh
                 VersionSent = false;
@@ -117,8 +117,8 @@ public static class GameStartManagerPatch
 
             if (DiscordManager.InstanceExists)
             {
-                __instance.ShareOnDiscordButton.gameObject.SetActive(AmongUsClient.Instance.AmHost && IsOnlineGame &&
-                    DiscordManager.Instance.CanShareGameOnDiscord() && DiscordManager.Instance.HasValidPartyID());
+                __instance.ShareOnDiscordButton.gameObject.SetActive(AmongUsClient.Instance.AmHost && IsOnlineGame && DiscordManager.Instance.CanShareGameOnDiscord() &&
+                    DiscordManager.Instance.HasValidPartyID());
             }
 
             if (GameData.Instance.PlayerCount != __instance.LastPlayerCount)
@@ -153,15 +153,15 @@ public static class GameStartManagerPatch
             var versionMismatch = false;
             var message = "";
 
+            if (CustomPlayer.Local && !VersionSent)
+            {
+                VersionSent = true;
+                ShareGameVersion();
+            }
+
             if (!TownOfUsReworked.MCIActive && !IsHnS)
             {
                 //Send version as soon as CustomPlayer.Local exists
-                if (CustomPlayer.Local && !VersionSent)
-                {
-                    VersionSent = true;
-                    ShareGameVersion();
-                }
-
                 foreach (var client in AmongUsClient.Instance.allClients)
                 {
                     if (client.Character == null)
@@ -214,7 +214,7 @@ public static class GameStartManagerPatch
                     if (KickingTimer > 10)
                     {
                         KickingTimer = 0;
-                        AmongUsClient.Instance.ExitGame(DisconnectReasons.ExitGame);
+                        AmongUsClient.Instance.ExitGame(DisconnectReasons.Kicked);
                         SceneChanger.ChangeScene("MainMenu");
                     }
 

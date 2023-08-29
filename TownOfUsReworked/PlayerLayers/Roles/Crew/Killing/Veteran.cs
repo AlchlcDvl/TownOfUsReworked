@@ -45,7 +45,7 @@ public class Veteran : Crew
         if (!ButtonUsable || Timer != 0f || OnAlert)
             return;
 
-        TimeRemaining = CustomGameOptions.AlertDuration;
+        TimeRemaining = CustomGameOptions.AlertDur;
         UsesLeft--;
         Alert();
         CallRpc(CustomRPC.Action, ActionsRPC.Alert, this);
@@ -54,6 +54,6 @@ public class Veteran : Crew
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        AlertButton.Update("ALERT", Timer, CustomGameOptions.AlertCd, UsesLeft, OnAlert, TimeRemaining, CustomGameOptions.AlertDuration, ButtonUsable, ButtonUsable);
+        AlertButton.Update("ALERT", Timer, CustomGameOptions.AlertCd, UsesLeft, OnAlert, TimeRemaining, CustomGameOptions.AlertDur, ButtonUsable, ButtonUsable);
     }
 }

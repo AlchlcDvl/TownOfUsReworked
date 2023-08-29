@@ -18,7 +18,7 @@ public class Shapeshifter : Syndicate
     public override Func<string> StartText => () => "Change Everyone's Appearances";
     public override Func<string> Description => () => $"- You can {(HoldsDrive ? "shuffle everyone's appearances" : "swap the appearances of 2 players")}\n{CommonAbilities}";
     public override InspectorResults InspectorResults => InspectorResults.CreatesConfusion;
-    public float Timer => ButtonUtils.Timer(Player, LastShapeshifted, CustomGameOptions.ShapeshiftCooldown);
+    public float Timer => ButtonUtils.Timer(Player, LastShapeshifted, CustomGameOptions.ShapeshiftCd);
 
     public Shapeshifter(PlayerControl player) : base(player)
     {
@@ -95,7 +95,7 @@ public class Shapeshifter : Syndicate
 
         if (HoldsDrive)
         {
-            TimeRemaining = CustomGameOptions.ShapeshiftDuration;
+            TimeRemaining = CustomGameOptions.ShapeshiftDur;
             Shapeshift();
             CallRpc(CustomRPC.Action, ActionsRPC.Shapeshift, this);
         }
@@ -106,7 +106,7 @@ public class Shapeshifter : Syndicate
         else
         {
             CallRpc(CustomRPC.Action, ActionsRPC.Shapeshift, this, ShapeshiftPlayer1, ShapeshiftPlayer2);
-            TimeRemaining = CustomGameOptions.ShapeshiftDuration;
+            TimeRemaining = CustomGameOptions.ShapeshiftDur;
             Shapeshift();
         }
     }
@@ -122,8 +122,8 @@ public class Shapeshifter : Syndicate
         base.UpdateHud(__instance);
         var flag1 = ShapeshiftPlayer1 == null && !HoldsDrive;
         var flag2 = ShapeshiftPlayer2 == null && !HoldsDrive;
-        ShapeshiftButton.Update(flag1 ? "FIRST TARGET" : (flag2 ? "SECOND TARGET": "SHAPESHIFT"), Timer, CustomGameOptions.ShapeshiftCooldown, Shapeshifted, TimeRemaining,
-            CustomGameOptions.ShapeshiftDuration);
+        ShapeshiftButton.Update(flag1 ? "FIRST TARGET" : (flag2 ? "SECOND TARGET": "SHAPESHIFT"), Timer, CustomGameOptions.ShapeshiftCd, Shapeshifted, TimeRemaining,
+            CustomGameOptions.ShapeshiftDur);
 
         if (Input.GetKeyDown(KeyCode.Backspace))
         {
@@ -135,7 +135,7 @@ public class Shapeshifter : Syndicate
                     ShapeshiftPlayer1 = null;
             }
 
-            LogSomething("Removed a target");
+            LogInfo("Removed a target");
         }
     }
 }

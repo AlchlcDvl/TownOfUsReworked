@@ -165,3 +165,39 @@ public static class SkeldShipStatusPatch
             CafeVent.transform.position = CafeVentNewPos;
     }
 }
+
+[HarmonyPatch(typeof(ReactorSystemType), nameof(ReactorSystemType.RepairDamage))]
+public static class ReactorSkeld
+{
+    public static bool Prefix(ReactorSystemType __instance, ref byte opCode)
+    {
+        if (ShipStatus.Instance.Type == ShipStatus.MapType.Ship && opCode == 128 && !__instance.IsActive)
+        {
+            __instance.Countdown = CustomGameOptions.SkeldReactorTimer;
+            __instance.ReactorDuration = CustomGameOptions.SkeldReactorTimer;
+            __instance.UserConsolePairs.Clear();
+            __instance.IsDirty = true;
+            return false;
+        }
+
+        return true;
+    }
+}
+
+[HarmonyPatch(typeof(LifeSuppSystemType), nameof(LifeSuppSystemType.RepairDamage))]
+public static class O2Skeld
+{
+    public static bool Prefix(LifeSuppSystemType __instance, ref byte opCode)
+    {
+        if (ShipStatus.Instance.Type == ShipStatus.MapType.Ship && opCode == 128 && !__instance.IsActive)
+        {
+            __instance.Countdown = CustomGameOptions.SkeldO2Timer;
+            __instance.LifeSuppDuration = CustomGameOptions.SkeldO2Timer;
+            __instance.CompletedConsoles.Clear();
+            __instance.IsDirty = true;
+            return false;
+        }
+
+        return true;
+    }
+}

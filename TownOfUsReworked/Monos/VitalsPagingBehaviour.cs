@@ -12,13 +12,13 @@ public class VitalsPagingBehaviour : BasePagingBehaviour
 
     public override void Start()
     {
-        base.Start();
         PageText = Instantiate(HUD.KillButton.cooldownTimerText, Menu.transform);
         PageText.name = "MenuPageCount";
         PageText.enableWordWrapping = false;
         PageText.gameObject.SetActive(true);
         PageText.transform.localPosition = new(2.7f, -2f, -1f);
         PageText.transform.localScale *= 0.5f;
+        OnPageChanged();
     }
 
     public override void OnPageChanged()

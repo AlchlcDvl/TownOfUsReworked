@@ -45,7 +45,7 @@ public class Survivor : Neutral
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        VestButton.Update("PROTECT", Timer, CustomGameOptions.VestCd, UsesLeft, Vesting, TimeRemaining, CustomGameOptions.VestDuration);
+        VestButton.Update("PROTECT", Timer, CustomGameOptions.VestCd, UsesLeft, Vesting, TimeRemaining, CustomGameOptions.VestDur);
     }
 
     public void HitVest()
@@ -53,7 +53,7 @@ public class Survivor : Neutral
         if (!ButtonUsable || Timer != 0f || Vesting)
             return;
 
-        TimeRemaining = CustomGameOptions.VestDuration;
+        TimeRemaining = CustomGameOptions.VestDur;
         UsesLeft--;
         Vest();
         CallRpc(CustomRPC.Action, ActionsRPC.Vest, this);

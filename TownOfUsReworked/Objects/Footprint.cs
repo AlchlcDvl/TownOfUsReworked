@@ -11,7 +11,7 @@ public class Footprint
     public Color Color { get; set; }
     public readonly Vector3 Position;
     private static bool Grey => CustomGameOptions.AnonymousFootPrint || DoUndo.IsCamoed;
-    public static readonly Dictionary<PlayerControl, int> OddEven = new();
+    public static readonly Dictionary<byte, int> OddEven = new();
     private static readonly List<Footprint> AllPrints = new();
 
     public Footprint(PlayerControl player)
@@ -23,10 +23,10 @@ public class Footprint
         Color = UColor.black;
         AllPrints.Add(this);
 
-        if (!OddEven.ContainsKey(Player))
-            OddEven.Add(Player, 0);
+        if (!OddEven.ContainsKey(Player.PlayerId))
+            OddEven.Add(Player.PlayerId, 0);
         else
-            OddEven[Player]++;
+            OddEven[Player.PlayerId]++;
 
         GObject = new("Footprint") { layer = 11 };
         GObject.AddSubmergedComponent("ElevatorMover");
@@ -37,7 +37,7 @@ public class Footprint
         GObject.SetActive(true);
 
         Sprite = GObject.AddComponent<SpriteRenderer>();
-        Sprite.sprite = OddEven[Player] % 2 == 0 ? GetSprite("FootprintLeft") : GetSprite("FootprintRight");
+        Sprite.sprite = GetSprite("Footprint" + (OddEven[Player.PlayerId] % 2 == 0 ? "Left" : "Right"));
         Sprite.color = Color;
     }
 
@@ -52,7 +52,7 @@ public class Footprint
     public bool Update()
     {
         var currentTime = Time.time;
-        var alpha = Mathf.Max(1f - ((currentTime - Time2) / CustomGameOptions.FootprintDuration), 0f);
+        var alpha = Mathf.Max(1f - ((currentTime - Time2) / CustomGameOptions.FootprintDur), 0f);
 
         if (alpha is < 0 or > 1)
             alpha = 0;
@@ -61,7 +61,7 @@ public class Footprint
         Color = new(Color.r, Color.g, Color.b, alpha);
         Sprite.color = Color;
 
-        if (Time2 + CustomGameOptions.FootprintDuration < currentTime)
+        if (Time2 + CustomGameOptions.FootprintDur < currentTime)
         {
             Destroy();
             Role.AllRoles.ForEach(x => x.AllPrints.Remove(this));

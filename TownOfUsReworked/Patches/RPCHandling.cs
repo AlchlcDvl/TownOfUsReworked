@@ -13,8 +13,8 @@ public static class RPCHandling
         switch (rpc)
         {
             case CustomRPC.Test:
-                LogSomething("Received RPC!");
-                HUD.Chat.AddChat(CustomPlayer.Local, "Received RPC!");
+                LogMessage("Received RPC!");
+                Run(HUD.Chat, "<color=#FF00FFFF>⚠ TEST ⚠</color>", "Received RPC!");
                 break;
 
             case CustomRPC.Misc:
@@ -51,17 +51,14 @@ public static class RPCHandling
                         var message = reader.ReadString();
 
                         if (whispered == CustomPlayer.Local)
-                            HUD.Chat.AddChat(CustomPlayer.Local, $"{whisperer.name} whispers to you:{message}");
+                            Run(HUD.Chat, "<color=#4D4DFFFF>「 Whispers 」</color>", $"{whisperer.name} whispers to you: {message}");
                         else if ((CustomPlayer.Local.Is(LayerEnum.Blackmailer) && CustomGameOptions.WhispersNotPrivate) || DeadSeeEverything || (CustomPlayer.Local.Is(LayerEnum.Silencer)
                             && CustomGameOptions.WhispersNotPrivateSilencer))
                         {
-                            HUD.Chat.AddChat(CustomPlayer.Local, $"{whisperer.name} is whispering to {whispered.name}: {message}");
+                            Run(HUD.Chat, "<color=#4D4DFFFF>「 Whispers 」</color>", $"{whisperer.name} is whispering to {whispered.name}: {message}");
                         }
                         else if (CustomGameOptions.WhispersAnnouncement)
-                            HUD.Chat.AddChat(CustomPlayer.Local, $"{whisperer.name} is whispering to {whispered.name}.");
-
-                        if (!ChatCommand.BubbleModifications.ContainsKey(HUD.Chat.chatBubblePool.activeChildren[^1].Cast<ChatBubble>()))
-                            ChatCommand.BubbleModifications.Add(HUD.Chat.chatBubblePool.activeChildren[^1].Cast<ChatBubble>(), ("Whispers", UColor.blue));
+                            Run(HUD.Chat, "<color=#4D4DFFFF>「 Whispers 」</color>", $"{whisperer.name} is whispering to {whispered.name}.");
 
                         break;
 
@@ -87,6 +84,10 @@ public static class RPCHandling
                         RoleGen.ResetEverything();
                         break;
 
+                    case MiscRPC.SyncPureCrew:
+                        RoleGen.PureCrew = reader.ReadPlayer();
+                        break;
+
                     case MiscRPC.AttemptSound:
                         Role.BreakShield(reader.ReadPlayer(), CustomGameOptions.ShieldBreaks);
                         break;
@@ -104,20 +105,26 @@ public static class RPCHandling
                         break;
 
                     case MiscRPC.MeetingStart:
-                        AllBodies.ForEach(x => x.gameObject.Destroy());
-                        CustomPlayer.AllPlayers.ForEach(x => x.MyPhysics.ResetAnimState());
+                        AllBodies.ForEach(x => x?.gameObject?.Destroy());
+                        CustomPlayer.AllPlayers.ForEach(x => x?.MyPhysics?.ResetAnimState());
                         break;
 
                     case MiscRPC.DoorSyncToilet:
                         UObject.FindObjectsOfType<PlainDoor>().FirstOrDefault(door => door.Id == reader.ReadInt32())?.SetDoorway(true);
                         break;
 
-                    /*case MiscRPC.SyncPlateform:
-                        Role.SyncPlateform();
+                    /*case MiscRPC.SyncPlatform:
+                        Role.SyncPlatform();
                         break;*/
 
                     case MiscRPC.SetColor:
-                        reader.ReadPlayer().SetColor(reader.ReadByte());
+                        var player = reader.ReadPlayer();
+                        player.SetColor(reader.ReadByte());
+                        UpdateNames.ColorNames[player.PlayerId] = TranslationController.Instance.GetString(Palette.ColorNames[player.CurrentOutfit.ColorId]);
+                        break;
+
+                    case MiscRPC.SyncSummary:
+                        SaveText("Summary", reader.ReadString());
                         break;
 
                     case MiscRPC.VersionHandshake:
@@ -133,13 +140,9 @@ public static class RPCHandling
                         lights.ActualSwitches = lights.ExpectedSwitches;
                         break;
 
-                    case MiscRPC.RemoveMeetings:
-                        reader.ReadPlayer().RemainingEmergencies = 0;
-                        break;
-
                     case MiscRPC.SetSpawnAirship:
                         SpawnInMinigamePatch.SpawnPoints.Clear();
-                        SpawnInMinigamePatch.SpawnPoints.AddRange(reader.ReadBytesAndSize().ToList());
+                        SpawnInMinigamePatch.SpawnPoints.AddRange(reader.ReadByteList());
                         break;
 
                     case MiscRPC.ChaosDrive:
@@ -158,7 +161,7 @@ public static class RPCHandling
 
                     case MiscRPC.SetSettings:
                         var map = reader.ReadByte();
-                        TownOfUsReworked.NormalOptions.MapId = map == 255 ? (byte)0 : map;
+                        TownOfUsReworked.NormalOptions.MapId = map;
                         TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.Scientist, 0, 0);
                         TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.Engineer, 0, 0);
                         TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.GuardianAngel, 0, 0);
@@ -176,19 +179,34 @@ public static class RPCHandling
                         TownOfUsReworked.NormalOptions.KillDistance = CustomGameOptions.InteractionDistance;
                         TownOfUsReworked.NormalOptions.EmergencyCooldown = CustomGameOptions.EmergencyButtonCooldown;
                         TownOfUsReworked.NormalOptions.NumEmergencyMeetings = CustomGameOptions.EmergencyButtonCount;
-                        TownOfUsReworked.NormalOptions.KillCooldown = CustomGameOptions.IntKillCooldown;
+                        TownOfUsReworked.NormalOptions.KillCooldown = CustomGameOptions.IntKillCd;
                         TownOfUsReworked.NormalOptions.GhostsDoTasks = CustomGameOptions.GhostTasksCountToWin;
                         TownOfUsReworked.NormalOptions.MaxPlayers = CustomGameOptions.LobbySize;
                         GameOptionsManager.Instance.currentNormalGameOptions = TownOfUsReworked.NormalOptions;
                         CustomPlayer.AllPlayers.ForEach(x => x.MaxReportDistance = CustomGameOptions.ReportDistance);
+                        MapPatches.AdjustSettings(map);
+                        CustomOption.SaveSettings("LastUsedSettings");
                         break;
 
                     case MiscRPC.SetFirstKilled:
                         CachedFirstDead = FirstDead = reader.ReadPlayer();
                         break;
 
+                    /*case MiscRPC.ShareFriendCode:
+                        reader.ReadPlayer().FriendCode = reader.ReadString();
+                        break;*/
+
+                    case MiscRPC.BodyLocation:
+                        var id = reader.ReadByte();
+                        var location = reader.ReadString();
+
+                        if (!BodyLocations.TryAdd(id, location))
+                            BodyLocations[id] = location;
+
+                        break;
+
                     default:
-                        LogSomething($"Received unknown RPC - {nameof(misc)}");
+                        LogError($"Received unknown RPC - {misc}");
                         break;
                 }
 
@@ -268,7 +286,7 @@ public static class RPCHandling
                         break;
 
                     default:
-                        LogSomething($"Received unknown RPC - {nameof(turn)}");
+                        LogError($"Received unknown RPC - {turn}");
                         break;
                 }
 
@@ -348,7 +366,7 @@ public static class RPCHandling
                         break;
 
                     default:
-                        LogSomething($"Received unknown RPC - {nameof(target)}");
+                        LogError($"Received unknown RPC - {target}");
                         break;
                 }
 
@@ -384,20 +402,20 @@ public static class RPCHandling
 
                             case RetributionistActionsRPC.Alert:
                                 var retRole7 = reader.ReadLayer<Retributionist>();
-                                retRole7.TimeRemaining = CustomGameOptions.AlertDuration;
+                                retRole7.TimeRemaining = CustomGameOptions.AlertDur;
                                 retRole7.Alert();
                                 break;
 
                             case RetributionistActionsRPC.AltruistRevive:
                                 var retRole8 = reader.ReadLayer<Retributionist>();
                                 retRole8.RevivingBody = reader.ReadBody();
-                                retRole8.TimeRemaining = CustomGameOptions.AltReviveDuration;
+                                retRole8.TimeRemaining = CustomGameOptions.ReviveDur;
                                 retRole8.Revive();
                                 break;
 
                             case RetributionistActionsRPC.Swoop:
                                 var retRole9 = reader.ReadLayer<Retributionist>();
-                                retRole9.TimeRemaining = CustomGameOptions.SwoopDuration;
+                                retRole9.TimeRemaining = CustomGameOptions.SwoopDur;
                                 retRole9.Invis();
                                 break;
 
@@ -416,12 +434,12 @@ public static class RPCHandling
                                 var retRole1 = reader.ReadLayer<Retributionist>();
                                 var blocked4 = reader.ReadPlayer();
                                 retRole1.BlockTarget = reader.ReadPlayer();
-                                retRole1.TimeRemaining = CustomGameOptions.EscRoleblockDuration;
+                                retRole1.TimeRemaining = CustomGameOptions.EscortDur;
                                 retRole1.Block();
                                 break;
 
                             default:
-                                LogSomething($"Received unknown RPC - {nameof(retAction)}");
+                                LogError($"Received unknown RPC - {retAction}");
                                 break;
                         }
 
@@ -434,15 +452,15 @@ public static class RPCHandling
                         {
                             case GodfatherActionsRPC.Morph:
                                 var gfRole3 = reader.ReadLayer<PromotedGodfather>();
-                                gfRole3.TimeRemaining = CustomGameOptions.MorphlingDuration;
+                                gfRole3.TimeRemaining = CustomGameOptions.MorphDur;
                                 gfRole3.MorphedPlayer = reader.ReadPlayer();
                                 gfRole3.Morph();
                                 break;
 
                             case GodfatherActionsRPC.Disguise:
                                 var gfRole4 = reader.ReadLayer<PromotedGodfather>();
-                                gfRole4.TimeRemaining2 = CustomGameOptions.TimeToDisguise;
-                                gfRole4.TimeRemaining = CustomGameOptions.DisguiseDuration;
+                                gfRole4.TimeRemaining2 = CustomGameOptions.DisguiseDelay;
+                                gfRole4.TimeRemaining = CustomGameOptions.DisguiseDur;
                                 gfRole4.DisguisedPlayer = reader.ReadPlayer();
                                 gfRole4.CopiedPlayer = reader.ReadPlayer();
                                 gfRole4.DisgDelay();
@@ -451,7 +469,7 @@ public static class RPCHandling
                             case GodfatherActionsRPC.ConsRoleblock:
                                 var gfRole5 = reader.ReadLayer<PromotedGodfather>();
                                 gfRole5.BlockTarget = reader.ReadPlayer();
-                                gfRole5.TimeRemaining = CustomGameOptions.ConsRoleblockDuration;
+                                gfRole5.TimeRemaining = CustomGameOptions.ConsortDur;
                                 gfRole5.Block();
                                 break;
 
@@ -461,7 +479,7 @@ public static class RPCHandling
 
                             case GodfatherActionsRPC.Invis:
                                 var gfRole8 = reader.ReadLayer<PromotedGodfather>();
-                                gfRole8.TimeRemaining = CustomGameOptions.InvisDuration;
+                                gfRole8.TimeRemaining = CustomGameOptions.InvisDur;
                                 gfRole8.Invis();
                                 break;
 
@@ -477,19 +495,19 @@ public static class RPCHandling
 
                             case GodfatherActionsRPC.Camouflage:
                                 var gfRole11 = reader.ReadLayer<PromotedGodfather>();
-                                gfRole11.TimeRemaining = CustomGameOptions.CamouflagerDuration;
+                                gfRole11.TimeRemaining = CustomGameOptions.CamouflageDur;
                                 gfRole11.Camouflage();
                                 break;
 
                             case GodfatherActionsRPC.FlashGrenade:
                                 var gfRole12 = reader.ReadLayer<PromotedGodfather>();
-                                gfRole12.TimeRemaining = CustomGameOptions.GrenadeDuration;
+                                gfRole12.TimeRemaining = CustomGameOptions.FlashDur;
                                 gfRole12.Flash();
                                 break;
 
                             case GodfatherActionsRPC.SetBomb:
                                 var gfRole13 = reader.ReadLayer<PromotedGodfather>();
-                                gfRole13.TimeRemaining = CustomGameOptions.EnforceDuration;
+                                gfRole13.TimeRemaining = CustomGameOptions.EnforceDur;
                                 gfRole13.TimeRemaining2 = CustomGameOptions.EnforceDelay;
                                 gfRole13.BombedPlayer = reader.ReadPlayer();
                                 gfRole13.BombDelay();
@@ -497,13 +515,13 @@ public static class RPCHandling
 
                             case GodfatherActionsRPC.Ambush:
                                 var gfRole14 = reader.ReadLayer<PromotedGodfather>();
-                                gfRole14.TimeRemaining = CustomGameOptions.AmbushDuration;
+                                gfRole14.TimeRemaining = CustomGameOptions.AmbushDur;
                                 gfRole14.AmbushedPlayer = reader.ReadPlayer();
                                 gfRole14.Ambush();
                                 break;
 
                             default:
-                                LogSomething($"Received unknown RPC - {nameof(gfAction)}");
+                                LogError($"Received unknown RPC - {gfAction}");
                                 break;
                         }
 
@@ -517,7 +535,7 @@ public static class RPCHandling
                             case RebelActionsRPC.Poison:
                                 var rebRole1 = reader.ReadLayer<PromotedRebel>();
                                 rebRole1.PoisonedPlayer = reader.ReadPlayer();
-                                rebRole1.TimeRemaining = CustomGameOptions.PoisonDuration;
+                                rebRole1.TimeRemaining = CustomGameOptions.PoisonDur;
                                 rebRole1.Poison();
                                 break;
 
@@ -527,7 +545,7 @@ public static class RPCHandling
                                 if (!rebRole2.HoldsDrive)
                                     rebRole2.ConcealedPlayer = reader.ReadPlayer();
 
-                                rebRole2.TimeRemaining = CustomGameOptions.ConcealDuration;
+                                rebRole2.TimeRemaining = CustomGameOptions.ConcealDur;
                                 rebRole2.Conceal();
                                 break;
 
@@ -540,7 +558,7 @@ public static class RPCHandling
                                     rebRole3.ShapeshiftPlayer2 = reader.ReadPlayer();
                                 }
 
-                                rebRole3.TimeRemaining = CustomGameOptions.ShapeshiftDuration;
+                                rebRole3.TimeRemaining = CustomGameOptions.ShapeshiftDur;
                                 rebRole3.Shapeshift();
                                 break;
 
@@ -558,7 +576,7 @@ public static class RPCHandling
                             case RebelActionsRPC.Crusade:
                                 var rebRole7 = reader.ReadLayer<PromotedRebel>();
                                 rebRole7.CrusadedPlayer = reader.ReadPlayer();
-                                rebRole7.TimeRemaining = CustomGameOptions.CrusadeDuration;
+                                rebRole7.TimeRemaining = CustomGameOptions.CrusadeDur;
                                 rebRole7.Crusade();
                                 break;
 
@@ -572,13 +590,13 @@ public static class RPCHandling
                                 if (!rebRole6.HoldsDrive)
                                     rebRole6.ConfusedPlayer = reader.ReadPlayer();
 
-                                rebRole6.TimeRemaining = CustomGameOptions.ConfuseDuration;
+                                rebRole6.TimeRemaining = CustomGameOptions.ConfuseDur;
                                 rebRole6.Confuse();
                                 break;
 
                             case RebelActionsRPC.TimeControl:
                                 var rebRole5 = reader.ReadLayer<PromotedRebel>();
-                                rebRole5.TimeRemaining = CustomGameOptions.TimeControlDuration;
+                                rebRole5.TimeRemaining = CustomGameOptions.TimeDur;
                                 rebRole5.Control();
                                 break;
 
@@ -587,7 +605,7 @@ public static class RPCHandling
                                 break;
 
                             default:
-                                LogSomething($"Received unknown RPC - {nameof(rebAction)}");
+                                LogError($"Received unknown RPC - {rebAction}");
                                 break;
                         }
 
@@ -679,7 +697,7 @@ public static class RPCHandling
 
                     case ActionsRPC.SetBomb:
                         var enfRole = reader.ReadLayer<Enforcer>();
-                        enfRole.TimeRemaining = CustomGameOptions.EnforceDuration;
+                        enfRole.TimeRemaining = CustomGameOptions.EnforceDur;
                         enfRole.TimeRemaining2 = CustomGameOptions.EnforceDelay;
                         enfRole.BombedPlayer = reader.ReadPlayer();
                         enfRole.Delay();
@@ -687,14 +705,14 @@ public static class RPCHandling
 
                     case ActionsRPC.Morph:
                         var morphRole = reader.ReadLayer<Morphling>();
-                        morphRole.TimeRemaining = CustomGameOptions.MorphlingDuration;
+                        morphRole.TimeRemaining = CustomGameOptions.MorphDur;
                         morphRole.MorphedPlayer = reader.ReadPlayer();
                         morphRole.Morph();
                         break;
 
                     case ActionsRPC.Scream:
                         var bansheeRole2 = reader.ReadLayer<Banshee>();
-                        bansheeRole2.TimeRemaining = CustomGameOptions.ScreamDuration;
+                        bansheeRole2.TimeRemaining = CustomGameOptions.ScreamDur;
                         bansheeRole2.Scream();
                         break;
 
@@ -704,8 +722,8 @@ public static class RPCHandling
 
                     case ActionsRPC.Disguise:
                         var disguiseRole = reader.ReadLayer<Disguiser>();
-                        disguiseRole.TimeRemaining = CustomGameOptions.DisguiseDuration;
-                        disguiseRole.TimeRemaining2 = CustomGameOptions.TimeToDisguise;
+                        disguiseRole.TimeRemaining = CustomGameOptions.DisguiseDur;
+                        disguiseRole.TimeRemaining2 = CustomGameOptions.DisguiseDelay;
                         disguiseRole.CopiedPlayer = reader.ReadPlayer();
                         disguiseRole.DisguisedPlayer = reader.ReadPlayer();
                         disguiseRole.Delay();
@@ -713,7 +731,7 @@ public static class RPCHandling
 
                     case ActionsRPC.Poison:
                         var poisonerRole = reader.ReadLayer<Poisoner>();
-                        poisonerRole.TimeRemaining = CustomGameOptions.PoisonDuration;
+                        poisonerRole.TimeRemaining = CustomGameOptions.PoisonDur;
                         poisonerRole.PoisonedPlayer = reader.ReadPlayer();
                         poisonerRole.Poison();
                         break;
@@ -732,39 +750,39 @@ public static class RPCHandling
 
                     case ActionsRPC.Invis:
                         var wraithRole = reader.ReadLayer<Wraith>();
-                        wraithRole.TimeRemaining = CustomGameOptions.InvisDuration;
+                        wraithRole.TimeRemaining = CustomGameOptions.InvisDur;
                         wraithRole.Invis();
                         break;
 
                     case ActionsRPC.Alert:
                         var veteranRole = reader.ReadLayer<Veteran>();
-                        veteranRole.TimeRemaining = CustomGameOptions.AlertDuration;
+                        veteranRole.TimeRemaining = CustomGameOptions.AlertDur;
                         veteranRole.Alert();
                         break;
 
                     case ActionsRPC.Vest:
                         var survRole = reader.ReadLayer<Survivor>();
-                        survRole.TimeRemaining = CustomGameOptions.VestDuration;
+                        survRole.TimeRemaining = CustomGameOptions.VestDur;
                         survRole.Vest();
                         break;
 
                     case ActionsRPC.Ambush:
                         var ambRole = reader.ReadLayer<Ambusher>();
-                        ambRole.TimeRemaining = CustomGameOptions.AmbushDuration;
+                        ambRole.TimeRemaining = CustomGameOptions.AmbushDur;
                         ambRole.AmbushedPlayer = reader.ReadPlayer();
                         ambRole.Ambush();
                         break;
 
                     case ActionsRPC.Crusade:
                         var crusRole = reader.ReadLayer<Crusader>();
-                        crusRole.TimeRemaining = CustomGameOptions.CrusadeDuration;
+                        crusRole.TimeRemaining = CustomGameOptions.CrusadeDur;
                         crusRole.CrusadedPlayer = reader.ReadPlayer();
                         crusRole.Crusade();
                         break;
 
                     case ActionsRPC.GAProtect:
                         var ga2Role = reader.ReadLayer<GuardianAngel>();
-                        ga2Role.TimeRemaining = CustomGameOptions.ProtectDuration;
+                        ga2Role.TimeRemaining = CustomGameOptions.ProtectDur;
                         ga2Role.Protect();
                         break;
 
@@ -789,7 +807,7 @@ public static class RPCHandling
                         }
                         catch (Exception e)
                         {
-                            LogSomething(e);
+                            LogError(e);
                         }
 
                         break;
@@ -814,7 +832,7 @@ public static class RPCHandling
 
                     case ActionsRPC.FlashGrenade:
                         var grenadierRole = reader.ReadLayer<Grenadier>();
-                        grenadierRole.TimeRemaining = CustomGameOptions.GrenadeDuration;
+                        grenadierRole.TimeRemaining = CustomGameOptions.FlashDur;
                         grenadierRole.Flash();
                         break;
 
@@ -829,14 +847,14 @@ public static class RPCHandling
                     case ActionsRPC.AltruistRevive:
                         var altruistRole = reader.ReadLayer<Altruist>();
                         altruistRole.RevivingBody = reader.ReadBody();
-                        altruistRole.TimeRemaining = CustomGameOptions.AltReviveDuration;
+                        altruistRole.TimeRemaining = CustomGameOptions.ReviveDur;
                         altruistRole.Revive();
                         break;
 
                     case ActionsRPC.NecromancerResurrect:
                         var necroRole = reader.ReadLayer<Necromancer>();
                         necroRole.ResurrectingBody = reader.ReadBody();
-                        necroRole.TimeRemaining = CustomGameOptions.NecroResurrectDuration;
+                        necroRole.TimeRemaining = CustomGameOptions.ResurrectDur;
                         necroRole.Resurrect();
                         break;
 
@@ -852,7 +870,7 @@ public static class RPCHandling
 
                     case ActionsRPC.Swoop:
                         var chameleonRole = reader.ReadLayer<Chameleon>();
-                        chameleonRole.TimeRemaining = CustomGameOptions.SwoopDuration;
+                        chameleonRole.TimeRemaining = CustomGameOptions.SwoopDur;
                         chameleonRole.Invis();
                         break;
 
@@ -892,35 +910,35 @@ public static class RPCHandling
 
                     case ActionsRPC.Camouflage:
                         var camouflagerRole = reader.ReadLayer<Camouflager>();
-                        camouflagerRole.TimeRemaining = CustomGameOptions.CamouflagerDuration;
+                        camouflagerRole.TimeRemaining = CustomGameOptions.CamouflageDur;
                         camouflagerRole.Camouflage();
                         break;
 
                     case ActionsRPC.EscRoleblock:
                         var escortRole = reader.ReadLayer<Escort>();
                         escortRole.BlockTarget = reader.ReadPlayer();
-                        escortRole.TimeRemaining = CustomGameOptions.EscRoleblockDuration;
+                        escortRole.TimeRemaining = CustomGameOptions.EscortDur;
                         escortRole.Block();
                         break;
 
                     case ActionsRPC.GlitchRoleblock:
                         var glitchRole = reader.ReadLayer<Glitch>();
                         glitchRole.HackTarget = reader.ReadPlayer();
-                        glitchRole.TimeRemaining = CustomGameOptions.HackDuration;
+                        glitchRole.TimeRemaining = CustomGameOptions.HackDur;
                         glitchRole.Hack();
                         break;
 
                     case ActionsRPC.ConsRoleblock:
                         var consortRole = reader.ReadLayer<Consort>();
                         consortRole.BlockTarget = reader.ReadPlayer();
-                        consortRole.TimeRemaining = CustomGameOptions.ConsRoleblockDuration;
+                        consortRole.TimeRemaining = CustomGameOptions.ConsortDur;
                         consortRole.Block();
                         break;
 
                     case ActionsRPC.Mimic:
                         var glitchRole4 = reader.ReadLayer<Glitch>();
                         glitchRole4.MimicTarget = reader.ReadPlayer();
-                        glitchRole4.TimeRemaining2 = CustomGameOptions.MimicDuration;
+                        glitchRole4.TimeRemaining2 = CustomGameOptions.MimicDur;
                         glitchRole4.Mimic();
                         break;
 
@@ -930,7 +948,7 @@ public static class RPCHandling
                         if (!concealerRole.HoldsDrive)
                             concealerRole.ConcealedPlayer = reader.ReadPlayer();
 
-                        concealerRole.TimeRemaining = CustomGameOptions.ConcealDuration;
+                        concealerRole.TimeRemaining = CustomGameOptions.ConcealDur;
                         concealerRole.Conceal();
                         break;
 
@@ -943,7 +961,7 @@ public static class RPCHandling
                             ssRole.ShapeshiftPlayer2 = reader.ReadPlayer();
                         }
 
-                        ssRole.TimeRemaining = CustomGameOptions.ShapeshiftDuration;
+                        ssRole.TimeRemaining = CustomGameOptions.ShapeshiftDur;
                         ssRole.Shapeshift();
                         break;
 
@@ -997,13 +1015,13 @@ public static class RPCHandling
                         if (!drunkRole.HoldsDrive)
                             drunkRole.ConfusedPlayer = reader.ReadPlayer();
 
-                        drunkRole.TimeRemaining = CustomGameOptions.ConfuseDuration;
+                        drunkRole.TimeRemaining = CustomGameOptions.ConfuseDur;
                         drunkRole.Confuse();
                         break;
 
                     case ActionsRPC.TimeControl:
                         var tkRole = reader.ReadLayer<TimeKeeper>();
-                        tkRole.TimeRemaining = CustomGameOptions.TimeControlDuration;
+                        tkRole.TimeRemaining = CustomGameOptions.TimeDur;
                         tkRole.Control();
                         break;
 
@@ -1023,7 +1041,7 @@ public static class RPCHandling
                         break;
 
                     default:
-                        LogSomething($"Received unknown RPC - {nameof(action)}");
+                        LogError($"Received unknown RPC - {action}");
                         break;
                 }
 
@@ -1121,8 +1139,8 @@ public static class RPCHandling
                         nkRole.Winner = true;
                         break;
 
-                    case WinLoseRPC.InfectorsWin:
-                        Role.InfectorsWin = true;
+                    case WinLoseRPC.ApocalypseWins:
+                        Role.ApocalypseWins = true;
                         break;
 
                     case WinLoseRPC.JesterWin:
@@ -1190,20 +1208,18 @@ public static class RPCHandling
 
                     case WinLoseRPC.PhantomWin:
                         Role.PhantomWins = true;
-                        var phantom3 = reader.ReadLayer<Phantom>();
-                        phantom3.CompletedTasks = true;
-                        phantom3.Winner = true;
+                        reader.ReadLayer<Phantom>().CompletedTasks = true;
                         break;
 
                     default:
-                        LogSomething($"Received unknown RPC - {nameof(winlose)}");
+                        LogError($"Received unknown RPC - {winlose}");
                         break;
                 }
 
                 break;
 
             default:
-                LogSomething($"Received unknown RPC - {nameof(rpc)}");
+                LogError($"Received unknown RPC - {rpc}");
                 break;
         }
     }

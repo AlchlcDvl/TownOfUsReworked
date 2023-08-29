@@ -1,4 +1,4 @@
-namespace TownOfUsReworked.CustomOptions;
+/*namespace TownOfUsReworked.CustomOptions;
 
 public class CustomNestedOption : CustomOption
 {
@@ -11,8 +11,8 @@ public class CustomNestedOption : CustomOption
 
     public CustomNestedOption(MultiMenu menu, string name) : base(-1, menu, name, CustomOptionType.Nested, 0)
     {
-        Header = new(MultiMenu.external, name);
-        CancelButton = new(MultiMenu.external, "Cancel", delegate { Cancel(FlashWhite); });
+        Header = new(MultiMenu.External, name);
+        CancelButton = new(MultiMenu.External, "Cancel", delegate { Cancel(FlashWhite); });
         InternalOptions.Add(Header);
         InternalOptions.Add(CancelButton);
         AllCancelButtons.Add(CancelButton);
@@ -126,4 +126,4 @@ public class CustomNestedOption : CustomOption
         base.OptionCreated();
         Setting.Cast<ToggleOption>().TitleText.text = Name;
     }
-}
+}*/

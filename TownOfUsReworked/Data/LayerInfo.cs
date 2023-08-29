@@ -57,7 +57,7 @@ public static class LayerInfo
         new("Tracker", "Track", "InvaThe Tracker can track others during a round. Once they track someone, an arrow is continuously pointing to them, which updates in set intervals.",
             RoleAlignment.CrewInvest, Faction.Crew, "I only took up this job because the others were full. Yes it's a proper job. No, I'm not a stalker.", Colors.Tracker),
         new("Transporter", "Trans", "The Transporter can swap the locations of two players at will. Being transported plays an animation that's visible to all players and renderers the" +
-            " targets immobile for the duration of the transportation. During the transportation, they can be targetted by anyone, even those of their own team. This means that the " +
+            " targets immobile for the duration of the transportation. During the transportation, they can be targeted by anyone, even those of their own team. This means that the " +
             "Transporter is capable of making evils attack each other.", RoleAlignment.CrewSupport, Faction.Crew, "You're here and you're there. Where will you go? That's for me to decide."
             + ".", Colors.Transporter),
         new("Vampire Hunter", "VH", "The Vampire Hunter only spawns if there are Undead in the game. They can check players to see if they are an Undead. When the Vampire Hunter finds them"
@@ -213,8 +213,8 @@ public static class LayerInfo
             " becomes the new Rebel. As a result, the new Rebel has a lower cooldown on all of their original role's abilities.", RoleAlignment.SyndicateUtil, Faction.Syndicate,
             "Learning new things.", Colors.Sidekick),
         new("Warper", "Warp", "The Warper can teleport a player to another player. With the Chaos Drive, the Warper teleports everyone to random positions on the map. Warping a player "
-            + "makes them unable to move and play an animation. During warping, they can be targetted by anyone, opening up the possibility of team killing.",
-            RoleAlignment.SyndicateSupport, Faction.Syndicate, "BEGONE!", Colors.Warper),
+            + "makes them unable to move and play an animation. During warping, they can be targeted by anyone, opening up the possibility of team killing.", RoleAlignment.SyndicateSupport,
+            Faction.Syndicate, "BEGONE!", Colors.Warper),
         new("Enforcer", "Enf", "The Enforcer can plant bombs on players. After a short while, the target will be alerted to the bomb's presence and must kill someone to get rid of" +
             " it. If they fail to do so within a certain time limit, the bomb will explode, killing everyone within its vicinity.", RoleAlignment.IntruderKill, Faction.Intruder,
             "You will do as I say...unless you want to be the painting on the walls.", Colors.Enforcer),
@@ -229,8 +229,8 @@ public static class LayerInfo
             "faction they defected to"),
         new("Dictator", "Dict", "The Dictator has no active ability aside from revealing themselves as the Dictator to all players. When revealed, in the next meeting they can pick " +
             "up to 3 players to be ejected. All selected players will be killed at the end of the meeting, along with the chosen 4th player everyone else votes on (if any). If any " +
-            "of the killed players happens to be Crew, the Dictator dies with them. After that meeting, the Dictator has no post ejection ability.", RoleAlignment.CrewSov,
-            Faction.Crew, "Out you go!", Colors.Dictator),
+            "of the killed players happens to be Crew, the Dictator dies with them. The Dictator has no post ejection ability.", RoleAlignment.CrewSov, Faction.Crew, "Out you go!",
+            Colors.Dictator),
         new("Monarch", "Mon", "The Monarch can appoint players as knights. When the next meeting is called, all knighted players will be announced. Knighted players will have the value"
             + " of their votes increased. As long as a Knight is alive, the Monarch cannot be killed. Knighted players have a pinkish red κ next to their names.",
             RoleAlignment.CrewSov, Faction.Crew, "Doth thou solemnly swear your allegiance to the lord?", Colors.Monarch),
@@ -339,20 +339,20 @@ public static class LayerInfo
 
     public static readonly List<FactionInfo> AllFactions = new()
     {
-        new(Faction.None, UColor.red),
-        new(Faction.Crew, Colors.Crew),
-        new(Faction.Intruder, Colors.Intruder),
-        new(Faction.Neutral, Colors.Neutral),
-        new(Faction.Syndicate, Colors.Syndicate)
+        new(Faction.None),
+        new(Faction.Crew),
+        new(Faction.Intruder),
+        new(Faction.Neutral),
+        new(Faction.Syndicate)
     };
 
     public static readonly List<SubFactionInfo> AllSubFactions = new()
     {
-        new(SubFaction.None, UColor.red),
-        new(SubFaction.Sect, Colors.Sect),
-        new(SubFaction.Cabal, Colors.Cabal),
-        new(SubFaction.Undead, Colors.Undead),
-        new(SubFaction.Reanimated, Colors.Reanimated)
+        new(SubFaction.None),
+        new(SubFaction.Sect),
+        new(SubFaction.Cabal),
+        new(SubFaction.Undead),
+        new(SubFaction.Reanimated)
     };
 
     public static readonly List<AlignmentInfo> AllAlignments = new()

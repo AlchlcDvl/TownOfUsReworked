@@ -22,7 +22,7 @@ public class Role : PlayerLayer
     public static bool ReanimatedWin { get; set; }
     public static bool SectWin { get; set; }
 
-    public static bool InfectorsWin { get; set; }
+    public static bool ApocalypseWins { get; set; }
 
     public static bool NKWins { get; set; }
 
@@ -54,7 +54,7 @@ public class Role : PlayerLayer
     private static bool PlayerIsLeft;
     public CustomButton CallButton { get; set; }*/
 
-    public static bool RoleWins => UndeadWin || CabalWin || InfectorsWin || ReanimatedWin || SectWin || NKWins || CrewWin || IntruderWin || SyndicateWin || AllNeutralsWin || GlitchWins ||
+    public static bool RoleWins => UndeadWin || CabalWin || ApocalypseWins || ReanimatedWin || SectWin || NKWins || CrewWin || IntruderWin || SyndicateWin || AllNeutralsWin || GlitchWins ||
         JuggernautWins || SerialKillerWins || ArsonistWins || CryomaniacWins || MurdererWins || PhantomWins || WerewolfWins || ActorWins || BountyHunterWins || CannibalWins || TrollWins ||
         ExecutionerWins || GuesserWins || JesterWins;
 
@@ -122,9 +122,9 @@ public class Role : PlayerLayer
     public bool IsIntDefect { get; set; }
     public bool IsSynDefect { get; set; }
     public bool IsNeutDefect { get; set; }
-    public bool Faithful => !IsRecruit && !IsResurrected && !IsPersuaded && !IsBitten && !Player.Is(LayerEnum.Allied) && !IsCrewDefect && !IsIntDefect && !IsSynDefect &&
-        !IsNeutDefect && !Player.Is(LayerEnum.Corrupted) && !Player.Is(LayerEnum.Mafia) && !Player.IsWinningRival() && !Player.HasAliveLover() && BaseFaction == Faction &&
-        !Player.IsTurnedFanatic() && !Player.IsTurnedTraitor();
+    public bool Faithful => !IsRecruit && !IsResurrected && !IsPersuaded && !IsBitten && !Player.Is(LayerEnum.Allied) && !IsCrewDefect && !IsIntDefect && !IsSynDefect && !IsNeutDefect &&
+        !Player.Is(LayerEnum.Corrupted) && !Player.Is(LayerEnum.Mafia) && !Player.IsWinningRival() && !Player.HasAliveLover() && BaseFaction == Faction && !Player.IsTurnedFanatic() &&
+        !Player.IsTurnedTraitor();
 
     public bool HasTarget => Type is LayerEnum.Executioner or LayerEnum.GuardianAngel or LayerEnum.Guesser or LayerEnum.BountyHunter;
 
@@ -136,7 +136,6 @@ public class Role : PlayerLayer
         __instance.PetButton.buttonLabelText.SetOutlineColor(FactionColor);
         __instance.ImpostorVentButton.buttonLabelText.SetOutlineColor(FactionColor);
         __instance.SabotageButton.buttonLabelText.SetOutlineColor(FactionColor);
-        __instance.SabotageButton.gameObject.SetActive(Player.CanSabotage());
 
         foreach (var pair in DeadArrows)
         {
@@ -212,7 +211,7 @@ public class Role : PlayerLayer
                 {
                     var seconds = (DateTime.UtcNow - pair.Value).TotalSeconds;
 
-                    if (seconds > CustomGameOptions.TimeControlDuration + 1)
+                    if (seconds > CustomGameOptions.TimeDur + 1)
                         toBeRemoved.Add(pair.Key);
                 }
 
@@ -226,6 +225,46 @@ public class Role : PlayerLayer
             }
             else
                 Positions.Clear();
+        }
+
+        foreach (var arso in GetRoles<Arsonist>(LayerEnum.Arsonist))
+        {
+            arso.Doused.RemoveAll(x => PlayerById(x).Data.IsDead || PlayerById(x).Data.Disconnected);
+
+            if (arso.IsDead)
+                arso.Doused.Clear();
+        }
+
+        foreach (var cryo in GetRoles<Cryomaniac>(LayerEnum.Cryomaniac))
+        {
+            cryo.Doused.RemoveAll(x => PlayerById(x).Data.IsDead || PlayerById(x).Data.Disconnected);
+
+            if (cryo.IsDead)
+                cryo.Doused.Clear();
+        }
+
+        foreach (var pb in GetRoles<Plaguebearer>(LayerEnum.Plaguebearer))
+        {
+            pb.Infected.RemoveAll(x => PlayerById(x).Data.IsDead || PlayerById(x).Data.Disconnected);
+
+            if (pb.IsDead)
+                pb.Infected.Clear();
+        }
+
+        foreach (var framer in GetRoles<Framer>(LayerEnum.Framer))
+        {
+            framer.Framed.RemoveAll(x => PlayerById(x).Data.IsDead || PlayerById(x).Data.Disconnected);
+
+            if (framer.IsDead)
+                framer.Framed.Clear();
+        }
+
+        foreach (var spell in GetRoles<Spellslinger>(LayerEnum.Spellslinger))
+        {
+            spell.Spelled.RemoveAll(x => PlayerById(x).Data.IsDead || PlayerById(x).Data.Disconnected);
+
+            if (spell.IsDead)
+                spell.Spelled.Clear();
         }
     }
 
@@ -263,11 +302,11 @@ public class Role : PlayerLayer
 
     private static void UsePlateforRpc()
     {
-        SyncPlateform();
-        CallRpc(CustomRPC.Misc, MiscRPC.SyncPlateform);
+        SyncPlatform();
+        CallRpc(CustomRPC.Misc, MiscRPC.SyncPlatform);
     }
 
-    public static void SyncPlateform() => Coroutines.Start(UsePlatformCoro());
+    public static void SyncPlatform() => Coroutines.Start(UsePlatformCoro());
 
     private static IEnumerator UsePlatformCoro()
     {
@@ -404,46 +443,6 @@ public class Role : PlayerLayer
             dict.ToBeEjected.Clear();
         }
 
-        foreach (var arso in GetRoles<Arsonist>(LayerEnum.Arsonist))
-        {
-            arso.Doused.RemoveAll(x => PlayerById(x).Data.IsDead || PlayerById(x).Data.Disconnected);
-
-            if (arso.IsDead)
-                arso.Doused.Clear();
-        }
-
-        foreach (var cryo in GetRoles<Cryomaniac>(LayerEnum.Cryomaniac))
-        {
-            cryo.Doused.RemoveAll(x => PlayerById(x).Data.IsDead || PlayerById(x).Data.Disconnected);
-
-            if (cryo.IsDead)
-                cryo.Doused.Clear();
-        }
-
-        foreach (var pb in GetRoles<Plaguebearer>(LayerEnum.Plaguebearer))
-        {
-            pb.Infected.RemoveAll(x => PlayerById(x).Data.IsDead || PlayerById(x).Data.Disconnected);
-
-            if (pb.IsDead)
-                pb.Infected.Clear();
-        }
-
-        foreach (var framer in GetRoles<Framer>(LayerEnum.Framer))
-        {
-            framer.Framed.RemoveAll(x => PlayerById(x).Data.IsDead || PlayerById(x).Data.Disconnected);
-
-            if (framer.IsDead)
-                framer.Framed.Clear();
-        }
-
-        foreach (var spell in GetRoles<Spellslinger>(LayerEnum.Spellslinger))
-        {
-            spell.Spelled.RemoveAll(x => PlayerById(x).Data.IsDead || PlayerById(x).Data.Disconnected);
-
-            if (spell.IsDead)
-                spell.Spelled.Clear();
-        }
-
         foreach (var bh in GetRoles<BountyHunter>(LayerEnum.BountyHunter))
         {
             if (bh.TargetPlayer == null && bh.TentativeTarget != null && !bh.Assigned)
@@ -453,14 +452,14 @@ public class Role : PlayerLayer
 
                 //Ensures only the Bounty Hunter sees this
                 if (HUD && bh.Local)
-                    HUD.Chat.AddChat(CustomPlayer.Local, "Your bounty has been received! Prepare to hunt.");
+                    Run(HUD.Chat, "<color=#B51E39FF>〖 Bounty Hunt 〗</color>", "Your bounty has been received! Prepare to hunt.");
             }
         }
     }
 
     public const string IntrudersWinCon = "- Have a critical sabotage reach 0 seconds\n- Kill anyone who opposes the <color=#FF0000FF>Intruders</color>";
-    public static string SyndicateWinCon => (CustomGameOptions.AltImps ? "- Have a critical sabotage reach 0 seconds\n" : "") + "- Cause chaos and kill off anyone who opposes "
-        + "the <color=#008000FF>Syndicate</color>";
+    public static string SyndicateWinCon => (CustomGameOptions.AltImps ? "- Have a critical sabotage reach 0 seconds\n" : "") + "- Cause chaos and kill off anyone who opposes the " +
+        "<color=#008000FF>Syndicate</color>";
     public const string CrewWinCon = "- Finish all tasks\n- Eject all <color=#FF0000FF>evildoers</color>";
 
     protected Role(PlayerControl player) : base(player)
@@ -505,7 +504,7 @@ public class Role : PlayerLayer
                 continue;
 
             if (role2.ShieldedPlayer == player && ((role2.Local && (int)CustomGameOptions.NotificationShield is 0 or 2) || CustomGameOptions.NotificationShield ==
-                NotificationOptions.Everyone || (CustomPlayer.Local == player && (int)CustomGameOptions.NotificationShield is 1 or 2)))
+                ShieldOptions.Everyone || (CustomPlayer.Local == player && (int)CustomGameOptions.NotificationShield is 1 or 2)))
             {
                 Flash(role2.Color);
             }
@@ -517,7 +516,7 @@ public class Role : PlayerLayer
                 continue;
 
             if (role2.ShieldedPlayer == player && ((role2.Local && (int)CustomGameOptions.NotificationShield is 0 or 2) || CustomGameOptions.NotificationShield ==
-                NotificationOptions.Everyone || (CustomPlayer.Local == player && (int)CustomGameOptions.NotificationShield is 1 or 2)))
+                ShieldOptions.Everyone || (CustomPlayer.Local == player && (int)CustomGameOptions.NotificationShield is 1 or 2)))
             {
                 Flash(role2.Color);
             }
@@ -537,7 +536,7 @@ public class Role : PlayerLayer
                 role2.ExShielded = player;
 
                 if (TownOfUsReworked.IsTest)
-                    LogSomething(player.name + " Is Ex-Shielded");
+                    LogMessage(player.name + " Is Ex-Shielded");
             }
         }
 
@@ -552,7 +551,7 @@ public class Role : PlayerLayer
                 role2.ExShielded = player;
 
                 if (TownOfUsReworked.IsTest)
-                    LogSomething(player.name + " Is Ex-Shielded");
+                    LogMessage(player.name + " Is Ex-Shielded");
             }
         }
     }

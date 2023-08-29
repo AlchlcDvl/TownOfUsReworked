@@ -5,9 +5,10 @@ namespace TownOfUsReworked.Data;
 public static class ConstantVariables
 {
     public static bool IsCountDown => GameStartManager.Instance && GameStartManager.Instance.startState == GameStartManager.StartingStates.Countdown;
-    public static bool IsInGame => (AmongUsClient.Instance.GameState == InnerNetClient.GameStates.Started || GameManager.Instance?.GameHasStarted == true) && !LobbyBehaviour.Instance;
+    public static bool IsInGame => (AmongUsClient.Instance.GameState == InnerNetClient.GameStates.Started || GameManager.Instance?.GameHasStarted == true ||
+        AmongUsClient.Instance.IsGameStarted) && !LobbyBehaviour.Instance;
     public static bool IsLobby => AmongUsClient.Instance.GameState == InnerNetClient.GameStates.Joined || LobbyBehaviour.Instance;
-    public static bool IsEnded => AmongUsClient.Instance.GameState == InnerNetClient.GameStates.Ended;
+    public static bool IsEnded => AmongUsClient.Instance.GameState == InnerNetClient.GameStates.Ended || AmongUsClient.Instance.IsGameOver;
     public static bool IsHnS => GameOptionsManager.Instance.CurrentGameOptions.GameMode == GameModes.HideNSeek;
     public static bool IsNormal => GameOptionsManager.Instance.CurrentGameOptions.GameMode == GameModes.Normal;
     public static bool IsOnlineGame => AmongUsClient.Instance.NetworkMode == NetworkModes.OnlineGame;
@@ -24,8 +25,7 @@ public static class ConstantVariables
     public static bool NoLobby => !(IsInGame || IsLobby || IsEnded || IsRoaming || IsMeeting);
     public static bool LastImp => CustomPlayer.AllPlayers.Count(x => x.Is(Faction.Intruder) && !(x.Data.IsDead || x.Data.Disconnected)) == 1;
     public static bool LastSyn => CustomPlayer.AllPlayers.Count(x => x.Is(Faction.Syndicate) && !(x.Data.IsDead || x.Data.Disconnected)) == 1;
-    public static bool Inactive => CustomPlayer.AllPlayers.Count <= 1 || CustomPlayer.Local == null || CustomPlayer.LocalCustom.Data == null || NoLobby;
-    public static bool NoPlayers => CustomPlayer.AllPlayers.Count < 1 || CustomPlayer.Local == null || CustomPlayer.LocalCustom.Data == null;
+    public static bool NoPlayers => CustomPlayer.AllPlayers.Count < 1 || CustomPlayer.Local == null || CustomPlayer.LocalCustom.Data == null || NoLobby;
     public static bool LocalBlocked => PlayerLayer.LocalLayers.Any(x => x.IsBlocked);
     public static bool LocalNotBlocked => !LocalBlocked;
     public static bool DeadSeeEverything
@@ -42,7 +42,7 @@ public static class ConstantVariables
             if (CustomPlayer.Local.Is(LayerEnum.GuardianAngel))
             {
                 var ga = (GuardianAngel)Role.LocalRole;
-                otherFlag = ga.TargetAlive && CustomGameOptions.ProtectBeyondTheGrave && ga.ButtonUsable;
+                otherFlag = !ga.Failed && ga.TargetPlayer != null && ga.TargetAlive && CustomGameOptions.ProtectBeyondTheGrave && ga.ButtonUsable;
             }
             else if (CustomPlayer.Local.Is(LayerEnum.Jester))
             {
@@ -69,10 +69,6 @@ public static class ConstantVariables
     public static bool AllNeutralsWin => (!CustomPlayer.AllPlayers.Any(x => !x.Data.IsDead && !x.Data.Disconnected && (x.NotOnTheSameSide() || x.Is(Faction.Crew) || x.Is(Faction.Syndicate)
         || x.Is(Faction.Intruder)))) && CustomGameOptions.NoSolo == NoSolo.AllNeutrals;
 
-    public static bool PestOrPBWins => !CustomPlayer.AllPlayers.Any(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) || x.Is(Faction.Crew) || x.Is(LayerEnum.Allied) ||
-        x.Is(RoleAlignment.NeutralKill) || x.Is(RoleAlignment.NeutralNeo) || x.Is(Faction.Syndicate) || (x.Is(RoleAlignment.NeutralPros) && !x.Is(LayerEnum.Pestilence)) ||
-        x.NotOnTheSameSide() || x.Is(RoleAlignment.NeutralApoc) || (x.Is(Faction.Neutral) && CustomGameOptions.NoSolo == NoSolo.AllNeutrals)));
-
     public static bool AllNKsWin => (!CustomPlayer.AllPlayers.Any(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) || x.Is(RoleAlignment.NeutralNeo) ||
         x.Is(Faction.Syndicate) || x.Is(RoleAlignment.NeutralHarb) || x.Is(RoleAlignment.NeutralPros) || x.Is(Faction.Crew) || x.Is(LayerEnum.Allied) || x.Is(RoleAlignment.NeutralApoc) ||
         x.NotOnTheSameSide()))) && CustomGameOptions.NoSolo == NoSolo.AllNKs;
@@ -81,29 +77,29 @@ public static class ConstantVariables
 
     public static bool CabalWin => !CustomPlayer.AllPlayers.Any(x => !x.Data.IsDead && !x.Data.Disconnected && !x.IsRecruit() && (x.Is(Faction.Intruder) || x.Is(Faction.Crew) ||
         x.Is(RoleAlignment.NeutralKill) || (x.Is(RoleAlignment.NeutralNeo) && !x.Is(LayerEnum.Jackal)) || x.Is(Faction.Syndicate) || x.Is(RoleAlignment.NeutralPros) ||
-        x.NotOnTheSameSide() || (x.Is(Faction.Neutral) && CustomGameOptions.NoSolo == NoSolo.AllNeutrals)));
+        x.NotOnTheSameSide() || x.Is(RoleAlignment.NeutralHarb) || x.Is(RoleAlignment.NeutralApoc) || (x.Is(Faction.Neutral) && CustomGameOptions.NoSolo == NoSolo.AllNeutrals)));
 
     public static bool UndeadWin => !CustomPlayer.AllPlayers.Any(x => !x.Data.IsDead && !x.Data.Disconnected && !x.IsBitten() && (x.Is(Faction.Intruder) || x.Is(Faction.Crew) ||
         x.Is(RoleAlignment.NeutralKill) || (x.Is(RoleAlignment.NeutralNeo) && !x.Is(LayerEnum.Dracula)) || x.Is(Faction.Syndicate) || x.Is(RoleAlignment.NeutralPros) ||
-        x.NotOnTheSameSide() || (x.Is(Faction.Neutral) && CustomGameOptions.NoSolo == NoSolo.AllNeutrals)));
+        x.NotOnTheSameSide() || x.Is(RoleAlignment.NeutralHarb) || x.Is(RoleAlignment.NeutralApoc) || (x.Is(Faction.Neutral) && CustomGameOptions.NoSolo == NoSolo.AllNeutrals)));
 
     public static bool SectWin => !CustomPlayer.AllPlayers.Any(x => !x.Data.IsDead && !x.Data.Disconnected && !x.IsPersuaded() && (x.Is(Faction.Intruder) || x.Is(Faction.Crew) ||
         x.Is(RoleAlignment.NeutralKill) || (x.Is(RoleAlignment.NeutralNeo) && !x.Is(LayerEnum.Whisperer)) || x.Is(Faction.Syndicate) || x.Is(RoleAlignment.NeutralPros) ||
-        x.NotOnTheSameSide() || (x.Is(Faction.Neutral) && CustomGameOptions.NoSolo == NoSolo.AllNeutrals)));
+        x.NotOnTheSameSide() || x.Is(RoleAlignment.NeutralHarb) || x.Is(RoleAlignment.NeutralApoc) || (x.Is(Faction.Neutral) && CustomGameOptions.NoSolo == NoSolo.AllNeutrals)));
 
     public static bool ReanimatedWin => !CustomPlayer.AllPlayers.Any(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) || x.Is(Faction.Crew) || x.Is(Faction.Syndicate)
-        || x.Is(RoleAlignment.NeutralKill) || (x.Is(RoleAlignment.NeutralNeo) && !x.Is(LayerEnum.Necromancer)) || x.Is(RoleAlignment.NeutralPros) || x.NotOnTheSameSide() ||
-        (x.Is(Faction.Neutral) && CustomGameOptions.NoSolo == NoSolo.AllNeutrals)) && !x.IsResurrected());
+        || x.Is(RoleAlignment.NeutralKill) || (x.Is(RoleAlignment.NeutralNeo) && !x.Is(LayerEnum.Necromancer)) || x.Is(RoleAlignment.NeutralPros) || x.Is(RoleAlignment.NeutralHarb) ||
+        x.Is(RoleAlignment.NeutralApoc) || x.NotOnTheSameSide() || (x.Is(Faction.Neutral) && CustomGameOptions.NoSolo == NoSolo.AllNeutrals)) && !x.IsResurrected());
 
     public static bool GameHasEnded => Role.RoleWins || Objectifier.ObjectifierWins || PlayerLayer.NobodyWins;
 
     public static bool SameNKWins(LayerEnum nk) => !CustomPlayer.AllPlayers.Any(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) || x.Is(Faction.Crew) || (!x.Is(nk)
-        && x.Is(RoleAlignment.NeutralKill)) || x.Is(RoleAlignment.NeutralNeo) || x.Is(Faction.Syndicate) || x.Is(RoleAlignment.NeutralPros) || x.NotOnTheSameSide())) &&
-        CustomGameOptions.NoSolo == NoSolo.SameNKs;
+        && x.Is(RoleAlignment.NeutralKill)) || x.Is(RoleAlignment.NeutralNeo) || x.Is(RoleAlignment.NeutralHarb) || x.Is(RoleAlignment.NeutralApoc) || x.Is(Faction.Syndicate) ||
+        x.Is(RoleAlignment.NeutralPros) || x.NotOnTheSameSide())) && CustomGameOptions.NoSolo == NoSolo.SameNKs;
 
     public static bool SoloNKWins(PlayerControl player) => !CustomPlayer.AllPlayers.Any(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) || x.Is(Faction.Crew) ||
-        (x.Is(RoleAlignment.NeutralKill) && x != player) || x.Is(RoleAlignment.NeutralNeo) || x.Is(Faction.Syndicate) || x.Is(RoleAlignment.NeutralPros) || x.NotOnTheSameSide())) &&
-        CustomGameOptions.NoSolo == NoSolo.Never;
+        (x.Is(RoleAlignment.NeutralKill) && x != player) || x.Is(RoleAlignment.NeutralNeo) || x.Is(RoleAlignment.NeutralHarb) || x.Is(RoleAlignment.NeutralApoc) || x.Is(Faction.Syndicate) ||
+        x.Is(RoleAlignment.NeutralPros) || x.NotOnTheSameSide())) && CustomGameOptions.NoSolo == NoSolo.Never;
 
     public static bool CorruptedWin(PlayerControl player) => !CustomPlayer.AllPlayers.Any(x => !x.Data.IsDead && !x.Data.Disconnected && !x.Is(LayerEnum.Corrupted) && ((x != player &&
         !CustomGameOptions.AllCorruptedWin) || CustomGameOptions.AllCorruptedWin));
@@ -115,4 +111,8 @@ public static class ConstantVariables
         Objectifier.GetObjectifiers<Rivals>(LayerEnum.Rivals).Any(x => x.IsWinningRival && x == player);
 
     public static bool MafiaWin => !CustomPlayer.AllPlayers.Any(x => !x.Data.IsDead && !x.Data.Disconnected && !x.Is(LayerEnum.Mafia));
+
+    public static bool ApocWins => !CustomPlayer.AllPlayers.Any(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) || x.Is(Faction.Crew) ||
+        x.Is(RoleAlignment.NeutralKill) || x.Is(RoleAlignment.NeutralNeo) || x.Is(RoleAlignment.NeutralPros) || x.NotOnTheSameSide() || (x.Is(Faction.Neutral) && CustomGameOptions.NoSolo ==
+        NoSolo.AllNeutrals)));
 }

@@ -80,7 +80,7 @@ public class GuardianAngel : Neutral
         if (!ButtonUsable || Timer != 0f || !TargetAlive || Protecting)
             return;
 
-        TimeRemaining = CustomGameOptions.ProtectDuration;
+        TimeRemaining = CustomGameOptions.ProtectDur;
         UsesLeft--;
         Protect();
         CallRpc(CustomRPC.Action, ActionsRPC.GAProtect, this);
@@ -89,13 +89,13 @@ public class GuardianAngel : Neutral
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        ProtectButton.Update("PROTECT", Timer, CustomGameOptions.ProtectCd, UsesLeft, Protecting, TimeRemaining, CustomGameOptions.ProtectDuration, true, !Failed &&
+        ProtectButton.Update("PROTECT", Timer, CustomGameOptions.ProtectCd, UsesLeft, Protecting, TimeRemaining, CustomGameOptions.ProtectDur, true, !Failed &&
             TargetPlayer != null && TargetAlive);
         TargetButton.Update("WATCH", true, TargetPlayer == null);
 
         if (CustomGameOptions.ProtectBeyondTheGrave)
         {
-            GraveProtectButton.Update("PROTECT", Timer, CustomGameOptions.ProtectCd, UsesLeft, Protecting, TimeRemaining, CustomGameOptions.ProtectDuration, true, IsDead &&
+            GraveProtectButton.Update("PROTECT", Timer, CustomGameOptions.ProtectCd, UsesLeft, Protecting, TimeRemaining, CustomGameOptions.ProtectDur, true, IsDead &&
                 !Failed && TargetPlayer != null && TargetAlive);
         }
 

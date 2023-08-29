@@ -25,9 +25,9 @@ public class Glitch : Neutral
     public override Func<string> Description => () => "- You can mimic players' appearances whenever you want to\n- Hacking blocks your target from being able to use their abilities " +
         "for a short while\n- You are immune to blocks\n- If you hack a <color=#336EFFFF>Serial Killer</color> they will be forced to kill you";
     public override InspectorResults InspectorResults => InspectorResults.HindersOthers;
-    public float HackTimer => ButtonUtils.Timer(Player, LastHacked, CustomGameOptions.HackCooldown);
-    public float MimicTimer => ButtonUtils.Timer(Player, LastMimic, CustomGameOptions.MimicCooldown);
-    public float NeutraliseTimer => ButtonUtils.Timer(Player, LastKilled, CustomGameOptions.GlitchKillCooldown);
+    public float HackTimer => ButtonUtils.Timer(Player, LastHacked, CustomGameOptions.HackCd);
+    public float MimicTimer => ButtonUtils.Timer(Player, LastMimic, CustomGameOptions.MimicCd);
+    public float NeutraliseTimer => ButtonUtils.Timer(Player, LastKilled, CustomGameOptions.NeutraliseCd);
 
     public Glitch(PlayerControl owner) : base(owner)
     {
@@ -76,11 +76,7 @@ public class Glitch : Neutral
         LastMimic = DateTime.UtcNow;
     }
 
-    public void Click(PlayerControl player)
-    {
-        LogSomething($"Mimcking {player.name}");
-        MimicTarget = player;
-    }
+    public void Click(PlayerControl player) => MimicTarget = player;
 
     public void HitHack()
     {
@@ -92,7 +88,7 @@ public class Glitch : Neutral
         if (interact[3])
         {
             HackTarget = HackButton.TargetPlayer;
-            TimeRemaining = CustomGameOptions.HackDuration;
+            TimeRemaining = CustomGameOptions.HackDur;
             CallRpc(CustomRPC.Action, ActionsRPC.GlitchRoleblock, this, HackTarget);
             Hack();
         }
@@ -127,7 +123,7 @@ public class Glitch : Neutral
         else
         {
             CallRpc(CustomRPC.Action, ActionsRPC.Mimic, this, MimicTarget);
-            TimeRemaining2 = CustomGameOptions.MimicDuration;
+            TimeRemaining2 = CustomGameOptions.MimicDur;
             Mimic();
         }
     }
@@ -142,16 +138,16 @@ public class Glitch : Neutral
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        NeutraliseButton.Update("NEUTRALISE", NeutraliseTimer, CustomGameOptions.GlitchKillCooldown);
-        HackButton.Update("HACK", HackTimer, CustomGameOptions.HackCooldown, IsUsingHack, TimeRemaining, CustomGameOptions.HackDuration);
-        MimicButton.Update("MIMIC", MimicTimer, CustomGameOptions.MimicCooldown, IsUsingMimic, TimeRemaining2, CustomGameOptions.MimicDuration);
+        NeutraliseButton.Update("NEUTRALISE", NeutraliseTimer, CustomGameOptions.NeutraliseCd);
+        HackButton.Update("HACK", HackTimer, CustomGameOptions.HackCd, IsUsingHack, TimeRemaining, CustomGameOptions.HackDur);
+        MimicButton.Update("MIMIC", MimicTimer, CustomGameOptions.MimicCd, IsUsingMimic, TimeRemaining2, CustomGameOptions.MimicDur);
 
         if (Input.GetKeyDown(KeyCode.Backspace))
         {
             if (MimicTarget != null && !IsUsingMimic)
                 MimicTarget = null;
 
-            LogSomething("Removed a target");
+            LogInfo("Removed a target");
         }
     }
 }

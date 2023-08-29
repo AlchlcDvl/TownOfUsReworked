@@ -91,7 +91,7 @@ public static class ModCompatibility
         {
             SubPlugin = subPlugin!.Instance as BasePlugin;
             SubVersion = subPlugin.Metadata.Version;
-            LogSomething(SubVersion);
+            LogInfo(SubVersion);
 
             SubAssembly = SubPlugin!.GetType().Assembly;
             SubTypes = AccessTools.GetTypesFromAssembly(SubAssembly);
@@ -147,7 +147,7 @@ public static class ModCompatibility
         }
         catch (Exception e)
         {
-            LogSomething("Could not load Submerged Compatibility:\n" + e);
+            LogError($"Could not load Submerged Compatibility\n{e}");
             SubLoaded = false;
         }
     }
@@ -244,10 +244,19 @@ public static class ModCompatibility
         if (!IsSubmerged || !CustomPlayer.LocalCustom.IsDead || !CustomPlayer.Local.IsPostmortal() || (CustomPlayer.Local.IsPostmortal() && CustomPlayer.Local.Caught()))
             return;
 
-        var startingVent = ShipStatus.Instance.AllVents[URandom.RandomRangeInt(0, ShipStatus.Instance.AllVents.Count)];
+        var vents = ShipStatus.Instance.AllVents.ToList();
+        var clean = PlayerControl.LocalPlayer.myTasks.ToArray().Where(x => x.TaskType == TaskTypes.VentCleaning).ToList();
+
+        if (clean != null)
+        {
+            var ids = clean.Where(x => !x.IsComplete).ToList().ConvertAll(x => x.FindConsoles()[0].ConsoleId);
+            vents = ShipStatus.Instance.AllVents.Where(x => !ids.Contains(x.Id)).ToList();
+        }
+
+        var startingVent = vents[URandom.RandomRangeInt(0, vents.Count)];
 
         while (ShipStatus.Instance.AllVents.IndexOf(startingVent) is 0 or 14)
-            startingVent = ShipStatus.Instance.AllVents[URandom.RandomRangeInt(0, ShipStatus.Instance.AllVents.Count)];
+            startingVent = vents[URandom.RandomRangeInt(0, vents.Count)];
 
         ChangeFloor(startingVent.transform.position.y > -7f);
         CustomPlayer.Local.NetTransform.RpcSnapTo(new(startingVent.transform.position.x, startingVent.transform.position.y + 0.3636f));
@@ -368,16 +377,14 @@ public static class ModCompatibility
         {
             LIPlugin = liPlugin!.Instance as BasePlugin;
             LIVersion = liPlugin.Metadata.Version;
-            LogSomething(LIVersion);
+            LogInfo(LIVersion);
         }
         catch (Exception e)
         {
-            LogSomething("Could not load LevelImpostor Compatibility:\n" + e);
+            LogError($"Could not load LevelImposter Compatibility\n{e}");
             LILoaded = false;
         }
     }
-
-    public const string RD_GUID = "gg.reactor.debugger";
 
     public static void Init()
     {
@@ -388,7 +395,25 @@ public static class ModCompatibility
         }
         catch (Exception e)
         {
-            LogSomething("Couldn't load compatibilies:\n" + e);
+            LogError("Couldn't load compatibilies:\n" + e);
+        }
+    }
+
+    public static readonly List<string> Unsupported = new() { "Mini.RegionInstall", "AllTheRoles", "TownOfUs", "TheOtherRoles", "TownOfHost", "Lotus", "LasMonjas", "CrowdedMod" };
+
+    public static void CheckAbort(out bool abort, out string mod)
+    {
+        abort = false;
+        mod = "";
+
+        foreach (var unsupp in Unsupported)
+        {
+            if (File.Exists($"{TownOfUsReworked.ModsFolder}{unsupp}.dll"))
+            {
+                abort = true;
+                mod = unsupp;
+                return;
+            }
         }
     }
 }

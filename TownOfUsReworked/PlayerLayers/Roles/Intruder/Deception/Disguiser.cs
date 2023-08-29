@@ -21,8 +21,8 @@ public class Disguiser : Intruder
     public override Func<string> StartText => () => "Disguise The <color=#8CFFFFFF>Crew</color> To Frame Them";
     public override Func<string> Description => () => $"- You can disguise a player into someone else's appearance\n{CommonAbilities}";
     public override InspectorResults InspectorResults => InspectorResults.CreatesConfusion;
-    public float DisguiseTimer => ButtonUtils.Timer(Player, LastDisguised, CustomGameOptions.DisguiseCooldown);
-    public float MeasureTimer => ButtonUtils.Timer(Player, LastMeasured, CustomGameOptions.MeasureCooldown);
+    public float DisguiseTimer => ButtonUtils.Timer(Player, LastDisguised, CustomGameOptions.DisguiseCd);
+    public float MeasureTimer => ButtonUtils.Timer(Player, LastMeasured, CustomGameOptions.MeasureCd);
 
     public Disguiser(PlayerControl player) : base(player)
     {
@@ -72,8 +72,8 @@ public class Disguiser : Intruder
 
         if (interact[3])
         {
-            TimeRemaining = CustomGameOptions.DisguiseDuration;
-            TimeRemaining2 = CustomGameOptions.TimeToDisguise;
+            TimeRemaining = CustomGameOptions.DisguiseDur;
+            TimeRemaining2 = CustomGameOptions.DisguiseDelay;
             CopiedPlayer = MeasuredPlayer;
             DisguisedPlayer = DisguiseButton.TargetPlayer;
             Delay();
@@ -132,8 +132,8 @@ public class Disguiser : Intruder
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        DisguiseButton.Update("DISGUISE", DisguiseTimer, CustomGameOptions.DisguiseCooldown, DelayActive || Disguised, DelayActive ? TimeRemaining2 : TimeRemaining, DelayActive ?
-            CustomGameOptions.TimeToDisguise : CustomGameOptions.DisguiseDuration, true, MeasuredPlayer != null);
-        MeasureButton.Update("MEASURE", MeasureTimer, CustomGameOptions.MeasureCooldown);
+        DisguiseButton.Update("DISGUISE", DisguiseTimer, CustomGameOptions.DisguiseCd, DelayActive || Disguised, DelayActive ? TimeRemaining2 : TimeRemaining, DelayActive ?
+            CustomGameOptions.DisguiseDelay : CustomGameOptions.DisguiseDur, true, MeasuredPlayer != null);
+        MeasureButton.Update("MEASURE", MeasureTimer, CustomGameOptions.MeasureCd);
     }
 }

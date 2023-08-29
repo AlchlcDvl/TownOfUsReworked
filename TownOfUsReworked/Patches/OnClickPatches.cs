@@ -15,9 +15,9 @@ public static class PlayerControlOnClick
         if (!__instance.Data.IsDead)
         {
             if (__instance != CustomPlayer.Local)
-                CustomButton.AllButtons.Find(x => x.Owner.Local && x.TargetPlayer == __instance && x.Clickable)?.Clicked();
+                CustomButton.AllButtons.Find(x => x.Owner.Local && x.TargetPlayer == __instance && x.Clickable && !x.Blocked)?.Clicked();
             else
-                CustomButton.AllButtons.Find(x => x.Owner.Local && x.Clickable && x.Type == AbilityTypes.Effect)?.Clicked();
+                CustomButton.AllButtons.Find(x => x.Owner.Local && x.Clickable && x.Type == AbilityTypes.Effect&& !x.Blocked)?.Clicked();
 
             return false;
         }
@@ -88,7 +88,7 @@ public static class DeadBodyOnClick
         if (__instance == null || Meeting || LobbyBehaviour.Instance || IsHnS)
             return true;
 
-        var button = CustomButton.AllButtons.Find(x => x.Owner.Local && x.TargetBody == __instance && x.Clickable);
+        var button = CustomButton.AllButtons.Find(x => x.Owner.Local && x.TargetBody == __instance && x.Clickable&& !x.Blocked);
         button?.Clicked();
         return button == null;
     }

@@ -13,7 +13,7 @@ public class Troll : Neutral
     public override Func<string> Description => () => "- You can interact with players\n- Your interactions do nothing except spread infection and possibly kill you via touch " +
         "sensitive roles\n- If you are killed, you will also kill your killer";
     public override InspectorResults InspectorResults => InspectorResults.Manipulative;
-    public float Timer => ButtonUtils.Timer(Player, LastInteracted, CustomGameOptions.InteractCooldown);
+    public float Timer => ButtonUtils.Timer(Player, LastInteracted, CustomGameOptions.InteractCd);
 
     public Troll(PlayerControl player) : base(player)
     {
@@ -40,6 +40,6 @@ public class Troll : Neutral
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        InteractButton.Update("INTERACT", Timer, CustomGameOptions.InteractCooldown);
+        InteractButton.Update("INTERACT", Timer, CustomGameOptions.InteractCd);
     }
 }

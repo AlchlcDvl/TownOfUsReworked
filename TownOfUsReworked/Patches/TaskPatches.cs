@@ -5,28 +5,30 @@ public static class RecomputeTaskCounts
 {
     public static bool Prefix(GameData __instance)
     {
+        if (IsHnS)
+            return true;
+
         __instance.TotalTasks = 0;
         __instance.CompletedTasks = 0;
 
-        for (var i = 0; i < __instance.AllPlayers.Count; i++)
+        foreach (var playerInfo in __instance.AllPlayers)
         {
-            var playerInfo = __instance.AllPlayers[i];
             var pc = playerInfo.Object;
 
-            if (!playerInfo.Disconnected && pc != null && playerInfo.Tasks != null && pc.CanDoTasks() && !(playerInfo.IsDead && pc.Is(LayerEnum.Revealer)) && !(playerInfo.IsDead &&
-                !CustomGameOptions.GhostTasksCountToWin))
+            if (!playerInfo.Disconnected && playerInfo.Tasks != null && pc.CanDoTasks() && pc.Is(Faction.Crew) && !pc.Is(LayerEnum.Revealer) && (!playerInfo.IsDead ||
+                CustomGameOptions.GhostTasksCountToWin))
             {
-                for (var j = 0; j < playerInfo.Tasks.Count; j++)
+                foreach (var task in playerInfo.Tasks)
                 {
                     __instance.TotalTasks++;
 
-                    if (playerInfo.Tasks[j].Complete)
+                    if (task.Complete)
                         __instance.CompletedTasks++;
                 }
             }
         }
 
-        return __instance.TotalTasks != 0;
+        return false;
     }
 }
 
@@ -36,7 +38,6 @@ public static class CanUse
     public static bool Prefix(Console __instance, [HarmonyArgument(0)] GameData.PlayerInfo playerInfo, ref float __result)
     {
         var playerControl = playerInfo.Object;
-
         var flag = !playerControl.CanDoTasks();
 
         //If the console is not a sabotage repair console
@@ -47,17 +48,6 @@ public static class CanUse
         }
 
         return true;
-    }
-}
-
-[HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.Begin))]
-public static class BeginShip
-{
-    public static void Prefix()
-    {
-        TownOfUsReworked.NormalOptions.NumCommonTasks = CustomGameOptions.CommonTasks;
-        TownOfUsReworked.NormalOptions.NumShortTasks = CustomGameOptions.ShortTasks;
-        TownOfUsReworked.NormalOptions.NumLongTasks = CustomGameOptions.LongTasks;
     }
 }
 

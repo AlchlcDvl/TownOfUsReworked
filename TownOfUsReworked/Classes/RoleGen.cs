@@ -3,50 +3,50 @@ namespace TownOfUsReworked.Classes;
 [HarmonyPatch]
 public static class RoleGen
 {
-    private static readonly List<(int Chance, LayerEnum Id, bool Unique)> CrewAuditorRoles = new();
-    private static readonly List<(int Chance, LayerEnum ID, bool Unique)> CrewKillingRoles = new();
-    private static readonly List<(int Chance, LayerEnum ID, bool Unique)> CrewSupportRoles = new();
-    private static readonly List<(int Chance, LayerEnum ID, bool Unique)> CrewSovereignRoles = new();
-    private static readonly List<(int Chance, LayerEnum ID, bool Unique)> CrewProtectiveRoles = new();
-    private static readonly List<(int Chance, LayerEnum ID, bool Unique)> CrewInvestigativeRoles = new();
-    private static readonly List<(int Chance, LayerEnum ID, bool Unique)> CrewRoles = new();
+    private static readonly List<GenerationData> CrewAuditorRoles = new();
+    private static readonly List<GenerationData> CrewKillingRoles = new();
+    private static readonly List<GenerationData> CrewSupportRoles = new();
+    private static readonly List<GenerationData> CrewSovereignRoles = new();
+    private static readonly List<GenerationData> CrewProtectiveRoles = new();
+    private static readonly List<GenerationData> CrewInvestigativeRoles = new();
+    private static readonly List<GenerationData> CrewRoles = new();
 
-    private static readonly List<(int Chance, LayerEnum ID, bool Unique)> NeutralEvilRoles = new();
-    private static readonly List<(int Chance, LayerEnum ID, bool Unique)> NeutralBenignRoles = new();
-    private static readonly List<(int Chance, LayerEnum ID, bool Unique)> NeutralKillingRoles = new();
-    private static readonly List<(int Chance, LayerEnum ID, bool Unique)> NeutralNeophyteRoles = new();
-    private static readonly List<(int Chance, LayerEnum ID, bool Unique)> NeutralHarbingerRoles = new();
-    private static readonly List<(int Chance, LayerEnum ID, bool Unique)> NeutralRoles = new();
+    private static readonly List<GenerationData> NeutralEvilRoles = new();
+    private static readonly List<GenerationData> NeutralBenignRoles = new();
+    private static readonly List<GenerationData> NeutralKillingRoles = new();
+    private static readonly List<GenerationData> NeutralNeophyteRoles = new();
+    private static readonly List<GenerationData> NeutralHarbingerRoles = new();
+    private static readonly List<GenerationData> NeutralRoles = new();
 
-    private static readonly List<(int Chance, LayerEnum ID, bool Unique)> IntruderKillingRoles = new();
-    private static readonly List<(int Chance, LayerEnum ID, bool Unique)> IntruderSupportRoles = new();
-    private static readonly List<(int Chance, LayerEnum ID, bool Unique)> IntruderDeceptionRoles = new();
-    private static readonly List<(int Chance, LayerEnum ID, bool Unique)> IntruderConcealingRoles = new();
-    private static readonly List<(int Chance, LayerEnum ID, bool Unique)> IntruderRoles = new();
+    private static readonly List<GenerationData> IntruderKillingRoles = new();
+    private static readonly List<GenerationData> IntruderSupportRoles = new();
+    private static readonly List<GenerationData> IntruderDeceptionRoles = new();
+    private static readonly List<GenerationData> IntruderConcealingRoles = new();
+    private static readonly List<GenerationData> IntruderRoles = new();
 
-    private static readonly List<(int Chance, LayerEnum ID, bool Unique)> SyndicatePowerRoles = new();
-    private static readonly List<(int Chance, LayerEnum ID, bool Unique)> SyndicateSupportRoles = new();
-    private static readonly List<(int Chance, LayerEnum ID, bool Unique)> SyndicateKillingRoles = new();
-    private static readonly List<(int Chance, LayerEnum ID, bool Unique)> SyndicateDisruptionRoles = new();
-    private static readonly List<(int Chance, LayerEnum ID, bool Unique)> SyndicateRoles = new();
+    private static readonly List<GenerationData> SyndicatePowerRoles = new();
+    private static readonly List<GenerationData> SyndicateSupportRoles = new();
+    private static readonly List<GenerationData> SyndicateKillingRoles = new();
+    private static readonly List<GenerationData> SyndicateDisruptionRoles = new();
+    private static readonly List<GenerationData> SyndicateRoles = new();
 
-    private static readonly List<(int Chance, LayerEnum ID, bool Unique)> AllModifiers = new();
-    private static readonly List<(int Chance, LayerEnum ID, bool Unique)> AllAbilities = new();
-    private static readonly List<(int Chance, LayerEnum ID, bool Unique)> AllObjectifiers = new();
-    private static readonly List<(int Chance, LayerEnum ID, bool Unique)> AllRoles = new();
+    private static readonly List<GenerationData> AllModifiers = new();
+    private static readonly List<GenerationData> AllAbilities = new();
+    private static readonly List<GenerationData> AllObjectifiers = new();
+    private static readonly List<GenerationData> AllRoles = new();
 
     public static PlayerControl PureCrew;
     public static int Convertible;
 
-    private const LayerEnum Any = LayerEnum.Any;
     private static readonly List<LayerEnum> CA = new() { LayerEnum.Mystic, LayerEnum.VampireHunter };
     private static readonly List<LayerEnum> CI = new() { LayerEnum.Sheriff, LayerEnum.Inspector, LayerEnum.Tracker, LayerEnum.Medium, LayerEnum.Coroner, LayerEnum.Operative, LayerEnum.Seer,
         LayerEnum.Detective };
     private static readonly List<LayerEnum> CSv = new() { LayerEnum.Mayor, LayerEnum.Dictator, LayerEnum.Monarch };
     private static readonly List<LayerEnum> CP = new() { LayerEnum.Altruist, LayerEnum.Medic };
+    private static readonly List<LayerEnum> CU = new() { LayerEnum.Crewmate };
     private static readonly List<LayerEnum> CK = new() { LayerEnum.Vigilante, LayerEnum.Veteran};
     private static readonly List<LayerEnum> CS = new() { LayerEnum.Engineer, LayerEnum.Transporter, LayerEnum.Escort, LayerEnum.Shifter, LayerEnum.Chameleon, LayerEnum.Retributionist };
-    private static readonly List<List<LayerEnum>> Crew = new() { CA, CI, CSv, CP, CK, CS };
+    private static readonly List<List<LayerEnum>> Crew = new() { CA, CI, CSv, CP, CK, CS, CU };
     private static readonly List<LayerEnum> NB = new() { LayerEnum.Amnesiac, LayerEnum.GuardianAngel, LayerEnum.Survivor, LayerEnum.Thief };
     private static readonly List<LayerEnum> NE = new() { LayerEnum.Jester, LayerEnum.Actor, LayerEnum.BountyHunter, LayerEnum.Cannibal, LayerEnum.Executioner, LayerEnum.Guesser,
         LayerEnum.Troll };
@@ -60,22 +60,24 @@ public static class RoleGen
     private static readonly List<LayerEnum> ID = new() { LayerEnum.Morphling, LayerEnum.Disguiser, LayerEnum.Wraith };
     private static readonly List<LayerEnum> IK = new() { LayerEnum.Enforcer, LayerEnum.Ambusher };
     private static readonly List<LayerEnum> IS = new() { LayerEnum.Consigliere, LayerEnum.Godfather, LayerEnum.Miner, LayerEnum.Teleporter, LayerEnum.Consort };
-    private static readonly List<List<LayerEnum>> Intruders = new() { IC, ID, IK, IS };
+    private static readonly List<LayerEnum> IU = new() { LayerEnum.Impostor };
+    private static readonly List<List<LayerEnum>> Intruders = new() { IC, ID, IK, IS, IU };
     private static readonly List<LayerEnum> SSu = new() { LayerEnum.Rebel, LayerEnum.Warper, LayerEnum.Stalker };
     private static readonly List<LayerEnum> SD = new() { LayerEnum.Concealer, LayerEnum.Drunkard, LayerEnum.Framer, LayerEnum.Shapeshifter, LayerEnum.Silencer };
     private static readonly List<LayerEnum> SP = new() { LayerEnum.TimeKeeper, LayerEnum.Spellslinger };
     private static readonly List<LayerEnum> SyK = new() { LayerEnum.Bomber, LayerEnum.Collider, LayerEnum.Crusader, LayerEnum.Poisoner };
-    private static readonly List<List<LayerEnum>> Syndicate = new() { SSu, SyK, SD, SP };
+    private static readonly List<LayerEnum> SU = new() { LayerEnum.Anarchist };
+    private static readonly List<List<LayerEnum>> Syndicate = new() { SSu, SyK, SD, SP, SU };
     private static readonly List<LayerEnum> AlignmentEntries = new() { LayerEnum.CrewSupport, LayerEnum.CrewInvest, LayerEnum.CrewSov, LayerEnum.CrewProt, LayerEnum.CrewKill,
         LayerEnum.CrewAudit, LayerEnum.IntruderSupport, LayerEnum.IntruderConceal, LayerEnum.IntruderDecep, LayerEnum.IntruderKill, LayerEnum.NeutralApoc, LayerEnum.NeutralHarb,
         LayerEnum.NeutralBen, LayerEnum.NeutralEvil, LayerEnum.NeutralKill, LayerEnum.NeutralNeo, LayerEnum.SyndicateDisrup, LayerEnum.SyndicateKill, LayerEnum.SyndicatePower,
-        LayerEnum.SyndicatePower };
+        LayerEnum.SyndicatePower, LayerEnum.IntruderUtil, LayerEnum.CrewUtil, LayerEnum.SyndicateUtil };
     private static readonly List<LayerEnum> RandomEntries = new() { LayerEnum.RandomCrew, LayerEnum.RandomIntruder, LayerEnum.RandomSyndicate, LayerEnum.RandomNeutral };
     private static readonly List<List<LayerEnum>> Alignments = new() { CA, CI, CSv, CP, CK, CS, NB, NE, NN, NH, NK, IC, ID, IS, SSu, SD, SP, SyK, IK, NA };
 
-    private static void Sort(this List<(int Chance, LayerEnum ID, bool Unique)> items, int amount)
+    private static void Sort(this List<GenerationData> items, int amount)
     {
-        var newList = new List<(int Chance, LayerEnum ID, bool Unique)>();
+        var newList = new List<GenerationData>();
 
         if (amount < CustomPlayer.AllPlayers.Count)
             amount = CustomPlayer.AllPlayers.Count;
@@ -174,315 +176,13 @@ public static class RoleGen
         if (!IsAA)
             return;
 
-        var random = URandom.RandomRangeInt(0, 100);
-
-        if (players <= 6)
-        {
-            if (random <= 5)
-                impostors = 0;
-            else
-                impostors = 1;
-        }
-        else if (players == 7)
-        {
-            if (random < 5)
-                impostors = 0;
-            else if (random < 20)
-                impostors = 2;
-            else
-                impostors = 1;
-        }
-        else if (players == 8)
-        {
-            if (random < 5)
-                impostors = 0;
-            else if (random < 40)
-                impostors = 2;
-            else
-                impostors = 1;
-        }
-        else if (players == 9)
-        {
-            if (random < 5)
-                impostors = 0;
-            else if (random < 50)
-                impostors = 2;
-            else
-                impostors = 1;
-        }
-        else if (players == 10)
-        {
-            if (random < 5)
-                impostors = 0;
-            else if (random < 10)
-                impostors = 3;
-            else if (random < 60)
-                impostors = 2;
-            else
-                impostors = 1;
-        }
-        else if (players == 11)
-        {
-            if (random < 10)
-                impostors = 0;
-            else if (random < 60)
-                impostors = 2;
-            else if (random < 70)
-                impostors = 3;
-            else
-                impostors = 1;
-        }
-        else if (players == 12)
-        {
-            if (random < 10)
-                impostors = 0;
-            else if (random < 60)
-                impostors = 2;
-            else if (random < 80)
-                impostors = 3;
-            else
-                impostors = 1;
-        }
-        else if (players == 13)
-        {
-            if (random < 10)
-                impostors = 0;
-            else if (random < 60)
-                impostors = 2;
-            else if (random < 90)
-                impostors = 3;
-            else
-                impostors = 1;
-        }
-        else if (players == 14)
-        {
-            if (random < 5)
-                impostors = 0;
-            else if (random < 25)
-                impostors = 1;
-            else if (random < 50)
-                impostors = 3;
-            else
-                impostors = 2;
-        }
-        else if (random < 5)
-            impostors = 0;
-        else if (random < 20)
-            impostors = 1;
-        else if (random < 60)
-            impostors = 3;
-        else if (random < 90)
-            impostors = 2;
-        else
-            impostors = 4;
-
-        random = URandom.RandomRangeInt(0, 100);
-
-        if (players <= 6)
-        {
-            if (random <= 5)
-                syndicate = 0;
-            else
-                syndicate = 1;
-        }
-        else if (players == 7)
-        {
-            if (random < 5)
-                syndicate = 0;
-            else if (random < 20)
-                syndicate = 2;
-            else
-                syndicate = 1;
-        }
-        else if (players == 8)
-        {
-            if (random < 5)
-                syndicate = 0;
-            else if (random < 40)
-                syndicate = 2;
-            else
-                syndicate = 1;
-        }
-        else if (players == 9)
-        {
-            if (random < 5)
-                syndicate = 0;
-            else if (random < 50)
-                syndicate = 2;
-            else
-                syndicate = 1;
-        }
-        else if (players == 10)
-        {
-            if (random < 5)
-                syndicate = 0;
-            else if (random < 10)
-                syndicate = 3;
-            else if (random < 60)
-                syndicate = 2;
-            else
-                syndicate = 1;
-        }
-        else if (players == 11)
-        {
-            if (random < 10)
-                syndicate = 0;
-            else if (random < 60)
-                syndicate = 2;
-            else if (random < 70)
-                syndicate = 3;
-            else
-                syndicate = 1;
-        }
-        else if (players == 12)
-        {
-            if (random < 10)
-                syndicate = 0;
-            else if (random < 60)
-                syndicate = 2;
-            else if (random < 80)
-                syndicate = 3;
-            else
-                syndicate = 1;
-        }
-        else if (players == 13)
-        {
-            if (random < 10)
-                syndicate = 0;
-            else if (random < 60)
-                syndicate = 2;
-            else if (random < 90)
-                syndicate = 3;
-            else
-                syndicate = 1;
-        }
-        else if (players == 14)
-        {
-            if (random < 5)
-                syndicate = 0;
-            else if (random < 25)
-                syndicate = 1;
-            else if (random < 50)
-                syndicate = 3;
-            else
-                syndicate = 2;
-        }
-        else if (random < 5)
-            syndicate = 0;
-        else if (random < 20)
-            syndicate = 1;
-        else if (random < 60)
-            syndicate = 3;
-        else if (random < 90)
-            syndicate = 2;
-        else
-            syndicate = 4;
-
-        random = URandom.RandomRangeInt(0, 100);
-
-        if (players <= 6)
-        {
-            if (random <= 5)
-                neutrals = 0;
-            else
-                neutrals = 1;
-        }
-        else if (players == 7)
-        {
-            if (random < 5)
-                neutrals = 0;
-            else if (random < 20)
-                neutrals = 2;
-            else
-                neutrals = 1;
-        }
-        else if (players == 8)
-        {
-            if (random < 5)
-                neutrals = 0;
-            else if (random < 40)
-                neutrals = 2;
-            else
-                neutrals = 1;
-        }
-        else if (players == 9)
-        {
-            if (random < 5)
-                neutrals = 0;
-            else if (random < 50)
-                neutrals = 2;
-            else
-                neutrals = 1;
-        }
-        else if (players == 10)
-        {
-            if (random < 5)
-                neutrals = 0;
-            else if (random < 10)
-                neutrals = 3;
-            else if (random < 60)
-                neutrals = 2;
-            else
-                neutrals = 1;
-        }
-        else if (players == 11)
-        {
-            if (random < 10)
-                neutrals = 0;
-            else if (random < 60)
-                neutrals = 2;
-            else if (random < 70)
-                neutrals = 3;
-            else
-                neutrals = 1;
-        }
-        else if (players == 12)
-        {
-            if (random < 10)
-                neutrals = 0;
-            else if (random < 60)
-                neutrals = 2;
-            else if (random < 80)
-                neutrals = 3;
-            else
-                neutrals = 1;
-        }
-        else if (players == 13)
-        {
-            if (random < 10)
-                neutrals = 0;
-            else if (random < 60)
-                neutrals = 2;
-            else if (random < 90)
-                neutrals = 3;
-            else
-                neutrals = 1;
-        }
-        else if (players == 14)
-        {
-            if (random < 5)
-                neutrals = 0;
-            else if (random < 25)
-                neutrals = 1;
-            else if (random < 50)
-                neutrals = 3;
-            else
-                neutrals = 2;
-        }
-        else if (random < 5)
-            neutrals = 0;
-        else if (random < 20)
-            neutrals = 1;
-        else if (random < 60)
-            neutrals = 3;
-        else if (random < 90)
-            neutrals = 2;
-        else
-            neutrals = 4;
+        impostors = GetRandomCount();
+        neutrals = GetRandomCount();
+        syndicate = GetRandomCount();
 
         if (impostors == 0 && syndicate == 0 && neutrals == 0)
         {
-            random = URandom.RandomRangeInt(0, 3);
+            var random = URandom.RandomRangeInt(0, 3);
 
             if (random == 0)
                 impostors++;
@@ -516,43 +216,152 @@ public static class RoleGen
         }
     }
 
+    private static int GetRandomCount()
+    {
+        var random = URandom.RandomRangeInt(0, 100);
+        var players = GameData.Instance.PlayerCount;
+        var result = 0;
+
+        if (players <= 6)
+        {
+            if (random <= 5)
+                result = 0;
+            else
+                result = 1;
+        }
+        else if (players == 7)
+        {
+            if (random < 5)
+                result = 0;
+            else if (random < 20)
+                result = 2;
+            else
+                result = 1;
+        }
+        else if (players == 8)
+        {
+            if (random < 5)
+                result = 0;
+            else if (random < 40)
+                result = 2;
+            else
+                result = 1;
+        }
+        else if (players == 9)
+        {
+            if (random < 5)
+                result = 0;
+            else if (random < 50)
+                result = 2;
+            else
+                result = 1;
+        }
+        else if (players == 10)
+        {
+            if (random < 5)
+                result = 0;
+            else if (random < 10)
+                result = 3;
+            else if (random < 60)
+                result = 2;
+            else
+                result = 1;
+        }
+        else if (players == 11)
+        {
+            if (random < 10)
+                result = 0;
+            else if (random < 60)
+                result = 2;
+            else if (random < 70)
+                result = 3;
+            else
+                result = 1;
+        }
+        else if (players == 12)
+        {
+            if (random < 10)
+                result = 0;
+            else if (random < 60)
+                result = 2;
+            else if (random < 80)
+                result = 3;
+            else
+                result = 1;
+        }
+        else if (players == 13)
+        {
+            if (random < 10)
+                result = 0;
+            else if (random < 60)
+                result = 2;
+            else if (random < 90)
+                result = 3;
+            else
+                result = 1;
+        }
+        else if (players == 14)
+        {
+            if (random < 5)
+                result = 0;
+            else if (random < 25)
+                result = 1;
+            else if (random < 50)
+                result = 3;
+            else
+                result = 2;
+        }
+        else if (random < 5)
+            result = 0;
+        else if (random < 20)
+            result = 1;
+        else if (random < 60)
+            result = 3;
+        else if (random < 90)
+            result = 2;
+        else
+            result = 4;
+
+        return result;
+    }
+
     private static void GenVanilla()
     {
-        LogSomething("Role Gen Start");
+        LogInfo("Role Gen Start");
         var players = CustomPlayer.AllPlayers;
 
         AllRoles.Clear();
 
         while (AllRoles.Count < (CustomGameOptions.AltImps ? CustomGameOptions.SyndicateCount : CustomGameOptions.IntruderCount))
-            AllRoles.Add(GenerateRoleSpawnItem(CustomGameOptions.AltImps ? LayerEnum.Anarchist : LayerEnum.Impostor));
+            AllRoles.Add(GenerateSpawnItem(CustomGameOptions.AltImps ? LayerEnum.Anarchist : LayerEnum.Impostor));
 
         while (AllRoles.Count < players.Count)
-            AllRoles.Add(GenerateRoleSpawnItem(LayerEnum.Crewmate));
+            AllRoles.Add(GenerateSpawnItem(LayerEnum.Crewmate));
 
         var spawnList = AllRoles;
         spawnList.Shuffle();
 
-        LogSomething("Layers Sorted");
+        LogInfo("Layers Sorted");
 
         if (TownOfUsReworked.IsTest)
         {
             var ids = "";
 
-            foreach (var (_, id, _) in spawnList)
-                ids += $" {id}";
+            foreach (var spawn in spawnList)
+                ids += $" {spawn.ID}";
 
-            LogSomething("Roles in the game: " + ids);
+            LogMessage("Roles in the game: " + ids);
         }
 
         while (players.Count > 0 && spawnList.Count > 0)
             Gen(players.TakeFirst(), (int)spawnList.TakeFirst().ID, PlayerLayerEnum.Role);
 
-        LogSomething("Role Spawn Done");
+        LogInfo("Role Spawn Done");
     }
 
     private static void GenKilling()
     {
-        LogSomething("Role Gen Start");
+        LogInfo("Role Gen Start");
         var players = CustomPlayer.AllPlayers;
         GetAdjustedFactions(out var imps, out var syn, out var neutrals, out var crew);
 
@@ -561,51 +370,51 @@ public static class RoleGen
         SyndicateRoles.Clear();
         NeutralRoles.Clear();
 
-        LogSomething("Lists Cleared - Killing Only");
+        LogInfo("Lists Cleared - Killing Only");
 
         IntruderRoles.Clear();
-        IntruderRoles.Add(GenerateRoleSpawnItem(LayerEnum.Enforcer));
-        IntruderRoles.Add(GenerateRoleSpawnItem(LayerEnum.Morphling));
-        IntruderRoles.Add(GenerateRoleSpawnItem(LayerEnum.Blackmailer));
-        IntruderRoles.Add(GenerateRoleSpawnItem(LayerEnum.Miner));
-        IntruderRoles.Add(GenerateRoleSpawnItem(LayerEnum.Teleporter));
-        IntruderRoles.Add(GenerateRoleSpawnItem(LayerEnum.Wraith));
-        IntruderRoles.Add(GenerateRoleSpawnItem(LayerEnum.Consort));
-        IntruderRoles.Add(GenerateRoleSpawnItem(LayerEnum.Janitor));
-        IntruderRoles.Add(GenerateRoleSpawnItem(LayerEnum.Camouflager));
-        IntruderRoles.Add(GenerateRoleSpawnItem(LayerEnum.Grenadier));
-        IntruderRoles.Add(GenerateRoleSpawnItem(LayerEnum.Impostor));
-        IntruderRoles.Add(GenerateRoleSpawnItem(LayerEnum.Consigliere));
-        IntruderRoles.Add(GenerateRoleSpawnItem(LayerEnum.Disguiser));
-        IntruderRoles.Add(GenerateRoleSpawnItem(LayerEnum.Ambusher));
+        IntruderRoles.Add(GenerateSpawnItem(LayerEnum.Enforcer));
+        IntruderRoles.Add(GenerateSpawnItem(LayerEnum.Morphling));
+        IntruderRoles.Add(GenerateSpawnItem(LayerEnum.Blackmailer));
+        IntruderRoles.Add(GenerateSpawnItem(LayerEnum.Miner));
+        IntruderRoles.Add(GenerateSpawnItem(LayerEnum.Teleporter));
+        IntruderRoles.Add(GenerateSpawnItem(LayerEnum.Wraith));
+        IntruderRoles.Add(GenerateSpawnItem(LayerEnum.Consort));
+        IntruderRoles.Add(GenerateSpawnItem(LayerEnum.Janitor));
+        IntruderRoles.Add(GenerateSpawnItem(LayerEnum.Camouflager));
+        IntruderRoles.Add(GenerateSpawnItem(LayerEnum.Grenadier));
+        IntruderRoles.Add(GenerateSpawnItem(LayerEnum.Impostor));
+        IntruderRoles.Add(GenerateSpawnItem(LayerEnum.Consigliere));
+        IntruderRoles.Add(GenerateSpawnItem(LayerEnum.Disguiser));
+        IntruderRoles.Add(GenerateSpawnItem(LayerEnum.Ambusher));
 
         if (imps >= 3)
-            IntruderRoles.Add(GenerateRoleSpawnItem(LayerEnum.Godfather));
+            IntruderRoles.Add(GenerateSpawnItem(LayerEnum.Godfather));
 
-        SyndicateRoles.Add(GenerateRoleSpawnItem(LayerEnum.Anarchist));
-        SyndicateRoles.Add(GenerateRoleSpawnItem(LayerEnum.Bomber));
-        SyndicateRoles.Add(GenerateRoleSpawnItem(LayerEnum.Poisoner));
-        SyndicateRoles.Add(GenerateRoleSpawnItem(LayerEnum.Crusader));
-        SyndicateRoles.Add(GenerateRoleSpawnItem(LayerEnum.Collider));
+        SyndicateRoles.Add(GenerateSpawnItem(LayerEnum.Anarchist));
+        SyndicateRoles.Add(GenerateSpawnItem(LayerEnum.Bomber));
+        SyndicateRoles.Add(GenerateSpawnItem(LayerEnum.Poisoner));
+        SyndicateRoles.Add(GenerateSpawnItem(LayerEnum.Crusader));
+        SyndicateRoles.Add(GenerateSpawnItem(LayerEnum.Collider));
 
         if (syn >= 3)
-            SyndicateRoles.Add(GenerateRoleSpawnItem(LayerEnum.Rebel));
+            SyndicateRoles.Add(GenerateSpawnItem(LayerEnum.Rebel));
 
-        NeutralRoles.Add(GenerateRoleSpawnItem(LayerEnum.Glitch));
-        NeutralRoles.Add(GenerateRoleSpawnItem(LayerEnum.Werewolf));
-        NeutralRoles.Add(GenerateRoleSpawnItem(LayerEnum.SerialKiller));
-        NeutralRoles.Add(GenerateRoleSpawnItem(LayerEnum.Juggernaut));
-        NeutralRoles.Add(GenerateRoleSpawnItem(LayerEnum.Murderer));
-        NeutralRoles.Add(GenerateRoleSpawnItem(LayerEnum.Thief));
+        NeutralRoles.Add(GenerateSpawnItem(LayerEnum.Glitch));
+        NeutralRoles.Add(GenerateSpawnItem(LayerEnum.Werewolf));
+        NeutralRoles.Add(GenerateSpawnItem(LayerEnum.SerialKiller));
+        NeutralRoles.Add(GenerateSpawnItem(LayerEnum.Juggernaut));
+        NeutralRoles.Add(GenerateSpawnItem(LayerEnum.Murderer));
+        NeutralRoles.Add(GenerateSpawnItem(LayerEnum.Thief));
 
         if (CustomGameOptions.AddArsonist)
-            NeutralRoles.Add(GenerateRoleSpawnItem(LayerEnum.Arsonist));
+            NeutralRoles.Add(GenerateSpawnItem(LayerEnum.Arsonist));
 
         if (CustomGameOptions.AddCryomaniac)
-            NeutralRoles.Add(GenerateRoleSpawnItem(LayerEnum.Cryomaniac));
+            NeutralRoles.Add(GenerateSpawnItem(LayerEnum.Cryomaniac));
 
         if (CustomGameOptions.AddPlaguebearer)
-            NeutralRoles.Add(GenerateRoleSpawnItem(CustomGameOptions.PestSpawn ? LayerEnum.Pestilence : LayerEnum.Plaguebearer));
+            NeutralRoles.Add(GenerateSpawnItem(CustomGameOptions.PestSpawn ? LayerEnum.Pestilence : LayerEnum.Plaguebearer));
 
         NeutralRoles.Sort(neutrals);
 
@@ -616,23 +425,23 @@ public static class RoleGen
         {
             if (vigis > 0)
             {
-                CrewRoles.Add(GenerateRoleSpawnItem(LayerEnum.Vigilante));
+                CrewRoles.Add(GenerateSpawnItem(LayerEnum.Vigilante));
                 vigis--;
             }
 
             if (vets > 0)
             {
-                CrewRoles.Add(GenerateRoleSpawnItem(LayerEnum.Veteran));
+                CrewRoles.Add(GenerateSpawnItem(LayerEnum.Veteran));
                 vets--;
             }
         }
 
-        LogSomething("Lists Set - Killing Only");
+        LogInfo("Lists Set - Killing Only");
 
         IntruderRoles.Sort(imps);
         CrewRoles.Sort(crew);
 
-        LogSomething("Killing Role List Sorted");
+        LogInfo("Killing Role List Sorted");
 
         AllRoles.AddRange(NeutralRoles);
         AllRoles.AddRange(CrewRoles);
@@ -641,16 +450,16 @@ public static class RoleGen
         if (!CustomGameOptions.AltImps)
             AllRoles.AddRange(IntruderRoles);
 
-        LogSomething("Layers Sorted");
+        LogInfo("Layers Sorted");
 
         if (TownOfUsReworked.IsTest)
         {
             var ids = "";
 
-            foreach (var (_, id, _) in AllRoles)
-                ids += $" {id}";
+            foreach (var spawn in AllRoles)
+                ids += $" {spawn.ID}";
 
-            LogSomething("Roles in the game: " + ids);
+            LogMessage("Roles in the game: " + ids);
         }
 
         var spawnList = AllRoles;
@@ -661,12 +470,12 @@ public static class RoleGen
 
         Role.SyndicateHasChaosDrive = true;
         AssignChaosDrive();
-        LogSomething("Role Spawn Done");
+        LogInfo("Role Spawn Done");
     }
 
     private static void GenClassicCustomAA()
     {
-        LogSomething("Role Gen Start");
+        LogInfo("Role Gen Start");
         var players = CustomPlayer.AllPlayers;
 
         SetPostmortals.PhantomOn = Check(CustomGameOptions.PhantomOn);
@@ -684,11 +493,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                CrewSovereignRoles.Add(GenerateRoleSpawnItem(LayerEnum.Mayor));
+                CrewSovereignRoles.Add(GenerateSpawnItem(LayerEnum.Mayor));
                 num--;
             }
 
-            LogSomething("Mayor Done");
+            LogInfo("Mayor Done");
         }
 
         if (CustomGameOptions.MonarchOn > 0)
@@ -697,11 +506,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                CrewSovereignRoles.Add(GenerateRoleSpawnItem(LayerEnum.Monarch));
+                CrewSovereignRoles.Add(GenerateSpawnItem(LayerEnum.Monarch));
                 num--;
             }
 
-            LogSomething("Monarch Done");
+            LogInfo("Monarch Done");
         }
 
         if (CustomGameOptions.DictatorOn > 0)
@@ -710,11 +519,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                CrewSovereignRoles.Add(GenerateRoleSpawnItem(LayerEnum.Dictator));
+                CrewSovereignRoles.Add(GenerateSpawnItem(LayerEnum.Dictator));
                 num--;
             }
 
-            LogSomething("Dictator Done");
+            LogInfo("Dictator Done");
         }
 
         if (CustomGameOptions.SheriffOn > 0)
@@ -723,11 +532,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                CrewInvestigativeRoles.Add(GenerateRoleSpawnItem(LayerEnum.Sheriff));
+                CrewInvestigativeRoles.Add(GenerateSpawnItem(LayerEnum.Sheriff));
                 num--;
             }
 
-            LogSomething("Sheriff Done");
+            LogInfo("Sheriff Done");
         }
 
         if (CustomGameOptions.InspectorOn > 0)
@@ -736,11 +545,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                CrewInvestigativeRoles.Add(GenerateRoleSpawnItem(LayerEnum.Inspector));
+                CrewInvestigativeRoles.Add(GenerateSpawnItem(LayerEnum.Inspector));
                 num--;
             }
 
-            LogSomething("Inspector Done");
+            LogInfo("Inspector Done");
         }
 
         if (CustomGameOptions.VigilanteOn > 0)
@@ -749,11 +558,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                CrewKillingRoles.Add(GenerateRoleSpawnItem(LayerEnum.Vigilante));
+                CrewKillingRoles.Add(GenerateSpawnItem(LayerEnum.Vigilante));
                 num--;
             }
 
-            LogSomething("Vigilante Done");
+            LogInfo("Vigilante Done");
         }
 
         if (CustomGameOptions.EngineerOn > 0)
@@ -762,11 +571,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                CrewSupportRoles.Add(GenerateRoleSpawnItem(LayerEnum.Engineer));
+                CrewSupportRoles.Add(GenerateSpawnItem(LayerEnum.Engineer));
                 num--;
             }
 
-            LogSomething("Engineer Done");
+            LogInfo("Engineer Done");
         }
 
         if (CustomGameOptions.MedicOn > 0)
@@ -775,11 +584,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                CrewProtectiveRoles.Add(GenerateRoleSpawnItem(LayerEnum.Medic));
+                CrewProtectiveRoles.Add(GenerateSpawnItem(LayerEnum.Medic));
                 num--;
             }
 
-            LogSomething("Medic Done");
+            LogInfo("Medic Done");
         }
 
         if (CustomGameOptions.AltruistOn > 0)
@@ -788,11 +597,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                CrewProtectiveRoles.Add(GenerateRoleSpawnItem(LayerEnum.Altruist));
+                CrewProtectiveRoles.Add(GenerateSpawnItem(LayerEnum.Altruist));
                 num--;
             }
 
-            LogSomething("Altruist Done");
+            LogInfo("Altruist Done");
         }
 
         if (CustomGameOptions.VeteranOn > 0)
@@ -801,11 +610,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                CrewKillingRoles.Add(GenerateRoleSpawnItem(LayerEnum.Veteran));
+                CrewKillingRoles.Add(GenerateSpawnItem(LayerEnum.Veteran));
                 num--;
             }
 
-            LogSomething("Veteran Done");
+            LogInfo("Veteran Done");
         }
 
         if (CustomGameOptions.TrackerOn > 0)
@@ -814,11 +623,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                CrewInvestigativeRoles.Add(GenerateRoleSpawnItem(LayerEnum.Tracker));
+                CrewInvestigativeRoles.Add(GenerateSpawnItem(LayerEnum.Tracker));
                 num--;
             }
 
-            LogSomething("Tracker Done");
+            LogInfo("Tracker Done");
         }
 
         if (CustomGameOptions.TransporterOn > 0)
@@ -827,11 +636,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                CrewSupportRoles.Add(GenerateRoleSpawnItem(LayerEnum.Transporter));
+                CrewSupportRoles.Add(GenerateSpawnItem(LayerEnum.Transporter));
                 num--;
             }
 
-            LogSomething("Transporter Done");
+            LogInfo("Transporter Done");
         }
 
         if (CustomGameOptions.MediumOn > 0)
@@ -840,11 +649,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                CrewInvestigativeRoles.Add(GenerateRoleSpawnItem(LayerEnum.Medium));
+                CrewInvestigativeRoles.Add(GenerateSpawnItem(LayerEnum.Medium));
                 num--;
             }
 
-            LogSomething("Medium Done");
+            LogInfo("Medium Done");
         }
 
         if (CustomGameOptions.CoronerOn > 0)
@@ -853,11 +662,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                CrewInvestigativeRoles.Add(GenerateRoleSpawnItem(LayerEnum.Coroner));
+                CrewInvestigativeRoles.Add(GenerateSpawnItem(LayerEnum.Coroner));
                 num--;
             }
 
-            LogSomething("Coroner Done");
+            LogInfo("Coroner Done");
         }
 
         if (CustomGameOptions.OperativeOn > 0)
@@ -866,11 +675,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                CrewInvestigativeRoles.Add(GenerateRoleSpawnItem(LayerEnum.Operative));
+                CrewInvestigativeRoles.Add(GenerateSpawnItem(LayerEnum.Operative));
                 num--;
             }
 
-            LogSomething("Operative Done");
+            LogInfo("Operative Done");
         }
 
         if (CustomGameOptions.DetectiveOn > 0)
@@ -879,11 +688,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                CrewInvestigativeRoles.Add(GenerateRoleSpawnItem(LayerEnum.Detective));
+                CrewInvestigativeRoles.Add(GenerateSpawnItem(LayerEnum.Detective));
                 num--;
             }
 
-            LogSomething("Detective Done");
+            LogInfo("Detective Done");
         }
 
         if (CustomGameOptions.EscortOn > 0)
@@ -892,11 +701,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                CrewSupportRoles.Add(GenerateRoleSpawnItem(LayerEnum.Escort));
+                CrewSupportRoles.Add(GenerateSpawnItem(LayerEnum.Escort));
                 num--;
             }
 
-            LogSomething("Escort Done");
+            LogInfo("Escort Done");
         }
 
         if (CustomGameOptions.ShifterOn > 0)
@@ -905,11 +714,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                CrewSupportRoles.Add(GenerateRoleSpawnItem(LayerEnum.Shifter));
+                CrewSupportRoles.Add(GenerateSpawnItem(LayerEnum.Shifter));
                 num--;
             }
 
-            LogSomething("Shifter Done");
+            LogInfo("Shifter Done");
         }
 
         if (CustomGameOptions.ChameleonOn > 0)
@@ -918,11 +727,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                CrewSupportRoles.Add(GenerateRoleSpawnItem(LayerEnum.Chameleon));
+                CrewSupportRoles.Add(GenerateSpawnItem(LayerEnum.Chameleon));
                 num--;
             }
 
-            LogSomething("Chameleon Done");
+            LogInfo("Chameleon Done");
         }
 
         if (CustomGameOptions.RetributionistOn > 0)
@@ -931,11 +740,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                CrewSupportRoles.Add(GenerateRoleSpawnItem(LayerEnum.Retributionist));
+                CrewSupportRoles.Add(GenerateSpawnItem(LayerEnum.Retributionist));
                 num--;
             }
 
-            LogSomething("Retributionist Done");
+            LogInfo("Retributionist Done");
         }
 
         if (CustomGameOptions.CrewmateOn > 0 && IsCustom)
@@ -944,11 +753,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                CrewRoles.Add(GenerateRoleSpawnItem(LayerEnum.Crewmate));
+                CrewRoles.Add(GenerateSpawnItem(LayerEnum.Crewmate));
                 num--;
             }
 
-            LogSomething("Crewmate Done");
+            LogInfo("Crewmate Done");
         }
 
         if (CustomGameOptions.VampireHunterOn > 0 && CustomGameOptions.DraculaOn > 0)
@@ -957,11 +766,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                CrewAuditorRoles.Add(GenerateRoleSpawnItem(LayerEnum.VampireHunter));
+                CrewAuditorRoles.Add(GenerateSpawnItem(LayerEnum.VampireHunter));
                 num--;
             }
 
-            LogSomething("Vampire Hunter Done");
+            LogInfo("Vampire Hunter Done");
         }
 
         if (CustomGameOptions.MysticOn > 0 && (CustomGameOptions.DraculaOn > 0 || CustomGameOptions.NecromancerOn > 0 || CustomGameOptions.WhispererOn > 0 || CustomGameOptions.JackalOn >
@@ -971,11 +780,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                CrewAuditorRoles.Add(GenerateRoleSpawnItem(LayerEnum.Mystic));
+                CrewAuditorRoles.Add(GenerateSpawnItem(LayerEnum.Mystic));
                 num--;
             }
 
-            LogSomething("Mystic Done");
+            LogInfo("Mystic Done");
         }
 
         if (CustomGameOptions.SeerOn > 0 && ((CustomGameOptions.VampireHunterOn > 0 && CustomGameOptions.DraculaOn > 0) || CustomGameOptions.BountyHunterOn > 0 ||
@@ -987,11 +796,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                CrewInvestigativeRoles.Add(GenerateRoleSpawnItem(LayerEnum.Seer));
+                CrewInvestigativeRoles.Add(GenerateSpawnItem(LayerEnum.Seer));
                 num--;
             }
 
-            LogSomething("Seer Done");
+            LogInfo("Seer Done");
         }
 
         if (CustomGameOptions.JesterOn > 0)
@@ -1000,11 +809,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                NeutralEvilRoles.Add(GenerateRoleSpawnItem(LayerEnum.Jester));
+                NeutralEvilRoles.Add(GenerateSpawnItem(LayerEnum.Jester));
                 num--;
             }
 
-            LogSomething("Jester Done");
+            LogInfo("Jester Done");
         }
 
         if (CustomGameOptions.AmnesiacOn > 0)
@@ -1013,11 +822,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                NeutralBenignRoles.Add(GenerateRoleSpawnItem(LayerEnum.Amnesiac));
+                NeutralBenignRoles.Add(GenerateSpawnItem(LayerEnum.Amnesiac));
                 num--;
             }
 
-            LogSomething("Amnesiac Done");
+            LogInfo("Amnesiac Done");
         }
 
         if (CustomGameOptions.ExecutionerOn > 0)
@@ -1026,11 +835,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                NeutralEvilRoles.Add(GenerateRoleSpawnItem(LayerEnum.Executioner));
+                NeutralEvilRoles.Add(GenerateSpawnItem(LayerEnum.Executioner));
                 num--;
             }
 
-            LogSomething("Executioner Done");
+            LogInfo("Executioner Done");
         }
 
         if (CustomGameOptions.SurvivorOn > 0 && !CustomGameOptions.AvoidNeutralKingmakers)
@@ -1039,11 +848,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                NeutralBenignRoles.Add(GenerateRoleSpawnItem(LayerEnum.Survivor));
+                NeutralBenignRoles.Add(GenerateSpawnItem(LayerEnum.Survivor));
                 num--;
             }
 
-            LogSomething("Survivor Done");
+            LogInfo("Survivor Done");
         }
 
         if (CustomGameOptions.GuardianAngelOn > 0 && !CustomGameOptions.AvoidNeutralKingmakers)
@@ -1052,11 +861,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                NeutralBenignRoles.Add(GenerateRoleSpawnItem(LayerEnum.GuardianAngel));
+                NeutralBenignRoles.Add(GenerateSpawnItem(LayerEnum.GuardianAngel));
                 num--;
             }
 
-            LogSomething("Guardian Angel Done");
+            LogInfo("Guardian Angel Done");
         }
 
         if (CustomGameOptions.GlitchOn > 0)
@@ -1065,11 +874,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                NeutralKillingRoles.Add(GenerateRoleSpawnItem(LayerEnum.Glitch));
+                NeutralKillingRoles.Add(GenerateSpawnItem(LayerEnum.Glitch));
                 num--;
             }
 
-            LogSomething("Glitch Done");
+            LogInfo("Glitch Done");
         }
 
         if (CustomGameOptions.MurdererOn > 0)
@@ -1078,11 +887,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                NeutralKillingRoles.Add(GenerateRoleSpawnItem(LayerEnum.Murderer));
+                NeutralKillingRoles.Add(GenerateSpawnItem(LayerEnum.Murderer));
                 num--;
             }
 
-            LogSomething("Murderer Done");
+            LogInfo("Murderer Done");
         }
 
         if (CustomGameOptions.CryomaniacOn > 0)
@@ -1091,11 +900,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                NeutralKillingRoles.Add(GenerateRoleSpawnItem(LayerEnum.Cryomaniac));
+                NeutralKillingRoles.Add(GenerateSpawnItem(LayerEnum.Cryomaniac));
                 num--;
             }
 
-            LogSomething("Cryomaniac Done");
+            LogInfo("Cryomaniac Done");
         }
 
         if (CustomGameOptions.WerewolfOn > 0)
@@ -1104,11 +913,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                NeutralKillingRoles.Add(GenerateRoleSpawnItem(LayerEnum.Werewolf));
+                NeutralKillingRoles.Add(GenerateSpawnItem(LayerEnum.Werewolf));
                 num--;
             }
 
-            LogSomething("Werewolf Done");
+            LogInfo("Werewolf Done");
         }
 
         if (CustomGameOptions.ArsonistOn > 0)
@@ -1117,11 +926,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                NeutralKillingRoles.Add(GenerateRoleSpawnItem(LayerEnum.Arsonist));
+                NeutralKillingRoles.Add(GenerateSpawnItem(LayerEnum.Arsonist));
                 num--;
             }
 
-            LogSomething("Arsonist Done");
+            LogInfo("Arsonist Done");
         }
 
         if (CustomGameOptions.JackalOn > 0 && GameData.Instance.PlayerCount > 5)
@@ -1130,11 +939,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                NeutralNeophyteRoles.Add(GenerateRoleSpawnItem(LayerEnum.Jackal));
+                NeutralNeophyteRoles.Add(GenerateSpawnItem(LayerEnum.Jackal));
                 num--;
             }
 
-            LogSomething("Jackal Done");
+            LogInfo("Jackal Done");
         }
 
         if (CustomGameOptions.NecromancerOn > 0)
@@ -1143,11 +952,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                NeutralNeophyteRoles.Add(GenerateRoleSpawnItem(LayerEnum.Necromancer));
+                NeutralNeophyteRoles.Add(GenerateSpawnItem(LayerEnum.Necromancer));
                 num--;
             }
 
-            LogSomething("Necromancer Done");
+            LogInfo("Necromancer Done");
         }
 
         if (CustomGameOptions.PlaguebearerOn > 0)
@@ -1156,12 +965,12 @@ public static class RoleGen
 
             while (num > 0)
             {
-                NeutralHarbingerRoles.Add(GenerateRoleSpawnItem(CustomGameOptions.PestSpawn ? LayerEnum.Pestilence : LayerEnum.Plaguebearer));
+                NeutralHarbingerRoles.Add(GenerateSpawnItem(CustomGameOptions.PestSpawn ? LayerEnum.Pestilence : LayerEnum.Plaguebearer));
                 num--;
             }
 
             var PBorPest = CustomGameOptions.PestSpawn ? "Pestilence" : "Plaguebearer";
-            LogSomething($"{PBorPest} Done");
+            LogInfo($"{PBorPest} Done");
         }
 
         if (CustomGameOptions.SerialKillerOn > 0)
@@ -1170,11 +979,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                NeutralKillingRoles.Add(GenerateRoleSpawnItem(LayerEnum.SerialKiller));
+                NeutralKillingRoles.Add(GenerateSpawnItem(LayerEnum.SerialKiller));
                 num--;
             }
 
-            LogSomething("Serial Killer Done");
+            LogInfo("Serial Killer Done");
         }
 
         if (CustomGameOptions.JuggernautOn > 0)
@@ -1183,11 +992,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                NeutralKillingRoles.Add(GenerateRoleSpawnItem(LayerEnum.Juggernaut));
+                NeutralKillingRoles.Add(GenerateSpawnItem(LayerEnum.Juggernaut));
                 num--;
             }
 
-            LogSomething("Juggeraut Done");
+            LogInfo("Juggeraut Done");
         }
 
         if (CustomGameOptions.CannibalOn > 0)
@@ -1196,11 +1005,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                NeutralEvilRoles.Add(GenerateRoleSpawnItem(LayerEnum.Cannibal));
+                NeutralEvilRoles.Add(GenerateSpawnItem(LayerEnum.Cannibal));
                 num--;
             }
 
-            LogSomething("Cannibal Done");
+            LogInfo("Cannibal Done");
         }
 
         if (CustomGameOptions.GuesserOn > 0)
@@ -1209,11 +1018,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                NeutralEvilRoles.Add(GenerateRoleSpawnItem(LayerEnum.Guesser));
+                NeutralEvilRoles.Add(GenerateSpawnItem(LayerEnum.Guesser));
                 num--;
             }
 
-            LogSomething("Guesser Done");
+            LogInfo("Guesser Done");
         }
 
         if (CustomGameOptions.ActorOn > 0 && (CustomGameOptions.CrewAssassinOn > 0 || CustomGameOptions.NeutralAssassinOn > 0 || CustomGameOptions.SyndicateAssassinOn > 0 ||
@@ -1223,11 +1032,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                NeutralEvilRoles.Add(GenerateRoleSpawnItem(LayerEnum.Actor));
+                NeutralEvilRoles.Add(GenerateSpawnItem(LayerEnum.Actor));
                 num--;
             }
 
-            LogSomething("Actor Done");
+            LogInfo("Actor Done");
         }
 
         if (CustomGameOptions.ThiefOn > 0)
@@ -1236,11 +1045,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                NeutralBenignRoles.Add(GenerateRoleSpawnItem(LayerEnum.Thief));
+                NeutralBenignRoles.Add(GenerateSpawnItem(LayerEnum.Thief));
                 num--;
             }
 
-            LogSomething("Thief Done");
+            LogInfo("Thief Done");
         }
 
         if (CustomGameOptions.DraculaOn > 0)
@@ -1249,11 +1058,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                NeutralNeophyteRoles.Add(GenerateRoleSpawnItem(LayerEnum.Dracula));
+                NeutralNeophyteRoles.Add(GenerateSpawnItem(LayerEnum.Dracula));
                 num--;
             }
 
-            LogSomething("Dracula Done");
+            LogInfo("Dracula Done");
         }
 
         if (CustomGameOptions.WhispererOn > 0)
@@ -1262,11 +1071,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                NeutralNeophyteRoles.Add(GenerateRoleSpawnItem(LayerEnum.Whisperer));
+                NeutralNeophyteRoles.Add(GenerateSpawnItem(LayerEnum.Whisperer));
                 num--;
             }
 
-            LogSomething("Whisperer Done");
+            LogInfo("Whisperer Done");
         }
 
         if (CustomGameOptions.TrollOn > 0)
@@ -1275,11 +1084,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                NeutralEvilRoles.Add(GenerateRoleSpawnItem(LayerEnum.Troll));
+                NeutralEvilRoles.Add(GenerateSpawnItem(LayerEnum.Troll));
                 num--;
             }
 
-            LogSomething("Troll Done");
+            LogInfo("Troll Done");
         }
 
         if (CustomGameOptions.BountyHunterOn > 0)
@@ -1288,11 +1097,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                NeutralEvilRoles.Add(GenerateRoleSpawnItem(LayerEnum.BountyHunter));
+                NeutralEvilRoles.Add(GenerateSpawnItem(LayerEnum.BountyHunter));
                 num--;
             }
 
-            LogSomething("Bounty Hunter Done");
+            LogInfo("Bounty Hunter Done");
         }
 
         if (CustomGameOptions.MorphlingOn > 0)
@@ -1301,11 +1110,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                IntruderDeceptionRoles.Add(GenerateRoleSpawnItem(LayerEnum.Morphling));
+                IntruderDeceptionRoles.Add(GenerateSpawnItem(LayerEnum.Morphling));
                 num--;
             }
 
-            LogSomething("Morphling Done");
+            LogInfo("Morphling Done");
         }
 
         if (CustomGameOptions.BlackmailerOn > 0)
@@ -1314,11 +1123,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                IntruderConcealingRoles.Add(GenerateRoleSpawnItem(LayerEnum.Blackmailer));
+                IntruderConcealingRoles.Add(GenerateSpawnItem(LayerEnum.Blackmailer));
                 num--;
             }
 
-            LogSomething("Blackmailer Done");
+            LogInfo("Blackmailer Done");
         }
 
         if (CustomGameOptions.MinerOn > 0)
@@ -1327,11 +1136,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                IntruderSupportRoles.Add(GenerateRoleSpawnItem(LayerEnum.Miner));
+                IntruderSupportRoles.Add(GenerateSpawnItem(LayerEnum.Miner));
                 num--;
             }
 
-            LogSomething("Miner Done");
+            LogInfo("Miner Done");
         }
 
         if (CustomGameOptions.TeleporterOn > 0)
@@ -1340,11 +1149,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                IntruderSupportRoles.Add(GenerateRoleSpawnItem(LayerEnum.Teleporter));
+                IntruderSupportRoles.Add(GenerateSpawnItem(LayerEnum.Teleporter));
                 num--;
             }
 
-            LogSomething("Teleporter Done");
+            LogInfo("Teleporter Done");
         }
 
         if (CustomGameOptions.AmbusherOn > 0)
@@ -1353,11 +1162,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                IntruderKillingRoles.Add(GenerateRoleSpawnItem(LayerEnum.Ambusher));
+                IntruderKillingRoles.Add(GenerateSpawnItem(LayerEnum.Ambusher));
                 num--;
             }
 
-            LogSomething("Ambusher Done");
+            LogInfo("Ambusher Done");
         }
 
         if (CustomGameOptions.WraithOn > 0)
@@ -1366,11 +1175,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                IntruderDeceptionRoles.Add(GenerateRoleSpawnItem(LayerEnum.Wraith));
+                IntruderDeceptionRoles.Add(GenerateSpawnItem(LayerEnum.Wraith));
                 num--;
             }
 
-            LogSomething("Wraith Done");
+            LogInfo("Wraith Done");
         }
 
         if (CustomGameOptions.ConsortOn > 0)
@@ -1379,11 +1188,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                IntruderSupportRoles.Add(GenerateRoleSpawnItem(LayerEnum.Consort));
+                IntruderSupportRoles.Add(GenerateSpawnItem(LayerEnum.Consort));
                 num--;
             }
 
-            LogSomething("Consort Done");
+            LogInfo("Consort Done");
         }
 
         if (CustomGameOptions.JanitorOn > 0)
@@ -1392,11 +1201,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                IntruderConcealingRoles.Add(GenerateRoleSpawnItem(LayerEnum.Janitor));
+                IntruderConcealingRoles.Add(GenerateSpawnItem(LayerEnum.Janitor));
                 num--;
             }
 
-            LogSomething("Janitor Done");
+            LogInfo("Janitor Done");
         }
 
         if (CustomGameOptions.CamouflagerOn > 0)
@@ -1405,11 +1214,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                IntruderConcealingRoles.Add(GenerateRoleSpawnItem(LayerEnum.Camouflager));
+                IntruderConcealingRoles.Add(GenerateSpawnItem(LayerEnum.Camouflager));
                 num--;
             }
 
-            LogSomething("Camouflager Done");
+            LogInfo("Camouflager Done");
         }
 
         if (CustomGameOptions.GrenadierOn > 0)
@@ -1418,11 +1227,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                IntruderConcealingRoles.Add(GenerateRoleSpawnItem(LayerEnum.Grenadier));
+                IntruderConcealingRoles.Add(GenerateSpawnItem(LayerEnum.Grenadier));
                 num--;
             }
 
-            LogSomething("Grenadier Done");
+            LogInfo("Grenadier Done");
         }
 
         if (CustomGameOptions.ImpostorOn > 0 && IsCustom)
@@ -1431,11 +1240,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                IntruderRoles.Add(GenerateRoleSpawnItem(LayerEnum.Impostor));
+                IntruderRoles.Add(GenerateSpawnItem(LayerEnum.Impostor));
                 num--;
             }
 
-            LogSomething("Impostor Done");
+            LogInfo("Impostor Done");
         }
 
         if (CustomGameOptions.ConsigliereOn > 0)
@@ -1444,11 +1253,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                IntruderSupportRoles.Add(GenerateRoleSpawnItem(LayerEnum.Consigliere));
+                IntruderSupportRoles.Add(GenerateSpawnItem(LayerEnum.Consigliere));
                 num--;
             }
 
-            LogSomething("Consigliere Done");
+            LogInfo("Consigliere Done");
         }
 
         if (CustomGameOptions.DisguiserOn > 0)
@@ -1457,11 +1266,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                IntruderDeceptionRoles.Add(GenerateRoleSpawnItem(LayerEnum.Disguiser));
+                IntruderDeceptionRoles.Add(GenerateSpawnItem(LayerEnum.Disguiser));
                 num--;
             }
 
-            LogSomething("Disguiser Done");
+            LogInfo("Disguiser Done");
         }
 
         if (CustomGameOptions.EnforcerOn > 0)
@@ -1470,11 +1279,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                IntruderKillingRoles.Add(GenerateRoleSpawnItem(LayerEnum.Enforcer));
+                IntruderKillingRoles.Add(GenerateSpawnItem(LayerEnum.Enforcer));
                 num--;
             }
 
-            LogSomething("Enforcer Done");
+            LogInfo("Enforcer Done");
         }
 
         if (CustomGameOptions.GodfatherOn > 0 && imps >= 3)
@@ -1483,11 +1292,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                IntruderSupportRoles.Add(GenerateRoleSpawnItem(LayerEnum.Godfather));
+                IntruderSupportRoles.Add(GenerateSpawnItem(LayerEnum.Godfather));
                 num--;
             }
 
-            LogSomething("Godfather Done");
+            LogInfo("Godfather Done");
         }
 
         if (CustomGameOptions.AnarchistOn > 0 && IsCustom)
@@ -1496,11 +1305,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                SyndicateRoles.Add(GenerateRoleSpawnItem(LayerEnum.Anarchist));
+                SyndicateRoles.Add(GenerateSpawnItem(LayerEnum.Anarchist));
                 num--;
             }
 
-            LogSomething("Anarchist Done");
+            LogInfo("Anarchist Done");
         }
 
         if (CustomGameOptions.ShapeshifterOn > 0)
@@ -1509,11 +1318,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                SyndicateDisruptionRoles.Add(GenerateRoleSpawnItem(LayerEnum.Shapeshifter));
+                SyndicateDisruptionRoles.Add(GenerateSpawnItem(LayerEnum.Shapeshifter));
                 num--;
             }
 
-            LogSomething("Shapeshifter Done");
+            LogInfo("Shapeshifter Done");
         }
 
         if (CustomGameOptions.FramerOn > 0)
@@ -1522,11 +1331,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                SyndicateDisruptionRoles.Add(GenerateRoleSpawnItem(LayerEnum.Framer));
+                SyndicateDisruptionRoles.Add(GenerateSpawnItem(LayerEnum.Framer));
                 num--;
             }
 
-            LogSomething("Framer Done");
+            LogInfo("Framer Done");
         }
 
         if (CustomGameOptions.CrusaderOn > 0)
@@ -1535,11 +1344,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                SyndicateKillingRoles.Add(GenerateRoleSpawnItem(LayerEnum.Crusader));
+                SyndicateKillingRoles.Add(GenerateSpawnItem(LayerEnum.Crusader));
                 num--;
             }
 
-            LogSomething("Crusader Done");
+            LogInfo("Crusader Done");
         }
 
         if (CustomGameOptions.RebelOn > 0 && syn >= 3)
@@ -1548,11 +1357,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                SyndicateSupportRoles.Add(GenerateRoleSpawnItem(LayerEnum.Rebel));
+                SyndicateSupportRoles.Add(GenerateSpawnItem(LayerEnum.Rebel));
                 num--;
             }
 
-            LogSomething("Rebel Done");
+            LogInfo("Rebel Done");
         }
 
         if (CustomGameOptions.PoisonerOn > 0)
@@ -1561,11 +1370,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                SyndicateKillingRoles.Add(GenerateRoleSpawnItem(LayerEnum.Poisoner));
+                SyndicateKillingRoles.Add(GenerateSpawnItem(LayerEnum.Poisoner));
                 num--;
             }
 
-            LogSomething("Poisoner Done");
+            LogInfo("Poisoner Done");
         }
 
         if (CustomGameOptions.ColliderOn > 0)
@@ -1574,11 +1383,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                SyndicateKillingRoles.Add(GenerateRoleSpawnItem(LayerEnum.Collider));
+                SyndicateKillingRoles.Add(GenerateSpawnItem(LayerEnum.Collider));
                 num--;
             }
 
-            LogSomething("Collider Done");
+            LogInfo("Collider Done");
         }
 
         if (CustomGameOptions.ConcealerOn > 0)
@@ -1587,24 +1396,24 @@ public static class RoleGen
 
             while (num > 0)
             {
-                SyndicateDisruptionRoles.Add(GenerateRoleSpawnItem(LayerEnum.Concealer));
+                SyndicateDisruptionRoles.Add(GenerateSpawnItem(LayerEnum.Concealer));
                 num--;
             }
 
-            LogSomething("Concealer Done");
+            LogInfo("Concealer Done");
         }
 
-        if (CustomGameOptions.WarperOn > 0 && (int)CustomGameOptions.Map is not 3 and not 4)
+        if (CustomGameOptions.WarperOn > 0 && (int)CustomGameOptions.Map is not (4 or 5 or 6))
         {
             num = CustomGameOptions.WarperCount;
 
             while (num > 0)
             {
-                SyndicateSupportRoles.Add(GenerateRoleSpawnItem(LayerEnum.Warper));
+                SyndicateSupportRoles.Add(GenerateSpawnItem(LayerEnum.Warper));
                 num--;
             }
 
-            LogSomething("Warper Done");
+            LogInfo("Warper Done");
         }
 
         if (CustomGameOptions.BomberOn > 0)
@@ -1613,11 +1422,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                SyndicateKillingRoles.Add(GenerateRoleSpawnItem(LayerEnum.Bomber));
+                SyndicateKillingRoles.Add(GenerateSpawnItem(LayerEnum.Bomber));
                 num--;
             }
 
-            LogSomething("Bomber Done");
+            LogInfo("Bomber Done");
         }
 
         if (CustomGameOptions.SpellslingerOn > 0)
@@ -1626,11 +1435,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                SyndicatePowerRoles.Add(GenerateRoleSpawnItem(LayerEnum.Spellslinger));
+                SyndicatePowerRoles.Add(GenerateSpawnItem(LayerEnum.Spellslinger));
                 num--;
             }
 
-            LogSomething("Spellslinger Done");
+            LogInfo("Spellslinger Done");
         }
 
         if (CustomGameOptions.StalkerOn > 0)
@@ -1639,11 +1448,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                SyndicateSupportRoles.Add(GenerateRoleSpawnItem(LayerEnum.Stalker));
+                SyndicateSupportRoles.Add(GenerateSpawnItem(LayerEnum.Stalker));
                 num--;
             }
 
-            LogSomething("Stalker Done");
+            LogInfo("Stalker Done");
         }
 
         if (CustomGameOptions.DrunkardOn > 0)
@@ -1652,11 +1461,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                SyndicateDisruptionRoles.Add(GenerateRoleSpawnItem(LayerEnum.Drunkard));
+                SyndicateDisruptionRoles.Add(GenerateSpawnItem(LayerEnum.Drunkard));
                 num--;
             }
 
-            LogSomething("Drunkard Done");
+            LogInfo("Drunkard Done");
         }
 
         if (CustomGameOptions.TimeKeeperOn > 0)
@@ -1665,11 +1474,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                SyndicatePowerRoles.Add(GenerateRoleSpawnItem(LayerEnum.TimeKeeper));
+                SyndicatePowerRoles.Add(GenerateSpawnItem(LayerEnum.TimeKeeper));
                 num--;
             }
 
-            LogSomething("Time Keeper Done");
+            LogInfo("Time Keeper Done");
         }
 
         if (CustomGameOptions.SilencerOn > 0)
@@ -1678,11 +1487,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                SyndicateDisruptionRoles.Add(GenerateRoleSpawnItem(LayerEnum.Silencer));
+                SyndicateDisruptionRoles.Add(GenerateSpawnItem(LayerEnum.Silencer));
                 num--;
             }
 
-            LogSomething("Silencer Done");
+            LogInfo("Silencer Done");
         }
 
         if (IsClassic || IsCustom)
@@ -1737,7 +1546,7 @@ public static class RoleGen
                 IntruderRoles.Sort(URandom.RandomRangeInt(minInt, maxInt + 1));
 
                 while (IntruderRoles.Count < imps)
-                    IntruderRoles.Add(GenerateRoleSpawnItem(LayerEnum.Impostor));
+                    IntruderRoles.Add(GenerateSpawnItem(LayerEnum.Impostor));
 
                 IntruderRoles.Shuffle();
             }
@@ -1792,7 +1601,7 @@ public static class RoleGen
                 SyndicateRoles.Sort(URandom.RandomRangeInt(minSyn, maxSyn + 1));
 
                 while (SyndicateRoles.Count < syn)
-                    SyndicateRoles.Add(GenerateRoleSpawnItem(LayerEnum.Anarchist));
+                    SyndicateRoles.Add(GenerateSpawnItem(LayerEnum.Anarchist));
 
                 SyndicateRoles.Shuffle();
             }
@@ -1916,12 +1725,12 @@ public static class RoleGen
                 CrewRoles.Sort(URandom.RandomRangeInt(minCrew, maxCrew + 1));
 
                 while (CrewRoles.Count < crew)
-                    CrewRoles.Add(GenerateRoleSpawnItem(LayerEnum.Crewmate));
+                    CrewRoles.Add(GenerateSpawnItem(LayerEnum.Crewmate));
 
                 CrewRoles.Shuffle();
             }
 
-            LogSomething("Classic/Custom Sorting Done");
+            LogInfo("Classic/Custom Sorting Done");
         }
         else if (IsAA)
         {
@@ -1935,7 +1744,7 @@ public static class RoleGen
             IntruderRoles.Shuffle();
             NeutralRoles.Shuffle();
 
-            LogSomething("All Any Sorting Done");
+            LogInfo("All Any Sorting Done");
         }
 
         if (CustomGameOptions.AltImps)
@@ -1954,15 +1763,15 @@ public static class RoleGen
         var spawnList = AllRoles;
 
         while (spawnList.Count < players.Count)
-            spawnList.Add(GenerateRoleSpawnItem(LayerEnum.Crewmate));
+            spawnList.Add(GenerateSpawnItem(LayerEnum.Crewmate));
 
         if (!spawnList.Any(x => CrewRoles.Contains(x) || x.ID == LayerEnum.Crewmate))
         {
             spawnList.Remove(spawnList.Random());
-            spawnList.Add(CrewRoles.Count > 0 ? CrewRoles.Random() : GenerateRoleSpawnItem(LayerEnum.Crewmate));
+            spawnList.Add(CrewRoles.Count > 0 ? CrewRoles.Random() : GenerateSpawnItem(LayerEnum.Crewmate));
 
             if (TownOfUsReworked.IsTest)
-                LogSomething("Added Solo Crew");
+                LogInfo("Added Solo Crew");
         }
 
         if (!spawnList.Any(x => x.ID == LayerEnum.Dracula) && spawnList.Any(x => x.ID == LayerEnum.VampireHunter))
@@ -1971,7 +1780,7 @@ public static class RoleGen
 
             while (count > 0)
             {
-                spawnList.Add(GenerateRoleSpawnItem(LayerEnum.Vigilante));
+                spawnList.Add(GenerateSpawnItem(LayerEnum.Vigilante));
                 count--;
             }
         }
@@ -1983,37 +1792,46 @@ public static class RoleGen
         }
 
         spawnList.Shuffle();
-        LogSomething("Layers Sorted");
+        LogInfo("Layers Sorted");
 
         if (TownOfUsReworked.IsTest)
         {
             var ids = "";
 
-            foreach (var (_, id, _) in spawnList)
-                ids += $" {id}";
+            foreach (var spawn in spawnList)
+                ids += $" {spawn.ID}";
 
-            LogSomething("Roles in the game: " + ids);
+            LogMessage("Roles in the game: " + ids);
         }
 
         while (players.Count > 0 && spawnList.Count > 0)
             Gen(players.TakeFirst(), (int)spawnList.TakeFirst().ID, PlayerLayerEnum.Role);
 
-        LogSomething("Role Gen End");
+        LogInfo("Role Gen End");
     }
+
+    private static bool CannotAdd(LayerEnum id) => AllRoles.Any(x => x.ID == id && x.Unique) || CustomOption.GetOptions<RoleListEntryOption>(CustomOptionType.Entry).Any(x =>
+        x.Name.Contains("Ban") && x.Get() == id) || (id == LayerEnum.Crewmate && CustomGameOptions.BanCrewmate) || (id == LayerEnum.Impostor && CustomGameOptions.BanImpostor) || (id ==
+        LayerEnum.Anarchist && CustomGameOptions.BanAnarchist);
 
     private static void GenRoleList()
     {
-        LogSomething("Role Gen Start");
+        LogInfo("Role Gen Start");
         var players = CustomPlayer.AllPlayers;
         var entries = CustomOption.GetOptions<RoleListEntryOption>(CustomOptionType.Entry).Where(x => x.Name.Contains("Entry"));
         var bans = CustomOption.GetOptions<RoleListEntryOption>(CustomOptionType.Entry).Where(x => x.Name.Contains("Ban"));
         var alignments = entries.Where(x => AlignmentEntries.Contains(x.Get())).ToList();
         var randoms = entries.Where(x => RandomEntries.Contains(x.Get())).ToList();
         var roles = entries.Where(x => Alignments.Any(y => y.Contains(x.Get()))).ToList();
-        var anies = entries.Where(x => x.Get() == Any).ToList();
+        var anies = entries.Where(x => x.Get() == LayerEnum.Any).ToList();
         //I have no idea what plural for any is lmao
 
         AllRoles.Clear();
+
+        SetPostmortals.PhantomOn = CustomGameOptions.EnablePhantom;
+        SetPostmortals.RevealerOn = CustomGameOptions.EnableRevealer;
+        SetPostmortals.BansheeOn = CustomGameOptions.EnableBanshee;
+        SetPostmortals.GhoulOn = CustomGameOptions.EnableGhoul;
 
         foreach (var entry in roles)
         {
@@ -2023,10 +1841,10 @@ public static class RoleGen
 
             while (cachedCount == AllRoles.Count)
             {
-                ratelimit++;
-
-                if (!AllRoles.Any(x => x.ID == id && x.Unique) && !bans.Any(x => x.Get() == id))
-                    AllRoles.Add(GenerateRoleSpawnItem(id));
+                if (CannotAdd(id))
+                    ratelimit++;
+                else
+                    AllRoles.Add(GenerateSpawnItem(id));
 
                 if (ratelimit > 1000)
                     break;
@@ -2042,8 +1860,6 @@ public static class RoleGen
 
             while (cachedCount == AllRoles.Count)
             {
-                ratelimit++;
-
                 if (id == LayerEnum.CrewAudit)
                     random = CA.Random();
                 else if (id == LayerEnum.CrewInvest)
@@ -2084,9 +1900,17 @@ public static class RoleGen
                     random = SD.Random();
                 else if (id == LayerEnum.SyndicateKill)
                     random = SyK.Random();
+                else if (id == LayerEnum.CrewUtil)
+                    random = CU.Random();
+                else if (id == LayerEnum.IntruderUtil)
+                    random = IU.Random();
+                else if (id == LayerEnum.SyndicateUtil)
+                    random = SU.Random();
 
-                if (!AllRoles.Any(x => x.ID == random && x.Unique) && !bans.Any(x => x.Get() == random) && random != LayerEnum.None)
-                    AllRoles.Add(GenerateRoleSpawnItem(random));
+                if (CannotAdd(id))
+                    ratelimit++;
+                else
+                    AllRoles.Add(GenerateSpawnItem(random));
 
                 if (ratelimit > 1000)
                     break;
@@ -2102,8 +1926,6 @@ public static class RoleGen
 
             while (cachedCount == AllRoles.Count)
             {
-                ratelimit++;
-
                 if (id == LayerEnum.RandomCrew)
                     random = Crew.Random().Random();
                 else if (id == LayerEnum.RandomNeutral)
@@ -2113,8 +1935,10 @@ public static class RoleGen
                 else if (id == LayerEnum.RandomSyndicate)
                     random = Syndicate.Random().Random();
 
-                if (!AllRoles.Any(x => x.ID == random && x.Unique) && !bans.Any(x => x.Get() == random) && random != LayerEnum.None)
-                    AllRoles.Add(GenerateRoleSpawnItem(random));
+                if (CannotAdd(id))
+                    ratelimit++;
+                else
+                    AllRoles.Add(GenerateSpawnItem(random));
 
                 if (ratelimit > 1000)
                     break;
@@ -2129,44 +1953,45 @@ public static class RoleGen
             while (cachedCount == AllRoles.Count)
             {
                 var random = Alignments.Random().Random();
-                ratelimit++;
 
-                if (!AllRoles.Any(x => x.ID == random && x.Unique) && !bans.Any(x => x.Get() == random))
-                    AllRoles.Add(GenerateRoleSpawnItem(random));
+                if (CannotAdd(random))
+                    ratelimit++;
+                else
+                    AllRoles.Add(GenerateSpawnItem(random));
 
                 if (ratelimit > 1000)
                     break;
             }
         }
 
-        //Added rate limits to ensure the loops do not go on forveer if roles have been set to unique
+        //Added rate limits to ensure the loops do not go on forever if roles have been set to unique
 
         //In case if the ratelimits disallow the spawning of roles from the role list, vanilla Crewmate should spawn
         while (AllRoles.Count < players.Count)
-            AllRoles.Add(GenerateRoleSpawnItem(LayerEnum.Crewmate));
+            AllRoles.Add(GenerateSpawnItem(LayerEnum.Crewmate));
 
         var spawnList = AllRoles;
         spawnList.Shuffle();
 
-        LogSomething("Layers Sorted");
+        LogInfo("Layers Sorted");
 
         if (TownOfUsReworked.IsTest)
         {
             var ids = "";
 
-            foreach (var (_, id, _) in spawnList)
-                ids += $" {id}";
+            foreach (var spawn in spawnList)
+                ids += $" {spawn.ID}";
 
-            LogSomething("Roles in the game: " + ids);
+            LogMessage("Roles in the game: " + ids);
         }
 
         while (players.Count > 0 && spawnList.Count > 0)
             Gen(players.TakeFirst(), (int)spawnList.TakeFirst().ID, PlayerLayerEnum.Role);
 
-        LogSomething("Role Spawn Done");
+        LogInfo("Role Spawn Done");
     }
 
-    private static (int Chance, LayerEnum ID, bool Unique) GenerateRoleSpawnItem(LayerEnum id)
+    private static GenerationData GenerateSpawnItem(LayerEnum id)
     {
         var things = id switch
         {
@@ -2248,16 +2073,6 @@ public static class RoleGen
             LayerEnum.Ambusher => (CustomGameOptions.AmbusherOn, CustomGameOptions.UniqueAmbusher),
             LayerEnum.Crusader => (CustomGameOptions.CrusaderOn, CustomGameOptions.UniqueCrusader),
             LayerEnum.Silencer => (CustomGameOptions.SilencerOn, CustomGameOptions.UniqueSilencer),
-            _ => throw new NotImplementedException()
-        };
-
-        return (things.Item1, id, things.Item2);
-    }
-
-    private static (int Chance, LayerEnum ID, bool Unique) GenerateAbilitySpawnItem(LayerEnum id)
-    {
-        var things = id switch
-        {
             LayerEnum.CrewAssassin => (CustomGameOptions.CrewAssassinOn, CustomGameOptions.UniqueCrewAssassin),
             LayerEnum.IntruderAssassin => (CustomGameOptions.IntruderAssassinOn, CustomGameOptions.UniqueIntruderAssassin),
             LayerEnum.SyndicateAssassin => (CustomGameOptions.SyndicateAssassinOn, CustomGameOptions.UniqueSyndicateAssassin),
@@ -2275,16 +2090,6 @@ public static class RoleGen
             LayerEnum.Torch => (CustomGameOptions.TorchOn, CustomGameOptions.UniqueTorch),
             LayerEnum.Tunneler => (CustomGameOptions.TunnelerOn, CustomGameOptions.UniqueTunneler),
             LayerEnum.Underdog => (CustomGameOptions.UnderdogOn, CustomGameOptions.UniqueUnderdog),
-            _ => throw new NotImplementedException()
-        };
-
-        return (things.Item1, id, things.Item2);
-    }
-
-    private static (int Chance, LayerEnum ID, bool Unique) GenerateModifierSpawnItem(LayerEnum id)
-    {
-        var things = id switch
-        {
             LayerEnum.Astral => (CustomGameOptions.AstralOn, CustomGameOptions.UniqueAstral),
             LayerEnum.Bait => (CustomGameOptions.BaitOn, CustomGameOptions.UniqueBait),
             LayerEnum.Coward => (CustomGameOptions.CowardOn, CustomGameOptions.UniqueCoward),
@@ -2298,16 +2103,6 @@ public static class RoleGen
             LayerEnum.VIP => (CustomGameOptions.VIPOn, CustomGameOptions.UniqueVIP),
             LayerEnum.Volatile => (CustomGameOptions.VolatileOn, CustomGameOptions.UniqueVolatile),
             LayerEnum.Yeller => (CustomGameOptions.YellerOn, CustomGameOptions.UniqueYeller),
-            _ => throw new NotImplementedException(),
-        };
-
-        return (things.Item1, id, things.Item2);
-    }
-
-    private static (int Chance, LayerEnum ID, bool Unique) GenerateObjectifierSpawnItem(LayerEnum id)
-    {
-        var things = id switch
-        {
             LayerEnum.Allied => (CustomGameOptions.AlliedOn, CustomGameOptions.UniqueAllied),
             LayerEnum.Corrupted => (CustomGameOptions.CorruptedOn, CustomGameOptions.UniqueCorrupted),
             LayerEnum.Defector => (CustomGameOptions.DefectorOn, CustomGameOptions.UniqueDefector),
@@ -2322,7 +2117,7 @@ public static class RoleGen
             _ => throw new NotImplementedException(),
         };
 
-        return (things.Item1, id, things.Item2);
+        return new(things.Item1, id, things.Item2);
     }
 
     private static void GenAbilities()
@@ -2336,11 +2131,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                AllAbilities.Add(GenerateAbilitySpawnItem(LayerEnum.CrewAssassin));
+                AllAbilities.Add(GenerateSpawnItem(LayerEnum.CrewAssassin));
                 num--;
             }
 
-            LogSomething("Crew Assassin Done");
+            LogInfo("Crew Assassin Done");
         }
 
         if (CustomGameOptions.SyndicateAssassinOn > 0)
@@ -2349,11 +2144,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                AllAbilities.Add(GenerateAbilitySpawnItem(LayerEnum.SyndicateAssassin));
+                AllAbilities.Add(GenerateSpawnItem(LayerEnum.SyndicateAssassin));
                 num--;
             }
 
-            LogSomething("Syndicate Assassin Done");
+            LogInfo("Syndicate Assassin Done");
         }
 
         if (CustomGameOptions.IntruderAssassinOn > 0)
@@ -2362,11 +2157,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                AllAbilities.Add(GenerateAbilitySpawnItem(LayerEnum.IntruderAssassin));
+                AllAbilities.Add(GenerateSpawnItem(LayerEnum.IntruderAssassin));
                 num--;
             }
 
-            LogSomething("Intruder Assassin Done");
+            LogInfo("Intruder Assassin Done");
         }
 
         if (CustomGameOptions.NeutralAssassinOn > 0)
@@ -2375,11 +2170,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                AllAbilities.Add(GenerateAbilitySpawnItem(LayerEnum.NeutralAssassin));
+                AllAbilities.Add(GenerateSpawnItem(LayerEnum.NeutralAssassin));
                 num--;
             }
 
-            LogSomething("Neutral Assassin Done");
+            LogInfo("Neutral Assassin Done");
         }
 
         if (CustomGameOptions.RuthlessOn > 0)
@@ -2388,11 +2183,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                AllAbilities.Add(GenerateAbilitySpawnItem(LayerEnum.Ruthless));
+                AllAbilities.Add(GenerateSpawnItem(LayerEnum.Ruthless));
                 num--;
             }
 
-            LogSomething("Ruthless Done");
+            LogInfo("Ruthless Done");
         }
 
         if (CustomGameOptions.SnitchOn > 0)
@@ -2401,11 +2196,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                AllAbilities.Add(GenerateAbilitySpawnItem(LayerEnum.Snitch));
+                AllAbilities.Add(GenerateSpawnItem(LayerEnum.Snitch));
                 num--;
             }
 
-            LogSomething("Snitch Done");
+            LogInfo("Snitch Done");
         }
 
         if (CustomGameOptions.InsiderOn > 0 && CustomGameOptions.AnonymousVoting)
@@ -2414,11 +2209,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                AllAbilities.Add(GenerateAbilitySpawnItem(LayerEnum.Insider));
+                AllAbilities.Add(GenerateSpawnItem(LayerEnum.Insider));
                 num--;
             }
 
-            LogSomething("Insider Done");
+            LogInfo("Insider Done");
         }
 
         if (CustomGameOptions.MultitaskerOn > 0)
@@ -2427,11 +2222,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                AllAbilities.Add(GenerateAbilitySpawnItem(LayerEnum.Multitasker));
+                AllAbilities.Add(GenerateSpawnItem(LayerEnum.Multitasker));
                 num--;
             }
 
-            LogSomething("Multitasker Done");
+            LogInfo("Multitasker Done");
         }
 
         if (CustomGameOptions.RadarOn > 0)
@@ -2440,11 +2235,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                AllAbilities.Add(GenerateAbilitySpawnItem(LayerEnum.Radar));
+                AllAbilities.Add(GenerateSpawnItem(LayerEnum.Radar));
                 num--;
             }
 
-            LogSomething("Radar Done");
+            LogInfo("Radar Done");
         }
 
         if (CustomGameOptions.TiebreakerOn > 0)
@@ -2453,11 +2248,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                AllAbilities.Add(GenerateAbilitySpawnItem(LayerEnum.Tiebreaker));
+                AllAbilities.Add(GenerateSpawnItem(LayerEnum.Tiebreaker));
                 num--;
             }
 
-            LogSomething("Tiebreaker Done");
+            LogInfo("Tiebreaker Done");
         }
 
         if (CustomGameOptions.TorchOn > 0)
@@ -2466,11 +2261,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                AllAbilities.Add(GenerateAbilitySpawnItem(LayerEnum.Torch));
+                AllAbilities.Add(GenerateSpawnItem(LayerEnum.Torch));
                 num--;
             }
 
-            LogSomething("Torch Done");
+            LogInfo("Torch Done");
         }
 
         if (CustomGameOptions.UnderdogOn > 0)
@@ -2479,11 +2274,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                AllAbilities.Add(GenerateAbilitySpawnItem(LayerEnum.Underdog));
+                AllAbilities.Add(GenerateSpawnItem(LayerEnum.Underdog));
                 num--;
             }
 
-            LogSomething("Underdog Done");
+            LogInfo("Underdog Done");
         }
 
         if (CustomGameOptions.TunnelerOn > 0 && CustomGameOptions.WhoCanVent == WhoCanVentOptions.Default)
@@ -2492,11 +2287,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                AllAbilities.Add(GenerateAbilitySpawnItem(LayerEnum.Tunneler));
+                AllAbilities.Add(GenerateSpawnItem(LayerEnum.Tunneler));
                 num--;
             }
 
-            LogSomething("Tunneler Done");
+            LogInfo("Tunneler Done");
         }
 
         if (CustomGameOptions.NinjaOn > 0)
@@ -2505,11 +2300,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                AllAbilities.Add(GenerateAbilitySpawnItem(LayerEnum.Ninja));
+                AllAbilities.Add(GenerateSpawnItem(LayerEnum.Ninja));
                 num--;
             }
 
-            LogSomething("Ninja Done");
+            LogInfo("Ninja Done");
         }
 
         if (CustomGameOptions.ButtonBarryOn > 0)
@@ -2518,11 +2313,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                AllAbilities.Add(GenerateAbilitySpawnItem(LayerEnum.ButtonBarry));
+                AllAbilities.Add(GenerateSpawnItem(LayerEnum.ButtonBarry));
                 num--;
             }
 
-            LogSomething("Button Barry Done");
+            LogInfo("Button Barry Done");
         }
 
         if (CustomGameOptions.PoliticianOn > 0)
@@ -2531,11 +2326,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                AllAbilities.Add(GenerateAbilitySpawnItem(LayerEnum.Politician));
+                AllAbilities.Add(GenerateSpawnItem(LayerEnum.Politician));
                 num--;
             }
 
-            LogSomething("Politician Done");
+            LogInfo("Politician Done");
         }
 
         if (CustomGameOptions.SwapperOn > 0)
@@ -2544,11 +2339,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                AllAbilities.Add(GenerateAbilitySpawnItem(LayerEnum.Swapper));
+                AllAbilities.Add(GenerateSpawnItem(LayerEnum.Swapper));
                 num--;
             }
 
-            LogSomething("Swapper Done");
+            LogInfo("Swapper Done");
         }
 
         var maxAb = CustomGameOptions.MaxAbilities;
@@ -2628,10 +2423,10 @@ public static class RoleGen
         {
             var ids = "";
 
-            foreach (var (_, id, _) in spawnList)
-                ids += $" {id}";
+            foreach (var spawn in spawnList)
+                ids += $" {spawn.ID}";
 
-            LogSomething("Abilities in the game: " + ids);
+            LogMessage("Abilities in the game: " + ids);
         }
 
         while (canHaveSnitch.Count > 0 || (CustomGameOptions.WhoCanVent == WhoCanVentOptions.Default && canHaveTunnelerAbility.Count > 0) || canHaveIntruderAbility.Count > 0 ||
@@ -2708,11 +2503,11 @@ public static class RoleGen
                 if (Ability.GetAbility(assigned) == null)
                     Gen(assigned, (int)id, PlayerLayerEnum.Ability);
                 else
-                    spawnList.Add(GenerateAbilitySpawnItem(id));
+                    spawnList.Add(GenerateSpawnItem(id));
             }
         }
 
-        LogSomething("Abilities Done");
+        LogInfo("Abilities Done");
     }
 
     private static void GenObjectifiers()
@@ -2722,28 +2517,28 @@ public static class RoleGen
 
         if (CustomGameOptions.LoversOn > 0 && GameData.Instance.PlayerCount > 4)
         {
-            num = CustomGameOptions.LoversCount;
+            num = CustomGameOptions.LoversCount * 2;
 
             while (num > 0)
             {
-                AllObjectifiers.Add(GenerateObjectifierSpawnItem(LayerEnum.Lovers));
+                AllObjectifiers.Add(GenerateSpawnItem(LayerEnum.Lovers));
                 num--;
             }
 
-            LogSomething("Lovers Done");
+            LogInfo("Lovers Done");
         }
 
         if (CustomGameOptions.RivalsOn > 0 && GameData.Instance.PlayerCount > 3)
         {
-            num = CustomGameOptions.RivalsCount;
+            num = CustomGameOptions.RivalsCount * 2;
 
             while (num > 0)
             {
-                AllObjectifiers.Add(GenerateObjectifierSpawnItem(LayerEnum.Rivals));
+                AllObjectifiers.Add(GenerateSpawnItem(LayerEnum.Rivals));
                 num--;
             }
 
-            LogSomething("Rivals Done");
+            LogInfo("Rivals Done");
         }
 
         if (CustomGameOptions.FanaticOn > 0)
@@ -2752,11 +2547,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                AllObjectifiers.Add(GenerateObjectifierSpawnItem(LayerEnum.Fanatic));
+                AllObjectifiers.Add(GenerateSpawnItem(LayerEnum.Fanatic));
                 num--;
             }
 
-            LogSomething("Fanatic Done");
+            LogInfo("Fanatic Done");
         }
 
         if (CustomGameOptions.CorruptedOn > 0)
@@ -2765,11 +2560,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                AllObjectifiers.Add(GenerateObjectifierSpawnItem(LayerEnum.Corrupted));
+                AllObjectifiers.Add(GenerateSpawnItem(LayerEnum.Corrupted));
                 num--;
             }
 
-            LogSomething("Corrupted Done");
+            LogInfo("Corrupted Done");
         }
 
         if (CustomGameOptions.OverlordOn > 0)
@@ -2778,11 +2573,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                AllObjectifiers.Add(GenerateObjectifierSpawnItem(LayerEnum.Overlord));
+                AllObjectifiers.Add(GenerateSpawnItem(LayerEnum.Overlord));
                 num--;
             }
 
-            LogSomething("Overlord Done");
+            LogInfo("Overlord Done");
         }
 
         if (CustomGameOptions.AlliedOn > 0)
@@ -2791,11 +2586,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                AllObjectifiers.Add(GenerateObjectifierSpawnItem(LayerEnum.Allied));
+                AllObjectifiers.Add(GenerateSpawnItem(LayerEnum.Allied));
                 num--;
             }
 
-            LogSomething("Allied Done");
+            LogInfo("Allied Done");
         }
 
         if (CustomGameOptions.TraitorOn > 0)
@@ -2804,11 +2599,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                AllObjectifiers.Add(GenerateObjectifierSpawnItem(LayerEnum.Traitor));
+                AllObjectifiers.Add(GenerateSpawnItem(LayerEnum.Traitor));
                 num--;
             }
 
-            LogSomething("Traitor Done");
+            LogInfo("Traitor Done");
         }
 
         if (CustomGameOptions.TaskmasterOn > 0)
@@ -2817,11 +2612,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                AllObjectifiers.Add(GenerateObjectifierSpawnItem(LayerEnum.Taskmaster));
+                AllObjectifiers.Add(GenerateSpawnItem(LayerEnum.Taskmaster));
                 num--;
             }
 
-            LogSomething("Taskmaster Done");
+            LogInfo("Taskmaster Done");
         }
 
         if (CustomGameOptions.MafiaOn > 0)
@@ -2830,11 +2625,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                AllObjectifiers.Add(GenerateObjectifierSpawnItem(LayerEnum.Mafia));
+                AllObjectifiers.Add(GenerateSpawnItem(LayerEnum.Mafia));
                 num--;
             }
 
-            LogSomething("Mafia Done");
+            LogInfo("Mafia Done");
         }
 
         if (CustomGameOptions.DefectorOn > 0)
@@ -2843,24 +2638,24 @@ public static class RoleGen
 
             while (num > 0)
             {
-                AllObjectifiers.Add(GenerateObjectifierSpawnItem(LayerEnum.Defector));
+                AllObjectifiers.Add(GenerateSpawnItem(LayerEnum.Defector));
                 num--;
             }
 
-            LogSomething("Defector Done");
+            LogInfo("Defector Done");
         }
 
         if (CustomGameOptions.LinkedOn > 0 && Role.GetRoles(Faction.Neutral).Count > 1 && GameData.Instance.PlayerCount > 3)
         {
-            num = CustomGameOptions.LinkedCount;
+            num = CustomGameOptions.LinkedCount * 2;
 
             while (num > 0)
             {
-                AllObjectifiers.Add(GenerateObjectifierSpawnItem(LayerEnum.Linked));
+                AllObjectifiers.Add(GenerateSpawnItem(LayerEnum.Linked));
                 num--;
             }
 
-            LogSomething("Linked Done");
+            LogInfo("Linked Done");
         }
 
 
@@ -2907,10 +2702,10 @@ public static class RoleGen
         {
             var ids = "";
 
-            foreach (var (_, id, _) in spawnList)
-                ids += $" {id}";
+            foreach (var spawn in spawnList)
+                ids += $" {spawn.ID}";
 
-            LogSomething("Objectifiers in the game: " + ids);
+            LogMessage("Objectifiers in the game: " + ids);
         }
 
         while (canHaveNeutralObjectifier.Count > 0 || canHaveCrewObjectifier.Count > 0 || canHaveLoverorRival.Count > 1 || canHaveObjectifier.Count > 0 || canHaveDefector.Count > 0)
@@ -2918,7 +2713,7 @@ public static class RoleGen
             if (spawnList.Count == 0)
                 break;
 
-            var (_, id, _) = spawnList.TakeFirst();
+            var id = spawnList.TakeFirst().ID;
             LayerEnum[] LoverRival = { LayerEnum.Lovers, LayerEnum.Rivals };
             LayerEnum[] Crew = { LayerEnum.Corrupted, LayerEnum.Fanatic, LayerEnum.Traitor };
             LayerEnum[] Neutral = { LayerEnum.Taskmaster, LayerEnum.Overlord, LayerEnum.Linked };
@@ -2962,7 +2757,7 @@ public static class RoleGen
                 if (Objectifier.GetObjectifier(assigned) == null)
                     Gen(assigned, (int)id, PlayerLayerEnum.Objectifier);
                 else
-                    spawnList.Add(GenerateObjectifierSpawnItem(id));
+                    spawnList.Add(GenerateSpawnItem(id));
             }
 
             if (assignedOther != null)
@@ -2979,7 +2774,7 @@ public static class RoleGen
             }
         }
 
-        LogSomething("Objectifiers Done");
+        LogInfo("Objectifiers Done");
     }
 
     private static void GenModifiers()
@@ -2993,11 +2788,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                AllModifiers.Add(GenerateModifierSpawnItem(LayerEnum.Diseased));
+                AllModifiers.Add(GenerateSpawnItem(LayerEnum.Diseased));
                 num--;
             }
 
-            LogSomething("Diseased Done");
+            LogInfo("Diseased Done");
         }
 
         if (CustomGameOptions.BaitOn > 0)
@@ -3006,11 +2801,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                AllModifiers.Add(GenerateModifierSpawnItem(LayerEnum.Bait));
+                AllModifiers.Add(GenerateSpawnItem(LayerEnum.Bait));
                 num--;
             }
 
-            LogSomething("Bait Done");
+            LogInfo("Bait Done");
         }
 
         if (CustomGameOptions.DwarfOn > 0)
@@ -3019,11 +2814,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                AllModifiers.Add(GenerateModifierSpawnItem(LayerEnum.Dwarf));
+                AllModifiers.Add(GenerateSpawnItem(LayerEnum.Dwarf));
                 num--;
             }
 
-            LogSomething("Dwarf Done");
+            LogInfo("Dwarf Done");
         }
 
         if (CustomGameOptions.VIPOn > 0)
@@ -3032,11 +2827,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                AllModifiers.Add(GenerateModifierSpawnItem(LayerEnum.VIP));
+                AllModifiers.Add(GenerateSpawnItem(LayerEnum.VIP));
                 num--;
             }
 
-            LogSomething("VIP Done");
+            LogInfo("VIP Done");
         }
 
         if (CustomGameOptions.ShyOn > 0)
@@ -3045,11 +2840,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                AllModifiers.Add(GenerateModifierSpawnItem(LayerEnum.Shy));
+                AllModifiers.Add(GenerateSpawnItem(LayerEnum.Shy));
                 num--;
             }
 
-            LogSomething("Shy Done");
+            LogInfo("Shy Done");
         }
 
         if (CustomGameOptions.GiantOn > 0)
@@ -3058,11 +2853,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                AllModifiers.Add(GenerateModifierSpawnItem(LayerEnum.Giant));
+                AllModifiers.Add(GenerateSpawnItem(LayerEnum.Giant));
                 num--;
             }
 
-            LogSomething("Giant Done");
+            LogInfo("Giant Done");
         }
 
         if (CustomGameOptions.DrunkOn > 0)
@@ -3071,11 +2866,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                AllModifiers.Add(GenerateModifierSpawnItem(LayerEnum.Drunk));
+                AllModifiers.Add(GenerateSpawnItem(LayerEnum.Drunk));
                 num--;
             }
 
-            LogSomething("Drunk Done");
+            LogInfo("Drunk Done");
         }
 
         if (CustomGameOptions.CowardOn > 0)
@@ -3084,11 +2879,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                AllModifiers.Add(GenerateModifierSpawnItem(LayerEnum.Coward));
+                AllModifiers.Add(GenerateSpawnItem(LayerEnum.Coward));
                 num--;
             }
 
-            LogSomething("Coward Done");
+            LogInfo("Coward Done");
         }
 
         if (CustomGameOptions.VolatileOn > 0)
@@ -3097,11 +2892,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                AllModifiers.Add(GenerateModifierSpawnItem(LayerEnum.Volatile));
+                AllModifiers.Add(GenerateSpawnItem(LayerEnum.Volatile));
                 num--;
             }
 
-            LogSomething("Volatile Done");
+            LogInfo("Volatile Done");
         }
 
         if (CustomGameOptions.IndomitableOn > 0)
@@ -3110,11 +2905,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                AllModifiers.Add(GenerateModifierSpawnItem(LayerEnum.Indomitable));
+                AllModifiers.Add(GenerateSpawnItem(LayerEnum.Indomitable));
                 num--;
             }
 
-            LogSomething("Indomitable Done");
+            LogInfo("Indomitable Done");
         }
 
         if (CustomGameOptions.ProfessionalOn > 0)
@@ -3123,11 +2918,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                AllModifiers.Add(GenerateModifierSpawnItem(LayerEnum.Professional));
+                AllModifiers.Add(GenerateSpawnItem(LayerEnum.Professional));
                 num--;
             }
 
-            LogSomething("Professional Done");
+            LogInfo("Professional Done");
         }
 
         if (CustomGameOptions.AstralOn > 0)
@@ -3136,11 +2931,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                AllModifiers.Add(GenerateModifierSpawnItem(LayerEnum.Astral));
+                AllModifiers.Add(GenerateSpawnItem(LayerEnum.Astral));
                 num--;
             }
 
-            LogSomething("Astral Done");
+            LogInfo("Astral Done");
         }
 
         if (CustomGameOptions.YellerOn > 0)
@@ -3149,11 +2944,11 @@ public static class RoleGen
 
             while (num > 0)
             {
-                AllModifiers.Add(GenerateModifierSpawnItem(LayerEnum.Yeller));
+                AllModifiers.Add(GenerateSpawnItem(LayerEnum.Yeller));
                 num--;
             }
 
-            LogSomething("Yeller Done");
+            LogInfo("Yeller Done");
         }
 
 
@@ -3197,10 +2992,10 @@ public static class RoleGen
         {
             var ids = "";
 
-            foreach (var (_, id, _) in spawnList)
-                ids += $" {id}";
+            foreach (var spawn in spawnList)
+                ids += $" {spawn.ID}";
 
-            LogSomething("Modifiers in the game: " + ids);
+            LogMessage("Modifiers in the game: " + ids);
         }
 
         while (canHaveBait.Count > 0 || canHaveDiseased.Count > 0 || canHaveProfessional.Count > 0 || canHaveModifier.Count > 0)
@@ -3208,7 +3003,7 @@ public static class RoleGen
             if (spawnList.Count == 0)
                 break;
 
-            var (_, id, _) = spawnList.TakeFirst();
+            var id = spawnList.TakeFirst().ID;
             LayerEnum[] Bait = { LayerEnum.Bait };
             LayerEnum[] Diseased = { LayerEnum.Diseased };
             LayerEnum[] Professional = { LayerEnum.Professional };
@@ -3240,11 +3035,11 @@ public static class RoleGen
                 if (Modifier.GetModifier(assigned) == null)
                     Gen(assigned, (int)id, PlayerLayerEnum.Modifier);
                 else
-                    spawnList.Add(GenerateModifierSpawnItem(id));
+                    spawnList.Add(GenerateSpawnItem(id));
             }
         }
 
-        LogSomething("Modifiers Done");
+        LogInfo("Modifiers Done");
     }
 
     private static void SetTargets()
@@ -3292,7 +3087,7 @@ public static class RoleGen
                 CallRpc(CustomRPC.Target, TargetRPC.SetAlliedFaction, ally.Player, faction);
             }
 
-            LogSomething("Allied Faction Set Done");
+            LogInfo("Allied Faction Set Done");
         }
 
         if (CustomGameOptions.LoversOn > 0)
@@ -3315,7 +3110,7 @@ public static class RoleGen
                 CallRpc(CustomRPC.Target, TargetRPC.SetCouple, lover.Player, other.Player);
 
                 if (TownOfUsReworked.IsTest)
-                    LogSomething($"Lovers = {lover.PlayerName} & {other.PlayerName}");
+                    LogMessage($"Lovers = {lover.PlayerName} & {other.PlayerName}");
             }
 
             foreach (var lover in lovers)
@@ -3324,7 +3119,7 @@ public static class RoleGen
                     NullLayer(lover.Player, PlayerLayerEnum.Objectifier);
             }
 
-            LogSomething("Lovers Set");
+            LogInfo("Lovers Set");
         }
 
         if (CustomGameOptions.RivalsOn > 0)
@@ -3347,7 +3142,7 @@ public static class RoleGen
                 CallRpc(CustomRPC.Target, TargetRPC.SetDuo, rival.Player, other.Player);
 
                 if (TownOfUsReworked.IsTest)
-                    LogSomething($"Rivals = {rival.PlayerName} & {other.PlayerName}");
+                    LogMessage($"Rivals = {rival.PlayerName} & {other.PlayerName}");
             }
 
             foreach (var rival in rivals)
@@ -3356,7 +3151,7 @@ public static class RoleGen
                     NullLayer(rival.Player, PlayerLayerEnum.Objectifier);
             }
 
-            LogSomething("Rivals Set");
+            LogInfo("Rivals Set");
         }
 
         if (CustomGameOptions.LinkedOn > 0)
@@ -3379,7 +3174,7 @@ public static class RoleGen
                 CallRpc(CustomRPC.Target, TargetRPC.SetLinked, link.Player, other.Player);
 
                 if (TownOfUsReworked.IsTest)
-                    LogSomething($"Linked = {link.PlayerName} & {other.PlayerName}");
+                    LogMessage($"Linked = {link.PlayerName} & {other.PlayerName}");
             }
 
             foreach (var link in linked)
@@ -3388,7 +3183,7 @@ public static class RoleGen
                     NullLayer(link.Player, PlayerLayerEnum.Objectifier);
             }
 
-            LogSomething("Linked Set");
+            LogInfo("Linked Set");
         }
 
         if (CustomGameOptions.MafiaOn > 0)
@@ -3399,7 +3194,7 @@ public static class RoleGen
                     NullLayer(player, PlayerLayerEnum.Objectifier);
             }
 
-            LogSomething("Mafia Set");
+            LogInfo("Mafia Set");
         }
 
         if (CustomGameOptions.ExecutionerOn > 0 && !CustomGameOptions.ExecutionerCanPickTargets)
@@ -3423,11 +3218,11 @@ public static class RoleGen
                     CallRpc(CustomRPC.Target, TargetRPC.SetExeTarget, exe, exe.TargetPlayer);
 
                     if (TownOfUsReworked.IsTest)
-                        LogSomething($"Exe Target = {exe.TargetPlayer?.name}");
+                        LogMessage($"Exe Target = {exe.TargetPlayer?.name}");
                 }
             }
 
-            LogSomething("Exe Targets Set");
+            LogInfo("Exe Targets Set");
         }
 
         if (CustomGameOptions.GuesserOn > 0 && !CustomGameOptions.GuesserCanPickTargets)
@@ -3452,11 +3247,11 @@ public static class RoleGen
                     CallRpc(CustomRPC.Target, TargetRPC.SetGuessTarget, guess.Player, guess.TargetPlayer);
 
                     if (TownOfUsReworked.IsTest)
-                        LogSomething($"Guess Target = {guess.TargetPlayer?.name}");
+                        LogMessage($"Guess Target = {guess.TargetPlayer?.name}");
                 }
             }
 
-            LogSomething("Guess Targets Set");
+            LogInfo("Guess Targets Set");
         }
 
         if (CustomGameOptions.GuardianAngelOn > 0 && !CustomGameOptions.GuardianAngelCanPickTargets)
@@ -3480,11 +3275,11 @@ public static class RoleGen
                     CallRpc(CustomRPC.Target, TargetRPC.SetGATarget, ga.Player, ga.TargetPlayer);
 
                     if (TownOfUsReworked.IsTest)
-                        LogSomething($"GA Target = {ga.TargetPlayer?.name}");
+                        LogMessage($"GA Target = {ga.TargetPlayer?.name}");
                 }
             }
 
-            LogSomething("GA Target Set");
+            LogInfo("GA Target Set");
         }
 
         if (CustomGameOptions.BountyHunterOn > 0 && !CustomGameOptions.BountyHunterCanPickTargets)
@@ -3508,11 +3303,11 @@ public static class RoleGen
                     CallRpc(CustomRPC.Target, TargetRPC.SetBHTarget, bh.Player, bh.TargetPlayer);
 
                     if (TownOfUsReworked.IsTest)
-                        LogSomething($"BH Target = {bh.TargetPlayer?.name}");
+                        LogMessage($"BH Target = {bh.TargetPlayer?.name}");
                 }
             }
 
-            LogSomething("BH Targets Set");
+            LogInfo("BH Targets Set");
         }
 
         if (CustomGameOptions.ActorOn > 0 && !CustomGameOptions.ActorCanPickRole)
@@ -3535,11 +3330,11 @@ public static class RoleGen
                     CallRpc(CustomRPC.Target, TargetRPC.SetActPretendList, act.Player, act.TargetRole);
 
                     if (TownOfUsReworked.IsTest)
-                        LogSomething(act.PretendRoles);
+                        LogMessage($"Act Target = {act.PretendRoles}");
                 }
             }
 
-            LogSomething("Act Variables Set");
+            LogInfo("Act Variables Set");
         }
 
         if (CustomGameOptions.JackalOn > 0)
@@ -3588,10 +3383,10 @@ public static class RoleGen
                 }
 
                 if (TownOfUsReworked.IsTest)
-                    LogSomething($"Recruits = {jackal.GoodRecruit?.name} (Good) & {jackal.EvilRecruit?.name} (Evil)");
+                    LogMessage($"Recruits = {jackal.GoodRecruit?.name} (Good) & {jackal.EvilRecruit?.name} (Evil)");
             }
 
-            LogSomething("Jackal Recruits Set");
+            LogInfo("Jackal Recruits Set");
         }
 
         foreach (var player in CustomPlayer.AllPlayers)
@@ -3608,21 +3403,11 @@ public static class RoleGen
             if (!Role.GetRole(player))
                 NullLayer(player, PlayerLayerEnum.Role);
 
-            if ((!CustomGameOptions.MayorButton && player.Is(LayerEnum.Mayor)) || (!CustomGameOptions.SwapperButton && player.Is(LayerEnum.Swapper)) || (!CustomGameOptions.ActorButton
-                && player.Is(LayerEnum.Actor)) || player.Is(LayerEnum.Shy) || (!CustomGameOptions.ExecutionerButton && player.Is(LayerEnum.Executioner)) ||
-                (!CustomGameOptions.GuesserButton && player.Is(LayerEnum.Guesser)) || (!CustomGameOptions.JesterButton && player.Is(LayerEnum.Jester)) ||
-                (!CustomGameOptions.PoliticianButton && player.Is(LayerEnum.Politician)) || (!CustomGameOptions.DictatorButton && player.Is(LayerEnum.Dictator)) ||
-                (!CustomGameOptions.MonarchButton && player.Is(LayerEnum.Monarch)))
-            {
-                player.RemainingEmergencies = 0;
-                CallRpc(CustomRPC.Misc, MiscRPC.RemoveMeetings, player);
-            }
-
             if (TownOfUsReworked.IsTest)
-                LogSomething($"{player.name} -> {Role.GetRole(player)}, {Objectifier.GetObjectifier(player)}, {Modifier.GetModifier(player)}, {Ability.GetAbility(player)}");
+                LogMessage($"{player.name} -> {Role.GetRole(player)}, {Objectifier.GetObjectifier(player)}, {Modifier.GetModifier(player)}, {Ability.GetAbility(player)}");
         }
 
-        LogSomething("Players Set");
+        LogInfo("Players Set");
     }
 
     public static void ResetEverything()
@@ -3638,7 +3423,7 @@ public static class RoleGen
         Role.CabalWin = false;
         Role.SectWin = false;
         Role.ReanimatedWin = false;
-        Role.InfectorsWin = false;
+        Role.ApocalypseWins = false;
 
         Role.NKWins = false;
 
@@ -3679,6 +3464,7 @@ public static class RoleGen
         Role.Buttons.Clear();
 
         UpdateNames.PlayerNames.Clear();
+        UpdateNames.ColorNames.Clear();
 
         ConfirmEjects.LastExiled = null;
 
@@ -3738,10 +3524,11 @@ public static class RoleGen
 
         CustomButton.AllButtons.Clear();
 
-        Ash.AllPiles.Clear();
-        Objects.Range.AllItems.Clear();
+        Ash.DestroyAll();
+        Objects.Range.DestroyAll();
 
         GameSettings.SettingsPage = 0;
+        GameSettings.CurrentPage = 1;
 
         Assassin.RemainingKills = CustomGameOptions.AssassinKills;
 
@@ -3753,16 +3540,38 @@ public static class RoleGen
         FirstDead = null;
 
         //Role.IsLeft = false;
+
+        PlayerLayer.DeleteAll();
+
+        CustomMeeting.AllCustomMeetings.ForEach(x => x.Destroy());
+        CustomMeeting.AllCustomMeetings.Clear();
+
+        CustomButton.AllButtons.ForEach(x => x.Destroy());
+        CustomButton.AllButtons.Clear();
+
+        CustomArrow.AllArrows.ForEach(x => x.Destroy());
+        CustomArrow.AllArrows.Clear();
+
+        CustomMenu.AllMenus.ForEach(x => x.Destroy());
+        CustomMenu.AllMenus.Clear();
+
+        Ash.DestroyAll();
+        Objects.Range.DestroyAll();
+        OtherButtonsPatch.CloseMenus();
+
+        BodyLocations.Clear();
     }
 
     public static void BeginRoleGen()
     {
-        if (IsHnS)
+        LogInfo("RPC SET ROLE");
+
+        if (IsHnS || !AmongUsClient.Instance.AmHost)
             return;
 
         ResetEverything();
         CallRpc(CustomRPC.Misc, MiscRPC.Start);
-        LogSomething("Cleared Variables");
+        LogInfo("Cleared Variables");
 
         if (IsKilling)
             GenKilling();
@@ -3774,6 +3583,8 @@ public static class RoleGen
             GenClassicCustomAA();
 
         PureCrew = CustomPlayer.AllPlayers.Where(x => x.Is(Faction.Crew)).ToList().Random();
+        CallRpc(CustomRPC.Misc, MiscRPC.SyncPureCrew, PureCrew);
+        LogInfo("Synced Pure Crew");
 
         if (!IsVanilla)
         {
@@ -3965,11 +3776,7 @@ public static class RoleGen
         CallRpc(CustomRPC.Misc, MiscRPC.SetLayer, id, player, rpc);
     }
 
-    private static void NullLayer(PlayerControl player, PlayerLayerEnum rpc)
-    {
-        SetLayer(10000, player, rpc);
-        CallRpc(CustomRPC.Misc, MiscRPC.SetLayer, 10000, player, rpc);
-    }
+    private static void NullLayer(PlayerControl player, PlayerLayerEnum rpc) => Gen(player, 10000, rpc);
 
     public static void SetLayer(int id, PlayerControl player, PlayerLayerEnum rpc)
     {
@@ -4024,7 +3831,12 @@ public static class RoleGen
         var converter = PlayerById(convert);
 
         if (condition || Convertible <= 0 || PureCrew == converted)
-            Interact(converter, converted, true, true);
+        {
+            if (AmongUsClient.Instance.AmHost)
+                Interact(converter, converted, true, true);
+
+            return;
+        }
         else
         {
             var role1 = Role.GetRole(converted);

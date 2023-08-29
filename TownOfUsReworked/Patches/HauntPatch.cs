@@ -33,12 +33,12 @@ public static class HauntPatch
         if (ability != null && ability.Type != LayerEnum.None)
             otherString += $" {ability.Name}";
 
-        var String = objectiveString;
+        var filter = objectiveString;
 
         if (otherString.Length != 0)
-            String += "\n" + otherString;
+            filter += "\n" + otherString;
 
-        __instance.FilterText.text = $"<size=75%>{String}</size>";
+        __instance.FilterText.text = $"<size=75%>{filter}</size>";
         return false;
     }
 }

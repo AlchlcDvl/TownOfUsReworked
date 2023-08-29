@@ -14,7 +14,7 @@ public class Framer : Syndicate
     public override Func<string> Description => () => $"- You can frame {(HoldsDrive ? $"all players within a {CustomGameOptions.ChaosDriveFrameRadius}m radius" : "a player")}\n- " +
         $"Framed players will die very easily to killing roles and will appear to have the wrong results to investigative roles till you are dead\n{CommonAbilities}";
     public override InspectorResults InspectorResults => InspectorResults.Manipulative;
-    public float Timer => ButtonUtils.Timer(Player, LastFramed, CustomGameOptions.FrameCooldown);
+    public float Timer => ButtonUtils.Timer(Player, LastFramed, CustomGameOptions.FrameCd);
 
     public Framer(PlayerControl player) : base(player)
     {
@@ -63,7 +63,7 @@ public class Framer : Syndicate
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        FrameButton.Update("FRAME", Timer, CustomGameOptions.FrameCooldown, true, !HoldsDrive);
-        RadialFrameButton.Update("FRAME", Timer, CustomGameOptions.FrameCooldown, true, HoldsDrive);
+        FrameButton.Update("FRAME", Timer, CustomGameOptions.FrameCd, true, !HoldsDrive);
+        RadialFrameButton.Update("FRAME", Timer, CustomGameOptions.FrameCd, true, HoldsDrive);
     }
 }

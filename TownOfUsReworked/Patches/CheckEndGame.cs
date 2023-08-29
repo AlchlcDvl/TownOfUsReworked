@@ -9,12 +9,12 @@ public static class CheckEndGame
         if (IsFreePlay || IsHnS || !AmongUsClient.Instance.AmHost)
             return false;
 
-        var spell = Role.GetRoles<Spellslinger>(LayerEnum.Spellslinger).Find(x => x.Spelled.Count >= CustomPlayer.AllPlayers.Count(y => !y.Data.IsDead && !y.Data.Disconnected &&
-            !y.Is(x.Faction)));
-        var reb = Role.GetRoles<PromotedRebel>(LayerEnum.PromotedRebel).Find(x => x.Spelled.Count >= CustomPlayer.AllPlayers.Count(y => !y.Data.IsDead && !y.Data.Disconnected &&
-            !y.Is(x.Faction)));
+        var spell = Role.GetRoles<Spellslinger>(LayerEnum.Spellslinger).Find(x => !x.IsDead && !x.Disconnected && x.Spelled.Count == CustomPlayer.AllPlayers.Count(y => !y.Data.IsDead &&
+            !y.Data.Disconnected && !y.Is(x.Faction)));
+        var reb = Role.GetRoles<PromotedRebel>(LayerEnum.PromotedRebel).Find(x => !x.IsDead && !x.Disconnected && x.Spelled.Count == CustomPlayer.AllPlayers.Count(y => !y.Data.IsDead &&
+            !y.Data.Disconnected && !y.Is(x.Faction)));
 
-        if (TasksDone() && Role.GetRoles(Faction.Crew).Any(x => x.Player.CanDoTasks()))
+        if (TasksDone())
         {
             CallRpc(CustomRPC.WinLose, WinLoseRPC.CrewWin);
             Role.CrewWin = true;
@@ -97,13 +97,13 @@ public static class CheckEndGame
         else
         {
             PlayerLayer.AllLayers.ForEach(x => x?.GameEnd());
-            //Stalemate detector for unwinnable situations
             DetectStalemate();
         }
 
         return false;
     }
 
+    //Stalemate detector for unwinnable situations
     private static void DetectStalemate()
     {
         var players = CustomPlayer.AllPlayers.Where(x => !x.Data.IsDead && !x.Data.Disconnected).ToList();
@@ -137,9 +137,11 @@ public static class CheckEndGame
                 PerformStalemate();
             }
         }
+        else if (players.Count == 0)
+            PerformStalemate();
     }
 
-    private static void PerformStalemate()
+    public static void PerformStalemate()
     {
         CallRpc(CustomRPC.WinLose, WinLoseRPC.NobodyWins);
         PlayerLayer.NobodyWins = true;
@@ -150,7 +152,7 @@ public static class CheckEndGame
     {
         try
         {
-            if (Role.GetRoles(Faction.Crew).All(x => x.IsDead))
+            if (Role.GetRoles(Faction.Crew).All(x => x.IsDead && !CustomGameOptions.GhostTasksCountToWin) || !Role.GetRoles(Faction.Crew).Any(x => x.Player.CanDoTasks()))
                 return false;
 
             var allCrew = new List<PlayerControl>();
@@ -207,7 +209,38 @@ public static class CheckEndGame
 }
 
 [HarmonyPatch(typeof(LogicGameFlowNormal), nameof(LogicGameFlowNormal.IsGameOverDueToDeath))]
-public static class OverrideEndGame
+public static class OverrideKillEndGame
 {
     public static void Postfix(ref bool __result) => __result = false;
+}
+
+[HarmonyPatch(typeof(GameManager), nameof(GameManager.CheckEndGameViaTasks))]
+public static class OverrideTaskEndGame1
+{
+    public static void Postfix(ref bool __result)
+    {
+        GameData.Instance.RecomputeTaskCounts();
+        __result = false;
+    }
+}
+
+[HarmonyPatch(typeof(GameManager), nameof(GameManager.CheckTaskCompletion))]
+public static class OverrideTaskEndGame2
+{
+    public static bool Prefix(ref bool __result)
+    {
+        if (TutorialManager.InstanceExists)
+        {
+            if (PlayerControl.LocalPlayer.myTasks.All(t => t.IsComplete))
+            {
+                HudManager.Instance.ShowPopUp(TranslationController.Instance.GetString(StringNames.GameOverTaskWin));
+                ShipStatus.Instance.Begin();
+            }
+        }
+        else
+            GameData.Instance.RecomputeTaskCounts();
+
+        __result = false;
+        return false;
+    }
 }

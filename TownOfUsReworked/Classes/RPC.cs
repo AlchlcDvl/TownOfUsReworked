@@ -30,7 +30,6 @@ public static class RPC
                 continue;
 
             writer.Write(option.ID);
-            writer.Write(option.Name);
 
             if (option.Type == CustomOptionType.Toggle)
                 writer.Write((bool)option.Value);
@@ -50,13 +49,12 @@ public static class RPC
 
     public static void ReceiveOptionRPC(MessageReader reader)
     {
-        LogSomething("Options received:");
+        LogInfo("Options received:");
 
         while (reader.BytesRemaining > 0)
         {
             var id = reader.ReadInt32();
-            var name = reader.ReadString();
-            var customOption = CustomOption.AllOptions.Find(option => option.ID == id && option.Name == name);
+            var customOption = CustomOption.AllOptions.Find(option => option.ID == id);
 
             if (customOption == null)
                 continue;
@@ -78,7 +76,7 @@ public static class RPC
             }
 
             customOption.Set(value, val);
-            LogSomething(customOption);
+            LogInfo(customOption);
         }
 
         CustomOption.SaveSettings("LastUsedSettings");
@@ -100,11 +98,8 @@ public static class RPC
             TownOfUsReworked.Executing.ManifestModule.ModuleVersionId, AmongUsClient.Instance.ClientId);
     }
 
-    public static void VersionHandshake(int major, int minor, int build, int revision, Guid guid, int clientId)
-    {
-        if (!GameStartManagerPatch.PlayerVersions.ContainsKey(clientId))
-            GameStartManagerPatch.PlayerVersions.Add(clientId, new(new(major, minor, build, revision), guid));
-    }
+    public static void VersionHandshake(int major, int minor, int build, int revision, Guid guid, int clientId) => GameStartManagerPatch.PlayerVersions.TryAdd(clientId, new(new(major, minor,
+        build, revision), guid));
 
     public static Vector3 ReadVector3(this MessageReader reader)
     {
@@ -149,7 +144,9 @@ public static class RPC
                     writer.Write((byte)(CustomRPC)data[0]);
                 }
 
-                if (item is bool boolean)
+                if (item == null)
+                    LogError($"Data type used in the rpc was null: index - {data.ToList().IndexOf(item) + 1}, main rpc - {data[0]}, rpc - {data[1]}");
+                else if (item is bool boolean)
                     writer.Write(boolean);
                 else if (item is int integer)
                     writer.Write(integer);
@@ -157,6 +154,8 @@ public static class RPC
                     writer.Write(uinteger);
                 else if (item is float Float)
                     writer.Write(Float);
+                else if (item is string text)
+                    writer.Write(text);
                 else if (item is byte Byte)
                     writer.Write(Byte);
                 else if (item is sbyte sByte)
@@ -212,16 +211,8 @@ public static class RPC
                     writer.Write(layer2.PlayerId);
                     writer.Write((byte)layer2.Type);
                 }
-                else if (item == null)
-                {
-                    LogSomething($"Data type used in the rpc was null: item - {nameof(item)}, rpc - {data[0]}");
-                    break;
-                }
                 else
-                {
-                    LogSomething($"Unknown data type used in the rpc: item - {nameof(item)}, rpc - {data[0]}");
-                    break;
-                }
+                    LogError($"Unknown data type used in the rpc: index - {data.ToList().IndexOf(item) + 1}, rpc - {data[1]}");
             }
         }
 

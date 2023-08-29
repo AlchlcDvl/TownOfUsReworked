@@ -1,6 +1,7 @@
 namespace TownOfUsReworked.PlayerLayers;
 
 [HarmonyPatch(typeof(EndGameManager), nameof(EndGameManager.Start))]
+[HarmonyPriority(Priority.First)]
 public static class Outro
 {
     public static void Postfix(EndGameManager __instance)
@@ -17,9 +18,9 @@ public static class Outro
         if (!GameHasEnded)
             return;
 
-        var text = UObject.Instantiate(__instance.WinText);
+        var text = UObject.Instantiate(__instance.WinText, __instance.WinText.transform.parent);
         SoundManager.Instance.StopSound(__instance.ImpostorStinger);
-        Play("IntruderWin");
+        var winsound = "IntruderWin";
 
         foreach (var player in UObject.FindObjectsOfType<PoolablePlayer>())
         {
@@ -32,8 +33,7 @@ public static class Outro
             __instance.BackgroundBar.material.color = Colors.Stalemate;
             text.text = "Stalemate";
             text.color = Colors.Stalemate;
-            Stop("IntruderWin");
-            Play("Stalemate");
+            winsound = "Stalemate";
         }
         else if (Role.SyndicateWin)
         {
@@ -78,8 +78,7 @@ public static class Outro
             __instance.BackgroundBar.material.color = role.FactionColor;
             text.text = "Crew Wins";
             text.color = role.FactionColor;
-            Stop("IntruderWin");
-            Play("CrewWin");
+            winsound = "CrewWin";
         }
         else if (Role.NKWins)
         {
@@ -92,16 +91,16 @@ public static class Outro
             text.text = "Neutral Killers Win";
             text.color = Colors.Alignment;
         }
-        else if (Role.InfectorsWin)
+        else if (Role.ApocalypseWins)
         {
-            var role = Role.AllRoles.Find(x => x.Type is LayerEnum.Plaguebearer or LayerEnum.Pestilence && x.Winner);
+            var role = Role.AllRoles.Find(x => x.RoleAlignment is RoleAlignment.NeutralApoc or RoleAlignment.NeutralHarb);
 
             if (role == null)
                 return;
 
-            __instance.BackgroundBar.material.color = Colors.Infector;
-            text.text = "Infectors Win";
-            text.color = Colors.Infector;
+            __instance.BackgroundBar.material.color = Colors.Apocalypse;
+            text.text = "The Apocalypse Is Nigh!";
+            text.color = Colors.Apocalypse;
         }
         else if (Role.UndeadWin)
         {
@@ -383,6 +382,7 @@ public static class Outro
         var pos = __instance.WinText.transform.localPosition;
         pos.y += 1.5f;
         __instance.WinText.transform.localPosition = pos;
-        text.text = $"<size=50%>{text.text}</size>";
+        text.text = $"<size=50%>{text.text}!</size>";
+        Play(winsound);
     }
 }

@@ -5,7 +5,7 @@ public static class References
 {
     
     public static readonly List<PlayerControl> RecentlyKilled = new();
-    public static readonly Dictionary<PlayerControl, PlayerControl> CachedMorphs = new();
+    public static readonly Dictionary<byte, byte> CachedMorphs = new();
     public static readonly List<DeadPlayer> KilledPlayers = new();
     public static List<DeadBody> AllBodies => UObject.FindObjectsOfType<DeadBody>().ToList();
     public static List<Vent> AllVents => UObject.FindObjectsOfType<Vent>().ToList();
@@ -20,12 +20,15 @@ public static class References
     public static MeetingHud Meeting => MeetingHud.Instance;
     public static ShipStatus Ship => ShipStatus.Instance;
     public static MapBehaviour Map => MapBehaviour.Instance;
-    public const string Everything = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*()|{}[],.<>;':\"-+=*/`~_\\ ⟡☆♡♧♤ø▶❥✔εΔΓικνστυφψΨωχӪζδ♠♥βαµ♣✚Ξρλς§π★ηΛγΣΦΘξ✧¢";
+    public static Dictionary<byte, string> BodyLocations = new();
+    public const string Everything = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*()|{}[],.<>;':\"-+=*/`~_\\ ⟡☆♡♧♤ø▶❥✔εΔΓικνστυφψΨωχӪζδ♠♥βαµ♣✚Ξρλς§π★ηΛγΣΦΘξ✧¢" +
+        "乂⁂¤∮彡个「」人요〖〗ロ米卄王īl【】·ㅇ°◈◆◇◥◤◢◣《》︵︶☆☀☂☹☺♡♩♪♫♬✓☜☞☟☯☃✿❀÷º¿※⁑∞≠";
     public static readonly Dictionary<string, string> KeyWords = new()
     {
         { "%modversion%", TownOfUsReworked.VersionFinal },
         { "%discord%", $"[{TownOfUsReworked.DiscordInvite}]Discord[]" },
-        { "%github%", $"[{TownOfUsReworked.GitHubLink}]GitHub[]" }
+        { "%github%", $"[{TownOfUsReworked.GitHubLink}]GitHub[]" },
+        { "%assets%", $"[{TownOfUsReworked.AssetsLink}]Assets[]" }
     };
     public static readonly List<Vector3> SkeldSpawns = new()
     {

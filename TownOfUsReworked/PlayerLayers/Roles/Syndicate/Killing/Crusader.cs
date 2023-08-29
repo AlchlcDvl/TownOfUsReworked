@@ -16,7 +16,7 @@ public class Crusader : Syndicate
     public override Func<string> Description => () => "- You can crusade players\n- Crusaded players will be forced to be on alert, and will kill whoever interacts with then" +
         $"{(HoldsDrive ? $"\n- Crusaded players will also kill anyone within a {CustomGameOptions.ChaosDriveCrusadeRadius}m radies" : "")}\n{CommonAbilities}";
     public override InspectorResults InspectorResults => InspectorResults.PreservesLife;
-    public float Timer => ButtonUtils.Timer(Player, LastCrusaded, CustomGameOptions.CrusadeCooldown);
+    public float Timer => ButtonUtils.Timer(Player, LastCrusaded, CustomGameOptions.CrusadeCd);
 
     public Crusader(PlayerControl player) : base(player)
     {
@@ -76,7 +76,7 @@ public class Crusader : Syndicate
         {
             CrusadedPlayer = CrusadeButton.TargetPlayer;
             CallRpc(CustomRPC.Action, ActionsRPC.Crusade, this, CrusadedPlayer);
-            TimeRemaining = CustomGameOptions.CrusadeDuration;
+            TimeRemaining = CustomGameOptions.CrusadeDur;
             Crusade();
         }
         else if (interact[0])
@@ -91,6 +91,6 @@ public class Crusader : Syndicate
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        CrusadeButton.Update("CRUSADE", Timer, CustomGameOptions.CrusadeCooldown, OnCrusade, TimeRemaining, CustomGameOptions.CrusadeDuration);
+        CrusadeButton.Update("CRUSADE", Timer, CustomGameOptions.CrusadeCd, OnCrusade, TimeRemaining, CustomGameOptions.CrusadeDur);
     }
 }

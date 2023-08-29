@@ -509,7 +509,14 @@ public class Assassin : Ability
         if (player.Is(LayerEnum.Indomitable))
         {
             if (player == CustomPlayer.Local || Local)
+            {
+                if (Local)
+                    Run(HUD.Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"You failed to assassinate {guessTarget.name}!");
+                else if (player == CustomPlayer.Local)
+                    Run(HUD.Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"Someone tried to assassinate you!");
+
                 Flash(Colors.Indomitable);
+            }
 
             Modifier.GetModifier<Indomitable>(player).AttemptedGuess = true;
 
@@ -525,6 +532,12 @@ public class Assassin : Ability
             {
                 modifier.LifeUsed = true;
                 Flash(modifier.Color);
+
+                if (Local)
+                    Run(HUD.Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"You incorrectly guessed {guessTarget.name} as {guess} and lost a life!");
+                else if ((Player.GetFaction() == CustomPlayer.Local.GetFaction() && (Player.GetFaction() is Faction.Intruder or Faction.Syndicate)) || DeadSeeEverything)
+                    Run(HUD.Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} incorrectly guessed {guessTarget.name} as {guess} and lost a life!");
+
                 return;
             }
         }
@@ -543,23 +556,21 @@ public class Assassin : Ability
         if (Local)
         {
             if (Player != player)
-                HUD.Chat.AddChat(CustomPlayer.Local, $"You guessed {guessTarget.name} as {guess}!");
-            else if (Player.Is(LayerEnum.Professional))
-                HUD.Chat.AddChat(CustomPlayer.Local, $"You incorrectly guessed {guessTarget.name} as {guess} and lost a life!");
+                Run(HUD.Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"You guessed {guessTarget.name} as {guess}!");
             else
-                HUD.Chat.AddChat(CustomPlayer.Local, $"You incorrectly guessed {guessTarget.name} as {guess} and died!");
+                Run(HUD.Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"You incorrectly guessed {guessTarget.name} as {guess} and died!");
         }
         else if (Player != player && CustomPlayer.Local == player)
-            HUD.Chat.AddChat(CustomPlayer.Local, $"{Player.name} guessed you as {guess}!");
+            Run(HUD.Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} guessed you as {guess}!");
         else if ((Player.GetFaction() == CustomPlayer.Local.GetFaction() && (Player.GetFaction() is Faction.Intruder or Faction.Syndicate)) || DeadSeeEverything)
         {
             if (Player != player)
-                HUD.Chat.AddChat(CustomPlayer.Local, $"{Player.name} guessed {guessTarget.name} as {guess}!");
-            else if (Player.Is(LayerEnum.Professional))
-                HUD.Chat.AddChat(CustomPlayer.Local, $"{Player.name} incorrectly guessed {guessTarget.name} as {guess} and lost a life!");
+                Run(HUD.Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} guessed {guessTarget.name} as {guess}!");
             else
-                HUD.Chat.AddChat(CustomPlayer.Local, $"{Player.name} incorrectly guessed {guessTarget.name} as {guess} and died!");
+                Run(HUD.Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} incorrectly guessed {guessTarget.name} as {guess} and died!");
         }
+        else
+            Run(HUD.Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"{player.name} has been assassinated!");
     }
 
     public override void VoteComplete(MeetingHud __instance)

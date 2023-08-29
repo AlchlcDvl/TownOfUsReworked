@@ -5,7 +5,7 @@ public class Info
     public readonly string Name;
     public string Short { get; set; }
     public string Description { get; set; }
-    public readonly Color Color;
+    public Color Color { get; set; }
     public readonly InfoType Type;
 
     public static readonly List<Info> AllInfo = new();
@@ -41,10 +41,16 @@ public class Info
         foreach (var info in AllInfo.Where(x => x.Type is not InfoType.Alignment and not InfoType.Lore))
             result = result.Replace(info.Name, $"<b><color=#{info.Color.ToHtmlStringRGBA()}>{info.Name}</color></b>");
 
+        foreach (var info in LayerInfo.AllObjectifiers)
+            result = result.Replace(info.Symbol, $"<b><color=#{info.Color.ToHtmlStringRGBA()}>{info.Symbol}</color></b>");
+
+        foreach (var info in LayerInfo.AllSubFactions)
+            result = result.Replace(info.Symbol, $"<b><color=#{info.Color.ToHtmlStringRGBA()}>{info.Symbol}</color></b>");
+
         for (var i = 0; i < 50; i++)
             result = result.Replace(((RoleAlignment)i).AlignmentName(), $"<b>{((RoleAlignment)i).AlignmentName(true)}</b>");
 
-        return result.Replace("<color=#758000FF>Drunk</color>ard", "Drunkard");
+        return result.Replace("<b><color=#758000FF>Drunk</color></b>ard", "Drunkard");
     }
 
     public virtual void WikiEntry(out string result) => result = "";
@@ -118,15 +124,15 @@ public class FactionInfo : Info
         "while not knowing who the other members are. Each role is unique in its own way, some can be helpful, some exist to destroy others and some just exist for the sake of " +
         "existing.";
 
-    public FactionInfo(Faction faction, Color color) : base($"{faction}", "", "", color, InfoType.Faction)
+    public FactionInfo(Faction faction) : base($"{faction}", "", "", default, InfoType.Faction)
     {
-        (Description, Short) = faction switch
+        (Description, Short, Color) = faction switch
         {
-            Faction.Syndicate => (SyndicateDescription, "Syn"),
-            Faction.Crew => (CrewDescription, "Crew"),
-            Faction.Intruder => (IntruderDescription, "Int"),
-            Faction.Neutral => (NeutralDescription, "Neut"),
-            _ => ("Invalid", "Invalid")
+            Faction.Syndicate => (SyndicateDescription, "Syn", Colors.Syndicate),
+            Faction.Crew => (CrewDescription, "Crew", Colors.Crew),
+            Faction.Intruder => (IntruderDescription, "Int", Colors.Intruder),
+            Faction.Neutral => (NeutralDescription, "Neut", Colors.Neutral),
+            _ => ("Invalid", "Invalid", Colors.Faction)
         };
     }
 
@@ -143,23 +149,25 @@ public class SubFactionInfo : Info
 {
     private const string CabalDescription = "The Cabal is an oraganisation that's similar to the Syndicate. They, however, operate covertly by secretly recruiting people to join their"
         + " group. The Cabal starts off very strong so they are of a higher priority when dealing with enemies. The Cabal is led by the Jackal.";
-    private const string UndeadDescription = "The Undead are a group of bloodthirsty vampires who closely grow their numbers. The longer the game goes on, the higher their priority" +
-        " on the elimination list. If a member of this subfaction interacts with a Vampire Hunter, the interactor will be killed by the Vampire Hunter in question. The Undead are led "
-        + "by the Dracula.";
-    private const string ReanimatedDescription = "The Reanimated are a bunch of players who have died yet hold a grudge agaisnt the living. Their grudge is made possible by the " +
-        "Necromancer, who leads them. The longer the game goes on with no deaths, the higher the chances of a Necromancer at work.";
+    private const string UndeadDescription = "The Undead are a group of bloodthirsty vampires who slowly grow their numbers. The longer the game goes on, the higher their priority on the " +
+        "elimination list. If a member of this subfaction interacts with a Vampire Hunter, the interactor will be killed by the Vampire Hunter in question. The Undead are led by the " +
+        "Dracula.";
+    private const string ReanimatedDescription = "The Reanimated are a bunch of people who have died yet hold a grudge agaisnt the living. This is made possible by the Necromancer, who leads"
+        + " them. The longer the game goes on with no deaths, the higher the chances of a Necromancer at work.";
     private const string SectDescription = "The Sect is a cult which can gain massive amounts of followers in one go. It may be weak at the start, but do not understimate their " +
         "powerful growth as it may overrun you. The Sect is led by the Whisperer.";
 
-    public SubFactionInfo(SubFaction sub, Color color) : base($"{sub}", "", "", color, InfoType.SubFaction)
+    public readonly string Symbol;
+
+    public SubFactionInfo(SubFaction sub) : base($"{sub}", "", "", default, InfoType.SubFaction)
     {
-        (Description, Short) = sub switch
+        (Description, Short, Color, Symbol) = sub switch
         {
-            SubFaction.Undead => (UndeadDescription, "Und"),
-            SubFaction.Reanimated => (ReanimatedDescription, "RA"),
-            SubFaction.Cabal => (CabalDescription, "Cab"),
-            SubFaction.Sect => (SectDescription, "Sect"),
-            _ => ("Invalid", "Invalid")
+            SubFaction.Undead => (UndeadDescription, "Und", Colors.Undead, "γ"),
+            SubFaction.Reanimated => (ReanimatedDescription, "RA", Colors.Reanimated, "Σ"),
+            SubFaction.Cabal => (CabalDescription, "Cab", Colors.Cabal, "$"),
+            SubFaction.Sect => (SectDescription, "Sect", Colors.Sect, "Λ"),
+            _ => ("Invalid", "Invalid", Colors.SubFaction, "φ")
         };
     }
 
@@ -168,6 +176,7 @@ public class SubFactionInfo : Info
         base.WikiEntry(out result);
         result += ColorIt($"Name: {Name}");
         result += "\n" + ColorIt($"Short Form: {Short}");
+        result += "\n" + ColorIt($"Symbol: {Symbol}");
         result += "\n" + ColorIt(WrapText($"Description: {Description}"));
     }
 }
@@ -181,8 +190,7 @@ public class AlignmentInfo : Info
     private const string CSDescription = "Crew (Support) roles are roles with miscellaneous abilities. Try not to get lost because if you are not paying attention, your chances " +
         "of winning will be severely decreased because of them.";
     private const string CADescription = "Crew (Auditor) roles are special roles that spawn under certain conditions. They exist for the demise of rival subfactions.";
-    private const string CKDescription = "Crew (Killing) roles have no aversion to killing like the rest of the Crew and if left alone and potentially wreck the chances of evils " +
-        "winning.";
+    private const string CKDescription = "Crew (Killing) roles have no aversion to killing like the rest of the Crew and if left alone and potentially wreck the chances of evils winning.";
     private const string CSvDescription = "Crew (Sovereign) roles are democratic roles with powers over votes. They are the most powerful during a meeting, so avoid too many " +
         "meetings while they are active.";
     private const string CDDescription = "Crew (Deception) roles are defected Intruder (Deception) roles who have sided with the Crew.";
@@ -316,7 +324,7 @@ public class AlignmentInfo : Info
     public override void WikiEntry(out string result)
     {
         base.WikiEntry(out result);
-        result += ColorIt($"Name: {Base.AlignmentName(true)}");
+        result += $"Name: {Base.AlignmentName(true)}";
         result += "\n" + ColorIt($"Short Form: {Short}");
         result += "\n" + ColorIt(WrapText($"Description: {Description}"));
     }
@@ -354,8 +362,7 @@ public class ObjectifierInfo : Info
     public readonly string WinCon;
     public readonly string Symbol;
 
-    public ObjectifierInfo(string name, string shortF, string description, string wincon, string applies, string symbol, Color color) : base(name, shortF, description, color,
-        InfoType.Objectifier)
+    public ObjectifierInfo(string name, string shortF, string description, string wincon, string applies, string symbol, Color color) : base(name, shortF, description, color, (InfoType)1)
     {
         AppliesTo = applies;
         WinCon = wincon;
@@ -421,7 +428,7 @@ public class Lore : Info
     public override void WikiEntry(out string result)
     {
         base.WikiEntry(out result);
-        result += "\n" + ColorIt(WrapText($"Description: {Description}"));
+        result += "\n" + ColorIt(WrapText(Description));
     }
 }
 

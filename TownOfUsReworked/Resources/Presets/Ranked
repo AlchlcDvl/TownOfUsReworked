@@ -48,7 +48,7 @@ Anonymous Voting
 True
 No Skipping
 0
-Enable First Kill Shield
+First Kill Shield
 False
 Who Sees First Kill Shield
 0
@@ -58,7 +58,7 @@ Visual Tasks
 False
 No Player Names
 True
-PSSST *Whispers*
+Whispering
 True
 Everyone Is Alerted To Whispers
 True
@@ -72,15 +72,15 @@ Enable <color=#7F7F7FFF>Modifiers</color>
 True
 Enable <color=#DD585BFF>Objectifiers</color>
 True
-Players In Vents Can Be Targetted
+Players In Vents Can Be Targeted
 True
 Enable Game Announcements
 True
 Reported Body's Location Is Announced
 False
-Every Body's Role/Faction Is Announced
+Every Body's <color=#FFD700FF>Role</color>/<color=#00E66DFF>Faction</color> Is Announced
 2
-Every Body's Killer's Role/Faction Is Announced
+Every Body's Killer's <color=#FFD700FF>Role</color>/<color=#00E66DFF>Faction</color> Is Announced
 0
 Dead Can See Everything
 True
@@ -100,19 +100,19 @@ Airship Chance
 0
 Auto Adjust Settings
 False
-Half Vision On Skeld/Mira HQ
+Half Vision On Small Maps
 True
-Mira HQ Decreased Cooldowns
+Small Maps Decreased Cooldowns
 5
-Airship/Submerged Increased Cooldowns
+Large Maps Increased Cooldowns
 0
-Skeld/Mira HQ Increased Short Tasks
+Small Maps Increased Short Tasks
 2
-Skeld/Mira HQ Increased Long Tasks
+Small Maps Increased Long Tasks
 0
-Airship/Submerged Decreased Short Tasks
+Large Maps Decreased Short Tasks
 0
-Airship/Submerged Decreased Long Tasks
+Large Maps Decreased Long Tasks
 1
 Camouflaged Comms
 True
@@ -123,6 +123,8 @@ True
 Reactor Sabotage Shakes The Screen By
 50
 Changed Skeld Vent Layout
+True
+Changed Mira HQ Vent Layout
 True
 Changed Polus Vent Layout
 True
@@ -136,10 +138,6 @@ Seimic Stabliser Malfunction Countdown
 60
 Spawn Type
 2
-Add Call Platform Button
-True
-Add Meeting To Security Room Teleporter
-False
 Move Vitals
 False
 Move Fuel
@@ -150,6 +148,10 @@ Move Admin Table
 0
 Move Electrical Outlet
 0
+Min Time For Door Swipe
+0.4
+Heli Crash Countdown
+90
 <color=#708EEFFF>Mystic</color>
 40
 1
@@ -372,6 +374,12 @@ Move Electrical Outlet
 <color=#B5004CFF>Poisoner</color>
 40
 1
+<color=#0028F5FF>Spellslinger</color>
+30
+1
+<color=#3769FEFF>Time Keeper</color>
+20
+1
 <color=#FFFCCEFF>Rebel</color>
 0
 0
@@ -380,12 +388,6 @@ Move Electrical Outlet
 1
 <color=#8C7140FF>Warper</color>
 60
-1
-<color=#0028F5FF>Spellslinger</color>
-30
-1
-<color=#3769FEFF>Time Keeper</color>
-20
 1
 <color=#008000FF>Anarchist</color>
 0
@@ -534,7 +536,7 @@ Min <color=#8CFFFFFF>Crew</color> <color=#FFD700FF>Roles</color>
 7
 <color=#8CFFFFFF>Crew</color> Can Vent
 False
-Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Auditor</color> <color=#FFD700FF>Roles</color>
+Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Auditors</color>
 1
 <color=#708EEFFF>Mystic</color> Is Unique
 False
@@ -544,13 +546,13 @@ Reveal Cooldown
 False
 Stake Cooldown
 25
-Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Investigative</color> <color=#FFD700FF>Roles</color>
+Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Investigatives</color>
 3
 <color=#4D99E6FF>Coroner</color> Is Unique
 False
 Dead Body Arrow Duration
 0.25
-<color=#4D99E6FF>Coroner</color> Gets Killer's Role
+<color=#4D99E6FF>Coroner</color> Gets Roles
 True
 <color=#4D99E6FF>Coroner</color> Gets Killer's Name
 False
@@ -564,8 +566,8 @@ Autopsy Cooldown
 False
 Examine Cooldown
 10
-Bloody Player Duration
-25
+Bloody Hands Duration
+10
 Footprint Interval
 0.15
 Footprint Duration
@@ -586,10 +588,6 @@ Reveal The <color=#A680FFFF>Medium</color> To The Mediate Target
 1
 Who Is Revealed With Mediate
 0
-<color=#71368AFF>Seer</color> Is Unique
-False
-Seer Cooldown
-25
 <color=#A7D1B3FF>Operative</color> Is Unique
 False
 Bug Cooldown
@@ -598,7 +596,7 @@ Min Amount Of Time In Bug To Trigger
 0
 Bugs Are Removed Each Round
 True
-Bug Count
+Max Bugs
 5
 Bug Radius
 2
@@ -608,13 +606,17 @@ Who Sees Dead Bodies On Admin
 1
 <color=#A7D1B3FF>Operative</color> Gets Precise Information
 False
+<color=#71368AFF>Seer</color> Is Unique
+False
+Seer Cooldown
+25
 <color=#FFCC80FF>Sheriff</color> Is Unique
 False
 Interrogate Cooldown
 25
 <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Evils</color> Show Evil
 True
-<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killings</color> Show Evil
+<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color> Show Evil
 True
 <color=#009900FF>Tracker</color> Is Unique
 False
@@ -626,7 +628,7 @@ Track Cooldown
 False
 Max Tracks
 5
-Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>
+Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Killers</color>
 2
 <color=#998040FF>Veteran</color> Is Unique
 False
@@ -644,23 +646,23 @@ True
 False
 <color=#FFFF00FF>Vigilante</color> Cannot Shoot On The First Round
 True
-How Is The <color=#FFFF00FF>Vigilante</color> Notified Of Their Target's Innocence
-2
 How Does <color=#FFFF00FF>Vigilante</color> Die
 0
+How Is The <color=#FFFF00FF>Vigilante</color> Notified Of Their Target's Innocence
+2
 Shoot Cooldown
 25
 Max Bullets
 5
-Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Protective</color> <color=#FFD700FF>Roles</color>
+Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Protectives</color>
 1
 <color=#660000FF>Altruist</color> Is Unique
 False
-Revive Count
+Max Revives
 5
 Revive Cooldown
 25
-<color=#660000FF>Altruist</color> Revive Duration
+Revive Duration
 5
 Target's Body Disappears On Beginning Of Revive
 False
@@ -672,7 +674,7 @@ Who Gets Murder Attempt Indicator
 0
 Shield Breaks On Murder Attempt
 True
-Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Sovereign</color> <color=#FFD700FF>Roles</color>
+Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Sovereigns</color>
 1
 <color=#00CB97FF>Dictator</color> Is Unique
 False
@@ -704,7 +706,7 @@ Knighted Votes Count As
 True
 Knights Can Button
 True
-Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>
+Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Supporters</color>
 3
 <color=#5411F8FF>Chameleon</color> Is Unique
 False
@@ -730,7 +732,7 @@ Roleblock Duration
 False
 <color=#8D0F8CFF>Retributionist</color> Can Mimic After Voting
 True
-Max Uses
+Total Limit On Limited Abilities
 5
 <color=#DF851FFF>Shifter</color> Is Unique
 True
@@ -766,9 +768,9 @@ Lights Sabotage Affects <color=#B3B3B3FF>Neutral</color> Vision
 True
 <color=#B3B3B3FF>Neutrals</color> Use A Flashlight
 False
-Max <color=#B3B3B3FF>Neutral</color> <color=#FFD700FF>Roles</color>
+Max <color=#B3B3B3FF>Neutrals</color>
 5
-Min <color=#B3B3B3FF>Neutral</color> <color=#FFD700FF>Roles</color>
+Min <color=#B3B3B3FF>Neutrals</color>
 3
 <color=#B3B3B3FF>Neutrals</color> Together, Strong
 0
@@ -784,7 +786,7 @@ Obliterate Cooldown
 25
 <color=#424242FF>Pestilence</color> Can Vent
 True
-Max <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Benign</color> <color=#FFD700FF>Roles</color>
+Max <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Benigns</color>
 2
 <color=#FFFF00FF>Vigilante</color> Kills <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Benigns</color>
 False
@@ -848,7 +850,7 @@ False
 False
 <color=#80FF00FF>Thief</color> Can Vent
 False
-Max <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Evil</color> <color=#FFD700FF>Roles</color>
+Max <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Evils</color>
 2
 <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Evils</color> End The Game When Winning
 True
@@ -958,7 +960,7 @@ Interact Cooldown
 True
 <color=#678D36FF>Troll</color> Can Switch Vents
 True
-Max <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Harbinger</color> <color=#FFD700FF>Roles</color>
+Max <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Harbingers</color>
 1
 <color=#CFFE61FF>Plaguebearer</color> Is Unique
 False
@@ -966,7 +968,7 @@ Infect Cooldown
 25
 <color=#CFFE61FF>Plaguebearer</color> Can Vent
 False
-Max <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>
+Max <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color>
 1
 <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color> Have <color=#FF0000FF>Intruder</color> Vision
 True
@@ -1044,7 +1046,7 @@ Maul Radius
 2
 <color=#9F703AFF>Werewolf</color> Can Vent
 True
-Max <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Neophyte</color> <color=#FFD700FF>Roles</color>
+Max <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Neophytes</color>
 1
 <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Neophytes</color> Have <color=#FF0000FF>Intruder</color> Vision
 True
@@ -1070,18 +1072,18 @@ False
 False
 Resurrect Cooldown
 15
-Resurrect Cooldown Increases By
-2.5
 Resurrect Cooldown Increases
 True
-Resurrect Count
+Resurrect Cooldown Increases By
+2.5
+Max Resurrections
 5
 Kill Cooldown
-10
-Kill Cooldown Increases By
-2.5
+15
 Kill Cooldown Increases
 True
+Kill Cooldown Increases By
+2.5
 Kill Count
 7
 Kill And Resurrect Cooldowns Are Linked
@@ -1098,7 +1100,7 @@ False
 False
 Whisper Cooldown
 15
-Whisper Cooldown Increases Each Whisper
+Whisper Cooldown Increases
 True
 Whisper Cooldown Increases By
 5
@@ -1106,7 +1108,7 @@ Whisper Radius
 2
 Whisper Rate
 35
-Whisper Rate Decreases Each Whisper
+Whisper Rate Decreases
 False
 Whisper Rate Decrease
 5
@@ -1140,7 +1142,7 @@ Max <color=#FF0000FF>Intruder</color> <color=#FFD700FF>Roles</color>
 5
 Min <color=#FF0000FF>Intruder</color> <color=#FFD700FF>Roles</color>
 5
-Max <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Concealing</color> <color=#FFD700FF>Roles</color>
+Max <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Concealers</color>
 2
 <color=#02A752FF>Blackmailer</color> Is Unique
 False
@@ -1188,7 +1190,7 @@ Drag Speed
 1
 <color=#2647A2FF>Janitor</color> Can Vent
 3
-Max <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Deception</color> <color=#FFD700FF>Roles</color>
+Max <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Deceivers</color>
 2
 <color=#40B4FFFF>Disguiser</color> Is Unique
 False
@@ -1224,7 +1226,7 @@ Invis Duration
 13
 <color=#5C4F75FF>Wraith</color> Can Vent
 False
-Max <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>
+Max <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Killers</color>
 2
 <color=#2BD29CFF>Ambusher</color> Is Unique
 False
@@ -1244,7 +1246,7 @@ Enforce Delay
 5
 Enforce Explosion Radius
 2
-Max <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>
+Max <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Supporters</color>
 1
 <color=#FFFF99FF>Consigliere</color> Is Unique
 False
@@ -1298,7 +1300,7 @@ Max <color=#008000FF>Syndicate</color> <color=#FFD700FF>Roles</color>
 5
 Min <color=#008000FF>Syndicate</color> <color=#FFD700FF>Roles</color>
 5
-Max <color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Disruption</color> <color=#FFD700FF>Roles</color>
+Max <color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Disruptors</color>
 1
 <color=#C02525FF>Concealer</color> Is Unique
 False
@@ -1340,7 +1342,7 @@ True
 False
 Silence Is Revealed To Everyone
 True
-Max <color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>
+Max <color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Killers</color>
 1
 <color=#C9CC3FFF>Bomber</color> Is Unique
 False
@@ -1392,7 +1394,7 @@ Poison Cooldown
 25
 Poison Kill Delay
 10
-Max <color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Power</color> <color=#FFD700FF>Roles</color>
+Max <color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Powers</color>
 1
 <color=#0028F5FF>Spellslinger</color> Is Unique
 False
@@ -1410,7 +1412,7 @@ Time Control Duration
 True
 <color=#008000FF>Syndicate</color> Are Immune To Rewind
 True
-Max <color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>
+Max <color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Supporters</color>
 1
 <color=#FFFCCEFF>Rebel</color> Is Unique
 False
@@ -1460,6 +1462,8 @@ True
 False
 Controls Reverse Over Time
 False
+<color=#758000FF>Drunk</color> Knows Who They Are
+True
 Reversed Controls Interval
 10
 <color=#FF8080FF>Dwarf</color> Is Unique
@@ -1714,3 +1718,9 @@ Ban 4
 113
 Ban 5
 113
+Ban <color=#8CFFFFFF>Crewmate</color>
+True
+Ban <color=#FF0000FF>Impostor</color>
+True
+Ban <color=#008000FF>Anarchist</color>
+True

@@ -12,7 +12,7 @@ public class Syndicate : Role
     public override Color32 Color => Colors.Syndicate;
     public override Faction BaseFaction => Faction.Syndicate;
     public float KillTimer => ButtonUtils.Timer(Player, LastKilled, !HoldsDrive && Type is LayerEnum.Anarchist or LayerEnum.Rebel or LayerEnum.Sidekick ?
-        CustomGameOptions.AnarchKillCooldown : CustomGameOptions.ChaosDriveKillCooldown);
+        CustomGameOptions.AnarchKillCd : CustomGameOptions.CDKillCd);
 
     protected Syndicate(PlayerControl player) : base(player)
     {
@@ -80,7 +80,7 @@ public class Syndicate : Role
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        KillButton.Update("KILL", KillTimer, CustomGameOptions.ChaosDriveKillCooldown, true, (HoldsDrive && RoleAlignment != RoleAlignment.SyndicateKill) || Type is LayerEnum.Anarchist
+        KillButton.Update("KILL", KillTimer, CustomGameOptions.CDKillCd, true, (HoldsDrive && RoleAlignment != RoleAlignment.SyndicateKill) || Type is LayerEnum.Anarchist
             or LayerEnum.Sidekick or LayerEnum.Rebel);
     }
 }

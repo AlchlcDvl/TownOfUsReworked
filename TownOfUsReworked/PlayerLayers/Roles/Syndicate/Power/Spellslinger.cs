@@ -14,7 +14,7 @@ public class Spellslinger : Syndicate
     public override Func<string> Description => () => $"- You can place a spell on players\n- When all non-{FactionColorString} players are spelled the game ends in a " +
         $"{FactionColorString} win{(HoldsDrive ? "\n- Your spells don't trigger interaction sensitive roles and your cooldown does not increase" : "")}\n{CommonAbilities}";
     public override InspectorResults InspectorResults => InspectorResults.SeeksToDestroy;
-    public float Timer => ButtonUtils.Timer(Player, LastSpelled, CustomGameOptions.SpellCooldown, SpellCount * CustomGameOptions.SpellCooldownIncrease);
+    public float Timer => ButtonUtils.Timer(Player, LastSpelled, CustomGameOptions.SpellCd, SpellCount * CustomGameOptions.SpellCdIncrease);
 
     public Spellslinger(PlayerControl player) : base(player)
     {
@@ -67,6 +67,6 @@ public class Spellslinger : Syndicate
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        SpellButton.Update("SPELL", Timer, CustomGameOptions.SpellCooldown, SpellCount * CustomGameOptions.SpellCooldownIncrease);
+        SpellButton.Update("SPELL", Timer, CustomGameOptions.SpellCd, SpellCount * CustomGameOptions.SpellCdIncrease);
     }
 }

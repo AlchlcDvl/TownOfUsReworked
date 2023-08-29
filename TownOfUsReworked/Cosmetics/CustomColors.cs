@@ -37,8 +37,7 @@ public static class ColorUtils
 
     public static float PPR(float min, float max, float mul) => max - Mathf.PingPong(Time.time * mul, max - min);
 
-    public static Color Shadow(Color color) => new(color.r - 0.2f < 0 ? 0f : color.r - 0.2f, color.g - 0.2f < 0 ? 0f : color.g - 0.2f, color.b - 0.2f < 0 ? 0f : color.b - 0.2f,
-        color.a);
+    public static Color Shadow(Color color) => new(color.r - 0.2f < 0 ? 0f : color.r - 0.2f, color.g - 0.2f < 0 ? 0f : color.g - 0.2f, color.b - 0.2f < 0 ? 0f : color.b - 0.2f, color.a);
 
     public static void SetColor(Renderer rend, int id)
     {
@@ -82,20 +81,20 @@ public static class ColorUtils
     public static bool IsChanging(int id) => IsRainbow(id) || IsFire(id) || IsGalaxy(id) || IsMantle(id) || IsMonochrome(id) || IsChroma(id) || IsReversebow(id) || IsVibrance(id) ||
         IsDarkbow(id) || IsAbberration(id);
 
-    public static bool IsContrasting(int id) => id is 35 or 34 or 38 or 39;
+    public static bool IsContrasting(int id) => id is 35 or 34 or 38 or 39 or 40;
 
     public static Color GetColor(int id, bool shadow) => id switch
     {
-        40 => shadow ? ReversebowShadow : Reversebow,
-        41 => shadow ? VibranceShadow : Vibrance,
-        42 => shadow ? DarkbowShadow : Darkbow,
-        43 => shadow ? AbberationShadow : Abberation,
-        44 => shadow ? ChromaShadow : Chroma,
-        45 => shadow ? MantleShadow : Mantle,
-        46 => shadow ? FireShadow : Fire,
-        47 => shadow ? GalaxyShadow : Galaxy,
-        48 => shadow ? MonochromeShadow : Monochrome,
-        49 => shadow ? RainbowShadow : Rainbow,
+        41 => shadow ? ReversebowShadow : Reversebow,
+        42 => shadow ? VibranceShadow : Vibrance,
+        43 => shadow ? DarkbowShadow : Darkbow,
+        44 => shadow ? AbberationShadow : Abberation,
+        45 => shadow ? ChromaShadow : Chroma,
+        46 => shadow ? MantleShadow : Mantle,
+        47 => shadow ? FireShadow : Fire,
+        48 => shadow ? GalaxyShadow : Galaxy,
+        49 => shadow ? MonochromeShadow : Monochrome,
+        50 => shadow ? RainbowShadow : Rainbow,
         _ => shadow ? Palette.ShadowColors[id] : Palette.PlayerColors[id]
     };
 
@@ -142,17 +141,18 @@ public static class ColorUtils
         { 37, "Darker" }, //Vantablack
         { 38, "Lighter" }, //Ice
         { 39, "Darker" }, //Nougat
+        { 40, "Lighter" }, //Lava
         //Everchanging colors
-        { 40, "Darker" }, //Reversebow
-        { 41, "Lighter" }, //Vibrance
-        { 42, "Darker" }, //Darkbow
-        { 43, "Darker" }, //Abberration
-        { 44, "Lighter" }, //Chroma
-        { 45, "Darker" }, //Mantle
-        { 46, "Lighter" }, //Fire
-        { 47, "Lighter" }, //Galaxy
-        { 48, "Lighter" }, //Monochrome
-        { 49, "Lighter" } //Rainbow
+        { 41, "Darker" }, //Reversebow
+        { 42, "Lighter" }, //Vibrance
+        { 43, "Darker" }, //Darkbow
+        { 44, "Darker" }, //Aberration
+        { 45, "Lighter" }, //Chroma
+        { 46, "Darker" }, //Mantle
+        { 47, "Lighter" }, //Fire
+        { 48, "Lighter" }, //Galaxy
+        { 49, "Lighter" }, //Monochrome
+        { 50, "Lighter" } //Rainbow
     };
 }
 
@@ -182,33 +182,34 @@ public static class PalettePatch
             StringNames.ColorTan,
             StringNames.ColorCoral,
             //New colors
-            (StringNames)999968, //Watermelon
-            (StringNames)999969, //Chocolate
-            (StringNames)999970, //Sky Blue
-            (StringNames)999971, //Beige
-            (StringNames)999972, //Magenta
-            (StringNames)999973, //Turquoise
-            (StringNames)999974, //Lilac
-            (StringNames)999975, //Olive
-            (StringNames)999976, //Azure
-            (StringNames)999977, //Plum
-            (StringNames)999978, //Jungle
-            (StringNames)999979, //Mint
-            (StringNames)999980, //Chartreuse
-            (StringNames)999981, //Macau
-            (StringNames)999982, //Tawny
-            (StringNames)999983, //Gold
-            (StringNames)999984, //Panda
-            (StringNames)999985, //Contrast
-            (StringNames)999986, //Starlight
-            (StringNames)999987, //Vantablack
-            (StringNames)999988, //Ice
-            (StringNames)999989, //Nougat
+            (StringNames)999967, //Watermelon
+            (StringNames)999968, //Chocolate
+            (StringNames)999969, //Sky Blue
+            (StringNames)999970, //Beige
+            (StringNames)999971, //Magenta
+            (StringNames)999972, //Turquoise
+            (StringNames)999973, //Lilac
+            (StringNames)999974, //Olive
+            (StringNames)999975, //Azure
+            (StringNames)999976, //Plum
+            (StringNames)999977, //Jungle
+            (StringNames)999978, //Mint
+            (StringNames)999979, //Chartreuse
+            (StringNames)999980, //Macau
+            (StringNames)999981, //Tawny
+            (StringNames)999982, //Gold
+            (StringNames)999983, //Panda
+            (StringNames)999984, //Contrast
+            (StringNames)999985, //Starlight
+            (StringNames)999986, //Vantablack
+            (StringNames)999987, //Ice
+            (StringNames)999988, //Nougat
+            (StringNames)999989, //Lava
             //Everchanging colors
             (StringNames)999990, //Reversebow
             (StringNames)999991, //Vibrance
             (StringNames)999992, //Darkbow
-            (StringNames)999993, //Abberration
+            (StringNames)999993, //Aberration
             (StringNames)999994, //Chroma
             (StringNames)999995, //Mantle
             (StringNames)999996, //Fire
@@ -260,6 +261,7 @@ public static class PalettePatch
             new(0, 0, 0, 255),
             new(251, 251, 255, 255),
             new(160, 101, 56, 255),
+            new(255, 255, 16, 255),
             //Everchanging colors
             new(0, 0, 0, 255),
             new(0, 0, 0, 255),
@@ -316,6 +318,7 @@ public static class PalettePatch
             new(0, 0, 0, 255),
             new(112, 250, 241, 255),
             new(115, 15, 78, 255),
+            new(255, 0, 0, 255),
             //Everchanging colors
             new(0, 0, 0, 255),
             new(0, 0, 0, 255),
@@ -338,32 +341,33 @@ public static class PatchColours
     {
         var newResult = (int)name switch
         {
-            999968 => "Watermelon",
-            999969 => "Chocolate",
-            999970 => "Sky Blue",
-            999971 => "Beige",
-            999972 => "Magenta",
-            999973 => "Turquoise",
-            999974 => "Lilac",
-            999975 => "Olive",
-            999976 => "Azure",
-            999977 => "Plum",
-            999978 => "Jungle",
-            999979 => "Mint",
-            999980 => "Chartreuse",
-            999981 => "Macau",
-            999982 => "Tawny",
-            999983 => "Gold",
-            999984 => "Panda",
-            999985 => "Contrast",
-            999986 => "Starlight",
-            999987 => "Vantablack",
-            999988 => "Ice",
-            999989 => "Nougat",
+            999967 => "Watermelon",
+            999968 => "Chocolate",
+            999969 => "SkyBlue",
+            999970 => "Beige",
+            999971 => "Magenta",
+            999972 => "Turquoise",
+            999973 => "Lilac",
+            999974 => "Olive",
+            999975 => "Azure",
+            999976 => "Plum",
+            999977 => "Jungle",
+            999978 => "Mint",
+            999979 => "Chartreuse",
+            999980 => "Macau",
+            999981 => "Tawny",
+            999982 => "Gold",
+            999983 => "Panda",
+            999984 => "Contrast",
+            999985 => "Starlight",
+            999986 => "Vantablack",
+            999987 => "Ice",
+            999988 => "Nougat",
+            999989 => "Lava",
             999990 => "Reversebow",
             999991 => "Vibrance",
             999992 => "Darkbow",
-            999993 => "Abberration",
+            999993 => "Aberration",
             999994 => "Chroma",
             999995 => "Mantle",
             999996 => "Fire",
@@ -375,7 +379,7 @@ public static class PatchColours
 
         if (newResult != null)
         {
-            __result = newResult;
+            __result = Translate($"Colors.{newResult}");
             return false;
         }
 

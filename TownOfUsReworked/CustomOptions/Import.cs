@@ -6,7 +6,7 @@ public class Import : CustomButtonOption
     private List<OptionBehaviour> OldButtons { get; set; } = new();
     public List<CustomButtonOption> SlotButtons = new();
 
-    public Import() : base(MultiMenu.main, "Load Custom Settings") => Do = ToDo;
+    public Import() : base(MultiMenu.Main, "Load Custom Settings") => Do = ToDo;
 
     private List<OptionBehaviour> CreateOptions()
     {
@@ -51,6 +51,7 @@ public class Import : CustomButtonOption
         Loading.Setting.gameObject.Destroy();
         OldButtons.ForEach(x => x.gameObject.SetActive(true));
         __instance.Children = OldButtons.ToArray();
+        GameSettings.SettingsPage = 0;
         yield return new WaitForEndOfFrame();
         yield return flashCoro();
     }
@@ -58,8 +59,8 @@ public class Import : CustomButtonOption
     public void ToDo()
     {
         SlotButtons.Clear();
-        Slots.Keys.ToList().ForEach(x => SlotButtons.Add(new(MultiMenu.external, $"Slot {x}", delegate { ImportSlot(x); })));
-        SlotButtons.Add(new(MultiMenu.external, "Cancel", delegate { Cancel(FlashWhite); }));
+        Slots.Keys.ToList().ForEach(x => SlotButtons.Add(new(MultiMenu.External, $"Slot {x}", delegate { ImportSlot(x); })));
+        SlotButtons.Add(new(MultiMenu.External, "Cancel", delegate { Cancel(FlashWhite); }));
 
         var options = CreateOptions();
         var __instance = UObject.FindObjectOfType<GameOptionsMenu>();
@@ -68,6 +69,7 @@ public class Import : CustomButtonOption
         var z = __instance.Children[1].transform.localPosition.z;
         OldButtons = __instance.Children.ToList();
         OldButtons.ForEach(x => x.gameObject.SetActive(false));
+        GameSettings.SettingsPage = 9;
 
         for (var i = 0; i < options.Count; i++)
             options[i].transform.localPosition = new(x, y - (i * 0.5f), z);
@@ -77,7 +79,7 @@ public class Import : CustomButtonOption
 
     private void ImportSlot(int slotId)
     {
-        LogSomething($"Loading - Slot {slotId}");
+        LogInfo($"Loading - Slot {slotId}");
         string text = null;
 
         try
@@ -92,7 +94,7 @@ public class Import : CustomButtonOption
         if (string.IsNullOrEmpty(text))
         {
             Cancel(FlashRed);
-            LogSomething("Slot no exist");
+            LogError("Slot no exist");
             return;
         }
 
@@ -146,7 +148,7 @@ public class Import : CustomButtonOption
             }
             catch (Exception e)
             {
-                LogSomething("Unable to set - " + option.Name + " : " + value + " " + splitText[0] + "\nException: " + e);
+                LogError("Unable to set - " + option.Name + " : " + value + " " + splitText[0] + "\nException: " + e);
             }
         }
 

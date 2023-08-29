@@ -25,7 +25,7 @@ public class Warper : Syndicate
     public override Func<string> Description => () => "- You can warp " +
         $"{(HoldsDrive ? "all players, forcing them to be teleported to random locations" : "a player to another player of your choice")}\n{CommonAbilities}";
     public override InspectorResults InspectorResults => InspectorResults.MovesAround;
-    public float Timer => ButtonUtils.Timer(Player, LastWarped, CustomGameOptions.WarpCooldown);
+    public float Timer => ButtonUtils.Timer(Player, LastWarped, CustomGameOptions.WarpCd);
 
     public Warper(PlayerControl player) : base(player)
     {
@@ -54,7 +54,7 @@ public class Warper : Syndicate
         Player2Body = null;
         WasInVent = false;
         Vent = null;
-        TimeRemaining = CustomGameOptions.WarpDuration;
+        TimeRemaining = CustomGameOptions.WarpDur;
 
         if (WarpPlayer1.Data.IsDead)
         {
@@ -93,7 +93,7 @@ public class Warper : Syndicate
         WarpPlayer1.NetTransform.Halt();
 
         if (CustomPlayer.Local == WarpPlayer1)
-            Flash(Color, CustomGameOptions.WarpDuration);
+            Flash(Color, CustomGameOptions.WarpDur);
 
         if (Player1Body == null && !WasInVent)
             AnimateWarp();
@@ -105,7 +105,7 @@ public class Warper : Syndicate
             var now = DateTime.UtcNow;
             var seconds = (now - startTime).TotalSeconds;
 
-            if (seconds < CustomGameOptions.WarpDuration)
+            if (seconds < CustomGameOptions.WarpDur)
             {
                 TimeRemaining -= Time.deltaTime;
                 yield return null;
@@ -114,7 +114,10 @@ public class Warper : Syndicate
                 break;
 
             if (Meeting)
+            {
+                TimeRemaining = 0;
                 yield break;
+            }
         }
 
         if (Player1Body == null && Player2Body == null)
@@ -214,7 +217,7 @@ public class Warper : Syndicate
         AnimationPlaying.flipX = WarpPlayer1.MyRend().flipX;
         AnimationPlaying.transform.localScale *= 0.9f * WarpPlayer1.GetModifiedSize();
 
-        HUD.StartCoroutine(Effects.Lerp(CustomGameOptions.WarpDuration, new Action<float>(p =>
+        HUD.StartCoroutine(Effects.Lerp(CustomGameOptions.WarpDur, new Action<float>(p =>
         {
             var index = (int)(p * PortalAnimation.Length);
             index = Mathf.Clamp(index, 0, PortalAnimation.Length - 1);
@@ -252,8 +255,8 @@ public class Warper : Syndicate
         base.UpdateHud(__instance);
         var flag1 = WarpPlayer1 == null && !HoldsDrive;
         var flag2 = WarpPlayer2 == null && !HoldsDrive;
-        WarpButton.Update(flag1 ? "FIRST TARGET" : (flag2 ? "SECOND TARGET" : "WARP"), Timer, CustomGameOptions.WarpCooldown, Warping, TimeRemaining,
-            CustomGameOptions.WarpDuration);
+        WarpButton.Update(flag1 ? "FIRST TARGET" : (flag2 ? "SECOND TARGET" : "WARP"), Timer, CustomGameOptions.WarpCd, Warping, TimeRemaining,
+            CustomGameOptions.WarpDur);
 
         if (Input.GetKeyDown(KeyCode.Backspace))
         {
@@ -265,7 +268,7 @@ public class Warper : Syndicate
                     WarpPlayer1 = null;
             }
 
-            LogSomething("Removed a target");
+            LogInfo("Removed a target");
         }
 
         foreach (var entry in UnwarpablePlayers)

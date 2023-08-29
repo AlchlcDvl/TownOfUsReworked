@@ -17,7 +17,7 @@ public class Silencer : Syndicate
         + " be alerted at the start of the meeting that someone has been silenced " : "") + (CustomGameOptions.WhispersNotPrivateSilencer ? "\n- You can read whispers during meetings"
         : "") + CommonAbilities;
     public override InspectorResults InspectorResults => InspectorResults.GainsInfo;
-    public float Timer => ButtonUtils.Timer(Player, LastSilenced, CustomGameOptions.SilenceCooldown);
+    public float Timer => ButtonUtils.Timer(Player, LastSilenced, CustomGameOptions.SilenceCd);
 
     public Silencer(PlayerControl player) : base(player)
     {
@@ -51,6 +51,6 @@ public class Silencer : Syndicate
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        SilenceButton.Update("SILENCE", Timer, CustomGameOptions.SilenceCooldown);
+        SilenceButton.Update("SILENCE", Timer, CustomGameOptions.SilenceCd);
     }
 }

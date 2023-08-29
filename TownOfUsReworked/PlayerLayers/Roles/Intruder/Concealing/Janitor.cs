@@ -16,7 +16,7 @@ public class Janitor : Intruder
     public override Func<string> Description => () => "- You can clean up dead bodies, making them disappear from sight\n- You can drag bodies away to prevent them from getting " +
         $"reported\n{CommonAbilities}";
     public override InspectorResults InspectorResults => InspectorResults.DealsWithDead;
-    public float CleanTimer => ButtonUtils.Timer(Player, LastCleaned, CustomGameOptions.JanitorCleanCd, LastImp && CustomGameOptions.SoloBoost ? -CustomGameOptions.UnderdogKillBonus :
+    public float CleanTimer => ButtonUtils.Timer(Player, LastCleaned, CustomGameOptions.CleanCd, LastImp && CustomGameOptions.SoloBoost ? -CustomGameOptions.UnderdogKillBonus :
         0);
     public float DragTimer => ButtonUtils.Timer(Player, LastDragged, CustomGameOptions.DragCd);
 
@@ -67,7 +67,7 @@ public class Janitor : Intruder
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        CleanButton.Update("CLEAN", CleanTimer, CustomGameOptions.JanitorCleanCd, LastImp && CustomGameOptions.SoloBoost ? -CustomGameOptions.UnderdogKillBonus : 0, true,
+        CleanButton.Update("CLEAN", CleanTimer, CustomGameOptions.CleanCd, LastImp && CustomGameOptions.SoloBoost ? -CustomGameOptions.UnderdogKillBonus : 0, true,
             CurrentlyDragging == null);
         DragButton.Update("DRAG", DragTimer, CustomGameOptions.DragCd, true, CurrentlyDragging == null);
         DropButton.Update("DROP", true, CurrentlyDragging != null);

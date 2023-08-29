@@ -11,7 +11,7 @@ public class Vigilante : Crew
     public int UsesLeft { get; set; }
     public bool ButtonUsable => UsesLeft > 0;
     public bool RoundOne { get; set; }
-    public float Timer => ButtonUtils.Timer(Player, LastKilled, CustomGameOptions.VigiKillCd);
+    public float Timer => ButtonUtils.Timer(Player, LastKilled, CustomGameOptions.ShootCd);
 
     public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Vigilante : Colors.Crew;
     public override string Name => "Vigilante";
@@ -23,7 +23,7 @@ public class Vigilante : Crew
     public Vigilante(PlayerControl player) : base(player)
     {
         RoleAlignment = RoleAlignment.CrewKill;
-        UsesLeft = CustomGameOptions.VigiBulletCount;
+        UsesLeft = CustomGameOptions.MaxBullets;
         ShootButton = new(this, "Shoot", AbilityTypes.Direct, "ActionSecondary", Shoot, true);
     }
 
@@ -34,7 +34,7 @@ public class Vigilante : Crew
         if (PreMeetingDie)
             RpcMurderPlayer(Player, Player);
         else if (InnoMessage)
-            HUD.Chat.AddChat(CustomPlayer.Local, "You killed an innocent an innocent crew! You have put your gun away out of guilt.");
+            Run(HUD.Chat, "<color=#FFFF00FF>〖 How Dare You 〗</color>", "You killed an innocent an innocent crew! You have put your gun away out of guilt.");
     }
 
     public bool Exception(PlayerControl player) => player.Is(Faction) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || Player.IsLinkedTo(player);
@@ -42,7 +42,7 @@ public class Vigilante : Crew
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        ShootButton.Update("SHOOT", Timer, CustomGameOptions.VigiKillCd, UsesLeft, ButtonUsable, ButtonUsable && !KilledInno && !RoundOne);
+        ShootButton.Update("SHOOT", Timer, CustomGameOptions.ShootCd, UsesLeft, ButtonUsable, ButtonUsable && !KilledInno && !RoundOne);
     }
 
     public void Shoot()

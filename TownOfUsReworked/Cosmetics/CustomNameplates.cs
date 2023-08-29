@@ -41,18 +41,14 @@ public static class CustomNameplates
         nameplate.ChipOffset = new(0f, 0.2f);
         nameplate.Free = true;
 
-        var extend = new NameplateExtension
+        var extend = new NameplateExtension()
         {
             Artist = cn.Artist ?? "Unknown",
             Condition = cn.Condition ?? "none"
         };
 
-        if (!CustomNameplateRegistry.ContainsKey(nameplate.name))
-            CustomNameplateRegistry.Add(nameplate.name, extend);
-
-        if (!CustomNameplateViewDatas.ContainsKey(nameplate.name))
-            CustomNameplateViewDatas.Add(nameplate.name, viewData);
-
+        CustomNameplateRegistry.TryAdd(nameplate.name, extend);
+        CustomNameplateViewDatas.TryAdd(nameplate.name, viewData);
         nameplate.ViewDataRef = new(viewData.Pointer);
         nameplate.CreateAddressableAsset();
         return nameplate;
@@ -73,11 +69,11 @@ public static class CustomNameplates
 
             try
             {
-                while (CosmeticsLoader.NameplateDetails.Count > 0)
+                while (AssetLoader.NameplateDetails.Count > 0)
                 {
-                    var nameplateData = CreateNameplateBehaviour(CosmeticsLoader.NameplateDetails[0], true);
+                    var nameplateData = CreateNameplateBehaviour(AssetLoader.NameplateDetails[0], true);
                     allPlates.Add(nameplateData);
-                    CosmeticsLoader.NameplateDetails.RemoveAt(0);
+                    AssetLoader.NameplateDetails.RemoveAt(0);
                 }
 
                 __instance.allNamePlates = allPlates.ToArray();
@@ -86,7 +82,7 @@ public static class CustomNameplates
             catch (Exception e)
             {
                 if (!SubLoaded)
-                    LogSomething("Unable to add Custom Nameplates\n" + e);
+                    LogError("Unable to add Custom Nameplates\n" + e);
             }
         }
 
@@ -139,10 +135,9 @@ public static class CustomNameplates
 
                 colorChip.Button.ClickMask = __instance.scroller.Hitbox;
                 colorChip.transform.localPosition = new(xpos, ypos, -1f);
-                __instance.StartCoroutine(nameplate.CoLoadIcon(new Action<Sprite, AddressableAsset>((_, _) =>
+                __instance.StartCoroutine(nameplate.CoLoadIcon(new Action<Sprite, AddressableAsset>((sprite, _) =>
                 {
-                    colorChip.gameObject.GetComponent<NameplateChip>().image.sprite = CustomNameplateViewDatas.TryGetValue(nameplate.name, out var data) ? data.Image :
-                        ShipStatus.Instance.CosmeticsCache.GetNameplate(nameplate.ProdId).Image;
+                    colorChip.gameObject.GetComponent<NameplateChip>().image.sprite = sprite;
                     colorChip.gameObject.GetComponent<NameplateChip>().ProductId = nameplate.ProductId;
                 })));
                 __instance.ColorChips.Add(colorChip);
@@ -193,7 +188,7 @@ public static class CustomNameplates
                 return 500;
             });
 
-            orderedKeys.ToList().ForEach(key => YOffset = CreateHatPackage(packages[key], key, YOffset, __instance));
+            keys.ToList().ForEach(key => YOffset = CreateNameplatePackage(packages[key], key, YOffset, __instance));
             __instance.scroller.ContentYBounds.max = -(YOffset + 3.8f);
             return false;
         }
@@ -204,13 +199,10 @@ public static class CustomNameplates
     {
         public static void Postfix(PlayerVoteArea __instance, string plateID)
         {
-            if (!CustomNameplateViewDatas.ContainsKey(plateID))
+            if (!CustomNameplateViewDatas.TryGetValue(plateID, out var result) || result == null)
                 return;
 
-            var npvd = CustomNameplateViewDatas[plateID];
-
-            if (npvd != null)
-                __instance.Background.sprite = npvd.Image;
+            __instance.Background.sprite = result.Image;
         }
     }
 
@@ -219,10 +211,8 @@ public static class CustomNameplates
     {
         public static bool Prefix(CosmeticsCache __instance, string id, ref NamePlateViewData __result)
         {
-            if (!CustomNameplateViewDatas.ContainsKey(id))
+            if (!CustomNameplateViewDatas.TryGetValue(id, out __result))
                 return true;
-
-            __result = CustomNameplateViewDatas[id];
 
             if (__result == null)
                 __result = __instance.nameplates["nameplate_NoPlate"].GetAsset();

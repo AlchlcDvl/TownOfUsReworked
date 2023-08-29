@@ -172,7 +172,7 @@ public static class CustomHats
         if (ch.Adaptive && Shader != null)
             viewData.AltShader = Shader;
 
-        var extend = new HatExtension
+        var extend = new HatExtension()
         {
             Artist = ch.Artist ?? "Misc",
             Condition = ch.Condition ?? "none"
@@ -193,12 +193,8 @@ public static class CustomHats
             TestExt.Condition = hat.name;
         }
 
-        if (!CustomHatRegistry.ContainsKey(hat.name))
-            CustomHatRegistry.Add(hat.name, extend);
-
-        if (!CustomHatViewDatas.ContainsKey(hat.name))
-            CustomHatViewDatas.Add(hat.name, viewData);
-
+        CustomHatRegistry.TryAdd(hat.name, extend);
+        CustomHatViewDatas.TryAdd(hat.name, viewData);
         hat.ViewDataRef = new(viewData.Pointer);
         hat.CreateAddressableAsset();
         return hat;
@@ -219,11 +215,11 @@ public static class CustomHats
 
             try
             {
-                while (CosmeticsLoader.HatDetails.Count > 0)
+                while (AssetLoader.HatDetails.Count > 0)
                 {
-                    var hatData = CreateHatBehaviour(CosmeticsLoader.HatDetails[0], true);
+                    var hatData = CreateHatBehaviour(AssetLoader.HatDetails[0], true);
                     AllHats.Add(hatData);
-                    CosmeticsLoader.HatDetails.RemoveAt(0);
+                    AssetLoader.HatDetails.RemoveAt(0);
                 }
 
                 __instance.allHats = AllHats.ToArray();
@@ -232,7 +228,7 @@ public static class CustomHats
             catch (Exception e)
             {
                 if (!SubLoaded)
-                    LogSomething("Unable to add Custom Hats\n" + e);
+                    LogError("Unable to add Custom Hats\n" + e);
             }
         }
 
@@ -272,6 +268,7 @@ public static class CustomHats
     }
 
     [HarmonyPatch(typeof(HatParent), nameof(HatParent.SetHat), typeof(int))]
+    [HarmonyPriority(Priority.High)]
     public static class HatParentSetHatPatchColor
     {
         public static void Prefix(HatParent __instance)
@@ -294,7 +291,7 @@ public static class CustomHats
                 }
                 catch (Exception e)
                 {
-                    LogSomething("Unable to create test hat\n" + e);
+                    LogError("Unable to create test hat\n" + e);
                 }
             }
         }
@@ -324,12 +321,12 @@ public static class CustomHats
                 if (hats.Count > 0)
                 {
                     __instance.Hat = CreateHatBehaviour(hats[0], true, true);
-                    __instance.hatDataAsset = __instance.Hat.CreateAddressableAsset();
+                    __instance.Hat.CreateAddressableAsset();
                 }
             }
             catch (Exception e)
             {
-                LogSomething("Unable to create test hat\n" + e);
+                LogError("Unable to create test hat\n" + e);
                 return true;
             }
 
@@ -344,7 +341,7 @@ public static class CustomHats
     {
         public static bool Prefix(HatParent __instance, int color)
         {
-            if (!CustomHatRegistry.ContainsKey(__instance.Hat.name))
+            if (!CustomHatViewDatas.ContainsKey(__instance.Hat.name))
                 return true;
 
             __instance.hatDataAsset = null;
@@ -460,7 +457,7 @@ public static class CustomHats
             if (!__instance.Hat)
                 return false;
 
-            if (!CustomHatRegistry.TryGetValue(__instance.Hat.name, out var hatViewData))
+            if (!CustomHatViewDatas.TryGetValue(__instance.Hat.name, out var hatViewData))
                 return true;
 
             __instance.hatDataAsset = null;
@@ -573,7 +570,7 @@ public static class CustomHats
         private const string InnerslothPackageName = "Innersloth";
         private static TMP_Text Template;
 
-        public static float CreateHatPackage(List<Tuple<HatData, HatExtension>> hats, string packageName, float YStart, HatsTab __instance)
+        public static float CreateHatPackage(List<(HatData, HatExtension)> hats, string packageName, float YStart, HatsTab __instance)
         {
             var isDefaultPackage = InnerslothPackageName == packageName;
 
@@ -655,7 +652,7 @@ public static class CustomHats
             __instance.ColorChips = new();
 
             var unlockedHats = HatManager.Instance.GetUnlockedHats();
-            var packages = new Dictionary<string, List<Tuple<HatData, HatExtension>>>();
+            var packages = new Dictionary<string, List<(HatData, HatExtension)>>();
 
             foreach (var hatBehaviour in unlockedHats)
             {

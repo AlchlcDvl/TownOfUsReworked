@@ -82,9 +82,10 @@ public abstract class PlayerLayer
             return;
         else if (IsDead)
         {
-            if (Type == LayerEnum.Phantom && TasksDone)
+            if (Type == LayerEnum.Phantom && TasksDone && ((Role)this).Faithful)
             {
                 Role.PhantomWins = true;
+                ((Phantom)this).CompletedTasks = true;
                 CallRpc(CustomRPC.WinLose, WinLoseRPC.PhantomWin, this);
                 EndGame();
             }
@@ -156,11 +157,10 @@ public abstract class PlayerLayer
             else if (Type == LayerEnum.Mafia && MafiaWin)
             {
                 Objectifier.MafiaWins = true;
-                Winner = true;
                 CallRpc(CustomRPC.WinLose, WinLoseRPC.MafiaWins);
                 EndGame();
             }
-            else if (Type == LayerEnum.Overlord && MeetingPatches.MeetingCount >= CustomGameOptions.OverlordMeetingWinCount && !IsAlive)
+            else if (Type == LayerEnum.Overlord && MeetingPatches.MeetingCount >= CustomGameOptions.OverlordMeetingWinCount && IsAlive)
             {
                 Objectifier.OverlordWins = true;
                 Objectifier.GetObjectifiers(LayerEnum.Overlord).Where(ov => ov.IsAlive).ToList().ForEach(x => x.Winner = true);
@@ -196,15 +196,15 @@ public abstract class PlayerLayer
                 CallRpc(CustomRPC.WinLose, WinLoseRPC.ReanimatedWin);
                 EndGame();
             }
-            else if (role.Faction == Faction.Syndicate && (role.Faithful || Type == LayerEnum.Betrayer || role.IsSynAlly || role.IsSynDefect || role.IsSynFanatic ||
-                role.IsSynTraitor) && SyndicateWins)
+            else if (role.Faction == Faction.Syndicate && (role.Faithful || Type == LayerEnum.Betrayer || role.IsSynAlly || role.IsSynDefect || role.IsSynFanatic || role.IsSynTraitor) &&
+                SyndicateWins)
             {
                 Role.SyndicateWin = true;
                 CallRpc(CustomRPC.WinLose, WinLoseRPC.SyndicateWin);
                 EndGame();
             }
-            else if (role.Faction == Faction.Intruder && (role.Faithful || Type == LayerEnum.Betrayer || role.IsIntDefect || role.IsIntAlly || role.IsIntFanatic ||
-                role.IsIntTraitor) && IntrudersWin)
+            else if (role.Faction == Faction.Intruder && (role.Faithful || Type == LayerEnum.Betrayer || role.IsIntDefect || role.IsIntAlly || role.IsIntFanatic || role.IsIntTraitor) &&
+                IntrudersWin)
             {
                 Role.IntruderWin = true;
                 CallRpc(CustomRPC.WinLose, WinLoseRPC.IntruderWin);
@@ -216,10 +216,10 @@ public abstract class PlayerLayer
                 CallRpc(CustomRPC.WinLose, WinLoseRPC.CrewWin);
                 EndGame();
             }
-            else if (role.Faithful && PestOrPBWins && Type is LayerEnum.Plaguebearer or LayerEnum.Pestilence)
+            else if (role.Faithful && ApocWins && role.RoleAlignment is RoleAlignment.NeutralApoc or RoleAlignment.NeutralHarb)
             {
-                Role.InfectorsWin = true;
-                CallRpc(CustomRPC.WinLose, WinLoseRPC.InfectorsWin);
+                Role.ApocalypseWins = true;
+                CallRpc(CustomRPC.WinLose, WinLoseRPC.ApocalypseWins);
                 EndGame();
             }
             else if (AllNeutralsWin && role.Faithful)
@@ -345,14 +345,15 @@ public abstract class PlayerLayer
 
     public override string ToString() => Name;
 
+    public void Delete()
+    {
+        OnLobby();
+        Player = null;
+    }
+
     public static void DeleteAll()
     {
-        foreach (var layer in AllLayers)
-        {
-            layer.OnLobby();
-            layer.Player = null;
-        }
-
+        AllLayers.ForEach(x => x.Delete());
         Role.AllRoles.Clear();
         Objectifier.AllObjectifiers.Clear();
         Modifier.AllModifiers.Clear();
@@ -362,8 +363,7 @@ public abstract class PlayerLayer
 
     public static List<PlayerLayer> GetLayers(PlayerControl player) => AllLayers.Where(x => x.Player == player).ToList();
 
-    public static List<PlayerLayer> GetLayers(LayerEnum type, PlayerLayerEnum layer = PlayerLayerEnum.None) => AllLayers.Where(x => x.Type == type && (layer == PlayerLayerEnum.None ||
-        x.LayerType == layer)).ToList();
+    public static List<PlayerLayer> GetLayers(LayerEnum type) => AllLayers.Where(x => x.Type == type).ToList();
 
-    public static List<T> GetLayers<T>(LayerEnum type, PlayerLayerEnum layer = PlayerLayerEnum.None) where T : PlayerLayer => GetLayers(type, layer).Cast<T>().ToList();
+    public static List<T> GetLayers<T>(LayerEnum type) where T : PlayerLayer => GetLayers(type).Cast<T>().ToList();
 }

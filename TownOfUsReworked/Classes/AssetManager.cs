@@ -11,106 +11,75 @@ public static class AssetManager
     {
         { "Casual", CreateText("Casual", "Presets") },
         { "Chaos", CreateText("Chaos", "Presets") },
-        { "Default", TryLoadingDataPreset("Default") },
-        { "Last Used", TryLoadingDataPreset("LastUsed") },
+        { "Default", ReadText("DefaultSettings") },
+        { "Last Used", ReadText("LastUsedSettings") },
         { "Ranked", CreateText("Ranked", "Presets") }
     };
     public static readonly Dictionary<int, string> Slots = new()
     {
-        { 1, TryLoadingSlotSettings(1) },
-        { 2, TryLoadingSlotSettings(2) },
-        { 3, TryLoadingSlotSettings(3) },
-        { 4, TryLoadingSlotSettings(4) },
-        { 5, TryLoadingSlotSettings(5) },
-        { 6, TryLoadingSlotSettings(6) },
-        { 7, TryLoadingSlotSettings(7) },
-        { 8, TryLoadingSlotSettings(8) },
-        { 9, TryLoadingSlotSettings(9) },
-        { 10, TryLoadingSlotSettings(10) }
+        { 1, ReadText("GameSettings-Slot1-ToU-Rew") },
+        { 2, ReadText("GameSettings-Slot2-ToU-Rew") },
+        { 3, ReadText("GameSettings-Slot3-ToU-Rew") },
+        { 4, ReadText("GameSettings-Slot4-ToU-Rew") },
+        { 5, ReadText("GameSettings-Slot5-ToU-Rew") },
+        { 6, ReadText("GameSettings-Slot6-ToU-Rew") },
+        { 7, ReadText("GameSettings-Slot7-ToU-Rew") },
+        { 8, ReadText("GameSettings-Slot8-ToU-Rew") },
+        { 9, ReadText("GameSettings-Slot9-ToU-Rew") },
+        { 10, ReadText("GameSettings-Slot10-ToU-Rew") }
     };
-
-    public static string TryLoadingDataPreset(string itemName)
-    {
-        try
-        {
-            return File.ReadAllText(Path.Combine(Application.persistentDataPath, $"{itemName}Settings"));
-        }
-        catch
-        {
-            LogSomething($"Error Loading {itemName}");
-            return "";
-        }
-    }
-
-    public static string TryLoadingSlotSettings(int slotId)
-    {
-        try
-        {
-            return File.ReadAllText(Path.Combine(Application.persistentDataPath, $"GameSettings-Slot{slotId}-ToU-Rew"));
-        }
-        catch
-        {
-            LogSomething($"Error Loading Slot {slotId}");
-            return "";
-        }
-    }
 
     public static AudioClip GetAudio(string path)
     {
         if (!SoundEffects.ContainsKey(path))
         {
-            LogSomething($"{path} does not exist");
+            LogError($"{path} does not exist");
             return null;
         }
         else
             return SoundEffects[path];
     }
 
-    public static Sprite GetSprite(string path) => !Sprites.ContainsKey(path) ? (Meeting ? Sprites["MeetingPlaceholder"] : Sprites["Placeholder"]) : Sprites[path];
+    public static Sprite GetSprite(string path) => !Sprites.ContainsKey(path) || path == "" ? (Meeting ? Sprites["MeetingPlaceholder"] : Sprites["Placeholder"]) : Sprites[path];
 
-    public static void Play(string path)
+    public static void Play(string path, bool loop = false)
     {
         try
         {
-            var clipToPlay = GetAudio(path);
             Stop(path);
 
             if (Constants.ShouldPlaySfx())
-                SoundManager.Instance.PlaySound(clipToPlay, false);
+                SoundManager.Instance.PlaySound(GetAudio(path), loop);
         }
         catch
         {
-            LogSomething($"Error playing because {path}");
+            LogError($"Error playing because {path} was null");
         }
     }
 
     public static void Stop(string path)
     {
-        if (Constants.ShouldPlaySfx())
-            SoundManager.Instance.StopSound(GetAudio(path));
+        try
+        {
+            if (Constants.ShouldPlaySfx())
+                SoundManager.Instance.StopSound(GetAudio(path));
+        } catch {}
     }
 
     public static void StopAll() => SoundEffects.Keys.ToList().ForEach(Stop);
-
-    public static string GetLanguage() => (uint)DataManager.Settings.Language.CurrentLanguage switch
-    {
-        13U => "SChinese",
-        _ => "English"
-    };
 
     public static Texture2D LoadDiskTexture(string path)
     {
         try
         {
             var texture = EmptyTexture();
-            var byteTexture = Il2CppSystem.IO.File.ReadAllBytes(path);
-            _ = ImageConversion.LoadImage(texture, byteTexture, false);
+            _ = ImageConversion.LoadImage(texture, File.ReadAllBytes(path), false);
             texture.hideFlags |= HideFlags.HideAndDontSave | HideFlags.DontUnloadUnusedAsset;
             return texture;
         }
         catch
         {
-            LogSomething("Error loading texture from disk: " + path);
+            LogError($"Error loading {path} from disk");
             return null;
         }
     }
@@ -134,7 +103,7 @@ public static class AssetManager
         }
         catch
         {
-            LogSomething("Error loading texture from resources: " + path);
+            LogError($"Error loading {path} from resources");
             return null;
         }
     }
@@ -153,7 +122,7 @@ public static class AssetManager
         }
         catch
         {
-            LogSomething($"Error Loading {name}");
+            LogError($"Error Loading {name}");
             return null;
         }
     }

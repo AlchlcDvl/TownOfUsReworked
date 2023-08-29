@@ -9,22 +9,21 @@ public static class Colors
     public static Color32 Ability => new(255, 153, 0, 255); //#FF9900FF
     public static Color32 Layer => new(38, 132, 193, 255); //#2684C1FF
     public static Color32 Objectifier => new(221, 88, 91, 255); //#DD585BFF
-    public static Color32 Faction => new(0, 230, 109, 255); //#00E66DFF
-    public static Color32 SubFaction => new(32, 77, 66, 255); //#204D42FF
 
     //Faction Colors
     public static Color32 Crew => new(140, 255, 255, 255); //#8CFFFFFF
     public static Color32 Neutral => new(179, 179, 179, 255); //#B3B3B3FF
     public static Color32 Intruder => new(255, 0, 0, 255); //#FF0000FF
     public static Color32 Syndicate => new(0, 128, 0, 255); //#008000FF
-    public static Color32 Other => new(128, 128, 0, 255); //#808000FF
+    public static Color32 Faction => new(0, 230, 109, 255); //#00E66DFF
 
     //Subfaction Colors
     public static Color32 Undead => new(123, 137, 104, 255); //#7B8968FF
-    public static Color32 Cabal => new(87, 86, 87, 255); //#575657FF
+    public static Color32 Cabal => new(87, 87, 87, 255); //#575757FF
     public static Color32 Reanimated => new(230, 16, 138, 255); //#E6108AFF
     public static Color32 Sect => new(249, 149, 252, 255); //#F995FCFF
-    public static Color32 Infector => new(167, 197, 150, 255); //#A7C596FF
+    public static Color32 Apocalypse => new(167, 197, 150, 255); //#A7C596FF
+    public static Color32 SubFaction => new(32, 77, 66, 255); //#204D42FF
 
     //Crew Colors
     public static Color32 Mayor => new(112, 79, 168, 255); //#704FA8FF
@@ -174,8 +173,10 @@ public static class Colors
     //#dcee85 #6c29ab #800000 #808000 #008000 #800080 #000080 #e74c3c #992d22 #00FFFD #917ac0 #Eac1d2 #286e58 #db4f20 #abd432 #2e3b97 #ffd100 #fffcce #40b4ff #a82626 #8ff731 #942b3b #80B3FF
     //#4e4e4e #fffead #1abc9c #2ecc71 #1f8b4c #3498db #ad1457 #c27c0e #ffd2fb #805bc4 #95a5a6 #979c9f #888888 #ff7272 #f25ff1 #FF00FF #916640 #1AFF74 #2672FF #8637C2 #e7dae2 #9B7038 #EDC240
     //#6a1515 #569d29 #f1612b #7d86e1 #EC62A5 #78c689 #fccc52 #6b2d2a #FCBA03 #F8CD46 #FF4D00 #7EFBC2 #4d4d4d #38b553 #0000FF #0000A7 #f25e75 #5865F2 #0437EF #7FFF00 #FB9327 #FAE57E #06DF0C
-    //#1E300B #F3A6D3 #F9BFA7 #E1E4E4 #869919
+    //#1E300B #F3A6D3 #F9BFA7 #E1E4E4 #869919 #2B0538 #78081C #69201B #9000D7 #CF036F #FA1C79 #B0BF1A #A64D79 #B3D94D #73AD09 #41d1c3 #B0BF1A #80B2FF #33FF77 #AAFF00 #452112 #663366 #9C4A14
+    //#1A3270 #C02A2C #E37C21 #20A1B7 #606168 #99007F #ECFF45 #BE1C8C #603FEF #610F69 #CBD542 #67A836 #B34D99 #06E00C #B545FF #DB7601 #1D4DFC #6699FF #9D7038 #FF004E #00CC99 #949797 #F5A6D4
+    //#ECC23E #A9A9A9 #1F51FF #9C9A9A #A22929 #7500AF
 
     //Symbol Storage
-    //⟡ ☆ ♡ ♧ ♤ ▶ ❥ ✔ ι ν σ τ ψ ✧ ¢
+    //⟡ ☆ ♡ ♧ ♤ ▶ ❥ ✔ ι ν σ τ ψ ✧ ¢ 乂 ⁂ ¤ ∮ 彡 个 「 」 人 요 〖 〗 ロ 米 卄 王 ī l 【 】 · ㅇ ° ◈ ◆ ◇ ◥ ◤ ◢ ◣ 《 》 ︵ ︶ ☆ ☀ ☂ ☹ ☺ ♡ ♩ ♪ ♫ ♬ ✓ ☜ ☞ ☟ ☯ ☃ ✿ ❀ ÷ º ¿ ※ ⁑ ∞ ≠ +
 }

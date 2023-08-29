@@ -5,7 +5,7 @@ public static class SubmergedStartPatch
 {
     public static void Postfix()
     {
-        if (PlayerControl.LocalPlayer.Data == null || PlayerControl.LocalPlayer == null)
+        if (CustomPlayer.Local == null || CustomPlayer.Local.Data == null)
             return;
 
         if (IsSubmerged)
@@ -24,14 +24,14 @@ public static class SubmergedHudPatch
 }
 
 [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.HandleAnimation))]
-[HarmonyPriority(Priority.Low)] //Make sure it occurs after other patches
+[HarmonyPriority(Priority.Low)]
 public static class SubmergedPhysicsPatch
 {
     public static void Postfix(PlayerPhysics __instance) => Ghostrolefix(__instance);
 }
 
 [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.LateUpdate))]
-[HarmonyPriority(Priority.Low)] //Make sure it occurs after other patches
+[HarmonyPriority(Priority.Low)]
 public static class SubmergedLateUpdatePhysicsPatch
 {
     public static void Postfix(PlayerPhysics __instance) => Ghostrolefix(__instance);

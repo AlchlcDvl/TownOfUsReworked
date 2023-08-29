@@ -17,9 +17,9 @@ public class Enforcer : Intruder
     public override LayerEnum Type => LayerEnum.Enforcer;
     public override Func<string> StartText => () => "Force The <color=#8CFFFFFF>Crew</color> To Do Your Bidding";
     public override Func<string> Description => () => "- You can plant bombs on players and force them to kill others\n- If the player is unable to kill someone within " +
-        $"{CustomGameOptions.EnforceDuration}s, the bomb will detonate and kill everyone within a {CustomGameOptions.EnforceRadius}m radius\n{CommonAbilities}";
+        $"{CustomGameOptions.EnforceDur}s, the bomb will detonate and kill everyone within a {CustomGameOptions.EnforceRadius}m radius\n{CommonAbilities}";
     public override InspectorResults InspectorResults => InspectorResults.DropsItems;
-    public float Timer => ButtonUtils.Timer(Player, LastBombed, CustomGameOptions.EnforceCooldown);
+    public float Timer => ButtonUtils.Timer(Player, LastBombed, CustomGameOptions.EnforceCd);
 
     public Enforcer(PlayerControl player) : base(player)
     {
@@ -88,7 +88,7 @@ public class Enforcer : Intruder
 
         if (interact[3])
         {
-            TimeRemaining = CustomGameOptions.EnforceDuration;
+            TimeRemaining = CustomGameOptions.EnforceDur;
             TimeRemaining2 = CustomGameOptions.EnforceDelay;
             BombedPlayer = BombButton.TargetPlayer;
             CallRpc(CustomRPC.Action, ActionsRPC.SetBomb, this, BombedPlayer);
@@ -106,7 +106,7 @@ public class Enforcer : Intruder
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        BombButton.Update("BOMB", Timer, CustomGameOptions.EnforceCooldown, DelayActive || Bombing, DelayActive ? TimeRemaining2 : TimeRemaining, DelayActive ?
-            CustomGameOptions.EnforceDelay : CustomGameOptions.EnforceDuration);
+        BombButton.Update("BOMB", Timer, CustomGameOptions.EnforceCd, DelayActive || Bombing, DelayActive ? TimeRemaining2 : TimeRemaining, DelayActive ?
+            CustomGameOptions.EnforceDelay : CustomGameOptions.EnforceDur);
     }
 }

@@ -5,7 +5,7 @@ public class Mystic : Crew
     public DateTime LastRevealed { get; set; }
     public static bool ConvertedDead => !CustomPlayer.AllPlayers.Any(x => !x.Data.IsDead && !x.Data.Disconnected && !x.Is(SubFaction.None));
     public CustomButton RevealButton { get; set; }
-    public float Timer => ButtonUtils.Timer(Player, LastRevealed, CustomGameOptions.RevealCooldown);
+    public float Timer => ButtonUtils.Timer(Player, LastRevealed, CustomGameOptions.MysticRevealCd);
 
     public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Mystic : Colors.Crew;
     public override string Name => "Mystic";
@@ -33,7 +33,7 @@ public class Mystic : Crew
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        RevealButton.Update("REVEAL", Timer, CustomGameOptions.RevealCooldown);
+        RevealButton.Update("REVEAL", Timer, CustomGameOptions.MysticRevealCd);
 
         if (ConvertedDead && !IsDead)
         {

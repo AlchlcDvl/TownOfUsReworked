@@ -20,7 +20,7 @@ public class Thief : Neutral
     public override Func<string> StartText => () => "Steal From The Killers";
     public override Func<string> Description => () => "- You can kill players to steal their roles\n- You cannot steal roles from players who cannot kill";
     public override InspectorResults InspectorResults => InspectorResults.BringsChaos;
-    public float Timer => ButtonUtils.Timer(Player, LastStolen, CustomGameOptions.ThiefKillCooldown);
+    public float Timer => ButtonUtils.Timer(Player, LastStolen, CustomGameOptions.StealCd);
 
     public Thief(PlayerControl player) : base(player)
     {
@@ -403,7 +403,7 @@ public class Thief : Neutral
             _ => new Thief(thief),
         };
 
-        newRole.RoleUpdate(thiefRole);
+        newRole.RoleUpdate(thiefRole, true);
 
         if (other.Is(LayerEnum.Dracula))
             ((Dracula)role).Converted.Clear();
@@ -427,7 +427,7 @@ public class Thief : Neutral
                 other.Data.Role.TeamType = RoleTeamTypes.Crewmate;
 
             var newRole2 = new Thief(other);
-            newRole2.RoleUpdate(role);
+            newRole2.RoleUpdate(role, true);
         }
 
         if (thief.Is(Faction.Intruder) || thief.Is(Faction.Syndicate) || (thief.Is(Faction.Neutral) && CustomGameOptions.SnitchSeesNeutrals))
@@ -451,7 +451,7 @@ public class Thief : Neutral
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        StealButton.Update("STEAL", Timer, CustomGameOptions.ThiefKillCooldown);
+        StealButton.Update("STEAL", Timer, CustomGameOptions.StealCd);
     }
 
     public override void UpdateMeeting(MeetingHud __instance)
@@ -494,9 +494,6 @@ public class Thief : Neutral
 
         MarkMeetingDead(player, Player);
 
-        if (Player != player)
-            Steal(this, player);
-
         if (AmongUsClient.Instance.AmHost && player.Is(LayerEnum.Lovers) && CustomGameOptions.BothLoversDie)
         {
             var otherLover = player.GetOtherLover();
@@ -509,21 +506,26 @@ public class Thief : Neutral
         {
             if (Player != player)
             {
-                HUD.Chat.AddChat(CustomPlayer.Local, $"You guessed {guessTarget.name} as {guess}!");
+                Run(HUD.Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"You guessed {guessTarget.name} as {guess}!");
                 GuessMenu.HideButtons();
             }
             else
-                HUD.Chat.AddChat(CustomPlayer.Local, $"You incorrectly guessed {guessTarget.name} as {guess} and died!");
+                Run(HUD.Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"You incorrectly guessed {guessTarget.name} as {guess} and died!");
         }
         else if (Player != player && CustomPlayer.Local == player)
-            HUD.Chat.AddChat(CustomPlayer.Local, $"{Player.name} guessed you as {guessTarget}!");
+            Run(HUD.Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} guessed you as {guessTarget}!");
         else if (DeadSeeEverything)
         {
             if (Player != player)
-                HUD.Chat.AddChat(CustomPlayer.Local, $"{Player.name} guessed {player.name} as {guessTarget} and stole their role!");
+                Run(HUD.Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} guessed {player.name} as {guessTarget} and stole their role!");
             else
-                HUD.Chat.AddChat(CustomPlayer.Local, $"{Player.name} incorrectly guessed {player.name} as {guessTarget} and died!");
+                Run(HUD.Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} incorrectly guessed {player.name} as {guessTarget} and died!");
         }
+        else
+            Run(HUD.Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"{player.name} has been assassinated!");
+
+        if (Player != player)
+            Steal(this, player);
     }
 
     public override void VoteComplete(MeetingHud __instance)

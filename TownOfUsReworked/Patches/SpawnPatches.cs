@@ -8,31 +8,21 @@ public static class SpawnPatches
     [HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.OnDestroy))]
     public static class IntroCutsceneOnDestroyPatch
     {
-        public static void Prefix()
-        {
-            HUD.GameSettings.gameObject.SetActive(false);
-            DataManager.Settings.Gameplay.ScreenShake = true;
-
-            if (!HUD.Chat.isActiveAndEnabled)
-                HUD.Chat.SetVisible(CustomPlayer.Local.CanChat());
-
-            RandomSpawn();
-        }
+        public static void Prefix() => DoTheThing();
     }
 
     [HarmonyPatch(typeof(ExileController), nameof(ExileController.WrapUp))]
     public static class BaseExileControllerPatch
     {
-        public static void Postfix()
-        {
-            HUD.GameSettings.gameObject.SetActive(false);
-            DataManager.Settings.Gameplay.ScreenShake = true;
+        public static void Postfix() => DoTheThing();
+    }
 
-            if (!HUD.Chat.isActiveAndEnabled)
-                HUD.Chat.SetVisible(CustomPlayer.Local.CanChat());
-
-            RandomSpawn();
-        }
+    private static void DoTheThing()
+    {
+        HUD?.GameSettings?.gameObject?.SetActive(false);
+        DataManager.Settings.Gameplay.ScreenShake = true;
+        HUD?.Chat?.SetVisible(CustomPlayer.Local.CanChat());
+        RandomSpawn();
     }
 
     private static void RandomSpawn()

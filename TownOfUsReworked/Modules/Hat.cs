@@ -17,8 +17,8 @@ public class CustomHat
     public string Name { get; set; }
     public string ID { get; set; }
     public string FlipID { get; set; }
-    public string BackFlipID { get; set; }
     public string BackID { get; set; }
+    public string BackFlipID { get; set; }
     public string ClimbID { get; set; }
     public string ClimbFlipID { get; set; }
     public string FloorID { get; set; }

@@ -6,7 +6,7 @@ public class Actor : Neutral
     public InspectorResults PretendRoles => TargetRole.InspectorResults;
     public Role TargetRole { get; set; }
     public bool Failed => !Ability.GetAssassins().Any(x => !x.IsDead && !x.Disconnected);
-    public CustomButton RoleButton { get; set; }
+    public CustomButton PretendButton { get; set; }
     public int Rounds { get; set; }
     public bool TargetFailed => TargetRole == null && Rounds > 0;
 
@@ -22,15 +22,15 @@ public class Actor : Neutral
         Objectives = () => Guessed ? "- You have successfully fooled the crew" : (TargetRole == null ? "- Find a set of roles you must pretend to be" : ("- Get guessed as one of your" +
             $" target roles\n- Your target roles belong to the {PretendRoles} role list"));
         RoleAlignment = RoleAlignment.NeutralEvil;
-        RoleButton = new(this, "ActorRole", AbilityTypes.Direct, "ActionSecondary", PickRole);
+        PretendButton = new(this, "Pretend", AbilityTypes.Direct, "ActionSecondary", PickRole);
     }
 
     public void PickRole()
     {
-        if (IsTooFar(Player, RoleButton.TargetPlayer))
+        if (IsTooFar(Player, PretendButton.TargetPlayer))
             return;
 
-        TargetRole = GetRole(RoleButton.TargetPlayer);
+        TargetRole = GetRole(PretendButton.TargetPlayer);
         CallRpc(CustomRPC.Target, TargetRPC.SetActPretendList, this, TargetRole);
     }
 
@@ -139,7 +139,7 @@ public class Actor : Neutral
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        RoleButton.Update("PRETEND", true, TargetRole == null);
+        PretendButton.Update("PRETEND", true, TargetRole == null);
 
         if ((TargetFailed || (TargetRole != null && Failed)) && !IsDead)
         {

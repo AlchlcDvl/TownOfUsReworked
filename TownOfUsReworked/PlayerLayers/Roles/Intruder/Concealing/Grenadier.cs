@@ -18,7 +18,7 @@ public class Grenadier : Intruder
     public override Func<string> StartText => () => "Blind The <color=#8CFFFFFF>Crew</color> With Your Magnificent Figure";
     public override Func<string> Description => () => $"- You can drop a flashbang, which blinds players around you\n{CommonAbilities}";
     public override InspectorResults InspectorResults => InspectorResults.DropsItems;
-    public float Timer => ButtonUtils.Timer(Player, LastFlashed, CustomGameOptions.GrenadeCd);
+    public float Timer => ButtonUtils.Timer(Player, LastFlashed, CustomGameOptions.FlashCd);
 
     public Grenadier(PlayerControl player) : base(player)
     {
@@ -50,12 +50,9 @@ public class Grenadier : Intruder
         {
             if (CustomPlayer.Local == player)
             {
-                HUD.FullScreen.enabled = true;
-                HUD.FullScreen.gameObject.active = true;
-
-                if (TimeRemaining > CustomGameOptions.GrenadeDuration - 0.5f)
+                if (TimeRemaining > CustomGameOptions.FlashDur - 0.5f)
                 {
-                    var fade = (TimeRemaining - CustomGameOptions.GrenadeDuration) * (-2f);
+                    var fade = (TimeRemaining - CustomGameOptions.FlashDur) * -2f;
 
                     if (ShouldPlayerBeBlinded(player))
                         HUD.FullScreen.color = Color32.Lerp(NormalVision, BlindVision, fade);
@@ -64,11 +61,8 @@ public class Grenadier : Intruder
                     else
                         HUD.FullScreen.color = NormalVision;
                 }
-                else if (TimeRemaining <= (CustomGameOptions.GrenadeDuration - 0.5f) && TimeRemaining >= 0.5f)
+                else if (TimeRemaining <= (CustomGameOptions.FlashDur - 0.5f) && TimeRemaining >= 0.5f)
                 {
-                    HUD.FullScreen.enabled = true;
-                    HUD.FullScreen.gameObject.active = true;
-
                     if (ShouldPlayerBeBlinded(player))
                         HUD.FullScreen.color = BlindVision;
                     else if (ShouldPlayerBeDimmed(player))
@@ -110,7 +104,6 @@ public class Grenadier : Intruder
     {
         Enabled = false;
         LastFlashed = DateTime.UtcNow;
-        HUD.FullScreen.color = NormalVision;
         FlashedPlayers.Clear();
         SetFullScreenHUD();
     }
@@ -125,7 +118,7 @@ public class Grenadier : Intruder
             return;
 
         CallRpc(CustomRPC.Action, ActionsRPC.FlashGrenade, this);
-        TimeRemaining = CustomGameOptions.GrenadeDuration;
+        TimeRemaining = CustomGameOptions.FlashDur;
         Flash();
     }
 
@@ -136,6 +129,6 @@ public class Grenadier : Intruder
         var dummyActive = system.dummy.IsActive;
         var sabActive = system.specials.Any(s => s.IsActive);
         var condition = !dummyActive && !sabActive;
-        FlashButton.Update("FLASH", Timer, CustomGameOptions.GrenadeCd, Flashed, TimeRemaining, CustomGameOptions.GrenadeDuration, condition);
+        FlashButton.Update("FLASH", Timer, CustomGameOptions.FlashCd, Flashed, TimeRemaining, CustomGameOptions.FlashDur, condition);
     }
 }

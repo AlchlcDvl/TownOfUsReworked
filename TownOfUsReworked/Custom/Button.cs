@@ -19,6 +19,8 @@ public class CustomButton
     private GameObject Block { get; set; }
     private bool Local => Owner.Local || TownOfUsReworked.MCIActive;
     private bool Disabled { get; set; }
+    public bool Blocked => Owner.IsBlocked;
+    private bool KeyDown => Rewired.ReInput.players.GetPlayer(0).GetButtonDown(Keybind);
     public delegate void Click();
     public delegate bool Exclude(PlayerControl player);
     private bool SetAliveActive => !Owner.IsDead && Owner.Player.Is(Owner.Type) && IsRoaming && Owner.Local && ButtonsActive;
@@ -36,13 +38,17 @@ public class CustomButton
         PostDeath = postDeath;
         Exception = exception ?? BlankBool;
         AllButtons.Add(this);
-
-        if (Local)
-            CreateButton();
+        CreateButton();
     }
+
+    public CustomButton(PlayerLayer owner, string button, AbilityTypes type, string keybind, Click click, bool hasUses = false, bool postDeath = false) : this(owner, button, type, keybind,
+        click, null, hasUses, postDeath) {}
 
     private void CreateButton()
     {
+        if (!Local)
+            return;
+
         Base = InstantiateButton();
         Base.graphic.sprite = GetSprite(Button);
         Base.gameObject.name = Base.name = Button + Owner.Name + Owner.PlayerName;
@@ -53,9 +59,6 @@ public class CustomButton
         Block.SetActive(false);
         Block.transform.SetParent(Base.transform);
     }
-
-    public CustomButton(PlayerLayer owner, string button, AbilityTypes type, string keybind, Click click, bool hasUses = false, bool postDeath = false) : this(owner, button, type,
-        keybind, click, null, hasUses, postDeath) {}
 
     private static AbilityButton InstantiateButton()
     {
@@ -89,8 +92,7 @@ public class CustomButton
             return;
         }
 
-        TargetPlayer = Owner.Player.GetClosestPlayer(CustomPlayer.AllPlayers.Where(x => x != Owner.Player && !x.IsPostmortal() && !x.Data.IsDead && (!Exception(x) || x.IsMoving()))
-            .ToList());
+        TargetPlayer = Owner.Player.GetClosestPlayer(CustomPlayer.AllPlayers.Where(x => x != Owner.Player && !x.IsPostmortal() && !x.Data.IsDead && (!Exception(x) || x.IsMoving())).ToList());
 
         foreach (var player in CustomPlayer.AllPlayers)
         {
@@ -178,10 +180,10 @@ public class CustomButton
             SetVentTarget(effectActive);
     }
 
-    public void Update(string label, float timer, float maxTimer, int uses, bool effectActive, float effectTimer, float maxDuration, float cooldownDiff, float cooldownMult, bool
-        condition = true, bool usable = true)
+    public void Update(string label, float timer, float maxTimer, int uses, bool effectActive, float effectTimer, float maxDuration, float cooldownDiff, float cooldownMult, bool condition =
+        true, bool usable = true)
     {
-        if ((!Local || IsLobby || (HasUses && uses <= 0) || Meeting || Inactive || !usable || (!PostDeath && Owner.IsDead)) && !Disabled)
+        if ((!Local || IsLobby || (HasUses && uses <= 0) || Meeting || NoPlayers || !usable || (!PostDeath && Owner.IsDead)) && !Disabled)
             Disable();
 
         if (usable && Disabled)
@@ -193,12 +195,12 @@ public class CustomButton
         var pos = Base.transform.position;
         pos.z = -50f;
         Block.transform.position = pos;
-        Block.SetActive(Owner.IsBlocked && Base.isActiveAndEnabled && SetAliveActive);
+        Block.SetActive(Blocked && Base.isActiveAndEnabled && SetAliveActive);
         SetTarget(effectActive);
-        Base.buttonLabelText.text = Owner.IsBlocked ? "BLOCKED" : label;
+        Base.buttonLabelText.text = Blocked ? "BLOCKED" : label;
         Base.buttonLabelText.SetOutlineColor(Owner.Color);
         Base.gameObject.SetActive(PostDeath ? SetDeadActive : SetAliveActive);
-        Clickable = Base && !effectActive && usable && condition && !(HasUses && uses <= 0) && !Meeting && !Owner.IsBlocked && Owner.Player.CanMove && !Base.isCoolingDown &&
+        Clickable = Base && !effectActive && usable && condition && !(HasUses && uses <= 0) && !Meeting && !Blocked && Owner.Player.CanMove && !Base.isCoolingDown &&
             Base.isActiveAndEnabled && !Owner.Player.CannotUse() && (PostDeath ? SetDeadActive : SetAliveActive) && !LobbyBehaviour.Instance;
 
         if (effectActive)
@@ -211,7 +213,7 @@ public class CustomButton
         else
             Base.SetInfiniteUses();
 
-        if (Rewired.ReInput.players.GetPlayer(0).GetButtonDown(Keybind))
+        if (KeyDown)
             Clicked();
     }
 
@@ -227,8 +229,8 @@ public class CustomButton
     public void Update(string label, float timer, float maxTimer, float cooldownDiff, bool condition = true, bool usable = true) => Update(label, timer, maxTimer, 0, cooldownDiff, 1,
         condition, usable);
 
-    public void Update(string label, float timer, float maxTimer, int uses, float cooldownDiff, bool condition = true, bool usable = true) => Update(label, timer, maxTimer, uses, false, 0,
-        1, cooldownDiff, 1, condition, usable);
+    public void Update(string label, float timer, float maxTimer, int uses, float cooldownDiff, bool condition = true, bool usable = true) => Update(label, timer, maxTimer, uses, false, 0, 1,
+        cooldownDiff, 1, condition, usable);
 
     public void Update(string label, float timer, float maxTimer, float cooldownDiff, float cooldownMult, bool condition = true, bool usable = true) => Update(label, timer, maxTimer, 0,
         cooldownDiff, cooldownMult, condition, usable);
@@ -236,8 +238,8 @@ public class CustomButton
     public void Update(string label, float timer, float maxTimer, int uses, float cooldownDiff, float cooldownMult, bool condition = true, bool usable = true) => Update(label, timer,
         maxTimer, uses, false, 0, 1, cooldownDiff, cooldownMult, condition, usable);
 
-    public void Update(string label, float timer, float maxTimer, bool effectActive, float effectTimer, float maxDuration, bool condition = true, bool usable = true) => Update(label,
-        timer, maxTimer, 0, effectActive, effectTimer, maxDuration, 0, 1, condition, usable);
+    public void Update(string label, float timer, float maxTimer, bool effectActive, float effectTimer, float maxDuration, bool condition = true, bool usable = true) => Update(label, timer,
+        maxTimer, 0, effectActive, effectTimer, maxDuration, 0, 1, condition, usable);
 
     public void Update(string label, float timer, float maxTimer, int uses, bool effectActive, float effectTimer, float maxDuration, bool condition = true, bool usable = true) =>
         Update(label, timer, maxTimer, uses, effectActive, effectTimer, maxDuration, 0, 1, condition, usable);
@@ -248,8 +250,8 @@ public class CustomButton
     public void Update(string label, float timer, float maxTimer, int uses, bool effectActive, float effectTimer, float maxDuration, float cooldownDiff, bool condition = true, bool usable =
         true) => Update(label, timer, maxTimer, uses, effectActive, effectTimer, maxDuration, cooldownDiff, 1, condition, usable);
 
-    public void Update(string label, float timer, float maxTimer, bool effectActive, float effectTimer, float maxDuration, float cooldownDiff, float cooldownMult, bool condition = true,
-        bool usable = true) => Update(label, timer, maxTimer, 0, effectActive, effectTimer, maxDuration, cooldownDiff, cooldownMult, condition, usable);
+    public void Update(string label, float timer, float maxTimer, bool effectActive, float effectTimer, float maxDuration, float cooldownDiff, float cooldownMult, bool condition = true, bool
+        usable = true) => Update(label, timer, maxTimer, 0, effectActive, effectTimer, maxDuration, cooldownDiff, cooldownMult, condition, usable);
 
     private void DisableTarget()
     {
@@ -263,23 +265,16 @@ public class CustomButton
                 break;
 
             case AbilityTypes.Dead:
-                if (TargetBody != null)
-                {
-                    var component = TargetBody.bodyRenderers.FirstOrDefault();
-                    component.material.SetFloat("_Outline", 1f);
-                    component.material.SetColor("_OutlineColor", Owner.Color);
-                }
-
+                var component = TargetBody?.bodyRenderers?.FirstOrDefault();
+                component?.material?.SetFloat("_Outline", 1f);
+                component?.material?.SetColor("_OutlineColor", Owner.Color);
                 TargetBody = null;
                 break;
 
             case AbilityTypes.Vent:
-                if (TargetVent != null)
-                {
-                    TargetVent.myRend.material.SetFloat("_Outline", 0f);
-                    TargetVent.myRend.material.SetFloat("_AddColor", 0f);
-                }
-
+                var rend = TargetVent?.myRend;
+                rend?.material?.SetFloat("_Outline", 0f);
+                rend?.material?.SetFloat("_AddColor", 0f);
                 TargetVent = null;
                 break;
         }
@@ -287,6 +282,9 @@ public class CustomButton
 
     public void Disable()
     {
+        if (Disabled)
+            return;
+
         Disabled = true;
         Base?.gameObject?.SetActive(false);
         DisableTarget();
@@ -294,27 +292,32 @@ public class CustomButton
 
     public void Enable()
     {
+        if (!Disabled)
+            return;
+
         Disabled = false;
         Base?.gameObject?.SetActive(true);
     }
 
-    public void Destroy(bool remove = true)
+    public void Destroy()
     {
+        AllButtons.Remove(this);
+
         if (Base == null)
             return;
 
         Base?.SetCoolDown(0, 0);
         Base?.SetDisabled();
+        Base.GetComponent<PassiveButton>().OnClick = new();
         Base?.buttonLabelText?.gameObject?.SetActive(false);
-        Base?.buttonLabelText?.gameObject.Destroy();
+        Base?.buttonLabelText?.gameObject?.Destroy();
+        Block?.SetActive(false);
+        Block?.Destroy();
         Base?.gameObject?.SetActive(false);
         Base?.gameObject?.Destroy();
         Base.Destroy();
         Base = null;
         Disabled = true;
-
-        if (remove)
-            AllButtons.Remove(this);
     }
 
     public static void DisableAll() => AllButtons.ForEach(x => x.Disable());

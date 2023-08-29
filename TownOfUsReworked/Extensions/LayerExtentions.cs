@@ -163,7 +163,7 @@ public static class LayerExtentions
     public static bool CanSabotage(this PlayerControl player)
     {
         var result = (player.Is(Faction.Intruder) || (player.Is(Faction.Syndicate) && CustomGameOptions.AltImps)) && !Meeting && CustomGameOptions.IntrudersCanSabotage &&
-            !Role.GetRoles(player.GetFaction()).All(x => x.IsDead);
+            !Role.GetRoles(player.GetFaction()).All(x => x.IsDead && !CustomGameOptions.GhostsCanSabotage);
 
         if (!player.Data.IsDead)
             return result;
@@ -324,6 +324,8 @@ public static class LayerExtentions
     }
 
     public static Silencer GetSilencer(this PlayerControl player) => Role.GetRoles<Silencer>(LayerEnum.Silencer).Find(x => x.SilencedPlayer == player);
+
+    public static PromotedRebel GetRebSilencer(this PlayerControl player) => Role.GetRoles<PromotedRebel>(LayerEnum.PromotedRebel).Find(x => x.SilencedPlayer == player && x.IsSil);
 
     public static bool IsBombed(this PlayerControl player) => Role.GetRoles<Enforcer>(LayerEnum.Enforcer).Any(role => player == role.BombedPlayer);
 
@@ -560,8 +562,8 @@ public static class LayerExtentions
 
         if (Role.GetRoles<Shapeshifter>(LayerEnum.Shapeshifter).Any(x => x.Shapeshifted))
         {
-            if (CachedMorphs.ContainsKey(player))
-                mimicked = CachedMorphs[player];
+            if (CachedMorphs.ContainsKey(player.PlayerId))
+                mimicked = PlayerById(CachedMorphs[player.PlayerId]);
             else
             {
                 var ss = (Shapeshifter)Role.AllRoles.Find(x => x.Type == LayerEnum.Shapeshifter && ((Shapeshifter)x).Shapeshifted && (player == ((Shapeshifter)x).ShapeshiftPlayer1 ||
@@ -580,8 +582,8 @@ public static class LayerExtentions
         }
         else if (Role.GetRoles<PromotedRebel>(LayerEnum.PromotedRebel).Any(x => x.OnEffect && x.IsSS))
         {
-            if (CachedMorphs.ContainsKey(player))
-                mimicked = CachedMorphs[player];
+            if (CachedMorphs.ContainsKey(player.PlayerId))
+                mimicked = PlayerById(CachedMorphs[player.PlayerId]);
             else
             {
                 var reb = (PromotedRebel)Role.AllRoles.Find(x => x.Type == LayerEnum.PromotedRebel && ((PromotedRebel)x).OnEffect && (player == ((PromotedRebel)x).ShapeshiftPlayer1 ||
@@ -946,23 +948,20 @@ public static class LayerExtentions
             abilities += $"\n{role.ColorString}- Attempting to interact with a <color=#C0C0C0FF>Vampire Hunter</color> will force them to kill you</color>";
         }
 
-        if (objectives == $"{ObjectivesColorString}Objectives:")
-            objectives += "\n- None";
-
         objectives += "</color>";
 
-        if (info[0])
+        if (info[0] && role.Description() is not ("" or "- None"))
             abilities += $"\n{role.ColorString}{role.Description()}</color>";
 
-        if (info[2] && !ability.Hidden && ability.Type != LayerEnum.None)
+        if (info[2] && !ability.Hidden && ability.Type != LayerEnum.None && ability.Description() is not ("" or "- None"))
             abilities += $"\n{ability.ColorString}{ability.Description()}</color>";
 
         if (abilities == $"{AbilitiesColorString}Abilities:")
-            abilities += "\n- None";
+            abilities = "";
+        else
+            abilities = $"\n{abilities}</color>";
 
-        abilities += "</color>";
-
-        if (info[1] && !modifier.Hidden && modifier.Type != LayerEnum.None)
+        if (info[1] && !modifier.Hidden && modifier.Type != LayerEnum.None && modifier.Description() is not ("" or "- None"))
             attributes += $"\n{modifier.ColorString}{modifier.Description()}</color>";
 
         if (player.IsGuessTarget() && CustomGameOptions.GuesserTargetKnows)
@@ -987,10 +986,11 @@ public static class LayerExtentions
             attributes += "\n<color=#FF0000FF>- You are dead</color>";
 
         if (attributes == $"{AttributesColorString}Attributes:")
-            attributes += "\n- None";
+            attributes = "";
+        else
+            attributes = $"\n{attributes}</color>";
 
-        attributes += "</color>";
-        return $"{roleName}\n{alignment}\n{subfaction}\n{objectifierName}\n{abilityName}\n{modifierName}\n{objectives}\n{abilities}\n{attributes}";
+        return $"{roleName}\n{alignment}\n{subfaction}\n{objectifierName}\n{abilityName}\n{modifierName}\n{objectives}{abilities}{attributes}";
     }
 
     public static void RegenTask(this PlayerControl player)
@@ -1007,18 +1007,22 @@ public static class LayerExtentions
         } catch {}
     }
 
-    public static void RoleUpdate(this Role newRole, Role former)
+    public static void RoleUpdate(this Role newRole, Role former, bool retainFaction = false)
     {
         CustomButton.AllButtons.Where(x => x.Owner == former || x.Owner.Player == null).ToList().ForEach(x => x.Destroy());
         CustomArrow.AllArrows.Where(x => x.Owner == former.Player).ToList().ForEach(x => x.Disable());
         former.OnLobby();
         former.Ignore = true;
         former.Player = null;
-        newRole.RoleHistory.Add(former);
-        newRole.RoleHistory.AddRange(former.RoleHistory);
-        newRole.Faction = former.Faction;
+
+        if (!retainFaction)
+        {
+            newRole.Faction = former.Faction;
+            newRole.FactionColor = former.FactionColor;
+        }
+
+        newRole.RoleAlignment = newRole.RoleAlignment.GetNewAlignment(newRole.Faction);
         newRole.SubFaction = former.SubFaction;
-        newRole.FactionColor = former.FactionColor;
         newRole.SubFactionColor = former.SubFactionColor;
         newRole.DeathReason = former.DeathReason;
         newRole.KilledBy = former.KilledBy;
@@ -1041,6 +1045,8 @@ public static class LayerExtentions
         newRole.IsNeutDefect = former.IsNeutDefect;
         newRole.AllArrows = former.AllArrows;
         newRole.SubFactionSymbol = former.SubFactionSymbol;
+        newRole.RoleHistory.Add(former);
+        newRole.RoleHistory.AddRange(former.RoleHistory);
         Role.AllRoles.Remove(former);
         PlayerLayer.AllLayers.Remove(former);
 
@@ -1183,5 +1189,63 @@ public static class LayerExtentions
         }
 
         return alignment;
+    }
+
+    public static bool CanButton(this PlayerControl player, out string name)
+    {
+        name = "Shy";
+
+        if (player.Is(LayerEnum.Mayor))
+        {
+            name = "Mayor";
+            return CustomGameOptions.MayorButton;
+        }
+        else if (player.Is(LayerEnum.Jester))
+        {
+            name = "Jester";
+            return CustomGameOptions.JesterButton;
+        }
+        else if (player.Is(LayerEnum.Swapper))
+        {
+            name = "Swapper";
+            return CustomGameOptions.SwapperButton;
+        }
+        else if (player.Is(LayerEnum.Actor))
+        {
+            name = "Actor";
+            return CustomGameOptions.ActorButton;
+        }
+        else if (player.Is(LayerEnum.Executioner))
+        {
+            name = "Executioner";
+            return CustomGameOptions.ExecutionerButton;
+        }
+        else if (player.Is(LayerEnum.Guesser))
+        {
+            name = "Guesser";
+            return CustomGameOptions.GuesserButton;
+        }
+        else if (player.Is(LayerEnum.Politician))
+        {
+            name = "Politician";
+            return CustomGameOptions.PoliticianButton;
+        }
+        else if (player.Is(LayerEnum.Dictator))
+        {
+            name = "Dictator";
+            return CustomGameOptions.DictatorButton;
+        }
+        else if (player.Is(LayerEnum.Monarch))
+        {
+            name = "Monarch";
+            return CustomGameOptions.MonarchButton;
+        }
+        else if (player.IsKnighted())
+        {
+            name = "Knight";
+            return CustomGameOptions.KnightButton;
+        }
+
+        return !player.Is(LayerEnum.Shy) && player.RemainingEmergencies > 0;
     }
 }

@@ -6,7 +6,38 @@ public static class PerformVent
 {
     public static bool Prefix()
     {
-        if (Inactive)
+        if (NoPlayers)
+            return true;
+
+        if (!CustomPlayer.Local.CanVent())
+            return false;
+
+        return LocalNotBlocked;
+    }
+}
+
+[HarmonyPatch(typeof(Vent), nameof(Vent.Use))]
+[HarmonyPriority(Priority.First)]
+public static class UseVent
+{
+    public static bool Prefix()
+    {
+        if (NoPlayers)
+            return true;
+
+        if (!CustomPlayer.Local.CanVent())
+            return false;
+
+        return LocalNotBlocked;
+    }
+}
+
+[HarmonyPatch(typeof(Vent), nameof(Vent.TryMoveToVent))]
+public static class MoveToVentPatch
+{
+    public static bool Prefix()
+    {
+        if (NoPlayers)
             return true;
 
         if (!CustomPlayer.Local.CanVent())
@@ -22,7 +53,7 @@ public static class PerformReport
 {
     public static bool Prefix()
     {
-        if (Inactive)
+        if (NoPlayers)
             return true;
 
         if (CustomPlayer.Local.Is(LayerEnum.Coward))
@@ -38,7 +69,7 @@ public static class PerformUse
 {
     public static bool Prefix()
     {
-        if (Inactive)
+        if (NoPlayers)
             return true;
 
         return LocalNotBlocked;
@@ -51,7 +82,7 @@ public static class PerformSabotage
 {
     public static bool Prefix()
     {
-        if (Inactive)
+        if (NoPlayers)
             return true;
 
         return LocalNotBlocked;
@@ -64,7 +95,7 @@ public static class PerformAdmin
 {
     public static bool Prefix()
     {
-        if (Inactive)
+        if (NoPlayers)
             return true;
 
         return LocalNotBlocked;
@@ -77,7 +108,7 @@ public static class PerformPet
 {
     public static bool Prefix()
     {
-        if (Inactive)
+        if (NoPlayers)
             return true;
 
         return LocalNotBlocked; //No petting for you lmao

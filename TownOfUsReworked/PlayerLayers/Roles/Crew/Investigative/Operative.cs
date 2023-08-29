@@ -9,7 +9,7 @@ public class Operative : Crew
     public bool ButtonUsable => UsesLeft > 0;
     public CustomButton BugButton { get; set; }
     public Dictionary<byte, TMP_Text> PlayerNumbers { get; set; }
-    public float Timer => ButtonUtils.Timer(Player, LastBugged, CustomGameOptions.BugCooldown);
+    public float Timer => ButtonUtils.Timer(Player, LastBugged, CustomGameOptions.BugCd);
 
     public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Operative : Colors.Crew;
     public override string Name => "Operative";
@@ -82,13 +82,13 @@ public class Operative : Crew
         }
 
         if (HUD)
-            HUD.Chat.AddChat(CustomPlayer.Local, message);
+            Run(HUD.Chat, "<color=#A7D1B3FF>〖 Bug Results 〗</color>", message);
     }
 
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        BugButton.Update("BUG", Timer, CustomGameOptions.BugCooldown, UsesLeft, ButtonUsable);
+        BugButton.Update("BUG", Timer, CustomGameOptions.BugCd, UsesLeft, ButtonUsable);
     }
 
     public void PlaceBug()

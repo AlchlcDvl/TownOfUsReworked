@@ -17,7 +17,7 @@ public class Banshee : Syndicate
     public override Func<string> StartText => () => "AAAAAAAAAAAAAAAAAAAAAAAAA";
     public override Func<string> Description => () => "- You can scream loudly, blocking all players as long as you are not clicked";
     public override InspectorResults InspectorResults => InspectorResults.Ghostly;
-    public float Timer => ButtonUtils.Timer(Player, LastScreamed, CustomGameOptions.ScreamCooldown, true);
+    public float Timer => ButtonUtils.Timer(Player, LastScreamed, CustomGameOptions.ScreamCd, true);
 
     public Banshee(PlayerControl player) : base(player)
     {
@@ -110,7 +110,7 @@ public class Banshee : Syndicate
         if (Timer != 0f)
             return;
 
-        TimeRemaining = CustomGameOptions.ScreamDuration;
+        TimeRemaining = CustomGameOptions.ScreamDur;
         Scream();
         CallRpc(CustomRPC.Action, ActionsRPC.Scream, this);
 
@@ -124,6 +124,6 @@ public class Banshee : Syndicate
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        ScreamButton.Update("SCREAM", Timer, CustomGameOptions.ScreamCooldown, Screaming, TimeRemaining, CustomGameOptions.ScreamDuration, true, !Caught);
+        ScreamButton.Update("SCREAM", Timer, CustomGameOptions.ScreamCd, Screaming, TimeRemaining, CustomGameOptions.ScreamDur, true, !Caught);
     }
 }

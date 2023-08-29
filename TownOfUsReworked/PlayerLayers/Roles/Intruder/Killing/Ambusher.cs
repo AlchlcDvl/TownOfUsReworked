@@ -16,7 +16,7 @@ public class Ambusher : Intruder
     public override Func<string> Description => () => "- You can ambush players\n- Ambushed players will be forced to be on alert and kill whoever interacts with them\n" +
         CommonAbilities;
     public override InspectorResults InspectorResults => InspectorResults.HindersOthers;
-    public float Timer => ButtonUtils.Timer(Player, LastAmbushed, CustomGameOptions.AmbushCooldown);
+    public float Timer => ButtonUtils.Timer(Player, LastAmbushed, CustomGameOptions.AmbushCd);
 
     public Ambusher(PlayerControl player) : base(player)
     {
@@ -50,7 +50,7 @@ public class Ambusher : Intruder
 
         if (interact[3])
         {
-            TimeRemaining = CustomGameOptions.AmbushDuration;
+            TimeRemaining = CustomGameOptions.AmbushDur;
             AmbushedPlayer = AmbushButton.TargetPlayer;
             CallRpc(CustomRPC.Action, ActionsRPC.Ambush, this, AmbushedPlayer);
             Ambush();
@@ -67,6 +67,6 @@ public class Ambusher : Intruder
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        AmbushButton.Update("AMBUSH", Timer, CustomGameOptions.AmbushDuration, OnAmbush, TimeRemaining, CustomGameOptions.AmbushDuration);
+        AmbushButton.Update("AMBUSH", Timer, CustomGameOptions.AmbushDur, OnAmbush, TimeRemaining, CustomGameOptions.AmbushDur);
     }
 }

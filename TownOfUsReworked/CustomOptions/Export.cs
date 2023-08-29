@@ -6,7 +6,7 @@ public class Export : CustomButtonOption
     private List<OptionBehaviour> OldButtons { get; set; } = new();
     public List<CustomButtonOption> SlotButtons = new();
 
-    public Export() : base(MultiMenu.main, "Save Custom Settings") => Do = ToDo;
+    public Export() : base(MultiMenu.Main, "Save Custom Settings") => Do = ToDo;
 
     private List<OptionBehaviour> CreateOptions()
     {
@@ -51,6 +51,7 @@ public class Export : CustomButtonOption
         Loading.Setting.gameObject.Destroy();
         OldButtons.ForEach(x => x.gameObject.SetActive(true));
         __instance.Children = OldButtons.ToArray();
+        GameSettings.SettingsPage = 0;
         yield return new WaitForEndOfFrame();
         yield return flashCoro();
     }
@@ -58,8 +59,8 @@ public class Export : CustomButtonOption
     public void ToDo()
     {
         SlotButtons.Clear();
-        Slots.Keys.ToList().ForEach(x => SlotButtons.Add(new(MultiMenu.external, $"Slot {x}", delegate { ExportSlot(x); })));
-        SlotButtons.Add(new(MultiMenu.external, "Cancel", delegate { Cancel(FlashWhite); }));
+        Slots.Keys.ToList().ForEach(x => SlotButtons.Add(new(MultiMenu.External, $"Slot {x}", delegate { ExportSlot(x); })));
+        SlotButtons.Add(new(MultiMenu.External, "Cancel", delegate { Cancel(FlashWhite); }));
 
         var options = CreateOptions();
         var __instance = UObject.FindObjectOfType<GameOptionsMenu>();
@@ -68,6 +69,7 @@ public class Export : CustomButtonOption
         var z = __instance.Children[1].transform.localPosition.z;
         OldButtons = __instance.Children.ToList();
         OldButtons.ForEach(x => x.gameObject.SetActive(false));
+        GameSettings.SettingsPage = 9;
 
         for (var i = 0; i < options.Count; i++)
             options[i].transform.localPosition = new(x, y - (i * 0.5f), z);
@@ -77,12 +79,12 @@ public class Export : CustomButtonOption
 
     private void ExportSlot(int slotId)
     {
-        LogSomething($"Saving Slot - {slotId}");
+        LogInfo($"Saving Slot - {slotId}");
 
         try
         {
             SaveSettings($"GameSettings-Slot{slotId}-ToU-Rew");
-            Slots[slotId] = TryLoadingSlotSettings(slotId);
+            Slots[slotId] = ReadText($"GameSettings-Slot{slotId}-ToU-Rew");
             Cancel(FlashGreen);
         }
         catch
