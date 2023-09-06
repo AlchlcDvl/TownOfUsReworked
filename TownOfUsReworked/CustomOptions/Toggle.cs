@@ -18,7 +18,6 @@ public class CustomToggleOption : CustomOption
         var toggle = Setting.Cast<ToggleOption>();
         toggle.TitleText.text = Name;
         toggle.CheckMark.enabled = Get();
-        toggle.gameObject.GetComponent<BoxCollider2D>().size = new(7.91f, 0.45f);
     }
 
     public static implicit operator bool(CustomToggleOption option) => option.Get();
