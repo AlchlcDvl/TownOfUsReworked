@@ -187,7 +187,7 @@ Quick warning: This mod adds a whole LOT of stuff, and is currently not very beg
 <details>
 <summary>Changelog</summary>
 <details>
-<summary>v0.5.0</summary>
+<summary>v0.5.1</summary>
 <ul> <li>Update: Updated BepInEx to 6.0.0-be.673</li> </ul>
 <ul> <li>Addition: Ability delays animate the button a little differently</li> </ul>
 <ul> <li>Improvement: Improved how custom options and buttons are visually handled</li> </ul>
