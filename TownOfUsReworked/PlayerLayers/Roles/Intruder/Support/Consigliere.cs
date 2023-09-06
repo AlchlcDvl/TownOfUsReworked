@@ -9,7 +9,7 @@ public class Consigliere : Intruder
     private string CanAssassinate => Player.IsAssassin() && CustomGameOptions.ConsigInfo == ConsigInfo.Role ? ("\n- You cannot assassinate players " +
         "you have revealed") : "";
 
-    public override Color32 Color => ClientGameOptions.CustomIntColors ? Colors.Consigliere : Colors.Intruder;
+    public override Color Color => ClientGameOptions.CustomIntColors ? Colors.Consigliere : Colors.Intruder;
     public override string Name => "Consigliere";
     public override LayerEnum Type => LayerEnum.Consigliere;
     public override Func<string> StartText => () => "See The <color=#8CFFFFFF>Crew</color> For Who They Really Are";
@@ -19,7 +19,7 @@ public class Consigliere : Intruder
 
     public Consigliere(PlayerControl player) : base(player)
     {
-        RoleAlignment = RoleAlignment.IntruderSupport;
+        Alignment = Alignment.IntruderSupport;
         Investigated = new();
         InvestigateButton = new(this, "Investigate", AbilityTypes.Direct, "Secondary", Investigate, Exception1);
     }
@@ -31,12 +31,12 @@ public class Consigliere : Intruder
 
         var interact = Interact(Player, InvestigateButton.TargetPlayer);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
             Investigated.Add(InvestigateButton.TargetPlayer.PlayerId);
 
-        if (interact[0])
+        if (interact.Reset)
             LastInvestigated = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastInvestigated.AddSeconds(CustomGameOptions.ProtectKCReset);
     }
 

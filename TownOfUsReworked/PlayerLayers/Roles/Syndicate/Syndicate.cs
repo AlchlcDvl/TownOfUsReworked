@@ -4,12 +4,12 @@ public class Syndicate : Role
 {
     public DateTime LastKilled { get; set; }
     public CustomButton KillButton { get; set; }
-    public string CommonAbilities => (Type is not LayerEnum.Anarchist and not LayerEnum.Sidekick && RoleAlignment != RoleAlignment.SyndicateKill && HoldsDrive ? ("- You can kill " +
+    public string CommonAbilities => (Type is not LayerEnum.Anarchist and not LayerEnum.Sidekick && Alignment != Alignment.SyndicateKill && HoldsDrive ? ("- You can kill " +
         "players directly") : "- You can kill") + (Player.CanSabotage() ? "\n- You can sabotage the systems to distract the <color=#8CFFFFFF>Crew</color>" : "");
     public bool HoldsDrive => Player == DriveHolder || (CustomGameOptions.GlobalDrive && SyndicateHasChaosDrive) || GetRoles<PromotedRebel>(LayerEnum.PromotedRebel).Any(x =>
         x.HoldsDrive && x.FormerRole == this);
 
-    public override Color32 Color => Colors.Syndicate;
+    public override Color Color => Colors.Syndicate;
     public override Faction BaseFaction => Faction.Syndicate;
     public float KillTimer => ButtonUtils.Timer(Player, LastKilled, !HoldsDrive && Type is LayerEnum.Anarchist or LayerEnum.Rebel or LayerEnum.Sidekick ?
         CustomGameOptions.AnarchKillCd : CustomGameOptions.CDKillCd);
@@ -66,11 +66,11 @@ public class Syndicate : Role
 
         var interact = Interact(Player, KillButton.TargetPlayer, true);
 
-        if (interact[0] || interact[3])
+        if (interact.Reset || interact.AbilityUsed)
             LastKilled = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
-        else if (interact[2])
+        else if (interact.Vested)
             LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
     }
 
@@ -80,7 +80,7 @@ public class Syndicate : Role
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        KillButton.Update("KILL", KillTimer, CustomGameOptions.CDKillCd, true, (HoldsDrive && RoleAlignment != RoleAlignment.SyndicateKill) || Type is LayerEnum.Anarchist
+        KillButton.Update("KILL", KillTimer, CustomGameOptions.CDKillCd, true, (HoldsDrive && Alignment != Alignment.SyndicateKill) || Type is LayerEnum.Anarchist
             or LayerEnum.Sidekick or LayerEnum.Rebel);
     }
 }

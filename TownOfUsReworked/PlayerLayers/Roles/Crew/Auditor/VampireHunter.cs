@@ -3,11 +3,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class VampireHunter : Crew
 {
     public DateTime LastStaked { get; set; }
-    public static bool VampsDead => !CustomPlayer.AllPlayers.Any(x => !x.Data.IsDead && !x.Data.Disconnected && x.Is(SubFaction.Undead));
+    public static bool VampsDead => !CustomPlayer.AllPlayers.Any(x => !x.HasDied() && x.Is(SubFaction.Undead));
     public CustomButton StakeButton { get; set; }
     public float Timer => ButtonUtils.Timer(Player, LastStaked, CustomGameOptions.StakeCd);
 
-    public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.VampireHunter : Colors.Crew;
+    public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.VampireHunter : Colors.Crew;
     public override string Name => "Vampire Hunter";
     public override LayerEnum Type => LayerEnum.VampireHunter;
     public override Func<string> StartText => () => "Stake The <color=#7B8968FF>Undead</color>";
@@ -17,7 +17,7 @@ public class VampireHunter : Crew
 
     public VampireHunter(PlayerControl player) : base(player)
     {
-        RoleAlignment = RoleAlignment.CrewAudit;
+        Alignment = Alignment.CrewAudit;
         StakeButton = new(this, "Stake", AbilityTypes.Direct, "ActionSecondary", Stake);
     }
 
@@ -52,11 +52,11 @@ public class VampireHunter : Crew
 
         var interact = Interact(Player, StakeButton.TargetPlayer, StakeButton.TargetPlayer.Is(SubFaction.Undead) || StakeButton.TargetPlayer.IsFramed());
 
-        if (interact[3] || interact[0])
+        if (interact.AbilityUsed || interact.Reset)
             LastStaked = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastStaked.AddSeconds(CustomGameOptions.ProtectKCReset);
-        else if (interact[2])
+        else if (interact.Vested)
             LastStaked.AddSeconds(CustomGameOptions.VestKCReset);
     }
 }

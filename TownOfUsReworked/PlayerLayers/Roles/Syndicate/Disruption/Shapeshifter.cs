@@ -12,7 +12,7 @@ public class Shapeshifter : Syndicate
     public CustomMenu ShapeshiftMenu1 { get; set; }
     public CustomMenu ShapeshiftMenu2 { get; set; }
 
-    public override Color32 Color => ClientGameOptions.CustomSynColors ? Colors.Shapeshifter : Colors.Syndicate;
+    public override Color Color => ClientGameOptions.CustomSynColors ? Colors.Shapeshifter : Colors.Syndicate;
     public override string Name => "Shapeshifter";
     public override LayerEnum Type => LayerEnum.Shapeshifter;
     public override Func<string> StartText => () => "Change Everyone's Appearances";
@@ -22,7 +22,7 @@ public class Shapeshifter : Syndicate
 
     public Shapeshifter(PlayerControl player) : base(player)
     {
-        RoleAlignment = RoleAlignment.SyndicateDisrup;
+        Alignment = Alignment.SyndicateDisrup;
         ShapeshiftPlayer1 = null;
         ShapeshiftPlayer2 = null;
         ShapeshiftMenu1 = new(Player, Click1, Exception1);
@@ -68,11 +68,11 @@ public class Shapeshifter : Syndicate
     {
         var interact = Interact(Player, player);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
             ShapeshiftPlayer1 = player;
-        else if (interact[0])
+        else if (interact.Reset)
             LastShapeshifted = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastShapeshifted.AddSeconds(CustomGameOptions.ProtectKCReset);
     }
 
@@ -80,11 +80,11 @@ public class Shapeshifter : Syndicate
     {
         var interact = Interact(Player, player);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
             ShapeshiftPlayer2 = player;
-        else if (interact[0])
+        else if (interact.Reset)
             LastShapeshifted = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastShapeshifted.AddSeconds(CustomGameOptions.ProtectKCReset);
     }
 
@@ -96,7 +96,6 @@ public class Shapeshifter : Syndicate
         if (HoldsDrive)
         {
             TimeRemaining = CustomGameOptions.ShapeshiftDur;
-            Shapeshift();
             CallRpc(CustomRPC.Action, ActionsRPC.Shapeshift, this);
         }
         else if (ShapeshiftPlayer1 == null)
@@ -107,7 +106,6 @@ public class Shapeshifter : Syndicate
         {
             CallRpc(CustomRPC.Action, ActionsRPC.Shapeshift, this, ShapeshiftPlayer1, ShapeshiftPlayer2);
             TimeRemaining = CustomGameOptions.ShapeshiftDur;
-            Shapeshift();
         }
     }
 

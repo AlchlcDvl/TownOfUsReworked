@@ -9,7 +9,7 @@ public class Tracker : Crew
     public CustomButton TrackButton { get; set; }
     public float Timer => ButtonUtils.Timer(Player, LastTracked, CustomGameOptions.TrackCd);
 
-    public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Tracker : Colors.Crew;
+    public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Tracker : Colors.Crew;
     public override string Name => "Tracker";
     public override LayerEnum Type => LayerEnum.Tracker;
     public override Func<string> StartText => () => "Track Everyone's Movements";
@@ -20,7 +20,7 @@ public class Tracker : Crew
     {
         UsesLeft = CustomGameOptions.MaxTracks;
         TrackerArrows = new();
-        RoleAlignment = RoleAlignment.CrewInvest;
+        Alignment = Alignment.CrewInvest;
         TrackButton = new(this, "Track", AbilityTypes.Direct, "ActionSecondary", Track, Exception, true);
     }
 
@@ -46,15 +46,15 @@ public class Tracker : Crew
 
         var interact = Interact(Player, TrackButton.TargetPlayer);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
         {
             TrackerArrows.Add(TrackButton.TargetPlayer.PlayerId, new(Player, TrackButton.TargetPlayer.GetPlayerColor(), CustomGameOptions.UpdateInterval));
             UsesLeft--;
         }
 
-        if (interact[0])
+        if (interact.Reset)
             LastTracked = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastTracked.AddSeconds(CustomGameOptions.ProtectKCReset);
     }
 

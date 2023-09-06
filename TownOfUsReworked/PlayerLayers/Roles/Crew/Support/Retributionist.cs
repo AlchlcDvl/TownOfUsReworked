@@ -1,10 +1,11 @@
+
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public class Retributionist : Crew
 {
     public Retributionist(PlayerControl player) : base(player)
     {
-        RoleAlignment = RoleAlignment.CrewSupport;
+        Alignment = Alignment.CrewSupport;
         Inspected = new();
         BodyArrows = new();
         MediatedPlayers = new();
@@ -59,13 +60,14 @@ public class Retributionist : Crew
         FixButton = new(this, "Fix", AbilityTypes.Effect, "ActionSecondary", Fix, true);
         BlockButton = new(this, "EscortRoleblock", AbilityTypes.Direct, "ActionSecondary", Roleblock, Exception6);
         TransportButton = new(this, "Transport", AbilityTypes.Effect, "ActionSecondary", Transport, true);
+        //SeanceButton = new(this, "Seance", AbilityTypes.Effect, "ActionSecondary", Seance, false, true);
         RetMenu = new(Player, "RetActive", "RetDisabled", MeetingTypes.Toggle, CustomGameOptions.ReviveAfterVoting, SetActive, IsExempt, GenNumbers);
     }
 
     //Retributionist Stuff
     public PlayerVoteArea Selected { get; set; }
     public PlayerControl Revived { get; set; }
-    public Role RevivedRole { get; set; }
+    public Role RevivedRole => Revived == null ? null : (Revived.Is(LayerEnum.Revealer) ? GetRole<Revealer>(Revived).FormerRole : GetRole(Revived));
     public int UsesLeft { get; set; }
     public float TimeRemaining { get; set; }
     public bool ButtonUsable => UsesLeft > 0;
@@ -73,7 +75,7 @@ public class Retributionist : Crew
     public bool Enabled { get; set; }
     public CustomMeeting RetMenu { get; set; }
 
-    public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Retributionist : Colors.Crew;
+    public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Retributionist : Colors.Crew;
     public override string Name => "Retributionist";
     public override LayerEnum Type => LayerEnum.Retributionist;
     public override Func<string> StartText => () => "Mimic the Dead";
@@ -202,103 +204,128 @@ public class Retributionist : Crew
         BlockButton.Update("ROLEBLOCK", BlockTimer, CustomGameOptions.EscortCd, OnEffect, TimeRemaining, CustomGameOptions.EscortDur, true, IsEsc);
         TrackButton.Update("TRACK", TrackTimer, CustomGameOptions.TrackCd, UsesLeft, ButtonUsable, ButtonUsable && IsTrack);
 
-        if (!IsDead)
+        if (IsDead)
+            OnLobby();
+        else if (IsCor)
         {
-            if (IsCor)
+            var validBodies = AllBodies.Where(x => KilledPlayers.Any(y => y.PlayerId == x.ParentId && DateTime.UtcNow <
+                y.KillTime.AddSeconds(CustomGameOptions.CoronerArrowDur)));
+
+            foreach (var bodyArrow in BodyArrows.Keys)
             {
-                var validBodies = AllBodies.Where(x => KilledPlayers.Any(y => y.PlayerId == x.ParentId && DateTime.UtcNow <
-                    y.KillTime.AddSeconds(CustomGameOptions.CoronerArrowDur)));
+                if (!validBodies.Any(x => x.ParentId == bodyArrow))
+                    DestroyArrow(bodyArrow);
+            }
 
-                foreach (var bodyArrow in BodyArrows.Keys)
+            foreach (var body in validBodies)
+            {
+                if (!BodyArrows.ContainsKey(body.ParentId))
+                    BodyArrows.Add(body.ParentId, new(Player, Color));
+
+                BodyArrows[body.ParentId]?.Update(body.TruePosition);
+            }
+        }
+        else if (IsMed)
+        {
+            foreach (var player in CustomPlayer.AllPlayers)
+            {
+                if (MediateArrows.ContainsKey(player.PlayerId))
                 {
-                    if (!validBodies.Any(x => x.ParentId == bodyArrow))
-                        DestroyArrow(bodyArrow);
-                }
+                    MediateArrows[player.PlayerId]?.Update(player.transform.position, player.GetPlayerColor(false, CustomGameOptions.ShowMediatePlayer));
+                    player.Visible = true;
 
-                foreach (var body in validBodies)
-                {
-                    if (!BodyArrows.ContainsKey(body.ParentId))
-                        BodyArrows.Add(body.ParentId, new(Player, Color));
-
-                    BodyArrows[body.ParentId]?.Update(body.TruePosition);
+                    if (!CustomGameOptions.ShowMediatePlayer)
+                    {
+                        player.SetOutfit(CustomPlayerOutfitType.Camouflage, BlankOutfit(player));
+                        PlayerMaterial.SetColors(UColor.grey, player.MyRend());
+                    }
                 }
             }
-            else if (IsMed)
+        }
+        else if (IsTrack)
+        {
+            foreach (var pair in TrackerArrows)
             {
+                var player = PlayerById(pair.Key);
+                var body = BodyById(pair.Key);
+
+                if (player == null || player.Data.Disconnected || (player.Data.IsDead && !body))
+                    DestroyArrow(pair.Key);
+                else
+                    pair.Value?.Update(player.Data.IsDead ? body.transform.position : player.transform.position, player.GetPlayerColor());
+            }
+        }
+        else if (IsDet)
+        {
+            _time += Time.deltaTime;
+
+            if (_time >= CustomGameOptions.FootprintInterval)
+            {
+                _time -= CustomGameOptions.FootprintInterval;
+
                 foreach (var player in CustomPlayer.AllPlayers)
                 {
-                    if (MediateArrows.ContainsKey(player.PlayerId))
-                    {
-                        MediateArrows[player.PlayerId]?.Update(player.transform.position, player.GetPlayerColor(false, CustomGameOptions.ShowMediatePlayer));
-                        player.Visible = true;
+                    if (player.HasDied() || player == CustomPlayer.Local)
+                        continue;
 
-                        if (!CustomGameOptions.ShowMediatePlayer)
-                        {
-                            player.SetOutfit(CustomPlayerOutfitType.Camouflage, BlankOutfit(player));
-                            PlayerMaterial.SetColors(UColor.grey, player.MyRend());
-                        }
-                    }
+                    if (!AllPrints.Any(print => Vector3.Distance(print.Position, Position(player)) < 0.5f && print.Color.a > 0.5 && print.PlayerId == player.PlayerId))
+                        AllPrints.Add(new(player));
                 }
-            }
-            else if (IsTrack)
-            {
-                foreach (var pair in TrackerArrows)
+
+                for (var i = 0; i < AllPrints.Count; i++)
                 {
-                    var player = PlayerById(pair.Key);
-                    var body = BodyById(pair.Key);
-
-                    if (player == null || player.Data.Disconnected || (player.Data.IsDead && !body))
-                        DestroyArrow(pair.Key);
-                    else
-                        pair.Value?.Update(player.Data.IsDead ? body.transform.position : player.transform.position, player.GetPlayerColor());
-                }
-            }
-            else if (IsDet)
-            {
-                _time += Time.deltaTime;
-
-                if (_time >= CustomGameOptions.FootprintInterval)
-                {
-                    _time -= CustomGameOptions.FootprintInterval;
-
-                    foreach (var player in CustomPlayer.AllPlayers)
+                    try
                     {
-                        if (player.Data.IsDead || player.Data.Disconnected || player == CustomPlayer.Local)
-                            continue;
+                        var footprint = AllPrints[i];
 
-                        if (!AllPrints.Any(print => Vector3.Distance(print.Position, Position(player)) < 0.5f && print.Color.a > 0.5 && print.PlayerId == player.PlayerId))
-                            AllPrints.Add(new(player));
-                    }
-
-                    for (var i = 0; i < AllPrints.Count; i++)
-                    {
-                        try
-                        {
-                            var footprint = AllPrints[i];
-
-                            if (footprint.Update())
-                                i--;
-                        } catch { /*Assume footprint value is null and allow the loop to continue*/ }
-                    }
+                        if (footprint.Update())
+                            i--;
+                    } catch { /*Assume footprint value is null and allow the loop to continue*/ }
                 }
             }
         }
-        else
-            OnLobby();
-
-        foreach (var entry in UntransportablePlayers)
+        else if (IsTrans)
         {
-            var player = PlayerById(entry.Key);
+            foreach (var entry in UntransportablePlayers)
+            {
+                var player = PlayerById(entry.Key);
 
-            if (player == null)
-                continue;
+                if (player == null || player.HasDied())
+                    continue;
 
-            if (player.Data.IsDead || player.Data.Disconnected)
-                continue;
-
-            if (UntransportablePlayers.ContainsKey(player.PlayerId) && player.moveable && UntransportablePlayers.GetValueSafe(player.PlayerId).AddSeconds(0.5) < DateTime.UtcNow)
-                UntransportablePlayers.Remove(player.PlayerId);
+                if (UntransportablePlayers.ContainsKey(player.PlayerId) && player.moveable && UntransportablePlayers.GetValueSafe(player.PlayerId).AddSeconds(0.5) < DateTime.UtcNow)
+                    UntransportablePlayers.Remove(player.PlayerId);
+            }
         }
+    }
+
+    public void Effect()
+    {
+        Enabled = true;
+        TimeRemaining -= Time.deltaTime;
+
+        if (IsCham)
+            Invis();
+        else if (IsVet)
+            Alert();
+        else if (IsEsc)
+            Block();
+        else if (IsAlt)
+            Revive();
+    }
+
+    public void UnEffect()
+    {
+        Enabled = false;
+
+        if (IsCham)
+            Uninvis();
+        else if (IsVet)
+            UnAlert();
+        else if (IsEsc)
+            UnBlock();
+        else if (IsAlt)
+            UnRevive();
     }
 
     public override void ConfirmVotePrefix(MeetingHud __instance)
@@ -309,7 +336,6 @@ public class Retributionist : Crew
         if (Selected != null)
         {
             Revived = PlayerByVoteArea(Selected);
-            RevivedRole = Revived == null ? null : (Revived.Is(LayerEnum.Revealer) ? GetRole<Revealer>(Revived).FormerRole : GetRole(Revived));
             CallRpc(CustomRPC.Action, ActionsRPC.RetributionistAction, RetributionistActionsRPC.RetributionistRevive, this, Selected);
         }
     }
@@ -328,7 +354,6 @@ public class Retributionist : Crew
         if (Selected != null)
         {
             Revived = PlayerByVoteArea(Selected);
-            RevivedRole = Revived == null ? null : (Revived.Is(LayerEnum.Revealer) ? GetRole<Revealer>(Revived).FormerRole : GetRole(Revived));
             CallRpc(CustomRPC.Action, ActionsRPC.RetributionistAction, RetributionistActionsRPC.RetributionistRevive, this, Selected);
         }
     }
@@ -375,6 +400,8 @@ public class Retributionist : Crew
             AllPrints.ForEach(x => x.Destroy());
             AllPrints.Clear();
         }
+
+        Revived = null;
     }
 
     //Coroner Stuff
@@ -395,8 +422,7 @@ public class Retributionist : Crew
             return;
 
         var playerId = AutopsyButton.TargetBody.ParentId;
-        var player = PlayerById(playerId);
-        Spread(Player, player);
+        Spread(Player, PlayerById(playerId));
         ReferenceBodies.AddRange(KilledPlayers.Where(x => x.PlayerId == playerId));
         LastAutopsied = DateTime.UtcNow;
     }
@@ -408,12 +434,12 @@ public class Retributionist : Crew
 
         var interact = Interact(Player, CompareButton.TargetPlayer);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
             Flash(ReferenceBodies.Any(x => CompareButton.TargetPlayer.PlayerId == x.KillerId) ? UColor.red : UColor.green);
 
-        if (interact[0])
+        if (interact.Reset)
             LastCompared = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastCompared.AddSeconds(CustomGameOptions.ProtectKCReset);
     }
 
@@ -457,15 +483,15 @@ public class Retributionist : Crew
 
         var interact = Interact(Player, ExamineButton.TargetPlayer);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
         {
             Flash(ExamineButton.TargetPlayer.IsFramed() || KilledPlayers.Any(x => x.KillerId == ExamineButton.TargetPlayer.PlayerId && (DateTime.UtcNow - x.KillTime).TotalSeconds <=
                 CustomGameOptions.RecentKill) ? UColor.red : UColor.green);
         }
 
-        if (interact[0])
+        if (interact.Reset)
             LastExamined = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastExamined.AddSeconds(CustomGameOptions.ProtectKCReset);
     }
 
@@ -483,12 +509,12 @@ public class Retributionist : Crew
 
         var interact = Interact(Player, InspectButton.TargetPlayer);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
             Inspected.Add(InspectButton.TargetPlayer.PlayerId);
 
-        if (interact[0])
+        if (interact.Reset)
             LastInspected = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastInspected.AddSeconds(CustomGameOptions.ProtectKCReset);
     }
 
@@ -523,7 +549,7 @@ public class Retributionist : Crew
                 {
                     MediateArrows.Add(dead.PlayerId, new(Player, Color));
                     MediatedPlayers.Add(dead.PlayerId);
-                    CallRpc(CustomRPC.Action, ActionsRPC.RetributionistAction, RetributionistActionsRPC.Mediate, this, dead.PlayerId);
+                    CallRpc(CustomRPC.Action, ActionsRPC.RetributionistAction, RetributionistActionsRPC.Mediate, PlayerId, dead.PlayerId);
 
                     if (CustomGameOptions.DeadRevealed != DeadRevealed.All)
                         break;
@@ -539,10 +565,12 @@ public class Retributionist : Crew
             {
                 MediateArrows.Add(dead.PlayerId, new(Player, Color));
                 MediatedPlayers.Add(dead.PlayerId);
-                CallRpc(CustomRPC.Action, ActionsRPC.RetributionistAction, RetributionistActionsRPC.Mediate, this, dead.PlayerId);
+                CallRpc(CustomRPC.Action, ActionsRPC.RetributionistAction, RetributionistActionsRPC.Mediate, PlayerId, dead.PlayerId);
             }
         }
     }
+
+    //private static void Seance() { Currently blank, gonna work on this later }
 
     //Operative Stuff
     public List<Bug> Bugs { get; set; }
@@ -576,12 +604,12 @@ public class Retributionist : Crew
 
         var interact = Interact(Player, InterrogateButton.TargetPlayer);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
             Flash(InterrogateButton.TargetPlayer.SeemsEvil() ? UColor.red : UColor.green);
 
-        if (interact[0])
+        if (interact.Reset)
             LastInterrogated = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastInterrogated.AddSeconds(CustomGameOptions.ProtectKCReset);
     }
 
@@ -599,15 +627,15 @@ public class Retributionist : Crew
 
         var interact = Interact(Player, TrackButton.TargetPlayer);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
         {
             TrackerArrows.Add(TrackButton.TargetPlayer.PlayerId, new(Player, TrackButton.TargetPlayer.GetPlayerColor(), CustomGameOptions.UpdateInterval));
             UsesLeft--;
         }
 
-        if (interact[0])
+        if (interact.Reset)
             LastTracked = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastTracked.AddSeconds(CustomGameOptions.ProtectKCReset);
     }
 
@@ -624,14 +652,14 @@ public class Retributionist : Crew
 
         var interact = Interact(Player, ShootButton.TargetPlayer, true);
 
-        if (interact[3] || interact[0])
+        if (interact.AbilityUsed || interact.Reset)
         {
             LastKilled = DateTime.UtcNow;
             UsesLeft--;
         }
-        else if (interact[1])
+        else if (interact.Protected)
             LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
-        else if (interact[2])
+        else if (interact.Vested)
             LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
     }
 
@@ -648,11 +676,11 @@ public class Retributionist : Crew
 
         var interact = Interact(Player, StakeButton.TargetPlayer, StakeButton.TargetPlayer.Is(SubFaction.Undead) || StakeButton.TargetPlayer.IsFramed());
 
-        if (interact[3] || interact[0])
+        if (interact.AbilityUsed || interact.Reset)
             LastStaked = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastStaked.AddSeconds(CustomGameOptions.ProtectKCReset);
-        else if (interact[2])
+        else if (interact.Vested)
             LastStaked.AddSeconds(CustomGameOptions.VestKCReset);
     }
 
@@ -669,29 +697,20 @@ public class Retributionist : Crew
 
         TimeRemaining = CustomGameOptions.AlertDur;
         UsesLeft--;
-        Alert();
         CallRpc(CustomRPC.Action, ActionsRPC.RetributionistAction, RetributionistActionsRPC.Alert, this);
     }
 
     public void Alert()
     {
-        Enabled = true;
-        TimeRemaining -= Time.deltaTime;
-
         if (Meeting)
             TimeRemaining = 0f;
     }
 
-    public void UnAlert()
-    {
-        Enabled = false;
-        LastAlerted = DateTime.UtcNow;
-    }
+    public void UnAlert() => LastAlerted = DateTime.UtcNow;
 
     //Altruist Stuff
     public CustomButton ReviveButton { get; set; }
     public bool IsAlt => RevivedRole?.Type == LayerEnum.Altruist;
-    public bool Reviving { get; set; }
     public DeadBody RevivingBody { get; set; }
     public bool Success { get; set; }
     public DateTime LastRevived { get; set; }
@@ -699,17 +718,6 @@ public class Retributionist : Crew
 
     public void Revive()
     {
-        if (!Reviving && CustomPlayer.Local.PlayerId == ReviveButton.TargetBody.ParentId)
-        {
-            Flash(Color);
-
-            if (CustomGameOptions.AltruistTargetBody)
-                ReviveButton.TargetBody?.gameObject.Destroy();
-        }
-
-        Reviving = true;
-        TimeRemaining -= Time.deltaTime;
-
         if (Meeting || IsDead)
         {
             Success = false;
@@ -719,7 +727,6 @@ public class Retributionist : Crew
 
     public void UnRevive()
     {
-        Reviving = false;
         LastRevived = DateTime.UtcNow;
 
         if (Success)
@@ -765,7 +772,10 @@ public class Retributionist : Crew
         CallRpc(CustomRPC.Action, ActionsRPC.RetributionistAction, RetributionistActionsRPC.AltruistRevive, this, RevivingBody);
         TimeRemaining = CustomGameOptions.ReviveDur;
         Success = true;
-        Revive();
+        Flash(Color);
+
+        if (CustomGameOptions.AltruistTargetBody)
+            ReviveButton.TargetBody?.gameObject.Destroy();
     }
 
     //Medic Stuff
@@ -782,7 +792,7 @@ public class Retributionist : Crew
 
         var interact = Interact(Player, ShieldButton.TargetPlayer);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
         {
             ShieldedPlayer = ShieldButton.TargetPlayer;
             CallRpc(CustomRPC.Action, ActionsRPC.RetributionistAction, RetributionistActionsRPC.Protect, this, ShieldedPlayer);
@@ -801,15 +811,12 @@ public class Retributionist : Crew
             return;
 
         TimeRemaining = CustomGameOptions.SwoopDur;
-        Invis();
         UsesLeft--;
         CallRpc(CustomRPC.Action, ActionsRPC.RetributionistAction, RetributionistActionsRPC.Swoop, this);
     }
 
     public void Invis()
     {
-        Enabled = true;
-        TimeRemaining -= Time.deltaTime;
         Utils.Invis(Player);
 
         if (Meeting || IsDead)
@@ -818,7 +825,6 @@ public class Retributionist : Crew
 
     public void Uninvis()
     {
-        Enabled = false;
         LastSwooped = DateTime.UtcNow;
         DefaultOutfit(Player);
     }
@@ -863,15 +869,15 @@ public class Retributionist : Crew
 
         var interact = Interact(Player, RevealButton.TargetPlayer);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
         {
-            Flash((!RevealButton.TargetPlayer.Is(SubFaction) && SubFaction != SubFaction.None && !RevealButton.TargetPlayer.Is(RoleAlignment.NeutralNeo)) ||
+            Flash((!RevealButton.TargetPlayer.Is(SubFaction) && SubFaction != SubFaction.None && !RevealButton.TargetPlayer.Is(Alignment.NeutralNeo)) ||
                 RevealButton.TargetPlayer.IsFramed() ? UColor.red : UColor.green);
         }
 
-        if (interact[0])
+        if (interact.Reset)
             LastRevealed = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastRevealed.AddSeconds(CustomGameOptions.ProtectKCReset);
     }
 
@@ -888,12 +894,12 @@ public class Retributionist : Crew
 
         var interact = Interact(Player, SeerButton.TargetPlayer);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
             Flash(GetRole(SeerButton.TargetPlayer).RoleHistory.Count > 0 || SeerButton.TargetPlayer.IsFramed() ? UColor.red : UColor.green);
 
-        if (interact[0])
+        if (interact.Reset)
             LastSeered = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastSeered.AddSeconds(CustomGameOptions.ProtectKCReset);
     }
 
@@ -906,7 +912,6 @@ public class Retributionist : Crew
 
     public void UnBlock()
     {
-        Enabled = false;
         GetLayers(BlockTarget).ForEach(x => x.IsBlocked = false);
         BlockTarget = null;
         LastBlocked = DateTime.UtcNow;
@@ -914,11 +919,9 @@ public class Retributionist : Crew
 
     public void Block()
     {
-        Enabled = true;
-        TimeRemaining -= Time.deltaTime;
         GetLayers(BlockTarget).ForEach(x => x.IsBlocked = !GetRole(BlockTarget).RoleBlockImmune);
 
-        if (Meeting || IsDead || BlockTarget.Data.IsDead || BlockTarget.Data.Disconnected)
+        if (Meeting || IsDead || BlockTarget.HasDied())
             TimeRemaining = 0f;
     }
 
@@ -929,16 +932,15 @@ public class Retributionist : Crew
 
         var interact = Interact(Player, BlockButton.TargetPlayer);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
         {
             TimeRemaining = CustomGameOptions.EscortDur;
             BlockTarget = BlockButton.TargetPlayer;
-            Block();
             CallRpc(CustomRPC.Action, ActionsRPC.RetributionistAction, RetributionistActionsRPC.EscRoleblock, this, BlockTarget);
         }
-        else if (interact[0])
+        else if (interact.Reset)
             LastBlocked = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastBlocked.AddSeconds(CustomGameOptions.ProtectKCReset);
     }
 
@@ -1170,11 +1172,11 @@ public class Retributionist : Crew
     {
         var interact = Interact(Player, player);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
             TransportPlayer1 = player;
-        else if (interact[0])
+        else if (interact.Reset)
             LastTransported = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastTransported.AddSeconds(CustomGameOptions.ProtectKCReset);
     }
 
@@ -1182,11 +1184,11 @@ public class Retributionist : Crew
     {
         var interact = Interact(Player, player);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
             TransportPlayer2 = player;
-        else if (interact[0])
+        else if (interact.Reset)
             LastTransported = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastTransported.AddSeconds(CustomGameOptions.ProtectKCReset);
     }
 

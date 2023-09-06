@@ -6,7 +6,6 @@ public static class SettingsPatches
     private static readonly string[] Menus = { "Global", "Crew", "Neutral", "Intruder", "Syndicate", "Modifier", "Objectifier", "Ability", "Role List" };
     private static readonly List<GameObject> MenuG = new();
     private static readonly List<SpriteRenderer> MenuS = new();
-    //private static readonly List<RolesSettingsMenu> MenuR = new();
 
     public static Export ExportButton;
     public static Import ImportButton;
@@ -14,114 +13,131 @@ public static class SettingsPatches
 
     public static bool Changed;
 
+    private static RoleOptionSetting RolePrefab;
+
     private static Dictionary<CustomOption, OptionBehaviour> CreateOptions()
     {
+        if (RolePrefab == null)
+        {
+            //Title = 1, Count - = 2, Count Val = 3, Count + = 4, Chance - = 5, Chance Val = 6, Chance + = 7
+            RolePrefab = UObject.Instantiate(UObject.FindObjectOfType<RoleOptionSetting>(true), null);
+            RolePrefab.name = "CustomLayersOptionPrefab";
+            RolePrefab.transform.GetChild(0).localScale = new(1.6f, 1f, 1f);
+            RolePrefab.transform.GetChild(1).localPosition = new(-1.05f, 0f, 0f);
+            RolePrefab.transform.GetChild(1).GetComponent<RectTransform>().sizeDelta = new(5.5f, 0.37f);
+            RolePrefab.transform.GetChild(2).localPosition += new Vector3(0.4f, 0f, 0f);
+            RolePrefab.transform.GetChild(3).localPosition += new Vector3(0.6f, 0f, 0f);
+            RolePrefab.transform.GetChild(3).GetComponent<RectTransform>().sizeDelta = new(1.6f, 0.26f);
+            RolePrefab.transform.GetChild(4).localPosition += new Vector3(0.8f, 0f, 0f);
+            RolePrefab.transform.GetChild(5).localPosition += new Vector3(1.0f, 0f, 0f);
+            RolePrefab.transform.GetChild(6).localPosition += new Vector3(1.2f, 0f, 0f);
+            RolePrefab.transform.GetChild(6).GetComponent<RectTransform>().sizeDelta = new(1.6f, 0.26f);
+            RolePrefab.transform.GetChild(7).localPosition += new Vector3(1.4f, 0f, 0f);
+            RolePrefab.transform.GetChild(8).gameObject.SetActive(false);
+            RolePrefab.gameObject.SetActive(false);
+        }
+
         var options = new Dictionary<CustomOption, OptionBehaviour>();
         var togglePrefab = UObject.FindObjectOfType<ToggleOption>();
         var numberPrefab = UObject.FindObjectOfType<NumberOption>();
         var keyValPrefab = UObject.FindObjectOfType<KeyValueOption>();
-        var rolePrefab = UObject.FindObjectOfType<RoleOptionSetting>(true);
         var type = (MultiMenu)GameSettings.SettingsPage;
 
         if (type == MultiMenu.Main)
         {
             if (ExportButton.Setting != null)
-            {
                 ExportButton.Setting.gameObject.SetActive(true);
-                options.Add(ExportButton, ExportButton.Setting);
-            }
             else
             {
-                var toggle = UObject.Instantiate(togglePrefab, togglePrefab.transform.parent);
-                toggle.transform.GetChild(2).gameObject.SetActive(false);
-                toggle.transform.GetChild(0).localPosition += new Vector3(1f, 0f, 0f);
-                ExportButton.Setting = toggle;
+                ExportButton.Setting = CustomButtonOption.CreateButton();
                 ExportButton.OptionCreated();
-                options.Add(ExportButton, toggle);
             }
 
             if (ImportButton.Setting != null)
-            {
                 ImportButton.Setting.gameObject.SetActive(true);
-                options.Add(ImportButton, ImportButton.Setting);
-            }
             else
             {
-                var toggle = UObject.Instantiate(togglePrefab, togglePrefab.transform.parent);
-                toggle.transform.GetChild(2).gameObject.SetActive(false);
-                toggle.transform.GetChild(0).localPosition += new Vector3(1f, 0f, 0f);
-                ImportButton.Setting = toggle;
+                ImportButton.Setting = CustomButtonOption.CreateButton();
                 ImportButton.OptionCreated();
-                options.Add(ImportButton, toggle);
             }
 
             if (PresetButton.Setting != null)
-            {
                 PresetButton.Setting.gameObject.SetActive(true);
-                options.Add(PresetButton, PresetButton.Setting);
-            }
             else
             {
-                var toggle = UObject.Instantiate(togglePrefab, togglePrefab.transform.parent);
-                toggle.transform.GetChild(2).gameObject.SetActive(false);
-                toggle.transform.GetChild(0).localPosition += new Vector3(1f, 0f, 0f);
-                PresetButton.Setting = toggle;
+                PresetButton.Setting = CustomButtonOption.CreateButton();
                 PresetButton.OptionCreated();
-                options.Add(PresetButton, toggle);
             }
+
+            options.Add(ExportButton, ExportButton.Setting);
+            options.Add(ImportButton, ImportButton.Setting);
+            options.Add(PresetButton, PresetButton.Setting);
         }
 
         foreach (var option in CustomOption.AllOptions.Where(x => x.Menu == type))
         {
             if (option.Setting != null)
-            {
                 option.Setting.gameObject.SetActive(true);
-                options.Add(option, option.Setting);
-                continue;
-            }
-
-            switch (option.Type)
+            else
             {
-                case CustomOptionType.Number:
-                    var number = UObject.Instantiate(numberPrefab, numberPrefab.transform.parent);
-                    option.Setting = number;
-                    options.Add(option, number);
-                    break;
+                switch (option.Type)
+                {
+                    case CustomOptionType.Number: //+ = 1, - = 2, Title = 3, Val = 4
+                        var number = UObject.Instantiate(numberPrefab, numberPrefab.transform.parent);
+                        number.transform.GetChild(0).localScale = new(1.6f, 1f, 1f);
+                        number.transform.GetChild(1).localPosition += new Vector3(1.4f, 0f, 0f);
+                        number.transform.GetChild(2).localPosition += new Vector3(1.0f, 0f, 0f);
+                        number.transform.GetChild(3).localPosition = new(-1.05f, 0f, 0f);
+                        number.transform.GetChild(3).GetComponent<RectTransform>().sizeDelta = new(5.5f, 0.37f);
+                        number.transform.GetChild(4).localPosition += new Vector3(1.2f, 0f, 0f);
+                        number.transform.GetChild(4).GetComponent<RectTransform>().sizeDelta = new(1.6f, 0.26f);
+                        option.Setting = number;
+                        break;
 
-                case CustomOptionType.String:
-                    var str = UObject.Instantiate(keyValPrefab, keyValPrefab.transform.parent);
-                    option.Setting = str;
-                    options.Add(option, str);
-                    break;
+                    case CustomOptionType.String: //+ = 1, - = 2, Title = 3, Val = 4
+                        var str = UObject.Instantiate(keyValPrefab, keyValPrefab.transform.parent);
+                        str.transform.GetChild(0).localScale = new(1.6f, 1f, 1f);
+                        str.transform.GetChild(1).localPosition += new Vector3(1.4f, 0f, 0f);
+                        str.transform.GetChild(2).localPosition += new Vector3(1.0f, 0f, 0f);
+                        str.transform.GetChild(3).localPosition = new(-1.05f, 0f, 0f);
+                        str.transform.GetChild(3).GetComponent<RectTransform>().sizeDelta = new(5.5f, 0.37f);
+                        str.transform.GetChild(4).localPosition += new Vector3(1.2f, 0f, 0f);
+                        str.transform.GetChild(4).GetComponent<RectTransform>().sizeDelta = new(1.6f, 0.26f);
+                        option.Setting = str;
+                        break;
 
-                case CustomOptionType.Layers:
-                    var layer = UObject.Instantiate(rolePrefab, keyValPrefab.transform.parent);
-                    layer.transform.GetChild(8).gameObject.SetActive(false);
-                    option.Setting = layer;
-                    options.Add(option, layer);
-                    break;
+                    case CustomOptionType.Layers:
+                        var layer = UObject.Instantiate(RolePrefab, keyValPrefab.transform.parent);
+                        layer.transform.GetChild(2).gameObject.SetActive(IsCustom);
+                        layer.transform.GetChild(3).gameObject.SetActive(IsCustom);
+                        layer.transform.GetChild(4).gameObject.SetActive(IsCustom);
+                        option.Setting = layer;
+                        break;
 
-                case CustomOptionType.Toggle:
-                case CustomOptionType.Nested:
-                case CustomOptionType.Button:
-                case CustomOptionType.Header:
-                case CustomOptionType.Entry:
-                    var toggle = UObject.Instantiate(togglePrefab, togglePrefab.transform.parent);
+                    case CustomOptionType.Toggle: //Title = 0, Check = 2
+                    case CustomOptionType.Header:
+                    case CustomOptionType.Entry:
+                        var toggle = UObject.Instantiate(togglePrefab, togglePrefab.transform.parent);
+                        toggle.transform.GetChild(0).localPosition = new(-1.05f, 0f, 0f);
+                        toggle.transform.GetChild(0).GetComponent<RectTransform>().sizeDelta = new(5.5f, 0.37f);
+                        toggle.transform.GetChild(1).localScale = new(1.6f, 1f, 1f);
+                        toggle.transform.GetChild(2).localPosition = new(2.72f, 0f, 0f);
+                        toggle.gameObject.GetComponent<BoxCollider2D>().size = new(option is CustomHeaderOption ? 0f : 7.91f, 0.45f);
 
-                    if (option.Type != CustomOptionType.Toggle)
-                        toggle.transform.GetChild(2).gameObject.SetActive(false);
+                        if (option.Type != CustomOptionType.Toggle)
+                            toggle.transform.GetChild(2).gameObject.SetActive(false);
 
-                    if (option.Type == CustomOptionType.Header)
-                        toggle.transform.GetChild(1).gameObject.SetActive(false);
-                    else if (option.Type is CustomOptionType.Button or CustomOptionType.Nested)
-                        toggle.transform.GetChild(0).localPosition += new Vector3(1f, 0f, 0f);
+                        if (option is CustomHeaderOption)
+                            toggle.transform.GetChild(1).gameObject.SetActive(false);
 
-                    option.Setting = toggle;
-                    options.Add(option, toggle);
-                    break;
+                        option.Setting = toggle;
+                        break;
+                }
+
+                option.OptionCreated();
             }
 
-            option.OptionCreated();
+            options.Add(option, option.Setting);
         }
 
         return options;
@@ -147,7 +163,6 @@ public static class SettingsPatches
             return false;
         }
 
-        //Works but may need to change to gameObject.name check
         var customOption = CustomOption.AllOptions.Find(option => option.Setting == opt);
 
         if (customOption == null)
@@ -159,19 +174,13 @@ public static class SettingsPatches
         if (customOption == null)
             customOption = PresetButton.SlotButtons.Find(option => option.Setting == opt);
 
-        /*if (customOption == null)
-            customOption = CustomNestedOption.AllCancelButtons.Find(option => option.Setting == opt);
-
-        if (customOption == null)
-            customOption = CustomLayersOption.AllRoleOptions.Find(option => option.Setting == opt);*/
-
         if (customOption == null)
             customOption = RoleListEntryOption.EntryButtons.Find(option => option.Setting == opt);
 
         if (customOption == null)
             return true;
 
-        customOption.OptionCreated();
+        customOption?.OptionCreated();
         return false;
     }
 
@@ -180,47 +189,61 @@ public static class SettingsPatches
     {
         public static void Postfix(GameSettingMenu __instance)
         {
+            MenuG.Clear();
+            MenuS.Clear();
+
             if (IsHnS)
                 return;
 
             var obj = __instance.RolesSettingsHightlight.gameObject.transform.parent.parent;
-            var diff = (0.7f * Menus.Length) - 2;
-            obj.transform.localPosition = new(obj.transform.localPosition.x - diff, obj.transform.localPosition.y, obj.transform.localPosition.z);
-            __instance.GameSettingsHightlight.gameObject.transform.parent.localPosition = obj.transform.localPosition;
-            MenuG.Clear();
-            MenuS.Clear();
 
             for (var index = 0; index < Menus.Length; index++)
             {
                 var touSettings = UObject.Instantiate(__instance.RegularGameSettings, __instance.RegularGameSettings.transform.parent);
                 touSettings.SetActive(false);
-                touSettings.name = $"ToU-Rew{Menus[index]}Settings";
+                touSettings.name = $"{Menus[index]}Settings".Replace(" ", "");
+                //Derived this from Town Of Host Edited
+                touSettings.transform.FindChild("BackPanel").transform.localScale = new(1.6f, 1f, 1f);
+                touSettings.transform.FindChild("Bottom Gradient").transform.localScale = new(1.6f, 1f, 1f);
+                touSettings.transform.FindChild("BackPanel").transform.localPosition += new Vector3(0.2f, 0f, 0f);
+                touSettings.transform.FindChild("Bottom Gradient").transform.localPosition += new Vector3(0.2f, 0f, 0f);
+                touSettings.transform.FindChild("Background").transform.localScale = new(1.8f, 1f, 1f);
+                touSettings.transform.FindChild("UI_Scrollbar").transform.localPosition += new Vector3(1.4f, 0f, 0f);
+                touSettings.transform.FindChild("UI_ScrollbarTrack").transform.localPosition += new Vector3(1.4f, 0f, 0f);
+                touSettings.transform.FindChild("GameGroup/SliderInner").transform.localPosition += new Vector3(-0.3f, 0f, 0f);
 
                 var gameGroup = touSettings.transform.FindChild("GameGroup");
                 var title = gameGroup?.FindChild("Text");
 
-                if (title != null)
+                if (title)
                 {
+                    title.localPosition += new Vector3(1.3f, 0f, 0f);
                     title.GetComponent<TextTranslatorTMP>().Destroy();
                     title.GetComponent<TextMeshPro>().m_text = $"{Menus[index]} Settings";
                 }
 
                 var sliderInner = gameGroup?.FindChild("SliderInner");
 
-                if (sliderInner != null)
-                    sliderInner.GetComponent<GameOptionsMenu>().name = $"ToU-Rew{Menus[index]}OptionsMenu";
+                if (sliderInner)
+                    sliderInner.GetComponent<GameOptionsMenu>().name = $"{Menus[index]}OptionsMenu".Replace(" ", "");
 
                 var ourSettingsButton = UObject.Instantiate(obj.gameObject, obj.transform.parent);
-                ourSettingsButton.transform.localPosition = new(obj.localPosition.x + (0.7f * (index + 1)), obj.localPosition.y, obj.localPosition.z);
-                ourSettingsButton.name = $"ToU-Rew{Menus[index]}Tab";
+                ourSettingsButton.transform.localPosition = new(-4.3f + (0.7f * (index + 1)), 0f, -5f);
+                ourSettingsButton.name = $"{Menus[index]}Tab".Replace(" ", "");
 
                 var hatButton = ourSettingsButton.transform.GetChild(0); //TODO: Change to FindChild I guess to be sure
-                var hatIcon = hatButton.GetChild(0);
+                hatButton.GetChild(0).GetComponent<SpriteRenderer>().sprite = GetSprite(GetSettingSprite(index));
+
                 var tabBackground = hatButton.GetChild(1);
 
-                hatIcon.GetComponent<SpriteRenderer>().sprite = GetSprite(GetSettingSprite(index));
+                var rend = tabBackground.GetComponent<SpriteRenderer>();
+                var color = GetSettingColor(index);
+                rend.color = color;
+                color.a = 0.5f;
+                rend.transform.GetChild(0).GetComponent<SpriteRenderer>().color = color;
+
+                MenuS.Add(rend);
                 MenuG.Add(touSettings);
-                MenuS.Add(tabBackground.GetComponent<SpriteRenderer>());
 
                 var passiveButton = tabBackground.GetComponent<PassiveButton>();
                 passiveButton.OnClick = new();
@@ -228,16 +251,7 @@ public static class SettingsPatches
                 passiveButton.OnClick.AddListener((Action)(() => ToggleButtonVoid(id)));
             }
 
-            __instance.RegularGameSettings.SetActive(false);
-            __instance.RolesSettings.gameObject.SetActive(false);
-            __instance.GameSettingsHightlight.gameObject.SetActive(false);
-            __instance.RolesSettingsHightlight.gameObject.SetActive(false);
-            __instance.GameSettingsHightlight.enabled = false;
-            __instance.RolesSettingsHightlight.enabled = false;
-            __instance.RolesSettingsHightlight.gameObject.transform.parent.parent.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
-            __instance.GameSettingsHightlight.gameObject.transform.parent.parent.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
-            __instance.RolesSettingsHightlight.gameObject.transform.parent.parent.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().gameObject.SetActive(false);
-            __instance.GameSettingsHightlight.gameObject.transform.parent.parent.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().gameObject.SetActive(false);
+            DisableVanillaMenus(__instance);
             ToggleButtonVoid(GameSettings.SettingsPage);
         }
 
@@ -251,11 +265,38 @@ public static class SettingsPatches
             6 => "Objectifiers",
             7 => "Abilities",
             8 => "RoleLists",
-            _ => "SettingsButton"
+            0 or _ => "SettingsButton"
+        };
+
+        private static Color GetSettingColor(int index) => index switch
+        {
+            1 => Colors.Crew,
+            2 => Colors.Neutral,
+            3 => Colors.Intruder,
+            4 => Colors.Syndicate,
+            5 => Colors.Modifier,
+            6 => Colors.Objectifier,
+            7 => Colors.Abilities,
+            8 => Colors.Alignment,
+            0 or _ => UColor.white
         };
     }
 
-    public static void ToggleButtonVoid(int id)
+    private static void DisableVanillaMenus(GameSettingMenu __instance)
+    {
+        __instance.RegularGameSettings.SetActive(false);
+        __instance.RolesSettings.gameObject.SetActive(false);
+        __instance.GameSettingsHightlight.gameObject.SetActive(false);
+        __instance.RolesSettingsHightlight.gameObject.SetActive(false);
+        __instance.GameSettingsHightlight.enabled = false;
+        __instance.RolesSettingsHightlight.enabled = false;
+        __instance.RolesSettingsHightlight.gameObject.transform.parent.parent.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
+        __instance.GameSettingsHightlight.gameObject.transform.parent.parent.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
+        __instance.RolesSettingsHightlight.gameObject.transform.parent.parent.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().gameObject.SetActive(false);
+        __instance.GameSettingsHightlight.gameObject.transform.parent.parent.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().gameObject.SetActive(false);
+    }
+
+    private static void ToggleButtonVoid(int id)
     {
         MenuG.ForEach(x => x?.SetActive(MenuG[id] == x));
         GameSettings.SettingsPage = id;
@@ -270,16 +311,7 @@ public static class SettingsPatches
             if (IsHnS)
                 return;
 
-            __instance.RegularGameSettings.SetActive(false);
-            __instance.RolesSettings.gameObject.SetActive(false);
-            __instance.GameSettingsHightlight.gameObject.SetActive(false);
-            __instance.RolesSettingsHightlight.gameObject.SetActive(false);
-            __instance.GameSettingsHightlight.enabled = false;
-            __instance.RolesSettingsHightlight.enabled = false;
-            __instance.RolesSettingsHightlight.gameObject.transform.parent.parent.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
-            __instance.GameSettingsHightlight.gameObject.transform.parent.parent.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
-            __instance.RolesSettingsHightlight.gameObject.transform.parent.parent.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().gameObject.SetActive(false);
-            __instance.GameSettingsHightlight.gameObject.transform.parent.parent.transform.GetChild(0).GetChild(0).GetComponent<SpriteRenderer>().gameObject.SetActive(false);
+            DisableVanillaMenus(__instance);
 
             if (Changed)
                 ToggleButtonVoid(GameSettings.SettingsPage);
@@ -312,6 +344,11 @@ public static class SettingsPatches
     [HarmonyPatch(typeof(GameOptionsMenu), nameof(GameOptionsMenu.Start))]
     public static class GameOptionsMenu_Start
     {
+        private static bool ValuesSet;
+        private static float X;
+        private static float Y;
+        private static float Z;
+
         public static bool Prefix(GameOptionsMenu __instance)
         {
             if (IsHnS)
@@ -324,15 +361,22 @@ public static class SettingsPatches
                 children[k] = __instance.gameObject.transform.GetChild(k);
 
             //TODO: Make a better fix for this for example caching the options or creating it ourself.
-            var startOption = __instance.gameObject.transform.GetChild(0);
+            //AD Says: Done.
+            if (!ValuesSet)
+            {
+                ValuesSet = true;
+                var startOptionPos = __instance.gameObject.transform.GetChild(0).localPosition;
+                (X, Y, Z) = (startOptionPos.x, startOptionPos.y, startOptionPos.z);
+            }
+
             var allOptions = CreateOptions();
-            var (customOptions, behaviours) = (allOptions.Keys.ToList(), allOptions.Values.ToList());
-            var (x, y, z) = (startOption.localPosition.x, startOption.localPosition.y, startOption.localPosition.z);
+            var (customOptions, behaviours) = (allOptions.Keys.ToList(), allOptions.Values.ToArray());
+            var (x, y, z) = (X, Y, Z);
 
             for (var k = 0; k < children.Length; k++)
                 children[k].gameObject.Destroy();
 
-            for (var i = 0; i < behaviours.Count; i++)
+            for (var i = 0; i < allOptions.Count; i++)
             {
                 if (i > 0)
                     y -= customOptions[i] is CustomHeaderOption ? 0.6f : 0.5f;
@@ -340,7 +384,7 @@ public static class SettingsPatches
                 behaviours[i].transform.localPosition = new(x, y, z);
             }
 
-            __instance.Children = new(behaviours.ToArray());
+            __instance.Children = new(behaviours);
             return false;
         }
     }
@@ -348,8 +392,10 @@ public static class SettingsPatches
     [HarmonyPatch(typeof(GameOptionsMenu), nameof(GameOptionsMenu.Update))]
     public static class GameOptionsMenu_Update
     {
-        private static bool YSet;
+        private static bool ValuesSet;
+        private static float X;
         private static float Y;
+        private static float Z;
 
         public static bool Prefix(GameOptionsMenu __instance)
         {
@@ -358,21 +404,22 @@ public static class SettingsPatches
             if (gameSettingMenu.RegularGameSettings.active || gameSettingMenu.RolesSettings.gameObject.active || __instance.Children == null || __instance.Children.Length == 0)
                 return true;
 
-            if (!YSet)
+            if (!ValuesSet)
             {
-                YSet = true;
-                Y = __instance.Children[0].transform.localPosition.y;
+                ValuesSet = true;
+                var startOptionPos = __instance.Children[0].transform.localPosition;
+                (X, Y, Z) = (startOptionPos.x, startOptionPos.y, startOptionPos.z);
             }
 
             try
             {
-                for (var i = 0; i < 9; i++)
+                for (var i = 0; i < MenuS.Count; i++)
                     MenuS[i].enabled = i == GameSettings.SettingsPage;
             } catch {}
 
             if (GameSettings.SettingsPage != 9)
             {
-                var (x, y, z) = (__instance.Children[0].transform.localPosition.x, Y + 0.6f, __instance.Children[0].transform.localPosition.z);
+                var (x, y, z) = (X, Y + 0.6f, Z);
                 var list = new List<OptionBehaviour>();
 
                 if (GameSettings.SettingsPage == 0)
@@ -397,13 +444,20 @@ public static class SettingsPatches
                         y -= option is CustomHeaderOption ? 0.6f : 0.5f;
                         option.Setting.transform.localPosition = new(x, y, z);
                         list.Add(option.Setting);
+
+                        if (option is CustomLayersOption)
+                        {
+                            option.Setting.transform.GetChild(2).gameObject.SetActive(IsCustom);
+                            option.Setting.transform.GetChild(3).gameObject.SetActive(IsCustom);
+                            option.Setting.transform.GetChild(4).gameObject.SetActive(IsCustom);
+                        }
                     }
                 }
 
                 __instance.Children = new(list.ToArray());
             }
 
-            __instance.GetComponentInParent<Scroller>().ContentYBounds.max = __instance.Children.Length / 1.85f;
+            __instance.GetComponentInParent<Scroller>().ContentYBounds.max = __instance.Children.Length / 2f;
             return false;
         }
     }
@@ -432,22 +486,12 @@ public static class SettingsPatches
         public static bool Prefix(ToggleOption __instance)
         {
             var option = CustomOption.AllOptions.Find(option => option.Setting == __instance);
-            //Works but may need to change to gameObject.name check
 
             if (option is CustomToggleOption toggle)
             {
                 toggle.Toggle();
                 return false;
             }
-
-            /*if (option is CustomNestedOption nested)
-            {
-                if (!AmongUsClient.Instance.AmHost)
-                    return false;
-
-                nested.ToDo();
-                return false;
-            }*/
 
             if (option is RoleListEntryOption role)
             {
@@ -521,7 +565,7 @@ public static class SettingsPatches
                 return false;
             }
 
-            /*var option5 = CustomNestedOption.AllCancelButtons.Find(option => option.Setting == __instance);
+            var option5 = RoleListEntryOption.EntryButtons.Find(option => option.Setting == __instance);
 
             if (option5 is CustomButtonOption button4)
             {
@@ -529,17 +573,6 @@ public static class SettingsPatches
                     return false;
 
                 button4.Do();
-                return false;
-            }*/
-
-            var option6 = RoleListEntryOption.EntryButtons.Find(option => option.Setting == __instance);
-
-            if (option6 is CustomButtonOption button5)
-            {
-                if (!AmongUsClient.Instance.AmHost)
-                    return false;
-
-                button5.Do();
                 return false;
             }
 
@@ -553,7 +586,6 @@ public static class SettingsPatches
         public static bool Prefix(NumberOption __instance)
         {
             var option = CustomOption.AllOptions.Find(option => option.Setting == __instance);
-            //Works but may need to change to gameObject.name check
 
             if (option is CustomNumberOption number)
             {
@@ -571,7 +603,6 @@ public static class SettingsPatches
         public static bool Prefix(NumberOption __instance)
         {
             var option = CustomOption.AllOptions.Find(option => option.Setting == __instance);
-            //Works but may need to change to gameObject.name check
 
             if (option is CustomNumberOption number)
             {
@@ -589,7 +620,6 @@ public static class SettingsPatches
         public static bool Prefix(KeyValueOption __instance)
         {
             var option = CustomOption.AllOptions.Find(option => option.Setting == __instance);
-            //Works but may need to change to gameObject.name check
 
             if (option is CustomStringOption str)
             {
@@ -607,7 +637,6 @@ public static class SettingsPatches
         public static bool Prefix(KeyValueOption __instance)
         {
             var option = CustomOption.AllOptions.Find(option => option.Setting == __instance);
-            //Works but may need to change to gameObject.name check
 
             if (option is CustomStringOption str)
             {
@@ -619,60 +648,12 @@ public static class SettingsPatches
         }
     }
 
-    /*[HarmonyPatch(typeof(RoleOptionSetting), nameof(RoleOptionSetting.SetRole))]
-    public static class RoleOptionOptionPatchSetRole
-    {
-        public static bool Prefix(RoleOptionSetting __instance)
-        {
-            var option = CustomOption.AllOptions.Find(option => option.Setting == __instance);
-            //Works but may need to change to gameObject.name check
-            return option == null;
-        }
-    }
-
-    [HarmonyPatch(typeof(RoleOptionSetting), nameof(RoleOptionSetting.ShowRoleDetails))]
-    public static class RoleOptionOptionPatchShowRoleDetails
-    {
-        public static bool Prefix(RoleOptionSetting __instance)
-        {
-            var option = CustomOption.AllOptions.Find(option => option.Setting == __instance);
-            //Works but may need to change to gameObject.name check
-
-            if (option is CustomLayersOption layer)
-            {
-                layer.ShowRoleDetails();
-                return false;
-            }
-
-            return true;
-        }
-    }
-
-    [HarmonyPatch(typeof(RoleOptionSetting), nameof(RoleOptionSetting.ShowAdvancedOptions))]
-    public static class RoleOptionOptionPatchShowAdvancedOptions
-    {
-        public static bool Prefix(RoleOptionSetting __instance)
-        {
-            var option = CustomOption.AllOptions.Find(option => option.Setting == __instance);
-            //Works but may need to change to gameObject.name check
-
-            if (option is CustomLayersOption layer)
-            {
-                layer.ShowAdvancedOptions();
-                return false;
-            }
-
-            return true;
-        }
-    }*/
-
     [HarmonyPatch(typeof(RoleOptionSetting), nameof(RoleOptionSetting.IncreaseChance))]
     public static class RoleOptionOptionPatchIncreaseChance
     {
         public static bool Prefix(RoleOptionSetting __instance)
         {
             var option = CustomOption.AllOptions.Find(option => option.Setting == __instance);
-            //Works but may need to change to gameObject.name check
 
             if (option is CustomLayersOption layer)
             {
@@ -690,7 +671,6 @@ public static class SettingsPatches
         public static bool Prefix(RoleOptionSetting __instance)
         {
             var option = CustomOption.AllOptions.Find(option => option.Setting == __instance);
-            //Works but may need to change to gameObject.name check
 
             if (option is CustomLayersOption layer)
             {
@@ -708,7 +688,6 @@ public static class SettingsPatches
         public static bool Prefix(RoleOptionSetting __instance)
         {
             var option = CustomOption.AllOptions.Find(option => option.Setting == __instance);
-            //Works but may need to change to gameObject.name check
 
             if (option is CustomLayersOption layer)
             {
@@ -726,7 +705,6 @@ public static class SettingsPatches
         public static bool Prefix(RoleOptionSetting __instance)
         {
             var option = CustomOption.AllOptions.Find(option => option.Setting == __instance);
-            //Works but may need to change to gameObject.name check
 
             if (option is CustomLayersOption layer)
             {
@@ -765,8 +743,6 @@ public static class SettingsPatches
 
             if (__instance.myPlayer == CustomPlayer.Local)
                 Run(HUD.Chat, "<color=#5411F8FF>人 Welcome! 人</color>", "Welcome to Town Of Us Reworked! Type /help to get started!");
-
-            //CallRpc(CustomRPC.Misc, MiscRPC.ShareFriendCode, CustomPlayer.Local, CustomPlayer.Local.FriendCode);
 
             if (!AmongUsClient.Instance.AmHost)
                 return;
@@ -841,7 +817,6 @@ public static class SettingsPatches
 
             Scroller = new GameObject("SettingsScroller") { layer = 5 }.AddComponent<Scroller>();
             Scroller.transform.SetParent(__instance.GameSettings.transform.parent);
-
             Scroller.transform.localScale = Vector3.one;
             Scroller.allowX = false;
             Scroller.allowY = true;
@@ -850,7 +825,6 @@ public static class SettingsPatches
             Scroller.ScrollbarYBounds = new(0, 0);
             Scroller.ContentXBounds = new(MinX, MinX);
             Scroller.enabled = true;
-
             Scroller.Inner = __instance.GameSettings.transform;
             __instance.GameSettings.transform.SetParent(Scroller.transform);
         }
@@ -859,14 +833,14 @@ public static class SettingsPatches
     //Adapted from The Other Roles
     private static readonly SelectOption[] ClientOptions =
     {
-        new("Custom Crew Colors", () => TownOfUsReworked.CustomCrewColors.Value = !TownOfUsReworked.CustomCrewColors.Value, TownOfUsReworked.CustomCrewColors.Value),
-        new("Custom Neutral Colors", () => TownOfUsReworked.CustomNeutColors.Value = !TownOfUsReworked.CustomNeutColors.Value, TownOfUsReworked.CustomNeutColors.Value),
-        new("Custom Intruder Colors", () => TownOfUsReworked.CustomIntColors.Value = !TownOfUsReworked.CustomIntColors.Value, TownOfUsReworked.CustomIntColors.Value),
-        new("Custom Syndicate Colors", () => TownOfUsReworked.CustomSynColors.Value = !TownOfUsReworked.CustomSynColors.Value, TownOfUsReworked.CustomSynColors.Value),
-        new("Custom Modifier Colors", () => TownOfUsReworked.CustomModColors.Value = !TownOfUsReworked.CustomModColors.Value, TownOfUsReworked.CustomModColors.Value),
-        new("Custom Objectifier Colors", () => TownOfUsReworked.CustomObjColors.Value = !TownOfUsReworked.CustomObjColors.Value, TownOfUsReworked.CustomObjColors.Value),
-        new("Custom Ability Colors", () => TownOfUsReworked.CustomAbColors.Value = !TownOfUsReworked.CustomAbColors.Value, TownOfUsReworked.CustomAbColors.Value),
-        new("Custom Ejects", () => TownOfUsReworked.CustomEjects.Value = !TownOfUsReworked.CustomEjects.Value, TownOfUsReworked.CustomEjects.Value),
+        new("Custom Crew Colors", () => TownOfUsReworked.CustomCrewColors.Value = !TownOfUsReworked.CustomCrewColors.Value, ClientGameOptions.CustomCrewColors),
+        new("Custom Neutral Colors", () => TownOfUsReworked.CustomNeutColors.Value = !TownOfUsReworked.CustomNeutColors.Value, ClientGameOptions.CustomNeutColors),
+        new("Custom Intruder Colors", () => TownOfUsReworked.CustomIntColors.Value = !TownOfUsReworked.CustomIntColors.Value, ClientGameOptions.CustomIntColors),
+        new("Custom Syndicate Colors", () => TownOfUsReworked.CustomSynColors.Value = !TownOfUsReworked.CustomSynColors.Value, ClientGameOptions.CustomSynColors),
+        new("Custom Modifier Colors", () => TownOfUsReworked.CustomModColors.Value = !TownOfUsReworked.CustomModColors.Value, ClientGameOptions.CustomModColors),
+        new("Custom Objectifier Colors", () => TownOfUsReworked.CustomObjColors.Value = !TownOfUsReworked.CustomObjColors.Value, ClientGameOptions.CustomObjColors),
+        new("Custom Ability Colors", () => TownOfUsReworked.CustomAbColors.Value = !TownOfUsReworked.CustomAbColors.Value, ClientGameOptions.CustomAbColors),
+        new("Custom Ejects", () => TownOfUsReworked.CustomEjects.Value = !TownOfUsReworked.CustomEjects.Value, ClientGameOptions.CustomEjects),
         new("Lighter Darker Colors", LighterDarker, TownOfUsReworked.LighterDarker.Value),
         new("White Nameplates", WhiteNameplates, TownOfUsReworked.WhiteNameplates.Value),
         new("No Levels", NoLevels, TownOfUsReworked.NoLevels.Value),
@@ -1050,7 +1024,7 @@ public static class SettingsPatches
             passiveButton.OnMouseOver.AddListener((Action) (() => button.Background.color = new Color32(34, 139, 34, byte.MaxValue)));
             passiveButton.OnMouseOut = new();
             passiveButton.OnMouseOut.AddListener((Action) (() => button.Background.color = button.onState ? UColor.green : UColor.red));
-            button.gameObject.GetComponentsInChildren<SpriteRenderer>().ToList().ForEach(x => x.size = new(2.2f, 0.7f));
+            button.gameObject.GetComponentsInChildren<SpriteRenderer>().ForEach(x => x.size = new(2.2f, 0.7f));
         }
     }
 

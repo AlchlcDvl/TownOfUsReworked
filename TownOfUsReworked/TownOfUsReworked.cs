@@ -11,7 +11,7 @@ public class TownOfUsReworked : BasePlugin
 {
     public const string Id = "me.alchlcdvl.reworked";
     public const string Name = "TownOfUsReworked";
-    public const string VersionString = "0.5.0.0";
+    public const string VersionString = "0.5.1.0";
     public static readonly Version Version = new(VersionString);
 
     public const bool IsDev = false;
@@ -92,8 +92,8 @@ public class TownOfUsReworked : BasePlugin
         NormalGameOptionsV07.MaxImpostors = Enumerable.Repeat(127, 127).ToArray();
         NormalGameOptionsV07.MinPlayers = Enumerable.Repeat(1, 127).ToArray();
 
-        Ip = Config.Bind("Custom", "Custom Server IP", "127.0.0.1");
-        Port = Config.Bind("Custom", "Custom Server Port", (ushort)22023);
+        Ip = Config.Bind("Custom", "Custom Server IP", "127.0.0.1", "IP for the Custom Server");
+        Port = Config.Bind("Custom", "Custom Server Port", (ushort)22023, "Port for the Custom Server");
         LighterDarker = Config.Bind("Custom", "Lighter Darker Colors", true, "Adds smaller descriptions of colors as lighter or darker for body report purposes");
         WhiteNameplates = Config.Bind("Custom", "White Nameplates", false, "Enables custom nameplates");
         NoLevels = Config.Bind("Custom", "No Levels", false, "Enables the little level icon during meetings");

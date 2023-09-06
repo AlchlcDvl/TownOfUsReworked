@@ -72,6 +72,7 @@ public enum ActionsRPC
     Silence,
     RequestHit,
     PlaceHit,
+    RoleAction,
 
     None
 }
@@ -139,7 +140,7 @@ public enum Faction
     None
 }
 
-public enum RoleAlignment
+public enum Alignment
 {
     CrewSupport,
     CrewInvest,
@@ -216,7 +217,6 @@ public enum CustomOptionType
     String,
     Button,
     Layers,
-    Nested,
     Entry
 }
 

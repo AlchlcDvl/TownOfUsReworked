@@ -7,7 +7,7 @@ public class Werewolf : Neutral
     public CustomButton MaulButton { get; set; }
     public int Rounds { get; set; }
 
-    public override Color32 Color => ClientGameOptions.CustomNeutColors ? Colors.Werewolf : Colors.Neutral;
+    public override Color Color => ClientGameOptions.CustomNeutColors ? Colors.Werewolf : Colors.Neutral;
     public override string Name => "Werewolf";
     public override LayerEnum Type => LayerEnum.Werewolf;
     public override Func<string> StartText => () => "AWOOOOOOOOOO";
@@ -18,7 +18,7 @@ public class Werewolf : Neutral
     public Werewolf(PlayerControl player) : base(player)
     {
         Objectives = () => "- Maul anyone who can oppose you";
-        RoleAlignment = RoleAlignment.NeutralKill;
+        Alignment = Alignment.NeutralKill;
         MaulButton = new(this, "Maul", AbilityTypes.Direct, "ActionSecondary", HitMaul, Exception);
     }
 
@@ -58,14 +58,14 @@ public class Werewolf : Neutral
 
         var interact = Interact(Player, MaulButton.TargetPlayer, true);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
             Maul();
 
-        if (interact[0])
+        if (interact.Reset)
             LastMauled = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastMauled.AddSeconds(CustomGameOptions.ProtectKCReset);
-        else if (interact[2])
+        else if (interact.Vested)
             LastMauled.AddSeconds(CustomGameOptions.VestKCReset);
     }
 

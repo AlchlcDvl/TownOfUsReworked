@@ -7,7 +7,7 @@ public class Mayor : Crew
     public bool Revealed { get; set; }
     public byte Voted { get; set; }
 
-    public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Mayor : Colors.Crew;
+    public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Mayor : Colors.Crew;
     public override string Name => "Mayor";
     public override LayerEnum Type => LayerEnum.Mayor;
     public override Func<string> StartText => () => "Reveal Yourself To Commit Voter Fraud";
@@ -17,7 +17,7 @@ public class Mayor : Crew
 
     public Mayor(PlayerControl player) : base(player)
     {
-        RoleAlignment = RoleAlignment.CrewSov;
+        Alignment = Alignment.CrewSov;
         Voted = 255;
         RevealButton = new(this, "MayorReveal", AbilityTypes.Effect, "ActionSecondary", Reveal);
     }

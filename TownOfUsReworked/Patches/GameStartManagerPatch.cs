@@ -67,7 +67,7 @@ public static class GameStartManagerPatch
                     AmongUsClient.Instance.Spawn(LobbyBehaviour.Instance);
                 }
 
-                __instance.MakePublicButton.gameObject.SetActive(AmongUsClient.Instance.NetworkMode == NetworkModes.OnlineGame);
+                __instance.MakePublicButton.gameObject.SetActive(IsOnlineGame);
                 __instance.ShareOnDiscordButton.gameObject.SetActive(false);
             }
 

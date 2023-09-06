@@ -8,7 +8,7 @@ public class Bomber : Syndicate
     public CustomButton DetonateButton { get; set; }
     public List<Bomb> Bombs { get; set; }
 
-    public override Color32 Color => ClientGameOptions.CustomSynColors ? Colors.Bomber : Colors.Syndicate;
+    public override Color Color => ClientGameOptions.CustomSynColors ? Colors.Bomber : Colors.Syndicate;
     public override string Name => "Bomber";
     public override LayerEnum Type => LayerEnum.Bomber;
     public override Func<string> StartText => () => "Make People Go Boom";
@@ -20,7 +20,7 @@ public class Bomber : Syndicate
 
     public Bomber(PlayerControl player) : base(player)
     {
-        RoleAlignment = RoleAlignment.SyndicateKill;
+        Alignment = Alignment.SyndicateKill;
         Bombs = new();
         BombButton = new(this, "Plant", AbilityTypes.Effect, "ActionSecondary", Place);
         DetonateButton = new(this, "Detonate", AbilityTypes.Effect, "Secondary", Detonate);

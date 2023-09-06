@@ -111,7 +111,7 @@ public static class MeetingHud_Update
                 if (role.BlackmailedPlayer == null)
                     continue;
 
-                if (!role.BlackmailedPlayer.Data.IsDead)
+                if (!role.BlackmailedPlayer.HasDied())
                 {
                     var playerState = __instance.playerStates.FirstOrDefault(x => x.TargetPlayerId == role.BlackmailedPlayer.PlayerId);
                     playerState.Overlay.gameObject.SetActive(true);
@@ -144,7 +144,7 @@ public static class MeetingHud_Update
                 if (role.BlackmailedPlayer == null || !role.IsBM)
                     continue;
 
-                if (!role.BlackmailedPlayer.Data.IsDead)
+                if (!role.BlackmailedPlayer.HasDied())
                 {
                     var playerState = __instance.playerStates.FirstOrDefault(x => x.TargetPlayerId == role.BlackmailedPlayer.PlayerId);
                     playerState.Overlay.gameObject.SetActive(true);
@@ -180,7 +180,7 @@ public static class MeetingHud_Update
                 if (role.SilencedPlayer == null)
                     continue;
 
-                if (!role.SilencedPlayer.Data.IsDead)
+                if (!role.SilencedPlayer.HasDied())
                 {
                     var playerState = __instance.playerStates.FirstOrDefault(x => x.TargetPlayerId == role.SilencedPlayer.PlayerId);
                     playerState.Overlay.gameObject.SetActive(true);
@@ -213,7 +213,7 @@ public static class MeetingHud_Update
                 if (role.SilencedPlayer == null || !role.IsSil)
                     continue;
 
-                if (!role.SilencedPlayer.Data.IsDead)
+                if (!role.SilencedPlayer.HasDied())
                 {
                     var playerState = __instance.playerStates.FirstOrDefault(x => x.TargetPlayerId == role.SilencedPlayer.PlayerId);
                     playerState.Overlay.gameObject.SetActive(true);

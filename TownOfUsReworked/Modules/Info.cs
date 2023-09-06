@@ -48,7 +48,7 @@ public class Info
             result = result.Replace(info.Symbol, $"<b><color=#{info.Color.ToHtmlStringRGBA()}>{info.Symbol}</color></b>");
 
         for (var i = 0; i < 50; i++)
-            result = result.Replace(((RoleAlignment)i).AlignmentName(), $"<b>{((RoleAlignment)i).AlignmentName(true)}</b>");
+            result = result.Replace(((Alignment)i).AlignmentName(), $"<b>{((Alignment)i).AlignmentName(true)}</b>");
 
         return result.Replace("<b><color=#758000FF>Drunk</color></b>ard", "Drunkard");
     }
@@ -67,7 +67,7 @@ public class RoleInfo : Info
     private const string SyndicateObjective = "Have a critical sabotage set off by the Syndicate reach 0 seconds or kill off all Intruders, Unfaithful Syndicate, Crew and opposing Neutrals.";
     private const string CrewObjective = "Finish tasks along with other Crew or kill off all Intruders, Syndicate, Unfaithful Crew, and opposing Neutrals.";
 
-    public RoleInfo(string name, string shortF, string description, RoleAlignment alignmentEnum, Faction faction, string quote, Color color, string wincon = "") : base(name, shortF,
+    public RoleInfo(string name, string shortF, string description, Alignment alignmentEnum, Faction faction, string quote, Color color, string wincon = "") : base(name, shortF,
         description, color, InfoType.Role)
     {
         Quote = quote;
@@ -250,64 +250,64 @@ public class AlignmentInfo : Info
     private const string NUDescription = "Neutral (Utility) roles are defected Crew, Intruder or Syndicate (Utility) roles who have broken away from their respective faction.";
     private const string NSDescription = "Neutral (Support) roles are defected Crew, Intruder or Syndicate (Support) roles who have broken away from their respective faction.";
 
-    public readonly string Alignment;
-    public readonly RoleAlignment Base;
+    public readonly string AlignmentName;
+    public readonly Alignment Base;
 
-    public AlignmentInfo(RoleAlignment alignmentEnum) : base(alignmentEnum.AlignmentName(), "", "", Colors.Alignment, InfoType.Alignment)
+    public AlignmentInfo(Alignment alignmentEnum) : base(alignmentEnum.AlignmentName(), "", "", Colors.Alignment, InfoType.Alignment)
     {
         Base = alignmentEnum;
-        (Short, Description, Alignment) = alignmentEnum switch
+        (Short, Description, AlignmentName) = Base switch
         {
-            RoleAlignment.CrewSupport => ("CS", CSDescription, "Support"),
-            RoleAlignment.CrewInvest => ("CI", CIDescription, "Investigative"),
-            RoleAlignment.CrewProt => ("CP", CPDescription, "Protective"),
-            RoleAlignment.CrewKill => ("CK", CKDescription, "Killing"),
-            RoleAlignment.CrewUtil => ("CU", CUDescription, "Utility"),
-            RoleAlignment.CrewSov => ("CSv", CSvDescription, "Sovereign"),
-            RoleAlignment.CrewAudit => ("CA", CADescription, "Auditor"),
-            RoleAlignment.CrewConceal => ("CC", CCDescription, "Concealing"),
-            RoleAlignment.CrewDecep => ("CD", CDDescription, "Deception"),
-            RoleAlignment.CrewPower => ("CPow", CPowDescription, "Power"),
-            RoleAlignment.CrewDisrup => ("CDi", CDiDescription, "Disruption"),
-            RoleAlignment.IntruderSupport => ("IS", ISDescription, "Support"),
-            RoleAlignment.IntruderConceal => ("IC", ICDescription, "Conceal"),
-            RoleAlignment.IntruderDecep => ("ID", IDDescription, "Depection"),
-            RoleAlignment.IntruderKill => ("IK", IKDescription, "Killing"),
-            RoleAlignment.IntruderUtil => ("IU", IUDescription, "Utility"),
-            RoleAlignment.IntruderInvest => ("II", IIDescription, "Investigative"),
-            RoleAlignment.IntruderProt => ("IP", IPDescription, "Protective"),
-            RoleAlignment.IntruderSov => ("ISv", ISvDescription, "Sovereign"),
-            RoleAlignment.IntruderAudit => ("IA", IADescription, "Auditor"),
-            RoleAlignment.IntruderPower => ("IPow", IPowDescription, "Power"),
-            RoleAlignment.IntruderDisrup => ("IDi", IDiDescription, "Disruption"),
-            RoleAlignment.NeutralKill => ("NK", NKDescription, "Killing"),
-            RoleAlignment.NeutralNeo => ("NN", NNDescription, "Neophyte"),
-            RoleAlignment.NeutralEvil => ("NE", NEDescription, "Evil"),
-            RoleAlignment.NeutralBen => ("NB", NBDescription, "Benign"),
-            RoleAlignment.NeutralPros => ("NP", NPDescription, "Proselyte"),
-            RoleAlignment.NeutralApoc => ("NA", NADescription, "Apocalypse"),
-            RoleAlignment.NeutralHarb => ("NH", NHDescription, "Harbinger"),
-            RoleAlignment.NeutralInvest => ("NI", NIDescription, "Investigative"),
-            RoleAlignment.NeutralAudit => ("NAud", NAudDescription, "Auditor"),
-            RoleAlignment.NeutralSov => ("NSv", NSvDescription, "Sovereign"),
-            RoleAlignment.NeutralProt => ("NProt", NProtDescription, "Protective"),
-            RoleAlignment.NeutralSupport => ("NS", NSDescription, "Support"),
-            RoleAlignment.NeutralUtil => ("NU", NUDescription, "Utility"),
-            RoleAlignment.NeutralConceal => ("NC", NCDescription, "Conceal"),
-            RoleAlignment.NeutralDecep => ("ND", NDDescription, "Deception"),
-            RoleAlignment.NeutralDisrup => ("NDi", NDiDescription, "Disruption"),
-            RoleAlignment.NeutralPower => ("NPow", NPowDescription, "Power"),
-            RoleAlignment.SyndicateKill => ("SyK", SyKDescription, "Killing"),
-            RoleAlignment.SyndicateSupport => ("SSu", SSuDescription, "Support"),
-            RoleAlignment.SyndicateDisrup => ("SD", SDDescription, "Disruption"),
-            RoleAlignment.SyndicatePower => ("SP", SPDescription, "Power"),
-            RoleAlignment.SyndicateUtil => ("SU", SUDescription, "Utility"),
-            RoleAlignment.SyndicateInvest => ("SI", SIDescription, "Investigative"),
-            RoleAlignment.SyndicateProt => ("SProt", SProtDescription, "Protective"),
-            RoleAlignment.SyndicateSov => ("SSv", SSvDescription, "Soveriegn"),
-            RoleAlignment.SyndicateAudit => ("SA", SADescription, "Auditor"),
-            RoleAlignment.SyndicateConceal => ("SC", SCDescription, "Concealing"),
-            RoleAlignment.SyndicateDecep => ("SDe", SDeDescription, "Deception"),
+            Alignment.CrewSupport => ("CS", CSDescription, "Support"),
+            Alignment.CrewInvest => ("CI", CIDescription, "Investigative"),
+            Alignment.CrewProt => ("CP", CPDescription, "Protective"),
+            Alignment.CrewKill => ("CK", CKDescription, "Killing"),
+            Alignment.CrewUtil => ("CU", CUDescription, "Utility"),
+            Alignment.CrewSov => ("CSv", CSvDescription, "Sovereign"),
+            Alignment.CrewAudit => ("CA", CADescription, "Auditor"),
+            Alignment.CrewConceal => ("CC", CCDescription, "Concealing"),
+            Alignment.CrewDecep => ("CD", CDDescription, "Deception"),
+            Alignment.CrewPower => ("CPow", CPowDescription, "Power"),
+            Alignment.CrewDisrup => ("CDi", CDiDescription, "Disruption"),
+            Alignment.IntruderSupport => ("IS", ISDescription, "Support"),
+            Alignment.IntruderConceal => ("IC", ICDescription, "Conceal"),
+            Alignment.IntruderDecep => ("ID", IDDescription, "Depection"),
+            Alignment.IntruderKill => ("IK", IKDescription, "Killing"),
+            Alignment.IntruderUtil => ("IU", IUDescription, "Utility"),
+            Alignment.IntruderInvest => ("II", IIDescription, "Investigative"),
+            Alignment.IntruderProt => ("IP", IPDescription, "Protective"),
+            Alignment.IntruderSov => ("ISv", ISvDescription, "Sovereign"),
+            Alignment.IntruderAudit => ("IA", IADescription, "Auditor"),
+            Alignment.IntruderPower => ("IPow", IPowDescription, "Power"),
+            Alignment.IntruderDisrup => ("IDi", IDiDescription, "Disruption"),
+            Alignment.NeutralKill => ("NK", NKDescription, "Killing"),
+            Alignment.NeutralNeo => ("NN", NNDescription, "Neophyte"),
+            Alignment.NeutralEvil => ("NE", NEDescription, "Evil"),
+            Alignment.NeutralBen => ("NB", NBDescription, "Benign"),
+            Alignment.NeutralPros => ("NP", NPDescription, "Proselyte"),
+            Alignment.NeutralApoc => ("NA", NADescription, "Apocalypse"),
+            Alignment.NeutralHarb => ("NH", NHDescription, "Harbinger"),
+            Alignment.NeutralInvest => ("NI", NIDescription, "Investigative"),
+            Alignment.NeutralAudit => ("NAud", NAudDescription, "Auditor"),
+            Alignment.NeutralSov => ("NSv", NSvDescription, "Sovereign"),
+            Alignment.NeutralProt => ("NProt", NProtDescription, "Protective"),
+            Alignment.NeutralSupport => ("NS", NSDescription, "Support"),
+            Alignment.NeutralUtil => ("NU", NUDescription, "Utility"),
+            Alignment.NeutralConceal => ("NC", NCDescription, "Conceal"),
+            Alignment.NeutralDecep => ("ND", NDDescription, "Deception"),
+            Alignment.NeutralDisrup => ("NDi", NDiDescription, "Disruption"),
+            Alignment.NeutralPower => ("NPow", NPowDescription, "Power"),
+            Alignment.SyndicateKill => ("SyK", SyKDescription, "Killing"),
+            Alignment.SyndicateSupport => ("SSu", SSuDescription, "Support"),
+            Alignment.SyndicateDisrup => ("SD", SDDescription, "Disruption"),
+            Alignment.SyndicatePower => ("SP", SPDescription, "Power"),
+            Alignment.SyndicateUtil => ("SU", SUDescription, "Utility"),
+            Alignment.SyndicateInvest => ("SI", SIDescription, "Investigative"),
+            Alignment.SyndicateProt => ("SProt", SProtDescription, "Protective"),
+            Alignment.SyndicateSov => ("SSv", SSvDescription, "Soveriegn"),
+            Alignment.SyndicateAudit => ("SA", SADescription, "Auditor"),
+            Alignment.SyndicateConceal => ("SC", SCDescription, "Concealing"),
+            Alignment.SyndicateDecep => ("SDe", SDeDescription, "Deception"),
             _ => ("Invalid", "Invalid", "Invalid")
         };
     }

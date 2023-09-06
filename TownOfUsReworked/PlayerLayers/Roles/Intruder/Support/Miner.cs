@@ -7,7 +7,7 @@ public class Miner : Intruder
     public bool CanPlace { get; set; }
     public List<Vent> Vents { get; set; }
 
-    public override Color32 Color => ClientGameOptions.CustomIntColors ? Colors.Miner : Colors.Intruder;
+    public override Color Color => ClientGameOptions.CustomIntColors ? Colors.Miner : Colors.Intruder;
     public override string Name => "Miner";
     public override LayerEnum Type => LayerEnum.Miner;
     public override Func<string> StartText => () => "From The Top, Make It Drop, Boom, That's A Vent";
@@ -17,7 +17,7 @@ public class Miner : Intruder
 
     public Miner(PlayerControl player) : base(player)
     {
-        RoleAlignment = RoleAlignment.IntruderSupport;
+        Alignment = Alignment.IntruderSupport;
         MineButton = new(this, "Mine", AbilityTypes.Effect, "Secondary", Mine);
         Vents = new();
     }
@@ -35,7 +35,7 @@ public class Miner : Intruder
     {
         base.UpdateHud(__instance);
         var hits = Physics2D.OverlapBoxAll(Player.transform.position, GetSize(), 0);
-        hits = hits.Where(c => (c.name.Contains("Vent") || !c.isTrigger) && c.gameObject.layer is not 8 and not 5).ToArray();
+        hits = hits.Where(c => (c.name.Contains("Vent") || !c.isTrigger) && c.gameObject.layer is not (8 or 5)).ToArray();
         CanPlace = hits.Count == 0 && Player.moveable && !GetPlayerElevator(Player).IsInElevator;
         MineButton.Update("MINE", Timer, CustomGameOptions.MineCd, CanPlace);
     }

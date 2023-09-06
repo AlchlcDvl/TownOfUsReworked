@@ -18,7 +18,7 @@ public class Warper : Syndicate
     public bool WasInVent { get; set; }
     public Vent Vent { get; set; }
 
-    public override Color32 Color => ClientGameOptions.CustomSynColors ? Colors.Warper : Colors.Syndicate;
+    public override Color Color => ClientGameOptions.CustomSynColors ? Colors.Warper : Colors.Syndicate;
     public override string Name => "Warper";
     public override LayerEnum Type => LayerEnum.Warper;
     public override Func<string> StartText => () => "Warp The <color=#8CFFFFFF>Crew</color> Away From Each Other";
@@ -185,11 +185,11 @@ public class Warper : Syndicate
     {
         var interact = Interact(Player, player);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
             WarpPlayer1 = player;
-        else if (interact[0])
+        else if (interact.Reset)
             LastWarped = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastWarped.AddSeconds(CustomGameOptions.ProtectKCReset);
     }
 
@@ -197,11 +197,11 @@ public class Warper : Syndicate
     {
         var interact = Interact(Player, player);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
             WarpPlayer2 = player;
-        else if (interact[0])
+        else if (interact.Reset)
             LastWarped = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastWarped.AddSeconds(CustomGameOptions.ProtectKCReset);
     }
 
@@ -275,7 +275,7 @@ public class Warper : Syndicate
         {
             var player = PlayerById(entry.Key);
 
-            if (player?.Data.IsDead == true || player.Data.Disconnected)
+            if (player == null || player.HasDied())
                 continue;
 
             if (UnwarpablePlayers.ContainsKey(player.PlayerId) && player.moveable && UnwarpablePlayers.GetValueSafe(player.PlayerId).AddSeconds(0.5) < DateTime.UtcNow)

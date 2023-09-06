@@ -14,7 +14,7 @@ public class Thief : Neutral
     public Dictionary<int, KeyValuePair<string, Color>> Sorted { get; set; }
     public CustomMeeting GuessMenu { get; set; }
 
-    public override Color32 Color => ClientGameOptions.CustomNeutColors ? Colors.Thief : Colors.Neutral;
+    public override Color Color => ClientGameOptions.CustomNeutColors ? Colors.Thief : Colors.Neutral;
     public override string Name => "Thief";
     public override LayerEnum Type => LayerEnum.Thief;
     public override Func<string> StartText => () => "Steal From The Killers";
@@ -24,7 +24,7 @@ public class Thief : Neutral
 
     public Thief(PlayerControl player) : base(player)
     {
-        RoleAlignment = RoleAlignment.NeutralBen;
+        Alignment = Alignment.NeutralBen;
         StealButton = new(this, "Steal", AbilityTypes.Direct, "ActionSecondary", Steal, Exception);
         ColorMapping = new();
         SortedColorMapping = new();
@@ -225,8 +225,8 @@ public class Thief : Neutral
     private bool IsExempt(PlayerVoteArea voteArea)
     {
         var player = PlayerByVoteArea(voteArea);
-        return player.Data.IsDead || player.Data.Disconnected || (voteArea.NameText.text.Contains('\n') && Player.GetFaction() != player.GetFaction()) || IsDead || (player == Player &&
-            player == CustomPlayer.Local) || Player.GetFaction() == player.GetFaction() || Player.IsLinkedTo(player);
+        return player.HasDied() || (voteArea.NameText.text.Contains('\n') && Player.GetFaction() != player.GetFaction()) || IsDead || (player == Player && player == CustomPlayer.Local) ||
+            (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || Player.IsLinkedTo(player);
     }
 
     private void Guess(PlayerVoteArea voteArea, MeetingHud __instance)
@@ -291,10 +291,10 @@ public class Thief : Neutral
 
         var interact = Interact(Player, StealButton.TargetPlayer, true);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
         {
-            if (!(StealButton.TargetPlayer.Is(Faction.Intruder) || StealButton.TargetPlayer.Is(Faction.Syndicate) || StealButton.TargetPlayer.Is(RoleAlignment.NeutralKill) ||
-                StealButton.TargetPlayer.Is(RoleAlignment.NeutralNeo) || StealButton.TargetPlayer.Is(RoleAlignment.NeutralPros) || StealButton.TargetPlayer.Is(RoleAlignment.CrewKill)))
+            if (!(StealButton.TargetPlayer.Is(Faction.Intruder) || StealButton.TargetPlayer.Is(Faction.Syndicate) || StealButton.TargetPlayer.Is(Alignment.NeutralKill) ||
+                StealButton.TargetPlayer.Is(Alignment.NeutralNeo) || StealButton.TargetPlayer.Is(Alignment.NeutralPros) || StealButton.TargetPlayer.Is(Alignment.CrewKill)))
             {
                 Utils.RpcMurderPlayer(Player, Player);
             }
@@ -306,11 +306,11 @@ public class Thief : Neutral
             }
         }
 
-        if (interact[0])
+        if (interact.Reset)
             LastStolen = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastStolen.AddSeconds(CustomGameOptions.ProtectKCReset);
-        else if (interact[2])
+        else if (interact.Vested)
             LastStolen.AddSeconds(CustomGameOptions.VestKCReset);
     }
 

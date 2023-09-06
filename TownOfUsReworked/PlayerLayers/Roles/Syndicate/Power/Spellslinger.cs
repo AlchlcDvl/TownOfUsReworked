@@ -7,7 +7,7 @@ public class Spellslinger : Syndicate
     public DateTime LastSpelled { get; set; }
     public int SpellCount { get; set; }
 
-    public override Color32 Color => ClientGameOptions.CustomSynColors ? Colors.Spellslinger : Colors.Syndicate;
+    public override Color Color => ClientGameOptions.CustomSynColors ? Colors.Spellslinger : Colors.Syndicate;
     public override string Name => "Spellslinger";
     public override LayerEnum Type => LayerEnum.Spellslinger;
     public override Func<string> StartText => () => "Place the <color=#8CFFFFFF>Crew</color> Under A Curse";
@@ -18,7 +18,7 @@ public class Spellslinger : Syndicate
 
     public Spellslinger(PlayerControl player) : base(player)
     {
-        RoleAlignment = RoleAlignment.SyndicatePower;
+        Alignment = Alignment.SyndicatePower;
         Spelled = new();
         SpellCount = 0;
         SpellButton = new(this, "Spell", AbilityTypes.Direct, "Secondary", HitSpell, Exception1);
@@ -52,12 +52,12 @@ public class Spellslinger : Syndicate
         {
             var interact = Interact(Player, SpellButton.TargetPlayer);
 
-            if (interact[3])
+            if (interact.AbilityUsed)
                 Spell(SpellButton.TargetPlayer);
 
-            if (interact[0])
+            if (interact.Reset)
                 LastSpelled = DateTime.UtcNow;
-            else if (interact[1])
+            else if (interact.Protected)
                 LastSpelled.AddSeconds(CustomGameOptions.ProtectKCReset);
         }
     }

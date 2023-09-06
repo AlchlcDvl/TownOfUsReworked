@@ -10,7 +10,7 @@ public static class AdminPatch
         __instance.SabotageText.gameObject.SetActive(sabotaged);
 
         if (sabotaged)
-            __instance.CountAreas.ToList().ForEach(x => x.UpdateCount(0));
+            __instance.CountAreas.ForEach(x => x.UpdateCount(0));
     }
 
     public static void UpdateBlips(CounterArea area, List<byte> colorMapping, bool isOP)
@@ -92,8 +92,7 @@ public static class AdminPatch
                 {
                     var component = collider.GetComponent<PlayerControl>();
 
-                    if (component && component.Data != null && !component.Data.Disconnected && !component.Data.IsDead && (__instance.showLivePlayerPosition || !component.AmOwner) &&
-                        !colorMapDuplicate.Contains(data.PlayerId))
+                    if (component && component.Data != null && !component.HasDied() && (__instance.showLivePlayerPosition || !component.AmOwner) && !colorMapDuplicate.Contains(data.PlayerId))
                     {
                         colorMap.Add(data.PlayerId);
                         colorMapDuplicate.Add(data.PlayerId);

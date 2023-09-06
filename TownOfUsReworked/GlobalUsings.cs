@@ -43,6 +43,7 @@ global using TownOfUsReworked.PlayerLayers.Objectifiers;
 global using static TownOfUsReworked.Modules.ChatCommand;
 global using static TownOfUsReworked.Classes.AssetManager;
 global using static TownOfUsReworked.Data.ConstantVariables;
+global using static TownOfUsReworked.Modules.InteractionData;
 global using static TownOfUsReworked.Classes.ModCompatibility;
 global using static TownOfUsReworked.Extensions.LayerExtentions;
 

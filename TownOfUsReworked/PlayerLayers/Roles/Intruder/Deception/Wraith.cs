@@ -8,7 +8,7 @@ public class Wraith : Intruder
     public float TimeRemaining { get; set; }
     public bool IsInvis => TimeRemaining > 0f;
 
-    public override Color32 Color => ClientGameOptions.CustomIntColors ? Colors.Wraith : Colors.Intruder;
+    public override Color Color => ClientGameOptions.CustomIntColors ? Colors.Wraith : Colors.Intruder;
     public override string Name => "Wraith";
     public override LayerEnum Type => LayerEnum.Wraith;
     public override Func<string> StartText => () => "Sneaky Sneaky";
@@ -18,7 +18,7 @@ public class Wraith : Intruder
 
     public Wraith(PlayerControl player) : base(player)
     {
-        RoleAlignment = RoleAlignment.IntruderDecep;
+        Alignment = Alignment.IntruderDecep;
         InvisButton = new(this, "Invis", AbilityTypes.Effect, "Secondary", HitInvis);
     }
 
@@ -46,7 +46,6 @@ public class Wraith : Intruder
 
         CallRpc(CustomRPC.Action, ActionsRPC.Invis, this);
         TimeRemaining = CustomGameOptions.InvisDur;
-        Invis();
     }
 
     public override void UpdateHud(HudManager __instance)

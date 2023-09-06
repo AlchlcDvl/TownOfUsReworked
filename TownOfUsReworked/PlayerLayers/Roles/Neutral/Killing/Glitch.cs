@@ -18,7 +18,7 @@ public class Glitch : Neutral
     public PlayerControl MimicTarget { get; set; }
     public CustomMenu MimicMenu { get; set; }
 
-    public override Color32 Color => ClientGameOptions.CustomNeutColors ? Colors.Glitch : Colors.Neutral;
+    public override Color Color => ClientGameOptions.CustomNeutColors ? Colors.Glitch : Colors.Neutral;
     public override string Name => "Glitch";
     public override LayerEnum Type => LayerEnum.Glitch;
     public override Func<string> StartText => () => "foreach var PlayerControl Glitch.MurderPlayer";
@@ -32,7 +32,7 @@ public class Glitch : Neutral
     public Glitch(PlayerControl owner) : base(owner)
     {
         Objectives = () => "- Neutralise anyone who can oppose you";
-        RoleAlignment = RoleAlignment.NeutralKill;
+        Alignment = Alignment.NeutralKill;
         MimicMenu = new(Player, Click, Exception3);
         RoleBlockImmune = true;
         NeutraliseButton = new(this, "Neutralise", AbilityTypes.Direct, "ActionSecondary", Neutralise, Exception1);
@@ -54,7 +54,7 @@ public class Glitch : Neutral
         TimeRemaining -= Time.deltaTime;
         GetLayers(HackTarget).ForEach(x => x.IsBlocked = !GetRole(HackTarget).RoleBlockImmune);
 
-        if (Meeting || IsDead || HackTarget.Data.IsDead || HackTarget.Data.Disconnected)
+        if (Meeting || IsDead || HackTarget.HasDied())
             TimeRemaining = 0f;
     }
 
@@ -85,16 +85,15 @@ public class Glitch : Neutral
 
         var interact = Interact(Player, HackButton.TargetPlayer);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
         {
             HackTarget = HackButton.TargetPlayer;
             TimeRemaining = CustomGameOptions.HackDur;
             CallRpc(CustomRPC.Action, ActionsRPC.GlitchRoleblock, this, HackTarget);
-            Hack();
         }
-        else if (interact[0])
+        else if (interact.Reset)
             LastHacked = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastHacked.AddSeconds(CustomGameOptions.ProtectKCReset);
     }
 
@@ -105,11 +104,11 @@ public class Glitch : Neutral
 
         var interact = Interact(Player, NeutraliseButton.TargetPlayer, true);
 
-        if (interact[3] || interact[0])
+        if (interact.AbilityUsed || interact.Reset)
             LastKilled = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
-        else if (interact[2])
+        else if (interact.Vested)
             LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
     }
 
@@ -124,7 +123,6 @@ public class Glitch : Neutral
         {
             CallRpc(CustomRPC.Action, ActionsRPC.Mimic, this, MimicTarget);
             TimeRemaining2 = CustomGameOptions.MimicDur;
-            Mimic();
         }
     }
 

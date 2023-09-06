@@ -141,6 +141,7 @@ public static class Blocked
             UseBlock = new("UseBlock");
             UseBlock.AddComponent<SpriteRenderer>().sprite = GetSprite("Blocked");
             UseBlock.transform.localScale *= 0.75f;
+            UseBlock.transform.localPosition = new(0f, 0f, 5f);
             UseBlock.transform.SetParent(__instance.UseButton.transform);
         }
 
@@ -157,6 +158,7 @@ public static class Blocked
             PetBlock = new("PetBlock");
             PetBlock.AddComponent<SpriteRenderer>().sprite = GetSprite("Blocked");
             PetBlock.transform.localScale *= 0.75f;
+            PetBlock.transform.localPosition = new(0f, 0f, 5f);
             PetBlock.transform.SetParent(__instance.PetButton.transform);
         }
 
@@ -173,6 +175,7 @@ public static class Blocked
             SaboBlock = new("SaboBlock");
             SaboBlock.AddComponent<SpriteRenderer>().sprite = GetSprite("Blocked");
             SaboBlock.transform.localScale *= 0.75f;
+            SaboBlock.transform.localPosition = new(0f, 0f, 5f);
             SaboBlock.transform.SetParent(__instance.SabotageButton.transform);
         }
 
@@ -189,6 +192,7 @@ public static class Blocked
             VentBlock = new("VentBlock");
             VentBlock.AddComponent<SpriteRenderer>().sprite = GetSprite("Blocked");
             VentBlock.transform.localScale *= 0.75f;
+            VentBlock.transform.localPosition = new(0f, 0f, 5f);
             VentBlock.transform.SetParent(__instance.ImpostorVentButton.transform);
         }
 
@@ -205,6 +209,7 @@ public static class Blocked
             ReportBlock = new("ReportBlock");
             ReportBlock.AddComponent<SpriteRenderer>().sprite = GetSprite("Blocked");
             ReportBlock.transform.localScale *= 0.75f;
+            ReportBlock.transform.localPosition = new(0f, 0f, 5f);
             ReportBlock.transform.SetParent(__instance.ReportButton.transform);
         }
 

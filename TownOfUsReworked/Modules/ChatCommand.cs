@@ -115,7 +115,7 @@ public class ChatCommand
         }
 
         var message = "";
-        args[2..].ToList().ForEach(arg => message += $"{arg} ");
+        args[2..].ForEach(arg => message += $"{arg} ");
         message = message.Remove(message.Length - 1);
 
         if (CustomPlayer.Local.Data.IsDead)
@@ -195,7 +195,7 @@ public class ChatCommand
         }
 
         var arg = "";
-        args[1..].ToList().ForEach(arg2 => arg += $"{arg2} ");
+        args[1..].ForEach(arg2 => arg += $"{arg2} ");
         arg = arg.Remove(arg.Length - 1);
 
         if (arg.Any(disallowed.Contains))
@@ -272,7 +272,7 @@ public class ChatCommand
         }
 
         var arg = "";
-        args[1..].ToList().ForEach(arg2 => arg += $"{arg2} ");
+        args[1..].ForEach(arg2 => arg += $"{arg2} ");
         arg = arg.Remove(arg.Length - 1);
 
         var target = CustomPlayer.AllPlayers.Find(x => x.Data.PlayerName == arg);
@@ -319,7 +319,7 @@ public class ChatCommand
     private static void TestArgs(string[] args, ChatController __instance)
     {
         var message = "You entered the following params:\n";
-        args[1..].ToList().ForEach(arg => message += $"{arg}, ");
+        args[1..].ForEach(arg => message += $"{arg}, ");
         message = message.Remove(message.Length - 2);
         Run(__instance, "<color=#FF00FFFF>⚠ TEST ⚠</color>", message);
     }

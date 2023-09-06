@@ -12,7 +12,7 @@ public class Morphling : Intruder
     public bool Enabled { get; set; }
     public bool Morphed => TimeRemaining > 0f;
 
-    public override Color32 Color => ClientGameOptions.CustomIntColors ? Colors.Morphling : Colors.Intruder;
+    public override Color Color => ClientGameOptions.CustomIntColors ? Colors.Morphling : Colors.Intruder;
     public override string Name => "Morphling";
     public override LayerEnum Type => LayerEnum.Morphling;
     public override Func<string> StartText => () => "Fool The <color=#8CFFFFFF>Crew</color> With Your Appearances";
@@ -23,7 +23,7 @@ public class Morphling : Intruder
 
     public Morphling(PlayerControl player) : base(player)
     {
-        RoleAlignment = RoleAlignment.IntruderDecep;
+        Alignment = Alignment.IntruderDecep;
         SampledPlayer = null;
         MorphedPlayer = null;
         MorphButton = new(this, "Morph", AbilityTypes.Effect, "Secondary", HitMorph);
@@ -59,7 +59,6 @@ public class Morphling : Intruder
         TimeRemaining = CustomGameOptions.MorphDur;
         MorphedPlayer = SampledPlayer;
         CallRpc(CustomRPC.Action, ActionsRPC.Morph, this, MorphedPlayer);
-        Morph();
     }
 
     public void Sample()
@@ -69,17 +68,17 @@ public class Morphling : Intruder
 
         var interact = Interact(Player, SampleButton.TargetPlayer);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
             SampledPlayer = SampleButton.TargetPlayer;
 
-        if (interact[0])
+        if (interact.Reset)
         {
             LastSampled = DateTime.UtcNow;
 
             if (CustomGameOptions.MorphCooldownsLinked)
                 LastMorphed = DateTime.UtcNow;
         }
-        else if (interact[1])
+        else if (interact.Protected)
         {
             LastSampled.AddSeconds(CustomGameOptions.ProtectKCReset);
 

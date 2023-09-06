@@ -8,5 +8,5 @@ public class Impostor : Intruder
     public override Func<string> Description => () => CommonAbilities;
     public override InspectorResults InspectorResults => InspectorResults.IsBasic;
 
-    public Impostor(PlayerControl player) : base(player) => RoleAlignment = RoleAlignment.IntruderUtil;
+    public Impostor(PlayerControl player) : base(player) => Alignment = Alignment.IntruderUtil;
 }

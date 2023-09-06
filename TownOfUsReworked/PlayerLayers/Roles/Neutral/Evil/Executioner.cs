@@ -10,12 +10,12 @@ public class Executioner : Neutral
     public DateTime LastDoomed { get; set; }
     public int UsesLeft { get; set; }
     public bool CanDoom => TargetVotedOut && !HasDoomed && UsesLeft > 0 && ToDoom.Count > 0 && !CustomGameOptions.AvoidNeutralKingmakers;
-    public bool Failed => !TargetVotedOut && (TargetPlayer.Data.IsDead || TargetPlayer.Data.Disconnected);
+    public bool Failed => !TargetVotedOut && TargetPlayer.HasDied();
     public int Rounds { get; set; }
     public CustomButton TargetButton { get; set; }
     public bool TargetFailed => TargetPlayer == null && Rounds > 2;
 
-    public override Color32 Color => ClientGameOptions.CustomNeutColors ? Colors.Executioner : Colors.Neutral;
+    public override Color Color => ClientGameOptions.CustomNeutColors ? Colors.Executioner : Colors.Neutral;
     public override string Name => "Executioner";
     public override LayerEnum Type => LayerEnum.Executioner;
     public override Func<string> StartText => () => "Find Someone To Eject";
@@ -27,7 +27,7 @@ public class Executioner : Neutral
     public Executioner(PlayerControl player) : base(player)
     {
         Objectives = () => TargetVotedOut ? $"- {TargetPlayer?.name} has been ejected" : (TargetPlayer == null ? "- Find a target to eject" : $"- Eject {TargetPlayer?.name}");
-        RoleAlignment = RoleAlignment.NeutralEvil;
+        Alignment = Alignment.NeutralEvil;
         ToDoom = new();
         UsesLeft = CustomGameOptions.MaxDooms;
         DoomButton = new(this, "Doom", AbilityTypes.Direct, "ActionSecondary", Doom, Exception1, true);
@@ -97,7 +97,7 @@ public class Executioner : Neutral
 
     public bool Exception1(PlayerControl player) => !ToDoom.Contains(player.PlayerId) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || player.IsLinkedTo(Player);
 
-    public bool Exception2(PlayerControl player) => player == TargetPlayer || player.IsLinkedTo(Player) || player.Is(RoleAlignment.CrewSov) || (player.Is(SubFaction) && SubFaction !=
+    public bool Exception2(PlayerControl player) => player == TargetPlayer || player.IsLinkedTo(Player) || player.Is(Alignment.CrewSov) || (player.Is(SubFaction) && SubFaction !=
         SubFaction.None);
 
     public override void UpdateHud(HudManager __instance)

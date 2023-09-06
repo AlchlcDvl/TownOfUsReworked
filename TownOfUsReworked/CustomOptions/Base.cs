@@ -13,7 +13,7 @@ public class CustomOption
     public readonly CustomOptionType Type;
     public object[] Parents { get; set; }
     public readonly bool All;
-    public bool Active => Parents == null || (All ? Parents.All(IsActive) : Parents.Any(IsActive));
+    public bool Active => All ? Parents.All(IsActive) : Parents.Any(IsActive);
 
     public CustomOption(int id, MultiMenu menu, string name, CustomOptionType type, object defaultValue, object otherDefault, object[] parent, bool all = false)
     {
@@ -72,7 +72,7 @@ public class CustomOption
     {
         Setting.name = Setting.gameObject.name = Name.Replace(" ", "_");
         Setting.Title = (StringNames)999999999;
-        Setting.OnValueChanged = (Action<OptionBehaviour>)(_ => {});
+        Setting.OnValueChanged = new Action<OptionBehaviour>(_ => {});
     }
 
     public void Set(object value, object otherValue = null)
@@ -120,7 +120,7 @@ public class CustomOption
 
         foreach (var option in AllOptions)
         {
-            if (option.Type is CustomOptionType.Button or CustomOptionType.Header or CustomOptionType.Nested)
+            if (option.Type is CustomOptionType.Button or CustomOptionType.Header)
                 continue;
 
             builder.AppendLine(option.Name.Trim());

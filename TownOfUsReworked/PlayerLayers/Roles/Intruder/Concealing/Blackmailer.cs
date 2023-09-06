@@ -9,7 +9,7 @@ public class Blackmailer : Intruder
     public Sprite PrevOverlay { get; set; }
     public Color PrevColor { get; set; }
 
-    public override Color32 Color => ClientGameOptions.CustomIntColors ? Colors.Blackmailer : Colors.Intruder;
+    public override Color Color => ClientGameOptions.CustomIntColors ? Colors.Blackmailer : Colors.Intruder;
     public override string Name => "Blackmailer";
     public override LayerEnum Type => LayerEnum.Blackmailer;
     public override Func<string> StartText => () => "You Know Their Secrets";
@@ -21,7 +21,7 @@ public class Blackmailer : Intruder
 
     public Blackmailer(PlayerControl player) : base(player)
     {
-        RoleAlignment = RoleAlignment.IntruderConceal;
+        Alignment = Alignment.IntruderConceal;
         BlackmailedPlayer = null;
         BlackmailButton = new(this, "Blackmail", AbilityTypes.Direct, "Secondary", Blackmail, Exception1);
     }
@@ -33,15 +33,15 @@ public class Blackmailer : Intruder
 
         var interact = Interact(Player, BlackmailButton.TargetPlayer);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
         {
             BlackmailedPlayer = BlackmailButton.TargetPlayer;
             CallRpc(CustomRPC.Action, ActionsRPC.Blackmail, this, BlackmailedPlayer);
         }
 
-        if (interact[0])
+        if (interact.Reset)
             LastBlackmailed = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastBlackmailed.AddSeconds(CustomGameOptions.ProtectKCReset);
     }
 

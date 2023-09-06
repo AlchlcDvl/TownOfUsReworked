@@ -22,8 +22,8 @@ public static class CalculateLightRadiusPatch
 
         if (player.IsDead)
             __result = __instance.MaxLightRadius;
-        else if (player.Object.Is(Faction.Intruder) || (player.Object.Is(RoleAlignment.NeutralKill) && CustomGameOptions.NKHasImpVision) || player.Object.Is(LayerEnum.Torch) ||
-            (player.Object.Is(RoleAlignment.NeutralNeo) && CustomGameOptions.NNHasImpVision))
+        else if (player.Object.Is(Faction.Intruder) || (player.Object.Is(Alignment.NeutralKill) && CustomGameOptions.NKHasImpVision) || player.Object.Is(LayerEnum.Torch) ||
+            (player.Object.Is(Alignment.NeutralNeo) && CustomGameOptions.NNHasImpVision))
         {
             __result = __instance.MaxLightRadius * CustomGameOptions.IntruderVision;
         }
@@ -49,7 +49,6 @@ public static class AdjustLightingPatch
 {
     public static bool Prefix(PlayerControl __instance)
     {
-        //Planning on making flashlights available all the time
         AdjustLighting(__instance);
         return false;
     }
@@ -71,10 +70,11 @@ public static class AdjustLightingPatch
         else if (__instance.Is(Faction.Neutral))
             flashlights = CustomGameOptions.NeutralFlashlight;
 
+        flashlights &= !__instance.Data.IsDead;
+
         if (flashlights)
             size /= ShipStatus.Instance.MaxLightRadius;
 
-        flashlights = flashlights && !__instance.Data.IsDead;
         __instance.TargetFlashlight?.gameObject.SetActive(flashlights);
         __instance.StartCoroutine(__instance.EnableRightJoystick(flashlights));
         __instance.lightSource.SetupLightingForGameplay(flashlights, size, __instance.TargetFlashlight.transform);

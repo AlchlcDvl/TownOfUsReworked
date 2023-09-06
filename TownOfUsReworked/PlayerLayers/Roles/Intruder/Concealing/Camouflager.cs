@@ -8,7 +8,7 @@ public class Camouflager : Intruder
     public float TimeRemaining { get; set; }
     public bool Camouflaged => TimeRemaining > 0f;
 
-    public override Color32 Color => ClientGameOptions.CustomIntColors ? Colors.Camouflager : Colors.Intruder;
+    public override Color Color => ClientGameOptions.CustomIntColors ? Colors.Camouflager : Colors.Intruder;
     public override string Name => "Camouflager";
     public override LayerEnum Type => LayerEnum.Camouflager;
     public override Func<string> StartText => () => "Hinder The <color=#8CFFFFFF>Crew</color>'s Recognition";
@@ -19,7 +19,7 @@ public class Camouflager : Intruder
 
     public Camouflager(PlayerControl player) : base(player)
     {
-        RoleAlignment = RoleAlignment.IntruderConceal;
+        Alignment = Alignment.IntruderConceal;
         CamouflageButton = new(this, "Camouflage", AbilityTypes.Effect, "Secondary", HitCamouflage);
     }
 
@@ -27,6 +27,7 @@ public class Camouflager : Intruder
     {
         Enabled = true;
         TimeRemaining -= Time.deltaTime;
+        DoUndo.CamouflagerEnabled = true;
         Utils.Camouflage();
 
         if (Meeting)
@@ -38,6 +39,7 @@ public class Camouflager : Intruder
         Enabled = false;
         LastCamouflaged = DateTime.UtcNow;
         DefaultOutfitAll();
+        DoUndo.CamouflagerEnabled = false;
     }
 
     public void HitCamouflage()
@@ -47,7 +49,6 @@ public class Camouflager : Intruder
 
         CallRpc(CustomRPC.Action, ActionsRPC.Camouflage, this);
         TimeRemaining = CustomGameOptions.CamouflageDur;
-        Camouflage();
     }
 
     public override void UpdateHud(HudManager __instance)

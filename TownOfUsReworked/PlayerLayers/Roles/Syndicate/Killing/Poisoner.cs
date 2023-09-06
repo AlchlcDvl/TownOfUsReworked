@@ -11,7 +11,7 @@ public class Poisoner : Syndicate
     public bool Poisoned => TimeRemaining > 0f;
     public CustomMenu PoisonMenu { get; set; }
 
-    public override Color32 Color => ClientGameOptions.CustomSynColors ? Colors.Poisoner : Colors.Syndicate;
+    public override Color Color => ClientGameOptions.CustomSynColors ? Colors.Poisoner : Colors.Syndicate;
     public override string Name => "Poisoner";
     public override LayerEnum Type => LayerEnum.Poisoner;
     public override Func<string> StartText => () => "Delay A Kill To Decieve The <color=#8CFFFFFF>Crew</color>";
@@ -23,7 +23,7 @@ public class Poisoner : Syndicate
     public Poisoner(PlayerControl player) : base(player)
     {
         PoisonedPlayer = null;
-        RoleAlignment = RoleAlignment.SyndicateKill;
+        Alignment = Alignment.SyndicateKill;
         PoisonMenu = new(Player, Click, Exception1);
         PoisonButton = new(this, "Poison", AbilityTypes.Direct, "ActionSecondary", HitPoison, Exception1);
         GlobalPoisonButton = new(this, "GlobalPoison", AbilityTypes.Effect, "ActionSecondary", HitGlobalPoison);
@@ -34,13 +34,13 @@ public class Poisoner : Syndicate
         Enabled = true;
         TimeRemaining -= Time.deltaTime;
 
-        if (Meeting || PoisonedPlayer.Data.IsDead || PoisonedPlayer.Data.Disconnected || IsDead)
+        if (Meeting || PoisonedPlayer.HasDied() || IsDead)
             TimeRemaining = 0f;
     }
 
     public void PoisonKill()
     {
-        if (!(PoisonedPlayer.Data.IsDead || PoisonedPlayer.Data.Disconnected || PoisonedPlayer.Is(LayerEnum.Pestilence)))
+        if (!(PoisonedPlayer.HasDied() || PoisonedPlayer.Is(LayerEnum.Pestilence)))
             RpcMurderPlayer(Player, PoisonedPlayer, DeathReasonEnum.Poisoned, false);
 
         PoisonedPlayer = null;
@@ -52,11 +52,11 @@ public class Poisoner : Syndicate
     {
         var interact = Interact(Player, player);
 
-        if (interact[3] && !player.IsProtected() && !player.IsVesting() && !player.IsProtectedMonarch())
+        if (interact.AbilityUsed && !player.IsProtected() && !player.IsVesting() && !player.IsProtectedMonarch())
             PoisonedPlayer = player;
-        else if (interact[0])
+        else if (interact.Reset)
             LastPoisoned = DateTime.UtcNow;
-        else if (interact[1] || player.IsProtected())
+        else if (interact.Protected || player.IsProtected())
             LastPoisoned.AddSeconds(CustomGameOptions.ProtectKCReset);
         else if (player.IsVesting())
             LastPoisoned.AddSeconds(CustomGameOptions.VestKCReset);
@@ -88,18 +88,17 @@ public class Poisoner : Syndicate
 
         var interact = Interact(Player, PoisonButton.TargetPlayer);
 
-        if (interact[3] && !PoisonButton.TargetPlayer.IsProtected() && !PoisonButton.TargetPlayer.IsVesting() && !PoisonButton.TargetPlayer.IsProtectedMonarch())
+        if (interact.AbilityUsed && !PoisonButton.TargetPlayer.IsProtected() && !PoisonButton.TargetPlayer.IsVesting() && !PoisonButton.TargetPlayer.IsProtectedMonarch())
         {
             PoisonedPlayer = PoisonButton.TargetPlayer;
             CallRpc(CustomRPC.Action, ActionsRPC.Poison, this, PoisonedPlayer);
             TimeRemaining = CustomGameOptions.PoisonDur;
-            Poison();
         }
-        else if (interact[1] || PoisonButton.TargetPlayer.IsProtected())
+        else if (interact.Protected || PoisonButton.TargetPlayer.IsProtected())
             LastPoisoned.AddSeconds(CustomGameOptions.ProtectKCReset);
-        else if (interact[0])
+        else if (interact.Reset)
             LastPoisoned = DateTime.UtcNow;
-        else if (interact[2])
+        else if (interact.Vested)
             LastPoisoned.AddSeconds(CustomGameOptions.VestKCReset);
     }
 
@@ -114,7 +113,6 @@ public class Poisoner : Syndicate
         {
             CallRpc(CustomRPC.Action, ActionsRPC.Poison, this, PoisonedPlayer);
             TimeRemaining = CustomGameOptions.PoisonDur;
-            Poison();
         }
     }
 }

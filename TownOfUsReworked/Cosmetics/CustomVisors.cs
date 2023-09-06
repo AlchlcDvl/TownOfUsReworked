@@ -254,7 +254,7 @@ public static class CustomVisors
                 return 500;
             });
 
-            keys.ToList().ForEach(key => YOffset = CreateVisorPackage(packages[key], key, YOffset, __instance));
+            keys.ForEach(key => YOffset = CreateVisorPackage(packages[key], key, YOffset, __instance));
             __instance.scroller.ContentYBounds.max = -(YOffset + 4.1f);
             return false;
         }

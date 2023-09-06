@@ -9,7 +9,7 @@ public class Medium : Crew
     public List<byte> MediatedPlayers { get; set; }
     public float Timer => ButtonUtils.Timer(Player, LastMediated, CustomGameOptions.MediateCd);
 
-    public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Medium : Colors.Crew;
+    public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Medium : Colors.Crew;
     public override string Name => "Medium";
     public override LayerEnum Type => LayerEnum.Medium;
     public override Func<string> StartText => () => "<size=80%>Spooky Scary Ghosties Send Shivers Down Your Spine</size>";
@@ -21,7 +21,7 @@ public class Medium : Crew
     {
         MediatedPlayers = new();
         MediateArrows = new();
-        RoleAlignment = RoleAlignment.CrewInvest;
+        Alignment = Alignment.CrewInvest;
         MediateButton = new(this, "Mediate", AbilityTypes.Effect, "ActionSecondary", Mediate);
         //SeanceButton = new(this, "Seance", AbilityTypes.Effect, "ActionSecondary", Seance, false, true);
     }
@@ -83,7 +83,7 @@ public class Medium : Crew
                 {
                     MediateArrows.Add(dead.PlayerId, new(Player, Color));
                     MediatedPlayers.Add(dead.PlayerId);
-                    CallRpc(CustomRPC.Action, ActionsRPC.Mediate, this, dead.PlayerId);
+                    CallRpc(CustomRPC.Action, ActionsRPC.Mediate, PlayerId, dead.PlayerId);
 
                     if (CustomGameOptions.DeadRevealed != DeadRevealed.All)
                         break;

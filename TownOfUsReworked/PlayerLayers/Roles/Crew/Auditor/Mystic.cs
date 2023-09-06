@@ -3,11 +3,11 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Mystic : Crew
 {
     public DateTime LastRevealed { get; set; }
-    public static bool ConvertedDead => !CustomPlayer.AllPlayers.Any(x => !x.Data.IsDead && !x.Data.Disconnected && !x.Is(SubFaction.None));
+    public static bool ConvertedDead => !CustomPlayer.AllPlayers.Any(x => !x.HasDied() && !x.Is(SubFaction.None));
     public CustomButton RevealButton { get; set; }
     public float Timer => ButtonUtils.Timer(Player, LastRevealed, CustomGameOptions.MysticRevealCd);
 
-    public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Mystic : Colors.Crew;
+    public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Mystic : Colors.Crew;
     public override string Name => "Mystic";
     public override LayerEnum Type => LayerEnum.Mystic;
     public override Func<string> StartText => () => "You Know When Converts Happen";
@@ -17,7 +17,7 @@ public class Mystic : Crew
 
     public Mystic(PlayerControl player) : base(player)
     {
-        RoleAlignment = RoleAlignment.CrewAudit;
+        Alignment = Alignment.CrewAudit;
         RevealButton = new(this, "MysticReveal", AbilityTypes.Direct, "ActionSecondary", Reveal, Exception);
     }
 
@@ -49,15 +49,15 @@ public class Mystic : Crew
 
         var interact = Interact(Player, RevealButton.TargetPlayer);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
         {
-            Flash((!RevealButton.TargetPlayer.Is(SubFaction) && SubFaction != SubFaction.None && !RevealButton.TargetPlayer.Is(RoleAlignment.NeutralNeo)) ||
+            Flash((!RevealButton.TargetPlayer.Is(SubFaction) && SubFaction != SubFaction.None && !RevealButton.TargetPlayer.Is(Alignment.NeutralNeo)) ||
                 RevealButton.TargetPlayer.IsFramed() ? UColor.red : UColor.green);
         }
 
-        if (interact[0])
+        if (interact.Reset)
             LastRevealed = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastRevealed.AddSeconds(CustomGameOptions.ProtectKCReset);
     }
 

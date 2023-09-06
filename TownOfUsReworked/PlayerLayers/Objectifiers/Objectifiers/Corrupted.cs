@@ -6,7 +6,7 @@ public class Corrupted : Objectifier
     public CustomButton CorruptButton { get; set; }
     public float Timer => ButtonUtils.Timer(Player, LastCorrupted, CustomGameOptions.CorruptCd);
 
-    public override Color32 Color => ClientGameOptions.CustomObjColors ? Colors.Corrupted : Colors.Objectifier;
+    public override Color Color => ClientGameOptions.CustomObjColors ? Colors.Corrupted : Colors.Objectifier;
     public override string Name => "Corrupted";
     public override string Symbol => "δ";
     public override LayerEnum Type => LayerEnum.Corrupted;
@@ -15,7 +15,7 @@ public class Corrupted : Objectifier
     public Corrupted(PlayerControl player) : base(player)
     {
         CorruptButton = new(this, "Corrupt", AbilityTypes.Direct, "Quarternary", Corrupt);
-        Role.GetRole(Player).RoleAlignment = Role.GetRole(Player).RoleAlignment.GetNewAlignment(Faction.Neutral);
+        Role.GetRole(Player).Alignment = Role.GetRole(Player).Alignment.GetNewAlignment(Faction.Neutral);
     }
 
     public void Corrupt()
@@ -25,11 +25,11 @@ public class Corrupted : Objectifier
 
         var interact = Interact(Player, CorruptButton.TargetPlayer, true);
 
-        if (interact[3] || interact[0])
+        if (interact.AbilityUsed || interact.Reset)
             LastCorrupted = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastCorrupted.AddSeconds(CustomGameOptions.ProtectKCReset);
-        else if (interact[2])
+        else if (interact.Vested)
             LastCorrupted.AddSeconds(CustomGameOptions.VestKCReset);
     }
 

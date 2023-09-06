@@ -12,7 +12,7 @@ public class Coroner : Crew
     public float AutopsyTimer => ButtonUtils.Timer(Player, LastAutopsied, CustomGameOptions.AutopsyCd);
     public float CompareTimer => ButtonUtils.Timer(Player, LastCompared, CustomGameOptions.CompareCd);
 
-    public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Coroner : Colors.Crew;
+    public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Coroner : Colors.Crew;
     public override string Name => "Coroner";
     public override LayerEnum Type => LayerEnum.Coroner;
     public override Func<string> StartText => () => "Examine The Dead For Information";
@@ -23,7 +23,7 @@ public class Coroner : Crew
 
     public Coroner(PlayerControl player) : base(player)
     {
-        RoleAlignment = RoleAlignment.CrewInvest;
+        Alignment = Alignment.CrewInvest;
         BodyArrows = new();
         Reported = new();
         ReferenceBodies = new();
@@ -78,8 +78,7 @@ public class Coroner : Crew
             return;
 
         var playerId = AutopsyButton.TargetBody.ParentId;
-        var player = PlayerById(playerId);
-        Spread(Player, player);
+        Spread(Player, PlayerById(playerId));
         ReferenceBodies.AddRange(KilledPlayers.Where(x => x.PlayerId == playerId));
         LastAutopsied = DateTime.UtcNow;
     }
@@ -91,12 +90,12 @@ public class Coroner : Crew
 
         var interact = Interact(Player, CompareButton.TargetPlayer);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
             Flash(ReferenceBodies.Any(x => CompareButton.TargetPlayer.PlayerId == x.KillerId) ? UColor.red : UColor.green);
 
-        if (interact[0])
+        if (interact.Reset)
             LastCompared = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastCompared.AddSeconds(CustomGameOptions.ProtectKCReset);
     }
 

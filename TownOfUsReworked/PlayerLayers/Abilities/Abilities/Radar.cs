@@ -4,7 +4,7 @@ public class Radar : Ability
 {
     public CustomArrow RadarArrow { get; set; }
 
-    public override Color32 Color => ClientGameOptions.CustomAbColors ? Colors.Radar : Colors.Ability;
+    public override Color Color => ClientGameOptions.CustomAbColors ? Colors.Radar : Colors.Ability;
     public override string Name => "Radar";
     public override LayerEnum Type => LayerEnum.Radar;
     public override Func<string> Description => () => "- You are aware of those close to you";

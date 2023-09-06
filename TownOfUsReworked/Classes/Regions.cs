@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 
 namespace TownOfUsReworked.Classes;
 
+[HarmonyPatch]
 public static class ExtraRegions
 {
     private static ReadOnlyDictionary<string, IRegionInfo> ParsedRegions;
@@ -65,7 +66,7 @@ public static class ExtraRegions
             var parsed = ParseRegions(TownOfUsReworked.Regions.Value);
             AddRegions(parsed);
             var regionsDict = new Dictionary<string, IRegionInfo>();
-            parsed.ToList().ForEach(region => regionsDict[region.Name] = region);
+            parsed.ForEach(region => regionsDict[region.Name] = region);
             ParsedRegions = new(regionsDict);
         }
     }

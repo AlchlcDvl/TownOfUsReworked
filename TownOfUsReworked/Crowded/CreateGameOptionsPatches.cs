@@ -20,7 +20,7 @@ public static class CreateOptionsPicker_Awake
             {
                 var playerButton = __instance.MaxPlayerButtons[i];
                 var tmp = playerButton.GetComponentInChildren<TextMeshPro>();
-                var newValue = Mathf.Max(byte.Parse(tmp.text) - 10, byte.Parse(playerButton.name) - 2);
+                var newValue = Mathf.Max(byte.Parse(tmp.text) - 10, byte.Parse(playerButton.name) - 3);
                 tmp.text = newValue.ToString();
             }
 
@@ -58,16 +58,13 @@ public static class CreateOptionsPicker_Awake
             playerButton.OnClick.AddListener((Action)(() =>
             {
                 var maxPlayers = byte.Parse(text.text);
-                var maxImp = Mathf.Min(__instance.GetTargetOptions().NumImpostors, maxPlayers / 2);
-                __instance.GetTargetOptions().SetInt(Int32OptionNames.NumImpostors, maxImp);
-                __instance.ImpostorButtons[1].TextMesh.text = maxImp.ToString();
                 __instance.SetMaxPlayersButtons(maxPlayers);
             }));
         }
 
         __instance.MaxPlayerButtons.ForEach(x => x.enabled = x.GetComponentInChildren<TextMeshPro>().text == __instance.GetTargetOptions().MaxPlayers.ToString());
-        __instance.ImpostorButtons.ToList().ForEach(x => x.gameObject.Destroy());
-        __instance.ImpostorText.gameObject.Destroy();
+        __instance.ImpostorButtons.ForEach(x => x.gameObject.SetActive(false));
+        __instance.ImpostorText.gameObject.SetActive(false);
     }
 }
 
@@ -77,18 +74,21 @@ public static class MapPickerPatch
     public static void Postfix(ref int mapId) => Generate.Map.Set(mapId);
 }
 
+[HarmonyPatch(typeof(CreateOptionsPicker), nameof(CreateOptionsPicker.SetMaxPlayersButtons))]
+public static class LobbySizePatch
+{
+    public static void Postfix(ref int maxPlayers) => Generate.LobbySize.Set(maxPlayers);
+}
+
 [HarmonyPatch(typeof(CreateOptionsPicker), nameof(CreateOptionsPicker.UpdateMaxPlayersButtons))]
 public static class CreateOptionsPicker_UpdateMaxPlayersButtons
 {
     public static bool Prefix(CreateOptionsPicker __instance, [HarmonyArgument(0)] IGameOptions opts)
     {
-        if (__instance.CrewArea)
-            __instance.CrewArea.SetCrewSize(opts.MaxPlayers, opts.NumImpostors);
-
-        var selectedAsString = opts.MaxPlayers.ToString();
+        __instance.CrewArea?.SetCrewSize(opts.MaxPlayers, opts.NumImpostors);
 
         for (var i = 1; i < __instance.MaxPlayerButtons.Count - 1; i++)
-            __instance.MaxPlayerButtons[i].enabled = __instance.MaxPlayerButtons[i].GetComponentInChildren<TextMeshPro>().text == selectedAsString;
+            __instance.MaxPlayerButtons[i].enabled = __instance.MaxPlayerButtons[i].GetComponentInChildren<TextMeshPro>().text == opts.MaxPlayers.ToString();
 
         return false;
     }

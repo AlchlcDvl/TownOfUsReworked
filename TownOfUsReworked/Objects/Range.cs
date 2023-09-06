@@ -5,7 +5,6 @@ public class Range
     public static readonly List<Range> AllItems = new();
     private readonly GameObject Item;
     public Transform Transform => Item?.transform;
-    private static int Count;
     public readonly int Number;
     private readonly TextMeshPro NumberText;
     public readonly PlayerControl Owner;
@@ -23,8 +22,7 @@ public class Range
         rend.sprite = GetSprite("Range");
         rend.color = color;
         Item.SetActive(true);
-        Count++;
-        Number = Count;
+        Number = AllItems.Count + 1;
         NumberText = UObject.Instantiate(HUD.KillButton.cooldownTimerText, Transform);
         NumberText.text = $"<size=300%>{Number}</size>";
         NumberText.fontStyle = FontStyles.Bold;
@@ -65,6 +63,5 @@ public class Range
     {
         AllItems.ForEach(p => p.Destroy(false));
         AllItems.Clear();
-        Count = 0;
     }
 }

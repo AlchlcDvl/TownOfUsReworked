@@ -132,6 +132,7 @@ Quick warning: This mod adds a whole LOT of stuff, and is currently not very beg
 
 | Among Us | Mod Version | Link |
 |----------|-------------|------|
+| 2023.7.12 (s & e) | v0.5.1 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.5.1/Reworked.zip) |
 | 2023.7.12 (s & e) | v0.5.0 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.5.0/Reworked.zip) |
 
 <details>
@@ -186,8 +187,56 @@ Quick warning: This mod adds a whole LOT of stuff, and is currently not very beg
 <details>
 <summary>Changelog</summary>
 <details>
-<summary>v0.4.6</summary>
-<ul> <li></li> </ul>
+<summary>v0.5.0</summary>
+<ul> <li>Update: Updated BepInEx to 6.0.0-be.673</li> </ul>
+<ul> <li>Addition: Ability delays animate the button a little differently</li> </ul>
+<ul> <li>Improvement: Improved how custom options and buttons are visually handled</li> </ul>
+<ul> <li>Improvement: Improved how layers are sorted for even more guaranteed randomness</li> </ul>
+<ul> <li>Optimisation: The code was optimised even more</li> </ul>
+<ul> <li>Critical Fix: Fixed games sometimes not starting properly</li> </ul>
+<ul> <li>Role Fix: Fixed Medium and Retributionist-Medium mediates behaving weirdly</li> </ul>
+</details>
+<details>
+<summary>v0.5.0</summary>
+<ul> <li>Mega Addition: Translations (WIP)</li> </ul>
+<ul> <li>Addition: Added free ban slots for Crewmate, Impostor and Anarchist for the Role List game mode</li> </ul>
+<ul> <li>Addition: Phantom, Ghoul, Banshee and Revealer spawns can now be toggled on for the Role List game mode</li> </ul>
+<ul> <li>Addition: Added a game filter tag for modded games on the official servers</li> </ul>
+<ul> <li>Overhaul: Overhauled how custom options work</li> </ul>
+<ul> <li>Nerf: Retributionists using a Vigilante's ability will also decrease their ability usage upon killing someone</li> </ul>
+<ul> <li>Nerf: Reviving a winning Troll now disables their win (meaning they have to be killed again to win :trol)</li> </ul>
+<ul> <li>Change: Crewmate, Anarchist and Impostor are now included in the Random Faction slot</li> </ul>
+<ul> <li>Change: Pestilence/Plaguebearer win screen has been changed (to make way for future roles of similar types)</li> </ul>
+<ul> <li>Change: Dying and getting revived now resets your status as a doused/infected/spelled player</li> </ul>
+<ul> <li>Change: Warper no longer spawns on Submerged or on Level Impostor maps (mainly because it's hard to set precise locations for post-CD warping there)</li> </ul>
+<ul> <li>Improvement: Improved how the meeting button appears to those who cannot call a meeting</li> </ul>
+<ul> <li>Improvement: Pressing A, D or the Right/Left arrows will now cycle through the cameras on Polus</li> </ul>
+<ul> <li>Improvement: Improved how chat commands are handled (and are even dynamic now!)</li> </ul>
+<ul> <li>Improvement: Task outlines now match the color of your role</li> </ul>
+<ul> <li>Improvement: Improved how the auto updater works (and removed Submerged auto updater for now)</li> </ul>
+<ul> <li>Improvement: Added an aborter for if the mod detects any other mods that are not Submerged or LevelImpostor (mainly to avoid having games breaking/corrupting because of conflicting mods)</li> </ul>
+<ul> <li>Improvement: Added some code here and there to improve performance</li> </ul>
+<ul> <li>Critical Fix: Fixed games not ending when everyone died</li> </ul>
+<ul> <li>Critical Fix: Fixed the issue where the game would end in no one's victory when 0 crew spawned and a meeting is called</li> </ul>
+<ul> <li>Vanilla Fix: The colorblind text now updates according properly regarding seeing them through walls</li> </ul>
+<ul> <li>General Fix: Corrected some parts of the mod</li> </ul>
+<ul> <li>Bug Fix: Fixed even more log spam</li> </ul>
+<ul> <li>Bug Fix: Fixed failed conversions sometimes appearing to be converted to non-host players</li> </ul>
+<ul> <li>Bug Fix: Fixed some issues with other win conditions</li> </ul>
+<ul> <li>Bug Fix: Fixed chat messages not color coding properly when needed</li> </ul>
+<ul> <li>Bug Fix: Fixed the chaos preset breaking settings if you don't have LevelImposter or Submerged</li> </ul>
+<ul> <li>Bug Fix: Fixed the issue where the scrollbar would freak out</li> </ul>
+<ul> <li>Bug Fix: Fixed the strange desync with rpcs and strings (like issues with whispering and guesses)</li> </ul>
+<ul> <li>Bug Fix: Fixed shapeshifts not working (for like the 10th time)</li> </ul>
+<ul> <li>Visual Fix: Fixed the highlight staying permanent for some reason on the role lists menu button in the game settings menu</li> </ul>
+<ul> <li>Visual Fix: Fixed the mod logo being visible when the credits screen is active</li> </ul>
+<ul> <li>Visual Fix: Fixed Drunkard appearing to have 2 colors in the wiki entries</li> </ul>
+<ul> <li>Visual Fix: Fixed the Sabotage and Vent buttons not disappearing when the minimap is opened</li> </ul>
+<ul> <li>Role Fix: Fixed Amnesiacs and Thieves from not winning or ending the game when they change roles</li> </ul>
+<ul> <li>Role Fix: Fixed Rebel-Crusaders not actually being able to crusade</li> </ul>
+<ul> <li>Role Fix: Fixed Spellslinger somehow winning the game beyond death without doing anything</li> </ul>
+<ul> <li>Role Fix: Fixed Plaguebearers being unable to infect the host by any way (and thus being unable to transform into Pestilence)</li> </ul>
+<ul> <li>Potential Fix: Attempted fix for the occasional "Fatal Error In GC" error</li> </ul>
 </details>
 <details>
 <summary>v0.4.5</summary>
@@ -1192,7 +1241,6 @@ The Chameleon can go invisible to stalk players and see what they do when no one
 
 ## Coroner
 ### Alignment: Crew (Investigative)
-### Origin: Town Of Us Reworked, formed from the fusion of Town Of Us Mystic and the body reports from Medic and Detective 
 
 The Coroner gets an alert when someone dies and briefly gets an arrow pointing in the direction of the body. They can autopsy bodies to get some information. They can then compare that information with players to see if they killed the body or not. The Coroner also gets a body report from the body they reported. The report will include the cause and time of death, player's faction/role, the killer's faction/role and (according to the settings) the killer's name.
 
@@ -1245,8 +1293,8 @@ The Dictator has no active ability aside from revealing themselves as the Dictat
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Dictator Cannot Reveal Round One | Self explanatory | Toggle | True |
-| Dictator Can Dictate After Voting | Self explanatory | Toggle | True |
+| Dictator Cannot Reveal Round One | Self descriptive | Toggle | True |
+| Dictator Can Dictate After Voting | Self descriptive | Toggle | True |
 | Dictator Can Button | Whether the Dictator can call a meeting | Toggle | True |
 
 ![Dictator](./Images/Dictator.png)
@@ -1306,7 +1354,7 @@ The Mayor has no active ability aside from being able to reveal themselves as th
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Mayor Votes Count As | The additional number of votes that are added to the Mayor's vote | Number | 2 |
-| Mayor Cannot Reveal Round One | Self explanatory | Toggle | True |
+| Mayor Cannot Reveal Round One | Self descriptive | Toggle | True |
 | Mayor Can Button | Whether the Mayor can call a meeting | Toggle | True |
 
 ![Mayor](./Images/Mayor.png)
@@ -1355,7 +1403,7 @@ The Monarch can appoint players as knights. When the next meeting is called, all
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Knighting Cooldown | The cooldown on the Monarch's Knighting button | Time | 10s |
-| Monarch Cannot Knight Round One | Self explanatory | Toggle | True |
+| Monarch Cannot Knight Round One | Self descriptive | Toggle | True |
 | Knighted Count | The number of times the Monarch can knight players | Number | 1 |
 | Knighted Votes Count As | The additional number of votes that are added to a knighted player's vote | Number | 1 |
 | Monarch Can Button | Whether the Monarch can call a meeting | Toggle | True |
@@ -1407,7 +1455,7 @@ The Retributionist can mimic dead crewmates. During meetings, the Retributionist
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Retributionist Can Mimic After Voting | Self explanatory | Toggle | True |
+| Retributionist Can Mimic After Voting | Self descriptive | Toggle | True |
 | Total Limit On Limited Abilities | How many times can the Retributionist use the abilities of roles with limited uses on their abilities | Number | 5 |
 
 ![Retributionist](./Images/Retributionist.png)
@@ -2263,7 +2311,7 @@ The Janitor can drag, drop and clean up bodies. Both their Kill and Clean abilit
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Clean Cooldown | The cooldown on the Janitor's Clean button | Time | 25s |
-| Janitor Has Lower Clean Cooldown When Solo | Self explanatory | Toggle | False |
+| Janitor Has Lower Clean Cooldown When Solo | Self descriptive | Toggle | False |
 | Kill And Clean Cooldowns Are Linked | Decides whether the Janitor's cooldowns are linked so that killing resets cleaning and vice versa | Toggle | False |
 | Drag Cooldown | The cooldown on the Janitor Drag ability | Time | 25s |
 | Drag Speed | How fast will the Janitor become when dragging a body | Factor | 0.5x |
@@ -2832,7 +2880,7 @@ The Drunk player's controls are inverted.
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Drunk Controls Swap Over Time | Self explanatory | Toggle | True |
+| Drunk Controls Swap Over Time | Self descriptive | Toggle | True |
 | Swap Interval | How much time must pass before the controls swap | Time | 15s |
 
 ## Dwarf

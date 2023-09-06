@@ -6,7 +6,7 @@ public class Mafioso : Intruder
     public Godfather Godfather { get; set; }
     public bool CanPromote => (Godfather.IsDead || Godfather.Disconnected) && !IsDead;
 
-    public override Color32 Color => ClientGameOptions.CustomIntColors ? Colors.Mafioso : Colors.Intruder;
+    public override Color Color => ClientGameOptions.CustomIntColors ? Colors.Mafioso : Colors.Intruder;
     public override string Name => "Mafioso";
     public override LayerEnum Type => LayerEnum.Mafioso;
     public override Func<string> StartText => () => "Succeed The <color=#404C08FF>Godfather</color>";
@@ -14,7 +14,7 @@ public class Mafioso : Intruder
         $"abilities of your former role\n{CommonAbilities}";
     public override InspectorResults InspectorResults => InspectorResults.IsCold;
 
-    public Mafioso(PlayerControl player) : base(player) => RoleAlignment = RoleAlignment.IntruderUtil;
+    public Mafioso(PlayerControl player) : base(player) => Alignment = Alignment.IntruderUtil;
 
     public void TurnGodfather()
     {
@@ -22,7 +22,7 @@ public class Mafioso : Intruder
         {
             FormerRole = FormerRole,
             RoleBlockImmune = FormerRole.RoleBlockImmune,
-            RoleAlignment = FormerRole.RoleAlignment
+            Alignment = FormerRole.Alignment
         };
 
         newRole.RoleUpdate(this);

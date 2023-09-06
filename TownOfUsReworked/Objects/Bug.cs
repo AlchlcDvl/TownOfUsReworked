@@ -4,12 +4,13 @@ public class Bug : Range
 {
     private readonly Dictionary<byte, float> Players = new();
     private List<PlayerControl> Closest { get; set; }
-    public readonly Dictionary<PlayerControl, LayerEnum> Results;
+    private readonly Dictionary<PlayerControl, LayerEnum> Results = new();
 
     public Bug(PlayerControl owner) : base(owner, Colors.Operative, CustomGameOptions.BugRange, "Bug")
     {
         Results = new();
         Closest = new();
+        Players = new();
         Coroutines.Start(Timer());
     }
 
@@ -68,6 +69,7 @@ public class Bug : Range
             result = $"Bug {Number}: {result}";
 
         Results.Clear();
+        Players.Clear();
         return result;
     }
 

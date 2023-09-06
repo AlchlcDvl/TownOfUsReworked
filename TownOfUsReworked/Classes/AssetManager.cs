@@ -66,7 +66,7 @@ public static class AssetManager
         } catch {}
     }
 
-    public static void StopAll() => SoundEffects.Keys.ToList().ForEach(Stop);
+    public static void StopAll() => SoundEffects.Keys.ForEach(Stop);
 
     public static Texture2D LoadDiskTexture(string path)
     {

@@ -2,7 +2,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public class Neutral : Role
 {
-    public override Color32 Color => Colors.Neutral;
+    public override Color Color => Colors.Neutral;
     public override Faction BaseFaction => Faction.Neutral;
 
     protected Neutral(PlayerControl player) : base(player)

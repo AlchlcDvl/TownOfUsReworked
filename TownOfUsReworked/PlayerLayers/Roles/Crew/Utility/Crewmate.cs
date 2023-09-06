@@ -7,5 +7,5 @@ public class Crewmate : Crew
     public override Func<string> StartText => () => "Do Your Tasks";
     public override InspectorResults InspectorResults => InspectorResults.IsBasic;
 
-    public Crewmate(PlayerControl player) : base(player) => RoleAlignment = RoleAlignment.CrewUtil;
+    public Crewmate(PlayerControl player) : base(player) => Alignment = Alignment.CrewUtil;
 }

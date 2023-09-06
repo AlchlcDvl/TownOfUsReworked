@@ -7,7 +7,7 @@ public class Detective : Crew
     public float Timer => ButtonUtils.Timer(Player, LastExamined, CustomGameOptions.ExamineCd);
     private static float _time;
 
-    public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Detective : Colors.Crew;
+    public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Detective : Colors.Crew;
     public override string Name => "Detective";
     public override LayerEnum Type => LayerEnum.Detective;
     public override Func<string> StartText => () => "Examine Players For <color=#AA0000FF>Blood</color>";
@@ -17,7 +17,7 @@ public class Detective : Crew
 
     public Detective(PlayerControl player) : base(player)
     {
-        RoleAlignment = RoleAlignment.CrewInvest;
+        Alignment = Alignment.CrewInvest;
         ExamineButton = new(this, "Examine", AbilityTypes.Direct, "ActionSecondary", Examine);
     }
 
@@ -44,15 +44,15 @@ public class Detective : Crew
 
         var interact = Interact(Player, ExamineButton.TargetPlayer);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
         {
             Flash(ExamineButton.TargetPlayer.IsFramed() || KilledPlayers.Any(x => x.KillerId == ExamineButton.TargetPlayer.PlayerId && (DateTime.UtcNow - x.KillTime).TotalSeconds <=
                 CustomGameOptions.RecentKill) ? UColor.red : UColor.green);
         }
 
-        if (interact[0])
+        if (interact.Reset)
             LastExamined = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastExamined.AddSeconds(CustomGameOptions.ProtectKCReset);
     }
 
@@ -71,7 +71,7 @@ public class Detective : Crew
 
                 foreach (var player in CustomPlayer.AllPlayers)
                 {
-                    if (player.Data.IsDead || player.Data.Disconnected || player == CustomPlayer.Local)
+                    if (player.HasDied() || player == CustomPlayer.Local)
                         continue;
 
                     if (!AllPrints.Any(print => Vector3.Distance(print.Position, Position(player)) < 0.5f && print.Color.a > 0.5 && print.PlayerId == player.PlayerId))

@@ -10,7 +10,7 @@ public class Cannibal : Neutral
     public bool EatWin => EatNeed == 0;
     public bool CanEat => !Eaten || (Eaten && !CustomGameOptions.AvoidNeutralKingmakers);
 
-    public override Color32 Color => ClientGameOptions.CustomNeutColors ? Colors.Cannibal : Colors.Neutral;
+    public override Color Color => ClientGameOptions.CustomNeutColors ? Colors.Cannibal : Colors.Neutral;
     public override string Name => "Cannibal";
     public override LayerEnum Type => LayerEnum.Cannibal;
     public override Func<string> StartText => () => "Eat The Bodies Of The Dead";
@@ -21,7 +21,7 @@ public class Cannibal : Neutral
 
     public Cannibal(PlayerControl player) : base(player)
     {
-        RoleAlignment = RoleAlignment.NeutralEvil;
+        Alignment = Alignment.NeutralEvil;
         Objectives = () => Eaten ? "- You are satiated" : $"- Eat {EatNeed} bod{(EatNeed == 1 ? "y" : "ies")}";
         BodyArrows = new();
         EatNeed = CustomGameOptions.BodiesNeeded >= CustomPlayer.AllPlayers.Count / 2 ? CustomPlayer.AllPlayers.Count / 2 : CustomGameOptions.BodiesNeeded;

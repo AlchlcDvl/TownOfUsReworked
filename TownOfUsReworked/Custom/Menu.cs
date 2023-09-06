@@ -22,7 +22,7 @@ public class CustomMenu
 
     public void Open()
     {
-        Targets = CustomPlayer.AllPlayers.Where(x => !Exception(x) && !x.IsPostmortal() && !x.Data.IsDead).ToList();
+        Targets = CustomPlayer.AllPlayers.Where(x => !Exception(x) && !x.IsPostmortal() && !x.HasDied()).ToList();
 
         if (Menu == null)
         {
@@ -54,5 +54,11 @@ public class CustomMenu
     {
         Menu?.Destroy();
         Menu = null;
+    }
+
+    public static void DestroyAll()
+    {
+        AllMenus.ForEach(x => x.Destroy());
+        AllMenus.Clear();
     }
 }

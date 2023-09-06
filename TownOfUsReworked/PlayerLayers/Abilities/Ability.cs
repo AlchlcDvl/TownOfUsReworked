@@ -5,7 +5,7 @@ public class Ability : PlayerLayer
     public static readonly List<Ability> AllAbilities = new();
     public static Ability LocalAbility => GetAbility(CustomPlayer.Local);
 
-    public override Color32 Color => Colors.Ability;
+    public override Color Color => Colors.Ability;
     public override PlayerLayerEnum LayerType => PlayerLayerEnum.Ability;
 
     public virtual bool Hidden => false;

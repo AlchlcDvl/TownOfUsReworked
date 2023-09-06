@@ -15,7 +15,7 @@ public class Disguiser : Intruder
     public bool Disguised => TimeRemaining > 0f;
     public bool Enabled { get; set; }
 
-    public override Color32 Color => ClientGameOptions.CustomIntColors ? Colors.Disguiser : Colors.Intruder;
+    public override Color Color => ClientGameOptions.CustomIntColors ? Colors.Disguiser : Colors.Intruder;
     public override string Name => "Disguiser";
     public override LayerEnum Type => LayerEnum.Disguiser;
     public override Func<string> StartText => () => "Disguise The <color=#8CFFFFFF>Crew</color> To Frame Them";
@@ -26,7 +26,7 @@ public class Disguiser : Intruder
 
     public Disguiser(PlayerControl player) : base(player)
     {
-        RoleAlignment = RoleAlignment.IntruderDecep;
+        Alignment = Alignment.IntruderDecep;
         MeasuredPlayer = null;
         DisguiseButton = new(this, "Disguise", AbilityTypes.Direct, "Secondary", HitDisguise, Exception1);
         MeasureButton = new(this, "Measure", AbilityTypes.Direct, "Tertiary", Measure, Exception2);
@@ -41,15 +41,16 @@ public class Disguiser : Intruder
         Morph(DisguisedPlayer, CopiedPlayer);
         Enabled = true;
 
-        if (IsDead || DisguisedPlayer.Data.IsDead || DisguisedPlayer.Data.Disconnected || Meeting)
+        if (IsDead || DisguisedPlayer.HasDied() || Meeting)
             TimeRemaining = 0f;
     }
 
     public void Delay()
     {
+        Enabled = true;
         TimeRemaining2 -= Time.deltaTime;
 
-        if (IsDead || DisguisedPlayer.Data.IsDead || DisguisedPlayer.Data.Disconnected)
+        if (IsDead || DisguisedPlayer.HasDied())
             TimeRemaining2 = 0f;
     }
 
@@ -58,6 +59,8 @@ public class Disguiser : Intruder
         Enabled = false;
         DefaultOutfit(DisguisedPlayer);
         LastDisguised = DateTime.UtcNow;
+        DisguisedPlayer = null;
+        CopiedPlayer = null;
 
         if (CustomGameOptions.DisgCooldownsLinked)
             LastMeasured = DateTime.UtcNow;
@@ -70,26 +73,25 @@ public class Disguiser : Intruder
 
         var interact = Interact(Player, DisguiseButton.TargetPlayer);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
         {
             TimeRemaining = CustomGameOptions.DisguiseDur;
             TimeRemaining2 = CustomGameOptions.DisguiseDelay;
             CopiedPlayer = MeasuredPlayer;
             DisguisedPlayer = DisguiseButton.TargetPlayer;
-            Delay();
             CallRpc(CustomRPC.Action, ActionsRPC.Disguise, this, CopiedPlayer, DisguisedPlayer);
 
             if (CustomGameOptions.DisgCooldownsLinked)
                 LastMeasured = DateTime.UtcNow;
         }
-        else if (interact[0])
+        else if (interact.Reset)
         {
             LastDisguised = DateTime.UtcNow;
 
             if (CustomGameOptions.DisgCooldownsLinked)
                 LastMeasured = DateTime.UtcNow;
         }
-        else if (interact[1])
+        else if (interact.Protected)
         {
             LastDisguised.AddSeconds(CustomGameOptions.ProtectKCReset);
 
@@ -105,17 +107,17 @@ public class Disguiser : Intruder
 
         var interact = Interact(Player, MeasureButton.TargetPlayer);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
             MeasuredPlayer = MeasureButton.TargetPlayer;
 
-        if (interact[0])
+        if (interact.Reset)
         {
             LastMeasured = DateTime.UtcNow;
 
             if (CustomGameOptions.DisgCooldownsLinked)
                 LastDisguised = DateTime.UtcNow;
         }
-        else if (interact[1])
+        else if (interact.Protected)
         {
             LastMeasured.AddSeconds(CustomGameOptions.ProtectKCReset);
 
@@ -132,8 +134,8 @@ public class Disguiser : Intruder
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        DisguiseButton.Update("DISGUISE", DisguiseTimer, CustomGameOptions.DisguiseCd, DelayActive || Disguised, DelayActive ? TimeRemaining2 : TimeRemaining, DelayActive ?
-            CustomGameOptions.DisguiseDelay : CustomGameOptions.DisguiseDur, true, MeasuredPlayer != null);
+        DisguiseButton.Update("DISGUISE", DisguiseTimer, CustomGameOptions.DisguiseCd, Disguised, TimeRemaining, CustomGameOptions.DisguiseDur, DelayActive, TimeRemaining2, true,
+            MeasuredPlayer != null);
         MeasureButton.Update("MEASURE", MeasureTimer, CustomGameOptions.MeasureCd);
     }
 }

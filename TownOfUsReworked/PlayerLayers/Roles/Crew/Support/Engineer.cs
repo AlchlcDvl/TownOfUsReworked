@@ -8,7 +8,7 @@ public class Engineer : Crew
     public DateTime LastFixed { get; set; }
     public float Timer => ButtonUtils.Timer(Player, LastFixed, CustomGameOptions.FixCd);
 
-    public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Engineer : Colors.Crew;
+    public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Engineer : Colors.Crew;
     public override string Name => "Engineer";
     public override LayerEnum Type => LayerEnum.Engineer;
     public override Func<string> StartText => () => "Just Fix It";
@@ -17,7 +17,7 @@ public class Engineer : Crew
 
     public Engineer(PlayerControl player) : base(player)
     {
-        RoleAlignment = RoleAlignment.CrewSupport;
+        Alignment = Alignment.CrewSupport;
         UsesLeft = CustomGameOptions.MaxFixes;
         FixButton = new(this, "Fix", AbilityTypes.Effect, "ActionSecondary", Fix, true);
     }
@@ -50,6 +50,6 @@ public class Engineer : Crew
         var dummyActive = system?.dummy.IsActive;
         var active = system?.specials.Any(s => s.IsActive);
         var condition = active == true && dummyActive == false;
-        FixButton.Update("FIX", Timer, CustomGameOptions.FixCd, UsesLeft, condition && ButtonUsable, ButtonUsable);
+        FixButton.Update("FIX", Timer, CustomGameOptions.FixCd, UsesLeft, condition, ButtonUsable);
     }
 }

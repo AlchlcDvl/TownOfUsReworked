@@ -82,7 +82,7 @@ public static class Outro
         }
         else if (Role.NKWins)
         {
-            var role = Role.AllRoles.Find(x => x.RoleAlignment == RoleAlignment.NeutralKill && x.Winner);
+            var role = Role.AllRoles.Find(x => x.Alignment == Alignment.NeutralKill && x.Winner);
 
             if (role == null)
                 return;
@@ -93,7 +93,7 @@ public static class Outro
         }
         else if (Role.ApocalypseWins)
         {
-            var role = Role.AllRoles.Find(x => x.RoleAlignment is RoleAlignment.NeutralApoc or RoleAlignment.NeutralHarb);
+            var role = Role.AllRoles.Find(x => x.Alignment is Alignment.NeutralApoc or Alignment.NeutralHarb);
 
             if (role == null)
                 return;

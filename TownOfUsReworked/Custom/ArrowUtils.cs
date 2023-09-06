@@ -9,7 +9,7 @@ public static class ArrowUtils
         list.Clear();
     }
 
-    public static void DisableArrows(this PlayerControl player) => CustomArrow.AllArrows.Where(x => x.Owner == player).ToList().ForEach(x => x.Disable());
+    public static void DisableArrows(this PlayerControl player) => CustomArrow.AllArrows.Where(x => x.Owner == player).ForEach(x => x.Disable());
 
-    public static void EnableArrows(this PlayerControl player) => CustomArrow.AllArrows.Where(x => x.Owner == player).ToList().ForEach(x => x.Enable());
+    public static void EnableArrows(this PlayerControl player) => CustomArrow.AllArrows.Where(x => x.Owner == player).ForEach(x => x.Enable());
 }

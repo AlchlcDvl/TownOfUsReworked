@@ -10,7 +10,7 @@ public class Actor : Neutral
     public int Rounds { get; set; }
     public bool TargetFailed => TargetRole == null && Rounds > 0;
 
-    public override Color32 Color => ClientGameOptions.CustomNeutColors ? Colors.Actor : Colors.Neutral;
+    public override Color Color => ClientGameOptions.CustomNeutColors ? Colors.Actor : Colors.Neutral;
     public override string Name => "Actor";
     public override LayerEnum Type => LayerEnum.Actor;
     public override Func<string> StartText => () => "Play Pretend With The Others";
@@ -21,7 +21,7 @@ public class Actor : Neutral
     {
         Objectives = () => Guessed ? "- You have successfully fooled the crew" : (TargetRole == null ? "- Find a set of roles you must pretend to be" : ("- Get guessed as one of your" +
             $" target roles\n- Your target roles belong to the {PretendRoles} role list"));
-        RoleAlignment = RoleAlignment.NeutralEvil;
+        Alignment = Alignment.NeutralEvil;
         PretendButton = new(this, "Pretend", AbilityTypes.Direct, "ActionSecondary", PickRole);
     }
 

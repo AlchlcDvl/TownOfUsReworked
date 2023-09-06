@@ -11,7 +11,7 @@ public class Banshee : Syndicate
     public bool Caught { get; set; }
     public bool Faded { get; set; }
 
-    public override Color32 Color => ClientGameOptions.CustomSynColors ? Colors.Banshee : Colors.Syndicate;
+    public override Color Color => ClientGameOptions.CustomSynColors ? Colors.Banshee : Colors.Syndicate;
     public override string Name => "Banshee";
     public override LayerEnum Type => LayerEnum.Banshee;
     public override Func<string> StartText => () => "AAAAAAAAAAAAAAAAAAAAAAAAA";
@@ -21,7 +21,7 @@ public class Banshee : Syndicate
 
     public Banshee(PlayerControl player) : base(player)
     {
-        RoleAlignment = RoleAlignment.SyndicateUtil;
+        Alignment = Alignment.SyndicateUtil;
         Blocked = new();
         RoleBlockImmune = true; //Not taking chances
         ScreamButton = new(this, "Scream", AbilityTypes.Effect, "ActionSecondary", HitScream);
@@ -29,15 +29,6 @@ public class Banshee : Syndicate
 
     public void Scream()
     {
-        if (!Enabled)
-        {
-            foreach (var player8 in CustomPlayer.AllPlayers)
-            {
-                if (!player8.Data.IsDead && !player8.Data.Disconnected && !player8.Is(Faction.Syndicate))
-                    Blocked.Add(player8.PlayerId);
-            }
-        }
-
         Enabled = true;
         TimeRemaining -= Time.deltaTime;
 
@@ -74,6 +65,9 @@ public class Banshee : Syndicate
 
     public void Fade()
     {
+        if (Disconnected)
+            return;
+
         Faded = true;
         Player.Visible = true;
         var color = new Color(1f, 1f, 1f, 0f);
@@ -105,6 +99,15 @@ public class Banshee : Syndicate
         Player.cosmetics.colorBlindText.color = new(0f, 0f, 0f, 0f);
     }
 
+    public void UnFade()
+    {
+        DefaultOutfit(Player);
+        Player.MyRend().color = UColor.white;
+        Player.gameObject.layer = LayerMask.NameToLayer("Ghost");
+        Faded = false;
+        Player.MyPhysics.ResetMoveState();
+    }
+
     public void HitScream()
     {
         if (Timer != 0f)
@@ -116,7 +119,7 @@ public class Banshee : Syndicate
 
         foreach (var player in CustomPlayer.AllPlayers)
         {
-            if (!player.Data.IsDead && !player.Data.Disconnected && !player.Is(Faction.Syndicate))
+            if (!player.HasDied() && !player.Is(Faction.Syndicate))
                 Blocked.Add(player.PlayerId);
         }
     }

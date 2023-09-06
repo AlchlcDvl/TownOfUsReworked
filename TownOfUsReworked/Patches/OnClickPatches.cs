@@ -17,7 +17,7 @@ public static class PlayerControlOnClick
             if (__instance != CustomPlayer.Local)
                 CustomButton.AllButtons.Find(x => x.Owner.Local && x.TargetPlayer == __instance && x.Clickable && !x.Blocked)?.Clicked();
             else
-                CustomButton.AllButtons.Find(x => x.Owner.Local && x.Clickable && x.Type == AbilityTypes.Effect&& !x.Blocked)?.Clicked();
+                CustomButton.AllButtons.Find(x => x.Owner.Local && x.Clickable && x.Type == AbilityTypes.Effect && !x.Blocked)?.Clicked();
 
             return false;
         }
@@ -38,9 +38,8 @@ public static class PlayerControlOnClick
         }
         else if (__instance.Is(LayerEnum.Revealer))
         {
-            if ((CustomGameOptions.RevealerCanBeClickedBy == RevealerCanBeClickedBy.EvilsOnly && !(CustomPlayer.Local.Is(Faction.Intruder) ||
-                CustomPlayer.Local.Is(Faction.Syndicate))) || (CustomGameOptions.RevealerCanBeClickedBy == RevealerCanBeClickedBy.NonCrew &&
-                CustomPlayer.Local.Is(Faction.Crew)))
+            if ((CustomGameOptions.RevealerCanBeClickedBy == RevealerCanBeClickedBy.EvilsOnly && !(CustomPlayer.Local.Is(Faction.Intruder) || CustomPlayer.Local.Is(Faction.Syndicate))) ||
+                (CustomGameOptions.RevealerCanBeClickedBy == RevealerCanBeClickedBy.NonCrew && CustomPlayer.Local.Is(Faction.Crew)))
             {
                 return false;
             }

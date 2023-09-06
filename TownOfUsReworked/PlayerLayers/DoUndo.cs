@@ -5,8 +5,8 @@ namespace TownOfUsReworked.PlayerLayers;
 public static class DoUndo
 {
     private static bool CommsEnabled;
-    private static bool CamouflagerEnabled;
-    private static bool GodfatherEnabled;
+    public static bool CamouflagerEnabled;
+    public static bool GodfatherEnabled;
     public static bool IsCamoed => CommsEnabled || CamouflagerEnabled || GodfatherEnabled;
 
     public static void Postfix(HudManager __instance)
@@ -93,8 +93,10 @@ public static class DoUndo
         if (Map && LocalBlocked)
             Map.Close();
 
-        CustomArrow.AllArrows.Where(x => x.Owner != CustomPlayer.Local).ToList().ForEach(x => x.Update());
+        CustomArrow.AllArrows.Where(x => x.Owner != CustomPlayer.Local).ForEach(x => x.Update());
         PlayerLayer.LocalLayers.ForEach(x => x?.UpdateHud(__instance));
+        CamouflagerEnabled = false;
+        CommsEnabled = false;
 
         foreach (var role in Role.GetRoles<Chameleon>(LayerEnum.Chameleon))
         {
@@ -116,37 +118,16 @@ public static class DoUndo
         {
             if (alt.IsReviving)
                 alt.Revive();
-            else if (alt.Reviving)
+            else if (alt.Enabled)
                 alt.UnRevive();
         }
 
         foreach (var ret in Role.GetRoles<Retributionist>(LayerEnum.Retributionist))
         {
-            if (ret.RevivedRole == null)
-                continue;
-
             if (ret.OnEffect)
-            {
-                if (ret.IsCham)
-                    ret.Invis();
-                else if (ret.IsVet)
-                    ret.Alert();
-                else if (ret.IsEsc)
-                    ret.Block();
-                else if (ret.IsAlt)
-                    ret.Revive();
-            }
+                ret.Effect();
             else if (ret.Enabled)
-            {
-                if (ret.IsCham)
-                    ret.Uninvis();
-                else if (ret.IsVet)
-                    ret.UnAlert();
-                else if (ret.IsEsc)
-                    ret.UnBlock();
-                else if (ret.IsAlt)
-                    ret.UnRevive();
-            }
+                ret.UnEffect();
         }
 
         foreach (var veteran in Role.GetRoles<Veteran>(LayerEnum.Veteran))
@@ -165,71 +146,22 @@ public static class DoUndo
                 amb.UnAmbush();
         }
 
-        CamouflagerEnabled = false;
-        CommsEnabled = false;
-
         foreach (var camouflager in Role.GetRoles<Camouflager>(LayerEnum.Camouflager))
         {
             if (camouflager.Camouflaged)
-            {
                 camouflager.Camouflage();
-                CamouflagerEnabled = true;
-            }
             else if (camouflager.Enabled)
-            {
                 camouflager.UnCamouflage();
-                CamouflagerEnabled = false;
-            }
         }
 
         foreach (var gf in Role.GetRoles<PromotedGodfather>(LayerEnum.PromotedGodfather))
         {
-            if (gf.FormerRole == null || gf.IsImp)
-                continue;
-
             if (gf.DelayActive)
-            {
-                if (gf.IsEnf)
-                    gf.BombDelay();
-                else if (gf.IsDisg)
-                    gf.DisgDelay();
-            }
+                gf.Delay();
             else if (gf.OnEffect)
-            {
-                if (gf.IsGren)
-                    gf.Flash();
-                else if (gf.IsDisg)
-                    gf.Disguise();
-                else if (gf.IsMorph)
-                    gf.Morph();
-                else if (gf.IsWraith)
-                    gf.Invis();
-                else if (gf.IsCons)
-                    gf.Block();
-                else if (gf.IsCamo)
-                {
-                    gf.Camouflage();
-                    GodfatherEnabled = true;
-                }
-            }
+                gf.Effect();
             else if (gf.Enabled)
-            {
-                if (gf.IsGren)
-                    gf.UnFlash();
-                else if (gf.IsDisg)
-                    gf.UnDisguise();
-                else if (gf.IsMorph)
-                    gf.Unmorph();
-                else if (gf.IsWraith)
-                    gf.Uninvis();
-                else if (gf.IsCons)
-                    gf.UnBlock();
-                else if (gf.IsCamo)
-                {
-                    gf.UnCamouflage();
-                    GodfatherEnabled = false;
-                }
-            }
+                gf.UnEffect();
         }
 
         foreach (var consort in Role.GetRoles<Consort>(LayerEnum.Consort))
@@ -331,40 +263,18 @@ public static class DoUndo
 
         foreach (var phantom in Role.GetRoles<Phantom>(LayerEnum.Phantom))
         {
-            if (phantom.Disconnected)
-                continue;
-
-            var caught = phantom.Caught;
-
-            if (!caught)
+            if (!phantom.Caught)
                 phantom.Fade();
             else if (phantom.Faded)
-            {
-                DefaultOutfit(phantom.Player);
-                phantom.Player.MyRend().color = UColor.white;
-                phantom.Player.gameObject.layer = LayerMask.NameToLayer("Ghost");
-                phantom.Faded = false;
-                phantom.Player.MyPhysics.ResetMoveState();
-            }
+                phantom.UnFade();
         }
 
         foreach (var banshee in Role.GetRoles<Banshee>(LayerEnum.Banshee))
         {
-            if (banshee.Disconnected)
-                continue;
-
-            var caught = banshee.Caught;
-
-            if (!caught)
+            if (!banshee.Caught)
                 banshee.Fade();
             else if (banshee.Faded)
-            {
-                DefaultOutfit(banshee.Player);
-                banshee.Player.MyRend().color = UColor.white;
-                banshee.Player.gameObject.layer = LayerMask.NameToLayer("Ghost");
-                banshee.Faded = false;
-                banshee.Player.MyPhysics.ResetMoveState();
-            }
+                banshee.UnFade();
 
             if (banshee.Screaming)
                 banshee.Scream();
@@ -374,40 +284,18 @@ public static class DoUndo
 
         foreach (var ghoul in Role.GetRoles<Ghoul>(LayerEnum.Ghoul))
         {
-            if (ghoul.Disconnected)
-                continue;
-
-            var caught = ghoul.Caught;
-
-            if (!caught)
+            if (!ghoul.Caught)
                 ghoul.Fade();
             else if (ghoul.Faded)
-            {
-                DefaultOutfit(ghoul.Player);
-                ghoul.Player.MyRend().color = UColor.white;
-                ghoul.Player.gameObject.layer = LayerMask.NameToLayer("Ghost");
-                ghoul.Faded = false;
-                ghoul.Player.MyPhysics.ResetMoveState();
-            }
+                ghoul.UnFade();
         }
 
-        foreach (var haunter in Role.GetRoles<Revealer>(LayerEnum.Revealer))
+        foreach (var revealer in Role.GetRoles<Revealer>(LayerEnum.Revealer))
         {
-            if (haunter.Disconnected)
-                return;
-
-            var caught = haunter.Caught;
-
-            if (!caught)
-                haunter.Fade();
-            else if (haunter.Faded)
-            {
-                DefaultOutfit(haunter.Player);
-                haunter.Player.MyRend().color = UColor.white;
-                haunter.Player.gameObject.layer = LayerMask.NameToLayer("Ghost");
-                haunter.Faded = false;
-                haunter.Player.MyPhysics.ResetMoveState();
-            }
+            if (!revealer.Caught)
+                revealer.Fade();
+            else if (revealer.Faded)
+                revealer.UnFade();
         }
 
         foreach (var concealer in Role.GetRoles<Concealer>(LayerEnum.Concealer))
@@ -460,39 +348,10 @@ public static class DoUndo
 
         foreach (var reb in Role.GetRoles<PromotedRebel>(LayerEnum.PromotedRebel))
         {
-            if (reb.FormerRole == null || reb.IsAnarch)
-                continue;
-
             if (reb.OnEffect)
-            {
-                if (reb.IsConc)
-                    reb.Conceal();
-                else if (reb.IsPois)
-                    reb.Poison();
-                else if (reb.IsSS)
-                    reb.Shapeshift();
-                else if (reb.IsDrunk)
-                    reb.Confuse();
-                else if (reb.IsTK)
-                    reb.Control();
-                else if (reb.IsCol)
-                    reb.ChargeSelf();
-            }
+                reb.Effect();
             else if (reb.Enabled)
-            {
-                if (reb.IsConc)
-                    reb.UnConceal();
-                else if (reb.IsPois)
-                    reb.PoisonKill();
-                else if (reb.IsSS)
-                    reb.UnShapeshift();
-                else if (reb.IsDrunk)
-                    reb.UnConfuse();
-                else if (reb.IsTK)
-                    reb.UnControl();
-                else if (reb.IsCol)
-                    reb.DischargeSelf();
-            }
+                reb.UnEffect();
         }
 
         foreach (var ss in Role.GetRoles<Shapeshifter>(LayerEnum.Shapeshifter))
@@ -505,7 +364,7 @@ public static class DoUndo
 
         foreach (var body in AllBodies)
         {
-            var renderer = body.bodyRenderers.FirstOrDefault();
+            var renderer = body.MyRend();
 
             if (IsCamoed)
                 PlayerMaterial.SetColors(UColor.grey, renderer);

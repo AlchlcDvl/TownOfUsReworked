@@ -12,7 +12,7 @@ public class Monarch : Crew
     public bool Protected => Knighted.Count > 0;
     public float Timer => ButtonUtils.Timer(Player, LastKnighted, CustomGameOptions.KnightingCd);
 
-    public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Monarch : Colors.Crew;
+    public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Monarch : Colors.Crew;
     public override string Name => "Monarch";
     public override LayerEnum Type => LayerEnum.Monarch;
     public override Func<string> StartText => () => "Knight Those Who You Trust";
@@ -22,7 +22,7 @@ public class Monarch : Crew
 
     public Monarch(PlayerControl player) : base(player)
     {
-        RoleAlignment = RoleAlignment.CrewSov;
+        Alignment = Alignment.CrewSov;
         Knighted = new();
         ToBeKnighted = new();
         UsesLeft = CustomGameOptions.KnightCount;

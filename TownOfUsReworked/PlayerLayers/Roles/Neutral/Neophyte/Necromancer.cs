@@ -19,7 +19,7 @@ public class Necromancer : Neutral
     public float TimeRemaining { get; set; }
     public bool IsResurrecting => TimeRemaining > 0f;
 
-    public override Color32 Color => ClientGameOptions.CustomNeutColors ? Colors.Necromancer : Colors.Neutral;
+    public override Color Color => ClientGameOptions.CustomNeutColors ? Colors.Necromancer : Colors.Neutral;
     public override string Name => "Necromancer";
     public override LayerEnum Type => LayerEnum.Necromancer;
     public override Func<string> StartText => () => "Resurrect The Dead Into Doing Your Bidding";
@@ -32,7 +32,7 @@ public class Necromancer : Neutral
     public Necromancer(PlayerControl player) : base(player)
     {
         Objectives = () => "- Resurrect or kill anyone who can oppose the <color=#E6108AFF>Reanimated</color>";
-        RoleAlignment = RoleAlignment.NeutralNeo;
+        Alignment = Alignment.NeutralNeo;
         Objectives = () => "- Resurrect the dead into helping you gain control of the crew";
         SubFaction = SubFaction.Reanimated;
         SubFactionColor = Colors.Reanimated;
@@ -48,14 +48,6 @@ public class Necromancer : Neutral
 
     public void Resurrect()
     {
-        if (!Resurrecting && CustomPlayer.Local.PlayerId == ResurrectButton.TargetBody.ParentId)
-        {
-            Flash(Colors.Reanimated, CustomGameOptions.ResurrectDur);
-
-            if (CustomGameOptions.NecromancerTargetBody)
-                ResurrectButton.TargetBody?.gameObject.Destroy();
-        }
-
         Resurrecting = true;
         TimeRemaining -= Time.deltaTime;
 
@@ -108,11 +100,10 @@ public class Necromancer : Neutral
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        KillButton.Update("KILL", KillTimer, CustomGameOptions.NecroKillCd, KillUsesLeft, CustomGameOptions.NecroKillCdIncreases ? KillCount *
-            CustomGameOptions.NecroKillCdIncrease : 0, true, KillButtonUsable);
-        ResurrectButton.Update("RESURRECT", ResurrectTimer, CustomGameOptions.ResurrectCd, ResurrectUsesLeft, IsResurrecting, TimeRemaining,
-            CustomGameOptions.ResurrectDur, CustomGameOptions.ResurrectCdIncreases ? ResurrectedCount * CustomGameOptions.ResurrectCdIncrease : 0, true,
-            ResurrectButtonUsable);
+        KillButton.Update("KILL", KillTimer, CustomGameOptions.NecroKillCd, KillUsesLeft, CustomGameOptions.NecroKillCdIncreases ? KillCount * CustomGameOptions.NecroKillCdIncrease : 0, true,
+            KillButtonUsable);
+        ResurrectButton.Update("RESURRECT", ResurrectTimer, CustomGameOptions.ResurrectCd, ResurrectUsesLeft, IsResurrecting, TimeRemaining, CustomGameOptions.ResurrectDur,
+            CustomGameOptions.ResurrectCdIncreases ? ResurrectedCount * CustomGameOptions.ResurrectCdIncrease : 0, true, ResurrectButtonUsable);
     }
 
     public void HitResurrect()
@@ -131,7 +122,10 @@ public class Necromancer : Neutral
             CallRpc(CustomRPC.Action, ActionsRPC.NecromancerResurrect, this, ResurrectingBody);
             TimeRemaining = CustomGameOptions.ResurrectDur;
             Success = true;
-            Resurrect();
+            Flash(Colors.Reanimated, CustomGameOptions.ResurrectDur);
+
+            if (CustomGameOptions.NecromancerTargetBody)
+                ResurrectButton.TargetBody?.gameObject.Destroy();
 
             if (CustomGameOptions.NecroCooldownsLinked)
                 LastKilled = DateTime.UtcNow;
@@ -145,27 +139,27 @@ public class Necromancer : Neutral
 
         var interact = Interact(Player, KillButton.TargetPlayer, true);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
         {
             KillCount++;
             KillUsesLeft--;
         }
 
-        if (interact[0])
+        if (interact.Reset)
         {
             LastKilled = DateTime.UtcNow;
 
             if (CustomGameOptions.NecroCooldownsLinked)
                 LastResurrected = DateTime.UtcNow;
         }
-        else if (interact[1])
+        else if (interact.Protected)
         {
             LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
 
             if (CustomGameOptions.NecroCooldownsLinked)
                 LastResurrected.AddSeconds(CustomGameOptions.ProtectKCReset);
         }
-        else if (interact[2])
+        else if (interact.Vested)
         {
             LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
 

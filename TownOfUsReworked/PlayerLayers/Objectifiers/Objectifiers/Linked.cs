@@ -4,7 +4,7 @@ public class Linked : Objectifier
 {
     public PlayerControl OtherLink { get; set; }
 
-    public override Color32 Color => ClientGameOptions.CustomObjColors ? Colors.Linked : Colors.Objectifier;
+    public override Color Color => ClientGameOptions.CustomObjColors ? Colors.Linked : Colors.Objectifier;
     public override string Name => "Linked";
     public override string Symbol => "Ψ";
     public override LayerEnum Type => LayerEnum.Linked;

@@ -7,7 +7,7 @@ public class Volatile : Modifier
     private static bool RickRolled;
     public bool Exposed { get; set; }
 
-    public override Color32 Color => ClientGameOptions.CustomModColors ? Colors.Volatile : Colors.Modifier;
+    public override Color Color => ClientGameOptions.CustomModColors ? Colors.Volatile : Colors.Modifier;
     public override string Name => "Volatile";
     public override LayerEnum Type => LayerEnum.Volatile;
     public override Func<string> Description => () => "- You experience hallucinations";

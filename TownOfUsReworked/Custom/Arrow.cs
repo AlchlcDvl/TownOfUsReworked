@@ -74,11 +74,11 @@ public class CustomArrow
         if (Disabled)
             return;
 
-        Destroy(false);
+        Destroy();
         Disabled = true;
     }
 
-    public void Destroy(bool remove = true)
+    public void Destroy()
     {
         ArrowObj.Destroy();
         Arrow.Destroy();
@@ -88,9 +88,6 @@ public class CustomArrow
         Arrow = null;
         Render = null;
         Point = null;
-
-        if (remove)
-            AllArrows.Remove(this);
     }
 
     public void Enable()
@@ -120,5 +117,11 @@ public class CustomArrow
 
         Point.transform.localPosition = v;
         PlayerMaterial.SetColors(ArrowColor, Point);
+    }
+
+    public static void DestroyAll()
+    {
+        AllArrows.ForEach(x => x.Destroy());
+        AllArrows.Clear();
     }
 }

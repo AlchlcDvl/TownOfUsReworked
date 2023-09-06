@@ -26,7 +26,7 @@ public static class RPC
                 writer.Write((byte)MiscRPC.SyncCustomSettings);
             }
 
-            if (option.Type is CustomOptionType.Header or CustomOptionType.Nested or CustomOptionType.Button)
+            if (option.Type is CustomOptionType.Header or CustomOptionType.Button)
                 continue;
 
             writer.Write(option.ID);
@@ -180,7 +180,7 @@ public static class RPC
                     writer.Write((byte)turn);
                 else if (item is Faction faction)
                     writer.Write((byte)faction);
-                else if (item is RoleAlignment alignment)
+                else if (item is Alignment alignment)
                     writer.Write((byte)alignment);
                 else if (item is SubFaction subfaction)
                     writer.Write((byte)subfaction);

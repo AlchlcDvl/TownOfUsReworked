@@ -52,7 +52,7 @@ public static class SetPostmortals
         {
             if (ghoul.Caught)
                 ghoul.MarkedPlayer = null;
-            else if (ghoul.MarkedPlayer != null && !(ghoul.MarkedPlayer.Data.IsDead || ghoul.MarkedPlayer.Data.Disconnected))
+            else if (ghoul.MarkedPlayer != null && !ghoul.MarkedPlayer.HasDied())
                 ghoul.MarkedPlayer.Exiled();
         }
 

@@ -43,12 +43,12 @@ public class CustomMeeting
 
     public void HideButtons()
     {
-        Buttons.Keys.ToList().ForEach(HideSingle);
+        Buttons.Keys.ForEach(HideSingle);
         Buttons.Clear();
 
         if (Type == MeetingTypes.Toggle)
         {
-            Actives.Keys.ToList().ForEach(x => Actives[x] = false);
+            Actives.Keys.ForEach(x => Actives[x] = false);
             Actives.Clear();
         }
     }
@@ -71,6 +71,9 @@ public class CustomMeeting
 
     private void GenButton(PlayerVoteArea voteArea, MeetingHud __instance, bool usable = true)
     {
+        Actives.Clear();
+        Buttons.Clear();
+
         if (!usable || Owner != CustomPlayer.Local)
             return;
 
@@ -134,9 +137,11 @@ public class CustomMeeting
             HideButtons();
     }
 
-    public void Destroy()
+    public void Destroy() => HideButtons();
+
+    public static void DestroyAll()
     {
-        HideButtons();
-        AllCustomMeetings.RemoveAll(x => x == this || x == null);
+        AllCustomMeetings.ForEach(x => x.Destroy());
+        AllCustomMeetings.Clear();
     }
 }

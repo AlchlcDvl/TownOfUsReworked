@@ -10,7 +10,7 @@ public class Dictator : Crew
     public bool ToDie { get; set; }
     public CustomMeeting DictMenu { get; set; }
 
-    public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Dictator : Colors.Crew;
+    public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Dictator : Colors.Crew;
     public override string Name => "Dictator";
     public override LayerEnum Type => LayerEnum.Dictator;
     public override Func<string> StartText => () => "You Have The Final Say";
@@ -19,7 +19,7 @@ public class Dictator : Crew
 
     public Dictator(PlayerControl player) : base(player)
     {
-        RoleAlignment = RoleAlignment.CrewSov;
+        Alignment = Alignment.CrewSov;
         ToBeEjected = new();
         Ejected = false;
         ToDie = false;
@@ -90,7 +90,7 @@ public class Dictator : Crew
     private bool IsExempt(PlayerVoteArea voteArea)
     {
         var player = PlayerByVoteArea(voteArea);
-        return player.Data.IsDead || player.Data.Disconnected || (player == Player && player == CustomPlayer.Local) || IsDead || !Revealed || Ejected;
+        return player.HasDied() || (player == Player && player == CustomPlayer.Local) || IsDead || !Revealed || Ejected;
     }
 
     public override void ConfirmVotePrefix(MeetingHud __instance)

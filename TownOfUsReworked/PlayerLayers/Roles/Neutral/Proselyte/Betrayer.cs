@@ -5,7 +5,7 @@ public class Betrayer : Neutral
     public CustomButton KillButton { get; set; }
     public DateTime LastKilled { get; set; }
 
-    public override Color32 Color => ClientGameOptions.CustomNeutColors ? Colors.Betrayer : Colors.Neutral;
+    public override Color Color => ClientGameOptions.CustomNeutColors ? Colors.Betrayer : Colors.Neutral;
     public override string Name => "Betrayer";
     public override LayerEnum Type => LayerEnum.Betrayer;
     public override Func<string> StartText => () => "Those Backs Are Ripe For Some Stabbing";
@@ -16,7 +16,7 @@ public class Betrayer : Neutral
     public Betrayer(PlayerControl player) : base(player)
     {
         Objectives = () => $"- Kill anyone who opposes the {FactionName}";
-        RoleAlignment = RoleAlignment.NeutralPros;
+        Alignment = Alignment.NeutralPros;
         KillButton = new(this, "BetKill", AbilityTypes.Direct, "ActionSecondary", Kill, Exception);
     }
 
@@ -27,11 +27,11 @@ public class Betrayer : Neutral
 
         var interact = Interact(Player, KillButton.TargetPlayer, true);
 
-        if (interact[3] || interact[0])
+        if (interact.AbilityUsed || interact.Reset)
             LastKilled = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
-        else if (interact[2])
+        else if (interact.Vested)
             LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
     }
 

@@ -5,7 +5,7 @@ public class Murderer : Neutral
     public DateTime LastKilled { get; set; }
     public CustomButton MurderButton { get; set; }
 
-    public override Color32 Color => ClientGameOptions.CustomNeutColors ? Colors.Murderer : Colors.Neutral;
+    public override Color Color => ClientGameOptions.CustomNeutColors ? Colors.Murderer : Colors.Neutral;
     public override string Name => "Murderer";
     public override LayerEnum Type => LayerEnum.Murderer;
     public override Func<string> StartText => () => "I Got Murder On My Mind";
@@ -16,7 +16,7 @@ public class Murderer : Neutral
     public Murderer(PlayerControl player) : base(player)
     {
         Objectives = () => "- Murder anyone who can oppose you";
-        RoleAlignment = RoleAlignment.NeutralKill;
+        Alignment = Alignment.NeutralKill;
         MurderButton = new(this, "Murder", AbilityTypes.Direct, "ActionSecondary", Murder, Exception);
     }
 
@@ -27,11 +27,11 @@ public class Murderer : Neutral
 
         var interact = Interact(Player, MurderButton.TargetPlayer, true);
 
-        if (interact[3] || interact[0])
+        if (interact.AbilityUsed || interact.Reset)
             LastKilled = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
-        else if (interact[2])
+        else if (interact.Vested)
             LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
     }
 

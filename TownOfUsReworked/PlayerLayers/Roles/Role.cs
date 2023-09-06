@@ -8,7 +8,7 @@ public class Role : PlayerLayer
 
     public static Role LocalRole => GetRole(CustomPlayer.Local);
 
-    public override Color32 Color => Colors.Role;
+    public override Color Color => Colors.Role;
     public override PlayerLayerEnum LayerType => PlayerLayerEnum.Role;
 
     public virtual Faction BaseFaction => Faction.None;
@@ -62,10 +62,10 @@ public class Role : PlayerLayer
     public static bool SyndicateHasChaosDrive { get; set; }
     public static PlayerControl DriveHolder { get; set; }
 
-    public Color32 FactionColor { get; set; } = Colors.Faction;
-    public Color32 SubFactionColor { get; set; } = Colors.SubFaction;
+    public Color FactionColor { get; set; } = Colors.Faction;
+    public Color SubFactionColor { get; set; } = Colors.SubFaction;
     public Faction Faction { get; set; } = Faction.None;
-    public RoleAlignment RoleAlignment { get; set; } = RoleAlignment.None;
+    public Alignment Alignment { get; set; } = Alignment.None;
     public SubFaction SubFaction { get; set; } = SubFaction.None;
     public List<Role> RoleHistory { get; set; } = new();
     public ChatChannel CurrentChannel { get; set; } = ChatChannel.All;
@@ -229,7 +229,7 @@ public class Role : PlayerLayer
 
         foreach (var arso in GetRoles<Arsonist>(LayerEnum.Arsonist))
         {
-            arso.Doused.RemoveAll(x => PlayerById(x).Data.IsDead || PlayerById(x).Data.Disconnected);
+            arso.Doused.RemoveAll(x => PlayerById(x).HasDied());
 
             if (arso.IsDead)
                 arso.Doused.Clear();
@@ -237,7 +237,7 @@ public class Role : PlayerLayer
 
         foreach (var cryo in GetRoles<Cryomaniac>(LayerEnum.Cryomaniac))
         {
-            cryo.Doused.RemoveAll(x => PlayerById(x).Data.IsDead || PlayerById(x).Data.Disconnected);
+            cryo.Doused.RemoveAll(x => PlayerById(x).HasDied());
 
             if (cryo.IsDead)
                 cryo.Doused.Clear();
@@ -245,7 +245,7 @@ public class Role : PlayerLayer
 
         foreach (var pb in GetRoles<Plaguebearer>(LayerEnum.Plaguebearer))
         {
-            pb.Infected.RemoveAll(x => PlayerById(x).Data.IsDead || PlayerById(x).Data.Disconnected);
+            pb.Infected.RemoveAll(x => PlayerById(x).HasDied());
 
             if (pb.IsDead)
                 pb.Infected.Clear();
@@ -253,7 +253,7 @@ public class Role : PlayerLayer
 
         foreach (var framer in GetRoles<Framer>(LayerEnum.Framer))
         {
-            framer.Framed.RemoveAll(x => PlayerById(x).Data.IsDead || PlayerById(x).Data.Disconnected);
+            framer.Framed.RemoveAll(x => PlayerById(x).HasDied());
 
             if (framer.IsDead)
                 framer.Framed.Clear();
@@ -261,7 +261,7 @@ public class Role : PlayerLayer
 
         foreach (var spell in GetRoles<Spellslinger>(LayerEnum.Spellslinger))
         {
-            spell.Spelled.RemoveAll(x => PlayerById(x).Data.IsDead || PlayerById(x).Data.Disconnected);
+            spell.Spelled.RemoveAll(x => PlayerById(x).HasDied());
 
             if (spell.IsDead)
                 spell.Spelled.Clear();
@@ -561,8 +561,8 @@ public class Role : PlayerLayer
         if (IsTooFar(Player, BombKillButton.TargetPlayer) || !Bombed)
             return;
 
-        var success = Interact(Player, BombKillButton.TargetPlayer, true)[3];
-        GetRoles<Enforcer>(LayerEnum.Enforcer).Where(x => x.BombedPlayer == Player).ToList().ForEach(x =>
+        var success = Interact(Player, BombKillButton.TargetPlayer, true).AbilityUsed;
+        GetRoles<Enforcer>(LayerEnum.Enforcer).Where(x => x.BombedPlayer == Player).ForEach(x =>
         {
             x.BombSuccessful = success;
             x.TimeRemaining = 0;
@@ -583,7 +583,7 @@ public class Role : PlayerLayer
 
     public static List<Role> GetRoles(Faction faction) => AllRoles.Where(x => x.Faction == faction && !x.Ignore).ToList();
 
-    public static List<Role> GetRoles(RoleAlignment ra) => AllRoles.Where(x => x.RoleAlignment == ra && !x.Ignore).ToList();
+    public static List<Role> GetRoles(Alignment ra) => AllRoles.Where(x => x.Alignment == ra && !x.Ignore).ToList();
 
     public static List<Role> GetRoles(SubFaction subfaction) => AllRoles.Where(x => x.SubFaction == subfaction && !x.Ignore).ToList();
 

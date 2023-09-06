@@ -190,7 +190,7 @@ public static class MinigamePatch
         if (!__instance || !CustomPlayer.Local.Is(LayerEnum.Multitasker))
             return;
 
-        __instance.GetComponentsInChildren<SpriteRenderer>().ToList().ForEach(x => x.color = new(x.color.r, x.color.g, x.color.b, CustomGameOptions.Transparancy / 100f));
+        __instance.GetComponentsInChildren<SpriteRenderer>().ForEach(x => x.color = new(x.color.r, x.color.g, x.color.b, CustomGameOptions.Transparancy / 100f));
     }
 }
 
@@ -434,20 +434,19 @@ public static class LobbyBehaviourPatch
 {
     public static void Postfix()
     {
-        //Fix Grenadier and screwed blind in lobby
-        HUD.FullScreen.gameObject.active = false;
+        SetFullScreenHUD();
         DataManager.Settings.Gameplay.ScreenShake = false;
         RoleGen.ResetEverything();
         TownOfUsReworked.IsTest = IsLocalGame && (TownOfUsReworked.IsDev || (TownOfUsReworked.IsTest && TownOfUsReworked.MCIActive));
         StopAll();
         DefaultOutfitAll();
+        var count = MCIUtils.Clients.Count;
+        MCIUtils.Clients.Clear();
+        MCIUtils.PlayerIdClientId.Clear();
 
         if (MCIUtils.Clients.Count != 0 && TownOfUsReworked.MCIActive && IsLocalGame)
         {
-            var count = MCIUtils.Clients.Count;
             DebuggerBehaviour.Instance.TestWindow.Enabled = true;
-            MCIUtils.Clients.Clear();
-            MCIUtils.PlayerIdClientId.Clear();
 
             if (TownOfUsReworked.Persistence)
             {

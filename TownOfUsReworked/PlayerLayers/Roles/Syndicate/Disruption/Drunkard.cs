@@ -11,7 +11,7 @@ public class Drunkard : Syndicate
     public PlayerControl ConfusedPlayer { get; set; }
     public CustomMenu ConfuseMenu { get; set; }
 
-    public override Color32 Color => ClientGameOptions.CustomSynColors ? Colors.Drunkard : Colors.Syndicate;
+    public override Color Color => ClientGameOptions.CustomSynColors ? Colors.Drunkard : Colors.Syndicate;
     public override string Name => "Drunkard";
     public override LayerEnum Type => LayerEnum.Drunkard;
     public override Func<string> StartText => () => "<i>Burp</i>";
@@ -22,7 +22,7 @@ public class Drunkard : Syndicate
 
     public Drunkard(PlayerControl player) : base(player)
     {
-        RoleAlignment = RoleAlignment.SyndicateDisrup;
+        Alignment = Alignment.SyndicateDisrup;
         ConfuseMenu = new(Player, Click, Exception1);
         ConfusedPlayer = null;
         ConfuseButton = new(this, "Confuse", AbilityTypes.Effect, "Secondary", HitConfuse);
@@ -30,9 +30,6 @@ public class Drunkard : Syndicate
 
     public void Confuse()
     {
-        if (!Enabled && (CustomPlayer.Local == ConfusedPlayer || HoldsDrive))
-            Flash(Color);
-
         Enabled = true;
         TimeRemaining -= Time.deltaTime;
 
@@ -51,11 +48,11 @@ public class Drunkard : Syndicate
     {
         var interact = Interact(Player, player);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
             ConfusedPlayer = player;
-        else if (interact[0])
+        else if (interact.Reset)
             LastConfused = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastConfused.AddSeconds(CustomGameOptions.ProtectKCReset);
     }
 
@@ -67,7 +64,6 @@ public class Drunkard : Syndicate
         if (HoldsDrive)
         {
             TimeRemaining = CustomGameOptions.ConfuseDur;
-            Confuse();
             CallRpc(CustomRPC.Action, ActionsRPC.Confuse, this);
         }
         else if (ConfusedPlayer == null)
@@ -76,7 +72,6 @@ public class Drunkard : Syndicate
         {
             CallRpc(CustomRPC.Action, ActionsRPC.Confuse, this, ConfusedPlayer);
             TimeRemaining = CustomGameOptions.ConfuseDur;
-            Confuse();
         }
     }
 

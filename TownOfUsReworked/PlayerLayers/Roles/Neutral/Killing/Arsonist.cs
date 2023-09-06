@@ -4,14 +4,13 @@ public class Arsonist : Neutral
 {
     public CustomButton IgniteButton { get; set; }
     public CustomButton DouseButton { get; set; }
-    public bool LastKiller => !CustomPlayer.AllPlayers.Any(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) ||
-        x.Is(RoleAlignment.CrewKill) || x.Is(RoleAlignment.CrewAudit) || x.Is(RoleAlignment.NeutralPros) || x.Is(RoleAlignment.NeutralNeo) || (x.Is(RoleAlignment.NeutralKill) && x !=
-        Player))) && CustomGameOptions.ArsoLastKillerBoost;
+    public bool LastKiller => !CustomPlayer.AllPlayers.Any(x => !x.HasDied() && (x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) || x.Is(Alignment.CrewKill) || x.Is(Alignment.CrewAudit) ||
+        x.Is(Alignment.NeutralPros) || x.Is(Alignment.NeutralNeo) || (x.Is(Alignment.NeutralKill) && x != Player))) && CustomGameOptions.ArsoLastKillerBoost;
     public List<byte> Doused { get; set; }
     public DateTime LastDoused { get; set; }
     public DateTime LastIgnited { get; set; }
 
-    public override Color32 Color => ClientGameOptions.CustomNeutColors ? Colors.Arsonist : Colors.Neutral;
+    public override Color Color => ClientGameOptions.CustomNeutColors ? Colors.Arsonist : Colors.Neutral;
     public override string Name => "Arsonist";
     public override LayerEnum Type => LayerEnum.Arsonist;
     public override Func<string> StartText => () => "PYROMANIAAAAAAAAAAAAAA";
@@ -24,7 +23,7 @@ public class Arsonist : Neutral
     public Arsonist(PlayerControl player) : base(player)
     {
         Objectives = () => "- Burn anyone who can oppose you";
-        RoleAlignment = RoleAlignment.NeutralKill;
+        Alignment = Alignment.NeutralKill;
         Doused = new();
         DouseButton = new(this, "ArsoDouse", AbilityTypes.Direct, "ActionSecondary", Douse, Exception);
         IgniteButton = new(this, "Ignite", AbilityTypes.Effect, "Secondary", Ignite);
@@ -44,7 +43,7 @@ public class Arsonist : Neutral
             {
                 var player = PlayerById(playerId);
 
-                if (player?.Data.Disconnected == true || player.Data.IsDead || player.Is(LayerEnum.Pestilence) || player.IsProtected())
+                if (player == null || player.HasDied() || player.Is(LayerEnum.Pestilence) || player.IsProtected())
                     continue;
 
                 RpcMurderPlayer(Player, player, DeathReasonEnum.Ignited, false);
@@ -81,17 +80,17 @@ public class Arsonist : Neutral
 
         var interact = Interact(Player, DouseButton.TargetPlayer);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
             RpcSpreadDouse(Player, DouseButton.TargetPlayer);
 
-        if (interact[0])
+        if (interact.Reset)
         {
             LastDoused = DateTime.UtcNow;
 
             if (CustomGameOptions.ArsoCooldownsLinked && !LastKiller)
                 LastIgnited = DateTime.UtcNow;
         }
-        else if (interact[1])
+        else if (interact.Protected)
         {
             LastDoused.AddSeconds(CustomGameOptions.ProtectKCReset);
 

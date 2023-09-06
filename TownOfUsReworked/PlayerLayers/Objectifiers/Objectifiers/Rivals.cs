@@ -3,12 +3,12 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers;
 public class Rivals : Objectifier
 {
     public PlayerControl OtherRival { get; set; }
-    public bool RivalDead => OtherRival == null || OtherRival.Data.IsDead || OtherRival.Data.Disconnected;
-    public bool IsDeadRival => Player == null || IsDead || Disconnected;
+    public bool RivalDead => OtherRival == null || OtherRival.HasDied();
+    public bool IsDeadRival => Player == null || Player.HasDied();
     public bool BothRivalsDead => IsDeadRival && RivalDead;
     public bool IsWinningRival =>  RivalDead && !IsDeadRival;
 
-    public override Color32 Color => ClientGameOptions.CustomObjColors ? Colors.Rivals : Colors.Objectifier;
+    public override Color Color => ClientGameOptions.CustomObjColors ? Colors.Rivals : Colors.Objectifier;
     public override string Name => "Rivals";
     public override string Symbol => "α";
     public override LayerEnum Type => LayerEnum.Rivals;

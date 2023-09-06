@@ -33,7 +33,7 @@ public static class Summary
             summary += $"{role?.ColorString}{role?.Name}</color>";
             cache += role.Name;
 
-            if (role.SubFaction != SubFaction.None && !player.Is(RoleAlignment.NeutralNeo))
+            if (role.SubFaction != SubFaction.None && !player.Is(Alignment.NeutralNeo))
             {
                 summary += $" {role?.SubFactionColorString}{role?.SubFactionSymbol}</color>";
                 cache += $" {role?.SubFactionSymbol}";

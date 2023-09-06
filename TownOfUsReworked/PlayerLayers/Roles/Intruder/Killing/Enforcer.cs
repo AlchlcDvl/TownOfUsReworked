@@ -12,7 +12,7 @@ public class Enforcer : Intruder
     public bool DelayActive => TimeRemaining2 > 0f;
     public bool BombSuccessful { get; set; }
 
-    public override Color32 Color => ClientGameOptions.CustomIntColors ? Colors.Enforcer : Colors.Intruder;
+    public override Color Color => ClientGameOptions.CustomIntColors ? Colors.Enforcer : Colors.Intruder;
     public override string Name => "Enforcer";
     public override LayerEnum Type => LayerEnum.Enforcer;
     public override Func<string> StartText => () => "Force The <color=#8CFFFFFF>Crew</color> To Do Your Bidding";
@@ -23,7 +23,7 @@ public class Enforcer : Intruder
 
     public Enforcer(PlayerControl player) : base(player)
     {
-        RoleAlignment = RoleAlignment.IntruderKill;
+        Alignment = Alignment.IntruderKill;
         BombedPlayer = null;
         BombButton = new(this, "Enforce", AbilityTypes.Direct, "Secondary", Bomb, Exception1);
     }
@@ -39,7 +39,7 @@ public class Enforcer : Intruder
         Enabled = true;
         TimeRemaining -= Time.deltaTime;
 
-        if (IsDead || Meeting || BombedPlayer.Data.IsDead || BombedPlayer.Data.Disconnected || BombSuccessful)
+        if (IsDead || Meeting || BombedPlayer.HasDied() || BombSuccessful)
             TimeRemaining = 0f;
     }
 
@@ -47,7 +47,7 @@ public class Enforcer : Intruder
     {
         TimeRemaining2 -= Time.deltaTime;
 
-        if (IsDead || Meeting || BombedPlayer.Data.IsDead || BombedPlayer.Data.Disconnected)
+        if (IsDead || Meeting || BombedPlayer.HasDied())
             TimeRemaining2 = 0f;
     }
 
@@ -86,17 +86,16 @@ public class Enforcer : Intruder
 
         var interact = Interact(Player, BombButton.TargetPlayer);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
         {
-            TimeRemaining = CustomGameOptions.EnforceDur;
             TimeRemaining2 = CustomGameOptions.EnforceDelay;
+            TimeRemaining = CustomGameOptions.EnforceDur;
             BombedPlayer = BombButton.TargetPlayer;
             CallRpc(CustomRPC.Action, ActionsRPC.SetBomb, this, BombedPlayer);
-            Delay();
         }
-        else if (interact[0])
+        else if (interact.Reset)
             LastBombed = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastBombed.AddSeconds(CustomGameOptions.ProtectKCReset);
     }
 
@@ -106,7 +105,6 @@ public class Enforcer : Intruder
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        BombButton.Update("BOMB", Timer, CustomGameOptions.EnforceCd, DelayActive || Bombing, DelayActive ? TimeRemaining2 : TimeRemaining, DelayActive ?
-            CustomGameOptions.EnforceDelay : CustomGameOptions.EnforceDur);
+        BombButton.Update("BOMB", Timer, CustomGameOptions.EnforceCd, Bombing, TimeRemaining, CustomGameOptions.EnforceDur, DelayActive, TimeRemaining2);
     }
 }

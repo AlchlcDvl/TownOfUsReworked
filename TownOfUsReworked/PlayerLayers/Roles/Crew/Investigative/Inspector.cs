@@ -7,7 +7,7 @@ public class Inspector : Crew
     public CustomButton InspectButton { get; set; }
     public float Timer => ButtonUtils.Timer(Player, LastInspected, CustomGameOptions.InspectCd);
 
-    public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Inspector : Colors.Crew;
+    public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Inspector : Colors.Crew;
     public override string Name => "Inspector";
     public override LayerEnum Type => LayerEnum.Inspector;
     public override Func<string> StartText => () => "Inspect Players For Their Roles";
@@ -16,7 +16,7 @@ public class Inspector : Crew
 
     public Inspector(PlayerControl player) : base(player)
     {
-        RoleAlignment = RoleAlignment.CrewInvest;
+        Alignment = Alignment.CrewInvest;
         Inspected = new();
         InspectButton = new(this, "Inspect", AbilityTypes.Direct, "ActionSecondary", Inspect, Exception);
     }
@@ -28,12 +28,12 @@ public class Inspector : Crew
 
         var interact = Interact(Player, InspectButton.TargetPlayer);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
             Inspected.Add(InspectButton.TargetPlayer.PlayerId);
 
-        if (interact[0])
+        if (interact.Reset)
             LastInspected = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastInspected.AddSeconds(CustomGameOptions.ProtectKCReset);
     }
 

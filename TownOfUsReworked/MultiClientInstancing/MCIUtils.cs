@@ -71,7 +71,7 @@ public static class MCIUtils
 
     public static void RemoveAllPlayers()
     {
-        PlayerIdClientId.Keys.ToList().ForEach(RemovePlayer);
+        PlayerIdClientId.Keys.ForEach(RemovePlayer);
         SwitchTo(0);
     }
 

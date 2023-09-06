@@ -4,7 +4,7 @@ public class Astral : Modifier
 {
     public Vector3 LastPosition { get; set; }
 
-    public override Color32 Color => ClientGameOptions.CustomModColors ? Colors.Astral : Colors.Modifier;
+    public override Color Color => ClientGameOptions.CustomModColors ? Colors.Astral : Colors.Modifier;
     public override string Name => "Astral";
     public override LayerEnum Type => LayerEnum.Astral;
     public override Func<string> Description => () => "- You will not teleport to the meeting button";

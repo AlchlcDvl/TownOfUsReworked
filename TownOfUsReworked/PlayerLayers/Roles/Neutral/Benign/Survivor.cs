@@ -11,7 +11,7 @@ public class Survivor : Neutral
     public bool Alive => !Disconnected && !IsDead;
     public CustomButton VestButton { get; set; }
 
-    public override Color32 Color => ClientGameOptions.CustomNeutColors ? Colors.Survivor : Colors.Neutral;
+    public override Color Color => ClientGameOptions.CustomNeutColors ? Colors.Survivor : Colors.Neutral;
     public override string Name => "Survivor";
     public override LayerEnum Type => LayerEnum.Survivor;
     public override Func<string> StartText => () => "Do Whatever It Takes To Live";
@@ -22,7 +22,7 @@ public class Survivor : Neutral
     public Survivor(PlayerControl player) : base(player)
     {
         UsesLeft = CustomGameOptions.MaxVests;
-        RoleAlignment = RoleAlignment.NeutralBen;
+        Alignment = Alignment.NeutralBen;
         Objectives = () => "- Live to the end of the game";
         VestButton = new(this, "Vest", AbilityTypes.Effect, "ActionSecondary", HitVest, true);
     }
@@ -55,7 +55,6 @@ public class Survivor : Neutral
 
         TimeRemaining = CustomGameOptions.VestDur;
         UsesLeft--;
-        Vest();
         CallRpc(CustomRPC.Action, ActionsRPC.Vest, this);
     }
 }

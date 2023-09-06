@@ -5,7 +5,7 @@ public class Modifier : PlayerLayer
     public static readonly List<Modifier> AllModifiers = new();
     public static Modifier LocalModifier => GetModifier(CustomPlayer.Local);
 
-    public override Color32 Color => Colors.Modifier;
+    public override Color Color => Colors.Modifier;
     public override PlayerLayerEnum LayerType => PlayerLayerEnum.Modifier;
 
     public virtual bool Hidden => false;

@@ -7,7 +7,7 @@ public class Framer : Syndicate
     public List<byte> Framed { get; set; }
     public DateTime LastFramed { get; set; }
 
-    public override Color32 Color => ClientGameOptions.CustomSynColors ? Colors.Framer : Colors.Syndicate;
+    public override Color Color => ClientGameOptions.CustomSynColors ? Colors.Framer : Colors.Syndicate;
     public override string Name => "Framer";
     public override LayerEnum Type => LayerEnum.Framer;
     public override Func<string> StartText => () => "Make Everyone Suspicious";
@@ -18,7 +18,7 @@ public class Framer : Syndicate
 
     public Framer(PlayerControl player) : base(player)
     {
-        RoleAlignment = RoleAlignment.SyndicateDisrup;
+        Alignment = Alignment.SyndicateDisrup;
         Framed = new();
         FrameButton = new(this, "Frame", AbilityTypes.Direct, "Secondary", Frame, Exception1);
         RadialFrameButton = new(this, "RadialFrame", AbilityTypes.Effect, "Secondary", RadialFrame);
@@ -40,12 +40,12 @@ public class Framer : Syndicate
 
         var interact = Interact(Player, FrameButton.TargetPlayer);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
             RpcFrame(FrameButton.TargetPlayer);
 
-        if (interact[0])
+        if (interact.Reset)
             LastFramed = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastFramed.AddSeconds(CustomGameOptions.ProtectKCReset);
     }
 

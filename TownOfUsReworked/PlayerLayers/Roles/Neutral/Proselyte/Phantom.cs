@@ -7,7 +7,7 @@ public class Phantom : Neutral
     public bool PhantomWin { get; set; }
     public bool Faded { get; set; }
 
-    public override Color32 Color => ClientGameOptions.CustomNeutColors ? Colors.Phantom : Colors.Neutral;
+    public override Color Color => ClientGameOptions.CustomNeutColors ? Colors.Phantom : Colors.Neutral;
     public override string Name => "Phantom";
     public override LayerEnum Type => LayerEnum.Phantom;
     public override Func<string> StartText => () => "Peek-A-Boo!";
@@ -17,11 +17,14 @@ public class Phantom : Neutral
     public Phantom(PlayerControl player) : base(player)
     {
         Objectives = () => "- Finish your tasks without getting clicked";
-        RoleAlignment = RoleAlignment.NeutralPros;
+        Alignment = Alignment.NeutralPros;
     }
 
     public void Fade()
     {
+        if (Disconnected)
+            return;
+
         Faded = true;
         Player.Visible = true;
         var color = new Color(1f, 1f, 1f, 0f);
@@ -42,5 +45,14 @@ public class Phantom : Neutral
         Player.MyRend().color = color;
         Player.NameText().color = new(0f, 0f, 0f, 0f);
         Player.cosmetics.colorBlindText.color = new(0f, 0f, 0f, 0f);
+    }
+
+    public void UnFade()
+    {
+        DefaultOutfit(Player);
+        Player.MyRend().color = UColor.white;
+        Player.gameObject.layer = LayerMask.NameToLayer("Ghost");
+        Faded = false;
+        Player.MyPhysics.ResetMoveState();
     }
 }

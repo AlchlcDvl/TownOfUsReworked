@@ -10,7 +10,7 @@ public class Escort : Crew
     public bool Blocking => TimeRemaining > 0f;
     public float Timer => ButtonUtils.Timer(Player, LastBlocked, CustomGameOptions.EscortCd);
 
-    public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Escort : Colors.Crew;
+    public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Escort : Colors.Crew;
     public override string Name => "Escort";
     public override LayerEnum Type => LayerEnum.Escort;
     public override Func<string> StartText => () => "Roleblock Players From Harming The <color=#8CFFFFFF>Crew</color>";
@@ -20,7 +20,7 @@ public class Escort : Crew
 
     public Escort(PlayerControl player) : base(player)
     {
-        RoleAlignment = RoleAlignment.CrewSupport;
+        Alignment = Alignment.CrewSupport;
         RoleBlockImmune = true;
         BlockTarget = null;
         BlockButton = new(this, "EscortRoleblock", AbilityTypes.Direct, "ActionSecondary", Roleblock);
@@ -40,7 +40,7 @@ public class Escort : Crew
         TimeRemaining -= Time.deltaTime;
         GetLayers(BlockTarget).ForEach(x => x.IsBlocked = !GetRole(BlockTarget).RoleBlockImmune);
 
-        if (Meeting || IsDead || BlockTarget.Data.IsDead || BlockTarget.Data.Disconnected)
+        if (Meeting || IsDead || BlockTarget.HasDied())
             TimeRemaining = 0f;
     }
 
@@ -51,16 +51,15 @@ public class Escort : Crew
 
         var interact = Interact(Player, BlockButton.TargetPlayer);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
         {
             TimeRemaining = CustomGameOptions.EscortDur;
             BlockTarget = BlockButton.TargetPlayer;
-            Block();
             CallRpc(CustomRPC.Action, ActionsRPC.EscRoleblock, this, BlockTarget);
         }
-        else if (interact[0])
+        else if (interact.Reset)
             LastBlocked = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastBlocked.AddSeconds(CustomGameOptions.ProtectKCReset);
     }
 

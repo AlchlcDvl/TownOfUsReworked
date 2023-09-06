@@ -5,7 +5,7 @@ public class Altruist : Crew
     public CustomButton ReviveButton { get; set; }
     public int UsesLeft { get; set; }
     public bool ButtonUsable => UsesLeft > 0;
-    public bool Reviving { get; set; }
+    public bool Enabled { get; set; }
     public float TimeRemaining { get; set; }
     public bool IsReviving => TimeRemaining > 0f;
     public DeadBody RevivingBody { get; set; }
@@ -13,7 +13,7 @@ public class Altruist : Crew
     public DateTime LastRevived { get; set; }
     public float Timer => ButtonUtils.Timer(Player, LastRevived, CustomGameOptions.ReviveCd);
 
-    public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Altruist : Colors.Crew;
+    public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Altruist : Colors.Crew;
     public override string Name => "Altruist";
     public override LayerEnum Type => LayerEnum.Altruist;
     public override Func<string> StartText => () => "Sacrifice Yourself To Save Another";
@@ -23,7 +23,7 @@ public class Altruist : Crew
 
     public Altruist(PlayerControl player) : base(player)
     {
-        RoleAlignment = RoleAlignment.CrewProt;
+        Alignment = Alignment.CrewProt;
         UsesLeft = CustomGameOptions.MaxRevives;
         ReviveButton = new(this, "Revive", AbilityTypes.Dead, "ActionSecondary", HitRevive, true);
     }
@@ -36,15 +36,7 @@ public class Altruist : Crew
 
     public void Revive()
     {
-        if (!Reviving && CustomPlayer.Local.PlayerId == ReviveButton.TargetBody.ParentId)
-        {
-            Flash(Color, CustomGameOptions.ReviveDur);
-
-            if (CustomGameOptions.AltruistTargetBody)
-                ReviveButton.TargetBody?.gameObject.Destroy();
-        }
-
-        Reviving = true;
+        Enabled = true;
         TimeRemaining -= Time.deltaTime;
 
         if (Meeting || IsDead)
@@ -56,7 +48,7 @@ public class Altruist : Crew
 
     public void UnRevive()
     {
-        Reviving = false;
+        Enabled = false;
         LastRevived = DateTime.UtcNow;
 
         if (Success)
@@ -106,6 +98,9 @@ public class Altruist : Crew
         CallRpc(CustomRPC.Action, ActionsRPC.AltruistRevive, this, RevivingBody);
         TimeRemaining = CustomGameOptions.ReviveDur;
         Success = true;
-        Revive();
+        Flash(Color, CustomGameOptions.ReviveDur);
+
+        if (CustomGameOptions.AltruistTargetBody)
+            ReviveButton.TargetBody?.gameObject.Destroy();
     }
 }

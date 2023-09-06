@@ -6,7 +6,7 @@ public class Sidekick : Syndicate
     public Rebel Rebel { get; set; }
     public bool CanPromote => (Rebel.IsDead || Rebel.Disconnected) && !IsDead;
 
-    public override Color32 Color => ClientGameOptions.CustomSynColors ? Colors.Sidekick : Colors.Syndicate;
+    public override Color Color => ClientGameOptions.CustomSynColors ? Colors.Sidekick : Colors.Syndicate;
     public override string Name => "Sidekick";
     public override LayerEnum Type => LayerEnum.Sidekick;
     public override Func<string> StartText => () => "Succeed The <color=#FFFCCEFF>Rebel</color>";
@@ -14,7 +14,7 @@ public class Sidekick : Syndicate
         + $"of your former role\n{CommonAbilities}";
     public override InspectorResults InspectorResults => InspectorResults.IsCold;
 
-    public Sidekick(PlayerControl player) : base(player) => RoleAlignment = RoleAlignment.SyndicateUtil;
+    public Sidekick(PlayerControl player) : base(player) => Alignment = Alignment.SyndicateUtil;
 
     public void TurnRebel()
     {
@@ -22,7 +22,7 @@ public class Sidekick : Syndicate
         {
             FormerRole = FormerRole,
             RoleBlockImmune = FormerRole.RoleBlockImmune,
-            RoleAlignment = FormerRole.RoleAlignment
+            Alignment = FormerRole.Alignment
         };
         newRole.RoleUpdate(this);
 

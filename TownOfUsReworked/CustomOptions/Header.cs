@@ -10,5 +10,6 @@ public class CustomHeaderOption : CustomOption
     {
         base.OptionCreated();
         Setting.Cast<ToggleOption>().TitleText.text = Name;
+        Setting.gameObject.GetComponent<PassiveButton>().Destroy();
     }
 }

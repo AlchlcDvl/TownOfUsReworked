@@ -2,7 +2,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public class Crew : Role
 {
-    public override Color32 Color => Colors.Crew;
+    public override Color Color => Colors.Crew;
     public override Faction BaseFaction => Faction.Crew;
 
     protected Crew(PlayerControl player) : base(player)

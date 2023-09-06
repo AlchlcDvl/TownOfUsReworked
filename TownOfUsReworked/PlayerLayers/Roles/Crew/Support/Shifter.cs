@@ -6,7 +6,7 @@ public class Shifter : Crew
     public CustomButton ShiftButton { get; set; }
     public float Timer => ButtonUtils.Timer(Player, LastShifted, CustomGameOptions.ShiftCd);
 
-    public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Shifter : Colors.Crew;
+    public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Shifter : Colors.Crew;
     public override string Name => "Shifter";
     public override LayerEnum Type => LayerEnum.Shifter;
     public override Func<string> StartText => () => "Shift Around Roles";
@@ -15,7 +15,7 @@ public class Shifter : Crew
 
     public Shifter(PlayerControl player) : base(player)
     {
-        RoleAlignment = RoleAlignment.CrewSupport;
+        Alignment = Alignment.CrewSupport;
         ShiftButton = new(this, "Shift", AbilityTypes.Direct, "ActionSecondary", Shift);
     }
 
@@ -26,15 +26,15 @@ public class Shifter : Crew
 
         var interact = Interact(Player, ShiftButton.TargetPlayer);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
         {
             CallRpc(CustomRPC.Action, ActionsRPC.Shift, this, ShiftButton.TargetPlayer);
             Shift(this, ShiftButton.TargetPlayer);
         }
 
-        if (interact[0])
+        if (interact.Reset)
             LastShifted = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastShifted.AddSeconds(CustomGameOptions.ProtectKCReset);
     }
 

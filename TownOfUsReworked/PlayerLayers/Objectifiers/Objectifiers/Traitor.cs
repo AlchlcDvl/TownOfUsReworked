@@ -7,7 +7,7 @@ public class Traitor : Objectifier
     public Faction Side { get; set; }
     public bool Betray => ((Side == Faction.Intruder && LastImp) || (Side == Faction.Syndicate && LastSyn)) && !IsDead && Turned && !Betrayed;
 
-    public override Color32 Color
+    public override Color Color
     {
         get
         {
@@ -53,8 +53,8 @@ public class Traitor : Objectifier
         turnIntruder = false;
         turnSyndicate = false;
 
-        var IntrudersAlive = CustomPlayer.AllPlayers.Count(x => x.Is(Faction.Intruder) && !x.Data.IsDead && !x.Data.Disconnected);
-        var SyndicateAlive = CustomPlayer.AllPlayers.Count(x => x.Is(Faction.Syndicate) && !x.Data.IsDead && !x.Data.Disconnected);
+        var IntrudersAlive = CustomPlayer.AllPlayers.Count(x => x.Is(Faction.Intruder) && !x.HasDied());
+        var SyndicateAlive = CustomPlayer.AllPlayers.Count(x => x.Is(Faction.Syndicate) && !x.HasDied());
 
         if (IntrudersAlive > 0 && SyndicateAlive > 0)
         {
@@ -103,7 +103,7 @@ public class Traitor : Objectifier
 
         Side = traitorRole.Faction;
         Turned = true;
-        traitorRole.RoleAlignment = traitorRole.RoleAlignment.GetNewAlignment(traitorRole.Faction);
+        traitorRole.Alignment = traitorRole.Alignment.GetNewAlignment(traitorRole.Faction);
 
         foreach (var snitch in Ability.GetAbilities<Snitch>(LayerEnum.Snitch))
         {

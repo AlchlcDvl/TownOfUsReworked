@@ -16,19 +16,14 @@ public class Preset : CustomButtonOption
         foreach (var button in SlotButtons)
         {
             if (button.Setting != null)
-            {
                 button.Setting.gameObject.SetActive(true);
-                options.Add(button.Setting);
-            }
             else
             {
-                var toggle = UObject.Instantiate(togglePrefab, togglePrefab.transform.parent);
-                toggle.transform.GetChild(2).gameObject.SetActive(false);
-                toggle.transform.GetChild(0).localPosition += new Vector3(1f, 0f, 0f);
-                button.Setting = toggle;
+                button.Setting = CreateButton();
                 button.OptionCreated();
-                options.Add(toggle);
             }
+
+            options.Add(button.Setting);
         }
 
         return options;
@@ -42,7 +37,7 @@ public class Preset : CustomButtonOption
             yield break;
 
         var __instance = UObject.FindObjectOfType<GameOptionsMenu>();
-        SlotButtons.Skip(1).ToList().ForEach(x => x.Setting.gameObject.Destroy());
+        SlotButtons.Skip(1).ForEach(x => x.Setting.gameObject.Destroy());
         Loading = SlotButtons[0];
         Loading.Do = () => {};
         Loading.Setting.Cast<ToggleOption>().TitleText.text = "Loading...";
@@ -59,7 +54,7 @@ public class Preset : CustomButtonOption
     public void ToDo()
     {
         SlotButtons.Clear();
-        Presets.Keys.ToList().ForEach(x => SlotButtons.Add(new(MultiMenu.External, x, delegate { LoadPreset(x); })));
+        Presets.Keys.ForEach(x => SlotButtons.Add(new(MultiMenu.External, x, delegate { LoadPreset(x); })));
         SlotButtons.Add(new(MultiMenu.External, "Cancel", delegate { Cancel(FlashWhite); }));
         var options = CreateOptions();
         var __instance = UObject.FindObjectOfType<GameOptionsMenu>();

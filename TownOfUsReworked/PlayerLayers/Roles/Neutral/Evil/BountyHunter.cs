@@ -14,18 +14,18 @@ public class BountyHunter : Neutral
     public PlayerControl RequestingPlayer { get; set; }
     public PlayerControl TentativeTarget { get; set; }
     public bool ButtonUsable => UsesLeft > 0;
-    public bool Failed => (UsesLeft <= 0 && !TargetFound) || (!TargetKilled && (TargetPlayer.Data.IsDead || TargetPlayer.Data.Disconnected));
+    public bool Failed => (UsesLeft <= 0 && !TargetFound) || (!TargetKilled && (TargetPlayer.HasDied()));
     public int UsesLeft { get; set; }
     private int LettersGiven { get; set; }
     private bool LettersExhausted { get; set; }
     private readonly List<string> Letters = new();
-    public bool CanHunt => (TargetFound && !TargetPlayer.Data.IsDead && !TargetPlayer.Data.Disconnected) || (TargetKilled && !CustomGameOptions.AvoidNeutralKingmakers);
-    public bool CanRequest => (RequestingPlayer == null || RequestingPlayer.Data.IsDead || RequestingPlayer.Data.Disconnected) && TargetPlayer == null;
+    public bool CanHunt => (TargetFound && !TargetPlayer.HasDied()) || (TargetKilled && !CustomGameOptions.AvoidNeutralKingmakers);
+    public bool CanRequest => (RequestingPlayer == null || RequestingPlayer.HasDied()) && TargetPlayer == null;
     public bool Assigned { get; set; }
     public int Rounds { get; set; }
     public bool TargetFailed => TargetPlayer == null && Rounds > 2;
 
-    public override Color32 Color => ClientGameOptions.CustomNeutColors ? Colors.BountyHunter : Colors.Neutral;
+    public override Color Color => ClientGameOptions.CustomNeutColors ? Colors.BountyHunter : Colors.Neutral;
     public override string Name => "Bounty Hunter";
     public override LayerEnum Type => LayerEnum.BountyHunter;
     public override Func<string> StartText => () => "Find And Kill Your Target";
@@ -38,7 +38,7 @@ public class BountyHunter : Neutral
     public BountyHunter(PlayerControl player) : base(player)
     {
         Objectives = () => TargetKilled ? "- You have completed the bounty" : (TargetPlayer == null ? "- Recieve a bounty" : "- Find and kill your target");
-        RoleAlignment = RoleAlignment.NeutralEvil;
+        Alignment = Alignment.NeutralEvil;
         UsesLeft = CustomGameOptions.BountyHunterGuesses;
         TargetPlayer = null;
         GuessButton = new(this, "BHGuess", AbilityTypes.Direct, "Secondary", Guess, true);
@@ -219,7 +219,7 @@ public class BountyHunter : Neutral
         {
             var interact = Interact(Player, HuntButton.TargetPlayer, true);
 
-            if (!interact[3])
+            if (!interact.AbilityUsed)
                 RpcMurderPlayer(Player, HuntButton.TargetPlayer);
 
             TargetKilled = true;
@@ -230,11 +230,11 @@ public class BountyHunter : Neutral
         {
             var interact = Interact(Player, HuntButton.TargetPlayer, true);
 
-            if (interact[0] || interact[3])
+            if (interact.Reset || interact.AbilityUsed)
                 LastChecked = DateTime.UtcNow;
-            else if (interact[1])
+            else if (interact.Protected)
                 LastChecked.AddSeconds(CustomGameOptions.ProtectKCReset);
-            else if (interact[2])
+            else if (interact.Vested)
                 LastChecked.AddSeconds(CustomGameOptions.VestKCReset);
         }
     }

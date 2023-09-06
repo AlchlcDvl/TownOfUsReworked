@@ -10,7 +10,7 @@ public class SerialKiller : Neutral
     public float TimeRemaining { get; set; }
     public bool Lusted => TimeRemaining > 0f;
 
-    public override Color32 Color => ClientGameOptions.CustomNeutColors ? Colors.SerialKiller : Colors.Neutral;
+    public override Color Color => ClientGameOptions.CustomNeutColors ? Colors.SerialKiller : Colors.Neutral;
     public override string Name => "Serial Killer";
     public override LayerEnum Type => LayerEnum.SerialKiller;
     public override Func<string> StartText => () => "You Like To Play With Knives";
@@ -24,7 +24,7 @@ public class SerialKiller : Neutral
     public SerialKiller(PlayerControl player) : base(player)
     {
         Objectives = () => "- Stab anyone who can oppose you";
-        RoleAlignment = RoleAlignment.NeutralKill;
+        Alignment = Alignment.NeutralKill;
         RoleBlockImmune = true;
         StabButton = new(this, "Stab", AbilityTypes.Direct, "ActionSecondary", Stab, Exception);
         BloodlustButton = new(this, "Bloodlust", AbilityTypes.Effect, "Secondary", Lust);
@@ -51,7 +51,6 @@ public class SerialKiller : Neutral
             return;
 
         TimeRemaining = CustomGameOptions.BloodlustDur;
-        Bloodlust();
     }
 
     public void Stab()
@@ -61,11 +60,11 @@ public class SerialKiller : Neutral
 
         var interact = Interact(Player, StabButton.TargetPlayer, true);
 
-        if (interact[3] || interact[0])
+        if (interact.AbilityUsed || interact.Reset)
             LastKilled = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
-        else if (interact[2])
+        else if (interact.Vested)
             LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
     }
 

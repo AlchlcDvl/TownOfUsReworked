@@ -6,7 +6,7 @@ public class Juggernaut : Neutral
     public int JuggKills { get; set; }
     public CustomButton AssaultButton { get; set; }
 
-    public override Color32 Color => ClientGameOptions.CustomNeutColors ? Colors.Juggernaut : Colors.Neutral;
+    public override Color Color => ClientGameOptions.CustomNeutColors ? Colors.Juggernaut : Colors.Neutral;
     public override string Name => "Juggernaut";
     public override LayerEnum Type => LayerEnum.Juggernaut;
     public override Func<string> StartText => () => "Your Power Grows With Every Kill";
@@ -17,7 +17,7 @@ public class Juggernaut : Neutral
     public Juggernaut(PlayerControl player) : base(player)
     {
         Objectives = () => "- Assault anyone who can oppose you";
-        RoleAlignment = RoleAlignment.NeutralKill;
+        Alignment = Alignment.NeutralKill;
         JuggKills = 0;
         AssaultButton = new(this, "Assault", AbilityTypes.Direct, "ActionSecondary", Assault, Exception);
     }
@@ -29,17 +29,17 @@ public class Juggernaut : Neutral
 
         var interact = Interact(Player, AssaultButton.TargetPlayer, true, false, JuggKills >= 4);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
             JuggKills++;
 
         if (JuggKills == 4 && Local)
             Flash(Color);
 
-        if (interact[0])
+        if (interact.Reset)
             LastKilled = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
-        else if (interact[2])
+        else if (interact.Vested)
             LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
     }
 

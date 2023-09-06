@@ -11,7 +11,7 @@ public class Veteran : Crew
     public CustomButton AlertButton { get; set; }
     public float Timer => ButtonUtils.Timer(Player, LastAlerted, CustomGameOptions.AlertCd);
 
-    public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Veteran : Colors.Crew;
+    public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Veteran : Colors.Crew;
     public override string Name => "Veteran";
     public override LayerEnum Type => LayerEnum.Veteran;
     public override Func<string> StartText => () => "Alert To Kill Anyone Who Dares To Touches You";
@@ -21,7 +21,7 @@ public class Veteran : Crew
     public Veteran(PlayerControl player) : base(player)
     {
         UsesLeft = CustomGameOptions.MaxAlerts;
-        RoleAlignment = RoleAlignment.CrewKill;
+        Alignment = Alignment.CrewKill;
         AlertButton = new(this, "Alert", AbilityTypes.Effect, "ActionSecondary", HitAlert, true);
     }
 
@@ -47,7 +47,6 @@ public class Veteran : Crew
 
         TimeRemaining = CustomGameOptions.AlertDur;
         UsesLeft--;
-        Alert();
         CallRpc(CustomRPC.Action, ActionsRPC.Alert, this);
     }
 

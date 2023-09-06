@@ -25,7 +25,7 @@ public class Transporter : Crew
     public Vent Vent2 { get; set; }
     public float Timer => ButtonUtils.Timer(Player, LastTransported, CustomGameOptions.TransportCd);
 
-    public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Transporter : Colors.Crew;
+    public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Transporter : Colors.Crew;
     public override string Name => "Transporter";
     public override LayerEnum Type => LayerEnum.Transporter;
     public override Func<string> StartText => () => "Swap Locations Of Players For Maximum Confusion";
@@ -37,7 +37,7 @@ public class Transporter : Crew
         TransportPlayer1 = null;
         TransportPlayer2 = null;
         UsesLeft = CustomGameOptions.MaxTransports;
-        RoleAlignment = RoleAlignment.CrewSupport;
+        Alignment = Alignment.CrewSupport;
         UntransportablePlayers = new();
         TransportMenu1 = new(Player, Click1, Exception1);
         TransportMenu2 = new(Player, Click2, Exception2);
@@ -233,11 +233,11 @@ public class Transporter : Crew
     {
         var interact = Interact(Player, player);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
             TransportPlayer1 = player;
-        else if (interact[0])
+        else if (interact.Reset)
             LastTransported = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastTransported.AddSeconds(CustomGameOptions.ProtectKCReset);
     }
 
@@ -245,11 +245,11 @@ public class Transporter : Crew
     {
         var interact = Interact(Player, player);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
             TransportPlayer2 = player;
-        else if (interact[0])
+        else if (interact.Reset)
             LastTransported = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastTransported.AddSeconds(CustomGameOptions.ProtectKCReset);
     }
 
@@ -334,10 +334,7 @@ public class Transporter : Crew
         {
             var player = PlayerById(entry.Key);
 
-            if (player == null)
-                continue;
-
-            if (player.Data.IsDead || player.Data.Disconnected)
+            if (player == null || player.HasDied())
                 continue;
 
             if (UntransportablePlayers.ContainsKey(player.PlayerId) && player.moveable && UntransportablePlayers.GetValueSafe(player.PlayerId).AddSeconds(0.5) < DateTime.UtcNow)

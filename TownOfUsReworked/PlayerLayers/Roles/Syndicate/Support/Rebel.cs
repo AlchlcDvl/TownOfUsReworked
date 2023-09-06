@@ -5,7 +5,7 @@ public class Rebel : Syndicate
     public bool HasDeclared { get; set; }
     public CustomButton SidekickButton { get; set; }
 
-    public override Color32 Color => ClientGameOptions.CustomSynColors ? Colors.Rebel : Colors.Syndicate;
+    public override Color Color => ClientGameOptions.CustomSynColors ? Colors.Rebel : Colors.Syndicate;
     public override string Name => "Rebel";
     public override LayerEnum Type => LayerEnum.Rebel;
     public override Func<string> StartText => () => "Promote Your Fellow <color=#008000FF>Syndicate</color> To Do Better";
@@ -16,7 +16,7 @@ public class Rebel : Syndicate
 
     public Rebel(PlayerControl player) : base(player)
     {
-        RoleAlignment = RoleAlignment.SyndicateSupport;
+        Alignment = Alignment.SyndicateSupport;
         SidekickButton = new(this, "Sidekick", AbilityTypes.Direct, "Secondary", Sidekick);
     }
 
@@ -47,7 +47,7 @@ public class Rebel : Syndicate
 
         var interact = Interact(Player, SidekickButton.TargetPlayer);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
         {
             CallRpc(CustomRPC.Action, ActionsRPC.Sidekick, this, SidekickButton.TargetPlayer);
             Sidekick(this, SidekickButton.TargetPlayer);

@@ -10,6 +10,8 @@ public static class CustomGameOptions
     public static int InteractionDistance => Generate.InteractionDistance;
     public static int EmergencyButtonCount => Generate.EmergencyButtonCount;
     public static int EmergencyButtonCooldown => Generate.EmergencyButtonCooldown;
+    public static bool EnableInitialCds => Generate.EnableInitialCds;
+    public static bool EnableMeetingCds => Generate.EnableMeetingCds;
     public static float InitialCooldowns => Generate.InitialCooldowns;
     public static float MeetingCooldowns => Generate.MeetingCooldowns;
     public static float ReportDistance => Generate.ReportDistance;

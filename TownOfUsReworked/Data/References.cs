@@ -15,7 +15,6 @@ public static class References
     public static List<PlayerVoteArea> AllVoteAreas => Meeting.playerStates.ToList();
     public static PlayerControl FirstDead;
     public static PlayerControl CachedFirstDead;
-    public static bool RoundOne;
     public static HudManager HUD => HudManager.Instance;
     public static MeetingHud Meeting => MeetingHud.Instance;
     public static ShipStatus Ship => ShipStatus.Instance;

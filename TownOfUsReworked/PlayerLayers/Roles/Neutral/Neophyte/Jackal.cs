@@ -10,7 +10,7 @@ public class Jackal : Neutral
     public DateTime LastRecruited { get; set; }
     public List<byte> Recruited { get; set; }
 
-    public override Color32 Color => ClientGameOptions.CustomNeutColors ? Colors.Jackal : Colors.Neutral;
+    public override Color Color => ClientGameOptions.CustomNeutColors ? Colors.Jackal : Colors.Neutral;
     public override string Name => "Jackal";
     public override LayerEnum Type => LayerEnum.Jackal;
     public override Func<string> StartText => () => "Gain A Majority";
@@ -25,7 +25,7 @@ public class Jackal : Neutral
         Objectives = () => "- Recruit or kill anyone who can oppose the <color=#575657FF>Cabal</color>";
         SubFaction = SubFaction.Cabal;
         SubFactionColor = Colors.Cabal;
-        RoleAlignment = RoleAlignment.NeutralNeo;
+        Alignment = Alignment.NeutralNeo;
         Recruited = new() { Player.PlayerId };
         RecruitButton = new(this, "Recruit", AbilityTypes.Direct, "ActionSecondary", Recruit, Exception);
         SubFactionSymbol = "$";
@@ -38,12 +38,12 @@ public class Jackal : Neutral
 
         var interact = Interact(Player, RecruitButton.TargetPlayer, false, true);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
             RoleGen.RpcConvert(RecruitButton.TargetPlayer.PlayerId, Player.PlayerId, SubFaction.Cabal);
 
-        if (interact[0])
+        if (interact.Reset)
             LastRecruited = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastRecruited.AddSeconds(CustomGameOptions.ProtectKCReset);
     }
 

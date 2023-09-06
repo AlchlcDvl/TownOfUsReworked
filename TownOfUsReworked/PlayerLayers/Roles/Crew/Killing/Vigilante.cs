@@ -13,7 +13,7 @@ public class Vigilante : Crew
     public bool RoundOne { get; set; }
     public float Timer => ButtonUtils.Timer(Player, LastKilled, CustomGameOptions.ShootCd);
 
-    public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Vigilante : Colors.Crew;
+    public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Vigilante : Colors.Crew;
     public override string Name => "Vigilante";
     public override LayerEnum Type => LayerEnum.Vigilante;
     public override Func<string> StartText => () => "Shoot The <color=#FF0000FF>Evildoers</color>";
@@ -22,7 +22,7 @@ public class Vigilante : Crew
 
     public Vigilante(PlayerControl player) : base(player)
     {
-        RoleAlignment = RoleAlignment.CrewKill;
+        Alignment = Alignment.CrewKill;
         UsesLeft = CustomGameOptions.MaxBullets;
         ShootButton = new(this, "Shoot", AbilityTypes.Direct, "ActionSecondary", Shoot, true);
     }
@@ -51,15 +51,15 @@ public class Vigilante : Crew
             return;
 
         var target = ShootButton.TargetPlayer;
-        var flag4 = target.Is(Faction.Intruder) || target.Is(RoleAlignment.NeutralKill) || target.Is(Faction.Syndicate) || target.Is(LayerEnum.Troll) || (target.Is(LayerEnum.Jester) &&
+        var flag4 = target.Is(Faction.Intruder) || target.Is(Alignment.NeutralKill) || target.Is(Faction.Syndicate) || target.Is(LayerEnum.Troll) || (target.Is(LayerEnum.Jester) &&
             CustomGameOptions.VigiKillsJester) || (target.Is(LayerEnum.Executioner) && CustomGameOptions.VigiKillsExecutioner) || (target.Is(LayerEnum.Cannibal) &&
-            CustomGameOptions.VigiKillsCannibal) || (target.Is(RoleAlignment.NeutralBen) && CustomGameOptions.VigiKillsNB) || target.Is(RoleAlignment.NeutralNeo) ||
-            target.Is(RoleAlignment.NeutralPros) || target.IsFramed() || Player.IsFramed() || Player.NotOnTheSameSide() || target.NotOnTheSameSide() ||
+            CustomGameOptions.VigiKillsCannibal) || (target.Is(Alignment.NeutralBen) && CustomGameOptions.VigiKillsNB) || target.Is(Alignment.NeutralNeo) ||
+            target.Is(Alignment.NeutralPros) || target.IsFramed() || Player.IsFramed() || Player.NotOnTheSameSide() || target.NotOnTheSameSide() ||
             Player.Is(LayerEnum.Corrupted) || (target.Is(LayerEnum.BountyHunter) && CustomGameOptions.VigiKillsBH) || (target.Is(LayerEnum.Actor) &&
-            CustomGameOptions.VigiKillsActor) || target.Is(RoleAlignment.NeutralHarb);
+            CustomGameOptions.VigiKillsActor) || target.Is(Alignment.NeutralHarb);
         var interact = Interact(Player, target, flag4);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
         {
             if (flag4 && !Player.IsFramed())
             {
@@ -89,11 +89,11 @@ public class Vigilante : Crew
 
             UsesLeft--;
         }
-        else if (interact[0])
+        else if (interact.Reset)
             LastKilled = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
-        else if (interact[2])
+        else if (interact.Vested)
             LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
     }
 }

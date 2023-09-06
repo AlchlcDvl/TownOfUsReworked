@@ -7,10 +7,7 @@ public static class ButtonUtils
 
     public static void DisableButtons(this PlayerControl player)
     {
-        foreach (var button in CustomButton.AllButtons.Where(x => x.Owner.Player == player))
-            button.Disable();
-
-        HUD.KillButton.gameObject.SetActive(false);
+        CustomButton.AllButtons.Where(x => x.Owner.Player == player).ForEach(x => x.Disable());
         HUD.SabotageButton.gameObject.SetActive(false);
         HUD.ReportButton.gameObject.SetActive(false);
         HUD.ImpostorVentButton.gameObject.SetActive(false);
@@ -24,9 +21,7 @@ public static class ButtonUtils
 
     public static void EnableButtons(this PlayerControl player)
     {
-        foreach (var button in CustomButton.AllButtons.Where(x => x.Owner.Player == player))
-            button.Enable();
-
+        CustomButton.AllButtons.Where(x => x.Owner.Player == player).ForEach(x => x.Enable());
         HUD.KillButton.gameObject.SetActive(false);
         HUD.SabotageButton.gameObject.SetActive(player.CanSabotage());
         HUD.ReportButton.gameObject.SetActive(!player.Is(LayerEnum.Coward));
@@ -53,9 +48,19 @@ public static class ButtonUtils
             HUD.PetButton.gameObject.SetActive(false);
     }
 
-    public static void DestroyButtons(this PlayerControl player) => CustomButton.AllButtons.Where(x => x.Owner.Player == player).ToList().ForEach(x => x.Destroy());
+    public static void SetDelay(this ActionButton button, float timer)
+    {
+        button.isCoolingDown = timer > 0f;
+        button.graphic.transform.localPosition = button.position + ((Vector3)URandom.insideUnitCircle * 0.05f);
+        button.cooldownTimerText.text = Mathf.CeilToInt(timer).ToString();
+        button.cooldownTimerText.color = UColor.white;
+        button.cooldownTimerText.gameObject.SetActive(true);
+        button.SetCooldownFill(1f);
+    }
 
-    public static bool CannotUse(this PlayerControl player) => player.onLadder || player.IsBlocked() || (player.inVent && !CustomGameOptions.VentTargeting) || player.inMovingPlat;
+    public static void DestroyButtons(this PlayerControl player) => CustomButton.AllButtons.Where(x => x.Owner.Player == player).ForEach(x => x.Destroy());
+
+    public static bool CannotUse(this PlayerControl player) => player.onLadder || player.IsBlocked() || player.inVent || player.inMovingPlat;
 
     public static float GetModifiedCooldown(this PlayerControl player, float cooldown, float difference = 0f, float factor = 1f)
     {
@@ -110,7 +115,6 @@ public static class ButtonUtils
     {
         var local = CustomPlayer.Local;
         var role = Role.LocalRole;
-        RoundOne = start;
 
         if (role.Requesting && !start)
             role.BountyTimer++;
@@ -122,9 +126,9 @@ public static class ButtonUtils
         {
             var role2 = (Chameleon)role;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
                 role2.LastSwooped = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.SwoopCd);
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
                 role2.LastSwooped = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.SwoopCd);
             else
                 role2.LastSwooped = DateTime.UtcNow;
@@ -133,9 +137,9 @@ public static class ButtonUtils
         {
             var role2 = (Detective)role;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
                 role2.LastExamined = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ExamineCd);
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
                 role2.LastExamined = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.ExamineCd);
             else
                 role2.LastExamined = DateTime.UtcNow;
@@ -145,9 +149,9 @@ public static class ButtonUtils
             var role2 = (Escort)role;
             role2.BlockTarget = null;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
                 role2.LastBlocked = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.EscortCd);
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
                 role2.LastBlocked = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.EscortCd);
             else
                 role2.LastBlocked = DateTime.UtcNow;
@@ -156,26 +160,26 @@ public static class ButtonUtils
         {
             var role2 = (Inspector)role;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
                 role2.LastInspected = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.InspectCd);
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
                 role2.LastInspected = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.InspectCd);
             else
                 role2.LastInspected = DateTime.UtcNow;
 
-            if (local.Data.IsDead && DeadSeeEverything)
+            if (local.HasDied() && DeadSeeEverything)
                 role2.Inspected.Clear();
         }
         else if (local.Is(LayerEnum.Coroner))
         {
             var role2 = (Coroner)role;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
             {
                 role2.LastCompared = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.CompareCd);
                 role2.LastAutopsied = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.AutopsyCd);
             }
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
             {
                 role2.LastCompared = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.CompareCd);
                 role2.LastAutopsied = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.AutopsyCd);
@@ -191,9 +195,9 @@ public static class ButtonUtils
             var role2 = (Medium)role;
             role2.OnLobby();
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
                 role2.LastMediated = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.MediateCd);
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
                 role2.LastMediated = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.MediateCd);
             else
                 role2.LastMediated = DateTime.UtcNow;
@@ -203,9 +207,9 @@ public static class ButtonUtils
             var role2 = (Operative)role;
             role2.BuggedPlayers.Clear();
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
                 role2.LastBugged = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.BugCd);
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
                 role2.LastBugged = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.BugCd);
             else
                 role2.LastBugged = DateTime.UtcNow;
@@ -217,9 +221,9 @@ public static class ButtonUtils
         {
             var role2 = (Sheriff)role;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
                 role2.LastInterrogated = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.InterrogateCd);
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
                 role2.LastInterrogated = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.InterrogateCd);
             else
                 role2.LastInterrogated = DateTime.UtcNow;
@@ -228,9 +232,9 @@ public static class ButtonUtils
         {
             var role2 = (Shifter)role;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
                 role2.LastShifted = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ShiftCd);
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
                 role2.LastShifted = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.ShiftCd);
             else
                 role2.LastShifted = DateTime.UtcNow;
@@ -239,9 +243,9 @@ public static class ButtonUtils
         {
             var role2 = (Tracker)role;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
                 role2.LastTracked = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.TrackCd);
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
                 role2.LastTracked = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.TrackCd);
             else
                 role2.LastTracked = DateTime.UtcNow;
@@ -258,9 +262,9 @@ public static class ButtonUtils
             role2.TransportPlayer1 = null;
             role2.TransportPlayer2 = null;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
                 role2.LastTransported = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.TransportCd);
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
                 role2.LastTransported = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.TransportCd);
             else
                 role2.LastTransported = DateTime.UtcNow;
@@ -269,9 +273,9 @@ public static class ButtonUtils
         {
             var role2 = (Altruist)role;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
                 role2.LastRevived = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ReviveCd);
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
                 role2.LastRevived = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.ReviveCd);
             else
                 role2.LastRevived = DateTime.UtcNow;
@@ -280,9 +284,9 @@ public static class ButtonUtils
         {
             var role2 = (VampireHunter)role;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
                 role2.LastStaked = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.StakeCd);
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
                 role2.LastStaked = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.StakeCd);
             else
                 role2.LastStaked = DateTime.UtcNow;
@@ -291,9 +295,9 @@ public static class ButtonUtils
         {
             var role2 = (Veteran)role;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
                 role2.LastAlerted = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.AlertCd);
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
                 role2.LastAlerted = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.AlertCd);
             else
                 role2.LastAlerted = DateTime.UtcNow;
@@ -302,9 +306,9 @@ public static class ButtonUtils
         {
             var role2 = (Mystic)role;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
                 role2.LastRevealed = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.MysticRevealCd);
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
                 role2.LastRevealed = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.MysticRevealCd);
             else
                 role2.LastRevealed = DateTime.UtcNow;
@@ -313,9 +317,9 @@ public static class ButtonUtils
         {
             var role2 = (Seer)role;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
                 role2.LastSeered = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.SeerCd);
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
                 role2.LastSeered = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.SeerCd);
             else
                 role2.LastSeered = DateTime.UtcNow;
@@ -325,9 +329,9 @@ public static class ButtonUtils
             var role2 = (Vigilante)role;
             role2.RoundOne = start && CustomGameOptions.RoundOneNoShot;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
                 role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ShootCd);
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
                 role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.ShootCd);
             else
                 role2.LastKilled = DateTime.UtcNow;
@@ -342,9 +346,9 @@ public static class ButtonUtils
             var role2 = (Monarch)role;
             role2.RoundOne = start && CustomGameOptions.RoundOneNoKnighting;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
                 role2.LastKnighted = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.KnightingCd);
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
                 role2.LastKnighted = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.KnightingCd);
             else
                 role2.LastKnighted = DateTime.UtcNow;
@@ -392,7 +396,7 @@ public static class ButtonUtils
                 role2.LastTransported = DateTime.UtcNow;
             }
 
-            if (local.Data.IsDead && DeadSeeEverything)
+            if (local.HasDied() && DeadSeeEverything)
                 role2.Inspected.Clear();
 
             if (CustomGameOptions.BugsRemoveOnNewRound && meeting)
@@ -413,9 +417,9 @@ public static class ButtonUtils
             var role2 = (Blackmailer)role;
             role2.BlackmailedPlayer = null;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
                 role2.LastBlackmailed = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.BlackmailCd);
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
                 role2.LastBlackmailed = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.BlackmailCd);
             else
                 role2.LastBlackmailed = DateTime.UtcNow;
@@ -424,9 +428,9 @@ public static class ButtonUtils
         {
             var role2 = (Camouflager)role;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
                 role2.LastCamouflaged = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.CamouflagerCd);
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
                 role2.LastCamouflaged = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.CamouflagerCd);
             else
                 role2.LastCamouflaged = DateTime.UtcNow;
@@ -436,9 +440,9 @@ public static class ButtonUtils
             var role2 = (Enforcer)role;
             role2.BombedPlayer = null;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
                 role2.LastBombed = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.EnforceCd);
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
                 role2.LastBombed = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.EnforceCd);
             else
                 role2.LastBombed = DateTime.UtcNow;
@@ -447,14 +451,14 @@ public static class ButtonUtils
         {
             var role2 = (Consigliere)role;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
                 role2.LastInvestigated = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.InvestigateCd);
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
                 role2.LastInvestigated = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.InvestigateCd);
             else
                 role2.LastInvestigated = DateTime.UtcNow;
 
-            if (local.Data.IsDead && DeadSeeEverything)
+            if (local.HasDied() && DeadSeeEverything)
                 role2.Investigated.Clear();
         }
         else if (local.Is(LayerEnum.Consort))
@@ -462,9 +466,9 @@ public static class ButtonUtils
             var role2 = (Consort)role;
             role2.BlockTarget = null;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
                 role2.LastBlocked = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ConsortCd);
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
                 role2.LastBlocked = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.ConsortCd);
             else
                 role2.LastBlocked = DateTime.UtcNow;
@@ -476,12 +480,12 @@ public static class ButtonUtils
             role2.DisguisedPlayer = null;
             role2.CopiedPlayer = null;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
             {
                 role2.LastDisguised = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.DisguiseCd);
                 role2.LastMeasured = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.MeasureCd);
             }
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
             {
                 role2.LastDisguised = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.DisguiseCd);
                 role2.LastMeasured = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.MeasureCd);
@@ -543,16 +547,16 @@ public static class ButtonUtils
                 role2.LastBlocked = DateTime.UtcNow;
             }
 
-            if (local.Data.IsDead && DeadSeeEverything)
+            if (local.HasDied() && DeadSeeEverything)
                 role2.Investigated.Clear();
         }
         else if (local.Is(LayerEnum.Grenadier))
         {
             var role2 = (Grenadier)role;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
                 role2.LastFlashed = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.FlashCd);
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
                 role2.LastFlashed = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.FlashCd);
             else
                 role2.LastFlashed = DateTime.UtcNow;
@@ -562,12 +566,12 @@ public static class ButtonUtils
             var role2 = (Janitor)role;
             role2.CurrentlyDragging = null;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
             {
                 role2.LastCleaned = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.CleanCd);
                 role2.LastDragged = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.DragCd);
             }
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
             {
                 role2.LastCleaned = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.CleanCd);
                 role2.LastDragged = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.DragCd);
@@ -582,9 +586,9 @@ public static class ButtonUtils
         {
             var role2 = (Miner)role;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
                 role2.LastMined = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.MineCd);
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
                 role2.LastMined = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.MineCd);
             else
                 role2.LastMined = DateTime.UtcNow;
@@ -595,12 +599,12 @@ public static class ButtonUtils
             role2.SampledPlayer = null;
             role2.MorphedPlayer = null;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
             {
                 role2.LastMorphed = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.MorphCd);
                 role2.LastSampled = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.SampleCd);
             }
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
             {
                 role2.LastMorphed = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.MorphCd);
                 role2.LastSampled = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.SampleCd);
@@ -616,12 +620,12 @@ public static class ButtonUtils
             var role2 = (Teleporter)role;
             role2.TeleportPoint = Vector3.zero;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
             {
                 role2.LastTeleported = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.TeleportCd);
                 role2.LastMarked = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.TeleMarkCd);
             }
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
             {
                 role2.LastMarked = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.TeleMarkCd);
                 role2.LastTeleported = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.TeleportCd);
@@ -636,9 +640,9 @@ public static class ButtonUtils
         {
             var role2 = (Wraith)role;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
                 role2.LastInvis = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.InvisCd);
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
                 role2.LastInvis = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.InvisCd);
             else
                 role2.LastInvis = DateTime.UtcNow;
@@ -648,9 +652,9 @@ public static class ButtonUtils
             var role2 = (Ambusher)role;
             role2.AmbushedPlayer = null;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
                 role2.LastAmbushed = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.AmbushCd);
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
                 role2.LastAmbushed = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.AmbushCd);
             else
                 role2.LastAmbushed = DateTime.UtcNow;
@@ -661,7 +665,7 @@ public static class ButtonUtils
 
             if (!role2.Caught)
             {
-                if (meeting)
+                if (meeting&& CustomGameOptions.EnableMeetingCds)
                     role2.LastMarked = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.GhoulMarkCd);
                 else
                     role2.LastMarked = DateTime.UtcNow;
@@ -672,9 +676,9 @@ public static class ButtonUtils
             var role2 = (Concealer)role;
             role2.ConcealedPlayer = null;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
                 role2.LastConcealed = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ConcealCd);
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
                 role2.LastConcealed = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.ConcealCd);
             else
                 role2.LastConcealed = DateTime.UtcNow;
@@ -684,9 +688,9 @@ public static class ButtonUtils
             var role2 = (Silencer)role;
             role2.SilencedPlayer = null;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
                 role2.LastSilenced = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.SilenceCd);
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
                 role2.LastSilenced = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.SilenceCd);
             else
                 role2.LastSilenced = DateTime.UtcNow;
@@ -695,9 +699,9 @@ public static class ButtonUtils
         {
             var role2 = (Spellslinger)role;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
                 role2.LastSpelled = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.SpellCd);
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
                 role2.LastSpelled = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.SpellCd);
             else
                 role2.LastSpelled = DateTime.UtcNow;
@@ -706,9 +710,9 @@ public static class ButtonUtils
         {
             var role2 = (TimeKeeper)role;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
                 role2.LastTimed = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.TimeCd);
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
                 role2.LastTimed = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.TimeCd);
             else
                 role2.LastTimed = DateTime.UtcNow;
@@ -717,9 +721,9 @@ public static class ButtonUtils
         {
             var role2 = (Stalker)role;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
                 role2.LastStalked = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.StalkCd);
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
                 role2.LastStalked = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.StalkCd);
             else
                 role2.LastStalked = DateTime.UtcNow;
@@ -728,12 +732,12 @@ public static class ButtonUtils
         {
             var role2 = (Bomber)role;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
             {
                 role2.LastDetonated = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.DetonateCd);
                 role2.LastPlaced = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.BombCd);
             }
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
             {
                 role2.LastDetonated = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.DetonateCd);
                 role2.LastPlaced = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.BombCd);
@@ -751,14 +755,14 @@ public static class ButtonUtils
         {
             var role2 = (Framer)role;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
                 role2.LastFramed = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.FrameCd);
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
                 role2.LastFramed = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.FrameCd);
             else
                 role2.LastFramed = DateTime.UtcNow;
 
-            if (local.Data.IsDead || local.Data.Disconnected)
+            if (local.HasDied())
                 role2.Framed.Clear();
         }
         else if (local.Is(LayerEnum.Crusader))
@@ -766,9 +770,9 @@ public static class ButtonUtils
             var role2 = (Crusader)role;
             role2.CrusadedPlayer = null;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
                 role2.LastCrusaded = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.CrusadeCd);
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
                 role2.LastCrusaded = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.CrusadeCd);
             else
                 role2.LastCrusaded = DateTime.UtcNow;
@@ -778,9 +782,9 @@ public static class ButtonUtils
             var role2 = (Poisoner)role;
             role2.PoisonedPlayer = null;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
                 role2.LastPoisoned = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.PoisonCd);
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
                 role2.LastPoisoned = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.PoisonCd);
             else
                 role2.LastPoisoned = DateTime.UtcNow;
@@ -801,7 +805,7 @@ public static class ButtonUtils
 
             if (!(role2.FormerRole == null || role2.IsAnarch))
             {
-                if (meeting)
+                if (meeting&& CustomGameOptions.EnableMeetingCds)
                 {
                     role2.LastConcealed = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.ConcealCd);
                     role2.LastFramed = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.FrameCd);
@@ -844,9 +848,9 @@ public static class ButtonUtils
             role2.ShapeshiftPlayer1 = null;
             role2.ShapeshiftPlayer2 = null;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
                 role2.LastShapeshifted = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ShapeshiftCd);
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
                 role2.LastShapeshifted = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.ShapeshiftCd);
             else
                 role2.LastShapeshifted = DateTime.UtcNow;
@@ -857,9 +861,9 @@ public static class ButtonUtils
             role2.WarpPlayer1 = null;
             role2.WarpPlayer2 = null;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
                 role2.LastWarped = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.WarpCd);
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
                 role2.LastWarped = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.WarpCd);
             else
                 role2.LastWarped = DateTime.UtcNow;
@@ -870,13 +874,13 @@ public static class ButtonUtils
             role2.Positive = null;
             role2.Negative = null;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
             {
                 role2.LastCharged = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ChargeCd);
                 role2.LastNegative = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.CollideCd);
                 role2.LastPositive = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.CollideCd);
             }
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
             {
                 role2.LastCharged = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.ChargeCd);
                 role2.LastNegative = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.CollideCd);
@@ -895,7 +899,7 @@ public static class ButtonUtils
 
             if (!role2.Caught)
             {
-                if (meeting)
+                if (meeting&& CustomGameOptions.EnableMeetingCds)
                     role2.LastScreamed = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.ScreamCd);
                 else
                     role2.LastScreamed = DateTime.UtcNow;
@@ -905,12 +909,12 @@ public static class ButtonUtils
         {
             var role2 = (Arsonist)role;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
             {
                 role2.LastDoused = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ArsoDouseCd);
                 role2.LastIgnited = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.IgniteCd);
             }
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
             {
                 role2.LastDoused = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.ArsoDouseCd);
                 role2.LastIgnited = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.IgniteCd);
@@ -925,9 +929,9 @@ public static class ButtonUtils
         {
             var role2 = (Cannibal)role;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
                 role2.LastEaten = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.EatCd);
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
                 role2.LastEaten = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.EatCd);
             else
                 role2.LastEaten = DateTime.UtcNow;
@@ -936,9 +940,9 @@ public static class ButtonUtils
         {
             var role2 = (Cryomaniac)role;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
                 role2.LastDoused = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.CryoDouseCd);
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
                 role2.LastDoused = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.CryoDouseCd);
             else
                 role2.LastDoused = DateTime.UtcNow;
@@ -947,9 +951,9 @@ public static class ButtonUtils
         {
             var role2 = (Dracula)role;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
                 role2.LastBitten = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.BiteCd);
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
                 role2.LastBitten = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.BiteCd);
             else
                 role2.LastBitten = DateTime.UtcNow;
@@ -960,13 +964,13 @@ public static class ButtonUtils
             role2.MimicTarget = null;
             role2.HackTarget = null;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
             {
                 role2.LastMimic = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.MimicCd);
                 role2.LastHacked = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.HackCd);
                 role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.NeutraliseCd);
             }
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
             {
                 role2.LastMimic = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.MimicCd);
                 role2.LastHacked = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.HackCd);
@@ -986,9 +990,9 @@ public static class ButtonUtils
             if (meeting && role2.TargetPlayer == null)
                 role2.Rounds++;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
                 role2.LastProtected = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ProtectCd);
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
                 role2.LastProtected = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.ProtectCd);
             else
                 role2.LastProtected = DateTime.UtcNow;
@@ -1004,9 +1008,9 @@ public static class ButtonUtils
         {
             var role2 = (Jackal)role;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
                 role2.LastRecruited = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.RecruitCd);
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
                 role2.LastRecruited = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.RecruitCd);
             else
                 role2.LastRecruited = DateTime.UtcNow;
@@ -1015,12 +1019,12 @@ public static class ButtonUtils
         {
             var role2 = (Necromancer)role;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
             {
                 role2.LastResurrected = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ResurrectCd);
                 role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.NecroKillCd);
             }
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
             {
                 role2.LastResurrected = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.ResurrectCd);
                 role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.NecroKillCd);
@@ -1035,7 +1039,7 @@ public static class ButtonUtils
         {
             var role2 = (Jester)role;
 
-            if (meeting)
+            if (meeting&& CustomGameOptions.EnableMeetingCds)
                 role2.LastHaunted = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.HauntCd);
             else
                 role2.LastHaunted = DateTime.UtcNow;
@@ -1044,9 +1048,9 @@ public static class ButtonUtils
         {
             var role2 = (Juggernaut)role;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
                 role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.AssaultCd);
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
                 role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.AssaultCd);
             else
                 role2.LastKilled = DateTime.UtcNow;
@@ -1055,9 +1059,9 @@ public static class ButtonUtils
         {
             var role2 = (Murderer)role;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
                 role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.MurderCd);
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
                 role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.MurderCd);
             else
                 role2.LastKilled = DateTime.UtcNow;
@@ -1066,9 +1070,9 @@ public static class ButtonUtils
         {
             var role2 = (Pestilence)role;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
                 role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ObliterateCd);
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
                 role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.ObliterateCd);
             else
                 role2.LastKilled = DateTime.UtcNow;
@@ -1077,9 +1081,9 @@ public static class ButtonUtils
         {
             var role2 = (Plaguebearer)role;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
                 role2.LastInfected = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.InfectCd);
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
                 role2.LastInfected = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.InfectCd);
             else
                 role2.LastInfected = DateTime.UtcNow;
@@ -1088,12 +1092,12 @@ public static class ButtonUtils
         {
             var role2 = (SerialKiller)role;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
             {
                 role2.LastLusted = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.BloodlustCd);
                 role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.StabCd);
             }
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
             {
                 role2.LastLusted = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.BloodlustCd);
                 role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.StabCd);
@@ -1108,9 +1112,9 @@ public static class ButtonUtils
         {
             var role2 = (Survivor)role;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
                 role2.LastVested = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.VestCd);
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
                 role2.LastVested = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.VestCd);
             else
                 role2.LastVested = DateTime.UtcNow;
@@ -1119,9 +1123,9 @@ public static class ButtonUtils
         {
             var role2 = (Thief)role;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
                 role2.LastStolen = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.StealCd);
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
                 role2.LastStolen = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.StealCd);
             else
                 role2.LastStolen = DateTime.UtcNow;
@@ -1130,9 +1134,9 @@ public static class ButtonUtils
         {
             var role2 = (Troll)role;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
                 role2.LastInteracted = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.InteractCd);
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
                 role2.LastInteracted = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.InteractCd);
             else
                 role2.LastInteracted = DateTime.UtcNow;
@@ -1141,9 +1145,9 @@ public static class ButtonUtils
         {
             var role2 = (Werewolf)role;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
                 role2.LastMauled = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.MaulCd);
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
                 role2.LastMauled = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.MaulCd);
             else
                 role2.LastMauled = DateTime.UtcNow;
@@ -1152,9 +1156,9 @@ public static class ButtonUtils
         {
             var role2 = (Whisperer)role;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
                 role2.LastWhispered = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.WhisperCd);
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
                 role2.LastWhispered = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.WhisperCd);
             else
                 role2.LastWhispered = DateTime.UtcNow;
@@ -1163,9 +1167,9 @@ public static class ButtonUtils
         {
             var role2 = (BountyHunter)role;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
                 role2.LastChecked = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.GuessCd);
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
                 role2.LastChecked = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.GuessCd);
             else
                 role2.LastChecked = DateTime.UtcNow;
@@ -1174,7 +1178,7 @@ public static class ButtonUtils
         {
             var role2 = (Executioner)role;
 
-            if (meeting)
+            if (meeting&& CustomGameOptions.EnableMeetingCds)
                 role2.LastDoomed = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.DoomCd);
             else
                 role2.LastDoomed = DateTime.UtcNow;
@@ -1194,9 +1198,9 @@ public static class ButtonUtils
         {
             var role2 = (Intruder)role;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
                 role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.IntKillCd);
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
                 role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.IntKillCd);
             else
                 role2.LastKilled = DateTime.UtcNow;
@@ -1205,12 +1209,12 @@ public static class ButtonUtils
         {
             var role2 = (Syndicate)role;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
             {
                 role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - (role.Type is LayerEnum.Anarchist or LayerEnum.Sidekick or LayerEnum.Rebel &&
                     !role2.HoldsDrive ? CustomGameOptions.AnarchKillCd : CustomGameOptions.CDKillCd));
             }
-            else if (meeting)
+            else if (meeting&& CustomGameOptions.EnableMeetingCds)
             {
                 role2.LastKilled = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - (role.Type is LayerEnum.Anarchist or LayerEnum.Sidekick or LayerEnum.Rebel &&
                     !role2.HoldsDrive ? CustomGameOptions.AnarchKillCd : CustomGameOptions.CDKillCd));
@@ -1225,9 +1229,9 @@ public static class ButtonUtils
         {
             var obj2 = (Corrupted)obj;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
                 obj2.LastCorrupted = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.CorruptCd);
-            else if (meeting)
+            else if (meeting && CustomGameOptions.EnableMeetingCds)
                 obj2.LastCorrupted = DateTime.UtcNow.AddSeconds(CustomGameOptions.MeetingCooldowns - CustomGameOptions.CorruptCd);
             else
                 obj2.LastCorrupted = DateTime.UtcNow;
@@ -1239,7 +1243,7 @@ public static class ButtonUtils
         {
             var ab2 = (ButtonBarry)ab;
 
-            if (start)
+            if (start && CustomGameOptions.EnableInitialCds)
                 ab2.LastButtoned = DateTime.UtcNow.AddSeconds(CustomGameOptions.InitialCooldowns - CustomGameOptions.ButtonCooldown);
             else
                 ab2.LastButtoned = DateTime.UtcNow;

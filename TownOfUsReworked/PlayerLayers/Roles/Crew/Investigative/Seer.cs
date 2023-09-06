@@ -10,7 +10,7 @@ public class Seer : Crew
     public CustomButton SeerButton { get; set; }
     public float Timer => ButtonUtils.Timer(Player, LastSeered, CustomGameOptions.SeerCd);
 
-    public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Seer : Colors.Crew;
+    public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Seer : Colors.Crew;
     public override string Name => "Seer";
     public override LayerEnum Type => LayerEnum.Seer;
     public override Func<string> StartText => () => "You Can See People's Histories";
@@ -20,7 +20,7 @@ public class Seer : Crew
 
     public Seer(PlayerControl player) : base(player)
     {
-        RoleAlignment = RoleAlignment.CrewInvest;
+        Alignment = Alignment.CrewInvest;
         SeerButton = new(this, "Seer", AbilityTypes.Direct, "ActionSecondary", See);
     }
 
@@ -40,12 +40,12 @@ public class Seer : Crew
 
         var interact = Interact(Player, SeerButton.TargetPlayer);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
             Flash(GetRole(SeerButton.TargetPlayer).RoleHistory.Count > 0 || SeerButton.TargetPlayer.IsFramed() ? UColor.red : UColor.green);
 
-        if (interact[0])
+        if (interact.Reset)
             LastSeered = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastSeered.AddSeconds(CustomGameOptions.ProtectKCReset);
     }
 

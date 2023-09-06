@@ -15,7 +15,7 @@ public class Collider : Syndicate
     public bool Charged => TimeRemaining > 0f;
     private float Range => CustomGameOptions.CollideRange + (HoldsDrive ? CustomGameOptions.CollideRangeIncrease : 0);
 
-    public override Color32 Color => ClientGameOptions.CustomSynColors ? Colors.Collider : Colors.Syndicate;
+    public override Color Color => ClientGameOptions.CustomSynColors ? Colors.Collider : Colors.Syndicate;
     public override string Name => "Collider";
     public override LayerEnum Type => LayerEnum.Collider;
     public override Func<string> StartText => () => "FUUUUUUUUUUUUUUUUUUUUUUUUUUSION!";
@@ -28,7 +28,7 @@ public class Collider : Syndicate
 
     public Collider(PlayerControl player) : base(player)
     {
-        RoleAlignment = RoleAlignment.SyndicateKill;
+        Alignment = Alignment.SyndicateKill;
         Positive = null;
         Negative = null;
         PositiveButton = new(this, "Positive", AbilityTypes.Direct, "ActionSecondary", SetPositive, Exception1);
@@ -43,19 +43,19 @@ public class Collider : Syndicate
 
         var interact = Interact(Player, PositiveButton.TargetPlayer);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
             Positive = PositiveButton.TargetPlayer;
 
-        if (interact[0])
+        if (interact.Reset)
             LastPositive = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastPositive.AddSeconds(CustomGameOptions.ProtectKCReset);
 
         if (CustomGameOptions.ChargeCooldownsLinked)
         {
-            if (interact[0])
+            if (interact.Reset)
                 LastNegative = DateTime.UtcNow;
-            else if (interact[1])
+            else if (interact.Protected)
                 LastNegative.AddSeconds(CustomGameOptions.ProtectKCReset);
         }
     }
@@ -67,19 +67,19 @@ public class Collider : Syndicate
 
         var interact = Interact(Player, NegativeButton.TargetPlayer);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
             Negative = NegativeButton.TargetPlayer;
 
-        if (interact[0])
+        if (interact.Reset)
             LastNegative = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastNegative.AddSeconds(CustomGameOptions.ProtectKCReset);
 
         if (CustomGameOptions.ChargeCooldownsLinked)
         {
-            if (interact[0])
+            if (interact.Reset)
                 LastPositive = DateTime.UtcNow;
-            else if (interact[1])
+            else if (interact.Protected)
                 LastPositive.AddSeconds(CustomGameOptions.ProtectKCReset);
         }
     }
@@ -90,7 +90,6 @@ public class Collider : Syndicate
             return;
 
         TimeRemaining = CustomGameOptions.ChargeDur;
-        ChargeSelf();
     }
 
     public void ChargeSelf()

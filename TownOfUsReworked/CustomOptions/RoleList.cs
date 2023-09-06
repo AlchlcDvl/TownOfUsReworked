@@ -160,18 +160,14 @@ public class RoleListEntryOption : CustomOption
         foreach (var button in SlotButtons)
         {
             if (button.Setting != null)
-            {
                 button.Setting.gameObject.SetActive(true);
-                options.Add(button.Setting);
-            }
             else
             {
-                var toggle = UObject.Instantiate(togglePrefab, togglePrefab.transform.parent);
-                toggle.transform.GetChild(2).gameObject.SetActive(false);
-                button.Setting = toggle;
+                button.Setting = CustomButtonOption.CreateButton();
                 button.OptionCreated();
-                options.Add(toggle);
             }
+
+            options.Add(button.Setting);
         }
 
         return options;
@@ -185,7 +181,7 @@ public class RoleListEntryOption : CustomOption
 
         if (!Name.Contains("Ban"))
         {
-            Alignments.Keys.ToList().ForEach(x => SlotButtons.Add(new(MultiMenu.External, Alignments[x], delegate { SetVal(x); })));
+            Alignments.Keys.ForEach(x => SlotButtons.Add(new(MultiMenu.External, Alignments[x], delegate { SetVal(x); })));
             keys = keys.Skip(1).ToList();
         }
         else
@@ -224,7 +220,7 @@ public class RoleListEntryOption : CustomOption
             yield break;
 
         var __instance = UObject.FindObjectOfType<GameOptionsMenu>();
-        SlotButtons.Skip(1).ToList().ForEach(x => x.Setting.gameObject.Destroy());
+        SlotButtons.Skip(1).ForEach(x => x.Setting.gameObject.Destroy());
         Loading = SlotButtons[0];
         Loading.Do = () => {};
         Loading.Setting.Cast<ToggleOption>().TitleText.text = "Loading...";

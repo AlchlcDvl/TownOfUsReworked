@@ -9,7 +9,7 @@ public class Crusader : Syndicate
     public PlayerControl CrusadedPlayer { get; set; }
     public CustomButton CrusadeButton { get; set; }
 
-    public override Color32 Color => ClientGameOptions.CustomSynColors ? Colors.Crusader : Colors.Syndicate;
+    public override Color Color => ClientGameOptions.CustomSynColors ? Colors.Crusader : Colors.Syndicate;
     public override string Name => "Crusader";
     public override LayerEnum Type => LayerEnum.Crusader;
     public override Func<string> StartText => () => "Cleanse This Land Of The Unholy Filth";
@@ -20,7 +20,7 @@ public class Crusader : Syndicate
 
     public Crusader(PlayerControl player) : base(player)
     {
-        RoleAlignment = RoleAlignment.SyndicateKill;
+        Alignment = Alignment.SyndicateKill;
         CrusadedPlayer = null;
         CrusadeButton = new(this, "Crusade", AbilityTypes.Direct, "ActionSecondary", HitCrusade, Exception1);
     }
@@ -30,7 +30,7 @@ public class Crusader : Syndicate
         Enabled = true;
         TimeRemaining -= Time.deltaTime;
 
-        if (IsDead || CrusadedPlayer.Data.IsDead || CrusadedPlayer.Data.Disconnected || Meeting)
+        if (IsDead || CrusadedPlayer.HasDied() || Meeting)
             TimeRemaining = 0f;
     }
 
@@ -72,16 +72,15 @@ public class Crusader : Syndicate
 
         var interact = Interact(Player, CrusadeButton.TargetPlayer);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
         {
             CrusadedPlayer = CrusadeButton.TargetPlayer;
             CallRpc(CustomRPC.Action, ActionsRPC.Crusade, this, CrusadedPlayer);
             TimeRemaining = CustomGameOptions.CrusadeDur;
-            Crusade();
         }
-        else if (interact[0])
+        else if (interact.Reset)
             LastCrusaded = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastCrusaded.AddSeconds(CustomGameOptions.ProtectKCReset);
     }
 

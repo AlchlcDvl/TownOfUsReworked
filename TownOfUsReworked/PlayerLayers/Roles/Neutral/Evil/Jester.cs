@@ -10,7 +10,7 @@ public class Jester : Neutral
     public int UsesLeft { get; set; }
     public bool CanHaunt => VotedOut && !HasHaunted && UsesLeft > 0 && ToHaunt.Count > 0 && !CustomGameOptions.AvoidNeutralKingmakers;
 
-    public override Color32 Color => ClientGameOptions.CustomNeutColors ? Colors.Jester : Colors.Neutral;
+    public override Color Color => ClientGameOptions.CustomNeutColors ? Colors.Jester : Colors.Neutral;
     public override string Name => "Jester";
     public override LayerEnum Type => LayerEnum.Jester;
     public override Func<string> StartText => () => "It Was Jest A Prank Bro";
@@ -21,7 +21,7 @@ public class Jester : Neutral
     public Jester(PlayerControl player) : base(player)
     {
         Objectives = () => VotedOut ? "- You have been ejected" : "- Get ejected";
-        RoleAlignment = RoleAlignment.NeutralEvil;
+        Alignment = Alignment.NeutralEvil;
         ToHaunt = new();
         UsesLeft = CustomGameOptions.MaxHaunts;
         HauntButton = new(this, "Haunt", AbilityTypes.Direct, "ActionSecondary", Haunt, Exception, true, true);

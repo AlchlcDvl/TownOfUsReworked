@@ -11,7 +11,7 @@ public class Operative : Crew
     public Dictionary<byte, TMP_Text> PlayerNumbers { get; set; }
     public float Timer => ButtonUtils.Timer(Player, LastBugged, CustomGameOptions.BugCd);
 
-    public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Operative : Colors.Crew;
+    public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Operative : Colors.Crew;
     public override string Name => "Operative";
     public override LayerEnum Type => LayerEnum.Operative;
     public override Func<string> StartText => () => "Detect Which Roles Are Here";
@@ -22,7 +22,7 @@ public class Operative : Crew
     public Operative(PlayerControl player) : base(player)
     {
         UsesLeft = CustomGameOptions.MaxBugs;
-        RoleAlignment = RoleAlignment.CrewInvest;
+        Alignment = Alignment.CrewInvest;
         PlayerNumbers = new();
         BuggedPlayers = new();
         Bugs = new();

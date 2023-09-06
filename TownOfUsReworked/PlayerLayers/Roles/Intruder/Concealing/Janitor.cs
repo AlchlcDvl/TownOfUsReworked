@@ -9,7 +9,7 @@ public class Janitor : Intruder
     public DeadBody CurrentlyDragging { get; set; }
     public DateTime LastCleaned { get; set; }
 
-    public override Color32 Color => ClientGameOptions.CustomIntColors ? Colors.Janitor : Colors.Intruder;
+    public override Color Color => ClientGameOptions.CustomIntColors ? Colors.Janitor : Colors.Intruder;
     public override string Name => "Janitor";
     public override LayerEnum Type => LayerEnum.Janitor;
     public override Func<string> StartText => () => "You Know Their Secrets";
@@ -22,7 +22,7 @@ public class Janitor : Intruder
 
     public Janitor(PlayerControl player) : base(player)
     {
-        RoleAlignment = RoleAlignment.IntruderConceal;
+        Alignment = Alignment.IntruderConceal;
         CurrentlyDragging = null;
         CleanButton = new(this, "Clean", AbilityTypes.Dead, "Secondary", Clean);
         DragButton = new(this, "Drag", AbilityTypes.Dead, "Tertiary", Drag);

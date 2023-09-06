@@ -6,7 +6,7 @@ public class Stalker : Syndicate
     public DateTime LastStalked { get; set; }
     public CustomButton StalkButton { get; set; }
 
-    public override Color32 Color => ClientGameOptions.CustomSynColors ? Colors.Stalker : Colors.Syndicate;
+    public override Color Color => ClientGameOptions.CustomSynColors ? Colors.Stalker : Colors.Syndicate;
     public override string Name => "Stalker";
     public override LayerEnum Type => LayerEnum.Stalker;
     public override Func<string> StartText => () => "Stalk Everyone To Monitor Their Movements";
@@ -17,7 +17,7 @@ public class Stalker : Syndicate
     public Stalker(PlayerControl player) : base(player)
     {
         StalkerArrows = new();
-        RoleAlignment = RoleAlignment.SyndicateSupport;
+        Alignment = Alignment.SyndicateSupport;
         StalkButton = new(this, "Stalk", AbilityTypes.Direct, "ActionSecondary", Stalk, Exception1);
     }
 
@@ -41,12 +41,12 @@ public class Stalker : Syndicate
 
         var interact = Interact(Player, StalkButton.TargetPlayer);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
             StalkerArrows.Add(StalkButton.TargetPlayer.PlayerId, new(Player, StalkButton.TargetPlayer.GetPlayerColor(!HoldsDrive)));
 
-        if (interact[0])
+        if (interact.Reset)
             LastStalked = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastStalked.AddSeconds(CustomGameOptions.ProtectKCReset);
     }
 

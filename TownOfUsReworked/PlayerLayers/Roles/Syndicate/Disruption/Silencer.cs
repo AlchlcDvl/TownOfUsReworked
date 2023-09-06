@@ -9,7 +9,7 @@ public class Silencer : Syndicate
     public Sprite PrevOverlay { get; set; }
     public Color PrevColor { get; set; }
 
-    public override Color32 Color => ClientGameOptions.CustomSynColors ? Colors.Silencer : Colors.Syndicate;
+    public override Color Color => ClientGameOptions.CustomSynColors ? Colors.Silencer : Colors.Syndicate;
     public override string Name => "Silencer";
     public override LayerEnum Type => LayerEnum.Silencer;
     public override Func<string> StartText => () => "You Are The One Who Hushes";
@@ -21,7 +21,7 @@ public class Silencer : Syndicate
 
     public Silencer(PlayerControl player) : base(player)
     {
-        RoleAlignment = RoleAlignment.SyndicateDisrup;
+        Alignment = Alignment.SyndicateDisrup;
         SilencedPlayer = null;
         SilenceButton = new(this, "Silence", AbilityTypes.Direct, "Secondary", Silence, Exception1);
     }
@@ -33,15 +33,15 @@ public class Silencer : Syndicate
 
         var interact = Interact(Player, SilenceButton.TargetPlayer);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
         {
             SilencedPlayer = SilenceButton.TargetPlayer;
             CallRpc(CustomRPC.Action, ActionsRPC.Silence, this, SilencedPlayer);
         }
 
-        if (interact[0])
+        if (interact.Reset)
             LastSilenced = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastSilenced.AddSeconds(CustomGameOptions.ProtectKCReset);
     }
 

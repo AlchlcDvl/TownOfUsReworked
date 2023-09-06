@@ -9,10 +9,10 @@ public static class CheckEndGame
         if (IsFreePlay || IsHnS || !AmongUsClient.Instance.AmHost)
             return false;
 
-        var spell = Role.GetRoles<Spellslinger>(LayerEnum.Spellslinger).Find(x => !x.IsDead && !x.Disconnected && x.Spelled.Count == CustomPlayer.AllPlayers.Count(y => !y.Data.IsDead &&
-            !y.Data.Disconnected && !y.Is(x.Faction)));
-        var reb = Role.GetRoles<PromotedRebel>(LayerEnum.PromotedRebel).Find(x => !x.IsDead && !x.Disconnected && x.Spelled.Count == CustomPlayer.AllPlayers.Count(y => !y.Data.IsDead &&
-            !y.Data.Disconnected && !y.Is(x.Faction)));
+        var spell = Role.GetRoles<Spellslinger>(LayerEnum.Spellslinger).Find(x => !x.IsDead && !x.Disconnected && x.Spelled.Count == CustomPlayer.AllPlayers.Count(y => !y.HasDied() &&
+            !y.Is(x.Faction)));
+        var reb = Role.GetRoles<PromotedRebel>(LayerEnum.PromotedRebel).Find(x => !x.IsDead && !x.Disconnected && x.Spelled.Count == CustomPlayer.AllPlayers.Count(y => !y.HasDied() &&
+            !y.Is(x.Faction)));
 
         if (TasksDone())
         {
@@ -106,7 +106,7 @@ public static class CheckEndGame
     //Stalemate detector for unwinnable situations
     private static void DetectStalemate()
     {
-        var players = CustomPlayer.AllPlayers.Where(x => !x.Data.IsDead && !x.Data.Disconnected).ToList();
+        var players = CustomPlayer.AllPlayers.Where(x => !x.HasDied()).ToList();
 
         if (players.Count == 2)
         {

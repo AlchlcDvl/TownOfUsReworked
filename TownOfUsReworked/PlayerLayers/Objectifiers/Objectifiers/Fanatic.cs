@@ -7,7 +7,7 @@ public class Fanatic : Objectifier
     public Faction Side { get; set; }
     public bool Betray => ((Side == Faction.Intruder && LastImp) || (Side == Faction.Syndicate && LastSyn)) && !IsDead && Turned && !Betrayed;
 
-    public override Color32 Color
+    public override Color Color
     {
         get
         {
@@ -56,7 +56,7 @@ public class Fanatic : Objectifier
         }
 
         Side = faction;
-        fanaticRole.RoleAlignment = fanaticRole.RoleAlignment.GetNewAlignment(fanaticRole.Faction);
+        fanaticRole.Alignment = fanaticRole.Alignment.GetNewAlignment(fanaticRole.Faction);
 
         foreach (var snitch in Ability.GetAbilities<Snitch>(LayerEnum.Snitch))
         {

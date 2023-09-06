@@ -8,7 +8,7 @@ public class Ghoul : Intruder
     public DateTime LastMarked { get; set; }
     public PlayerControl MarkedPlayer { get; set; }
 
-    public override Color32 Color => ClientGameOptions.CustomIntColors ? Colors.Ghoul : Colors.Intruder;
+    public override Color Color => ClientGameOptions.CustomIntColors ? Colors.Ghoul : Colors.Intruder;
     public override string Name => "Ghoul";
     public override LayerEnum Type => LayerEnum.Ghoul;
     public override Func<string> StartText => () => "BOO!";
@@ -19,13 +19,16 @@ public class Ghoul : Intruder
 
     public Ghoul(PlayerControl player) : base(player)
     {
-        RoleAlignment = RoleAlignment.IntruderUtil;
+        Alignment = Alignment.IntruderUtil;
         MarkedPlayer = null;
         MarkButton = new(this, "GhoulMark", AbilityTypes.Direct, "ActionSecondary", Mark, Exception1, false, true);
     }
 
     public void Fade()
     {
+        if (Disconnected)
+            return;
+
         Faded = true;
         Player.Visible = true;
         var color = new Color(1f, 1f, 1f, 0f);
@@ -55,6 +58,15 @@ public class Ghoul : Intruder
 
         MarkedPlayer = MarkButton.TargetPlayer;
         CallRpc(CustomRPC.Action, ActionsRPC.Mark, this, MarkedPlayer);
+    }
+
+    public void UnFade()
+    {
+        DefaultOutfit(Player);
+        Player.MyRend().color = UColor.white;
+        Player.gameObject.layer = LayerMask.NameToLayer("Ghost");
+        Faded = false;
+        Player.MyPhysics.ResetMoveState();
     }
 
     public bool Exception1(PlayerControl player) => player == MarkedPlayer || player.Is(Faction) || (player.Is(SubFaction) && SubFaction != SubFaction.None);

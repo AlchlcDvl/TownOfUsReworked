@@ -8,7 +8,7 @@ public class TimeKeeper : Syndicate
     public float TimeRemaining { get; set; }
     public bool Controlling => TimeRemaining > 0f;
 
-    public override Color32 Color => ClientGameOptions.CustomSynColors ? Colors.TimeKeeper : Colors.Syndicate;
+    public override Color Color => ClientGameOptions.CustomSynColors ? Colors.TimeKeeper : Colors.Syndicate;
     public override string Name => "Time Keeper";
     public override LayerEnum Type => LayerEnum.TimeKeeper;
     public override Func<string> StartText => () => "Bend Time To Your Will";
@@ -18,7 +18,7 @@ public class TimeKeeper : Syndicate
 
     public TimeKeeper(PlayerControl player) : base(player)
     {
-        RoleAlignment = RoleAlignment.SyndicatePower;
+        Alignment = Alignment.SyndicatePower;
         TimeButton = new(this, "Time", AbilityTypes.Effect, "Secondary", TimeControl);
     }
 
@@ -50,7 +50,6 @@ public class TimeKeeper : Syndicate
             return;
 
         TimeRemaining = CustomGameOptions.TimeDur;
-        Control();
         CallRpc(CustomRPC.Action, ActionsRPC.TimeControl, this);
     }
 

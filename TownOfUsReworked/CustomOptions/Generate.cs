@@ -10,7 +10,9 @@ public static class Generate
     public static CustomNumberOption InteractionDistance;
     public static CustomNumberOption EmergencyButtonCount;
     public static CustomNumberOption EmergencyButtonCooldown;
+    public static CustomToggleOption EnableInitialCds;
     public static CustomNumberOption InitialCooldowns;
+    public static CustomToggleOption EnableMeetingCds;
     public static CustomNumberOption MeetingCooldowns;
     public static CustomNumberOption DiscussionTime;
     public static CustomNumberOption VotingTime;
@@ -1404,7 +1406,6 @@ public static class Generate
     public static CustomToggleOption EnableBanshee;
 
     /*For Testing
-    public static CustomNestedOption ExampleNested;
     public static CustomToggleOption ExampleToggle;
     public static CustomNumberOption ExampleNumber;
     public static CustomStringOption ExampleString;
@@ -1434,14 +1435,11 @@ public static class Generate
 
         var num = 0;
 
-        /*ExampleNested = new(MultiMenu.Main, "Exampled Nested Option");
-        ExampleLayers = new(num++, MultiMenu.Main, "Example Layers Option", "Layer");
+        /*ExampleLayers = new(num++, MultiMenu.Main, "Example Layers Option");
         ExampleHeader = new(num++, MultiMenu.External, "Example Header Option");
         ExampleToggle = new(num++, MultiMenu.External, "Example Toggle Option", true/false);
-        ExampleNumber = new(num++, MultiMenu.External, "Example Number Option", 1, 1, 5, 1, MultiplierFormat);
-        ExampleString = new(num++, MultiMenu.External, "Example String Option", new[] { "Something", "Something Else", "Something Else Else" });
-        ExampleLayers.AddOptions(ExampleHeader, ExampleToggle, ExampleNumber, ExampleString);
-        ExampleNested.AddOptions(ExampleHeader, ExampleToggle, ExampleNumber, ExampleString, ExampleLayers);*/
+        ExampleNumber = new(num++, MultiMenu.External, "Example Number Option", 1, 1, 5, 1);
+        ExampleString = new(num++, MultiMenu.External, "Example String Option", new[] { "Something", "Something Else", "Something Else Else" });*/
 
         GameSettings = new(MultiMenu.Main, "Game Settings");
         PlayerSpeed = new(num++, MultiMenu.Main, "Player Speed", 1.25f, 0.25f, 10, 0.25f, MultiplierFormat);
@@ -1454,12 +1452,14 @@ public static class Generate
         TaskBarMode = new(num++, MultiMenu.Main, "Taskbar Updates", new[] { "Meeting", "Rounds", "Invisible" });
         ConfirmEjects = new(num++, MultiMenu.Main, "Confirm Ejects", false);
         EjectionRevealsRole = new(num++, MultiMenu.Main, "Ejection Reveals <color=#FFD700FF>Roles</color>", false, ConfirmEjects);
-        InitialCooldowns = new(num++, MultiMenu.Main, "Game Start Cooldowns", 10, 0, 30, 2.5f, CooldownFormat);
-        MeetingCooldowns = new(num++, MultiMenu.Main, "Meeting End Cooldowns", 15, 0, 30, 2.5f, CooldownFormat);
+        EnableInitialCds = new(num++, MultiMenu.Main, "Enable Game Start Cooldowns", true);
+        InitialCooldowns = new(num++, MultiMenu.Main, "Game Start Cooldown", 10, 0, 30, 2.5f, CooldownFormat, EnableInitialCds);
+        EnableMeetingCds = new(num++, MultiMenu.Main, "Enable Meeting End Cooldowns", true);
+        MeetingCooldowns = new(num++, MultiMenu.Main, "Meeting End Cooldown", 15, 0, 30, 2.5f, CooldownFormat, EnableMeetingCds);
         ReportDistance = new(num++, MultiMenu.Main, "Player Report Distance", 3.5f, 1, 20, 0.25f, DistanceFormat);
         ChatCooldown = new(num++, MultiMenu.Main, "Chat Cooldown", 3, 0, 3, 0.1f, CooldownFormat);
         ChatCharacterLimit = new(num++, MultiMenu.Main, "Chat Character Limit", 200, 50, 2000, 50);
-        LobbySize = new(num++, MultiMenu.Main, "Lobby Size", 15, 3, 127, 1);
+        LobbySize = new(num++, MultiMenu.Main, "Lobby Size", 15, 2, 127, 1);
 
         GameModeSettings = new(MultiMenu.Main, "Game Mode Settings");
         CurrentMode = new(num++, MultiMenu.Main, "Game Mode", new[] { "Classic", "All Any", "<color=#1D7CF2FF>Killing</color> Only", "Role List", "Custom", "Vanilla" });

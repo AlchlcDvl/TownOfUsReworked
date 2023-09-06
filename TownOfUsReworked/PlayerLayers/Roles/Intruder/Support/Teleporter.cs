@@ -9,7 +9,7 @@ public class Teleporter : Intruder
     public bool CanMark { get; set; }
     public Vector3 TeleportPoint { get; set; }
 
-    public override Color32 Color => ClientGameOptions.CustomIntColors ? Colors.Teleporter : Colors.Intruder;
+    public override Color Color => ClientGameOptions.CustomIntColors ? Colors.Teleporter : Colors.Intruder;
     public override string Name => "Teleporter";
     public override LayerEnum Type => LayerEnum.Teleporter;
     public override Func<string> StartText => () => "X Marks The Spot";
@@ -54,7 +54,7 @@ public class Teleporter : Intruder
     {
         base.UpdateHud(__instance);
         var hits = Physics2D.OverlapBoxAll(Player.transform.position, GetSize(), 0);
-        hits = hits.Where(c => (c.name.Contains("Vent") || !c.isTrigger) && c.gameObject.layer is not 8 and not 5).ToArray();
+        hits = hits.Where(c => (c.name.Contains("Vent") || !c.isTrigger) && c.gameObject.layer is not (8 or 5)).ToArray();
         CanMark = hits.Count == 0 && Player.moveable && !GetPlayerElevator(Player).IsInElevator && TeleportPoint != Player.transform.position;
         MarkButton.Update("MARK", MarkTimer, CustomGameOptions.TeleMarkCd, CanMark);
         TeleportButton.Update("TELEPORT", TeleportTimer, CustomGameOptions.TeleportCd, true, TeleportPoint != Vector3.zero && TeleportPoint != Player.transform.position);

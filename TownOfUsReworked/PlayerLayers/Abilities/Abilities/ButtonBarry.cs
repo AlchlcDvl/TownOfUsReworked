@@ -8,7 +8,7 @@ public class ButtonBarry : Ability
     public bool ButtonUsable => !ButtonUsed && Player.RemainingEmergencies > 0;
     public float Timer => ButtonUtils.Timer(Player, LastButtoned, CustomGameOptions.ButtonCooldown);
 
-    public override Color32 Color => ClientGameOptions.CustomAbColors ? Colors.ButtonBarry : Colors.Ability;
+    public override Color Color => ClientGameOptions.CustomAbColors ? Colors.ButtonBarry : Colors.Ability;
     public override string Name => "Button Barry";
     public override LayerEnum Type => LayerEnum.ButtonBarry;
     public override Func<string> Description => () => "- You can call a button from anywhere";

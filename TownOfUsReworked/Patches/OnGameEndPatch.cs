@@ -32,7 +32,7 @@ public static class OnGameEndPatch
             }
             else if (Role.NKWins)
             {
-                foreach (var role2 in Role.GetRoles(RoleAlignment.NeutralKill))
+                foreach (var role2 in Role.GetRoles(Alignment.NeutralKill))
                 {
                     if (!role2.Disconnected && role2.Faithful)
                         winners.Add(PotentialWinners.First(x => x.PlayerName == role2.PlayerName));
@@ -156,13 +156,13 @@ public static class OnGameEndPatch
             }
             else if (Role.ApocalypseWins)
             {
-                foreach (var role2 in Role.GetRoles(RoleAlignment.NeutralApoc))
+                foreach (var role2 in Role.GetRoles(Alignment.NeutralApoc))
                 {
                     if (!role2.Disconnected && role2.Faithful)
                         winners.Add(PotentialWinners.First(x => x.PlayerName == role2.PlayerName));
                 }
 
-                foreach (var role2 in Role.GetRoles(RoleAlignment.NeutralHarb))
+                foreach (var role2 in Role.GetRoles(Alignment.NeutralHarb))
                 {
                     if (!role2.Disconnected && role2.Faithful)
                         winners.Add(PotentialWinners.First(x => x.PlayerName == role2.PlayerName));

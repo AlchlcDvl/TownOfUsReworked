@@ -2,7 +2,7 @@ namespace TownOfUsReworked.PlayerLayers.Modifiers;
 
 public class Diseased : Modifier
 {
-    public override Color32 Color => ClientGameOptions.CustomModColors ? Colors.Diseased : Colors.Modifier;
+    public override Color Color => ClientGameOptions.CustomModColors ? Colors.Diseased : Colors.Modifier;
     public override string Name => "Diseased";
     public override LayerEnum Type => LayerEnum.Diseased;
     public override Func<string> Description => () => $"- Your killer's cooldown increases by {CustomGameOptions.DiseasedMultiplier} times";

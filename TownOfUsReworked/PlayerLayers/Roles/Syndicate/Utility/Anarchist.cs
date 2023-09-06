@@ -8,5 +8,5 @@ public class Anarchist : Syndicate
     public override Func<string> Description => () => CommonAbilities;
     public override InspectorResults InspectorResults => InspectorResults.IsBasic;
 
-    public Anarchist(PlayerControl player) : base(player) => RoleAlignment = RoleAlignment.SyndicateUtil;
+    public Anarchist(PlayerControl player) : base(player) => Alignment = Alignment.SyndicateUtil;
 }

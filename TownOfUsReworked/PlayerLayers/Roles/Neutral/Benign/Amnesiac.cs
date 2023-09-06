@@ -5,7 +5,7 @@ public class Amnesiac : Neutral
     public Dictionary<byte, CustomArrow> BodyArrows { get; set; }
     public CustomButton RememberButton { get; set; }
 
-    public override Color32 Color => ClientGameOptions.CustomNeutColors ? Colors.Amnesiac : Colors.Intruder;
+    public override Color Color => ClientGameOptions.CustomNeutColors ? Colors.Amnesiac : Colors.Intruder;
     public override string Name => "Amnesiac";
     public override LayerEnum Type => LayerEnum.Amnesiac;
     public override Func<string> StartText => () => "You Forgor <i>:skull:</i>";
@@ -15,7 +15,7 @@ public class Amnesiac : Neutral
 
     public Amnesiac(PlayerControl player) : base(player)
     {
-        RoleAlignment = RoleAlignment.NeutralBen;
+        Alignment = Alignment.NeutralBen;
         Objectives = () => "- Find a dead body, remember their role and then fulfill the win condition for that role";
         BodyArrows = new();
         RememberButton = new(this, "Remember", AbilityTypes.Dead, "ActionSecondary", Remember);

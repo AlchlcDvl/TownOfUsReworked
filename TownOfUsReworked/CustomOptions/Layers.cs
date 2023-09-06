@@ -2,27 +2,24 @@ namespace TownOfUsReworked.CustomOptions;
 
 public class CustomLayersOption : CustomOption
 {
-    public readonly string Layer;
     private int CachedCount { get; set; }
     private int CachedChance { get; set; }
     private readonly int Max;
     private readonly int Min;
-    //private List<CustomOption> RoleOptions = new();
-    //public static readonly List<CustomOption> AllRoleOptions = new();
 
     public CustomLayersOption(int id, MultiMenu menu, string name, int min = 1, int max = 15, object[] parent = null, bool all = false) : base(id, menu, name, CustomOptionType.Layers, 0, 0,
         parent, all)
     {
         Min = min;
         Max = max;
-        Format = (val, otherVal) => $"{val}% (x{otherVal})";
+        Format = (val, otherVal) => $"{val}%" + (IsCustom ? $" (x{otherVal})" : "");
     }
 
     public CustomLayersOption(int id, MultiMenu menu, string name, int min = 1, int max = 15, object parent = null) : base(id, menu, name, CustomOptionType.Layers, 0, 0, parent)
     {
         Min = min;
         Max = max;
-        Format = (val, otherVal) => $"{val}% (x{otherVal})";
+        Format = (val, otherVal) => $"{val}%" + (IsCustom ? $" (x{otherVal})" : "");
     }
 
     public override void OptionCreated()
@@ -36,43 +33,6 @@ public class CustomLayersOption : CustomOption
         role.Role = null;
         role.RoleChance = (int)Value;
     }
-
-    /*public void ShowAdvancedOptions()
-    {
-        ShowRoleDetails();
-        var tab = GameSettingMenu.Instance.RolesSettings.AllAdvancedSettingTabs[0];
-        GameSettingMenu.Instance.RolesSettings.RoleChancesSettings.SetActive(false);
-        GameSettingMenu.Instance.RolesSettings.AdvancedRolesSettings.SetActive(true);
-        GameSettingMenu.Instance.RolesSettings.RefreshChildren();
-        ControllerManager.Instance.CurrentUiState.BackButton = GameSettingMenu.Instance.AdvancedSettingsBackButton;
-    }
-
-    //I'll get to these later
-    public void AddOptions(params CustomOption[] list)
-    {
-        RoleOptions = list.ToList();
-        AllRoleOptions.AddRange(RoleOptions);
-    }
-
-    public void CloseAdvancedSettings()
-    {
-        ShowRoleDetails();
-        GameSettingMenu.Instance.RolesSettings.CloseAdvancedSettings();
-        ControllerManager.Instance.CurrentUiState.BackButton = GameSettingMenu.Instance.BackButton;
-    }
-
-    public void ShowRoleDetails()
-    {
-        //This will be worked on later, when I figure out why the custom options aren't spawning in the Role menu instead
-        var layer = Info.AllInfo.Find(x => x.Name == Layer || x.Short == Layer);
-
-        if (layer == null)
-            return;
-
-        GameSettingMenu.Instance.RoleName.text = layer.Name;
-        GameSettingMenu.Instance.RoleBlurb.text = layer.Description;
-        GameSettingMenu.Instance.RoleIcon.sprite = GetSprite(Layer == layer.Short ? layer.Name : Layer);
-    }*/
 
     public int GetChance() => (int)Value;
 
@@ -92,7 +52,6 @@ public class CustomLayersOption : CustomOption
             chance = 0;
         }
 
-        //ShowRoleDetails();
         Set(chance, count);
     }
 
@@ -110,7 +69,6 @@ public class CustomLayersOption : CustomOption
             chance = 0;
         }
 
-        //ShowRoleDetails();
         Set(chance, count);
     }
 
@@ -127,7 +85,6 @@ public class CustomLayersOption : CustomOption
         else if (count == 0 && chance > 0)
             count = CachedCount == 0 || !IsCustom ? Min : CachedCount;
 
-        //ShowRoleDetails();
         Set(chance, count);
     }
 
@@ -144,7 +101,6 @@ public class CustomLayersOption : CustomOption
         else if (count == 0 && chance > 0)
             count = CachedCount == 0 || !IsCustom ? Min : CachedCount;
 
-        //ShowRoleDetails();
         Set(chance, count);
     }
 }

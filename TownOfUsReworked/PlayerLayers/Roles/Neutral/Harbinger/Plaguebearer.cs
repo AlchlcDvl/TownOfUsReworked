@@ -4,10 +4,10 @@ public class Plaguebearer : Neutral
 {
     public DateTime LastInfected { get; set; }
     public List<byte> Infected { get; set; }
-    public bool CanTransform => CustomPlayer.AllPlayers.Count(x => !x.Data.IsDead && !x.Data.Disconnected) <= Infected.Count || CustomGameOptions.PestSpawn;
+    public bool CanTransform => CustomPlayer.AllPlayers.Count(x => !x.HasDied()) <= Infected.Count || CustomGameOptions.PestSpawn;
     public CustomButton InfectButton { get; set; }
 
-    public override Color32 Color => ClientGameOptions.CustomNeutColors ? Colors.Plaguebearer : Colors.Neutral;
+    public override Color Color => ClientGameOptions.CustomNeutColors ? Colors.Plaguebearer : Colors.Neutral;
     public override string Name => "Plaguebearer";
     public override LayerEnum Type => LayerEnum.Plaguebearer;
     public override Func<string> StartText => () => "Spread Disease To Summon <color=#424242FF>Pestilence</color>";
@@ -19,7 +19,7 @@ public class Plaguebearer : Neutral
     public Plaguebearer(PlayerControl player) : base(player)
     {
         Objectives = () => "- Infect everyone to become <color=#424242FF>Pestilence</color>\n- Kill off anyone who can oppose you";
-        RoleAlignment = RoleAlignment.NeutralHarb;
+        Alignment = Alignment.NeutralHarb;
         Infected = new() { Player.PlayerId };
         InfectButton = new(this, "Infect", AbilityTypes.Direct, "ActionSecondary", Infect, Exception);
     }
@@ -57,9 +57,9 @@ public class Plaguebearer : Neutral
 
         var interact = Interact(Player, InfectButton.TargetPlayer);
 
-        if (interact[0])
+        if (interact.Reset)
             LastInfected = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastInfected.AddSeconds(CustomGameOptions.ProtectKCReset);
     }
 

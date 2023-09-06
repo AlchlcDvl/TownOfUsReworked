@@ -2,7 +2,7 @@ namespace TownOfUsReworked.PlayerLayers;
 
 public abstract class PlayerLayer
 {
-    public virtual Color32 Color => Colors.Layer;
+    public virtual Color Color => Colors.Layer;
     public virtual string Name => "None";
     public string Short => Info.AllInfo.Find(x => x.Name == Name)?.Short;
     public virtual PlayerLayerEnum LayerType => PlayerLayerEnum.None;
@@ -70,6 +70,8 @@ public abstract class PlayerLayer
 
     public virtual void UponTaskComplete(PlayerControl player, uint taskId) {}
 
+    public virtual void ReadRPC(MessageReader reader) {}
+
     protected PlayerLayer(PlayerControl player)
     {
         Player = player;
@@ -89,7 +91,7 @@ public abstract class PlayerLayer
                 CallRpc(CustomRPC.WinLose, WinLoseRPC.PhantomWin, this);
                 EndGame();
             }
-            else if (LayerType == PlayerLayerEnum.Role && ((Role)this).RoleAlignment == RoleAlignment.NeutralEvil && CustomGameOptions.NeutralEvilsEndGame)
+            else if (LayerType == PlayerLayerEnum.Role && ((Role)this).Alignment == Alignment.NeutralEvil && CustomGameOptions.NeutralEvilsEndGame)
             {
                 if (Type == LayerEnum.Jester && ((Jester)this).VotedOut)
                 {
@@ -163,7 +165,7 @@ public abstract class PlayerLayer
             else if (Type == LayerEnum.Overlord && MeetingPatches.MeetingCount >= CustomGameOptions.OverlordMeetingWinCount && IsAlive)
             {
                 Objectifier.OverlordWins = true;
-                Objectifier.GetObjectifiers(LayerEnum.Overlord).Where(ov => ov.IsAlive).ToList().ForEach(x => x.Winner = true);
+                Objectifier.GetObjectifiers(LayerEnum.Overlord).Where(ov => ov.IsAlive).ForEach(x => x.Winner = true);
                 CallRpc(CustomRPC.WinLose, WinLoseRPC.OverlordWin);
                 EndGame();
             }
@@ -216,7 +218,7 @@ public abstract class PlayerLayer
                 CallRpc(CustomRPC.WinLose, WinLoseRPC.CrewWin);
                 EndGame();
             }
-            else if (role.Faithful && ApocWins && role.RoleAlignment is RoleAlignment.NeutralApoc or RoleAlignment.NeutralHarb)
+            else if (role.Faithful && ApocWins && role.Alignment is Alignment.NeutralApoc or Alignment.NeutralHarb)
             {
                 Role.ApocalypseWins = true;
                 CallRpc(CustomRPC.WinLose, WinLoseRPC.ApocalypseWins);
@@ -228,13 +230,13 @@ public abstract class PlayerLayer
                 CallRpc(CustomRPC.WinLose, WinLoseRPC.AllNeutralsWin);
                 EndGame();
             }
-            else if (AllNKsWin && role.Faithful && role.RoleAlignment == RoleAlignment.NeutralKill)
+            else if (AllNKsWin && role.Faithful && role.Alignment == Alignment.NeutralKill)
             {
                 Role.NKWins = true;
                 CallRpc(CustomRPC.WinLose, WinLoseRPC.AllNKsWin);
                 EndGame();
             }
-            else if (role.Faithful && role.RoleAlignment == RoleAlignment.NeutralKill && (SameNKWins(role.Type) || SoloNKWins(Player)))
+            else if (role.Faithful && role.Alignment == Alignment.NeutralKill && (SameNKWins(role.Type) || SoloNKWins(Player)))
             {
                 switch (role.Type)
                 {
@@ -280,7 +282,7 @@ public abstract class PlayerLayer
                 CallRpc(CustomRPC.WinLose, CustomGameOptions.NoSolo == NoSolo.SameNKs ? WinLoseRPC.SameNKWins : WinLoseRPC.SoloNKWins, this);
                 EndGame();
             }
-            else if (CustomGameOptions.NeutralEvilsEndGame && role.RoleAlignment == RoleAlignment.NeutralEvil)
+            else if (CustomGameOptions.NeutralEvilsEndGame && role.Alignment == Alignment.NeutralEvil)
             {
                 if (Type == LayerEnum.Executioner && ((Executioner)role).TargetVotedOut)
                 {

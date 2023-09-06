@@ -688,7 +688,7 @@ public static class CustomHats
                 return 500;
             });
 
-            orderedKeys.ToList().ForEach(key => YOffset = CreateHatPackage(packages[key], key, YOffset, __instance));
+            orderedKeys.ForEach(key => YOffset = CreateHatPackage(packages[key], key, YOffset, __instance));
 
             foreach (var colorChip in __instance.ColorChips)
             {

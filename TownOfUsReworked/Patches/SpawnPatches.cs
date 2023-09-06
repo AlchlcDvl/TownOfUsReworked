@@ -46,7 +46,7 @@ public static class SpawnPatches
 
         foreach (var player in CustomPlayer.AllPlayers)
         {
-            if (player.Data.Disconnected || player.Data.IsDead)
+            if (player.HasDied())
                 continue;
 
             var location = allLocations.Random();

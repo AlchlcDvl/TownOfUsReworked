@@ -5,249 +5,249 @@ public static class LayerInfo
 {
     public static readonly List<RoleInfo> AllRoles = new()
     {
-        new("Invalid", "Invalid", "Invalid", RoleAlignment.None, Faction.None, "Invalid", Colors.Role, "Invalid"),
+        new("Invalid", "Invalid", "Invalid", Alignment.None, Faction.None, "Invalid", Colors.Role, "Invalid"),
         new("Altruist", "Alt", "The Altruist is capable of reviving dead players. After a set period of time, the player will be resurrected, if the revival isn't interrupted. Once a " +
             "player is revived, all evil players will be notified of the revival and will have an arrow pointing towards the revived player. Once the Altruist uses up all of their ability"
-            + " charges, they sacrifice themselves on the last use of their ability.", RoleAlignment.CrewProt, Faction.Crew, "I know what I have to do but I don't know if I have the " +
+            + " charges, they sacrifice themselves on the last use of their ability.", Alignment.CrewProt, Faction.Crew, "I know what I have to do but I don't know if I have the " +
             "strength to do it.", Colors.Altruist),
-        new("Chameleon", "Cham", "The Chameleon can go invisible to stalk players and see what they do when no one is around.", RoleAlignment.CrewSupport, Faction.Crew, "Are you sure you" +
+        new("Chameleon", "Cham", "The Chameleon can go invisible to stalk players and see what they do when no one is around.", Alignment.CrewSupport, Faction.Crew, "Are you sure you" +
             " can see me?", Colors.Chameleon),
         new("Coroner", "Cor", "The Coroner gets an alert when someone dies and briefly gets an arrow pointing in the direction of the body. They can autopsy bodies to get some info. They" +
             " can then compare that information with players to see if they killed the body or not. The Coroner also gets a body report from the player they reported. The report will " +
-            "include the cause and time of death, player's faction/role, the killer's faction/role and (according to the settings) the killer's name.", RoleAlignment.CrewInvest,
+            "include the cause and time of death, player's faction/role, the killer's faction/role and (according to the settings) the killer's name.", Alignment.CrewInvest,
             Faction.Crew, "A body? Where? I need it for...scientific purposes.", Colors.Coroner),
-        new("Crewmate", "Crew", "Just a plain Crew with no abilities and only spawns if all the other roles are taken or set to spawn in Custom mode.", RoleAlignment.CrewUtil, Faction.Crew,
+        new("Crewmate", "Crew", "Just a plain Crew with no abilities and only spawns if all the other roles are taken or set to spawn in Custom mode.", Alignment.CrewUtil, Faction.Crew,
             "I once made a pencil using 2 erasers...they were pointless, just like me.", Colors.Crew),
-        new("Engineer", "Engi", "The Engineer can fix sabotages from anywhere on the map. They can also use vents to get across the map easily.", RoleAlignment.CrewSupport, Faction.Crew,
+        new("Engineer", "Engi", "The Engineer can fix sabotages from anywhere on the map. They can also use vents to get across the map easily.", Alignment.CrewSupport, Faction.Crew,
             "How am I going to stop some big mean mother hubbard from tearing me a structurally superfluous new behind? The solution? Use a wrench. And if that don't work, use more wrench."
             , Colors.Engineer),
-        new("Escort", "Esc", "The Escort can roleblock players and prevent them from doing anything for a short while.", RoleAlignment.CrewSupport, Faction.Crew, "Today, I will make you a "
+        new("Escort", "Esc", "The Escort can roleblock players and prevent them from doing anything for a short while.", Alignment.CrewSupport, Faction.Crew, "Today, I will make you a "
             + "man.", Colors.Escort),
         new("Inspector", "Insp", "The Inspector can inspect players for their roles. Upon being inspected, the target's name will be updated to give a list of what roles the target could" +
-            " possibly be.", RoleAlignment.CrewInvest, Faction.Crew, "THAT'S THE GODFATHER! YOU GOTTA BELIEVE ME.", Colors.Inspector),
+            " possibly be.", Alignment.CrewInvest, Faction.Crew, "THAT'S THE GODFATHER! YOU GOTTA BELIEVE ME.", Colors.Inspector),
         new("Mayor", "Mayo (XD)", "The Mayor has no active ability aside from being able to reveal themselves as the Mayor to other players. Upon doing so, tthe value of their vote " +
-            "increases.", RoleAlignment.CrewSov, Faction.Crew, "Um, those votes are legitimate. No, the votes are not rigged.", Colors.Mayor),
+            "increases.", Alignment.CrewSov, Faction.Crew, "Um, those votes are legitimate. No, the votes are not rigged.", Colors.Mayor),
         new("Medic", "Medic", "The Medic can give any player a shield that will make them largely immortal as long as the Medic is alive. Some ways of death still go through, like " +
-            "assassination and ignition. Shielded players have a green ✚ next to their names.", RoleAlignment.CrewProt, Faction.Crew, "Where does it hurt?", Colors.Medic),
+            "assassination and ignition. Shielded players have a green ✚ next to their names.", Alignment.CrewProt, Faction.Crew, "Where does it hurt?", Colors.Medic),
         new("Medium", "Med", "The Medium can mediate to be able to see ghosts. If the Medium uses this ability, the Medium and the dead player will be able to see each other and " +
-            "communicate from beyond the grave!", RoleAlignment.CrewInvest, Faction.Crew, "The voices...they are telling me...my breath stinks? Can ghosts even smell?", Colors.Medium),
+            "communicate from beyond the grave!", Alignment.CrewInvest, Faction.Crew, "The voices...they are telling me...my breath stinks? Can ghosts even smell?", Colors.Medium),
         new("Mystic", "Mys", "The Mystic only spawns when there is at least one Neutral (Neophyte) role present in the game. Whenever someone's subfaction is changed, the Mystic will be " +
             "alerted about it. The Mystic can also investigate players to see if their subfactions have been changed. If the target has a different subfaction from the Mystic's, the Mystic"
             + "'s screen will flash red, otherwise it will flash green. It will not, however, work on the Neutral (Neophyte) roles themselves so even people who flashed green might " +
-            "still be evil. Once all subfactions are dead, the Mystic becomes a Seer. If the player is framed, they will appear to have their subfactions changed.", RoleAlignment.CrewAudit,
+            "still be evil. Once all subfactions are dead, the Mystic becomes a Seer. If the player is framed, they will appear to have their subfactions changed.", Alignment.CrewAudit,
             Faction.Crew, "There's a hint of corruption.", Colors.Mystic),
         new("Operative", "Op", "The Operative can place bugs around the map. When players enter the range of the bug and stay within it for a certain amount of time, they trigger it. In " +
             "the following meeting, all players who triggered a bug will have their role displayed to the Operative. However, this is done so in a random order, not stating who entered the"
             + "bug, nor what role a specific player is. The Operative also gains more information when on Admin Table and on Vitals. On Admin Table, the Operative can see the colors of " +
-            "every person on the map. When on Vitals, the Operative is shown how long someone has been dead for.", RoleAlignment.CrewInvest, Faction.Crew, "The only thing you need to find"
+            "every person on the map. When on Vitals, the Operative is shown how long someone has been dead for.", Alignment.CrewInvest, Faction.Crew, "The only thing you need to find"
             + " out information is good placement and amazing levels of patience.", Colors.Operative),
         new("Retributionist", "Ret", "The Retributionist can mimic dead crewamtes. During meetings, the Retributionist can select who they are going to mimic for the following round from" +
             " the dead. It should be noted the Retributionist can not use all Crew roles and cannot use any Non-Crew role. The cooldowns, limits and everything will be set by the settings"
-            + " for their respective roles.", RoleAlignment.CrewSupport, Faction.Crew, "Bodies...bodies...I NEED BODIES.", Colors.Retributionist),
+            + " for their respective roles.", Alignment.CrewSupport, Faction.Crew, "Bodies...bodies...I NEED BODIES.", Colors.Retributionist),
         new("Seer", "Seer", "The Seer only spawns if there are roles capable of changing their initial roles or if there's a Traitor or Fanatic in the game. The Seer can investigate " +
             "players to see if their role is different from what they started out as. If a player's role has been changed, the Seer's screen will flash red, otherwise it will flash green" +
             ". This, however, does not work on those whose subfactions have changed so those who flashed green might still be evil. If all players capable of changing or have changed their"
-            + " initial roles are dead, the Seer becomes a Sheriff. If the player is framed, they will appear to have their role changed.", RoleAlignment.CrewInvest, Faction.Crew, "You've "
+            + " initial roles are dead, the Seer becomes a Sheriff. If the player is framed, they will appear to have their role changed.", Alignment.CrewInvest, Faction.Crew, "You've "
             + "got quite the history.", Colors.Seer),
         new("Sheriff", "Sher", "The Sheriff can reveal the alliance of other players. Based on settings, the Sheriff can find out whether a player is Good or Evil. The Sheriff's screen" +
-            " will flash green or red depending on the results. If the player is framed, they will appear to be evil.", RoleAlignment.CrewInvest, Faction.Crew, "Guys I promise I'm not an" +
+            " will flash green or red depending on the results. If the player is framed, they will appear to be evil.", Alignment.CrewInvest, Faction.Crew, "Guys I promise I'm not an" +
             " Executioner, I checked Blue and they're sus.", Colors.Sheriff),
-        new("Shifter", "Shift", "The Shifter can swap roles with someone, as long as they are Crew. If the shift is unsuccessful, the Shifter dies.", RoleAlignment.CrewSupport, Faction.Crew
+        new("Shifter", "Shift", "The Shifter can swap roles with someone, as long as they are Crew. If the shift is unsuccessful, the Shifter dies.", Alignment.CrewSupport, Faction.Crew
             , "GET BACK HERE I WANT YOUR ROLE.", Colors.Shifter),
         new("Tracker", "Track", "InvaThe Tracker can track others during a round. Once they track someone, an arrow is continuously pointing to them, which updates in set intervals.",
-            RoleAlignment.CrewInvest, Faction.Crew, "I only took up this job because the others were full. Yes it's a proper job. No, I'm not a stalker.", Colors.Tracker),
+            Alignment.CrewInvest, Faction.Crew, "I only took up this job because the others were full. Yes it's a proper job. No, I'm not a stalker.", Colors.Tracker),
         new("Transporter", "Trans", "The Transporter can swap the locations of two players at will. Being transported plays an animation that's visible to all players and renderers the" +
             " targets immobile for the duration of the transportation. During the transportation, they can be targeted by anyone, even those of their own team. This means that the " +
-            "Transporter is capable of making evils attack each other.", RoleAlignment.CrewSupport, Faction.Crew, "You're here and you're there. Where will you go? That's for me to decide."
+            "Transporter is capable of making evils attack each other.", Alignment.CrewSupport, Faction.Crew, "You're here and you're there. Where will you go? That's for me to decide."
             + ".", Colors.Transporter),
         new("Vampire Hunter", "VH", "The Vampire Hunter only spawns if there are Undead in the game. They can check players to see if they are an Undead. When the Vampire Hunter finds them"
             + ", the target is killed. Otherwise they only interact and nothing else happens. When all Undead are dead, the Vampire Hunter turns into a Vigilante. Interacting with a " +
-            "Vampire Hunter as an Undead will force the Vampire Hunter to kill you.", RoleAlignment.CrewAudit, Faction.Crew, "The Dracula could be any one of us! He could be you! He could"
+            "Vampire Hunter as an Undead will force the Vampire Hunter to kill you.", Alignment.CrewAudit, Faction.Crew, "The Dracula could be any one of us! He could be you! He could"
             + " be me! He could even be- <i>gets voted off</i>", Colors.VampireHunter),
-        new("Veteran", "Vet", "The Veteran can go on alert. Anyone who interacts with a Veteran on alert will be killed by the Veteran in question.", RoleAlignment.CrewKill, Faction.Crew,
+        new("Veteran", "Vet", "The Veteran can go on alert. Anyone who interacts with a Veteran on alert will be killed by the Veteran in question.", Alignment.CrewKill, Faction.Crew,
             "Touch me, I dare you.", Colors.Veteran),
-        new("Vigilante", "Vig", "The Vigilante can kill. However, if they kill someone they shouldn't, they instead die themselves.", RoleAlignment.CrewKill, Faction.Crew, "I AM THE HAND" +
+        new("Vigilante", "Vig", "The Vigilante can kill. However, if they kill someone they shouldn't, they instead die themselves.", Alignment.CrewKill, Faction.Crew, "I AM THE HAND" +
             " OF JUSTICE.", Colors.Vigilante),
         new("Actor", "Act", "The Actor gets a list of roles at the start of the game. This list of roles depends on which roles are present in the game so that it's easier for the Actor " +
-            "to pretend with certain events. The Actor must pretend to be and get guessed as one of the roles in order to win.", RoleAlignment.NeutralEvil, Faction.Neutral, "I am totally" +
+            "to pretend with certain events. The Actor must pretend to be and get guessed as one of the roles in order to win.", Alignment.NeutralEvil, Faction.Neutral, "I am totally" +
             " what you think of me as.", Colors.Actor, "Get guessed as a role in their target role list"),
         new("Amnesiac", "Amne", "The Amnesiac is essentially roleless and cannot win without remembering the role of a dead player. When there is only 6 players left, the Amnesiac " +
-            "becomes a Thief.", RoleAlignment.NeutralBen, Faction.Neutral, "I forgor :skull:", Colors.Amnesiac, "Find a dead body, take their role and then win as that role."),
+            "becomes a Thief.", Alignment.NeutralBen, Faction.Neutral, "I forgor :skull:", Colors.Amnesiac, "Find a dead body, take their role and then win as that role."),
         new("Arsonist", "Arso", "The Arsonist can douse players in gasoline. After dousing, the Arsonist can choose to ignite all doused players which kills all doused players at once." +
-            " Doused players have an orange Ξ next to their names", RoleAlignment.NeutralKill, Faction.Neutral, "I like my meat well done.", Colors.Arsonist, "Douse and ignite anyone who" +
+            " Doused players have an orange Ξ next to their names", Alignment.NeutralKill, Faction.Neutral, "I like my meat well done.", Colors.Arsonist, "Douse and ignite anyone who" +
             " can oppose them"),
         new("Bounty Hunter", "BH", "The Bounty Hunter is assigned a target as the start of the game. Every meeting, the Bounty Hunter is given clue to who their target might be. They "
             + "do not know who the target is and must find them via a series of clues and limited guesses. Upon finding their target within the set amount of guesses, the guess " +
             "button becomes a kill button. The Bounty Hunter's target always knows that there is a bounty on their head. If the Bounty Hunter is unable to find their target within " +
             "the number of guesses or their target dies not by the Bounty Hunter's hands, the Bounty Hunter becomes a Troll. The target has a red Θ next to their names.",
-            RoleAlignment.NeutralEvil, Faction.Neutral, "You can run, but you can't hide.", Colors.BountyHunter, "Find and kill their bounty"),
-        new("Cannibal", "Cann", "The Cannibal can eat the body which wipes away the body, like the Janitor.", RoleAlignment.NeutralEvil, Faction.Neutral, "How do you survive with no " +
+            Alignment.NeutralEvil, Faction.Neutral, "You can run, but you can't hide.", Colors.BountyHunter, "Find and kill their bounty"),
+        new("Cannibal", "Cann", "The Cannibal can eat the body which wipes away the body, like the Janitor.", Alignment.NeutralEvil, Faction.Neutral, "How do you survive with no " +
             "food but with a lot of people? Improvise, adapt, overcome.", Colors.Cannibal, "Eat a certain number of bodies"),
         new("Cryomaniac", "Cryo", "The Cryomaniac can douse in coolant and freeze players similar to the Arsonist's dousing in gasoline and ignite. Freezing players does not " +
             "immediately kill doused targets, instead when the next meeting is called, all currently doused players will die. When the Cryomaniac is the last killer or when the final "
-            + "number of players reaches a certain threshold, the Cryomaniac can also directly kill. Doused players have a purple λ next to their names.", RoleAlignment.NeutralKill,
+            + "number of players reaches a certain threshold, the Cryomaniac can also directly kill. Doused players have a purple λ next to their names.", Alignment.NeutralKill,
             Faction.Neutral, "Anybody wants ice scream?", Colors.Cryomaniac, "Douse and freeze anyone who can oppose them"),
         new("Dracula", "Drac", "The Dracula is the only Undead that spawns in. The Dracula is the leader of the Undead who can convert others into an Undead. If the target cannot be " +
             "converted, they will be attacked instead. The Dracula must watch out for the Vampire Hunter as attempting to convert them will cause the Vampire Hunter to kill the " +
-            "Dracula. Members of the Undead have a grey γ next to their names.", RoleAlignment.NeutralNeo, Faction.Neutral, "Everyone calls me a pain in the neck.", Colors.Dracula,
+            "Dracula. Members of the Undead have a grey γ next to their names.", Alignment.NeutralNeo, Faction.Neutral, "Everyone calls me a pain in the neck.", Colors.Dracula,
             "Convert or kill anyone who can oppose the Undead"),
         new("Executioner", "Exe", "The Executioner has no abilities and instead must use gas-lighting techniques to get their target ejected. The Executioner's target, by default, " +
             "is always a non-Crew (Sovereign) player. Once their target is ejected, the Executioner can doom those who voted for their target. If their target dies before ejected" +
-            ", the Executioner turns into a Jester. Targets have a grey § next to their names.", RoleAlignment.NeutralEvil, Faction.Neutral, "Source: trust me bro.",
+            ", the Executioner turns into a Jester. Targets have a grey § next to their names.", Alignment.NeutralEvil, Faction.Neutral, "Source: trust me bro.",
             Colors.Executioner, "Have their target ejected by any means"),
         new("Glitch", "Gli", "The Glitch can hack players, resulting in them being unable to do anything for a set duration or they can also mimic someone, which results in them " +
-            "looking exactly like the other person. The Glitch can kill normally.", RoleAlignment.NeutralKill, Faction.Neutral, "Hippity hoppity, your code is now my property.",
+            "looking exactly like the other person. The Glitch can kill normally.", Alignment.NeutralKill, Faction.Neutral, "Hippity hoppity, your code is now my property.",
             Colors.Glitch, "Neutralise anyone who can oppose them"),
         new("Guesser", "Guess", "The Guesser has no abilities aside from guessing only their target. Every meeting, the Guesser is told a hint regarding their target's role. If the " +
             "target dies not by the Gusser's hands, the Guesser becomes an Actor with the target role list that of their target's role. Upon guessing their target, the Guesser can " +
-            "freely guess anyone. Targets have a beige π next to their names.", RoleAlignment.NeutralEvil, Faction.Neutral, "I want to know what you are.", Colors.Guesser, "Guess their"
+            "freely guess anyone. Targets have a beige π next to their names.", Alignment.NeutralEvil, Faction.Neutral, "I want to know what you are.", Colors.Guesser, "Guess their"
             + " target's role"),
         new("Jackal", "Jack", "The Jackal is the leader of the Cabal. They spawn in with 2 recruits at the start of the game. One of the recruits is the 'good' one, meaning they are " +
             "Crew or Neutral (Benign). The other is the 'evil' recruit, who can be either Intruder, Syndicate or Neutral (Killing) or (Harbinger). When both recruits die, the Jackal " +
             "can then recruit another player to join the Cabal and become the backup recruit. If the target happens to be a member of a rival subfaction, they will be attacked instead"
-            + " and the Jackal will still lose their ability to recruit. Members of the Cabal have a dark grey $ next to their names.", RoleAlignment.NeutralNeo, Faction.Neutral, "I've"
+            + " and the Jackal will still lose their ability to recruit. Members of the Cabal have a dark grey $ next to their names.", Alignment.NeutralNeo, Faction.Neutral, "I've"
             + " got money.", Colors.Jackal, "Recruit or kill anyone who can oppose Cabal"),
         new("Guardian Angel", "GA", "The Guardian Angel more or less aligns themselves with the faction of their target. The Guardian Angel will win with anyone as long as their " +
             "target lives to the end of the game, even if their target loses. If the Guardian Angel's target dies, they become a Survivor. Targets have a white ★ and a white η when " +
-            "being protected next to their names.", RoleAlignment.NeutralBen, Faction.Neutral, "Hush child...Mama's here.", UColor.white, "Have their target live to the end of the "
+            "being protected next to their names.", Alignment.NeutralBen, Faction.Neutral, "Hush child...Mama's here.", UColor.white, "Have their target live to the end of the "
             + "game"),
         new("Jester", "Jest", "The Jester has no abilities and must make themselves appear to be evil to the Crew and get ejected. After getting ejected, the Jester can haunt those " +
-            "who voted for them, killing them from beyond the grave.", RoleAlignment.NeutralEvil, Faction.Neutral, "Hehehe I wonder if I do this...", Colors.Jester, "Get ejected"),
+            "who voted for them, killing them from beyond the grave.", Alignment.NeutralEvil, Faction.Neutral, "Hehehe I wonder if I do this...", Colors.Jester, "Get ejected"),
         new("Juggernaut", "Jugg", "The Juggernaut's kill cooldown decreases with every kill they make. When they reach a certain number of kills, the kill cooldown no longer " +
-            "decreases and instead gives them other buffs, like bypassing protections.", RoleAlignment.NeutralKill, Faction.Neutral, "The doctor told me bones grow stronger when " +
+            "decreases and instead gives them other buffs, like bypassing protections.", Alignment.NeutralKill, Faction.Neutral, "The doctor told me bones grow stronger when " +
             "recieving damage. But then why did he kick me out when I picked up a hammer?", Colors.Juggernaut, "Assault anyone who can oppose them"),
         new("Revealer", "Rev", "The Revealer is the first dead Crew. Upon finishing all their tasks, the evils, and possibly their roles, will be revealed to all other alive players. "
-            + "However, if the Revealer is clicked they lose their ability to reveal evils and are once again a normal ghost.", RoleAlignment.CrewUtil, Faction.Crew, "I have no idea "
+            + "However, if the Revealer is clicked they lose their ability to reveal evils and are once again a normal ghost.", Alignment.CrewUtil, Faction.Crew, "I have no idea "
             + "who I am or what I do, the only thing I know is to finish my job.", Colors.Revealer),
-        new("Murderer", "Murd", "The Murderer is a simple Neutral Killer with no special abilities.", RoleAlignment.NeutralKill, Faction.Neutral, "I like my women like how I like " +
+        new("Murderer", "Murd", "The Murderer is a simple Neutral Killer with no special abilities.", Alignment.NeutralKill, Faction.Neutral, "I like my women like how I like " +
             "my knives, sharp and painful.", Colors.Murderer, "Murder anyone who can oppose them"),
         new("Necromancer", "Necro", "The Necromancer is essentially an evil Altruist. They can resurrect dead players and make them join the Necromancer's team, the Reanimated. There" +
             " is a limit to how many times can the Necromancer can kill and resurrect players. Members of the Reanimated have a dark pink Σ next to their names.",
-            RoleAlignment.NeutralNeo, Faction.Neutral, "I like the dead, they do a lot of things I like. For example, staying dead.", Colors.Necromancer, "Resurrect the dead and kill "
+            Alignment.NeutralNeo, Faction.Neutral, "I like the dead, they do a lot of things I like. For example, staying dead.", Colors.Necromancer, "Resurrect the dead and kill "
             + "off anyone who can oppose the Reanimated"),
         new("Pestilence", "Pest", "The Pestilence is always on permanent alert, where anyone who tries to interact with them will die. Pestilence does not spawn in-game and instead " +
             "gets converted from Plaguebearer after they infect everyone. Pestilence cannot die unless they have been voted out, and they can't be guessed (usually). This role does not"
-            + " spawn directly, unless it's set to, in which case it will replace the Plaguebearer.", RoleAlignment.NeutralApoc, Faction.Neutral, "I am the god of disease, nothing can"
+            + " spawn directly, unless it's set to, in which case it will replace the Plaguebearer.", Alignment.NeutralApoc, Faction.Neutral, "I am the god of disease, nothing can"
             + "kill me. <i>Voice from the distance</i> Ejections can!", Colors.Pestilence, "Obliterate anyone who can oppose them"),
         new("Phantom", "Phan", "The Phantom spawns when a Neutral player dies withouth accomplishing their objective. They become half-invisible and have to complete all their tasks " +
-            "without getting clicked on to win.", RoleAlignment.NeutralPros, Faction.Neutral, "I'm the one who you should not have killed. <i>Voice from the distance</i> Get outta " +
+            "without getting clicked on to win.", Alignment.NeutralPros, Faction.Neutral, "I'm the one who you should not have killed. <i>Voice from the distance</i> Get outta " +
             "here! This is not FNAF!", Colors.Phantom, "Finish tasks without getting caught"),
         new("Plaguebearer", "PB", "The Plaguebearer can infect other players. Once infected, the infected player can go and infect other players via interacting with them. Once all " +
-            "players are infected, the Plaguebearer becomes Pestilence. Infected players have a pale lime ρ next to their names.", RoleAlignment.NeutralHarb, Faction.Neutral,
+            "players are infected, the Plaguebearer becomes Pestilence. Infected players have a pale lime ρ next to their names.", Alignment.NeutralHarb, Faction.Neutral,
             "<i>Cough</i> This should surely work, right? <i>Cough</i> I sure hope it does.", Colors.Plaguebearer, "Infect everyone to become Pestilence or kill off anyone who can " +
             "oppose them"),
         new("Serial Killer", "SK", "Although the Serial Killer has a kill button, they can't use it unless they are in Bloodlust. Once the Serial Killer is in bloodlust they gain the "
-            + "ability to kill. However, unlike most killers, their kill cooldown is really short for the duration of the bloodlust.", RoleAlignment.NeutralKill, Faction.Neutral, "My "
+            + "ability to kill. However, unlike most killers, their kill cooldown is really short for the duration of the bloodlust.", Alignment.NeutralKill, Faction.Neutral, "My "
             + "knife, WHERE'S MY KNIFE?!", Colors.SerialKiller, "Stab anyone who can oppose them"),
         new("Survivor", "Surv", "The Survivor wins by simply surviving. They can vest which makes them immortal for a short duration. Vesting Survivors have a yellow υ next to their " +
-            "names.", RoleAlignment.NeutralBen, Faction.Neutral, "Hey listen man, I mind my own business and you mind yours. Everyone wins!", Colors.Survivor, "Live to the end of the "
+            "names.", Alignment.NeutralBen, Faction.Neutral, "Hey listen man, I mind my own business and you mind yours. Everyone wins!", Colors.Survivor, "Live to the end of the "
             + "game"),
         new("Thief", "Thief", "The Thief can kill players to steal their roles. The player, however, must be a role with the ability to kill otherwise the Thief will die. After " +
             "stealing their target's role, the Thief can now win as whatever role they have become. The Thief can also guess players in-meeting to steal their roles.",
-            RoleAlignment.NeutralBen, Faction.Neutral, "Now it's mine.", Colors.Thief, "Kill and steal someone's role"),
+            Alignment.NeutralBen, Faction.Neutral, "Now it's mine.", Colors.Thief, "Kill and steal someone's role"),
         new("Troll", "Troll", "The Troll just wants to be killed, but not ejected. The Troll can \"interact\" with players. This interaction does nothing, it just triggers any " +
-            "interaction sensitive roles like Veteran and Pestilence. Killing the Troll makes the Troll kill their killer.", RoleAlignment.NeutralEvil, Faction.Neutral, "Kill me. " +
+            "interaction sensitive roles like Veteran and Pestilence. Killing the Troll makes the Troll kill their killer.", Alignment.NeutralEvil, Faction.Neutral, "Kill me. " +
             "Impostor: Later.", Colors.Troll, "Get killed"),
-        new("Werewolf", "WW", "The Werewolf can kill all players within a certain radius.", RoleAlignment.NeutralKill, Faction.Neutral, "AWOOOOOOOOOOOOOOOOOOOO", Colors.Werewolf,
+        new("Werewolf", "WW", "The Werewolf can kill all players within a certain radius.", Alignment.NeutralKill, Faction.Neutral, "AWOOOOOOOOOOOOOOOOOOOO", Colors.Werewolf,
             "Maul anyone who can oppose them"),
         new("Whisperer", "Whisp", "The Whisperer can whisper to all players within a certain radius. With each whisper, the chances of bringing someone over to the Sect increases " +
-            "till they do convert. Members of the Sect have a pink Λ next to their names", RoleAlignment.NeutralNeo, Faction.Neutral, "PSST.", Colors.Whisperer, "Persuade or kill " +
+            "till they do convert. Members of the Sect have a pink Λ next to their names", Alignment.NeutralNeo, Faction.Neutral, "PSST.", Colors.Whisperer, "Persuade or kill " +
             "anyone who can oppose the Sect"),
-        new("Ambusher", "Amb", "The Ambusher can temporarily force anyone to go on alert, killing anyone who interacts with the Ambusher's target.", RoleAlignment.IntruderKill,
+        new("Ambusher", "Amb", "The Ambusher can temporarily force anyone to go on alert, killing anyone who interacts with the Ambusher's target.", Alignment.IntruderKill,
             Faction.Intruder, "BOO", Colors.Ambusher),
-        new("Blackmailer", "BM", "The Blackmailer can blackmail people. Blackmailed players cannot speak during the next meeting.", RoleAlignment.IntruderConceal, Faction.Intruder,
+        new("Blackmailer", "BM", "The Blackmailer can blackmail people. Blackmailed players cannot speak during the next meeting.", Alignment.IntruderConceal, Faction.Intruder,
             "Shush.", Colors.Blackmailer),
         new("Camouflager", "Camo", "The Camouflager does the same thing as the Better Comms Sabotage, but their camouflage can be stacked on top other sabotages. Camouflaged players "+
-            "can kill in front everyone and no one will know who it is.", RoleAlignment.IntruderConceal, Faction.Intruder, "Good luck telling others apart.", Colors.Camouflager),
-        new("Consigliere", "Consig", "The Consigliere can reveal people's roles. They cannot guess those they revealed for obvious reasons.", RoleAlignment.IntruderSupport,
+            "can kill in front everyone and no one will know who it is.", Alignment.IntruderConceal, Faction.Intruder, "Good luck telling others apart.", Colors.Camouflager),
+        new("Consigliere", "Consig", "The Consigliere can reveal people's roles. They cannot guess those they revealed for obvious reasons.", Alignment.IntruderSupport,
             Faction.Intruder, "What are you?", Colors.Consigliere),
         new("Consort", "Cons", "The Consort can roleblock players and prevent them from doing anything for a short while. They behave just like an Escort but the Consort can roleblock "
-            + "from any range.", RoleAlignment.IntruderSupport, Faction.Intruder, "I'm like the first slice of bread, everyone touches me but no one likes me.", Colors.Consort),
+            + "from any range.", Alignment.IntruderSupport, Faction.Intruder, "I'm like the first slice of bread, everyone touches me but no one likes me.", Colors.Consort),
         new("Disguiser", "Disg", "The Disguiser can disguise other players. At the beginning of each, they can choose someone to measure. They can then disguise the next nearest " +
-            "person into the measured person for a limited amount of time after a short delay.", RoleAlignment.IntruderDecep, Faction.Intruder, "Here, wear this for me please. I " +
+            "person into the measured person for a limited amount of time after a short delay.", Alignment.IntruderDecep, Faction.Intruder, "Here, wear this for me please. I " +
             "promise I won't do anything to you.", Colors.Disguiser),
         new("Ghoul", "Ghoul", "The Ghoul is the first dead Intruder. Every round, the Ghoul can mark a player for death. All players are told who is marked and the marked player will "
             + "die at the end of the next meeting. The only way to save a marked player is to click the Ghoul that marked them. Marked players have a yellow χ next to their names.",
-            RoleAlignment.IntruderUtil, Faction.Intruder, "I CURSE YOU!", Colors.Ghoul),
+            Alignment.IntruderUtil, Faction.Intruder, "I CURSE YOU!", Colors.Ghoul),
         new("Godfather", "GF", "The Godfather can only spawn in 3+ Intruder games. They can choose to promote a fellow Intruder to Mafioso. When the Godfather dies, the Mafioso " +
-            "becomes the new Godfather and has lowered cooldowns.", RoleAlignment.IntruderSupport, Faction.Intruder, "I'm going to make an offer they can't refuse.", Colors.Godfather),
+            "becomes the new Godfather and has lowered cooldowns.", Alignment.IntruderSupport, Faction.Intruder, "I'm going to make an offer they can't refuse.", Colors.Godfather),
         new("Grenadier", "Gren", "The Grenadier can throw flash grenades which blinds nearby players. However, a sabotage and a flash grenade can not be active at the same time.",
-            RoleAlignment.IntruderConceal, Faction.Intruder, "AAAAAAAAAAAAA YOUR EYES.", Colors.Grenadier),
-        new("Impostor", "Imp", "Just a plain Intruder with no abilities and only spawns if all the other roles are taken or set to spawn in Custom mode.", RoleAlignment.IntruderUtil,
+            Alignment.IntruderConceal, Faction.Intruder, "AAAAAAAAAAAAA YOUR EYES.", Colors.Grenadier),
+        new("Impostor", "Imp", "Just a plain Intruder with no abilities and only spawns if all the other roles are taken or set to spawn in Custom mode.", Alignment.IntruderUtil,
             Faction.Intruder, "If you ever feel useless, just remember I exist.", Colors.Intruder),
         new("Janitor", "Jani", "The Janitor can drag, drop and clean up bodies. Both their Kill and Clean usually ability have a shared cooldown, meaning they have to choose which one"
-            + " they want to use.", RoleAlignment.IntruderConceal, Faction.Intruder, "I'm the guy you call to clean up after you.", Colors.Janitor),
+            + " they want to use.", Alignment.IntruderConceal, Faction.Intruder, "I'm the guy you call to clean up after you.", Colors.Janitor),
         new("Mafioso", "Mafi", "The Mafioso is promoted from a random non-Godfather Intruder role. The Mafioso by themself is nothing special, but when the Godfather dies, the Mafioso "
-            + "becomes the new Godfather. As a result, the new Godfather has a lower cooldown on all of their original role's abilities.", RoleAlignment.IntruderUtil, Faction.Intruder,
+            + "becomes the new Godfather. As a result, the new Godfather has a lower cooldown on all of their original role's abilities.", Alignment.IntruderUtil, Faction.Intruder,
             "Yes, boss. Got it, boss.", Colors.Mafioso),
-        new("Miner", "Miner", "The Miner can create new vents. These vents only connect to each other, forming a new passageway.", RoleAlignment.IntruderSupport, Faction.Intruder,
+        new("Miner", "Miner", "The Miner can create new vents. These vents only connect to each other, forming a new passageway.", Alignment.IntruderSupport, Faction.Intruder,
             "Dig, dig, diggin' some rave; making some loud sound waves; the only thing you'll be diggin' is your own grave.", Colors.Miner),
         new("Morphling", "Morph", "The Morphling can morph into another player. During the round, they can choose someone to sample. They can then morph into the sampled person at any"
-            + " time for a limited amount of time.", RoleAlignment.IntruderDecep, Faction.Intruder, "<i>Casually observing the chaos over Green seeing Red kill.</i> It was me.",
+            + " time for a limited amount of time.", Alignment.IntruderDecep, Faction.Intruder, "<i>Casually observing the chaos over Green seeing Red kill.</i> It was me.",
             Colors.Morphling),
-        new("Teleporter", "Tele", "The Teleporter can mark a location which they can then teleport to later.", RoleAlignment.IntruderSupport, Faction.Intruder, "He's here, he's there, "
+        new("Teleporter", "Tele", "The Teleporter can mark a location which they can then teleport to later.", Alignment.IntruderSupport, Faction.Intruder, "He's here, he's there, "
             + "he's everywhere. Who are ya gonna call? Psychic friend Fr-", Colors.Teleporter),
-        new("Wraith", "Wraith", "The Wraith can temporarily turn invisible.", RoleAlignment.IntruderDecep, Faction.Intruder, "Now you see me, now you don't.", Colors.Wraith),
+        new("Wraith", "Wraith", "The Wraith can temporarily turn invisible.", Alignment.IntruderDecep, Faction.Intruder, "Now you see me, now you don't.", Colors.Wraith),
         new("Anarchist", "Anarch", "Just a plain Syndicate with no abilities and only spawns if all the other roles are taken or set to spawn in Custom mode. Its only benefit is its " +
-            "ability to kill from the beginning of the game. With the Chaos Drive, the Anarchist's kill cooldown decreases.", RoleAlignment.SyndicateUtil, Faction.Syndicate, "If you " +
+            "ability to kill from the beginning of the game. With the Chaos Drive, the Anarchist's kill cooldown decreases.", Alignment.SyndicateUtil, Faction.Syndicate, "If you " +
             "ever feel useless, just remember that I also exist.", Colors.Syndicate),
         new("Banshee", "Bansh", "The Banshee is the first dead Syndicate. The Banshee can block every non-Syndicate player every once in a while. This role cannot get the Chaos Drive.",
-            RoleAlignment.SyndicateUtil, Faction.Syndicate, "AAAAAAAAAAAAAAA", Colors.Banshee),
-        new("Concealer", "Conceal", "The Concealer can make a player invisible for a short while. With the Chaos Drive, this applies to everyone.", RoleAlignment.SyndicateDisrup,
+            Alignment.SyndicateUtil, Faction.Syndicate, "AAAAAAAAAAAAAAA", Colors.Banshee),
+        new("Concealer", "Conceal", "The Concealer can make a player invisible for a short while. With the Chaos Drive, this applies to everyone.", Alignment.SyndicateDisrup,
             Faction.Syndicate, "HAHAHA YOU CAN'T SEE VERY WELL CAN YOU NOW?", Colors.Concealer),
         new("Crusader", "Crus", "The Crusader can temporaily force anyone to go on alert, killing anyone who interacts with the Crusader's target. With the Chaos Drive, attempting to "
-            + "interact with the Crusader's target will cause the target to kill everyone within a certain range, including the target themselves.", RoleAlignment.SyndicateKill,
+            + "interact with the Crusader's target will cause the target to kill everyone within a certain range, including the target themselves.", Alignment.SyndicateKill,
             Faction.Syndicate, "I WILL PURGE THIS UNHOLY LAND!", Colors.Crusader),
         new("Framer", "Framer", "The Framer can frame players, making them appear to be evil or have wrong results. This effect lasts as long as the Framer is alive. With the Chaos " +
-            "Drive, the Framer can frame players within a certain radius.", RoleAlignment.SyndicateDisrup, Faction.Syndicate, "Who knew old documents can get people into trouble?",
+            "Drive, the Framer can frame players within a certain radius.", Alignment.SyndicateDisrup, Faction.Syndicate, "Who knew old documents can get people into trouble?",
             Colors.Framer),
         new("Poisoner", "Pois", "The Poisoner can poison a player instead of killing. When they poison a player, the poisoned player dies either upon the start of the next meeting or" +
-            " after a set duration. With the Chaos Drive, the Poisoner can poison a player from anywhere.", RoleAlignment.SyndicateKill, Faction.Syndicate, "So now if you " +
+            " after a set duration. With the Chaos Drive, the Poisoner can poison a player from anywhere.", Alignment.SyndicateKill, Faction.Syndicate, "So now if you " +
             "mix these together, you end up creating this...thing.", Colors.Poisoner),
         new("Rebel", "Reb", "The Rebel can only spawn in 3+ Syndicate games. They can choose to promote a fellow Syndicate to Sidekick. When the Rebel dies, the Sidekick becomes " +
-            "the new Rebel and has lowered cooldowns. With the Chaos Drive, the Rebel's gains the improved abilities of their former role.", RoleAlignment.SyndicateSupport,
+            "the new Rebel and has lowered cooldowns. With the Chaos Drive, the Rebel's gains the improved abilities of their former role.", Alignment.SyndicateSupport,
             Faction.Syndicate, "DOWN WITH THE GOVERNMENT!", Colors.Rebel),
-        new("Shapeshifter", "SS", "The Shapeshifter can swap the appearances of 2 players. With the Chaos Drive, everyone's appearances are suffled.", RoleAlignment.SyndicateDisrup,
+        new("Shapeshifter", "SS", "The Shapeshifter can swap the appearances of 2 players. With the Chaos Drive, everyone's appearances are suffled.", Alignment.SyndicateDisrup,
             Faction.Syndicate, "Everyone! We will be playing dress up! TOGETHER!", Colors.Shapeshifter),
         new("Sidekick", "Side", "The Sidekick is promoted from a random non-Rebel Syndicate role. The Sidekick by themselves is nothing special, but when the Rebel dies, the Sidekick" +
-            " becomes the new Rebel. As a result, the new Rebel has a lower cooldown on all of their original role's abilities.", RoleAlignment.SyndicateUtil, Faction.Syndicate,
+            " becomes the new Rebel. As a result, the new Rebel has a lower cooldown on all of their original role's abilities.", Alignment.SyndicateUtil, Faction.Syndicate,
             "Learning new things.", Colors.Sidekick),
         new("Warper", "Warp", "The Warper can teleport a player to another player. With the Chaos Drive, the Warper teleports everyone to random positions on the map. Warping a player "
-            + "makes them unable to move and play an animation. During warping, they can be targeted by anyone, opening up the possibility of team killing.", RoleAlignment.SyndicateSupport,
+            + "makes them unable to move and play an animation. During warping, they can be targeted by anyone, opening up the possibility of team killing.", Alignment.SyndicateSupport,
             Faction.Syndicate, "BEGONE!", Colors.Warper),
         new("Enforcer", "Enf", "The Enforcer can plant bombs on players. After a short while, the target will be alerted to the bomb's presence and must kill someone to get rid of" +
-            " it. If they fail to do so within a certain time limit, the bomb will explode, killing everyone within its vicinity.", RoleAlignment.IntruderKill, Faction.Intruder,
+            " it. If they fail to do so within a certain time limit, the bomb will explode, killing everyone within its vicinity.", Alignment.IntruderKill, Faction.Intruder,
             "You will do as I say...unless you want to be the painting on the walls.", Colors.Enforcer),
         new("Bomber", "Bomb", "The Bomber can place a bomb which can be remotely detonated at any time. Anyone caught inside the bomb's radius at the time of detonation will be killed"
-            + ". Only the latest placed bomb will detonate, unless the Bomber holds the Chaos Drive, with which they can detonate all bombs at once.", RoleAlignment.SyndicateKill,
+            + ". Only the latest placed bomb will detonate, unless the Bomber holds the Chaos Drive, with which they can detonate all bombs at once.", Alignment.SyndicateKill,
             Faction.Syndicate, "KABOOM!!", Colors.Bomber),
         new("Detective", "Det", "The Detective can examine other players for bloody hands. If the examined player has killed recently, the Detective will be alerted about it. The " +
-            "Detective can also see the footprints of players. All footprints disappear after a set amount of time and only the Detective can see them.", RoleAlignment.CrewInvest,
+            "Detective can also see the footprints of players. All footprints disappear after a set amount of time and only the Detective can see them.", Alignment.CrewInvest,
             Faction.Crew, "I am skilled in identifying blood...yup that's defintely blood.", Colors.Detective),
         new("Betrayer", "Bet", "The Betrayer is a simple killer, who appears after a turned Traitor/Fanatic was the only member of their new faction remaning. This role does not spawn"
-            + " directly.", RoleAlignment.NeutralPros, Faction.Neutral, "The back that trusts me the most is the sweetest to stab", Colors.Betrayer, "Kill anyone who opposes the " +
+            + " directly.", Alignment.NeutralPros, Faction.Neutral, "The back that trusts me the most is the sweetest to stab", Colors.Betrayer, "Kill anyone who opposes the " +
             "faction they defected to"),
         new("Dictator", "Dict", "The Dictator has no active ability aside from revealing themselves as the Dictator to all players. When revealed, in the next meeting they can pick " +
             "up to 3 players to be ejected. All selected players will be killed at the end of the meeting, along with the chosen 4th player everyone else votes on (if any). If any " +
-            "of the killed players happens to be Crew, the Dictator dies with them. The Dictator has no post ejection ability.", RoleAlignment.CrewSov, Faction.Crew, "Out you go!",
+            "of the killed players happens to be Crew, the Dictator dies with them. The Dictator has no post ejection ability.", Alignment.CrewSov, Faction.Crew, "Out you go!",
             Colors.Dictator),
         new("Monarch", "Mon", "The Monarch can appoint players as knights. When the next meeting is called, all knighted players will be announced. Knighted players will have the value"
             + " of their votes increased. As long as a Knight is alive, the Monarch cannot be killed. Knighted players have a pinkish red κ next to their names.",
-            RoleAlignment.CrewSov, Faction.Crew, "Doth thou solemnly swear your allegiance to the lord?", Colors.Monarch),
+            Alignment.CrewSov, Faction.Crew, "Doth thou solemnly swear your allegiance to the lord?", Colors.Monarch),
         new("Stalker", "Stalk", "The Stalker is a buffed Tracker with no update interval. With the Chaos Drive, the arrows are no longer affected by camouflages and all players " +
-            "instantly have an arrow pointing at them.", RoleAlignment.SyndicateSupport, Faction.Syndicate, "I'll follow you.", Colors.Stalker),
+            "instantly have an arrow pointing at them.", Alignment.SyndicateSupport, Faction.Syndicate, "I'll follow you.", Colors.Stalker),
         new("Spellslinger", "Spell", "The Spellslinger is a powerful role who can cast curses on players. When all non-Syndicate players are cursed, the game ends in a Syndicate " +
             "victory. With each curse cast, the spell cooldown increases. This effect is negated by the Chaos Drive. Spelled players have a blue ø next to their names during a meeting"
-            + ".", RoleAlignment.SyndicatePower, Faction.Syndicate, "I CURSE YOU TO SUCK ONE THOUSAND D-", Colors.Spellslinger),
+            + ".", Alignment.SyndicatePower, Faction.Syndicate, "I CURSE YOU TO SUCK ONE THOUSAND D-", Colors.Spellslinger),
         new("Collider", "Col", "The Collider can mark players as positive and negative. If these charged players come within a certain distance of each other, they will die together" +
             ". With the Chaos Drive, the Collider can charge themselves to collide with the other charged players. This only kills the charged victim. The range of collision also " +
-            "increases with the Chaos Drive.", RoleAlignment.SyndicateKill, Faction.Syndicate, "I'm a great matchmaker, trust me.", Colors.Collider),
+            "increases with the Chaos Drive.", Alignment.SyndicateKill, Faction.Syndicate, "I'm a great matchmaker, trust me.", Colors.Collider),
         new("Time Keeper", "TK", "The Time Keeper can control time. Without the Chaos Drive, the Time Keeper can freeze time, making everyone unable to move and with it, the Time " +
-            "Keeper rewinds players instead.", RoleAlignment.SyndicatePower, Faction.Syndicate, "IT'S TIME TO STOP. NO MORE.", Colors.TimeKeeper),
+            "Keeper rewinds players instead.", Alignment.SyndicatePower, Faction.Syndicate, "IT'S TIME TO STOP. NO MORE.", Colors.TimeKeeper),
         new("Silencer", "Sil", "The Silencer can silencer people. Silenced plaeyrs cannot see the messages being sent by others but can still talk. Other players can still talk but " +
             "can't get their info through to the silenced player. With the Chaos Drive, silence prevents everyone except for the silenced player from talking.",
-            RoleAlignment.SyndicateDisrup, Faction.Syndicate, "QUIET.", Colors.Silencer),
-        new("Drunkard", "Drunk", "The Drunkard can reverse a player's controls. With the Chaos Drive, this effect applies to everyone.", RoleAlignment.SyndicateDisrup,
+            Alignment.SyndicateDisrup, Faction.Syndicate, "QUIET.", Colors.Silencer),
+        new("Drunkard", "Drunk", "The Drunkard can reverse a player's controls. With the Chaos Drive, this effect applies to everyone.", Alignment.SyndicateDisrup,
             Faction.Syndicate, "<i>Burp</i>", Colors.Drunkard)
     };
 
@@ -357,57 +357,57 @@ public static class LayerInfo
 
     public static readonly List<AlignmentInfo> AllAlignments = new()
     {
-        new(RoleAlignment.None),
-        new(RoleAlignment.CrewSupport),
-        new(RoleAlignment.CrewInvest),
-        new(RoleAlignment.CrewProt),
-        new(RoleAlignment.CrewKill),
-        new(RoleAlignment.CrewUtil),
-        new(RoleAlignment.CrewSov),
-        new(RoleAlignment.CrewAudit),
-        new(RoleAlignment.CrewConceal),
-        new(RoleAlignment.CrewDecep),
-        new(RoleAlignment.CrewPower),
-        new(RoleAlignment.CrewDisrup),
-        new(RoleAlignment.IntruderSupport),
-        new(RoleAlignment.IntruderConceal),
-        new(RoleAlignment.IntruderDecep),
-        new(RoleAlignment.IntruderKill),
-        new(RoleAlignment.IntruderUtil),
-        new(RoleAlignment.IntruderInvest),
-        new(RoleAlignment.IntruderProt),
-        new(RoleAlignment.IntruderSov),
-        new(RoleAlignment.IntruderAudit),
-        new(RoleAlignment.IntruderPower),
-        new(RoleAlignment.IntruderDisrup),
-        new(RoleAlignment.NeutralKill),
-        new(RoleAlignment.NeutralNeo),
-        new(RoleAlignment.NeutralEvil),
-        new(RoleAlignment.NeutralBen),
-        new(RoleAlignment.NeutralPros),
-        new(RoleAlignment.NeutralApoc),
-        new(RoleAlignment.NeutralHarb),
-        new(RoleAlignment.NeutralInvest),
-        new(RoleAlignment.NeutralAudit),
-        new(RoleAlignment.NeutralSov),
-        new(RoleAlignment.NeutralProt),
-        new(RoleAlignment.NeutralSupport),
-        new(RoleAlignment.NeutralUtil),
-        new(RoleAlignment.NeutralConceal),
-        new(RoleAlignment.NeutralDecep),
-        new(RoleAlignment.NeutralDisrup),
-        new(RoleAlignment.NeutralPower),
-        new(RoleAlignment.SyndicateKill),
-        new(RoleAlignment.SyndicateSupport),
-        new(RoleAlignment.SyndicateDisrup),
-        new(RoleAlignment.SyndicatePower),
-        new(RoleAlignment.SyndicateUtil),
-        new(RoleAlignment.SyndicateInvest),
-        new(RoleAlignment.SyndicateProt),
-        new(RoleAlignment.SyndicateSov),
-        new(RoleAlignment.SyndicateAudit),
-        new(RoleAlignment.SyndicateConceal),
-        new(RoleAlignment.SyndicateDecep)
+        new(Alignment.None),
+        new(Alignment.CrewSupport),
+        new(Alignment.CrewInvest),
+        new(Alignment.CrewProt),
+        new(Alignment.CrewKill),
+        new(Alignment.CrewUtil),
+        new(Alignment.CrewSov),
+        new(Alignment.CrewAudit),
+        new(Alignment.CrewConceal),
+        new(Alignment.CrewDecep),
+        new(Alignment.CrewPower),
+        new(Alignment.CrewDisrup),
+        new(Alignment.IntruderSupport),
+        new(Alignment.IntruderConceal),
+        new(Alignment.IntruderDecep),
+        new(Alignment.IntruderKill),
+        new(Alignment.IntruderUtil),
+        new(Alignment.IntruderInvest),
+        new(Alignment.IntruderProt),
+        new(Alignment.IntruderSov),
+        new(Alignment.IntruderAudit),
+        new(Alignment.IntruderPower),
+        new(Alignment.IntruderDisrup),
+        new(Alignment.NeutralKill),
+        new(Alignment.NeutralNeo),
+        new(Alignment.NeutralEvil),
+        new(Alignment.NeutralBen),
+        new(Alignment.NeutralPros),
+        new(Alignment.NeutralApoc),
+        new(Alignment.NeutralHarb),
+        new(Alignment.NeutralInvest),
+        new(Alignment.NeutralAudit),
+        new(Alignment.NeutralSov),
+        new(Alignment.NeutralProt),
+        new(Alignment.NeutralSupport),
+        new(Alignment.NeutralUtil),
+        new(Alignment.NeutralConceal),
+        new(Alignment.NeutralDecep),
+        new(Alignment.NeutralDisrup),
+        new(Alignment.NeutralPower),
+        new(Alignment.SyndicateKill),
+        new(Alignment.SyndicateSupport),
+        new(Alignment.SyndicateDisrup),
+        new(Alignment.SyndicatePower),
+        new(Alignment.SyndicateUtil),
+        new(Alignment.SyndicateInvest),
+        new(Alignment.SyndicateProt),
+        new(Alignment.SyndicateSov),
+        new(Alignment.SyndicateAudit),
+        new(Alignment.SyndicateConceal),
+        new(Alignment.SyndicateDecep)
     };
 
     public static readonly List<Lore> AllLore = new()

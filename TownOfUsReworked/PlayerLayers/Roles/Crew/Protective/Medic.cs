@@ -7,7 +7,7 @@ public class Medic : Crew
     public PlayerControl ExShielded { get; set; }
     public CustomButton ShieldButton { get; set; }
 
-    public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Medic : Colors.Crew;
+    public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Medic : Colors.Crew;
     public override string Name => "Medic";
     public override LayerEnum Type => LayerEnum.Medic;
     public override Func<string> StartText => () => "Shield A Player To Protect Them";
@@ -19,7 +19,7 @@ public class Medic : Crew
     {
         ShieldedPlayer = null;
         ExShielded = null;
-        RoleAlignment = RoleAlignment.CrewProt;
+        Alignment = Alignment.CrewProt;
         ShieldButton = new(this, "Shield", AbilityTypes.Direct, "ActionSecondary", Protect, Exception);
     }
 
@@ -30,7 +30,7 @@ public class Medic : Crew
 
         var interact = Interact(Player, ShieldButton.TargetPlayer);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
         {
             ShieldedPlayer = ShieldButton.TargetPlayer;
             CallRpc(CustomRPC.Action, ActionsRPC.Protect, this, ShieldedPlayer);

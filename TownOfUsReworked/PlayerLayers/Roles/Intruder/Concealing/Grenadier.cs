@@ -12,7 +12,7 @@ public class Grenadier : Intruder
     public List<PlayerControl> FlashedPlayers { get; set; }
     public bool Flashed => TimeRemaining > 0f;
 
-    public override Color32 Color => ClientGameOptions.CustomIntColors ? Colors.Grenadier : Colors.Intruder;
+    public override Color Color => ClientGameOptions.CustomIntColors ? Colors.Grenadier : Colors.Intruder;
     public override string Name => "Grenadier";
     public override LayerEnum Type => LayerEnum.Grenadier;
     public override Func<string> StartText => () => "Blind The <color=#8CFFFFFF>Crew</color> With Your Magnificent Figure";
@@ -22,16 +22,13 @@ public class Grenadier : Intruder
 
     public Grenadier(PlayerControl player) : base(player)
     {
-        RoleAlignment = RoleAlignment.IntruderConceal;
+        Alignment = Alignment.IntruderConceal;
         FlashedPlayers = new();
         FlashButton = new(this, "Flash", AbilityTypes.Effect, "Secondary", HitFlash);
     }
 
     public void Flash()
     {
-        if (!Enabled)
-            FlashedPlayers = GetClosestPlayers(Player.GetTruePosition(), CustomGameOptions.FlashRadius);
-
         Enabled = true;
         TimeRemaining -= Time.deltaTime;
 
@@ -119,7 +116,7 @@ public class Grenadier : Intruder
 
         CallRpc(CustomRPC.Action, ActionsRPC.FlashGrenade, this);
         TimeRemaining = CustomGameOptions.FlashDur;
-        Flash();
+        FlashedPlayers = GetClosestPlayers(Player.GetTruePosition(), CustomGameOptions.FlashRadius);
     }
 
     public override void UpdateHud(HudManager __instance)

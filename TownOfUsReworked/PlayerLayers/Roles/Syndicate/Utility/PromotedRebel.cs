@@ -4,7 +4,7 @@ public class PromotedRebel : Syndicate
 {
     public PromotedRebel(PlayerControl player) : base(player)
     {
-        RoleAlignment = RoleAlignment.SyndicateSupport;
+        Alignment = Alignment.SyndicateSupport;
         SpellCount = 0;
         Framed = new();
         UnwarpablePlayers = new();
@@ -65,7 +65,7 @@ public class PromotedRebel : Syndicate
     public float TimeRemaining { get; set; }
     public bool OnEffect => TimeRemaining > 0f;
 
-    public override Color32 Color => ClientGameOptions.CustomSynColors ? Colors.Rebel : Colors.Syndicate;
+    public override Color Color => ClientGameOptions.CustomSynColors ? Colors.Rebel : Colors.Syndicate;
     public override string Name => "Rebel";
     public override LayerEnum Type => LayerEnum.PromotedRebel;
     public override Func<string> StartText => () => "Lead The <color=#008000FF>Syndicate</color>";
@@ -247,6 +247,19 @@ public class PromotedRebel : Syndicate
                 }
             }
         }
+        else if (IsWarp)
+        {
+            foreach (var entry in UnwarpablePlayers)
+            {
+                var player = PlayerById(entry.Key);
+
+                if (player == null || player.HasDied())
+                    continue;
+
+                if (UnwarpablePlayers.ContainsKey(player.PlayerId) && player.moveable && UnwarpablePlayers.GetValueSafe(player.PlayerId).AddSeconds(0.5) < DateTime.UtcNow)
+                    UnwarpablePlayers.Remove(player.PlayerId);
+            }
+        }
     }
 
     public override void OnLobby()
@@ -270,6 +283,43 @@ public class PromotedRebel : Syndicate
             Bomb.DetonateBombs(Bombs);
     }
 
+    public void Effect()
+    {
+        Enabled = true;
+        TimeRemaining -= Time.deltaTime;
+
+        if (IsConc)
+            Conceal();
+        else if (IsPois)
+            Poison();
+        else if (IsSS)
+            Shapeshift();
+        else if (IsDrunk)
+            Confuse();
+        else if (IsTK)
+            Control();
+        else if (IsCol)
+            ChargeSelf();
+    }
+
+    public void UnEffect()
+    {
+        Enabled = false;
+
+        if (IsConc)
+            UnConceal();
+        else if (IsPois)
+            PoisonKill();
+        else if (IsSS)
+            UnShapeshift();
+        else if (IsDrunk)
+            UnConfuse();
+        else if (IsTK)
+            UnControl();
+        else if (IsCol)
+            DischargeSelf();
+    }
+
     //Anarchist Stuff
     public bool IsAnarch => FormerRole?.Type == LayerEnum.Anarchist;
 
@@ -283,9 +333,6 @@ public class PromotedRebel : Syndicate
 
     public void Conceal()
     {
-        Enabled = true;
-        TimeRemaining -= Time.deltaTime;
-
         if (HoldsDrive)
             Conceal();
         else
@@ -297,7 +344,6 @@ public class PromotedRebel : Syndicate
 
     public void UnConceal()
     {
-        Enabled = false;
         LastConcealed = DateTime.UtcNow;
 
         if (SyndicateHasChaosDrive)
@@ -310,11 +356,11 @@ public class PromotedRebel : Syndicate
     {
         var interact = Interact(Player, player);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
             ConcealedPlayer = player;
-        else if (interact[0])
+        else if (interact.Reset)
             LastConcealed = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastConcealed.AddSeconds(CustomGameOptions.ProtectKCReset);
     }
 
@@ -326,7 +372,6 @@ public class PromotedRebel : Syndicate
         if (HoldsDrive)
         {
             TimeRemaining = CustomGameOptions.ConcealDur;
-            Conceal();
             CallRpc(CustomRPC.Action, ActionsRPC.RebelAction, RebelActionsRPC.Conceal, this);
         }
         else if (ConcealedPlayer == null)
@@ -335,7 +380,6 @@ public class PromotedRebel : Syndicate
         {
             TimeRemaining = CustomGameOptions.ConcealDur;
             CallRpc(CustomRPC.Action, ActionsRPC.RebelAction, RebelActionsRPC.Conceal, this, ConcealedPlayer);
-            Conceal();
         }
     }
 
@@ -363,12 +407,12 @@ public class PromotedRebel : Syndicate
 
         var interact = Interact(Player, FrameButton.TargetPlayer);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
             RpcFrame(FrameButton.TargetPlayer);
 
-        if (interact[0])
+        if (interact.Reset)
             LastFramed = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastFramed.AddSeconds(CustomGameOptions.ProtectKCReset);
     }
 
@@ -392,20 +436,16 @@ public class PromotedRebel : Syndicate
 
     public void Poison()
     {
-        Enabled = true;
-        TimeRemaining -= Time.deltaTime;
-
-        if (Meeting || IsDead || PoisonedPlayer.Data.IsDead || PoisonedPlayer.Data.Disconnected)
+        if (Meeting || IsDead || PoisonedPlayer.HasDied())
             TimeRemaining = 0f;
     }
 
     public void PoisonKill()
     {
-        if (!(PoisonedPlayer.Data.IsDead || PoisonedPlayer.Data.Disconnected || PoisonedPlayer.Is(LayerEnum.Pestilence)))
+        if (!(PoisonedPlayer.HasDied() || PoisonedPlayer.Is(LayerEnum.Pestilence)))
             RpcMurderPlayer(Player, PoisonedPlayer, DeathReasonEnum.Poisoned, false);
 
         PoisonedPlayer = null;
-        Enabled = false;
         LastPoisoned = DateTime.UtcNow;
     }
 
@@ -413,11 +453,11 @@ public class PromotedRebel : Syndicate
     {
         var interact = Interact(Player, player);
 
-        if (interact[3] && !player.IsProtected() && !player.IsVesting())
+        if (interact.AbilityUsed && !player.IsProtected() && !player.IsVesting())
             PoisonedPlayer = player;
-        else if (interact[0])
+        else if (interact.Reset)
             LastPoisoned = DateTime.UtcNow;
-        else if (interact[1] || player.IsProtected())
+        else if (interact.Protected || player.IsProtected())
             LastPoisoned.AddSeconds(CustomGameOptions.ProtectKCReset);
         else if (player.IsVesting())
             LastPoisoned.AddSeconds(CustomGameOptions.VestKCReset);
@@ -430,18 +470,17 @@ public class PromotedRebel : Syndicate
 
         var interact = Interact(Player, PoisonButton.TargetPlayer);
 
-        if (interact[3] && !PoisonButton.TargetPlayer.IsProtected() && !PoisonButton.TargetPlayer.IsVesting() && !PoisonButton.TargetPlayer.IsProtectedMonarch())
+        if (interact.AbilityUsed && !PoisonButton.TargetPlayer.IsProtected() && !PoisonButton.TargetPlayer.IsVesting() && !PoisonButton.TargetPlayer.IsProtectedMonarch())
         {
             PoisonedPlayer = PoisonButton.TargetPlayer;
             CallRpc(CustomRPC.Action, ActionsRPC.RebelAction, RebelActionsRPC.Poison, this, PoisonedPlayer);
             TimeRemaining = CustomGameOptions.PoisonDur;
-            Poison();
         }
-        else if (interact[1] || PoisonButton.TargetPlayer.IsProtected())
+        else if (interact.Protected || PoisonButton.TargetPlayer.IsProtected())
             LastPoisoned.AddSeconds(CustomGameOptions.ProtectKCReset);
-        else if (interact[0])
+        else if (interact.Reset)
             LastPoisoned = DateTime.UtcNow;
-        else if (interact[2])
+        else if (interact.Vested)
             LastPoisoned.AddSeconds(CustomGameOptions.VestKCReset);
     }
 
@@ -456,7 +495,6 @@ public class PromotedRebel : Syndicate
         {
             CallRpc(CustomRPC.Action, ActionsRPC.RebelAction, RebelActionsRPC.Poison, this, PoisonedPlayer);
             TimeRemaining = CustomGameOptions.PoisonDur;
-            Poison();
         }
     }
 
@@ -472,9 +510,6 @@ public class PromotedRebel : Syndicate
 
     public void Shapeshift()
     {
-        Enabled = true;
-        TimeRemaining -= Time.deltaTime;
-
         if (!SyndicateHasChaosDrive)
         {
             Morph(ShapeshiftPlayer1, ShapeshiftPlayer2);
@@ -489,7 +524,6 @@ public class PromotedRebel : Syndicate
 
     public void UnShapeshift()
     {
-        Enabled = false;
         LastShapeshifted = DateTime.UtcNow;
 
         if (SyndicateHasChaosDrive)
@@ -508,11 +542,11 @@ public class PromotedRebel : Syndicate
     {
         var interact = Interact(Player, player);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
             ShapeshiftPlayer1 = player;
-        else if (interact[0])
+        else if (interact.Reset)
             LastShapeshifted = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastShapeshifted.AddSeconds(CustomGameOptions.ProtectKCReset);
     }
 
@@ -520,11 +554,11 @@ public class PromotedRebel : Syndicate
     {
         var interact = Interact(Player, player);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
             ShapeshiftPlayer2 = player;
-        else if (interact[0])
+        else if (interact.Reset)
             LastShapeshifted = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastShapeshifted.AddSeconds(CustomGameOptions.ProtectKCReset);
     }
 
@@ -536,7 +570,6 @@ public class PromotedRebel : Syndicate
         if (HoldsDrive)
         {
             TimeRemaining = CustomGameOptions.ShapeshiftDur;
-            Shapeshift();
             CallRpc(CustomRPC.Action, ActionsRPC.RebelAction, RebelActionsRPC.Shapeshift, this);
         }
         else if (ShapeshiftPlayer1 == null)
@@ -547,7 +580,6 @@ public class PromotedRebel : Syndicate
         {
             CallRpc(CustomRPC.Action, ActionsRPC.RebelAction, RebelActionsRPC.Shapeshift, this, ShapeshiftPlayer1, ShapeshiftPlayer2);
             TimeRemaining = CustomGameOptions.ShapeshiftDur;
-            Shapeshift();
         }
     }
 
@@ -757,11 +789,11 @@ public class PromotedRebel : Syndicate
     {
         var interact = Interact(Player, player);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
             WarpPlayer1 = player;
-        else if (interact[0])
+        else if (interact.Reset)
             LastWarped = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastWarped.AddSeconds(CustomGameOptions.ProtectKCReset);
     }
 
@@ -769,11 +801,11 @@ public class PromotedRebel : Syndicate
     {
         var interact = Interact(Player, player);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
             WarpPlayer2 = player;
-        else if (interact[0])
+        else if (interact.Reset)
             LastWarped = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastWarped.AddSeconds(CustomGameOptions.ProtectKCReset);
     }
 
@@ -784,7 +816,7 @@ public class PromotedRebel : Syndicate
 
         if (HoldsDrive)
         {
-            Warp();
+            Utils.Warp();
             LastWarped = DateTime.UtcNow;
         }
         else if (WarpPlayer1 == null)
@@ -807,16 +839,12 @@ public class PromotedRebel : Syndicate
 
     public void Crusade()
     {
-        Enabled = true;
-        TimeRemaining -= Time.deltaTime;
-
-        if (IsDead || CrusadedPlayer.Data.IsDead || CrusadedPlayer.Data.Disconnected || Meeting)
+        if (IsDead || CrusadedPlayer.HasDied() || Meeting)
             TimeRemaining = 0f;
     }
 
     public void UnCrusade()
     {
-        Enabled = false;
         LastCrusaded = DateTime.UtcNow;
         CrusadedPlayer = null;
     }
@@ -828,16 +856,15 @@ public class PromotedRebel : Syndicate
 
         var interact = Interact(Player, CrusadeButton.TargetPlayer);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
         {
             CrusadedPlayer = CrusadeButton.TargetPlayer;
             CallRpc(CustomRPC.Action, ActionsRPC.RebelAction, RebelActionsRPC.Crusade, this, CrusadedPlayer);
             TimeRemaining = CustomGameOptions.CrusadeDur;
-            Crusade();
         }
-        else if (interact[0])
+        else if (interact.Reset)
             LastCrusaded = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastCrusaded.AddSeconds(CustomGameOptions.ProtectKCReset);
     }
 
@@ -863,12 +890,12 @@ public class PromotedRebel : Syndicate
 
         var interact = Interact(Player, PositiveButton.TargetPlayer);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
             Positive = PositiveButton.TargetPlayer;
 
-        if (interact[0])
+        if (interact.Reset)
             LastPositive = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastPositive.AddSeconds(CustomGameOptions.ProtectKCReset);
     }
 
@@ -879,12 +906,12 @@ public class PromotedRebel : Syndicate
 
         var interact = Interact(Player, NegativeButton.TargetPlayer);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
             Negative = NegativeButton.TargetPlayer;
 
-        if (interact[0])
+        if (interact.Reset)
             LastNegative = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastNegative.AddSeconds(CustomGameOptions.ProtectKCReset);
     }
 
@@ -894,23 +921,15 @@ public class PromotedRebel : Syndicate
             return;
 
         TimeRemaining = CustomGameOptions.ChargeDur;
-        ChargeSelf();
     }
 
     public void ChargeSelf()
     {
-        Enabled = true;
-        TimeRemaining -= Time.deltaTime;
-
         if (IsDead || Meeting)
             TimeRemaining = 0f;
     }
 
-    public void DischargeSelf()
-    {
-        Enabled = false;
-        LastCharged = DateTime.UtcNow;
-    }
+    public void DischargeSelf() => LastCharged = DateTime.UtcNow;
 
     //Spellslinger Stuff
     public CustomButton SpellButton { get; set; }
@@ -948,12 +967,12 @@ public class PromotedRebel : Syndicate
         {
             var interact = Interact(Player, SpellButton.TargetPlayer);
 
-            if (interact[3])
+            if (interact.AbilityUsed)
                 Spell(SpellButton.TargetPlayer);
 
-            if (interact[0])
+            if (interact.Reset)
                 LastSpelled = DateTime.UtcNow;
-            else if (interact[1])
+            else if (interact.Protected)
                 LastSpelled.AddSeconds(CustomGameOptions.ProtectKCReset);
         }
     }
@@ -978,12 +997,12 @@ public class PromotedRebel : Syndicate
 
         var interact = Interact(Player, StalkButton.TargetPlayer);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
             StalkerArrows.Add(StalkButton.TargetPlayer.PlayerId, new(Player, StalkButton.TargetPlayer.GetPlayerColor(!HoldsDrive)));
 
-        if (interact[0])
+        if (interact.Reset)
             LastStalked = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastStalked.AddSeconds(CustomGameOptions.ProtectKCReset);
     }
 
@@ -998,12 +1017,6 @@ public class PromotedRebel : Syndicate
 
     public void Confuse()
     {
-        if (!Enabled && (CustomPlayer.Local == ConfusedPlayer || HoldsDrive))
-            Flash(Color);
-
-        Enabled = true;
-        TimeRemaining -= Time.deltaTime;
-
         if (Meeting || (ConfusedPlayer == null && !HoldsDrive))
             TimeRemaining = 0f;
     }
@@ -1019,11 +1032,11 @@ public class PromotedRebel : Syndicate
     {
         var interact = Interact(Player, player);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
             ConfusedPlayer = player;
-        else if (interact[0])
+        else if (interact.Reset)
             LastConfused = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastConfused.AddSeconds(CustomGameOptions.ProtectKCReset);
     }
 
@@ -1035,7 +1048,6 @@ public class PromotedRebel : Syndicate
         if (HoldsDrive)
         {
             TimeRemaining = CustomGameOptions.ConfuseDur;
-            Confuse();
             CallRpc(CustomRPC.Action, ActionsRPC.RebelAction, RebelActionsRPC.Confuse, this);
         }
         else if (ConfusedPlayer == null)
@@ -1044,7 +1056,6 @@ public class PromotedRebel : Syndicate
         {
             CallRpc(CustomRPC.Action, ActionsRPC.RebelAction, RebelActionsRPC.Confuse, this, ConfusedPlayer);
             TimeRemaining = CustomGameOptions.ConfuseDur;
-            Confuse();
         }
     }
 
@@ -1056,12 +1067,6 @@ public class PromotedRebel : Syndicate
 
     public void Control()
     {
-        if (!Enabled)
-            Flash(Color, CustomGameOptions.TimeDur);
-
-        Enabled = true;
-        TimeRemaining -= Time.deltaTime;
-
         if (HoldsDrive)
             CustomPlayer.AllPlayers.ForEach(x => GetRole(x).Rewinding = true);
 
@@ -1071,7 +1076,6 @@ public class PromotedRebel : Syndicate
 
     public void UnControl()
     {
-        Enabled = false;
         LastTimed = DateTime.UtcNow;
         CustomPlayer.AllPlayers.ForEach(x => GetRole(x).Rewinding = false);
     }
@@ -1082,7 +1086,6 @@ public class PromotedRebel : Syndicate
             return;
 
         TimeRemaining = CustomGameOptions.TimeDur;
-        Control();
         CallRpc(CustomRPC.Action, ActionsRPC.RebelAction, RebelActionsRPC.TimeControl, this);
     }
 
@@ -1103,15 +1106,15 @@ public class PromotedRebel : Syndicate
 
         var interact = Interact(Player, SilenceButton.TargetPlayer);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
         {
             SilencedPlayer = SilenceButton.TargetPlayer;
             CallRpc(CustomRPC.Action, ActionsRPC.RebelAction, RebelActionsRPC.Silence, this, SilencedPlayer);
         }
 
-        if (interact[0])
+        if (interact.Reset)
             LastSilenced = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastSilenced.AddSeconds(CustomGameOptions.ProtectKCReset);
     }
 }

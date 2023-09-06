@@ -8,7 +8,7 @@ public class Guesser : Neutral
     public bool FactionHintGiven { get; set; }
     public bool AlignmentHintGiven { get; set; }
     public bool InspectorGiven { get; set; }
-    public bool Failed => TargetPlayer != null && !TargetGuessed && (RemainingGuesses <= 0 || TargetPlayer.Data.IsDead || TargetPlayer.Data.Disconnected);
+    public bool Failed => TargetPlayer != null && !TargetGuessed && (RemainingGuesses <= 0 || TargetPlayer.HasDied());
     private int LettersGiven { get; set; }
     private bool LettersExhausted { get; set; }
     private string RoleName { get; set; }
@@ -26,7 +26,7 @@ public class Guesser : Neutral
     public bool TargetFailed => TargetPlayer == null && Rounds > 2;
     public CustomMeeting GuessMenu { get; set; }
 
-    public override Color32 Color => ClientGameOptions.CustomNeutColors ? Colors.Guesser : Colors.Neutral;
+    public override Color Color => ClientGameOptions.CustomNeutColors ? Colors.Guesser : Colors.Neutral;
     public override string Name => "Guesser";
     public override LayerEnum Type => LayerEnum.Guesser;
     public override Func<string> StartText => () => "Guess What Someone Might Be";
@@ -37,7 +37,7 @@ public class Guesser : Neutral
 
     public Guesser(PlayerControl player) : base(player)
     {
-        RoleAlignment = RoleAlignment.NeutralEvil;
+        Alignment = Alignment.NeutralEvil;
         RemainingGuesses = CustomGameOptions.MaxGuesses;
         SortedColorMapping = new();
         SelectedButton = null;
@@ -54,7 +54,7 @@ public class Guesser : Neutral
         Rounds = 0;
     }
 
-    public bool Exception(PlayerControl player) => player == TargetPlayer || player.IsLinkedTo(Player) || player.Is(RoleAlignment.CrewInvest) || (player.Is(SubFaction) && SubFaction !=
+    public bool Exception(PlayerControl player) => player == TargetPlayer || player.IsLinkedTo(Player) || player.Is(Alignment.CrewInvest) || (player.Is(SubFaction) && SubFaction !=
         SubFaction.None);
 
     public void SelectTarget()
@@ -428,7 +428,7 @@ public class Guesser : Neutral
         }
         else if (!AlignmentHintGiven && LettersExhausted)
         {
-            something = $"Your target's role belongs to {targetRole.RoleAlignment.AlignmentName()} alignment!";
+            something = $"Your target's role belongs to {targetRole.Alignment.AlignmentName()} alignment!";
             AlignmentHintGiven = true;
         }
         else if (!InspectorGiven && LettersExhausted)
@@ -448,8 +448,8 @@ public class Guesser : Neutral
     private bool IsExempt(PlayerVoteArea voteArea)
     {
         var player = PlayerByVoteArea(voteArea);
-        return player.Data.IsDead || player.Data.Disconnected || (player != TargetPlayer && !TargetGuessed) || player == CustomPlayer.Local || RemainingGuesses <= 0 || IsDead ||
-            Player.IsLinkedTo(player) || (TargetGuessed && CustomGameOptions.AvoidNeutralKingmakers);
+        return player.HasDied() || (player != TargetPlayer && !TargetGuessed) || player == CustomPlayer.Local || RemainingGuesses <= 0 || IsDead || Player.IsLinkedTo(player) || (TargetGuessed
+            && CustomGameOptions.AvoidNeutralKingmakers);
     }
 
     private void Guess(PlayerVoteArea voteArea, MeetingHud __instance)

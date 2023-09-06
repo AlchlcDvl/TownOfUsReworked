@@ -43,25 +43,6 @@ public static class HauntPatch
     }
 }
 
-[HarmonyPatch(typeof(AbilityButton), nameof(AbilityButton.Update))]
-public static class HauntUpdatePatch
-{
-    public static bool Prefix(AbilityButton __instance) => CustomButton.AllButtons.Find(x => x.Base == __instance) == null;
-
-    public static void Postfix()
-    {
-        if (!IsInGame)
-            HUD.AbilityButton.gameObject.SetActive(false);
-        else if (IsHnS)
-            HUD.AbilityButton.gameObject.SetActive(!CustomPlayer.LocalCustom.Data.IsImpostor());
-        else
-        {
-            var ghostRole = CustomPlayer.Local.IsPostmortal() && !CustomPlayer.Local.Caught();
-            HUD.AbilityButton.gameObject.SetActive(!ghostRole && !Meeting && CustomPlayer.LocalCustom.IsDead);
-        }
-    }
-}
-
 [HarmonyPatch(typeof(HauntMenuMinigame), nameof(HauntMenuMinigame.Start))]
 public static class AddNeutralHauntPatch
 {

@@ -7,7 +7,7 @@ public class Intruder : Role
     public string CommonAbilities => "- You can kill players" + (CustomGameOptions.IntrudersCanSabotage || (IsDead && CustomGameOptions.GhostsCanSabotage) ? ("\n- You can call " +
         "sabotages to distract the <color=#8CFFFFFF>Crew</color>") : "");
 
-    public override Color32 Color => Colors.Intruder;
+    public override Color Color => Colors.Intruder;
     public override Faction BaseFaction => Faction.Intruder;
     public float KillTimer => ButtonUtils.Timer(Player, LastKilled, CustomGameOptions.IntKillCd);
 
@@ -67,17 +67,17 @@ public class Intruder : Role
         {
             var jani = (Janitor)this;
 
-            if (interact[3] || interact[0])
+            if (interact.AbilityUsed || interact.Reset)
             {
                 if (CustomGameOptions.JaniCooldownsLinked)
                     jani.LastCleaned = DateTime.UtcNow;
             }
-            else if (interact[1])
+            else if (interact.Protected)
             {
                 if (CustomGameOptions.JaniCooldownsLinked)
                     jani.LastCleaned.AddSeconds(CustomGameOptions.ProtectKCReset);
             }
-            else if (interact[2])
+            else if (interact.Vested)
             {
                 if (CustomGameOptions.JaniCooldownsLinked)
                     jani.LastCleaned.AddSeconds(CustomGameOptions.VestKCReset);
@@ -87,28 +87,28 @@ public class Intruder : Role
         {
             var gf = (PromotedGodfather)this;
 
-            if (interact[3] || interact[0])
+            if (interact.AbilityUsed || interact.Reset)
             {
                 if (CustomGameOptions.JaniCooldownsLinked && gf.IsJani)
                     gf.LastCleaned = DateTime.UtcNow;
             }
-            else if (interact[1])
+            else if (interact.Protected)
             {
                 if (CustomGameOptions.JaniCooldownsLinked && gf.IsJani)
                     gf.LastCleaned.AddSeconds(CustomGameOptions.ProtectKCReset);
             }
-            else if (interact[2])
+            else if (interact.Vested)
             {
                 if (CustomGameOptions.JaniCooldownsLinked && gf.IsJani)
                     gf.LastCleaned.AddSeconds(CustomGameOptions.VestKCReset);
             }
         }
 
-        if (interact[3] || interact[0])
+        if (interact.AbilityUsed || interact.Reset)
             LastKilled = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
-        else if (interact[2])
+        else if (interact.Vested)
             LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
     }
 

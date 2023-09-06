@@ -6,7 +6,7 @@ public class Sheriff : Crew
     public DateTime LastInterrogated { get; set; }
     public float Timer => ButtonUtils.Timer(Player, LastInterrogated, CustomGameOptions.InterrogateCd);
 
-    public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Sheriff : Colors.Crew;
+    public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Sheriff : Colors.Crew;
     public override string Name => "Sheriff";
     public override LayerEnum Type => LayerEnum.Sheriff;
     public override Func<string> StartText => () => "Reveal The Alignment Of Other Players";
@@ -15,7 +15,7 @@ public class Sheriff : Crew
 
     public Sheriff(PlayerControl player) : base(player)
     {
-        RoleAlignment = RoleAlignment.CrewKill;
+        Alignment = Alignment.CrewKill;
         InterrogateButton = new(this, "Interrogate", AbilityTypes.Direct, "ActionSecondary", Interrogate, Exception);
     }
 
@@ -26,12 +26,12 @@ public class Sheriff : Crew
 
         var interact = Interact(Player, InterrogateButton.TargetPlayer);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
             Flash(InterrogateButton.TargetPlayer.SeemsEvil() ? UColor.red : UColor.green);
 
-        if (interact[0])
+        if (interact.Reset)
             LastInterrogated = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastInterrogated.AddSeconds(CustomGameOptions.ProtectKCReset);
     }
 

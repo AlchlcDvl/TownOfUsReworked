@@ -5,13 +5,19 @@ public static class Utils
 {
     private static bool Shapeshifted;
 
+    public static bool HasDied(this PlayerControl player) => player.Data.IsDead || player.Data.Disconnected;
+
     public static TextMeshPro NameText(this PlayerControl p) => p.cosmetics.nameText;
 
     public static TextMeshPro ColorBlindText(this PlayerControl p) => p.cosmetics.colorBlindText;
 
     public static TextMeshPro NameText(this PoolablePlayer p) => p.cosmetics.nameText;
 
-    public static SpriteRenderer MyRend(this PlayerControl p) => p.cosmetics.currentBodySprite.BodySprite;
+    public static SpriteRenderer MyRend(this PlayerControl p) => p?.cosmetics?.currentBodySprite?.BodySprite;
+
+    public static SpriteRenderer MyRend(this Vent v) => v?.myRend;
+
+    public static SpriteRenderer MyRend(this DeadBody d) => d?.bodyRenderers?.FirstOrDefault();
 
     public static bool IsImpostor(this GameData.PlayerInfo playerinfo) => playerinfo?.Role?.TeamType == RoleTeamTypes.Impostor;
 
@@ -100,7 +106,6 @@ public static class Utils
         {
             player.SetOutfit(CustomPlayerOutfitType.Camouflage, BlankOutfit(player));
             PlayerMaterial.SetColors(UColor.grey, player.MyRend());
-
             HUD.StartCoroutine(Effects.Lerp(1, new Action<float>(p =>
             {
                 var cbtext = player.ColorBlindText();
@@ -200,7 +205,7 @@ public static class Utils
     public static Color GetShadowColor(this PlayerControl player, bool camoCondition = true, bool otherCondition = false)
     {
         if ((DoUndo.IsCamoed && camoCondition) || otherCondition)
-            return new Color32(125, 125, 125, 255);
+            return new(0.5f, 0.5f, 0.5f, 1f);
         else
             return ColorUtils.GetColor(player.GetDefaultOutfit().ColorId, true);
     }
@@ -615,133 +620,6 @@ public static class Utils
             GameManager.Instance.RpcEndGame(GameOverReason.ImpostorByVote, false);
     }
 
-    public static List<bool> Interact(PlayerControl player, PlayerControl target, bool toKill = false, bool toConvert = false, bool bypass = false)
-    {
-        var fullReset = false;
-        var gaReset = false;
-        var survReset = false;
-        var abilityUsed = false;
-        bypass |= player.Is(LayerEnum.Ruthless);
-        Spread(player, target);
-
-        if (target == CachedFirstDead && (toConvert || toKill))
-            fullReset = true;
-        else if ((target.IsOnAlert() || ((target.IsAmbushed() || target.IsGFAmbushed()) && (!player.Is(Faction.Intruder) || (player.Is(Faction.Intruder) && CustomGameOptions.AmbushMates)))
-            || target.Is(LayerEnum.Pestilence) || (target.Is(LayerEnum.VampireHunter) && player.Is(SubFaction.Undead)) || (target.Is(LayerEnum.SerialKiller) && (player.Is(LayerEnum.Escort)
-            || player.Is(LayerEnum.Consort) || player.Is(LayerEnum.Glitch)) && !toKill)) && !bypass)
-        {
-            if (player.Is(LayerEnum.Pestilence))
-            {
-                if ((target.IsShielded() || target.IsRetShielded()) && (toKill || toConvert))
-                {
-                    fullReset = CustomGameOptions.ShieldBreaks;
-                    Role.BreakShield(target, CustomGameOptions.ShieldBreaks);
-                    CallRpc(CustomRPC.Misc, MiscRPC.AttemptSound, target);
-                }
-                else if (target.IsProtected())
-                    gaReset = true;
-            }
-            else if ((player.IsShielded() || player.IsRetShielded()) && !target.Is(LayerEnum.Ruthless))
-            {
-                fullReset = CustomGameOptions.ShieldBreaks;
-                Role.BreakShield(player, CustomGameOptions.ShieldBreaks);
-                CallRpc(CustomRPC.Misc, MiscRPC.AttemptSound, player);
-            }
-            else if (player.IsProtected() && !target.Is(LayerEnum.Ruthless))
-                gaReset = true;
-            else
-                RpcMurderPlayer(target, player, target.IsAmbushed() ? DeathReasonEnum.Ambushed : DeathReasonEnum.Killed);
-
-            if ((target.IsShielded() || target.IsRetShielded()) && (toKill || toConvert))
-            {
-                fullReset = CustomGameOptions.ShieldBreaks;
-                Role.BreakShield(target, CustomGameOptions.ShieldBreaks);
-                CallRpc(CustomRPC.Misc, MiscRPC.AttemptSound, target);
-            }
-        }
-        else if ((target.IsCrusaded() || target.IsRebCrusaded()) && (!player.Is(Faction.Syndicate) || (player.Is(Faction.Syndicate) && CustomGameOptions.CrusadeMates)) && !bypass)
-        {
-            if (player.Is(LayerEnum.Pestilence))
-            {
-                if ((target.IsShielded() || target.IsRetShielded()) && (toKill || toConvert))
-                {
-                    fullReset = CustomGameOptions.ShieldBreaks;
-                    Role.BreakShield(target, CustomGameOptions.ShieldBreaks);
-                    CallRpc(CustomRPC.Misc, MiscRPC.AttemptSound, target);
-                }
-                else if (target.IsProtected())
-                    gaReset = true;
-            }
-            else if ((player.IsShielded() || player.IsRetShielded()) && !target.Is(LayerEnum.Ruthless))
-            {
-                fullReset = CustomGameOptions.ShieldBreaks;
-                Role.BreakShield(player, CustomGameOptions.ShieldBreaks);
-                CallRpc(CustomRPC.Misc, MiscRPC.AttemptSound, player);
-            }
-            else if (player.IsProtected() && !target.Is(LayerEnum.Ruthless))
-                gaReset = true;
-            else
-            {
-                var crus = target.GetCrusader();
-                var reb = target.GetRebCrus();
-
-                if (crus?.HoldsDrive == true || reb?.HoldsDrive == true)
-                    Crusader.RadialCrusade(target);
-                else
-                    RpcMurderPlayer(target, player, DeathReasonEnum.Crusaded);
-            }
-
-            if ((target.IsShielded() || target.IsRetShielded()) && (toKill || toConvert))
-            {
-                fullReset = CustomGameOptions.ShieldBreaks;
-                Role.BreakShield(target, CustomGameOptions.ShieldBreaks);
-                CallRpc(CustomRPC.Misc, MiscRPC.AttemptSound, target);
-            }
-        }
-        else if ((target.IsShielded() || target.IsRetShielded()) && (toKill || toConvert) && !bypass)
-        {
-            fullReset = CustomGameOptions.ShieldBreaks;
-            Role.BreakShield(target, CustomGameOptions.ShieldBreaks);
-            CallRpc(CustomRPC.Misc, MiscRPC.AttemptSound, target);
-        }
-        else if (target.IsVesting() && (toKill || toConvert) && !bypass)
-            survReset = true;
-        else if (target.IsProtected() && (toKill || toConvert) && !bypass)
-            gaReset = true;
-        else if ((target.IsProtectedMonarch() || player.IsOtherRival(target)) && (toKill || toConvert))
-            fullReset = true;
-        else
-        {
-            if (toKill)
-            {
-                if (target.Is(LayerEnum.Fanatic) && (player.Is(Faction.Intruder) || player.Is(Faction.Syndicate)) && target.IsUnturnedFanatic() && !bypass)
-                {
-                    var fact = player.GetFaction();
-                    var fanatic = Objectifier.GetObjectifier<Fanatic>(target);
-                    fanatic.TurnFanatic(fact);
-                    CallRpc(CustomRPC.Change, TurnRPC.TurnFanatic, fanatic, fact);
-                }
-                else
-                    RpcMurderPlayer(player, target);
-            }
-            else if (toConvert && !target.Is(SubFaction.None))
-                RpcMurderPlayer(player, target, DeathReasonEnum.Failed);
-
-            abilityUsed = true;
-            fullReset = true;
-        }
-
-        if ((target.IsOnAlert() || ((target.IsAmbushed() || target.IsGFAmbushed()) && (!player.Is(Faction.Intruder) || (player.Is(Faction.Intruder) && CustomGameOptions.AmbushMates))) ||
-            target.Is(LayerEnum.Pestilence) || (target.Is(LayerEnum.VampireHunter) && player.Is(SubFaction.Undead)) || (target.Is(LayerEnum.SerialKiller) && (player.Is(LayerEnum.Escort) ||
-            player.Is(LayerEnum.Consort) || player.Is(LayerEnum.Glitch)) && !toKill) || ((target.IsCrusaded() || target.IsRebCrusaded()) && (!player.Is(Faction.Syndicate) ||
-            (player.Is(Faction.Syndicate) && CustomGameOptions.CrusadeMates)))) && bypass && !target.Is(LayerEnum.Pestilence))
-        {
-            RpcMurderPlayer(target, player);
-        }
-
-        return new() { fullReset, gaReset, survReset, abilityUsed };
-    }
-
     public static List<PlayerControl> GetClosestPlayers(Vector2 truePosition, float radius, bool includeDead = false) => CustomPlayer.AllPlayers.Where(x => Vector2.Distance(truePosition,
         x.GetTruePosition()) <= radius && (!x.Data.IsDead || (x.Data.IsDead && includeDead))).ToList();
 
@@ -793,8 +671,8 @@ public static class Utils
 
     public static void StopDragging(byte id)
     {
-        Role.GetRoles<Janitor>(LayerEnum.Janitor).Where(x => x.CurrentlyDragging != null && x.CurrentlyDragging.ParentId == id).ToList().ForEach(x => x.Drop());
-        Role.GetRoles<PromotedGodfather>(LayerEnum.PromotedGodfather).Where(x => x.CurrentlyDragging != null && x.CurrentlyDragging.ParentId == id).ToList().ForEach(x => x.Drop());
+        Role.GetRoles<Janitor>(LayerEnum.Janitor).Where(x => x.CurrentlyDragging != null && x.CurrentlyDragging.ParentId == id).ForEach(x => x.Drop());
+        Role.GetRoles<PromotedGodfather>(LayerEnum.PromotedGodfather).Where(x => x.CurrentlyDragging != null && x.CurrentlyDragging.ParentId == id).ForEach(x => x.Drop());
     }
 
     public static string CreateText(string itemName, string folder = "")
@@ -805,7 +683,7 @@ public static class Utils
             var stream = TownOfUsReworked.Executing.GetManifestResourceStream(resourceName);
             var reader = new StreamReader(stream);
             var text = reader.ReadToEnd();
-            KeyWords.ToList().ForEach(x => text = text.Replace(x.Key, x.Value));
+            KeyWords.ForEach(x => text = text.Replace(x.Key, x.Value));
             return text;
         }
         catch
@@ -876,15 +754,13 @@ public static class Utils
 
     public static void AddVent(Role role, Vector3 position, string name)
     {
-        if (role.Type == LayerEnum.Miner)
+        if (role is Miner miner)
         {
-            var miner = (Miner)role;
             var vent = SpawnVent(miner.Vents, position, name);
             miner.Vents.Add(vent);
         }
-        else if (role.Type == LayerEnum.PromotedGodfather)
+        else if (role is PromotedGodfather gf)
         {
-            var gf = (PromotedGodfather)role;
             var vent = SpawnVent(gf.Vents, position, name);
             gf.Vents.Add(vent);
         }
@@ -945,9 +821,9 @@ public static class Utils
         }
     }
 
-    public static void Flash(Color32 color, string message, float duration = 0.5f, float size = 100f) => Flash(color, duration, message, size);
+    public static void Flash(Color color, string message, float duration = 0.5f, float size = 100f) => Flash(color, duration, message, size);
 
-    public static void Flash(Color32 color, float duration = 0.5f, string message = "", float size = 100f) => Coroutines.Start(FlashCoro(color, duration, message, size));
+    public static void Flash(Color color, float duration = 0.5f, string message = "", float size = 100f) => Coroutines.Start(FlashCoro(color, duration, message, size));
 
     public static IEnumerator FlashCoro(Color color, float duration, string message, float size)
     {
@@ -983,7 +859,7 @@ public static class Utils
         fullscreen.gameObject.active = true;
         var fs = false;
 
-        if (ShipStatus.Instance)
+        if (ShipStatus.Instance && !LobbyBehaviour.Instance)
         {
             switch (TownOfUsReworked.NormalOptions.MapId)
             {
@@ -1070,14 +946,14 @@ public static class Utils
 
         if (AmongUsClient.Instance.AmHost)
         {
-            Role.GetRoles<Janitor>(LayerEnum.Janitor).Where(x => x.CurrentlyDragging != null).ToList().ForEach(x => x.Drop());
-            Role.GetRoles<PromotedGodfather>(LayerEnum.PromotedGodfather).Where(x => x.CurrentlyDragging != null).ToList().ForEach(x => x.Drop());
+            Role.GetRoles<Janitor>(LayerEnum.Janitor).Where(x => x.CurrentlyDragging != null).ForEach(x => x.Drop());
+            Role.GetRoles<PromotedGodfather>(LayerEnum.PromotedGodfather).Where(x => x.CurrentlyDragging != null).ForEach(x => x.Drop());
         }
     }
 
     public static Dictionary<byte, Vector2> GenerateWarpCoordinates()
     {
-        var targets = CustomPlayer.AllPlayers.Where(player => !player.Data.IsDead && !player.Data.Disconnected).ToList();
+        var targets = CustomPlayer.AllPlayers.Where(player => !player.HasDied()).ToList();
         var coordinates = new Dictionary<byte, Vector2>(targets.Count);
         var allLocations = new List<Vector3>();
 
@@ -1238,7 +1114,7 @@ public static class Utils
             var swapPlayer1 = PlayerByVoteArea(swapper.Swap1);
             var swapPlayer2 = PlayerByVoteArea(swapper.Swap2);
 
-            if (swapPlayer1 == null || swapPlayer2 == null || swapPlayer1.Data.IsDead || swapPlayer1.Data.Disconnected || swapPlayer2.Data.IsDead || swapPlayer2.Data.Disconnected)
+            if (swapPlayer1 == null || swapPlayer2 == null || swapPlayer1.HasDied() || swapPlayer2.HasDied())
                 continue;
 
             var swap1 = 0;
@@ -1343,8 +1219,7 @@ public static class Utils
         }
         else if (phantom)
         {
-            var toChooseFrom = CustomPlayer.AllPlayers.Where(x => x.Is(Faction.Neutral) && !NeutralHasUnfinishedBusiness(x) && x.Data.IsDead && !x.Data.Disconnected)
-                .ToList();
+            var toChooseFrom = CustomPlayer.AllPlayers.Where(x => x.Is(Faction.Neutral) && !NeutralHasUnfinishedBusiness(x) && x.Data.IsDead && !x.Data.Disconnected).ToList();
 
             if (toChooseFrom.Count == 0)
                 CallRpc(CustomRPC.Misc, MiscRPC.SetPhantom, 255);
@@ -1530,7 +1405,7 @@ public static class Utils
                 normalPlayerTask.Initialize();
 
                 if (normalPlayerTask.TaskType == TaskTypes.PickUpTowels)
-                    UObject.FindObjectsOfType<TowelTaskConsole>().ToList().ForEach(x => x.Image.color = UColor.white);
+                    UObject.FindObjectsOfType<TowelTaskConsole>().ForEach(x => x.Image.color = UColor.white);
 
                 normalPlayerTask.taskStep = 0;
 
@@ -1634,7 +1509,7 @@ public static class Utils
     public static string WrapTexts(List<string> texts, int width = 90, bool overflow = true)
     {
         var result = WrapText(texts[0], width, overflow);
-        texts.Skip(1).ToList().ForEach(x => result += $"\n{WrapText(x, width, overflow)}");
+        texts.Skip(1).ForEach(x => result += $"\n{WrapText(x, width, overflow)}");
         return result;
     }
 

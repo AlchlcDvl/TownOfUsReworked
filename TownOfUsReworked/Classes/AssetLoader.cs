@@ -202,7 +202,7 @@ public static class AssetLoader
             if (update && Directory.Exists(TownOfUsReworked.Hats))
             {
                 var d = new DirectoryInfo(TownOfUsReworked.Hats);
-                d.GetFiles("*.png").Select(x => x.FullName).ToArray().ToList().ForEach(File.Delete);
+                d.GetFiles("*.png").Select(x => x.FullName).ForEach(File.Delete);
             }
 
             if (!Directory.Exists(TownOfUsReworked.Hats))
@@ -304,7 +304,7 @@ public static class AssetLoader
             if (update && Directory.Exists(TownOfUsReworked.Visors))
             {
                 var d = new DirectoryInfo(TownOfUsReworked.Visors);
-                d.GetFiles("*.png").Select(x => x.FullName).ToArray().ToList().ForEach(File.Delete);
+                d.GetFiles("*.png").Select(x => x.FullName).ForEach(File.Delete);
             }
 
             if (!Directory.Exists(TownOfUsReworked.Visors))
@@ -396,7 +396,7 @@ public static class AssetLoader
             if (update && Directory.Exists(TownOfUsReworked.Nameplates))
             {
                 var d = new DirectoryInfo(TownOfUsReworked.Nameplates);
-                d.GetFiles("*.png").Select(x => x.FullName).ToArray().ToList().ForEach(File.Delete);
+                d.GetFiles("*.png").Select(x => x.FullName).ForEach(File.Delete);
             }
 
             if (!Directory.Exists(TownOfUsReworked.Nameplates))

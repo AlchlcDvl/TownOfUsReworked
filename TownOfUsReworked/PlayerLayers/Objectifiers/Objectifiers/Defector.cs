@@ -6,7 +6,7 @@ public class Defector : Objectifier
     public Faction Side { get; set; }
     public bool Defect => ((Side == Faction.Intruder && LastImp) || (Side == Faction.Syndicate && LastSyn)) && !IsDead && !Turned;
 
-    public override Color32 Color
+    public override Color Color
     {
         get
         {
@@ -77,7 +77,7 @@ public class Defector : Objectifier
         }
 
         Side = role.Faction;
-        role.RoleAlignment = role.RoleAlignment.GetNewAlignment(role.Faction);
+        role.Alignment = role.Alignment.GetNewAlignment(role.Faction);
 
         if (Local)
             Flash(Color);

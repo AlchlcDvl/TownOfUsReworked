@@ -9,7 +9,7 @@ public class Ambusher : Intruder
     public PlayerControl AmbushedPlayer { get; set; }
     public CustomButton AmbushButton { get; set; }
 
-    public override Color32 Color => ClientGameOptions.CustomIntColors ? Colors.Ambusher : Colors.Intruder;
+    public override Color Color => ClientGameOptions.CustomIntColors ? Colors.Ambusher : Colors.Intruder;
     public override string Name => "Ambusher";
     public override LayerEnum Type => LayerEnum.Ambusher;
     public override Func<string> StartText => () => "Spook The <color=#8CFFFFFF>Crew</color>";
@@ -20,7 +20,7 @@ public class Ambusher : Intruder
 
     public Ambusher(PlayerControl player) : base(player)
     {
-        RoleAlignment = RoleAlignment.IntruderKill;
+        Alignment = Alignment.IntruderKill;
         AmbushedPlayer = null;
         AmbushButton = new(this, "Ambush", AbilityTypes.Direct, "Secondary", HitAmbush, Exception1);
     }
@@ -30,7 +30,7 @@ public class Ambusher : Intruder
         Enabled = true;
         TimeRemaining -= Time.deltaTime;
 
-        if (IsDead || AmbushedPlayer.Data.IsDead || AmbushedPlayer.Data.Disconnected || Meeting)
+        if (IsDead || AmbushedPlayer.HasDied() || Meeting)
             TimeRemaining = 0f;
     }
 
@@ -48,16 +48,15 @@ public class Ambusher : Intruder
 
         var interact = Interact(Player, AmbushButton.TargetPlayer);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
         {
             TimeRemaining = CustomGameOptions.AmbushDur;
             AmbushedPlayer = AmbushButton.TargetPlayer;
             CallRpc(CustomRPC.Action, ActionsRPC.Ambush, this, AmbushedPlayer);
-            Ambush();
         }
-        else if (interact[0])
+        else if (interact.Reset)
             LastAmbushed = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastAmbushed.AddSeconds(CustomGameOptions.ProtectKCReset);
     }
 

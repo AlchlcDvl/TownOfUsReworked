@@ -6,7 +6,7 @@ public class Troll : Neutral
     public DateTime LastInteracted { get; set; }
     public CustomButton InteractButton { get; set; }
 
-    public override Color32 Color => ClientGameOptions.CustomNeutColors ? Colors.Troll : Colors.Neutral;
+    public override Color Color => ClientGameOptions.CustomNeutColors ? Colors.Troll : Colors.Neutral;
     public override string Name => "Troll";
     public override LayerEnum Type => LayerEnum.Troll;
     public override Func<string> StartText => () => "Troll Everyone With Your Death";
@@ -17,7 +17,7 @@ public class Troll : Neutral
 
     public Troll(PlayerControl player) : base(player)
     {
-        RoleAlignment = RoleAlignment.NeutralEvil;
+        Alignment = Alignment.NeutralEvil;
         Objectives = () => Killed ? "- You have successfully trolled someone" : "- Get killed";
         InteractButton = new(this, "Placeholder", AbilityTypes.Direct, "ActionSecondary", Interact);
     }
@@ -27,13 +27,13 @@ public class Troll : Neutral
         if (Timer != 0f || IsTooFar(Player, InteractButton.TargetPlayer))
             return;
 
-        var interact = Utils.Interact(Player, InteractButton.TargetPlayer);
+        var interact = InteractionData.Interact(Player, InteractButton.TargetPlayer);
 
-        if (interact[3] || interact[0])
+        if (interact.AbilityUsed || interact.Reset)
             LastInteracted = DateTime.UtcNow;
-        else if (interact[0])
+        else if (interact.Reset)
             LastInteracted = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastInteracted.AddSeconds(CustomGameOptions.ProtectKCReset);
     }
 

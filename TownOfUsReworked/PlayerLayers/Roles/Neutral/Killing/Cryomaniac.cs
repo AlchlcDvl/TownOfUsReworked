@@ -9,11 +9,10 @@ public class Cryomaniac : Neutral
     public bool FreezeUsed { get; set; }
     public DateTime LastDoused { get; set; }
     public DateTime LastKilled { get; set; }
-    public bool LastKiller => !CustomPlayer.AllPlayers.Any(x => !x.Data.IsDead && !x.Data.Disconnected && (x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) ||
-        x.Is(RoleAlignment.CrewKill) || x.Is(RoleAlignment.CrewAudit) || x.Is(RoleAlignment.NeutralPros) || x.Is(RoleAlignment.NeutralNeo) || (x.Is(RoleAlignment.NeutralKill) && x !=
-        Player))) && CustomGameOptions.CryoLastKillerBoost;
+    public bool LastKiller => !CustomPlayer.AllPlayers.Any(x => !x.HasDied() && (x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) || x.Is(Alignment.CrewKill) || x.Is(Alignment.CrewAudit) ||
+        x.Is(Alignment.NeutralPros) || x.Is(Alignment.NeutralNeo) || (x.Is(Alignment.NeutralKill) && x != Player))) && CustomGameOptions.CryoLastKillerBoost;
 
-    public override Color32 Color => ClientGameOptions.CustomNeutColors ? Colors.Cryomaniac : Colors.Neutral;
+    public override Color Color => ClientGameOptions.CustomNeutColors ? Colors.Cryomaniac : Colors.Neutral;
     public override string Name => "Cryomaniac";
     public override LayerEnum Type => LayerEnum.Cryomaniac;
     public override Func<string> StartText => () => "Who Likes Ice Cream?";
@@ -26,7 +25,7 @@ public class Cryomaniac : Neutral
     public Cryomaniac(PlayerControl player) : base(player)
     {
         Objectives = () => "- Freeze anyone who can oppose you";
-        RoleAlignment = RoleAlignment.NeutralKill;
+        Alignment = Alignment.NeutralKill;
         Doused = new();
         DouseButton = new(this, "CryoDouse", AbilityTypes.Direct, "ActionSecondary", Douse, Exception);
         FreezeButton = new(this, "Freeze", AbilityTypes.Effect, "Secondary", Freeze);
@@ -40,11 +39,11 @@ public class Cryomaniac : Neutral
 
         var interact = Interact(Player, KillButton.TargetPlayer, true);
 
-        if (interact[0] || interact[3])
+        if (interact.Reset || interact.AbilityUsed)
             LastKilled = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
-        else if (interact[2])
+        else if (interact.Vested)
             LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
     }
 
@@ -69,7 +68,7 @@ public class Cryomaniac : Neutral
                 {
                     var player2 = PlayerById(player);
 
-                    if (player2.Data.IsDead || player2.Data.Disconnected || player2.Is(LayerEnum.Pestilence) || player2.IsProtected())
+                    if (player2 == null || player2.HasDied() || player2.Is(LayerEnum.Pestilence) || player2.IsProtected())
                         continue;
 
                     RpcMurderPlayer(Player, player2, DeathReasonEnum.Frozen);
@@ -99,14 +98,14 @@ public class Cryomaniac : Neutral
 
         var interact = Interact(Player, DouseButton.TargetPlayer, LastKiller);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
             RpcSpreadDouse(Player, DouseButton.TargetPlayer);
 
-        if (interact[0])
+        if (interact.Reset)
             LastDoused = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastDoused.AddSeconds(CustomGameOptions.ProtectKCReset);
-        else if (interact[2])
+        else if (interact.Vested)
             LastDoused.AddSeconds(CustomGameOptions.VestKCReset);
     }
 

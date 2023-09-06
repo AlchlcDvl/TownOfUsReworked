@@ -63,7 +63,7 @@ public class Assassin : Ability
         { "IsBasic", new() { "Crewmate", "Impostor", "Anarchist", "Murderer" } }
     };
 
-    public override Color32 Color => ClientGameOptions.CustomAbColors ? Colors.Assassin : Colors.Ability;
+    public override Color Color => ClientGameOptions.CustomAbColors ? Colors.Assassin : Colors.Ability;
     public override string Name => "Assassin";
     public override Func<string> Description => () => "- You can guess players mid-meetings";
 
@@ -416,9 +416,9 @@ public class Assassin : Ability
     private bool IsExempt(PlayerVoteArea voteArea)
     {
         var player = PlayerByVoteArea(voteArea);
-        return player.Data.IsDead || player.Data.Disconnected || (voteArea.NameText.text.Contains('\n') && ((Player.GetFaction() != player.GetFaction()) || (Player.GetSubFaction() !=
-            Player.GetSubFaction()))) || IsDead || (player == Player && player == CustomPlayer.Local) || (Player.GetFaction() == player.GetFaction() && Player.GetFaction() != Faction.Crew)
-            || RemainingKills <= 0 || (Player.GetSubFaction() == player.GetSubFaction() && Player.GetSubFaction() != SubFaction.None) || Player.IsLinkedTo(player);
+        return player.HasDied() || (voteArea.NameText.text.Contains('\n') && ((Player.GetFaction() != player.GetFaction()) || (Player.GetSubFaction() != Player.GetSubFaction()))) ||
+            IsDead || (player == Player && player == CustomPlayer.Local) || (Player.GetFaction() == player.GetFaction() && Player.GetFaction() != Faction.Crew) | RemainingKills <= 0 ||
+            (Player.GetSubFaction() == player.GetSubFaction() && Player.GetSubFaction() != SubFaction.None) || Player.IsLinkedTo(player);
     }
 
     private void Guess(PlayerVoteArea voteArea, MeetingHud __instance)

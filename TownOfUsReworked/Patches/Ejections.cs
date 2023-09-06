@@ -23,8 +23,8 @@ public static class ConfirmEjects
         var player = exiled.Object;
         var role = Role.GetRole(player);
 
-        var totalEvilsCount = CustomPlayer.AllPlayers.Count(x => ((!x.Is(Faction.Crew) && !x.Is(RoleAlignment.NeutralBen) && !x.Is(RoleAlignment.NeutralEvil)) ||
-            x.NotOnTheSameSide()) && !(x.Data.IsDead || x.Data.Disconnected));
+        var totalEvilsCount = CustomPlayer.AllPlayers.Count(x => ((!x.Is(Faction.Crew) && !x.Is(Alignment.NeutralBen) && !x.Is(Alignment.NeutralEvil)) || x.NotOnTheSameSide()) &&
+            !x.HasDied());
         var totalEvilsRemaining = IsAA ? "an unknown number of" : $"{totalEvilsCount}";
         var evils = totalEvilsCount > 1 ? "evils" : "evil";
         var IsAre = totalEvilsCount > 1 ? "are" : "is";

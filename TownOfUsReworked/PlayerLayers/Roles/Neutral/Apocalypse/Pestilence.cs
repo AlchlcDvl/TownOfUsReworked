@@ -5,7 +5,7 @@ public class Pestilence : Neutral
     public DateTime LastKilled { get; set; }
     public CustomButton ObliterateButton { get; set; }
 
-    public override Color32 Color => ClientGameOptions.CustomNeutColors ? Colors.Pestilence : Colors.Neutral;
+    public override Color Color => ClientGameOptions.CustomNeutColors ? Colors.Pestilence : Colors.Neutral;
     public override string Name => "Pestilence";
     public override LayerEnum Type => LayerEnum.Pestilence;
     public override Func<string> StartText => () => "THE APOCALYPSE IS NIGH";
@@ -16,7 +16,7 @@ public class Pestilence : Neutral
     public Pestilence(PlayerControl owner) : base(owner)
     {
         Objectives = () => "- Obliterate anyone who can oppose you";
-        RoleAlignment = RoleAlignment.NeutralApoc;
+        Alignment = Alignment.NeutralApoc;
         ObliterateButton = new(this, "Obliterate", AbilityTypes.Direct, "ActionSecondary", Obliterate, Exception);
     }
 
@@ -27,11 +27,11 @@ public class Pestilence : Neutral
 
         var interact = Interact(Player, ObliterateButton.TargetPlayer, true);
 
-        if (interact[3] || interact[0])
+        if (interact.AbilityUsed || interact.Reset)
             LastKilled = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
-        else if (interact[2])
+        else if (interact.Vested)
             LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
     }
 

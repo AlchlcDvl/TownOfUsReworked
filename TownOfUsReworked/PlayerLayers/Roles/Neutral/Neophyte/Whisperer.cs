@@ -10,7 +10,7 @@ public class Whisperer : Neutral
     public int WhisperConversion { get; set; }
     public List<byte> Persuaded { get; set; }
 
-    public override Color32 Color => ClientGameOptions.CustomNeutColors ? Colors.Whisperer : Colors.Neutral;
+    public override Color Color => ClientGameOptions.CustomNeutColors ? Colors.Whisperer : Colors.Neutral;
     public override string Name => "Whisperer";
     public override LayerEnum Type => LayerEnum.Whisperer;
     public override Func<string> StartText => () => "PSST";
@@ -23,7 +23,7 @@ public class Whisperer : Neutral
     public Whisperer(PlayerControl player) : base(player)
     {
         Objectives = () => "- Persuade or kill anyone who can oppose the <color=#F995FCFF>Sect</color>";
-        RoleAlignment = RoleAlignment.NeutralNeo;
+        Alignment = Alignment.NeutralNeo;
         SubFaction = SubFaction.Sect;
         SubFactionColor = Colors.Sect;
         WhisperConversion = CustomGameOptions.WhisperRate;

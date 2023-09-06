@@ -10,7 +10,7 @@ public class Concealer : Syndicate
     public PlayerControl ConcealedPlayer { get; set; }
     public CustomMenu ConcealMenu { get; set; }
 
-    public override Color32 Color => ClientGameOptions.CustomSynColors ? Colors.Concealer : Colors.Syndicate;
+    public override Color Color => ClientGameOptions.CustomSynColors ? Colors.Concealer : Colors.Syndicate;
     public override string Name => "Concealer";
     public override LayerEnum Type => LayerEnum.Concealer;
     public override Func<string> StartText => () => "Turn The <color=#8CFFFFFF>Crew</color> Invisible For Some Chaos";
@@ -20,7 +20,7 @@ public class Concealer : Syndicate
 
     public Concealer(PlayerControl player) : base(player)
     {
-        RoleAlignment = RoleAlignment.SyndicateDisrup;
+        Alignment = Alignment.SyndicateDisrup;
         ConcealMenu = new(Player, Click, Exception1);
         ConcealedPlayer = null;
         ConcealButton = new(this, "Conceal", AbilityTypes.Effect, "Secondary", HitConceal);
@@ -57,11 +57,11 @@ public class Concealer : Syndicate
     {
         var interact = Interact(Player, player);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
             ConcealedPlayer = player;
-        else if (interact[0])
+        else if (interact.Reset)
             LastConcealed = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastConcealed.AddSeconds(CustomGameOptions.ProtectKCReset);
     }
 
@@ -73,7 +73,6 @@ public class Concealer : Syndicate
         if (HoldsDrive)
         {
             TimeRemaining = CustomGameOptions.ConcealDur;
-            Conceal();
             CallRpc(CustomRPC.Action, ActionsRPC.Conceal, this);
         }
         else if (ConcealedPlayer == null)
@@ -82,7 +81,6 @@ public class Concealer : Syndicate
         {
             TimeRemaining = CustomGameOptions.ConcealDur;
             CallRpc(CustomRPC.Action, ActionsRPC.Conceal, this, ConcealedPlayer);
-            Conceal();
         }
     }
 

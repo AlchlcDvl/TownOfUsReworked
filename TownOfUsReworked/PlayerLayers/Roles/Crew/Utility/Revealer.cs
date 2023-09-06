@@ -8,17 +8,20 @@ public class Revealer : Crew
     public bool Faded { get; set; }
     public Role FormerRole { get; set; }
 
-    public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Revealer : Colors.Crew;
+    public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Revealer : Colors.Crew;
     public override string Name => "Revealer";
     public override LayerEnum Type => LayerEnum.Revealer;
     public override Func<string> StartText => () => "OOOOOOO";
     public override Func<string> Description => () => "- You can reveal evils players to the <color=#8CFFFFFF>Crew</color> once you finish your tasks without getting clicked.";
     public override InspectorResults InspectorResults => InspectorResults.Ghostly;
 
-    public Revealer(PlayerControl player) : base(player) => RoleAlignment = RoleAlignment.CrewUtil;
+    public Revealer(PlayerControl player) : base(player) => Alignment = Alignment.CrewUtil;
 
     public void Fade()
     {
+        if (Disconnected)
+            return;
+
         Faded = true;
         Player.Visible = true;
         var color = new Color(1f, 1f, 1f, 0f);
@@ -39,5 +42,14 @@ public class Revealer : Crew
         Player.MyRend().color = color;
         Player.NameText().color = new(0f, 0f, 0f, 0f);
         Player.cosmetics.colorBlindText.color = new(0f, 0f, 0f, 0f);
+    }
+
+    public void UnFade()
+    {
+        DefaultOutfit(Player);
+        Player.MyRend().color = UColor.white;
+        Player.gameObject.layer = LayerMask.NameToLayer("Ghost");
+        Faded = false;
+        Player.MyPhysics.ResetMoveState();
     }
 }

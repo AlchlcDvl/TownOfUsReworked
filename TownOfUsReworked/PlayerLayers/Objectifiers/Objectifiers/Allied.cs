@@ -4,7 +4,7 @@ public class Allied : Objectifier
 {
     public Faction Side { get; set; }
 
-    public override Color32 Color
+    public override Color Color
     {
         get
         {

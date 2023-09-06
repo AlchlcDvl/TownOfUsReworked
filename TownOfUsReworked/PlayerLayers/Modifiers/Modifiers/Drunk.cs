@@ -6,7 +6,7 @@ public class Drunk : Modifier
     public int Modify { get; set; }
     private bool Exposed { get; set; }
 
-    public override Color32 Color => ClientGameOptions.CustomModColors ? Colors.Drunk : Colors.Modifier;
+    public override Color Color => ClientGameOptions.CustomModColors ? Colors.Drunk : Colors.Modifier;
     public override string Name => "Drunk";
     public override LayerEnum Type => LayerEnum.Drunk;
     public override Func<string> Description => () => CustomGameOptions.DrunkControlsSwap ? "- Your controls swap over time" : "- Your controls are inverted";

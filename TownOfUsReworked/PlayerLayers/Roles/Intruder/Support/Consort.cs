@@ -10,7 +10,7 @@ public class Consort : Intruder
     public bool Blocking => TimeRemaining > 0f;
     public CustomMenu BlockMenu { get; set; }
 
-    public override Color32 Color => ClientGameOptions.CustomIntColors ? Colors.Consort : Colors.Intruder;
+    public override Color Color => ClientGameOptions.CustomIntColors ? Colors.Consort : Colors.Intruder;
     public override string Name => "Consort";
     public override LayerEnum Type => LayerEnum.Consort;
     public override Func<string> StartText => () => "Roleblock The <color=#8CFFFFFF>Crew</color> From Progressing";
@@ -21,7 +21,7 @@ public class Consort : Intruder
 
     public Consort(PlayerControl player) : base(player)
     {
-        RoleAlignment = RoleAlignment.IntruderSupport;
+        Alignment = Alignment.IntruderSupport;
         RoleBlockImmune = true;
         BlockMenu = new(Player, Click, Exception1);
         BlockTarget = null;
@@ -42,7 +42,7 @@ public class Consort : Intruder
         TimeRemaining -= Time.deltaTime;
         GetLayers(BlockTarget).ForEach(x => x.IsBlocked = !GetRole(BlockTarget).RoleBlockImmune);
 
-        if (IsDead || BlockTarget.Data.IsDead || BlockTarget.Data.Disconnected || Meeting || !BlockTarget.IsBlocked())
+        if (IsDead || BlockTarget.HasDied() || Meeting || !BlockTarget.IsBlocked())
             TimeRemaining = 0f;
     }
 
@@ -50,11 +50,11 @@ public class Consort : Intruder
     {
         var interact = Interact(Player, player);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
             BlockTarget = player;
-        else if (interact[0])
+        else if (interact.Reset)
             LastBlocked = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastBlocked.AddSeconds(CustomGameOptions.ProtectKCReset);
     }
 
@@ -68,7 +68,6 @@ public class Consort : Intruder
         else
         {
             TimeRemaining = CustomGameOptions.ConsortDur;
-            Block();
             CallRpc(CustomRPC.Action, ActionsRPC.ConsRoleblock, this, BlockTarget);
         }
     }
@@ -78,8 +77,7 @@ public class Consort : Intruder
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        BlockButton.Update(BlockTarget == null ? "SET TARGET" : "ROLEBLOCK", Timer, CustomGameOptions.ConsortCd, Blocking, TimeRemaining,
-            CustomGameOptions.ConsortDur);
+        BlockButton.Update(BlockTarget == null ? "SET TARGET" : "ROLEBLOCK", Timer, CustomGameOptions.ConsortCd, Blocking, TimeRemaining, CustomGameOptions.ConsortDur);
 
         if (Input.GetKeyDown(KeyCode.Backspace))
         {

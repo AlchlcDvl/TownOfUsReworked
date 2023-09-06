@@ -8,7 +8,7 @@ public class GuardianAngel : Neutral
     public int UsesLeft { get; set; }
     public bool ButtonUsable => UsesLeft > 0;
     public PlayerControl TargetPlayer { get; set; }
-    public bool TargetAlive => !Disconnected && !TargetPlayer.Data.IsDead && !TargetPlayer.Data.Disconnected;
+    public bool TargetAlive => !Disconnected && !TargetPlayer.HasDied();
     public bool Protecting => TimeRemaining > 0f;
     public CustomButton ProtectButton { get; set; }
     public CustomButton GraveProtectButton { get; set; }
@@ -16,7 +16,7 @@ public class GuardianAngel : Neutral
     public CustomButton TargetButton { get; set; }
     public bool Failed => TargetPlayer == null && Rounds > 2;
 
-    public override Color32 Color => ClientGameOptions.CustomNeutColors ? Colors.GuardianAngel : Colors.Neutral;
+    public override Color Color => ClientGameOptions.CustomNeutColors ? Colors.GuardianAngel : Colors.Neutral;
     public override string Name => "Guardian Angel";
     public override LayerEnum Type => LayerEnum.GuardianAngel;
     public override Func<string> StartText => () => "Find Someone To Protect";
@@ -29,7 +29,7 @@ public class GuardianAngel : Neutral
     {
         Objectives = () => TargetPlayer == null ? "- Find a target to protect" : $"- Have {TargetPlayer?.name} live to the end of the game";
         UsesLeft = CustomGameOptions.MaxProtects;
-        RoleAlignment = RoleAlignment.NeutralBen;
+        Alignment = Alignment.NeutralBen;
         TargetPlayer = null;
         ProtectButton = new(this, "Protect", AbilityTypes.Effect, "ActionSecondary", HitProtect, true);
         TargetButton = new(this, "GATarget", AbilityTypes.Direct, "ActionSecondary", SelectTarget);
@@ -82,7 +82,6 @@ public class GuardianAngel : Neutral
 
         TimeRemaining = CustomGameOptions.ProtectDur;
         UsesLeft--;
-        Protect();
         CallRpc(CustomRPC.Action, ActionsRPC.GAProtect, this);
     }
 

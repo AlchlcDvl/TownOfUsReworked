@@ -5,9 +5,9 @@ public class Dracula : Neutral
     public DateTime LastBitten { get; set; }
     public CustomButton BiteButton { get; set; }
     public List<byte> Converted { get; set; }
-    public int AliveCount => Converted.Count(x => PlayerById(x) != null && !PlayerById(x).Data.IsDead && !PlayerById(x).Data.Disconnected);
+    public static int AliveCount => CustomPlayer.AllPlayers.Count(x => !x.HasDied());
 
-    public override Color32 Color => ClientGameOptions.CustomNeutColors ? Colors.Dracula : Colors.Neutral;
+    public override Color Color => ClientGameOptions.CustomNeutColors ? Colors.Dracula : Colors.Neutral;
     public override string Name => "Dracula";
     public override LayerEnum Type => LayerEnum.Dracula;
     public override Func<string> StartText => () => "Lead The <color=#7B8968FF>Undead</color> To Victory";
@@ -21,7 +21,7 @@ public class Dracula : Neutral
     {
         Objectives = () => "- Convert or kill anyone who can oppose the <color=#7B8968FF>Undead</color>";
         SubFaction = SubFaction.Undead;
-        RoleAlignment = RoleAlignment.NeutralNeo;
+        Alignment = Alignment.NeutralNeo;
         SubFactionColor = Colors.Undead;
         Converted = new() { Player.PlayerId };
         BiteButton = new(this, "Bite", AbilityTypes.Direct, "ActionSecondary", Convert);
@@ -35,14 +35,14 @@ public class Dracula : Neutral
 
         var interact = Interact(Player, BiteButton.TargetPlayer, false, true);
 
-        if (interact[3])
+        if (interact.AbilityUsed)
             RoleGen.RpcConvert(BiteButton.TargetPlayer.PlayerId, Player.PlayerId, SubFaction.Undead, AliveCount >= CustomGameOptions.AliveVampCount);
 
-        if (interact[0])
+        if (interact.Reset)
             LastBitten = DateTime.UtcNow;
-        else if (interact[1])
+        else if (interact.Protected)
             LastBitten.AddSeconds(CustomGameOptions.ProtectKCReset);
-        else if (interact[2])
+        else if (interact.Vested)
             LastBitten.AddSeconds(CustomGameOptions.VestKCReset);
     }
 

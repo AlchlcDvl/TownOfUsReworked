@@ -8,11 +8,9 @@ public static class ListExtensions
         if (list.Count is 1 or 0)
             return;
 
-        var count = list.Count;
-
-        for (var i = 0; i <= count - 1; ++i)
+        for (var i = list.Count - 1; i > 0; --i)
         {
-            var r = URandom.RandomRangeInt(i, count);
+            var r = URandom.Range(0, i + 1);
             (list[r], list[i]) = (list[i], list[r]);
         }
     }
@@ -22,32 +20,25 @@ public static class ListExtensions
         if (list.Count is 1 or 0)
             return;
 
-        var count = list.Count;
-
-        for (var i = 0; i <= count - 1; ++i)
+        for (var i = list.Count - 1; i > 0; --i)
         {
-            var r = URandom.RandomRangeInt(i, count);
+            var r = URandom.Range(0, i + 1);
             (list[r], list[i]) = (list[i], list[r]);
         }
     }
 
     public static T TakeFirst<T>(this List<T> list)
     {
-        if (list.Count == 0)
-            return default;
-
-        list.Shuffle();
-        var item = list[0];
-
-        while (item == null)
+        try
         {
-            list.Shuffle();
-            item = list[0];
+            var item = list[0];
+            list.RemoveAt(0);
+            return item;
         }
-
-        list.RemoveAt(0);
-        list.Shuffle();
-        return item;
+        catch
+        {
+            return default;
+        }
     }
 
     public static T TakeFirst<T>(this ISystem.List<T> list) => list.Il2CppToSystem().TakeFirst();
@@ -61,9 +52,9 @@ public static class ListExtensions
         }
     }
 
-    public static void AddRanges<T>(this List<T> main, params List<T>[] items) => items.ToList().ForEach(main.AddRange);
+    public static void AddRanges<T>(this List<T> main, params List<T>[] items) => items.ForEach(main.AddRange);
 
-    public static void RemoveRanges<T>(this List<T> main, params List<T>[] items) => items.ToList().ForEach(main.RemoveRange);
+    public static void RemoveRanges<T>(this List<T> main, params List<T>[] items) => items.ForEach(main.RemoveRange);
 
     public static bool Replace<T>(this List<T> list, T item1, T item2)
     {
@@ -116,4 +107,14 @@ public static class ListExtensions
     public static T Random<T>(this ISystem.List<T> list, Func<T, bool> predicate, T defaultVal = default) => list.Il2CppToSystem().Random(predicate, defaultVal);
 
     public static T Find<T>(this ISystem.List<T> list, Predicate<T> predicate) => list.Il2CppToSystem().Find(predicate);
+
+    public static void ForEach<T>(this IEnumerable<T> source, Action<T> action) => source.ToList().ForEach(action);
+
+    public static TValue GetValue<TKey, TValue>(this Dictionary<TKey, TValue> dict, TKey key, TValue newVal)
+    {
+        if (dict.TryGetValue(key, out var value))
+            return value;
+
+        return dict[key] = newVal;
+    }
 }

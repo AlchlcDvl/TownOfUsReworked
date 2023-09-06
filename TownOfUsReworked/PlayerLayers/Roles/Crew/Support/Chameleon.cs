@@ -11,7 +11,7 @@ public class Chameleon : Crew
     public bool ButtonUsable => UsesLeft > 0;
     public float Timer => ButtonUtils.Timer(Player, LastSwooped, CustomGameOptions.SwoopCd);
 
-    public override Color32 Color => ClientGameOptions.CustomCrewColors ? Colors.Chameleon : Colors.Crew;
+    public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Chameleon : Colors.Crew;
     public override string Name => "Chameleon";
     public override LayerEnum Type => LayerEnum.Chameleon;
     public override Func<string> StartText => () => "Go Invisible To Stalk Players";
@@ -47,7 +47,6 @@ public class Chameleon : Crew
             return;
 
         TimeRemaining = CustomGameOptions.SwoopDur;
-        Invis();
         UsesLeft--;
         CallRpc(CustomRPC.Action, ActionsRPC.Swoop, this);
     }
