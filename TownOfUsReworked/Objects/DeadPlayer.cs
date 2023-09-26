@@ -25,8 +25,7 @@ public class DeadPlayer
         var killerRole = Role.GetRole(Killer);
         var bodyRole = Role.GetRole(Body);
 
-        if (!(Role.GetRoles<Grenadier>(LayerEnum.Grenadier).Any(x => x.Flashed && x.FlashedPlayers.Contains(Reporter)) ||
-            Role.GetRoles<PromotedGodfather>(LayerEnum.PromotedGodfather).Any(x => x.OnEffect && x.IsGren && x.FlashedPlayers.Contains(Reporter))))
+        if (!Reporter.IsFlashed())
         {
             report += $"They died approximately {Math.Round(KillAge / 1000f)}s ago!\n";
             report += $"They were a {bodyRole.Name}!\n";
@@ -46,7 +45,7 @@ public class DeadPlayer
                 else if (Killer.Is(Faction.Syndicate))
                     report += "The killer is from the Syndicate!\n";
 
-                report += $"The killer is a {ColorUtils.LightDarkColors[Killer.CurrentOutfit.ColorId].ToLower()} color!\n";
+                report += $"The killer is a {CustomColors.LightDarkColors[Killer.CurrentOutfit.ColorId].ToLower()} color!\n";
 
                 if (CustomGameOptions.CoronerReportName && CustomGameOptions.CoronerKillerNameTime <= Math.Round(KillAge / 1000))
                     report += $"They were killed by {Killer.name}!";

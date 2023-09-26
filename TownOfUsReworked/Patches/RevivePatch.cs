@@ -49,6 +49,7 @@ public static class PlayerControlRevivePatch
         HUD.AdminButton.ToggleVisible(__instance.Data.IsImpostor() && IsHnS);
         HUD.SabotageButton.ToggleVisible(__instance.CanSabotage());
         HUD.ImpostorVentButton.ToggleVisible(__instance.CanVent());
+        ButtonUtils.ResetCustomTimers();
 
         if (HUD.Chat.IsOpenOrOpening)
             HUD.Chat.ForceClosed();

@@ -16,6 +16,12 @@ public static class HandleDisconnect
 
                 CallRpc(CustomRPC.Misc, MiscRPC.AddVoteBank, pol, votesRegained);
             }
+
+            foreach (var mayor in Role.GetRoles<Mayor>(LayerEnum.Mayor))
+            {
+                if (mayor.Voted == player.PlayerId)
+                    mayor.Voted = 255;
+            }
         }
 
         CustomPlayer.AllCustomPlayers.RemoveAll(x => x.Player == player || x.Player == null);

@@ -1,6 +1,5 @@
 ﻿namespace TownOfUsReworked.Classes;
 
-[HarmonyPatch]
 public static class ModCompatibility
 {
     public const string SM_GUID = "Submerged";
@@ -208,7 +207,7 @@ public static class ModCompatibility
 
     public static void ExileRoleChangePostfix()
     {
-        Coroutines.Start(WaitMeeting(() => ButtonUtils.ResetCustomTimers(false, true)));
+        Coroutines.Start(WaitMeeting(() => ButtonUtils.ResetCustomTimers(CooldownType.Meeting)));
         Coroutines.Start(WaitMeeting(GhostRoleBegin));
         SetPostmortals.ExileControllerPostfix(ExileController.Instance);
     }

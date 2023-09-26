@@ -183,7 +183,7 @@ public class SubFactionInfo : Info
 
 public class AlignmentInfo : Info
 {
-    private const string CPDescription = "Crew (Protective) roles have the capability to stop someone from losing their life or bring back the dead.";
+    private const string CrPDescription = "Crew (Protective) roles have the capability to stop someone from losing their life or bring back the dead.";
     private const string CIDescription = "Crew (Investigative) roles have the ability to gain information via special methods. Using the acquired info, Crew (Investigative) roles "
         + "can deduce who is good and who is not.";
     private const string CUDescription = "Crew (Utility) roles usually don't appear under regaular spawn conditions.";
@@ -196,7 +196,7 @@ public class AlignmentInfo : Info
     private const string CDDescription = "Crew (Deception) roles are defected Intruder (Deception) roles who have sided with the Crew.";
     private const string CCDescription = "Crew (Concealing) roles are defected Intruder (Concealing) roles who have sided with the Crew.";
     private const string CDiDescription = "Crew (Disruption) roles are defected Syndicate (Disruption) roles who have sided with the Crew.";
-    private const string CPowDescription = "Crew (Power) roles are defected Syndicate (Power) roles who have sided with the Crew.";
+    private const string CrPowDescription = "Crew (Power) roles are defected Syndicate (Power) roles who have sided with the Crew.";
 
     private const string ISDescription = "Intruder (Support) roles have miscellaneous abilities. These roles can delay players' chances of winning by either gaining enough info to"
         + " stop them or forcing players to do things they can't.";
@@ -260,14 +260,14 @@ public class AlignmentInfo : Info
         {
             Alignment.CrewSupport => ("CS", CSDescription, "Support"),
             Alignment.CrewInvest => ("CI", CIDescription, "Investigative"),
-            Alignment.CrewProt => ("CP", CPDescription, "Protective"),
+            Alignment.CrewProt => ("CrP", CrPDescription, "Protective"),
             Alignment.CrewKill => ("CK", CKDescription, "Killing"),
             Alignment.CrewUtil => ("CU", CUDescription, "Utility"),
             Alignment.CrewSov => ("CSv", CSvDescription, "Sovereign"),
             Alignment.CrewAudit => ("CA", CADescription, "Auditor"),
             Alignment.CrewConceal => ("CC", CCDescription, "Concealing"),
             Alignment.CrewDecep => ("CD", CDDescription, "Deception"),
-            Alignment.CrewPower => ("CPow", CPowDescription, "Power"),
+            Alignment.CrewPower => ("CrPow", CrPowDescription, "Power"),
             Alignment.CrewDisrup => ("CDi", CDiDescription, "Disruption"),
             Alignment.IntruderSupport => ("IS", ISDescription, "Support"),
             Alignment.IntruderConceal => ("IC", ICDescription, "Conceal"),

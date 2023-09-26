@@ -377,7 +377,7 @@ Heli Crash Countdown
 <color=#0028F5FF>Spellslinger</color>
 100
 1
-<color=#3769FEFF>Time Keeper</color>
+<color=#3769FEFF>Timekeeper</color>
 100
 1
 <color=#FFFCCEFF>Rebel</color>
@@ -1402,7 +1402,7 @@ Spell Cooldown
 10
 Spell Cooldown Increase
 2.5
-<color=#3769FEFF>Time Keeper</color> Is Unique
+<color=#3769FEFF>Timekeeper</color> Is Unique
 False
 Time Control Cooldown
 10

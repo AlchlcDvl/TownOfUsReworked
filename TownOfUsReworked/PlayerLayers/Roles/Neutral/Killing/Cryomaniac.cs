@@ -7,8 +7,6 @@ public class Cryomaniac : Neutral
     public CustomButton KillButton { get; set; }
     public List<byte> Doused { get; set; }
     public bool FreezeUsed { get; set; }
-    public DateTime LastDoused { get; set; }
-    public DateTime LastKilled { get; set; }
     public bool LastKiller => !CustomPlayer.AllPlayers.Any(x => !x.HasDied() && (x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) || x.Is(Alignment.CrewKill) || x.Is(Alignment.CrewAudit) ||
         x.Is(Alignment.NeutralPros) || x.Is(Alignment.NeutralNeo) || (x.Is(Alignment.NeutralKill) && x != Player))) && CustomGameOptions.CryoLastKillerBoost;
 
@@ -19,32 +17,28 @@ public class Cryomaniac : Neutral
     public override Func<string> Description => () => "- You can douse players in coolant\n- Doused players can be frozen, which kills all of them at once at the start of the next " +
         $"meeting\n- People who interact with you will also get doused{(LastKiller ? "\n- You can kill normally" : "")}";
     public override InspectorResults InspectorResults => InspectorResults.SeeksToDestroy;
-    public float DouseTimer => ButtonUtils.Timer(Player, LastDoused, CustomGameOptions.CryoDouseCd);
-    public float KillTimer => ButtonUtils.Timer(Player, LastKilled, CustomGameOptions.CryoDouseCd);
 
     public Cryomaniac(PlayerControl player) : base(player)
     {
         Objectives = () => "- Freeze anyone who can oppose you";
         Alignment = Alignment.NeutralKill;
         Doused = new();
-        DouseButton = new(this, "CryoDouse", AbilityTypes.Direct, "ActionSecondary", Douse, Exception);
-        FreezeButton = new(this, "Freeze", AbilityTypes.Effect, "Secondary", Freeze);
-        KillButton = new(this, "CryoKill", AbilityTypes.Direct, "Tertiary", Kill, Exception);
+        DouseButton = new(this, "CryoDouse", AbilityTypes.Target, "ActionSecondary", Douse, CustomGameOptions.CryoDouseCd, Exception);
+        FreezeButton = new(this, "Freeze", AbilityTypes.Targetless, "Secondary", Freeze);
+        KillButton = new(this, "CryoKill", AbilityTypes.Target, "Tertiary", Kill, CustomGameOptions.CryoDouseCd, Exception);
     }
 
     public void Kill()
     {
-        if (IsTooFar(Player, KillButton.TargetPlayer) || KillTimer != 0f)
-            return;
-
         var interact = Interact(Player, KillButton.TargetPlayer, true);
+        var cooldown = CooldownType.Reset;
 
-        if (interact.Reset || interact.AbilityUsed)
-            LastKilled = DateTime.UtcNow;
-        else if (interact.Protected)
-            LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
+        if (interact.Protected)
+            cooldown = CooldownType.GuardianAngel;
         else if (interact.Vested)
-            LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
+            cooldown = CooldownType.Survivor;
+
+        KillButton.StartCooldown(cooldown);
     }
 
     public void RpcSpreadDouse(PlayerControl source, PlayerControl target)
@@ -53,7 +47,7 @@ public class Cryomaniac : Neutral
             return;
 
         Doused.Add(target.PlayerId);
-        CallRpc(CustomRPC.Action, ActionsRPC.FreezeDouse, this, target);
+        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, target.PlayerId);
     }
 
     public override void OnMeetingStart(MeetingHud __instance)
@@ -64,6 +58,9 @@ public class Cryomaniac : Neutral
         {
             if (cryo.FreezeUsed)
             {
+                if (cryo.Player != Player && !CustomGameOptions.CryoFreezeAll)
+                    continue;
+
                 foreach (var player in cryo.Doused)
                 {
                     var player2 = PlayerById(player);
@@ -80,40 +77,32 @@ public class Cryomaniac : Neutral
         }
     }
 
-    public bool Exception(PlayerControl player) => Doused.Contains(player.PlayerId) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction
-        is Faction.Intruder or Faction.Syndicate) || Player.IsLinkedTo(player);
-
-    public override void UpdateHud(HudManager __instance)
-    {
-        base.UpdateHud(__instance);
-        DouseButton.Update("DOUSE", DouseTimer, CustomGameOptions.CryoDouseCd);
-        KillButton.Update("KILL", KillTimer, CustomGameOptions.CryoDouseCd, true, LastKiller);
-        FreezeButton.Update("FREEZE", true, Doused.Count > 0 && !FreezeUsed);
-    }
+    public bool Exception(PlayerControl player) => Doused.Contains(player.PlayerId) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is
+        Faction.Intruder or Faction.Syndicate) || Player.IsLinkedTo(player);
 
     public void Douse()
     {
-        if (IsTooFar(Player, DouseButton.TargetPlayer) || DouseTimer != 0f || Doused.Contains(DouseButton.TargetPlayer.PlayerId))
-            return;
-
         var interact = Interact(Player, DouseButton.TargetPlayer, LastKiller);
+        var cooldown = CooldownType.Reset;
 
         if (interact.AbilityUsed)
             RpcSpreadDouse(Player, DouseButton.TargetPlayer);
 
-        if (interact.Reset)
-            LastDoused = DateTime.UtcNow;
-        else if (interact.Protected)
-            LastDoused.AddSeconds(CustomGameOptions.ProtectKCReset);
-        else if (interact.Vested)
-            LastDoused.AddSeconds(CustomGameOptions.VestKCReset);
+        if (interact.Protected)
+            cooldown = CooldownType.GuardianAngel;
+
+        DouseButton.StartCooldown(cooldown);
     }
 
-    public void Freeze()
+    public void Freeze() => FreezeUsed = true;
+
+    public override void UpdateHud(HudManager __instance)
     {
-        if (Doused.Count == 0 || FreezeUsed)
-            return;
-
-        FreezeUsed = true;
+        base.UpdateHud(__instance);
+        DouseButton.Update2("DOUSE");
+        FreezeButton.Update2("FREEZE", Doused.Count > 0 && !FreezeUsed);
+        KillButton.Update2("KILL", LastKiller);
     }
+
+    public override void ReadRPC(MessageReader reader) => Doused.Add(reader.ReadByte());
 }

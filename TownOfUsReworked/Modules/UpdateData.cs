@@ -24,6 +24,6 @@ public class UpdateData
         if (!Version.TryParse(Tag, out var myVersion))
             return false;
 
-        return myVersion.BaseVersion() > version.BaseVersion();
+        return myVersion?.BaseVersion() > version?.BaseVersion();
     }
 }

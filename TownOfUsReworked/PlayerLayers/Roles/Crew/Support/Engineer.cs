@@ -3,10 +3,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Engineer : Crew
 {
     public CustomButton FixButton { get; set; }
-    public int UsesLeft { get; set; }
-    public bool ButtonUsable => UsesLeft > 0;
-    public DateTime LastFixed { get; set; }
-    public float Timer => ButtonUtils.Timer(Player, LastFixed, CustomGameOptions.FixCd);
 
     public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Engineer : Colors.Crew;
     public override string Name => "Engineer";
@@ -18,38 +14,26 @@ public class Engineer : Crew
     public Engineer(PlayerControl player) : base(player)
     {
         Alignment = Alignment.CrewSupport;
-        UsesLeft = CustomGameOptions.MaxFixes;
-        FixButton = new(this, "Fix", AbilityTypes.Effect, "ActionSecondary", Fix, true);
-    }
-
-    public void Fix()
-    {
-        if (!ButtonUsable || Timer != 0f)
-            return;
-
-        var system = ShipStatus.Instance.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>();
-
-        if (system == null)
-            return;
-
-        var dummyActive = system.dummy.IsActive;
-        var sabActive = system.specials.Any(s => s.IsActive);
-
-        if (!sabActive || dummyActive)
-            return;
-
-        UsesLeft--;
-        LastFixed = DateTime.UtcNow;
-        FixExtentions.Fix();
+        FixButton = new(this, "Fix", AbilityTypes.Targetless, "ActionSecondary", Fix, CustomGameOptions.FixCd, CustomGameOptions.MaxFixes);
     }
 
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
+        FixButton.Update2("FIX SABOTAGE", condition: Condition());
+    }
+
+    public bool Condition()
+    {
         var system = ShipStatus.Instance.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>();
         var dummyActive = system?.dummy.IsActive;
         var active = system?.specials.Any(s => s.IsActive);
-        var condition = active == true && dummyActive == false;
-        FixButton.Update("FIX", Timer, CustomGameOptions.FixCd, UsesLeft, condition, ButtonUsable);
+        return active == true && dummyActive == false;
+    }
+
+    public void Fix()
+    {
+        FixExtentions.Fix();
+        FixButton.StartCooldown(CooldownType.Start);
     }
 }

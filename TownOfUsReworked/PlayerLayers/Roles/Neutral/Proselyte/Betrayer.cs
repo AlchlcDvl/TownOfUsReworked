@@ -3,7 +3,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Betrayer : Neutral
 {
     public CustomButton KillButton { get; set; }
-    public DateTime LastKilled { get; set; }
 
     public override Color Color => ClientGameOptions.CustomNeutColors ? Colors.Betrayer : Colors.Neutral;
     public override string Name => "Betrayer";
@@ -11,39 +10,33 @@ public class Betrayer : Neutral
     public override Func<string> StartText => () => "Those Backs Are Ripe For Some Stabbing";
     public override Func<string> Description => () => "- You can kill";
     public override InspectorResults InspectorResults => InspectorResults.IsAggressive;
-    public float Timer => ButtonUtils.Timer(Player, LastKilled, CustomGameOptions.BetrayCd);
 
     public Betrayer(PlayerControl player) : base(player)
     {
         Objectives = () => $"- Kill anyone who opposes the {FactionName}";
         Alignment = Alignment.NeutralPros;
-        KillButton = new(this, "BetKill", AbilityTypes.Direct, "ActionSecondary", Kill, Exception);
+        KillButton = new(this, "BetKill", AbilityTypes.Target, "ActionSecondary", Kill, CustomGameOptions.BetrayCd, Exception);
     }
 
     public void Kill()
     {
-        if (IsTooFar(Player, KillButton.TargetPlayer) || Timer != 0f || Faction == Faction.Neutral)
-            return;
-
         var interact = Interact(Player, KillButton.TargetPlayer, true);
+        var cooldown = CooldownType.Reset;
 
-        if (interact.AbilityUsed || interact.Reset)
-            LastKilled = DateTime.UtcNow;
-        else if (interact.Protected)
-            LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
+        if (interact.Protected)
+            cooldown = CooldownType.GuardianAngel;
         else if (interact.Vested)
-            LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
+            cooldown = CooldownType.Survivor;
+
+        KillButton.StartCooldown(cooldown);
     }
 
-    public bool Exception(PlayerControl player) => (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate)
-        || Player.IsLinkedTo(player);
+    public bool Exception(PlayerControl player) => (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) ||
+        Player.IsLinkedTo(player);
 
     public override void UpdateHud(HudManager __instance)
     {
-        if (Faction == Faction.Neutral)
-            return;
-
         base.UpdateHud(__instance);
-        KillButton.Update("KILL", Timer, CustomGameOptions.BetrayCd);
+        KillButton.Update2("BETRAY");
     }
 }

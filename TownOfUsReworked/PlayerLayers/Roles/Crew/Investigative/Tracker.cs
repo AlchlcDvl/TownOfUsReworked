@@ -3,11 +3,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Tracker : Crew
 {
     public Dictionary<byte, CustomArrow> TrackerArrows { get; set; }
-    public DateTime LastTracked { get; set; }
-    public int UsesLeft { get; set; }
-    public bool ButtonUsable => UsesLeft > 0;
     public CustomButton TrackButton { get; set; }
-    public float Timer => ButtonUtils.Timer(Player, LastTracked, CustomGameOptions.TrackCd);
 
     public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Tracker : Colors.Crew;
     public override string Name => "Tracker";
@@ -18,10 +14,9 @@ public class Tracker : Crew
 
     public Tracker(PlayerControl player) : base(player)
     {
-        UsesLeft = CustomGameOptions.MaxTracks;
         TrackerArrows = new();
         Alignment = Alignment.CrewInvest;
-        TrackButton = new(this, "Track", AbilityTypes.Direct, "ActionSecondary", Track, Exception, true);
+        TrackButton = new(this, "Track", AbilityTypes.Target, "ActionSecondary", Track, CustomGameOptions.TrackCd, Exception, CustomGameOptions.MaxTracks);
     }
 
     public void DestroyArrow(byte targetPlayerId)
@@ -41,27 +36,22 @@ public class Tracker : Crew
 
     public void Track()
     {
-        if (IsTooFar(Player, TrackButton.TargetPlayer) || Timer != 0f)
-            return;
-
         var interact = Interact(Player, TrackButton.TargetPlayer);
+        var cooldown = CooldownType.Reset;
 
         if (interact.AbilityUsed)
-        {
             TrackerArrows.Add(TrackButton.TargetPlayer.PlayerId, new(Player, TrackButton.TargetPlayer.GetPlayerColor(), CustomGameOptions.UpdateInterval));
-            UsesLeft--;
-        }
 
-        if (interact.Reset)
-            LastTracked = DateTime.UtcNow;
-        else if (interact.Protected)
-            LastTracked.AddSeconds(CustomGameOptions.ProtectKCReset);
+        if (interact.Protected)
+            cooldown = CooldownType.GuardianAngel;
+
+        TrackButton.StartCooldown(cooldown);
     }
 
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        TrackButton.Update("TRACK", Timer, CustomGameOptions.TrackCd, UsesLeft, ButtonUsable, ButtonUsable);
+        TrackButton.Update2("TRACK");
 
         if (IsDead)
             OnLobby();

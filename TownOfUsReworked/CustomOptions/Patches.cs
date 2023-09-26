@@ -1,6 +1,5 @@
 namespace TownOfUsReworked.CustomOptions;
 
-[HarmonyPatch]
 public static class SettingsPatches
 {
     private static readonly string[] Menus = { "Global", "Crew", "Neutral", "Intruder", "Syndicate", "Modifier", "Objectifier", "Ability", "Role List" };
@@ -17,6 +16,11 @@ public static class SettingsPatches
 
     private static Dictionary<CustomOption, OptionBehaviour> CreateOptions()
     {
+        var options = new Dictionary<CustomOption, OptionBehaviour>();
+
+        if (GameSettings.SettingsPage == 9)
+            return options;
+
         if (RolePrefab == null)
         {
             //Title = 1, Count - = 2, Count Val = 3, Count + = 4, Chance - = 5, Chance Val = 6, Chance + = 7
@@ -37,7 +41,6 @@ public static class SettingsPatches
             RolePrefab.gameObject.SetActive(false);
         }
 
-        var options = new Dictionary<CustomOption, OptionBehaviour>();
         var togglePrefab = UObject.FindObjectOfType<ToggleOption>();
         var numberPrefab = UObject.FindObjectOfType<NumberOption>();
         var keyValPrefab = UObject.FindObjectOfType<KeyValueOption>();
@@ -45,25 +48,19 @@ public static class SettingsPatches
 
         if (type == MultiMenu.Main)
         {
-            if (ExportButton.Setting != null)
-                ExportButton.Setting.gameObject.SetActive(true);
-            else
+            if (ExportButton.Setting == null)
             {
                 ExportButton.Setting = CustomButtonOption.CreateButton();
                 ExportButton.OptionCreated();
             }
 
-            if (ImportButton.Setting != null)
-                ImportButton.Setting.gameObject.SetActive(true);
-            else
+            if (ImportButton.Setting == null)
             {
                 ImportButton.Setting = CustomButtonOption.CreateButton();
                 ImportButton.OptionCreated();
             }
 
-            if (PresetButton.Setting != null)
-                PresetButton.Setting.gameObject.SetActive(true);
-            else
+            if (PresetButton.Setting == null)
             {
                 PresetButton.Setting = CustomButtonOption.CreateButton();
                 PresetButton.OptionCreated();
@@ -76,9 +73,7 @@ public static class SettingsPatches
 
         foreach (var option in CustomOption.AllOptions.Where(x => x.Menu == type))
         {
-            if (option.Setting != null)
-                option.Setting.gameObject.SetActive(true);
-            else
+            if (option.Setting == null)
             {
                 switch (option.Type)
                 {
@@ -214,12 +209,14 @@ public static class SettingsPatches
 
                 var gameGroup = touSettings.transform.FindChild("GameGroup");
                 var title = gameGroup?.FindChild("Text");
+                var color = GetSettingColor(index);
 
                 if (title)
                 {
                     title.localPosition += new Vector3(1.3f, 0f, 0f);
                     title.GetComponent<TextTranslatorTMP>().Destroy();
                     title.GetComponent<TextMeshPro>().m_text = $"{Menus[index]} Settings";
+                    title.GetComponent<TextMeshPro>().color = color;
                 }
 
                 var sliderInner = gameGroup?.FindChild("SliderInner");
@@ -237,7 +234,6 @@ public static class SettingsPatches
                 var tabBackground = hatButton.GetChild(1);
 
                 var rend = tabBackground.GetComponent<SpriteRenderer>();
-                var color = GetSettingColor(index);
                 rend.color = color;
                 color.a = 0.5f;
                 rend.transform.GetChild(0).GetComponent<SpriteRenderer>().color = color;
@@ -341,6 +337,12 @@ public static class SettingsPatches
         }
     }
 
+    [HarmonyPatch(typeof(GameSettingMenu), nameof(GameSettingMenu.OnEnable))]
+    public static class GameSettingMenuOnEnable
+    {
+        public static void Prefix(ref GameSettingMenu __instance) => __instance.HideForOnline = new(0);
+    }
+
     [HarmonyPatch(typeof(GameOptionsMenu), nameof(GameOptionsMenu.Start))]
     public static class GameOptionsMenu_Start
     {
@@ -382,6 +384,7 @@ public static class SettingsPatches
                     y -= customOptions[i] is CustomHeaderOption ? 0.6f : 0.5f;
 
                 behaviours[i].transform.localPosition = new(x, y, z);
+                behaviours[i].gameObject.SetActive(true);
             }
 
             __instance.Children = new(behaviours);

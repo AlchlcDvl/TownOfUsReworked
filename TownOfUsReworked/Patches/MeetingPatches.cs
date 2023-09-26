@@ -1,6 +1,5 @@
 namespace TownOfUsReworked.Patches;
 
-[HarmonyPatch]
 public static class MeetingPatches
 {
     private static GameData.PlayerInfo VoteTarget;
@@ -13,7 +12,7 @@ public static class MeetingPatches
     {
         public static void Postfix(PlayerVoteArea __instance)
         {
-            if (CustomGameOptions.CamouflagedMeetings && DoUndo.IsCamoed)
+            if (CustomGameOptions.CamouflagedMeetings && HudUpdate.IsCamoed)
             {
                 __instance.Background.sprite = ShipStatus.Instance.CosmeticsCache.GetNameplate("nameplate_NoPlate").Image;
                 __instance.LevelNumberText.GetComponentInParent<SpriteRenderer>().enabled = false;
@@ -327,7 +326,7 @@ public static class MeetingPatches
 
             var playerControl = playerInfo.Object;
 
-            if ((playerControl.IsAssassin() || playerControl.Is(LayerEnum.Guesser)) && playerInfo.IsDead)
+            if ((playerControl.IsAssassin() || playerControl.Is(LayerEnum.Guesser) || playerControl.Is(LayerEnum.Thief)) && playerInfo.IsDead)
             {
                 playerVoteArea.VotedFor = PlayerVoteArea.DeadVote;
                 playerVoteArea.SetDead(false, true);
@@ -348,7 +347,7 @@ public static class MeetingPatches
                 {
                     var playerVoteArea = __instance.playerStates[i];
 
-                    array[i] = new MeetingHud.VoterState
+                    array[i] = new MeetingHud.VoterState()
                     {
                         VoterId = playerVoteArea.TargetPlayerId,
                         VotedForId = playerVoteArea.VotedFor
@@ -356,7 +355,7 @@ public static class MeetingPatches
                 }
 
                 __instance.RpcVotingComplete(array, exiled, tie);
-                Ability.GetAbilities<Politician>(LayerEnum.Politician).ForEach(x => CallRpc(CustomRPC.Action, ActionsRPC.SetExtraVotes, x, x.ExtraVotes.ToArray()));
+                Ability.GetAbilities<Politician>(LayerEnum.Politician).ForEach(x => CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, x, x.ExtraVotes.ToArray()));
             }
 
             return false;
@@ -369,7 +368,7 @@ public static class MeetingPatches
         public static bool Prefix(MeetingHud __instance, [HarmonyArgument(0)] Il2CppStructArray<MeetingHud.VoterState> states)
         {
             var allNums = new Dictionary<int, int>();
-            __instance.TitleText.text = UObject.FindObjectOfType<TranslationController>().GetString(StringNames.MeetingVotingResults, Array.Empty<Il2CppSystem.Object>());
+            __instance.TitleText.text = TranslationController.Instance.GetString(StringNames.MeetingVotingResults, Array.Empty<Il2CppSystem.Object>());
             var amountOfSkippedVoters = 0;
 
             for (var i = 0; i < __instance.playerStates.Length; i++)

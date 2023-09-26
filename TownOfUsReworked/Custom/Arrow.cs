@@ -51,7 +51,6 @@ public class CustomArrow
         if (Owner != CustomPlayer.Local)
         {
             Arrow.target = CustomPlayer.LocalCustom.Position;
-            Arrow.Update();
             Disable();
             return;
         }
@@ -64,7 +63,6 @@ public class CustomArrow
         if (_time <= DateTime.UtcNow.AddSeconds(-Interval))
         {
             Arrow.target = Target = target;
-            Arrow.Update();
             _time = DateTime.UtcNow;
         }
     }
@@ -80,10 +78,10 @@ public class CustomArrow
 
     public void Destroy()
     {
-        ArrowObj.Destroy();
-        Arrow.Destroy();
-        Render.Destroy();
-        Point.Destroy();
+        ArrowObj?.Destroy();
+        Arrow?.Destroy();
+        Render?.Destroy();
+        Point?.Destroy();
         ArrowObj = null;
         Arrow = null;
         Render = null;

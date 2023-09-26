@@ -1,7 +1,7 @@
 namespace TownOfUsReworked.Patches;
 
 [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Update))]
-public class ShowHostMeetingUpdatePatch
+public static class ShowHostMeetingUpdatePatch
 {
     public static void Postfix(MeetingHud __instance)
     {
@@ -19,7 +19,7 @@ public class ShowHostMeetingUpdatePatch
 }
 
 [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
-public class ShowHostMeetingStartPatch
+public static class ShowHostMeetingStartPatch
 {
     public static void Postfix(MeetingHud __instance)
     {

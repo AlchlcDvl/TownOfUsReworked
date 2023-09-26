@@ -26,7 +26,7 @@ public static class AdminPatch
             var sprite = icon.GetComponent<SpriteRenderer>();
             var text = icon.GetComponentInChildren<TextMeshPro>(true);
 
-            if (DoUndo.IsCamoed)
+            if (HudUpdate.IsCamoed)
                 sprite.color = UColor.grey;
 
             if (sprite != null)

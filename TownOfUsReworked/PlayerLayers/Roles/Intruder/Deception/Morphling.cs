@@ -4,13 +4,9 @@ public class Morphling : Intruder
 {
     public CustomButton MorphButton { get; set; }
     public CustomButton SampleButton { get; set; }
-    public DateTime LastMorphed { get; set; }
-    public DateTime LastSampled { get; set; }
     public PlayerControl MorphedPlayer { get; set; }
     public PlayerControl SampledPlayer { get; set; }
-    public float TimeRemaining { get; set; }
-    public bool Enabled { get; set; }
-    public bool Morphed => TimeRemaining > 0f;
+    public bool Morphed => MorphButton.EffectActive;
 
     public override Color Color => ClientGameOptions.CustomIntColors ? Colors.Morphling : Colors.Intruder;
     public override string Name => "Morphling";
@@ -18,73 +14,49 @@ public class Morphling : Intruder
     public override Func<string> StartText => () => "Fool The <color=#8CFFFFFF>Crew</color> With Your Appearances";
     public override Func<string> Description => () => $"- You can morph into other players, taking up their appearances as your own\n{CommonAbilities}";
     public override InspectorResults InspectorResults => InspectorResults.CreatesConfusion;
-    public float SampleTimer => ButtonUtils.Timer(Player, LastSampled, CustomGameOptions.SampleCd);
-    public float MorphTimer => ButtonUtils.Timer(Player, LastMorphed, CustomGameOptions.MorphCd);
 
     public Morphling(PlayerControl player) : base(player)
     {
         Alignment = Alignment.IntruderDecep;
         SampledPlayer = null;
         MorphedPlayer = null;
-        MorphButton = new(this, "Morph", AbilityTypes.Effect, "Secondary", HitMorph);
-        SampleButton = new(this, "Sample", AbilityTypes.Direct, "Tertiary", Sample, Exception1);
+        MorphButton = new(this, "Morph", AbilityTypes.Targetless, "Secondary", HitMorph, CustomGameOptions.MorphCd, CustomGameOptions.MorphDur, (CustomButton.EffectVoid)Morph, UnMorph);
+        SampleButton = new(this, "Sample", AbilityTypes.Target, "Tertiary", Sample, CustomGameOptions.SampleCd, Exception1);
     }
 
-    public void Morph()
-    {
-        TimeRemaining -= Time.deltaTime;
-        Utils.Morph(Player, MorphedPlayer);
-        Enabled = true;
+    public void Morph() => Utils.Morph(Player, MorphedPlayer);
 
-        if (IsDead || Meeting)
-            TimeRemaining = 0f;
-    }
-
-    public void Unmorph()
+    public void UnMorph()
     {
         MorphedPlayer = null;
-        Enabled = false;
         DefaultOutfit(Player);
-        LastMorphed = DateTime.UtcNow;
 
         if (CustomGameOptions.MorphCooldownsLinked)
-            LastSampled = DateTime.UtcNow;
+            SampleButton.StartCooldown(CooldownType.Reset);
     }
 
     public void HitMorph()
     {
-        if (MorphTimer != 0f || SampledPlayer == null || Morphed)
-            return;
-
-        TimeRemaining = CustomGameOptions.MorphDur;
         MorphedPlayer = SampledPlayer;
-        CallRpc(CustomRPC.Action, ActionsRPC.Morph, this, MorphedPlayer);
+        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction1, MorphButton, MorphedPlayer);
+        MorphButton.Begin();
     }
 
     public void Sample()
     {
-        if (SampleTimer != 0f || IsTooFar(Player, SampleButton.TargetPlayer) || SampledPlayer == SampleButton.TargetPlayer)
-            return;
-
         var interact = Interact(Player, SampleButton.TargetPlayer);
+        var cooldown = CooldownType.Reset;
 
         if (interact.AbilityUsed)
             SampledPlayer = SampleButton.TargetPlayer;
 
-        if (interact.Reset)
-        {
-            LastSampled = DateTime.UtcNow;
+        if (interact.Protected)
+            cooldown = CooldownType.GuardianAngel;
 
-            if (CustomGameOptions.MorphCooldownsLinked)
-                LastMorphed = DateTime.UtcNow;
-        }
-        else if (interact.Protected)
-        {
-            LastSampled.AddSeconds(CustomGameOptions.ProtectKCReset);
+        SampleButton.StartCooldown(cooldown);
 
-            if (CustomGameOptions.MorphCooldownsLinked)
-                LastMorphed.AddSeconds(CustomGameOptions.ProtectKCReset);
-        }
+        if (CustomGameOptions.DisgCooldownsLinked)
+            MorphButton.StartCooldown(cooldown);
     }
 
     public bool Exception1(PlayerControl player) => player == SampledPlayer;
@@ -92,7 +64,11 @@ public class Morphling : Intruder
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        MorphButton.Update("MORPH", MorphTimer, CustomGameOptions.MorphCd, Morphed, TimeRemaining, CustomGameOptions.MorphDur, true, SampledPlayer != null);
-        SampleButton.Update("SAMPLE", SampleTimer, CustomGameOptions.SampleCd);
+        SampleButton.Update2("SAMPLE");
+        MorphButton.Update2("MORPH", SampledPlayer != null);
     }
+
+    public override void TryEndEffect() => MorphButton.Update3(IsDead);
+
+    public override void ReadRPC(MessageReader reader) => MorphedPlayer = reader.ReadPlayer();
 }

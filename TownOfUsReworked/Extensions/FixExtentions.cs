@@ -1,6 +1,5 @@
 namespace TownOfUsReworked.Extensions;
 
-[HarmonyPatch]
 public static class FixExtentions
 {
     public static void FixComms() => ShipStatus.Instance.RpcRepairSystem(SystemTypes.Comms, 0);
@@ -159,6 +158,9 @@ public static class FixExtentions
                 break;
 
             case 6:
+                if (!LILoaded)
+                    break;
+
                 var comms6 = ShipStatus.Instance.Systems[SystemTypes.Comms].Cast<HudOverrideSystemType>();
 
                 if (comms6.IsActive)

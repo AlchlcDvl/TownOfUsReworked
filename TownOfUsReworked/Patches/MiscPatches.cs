@@ -16,12 +16,6 @@ public static class ButtonsPatch
     public static bool Prefix(ref bool __result) => __result = false;
 }
 
-[HarmonyPatch(typeof(GameSettingMenu), nameof(GameSettingMenu.OnEnable))]
-public static class GameSettingMenuOnEnable
-{
-    public static void Prefix(ref GameSettingMenu __instance) => __instance.HideForOnline = new(0);
-}
-
 [HarmonyPatch(typeof(MapBehaviour), nameof(MapBehaviour.FixedUpdate))]
 public static class MapBehaviourPatch
 {
@@ -265,18 +259,14 @@ public static class OverlayKillAnimationPatch
 
     public static void Prefix(GameData.PlayerInfo kInfo)
     {
-        var playerControl = CustomPlayer.AllPlayers.Find(p => p.PlayerId == kInfo.PlayerId);
+        var playerControl = PlayerById(kInfo.PlayerId);
         CurrentOutfitTypeCache = (int)playerControl.CurrentOutfitType;
 
         if (!CustomGameOptions.AppearanceAnimation)
             playerControl.CurrentOutfitType = PlayerOutfitType.Default;
     }
 
-    public static void Postfix(GameData.PlayerInfo kInfo)
-    {
-        var playerControl = CustomPlayer.AllPlayers.Find(p => p.PlayerId == kInfo.PlayerId);
-        playerControl.CurrentOutfitType = (PlayerOutfitType)CurrentOutfitTypeCache;
-    }
+    public static void Postfix(GameData.PlayerInfo kInfo) => PlayerById(kInfo.PlayerId).CurrentOutfitType = (PlayerOutfitType)CurrentOutfitTypeCache;
 }
 
 [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.Awake))]
@@ -443,11 +433,11 @@ public static class LobbyBehaviourPatch
         var count = MCIUtils.Clients.Count;
         MCIUtils.Clients.Clear();
         MCIUtils.PlayerIdClientId.Clear();
+        DebuggerBehaviour.Instance.TestWindow.Enabled = TownOfUsReworked.MCIActive && IsLocalGame;
+        DebuggerBehaviour.Instance.CooldownsWindow.Enabled = false;
 
-        if (MCIUtils.Clients.Count != 0 && TownOfUsReworked.MCIActive && IsLocalGame)
+        if (count > 0)
         {
-            DebuggerBehaviour.Instance.TestWindow.Enabled = true;
-
             if (TownOfUsReworked.Persistence)
             {
                 for (var i = 0; i < count; i++)

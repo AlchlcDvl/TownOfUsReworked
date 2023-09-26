@@ -8,6 +8,7 @@ public abstract class PlayerLayer
     public virtual PlayerLayerEnum LayerType => PlayerLayerEnum.None;
     public virtual LayerEnum Type => LayerEnum.None;
     public virtual Func<string> Description => () => "- None";
+    public virtual Func<string> Attributes => () => "- None";
 
     public PlayerControl Player { get; set; }
     public bool IsBlocked { get; set; }
@@ -34,7 +35,7 @@ public abstract class PlayerLayer
     public static readonly List<PlayerLayer> AllLayers = new();
     public static List<PlayerLayer> LocalLayers => GetLayers(CustomPlayer.Local);
 
-    public virtual void OnLobby() => EndGame.Reset();
+    public virtual void OnLobby() => Patches.EndGame.Reset();
 
     public virtual void UpdateHud(HudManager __instance) {}
 
@@ -52,21 +53,27 @@ public abstract class PlayerLayer
 
     public virtual void UpdateMap(MapBehaviour __instance) {}
 
+    public virtual void TryEndEffect() {}
+
+    public virtual void ExitingLayer() {}
+
+    public virtual void EnteringLayer() {}
+
     public virtual void OnMeetingStart(MeetingHud __instance)
     {
         Player.DisableButtons();
-        EndGame.Reset();
+        Patches.EndGame.Reset();
         Ash.DestroyAll();
     }
 
     public virtual void OnMeetingEnd(MeetingHud __instance)
     {
         Player.EnableButtons();
-        EndGame.Reset();
-        ButtonUtils.ResetCustomTimers(false, true);
+        Patches.EndGame.Reset();
+        ButtonUtils.ResetCustomTimers(CooldownType.Meeting);
     }
 
-    public virtual void OnBodyReport(GameData.PlayerInfo info) => EndGame.Reset();
+    public virtual void OnBodyReport(GameData.PlayerInfo info) => Patches.EndGame.Reset();
 
     public virtual void UponTaskComplete(PlayerControl player, uint taskId) {}
 
@@ -320,7 +327,7 @@ public abstract class PlayerLayer
         if (a is null || b is null)
             return false;
 
-        return a.Type == b.Type && a.Player == b.Player && a.LayerType == b.LayerType;
+        return a.Type == b.Type && a.LayerType == b.LayerType;
     }
 
     public static bool operator !=(PlayerLayer a, PlayerLayer b) => !(a == b);

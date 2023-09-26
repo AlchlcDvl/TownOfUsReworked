@@ -7,7 +7,6 @@ public class Jackal : Neutral
     public PlayerControl BackupRecruit { get; set; }
     public CustomButton RecruitButton { get; set; }
     public bool RecruitsDead => EvilRecruit == null || GoodRecruit == null || BackupRecruit == null;
-    public DateTime LastRecruited { get; set; }
     public List<byte> Recruited { get; set; }
 
     public override Color Color => ClientGameOptions.CustomNeutColors ? Colors.Jackal : Colors.Neutral;
@@ -18,7 +17,6 @@ public class Jackal : Neutral
         "Syndicate</color>, <color=#FF0000FF>Intruder</color> or a <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killer</color>\n- When both recruits die, you can recruit a third" +
         " member into the <color=#575657FF>Cabal</color>";
     public override InspectorResults InspectorResults => InspectorResults.BringsChaos;
-    public float Timer => ButtonUtils.Timer(Player, LastRecruited, CustomGameOptions.RecruitCd);
 
     public Jackal(PlayerControl player) : base(player)
     {
@@ -27,24 +25,24 @@ public class Jackal : Neutral
         SubFactionColor = Colors.Cabal;
         Alignment = Alignment.NeutralNeo;
         Recruited = new() { Player.PlayerId };
-        RecruitButton = new(this, "Recruit", AbilityTypes.Direct, "ActionSecondary", Recruit, Exception);
+        RecruitButton = new(this, "Recruit", AbilityTypes.Target, "ActionSecondary", Recruit, Exception);
         SubFactionSymbol = "$";
     }
 
     public void Recruit()
     {
-        if (Timer != 0f || !RecruitsDead)
-            return;
-
         var interact = Interact(Player, RecruitButton.TargetPlayer, false, true);
+        var cooldown = CooldownType.Reset;
 
         if (interact.AbilityUsed)
             RoleGen.RpcConvert(RecruitButton.TargetPlayer.PlayerId, Player.PlayerId, SubFaction.Cabal);
 
-        if (interact.Reset)
-            LastRecruited = DateTime.UtcNow;
-        else if (interact.Protected)
-            LastRecruited.AddSeconds(CustomGameOptions.ProtectKCReset);
+        if (interact.Protected)
+            cooldown = CooldownType.GuardianAngel;
+        else if (interact.Vested)
+            cooldown = CooldownType.Survivor;
+
+        RecruitButton.StartCooldown(cooldown);
     }
 
     public bool Exception(PlayerControl player) => Recruited.Contains(player.PlayerId);
@@ -52,6 +50,6 @@ public class Jackal : Neutral
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        RecruitButton.Update("RECRUIT", Timer, CustomGameOptions.RecruitCd, true, RecruitsDead);
+        RecruitButton.Update2("RECRUIT", RecruitsDead);
     }
 }

@@ -45,6 +45,9 @@ public class Phantom : Neutral
         Player.MyRend().color = color;
         Player.NameText().color = new(0f, 0f, 0f, 0f);
         Player.cosmetics.colorBlindText.color = new(0f, 0f, 0f, 0f);
+
+        if (Local)
+            Camouflage();
     }
 
     public void UnFade()
@@ -54,5 +57,8 @@ public class Phantom : Neutral
         Player.gameObject.layer = LayerMask.NameToLayer("Ghost");
         Faded = false;
         Player.MyPhysics.ResetMoveState();
+
+        if (Local)
+            DefaultOutfitAll();
     }
 }

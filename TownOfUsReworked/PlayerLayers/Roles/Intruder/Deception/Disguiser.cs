@@ -4,16 +4,10 @@ public class Disguiser : Intruder
 {
     public CustomButton DisguiseButton { get; set; }
     public CustomButton MeasureButton { get; set; }
-    public DateTime LastDisguised { get; set; }
-    public DateTime LastMeasured { get; set; }
-    public float TimeRemaining { get; set; }
-    public float TimeRemaining2 { get; set; }
     public PlayerControl MeasuredPlayer { get; set; }
     public PlayerControl CopiedPlayer { get; set; }
     public PlayerControl DisguisedPlayer { get; set; }
-    public bool DelayActive => TimeRemaining2 > 0f;
-    public bool Disguised => TimeRemaining > 0f;
-    public bool Enabled { get; set; }
+    public bool Disguised => DisguiseButton.EffectActive;
 
     public override Color Color => ClientGameOptions.CustomIntColors ? Colors.Disguiser : Colors.Intruder;
     public override string Name => "Disguiser";
@@ -21,121 +15,83 @@ public class Disguiser : Intruder
     public override Func<string> StartText => () => "Disguise The <color=#8CFFFFFF>Crew</color> To Frame Them";
     public override Func<string> Description => () => $"- You can disguise a player into someone else's appearance\n{CommonAbilities}";
     public override InspectorResults InspectorResults => InspectorResults.CreatesConfusion;
-    public float DisguiseTimer => ButtonUtils.Timer(Player, LastDisguised, CustomGameOptions.DisguiseCd);
-    public float MeasureTimer => ButtonUtils.Timer(Player, LastMeasured, CustomGameOptions.MeasureCd);
 
     public Disguiser(PlayerControl player) : base(player)
     {
         Alignment = Alignment.IntruderDecep;
-        MeasuredPlayer = null;
-        DisguiseButton = new(this, "Disguise", AbilityTypes.Direct, "Secondary", HitDisguise, Exception1);
-        MeasureButton = new(this, "Measure", AbilityTypes.Direct, "Tertiary", Measure, Exception2);
+        DisguiseButton = new(this, "Disguise", AbilityTypes.Target, "Secondary", HitDisguise, CustomGameOptions.DisguiseCd, CustomGameOptions.DisguiseDur, Disguise, UnDisguise,
+            CustomGameOptions.DisguiseDelay, Exception1);
+        MeasureButton = new(this, "Measure", AbilityTypes.Target, "Tertiary", Measure, CustomGameOptions.MeasureCd, Exception2);
         DisguisedPlayer = null;
         MeasuredPlayer = null;
         CopiedPlayer = null;
     }
 
-    public void Disguise()
-    {
-        TimeRemaining -= Time.deltaTime;
-        Morph(DisguisedPlayer, CopiedPlayer);
-        Enabled = true;
-
-        if (IsDead || DisguisedPlayer.HasDied() || Meeting)
-            TimeRemaining = 0f;
-    }
-
-    public void Delay()
-    {
-        Enabled = true;
-        TimeRemaining2 -= Time.deltaTime;
-
-        if (IsDead || DisguisedPlayer.HasDied())
-            TimeRemaining2 = 0f;
-    }
+    public void Disguise() => Morph(DisguisedPlayer, CopiedPlayer);
 
     public void UnDisguise()
     {
-        Enabled = false;
         DefaultOutfit(DisguisedPlayer);
-        LastDisguised = DateTime.UtcNow;
         DisguisedPlayer = null;
         CopiedPlayer = null;
-
-        if (CustomGameOptions.DisgCooldownsLinked)
-            LastMeasured = DateTime.UtcNow;
     }
 
     public void HitDisguise()
     {
-        if (DisguiseTimer != 0f || IsTooFar(Player, DisguiseButton.TargetPlayer) || DisguiseButton.TargetPlayer == MeasuredPlayer || Disguised || DelayActive)
-            return;
-
         var interact = Interact(Player, DisguiseButton.TargetPlayer);
+        var cooldown = CooldownType.Reset;
 
         if (interact.AbilityUsed)
         {
-            TimeRemaining = CustomGameOptions.DisguiseDur;
-            TimeRemaining2 = CustomGameOptions.DisguiseDelay;
             CopiedPlayer = MeasuredPlayer;
             DisguisedPlayer = DisguiseButton.TargetPlayer;
-            CallRpc(CustomRPC.Action, ActionsRPC.Disguise, this, CopiedPlayer, DisguisedPlayer);
-
-            if (CustomGameOptions.DisgCooldownsLinked)
-                LastMeasured = DateTime.UtcNow;
-        }
-        else if (interact.Reset)
-        {
-            LastDisguised = DateTime.UtcNow;
-
-            if (CustomGameOptions.DisgCooldownsLinked)
-                LastMeasured = DateTime.UtcNow;
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction1, DisguiseButton, CopiedPlayer, DisguisedPlayer);
+            DisguiseButton.Begin();
         }
         else if (interact.Protected)
-        {
-            LastDisguised.AddSeconds(CustomGameOptions.ProtectKCReset);
+            cooldown = CooldownType.GuardianAngel;
 
-            if (CustomGameOptions.DisgCooldownsLinked)
-                LastMeasured.AddSeconds(CustomGameOptions.ProtectKCReset);
-        }
+        if (!interact.AbilityUsed)
+            MeasureButton.StartCooldown(cooldown);
+
+        if (CustomGameOptions.DisgCooldownsLinked)
+            DisguiseButton.StartCooldown(cooldown);
     }
 
     public void Measure()
     {
-        if (MeasureTimer != 0f || IsTooFar(Player, MeasureButton.TargetPlayer) || MeasureButton.TargetPlayer == MeasuredPlayer)
-            return;
-
         var interact = Interact(Player, MeasureButton.TargetPlayer);
+        var cooldown = CooldownType.Reset;
 
         if (interact.AbilityUsed)
             MeasuredPlayer = MeasureButton.TargetPlayer;
 
-        if (interact.Reset)
-        {
-            LastMeasured = DateTime.UtcNow;
+        if (interact.Protected)
+            cooldown = CooldownType.GuardianAngel;
 
-            if (CustomGameOptions.DisgCooldownsLinked)
-                LastDisguised = DateTime.UtcNow;
-        }
-        else if (interact.Protected)
-        {
-            LastMeasured.AddSeconds(CustomGameOptions.ProtectKCReset);
+        MeasureButton.StartCooldown(cooldown);
 
-            if (CustomGameOptions.DisgCooldownsLinked)
-                LastDisguised.AddSeconds(CustomGameOptions.ProtectKCReset);
-        }
+        if (CustomGameOptions.DisgCooldownsLinked)
+            DisguiseButton.StartCooldown(cooldown);
     }
 
-    public bool Exception1(PlayerControl player) => (player.Is(Faction) && CustomGameOptions.DisguiseTarget == DisguiserTargets.NonIntruders) || (!player.Is(Faction) &&
-        CustomGameOptions.DisguiseTarget == DisguiserTargets.Intruders) || Exception2(player);
+    public bool Exception1(PlayerControl player) => Exception2(player) || (((player.Is(Faction) && CustomGameOptions.DisguiseTarget == DisguiserTargets.NonIntruders) || (!player.Is(Faction)
+        && CustomGameOptions.DisguiseTarget == DisguiserTargets.Intruders)) && Faction is Faction.Intruder or Faction.Syndicate);
 
     public bool Exception2(PlayerControl player) => player == MeasuredPlayer;
 
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        DisguiseButton.Update("DISGUISE", DisguiseTimer, CustomGameOptions.DisguiseCd, Disguised, TimeRemaining, CustomGameOptions.DisguiseDur, DelayActive, TimeRemaining2, true,
-            MeasuredPlayer != null);
-        MeasureButton.Update("MEASURE", MeasureTimer, CustomGameOptions.MeasureCd);
+        MeasureButton.Update2("MEASURE");
+        DisguiseButton.Update2("DISGUISE", MeasuredPlayer != null);
+    }
+
+    public override void TryEndEffect() => DisguiseButton.Update3((DisguisedPlayer != null && DisguisedPlayer.HasDied()) || IsDead);
+
+    public override void ReadRPC(MessageReader reader)
+    {
+        CopiedPlayer = reader.ReadPlayer();
+        DisguisedPlayer = reader.ReadPlayer();
     }
 }

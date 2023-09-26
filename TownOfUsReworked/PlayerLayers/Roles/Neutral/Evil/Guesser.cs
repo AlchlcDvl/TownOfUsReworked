@@ -49,13 +49,15 @@ public class Guesser : Neutral
         Objectives = () => TargetGuessed ? $"- You have found out what {TargetPlayer?.name} was" : (TargetPlayer == null ? "- Find someone to be guessed by you" : ("- Guess " +
             $"{TargetPlayer?.name}'s role"));
         SetLists();
-        TargetButton = new(this, "GuessTarget", AbilityTypes.Direct, "ActionSecondary", SelectTarget, Exception);
-        GuessMenu = new(Player, "Guess", MeetingTypes.Click, CustomGameOptions.GuesserAfterVoting, Guess, IsExempt, SetLists);
+        TargetButton = new(this, "GuessTarget", AbilityTypes.Target, "ActionSecondary", SelectTarget, Exception);
+        GuessMenu = new(Player, "Guess", CustomGameOptions.GuesserAfterVoting, Guess, IsExempt, SetLists);
         Rounds = 0;
     }
 
     public bool Exception(PlayerControl player) => player == TargetPlayer || player.IsLinkedTo(Player) || player.Is(Alignment.CrewInvest) || (player.Is(SubFaction) && SubFaction !=
         SubFaction.None);
+
+    public bool CanTarget() => TargetPlayer == null;
 
     public void SelectTarget()
     {
@@ -136,7 +138,7 @@ public class Guesser : Neutral
                 if (CustomGameOptions.StalkerOn > 0) ColorMapping.Add("Stalker", Colors.Stalker);
                 if (CustomGameOptions.ColliderOn > 0) ColorMapping.Add("Collider", Colors.Collider);
                 if (CustomGameOptions.SpellslingerOn > 0) ColorMapping.Add("Spellslinger", Colors.Spellslinger);
-                if (CustomGameOptions.TimeKeeperOn > 0) ColorMapping.Add("Time Keeper", Colors.TimeKeeper);
+                if (CustomGameOptions.TimekeeperOn > 0) ColorMapping.Add("Timekeeper", Colors.Timekeeper);
                 if (CustomGameOptions.SilencerOn > 0) ColorMapping.Add("Silencer", Colors.Silencer);
 
                 if (CustomGameOptions.RebelOn > 0)
@@ -297,18 +299,12 @@ public class Guesser : Neutral
     {
         var newRole = new Actor(Player) { TargetRole = target };
         newRole.RoleUpdate(this);
-
-        if (Local)
-            Flash(Colors.Actor);
-
-        if (CustomPlayer.Local.Is(LayerEnum.Seer))
-            Flash(Colors.Seer);
     }
 
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        TargetButton.Update("STALK", true, TargetPlayer == null);
+        TargetButton.Update2("AGONISE", TargetPlayer == null);
 
         if ((TargetFailed || (TargetPlayer != null && Failed)) && !IsDead)
         {
@@ -518,7 +514,7 @@ public class Guesser : Neutral
     public void RpcMurderPlayer(PlayerControl player, string guess, PlayerControl guessTarget)
     {
         MurderPlayer(player, guess, guessTarget);
-        CallRpc(CustomRPC.Action, ActionsRPC.GuesserKill, this, player, guess, guessTarget);
+        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, player, guess, guessTarget);
     }
 
     public void MurderPlayer(PlayerControl player, string guess, PlayerControl guessTarget)
@@ -574,4 +570,6 @@ public class Guesser : Neutral
         GuessMenu.Voted();
         Exit(__instance);
     }
+
+    public override void ReadRPC(MessageReader reader) => MurderPlayer(reader.ReadPlayer(), reader.ReadString(), reader.ReadPlayer());
 }

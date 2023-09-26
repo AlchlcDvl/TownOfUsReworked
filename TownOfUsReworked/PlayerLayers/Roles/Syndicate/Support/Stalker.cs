@@ -3,22 +3,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Stalker : Syndicate
 {
     public Dictionary<byte, CustomArrow> StalkerArrows { get; set; }
-    public DateTime LastStalked { get; set; }
     public CustomButton StalkButton { get; set; }
 
     public override Color Color => ClientGameOptions.CustomSynColors ? Colors.Stalker : Colors.Syndicate;
     public override string Name => "Stalker";
     public override LayerEnum Type => LayerEnum.Stalker;
     public override Func<string> StartText => () => "Stalk Everyone To Monitor Their Movements";
-    public override Func<string> Description => () => $"- You always know where your targets are\n{CommonAbilities}";
+    public override Func<string> Description => () => $"- You always know where your targets are" + (HoldsDrive ? "\n- Camouflages do not stop you seeing who's where" : "") + "\n" +
+        CommonAbilities;
     public override InspectorResults InspectorResults => InspectorResults.TracksOthers;
-    public float Timer => ButtonUtils.Timer(Player, LastStalked, CustomGameOptions.StalkCd);
 
     public Stalker(PlayerControl player) : base(player)
     {
         StalkerArrows = new();
         Alignment = Alignment.SyndicateSupport;
-        StalkButton = new(this, "Stalk", AbilityTypes.Direct, "ActionSecondary", Stalk, Exception1);
+        StalkButton = new(this, "Stalk", AbilityTypes.Target, "ActionSecondary", Stalk, CustomGameOptions.StalkCd, Exception1);
     }
 
     public void DestroyArrow(byte targetPlayerId)
@@ -36,18 +35,16 @@ public class Stalker : Syndicate
 
     public void Stalk()
     {
-        if (IsTooFar(Player, StalkButton.TargetPlayer) || Timer != 0f)
-            return;
-
         var interact = Interact(Player, StalkButton.TargetPlayer);
+        var cooldown = CooldownType.Reset;
 
         if (interact.AbilityUsed)
             StalkerArrows.Add(StalkButton.TargetPlayer.PlayerId, new(Player, StalkButton.TargetPlayer.GetPlayerColor(!HoldsDrive)));
 
-        if (interact.Reset)
-            LastStalked = DateTime.UtcNow;
-        else if (interact.Protected)
-            LastStalked.AddSeconds(CustomGameOptions.ProtectKCReset);
+        if (interact.Protected)
+            cooldown = CooldownType.GuardianAngel;
+
+        StalkButton.StartCooldown(cooldown);
     }
 
     public bool Exception1(PlayerControl player) => StalkerArrows.ContainsKey(player.PlayerId);
@@ -55,7 +52,7 @@ public class Stalker : Syndicate
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        StalkButton.Update("STALK", Timer, CustomGameOptions.StalkCd, true, !HoldsDrive);
+        StalkButton.Update2("STALK", !HoldsDrive);
 
         if (IsDead)
             OnLobby();

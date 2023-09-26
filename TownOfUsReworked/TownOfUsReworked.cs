@@ -11,7 +11,7 @@ public class TownOfUsReworked : BasePlugin
 {
     public const string Id = "me.alchlcdvl.reworked";
     public const string Name = "TownOfUsReworked";
-    public const string VersionString = "0.5.1.0";
+    public const string VersionString = "0.5.2.0";
     public static readonly Version Version = new(VersionString);
 
     public const bool IsDev = false;
@@ -29,6 +29,8 @@ public class TownOfUsReworked : BasePlugin
 
     public static string DataPath => $"{Path.GetDirectoryName(Application.dataPath)}\\";
     public static string Hats => $"{DataPath}CustomHats\\";
+    public static string Visors => $"{DataPath}CustomVisors\\";
+    //public static string Nameplates => $"{DataPath}CustomNameplates\\";
     public static string ModsFolder => $"{DataPath}\\BepInEx\\plugins\\";
 
     public const string DiscordInvite = "https://discord.gg/cd27aDQDY9";
@@ -107,29 +109,18 @@ public class TownOfUsReworked : BasePlugin
         CustomEjects = Config.Bind("Custom", "Custom Ejects", true, "Enables funny ejection messages compared to the monotone \"X was ejected\"");
         Regions = Config.Bind("Custom", "Regions", "{\"CurrentRegionIdx\":0,\"Regions\":[]}",
 			"Create an array of Regions you want to add/update. To create this array, go to https://impostor.github.io/Impostor/ and put the Regions array from the server file in here");
-        RegionsToRemove = Config.Bind("Custom", "Remove Regions", string.Empty, "Comma-seperated list of region names that should be removed");
+        RegionsToRemove = Config.Bind("Custom", "Remove Regions", "", "Comma-seperated list of region names that should be removed");
 
-        ClassInjector.RegisterTypeInIl2Cpp<MissingBehaviour>();
-        ClassInjector.RegisterTypeInIl2Cpp<BasePagingBehaviour>();
-        ClassInjector.RegisterTypeInIl2Cpp<MenuPagingBehaviour>();
-        ClassInjector.RegisterTypeInIl2Cpp<MeetingHudPagingBehaviour>();
-        ClassInjector.RegisterTypeInIl2Cpp<VitalsPagingBehaviour>();
-        ClassInjector.RegisterTypeInIl2Cpp<ColorBehaviour>();
-        ClassInjector.RegisterTypeInIl2Cpp<DebuggerBehaviour>();
-        ClassInjector.RegisterTypeInIl2Cpp<DragBehaviour>();
-        ClassInjector.RegisterTypeInIl2Cpp<ModUpdateBehaviour>();
+        AllMonos.RegisterMonos();
+        CustomColors.LoadColors();
+        AssetLoader.LoadAssets();
+        ExtraRegions.UpdateRegions();
+        Info.SetAllInfo();
 
         AddComponent<DebuggerBehaviour>();
         AddComponent<ModUpdateBehaviour>();
 
-        PalettePatch.LoadColors();
-        LoadAssets();
-        ExtraRegions.UpdateRegions();
-        Info.SetAllInfo();
-
         Cursor.SetCursor(GetSprite("Cursor").texture, Vector2.zero, CursorMode.Auto);
-
-        SceneManager.add_sceneLoaded((Action<Scene, LoadSceneMode>)((scene, _) => ExtraRegions.SetUpExtraRegions(scene)));
 
         LogMessage($"Mod Loaded - {this}");
     }

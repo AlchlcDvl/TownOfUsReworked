@@ -1,11 +1,10 @@
 namespace TownOfUsReworked.Classes;
 
-[HarmonyPatch]
 public static class AssetManager
 {
     public static readonly Dictionary<string, AudioClip> SoundEffects = new();
     public static readonly Dictionary<string, Sprite> Sprites = new();
-    private static readonly Dictionary<string, float> Sizes = new();
+    public static readonly Dictionary<string, float> Sizes = new();
     public static readonly Sprite[] PortalAnimation = new Sprite[205];
     public static readonly Dictionary<string, string> Presets = new()
     {
@@ -127,45 +126,31 @@ public static class AssetManager
         }
     }
 
-    public static void LoadAssets()
+    /*public static AudioClip loadAudioClipFromResources(string path)
     {
-        SoundEffects.Clear();
-        Sizes.Clear();
-        Sprites.Clear();
-
-        foreach (var resourceName in TownOfUsReworked.Core.GetManifestResourceNames())
+        try
         {
-            if (resourceName.EndsWith(".png"))
+            var sname = path.Replace(".raw", "").Replace(TownOfUsReworked.Sounds, "");
+            var stream = TownOfUsReworked.Executing.GetManifestResourceStream(path);
+            var byteAudio = new byte[stream.Length];
+            _ = stream.Read(byteAudio, 0, (int)stream.Length);
+            var samples = new float[byteAudio.Length / 4];
+
+            for (var i = 0; i < samples.Length; i++)
             {
-                var name = resourceName.Replace(".png", "").Replace(TownOfUsReworked.Buttons, "").Replace(TownOfUsReworked.Misc, "").Replace(TownOfUsReworked.Portal, "");
-
-                if (name is "CurrentSettings" or "Help" or "Plus" or "Minus" or "Wiki")
-                    Sizes.Add(name, 180);
-                else if (name == "Phone")
-                    Sizes.Add(name, 200);
-                else if (name == "Cursor")
-                    Sizes.Add(name, 115);
-                else
-                    Sizes.Add(name, 100);
+                var offset = i * 4;
+                samples[i] = (float)BitConverter.ToInt32(byteAudio, offset) / int.MaxValue;
             }
+
+            var audioClip = AudioClip.Create(clipName, samples.Length / 2, 2, 48000, false);
+            audioClip.hideFlags |= HideFlags.HideAndDontSave | HideFlags.DontSaveInEditor;
+            audioClip.SetData(samples, 0);
+            return audioClip;
         }
-
-        var position2 = 0;
-
-        foreach (var resourceName in TownOfUsReworked.Core.GetManifestResourceNames())
+        catch
         {
-            if ((resourceName.StartsWith(TownOfUsReworked.Buttons) || resourceName.StartsWith(TownOfUsReworked.Misc)) && resourceName.EndsWith(".png"))
-            {
-                var name = resourceName.Replace(".png", "").Replace(TownOfUsReworked.Buttons, "").Replace(TownOfUsReworked.Misc, "");
-                Sprites.Add(name, CreateSprite(resourceName));
-            }
-            else if (resourceName.StartsWith(TownOfUsReworked.Portal) && resourceName.EndsWith(".png"))
-            {
-                if (PortalAnimation[position2] == null)
-                    PortalAnimation[position2] = CreateSprite(resourceName);
-
-                position2++;
-            }
+            LogError("Error loading AudioClip from resources: " + path);
+            return null;
         }
-    }
+    }*/
 }

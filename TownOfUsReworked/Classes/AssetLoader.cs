@@ -4,19 +4,57 @@ using Newtonsoft.Json.Linq;
 
 namespace TownOfUsReworked.Classes;
 
-[HarmonyPatch]
 public static class AssetLoader
 {
     private const string REPO = "https://raw.githubusercontent.com/AlchlcDvl/ReworkedAssets/main";
     private static bool HatsRunning;
     //private static bool NameplatesRunning;
-    //private static bool VisorsRunning;
+    private static bool VisorsRunning;
     private static bool LangRunning;
     //public static readonly List<CustomNameplate> NameplateDetails = new();
     public static readonly List<CustomHat> HatDetails = new();
-    //public static readonly List<CustomVisor> VisorDetails = new();
+    public static readonly List<CustomVisor> VisorDetails = new();
     public static readonly List<Language> AllTranslations = new();
     private static bool Loaded;
+
+    public static void LoadAssets()
+    {
+        SoundEffects.Clear();
+        Sizes.Clear();
+        Sprites.Clear();
+
+        foreach (var resourceName in TownOfUsReworked.Core.GetManifestResourceNames())
+        {
+            if (resourceName.EndsWith(".png"))
+            {
+                var name = resourceName.Replace(".png", "").Replace(TownOfUsReworked.Buttons, "").Replace(TownOfUsReworked.Misc, "").Replace(TownOfUsReworked.Portal, "");
+
+                if (name is "CurrentSettings" or "Help" or "Plus" or "Minus" or "Wiki")
+                    Sizes.Add(name, 180);
+                else if (name == "Phone")
+                    Sizes.Add(name, 200);
+                else if (name == "Cursor")
+                    Sizes.Add(name, 115);
+                else
+                    Sizes.Add(name, 100);
+            }
+        }
+
+        var position2 = 0;
+
+        foreach (var resourceName in TownOfUsReworked.Core.GetManifestResourceNames())
+        {
+            if ((resourceName.StartsWith(TownOfUsReworked.Buttons) || resourceName.StartsWith(TownOfUsReworked.Misc)) && resourceName.EndsWith(".png"))
+                Sprites.Add(resourceName.Replace(".png", "").Replace(TownOfUsReworked.Buttons, "").Replace(TownOfUsReworked.Misc, ""), CreateSprite(resourceName));
+            else if (resourceName.StartsWith(TownOfUsReworked.Portal) && resourceName.EndsWith(".png"))
+            {
+                if (PortalAnimation[position2] == null)
+                    PortalAnimation[position2] = CreateSprite(resourceName);
+
+                position2++;
+            }
+        }
+    }
 
     public static void LaunchFetchers(bool update)
     {
@@ -26,7 +64,7 @@ public static class AssetLoader
             {
                 LaunchHatFetcher(update);
                 //LaunchNameplateFetcher(update);
-                //LaunchVisorFetcher(update);
+                LaunchVisorFetcher(update);
                 LaunchTranslationFetcher();
                 Loaded = true;
             }
@@ -55,7 +93,7 @@ public static class AssetLoader
         NameplatesRunning = true;
         _ = LaunchNameplateFetcherAsync(update);
         LogMessage("Fetched nameplates");
-    }
+    }*/
 
     private static void LaunchVisorFetcher(bool update)
     {
@@ -65,7 +103,7 @@ public static class AssetLoader
         VisorsRunning = true;
         _ = LaunchVisorFetcherAsync(update);
         LogMessage("Fetched visors");
-    }*/
+    }
 
     private static void LaunchTranslationFetcher()
     {
@@ -109,7 +147,7 @@ public static class AssetLoader
         }
 
         NameplatesRunning = false;
-    }
+    }*/
 
     private static async Task LaunchVisorFetcherAsync(bool update)
     {
@@ -126,7 +164,7 @@ public static class AssetLoader
         }
 
         VisorsRunning = false;
-    }*/
+    }
 
     private static async Task LaunchTranslationFetcherAsync()
     {
@@ -251,7 +289,7 @@ public static class AssetLoader
         return HttpStatusCode.OK;
     }
 
-    /*private static async Task<HttpStatusCode> FetchVisors(bool update)
+    private static async Task<HttpStatusCode> FetchVisors(bool update)
     {
         var http = new HttpClient();
         http.DefaultRequestHeaders.CacheControl = new() { NoCache = true };
@@ -295,6 +333,7 @@ public static class AssetLoader
                     info.FloorID = current["floorid"]?.ToString();
                     info.ClimbID = current["climbid"]?.ToString();
                     info.Adaptive = current["adaptive"] != null;
+                    info.InFront = current["infront"] != null;
                     VisorDetails.Add(info);
                 }
             }
@@ -327,12 +366,12 @@ public static class AssetLoader
 
             foreach (var file in markedfordownload)
             {
-                var hatFileResponse = await http.GetAsync($"{REPO}/visors/{file}.png", HttpCompletionOption.ResponseContentRead);
+                var visorFileResponse = await http.GetAsync($"{REPO}/visors/{file}.png", HttpCompletionOption.ResponseContentRead);
 
-                if (hatFileResponse.StatusCode != HttpStatusCode.OK)
+                if (visorFileResponse.StatusCode != HttpStatusCode.OK)
                     continue;
 
-                using (var responseStream = await hatFileResponse.Content.ReadAsStreamAsync())
+                using (var responseStream = await visorFileResponse.Content.ReadAsStreamAsync())
                 {
                     using (var fileStream = File.Create($"{TownOfUsReworked.Visors}\\{file}.png"))
                         responseStream.CopyTo(fileStream);
@@ -347,7 +386,7 @@ public static class AssetLoader
         return HttpStatusCode.OK;
     }
 
-    private static async Task<HttpStatusCode> FetchNameplates(bool update)
+    /*private static async Task<HttpStatusCode> FetchNameplates(bool update)
     {
         var http = new HttpClient();
         http.DefaultRequestHeaders.CacheControl = new() { NoCache = true };
@@ -410,12 +449,12 @@ public static class AssetLoader
 
             foreach (var file in markedfordownload)
             {
-                var NameplateFileResponse = await http.GetAsync($"{REPO}/nameplates/{file}.png", HttpCompletionOption.ResponseContentRead);
+                var nameplateFileResponse = await http.GetAsync($"{REPO}/nameplates/{file}.png", HttpCompletionOption.ResponseContentRead);
 
-                if (NameplateFileResponse.StatusCode != HttpStatusCode.OK)
+                if (nameplateFileResponse.StatusCode != HttpStatusCode.OK)
                     continue;
 
-                using (var responseStream = await hatFileResponse.Content.ReadAsStreamAsync())
+                using (var responseStream = await nameplateFileResponse.Content.ReadAsStreamAsync())
                 {
                     using (var fileStream = File.Create($"{TownOfUsReworked.Nameplates}\\{file}.png"))
                         responseStream.CopyTo(fileStream);
@@ -477,4 +516,6 @@ public static class AssetLoader
 
         return HttpStatusCode.OK;
     }
+
+    private static string ConvertToBaseName(string name) => name.Split('/').Last().Split('.').First();
 }

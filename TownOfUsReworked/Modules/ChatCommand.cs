@@ -171,7 +171,7 @@ public class ChatCommand
                 "color's ID, go into the color selection screen and count the number of colors starting from 0 to the position of the color you want to pick, from left to right. The range of"
                 + "colors is from 0 to 49 meaning Red to Rainbow respectively.");
         }
-        else if (ColorUtils.OutOfBounds(col))
+        else if (CustomColors.OutOfBounds(col))
             Run(__instance, "<color=#FF0000FF>⚠ Color Error ⚠</color>", $"Invalid c{spelling} id.");
         else
         {

@@ -42,14 +42,19 @@ public class Revealer : Crew
         Player.MyRend().color = color;
         Player.NameText().color = new(0f, 0f, 0f, 0f);
         Player.cosmetics.colorBlindText.color = new(0f, 0f, 0f, 0f);
+
+        if (Local)
+            Camouflage();
     }
 
     public void UnFade()
     {
-        DefaultOutfit(Player);
         Player.MyRend().color = UColor.white;
         Player.gameObject.layer = LayerMask.NameToLayer("Ghost");
         Faded = false;
         Player.MyPhysics.ResetMoveState();
+
+        if (Local)
+            DefaultOutfitAll();
     }
 }

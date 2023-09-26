@@ -3,7 +3,6 @@ using Newtonsoft.Json;
 
 namespace TownOfUsReworked.Classes;
 
-[HarmonyPatch]
 public static class ExtraRegions
 {
     private static ReadOnlyDictionary<string, IRegionInfo> ParsedRegions;
@@ -45,6 +44,7 @@ public static class ExtraRegions
 
         LogInfo("Resetting previous region");
         ServerManager.Instance.SetRegion(iregionInfo1);
+        SceneManager.add_sceneLoaded((Action<Scene, LoadSceneMode>)((scene, _) => SetUpExtraRegions(scene)));
     }
 
     public static void SetUpExtraRegions(Scene scene)

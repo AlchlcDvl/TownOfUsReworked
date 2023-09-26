@@ -1,6 +1,5 @@
 namespace TownOfUsReworked.Classes;
 
-[HarmonyPatch]
 public static class RoleGen
 {
     private static readonly List<GenerationData> CrewAuditorRoles = new();
@@ -42,11 +41,11 @@ public static class RoleGen
     private static readonly List<LayerEnum> CI = new() { LayerEnum.Sheriff, LayerEnum.Inspector, LayerEnum.Tracker, LayerEnum.Medium, LayerEnum.Coroner, LayerEnum.Operative, LayerEnum.Seer,
         LayerEnum.Detective };
     private static readonly List<LayerEnum> CSv = new() { LayerEnum.Mayor, LayerEnum.Dictator, LayerEnum.Monarch };
-    private static readonly List<LayerEnum> CP = new() { LayerEnum.Altruist, LayerEnum.Medic };
+    private static readonly List<LayerEnum> CrP = new() { LayerEnum.Altruist, LayerEnum.Medic };
     private static readonly List<LayerEnum> CU = new() { LayerEnum.Crewmate };
     private static readonly List<LayerEnum> CK = new() { LayerEnum.Vigilante, LayerEnum.Veteran};
     private static readonly List<LayerEnum> CS = new() { LayerEnum.Engineer, LayerEnum.Transporter, LayerEnum.Escort, LayerEnum.Shifter, LayerEnum.Chameleon, LayerEnum.Retributionist };
-    private static readonly List<List<LayerEnum>> Crew = new() { CA, CI, CSv, CP, CK, CS, CU };
+    private static readonly List<List<LayerEnum>> Crew = new() { CA, CI, CSv, CrP, CK, CS, CU };
     private static readonly List<LayerEnum> NB = new() { LayerEnum.Amnesiac, LayerEnum.GuardianAngel, LayerEnum.Survivor, LayerEnum.Thief };
     private static readonly List<LayerEnum> NE = new() { LayerEnum.Jester, LayerEnum.Actor, LayerEnum.BountyHunter, LayerEnum.Cannibal, LayerEnum.Executioner, LayerEnum.Guesser,
         LayerEnum.Troll };
@@ -64,7 +63,7 @@ public static class RoleGen
     private static readonly List<List<LayerEnum>> Intruders = new() { IC, ID, IK, IS, IU };
     private static readonly List<LayerEnum> SSu = new() { LayerEnum.Rebel, LayerEnum.Warper, LayerEnum.Stalker };
     private static readonly List<LayerEnum> SD = new() { LayerEnum.Concealer, LayerEnum.Drunkard, LayerEnum.Framer, LayerEnum.Shapeshifter, LayerEnum.Silencer };
-    private static readonly List<LayerEnum> SP = new() { LayerEnum.TimeKeeper, LayerEnum.Spellslinger };
+    private static readonly List<LayerEnum> SP = new() { LayerEnum.Timekeeper, LayerEnum.Spellslinger };
     private static readonly List<LayerEnum> SyK = new() { LayerEnum.Bomber, LayerEnum.Collider, LayerEnum.Crusader, LayerEnum.Poisoner };
     private static readonly List<LayerEnum> SU = new() { LayerEnum.Anarchist };
     private static readonly List<List<LayerEnum>> Syndicate = new() { SSu, SyK, SD, SP, SU };
@@ -73,7 +72,18 @@ public static class RoleGen
         LayerEnum.NeutralBen, LayerEnum.NeutralEvil, LayerEnum.NeutralKill, LayerEnum.NeutralNeo, LayerEnum.SyndicateDisrup, LayerEnum.SyndicateKill, LayerEnum.SyndicatePower,
         LayerEnum.SyndicatePower, LayerEnum.IntruderUtil, LayerEnum.CrewUtil, LayerEnum.SyndicateUtil };
     private static readonly List<LayerEnum> RandomEntries = new() { LayerEnum.RandomCrew, LayerEnum.RandomIntruder, LayerEnum.RandomSyndicate, LayerEnum.RandomNeutral };
-    private static readonly List<List<LayerEnum>> Alignments = new() { CA, CI, CSv, CP, CK, CS, NB, NE, NN, NH, NK, IC, ID, IS, SSu, SD, SP, SyK, IK, NA };
+    private static readonly List<List<LayerEnum>> Alignments = new() { CA, CI, CSv, CrP, CK, CS, NB, NE, NN, NH, NK, IC, ID, IS, SSu, SD, SP, SyK, IK, NA };
+
+    public static bool Check(int probability, bool sorting = false)
+    {
+        if (probability == 0)
+            return false;
+
+        if (probability == 100)
+            return !sorting;
+
+        return URandom.RandomRangeInt(1, 100) <= probability;
+    }
 
     private static void Sort(this List<GenerationData> items, int amount)
     {
@@ -82,7 +92,7 @@ public static class RoleGen
 
         if (IsAA)
         {
-            if (amount != CustomPlayer.AllPlayers.Count)
+            if (amount > CustomPlayer.AllPlayers.Count)
                 amount = CustomPlayer.AllPlayers.Count;
 
             var rate = 0;
@@ -108,14 +118,13 @@ public static class RoleGen
 
             var guaranteed = items.Where(x => x.Chance == 100).ToList();
             guaranteed.Shuffle();
-            var optionals = items.Where(x => Check(x.Chance)).ToList();
+            var optionals = items.Where(x => Check(x.Chance, true)).ToList();
             optionals.Shuffle();
-            newList.AddRange(guaranteed);
-            newList.AddRange(optionals);
-
-            while (newList.Count > amount)
-                newList.Remove(newList[^1]);
+            newList.AddRanges(guaranteed, optionals);
         }
+
+        while (newList.Count > amount)
+            newList.Remove(newList[^1]);
 
         items = newList;
         items.Shuffle();
@@ -1393,7 +1402,7 @@ public static class RoleGen
             LogInfo("Concealer Done");
         }
 
-        if (CustomGameOptions.WarperOn > 0 && (int)CustomGameOptions.Map is not (4 or 5 or 6))
+        if (CustomGameOptions.WarperOn > 0)
         {
             num = CustomGameOptions.WarperCount;
 
@@ -1458,17 +1467,17 @@ public static class RoleGen
             LogInfo("Drunkard Done");
         }
 
-        if (CustomGameOptions.TimeKeeperOn > 0)
+        if (CustomGameOptions.TimekeeperOn > 0)
         {
-            num = CustomGameOptions.TimeKeeperCount;
+            num = CustomGameOptions.TimekeeperCount;
 
             while (num > 0)
             {
-                SyndicatePowerRoles.Add(GenerateSpawnItem(LayerEnum.TimeKeeper));
+                SyndicatePowerRoles.Add(GenerateSpawnItem(LayerEnum.Timekeeper));
                 num--;
             }
 
-            LogInfo("Time Keeper Done");
+            LogInfo("Timekeeper Done");
         }
 
         if (CustomGameOptions.SilencerOn > 0)
@@ -1659,11 +1668,11 @@ public static class RoleGen
                 var maxCS = CustomGameOptions.CSMax;
                 var maxCA = CustomGameOptions.CAMax;
                 var maxCK = CustomGameOptions.CKMax;
-                var maxCP = CustomGameOptions.CPMax;
+                var maxCrP = CustomGameOptions.CrPMax;
                 var maxCSv = CustomGameOptions.CSvMax;
                 var minCrew = CustomGameOptions.CrewMin;
                 var maxCrew = CustomGameOptions.CrewMax;
-                var maxCrewSum = maxCA + maxCI + maxCK + maxCP + maxCS + maxCSv;
+                var maxCrewSum = maxCA + maxCI + maxCK + maxCrP + maxCS + maxCSv;
 
                 while (maxCrewSum > maxCrew)
                 {
@@ -1690,17 +1699,17 @@ public static class RoleGen
                             break;
 
                         case 5:
-                            if (maxCP > 0) maxCP--;
+                            if (maxCrP > 0) maxCrP--;
                             break;
                     }
 
-                    maxCrewSum = maxCA + maxCI + maxCK + maxCP + maxCS + maxCSv;
+                    maxCrewSum = maxCA + maxCI + maxCK + maxCrP + maxCS + maxCSv;
                 }
 
                 CrewAuditorRoles.Sort(maxCA);
                 CrewInvestigativeRoles.Sort(maxCI);
                 CrewKillingRoles.Sort(maxCK);
-                CrewProtectiveRoles.Sort(maxCP);
+                CrewProtectiveRoles.Sort(maxCrP);
                 CrewSupportRoles.Sort(maxCS);
                 CrewSovereignRoles.Sort(maxCSv);
 
@@ -1856,7 +1865,7 @@ public static class RoleGen
                 else if (id == LayerEnum.CrewSov)
                     random = CSv.Random();
                 else if (id == LayerEnum.CrewProt)
-                    random = CP.Random();
+                    random = CrP.Random();
                 else if (id == LayerEnum.CrewKill)
                     random = CK.Random();
                 else if (id == LayerEnum.CrewSupport)
@@ -2055,7 +2064,7 @@ public static class RoleGen
             LayerEnum.Mystic => (CustomGameOptions.MysticOn, CustomGameOptions.UniqueMystic),
             LayerEnum.Seer => (CustomGameOptions.SeerOn, CustomGameOptions.UniqueSeer),
             LayerEnum.Necromancer => (CustomGameOptions.NecromancerOn, CustomGameOptions.UniqueNecromancer),
-            LayerEnum.TimeKeeper => (CustomGameOptions.TimeKeeperOn, CustomGameOptions.UniqueTimeKeeper),
+            LayerEnum.Timekeeper => (CustomGameOptions.TimekeeperOn, CustomGameOptions.UniqueTimekeeper),
             LayerEnum.Ambusher => (CustomGameOptions.AmbusherOn, CustomGameOptions.UniqueAmbusher),
             LayerEnum.Crusader => (CustomGameOptions.CrusaderOn, CustomGameOptions.UniqueCrusader),
             LayerEnum.Silencer => (CustomGameOptions.SilencerOn, CustomGameOptions.UniqueSilencer),
@@ -2267,7 +2276,7 @@ public static class RoleGen
             LogInfo("Underdog Done");
         }
 
-        if (CustomGameOptions.TunnelerOn > 0 && CustomGameOptions.WhoCanVent == WhoCanVentOptions.Default)
+        if (CustomGameOptions.TunnelerOn > 0 && CustomGameOptions.WhoCanVent == WhoCanVentOptions.Default && !CustomGameOptions.CrewVent)
         {
             num = CustomGameOptions.TunnelerCount;
 
@@ -3576,21 +3585,21 @@ public static class RoleGen
             SetTargets();
         }
 
-        SpawnInMinigamePatch.SpawnPoints.Clear();
+        BetterAirship.SpawnPoints.Clear();
 
         if (AmongUsClient.Instance.AmHost)
         {
             var random = (byte)URandom.RandomRangeInt(0, 6);
 
-            while (SpawnInMinigamePatch.SpawnPoints.Count < 3)
+            while (BetterAirship.SpawnPoints.Count < 3)
             {
                 random = (byte)URandom.RandomRangeInt(0, 6);
 
-                if (!SpawnInMinigamePatch.SpawnPoints.Contains(random))
-                    SpawnInMinigamePatch.SpawnPoints.Add(random);
+                if (!BetterAirship.SpawnPoints.Contains(random))
+                    BetterAirship.SpawnPoints.Add(random);
             }
 
-            CallRpc(CustomRPC.Misc, MiscRPC.SetSpawnAirship, SpawnInMinigamePatch.SpawnPoints.ToArray());
+            CallRpc(CustomRPC.Misc, MiscRPC.SetSpawnAirship, BetterAirship.SpawnPoints.ToArray());
         }
     }
 
@@ -3681,7 +3690,7 @@ public static class RoleGen
         LayerEnum.Silencer => new Silencer(player),
         LayerEnum.Spellslinger => new Spellslinger(player),
         LayerEnum.Stalker => new Stalker(player),
-        LayerEnum.TimeKeeper => new TimeKeeper(player),
+        LayerEnum.Timekeeper => new Timekeeper(player),
         LayerEnum.Warper => new Warper(player),
         _ => new Roleless(player)
     };
@@ -3764,10 +3773,11 @@ public static class RoleGen
 
     public static void AssignChaosDrive()
     {
-        if (CustomGameOptions.SyndicateCount == 0 || !AmongUsClient.Instance.AmHost || !CustomPlayer.AllPlayers.Any(x => !x.HasDied() && x.Is(Faction.Syndicate)))
+        var all = CustomPlayer.AllPlayers.Where(x => !x.HasDied() && x.Is(Faction.Syndicate) && Role.GetRole(x).BaseFaction == Faction.Syndicate).ToList();
+
+        if (CustomGameOptions.SyndicateCount == 0 || !AmongUsClient.Instance.AmHost || !all.Any())
             return;
 
-        var all = CustomPlayer.AllPlayers.Where(x => !x.HasDied() && x.Is(Faction.Syndicate)).ToList();
         PlayerControl chosen = null;
 
         if (Role.DriveHolder == null || Role.DriveHolder.HasDied())

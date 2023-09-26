@@ -3,8 +3,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Sheriff : Crew
 {
     public CustomButton InterrogateButton { get; set; }
-    public DateTime LastInterrogated { get; set; }
-    public float Timer => ButtonUtils.Timer(Player, LastInterrogated, CustomGameOptions.InterrogateCd);
 
     public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Sheriff : Colors.Crew;
     public override string Name => "Sheriff";
@@ -16,23 +14,21 @@ public class Sheriff : Crew
     public Sheriff(PlayerControl player) : base(player)
     {
         Alignment = Alignment.CrewKill;
-        InterrogateButton = new(this, "Interrogate", AbilityTypes.Direct, "ActionSecondary", Interrogate, Exception);
+        InterrogateButton = new(this, "Interrogate", AbilityTypes.Target, "ActionSecondary", Interrogate, CustomGameOptions.InterrogateCd, Exception);
     }
 
     public void Interrogate()
     {
-        if (Timer != 0f || IsTooFar(Player, InterrogateButton.TargetPlayer))
-            return;
-
         var interact = Interact(Player, InterrogateButton.TargetPlayer);
+        var cooldown = CooldownType.Reset;
 
         if (interact.AbilityUsed)
             Flash(InterrogateButton.TargetPlayer.SeemsEvil() ? UColor.red : UColor.green);
 
-        if (interact.Reset)
-            LastInterrogated = DateTime.UtcNow;
-        else if (interact.Protected)
-            LastInterrogated.AddSeconds(CustomGameOptions.ProtectKCReset);
+        if (interact.Protected)
+            cooldown = CooldownType.GuardianAngel;
+
+        InterrogateButton.StartCooldown(cooldown);
     }
 
     public bool Exception(PlayerControl player) => (((Faction is Faction.Intruder or Faction.Syndicate && player.Is(Faction)) || (player.Is(SubFaction) && SubFaction != SubFaction.None)) &&
@@ -42,6 +38,6 @@ public class Sheriff : Crew
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        InterrogateButton.Update("INTERROGATE", Timer, CustomGameOptions.InterrogateCd);
+        InterrogateButton.Update2("INTERROGATE");
     }
 }

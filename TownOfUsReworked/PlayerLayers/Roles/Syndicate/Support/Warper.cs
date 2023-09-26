@@ -3,7 +3,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Warper : Syndicate
 {
     public CustomButton WarpButton { get; set; }
-    public DateTime LastWarped { get; set; }
     public PlayerControl WarpPlayer1 { get; set; }
     public PlayerControl WarpPlayer2 { get; set; }
     public Dictionary<byte, DateTime> UnwarpablePlayers { get; set; }
@@ -11,8 +10,7 @@ public class Warper : Syndicate
     public CustomMenu WarpMenu2 { get; set; }
     public SpriteRenderer AnimationPlaying { get; set; }
     public GameObject WarpObj { get; set; }
-    public float TimeRemaining { get; set; }
-    public bool Warping => TimeRemaining > 0;
+    public bool Warping { get; set; }
     public DeadBody Player1Body { get; set; }
     public DeadBody Player2Body { get; set; }
     public bool WasInVent { get; set; }
@@ -22,10 +20,9 @@ public class Warper : Syndicate
     public override string Name => "Warper";
     public override LayerEnum Type => LayerEnum.Warper;
     public override Func<string> StartText => () => "Warp The <color=#8CFFFFFF>Crew</color> Away From Each Other";
-    public override Func<string> Description => () => "- You can warp " +
-        $"{(HoldsDrive ? "all players, forcing them to be teleported to random locations" : "a player to another player of your choice")}\n{CommonAbilities}";
+    public override Func<string> Description => () => "- You can warp a" + (HoldsDrive ? "ll players, forcing them to be teleported to random locations" :
+        " player to another player of your choice") + $"\n{CommonAbilities}";
     public override InspectorResults InspectorResults => InspectorResults.MovesAround;
-    public float Timer => ButtonUtils.Timer(Player, LastWarped, CustomGameOptions.WarpCd);
 
     public Warper(PlayerControl player) : base(player)
     {
@@ -34,7 +31,7 @@ public class Warper : Syndicate
         UnwarpablePlayers = new();
         WarpMenu1 = new(Player, Click1, Exception1);
         WarpMenu2 = new(Player, Click2, Exception2);
-        WarpButton = new(this, "Warp", AbilityTypes.Effect, "Secondary", Warp);
+        WarpButton = new(this, "Warp", AbilityTypes.Targetless, "ActionSecondary", Warp, CustomGameOptions.WarpCd);
         Player1Body = null;
         Player2Body = null;
         WasInVent = false;
@@ -54,7 +51,6 @@ public class Warper : Syndicate
         Player2Body = null;
         WasInVent = false;
         Vent = null;
-        TimeRemaining = CustomGameOptions.WarpDur;
 
         if (WarpPlayer1.Data.IsDead)
         {
@@ -89,6 +85,7 @@ public class Warper : Syndicate
             WasInVent = true;
         }
 
+        Warping = true;
         WarpPlayer1.moveable = false;
         WarpPlayer1.NetTransform.Halt();
 
@@ -102,20 +99,16 @@ public class Warper : Syndicate
 
         while (true)
         {
-            var now = DateTime.UtcNow;
-            var seconds = (now - startTime).TotalSeconds;
+            var seconds = (DateTime.UtcNow - startTime).TotalSeconds;
 
             if (seconds < CustomGameOptions.WarpDur)
-            {
-                TimeRemaining -= Time.deltaTime;
                 yield return null;
-            }
             else
                 break;
 
             if (Meeting)
             {
-                TimeRemaining = 0;
+                AnimationPlaying.sprite = PortalAnimation[0];
                 yield break;
             }
         }
@@ -177,8 +170,7 @@ public class Warper : Syndicate
         WarpPlayer2.MyPhysics.ResetMoveState();
         WarpPlayer1 = null;
         WarpPlayer2 = null;
-        TimeRemaining = 0; //Insurance
-        LastWarped = DateTime.UtcNow;
+        Warping = false;
     }
 
     public void Click1(PlayerControl player)
@@ -188,9 +180,9 @@ public class Warper : Syndicate
         if (interact.AbilityUsed)
             WarpPlayer1 = player;
         else if (interact.Reset)
-            LastWarped = DateTime.UtcNow;
+            WarpButton.StartCooldown(CooldownType.Reset);
         else if (interact.Protected)
-            LastWarped.AddSeconds(CustomGameOptions.ProtectKCReset);
+            WarpButton.StartCooldown(CooldownType.GuardianAngel);
     }
 
     public void Click2(PlayerControl player)
@@ -200,9 +192,9 @@ public class Warper : Syndicate
         if (interact.AbilityUsed)
             WarpPlayer2 = player;
         else if (interact.Reset)
-            LastWarped = DateTime.UtcNow;
+            WarpButton.StartCooldown(CooldownType.Reset);
         else if (interact.Protected)
-            LastWarped.AddSeconds(CustomGameOptions.ProtectKCReset);
+            WarpButton.StartCooldown(CooldownType.GuardianAngel);
     }
 
     public bool Exception1(PlayerControl player) => (player == Player && !CustomGameOptions.WarpSelf) || UnwarpablePlayers.ContainsKey(player.PlayerId) || player == WarpPlayer2 ||
@@ -231,13 +223,10 @@ public class Warper : Syndicate
 
     public void Warp()
     {
-        if (Timer != 0f)
-            return;
-
         if (HoldsDrive)
         {
             Utils.Warp();
-            LastWarped = DateTime.UtcNow;
+            WarpButton.StartCooldown(CooldownType.Reset);
         }
         else if (WarpPlayer1 == null)
             WarpMenu1.Open();
@@ -245,22 +234,26 @@ public class Warper : Syndicate
             WarpMenu2.Open();
         else
         {
-            CallRpc(CustomRPC.Action, ActionsRPC.Warp, this, WarpPlayer1, WarpPlayer2);
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, WarpPlayer1, WarpPlayer2);
             Coroutines.Start(WarpPlayers());
         }
+    }
+
+    public override void ReadRPC(MessageReader reader)
+    {
+        WarpPlayer1 = reader.ReadPlayer();
+        WarpPlayer2 = reader.ReadPlayer();
+        Coroutines.Start(WarpPlayers());
     }
 
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        var flag1 = WarpPlayer1 == null && !HoldsDrive;
-        var flag2 = WarpPlayer2 == null && !HoldsDrive;
-        WarpButton.Update(flag1 ? "FIRST TARGET" : (flag2 ? "SECOND TARGET" : "WARP"), Timer, CustomGameOptions.WarpCd, Warping, TimeRemaining,
-            CustomGameOptions.WarpDur);
+        WarpButton.Update2(WarpPlayer1 == null && !HoldsDrive ? "FIRST TARGET" : (WarpPlayer2 == null && !HoldsDrive ? "SECOND TARGET" : "WARP"));
 
         if (Input.GetKeyDown(KeyCode.Backspace))
         {
-            if (!HoldsDrive)
+            if (!HoldsDrive && !Warping)
             {
                 if (WarpPlayer2 != null)
                     WarpPlayer2 = null;

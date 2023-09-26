@@ -5,7 +5,6 @@ public class Cannibal : Neutral
     public CustomButton EatButton { get; set; }
     public int EatNeed { get; set; }
     public bool Eaten { get; set; }
-    public DateTime LastEaten { get; set; }
     public Dictionary<byte, CustomArrow> BodyArrows { get; set; }
     public bool EatWin => EatNeed == 0;
     public bool CanEat => !Eaten || (Eaten && !CustomGameOptions.AvoidNeutralKingmakers);
@@ -17,15 +16,14 @@ public class Cannibal : Neutral
     public override Func<string> Description => () => "- You can consume a body, making it disappear from the game" + (CustomGameOptions.EatArrows ? "\n- When someone dies, you get "
         + "an arrow pointing to their body" : "");
     public override InspectorResults InspectorResults => InspectorResults.DealsWithDead;
-    public float Timer => ButtonUtils.Timer(Player, LastEaten, CustomGameOptions.EatCd);
 
     public Cannibal(PlayerControl player) : base(player)
     {
         Alignment = Alignment.NeutralEvil;
         Objectives = () => Eaten ? "- You are satiated" : $"- Eat {EatNeed} bod{(EatNeed == 1 ? "y" : "ies")}";
         BodyArrows = new();
-        EatNeed = CustomGameOptions.BodiesNeeded >= CustomPlayer.AllPlayers.Count / 2 ? CustomPlayer.AllPlayers.Count / 2 : CustomGameOptions.BodiesNeeded;
-        EatButton = new(this, "Eat", AbilityTypes.Dead, "ActionSecondary", Eat);
+        EatNeed = Math.Min(CustomGameOptions.BodiesNeeded, CustomPlayer.AllPlayers.Count / 2);
+        EatButton = new(this, "Eat", AbilityTypes.Dead, "ActionSecondary", Eat, CustomGameOptions.EatCd);
     }
 
     public void DestroyArrow(byte targetPlayerId)
@@ -44,7 +42,7 @@ public class Cannibal : Neutral
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        EatButton.Update("EAT", Timer, CustomGameOptions.EatCd, true, CanEat);
+        EatButton.Update2("EAT", CanEat);
 
         if (CustomGameOptions.EatArrows && !IsDead)
         {
@@ -70,12 +68,9 @@ public class Cannibal : Neutral
 
     public void Eat()
     {
-        if (IsTooFar(Player, EatButton.TargetBody) || Timer != 0f)
-            return;
-
         Spread(Player, PlayerByBody(EatButton.TargetBody));
         CallRpc(CustomRPC.Action, ActionsRPC.FadeBody, EatButton.TargetBody);
-        LastEaten = DateTime.UtcNow;
+        EatButton.StartCooldown(CooldownType.Reset);
         EatNeed--;
         Coroutines.Start(FadeBody(EatButton.TargetBody));
 

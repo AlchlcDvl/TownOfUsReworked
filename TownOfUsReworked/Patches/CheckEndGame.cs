@@ -9,10 +9,8 @@ public static class CheckEndGame
         if (IsFreePlay || IsHnS || !AmongUsClient.Instance.AmHost)
             return false;
 
-        var spell = Role.GetRoles<Spellslinger>(LayerEnum.Spellslinger).Find(x => !x.IsDead && !x.Disconnected && x.Spelled.Count == CustomPlayer.AllPlayers.Count(y => !y.HasDied() &&
-            !y.Is(x.Faction)));
-        var reb = Role.GetRoles<PromotedRebel>(LayerEnum.PromotedRebel).Find(x => !x.IsDead && !x.Disconnected && x.Spelled.Count == CustomPlayer.AllPlayers.Count(y => !y.HasDied() &&
-            !y.Is(x.Faction)));
+        var spell = Role.GetRoles<Spellslinger>(LayerEnum.Spellslinger).Find(x => !x.IsDead && !x.Disconnected && x.Spelled.Count == CustomPlayer.AllPlayers.Count(y => !y.HasDied()));
+        var reb = Role.GetRoles<PromotedRebel>(LayerEnum.PromotedRebel).Find(x => !x.IsDead && !x.Disconnected && x.Spelled.Count == CustomPlayer.AllPlayers.Count(y => !y.HasDied()));
 
         if (TasksDone())
         {
@@ -117,8 +115,8 @@ public static class CheckEndGame
             var nobuttons2 = player2.RemainingEmergencies == 0;
             var nobuttons = nobuttons1 && nobuttons2;
             var onehasbutton = !nobuttons1 || !nobuttons2;
-            var knighted1 = player1.IsKnighted();
-            var knighted2 = player2.IsKnighted();
+            var knighted1 = player1.IsKnighted() || player1.Is(LayerEnum.Tiebreaker);
+            var knighted2 = player2.IsKnighted() || player2.Is(LayerEnum.Tiebreaker);
             var neitherknighted = (knighted1 && knighted2) || (!knighted1 && !knighted2);
             var onisknighted = !knighted1 || !knighted2;
             var pol1 = player1.Is(LayerEnum.Politician);
@@ -131,11 +129,8 @@ public static class CheckEndGame
             var rivals = rival1 && rival2;
 
             //NK vs NK when neither can kill each other and Neutrals don't win together
-            if ((player1.Is(LayerEnum.Cryomaniac) && player2.Is(LayerEnum.Cryomaniac) && nosolo && nobuttons && neitherknighted) || NoOneWins || (player1.Is(LayerEnum.Pestilence) &&
-                player2.Is(LayerEnum.Pestilence) && nosolo && (nobuttons || neitherknighted)) || rivals || (cantkill && nobuttons))
-            {
+            if ((player1.Is(LayerEnum.Cryomaniac) && player2.Is(LayerEnum.Cryomaniac) && nosolo && nobuttons && neitherknighted) || NoOneWins || rivals || (cantkill && nobuttons))
                 PerformStalemate();
-            }
         }
         else if (players.Count == 0)
             PerformStalemate();
@@ -148,7 +143,7 @@ public static class CheckEndGame
         EndGame();
     }
 
-    public static bool TasksDone()
+    private static bool TasksDone()
     {
         try
         {
@@ -170,16 +165,14 @@ public static class CheckEndGame
             }
 
             return allCrew.Count == crewWithNoTasks.Count;
-        }
-        catch
-        {
-            return false;
-        }
+        } catch {}
+
+        return false;
     }
 
-    public static bool Sabotaged()
+    private static bool Sabotaged()
     {
-        if (ShipStatus.Instance.Systems != null)
+        try
         {
             if (ShipStatus.Instance.Systems.ContainsKey(SystemTypes.LifeSupp))
             {
@@ -202,7 +195,7 @@ public static class CheckEndGame
                 if (reactorSystemType.Countdown < 0f)
                     return true;
             }
-        }
+        } catch {}
 
         return false;
     }

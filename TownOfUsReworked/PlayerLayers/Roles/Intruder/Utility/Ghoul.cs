@@ -5,7 +5,6 @@ public class Ghoul : Intruder
     public CustomButton MarkButton { get; set; }
     public bool Caught { get; set; }
     public bool Faded { get; set; }
-    public DateTime LastMarked { get; set; }
     public PlayerControl MarkedPlayer { get; set; }
 
     public override Color Color => ClientGameOptions.CustomIntColors ? Colors.Ghoul : Colors.Intruder;
@@ -15,13 +14,12 @@ public class Ghoul : Intruder
     public override Func<string> Description => () => "- You can mark a player for death every round\n- Marked players will be announced to all players and will die at the end of the "
         + "next meeting if you are not clicked";
     public override InspectorResults InspectorResults => InspectorResults.Ghostly;
-    public float Timer => ButtonUtils.Timer(Player, LastMarked, CustomGameOptions.GhoulMarkCd, true);
 
     public Ghoul(PlayerControl player) : base(player)
     {
         Alignment = Alignment.IntruderUtil;
         MarkedPlayer = null;
-        MarkButton = new(this, "GhoulMark", AbilityTypes.Direct, "ActionSecondary", Mark, Exception1, false, true);
+        MarkButton = new(this, "GhoulMark", AbilityTypes.Target, "ActionSecondary", Mark, CustomGameOptions.GhoulMarkCd, Exception1, true);
     }
 
     public void Fade()
@@ -49,15 +47,16 @@ public class Ghoul : Intruder
         Player.MyRend().color = color;
         Player.NameText().color = new(0f, 0f, 0f, 0f);
         Player.cosmetics.colorBlindText.color = new(0f, 0f, 0f, 0f);
+
+        if (Local)
+            Camouflage();
     }
 
     public void Mark()
     {
-        if (Timer != 0f || IsTooFar(Player, MarkButton.TargetPlayer))
-            return;
-
         MarkedPlayer = MarkButton.TargetPlayer;
-        CallRpc(CustomRPC.Action, ActionsRPC.Mark, this, MarkedPlayer);
+        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, MarkedPlayer);
+        MarkButton.StartCooldown(CooldownType.Reset);
     }
 
     public void UnFade()
@@ -67,7 +66,12 @@ public class Ghoul : Intruder
         Player.gameObject.layer = LayerMask.NameToLayer("Ghost");
         Faded = false;
         Player.MyPhysics.ResetMoveState();
+
+        if (Local)
+            DefaultOutfitAll();
     }
+
+    public bool Usable() => !Caught;
 
     public bool Exception1(PlayerControl player) => player == MarkedPlayer || player.Is(Faction) || (player.Is(SubFaction) && SubFaction != SubFaction.None);
 
@@ -75,6 +79,8 @@ public class Ghoul : Intruder
     {
         base.UpdateHud(__instance);
         KillButton.Disable();
-        MarkButton.Update("MARK", Timer, CustomGameOptions.GhoulMarkCd, true, MarkedPlayer == null);
+        MarkButton.Update2("MARK", MarkedPlayer != null);
     }
+
+    public override void ReadRPC(MessageReader reader) => MarkedPlayer = reader.ReadPlayer();
 }

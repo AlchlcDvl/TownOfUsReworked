@@ -14,22 +14,19 @@ public class Actor : Neutral
     public override string Name => "Actor";
     public override LayerEnum Type => LayerEnum.Actor;
     public override Func<string> StartText => () => "Play Pretend With The Others";
-    public override Func<string> Description => () => TargetRole == null ? "- You can select a player whose role you can pretend to be" : "- Upon being guessed, you kill your guesser";
+    public override Func<string> Description => () => TargetRole == null ? "- You can select a player whose role you can pretend to be" : "- Upon being guessed, you will kill your guesser";
     public override InspectorResults InspectorResults => TargetRole == null ? InspectorResults.Manipulative : TargetRole.InspectorResults;
 
     public Actor(PlayerControl player) : base(player)
     {
-        Objectives = () => Guessed ? "- You have successfully fooled the crew" : (TargetRole == null ? "- Find a set of roles you must pretend to be" : ("- Get guessed as one of your" +
-            $" target roles\n- Your target roles belong to the {PretendRoles} role list"));
+        Objectives = () => Guessed ? "- You have successfully fooled the crew" : (TargetRole == null ? "- Find a set of roles you must pretend to be" : ("- Get guessed as one of your " +
+            $"target roles\n- Your target roles belong to the {PretendRoles} role list"));
         Alignment = Alignment.NeutralEvil;
-        PretendButton = new(this, "Pretend", AbilityTypes.Direct, "ActionSecondary", PickRole);
+        PretendButton = new(this, "Pretend", AbilityTypes.Target, "ActionSecondary", PickRole);
     }
 
     public void PickRole()
     {
-        if (IsTooFar(Player, PretendButton.TargetPlayer))
-            return;
-
         TargetRole = GetRole(PretendButton.TargetPlayer);
         CallRpc(CustomRPC.Target, TargetRPC.SetActPretendList, this, TargetRole);
     }
@@ -128,18 +125,12 @@ public class Actor : Neutral
         }
 
         newRole.RoleUpdate(this);
-
-        if (Local)
-            Flash(newRole.Color);
-
-        if (CustomPlayer.Local.Is(LayerEnum.Seer))
-            Flash(Colors.Seer);
     }
 
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        PretendButton.Update("PRETEND", true, TargetRole == null);
+        PretendButton.Update2("PRETEND", TargetRole == null);
 
         if ((TargetFailed || (TargetRole != null && Failed)) && !IsDead)
         {

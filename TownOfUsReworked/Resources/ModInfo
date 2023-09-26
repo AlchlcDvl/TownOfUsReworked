@@ -7,14 +7,22 @@ This mod is a mish mash of code and ideas from different mods and forks, mainly 
 If you want to know more try using the other info commands, visiting the %github% page or joining the %discord% server. Happy ejections!
 
 Changelog-
-- Update: Updated BepInEx to 6.0.0-be.673
-- Addition: Ability delays animate the button a little differently
-- Improvement: Improved how custom options and buttons are visually handled
-- Improvement: Improved how layers are sorted for even more guaranteed randomness
-- Improvement: Improved how interactions are handled
-- Optimisation: The code was optimised even more
-- Critical Fix: Fixed games sometimes not starting properly
-- Role Fix: Fixed Medium and Retributionist-Medium mediates behaving weirdly
+- Return: Custom visors are back
+- Recode: Recoded how buttons are handled
+- Recode: Recoded the many RPCs between roles
+- Change: Being revived/resurrected now resets your cooldowns (to avoid the revived people killing their killers immediately)
+- Change: Bugs and Bombs can no longer overlap ranges
+- Change: Changed the abbreviation of "Crew (Protective)" to "CrP" because the original abbreviation is a practice no one supports
+- Change: Warper can now spawn in Airship, Submerged and LevelImpostor maps
+- Nerf: Jesters and Executioners can no longer kill more than one player
+- Improvement: Postmortal roles that are not clicked will only see camouflaged players
+- General Fix: Fixed some issues with game logic
+- Visual Fix: Fixed Retributionist and Operative seeing double numbers when whispering is turned on
+- Visual Fix: Fixed the meeting timer sometimes being spammed with the page count
+- Visual Fix: Fixed Janitor having the incorrect intro text
+- Visual Fix: Fixed text run off in the hats and visors menus
+- Visual Fix: Fixed appearance changes not changing the players names
+- Role Fix: Fixed Vigilantes being unable to target Crew
 
 Credits-
 Reworked Creator - AlchlcDvl

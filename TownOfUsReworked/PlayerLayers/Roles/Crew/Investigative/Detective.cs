@@ -2,23 +2,21 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public class Detective : Crew
 {
-    public DateTime LastExamined { get; set; }
     public CustomButton ExamineButton { get; set; }
-    public float Timer => ButtonUtils.Timer(Player, LastExamined, CustomGameOptions.ExamineCd);
     private static float _time;
 
     public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Detective : Colors.Crew;
     public override string Name => "Detective";
     public override LayerEnum Type => LayerEnum.Detective;
     public override Func<string> StartText => () => "Examine Players For <color=#AA0000FF>Blood</color>";
-    public override Func<string> Description => () => "- You can examine players to see if they have killed recently\n- Your screen will flash red if your target has killed in the " +
-        $"last {CustomGameOptions.RecentKill}s\n- You can view everyone's footprints to see where they go or where they came from";
+    public override Func<string> Description => () => "- You can examine players to see if they have killed recently\n- Your screen will flash red if your target has killed in the last " +
+        $"{CustomGameOptions.RecentKill}s\n- You can view everyone's footprints to see where they go or where they came from";
     public override InspectorResults InspectorResults => InspectorResults.GainsInfo;
 
     public Detective(PlayerControl player) : base(player)
     {
         Alignment = Alignment.CrewInvest;
-        ExamineButton = new(this, "Examine", AbilityTypes.Direct, "ActionSecondary", Examine);
+        ExamineButton = new(this, "Examine", AbilityTypes.Target, "ActionSecondary", Examine, CustomGameOptions.ExamineCd);
     }
 
     public override void OnLobby()
@@ -39,10 +37,8 @@ public class Detective : Crew
 
     public void Examine()
     {
-        if (Timer != 0f || IsTooFar(Player, ExamineButton.TargetPlayer))
-            return;
-
         var interact = Interact(Player, ExamineButton.TargetPlayer);
+        var cooldown = CooldownType.Reset;
 
         if (interact.AbilityUsed)
         {
@@ -50,16 +46,16 @@ public class Detective : Crew
                 CustomGameOptions.RecentKill) ? UColor.red : UColor.green);
         }
 
-        if (interact.Reset)
-            LastExamined = DateTime.UtcNow;
-        else if (interact.Protected)
-            LastExamined.AddSeconds(CustomGameOptions.ProtectKCReset);
+        if (interact.Protected)
+            cooldown = CooldownType.GuardianAngel;
+
+        ExamineButton.StartCooldown(cooldown);
     }
 
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        ExamineButton.Update("EXAMINE", Timer, CustomGameOptions.ExamineCd);
+        ExamineButton.Update2("EXAMINE");
 
         if (!IsDead)
         {

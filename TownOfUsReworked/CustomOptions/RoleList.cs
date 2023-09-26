@@ -91,7 +91,7 @@ public class RoleListEntryOption : CustomOption
         { LayerEnum.Silencer, "<color=#AAB43EFF>Silencer</color>"},
         { LayerEnum.Spellslinger, "<color=#0028F5FF>Spellslinger</color>"},
         { LayerEnum.Stalker, "<color=#7E4D00FF>Stalker</color>"},
-        { LayerEnum.TimeKeeper, "<color=#3769FEFF>Time Keeper</color>"},
+        { LayerEnum.Timekeeper, "<color=#3769FEFF>Timekeeper</color>"},
         { LayerEnum.Warper, "<color=#8C7140FF>Warper</color>"}
     };
     public static Dictionary<LayerEnum, string> Alignments => new()

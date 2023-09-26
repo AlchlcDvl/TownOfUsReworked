@@ -92,12 +92,6 @@ public class Fanatic : Objectifier
 
         var betrayer = new Betrayer(Player) { Objectives = role.Objectives };
         betrayer.RoleUpdate(role);
-
-        if (Local)
-            Flash(Colors.Betrayer);
-
-        if (CustomPlayer.Local.Is(LayerEnum.Seer))
-            Flash(Colors.Seer);
     }
 
     public override void UpdateHud(HudManager __instance)

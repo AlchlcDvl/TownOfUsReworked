@@ -2,7 +2,6 @@ namespace TownOfUsReworked.Patches;
 
 //The code is from The Other Roles: Community Edition with slight modifications; link :- https://github.com/JustASysAdmin/TheOtherRoles2/blob/main/TheOtherRoles/Patches/IntroPatch.cs
 //Under GPL v3 with some modifications
-[HarmonyPatch]
 public static class SpawnPatches
 {
     [HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.OnDestroy))]

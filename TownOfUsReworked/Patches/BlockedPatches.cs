@@ -1,4 +1,4 @@
-namespace TownOfUsReworked.PlayerLayers;
+namespace TownOfUsReworked.Patches;
 
 [HarmonyPatch(typeof(VentButton), nameof(VentButton.DoClick))]
 [HarmonyPriority(Priority.First)]
@@ -148,7 +148,7 @@ public static class Blocked
         if (UseBlock)
         {
             var pos = __instance.UseButton.transform.position;
-            pos.z = -50f;
+            pos.z = 50f;
             UseBlock.transform.position = pos;
             UseBlock.SetActive(LocalBlocked && __instance.UseButton.isActiveAndEnabled);
         }
@@ -165,7 +165,7 @@ public static class Blocked
         if (PetBlock)
         {
             var pos = __instance.PetButton.transform.position;
-            pos.z = -50f;
+            pos.z = 50f;
             PetBlock.transform.position = pos;
             PetBlock.SetActive(LocalBlocked && __instance.PetButton.isActiveAndEnabled);
         }
@@ -182,7 +182,7 @@ public static class Blocked
         if (SaboBlock)
         {
             var pos = __instance.SabotageButton.transform.position;
-            pos.z = -50f;
+            pos.z = 50f;
             SaboBlock.transform.position = pos;
             SaboBlock.SetActive(LocalBlocked && __instance.SabotageButton.isActiveAndEnabled);
         }
@@ -199,7 +199,7 @@ public static class Blocked
         if (VentBlock)
         {
             var pos = __instance.ImpostorVentButton.transform.position;
-            pos.z = -50f;
+            pos.z = 50f;
             VentBlock.transform.position = pos;
             VentBlock.SetActive(LocalBlocked && __instance.ImpostorVentButton.isActiveAndEnabled);
         }
@@ -216,7 +216,7 @@ public static class Blocked
         if (ReportBlock)
         {
             var pos = __instance.ReportButton.transform.position;
-            pos.z = -50f;
+            pos.z = 50f;
             ReportBlock.transform.position = pos;
             ReportBlock.SetActive(LocalBlocked && __instance.ReportButton.isActiveAndEnabled);
         }

@@ -9,7 +9,7 @@ public static class SubmergedStartPatch
             return;
 
         if (IsSubmerged)
-            Coroutines.Start(WaitStart(() => ButtonUtils.ResetCustomTimers(true)));
+            Coroutines.Start(WaitStart(() => ButtonUtils.ResetCustomTimers(CooldownType.Start)));
     }
 }
 

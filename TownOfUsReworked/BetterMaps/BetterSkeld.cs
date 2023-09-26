@@ -1,6 +1,5 @@
 namespace TownOfUsReworked.BetterMaps;
 
-[HarmonyPatch]
 public static class SkeldShipStatusPatch
 {
     private static readonly Vector3 ReactorVentNewPos = new(-2.95f, -10.95f, 2f);

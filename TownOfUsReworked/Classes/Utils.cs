@@ -1,6 +1,5 @@
 ﻿namespace TownOfUsReworked.Classes;
 
-[HarmonyPatch]
 public static class Utils
 {
     private static bool Shapeshifted;
@@ -60,11 +59,15 @@ public static class Utils
 
     public static void Morph(PlayerControl player, PlayerControl morphTarget)
     {
-        if (DoUndo.IsCamoed)
+        if (HudUpdate.IsCamoed)
             return;
 
-        if (player.GetCustomOutfitType() != CustomPlayerOutfitType.Morph)
-            player.SetOutfit(CustomPlayerOutfitType.Morph, morphTarget.Data.DefaultOutfit);
+        if (player.GetCustomOutfitType() is not (CustomPlayerOutfitType.Morph or CustomPlayerOutfitType.Invis))
+        {
+            var morphTo = PlayerById(CachedMorphs.TryGetValue(player.PlayerId, out var morphId) ? morphId : morphTarget.PlayerId);
+            player.SetOutfit(CustomPlayerOutfitType.Morph, morphTo.Data.DefaultOutfit);
+            CachedMorphs.TryAdd(player.PlayerId, morphTarget.PlayerId);
+        }
     }
 
     public static void DefaultOutfit(PlayerControl player) => Coroutines.Start(DefaultOutfitCoro(player));
@@ -85,11 +88,11 @@ public static class Utils
 
             yield return new WaitForSeconds(1f);
         }
-        else if (Shapeshifted)
-        {
+        else if (player.GetCustomOutfitType() == CustomPlayerOutfitType.Morph)
             CachedMorphs.Remove(player.PlayerId);
+
+        if (Shapeshifted)
             Shapeshifted = false;
-        }
 
         player.SetOutfit(CustomPlayerOutfitType.Default);
         yield return null;
@@ -101,8 +104,7 @@ public static class Utils
 
     public static IEnumerator CamoSingleCoro(PlayerControl player)
     {
-        if (player.GetCustomOutfitType() is not CustomPlayerOutfitType.Camouflage and not CustomPlayerOutfitType.Invis and not CustomPlayerOutfitType.PlayerNameOnly &&
-            !player.Data.IsDead && !CustomPlayer.LocalCustom.IsDead && player != CustomPlayer.Local)
+        if ((int)player.GetCustomOutfitType() is not (4 or 5 or 6 or 7) && !player.Data.IsDead && !CustomPlayer.LocalCustom.IsDead && player != CustomPlayer.Local)
         {
             player.SetOutfit(CustomPlayerOutfitType.Camouflage, BlankOutfit(player));
             PlayerMaterial.SetColors(UColor.grey, player.MyRend());
@@ -116,14 +118,11 @@ public static class Utils
         yield return null;
     }
 
-    public static void Conceal() => CustomPlayer.AllPlayers.ForEach(x => Invis(x, CustomPlayer.Local.Is(Faction.Syndicate)));
-
     public static void Invis(PlayerControl player, bool condition = false) => Coroutines.Start(InvisCoro(player, condition));
 
     public static IEnumerator InvisCoro(PlayerControl player, bool condition)
     {
-        var color = UColor.clear;
-        color.a = condition || CustomPlayer.LocalCustom.IsDead || player == CustomPlayer.Local || CustomPlayer.Local.Is(LayerEnum.Torch) ? 0.1f : 0f;
+        var ca = condition || CustomPlayer.LocalCustom.IsDead || player == CustomPlayer.Local || CustomPlayer.Local.Is(LayerEnum.Torch) ? 0.1f : 0f;
 
         if (player.GetCustomOutfitType() != CustomPlayerOutfitType.Invis && !player.Data.IsDead)
         {
@@ -132,7 +131,7 @@ public static class Utils
             HUD.StartCoroutine(Effects.Lerp(1, new Action<float>(p =>
             {
                 var rend = player.MyRend();
-                var a = Mathf.Clamp(1 - p, color.a, 1);
+                var a = Mathf.Clamp(1 - p, ca, 1);
                 var r = rend.color.r * (1 - p);
                 var g = rend.color.g * (1 - p);
                 var b = rend.color.b * (1 - p);
@@ -153,6 +152,7 @@ public static class Utils
         HatId = "",
         SkinId = "",
         VisorId = "",
+        NamePlateId = "",
         PlayerName = " ",
         PetId = ""
     };
@@ -163,6 +163,7 @@ public static class Utils
         HatId = "",
         SkinId = "",
         VisorId = "",
+        NamePlateId = "",
         PlayerName = " ",
         PetId = ""
     };
@@ -204,18 +205,18 @@ public static class Utils
 
     public static Color GetShadowColor(this PlayerControl player, bool camoCondition = true, bool otherCondition = false)
     {
-        if ((DoUndo.IsCamoed && camoCondition) || otherCondition)
+        if ((HudUpdate.IsCamoed && camoCondition) || otherCondition)
             return new(0.5f, 0.5f, 0.5f, 1f);
         else
-            return ColorUtils.GetColor(player.GetDefaultOutfit().ColorId, true);
+            return CustomColors.GetColor(player.GetDefaultOutfit().ColorId, true);
     }
 
     public static Color GetPlayerColor(this PlayerControl player, bool camoCondition = true, bool otherCondition = false)
     {
-        if ((DoUndo.IsCamoed && camoCondition) || otherCondition)
+        if ((HudUpdate.IsCamoed && camoCondition) || otherCondition)
             return UColor.grey;
         else
-            return ColorUtils.GetColor(player.GetDefaultOutfit().ColorId, false);
+            return CustomColors.GetColor(player.GetDefaultOutfit().ColorId, false);
     }
 
     public static PlayerControl PlayerById(byte id) => CustomPlayer.AllPlayers.Find(x => x.PlayerId == id);
@@ -241,7 +242,7 @@ public static class Utils
         if (player == null || refplayer == null)
             return double.MaxValue;
 
-        return Vector2.Distance(refplayer.GetTruePosition(), player.GetTruePosition());
+        return Vector2.Distance(refplayer.transform.position, player.transform.position);
     }
 
     public static double GetDistBetweenPlayers(PlayerControl player, Vent refVent)
@@ -249,7 +250,7 @@ public static class Utils
         if (player == null || refVent == null)
             return double.MaxValue;
 
-        return Vector2.Distance(refVent.transform.position, player.GetTruePosition());
+        return Vector2.Distance(refVent.transform.position, player.transform.position);
     }
 
     public static double GetDistBetweenPlayers(PlayerControl player, DeadBody refBody)
@@ -257,7 +258,7 @@ public static class Utils
         if (player == null || refBody == null)
             return double.MaxValue;
 
-        return Vector2.Distance(refBody.TruePosition, player.GetTruePosition());
+        return Vector2.Distance(refBody.TruePosition, player.transform.position);
     }
 
     public static void RpcMurderPlayer(PlayerControl killer, PlayerControl target, DeathReasonEnum reason = DeathReasonEnum.Killed, bool lunge = true)
@@ -404,7 +405,7 @@ public static class Utils
                 swapper.Swap1 = null;
                 swapper.Swap2 = null;
                 swapper.SwapMenu.HideButtons();
-                CallRpc(CustomRPC.Action, ActionsRPC.SetSwaps, swapper, 255, 255);
+                CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, swapper, 255, 255);
             }
 
             if (target.Is(LayerEnum.Dictator))
@@ -413,7 +414,7 @@ public static class Utils
                 dict.DictMenu.HideButtons();
                 dict.ToBeEjected.Clear();
                 dict.ToDie = false;
-                CallRpc(CustomRPC.Action, ActionsRPC.SetExiles, dict, false, dict.ToBeEjected.ToArray());
+                CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, dict, DictActionsRPC.SetExiles, false, dict.ToBeEjected.ToArray());
             }
 
             if (target.Is(LayerEnum.Retributionist))
@@ -523,7 +524,7 @@ public static class Utils
                     swapper.Swap2 = null;
 
                 swapper.SwapMenu.Actives[target.PlayerId] = false;
-                CallRpc(CustomRPC.Action, ActionsRPC.SetSwaps, swapper, 255, 255);
+                CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, swapper, 255, 255);
             }
 
             swapper.SwapMenu.HideSingle(target.PlayerId);
@@ -541,7 +542,7 @@ public static class Utils
                     dictator.DictMenu.Actives[i] = false;
 
                 dictator.DictMenu.Actives[target.PlayerId] = false;
-                CallRpc(CustomRPC.Action, ActionsRPC.SetExiles, dictator, false, dictator.ToBeEjected.ToArray());
+                CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, dictator, DictActionsRPC.SetExiles, false, dictator.ToBeEjected.ToArray());
             }
 
             dictator.DictMenu.HideSingle(target.PlayerId);
@@ -560,19 +561,25 @@ public static class Utils
 
         if (AmongUsClient.Instance.AmHost)
         {
-            foreach (var mayor in Ability.GetAbilities<Politician>(LayerEnum.Politician))
+            foreach (var pol in Ability.GetAbilities<Politician>(LayerEnum.Politician))
             {
-                if (mayor.Player == target)
-                    mayor.ExtraVotes.Clear();
+                if (pol.Player == target)
+                    pol.ExtraVotes.Clear();
                 else
                 {
-                    var votesRegained = mayor.ExtraVotes.RemoveAll(x => x == target.PlayerId);
+                    var votesRegained = pol.ExtraVotes.RemoveAll(x => x == target.PlayerId);
 
-                    if (mayor.Local)
-                        mayor.VoteBank += votesRegained;
+                    if (pol.Local)
+                        pol.VoteBank += votesRegained;
 
-                    CallRpc(CustomRPC.Misc, MiscRPC.AddVoteBank, mayor, votesRegained);
+                    CallRpc(CustomRPC.Misc, MiscRPC.AddVoteBank, pol, votesRegained);
                 }
+            }
+
+            foreach (var mayor in Role.GetRoles<Mayor>(LayerEnum.Mayor))
+            {
+                if (mayor.Voted == target.PlayerId)
+                    mayor.Voted = 255;
             }
 
             AssignPostmortals(target);
@@ -657,18 +664,6 @@ public static class Utils
         Role.GetRoles<Cryomaniac>(LayerEnum.Cryomaniac).ForEach(cryo => cryo.RpcSpreadDouse(target, interacter));
     }
 
-    public static bool Check(int probability)
-    {
-        if (probability == 0)
-            return false;
-
-        if (probability == 100)
-            return true;
-
-        var num = URandom.RandomRangeInt(1, 100);
-        return num <= probability;
-    }
-
     public static void StopDragging(byte id)
     {
         Role.GetRoles<Janitor>(LayerEnum.Janitor).Where(x => x.CurrentlyDragging != null && x.CurrentlyDragging.ParentId == id).ForEach(x => x.Drop());
@@ -693,7 +688,7 @@ public static class Utils
         }
     }
 
-    public static bool IsInRange(float num, float min, float max, bool minInclusive = false, bool maxInclusive = false)
+    public static bool IsInRange(this float num, float min, float max, bool minInclusive = false, bool maxInclusive = false)
     {
         if (minInclusive && maxInclusive)
             return num >= min && num <= max;
@@ -744,7 +739,7 @@ public static class Utils
 
     public static void RpcSpawnVent(Role role)
     {
-        if (role.Type is not LayerEnum.Godfather and not LayerEnum.Miner)
+        if (role.Type is not (LayerEnum.Godfather or LayerEnum.Miner))
             return;
 
         var position = role.Player.transform.position;
@@ -1020,10 +1015,10 @@ public static class Utils
         Coroutines.Start(Fade(true));
     }
 
-    public static void Teleport(PlayerControl player, Vector3 position)
+    public static void Teleport(PlayerControl player, Vector2 position)
     {
         player.MyPhysics.ResetMoveState();
-        player.NetTransform.RpcSnapTo(new(position.x, position.y));
+        player.NetTransform.RpcSnapTo(position);
 
         if (IsSubmerged && CustomPlayer.Local == player)
         {
@@ -1077,7 +1072,7 @@ public static class Utils
 
         foreach (var role in Role.GetRoles<Mayor>(LayerEnum.Mayor))
         {
-            if (role.Revealed)
+            if (role.Revealed && role.Voted != 255)
             {
                 if (dictionary.TryGetValue(role.Voted, out var num))
                     dictionary[role.Voted] = num + CustomGameOptions.MayorVoteCount;
@@ -1108,7 +1103,7 @@ public static class Utils
 
         foreach (var swapper in Ability.GetAbilities<Swapper>(LayerEnum.Swapper))
         {
-            if (swapper.IsDead || swapper.Disconnected || swapper.Swap1 == null || swapper.Swap2 == null)
+            if (swapper.Player.HasDied() || swapper.Swap1 == null || swapper.Swap2 == null)
                 continue;
 
             var swapPlayer1 = PlayerByVoteArea(swapper.Swap1);
@@ -1149,7 +1144,7 @@ public static class Utils
             }
         }
 
-        dictionary.MaxPair(out tie);
+        _ = dictionary.MaxPair(out tie);
         return dictionary;
     }
 
@@ -1275,7 +1270,7 @@ public static class Utils
         AssignPostmortals(revealer, ghoul, banshee, phantom);
     }
 
-    public static PlayerControl GetClosestPlayer(this PlayerControl refPlayer, List<PlayerControl> allPlayers = null, float maxDistance = 0f, bool ignoreWalls = false)
+    public static PlayerControl GetClosestPlayer(this PlayerControl refPlayer, IEnumerable<PlayerControl> allPlayers = null, float maxDistance = 0f, bool ignoreWalls = false)
     {
         if (refPlayer.Data.IsDead && !refPlayer.Is(LayerEnum.Jester) && !refPlayer.Is(LayerEnum.Ghoul))
             return null;
@@ -1309,7 +1304,7 @@ public static class Utils
         return closestPlayer;
     }
 
-    public static PlayerControl GetClosestPlayer(Vector3 position, List<PlayerControl> allPlayers = null, float maxDistance = 0f, bool ignoreWalls = false)
+    public static PlayerControl GetClosestPlayer(Vector3 position, IEnumerable<PlayerControl> allPlayers = null, float maxDistance = 0f, bool ignoreWalls = false)
     {
         var closestDistance = double.MaxValue;
         PlayerControl closestPlayer = null;
@@ -1515,13 +1510,14 @@ public static class Utils
 
     public static bool IsNullEmptyOrWhiteSpace(string text) => text is null or "" || text.All(x => x == ' ');
 
-    public static void SaveText(string fileName, string textToSave)
+    public static void SaveText(string fileName, string textToSave, bool overrideText = true)
     {
         try
         {
             var text = Path.Combine(Application.persistentDataPath, $"{fileName}-temp");
-            File.WriteAllText(text, textToSave);
             var text2 = Path.Combine(Application.persistentDataPath, fileName);
+            var toOverride = overrideText ? "" : ReadText(fileName);
+            File.WriteAllText(text, toOverride + textToSave);
             File.Delete(text2);
             File.Move(text, text2);
         }

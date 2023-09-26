@@ -2,12 +2,16 @@ using Reactor.Utilities.ImGui;
 
 namespace TownOfUsReworked.Monos;
 
-//Based off of Reactor.Debugger but merged with MCI and added some functions of my own for testing
+//Based off of Reactor.Debugger but merged with MCI and added some functions and changes of my own for testing
 public class DebuggerBehaviour : MonoBehaviour
 {
     [HideFromIl2Cpp]
     public DragWindow TestWindow { get; }
-    private static byte ControllingFigure;
+
+    [HideFromIl2Cpp]
+    public DragWindow CooldownsWindow { get; }
+
+    private byte ControllingFigure;
 
     public static DebuggerBehaviour Instance { get; private set; }
 
@@ -17,9 +21,13 @@ public class DebuggerBehaviour : MonoBehaviour
             this.Destroy();
 
         Instance = this;
+
         TestWindow = new(new(20, 20, 0, 0), "Reworked Debugger", () =>
         {
             GUILayout.Label("Name: " + DataManager.Player.Customization.Name);
+
+            if (GUILayout.Button("Close Testing Menu"))
+                TestWindow.Enabled = false;
 
             if (CustomPlayer.Local && !NoLobby && !CustomPlayer.LocalCustom.IsDead && !IsEnded && !GameHasEnded)
                 CustomPlayer.Local.Collider.enabled = GUILayout.Toggle(CustomPlayer.Local.Collider.enabled, "Enable Player Collider");
@@ -136,6 +144,9 @@ public class DebuggerBehaviour : MonoBehaviour
                     var flashColor = new Color32(r, g, b, 255);
                     Flash(flashColor, "Flash!");
                 }
+
+                if (GUILayout.Button("Open Cooldowns Menu"))
+                    CooldownsWindow.Enabled = true;
             }
 
             if (CustomPlayer.Local)
@@ -148,7 +159,37 @@ public class DebuggerBehaviour : MonoBehaviour
             }
         })
         {
-            Enabled = false,
+            Enabled = false
+        };
+
+        CooldownsWindow = new(new(20, 20, 0, 0), "Cooldown Debugger", () =>
+        {
+            if (GUILayout.Button("Cancel Cooldowns"))
+                CustomPlayer.Local.GetButtons().ForEach(x => x.CooldownTime = 0f);
+
+            if (GUILayout.Button("Reset Full Cooldown"))
+                CustomPlayer.Local.GetButtons().ForEach(x => x.StartCooldown(CooldownType.Reset));
+
+            if (GUILayout.Button("Reset Survivor Cooldown"))
+                CustomPlayer.Local.GetButtons().ForEach(x => x.StartCooldown(CooldownType.Survivor));
+
+            if (GUILayout.Button("Reset Protect Cooldown"))
+                CustomPlayer.Local.GetButtons().ForEach(x => x.StartCooldown(CooldownType.GuardianAngel));
+
+            if (GUILayout.Button("Reset Initial Cooldown"))
+                CustomPlayer.Local.GetButtons().ForEach(x => x.StartCooldown(CooldownType.Start));
+
+            if (GUILayout.Button("Reset Meeting Cooldown"))
+                CustomPlayer.Local.GetButtons().ForEach(x => x.StartCooldown(CooldownType.Meeting));
+
+            if (GUILayout.Button("Cancel Effects") && CustomPlayer.Local.GetButtons().Any(x => x.EffectActive || x.DelayActive))
+                CustomPlayer.Local.GetButtons().ForEach(x => x.End = true);
+
+            if (GUILayout.Button("Close Cooldowns Menu"))
+                CooldownsWindow.Enabled = false;
+        })
+        {
+            Enabled = false
         };
     }
 
@@ -159,12 +200,18 @@ public class DebuggerBehaviour : MonoBehaviour
             if (TestWindow.Enabled)
                 TestWindow.Enabled = false;
 
+            if (CooldownsWindow.Enabled)
+                CooldownsWindow.Enabled = false;
+
             return; //You must ensure you are only playing on local
         }
 
         if (Input.GetKeyDown(KeyCode.F1))
         {
             TestWindow.Enabled = !TestWindow.Enabled;
+
+            if (CooldownsWindow.Enabled && !TestWindow.Enabled)
+                CooldownsWindow.Enabled = false;
 
             if (!TestWindow.Enabled && IsLobby)
             {
@@ -173,9 +220,13 @@ public class DebuggerBehaviour : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.F2))
-            TestWindow.Enabled = !TestWindow.Enabled;
+        if (Input.GetKeyDown(KeyCode.F2) && IsInGame)
+            CooldownsWindow.Enabled = !CooldownsWindow.Enabled;
     }
 
-    public void OnGUI() => TestWindow.OnGUI();
+    public void OnGUI()
+    {
+        TestWindow.OnGUI();
+        CooldownsWindow.OnGUI();
+    }
 }

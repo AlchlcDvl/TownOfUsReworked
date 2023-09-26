@@ -11,37 +11,36 @@ public class Mayor : Crew
     public override string Name => "Mayor";
     public override LayerEnum Type => LayerEnum.Mayor;
     public override Func<string> StartText => () => "Reveal Yourself To Commit Voter Fraud";
-    public override Func<string> Description => () => $"- You can reveal yourself to the crew\n- When revealed, your votes count {CustomGameOptions.MayorVoteCount + 1} times but you "
-        + "cannot be protected";
+    public override Func<string> Description => () => $"- You can reveal yourself to the crew\n- When revealed, your votes count {CustomGameOptions.MayorVoteCount + 1} times but you cannot "
+        + "be protected";
     public override InspectorResults InspectorResults => InspectorResults.LeadsTheGroup;
 
     public Mayor(PlayerControl player) : base(player)
     {
         Alignment = Alignment.CrewSov;
         Voted = 255;
-        RevealButton = new(this, "MayorReveal", AbilityTypes.Effect, "ActionSecondary", Reveal);
+        RevealButton = new(this, "MayorReveal", AbilityTypes.Targetless, "ActionSecondary", Reveal);
     }
 
     public void Reveal()
     {
-        if (RoundOne)
-            return;
-
-        CallRpc(CustomRPC.Action, ActionsRPC.MayorReveal, this);
+        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this);
         Revealed = true;
         Flash(Color);
         BreakShield(Player, true);
+        Voted = 255;
     }
 
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        RevealButton.Update("REVEAL", !Revealed, !Revealed && !RoundOne);
+        RevealButton.Update2("REVEAL", !Revealed && !RoundOne);
     }
 
-    public override void OnMeetingStart(MeetingHud __instance)
+    public override void ReadRPC(MessageReader reader)
     {
-        base.OnMeetingStart(__instance);
-        Voted = 255;
+        Revealed = true;
+        Flash(Colors.Mayor);
+        BreakShield(Player, true);
     }
 }

@@ -2,14 +2,13 @@ using PowerTools;
 
 namespace TownOfUsReworked.Cosmetics;
 
-[HarmonyPatch]
 public static class CustomHats
 {
     private static bool SubLoaded;
     private static bool Running;
     private static Material Shader;
-    public static readonly Dictionary<string, HatExtension> CustomHatRegistry = new();
     public static HatExtension TestExt;
+    public static readonly Dictionary<string, HatExtension> CustomHatRegistry = new();
     public static readonly Dictionary<string, HatViewData> CustomHatViewDatas = new();
 
     private static List<CustomHat> CreateCustomHatDetails(string[] hats, bool fromDisk = false)
@@ -132,38 +131,21 @@ public static class CustomHats
                 ch.BackFlipID = TownOfUsReworked.Hats + ch.BackFlipID + ".png";
         }
 
-        var hat = ScriptableObject.CreateInstance<HatData>();
-        var viewData = ScriptableObject.CreateInstance<HatViewData>();
+        var hat = ScriptableObject.CreateInstance<HatData>().DontDestroy();
+        var viewData = ScriptableObject.CreateInstance<HatViewData>().DontDestroy();
         viewData.MainImage = CreateHatSprite(ch.ID, fromDisk);
         ch.Behind = ch.BackID != null || ch.BackFlipID != null; //Required to view backresource
-
-        if (ch.BackID != null)
-            viewData.BackImage = CreateHatSprite(ch.BackID, fromDisk);
-
-        if (ch.BackFlipID != null)
-            viewData.LeftBackImage = CreateHatSprite(ch.BackID, fromDisk);
-
-        if (ch.ClimbID != null)
-            viewData.ClimbImage = CreateHatSprite(ch.ClimbID, fromDisk);
-
-        if (ch.ClimbFlipID != null)
-            viewData.LeftClimbImage = CreateHatSprite(ch.ClimbID, fromDisk);
-        else
-            viewData.LeftClimbImage = viewData.ClimbImage;
-
-        if (ch.FloorID != null)
-            viewData.FloorImage = CreateHatSprite(ch.FloorID, fromDisk);
-        else
-            viewData.FloorImage = viewData.MainImage;
-
-        if (ch.FloorFlipID != null)
-            viewData.LeftFloorImage = CreateHatSprite(ch.FloorID, fromDisk);
-        else
-            viewData.LeftFloorImage = viewData.FloorImage;
-
+        viewData.BackImage = ch.BackID != null ? CreateHatSprite(ch.BackID, fromDisk) : null;
+        viewData.ClimbImage = ch.ClimbID != null ? CreateHatSprite(ch.ClimbID, fromDisk) : null;
+        viewData.LeftBackImage = ch.BackFlipID != null ? CreateHatSprite(ch.BackID, fromDisk) : viewData.BackImage;
+        viewData.LeftClimbImage = ch.ClimbFlipID != null ? CreateHatSprite(ch.ClimbID, fromDisk) : viewData.ClimbImage;
+        viewData.FloorImage = ch.FloorID != null ? CreateHatSprite(ch.FloorID, fromDisk) : viewData.MainImage;
+        viewData.LeftMainImage = ch.FlipID != null ? CreateHatSprite(ch.FlipID, fromDisk) : viewData.MainImage;
+        viewData.LeftFloorImage = ch.FloorFlipID != null ? CreateHatSprite(ch.FloorID, fromDisk) : viewData.FloorImage;
+        hat.SpritePreview = viewData.MainImage;
         hat.name = ch.Name;
         hat.displayOrder = 99;
-        hat.ProductId = "hat_" + ch.Name.Replace(' ', '_');
+        hat.ProductId = "customHat_" + ch.Name.Replace(' ', '_');
         hat.InFront = !ch.Behind;
         hat.NoBounce = ch.NoBouce;
         hat.ChipOffset = new(0f, 0.2f);
@@ -175,25 +157,20 @@ public static class CustomHats
         var extend = new HatExtension()
         {
             Artist = ch.Artist ?? "Misc",
-            Condition = ch.Condition ?? "none"
+            Condition = ch.Condition ?? "none",
+            FlipImage = viewData.LeftMainImage,
+            FloorImage = viewData.FloorImage,
+            BackFlipImage = viewData.LeftBackImage
         };
-
-        if (ch.FlipID != null)
-            extend.FlipImage = CreateHatSprite(ch.FlipID, fromDisk);
-
-        if (ch.FloorID != null)
-            extend.FloorImage = CreateHatSprite(ch.FloorID, fromDisk);
-
-        if (ch.BackFlipID != null)
-            extend.BackFlipImage = CreateHatSprite(ch.BackFlipID, fromDisk);
 
         if (testOnly)
         {
             TestExt = extend;
             TestExt.Condition = hat.name;
         }
+        else
+            CustomHatRegistry.TryAdd(hat.name, extend);
 
-        CustomHatRegistry.TryAdd(hat.name, extend);
         CustomHatViewDatas.TryAdd(hat.name, viewData);
         hat.ViewDataRef = new(viewData.Pointer);
         hat.CreateAddressableAsset();
@@ -428,18 +405,79 @@ public static class CustomHats
         }
     }
 
+    [HarmonyPatch(typeof(HatParent), nameof(HatParent.LateUpdate))]
+    public static class HatParentLateUpdatePatch
+    {
+        public static bool Prefix(HatParent __instance)
+        {
+            if (__instance.Parent)
+            {
+                HatViewData hatViewData;
+
+                try
+                {
+                    hatViewData = __instance.hatDataAsset.GetAsset();
+                    return true;
+                }
+                catch
+                {
+                    try
+                    {
+                        hatViewData = CustomHatViewDatas[__instance.Hat.name];
+                    }
+                    catch
+                    {
+                        return false;
+                    }
+                }
+
+                if (__instance.Hat && hatViewData != null)
+                {
+                    if (__instance.FrontLayer.sprite != hatViewData.ClimbImage && __instance.FrontLayer.sprite != hatViewData.FloorImage)
+                    {
+                        if ((__instance.Hat.InFront || hatViewData.BackImage) && hatViewData.LeftMainImage)
+                            __instance.FrontLayer.sprite = __instance.Parent.flipX ? hatViewData.LeftMainImage : hatViewData.MainImage;
+
+                        if (hatViewData.BackImage && hatViewData.LeftBackImage)
+                        {
+                            __instance.BackLayer.sprite = __instance.Parent.flipX ? hatViewData.LeftBackImage : hatViewData.BackImage;
+                            return false;
+                        }
+
+                        if (!hatViewData.BackImage && !__instance.Hat.InFront && hatViewData.LeftMainImage)
+                        {
+                            __instance.BackLayer.sprite = __instance.Parent.flipX ? hatViewData.LeftMainImage : hatViewData.MainImage;
+                            return false;
+                        }
+                    }
+                    else if (__instance.FrontLayer.sprite == hatViewData.ClimbImage || __instance.FrontLayer.sprite == hatViewData.LeftClimbImage)
+                    {
+                        var spriteAnimNodeSync = __instance.SpriteSyncNode ?? __instance.GetComponent<SpriteAnimNodeSync>();
+
+                        if (spriteAnimNodeSync)
+                            spriteAnimNodeSync.NodeId = 0;
+                    }
+                }
+            }
+
+            return false;
+        }
+    }
+
     [HarmonyPatch(typeof(HatParent), nameof(HatParent.SetFloorAnim))]
     public static class HatParentSetFloorAnimPatch
     {
         public static bool Prefix(HatParent __instance)
         {
+            HatViewData hatViewData;
+
             try
             {
-                _ = __instance.hatDataAsset.GetAsset();
+                hatViewData = __instance.hatDataAsset.GetAsset();
                 return true;
             } catch {}
 
-            if (!CustomHatRegistry.TryGetValue(__instance.Hat.name, out var hatViewData))
+            if (!CustomHatViewDatas.TryGetValue(__instance.Hat.name, out hatViewData))
                 return true;
 
             __instance.BackLayer.enabled = false;
@@ -472,13 +510,15 @@ public static class CustomHats
     {
         public static bool Prefix(HatParent __instance)
         {
+            HatViewData hatViewData;
+
             try
             {
-                _ = __instance.hatDataAsset.GetAsset();
+                hatViewData = __instance.hatDataAsset.GetAsset();
                 return true;
             } catch {}
 
-            if (!CustomHatRegistry.TryGetValue(__instance.Hat.name, out var hatViewData))
+            if (!CustomHatViewDatas.TryGetValue(__instance.Hat.name, out hatViewData))
                 return true;
 
             if (!__instance.options.ShowForClimb)
@@ -567,15 +607,14 @@ public static class CustomHats
     [HarmonyPatch(typeof(HatsTab), nameof(HatsTab.OnEnable))]
     public static class HatsTabOnEnablePatch
     {
-        private const string InnerslothPackageName = "Innersloth";
         private static TMP_Text Template;
 
-        public static float CreateHatPackage(List<(HatData, HatExtension)> hats, string packageName, float YStart, HatsTab __instance)
+        public static float CreateHatPackage(List<HatData> hats, string packageName, float YStart, HatsTab __instance)
         {
-            var isDefaultPackage = InnerslothPackageName == packageName;
+            var isDefaultPackage = "Innersloth" == packageName;
 
             if (!isDefaultPackage)
-                hats = hats.OrderBy(x => x.Item1.name).ToList();
+                hats = hats.OrderBy(x => x.name).ToList();
 
             var offset = YStart;
 
@@ -592,9 +631,7 @@ public static class CustomHats
 
             for (var i = 0; i < hats.Count; i++)
             {
-                var hat = hats[i].Item1;
-                var ext = hats[i].Item2;
-
+                var hat = hats[i];
                 var xpos = __instance.XRange.Lerp(i % __instance.NumPerRow / (__instance.NumPerRow - 1f));
                 var ypos = offset - (i / __instance.NumPerRow * (isDefaultPackage ? 1f : 1.5f) * __instance.YOffset);
                 var colorChip = UObject.Instantiate(__instance.ColorTabPrefab, __instance.scroller.Inner);
@@ -609,11 +646,12 @@ public static class CustomHats
                     colorChip.Button.OnClick.AddListener((Action)(() => __instance.SelectHat(hat)));
 
                 colorChip.Button.ClickMask = __instance.scroller.Hitbox;
-                var background = colorChip.transform.FindChild("Background");
-                var foreground = colorChip.transform.FindChild("ForeGround");
 
-                if (ext != null)
+                if (hat.GetHatExtension() != null)
                 {
+                    var background = colorChip.transform.FindChild("Background");
+                    var foreground = colorChip.transform.FindChild("ForeGround");
+
                     if (background)
                     {
                         background.localPosition = Vector3.down * 0.243f;
@@ -622,15 +660,6 @@ public static class CustomHats
 
                     if (foreground)
                         foreground.localPosition = Vector3.down * 0.243f;
-
-                    if (Template)
-                    {
-                        var description = UObject.Instantiate(Template, colorChip.transform);
-                        description.transform.localPosition = new(0f, -0.65f, -1f);
-                        description.alignment = TextAlignmentOptions.Center;
-                        description.transform.localScale = Vector3.one * 0.65f;
-                        __instance.StartCoroutine(Effects.Lerp(0.1f, new Action<float>(_ => description.SetText($"{hat.name}"))));
-                    }
                 }
 
                 colorChip.transform.localPosition = new(xpos, ypos, -1f);
@@ -651,44 +680,29 @@ public static class CustomHats
 
             __instance.ColorChips = new();
 
-            var unlockedHats = HatManager.Instance.GetUnlockedHats();
-            var packages = new Dictionary<string, List<(HatData, HatExtension)>>();
+            var array = HatManager.Instance.GetUnlockedHats();
+            var packages = new Dictionary<string, List<HatData>>();
 
-            foreach (var hatBehaviour in unlockedHats)
+            foreach (var data in array)
             {
-                var ext = hatBehaviour.GetHatExtension();
+                var ext = data.GetHatExtension();
+                var package = ext != null ? ext.Artist : "Innersloth";
 
-                if (ext != null)
-                {
-                    if (!packages.ContainsKey(ext.Artist))
-                        packages[ext.Artist] = new();
+                if (!packages.ContainsKey(package))
+                    packages[package] = new();
 
-                    packages[ext.Artist].Add(new(hatBehaviour, ext));
-                }
-                else
-                {
-                    if (!packages.ContainsKey(InnerslothPackageName))
-                        packages[InnerslothPackageName] = new();
-
-                    packages[InnerslothPackageName].Add(new(hatBehaviour, null));
-                }
+                packages[package].Add(data);
             }
 
             var YOffset = __instance.YStart;
             Template = GameObject.Find("HatsGroup").transform.FindChild("Text").GetComponent<TMP_Text>();
-
-            var orderedKeys = packages.Keys.OrderBy(x =>
+            var keys = packages.Keys.OrderBy(x => x switch
             {
-                if (x == InnerslothPackageName)
-                    return 1000;
-
-                if (x == "Developer Hats")
-                    return 0;
-
-                return 500;
+                "Innersloth" => 2,
+                _ => 1
             });
 
-            orderedKeys.ForEach(key => YOffset = CreateHatPackage(packages[key], key, YOffset, __instance));
+            keys.ForEach(key => YOffset = CreateHatPackage(packages[key], key, YOffset, __instance));
 
             foreach (var colorChip in __instance.ColorChips)
             {

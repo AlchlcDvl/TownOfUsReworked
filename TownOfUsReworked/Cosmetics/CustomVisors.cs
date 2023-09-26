@@ -1,6 +1,5 @@
-/*namespace TownOfUsReworked.Cosmetics;
+namespace TownOfUsReworked.Cosmetics;
 
-[HarmonyPatch]
 public static class CustomVisors
 {
     private static bool SubLoaded;
@@ -21,8 +20,8 @@ public static class CustomVisors
         if (sprite == null)
             return null;
 
-        texture.hideFlags |= HideFlags.HideAndDontSave;
-        sprite.hideFlags |= HideFlags.HideAndDontSave;
+        texture.hideFlags |= HideFlags.HideAndDontSave | HideFlags.DontUnloadUnusedAsset;
+        sprite.hideFlags |= HideFlags.HideAndDontSave | HideFlags.DontUnloadUnusedAsset;
         return sprite;
     }
 
@@ -45,26 +44,19 @@ public static class CustomVisors
                 cv.ClimbID = TownOfUsReworked.Visors + cv.ClimbID + ".png";
         }
 
-        var visor = ScriptableObject.CreateInstance<VisorData>();
-        var viewData = ScriptableObject.CreateInstance<VisorViewData>();
+        var visor = ScriptableObject.CreateInstance<VisorData>().DontDestroy();
+        var viewData = ScriptableObject.CreateInstance<VisorViewData>().DontDestroy();
         viewData.IdleFrame = CreateVisorSprite(cv.ID, fromDisk);
-
-        if (cv.FlipID != null)
-            viewData.LeftIdleFrame = CreateVisorSprite(cv.FlipID, fromDisk);
-        else
-            viewData.LeftIdleFrame = viewData.IdleFrame;
-
-        if (cv.FloorID != null)
-            viewData.FloorFrame = CreateVisorSprite(cv.FloorID, fromDisk);
-
-        if (cv.ClimbID != null)
-            viewData.ClimbFrame = CreateVisorSprite(cv.ClimbID, fromDisk);
-
+        viewData.FloorFrame = cv.FloorID != null ? CreateVisorSprite(cv.FloorID, fromDisk) : viewData.IdleFrame;
+        viewData.LeftIdleFrame = cv.FlipID != null ? CreateVisorSprite(cv.FlipID, fromDisk) : null;
+        viewData.ClimbFrame = cv.ClimbID != null ? CreateVisorSprite(cv.ClimbID, fromDisk) : null;
+        visor.SpritePreview = viewData.IdleFrame;
         visor.name = cv.Name;
         visor.displayOrder = 99;
-        visor.ProductId = "visor_" + cv.Name.Replace(' ', '_');
+        visor.ProductId = "customVisor_" + cv.Name.Replace(' ', '_');
         visor.ChipOffset = new(0f, 0.2f);
         visor.Free = true;
+        visor.behindHats = !cv.InFront;
 
         if (cv.Adaptive && Shader != null)
             viewData.AltShader = Shader;
@@ -72,14 +64,12 @@ public static class CustomVisors
         var extend = new VisorExtension()
         {
             Artist = cv.Artist ?? "Unknown",
-            Condition = cv.Condition ?? "none"
+            Condition = cv.Condition ?? "none",
+            FlipImage = viewData.LeftIdleFrame
         };
 
-        if (cv.FlipID != null)
-            extend.FlipImage = CreateVisorSprite(cv.FlipID, fromDisk);
-
         CustomVisorRegistry.TryAdd(visor.name, extend);
-        CustomVisorViewDatas.TryAdd(visor.name, viewData);
+        CustomVisorViewDatas.TryAdd(visor.ProdId, viewData);
         visor.ViewDataRef = new(viewData.Pointer);
         visor.CreateAddressableAsset();
         return visor;
@@ -123,16 +113,11 @@ public static class CustomVisors
     [HarmonyPatch(typeof(VisorsTab), nameof(VisorsTab.OnEnable))]
     public static class VisorsTabOnEnablePatch
     {
-        public const string InnerslothPackageName = "Innersloth";
         private static TMP_Text Template;
 
-        public static float CreateVisorPackage(List<(VisorData, VisorExtension)> visors, string packageName, float YStart, VisorsTab __instance)
+        public static float CreateVisorPackage(List<VisorData> visors, string packageName, float YStart, VisorsTab __instance)
         {
-            var isDefault = InnerslothPackageName == packageName;
-
-            if (!isDefault)
-                visors = visors.OrderBy(x => x.Item1.name).ToList();
-
+            visors = visors.OrderBy(x => x.name).ToList();
             var offset = YStart;
 
             if (Template != null)
@@ -151,65 +136,32 @@ public static class CustomVisors
 
             for (var i = 0; i < visors.Count; i++)
             {
-                var visor = visors[i].Item1;
-                var ext = visors[i].Item2;
+                var visor = visors[i];
                 var xpos = __instance.XRange.Lerp(i % __instance.NumPerRow / (__instance.NumPerRow - 1f));
-                var ypos = offset - (i / __instance.NumPerRow * (isDefault ? 1f : 1.5f) * __instance.YOffset);
+                var ypos = offset - (i / __instance.NumPerRow * __instance.YOffset);
                 var colorChip = UObject.Instantiate(__instance.ColorTabPrefab, __instance.scroller.Inner);
 
                 if (ActiveInputManager.currentControlType == ActiveInputManager.InputType.Keyboard)
                 {
                     colorChip.Button.OnMouseOver.AddListener((Action)(() => __instance.SelectVisor(visor)));
-                    colorChip.Button.OnMouseOut.AddListener((Action)(() =>  __instance.SelectVisor(HatManager.Instance.GetVisorById(DataManager.Player.Customization.Visor))));
+                    colorChip.Button.OnMouseOut.AddListener((Action)(() => __instance.SelectVisor(HatManager.Instance.GetVisorById(DataManager.Player.Customization.Visor))));
                     colorChip.Button.OnClick.AddListener((Action)(() => __instance.ClickEquip()));
                 }
                 else
                     colorChip.Button.OnClick.AddListener((Action)(() => __instance.SelectVisor(visor)));
 
                 colorChip.Button.ClickMask = __instance.scroller.Hitbox;
-                var background = colorChip.transform.FindChild("Background");
-                var foreground = colorChip.transform.FindChild("ForeGround");
-
-                if (ext != null)
-                {
-                    if (background != null)
-                    {
-                        background.localPosition = Vector3.down * 0.243f;
-                        background.localScale = new(background.localScale.x, 0.8f, background.localScale.y);
-                    }
-
-                    if (foreground != null)
-                    {
-                        foreground.localPosition = Vector3.down * 0.243f;
-                        foreground.localScale = new(foreground.localScale.x, 1.5f, foreground.localScale.y);
-                    }
-
-                    if (Template != null)
-                    {
-                        var description = UObject.Instantiate(Template, colorChip.transform);
-                        var material2 = description.GetComponent<MeshRenderer>().material;
-                        material2.SetFloat("_StencilComp", 4f);
-                        material2.SetFloat("_Stencil", 1f);
-                        description.transform.localPosition = new(0f, -0.65f, -1f);
-                        description.alignment = TextAlignmentOptions.Center;
-                        description.transform.localScale = Vector3.one * 0.65f;
-                        __instance.StartCoroutine(Effects.Lerp(0.1f, new Action<float>(_ => description.SetText(visor.name ?? "", true))));
-                    }
-                }
-
                 colorChip.transform.localPosition = new(xpos, ypos, -1f);
                 colorChip.Inner.transform.localPosition = visor.ChipOffset;
                 colorChip.ProductId = visor.ProductId;
-                colorChip.Tag = visor.ProdId;
+                colorChip.Tag = visor;
+                __instance.UpdateMaterials(colorChip.Inner.FrontLayer, visor);
+                visor.SetPreview(colorChip.Inner.FrontLayer, __instance.HasLocalPlayer() ? CustomPlayer.LocalCustom.Data.DefaultOutfit.ColorId : DataManager.Player.Customization.Color);
                 colorChip.SelectionHighlight.gameObject.SetActive(false);
-                var color = __instance.HasLocalPlayer() ? CustomPlayer.LocalCustom.Data.DefaultOutfit.ColorId : DataManager.Player.Customization.Color;
-                var cv = CustomVisorsDict[visor.name];
-                colorChip.Inner.FrontLayer.sharedMaterial = cv.Adaptive ? Shader : HatManager.Instance.DefaultShader;
-                visor.SetPreview(colorChip.Inner.FrontLayer, color);
                 __instance.ColorChips.Add(colorChip);
             }
 
-            return offset - ((visors.Count - 1) / __instance.NumPerRow * (isDefault ? 1f : 1.5f) * __instance.YOffset) - 1.75f;
+            return offset - ((visors.Count - 1) / __instance.NumPerRow * __instance.YOffset) - 1.75f;
         }
 
         public static bool Prefix(VisorsTab __instance)
@@ -219,43 +171,36 @@ public static class CustomVisors
 
             __instance.ColorChips = new();
             var array = HatManager.Instance.GetUnlockedVisors();
-            var packages = new Dictionary<string, List<(VisorData, VisorExtension)>>();
+            var packages = new Dictionary<string, List<VisorData>>();
 
-            foreach (var visorBehaviour in array)
+            foreach (var data in array)
             {
-                var ext = visorBehaviour.GetVisorExtension();
+                var ext = data.GetVisorExtension();
+                var package = ext != null ? ext.Artist : "Innersloth";
 
-                if (ext != null)
-                {
-                    if (!packages.ContainsKey(ext.Artist))
-                        packages[ext.Artist] = new();
+                if (!packages.ContainsKey(package))
+                    packages[package] = new();
 
-                    packages[ext.Artist].Add(new(visorBehaviour, ext));
-                }
-                else
-                {
-                    if (!packages.ContainsKey(InnerslothPackageName))
-                        packages[InnerslothPackageName] = new();
-
-                    packages[InnerslothPackageName].Add(new(visorBehaviour, null));
-                }
+                packages[package].Add(data);
             }
 
-            var YOffset = __instance.YStart;
+            var yOffset = __instance.YStart;
             Template = __instance.transform.FindChild("Text").gameObject.GetComponent<TMP_Text>();
-            var keys = packages.Keys.OrderBy(x =>
+            var keys = packages.Keys.OrderBy(x => x switch
             {
-                if (x == InnerslothPackageName)
-                    return 1000;
-
-                if (x == "Developer Visors")
-                    return 0;
-
-                return 500;
+                "Innersloth" => 2,
+                _ => 1
             });
+            keys.ForEach(key => yOffset = CreateVisorPackage(packages[key], key, yOffset, __instance));
+            __instance.scroller.ContentYBounds.max = -(yOffset + 4.1f);
 
-            keys.ForEach(key => YOffset = CreateVisorPackage(packages[key], key, YOffset, __instance));
-            __instance.scroller.ContentYBounds.max = -(YOffset + 4.1f);
+            foreach (var colorChip in __instance.ColorChips)
+            {
+                colorChip.Inner.FrontLayer.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
+                colorChip.Inner.BackLayer.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
+                colorChip.SelectionHighlight.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
+            }
+
             return false;
         }
     }
@@ -280,41 +225,45 @@ public static class CustomVisors
     {
         public static bool Prefix(VisorLayer __instance)
         {
-            if (__instance.currentVisor == null || !CustomVisorViewDatas.TryGetValue(__instance.currentVisor.ProductId, out var asset))
+            if (__instance.currentVisor == null || !__instance.currentVisor.ProductId.StartsWith("customVisor_"))
                 return true;
 
-            __instance.Image.sharedMaterial = asset.AltShader ? asset.AltShader : HatManager.Instance.DefaultShader;
+            var asset = CustomVisorViewDatas.TryGetValue(__instance.currentVisor.ProdId, out var result) ? result : null;
+            __instance.Image.sharedMaterial = asset.AltShader ?? HatManager.Instance.DefaultShader;
             PlayerMaterial.SetColors(__instance.matProperties.ColorId, __instance.Image);
+
             __instance.Image.maskInteraction = __instance.matProperties.MaskType switch
             {
-                PlayerMaterial.MaskType.SimpleUI or PlayerMaterial.MaskType.ScrollingUI => (SpriteMaskInteraction)1,
-                PlayerMaterial.MaskType.Exile => (SpriteMaskInteraction)2,
-                _ => 0,
+                PlayerMaterial.MaskType.SimpleUI or PlayerMaterial.MaskType.ScrollingUI => SpriteMaskInteraction.VisibleInsideMask,
+                PlayerMaterial.MaskType.Exile => SpriteMaskInteraction.VisibleOutsideMask,
+                _ => SpriteMaskInteraction.None,
             };
+
             return false;
         }
     }
 
-    [HarmonyPatch(typeof(VisorLayer), nameof(VisorLayer.SetFlipX), new[] { typeof(bool) })]
+    [HarmonyPatch(typeof(VisorLayer), nameof(VisorLayer.SetFlipX))]
     public static class VisorLayerSetFlipXPatch
     {
         public static bool Prefix(VisorLayer __instance, bool flipX)
         {
-            if (__instance.currentVisor == null || !CustomVisorViewDatas.TryGetValue(__instance.currentVisor.ProductId, out var asset))
+            if (__instance.currentVisor == null || !__instance.currentVisor.ProductId.StartsWith("customVisor_"))
                 return true;
 
             __instance.Image.flipX = flipX;
+            var asset = CustomVisorViewDatas.TryGetValue(__instance.currentVisor.ProdId, out var result) ? result : null;
             __instance.Image.sprite = flipX && asset.LeftIdleFrame ? asset.LeftIdleFrame : asset.IdleFrame;
             return false;
         }
     }
 
-    [HarmonyPatch(typeof(VisorLayer), nameof(VisorLayer.SetVisor), typeof(VisorData), typeof(VisorViewData), typeof(int))]
+    [HarmonyPatch(typeof(VisorLayer), nameof(VisorLayer.SetVisor), new Type[] { typeof(VisorData), typeof(VisorViewData), typeof(int) })]
     public static class VisorLayerSetVisorPositionPatch
     {
         public static bool Prefix(VisorLayer __instance, VisorData data, VisorViewData visorView, int colorId)
         {
-            if (!CustomVisorViewDatas.ContainsKey(data.ProductId))
+            if (!data.ProductId.StartsWith("customVisor_"))
                 return true;
 
             __instance.currentVisor = data;
@@ -325,7 +274,7 @@ public static class CustomVisors
         }
     }
 
-    [HarmonyPatch(typeof(VisorLayer), nameof(VisorLayer.SetVisor), typeof(VisorData), typeof(int))]
+    [HarmonyPatch(typeof(VisorLayer), nameof(VisorLayer.SetVisor), new Type[] { typeof(VisorData), typeof(int) })]
     public static class VisorLayerSetVisorPatch
     {
         public static bool Prefix(VisorLayer __instance, VisorData data, int colorId)
@@ -344,4 +293,4 @@ public static class CustomVisors
         CustomVisorRegistry.TryGetValue(visor.name, out var ret);
         return ret;
     }
-}*/
+}

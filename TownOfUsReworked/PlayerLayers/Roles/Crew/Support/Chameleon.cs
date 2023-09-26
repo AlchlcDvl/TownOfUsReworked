@@ -2,14 +2,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public class Chameleon : Crew
 {
-    public bool Enabled { get; set; }
-    public DateTime LastSwooped { get; set; }
-    public float TimeRemaining { get; set; }
-    public bool IsSwooped => TimeRemaining > 0f;
     public CustomButton SwoopButton { get; set; }
-    public int UsesLeft { get; set; }
-    public bool ButtonUsable => UsesLeft > 0;
-    public float Timer => ButtonUtils.Timer(Player, LastSwooped, CustomGameOptions.SwoopCd);
 
     public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Chameleon : Colors.Crew;
     public override string Name => "Chameleon";
@@ -18,42 +11,24 @@ public class Chameleon : Crew
     public override Func<string> Description => () => "- You can turn invisible";
     public override InspectorResults InspectorResults => InspectorResults.Unseen;
 
-    public Chameleon(PlayerControl player) : base(player)
+    public Chameleon(PlayerControl player) : base(player) => SwoopButton = new(this, "Swoop", AbilityTypes.Targetless, "ActionSecondary", Swoop, CustomGameOptions.SwoopCd,
+        CustomGameOptions.SwoopDur, Invis, UnInvis, CustomGameOptions.MaxSwoops);
+
+    public void Invis() => Utils.Invis(Player);
+
+    public void UnInvis() => DefaultOutfit(Player);
+
+    public void Swoop()
     {
-        UsesLeft = CustomGameOptions.MaxSwoops;
-        SwoopButton = new(this, "Swoop", AbilityTypes.Effect, "ActionSecondary", HitSwoop, true);
-    }
-
-    public void Invis()
-    {
-        Enabled = true;
-        TimeRemaining -= Time.deltaTime;
-        Utils.Invis(Player);
-
-        if (Meeting || IsDead)
-            TimeRemaining = 0f;
-    }
-
-    public void Uninvis()
-    {
-        Enabled = false;
-        LastSwooped = DateTime.UtcNow;
-        DefaultOutfit(Player);
-    }
-
-    public void HitSwoop()
-    {
-        if (Timer != 0f || IsSwooped || !ButtonUsable)
-            return;
-
-        TimeRemaining = CustomGameOptions.SwoopDur;
-        UsesLeft--;
-        CallRpc(CustomRPC.Action, ActionsRPC.Swoop, this);
+        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction1, SwoopButton);
+        SwoopButton.Begin();
     }
 
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        SwoopButton.Update("SWOOP", Timer, CustomGameOptions.SwoopCd, UsesLeft, IsSwooped, TimeRemaining, CustomGameOptions.SwoopDur);
+        SwoopButton.Update2("SWOOP");
     }
+
+    public override void TryEndEffect() => SwoopButton.Update3(IsDead);
 }

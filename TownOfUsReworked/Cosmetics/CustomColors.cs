@@ -1,7 +1,6 @@
 namespace TownOfUsReworked.Cosmetics;
 
-[HarmonyPatch]
-public static class ColorUtils
+public static class CustomColors
 {
     public static Color Rainbow => new HSBColor(PP(0f, 1f, 0.3f), 1f, 1f).ToColor();
     public static Color RainbowShadow => Shadow(Rainbow);
@@ -48,7 +47,7 @@ public static class ColorUtils
 
     public static void SetChangingColor(Renderer rend, int id)
     {
-        if (!IsChanging(id))
+        if (!IsChanging(id) || rend == null)
             return;
 
         rend.material.SetColor("_BackColor", GetColor(id, true));
@@ -154,11 +153,7 @@ public static class ColorUtils
         { 49, "Lighter" }, //Monochrome
         { 50, "Lighter" } //Rainbow
     };
-}
 
-[HarmonyPatch]
-public static class PalettePatch
-{
     public static void LoadColors()
     {
         Palette.ColorNames = new[]
@@ -332,133 +327,133 @@ public static class PalettePatch
             new(0, 0, 0, 255)
         };
     }
-}
 
-[HarmonyPatch(typeof(TranslationController), nameof(TranslationController.GetString), new[] { typeof(StringNames), typeof(Il2CppReferenceArray<Il2CppSystem.Object>) })]
-public static class PatchColours
-{
-    public static bool Prefix(ref string __result, [HarmonyArgument(0)] StringNames name)
+    [HarmonyPatch(typeof(TranslationController), nameof(TranslationController.GetString), new[] { typeof(StringNames), typeof(Il2CppReferenceArray<Il2CppSystem.Object>) })]
+    public static class PatchColours
     {
-        var newResult = (int)name switch
+        public static bool Prefix(ref string __result, [HarmonyArgument(0)] StringNames name)
         {
-            999967 => "Watermelon",
-            999968 => "Chocolate",
-            999969 => "SkyBlue",
-            999970 => "Beige",
-            999971 => "Magenta",
-            999972 => "Turquoise",
-            999973 => "Lilac",
-            999974 => "Olive",
-            999975 => "Azure",
-            999976 => "Plum",
-            999977 => "Jungle",
-            999978 => "Mint",
-            999979 => "Chartreuse",
-            999980 => "Macau",
-            999981 => "Tawny",
-            999982 => "Gold",
-            999983 => "Panda",
-            999984 => "Contrast",
-            999985 => "Starlight",
-            999986 => "Vantablack",
-            999987 => "Ice",
-            999988 => "Nougat",
-            999989 => "Lava",
-            999990 => "Reversebow",
-            999991 => "Vibrance",
-            999992 => "Darkbow",
-            999993 => "Aberration",
-            999994 => "Chroma",
-            999995 => "Mantle",
-            999996 => "Fire",
-            999997 => "Galaxy",
-            999998 => "Monochrome",
-            999999 => "Rainbow",
-            _ => null
-        };
+            var newResult = (int)name switch
+            {
+                999967 => "Watermelon",
+                999968 => "Chocolate",
+                999969 => "SkyBlue",
+                999970 => "Beige",
+                999971 => "Magenta",
+                999972 => "Turquoise",
+                999973 => "Lilac",
+                999974 => "Olive",
+                999975 => "Azure",
+                999976 => "Plum",
+                999977 => "Jungle",
+                999978 => "Mint",
+                999979 => "Chartreuse",
+                999980 => "Macau",
+                999981 => "Tawny",
+                999982 => "Gold",
+                999983 => "Panda",
+                999984 => "Contrast",
+                999985 => "Starlight",
+                999986 => "Vantablack",
+                999987 => "Ice",
+                999988 => "Nougat",
+                999989 => "Lava",
+                999990 => "Reversebow",
+                999991 => "Vibrance",
+                999992 => "Darkbow",
+                999993 => "Aberration",
+                999994 => "Chroma",
+                999995 => "Mantle",
+                999996 => "Fire",
+                999997 => "Galaxy",
+                999998 => "Monochrome",
+                999999 => "Rainbow",
+                _ => null
+            };
 
-        if (newResult != null)
+            if (newResult != null)
+            {
+                __result = Translate($"Colors.{newResult}");
+                return false;
+            }
+
+            return true;
+        }
+    }
+
+    [HarmonyPatch(typeof(PlayerTab), nameof(PlayerTab.OnEnable))]
+    public static class PlayerTabOnEnablePatch
+    {
+        public static void Postfix(PlayerTab __instance)
         {
-            __result = Translate($"Colors.{newResult}");
+            for (var i = 0; i < __instance.ColorChips.Count; i++)
+            {
+                var colorChip = __instance.ColorChips[i];
+                colorChip.transform.localScale *= 0.6f;
+                var x = __instance.XRange.min + (i % 10 * 0.35f);
+                var y = __instance.YStart - (i / 10 * 0.35f);
+                colorChip.transform.localPosition = new(x, y, 2f);
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(PlayerTab), nameof(PlayerTab.Update))]
+    public static class PlayerTabUpdatePatch
+    {
+        public static void Postfix(PlayerTab __instance)
+        {
+            for (var i = 0; i < __instance.ColorChips.Count; i++)
+                __instance.ColorChips[i].Inner.SpriteColor = GetColor(i, false);
+        }
+    }
+
+    [HarmonyPatch(typeof(PlayerMaterial), nameof(PlayerMaterial.SetColors), typeof(int), typeof(Renderer))]
+    public static class SetPlayerMaterialPatch
+    {
+        public static bool Prefix([HarmonyArgument(0)] int colorId, [HarmonyArgument(1)] Renderer rend)
+        {
+            var r = rend.gameObject.GetComponent<ColorBehaviour>() ?? rend.gameObject.AddComponent<ColorBehaviour>();
+            r.AddRend(rend, colorId);
+            return !IsChanging(colorId);
+        }
+    }
+
+    [HarmonyPatch(typeof(PlayerMaterial), nameof(PlayerMaterial.SetColors), typeof(Color), typeof(Renderer))]
+    public static class SetPlayerMaterialPatch2
+    {
+        public static bool Prefix([HarmonyArgument(1)] Renderer rend)
+        {
+            var r = rend.gameObject.GetComponent<ColorBehaviour>() ?? rend.gameObject.AddComponent<ColorBehaviour>();
+            r.AddRend(rend, 0);
+            return true;
+        }
+    }
+
+    [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.CmdCheckColor))]
+    public static class CmdCheckColorPatch
+    {
+        public static bool Prefix(PlayerControl __instance, [HarmonyArgument(0)] byte colorId)
+        {
+            CallRpc(CustomRPC.Misc, MiscRPC.SetColor, __instance, colorId);
+            __instance.SetColor(colorId);
             return false;
         }
-
-        return true;
     }
-}
 
-[HarmonyPatch(typeof(PlayerTab), nameof(PlayerTab.OnEnable))]
-public static class PlayerTabOnEnablePatch
-{
-    public static void Postfix(PlayerTab __instance)
+    [HarmonyPatch(typeof(PlayerTab), nameof(PlayerTab.UpdateAvailableColors))]
+    public static class UpdateAvailableColorsPatch
     {
-        for (var i = 0; i < __instance.ColorChips.Count; i++)
+        public static bool Prefix(PlayerTab __instance)
         {
-            var colorChip = __instance.ColorChips[i];
-            colorChip.transform.localScale *= 0.6f;
-            var x = __instance.XRange.min + (i % 10 * 0.35f);
-            var y = __instance.YStart - (i / 10 * 0.35f);
-            colorChip.transform.localPosition = new(x, y, 2f);
+            __instance.AvailableColors.Clear();
+
+            for (var i = 0; i < Palette.PlayerColors.Count; i++)
+            {
+                if (!CustomPlayer.Local || CustomPlayer.Local.CurrentOutfit.ColorId != i)
+                    __instance.AvailableColors.Add(i);
+            }
+
+            return false;
         }
-    }
-}
-
-[HarmonyPatch(typeof(PlayerTab), nameof(PlayerTab.Update))]
-public static class PlayerTabUpdatePatch
-{
-    public static void Postfix(PlayerTab __instance)
-    {
-        for (var i = 0; i < __instance.ColorChips.Count; i++)
-            __instance.ColorChips[i].Inner.SpriteColor = ColorUtils.GetColor(i, false);
-    }
-}
-
-[HarmonyPatch(typeof(PlayerMaterial), nameof(PlayerMaterial.SetColors), typeof(int), typeof(Renderer))]
-public static class SetPlayerMaterialPatch
-{
-    public static bool Prefix([HarmonyArgument(0)] int colorId, [HarmonyArgument(1)] Renderer rend)
-    {
-        var r = rend.gameObject.GetComponent<ColorBehaviour>() ?? rend.gameObject.AddComponent<ColorBehaviour>();
-        r.AddRend(rend, colorId);
-        return !ColorUtils.IsChanging(colorId);
-    }
-}
-
-[HarmonyPatch(typeof(PlayerMaterial), nameof(PlayerMaterial.SetColors), typeof(Color), typeof(Renderer))]
-public static class SetPlayerMaterialPatch2
-{
-    public static bool Prefix([HarmonyArgument(1)] Renderer rend)
-    {
-        var r = rend.gameObject.GetComponent<ColorBehaviour>() ?? rend.gameObject.AddComponent<ColorBehaviour>();
-        r.AddRend(rend, 0);
-        return true;
-    }
-}
-
-[HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.CmdCheckColor))]
-public static class CmdCheckColorPatch
-{
-    public static bool Prefix(PlayerControl __instance, [HarmonyArgument(0)] byte colorId)
-    {
-        CallRpc(CustomRPC.Misc, MiscRPC.SetColor, __instance, colorId);
-        __instance.SetColor(colorId);
-        return false;
-    }
-}
-
-[HarmonyPatch(typeof(PlayerTab), nameof(PlayerTab.UpdateAvailableColors))]
-public static class UpdateAvailableColorsPatch
-{
-    public static bool Prefix(PlayerTab __instance)
-    {
-        __instance.AvailableColors.Clear();
-
-        for (var i = 0; i < Palette.PlayerColors.Count; i++)
-        {
-            if (!CustomPlayer.Local || CustomPlayer.Local.CurrentOutfit.ColorId != i)
-                __instance.AvailableColors.Add(i);
-        }
-
-        return false;
     }
 }

@@ -57,7 +57,7 @@ Quick warning: This mod adds a whole LOT of stuff, and is currently not very beg
 | [Mafioso](#mafioso)          | [Silencer](#silencer)         | [Monarch](#monarch)               | [Jackal](#jackal)                 |
 | [Miner](#miner)              | [Spellslinger](#spellslinger) | [Mystic](#mystic)                 | [Jester](#jester)                 |
 | [Morphling](#morphling)      | [Stalker](#stalker)           | [Operative](#operative)           | [Juggernaut](#juggernaut)         |
-| [Teleporter](#teleporter)    | [Time Keeper](time-keeper)    | [Retributionist](#retributionist) | [Murderer](#murderer)             |
+| [Teleporter](#teleporter)    | [Timekeeper](time-keeper)     | [Retributionist](#retributionist) | [Murderer](#murderer)             |
 | [Wraith](#wraith)            | [Warper](#warper)             | [Revealer](#revealer)             | [Necromancer](#necromancer)       |
 |                              |                               | [Seer](#seer)                     | [Pestilence](#pestilence)         |
 |                              |                               | [Sheriff](#sheriff)               | [Phantom](#phantom)               |
@@ -132,11 +132,13 @@ Quick warning: This mod adds a whole LOT of stuff, and is currently not very beg
 
 | Among Us | Mod Version | Link |
 |----------|-------------|------|
+| 2023.7.12 (s & e) | v0.5.2 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.5.2/Reworked.zip) |
 | 2023.7.12 (s & e) | v0.5.1 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.5.1/Reworked.zip) |
 | 2023.7.12 (s & e) | v0.5.0 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.5.0/Reworked.zip) |
 
 <details>
 <summary>Older Versions</summary>
+
 | Among Us | Mod Version | Link |
 |----------|-------------|------|
 | 2023.7.12 (s & e) | v0.4.5 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.4.5/Reworked.zip) |
@@ -178,6 +180,7 @@ Quick warning: This mod adds a whole LOT of stuff, and is currently not very beg
 | 2022.12.14 (s & e) | v0.0.1dev14 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev14/ToU-Rew-v0.0.1dev14.rar) |
 | 2022.12.14 (s & e) | v0.0.1dev13.5 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev13.5/ToU-Rew-v0.0.1dev13.5.rar) |
 | 2022.12.14 (s & e) | v0.0.1dev13 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev13/ToU-Rew-v0.0.1dev13.rar) |
+
 </details>
 
 -----------------------
@@ -186,6 +189,25 @@ Quick warning: This mod adds a whole LOT of stuff, and is currently not very beg
 
 <details>
 <summary>Changelog</summary>
+<details>
+<summary>v0.5.2</summary>
+<ul> <li>Return: Custom visors are back</li> </ul>
+<ul> <li>Recode: Recoded how buttons are handled</li> </ul>
+<ul> <li>Recode: Recoded the many RPCs between roles</li> </ul>
+<ul> <li>Change: Being revived/resurrected now resets your cooldowns (to avoid the revived people killing their killers immediately)</li> </ul>
+<ul> <li>Change: Bugs and Bombs can no longer overlap ranges</li> </ul>
+<ul> <li>Change: Changed the abbreviation of "Crew (Protective)" to "CrP" because the original abbreviation is a practice no one supports</li> </ul>
+<ul> <li>Change: Warper can now spawn in Airship, Submerged and LevelImpostor maps</li> </ul>
+<ul> <li>Nerf: Jesters and Executioners can no longer kill more than one player</li> </ul>
+<ul> <li>Improvement: Postmortal roles that are not clicked will only see camouflaged players</li> </ul>
+<ul> <li>General Fix: Fixed some issues with game logic</li> </ul>
+<ul> <li>Visual Fix: Fixed Retibutionist and Operative seeing double numbers when whispering is turned on</li> </ul>
+<ul> <li>Visual Fix: Fixed the meeting timer sometimes being spammed with the page count</li> </ul>
+<ul> <li>Visual Fix: Fixed Janitor having the incorrect intro text</li> </ul>
+<ul> <li>Visual Fix: Fixed text run off in the hats and visors menus</li> </ul>
+<ul> <li>Visual Fix: Fixed appearance changes not changing the players names</li> </ul>
+<ul> <li>Role Fix: Fixed Vigilantes being unable to target Crew</li> </ul>
+</details>
 <details>
 <summary>v0.5.1</summary>
 <ul> <li>Update: Updated BepInEx to 6.0.0-be.673</li> </ul>
@@ -469,7 +491,7 @@ Quick warning: This mod adds a whole LOT of stuff, and is currently not very beg
 <details>
 <summary>v0.2.5</summary>
 <ul> <li>New Role: Silencer [Syndicate (Disruption)]</li> </ul>
-<ul> <li>Return: Time Lord and Time Master are back, and more vengeful then ever as the Time Keeper [Syndicate (Power)]!</li> </ul>
+<ul> <li>Return: Time Lord and Time Master are back, and more vengeful then ever as the Timekeeper [Syndicate (Power)]!</li> </ul>
 <ul> <li>Return: Neutral (Evil) roles now end the game again, but this is togglable</li> </ul>
 <ul> <li>Addition: Added a credits button to the main menu</li> </ul>
 <ul> <li>Finished: Role cards are now complete</li> </ul>
@@ -1068,49 +1090,49 @@ Quick warning: This mod adds a whole LOT of stuff, and is currently not very beg
 ## Requirements 
 - Among Us
 - Steam or Epic Games
+- Windows/Linux operating system [download](#releases) the Town of Us Reworked zip file corresponding to the installed Among Us version.
 
-## Steam Guide
-1. [Download](#releases) the Town of Us Reworked file corresponding to the installed Among Us version.
-2. Go to your Steam library.
-3. Right-click Among Us > click `Manage` > click `Browse local files`.
-4. In the File Explorer, delete the entire `Among Us` folder.
-5. Go back to your Steam library.
-6. Right-Click Among Us > click `Properties...` > click `LOCAL FILES`.
-7. Click on `VERIFY INTEGRITY OF GAME FILES...`.
-8. Wait for Steam to download a clean version of Among Us.
-9. Duplicate the new Among Us Folder.
-10. Rename it to `Among Us - ToU-Rew`.
-11. Double-click on the zip file you downloaded.
-12. Drag all the files from the zip file in the new ToU folder.
-13. Finally, launch `Among Us.exe` from that folder.
+To start off any installation, 
 
-## Epic Games Guide
-1. [Download](#releases) the Town of Us Reworked file corresponding to the installed Among Us version.
-2. Go to your Epic Games library.
-3. Find Among Us and click on the 3 dots `...` > click `Uninstall`.
-4. Confirm you want to Uninstall Among Us.
-5. In the Epic library, click on Among Us to install.
-6. Copy the Folder Path.
-7. Uncheck Auto-Update.
-8. Click on Install.
-9. Click Yes on the Windows pop up.
-10. Paste the folder path in Windows search bar.
-11. Click on Enter.
-12. Copy or move the contents of the Town Of Us zip file into the AmongUs folder.
-13. Finally, launch Among Us from Epic Games library.
+## Windows Steam Guide
+1. Go to your Steam library.
+2. Right-click Among Us > click `Manage` > click `Browse local files`.
+3. In the File Explorer, delete the entire `Among Us` folder.
+4. Go back to your Steam library.
+5. Right-Click Among Us > click `Properties...` > click `LOCAL FILES`.
+6. Click on `VERIFY INTEGRITY OF GAME FILES...`.
+7. Wait for Steam to download a clean version of Among Us.
+8. Duplicate the new Among Us Folder and rename it to `Among Us - Reworked`.
+9. Extract the contents of the zip file into the new folder.
+10. Finally, launch `Among Us.exe` from that folder.
+
+## Windows Epic Games Guide
+1. Go to your Epic Games library.
+2. Find Among Us and click on the 3 dots `...` > click `Uninstall`.
+3. Confirm you want to Uninstall Among Us.
+4. In the Epic library, click on Among Us to install.
+5. Copy the Folder Path.
+6. Uncheck Auto-Update.
+7. Click on Install.
+8. Click Yes on the Windows pop up.
+9. Paste the folder path in Windows search bar.
+10. Press Enter.
+11. Copy or move the contents of the Town Of Us zip file into the AmongUs folder.
+12. Finally, launch Among Us from Epic Games library.
 
 ## Linux Guide
-1. Install Among Us via Steam
-2. Download newest [release](https://github.com/AlchlcDvl/TownOfUsReworked/releases) and extract it to ~/.steam/steam/steamapps/common/Among Us
-3. Enable `winhttp.dll` via the proton winecfg; [guide](https://docs.bepinex.dev/articles/advanced/steam_interop.html#open-winecfg-for-the-target-game)
-4. Launch the game via Steam
+1. Extract the contents of the zip file to ~/.steam/steam/steamapps/common/Among Us
+2. Enable `winhttp.dll` via the proton winecfg; [here's how](https://docs.bepinex.dev/articles/advanced/steam_interop.html#open-winecfg-for-the-target-game)
+3. Launch the game via Steam
 
 ## Results
 Your game folder should look something like this.
 
 ![Image](./Images/Folder.png)
 
-The first launch will take a while, so be patient if it doesn't launch immediately. If the mod still does not work, install [vc_redist](https://aka.ms/vs/16/release/vc_redist.x86.exe) and try again.
+The first launch will take a while, so be patient if it doesn't launch immediately.
+
+If the mod still does not work, install [vc_redist](https://aka.ms/vs/16/release/vc_redist.x86.exe) and try again.
 
 ## Issues
 If you still have issues installing Town of Us Reworked, you can join our [Discord](https://discord.gg/cd27aDQDY9) to receive help.
@@ -1126,13 +1148,13 @@ For Epic Games and Linux users, delete these files and you're good to go!
 
 ![Delete](./Images/Delete.png)
 
-For Steam users, delete the `Among Us - ToU-Rew` that you created.
+For Steam users, delete the `Among Us - Reworked` that you created.
 
 -----------------------
 
 # Differences
 
-This is yet another Town Of Us clone, I know. The main reason this mod exists is because I hated why despite me constantly telling the devs to remove the "The" in "The Glitch". After that I simply looked for help from [Det](https://github.com/FERTAILS) and then slowly learned from there.
+This is yet another Town Of Us clone, I know. The main reason this mod exists is because I was banned from the Town Of Us Reactivated discord and hated that "The" in "The Glitch" was not being removed. After that I simply looked for help from [Det](https://github.com/FERTAILS) and then slowly learned from there.
 
 > "*I simply taught him on how to make an empty role, and then he FUCKING EXPLODED*" - Det
 
@@ -2627,22 +2649,22 @@ The Stalker is a buffed Tracker with no update interval. With the Chaos Drive, t
 
 ![Stalker](./Images/Stalker.png)
 
-## Time Keeper
+## Timekeeper
 ### Alignment: Syndicate (Power)
 ### Origin: Reworked Town Of Us Time Lord
 
-The Time Keeper can control time. Without the Chaos Drive, the Time Keeper can freeze time, making everyone unable to move and with it, the Time Keeper rewinds players instead.
+The Timekeeper can control time. Without the Chaos Drive, the Timekeeper can freeze time, making everyone unable to move and with it, the Timekeeper rewinds players instead.
 
 ### Game Options
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Time Control Cooldown | The cooldown on the Time Keeper's time control button | Time | 25s |
-| Time Control Duration | The duration of the Time Keeper's time control | Time | 10s |
+| Time Control Cooldown | The cooldown on the Timekeeper's time control button | Time | 25s |
+| Time Control Duration | The duration of the Timekeeper's time control | Time | 10s |
 | Syndicate Are Immune To Freeze | Self descriptive | Toggle | False |
 | Syndicate Are Immune To Rewind | Self descriptive | Toggle | False |
 
-![Time Keeper](./Images/TimeKeeper.png)
+![Timekeeper](./Images/Timekeeper.png)
 
 ## Warper
 ### Alignment: Syndicate (Support)
@@ -3367,7 +3389,7 @@ The Underdog is an Intruder or Syndicate with prolonged cooldowns when with a te
 - Leads The Group - Mayor, Godfather (Original), Rebel (Original), Pestilence, Survivor
 - Brings Chaos - Shifter, Thief, Camouflager, Whisperer, Jackal
 - Seeks To Destroy - Arsonist, Cryomaniac, Plaguebearer, Spellslinger
-- Wants To Explore - Transporter, Teleporter, Warper, Time Keeper
+- Wants To Explore - Transporter, Teleporter, Warper, Timekeeper
 - New Lens - Engineer, Miner, Seer, Dracula, Medium, Monarch
 - Gains Information - Sheriff, Consigliere, Blackmailer, Detective, Inspector, Silencer
 - Is Manipulative - Jester, Executioner, Actor, Troll, Framer, Dictator
@@ -3531,6 +3553,7 @@ After that, it's gaming time.
 [VincentVision](https://github.com/VincentVision) - For some code here and there from his version of Town Of Us (which was deleted sadly)\
 [Lunastellia](https://github.com/Lunastellia) - For Better Skeld code\
 [CrowdedMod](https://github.com/CrowdedMods/CrowdedMod) - For allowing to bypass the 15 player limit and is embedded into the mod [here](https://github.com/AlchlcDvl/TownOfUsReworked/tree/master/TownOfUsReworked/Crowded)\
+[All The Roles](https://github.com/Zeo666/AllTheRoles) - For the Ruthless ability and help with the shapeshifter menus\
 [Town Of Salem](https://www.blankmediagames.com/TownOfSalem/), [Traitors In Salem](https://www.traitorsinsalem.com) & [Town Of Salem 2](https://store.steampowered.com/app/2140510/Town_of_Salem_2/) - For multiple role ideas
 
 -----------------------

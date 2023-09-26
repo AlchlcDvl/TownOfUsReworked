@@ -2,11 +2,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public class Transporter : Crew
 {
-    public DateTime LastTransported { get; set; }
     public PlayerControl TransportPlayer1 { get; set; }
     public PlayerControl TransportPlayer2 { get; set; }
-    public int UsesLeft { get; set; }
-    public bool ButtonUsable => UsesLeft > 0;
     public Dictionary<byte, DateTime> UntransportablePlayers { get; set; }
     public CustomButton TransportButton { get; set; }
     public CustomMenu TransportMenu1 { get; set; }
@@ -15,15 +12,13 @@ public class Transporter : Crew
     public SpriteRenderer AnimationPlaying2 { get; set; }
     public GameObject Transport1 { get; set; }
     public GameObject Transport2 { get; set; }
-    public float TimeRemaining { get; set; }
-    public bool Transporting => TimeRemaining > 0;
+    public bool Transporting { get; set; }
     public DeadBody Player1Body { get; set; }
     public DeadBody Player2Body { get; set; }
     public bool WasInVent1 { get; set; }
     public bool WasInVent2 { get; set; }
     public Vent Vent1 { get; set; }
     public Vent Vent2 { get; set; }
-    public float Timer => ButtonUtils.Timer(Player, LastTransported, CustomGameOptions.TransportCd);
 
     public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Transporter : Colors.Crew;
     public override string Name => "Transporter";
@@ -36,12 +31,11 @@ public class Transporter : Crew
     {
         TransportPlayer1 = null;
         TransportPlayer2 = null;
-        UsesLeft = CustomGameOptions.MaxTransports;
         Alignment = Alignment.CrewSupport;
         UntransportablePlayers = new();
         TransportMenu1 = new(Player, Click1, Exception1);
         TransportMenu2 = new(Player, Click2, Exception2);
-        TransportButton = new(this, "Transport", AbilityTypes.Effect, "ActionSecondary", Transport, true);
+        TransportButton = new(this, "Transport", AbilityTypes.Targetless, "ActionSecondary", Transport, CustomGameOptions.TransportCd, CustomGameOptions.MaxTransports);
         Player1Body = null;
         Player2Body = null;
         WasInVent1 = false;
@@ -53,7 +47,7 @@ public class Transporter : Crew
         Transport1.AddSubmergedComponent("ElevatorMover");
         Transport2.AddSubmergedComponent("ElevatorMover");
         Transport1.transform.position = new(Player.GetTruePosition().x, Player.GetTruePosition().y, (Player.GetTruePosition().y / 1000f) + 0.01f);
-        Transport1.transform.position = new(Player.GetTruePosition().x, Player.GetTruePosition().y, (Player.GetTruePosition().y / 1000f) + 0.01f);
+        Transport2.transform.position = new(Player.GetTruePosition().x, Player.GetTruePosition().y, (Player.GetTruePosition().y / 1000f) + 0.01f);
         AnimationPlaying1 = Transport1.AddComponent<SpriteRenderer>();
         AnimationPlaying2 = Transport2.AddComponent<SpriteRenderer>();
         AnimationPlaying1.sprite = AnimationPlaying2.sprite = PortalAnimation[0];
@@ -70,7 +64,6 @@ public class Transporter : Crew
         WasInVent2 = false;
         Vent1 = null;
         Vent2 = null;
-        TimeRemaining = CustomGameOptions.TransportDur;
 
         if (TransportPlayer1.Data.IsDead)
         {
@@ -108,6 +101,7 @@ public class Transporter : Crew
             WasInVent2 = true;
         }
 
+        Transporting = true;
         TransportPlayer1.moveable = false;
         TransportPlayer2.moveable = false;
         TransportPlayer1.NetTransform.Halt();
@@ -126,20 +120,16 @@ public class Transporter : Crew
 
         while (true)
         {
-            var now = DateTime.UtcNow;
-            var seconds = (now - startTime).TotalSeconds;
+            var seconds = (DateTime.UtcNow - startTime).TotalSeconds;
 
             if (seconds < CustomGameOptions.TransportDur)
-            {
-                TimeRemaining -= Time.deltaTime;
                 yield return null;
-            }
             else
                 break;
 
             if (Meeting)
             {
-                TimeRemaining = 0;
+                AnimationPlaying1.sprite = AnimationPlaying2.sprite = PortalAnimation[0];
                 yield break;
             }
         }
@@ -225,8 +215,7 @@ public class Transporter : Crew
         TransportPlayer2.NetTransform.enabled = true;
         TransportPlayer1 = null;
         TransportPlayer2 = null;
-        TimeRemaining = 0; //Insurance
-        LastTransported = DateTime.UtcNow;
+        Transporting = false;
     }
 
     public void Click1(PlayerControl player)
@@ -236,9 +225,9 @@ public class Transporter : Crew
         if (interact.AbilityUsed)
             TransportPlayer1 = player;
         else if (interact.Reset)
-            LastTransported = DateTime.UtcNow;
+            TransportButton.StartCooldown(CooldownType.Reset);
         else if (interact.Protected)
-            LastTransported.AddSeconds(CustomGameOptions.ProtectKCReset);
+            TransportButton.StartCooldown(CooldownType.GuardianAngel);
     }
 
     public void Click2(PlayerControl player)
@@ -248,9 +237,9 @@ public class Transporter : Crew
         if (interact.AbilityUsed)
             TransportPlayer2 = player;
         else if (interact.Reset)
-            LastTransported = DateTime.UtcNow;
+            TransportButton.StartCooldown(CooldownType.Reset);
         else if (interact.Protected)
-            LastTransported.AddSeconds(CustomGameOptions.ProtectKCReset);
+            TransportButton.StartCooldown(CooldownType.GuardianAngel);
     }
 
     public void AnimateTransport1()
@@ -289,43 +278,47 @@ public class Transporter : Crew
         })));
     }
 
-    public bool Exception1(PlayerControl player) => (player == Player && !CustomGameOptions.TransSelf) || UntransportablePlayers.ContainsKey(player.PlayerId) ||
-        (BodyById(player.PlayerId) == null && player.Data.IsDead) || player == TransportPlayer2 || player.IsMoving();
+    public bool Exception1(PlayerControl player) => (player == Player && !CustomGameOptions.TransSelf) || UntransportablePlayers.ContainsKey(player.PlayerId) || (BodyById(player.PlayerId) ==
+        null && player.Data.IsDead) || player == TransportPlayer2 || player.IsMoving();
 
-    public bool Exception2(PlayerControl player) => (player == Player && !CustomGameOptions.TransSelf) || UntransportablePlayers.ContainsKey(player.PlayerId) ||
-        (BodyById(player.PlayerId) == null && player.Data.IsDead) || player == TransportPlayer1 || player.IsMoving();
+    public bool Exception2(PlayerControl player) => (player == Player && !CustomGameOptions.TransSelf) || UntransportablePlayers.ContainsKey(player.PlayerId) || (BodyById(player.PlayerId) ==
+        null && player.Data.IsDead) || player == TransportPlayer1 || player.IsMoving();
 
     public void Transport()
     {
-        if (Timer != 0f)
-            return;
-
         if (TransportPlayer1 == null)
             TransportMenu1.Open();
         else if (TransportPlayer2 == null)
             TransportMenu2.Open();
         else
         {
-            CallRpc(CustomRPC.Action, ActionsRPC.Transport, this, TransportPlayer1, TransportPlayer2);
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, TransportPlayer1, TransportPlayer2);
             Coroutines.Start(TransportPlayers());
-            UsesLeft--;
+            TransportButton.StartCooldown(CooldownType.Reset);
         }
+    }
+
+    public override void ReadRPC(MessageReader reader)
+    {
+        TransportPlayer1 = reader.ReadPlayer();
+        TransportPlayer2 = reader.ReadPlayer();
+        Coroutines.Start(TransportPlayers());
     }
 
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        var flag1 = TransportPlayer1 == null;
-        var flag2 = TransportPlayer2 == null;
-        TransportButton.Update(flag1 ? "FIRST TARGET" : (flag2 ? "SECOND TARGET" : "TRANSPORT"), Timer, CustomGameOptions.TransportCd, UsesLeft, Transporting,
-            TimeRemaining, CustomGameOptions.TransportDur, true, ButtonUsable);
+        TransportButton.Update2(TransportPlayer1 == null ? "FIRST TARGET" : (TransportPlayer2 == null ? "SECOND TARGET" : "TRANSPORT"));
 
         if (Input.GetKeyDown(KeyCode.Backspace))
         {
-            if (TransportPlayer2 != null)
-                TransportPlayer2 = null;
-            else if (TransportPlayer1 != null)
-                TransportPlayer1 = null;
+            if (!Transporting)
+            {
+                if (TransportPlayer2 != null)
+                    TransportPlayer2 = null;
+                else if (TransportPlayer1 != null)
+                    TransportPlayer1 = null;
+            }
 
             LogInfo("Removed a target");
         }

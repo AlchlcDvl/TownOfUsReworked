@@ -13,7 +13,7 @@ public static class MedScanMinigamePatch
         var newHeightInch = oldHeightInch * CustomPlayer.Local.GetModifiedSize();
         var newWeight = oldWeight * CustomPlayer.Local.GetModifiedSize();
 
-        while (IsInRange(newHeightFeet, 0, 1))
+        while (newHeightFeet.IsInRange(0, 1))
         {
             newHeightInch += 12 * newHeightFeet;
             newHeightFeet--;

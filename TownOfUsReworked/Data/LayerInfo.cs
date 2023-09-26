@@ -1,15 +1,14 @@
 namespace TownOfUsReworked.Data;
 
-[HarmonyPatch]
 public static class LayerInfo
 {
     public static readonly List<RoleInfo> AllRoles = new()
     {
         new("Invalid", "Invalid", "Invalid", Alignment.None, Faction.None, "Invalid", Colors.Role, "Invalid"),
         new("Altruist", "Alt", "The Altruist is capable of reviving dead players. After a set period of time, the player will be resurrected, if the revival isn't interrupted. Once a " +
-            "player is revived, all evil players will be notified of the revival and will have an arrow pointing towards the revived player. Once the Altruist uses up all of their ability"
-            + " charges, they sacrifice themselves on the last use of their ability.", Alignment.CrewProt, Faction.Crew, "I know what I have to do but I don't know if I have the " +
-            "strength to do it.", Colors.Altruist),
+            "player is revived, all evil players will be notified of the revival and will have an arrow pointing towards the revived player. Once the Altruist uses up all of their ability "
+            + "charges, they sacrifice themselves on the last use of their ability.", Alignment.CrewProt, Faction.Crew, "I know what I have to do but I don't know if I have the strength to" +
+            " do it.", Colors.Altruist),
         new("Chameleon", "Cham", "The Chameleon can go invisible to stalk players and see what they do when no one is around.", Alignment.CrewSupport, Faction.Crew, "Are you sure you" +
             " can see me?", Colors.Chameleon),
         new("Coroner", "Cor", "The Coroner gets an alert when someone dies and briefly gets an arrow pointing in the direction of the body. They can autopsy bodies to get some info. They" +
@@ -242,8 +241,8 @@ public static class LayerInfo
         new("Collider", "Col", "The Collider can mark players as positive and negative. If these charged players come within a certain distance of each other, they will die together" +
             ". With the Chaos Drive, the Collider can charge themselves to collide with the other charged players. This only kills the charged victim. The range of collision also " +
             "increases with the Chaos Drive.", Alignment.SyndicateKill, Faction.Syndicate, "I'm a great matchmaker, trust me.", Colors.Collider),
-        new("Time Keeper", "TK", "The Time Keeper can control time. Without the Chaos Drive, the Time Keeper can freeze time, making everyone unable to move and with it, the Time " +
-            "Keeper rewinds players instead.", Alignment.SyndicatePower, Faction.Syndicate, "IT'S TIME TO STOP. NO MORE.", Colors.TimeKeeper),
+        new("Timekeeper", "TK", "The Timekeeper can control time. Without the Chaos Drive, the Timekeeper can freeze time, making everyone unable to move and with it, the Time " +
+            "Keeper rewinds players instead.", Alignment.SyndicatePower, Faction.Syndicate, "IT'S TIME TO STOP. NO MORE.", Colors.Timekeeper),
         new("Silencer", "Sil", "The Silencer can silencer people. Silenced plaeyrs cannot see the messages being sent by others but can still talk. Other players can still talk but " +
             "can't get their info through to the silenced player. With the Chaos Drive, silence prevents everyone except for the silenced player from talking.",
             Alignment.SyndicateDisrup, Faction.Syndicate, "QUIET.", Colors.Silencer),
@@ -537,7 +536,7 @@ public static class LayerInfo
         new("Inspector Results", "IR", "All roles are classified within certain role groups for the Inspector to see.", Colors.Inspector, "Results:\nDeals With Dead - Coroner, " +
             "Amnesiac, Retributionist, Janitor, Cannibal\nPreserves Life - Medic, Guardian Angel, Altruist, Necromancer, Crusader\nLeads The Group - Mayor, Godfather (Original), Rebel "
             + "(Original), Pestilence, Survivor\nBrings Chaos - Shifter, Thief, Camouflager, Whisperer, Jackal\nSeeks To Destroy - Arsonist, Cryomaniac, Plaguebearer, " +
-            "Spellslinger\nWants To Explore - Transporter, Teleporter, Warper, Time Keeper\nNew Lens - Engineer, Miner, Seer, Dracula, Medium, Monarch\nGains Information - Sheriff, " +
+            "Spellslinger\nWants To Explore - Transporter, Teleporter, Warper, Timekeeper\nNew Lens - Engineer, Miner, Seer, Dracula, Medium, Monarch\nGains Information - Sheriff, " +
             "Consigliere, Blackmailer, Detective, Inspector, Silencer\nIs Manipulative - Jester, Executioner, Actor, Troll, Framer, Dictator\nUnseen - Chameleon, Wraith, Concealer, " +
             "Poisoner, Collider\nIs Cold - Veteran, Vigilante, Sidekick, Guesser, Mafioso\nTracks Others - Tracker, Mystic, Vampire Hunter, Bounty Hunter, Stalker\nIs Aggressive - " +
             "Betrayer, Werewolf, Juggernaut, Serial Killer\nCreates Confusion - Morphling, Disguiser, Shapeshifter\nDrops Items - Bomber, Operative, Grenadier, Enforcer\nHinders  " +

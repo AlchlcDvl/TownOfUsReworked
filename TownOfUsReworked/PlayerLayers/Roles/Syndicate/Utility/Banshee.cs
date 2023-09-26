@@ -3,10 +3,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Banshee : Syndicate
 {
     public CustomButton ScreamButton { get; set; }
-    public bool Enabled { get; set; }
-    public DateTime LastScreamed { get; set; }
-    public float TimeRemaining { get; set; }
-    public bool Screaming => TimeRemaining > 0f;
     public List<byte> Blocked { get; set; }
     public bool Caught { get; set; }
     public bool Faded { get; set; }
@@ -17,21 +13,18 @@ public class Banshee : Syndicate
     public override Func<string> StartText => () => "AAAAAAAAAAAAAAAAAAAAAAAAA";
     public override Func<string> Description => () => "- You can scream loudly, blocking all players as long as you are not clicked";
     public override InspectorResults InspectorResults => InspectorResults.Ghostly;
-    public float Timer => ButtonUtils.Timer(Player, LastScreamed, CustomGameOptions.ScreamCd, true);
 
     public Banshee(PlayerControl player) : base(player)
     {
         Alignment = Alignment.SyndicateUtil;
         Blocked = new();
         RoleBlockImmune = true; //Not taking chances
-        ScreamButton = new(this, "Scream", AbilityTypes.Effect, "ActionSecondary", HitScream);
+        ScreamButton = new(this, "Scream", AbilityTypes.Targetless, "ActionSecondary", HitScream, CustomGameOptions.ScreamCd, CustomGameOptions.ScreamDur, (CustomButton.EffectVoid)Scream,
+            UnScream, true);
     }
 
     public void Scream()
     {
-        Enabled = true;
-        TimeRemaining -= Time.deltaTime;
-
         foreach (var id in Blocked)
         {
             var player = PlayerById(id);
@@ -39,16 +32,10 @@ public class Banshee : Syndicate
             foreach (var layer in GetLayers(player))
                 layer.IsBlocked = !GetRole(player).RoleBlockImmune;
         }
-
-        if (Meeting || Caught)
-            TimeRemaining = 0f;
     }
 
     public void UnScream()
     {
-        Enabled = false;
-        LastScreamed = DateTime.UtcNow;
-
         foreach (var id in Blocked)
         {
             var player = PlayerById(id);
@@ -83,50 +70,54 @@ public class Banshee : Syndicate
         color.a = Mathf.Lerp(color.a, 0, distPercent);
 
         if (Player.GetCustomOutfitType() != CustomPlayerOutfitType.PlayerNameOnly)
-        {
-            Player.SetOutfit(CustomPlayerOutfitType.PlayerNameOnly, new GameData.PlayerOutfit()
-            {
-                ColorId = Player.GetDefaultOutfit().ColorId,
-                HatId = "",
-                SkinId = "",
-                VisorId = "",
-                PlayerName = ""
-            });
-        }
+            Player.SetOutfit(CustomPlayerOutfitType.PlayerNameOnly, BlankOutfit(Player));
 
         Player.MyRend().color = color;
         Player.NameText().color = new(0f, 0f, 0f, 0f);
         Player.cosmetics.colorBlindText.color = new(0f, 0f, 0f, 0f);
+
+        if (Local)
+            Camouflage();
     }
 
     public void UnFade()
     {
-        DefaultOutfit(Player);
         Player.MyRend().color = UColor.white;
         Player.gameObject.layer = LayerMask.NameToLayer("Ghost");
         Faded = false;
         Player.MyPhysics.ResetMoveState();
+
+        if (Local)
+            DefaultOutfitAll();
     }
 
     public void HitScream()
     {
-        if (Timer != 0f)
-            return;
-
-        TimeRemaining = CustomGameOptions.ScreamDur;
-        Scream();
-        CallRpc(CustomRPC.Action, ActionsRPC.Scream, this);
-
         foreach (var player in CustomPlayer.AllPlayers)
         {
-            if (!player.HasDied() && !player.Is(Faction.Syndicate))
+            if (!player.HasDied() && !player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate)
                 Blocked.Add(player.PlayerId);
         }
+
+        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction1, ScreamButton);
+        ScreamButton.Begin();
     }
 
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        ScreamButton.Update("SCREAM", Timer, CustomGameOptions.ScreamCd, Screaming, TimeRemaining, CustomGameOptions.ScreamDur, true, !Caught);
+        KillButton.Disable();
+        ScreamButton.Update2("SCREAM", !Caught);
+    }
+
+    public override void TryEndEffect() => ScreamButton.Update3(Caught);
+
+    public override void ReadRPC(MessageReader reader)
+    {
+        foreach (var player in CustomPlayer.AllPlayers)
+        {
+            if (!player.HasDied() && !player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate)
+                Blocked.Add(player.PlayerId);
+        }
     }
 }

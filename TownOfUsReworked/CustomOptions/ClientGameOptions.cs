@@ -1,6 +1,5 @@
 namespace TownOfUsReworked.CustomOptions;
 
-[HarmonyPatch]
 public static class ClientGameOptions
 {
     public static bool LighterDarker => TownOfUsReworked.LighterDarker.Value;

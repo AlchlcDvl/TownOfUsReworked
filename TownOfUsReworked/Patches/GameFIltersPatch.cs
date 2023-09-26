@@ -1,6 +1,5 @@
 namespace TownOfUsReworked.Patches;
 
-[HarmonyPatch]
 public static class GameFilters
 {
     private const string FilterText = "Reworked";

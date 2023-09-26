@@ -17,48 +17,41 @@ public class Rebel : Syndicate
     public Rebel(PlayerControl player) : base(player)
     {
         Alignment = Alignment.SyndicateSupport;
-        SidekickButton = new(this, "Sidekick", AbilityTypes.Direct, "Secondary", Sidekick);
+        SidekickButton = new(this, "Sidekick", AbilityTypes.Target, "Secondary", Sidekick);
     }
 
-    public static void Sidekick(Rebel reb, PlayerControl target)
+    public void Sidekick(PlayerControl target)
     {
-        reb.HasDeclared = true;
+        HasDeclared = true;
         var formerRole = GetRole(target);
 
         var sidekick = new Sidekick(target)
         {
             FormerRole = formerRole,
-            Rebel = reb
+            Rebel = this
         };
 
         sidekick.RoleUpdate(formerRole);
-
-        if (target == CustomPlayer.Local)
-            Flash(Colors.Rebel);
-
-        if (CustomPlayer.Local.Is(LayerEnum.Seer))
-            Flash(Colors.Seer);
     }
 
     public void Sidekick()
     {
-        if (IsTooFar(Player, SidekickButton.TargetPlayer) || HasDeclared)
-            return;
-
         var interact = Interact(Player, SidekickButton.TargetPlayer);
 
         if (interact.AbilityUsed)
         {
-            CallRpc(CustomRPC.Action, ActionsRPC.Sidekick, this, SidekickButton.TargetPlayer);
-            Sidekick(this, SidekickButton.TargetPlayer);
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, SidekickButton.TargetPlayer);
+            Sidekick(SidekickButton.TargetPlayer);
         }
     }
 
     public bool Exception1(PlayerControl player) => !player.Is(Faction) || (!(player.GetRole() is LayerEnum.PromotedRebel or LayerEnum.Sidekick or LayerEnum.Rebel) && player.Is(Faction));
 
+    public override void ReadRPC(MessageReader reader) => Sidekick(reader.ReadPlayer());
+
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        SidekickButton.Update("SIDEKICK", true, !HasDeclared);
+        SidekickButton.Update2("SIDEKICK", !HasDeclared);
     }
 }

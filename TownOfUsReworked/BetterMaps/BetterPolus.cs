@@ -1,6 +1,5 @@
 namespace TownOfUsReworked.BetterMaps;
 
-[HarmonyPatch]
 public static class PolusShipStatusPatch
 {
     private static readonly Vector3 DvdScreenNewPos = new(26.635f, -15.92f, 1f);

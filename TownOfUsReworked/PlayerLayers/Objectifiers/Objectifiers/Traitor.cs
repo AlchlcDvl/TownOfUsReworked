@@ -43,9 +43,6 @@ public class Traitor : Objectifier
 
         var betrayer = new Betrayer(Player) { Objectives = role.Objectives };
         betrayer.RoleUpdate(role);
-
-        if (CustomPlayer.Local.Is(LayerEnum.Seer))
-            Flash(Colors.Seer);
     }
 
     public static void GetFactionChoice(out bool turnSyndicate, out bool turnIntruder)

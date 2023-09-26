@@ -1,6 +1,5 @@
 namespace TownOfUsReworked.MultiClientInstancing;
 
-[HarmonyPatch]
 public static class MCIUtils
 {
     public static readonly Dictionary<int, ClientData> Clients = new();
@@ -91,6 +90,8 @@ public static class MCIUtils
             CustomPlayer.Local.DisableArrows();
         }
 
+        PlayerLayer.LocalLayers.ForEach(x => x.ExitingLayer());
+
         CustomPlayer.Local.NetTransform.RpcSnapTo(CustomPlayer.LocalCustom.Position);
         CustomPlayer.Local.moveable = false;
 
@@ -126,6 +127,8 @@ public static class MCIUtils
             CustomPlayer.Local.EnableButtons();
             CustomPlayer.Local.EnableArrows();
         }
+
+        PlayerLayer.LocalLayers.ForEach(x => x.EnteringLayer());
 
         HUD.Chat.SetVisible(CustomPlayer.Local.CanChat());
     }

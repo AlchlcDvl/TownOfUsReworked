@@ -124,4 +124,10 @@ public class Politician : Ability
 
         UpdateButton(__instance);
     }
+
+    public override void ReadRPC(MessageReader reader)
+    {
+        ExtraVotes = reader.ReadByteList();
+        VoteBank -= ExtraVotes.Count;
+    }
 }

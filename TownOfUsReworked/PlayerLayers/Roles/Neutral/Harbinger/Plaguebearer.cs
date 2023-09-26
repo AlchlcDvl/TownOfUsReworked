@@ -2,7 +2,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public class Plaguebearer : Neutral
 {
-    public DateTime LastInfected { get; set; }
     public List<byte> Infected { get; set; }
     public bool CanTransform => CustomPlayer.AllPlayers.Count(x => !x.HasDied()) <= Infected.Count || CustomGameOptions.PestSpawn;
     public CustomButton InfectButton { get; set; }
@@ -14,14 +13,13 @@ public class Plaguebearer : Neutral
     public override Func<string> Description => () => "- You can infect players\n- When all players are infected, you will turn into <color=#424242FF>Pestilence</color>\n- Infections spread"
         + " via interaction between players";
     public override InspectorResults InspectorResults => InspectorResults.SeeksToDestroy;
-    public float Timer => ButtonUtils.Timer(Player, LastInfected, CustomGameOptions.InfectCd);
 
     public Plaguebearer(PlayerControl player) : base(player)
     {
         Objectives = () => "- Infect everyone to become <color=#424242FF>Pestilence</color>\n- Kill off anyone who can oppose you";
         Alignment = Alignment.NeutralHarb;
         Infected = new() { Player.PlayerId };
-        InfectButton = new(this, "Infect", AbilityTypes.Direct, "ActionSecondary", Infect, Exception);
+        InfectButton = new(this, "Infect", AbilityTypes.Target, "ActionSecondary", Infect, CustomGameOptions.InfectCd, Exception);
     }
 
     public void RpcSpreadInfection(PlayerControl source, PlayerControl target)
@@ -29,7 +27,7 @@ public class Plaguebearer : Neutral
         if ((Infected.Contains(source.PlayerId) && Infected.Contains(target.PlayerId)) || (!Infected.Contains(source.PlayerId) && !Infected.Contains(target.PlayerId)))
             return;
 
-        var id = (byte)0;
+        byte id = 0;
         var changed = false;
 
         if (Infected.Contains(source.PlayerId) || source.Is(LayerEnum.Plaguebearer))
@@ -45,22 +43,20 @@ public class Plaguebearer : Neutral
 
         if (changed)
         {
-            CallRpc(CustomRPC.Action, ActionsRPC.Infect, this, id);
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, id);
             Infected.Add(id);
         }
     }
 
     public void Infect()
     {
-        if (IsTooFar(Player, InfectButton.TargetPlayer) || Timer != 0f)
-            return;
-
         var interact = Interact(Player, InfectButton.TargetPlayer);
+        var cooldown = CooldownType.Reset;
 
-        if (interact.Reset)
-            LastInfected = DateTime.UtcNow;
-        else if (interact.Protected)
-            LastInfected.AddSeconds(CustomGameOptions.ProtectKCReset);
+        if (interact.Protected)
+            cooldown = CooldownType.GuardianAngel;
+
+        InfectButton.StartCooldown(cooldown);
     }
 
     public void TurnPestilence()
@@ -68,11 +64,8 @@ public class Plaguebearer : Neutral
         var newRole = new Pestilence(Player);
         newRole.RoleUpdate(this);
 
-        if (Local || CustomGameOptions.PlayersAlerted)
+        if (CustomGameOptions.PlayersAlerted)
             Flash(Colors.Pestilence);
-
-        if (CustomPlayer.Local.Is(LayerEnum.Seer) && !CustomGameOptions.PlayersAlerted)
-            Flash(Colors.Seer);
     }
 
     public bool Exception(PlayerControl player) => Infected.Contains(player.PlayerId);
@@ -80,7 +73,7 @@ public class Plaguebearer : Neutral
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        InfectButton.Update("INFECT", Timer, CustomGameOptions.InfectCd, true, !CanTransform);
+        InfectButton.Update2("INFECT");
 
         if (CanTransform && !IsDead)
         {
@@ -88,4 +81,6 @@ public class Plaguebearer : Neutral
             TurnPestilence();
         }
     }
+
+    public override void ReadRPC(MessageReader reader) => Infected.Add(reader.ReadByte());
 }

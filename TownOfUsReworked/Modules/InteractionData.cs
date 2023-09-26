@@ -15,7 +15,7 @@ public class InteractionData
         AbilityUsed = abilityUsed;
     }
 
-    public static InteractionData Interact(PlayerControl player, PlayerControl target, bool toKill = false, bool toConvert = false, bool bypass = false)
+    public static InteractionData Interact(PlayerControl player, PlayerControl target, bool toKill = false, bool toConvert = false, bool bypass = false, bool poisoning = false)
     {
         var fullReset = false;
         var gaReset = false;
@@ -24,7 +24,7 @@ public class InteractionData
         bypass |= player.Is(LayerEnum.Ruthless);
         Spread(player, target);
 
-        if (target == CachedFirstDead && (toConvert || toKill))
+        if ((target == CachedFirstDead || target.IsProtectedMonarch() || player.IsOtherRival(target)) && (toConvert || toKill || poisoning))
             fullReset = true;
         else if ((target.IsOnAlert() || ((target.IsAmbushed() || target.IsGFAmbushed()) && (!player.Is(Faction.Intruder) || (player.Is(Faction.Intruder) && CustomGameOptions.AmbushMates)))
             || target.Is(LayerEnum.Pestilence) || (target.Is(LayerEnum.VampireHunter) && player.Is(SubFaction.Undead)) || (target.Is(LayerEnum.SerialKiller) && (player.Is(LayerEnum.Escort)
@@ -32,7 +32,7 @@ public class InteractionData
         {
             if (player.Is(LayerEnum.Pestilence))
             {
-                if ((target.IsShielded() || target.IsRetShielded()) && (toKill || toConvert))
+                if ((target.IsShielded() || target.IsRetShielded()) && (toKill || toConvert || poisoning))
                 {
                     fullReset = CustomGameOptions.ShieldBreaks;
                     Role.BreakShield(target, CustomGameOptions.ShieldBreaks);
@@ -52,7 +52,7 @@ public class InteractionData
             else
                 RpcMurderPlayer(target, player, target.IsAmbushed() ? DeathReasonEnum.Ambushed : DeathReasonEnum.Killed);
 
-            if ((target.IsShielded() || target.IsRetShielded()) && (toKill || toConvert))
+            if ((target.IsShielded() || target.IsRetShielded()) && (toKill || toConvert || poisoning))
             {
                 fullReset = CustomGameOptions.ShieldBreaks;
                 Role.BreakShield(target, CustomGameOptions.ShieldBreaks);
@@ -63,7 +63,7 @@ public class InteractionData
         {
             if (player.Is(LayerEnum.Pestilence))
             {
-                if ((target.IsShielded() || target.IsRetShielded()) && (toKill || toConvert))
+                if ((target.IsShielded() || target.IsRetShielded()) && (toKill || toConvert || poisoning))
                 {
                     fullReset = CustomGameOptions.ShieldBreaks;
                     Role.BreakShield(target, CustomGameOptions.ShieldBreaks);
@@ -91,25 +91,23 @@ public class InteractionData
                     RpcMurderPlayer(target, player, DeathReasonEnum.Crusaded);
             }
 
-            if ((target.IsShielded() || target.IsRetShielded()) && (toKill || toConvert))
+            if ((target.IsShielded() || target.IsRetShielded()) && (toKill || toConvert || poisoning))
             {
                 fullReset = CustomGameOptions.ShieldBreaks;
                 Role.BreakShield(target, CustomGameOptions.ShieldBreaks);
                 CallRpc(CustomRPC.Misc, MiscRPC.AttemptSound, target);
             }
         }
-        else if ((target.IsShielded() || target.IsRetShielded()) && (toKill || toConvert) && !bypass)
+        else if ((target.IsShielded() || target.IsRetShielded()) && (toKill || toConvert || poisoning) && !bypass)
         {
             fullReset = CustomGameOptions.ShieldBreaks;
             Role.BreakShield(target, CustomGameOptions.ShieldBreaks);
             CallRpc(CustomRPC.Misc, MiscRPC.AttemptSound, target);
         }
-        else if (target.IsVesting() && (toKill || toConvert) && !bypass)
+        else if (target.IsVesting() && (toKill || toConvert || poisoning) && !bypass)
             survReset = true;
-        else if (target.IsProtected() && (toKill || toConvert) && !bypass)
+        else if (target.IsProtected() && (toKill || toConvert || poisoning) && !bypass)
             gaReset = true;
-        else if ((target.IsProtectedMonarch() || player.IsOtherRival(target)) && (toKill || toConvert))
-            fullReset = true;
         else
         {
             if (toKill)
@@ -121,7 +119,7 @@ public class InteractionData
                     fanatic.TurnFanatic(fact);
                     CallRpc(CustomRPC.Change, TurnRPC.TurnFanatic, fanatic, fact);
                 }
-                else
+                else if (!poisoning)
                     RpcMurderPlayer(player, target);
             }
             else if (toConvert && !target.Is(SubFaction.None))
@@ -138,6 +136,9 @@ public class InteractionData
         {
             RpcMurderPlayer(target, player);
         }
+
+        if (!abilityUsed)
+            abilityUsed = !(toKill || toConvert);
 
         return new(fullReset, survReset, gaReset, abilityUsed);
     }

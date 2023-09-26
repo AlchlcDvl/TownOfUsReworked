@@ -1,6 +1,5 @@
 namespace TownOfUsReworked.CustomOptions;
 
-[HarmonyPatch]
 public static class GameSettings
 {
     public static int SettingsPage;

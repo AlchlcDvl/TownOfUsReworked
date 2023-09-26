@@ -2,7 +2,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public class Dracula : Neutral
 {
-    public DateTime LastBitten { get; set; }
     public CustomButton BiteButton { get; set; }
     public List<byte> Converted { get; set; }
     public static int AliveCount => CustomPlayer.AllPlayers.Count(x => !x.HasDied());
@@ -15,7 +14,6 @@ public class Dracula : Neutral
         $"number of alive <color=#7B8968FF>Undead</color> exceeds {CustomGameOptions.AliveVampCount}, you will kill them instead\n- Attempting to convert a <color=#C0C0C0FF>Vampire " +
         "Hunter</color> will force them to kill you";
     public override InspectorResults InspectorResults => InspectorResults.NewLens;
-    public float Timer => ButtonUtils.Timer(Player, LastBitten, CustomGameOptions.BiteCd);
 
     public Dracula(PlayerControl player) : base(player)
     {
@@ -24,26 +22,24 @@ public class Dracula : Neutral
         Alignment = Alignment.NeutralNeo;
         SubFactionColor = Colors.Undead;
         Converted = new() { Player.PlayerId };
-        BiteButton = new(this, "Bite", AbilityTypes.Direct, "ActionSecondary", Convert);
+        BiteButton = new(this, "Bite", AbilityTypes.Target, "ActionSecondary", Convert, CustomGameOptions.BiteCd, Exception);
         SubFactionSymbol = "γ";
     }
 
     public void Convert()
     {
-        if (IsTooFar(Player, BiteButton.TargetPlayer) || Timer != 0f)
-            return;
-
         var interact = Interact(Player, BiteButton.TargetPlayer, false, true);
+        var cooldown = CooldownType.Reset;
 
         if (interact.AbilityUsed)
             RoleGen.RpcConvert(BiteButton.TargetPlayer.PlayerId, Player.PlayerId, SubFaction.Undead, AliveCount >= CustomGameOptions.AliveVampCount);
 
-        if (interact.Reset)
-            LastBitten = DateTime.UtcNow;
-        else if (interact.Protected)
-            LastBitten.AddSeconds(CustomGameOptions.ProtectKCReset);
+        if (interact.Protected)
+            cooldown = CooldownType.GuardianAngel;
         else if (interact.Vested)
-            LastBitten.AddSeconds(CustomGameOptions.VestKCReset);
+            cooldown = CooldownType.Survivor;
+
+        BiteButton.StartCooldown(cooldown);
     }
 
     public bool Exception(PlayerControl player) => Converted.Contains(player.PlayerId);
@@ -51,6 +47,6 @@ public class Dracula : Neutral
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        BiteButton.Update("BITE", Timer, CustomGameOptions.BiteCd);
+        BiteButton.Update2("BITE");
     }
 }

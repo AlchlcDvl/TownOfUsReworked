@@ -2,7 +2,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public class Werewolf : Neutral
 {
-    public DateTime LastMauled { get; set; }
     public bool CanMaul => Rounds % 2 == 1 || Rounds > 3;
     public CustomButton MaulButton { get; set; }
     public int Rounds { get; set; }
@@ -13,18 +12,17 @@ public class Werewolf : Neutral
     public override Func<string> StartText => () => "AWOOOOOOOOOO";
     public override Func<string> Description => () => $"- You kill everyone within {CustomGameOptions.MaulRadius}m";
     public override InspectorResults InspectorResults => InspectorResults.IsAggressive;
-    public float Timer => ButtonUtils.Timer(Player, LastMauled, CustomGameOptions.MaulCd);
 
     public Werewolf(PlayerControl player) : base(player)
     {
         Objectives = () => "- Maul anyone who can oppose you";
         Alignment = Alignment.NeutralKill;
-        MaulButton = new(this, "Maul", AbilityTypes.Direct, "ActionSecondary", HitMaul, Exception);
+        MaulButton = new(this, "Maul", AbilityTypes.Target, "ActionSecondary", HitMaul, CustomGameOptions.MaulCd, Exception);
     }
 
     public void Maul()
     {
-        foreach (var player in GetClosestPlayers(Player.GetTruePosition(), CustomGameOptions.MaulRadius))
+        foreach (var player in GetClosestPlayers(Player.transform.position, CustomGameOptions.MaulRadius))
         {
             Spread(Player, player);
 
@@ -53,28 +51,26 @@ public class Werewolf : Neutral
 
     public void HitMaul()
     {
-        if (Timer != 0f || IsTooFar(Player, MaulButton.TargetPlayer))
-            return;
-
         var interact = Interact(Player, MaulButton.TargetPlayer, true);
+        var cooldown = CooldownType.Reset;
 
         if (interact.AbilityUsed)
             Maul();
 
-        if (interact.Reset)
-            LastMauled = DateTime.UtcNow;
-        else if (interact.Protected)
-            LastMauled.AddSeconds(CustomGameOptions.ProtectKCReset);
+        if (interact.Protected)
+            cooldown = CooldownType.GuardianAngel;
         else if (interact.Vested)
-            LastMauled.AddSeconds(CustomGameOptions.VestKCReset);
+            cooldown = CooldownType.Survivor;
+
+        MaulButton.StartCooldown(cooldown);
     }
 
-    public bool Exception(PlayerControl player) => (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate)
-        || Player.IsLinkedTo(player);
+    public bool Exception(PlayerControl player) => (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) ||
+        Player.IsLinkedTo(player);
 
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        MaulButton.Update("MAUL", Timer, CustomGameOptions.MaulCd, CanMaul);
+        MaulButton.Update2("MAUL", CanMaul);
     }
 }

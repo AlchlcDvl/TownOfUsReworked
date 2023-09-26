@@ -79,8 +79,7 @@ public static class CompleteTasksPatch
             {
                 if (CustomPlayer.Local == __instance)
                     Flash(role.Color);
-                else if (CustomPlayer.Local.Is(Faction.Intruder) || (CustomPlayer.Local.Is(Alignment.NeutralKill) && CustomGameOptions.SnitchSeesNeutrals) ||
-                    CustomPlayer.Local.Is(Faction.Syndicate))
+                else if (CustomPlayer.Local.GetFaction() is Faction.Intruder or Faction.Syndicate || (CustomPlayer.Local.Is(Alignment.NeutralKill) && CustomGameOptions.SnitchSeesNeutrals))
                 {
                     Flash(role.Color);
                     Role.LocalRole.AllArrows.Add(role.PlayerId, new(CustomPlayer.Local, role.Color));
@@ -91,14 +90,11 @@ public static class CompleteTasksPatch
                 if (CustomPlayer.Local == __instance)
                 {
                     Flash(UColor.green);
-                    CustomPlayer.AllPlayers.Where(x => x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) || (x.Is(Alignment.NeutralKill) && CustomGameOptions.SnitchSeesNeutrals))
+                    CustomPlayer.AllPlayers.Where(x => x.GetFaction() is Faction.Intruder or Faction.Syndicate || (x.Is(Alignment.NeutralKill) && CustomGameOptions.SnitchSeesNeutrals))
                         .ForEach(x => Role.LocalRole.AllArrows.Add(x.PlayerId, new(__instance, role.Color)));
                 }
-                else if (CustomPlayer.Local.Is(Faction.Intruder) || (CustomPlayer.Local.Is(Alignment.NeutralKill) && CustomGameOptions.SnitchSeesNeutrals) ||
-                    CustomPlayer.Local.Is(Faction.Syndicate))
-                {
+                else if (CustomPlayer.Local.GetFaction() is Faction.Intruder or Faction.Syndicate || (CustomPlayer.Local.Is(Alignment.NeutralKill) && CustomGameOptions.SnitchSeesNeutrals))
                     Flash(UColor.red);
-                }
             }
         }
 
@@ -121,8 +117,8 @@ public static class CompleteTasksPatch
             {
                 if (CustomPlayer.Local == __instance || CustomPlayer.Local.Is(Faction.Crew) || CustomPlayer.Local.GetAlignment() is Alignment.NeutralBen or Alignment.NeutralEvil)
                     Flash(role.Color);
-                else if (CustomPlayer.Local.Is(Faction.Intruder) || CustomPlayer.Local.Is(Alignment.NeutralKill) || CustomPlayer.Local.Is(Faction.Syndicate) ||
-                    CustomPlayer.Local.Is(Alignment.NeutralNeo) || CustomPlayer.Local.Is(Alignment.NeutralPros))
+                else if (CustomPlayer.Local.GetFaction() is Faction.Intruder or Faction.Syndicate || CustomPlayer.Local.GetAlignment() is Alignment.NeutralKill or Alignment.NeutralNeo or
+                    Alignment.NeutralPros)
                 {
                     Flash(role.Color);
                     Role.LocalRole.AllArrows.Add(role.PlayerId, new(CustomPlayer.Local, role.Color));
@@ -155,7 +151,7 @@ public static class CompleteTasksPatch
             {
                 if (CustomPlayer.Local.Is(LayerEnum.Revealer))
                     Flash(role.Color);
-                else if (CustomPlayer.Local.Is(Faction.Intruder) || CustomPlayer.Local.Is(Faction.Syndicate) || (CustomPlayer.Local.Is(Alignment.NeutralKill) &&
+                else if (CustomPlayer.Local.GetFaction() is Faction.Intruder or Faction.Syndicate || (CustomPlayer.Local.Is(Alignment.NeutralKill) &&
                     CustomGameOptions.RevealerRevealsNeutrals))
                 {
                     role.Revealed = true;
@@ -167,36 +163,18 @@ public static class CompleteTasksPatch
             {
                 role.CompletedTasks = role.TasksDone;
 
-                if (CustomPlayer.Local.Is(LayerEnum.Revealer) || CustomPlayer.Local.Is(Faction.Intruder) || CustomPlayer.Local.Is(Faction.Syndicate) ||
-                    (CustomPlayer.Local.Is(Alignment.NeutralKill) && CustomGameOptions.RevealerRevealsNeutrals))
+                if (CustomPlayer.Local.Is(LayerEnum.Revealer) || CustomPlayer.Local.GetFaction() is Faction.Intruder or Faction.Syndicate || (CustomPlayer.Local.Is(Alignment.NeutralKill) &&
+                    CustomGameOptions.RevealerRevealsNeutrals))
                 {
                     Flash(role.Color);
                 }
             }
         }
 
-        var role1 = Role.GetRole(__instance);
-
-        if (role1.TasksDone)
+        foreach (var button in CustomButton.AllButtons.Where(x => x.Owner.Player == __instance))
         {
-            if (__instance.Is(LayerEnum.Tracker))
-                ((Tracker)role1).UsesLeft++;
-            else if (__instance.Is(LayerEnum.Transporter))
-                ((Transporter)role1).UsesLeft++;
-            else if (__instance.Is(LayerEnum.Vigilante))
-                ((Vigilante)role1).UsesLeft++;
-            else if (__instance.Is(LayerEnum.Veteran))
-                ((Veteran)role1).UsesLeft++;
-            else if (__instance.Is(LayerEnum.Altruist))
-                ((Altruist)role1).UsesLeft++;
-            else if (__instance.Is(LayerEnum.Monarch))
-                ((Monarch)role1).UsesLeft++;
-            else if (__instance.Is(LayerEnum.Chameleon))
-                ((Chameleon)role1).UsesLeft++;
-            else if (__instance.Is(LayerEnum.Engineer))
-                ((Engineer)role1).UsesLeft++;
-            else if (__instance.Is(LayerEnum.Retributionist))
-                ((Retributionist)role1).UsesLeft++;
+            if (button.HasUses)
+                button.Uses++;
         }
     }
 }

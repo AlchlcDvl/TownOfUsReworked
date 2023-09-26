@@ -22,7 +22,7 @@ public class CustomMenu
 
     public void Open()
     {
-        Targets = CustomPlayer.AllPlayers.Where(x => !Exception(x) && !x.IsPostmortal() && !x.HasDied()).ToList();
+        Targets = CustomPlayer.AllPlayers.Where(x => !Exception(x) && !x.IsPostmortal() && !x.Data.Disconnected).ToList();
 
         if (Menu == null)
         {

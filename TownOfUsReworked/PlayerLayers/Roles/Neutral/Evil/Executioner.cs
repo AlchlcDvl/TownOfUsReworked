@@ -7,9 +7,7 @@ public class Executioner : Neutral
     public List<byte> ToDoom { get; set; }
     public bool HasDoomed { get; set; }
     public CustomButton DoomButton { get; set; }
-    public DateTime LastDoomed { get; set; }
-    public int UsesLeft { get; set; }
-    public bool CanDoom => TargetVotedOut && !HasDoomed && UsesLeft > 0 && ToDoom.Count > 0 && !CustomGameOptions.AvoidNeutralKingmakers;
+    public bool CanDoom => TargetPlayer != null && TargetVotedOut && !HasDoomed && ToDoom.Count > 0 && !CustomGameOptions.AvoidNeutralKingmakers;
     public bool Failed => !TargetVotedOut && TargetPlayer.HasDied();
     public int Rounds { get; set; }
     public CustomButton TargetButton { get; set; }
@@ -22,24 +20,19 @@ public class Executioner : Neutral
     public override Func<string> Description => () => TargetPlayer == null ? "- You can select a player to eject" : ((TargetVotedOut ? "- You can doom those who voted for " +
         $"{TargetPlayer?.name}\n" : "") + $"- If {TargetPlayer?.name} dies, you will become a <color=#F7B3DAFF>Jester</color>");
     public override InspectorResults InspectorResults => InspectorResults.Manipulative;
-    public float Timer => ButtonUtils.Timer(Player, LastDoomed, CustomGameOptions.DoomCd);
 
     public Executioner(PlayerControl player) : base(player)
     {
         Objectives = () => TargetVotedOut ? $"- {TargetPlayer?.name} has been ejected" : (TargetPlayer == null ? "- Find a target to eject" : $"- Eject {TargetPlayer?.name}");
         Alignment = Alignment.NeutralEvil;
         ToDoom = new();
-        UsesLeft = CustomGameOptions.MaxDooms;
-        DoomButton = new(this, "Doom", AbilityTypes.Direct, "ActionSecondary", Doom, Exception1, true);
-        TargetButton = new(this, "ExeTarget", AbilityTypes.Direct, "ActionSecondary", SelectTarget, Exception2);
+        DoomButton = new(this, "Doom", AbilityTypes.Target, "ActionSecondary", Doom, Exception1);
+        TargetButton = new(this, "ExeTarget", AbilityTypes.Target, "ActionSecondary", SelectTarget, Exception2);
         Rounds = 0;
     }
 
     public void SelectTarget()
     {
-        if (TargetPlayer != null)
-            return;
-
         TargetPlayer = TargetButton.TargetPlayer;
         CallRpc(CustomRPC.Target, TargetRPC.SetExeTarget, this, TargetPlayer);
     }
@@ -62,37 +55,18 @@ public class Executioner : Neutral
 
             ToDoom.Add(state.TargetPlayerId);
         }
-
-        while (ToDoom.Count > UsesLeft)
-        {
-            ToDoom.Shuffle();
-            ToDoom.Remove(ToDoom[^1]);
-        }
-
-        UsesLeft = CustomGameOptions.MaxDooms <= ToDoom.Count ? CustomGameOptions.MaxDooms : ToDoom.Count;
     }
 
     public void TurnJest()
     {
         var newRole = new Jester(Player);
         newRole.RoleUpdate(this);
-
-        if (Local)
-            Flash(Colors.Jester);
-
-        if (CustomPlayer.Local.Is(LayerEnum.Seer))
-            Flash(Colors.Seer);
     }
 
     public void Doom()
     {
-        if (IsTooFar(Player, DoomButton.TargetPlayer) || Timer != 0f || !CanDoom)
-            return;
-
         RpcMurderPlayer(Player, DoomButton.TargetPlayer, DeathReasonEnum.Doomed, false);
         HasDoomed = true;
-        UsesLeft--;
-        LastDoomed = DateTime.UtcNow;
     }
 
     public bool Exception1(PlayerControl player) => !ToDoom.Contains(player.PlayerId) || (player.Is(SubFaction) && SubFaction != SubFaction.None) || player.IsLinkedTo(Player);
@@ -103,8 +77,8 @@ public class Executioner : Neutral
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        DoomButton.Update("DOOM", Timer, CustomGameOptions.DoomCd, UsesLeft, CanDoom, CanDoom && TargetPlayer != null);
-        TargetButton.Update("TORMENT", true, TargetPlayer == null);
+        DoomButton.Update2("DOOM", CanDoom);
+        TargetButton.Update2("TORMENT", TargetPlayer == null);
 
         if ((TargetFailed || (TargetPlayer != null && Failed)) && !IsDead)
         {

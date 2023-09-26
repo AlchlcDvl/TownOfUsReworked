@@ -174,8 +174,8 @@ public class Role : PlayerLayer
                 pair.Value?.Update(player.Data.IsDead ? body.transform.position : player.transform.position);
         }
 
-        BombKillButton.Update("KILL", true, Bombed);
-        PlaceHitButton.Update("PLACE HIT", true, Requesting);
+        BombKillButton.Update2("KILL", Bombed);
+        PlaceHitButton.Update2("PLACE HIT", Requesting);
         //CallButton?.Update("CALL PLATFORM", CanCall(), IsInPosition());
 
         if (__instance.TaskPanel)
@@ -388,7 +388,7 @@ public class Role : PlayerLayer
         var colorButton = voteArea.Buttons.transform.GetChild(0).gameObject;
         var newButton = UObject.Instantiate(colorButton, voteArea.transform);
         var playerControl = PlayerByVoteArea(voteArea);
-        newButton.GetComponent<SpriteRenderer>().sprite = GetSprite(ColorUtils.LightDarkColors[playerControl.GetDefaultOutfit().ColorId]);
+        newButton.GetComponent<SpriteRenderer>().sprite = GetSprite(CustomColors.LightDarkColors[playerControl.GetDefaultOutfit().ColorId]);
         newButton.transform.position = colorButton.transform.position - new Vector3(-0.8f, 0.2f, -2f);
         newButton.transform.localScale *= 0.8f;
         newButton.layer = 5;
@@ -467,8 +467,8 @@ public class Role : PlayerLayer
         if (GetRole(player))
             GetRole(player).Player = null;
 
-        BombKillButton = new(this, "BombKill", AbilityTypes.Direct, "Quarternary", BombKill);
-        PlaceHitButton = new(this, "PlaceHit", AbilityTypes.Direct, "Quarternary", PlaceHit);
+        BombKillButton = new(this, "BombKill", AbilityTypes.Target, "Quarternary", BombKill);
+        PlaceHitButton = new(this, "PlaceHit", AbilityTypes.Target, "Quarternary", PlaceHit);
         RoleHistory = new();
         AllPrints = new();
         AllArrows = new();
@@ -478,14 +478,11 @@ public class Role : PlayerLayer
         AllRoles.Add(this);
 
         /*if (TownOfUsReworked.NormalOptions.MapId == 4)
-            CallButton = new(this, "CallPlatform", AbilityTypes.Effect, "Quarternary", UsePlatform);*/
+            CallButton = new(this, "CallPlatform", AbilityTypes.Targetless, "Quarternary", UsePlatform);*/
     }
 
     public void PlaceHit()
     {
-        if (IsTooFar(Player, PlaceHitButton.TargetPlayer) || !Requesting)
-            return;
-
         var target = Requestor.IsLinkedTo(PlaceHitButton.TargetPlayer) ? Player : PlaceHitButton.TargetPlayer;
         GetRole<BountyHunter>(Requestor).TentativeTarget = target;
         Requesting = false;
@@ -503,8 +500,8 @@ public class Role : PlayerLayer
             if (role2.ShieldedPlayer == null)
                 continue;
 
-            if (role2.ShieldedPlayer == player && ((role2.Local && (int)CustomGameOptions.NotificationShield is 0 or 2) || CustomGameOptions.NotificationShield ==
-                ShieldOptions.Everyone || (CustomPlayer.Local == player && (int)CustomGameOptions.NotificationShield is 1 or 2)))
+            if (role2.ShieldedPlayer == player && ((role2.Local && (int)CustomGameOptions.NotificationShield is 0 or 2) || (int)CustomGameOptions.NotificationShield == 3 ||
+                (CustomPlayer.Local == player && (int)CustomGameOptions.NotificationShield is 1 or 2)))
             {
                 Flash(role2.Color);
             }
@@ -515,8 +512,8 @@ public class Role : PlayerLayer
             if (role2.ShieldedPlayer == null)
                 continue;
 
-            if (role2.ShieldedPlayer == player && ((role2.Local && (int)CustomGameOptions.NotificationShield is 0 or 2) || CustomGameOptions.NotificationShield ==
-                ShieldOptions.Everyone || (CustomPlayer.Local == player && (int)CustomGameOptions.NotificationShield is 1 or 2)))
+            if (role2.ShieldedPlayer == player && ((role2.Local && (int)CustomGameOptions.NotificationShield is 0 or 2) || (int)CustomGameOptions.NotificationShield == 3 ||
+                (CustomPlayer.Local == player && (int)CustomGameOptions.NotificationShield is 1 or 2)))
             {
                 Flash(role2.Color);
             }
@@ -558,16 +555,9 @@ public class Role : PlayerLayer
 
     public void BombKill()
     {
-        if (IsTooFar(Player, BombKillButton.TargetPlayer) || !Bombed)
-            return;
-
         var success = Interact(Player, BombKillButton.TargetPlayer, true).AbilityUsed;
-        GetRoles<Enforcer>(LayerEnum.Enforcer).Where(x => x.BombedPlayer == Player).ForEach(x =>
-        {
-            x.BombSuccessful = success;
-            x.TimeRemaining = 0;
-            x.Unboom();
-        });
+        GetRoles<Enforcer>(LayerEnum.Enforcer).Where(x => x.BombedPlayer == Player).ForEach(x => x.BombSuccessful = success);
+        GetRoles<PromotedGodfather>(LayerEnum.PromotedGodfather).Where(x => x.BombedPlayer == Player).ForEach(x => x.BombSuccessful = success);
         CallRpc(CustomRPC.Action, ActionsRPC.ForceKill, Player, success);
     }
 

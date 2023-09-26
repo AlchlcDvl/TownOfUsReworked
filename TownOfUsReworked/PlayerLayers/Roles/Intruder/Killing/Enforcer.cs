@@ -4,12 +4,6 @@ public class Enforcer : Intruder
 {
     public CustomButton BombButton { get; set; }
     public PlayerControl BombedPlayer { get; set; }
-    public bool Enabled { get; set; }
-    public DateTime LastBombed { get; set; }
-    public float TimeRemaining { get; set; }
-    public float TimeRemaining2 { get; set; }
-    public bool Bombing => TimeRemaining > 0f;
-    public bool DelayActive => TimeRemaining2 > 0f;
     public bool BombSuccessful { get; set; }
 
     public override Color Color => ClientGameOptions.CustomIntColors ? Colors.Enforcer : Colors.Intruder;
@@ -19,53 +13,37 @@ public class Enforcer : Intruder
     public override Func<string> Description => () => "- You can plant bombs on players and force them to kill others\n- If the player is unable to kill someone within " +
         $"{CustomGameOptions.EnforceDur}s, the bomb will detonate and kill everyone within a {CustomGameOptions.EnforceRadius}m radius\n{CommonAbilities}";
     public override InspectorResults InspectorResults => InspectorResults.DropsItems;
-    public float Timer => ButtonUtils.Timer(Player, LastBombed, CustomGameOptions.EnforceCd);
 
     public Enforcer(PlayerControl player) : base(player)
     {
         Alignment = Alignment.IntruderKill;
         BombedPlayer = null;
-        BombButton = new(this, "Enforce", AbilityTypes.Direct, "Secondary", Bomb, Exception1);
+        BombButton = new(this, "Enforce", AbilityTypes.Target, "Secondary", Bomb, CustomGameOptions.EnforceCd, CustomGameOptions.EnforceDur, BoomStart, UnBoom, CustomGameOptions.EnforceDelay,
+            Exception1);
     }
 
-    public void Boom()
+    public void BoomStart()
     {
-        if (!Enabled && CustomPlayer.Local == BombedPlayer)
+        if (CustomPlayer.Local == BombedPlayer && !IsDead)
         {
             Flash(Color);
             GetRole(BombedPlayer).Bombed = true;
         }
-
-        Enabled = true;
-        TimeRemaining -= Time.deltaTime;
-
-        if (IsDead || Meeting || BombedPlayer.HasDied() || BombSuccessful)
-            TimeRemaining = 0f;
     }
 
-    public void Delay()
+    public void UnBoom()
     {
-        TimeRemaining2 -= Time.deltaTime;
-
-        if (IsDead || Meeting || BombedPlayer.HasDied())
-            TimeRemaining2 = 0f;
-    }
-
-    public void Unboom()
-    {
-        Enabled = false;
-        LastBombed = DateTime.UtcNow;
-        GetRole(BombedPlayer).Bombed = false;
-
         if (!BombSuccessful)
             Explode();
 
+        GetRole(BombedPlayer).Bombed = false;
         BombedPlayer = null;
+        BombSuccessful = false;
     }
 
     private void Explode()
     {
-        foreach (var player in GetClosestPlayers(BombedPlayer.GetTruePosition(), CustomGameOptions.EnforceRadius))
+        foreach (var player in GetClosestPlayers(BombedPlayer.transform.position, CustomGameOptions.EnforceRadius))
         {
             Spread(BombedPlayer, player);
 
@@ -81,30 +59,30 @@ public class Enforcer : Intruder
 
     public void Bomb()
     {
-        if (Timer != 0f || IsTooFar(Player, BombButton.TargetPlayer) || BombedPlayer == BombButton.TargetPlayer)
-            return;
-
         var interact = Interact(Player, BombButton.TargetPlayer);
 
         if (interact.AbilityUsed)
         {
-            TimeRemaining2 = CustomGameOptions.EnforceDelay;
-            TimeRemaining = CustomGameOptions.EnforceDur;
             BombedPlayer = BombButton.TargetPlayer;
-            CallRpc(CustomRPC.Action, ActionsRPC.SetBomb, this, BombedPlayer);
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction1, BombButton, BombedPlayer);
+            BombButton.Begin();
         }
         else if (interact.Reset)
-            LastBombed = DateTime.UtcNow;
+            BombButton.StartCooldown(CooldownType.Reset);
         else if (interact.Protected)
-            LastBombed.AddSeconds(CustomGameOptions.ProtectKCReset);
+            BombButton.StartCooldown(CooldownType.GuardianAngel);
     }
 
-    public bool Exception1(PlayerControl player) => player == BombedPlayer || player.Is(Faction) || (player.Is(SubFaction) && SubFaction != SubFaction.None) ||
-        Player.IsLinkedTo(player);
+    public bool Exception1(PlayerControl player) => player == BombedPlayer || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction
+        != SubFaction.None) || Player.IsLinkedTo(player);
 
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        BombButton.Update("BOMB", Timer, CustomGameOptions.EnforceCd, Bombing, TimeRemaining, CustomGameOptions.EnforceDur, DelayActive, TimeRemaining2);
+        BombButton.Update2("SET BOMB");
     }
+
+    public override void TryEndEffect() => BombButton.Update3((BombedPlayer != null && BombedPlayer.HasDied()) || IsDead || BombSuccessful);
+
+    public override void ReadRPC(MessageReader reader) => BombedPlayer = reader.ReadPlayer();
 }

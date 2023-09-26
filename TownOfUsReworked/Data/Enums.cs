@@ -2,88 +2,51 @@ namespace TownOfUsReworked.Data;
 
 public enum ActionsRPC
 {
-    SetExtraVotes,
-    SetSwaps,
-    Shift,
-    Protect,
-    Morph,
-    Camouflage,
     Mine,
-    Swoop,
-    Invis,
-    Disguise,
-    Douse,
-    FreezeDouse,
-    AltruistRevive,
-    NecromancerResurrect,
     BarryButton,
-    Drag,
     Drop,
-    AssassinKill,
-    GuesserKill,
-    ThiefKill,
-    FlashGrenade,
-    Alert,
-    Remember,
     BaitReport,
-    Transport,
-    Mediate,
-    Vest,
-    GAProtect,
-    Blackmail,
-    Poison,
-    Infect,
     Convert,
-    Stake,
-    Warp,
     WarpAll,
     SetUnwarpable,
     Teleport,
-    Conceal,
-    Shapeshift,
-    Steal,
-    EscRoleblock,
-    ConsRoleblock,
-    Mimic,
-    GlitchRoleblock,
     BypassKill,
-    RetributionistAction,
-    GodfatherAction,
-    Sidekick,
-    Declare,
-    RebelAction,
-    Frame,
-    Ambush,
-    Crusade,
-    Scream,
-    Mark,
     FadeBody,
-    SetBomb,
     ForceKill,
     SetUninteractable,
     Burn,
-    MayorReveal,
-    DictatorReveal,
-    Spell,
-    Knight,
-    SetExiles,
-    Confuse,
-    TimeControl,
-    Silence,
-    RequestHit,
     PlaceHit,
-    RoleAction,
+    LayerAction1,
+    LayerAction2,
 
     None
 }
 
+public enum DictActionsRPC
+{
+    SetExiles,
+    Reveal
+}
+
+public enum GlitchActionsRPC
+{
+    Mimic,
+    Hack
+}
+
+public enum ThiefActionsRPC
+{
+    Steal,
+    Guess
+}
+
 public enum AbilityTypes
 {
-    Direct,
+    Target,
     Dead,
-    Effect,
     Vent,
-    Special
+    Targetless,
+    None
 }
 
 public enum MeetingTypes
@@ -372,6 +335,7 @@ public enum MiscRPC
     SyncSummary,
     //ShareFriendCode,
     BodyLocation,
+    SyncMayorVote,
 
     None
 }
@@ -488,7 +452,7 @@ public enum LayerEnum
     Silencer,
     Spellslinger,
     Stalker,
-    TimeKeeper,
+    Timekeeper,
     Warper,
 
     Any,
@@ -580,7 +544,7 @@ public enum InspectorResults
     LeadsTheGroup, //Mayor, Godfather, Rebel, Pestilence, Survivor
     BringsChaos, //Shifter, Thief, Camouflager, Whisperer, Jackal
     SeeksToDestroy, //Arsonist, Cryomaniac, Plaguebearer, Spellslinger
-    MovesAround, //Transporter, Teleporter, Warper, Time Keeper
+    MovesAround, //Transporter, Teleporter, Warper, Timekeeper
     NewLens, //Engineer, Miner, Seer, Dracula, Medium, Monarch
     GainsInfo, //Sheriff, Consigliere, Blackmailer, Detective, Inspector, Silencer
     Manipulative, //Jester, Executioner, Actor, Troll, Framer, Dictator
@@ -707,16 +671,12 @@ public enum BecomeEnum
     Crewmate
 }
 
-public enum RetributionistActionsRPC
+public enum RetActionsRPC
 {
     Protect,
-    AltruistRevive,
-    Alert,
     EscRoleblock,
     Transport,
     Mediate,
-    Stake,
-    Swoop,
     RetributionistRevive
 }
 
@@ -756,18 +716,13 @@ public enum AlliedFaction
     Crew
 }
 
-public enum GodfatherActionsRPC
+public enum GFActionsRPC
 {
     Morph,
-    Camouflage,
-    Invis,
     Disguise,
     Drag,
-    FlashGrenade,
     Blackmail,
-    Infect,
     ConsRoleblock,
-    SetBomb,
     Ambush
 }
 
@@ -778,7 +733,7 @@ public enum SyndicateVentOptions
     Never
 }
 
-public enum RebelActionsRPC
+public enum RebActionsRPC
 {
     Poison,
     Warp,
@@ -788,7 +743,6 @@ public enum RebelActionsRPC
     Crusade,
     Spell,
     Confuse,
-    TimeControl,
     Silence
 }
 
@@ -843,4 +797,13 @@ public enum ShowMediumToDead
     No,
     Target,
     AllDead
+}
+
+public enum CooldownType
+{
+    Start,
+    Meeting,
+    Survivor,
+    GuardianAngel,
+    Reset
 }

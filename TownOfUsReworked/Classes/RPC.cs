@@ -1,6 +1,5 @@
 namespace TownOfUsReworked.Classes;
 
-[HarmonyPatch]
 public static class RPC
 {
     public static void SendOptionRPC(CustomOption optionn = null)
@@ -101,13 +100,6 @@ public static class RPC
     public static void VersionHandshake(int major, int minor, int build, int revision, Guid guid, int clientId) => GameStartManagerPatch.PlayerVersions.TryAdd(clientId, new(new(major, minor,
         build, revision), guid));
 
-    public static Vector3 ReadVector3(this MessageReader reader)
-    {
-        var vector2 = reader.ReadVector2();
-        var z = reader.ReadSingle();
-        return new(vector2.x, vector2.y, z);
-    }
-
     public static PlayerControl ReadPlayer(this MessageReader reader) => PlayerById(reader.ReadByte());
 
     public static PlayerVoteArea ReadVoteArea(this MessageReader reader) => VoteAreaById(reader.ReadByte());
@@ -121,6 +113,12 @@ public static class RPC
         return PlayerLayer.AllLayers.Find(x => x.Player == player && x.Type == type);
     }
 
+    public static CustomButton ReadButton(this MessageReader reader)
+    {
+        var id = reader.ReadString();
+        return CustomButton.AllButtons.Find(x => x.ID == id);
+    }
+
     public static T ReadLayer<T>(this MessageReader reader) where T : PlayerLayer => reader.ReadLayer() as T;
 
     public static List<byte> ReadByteList(this MessageReader reader) => reader.ReadBytesAndSize().ToList();
@@ -128,7 +126,10 @@ public static class RPC
     public static void CallRpc(params object[] data)
     {
         if (data[0] is not CustomRPC)
-            throw new ArgumentException("The first param must be CustomRPC");
+        {
+            LogError("The first parameter must be CustomRPC");
+            return;
+        }
 
         var writer = AmongUsClient.Instance.StartRpcImmediately(CustomPlayer.Local.NetId, 254, SendOption.Reliable);
         writer.Write((byte)(CustomRPC)data[0]);
@@ -192,12 +193,18 @@ public static class RPC
                     writer.Write((byte)death);
                 else if (item is WinLoseRPC winlose)
                     writer.Write((byte)winlose);
-                else if (item is RetributionistActionsRPC retAction)
+                else if (item is RetActionsRPC retAction)
                     writer.Write((byte)retAction);
-                else if (item is GodfatherActionsRPC gfAction)
+                else if (item is GFActionsRPC gfAction)
                     writer.Write((byte)gfAction);
-                else if (item is RebelActionsRPC rebAction)
+                else if (item is RebActionsRPC rebAction)
                     writer.Write((byte)rebAction);
+                else if (item is DictActionsRPC dictAction)
+                    writer.Write((byte)dictAction);
+                else if (item is GlitchActionsRPC glitchAction)
+                    writer.Write((byte)glitchAction);
+                else if (item is ThiefActionsRPC thiefAction)
+                    writer.Write((byte)thiefAction);
                 else if (item is MiscRPC misc)
                     writer.Write((byte)misc);
                 else if (item is PlayerControl player)
@@ -206,6 +213,8 @@ public static class RPC
                     writer.Write(body.ParentId);
                 else if (item is PlayerVoteArea area)
                     writer.Write(area.TargetPlayerId);
+                else if (item is CustomButton button)
+                    writer.Write(button.ID);
                 else if (item is PlayerLayer layer2)
                 {
                     writer.Write(layer2.PlayerId);
@@ -218,4 +227,6 @@ public static class RPC
 
         AmongUsClient.Instance.FinishRpcImmediately(writer);
     }
+
+    public static void StartEffect(MessageReader reader) => reader.ReadButton()?.StartEffectRPC(reader);
 }

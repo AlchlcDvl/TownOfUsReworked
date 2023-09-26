@@ -2,9 +2,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public class Shifter : Crew
 {
-    public DateTime LastShifted { get; set; }
     public CustomButton ShiftButton { get; set; }
-    public float Timer => ButtonUtils.Timer(Player, LastShifted, CustomGameOptions.ShiftCd);
 
     public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Shifter : Colors.Crew;
     public override string Name => "Shifter";
@@ -16,108 +14,92 @@ public class Shifter : Crew
     public Shifter(PlayerControl player) : base(player)
     {
         Alignment = Alignment.CrewSupport;
-        ShiftButton = new(this, "Shift", AbilityTypes.Direct, "ActionSecondary", Shift);
+        ShiftButton = new(this, "Shift", AbilityTypes.Target, "ActionSecondary", Shift, CustomGameOptions.ShiftCd);
     }
 
     public void Shift()
     {
-        if (Timer != 0f || IsTooFar(Player, ShiftButton.TargetPlayer))
-            return;
-
         var interact = Interact(Player, ShiftButton.TargetPlayer);
 
         if (interact.AbilityUsed)
         {
-            CallRpc(CustomRPC.Action, ActionsRPC.Shift, this, ShiftButton.TargetPlayer);
-            Shift(this, ShiftButton.TargetPlayer);
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, ShiftButton.TargetPlayer);
+            Shift(ShiftButton.TargetPlayer);
         }
-
-        if (interact.Reset)
-            LastShifted = DateTime.UtcNow;
+        else if (interact.Reset)
+            ShiftButton.StartCooldown(CooldownType.Reset);
         else if (interact.Protected)
-            LastShifted.AddSeconds(CustomGameOptions.ProtectKCReset);
+            ShiftButton.StartCooldown(CooldownType.GuardianAngel);
     }
 
-    public static void Shift(Shifter shifterRole, PlayerControl other)
+    public void Shift(PlayerControl other)
     {
         var role = GetRole(other);
-        var shifter = shifterRole.Player;
 
         if (!other.Is(Faction.Crew) || other.IsFramed())
         {
             if (AmongUsClient.Instance.AmHost)
-                RpcMurderPlayer(shifter, shifter);
+                RpcMurderPlayer(Player, Player);
 
             return;
         }
 
-        if (CustomPlayer.Local == other || CustomPlayer.Local == shifter)
+        if (CustomPlayer.Local == other || CustomPlayer.Local == Player)
         {
             Flash(Colors.Shifter);
             role.OnLobby();
-            shifterRole.OnLobby();
+            OnLobby();
             ButtonUtils.ResetCustomTimers();
         }
 
         Role newRole = role.Type switch
         {
-            LayerEnum.Crewmate => new Crewmate(shifter),
-            LayerEnum.Detective => new Detective(shifter),
-            LayerEnum.Escort => new Escort(shifter),
-            LayerEnum.Sheriff => new Sheriff(shifter),
-            LayerEnum.Medic => new Medic(shifter),
-            LayerEnum.Medium => new Medium(shifter),
-            LayerEnum.VampireHunter => new VampireHunter(shifter),
-            LayerEnum.Mystic => new Mystic(shifter),
-            LayerEnum.Seer => new Seer(shifter),
-            LayerEnum.Altruist => new Altruist(shifter) { UsesLeft = ((Altruist)role).UsesLeft },
-            LayerEnum.Engineer => new Engineer(shifter) { UsesLeft = ((Engineer)role).UsesLeft },
-            LayerEnum.Inspector => new Inspector(shifter) { Inspected = ((Inspector)role).Inspected },
-            LayerEnum.Transporter => new Transporter(shifter) { UsesLeft = ((Transporter)role).UsesLeft },
-            LayerEnum.Mayor => new Mayor(shifter) { Revealed = ((Mayor)role).Revealed },
-            LayerEnum.Operative => new Operative(shifter) { UsesLeft = ((Operative)role).UsesLeft },
-            LayerEnum.Veteran => new Veteran(shifter) { UsesLeft = ((Veteran)role).UsesLeft },
-            LayerEnum.Vigilante => new Vigilante(shifter) { UsesLeft = ((Vigilante)role).UsesLeft },
-            LayerEnum.Chameleon => new Chameleon(shifter) { UsesLeft = ((Chameleon)role).UsesLeft },
-            LayerEnum.Dictator => new Dictator(shifter),
-            LayerEnum.Tracker => new Tracker(shifter)
+            LayerEnum.Crewmate => new Crewmate(Player),
+            LayerEnum.Detective => new Detective(Player),
+            LayerEnum.Escort => new Escort(Player),
+            LayerEnum.Sheriff => new Sheriff(Player),
+            LayerEnum.Medium => new Medium(Player),
+            LayerEnum.VampireHunter => new VampireHunter(Player),
+            LayerEnum.Mystic => new Mystic(Player),
+            LayerEnum.Seer => new Seer(Player),
+            LayerEnum.Altruist => new Altruist(Player),
+            LayerEnum.Engineer => new Engineer(Player),
+            LayerEnum.Inspector => new Inspector(Player),
+            LayerEnum.Transporter => new Transporter(Player),
+            LayerEnum.Mayor => new Mayor(Player),
+            LayerEnum.Operative => new Operative(Player),
+            LayerEnum.Veteran => new Veteran(Player),
+            LayerEnum.Vigilante => new Vigilante(Player),
+            LayerEnum.Chameleon => new Chameleon(Player),
+            LayerEnum.Dictator => new Dictator(Player),
+            LayerEnum.Tracker => new Tracker(Player),
+            LayerEnum.Coroner => new Coroner(Player),
+            LayerEnum.Medic => new Medic(Player) { ShieldedPlayer = ((Medic)role).ShieldedPlayer },
+            LayerEnum.Monarch => new Monarch(Player)
             {
-                TrackerArrows = ((Tracker)role).TrackerArrows,
-                UsesLeft = ((Tracker)role).UsesLeft
-            },
-            LayerEnum.Monarch => new Monarch(shifter)
-            {
-                UsesLeft = ((Monarch)role).UsesLeft,
                 ToBeKnighted = ((Monarch)role).ToBeKnighted,
                 Knighted = ((Monarch)role).Knighted
             },
-            LayerEnum.Coroner => new Coroner(shifter)
+            LayerEnum.Retributionist => new Retributionist(Player)
             {
-                ReferenceBodies = ((Coroner)role).ReferenceBodies,
-                Reported = ((Coroner)role).Reported
-            },
-            LayerEnum.Retributionist => new Retributionist(shifter)
-            {
-                TrackerArrows = ((Retributionist)role).TrackerArrows,
-                Inspected = ((Retributionist)role).Inspected,
                 Selected = ((Retributionist)role).Selected,
-                UsesLeft = ((Retributionist)role).UsesLeft,
-                Reported = ((Retributionist)role).Reported,
-                ReferenceBodies = ((Retributionist)role).ReferenceBodies
+                ShieldedPlayer = ((Retributionist)role).ShieldedPlayer
             },
-            _ => new Shifter(shifter),
+            LayerEnum.Shifter or _ => new Shifter(Player),
         };
 
-        newRole.RoleUpdate(shifterRole);
+        newRole.RoleUpdate(this);
         Role newRole2 = CustomGameOptions.ShiftedBecomes == BecomeEnum.Shifter ? new Shifter(other) : new Crewmate(other);
         newRole2.RoleUpdate(role);
     }
 
-    public bool Exception(PlayerControl player) => Faction is Faction.Intruder or Faction.Syndicate && player.Is(Faction);
+    public bool Exception(PlayerControl player) => (Faction is Faction.Intruder or Faction.Syndicate && player.Is(Faction)) || (SubFaction != SubFaction.None && player.Is(SubFaction));
+
+    public override void ReadRPC(MessageReader reader) => Shift(reader.ReadPlayer());
 
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        ShiftButton.Update("SHIFT", Timer, CustomGameOptions.ShiftCd);
+        ShiftButton.Update2("SHIFT");
     }
 }

@@ -1,6 +1,5 @@
 namespace TownOfUsReworked.Data;
 
-[HarmonyPatch]
 public static class References
 {
     
@@ -17,6 +16,7 @@ public static class References
     public static PlayerControl CachedFirstDead;
     public static HudManager HUD => HudManager.Instance;
     public static MeetingHud Meeting => MeetingHud.Instance;
+    public static ExileController Ejection => ExileController.Instance;
     public static ShipStatus Ship => ShipStatus.Instance;
     public static MapBehaviour Map => MapBehaviour.Instance;
     public static Dictionary<byte, string> BodyLocations = new();

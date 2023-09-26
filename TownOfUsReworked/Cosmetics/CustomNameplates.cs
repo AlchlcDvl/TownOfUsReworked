@@ -1,8 +1,5 @@
-/*using Innersloth.Assets;
+/*namespace TownOfUsReworked.Cosmetics;
 
-namespace TownOfUsReworked.Cosmetics;
-
-[HarmonyPatch]
 public static class CustomNameplates
 {
     private static bool SubLoaded;
@@ -22,8 +19,8 @@ public static class CustomNameplates
         if (sprite == null)
             return null;
 
-        texture.hideFlags |= HideFlags.HideAndDontSave;
-        sprite.hideFlags |= HideFlags.HideAndDontSave;
+        texture.hideFlags |= HideFlags.HideAndDontSave | HideFlags.DontUnloadUnusedAsset;
+        sprite.hideFlags |= HideFlags.HideAndDontSave | HideFlags.DontUnloadUnusedAsset;
         return sprite;
     }
 
@@ -32,12 +29,14 @@ public static class CustomNameplates
         if (fromDisk)
             cn.ID = TownOfUsReworked.Nameplates + cn.ID + ".png";
 
-        var nameplate = ScriptableObject.CreateInstance<NamePlateData>();
-        var viewData = ScriptableObject.CreateInstance<NamePlateViewData>();
+        var nameplate = ScriptableObject.CreateInstance<NamePlateData>().DontDestroy();
+        var viewData = ScriptableObject.CreateInstance<NamePlateViewData>().DontDestroy();
         viewData.Image = CreateNameplateSprite(cn.ID, fromDisk);
+        nameplate.SpritePreview = viewData.Image;
+        nameplate.PreviewCrewmateColor = false;
         nameplate.name = cn.Name;
         nameplate.displayOrder = 99;
-        nameplate.ProductId = "nameplate_" + cn.Name.Replace(' ', '_');
+        nameplate.ProductId = "customNameplate_" + cn.Name.Replace(' ', '_');
         nameplate.ChipOffset = new(0f, 0.2f);
         nameplate.Free = true;
 
@@ -92,14 +91,11 @@ public static class CustomNameplates
     [HarmonyPatch(typeof(NameplatesTab), nameof(NameplatesTab.OnEnable))]
     public static class NameplatesTabOnEnablePatch
     {
-        public const string InnerslothPackageName = "Innersloth";
         private static TMP_Text Template;
 
-        public static float CreateNameplatePackage(List<Tuple<NamePlateData, NameplateExtension>> nameplates, string packageName, float YStart, NameplatesTab __instance)
+        public static float CreateNameplatePackage(List<NamePlateData> nameplates, string packageName, float YStart, NameplatesTab __instance)
         {
-            if (packageName != InnerslothPackageName)
-                nameplates = nameplates.OrderBy(x => x.Item1.name).ToList();
-
+            nameplates = nameplates.OrderBy(x => x.name).ToList();
             var offset = YStart;
 
             if (Template != null)
@@ -118,7 +114,7 @@ public static class CustomNameplates
 
             for (var i = 0; i < nameplates.Count; i++)
             {
-                var nameplate = nameplates[i].Item1;
+                var nameplate = nameplates[i];
                 var xpos = __instance.XRange.Lerp(i % __instance.NumPerRow / (__instance.NumPerRow - 1f));
                 var ypos = offset - (i / __instance.NumPerRow * __instance.YOffset);
                 var colorChip = UObject.Instantiate(__instance.ColorTabPrefab, __instance.scroller.Inner);
@@ -126,8 +122,7 @@ public static class CustomNameplates
                 if (ActiveInputManager.currentControlType == ActiveInputManager.InputType.Keyboard)
                 {
                     colorChip.Button.OnMouseOver.AddListener((Action)(() => __instance.SelectNameplate(nameplate)));
-                    colorChip.Button.OnMouseOut.AddListener((Action)(() =>
-                        __instance.SelectNameplate(HatManager.Instance.GetNamePlateById(DataManager.Player.Customization.NamePlate))));
+                    colorChip.Button.OnMouseOut.AddListener((Action)(() => __instance.SelectNameplate(HatManager.Instance.GetNamePlateById(DataManager.Player.Customization.NamePlate))));
                     colorChip.Button.OnClick.AddListener((Action)(() => __instance.ClickEquip()));
                 }
                 else
@@ -135,11 +130,12 @@ public static class CustomNameplates
 
                 colorChip.Button.ClickMask = __instance.scroller.Hitbox;
                 colorChip.transform.localPosition = new(xpos, ypos, -1f);
-                __instance.StartCoroutine(nameplate.CoLoadIcon(new Action<Sprite, AddressableAsset>((sprite, _) =>
-                {
-                    colorChip.gameObject.GetComponent<NameplateChip>().image.sprite = sprite;
-                    colorChip.gameObject.GetComponent<NameplateChip>().ProductId = nameplate.ProductId;
-                })));
+                colorChip.Inner.transform.localPosition = nameplate.ChipOffset;
+                colorChip.ProductId = nameplate.ProductId;
+                colorChip.Tag = nameplate;
+                __instance.UpdateMaterials(colorChip.Inner.FrontLayer, nameplate);
+                nameplate.SetPreview(colorChip.Inner.FrontLayer, __instance.HasLocalPlayer() ? CustomPlayer.LocalCustom.Data.DefaultOutfit.ColorId : DataManager.Player.Customization.Color);
+                colorChip.SelectionHighlight.gameObject.SetActive(false);
                 __instance.ColorChips.Add(colorChip);
             }
 
@@ -153,56 +149,37 @@ public static class CustomNameplates
 
             __instance.ColorChips = new();
             var array = HatManager.Instance.GetUnlockedNamePlates();
-            var packages = new Dictionary<string, List<Tuple<NamePlateData, NameplateExtension>>>();
+            var packages = new Dictionary<string, List<NamePlateData>>();
 
             foreach (var data in array)
             {
                 var ext = data.GetNameplateExtension();
+                var package = ext != null ? ext.Artist : "Innersloth";
 
-                if (ext != null)
-                {
-                    if (!packages.ContainsKey(ext.Artist))
-                        packages[ext.Artist] = new();
+                if (!packages.ContainsKey(package))
+                    packages[package] = new();
 
-                    packages[ext.Artist].Add(new(data, ext));
-                }
-                else
-                {
-                    if (!packages.ContainsKey(InnerslothPackageName))
-                        packages[InnerslothPackageName] = new();
-
-                    packages[InnerslothPackageName].Add(new(data, null));
-                }
+                packages[package].Add(data);
             }
 
             var YOffset = __instance.YStart;
             Template = __instance.transform.FindChild("Text").gameObject.GetComponent<TMP_Text>();
-            var keys = packages.Keys.OrderBy(x =>
+            var keys = packages.Keys.OrderBy(x => x switch
             {
-                if (x == InnerslothPackageName)
-                    return 1000;
-
-                if (x == "Developer Visors")
-                    return 0;
-
-                return 500;
+                "Innersloth" => 2,
+                _ => 1
             });
-
             keys.ForEach(key => YOffset = CreateNameplatePackage(packages[key], key, YOffset, __instance));
             __instance.scroller.ContentYBounds.max = -(YOffset + 3.8f);
+
+            foreach (var colorChip in __instance.ColorChips)
+            {
+                colorChip.Inner.FrontLayer.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
+                colorChip.Inner.BackLayer.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
+                colorChip.SelectionHighlight.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
+            }
+
             return false;
-        }
-    }
-
-    [HarmonyPatch(typeof(PlayerVoteArea), nameof(PlayerVoteArea.PreviewNameplate))]
-    public static class PreviewNameplatePatch
-    {
-        public static void Postfix(PlayerVoteArea __instance, string plateID)
-        {
-            if (!CustomNameplateViewDatas.TryGetValue(plateID, out var result) || result == null)
-                return;
-
-            __instance.Background.sprite = result.Image;
         }
     }
 

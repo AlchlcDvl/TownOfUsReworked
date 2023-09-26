@@ -1,10 +1,9 @@
 namespace TownOfUsReworked.Data;
 
 //Thanks to Town Of Host parts of this code
-[HarmonyPatch]
 public static class ConstantVariables
 {
-    public static bool IsCountDown => GameStartManager.Instance && GameStartManager.Instance.startState == GameStartManager.StartingStates.Countdown;
+    public static bool IsCountDown => GameStartManager.Instance?.startState == GameStartManager.StartingStates.Countdown;
     public static bool IsInGame => (AmongUsClient.Instance.GameState == InnerNetClient.GameStates.Started || GameManager.Instance?.GameHasStarted == true ||
         AmongUsClient.Instance.IsGameStarted) && !LobbyBehaviour.Instance;
     public static bool IsLobby => AmongUsClient.Instance.GameState == InnerNetClient.GameStates.Joined || LobbyBehaviour.Instance;
@@ -42,12 +41,12 @@ public static class ConstantVariables
             if (CustomPlayer.Local.Is(LayerEnum.GuardianAngel))
             {
                 var ga = (GuardianAngel)Role.LocalRole;
-                otherFlag = !ga.Failed && ga.TargetPlayer != null && ga.TargetAlive && CustomGameOptions.ProtectBeyondTheGrave && ga.ButtonUsable;
+                otherFlag = !ga.Failed && ga.TargetPlayer != null && ga.TargetAlive && CustomGameOptions.ProtectBeyondTheGrave && ga.GraveProtectButton.Usable;
             }
             else if (CustomPlayer.Local.Is(LayerEnum.Jester))
             {
                 var jest = (Jester)Role.LocalRole;
-                otherFlag = jest.CanHaunt || jest.HasHaunted;
+                otherFlag = jest.CanHaunt;
             }
 
             return flag && !otherFlag;

@@ -15,7 +15,7 @@ public class Swapper : Ability
     {
         Swap1 = null;
         Swap2 = null;
-        SwapMenu = new(Player, "SwapActive", "SwapDisabled", MeetingTypes.Toggle, CustomGameOptions.SwapAfterVoting, SetActive, IsExempt);
+        SwapMenu = new(Player, "SwapActive", "SwapDisabled", CustomGameOptions.SwapAfterVoting, SetActive, IsExempt, position: null);
     }
 
     public override void VoteComplete(MeetingHud __instance)
@@ -24,7 +24,13 @@ public class Swapper : Ability
         SwapMenu.HideButtons();
 
         if (Swap1 && Swap2)
-            CallRpc(CustomRPC.Action, ActionsRPC.SetSwaps, this, Swap1, Swap2);
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, Swap1, Swap2);
+    }
+
+    public override void ReadRPC(MessageReader reader)
+    {
+        Swap1 = reader.ReadVoteArea();
+        Swap2 = reader.ReadVoteArea();
     }
 
     private void SetActive(PlayerVoteArea voteArea, MeetingHud __instance)
@@ -74,7 +80,7 @@ public class Swapper : Ability
         SwapMenu.Voted();
 
         if (Swap1 && Swap2)
-            CallRpc(CustomRPC.Action, ActionsRPC.SetSwaps, this, Swap1, Swap2);
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, Swap1, Swap2);
     }
 
     public override void UpdateMeeting(MeetingHud __instance)

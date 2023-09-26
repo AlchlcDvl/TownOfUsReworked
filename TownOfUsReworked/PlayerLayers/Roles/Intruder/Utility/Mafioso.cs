@@ -10,8 +10,8 @@ public class Mafioso : Intruder
     public override string Name => "Mafioso";
     public override LayerEnum Type => LayerEnum.Mafioso;
     public override Func<string> StartText => () => "Succeed The <color=#404C08FF>Godfather</color>";
-    public override Func<string> Description => () => "- When the <color=#404C08FF>Godfather</color> dies, you will become the new <color=#404C08FF>Godfather</color> with boosted " +
-        $"abilities of your former role\n{CommonAbilities}";
+    public override Func<string> Description => () => "- When the <color=#404C08FF>Godfather</color> dies, you will become the new <color=#404C08FF>Godfather</color> with boosted abilities" +
+        $" of your former role\n{CommonAbilities}";
     public override InspectorResults InspectorResults => InspectorResults.IsCold;
 
     public Mafioso(PlayerControl player) : base(player) => Alignment = Alignment.IntruderUtil;
@@ -26,12 +26,6 @@ public class Mafioso : Intruder
         };
 
         newRole.RoleUpdate(this);
-
-        if (Local)
-            Flash(Colors.Godfather);
-
-        if (CustomPlayer.Local.Is(LayerEnum.Seer))
-            Flash(Colors.Seer);
     }
 
     public override void UpdateHud(HudManager __instance)

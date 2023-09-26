@@ -14,10 +14,10 @@ public static class UpdateNames
         if (NoPlayers || IsHnS || Meeting || IsLobby)
             return;
 
-        CustomPlayer.AllPlayers.ForEach(SetName);
+        CustomPlayer.AllPlayers.ForEach(SetNames);
     }
 
-    private static void SetName(PlayerControl player)
+    private static void SetNames(PlayerControl player)
     {
         if (!PlayerNames.ContainsKey(player.PlayerId))
             PlayerNames.Add(player.PlayerId, player.Data.PlayerName);
@@ -31,23 +31,32 @@ public static class UpdateNames
 
     private static string UpdateColorblind(PlayerControl player)
     {
-        if (player.GetCustomOutfitType() == CustomPlayerOutfitType.Invis && player != CustomPlayer.Local)
-            return "";
-        
         if (!DataManager.Settings.Accessibility.ColorBlindMode)
             return "";
 
-        var distance = Vector2.Distance(CustomPlayer.Local.GetTruePosition(), player.GetTruePosition());
-        var vector = player.GetTruePosition() - CustomPlayer.Local.GetTruePosition();
+        var distance = Vector2.Distance(CustomPlayer.Local.transform.position, player.transform.position);
+        var vector = player.transform.position - CustomPlayer.Local.transform.position;
 
-        if (PhysicsHelpers.AnyNonTriggersBetween(CustomPlayer.Local.GetTruePosition(), vector.normalized, distance, Constants.ShipAndObjectsMask) && CustomGameOptions.ObstructNames &&
+        if (PhysicsHelpers.AnyNonTriggersBetween(CustomPlayer.Local.transform.position, vector.normalized, distance, Constants.ShipAndObjectsMask) && CustomGameOptions.ObstructNames &&
             player != CustomPlayer.Local && !CustomPlayer.LocalCustom.IsDead)
         {
             return "";
         }
 
-        var name = ColorNames.FirstOrDefault(x => x.Key == player.PlayerId).Value;
-        var ld = ColorUtils.LightDarkColors[player.CurrentOutfit.ColorId] == "Lighter" ? "L" : "D";
+        var name = "";
+
+        if (HudUpdate.IsCamoed && player != CustomPlayer.Local && !CustomPlayer.LocalCustom.IsDead)
+            name = GetRandomisedName();
+        else if (CustomGameOptions.NoNames && !IsLobby)
+            name = "";
+        else if (CachedMorphs.ContainsKey(player.PlayerId) && player != CustomPlayer.Local && !CustomPlayer.LocalCustom.IsDead)
+            name = ColorNames.FirstOrDefault(x => x.Key == CachedMorphs[player.PlayerId]).Value;
+        else if (player.GetCustomOutfitType() is CustomPlayerOutfitType.Invis && player != CustomPlayer.Local && !CustomPlayer.LocalCustom.IsDead)
+            name = "";
+        else
+            name = ColorNames.FirstOrDefault(x => x.Key == player.PlayerId).Value;
+
+        var ld = CustomColors.LightDarkColors[player.CurrentOutfit.ColorId] == "Lighter" ? "L" : "D";
 
         if (ClientGameOptions.LighterDarker)
             name += $" ({ld})";
@@ -57,13 +66,10 @@ public static class UpdateNames
 
     public static (string, Color) UpdateGameName(PlayerControl player)
     {
-        if (player.GetCustomOutfitType() == CustomPlayerOutfitType.Invis && player != CustomPlayer.Local)
-            return ("", UColor.clear);
+        var distance = Vector2.Distance(CustomPlayer.Local.transform.position, player.transform.position);
+        var vector = player.transform.position - CustomPlayer.Local.transform.position;
 
-        var distance = Vector2.Distance(CustomPlayer.Local.GetTruePosition(), player.GetTruePosition());
-        var vector = player.GetTruePosition() - CustomPlayer.Local.GetTruePosition();
-
-        if (PhysicsHelpers.AnyNonTriggersBetween(CustomPlayer.Local.GetTruePosition(), vector.normalized, distance, Constants.ShipAndObjectsMask) && CustomGameOptions.ObstructNames &&
+        if (PhysicsHelpers.AnyNonTriggersBetween(CustomPlayer.Local.transform.position, vector.normalized, distance, Constants.ShipAndObjectsMask) && CustomGameOptions.ObstructNames &&
             player != CustomPlayer.Local && !CustomPlayer.LocalCustom.IsDead)
         {
             return ("", UColor.clear);
@@ -75,9 +81,13 @@ public static class UpdateNames
         var localinfo = CustomPlayer.Local.AllPlayerInfo();
         var roleRevealed = false;
 
-        if (DoUndo.IsCamoed && player != CustomPlayer.Local && !CustomPlayer.LocalCustom.IsDead && !IsLobby)
+        if (HudUpdate.IsCamoed && player != CustomPlayer.Local && !CustomPlayer.LocalCustom.IsDead)
             name = GetRandomisedName();
         else if (CustomGameOptions.NoNames && !IsLobby)
+            name = "";
+        else if (CachedMorphs.ContainsKey(player.PlayerId) && player != CustomPlayer.Local && !CustomPlayer.LocalCustom.IsDead)
+            name = PlayerNames.FirstOrDefault(x => x.Key == CachedMorphs[player.PlayerId]).Value;
+        else if (player.GetCustomOutfitType() is CustomPlayerOutfitType.Invis && player != CustomPlayer.Local && !CustomPlayer.LocalCustom.IsDead)
             name = "";
         else
             name = PlayerNames.FirstOrDefault(x => x.Key == player.PlayerId).Value;

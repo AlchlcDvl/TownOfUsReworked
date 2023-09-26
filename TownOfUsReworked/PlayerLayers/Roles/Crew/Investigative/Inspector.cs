@@ -2,10 +2,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public class Inspector : Crew
 {
-    public DateTime LastInspected { get; set; }
     public List<byte> Inspected { get; set; }
     public CustomButton InspectButton { get; set; }
-    public float Timer => ButtonUtils.Timer(Player, LastInspected, CustomGameOptions.InspectCd);
 
     public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Inspector : Colors.Crew;
     public override string Name => "Inspector";
@@ -18,23 +16,21 @@ public class Inspector : Crew
     {
         Alignment = Alignment.CrewInvest;
         Inspected = new();
-        InspectButton = new(this, "Inspect", AbilityTypes.Direct, "ActionSecondary", Inspect, Exception);
+        InspectButton = new(this, "Inspect", AbilityTypes.Target, "ActionSecondary", Inspect, CustomGameOptions.InspectCd, Exception);
     }
 
     public void Inspect()
     {
-        if (Timer != 0f || IsTooFar(Player, InspectButton.TargetPlayer) || Inspected.Contains(InspectButton.TargetPlayer.PlayerId))
-            return;
-
         var interact = Interact(Player, InspectButton.TargetPlayer);
+        var cooldown = CooldownType.Reset;
 
         if (interact.AbilityUsed)
             Inspected.Add(InspectButton.TargetPlayer.PlayerId);
 
-        if (interact.Reset)
-            LastInspected = DateTime.UtcNow;
-        else if (interact.Protected)
-            LastInspected.AddSeconds(CustomGameOptions.ProtectKCReset);
+        if (interact.Protected)
+            cooldown = CooldownType.GuardianAngel;
+
+        InspectButton.StartCooldown(cooldown);
     }
 
     public bool Exception(PlayerControl player) => Inspected.Contains(player.PlayerId) || (((Faction is Faction.Intruder or Faction.Syndicate && player.Is(Faction)) || (player.Is(SubFaction)
@@ -45,6 +41,6 @@ public class Inspector : Crew
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        InspectButton.Update("INSPECT", Timer, CustomGameOptions.InspectCd);
+        InspectButton.Update2("INSPECT");
     }
 }

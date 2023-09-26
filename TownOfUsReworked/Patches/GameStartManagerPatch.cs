@@ -1,6 +1,5 @@
 namespace TownOfUsReworked.Patches;
 
-[HarmonyPatch]
 public static class GameStartManagerPatch
 {
     //The code is from The Other Roles; link :- https://github.com/TheOtherRolesAU/TheOtherRoles/blob/main/TheOtherRoles/Patches/GameStartManagerPatch.cs under GPL v3 with some

@@ -26,9 +26,9 @@ public static class ConfirmEjects
         var totalEvilsCount = CustomPlayer.AllPlayers.Count(x => ((!x.Is(Faction.Crew) && !x.Is(Alignment.NeutralBen) && !x.Is(Alignment.NeutralEvil)) || x.NotOnTheSameSide()) &&
             !x.HasDied());
         var totalEvilsRemaining = IsAA ? "an unknown number of" : $"{totalEvilsCount}";
-        var evils = totalEvilsCount > 1 ? "evils" : "evil";
-        var IsAre = totalEvilsCount > 1 ? "are" : "is";
-        var totalEvils = $"There {IsAre} {totalEvilsRemaining} <color=#FF0000FF>{evils}</color> remaining.";
+        var s = totalEvilsCount > 1 ? "s" : "";
+        var isAre = totalEvilsCount > 1 ? "are" : "is";
+        var totalEvils = $"There {isAre} {totalEvilsRemaining} <color=#FF0000FF>evil{s}</color> remaining.";
 
         var ejectString = "";
         PlayerControl target = null;
@@ -74,25 +74,16 @@ public static class ConfirmEjects
                 else if (target != null && CustomGameOptions.ExeEjectScreen)
                     ejectString = "The <color=#CCCCCCFF>Executioner</color> will avenge the fallen crew!";
                 else
-                    ejectString = $"{player.name} was the {role.ColorString + role.Name}</color>.";
+                    ejectString = $"{player.name} was the {role.ColorString}{role.Name}</color>.";
             }
             else if (!player.Is(SubFaction.None))
-                ejectString = $"{player.name} was the {role.SubFactionColorString + role.SubFactionName}</color>.";
+                ejectString = $"{player.name} was the {role.SubFactionColorString}{role.SubFactionName}</color>.";
             else if (player.Is(Faction.Crew) || player.Is(Faction.Intruder) || player.Is(Faction.Syndicate))
-                ejectString = $"{player.name} was the {role.FactionColorString + role.FactionName}</color>.";
+                ejectString = $"{player.name} was the {role.FactionColorString}{role.FactionName}</color>.";
 
             __instance.ImpostorText.text = totalEvils;
         }
 
         __instance.completeString = ejectString;
-
-        foreach (var vigi in Role.GetRoles<Vigilante>(LayerEnum.Vigilante))
-        {
-            if (vigi.PostMeetingDie)
-            {
-                vigi.Player.Exiled();
-                vigi.DeathReason = DeathReasonEnum.Suicide;
-            }
-        }
     }
 }

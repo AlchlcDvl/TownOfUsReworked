@@ -33,6 +33,7 @@ global using TownOfUsReworked.CustomOptions;
 global using TownOfUsReworked.PlayerLayers.Roles;
 global using static TownOfUsReworked.Classes.RPC;
 global using static TownOfUsReworked.Classes.Utils;
+global using static TownOfUsReworked.Classes.Blanks;
 global using TownOfUsReworked.MultiClientInstancing;
 global using static TownOfUsReworked.Classes.Logging;
 global using static TownOfUsReworked.Data.References;

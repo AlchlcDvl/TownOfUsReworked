@@ -3,7 +3,6 @@ using BepInEx.Logging;
 namespace TownOfUsReworked.Classes;
 
 //Adapted from LevelImpostor
-[HarmonyPatch]
 public static class Logging
 {
     private static ManualLogSource Log;

@@ -2,12 +2,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public class Consort : Intruder
 {
-    public DateTime LastBlocked { get; set; }
-    public float TimeRemaining { get; set; }
     public CustomButton BlockButton { get; set; }
     public PlayerControl BlockTarget { get; set; }
-    public bool Enabled { get; set; }
-    public bool Blocking => TimeRemaining > 0f;
     public CustomMenu BlockMenu { get; set; }
 
     public override Color Color => ClientGameOptions.CustomIntColors ? Colors.Consort : Colors.Intruder;
@@ -17,7 +13,6 @@ public class Consort : Intruder
     public override Func<string> Description => () => "- You can seduce players\n- Seduction blocks your target from being able to use their abilities for a short while\n- You are " +
         $"immune to blocks\n- If you block a <color=#336EFFFF>Serial Killer</color>, they will be forced to kill you\n{CommonAbilities}";
     public override InspectorResults InspectorResults => InspectorResults.HindersOthers;
-    public float Timer => ButtonUtils.Timer(Player, LastBlocked, CustomGameOptions.ConsortCd);
 
     public Consort(PlayerControl player) : base(player)
     {
@@ -25,26 +20,17 @@ public class Consort : Intruder
         RoleBlockImmune = true;
         BlockMenu = new(Player, Click, Exception1);
         BlockTarget = null;
-        BlockButton = new(this, "ConsortRoleblock", AbilityTypes.Effect, "Secondary", Roleblock);
+        BlockButton = new(this, "ConsortRoleblock", AbilityTypes.Targetless, "Secondary", Roleblock, CustomGameOptions.ConsortCd, CustomGameOptions.ConsortDur, (CustomButton.EffectVoid)Block,
+            UnBlock);
     }
 
     public void UnBlock()
     {
-        Enabled = false;
         GetLayers(BlockTarget).ForEach(x => x.IsBlocked = false);
         BlockTarget = null;
-        LastBlocked = DateTime.UtcNow;
     }
 
-    public void Block()
-    {
-        Enabled = true;
-        TimeRemaining -= Time.deltaTime;
-        GetLayers(BlockTarget).ForEach(x => x.IsBlocked = !GetRole(BlockTarget).RoleBlockImmune);
-
-        if (IsDead || BlockTarget.HasDied() || Meeting || !BlockTarget.IsBlocked())
-            TimeRemaining = 0f;
-    }
+    public void Block() => GetLayers(BlockTarget).ForEach(x => x.IsBlocked = !GetRole(BlockTarget).RoleBlockImmune);
 
     public void Click(PlayerControl player)
     {
@@ -53,38 +39,40 @@ public class Consort : Intruder
         if (interact.AbilityUsed)
             BlockTarget = player;
         else if (interact.Reset)
-            LastBlocked = DateTime.UtcNow;
+            BlockButton.StartCooldown(CooldownType.Reset);
         else if (interact.Protected)
-            LastBlocked.AddSeconds(CustomGameOptions.ProtectKCReset);
+            BlockButton.StartCooldown(CooldownType.GuardianAngel);
     }
 
     public void Roleblock()
     {
-        if (Timer != 0f)
-            return;
-
         if (BlockTarget == null)
             BlockMenu.Open();
         else
         {
-            TimeRemaining = CustomGameOptions.ConsortDur;
-            CallRpc(CustomRPC.Action, ActionsRPC.ConsRoleblock, this, BlockTarget);
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction1, BlockButton, BlockTarget);
+            BlockButton.Begin();
         }
     }
 
-    public bool Exception1(PlayerControl player) => player == BlockTarget || player == Player || player.Is(Faction) || (player.Is(SubFaction) && SubFaction != SubFaction.None);
+    public bool Exception1(PlayerControl player) => player == BlockTarget || player == Player || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) ||
+        (player.Is(SubFaction) && SubFaction != SubFaction.None);
 
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        BlockButton.Update(BlockTarget == null ? "SET TARGET" : "ROLEBLOCK", Timer, CustomGameOptions.ConsortCd, Blocking, TimeRemaining, CustomGameOptions.ConsortDur);
+        BlockButton.Update2(BlockTarget == null ? "SET TARGET" : "ROLEBLOCK");
 
         if (Input.GetKeyDown(KeyCode.Backspace))
         {
-            if (BlockTarget != null && !Blocking)
+            if (BlockTarget != null && !BlockButton.EffectActive)
                 BlockTarget = null;
 
             LogInfo("Removed a target");
         }
     }
+
+    public override void TryEndEffect() => BlockButton.Update3((BlockTarget != null && BlockTarget.HasDied()) || IsDead);
+
+    public override void ReadRPC(MessageReader reader) => BlockTarget = reader.ReadPlayer();
 }

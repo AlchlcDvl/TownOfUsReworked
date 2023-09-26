@@ -3,7 +3,6 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Whisperer : Neutral
 {
     public CustomButton WhisperButton { get; set; }
-    public DateTime LastWhispered { get; set; }
     public int WhisperCount { get; set; }
     public int ConversionCount { get; set; }
     public Dictionary<byte, int> PlayerConversion { get; set; }
@@ -17,8 +16,6 @@ public class Whisperer : Neutral
     public override Func<string> Description => () => "- You can whisper to players around, slowly bending them to your ideals\n- When a player reaches 100% conversion, they will " +
         "defect and join the <color=#F995FCFF>Sect</color>";
     public override InspectorResults InspectorResults => InspectorResults.BringsChaos;
-    public float Timer => ButtonUtils.Timer(Player, LastWhispered, CustomGameOptions.WhisperCd, CustomGameOptions.WhisperCdIncreases ?
-        (CustomGameOptions.WhisperCdIncrease * WhisperCount) : 0);
 
     public Whisperer(PlayerControl player) : base(player)
     {
@@ -28,7 +25,7 @@ public class Whisperer : Neutral
         SubFactionColor = Colors.Sect;
         WhisperConversion = CustomGameOptions.WhisperRate;
         Persuaded = new() { Player.PlayerId };
-        WhisperButton = new(this, "Whisper", AbilityTypes.Effect, "ActionSecondary", Whisper);
+        WhisperButton = new(this, "Whisper", AbilityTypes.Targetless, "ActionSecondary", Whisper, CustomGameOptions.WhisperCd);
         SubFactionSymbol = "Λ";
         PlayerConversion = new();
         CustomPlayer.AllPlayers.ForEach(x => PlayerConversion.Add(x.PlayerId, 100));
@@ -36,10 +33,7 @@ public class Whisperer : Neutral
 
     public void Whisper()
     {
-        if (Timer != 0f)
-            return;
-
-        var closestPlayers = GetClosestPlayers(Player.GetTruePosition(), CustomGameOptions.WhisperRadius);
+        var closestPlayers = GetClosestPlayers(Player.transform.position, CustomGameOptions.WhisperRadius);
         closestPlayers.Remove(Player);
 
         foreach (var player in closestPlayers)
@@ -68,16 +62,15 @@ public class Whisperer : Neutral
             }
         }
 
-        Persuaded.ForEach(x => PlayerConversion.Remove(x));
-        LastWhispered = DateTime.UtcNow;
         WhisperCount++;
+        Persuaded.ForEach(x => PlayerConversion.Remove(x));
         removals.ForEach(x => PlayerConversion.Remove(x));
+        WhisperButton.StartCooldown(CooldownType.Reset);
     }
 
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        WhisperButton.Update("WHISPER", Timer, CustomGameOptions.WhisperCd, CustomGameOptions.WhisperCdIncreases ? (CustomGameOptions.WhisperCdIncrease *
-            WhisperCount) : 0);
+        WhisperButton.Update2("WHISPER", difference: CustomGameOptions.WhisperCdIncreases ? (CustomGameOptions.WhisperCdIncrease * WhisperCount) : 0);
     }
 }

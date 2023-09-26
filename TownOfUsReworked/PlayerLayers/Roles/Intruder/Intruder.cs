@@ -2,21 +2,19 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public class Intruder : Role
 {
-    public DateTime LastKilled { get; set; }
     public CustomButton KillButton { get; set; }
-    public string CommonAbilities => "- You can kill players" + (CustomGameOptions.IntrudersCanSabotage || (IsDead && CustomGameOptions.GhostsCanSabotage) ? ("\n- You can call " +
-        "sabotages to distract the <color=#8CFFFFFF>Crew</color>") : "");
+    public string CommonAbilities => "<color=#FF0000FF>- You can kill players" + (CustomGameOptions.IntrudersCanSabotage || (IsDead && CustomGameOptions.GhostsCanSabotage) ? ("\n- You can " +
+        "call sabotages to distract the <color=#8CFFFFFF>Crew</color>") : "") + "</color>";
 
     public override Color Color => Colors.Intruder;
     public override Faction BaseFaction => Faction.Intruder;
-    public float KillTimer => ButtonUtils.Timer(Player, LastKilled, CustomGameOptions.IntKillCd);
 
     protected Intruder(PlayerControl player) : base(player)
     {
         Faction = Faction.Intruder;
         FactionColor = Colors.Intruder;
         Objectives = () => IntrudersWinCon;
-        KillButton = new(this, "IntruderKill", AbilityTypes.Direct, "ActionSecondary", Kill, Exception);
+        KillButton = new(this, "IntruderKill", AbilityTypes.Target, "ActionSecondary", Kill, CustomGameOptions.IntKillCd, Exception);
         Player.Data.SetImpostor(true);
     }
 
@@ -58,66 +56,50 @@ public class Intruder : Role
 
     public void Kill()
     {
-        if (IsTooFar(Player, KillButton.TargetPlayer) || KillTimer != 0f)
-            return;
-
         var interact = Interact(Player, KillButton.TargetPlayer, true);
 
         if (Player.Is(LayerEnum.Janitor))
         {
             var jani = (Janitor)this;
 
-            if (interact.AbilityUsed || interact.Reset)
+            if (CustomGameOptions.JaniCooldownsLinked)
             {
-                if (CustomGameOptions.JaniCooldownsLinked)
-                    jani.LastCleaned = DateTime.UtcNow;
-            }
-            else if (interact.Protected)
-            {
-                if (CustomGameOptions.JaniCooldownsLinked)
-                    jani.LastCleaned.AddSeconds(CustomGameOptions.ProtectKCReset);
-            }
-            else if (interact.Vested)
-            {
-                if (CustomGameOptions.JaniCooldownsLinked)
-                    jani.LastCleaned.AddSeconds(CustomGameOptions.VestKCReset);
+                if (interact.AbilityUsed || interact.Reset)
+                    jani.CleanButton.StartCooldown(CooldownType.Start);
+                else if (interact.Protected)
+                    jani.CleanButton.StartCooldown(CooldownType.GuardianAngel);
+                else if (interact.Vested)
+                    jani.CleanButton.StartCooldown(CooldownType.Survivor);
             }
         }
         else if (Player.Is(LayerEnum.PromotedGodfather))
         {
             var gf = (PromotedGodfather)this;
 
-            if (interact.AbilityUsed || interact.Reset)
+            if (CustomGameOptions.JaniCooldownsLinked && gf.IsJani)
             {
-                if (CustomGameOptions.JaniCooldownsLinked && gf.IsJani)
-                    gf.LastCleaned = DateTime.UtcNow;
-            }
-            else if (interact.Protected)
-            {
-                if (CustomGameOptions.JaniCooldownsLinked && gf.IsJani)
-                    gf.LastCleaned.AddSeconds(CustomGameOptions.ProtectKCReset);
-            }
-            else if (interact.Vested)
-            {
-                if (CustomGameOptions.JaniCooldownsLinked && gf.IsJani)
-                    gf.LastCleaned.AddSeconds(CustomGameOptions.VestKCReset);
+                if (interact.AbilityUsed || interact.Reset)
+                    gf.CleanButton.StartCooldown(CooldownType.Start);
+                else if (interact.Protected)
+                    gf.CleanButton.StartCooldown(CooldownType.GuardianAngel);
+                else if (interact.Vested)
+                    gf.CleanButton.StartCooldown(CooldownType.Survivor);
             }
         }
 
         if (interact.AbilityUsed || interact.Reset)
-            LastKilled = DateTime.UtcNow;
+            KillButton.StartCooldown(CooldownType.Reset);
         else if (interact.Protected)
-            LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
+            KillButton.StartCooldown(CooldownType.GuardianAngel);
         else if (interact.Vested)
-            LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
+            KillButton.StartCooldown(CooldownType.Survivor);
     }
 
-    public bool Exception(PlayerControl player) =>  (player.Is(Faction) && Faction != Faction.Crew) || (player.Is(SubFaction) && SubFaction != SubFaction.None) ||
-        Player.IsLinkedTo(player);
+    public bool Exception(PlayerControl player) =>  (player.Is(Faction) && Faction != Faction.Crew) || (player.Is(SubFaction) && SubFaction != SubFaction.None) ||  Player.IsLinkedTo(player);
 
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        KillButton.Update("KILL", KillTimer, CustomGameOptions.IntKillCd);
+        KillButton.Update2("KILL");
     }
 }

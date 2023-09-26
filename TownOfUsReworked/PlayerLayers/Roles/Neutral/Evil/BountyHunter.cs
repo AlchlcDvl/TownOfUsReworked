@@ -1,3 +1,4 @@
+
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public class BountyHunter : Neutral
@@ -7,19 +8,16 @@ public class BountyHunter : Neutral
     public bool ColorHintGiven { get; set; }
     public bool RoleHintGiven { get; set; }
     public bool TargetFound { get; set; }
-    public DateTime LastChecked { get; set; }
     public CustomButton GuessButton { get; set; }
     public CustomButton HuntButton { get; set; }
     public CustomButton RequestButton { get; set; }
     public PlayerControl RequestingPlayer { get; set; }
     public PlayerControl TentativeTarget { get; set; }
-    public bool ButtonUsable => UsesLeft > 0;
-    public bool Failed => (UsesLeft <= 0 && !TargetFound) || (!TargetKilled && (TargetPlayer.HasDied()));
-    public int UsesLeft { get; set; }
+    public bool Failed => (!GuessButton.Usable && !TargetFound) || (!TargetKilled && TargetPlayer.HasDied());
     private int LettersGiven { get; set; }
     private bool LettersExhausted { get; set; }
     private readonly List<string> Letters = new();
-    public bool CanHunt => (TargetFound && !TargetPlayer.HasDied()) || (TargetKilled && !CustomGameOptions.AvoidNeutralKingmakers);
+    public bool CanHunt => TargetPlayer != null && ((TargetFound && !TargetPlayer.HasDied()) || (TargetKilled && !CustomGameOptions.AvoidNeutralKingmakers));
     public bool CanRequest => (RequestingPlayer == null || RequestingPlayer.HasDied()) && TargetPlayer == null;
     public bool Assigned { get; set; }
     public int Rounds { get; set; }
@@ -29,21 +27,19 @@ public class BountyHunter : Neutral
     public override string Name => "Bounty Hunter";
     public override LayerEnum Type => LayerEnum.BountyHunter;
     public override Func<string> StartText => () => "Find And Kill Your Target";
-    public override Func<string> Description => () => TargetPlayer == null ? "- You can request a hit from a player to set your bounty" : ("- You can guess a player to be your " +
-        "bounty\n- Upon finding the bounty, you can kill them\n- After your bounty has been killed by you, you can kill others as many times as you want\n- If your target dies not by "
-        + "your hands, you will become a <color=#678D36FF>Troll</color>");
+    public override Func<string> Description => () => TargetPlayer == null ? "- You can request a hit from a player to set your bounty" : ("- You can guess a player to be your bounty\n- " +
+        "Upon finding the bounty, you can kill them\n- After your bounty has been killed by you, you can kill others as many times as you want\n- If your target dies not by your hands, you" +
+        " will become a <color=#678D36FF>Troll</color>");
     public override InspectorResults InspectorResults => InspectorResults.TracksOthers;
-    public float Timer => ButtonUtils.Timer(Player, LastChecked, CustomGameOptions.GuessCd);
 
     public BountyHunter(PlayerControl player) : base(player)
     {
         Objectives = () => TargetKilled ? "- You have completed the bounty" : (TargetPlayer == null ? "- Recieve a bounty" : "- Find and kill your target");
         Alignment = Alignment.NeutralEvil;
-        UsesLeft = CustomGameOptions.BountyHunterGuesses;
         TargetPlayer = null;
-        GuessButton = new(this, "BHGuess", AbilityTypes.Direct, "Secondary", Guess, true);
-        HuntButton = new(this, "Hunt", AbilityTypes.Direct, "ActionSecondary", Hunt);
-        RequestButton = new(this, "Request", AbilityTypes.Direct, "Tertiary", Request, Exception);
+        GuessButton = new(this, "BHGuess", AbilityTypes.Target, "Secondary", Guess, CustomGameOptions.GuessCd, CustomGameOptions.BountyHunterGuesses);
+        HuntButton = new(this, "Hunt", AbilityTypes.Target, "ActionSecondary", Hunt, CustomGameOptions.GuessCd);
+        RequestButton = new(this, "Request", AbilityTypes.Target, "Tertiary", Request, Exception);
     }
 
     public bool Exception(PlayerControl player) => player == TargetPlayer || player.IsLinkedTo(Player) || GetRole(player).Requesting || (player.Is(SubFaction) && SubFaction !=
@@ -53,12 +49,6 @@ public class BountyHunter : Neutral
     {
         var newRole = new Troll(Player);
         newRole.RoleUpdate(this);
-
-        if (Local)
-            Flash(Colors.Troll);
-
-        if (CustomPlayer.Local.Is(LayerEnum.Seer))
-            Flash(Colors.Seer);
     }
 
     public override void OnMeetingStart(MeetingHud __instance)
@@ -144,7 +134,7 @@ public class BountyHunter : Neutral
         }
         else if (!ColorHintGiven)
         {
-            something = $"Your target is a {ColorUtils.LightDarkColors[TargetPlayer.CurrentOutfit.ColorId].ToLower()} color!";
+            something = $"Your target is a {CustomColors.LightDarkColors[TargetPlayer.CurrentOutfit.ColorId].ToLower()} color!";
             ColorHintGiven = true;
         }
         else if (!RoleHintGiven)
@@ -164,9 +154,9 @@ public class BountyHunter : Neutral
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        GuessButton.Update("GUESS", Timer, CustomGameOptions.GuessCd, UsesLeft, true, !TargetFound && TargetPlayer != null);
-        HuntButton.Update("HUNT", Timer, CustomGameOptions.GuessCd, true, TargetPlayer != null && CanHunt);
-        RequestButton.Update("REQUEST HIT", true, CanRequest);
+        GuessButton.Update2("GUESS", TargetPlayer != null && !CanHunt);
+        HuntButton.Update2("HUNT", TargetPlayer != null && CanHunt);
+        RequestButton.Update2("REQUEST HIT", CanRequest);
 
         if ((TargetFailed || (TargetPlayer != null && Failed)) && !IsDead)
         {
@@ -177,43 +167,36 @@ public class BountyHunter : Neutral
 
     public void Request()
     {
-        if (IsTooFar(Player, RequestButton.TargetPlayer))
-            return;
-
         RequestingPlayer = RequestButton.TargetPlayer;
         GetRole(RequestingPlayer).Requesting = true;
         GetRole(RequestingPlayer).Requestor = Player;
-        CallRpc(CustomRPC.Action, ActionsRPC.RequestHit, this, RequestingPlayer);
+        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, RequestingPlayer);
+    }
+
+    public override void ReadRPC(MessageReader reader)
+    {
+        var request = reader.ReadPlayer();
+        RequestingPlayer = request;
+        GetRole(request).Requesting = true;
+        GetRole(request).Requestor = Player;
     }
 
     public void Guess()
     {
-        if (IsTooFar(Player, GuessButton.TargetPlayer) || Timer != 0f)
-            return;
+        TargetFound = GuessButton.TargetPlayer == TargetPlayer;
+        Flash(new(TargetFound ? 0 : 255, TargetFound ? 255 : 0, 0, 255));
+        GuessButton.StartCooldown(CooldownType.Reset);
 
-        if (GuessButton.TargetPlayer != TargetPlayer)
-        {
-            Flash(new(255, 0, 0, 255));
-            UsesLeft--;
-        }
-        else
-        {
-            TargetFound = true;
-            Flash(new(0, 255, 0, 255));
-        }
-
-        LastChecked = DateTime.UtcNow;
+        if (TargetFound)
+            HuntButton.StartCooldown(CooldownType.Reset);
     }
 
     public void Hunt()
     {
-        if (IsTooFar(Player, HuntButton.TargetPlayer) || Timer != 0f || !TargetFound)
-            return;
-
         if (HuntButton.TargetPlayer != TargetPlayer && !TargetKilled)
         {
             Flash(new(255, 0, 0, 255));
-            LastChecked = DateTime.UtcNow;
+            HuntButton.StartCooldown(CooldownType.Reset);
         }
         else if (HuntButton.TargetPlayer == TargetPlayer && !TargetKilled)
         {
@@ -223,19 +206,20 @@ public class BountyHunter : Neutral
                 RpcMurderPlayer(Player, HuntButton.TargetPlayer);
 
             TargetKilled = true;
-            LastChecked = DateTime.UtcNow;
+            HuntButton.StartCooldown(CooldownType.Reset);
             CallRpc(CustomRPC.WinLose, WinLoseRPC.BountyHunterWin, this);
         }
         else
         {
             var interact = Interact(Player, HuntButton.TargetPlayer, true);
+            var cooldown = CooldownType.Reset;
 
-            if (interact.Reset || interact.AbilityUsed)
-                LastChecked = DateTime.UtcNow;
-            else if (interact.Protected)
-                LastChecked.AddSeconds(CustomGameOptions.ProtectKCReset);
+            if (interact.Protected)
+                cooldown = CooldownType.GuardianAngel;
             else if (interact.Vested)
-                LastChecked.AddSeconds(CustomGameOptions.VestKCReset);
+                cooldown = CooldownType.Survivor;
+
+            HuntButton.StartCooldown(cooldown);
         }
     }
 }

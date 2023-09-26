@@ -1,6 +1,5 @@
 namespace TownOfUsReworked.BetterMaps;
 
-[HarmonyPatch]
 public static class MiraShipStatusPatch
 {
     private static readonly Vector3 CommsPos = new(14.5f, 3.1f, 2f);

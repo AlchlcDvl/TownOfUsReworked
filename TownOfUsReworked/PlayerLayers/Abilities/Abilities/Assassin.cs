@@ -49,7 +49,7 @@ public class Assassin : Ability
         { "LeadsTheGroup", new() { "Mayor", "Godfather", "Rebel", "Pestilence", "Survivor" } },
         { "BringsChaos", new() { "Shifter", "Thief", "Camouflager", "Whisperer", "Jackal" } },
         { "SeeksToDestroy", new() { "Arsonist", "Cryomaniac", "Plaguebearer", "Spellslinger" } },
-        { "MovesAround", new() { "Transporter", "Teleporter", "Warper", "Time Keeper" } },
+        { "MovesAround", new() { "Transporter", "Teleporter", "Warper", "Timekeeper" } },
         { "NewLens", new() { "Engineer", "Miner", "Seer", "Dracula", "Medium", "Monarch" } },
         { "GainsInfo", new() { "Sheriff", "Consigliere", "Blackmailer", "Detective", "Inspector", "Silencer" } },
         { "Manipulative", new() { "Jester", "Executioner", "Actor", "Troll", "Framer", "Dictator" } },
@@ -76,7 +76,7 @@ public class Assassin : Ability
         MaxPage = 0;
         Buttons = new();
         Sorted = new();
-        AssassinMenu = new(Player, "Guess", MeetingTypes.Click, CustomGameOptions.AssassinateAfterVoting, Guess, IsExempt, SetLists);
+        AssassinMenu = new(Player, "Guess", CustomGameOptions.AssassinateAfterVoting, Guess, IsExempt, SetLists);
     }
 
     private void SetLists()
@@ -164,7 +164,7 @@ public class Assassin : Ability
                 if (CustomGameOptions.StalkerOn > 0) ColorMapping.Add("Stalker", Colors.Stalker);
                 if (CustomGameOptions.ColliderOn > 0) ColorMapping.Add("Collider", Colors.Collider);
                 if (CustomGameOptions.SpellslingerOn > 0) ColorMapping.Add("Spellslinger", Colors.Spellslinger);
-                if (CustomGameOptions.TimeKeeperOn > 0) ColorMapping.Add("Time Keeper", Colors.TimeKeeper);
+                if (CustomGameOptions.TimekeeperOn > 0) ColorMapping.Add("Timekeeper", Colors.Timekeeper);
                 if (CustomGameOptions.SilencerOn > 0) ColorMapping.Add("Silencer", Colors.Silencer);
 
                 if (CustomGameOptions.RebelOn > 0)
@@ -448,6 +448,9 @@ public class Assassin : Ability
 
     public void Exit(MeetingHud __instance)
     {
+        if (!Phone)
+            return;
+
         Phone.Destroy();
         HUD.Chat.SetVisible(true);
         SelectedButton = null;
@@ -501,7 +504,7 @@ public class Assassin : Ability
     public void RpcMurderPlayer(PlayerControl player, string guess, PlayerControl guessTarget)
     {
         MurderPlayer(player, guess, guessTarget);
-        CallRpc(CustomRPC.Action, ActionsRPC.AssassinKill, this, player, guess, guessTarget);
+        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, player, guess, guessTarget);
     }
 
     public void MurderPlayer(PlayerControl player, string guess, PlayerControl guessTarget)
@@ -586,4 +589,6 @@ public class Assassin : Ability
         AssassinMenu.Voted();
         Exit(__instance);
     }
+
+    public override void ReadRPC(MessageReader reader) => MurderPlayer(reader.ReadPlayer(), reader.ReadString(), reader.ReadPlayer());
 }

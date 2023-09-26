@@ -12,13 +12,14 @@ public static class PlayerControlOnClick
         if (IsHnS)
             return true;
 
-        if (!__instance.Data.IsDead)
-        {
-            if (__instance != CustomPlayer.Local)
-                CustomButton.AllButtons.Find(x => x.Owner.Local && x.TargetPlayer == __instance && x.Clickable && !x.Blocked)?.Clicked();
-            else
-                CustomButton.AllButtons.Find(x => x.Owner.Local && x.Clickable && x.Type == AbilityTypes.Effect && !x.Blocked)?.Clicked();
+        var button = CustomButton.AllButtons.Find(x => x.Owner.Local && x.TargetPlayer == __instance && x.Clickable);
 
+        if (button == null)
+            button = CustomButton.AllButtons.Find(x => x.Owner.Local && x.Clickable && __instance == CustomPlayer.Local && x.Type == AbilityTypes.Targetless);
+        
+        if (button != null)
+        {
+            button.Clicked();
             return false;
         }
 
@@ -57,9 +58,7 @@ public static class PlayerControlOnClick
         {
             if (!CustomPlayer.Local.Is(Faction.Syndicate))
             {
-                var ban = Role.GetRole<Banshee>(__instance);
-                ban.Caught = true;
-                ban.TimeRemaining = 0f;
+                Role.GetRole<Banshee>(__instance).Caught = true;
                 __instance.Exiled();
                 CallRpc(CustomRPC.Misc, MiscRPC.CatchBanshee, __instance);
             }

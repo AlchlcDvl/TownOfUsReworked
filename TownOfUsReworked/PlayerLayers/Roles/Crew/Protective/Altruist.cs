@@ -3,55 +3,33 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public class Altruist : Crew
 {
     public CustomButton ReviveButton { get; set; }
-    public int UsesLeft { get; set; }
-    public bool ButtonUsable => UsesLeft > 0;
-    public bool Enabled { get; set; }
-    public float TimeRemaining { get; set; }
-    public bool IsReviving => TimeRemaining > 0f;
     public DeadBody RevivingBody { get; set; }
-    public bool Success { get; set; }
-    public DateTime LastRevived { get; set; }
-    public float Timer => ButtonUtils.Timer(Player, LastRevived, CustomGameOptions.ReviveCd);
 
     public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Altruist : Colors.Crew;
     public override string Name => "Altruist";
     public override LayerEnum Type => LayerEnum.Altruist;
     public override Func<string> StartText => () => "Sacrifice Yourself To Save Another";
-    public override Func<string> Description => () => $"- You can revive a dead body\n- Reviving someone takes {CustomGameOptions.ReviveDur}s\n- If a meeting is called during"
-        + " your revive, the revive fails";
+    public override Func<string> Description => () => $"- You can revive a dead body\n- Reviving a body takes {CustomGameOptions.ReviveDur}s\n- If a meeting is called or you are killed " +
+        "during your revive, the revive fails";
     public override InspectorResults InspectorResults => InspectorResults.PreservesLife;
 
     public Altruist(PlayerControl player) : base(player)
     {
         Alignment = Alignment.CrewProt;
-        UsesLeft = CustomGameOptions.MaxRevives;
-        ReviveButton = new(this, "Revive", AbilityTypes.Dead, "ActionSecondary", HitRevive, true);
+        ReviveButton = new(this, "Revive", AbilityTypes.Dead, "ActionSecondary", Revive, CustomGameOptions.ReviveCd, CustomGameOptions.ReviveDur, UponEnd, CustomGameOptions.MaxRevives);
     }
 
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        ReviveButton.Update("REVIVE", Timer, CustomGameOptions.ReviveCd, UsesLeft, IsReviving, TimeRemaining, CustomGameOptions.ReviveDur, true, ButtonUsable);
+        ReviveButton.Update2("REVIVE");
     }
 
-    public void Revive()
+    public override void TryEndEffect() => ReviveButton.Update3(IsDead);
+
+    public void UponEnd()
     {
-        Enabled = true;
-        TimeRemaining -= Time.deltaTime;
-
-        if (Meeting || IsDead)
-        {
-            Success = false;
-            TimeRemaining = 0f;
-        }
-    }
-
-    public void UnRevive()
-    {
-        Enabled = false;
-        LastRevived = DateTime.UtcNow;
-
-        if (Success)
+        if (!(Meeting || IsDead))
             FinishRevive();
     }
 
@@ -67,7 +45,6 @@ public class Altruist : Crew
         targetRole.DeathReason = DeathReasonEnum.Revived;
         targetRole.KilledBy = " By " + PlayerName;
         player.Revive();
-        UsesLeft--;
 
         if (player.Is(LayerEnum.Lovers) && CustomGameOptions.BothLoversDie)
         {
@@ -78,7 +55,7 @@ public class Altruist : Crew
             lover.Revive();
         }
 
-        if (UsesLeft == 0)
+        if (ReviveButton.Uses == 0 && Local)
             RpcMurderPlayer(Player, Player);
 
         if (formerKiller.Contains(CustomPlayer.LocalCustom.Data.PlayerName))
@@ -88,19 +65,26 @@ public class Altruist : Crew
         }
     }
 
-    public void HitRevive()
+    public void Revive()
     {
-        if (IsTooFar(Player, ReviveButton.TargetBody) || Timer != 0f || !ButtonUsable)
-            return;
-
         RevivingBody = ReviveButton.TargetBody;
         Spread(Player, PlayerByBody(RevivingBody));
-        CallRpc(CustomRPC.Action, ActionsRPC.AltruistRevive, this, RevivingBody);
-        TimeRemaining = CustomGameOptions.ReviveDur;
-        Success = true;
+        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction1, ReviveButton, RevivingBody);
+        ReviveButton.Begin();
         Flash(Color, CustomGameOptions.ReviveDur);
 
         if (CustomGameOptions.AltruistTargetBody)
             ReviveButton.TargetBody?.gameObject.Destroy();
+    }
+
+    public override void ReadRPC(MessageReader reader)
+    {
+        RevivingBody = reader.ReadBody();
+
+        if (CustomPlayer.Local.PlayerId == RevivingBody.ParentId)
+            Flash(Colors.Altruist, CustomGameOptions.ReviveDur);
+
+        if (CustomGameOptions.AltruistTargetBody)
+            RevivingBody.gameObject.Destroy();
     }
 }

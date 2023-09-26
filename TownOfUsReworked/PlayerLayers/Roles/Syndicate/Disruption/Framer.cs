@@ -5,65 +5,61 @@ public class Framer : Syndicate
     public CustomButton FrameButton { get; set; }
     public CustomButton RadialFrameButton { get; set; }
     public List<byte> Framed { get; set; }
-    public DateTime LastFramed { get; set; }
 
     public override Color Color => ClientGameOptions.CustomSynColors ? Colors.Framer : Colors.Syndicate;
     public override string Name => "Framer";
     public override LayerEnum Type => LayerEnum.Framer;
     public override Func<string> StartText => () => "Make Everyone Suspicious";
-    public override Func<string> Description => () => $"- You can frame {(HoldsDrive ? $"all players within a {CustomGameOptions.ChaosDriveFrameRadius}m radius" : "a player")}\n- " +
-        $"Framed players will die very easily to killing roles and will appear to have the wrong results to investigative roles till you are dead\n{CommonAbilities}";
+    public override Func<string> Description => () => $"- You can frame {(HoldsDrive ? $"all players within a {CustomGameOptions.ChaosDriveFrameRadius}m radius" : "a player")}\n- Framed " +
+        $"players will die very easily to killing roles and will appear to have the wrong results to investigative roles till you are dead\n{CommonAbilities}";
     public override InspectorResults InspectorResults => InspectorResults.Manipulative;
-    public float Timer => ButtonUtils.Timer(Player, LastFramed, CustomGameOptions.FrameCd);
 
     public Framer(PlayerControl player) : base(player)
     {
         Alignment = Alignment.SyndicateDisrup;
         Framed = new();
-        FrameButton = new(this, "Frame", AbilityTypes.Direct, "Secondary", Frame, Exception1);
-        RadialFrameButton = new(this, "RadialFrame", AbilityTypes.Effect, "Secondary", RadialFrame);
+        FrameButton = new(this, "Frame", AbilityTypes.Target, "Secondary", Frame, CustomGameOptions.FrameCd, Exception1);
+        RadialFrameButton = new(this, "RadialFrame", AbilityTypes.Targetless, "Secondary", RadialFrame, CustomGameOptions.FrameCd);
     }
 
     public void RpcFrame(PlayerControl player)
     {
-        if ((player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || Framed.Contains(player.PlayerId))
+        if (Exception1(player))
             return;
 
         Framed.Add(player.PlayerId);
-        CallRpc(CustomRPC.Action, ActionsRPC.Frame, this, player);
+        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, player.PlayerId);
     }
 
     public void Frame()
     {
-        if (Timer != 0f || IsTooFar(Player, FrameButton.TargetPlayer) || HoldsDrive)
-            return;
-
         var interact = Interact(Player, FrameButton.TargetPlayer);
+        var cooldown = CooldownType.Reset;
 
         if (interact.AbilityUsed)
             RpcFrame(FrameButton.TargetPlayer);
 
-        if (interact.Reset)
-            LastFramed = DateTime.UtcNow;
-        else if (interact.Protected)
-            LastFramed.AddSeconds(CustomGameOptions.ProtectKCReset);
+        if (interact.Protected)
+            cooldown = CooldownType.GuardianAngel;
+
+        FrameButton.StartCooldown(cooldown);
     }
 
     public void RadialFrame()
     {
-        if (Timer != 0f || !HoldsDrive)
-            return;
-
-        GetClosestPlayers(CustomPlayer.Local.GetTruePosition(), CustomGameOptions.ChaosDriveFrameRadius).ForEach(RpcFrame);
-        LastFramed = DateTime.UtcNow;
+        GetClosestPlayers(Player.transform.position, CustomGameOptions.ChaosDriveFrameRadius).ForEach(RpcFrame);
+        RadialFrameButton.StartCooldown(CooldownType.Reset);
     }
 
-    public bool Exception1(PlayerControl player) => Framed.Contains(player.PlayerId) || player.Is(Faction) || (player.Is(SubFaction) && SubFaction != SubFaction.None);
+    public bool Exception1(PlayerControl player) => Framed.Contains(player.PlayerId) || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) &&
+        SubFaction != SubFaction.None);
 
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        FrameButton.Update("FRAME", Timer, CustomGameOptions.FrameCd, true, !HoldsDrive);
-        RadialFrameButton.Update("FRAME", Timer, CustomGameOptions.FrameCd, true, HoldsDrive);
+        FrameButton.Update2("FRAME", !HoldsDrive);
+        RadialFrameButton.Update2("FRAME", HoldsDrive);
     }
+
+    public override void ReadRPC(MessageReader reader) => Framed.Add(reader.ReadByte());
 }

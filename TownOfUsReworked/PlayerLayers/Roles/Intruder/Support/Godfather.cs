@@ -17,49 +17,42 @@ public class Godfather : Intruder
     public Godfather(PlayerControl player) : base(player)
     {
         Alignment = Alignment.IntruderSupport;
-        DeclareButton = new(this, "Promote", AbilityTypes.Direct, "Secondary", Declare);
+        DeclareButton = new(this, "Promote", AbilityTypes.Target, "Secondary", Declare);
     }
 
-    public static void Declare(Godfather gf, PlayerControl target)
+    public void Declare(PlayerControl target)
     {
-        gf.HasDeclared = true;
+        HasDeclared = true;
         var formerRole = GetRole(target);
 
         var mafioso = new Mafioso(target)
         {
             FormerRole = formerRole,
-            Godfather = gf
+            Godfather = this
         };
 
         mafioso.RoleUpdate(formerRole);
-
-        if (target == CustomPlayer.Local)
-            Flash(Colors.Mafioso);
-
-        if (CustomPlayer.Local.Is(LayerEnum.Seer))
-            Flash(Colors.Seer);
     }
 
     public void Declare()
     {
-        if (IsTooFar(Player, DeclareButton.TargetPlayer) || HasDeclared)
-            return;
-
         var interact = Interact(Player, DeclareButton.TargetPlayer);
 
         if (interact.AbilityUsed)
         {
-            CallRpc(CustomRPC.Action, ActionsRPC.Declare, this, DeclareButton.TargetPlayer);
-            Declare(this, DeclareButton.TargetPlayer);
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, DeclareButton.TargetPlayer);
+            Declare(DeclareButton.TargetPlayer);
         }
     }
 
     public bool Exception1(PlayerControl player) => !player.Is(Faction) || (!(player.GetRole() is LayerEnum.PromotedGodfather or LayerEnum.Mafioso or LayerEnum.Godfather) &&
-        player.Is(Faction));
+        player.Is(Faction.Intruder));
 
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        DeclareButton.Update("PROMOTE", true, !HasDeclared);
+        DeclareButton.Update2("PROMOTE", !HasDeclared);
     }
+
+    public override void ReadRPC(MessageReader reader) => Declare(reader.ReadPlayer());
 }

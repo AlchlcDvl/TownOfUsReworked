@@ -1,6 +1,5 @@
 namespace TownOfUsReworked.CustomOptions;
 
-[HarmonyPatch]
 public static class CustomGameOptions
 {
     //Global Options
@@ -39,6 +38,7 @@ public static class CustomGameOptions
     public static bool EnableModifiers => Generate.EnableModifiers;
     public static bool EnableObjectifiers => Generate.EnableObjectifiers;
     public static bool VentTargeting => Generate.VentTargeting;
+    public static bool CooldownInVent => Generate.CooldownInVent;
     public static bool FirstKillShield => Generate.FirstKillShield;
     public static WhoCanSeeFirstKillShield WhoSeesFirstKillShield => (WhoCanSeeFirstKillShield)Generate.WhoSeesFirstKillShield.GetInt();
 
@@ -220,7 +220,7 @@ public static class CustomGameOptions
     public static int StalkerOn => Generate.StalkerOn.GetChance();
     public static int ColliderOn => Generate.ColliderOn.GetChance();
     public static int DrunkardOn => Generate.DrunkardOn.GetChance();
-    public static int TimeKeeperOn => Generate.TimeKeeperOn.GetChance();
+    public static int TimekeeperOn => Generate.TimekeeperOn.GetChance();
     public static int SilencerOn => Generate.SilencerOn.GetChance();
 
     //Ability Spawn
@@ -478,7 +478,6 @@ public static class CustomGameOptions
     public static int RetributionistCount => Generate.RetributionistOn.GetCount();
     public static bool UniqueRetributionist => Generate.UniqueRetributionist;
     public static bool ReviveAfterVoting => Generate.ReviveAfterVoting;
-    public static int MaxUses => Generate.MaxUses;
 
     //Shifter Settings
     public static BecomeEnum ShiftedBecomes => (BecomeEnum)Generate.ShiftedBecomes.GetInt();
@@ -546,9 +545,7 @@ public static class CustomGameOptions
     public static bool JesterButton => Generate.JesterButton;
     public static bool JesterVent => Generate.JesterVent;
     public static int JesterCount => Generate.JesterOn.GetCount();
-    public static int MaxHaunts => Generate.MaxHaunts;
     public static bool UniqueJester => Generate.UniqueJester;
-    public static float HauntCd => Generate.HauntCd;
 
     //Actor Settings
     public static bool VigiKillsActor => Generate.VigiKillsActor;
@@ -596,8 +593,6 @@ public static class CustomGameOptions
     public static bool ExeEjectScreen => Generate.ExeEjectScreen;
     public static bool ExeVentSwitch => Generate.ExeSwitchVent;
     public static bool UniqueExecutioner => Generate.UniqueExecutioner;
-    public static int MaxDooms => Generate.MaxDooms;
-    public static float DoomCd => Generate.DoomCd;
     public static bool ExecutionerCanPickTargets => Generate.ExecutionerCanPickTargets;
 
     //Guesser Settings
@@ -847,7 +842,6 @@ public static class CustomGameOptions
 
     //Anarchist Settings
     public static int AnarchistCount => Generate.AnarchistOn.GetCount();
-    public static float AnarchKillCd => Generate.AnarchKillCd;
 
     //Framer Settings
     public static int FramerCount => Generate.FramerOn.GetCount();
@@ -886,11 +880,11 @@ public static class CustomGameOptions
     public static bool UniqueDrunkard => Generate.UniqueDrunkard;
     public static bool ConfuseImmunity => Generate.ConfuseImmunity;
 
-    //Time Keeper Settings
-    public static int TimeKeeperCount => Generate.TimeKeeperOn.GetCount();
+    //Timekeeper Settings
+    public static int TimekeeperCount => Generate.TimekeeperOn.GetCount();
     public static float TimeCd => Generate.TimeCd;
     public static float TimeDur => Generate.TimeDur;
-    public static bool UniqueTimeKeeper => Generate.UniqueTimeKeeper;
+    public static bool UniqueTimekeeper => Generate.UniqueTimekeeper;
     public static bool TimeFreezeImmunity => Generate.TimeFreezeImmunity;
     public static bool TimeRewindImmunity => Generate.TimeRewindImmunity;
 
@@ -1227,8 +1221,8 @@ public static class CustomGameOptions
     //CI Settings
     public static int CIMax => Generate.CIMax;
 
-    //CP Settings
-    public static int CPMax => Generate.CPMax;
+    //CrP Settings
+    public static int CrPMax => Generate.CrPMax;
 
     //IC Settings
     public static int ICMax => Generate.ICMax;

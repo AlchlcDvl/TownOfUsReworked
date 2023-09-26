@@ -2,45 +2,41 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public class Pestilence : Neutral
 {
-    public DateTime LastKilled { get; set; }
     public CustomButton ObliterateButton { get; set; }
 
     public override Color Color => ClientGameOptions.CustomNeutColors ? Colors.Pestilence : Colors.Neutral;
     public override string Name => "Pestilence";
     public override LayerEnum Type => LayerEnum.Pestilence;
     public override Func<string> StartText => () => "THE APOCALYPSE IS NIGH";
-    public override Func<string> Description => () => "- You are on forever alert, anyone who interacts with you will be killed";
+    public override Func<string> Description => () => "- Anyone who interacts with you will be killed";
     public override InspectorResults InspectorResults => InspectorResults.LeadsTheGroup;
-    public float Timer => ButtonUtils.Timer(Player, LastKilled, CustomGameOptions.ObliterateCd);
 
     public Pestilence(PlayerControl owner) : base(owner)
     {
         Objectives = () => "- Obliterate anyone who can oppose you";
         Alignment = Alignment.NeutralApoc;
-        ObliterateButton = new(this, "Obliterate", AbilityTypes.Direct, "ActionSecondary", Obliterate, Exception);
+        ObliterateButton = new(this, "Obliterate", AbilityTypes.Target, "ActionSecondary", Obliterate, CustomGameOptions.ObliterateCd, Exception);
     }
 
     public void Obliterate()
     {
-        if (IsTooFar(Player, ObliterateButton.TargetPlayer) || Timer != 0f)
-            return;
-
         var interact = Interact(Player, ObliterateButton.TargetPlayer, true);
+        var cooldown = CooldownType.Reset;
 
-        if (interact.AbilityUsed || interact.Reset)
-            LastKilled = DateTime.UtcNow;
-        else if (interact.Protected)
-            LastKilled.AddSeconds(CustomGameOptions.ProtectKCReset);
+        if (interact.Protected)
+            cooldown = CooldownType.GuardianAngel;
         else if (interact.Vested)
-            LastKilled.AddSeconds(CustomGameOptions.VestKCReset);
+            cooldown = CooldownType.Survivor;
+
+        ObliterateButton.StartCooldown(cooldown);
     }
 
-    public bool Exception(PlayerControl player) => (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate)
-        || Player.IsLinkedTo(player);
+    public bool Exception(PlayerControl player) => (player.Is(SubFaction) && SubFaction != SubFaction.None) || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) ||
+        Player.IsLinkedTo(player);
 
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        ObliterateButton.Update("OBLITERATE", Timer, CustomGameOptions.ObliterateCd);
+        ObliterateButton.Update2("OBLITERATE");
     }
 }

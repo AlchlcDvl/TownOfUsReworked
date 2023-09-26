@@ -4,24 +4,22 @@ public class Spellslinger : Syndicate
 {
     public CustomButton SpellButton { get; set; }
     public List<byte> Spelled { get; set; }
-    public DateTime LastSpelled { get; set; }
     public int SpellCount { get; set; }
 
     public override Color Color => ClientGameOptions.CustomSynColors ? Colors.Spellslinger : Colors.Syndicate;
     public override string Name => "Spellslinger";
     public override LayerEnum Type => LayerEnum.Spellslinger;
     public override Func<string> StartText => () => "Place the <color=#8CFFFFFF>Crew</color> Under A Curse";
-    public override Func<string> Description => () => $"- You can place a spell on players\n- When all non-{FactionColorString} players are spelled the game ends in a " +
-        $"{FactionColorString} win{(HoldsDrive ? "\n- Your spells don't trigger interaction sensitive roles and your cooldown does not increase" : "")}\n{CommonAbilities}";
+    public override Func<string> Description => () => $"- You can place a spell on players\n- When all non-{FactionColorString}{Faction}</color> players are spelled the game ends in a " +
+        $"{FactionColorString}{Faction}</color> win{(HoldsDrive ? "\n- Your spells don't trigger interaction sensitive roles and your cooldown does not increase" : "")}\n{CommonAbilities}";
     public override InspectorResults InspectorResults => InspectorResults.SeeksToDestroy;
-    public float Timer => ButtonUtils.Timer(Player, LastSpelled, CustomGameOptions.SpellCd, SpellCount * CustomGameOptions.SpellCdIncrease);
 
     public Spellslinger(PlayerControl player) : base(player)
     {
         Alignment = Alignment.SyndicatePower;
         Spelled = new();
         SpellCount = 0;
-        SpellButton = new(this, "Spell", AbilityTypes.Direct, "Secondary", HitSpell, Exception1);
+        SpellButton = new(this, "Spell", AbilityTypes.Target, "Secondary", HitSpell, CustomGameOptions.SpellCd, Exception1);
     }
 
     public void Spell(PlayerControl player)
@@ -30,7 +28,7 @@ public class Spellslinger : Syndicate
             return;
 
         Spelled.Add(player.PlayerId);
-        CallRpc(CustomRPC.Action, ActionsRPC.Spell, this, player);
+        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, player.PlayerId);
 
         if (!HoldsDrive)
             SpellCount++;
@@ -40,13 +38,10 @@ public class Spellslinger : Syndicate
 
     public void HitSpell()
     {
-        if (Timer != 0f || IsTooFar(Player, SpellButton.TargetPlayer))
-            return;
-
         if (HoldsDrive)
         {
             Spell(SpellButton.TargetPlayer);
-            LastSpelled = DateTime.UtcNow;
+            SpellButton.StartCooldown(CooldownType.Reset);
         }
         else
         {
@@ -56,17 +51,19 @@ public class Spellslinger : Syndicate
                 Spell(SpellButton.TargetPlayer);
 
             if (interact.Reset)
-                LastSpelled = DateTime.UtcNow;
+                SpellButton.StartCooldown(CooldownType.Reset);
             else if (interact.Protected)
-                LastSpelled.AddSeconds(CustomGameOptions.ProtectKCReset);
+                SpellButton.StartCooldown(CooldownType.GuardianAngel);
         }
     }
 
-    public bool Exception1(PlayerControl player) => Spelled.Contains(player.PlayerId) || player.Is(Faction);
+    public bool Exception1(PlayerControl player) => Spelled.Contains(player.PlayerId);
+
+    public override void ReadRPC(MessageReader reader) => Spelled.Add(reader.ReadByte());
 
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        SpellButton.Update("SPELL", Timer, CustomGameOptions.SpellCd, SpellCount * CustomGameOptions.SpellCdIncrease);
+        SpellButton.Update2("SPELL", difference: SpellCount * CustomGameOptions.SpellCdIncrease);
     }
 }

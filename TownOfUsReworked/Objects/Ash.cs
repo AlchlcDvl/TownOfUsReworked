@@ -31,4 +31,10 @@ public class Ash
         AllPiles.ForEach(x => x.Destroy());
         AllPiles.Clear();
     }
+
+    public static void CreateAsh(DeadBody body)
+    {
+        Coroutines.Start(FadeBody(body));
+        _ = new Ash(body.TruePosition);
+    }
 }

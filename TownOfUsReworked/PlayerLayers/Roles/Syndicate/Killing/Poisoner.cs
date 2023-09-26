@@ -4,115 +4,96 @@ public class Poisoner : Syndicate
 {
     public CustomButton PoisonButton { get; set; }
     public CustomButton GlobalPoisonButton { get; set; }
-    public DateTime LastPoisoned { get; set; }
     public PlayerControl PoisonedPlayer { get; set; }
-    public float TimeRemaining { get; set; }
-    public bool Enabled { get; set; }
-    public bool Poisoned => TimeRemaining > 0f;
     public CustomMenu PoisonMenu { get; set; }
 
     public override Color Color => ClientGameOptions.CustomSynColors ? Colors.Poisoner : Colors.Syndicate;
     public override string Name => "Poisoner";
     public override LayerEnum Type => LayerEnum.Poisoner;
     public override Func<string> StartText => () => "Delay A Kill To Decieve The <color=#8CFFFFFF>Crew</color>";
-    public override Func<string> Description => () => $"- You can poison players{(HoldsDrive ? " from afar" : "")}\n- Poisoned players will die after {CustomGameOptions.PoisonDur}"
-        + $"s\n{CommonAbilities}";
+    public override Func<string> Description => () => $"- You can poison players{(HoldsDrive ? " from afar" : "")}\n- Poisoned players will die after {CustomGameOptions.PoisonDur}s\n" +
+        CommonAbilities;
     public override InspectorResults InspectorResults => InspectorResults.Unseen;
-    public float Timer => ButtonUtils.Timer(Player, LastPoisoned, CustomGameOptions.PoisonCd);
 
     public Poisoner(PlayerControl player) : base(player)
     {
         PoisonedPlayer = null;
         Alignment = Alignment.SyndicateKill;
         PoisonMenu = new(Player, Click, Exception1);
-        PoisonButton = new(this, "Poison", AbilityTypes.Direct, "ActionSecondary", HitPoison, Exception1);
-        GlobalPoisonButton = new(this, "GlobalPoison", AbilityTypes.Effect, "ActionSecondary", HitGlobalPoison);
+        PoisonButton = new(this, "Poison", AbilityTypes.Target, "ActionSecondary", HitPoison, CustomGameOptions.PoisonCd, CustomGameOptions.PoisonDur, UnPoison, Exception1);
+        GlobalPoisonButton = new(this, "GlobalPoison", AbilityTypes.Targetless, "ActionSecondary", HitGlobalPoison, CustomGameOptions.PoisonCd, CustomGameOptions.PoisonDur, UnPoison);
     }
 
-    public void Poison()
-    {
-        Enabled = true;
-        TimeRemaining -= Time.deltaTime;
+    public bool End() => PoisonedPlayer.HasDied() || IsDead;
 
-        if (Meeting || PoisonedPlayer.HasDied() || IsDead)
-            TimeRemaining = 0f;
-    }
-
-    public void PoisonKill()
+    public void UnPoison()
     {
         if (!(PoisonedPlayer.HasDied() || PoisonedPlayer.Is(LayerEnum.Pestilence)))
             RpcMurderPlayer(Player, PoisonedPlayer, DeathReasonEnum.Poisoned, false);
 
         PoisonedPlayer = null;
-        Enabled = false;
-        LastPoisoned = DateTime.UtcNow;
     }
 
     public void Click(PlayerControl player)
     {
-        var interact = Interact(Player, player);
+        var interact = Interact(Player, player, poisoning: true);
 
-        if (interact.AbilityUsed && !player.IsProtected() && !player.IsVesting() && !player.IsProtectedMonarch())
+        if (interact.AbilityUsed)
             PoisonedPlayer = player;
         else if (interact.Reset)
-            LastPoisoned = DateTime.UtcNow;
-        else if (interact.Protected || player.IsProtected())
-            LastPoisoned.AddSeconds(CustomGameOptions.ProtectKCReset);
-        else if (player.IsVesting())
-            LastPoisoned.AddSeconds(CustomGameOptions.VestKCReset);
+            GlobalPoisonButton.StartCooldown(CooldownType.Reset);
+        else if (interact.Protected)
+            GlobalPoisonButton.StartCooldown(CooldownType.GuardianAngel);
+        else if (interact.Vested)
+            GlobalPoisonButton.StartCooldown(CooldownType.Survivor);
     }
 
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        var flag = PoisonedPlayer == null && HoldsDrive;
-        GlobalPoisonButton.Update(flag ? "SET TARGET" : "POISON", Timer, CustomGameOptions.PoisonCd, Poisoned, TimeRemaining, CustomGameOptions.PoisonDur, true,
-            HoldsDrive);
-        PoisonButton.Update("POISON", Timer, CustomGameOptions.PoisonCd, Poisoned, TimeRemaining, CustomGameOptions.PoisonDur, true, !HoldsDrive);
+        GlobalPoisonButton.Update2(PoisonedPlayer == null && HoldsDrive ? "SET TARGET" : "POISON", HoldsDrive);
+        PoisonButton.Update2("POISON", !HoldsDrive);
 
         if (Input.GetKeyDown(KeyCode.Backspace))
         {
-            if (PoisonedPlayer != null && HoldsDrive && !Poisoned)
+            if (PoisonedPlayer != null && HoldsDrive && !(PoisonButton.EffectActive || GlobalPoisonButton.EffectActive))
                 PoisonedPlayer = null;
 
             LogInfo("Removed a target");
         }
     }
 
-    public bool Exception1(PlayerControl player) => player == PoisonedPlayer || player.Is(Faction) || (player.Is(SubFaction) && SubFaction != SubFaction.None);
+    public bool Exception1(PlayerControl player) => player == PoisonedPlayer || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) &&
+        SubFaction != SubFaction.None);
 
     public void HitPoison()
     {
-        if (Timer != 0f || Poisoned || HoldsDrive || IsTooFar(Player, PoisonButton.TargetPlayer))
-            return;
+        var interact = Interact(Player, PoisonButton.TargetPlayer, poisoning: true);
 
-        var interact = Interact(Player, PoisonButton.TargetPlayer);
-
-        if (interact.AbilityUsed && !PoisonButton.TargetPlayer.IsProtected() && !PoisonButton.TargetPlayer.IsVesting() && !PoisonButton.TargetPlayer.IsProtectedMonarch())
+        if (interact.AbilityUsed)
         {
             PoisonedPlayer = PoisonButton.TargetPlayer;
-            CallRpc(CustomRPC.Action, ActionsRPC.Poison, this, PoisonedPlayer);
-            TimeRemaining = CustomGameOptions.PoisonDur;
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction1, PoisonButton, PoisonedPlayer);
+            PoisonButton.Begin();
         }
-        else if (interact.Protected || PoisonButton.TargetPlayer.IsProtected())
-            LastPoisoned.AddSeconds(CustomGameOptions.ProtectKCReset);
         else if (interact.Reset)
-            LastPoisoned = DateTime.UtcNow;
+            PoisonButton.StartCooldown(CooldownType.Reset);
+        else if (interact.Protected)
+            PoisonButton.StartCooldown(CooldownType.GuardianAngel);
         else if (interact.Vested)
-            LastPoisoned.AddSeconds(CustomGameOptions.VestKCReset);
+            PoisonButton.StartCooldown(CooldownType.Survivor);
     }
 
     public void HitGlobalPoison()
     {
-        if (Timer != 0f || Poisoned || !HoldsDrive)
-            return;
-
         if (PoisonedPlayer == null)
             PoisonMenu.Open();
         else
         {
-            CallRpc(CustomRPC.Action, ActionsRPC.Poison, this, PoisonedPlayer);
-            TimeRemaining = CustomGameOptions.PoisonDur;
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction1, PoisonButton, PoisonedPlayer);
+            GlobalPoisonButton.Begin();
         }
     }
+
+    public override void ReadRPC(MessageReader reader) => PoisonedPlayer = reader.ReadPlayer();
 }

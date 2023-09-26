@@ -4,22 +4,31 @@ public class CustomMeeting
 {
     public readonly PlayerControl Owner;
     public readonly OnClick Click;
-    public readonly ExtraFunction Parallel;
+    public readonly Action Parallel;
     public readonly Exemption IsExempt;
     public readonly string ActiveSprite;
     public readonly string DisabledSprite;
     public readonly MeetingTypes Type;
-    public Vector3 Position { get; set; }
+    public Vector3? Position { get; set; }
     public Dictionary<byte, bool> Actives { get; set; }
     public Dictionary<byte, GameObject> Buttons { get; set; }
     public readonly bool AfterVote;
     public delegate void OnClick(PlayerVoteArea voteArea, MeetingHud __instance);
-    public delegate void ExtraFunction();
     public delegate bool Exemption(PlayerVoteArea voteArea);
     private static Vector3 BasePosition => new(-0.95f, 0.03f, -1.3f);
     public static readonly List<CustomMeeting> AllCustomMeetings = new();
 
-    public CustomMeeting(PlayerControl owner, string active, string disabled, MeetingTypes type, bool vote, OnClick click, Exemption isExempt = null, ExtraFunction parallel = null)
+    public CustomMeeting(PlayerControl owner, string active, string disabled, bool vote, OnClick click, Exemption isExempt = null, Vector3? position = default) : this(owner, active, disabled,
+        MeetingTypes.Toggle, vote, click, isExempt, null, position) {}
+
+    public CustomMeeting(PlayerControl owner, string sprite, bool vote, OnClick click, Exemption isExempt = null, Action parallel = null, Vector3? position = default) : this(owner,
+        sprite, "", MeetingTypes.Click, vote, click, isExempt, parallel, position) {}
+
+    public CustomMeeting(PlayerControl owner, string active, string disabled, bool vote, OnClick click, Exemption isExempt = null, Action parallel = null, Vector3? position = default)
+        : this(owner, active, disabled, MeetingTypes.Toggle, vote, click, isExempt, parallel, position) {}
+
+    private CustomMeeting(PlayerControl owner, string active, string disabled, MeetingTypes type, bool vote, OnClick click, Exemption isExempt = null, Action parallel = null, Vector3?
+        position = default)
     {
         Owner = owner;
         Click = click;
@@ -29,13 +38,11 @@ public class CustomMeeting
         Type = type;
         Parallel = parallel ?? Blank;
         IsExempt = isExempt ?? BlankBool;
+        Position = position ?? BasePosition;
         Actives = new();
         Buttons = new();
         AllCustomMeetings.Add(this);
     }
-
-    public CustomMeeting(PlayerControl owner, string active, MeetingTypes type, bool vote, OnClick click, Exemption isExempt = null, ExtraFunction parallel = null) : this(owner, active, "",
-        type, vote, click, isExempt, parallel) {}
 
     private static bool BlankBool(PlayerVoteArea voteArea) => false;
 
@@ -89,7 +96,7 @@ public class CustomMeeting
 
         var targetBox = UObject.Instantiate(voteArea.Buttons.transform.Find("CancelButton").gameObject, voteArea.transform);
         targetBox.name = Owner.name + ActiveSprite + voteArea.name;
-        targetBox.transform.localPosition = Position == default ? BasePosition : Position;
+        targetBox.transform.localPosition = Position.Value;
         var renderer = targetBox.GetComponent<SpriteRenderer>();
         renderer.sprite = GetSprite(Type == MeetingTypes.Toggle ? DisabledSprite : ActiveSprite);
         var button = targetBox.GetComponent<PassiveButton>();
