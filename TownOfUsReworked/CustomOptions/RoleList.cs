@@ -191,7 +191,7 @@ public class RoleListEntryOption : CustomOption
             keys = keys.Skip(1).ToList();
         }
         else
-            keys.RemoveAll(x => x is LayerEnum.Crewmate or LayerEnum.Impostor or LayerEnum.Anarchist);
+            keys.RemoveAll(x => x is LayerEnum.Crewmate or LayerEnum.Impostor or LayerEnum.Anarchist or LayerEnum.Murderer);
 
         keys.ForEach(x => SlotButtons.Add(new(MultiMenu.External, Entries[x], delegate { SetVal(x); })));
         SlotButtons.Add(new(MultiMenu.External, "Cancel", Cancel));
