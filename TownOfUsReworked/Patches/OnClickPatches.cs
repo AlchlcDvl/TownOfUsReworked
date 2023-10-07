@@ -16,14 +16,14 @@ public static class PlayerControlOnClick
 
         if (button == null)
             button = CustomButton.AllButtons.Find(x => x.Owner.Local && x.Clickable && __instance == CustomPlayer.Local && x.Type == AbilityTypes.Targetless);
-        
+
         if (button != null)
         {
             button.Clicked();
             return false;
         }
 
-        if (__instance == CustomPlayer.Local)
+        if (CustomPlayer.Local == null || CustomPlayer.Local.Data == null || CustomPlayer.Local.Data.Tasks == null || __instance == CustomPlayer.Local)
             return false;
 
         var tasksLeft = __instance.Data.Tasks.Count(x => !x.Complete);
@@ -88,6 +88,6 @@ public static class DeadBodyOnClick
 
         var button = CustomButton.AllButtons.Find(x => x.Owner.Local && x.TargetBody == __instance && x.Clickable&& !x.Blocked);
         button?.Clicked();
-        return button == null;
+        return button == null && !IsTaskRace && !IsCustomHnS;
     }
 }

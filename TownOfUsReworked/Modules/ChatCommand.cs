@@ -118,7 +118,7 @@ public class ChatCommand
         args[2..].ForEach(arg => message += $"{arg} ");
         message = message.Remove(message.Length - 1);
 
-        if (CustomPlayer.Local.Data.IsDead)
+        if (CustomPlayer.LocalCustom.IsDead)
             Run(__instance, "<color=#FFFF00FF>米 Shhhh 米</color>", "You are dead.");
         else if (CustomPlayer.Local.IsBlackmailed())
             Run(__instance, "<color=#02A752FF>米 Shhhh 米</color>", "You are blackmailed.");
@@ -218,7 +218,7 @@ public class ChatCommand
         if (IsNullEmptyOrWhiteSpace(summary))
             Run(__instance, "<color=#FF0000FF>⚠ Summary Error ⚠</color>", "Summary could not be found.");
         else
-            Run(__instance, "<color=#FF0080FF>个 Previous Game Summary 个</color>", summary, false, true);   
+            Run(__instance, "<color=#FF0080FF>个 Previous Game Summary 个</color>", summary, false, true);
     }
 
     private static void Clear(ChatController __instance)

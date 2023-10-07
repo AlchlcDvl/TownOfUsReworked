@@ -14,7 +14,7 @@ public static class HandleDisconnect
                 if (pol.Local)
                     pol.VoteBank += votesRegained;
 
-                CallRpc(CustomRPC.Misc, MiscRPC.AddVoteBank, pol, votesRegained);
+                CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, pol, PoliticianActionsRPC.Add, votesRegained);
             }
 
             foreach (var mayor in Role.GetRoles<Mayor>(LayerEnum.Mayor))

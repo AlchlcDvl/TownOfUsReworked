@@ -5,8 +5,8 @@ public static class CustomVisors
     private static bool SubLoaded;
     private static bool Running;
     private static Material Shader;
-    public static readonly Dictionary<string, VisorExtension> CustomVisorRegistry = new();
-    public static readonly Dictionary<string, VisorViewData> CustomVisorViewDatas = new();
+    private static readonly Dictionary<string, VisorExtension> CustomVisorRegistry = new();
+    private static readonly Dictionary<string, VisorViewData> CustomVisorViewDatas = new();
 
     private static Sprite CreateVisorSprite(string path, bool fromDisk = false)
     {
@@ -156,7 +156,7 @@ public static class CustomVisors
                 colorChip.ProductId = visor.ProductId;
                 colorChip.Tag = visor;
                 __instance.UpdateMaterials(colorChip.Inner.FrontLayer, visor);
-                visor.SetPreview(colorChip.Inner.FrontLayer, __instance.HasLocalPlayer() ? CustomPlayer.LocalCustom.Data.DefaultOutfit.ColorId : DataManager.Player.Customization.Color);
+                visor.SetPreview(colorChip.Inner.FrontLayer, __instance.HasLocalPlayer() ? CustomPlayer.LocalCustom.DefaultOutfit.ColorId : DataManager.Player.Customization.Color);
                 colorChip.SelectionHighlight.gameObject.SetActive(false);
                 __instance.ColorChips.Add(colorChip);
             }

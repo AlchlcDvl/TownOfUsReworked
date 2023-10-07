@@ -1,11 +1,13 @@
-/*namespace TownOfUsReworked.Cosmetics;
+using Innersloth.Assets;
+
+namespace TownOfUsReworked.Cosmetics;
 
 public static class CustomNameplates
 {
     private static bool SubLoaded;
     private static bool Running;
-    public static readonly Dictionary<string, NameplateExtension> CustomNameplateRegistry = new();
-    public static readonly Dictionary<string, NamePlateViewData> CustomNameplateViewDatas = new();
+    private static readonly Dictionary<string, NameplateExtension> CustomNameplateRegistry = new();
+    private static readonly Dictionary<string, NamePlateViewData> CustomNameplateViewDatas = new();
 
     private static Sprite CreateNameplateSprite(string path, bool fromDisk = false)
     {
@@ -47,7 +49,7 @@ public static class CustomNameplates
         };
 
         CustomNameplateRegistry.TryAdd(nameplate.name, extend);
-        CustomNameplateViewDatas.TryAdd(nameplate.name, viewData);
+        CustomNameplateViewDatas.TryAdd(nameplate.ProductId, viewData);
         nameplate.ViewDataRef = new(viewData.Pointer);
         nameplate.CreateAddressableAsset();
         return nameplate;
@@ -130,16 +132,25 @@ public static class CustomNameplates
 
                 colorChip.Button.ClickMask = __instance.scroller.Hitbox;
                 colorChip.transform.localPosition = new(xpos, ypos, -1f);
-                colorChip.Inner.transform.localPosition = nameplate.ChipOffset;
                 colorChip.ProductId = nameplate.ProductId;
                 colorChip.Tag = nameplate;
-                __instance.UpdateMaterials(colorChip.Inner.FrontLayer, nameplate);
-                nameplate.SetPreview(colorChip.Inner.FrontLayer, __instance.HasLocalPlayer() ? CustomPlayer.LocalCustom.Data.DefaultOutfit.ColorId : DataManager.Player.Customization.Color);
                 colorChip.SelectionHighlight.gameObject.SetActive(false);
+
+                if (CustomNameplateViewDatas.TryGetValue(colorChip.ProductId, out var viewData))
+                    colorChip.gameObject.GetComponent<NameplateChip>().image.sprite = viewData.Image;
+                else
+                    DefaultNameplateCoro(__instance, colorChip.gameObject.GetComponent<NameplateChip>());
+
                 __instance.ColorChips.Add(colorChip);
             }
 
             return offset - ((nameplates.Count - 1) / __instance.NumPerRow * __instance.YOffset) - 1.5f;
+        }
+
+        public static void DefaultNameplateCoro(NameplatesTab __instance, NameplateChip chip)
+        {
+            __instance.StartCoroutine(__instance.CoLoadAssetAsync<NamePlateViewData>(HatManager.Instance.GetNamePlateById(chip.ProductId).ViewDataRef, (Action<NamePlateViewData>)(viewData =>
+                chip.image.sprite = viewData?.Image)));
         }
 
         public static bool Prefix(NameplatesTab __instance)
@@ -171,14 +182,6 @@ public static class CustomNameplates
             });
             keys.ForEach(key => YOffset = CreateNameplatePackage(packages[key], key, YOffset, __instance));
             __instance.scroller.ContentYBounds.max = -(YOffset + 3.8f);
-
-            foreach (var colorChip in __instance.ColorChips)
-            {
-                colorChip.Inner.FrontLayer.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
-                colorChip.Inner.BackLayer.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
-                colorChip.SelectionHighlight.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
-            }
-
             return false;
         }
     }
@@ -198,9 +201,22 @@ public static class CustomNameplates
         }
     }
 
-    public static NameplateExtension GetNameplateExtension(this NamePlateData Nameplate)
+    [HarmonyPatch(typeof(PlayerVoteArea), nameof(PlayerVoteArea.PreviewNameplate))]
+    public class PreviewNameplatesPatch
     {
-        CustomNameplateRegistry.TryGetValue(Nameplate.name, out var ret);
+        public static void Postfix(PlayerVoteArea __instance, ref string plateID)
+        {
+            if (!CustomNameplateViewDatas.TryGetValue(plateID, out var viewData))
+                return;
+
+            if (viewData != null)
+                __instance.Background.sprite = viewData.Image;
+        }
+    }
+
+    public static NameplateExtension GetNameplateExtension(this NamePlateData nameplate)
+    {
+        CustomNameplateRegistry.TryGetValue(nameplate.name, out var ret);
         return ret;
     }
-}*/
+}

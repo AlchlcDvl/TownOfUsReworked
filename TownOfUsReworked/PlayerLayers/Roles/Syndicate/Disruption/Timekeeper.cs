@@ -14,7 +14,7 @@ public class Timekeeper : Syndicate
 
     public Timekeeper(PlayerControl player) : base(player)
     {
-        Alignment = Alignment.SyndicatePower;
+        Alignment = Alignment.SyndicateDisrup;
         TimeButton = new(this, "Time", AbilityTypes.Targetless, "Secondary", TimeControl, CustomGameOptions.TimeCd, CustomGameOptions.TimeDur, Control, ControlStart, UnControl);
     }
 

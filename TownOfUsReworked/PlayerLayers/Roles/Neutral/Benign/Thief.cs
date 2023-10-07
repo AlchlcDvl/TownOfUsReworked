@@ -188,7 +188,12 @@ public class Thief : Neutral
                     return;
 
                 if (SelectedButton != button)
+                {
+                    if (SelectedButton != null)
+                        SelectedButton.GetComponent<SpriteRenderer>().color = UColor.white;
+
                     SelectedButton = button;
+                }
                 else
                 {
                     var focusedTarget = PlayerByVoteArea(voteArea);

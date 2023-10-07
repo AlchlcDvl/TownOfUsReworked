@@ -37,8 +37,8 @@ public static class UpdateNames
         var distance = Vector2.Distance(CustomPlayer.Local.transform.position, player.transform.position);
         var vector = player.transform.position - CustomPlayer.Local.transform.position;
 
-        if (PhysicsHelpers.AnyNonTriggersBetween(CustomPlayer.Local.transform.position, vector.normalized, distance, Constants.ShipAndObjectsMask) && CustomGameOptions.ObstructNames &&
-            player != CustomPlayer.Local && !CustomPlayer.LocalCustom.IsDead)
+        if (PhysicsHelpers.AnyNonTriggersBetween(CustomPlayer.Local.transform.position, vector.normalized, distance, Constants.ShipAndObjectsMask) && player != CustomPlayer.Local &&
+            !CustomPlayer.LocalCustom.IsDead && CustomGameOptions.PlayerNames == Data.PlayerNames.Obstructed)
         {
             return "";
         }
@@ -47,11 +47,11 @@ public static class UpdateNames
 
         if (HudUpdate.IsCamoed && player != CustomPlayer.Local && !CustomPlayer.LocalCustom.IsDead)
             name = GetRandomisedName();
-        else if (CustomGameOptions.NoNames && !IsLobby)
+        else if (CustomGameOptions.PlayerNames == Data.PlayerNames.NotVisible && !IsLobby)
             name = "";
         else if (CachedMorphs.ContainsKey(player.PlayerId) && player != CustomPlayer.Local && !CustomPlayer.LocalCustom.IsDead)
             name = ColorNames.FirstOrDefault(x => x.Key == CachedMorphs[player.PlayerId]).Value;
-        else if (player.GetCustomOutfitType() is CustomPlayerOutfitType.Invis && player != CustomPlayer.Local && !CustomPlayer.LocalCustom.IsDead)
+        else if (player.GetCustomOutfitType() is CustomPlayerOutfitType.Invis or CustomPlayerOutfitType.Colorblind && player != CustomPlayer.Local && !CustomPlayer.LocalCustom.IsDead)
             name = "";
         else
             name = ColorNames.FirstOrDefault(x => x.Key == player.PlayerId).Value;
@@ -69,8 +69,8 @@ public static class UpdateNames
         var distance = Vector2.Distance(CustomPlayer.Local.transform.position, player.transform.position);
         var vector = player.transform.position - CustomPlayer.Local.transform.position;
 
-        if (PhysicsHelpers.AnyNonTriggersBetween(CustomPlayer.Local.transform.position, vector.normalized, distance, Constants.ShipAndObjectsMask) && CustomGameOptions.ObstructNames &&
-            player != CustomPlayer.Local && !CustomPlayer.LocalCustom.IsDead)
+        if (PhysicsHelpers.AnyNonTriggersBetween(CustomPlayer.Local.transform.position, vector.normalized, distance, Constants.ShipAndObjectsMask) && player != CustomPlayer.Local &&
+            !CustomPlayer.LocalCustom.IsDead && CustomGameOptions.PlayerNames == Data.PlayerNames.Obstructed)
         {
             return ("", UColor.clear);
         }
@@ -83,11 +83,11 @@ public static class UpdateNames
 
         if (HudUpdate.IsCamoed && player != CustomPlayer.Local && !CustomPlayer.LocalCustom.IsDead)
             name = GetRandomisedName();
-        else if (CustomGameOptions.NoNames && !IsLobby)
+        else if (CustomGameOptions.PlayerNames == Data.PlayerNames.NotVisible && !IsLobby)
             name = "";
         else if (CachedMorphs.ContainsKey(player.PlayerId) && player != CustomPlayer.Local && !CustomPlayer.LocalCustom.IsDead)
             name = PlayerNames.FirstOrDefault(x => x.Key == CachedMorphs[player.PlayerId]).Value;
-        else if (player.GetCustomOutfitType() is CustomPlayerOutfitType.Invis && player != CustomPlayer.Local && !CustomPlayer.LocalCustom.IsDead)
+        else if (player.GetCustomOutfitType() is CustomPlayerOutfitType.Invis or CustomPlayerOutfitType.Colorblind && player != CustomPlayer.Local && !CustomPlayer.LocalCustom.IsDead)
             name = "";
         else
             name = PlayerNames.FirstOrDefault(x => x.Key == player.PlayerId).Value;
@@ -95,11 +95,10 @@ public static class UpdateNames
         if (info[0] == null || localinfo[0] == null)
             return (name, color);
 
-        if (player.CanDoTasks() && DeadSeeEverything)
+        if (player.CanDoTasks() && (DeadSeeEverything || player == CustomPlayer.Local))
         {
             var role = info[0] as Role;
             name += $" ({role.TasksCompleted}/{role.TotalTasks})";
-            roleRevealed = true;
         }
 
         if (player.IsKnighted())

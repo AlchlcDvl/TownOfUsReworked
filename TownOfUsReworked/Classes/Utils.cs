@@ -20,7 +20,9 @@ public static class Utils
 
     public static bool IsImpostor(this GameData.PlayerInfo playerinfo) => playerinfo?.Role?.TeamType == RoleTeamTypes.Impostor;
 
-    public static bool IsImpostor(this PlayerVoteArea playerinfo) => PlayerByVoteArea(playerinfo)?.Data?.IsImpostor() == true;
+    public static bool IsImpostor(this PlayerControl playerinfo) => playerinfo?.Data?.Role?.TeamType == RoleTeamTypes.Impostor;
+
+    public static bool IsImpostor(this PlayerVoteArea playerinfo) => PlayerByVoteArea(playerinfo).IsImpostor();
 
     public static GameData.PlayerOutfit GetDefaultOutfit(this PlayerControl playerControl) => playerControl.Data.DefaultOutfit;
 
@@ -57,17 +59,26 @@ public static class Utils
 
     public static CustomPlayerOutfitType GetCustomOutfitType(this PlayerControl playerControl) => (CustomPlayerOutfitType)playerControl.CurrentOutfitType;
 
-    public static void Morph(PlayerControl player, PlayerControl morphTarget)
+    public static void Morph(PlayerControl player, PlayerControl morphTarget) => Coroutines.Start(MorphCoro(player, morphTarget));
+
+    public static IEnumerator MorphCoro(PlayerControl player, PlayerControl morphTarget)
     {
-        if (HudUpdate.IsCamoed)
-            return;
+        if (HudUpdate.IsCamoed || CustomPlayer.Local.Is(LayerEnum.Colorblind))
+            yield break;
 
         if (player.GetCustomOutfitType() is not (CustomPlayerOutfitType.Morph or CustomPlayerOutfitType.Invis))
         {
             var morphTo = PlayerById(CachedMorphs.TryGetValue(player.PlayerId, out var morphId) ? morphId : morphTarget.PlayerId);
             player.SetOutfit(CustomPlayerOutfitType.Morph, morphTo.Data.DefaultOutfit);
             CachedMorphs.TryAdd(player.PlayerId, morphTarget.PlayerId);
+            HUD.StartCoroutine(Effects.Lerp(1, new Action<float>(p =>
+            {
+                var color = Color.Lerp(Palette.PlayerColors[player.GetDefaultOutfit().ColorId], Palette.PlayerColors[morphTarget.GetDefaultOutfit().ColorId], p);
+                PlayerMaterial.SetColors(color, player.MyRend());
+            })));
         }
+
+        yield return null;
     }
 
     public static void DefaultOutfit(PlayerControl player) => Coroutines.Start(DefaultOutfitCoro(player));
@@ -79,7 +90,7 @@ public static class Utils
             HUD.StartCoroutine(Effects.Lerp(1, new Action<float>(p =>
             {
                 var rend = player.MyRend();
-                rend.color = new(255, 255, 255, p);
+                rend.color = new(1f, 1f, 1f, p);
                 var text = player.NameText();
                 text.color = new(text.color.a, text.color.a, text.color.a, p);
                 var cbtext = player.ColorBlindText();
@@ -88,8 +99,30 @@ public static class Utils
 
             yield return new WaitForSeconds(1f);
         }
+        else if (player.GetCustomOutfitType() == CustomPlayerOutfitType.Camouflage)
+        {
+            HUD.StartCoroutine(Effects.Lerp(1, new Action<float>(p =>
+            {
+                var color = Color.Lerp(UColor.grey, Palette.PlayerColors[player.GetDefaultOutfit().ColorId], p);
+                PlayerMaterial.SetColors(color, player.MyRend());
+            })));
+
+            yield return new WaitForSeconds(1f);
+        }
         else if (player.GetCustomOutfitType() == CustomPlayerOutfitType.Morph)
-            CachedMorphs.Remove(player.PlayerId);
+        {
+            HUD.StartCoroutine(Effects.Lerp(1, new Action<float>(p =>
+            {
+                var morphTarget = PlayerById(CachedMorphs.TryGetValue(player.PlayerId, out var otherId) ? otherId : player.PlayerId);
+                var color = Color.Lerp(Palette.PlayerColors[morphTarget.GetDefaultOutfit().ColorId], Palette.PlayerColors[player.GetDefaultOutfit().ColorId], p);
+                PlayerMaterial.SetColors(color, player.MyRend());
+
+                if (p == 1)
+                    CachedMorphs.Remove(player.PlayerId);
+            })));
+
+            yield return new WaitForSeconds(1f);
+        }
 
         if (Shapeshifted)
             Shapeshifted = false;
@@ -107,11 +140,10 @@ public static class Utils
         if ((int)player.GetCustomOutfitType() is not (4 or 5 or 6 or 7) && !player.Data.IsDead && !CustomPlayer.LocalCustom.IsDead && player != CustomPlayer.Local)
         {
             player.SetOutfit(CustomPlayerOutfitType.Camouflage, BlankOutfit(player));
-            PlayerMaterial.SetColors(UColor.grey, player.MyRend());
             HUD.StartCoroutine(Effects.Lerp(1, new Action<float>(p =>
             {
-                var cbtext = player.ColorBlindText();
-                cbtext.color = new(cbtext.color.a, cbtext.color.a, cbtext.color.a, 1 - p);
+                var color = Color.Lerp(Palette.PlayerColors[player.GetDefaultOutfit().ColorId], UColor.grey, p);
+                PlayerMaterial.SetColors(color, player.MyRend());
             })));
         }
 
@@ -127,15 +159,10 @@ public static class Utils
         if (player.GetCustomOutfitType() != CustomPlayerOutfitType.Invis && !player.Data.IsDead)
         {
             player.SetOutfit(CustomPlayerOutfitType.Invis, InvisOutfit(player));
-
             HUD.StartCoroutine(Effects.Lerp(1, new Action<float>(p =>
             {
                 var rend = player.MyRend();
-                var a = Mathf.Clamp(1 - p, ca, 1);
-                var r = rend.color.r * (1 - p);
-                var g = rend.color.g * (1 - p);
-                var b = rend.color.b * (1 - p);
-                rend.color = new(r, g, b, a);
+                rend.color = new(1f, 1f, 1f, Mathf.Clamp(1 - p, ca, 1));
                 var text = player.NameText();
                 text.color = new(text.color.a, text.color.a, text.color.a, 1 - p);
                 var cbtext = player.ColorBlindText();
@@ -148,7 +175,7 @@ public static class Utils
 
     public static GameData.PlayerOutfit InvisOutfit(PlayerControl player) => new()
     {
-        ColorId = player.CurrentOutfit.ColorId,
+        ColorId = 6,
         HatId = "",
         SkinId = "",
         VisorId = "",
@@ -164,6 +191,17 @@ public static class Utils
         SkinId = "",
         VisorId = "",
         NamePlateId = "",
+        PlayerName = " ",
+        PetId = ""
+    };
+
+    public static GameData.PlayerOutfit ColorblindOutfit(PlayerControl player) => new()
+    {
+        ColorId = player.GetDefaultOutfit().ColorId,
+        HatId = "",
+        SkinId = "",
+        VisorId = "",
+        NamePlateId = player.GetDefaultOutfit().NamePlateId,
         PlayerName = " ",
         PetId = ""
     };
@@ -284,6 +322,12 @@ public static class Utils
 
         if (data.IsDead)
             return;
+
+        if (IsCustomHnS)
+        {
+            var popup = GameManagerCreator.Instance.HideAndSeekManagerPrefab.DeathPopupPrefab;
+            UObject.Instantiate(popup, HUD.transform.parent).Show(target, 0);
+        }
 
         if (killer == CustomPlayer.Local || target == CustomPlayer.Local)
             Play("Kill");
@@ -572,7 +616,7 @@ public static class Utils
                     if (pol.Local)
                         pol.VoteBank += votesRegained;
 
-                    CallRpc(CustomRPC.Misc, MiscRPC.AddVoteBank, pol, votesRegained);
+                    CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, pol, PoliticianActionsRPC.Add, votesRegained);
                 }
             }
 
@@ -877,10 +921,16 @@ public static class Utils
                     break;
 
                 case 5:
+                    if (!SubLoaded)
+                        break;
+
                     fs = CustomPlayer.Local.myTasks.Any(x => x.TaskType == RetrieveOxygenMask);
                     break;
 
                 case 6:
+                    if (!LILoaded)
+                        break;
+
                     var reactor3 = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
                     var oxygen3 = ShipStatus.Instance.Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
                     var seismic2 = ShipStatus.Instance.Systems[SystemTypes.Laboratory].Cast<ReactorSystemType>();
@@ -936,7 +986,7 @@ public static class Utils
             player.transform.position = value;
 
             if (TownOfUsReworked.IsTest)
-                LogError($"Warping {player.Data.PlayerName} to ({value.x}, {value.y})");
+                LogError($"Warping {player.name} to {value}");
         }
 
         if (AmongUsClient.Instance.AmHost)
@@ -948,13 +998,13 @@ public static class Utils
 
     public static Dictionary<byte, Vector2> GenerateWarpCoordinates()
     {
-        var targets = CustomPlayer.AllPlayers.Where(player => !player.HasDied()).ToList();
-        var coordinates = new Dictionary<byte, Vector2>(targets.Count);
-        var allLocations = new List<Vector3>();
+        var targets = CustomPlayer.AllPlayers.Where(player => !player.HasDied());
+        var coordinates = new Dictionary<byte, Vector2>();
+        var allLocations = new List<Vector2>();
 
-        foreach (var player in CustomPlayer.AllPlayers)
+        foreach (var player in targets)
         {
-            if (!player.onLadder && !player.inMovingPlat)
+            if (!player.onLadder && !player.inMovingPlat && !player.inVent)
                 allLocations.Add(player.transform.position);
         }
 
@@ -975,11 +1025,11 @@ public static class Utils
         return coordinates;
     }
 
-    public static Vector3 GetVentPosition(Vent vent)
+    public static Vector2 GetVentPosition(Vent vent)
     {
         var destination = vent.transform.position;
         destination.y += 0.3636f;
-        return destination;
+        return new(destination.x, destination.y + 0.3636f);
     }
 
     public static IEnumerator Fade(bool fadeAway)

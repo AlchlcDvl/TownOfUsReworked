@@ -2,7 +2,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public class Werewolf : Neutral
 {
-    public bool CanMaul => Rounds % 2 == 1 || Rounds > 3;
+    public bool CanMaul => Rounds is not (0 or 2);
     public CustomButton MaulButton { get; set; }
     public int Rounds { get; set; }
 

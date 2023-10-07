@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-public class Syndicate : Role
+public abstract class Syndicate : Role
 {
     public CustomButton KillButton { get; set; }
     public string CommonAbilities => "<color=#008000FF>" + (Type is not LayerEnum.Anarchist and not LayerEnum.Sidekick && Alignment != Alignment.SyndicateKill && HoldsDrive ? ("- You can "
@@ -25,7 +25,7 @@ public class Syndicate : Role
         if (!Local)
             return;
 
-        var team = new List<PlayerControl> { CustomPlayer.Local };
+        var team = new List<PlayerControl>() { CustomPlayer.Local };
 
         if (IsRecruit)
         {

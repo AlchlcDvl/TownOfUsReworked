@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-public class Intruder : Role
+public abstract class Intruder : Role
 {
     public CustomButton KillButton { get; set; }
     public string CommonAbilities => "<color=#FF0000FF>- You can kill players" + (CustomGameOptions.IntrudersCanSabotage || (IsDead && CustomGameOptions.GhostsCanSabotage) ? ("\n- You can " +
@@ -23,7 +23,7 @@ public class Intruder : Role
         if (!Local)
             return;
 
-        var team = new List<PlayerControl> { CustomPlayer.Local };
+        var team = new List<PlayerControl>() { CustomPlayer.Local };
 
         if (IsRecruit)
         {

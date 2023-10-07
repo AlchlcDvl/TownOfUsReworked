@@ -30,6 +30,7 @@ public static class Generate
     public static CustomNumberOption RandomMapPolus;
     //public static CustomNumberOption RandomMapdlekS;
     public static CustomNumberOption RandomMapAirship;
+    //public static CustomNumberOption RandomMapFungle;
     public static CustomNumberOption RandomMapSubmerged;
     public static CustomNumberOption RandomMapLevelImpostor;
     public static CustomToggleOption AutoAdjustSettings;
@@ -51,7 +52,7 @@ public static class Generate
     public static CustomStringOption WhoSeesFirstKillShield;
     public static CustomToggleOption FactionSeeRoles;
     public static CustomToggleOption VisualTasks;
-    public static CustomToggleOption NoNames;
+    public static CustomStringOption PlayerNames;
     public static CustomToggleOption Whispers;
     public static CustomToggleOption WhispersAnnouncement;
     public static CustomToggleOption AppearanceAnimation;
@@ -61,11 +62,7 @@ public static class Generate
     public static CustomToggleOption EnableObjectifiers;
     public static CustomToggleOption VentTargeting;
     public static CustomToggleOption CooldownInVent;
-
-    //QoL Options
-    public static CustomHeaderOption QualityChanges;
     public static CustomToggleOption DeadSeeEverything;
-    public static CustomToggleOption ObstructNames;
     public static CustomToggleOption ParallelMedScans;
 
     //Better Sabotages
@@ -129,6 +126,28 @@ public static class Generate
     //All Any Options
     public static CustomHeaderOption AARLSettings;
     public static CustomToggleOption EnableUniques;
+
+    //Hide And Seek Options
+    public static CustomHeaderOption HnSSettings;
+    public static CustomNumberOption HunterCount;
+    public static CustomNumberOption StartTime;
+    public static CustomNumberOption HuntCd;
+    public static CustomStringOption HnSType;
+    public static CustomToggleOption HunterVent;
+    public static CustomNumberOption HnSShortTasks;
+    public static CustomNumberOption HnSCommonTasks;
+    public static CustomNumberOption HnSLongTasks;
+    public static CustomNumberOption HunterVision;
+    public static CustomNumberOption HuntedVision;
+    public static CustomNumberOption HunterSpeedModifier;
+    public static CustomToggleOption HunterFlashlight;
+    public static CustomToggleOption HuntedFlashlight;
+    public static CustomToggleOption HuntedChat;
+
+    //Task Race Options
+    public static CustomHeaderOption TRSettings;
+    public static CustomNumberOption TRShortTasks;
+    public static CustomNumberOption TRCommonTasks;
 
     //CI Role Spawn
     public static CustomHeaderOption CIRoles;
@@ -231,6 +250,10 @@ public static class Generate
     public static CustomLayersOption DisguiserOn;
     public static CustomLayersOption WraithOn;
 
+    //IH Role Spawn
+    public static CustomHeaderOption IHRoles;
+    public static CustomLayersOption GodfatherOn;
+
     //IK Role Spawn
     public static CustomHeaderOption IKRoles;
     public static CustomLayersOption AmbusherOn;
@@ -239,7 +262,6 @@ public static class Generate
     //IS Role Spawn
     public static CustomHeaderOption ISRoles;
     public static CustomLayersOption ConsigliereOn;
-    public static CustomLayersOption GodfatherOn;
     public static CustomLayersOption ConsortOn;
     public static CustomLayersOption MinerOn;
     public static CustomLayersOption TeleporterOn;
@@ -252,7 +274,6 @@ public static class Generate
     //SSu Role Spawn
     public static CustomHeaderOption SSuRoles;
     public static CustomLayersOption WarperOn;
-    public static CustomLayersOption RebelOn;
     public static CustomLayersOption StalkerOn;
 
     //SD Role Spawn
@@ -262,11 +283,12 @@ public static class Generate
     public static CustomLayersOption ConcealerOn;
     public static CustomLayersOption DrunkardOn;
     public static CustomLayersOption SilencerOn;
+    public static CustomLayersOption TimekeeperOn;
 
     //SyK Role Spawn
     public static CustomHeaderOption SPRoles;
+    public static CustomLayersOption RebelOn;
     public static CustomLayersOption SpellslingerOn;
-    public static CustomLayersOption TimekeeperOn;
 
     //SyK Role Spawn
     public static CustomHeaderOption SyKRoles;
@@ -295,6 +317,7 @@ public static class Generate
     public static CustomLayersOption VolatileOn;
     public static CustomLayersOption ProfessionalOn;
     public static CustomLayersOption YellerOn;
+    public static CustomLayersOption ColorblindOn;
 
     //Ability Spawn
     public static CustomHeaderOption Abilities;
@@ -629,6 +652,15 @@ public static class Generate
     public static CustomNumberOption InvisDur;
     public static CustomToggleOption WraithVent;
 
+    //IH Options
+    public static CustomHeaderOption IHSettings;
+    public static CustomNumberOption IHMax;
+
+    //Godfather Options
+    public static CustomHeaderOption Godfather;
+    public static CustomToggleOption UniqueGodfather;
+    public static CustomNumberOption GFPromotionCdDecrease;
+
     //IS Options
     public static CustomHeaderOption ISSettings;
     public static CustomNumberOption ISMax;
@@ -652,11 +684,6 @@ public static class Generate
     public static CustomToggleOption UniqueConsort;
     public static CustomNumberOption ConsortCd;
     public static CustomNumberOption ConsortDur;
-
-    //Godfather Options
-    public static CustomHeaderOption Godfather;
-    public static CustomToggleOption UniqueGodfather;
-    public static CustomNumberOption GFPromotionCdDecrease;
 
     //Miner Options
     public static CustomHeaderOption Miner;
@@ -804,7 +831,7 @@ public static class Generate
     public static CustomToggleOption WarpSelf;
 
     //SU Options
-    public static CustomHeaderOption SyndicateUtilitySettings;
+    public static CustomHeaderOption SUSettings;
 
     //Banshee Options
     public static CustomHeaderOption Banshee;
@@ -1333,6 +1360,10 @@ public static class Generate
     public static CustomHeaderOption Shy;
     public static CustomToggleOption UniqueShy;
 
+    //Colorblind Options
+    public static CustomHeaderOption Colorblind;
+    public static CustomToggleOption UniqueColorblind;
+
     //Astral Options
     public static CustomHeaderOption Astral;
     public static CustomToggleOption UniqueAstral;
@@ -1388,6 +1419,7 @@ public static class Generate
     public static CustomToggleOption BanCrewmate;
     public static CustomToggleOption BanImpostor;
     public static CustomToggleOption BanAnarchist;
+    public static CustomToggleOption BanMurderer;
 
     //Postmortal Options
     public static CustomHeaderOption EnablePostmortals;
@@ -1410,14 +1442,14 @@ public static class Generate
 
     public static void GenerateAll()
     {
-        var maps = new List<string>() { "Skeld", "Mira HQ", "Polus", /*"dlekS",*/ "Airship" };
+        var maps = new List<string>() { "Skeld", "Mira HQ", "Polus", /*"dlekS",*/ "Airship", /*"Fungle"*/ };
 
         if (SubLoaded)
             maps.Add("Submerged");
 
         if (LILoaded)
             maps.Add("LevelImpostor");
-        
+
         maps.Add("Random");
 
         SettingsPatches.ExportButton = new();
@@ -1453,16 +1485,37 @@ public static class Generate
         LobbySize = new(num++, MultiMenu.Main, "Lobby Size", 15, 2, 127, 1);
 
         GameModeSettings = new(MultiMenu.Main, "Game Mode Settings");
-        CurrentMode = new(num++, MultiMenu.Main, "Game Mode", new[] { "Classic", "All Any", "<color=#1D7CF2FF>Killing</color> Only", "Role List", "Custom", "Vanilla" });
+        CurrentMode = new(num++, MultiMenu.Main, "Game Mode", new[] { "<color=#C02A2CFF>Classic</color>", "<color=#CBD542FF>All Any</color>", "<color=#06E00CFF>Killing Only</color>",
+            "<color=#FA1C79FF>Role List</color>", "<color=#7500AFFF>Hide And Seek</color>", "<color=#1E49CFFF>Task Race</color>", "<color=#E6956AFF>Custom</color>", "Vanilla" });
 
-        KOSettings = new(MultiMenu.Main, "<color=#1D7CF2FF>Killing</color> Only Settings", GameMode.KillingOnly);
+        AARLSettings = new(MultiMenu.Main, "<color=#CBD542FF>All Any</color>/<color=#FA1C79FF>Role List</color> Settings", new object[] { GameMode.AllAny, GameMode.RoleList });
+        EnableUniques = new(num++, MultiMenu.Main, "Enable Uniques", false, AARLSettings);
+
+        KOSettings = new(MultiMenu.Main, "<color=#06E00CFF>Killing Only</color> Settings", GameMode.KillingOnly);
         NeutralRoles = new(num++, MultiMenu.Main, "<color=#B3B3B3FF>Neutrals</color> Count", 1, 0, 13, 1, KOSettings);
         AddArsonist = new(num++, MultiMenu.Main, "Add <color=#EE7600FF>Arsonist</color>", false, KOSettings);
         AddCryomaniac = new(num++, MultiMenu.Main, "Add <color=#642DEAFF>Cryomaniac</color>", false, KOSettings);
         AddPlaguebearer = new(num++, MultiMenu.Main, "Add <color=#CFFE61FF>Plaguebearer</color>", false, KOSettings);
 
-        AARLSettings = new(MultiMenu.Main, "All Any/Role List Settings", new object[] { GameMode.AllAny, GameMode.RoleList });
-        EnableUniques = new(num++, MultiMenu.Main, "Enable Uniques", false, AARLSettings);
+        HnSSettings = new(MultiMenu.Main, "<color=#7500AFFF>Hide And Seek</color> Settings", GameMode.HideAndSeek);
+        HnSType = new(num++, MultiMenu.Main, "<color=#7500AFFF>Hide And Seek</color> Game Type", new[] { "Classic", "Infection" }, HnSSettings);
+        HnSShortTasks = new(num++, MultiMenu.Main, "<color=#7500AFFF>Hide And Seek</color> Short Tasks", 4, 0, 13, 1, HnSSettings);
+        HnSCommonTasks = new(num++, MultiMenu.Main, "<color=#7500AFFF>Hide And Seek</color> Common Tasks", 4, 0, 13, 1, HnSSettings);
+        HnSLongTasks = new(num++, MultiMenu.Main, "<color=#7500AFFF>Hide And Seek</color> Long Tasks", 4, 0, 13, 1, HnSSettings);
+        HunterCount = new(num++, MultiMenu.Main, "<color=#FF004EFF>Hunter</color> Count", 1, 1, 13, 1, HnSSettings);
+        HuntCd = new(num++, MultiMenu.Main, "Hunt Cooldown", 10f, 5f, 60f, 5f, CooldownFormat, HnSSettings);
+        StartTime = new(num++, MultiMenu.Main, "Start Time", 10f, 5f, 60f, 5f, CooldownFormat, HnSSettings);
+        HunterVent = new(num++, MultiMenu.Main, "<color=#FF004EFF>Hunter</color> Can Vent", true, HnSSettings);
+        HunterVision = new(num++, MultiMenu.Main, "<color=#FF004EFF>Hunter</color> Vision", 0.25f, 0.1f, 1f, 0.05f, MultiplierFormat, HnSSettings);
+        HuntedVision = new(num++, MultiMenu.Main, "<color=#1F51FFFF>Hunted</color> Vision", 1.5f, 1f, 2f, 0.05f, MultiplierFormat, HnSSettings);
+        HunterSpeedModifier = new(num++, MultiMenu.Main, "<color=#FF004EFF>Hunter</color> Speed Modifier", 1.25f, 1f, 1.5f, 0.05f, MultiplierFormat, HnSSettings);
+        HunterFlashlight = new(num++, MultiMenu.Main, "<color=#FF004EFF>Hunters</color> Use A Flashlight", false, HnSSettings);
+        HuntedFlashlight = new(num++, MultiMenu.Main, "<color=#1F51FFFF>Hunted</color> Use A Flashlight", false, HnSSettings);
+        HuntedChat = new(num++, MultiMenu.Main, "<color=#1F51FFFF>Hunted</color> Can Chat", true, HnSSettings);
+
+        TRSettings = new(MultiMenu.Main, "<color=#1E49CFFF>Task Race</color> Settings", GameMode.TaskRace);
+        TRShortTasks = new(num++, MultiMenu.Main, "<color=#1E49CFFF>Task Race</color> Short Tasks", 4, 0, 13, 1, TRSettings);
+        TRCommonTasks = new(num++, MultiMenu.Main, "<color=#1E49CFFF>Task Race</color> Common Tasks", 4, 0, 13, 1, TRSettings);
 
         GameModifiers = new(MultiMenu.Main, "Game Modifiers");
         WhoCanVent = new(num++, MultiMenu.Main, "Serial Venters", new[] { "Default", "Everyone", "Never" });
@@ -1472,16 +1525,17 @@ public static class Generate
         WhoSeesFirstKillShield = new(num++, MultiMenu.Main, "Who Sees First Kill Shield", new[] { "Everyone", "Shielded", "No One" }, FirstKillShield);
         FactionSeeRoles = new(num++, MultiMenu.Main, "Factioned Evils See The <color=#FFD700FF>Roles</color> Of Their Team", true);
         VisualTasks = new(num++, MultiMenu.Main, "Visual Tasks", false);
-        NoNames = new(num++, MultiMenu.Main, "No Player Names", false);
+        PlayerNames = new(num++, MultiMenu.Main, "Player Names", new[] { "Hide Obstructed", "Always Visible", "Not Visible" });
         Whispers = new(num++, MultiMenu.Main, "Whispering", true);
         WhispersAnnouncement = new(num++, MultiMenu.Main, "Everyone Is Alerted To Whispers", true, Whispers);
         AppearanceAnimation = new(num++, MultiMenu.Main, "Kill Animations Show Modified Player", true);
-        RandomSpawns = new(num++, MultiMenu.Main, "Random Player Spawns", false);
         EnableAbilities = new(num++, MultiMenu.Main, "Enable <color=#FF9900FF>Abilities</color>", true);
         EnableModifiers = new(num++, MultiMenu.Main, "Enable <color=#7F7F7FFF>Modifiers</color>", true);
         EnableObjectifiers = new(num++, MultiMenu.Main, "Enable <color=#DD585BFF>Objectifiers</color>", true);
         VentTargeting = new(num++, MultiMenu.Main, "Players In Vents Can Be Targeted", true);
         CooldownInVent = new(num++, MultiMenu.Main, "Cooldown Decreases Even While In A Vent", false);
+        DeadSeeEverything = new(num++, MultiMenu.Main, "Dead Can See Everything", true);
+        ParallelMedScans = new(num++, MultiMenu.Main, "Parallel Medbay Scans", false);
 
         GameAnnouncementsSettings = new(MultiMenu.Main, "Game Announcement Settings");
         GameAnnouncements = new(num++, MultiMenu.Main, "Enable Game Announcements", false);
@@ -1491,11 +1545,6 @@ public static class Generate
         KillerReports = new(num++, MultiMenu.Main, "Every Body's Killer's <color=#FFD700FF>Role</color>/<color=#00E66DFF>Faction</color> Is Announced", new[] { "Never", "Role", "Faction" },
             GameAnnouncements);
 
-        QualityChanges = new(MultiMenu.Main, "Quality Additions");
-        DeadSeeEverything = new(num++, MultiMenu.Main, "Dead Can See Everything", true);
-        ParallelMedScans = new(num++, MultiMenu.Main, "Parallel Medbay Scans", false);
-        ObstructNames = new(num++, MultiMenu.Main, "Hide Obstructed Player Names", true);
-
         MapSettings = new(MultiMenu.Main, "Map Settings");
         Map = new(num++, MultiMenu.Main, "Map", maps.ToArray());
         RandomMapSkeld = new(num++, MultiMenu.Main, "Skeld Chance", 0, 0, 100, 10, PercentFormat, MapEnum.Random);
@@ -1503,6 +1552,7 @@ public static class Generate
         RandomMapPolus = new(num++, MultiMenu.Main, "Polus Chance", 0, 0, 100, 10, PercentFormat, MapEnum.Random);
         //RandomMapdlekS = new(num++, MultiMenu.Main, "dlekS Chance", 0, 0, 100, 10, PercentFormat, MapEnum.Random); for when it comes back lol
         RandomMapAirship = new(num++, MultiMenu.Main, "Airship Chance", 0, 0, 100, 10, PercentFormat, MapEnum.Random);
+        //RandomMapFungle = new(num++, MultiMenu.Main, "Fungle Chance", 0, 0, 100, 10, PercentFormat, MapEnum.Random);
 
         if (SubLoaded)
             RandomMapSubmerged = new(num++, MultiMenu.Main, "Submerged Chance", 0, 0, 100, 10, PercentFormat, MapEnum.Random);
@@ -1522,6 +1572,7 @@ public static class Generate
         LargeMapDecreasedShortTasks = new(num++, MultiMenu.Main, "Large Maps Decreased Short Tasks", 0, 0, 5, 1, new object[] { MapEnum.Skeld, /*MapEnum.dlekS,*/ MapEnum.Random,
             MapEnum.MiraHQ });
         LargeMapDecreasedLongTasks = new(num++, MultiMenu.Main, "Large Maps Decreased Long Tasks", 0, 0, 3, 1, new object[] { MapEnum.Airship, MapEnum.Submerged, MapEnum.Random });
+        RandomSpawns = new(num++, MultiMenu.Main, "Random Player Spawns", false);
 
         BetterSabotages = new(MultiMenu.Main, "Better Sabotages");
         CamouflagedComms = new(num++, MultiMenu.Main, "Camouflaged Comms", true);
@@ -1631,19 +1682,21 @@ public static class Generate
 
         CISettings = new(MultiMenu.Crew, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Investigative</color> Settings", new object[] { CoronerOn, DetectiveOn, InspectorOn, SeerOn,
             MediumOn, SheriffOn, TrackerOn, OperativeOn, LayerEnum.CrewInvest, LayerEnum.Coroner, LayerEnum.Detective, LayerEnum.Inspector, LayerEnum.Seer, LayerEnum.Medium,
-            LayerEnum.Sheriff, LayerEnum.Tracker, LayerEnum.Operative, LayerEnum.RandomCrew, LayerEnum.Mystic, LayerEnum.CrewAudit, MysticOn });
+            LayerEnum.Sheriff, LayerEnum.Tracker, LayerEnum.Operative, LayerEnum.RandomCrew, LayerEnum.Mystic, LayerEnum.CrewAudit, MysticOn, LayerEnum.RegularCrew });
         CIMax = new(num++, MultiMenu.Crew, "Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Investigatives</color>", 1, 1, 14, 1, CISettings);
 
-        Coroner = new(MultiMenu.Crew, "<color=#4D99E6FF>Coroner</color>", new object[] { CoronerOn, LayerEnum.Coroner, LayerEnum.CrewInvest, LayerEnum.RandomCrew });
+        Coroner = new(MultiMenu.Crew, "<color=#4D99E6FF>Coroner</color>", new object[] { CoronerOn, LayerEnum.Coroner, LayerEnum.CrewInvest, LayerEnum.RandomCrew, LayerEnum.RegularCrew });
         UniqueCoroner = new(num++, MultiMenu.Crew, "<color=#4D99E6FF>Coroner</color> Is Unique", false, new object[] { Coroner, EnableUniques }, true);
         CoronerArrowDur = new(num++, MultiMenu.Crew, "Dead Body Arrow Duration", 0.1f, 0f, 2f, 0.05f, CooldownFormat, Coroner);
         CoronerReportRole = new(num++, MultiMenu.Crew, "<color=#4D99E6FF>Coroner</color> Gets Roles", false, Coroner);
         CoronerReportName = new(num++, MultiMenu.Crew, "<color=#4D99E6FF>Coroner</color> Gets Killer's Name", false, Coroner);
-        CoronerKillerNameTime = new(num++, MultiMenu.Crew, "<color=#4D99E6FF>Coroner</color> Gets Killer's Name Under", 1f, 0.5f, 15f, 0.5f, CooldownFormat, Coroner);
+        CoronerKillerNameTime = new(num++, MultiMenu.Crew, "<color=#4D99E6FF>Coroner</color> Gets Killer's Name Under", 1f, 0.5f, 15f, 0.5f, CooldownFormat, new object[] { Coroner,
+            CoronerReportName }, true);
         CompareCd = new(num++, MultiMenu.Crew, "Compare Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Coroner);
         AutopsyCd = new(num++, MultiMenu.Crew, "Autopsy Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Coroner);
 
-        Detective = new(MultiMenu.Crew, "<color=#4D4DFFFF>Detective</color>", new object[] { DetectiveOn, LayerEnum.Detective, LayerEnum.CrewInvest, LayerEnum.RandomCrew });
+        Detective = new(MultiMenu.Crew, "<color=#4D4DFFFF>Detective</color>", new object[] { DetectiveOn, LayerEnum.Detective, LayerEnum.CrewInvest, LayerEnum.RandomCrew,
+            LayerEnum.RegularCrew });
         UniqueDetective = new(num++, MultiMenu.Crew, "<color=#4D4DFFFF>Detective</color> Is Unique", false, new object[] { Detective, EnableUniques }, true);
         ExamineCd = new(num++, MultiMenu.Crew, "Examine Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Detective);
         RecentKill = new(num++, MultiMenu.Crew, "Bloody Hands Duration", 10f, 5f, 60f, 2.5f, CooldownFormat, Detective);
@@ -1651,18 +1704,20 @@ public static class Generate
         FootprintDur = new(num++, MultiMenu.Crew, "Footprint Duration", 10f, 1f, 10f, 0.5f, CooldownFormat, Detective);
         AnonymousFootPrint = new(num++, MultiMenu.Crew, "Anonymous Footprint", false, Detective);
 
-        Inspector = new(MultiMenu.Crew, "<color=#7E3C64FF>Inspector</color>", new object[] { InspectorOn, LayerEnum.Inspector, LayerEnum.CrewInvest, LayerEnum.RandomCrew });
+        Inspector = new(MultiMenu.Crew, "<color=#7E3C64FF>Inspector</color>", new object[] { InspectorOn, LayerEnum.Inspector, LayerEnum.CrewInvest, LayerEnum.RandomCrew,
+            LayerEnum.RegularCrew });
         UniqueInspector = new(num++, MultiMenu.Crew, "<color=#7E3C64FF>Inspector</color> Is Unique", false, Inspector);
         InspectCd = new(num++, MultiMenu.Crew, "Inspect Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Inspector);
 
-        Medium = new(MultiMenu.Crew, "<color=#A680FFFF>Medium</color>", new object[] { MediumOn, LayerEnum.Medium, LayerEnum.CrewInvest, LayerEnum.RandomCrew });
+        Medium = new(MultiMenu.Crew, "<color=#A680FFFF>Medium</color>", new object[] { MediumOn, LayerEnum.Medium, LayerEnum.CrewInvest, LayerEnum.RandomCrew , LayerEnum.RegularCrew});
         UniqueMedium = new(num++, MultiMenu.Crew, "<color=#A680FFFF>Medium</color> Is Unique", false, new object[] { Medium, EnableUniques }, true);
         MediateCd = new(num++, MultiMenu.Crew, "Mediate Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Medium);
         ShowMediatePlayer = new(num++, MultiMenu.Crew, "Reveal Appearance Of Mediate Target", true, Medium);
         ShowMediumToDead = new(num++, MultiMenu.Crew, "Reveal The <color=#A680FFFF>Medium</color> To The Mediate Target", new[] { "No", "Target", "All Dead" }, Medium);
         DeadRevealed = new(num++, MultiMenu.Crew, "Who Is Revealed With Mediate", new[] { "Oldest Dead", "Newest Dead", "All Dead", "Random" }, Medium);
 
-        Operative = new(MultiMenu.Crew, "<color=#A7D1B3FF>Operative</color>", new object[] { OperativeOn, LayerEnum.Operative, LayerEnum.CrewInvest, LayerEnum.RandomCrew });
+        Operative = new(MultiMenu.Crew, "<color=#A7D1B3FF>Operative</color>", new object[] { OperativeOn, LayerEnum.Operative, LayerEnum.CrewInvest, LayerEnum.RandomCrew,
+            LayerEnum.RegularCrew });
         UniqueOperative = new(num++, MultiMenu.Crew, "<color=#A7D1B3FF>Operative</color> Is Unique", false, new object[] { Operative, EnableUniques }, true);
         BugCd = new(num++, MultiMenu.Crew, "Bug Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Operative);
         MinAmountOfTimeInBug = new(num++, MultiMenu.Crew, "Min Amount Of Time In Bug To Trigger", 0f, 0f, 15f, 0.5f, CooldownFormat, Operative);
@@ -1673,36 +1728,36 @@ public static class Generate
         WhoSeesDead = new(num++, MultiMenu.Crew, "Who Sees Dead Bodies On Admin", new[] { "Nobody", "Operative", "Everyone But Operative", "Everyone" }, Operative);
         PreciseOperativeInfo = new(num++, MultiMenu.Crew, "<color=#A7D1B3FF>Operative</color> Gets Precise Information", false, Operative);
 
-        Seer = new(MultiMenu.Crew, "<color=#71368AFF>Seer</color>", new object[] { SeerOn, LayerEnum.Seer, LayerEnum.CrewInvest, LayerEnum.RandomCrew, LayerEnum.Mystic, LayerEnum.CrewAudit,
-            MysticOn });
+        Seer = new(MultiMenu.Crew, "<color=#71368AFF>Seer</color>", new object[] { SeerOn, LayerEnum.Seer, LayerEnum.CrewInvest, LayerEnum.RandomCrew, Mystic, LayerEnum.RegularCrew });
         UniqueSeer = new(num++, MultiMenu.Crew, "<color=#71368AFF>Seer</color> Is Unique", false, new object[] { Seer, EnableUniques }, true);
         SeerCd = new(num++, MultiMenu.Crew, "Seer Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Seer);
 
-        Sheriff = new(MultiMenu.Crew, "<color=#FFCC80FF>Sheriff</color>", new object[] { SheriffOn, LayerEnum.Sheriff, LayerEnum.CrewInvest, LayerEnum.RandomCrew, LayerEnum.Seer, SeerOn });
+        Sheriff = new(MultiMenu.Crew, "<color=#FFCC80FF>Sheriff</color>", new object[] { SheriffOn, LayerEnum.Sheriff, LayerEnum.CrewInvest, LayerEnum.RandomCrew, Seer,
+            LayerEnum.RegularCrew });
         UniqueSheriff = new(num++, MultiMenu.Crew, "<color=#FFCC80FF>Sheriff</color> Is Unique", false, new object[] { Sheriff, EnableUniques }, true);
         InterrogateCd = new(num++, MultiMenu.Crew, "Interrogate Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Sheriff);
         NeutEvilRed = new(num++, MultiMenu.Crew, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Evils</color> Show Evil", false, Sheriff);
         NeutKillingRed = new(num++, MultiMenu.Crew, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color> Show Evil", false, Sheriff);
 
-        Tracker = new(MultiMenu.Crew, "<color=#009900FF>Tracker</color>", new object[] { TrackerOn, LayerEnum.Tracker, LayerEnum.CrewInvest, LayerEnum.RandomCrew });
+        Tracker = new(MultiMenu.Crew, "<color=#009900FF>Tracker</color>", new object[] { TrackerOn, LayerEnum.Tracker, LayerEnum.CrewInvest, LayerEnum.RandomCrew, LayerEnum.RegularCrew });
         UniqueTracker = new(num++, MultiMenu.Crew, "<color=#009900FF>Tracker</color> Is Unique", false, new object[] { Tracker, EnableUniques }, true);
-        UpdateInterval = new(num++, MultiMenu.Crew, "Arrow Update Interval", 5f, 0f, 15f, 0.5f, CooldownFormat, Tracker);
+        MaxTracks = new(num++, MultiMenu.Crew, "Max Tracks", 5, 1, 15, 1, Tracker);
         TrackCd = new(num++, MultiMenu.Crew, "Track Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Tracker);
         ResetOnNewRound = new(num++, MultiMenu.Crew, "<color=#009900FF>Tracker</color> Arrows Reset After Each Round", false, Tracker);
-        MaxTracks = new(num++, MultiMenu.Crew, "Max Tracks", 5, 1, 15, 1, Tracker);
+        UpdateInterval = new(num++, MultiMenu.Crew, "Arrow Update Interval", 5f, 0f, 15f, 0.5f, CooldownFormat, Tracker);
 
         CKSettings = new(MultiMenu.Crew, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Killing</color> Settings", new object[] { VigilanteOn, VeteranOn, LayerEnum.Vigilante,
-            LayerEnum.Veteran, LayerEnum.CrewKill, LayerEnum.RandomCrew, VampireHunterOn, LayerEnum.CrewAudit, LayerEnum.VampireHunter });
+            LayerEnum.Veteran, LayerEnum.CrewKill, LayerEnum.RandomCrew, VampireHunterOn, LayerEnum.CrewAudit, LayerEnum.VampireHunter, LayerEnum.RegularCrew });
         CKMax = new(num++, MultiMenu.Crew, "Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Killers</color>", 1, 1, 14, 1, CKSettings);
 
-        Veteran = new(MultiMenu.Crew, "<color=#998040FF>Veteran</color>", new object[] { VeteranOn, LayerEnum.Veteran, LayerEnum.CrewKill, LayerEnum.RandomCrew });
+        Veteran = new(MultiMenu.Crew, "<color=#998040FF>Veteran</color>", new object[] { VeteranOn, LayerEnum.Veteran, LayerEnum.CrewKill, LayerEnum.RandomCrew, LayerEnum.RegularCrew });
         UniqueVeteran = new(num++, MultiMenu.Crew, "<color=#998040FF>Veteran</color> Is Unique", false, new object[] { Veteran, EnableUniques }, true);
+        MaxAlerts = new(num++, MultiMenu.Crew, "Max Alerts", 5, 1, 15, 1, Veteran);
         AlertCd = new(num++, MultiMenu.Crew, "Alert Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Veteran);
         AlertDur = new(num++, MultiMenu.Crew, "Alert Duration", 10f, 5f, 30f, 1f, CooldownFormat, Veteran);
-        MaxAlerts = new(num++, MultiMenu.Crew, "Max Alerts", 5, 1, 15, 1, Veteran);
 
-        Vigilante = new(MultiMenu.Crew, "<color=#FFFF00FF>Vigilante</color>", new object[] { VigilanteOn, LayerEnum.Vigilante, LayerEnum.CrewKill, LayerEnum.RandomCrew, LayerEnum.CrewAudit,
-            LayerEnum.VampireHunter, VampireHunterOn });
+        Vigilante = new(MultiMenu.Crew, "<color=#FFFF00FF>Vigilante</color>", new object[] { VigilanteOn, LayerEnum.Vigilante, LayerEnum.CrewKill, LayerEnum.RandomCrew, VampireHunter,
+            LayerEnum.RegularCrew });
         UniqueVigilante = new(num++, MultiMenu.Crew, "<color=#FFFF00FF>Vigilante</color> Is Unique", false, new object[] { Vigilante, EnableUniques }, true);
         MisfireKillsInno = new(num++, MultiMenu.Crew, "Misfire Kills The Target", true, Vigilante);
         VigiKillAgain = new(num++, MultiMenu.Crew, "<color=#FFFF00FF>Vigilante</color> Can Kill Again If Target Was Innocent", true, Vigilante);
@@ -1710,21 +1765,22 @@ public static class Generate
         VigiOptions = new(num++, MultiMenu.Crew, "How Does <color=#FFFF00FF>Vigilante</color> Die", new[] { "Immediately", "Before Meeting", "After Meeting" }, Vigilante);
         VigiNotifOptions = new(num++, MultiMenu.Crew, "How Is The <color=#FFFF00FF>Vigilante</color> Notified Of Their Target's Innocence", new[] { "Never", "Flash", "Message" },
             Vigilante);
-        ShootCd = new(num++, MultiMenu.Crew, "Shoot Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Vigilante);
         MaxBullets = new(num++, MultiMenu.Crew, "Max Bullets", 5, 1, 15, 1, Vigilante);
+        ShootCd = new(num++, MultiMenu.Crew, "Shoot Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Vigilante);
 
         CrPSettings = new(MultiMenu.Crew, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Protective</color> Settings", new object[] { AltruistOn, MedicOn, LayerEnum.Altruist,
-            LayerEnum.Medic, LayerEnum.CrewProt, LayerEnum.RandomCrew });
+            LayerEnum.Medic, LayerEnum.CrewProt, LayerEnum.RandomCrew, LayerEnum.RegularCrew });
         CrPMax = new(num++, MultiMenu.Crew, "Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Protectives</color>", 1, 1, 14, 1, CrPSettings);
 
-        Altruist = new(MultiMenu.Crew, "<color=#660000FF>Altruist</color>", new object[] { AltruistOn, LayerEnum.Altruist, LayerEnum.CrewProt, LayerEnum.RandomCrew });
+        Altruist = new(MultiMenu.Crew, "<color=#660000FF>Altruist</color>", new object[] { AltruistOn, LayerEnum.Altruist, LayerEnum.CrewProt, LayerEnum.RandomCrew, LayerEnum.RegularCrew
+            });
         UniqueAltruist = new(num++, MultiMenu.Crew, "<color=#660000FF>Altruist</color> Is Unique", false, new object[] { Altruist, EnableUniques }, true);
         MaxRevives = new(num++, MultiMenu.Crew, "Max Revives", 5, 1, 14, 1, Altruist);
         ReviveCd = new(num++, MultiMenu.Crew, "Revive Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Altruist);
         ReviveDur = new(num++, MultiMenu.Crew, "Revive Duration", 10f, 1f, 15f, 1f, CooldownFormat, Altruist);
         AltruistTargetBody = new(num++, MultiMenu.Crew, "Target's Body Disappears On Beginning Of Revive", false, Altruist);
 
-        Medic = new(MultiMenu.Crew, "<color=#006600FF>Medic</color>", new object[] { MedicOn, LayerEnum.Medic, LayerEnum.CrewProt, LayerEnum.RandomCrew });
+        Medic = new(MultiMenu.Crew, "<color=#006600FF>Medic</color>", new object[] { MedicOn, LayerEnum.Medic, LayerEnum.CrewProt, LayerEnum.RandomCrew, LayerEnum.RegularCrew });
         UniqueMedic = new(num++, MultiMenu.Crew, "<color=#006600FF>Medic</color> Is Unique", false, new object[] { Medic, EnableUniques }, true);
         ShowShielded = new(num++, MultiMenu.Crew, "Show Shielded Player", new[] { "Self", "<color=#006600FF>Medic</color>", "Self And <color=#006600FF>Medic</color>", "Everyone", "Nobody"
             }, Medic);
@@ -1759,45 +1815,48 @@ public static class Generate
 
         CSSettings = new(MultiMenu.Crew, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Support</color> Settings", new object[] { ChameleonOn, EngineerOn, EscortOn, RetributionistOn,
             ShifterOn, TransporterOn, LayerEnum.RandomCrew, LayerEnum.Chameleon, LayerEnum.Engineer, LayerEnum.Escort, LayerEnum.Retributionist, LayerEnum.Shifter, LayerEnum.Transporter,
-            LayerEnum.CrewSupport });
+            LayerEnum.CrewSupport, LayerEnum.RegularCrew });
         CSMax = new(num++, MultiMenu.Crew, "Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Supporters</color>", 1, 1, 14, 1, CSSettings);
 
-        Chameleon = new(MultiMenu.Crew, "<color=#5411F8FF>Chameleon</color>", new object[] { ChameleonOn, LayerEnum.Chameleon, LayerEnum.CrewSupport, LayerEnum.RandomCrew });
+        Chameleon = new(MultiMenu.Crew, "<color=#5411F8FF>Chameleon</color>", new object[] { ChameleonOn, LayerEnum.Chameleon, LayerEnum.CrewSupport, LayerEnum.RandomCrew,
+            LayerEnum.RegularCrew });
         UniqueChameleon = new(num++, MultiMenu.Crew, "<color=#5411F8FF>Chameleon</color> Is Unique", false, new object[] { Chameleon, EnableUniques }, true);
+        MaxSwoops = new(num++, MultiMenu.Crew, "Max Swoops", 5, 1, 15, 1, Chameleon);
         SwoopCd = new(num++, MultiMenu.Crew, "Swoop Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Chameleon);
         SwoopDur = new(num++, MultiMenu.Crew, "Swoop Duration", 10f, 5f, 30f, 1f, CooldownFormat, Chameleon);
-        MaxSwoops = new(num++, MultiMenu.Crew, "Max Swoops", 5, 1, 15, 1, Chameleon);
 
-        Engineer = new(MultiMenu.Crew, "<color=#FFA60AFF>Engineer</color>", new object[] { EngineerOn, LayerEnum.Engineer, LayerEnum.CrewSupport, LayerEnum.RandomCrew });
+        Engineer = new(MultiMenu.Crew, "<color=#FFA60AFF>Engineer</color>", new object[] { EngineerOn, LayerEnum.Engineer, LayerEnum.CrewSupport, LayerEnum.RandomCrew, LayerEnum.RegularCrew
+            });
         UniqueEngineer = new(num++, MultiMenu.Crew, "<color=#FFA60AFF>Engineer</color> Is Unique", false, new object[] { Engineer, EnableUniques }, true);
-        FixCd = new(num++, MultiMenu.Crew, "Fix Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Engineer);
         MaxFixes = new(num++, MultiMenu.Crew, "Max Fixes", 5, 1, 15, 1, Engineer);
+        FixCd = new(num++, MultiMenu.Crew, "Fix Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Engineer);
 
-        Escort = new(MultiMenu.Crew, "<color=#803333FF>Escort</color>", new object[] { EscortOn, LayerEnum.Engineer, LayerEnum.CrewSupport, LayerEnum.RandomCrew });
+        Escort = new(MultiMenu.Crew, "<color=#803333FF>Escort</color>", new object[] { EscortOn, LayerEnum.Engineer, LayerEnum.CrewSupport, LayerEnum.RandomCrew, LayerEnum.RegularCrew });
         UniqueEscort = new(num++, MultiMenu.Crew, "<color=#803333FF>Escort</color> Is Unique", false, new object[] { Escort, EnableUniques }, true);
         EscortCd = new(num++, MultiMenu.Crew, "Roleblock Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Escort);
         EscortDur = new(num++, MultiMenu.Crew, "Roleblock Duration", 10f, 5f, 30f, 1f, CooldownFormat, Escort);
 
         Retributionist = new(MultiMenu.Crew, "<color=#8D0F8CFF>Retributionist</color>", new object[] { RetributionistOn, LayerEnum.Retributionist, LayerEnum.CrewSupport,
-            LayerEnum.RandomCrew });
+            LayerEnum.RandomCrew, LayerEnum.RegularCrew });
         UniqueRetributionist = new(num++, MultiMenu.Crew, "<color=#8D0F8CFF>Retributionist</color> Is Unique", false, new object[] { Retributionist, EnableUniques }, true);
         ReviveAfterVoting = new(num++, MultiMenu.Crew, "<color=#8D0F8CFF>Retributionist</color> Can Mimic After Voting", true, Retributionist);
 
-        Shifter = new(MultiMenu.Crew, "<color=#DF851FFF>Shifter</color>", new object[] { ShifterOn, LayerEnum.Shifter, LayerEnum.CrewSupport, LayerEnum.RandomCrew });
+        Shifter = new(MultiMenu.Crew, "<color=#DF851FFF>Shifter</color>", new object[] { ShifterOn, LayerEnum.Shifter, LayerEnum.CrewSupport, LayerEnum.RandomCrew, LayerEnum.RegularCrew });
         UniqueShifter = new(num++, MultiMenu.Crew, "<color=#DF851FFF>Shifter</color> Is Unique", false, new object[] { Shifter, EnableUniques }, true);
         ShiftCd = new(num++, MultiMenu.Crew, "Shift Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Shifter);
         ShiftedBecomes = new(num++, MultiMenu.Crew, "Shifted Becomes", new[] { "Shifter", "Crewmate" }, Shifter);
 
-        Transporter = new(MultiMenu.Crew, "<color=#00EEFFFF>Transporter</color>", new object[] { TransporterOn, LayerEnum.Transporter, LayerEnum.CrewSupport, LayerEnum.RandomCrew });
+        Transporter = new(MultiMenu.Crew, "<color=#00EEFFFF>Transporter</color>", new object[] { TransporterOn, LayerEnum.Transporter, LayerEnum.CrewSupport, LayerEnum.RandomCrew,
+            LayerEnum.RegularCrew });
         UniqueTransporter = new(num++, MultiMenu.Crew, "<color=#00EEFFFF>Transporter</color> Is Unique", false, new object[] { Transporter, EnableUniques }, true);
+        MaxTransports = new(num++, MultiMenu.Crew, "Max Transports", 5, 1, 15, 1, Transporter);
         TransportCd = new(num++, MultiMenu.Crew, "Transport Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Transporter);
         TransportDur = new(num++, MultiMenu.Crew, "Transport Duration", 5f, 1f, 20f, 1f, CooldownFormat, Transporter);
-        MaxTransports = new(num++, MultiMenu.Crew, "Max Transports", 5, 1, 15, 1, Transporter);
         TransSelf = new(num++, MultiMenu.Crew, "<color=#00EEFFFF>Transporter</color> Can Transport Themselves", true, Transporter);
 
-        CUSettings = new(MultiMenu.Crew, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Utility</color> Settings", RevealerOn);
+        CUSettings = new(MultiMenu.Crew, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Utility</color> Settings");
 
-        Revealer = new(MultiMenu.Crew, "<color=#D3D3D3FF>Revealer</color>", RevealerOn);
+        Revealer = new(MultiMenu.Crew, "<color=#D3D3D3FF>Revealer</color>");
         RevealerTasksRemainingClicked = new(num++, MultiMenu.Crew, "Tasks Remaining When <color=#D3D3D3FF>Revealer</color> Can Be Clicked", 5, 1, 10, 1, Revealer);
         RevealerTasksRemainingAlert = new(num++, MultiMenu.Crew, "Tasks Remaining When Revealed", 1, 1, 5, 1, Revealer);
         RevealerRevealsNeutrals = new(num++, MultiMenu.Crew, "<color=#D3D3D3FF>Revealer</color> Reveals <color=#B3B3B3FF>Neutrals</color>", false, Revealer);
@@ -1853,7 +1912,7 @@ public static class Generate
             LayerEnum.Jackal, LayerEnum.BountyHunter, LayerEnum.Cannibal, LayerEnum.Executioner, LayerEnum.Guesser, LayerEnum.Jester, LayerEnum.Troll, LayerEnum.Arsonist,
             LayerEnum.Cryomaniac, LayerEnum.Glitch, LayerEnum.Juggernaut, LayerEnum.Murderer, LayerEnum.SerialKiller, LayerEnum.Werewolf, LayerEnum.Dracula, LayerEnum.Whisperer,
             LayerEnum.Necromancer, LayerEnum.Necromancer, LayerEnum.NeutralApoc, LayerEnum.NeutralBen, LayerEnum.NeutralEvil, LayerEnum.NeutralHarb, LayerEnum.NeutralKill,
-            LayerEnum.NeutralNeo });
+            LayerEnum.NeutralNeo, LayerEnum.RegularNeutral, LayerEnum.HarmfulNeutral });
         NeutralVision = new(num++, MultiMenu.Neutral, "<color=#B3B3B3FF>Neutral</color> Vision", 1.5f, 0.25f, 5f, 0.25f, MultiplierFormat, NeutralSettings);
         LightsAffectNeutrals = new(num++, MultiMenu.Neutral, "Lights Sabotage Affects <color=#B3B3B3FF>Neutral</color> Vision", true, NeutralSettings);
         NeutralFlashlight = new(num++, MultiMenu.Neutral, "<color=#B3B3B3FF>Neutrals</color> Use A Flashlight", false, NeutralSettings);
@@ -1864,30 +1923,31 @@ public static class Generate
         NeutralsVent = new(num++, MultiMenu.Neutral, "<color=#B3B3B3FF>Neutrals</color> Can Vent", true, NeutralSettings);
 
         NASettings = new(MultiMenu.Neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Apocalypse</color> Settings", new object[] { PlaguebearerOn, LayerEnum.NeutralApoc,
-            LayerEnum.NeutralHarb, LayerEnum.RandomNeutral });
+            LayerEnum.NeutralHarb, LayerEnum.RandomNeutral, LayerEnum.HarmfulNeutral, LayerEnum.Plaguebearer, LayerEnum.Pestilence });
 
         Pestilence = new(MultiMenu.Neutral, "<color=#424242FF>Pestilence</color>", new object[] { PlaguebearerOn, LayerEnum.Pestilence, LayerEnum.Plaguebearer, LayerEnum.NeutralApoc,
-            LayerEnum.NeutralHarb, LayerEnum.RandomNeutral });
+            LayerEnum.NeutralHarb, LayerEnum.RandomNeutral, LayerEnum.HarmfulNeutral });
         PestSpawn = new(num++, MultiMenu.Neutral, "<color=#424242FF>Pestilence</color> Can Spawn Directly", false, Pestilence);
         PlayersAlerted = new(num++, MultiMenu.Neutral, "<color=#424242FF>Pestilence</color> Transformation Alerts Everyone", true, Pestilence);
         ObliterateCd = new(num++, MultiMenu.Neutral, "Obliterate Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Pestilence);
         PestVent = new(num++, MultiMenu.Neutral, "<color=#424242FF>Pestilence</color> Can Vent", true, Pestilence);
 
         NBSettings = new(MultiMenu.Neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Benign</color> Settings", new object[] { AmnesiacOn, GuardianAngelOn, SurvivorOn, ThiefOn,
-            LayerEnum.RandomNeutral, LayerEnum.Amnesiac, LayerEnum.GuardianAngel, LayerEnum.Survivor, LayerEnum.Thief, LayerEnum.NeutralBen });
+            LayerEnum.RandomNeutral, LayerEnum.Amnesiac, LayerEnum.GuardianAngel, LayerEnum.Survivor, LayerEnum.Thief, LayerEnum.NeutralBen, LayerEnum.RegularNeutral });
         NBMax = new(num++, MultiMenu.Neutral, "Max <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Benigns</color>", 1, 1, 14, 1, NBSettings);
         VigiKillsNB = new(num++, MultiMenu.Neutral, "<color=#FFFF00FF>Vigilante</color> Kills <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Benigns</color>", true, new object[] {
             Vigilante, NBSettings }, true);
 
-        Amnesiac = new(MultiMenu.Neutral, "<color=#22FFFFFF>Amnesiac</color>", new object[] { AmnesiacOn, LayerEnum.Amnesiac, LayerEnum.NeutralBen, LayerEnum.RandomNeutral });
+        Amnesiac = new(MultiMenu.Neutral, "<color=#22FFFFFF>Amnesiac</color>", new object[] { AmnesiacOn, LayerEnum.Amnesiac, LayerEnum.NeutralBen, LayerEnum.RandomNeutral,
+            LayerEnum.RegularNeutral });
         UniqueAmnesiac = new(num++, MultiMenu.Neutral, "<color=#22FFFFFF>Amnesiac</color> Is Unique", false, new object[] { Amnesiac, EnableUniques }, true);
         RememberArrows = new(num++, MultiMenu.Neutral, "<color=#22FFFFFF>Amnesiac</color> Gets Arrows To Dead Bodies", false, Amnesiac);
-        RememberArrowDelay = new(num++, MultiMenu.Neutral, "Arrow Appearance Delay", 5f, 0f, 15f, 1f, CooldownFormat, Amnesiac);
+        RememberArrowDelay = new(num++, MultiMenu.Neutral, "Remember Arrow Appearance Delay", 5f, 0f, 15f, 1f, CooldownFormat, Amnesiac);
         AmneVent = new(num++, MultiMenu.Neutral, "<color=#22FFFFFF>Amnesiac</color> Can Hide In Vents", false, Amnesiac);
         AmneSwitchVent = new(num++, MultiMenu.Neutral, "<color=#22FFFFFF>Amnesiac</color> Can Switch Vents", false, Amnesiac);
 
         GuardianAngel = new(MultiMenu.Neutral, "<color=#FFFFFFFF>Guardian Angel</color>", new object[] { GuardianAngelOn, LayerEnum.GuardianAngel, LayerEnum.NeutralBen,
-            LayerEnum.RandomNeutral });
+            LayerEnum.RandomNeutral, LayerEnum.RegularNeutral });
         UniqueGuardianAngel = new(num++, MultiMenu.Neutral, "<color=#FFFFFFFF>Guardian Angel</color> Is Unique", false, new object[] { GuardianAngel, EnableUniques }, true);
         GuardianAngelCanPickTargets = new(num++, MultiMenu.Neutral, "<color=#FFFFFFFF>Guardian Angel</color> Can Pick Their Own Target", false, GuardianAngel);
         ProtectCd = new(num++, MultiMenu.Neutral, "Protect Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, GuardianAngel);
@@ -1901,8 +1961,8 @@ public static class Generate
         GAVent = new(num++, MultiMenu.Neutral, "<color=#FFFFFFFF>Guardian Angel</color> Can Hide In Vents", false, GuardianAngel);
         GASwitchVent = new(num++, MultiMenu.Neutral, "<color=#FFFFFFFF>Guardian Angel</color> Can Switch Vents", false, GuardianAngel);
 
-        Survivor = new(MultiMenu.Neutral, "<color=#DDDD00FF>Survivor</color>", new object[] { SurvivorOn, LayerEnum.Survivor, LayerEnum.NeutralBen, LayerEnum.RandomNeutral,
-            LayerEnum.GuardianAngel, GuardianAngelOn });
+        Survivor = new(MultiMenu.Neutral, "<color=#DDDD00FF>Survivor</color>", new object[] { SurvivorOn, LayerEnum.Survivor, LayerEnum.NeutralBen, LayerEnum.RandomNeutral, GuardianAngel,
+            LayerEnum.RegularNeutral });
         UniqueSurvivor = new(num++, MultiMenu.Neutral, "<color=#DDDD00FF>Survivor</color> Is Unique", false, new object[] { Survivor, EnableUniques }, true);
         VestCd = new(num++, MultiMenu.Neutral, "Vest Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Survivor);
         VestDur = new(num++, MultiMenu.Neutral, "Vest Duration", 10f, 5f, 30f, 1f, CooldownFormat, Survivor);
@@ -1911,8 +1971,8 @@ public static class Generate
         SurvVent = new(num++, MultiMenu.Neutral, "<color=#DDDD00FF>Survivor</color> Can Hide In Vents", false, Survivor);
         SurvSwitchVent = new(num++, MultiMenu.Neutral, "<color=#DDDD00FF>Survivor</color> Can Switch Vents", false, Survivor);
 
-        Thief = new(MultiMenu.Neutral, "<color=#80FF00FF>Thief</color>", new object[] { ThiefOn, LayerEnum.Thief, LayerEnum.NeutralBen, LayerEnum.RandomNeutral, LayerEnum.Amnesiac,
-            AmnesiacOn });
+        Thief = new(MultiMenu.Neutral, "<color=#80FF00FF>Thief</color>", new object[] { ThiefOn, LayerEnum.Thief, LayerEnum.NeutralBen, LayerEnum.RandomNeutral, Amnesiac,
+            LayerEnum.RegularNeutral });
         UniqueThief = new(num++, MultiMenu.Neutral, "<color=#80FF00FF>Thief</color> Is Unique", false, new object[] { Thief, EnableUniques }, true);
         StealCd = new(num++, MultiMenu.Neutral, "Steal Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Thief);
         ThiefSteals = new(num++, MultiMenu.Neutral, "<color=#80FF00FF>Thief</color> Assigns <color=#80FF00FF>Thief</color> <color=#FFD700FF>Role</color> To Target", false, Thief);
@@ -1922,12 +1982,12 @@ public static class Generate
 
         NESettings = new(MultiMenu.Neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Evil</color> Settings", new object[] { ActorOn, BountyHunterOn, CannibalOn, ExecutionerOn,
             TrollOn, GuesserOn, JesterOn, LayerEnum.RandomNeutral, LayerEnum.Actor, LayerEnum.NeutralEvil, LayerEnum.BountyHunter, LayerEnum.Cannibal, LayerEnum.Executioner,
-            LayerEnum.Troll, LayerEnum.Guesser, LayerEnum.Jester });
+            LayerEnum.Troll, LayerEnum.Guesser, LayerEnum.Jester, LayerEnum.RegularNeutral });
         NEMax = new(num++, MultiMenu.Neutral, "Max <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Evils</color>", 1, 1, 14, 1, NESettings);
         NeutralEvilsEndGame = new(num++, MultiMenu.Neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Evils</color> End The Game When Winning", false, NESettings);
 
-        Actor = new(MultiMenu.Neutral, "<color=#00ACC2FF>Actor</color>", new object[] { ActorOn, LayerEnum.Actor, LayerEnum.NeutralEvil, LayerEnum.RandomNeutral, LayerEnum.Guesser,
-            GuesserOn });
+        Actor = new(MultiMenu.Neutral, "<color=#00ACC2FF>Actor</color>", new object[] { ActorOn, LayerEnum.Actor, LayerEnum.NeutralEvil, LayerEnum.RandomNeutral, Guesser,
+            LayerEnum.RegularNeutral });
         UniqueActor = new(num++, MultiMenu.Neutral, "<color=#00ACC2FF>Actor</color> Is Unique", false, new object[] { Actor, EnableUniques }, true);
         ActorCanPickRole = new(num++, MultiMenu.Neutral, "<color=#00ACC2FF>Actor</color> Can Choose A Target Role", false, Actor);
         ActorButton = new(num++, MultiMenu.Neutral, "<color=#00ACC2FF>Actor</color> Can Button", true, Actor);
@@ -1935,26 +1995,28 @@ public static class Generate
         ActSwitchVent = new(num++, MultiMenu.Neutral, "<color=#00ACC2FF>Actor</color> Can Switch Vents", false, Actor);
         VigiKillsActor = new(num++, MultiMenu.Neutral, "<color=#FFFF00FF>Vigilante</color> Kills <color=#00ACC2FF>Actor</color>", false, new[] { ActorOn, VigilanteOn }, true);
 
-        BountyHunter = new(MultiMenu.Neutral, "<color=#B51E39FF>Bounty Hunter</color>", new object[] { BountyHunterOn, LayerEnum.BountyHunter, LayerEnum.NeutralEvil, LayerEnum.RandomNeutral
-            });
+        BountyHunter = new(MultiMenu.Neutral, "<color=#B51E39FF>Bounty Hunter</color>", new object[] { BountyHunterOn, LayerEnum.BountyHunter, LayerEnum.NeutralEvil,
+            LayerEnum.RandomNeutral, LayerEnum.RegularNeutral });
         UniqueBountyHunter = new(num++, MultiMenu.Neutral, "<color=#B51E39FF>Bounty Hunter</color> Is Unique", false, new object[] { BountyHunter, EnableUniques }, true);
         BountyHunterCanPickTargets = new(num++, MultiMenu.Neutral, "<color=#B51E39FF>Bounty Hunter</color> Can Indirectly Pick Their Own Target", false, BountyHunter);
+        BountyHunterGuesses = new(num++, MultiMenu.Neutral, "Max Target Guesses", 5, 1, 15, 1, BountyHunter);
         GuessCd = new(num++, MultiMenu.Neutral, "Guess Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, BountyHunter);
-        BountyHunterGuesses = new(num++, MultiMenu.Neutral, "Max Guesses", 5, 1, 15, 1, BountyHunter);
         BHVent = new(num++, MultiMenu.Neutral, "<color=#B51E39FF>Bounty Hunter</color> Can Vent", false, BountyHunter);
         VigiKillsBH = new(num++, MultiMenu.Neutral, "<color=#FFFF00FF>Vigilante</color> Kills <color=#B51E39FF>Bounty Hunter</color>", false, new object[] { Vigilante, BountyHunterOn },
             true);
 
-        Cannibal = new(MultiMenu.Neutral, "<color=#8C4005FF>Cannibal</color>", new object[] { CannibalOn, LayerEnum.Cannibal, LayerEnum.NeutralEvil, LayerEnum.RandomNeutral });
+        Cannibal = new(MultiMenu.Neutral, "<color=#8C4005FF>Cannibal</color>", new object[] { CannibalOn, LayerEnum.Cannibal, LayerEnum.NeutralEvil, LayerEnum.RandomNeutral,
+            LayerEnum.RegularNeutral });
         UniqueCannibal = new(num++, MultiMenu.Neutral, "<color=#8C4005FF>Cannibal</color> Is Unique", false, new object[] { Cannibal, EnableUniques }, true);
         EatCd = new(num++, MultiMenu.Neutral, "Eat Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Cannibal);
         BodiesNeeded = new(num++, MultiMenu.Neutral, "Bodies Needed To Win", 1, 1, 5, 1, Cannibal);
         EatArrows = new(num++, MultiMenu.Neutral, "<color=#8C4005FF>Cannibal</color> Gets Arrows To Dead Bodies", false, Cannibal);
-        EatArrowDelay = new(num++, MultiMenu.Neutral, "Arrow Appearance Delay", 5f, 0f, 15f, 1f, CooldownFormat, Cannibal);
+        EatArrowDelay = new(num++, MultiMenu.Neutral, "Eat Arrow Appearance Delay", 5f, 0f, 15f, 1f, CooldownFormat, Cannibal);
         CannibalVent = new(num++, MultiMenu.Neutral, "<color=#8C4005FF>Cannibal</color> Can Vent", false, Cannibal);
         VigiKillsCannibal = new(num++, MultiMenu.Neutral, "<color=#FFFF00FF>Vigilante</color> Kills <color=#8C4005FF>Cannibal</color>", false, new object[] { CannibalOn, Vigilante }, true);
 
-        Executioner = new(MultiMenu.Neutral, "<color=#CCCCCCFF>Executioner</color>", new object[] { ExecutionerOn, LayerEnum.Executioner, LayerEnum.NeutralEvil, LayerEnum.RandomNeutral });
+        Executioner = new(MultiMenu.Neutral, "<color=#CCCCCCFF>Executioner</color>", new object[] { ExecutionerOn, LayerEnum.Executioner, LayerEnum.NeutralEvil, LayerEnum.RandomNeutral,
+            LayerEnum.RegularNeutral });
         UniqueExecutioner = new(num++, MultiMenu.Neutral, "<color=#CCCCCCFF>Executioner</color> Is Unique", false, new object[] { Executioner, EnableUniques }, true);
         ExecutionerCanPickTargets = new(num++, MultiMenu.Neutral, "<color=#CCCCCCFF>Executioner</color> Can Pick Their Own Target", false, Executioner);
         ExecutionerButton = new(num++, MultiMenu.Neutral, "<color=#CCCCCCFF>Executioner</color> Can Button", true, Executioner);
@@ -1967,7 +2029,8 @@ public static class Generate
         VigiKillsExecutioner = new(num++, MultiMenu.Neutral, "<color=#FFFF00FF>Vigilante</color> Kills <color=#CCCCCCFF>Executioner</color>", false, new object[] { ExecutionerOn, Vigilante
             }, true);
 
-        Guesser = new(MultiMenu.Neutral, "<color=#EEE5BEFF>Guesser</color>", new object[] { GuesserOn, LayerEnum.Guesser, LayerEnum.NeutralEvil, LayerEnum.RandomNeutral });
+        Guesser = new(MultiMenu.Neutral, "<color=#EEE5BEFF>Guesser</color>", new object[] { GuesserOn, LayerEnum.Guesser, LayerEnum.NeutralEvil, LayerEnum.RandomNeutral,
+            LayerEnum.RegularNeutral });
         UniqueGuesser = new(num++, MultiMenu.Neutral, "<color=#EEE5BEFF>Guesser</color> Is Unique", false, new object[] { Guesser, EnableUniques }, true);
         GuesserCanPickTargets = new(num++, MultiMenu.Neutral, "<color=#EEE5BEFF>Guesser</color> Can Pick Their Own Target", false, Guesser);
         GuesserButton = new(num++, MultiMenu.Neutral, "<color=#EEE5BEFF>Guesser</color> Can Button", true, Guesser);
@@ -1975,12 +2038,12 @@ public static class Generate
         GuessSwitchVent = new(num++, MultiMenu.Neutral, "<color=#EEE5BEFF>Guesser</color> Can Switch Vents", false, Guesser);
         GuessTargetKnows = new(num++, MultiMenu.Neutral, "Target Knows <color=#EEE5BEFF>Guesser</color> Exists", false, Guesser);
         MultipleGuesses = new(num++, MultiMenu.Neutral, "<color=#EEE5BEFF>Guesser</color> Can Guess Multiple Times", true, Guesser);
-        MaxGuesses = new(num++, MultiMenu.Neutral, "Max Guesses", 5, 1, 15, 1, Guesser);
+        MaxGuesses = new(num++, MultiMenu.Neutral, "Max Meeting Guesses", 5, 1, 15, 1, Guesser);
         GuesserAfterVoting = new(num++, MultiMenu.Neutral, "<color=#EEE5BEFF>Guesser</color> Can Guess After Voting", false, Guesser);
         VigiKillsGuesser = new(num++, MultiMenu.Neutral, "<color=#FFFF00FF>Vigilante</color> Kills <color=#EEE5BEFF>Guesser</color>", false, new object[] { GuesserOn, Vigilante }, true);
 
-        Jester = new(MultiMenu.Neutral, "<color=#F7B3DAFF>Jester</color>", new object[] { JesterOn, LayerEnum.Jester, LayerEnum.NeutralEvil, LayerEnum.RandomNeutral, LayerEnum.Executioner,
-            ExecutionerOn});
+        Jester = new(MultiMenu.Neutral, "<color=#F7B3DAFF>Jester</color>", new object[] { JesterOn, LayerEnum.Jester, LayerEnum.NeutralEvil, LayerEnum.RandomNeutral, Executioner,
+            LayerEnum.RegularNeutral });
         UniqueJester = new(num++, MultiMenu.Neutral, "<color=#F7B3DAFF>Jester</color> Is Unique", false, new object[] { Jester, EnableUniques }, true);
         JesterButton = new(num++, MultiMenu.Neutral, "<color=#F7B3DAFF>Jester</color> Can Button", true, Jester);
         JesterVent = new(num++, MultiMenu.Neutral, "<color=#F7B3DAFF>Jester</color> Can Hide In Vents", false, Jester);
@@ -1988,8 +2051,8 @@ public static class Generate
         JestEjectScreen = new(num++, MultiMenu.Neutral, "<color=#F7B3DAFF>Jester</color> Ejection Reveals Existence Of <color=#F7B3DAFF>Jester</color>", false, Jester);
         VigiKillsJester = new(num++, MultiMenu.Neutral, "<color=#FFFF00FF>Vigilante</color> Kills <color=#F7B3DAFF>Jester</color>", false, new object[] { JesterOn, Vigilante }, true);
 
-        Troll = new(MultiMenu.Neutral, "<color=#678D36FF>Troll</color>", new object[] { TrollOn, LayerEnum.Troll, LayerEnum.NeutralEvil, LayerEnum.RandomNeutral, LayerEnum.BountyHunter,
-            BountyHunterOn });
+        Troll = new(MultiMenu.Neutral, "<color=#678D36FF>Troll</color>", new object[] { TrollOn, LayerEnum.Troll, LayerEnum.NeutralEvil, LayerEnum.RandomNeutral, BountyHunter,
+            LayerEnum.RegularNeutral });
         UniqueTroll = new(num++, MultiMenu.Neutral, "<color=#678D36FF>Troll</color> Is Unique", false, new object[] { Troll, EnableUniques }, true);
         InteractCd = new(num++, MultiMenu.Neutral, "Interact Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Troll);
         TrollVent = new(num++, MultiMenu.Neutral, "<color=#678D36FF>Troll</color> Can Hide In Vent", false, Troll);
@@ -2007,14 +2070,15 @@ public static class Generate
 
         NKSettings = new(MultiMenu.Neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killing</color> Settings", new object[] { ArsonistOn, CryomaniacOn, GlitchOn, JuggernautOn,
             MurdererOn, SerialKillerOn, WerewolfOn, LayerEnum.RandomNeutral, LayerEnum.Arsonist, LayerEnum.NeutralKill, LayerEnum.Cryomaniac, LayerEnum.Glitch, LayerEnum.Juggernaut,
-            LayerEnum.Murderer, LayerEnum.SerialKiller, LayerEnum.Werewolf });
+            LayerEnum.Murderer, LayerEnum.SerialKiller, LayerEnum.Werewolf, LayerEnum.HarmfulNeutral });
         NKMax = new(num++, MultiMenu.Neutral, "Max <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color>", 1, 1, 14, 1, NKSettings);
         NKHasImpVision = new(num++, MultiMenu.Neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color> Have <color=#FF0000FF>Intruder</color> Vision", true, NKSettings);
         NKsKnow = new(num++, MultiMenu.Neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color> Know Each Other", false, NKSettings);
 
-        Arsonist = new(MultiMenu.Neutral, "<color=#EE7600FF>Arsonist</color>", new object[] { ArsonistOn, LayerEnum.Arsonist, LayerEnum.NeutralKill, LayerEnum.RandomNeutral });
+        Arsonist = new(MultiMenu.Neutral, "<color=#EE7600FF>Arsonist</color>", new object[] { ArsonistOn, LayerEnum.Arsonist, LayerEnum.NeutralKill, LayerEnum.RandomNeutral,
+            LayerEnum.HarmfulNeutral });
         UniqueArsonist = new(num++, MultiMenu.Neutral, "<color=#EE7600FF>Arsonist</color> Is Unique", false, new object[] { Arsonist, EnableUniques }, true);
-        ArsoDouseCd = new(num++, MultiMenu.Neutral, "Douse Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Arsonist);
+        ArsoDouseCd = new(num++, MultiMenu.Neutral, "<color=#EE7600FF>Arsonist</color> Douse Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Arsonist);
         IgniteCd = new(num++, MultiMenu.Neutral, "Ignite Cooldown", 25f, 5f, 60f, 2.5f, CooldownFormat, Arsonist);
         ArsoLastKillerBoost = new(num++, MultiMenu.Neutral, "Ignite Cooldown Removed When <color=#EE7600FF>Arsonist</color> Is Last Killer", false, Arsonist);
         ArsoIgniteAll = new(num++, MultiMenu.Neutral, "Ignition Ignites All Doused Players", false, Arsonist);
@@ -2022,14 +2086,16 @@ public static class Generate
         IgnitionCremates = new(num++, MultiMenu.Neutral, "Ignition Cremates Bodies", false, Arsonist);
         ArsoVent = new(num++, MultiMenu.Neutral, "<color=#EE7600FF>Arsonist</color> Can Vent", false, Arsonist);
 
-        Cryomaniac = new(MultiMenu.Neutral, "<color=#642DEAFF>Cryomaniac</color>", new object[] { CryomaniacOn, LayerEnum.Cryomaniac, LayerEnum.NeutralKill, LayerEnum.RandomNeutral });
+        Cryomaniac = new(MultiMenu.Neutral, "<color=#642DEAFF>Cryomaniac</color>", new object[] { CryomaniacOn, LayerEnum.Cryomaniac, LayerEnum.NeutralKill, LayerEnum.RandomNeutral,
+            LayerEnum.HarmfulNeutral });
         UniqueCryomaniac = new(num++, MultiMenu.Neutral, "<color=#642DEAFF>Cryomaniac</color> Is Unique", false, new object[] { Cryomaniac, EnableUniques }, true);
-        CryoDouseCd = new(num++, MultiMenu.Neutral, "Douse Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Cryomaniac);
+        CryoDouseCd = new(num++, MultiMenu.Neutral, "<color=#642DEAFF>Cryomaniac</color> Douse Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Cryomaniac);
         CryoFreezeAll = new(num++, MultiMenu.Neutral, "<color=#642DEAFF>Cryomaniac</color> Freeze Freezes All Doused Players", false, Cryomaniac);
         CryoLastKillerBoost = new(num++, MultiMenu.Neutral, "<color=#642DEAFF>Cryomaniac</color> Can Kill Normally When Last Killer", false, Cryomaniac);
         CryoVent = new(num++, MultiMenu.Neutral, "<color=#642DEAFF>Cryomaniac</color> Can Vent", false, Cryomaniac);
 
-        Glitch = new(MultiMenu.Neutral, "<color=#00FF00FF>Glitch</color>", new object[] { GlitchOn, LayerEnum.Glitch, LayerEnum.NeutralKill, LayerEnum.RandomNeutral });
+        Glitch = new(MultiMenu.Neutral, "<color=#00FF00FF>Glitch</color>", new object[] { GlitchOn, LayerEnum.Glitch, LayerEnum.NeutralKill, LayerEnum.RandomNeutral,
+            LayerEnum.HarmfulNeutral });
         UniqueGlitch = new(num++, MultiMenu.Neutral, "<color=#00FF00FF>Glitch</color> Is Unique", false, new object[] { Glitch, EnableUniques }, true);
         MimicCd = new(num++, MultiMenu.Neutral, "Mimic Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Glitch);
         HackCd = new(num++, MultiMenu.Neutral, "Hack Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Glitch);
@@ -2038,68 +2104,76 @@ public static class Generate
         NeutraliseCd = new(num++, MultiMenu.Neutral, "Neutralise Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Glitch);
         GlitchVent = new(num++, MultiMenu.Neutral, "<color=#00FF00FF>Glitch</color> Can Vent", false, Glitch);
 
-        Juggernaut = new(MultiMenu.Neutral, "<color=#A12B56FF>Juggernaut</color>", new object[] { JuggernautOn, LayerEnum.Juggernaut, LayerEnum.NeutralKill, LayerEnum.RandomNeutral });
+        Juggernaut = new(MultiMenu.Neutral, "<color=#A12B56FF>Juggernaut</color>", new object[] { JuggernautOn, LayerEnum.Juggernaut, LayerEnum.NeutralKill, LayerEnum.RandomNeutral,
+            LayerEnum.HarmfulNeutral });
         UniqueJuggernaut = new(num++, MultiMenu.Neutral, "<color=#A12B56FF>Juggernaut</color> Is Unique", false, new object[] { Juggernaut, EnableUniques }, true);
         AssaultCd = new(num++, MultiMenu.Neutral, "Assault Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Juggernaut);
         AssaultBonus = new(num++, MultiMenu.Neutral, "Assault Cooldown Bonus", 5f, 2.5f, 30f, 2.5f, CooldownFormat, Juggernaut);
         JuggVent = new(num++, MultiMenu.Neutral, "<color=#A12B56FF>Juggernaut</color> Can Vent", false, Juggernaut);
 
-        Murderer = new(MultiMenu.Neutral, "<color=#6F7BEAFF>Murderer</color>", new object[] { MurdererOn, LayerEnum.Murderer, LayerEnum.NeutralKill, LayerEnum.RandomNeutral });
+        Murderer = new(MultiMenu.Neutral, "<color=#6F7BEAFF>Murderer</color>", new object[] { MurdererOn, LayerEnum.Murderer, LayerEnum.NeutralKill, LayerEnum.RandomNeutral,
+            LayerEnum.HarmfulNeutral });
         UniqueMurderer = new(num++, MultiMenu.Neutral, "<color=#6F7BEAFF>Murderer</color> Is Unique", false, new object[] { Murderer, EnableUniques }, true);
         MurderCd = new(num++, MultiMenu.Neutral, "Murder Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Murderer);
         MurdVent = new(num++, MultiMenu.Neutral, "<color=#6F7BEAFF>Murderer</color> Can Vent", false, Murderer);
 
         SerialKiller = new(MultiMenu.Neutral, "<color=#336EFFFF>Serial Killer</color>", new object[] { SerialKillerOn, LayerEnum.SerialKiller, LayerEnum.NeutralKill,
-            LayerEnum.RandomNeutral });
+            LayerEnum.RandomNeutral, LayerEnum.HarmfulNeutral });
         UniqueSerialKiller = new(num++, MultiMenu.Neutral, "<color=#336EFFFF>Serial Killer</color> Is Unique", false, new object[] { SerialKiller, EnableUniques }, true);
         BloodlustCd = new(num++, MultiMenu.Neutral, "Bloodlust Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, SerialKiller);
         BloodlustDur = new(num++, MultiMenu.Neutral, "Bloodlust Duration", 10f, 5f, 30f, 1f, CooldownFormat, SerialKiller);
         StabCd = new(num++, MultiMenu.Neutral, "Stab Cooldown", 5f, 0.5f, 15f, 0.5f, CooldownFormat, SerialKiller);
         SKVentOptions = new(num++, MultiMenu.Neutral, "<color=#336EFFFF>Serial Killer</color> Can Vent", new[] { "Always", "Bloodlust", "No Lust", "Never" }, SerialKiller);
 
-        Werewolf = new(MultiMenu.Neutral, "<color=#9F703AFF>Werewolf</color>", new object[] { WerewolfOn, LayerEnum.Werewolf, LayerEnum.NeutralKill, LayerEnum.RandomNeutral });
+        Werewolf = new(MultiMenu.Neutral, "<color=#9F703AFF>Werewolf</color>", new object[] { WerewolfOn, LayerEnum.Werewolf, LayerEnum.NeutralKill, LayerEnum.RandomNeutral,
+            LayerEnum.HarmfulNeutral });
         UniqueWerewolf = new(num++, MultiMenu.Neutral, "<color=#9F703AFF>Werewolf</color> Is Unique", false, new object[] { Werewolf, EnableUniques }, true);
         MaulCd = new(num++, MultiMenu.Neutral, "Maul Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Werewolf);
         MaulRadius = new(num++, MultiMenu.Neutral, "Maul Radius", 1.5f, 0.5f, 5f, 0.25f, DistanceFormat, Werewolf);
         WerewolfVent = new(num++, MultiMenu.Neutral, "<color=#9F703AFF>Werewolf</color> Can Vent", false, Werewolf);
 
         NNSettings = new(MultiMenu.Neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Neophyte</color> Settings", new object[] { DraculaOn, WhispererOn, JackalOn, NecromancerOn,
-            LayerEnum.Dracula, LayerEnum.Whisperer, LayerEnum.Jackal, LayerEnum.Necromancer, LayerEnum.RandomNeutral, LayerEnum.NeutralNeo });
+            LayerEnum.Dracula, LayerEnum.Whisperer, LayerEnum.Jackal, LayerEnum.Necromancer, LayerEnum.RandomNeutral, LayerEnum.NeutralNeo, LayerEnum.HarmfulNeutral });
         NNMax = new(num++, MultiMenu.Neutral, "Max <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Neophytes</color>", 1, 1, 14, 1, NNSettings);
         NNHasImpVision = new(num++, MultiMenu.Neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Neophytes</color> Have <color=#FF0000FF>Intruder</color> Vision", true,
             NNSettings);
 
-        Dracula = new(MultiMenu.Neutral, "<color=#AC8A00FF>Dracula</color>", new object[] { DraculaOn, LayerEnum.Dracula, LayerEnum.NeutralNeo, LayerEnum.RandomNeutral });
+        Dracula = new(MultiMenu.Neutral, "<color=#AC8A00FF>Dracula</color>", new object[] { DraculaOn, LayerEnum.Dracula, LayerEnum.NeutralNeo, LayerEnum.RandomNeutral,
+            LayerEnum.HarmfulNeutral });
         UniqueDracula = new(num++, MultiMenu.Neutral, "<color=#AC8A00FF>Dracula</color> Is Unique", false, new object[] { Dracula, EnableUniques }, true);
         BiteCd = new(num++, MultiMenu.Neutral, "Bite Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Dracula);
         DracVent = new(num++, MultiMenu.Neutral, "<color=#AC8A00FF>Dracula</color> Can Vent", false, Dracula);
         AliveVampCount = new(num++, MultiMenu.Neutral, "Alive <color=#7B8968FF>Undead</color> Count", 3, 1, 14, 1, Dracula);
         UndeadVent = new(num++, MultiMenu.Neutral, "Undead Can Vent", false, Dracula);
 
-        Jackal = new(MultiMenu.Neutral, "<color=#45076AFF>Jackal</color>", new object[] { JackalOn, LayerEnum.Jackal, LayerEnum.NeutralNeo, LayerEnum.RandomNeutral });
+        Jackal = new(MultiMenu.Neutral, "<color=#45076AFF>Jackal</color>", new object[] { JackalOn, LayerEnum.Jackal, LayerEnum.NeutralNeo, LayerEnum.RandomNeutral,
+            LayerEnum.HarmfulNeutral });
         UniqueJackal = new(num++, MultiMenu.Neutral, "<color=#45076AFF>Jackal</color> Is Unique", false, new object[] { Jackal, EnableUniques }, true);
         RecruitCd = new(num++, MultiMenu.Neutral, "Recruit Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Jackal);
         JackalVent = new(num++, MultiMenu.Neutral, "<color=#45076AFF>Jackal</color> Can Vent", false, Jackal);
         RecruitVent = new(num++, MultiMenu.Neutral, "Recruits Can Vent", false, Jackal);
 
-        Necromancer = new(MultiMenu.Neutral, "<color=#BF5FFFFF>Necromancer</color>", new object[] { NecromancerOn, LayerEnum.Necromancer, LayerEnum.NeutralNeo, LayerEnum.RandomNeutral });
+        Necromancer = new(MultiMenu.Neutral, "<color=#BF5FFFFF>Necromancer</color>", new object[] { NecromancerOn, LayerEnum.Necromancer, LayerEnum.NeutralNeo, LayerEnum.RandomNeutral,
+            LayerEnum.HarmfulNeutral });
         UniqueNecromancer = new(num++, MultiMenu.Neutral, "<color=#BF5FFFFF>Necromancer</color> Is Unique", false, new object[] { Necromancer, EnableUniques }, true);
         ResurrectCd = new(num++, MultiMenu.Neutral, "Resurrect Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Necromancer);
         ResurrectCdIncreases = new(num++, MultiMenu.Neutral, "Resurrect Cooldown Increases", true, Necromancer);
         ResurrectCdIncrease = new(num++, MultiMenu.Neutral, "Resurrect Cooldown Increases By", 5f, 2.5f, 30f, 2.5f, CooldownFormat, new object[] { Necromancer, ResurrectCdIncreases },
             true);
         MaxResurrections = new(num++, MultiMenu.Neutral, "Max Resurrections", 5, 1, 14, 1, Necromancer);
-        NecroKillCd = new(num++, MultiMenu.Neutral, "Kill Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Necromancer);
-        NecroKillCdIncreases = new(num++, MultiMenu.Neutral, "Kill Cooldown Increases", true, Necromancer);
-        NecroKillCdIncrease = new(num++, MultiMenu.Neutral, "Kill Cooldown Increases By", 5f, 2.5f, 30f, 2.5f, CooldownFormat, new object[] { Necromancer, NecroKillCdIncreases }, true);
-        MaxNecroKills = new(num++, MultiMenu.Neutral, "Kill Count", 5, 1, 14, 1, Necromancer);
-        NecroCooldownsLinked = new(num++, MultiMenu.Neutral, "Kill And Resurrect Cooldowns Are Linked", false, Necromancer);
+        NecroKillCd = new(num++, MultiMenu.Neutral, "Sacrifice Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Necromancer);
+        NecroKillCdIncreases = new(num++, MultiMenu.Neutral, "Sacrifice Cooldown Increases", true, Necromancer);
+        NecroKillCdIncrease = new(num++, MultiMenu.Neutral, "Sacrifice Cooldown Increases By", 5f, 2.5f, 30f, 2.5f, CooldownFormat, new object[] { Necromancer, NecroKillCdIncreases },
+            true);
+        MaxNecroKills = new(num++, MultiMenu.Neutral, "Max Sacrifices", 5, 1, 14, 1, Necromancer);
+        NecroCooldownsLinked = new(num++, MultiMenu.Neutral, "Sacrifice And Resurrect Cooldowns Are Linked", false, Necromancer);
         NecromancerTargetBody = new(num++, MultiMenu.Neutral, "Target's Body Disappears On Beginning Of Resurrect", false, Necromancer);
         ResurrectDur = new(num++, MultiMenu.Neutral, "Resurrect Duration", 10f, 1f, 15f, 1f, CooldownFormat, Necromancer);
         NecroVent = new(num++, MultiMenu.Neutral, "<color=#BF5FFFFF>Necromancer</color> Can Vent", false, Necromancer);
         ResurrectVent = new(num++, MultiMenu.Neutral, "Resurrected Can Vent", false, Necromancer);
 
-        Whisperer = new(MultiMenu.Neutral, "<color=#2D6AA5FF>Whisperer</color>", new object[] { WhispererOn, LayerEnum.Whisperer, LayerEnum.NeutralNeo, LayerEnum.RandomNeutral });
+        Whisperer = new(MultiMenu.Neutral, "<color=#2D6AA5FF>Whisperer</color>", new object[] { WhispererOn, LayerEnum.Whisperer, LayerEnum.NeutralNeo, LayerEnum.RandomNeutral,
+            LayerEnum.HarmfulNeutral });
         UniqueWhisperer = new(num++, MultiMenu.Neutral, "<color=#2D6AA5FF>Whisperer</color> Is Unique", false, new object[] { Whisperer, EnableUniques }, true);
         WhisperCd = new(num++, MultiMenu.Neutral, "Whisper Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Whisperer);
         WhisperCdIncreases = new(num++, MultiMenu.Neutral, "Whisper Cooldown Increases", false, Whisperer);
@@ -2107,17 +2181,17 @@ public static class Generate
         WhisperRadius = new(num++, MultiMenu.Neutral, "Whisper Radius", 1.5f, 0.5f, 5f, 0.25f, DistanceFormat, Whisperer);
         WhisperRate = new(num++, MultiMenu.Neutral, "Whisper Rate", 5, 5, 50, 5, PercentFormat, Whisperer);
         WhisperRateDecreases = new(num++, MultiMenu.Neutral, "Whisper Rate Decreases", false, Whisperer);
-        WhisperRateDecrease = new(num++, MultiMenu.Neutral, "Whisper Rate Decrease", 5, 5, 50, 5, PercentFormat, new object[] { Whisperer, WhisperRateDecreases }, true);
+        WhisperRateDecrease = new(num++, MultiMenu.Neutral, "Whisper Rate Decreases By", 5, 5, 50, 5, PercentFormat, new object[] { Whisperer, WhisperRateDecreases }, true);
         WhispVent = new(num++, MultiMenu.Neutral, "<color=#2D6AA5FF>Whisperer</color> Can Vent", false, Whisperer);
         PersuadedVent = new(num++, MultiMenu.Neutral, "Persuaded Can Vent", false, Whisperer);
 
-        NPSettings = new(MultiMenu.Neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Proselyte</color> Settings", new[] { PhantomOn, TraitorOn, FanaticOn });
+        NPSettings = new(MultiMenu.Neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Proselyte</color> Settings");
 
         Betrayer = new(MultiMenu.Neutral, "<color=#11806AFF>Betrayer</color>");
-        BetrayCd = new(num++, MultiMenu.Neutral, "Kill Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Betrayer);
+        BetrayCd = new(num++, MultiMenu.Neutral, "Betray Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Betrayer);
         BetrayerVent = new(num++, MultiMenu.Neutral, "<color=#11806AFF>Betrayer</color> Can Vent", true, Betrayer);
 
-        Phantom = new(MultiMenu.Neutral, "<color=#662962FF>Phantom</color>", PhantomOn);
+        Phantom = new(MultiMenu.Neutral, "<color=#662962FF>Phantom</color>");
         PhantomTasksRemaining = new(num++, MultiMenu.Neutral, "Tasks Remaining When <color=#662962FF>Phantom</color> Can Be Clicked", 5, 1, 10, 1, Phantom);
         PhantomPlayersAlerted = new(num++, MultiMenu.Neutral, "Players Are Alerted When <color=#662962FF>Phantom</color> Is Clickable", false, Phantom);
 
@@ -2147,6 +2221,10 @@ public static class Generate
         MorphlingOn = new(num++, MultiMenu.Intruder, "<color=#BB45B0FF>Morphling</color>", parent: IDRoles);
         WraithOn = new(num++, MultiMenu.Intruder, "<color=#5C4F75FF>Wraith</color>", parent: IDRoles);
 
+        IHRoles = new(MultiMenu.Intruder, "<color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Head</color> <color=#FFD700FF>Roles</color>", new object[] { GameMode.Classic,
+            GameMode.AllAny, GameMode.KillingOnly, GameMode.Custom });
+        GodfatherOn = new(num++, MultiMenu.Intruder, "<color=#404C08FF>Godfather</color>", parent: IHRoles);
+
         IKRoles = new(MultiMenu.Intruder, "<color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>", new object[] { GameMode.Classic,
             GameMode.AllAny, GameMode.KillingOnly, GameMode.Custom });
         AmbusherOn = new(num++, MultiMenu.Intruder, "<color=#2BD29CFF>Ambusher</color>", parent: IKRoles);
@@ -2156,7 +2234,6 @@ public static class Generate
             GameMode.AllAny, GameMode.KillingOnly, GameMode.Custom });
         ConsigliereOn = new(num++, MultiMenu.Intruder, "<color=#FFFF99FF>Consigliere</color>", parent: ISRoles);
         ConsortOn = new(num++, MultiMenu.Intruder, "<color=#801780FF>Consort</color>", parent: ISRoles);
-        GodfatherOn = new(num++, MultiMenu.Intruder, "<color=#404C08FF>Godfather</color>", parent: ISRoles);
         MinerOn = new(num++, MultiMenu.Intruder, "<color=#AA7632FF>Miner</color>", parent: ISRoles);
         TeleporterOn = new(num++, MultiMenu.Intruder, "<color=#939593FF>Teleporter</color>", parent: ISRoles);
 
@@ -2166,11 +2243,12 @@ public static class Generate
         ImpostorOn = new(num++, MultiMenu.Intruder, "<color=#FF0000FF>Impostor</color>", parent: IURoles);
 
         ICSettings = new(MultiMenu.Intruder, "<color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Concealing</color> Settings", new object[] { BlackmailerOn, CamouflagerOn, GrenadierOn,
-            JanitorOn, LayerEnum.Blackmailer, LayerEnum.Camouflager, LayerEnum.Grenadier, LayerEnum.Janitor, LayerEnum.IntruderConceal, LayerEnum.RandomIntruder });
+            JanitorOn, LayerEnum.Blackmailer, LayerEnum.Camouflager, LayerEnum.Grenadier, LayerEnum.Janitor, LayerEnum.IntruderConceal, LayerEnum.RandomIntruder, LayerEnum.RegularIntruder
+            });
         ICMax = new(num++, MultiMenu.Intruder, "Max <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Concealers</color>", 1, 1, 14, 1, ICSettings);
 
         Blackmailer = new(MultiMenu.Intruder, "<color=#02A752FF>Blackmailer</color>", new object[] { BlackmailerOn, LayerEnum.Blackmailer, LayerEnum.IntruderConceal,
-            LayerEnum.RandomIntruder });
+            LayerEnum.RandomIntruder, LayerEnum.RegularIntruder });
         UniqueBlackmailer = new(num++, MultiMenu.Intruder, "<color=#02A752FF>Blackmailer</color> Is Unique", false, new object[] { Blackmailer, EnableUniques }, true);
         BlackmailCd = new(num++, MultiMenu.Intruder, "Blackmail Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Blackmailer);
         WhispersNotPrivate = new(num++, MultiMenu.Intruder, "<color=#02A752FF>Blackmailer</color> Can Read Whispers", true, Blackmailer);
@@ -2178,7 +2256,7 @@ public static class Generate
         BMRevealed = new(num++, MultiMenu.Intruder, "Blackmail Is Revealed To Everyone", true, Blackmailer);
 
         Camouflager = new(MultiMenu.Intruder, "<color=#378AC0FF>Camouflager</color>", new object[] { CamouflagerOn, LayerEnum.Camouflager, LayerEnum.IntruderConceal,
-            LayerEnum.RandomIntruder });
+            LayerEnum.RandomIntruder, LayerEnum.RegularIntruder });
         UniqueCamouflager = new(num++, MultiMenu.Intruder, "<color=#378AC0FF>Camouflager</color> Is Unique", false, new object[] { Camouflager, EnableUniques }, true);
         CamouflageCd = new(num++, MultiMenu.Intruder, "Camouflage Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Camouflager);
         CamouflageDur = new(num++, MultiMenu.Intruder, "Camouflage Duration", 10f, 5f, 30f, 1f, CooldownFormat, Camouflager);
@@ -2187,7 +2265,8 @@ public static class Generate
 
         CamouflagedMeetings.Parents = new object[] { CamouflagedComms, Camouflager };
 
-        Grenadier = new(MultiMenu.Intruder, "<color=#85AA5BFF>Grenadier</color>", new object[] { GrenadierOn, LayerEnum.Grenadier, LayerEnum.IntruderConceal, LayerEnum.RandomIntruder });
+        Grenadier = new(MultiMenu.Intruder, "<color=#85AA5BFF>Grenadier</color>", new object[] { GrenadierOn, LayerEnum.Grenadier, LayerEnum.IntruderConceal, LayerEnum.RandomIntruder,
+            LayerEnum.RegularIntruder });
         UniqueGrenadier = new(num++, MultiMenu.Intruder, "<color=#85AA5BFF>Grenadier</color> Is Unique", false, new object[] { Grenadier, EnableUniques }, true);
         FlashCd = new(num++, MultiMenu.Intruder, "Flash Grenade Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Grenadier);
         FlashDur = new(num++, MultiMenu.Intruder, "Flash Grenade Duration", 10f, 5f, 30f, 1f, CooldownFormat, Grenadier);
@@ -2195,7 +2274,8 @@ public static class Generate
         GrenadierIndicators = new(num++, MultiMenu.Intruder, "Indicate Flashed Players", false, Grenadier);
         GrenadierVent = new(num++, MultiMenu.Intruder, "<color=#85AA5BFF>Grenadier</color> Can Vent", false, Grenadier);
 
-        Janitor = new(MultiMenu.Intruder, "<color=#2647A2FF>Janitor</color>", new object[] { JanitorOn, LayerEnum.Janitor, LayerEnum.IntruderConceal, LayerEnum.RandomIntruder });
+        Janitor = new(MultiMenu.Intruder, "<color=#2647A2FF>Janitor</color>", new object[] { JanitorOn, LayerEnum.Janitor, LayerEnum.IntruderConceal, LayerEnum.RandomIntruder,
+            LayerEnum.RegularIntruder });
         UniqueJanitor = new(num++, MultiMenu.Intruder, "<color=#2647A2FF>Janitor</color> Is Unique", false, new object[] { Janitor, EnableUniques }, true);
         CleanCd = new(num++, MultiMenu.Intruder, "Clean Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Janitor);
         JaniCooldownsLinked = new(num++, MultiMenu.Intruder, "Kill And Clean Cooldowns Are Linked", false, Janitor);
@@ -2205,10 +2285,11 @@ public static class Generate
         JanitorVentOptions = new(num++, MultiMenu.Intruder, "<color=#2647A2FF>Janitor</color> Can Vent", new[] { "Never", "Body", "Bodyless", "Always" }, Janitor);
 
         IDSettings = new(MultiMenu.Intruder, "<color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Deception</color> Settings", new object[] { DisguiserOn, MorphlingOn, WraithOn,
-            LayerEnum.Disguiser, LayerEnum.Morphling, LayerEnum.Wraith, LayerEnum.IntruderDecep, LayerEnum.RandomIntruder });
+            LayerEnum.Disguiser, LayerEnum.Morphling, LayerEnum.Wraith, LayerEnum.IntruderDecep, LayerEnum.RandomIntruder, LayerEnum.RegularIntruder });
         IDMax = new(num++, MultiMenu.Intruder, "Max <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Deceivers</color>", 1, 1, 14, 1, IDSettings);
 
-        Disguiser = new(MultiMenu.Intruder, "<color=#40B4FFFF>Disguiser</color>", new object[] { DisguiserOn, LayerEnum.Disguiser, LayerEnum.IntruderDecep, LayerEnum.RandomIntruder });
+        Disguiser = new(MultiMenu.Intruder, "<color=#40B4FFFF>Disguiser</color>", new object[] { DisguiserOn, LayerEnum.Disguiser, LayerEnum.IntruderDecep, LayerEnum.RandomIntruder,
+            LayerEnum.RegularIntruder });
         UniqueDisguiser = new(num++, MultiMenu.Intruder, "<color=#40B4FFFF>Disguiser</color> Is Unique", false, new object[] { Disguiser, EnableUniques }, true);
         DisguiseCd = new(num++, MultiMenu.Intruder, "Disguise Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Disguiser);
         DisguiseDelay = new(num++, MultiMenu.Intruder, "Delay Before Disguising", 5f, 2.5f, 15f, 2.5f, CooldownFormat, Disguiser);
@@ -2217,7 +2298,8 @@ public static class Generate
         DisgCooldownsLinked = new(num++, MultiMenu.Intruder, "Measure And Disguise Cooldowns Are Linked", false, Disguiser);
         DisguiseTarget = new(num++, MultiMenu.Intruder, "<color=#40B4FFFF>Disguiser</color> Can Disguise", new[] { "Everyone", "Only Intruders", "Non Intruders" }, Disguiser);
 
-        Morphling = new(MultiMenu.Intruder, "<color=#BB45B0FF>Morphling</color>", new object[] { MorphlingOn, LayerEnum.Morphling, LayerEnum.IntruderDecep, LayerEnum.RandomIntruder });
+        Morphling = new(MultiMenu.Intruder, "<color=#BB45B0FF>Morphling</color>", new object[] { MorphlingOn, LayerEnum.Morphling, LayerEnum.IntruderDecep, LayerEnum.RandomIntruder,
+            LayerEnum.RegularIntruder });
         UniqueMorphling = new(num++, MultiMenu.Intruder, "<color=#BB45B0FF>Morphling</color> Is Unique", false, new object[] { Morphling, EnableUniques }, true);
         MorphCd = new(num++, MultiMenu.Intruder, "Morph Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Morphling);
         MorphDur = new(num++, MultiMenu.Intruder, "Morph Duration", 10f, 5f, 30f, 1f, CooldownFormat, Morphling);
@@ -2225,23 +2307,34 @@ public static class Generate
         MorphCooldownsLinked = new(num++, MultiMenu.Intruder, "Sample And Morph Cooldowns Are Linked", false, Morphling);
         MorphlingVent = new(num++, MultiMenu.Intruder, "<color=#BB45B0FF>Morphling</color> Can Vent", false, Morphling);
 
-        Wraith = new(MultiMenu.Intruder, "<color=#5C4F75FF>Wraith</color>", new object[] { WraithOn, LayerEnum.Wraith, LayerEnum.IntruderDecep, LayerEnum.RandomIntruder });
+        Wraith = new(MultiMenu.Intruder, "<color=#5C4F75FF>Wraith</color>", new object[] { WraithOn, LayerEnum.Wraith, LayerEnum.IntruderDecep, LayerEnum.RandomIntruder,
+            LayerEnum.RegularIntruder });
         UniqueWraith = new(num++, MultiMenu.Intruder, "<color=#5C4F75FF>Wraith</color> Is Unique", false, new object[] { Wraith, EnableUniques }, true);
         InvisCd = new(num++, MultiMenu.Intruder, "Invis Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Wraith);
         InvisDur = new(num++, MultiMenu.Intruder, "Invis Duration", 10f, 5f, 30f, 1f, CooldownFormat, Wraith);
         WraithVent = new(num++, MultiMenu.Intruder, "<color=#5C4F75FF>Wraith</color> Can Vent", false, Wraith);
 
+        IHSettings = new(MultiMenu.Intruder, "<color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Support</color> Settings", new object[] { GodfatherOn, LayerEnum.Godfather,
+            LayerEnum.RandomIntruder, LayerEnum.IntruderHead });
+        IHMax = new(num++, MultiMenu.Intruder, "Max <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Heads</color>", 1, 1, 14, 1, IHSettings);
+
+        Godfather = new(MultiMenu.Intruder, "<color=#404C08FF>Godfather</color>", new object[] { GodfatherOn, LayerEnum.Godfather, LayerEnum.IntruderHead, LayerEnum.RandomIntruder });
+        UniqueGodfather = new(num++, MultiMenu.Intruder, "<color=#404C08FF>Godfather</color> Is Unique", false, new object[] { Godfather, EnableUniques }, true);
+        GFPromotionCdDecrease = new(num++, MultiMenu.Intruder, "Ability Cooldown Bonus", 0.75f, 0.25f, 0.9f, 0.05f, MultiplierFormat, Godfather);
+
         IKSettings = new(MultiMenu.Intruder, "<color=#FF0000FF>Impostor</color> <color=#1D7CF2FF>Killing</color> Settings", new object[] { AmbusherOn, EnforcerOn, LayerEnum.Ambusher,
-            LayerEnum.Enforcer, LayerEnum.RandomIntruder, LayerEnum.IntruderKill });
+            LayerEnum.Enforcer, LayerEnum.RandomIntruder, LayerEnum.IntruderKill, LayerEnum.RegularIntruder });
         IKMax = new(num++, MultiMenu.Intruder, "Max <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Killers</color>", 1, 1, 14, 1, IKSettings);
 
-        Ambusher = new(MultiMenu.Intruder, "<color=#2BD29CFF>Ambusher</color>", new object[] { AmbusherOn, LayerEnum.Ambusher, LayerEnum.IntruderKill, LayerEnum.RandomIntruder });
+        Ambusher = new(MultiMenu.Intruder, "<color=#2BD29CFF>Ambusher</color>", new object[] { AmbusherOn, LayerEnum.Ambusher, LayerEnum.IntruderKill, LayerEnum.RandomIntruder,
+            LayerEnum.RegularIntruder });
         UniqueAmbusher = new(num++, MultiMenu.Intruder, "<color=#2BD29CFF>Ambusher</color> Is Unique", false, new object[] { Ambusher, EnableUniques }, true);
         AmbushCd = new(num++, MultiMenu.Intruder, "Ambush Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Ambusher);
         AmbushDur = new(num++, MultiMenu.Intruder, "Ambush Duration", 10f, 5f, 30f, 1f, CooldownFormat, Ambusher);
         AmbushMates = new(num++, MultiMenu.Intruder, "<color=#2BD29CFF>Ambusher</color> Can Ambush Teammates", false, Ambusher);
 
-        Enforcer = new(MultiMenu.Intruder, "<color=#005643FF>Enforcer</color>", new object[] { EnforcerOn, LayerEnum.Enforcer, LayerEnum.IntruderKill, LayerEnum.RandomIntruder });
+        Enforcer = new(MultiMenu.Intruder, "<color=#005643FF>Enforcer</color>", new object[] { EnforcerOn, LayerEnum.Enforcer, LayerEnum.IntruderKill, LayerEnum.RandomIntruder,
+            LayerEnum.RegularIntruder });
         UniqueEnforcer = new(num++, MultiMenu.Intruder, "<color=#005643FF>Enforcer</color> Is Unique", false, new object[] { Enforcer, EnableUniques }, true);
         EnforceCd = new(num++, MultiMenu.Intruder, "Enforce Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Enforcer);
         EnforceDur = new(num++, MultiMenu.Intruder, "Enforce Duration", 10f, 5f, 30f, 1f, CooldownFormat, Enforcer);
@@ -2249,40 +2342,38 @@ public static class Generate
         EnforceRadius = new(num++, MultiMenu.Intruder, "Enforce Explosion Radius", 1.5f, 0.5f, 5f, 0.25f, DistanceFormat, Enforcer);
 
         ISSettings = new(MultiMenu.Intruder, "<color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Support</color> Settings", new object[] { ConsigliereOn, ConsortOn, GodfatherOn, MinerOn,
-            TeleporterOn, LayerEnum.Consigliere, LayerEnum.Consort, LayerEnum.Godfather, LayerEnum.Miner, LayerEnum.Teleporter });
+            TeleporterOn, LayerEnum.Consigliere, LayerEnum.Consort, LayerEnum.Godfather, LayerEnum.Miner, LayerEnum.Teleporter, LayerEnum.RegularIntruder });
         ISMax = new(num++, MultiMenu.Intruder, "Max <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Supporters</color>", 1, 1, 14, 1, ISSettings);
 
         Consigliere = new(MultiMenu.Intruder, "<color=#FFFF99FF>Consigliere</color>", new object[] { ConsigliereOn, LayerEnum.Consigliere, LayerEnum.IntruderSupport,
-            LayerEnum.RandomIntruder });
+            LayerEnum.RandomIntruder, LayerEnum.RegularIntruder });
         UniqueConsigliere = new(num++, MultiMenu.Intruder, "<color=#FFFF99FF>Consigliere</color> Is Unique", false, new object[] { Consigliere, EnableUniques }, true);
         InvestigateCd = new(num++, MultiMenu.Intruder, "Investigate Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Consigliere);
         ConsigInfo = new(num++, MultiMenu.Intruder, "Info That <color=#FFFF99FF>Consigliere</color> Sees", new[] { "Role", "Faction" }, Consigliere);
 
-        Consort = new(MultiMenu.Intruder, "<color=#801780FF>Consort</color>", new object[] { ConsortOn, LayerEnum.Consort, LayerEnum.IntruderSupport, LayerEnum.RandomIntruder });
+        Consort = new(MultiMenu.Intruder, "<color=#801780FF>Consort</color>", new object[] { ConsortOn, LayerEnum.Consort, LayerEnum.IntruderSupport, LayerEnum.RandomIntruder,
+            LayerEnum.RegularIntruder });
         UniqueConsort = new(num++, MultiMenu.Intruder, "<color=#801780FF>Consort</color> Is Unique", false, new object[] { Consort, EnableUniques }, true);
         ConsortCd = new(num++, MultiMenu.Intruder, "Roleblock Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Consort);
         ConsortDur = new(num++, MultiMenu.Intruder, "Roleblock Duration", 10f, 5f, 30f, 1f, CooldownFormat, Consort);
 
-        Godfather = new(MultiMenu.Intruder, "<color=#404C08FF>Godfather</color>", new object[] { GodfatherOn, LayerEnum.Godfather, LayerEnum.IntruderSupport, LayerEnum.RandomIntruder });
-        UniqueGodfather = new(num++, MultiMenu.Intruder, "<color=#404C08FF>Godfather</color> Is Unique", false, new object[] { Godfather, EnableUniques }, true);
-        GFPromotionCdDecrease = new(num++, MultiMenu.Intruder, "Ability Cooldown Bonus", 0.75f, 0.25f, 0.9f, 0.05f, MultiplierFormat, Godfather);
-
-        Miner = new(MultiMenu.Intruder, "<color=#AA7632FF>Miner</color>", new object[] { MinerOn, LayerEnum.Miner, LayerEnum.IntruderSupport });
+        Miner = new(MultiMenu.Intruder, "<color=#AA7632FF>Miner</color>", new object[] { MinerOn, LayerEnum.Miner, LayerEnum.IntruderSupport, LayerEnum.RegularIntruder,
+            LayerEnum.RandomIntruder });
         UniqueMiner = new(num++, MultiMenu.Intruder, "<color=#AA7632FF>Miner</color> Is Unique", false, new object[] { Miner, EnableUniques }, true);
         MineCd = new(num++, MultiMenu.Intruder, "Mine Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Miner);
 
-        Teleporter = new(MultiMenu.Intruder, "<color=#939593FF>Teleporter</color>", new object[] { TeleporterOn, LayerEnum.Teleporter, LayerEnum.IntruderSupport, LayerEnum.RandomIntruder
-            });
+        Teleporter = new(MultiMenu.Intruder, "<color=#939593FF>Teleporter</color>", new object[] { TeleporterOn, LayerEnum.Teleporter, LayerEnum.IntruderSupport, LayerEnum.RandomIntruder,
+            LayerEnum.RegularIntruder });
         UniqueTeleporter = new(num++, MultiMenu.Intruder, "<color=#939593FF>Teleporter</color> Is Unique", false, new object[] { Teleporter, EnableUniques }, true);
         TeleportCd = new(num++, MultiMenu.Intruder, "Teleport Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Teleporter);
-        TeleMarkCd = new(num++, MultiMenu.Intruder, "Mark Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Teleporter);
+        TeleMarkCd = new(num++, MultiMenu.Intruder, "<color=#939593FF>Teleporter</color> Mark Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Teleporter);
         TeleCooldownsLinked = new(num++, MultiMenu.Intruder, "Mark And Teleport Cooldowns Are Linked", false, Teleporter);
         TeleVent = new(num++, MultiMenu.Intruder, "<color=#939593FF>Teleporter</color> Can Vent", false, Teleporter);
 
-        IUSettings = new(MultiMenu.Intruder, "<color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Utility</color> Settings", GhoulOn);
+        IUSettings = new(MultiMenu.Intruder, "<color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Utility</color> Settings");
 
-        Ghoul = new(MultiMenu.Intruder, "<color=#F1C40FFF>Ghoul</color>", GhoulOn);
-        GhoulMarkCd = new(num++, MultiMenu.Intruder, "Mark Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Ghoul);
+        Ghoul = new(MultiMenu.Intruder, "<color=#F1C40FFF>Ghoul</color>");
+        GhoulMarkCd = new(num++, MultiMenu.Intruder, "<color=#F1C40FFF>Ghoul</color> Mark Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Ghoul);
 
         SyndicateSettings = new(MultiMenu.Syndicate, "<color=#008000FF>Syndicate</color> Settings");
         SyndicateCount = new(num++, MultiMenu.Syndicate, "<color=#008000FF>Syndicate</color> Count", 1, 0, 4, 1);
@@ -2305,6 +2396,7 @@ public static class Generate
         FramerOn = new(num++, MultiMenu.Syndicate, "<color=#00FFFFFF>Framer</color>", parent: SDRoles);
         ShapeshifterOn = new(num++, MultiMenu.Syndicate, "<color=#2DFF00FF>Shapeshifter</color>", parent: SDRoles);
         SilencerOn = new(num++, MultiMenu.Syndicate, "<color=#AAB43EFF>Silencer</color>", parent: SDRoles);
+        TimekeeperOn = new(num++, MultiMenu.Syndicate, "<color=#3769FEFF>Timekeeper</color>", parent: SDRoles);
 
         SyKRoles = new(MultiMenu.Syndicate, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>", new object[] { GameMode.Classic,
             GameMode.AllAny, GameMode.KillingOnly, GameMode.Custom });
@@ -2315,12 +2407,11 @@ public static class Generate
 
         SPRoles = new(MultiMenu.Syndicate, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Power</color> <color=#FFD700FF>Roles</color>", new object[] { GameMode.Classic,
             GameMode.AllAny, GameMode.KillingOnly, GameMode.Custom });
+        RebelOn = new(num++, MultiMenu.Syndicate, "<color=#FFFCCEFF>Rebel</color>", parent: SPRoles);
         SpellslingerOn = new(num++, MultiMenu.Syndicate, "<color=#0028F5FF>Spellslinger</color>", parent: SPRoles);
-        TimekeeperOn = new(num++, MultiMenu.Syndicate, "<color=#3769FEFF>Timekeeper</color>", parent: SPRoles);
 
         SSuRoles = new(MultiMenu.Syndicate, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Support</color> <color=#FFD700FF>Roles</color>", new object[] { GameMode.Classic,
             GameMode.AllAny, GameMode.KillingOnly, GameMode.Custom });
-        RebelOn = new(num++, MultiMenu.Syndicate, "<color=#FFFCCEFF>Rebel</color>", parent: SSuRoles);
         StalkerOn = new(num++, MultiMenu.Syndicate, "<color=#7E4D00FF>Stalker</color>", parent: SSuRoles);
         WarperOn = new(num++, MultiMenu.Syndicate, "<color=#8C7140FF>Warper</color>", parent: SSuRoles);
 
@@ -2330,7 +2421,8 @@ public static class Generate
         BansheeOn = new(num++, MultiMenu.Syndicate, "<color=#E67E22FF>Banshee</color>", parent: SURoles);
 
         SDSettings = new(MultiMenu.Syndicate, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Disruption</color> Settings", new object[] { ConcealerOn, DrunkardOn, FramerOn,
-            ShapeshifterOn, SilencerOn, LayerEnum.RandomSyndicate, LayerEnum.Concealer, LayerEnum.Drunkard, LayerEnum.Framer, LayerEnum.Shapeshifter, LayerEnum.SyndicateDisrup });
+            ShapeshifterOn, SilencerOn, LayerEnum.RandomSyndicate, LayerEnum.Concealer, LayerEnum.Drunkard, LayerEnum.Framer, LayerEnum.Shapeshifter, LayerEnum.SyndicateDisrup,
+            TimekeeperOn, LayerEnum.Timekeeper });
         SDMax = new(num++, MultiMenu.Syndicate, "Max <color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Disruptors</color>", 1, 1, 14, 1, SDSettings);
 
         Concealer = new(MultiMenu.Syndicate, "<color=#C02525FF>Concealer</color>", new object[] { ConcealerOn, LayerEnum.Concealer, LayerEnum.SyndicateDisrup, LayerEnum.RandomSyndicate });
@@ -2364,6 +2456,14 @@ public static class Generate
         SilenceMates = new(num++, MultiMenu.Syndicate, "<color=#AAB43EFF>Silencer</color> Can Silence Teammates", false, Silencer);
         SilenceRevealed = new(num++, MultiMenu.Syndicate, "Silence Is Revealed To Everyone", true, Silencer);
 
+        Timekeeper = new(MultiMenu.Syndicate, "<color=#3769FEFF>Timekeeper</color>", new object[] { TimekeeperOn, LayerEnum.Timekeeper, LayerEnum.SyndicateDisrup, LayerEnum.RandomSyndicate
+            });
+        UniqueTimekeeper = new(num++, MultiMenu.Syndicate, "<color=#3769FEFF>Timekeeper</color> Is Unique", false, new object[] { Timekeeper, EnableUniques }, true);
+        TimeCd = new(num++, MultiMenu.Syndicate, "Time Control Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Timekeeper);
+        TimeDur = new(num++, MultiMenu.Syndicate, "Time Control Duration", 10f, 5f, 30f, 1f, CooldownFormat, Timekeeper);
+        TimeFreezeImmunity = new(num++, MultiMenu.Syndicate, "<color=#008000FF>Syndicate</color> Are Immune To Freeze", true, Timekeeper);
+        TimeRewindImmunity = new(num++, MultiMenu.Syndicate, "<color=#008000FF>Syndicate</color> Are Immune To Rewind", true, Timekeeper);
+
         SyKSettings = new(MultiMenu.Syndicate, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Killing</color> Settings", new object[] { BomberOn, ColliderOn, CrusaderOn, PoisonerOn,
             LayerEnum.RandomSyndicate, LayerEnum.Bomber, LayerEnum.Collider, LayerEnum.Crusader, LayerEnum.Poisoner, LayerEnum.SyndicateKill });
         SyKMax = new(num++, MultiMenu.Syndicate, "Max <color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Killers</color>", 1, 1, 14, 1, SyKSettings);
@@ -2382,7 +2482,7 @@ public static class Generate
         Collider = new(MultiMenu.Syndicate, "<color=#B345FFFF>Collider</color>", new object[] { ColliderOn, LayerEnum.Collider, LayerEnum.SyndicateKill, LayerEnum.RandomSyndicate });
         UniqueCollider = new(num++, MultiMenu.Syndicate, "<color=#B345FFFF>Collider</color> Is Unique", false, new object[] { Collider, EnableUniques }, true);
         CollideCd = new(num++, MultiMenu.Syndicate, "Set Charges Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Collider);
-        ChargeCd = new(num++, MultiMenu.Syndicate, "Charge Cooldown With Chose Drive", 25f, 10f, 60f, 2.5f, CooldownFormat, Collider);
+        ChargeCd = new(num++, MultiMenu.Syndicate, "Charge Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Collider);
         ChargeDur = new(num++, MultiMenu.Syndicate, "Charge Duration", 10f, 5f, 30f, 1f, CooldownFormat, Collider);
         CollideRange = new(num++, MultiMenu.Syndicate, "Collide Radius", 1.5f, 0.5f, 5f, 0.25f, DistanceFormat, Collider);
         CollideRangeIncrease = new(num++, MultiMenu.Syndicate, "Chaos Drive Collide Radius Increase", 0.5f, 0.5f, 5f, 0.25f, DistanceFormat, Collider);
@@ -2401,31 +2501,23 @@ public static class Generate
         PoisonCd = new(num++, MultiMenu.Syndicate, "Poison Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Poisoner);
         PoisonDur = new(num++, MultiMenu.Syndicate, "Poison Kill Delay", 5f, 1f, 15f, 1f, CooldownFormat, Poisoner);
 
-        SPSettings = new(MultiMenu.Syndicate, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Power</color> Settings", new object[] { SpellslingerOn, TimekeeperOn,
-            LayerEnum.Spellslinger, LayerEnum.Timekeeper, LayerEnum.RandomSyndicate, LayerEnum.SyndicatePower });
+        SPSettings = new(MultiMenu.Syndicate, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Power</color> Settings", new object[] { RebelOn, SpellslingerOn, LayerEnum.Rebel,
+            LayerEnum.Spellslinger, LayerEnum.RandomSyndicate, LayerEnum.SyndicatePower });
         SPMax = new(num++, MultiMenu.Syndicate, "Max <color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Powers</color>", 1, 1, 14, 1, SPSettings);
+
+        Rebel = new(MultiMenu.Syndicate, "<color=#FFFCCEFF>Rebel</color>", new object[] { RebelOn, LayerEnum.Rebel, LayerEnum.SyndicatePower, LayerEnum.RandomSyndicate });
+        UniqueRebel = new(num++, MultiMenu.Syndicate, "<color=#FFFCCEFF>Rebel</color> Is Unique", false, new object[] { Rebel, EnableUniques }, true);
+        RebPromotionCdDecrease = new(num++, MultiMenu.Syndicate, "Ability Cooldown Bonus", 0.75f, 0.25f, 0.9f, 0.05f, MultiplierFormat, Rebel);
 
         Spellslinger = new(MultiMenu.Syndicate, "<color=#0028F5FF>Spellslinger</color>", new object[] { SpellslingerOn, LayerEnum.Spellslinger, LayerEnum.SyndicatePower,
             LayerEnum.RandomSyndicate });
         UniqueSpellslinger = new(num++, MultiMenu.Syndicate, "<color=#0028F5FF>Spellslinger</color> Is Unique", false, new object[] { Spellslinger, EnableUniques }, true);
         SpellCd = new(num++, MultiMenu.Syndicate, "Spell Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Spellslinger);
-        SpellCdIncrease = new(num++, MultiMenu.Syndicate, "Spell Cooldown Increase", 5f, 2.5f, 30f, 2.5f, CooldownFormat, Spellslinger);
+        SpellCdIncrease = new(num++, MultiMenu.Syndicate, "Spell Cooldown Increases By", 5f, 2.5f, 30f, 2.5f, CooldownFormat, Spellslinger);
 
-        Timekeeper = new(MultiMenu.Syndicate, "<color=#3769FEFF>Timekeeper</color>", new object[] { TimekeeperOn, LayerEnum.Timekeeper, LayerEnum.SyndicatePower, LayerEnum.RandomSyndicate
-            });
-        UniqueTimekeeper = new(num++, MultiMenu.Syndicate, "<color=#3769FEFF>Timekeeper</color> Is Unique", false, new object[] { Timekeeper, EnableUniques }, true);
-        TimeCd = new(num++, MultiMenu.Syndicate, "Time Control Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Timekeeper);
-        TimeDur = new(num++, MultiMenu.Syndicate, "Time Control Duration", 10f, 5f, 30f, 1f, CooldownFormat, Timekeeper);
-        TimeFreezeImmunity = new(num++, MultiMenu.Syndicate, "<color=#008000FF>Syndicate</color> Are Immune To Freeze", true, Timekeeper);
-        TimeRewindImmunity = new(num++, MultiMenu.Syndicate, "<color=#008000FF>Syndicate</color> Are Immune To Rewind", true, Timekeeper);
-
-        SSuSettings = new(MultiMenu.Syndicate, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Support</color> Settings", new object[] { RebelOn, StalkerOn, WarperOn, LayerEnum.Rebel,
+        SSuSettings = new(MultiMenu.Syndicate, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Support</color> Settings", new object[] { StalkerOn, WarperOn,
             LayerEnum.Stalker, LayerEnum.Warper, LayerEnum.RandomSyndicate, LayerEnum.SyndicateSupport });
         SSuMax = new(num++, MultiMenu.Syndicate, "Max <color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Supporters</color>", 1, 1, 14, 1, SSuSettings);
-
-        Rebel = new(MultiMenu.Syndicate, "<color=#FFFCCEFF>Rebel</color>", new object[] { RebelOn, LayerEnum.Rebel, LayerEnum.SyndicateSupport, LayerEnum.RandomSyndicate });
-        UniqueRebel = new(num++, MultiMenu.Syndicate, "<color=#FFFCCEFF>Rebel</color> Is Unique", false, new object[] { Rebel, EnableUniques }, true);
-        RebPromotionCdDecrease = new(num++, MultiMenu.Syndicate, "Ability Cooldown Bonus", 0.75f, 0.25f, 0.9f, 0.05f, MultiplierFormat, Rebel);
 
         Stalker = new(MultiMenu.Syndicate, "<color=#7E4D00FF>Stalker</color>", new object[] { StalkerOn, LayerEnum.Stalker, LayerEnum.SyndicateSupport, LayerEnum.RandomSyndicate });
         UniqueStalker = new(num++, MultiMenu.Syndicate, "<color=#7E4D00FF>Stalker</color> Is Unique", false, new object[] { Stalker, EnableUniques }, true);
@@ -2437,15 +2529,16 @@ public static class Generate
         WarpDur = new(num++, MultiMenu.Syndicate, "Warp Duration", 5f, 1f, 20f, 1f, CooldownFormat, Warper);
         WarpSelf = new(num++, MultiMenu.Syndicate, "<color=#8C7140FF>Warper</color> Can Warp Themselves", true, Warper);
 
-        SyndicateUtilitySettings = new(MultiMenu.Syndicate, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Utility</color> Settings", BansheeOn);
+        SUSettings = new(MultiMenu.Syndicate, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Utility</color> Settings");
 
-        Banshee = new(MultiMenu.Syndicate, "<color=#E67E22FF>Banshee</color>", BansheeOn);
+        Banshee = new(MultiMenu.Syndicate, "<color=#E67E22FF>Banshee</color>");
         ScreamCd = new(num++, MultiMenu.Syndicate, "Scream Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Banshee);
         ScreamDur = new(num++, MultiMenu.Syndicate, "Scream Duration", 10f, 5f, 30f, 1f, CooldownFormat, Banshee);
 
         Modifiers = new(MultiMenu.Modifier, "<color=#7F7F7FFF>Modifiers</color>", new object[] { GameMode.Classic, GameMode.KillingOnly, GameMode.AllAny, GameMode.Custom });
         AstralOn = new(num++, MultiMenu.Modifier, "<color=#612BEFFF>Astral</color>", parent: Modifiers);
         BaitOn = new(num++, MultiMenu.Modifier, "<color=#00B3B3FF>Bait</color>", parent: Modifiers);
+        ColorblindOn = new(num++, MultiMenu.Modifier, "<color=#B34D99FF>Colorblind</color>", parent: Modifiers);
         CowardOn = new(num++, MultiMenu.Modifier, "<color=#456BA8FF>Coward</color>", parent: Modifiers);
         DiseasedOn = new(num++, MultiMenu.Modifier, "<color=#374D1EFF>Diseased</color>", parent: Modifiers);
         DrunkOn = new(num++, MultiMenu.Modifier, "<color=#758000FF>Drunk</color>", parent: Modifiers);
@@ -2459,7 +2552,7 @@ public static class Generate
         YellerOn = new(num++, MultiMenu.Modifier, "<color=#F6AAB7FF>Yeller</color>", parent: Modifiers);
 
         ModifierSettings = new(MultiMenu.Modifier, "<color=#7F7F7FFF>Modifier</color> Settings", new[] { AstralOn, BaitOn, CowardOn, DiseasedOn, DrunkOn, DwarfOn, GiantOn, ShyOn, VIPOn,
-            IndomitableOn, ProfessionalOn, VolatileOn, YellerOn });
+            IndomitableOn, ProfessionalOn, VolatileOn, YellerOn, ColorblindOn });
         MaxModifiers = new(num++, MultiMenu.Modifier, "Max <color=#7F7F7FFF>Modifiers</color>", 5, 1, 14, 1, ModifierSettings);
         MinModifiers = new(num++, MultiMenu.Modifier, "Min <color=#7F7F7FFF>Modifiers</color>", 5, 1, 14, 1, ModifierSettings);
 
@@ -2471,6 +2564,9 @@ public static class Generate
         BaitKnows = new(num++, MultiMenu.Modifier, "<color=#00B3B3FF>Bait</color> Knows Who They Are", true, Bait);
         BaitMinDelay = new(num++, MultiMenu.Modifier, "Minimum Delay for <color=#00B3B3FF>Bait</color> Self Report", 0f, 0f, 15f, 0.5f, CooldownFormat, Bait);
         BaitMaxDelay = new(num++, MultiMenu.Modifier, "Maximum Delay for <color=#00B3B3FF>Bait</color> Self Report", 1f, 0f, 15f, 0.5f, CooldownFormat, Bait);
+
+        Colorblind = new(MultiMenu.Modifier, "<color=#B34D99FF>Colorblind</color>", new object[] { ColorblindOn, EnableUniques }, true);
+        UniqueColorblind = new(num++, MultiMenu.Modifier, "<color=#B34D99FF>Colorblind</color> Is Unique", false, Colorblind);
 
         Coward = new(MultiMenu.Modifier, "<color=#456BA8FF>Coward</color>", new object[] { CowardOn, EnableUniques }, true);
         UniqueCoward = new(num++, MultiMenu.Modifier, "<color=#456BA8FF>Coward</color> Is Unique", false, Coward);
@@ -2740,12 +2836,23 @@ public static class Generate
         BanCrewmate = new(num++, MultiMenu.RoleList, "Ban <color=#8CFFFFFF>Crewmate</color>", false);
         BanImpostor = new(num++, MultiMenu.RoleList, "Ban <color=#FF0000FF>Impostor</color>", false);
         BanAnarchist = new(num++, MultiMenu.RoleList, "Ban <color=#008000FF>Anarchist</color>", false);
+        BanMurderer = new(num++, MultiMenu.RoleList, "Ban <color=#6F7BEAFF>Murderer</color>", false);
 
         EnablePostmortals = new(MultiMenu.RoleList, "Postmortals");
         EnableBanshee = new(num++, MultiMenu.RoleList, "Enable <color=#E67E22FF>Banshee</color>", false);
         EnableGhoul = new(num++, MultiMenu.RoleList, "Enable <color=#F1C40FFF>Ghoul</color>", false);
         EnablePhantom = new(num++, MultiMenu.RoleList, "Enable <color=#662962FF>Phantom</color>", false);
         EnableRevealer = new(num++, MultiMenu.RoleList, "Enable <color=#D3D3D3FF>Revealer</color>", false);
+
+        CUSettings.Parents = new object[] { EnableRevealer, RevealerOn };
+        NPSettings.Parents = new object[] { EnablePhantom, PhantomOn, TraitorOn, FanaticOn };
+        IUSettings.Parents = new object[] { EnableGhoul, GhoulOn };
+        SUSettings.Parents = new object[] { EnableBanshee, BansheeOn };
+
+        Revealer.Parents = new object[] { EnableRevealer, RevealerOn };
+        Ghoul.Parents = new object[] { EnableGhoul, GhoulOn };
+        Phantom.Parents = new object[] { EnablePhantom, PhantomOn };
+        Banshee.Parents = new object[] { EnableBanshee, BansheeOn };
 
         CustomOption.SaveSettings("DefaultSettings");
 

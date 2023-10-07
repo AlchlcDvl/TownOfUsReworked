@@ -1,49 +1,33 @@
+using System.Text.Json.Serialization;
+
 namespace TownOfUsReworked.Modules;
 
-public class GenerationData
-{
-    public int Chance;
-    public LayerEnum ID;
-    public bool Unique;
+public record GenerationData(int Chance, LayerEnum ID, bool Unique);
 
-    public GenerationData(int chance, LayerEnum id, bool unique)
-    {
-        Chance = chance;
-        ID = id;
-        Unique = unique;
-    }
-}
-
-public class PlayerInfo
-{
-    public readonly string PlayerName;
-    public readonly string History;
-    public readonly string CachedHistory;
-
-    public PlayerInfo(string name, string history, string cache)
-    {
-        PlayerName = name;
-        History = history;
-        CachedHistory = cache;
-    }
-}
-
-public class PlayerVersion
-{
-    public readonly Version Version;
-    public readonly Guid Guid;
-    public bool GuidMatches => TownOfUsReworked.Core.ManifestModule.ModuleVersionId.Equals(Guid);
-
-    public PlayerVersion(Version version, Guid guid)
-    {
-        Version = version;
-        Guid = guid;
-    }
-}
+public record SummaryInfo(string PlayerName, string History, string CachedHistory);
 
 public class PointInTime
 {
     public readonly Vector3 Position;
 
     public PointInTime(Vector3 position) => Position = position;
+}
+
+public record PlayerVersion(Version Version, Guid Guid)
+{
+    public bool GuidMatches => TownOfUsReworked.Core.ManifestModule.ModuleVersionId.Equals(Guid);
+}
+
+public class GitHubApiObject
+{
+    [JsonPropertyName("tag_name")]
+    public string tag_name { get; set; }
+    [JsonPropertyName("assets")]
+    public GitHubApiAsset[] assets { get; set; }
+}
+
+public class GitHubApiAsset
+{
+    [JsonPropertyName("browser_download_url")]
+    public string browser_download_url { get; set; }
 }

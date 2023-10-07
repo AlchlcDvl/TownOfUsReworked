@@ -31,12 +31,12 @@ public class CustomStringOption : CustomOption
         str.TitleText.text = Name;
         str.Selected = str.oldValue = GetInt();
         str.ValueText.text = GetString();
-        var list = new ISystem.List<ISystem.KeyValuePair<string, int>>();
+        var list = new List<ISystem.KeyValuePair<string, int>>();
 
         for (var i = 0; i < Values.Length; i++)
             list.Add(new(Values[i], i));
-        
-        str.Values = list;
+
+        str.Values = list.SystemToIl2Cpp();
     }
 
     public static implicit operator string(CustomStringOption option) => option.GetString();

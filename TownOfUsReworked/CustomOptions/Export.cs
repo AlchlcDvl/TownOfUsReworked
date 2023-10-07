@@ -46,7 +46,7 @@ public class Export : CustomButtonOption
         Loading.Setting.gameObject.Destroy();
         OldButtons.ForEach(x => x.gameObject.SetActive(true));
         __instance.Children = OldButtons.ToArray();
-        GameSettings.SettingsPage = 0;
+        SettingsPatches.SettingsPage = 0;
         yield return new WaitForEndOfFrame();
         yield return flashCoro();
     }
@@ -64,7 +64,7 @@ public class Export : CustomButtonOption
         var z = __instance.Children[1].transform.localPosition.z;
         OldButtons = __instance.Children.ToList();
         OldButtons.ForEach(x => x.gameObject.SetActive(false));
-        GameSettings.SettingsPage = 9;
+        SettingsPatches.SettingsPage = 9;
 
         for (var i = 0; i < options.Count; i++)
             options[i].transform.localPosition = new(x, y - (i * 0.5f), z);

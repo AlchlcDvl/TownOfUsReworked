@@ -64,32 +64,37 @@ public static class ListExtensions
         return result;
     }
 
-    public static bool Replace<T>(this List<T> list, T item1, T item2, bool all)
+    public static bool Replace<T>(this List<T> list, T item1, T item2)
     {
         var contains = list.Contains(item1);
 
         if (contains)
         {
-            if (all)
-            {
-                var pos = 0;
-                var clone = list;
+            var index = list.IndexOf(item1);
+            list.Remove(item1);
+            list.Insert(index, item2);
+        }
 
-                foreach (var item in clone)
-                {
-                    if (Equals(item, item1))
-                    {
-                        pos = clone.IndexOf(item);
-                        list.Remove(item);
-                        list.Insert(pos, item2);
-                    }
-                }
-            }
-            else
+        return contains;
+    }
+
+    public static bool ReplaceAll<T>(this List<T> list, T item1, T item2)
+    {
+        var contains = list.Contains(item1);
+
+        if (contains)
+        {
+            var pos = 0;
+            var clone = list;
+
+            foreach (var item in clone)
             {
-                var index = list.IndexOf(item1);
-                list.Remove(item1);
-                list.Insert(index, item2);
+                if (Equals(item, item1))
+                {
+                    pos = clone.IndexOf(item);
+                    list.Remove(item);
+                    list.Insert(pos, item2);
+                }
             }
         }
 

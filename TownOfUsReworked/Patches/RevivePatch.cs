@@ -46,7 +46,7 @@ public static class PlayerControlRevivePatch
 
         HUD.ShadowQuad.gameObject.SetActive(true);
         HUD.KillButton.ToggleVisible(false);
-        HUD.AdminButton.ToggleVisible(__instance.Data.IsImpostor() && IsHnS);
+        HUD.AdminButton.ToggleVisible(__instance.IsImpostor() && IsHnS);
         HUD.SabotageButton.ToggleVisible(__instance.CanSabotage());
         HUD.ImpostorVentButton.ToggleVisible(__instance.CanVent());
         ButtonUtils.ResetCustomTimers();

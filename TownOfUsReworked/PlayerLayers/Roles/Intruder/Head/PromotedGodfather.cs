@@ -4,7 +4,7 @@ public class PromotedGodfather : Intruder
 {
     public PromotedGodfather(PlayerControl player) : base(player)
     {
-        Alignment = Alignment.IntruderUtil;
+        Alignment = Alignment.IntruderHead;
         BlockMenu = new(Player, ConsClick, ConsException);
         TeleportPoint = Vector3.zero;
         Investigated = new();

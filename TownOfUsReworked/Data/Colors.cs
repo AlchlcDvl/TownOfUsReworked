@@ -16,6 +16,23 @@ public static class Colors
     public static Color Syndicate => new Color32(0, 128, 0, 255); //#008000FF
     public static Color Faction => new Color32(0, 230, 109, 255); //#00E66DFF
 
+    //Game Mode Colors
+    public static Color GameMode => new Color32(168, 21, 56, 255); //#A81538FF
+    public static Color TaskRace => new Color32(30, 73, 207, 255); //#1E49CFFF
+    public static Color HideAndSeek => new Color32(117, 0, 175, 255); //#7500AFFF
+    public static Color Classic => new Color32(192, 42, 44, 255); //#C02A2CFF
+    public static Color Custom => new Color32(230, 149, 106, 255); //#E6956AFF
+    public static Color AllAny => new Color32(203, 213, 66, 255); //#CBD542FF
+    public static Color RoleList => new Color32(250, 28, 121, 255); //#FA1C79FF
+    public static Color KillingOnly => new Color32(6, 224, 12, 255); //#06E00CFF
+
+    //Task Race Colors
+    public static Color Runner => new Color32(236, 194, 62, 255); //#ECC23EFF
+
+    //Hide And Seek Colors
+    public static Color Hunter => new Color32(255, 0, 78, 255); //#FF004EFF
+    public static Color Hunted => new Color32(31, 81, 255, 255); //#1F51FFFF
+
     //Subfaction Colors
     public static Color Undead => new Color32(123, 137, 104, 255); //#7B8968FF
     public static Color Cabal => new Color32(87, 87, 87, 255); //#575757FF
@@ -128,6 +145,7 @@ public static class Colors
     public static Color Indomitable => new Color32(45, 229, 190, 255); //#2DE5BEFF
     public static Color Astral => new Color32(97, 43, 239, 255); //#612BEFFF
     public static Color Yeller => new Color32(246, 170, 183, 255); //#F6AAB7FF
+    public static Color Colorblind => new Color32(179, 77, 153, 255); //#B34D99FF
 
     //Ability Colors
     public static Color Assassin => new Color32(7, 55, 99, 255); //#073763FF
@@ -172,10 +190,9 @@ public static class Colors
     //#dcee85 #6c29ab #800000 #808000 #008000 #800080 #000080 #e74c3c #992d22 #00FFFD #917ac0 #Eac1d2 #286e58 #db4f20 #abd432 #2e3b97 #ffd100 #fffcce #40b4ff #a82626 #8ff731 #942b3b #80B3FF
     //#4e4e4e #fffead #1abc9c #2ecc71 #1f8b4c #3498db #ad1457 #c27c0e #ffd2fb #805bc4 #95a5a6 #979c9f #888888 #ff7272 #f25ff1 #FF00FF #916640 #1AFF74 #2672FF #8637C2 #e7dae2 #9B7038 #EDC240
     //#6a1515 #569d29 #f1612b #7d86e1 #EC62A5 #78c689 #fccc52 #6b2d2a #FCBA03 #F8CD46 #FF4D00 #7EFBC2 #4d4d4d #38b553 #0000FF #0000A7 #f25e75 #5865F2 #0437EF #7FFF00 #FB9327 #FAE57E #06DF0C
-    //#1E300B #F3A6D3 #F9BFA7 #E1E4E4 #869919 #2B0538 #78081C #69201B #9000D7 #CF036F #FA1C79 #B0BF1A #A64D79 #B3D94D #73AD09 #41d1c3 #B0BF1A #80B2FF #33FF77 #AAFF00 #452112 #663366 #9C4A14
-    //#1A3270 #C02A2C #E37C21 #20A1B7 #606168 #99007F #ECFF45 #BE1C8C #603FEF #610F69 #CBD542 #67A836 #B34D99 #06E00C #B545FF #DB7601 #1D4DFC #6699FF #9D7038 #FF004E #00CC99 #949797 #F5A6D4
-    //#ECC23E #A9A9A9 #1F51FF #9C9A9A #A22929 #7500AF #B34D99 #1E49CF #FFC34F #A81538 #E6956A #404040
+    //#1E300B #F3A6D3 #F9BFA7 #E1E4E4 #869919 #2B0538 #78081C #69201B #9000D7 #CF036F #B0BF1A #A64D79 #B3D94D #73AD09 #41d1c3 #B0BF1A #80B2FF #33FF77 #AAFF00 #452112 #663366 #9C4A14 #A9A9A9
+    //#1A3270 #E37C21 #20A1B7 #606168 #99007F #ECFF45 #BE1C8C #603FEF #610F69 #67A836 #B545FF #DB7601 #1D4DFC #6699FF #9D7038 #00CC99 #949797 #F5A6D4 #404040 #9C9A9A #A22929 #B34D99 #FFC34F
 
     //Symbol Storage
-    //⟡ ☆ ♡ ♧ ♤ ▶ ❥ ✔ ι ν σ τ ψ ✧ ¢ 乂 ⁂ ¤ ∮ 彡 个 「 」 人 요 〖 〗 ロ 米 卄 王 ī l 【 】 · ㅇ ° ◈ ◆ ◇ ◥ ◤ ◢ ◣ 《 》 ︵ ︶ ☆ ☀ ☂ ☹ ☺ ♡ ♩ ♪ ♫ ♬ ✓ ☜ ☞ ☟ ☯ ☃ ✿ ❀ ÷ º ¿ ※ ⁑ ∞ ≠ +
+    //⟡ ☆ ♡ ♧ ♤ ▶ ❥ ι ν σ τ ψ ✧ ¢ 乂 ⁂ ¤ ∮ 彡 个 「 」 人 요 〖 〗 ロ 米 卄 王 ī l 【 】 · ㅇ ° ◈ ◆ ◇ ◥ ◤ ◢ ◣ 《 》 ︵ ︶ ☆ ☀ ☂ ☹ ☺ ♡ ♩ ♪ ♫ ♬ ✓ ☜ ☞ ☟ ☯ ☃ ✿ ❀ ÷ º ¿ ※ ⁑ ∞ ≠ +
 }

@@ -4,7 +4,7 @@ public class PromotedRebel : Syndicate
 {
     public PromotedRebel(PlayerControl player) : base(player)
     {
-        Alignment = Alignment.SyndicateUtil;
+        Alignment = Alignment.SyndicatePower;
         SpellCount = 0;
         Framed = new();
         UnwarpablePlayers = new();

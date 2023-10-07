@@ -211,12 +211,12 @@ public static class ChatCommands
             chatHandled = true;
             Run(__instance, "<color=#AAB43EFF>米 Shhhh 米</color>", "You are silenced.");
         }
-        else if (MeetingPatches.GivingAnnouncements && !CustomPlayer.Local.Data.IsDead)
+        else if (MeetingPatches.GivingAnnouncements && !CustomPlayer.LocalCustom.IsDead)
         {
             chatHandled = true;
             Run(__instance, "<color=#00CB97FF>米 Shhhh 米</color>", "You cannot talk right now.");
         }
-        else if (!CustomPlayer.Local.Data.IsDead && !IsNullEmptyOrWhiteSpace(text))
+        else if (!CustomPlayer.LocalCustom.IsDead && !IsNullEmptyOrWhiteSpace(text))
         {
             Notify(CustomPlayer.Local.PlayerId);
             CallRpc(CustomRPC.Misc, MiscRPC.Notify, CustomPlayer.Local.PlayerId);

@@ -4,8 +4,8 @@ public class Seer : Crew
 {
     public bool ChangedDead => !AllRoles.Any(x => x.Player != null && !x.Player.HasDied() && (x.RoleHistory.Count > 0 || x.Is(LayerEnum.Amnesiac) || x.Is(LayerEnum.Thief) ||
         x.Player.Is(LayerEnum.Traitor) || x.Is(LayerEnum.VampireHunter) || x.Is(LayerEnum.Godfather) || x.Is(LayerEnum.Mafioso) || x.Is(LayerEnum.Shifter) || x.Is(LayerEnum.Guesser) ||
-        x.Is(LayerEnum.Rebel) || x.Is(LayerEnum.Mystic) || (x.Is(LayerEnum.Seer) && x != this) || x.Is(LayerEnum.Sidekick) || x.Is(LayerEnum.GuardianAngel) || x.Is(LayerEnum.Executioner) ||
-        x.Is(LayerEnum.BountyHunter) || x.Player.Is(LayerEnum.Fanatic) || x.Is(LayerEnum.PromotedGodfather) || x.Is(LayerEnum.PromotedRebel)));
+        x.Is(LayerEnum.Rebel) || x.Is(LayerEnum.Mystic) || x.Is(LayerEnum.Sidekick) || x.Is(LayerEnum.GuardianAngel) || x.Is(LayerEnum.Executioner) || x.Player.Is(LayerEnum.Fanatic) ||
+        x.Is(LayerEnum.BountyHunter) || x.Is(LayerEnum.PromotedGodfather) || x.Is(LayerEnum.PromotedRebel)));
     public CustomButton SeerButton { get; set; }
 
     public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Seer : Colors.Crew;

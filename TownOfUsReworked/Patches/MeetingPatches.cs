@@ -355,7 +355,8 @@ public static class MeetingPatches
                 }
 
                 __instance.RpcVotingComplete(array, exiled, tie);
-                Ability.GetAbilities<Politician>(LayerEnum.Politician).ForEach(x => CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, x, x.ExtraVotes.ToArray()));
+                Ability.GetAbilities<Politician>(LayerEnum.Politician).ForEach(x => CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, x, PoliticianActionsRPC.Remove,
+                    x.ExtraVotes.ToArray()));
             }
 
             return false;
@@ -468,9 +469,6 @@ public static class MeetingPatches
         var info = player.AllPlayerInfo();
         var localinfo = CustomPlayer.Local.AllPlayerInfo();
         var roleRevealed = false;
-
-        if (CustomGameOptions.Whispers)
-            name = $"[{player.TargetPlayerId}] {name}";
 
         if (!info[0] || !localinfo[0])
             return (name, color);
@@ -1301,7 +1299,7 @@ public static class MeetingPatches
                 name += $" {role.FactionColorString}ξ</color>";
         }
 
-        if ((CustomPlayer.Local.Is(Faction.Syndicate) || DeadSeeEverything) && (player.TargetPlayerId == Role.DriveHolder.PlayerId || (CustomGameOptions.GlobalDrive &&
+        if ((CustomPlayer.Local.Is(Faction.Syndicate) || DeadSeeEverything) && (player.TargetPlayerId == Role.DriveHolder?.PlayerId || (CustomGameOptions.GlobalDrive &&
             Role.SyndicateHasChaosDrive && player.Is(Faction.Syndicate))))
         {
             name += " <color=#008000FF>Δ</color>";

@@ -56,30 +56,30 @@ public static class RegionInfoOpenPatch
             IPField.gameObject.SetActive(flag);
         }
 
-        if (PortField != null && PortField.gameObject != null)
-            return;
-
-        PortField = UObject.Instantiate(joinGameButton1.GameIdText, __instance.transform);
-        PortField.gameObject.name = "PortTextBox";
-        var child1 = PortField.transform.FindChild("arrowEnter");
-
-        if (child1 == null || child1.gameObject == null)
-            return;
-
-        child1.gameObject.DestroyImmediate();
-        PortField.transform.localPosition = new(2.8f, -1.55f, -100f);
-        PortField.characterLimit = 5;
-        __instance.StartCoroutine(Effects.Lerp(0.1f, new Action<float>(_ =>
+        if (PortField == null || PortField.gameObject == null)
         {
-            PortField.outputText.SetText($"{TownOfUsReworked.Port.Value}", true);
-            PortField.SetText($"{TownOfUsReworked.Port.Value}");
-        })));
-        PortField.ClearOnFocus = false;
-        PortField.OnEnter = PortField.OnChange = new();
-        PortField.OnFocusLost = new();
-        PortField.OnChange.AddListener(new Action(ChangePort));
-        PortField.OnFocusLost.AddListener(new Action(ExtraRegions.UpdateRegions));
-        PortField.gameObject.SetActive(flag);
+            PortField = UObject.Instantiate(joinGameButton1.GameIdText, __instance.transform);
+            PortField.gameObject.name = "PortTextBox";
+            var child1 = PortField.transform.FindChild("arrowEnter");
+
+            if (child1 == null || child1.gameObject == null)
+                return;
+
+            child1.gameObject.DestroyImmediate();
+            PortField.transform.localPosition = new(2.8f, -1.55f, -100f);
+            PortField.characterLimit = 5;
+            __instance.StartCoroutine(Effects.Lerp(0.1f, new Action<float>(_ =>
+            {
+                PortField.outputText.SetText($"{TownOfUsReworked.Port.Value}", true);
+                PortField.SetText($"{TownOfUsReworked.Port.Value}");
+            })));
+            PortField.ClearOnFocus = false;
+            PortField.OnEnter = PortField.OnChange = new();
+            PortField.OnFocusLost = new();
+            PortField.OnChange.AddListener(new Action(ChangePort));
+            PortField.OnFocusLost.AddListener(new Action(ExtraRegions.UpdateRegions));
+            PortField.gameObject.SetActive(flag);
+        }
     }
 
     private static void ChangeIP() => TownOfUsReworked.Ip.Value = IPField.text;

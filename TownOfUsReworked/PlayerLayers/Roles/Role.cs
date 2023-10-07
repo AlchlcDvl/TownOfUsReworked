@@ -1,9 +1,8 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-public class Role : PlayerLayer
+public abstract class Role : PlayerLayer
 {
     public static readonly List<Role> AllRoles = new();
-    public static readonly List<GameObject> Buttons = new();
     public static readonly List<PlayerControl> Cleaned = new();
 
     public static Role LocalRole => GetRole(CustomPlayer.Local);
@@ -49,6 +48,11 @@ public class Role : PlayerLayer
     public static bool CannibalWins { get; set; }
     public static bool TrollWins { get; set; }
 
+    public static bool TaskRunnerWins { get; set; }
+
+    public static bool HuntedWins { get; set; }
+    public static bool HunterWins { get; set; }
+
     /*private static bool PlateformIsUsed;
     public static bool IsLeft;
     private static bool PlayerIsLeft;
@@ -56,7 +60,11 @@ public class Role : PlayerLayer
 
     public static bool RoleWins => UndeadWin || CabalWin || ApocalypseWins || ReanimatedWin || SectWin || NKWins || CrewWin || IntruderWin || SyndicateWin || AllNeutralsWin || GlitchWins ||
         JuggernautWins || SerialKillerWins || ArsonistWins || CryomaniacWins || MurdererWins || PhantomWins || WerewolfWins || ActorWins || BountyHunterWins || CannibalWins || TrollWins ||
-        ExecutionerWins || GuesserWins || JesterWins;
+        ExecutionerWins || GuesserWins || JesterWins || TaskRunnerWins || HuntedWins || HunterWins;
+
+    public static bool FactionWins => CrewWin || IntruderWin || SyndicateWin || AllNeutralsWin;
+
+    public static bool SubFactionWins => UndeadWin || CabalWin || ReanimatedWin || SectWin;
 
     public static int ChaosDriveMeetingTimerCount { get; set; }
     public static bool SyndicateHasChaosDrive { get; set; }
@@ -70,11 +78,12 @@ public class Role : PlayerLayer
     public List<Role> RoleHistory { get; set; } = new();
     public ChatChannel CurrentChannel { get; set; } = ChatChannel.All;
     public List<Footprint> AllPrints { get; set; } = new();
-    public Dictionary<byte, CustomArrow> AllArrows { get; set; } = new();
-    public Dictionary<byte, CustomArrow> DeadArrows { get; set; } = new();
-    public Dictionary<PointInTime, DateTime> Positions { get; set; } = new();
+    public Dictionary<byte, CustomArrow> AllArrows { get; set; }
+    public Dictionary<byte, CustomArrow> DeadArrows { get; set; }
+    public Dictionary<PointInTime, DateTime> Positions { get; set; }
     public List<PointInTime> PointsInTime => Positions.Keys.ToList();
-    public Dictionary<byte, CustomArrow> YellerArrows { get; set; } = new();
+    public Dictionary<byte, CustomArrow> YellerArrows { get; set; }
+    public Dictionary<byte, TMP_Text> PlayerNumbers { get; set; }
 
     public string FactionColorString => $"<color=#{FactionColor.ToHtmlStringRGBA()}>";
     public string SubFactionColorString => $"<color=#{SubFactionColor.ToHtmlStringRGBA()}>";
@@ -84,8 +93,8 @@ public class Role : PlayerLayer
 
     public Func<string> Objectives { get; set; } = () => "- None";
 
-    public string FactionName => $"{Faction}";
-    public string SubFactionName => $"{SubFaction}";
+    public virtual string FactionName => $"{Faction}";
+    public virtual string SubFactionName => $"{SubFaction}";
     public string SubFactionSymbol { get; set; } = "φ";
 
     public string KilledBy { get; set; } = "";
@@ -174,8 +183,8 @@ public class Role : PlayerLayer
                 pair.Value?.Update(player.Data.IsDead ? body.transform.position : player.transform.position);
         }
 
-        BombKillButton.Update2("KILL", Bombed);
-        PlaceHitButton.Update2("PLACE HIT", Requesting);
+        BombKillButton?.Update2("KILL", Bombed);
+        PlaceHitButton?.Update2("PLACE HIT", Requesting);
         //CallButton?.Update("CALL PLATFORM", CanCall(), IsInPosition());
 
         if (__instance.TaskPanel)
@@ -200,11 +209,11 @@ public class Role : PlayerLayer
             tabText.SetText(text);
         }
 
-        if (!IsDead && !(Faction == Faction.Syndicate && CustomGameOptions.TimeRewindImmunity))
+        if (!IsDead && !(Faction == Faction.Syndicate && CustomGameOptions.TimeRewindImmunity) && Faction != Faction.GameMode)
         {
             if (!Rewinding)
             {
-                Positions.Add(new(Player.transform.position), DateTime.UtcNow);
+                Positions.TryAdd(new(Player.transform.position), DateTime.UtcNow);
                 var toBeRemoved = new List<PointInTime>();
 
                 foreach (var pair in Positions)
@@ -225,46 +234,6 @@ public class Role : PlayerLayer
             }
             else
                 Positions.Clear();
-        }
-
-        foreach (var arso in GetRoles<Arsonist>(LayerEnum.Arsonist))
-        {
-            arso.Doused.RemoveAll(x => PlayerById(x).HasDied());
-
-            if (arso.IsDead)
-                arso.Doused.Clear();
-        }
-
-        foreach (var cryo in GetRoles<Cryomaniac>(LayerEnum.Cryomaniac))
-        {
-            cryo.Doused.RemoveAll(x => PlayerById(x).HasDied());
-
-            if (cryo.IsDead)
-                cryo.Doused.Clear();
-        }
-
-        foreach (var pb in GetRoles<Plaguebearer>(LayerEnum.Plaguebearer))
-        {
-            pb.Infected.RemoveAll(x => PlayerById(x).HasDied());
-
-            if (pb.IsDead)
-                pb.Infected.Clear();
-        }
-
-        foreach (var framer in GetRoles<Framer>(LayerEnum.Framer))
-        {
-            framer.Framed.RemoveAll(x => PlayerById(x).HasDied());
-
-            if (framer.IsDead)
-                framer.Framed.Clear();
-        }
-
-        foreach (var spell in GetRoles<Spellslinger>(LayerEnum.Spellslinger))
-        {
-            spell.Spelled.RemoveAll(x => PlayerById(x).HasDied());
-
-            if (spell.IsDead)
-                spell.Spelled.Clear();
         }
     }
 
@@ -374,53 +343,58 @@ public class Role : PlayerLayer
             __instance.Close();
     }
 
-    private static bool IsExempt(PlayerVoteArea voteArea)
+    public void GenText(PlayerVoteArea voteArea)
     {
-        var player = PlayerByVoteArea(voteArea);
-        return player == null || player.Data.Disconnected || !ClientGameOptions.LighterDarker;
+        if (PlayerNumbers.TryGetValue(voteArea.TargetPlayerId, out var nameText))
+        {
+            nameText?.gameObject?.SetActive(false);
+            nameText?.gameObject?.Destroy();
+            PlayerNumbers.Remove(voteArea.TargetPlayerId);
+        }
+
+        nameText = UObject.Instantiate(voteArea.NameText, voteArea.transform);
+        nameText.transform.localPosition = new(-0.911f, -0.18f, -0.1f);
+        nameText.text = "";
+        nameText.name = "SubTextLabel";
+        nameText.color = UColor.white;
+        PlayerNumbers.Add(voteArea.TargetPlayerId, nameText);
+        GenNumbers(voteArea);
+        GenLighterDarker(voteArea);
     }
 
-    public static void GenButton(PlayerVoteArea voteArea)
+    public void GenNumbers(PlayerVoteArea voteArea)
     {
-        if (IsExempt(voteArea))
+        if (!PlayerNumbers.TryGetValue(voteArea.TargetPlayerId, out var nameText))
             return;
 
-        var colorButton = voteArea.Buttons.transform.GetChild(0).gameObject;
-        var newButton = UObject.Instantiate(colorButton, voteArea.transform);
+        if ((DataManager.Settings.Accessibility.ColorBlindMode && Type is LayerEnum.Operative or LayerEnum.Retributionist) || CustomGameOptions.Whispers)
+            nameText.text = $"{voteArea.TargetPlayerId} ";
+        else
+            nameText.text = nameText.text.Replace($"{voteArea.TargetPlayerId} ", "");
+    }
+
+    public void GenLighterDarker(PlayerVoteArea voteArea)
+    {
+        if (!PlayerNumbers.TryGetValue(voteArea.TargetPlayerId, out var nameText))
+            return;
+
         var playerControl = PlayerByVoteArea(voteArea);
-        newButton.GetComponent<SpriteRenderer>().sprite = GetSprite(CustomColors.LightDarkColors[playerControl.GetDefaultOutfit().ColorId]);
-        newButton.transform.position = colorButton.transform.position - new Vector3(-0.8f, 0.2f, -2f);
-        newButton.transform.localScale *= 0.8f;
-        newButton.layer = 5;
-        newButton.transform.parent = colorButton.transform.parent.parent;
-        newButton.GetComponent<PassiveButton>().OnClick = new();
-        Buttons.Add(newButton);
+        var ld = CustomColors.LightDarkColors[playerControl.GetDefaultOutfit().ColorId] == "Lighter" ? "L" : "D";
+
+        if (ClientGameOptions.LighterDarker)
+            nameText.text += $"({ld})";
+        else
+            nameText.text = nameText.text.Replace($"({ld})", "");
     }
 
     public override void OnMeetingStart(MeetingHud __instance)
     {
         base.OnMeetingStart(__instance);
         TrulyDead = IsDead;
-
-        if (ClientGameOptions.LighterDarker)
-        {
-            foreach (var button in Buttons)
-            {
-                if (button == null)
-                    continue;
-
-                button.SetActive(false);
-                button.Destroy();
-            }
-
-            Buttons.Clear();
-            AllVoteAreas.ForEach(GenButton);
-        }
-
+        AllVoteAreas.ForEach(GenText);
         AllRoles.ForEach(x => x.CurrentChannel = ChatChannel.All);
         GetRoles<Thief>(LayerEnum.Thief).ForEach(x => x.GuessMenu.HideButtons());
         GetRoles<Guesser>(LayerEnum.Guesser).ForEach(x => x.GuessMenu.HideButtons());
-        GetRoles<Operative>(LayerEnum.Operative).ForEach(x => x.PlayerNumbers.Clear());
 
         if (Requesting && BountyTimer > 2)
         {
@@ -433,7 +407,6 @@ public class Role : PlayerLayer
         foreach (var ret in GetRoles<Retributionist>(LayerEnum.Retributionist))
         {
             ret.RetMenu.HideButtons();
-            ret.PlayerNumbers.Clear();
             ret.Selected = null;
         }
 
@@ -467,18 +440,23 @@ public class Role : PlayerLayer
         if (GetRole(player))
             GetRole(player).Player = null;
 
-        BombKillButton = new(this, "BombKill", AbilityTypes.Target, "Quarternary", BombKill);
-        PlaceHitButton = new(this, "PlaceHit", AbilityTypes.Target, "Quarternary", PlaceHit);
         RoleHistory = new();
         AllPrints = new();
         AllArrows = new();
         DeadArrows = new();
         Positions = new();
         YellerArrows = new();
+        PlayerNumbers = new();
         AllRoles.Add(this);
 
         /*if (TownOfUsReworked.NormalOptions.MapId == 4)
             CallButton = new(this, "CallPlatform", AbilityTypes.Targetless, "Quarternary", UsePlatform);*/
+
+        if (!IsCustomHnS && !IsTaskRace)
+        {
+            BombKillButton = new(this, "BombKill", AbilityTypes.Target, "Quarternary", BombKill);
+            PlaceHitButton = new(this, "PlaceHit", AbilityTypes.Target, "Quarternary", PlaceHit);
+        }
     }
 
     public void PlaceHit()

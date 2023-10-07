@@ -24,7 +24,7 @@ public class InteractionData
         bypass |= player.Is(LayerEnum.Ruthless);
         Spread(player, target);
 
-        if ((target == CachedFirstDead || target.IsProtectedMonarch() || player.IsOtherRival(target)) && (toConvert || toKill || poisoning))
+        if ((target == CachedFirstDead || target.IsProtectedMonarch() || player.IsOtherRival(target) || player.NotTransformed()) && (toConvert || toKill || poisoning))
             fullReset = true;
         else if ((target.IsOnAlert() || ((target.IsAmbushed() || target.IsGFAmbushed()) && (!player.Is(Faction.Intruder) || (player.Is(Faction.Intruder) && CustomGameOptions.AmbushMates)))
             || target.Is(LayerEnum.Pestilence) || (target.Is(LayerEnum.VampireHunter) && player.Is(SubFaction.Undead)) || (target.Is(LayerEnum.SerialKiller) && (player.Is(LayerEnum.Escort)

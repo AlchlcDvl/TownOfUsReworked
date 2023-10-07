@@ -37,6 +37,8 @@ public abstract class PlayerLayer
 
     public virtual void OnLobby() => Patches.EndGame.Reset();
 
+    public virtual void OnIntroEnd() => ButtonUtils.ResetCustomTimers(CooldownType.Start);
+
     public virtual void UpdateHud(HudManager __instance) {}
 
     public virtual void UpdateMeeting(MeetingHud __instance) => ButtonUtils.DisableAllButtons();
@@ -315,6 +317,25 @@ public abstract class PlayerLayer
                     Winner = true;
                     EndGame();
                 }
+            }
+            else if (Type == LayerEnum.Runner && TasksDone)
+            {
+                Role.TaskRunnerWins = true;
+                Winner = true;
+                CallRpc(CustomRPC.WinLose, WinLoseRPC.TaskRunnerWins, this);
+                EndGame();
+            }
+            else if (Type == LayerEnum.Hunter && HunterWins)
+            {
+                Role.HunterWins = true;
+                CallRpc(CustomRPC.WinLose, WinLoseRPC.HunterWins);
+                EndGame();
+            }
+            else if (Type == LayerEnum.Hunted && HuntedWins)
+            {
+                Role.HuntedWins = true;
+                CallRpc(CustomRPC.WinLose, WinLoseRPC.HuntedWins);
+                EndGame();
             }
         }
     }

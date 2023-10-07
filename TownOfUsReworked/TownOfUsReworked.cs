@@ -11,7 +11,7 @@ public class TownOfUsReworked : BasePlugin
 {
     public const string Id = "me.alchlcdvl.reworked";
     public const string Name = "TownOfUsReworked";
-    public const string VersionString = "0.5.2.0";
+    public const string VersionString = "0.5.3.0";
     public static readonly Version Version = new(VersionString);
 
     public const bool IsDev = false;
@@ -30,7 +30,7 @@ public class TownOfUsReworked : BasePlugin
     public static string DataPath => $"{Path.GetDirectoryName(Application.dataPath)}\\";
     public static string Hats => $"{DataPath}CustomHats\\";
     public static string Visors => $"{DataPath}CustomVisors\\";
-    //public static string Nameplates => $"{DataPath}CustomNameplates\\";
+    public static string Nameplates => $"{DataPath}CustomNameplates\\";
     public static string ModsFolder => $"{DataPath}\\BepInEx\\plugins\\";
 
     public const string DiscordInvite = "https://discord.gg/cd27aDQDY9";
@@ -82,47 +82,50 @@ public class TownOfUsReworked : BasePlugin
             return;
         }
 
-        ModInstance = this;
+        try
+        {
+            Harmony.PatchAll();
 
-        if (!File.Exists($"{DataPath}steam_appid.txt"))
-            File.WriteAllText($"{DataPath}steam_appid.txt", "945360");
+            ModInstance = this;
 
-        Harmony.PatchAll();
+            if (!File.Exists($"{DataPath}steam_appid.txt"))
+                File.WriteAllText($"{DataPath}steam_appid.txt", "945360");
 
-        DataManager.Player.Onboarding.ViewedHideAndSeekHowToPlay = true;
+            DataManager.Player.Onboarding.ViewedHideAndSeekHowToPlay = true;
 
-        NormalGameOptionsV07.MaxImpostors = Enumerable.Repeat(127, 127).ToArray();
-        NormalGameOptionsV07.MinPlayers = Enumerable.Repeat(1, 127).ToArray();
+            NormalGameOptionsV07.MaxImpostors = Enumerable.Repeat(127, 127).ToArray();
+            NormalGameOptionsV07.MinPlayers = Enumerable.Repeat(1, 127).ToArray();
 
-        Ip = Config.Bind("Custom", "Custom Server IP", "127.0.0.1", "IP for the Custom Server");
-        Port = Config.Bind("Custom", "Custom Server Port", (ushort)22023, "Port for the Custom Server");
-        LighterDarker = Config.Bind("Custom", "Lighter Darker Colors", true, "Adds smaller descriptions of colors as lighter or darker for body report purposes");
-        WhiteNameplates = Config.Bind("Custom", "White Nameplates", false, "Enables custom nameplates");
-        NoLevels = Config.Bind("Custom", "No Levels", false, "Enables the little level icon during meetings");
-        CustomCrewColors = Config.Bind("Custom", "Custom Crew Colors", true, "Enables custom colors for Crew roles");
-        CustomNeutColors = Config.Bind("Custom", "Custom Neutral Colors", true, "Enables custom colors for Neutral roles");
-        CustomIntColors = Config.Bind("Custom", "Custom Intruder Colors", true, "Enables custom colors for Intruder roles");
-        CustomSynColors = Config.Bind("Custom", "Custom Syndicate Colors", true, "Enables custom colors for Syndicate roles");
-        CustomModColors = Config.Bind("Custom", "Custom Modifier Colors", true, "Enables custom colors for Modifiers");
-        CustomObjColors = Config.Bind("Custom", "Custom Objectifier Colors", true, "Enables custom colors for Objectifiers");
-        CustomAbColors = Config.Bind("Custom", "Custom Ability Colors", true, "Enables custom colors for Abilities");
-        CustomEjects = Config.Bind("Custom", "Custom Ejects", true, "Enables funny ejection messages compared to the monotone \"X was ejected\"");
-        Regions = Config.Bind("Custom", "Regions", "{\"CurrentRegionIdx\":0,\"Regions\":[]}",
-			"Create an array of Regions you want to add/update. To create this array, go to https://impostor.github.io/Impostor/ and put the Regions array from the server file in here");
-        RegionsToRemove = Config.Bind("Custom", "Remove Regions", "", "Comma-seperated list of region names that should be removed");
+            Ip = Config.Bind("Custom", "Custom Server IP", "127.0.0.1", "IP for the Custom Server");
+            Port = Config.Bind("Custom", "Custom Server Port", (ushort)22023, "Port for the Custom Server");
+            LighterDarker = Config.Bind("Custom", "Lighter Darker Colors", true, "Adds smaller descriptions of colors as lighter or darker for body report purposes");
+            WhiteNameplates = Config.Bind("Custom", "White Nameplates", false, "Enables custom nameplates");
+            NoLevels = Config.Bind("Custom", "No Levels", false, "Enables the little level icon during meetings");
+            CustomCrewColors = Config.Bind("Custom", "Custom Crew Colors", true, "Enables custom colors for Crew roles");
+            CustomNeutColors = Config.Bind("Custom", "Custom Neutral Colors", true, "Enables custom colors for Neutral roles");
+            CustomIntColors = Config.Bind("Custom", "Custom Intruder Colors", true, "Enables custom colors for Intruder roles");
+            CustomSynColors = Config.Bind("Custom", "Custom Syndicate Colors", true, "Enables custom colors for Syndicate roles");
+            CustomModColors = Config.Bind("Custom", "Custom Modifier Colors", true, "Enables custom colors for Modifiers");
+            CustomObjColors = Config.Bind("Custom", "Custom Objectifier Colors", true, "Enables custom colors for Objectifiers");
+            CustomAbColors = Config.Bind("Custom", "Custom Ability Colors", true, "Enables custom colors for Abilities");
+            CustomEjects = Config.Bind("Custom", "Custom Ejects", true, "Enables funny ejection messages compared to the monotone \"X was ejected\"");
+            Regions = Config.Bind("Custom", "Regions", "{\"CurrentRegionIdx\":0,\"Regions\":[]}",
+                "Create an array of Regions you want to add/update. To create this array, go to https://impostor.github.io/Impostor/ and put the Regions array from the server file in here");
+            RegionsToRemove = Config.Bind("Custom", "Remove Regions", "", "Comma-seperated list of region names that should be removed");
 
-        AllMonos.RegisterMonos();
-        CustomColors.LoadColors();
-        AssetLoader.LoadAssets();
-        ExtraRegions.UpdateRegions();
-        Info.SetAllInfo();
+            AllMonos.RegisterMonos();
+            CustomColors.LoadColors();
+            AssetLoader.LoadAssets();
+            ExtraRegions.UpdateRegions();
+            Info.SetAllInfo();
+            AllMonos.AddComponents();
 
-        AddComponent<DebuggerBehaviour>();
-        AddComponent<ModUpdateBehaviour>();
-
-        Cursor.SetCursor(GetSprite("Cursor").texture, Vector2.zero, CursorMode.Auto);
-
-        LogMessage($"Mod Loaded - {this}");
+            LogMessage($"Mod Loaded - {this}");
+        }
+        catch (Exception e)
+        {
+            LogFatal($"Couldn't load the mod because:\n{e}");
+        }
     }
 
     public override bool Unload()

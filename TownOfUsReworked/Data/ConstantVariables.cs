@@ -21,6 +21,8 @@ public static class ConstantVariables
     public static bool IsKilling => CustomGameOptions.GameMode == GameMode.KillingOnly;
     public static bool IsVanilla => CustomGameOptions.GameMode == GameMode.Vanilla;
     public static bool IsRoleList => CustomGameOptions.GameMode == GameMode.RoleList;
+    public static bool IsTaskRace => CustomGameOptions.GameMode == GameMode.TaskRace;
+    public static bool IsCustomHnS => CustomGameOptions.GameMode == GameMode.HideAndSeek;
     public static bool NoLobby => !(IsInGame || IsLobby || IsEnded || IsRoaming || IsMeeting);
     public static bool LastImp => CustomPlayer.AllPlayers.Count(x => x.Is(Faction.Intruder) && !x.HasDied()) == 1;
     public static bool LastSyn => CustomPlayer.AllPlayers.Count(x => x.Is(Faction.Syndicate) && !x.HasDied()) == 1;
@@ -113,4 +115,8 @@ public static class ConstantVariables
 
     public static bool ApocWins => !CustomPlayer.AllPlayers.Any(x => !x.HasDied() && (x.Is(Faction.Intruder) || x.Is(Faction.Syndicate) || x.Is(Faction.Crew) || x.Is(Alignment.NeutralKill)
         || x.Is(Alignment.NeutralNeo) || x.Is(Alignment.NeutralPros) || x.NotOnTheSameSide() || (x.Is(Faction.Neutral) && CustomGameOptions.NoSolo == NoSolo.AllNeutrals)));
+
+    public static bool HunterWins => !CustomPlayer.AllPlayers.Any(x => !x.HasDied() && x.Is(LayerEnum.Hunted));
+
+    public static bool HuntedWins => !CustomPlayer.AllPlayers.Any(x => !x.HasDied() && x.Is(LayerEnum.Hunter));
 }

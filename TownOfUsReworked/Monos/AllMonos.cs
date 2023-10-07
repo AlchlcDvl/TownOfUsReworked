@@ -12,6 +12,7 @@ public static class AllMonos
         ClassInjector.RegisterTypeInIl2Cpp<ColorBehaviour>();
         ClassInjector.RegisterTypeInIl2Cpp<DebuggerBehaviour>();
         ClassInjector.RegisterTypeInIl2Cpp<DragBehaviour>();
-        ClassInjector.RegisterTypeInIl2Cpp<ModUpdateBehaviour>();
     }
+
+    public static void AddComponents() => TownOfUsReworked.ModInstance.AddComponent<DebuggerBehaviour>();
 }

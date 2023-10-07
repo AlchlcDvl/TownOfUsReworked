@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-public class Neutral : Role
+public abstract class Neutral : Role
 {
     public override Color Color => Colors.Neutral;
     public override Faction BaseFaction => Faction.Neutral;
@@ -17,7 +17,7 @@ public class Neutral : Role
         if (!Local)
             return;
 
-        var team = new List<PlayerControl> { CustomPlayer.Local };
+        var team = new List<PlayerControl>() { CustomPlayer.Local };
 
         if (IsRecruit)
         {

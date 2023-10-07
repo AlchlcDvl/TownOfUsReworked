@@ -5,11 +5,10 @@ public static class SubmergedStartPatch
 {
     public static void Postfix()
     {
-        if (CustomPlayer.Local == null || CustomPlayer.Local.Data == null)
+        if (CustomPlayer.Local == null || CustomPlayer.Local.Data == null || !IsSubmerged)
             return;
 
-        if (IsSubmerged)
-            Coroutines.Start(WaitStart(() => ButtonUtils.ResetCustomTimers(CooldownType.Start)));
+        Coroutines.Start(WaitStart(() => ButtonUtils.ResetCustomTimers(CooldownType.Start)));
     }
 }
 
@@ -35,4 +34,22 @@ public static class SubmergedPhysicsPatch
 public static class SubmergedLateUpdatePhysicsPatch
 {
     public static void Postfix(PlayerPhysics __instance) => Ghostrolefix(__instance);
+}
+
+[HarmonyPatch(typeof(UObject), nameof(UObject.Destroy), new Type[] { typeof(GameObject) })]
+public static class SubmergedExile
+{
+    public static void Prefix(GameObject obj)
+    {
+        if ((!SubLoaded && !LILoaded) || TownOfUsReworked.NormalOptions?.MapId != 5 || obj == null || obj.name == null)
+            return;
+
+        if (obj.name.Contains("ExileCutscene"))
+            SetPostmortals.ExileControllerPostfix(ConfirmEjects.LastExiled);
+        else if (obj.name.Contains("SpawnInMinigame"))
+        {
+            if (CustomPlayer.Local.Is(LayerEnum.Astral) && !CustomPlayer.LocalCustom.IsDead)
+                Modifier.GetModifier<Astral>(CustomPlayer.Local).SetPosition();
+        }
+    }
 }

@@ -111,10 +111,10 @@ public static class ButtonUtils
     public static void ResetCustomTimers(CooldownType cooldown = CooldownType.Reset)
     {
         var local = CustomPlayer.Local;
-        CustomButton.AllButtons.Where(x => x.Owner.Player == local).ForEach(x => x.StartCooldown(cooldown));
         var role = Role.LocalRole;
         var start = cooldown == CooldownType.Start;
         var meeting = cooldown == CooldownType.Meeting;
+        CustomButton.AllButtons.Where(x => x.Owner.Player == local).ForEach(x => x.StartCooldown(cooldown));
 
         if (role.Requesting && !start)
             role.BountyTimer++;
@@ -124,13 +124,8 @@ public static class ButtonUtils
 
         if (local.Is(LayerEnum.Escort))
             ((Escort)role).BlockTarget = null;
-        else if (local.Is(LayerEnum.Inspector))
-        {
-            var role2 = (Inspector)role;
-
-            if (local.HasDied() && DeadSeeEverything)
-                role2.Inspected.Clear();
-        }
+        else if (local.Is(LayerEnum.Inspector) && local.HasDied() && DeadSeeEverything)
+            ((Inspector)role).Inspected.Clear();
         else if (local.Is(LayerEnum.Operative))
         {
             var role2 = (Operative)role;
@@ -170,6 +165,9 @@ public static class ButtonUtils
             role2.BlockTarget = null;
             role2.TransportPlayer1 = null;
             role2.TransportPlayer2 = null;
+            role2.MediateArrows.Values.ToList().DestroyAll();
+            role2.MediateArrows.Clear();
+            role2.MediatedPlayers.Clear();
 
             if (local.HasDied() && DeadSeeEverything)
                 role2.Inspected.Clear();
@@ -183,22 +181,13 @@ public static class ButtonUtils
                 role2.TrackerArrows.Clear();
                 role2.TrackButton.Uses = role2.TrackButton.MaxUses + (role2.TasksDone ? 1 : 0);
             }
-
-            role2.MediateArrows.Values.ToList().DestroyAll();
-            role2.MediateArrows.Clear();
-            role2.MediatedPlayers.Clear();
         }
         else if (local.Is(LayerEnum.Blackmailer))
             ((Blackmailer)role).BlackmailedPlayer = null;
         else if (local.Is(LayerEnum.Enforcer))
             ((Enforcer)role).BombedPlayer = null;
-        else if (local.Is(LayerEnum.Consigliere))
-        {
-            var role2 = (Consigliere)role;
-
-            if (local.HasDied() && DeadSeeEverything)
-                role2.Investigated.Clear();
-        }
+        else if (local.Is(LayerEnum.Consigliere) && local.HasDied() && DeadSeeEverything)
+            ((Consigliere)role).Investigated.Clear();
         else if (local.Is(LayerEnum.Consort))
             ((Consort)role).BlockTarget = null;
         else if (local.Is(LayerEnum.Disguiser))
@@ -220,6 +209,7 @@ public static class ButtonUtils
             role2.MorphedPlayer = null;
             role2.AmbushedPlayer = null;
             role2.BombedPlayer = null;
+            role2.CurrentlyDragging = null;
             role2.TeleportPoint = Vector3.zero;
 
             if (local.HasDied() && DeadSeeEverything)
@@ -241,20 +231,10 @@ public static class ButtonUtils
             ((Concealer)role).ConcealedPlayer = null;
         else if (local.Is(LayerEnum.Silencer))
             ((Silencer)role).SilencedPlayer = null;
-        else if (local.Is(LayerEnum.Bomber))
-        {
-            var role2 = (Bomber)role;
-
-            if (CustomGameOptions.BombsRemoveOnNewRound && meeting)
-                Bomb.Clear(role2.Bombs);
-        }
-        else if (local.Is(LayerEnum.Framer))
-        {
-            var role2 = (Framer)role;
-
-            if (local.HasDied())
-                role2.Framed.Clear();
-        }
+        else if (local.Is(LayerEnum.Bomber) && CustomGameOptions.BombsRemoveOnNewRound && meeting)
+            Bomb.Clear(((Bomber)role).Bombs);
+        else if (local.Is(LayerEnum.Framer) && local.HasDied())
+            ((Framer)role).Framed.Clear();
         else if (local.Is(LayerEnum.Crusader))
             ((Crusader)role).CrusadedPlayer = null;
         else if (local.Is(LayerEnum.Poisoner))
@@ -335,5 +315,7 @@ public static class ButtonUtils
             if (meeting && role2.TargetPlayer == null)
                 role2.Rounds++;
         }
+        else if (local.Is(LayerEnum.Werewolf))
+            ((Werewolf)role).Rounds++;
     }
 }

@@ -11,43 +11,70 @@ public static class RecomputeTaskCounts
         __instance.TotalTasks = 0;
         __instance.CompletedTasks = 0;
 
-        foreach (var playerInfo in __instance.AllPlayers)
+        if (IsTaskRace)
         {
-            var pc = playerInfo.Object;
+            PlayerControl most = null;
 
-            if (!playerInfo.Disconnected && playerInfo.Tasks != null && pc.CanDoTasks() && pc.Is(Faction.Crew) && !pc.Is(LayerEnum.Revealer) && (!playerInfo.IsDead ||
-                CustomGameOptions.GhostTasksCountToWin))
+            foreach (var playerInfo in __instance.AllPlayers)
             {
-                foreach (var task in playerInfo.Tasks)
-                {
-                    __instance.TotalTasks++;
+                var pc = playerInfo.Object;
 
-                    if (task.Complete)
-                        __instance.CompletedTasks++;
+                if (pc == null || playerInfo == null || playerInfo.Tasks == null || pc.HasDied())
+                    continue;
+
+                var mostRole = Role.GetRole(most);
+                var pcRole = Role.GetRole(pc);
+
+                if (most == null || (pcRole && mostRole && mostRole.TasksLeft >= pcRole.TasksLeft))
+                    most = pc;
+            }
+
+            var mostRole2 = Role.GetRole(most);
+
+            if (mostRole2)
+                __instance.CompletedTasks = mostRole2.TasksCompleted;
+
+            __instance.TotalTasks = CustomGameOptions.ShortTasks + CustomGameOptions.CommonTasks;
+        }
+        else if (IsCustomHnS)
+        {
+            foreach (var playerInfo in __instance.AllPlayers)
+            {
+                var pc = playerInfo.Object;
+
+                if (!playerInfo.Disconnected && playerInfo.Tasks != null && pc.Is(LayerEnum.Hunted))
+                {
+                    foreach (var task in playerInfo.Tasks)
+                    {
+                        __instance.TotalTasks++;
+
+                        if (task.Complete)
+                            __instance.CompletedTasks++;
+                    }
+                }
+            }
+        }
+        else
+        {
+            foreach (var playerInfo in __instance.AllPlayers)
+            {
+                var pc = playerInfo.Object;
+
+                if (!playerInfo.Disconnected && playerInfo.Tasks != null && pc.CanDoTasks() && pc.Is(Faction.Crew) && !pc.Is(LayerEnum.Revealer) && (!playerInfo.IsDead ||
+                    CustomGameOptions.GhostTasksCountToWin))
+                {
+                    foreach (var task in playerInfo.Tasks)
+                    {
+                        __instance.TotalTasks++;
+
+                        if (task.Complete)
+                            __instance.CompletedTasks++;
+                    }
                 }
             }
         }
 
         return false;
-    }
-}
-
-[HarmonyPatch(typeof(Console), nameof(Console.CanUse))]
-public static class CanUse
-{
-    public static bool Prefix(Console __instance, [HarmonyArgument(0)] GameData.PlayerInfo playerInfo, ref float __result)
-    {
-        var playerControl = playerInfo.Object;
-        var flag = !playerControl.CanDoTasks();
-
-        //If the console is not a sabotage repair console
-        if (flag && !__instance.AllowImpostor)
-        {
-            __result = float.MaxValue;
-            return false;
-        }
-
-        return true;
     }
 }
 
@@ -142,6 +169,13 @@ public static class CompleteTasksPatch
 
             if (role.TasksDone && !role.Caught)
                 role.CompletedTasks = true;
+        }
+        else if (__instance.Is(LayerEnum.Runner))
+        {
+            var role = Role.GetRole<Runner>(__instance);
+
+            if (role.TasksLeft == 1)
+                Flash(role.Color);
         }
         else if (__instance.Is(LayerEnum.Revealer))
         {

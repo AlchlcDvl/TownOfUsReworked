@@ -4,7 +4,6 @@ public class Phantom : Neutral
 {
     public bool Caught { get; set; }
     public bool CompletedTasks { get; set; }
-    public bool PhantomWin { get; set; }
     public bool Faded { get; set; }
 
     public override Color Color => ClientGameOptions.CustomNeutColors ? Colors.Phantom : Colors.Neutral;

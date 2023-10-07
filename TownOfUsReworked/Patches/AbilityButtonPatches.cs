@@ -24,7 +24,7 @@ public static class HauntUpdatePatch
         if (!IsInGame)
             __instance.gameObject.SetActive(false);
         else if (IsHnS)
-            __instance.gameObject.SetActive(!CustomPlayer.LocalCustom.Data.IsImpostor());
+            __instance.gameObject.SetActive(!CustomPlayer.Local.IsImpostor());
         else
             __instance.gameObject.SetActive(!(CustomPlayer.Local.IsPostmortal() && !CustomPlayer.Local.Caught()) && !Meeting && CustomPlayer.LocalCustom.IsDead);
     }

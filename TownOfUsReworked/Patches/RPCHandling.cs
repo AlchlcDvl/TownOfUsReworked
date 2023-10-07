@@ -100,17 +100,14 @@ public static class RPCHandling
                         rev.Exiled();
                         break;
 
-                    case MiscRPC.AddVoteBank:
-                        reader.ReadLayer<Politician>().VoteBank += reader.ReadInt32();
-                        break;
-
                     case MiscRPC.MeetingStart:
                         AllBodies.ForEach(x => x?.gameObject?.Destroy());
                         CustomPlayer.AllPlayers.ForEach(x => x?.MyPhysics?.ResetAnimState());
                         break;
 
                     case MiscRPC.DoorSyncToilet:
-                        UObject.FindObjectsOfType<PlainDoor>().FirstOrDefault(door => door.Id == reader.ReadInt32())?.SetDoorway(true);
+                        var id2 = reader.ReadInt32();
+                        UObject.FindObjectsOfType<PlainDoor>().FirstOrDefault(door => door.Id == id2)?.SetDoorway(true);
                         break;
 
                     /*case MiscRPC.SyncPlatform:
@@ -182,6 +179,9 @@ public static class RPCHandling
                         TownOfUsReworked.NormalOptions.KillCooldown = CustomGameOptions.IntKillCd;
                         TownOfUsReworked.NormalOptions.GhostsDoTasks = CustomGameOptions.GhostTasksCountToWin;
                         TownOfUsReworked.NormalOptions.MaxPlayers = CustomGameOptions.LobbySize;
+                        TownOfUsReworked.NormalOptions.NumShortTasks = CustomGameOptions.ShortTasks;
+                        TownOfUsReworked.NormalOptions.NumLongTasks = CustomGameOptions.LongTasks;
+                        TownOfUsReworked.NormalOptions.NumCommonTasks = CustomGameOptions.CommonTasks;
                         GameOptionsManager.Instance.currentNormalGameOptions = TownOfUsReworked.NormalOptions;
                         CustomPlayer.AllPlayers.ForEach(x => x.MaxReportDistance = CustomGameOptions.ReportDistance);
                         MapPatches.AdjustSettings(map);
@@ -652,6 +652,19 @@ public static class RPCHandling
                     case WinLoseRPC.PhantomWin:
                         Role.PhantomWins = true;
                         reader.ReadLayer<Phantom>().CompletedTasks = true;
+                        break;
+
+                    case WinLoseRPC.TaskRunnerWins:
+                        Role.TaskRunnerWins = true;
+                        reader.ReadLayer<Runner>().Winner = true;
+                        break;
+
+                    case WinLoseRPC.HuntedWins:
+                        Role.HuntedWins = true;
+                        break;
+
+                    case WinLoseRPC.HunterWins:
+                        Role.HunterWins = true;
                         break;
 
                     default:

@@ -58,7 +58,6 @@ public static class RPC
             if (customOption == null)
                 continue;
 
-            //Works but may need to change to gameObject.name check
             object value = null;
             object val = null;
 
@@ -66,8 +65,10 @@ public static class RPC
                 value = reader.ReadBoolean();
             else if (customOption.Type == CustomOptionType.Number)
                 value = reader.ReadSingle();
-            else if (customOption.Type is CustomOptionType.String or CustomOptionType.Entry)
+            else if (customOption.Type == CustomOptionType.String)
                 value = reader.ReadInt32();
+            else if (customOption.Type == CustomOptionType.Entry)
+                value = (LayerEnum)reader.ReadInt32();
             else if (customOption.Type == CustomOptionType.Layers)
             {
                 value = reader.ReadInt32();
@@ -173,6 +174,8 @@ public static class RPC
                     writer.Write(Long);
                 else if (item is byte[] array)
                     writer.WriteBytesAndSize(array);
+                else if (item is List<byte> list)
+                    writer.WriteBytesAndSize(list.ToArray());
                 else if (item is TargetRPC target)
                     writer.Write((byte)target);
                 else if (item is ActionsRPC action)
@@ -205,6 +208,8 @@ public static class RPC
                     writer.Write((byte)glitchAction);
                 else if (item is ThiefActionsRPC thiefAction)
                     writer.Write((byte)thiefAction);
+                else if (item is PoliticianActionsRPC polAction)
+                    writer.Write((byte)polAction);
                 else if (item is MiscRPC misc)
                     writer.Write((byte)misc);
                 else if (item is PlayerControl player)

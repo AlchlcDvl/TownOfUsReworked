@@ -7,27 +7,41 @@ This mod is a mish mash of code and ideas from different mods and forks, mainly 
 If you want to know more try using the other info commands, visiting the %github% page or joining the %discord% server. Happy ejections!
 
 Changelog-
-- Return: Custom visors are back
-- Recode: Recoded how buttons are handled
-- Recode: Recoded the many RPCs between roles
-- Change: Being revived/resurrected now resets your cooldowns (to avoid the revived people killing their killers immediately)
-- Change: Bugs and Bombs can no longer overlap ranges
-- Change: Changed the abbreviation of "Crew (Protective)" to "CrP" because the original abbreviation is a practice no one supports
-- Change: Warper can now spawn in Airship, Submerged and LevelImpostor maps
-- Nerf: Jesters and Executioners can no longer kill more than one player
-- Improvement: Postmortal roles that are not clicked will only see camouflaged players
-- General Fix: Fixed some issues with game logic
-- Visual Fix: Fixed Retributionist and Operative seeing double numbers when whispering is turned on
-- Visual Fix: Fixed the meeting timer sometimes being spammed with the page count
-- Visual Fix: Fixed Janitor having the incorrect intro text
-- Visual Fix: Fixed text run off in the hats and visors menus
-- Visual Fix: Fixed appearance changes not changing the players names
-- Role Fix: Fixed Vigilantes being unable to target Crew
+- New Game Mode: Task Race - See who's the best at finishing their tasks!
+- New Game Mode: Hide And Seek - Hunt or be hunted!
+- New Modifier: Colorblind
+- New Alignment: Intruder (Head)
+- Addition: Added an intro splash text
+- Addition: Added new selection options for the Role List game mode (see additional notes)
+- Addition: Added some animations for morphing and camouflaging
+- Return: Custom nameplates are back
+- Revert: Reverted the changes made to the auto updater
+- Improvement: Improved how the player numbers and the lighter darker mentions appear
+- Improvement: Improved how settings are loaded (might lead to loading issues with previously set settings)
+- Improvement: Improved the sorting on role generation again
+- Improvement: Improved how the invisibility animation is handled
+- Change: The following alignment changes have been made - Godfather => Intruder (Head), Rebel => Syndicate (Power), Timekeeper => Syndicate (Disruption)
+- Change: Seers no longer require other Seers to die in order to become Sheriffs
+- Bug Fix: Fixed the side buttons overlapping with the Submerged floor change button (To be tested)
+- Role Fix: Fixed Ghoul being able to kill Pestilence
+- Role Fix: Fixed being unable to guess as Guesser
+- Role Fix: Fixed Werewolf unable to kill
+- Role Fix: Fixed Jackal being able to recruit players at the start of the game, even if they have both spawning recruits
+- Potential Fix: Attempt number 4 at trying to reduce the "Fatal Error in GC" error
+
+Additional Notes-
+There were new Role List options added for the Role List mode, here's what each of those options do:
+Regular Crew - Spawns only Crew (Support), (Protective), (Investigative) and (Killing) roles
+Regular Intruder - Spawns only Intruder (Deception), (Killing), (Concealing) and (Support) roles
+Regular Syndicate - Spawns only Syndicate (Disruption), (Support) and (Killing) roles
+Regular Neutral - Spawns only Neutral (Evil) and (Benign) roles
+Harmful Neutral - Spawns only Neutral (Killing), (Harbinger) and (Neophyte) roles
+Ban Murderer - A free ban slot for the Murderer role (as it has no abilities and is very bland)
 
 Credits-
 Reworked Creator - AlchlcDvl
 Reworked Contributors - Det, Oper, xerminator, TheGodOfAr0n, twix, Discussions, Jsushi
-Reworked Testers - DarkFedora, 50 IQ, shiftyrose, TheRealLordDragon, Adrian D/i asked, Halloween Apple
+Reworked Testers - DarkFedora, 50 IQ, shiftyrose, TheRealLordDragon, Adrian D, HalloweenApple, Dave
 Reworked Artists - Kara, lotty, Gun, XiezibanWrite, Ramces, Det (their work can be found in %assets%)
 Reworked Translators - XiezibanWrite, CharlesQwQ
 Moral Support - MyDragonBreath

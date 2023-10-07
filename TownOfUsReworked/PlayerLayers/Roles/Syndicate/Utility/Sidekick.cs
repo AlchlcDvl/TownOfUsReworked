@@ -21,8 +21,7 @@ public class Sidekick : Syndicate
         var newRole = new PromotedRebel(Player)
         {
             FormerRole = FormerRole,
-            RoleBlockImmune = FormerRole.RoleBlockImmune,
-            Alignment = FormerRole.Alignment
+            RoleBlockImmune = FormerRole.RoleBlockImmune
         };
 
         newRole.RoleUpdate(this);

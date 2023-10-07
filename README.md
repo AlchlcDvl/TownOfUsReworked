@@ -1,7 +1,6 @@
 
 ### ***Note: This repo is a fork of [Town of Us Reactivated](https://github.com/eDonnes124/Town-Of-Us-R) and is currently under development.***
-### ***Also Note: This mod is NOT for mobile and console versions, do not ask for a port.***
-### ***Also Also Note: This mod is NOT host only either.***
+### ***Also Note: This mod is NOT for mobile and console versions and is NOT host only either, do not ask for a port or a rewrite.***
 
 -----------------------
 
@@ -9,7 +8,7 @@
 
 <p align="center"><a href="https://github.com/AlchlcDvl/TownOfUsReworked/releases/"><img src="https://badgen.net/github/release/AlchlcDvl/TownOfUsReworked?icon=github"></a></p>
 
-An [Among Us](https://store.steampowered.com/app/945360/Among_Us) mod that adds a bunch of roles, modifiers, objectifiers, abilities, improvements, game modes, modifiers and settings!
+An [Among Us](https://store.steampowered.com/app/945360/Among_Us) mod that adds a bunch of features!
 
 Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or want to find people to play with!
 
@@ -24,6 +23,8 @@ Quick warning: This mod adds a whole LOT of stuff, and is currently not very beg
 [**Releases**](#releases)
 
 [**Changelogs**](#changelogs)
+
+[**Additional Notes**](#additional-notes)
 
 [**Installation**](#installation)
 - [Requirements](#requirements)
@@ -40,50 +41,60 @@ Quick warning: This mod adds a whole LOT of stuff, and is currently not very beg
 
 [**Player Layers**](#player-layers)
 
-| [Intruders](#intruder-roles) | [Syndicate](#syndicate-roles) | [Crew](#crew-roles)               | [Neutrals](#neutral-roles)        |
-|------------------------------|-------------------------------|-----------------------------------|-----------------------------------|
-| [Ambusher](#ambusher)        | [Anarchist](#anarchist)       | [Altruist](#altruist)             | [Actor](#actor)                   |
-| [Blackmailer](#blackmailer)  | [Banshee](#banshee)           | [Chameleon](#chameleon)           | [Amnesiac](#amnesiac)             |
-| [Camouflager](#camouflager)  | [Bomber](#bomber)             | [Coroner](#coroner)               | [Arsonist](#arsonist)             |
-| [Consigliere](#consigliere)  | [Collider](#collider)         | [Crewmate](#crewmate)             | [Betrayer](betrayer)              |
-| [Consort](#consort)          | [Concealer](#concealer)       | [Detective](#detective)           | [Bounty Hunter](#bounty-hunter)   |
-| [Disguiser](#disguiser)      | [Crusader](#crusader)         | [Dictator](#dictator)             | [Cannibal](#cannibal)             |
-| [Enforcer](#enforcer)        | [Drunkard](#drunkard)         | [Engineer](#engineer)             | [Cryomaniac](#cryomaniac)         |
-| [Ghoul](#ghoul)              | [Framer](#framer)             | [Escort](#escort)                 | [Dracula](#dracula)               |
-| [Godfather](#godfather)      | [Poisoner](#poisoner)         | [Inspector](#inspector)           | [Executioner](#executioner)       |
-| [Grenadier](#grenadier)      | [Rebel](#rebel)               | [Mayor](#mayor)                   | [Glitch](#glitch)                 |
-| [Impostor](#impostor)        | [Shapeshifter](#shapeshifter) | [Medic](#medic)                   | [Guardian Angel](#guardian-angel) |
-| [Janitor](#janitor)          | [Sidekick](#sidekick)         | [Medium](#medium)                 | [Guesser](#guesser)               |
-| [Mafioso](#mafioso)          | [Silencer](#silencer)         | [Monarch](#monarch)               | [Jackal](#jackal)                 |
-| [Miner](#miner)              | [Spellslinger](#spellslinger) | [Mystic](#mystic)                 | [Jester](#jester)                 |
-| [Morphling](#morphling)      | [Stalker](#stalker)           | [Operative](#operative)           | [Juggernaut](#juggernaut)         |
-| [Teleporter](#teleporter)    | [Timekeeper](time-keeper)     | [Retributionist](#retributionist) | [Murderer](#murderer)             |
-| [Wraith](#wraith)            | [Warper](#warper)             | [Revealer](#revealer)             | [Necromancer](#necromancer)       |
-|                              |                               | [Seer](#seer)                     | [Pestilence](#pestilence)         |
-|                              |                               | [Sheriff](#sheriff)               | [Phantom](#phantom)               |
-|                              |                               | [Shifter](#shifter)               | [Plaguebearer](#plaguebearer)     |
-|                              |                               | [Tracker](#tracker)               | [Serial Killer](#serial-killer)   |
-|                              |                               | [Transporter](#transporter)       | [Survivor](#survivor)             |
-|                              |                               | [Vampire Hunter](#vampire-hunter) | [Thief](#thief)                   |
-|                              |                               | [Veteran](#veteran)               | [Werewolf](#werewolf)             |
-|                              |                               | [Vigilante](#vigilante)           | [Whisperer](#whisperer)           |
+| [Intruders](#intruder-roles) | [Syndicate](#syndicate-roles) | [Crew](#crew-roles)               | [Neutrals](#neutral-roles)        | [Game Mode](#game-mode-roles) |
+|------------------------------|-------------------------------|-----------------------------------|-----------------------------------|-------------------------------|
+| [Ambusher](#ambusher)        | [Anarchist](#anarchist)       | [Altruist](#altruist)             | [Actor](#actor)                   | [Hunted](#hunted)             |
+| [Blackmailer](#blackmailer)  | [Banshee](#banshee)           | [Chameleon](#chameleon)           | [Amnesiac](#amnesiac)             | [Hunter](#hunter)             |
+| [Camouflager](#camouflager)  | [Bomber](#bomber)             | [Coroner](#coroner)               | [Arsonist](#arsonist)             | [Runner](#runner)             |
+| [Consigliere](#consigliere)  | [Collider](#collider)         | [Crewmate](#crewmate)             | [Betrayer](betrayer)              |                               |
+| [Consort](#consort)          | [Concealer](#concealer)       | [Detective](#detective)           | [Bounty Hunter](#bounty-hunter)   |                               |
+| [Disguiser](#disguiser)      | [Crusader](#crusader)         | [Dictator](#dictator)             | [Cannibal](#cannibal)             |                               |
+| [Enforcer](#enforcer)        | [Drunkard](#drunkard)         | [Engineer](#engineer)             | [Cryomaniac](#cryomaniac)         |                               |
+| [Ghoul](#ghoul)              | [Framer](#framer)             | [Escort](#escort)                 | [Dracula](#dracula)               |                               |
+| [Godfather](#godfather)      | [Poisoner](#poisoner)         | [Inspector](#inspector)           | [Executioner](#executioner)       |                               |
+| [Grenadier](#grenadier)      | [Rebel](#rebel)               | [Mayor](#mayor)                   | [Glitch](#glitch)                 |                               |
+| [Impostor](#impostor)        | [Shapeshifter](#shapeshifter) | [Medic](#medic)                   | [Guardian Angel](#guardian-angel) |                               |
+| [Janitor](#janitor)          | [Sidekick](#sidekick)         | [Medium](#medium)                 | [Guesser](#guesser)               |                               |
+| [Mafioso](#mafioso)          | [Silencer](#silencer)         | [Monarch](#monarch)               | [Jackal](#jackal)                 |                               |
+| [Miner](#miner)              | [Spellslinger](#spellslinger) | [Mystic](#mystic)                 | [Jester](#jester)                 |                               |
+| [Morphling](#morphling)      | [Stalker](#stalker)           | [Operative](#operative)           | [Juggernaut](#juggernaut)         |                               |
+| [Teleporter](#teleporter)    | [Timekeeper](time-keeper)     | [Retributionist](#retributionist) | [Murderer](#murderer)             |                               |
+| [Wraith](#wraith)            | [Warper](#warper)             | [Revealer](#revealer)             | [Necromancer](#necromancer)       |                               |
+|                              |                               | [Seer](#seer)                     | [Pestilence](#pestilence)         |                               |
+|                              |                               | [Sheriff](#sheriff)               | [Phantom](#phantom)               |                               |
+|                              |                               | [Shifter](#shifter)               | [Plaguebearer](#plaguebearer)     |                               |
+|                              |                               | [Tracker](#tracker)               | [Serial Killer](#serial-killer)   |                               |
+|                              |                               | [Transporter](#transporter)       | [Survivor](#survivor)             |                               |
+|                              |                               | [Vampire Hunter](#vampire-hunter) | [Thief](#thief)                   |                               |
+|                              |                               | [Veteran](#veteran)               | [Werewolf](#werewolf)             |                               |
+|                              |                               | [Vigilante](#vigilante)           | [Whisperer](#whisperer)           |                               |
 
 | [Modifiers](#modifiers)       | [Abilities](#abilities)       | [Objectifiers](#objectifiers) |
 |-------------------------------|-------------------------------|-------------------------------|
 | [Astral](#astral)             | [Assassin](#assassin)         | [Allied](#allied)             |
 | [Bait](#bait)                 | [Button Barry](#button-barry) | [Corrupted](#corrupted)       |
-| [Coward](#coward)             | [Insider](#insider)           | [Defector](#defector)         |
-| [Diseased](#diseased)         | [Multitasker](#multitasker)   | [Fanatic](#fanatic)           |
-| [Drunk](#drunk)               | [Ninja](#ninja)               | [Linked](#linked)             |
-| [Dwarf](#dwarf)               | [Politician](#politician)     | [Lovers](#lovers)             |
-| [Giant](#giant)               | [Radar](#radar)               | [Mafia](#mafia)               |
-| [Indomitable](#indomitable)   | [Ruthless](#ruthless)         | [Overlord](#overlord)         |
-| [Professional](#professional) | [Snitch](#snitch)             | [Rivals](#rivals)             |
-| [Shy](#shy)                   | [Swapper](#swapper)           | [Taskmaster](#taskmaster)     |
-| [VIP](#vip)                   | [Tiebreaker](#tiebreaker)     | [Traitor](#traitor)           |
-| [Volatile](#volatile)         | [Torch](#torch)               |                               |
-| [Yeller](#yeller)             | [Tunneler](#tunneler)         |                               |
-|                               | [Underdog](#underdog)         |                               |
+| [Colorblind](#colorblind)     | [Insider](#insider)           | [Defector](#defector)         |
+| [Coward](#coward)             | [Multitasker](#multitasker)   | [Fanatic](#fanatic)           |
+| [Diseased](#diseased)         | [Ninja](#ninja)               | [Linked](#linked)             |
+| [Drunk](#drunk)               | [Politician](#politician)     | [Lovers](#lovers)             |
+| [Dwarf](#dwarf)               | [Radar](#radar)               | [Mafia](#mafia)               |
+| [Giant](#giant)               | [Ruthless](#ruthless)         | [Overlord](#overlord)         |
+| [Indomitable](#indomitable)   | [Snitch](#snitch)             | [Rivals](#rivals)             |
+| [Professional](#professional) | [Swapper](#swapper)           | [Taskmaster](#taskmaster)     |
+| [Shy](#shy)                   | [Tiebreaker](#tiebreaker)     | [Traitor](#traitor)           |
+| [VIP](#vip)                   | [Torch](#torch)               |                               |
+| [Volatile](#volatile)         | [Tunneler](#tunneler)         |                               |
+| [Yeller](#yeller)             | [Underdog](#underdog)         |                               |
+
+[**Game Modes**](#game-modes-1)
+- [Vanilla](#vanilla)
+- [Classic](#classic)
+- [Killing Only](#killing-only)
+- [All Any](#all-any)
+- [Role List](#role-list)
+- [Custom](#custom)
+- [Hide And Seek](#hide-and-seek)
+- [Task Race](#task-race)
 
 [**Custom Game Settings**](#custom-game-settings)
 - [Common Settings](#common-settings)
@@ -92,26 +103,21 @@ Quick warning: This mod adds a whole LOT of stuff, and is currently not very beg
 - [Syndicate Settings](#syndicate-settings)
 - [Neutral Settings](#neutral-settings)
 - [Game Settings](#game-settings)
-- [Game Mode Settings](#game-mode-settings)
-- [Killing Only Settings](#killing-only-settings)
-- [All Any/Role List Settings](#all-anyrole-list-settings)
 - [Game Modifiers](#game-modifiers)
 - [Game Announcements](#game-announcements)
-- [Quality Changes](#quality-changes)
-- [Custom Client Side Options](#custom-client-side-options)
 - [Map Settings](#map-settings)
 - [Better Sabotage Settings](#better-sabotage-settings)
 - [Better Skeld Settings](#better-skeld-settings)
 - [Better Mira HQ Settings](#better-mira-hq-settings)
 - [Better Polus Settings](#better-polus-settings)
 - [Better Airship Settings](#better-airship-settings)
+- [Custom Client Side Options](#custom-client-side-options)
 
 [**Game Info**](#game-info)
 - [Lighter Darker Colors](#lighter-darker-colors)
 - [Inspector Results](#inspector-results)
 - [Subfactions](#subfactions)
 - [Syndicate Chaos Drive Role Priority](#syndicate-chaos-drive-role-priority)
-- [Game Modes](#game-modes)
 
 [**Extras**](#extras)
 - [New Colors](#new-colors)
@@ -130,56 +136,57 @@ Quick warning: This mod adds a whole LOT of stuff, and is currently not very beg
 
 **Disclaimer: The mod is *not* guaranteed to work on the latest versions of Among Us when the game updates.**
 
-| Among Us | Mod Version | Link |
-|----------|-------------|------|
-| 2023.7.12 (s & e) | v0.5.2 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.5.2/Reworked.zip) |
-| 2023.7.12 (s & e) | v0.5.1 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.5.1/Reworked.zip) |
-| 2023.7.12 (s & e) | v0.5.0 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.5.0/Reworked.zip) |
+| Among Us          | Mod Version | Link                                                                                            |
+|-------------------|------------ |-------------------------------------------------------------------------------------------------|
+| 2023.7.12 (s & e) | 0.5.3       | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.5.3/Reworked.zip) |
+| 2023.7.12 (s & e) | 0.5.2       | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.5.2/Reworked.zip) |
+| 2023.7.12 (s & e) | 0.5.1       | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.5.1/Reworked.zip) |
+| 2023.7.12 (s & e) | 0.5.0       | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.5.0/Reworked.zip) |
 
 <details>
 <summary>Older Versions</summary>
 
-| Among Us | Mod Version | Link |
-|----------|-------------|------|
-| 2023.7.12 (s & e) | v0.4.5 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.4.5/Reworked.zip) |
-| 2023.7.12 (s & e) | v0.4.4 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.4.4/Reworked.zip) |
-| 2023.7.12 (s & e) | v0.4.3 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.4.3/Reworked.zip) |
-| 2023.7.12 (s & e) | v0.4.2 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.4.2/Reworked.zip) |
-| 2023.6.13 (s & e) | v0.4.1 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.4.1/Reworked.zip) |
-| 2023.6.13 (s & e) | v0.4.0 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.4.0/Reworked.zip) |
-| 2023.3.28 (s & e) | v0.3.1 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.3.1/Reworked.zip) |
-| 2023.3.28 (s & e) | v0.3.0 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.3.0/TownOfUsReworked.zip) |
-| 2023.3.28 (s & e) | v0.2.5 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.2.5/TownOfUsReworked.zip) |
-| 2023.3.28 (s & e) | v0.2.4 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.2.4/TownOfUsReworked.zip) |
-| 2023.3.28 (s & e) | v0.2.3 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.2.3/TownOfUsReworked.zip) |
-| 2023.3.28 (s & e) | v0.2.2 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.2.2/TownOfUsReworked.zip) |
-| 2023.3.28 (s & e) | v0.2.1 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.2.1/TownOfUsReworked.zip) |
-| 2023.3.28 (s & e) | v0.2.0 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.2.0/TownOfUsReworked.zip) |
-| 2023.3.28 (s & e) | v0.1.0-dev1 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.1.0-dev1/TownOfUsReworked.zip) |
-| 2023.3.28 (s & e) | v0.0.4-dev2 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.4-dev2/TownOfUsReworked.zip) |
-| 2023.3.28 (s & e) | v0.0.4-dev1 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.4-dev1/TownOfUsReworked.zip) |
-| 2023.3.28 (s & e) | v0.0.3-dev3 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.3-dev3/TownOfUsReworked.zip) |
-| 2023.3.28 (s & e) | v0.0.3-dev2 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.3-dev2/TownOfUsReworked.zip) |
-| 2023.3.28 (s & e) | v0.0.3-dev1 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.3-dev1/TownOfUsReworked.zip) |
-| 2023.3.28 (s & e) | v0.0.3 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.3/TownOfUsReworked.zip) |
-| 2023.3.28 (s & e) | v0.0.2dev8.75 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.2-dev8.75/TownOfUsReworked.zip) |
-| 2023.3.28 (s & e) | v0.0.2dev8.5 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.2-dev8.5/TownOfUsReworked.zip) |
-| 2023.3.28 (s & e) | v0.0.2dev8 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.2-dev8/TownOfUsReworked.zip) |
-| 2023.2.28 (s & e) | v0.0.2dev7 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.2-dev7/TownOfUsReworked.zip) |
-| 2023.2.28 (s & e) | v0.0.2dev6 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.2-dev6/TownOfUsReworked.zip) |
-| 2023.2.28 (s & e) | v0.0.2dev5 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.2-dev5/TownOfUsReworked.zip) |
-| 2023.2.28 (s & e) | v0.0.2dev4 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.2-dev4/TownOfUsReworked.zip) |
-| 2023.2.28 (s & e) | v0.0.2dev3 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.2-dev3/TownOfUsReworked.zip) |
-| 2023.2.28 (s & e) | v0.0.2dev2 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.2-dev2/ToU-Rew-v0.0.2-dev2.zip) |
-| 2022.12.14 (s & e) | v0.0.1dev19 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev19/ToU-Rew-v0.0.1-dev19.zip) |
-| 2022.12.14 (s & e) | v0.0.1dev18.5 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev18.5/ToU-Rew-v0.0.1-dev18.5.zip) |
-| 2022.12.14 (s & e) | v0.0.1dev18 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev18/ToU-Rew-v0.0.1-dev18.zip) |
-| 2022.12.14 (s & e) | v0.0.1dev17 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev17/ToU-Rew-v0.0.1-dev17.zip) |
-| 2022.12.14 (s & e) | v0.0.1dev16 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev16/ToU-Rew-v0.0.1dev16.rar) |
-| 2022.12.14 (s & e) | v0.0.1dev15 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev15/ToU-Rew-v0.0.1dev15.rar) |
-| 2022.12.14 (s & e) | v0.0.1dev14 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev14/ToU-Rew-v0.0.1dev14.rar) |
-| 2022.12.14 (s & e) | v0.0.1dev13.5 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev13.5/ToU-Rew-v0.0.1dev13.5.rar) |
-| 2022.12.14 (s & e) | v0.0.1dev13 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev13/ToU-Rew-v0.0.1dev13.rar) |
+| Among Us           | Mod Version  | Link                                                                                                                  |
+|--------------------|--------------|-----------------------------------------------------------------------------------------------------------------------|
+| 2023.7.12 (s & e)  | 0.4.5        | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.4.5/Reworked.zip)                       |
+| 2023.7.12 (s & e)  | 0.4.4        | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.4.4/Reworked.zip)                       |
+| 2023.7.12 (s & e)  | 0.4.3        | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.4.3/Reworked.zip)                       |
+| 2023.7.12 (s & e)  | 0.4.2        | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.4.2/Reworked.zip)                       |
+| 2023.6.13 (s & e)  | 0.4.1        | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.4.1/Reworked.zip)                       |
+| 2023.6.13 (s & e)  | 0.4.0        | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.4.0/Reworked.zip)                       |
+| 2023.3.28 (s & e)  | 0.3.1        | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.3.1/Reworked.zip)                       |
+| 2023.3.28 (s & e)  | 0.3.0        | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.3.0/TownOfUsReworked.zip)               |
+| 2023.3.28 (s & e)  | 0.2.5        | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.2.5/TownOfUsReworked.zip)               |
+| 2023.3.28 (s & e)  | 0.2.4        | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.2.4/TownOfUsReworked.zip)               |
+| 2023.3.28 (s & e)  | 0.2.3        | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.2.3/TownOfUsReworked.zip)               |
+| 2023.3.28 (s & e)  | 0.2.2        | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.2.2/TownOfUsReworked.zip)               |
+| 2023.3.28 (s & e)  | 0.2.1        | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.2.1/TownOfUsReworked.zip)               |
+| 2023.3.28 (s & e)  | 0.2.0        | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.2.0/TownOfUsReworked.zip)               |
+| 2023.3.28 (s & e)  | 0.1.0-dev1   | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.1.0-dev1/TownOfUsReworked.zip)          |
+| 2023.3.28 (s & e)  | 0.0.4-dev2   | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.4-dev2/TownOfUsReworked.zip)          |
+| 2023.3.28 (s & e)  | 0.0.4-dev1   | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.4-dev1/TownOfUsReworked.zip)          |
+| 2023.3.28 (s & e)  | 0.0.3-dev3   | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.3-dev3/TownOfUsReworked.zip)          |
+| 2023.3.28 (s & e)  | 0.0.3-dev2   | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.3-dev2/TownOfUsReworked.zip)          |
+| 2023.3.28 (s & e)  | 0.0.3-dev1   | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.3-dev1/TownOfUsReworked.zip)          |
+| 2023.3.28 (s & e)  | 0.0.3        | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.3/TownOfUsReworked.zip)               |
+| 2023.3.28 (s & e)  | 0.0.2dev8.75 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.2-dev8.75/TownOfUsReworked.zip)       |
+| 2023.3.28 (s & e)  | 0.0.2dev8.5  | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.2-dev8.5/TownOfUsReworked.zip)        |
+| 2023.3.28 (s & e)  | 0.0.2dev8    | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.2-dev8/TownOfUsReworked.zip)          |
+| 2023.2.28 (s & e)  | 0.0.2dev7    | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.2-dev7/TownOfUsReworked.zip)          |
+| 2023.2.28 (s & e)  | 0.0.2dev6    | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.2-dev6/TownOfUsReworked.zip)          |
+| 2023.2.28 (s & e)  | 0.0.2dev5    | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.2-dev5/TownOfUsReworked.zip)          |
+| 2023.2.28 (s & e)  | 0.0.2dev4    | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.2-dev4/TownOfUsReworked.zip)          |
+| 2023.2.28 (s & e)  | 0.0.2dev3    | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.2-dev3/TownOfUsReworked.zip)          |
+| 2023.2.28 (s & e)  | 0.0.2dev2    | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.2-dev2/ToU-Rew-v0.0.2-dev2.zip)       |
+| 2022.12.14 (s & e) | 0.0.1dev19   | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev19/ToU-Rew-v0.0.1-dev19.zip)     |
+| 2022.12.14 (s & e) | 0.0.1dev18.5 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev18.5/ToU-Rew-v0.0.1-dev18.5.zip) |
+| 2022.12.14 (s & e) | 0.0.1dev18   | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev18/ToU-Rew-v0.0.1-dev18.zip)     |
+| 2022.12.14 (s & e) | 0.0.1dev17   | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev17/ToU-Rew-v0.0.1-dev17.zip)     |
+| 2022.12.14 (s & e) | 0.0.1dev16   | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev16/ToU-Rew-v0.0.1dev16.rar)      |
+| 2022.12.14 (s & e) | 0.0.1dev15   | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev15/ToU-Rew-v0.0.1dev15.rar)      |
+| 2022.12.14 (s & e) | 0.0.1dev14   | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev14/ToU-Rew-v0.0.1dev14.rar)      |
+| 2022.12.14 (s & e) | 0.0.1dev13.5 | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev13.5/ToU-Rew-v0.0.1dev13.5.rar)  |
+| 2022.12.14 (s & e) | 0.0.1dev13   | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev13/ToU-Rew-v0.0.1dev13.rar)      |
 
 </details>
 
@@ -189,6 +196,30 @@ Quick warning: This mod adds a whole LOT of stuff, and is currently not very beg
 
 <details>
 <summary>Changelog</summary>
+<details>
+<summary>v0.5.3</summary>
+<ul> <li>New Game Mode: Task Race - See who's the best at finishing their tasks!</li> </ul>
+<ul> <li>New Game Mode: Hide And Seek - Hunt or be hunted!</li> </ul>
+<ul> <li>New Modifier: Colorblind</li> </ul>
+<ul> <li>New Alignment: Intruder (Head)</li> </ul>
+<ul> <li>Addition: Added an intro splash text</li> </ul>
+<ul> <li>Addition: Added new selection options for the Role List game mode (see additional notes)</li> </ul>
+<ul> <li>Addition: Added some animations for morphing and camouflaging</li> </ul>
+<ul> <li>Return: Custom nameplates are back</li> </ul>
+<ul> <li>Revert: Reverted the changes made to the auto updater</li> </ul>
+<ul> <li>Improvement: Improved how the player numbers and the lighter darker mentions appear</li> </ul>
+<ul> <li>Improvement: Improved how settings are loaded (might lead to loading issues with previously set settings)</li> </ul>
+<ul> <li>Improvement: Improved the sorting on role generation again</li> </ul>
+<ul> <li>Improvement: Improved how the invisibility animation is handled</li> </ul>
+<ul> <li>Change: The following alignment changes have been made - Godfather => Intruder (Head), Rebel => Syndicate (Power), Timekeeper => Syndicate (Disruption)</li> </ul>
+<ul> <li>Change: Seers no longer require other Seers to die in order to become Sheriffs</li> </ul>
+<ul> <li>Bug Fix: Fixed the side buttons overlapping with the Submerged floor change button (To be tested)</li> </ul>
+<ul> <li>Role Fix: Fixed Ghoul being able to kill Pestilence</li> </ul>
+<ul> <li>Role Fix: Fixed being unable to guess as Guesser</li> </ul>
+<ul> <li>Role Fix: Fixed Werewolf unable to kill</li> </ul>
+<ul> <li>Role Fix: Fixed Jackal being able to recruit players at the start of the game, even if they have both spawning recruits</li> </ul>
+<ul> <li>Potential Fix: Attempt number 4 at trying to reduce the "Fatal Error in GC" error</li> </ul>
+</details>
 <details>
 <summary>v0.5.2</summary>
 <ul> <li>Return: Custom visors are back</li> </ul>
@@ -1085,14 +1116,32 @@ Quick warning: This mod adds a whole LOT of stuff, and is currently not very beg
 
 -----------------------
 
+# Additional Notes
+
+<details>
+<summary>Additional Notes</summary>
+<details>
+<summary>v0.5.3</summary>
+There were new Role List options added for the Role List mode, here's what each of those options do:
+<ul> <li>Regular Crew - Spawns only Crew (Support), (Protective), (Investigative) and (Killing) roles</li> </ul>
+<ul> <li>Regular Intruder - Spawns only Intruder (Deception), (Killing), (Concealing) and (Support) roles</li> </ul>
+<ul> <li>Regular Syndicate - Spawns only Syndicate (Disruption), (Support) and (Killing) roles</li> </ul>
+<ul> <li>Regular Neutral - Spawns only Neutral (Evil) and (Benign) roles</li> </ul>
+<ul> <li>Harmful Neutral - Spawns only Neutral (Killing), (Harbinger) and (Neophyte) roles</li> </ul>
+<ul> <li>Ban Murderer - A free ban slot for the Murderer role (as it has no abilities and is very bland)</li> </ul>
+</details>
+</details>
+
+-----------------------
+
 # Installation
 
-## Requirements 
+## Requirements
 - Among Us
 - Steam or Epic Games
 - Windows/Linux operating system [download](#releases) the Town of Us Reworked zip file corresponding to the installed Among Us version.
 
-To start off any installation, 
+To start off any installation,
 
 ## Windows Steam Guide
 1. Go to your Steam library.
@@ -1255,9 +1304,9 @@ The Chameleon can go invisible to stalk players and see what they do when no one
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
+| Max Swoops | The number of times the Chameleon can use Swoop | Number | 5 |
 | Swoop Cooldown | The cooldown on the Chameleon's Swoop button | Time | 25s |
 | Swoop Duration | The duration of the Chameleon's Swoop | Time | 10s |
-| Max Swoops | The number of times the Chameleon can use Swoop | Number | 5 |
 
 ![Chameleon](./Images/Chameleon.png)
 
@@ -1331,8 +1380,8 @@ The Engineer can fix sabotages from anywhere on the map. They can also use vents
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Fix Cooldown | The cooldown on the Engineer's Fix button | Time | 25s |
 | Max Fixes | How many times can the Engineer fix sabotages | Number | 5 |
+| Fix Cooldown | The cooldown on the Engineer's Fix button | Time | 25s |
 
 ![Engineer](./Images/Engineer.png)
 
@@ -1416,7 +1465,7 @@ The Medium can mediate to be able to see ghosts. If the Medium uses this ability
 
 ## Monarch
 ### Alignment: Crew (Sovereign)
-### Origin: Traitors In Salem King
+### Origin: Traitors In Salem King/Town Of Salem 2
 
 The Monarch can appoint players as knights. When the next meeting is called, all knighted players will be announced. Knighted players will have the value of their votes increased. As long as a Knight is alive, the Monarch cannot be killed. Knighted players have a pinkish red κ next to their names.
 
@@ -1424,7 +1473,7 @@ The Monarch can appoint players as knights. When the next meeting is called, all
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Knighting Cooldown | The cooldown on the Monarch's Knighting button | Time | 10s |
+| Knighting Cooldown | The cooldown on the Monarch's Knight button | Time | 10s |
 | Monarch Cannot Knight Round One | Self descriptive | Toggle | True |
 | Knighted Count | The number of times the Monarch can knight players | Number | 1 |
 | Knighted Votes Count As | The additional number of votes that are added to a knighted player's vote | Number | 1 |
@@ -1478,7 +1527,6 @@ The Retributionist can mimic dead crewmates. During meetings, the Retributionist
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Retributionist Can Mimic After Voting | Self descriptive | Toggle | True |
-| Total Limit On Limited Abilities | How many times can the Retributionist use the abilities of roles with limited uses on their abilities | Number | 5 |
 
 ![Retributionist](./Images/Retributionist.png)
 
@@ -1555,10 +1603,10 @@ The Tracker can track others during a round. Once they track someone, an arrow i
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Arrow Update Interval | The time it takes for the arrow to update to the new location of the tracked player | Time | 5s |
+| Max Tracks | The number of new people they can track each round | Number | 5 |
 | Track Cooldown | The cooldown on the Tracker's Track button | Time | 25s |
 | Tracker Arrows Reset Each Round | Whether Tracker Arrows are removed after each meeting | Toggle | False |
-| Max Tracks | The number of new people they can track each round | Number | 5 |
+| Arrow Update Interval | The time it takes for the arrow to update to the new location of the tracked player | Time | 5s |
 
 ![Tracker](./Images/Tracker.png)
 
@@ -1572,8 +1620,9 @@ The Transporter can swap the locations of two players at will. Being transported
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Transport Cooldown | The cooldown on the Transporter's Transport ability | Time | 25s |
 | Max Transports | The amount of times the Transport ability can be used | Number | 5 |
+| Transport Cooldown | The cooldown on the Transporter's Transport ability | Time | 25s |
+| Transport Duration | The duration of the transport animation | Time | 5s |
 | Transporter Can Transport Themselves | Self descriptive | Toggle | False |
 
 ![Transporter](./Images/Transporter.png)
@@ -1601,9 +1650,9 @@ The Veteran can go on alert. Anyone who interacts with a Veteran on alert will b
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
+| Max Alerts | The number of times the Veteran can alert throughout the game | Number | 5 |
 | Alert Cooldown | The cooldown on the Veteran's Alert button. | Time | 5s |
 | Alert Duration | The duration of the Veteran's Alert | Time | 25s |
-| Max Alerts | The number of times the Veteran can alert throughout the game | Number | 5 |
 
 ![Veteran](./Images/Veteran.png)
 
@@ -1622,8 +1671,8 @@ The Vigilante can kill. However, if they kill someone they shouldn't, they inste
 | Vigilante Cannot Shoot Round One | Self descriptive | Toggle | True |
 | How Is The Vigilante Notified Of Their Target's Innocence | Whether the Vigilante is notified of their target's innocent upon misfire | String | Never |
 | How Does Vigilante Die | Dictates how does the Vigilante die, should they kill or attempt to kill someone they shouldn't | String | Immediately |
-| Shoot Cooldown | The cooldown on the Vigilante's kill button | Time | 25s |
 | Max Bullets | The number of times the Vigilante can shoot players throughout the game | Number | 5 |
+| Shoot Cooldown | The cooldown on the Vigilante's Shoot button | Time | 25s |
 
 ![Vigiante](./Images/Vigilante.png)
 
@@ -1646,7 +1695,6 @@ Each member of this faction has their own unique way to win, seperate from the o
 ## Actor
 ### Alignment: Neutral (Evil)
 ### Win Condition: Get guessed as a role in their target role list
-### Origin: Town Of Us Reworked
 
 The Actor gets a list of roles at the start of the game. This list of roles depends on which roles are present in the game so that it's easier for the Actor to pretend with certain events. The Actor must pretend to be and get guessed as one of the roles in order to win.
 
@@ -1654,6 +1702,7 @@ The Actor gets a list of roles at the start of the game. This list of roles depe
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
+| Actor Can Choose A Target Role | Whether the Actor can target a player to try and get guessed as their role | Toggle | True |
 | Actor Can Button | Whether the Actor call a meeting | Toggle | True |
 | Actor Can Hide In Vents | Whether the Actor Can Vent | Toggle | False |
 | Actor Can Switch Vents | Whether the Actor Can Switch while in Vents | Toggle | False |
@@ -1673,7 +1722,7 @@ The Amnesiac is essentially roleless and cannot win without remembering the role
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Amnesiac Gets Arrows To Dead Bodies | Self descriptive | Toggle | False |
-| Arrow Appearance Delay | The delay of the arrows appearing after the person died | Time | 5s |
+| Remember Arrow Appearance Delay | The delay of the arrows appearing after the person died | Time | 5s |
 | Amnesiac Can Hide In Vents | Decides whether the Amnesiac can vent | Toggle | False |
 | Amnesiac Can Switch Vents | Decides whether the Amnesiac can switch while in vents | Toggle | True |
 
@@ -1703,7 +1752,6 @@ The Arsonist can douse players with gasoline. After dousing, the Arsonist can ch
 ## Betrayer
 ### Alignment: Neutral (Proselyte)
 ### Win Condition: Kill anyone who opposes the faction they defected to
-### Origin: Town Of Us Reworked
 
 The Betrayer is a simple killer, who appears after a turned Traitor/Fanatic was the only member of their new faction remaning. This role does not spawn directly.
 
@@ -1711,7 +1759,7 @@ The Betrayer is a simple killer, who appears after a turned Traitor/Fanatic was 
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Kill Cooldown | The cooldown on the Betrayer's Kill button | Time | 25s |
+| Betray Cooldown | The cooldown on the Betrayer's Betray button | Time | 25s |
 | Betrayer Can Vent | Decides whether the Betrayer can vent | Toggle | True |
 
 ![Betrayer](./Images/Betrayer.png)
@@ -1719,7 +1767,6 @@ The Betrayer is a simple killer, who appears after a turned Traitor/Fanatic was 
 ## Bounty Hunter
 ### Alignment: Neutral (Evil)
 ### Win Condition: Find and kill thier target
-### Origin: Town Of Us Reworked
 
 The Bounty Hunter is assigned a target as the start of the game. Every meeting, the Bounty Hunter is given clue to who their target might be. They do not know who the target is and must find them via a series of clues and limited guesses. Upon finding their target within the set amount of guesses, the guess button becomes a kill button. The Bounty Hunter's target always knows that there is a bounty on their head. If the Bounty Hunter is unable to find their target within the number of guesses or their target dies not by the Bounty Hunter's hands, the Bounty Hunter becomes a Troll. The target has a red Θ next to their names.
 
@@ -1727,8 +1774,9 @@ The Bounty Hunter is assigned a target as the start of the game. Every meeting, 
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
+| Bounty Hunter Can Indirectly Pick Their Own Target | Whether the Bounty Hunter can choose a player to pick a target for them | Toggle | False |
+| Max Target Guesses | The number of times the Bounty Hunter can try to guess players as their target before losing | Number | 5 |
 | Guess Cooldown | The cooldown on the Bounty Hunter's Guess button | Time | 25s |
-| Max Guesses | The number of times the Bounty Hunter can try to guess players as their target before losing | Number | 5 |
 | Bounty Hunter Can Vent | Whether the Bounty Hunter Can Vent | Toggle | False |
 | Vigilante Kills Bounty Hunter | Whether the Vigilante is able to kill the Bounty Hunter | Toggle | False |
 
@@ -1739,17 +1787,17 @@ The Bounty Hunter is assigned a target as the start of the game. Every meeting, 
 ### Win Condition: Eat a certain number of bodies
 ### Origin: The Other Roles Vulture
 
-The Cannibal can eat the body which wipes away the body, like the Janitor.
+The Cannibal can eat the body which wipes it away, like the Janitor.
 
 ### Game Options
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Eat Cooldown | The cooldown on the Cannibal's eat button | Time | 25s |
-| Bodies Needed To Win | Self descriptive | Number | 5 (or changes to half the lobby size if not enough players) |
+| Bodies Needed To Win | Self descriptive | Number | 5 or changes to half the lobby size if not enough players |
 | Cannibal Can Vent | Decides whether the Cannibal can vent | Toggle | False |
 | Cannibal Gets Arrows | Whether the Cannibal has arrows pointing to dead bodies | Toggle | False |
-| Time After Death Arrow Appears | The delay of the arrows appearing after the person died | Time | 5s |
+| Eat Arrow Appearance Delay | The delay of the arrows appearing after the person died | Time | 5s |
 | Vigilante Kills Cannibal | Whether the Vigilante is able to kill the Cannibal | Toggle | False |
 
 ![Cannibal](./Images/Cannibal.png)
@@ -1757,7 +1805,6 @@ The Cannibal can eat the body which wipes away the body, like the Janitor.
 ## Cryomaniac
 ### Alignment: Neutral (Killing)
 ### Win Condition: Freeze anyone who can oppose them
-### Origin: Town Of Us Reworked
 
 The Cryomaniac can douse players in coolant and freeze them similar to the Arsonist's dousing in gasoline and ignite. Freezing players does not immediately kill doused targets, instead when the next meeting is called, all currently doused players will die. When the Cryomaniac is the last killer or when the final number of players reaches a certain threshold, the Cryomaniac can also directly kill. Doused players have a purple λ next to their names.
 
@@ -1767,6 +1814,7 @@ The Cryomaniac can douse players in coolant and freeze them similar to the Arson
 |------|-------------|------|---------|
 | Douse Cooldown | The cooldown on the Cryomaniac's Douse button | Time | 25s |
 | Freezing Freezes All Doused Players | One Cryomaniac freezing freezes all doused players of other Cryomaniacs as well | Toggle | False |
+| Cryomaniac Can Kill Normally When Last Killer | Whether the Cryomaniac is able to kill players directly if they happen to be the last evil alive | Toggle | False |
 | Cryomaniac Can Vent | Decides whether the Cryomaniac can vent | Toggle | False |
 
 ![Cryomaniac](./Images/Cryomaniac.png)
@@ -1774,7 +1822,6 @@ The Cryomaniac can douse players in coolant and freeze them similar to the Arson
 ## Dracula
 ### Alignment: Neutral (Neophyte)
 ### Win Condition: Convert or kill anyone who can oppose them
-### Origin: Town Of Us Reworked
 
 The Dracula is the only Undead that spawns in. The Dracula is the leader of the Undead who can convert others into an Undead. If the target cannot be converted, they will be attacked instead. The Dracula must watch out for the Vampire Hunter as attempting to convert them will cause the Vampire Hunter to kill the Dracula. Members of the Undead have a grey γ next to their names.
 
@@ -1800,8 +1847,7 @@ The Executioner has no abilities and instead must use gas-lighting techniques to
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Doom Cooldown | The cooldown on the Executioner's Guess button | Time | 25s |
-| Doom Count | The number of times the Executioner can doom those who voted for their target | Number | 5 (or lower if the number of people who voted for the target is lesser) |
+| Executioner Can Pick Their Own Target | Whether the Executioner can choose a player to be ejected | Toggle | False |
 | Executioner Can Button | Whether the Executioner can call a meeting | Toggle | True |
 | Executioner Can Hide In Vents | Whether the Executioner Can Vent | Toggle | False |
 | Executioner Can Switch Vents | Whether the Executioner Can Switch while in Vents | Toggle | False |
@@ -1835,7 +1881,7 @@ The Glitch can hack players, resulting in them being unable to do anything for a
 
 ## Guardian Angel
 ### Alignment: Neutral (Benign)
-### WIn Condition: Have your target live to see the end of the game
+### Win Condition: Have their target live to see the end of the game
 ### Origin: Town Of Salem
 
 The Guardian Angel more or less aligns themselves with the faction of their target. The Guardian Angel will win with anyone as long as their target lives to the end of the game, even if their target loses. If the Guardian Angel's target dies, they become a Survivor. Targets have a white ★ and a white η when being protected next to their names.
@@ -1844,6 +1890,7 @@ The Guardian Angel more or less aligns themselves with the faction of their targ
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
+| Guardian Angel Can Pick Their Own Target | Whether the Guardian Angel can choose a player to be protected | Toggle | False |
 | Protect Cooldown | The cooldown on the Guardian Angel's Protect button | Time | 25s |
 | Protect Duration | How long The Guardian Angel's Protect lasts | Time | 10s |
 | Cooldown Reset When Protected | The attackers kill cooldown after they attacked the protected target | Time | 2.5s |
@@ -1859,8 +1906,7 @@ The Guardian Angel more or less aligns themselves with the faction of their targ
 
 ## Guesser
 ### Alignment: Neutral (Evil)
-### Win Condition: Guess your target's role
-### Origin: Town Of Us Reworked
+### Win Condition: Guess their target's role
 
 The Guesser has no abilities aside from guessing only their target. Every meeting, the Guesser is told a hint regarding their target's role. If the target dies not by the Gusser's hands, the Guesser becomes an Actor with the target role list that of their target's role. Upon guessing their target, the Guesser can freely guess anyone. Targets have a beige π next to their names.
 
@@ -1868,6 +1914,7 @@ The Guesser has no abilities aside from guessing only their target. Every meetin
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
+| Guesser Can Pick Their Own Target | Whether the Guesser can choose a player to be guessed | Toggle | False |
 | Guesser Can Button | Whether the Guesser can call a meeting | Toggle | True |
 | Guesser Can Hide In Vents | Whether the Guesser Can Vent | Toggle | False |
 | Guesser Can Switch Vents | Whether the Guesser Can Switch while in Vents | Toggle | False |
@@ -1908,8 +1955,6 @@ The Jester has no abilities and must make themselves appear to be evil to the Cr
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Jester Can Button | Whether the Jester can call a meeting | Toggle | True |
-| Haunt Cooldown | The cooldown on the Jester's Guess button | Time | 25s |
-| Haunt Count | The number of times the Jester can haunt those who voted for them | Number | 5 (or lower if the number of people who voted for the Jester is lesser) |
 | Jester Can Hide In Vents | Whether the Jester Can Vent | Toggle | False |
 | Jester Can Switch Vents | Whether the Jester Can Switch while in Vents | Toggle | False |
 | Ejection Reveals Existence Of Jester | Decides if the Jester is ejected, it will reveal the fact that they were a Jester | Toggle | False |
@@ -1937,7 +1982,6 @@ The Juggernaut's kill cooldown decreases with every kill they make. When they re
 ## Murderer
 ### Alignment: Neutral (Killing)
 ### Win Condition: Murder anyone who can oppose them
-### Origin: Town Of Us Reworked
 
 The Murderer is a simple Neutral Killer with no special abilities.
 
@@ -1962,15 +2006,15 @@ The Necromancer is essentially an evil Altruist. They can resurrect dead players
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Resurrect Cooldown | The cooldown on the Necromancer's Resurrect button | Time | 25s |
-| Resurrect Cooldown Increase | The increase on the Necromancer's Resurrect cooldown with each use | Time | 5s |
 | Resurrect Cooldown Increases | Toggles whether the Necromancer's Resurrect cooldown increases each use | Toggle | True |
-| Resurrect Count | The number of times the Necromancer can resurrect | Number | 5 |
-| Kill Cooldown | The cooldown on the Necromancer's kill button | Time | 25s |
-| Kill Cooldown Increase | The increase on the Necromancer's kill cooldown with each use | Time | 5s |
-| Kill Cooldown Increases | Toggles whether the Necromancer's kill cooldown increases each use | Toggle | True |
-| Kill Count | The number of times the Necromancer can kill | Number | 5 |
+| Resurrect Cooldown Increases By | The increase on the Necromancer's Resurrect cooldown with each use | Time | 5s |
+| Max Resurrects | The number of times the Necromancer can resurrect | Number | 5 |
+| Sacrifice Cooldown | The cooldown on the Necromancer's Sacrifice button | Time | 25s |
+| Sacrifice Cooldown Increases | Toggles whether the Necromancer's sacrifice cooldown increases each use | Toggle | True |
+| Sacrifice Cooldown Increases By | The increase on the Necromancer's sacrifice cooldown with each use | Time | 5s |
+| Max Sacrifices | The number of times the Necromancer can sacrifice | Number | 5 |
 | Necromancer Can Vent | Toggles the Necromancer's ability to vent | Toggle | False |
-| Kill And Resurrect Cooldowns Are Linked | Decides whether the Necromancer's cooldowns are linked so that killing resets resurrection and vice versa | Toggle | False |
+| Sacrifice And Resurrect Cooldowns Are Linked | Decides whether the Necromancer's cooldowns are linked so that killing resets resurrection and vice versa | Toggle | False |
 | Resurrect Duration | The time it takes for the Necromancer to resurrect a dead body | Time | 10s |
 | Target's Body Disappears On Beginning Of Resurrect | Whether the dead body of the player the Necromancer is resurrecting disappears upon resurrection | Toggle | False |
 | Reanimated Can Vent | Whether the Necromancer's Reanimated Can Vent, overriding their role's vent settings | Toggle | False |
@@ -2078,6 +2122,8 @@ The Thief can kill players to steal their roles. The player, however, must be a 
 |------|-------------|------|---------|
 | Steals Cooldown | The cooldown on the Thief's Steal button | Time | 25s |
 | Thief Assigns Thief Role To Target | Whether the Thief completely steals their target's role or just copies it | Toggle | False |
+| Thief Can Guess To Steal Roles | Self descriptive | Toggle | True |
+| Thief Can Guess After Voting | Self descriptive | Toggle | True |
 | Thief Can Vent | Whether Thief Can Vent | Toggle | False |
 
 ![Thief](./Images/Thief.png)
@@ -2085,7 +2131,7 @@ The Thief can kill players to steal their roles. The player, however, must be a 
 ## Troll
 ### Alignment: Neutral (Evil)
 ### Win Condition: Get killed
-### Origin: Town Of Us Reworked
+### Origin: SocksFor1
 
 The Troll just wants to be killed, but not ejected. The Troll can "interact" with players. This interaction does nothing, it just triggers any interaction sensitive roles like Veteran and Pestilence. Killing the Troll makes the Troll kill their killer.
 
@@ -2102,7 +2148,6 @@ The Troll just wants to be killed, but not ejected. The Troll can "interact" wit
 ## Werewolf
 ### Alignment: Neutral (Killing)
 ### Win Condition: Maul anyone who can oppose them
-### Origin: Town Of Us Reworked
 
 The Werewolf can kill all players within a certain radius.
 
@@ -2128,10 +2173,11 @@ The Whisperer can whisper to all players within a certain radius. With each whis
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Whisper Cooldown | The cooldown on the Whisperer's Whisper button | Time | 25s |
-| Whisper Cooldown Increase | The increase on the Whisperer's whisper cooldown with each use | Time | 5s |
+| Whisper Cooldown Increases | Toggles whether the Whisperer's whisper cooldown increases each use | Time | 5s |
+| Whisper Cooldown Increases By | The increase on the Whisperer's whisper cooldown with each use | Time | 5s |
 | Whisper Rate | The inital rate for each whisper | Percentage | 5% |
-| Whisper Rate Decrease | Self descriptive | Percentage | 5% |
-| Whisper Rate Decreases | Self descriptive | Percentage | 5% |
+| Whisper Rate Decreases | Toggles whether the Whisperer's whisper rate decreases each use | Toggle | True |
+| Whisper Rate Decreases By | The decrease on the Whisperer's whisper rate with each use | Percentage | 5% |
 | Whisper Radius | How far a player must be to avoid a whisper | Factor | 1x |
 | Whisperer Can Vent | Toggles the Whisperer's ability to vent | Toggle | False |
 | Persuaded Can Vent | Whether the Whisperer's Sect Can Vent, overriding their role's vent settings | Toggle | False |
@@ -2148,13 +2194,13 @@ Each member of this faction has the ability to kill alongside an ability pertain
 |------|-------------|------|---------|
 | Intruder Count | How many Intruders can spawn | Number | 1 |
 | Kill Cooldown | The cooldown on the all of the Intruder's Kill button | Time | 25s |
-| Intruders Can Sabotage | Self descriptive | Toggle | False |
+| Intruders Can Sabotage | Self descriptive | Toggle | True |
+| Dead Intruders Can Sabotage | Self descriptive | Toggle | False |
 
 ![Intruder](./Images/Intruder.png)
 
 ## Ambusher
 ### Alignment: Intruder (Killing)
-### Origin: Town Of Us Reworked + Town Of Salem
 
 The Ambusher can temporarily force anyone to go on alert, killing anyone who interacts with the Ambusher's target.
 
@@ -2282,7 +2328,7 @@ The Ghoul is a dead Intruder. Every round, the Ghoul can mark a player for death
 ![Ghoul](./Images/Ghoul.png)
 
 ## Godfather
-### Alignment: Intruder (Support)
+### Alignment: Intruder (Head)
 
 The Godfather can only spawn in 3+ Intruder games. They can choose to promote a fellow Intruder to Mafioso. When the Godfather dies, the Mafioso becomes the new Godfather and has lowered cooldowns.
 
@@ -2422,24 +2468,17 @@ Each member of this faction has a special ability and then after a certain numbe
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Syndicate Count | How many Syndicate can spawn | Number | 1 |
-| Kill Cooldown | The cooldown on the all of the Syndicate's Kill button upon receiving the Chaos Drive | Time | 25s |
+| Chaos Drive Holder Kill Cooldown | The cooldown on the all of the Syndicate's Kill button upon receiving the Chaos Drive | Time | 25s |
 | Syndicate Replaces Intruders | Self descriptive | Toggle | False |
 | Chaos Drive Timer | How many meetings must pass before the Chaos Drive is handed out | Number | 3 |
 | Chaos Drive Is Global | The Chaos Drive is handed out to every member of the Syndicate rather than only one | Toggle | False |
-| Bomb Detonation Kills Members Of The Syndicate | Dictates whether members of the Syndicate are immune to bomb detonations | Toggle | True |
 
 ![Syndicate](./Images/Syndicate.png)
 
 ## Anarchist
 ### Alignment: Syndicate (Utility)
 
-Just a plain Syndicate with no abilities and only spawns if all the other roles are taken or set to spawn in Custom mode. Its only benefit is its ability to kill from the beginning of the game. With the Chaos Drive, the Anarchist's kill cooldown decreases.
-
-### Game Options
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Kill Cooldown | The cooldown on the Anarchist's Kill button before receiving the Chaos Drive | Time | 25s |
+Just a plain Syndicate with no abilities and only spawns if all the other roles are taken or set to spawn in Custom mode. Its only benefit is its ability to kill from the beginning of the game.
 
 ![Anarchist](./Images/Anarchist.png)
 
@@ -2473,6 +2512,7 @@ The Bomber can place a bomb which can be remotely detonated at any time. Anyone 
 | Bomb and Detonate Cooldowns Are Linked | Decides whether the Bomber's cooldowns are linked so that detonating resets placing and vice versa | Toggle | False |
 | Bombs Are Cleared Every Meeting | Self descriptive | Toggle | False |
 | Bombs Detonate When A Meeting Is Called | Self descriptive | Toggle | False |
+| Bomb Detonation Kills Members Of The Syndicate | Dictates whether members of the Syndicate are immune to bomb detonations | Toggle | True |
 
 ![Bomber](./Images/Bomber.png)
 
@@ -2502,6 +2542,7 @@ The Crusader can temporaily force anyone to go on alert, killing anyone who inte
 |------|-------------|------|---------|
 | Crusade Cooldown | The cooldown on the Crusader's Crusade button | Time | 25s |
 | Crusade Duration | The duration of the Crusader target's Crusade | Time | 10s |
+| Chaos Drive Crusade Radius | By how much does the range of the charged up crusade effect have | Distance | 0.1m |
 | Crusader Can Crusade Teammates | Dictates whether the Crusader can target teammates, while also being able to kill them | Toggle | False |
 
 ![Crusader](./Images/Crusader.png)
@@ -2516,9 +2557,13 @@ The Collider can mark players as positive and negative. If these charged players
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Coolide Cooldown | The cooldown on the Collider's Coolide button | Time | 25s |
+| Set Charges Cooldown | The cooldown on the Collider's Collide button | Time | 25s |
 | Collide Radius | How much distance must be between the charged players for them to survive | Distance | 1m |
 | Chaos Drive Collide Radius Increase | How much does the collide distance increase by upon receiving the Chaos Drive | Distance | 1m |
+| Charge Cooldown | The cooldown on the Collider's Charge button | Time | 25s |
+| Charge Duration | The duration of the Collider's Charge | Time | 10s |
+| Set Charge Cooldowns Are Linked | Decides whether the Collider's positive and negative button cooldowns are linked | Toggle | False |
+| Collision Resets Charge Cooldowns | Decides whether the Collider's positive and negative button cooldowns are reset when a successful collision happens | Toggle | False |
 
 ![Collider](./Images/Collider.png)
 
@@ -2568,7 +2613,7 @@ The Poisoner can poison a player instead of killing them. When they poison a pla
 ![Poisoner](./Images/Poisoner.png)
 
 ## Rebel
-### Alignment: Syndicate (Support)
+### Alignment: Syndicate (Power)
 
 The Rebel can only spawn in 3+ Syndicate games. They can choose to promote a fellow Syndicate to Sidekick. When the Rebel dies, the Sidekick becomes the new Rebel and has lowered cooldowns. With the Chaos Drive, the Rebel's gains the improved abilities of their former role.
 
@@ -2632,7 +2677,7 @@ The Spellslinger is a powerful role who can cast curses on players. When all non
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Spell Cooldown | The cooldown on the Spellslinger's Spell button | Time | 25s |
-| Spell Cooldown Increase | By how much does the cooldown increase with each curse cast | Time | 5s |
+| Spell Cooldown Increases By | By how much does the cooldown increase with each curse cast | Time | 5s |
 
 ![Spellslinger](./Images/Spellslinger.png)
 
@@ -2650,7 +2695,7 @@ The Stalker is a buffed Tracker with no update interval. With the Chaos Drive, t
 ![Stalker](./Images/Stalker.png)
 
 ## Timekeeper
-### Alignment: Syndicate (Power)
+### Alignment: Syndicate (Disruption)
 ### Origin: Reworked Town Of Us Time Lord
 
 The Timekeeper can control time. Without the Chaos Drive, the Timekeeper can freeze time, making everyone unable to move and with it, the Timekeeper rewinds players instead.
@@ -2677,9 +2722,32 @@ The Warper can teleport a player to another player. With the Chaos Drive, the Wa
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Warp Cooldown | The cooldown on the Warper's Warp button | Time | 25s |
+| Warp Duration | The duration of the warp animation | Time | 5s |
 | Warper Can Warp Themselves | Self descriptive | Toggle | False |
 
 ![Warper](./Images/Warper.png)
+
+# Game Mode Roles
+
+Each role within this group only spawns in certain game modes and come with their own special interactions with the game.
+
+## Hunted
+### Game Mode: Hide And Seek
+### Win Condition: Finish tasks with the other Hunted before the Hunters kill or convert all of them
+
+The Hunted is one of the two roles that spawn in this mod's version of Hide And Seek. The Hunted has no active abilities and just has a higher vision than the Hunters and might be able to chat.
+
+## Hunter
+### Game Mode: Hide And Seek
+### Win Condition: Kill or convert all of the Hunted
+
+The Hunter is one of the two roles that spawn in this mod's version of Hide And Seek. The Hunter can kill Hunted, or convert them to Hunters. The Hunters also have a higher run speed than Hunters but can barely see in exchange.
+
+## Runner
+### Game Mode: Task Race
+### Win Condition: Finish tasks before the others
+
+The Runner is a role that only spawns in the Task Race game mode. It has no abilities and just ends the game when they are the first to finish.
 
 -----------------------
 
@@ -2772,7 +2840,6 @@ The Lovers are two players who are linked together. They gain the primary object
 |------|-------------|------|---------|
 | Enable Lovers Chat | Whether the Lovers get a private chat in-between meetings | Toggle | True |
 | Both Lovers Die | Whether the a Lover automatically dies if the other does | Toggle | True |
-| Lovers Can Be Of The Same Faction | Self descriptive | Toggle | True |
 | Lovers Know Each Other's Roles | Self descriptive | Toggle | True |
 
 ## Mafia
@@ -2815,7 +2882,6 @@ The Rivals cannot do anything to each other and must get the other one killed.
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Enable Rivals Chat | Whether the Rivals get a private chat in-between meetings (this is just a troll setting lol) | Toggle | True |
-| Rivals Can Be Of The Same Faction | Self descriptive | Toggle | True |
 | Rivals Know Each Other's Roles | Self descriptive | Toggle | True |
 
 ## Taskmaster
@@ -2869,9 +2935,15 @@ Killing the Bait makes the killer auto self-report the Bait's body.
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Bait Knows Who They Are | Whether the Bait knows who they are | Toggle | True |
+| Bait Knows Who They Are | Whether a player knows they are Bait at the start of a game | Toggle | True |
 | Bait Minimum Delay | The minimum time the killer of the Bait reports the body | Time | 0s |
 | Bait Maximum Delay | The maximum time the killer of the Bait reports the body | Time | 1s |
+
+## Colorblind
+### Applied To: Everyone
+### Origin: Partly Town Of Us Aurial
+
+A colorblind player cannot tell the difference between players.
 
 ## Coward
 ### Applied To: Everyone
@@ -2889,7 +2961,7 @@ Killing the Diseased increases all of the killer's cooldowns.
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Diseased Knows Who They Are | Whether the Bait knows who they are | Toggle | True |
+| Diseased Knows Who They Are | Whether a player knows they are Diseased at the start of a game | Toggle | True |
 | Cooldown Multiplier | How much the Cooldowns of the killer is increased by | Factor | 3x |
 
 ## Drunk
@@ -2902,6 +2974,7 @@ The Drunk player's controls are inverted.
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
+| Drunk Knows Who They Are | Whether a player knows they are Drunk at the start of a game | Toggle | True |
 | Drunk Controls Swap Over Time | Self descriptive | Toggle | True |
 | Swap Interval | How much time must pass before the controls swap | Time | 15s |
 
@@ -2957,7 +3030,6 @@ The Professional has an extra life when guessing.
 
 ## Shy
 ### Applied To: Everyone
-### Origin: Town Of Us Reworked
 
 The Shy player cannot call meetings.
 
@@ -2983,11 +3055,11 @@ A Volatile player will see random things happen to them and cannot distinguish r
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
+| Volatile Knows Who They Are | Whether a player knows they are Volatile at the start of a game | Toggle | True |
 | Volatile Interval | How much time must pass before something happens | Time | 10s |
 
 ## Yeller
 ### Applied To: Everyone
-### Origin: Town Of Us Reworked
 
 The Yeller's location is always revealed to others.
 
@@ -3009,8 +3081,9 @@ The Assassin can guess the layers of others. If they guess right, the target is 
 |------|-------------|------|---------|
 | Assassin Guess Limit | The number of kills Assassins can do with his ability | Number | 1 |
 | Assassin Multiple Kill | Whether the Assassin can kill more than once per meeting | Toggle | False |
-| Assassin Guess Neutral Evil | Whether the Assassin can Guess Neutral Evil roles | Toggle | False |
-| Assassin Guess Neutral Benign | Whether the Assassin can Guess Neutral Benign roles | Toggle | False |
+| Assassin Guess Neutral Evils | Whether the Assassin can Guess Neutral (Evil) roles | Toggle | False |
+| Assassin Guess Neutral Benigns | Whether the Assassin can Guess Neutral (Benign) roles | Toggle | False |
+| Assassin Guess Crew Investigatives | Whether the Assassin can Guess Crew (Investigative) roles | Toggle | False |
 | Assassin Guess Pestilence | Whether the Assassin can Guess Pestilence | Toggle | False |
 | Assassin Guess Select Modifiers | Whether the Assassin can Guess some non-obvious Modifiers | Toggle | False |
 | Assassin Guess Select Objectifiers | Whether the Assassin can Guess some non-obvious Objectifiers | Toggle | False |
@@ -3027,7 +3100,7 @@ The Button Barry can call a meeting from anywhere on the map, even during sabota
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Button Cooldown | How much time must pass since the last meeting to be able to call a meeting | Percentage | 0% |
+| Button Cooldown | How much time must pass since the last meeting to be able to call a meeting | Cooldown | 10s |
 
 ## Insider
 ### Applied To: Crew
@@ -3048,6 +3121,7 @@ The Insider will be able to view everyone's votes in meetings upon finishing the
 When doing tasks, the Multitasker's task window is transparent.
 
 ### Game Options
+
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Transperency | Decides how well can someone see when opening a task | Percentage | 50% |
@@ -3088,7 +3162,7 @@ A Ruthless killer can bypass all forms of protection. Although they bypass alert
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Ruthless Knows Who They Are | Whether a player knows they are a Ruthless at the start of a game | Toggle | True |
+| Ruthless Knows Who They Are | Whether a player knows they are Ruthless at the start of a game | Toggle | True |
 
 ## Snitch
 ### Applied To: non-Traitor or Fanatic Crew
@@ -3163,7 +3237,101 @@ The Underdog is an Intruder or Syndicate with prolonged cooldowns when with a te
 |------|-------------|------|---------|
 | Underdog Knows Who They Are | Whether a player knows they are a Underdog at the start of a game | Toggle | True |
 | Kill Cooldown Bonus | The amount of time added or removed from the Underdog's Kill Cooldown | Time | 5s |
-| Increased Kill Cooldown  | Whether the Underdog's Kill Cooldown is Increased when they aren't alone | Toggle | True |
+| Increased Kill Cooldown | Whether the Underdog's Kill Cooldown is Increased when they aren't alone | Toggle | True |
+
+-----------------------
+
+# Game Modes
+
+This mod has a lot of different modes which greatly change how the game continues!
+
+### Game Mode Settings
+
+| Name | Description | Type | Default |
+|------|-------------|------|---------|
+| Game Mode | What game mode the next game will be | String | Classic |
+
+## Vanilla
+
+This mode is nothing special, everyone is either a basic [Crewmate](#crewmate) or [Impostor](#impostor) (or [Anarchist](#anarchist) if alternate intruders is turned on).
+
+## Classic
+
+This is the main mode of the game. Any layer can spawn in this mode, but only once.
+
+## Killing Only
+
+This is a restricted Classic mode where only roles with the capability to kill can spawn and the Syndicate recieves their Chaos Drive at the start of the game.
+
+### Killing Only Settings
+
+| Name | Description | Type | Default |
+|------|-------------|------|---------|
+| Neutrals Count | How many neutral roles will spawn | Number | 1 |
+| Add Arsonist | Whether Arsonist will be added to the role list | Toggle | True |
+| Add Cryomaniac | Whether Cryomaniac will be added to the role list | Toggle | True |
+| Add Plaguebearer | Whether Plaguebearer will be added to the role list | Toggle | True |
+
+## All Any
+
+This mode has no restrictions on how many instances of a layer can spawn. Each layer has a property called "Uniqueness" which is basically if only one of that layer can spawn (or two for Lovers, Rivals, Mafia or Linked).
+
+### All Any Settings
+
+| Name | Description | Type | Default |
+|------|-------------|------|---------|
+| Enable Uniques (Also applies to Role List) | Decide whether roles can be toggled to have only one spawn or not | Toggle | True |
+
+## Role List
+
+In this mode, you can make a set list of what roles can spawn. You can decide the exact number of a certain alignment/faction. However, other layers like modifiers, abilities and objectifiers cannot spawn in this mode. All Any's "Uniqueness" property of roles also applies here.
+
+### Role List Only Settings
+
+| Name | Description | Type | Default |
+|------|-------------|------|---------|
+| Role List Spawn Entry | There are 15 of these, you can pick whatever faction/alignment/role to spawn, keep in mind the uniqueness settings also take effect meaning if a selected role is not permissible, it is replaced by a regular Crewmate | Entry | None |
+| Role List Ban Entry | There are 5 of these, you can pick whichever role to ban from spawning, making sure it does not appear in the selected role list | Entry | None |
+| Ban Crewmate/Anarchist/Impostor/Murderer | These are free ban slots to block the specified role from spawning | Toggle | True |
+| Enable Revealer/Phantom/Ghoul/Banshee | These are extra slots to allow the spawning of the postmortal role of that type | Toggle | True |
+
+## Custom
+
+This mode is basically Classic but you can decide how many instances of the layer can spawn in the game.
+
+## Hide And Seek
+
+This mode is the unofficial addition of the Hide And Seek game mode that people used to play before the vanilla Hide And Seek was added. Only two roles spawn and this mode can have two types. The Classic type makes it so that the Hunters have to kill everyone else, but their numbers do not increase. In the Infection type, however, the Hunters turn the Hunted into their own teammates.
+
+### Hide And Seek Settings
+
+| Name | Description | Type | Default |
+|------|-------------|------|---------|
+| Game Type | What mode of Hide And Seek is to be played | String | Classic |
+| Common Tasks | How many common tasks must be assigned | Number | 4 |
+| Long Tasks | How many long tasks must be assigned | Number | 4 |
+| Short Tasks | How many short tasks must be assigned | Number | 4 |
+| Hunter Count | How many Hunters should spawn in | Number | 1 |
+| Hunt Cooldown | The cooldown on the Hunter's Hunt button | Time | 10s |
+| Start Time | The delayed start that the Hunters have when the game begins, to allow the Hunted to find places to hide/finish tasks fast | Time | 10s |
+| Hunter Can Vent | Self descriptive | Toggle | True |
+| Hunter Vision | How much can the Hunters see | Factor | x0.25 |
+| Hunted Vision | How much can the Hunted see | Factor | x1.5 |
+| Hunter Speed Modifier | How fast are the Hunters compared to the Hunted | Factor | x1.25 |
+| Hunters Use A Flashlight | Self descriptive | Toggle | False |
+| Hunted Use A Flashlight | Self descriptive | Toggle | False |
+| Hunted Can Chat | Self descriptive | Toggle | True |
+
+## Task Race
+
+This mode is a skill check mode to see who's the best at planning their task path and finishing tasks. No one can kill each other and must race to be the first one to finish their tasks.
+
+### Task Race Settings
+
+| Name | Description | Type | Default |
+|------|-------------|------|---------|
+| Common Tasks | How many common tasks must be assigned | Number | 4 |
+| Short Tasks | How many short tasks must be assigned | Number | 4 |
 
 -----------------------
 
@@ -3173,7 +3341,7 @@ The Underdog is an Intruder or Syndicate with prolonged cooldowns when with a te
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Player Speed | Self descriptive | Factor | 1x |
+| Player Speed | Self descriptive | Factor | 1.25x |
 | Ghost Speed | Self descriptive | Factor | 3x |
 | Interaction Distance | How far is too far to interact | Distance | 2m |
 | Emergency Button Count | How many times can players call meetings | Number | 1 |
@@ -3183,33 +3351,14 @@ The Underdog is an Intruder or Syndicate with prolonged cooldowns when with a te
 | Taskbar Updates | How does the taskbar update | String | Meeting Only |
 | Confirm Ejects | Displays the roles/factions of ejected players | Toggle | False |
 | Ejection Reveals Roles | Displays the roles/factions of ejected players | Toggle | False |
+| Enable Game Start Cooldowns | Toggles whether the game start cooldowns are applied or not | Toggle | True |
 | Game Start Cooldowns | Upon the start of the game, overrides the cooldowns of all roles with a cooldown | Time | 10s |
+| Enable Meeting End Cooldowns | Toggles whether the meeting end cooldowns are applied or not | Toggle | True |
 | Meeting End Cooldowns | Upon the end of the meeting, overrides the cooldowns of all roles with a cooldown | Time | 15s |
 | Player Report Distance | how close must a player be to a body to report it | Distance | 3.5m |
 | Chat Cooldown | How much should a player wait to send a message | Time | 3s |
 | Chat Character Limit | How much can a player type out before they can't anymore | Number | 200 |
 | Lobby Size | Self descriptive | Number | Auto-updates to whatever you set it as when making the lobby, otherwise 15 |
-
-## Game Mode Settings
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Game Mode | What game mode the next game will be | String | Classic |
-
-## Killing Only Settings
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Neutrals Count | How many neutral roles will spawn | Number | 1 |
-| Add Arsonist | Whether Arsonist will be added to the role list | Toggle | True |
-| Add Plaguebearer | Whether Plaguebearer will be added to the role list | Toggle | True |
-| Add Cryomaniac | Whether Cryomaniac will be added to the role list | Toggle | True |
-
-## All Any/Role List Settings
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Enable Uniques | Decide whether roles can be toggled to have only one spawn or not | Toggle | True |
 
 ## Game Modifiers
 
@@ -3222,15 +3371,17 @@ The Underdog is an Intruder or Syndicate with prolonged cooldowns when with a te
 | Who Sees First Kill Shield | Self descriptive | String | Everyone |
 | Factioned Evils Know The Roles Of Their Team | Self descriptive | Toggle | True |
 | Visual Tasks | Disables animations for certain tasks | Toggle | False |
-| No Player Names | Self descriptive | Toggle | False |
+| Player Names | How the game handles player names locally | String | Hide Obstructed |
 | Whispering | Toggles the whispering system | Toggle | True |
 | Everyone Is Alerted To Whispers | Players are told who's whispering who | Toggle | True |
 | Kill Animations Show Modified Player | Toggles whether the player's changed outfit is what appears on the kill animation | Toggle | True |
-| Random Player Spawns | Self descriptive | Toggle | False |
 | Enable Abilities | Self descriptive | Toggle | True |
 | Enable Objectifiers | Self descriptive | Toggle | True |
 | Enable Modifiers | Self descriptive | Toggle | True |
 | Players In Vents Can Be Targeted | Self descriptive | Toggle | False |
+| Cooldown Decreases Even While In A Vent | Self descriptive | Toggle | False |
+| Parallel Medbay Scans | Whether players have to wait for others to scan | Toggle | False |
+| Dead Can See Everything | Whether dead players are able to see every little detail about players | Toggle | False |
 
 ## Game Announcements
 
@@ -3240,30 +3391,6 @@ The Underdog is an Intruder or Syndicate with prolonged cooldowns when with a te
 | Reported Body's Location Is Announced | Self descriptive | Toggle | False |
 | Every Body's Role/Faction Is Announced | Self descriptive | String | Never |
 | Every Body's Killer's Role/Faction Is Announced | Self descriptive | String | Never |
-
-## Quality Changes
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Parallel Medbay Scans | Whether players have to wait for others to scan | Toggle | False |
-| Dead Can See Everything | Whether dead players are able to see every little detail about players | Toggle | False |
-| Hide Obstructed Player Names | Self descriptive | Toggle | False |
-
-## Custom Client Side Options
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Disable Level Icons | Whether all level icons are removed in meetings | Toggle | False |
-| White Nameplates | Whether all decorative nameplates are disabled in meetings | Toggle | False |
-| Enable Lighter Darker Colors | Whether all players have their color types visible | Toggle | True |
-| Custom Crew Colors | Toggles whether the roles from the Crew faction have a color unqiue to them | Toggle | True |
-| Custom Neutral Colors | Toggles whether the roles from the Neutral faction have a color unqiue to them | Toggle | True |
-| Custom Intruder Colors | Toggles whether the roles from the Intruder faction have a color unqiue to them | Toggle | True |
-| Custom Syndicate Colors | Toggles whether the roles from the Syndicate faction have a color unqiue to them | Toggle | True |
-| Custom Ability Colors | Toggles whether abilities have a color unqiue to them | Toggle | True |
-| Custom Modifier Colors | Toggles whether modifiers have a color unqiue to them | Toggle | True |
-| Custom Objectifier Colors | Toggles whether objectifiers have a color unqiue to them | Toggle | True |
-| Custom Ejection Messages | Just jokes | Toggle | False |
 
 ## Map Settings
 
@@ -3284,6 +3411,7 @@ The Underdog is an Intruder or Syndicate with prolonged cooldowns when with a te
 | Small Maps Increased Long Tasks | How many extra long tasks when the map is smaller maps | Number | 0 |
 | Large Maps Decreased Short Tasks | How many less short tasks when the map is larger maps | Number | 0 |
 | Large Maps Decreased Long Tasks | How many less long tasks when the map is larger maps | Number | 0 |
+| Random Player Spawns | Self descriptive | Toggle | False |
 
 ## Better Sabotage Settings
 
@@ -3298,23 +3426,23 @@ The Underdog is an Intruder or Syndicate with prolonged cooldowns when with a te
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Changed Skeld Vent Layout | Optimizes the vent layout on Skeld | Toggle | False |
-| Skeld Reactor Meltdown Countdown | What is the countdown for the reactor sabotage | Time | 60s |
-| Skeld Oxygen Depletion Countdown | What is the countdown for the o2 sabotage | Time | 60s |
+| Changed Vent Layout | Optimizes the vent layout on Skeld | Toggle | False |
+| Reactor Meltdown Countdown | What is the countdown for the reactor sabotage | Time | 60s |
+| Oxygen Depletion Countdown | What is the countdown for the O2 sabotage | Time | 60s |
 
 ## Better Mira HQ Settings
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Changed Mira HQ Vent Layout | Optimizes the vent layout on Mira HQ | Toggle | False |
-| Mira HQ Reactor Meltdown Countdown | What is the countdown for the reactor sabotage | Time | 60s |
-| Mira HQ Oxygen Depletion Countdown | What is the countdown for the o2 sabotage | Time | 60s |
+| Changed Vent Layout | Optimizes the vent layout on Mira HQ | Toggle | False |
+| Reactor Meltdown Countdown | What is the countdown for the reactor sabotage | Time | 60s |
+| Oxygen Depletion Countdown | What is the countdown for the O2 sabotage | Time | 60s |
 
 ## Better Polus Settings
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Changed Polus Vent Layout | Optimizes the vent layout on Polus | Toggle | False |
+| Changed Vent Layout | Optimizes the vent layout on Polus | Toggle | False |
 | Vitals Moved to Lab | Whether the Vitals panel is moved into the Laboratory | Toggle | False |
 | Cold Temp Moved to Death Valley | Whether the cold temperature task is moved to death valley | Toggle | False |
 | Reboot Wifi and Chart Course Swapped | Whether the Reboot Wifi and Chart Course swap locations | Toggle | False |
@@ -3332,6 +3460,22 @@ The Underdog is an Intruder or Syndicate with prolonged cooldowns when with a te
 | Move Electrical | Moves the electrical lights staion elsewhere on the map | String | Don't Move |
 | Min Time For Door Swipe | What is the minimum time required for the card swipe to be correct | Time | 60s |
 | Heli Crash Countdown | What is the countdown for the helicopter crash sabotage | Time | 60s |
+
+## Custom Client Side Options
+
+| Name | Description | Type | Default |
+|------|-------------|------|---------|
+| Disable Level Icons | Whether all level icons are removed in meetings | Toggle | False |
+| White Nameplates | Whether all decorative nameplates are disabled in meetings | Toggle | False |
+| Enable Lighter Darker Colors | Whether all players have their color types visible | Toggle | True |
+| Custom Crew Colors | Toggles whether the roles from the Crew faction have a color unqiue to them | Toggle | True |
+| Custom Neutral Colors | Toggles whether the roles from the Neutral faction have a color unqiue to them | Toggle | True |
+| Custom Intruder Colors | Toggles whether the roles from the Intruder faction have a color unqiue to them | Toggle | True |
+| Custom Syndicate Colors | Toggles whether the roles from the Syndicate faction have a color unqiue to them | Toggle | True |
+| Custom Ability Colors | Toggles whether abilities have a color unqiue to them | Toggle | True |
+| Custom Modifier Colors | Toggles whether modifiers have a color unqiue to them | Toggle | True |
+| Custom Objectifier Colors | Toggles whether objectifiers have a color unqiue to them | Toggle | True |
+| Custom Ejection Messages | Just jokes | Toggle | False |
 
 -----------------------
 
@@ -3386,7 +3530,7 @@ The Underdog is an Intruder or Syndicate with prolonged cooldowns when with a te
 ### Inspector Results
 - Deals With Dead - Coroner, Amnesiac, Retributionist, Janitor, Cannibal
 - Preserves Life - Medic, Guardian Angel, Altruist, Necromancer, Crusader
-- Leads The Group - Mayor, Godfather (Original), Rebel (Original), Pestilence, Survivor
+- Leads The Group - Mayor, Godfather, Rebel, Pestilence, Survivor
 - Brings Chaos - Shifter, Thief, Camouflager, Whisperer, Jackal
 - Seeks To Destroy - Arsonist, Cryomaniac, Plaguebearer, Spellslinger
 - Wants To Explore - Transporter, Teleporter, Warper, Timekeeper
@@ -3402,8 +3546,6 @@ The Underdog is an Intruder or Syndicate with prolonged cooldowns when with a te
 - Hinders Others - Escort, Consort, Glitch, Ambusher, Drunkard
 - Is Basic - Crewmate, Impostor, Murderer, Anarchist
 - Ghostly - Revealer, Phantom, Ghoul, Banshee
-
-Note: A Promoted Godfather/Rebel's Inspector results will match that of their former roles.
 
 ## Subfactions
 
@@ -3437,29 +3579,7 @@ Note: A Promoted Godfather/Rebel's Inspector results will match that of their fo
 5. Syndicate (Killing)
 6. Original Rebel, Sidekick, Anarchist
 
-**If there are multiple active roles from the same alignment, the Chaos Drive is randomly given to one of those roles.**
-
-## Game Modes
-
-This mod has a lot of different modes which greatly change how the game continues!
-
-**Vanilla**
-- Nothing special, everyone is either a basic [Crewmate](#crewmate) or [Impostor](#impostor)
-
-**Classic**
-- This is the main mode of the game
-- Any layer can spawn in this mode, but only once
-
-**Killing Only**
-- This is a restricted Classic mode where only roles with the capability to kill are the only ones that can spawn
-- The Syndicate recieves their Chaos Drive at the start of the game
-
-**All Any**
-- This mode has no restrictions on how many instances of a layer can spawn
-- Each layer has a property called "Uniqueness" which is basically if only one of that layer can spawn (or two for Lovers and Rivals)
-
-**Custom**
-- This mode is basically Classic but you can decide how many instances of the layer can spawn in the game
+**If there are multiple alive and active roles from the same alignment, the Chaos Drive is given to the player with a higher player id (aka whoever joined the lobby earlier).**
 
 -----------------------
 
@@ -3537,7 +3657,7 @@ After that, it's gaming time.
 [The Other Roles](https://github.com/Eisbison/TheOtherRoles) - For the inspiration of the Tracker role and the Astral and Bait modifiers, cosmetics system, teleport animation and version control\
 [The Other Roles: Community Edition](https://github.com/JustASysAdmin/TheOtherRoles2) - For the random spawns option\
 [Las Monjas](https://github.com/KiraYamato94/LasMonjas) - For the inspiration of the VIP modifier\
-[MyDragonBreath](https://github.com/MyDragonBreath) - For Submerged Compatibility, basis for mod debugging, partially the Operative role, general help and moral support\
+[MyDragonBreath](https://github.com/MyDragonBreath) - For Submerged Compatibility, basis for mod debugging (found [here](https://github.com/AlchlcDvl/TownOfUsReworked/tree/master/TownOfUsReworked/MultiClientInstancing) and [here](https://github.com/AlchlcDvl/TownOfUsReworked/tree/master/TownOfUsReworked/Monos/DebuggerBehaviour.cs)), partially the Operative role, general help and moral support\
 [Guus](https://github.com/OhMyGuus) - For support for the old Among Us versions (v2021.11.9.5 and v2021.12.15)\
 [ItsTheNumberH](https://github.com/itsTheNumberH/Town-Of-H) - For Coward, Volatile and Bait modifiers, Poisoner and Cannibal roles, partially for Tracker and Coroner roles and bug fixes\
 [Ruiner](https://github.com/ruiner189/Town-Of-Us-Redux) - For Lovers being changed into an objectifier and Task Tracking\
@@ -3553,7 +3673,6 @@ After that, it's gaming time.
 [VincentVision](https://github.com/VincentVision) - For some code here and there from his version of Town Of Us (which was deleted sadly)\
 [Lunastellia](https://github.com/Lunastellia) - For Better Skeld code\
 [CrowdedMod](https://github.com/CrowdedMods/CrowdedMod) - For allowing to bypass the 15 player limit and is embedded into the mod [here](https://github.com/AlchlcDvl/TownOfUsReworked/tree/master/TownOfUsReworked/Crowded)\
-[All The Roles](https://github.com/Zeo666/AllTheRoles) - For the Ruthless ability and help with the shapeshifter menus\
 [Town Of Salem](https://www.blankmediagames.com/TownOfSalem/), [Traitors In Salem](https://www.traitorsinsalem.com) & [Town Of Salem 2](https://store.steampowered.com/app/2140510/Town_of_Salem_2/) - For multiple role ideas
 
 -----------------------

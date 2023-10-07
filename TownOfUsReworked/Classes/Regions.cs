@@ -9,13 +9,13 @@ public static class ExtraRegions
 
     public static void UpdateRegions()
     {
-        var mna = new StaticHttpRegionInfo("Modded NA", StringNames.NoTranslation, "www.aumods.us", new(new[] { new ServerInfo("Http-1", "https://www.aumods.us", 443, false)
+        var mna = new StaticHttpRegionInfo("Modded NA (MNA)", StringNames.NoTranslation, "www.aumods.us", new(new[] { new ServerInfo("Http-1", "https://www.aumods.us", 443, false)
             })).Cast<IRegionInfo>();
 
-        var meu = new StaticHttpRegionInfo("Modded EU", StringNames.NoTranslation, "au-eu.duikbo.at", new(new[] { new ServerInfo("Http-1", "https://au-eu.duikbo.at", 443, false)
+        var meu = new StaticHttpRegionInfo("Modded EU (MEU)", StringNames.NoTranslation, "au-eu.duikbo.at", new(new[] { new ServerInfo("Http-1", "https://au-eu.duikbo.at", 443, false)
             })).Cast<IRegionInfo>();
 
-        var mas = new StaticHttpRegionInfo("Modded Asia", StringNames.NoTranslation, "au-as.duikbo.at", new(new[] { new ServerInfo("Http-1", "https://au-as.duikbo.at", 443, false)
+        var mas = new StaticHttpRegionInfo("Modded Asia (MAS)", StringNames.NoTranslation, "au-as.duikbo.at", new(new[] { new ServerInfo("Http-1", "https://au-as.duikbo.at", 443, false)
             })).Cast<IRegionInfo>();
 
         var custom = new StaticHttpRegionInfo("Custom", StringNames.NoTranslation, TownOfUsReworked.Ip.Value, new(new[] { new ServerInfo("Custom", TownOfUsReworked.Ip.Value,
@@ -132,19 +132,19 @@ public static class ExtraRegions
         }
     }
 
-    public static void CorrectCurrentRegion(ServerManager instance)
+    public static void CorrectCurrentRegion(ServerManager __instance)
     {
-        var region = instance.CurrentRegion;
+        var region = __instance.CurrentRegion;
         LogInfo($"Current region: {region.Name} ({region.Servers.Length} servers)");
         LogInfo($"Region \"{region.Servers[0].Name}\" @ {region.Servers[0].Ip}:{region.Servers[0].Port}");
 
         if (ParsedRegions != null && ParsedRegions.ContainsKey(region.Name))
         {
-            instance.CurrentRegion = ParsedRegions[region.Name];
+            __instance.CurrentRegion = ParsedRegions[region.Name];
             LogInfo("Loading region from cache instead of from file");
 
-            if (region.Servers[0].Port != instance.CurrentRegion.Servers[0].Port)
-                LogInfo($"Port corrected from {region.Servers[0].Port} to {instance.CurrentRegion.Servers[0].Port}");
+            if (region.Servers[0].Port != __instance.CurrentRegion.Servers[0].Port)
+                LogInfo($"Port corrected from {region.Servers[0].Port} to {__instance.CurrentRegion.Servers[0].Port}");
         }
     }
 }

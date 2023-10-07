@@ -33,8 +33,8 @@ public static class VentPatches
                 canUse &= num <= __instance.UsableDistance;
             else
             {
-                canUse = ((canUse ? 1 : 0) & (num > __instance.UsableDistance ? 0 : (!PhysicsHelpers.AnythingBetween(playerControl.Collider, (Vector2)center, (Vector2)position,
-                    Constants.ShipOnlyMask, false) ? 1 : 0))) != 0;
+                canUse = ((canUse ? 1 : 0) & (num > __instance.UsableDistance ? 0 : (!PhysicsHelpers.AnythingBetween(playerControl.Collider, center, position, Constants.ShipOnlyMask, false)
+                    ? 1 : 0))) != 0;
             }
         }
 

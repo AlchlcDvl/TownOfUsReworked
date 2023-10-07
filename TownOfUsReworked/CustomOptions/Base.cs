@@ -124,17 +124,72 @@ public class CustomOption
                 continue;
 
             builder.AppendLine(option.Name.Trim());
-
-            if (option is RoleListEntryOption entry)
-                builder.AppendLine(((int)entry.Get()).ToString().Trim());
-            else
-                builder.AppendLine(option.Value.ToString().Trim());
+            builder.AppendLine(option.Value.ToString().Trim());
 
             if (option.OtherValue != null)
                 builder.AppendLine(option.OtherValue?.ToString().Trim());
         }
 
         SaveText(fileName, builder.ToString());
+    }
+
+    public static void LoadSettings(string settingsData)
+    {
+        var splitText = settingsData.Split("\n").ToList();
+
+        while (splitText.Count > 0)
+        {
+            var name = splitText[0].Trim();
+            splitText.RemoveAt(0);
+            var option = AllOptions.Find(o => o.Name.Equals(name, StringComparison.Ordinal));
+
+            if (option == null)
+            {
+                try
+                {
+                    splitText.RemoveAt(0);
+                } catch {}
+
+                continue;
+            }
+
+            var value = splitText[0];
+            splitText.RemoveAt(0);
+
+            try
+            {
+                switch (option.Type)
+                {
+                    case CustomOptionType.Number:
+                        option.Set(float.Parse(value));
+                        break;
+
+                    case CustomOptionType.Toggle:
+                        option.Set(bool.Parse(value));
+                        break;
+
+                    case CustomOptionType.String:
+                        option.Set(int.Parse(value));
+                        break;
+
+                    case CustomOptionType.Entry:
+                        option.Set(Enum.Parse<LayerEnum>(value));
+                        break;
+
+                    case CustomOptionType.Layers:
+                        var value2 = splitText[0];
+                        splitText.RemoveAt(0);
+                        option.Set(int.Parse(value), int.Parse(value2));
+                        break;
+                }
+            }
+            catch (Exception e)
+            {
+                LogError("Unable to set - " + option.Name + " : " + value + " " + splitText[0] + "\nException: " + e);
+            }
+        }
+
+        SendOptionRPC();
     }
 
     public static List<CustomOption> GetOptions(CustomOptionType type) => AllOptions.Where(x => x.Type == type).ToList();

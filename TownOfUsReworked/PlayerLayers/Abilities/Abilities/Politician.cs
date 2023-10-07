@@ -127,7 +127,22 @@ public class Politician : Ability
 
     public override void ReadRPC(MessageReader reader)
     {
-        ExtraVotes = reader.ReadByteList();
-        VoteBank -= ExtraVotes.Count;
+        var polAction = (PoliticianActionsRPC)reader.ReadByte();
+
+        switch(polAction)
+        {
+            case PoliticianActionsRPC.Remove:
+                ExtraVotes = reader.ReadByteList();
+                VoteBank -= ExtraVotes.Count;
+                break;
+
+            case PoliticianActionsRPC.Add:
+                VoteBank -= reader.ReadInt32();
+                break;
+
+            default:
+                LogError($"Received unknown RPC - {polAction}");
+                break;
+        }
     }
 }

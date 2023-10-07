@@ -18,9 +18,19 @@ public static class CustomGameOptions
     public static int ChatCharacterLimit => Generate.ChatCharacterLimit;
     public static int DiscussionTime => Generate.DiscussionTime;
     public static int VotingTime => Generate.VotingTime;
-    public static TaskBar TaskBarMode => (TaskBar)Generate.TaskBarMode.GetInt();
     public static bool EjectionRevealsRole => Generate.EjectionRevealsRole;
     public static int LobbySize => Generate.LobbySize;
+    public static TaskBar TaskBarMode
+    {
+        get
+        {
+            return GameMode switch
+            {
+                GameMode.TaskRace or GameMode.HideAndSeek => TaskBar.Normal,
+                _ => (TaskBar)Generate.TaskBarMode.GetInt()
+            };
+        }
+    }
 
     //Game Modifiers
     public static WhoCanVentOptions WhoCanVent => (WhoCanVentOptions)Generate.WhoCanVent.GetInt();
@@ -29,7 +39,6 @@ public static class CustomGameOptions
     public static bool FactionSeeRoles => Generate.FactionSeeRoles;
     public static bool ParallelMedScans => Generate.ParallelMedScans;
     public static DisableSkipButtonMeetings SkipButtonDisable => (DisableSkipButtonMeetings)Generate.SkipButtonDisable.GetInt();
-    public static bool NoNames => Generate.NoNames;
     public static bool Whispers => Generate.Whispers;
     public static bool WhispersAnnouncement => Generate.WhispersAnnouncement;
     public static bool AppearanceAnimation => Generate.AppearanceAnimation;
@@ -41,6 +50,8 @@ public static class CustomGameOptions
     public static bool CooldownInVent => Generate.CooldownInVent;
     public static bool FirstKillShield => Generate.FirstKillShield;
     public static WhoCanSeeFirstKillShield WhoSeesFirstKillShield => (WhoCanSeeFirstKillShield)Generate.WhoSeesFirstKillShield.GetInt();
+    public static PlayerNames PlayerNames => (PlayerNames)Generate.PlayerNames.GetInt();
+    public static bool DeadSeeEverything => Generate.DeadSeeEverything;
 
     //Better Sabotage Settings
     public static float ReactorShake => Generate.ReactorShake;
@@ -55,10 +66,6 @@ public static class CustomGameOptions
     public static RoleFactionReports RoleFactionReports => (RoleFactionReports)Generate.RoleFactionReports.GetInt();
     public static RoleFactionReports KillerReports => (RoleFactionReports)Generate.KillerReports.GetInt();
     public static bool GameAnnouncements => Generate.GameAnnouncements;
-
-    //QOL Changes
-    public static bool DeadSeeEverything => Generate.DeadSeeEverything;
-    public static bool ObstructNames => Generate.ObstructNames;
 
     //Game Modes
     public static GameMode GameMode => (GameMode)Generate.CurrentMode.GetInt();
@@ -110,6 +117,55 @@ public static class CustomGameOptions
     public static int LargeMapDecreasedLongTasks => Generate.LargeMapDecreasedLongTasks;
     public static bool AutoAdjustSettings => Generate.AutoAdjustSettings;
     public static bool SmallMapHalfVision => Generate.SmallMapHalfVision;
+    public static int ShortTasks
+    {
+        get
+        {
+            return GameMode switch
+            {
+                GameMode.TaskRace => Generate.TRShortTasks,
+                GameMode.HideAndSeek => Generate.HnSShortTasks,
+                _ => Generate.ShortTasks
+            };
+        }
+    }
+    public static int LongTasks
+    {
+        get
+        {
+            return GameMode switch
+            {
+                GameMode.TaskRace => 0,
+                GameMode.HideAndSeek => Generate.HnSLongTasks,
+                _ => Generate.LongTasks
+            };
+        }
+    }
+    public static int CommonTasks
+    {
+        get
+        {
+            return GameMode switch
+            {
+                GameMode.TaskRace => Generate.TRCommonTasks,
+                GameMode.HideAndSeek => Generate.HnSCommonTasks,
+                _ => Generate.CommonTasks
+            };
+        }
+    }
+
+    //Hide And Seek Settings
+    public static int HunterCount => Generate.HunterCount;
+    public static float StartTime => Generate.StartTime;
+    public static bool HunterVent => Generate.HunterVent;
+    public static float HuntCd => Generate.HuntCd;
+    public static HnSMode HnSMode => (HnSMode)Generate.HnSType.GetInt();
+    public static float HuntedVision => Generate.HuntedVision;
+    public static float HunterVision => Generate.HunterVision;
+    public static float HunterSpeedModifier => Generate.HunterSpeedModifier;
+    public static bool HuntedFlashlight => Generate.HuntedFlashlight;
+    public static bool HunterFlashlight => Generate.HunterFlashlight;
+    public static bool HuntedChat => Generate.HuntedChat;
 
     //Polus Settings
     public static bool VitalsLab => Generate.VitalsLab;
@@ -267,12 +323,10 @@ public static class CustomGameOptions
     public static int IndomitableOn => Generate.IndomitableOn.GetChance();
     public static int AstralOn => Generate.AstralOn.GetChance();
     public static int YellerOn => Generate.YellerOn.GetChance();
+    public static int ColorblindOn => Generate.ColorblindOn.GetChance();
 
     //Crew Options
     public static float CrewVision => Generate.CrewVision;
-    public static int ShortTasks => Generate.ShortTasks;
-    public static int LongTasks => Generate.LongTasks;
-    public static int CommonTasks => Generate.CommonTasks;
     public static bool GhostTasksCountToWin => Generate.GhostTasksCountToWin;
     public static bool CrewFlashlight => Generate.CrewFlashlight;
     public static bool CrewVent => Generate.CrewVent;
@@ -1169,6 +1223,10 @@ public static class CustomGameOptions
     public static int ShyCount => Generate.ShyOn.GetCount();
     public static bool UniqueShy => Generate.UniqueShy;
 
+    //Colorblind Settings
+    public static int ColorblindCount => Generate.ColorblindOn.GetCount();
+    public static bool UniqueColorblind => Generate.UniqueColorblind;
+
     //Astral Settings
     public static int AstralCount => Generate.AstralOn.GetCount();
     public static bool UniqueAstral => Generate.UniqueAstral;
@@ -1233,6 +1291,9 @@ public static class CustomGameOptions
     //IS Settings
     public static int ISMax => Generate.ISMax;
 
+    //IH Settings
+    public static int IHMax => Generate.IHMax;
+
     //IK Settings
     public static int IKMax => Generate.IKMax;
 
@@ -1263,6 +1324,7 @@ public static class CustomGameOptions
     public static bool BanCrewmate => Generate.BanCrewmate;
     public static bool BanImpostor => Generate.BanImpostor;
     public static bool BanAnarchist => Generate.BanAnarchist;
+    public static bool BanMurderer => Generate.BanMurderer;
 
     //Enabling Postmortals
     public static bool EnableBanshee => Generate.EnableBanshee;

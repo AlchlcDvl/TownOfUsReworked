@@ -55,11 +55,7 @@ public static class CreateOptionsPicker_Awake
             var playerButton = __instance.MaxPlayerButtons[i].GetComponent<PassiveButton>();
             var text = playerButton.GetComponentInChildren<TextMeshPro>();
             playerButton.OnClick = new();
-            playerButton.OnClick.AddListener((Action)(() =>
-            {
-                var maxPlayers = byte.Parse(text.text);
-                __instance.SetMaxPlayersButtons(maxPlayers);
-            }));
+            playerButton.OnClick.AddListener((Action)(() => __instance.SetMaxPlayersButtons(byte.Parse(text.text))));
         }
 
         __instance.MaxPlayerButtons.ForEach(x => x.enabled = x.GetComponentInChildren<TextMeshPro>().text == __instance.GetTargetOptions().MaxPlayers.ToString());

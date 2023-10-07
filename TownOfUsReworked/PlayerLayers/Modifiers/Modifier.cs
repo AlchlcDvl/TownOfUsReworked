@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Modifiers;
 
-public class Modifier : PlayerLayer
+public abstract class Modifier : PlayerLayer
 {
     public static readonly List<Modifier> AllModifiers = new();
     public static Modifier LocalModifier => GetModifier(CustomPlayer.Local);
@@ -10,7 +10,7 @@ public class Modifier : PlayerLayer
 
     public virtual bool Hidden => false;
 
-    public Modifier(PlayerControl player) : base(player)
+    protected Modifier(PlayerControl player) : base(player)
     {
         if (GetModifier(player))
             GetModifier(player).Player = null;

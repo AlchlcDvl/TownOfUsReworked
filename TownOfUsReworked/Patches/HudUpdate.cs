@@ -1,5 +1,12 @@
 namespace TownOfUsReworked.Patches;
 
+[HarmonyPatch(typeof(SabotageButton), nameof(SabotageButton.Refresh))]
+[HarmonyPriority(Priority.First)]
+public static class RefreshPatch
+{
+    public static bool Prefix() => false;
+}
+
 [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
 [HarmonyPriority(Priority.First)]
 public static class HudUpdate
@@ -193,24 +200,13 @@ public static class HudUpdate
 }
 
 [HarmonyPatch(typeof(UObject), nameof(UObject.Destroy), typeof(UObject))]
-public static class HUDClose
+public static class MeetingCooldowns
 {
     public static void Postfix(UObject obj)
     {
         if (obj == null || obj != ExileController.Instance?.gameObject)
             return;
 
-        CustomPlayer.Local.EnableButtons();
         ButtonUtils.ResetCustomTimers(CooldownType.Meeting);
-    }
-}
-
-[HarmonyPatch(typeof(IntroCutscene._CoBegin_d__33), nameof(IntroCutscene._CoBegin_d__33.MoveNext))]
-public static class Start
-{
-    public static void Postfix()
-    {
-        CustomPlayer.Local.EnableButtons();
-        ButtonUtils.ResetCustomTimers(CooldownType.Start);
     }
 }

@@ -6,7 +6,8 @@ public class Jackal : Neutral
     public PlayerControl GoodRecruit { get; set; }
     public PlayerControl BackupRecruit { get; set; }
     public CustomButton RecruitButton { get; set; }
-    public bool RecruitsDead => EvilRecruit == null || GoodRecruit == null || BackupRecruit == null;
+    public bool RecruitsDead => EvilRecruit == null || GoodRecruit == null || (BackupRecruit == null && GoodRecruit != null && EvilRecruit != null && GoodRecruit.HasDied() &&
+        EvilRecruit.HasDied());
     public List<byte> Recruited { get; set; }
 
     public override Color Color => ClientGameOptions.CustomNeutColors ? Colors.Jackal : Colors.Neutral;

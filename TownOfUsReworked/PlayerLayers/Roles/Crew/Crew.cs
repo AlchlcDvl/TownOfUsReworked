@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
-public class Crew : Role
+public abstract class Crew : Role
 {
     public override Color Color => Colors.Crew;
     public override Faction BaseFaction => Faction.Crew;
@@ -18,7 +18,7 @@ public class Crew : Role
         if (!Local)
             return;
 
-        var team = new List<PlayerControl> { CustomPlayer.Local };
+        var team = new List<PlayerControl>() { CustomPlayer.Local };
 
         if (IsRecruit)
         {

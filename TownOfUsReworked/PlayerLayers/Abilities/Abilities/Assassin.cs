@@ -28,7 +28,7 @@ public class SyndicateAssassin : Assassin
     public SyndicateAssassin(PlayerControl player) : base(player) {}
 }
 
-public class Assassin : Ability
+public abstract class Assassin : Ability
 {
     public Dictionary<string, Color> ColorMapping { get; set; }
     public Dictionary<string, Color> SortedColorMapping { get; set; }
@@ -67,7 +67,7 @@ public class Assassin : Ability
     public override string Name => "Assassin";
     public override Func<string> Description => () => "- You can guess players mid-meetings";
 
-    public Assassin(PlayerControl player) : base(player)
+    protected Assassin(PlayerControl player) : base(player)
     {
         ColorMapping = new();
         SortedColorMapping = new();
@@ -345,7 +345,12 @@ public class Assassin : Ability
                     return;
 
                 if (SelectedButton != button)
+                {
+                    if (SelectedButton != null)
+                        SelectedButton.GetComponent<SpriteRenderer>().color = UColor.white;
+
                     SelectedButton = button;
+                }
                 else
                 {
                     var focusedTarget = PlayerByVoteArea(voteArea);

@@ -7,9 +7,9 @@ public static class CustomHats
     private static bool SubLoaded;
     private static bool Running;
     private static Material Shader;
-    public static HatExtension TestExt;
-    public static readonly Dictionary<string, HatExtension> CustomHatRegistry = new();
-    public static readonly Dictionary<string, HatViewData> CustomHatViewDatas = new();
+    private static HatExtension TestExt;
+    private static readonly Dictionary<string, HatExtension> CustomHatRegistry = new();
+    private static readonly Dictionary<string, HatViewData> CustomHatViewDatas = new();
 
     private static List<CustomHat> CreateCustomHatDetails(string[] hats, bool fromDisk = false)
     {
@@ -337,7 +337,7 @@ public static class CustomHats
 
             try
             {
-                _ = __instance.hatDataAsset.GetAsset();
+                asset = __instance.hatDataAsset.GetAsset();
                 return true;
             }
             catch
@@ -351,6 +351,9 @@ public static class CustomHats
                     return false;
                 }
             }
+
+            if (asset = null)
+                return true;
 
             __instance.FrontLayer.sharedMaterial = asset.AltShader ? asset.AltShader : HatManager.Instance.DefaultShader;
 
@@ -368,38 +371,18 @@ public static class CustomHats
             if (__instance.BackLayer)
                 __instance.BackLayer.material.SetInt(PlayerMaterial.MaskLayer, __instance.matProperties.MaskLayer);
 
-            var maskType = __instance.matProperties.MaskType;
-
-            if (maskType == PlayerMaterial.MaskType.ScrollingUI)
+            var maskInteraction = __instance.matProperties.MaskType switch
             {
-                if (__instance.FrontLayer)
-                    __instance.FrontLayer.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
+                PlayerMaterial.MaskType.ScrollingUI => SpriteMaskInteraction.VisibleInsideMask,
+                PlayerMaterial.MaskType.Exile => SpriteMaskInteraction.VisibleOutsideMask,
+                _ => SpriteMaskInteraction.None
+            };
 
-                if (__instance.BackLayer)
-                {
-                    __instance.BackLayer.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
-                    return false;
-                }
-            }
-            else if (maskType == PlayerMaterial.MaskType.Exile)
-            {
-                if (__instance.FrontLayer)
-                    __instance.FrontLayer.maskInteraction = SpriteMaskInteraction.VisibleOutsideMask;
+            if (__instance.FrontLayer)
+                __instance.FrontLayer.maskInteraction = maskInteraction;
 
-                if (__instance.BackLayer)
-                {
-                    __instance.BackLayer.maskInteraction = SpriteMaskInteraction.VisibleOutsideMask;
-                    return false;
-                }
-            }
-            else
-            {
-                if (__instance.FrontLayer)
-                    __instance.FrontLayer.maskInteraction = SpriteMaskInteraction.None;
-
-                if (__instance.BackLayer)
-                    __instance.BackLayer.maskInteraction = SpriteMaskInteraction.None;
-            }
+            if (__instance.BackLayer)
+                __instance.BackLayer.maskInteraction = maskInteraction;
 
             return false;
         }
@@ -663,7 +646,7 @@ public static class CustomHats
                 }
 
                 colorChip.transform.localPosition = new(xpos, ypos, -1f);
-                colorChip.Inner.SetHat(hat, __instance.HasLocalPlayer() ? CustomPlayer.LocalCustom.Data.DefaultOutfit.ColorId : DataManager.Player.Customization.Color);
+                colorChip.Inner.SetHat(hat, __instance.HasLocalPlayer() ? CustomPlayer.LocalCustom.DefaultOutfit.ColorId : DataManager.Player.Customization.Color);
                 colorChip.Inner.transform.localPosition = hat.ChipOffset;
                 colorChip.Tag = hat;
                 colorChip.SelectionHighlight.gameObject.SetActive(false);

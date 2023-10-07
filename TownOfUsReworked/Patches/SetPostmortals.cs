@@ -6,24 +6,6 @@ public static class AirshipExile
     public static void Postfix(AirshipExileController __instance) => SetPostmortals.ExileControllerPostfix(__instance);
 }
 
-[HarmonyPatch(typeof(UObject), nameof(UObject.Destroy), new Type[] { typeof(GameObject) })]
-public static class SubmergedExile
-{
-    public static void Prefix(GameObject obj)
-    {
-        if (!SubLoaded || TownOfUsReworked.NormalOptions?.MapId != 5)
-            return;
-
-        if (obj.name?.Contains("ExileCutscene") == true)
-            SetPostmortals.ExileControllerPostfix(ConfirmEjects.LastExiled);
-        else if (obj.name.Contains("SpawnInMinigame"))
-        {
-            if (CustomPlayer.Local.Is(LayerEnum.Astral) && !CustomPlayer.LocalCustom.IsDead)
-                Modifier.GetModifier<Astral>(CustomPlayer.Local).SetPosition();
-        }
-    }
-}
-
 [HarmonyPatch(typeof(ExileController), nameof(ExileController.WrapUp))]
 public static class SetPostmortals
 {
@@ -34,7 +16,7 @@ public static class SetPostmortals
 
     public static void ExileControllerPostfix(ExileController __instance)
     {
-        if (CustomPlayer.LocalCustom.Data.Disconnected)
+        if (CustomPlayer.LocalCustom.Disconnected)
             return;
 
         if (CustomPlayer.Local.Is(LayerEnum.Astral) && !CustomPlayer.LocalCustom.IsDead)
@@ -52,7 +34,7 @@ public static class SetPostmortals
         {
             if (ghoul.Caught)
                 ghoul.MarkedPlayer = null;
-            else if (ghoul.MarkedPlayer != null && !ghoul.MarkedPlayer.HasDied())
+            else if (ghoul.MarkedPlayer != null && !ghoul.MarkedPlayer.HasDied() && !ghoul.MarkedPlayer.Is(Alignment.NeutralApoc))
                 ghoul.MarkedPlayer.Exiled();
         }
 

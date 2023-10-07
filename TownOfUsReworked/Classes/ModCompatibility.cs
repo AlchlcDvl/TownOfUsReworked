@@ -394,7 +394,7 @@ public static class ModCompatibility
         }
         catch (Exception e)
         {
-            LogError("Couldn't load compatibilies:\n" + e);
+            LogError($"Couldn't load compatibilies:\n{e}");
         }
     }
 

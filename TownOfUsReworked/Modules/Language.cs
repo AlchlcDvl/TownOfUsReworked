@@ -40,9 +40,9 @@ public class Language
 
     private static readonly List<string> SupportedLangs = new() { "English", "SChinese" };
 
-    public static string Translate(string id, string language = "")
+    public static string Translate(string id, string language = null)
     {
-        var lang = language == "" ? CurrentLanguage : language;
+        var lang = language ?? CurrentLanguage;
 
         try
         {

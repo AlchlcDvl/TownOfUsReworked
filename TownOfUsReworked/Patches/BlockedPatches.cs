@@ -63,6 +63,38 @@ public static class PerformReport
     }
 }
 
+[HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.ReportClosest))]
+[HarmonyPriority(Priority.First)]
+public static class ReportClosest
+{
+    public static bool Prefix()
+    {
+        if (NoPlayers)
+            return true;
+
+        if (CustomPlayer.Local.Is(LayerEnum.Coward))
+            return false;
+
+        return LocalNotBlocked;
+    }
+}
+
+[HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.ReportDeadBody))]
+[HarmonyPriority(Priority.First)]
+public static class ReportDeadBody
+{
+    public static bool Prefix()
+    {
+        if (NoPlayers)
+            return true;
+
+        if (CustomPlayer.Local.Is(LayerEnum.Coward))
+            return false;
+
+        return LocalNotBlocked;
+    }
+}
+
 [HarmonyPatch(typeof(UseButton), nameof(UseButton.DoClick))]
 [HarmonyPriority(Priority.First)]
 public static class PerformUse
@@ -85,7 +117,7 @@ public static class PerformSabotage
         if (NoPlayers)
             return true;
 
-        return LocalNotBlocked;
+        return LocalNotBlocked && CustomPlayer.Local.CanSabotage();
     }
 }
 

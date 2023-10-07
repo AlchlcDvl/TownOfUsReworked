@@ -34,7 +34,7 @@ public static class OtherButtonsPatch
     private static bool PagesSet;
     private static Info Selected;
     private static bool LoreActive;
-    //private static readonly Dictionary<int, string> Entry = new();
+    //private static Dictionary<int, string> Entry = new();
     //Max page line limit is 20, keeping this in mind for now
 
     private static Vector3 MapPos;
@@ -50,10 +50,10 @@ public static class OtherButtonsPatch
             if (IsHnS)
                 return;
 
-            __instance.GameSettings.text = GameSettings.Settings();
+            __instance.GameSettings.text = SettingsPatches.Settings();
 
             if (__instance.TaskPanel)
-                __instance.TaskPanel.gameObject.SetActive(!RoleCardActive && !SettingsActive && !Zooming && !Meeting && !(Map && Map.IsOpen) && !WikiActive);
+                __instance.TaskPanel.gameObject.SetActive(!RoleCardActive && !SettingsActive && !Zooming && !Meeting && !(Map && Map.IsOpen) && !WikiActive && !IsCustomHnS);
 
             MapPos = __instance.SettingsButton.transform.localPosition + new Vector3(0, -0.66f, -__instance.SettingsButton.transform.localPosition.z - 51f);
 
@@ -78,6 +78,17 @@ public static class OtherButtonsPatch
 
             Pos = MapPos + new Vector3(0, -0.66f, 0f);
             __instance.MapButton.transform.localPosition = Pos;
+
+            if (IsSubmerged)
+            {
+                var floorButton = __instance.MapButton.transform.parent.Find(__instance.MapButton.name + "(Clone)");
+
+                if (floorButton)
+                {
+                    Pos += new Vector3(0, -0.66f, 0f);
+                    floorButton.localPosition = Pos;
+                }
+            }
 
             if (!SettingsButton)
             {

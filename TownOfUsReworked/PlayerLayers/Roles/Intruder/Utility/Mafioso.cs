@@ -21,8 +21,7 @@ public class Mafioso : Intruder
         var newRole = new PromotedGodfather(Player)
         {
             FormerRole = FormerRole,
-            RoleBlockImmune = FormerRole.RoleBlockImmune,
-            Alignment = FormerRole.Alignment
+            RoleBlockImmune = FormerRole.RoleBlockImmune
         };
 
         newRole.RoleUpdate(this);

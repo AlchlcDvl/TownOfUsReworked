@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Abilities;
 
-public class Ability : PlayerLayer
+public abstract class Ability : PlayerLayer
 {
     public static readonly List<Ability> AllAbilities = new();
     public static Ability LocalAbility => GetAbility(CustomPlayer.Local);
@@ -10,7 +10,7 @@ public class Ability : PlayerLayer
 
     public virtual bool Hidden => false;
 
-    public Ability(PlayerControl player) : base(player)
+    protected Ability(PlayerControl player) : base(player)
     {
         if (GetAbility(player))
             GetAbility(player).Player = null;

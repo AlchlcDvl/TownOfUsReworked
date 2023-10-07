@@ -5,7 +5,6 @@ public class Operative : Crew
     public List<Bug> Bugs { get; set; }
     public List<LayerEnum> BuggedPlayers { get; set; }
     public CustomButton BugButton { get; set; }
-    public Dictionary<byte, TMP_Text> PlayerNumbers { get; set; }
 
     public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Operative : Colors.Crew;
     public override string Name => "Operative";
@@ -18,7 +17,6 @@ public class Operative : Crew
     public Operative(PlayerControl player) : base(player)
     {
         Alignment = Alignment.CrewInvest;
-        PlayerNumbers = new();
         BuggedPlayers = new();
         Bugs = new();
         BugButton = new(this, "Bug", AbilityTypes.Targetless, "ActionSecondary", PlaceBug, CustomGameOptions.BugCd, CustomGameOptions.MaxBugs);
@@ -31,25 +29,9 @@ public class Operative : Crew
         Bugs.Clear();
     }
 
-    public void GenNumbers()
-    {
-        if (!DataManager.Settings.Accessibility.ColorBlindMode || CustomGameOptions.Whispers)
-            return;
-
-        foreach (var voteArea in AllVoteAreas)
-        {
-            var targetId = voteArea.TargetPlayerId;
-            var nameText = UObject.Instantiate(voteArea.NameText, voteArea.transform);
-            nameText.transform.localPosition = new(-1.211f, -0.18f, -0.1f);
-            nameText.text = $"{targetId}";
-            PlayerNumbers.Add(targetId, nameText);
-        }
-    }
-
     public override void OnMeetingStart(MeetingHud __instance)
     {
         base.OnMeetingStart(__instance);
-        GenNumbers();
         var message = "";
 
         if (BuggedPlayers.Count == 0)

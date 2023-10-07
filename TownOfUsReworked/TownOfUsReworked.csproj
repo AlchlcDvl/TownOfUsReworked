@@ -3,11 +3,11 @@
         <AssemblyName>Reworked</AssemblyName>
         <RootNamespace>TownOfUsReworked</RootNamespace>
         <TargetFramework>net6.0</TargetFramework>
-        <Version>0.5.2.0</Version>
+        <Version>0.5.3.0</Version>
         <DebugType>embedded</DebugType>
         <LangVersion>latest</LangVersion>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <Authors>Reworked</Authors>
+        <Authors>AlchlcDvl</Authors>
         <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
         <EnableDynamicLoading>true</EnableDynamicLoading>
         <Configurations>Debug;Release</Configurations>

@@ -1,5 +1,24 @@
 namespace TownOfUsReworked.Patches;
 
+[HarmonyPatch(typeof(Console), nameof(Console.CanUse))]
+public static class CanUse
+{
+    public static bool Prefix(Console __instance, [HarmonyArgument(0)] GameData.PlayerInfo playerInfo, ref float __result)
+    {
+        var playerControl = playerInfo.Object;
+        var flag = !playerControl.CanDoTasks();
+
+        //If the console is not a sabotage repair console
+        if (flag && !__instance.AllowImpostor)
+        {
+            __result = float.MaxValue;
+            return false;
+        }
+
+        return true;
+    }
+}
+
 #region OpenDoorConsole
 [HarmonyPatch(typeof(OpenDoorConsole), nameof(OpenDoorConsole.CanUse))]
 public static class OpenDoorConsoleCanUse

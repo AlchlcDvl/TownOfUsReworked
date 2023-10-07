@@ -46,7 +46,7 @@ public class Import : CustomButtonOption
         Loading.Setting.gameObject.Destroy();
         OldButtons.ForEach(x => x.gameObject.SetActive(true));
         __instance.Children = OldButtons.ToArray();
-        GameSettings.SettingsPage = 0;
+        SettingsPatches.SettingsPage = 0;
         yield return new WaitForEndOfFrame();
         yield return flashCoro();
     }
@@ -64,7 +64,7 @@ public class Import : CustomButtonOption
         var z = __instance.Children[1].transform.localPosition.z;
         OldButtons = __instance.Children.ToList();
         OldButtons.ForEach(x => x.gameObject.SetActive(false));
-        GameSettings.SettingsPage = 9;
+        SettingsPatches.SettingsPage = 9;
 
         for (var i = 0; i < options.Count; i++)
             options[i].transform.localPosition = new(x, y - (i * 0.5f), z);
@@ -90,65 +90,12 @@ public class Import : CustomButtonOption
         {
             Cancel(FlashRed);
             LogError("Slot no exist");
-            return;
         }
-
-        var splitText = text.Split("\n").ToList();
-
-        while (splitText.Count > 0)
+        else
         {
-            var name = splitText[0].Trim();
-            splitText.RemoveAt(0);
-            var option = AllOptions.Find(o => o.Name.Equals(name, StringComparison.Ordinal));
-
-            if (option == null)
-            {
-                try
-                {
-                    splitText.RemoveAt(0);
-                } catch {}
-
-                continue;
-            }
-
-            var value = splitText[0];
-            splitText.RemoveAt(0);
-
-            try
-            {
-                switch (option.Type)
-                {
-                    case CustomOptionType.Number:
-                        option.Set(float.Parse(value));
-                        break;
-
-                    case CustomOptionType.Toggle:
-                        option.Set(bool.Parse(value));
-                        break;
-
-                    case CustomOptionType.String:
-                        option.Set(int.Parse(value));
-                        break;
-
-                    case CustomOptionType.Entry:
-                        option.Set((LayerEnum)int.Parse(value));
-                        break;
-
-                    case CustomOptionType.Layers:
-                        var value2 = splitText[0];
-                        splitText.RemoveAt(0);
-                        option.Set(int.Parse(value), int.Parse(value2));
-                        break;
-                }
-            }
-            catch (Exception e)
-            {
-                LogError("Unable to set - " + option.Name + " : " + value + " " + splitText[0] + "\nException: " + e);
-            }
+            LoadSettings(text);
+            Cancel(FlashGreen);
         }
-
-        SendOptionRPC();
-        Cancel(FlashGreen);
     }
 
     private IEnumerator FlashGreen()

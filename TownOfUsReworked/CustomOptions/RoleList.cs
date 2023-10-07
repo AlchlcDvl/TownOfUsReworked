@@ -108,6 +108,7 @@ public class RoleListEntryOption : CustomOption
         { LayerEnum.CrewSov, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Sovereign</color>"},
         { LayerEnum.CrewSupport, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Support</color>"},
         { LayerEnum.CrewUtil, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Utility</color>"},
+        { LayerEnum.RegularCrew, "<color=#1D7CF2FF>Regular</color> <color=#8CFFFFFF>Crew</color>"},
 
         { LayerEnum.RandomNeutral, "<color=#1D7CF2FF>Random</color> <color=#B3B3B3FF>Neutral</color>"},
         { LayerEnum.NeutralApoc, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Apocalypse</color>"},
@@ -116,23 +117,28 @@ public class RoleListEntryOption : CustomOption
         { LayerEnum.NeutralHarb, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Harbinger</color>"},
         { LayerEnum.NeutralKill, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killing</color>"},
         { LayerEnum.NeutralNeo, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Neophyte</color>"},
+        { LayerEnum.RegularNeutral, "<color=#1D7CF2FF>Regular</color> <color=#B3B3B3FF>Neutral</color>"},
+        { LayerEnum.HarmfulNeutral, "<color=#1D7CF2FF>Harmful</color> <color=#B3B3B3FF>Neutral</color>"},
 
         { LayerEnum.RandomIntruder, "<color=#1D7CF2FF>Random</color> <color=#FF0000FF>Intruder</color>"},
+        { LayerEnum.IntruderHead, "<color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Head</color>"},
         { LayerEnum.IntruderConceal, "<color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Concealing</color>"},
         { LayerEnum.IntruderDecep, "<color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Deception</color>"},
         { LayerEnum.IntruderKill, "<color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Killing</color>"},
         { LayerEnum.IntruderSupport, "<color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Support</color>"},
         { LayerEnum.IntruderUtil, "<color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Utility</color>"},
+        { LayerEnum.RegularIntruder, "<color=#1D7CF2FF>Regular</color> <color=#FF0000FF>Intruder</color>"},
 
         { LayerEnum.RandomSyndicate, "<color=#1D7CF2FF>Random</color> <color=#008000FF>Syndicate</color>"},
         { LayerEnum.SyndicateDisrup, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Disruption</color>"},
         { LayerEnum.SyndicateKill, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Killing</color>"},
         { LayerEnum.SyndicatePower, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Power</color>"},
         { LayerEnum.SyndicateSupport, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Support</color>"},
-        { LayerEnum.SyndicateUtil, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Utility</color>"}
+        { LayerEnum.SyndicateUtil, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Utility</color>"},
+        { LayerEnum.RegularSyndicate, "<color=#1D7CF2FF>Regular</color> <color=#008000FF>Syndicate</color>"}
     };
 
-    public RoleListEntryOption(int id, string name) : base(id, MultiMenu.RoleList, $"{name} {(name.Contains("Entry") ? EntryNum : BanNum) + 1}", CustomOptionType.Entry, (int)LayerEnum.None)
+    public RoleListEntryOption(int id, string name) : base(id, MultiMenu.RoleList, $"{name} {(name.Contains("Entry") ? EntryNum : BanNum) + 1}", CustomOptionType.Entry, LayerEnum.None)
     {
         Format = (val, _) => GetString(val);
 
@@ -198,7 +204,7 @@ public class RoleListEntryOption : CustomOption
         var z = __instance.Children[1].transform.localPosition.z;
         OldButtons = __instance.Children.ToList();
         OldButtons.ForEach(x => x.gameObject.SetActive(false));
-        GameSettings.SettingsPage = 9;
+        SettingsPatches.SettingsPage = 9;
 
         for (var i = 0; i < options.Count; i++)
             options[i].transform.localPosition = new(x, y - (i * 0.5f), z);
@@ -229,7 +235,7 @@ public class RoleListEntryOption : CustomOption
         Loading.Setting.gameObject.Destroy();
         OldButtons.ForEach(x => x.gameObject.SetActive(true));
         __instance.Children = OldButtons.ToArray();
-        GameSettings.SettingsPage = 8;
+        SettingsPatches.SettingsPage = 8;
         yield return new WaitForEndOfFrame();
         yield return null;
     }

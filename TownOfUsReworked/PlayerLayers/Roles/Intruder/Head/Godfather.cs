@@ -16,7 +16,7 @@ public class Godfather : Intruder
 
     public Godfather(PlayerControl player) : base(player)
     {
-        Alignment = Alignment.IntruderSupport;
+        Alignment = Alignment.IntruderHead;
         DeclareButton = new(this, "Promote", AbilityTypes.Target, "Secondary", Declare);
     }
 

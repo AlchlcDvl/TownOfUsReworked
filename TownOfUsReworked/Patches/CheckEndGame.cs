@@ -14,8 +14,20 @@ public static class CheckEndGame
 
         if (TasksDone())
         {
-            CallRpc(CustomRPC.WinLose, WinLoseRPC.CrewWin);
-            Role.CrewWin = true;
+            var winLose = WinLoseRPC.NobodyWins;
+
+            if (IsCustomHnS)
+            {
+                winLose = WinLoseRPC.HuntedWins;
+                Role.HuntedWins = true;
+            }
+            else
+            {
+                winLose = WinLoseRPC.CrewWin;
+                Role.CrewWin = true;
+            }
+
+            CallRpc(CustomRPC.WinLose, winLose);
             EndGame();
         }
         else if (spell)
@@ -147,24 +159,45 @@ public static class CheckEndGame
     {
         try
         {
-            if (Role.GetRoles(Faction.Crew).All(x => x.IsDead && !CustomGameOptions.GhostTasksCountToWin) || !Role.GetRoles(Faction.Crew).Any(x => x.Player.CanDoTasks()))
-                return false;
-
-            var allCrew = new List<PlayerControl>();
-            var crewWithNoTasks = new List<PlayerControl>();
-
-            foreach (var player in CustomPlayer.AllPlayers)
+            if (IsCustomHnS)
             {
-                if (player.CanDoTasks() && player.Is(Faction.Crew) && (!player.Data.IsDead || (player.Data.IsDead && CustomGameOptions.GhostTasksCountToWin)))
+                var allCrew = new List<PlayerControl>();
+                var crewWithNoTasks = new List<PlayerControl>();
+
+                foreach (var player in CustomPlayer.AllPlayers)
                 {
-                    allCrew.Add(player);
+                    if (player.Is(LayerEnum.Hunted))
+                    {
+                        allCrew.Add(player);
 
-                    if (Role.GetRole(player).TasksDone)
-                        crewWithNoTasks.Add(player);
+                        if (Role.GetRole(player).TasksDone)
+                            crewWithNoTasks.Add(player);
+                    }
                 }
-            }
 
-            return allCrew.Count == crewWithNoTasks.Count;
+                return allCrew.Count == crewWithNoTasks.Count;
+            }
+            else
+            {
+                if (Role.GetRoles(Faction.Crew).All(x => x.IsDead && !CustomGameOptions.GhostTasksCountToWin) || !Role.GetRoles(Faction.Crew).Any(x => x.Player.CanDoTasks()))
+                    return false;
+
+                var allCrew = new List<PlayerControl>();
+                var crewWithNoTasks = new List<PlayerControl>();
+
+                foreach (var player in CustomPlayer.AllPlayers)
+                {
+                    if (player.CanDoTasks() && player.Is(Faction.Crew) && (!player.Data.IsDead || (player.Data.IsDead && CustomGameOptions.GhostTasksCountToWin)))
+                    {
+                        allCrew.Add(player);
+
+                        if (Role.GetRole(player).TasksDone)
+                            crewWithNoTasks.Add(player);
+                    }
+                }
+
+                return allCrew.Count == crewWithNoTasks.Count;
+            }
         } catch {}
 
         return false;
@@ -204,16 +237,22 @@ public static class CheckEndGame
 [HarmonyPatch(typeof(LogicGameFlowNormal), nameof(LogicGameFlowNormal.IsGameOverDueToDeath))]
 public static class OverrideKillEndGame
 {
-    public static void Postfix(ref bool __result) => __result = false;
+    public static bool Prefix(ref bool __result) => __result = false;
+}
+
+[HarmonyPatch(typeof(LogicGameFlowNormal), nameof(LogicGameFlowNormal.EndGameForSabotage))]
+public static class OverrideSabEndGame
+{
+    public static bool Prefix() => false;
 }
 
 [HarmonyPatch(typeof(GameManager), nameof(GameManager.CheckEndGameViaTasks))]
 public static class OverrideTaskEndGame1
 {
-    public static void Postfix(ref bool __result)
+    public static bool Prefix(ref bool __result)
     {
         GameData.Instance.RecomputeTaskCounts();
-        __result = false;
+        return __result = !IsHnS;
     }
 }
 
@@ -224,16 +263,15 @@ public static class OverrideTaskEndGame2
     {
         if (TutorialManager.InstanceExists)
         {
-            if (PlayerControl.LocalPlayer.myTasks.All(t => t.IsComplete))
+            if (CustomPlayer.Local.myTasks.All(t => t.IsComplete))
             {
-                HudManager.Instance.ShowPopUp(TranslationController.Instance.GetString(StringNames.GameOverTaskWin));
-                ShipStatus.Instance.Begin();
+                HUD.ShowPopUp(TranslationController.Instance.GetString(StringNames.GameOverTaskWin));
+                Ship.Begin();
             }
         }
         else
             GameData.Instance.RecomputeTaskCounts();
 
-        __result = false;
-        return false;
+        return __result = !IsHnS;
     }
 }

@@ -31,13 +31,19 @@ public static class CalculateLightRadiusPatch
             __result = __instance.MaxLightRadius * CustomGameOptions.SyndicateVision;
         else if (player.Object.Is(Faction.Neutral) && !CustomGameOptions.LightsAffectNeutrals)
             __result = __instance.MaxLightRadius * CustomGameOptions.NeutralVision;
+        else if (player.Object.Is(LayerEnum.Runner))
+            __result = __instance.MaxLightRadius;
+        else if (player.Object.Is(LayerEnum.Hunted))
+            __result = __instance.MaxLightRadius * CustomGameOptions.HuntedVision;
+        else if (player.Object.Is(LayerEnum.Hunter))
+            __result = __instance.MaxLightRadius * (Role.GetRole<Hunter>(player.Object).Starting ? 0f : CustomGameOptions.HunterVision);
         else
         {
             __result = Mathf.Lerp(__instance.MinLightRadius, __instance.MaxLightRadius, __instance.Systems[SystemTypes.Electrical].Cast<SwitchSystem>().Value / 255f) *
                 (player.Object.Is(Faction.Neutral) ? CustomGameOptions.NeutralVision : CustomGameOptions.CrewVision);
         }
 
-        if (MapPatches.CurrentMap is 0 or 3 or 6 && CustomGameOptions.SmallMapHalfVision)
+        if (MapPatches.CurrentMap is 0 or 3 or 6 && CustomGameOptions.SmallMapHalfVision && !IsTaskRace && !IsCustomHnS)
             __result *= 0.5f;
 
         return false;
@@ -69,13 +75,17 @@ public static class AdjustLightingPatch
             flashlights = CustomGameOptions.SyndicateFlashlight;
         else if (__instance.Is(Faction.Neutral))
             flashlights = CustomGameOptions.NeutralFlashlight;
+        else if (__instance.Is(LayerEnum.Hunted))
+            flashlights = CustomGameOptions.HuntedFlashlight;
+        else if (__instance.Is(LayerEnum.Hunter))
+            flashlights = CustomGameOptions.HunterFlashlight;
 
         flashlights &= !__instance.Data.IsDead;
 
         if (flashlights)
             size /= ShipStatus.Instance.MaxLightRadius;
 
-        __instance.TargetFlashlight?.gameObject.SetActive(flashlights);
+        __instance.TargetFlashlight.gameObject.SetActive(flashlights);
         __instance.StartCoroutine(__instance.EnableRightJoystick(flashlights));
         __instance.lightSource.SetupLightingForGameplay(flashlights, size, __instance.TargetFlashlight.transform);
     }

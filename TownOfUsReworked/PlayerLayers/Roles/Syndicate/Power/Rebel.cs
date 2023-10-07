@@ -16,7 +16,7 @@ public class Rebel : Syndicate
 
     public Rebel(PlayerControl player) : base(player)
     {
-        Alignment = Alignment.SyndicateSupport;
+        Alignment = Alignment.SyndicatePower;
         SidekickButton = new(this, "Sidekick", AbilityTypes.Target, "Secondary", Sidekick);
     }
 

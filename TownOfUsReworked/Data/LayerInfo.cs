@@ -169,7 +169,7 @@ public static class LayerInfo
             + "die at the end of the next meeting. The only way to save a marked player is to click the Ghoul that marked them. Marked players have a yellow χ next to their names.",
             Alignment.IntruderUtil, Faction.Intruder, "I CURSE YOU!", Colors.Ghoul),
         new("Godfather", "GF", "The Godfather can only spawn in 3+ Intruder games. They can choose to promote a fellow Intruder to Mafioso. When the Godfather dies, the Mafioso " +
-            "becomes the new Godfather and has lowered cooldowns.", Alignment.IntruderSupport, Faction.Intruder, "I'm going to make an offer they can't refuse.", Colors.Godfather),
+            "becomes the new Godfather and has lowered cooldowns.", Alignment.IntruderHead, Faction.Intruder, "I'm going to make an offer they can't refuse.", Colors.Godfather),
         new("Grenadier", "Gren", "The Grenadier can throw flash grenades which blinds nearby players. However, a sabotage and a flash grenade can not be active at the same time.",
             Alignment.IntruderConceal, Faction.Intruder, "AAAAAAAAAAAAA YOUR EYES.", Colors.Grenadier),
         new("Impostor", "Imp", "Just a plain Intruder with no abilities and only spawns if all the other roles are taken or set to spawn in Custom mode.", Alignment.IntruderUtil,
@@ -204,8 +204,8 @@ public static class LayerInfo
             " after a set duration. With the Chaos Drive, the Poisoner can poison a player from anywhere.", Alignment.SyndicateKill, Faction.Syndicate, "So now if you " +
             "mix these together, you end up creating this...thing.", Colors.Poisoner),
         new("Rebel", "Reb", "The Rebel can only spawn in 3+ Syndicate games. They can choose to promote a fellow Syndicate to Sidekick. When the Rebel dies, the Sidekick becomes " +
-            "the new Rebel and has lowered cooldowns. With the Chaos Drive, the Rebel's gains the improved abilities of their former role.", Alignment.SyndicateSupport,
-            Faction.Syndicate, "DOWN WITH THE GOVERNMENT!", Colors.Rebel),
+            "the new Rebel and has lowered cooldowns. With the Chaos Drive, the Rebel's gains the improved abilities of their former role.", Alignment.SyndicatePower, Faction.Syndicate,
+            "DOWN WITH THE GOVERNMENT!", Colors.Rebel),
         new("Shapeshifter", "SS", "The Shapeshifter can swap the appearances of 2 players. With the Chaos Drive, everyone's appearances are suffled.", Alignment.SyndicateDisrup,
             Faction.Syndicate, "Everyone! We will be playing dress up! TOGETHER!", Colors.Shapeshifter),
         new("Sidekick", "Side", "The Sidekick is promoted from a random non-Rebel Syndicate role. The Sidekick by themselves is nothing special, but when the Rebel dies, the Sidekick" +
@@ -224,30 +224,38 @@ public static class LayerInfo
             "Detective can also see the footprints of players. All footprints disappear after a set amount of time and only the Detective can see them.", Alignment.CrewInvest,
             Faction.Crew, "I am skilled in identifying blood...yup that's defintely blood.", Colors.Detective),
         new("Betrayer", "Bet", "The Betrayer is a simple killer, who appears after a turned Traitor/Fanatic was the only member of their new faction remaning. This role does not spawn"
-            + " directly.", Alignment.NeutralPros, Faction.Neutral, "The back that trusts me the most is the sweetest to stab", Colors.Betrayer, "Kill anyone who opposes the " +
-            "faction they defected to"),
+            + " directly.", Alignment.NeutralPros, Faction.Neutral, "The back that trusts me the most is the sweetest to stab", Colors.Betrayer, "Kill anyone who opposes the faction " +
+            "they defected to"),
         new("Dictator", "Dict", "The Dictator has no active ability aside from revealing themselves as the Dictator to all players. When revealed, in the next meeting they can pick " +
             "up to 3 players to be ejected. All selected players will be killed at the end of the meeting, along with the chosen 4th player everyone else votes on (if any). If any " +
             "of the killed players happens to be Crew, the Dictator dies with them. The Dictator has no post ejection ability.", Alignment.CrewSov, Faction.Crew, "Out you go!",
             Colors.Dictator),
         new("Monarch", "Mon", "The Monarch can appoint players as knights. When the next meeting is called, all knighted players will be announced. Knighted players will have the value"
-            + " of their votes increased. As long as a Knight is alive, the Monarch cannot be killed. Knighted players have a pinkish red κ next to their names.",
-            Alignment.CrewSov, Faction.Crew, "Doth thou solemnly swear your allegiance to the lord?", Colors.Monarch),
+            + " of their votes increased. As long as a Knight is alive, the Monarch cannot be killed. Knighted players have a pinkish red κ next to their names.", Alignment.CrewSov,
+            Faction.Crew, "Doth thou solemnly swear your allegiance to the lord?", Colors.Monarch),
         new("Stalker", "Stalk", "The Stalker is a buffed Tracker with no update interval. With the Chaos Drive, the arrows are no longer affected by camouflages and all players " +
             "instantly have an arrow pointing at them.", Alignment.SyndicateSupport, Faction.Syndicate, "I'll follow you.", Colors.Stalker),
         new("Spellslinger", "Spell", "The Spellslinger is a powerful role who can cast curses on players. When all non-Syndicate players are cursed, the game ends in a Syndicate " +
-            "victory. With each curse cast, the spell cooldown increases. This effect is negated by the Chaos Drive. Spelled players have a blue ø next to their names during a meeting"
-            + ".", Alignment.SyndicatePower, Faction.Syndicate, "I CURSE YOU TO SUCK ONE THOUSAND D-", Colors.Spellslinger),
+            "victory. With each curse cast, the spell cooldown increases. This effect is negated by the Chaos Drive. Spelled players have a blue ø next to their names during a meeting.",
+            Alignment.SyndicatePower, Faction.Syndicate, "I CURSE YOU TO SUCK ONE THOUSAND D-", Colors.Spellslinger),
         new("Collider", "Col", "The Collider can mark players as positive and negative. If these charged players come within a certain distance of each other, they will die together" +
             ". With the Chaos Drive, the Collider can charge themselves to collide with the other charged players. This only kills the charged victim. The range of collision also " +
             "increases with the Chaos Drive.", Alignment.SyndicateKill, Faction.Syndicate, "I'm a great matchmaker, trust me.", Colors.Collider),
-        new("Timekeeper", "TK", "The Timekeeper can control time. Without the Chaos Drive, the Timekeeper can freeze time, making everyone unable to move and with it, the Time " +
-            "Keeper rewinds players instead.", Alignment.SyndicatePower, Faction.Syndicate, "IT'S TIME TO STOP. NO MORE.", Colors.Timekeeper),
+        new("Timekeeper", "TK", "The Timekeeper can control time. Without the Chaos Drive, the Timekeeper can freeze time, making everyone unable to move and with it, the Timekeeper" +
+            " rewinds players instead.", Alignment.SyndicateDisrup, Faction.Syndicate, "IT'S TIME TO STOP. NO MORE.", Colors.Timekeeper),
         new("Silencer", "Sil", "The Silencer can silencer people. Silenced plaeyrs cannot see the messages being sent by others but can still talk. Other players can still talk but " +
-            "can't get their info through to the silenced player. With the Chaos Drive, silence prevents everyone except for the silenced player from talking.",
-            Alignment.SyndicateDisrup, Faction.Syndicate, "QUIET.", Colors.Silencer),
-        new("Drunkard", "Drunk", "The Drunkard can reverse a player's controls. With the Chaos Drive, this effect applies to everyone.", Alignment.SyndicateDisrup,
-            Faction.Syndicate, "<i>Burp</i>", Colors.Drunkard)
+            "can't get their info through to the silenced player. With the Chaos Drive, silence prevents everyone except for the silenced player from talking.", Alignment.SyndicateDisrup,
+            Faction.Syndicate, "QUIET.", Colors.Silencer),
+        new("Drunkard", "Drunk", "The Drunkard can reverse a player's controls. With the Chaos Drive, this effect applies to everyone.", Alignment.SyndicateDisrup, Faction.Syndicate,
+            "<i>Burp</i>", Colors.Drunkard),
+        new("Hunter", "Hunter", "The Hunter is one of the two roles that spawn in this mod's version of Hide And Seek. The Hunter can kill Hunted, or convert them to Hunters. The Hunters " +
+            "also have a higher run speed than Hunters but can barely see in exchange.", Alignment.GameModeHideAndSeek, Faction.GameMode, "You can run, but you can't hide", Colors.Hunter,
+            "Kill or convert all of the Hunted"),
+        new("Hunted", "Hunted", "The Hunted is one of the two roles that spawn in this mod's version of Hide And Seek. The Hunted has no active abilities and just has a higher vision than " +
+            "the Hunters and might be able to chat.", Alignment.GameModeHideAndSeek, Faction.GameMode, "I am running and hiding", Colors.Hunted, "Finish all tasks before the Hunters catch " +
+            "them"),
+        new("Runner", "Runner", "The Runner is a role that only spawns in the Task Race game mode. It has no abilities and just ends the game when they are the first to finish.",
+            Alignment.GameModeTaskRace, Faction.GameMode, "Gotta go fast", Colors.Runner, "Be the first to finish their tasks")
     };
 
     public static readonly List<ModifierInfo> AllModifiers = new()
@@ -267,11 +275,11 @@ public static class LayerInfo
             Colors.Modifier),
         new("Shy", "Shy", "The Shy player cannot call meetings.", "Everyone except Button Barries and roles who cannot call meetings", Colors.Shy),
         new("Indomitable", "Ind", "The Indomitable player cannot be guessed.", "Everyone", Colors.Indomitable),
-        new("VIP", "VIP", "Everyone is alerted of the VIP's death through a flash of the VIP's role color and will have an arrow poiting towards the VIP's body.", "Everyone",
-            Colors.VIP),
+        new("VIP", "VIP", "Everyone is alerted of the VIP's death through a flash of the VIP's role color and will have an arrow poiting towards the VIP's body.", "Everyone", Colors.VIP),
         new("Professional", "Prof", "The Professional has an extra life when guessing.", "Assassins", Colors.Professional),
         new("Astral", "Astral", "An Astral player is not teleported to the meeting table.", "Everyone", Colors.Astral),
         new("Yeller", "Yell", "The Yeller's location is revealed to everyone at all times.", "Everyone", Colors.Yeller),
+        new("Colorblind", "CB", "A colorblind player cannot tell the difference between players.", "Everyone", Colors.Colorblind),
         new("Volatile", "Vol", "A Volatile player will see random things happen to them and cannot distinguish real kill and flashes from the fake ones.", "Everyone", Colors.Volatile)
     };
 
@@ -280,14 +288,14 @@ public static class LayerInfo
         new("Invalid", "Invalid", "Invalid", "Invalid", "Invalid", "φ", Colors.Objectifier),
         new("Taskmaster", "TM", "The Taskmaster is basically a living Phantom. When a certain number of tasks are remaining, the Taskmaster is revealed to Intruders and the Syndicate" +
             " and the Crew only sees a flash to indicate the Taskmaster's existence.", "Finish tasks without dying or game ending", "Neutrals", "µ", Colors.Taskmaster),
-        new("Lovers", "Lover", "The Lovers are two players who are linked together. They gain the primary objective to stay alive together. In order to so, they gain access to a " +
-            "private chat, only visible by them in between meetings. However, they can also win with their respective teams.", "Live to the final 3 with both Lovers still alive",
-            "Everyone", "♥", Colors.Lovers),
-        new("Rivals", "Rival", "The Rivals cannot do anything to each other and must get the other one killed.", "Get the other rival killed without directly interfering, then live " +
-            "to the final 2", "Everyone", "α", Colors.Rivals),
+        new("Lovers", "Lover", "The Lovers are two players who are linked together. They gain the primary objective to stay alive together. In order to so, they gain access to a private" +
+            " chat, only visible by them in between meetings. However, they can also win with their respective teams.", "Live to the final 3 with both Lovers still alive", "Everyone", "♥",
+            Colors.Lovers),
+        new("Rivals", "Rival", "The Rivals cannot do anything to each other and must get the other one killed.", "Get the other rival killed without directly interfering, then live to the " +
+            "final 2", "Everyone", "α", Colors.Rivals),
         new("Allied", "Ally", "An Allied Neutral Killer now sides with either the Crew, Intruders or the Syndicate. In the case of the latter two, all faction members are shown who is "
-            + "their Ally, and can no longer kill them. A Crew-Allied will have tasks that they must complete.", "Win with whichever faction they are aligned with", "Neutral Killers",
-            "ζ", Colors.Allied),
+            + "their Ally, and can no longer kill them. A Crew-Allied will have tasks that they must complete.", "Win with whichever faction they are aligned with", "Neutral Killers", "ζ",
+            Colors.Allied),
         new("Fanatic", "CF (means Crew Fanatic)", "When attacked, the Fanatic joins whichever faction their attacker belongs to. From then on, their alliance sits with said faction.",
             "Get attacked by either the Intruders or the Syndicate to join their team", "Crew", "♠", Colors.Fanatic),
         new("Overlord", "Ov", "Every meeting, for as long as an Overlord is alive, players will be alerted to their existence. The game ends if the Overlord lives long enough. All " +
@@ -312,18 +320,17 @@ public static class LayerInfo
             "Intruders, Crew, Syndicate, Neutral (Killing), Neutral (Harbinger) and Neutral (Neophyte)", Colors.Assassin),
         new("Button Barry", "BB", "The Button Barry can call a meeting from anywhere on the map, even during sabotages. Calling a meeting during a sabotage will fix the sabotage.",
             "Everyone except roles who cannot call meetings", Colors.ButtonBarry),
-        new("Insider", "Ins", "The Insider will be able to view everyone's votes in meetings upon finishing their tasks. Only spawns if Anonymous Votes is turn on.", "Crew",
-            Colors.Insider),
+        new("Insider", "Ins", "The Insider will be able to view everyone's votes in meetings upon finishing their tasks. Only spawns if Anonymous Votes is turn on.", "Crew", Colors.Insider),
         new("Multitasker", "MT", "When doing tasks, the Multitasker's task window is transparent.", "Roles with tasks", Colors.Multitasker),
         new("Ninja", "Nin", "Ninjas don't lunge when killing.", "Killing roles", Colors.Ninja),
         new("Radar", "Radar", "The Radar always has an arrow pointing towards the nearest player.", "Everyone", Colors.Radar),
-        new("Ruthless", "Ruth", "A Ruthless killer can bypass all forms of protection. Although they bypass alert protection, they will still die to a player on alert.", "Killing " +
-            "roles", Colors.Ruthless),
+        new("Ruthless", "Ruth", "A Ruthless killer can bypass all forms of protection. Although they bypass alert protection, they will still die to a player on alert.", "Killing roles",
+            Colors.Ruthless),
         new("Snitch", "Snitch", "The Snitch is an ability which allows any member of the Crew to get arrows pointing towards the Intruders and the Syndicate once all their tasks are " +
             "finished. The names of the Intruders and Syndicate will also show up as red on their screen. However, when they only have a certain amount of tasks left, the Intruders and"
             + " the Syndicate get an arrow pointing towards the Snitch.", "non-Traitor or Fanatic Crew", Colors.Snitch),
-        new("Tiebreaker", "TB", "During the event of a tie vote, the tied player who the Tiebreaker voted for will be ejected. In the case of a Politician, this applies to their first "
-            + "vote.", "Everyone", Colors.Tiebreaker),
+        new("Tiebreaker", "TB", "During the event of a tie vote, the tied player who the Tiebreaker voted for will be ejected. In the case of a Politician, this applies to their first vote.",
+            "Everyone", Colors.Tiebreaker),
         new("Torch", "Torch", "The Torch has Intruder vision at all times and can see the silhouettes of invisible players.", "Crew, Neutral Evil and Benign roles, Neutrals and Neutral"
             + " Killers when their respective lights are off", Colors.Torch),
         new("Tunneler", "Tun", "The Tunneler will be able to vent when they finish their tasks.", "Crew excluding Engineer", Colors.Tunneler),
@@ -342,7 +349,8 @@ public static class LayerInfo
         new(Faction.Crew),
         new(Faction.Intruder),
         new(Faction.Neutral),
-        new(Faction.Syndicate)
+        new(Faction.Syndicate),
+        new(Faction.GameMode)
     };
 
     public static readonly List<SubFactionInfo> AllSubFactions = new()
@@ -406,7 +414,25 @@ public static class LayerInfo
         new(Alignment.SyndicateSov),
         new(Alignment.SyndicateAudit),
         new(Alignment.SyndicateConceal),
-        new(Alignment.SyndicateDecep)
+        new(Alignment.SyndicateDecep),
+        new(Alignment.IntruderHead),
+        new(Alignment.NeutralHead),
+        new(Alignment.CrewHead),
+        new(Alignment.SyndicateHead),
+        new(Alignment.GameModeHideAndSeek),
+        new(Alignment.GameModeTaskRace)
+    };
+
+    public static readonly List<GameModeInfo> AllModes = new()
+    {
+        new(GameMode.Classic),
+        new(GameMode.Vanilla),
+        new(GameMode.AllAny),
+        new(GameMode.KillingOnly),
+        new(GameMode.TaskRace),
+        new(GameMode.RoleList),
+        new(GameMode.HideAndSeek),
+        new(GameMode.Custom)
     };
 
     public static readonly List<Lore> AllLore = new()
@@ -478,8 +504,8 @@ public static class LayerInfo
             "person, so at least they'd be safe. It was the Crewmate, a loveable simpleton who only stood for justice. She would know when he would be attacked. All she had to do " +
             "was just sit and lie in wait, patiently waiting for a killer to slip up and attack the Crewmate and alerting her. But on her way to the cafeteria, she heard wheezing. " +
             "It was the corrupt Mayor, the one who was the sole reason behind the Medic's accident. Her entire being said let him die, but only her heart said to save him, for she " +
-            "was not a monster, but the barrier between life and death for the Crew. She slowly approached the Mayor, pushing down her hatred for him. \"Where does it hurt?\"",
-            "Medic", Colors.Medic),
+            "was not a monster, but the barrier between life and death for the Crew. She slowly approached the Mayor, pushing down her hatred for him. \"Where does it hurt?\"", "Medic",
+            Colors.Medic),
         new("Crewmate", "Nothing fruitful ever happened in the Crewmate's life. He was just lucky enough to get a spot in the exploration trip to Polus. Only useful for " +
             "finishing tasks and basic repairs, he decided to make the most of his time aboard the Skeld. Getting acquainted with all those famous celebrities from Mira, the " +
             "Crewmate felt a sense of bliss and happiness. He was going to make history. He was finally going to be able to stand with the celebrities like the Mayor. That would'" +
@@ -515,32 +541,30 @@ public static class LayerInfo
             + " \"STOP! IT'S M-\" <i>slash</i> The Godfather dropped the knife down and knelt down in horror as he stared at the body. He had slashed his Janitor, his last surviving " +
             "teammate. The Crewmate knew what he had seen the Godfather do. The Crewmate quickly reported the body and called out the Godfather for killing someone. The Godfather, " +
             "unable to form words due to the horror of what happened, couldn’t defend himself. Just as the Godfather was getting thrown into the airlock, he locked eyes with the " +
-            "Crewmate. The Crewmate, with a smirk, gave the Godfather a V from his fingers and only then did the Godfather realise who the Transporter was.", "Trans",
-            Colors.Transporter)
+            "Crewmate. The Crewmate, with a smirk, gave the Godfather a V from his fingers and only then did the Godfather realise who the Transporter was.", "Trans", Colors.Transporter)
     };
 
     public static readonly List<OtherInfo> AllOthers = new()
     {
         new("Invalid", "Invalid", "Invalid", UColor.red, "Invalid"),
         new("Chaos Drive", "CD", "The Chaos Drive is an ability boosting device that the Syndicate receives after a certain number of meetings. When the Chaos Drive is discovered, it "
-            + "is handed to members of the Syndicate in a particular order. The holder of the Chaos Drive gains the ability to kill (if they didn't already) and have stronger " +
-            "variations/buffs to their abilities.", Colors.Syndicate, "Order Of Receiving The Chaos Drive:\nPromoted Rebel\nSyndicate (Disruption)\nSyndicate (Support)\nSyndicate " +
-            "(Power)\nSyndicate (Killing)\nOriginal Rebel, Sidekick, Anarchist"),
-        new("Role", "Role", "Roles decide your abilities and goals for the game. Every game, you are guaranteed to have a role as not having one basically means you cannot play the " +
-            "game.", Colors.Role),
-        new("Objectifier", "Obj", "Objectifiers provide an alternate way for you to win, and sometimes they may override the your original win condition (see Corrupted and Mafia) or " +
-            "change your win condition mid-game (see Traitor and Fanatic).", Colors.Objectifier),
-        new("Modifier", "Mod", "Modifiers are passive afflictions, usually negative or benign in nature, that serve no purpose and are there for fun. It cam alter a player's gameplay "
-            + "based on what they might have. For example, Baits and Diseased players would want to die for their modifiers to take effect.", Colors.Modifier),
+            + "is handed to members of the Syndicate in a particular order. The holder of the Chaos Drive gains the ability to kill (if they didn't already) and have stronger variations/" +
+            "buffs to their abilities.", Colors.Syndicate, "Order Of Receiving The Chaos Drive:\nPromoted Rebel\nSyndicate (Disruption)\nSyndicate (Support)\nSyndicate (Power)\nSyndicate " +
+            "(Killing)\nOriginal Rebel, Sidekick, Anarchist"),
+        new("Role", "Role", "Roles decide your abilities and goals for the game. Every game, you are guaranteed to have a role as not having one basically means you cannot play the game.",
+            Colors.Role),
+        new("Objectifier", "Obj", "Objectifiers provide an alternate way for you to win, and sometimes they may override the your original win condition (see Corrupted and Mafia) or change" +
+            " your win condition mid-game (see Traitor and Fanatic).", Colors.Objectifier),
+        new("Modifier", "Mod", "Modifiers are passive afflictions, usually negative or benign in nature, that serve no purpose and are there for fun. It cam alter a player's gameplay based"
+            + " on what they might have. For example, Baits and Diseased players would want to die for their modifiers to take effect.", Colors.Modifier),
         new("Ability", "Ab", "Abilities give you an additional ability on top of your original abilities, to help boost your chances of winning.", Colors.Ability),
         new("Inspector Results", "IR", "All roles are classified within certain role groups for the Inspector to see.", Colors.Inspector, "Results:\nDeals With Dead - Coroner, " +
-            "Amnesiac, Retributionist, Janitor, Cannibal\nPreserves Life - Medic, Guardian Angel, Altruist, Necromancer, Crusader\nLeads The Group - Mayor, Godfather (Original), Rebel "
-            + "(Original), Pestilence, Survivor\nBrings Chaos - Shifter, Thief, Camouflager, Whisperer, Jackal\nSeeks To Destroy - Arsonist, Cryomaniac, Plaguebearer, " +
-            "Spellslinger\nWants To Explore - Transporter, Teleporter, Warper, Timekeeper\nNew Lens - Engineer, Miner, Seer, Dracula, Medium, Monarch\nGains Information - Sheriff, " +
-            "Consigliere, Blackmailer, Detective, Inspector, Silencer\nIs Manipulative - Jester, Executioner, Actor, Troll, Framer, Dictator\nUnseen - Chameleon, Wraith, Concealer, " +
-            "Poisoner, Collider\nIs Cold - Veteran, Vigilante, Sidekick, Guesser, Mafioso\nTracks Others - Tracker, Mystic, Vampire Hunter, Bounty Hunter, Stalker\nIs Aggressive - " +
-            "Betrayer, Werewolf, Juggernaut, Serial Killer\nCreates Confusion - Morphling, Disguiser, Shapeshifter\nDrops Items - Bomber, Operative, Grenadier, Enforcer\nHinders  " +
-            "Others - Escort, Consort, Glitch, Ambusher, Drunkard\nIs Basic - Crewmate, Impostor, Murderer, Anarchist\nGhostly - Revealer, Phantom, Ghoul, Banshee\n\nNote: A Promoted "
-            + "Godfather/Rebel's Inspector results will match that of their former roles.")
+            "Amnesiac, Retributionist, Janitor, Cannibal\nPreserves Life - Medic, Guardian Angel, Altruist, Necromancer, Crusader\nLeads The Group - Mayor, Godfather, Rebel, Pestilence, " +
+            "Survivor\nBrings Chaos - Shifter, Thief, Camouflager, Whisperer, Jackal\nSeeks To Destroy - Arsonist, Cryomaniac, Plaguebearer, Spellslinger\nWants To Explore - Transporter, " +
+            "Teleporter, Warper, Timekeeper\nNew Lens - Engineer, Miner, Seer, Dracula, Medium, Monarch\nGains Information - Sheriff, Consigliere, Blackmailer, Detective, Inspector, " +
+            "Silencer\nIs Manipulative - Jester, Executioner, Actor, Troll, Framer, Dictator\nUnseen - Chameleon, Wraith, Concealer, Poisoner, Collider\nIs Cold - Veteran, Vigilante, " +
+            "Sidekick, Guesser, Mafioso\nTracks Others - Tracker, Mystic, Vampire Hunter, Bounty Hunter, Stalker\nIs Aggressive - Betrayer, Werewolf, Juggernaut, Serial Killer\nCreates " +
+            "Confusion - Morphling, Disguiser, Shapeshifter\nDrops Items - Bomber, Operative, Grenadier, Enforcer\nHinders Others - Escort, Consort, Glitch, Ambusher, Drunkard\nIs Basic - " +
+            "Crewmate, Impostor, Murderer, Anarchist\nGhostly - Revealer, Phantom, Ghoul, Banshee")
     };
 }

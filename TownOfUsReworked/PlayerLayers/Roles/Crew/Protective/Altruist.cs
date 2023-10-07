@@ -58,7 +58,7 @@ public class Altruist : Crew
         if (ReviveButton.Uses == 0 && Local)
             RpcMurderPlayer(Player, Player);
 
-        if (formerKiller.Contains(CustomPlayer.LocalCustom.Data.PlayerName))
+        if (formerKiller.Contains(CustomPlayer.LocalCustom.PlayerName))
         {
             LocalRole.AllArrows.Add(player.PlayerId, new(CustomPlayer.Local, Color));
             Flash(Color);

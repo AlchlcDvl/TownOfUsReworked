@@ -176,11 +176,13 @@ public static class LayerExtentions
         var taskmasterflag = player.Is(LayerEnum.Taskmaster);
         var defectflag = player.IsCrewDefect();
 
+        var gmflag = player.Is(LayerEnum.Runner) || player.Is(LayerEnum.Hunted);
+
         var flag1 = crewflag && !sideflag;
         var flag2 = neutralflag && (taskmasterflag || phantomflag);
         var flag3 = intruderflag && (taskmasterflag || defectflag);
         var flag4 = syndicateflag && (taskmasterflag || defectflag);
-        return flag1 || flag2 || flag3 || flag4;
+        return flag1 || flag2 || flag3 || flag4 || gmflag;
     }
 
     public static bool IsMoving(this PlayerControl player) => Role.GetRoles<Transporter>(LayerEnum.Transporter).Any(x => (x.TransportPlayer1 == player || x.TransportPlayer2 == player) &&
@@ -345,6 +347,8 @@ public static class LayerExtentions
 
     public static bool IsVesting(this PlayerControl player) => Role.GetRoles<Survivor>(LayerEnum.Survivor).Any(role => role.VestButton.EffectActive && player == role.Player);
 
+    public static bool NotTransformed(this PlayerControl player) => Role.GetRoles<Werewolf>(LayerEnum.Werewolf).Any(role => !role.CanMaul && player == role.Player);
+
     public static bool IsMarked(this PlayerControl player) => Role.GetRoles<Ghoul>(LayerEnum.Ghoul).Any(role => player == role.MarkedPlayer);
 
     public static bool IsAmbushed(this PlayerControl player) => Role.GetRoles<Ambusher>(LayerEnum.Ambusher).Any(role => role.OnAmbush && player == role.AmbushedPlayer);
@@ -447,7 +451,7 @@ public static class LayerExtentions
         var role = Role.GetRole(player);
 
         if (role == null || !player.IsPostmortal())
-            return false;
+            return true;
 
         if (player.Is(LayerEnum.Phantom))
             return ((Phantom)role).Caught;
@@ -473,6 +477,12 @@ public static class LayerExtentions
         if (LobbyBehaviour.Instance || (HudUpdate.IsCamoed && CustomGameOptions.CamoHideSpeed))
             return result;
 
+        if (IntroCutscene.Instance)
+            return 0f;
+
+        if (player.Is(LayerEnum.Hunter))
+            return Role.GetRole<Hunter>(player).Starting ? 0f : CustomGameOptions.HunterSpeedModifier;
+
         if (player.Is(LayerEnum.Dwarf))
             result *= CustomGameOptions.DwarfSpeed;
         else if (player.Is(LayerEnum.Giant))
@@ -495,7 +505,7 @@ public static class LayerExtentions
                 !CustomGameOptions.TimeRewindImmunity) || (Role.GetRoles<Timekeeper>(LayerEnum.Timekeeper).Any(x => x.TimeButton.EffectActive && !x.HoldsDrive) &&
                 !CustomGameOptions.TimeFreezeImmunity))))
             {
-                result *= 0;
+                result = 0f;
             }
         }
 
@@ -505,7 +515,7 @@ public static class LayerExtentions
                 x.HoldsDrive && x.IsTK) && !CustomGameOptions.TimeRewindImmunity) || (Role.GetRoles<PromotedRebel>(LayerEnum.PromotedRebel).Any(x => x.TimeButton.EffectActive &&
                 !x.HoldsDrive && x.IsTK) && !CustomGameOptions.TimeFreezeImmunity))))
             {
-                result *= 0;
+                result = 0f;
             }
         }
 
@@ -571,6 +581,10 @@ public static class LayerExtentions
 
         if (playerRole == null)
             mainflag = playerInfo.IsImpostor();
+        else if (player.Is(LayerEnum.Hunter))
+            mainflag = CustomGameOptions.HunterVent;
+        else if (player.Is(LayerEnum.Hunted) || player.Is(LayerEnum.Runner))
+            mainflag = false;
         else if (player.Is(LayerEnum.Mafia))
             mainflag = CustomGameOptions.MafVent;
         else if (player.Is(LayerEnum.Corrupted))
@@ -585,7 +599,7 @@ public static class LayerExtentions
             mainflag = CustomGameOptions.UndeadVent;
         else if (player.Is(Faction.Syndicate) && playerRole.BaseFaction == Faction.Syndicate)
             mainflag = (((Syndicate)playerRole).HoldsDrive && (int)CustomGameOptions.SyndicateVent is 1) || (int)CustomGameOptions.SyndicateVent is 0;
-        else if (player.Is(Faction.Intruder))
+        else if (player.Is(Faction.Intruder) && playerRole.BaseFaction == Faction.Intruder)
         {
             var flag = (player.Is(LayerEnum.Morphling) && !CustomGameOptions.MorphlingVent) || (player.Is(LayerEnum.Wraith) && !CustomGameOptions.WraithVent) ||
                 (player.Is(LayerEnum.Grenadier) && !CustomGameOptions.GrenadierVent) || (player.Is(LayerEnum.Teleporter) && !CustomGameOptions.TeleVent);
@@ -637,17 +651,16 @@ public static class LayerExtentions
                 CustomGameOptions.ExeVent) || (player.Is(LayerEnum.Cannibal) && CustomGameOptions.CannibalVent) || (player.Is(LayerEnum.Dracula) && CustomGameOptions.DracVent) ||
                 (player.Is(LayerEnum.Survivor) && CustomGameOptions.SurvVent) || (player.Is(LayerEnum.Actor) && CustomGameOptions.ActorVent) || (player.Is(LayerEnum.GuardianAngel) &&
                 CustomGameOptions.GAVent) || (player.Is(LayerEnum.Amnesiac) && CustomGameOptions.AmneVent) || (player.Is(LayerEnum.Werewolf) && CustomGameOptions.WerewolfVent) ||
-                (player.Is(LayerEnum.Jackal) && CustomGameOptions.JackalVent) || (player.Is(LayerEnum.BountyHunter) && CustomGameOptions.BHVent)) && CustomGameOptions.NeutralsVent;
+                (player.Is(LayerEnum.Jackal) && CustomGameOptions.JackalVent) || (player.Is(LayerEnum.BountyHunter) && CustomGameOptions.BHVent) || (player.Is(LayerEnum.Betrayer) &&
+                CustomGameOptions.BetrayerVent)) && CustomGameOptions.NeutralsVent;
 
             if (player.Is(LayerEnum.SerialKiller))
             {
                 var role2 = (SerialKiller)playerRole;
-                mainflag = (int)CustomGameOptions.SKVentOptions is 0 || (role2.BloodlustButton.EffectActive && (int)CustomGameOptions.SKVentOptions is 1) ||
-                    (!role2.BloodlustButton.EffectActive && (int)CustomGameOptions.SKVentOptions is 2);
+                mainflag = CustomGameOptions.NeutralsVent &&((int)CustomGameOptions.SKVentOptions is 0 || (role2.BloodlustButton.EffectActive && (int)CustomGameOptions.SKVentOptions is 1)
+                    || (!role2.BloodlustButton.EffectActive && (int)CustomGameOptions.SKVentOptions is 2));
             }
         }
-        else if (player.Is(LayerEnum.Betrayer))
-            mainflag = CustomGameOptions.BetrayerVent;
         else if (player.IsPostmortal() && player.inVent)
             mainflag = true;
 
@@ -668,6 +681,8 @@ public static class LayerExtentions
             return CustomGameOptions.RivalsChat;
         else if (player.Is(LayerEnum.Linked))
             return CustomGameOptions.LinkedChat;
+        else if (player.Is(LayerEnum.Hunted))
+            return CustomGameOptions.HuntedChat;
         else
             return false;
     }
@@ -1042,8 +1057,26 @@ public static class LayerExtentions
         Alignment.SyndicateProt => withColors ? "<color=#008000FF>Syndicate (<color=#1D7CF2FF>Protective</color>)</color>" : "Syndicate (Protective)",
         Alignment.SyndicateConceal => withColors ? "<color=#008000FF>Syndicate (<color=#1D7CF2FF>Concealing</color>)</color>" : "Syndicate (Concealing)",
         Alignment.SyndicateDecep => withColors ? "<color=#008000FF>Syndicate (<color=#1D7CF2FF>Deception</color>)</color>" : "Syndicate (Deception)",
-        Alignment.None => "Invalid",
-        _ => "Invalid",
+        Alignment.IntruderHead => withColors ? "<color=#FF0000FF>Intruder (<color=#1D7CF2FF>Head</color>)</color>" : "Intruder (Head)",
+        Alignment.CrewHead => withColors ? "<color=#8CFFFFFF>Crew (<color=#1D7CF2FF>Head</color>)</color>" : "Crew (Head)",
+        Alignment.SyndicateHead => withColors ? "<color=#008000FF>Syndicate (<color=#1D7CF2FF>Head</color>)</color>" : "Syndicate (Head)",
+        Alignment.NeutralHead => withColors ? "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Head</color>)</color>" : "Neutral (Head)",
+        Alignment.GameModeHideAndSeek => withColors ? "<color=#A81538FF>Game Mode (<color=#7500AFFF>Hide And Seek</color>)</color>" : "Game Mode (Hide And Seek)",
+        Alignment.GameModeTaskRace => withColors ? "<color=#A81538FF>Game Mode (<color=#1E49CFFF>Task Race</color>)</color>" : "Game Mode (Task Race)",
+        _ => "Invalid"
+    };
+
+    public static string GameModeName(this GameMode mode, bool withColors = false) => mode switch
+    {
+        GameMode.TaskRace => withColors ? "<color=#1E49CFFF>Task Race</color>" : "Task Race",
+        GameMode.HideAndSeek => withColors ? "<color=#7500AFFF>Hide And Seek</color>" : "Hide And Seek",
+        GameMode.Classic => withColors ? "<color=#C02A2CFF>Classic</color>" : "Classic",
+        GameMode.AllAny => withColors ? "<color=#CBD542FF>All Any</color>" : "All Any",
+        GameMode.KillingOnly => withColors ? "<color=#06E00CFF>Killing Only</color>" : "Killing Only",
+        GameMode.Custom => withColors ? "<color=#E6956AFF>Custom</color>" : "Custom",
+        GameMode.Vanilla => "Vanilla",
+        GameMode.RoleList => withColors ? "<color=#FA1C79FF>Role List</color>" : "Role List",
+        _ => "Invalid"
     };
 
     public static Alignment GetNewAlignment(this Alignment alignment, Faction faction)
@@ -1059,6 +1092,7 @@ public static class LayerExtentions
                 Alignment.IntruderUtil or Alignment.SyndicateUtil => Alignment.CrewUtil,
                 Alignment.SyndicateDisrup => Alignment.CrewDisrup,
                 Alignment.SyndicatePower => Alignment.CrewPower,
+                Alignment.IntruderHead => Alignment.CrewHead,
                 _ => alignment
             };
         }
@@ -1091,6 +1125,7 @@ public static class LayerExtentions
                 Alignment.CrewAudit => Alignment.SyndicateAudit,
                 Alignment.IntruderConceal => Alignment.SyndicateConceal,
                 Alignment.IntruderDecep => Alignment.SyndicateDecep,
+                Alignment.IntruderHead => Alignment.SyndicateHead,
                 _ => alignment
             };
         }
@@ -1109,6 +1144,7 @@ public static class LayerExtentions
                 Alignment.IntruderDecep => Alignment.NeutralDecep,
                 Alignment.SyndicateDisrup => Alignment.NeutralDisrup,
                 Alignment.SyndicatePower => Alignment.NeutralDisrup,
+                Alignment.IntruderHead => Alignment.NeutralHead,
                 _ => alignment
             };
         }
@@ -1119,58 +1155,64 @@ public static class LayerExtentions
     public static bool CanButton(this PlayerControl player, out string name)
     {
         name = "Shy";
+        var result = !player.Is(LayerEnum.Shy) && player.RemainingEmergencies > 0;
 
         if (player.Is(LayerEnum.Mayor))
         {
             name = "Mayor";
-            return CustomGameOptions.MayorButton;
+            result = CustomGameOptions.MayorButton;
         }
         else if (player.Is(LayerEnum.Jester))
         {
             name = "Jester";
-            return CustomGameOptions.JesterButton;
+            result = CustomGameOptions.JesterButton;
         }
         else if (player.Is(LayerEnum.Swapper))
         {
             name = "Swapper";
-            return CustomGameOptions.SwapperButton;
+            result = CustomGameOptions.SwapperButton;
         }
         else if (player.Is(LayerEnum.Actor))
         {
             name = "Actor";
-            return CustomGameOptions.ActorButton;
+            result = CustomGameOptions.ActorButton;
         }
         else if (player.Is(LayerEnum.Executioner))
         {
             name = "Executioner";
-            return CustomGameOptions.ExecutionerButton;
+            result = CustomGameOptions.ExecutionerButton;
         }
         else if (player.Is(LayerEnum.Guesser))
         {
             name = "Guesser";
-            return CustomGameOptions.GuesserButton;
+            result = CustomGameOptions.GuesserButton;
         }
         else if (player.Is(LayerEnum.Politician))
         {
             name = "Politician";
-            return CustomGameOptions.PoliticianButton;
+            result = CustomGameOptions.PoliticianButton;
         }
         else if (player.Is(LayerEnum.Dictator))
         {
             name = "Dictator";
-            return CustomGameOptions.DictatorButton;
+            result = CustomGameOptions.DictatorButton;
         }
         else if (player.Is(LayerEnum.Monarch))
         {
             name = "Monarch";
-            return CustomGameOptions.MonarchButton;
+            result = CustomGameOptions.MonarchButton;
         }
         else if (player.IsKnighted())
         {
             name = "Knight";
-            return CustomGameOptions.KnightButton;
+            result = CustomGameOptions.KnightButton;
+        }
+        else if (IsTaskRace || IsCustomHnS)
+        {
+            name = "GameMode";
+            result = false;
         }
 
-        return !player.Is(LayerEnum.Shy) && player.RemainingEmergencies > 0;
+        return result;
     }
 }

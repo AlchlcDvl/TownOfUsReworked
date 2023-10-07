@@ -94,14 +94,14 @@ public static class OpenMapMenuPatch
 
         var notmodified = true;
 
-        if (opts.Mode is not MapOptions.Modes.None and not MapOptions.Modes.CountOverlay)
+        if (opts.Mode is not (MapOptions.Modes.None or MapOptions.Modes.CountOverlay))
         {
             if (CustomPlayer.Local.CanSabotage())
                 __instance.ShowSabotageMap();
             else
                 __instance.ShowNormalMap();
 
-            __instance.taskOverlay.gameObject.SetActive(CustomPlayer.Local.Is(Faction.Crew));
+            __instance.taskOverlay.gameObject.SetActive(CustomPlayer.Local.CanDoTasks() && !IsTaskRace && !IsCustomHnS);
             notmodified = false;
         }
 
@@ -285,13 +285,6 @@ public static class RemoveCustomPlayerPatch
     public static void Prefix(PlayerControl __instance) => CustomPlayer.AllCustomPlayers.RemoveAll(x => x.Player == __instance || x.Player == null);
 }
 
-[HarmonyPatch(typeof(SabotageButton), nameof(SabotageButton.Refresh))]
-[HarmonyPriority(Priority.First)]
-public static class RefreshPatch
-{
-    public static bool Prefix() => false;
-}
-
 [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
 public static class LobbySizePatch
 {
@@ -408,8 +401,12 @@ public static class EmergencyMinigameUpdatePatch
     {
         if ((!CustomPlayer.Local.CanButton(out var name) || CustomPlayer.Local.RemainingEmergencies == 0) && !CustomPlayer.Local.myTasks.Any(PlayerTask.TaskIsEmergency))
         {
-            var title = name == "Shy" && CustomPlayer.Local.RemainingEmergencies > 0 ? "You are too shy to call a meeting" :
-                $"{(CustomPlayer.Local.RemainingEmergencies == 0 ? "Y" : $"As the {name}, y")}ou cannot call any more meetings";
+            var title = name switch
+            {
+                "Shy" => "You are too shy to call a meeting",
+                "GameMode" => "Don't call meetings",
+                _ => $"{(CustomPlayer.Local.RemainingEmergencies == 0 ? "Y" : $"As the {name}, y")}ou cannot call any more meetings"
+            };
             __instance.StatusText.text = title;
             __instance.NumberText.text = string.Empty;
             __instance.ClosedLid.gameObject.SetActive(true);

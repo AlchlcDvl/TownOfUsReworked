@@ -21,7 +21,7 @@ public static class GameFilters
                 {
                     __instance.targetOpts.FilterTags = new();
                     __instance.targetOpts.FilterTags.Add(FilterText);
-                    __instance.controllerSelectable.Il2CppToSystem().ForEach(x => x.GetComponent<ChatLanguageButton>().SetSelected(false));
+                    __instance.controllerSelectable.ForEach(x => x.GetComponent<ChatLanguageButton>().SetSelected(false));
                     button.SetSelected(true);
                 }
                 else

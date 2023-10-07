@@ -27,7 +27,7 @@ public static class Keybinds
         action.type = InputActionType.Button;
         action.userAssignable = true;
 
-        var map = new ActionElementMap
+        var map = new ActionElementMap()
         {
             _elementIdentifierId = -1,
             _actionId = action.id,

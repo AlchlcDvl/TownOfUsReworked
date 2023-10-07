@@ -6,6 +6,7 @@ namespace TownOfUsReworked.Classes;
 public static class Logging
 {
     private static ManualLogSource Log;
+    public static string SavedLogs;
 
     public static void Init()
     {
@@ -13,7 +14,11 @@ public static class Logging
         //Application.add_logMessageReceived(new Action<string, string, LogType>(OnUnityLog));
     }
 
-    private static void LogSomething(object message, LogLevel type) => Log?.Log(type, message);
+    private static void LogSomething(object message, LogLevel type)
+    {
+        Log?.Log(type, message);
+        SavedLogs += $"[{type}] {message}\n";
+    }
 
     public static void LogError(object message) => LogSomething(message, LogLevel.Error);
 

@@ -20,10 +20,96 @@ public static class MainMenuStartPatch
     };
     public static GameObject Logo;
 
-    public static void Prefix()
+    public static void Prefix(MainMenuManager __instance)
     {
         ModCompatibility.Init();
         Generate.GenerateAll();
+        ModUpdater.LaunchUpdater();
+        AssetLoader.LaunchFetchers(ModUpdater.ReworkedUpdate || ModUpdater.SubmergedUpdate);
+        var rightPanel = GameObject.Find("RightPanel");
+
+        if (rightPanel == null)
+            return;
+
+        if (!Logo)
+        {
+            Logo = new GameObject("ReworkedLogo");
+            Logo.transform.position = new(2f, 0f, 100f);
+            Logo.AddComponent<SpriteRenderer>().sprite = GetSprite("Banner");
+            Logo.transform.SetParent(rightPanel.transform);
+        }
+
+        var template = GameObject.Find("ExitGameButton");
+
+        if (template == null)
+            return;
+
+        var y = 0.6f;
+
+        //If there's an update, create and show the update button
+        if (ModUpdater.ReworkedUpdate)
+        {
+            var touButton = UObject.Instantiate(template, rightPanel.transform);
+            touButton.transform.localPosition = new(touButton.transform.localPosition.x, y, touButton.transform.localPosition.z);
+            touButton.transform.localScale = new(0.44f, 0.84f, 1f);
+            touButton.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = GetSprite("UpdateToUButton");
+            touButton.transform.GetChild(1).GetComponent<SpriteRenderer>().sprite = GetSprite("UpdateToUButton");
+
+            var pos = touButton.GetComponent<AspectPosition>();
+            pos.Alignment = AspectPosition.EdgeAlignments.LeftBottom;
+            pos.DistanceFromEdge = new(1.5f, 1f, 0f);
+
+            var passiveTOUButton = touButton.GetComponent<PassiveButton>();
+            passiveTOUButton.OnClick = new();
+            passiveTOUButton.OnClick.AddListener((Action)(() =>
+            {
+                ModUpdater.ExecuteUpdate("Reworked");
+                touButton.SetActive(false);
+            }));
+
+            __instance.StartCoroutine(Effects.Lerp(0.1f, new Action<float>(_ =>
+            {
+                touButton.transform.GetChild(2).GetChild(0).GetComponent<TMP_Text>().SetText("");
+                pos.AdjustPosition();
+            })));
+
+            y += 0.6f;
+        }
+
+        //If there's an update, create and show the update button
+        if (ModUpdater.SubmergedUpdate)
+        {
+            var submergedButton = UObject.Instantiate(template, rightPanel.transform);
+            submergedButton.transform.localPosition = new(submergedButton.transform.localPosition.x, y, submergedButton.transform.localPosition.z);
+            submergedButton.transform.localScale = new(0.44f, 0.84f, 1f);
+            submergedButton.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = GetSprite("UpdateSubmergedButton");
+            submergedButton.transform.GetChild(1).GetComponent<SpriteRenderer>().sprite = GetSprite("UpdateSubmergedButton");
+
+            var pos = submergedButton.GetComponent<AspectPosition>();
+            pos.Alignment = AspectPosition.EdgeAlignments.LeftBottom;
+            pos.DistanceFromEdge = new(1.5f, 1.5f, 0f);
+
+            var passiveSubmergedButton = submergedButton.GetComponent<PassiveButton>();
+            passiveSubmergedButton.OnClick = new();
+            passiveSubmergedButton.OnClick.AddListener((Action)(() =>
+            {
+                ModUpdater.ExecuteUpdate("Submerged");
+                submergedButton.SetActive(false);
+            }));
+
+            __instance.StartCoroutine(Effects.Lerp(0.1f, new Action<float>(_ =>
+            {
+                submergedButton.transform.GetChild(2).GetChild(0).GetComponent<TMP_Text>().SetText("");
+                pos.AdjustPosition();
+            })));
+        }
+
+        if (ModUpdater.ReworkedUpdate || ModUpdater.SubmergedUpdate)
+        {
+            ModUpdater.InfoPopup = UObject.Instantiate(TwitchManager.Instance.TwitchPopup);
+            ModUpdater.InfoPopup.TextAreaTMP.fontSize *= 0.7f;
+            ModUpdater.InfoPopup.TextAreaTMP.enableAutoSizing = false;
+        }
     }
 
     public static void Postfix(MainMenuManager __instance)
@@ -109,14 +195,6 @@ public static class MainMenuStartPatch
             GameObject.Find("ReworkedGitHub").transform.GetChild(0).GetChild(0).GetComponent<TMP_Text>().SetText("Mod GitHub");
             GameObject.Find("ReworkedModInfo").transform.GetChild(0).GetChild(0).GetComponent<TMP_Text>().SetText("Mod Info");
         })));
-
-        if (!Logo)
-        {
-            Logo = new GameObject("ReworkedLogo");
-            Logo.transform.position = new(2f, -0.1f, 100f);
-            Logo.AddComponent<SpriteRenderer>().sprite = GetSprite("Banner");
-            Logo.transform.SetParent(GameObject.Find("RightPanel").transform);
-        }
     }
 }
 

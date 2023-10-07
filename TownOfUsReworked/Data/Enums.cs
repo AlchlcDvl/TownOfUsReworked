@@ -34,6 +34,12 @@ public enum GlitchActionsRPC
     Hack
 }
 
+public enum PoliticianActionsRPC
+{
+    Add,
+    Remove
+}
+
 public enum ThiefActionsRPC
 {
     Steal,
@@ -65,6 +71,7 @@ public enum InfoType
     Faction,
     SubFaction,
     Alignment,
+    GameMode,
     Other,
 
     None
@@ -99,6 +106,7 @@ public enum Faction
     Intruder,
     Neutral,
     Syndicate,
+    GameMode,
 
     None
 }
@@ -116,6 +124,7 @@ public enum Alignment
     CrewDecep,
     CrewPower,
     CrewDisrup,
+    CrewHead,
 
     IntruderSupport,
     IntruderConceal,
@@ -128,6 +137,7 @@ public enum Alignment
     IntruderAudit,
     IntruderPower,
     IntruderDisrup,
+    IntruderHead,
 
     NeutralKill,
     NeutralNeo,
@@ -146,6 +156,7 @@ public enum Alignment
     NeutralDecep,
     NeutralDisrup,
     NeutralPower,
+    NeutralHead,
 
     SyndicateKill,
     SyndicateSupport,
@@ -158,6 +169,10 @@ public enum Alignment
     SyndicateAudit,
     SyndicateConceal,
     SyndicateDecep,
+    SyndicateHead,
+
+    GameModeTaskRace,
+    GameModeHideAndSeek,
 
     None
 }
@@ -246,8 +261,16 @@ public enum GameMode
     AllAny,
     KillingOnly,
     RoleList,
+    HideAndSeek,
+    TaskRace,
     Custom,
     Vanilla
+}
+
+public enum HnSMode
+{
+    Classic,
+    Infection
 }
 
 public enum MapEnum
@@ -257,6 +280,7 @@ public enum MapEnum
     Polus,
     //dlekS,
     Airship,
+    //Fungle,
     Submerged,
     LevelImpostor,
     Random
@@ -267,6 +291,13 @@ public enum TaskBar
     MeetingOnly,
     Normal,
     Invisible
+}
+
+public enum PlayerNames
+{
+    Obstructed,
+    Visible,
+    NotVisible
 }
 
 public enum WhoCanSeeFirstKillShield
@@ -284,7 +315,8 @@ public enum CustomPlayerOutfitType
     Morph,
     Camouflage,
     Invis,
-    PlayerNameOnly
+    PlayerNameOnly,
+    Colorblind
 }
 
 public enum TargetRPC
@@ -318,7 +350,6 @@ public enum MiscRPC
     Start,
     SyncCustomSettings,
     SetSettings,
-    AddVoteBank,
     MeetingStart,
     Notify,
     SubmergedFixOxygen,
@@ -335,7 +366,6 @@ public enum MiscRPC
     SyncSummary,
     //ShareFriendCode,
     BodyLocation,
-    SyncMayorVote,
 
     None
 }
@@ -455,45 +485,14 @@ public enum LayerEnum
     Timekeeper,
     Warper,
 
-    Any,
+    Hunter,
+    Hunted,
 
-    RandomCrew,
-    CrewSupport,
-    CrewInvest,
-    CrewProt,
-    CrewKill,
-    CrewSov,
-    CrewAudit,
-
-    RandomIntruder,
-    IntruderSupport,
-    IntruderConceal,
-    IntruderDecep,
-    IntruderKill,
-
-    RandomNeutral,
-    NeutralKill,
-    NeutralNeo,
-    NeutralEvil,
-    NeutralBen,
-    NeutralPros,
-    NeutralApoc,
-    NeutralHarb,
-
-    RandomSyndicate,
-    SyndicateKill,
-    SyndicateSupport,
-    SyndicateDisrup,
-    SyndicatePower,
-
-    None,
-
-    CrewUtil,
-    IntruderUtil,
-    SyndicateUtil,
+    Runner,
 
     Astral,
     Bait,
+    Colorblind,
     Coward,
     Diseased,
     Drunk,
@@ -534,7 +533,49 @@ public enum LayerEnum
     Tiebreaker,
     Torch,
     Tunneler,
-    Underdog
+    Underdog,
+
+    Any,
+
+    RandomCrew,
+    CrewSupport,
+    CrewInvest,
+    CrewProt,
+    CrewKill,
+    CrewSov,
+    CrewAudit,
+    CrewUtil,
+    RegularCrew,
+
+    RandomIntruder,
+    IntruderSupport,
+    IntruderConceal,
+    IntruderDecep,
+    IntruderKill,
+    IntruderUtil,
+    IntruderHead,
+    RegularIntruder,
+
+    RandomNeutral,
+    NeutralKill,
+    NeutralNeo,
+    NeutralEvil,
+    NeutralBen,
+    NeutralPros,
+    NeutralApoc,
+    NeutralHarb,
+    RegularNeutral,
+    HarmfulNeutral,
+
+    RandomSyndicate,
+    SyndicateKill,
+    SyndicateSupport,
+    SyndicateDisrup,
+    SyndicatePower,
+    SyndicateUtil,
+    RegularSyndicate,
+
+    None
 }
 
 public enum InspectorResults
@@ -584,6 +625,7 @@ public enum DeathReasonEnum
     Dictated,
     Collided,
     Escaped,
+    Converted,
 
     None
 }
@@ -622,6 +664,11 @@ public enum WinLoseRPC
     MafiaWins,
 
     NobodyWins,
+
+    TaskRunnerWins,
+
+    HunterWins,
+    HuntedWins,
 
     None
 }

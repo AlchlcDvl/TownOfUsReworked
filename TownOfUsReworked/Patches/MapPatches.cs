@@ -41,6 +41,9 @@ public static class MapPatches
             TownOfUsReworked.NormalOptions.KillCooldown = CustomGameOptions.IntKillCd;
             TownOfUsReworked.NormalOptions.GhostsDoTasks = CustomGameOptions.GhostTasksCountToWin;
             TownOfUsReworked.NormalOptions.MaxPlayers = CustomGameOptions.LobbySize;
+            TownOfUsReworked.NormalOptions.NumShortTasks = CustomGameOptions.ShortTasks;
+            TownOfUsReworked.NormalOptions.NumLongTasks = CustomGameOptions.LongTasks;
+            TownOfUsReworked.NormalOptions.NumCommonTasks = CustomGameOptions.CommonTasks;
             GameOptionsManager.Instance.currentNormalGameOptions = TownOfUsReworked.NormalOptions;
             CustomOption.SaveSettings("LastUsedSettings");
             AdjustSettings(CurrentMap);

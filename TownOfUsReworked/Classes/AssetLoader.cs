@@ -8,10 +8,10 @@ public static class AssetLoader
 {
     private const string REPO = "https://raw.githubusercontent.com/AlchlcDvl/ReworkedAssets/main";
     private static bool HatsRunning;
-    //private static bool NameplatesRunning;
+    private static bool NameplatesRunning;
     private static bool VisorsRunning;
     private static bool LangRunning;
-    //public static readonly List<CustomNameplate> NameplateDetails = new();
+    public static readonly List<CustomNameplate> NameplateDetails = new();
     public static readonly List<CustomHat> HatDetails = new();
     public static readonly List<CustomVisor> VisorDetails = new();
     public static readonly List<Language> AllTranslations = new();
@@ -54,25 +54,20 @@ public static class AssetLoader
                 position2++;
             }
         }
+
+        Cursor.SetCursor(GetSprite("Cursor").texture, Vector2.zero, CursorMode.Auto);
     }
 
     public static void LaunchFetchers(bool update)
     {
-        try
-        {
-            if (!Loaded)
-            {
-                LaunchHatFetcher(update);
-                //LaunchNameplateFetcher(update);
-                LaunchVisorFetcher(update);
-                LaunchTranslationFetcher();
-                Loaded = true;
-            }
-        }
-        catch
-        {
-            Loaded = false;
-        }
+        if (Loaded)
+            return;
+
+        LaunchHatFetcher(update);
+        LaunchVisorFetcher(update);
+        LaunchNameplateFetcher(update);
+        LaunchTranslationFetcher();
+        Loaded = true;
     }
 
     private static void LaunchHatFetcher(bool update)
@@ -85,7 +80,7 @@ public static class AssetLoader
         LogMessage("Fetched hats");
     }
 
-    /*private static void LaunchNameplateFetcher(bool update)
+    private static void LaunchNameplateFetcher(bool update)
     {
         if (NameplatesRunning)
             return;
@@ -93,7 +88,7 @@ public static class AssetLoader
         NameplatesRunning = true;
         _ = LaunchNameplateFetcherAsync(update);
         LogMessage("Fetched nameplates");
-    }*/
+    }
 
     private static void LaunchVisorFetcher(bool update)
     {
@@ -132,7 +127,7 @@ public static class AssetLoader
         HatsRunning = false;
     }
 
-    /*private static async Task LaunchNameplateFetcherAsync(bool update)
+    private static async Task LaunchNameplateFetcherAsync(bool update)
     {
         try
         {
@@ -147,7 +142,7 @@ public static class AssetLoader
         }
 
         NameplatesRunning = false;
-    }*/
+    }
 
     private static async Task LaunchVisorFetcherAsync(bool update)
     {
@@ -274,11 +269,9 @@ public static class AssetLoader
                 if (hatFileResponse.StatusCode != HttpStatusCode.OK)
                     continue;
 
-                using (var responseStream = await hatFileResponse.Content.ReadAsStreamAsync())
-                {
-                    using (var fileStream = File.Create($"{TownOfUsReworked.Hats}\\{file}.png"))
-                        responseStream.CopyTo(fileStream);
-                }
+                using var responseStream = await hatFileResponse.Content.ReadAsStreamAsync();
+                using var fileStream = File.Create($"{TownOfUsReworked.Hats}\\{file}.png");
+                responseStream.CopyTo(fileStream);
             }
         }
         catch (Exception ex)
@@ -371,11 +364,9 @@ public static class AssetLoader
                 if (visorFileResponse.StatusCode != HttpStatusCode.OK)
                     continue;
 
-                using (var responseStream = await visorFileResponse.Content.ReadAsStreamAsync())
-                {
-                    using (var fileStream = File.Create($"{TownOfUsReworked.Visors}\\{file}.png"))
-                        responseStream.CopyTo(fileStream);
-                }
+                using var responseStream = await visorFileResponse.Content.ReadAsStreamAsync();
+                using var fileStream = File.Create($"{TownOfUsReworked.Visors}\\{file}.png");
+                responseStream.CopyTo(fileStream);
             }
         }
         catch (Exception ex)
@@ -386,7 +377,7 @@ public static class AssetLoader
         return HttpStatusCode.OK;
     }
 
-    /*private static async Task<HttpStatusCode> FetchNameplates(bool update)
+    private static async Task<HttpStatusCode> FetchNameplates(bool update)
     {
         var http = new HttpClient();
         http.DefaultRequestHeaders.CacheControl = new() { NoCache = true };
@@ -454,11 +445,9 @@ public static class AssetLoader
                 if (nameplateFileResponse.StatusCode != HttpStatusCode.OK)
                     continue;
 
-                using (var responseStream = await nameplateFileResponse.Content.ReadAsStreamAsync())
-                {
-                    using (var fileStream = File.Create($"{TownOfUsReworked.Nameplates}\\{file}.png"))
-                        responseStream.CopyTo(fileStream);
-                }
+                using var responseStream = await nameplateFileResponse.Content.ReadAsStreamAsync();
+                using var fileStream = File.Create($"{TownOfUsReworked.Nameplates}\\{file}.png");
+                responseStream.CopyTo(fileStream);
             }
         }
         catch (Exception ex)
@@ -467,7 +456,7 @@ public static class AssetLoader
         }
 
         return HttpStatusCode.OK;
-    }*/
+    }
 
     private static async Task<HttpStatusCode> FetchTranslations()
     {

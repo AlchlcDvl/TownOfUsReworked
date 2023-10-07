@@ -247,7 +247,9 @@ public class Guesser : Neutral
 
                 if (SelectedButton != button)
                 {
-                    SelectedButton.GetComponent<SpriteRenderer>().color = UColor.white;
+                    if (SelectedButton != null)
+                        SelectedButton.GetComponent<SpriteRenderer>().color = UColor.white;
+
                     SelectedButton = button;
                 }
                 else

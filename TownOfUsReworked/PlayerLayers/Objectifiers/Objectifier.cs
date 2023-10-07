@@ -1,6 +1,6 @@
 namespace TownOfUsReworked.PlayerLayers.Objectifiers;
 
-public class Objectifier : PlayerLayer
+public abstract class Objectifier : PlayerLayer
 {
     public static readonly List<Objectifier> AllObjectifiers = new();
     public static Objectifier LocalObjectifier => GetObjectifier(CustomPlayer.Local);
@@ -11,16 +11,16 @@ public class Objectifier : PlayerLayer
     public virtual string Symbol => "φ";
     public virtual bool Hidden => false;
 
-    public static bool LoveWins;
-    public static bool RivalWins;
-    public static bool TaskmasterWins;
-    public static bool CorruptedWins;
-    public static bool OverlordWins;
-    public static bool MafiaWins;
+    public static bool LoveWins { get; set; }
+    public static bool RivalWins { get; set; }
+    public static bool TaskmasterWins { get; set; }
+    public static bool CorruptedWins { get; set; }
+    public static bool OverlordWins { get; set; }
+    public static bool MafiaWins { get; set; }
 
     public static bool ObjectifierWins => LoveWins || RivalWins || TaskmasterWins || CorruptedWins || OverlordWins || MafiaWins;
 
-    public Objectifier(PlayerControl player) : base(player)
+    protected Objectifier(PlayerControl player) : base(player)
     {
         if (GetObjectifier(player))
             GetObjectifier(player).Player = null;

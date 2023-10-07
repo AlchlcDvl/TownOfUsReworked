@@ -12,7 +12,6 @@ public class Retributionist : Crew
         TrackerArrows = new();
         UntransportablePlayers = new();
         Reported = new();
-        PlayerNumbers = new();
         ReferenceBodies = new();
         Selected = null;
         TransportPlayer1 = null;
@@ -58,7 +57,7 @@ public class Retributionist : Crew
         BlockButton = new(this, "EscortRoleblock", AbilityTypes.Target, "ActionSecondary", Roleblock, CustomGameOptions.EscortCd, CustomGameOptions.EscortDur,
             (CustomButton.EffectVoid)Block, UnBlock);
         TransportButton = new(this, "Transport", AbilityTypes.Targetless, "ActionSecondary", Transport, CustomGameOptions.TransportCd, CustomGameOptions.MaxTransports);
-        RetMenu = new(Player, "RetActive", "RetDisabled", CustomGameOptions.ReviveAfterVoting, SetActive, IsExempt, GenNumbers, new(-0.4f, 0.03f, -1.3f));
+        RetMenu = new(Player, "RetActive", "RetDisabled", CustomGameOptions.ReviveAfterVoting, SetActive, IsExempt, new(-0.4f, 0.03f, -1.3f));
     }
 
     //Retributionist Stuff
@@ -110,21 +109,6 @@ public class Retributionist : Crew
     }
 
     private bool IsExempt(PlayerVoteArea voteArea) => !voteArea.AmDead || PlayerByVoteArea(voteArea).Data.Disconnected || IsDead;
-
-    public void GenNumbers()
-    {
-        if (!DataManager.Settings.Accessibility.ColorBlindMode || CustomGameOptions.Whispers)
-            return;
-
-        foreach (var voteArea in AllVoteAreas)
-        {
-            var targetId = voteArea.TargetPlayerId;
-            var nameText = UObject.Instantiate(voteArea.NameText, voteArea.transform);
-            nameText.transform.localPosition = new(-1.211f, -0.18f, -0.1f);
-            nameText.text = $"{targetId}";
-            PlayerNumbers.Add(targetId, nameText);
-        }
-    }
 
     private void SetActive(PlayerVoteArea voteArea, MeetingHud __instance)
     {
@@ -543,7 +527,6 @@ public class Retributionist : Crew
     public List<Bug> Bugs { get; set; }
     public List<LayerEnum> BuggedPlayers { get; set; }
     public CustomButton BugButton { get; set; }
-    public Dictionary<byte, TMP_Text> PlayerNumbers { get; set; }
     public bool IsOP => RevivedRole?.Type == LayerEnum.Operative;
 
     public void PlaceBug()
@@ -682,7 +665,7 @@ public class Retributionist : Crew
         if (ReviveButton.Uses == 0 && Local)
             RpcMurderPlayer(Player, Player);
 
-        if (formerKiller.Contains(CustomPlayer.LocalCustom.Data.PlayerName))
+        if (formerKiller.Contains(CustomPlayer.LocalCustom.PlayerName))
         {
             LocalRole.AllArrows.Add(player.PlayerId, new(CustomPlayer.Local, Color));
             Flash(Color);

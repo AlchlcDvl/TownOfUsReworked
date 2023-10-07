@@ -1,7 +1,6 @@
 namespace TownOfUsReworked.Patches;
 
-//The code is from The Other Roles: Community Edition with slight modifications; link :- https://github.com/JustASysAdmin/TheOtherRoles2/blob/main/TheOtherRoles/Patches/IntroPatch.cs
-//Under GPL v3 with some modifications
+//The code is from The Other Roles: Community Edition with modifications; link :- https://github.com/JustASysAdmin/TheOtherRoles2/blob/main/TheOtherRoles/Patches/IntroPatch.cs
 public static class SpawnPatches
 {
     [HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.OnDestroy))]
@@ -22,6 +21,7 @@ public static class SpawnPatches
         DataManager.Settings.Gameplay.ScreenShake = true;
         HUD?.Chat?.SetVisible(CustomPlayer.Local.CanChat());
         RandomSpawn();
+        PlayerLayer.LocalLayers.ForEach(x => x?.OnIntroEnd());
     }
 
     private static void RandomSpawn()
@@ -29,7 +29,7 @@ public static class SpawnPatches
         if (!AmongUsClient.Instance.AmHost || !CustomGameOptions.RandomSpawns || TownOfUsReworked.NormalOptions.MapId is 4 or 5 or 6)
             return;
 
-        var allLocations = new List<Vector3>();
+        var allLocations = new List<Vector2>();
         AllVents.ForEach(x => allLocations.Add(GetVentPosition(x)));
         var tobeadded = TownOfUsReworked.NormalOptions.MapId switch
         {
@@ -48,8 +48,7 @@ public static class SpawnPatches
             if (player.HasDied())
                 continue;
 
-            var location = allLocations.Random();
-            player.NetTransform.RpcSnapTo(new(location.x, location.y));
+            player.NetTransform.RpcSnapTo(allLocations.Random());
         }
     }
 }

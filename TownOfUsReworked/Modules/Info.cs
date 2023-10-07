@@ -33,12 +33,12 @@ public class Info
     public static void SetAllInfo()
     {
         AllInfo.AddRanges(ConvertToBase(LayerInfo.AllRoles), ConvertToBase(LayerInfo.AllModifiers), ConvertToBase(LayerInfo.AllAbilities), ConvertToBase(LayerInfo.AllObjectifiers),
-            ConvertToBase(LayerInfo.AllFactions), ConvertToBase(LayerInfo.AllSubFactions), ConvertToBase(LayerInfo.AllOthers));
+            ConvertToBase(LayerInfo.AllFactions), ConvertToBase(LayerInfo.AllSubFactions), ConvertToBase(LayerInfo.AllModes), ConvertToBase(LayerInfo.AllOthers));
     }
 
     public static string ColorIt(string result)
     {
-        foreach (var info in AllInfo.Where(x => x.Type is not InfoType.Alignment and not InfoType.Lore))
+        foreach (var info in AllInfo.Where(x => x.Type is not (InfoType.Alignment or InfoType.Lore)))
             result = result.Replace(info.Name, $"<b><color=#{info.Color.ToHtmlStringRGBA()}>{info.Name}</color></b>");
 
         foreach (var info in LayerInfo.AllObjectifiers)
@@ -47,10 +47,10 @@ public class Info
         foreach (var info in LayerInfo.AllSubFactions)
             result = result.Replace(info.Symbol, $"<b><color=#{info.Color.ToHtmlStringRGBA()}>{info.Symbol}</color></b>");
 
-        for (var i = 0; i < 50; i++)
+        for (var i = 0; i < 52; i++)
             result = result.Replace(((Alignment)i).AlignmentName(), $"<b>{((Alignment)i).AlignmentName(true)}</b>");
 
-        return result.Replace("<b><color=#758000FF>Drunk</color></b>ard", "Drunkard");
+        return result.Replace("<b><color=#758000FF>Drunk</color></b>ard", "Drunkard").Replace("<b><color=#FFD700FF>Role</color></b> List", "Role List");
     }
 
     public virtual void WikiEntry(out string result) => result = "";
@@ -67,8 +67,8 @@ public class RoleInfo : Info
     private const string SyndicateObjective = "Have a critical sabotage set off by the Syndicate reach 0 seconds or kill off all Intruders, Unfaithful Syndicate, Crew and opposing Neutrals.";
     private const string CrewObjective = "Finish tasks along with other Crew or kill off all Intruders, Syndicate, Unfaithful Crew, and opposing Neutrals.";
 
-    public RoleInfo(string name, string shortF, string description, Alignment alignmentEnum, Faction faction, string quote, Color color, string wincon = "") : base(name, shortF,
-        description, color, InfoType.Role)
+    public RoleInfo(string name, string shortF, string description, Alignment alignmentEnum, Faction faction, string quote, Color color, string wincon = "") : base(name, shortF, description,
+        color, InfoType.Role)
     {
         Quote = quote;
         Alignment = alignmentEnum.AlignmentName();
@@ -78,7 +78,7 @@ public class RoleInfo : Info
             Faction.Syndicate => SyndicateObjective,
             Faction.Crew => CrewObjective,
             Faction.Intruder => IntruderObjective,
-            Faction.Neutral => wincon,
+            Faction.Neutral or Faction.GameMode => wincon,
             _ => "Invalid"
         };
     }
@@ -123,6 +123,8 @@ public class FactionInfo : Info
         " the same faction. The main theme of this faction is free for all. This faction is an uninformed minority of the game, meaning they make up a small part of the crew " +
         "while not knowing who the other members are. Each role is unique in its own way, some can be helpful, some exist to destroy others and some just exist for the sake of " +
         "existing.";
+    private const string GameModeDescription = "Game Mode roles only spawn in certain special game modes. They have their own special abilities and objectives that are not seen in other " +
+        "factions.";
 
     public FactionInfo(Faction faction) : base($"{faction}", "", "", default, InfoType.Faction)
     {
@@ -132,8 +134,18 @@ public class FactionInfo : Info
             Faction.Crew => (CrewDescription, "Crew", Colors.Crew),
             Faction.Intruder => (IntruderDescription, "Int", Colors.Intruder),
             Faction.Neutral => (NeutralDescription, "Neut", Colors.Neutral),
+            Faction.GameMode => (GameModeDescription, "GM", Colors.GameMode),
             _ => ("Invalid", "Invalid", Colors.Faction)
         };
+    }
+
+    public override string ToString()
+    {
+        var builder = new StringBuilder();
+        builder.AppendLine($"Name: {Name}")
+            .AppendLine($"Short Form: {Short}")
+            .AppendLine($"Description: {Description}");
+        return builder.ToString();
     }
 
     public override void WikiEntry(out string result)
@@ -171,6 +183,16 @@ public class SubFactionInfo : Info
         };
     }
 
+    public override string ToString()
+    {
+        var builder = new StringBuilder();
+        builder.AppendLine($"Name: {Name}")
+            .AppendLine($"Short Form: {Short}")
+            .AppendLine($"Symbol: {Symbol}")
+            .AppendLine($"Description: {Description}");
+        return builder.ToString();
+    }
+
     public override void WikiEntry(out string result)
     {
         base.WikiEntry(out result);
@@ -197,6 +219,7 @@ public class AlignmentInfo : Info
     private const string CCDescription = "Crew (Concealing) roles are defected Intruder (Concealing) roles who have sided with the Crew.";
     private const string CDiDescription = "Crew (Disruption) roles are defected Syndicate (Disruption) roles who have sided with the Crew.";
     private const string CrPowDescription = "Crew (Power) roles are defected Syndicate (Power) roles who have sided with the Crew.";
+    private const string CHDescription = "Crew (Head) roles are defected Intruder (Head) roles who have sided with the Crew.";
 
     private const string ISDescription = "Intruder (Support) roles have miscellaneous abilities. These roles can delay players' chances of winning by either gaining enough info to"
         + " stop them or forcing players to do things they can't.";
@@ -212,6 +235,7 @@ public class AlignmentInfo : Info
     private const string ISvDescription = "Intruder (Sovereign) roles are Crew (Sovereign) roles that have betrayed the Crew to join the Intruders.";
     private const string IDiDescription = "Intruder (Disruption) roles are defected Syndicate (Disruption) roles who have sided with the Intruders.";
     private const string IPowDescription = "Intruder (Power) roles are defected Syndicate (Power) roles who have sided with the Intruders.";
+    private const string IHDescription = "Intruder (Head) roles are powerful roles that lead the Intruders.";
 
     private const string SUDescription = "Syndicate (Utility) roles usually don't appear under regaular spawn conditions.";
     private const string SSuDescription = "Syndicate (Support) roles have miscellaneous abilities. They are detrimental to the Syndicate's cause and if used right, can greatly " +
@@ -225,6 +249,7 @@ public class AlignmentInfo : Info
     private const string SSvDescription = "Syndicate (Sovereign) roles are Crew (Sovereign) roles that have betrayed the Crew to join the Syndicate.";
     private const string SDeDescription = "Syndicate (Deception) roles are defected Intruder (Deception) roles who have sided with the Syndicate.";
     private const string SCDescription = "Syndicate (Concealing) roles are defected Intruder (Concealing) roles who have sided with the Syndicate.";
+    private const string SHDescription = "Syndicate (Head) roles are defected Intruder (Head) roles who have sided with the Syndicate.";
 
     private const string NBDescription = "Neutral (Benign) roles are special roles that have the capability to win with anyone, as long as a certain condition is fulfilled by the" +
         " end of the game.";
@@ -247,8 +272,12 @@ public class AlignmentInfo : Info
     private const string NSvDescription = "Neutral (Sovereign) roles are Crew (Sovereign) roles that have betrayed the Crew.";
     private const string NDDescription = "Neutral (Deception) roles are defected Intruder (Deception) roles who have broken away from the Intruders.";
     private const string NCDescription = "Neutral (Concealing) role are defected Intruder (Concealing) roles who have broken away from the Intruders.";
-    private const string NUDescription = "Neutral (Utility) roles are defected Crew, Intruder or Syndicate (Utility) roles who have broken away from their respective faction.";
-    private const string NSDescription = "Neutral (Support) roles are defected Crew, Intruder or Syndicate (Support) roles who have broken away from their respective faction.";
+    private const string NHeadDescription = "Neutral (Head) role are defected Intruder (Head) roles who have broken away from the Intruders.";
+    private const string NUDescription = "Neutral (Utility) roles are defected Crew, Intruder or Syndicate (Utility) roles who have broken away from their respective factions.";
+    private const string NSDescription = "Neutral (Support) roles are defected Crew, Intruder or Syndicate (Support) roles who have broken away from their respective factions.";
+
+    private const string HnSDescription = "These roles spawn in the Hide And Seek game mode.";
+    private const string TRDescription = "These roles spawn in the Task Race game mode.";
 
     public readonly string AlignmentName;
     public readonly Alignment Base;
@@ -308,6 +337,12 @@ public class AlignmentInfo : Info
             Alignment.SyndicateAudit => ("SA", SADescription, "Auditor"),
             Alignment.SyndicateConceal => ("SC", SCDescription, "Concealing"),
             Alignment.SyndicateDecep => ("SDe", SDeDescription, "Deception"),
+            Alignment.CrewHead => ("CH", CHDescription, "Head"),
+            Alignment.IntruderHead => ("IH", IHDescription, "Head"),
+            Alignment.SyndicateHead => ("SH", SHDescription, "Head"),
+            Alignment.NeutralHead => ("NHead", NHeadDescription, "Head"),
+            Alignment.GameModeHideAndSeek => ("HnS", HnSDescription, "Hide And Seek"),
+            Alignment.GameModeTaskRace => ("TR", TRDescription, "Task Race"),
             _ => ("Invalid", "Invalid", "Invalid")
         };
     }
@@ -436,8 +471,7 @@ public class OtherInfo : Info
 {
     public readonly string OtherNotes;
 
-    public OtherInfo(string name, string shortF, string description, Color color, string otherNotes = "") : base(name, shortF, description, color, InfoType.Other) => OtherNotes =
-        otherNotes;
+    public OtherInfo(string name, string shortF, string description, Color color, string otherNotes = "") : base(name, shortF, description, color, InfoType.Other) => OtherNotes = otherNotes;
 
     public override string ToString()
     {
@@ -446,7 +480,6 @@ public class OtherInfo : Info
             .AppendLine($"Short Form: {Short}")
             .AppendLine($"Description: {Description}")
             .Append($"\n{OtherNotes}");
-
         return builder.ToString();
     }
 
@@ -457,5 +490,59 @@ public class OtherInfo : Info
         result += "\n" + ColorIt($"Short Form: {Short}");
         result += "\n" + ColorIt(WrapText($"Description: {Description}"));
         result += "\n" + ColorIt(WrapTexts(OtherNotes.Split('\n').ToList()));
+    }
+}
+
+public class GameModeInfo : Info
+{
+    private const string ClassicDescription = "This is the main mode of the game. Any layer can spawn in this mode, but only once.";
+    private const string VanillaDescription = "This mode is nothing special, everyone is either a basic Crewmate or Impostor (or Anarchist if alternate intruders is turned on).";
+    private const string KODescription = "This is a restricted Classic mode where only roles with the capability to kill can spawn and the Syndicate recieves their Chaos Drive at the start "
+        + "of the game.";
+    private const string AADescription = "This mode has no restrictions on how many instances of a layer can spawn. Each layer has a property called \"Uniqueness\" which is basically if only"
+        + " one of that layer can spawn (or two for Lovers, Rivals, Mafia or Linked).";
+    private const string RLDescription = "In this mode, you can make a set list of what roles can spawn. You can decide the exact number of a certain alignment/faction. However, other layers"
+        + " like modifiers, abilities and objectifiers cannot spawn in this mode. All Any's \"Uniqueness\" property of roles also applies here.";
+    private const string CustomDescription = "This mode is basically Classic but you can decide how many instances of the layer can spawn in the game.";
+    private const string HnSDescription = "This mode is the unofficial addition of the Hide And Seek game mode that people used to play before the vanilla Hide And Seek was added. Only two "
+        + "roles spawn and this mode can have two types. The Classic type makes it so that the Hunters have to kill everyone else, but their numbers do not increase. In the Infection type, "
+        + "however, the Hunters turn the Hunted into their own teammates.";
+    private const string TRDescription = "This mode is a skill check mode to see who's the best at planning their task path and finishing tasks. No one can kill each other and must race to "
+        + "be the first one to finish their tasks.";
+
+    public readonly GameMode Mode;
+
+    public GameModeInfo(GameMode mode) : base(mode.GameModeName(), "", "", default, InfoType.GameMode)
+    {
+        Mode = mode;
+        (Description, Short, Color) = mode switch
+        {
+            GameMode.Vanilla => (VanillaDescription, "Vanilla", Color.white),
+            GameMode.Classic => (ClassicDescription, "Classic", Colors.Classic),
+            GameMode.KillingOnly => (KODescription, "KO", Colors.KillingOnly),
+            GameMode.AllAny => (AADescription, "AA", Colors.AllAny),
+            GameMode.RoleList => (RLDescription, "RL", Colors.RoleList),
+            GameMode.Custom => (CustomDescription, "Custom", Colors.Custom),
+            GameMode.HideAndSeek => (HnSDescription, "HnS", Colors.HideAndSeek),
+            GameMode.TaskRace => (TRDescription, "TR", Colors.TaskRace),
+            _ => ("Invalid", "Invalid", Colors.GameMode)
+        };
+    }
+
+    public override string ToString()
+    {
+        var builder = new StringBuilder();
+        builder.AppendLine($"Name: {Mode.GameModeName(true)}")
+            .AppendLine($"Short Form: {Short}")
+            .AppendLine($"Description: {Description}");
+        return builder.ToString();
+    }
+
+    public override void WikiEntry(out string result)
+    {
+        base.WikiEntry(out result);
+        result += ColorIt($"Name: {Mode.GameModeName(true)}");
+        result += "\n" + ColorIt($"Short Form: {Short}");
+        result += "\n" + ColorIt(WrapText($"Description: {Description}"));
     }
 }
