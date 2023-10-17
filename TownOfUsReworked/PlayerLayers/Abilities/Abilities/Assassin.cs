@@ -3,6 +3,7 @@
 public class CrewAssassin : Assassin
 {
     public override LayerEnum Type => LayerEnum.CrewAssassin;
+    public override string Name => "Bullseye";
 
     public CrewAssassin(PlayerControl player) : base(player) {}
 }
@@ -10,6 +11,7 @@ public class CrewAssassin : Assassin
 public class IntruderAssassin : Assassin
 {
     public override LayerEnum Type => LayerEnum.IntruderAssassin;
+    public override string Name => "Hitman";
 
     public IntruderAssassin(PlayerControl player) : base(player) {}
 }
@@ -17,6 +19,7 @@ public class IntruderAssassin : Assassin
 public class NeutralAssassin : Assassin
 {
     public override LayerEnum Type => LayerEnum.NeutralAssassin;
+    public override string Name => "Slayer";
 
     public NeutralAssassin(PlayerControl player) : base(player) {}
 }
@@ -24,6 +27,7 @@ public class NeutralAssassin : Assassin
 public class SyndicateAssassin : Assassin
 {
     public override LayerEnum Type => LayerEnum.NeutralAssassin;
+    public override string Name => "Sniper";
 
     public SyndicateAssassin(PlayerControl player) : base(player) {}
 }
@@ -33,8 +37,6 @@ public abstract class Assassin : Ability
     public Dictionary<string, Color> ColorMapping { get; set; }
     public Dictionary<string, Color> SortedColorMapping { get; set; }
     public static int RemainingKills { get; set; }
-    private static bool AssassinOn => CustomGameOptions.CrewAssassinOn > 0 || CustomGameOptions.IntruderAssassinOn > 0 || CustomGameOptions.SyndicateAssassinOn > 0 ||
-        CustomGameOptions.NeutralAssassinOn > 0;
     public GameObject Phone { get; set; }
     public Transform SelectedButton { get; set; }
     public int Page { get; set; }
@@ -42,29 +44,8 @@ public abstract class Assassin : Ability
     public Dictionary<int, List<Transform>> Buttons { get; set; }
     public Dictionary<int, KeyValuePair<string, Color>> Sorted { get; set; }
     public CustomMeeting AssassinMenu { get; set; }
-    private static Dictionary<string, List<string>> Actors => new()
-    {
-        { "DealsWithDead", new() { "Coroner", "Amnesiac", "Retributionist", "Janitor", "Cannibal" } },
-        { "PreservesLife", new() { "Medic", "Guardian Angel", "Altruist", "Necromancer", "Crusader" } },
-        { "LeadsTheGroup", new() { "Mayor", "Godfather", "Rebel", "Pestilence", "Survivor" } },
-        { "BringsChaos", new() { "Shifter", "Thief", "Camouflager", "Whisperer", "Jackal" } },
-        { "SeeksToDestroy", new() { "Arsonist", "Cryomaniac", "Plaguebearer", "Spellslinger" } },
-        { "MovesAround", new() { "Transporter", "Teleporter", "Warper", "Timekeeper" } },
-        { "NewLens", new() { "Engineer", "Miner", "Seer", "Dracula", "Medium", "Monarch" } },
-        { "GainsInfo", new() { "Sheriff", "Consigliere", "Blackmailer", "Detective", "Inspector", "Silencer" } },
-        { "Manipulative", new() { "Jester", "Executioner", "Actor", "Troll", "Framer", "Dictator" } },
-        { "Unseen", new() { "Chameleon", "Wraith", "Concealer", "Poisoner", "Collider" } },
-        { "IsCold", new() { "Veteran", "Vigilante", "Sidekick", "Guesser", "Mafioso" } },
-        { "TracksOthers", new() { "Tracker", "Mystic", "Vampire Hunter", "Bounty Hunter", "Stalker" } },
-        { "IsAggressive", new() { "Betrayer", "Werewolf", "Juggernaut", "Serial Kilelr" } },
-        { "CreatesConfusion", new() { "Morphling", "Disguiser", "Shapeshifter" } },
-        { "DropsItems", new() { "Bomber", "Operative", "Grenadier", "Enforcer" } },
-        { "HindersOthers", new() { "Escort", "Consort", "Glitch", "Ambusher", "Drunkard" } },
-        { "IsBasic", new() { "Crewmate", "Impostor", "Anarchist", "Murderer" } }
-    };
 
     public override Color Color => ClientGameOptions.CustomAbColors ? Colors.Assassin : Colors.Ability;
-    public override string Name => "Assassin";
     public override Func<string> Description => () => "- You can guess players mid-meetings";
 
     protected Assassin(PlayerControl player) : base(player)
@@ -100,24 +81,24 @@ public abstract class Assassin : Ability
                 if (CustomGameOptions.TransporterOn > 0) ColorMapping.Add("Transporter", Colors.Transporter);
                 if (CustomGameOptions.ShifterOn > 0) ColorMapping.Add("Shifter", Colors.Shifter);
                 if (CustomGameOptions.EscortOn > 0) ColorMapping.Add("Escort", Colors.Escort);
-                if (CustomGameOptions.VigilanteOn > 0) ColorMapping.Add("Vigilante", Colors.Vigilante);
+                if ((CustomGameOptions.VampireHunterOn > 0 && CustomGameOptions.DraculaOn > 0) || CustomGameOptions.VigilanteOn > 0) ColorMapping.Add("Vigilante", Colors.Vigilante);
                 if (CustomGameOptions.RetributionistOn > 0) ColorMapping.Add("Retributionist", Colors.Retributionist);
                 if (CustomGameOptions.ChameleonOn > 0) ColorMapping.Add("Chameleon", Colors.Chameleon);
-                if (CustomGameOptions.MysticOn > 0) ColorMapping.Add("Mystic", Colors.Mystic);
+                if (CustomGameOptions.MysticOn > 0 && (CustomGameOptions.DraculaOn > 0 || CustomGameOptions.JackalOn > 0 || CustomGameOptions.WhispererOn > 0 || CustomGameOptions.NecromancerOn > 0)) ColorMapping.Add("Mystic", Colors.Mystic);
                 if (CustomGameOptions.MonarchOn > 0) ColorMapping.Add("Monarch", Colors.Monarch);
                 if (CustomGameOptions.DictatorOn > 0) ColorMapping.Add("Dictator", Colors.Dictator);
+                if (CustomGameOptions.BastionOn > 0) ColorMapping.Add("Bastion", Colors.Bastion);
                 if (CustomGameOptions.VampireHunterOn > 0 && CustomGameOptions.DraculaOn > 0) ColorMapping.Add("Vampire Hunter", Colors.VampireHunter);
 
                 if (CustomGameOptions.AssassinGuessInvestigative)
                 {
-                    if (CustomGameOptions.SheriffOn > 0) ColorMapping.Add("Sheriff", Colors.Sheriff);
+                    if (CustomGameOptions.SeerOn > 0 || CustomGameOptions.SheriffOn > 0) ColorMapping.Add("Sheriff", Colors.Sheriff);
                     if (CustomGameOptions.TrackerOn > 0) ColorMapping.Add("Tracker", Colors.Tracker);
                     if (CustomGameOptions.OperativeOn > 0) ColorMapping.Add("Operative", Colors.Operative);
                     if (CustomGameOptions.MediumOn > 0) ColorMapping.Add("Medium", Colors.Medium);
                     if (CustomGameOptions.CoronerOn > 0) ColorMapping.Add("Coroner", Colors.Coroner);
                     if (CustomGameOptions.DetectiveOn > 0) ColorMapping.Add("Detective", Colors.Detective);
-                    if (CustomGameOptions.SeerOn > 0) ColorMapping.Add("Seer", Colors.Seer);
-                    if (CustomGameOptions.InspectorOn > 0) ColorMapping.Add("Inspector", Colors.Inspector);
+                    if (CustomGameOptions.SeerOn > 0 || ColorMapping.ContainsKey("Mystic")) ColorMapping.Add("Seer", Colors.Seer);
                 }
             }
         }
@@ -177,21 +158,20 @@ public abstract class Assassin : Ability
 
         if (CustomGameOptions.NeutralMax > 0 && CustomGameOptions.NeutralMin > 0)
         {
-            if (CustomGameOptions.ArsonistOn > 0 && !Player.Is(LayerEnum.Arsonist) && Player.Is(SubFaction.None)) ColorMapping.Add("Arsonist", Colors.Arsonist);
-            if (CustomGameOptions.GlitchOn > 0 && !Player.Is(LayerEnum.Glitch) && Player.Is(SubFaction.None)) ColorMapping.Add("Glitch", Colors.Glitch);
-            if (CustomGameOptions.SerialKillerOn > 0 && !Player.Is(LayerEnum.SerialKiller) && Player.Is(SubFaction.None)) ColorMapping.Add("Serial Killer", Colors.SerialKiller);
-            if (CustomGameOptions.JuggernautOn > 0 && !Player.Is(LayerEnum.Juggernaut) && Player.Is(SubFaction.None)) ColorMapping.Add("Juggernaut", Colors.Juggernaut);
-            if (CustomGameOptions.MurdererOn > 0 && !Player.Is(LayerEnum.Murderer) && Player.Is(SubFaction.None)) ColorMapping.Add("Murderer", Colors.Murderer);
-            if (CustomGameOptions.CryomaniacOn > 0 && !Player.Is(LayerEnum.Murderer) && Player.Is(SubFaction.None)) ColorMapping.Add("Cryomaniac", Colors.Cryomaniac);
-            if (CustomGameOptions.WerewolfOn > 0 && !Player.Is(LayerEnum.Werewolf) && Player.Is(SubFaction.None)) ColorMapping.Add("Werewolf", Colors.Werewolf);
+            if (CustomGameOptions.ArsonistOn > 0 && !Player.Is(LayerEnum.Arsonist)) ColorMapping.Add("Arsonist", Colors.Arsonist);
+            if (CustomGameOptions.GlitchOn > 0 && !Player.Is(LayerEnum.Glitch)) ColorMapping.Add("Glitch", Colors.Glitch);
+            if (CustomGameOptions.SerialKillerOn > 0 && !Player.Is(LayerEnum.SerialKiller)) ColorMapping.Add("Serial Killer", Colors.SerialKiller);
+            if (CustomGameOptions.JuggernautOn > 0 && !Player.Is(LayerEnum.Juggernaut)) ColorMapping.Add("Juggernaut", Colors.Juggernaut);
+            if (CustomGameOptions.MurdererOn > 0 && !Player.Is(LayerEnum.Murderer)) ColorMapping.Add("Murderer", Colors.Murderer);
+            if (CustomGameOptions.CryomaniacOn > 0 && !Player.Is(LayerEnum.Murderer)) ColorMapping.Add("Cryomaniac", Colors.Cryomaniac);
+            if (CustomGameOptions.WerewolfOn > 0 && !Player.Is(LayerEnum.Werewolf)) ColorMapping.Add("Werewolf", Colors.Werewolf);
 
-            if (CustomGameOptions.PlaguebearerOn > 0 && Player.Is(SubFaction.None))
+            if (CustomGameOptions.PlaguebearerOn > 0 && !Player.Is(Alignment.NeutralHarb) && !Player.Is(Alignment.NeutralApoc))
             {
-                if (!Player.Is(LayerEnum.Pestilence) && CustomGameOptions.AssassinGuessPest)
-                    ColorMapping.Add("Pestilence", Colors.Pestilence);
+                ColorMapping.Add("Plaguebearer", Colors.Plaguebearer);
 
-                if (!Player.Is(LayerEnum.Plaguebearer))
-                    ColorMapping.Add("Plaguebearer", Colors.Plaguebearer);
+                if (CustomGameOptions.AssassinGuessPest)
+                    ColorMapping.Add("Pestilence", Colors.Pestilence);
             }
 
             if (CustomGameOptions.DraculaOn > 0 && !Player.Is(SubFaction.Undead))
@@ -267,7 +247,10 @@ public abstract class Assassin : Ability
         //Add Abilities if enabled
         if (CustomGameOptions.AssassinGuessAbilities)
         {
-            if (AssassinOn) ColorMapping.Add("Assassin", Colors.Assassin);
+            if (CustomGameOptions.CrewAssassinOn > 0) ColorMapping.Add("Bullseye", Colors.Assassin);
+            if (CustomGameOptions.IntruderAssassinOn > 0) ColorMapping.Add("Assassin", Colors.Assassin);
+            if (CustomGameOptions.SyndicateAssassinOn > 0) ColorMapping.Add("Sniper", Colors.Assassin);
+            if (CustomGameOptions.NeutralAssassinOn > 0) ColorMapping.Add("Slayer", Colors.Assassin);
             if (CustomGameOptions.TorchOn > 0) ColorMapping.Add("Torch", Colors.Torch);
             if (CustomGameOptions.UnderdogOn > 0) ColorMapping.Add("Underdog", Colors.Underdog);
             if (CustomGameOptions.RadarOn > 0) ColorMapping.Add("Radar", Colors.Radar);
@@ -367,10 +350,10 @@ public abstract class Assassin : Ability
                     var playerModifier = Modifier.GetModifier(voteArea);
                     var playerObjectifier = Objectifier.GetObjectifier(voteArea);
 
-                    var roleflag = playerRole != null && playerRole.Name == currentGuess;
-                    var modifierflag = playerModifier != null && playerModifier.Name == currentGuess && CustomGameOptions.AssassinGuessModifiers;
-                    var abilityflag = playerAbility != null && playerAbility.Name == currentGuess && CustomGameOptions.AssassinGuessAbilities;
-                    var objectifierflag = playerObjectifier != null && playerObjectifier.Name == currentGuess && CustomGameOptions.AssassinGuessObjectifiers;
+                    var roleflag = playerRole?.Name == currentGuess;
+                    var modifierflag = playerModifier?.Name == currentGuess && CustomGameOptions.AssassinGuessModifiers;
+                    var abilityflag = playerAbility?.Name == currentGuess && CustomGameOptions.AssassinGuessAbilities;
+                    var objectifierflag = playerObjectifier?.Name == currentGuess && CustomGameOptions.AssassinGuessObjectifiers;
                     var recruitflag = targetPlayer.IsRecruit() && currentGuess == "Recruit";
                     var sectflag = targetPlayer.IsPersuaded() && currentGuess == "Persuaded";
                     var reanimatedflag = targetPlayer.IsResurrected() && currentGuess == "Resurrected";
@@ -383,7 +366,7 @@ public abstract class Assassin : Ability
                     {
                         var actor = Role.GetRole<Actor>(targetPlayer);
 
-                        if (Actors.TryGetValue($"{actor.PretendRoles}", out var results) && results.Any(x => x == currentGuess))
+                        if (actor.PretendRoles.Any(x => x.Name == currentGuess))
                         {
                             actor.Guessed = true;
                             actGuessed = true;
@@ -400,7 +383,7 @@ public abstract class Assassin : Ability
 
                     Exit(__instance);
 
-                    if (RemainingKills < 0 || !CustomGameOptions.AssassinMultiKill)
+                    if (RemainingKills <= 0 || !CustomGameOptions.AssassinMultiKill)
                         AssassinMenu.HideButtons();
                     else
                         AssassinMenu.HideSingle(targetId);
@@ -514,22 +497,15 @@ public abstract class Assassin : Ability
 
     public void MurderPlayer(PlayerControl player, string guess, PlayerControl guessTarget)
     {
-        if (player.Is(LayerEnum.Indomitable))
+        if (player.Is(LayerEnum.Indomitable) && player != Player)
         {
-            if (player == CustomPlayer.Local || Local)
-            {
-                if (Local)
-                    Run(HUD.Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"You failed to assassinate {guessTarget.name}!");
-                else if (player == CustomPlayer.Local)
-                    Run(HUD.Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"Someone tried to assassinate you!");
+            if (Local)
+                Run(HUD.Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"You failed to assassinate {guessTarget.name}!");
+            else if (player == CustomPlayer.Local)
+                Run(HUD.Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"Someone tried to assassinate you!");
 
-                Flash(Colors.Indomitable);
-            }
-
+            Flash(Colors.Indomitable);
             Modifier.GetModifier<Indomitable>(player).AttemptedGuess = true;
-
-            if (player != Player)
-                return;
         }
 
         if (Player.Is(LayerEnum.Professional) && Player == player)
@@ -539,10 +515,12 @@ public abstract class Assassin : Ability
             if (!modifier.LifeUsed)
             {
                 modifier.LifeUsed = true;
-                Flash(modifier.Color);
 
                 if (Local)
+                {
+                    Flash(modifier.Color);
                     Run(HUD.Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"You incorrectly guessed {guessTarget.name} as {guess} and lost a life!");
+                }
                 else if ((Player.GetFaction() == CustomPlayer.Local.GetFaction() && (Player.GetFaction() is Faction.Intruder or Faction.Syndicate)) || DeadSeeEverything)
                     Run(HUD.Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} incorrectly guessed {guessTarget.name} as {guess} and lost a life!");
 
@@ -557,7 +535,7 @@ public abstract class Assassin : Ability
         {
             var otherLover = player.GetOtherLover();
 
-            if (!otherLover.Is(LayerEnum.Pestilence))
+            if (!otherLover.Is(Alignment.NeutralApoc))
                 RpcMurderPlayer(otherLover, guess, guessTarget);
         }
 

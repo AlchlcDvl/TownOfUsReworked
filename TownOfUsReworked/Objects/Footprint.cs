@@ -12,7 +12,6 @@ public class Footprint
     public readonly Vector3 Position;
     private static bool Grey => CustomGameOptions.AnonymousFootPrint || HudUpdate.IsCamoed;
     public static readonly Dictionary<byte, int> OddEven = new();
-    private static readonly List<Footprint> AllPrints = new();
 
     public Footprint(PlayerControl player)
     {
@@ -21,7 +20,6 @@ public class Footprint
         Player = player;
         Time2 = (int)Time.time;
         Color = UColor.black;
-        AllPrints.Add(this);
 
         if (!OddEven.ContainsKey(Player.PlayerId))
             OddEven.Add(Player.PlayerId, 0);
@@ -41,13 +39,7 @@ public class Footprint
         Sprite.color = Color;
     }
 
-    public void Destroy(bool remove = true)
-    {
-        GObject.Destroy();
-
-        if (remove)
-            AllPrints.Remove(this);
-    }
+    public void Destroy() => GObject.Destroy();
 
     public bool Update()
     {
@@ -64,7 +56,8 @@ public class Footprint
         if (Time2 + CustomGameOptions.FootprintDur < currentTime)
         {
             Destroy();
-            Role.AllRoles.ForEach(x => x.AllPrints.Remove(this));
+            PlayerLayer.GetLayers<Detective>().ForEach(x => x.AllPrints.Remove(this));
+            PlayerLayer.GetLayers<Retributionist>().ForEach(x => x.AllPrints.Remove(this));
             return true;
         }
         else

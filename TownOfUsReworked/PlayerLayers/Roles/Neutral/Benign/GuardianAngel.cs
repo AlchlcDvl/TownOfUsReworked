@@ -16,7 +16,6 @@ public class GuardianAngel : Neutral
     public override Func<string> StartText => () => "Find Someone To Protect";
     public override Func<string> Description => () => TargetPlayer == null ? "- You can select a player to be your target" : ($"- You can protect {TargetPlayer?.name} from death for a " +
         $"short while\n- If {TargetPlayer?.name} dies, you will become a <color=#DDDD00FF>Survivor</color>");
-    public override InspectorResults InspectorResults => InspectorResults.PreservesLife;
 
     public GuardianAngel(PlayerControl player) : base(player)
     {
@@ -36,11 +35,7 @@ public class GuardianAngel : Neutral
         CallRpc(CustomRPC.Target, TargetRPC.SetGATarget, this, TargetPlayer);
     }
 
-    public void TurnSurv()
-    {
-        var newRole = new Survivor(Player);
-        newRole.RoleUpdate(this);
-    }
+    public void TurnSurv() => new Survivor(Player).RoleUpdate(this);
 
     public void HitProtect()
     {

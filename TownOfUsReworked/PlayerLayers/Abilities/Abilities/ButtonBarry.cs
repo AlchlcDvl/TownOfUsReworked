@@ -20,6 +20,7 @@ public class ButtonBarry : Ability
 
         if (AmongUsClient.Instance.AmHost)
         {
+            Player.RemainingEmergencies++;
             MeetingRoomManager.Instance.reporter = Player;
             MeetingRoomManager.Instance.target = null;
             AmongUsClient.Instance.DisconnectHandlers.AddUnique(MeetingRoomManager.Instance.Cast<IDisconnectHandler>());
@@ -31,6 +32,6 @@ public class ButtonBarry : Ability
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        ButtonButton.Update2("BUTTON", !ButtonUsed && Player.RemainingEmergencies > 0);
+        ButtonButton.Update2("BUTTON", !ButtonUsed);
     }
 }

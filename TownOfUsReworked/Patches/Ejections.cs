@@ -1,7 +1,6 @@
 namespace TownOfUsReworked.Patches;
 
 [HarmonyPatch(typeof(ExileController), nameof(ExileController.Begin))]
-[HarmonyPriority(Priority.First)]
 public static class ConfirmEjects
 {
     public static ExileController LastExiled;
@@ -31,19 +30,13 @@ public static class ConfirmEjects
         var totalEvils = $"There {isAre} {totalEvilsRemaining} <color=#FF0000FF>evil{s}</color> remaining.";
 
         var ejectString = "";
-        PlayerControl target = null;
+        var target = PlayerLayer.GetLayers<Executioner>().First(x => x.TargetPlayer == player)?.TargetPlayer;
 
         if (role == null)
             return;
 
         role.DeathReason = DeathReasonEnum.Ejected;
         role.KilledBy = " ";
-
-        foreach (var exe in Role.GetRoles<Executioner>(LayerEnum.Executioner))
-        {
-            if (player == exe.TargetPlayer)
-                target = exe.TargetPlayer;
-        }
 
         if (role == null || !CustomGameOptions.ConfirmEjects)
         {
@@ -77,9 +70,9 @@ public static class ConfirmEjects
                     ejectString = $"{player.name} was the {role.ColorString}{role.Name}</color>.";
             }
             else if (!player.Is(SubFaction.None))
-                ejectString = $"{player.name} was the {role.SubFactionColorString}{role.SubFactionName}</color>.";
-            else if (player.Is(Faction.Crew) || player.Is(Faction.Intruder) || player.Is(Faction.Syndicate))
-                ejectString = $"{player.name} was the {role.FactionColorString}{role.FactionName}</color>.";
+                ejectString = $"{player.name} was {role.SubFactionColorString}{role.SubFactionName}</color>.";
+            else
+                ejectString = $"{player.name} was {role.FactionColorString}{role.FactionName}</color>.";
 
             __instance.ImpostorText.text = totalEvils;
         }

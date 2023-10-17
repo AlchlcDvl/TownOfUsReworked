@@ -11,7 +11,6 @@ public class Ambusher : Intruder
     public override LayerEnum Type => LayerEnum.Ambusher;
     public override Func<string> StartText => () => "Spook The <color=#8CFFFFFF>Crew</color>";
     public override Func<string> Description => () => $"- You can ambush players\n- Ambushed players will be forced to be on alert and kill whoever interacts with them\n{CommonAbilities}";
-    public override InspectorResults InspectorResults => InspectorResults.HindersOthers;
 
     public Ambusher(PlayerControl player) : base(player)
     {

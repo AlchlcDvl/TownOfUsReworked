@@ -13,7 +13,6 @@ public class Grenadier : Intruder
     public override LayerEnum Type => LayerEnum.Grenadier;
     public override Func<string> StartText => () => "Blind The <color=#8CFFFFFF>Crew</color> With Your Magnificent Figure";
     public override Func<string> Description => () => $"- You can drop a flashbang which blinds players around you\n{CommonAbilities}";
-    public override InspectorResults InspectorResults => InspectorResults.DropsItems;
 
     public Grenadier(PlayerControl player) : base(player)
     {
@@ -65,11 +64,8 @@ public class Grenadier : Intruder
                     FlashButton.EffectTime = 0f;
                 }
 
-                if (Map)
-                    Map.Close();
-
-                if (Minigame.Instance)
-                    Minigame.Instance.Close();
+                Map?.Close();
+                ActiveTask?.Close();
             }
         }
     }

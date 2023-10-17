@@ -12,7 +12,6 @@ public class Enforcer : Intruder
     public override Func<string> StartText => () => "Force The <color=#8CFFFFFF>Crew</color> To Do Your Bidding";
     public override Func<string> Description => () => "- You can plant bombs on players and force them to kill others\n- If the player is unable to kill someone within " +
         $"{CustomGameOptions.EnforceDur}s, the bomb will detonate and kill everyone within a {CustomGameOptions.EnforceRadius}m radius\n{CommonAbilities}";
-    public override InspectorResults InspectorResults => InspectorResults.DropsItems;
 
     public Enforcer(PlayerControl player) : base(player)
     {

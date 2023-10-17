@@ -3,6 +3,8 @@ namespace TownOfUsReworked.Patches;
 public static class OnGameEndPatch
 {
     private static readonly List<WinningPlayerData> PotentialWinners = new();
+    private static readonly List<SummaryInfo> PlayerRoles = new();
+    public static readonly List<SummaryInfo> Disconnected = new();
 
     [HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.OnGameEnd))]
     public static class AmongUsClient_OnGameEnd
@@ -45,13 +47,13 @@ public static class OnGameEndPatch
                         winners.Add(PotentialWinners.First(x => x.PlayerName == role2.PlayerName));
                 }
 
-                foreach (var ally in Objectifier.GetObjectifiers<Allied>(LayerEnum.Allied))
+                foreach (var ally in PlayerLayer.GetLayers<Allied>())
                 {
                     if (!ally.Disconnected && ally.Side == Faction.Crew)
                         winners.Add(PotentialWinners.First(x => x.PlayerName == ally.PlayerName));
                 }
 
-                foreach (var defect in Objectifier.GetObjectifiers<Defector>(LayerEnum.Defector))
+                foreach (var defect in PlayerLayer.GetLayers<Defector>())
                 {
                     if (!defect.Disconnected && defect.Side == Faction.Crew && Role.GetRole(defect.Player).BaseFaction != defect.Side)
                         winners.Add(PotentialWinners.First(x => x.PlayerName == defect.PlayerName));
@@ -65,25 +67,25 @@ public static class OnGameEndPatch
                         winners.Add(PotentialWinners.First(x => x.PlayerName == role2.PlayerName));
                 }
 
-                foreach (var ally in Objectifier.GetObjectifiers<Allied>(LayerEnum.Allied))
+                foreach (var ally in PlayerLayer.GetLayers<Allied>())
                 {
                     if (!ally.Disconnected && ally.Side == Faction.Intruder)
                         winners.Add(PotentialWinners.First(x => x.PlayerName == ally.PlayerName));
                 }
 
-                foreach (var traitor in Objectifier.GetObjectifiers<Traitor>(LayerEnum.Traitor))
+                foreach (var traitor in PlayerLayer.GetLayers<Traitor>())
                 {
                     if (!traitor.Disconnected && traitor.Side == Faction.Intruder)
                         winners.Add(PotentialWinners.First(x => x.PlayerName == traitor.PlayerName));
                 }
 
-                foreach (var fanatic in Objectifier.GetObjectifiers<Fanatic>(LayerEnum.Fanatic))
+                foreach (var fanatic in PlayerLayer.GetLayers<Fanatic>())
                 {
                     if (!fanatic.Disconnected && fanatic.Side == Faction.Intruder)
                         winners.Add(PotentialWinners.First(x => x.PlayerName == fanatic.PlayerName));
                 }
 
-                foreach (var defect in Objectifier.GetObjectifiers<Defector>(LayerEnum.Defector))
+                foreach (var defect in PlayerLayer.GetLayers<Defector>())
                 {
                     if (!defect.Disconnected && defect.Side == Faction.Intruder && Role.GetRole(defect.Player).BaseFaction != defect.Side)
                         winners.Add(PotentialWinners.First(x => x.PlayerName == defect.PlayerName));
@@ -97,25 +99,25 @@ public static class OnGameEndPatch
                         winners.Add(PotentialWinners.First(x => x.PlayerName == role2.PlayerName));
                 }
 
-                foreach (var ally in Objectifier.GetObjectifiers<Allied>(LayerEnum.Allied))
+                foreach (var ally in PlayerLayer.GetLayers<Allied>())
                 {
                     if (!ally.Disconnected && ally.Side == Faction.Syndicate)
                         winners.Add(PotentialWinners.First(x => x.PlayerName == ally.PlayerName));
                 }
 
-                foreach (var traitor in Objectifier.GetObjectifiers<Traitor>(LayerEnum.Traitor))
+                foreach (var traitor in PlayerLayer.GetLayers<Traitor>())
                 {
                     if (!traitor.Disconnected && traitor.Side == Faction.Syndicate)
                         winners.Add(PotentialWinners.First(x => x.PlayerName == traitor.PlayerName));
                 }
 
-                foreach (var fanatic in Objectifier.GetObjectifiers<Fanatic>(LayerEnum.Fanatic))
+                foreach (var fanatic in PlayerLayer.GetLayers<Fanatic>())
                 {
                     if (!fanatic.Disconnected && fanatic.Side == Faction.Syndicate)
                         winners.Add(PotentialWinners.First(x => x.PlayerName == fanatic.PlayerName));
                 }
 
-                foreach (var defect in Objectifier.GetObjectifiers<Defector>(LayerEnum.Defector))
+                foreach (var defect in PlayerLayer.GetLayers<Defector>())
                 {
                     if (!defect.Disconnected && defect.Side == Faction.Syndicate && Role.GetRole(defect.Player).BaseFaction != defect.Side)
                         winners.Add(PotentialWinners.First(x => x.PlayerName == defect.PlayerName));
@@ -225,7 +227,7 @@ public static class OnGameEndPatch
             }
             else if (Role.PhantomWins)
             {
-                foreach (var role2 in Role.GetRoles<Phantom>(LayerEnum.Phantom))
+                foreach (var role2 in PlayerLayer.GetLayers<Phantom>())
                 {
                     if (!role2.Disconnected && role2.Faithful && role2.CompletedTasks)
                         winners.Add(PotentialWinners.First(x => x.PlayerName == role2.PlayerName));
@@ -309,62 +311,62 @@ public static class OnGameEndPatch
                 if (!(Role.ActorWins || Role.BountyHunterWins || Role.CannibalWins || Role.ExecutionerWins || Role.GuesserWins || Role.JesterWins || Role.TrollWins) ||
                     !CustomGameOptions.NeutralEvilsEndGame)
                 {
-                    foreach (var surv in Role.GetRoles<Survivor>(LayerEnum.Survivor))
+                    foreach (var surv in PlayerLayer.GetLayers<Survivor>())
                     {
                         if (surv.Alive)
                             winners.Add(PotentialWinners.First(x => x.PlayerName == surv.PlayerName));
                     }
 
-                    foreach (var ga in Role.GetRoles<GuardianAngel>(LayerEnum.GuardianAngel))
+                    foreach (var ga in PlayerLayer.GetLayers<GuardianAngel>())
                     {
                         if (!ga.Failed && ga.TargetPlayer != null && ga.TargetAlive)
                             winners.Add(PotentialWinners.First(x => x.PlayerName == ga.PlayerName));
                     }
                 }
 
-                foreach (var jest in Role.GetRoles<Jester>(LayerEnum.Jester))
+                foreach (var jest in PlayerLayer.GetLayers<Jester>())
                 {
                     if (jest.VotedOut && !jest.Disconnected)
                         winners.Add(PotentialWinners.First(x => x.PlayerName == jest.PlayerName));
                 }
 
-                foreach (var exe in Role.GetRoles<Executioner>(LayerEnum.Executioner))
+                foreach (var exe in PlayerLayer.GetLayers<Executioner>())
                 {
                     if (exe.TargetVotedOut && !exe.Disconnected)
                         winners.Add(PotentialWinners.First(x => x.PlayerName == exe.PlayerName));
                 }
 
-                foreach (var bh in Role.GetRoles<BountyHunter>(LayerEnum.BountyHunter))
+                foreach (var bh in PlayerLayer.GetLayers<BountyHunter>())
                 {
                     if (bh.TargetKilled && !bh.Disconnected)
                         winners.Add(PotentialWinners.First(x => x.PlayerName == bh.PlayerName));
                 }
 
-                foreach (var act in Role.GetRoles<Actor>(LayerEnum.Actor))
+                foreach (var act in PlayerLayer.GetLayers<Actor>())
                 {
                     if (act.Guessed && !act.Disconnected)
                         winners.Add(PotentialWinners.First(x => x.PlayerName == act.PlayerName));
                 }
 
-                foreach (var cann in Role.GetRoles<Cannibal>(LayerEnum.Cannibal))
+                foreach (var cann in PlayerLayer.GetLayers<Cannibal>())
                 {
                     if (cann.Eaten && !cann.Disconnected)
                         winners.Add(PotentialWinners.First(x => x.PlayerName == cann.PlayerName));
                 }
 
-                foreach (var guess in Role.GetRoles<Guesser>(LayerEnum.Guesser))
+                foreach (var guess in PlayerLayer.GetLayers<Guesser>())
                 {
                     if (guess.TargetGuessed && !guess.Disconnected)
                         winners.Add(PotentialWinners.First(x => x.PlayerName == guess.PlayerName));
                 }
 
-                foreach (var troll in Role.GetRoles<Troll>(LayerEnum.Troll))
+                foreach (var troll in PlayerLayer.GetLayers<Troll>())
                 {
                     if (troll.Killed && !troll.Disconnected)
                         winners.Add(PotentialWinners.First(x => x.PlayerName == troll.PlayerName));
                 }
 
-                foreach (var link in Objectifier.GetObjectifiers<Linked>(LayerEnum.Linked))
+                foreach (var link in PlayerLayer.GetLayers<Linked>())
                 {
                     if (winners.Any(x => x.PlayerName == link.PlayerName) && !winners.Any(x => x.PlayerName == link.OtherLink.Data.PlayerName))
                         winners.Add(PotentialWinners.First(x => x.PlayerName == link.OtherLink.Data.PlayerName));
@@ -376,274 +378,225 @@ public static class OnGameEndPatch
             TempData.winners = winners.SystemToIl2Cpp();
         }
     }
-}
 
-[HarmonyPatch(typeof(EndGameManager), nameof(EndGameManager.Start))]
-[HarmonyPriority(Priority.First)]
-public static class Outro
-{
-    public static void Postfix(EndGameManager __instance)
+    [HarmonyPatch(typeof(EndGameManager), nameof(EndGameManager.Start))]
+    public static class Outro
     {
-        if (!SoundEffects.ContainsKey("CrewWin"))
-            SoundEffects.Add("CrewWin", __instance.CrewStinger);
+        public static void Postfix(EndGameManager __instance)
+        {
+            SoundEffects.TryAdd("CrewWin", __instance.CrewStinger);
+            SoundEffects.TryAdd("IntruderWin", __instance.ImpostorStinger);
+            SoundEffects.TryAdd("Stalemate", __instance.DisconnectStinger);
 
-        if (!SoundEffects.ContainsKey("IntruderWin"))
-            SoundEffects.Add("IntruderWin", __instance.ImpostorStinger);
+            if (!GameHasEnded)
+                return;
 
-        if (!SoundEffects.ContainsKey("Stalemate"))
-            SoundEffects.Add("Stalemate", __instance.DisconnectStinger);
+            var text = UObject.Instantiate(__instance.WinText, __instance.WinText.transform.parent);
+            SoundManager.Instance.StopSound(__instance.ImpostorStinger);
+            var winsound = "IntruderWin";
+            Color? color = Colors.Stalemate;
+            var texttext = "Stalemate";
 
-        if (!GameHasEnded)
-            return;
+            foreach (var player in UObject.FindObjectsOfType<PoolablePlayer>())
+            {
+                var local = Role.AllRoles.Find(x => x.PlayerName == player.NameText().text);
+                player.NameText().text = $"{local.ColorString}<size=75%>{local}</size>\n<size=90%>{player.NameText().text}</size></color>";
+            }
 
-        var text = UObject.Instantiate(__instance.WinText, __instance.WinText.transform.parent);
-        SoundManager.Instance.StopSound(__instance.ImpostorStinger);
-        var winsound = "IntruderWin";
-        var color = Colors.Stalemate;
-        var texttext = "Stalemate";
+            if (PlayerLayer.NobodyWins)
+                winsound = "Stalemate";
+            else if (Role.SyndicateWin)
+            {
+                texttext = "The Syndicate Wins";
+                color = Colors.Syndicate;
+            }
+            else if (Role.IntruderWin)
+            {
+                texttext = "Intruders Win";
+                color = Colors.Intruder;
+            }
+            else if (Role.AllNeutralsWin)
+            {
+                texttext = "Neutrals Win";
+                color = Colors.Neutral;
+            }
+            else if (Role.CrewWin)
+            {
+                texttext = "Crew Wins";
+                color = Colors.Crew;
+                winsound = "CrewWin";
+            }
+            else if (Role.NKWins)
+            {
+                texttext = "Neutral Killers Win";
+                color = Colors.Alignment;
+            }
+            else if (Role.ApocalypseWins)
+            {
+                texttext = "The Apocalypse Is Nigh";
+                color = Colors.Apocalypse;
+            }
+            else if (Role.UndeadWin)
+            {
+                texttext = "The Undead Win";
+                color = Colors.Undead;
+            }
+            else if (Role.CabalWin)
+            {
+                texttext = "The Cabal Wins";
+                color = Colors.Cabal;
+            }
+            else if (Role.SectWin)
+            {
+                texttext = "The Sect Wins";
+                color = Colors.Sect;
+            }
+            else if (Role.ReanimatedWin)
+            {
+                texttext = "The Reanimated Win";
+                color = Colors.Reanimated;
+            }
+            else if (Role.CryomaniacWins)
+            {
+                texttext = "Cryomaniac Wins";
+                color = Colors.Cryomaniac;
+            }
+            else if (Role.ArsonistWins)
+            {
+                texttext = "Aronist Wins";
+                color = Colors.Arsonist;
+            }
+            else if (Role.GlitchWins)
+            {
+                texttext = "Glitch Wins";
+                color = Colors.Glitch;
+            }
+            else if (Role.JuggernautWins)
+            {
+                texttext = "Juggernaut Wins";
+                color = Colors.Juggernaut;
+            }
+            else if (Role.MurdererWins)
+            {
+                texttext = "Murderer Wins";
+                color = Colors.Murderer;
+            }
+            else if (Role.SerialKillerWins)
+            {
+                texttext = "Serial Killer Wins";
+                color = Colors.SerialKiller;
+            }
+            else if (Role.WerewolfWins)
+            {
+                texttext = "Werewolf Wins";
+                color = Colors.Werewolf;
+            }
+            else if (Role.PhantomWins)
+            {
+                texttext = "Phantom Wins";
+                color = Colors.Phantom;
+            }
+            else if (Role.ActorWins)
+            {
+                texttext = "Actor Wins";
+                color = Colors.Actor;
+            }
+            else if (Role.BountyHunterWins)
+            {
+                texttext = "Bounty Hunter Wins";
+                color = Colors.BountyHunter;
+            }
+            else if (Role.CannibalWins)
+            {
+                texttext = "Cannibal Wins";
+                color = Colors.Cannibal;
+            }
+            else if (Role.ExecutionerWins)
+            {
+                texttext = "Executioner Wins";
+                color = Colors.Executioner;
+            }
+            else if (Role.GuesserWins)
+            {
+                texttext = "Guesser Wins";
+                color = Colors.Guesser;
+            }
+            else if (Role.JesterWins)
+            {
+                texttext = "Jester Wins";
+                color = Colors.Jester;
+            }
+            else if (Role.TrollWins)
+            {
+                texttext = "Troll Wins";
+                color = Colors.Troll;
+            }
+            else if (Role.TaskRunnerWins)
+            {
+                texttext = "Tasks Completed";
+                color = Colors.TaskRace;
+            }
+            else if (Role.HuntedWins)
+            {
+                texttext = "The Hunted Survived";
+                color = Colors.Hunted;
+            }
+            else if (Role.HunterWins)
+            {
+                texttext = "Every One Was Hunted";
+                color = Colors.Hunter;
+            }
+            else if (Objectifier.CorruptedWins)
+            {
+                texttext = "Corrupted Wins";
+                color = Colors.Corrupted;
+            }
+            else if (Objectifier.LoveWins)
+            {
+                texttext = "Love Wins";
+                color = Colors.Lovers;
+            }
+            else if (Objectifier.RivalWins)
+            {
+                texttext = "Rival Wins";
+                color = Colors.Rivals;
+            }
+            else if (Objectifier.TaskmasterWins)
+            {
+                texttext = "Taskmaster Wins";
+                color = Colors.Taskmaster;
+            }
+            else if (Objectifier.OverlordWins)
+            {
+                texttext = "Overlord Wins";
+                color = Colors.Overlord;
+            }
+            else if (Objectifier.MafiaWins)
+            {
+                texttext = "The Mafia Wins";
+                color = Colors.Mafia;
+            }
 
-        foreach (var player in UObject.FindObjectsOfType<PoolablePlayer>())
-        {
-            var local = Role.AllRoles.Find(x => x.PlayerName == player.NameText().text);
-            player.NameText().text = $"{local.ColorString}<size=75%>{local}</size>\n<size=90%>{player.NameText().text}</size></color>";
+            __instance.BackgroundBar.material.color = text.color = color ?? Colors.Stalemate;
+            var pos = __instance.WinText.transform.localPosition;
+            pos.y += 1.5f;
+            __instance.WinText.transform.localPosition = pos;
+            text.text = $"<size=50%>{texttext}!</size>";
+            Play(winsound);
         }
-
-        if (PlayerLayer.NobodyWins)
-            winsound = "Stalemate";
-        else if (Role.SyndicateWin)
-        {
-            var role = Role.AllRoles.Find(x => x.Faction == Faction.Syndicate && x.Faithful);
-            texttext = "The Syndicate Wins";
-            color = role.FactionColor;
-        }
-        else if (Role.IntruderWin)
-        {
-            var role = Role.AllRoles.Find(x => x.Faction == Faction.Intruder && x.Faithful);
-            texttext = "Intruders Win";
-            color = role.FactionColor;
-        }
-        else if (Role.AllNeutralsWin)
-        {
-            var role = Role.AllRoles.Find(x => x.Faction == Faction.Neutral && x.Faithful);
-            texttext = "Neutrals Win";
-            color = role.FactionColor;
-        }
-        else if (Role.CrewWin)
-        {
-            var role = Role.AllRoles.Find(x => x.Faction == Faction.Crew && x.Faithful);
-            texttext = "Crew Wins";
-            color = role.FactionColor;
-            winsound = "CrewWin";
-        }
-        else if (Role.NKWins)
-        {
-            var role = Role.AllRoles.Find(x => x.Alignment == Alignment.NeutralKill && x.Winner);
-            texttext = "Neutral Killers Win";
-            color = Colors.Alignment;
-        }
-        else if (Role.ApocalypseWins)
-        {
-            var role = Role.AllRoles.Find(x => x.Alignment is Alignment.NeutralApoc or Alignment.NeutralHarb && x.Faithful);
-            texttext = "The Apocalypse Is Nigh";
-            color = Colors.Apocalypse;
-        }
-        else if (Role.UndeadWin)
-        {
-            var role = Role.AllRoles.Find(x => x.SubFaction == SubFaction.Undead && Role.UndeadWin);
-            texttext = "The Undead Win";
-            color = role.SubFactionColor;
-        }
-        else if (Role.CabalWin)
-        {
-            var role = Role.AllRoles.Find(x => x.SubFaction == SubFaction.Cabal && Role.CabalWin);
-            texttext = "The Cabal Wins";
-            color = role.SubFactionColor;
-        }
-        else if (Role.SectWin)
-        {
-            var role = Role.AllRoles.Find(x => x.SubFaction == SubFaction.Sect && Role.SectWin);
-            texttext = "The Sect Wins";
-            color = role.SubFactionColor;
-        }
-        else if (Role.ReanimatedWin)
-        {
-            var role = Role.AllRoles.Find(x => x.SubFaction == SubFaction.Reanimated && Role.ReanimatedWin);
-            texttext = "The Reanimated Win";
-            color = role.SubFactionColor;
-        }
-        else if (Role.CryomaniacWins)
-        {
-            var role = Role.AllRoles.Find(x => x.Type == LayerEnum.Cryomaniac && x.Winner);
-            texttext = "Cryomaniac Wins";
-            color = role.Color;
-        }
-        else if (Role.ArsonistWins)
-        {
-            var role = Role.AllRoles.Find(x => x.Type == LayerEnum.Arsonist && x.Winner);
-            texttext = "Aronist Wins";
-            color = role.Color;
-        }
-        else if (Role.GlitchWins)
-        {
-            var role = Role.AllRoles.Find(x => x.Type == LayerEnum.Glitch && x.Winner);
-            texttext = "Glitch Wins";
-            color = role.Color;
-        }
-        else if (Role.JuggernautWins)
-        {
-            var role = Role.AllRoles.Find(x => x.Type == LayerEnum.Juggernaut && x.Winner);
-            texttext = "Juggernaut Wins";
-            color = role.Color;
-        }
-        else if (Role.MurdererWins)
-        {
-            var role = Role.AllRoles.Find(x => x.Type == LayerEnum.Murderer && x.Winner);
-            texttext = "Murderer Wins";
-            color = role.Color;
-        }
-        else if (Role.SerialKillerWins)
-        {
-            var role = Role.AllRoles.Find(x => x.Type == LayerEnum.SerialKiller && x.Winner);
-            texttext = "Serial Killer Wins";
-            color = role.Color;
-        }
-        else if (Role.WerewolfWins)
-        {
-            var role = Role.AllRoles.Find(x => x.Type == LayerEnum.Werewolf && x.Winner);
-            texttext = "Werewolf Wins";
-            color = role.Color;
-        }
-        else if (Role.PhantomWins)
-        {
-            var role = Role.AllRoles.Find(x => x.Type == LayerEnum.Phantom && x.Winner);
-            texttext = "Phantom Wins";
-            color = role.Color;
-        }
-        else if (Role.ActorWins)
-        {
-            var role = Role.AllRoles.Find(x => x.Type == LayerEnum.Actor && x.Winner);
-            texttext = "Actor Wins";
-            color = role.Color;
-        }
-        else if (Role.BountyHunterWins)
-        {
-            var role = Role.AllRoles.Find(x => x.Type == LayerEnum.BountyHunter && x.Winner);
-            texttext = "Bounty Hunter Wins";
-            color = role.Color;
-        }
-        else if (Role.CannibalWins)
-        {
-            var role = Role.AllRoles.Find(x => x.Type == LayerEnum.Cannibal && x.Winner);
-            texttext = "Cannibal Wins";
-            color = role.Color;
-        }
-        else if (Role.ExecutionerWins)
-        {
-            var role = Role.AllRoles.Find(x => x.Type == LayerEnum.Executioner && x.Winner);
-            texttext = "Executioner Wins";
-            color = role.Color;
-        }
-        else if (Role.GuesserWins)
-        {
-            var role = Role.AllRoles.Find(x => x.Type == LayerEnum.Guesser && x.Winner);
-            texttext = "Guesser Wins";
-            color = role.Color;
-        }
-        else if (Role.JesterWins)
-        {
-            var role = Role.AllRoles.Find(x => x.Type == LayerEnum.Jester && x.Winner);
-            texttext = "Jester Wins";
-            color = role.Color;
-        }
-        else if (Role.TrollWins)
-        {
-            var role = Role.AllRoles.Find(x => x.Type == LayerEnum.Troll && x.Winner);
-            texttext = "Troll Wins";
-            color = role.Color;
-        }
-        else if (Role.TaskRunnerWins)
-        {
-            var role = Role.AllRoles.Find(x => x.Type == LayerEnum.Runner && x.Winner);
-            texttext = "Tasks Completed";
-            color = role.Color;
-        }
-        else if (Role.HuntedWins)
-        {
-            var role = Role.AllRoles.Find(x => x.Type == LayerEnum.Hunted);
-            texttext = "The Hunted Survived";
-            color = role.Color;
-        }
-        else if (Role.HunterWins)
-        {
-            var role = Role.AllRoles.Find(x => x.Type == LayerEnum.Hunter);
-            texttext = "Every One Was Hunted";
-            color = role.Color;
-        }
-        else if (Objectifier.CorruptedWins)
-        {
-            var obj = Objectifier.AllObjectifiers.Find(x => x.Type == LayerEnum.Corrupted && x.Winner);
-            texttext = "Corrupted Wins";
-            color = obj.Color;
-        }
-        else if (Objectifier.LoveWins)
-        {
-            var obj = Objectifier.AllObjectifiers.Find(x => x.Type == LayerEnum.Lovers && x.Winner);
-            texttext = "Love Wins";
-            color = obj.Color;
-        }
-        else if (Objectifier.RivalWins)
-        {
-            var obj = Objectifier.AllObjectifiers.Find(x => x.Type == LayerEnum.Rivals && x.Winner);
-            texttext = "Rival Wins";
-            color = obj.Color;
-        }
-        else if (Objectifier.TaskmasterWins)
-        {
-            var obj = Objectifier.AllObjectifiers.Find(x => x.Type == LayerEnum.Taskmaster && x.Winner);
-            texttext = "Taskmaster Wins";
-            color = obj.Color;
-        }
-        else if (Objectifier.OverlordWins)
-        {
-            var obj = Objectifier.AllObjectifiers.Find(x => x.Type == LayerEnum.Overlord && x.Winner);
-            texttext = "Overlord Wins";
-            color = obj.Color;
-        }
-        else if (Objectifier.MafiaWins)
-        {
-            var obj = Objectifier.AllObjectifiers.Find(x => x.Type == LayerEnum.Mafia && x.Winner);
-            texttext = "The Mafia Wins";
-            color = obj.Color;
-        }
-
-        __instance.BackgroundBar.material.color = text.color = color;
-        var pos = __instance.WinText.transform.localPosition;
-        pos.y += 1.5f;
-        __instance.WinText.transform.localPosition = pos;
-        text.text = $"<size=50%>{texttext}!</size>";
-        Play(winsound);
     }
-}
 
-[HarmonyPatch(typeof(GameManager), nameof(GameManager.RpcEndGame))]
-public static class EndGame
-{
     public static void Reset()
     {
-        foreach (var role in Role.AllRoles)
-        {
-            role.AllPrints.ForEach(x => x.Destroy());
-            role.AllPrints.Clear();
-        }
+        PlayerLayer.GetLayers<Detective>().ForEach(x => x.Clear());
+        PlayerLayer.GetLayers<Retributionist>().ForEach(x => x.ClearFootprints());
     }
 
-    public static void Prefix() => Reset();
-}
-
-public static class Summary
-{
-    private static readonly List<SummaryInfo> PlayerRoles = new();
-    public static readonly List<SummaryInfo> Disconnected = new();
+    [HarmonyPatch(typeof(GameManager), nameof(GameManager.RpcEndGame))]
+    public static class EndGame
+    {
+        public static void Prefix() => Reset();
+    }
 
     public static void AddSummaryInfo(PlayerControl player, bool disconnected = false)
     {

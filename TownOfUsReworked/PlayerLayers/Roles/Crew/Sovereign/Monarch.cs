@@ -14,7 +14,6 @@ public class Monarch : Crew
     public override Func<string> StartText => () => "Knight Those Who You Trust";
     public override Func<string> Description => () => $"- You can knight players\n- Knighted players will have their votes count {CustomGameOptions.KnightVoteCount + 1} times\n- As long as "
         + "a knight is alive, you cannot be killed";
-    public override InspectorResults InspectorResults => InspectorResults.NewLens;
 
     public Monarch(PlayerControl player) : base(player)
     {

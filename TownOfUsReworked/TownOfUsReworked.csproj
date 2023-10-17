@@ -3,9 +3,10 @@
         <AssemblyName>Reworked</AssemblyName>
         <RootNamespace>TownOfUsReworked</RootNamespace>
         <TargetFramework>net6.0</TargetFramework>
-        <Version>0.5.3.0</Version>
+        <Version>0.5.4.0</Version>
         <DebugType>embedded</DebugType>
         <LangVersion>latest</LangVersion>
+        <nullable>enable</nullable>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <Authors>AlchlcDvl</Authors>
         <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
@@ -14,6 +15,7 @@
         <RepositoryType>git</RepositoryType>
         <RepositoryUrl>https://github.com/AlchlcDvl/TownOfUsReworked.git</RepositoryUrl>
         <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
+        <PlatformTarget>x86</PlatformTarget>
     </PropertyGroup>
 
     <ItemGroup>
@@ -28,10 +30,11 @@
 
     <ItemGroup>
         <EmbeddedResource Include="Resources\*" />
-        <EmbeddedResource Include="Resources\Misc\**" />
-        <EmbeddedResource Include="Resources\Buttons\**" />
-        <EmbeddedResource Include="Resources\Presets\**" />
-        <EmbeddedResource Include="Resources\Portal\**" />
+        <EmbeddedResource Include="Resources\Misc\*" />
+        <EmbeddedResource Include="Resources\Buttons\*" />
+        <EmbeddedResource Include="Resources\Presets\*" />
+        <EmbeddedResource Include="Resources\Portal\*" />
+        <EmbeddedResource Include="Resources\Sounds\*" />
     </ItemGroup>
 
     <Target Name="Copy" AfterTargets="Build" Condition="'$(AmongUs)' != ''">

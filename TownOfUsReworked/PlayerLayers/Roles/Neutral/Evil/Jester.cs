@@ -13,7 +13,6 @@ public class Jester : Neutral
     public override LayerEnum Type => LayerEnum.Jester;
     public override Func<string> StartText => () => "It Was Jest A Prank Bro";
     public override Func<string> Description => () => VotedOut ? "- You can haunt those who voted for you" : "- None";
-    public override InspectorResults InspectorResults => InspectorResults.Manipulative;
 
     public Jester(PlayerControl player) : base(player)
     {

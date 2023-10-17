@@ -5,6 +5,7 @@ public static class AssetManager
     public static readonly Dictionary<string, AudioClip> SoundEffects = new();
     public static readonly Dictionary<string, Sprite> Sprites = new();
     public static readonly Dictionary<string, float> Sizes = new();
+    public static readonly Dictionary<string, int> Frequencies = new();
     public static readonly Sprite[] PortalAnimation = new Sprite[205];
     public static readonly Dictionary<string, string> Presets = new()
     {
@@ -35,11 +36,20 @@ public static class AssetManager
             LogError($"{path} does not exist");
             return null;
         }
-        else
-            return SoundEffects[path];
+
+        return SoundEffects[path];
     }
 
-    public static Sprite GetSprite(string path) => !Sprites.ContainsKey(path) || path == "" ? (Meeting ? Sprites["MeetingPlaceholder"] : Sprites["Placeholder"]) : Sprites[path];
+    public static Sprite GetSprite(string path)
+    {
+        if (!Sprites.ContainsKey(path))
+        {
+            LogError($"{path} does not exist");
+            return Meeting ? Sprites["MeetingPlaceholder"] : Sprites["Placeholder"];
+        }
+
+        return Sprites[path];
+    }
 
     public static void Play(string path, bool loop = false)
     {
@@ -62,7 +72,11 @@ public static class AssetManager
         {
             if (Constants.ShouldPlaySfx())
                 SoundManager.Instance.StopSound(GetAudio(path));
-        } catch {}
+        }
+        catch
+        {
+            LogError($"Error stopping because {path} was null");
+        }
     }
 
     public static void StopAll() => SoundEffects.Keys.ForEach(Stop);
@@ -74,6 +88,8 @@ public static class AssetManager
             var texture = EmptyTexture();
             _ = ImageConversion.LoadImage(texture, File.ReadAllBytes(path), false);
             texture.hideFlags |= HideFlags.HideAndDontSave | HideFlags.DontUnloadUnusedAsset;
+            texture.name = path;
+            _ = texture.DontDestroy();
             return texture;
         }
         catch
@@ -91,13 +107,14 @@ public static class AssetManager
         {
             var sname = path.Replace(".png", "").Replace(TownOfUsReworked.Buttons, "").Replace(TownOfUsReworked.Misc, "").Replace(TownOfUsReworked.Portal, "");
             var texture = EmptyTexture();
-            var stream = TownOfUsReworked.Executing.GetManifestResourceStream(path);
+            var stream = TownOfUsReworked.Core.GetManifestResourceStream(path);
             var length = stream.Length;
             var byteTexture = new Il2CppStructArray<byte>(length);
             _ = stream.Read(new(IntPtr.Add(byteTexture.Pointer, IntPtr.Size * 4).ToPointer(), (int)length));
             _ = ImageConversion.LoadImage(texture, byteTexture, false);
             texture.name = sname;
             texture.hideFlags |= HideFlags.HideAndDontSave | HideFlags.DontUnloadUnusedAsset;
+            _ = texture.DontDestroy();
             return texture;
         }
         catch
@@ -121,36 +138,79 @@ public static class AssetManager
         }
         catch
         {
-            LogError($"Error Loading {name}");
+            LogError($"Error loading {name} as a sprite");
             return null;
         }
     }
 
-    /*public static AudioClip loadAudioClipFromResources(string path)
+    public static AudioClip CreateAudio(string path)
     {
         try
         {
             var sname = path.Replace(".raw", "").Replace(TownOfUsReworked.Sounds, "");
-            var stream = TownOfUsReworked.Executing.GetManifestResourceStream(path);
+            var stream = TownOfUsReworked.Core.GetManifestResourceStream(path);
             var byteAudio = new byte[stream.Length];
             _ = stream.Read(byteAudio, 0, (int)stream.Length);
             var samples = new float[byteAudio.Length / 4];
 
             for (var i = 0; i < samples.Length; i++)
-            {
-                var offset = i * 4;
-                samples[i] = (float)BitConverter.ToInt32(byteAudio, offset) / int.MaxValue;
-            }
+                samples[i] = (float)BitConverter.ToInt32(byteAudio, i * 4) / int.MaxValue;
 
-            var audioClip = AudioClip.Create(clipName, samples.Length / 2, 2, 48000, false);
+            var audioClip = AudioClip.Create(sname, samples.Length / 2, 2, Frequencies[sname], false);
             audioClip.hideFlags |= HideFlags.HideAndDontSave | HideFlags.DontSaveInEditor;
             audioClip.SetData(samples, 0);
+            _ = audioClip.DontDestroy();
             return audioClip;
         }
         catch
         {
-            LogError("Error loading AudioClip from resources: " + path);
+            LogError($"Error loading {path} from resources");
             return null;
         }
-    }*/
+    }
+
+    public static string CreateText(string itemName, string folder = "")
+    {
+        try
+        {
+            var resourceName = $"{TownOfUsReworked.Resources}{(folder == "" ? "" : $"{folder}.")}{itemName}";
+            var stream = TownOfUsReworked.Core.GetManifestResourceStream(resourceName);
+            var reader = new StreamReader(stream);
+            var text = reader.ReadToEnd();
+            KeyWords.ForEach(x => text = text.Replace(x.Key, x.Value));
+            return text;
+        }
+        catch
+        {
+            LogError($"Error loading {itemName} from resources");
+            return "";
+        }
+    }
+
+    public static void SaveText(string fileName, string textToSave, string diskLocation) => SaveText(fileName, textToSave, true, diskLocation);
+
+    public static void SaveText(string fileName, string textToSave, bool overrideText = true, string diskLocation = null)
+    {
+        try
+        {
+            File.WriteAllText(Path.Combine(diskLocation ?? Application.persistentDataPath, fileName), (overrideText ? "" : ReadText(fileName)) + textToSave);
+        }
+        catch
+        {
+            LogError($"Unable to save text to {fileName}{(diskLocation != null ? $" in {diskLocation}" : "")}");
+        }
+    }
+
+    public static string ReadText(string fileName, string diskLocation = null)
+    {
+        try
+        {
+            return File.ReadAllText(Path.Combine(diskLocation ?? Application.persistentDataPath, fileName));
+        }
+        catch
+        {
+            LogError($"Error reading {fileName}{(diskLocation != null ? $" from {diskLocation}" : "")}");
+            return "";
+        }
+    }
 }

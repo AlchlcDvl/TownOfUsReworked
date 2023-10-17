@@ -10,7 +10,6 @@ public class Tracker : Crew
     public override LayerEnum Type => LayerEnum.Tracker;
     public override Func<string> StartText => () => "Track Everyone's Movements";
     public override Func<string> Description => () => "- You can track players which creates arrows that update every now and then with the target's position";
-    public override InspectorResults InspectorResults => InspectorResults.TracksOthers;
 
     public Tracker(PlayerControl player) : base(player)
     {

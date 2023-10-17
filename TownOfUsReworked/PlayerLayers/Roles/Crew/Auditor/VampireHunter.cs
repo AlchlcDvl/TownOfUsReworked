@@ -11,7 +11,6 @@ public class VampireHunter : Crew
     public override Func<string> StartText => () => "Stake The <color=#7B8968FF>Undead</color>";
     public override Func<string> Description => () => "- You can stake players to see if they have been turned\n- When you stake a turned person, or an <color=#7B8968FF>Undead</color> " +
         "tries to interact with you, you will kill them\n- When all <color=#7B8968FF>Undead</color> players die, you will become a <color=#FFFF00FF>Vigilante</color>";
-    public override InspectorResults InspectorResults => InspectorResults.TracksOthers;
 
     public VampireHunter(PlayerControl player) : base(player)
     {
@@ -19,11 +18,7 @@ public class VampireHunter : Crew
         StakeButton = new(this, "Stake", AbilityTypes.Target, "ActionSecondary", Stake, CustomGameOptions.StakeCd);
     }
 
-    public void TurnVigilante()
-    {
-        var newRole = new Vigilante(Player);
-        newRole.RoleUpdate(this);
-    }
+    public void TurnVigilante() => new Vigilante(Player).RoleUpdate(this);
 
     public override void UpdateHud(HudManager __instance)
     {

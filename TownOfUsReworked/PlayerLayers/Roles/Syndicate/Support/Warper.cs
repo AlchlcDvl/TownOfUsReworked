@@ -22,7 +22,6 @@ public class Warper : Syndicate
     public override Func<string> StartText => () => "Warp The <color=#8CFFFFFF>Crew</color> Away From Each Other";
     public override Func<string> Description => () => "- You can warp a" + (HoldsDrive ? "ll players, forcing them to be teleported to random locations" :
         " player to another player of your choice") + $"\n{CommonAbilities}";
-    public override InspectorResults InspectorResults => InspectorResults.MovesAround;
 
     public Warper(PlayerControl player) : base(player)
     {
@@ -43,6 +42,7 @@ public class Warper : Syndicate
         AnimationPlaying.sprite = PortalAnimation[0];
         AnimationPlaying.material = HatManager.Instance.PlayerMaterial;
         WarpObj.SetActive(true);
+        player.Data.Role.IntroSound = GetAudio("WarperIntro");
     }
 
     public IEnumerator WarpPlayers()
@@ -157,11 +157,8 @@ public class Warper : Syndicate
 
         if (CustomPlayer.Local == WarpPlayer1)
         {
-            if (Minigame.Instance)
-                Minigame.Instance.Close();
-
-            if (Map)
-                Map.Close();
+            ActiveTask?.Close();
+            Map?.Close();
         }
 
         WarpPlayer1.moveable = true;

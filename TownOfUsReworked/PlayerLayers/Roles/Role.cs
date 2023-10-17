@@ -12,9 +12,8 @@ public abstract class Role : PlayerLayer
 
     public virtual Faction BaseFaction => Faction.None;
     public virtual Func<string> StartText => () => "Woah The Game Started";
-    public virtual InspectorResults InspectorResults => InspectorResults.None;
 
-    public virtual void IntroPrefix(IntroCutscene._ShowTeam_d__36 __instance) {}
+    public virtual List<PlayerControl> Team() => new() { Player };
 
     public static bool UndeadWin { get; set; }
     public static bool CabalWin { get; set; }
@@ -77,7 +76,6 @@ public abstract class Role : PlayerLayer
     public SubFaction SubFaction { get; set; } = SubFaction.None;
     public List<Role> RoleHistory { get; set; } = new();
     public ChatChannel CurrentChannel { get; set; } = ChatChannel.All;
-    public List<Footprint> AllPrints { get; set; } = new();
     public Dictionary<byte, CustomArrow> AllArrows { get; set; }
     public Dictionary<byte, CustomArrow> DeadArrows { get; set; }
     public Dictionary<PointInTime, DateTime> Positions { get; set; }
@@ -156,7 +154,7 @@ public abstract class Role : PlayerLayer
                 pair.Value?.Update(player.transform.position);
         }
 
-        foreach (var yeller in Modifier.GetModifiers<Yeller>(LayerEnum.Yeller))
+        foreach (var yeller in GetLayers<Yeller>())
         {
             if (yeller.Player != Player)
             {
@@ -185,7 +183,7 @@ public abstract class Role : PlayerLayer
 
         BombKillButton?.Update2("KILL", Bombed);
         PlaceHitButton?.Update2("PLACE HIT", Requesting);
-        //CallButton?.Update("CALL PLATFORM", CanCall(), IsInPosition());
+        //CallButton?.Update("CALL PLATFORM", IsInPosition(), CanCall());
 
         if (__instance.TaskPanel)
         {
@@ -393,8 +391,8 @@ public abstract class Role : PlayerLayer
         TrulyDead = IsDead;
         AllVoteAreas.ForEach(GenText);
         AllRoles.ForEach(x => x.CurrentChannel = ChatChannel.All);
-        GetRoles<Thief>(LayerEnum.Thief).ForEach(x => x.GuessMenu.HideButtons());
-        GetRoles<Guesser>(LayerEnum.Guesser).ForEach(x => x.GuessMenu.HideButtons());
+        GetLayers<Thief>().ForEach(x => x.GuessMenu.HideButtons());
+        GetLayers<Guesser>().ForEach(x => x.GuessMenu.HideButtons());
 
         if (Requesting && BountyTimer > 2)
         {
@@ -404,19 +402,19 @@ public abstract class Role : PlayerLayer
             Requestor = null;
         }
 
-        foreach (var ret in GetRoles<Retributionist>(LayerEnum.Retributionist))
+        foreach (var ret in GetLayers<Retributionist>())
         {
             ret.RetMenu.HideButtons();
             ret.Selected = null;
         }
 
-        foreach (var dict in GetRoles<Dictator>(LayerEnum.Dictator))
+        foreach (var dict in GetLayers<Dictator>())
         {
             dict.DictMenu.HideButtons();
             dict.ToBeEjected.Clear();
         }
 
-        foreach (var bh in GetRoles<BountyHunter>(LayerEnum.BountyHunter))
+        foreach (var bh in GetLayers<BountyHunter>())
         {
             if (bh.TargetPlayer == null && bh.TentativeTarget != null && !bh.Assigned)
             {
@@ -441,7 +439,6 @@ public abstract class Role : PlayerLayer
             GetRole(player).Player = null;
 
         RoleHistory = new();
-        AllPrints = new();
         AllArrows = new();
         DeadArrows = new();
         Positions = new();
@@ -449,13 +446,16 @@ public abstract class Role : PlayerLayer
         PlayerNumbers = new();
         AllRoles.Add(this);
 
-        /*if (TownOfUsReworked.NormalOptions.MapId == 4)
+        /*if (TownOfUsReworked.NormalOptions.MapId == 4 && CustomGameOptions.CallPlatformButton)
             CallButton = new(this, "CallPlatform", AbilityTypes.Targetless, "Quarternary", UsePlatform);*/
 
         if (!IsCustomHnS && !IsTaskRace)
         {
-            BombKillButton = new(this, "BombKill", AbilityTypes.Target, "Quarternary", BombKill);
-            PlaceHitButton = new(this, "PlaceHit", AbilityTypes.Target, "Quarternary", PlaceHit);
+            if (CustomGameOptions.EnforcerOn > 0)
+                BombKillButton = new(this, "BombKill", AbilityTypes.Target, "Quarternary", BombKill);
+
+            if (CustomGameOptions.BountyHunterOn > 0 && CustomGameOptions.BountyHunterCanPickTargets)
+                PlaceHitButton = new(this, "PlaceHit", AbilityTypes.Target, "Quarternary", PlaceHit);
         }
     }
 
@@ -470,12 +470,9 @@ public abstract class Role : PlayerLayer
 
     public static void BreakShield(PlayerControl player, bool flag)
     {
-        foreach (var role2 in GetRoles<Retributionist>(LayerEnum.Retributionist))
+        foreach (var role2 in GetLayers<Retributionist>())
         {
-            if (!role2.IsMedic)
-                continue;
-
-            if (role2.ShieldedPlayer == null)
+            if (!role2.IsMedic || role2.ShieldedPlayer == null)
                 continue;
 
             if (role2.ShieldedPlayer == player && ((role2.Local && (int)CustomGameOptions.NotificationShield is 0 or 2) || (int)CustomGameOptions.NotificationShield == 3 ||
@@ -485,7 +482,7 @@ public abstract class Role : PlayerLayer
             }
         }
 
-        foreach (var role2 in GetRoles<Medic>(LayerEnum.Medic))
+        foreach (var role2 in GetLayers<Medic>())
         {
             if (role2.ShieldedPlayer == null)
                 continue;
@@ -500,7 +497,7 @@ public abstract class Role : PlayerLayer
         if (!flag)
             return;
 
-        foreach (var role2 in GetRoles<Retributionist>(LayerEnum.Retributionist))
+        foreach (var role2 in GetLayers<Retributionist>())
         {
             if (!role2.IsMedic || role2.ShieldedPlayer == null)
                 continue;
@@ -515,7 +512,7 @@ public abstract class Role : PlayerLayer
             }
         }
 
-        foreach (var role2 in GetRoles<Medic>(LayerEnum.Medic))
+        foreach (var role2 in GetLayers<Medic>())
         {
             if (role2.ShieldedPlayer == null)
                 continue;
@@ -531,11 +528,47 @@ public abstract class Role : PlayerLayer
         }
     }
 
+    public static void BastionBomb(Vent vent, bool flag)
+    {
+        foreach (var role2 in GetLayers<Bastion>())
+        {
+            if (role2.BombedIDs.Contains(vent.Id) && role2.Local)
+                Flash(role2.Color);
+        }
+
+        foreach (var role2 in GetLayers<Retributionist>())
+        {
+            if (!role2.IsBast)
+                continue;
+
+            if (role2.BombedIDs.Contains(vent.Id) && role2.Local)
+                Flash(role2.Color);
+        }
+
+        if (!flag)
+            return;
+
+        foreach (var role2 in GetLayers<Bastion>())
+        {
+            if (role2.BombedIDs.Contains(vent.Id))
+                role2.BombedIDs.Remove(vent.Id);
+        }
+
+        foreach (var role2 in GetLayers<Retributionist>())
+        {
+            if (!role2.IsBast)
+                continue;
+
+            if (role2.BombedIDs.Contains(vent.Id))
+                role2.BombedIDs.Remove(vent.Id);
+        }
+    }
+
     public void BombKill()
     {
         var success = Interact(Player, BombKillButton.TargetPlayer, true).AbilityUsed;
-        GetRoles<Enforcer>(LayerEnum.Enforcer).Where(x => x.BombedPlayer == Player).ForEach(x => x.BombSuccessful = success);
-        GetRoles<PromotedGodfather>(LayerEnum.PromotedGodfather).Where(x => x.BombedPlayer == Player).ForEach(x => x.BombSuccessful = success);
+        GetLayers<Enforcer>().Where(x => x.BombedPlayer == Player).ForEach(x => x.BombSuccessful = success);
+        GetLayers<PromotedGodfather>().Where(x => x.BombedPlayer == Player).ForEach(x => x.BombSuccessful = success);
         CallRpc(CustomRPC.Action, ActionsRPC.ForceKill, Player, success);
     }
 
@@ -545,15 +578,11 @@ public abstract class Role : PlayerLayer
 
     public static Role GetRole(PlayerVoteArea area) => GetRole(PlayerByVoteArea(area));
 
-    public static List<Role> GetRoles(LayerEnum roletype) => AllRoles.Where(x => x.Type == roletype && !x.Ignore && x.LayerType == PlayerLayerEnum.Role).ToList();
-
-    public static List<T> GetRoles<T>(LayerEnum roletype) where T : Role => GetRoles(roletype).Cast<T>().ToList();
+    public static List<Role> GetRoles(LayerEnum roletype) => AllRoles.Where(x => x.Type == roletype && !x.Ignore).ToList();
 
     public static List<Role> GetRoles(Faction faction) => AllRoles.Where(x => x.Faction == faction && !x.Ignore).ToList();
 
     public static List<Role> GetRoles(Alignment ra) => AllRoles.Where(x => x.Alignment == ra && !x.Ignore).ToList();
 
     public static List<Role> GetRoles(SubFaction subfaction) => AllRoles.Where(x => x.SubFaction == subfaction && !x.Ignore).ToList();
-
-    public static List<Role> GetRoles(InspectorResults results) => AllRoles.Where(x => x.InspectorResults == results && !x.Ignore).ToList();
 }

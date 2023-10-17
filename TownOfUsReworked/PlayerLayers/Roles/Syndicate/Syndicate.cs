@@ -5,8 +5,8 @@ public abstract class Syndicate : Role
     public CustomButton KillButton { get; set; }
     public string CommonAbilities => "<color=#008000FF>" + (Type is not LayerEnum.Anarchist and not LayerEnum.Sidekick && Alignment != Alignment.SyndicateKill && HoldsDrive ? ("- You can "
         + "kill players directly") : "- You can kill") + (Player.CanSabotage() ? "\n- You can sabotage the systems to distract the <color=#8CFFFFFF>Crew</color>" : "") + "</color>";
-    public bool HoldsDrive => Player == DriveHolder || (CustomGameOptions.GlobalDrive && SyndicateHasChaosDrive) || GetRoles<PromotedRebel>(LayerEnum.PromotedRebel).Any(x => x.HoldsDrive &&
-        x.FormerRole == this);
+    public bool HoldsDrive => Player == DriveHolder || (CustomGameOptions.GlobalDrive && SyndicateHasChaosDrive) || GetLayers<PromotedRebel>().Any(x => x.HoldsDrive && IsPromoted);
+    public bool IsPromoted;
 
     public override Color Color => Colors.Syndicate;
     public override Faction BaseFaction => Faction.Syndicate;
@@ -18,14 +18,12 @@ public abstract class Syndicate : Role
         Objectives = () => SyndicateWinCon;
         KillButton = new(this, "SyndicateKill", AbilityTypes.Target, "ActionSecondary", Kill, CustomGameOptions.CDKillCd, Exception);
         Player.Data.SetImpostor(true);
+        IsPromoted = false;
     }
 
-    public override void IntroPrefix(IntroCutscene._ShowTeam_d__36 __instance)
+    public override List<PlayerControl> Team()
     {
-        if (!Local)
-            return;
-
-        var team = new List<PlayerControl>() { CustomPlayer.Local };
+        var team = base.Team();
 
         if (IsRecruit)
         {
@@ -36,7 +34,7 @@ public abstract class Syndicate : Role
 
         foreach (var player in CustomPlayer.AllPlayers)
         {
-            if (player.Is(Faction) && player != CustomPlayer.Local)
+            if (player.Is(Faction) && player != Player)
                 team.Add(player);
         }
 
@@ -53,7 +51,7 @@ public abstract class Syndicate : Role
             }
         }
 
-        __instance.teamToShow = team.SystemToIl2Cpp();
+        return team;
     }
 
     public void Kill()

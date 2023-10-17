@@ -3,7 +3,7 @@ namespace TownOfUsReworked.Patches;
 [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.HandleRpc))]
 public static class RPCHandling
 {
-    public static void Postfix([HarmonyArgument(0)] byte callId, [HarmonyArgument(1)] MessageReader reader)
+    public static void Postfix(ref byte callId, ref MessageReader reader)
     {
         if (callId != 254)
             return;
@@ -92,6 +92,10 @@ public static class RPCHandling
                         Role.BreakShield(reader.ReadPlayer(), CustomGameOptions.ShieldBreaks);
                         break;
 
+                    case MiscRPC.BastionBomb:
+                        Role.BastionBomb(reader.ReadVent(), CustomGameOptions.BombRemovedOnKill);
+                        break;
+
                     case MiscRPC.CatchRevealer:
                         var rev = reader.ReadPlayer();
                         var revRole = Role.GetRole<Revealer>(rev);
@@ -149,7 +153,6 @@ public static class RPCHandling
 
                     case MiscRPC.SyncCustomSettings:
                         ReceiveOptionRPC(reader);
-                        CustomOption.SaveSettings("LastUsedSettings");
                         break;
 
                     case MiscRPC.Notify:
@@ -185,7 +188,6 @@ public static class RPCHandling
                         GameOptionsManager.Instance.currentNormalGameOptions = TownOfUsReworked.NormalOptions;
                         CustomPlayer.AllPlayers.ForEach(x => x.MaxReportDistance = CustomGameOptions.ReportDistance);
                         MapPatches.AdjustSettings(map);
-                        CustomOption.SaveSettings("LastUsedSettings");
                         break;
 
                     case MiscRPC.SetFirstKilled:
@@ -230,7 +232,11 @@ public static class RPCHandling
                         break;
 
                     case TurnRPC.TurnAct:
-                        reader.ReadLayer<Guesser>().TurnAct(reader.ReadLayer<Role>());
+                        reader.ReadLayer<Guesser>().TurnAct(reader.ReadLayerList<Role>());
+                        break;
+
+                    case TurnRPC.TurnRole:
+                        reader.ReadLayer<Actor>().TurnRole(reader.ReadLayer<Role>());
                         break;
 
                     case TurnRPC.TurnVigilante:
@@ -281,10 +287,6 @@ public static class RPCHandling
                         reader.ReadLayer<Mystic>().TurnSeer();
                         break;
 
-                    case TurnRPC.TurnRole:
-                        reader.ReadLayer<Actor>().TurnRole();
-                        break;
-
                     default:
                         LogError($"Received unknown RPC - {turn}");
                         break;
@@ -314,7 +316,7 @@ public static class RPCHandling
                         break;
 
                     case TargetRPC.SetActPretendList:
-                        reader.ReadLayer<Actor>().TargetRole = reader.ReadLayer<Role>();
+                        reader.ReadLayer<Actor>().PretendRoles = reader.ReadLayerList<Role>();
                         break;
 
                     case TargetRPC.SetAlliedFaction:
@@ -345,24 +347,24 @@ public static class RPCHandling
                         break;
 
                     case TargetRPC.SetCouple:
-                        var lover1 = reader.ReadPlayer();
-                        var lover2 = reader.ReadPlayer();
-                        Objectifier.GetObjectifier<Lovers>(lover1).OtherLover = lover2;
-                        Objectifier.GetObjectifier<Lovers>(lover2).OtherLover = lover1;
+                        var lover1 = reader.ReadLayer<Lovers>();
+                        var lover2 = reader.ReadLayer<Lovers>();
+                        lover1.OtherLover = lover2.Player;
+                        lover2.OtherLover = lover1.Player;
                         break;
 
                     case TargetRPC.SetDuo:
-                        var rival1 = reader.ReadPlayer();
-                        var rival2 = reader.ReadPlayer();
-                        Objectifier.GetObjectifier<Rivals>(rival1).OtherRival = rival2;
-                        Objectifier.GetObjectifier<Rivals>(rival2).OtherRival = rival1;
+                        var rival1 = reader.ReadLayer<Rivals>();
+                        var rival2 = reader.ReadLayer<Rivals>();
+                        rival1.OtherRival = rival2.Player;
+                        rival2.OtherRival = rival1.Player;
                         break;
 
                     case TargetRPC.SetLinked:
-                        var link1 = reader.ReadPlayer();
-                        var link2 = reader.ReadPlayer();
-                        Objectifier.GetObjectifier<Linked>(link1).OtherLink = link2;
-                        Objectifier.GetObjectifier<Linked>(link2).OtherLink = link1;
+                        var link1 = reader.ReadLayer<Linked>();
+                        var link2 = reader.ReadLayer<Linked>();
+                        link1.OtherLink = link2.Player;
+                        link2.OtherLink = link1.Player;
                         break;
 
                     default:
@@ -396,12 +398,12 @@ public static class RPCHandling
                     case ActionsRPC.ForceKill:
                         var victim = reader.ReadPlayer();
                         var success = reader.ReadBoolean();
-                        Role.GetRoles<Enforcer>(LayerEnum.Enforcer).Where(x => x.BombedPlayer == victim).ForEach(x => x.BombSuccessful = success);
-                        Role.GetRoles<PromotedGodfather>(LayerEnum.PromotedGodfather).Where(x => x.BombedPlayer == victim).ForEach(x => x.BombSuccessful = success);
+                        PlayerLayer.GetLayers<Enforcer>().Where(x => x.BombedPlayer == victim).ForEach(x => x.BombSuccessful = success);
+                        PlayerLayer.GetLayers<PromotedGodfather>().Where(x => x.BombedPlayer == victim).ForEach(x => x.BombSuccessful = success);
                         break;
 
                     case ActionsRPC.Mine:
-                        AddVent(reader.ReadLayer<Role>(), reader.ReadVector2(), reader.ReadString());
+                        AddVent(reader.ReadLayer<Role>(), reader.ReadVector2());
                         break;
 
                     case ActionsRPC.SetUninteractable:
@@ -434,9 +436,11 @@ public static class RPCHandling
                         break;
 
                     case ActionsRPC.BarryButton:
+                        var buttonBarry = reader.ReadPlayer();
+                        buttonBarry.RemainingEmergencies++;
+
                         if (AmongUsClient.Instance.AmHost)
                         {
-                            var buttonBarry = reader.ReadPlayer();
                             MeetingRoomManager.Instance.reporter = buttonBarry;
                             MeetingRoomManager.Instance.target = null;
                             AmongUsClient.Instance.DisconnectHandlers.AddUnique(MeetingRoomManager.Instance.Cast<IDisconnectHandler>());
@@ -476,7 +480,7 @@ public static class RPCHandling
                         break;
 
                     case ActionsRPC.LayerAction1:
-                        StartEffect(reader);
+                        reader.ReadButton().StartEffectRPC(reader);
                         break;
 
                     case ActionsRPC.LayerAction2:

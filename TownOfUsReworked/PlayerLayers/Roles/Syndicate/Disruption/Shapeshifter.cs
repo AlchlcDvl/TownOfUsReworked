@@ -13,7 +13,6 @@ public class Shapeshifter : Syndicate
     public override LayerEnum Type => LayerEnum.Shapeshifter;
     public override Func<string> StartText => () => "Change Everyone's Appearances";
     public override Func<string> Description => () => $"- You can {(HoldsDrive ? "shuffle everyone's appearances" : "swap the appearances of 2 players")}\n{CommonAbilities}";
-    public override InspectorResults InspectorResults => InspectorResults.CreatesConfusion;
 
     public Shapeshifter(PlayerControl player) : base(player)
     {
@@ -23,18 +22,43 @@ public class Shapeshifter : Syndicate
         ShapeshiftMenu1 = new(Player, Click1, Exception1);
         ShapeshiftMenu2 = new(Player, Click2, Exception2);
         ShapeshiftButton = new(this, "Shapeshift", AbilityTypes.Targetless, "Secondary", HitShapeshift, CustomGameOptions.ShapeshiftCd, CustomGameOptions.ShapeshiftDur,
-            (CustomButton.EffectVoid)Shapeshift, UnShapeshift);
+            (CustomButton.EffectVoid)Shift, UnShapeshift);
     }
 
-    public void Shapeshift()
+    public void Shift() => Shapeshift(ShapeshiftPlayer1, ShapeshiftPlayer2, HoldsDrive);
+
+    public static void Shapeshift(PlayerControl player1, PlayerControl player2, bool drived)
     {
-        if (!HoldsDrive)
+        if (!drived)
         {
-            Morph(ShapeshiftPlayer1, ShapeshiftPlayer2);
-            Morph(ShapeshiftPlayer2, ShapeshiftPlayer1);
+            Morph(player1, player2);
+            Morph(player2, player1);
         }
         else
-            Utils.Shapeshift();
+        {
+            if (!Shapeshifted)
+            {
+                Shapeshifted = true;
+                var allPlayers = CustomPlayer.AllPlayers;
+                var shuffledPlayers = CustomPlayer.AllPlayers;
+                shuffledPlayers.Shuffle();
+
+                for (var i = 0; i < allPlayers.Count; i++)
+                {
+                    var morphed = allPlayers[i];
+                    var morphTarget = shuffledPlayers[i];
+                    CachedMorphs.TryAdd(morphed.PlayerId, morphTarget.PlayerId);
+                }
+            }
+            else
+            {
+                CustomPlayer.AllPlayers.ForEach(x =>
+                {
+                    if (CachedMorphs.ContainsKey(x.PlayerId))
+                        Morph(x, PlayerById(CachedMorphs[x.PlayerId]));
+                });
+            }
+        }
     }
 
     public void UnShapeshift()

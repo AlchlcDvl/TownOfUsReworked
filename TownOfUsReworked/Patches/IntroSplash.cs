@@ -40,7 +40,7 @@ public static class IntroSplash
         public static void Postfix()
         {
             if (Intro)
-                Intro.text = $"<size=175%><b><color=#9FDA81FF>{Splashes.Random()}</color></b></size>";
+                Intro.text = $"<size=175%><b><color=#9FDA81FF>{Splashes.Random(x => x != Intro.text)}</color></b></size>";
         }
     }
 }

@@ -15,7 +15,6 @@ public class Cannibal : Neutral
     public override Func<string> StartText => () => "Eat The Bodies Of The Dead";
     public override Func<string> Description => () => "- You can consume a body, making it disappear from the game" + (CustomGameOptions.EatArrows ? "\n- When someone dies, you get "
         + "an arrow pointing to their body" : "");
-    public override InspectorResults InspectorResults => InspectorResults.DealsWithDead;
 
     public Cannibal(PlayerControl player) : base(player)
     {

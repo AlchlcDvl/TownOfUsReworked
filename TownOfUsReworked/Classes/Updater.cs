@@ -6,14 +6,36 @@ namespace TownOfUsReworked.Classes;
 
 public class ModUpdater
 {
-    public static bool Running = false;
+    private static bool Running = false;
     public static bool ReworkedUpdate = false;
     public static bool SubmergedUpdate = false;
-    public static string ReworkedURI = null;
-    public static string SubmergedURI = null;
+    public static bool CanDownloadSubmerged = false;
+    private static string ReworkedURI = null;
+    private static string SubmergedURI = null;
     private static Task ReworkedTask = null;
     private static Task SubmergedTask = null;
-    public static GenericPopup InfoPopup;
+    private static GenericPopup InfoPopup;
+    private static HttpClient Client = null;
+
+    private static void SetUpClient()
+    {
+        Client = new() { DefaultRequestHeaders = { {"User-Agent", "Downloader"} } };
+        Client.DefaultRequestHeaders.CacheControl = new() { NoCache = true };
+    }
+
+    private static string GetLink(string tag) => tag switch
+    {
+        "Reworked" => "https://api.github.com/repos/AlchlcDvl/TownOfUsReworked/releases/latest",
+        "Submerged" => "https://api.github.com/repos/SubmergedAmongUs/Submerged/releases/latest",
+        _ => throw new NotImplementedException(tag)
+    };
+
+    private static string GetLink2(string tag) => tag switch
+    {
+        "Reworked" => ReworkedURI,
+        "Submerged" => SubmergedURI,
+        _ => throw new NotImplementedException(tag)
+    };
 
     public static void LaunchUpdater()
     {
@@ -21,29 +43,17 @@ public class ModUpdater
             return;
 
         Running = true;
+        CanDownloadSubmerged = !SubLoaded;
+        SetUpClient();
+        CheckForUpdate("Reworked").GetAwaiter().GetResult();
+        CheckForUpdate("Submerged").GetAwaiter().GetResult();
 
-        try
+        if (ReworkedUpdate || SubmergedUpdate || CanDownloadSubmerged)
         {
-            CheckForUpdate("Reworked").GetAwaiter().GetResult();
-        } catch {}
-
-        if (SubLoaded)
-        {
-            //Only check of Submerged update if Submerged is already installed
-            var codeBase = TownOfUsReworked.Executing.Location;
-            var uri = new UriBuilder(codeBase);
-            var submergedPath = Uri.UnescapeDataString(uri.Path.Replace("Reworked", "Submerged"));
-
-            if (File.Exists(submergedPath))
-            {
-                try
-                {
-                    CheckForUpdate("Submerged").GetAwaiter().GetResult();
-                } catch {}
-            }
+            InfoPopup = UObject.Instantiate(TwitchManager.Instance.TwitchPopup);
+            InfoPopup.TextAreaTMP.fontSize *= 0.7f;
+            InfoPopup.TextAreaTMP.enableAutoSizing = false;
         }
-
-        ClearOldVersions();
     }
 
     public static void ExecuteUpdate(string updateType)
@@ -79,91 +89,56 @@ public class ModUpdater
         InfoPopup.StartCoroutine(Effects.Lerp(0.01f, new Action<float>((p) => { SetPopupText(info); })));
     }
 
-    private static void ClearOldVersions()
+    private static async Task<bool> CheckForUpdate(string? updateType)
     {
-        //Removes any old versions (Denoted by the suffix `.old`)
+        if (Client == null)
+        {
+            LogError("Client was null");
+            return false;
+        }
+
+        //Checks the github api for tags. Compares current version to the latest tag version on GitHub
         try
         {
-            var d = new DirectoryInfo(TownOfUsReworked.DataPath + "BepInEx\\plugins");
-            d.GetFiles("*.old").Select(x => x.FullName).ForEach(File.Delete);
-        }
-        catch (Exception e)
-        {
-            LogError("Exception occured when clearing old versions:\n" + e);
-        }
-    }
-
-    private static async Task<bool> CheckForUpdate(string updateType)
-    {
-        //Checks the github api for Reworked tags. Compares current version (from VersionString in TownOfUsReworked.cs) to the latest tag version (on GitHub)
-        try
-        {
-            var githubURI = "";
-
-            if (updateType == "Reworked")
-                githubURI = "https://api.github.com/repos/AlchlcDvl/TownOfUsReworked/releases/latest";
-            else if (updateType == "Submerged")
-                githubURI = "https://api.github.com/repos/SubmergedAmongUs/Submerged/releases/latest";
-
-            var http = new HttpClient();
-            http.DefaultRequestHeaders.Add("User-Agent", $"{updateType} Updater");
-            var response = await http.GetAsync(new Uri(githubURI), HttpCompletionOption.ResponseContentRead);
+            var response = await Client.GetAsync(new Uri(GetLink(updateType)), HttpCompletionOption.ResponseContentRead);
 
             if (response.StatusCode != HttpStatusCode.OK || response.Content == null)
             {
-                LogError($"Server returned no data: {response.StatusCode}");
+                LogError($"Server returned no data: {response.StatusCode} for {updateType}");
                 return false;
             }
 
             var json = await response.Content.ReadAsStringAsync();
             var data = JsonSerializer.Deserialize<GitHubApiObject>(json);
 
-            var tagname = data.tag_name;
+            var tagname = data.Tag;
 
             if (tagname == null)
                 return false; // Something went wrong
 
-            var diff = 0;
-            var ver = Version.Parse(tagname.Replace("v", ""));
-
+            //Check Reworked version
             if (updateType == "Reworked")
-            {
-                //Check Reworked version
-                diff = TownOfUsReworked.Version.CompareTo(ver);
+                ReworkedUpdate = TownOfUsReworked.Version.CompareTo(Version.Parse(tagname.Replace("v", ""))) < 0;
+            //Accounts for broken version + checks Submerged version
+            else if (updateType == "Submerged" && SubLoaded)
+                SubmergedUpdate = SubVersion == null || SubVersion.CompareTo(SemanticVersioning.Version.Parse(tagname.Replace("v", ""))) < 0;
 
-                if (diff < 0) // Reworked update required
-                    ReworkedUpdate = true;
-            }
-            else if (updateType == "Submerged")
-            {
-                //account for broken version
-                if (SubVersion == null)
-                    SubmergedUpdate = true;
-                else
-                {
-                    diff = SubVersion.CompareTo(SemanticVersioning.Version.Parse(tagname.Replace("v", "")));
-
-                    if (diff < 0) // Submerged update required
-                        SubmergedUpdate = true;
-                }
-            }
-
-            var assets = data.assets;
+            var assets = data.Assets;
 
             if (assets == null)
                 return false;
 
             foreach (var asset in assets)
             {
-                if (asset.browser_download_url == null)
+                if (asset.URL == null)
                     continue;
 
-                if (asset.browser_download_url.EndsWith(".dll"))
+                if (asset.URL.EndsWith(".dll"))
                 {
                     if (updateType == "Reworked")
-                        ReworkedURI = asset.browser_download_url;
+                        ReworkedURI = asset.URL;
                     else if (updateType == "Submerged")
-                        SubmergedURI = asset.browser_download_url;
+                        SubmergedURI = asset.URL;
 
                     return true;
                 }
@@ -179,33 +154,32 @@ public class ModUpdater
 
     private static async Task<bool> DownloadUpdate(string updateType)
     {
-        //Downloads the new Reworked/Submerged dll from GitHub into the plugins folder
-        var downloadDLL = updateType == "Reworked" ? ReworkedURI : SubmergedURI;
-        var info = Translate("Updates.Mod.Success").Replace("%mod%", Translate($"Mod.{updateType}"));
+        if (Client == null)
+        {
+            LogError("Client was null");
+            return false;
+        }
 
         try
         {
-            var http = new HttpClient();
-            http.DefaultRequestHeaders.Add("User-Agent", $"{updateType} Updater");
-            var response = await http.GetAsync(new Uri(downloadDLL), HttpCompletionOption.ResponseContentRead);
+            //Downloads the new dll from GitHub into the plugins folder
+            var info = Translate("Updates.Mod.Success").Replace("%mod%", Translate($"Mod.{updateType}"));
+            var response = await Client.GetAsync(new Uri(GetLink2(updateType)), HttpCompletionOption.ResponseContentRead);
 
             if (response.StatusCode != HttpStatusCode.OK || response.Content == null)
             {
-                LogError($"Server returned no data: {response.StatusCode}");
+                LogError($"Server returned no data: {response.StatusCode} for {updateType}");
                 return false;
             }
 
-            var codeBase = TownOfUsReworked.Executing.Location;
-            var uri = new UriBuilder(codeBase);
-            var fullname = Uri.UnescapeDataString(uri.Path);
+            var fullname = $"{TownOfUsReworked.ModsFolder}{updateType}.dll";
 
-            if (updateType == "Submerged")
-                fullname = fullname.Replace("Reworked", "Submerged"); //TODO A better solution than this to correctly name the dll files
-
-            if (File.Exists(fullname + ".old")) // Clear old file in case it wasnt;
+            if (File.Exists(fullname + ".old")) // Clear old file
                 File.Delete(fullname + ".old");
 
-            File.Move(fullname, fullname + ".old"); // rename current executable to old
+            if (File.Exists(fullname)) // Rename current executable to old, if any
+                File.Move(fullname, fullname + ".old");
+
             using var responseStream = await response.Content.ReadAsStreamAsync();
             using var fileStream = File.Create(fullname);
             responseStream.CopyTo(fileStream);
@@ -215,10 +189,9 @@ public class ModUpdater
         catch (Exception ex)
         {
             LogError(ex);
+            ShowPopUp(Translate("Updates.Mod.NoSuccess"));
+            return false;
         }
-
-        ShowPopUp(Translate("Updates.Mod.NoSuccess"));
-        return false;
     }
 
     private static void ShowPopUp(string message)

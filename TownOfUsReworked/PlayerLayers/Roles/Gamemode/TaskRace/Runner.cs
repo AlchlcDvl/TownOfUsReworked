@@ -16,14 +16,6 @@ public class Runner : Role
         Player.Data.SetImpostor(false);
     }
 
-    public override void IntroPrefix(IntroCutscene._ShowTeam_d__36 __instance)
-    {
-        if (!Local)
-            return;
-
-        __instance.teamToShow = new List<PlayerControl>() { CustomPlayer.Local }.SystemToIl2Cpp();
-    }
-
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);

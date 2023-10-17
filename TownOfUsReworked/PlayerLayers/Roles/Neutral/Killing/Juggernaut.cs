@@ -10,7 +10,6 @@ public class Juggernaut : Neutral
     public override LayerEnum Type => LayerEnum.Juggernaut;
     public override Func<string> StartText => () => "Your Power Grows With Every Kill";
     public override Func<string> Description => () => "- With each kill, your kill cooldown decreases" + (JuggKills >= 4 ? "\n- You can bypass all forms of protection" : "");
-    public override InspectorResults InspectorResults => InspectorResults.IsAggressive;
 
     public Juggernaut(PlayerControl player) : base(player)
     {

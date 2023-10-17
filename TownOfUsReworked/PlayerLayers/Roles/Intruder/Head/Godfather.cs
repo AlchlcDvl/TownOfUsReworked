@@ -12,7 +12,6 @@ public class Godfather : Intruder
     public override Func<string> Description => () => "- You can promote a fellow <color=#FF0000FF>Intruder</color> into becoming your successor\n- Promoting an <color=#FF0000FF>" +
         "Intruder</color> turns them into a <color=#6400FFFF>Mafioso</color>\n- If you die, the <color=#6400FFFF>Mafioso</color> will become the new <color=#404C08FF>Godfather</color>"
         + $"\nand inherits better abilities of their former role\n{CommonAbilities}";
-    public override InspectorResults InspectorResults => InspectorResults.LeadsTheGroup;
 
     public Godfather(PlayerControl player) : base(player)
     {
@@ -24,14 +23,11 @@ public class Godfather : Intruder
     {
         HasDeclared = true;
         var formerRole = GetRole(target);
-
-        var mafioso = new Mafioso(target)
+        new Mafioso(target)
         {
             FormerRole = formerRole,
             Godfather = this
-        };
-
-        mafioso.RoleUpdate(formerRole);
+        }.RoleUpdate(formerRole);
     }
 
     public void Declare()

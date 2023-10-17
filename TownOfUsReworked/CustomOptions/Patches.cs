@@ -20,6 +20,8 @@ public static class SettingsPatches
     [HarmonyPatch(typeof(IGameOptionsExtensions), nameof(IGameOptionsExtensions.ToHudString))]
     public static class GameOptionsDataPatch
     {
+        public static IEnumerable<MethodBase> TargetMethods() => typeof(GameOptionsData).GetMethods(typeof(string), typeof(int));
+
         public static bool Prefix(ref string __result)
         {
             if (IsHnS)
@@ -286,9 +288,7 @@ public static class SettingsPatches
                         option.Setting = layer;
                         break;
 
-                    case CustomOptionType.Toggle: //Title = 0, Check = 2
-                    case CustomOptionType.Header:
-                    case CustomOptionType.Entry:
+                    case CustomOptionType.Toggle or CustomOptionType.Header or CustomOptionType.Entry: //Title = 0, Check = 2
                         var toggle = UObject.Instantiate(togglePrefab, togglePrefab.transform.parent);
                         toggle.transform.GetChild(0).localPosition = new(-1.05f, 0f, 0f);
                         toggle.transform.GetChild(0).GetComponent<RectTransform>().sizeDelta = new(5.5f, 0.37f);
@@ -504,8 +504,6 @@ public static class SettingsPatches
     {
         public static void Prefix()
         {
-            CustomOption.SaveSettings("LastUsedSettings");
-
             if (SettingsPage == 9)
             {
                 SettingsPage = 0;
@@ -517,7 +515,7 @@ public static class SettingsPatches
     [HarmonyPatch(typeof(GameSettingMenu), nameof(GameSettingMenu.OnEnable))]
     public static class GameSettingMenuOnEnable
     {
-        public static void Prefix(ref GameSettingMenu __instance) => __instance.HideForOnline = new(0);
+        public static void Prefix(GameSettingMenu __instance) => __instance.HideForOnline = new(0);
     }
 
     [HarmonyPatch(typeof(GameOptionsMenu), nameof(GameOptionsMenu.Start))]

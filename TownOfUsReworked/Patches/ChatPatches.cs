@@ -9,9 +9,7 @@ public static class ChatUpdate
 
     public static bool Prefix(ChatController __instance)
     {
-        if (!SoundEffects.ContainsKey("Chat"))
-            SoundEffects.Add("Chat", __instance.messageSound);
-
+        SoundEffects.TryAdd("Chat", __instance.messageSound);
         UpdateHistory(__instance);
         UpdateBubbles(__instance);
         UpdateChatTimer(__instance);
@@ -40,38 +38,35 @@ public static class ChatUpdate
         {
             var chat = bubble.Cast<ChatBubble>();
 
-            if (chat.NameText != null)
+            if (chat.NameText != null && IsInGame)
             {
-                if (IsInGame)
+                foreach (var player in CustomPlayer.AllPlayers)
                 {
-                    foreach (var player in CustomPlayer.AllPlayers)
+                    if (chat.NameText.text.Contains(player.Data.PlayerName))
                     {
-                        if (chat.NameText.text.Contains(player.Data.PlayerName))
+                        var role = Role.GetRole(player);
+
+                        if (role != null)
                         {
-                            var role = Role.GetRole(player);
-
-                            if (role != null)
+                            if ((((CustomPlayer.Local.GetFaction() == player.GetFaction() && !player.Is(Faction.Crew) && !player.Is(Faction.Neutral)) ||
+                                (CustomPlayer.Local.GetSubFaction() == player.GetSubFaction() && !player.Is(SubFaction.None))) && CustomGameOptions.FactionSeeRoles) || player ==
+                                CustomPlayer.Local)
                             {
-                                if ((((CustomPlayer.Local.GetFaction() == player.GetFaction() && !player.Is(Faction.Crew) && !player.Is(Faction.Neutral)) ||
-                                    (CustomPlayer.Local.GetSubFaction() == player.GetSubFaction() && !player.Is(SubFaction.None))) && CustomGameOptions.FactionSeeRoles) || player ==
-                                    CustomPlayer.Local)
-                                {
-                                    chat.NameText.color = role.Color;
-                                }
-                                else if (CustomPlayer.Local.GetFaction() == player.GetFaction() && !player.Is(Faction.Crew) && !player.Is(Faction.Neutral) &&
-                                    !CustomGameOptions.FactionSeeRoles)
-                                {
-                                    chat.NameText.color = role.FactionColor;
-                                }
-                                else if (CustomPlayer.Local.GetSubFaction() == player.GetSubFaction() && !player.Is(SubFaction.None) && !CustomGameOptions.FactionSeeRoles)
-                                    chat.NameText.color = role.SubFactionColor;
-                                else
-                                    chat.NameText.color = UColor.white;
+                                chat.NameText.color = role.Color;
                             }
-
-                            if (CustomGameOptions.Whispers && !chat.NameText.text.Contains($"[{player.PlayerId}] "))
-                                chat.NameText.text = $"[{player.PlayerId}] " + chat.NameText.text;
+                            else if (CustomPlayer.Local.GetFaction() == player.GetFaction() && !player.Is(Faction.Crew) && !player.Is(Faction.Neutral) &&
+                                !CustomGameOptions.FactionSeeRoles)
+                            {
+                                chat.NameText.color = role.FactionColor;
+                            }
+                            else if (CustomPlayer.Local.GetSubFaction() == player.GetSubFaction() && !player.Is(SubFaction.None) && !CustomGameOptions.FactionSeeRoles)
+                                chat.NameText.color = role.SubFactionColor;
+                            else
+                                chat.NameText.color = UColor.white;
                         }
+
+                        if (CustomGameOptions.Whispers && !chat.NameText.text.Contains($"[{player.PlayerId}] "))
+                            chat.NameText.text = $"[{player.PlayerId}] " + chat.NameText.text;
                     }
                 }
             }
@@ -145,7 +140,7 @@ public static class OverrideCharCountPatch
 [HarmonyPatch(typeof(ChatController), nameof(ChatController.AddChat))]
 public static class ChatChannels
 {
-    public static bool Prefix(ChatController __instance, [HarmonyArgument(0)] PlayerControl sourcePlayer)
+    public static bool Prefix(ChatController __instance, ref PlayerControl sourcePlayer)
     {
         if (__instance != HUD.Chat)
             return true;
@@ -179,7 +174,7 @@ public static class MeetingStart
 [HarmonyPatch(typeof(ChatController), nameof(ChatController.SendChat))]
 public static class ChatCommands
 {
-    private static SpriteRenderer Chat;
+    private readonly static Dictionary<byte, SpriteRenderer> Notifs = new();
 
     public static bool Prefix(ChatController __instance)
     {
@@ -262,23 +257,24 @@ public static class ChatCommands
 
     public static void Notify(byte targetPlayerId)
     {
-        if (!Meeting || Chat)
+        if (!Meeting || Notifs.ContainsKey(targetPlayerId))
             return;
 
         var playerVoteArea = VoteAreaById(targetPlayerId);
-        Chat = UObject.Instantiate(playerVoteArea.Megaphone, playerVoteArea.Megaphone.transform.parent);
-        Chat.name = "Notification";
-        Chat.transform.localPosition = new(-2f, 0.1f, -1f);
-        Chat.sprite = GetSprite("Chat");
-        Chat.gameObject.SetActive(true);
+        var chat = UObject.Instantiate(playerVoteArea.Megaphone, playerVoteArea.Megaphone.transform.parent);
+        chat.name = $"Notification{targetPlayerId}";
+        chat.transform.localPosition = new(-2f, 0.1f, -1f);
+        chat.sprite = GetSprite("Chat");
+        chat.gameObject.SetActive(true);
+        Notifs.Add(targetPlayerId, chat);
         HUD.StartCoroutine(Effects.Lerp(2, new Action<float>(p =>
         {
             if (p == 1)
             {
-                Chat.gameObject.SetActive(false);
-                Chat.gameObject.Destroy();
-                Chat.Destroy();
-                Chat = null;
+                chat.gameObject.SetActive(false);
+                chat.gameObject.Destroy();
+                chat.Destroy();
+                Notifs.Remove(targetPlayerId);
             }
         })));
     }

@@ -1,10 +1,9 @@
 namespace TownOfUsReworked.Patches;
 
 [HarmonyPatch(typeof(VentButton), nameof(VentButton.DoClick))]
-[HarmonyPriority(Priority.First)]
 public static class PerformVent
 {
-    public static bool Prefix()
+    public static bool Prefix(VentButton __instance)
     {
         if (NoPlayers)
             return true;
@@ -12,43 +11,19 @@ public static class PerformVent
         if (!CustomPlayer.Local.CanVent())
             return false;
 
-        return LocalNotBlocked;
-    }
-}
-
-[HarmonyPatch(typeof(Vent), nameof(Vent.Use))]
-[HarmonyPriority(Priority.First)]
-public static class UseVent
-{
-    public static bool Prefix()
-    {
-        if (NoPlayers)
-            return true;
-
-        if (!CustomPlayer.Local.CanVent())
+        if (__instance.currentTarget.IsBombed())
+        {
+            RpcMurderPlayer(CustomPlayer.Local);
+            Role.BastionBomb(__instance.currentTarget, CustomGameOptions.BombRemovedOnKill);
+            CallRpc(CustomRPC.Misc, MiscRPC.BastionBomb, __instance.currentTarget);
             return false;
-
-        return LocalNotBlocked;
-    }
-}
-
-[HarmonyPatch(typeof(Vent), nameof(Vent.TryMoveToVent))]
-public static class MoveToVentPatch
-{
-    public static bool Prefix()
-    {
-        if (NoPlayers)
-            return true;
-
-        if (!CustomPlayer.Local.CanVent())
-            return false;
+        }
 
         return LocalNotBlocked;
     }
 }
 
 [HarmonyPatch(typeof(ReportButton), nameof(ReportButton.DoClick))]
-[HarmonyPriority(Priority.First)]
 public static class PerformReport
 {
     public static bool Prefix()
@@ -64,7 +39,6 @@ public static class PerformReport
 }
 
 [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.ReportClosest))]
-[HarmonyPriority(Priority.First)]
 public static class ReportClosest
 {
     public static bool Prefix()
@@ -80,7 +54,6 @@ public static class ReportClosest
 }
 
 [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.ReportDeadBody))]
-[HarmonyPriority(Priority.First)]
 public static class ReportDeadBody
 {
     public static bool Prefix()
@@ -96,7 +69,6 @@ public static class ReportDeadBody
 }
 
 [HarmonyPatch(typeof(UseButton), nameof(UseButton.DoClick))]
-[HarmonyPriority(Priority.First)]
 public static class PerformUse
 {
     public static bool Prefix()
@@ -109,7 +81,6 @@ public static class PerformUse
 }
 
 [HarmonyPatch(typeof(SabotageButton), nameof(SabotageButton.DoClick))]
-[HarmonyPriority(Priority.First)]
 public static class PerformSabotage
 {
     public static bool Prefix()
@@ -122,7 +93,6 @@ public static class PerformSabotage
 }
 
 [HarmonyPatch(typeof(AdminButton), nameof(AdminButton.DoClick))]
-[HarmonyPriority(Priority.First)]
 public static class PerformAdmin
 {
     public static bool Prefix()
@@ -135,7 +105,6 @@ public static class PerformAdmin
 }
 
 [HarmonyPatch(typeof(PetButton), nameof(PetButton.DoClick))]
-[HarmonyPriority(Priority.First)]
 public static class PerformPet
 {
     public static bool Prefix()
@@ -148,7 +117,6 @@ public static class PerformPet
 }
 
 [HarmonyPatch(typeof(KillButton), nameof(KillButton.DoClick))]
-[HarmonyPriority(Priority.First)]
 public static class PerformKill
 {
     public static bool Prefix() => false;

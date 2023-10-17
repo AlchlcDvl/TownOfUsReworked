@@ -12,7 +12,6 @@ public class Consigliere : Intruder
     public override Func<string> StartText => () => "See The <color=#8CFFFFFF>Crew</color> For Who They Really Are";
     public override Func<string> Description => () => $"- You can reveal a player's {Option}\n{CommonAbilities}";
     public override Func<string> Attributes => () => Player.IsAssassin() && CustomGameOptions.ConsigInfo == ConsigInfo.Role ? "\n- You cannot assassinate players you have revealed" : "";
-    public override InspectorResults InspectorResults => InspectorResults.GainsInfo;
 
     public Consigliere(PlayerControl player) : base(player)
     {

@@ -71,9 +71,9 @@ public static class PolusShipStatusPatch
         }
     }
 
-    private static void ApplyChanges(ShipStatus instance)
+    private static void ApplyChanges(ShipStatus __instance)
     {
-        if (instance.Type == ShipStatus.MapType.Pb)
+        if (__instance.Type == ShipStatus.MapType.Pb)
         {
             FindPolusObjects();
             AdjustPolus();

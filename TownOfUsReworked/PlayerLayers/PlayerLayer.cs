@@ -35,7 +35,7 @@ public abstract class PlayerLayer
     public static readonly List<PlayerLayer> AllLayers = new();
     public static List<PlayerLayer> LocalLayers => GetLayers(CustomPlayer.Local);
 
-    public virtual void OnLobby() => Patches.EndGame.Reset();
+    public virtual void OnLobby() => OnGameEndPatch.Reset();
 
     public virtual void OnIntroEnd() => ButtonUtils.ResetCustomTimers(CooldownType.Start);
 
@@ -64,18 +64,18 @@ public abstract class PlayerLayer
     public virtual void OnMeetingStart(MeetingHud __instance)
     {
         Player.DisableButtons();
-        Patches.EndGame.Reset();
+        OnGameEndPatch.Reset();
         Ash.DestroyAll();
     }
 
     public virtual void OnMeetingEnd(MeetingHud __instance)
     {
         Player.EnableButtons();
-        Patches.EndGame.Reset();
+        OnGameEndPatch.Reset();
         ButtonUtils.ResetCustomTimers(CooldownType.Meeting);
     }
 
-    public virtual void OnBodyReport(GameData.PlayerInfo info) => Patches.EndGame.Reset();
+    public virtual void OnBodyReport(GameData.PlayerInfo info) => OnGameEndPatch.Reset();
 
     public virtual void UponTaskComplete(PlayerControl player, uint taskId) {}
 
@@ -348,7 +348,7 @@ public abstract class PlayerLayer
         if (a is null || b is null)
             return false;
 
-        return a.Type == b.Type && a.LayerType == b.LayerType;
+        return a.Type == b.Type && a.LayerType == b.LayerType && a.Player == b.Player && a.GetHashCode() == b.GetHashCode();
     }
 
     public static bool operator !=(PlayerLayer a, PlayerLayer b) => !(a == b);
@@ -357,7 +357,7 @@ public abstract class PlayerLayer
 
     private bool Equals(PlayerLayer other) => Equals(Player, other.Player) && Type == other.Type && GetHashCode() == other.GetHashCode();
 
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         if (obj is null)
             return false;
@@ -384,16 +384,15 @@ public abstract class PlayerLayer
     public static void DeleteAll()
     {
         AllLayers.ForEach(x => x.Delete());
+        AllLayers.Clear();
         Role.AllRoles.Clear();
         Objectifier.AllObjectifiers.Clear();
         Modifier.AllModifiers.Clear();
         Ability.AllAbilities.Clear();
-        AllLayers.Clear();
     }
 
     public static List<PlayerLayer> GetLayers(PlayerControl player) => AllLayers.Where(x => x.Player == player).ToList();
 
-    public static List<PlayerLayer> GetLayers(LayerEnum type) => AllLayers.Where(x => x.Type == type).ToList();
-
-    public static List<T> GetLayers<T>(LayerEnum type) where T : PlayerLayer => GetLayers(type).Cast<T>().ToList();
+    public static List<T> GetLayers<T>(bool includeIgnored = false) where T : PlayerLayer => AllLayers.Where(x => x.GetType() == typeof(T) && (!x.Ignore || includeIgnored)).Cast<T>()
+        .ToList();
 }

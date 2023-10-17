@@ -7,41 +7,34 @@ This mod is a mish mash of code and ideas from different mods and forks, mainly 
 If you want to know more try using the other info commands, visiting the %github% page or joining the %discord% server. Happy ejections!
 
 Changelog-
-- New Game Mode: Task Race - See who's the best at finishing their tasks!
-- New Game Mode: Hide And Seek - Hunt or be hunted!
-- New Modifier: Colorblind
-- New Alignment: Intruder (Head)
-- Addition: Added an intro splash text
-- Addition: Added new selection options for the Role List game mode (see additional notes)
-- Addition: Added some animations for morphing and camouflaging
-- Return: Custom nameplates are back
-- Revert: Reverted the changes made to the auto updater
-- Improvement: Improved how the player numbers and the lighter darker mentions appear
-- Improvement: Improved how settings are loaded (might lead to loading issues with previously set settings)
-- Improvement: Improved the sorting on role generation again
-- Improvement: Improved how the invisibility animation is handled
-- Change: The following alignment changes have been made - Godfather => Intruder (Head), Rebel => Syndicate (Power), Timekeeper => Syndicate (Disruption)
-- Change: Seers no longer require other Seers to die in order to become Sheriffs
-- Bug Fix: Fixed the side buttons overlapping with the Submerged floor change button (To be tested)
-- Role Fix: Fixed Ghoul being able to kill Pestilence
-- Role Fix: Fixed being unable to guess as Guesser
-- Role Fix: Fixed Werewolf unable to kill
-- Role Fix: Fixed Jackal being able to recruit players at the start of the game, even if they have both spawning recruits
-- Potential Fix: Attempt number 4 at trying to reduce the "Fatal Error in GC" error
-
-Additional Notes-
-There were new Role List options added for the Role List mode, here's what each of those options do:
-Regular Crew - Spawns only Crew (Support), (Protective), (Investigative) and (Killing) roles
-Regular Intruder - Spawns only Intruder (Deception), (Killing), (Concealing) and (Support) roles
-Regular Syndicate - Spawns only Syndicate (Disruption), (Support) and (Killing) roles
-Regular Neutral - Spawns only Neutral (Evil) and (Benign) roles
-Harmful Neutral - Spawns only Neutral (Killing), (Harbinger) and (Neophyte) roles
-Ban Murderer - A free ban slot for the Murderer role (as it has no abilities and is very bland)
+- New Role: Bastion [Crew (Killing)]
+- Addition: Added night vision cameras
+- Addition: You can now optionally download Submerged right from the main menu (LevelImpostor soon to follow)
+- Return: Sounds effects are back
+- Improvement: The death popup in Hide And Seek mode now changes to match the mode (X was converted/killed)
+- Improvement: There can be multiple chat notifications for every player that chats now
+- Improvement: Improved how the intro screen appears
+- Improvement: The Level Impostor map option now changes to match the custom map you loaded (to be tested)
+- Change: Actor can now get a randomised list (instead of a fixed one) of roles present in the game to be guessed as
+- Change: Actor can no longer spawn in Role List (because it depends on Assasin which cannot spawn in Role List either)
+- Change: The Assassin ability's name now changes depending on the faction it's applied to
+- Change: As the Assassin, you now have to specify what ype of Assassin someone is to correctly guess them
+- Change: Detective now has to examine players to be able to see their footprints
+- Optimisation: Improved more code handling
+- Bug Fix: Fixed role generation breaking on one player
+- Bug Fix: Fixed tasks not resetting properly on LevelImpostor maps (when turning into Revealer/Phantom)
+- Bug Fix: Fixed games incorrectly ending
+- Bug Fix: Fixed targets not being set properly
+- Bug Fix: Fixed some data desync between roles
+- Visual Fix: Buttons now correctly appear and disappear when opening tasks or other interactibles
+- Visual Fix: Fixed vanilla color names being capitalised when using colorblind mode
+- Role Fix: Fixed Werewolf being able to maul at the wrong times
+- Removed: Inspector (as I've come to realise, locking players to certain claims is not healthy for the mod)
 
 Credits-
 Reworked Creator - AlchlcDvl
 Reworked Contributors - Det, Oper, xerminator, TheGodOfAr0n, twix, Discussions, Jsushi
-Reworked Testers - DarkFedora, 50 IQ, shiftyrose, TheRealLordDragon, Adrian D, HalloweenApple, Dave
+Reworked Testers - DarkFedora, 50 IQ, shiftyrose, TheRealLordDragon, Adrian D, HalloweenApple, Dave, Nerdy
 Reworked Artists - Kara, lotty, Gun, XiezibanWrite, Ramces, Det (their work can be found in %assets%)
 Reworked Translators - XiezibanWrite, CharlesQwQ
 Moral Support - MyDragonBreath
@@ -50,7 +43,7 @@ Base Mod Creator - Slushiegoose
 Base And Reactivated Maintainers - eDonnes/Donners, MyDragonBreath
 Base And Reactivated Contributors - XtraCube, OhMyGuus, Ruiner, -H, Term
 
-Derived Ideas (And Code) From - Woodi, NotHunter101, Evan91380, Hardel-DW, tomozbot, Eisbison, Malloris, K3ndo, Gendelo, Bavari, Scoom, Zeo, 5up, Brybry16, DorCoMaNdO, Galster, przebor, VincentVision, Lunastellia, Allul, Ottomated, BlankMediaGames, Submerged, DigiWorm0
+Derived Ideas (And Code) From - Woodi, NotHunter101, Evan91380, Hardel-DW, tomozbot, Eisbison, Malloris, K3ndo, Gendelo, Bavari, Scoom, Zeo, 5up, Brybry16, DorCoMaNdO, Galster, przebor, VincentVision, Lunastellia, Allul, Ottomated, BlankMediaGames, The Submerged Team, DigiWorm0
 
 Hosting Modded Servers - miniduikboot, GD
 

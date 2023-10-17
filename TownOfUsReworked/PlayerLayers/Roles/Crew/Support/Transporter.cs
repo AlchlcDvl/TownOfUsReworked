@@ -25,7 +25,6 @@ public class Transporter : Crew
     public override LayerEnum Type => LayerEnum.Transporter;
     public override Func<string> StartText => () => "Swap Locations Of Players For Maximum Confusion";
     public override Func<string> Description => () => "- You can swap the locations of 2 players of your choice";
-    public override InspectorResults InspectorResults => InspectorResults.MovesAround;
 
     public Transporter(PlayerControl player) : base(player)
     {
@@ -200,11 +199,8 @@ public class Transporter : Crew
 
         if (CustomPlayer.Local == TransportPlayer1 || CustomPlayer.Local == TransportPlayer2)
         {
-            if (Minigame.Instance)
-                Minigame.Instance.Close();
-
-            if (Map)
-                Map.Close();
+            ActiveTask?.Close();
+            Map?.Close();
         }
 
         TransportPlayer1.moveable = true;

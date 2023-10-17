@@ -9,7 +9,6 @@ public class Sheriff : Crew
     public override LayerEnum Type => LayerEnum.Sheriff;
     public override Func<string> StartText => () => "Reveal The Alignment Of Other Players";
     public override Func<string> Description => () => "- You can reveal alignments of other players relative to the <color=#8CFFFFFF>Crew</color>";
-    public override InspectorResults InspectorResults => InspectorResults.GainsInfo;
 
     public Sheriff(PlayerControl player) : base(player)
     {

@@ -45,7 +45,6 @@ public static class MapPatches
             TownOfUsReworked.NormalOptions.NumLongTasks = CustomGameOptions.LongTasks;
             TownOfUsReworked.NormalOptions.NumCommonTasks = CustomGameOptions.CommonTasks;
             GameOptionsManager.Instance.currentNormalGameOptions = TownOfUsReworked.NormalOptions;
-            CustomOption.SaveSettings("LastUsedSettings");
             AdjustSettings(CurrentMap);
             CallRpc(CustomRPC.Misc, MiscRPC.SetSettings, CurrentMap, tbMode);
         }

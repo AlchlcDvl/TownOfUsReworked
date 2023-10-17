@@ -55,9 +55,9 @@ public static class MiraShipStatusPatch
         }
     }
 
-    private static void ApplyChanges(ShipStatus instance)
+    private static void ApplyChanges(ShipStatus __instance)
     {
-        if (instance.Type == ShipStatus.MapType.Hq)
+        if (__instance.Type == ShipStatus.MapType.Hq)
         {
             FindRooms();
             FindVents();

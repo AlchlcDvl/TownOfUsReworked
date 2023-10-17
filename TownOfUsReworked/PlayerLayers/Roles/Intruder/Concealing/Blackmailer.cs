@@ -15,7 +15,6 @@ public class Blackmailer : Intruder
     public override Func<string> Description => () => "- You can silence players to ensure they cannot hear what others say\n" + (CustomGameOptions.BMRevealed ? ("- Everyone will be " +
         "alerted at the start of the meeting that someone has been silenced ") : "") + (CustomGameOptions.WhispersNotPrivate ? "\n- You can read whispers during meetings" : "") +
         $"\n{CommonAbilities}";
-    public override InspectorResults InspectorResults => InspectorResults.GainsInfo;
 
     public Blackmailer(PlayerControl player) : base(player)
     {

@@ -3,14 +3,14 @@ namespace TownOfUsReworked.Patches;
 [HarmonyPatch(typeof(IntroCutscene._ShowTeam_d__36), nameof(IntroCutscene._ShowTeam_d__36.MoveNext))]
 public static class ShowTeamPatch
 {
-    public static void Prefix(IntroCutscene._ShowTeam_d__36 __instance) => Role.LocalRole.IntroPrefix(__instance);
+    public static void Prefix(IntroCutscene._ShowTeam_d__36 __instance)=> __instance.teamToShow = Role.LocalRole.Team().SystemToIl2Cpp();
 
     public static void Postfix(IntroCutscene._ShowTeam_d__36 __instance)
     {
         __instance.__4__this.TeamTitle.text = Role.LocalRole.FactionName;
         __instance.__4__this.TeamTitle.color = Role.LocalRole.FactionColor;
         __instance.__4__this.TeamTitle.outlineColor = UColor.black;
-        __instance.__4__this.BackgroundBar.material.color = Role.LocalRole.Color;
+        __instance.__4__this.BackgroundBar.material.color = Role.LocalRole.FactionColor;
         __instance.__4__this.ImpostorText.text = " ";
     }
 }
@@ -52,4 +52,12 @@ public static class ShowRolePatch
         __instance.__4__this.RoleBlurbText.text = role.StartText() + statusString;
         __instance.__4__this.RoleBlurbText.color = role.Color;
     }
+}
+
+[HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.CreatePlayer))]
+public static class CreatePlayerPatch
+{
+    public static void Prefix(ref bool impostorPositioning) => impostorPositioning = true;
+
+    public static void Postfix(ref PoolablePlayer __result) => __result.SetNameColor(Role.LocalRole.FactionColor);
 }

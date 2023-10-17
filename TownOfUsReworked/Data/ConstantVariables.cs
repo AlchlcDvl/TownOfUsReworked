@@ -13,7 +13,7 @@ public static class ConstantVariables
     public static bool IsOnlineGame => AmongUsClient.Instance.NetworkMode == NetworkModes.OnlineGame;
     public static bool IsLocalGame => AmongUsClient.Instance.NetworkMode == NetworkModes.LocalGame;
     public static bool IsFreePlay => AmongUsClient.Instance.NetworkMode == NetworkModes.FreePlay;
-    public static bool IsRoaming => IsInGame && !Meeting && !Minigame.Instance;
+    public static bool IsRoaming => IsInGame && !Meeting && !ActiveTask;
     public static bool IsMeeting => IsInGame && Meeting;
     public static bool IsAA => CustomGameOptions.GameMode == GameMode.AllAny;
     public static bool IsCustom => CustomGameOptions.GameMode == GameMode.Custom;
@@ -105,11 +105,9 @@ public static class ConstantVariables
     public static bool CorruptedWin(PlayerControl player) => !CustomPlayer.AllPlayers.Any(x => !x.HasDied() && !x.Is(LayerEnum.Corrupted) && ((x != player &&
         !CustomGameOptions.AllCorruptedWin) || CustomGameOptions.AllCorruptedWin));
 
-    public static bool LoversWin(PlayerControl player) => CustomPlayer.AllPlayers.Count(x => !x.HasDied()) <= 3 && Objectifier.GetObjectifiers<Lovers>(LayerEnum.Lovers).Any(x =>
-        x.LoversAlive && x == player);
+    public static bool LoversWin(PlayerControl player) => CustomPlayer.AllPlayers.Count(x => !x.HasDied()) <= 3 && PlayerLayer.GetLayers<Lovers>().Any(x => x.LoversAlive && x == player);
 
-    public static bool RivalsWin(PlayerControl player) => CustomPlayer.AllPlayers.Count(x => !x.HasDied()) <= 2 && Objectifier.GetObjectifiers<Rivals>(LayerEnum.Rivals).Any(x =>
-        x.IsWinningRival && x == player);
+    public static bool RivalsWin(PlayerControl player) => CustomPlayer.AllPlayers.Count(x => !x.HasDied()) <= 2 && PlayerLayer.GetLayers<Rivals>().Any(x => x.IsWinningRival && x == player);
 
     public static bool MafiaWin => !CustomPlayer.AllPlayers.Any(x => !x.HasDied() && !x.Is(LayerEnum.Mafia));
 

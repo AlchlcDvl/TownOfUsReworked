@@ -8,9 +8,6 @@ public static class UpdateNames
 
     public static void Postfix()
     {
-        if (!SoundEffects.ContainsKey("Kill") && CustomPlayer.Local)
-            SoundEffects.Add("Kill", CustomPlayer.Local.KillSfx);
-
         if (NoPlayers || IsHnS || Meeting || IsLobby)
             return;
 
@@ -23,7 +20,7 @@ public static class UpdateNames
             PlayerNames.Add(player.PlayerId, player.Data.PlayerName);
 
         if (!ColorNames.ContainsKey(player.PlayerId))
-            ColorNames.Add(player.PlayerId, TranslationController.Instance.GetString(Palette.ColorNames[player.CurrentOutfit.ColorId]));
+            ColorNames.Add(player.PlayerId, player.Data.ColorName.Replace("(", "").Replace(")", ""));
 
         (player.NameText().text, player.NameText().color) = UpdateGameName(player);
         player.ColorBlindText().text = UpdateColorblind(player);
@@ -95,7 +92,7 @@ public static class UpdateNames
         if (info[0] == null || localinfo[0] == null)
             return (name, color);
 
-        if (player.CanDoTasks() && (DeadSeeEverything || player == CustomPlayer.Local))
+        if (player.CanDoTasks() && (DeadSeeEverything || player == CustomPlayer.Local || IsCustomHnS || IsTaskRace))
         {
             var role = info[0] as Role;
             name += $" ({role.TasksCompleted}/{role.TotalTasks})";
@@ -134,20 +131,6 @@ public static class UpdateNames
                     if (godfather.Investigated.Contains(player.PlayerId))
                         godfather.Investigated.Remove(player.PlayerId);
                 }
-                else if (CustomPlayer.Local.Is(LayerEnum.Inspector))
-                {
-                    var inspector = localinfo[0] as Inspector;
-
-                    if (inspector.Inspected.Contains(player.PlayerId))
-                        inspector.Inspected.Remove(player.PlayerId);
-                }
-                else if (CustomPlayer.Local.Is(LayerEnum.Retributionist))
-                {
-                    var retributionist = localinfo[0] as Retributionist;
-
-                    if (retributionist.Inspected.Contains(player.PlayerId))
-                        retributionist.Inspected.Remove(player.PlayerId);
-                }
             }
         }
         else if (player.Is(LayerEnum.Dictator) && !DeadSeeEverything && CustomPlayer.Local != player)
@@ -173,20 +156,6 @@ public static class UpdateNames
 
                     if (godfather.Investigated.Contains(player.PlayerId))
                         godfather.Investigated.Remove(player.PlayerId);
-                }
-                else if (CustomPlayer.Local.Is(LayerEnum.Inspector))
-                {
-                    var inspector = localinfo[0] as Inspector;
-
-                    if (inspector.Inspected.Contains(player.PlayerId))
-                        inspector.Inspected.Remove(player.PlayerId);
-                }
-                else if (CustomPlayer.Local.Is(LayerEnum.Retributionist))
-                {
-                    var retributionist = localinfo[0] as Retributionist;
-
-                    if (retributionist.Inspected.Contains(player.PlayerId))
-                        retributionist.Inspected.Remove(player.PlayerId);
                 }
             }
         }
@@ -254,12 +223,6 @@ public static class UpdateNames
 
             if (ret.ShieldedPlayer != null && ret.ShieldedPlayer == player && (int)CustomGameOptions.ShowShielded is 1 or 2)
                 name += " <color=#006600FF>✚</color>";
-            if (ret.Inspected.Contains(player.PlayerId) && !roleRevealed)
-            {
-                name += $"\n{player.GetInspResults()}";
-                color = ret.Color;
-                roleRevealed = true;
-            }
         }
         else if (CustomPlayer.Local.Is(LayerEnum.Arsonist) && !DeadSeeEverything)
         {
@@ -444,16 +407,11 @@ public static class UpdateNames
                 color = blackmailer.Color;
             }
         }
-        else if (CustomPlayer.Local.Is(LayerEnum.Inspector))
+        else if ((IsCustomHnS || IsTaskRace) && player != CustomPlayer.Local)
         {
-            var inspector = localinfo[0] as Inspector;
-
-            if (inspector.Inspected.Contains(player.PlayerId) && !roleRevealed)
-            {
-                name += $"\n{player.GetInspResults()}";
-                color = inspector.Color;
-                roleRevealed = true;
-            }
+            name += $"\n{info[0]}";
+            color = info[0].Color;
+            roleRevealed = true;
         }
 
         if (CustomPlayer.Local.IsBitten() && !DeadSeeEverything)
@@ -482,20 +440,6 @@ public static class UpdateNames
 
                         if (godfather.Investigated.Contains(player.PlayerId))
                             godfather.Investigated.Remove(player.PlayerId);
-                    }
-                    else if (CustomPlayer.Local.Is(LayerEnum.Inspector))
-                    {
-                        var inspector = localinfo[0] as Inspector;
-
-                        if (inspector.Inspected.Contains(player.PlayerId))
-                            inspector.Inspected.Remove(player.PlayerId);
-                    }
-                    else if (CustomPlayer.Local.Is(LayerEnum.Retributionist))
-                    {
-                        var retributionist = localinfo[0] as Retributionist;
-
-                        if (retributionist.Inspected.Contains(player.PlayerId))
-                            retributionist.Inspected.Remove(player.PlayerId);
                     }
                 }
                 else
@@ -529,20 +473,6 @@ public static class UpdateNames
                         if (godfather.Investigated.Contains(player.PlayerId))
                             godfather.Investigated.Remove(player.PlayerId);
                     }
-                    else if (CustomPlayer.Local.Is(LayerEnum.Inspector))
-                    {
-                        var inspector = localinfo[0] as Inspector;
-
-                        if (inspector.Inspected.Contains(player.PlayerId))
-                            inspector.Inspected.Remove(player.PlayerId);
-                    }
-                    else if (CustomPlayer.Local.Is(LayerEnum.Retributionist))
-                    {
-                        var retributionist = localinfo[0] as Retributionist;
-
-                        if (retributionist.Inspected.Contains(player.PlayerId))
-                            retributionist.Inspected.Remove(player.PlayerId);
-                    }
                 }
                 else
                     color = jackal.SubFactionColor;
@@ -574,20 +504,6 @@ public static class UpdateNames
 
                         if (godfather.Investigated.Contains(player.PlayerId))
                             godfather.Investigated.Remove(player.PlayerId);
-                    }
-                    else if (CustomPlayer.Local.Is(LayerEnum.Inspector))
-                    {
-                        var inspector = localinfo[0] as Inspector;
-
-                        if (inspector.Inspected.Contains(player.PlayerId))
-                            inspector.Inspected.Remove(player.PlayerId);
-                    }
-                    else if (CustomPlayer.Local.Is(LayerEnum.Retributionist))
-                    {
-                        var retributionist = localinfo[0] as Retributionist;
-
-                        if (retributionist.Inspected.Contains(player.PlayerId))
-                            retributionist.Inspected.Remove(player.PlayerId);
                     }
                 }
                 else
@@ -621,20 +537,6 @@ public static class UpdateNames
                         if (godfather.Investigated.Contains(player.PlayerId))
                             godfather.Investigated.Remove(player.PlayerId);
                     }
-                    else if (CustomPlayer.Local.Is(LayerEnum.Inspector))
-                    {
-                        var inspector = localinfo[0] as Inspector;
-
-                        if (inspector.Inspected.Contains(player.PlayerId))
-                            inspector.Inspected.Remove(player.PlayerId);
-                    }
-                    else if (CustomPlayer.Local.Is(LayerEnum.Retributionist))
-                    {
-                        var retributionist = localinfo[0] as Retributionist;
-
-                        if (retributionist.Inspected.Contains(player.PlayerId))
-                            retributionist.Inspected.Remove(player.PlayerId);
-                    }
                 }
                 else
                     color = whisperer.SubFactionColor;
@@ -643,7 +545,7 @@ public static class UpdateNames
             {
                 foreach (var (key, value) in whisperer.PlayerConversion)
                 {
-                    if (player.PlayerId == key)
+                    if (player.PlayerId == key && !player.Is(SubFaction.Sect))
                         name += $" {value}%";
                 }
             }
@@ -679,20 +581,6 @@ public static class UpdateNames
                         if (godfather.Investigated.Contains(player.PlayerId))
                             godfather.Investigated.Remove(player.PlayerId);
                     }
-                    else if (CustomPlayer.Local.Is(LayerEnum.Inspector))
-                    {
-                        var inspector = localinfo[0] as Inspector;
-
-                        if (inspector.Inspected.Contains(player.PlayerId))
-                            inspector.Inspected.Remove(player.PlayerId);
-                    }
-                    else if (CustomPlayer.Local.Is(LayerEnum.Retributionist))
-                    {
-                        var retributionist = localinfo[0] as Retributionist;
-
-                        if (retributionist.Inspected.Contains(player.PlayerId))
-                            retributionist.Inspected.Remove(player.PlayerId);
-                    }
                 }
             }
         }
@@ -725,20 +613,6 @@ public static class UpdateNames
 
                         if (godfather.Investigated.Contains(player.PlayerId))
                             godfather.Investigated.Remove(player.PlayerId);
-                    }
-                    else if (CustomPlayer.Local.Is(LayerEnum.Inspector))
-                    {
-                        var inspector = localinfo[0] as Inspector;
-
-                        if (inspector.Inspected.Contains(player.PlayerId))
-                            inspector.Inspected.Remove(player.PlayerId);
-                    }
-                    else if (CustomPlayer.Local.Is(LayerEnum.Retributionist))
-                    {
-                        var retributionist = localinfo[0] as Retributionist;
-
-                        if (retributionist.Inspected.Contains(player.PlayerId))
-                            retributionist.Inspected.Remove(player.PlayerId);
                     }
                 }
             }
@@ -773,20 +647,6 @@ public static class UpdateNames
                         if (godfather.Investigated.Contains(player.PlayerId))
                             godfather.Investigated.Remove(player.PlayerId);
                     }
-                    else if (CustomPlayer.Local.Is(LayerEnum.Inspector))
-                    {
-                        var inspector = localinfo[0] as Inspector;
-
-                        if (inspector.Inspected.Contains(player.PlayerId))
-                            inspector.Inspected.Remove(player.PlayerId);
-                    }
-                    else if (CustomPlayer.Local.Is(LayerEnum.Retributionist))
-                    {
-                        var retributionist = localinfo[0] as Retributionist;
-
-                        if (retributionist.Inspected.Contains(player.PlayerId))
-                            retributionist.Inspected.Remove(player.PlayerId);
-                    }
                 }
             }
         }
@@ -818,20 +678,6 @@ public static class UpdateNames
 
                         if (godfather.Investigated.Contains(player.PlayerId))
                             godfather.Investigated.Remove(player.PlayerId);
-                    }
-                    else if (CustomPlayer.Local.Is(LayerEnum.Inspector))
-                    {
-                        var inspector = localinfo[0] as Inspector;
-
-                        if (inspector.Inspected.Contains(player.PlayerId))
-                            inspector.Inspected.Remove(player.PlayerId);
-                    }
-                    else if (CustomPlayer.Local.Is(LayerEnum.Retributionist))
-                    {
-                        var retributionist = localinfo[0] as Retributionist;
-
-                        if (retributionist.Inspected.Contains(player.PlayerId))
-                            retributionist.Inspected.Remove(player.PlayerId);
                     }
                 }
             }
@@ -931,7 +777,7 @@ public static class UpdateNames
             name += " <color=#008000FF>Δ</color>";
         }
 
-        if (Role.GetRoles<Revealer>(LayerEnum.Revealer).Any(x => x.CompletedTasks) && CustomPlayer.Local.Is(Faction.Crew))
+        if (PlayerLayer.GetLayers<Revealer>().Any(x => x.CompletedTasks) && CustomPlayer.Local.Is(Faction.Crew))
         {
             var role = info[0] as Role;
 
@@ -1045,30 +891,6 @@ public static class UpdateNames
 
             if (player.IsSpelled())
                 name += " <color=#0028F5FF>ø</color>";
-
-            if (CustomPlayer.Local.Is(LayerEnum.Consigliere))
-            {
-                var consigliere = localinfo[0] as Consigliere;
-                consigliere.Investigated.Clear();
-            }
-
-            if (CustomPlayer.Local.Is(LayerEnum.PromotedGodfather))
-            {
-                var godfather = localinfo[0] as PromotedGodfather;
-                godfather.Investigated.Clear();
-            }
-
-            if (CustomPlayer.Local.Is(LayerEnum.Inspector))
-            {
-                var inspector = localinfo[0] as Inspector;
-                inspector.Inspected.Clear();
-            }
-
-            if (CustomPlayer.Local.Is(LayerEnum.Retributionist))
-            {
-                var retributionist = localinfo[0] as Retributionist;
-                retributionist.Inspected.Clear();
-            }
         }
 
         if ((player.IsShielded() || player.IsRetShielded()) && (int)CustomGameOptions.ShowShielded is 3 && !DeadSeeEverything)

@@ -44,6 +44,7 @@ public static class RPC
         }
 
         AmongUsClient.Instance.FinishRpcImmediately(writer);
+        CustomOption.SaveSettings("LastUsedSettings");
     }
 
     public static void ReceiveOptionRPC(MessageReader reader)
@@ -91,11 +92,11 @@ public static class RPC
         writer.Write((byte)TownOfUsReworked.Version.Minor);
         writer.Write((byte)TownOfUsReworked.Version.Build);
         writer.Write((byte)TownOfUsReworked.Version.Revision);
-        writer.WriteBytesAndSize(TownOfUsReworked.Executing.ManifestModule.ModuleVersionId.ToByteArray());
+        writer.WriteBytesAndSize(TownOfUsReworked.Core.ManifestModule.ModuleVersionId.ToByteArray());
         writer.WritePacked(AmongUsClient.Instance.ClientId);
         AmongUsClient.Instance.FinishRpcImmediately(writer);
         VersionHandshake(TownOfUsReworked.Version.Major, TownOfUsReworked.Version.Minor, TownOfUsReworked.Version.Build, TownOfUsReworked.Version.Revision,
-            TownOfUsReworked.Executing.ManifestModule.ModuleVersionId, AmongUsClient.Instance.ClientId);
+            TownOfUsReworked.Core.ManifestModule.ModuleVersionId, AmongUsClient.Instance.ClientId);
     }
 
     public static void VersionHandshake(int major, int minor, int build, int revision, Guid guid, int clientId) => GameStartManagerPatch.PlayerVersions.TryAdd(clientId, new(new(major, minor,
@@ -106,6 +107,8 @@ public static class RPC
     public static PlayerVoteArea ReadVoteArea(this MessageReader reader) => VoteAreaById(reader.ReadByte());
 
     public static DeadBody ReadBody(this MessageReader reader) => BodyById(reader.ReadByte());
+
+    public static Vent ReadVent(this MessageReader reader) => VentById(reader.ReadInt32());
 
     public static PlayerLayer ReadLayer(this MessageReader reader)
     {
@@ -124,6 +127,125 @@ public static class RPC
 
     public static List<byte> ReadByteList(this MessageReader reader) => reader.ReadBytesAndSize().ToList();
 
+    public static List<PlayerLayer> ReadLayerList(this MessageReader reader)
+    {
+        var count = reader.ReadInt32();
+        var list = new List<PlayerLayer>();
+
+        while (list.Count < count)
+            list.Add(reader.ReadLayer());
+
+        return list;
+    }
+
+    public static List<T> ReadLayerList<T>(this MessageReader reader) where T : PlayerLayer
+    {
+        var count = reader.ReadInt32();
+        var list = new List<T>();
+
+        while (list.Count < count)
+            list.Add(reader.ReadLayer<T>());
+
+        return list;
+    }
+
+    public static void Write(this MessageWriter writer, object item, object[] data)
+    {
+        if (item == null)
+            LogError($"Data type used in the rpc was null: index - {data.ToList().IndexOf(item) + 1}, rpc - {data[data.Length == 1 ? 0 : 1]}");
+        else if (item is CustomRPC custom)
+            writer.Write((byte)custom);
+        else if (item is PlayerControl player)
+            writer.Write(player.PlayerId);
+        else if (item is DeadBody body)
+            writer.Write(body.ParentId);
+        else if (item is PlayerVoteArea area)
+            writer.Write(area.TargetPlayerId);
+        else if (item is Vent vent)
+            writer.Write(vent.Id);
+        else if (item is PlayerLayer layer2)
+        {
+            writer.Write(layer2.PlayerId);
+            writer.Write((byte)layer2.Type);
+        }
+        else if (item is bool boolean)
+            writer.Write(boolean);
+        else if (item is int integer)
+            writer.Write(integer);
+        else if (item is uint uinteger)
+            writer.Write(uinteger);
+        else if (item is float Float)
+            writer.Write(Float);
+        else if (item is string text)
+            writer.Write(text);
+        else if (item is byte Byte)
+            writer.Write(Byte);
+        else if (item is sbyte sByte)
+            writer.Write(sByte);
+        else if (item is Vector2 vector2)
+            writer.Write(vector2);
+        else if (item is ulong Ulong)
+            writer.Write(Ulong);
+        else if (item is ushort Ushort)
+            writer.Write(Ushort);
+        else if (item is short Short)
+            writer.Write(Short);
+        else if (item is long Long)
+            writer.Write(Long);
+        else if (item is byte[] array)
+            writer.WriteBytesAndSize(array);
+        else if (item is List<byte> list)
+            writer.WriteBytesAndSize(list.ToArray());
+        else if (item is TargetRPC target)
+            writer.Write((byte)target);
+        else if (item is ActionsRPC action)
+            writer.Write((byte)action);
+        else if (item is TurnRPC turn)
+            writer.Write((byte)turn);
+        else if (item is Faction faction)
+            writer.Write((byte)faction);
+        else if (item is Alignment alignment)
+            writer.Write((byte)alignment);
+        else if (item is SubFaction subfaction)
+            writer.Write((byte)subfaction);
+        else if (item is PlayerLayerEnum layer)
+            writer.Write((byte)layer);
+        else if (item is DeathReasonEnum death)
+            writer.Write((byte)death);
+        else if (item is WinLoseRPC winlose)
+            writer.Write((byte)winlose);
+        else if (item is RetActionsRPC retAction)
+            writer.Write((byte)retAction);
+        else if (item is GFActionsRPC gfAction)
+            writer.Write((byte)gfAction);
+        else if (item is RebActionsRPC rebAction)
+            writer.Write((byte)rebAction);
+        else if (item is DictActionsRPC dictAction)
+            writer.Write((byte)dictAction);
+        else if (item is GlitchActionsRPC glitchAction)
+            writer.Write((byte)glitchAction);
+        else if (item is ThiefActionsRPC thiefAction)
+            writer.Write((byte)thiefAction);
+        else if (item is PoliticianActionsRPC polAction)
+            writer.Write((byte)polAction);
+        else if (item is MiscRPC misc)
+            writer.Write((byte)misc);
+        else if (item is CustomButton button)
+            writer.Write(button.ID);
+        else if (item is List<PlayerLayer> layers)
+        {
+            writer.Write(layers.Count);
+            layers.ForEach(x => writer.Write(x));
+        }
+        else if (item is List<Role> roles)
+        {
+            writer.Write(roles.Count);
+            roles.ForEach(x => writer.Write(x));
+        }
+        else
+            LogError($"Unknown data type used in the rpc: index - {data.ToList().IndexOf(item) + 1}, rpc - {data[data.Length == 1 ? 0 : 1]}");
+    }
+
     public static void CallRpc(params object[] data)
     {
         if (data[0] is not CustomRPC)
@@ -133,105 +255,7 @@ public static class RPC
         }
 
         var writer = AmongUsClient.Instance.StartRpcImmediately(CustomPlayer.Local.NetId, 254, SendOption.Reliable);
-        writer.Write((byte)(CustomRPC)data[0]);
-
-        if (data.Length > 1)
-        {
-            foreach (var item in data[1..])
-            {
-                if (writer.Position > 1000)
-                {
-                    AmongUsClient.Instance.FinishRpcImmediately(writer);
-                    writer = AmongUsClient.Instance.StartRpcImmediately(CustomPlayer.Local.NetId, 254, SendOption.Reliable);
-                    writer.Write((byte)(CustomRPC)data[0]);
-                }
-
-                if (item == null)
-                    LogError($"Data type used in the rpc was null: index - {data.ToList().IndexOf(item) + 1}, main rpc - {data[0]}, rpc - {data[1]}");
-                else if (item is bool boolean)
-                    writer.Write(boolean);
-                else if (item is int integer)
-                    writer.Write(integer);
-                else if (item is uint uinteger)
-                    writer.Write(uinteger);
-                else if (item is float Float)
-                    writer.Write(Float);
-                else if (item is string text)
-                    writer.Write(text);
-                else if (item is byte Byte)
-                    writer.Write(Byte);
-                else if (item is sbyte sByte)
-                    writer.Write(sByte);
-                else if (item is Vector2 vector2)
-                    writer.Write(vector2);
-                else if (item is ulong Ulong)
-                    writer.Write(Ulong);
-                else if (item is ushort Ushort)
-                    writer.Write(Ushort);
-                else if (item is short Short)
-                    writer.Write(Short);
-                else if (item is long Long)
-                    writer.Write(Long);
-                else if (item is byte[] array)
-                    writer.WriteBytesAndSize(array);
-                else if (item is List<byte> list)
-                    writer.WriteBytesAndSize(list.ToArray());
-                else if (item is TargetRPC target)
-                    writer.Write((byte)target);
-                else if (item is ActionsRPC action)
-                    writer.Write((byte)action);
-                else if (item is TurnRPC turn)
-                    writer.Write((byte)turn);
-                else if (item is Faction faction)
-                    writer.Write((byte)faction);
-                else if (item is Alignment alignment)
-                    writer.Write((byte)alignment);
-                else if (item is SubFaction subfaction)
-                    writer.Write((byte)subfaction);
-                else if (item is PlayerLayerEnum layer)
-                    writer.Write((byte)layer);
-                else if (item is InspectorResults results)
-                    writer.Write((byte)results);
-                else if (item is DeathReasonEnum death)
-                    writer.Write((byte)death);
-                else if (item is WinLoseRPC winlose)
-                    writer.Write((byte)winlose);
-                else if (item is RetActionsRPC retAction)
-                    writer.Write((byte)retAction);
-                else if (item is GFActionsRPC gfAction)
-                    writer.Write((byte)gfAction);
-                else if (item is RebActionsRPC rebAction)
-                    writer.Write((byte)rebAction);
-                else if (item is DictActionsRPC dictAction)
-                    writer.Write((byte)dictAction);
-                else if (item is GlitchActionsRPC glitchAction)
-                    writer.Write((byte)glitchAction);
-                else if (item is ThiefActionsRPC thiefAction)
-                    writer.Write((byte)thiefAction);
-                else if (item is PoliticianActionsRPC polAction)
-                    writer.Write((byte)polAction);
-                else if (item is MiscRPC misc)
-                    writer.Write((byte)misc);
-                else if (item is PlayerControl player)
-                    writer.Write(player.PlayerId);
-                else if (item is DeadBody body)
-                    writer.Write(body.ParentId);
-                else if (item is PlayerVoteArea area)
-                    writer.Write(area.TargetPlayerId);
-                else if (item is CustomButton button)
-                    writer.Write(button.ID);
-                else if (item is PlayerLayer layer2)
-                {
-                    writer.Write(layer2.PlayerId);
-                    writer.Write((byte)layer2.Type);
-                }
-                else
-                    LogError($"Unknown data type used in the rpc: index - {data.ToList().IndexOf(item) + 1}, rpc - {data[1]}");
-            }
-        }
-
+        data.ForEach(x => writer.Write(x, data));
         AmongUsClient.Instance.FinishRpcImmediately(writer);
     }
-
-    public static void StartEffect(MessageReader reader) => reader.ReadButton()?.StartEffectRPC(reader);
 }

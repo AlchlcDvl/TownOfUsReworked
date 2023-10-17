@@ -79,7 +79,7 @@ public static class LobbySizePatch
 [HarmonyPatch(typeof(CreateOptionsPicker), nameof(CreateOptionsPicker.UpdateMaxPlayersButtons))]
 public static class CreateOptionsPicker_UpdateMaxPlayersButtons
 {
-    public static bool Prefix(CreateOptionsPicker __instance, [HarmonyArgument(0)] IGameOptions opts)
+    public static bool Prefix(CreateOptionsPicker __instance, ref IGameOptions opts)
     {
         __instance.CrewArea?.SetCrewSize(opts.MaxPlayers, opts.NumImpostors);
 

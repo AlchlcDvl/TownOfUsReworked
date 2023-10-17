@@ -1,11 +1,11 @@
 namespace TownOfUsReworked.Patches;
 
 [HarmonyPatch(typeof(Console), nameof(Console.CanUse))]
-public static class CanUse
+public static class ConsoleCanUse
 {
-    public static bool Prefix(Console __instance, [HarmonyArgument(0)] GameData.PlayerInfo playerInfo, ref float __result)
+    public static bool Prefix(Console __instance, ref GameData.PlayerInfo pc, ref float __result)
     {
-        var playerControl = playerInfo.Object;
+        var playerControl = pc.Object;
         var flag = !playerControl.CanDoTasks();
 
         //If the console is not a sabotage repair console
@@ -23,22 +23,22 @@ public static class CanUse
 [HarmonyPatch(typeof(OpenDoorConsole), nameof(OpenDoorConsole.CanUse))]
 public static class OpenDoorConsoleCanUse
 {
-    public static void Prefix([HarmonyArgument(0)] GameData.PlayerInfo playerInfo, ref bool __state)
+    public static void Prefix(ref GameData.PlayerInfo pc, ref bool __state)
     {
         __state = false;
-        var playerControl = playerInfo.Object;
+        var playerControl = pc.Object;
 
-        if (playerControl.IsPostmortal() && !playerControl.Caught() && playerInfo.IsDead)
+        if (playerControl.IsPostmortal() && !playerControl.Caught() && pc.IsDead)
         {
-            playerInfo.IsDead = false;
+            pc.IsDead = false;
             __state = true;
         }
     }
 
-    public static void Postfix([HarmonyArgument(0)] GameData.PlayerInfo playerInfo, ref bool __state)
+    public static void Postfix(ref GameData.PlayerInfo pc, ref bool __state)
     {
         if (__state)
-            playerInfo.IsDead = true;
+            pc.IsDead = true;
     }
 }
 
@@ -51,6 +51,7 @@ public static class OpenDoorConsoleUse
 
         if (canUse)
         {
+            ShipStatus.Instance.RpcRepairSystem(SystemTypes.Doors, __instance.MyDoor.Id | 64);
             CallRpc(CustomRPC.Misc, MiscRPC.DoorSyncToilet, __instance.MyDoor.Id);
             __instance.MyDoor.SetDoorway(true);
         }
@@ -64,22 +65,22 @@ public static class OpenDoorConsoleUse
 [HarmonyPatch(typeof(DoorConsole), nameof(DoorConsole.CanUse))]
 public static class DoorConsoleCanUse
 {
-    public static void Prefix([HarmonyArgument(0)] GameData.PlayerInfo playerInfo, ref bool __state)
+    public static void Prefix(ref GameData.PlayerInfo pc, ref bool __state)
     {
         __state = false;
-        var playerControl = playerInfo.Object;
+        var playerControl = pc.Object;
 
-        if (playerControl.IsPostmortal() && !playerControl.Caught() && playerInfo.IsDead)
+        if (playerControl.IsPostmortal() && !playerControl.Caught() && pc.IsDead)
         {
-            playerInfo.IsDead = false;
+            pc.IsDead = false;
             __state = true;
         }
     }
 
-    public static void Postfix([HarmonyArgument(0)] GameData.PlayerInfo playerInfo, ref bool __state)
+    public static void Postfix(ref GameData.PlayerInfo pc, ref bool __state)
     {
         if (__state)
-            playerInfo.IsDead = true;
+            pc.IsDead = true;
     }
 }
 
@@ -112,22 +113,22 @@ public static class DoorConsoleUsePatch
 [HarmonyPatch(typeof(Ladder), nameof(Ladder.CanUse))]
 public static class LadderCanUse
 {
-    public static void Prefix([HarmonyArgument(0)] GameData.PlayerInfo playerInfo, ref bool __state)
+    public static void Prefix(ref GameData.PlayerInfo pc, ref bool __state)
     {
         __state = false;
-        var playerControl = playerInfo.Object;
+        var playerControl = pc.Object;
 
-        if (playerControl.IsPostmortal() && !playerControl.Caught() && playerInfo.IsDead)
+        if (playerControl.IsPostmortal() && !playerControl.Caught() && pc.IsDead)
         {
-            playerInfo.IsDead = false;
+            pc.IsDead = false;
             __state = true;
         }
     }
 
-    public static void Postfix([HarmonyArgument(0)] GameData.PlayerInfo playerInfo, ref bool __state)
+    public static void Postfix(ref GameData.PlayerInfo pc, ref bool __state)
     {
         if (__state)
-            playerInfo.IsDead = true;
+            pc.IsDead = true;
     }
 }
 
@@ -137,7 +138,7 @@ public static class LadderUse
     public static bool Prefix(Ladder __instance)
     {
         var data = CustomPlayer.LocalCustom.Data;
-        __instance.CanUse(data, out var flag, out var _);
+        __instance.CanUse(data, out var flag, out _);
 
         if (flag)
             CustomPlayer.Local.MyPhysics.RpcClimbLadder(__instance);
@@ -151,22 +152,22 @@ public static class LadderUse
 [HarmonyPatch(typeof(PlatformConsole), nameof(PlatformConsole.CanUse))]
 public static class PlatformConsoleCanUse
 {
-    public static void Prefix([HarmonyArgument(0)] GameData.PlayerInfo playerInfo, ref bool __state)
+    public static void Prefix(ref GameData.PlayerInfo pc, ref bool __state)
     {
         __state = false;
-        var playerControl = playerInfo.Object;
+        var playerControl = pc.Object;
 
         if (playerControl.IsPostmortal() && !playerControl.Caught())
         {
-            playerInfo.IsDead = false;
+            pc.IsDead = false;
             __state = true;
         }
     }
 
-    public static void Postfix([HarmonyArgument(0)] GameData.PlayerInfo playerInfo, ref bool __state)
+    public static void Postfix(ref GameData.PlayerInfo pc, ref bool __state)
     {
         if (__state)
-            playerInfo.IsDead = true;
+            pc.IsDead = true;
     }
 }
 #endregion
@@ -175,22 +176,22 @@ public static class PlatformConsoleCanUse
 [HarmonyPatch(typeof(DeconControl), nameof(DeconControl.CanUse))]
 public static class DeconControlUse
 {
-    public static void Prefix([HarmonyArgument(0)] GameData.PlayerInfo playerInfo, ref bool __state)
+    public static void Prefix(ref GameData.PlayerInfo pc, ref bool __state)
     {
         __state = false;
-        var playerControl = playerInfo.Object;
+        var playerControl = pc.Object;
 
-        if (playerControl.IsPostmortal() && !playerControl.Caught() && playerInfo.IsDead)
+        if (playerControl.IsPostmortal() && !playerControl.Caught() && pc.IsDead)
         {
-            playerInfo.IsDead = false;
+            pc.IsDead = false;
             __state = true;
         }
     }
 
-    public static void Postfix([HarmonyArgument(0)] GameData.PlayerInfo playerInfo, ref bool __state)
+    public static void Postfix(ref GameData.PlayerInfo pc, ref bool __state)
     {
         if (__state)
-            playerInfo.IsDead = true;
+            pc.IsDead = true;
     }
 }
 #endregion
@@ -199,22 +200,22 @@ public static class DeconControlUse
 [HarmonyPatch(typeof(Console), nameof(Console.CanUse))]
 public static class ConsoleCanUsePatch
 {
-    public static void Prefix([HarmonyArgument(0)] GameData.PlayerInfo playerInfo, ref bool __state)
+    public static void Prefix(ref GameData.PlayerInfo pc, ref bool __state)
     {
         __state = false;
-        var playerControl = playerInfo.Object;
+        var playerControl = pc.Object;
 
         if (playerControl.IsPostmortal() && !playerControl.Caught())
         {
-            playerInfo.IsDead = false;
+            pc.IsDead = false;
             __state = true;
         }
     }
 
-    public static void Postfix([HarmonyArgument(0)] GameData.PlayerInfo playerInfo, ref bool __state)
+    public static void Postfix(ref GameData.PlayerInfo pc, ref bool __state)
     {
         if (__state)
-            playerInfo.IsDead = true;
+            pc.IsDead = true;
     }
 }
 
@@ -253,14 +254,12 @@ public static class DoorSwipePatch
 [HarmonyPatch(typeof(Console), nameof(Console.SetOutline))]
 public static class SetTaskOutline
 {
-    public static void Postfix(Console __instance, [HarmonyArgument(1)] ref bool mainTarget)
+    public static void Postfix(Console __instance, ref bool mainTarget)
     {
-        var active = CustomPlayer.Local && !Meeting && CustomPlayer.Local.CanDoTasks();
-
-        if (!Role.LocalRole || !active)
+        if (!Role.LocalRole || !(CustomPlayer.Local && !Meeting && CustomPlayer.Local.CanDoTasks()))
             return;
 
         __instance.Image.material.SetColor("_OutlineColor", Role.LocalRole.Color);
-        __instance.Image.material.SetColor("_AddColor", mainTarget ? Role.LocalRole.Color : Color.clear);
+        __instance.Image.material.SetColor("_AddColor", mainTarget ? Role.LocalRole.Color : UColor.clear);
     }
 }

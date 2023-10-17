@@ -12,7 +12,6 @@ public class Medic : Crew
     public override Func<string> StartText => () => "Shield A Player To Protect Them";
     public override Func<string> Description => () => "- You can shield a player to prevent them from dying to others\n- If your target is attacked, you will be notified of it\n- Your " +
         "shield does not save your target from suicides or ejections";
-    public override InspectorResults InspectorResults => InspectorResults.PreservesLife;
 
     public Medic(PlayerControl player) : base(player)
     {
@@ -20,6 +19,7 @@ public class Medic : Crew
         ExShielded = null;
         Alignment = Alignment.CrewProt;
         ShieldButton = new(this, "Shield", AbilityTypes.Target, "ActionSecondary", Protect, Exception);
+        player.Data.Role.IntroSound = GetAudio("MedicIntro");
     }
 
     public void Protect()

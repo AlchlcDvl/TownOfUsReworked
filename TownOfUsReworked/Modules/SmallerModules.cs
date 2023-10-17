@@ -2,9 +2,9 @@ using System.Text.Json.Serialization;
 
 namespace TownOfUsReworked.Modules;
 
-public record GenerationData(int Chance, LayerEnum ID, bool Unique);
+public record class GenerationData(int Chance, LayerEnum ID, bool Unique);
 
-public record SummaryInfo(string PlayerName, string History, string CachedHistory);
+public record class SummaryInfo(string PlayerName, string History, string CachedHistory);
 
 public class PointInTime
 {
@@ -13,7 +13,7 @@ public class PointInTime
     public PointInTime(Vector3 position) => Position = position;
 }
 
-public record PlayerVersion(Version Version, Guid Guid)
+public record class PlayerVersion(Version Version, Guid Guid)
 {
     public bool GuidMatches => TownOfUsReworked.Core.ManifestModule.ModuleVersionId.Equals(Guid);
 }
@@ -21,13 +21,13 @@ public record PlayerVersion(Version Version, Guid Guid)
 public class GitHubApiObject
 {
     [JsonPropertyName("tag_name")]
-    public string tag_name { get; set; }
+    public string Tag { get; set; }
     [JsonPropertyName("assets")]
-    public GitHubApiAsset[] assets { get; set; }
+    public GitHubApiAsset[] Assets { get; set; }
 }
 
 public class GitHubApiAsset
 {
     [JsonPropertyName("browser_download_url")]
-    public string browser_download_url { get; set; }
+    public string URL { get; set; }
 }

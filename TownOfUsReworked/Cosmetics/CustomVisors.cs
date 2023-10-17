@@ -20,7 +20,6 @@ public static class CustomVisors
         if (sprite == null)
             return null;
 
-        texture.hideFlags |= HideFlags.HideAndDontSave | HideFlags.DontUnloadUnusedAsset;
         sprite.hideFlags |= HideFlags.HideAndDontSave | HideFlags.DontUnloadUnusedAsset;
         return sprite;
     }
@@ -61,15 +60,9 @@ public static class CustomVisors
         if (cv.Adaptive && Shader != null)
             viewData.AltShader = Shader;
 
-        var extend = new VisorExtension()
-        {
-            Artist = cv.Artist ?? "Unknown",
-            Condition = cv.Condition ?? "none",
-            FlipImage = viewData.LeftIdleFrame
-        };
-
+        var extend = new VisorExtension() { Artist = cv.Artist ?? "Unknown" };
         CustomVisorRegistry.TryAdd(visor.name, extend);
-        CustomVisorViewDatas.TryAdd(visor.ProdId, viewData);
+        CustomVisorViewDatas.TryAdd(visor.ProductId, viewData);
         visor.ViewDataRef = new(viewData.Pointer);
         visor.CreateAddressableAsset();
         return visor;
@@ -208,7 +201,7 @@ public static class CustomVisors
     [HarmonyPatch(typeof(CosmeticsCache), nameof(CosmeticsCache.GetVisor))]
     public static class CosmeticsCacheGetVisorPatch
     {
-        public static bool Prefix(CosmeticsCache __instance, string id, ref VisorViewData __result)
+        public static bool Prefix(CosmeticsCache __instance, ref string id, ref VisorViewData __result)
         {
             if (!CustomVisorViewDatas.TryGetValue(id, out __result))
                 return true;
@@ -228,7 +221,7 @@ public static class CustomVisors
             if (__instance.currentVisor == null || !__instance.currentVisor.ProductId.StartsWith("customVisor_"))
                 return true;
 
-            var asset = CustomVisorViewDatas.TryGetValue(__instance.currentVisor.ProdId, out var result) ? result : null;
+            var asset = CustomVisorViewDatas.TryGetValue(__instance.currentVisor.ProductId, out var result) ? result : null;
             __instance.Image.sharedMaterial = asset.AltShader ?? HatManager.Instance.DefaultShader;
             PlayerMaterial.SetColors(__instance.matProperties.ColorId, __instance.Image);
 
@@ -246,24 +239,24 @@ public static class CustomVisors
     [HarmonyPatch(typeof(VisorLayer), nameof(VisorLayer.SetFlipX))]
     public static class VisorLayerSetFlipXPatch
     {
-        public static bool Prefix(VisorLayer __instance, bool flipX)
+        public static bool Prefix(VisorLayer __instance, ref bool flipX)
         {
             if (__instance.currentVisor == null || !__instance.currentVisor.ProductId.StartsWith("customVisor_"))
                 return true;
 
             __instance.Image.flipX = flipX;
-            var asset = CustomVisorViewDatas.TryGetValue(__instance.currentVisor.ProdId, out var result) ? result : null;
-            __instance.Image.sprite = flipX && asset.LeftIdleFrame ? asset.LeftIdleFrame : asset.IdleFrame;
+            var asset = CustomVisorViewDatas.TryGetValue(__instance.currentVisor.ProductId, out var result) ? result : null;
+            __instance.Image.sprite = flipX && asset?.LeftIdleFrame ? asset.LeftIdleFrame : asset.IdleFrame;
             return false;
         }
     }
 
-    [HarmonyPatch(typeof(VisorLayer), nameof(VisorLayer.SetVisor), new Type[] { typeof(VisorData), typeof(VisorViewData), typeof(int) })]
+    [HarmonyPatch(typeof(VisorLayer), nameof(VisorLayer.SetVisor), typeof(VisorData), typeof(VisorViewData), typeof(int))]
     public static class VisorLayerSetVisorPositionPatch
     {
-        public static bool Prefix(VisorLayer __instance, VisorData data, VisorViewData visorView, int colorId)
+        public static bool Prefix(VisorLayer __instance, ref VisorData data, ref VisorViewData visorView, ref int colorId)
         {
-            if (!data.ProductId.StartsWith("customVisor_"))
+            if (!CustomVisorViewDatas.TryGetValue(data.ProductId, out visorView))
                 return true;
 
             __instance.currentVisor = data;
@@ -274,10 +267,10 @@ public static class CustomVisors
         }
     }
 
-    [HarmonyPatch(typeof(VisorLayer), nameof(VisorLayer.SetVisor), new Type[] { typeof(VisorData), typeof(int) })]
+    [HarmonyPatch(typeof(VisorLayer), nameof(VisorLayer.SetVisor), typeof(VisorData), typeof(int))]
     public static class VisorLayerSetVisorPatch
     {
-        public static bool Prefix(VisorLayer __instance, VisorData data, int colorId)
+        public static bool Prefix(VisorLayer __instance, ref VisorData data, ref int colorId)
         {
             if (!CustomVisorViewDatas.TryGetValue(data.ProductId, out var asset))
                 return true;

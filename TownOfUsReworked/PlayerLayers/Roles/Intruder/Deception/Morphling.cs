@@ -13,7 +13,6 @@ public class Morphling : Intruder
     public override LayerEnum Type => LayerEnum.Morphling;
     public override Func<string> StartText => () => "Fool The <color=#8CFFFFFF>Crew</color> With Your Appearances";
     public override Func<string> Description => () => $"- You can morph into other players, taking up their appearances as your own\n{CommonAbilities}";
-    public override InspectorResults InspectorResults => InspectorResults.CreatesConfusion;
 
     public Morphling(PlayerControl player) : base(player)
     {
@@ -22,6 +21,7 @@ public class Morphling : Intruder
         MorphedPlayer = null;
         MorphButton = new(this, "Morph", AbilityTypes.Targetless, "Secondary", HitMorph, CustomGameOptions.MorphCd, CustomGameOptions.MorphDur, (CustomButton.EffectVoid)Morph, UnMorph);
         SampleButton = new(this, "Sample", AbilityTypes.Target, "Tertiary", Sample, CustomGameOptions.SampleCd, Exception1);
+        player.Data.Role.IntroSound = GetAudio("MorphlingIntro");
     }
 
     public void Morph() => Utils.Morph(Player, MorphedPlayer);

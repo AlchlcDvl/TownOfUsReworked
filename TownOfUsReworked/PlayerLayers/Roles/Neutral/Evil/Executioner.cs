@@ -19,7 +19,6 @@ public class Executioner : Neutral
     public override Func<string> StartText => () => "Find Someone To Eject";
     public override Func<string> Description => () => TargetPlayer == null ? "- You can select a player to eject" : ((TargetVotedOut ? "- You can doom those who voted for " +
         $"{TargetPlayer?.name}\n" : "") + $"- If {TargetPlayer?.name} dies, you will become a <color=#F7B3DAFF>Jester</color>");
-    public override InspectorResults InspectorResults => InspectorResults.Manipulative;
 
     public Executioner(PlayerControl player) : base(player)
     {
@@ -57,11 +56,7 @@ public class Executioner : Neutral
         }
     }
 
-    public void TurnJest()
-    {
-        var newRole = new Jester(Player);
-        newRole.RoleUpdate(this);
-    }
+    public void TurnJest() => new Jester(Player).RoleUpdate(this);
 
     public void Doom()
     {

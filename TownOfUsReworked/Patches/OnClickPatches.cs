@@ -1,7 +1,6 @@
 namespace TownOfUsReworked.Patches;
 
 [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.OnClick))]
-[HarmonyPriority(Priority.First)]
 public static class PlayerControlOnClick
 {
     public static bool Prefix(PlayerControl __instance)
@@ -78,7 +77,6 @@ public static class PlayerControlOnClick
 }
 
 [HarmonyPatch(typeof(DeadBody), nameof(DeadBody.OnClick))]
-[HarmonyPriority(Priority.First)]
 public static class DeadBodyOnClick
 {
     public static bool Prefix(DeadBody __instance)

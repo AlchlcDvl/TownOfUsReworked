@@ -5,7 +5,6 @@ public class Retributionist : Crew
     public Retributionist(PlayerControl player) : base(player)
     {
         Alignment = Alignment.CrewSupport;
-        Inspected = new();
         BodyArrows = new();
         MediatedPlayers = new();
         Bugs = new();
@@ -13,6 +12,9 @@ public class Retributionist : Crew
         UntransportablePlayers = new();
         Reported = new();
         ReferenceBodies = new();
+        AllPrints = new();
+        BombedIDs = new();
+        Investigated = new();
         Selected = null;
         TransportPlayer1 = null;
         TransportPlayer2 = null;
@@ -41,7 +43,6 @@ public class Retributionist : Crew
         AutopsyButton = new(this, "Autopsy", AbilityTypes.Dead, "ActionSecondary", Autopsy, CustomGameOptions.AutopsyCd);
         CompareButton = new(this, "Compare", AbilityTypes.Target, "Secondary", Compare, CustomGameOptions.CompareCd);
         ExamineButton = new(this, "Examine", AbilityTypes.Target, "ActionSecondary", Examine, CustomGameOptions.ExamineCd);
-        InspectButton = new(this, "Inspect", AbilityTypes.Target, "ActionSecondary", Inspect, CustomGameOptions.InspectCd, InspException);
         MediateButton = new(this, "Mediate", AbilityTypes.Targetless, "ActionSecondary", Mediate, CustomGameOptions.MediateCd);
         BugButton = new(this, "Bug", AbilityTypes.Targetless, "ActionSecondary", PlaceBug, CustomGameOptions.BugCd, CustomGameOptions.MaxBugs);
         SeerButton = new(this, "Seer", AbilityTypes.Target, "ActionSecondary", See, CustomGameOptions.SeerCd);
@@ -57,6 +58,7 @@ public class Retributionist : Crew
         BlockButton = new(this, "EscortRoleblock", AbilityTypes.Target, "ActionSecondary", Roleblock, CustomGameOptions.EscortCd, CustomGameOptions.EscortDur,
             (CustomButton.EffectVoid)Block, UnBlock);
         TransportButton = new(this, "Transport", AbilityTypes.Targetless, "ActionSecondary", Transport, CustomGameOptions.TransportCd, CustomGameOptions.MaxTransports);
+        BombButton = new(this, "VentBomb", AbilityTypes.Vent, "ActionSecondary", Bomb, CustomGameOptions.BastionCd, CustomGameOptions.MaxBombs, BastException);
         RetMenu = new(Player, "RetActive", "RetDisabled", CustomGameOptions.ReviveAfterVoting, SetActive, IsExempt, new(-0.4f, 0.03f, -1.3f));
     }
 
@@ -66,12 +68,22 @@ public class Retributionist : Crew
     public Role RevivedRole => Revived == null ? null : (Revived.Is(LayerEnum.Revealer) ? GetRole<Revealer>(Revived).FormerRole : GetRole(Revived));
     public CustomMeeting RetMenu { get; set; }
 
-    public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Retributionist : Colors.Crew;
+    public override Color Color
+    {
+        get
+        {
+            if (!ClientGameOptions.CustomCrewColors)
+                return Colors.Crew;
+            else if (RevivedRole != null)
+                return RevivedRole.Color;
+            else
+                return Colors.Retributionist;
+        }
+    }
     public override string Name => "Retributionist";
     public override LayerEnum Type => LayerEnum.Retributionist;
     public override Func<string> StartText => () => "Mimic the Dead";
     public override Func<string> Description => () => "- You can mimic the abilities of dead <color=#8CFFFFFF>Crew</color>" + (RevivedRole == null ? "" : $"\n{RevivedRole.Description()}");
-    public override InspectorResults InspectorResults => RevivedRole == null ? InspectorResults.DealsWithDead : RevivedRole.InspectorResults;
 
     public override void OnLobby()
     {
@@ -90,8 +102,7 @@ public class Retributionist : Crew
         Bug.Clear(Bugs);
         Bugs.Clear();
 
-        AllPrints.ForEach(x => x.Destroy());
-        AllPrints.Clear();
+        ClearFootprints();
     }
 
     public void DestroyArrow(byte targetPlayerId)
@@ -108,7 +119,7 @@ public class Retributionist : Crew
         }
     }
 
-    private bool IsExempt(PlayerVoteArea voteArea) => !voteArea.AmDead || PlayerByVoteArea(voteArea).Data.Disconnected || IsDead;
+    private bool IsExempt(PlayerVoteArea voteArea) => !voteArea.AmDead || PlayerByVoteArea(voteArea).Data.Disconnected || IsDead || !PlayerByVoteArea(voteArea).Is(Faction.Crew);
 
     private void SetActive(PlayerVoteArea voteArea, MeetingHud __instance)
     {
@@ -133,7 +144,6 @@ public class Retributionist : Crew
         AutopsyButton.Update2("AUTOPSY", IsCor);
         CompareButton.Update2("COMPARE", ReferenceBodies.Count > 0 && IsCor);
         ExamineButton.Update2("EXAMINE", IsDet);
-        InspectButton.Update2("INSPECT", IsInsp);
         MediateButton.Update2("MEDIATE", IsMed);
         BugButton.Update2("BUG", IsOP, !Bugs.Any(x => Vector2.Distance(Player.transform.position, x.Transform.position) < x.Size * 2));
         SeerButton.Update2("SEE", IsSeer);
@@ -144,6 +154,7 @@ public class Retributionist : Crew
         SwoopButton.Update2("SWOOP", IsCham);
         BlockButton.Update2("ROLEBLOCK", IsEsc);
         TrackButton.Update2("TRACK", IsTrack);
+        BombButton.Update2("PLACE BOMB", IsBast);
 
         if (IsDead)
             OnLobby();
@@ -204,12 +215,14 @@ public class Retributionist : Crew
             {
                 _time -= CustomGameOptions.FootprintInterval;
 
-                foreach (var player in CustomPlayer.AllPlayers)
+                foreach (var id in Investigated)
                 {
+                    var player = PlayerById(id);
+
                     if (player.HasDied() || player == CustomPlayer.Local)
                         continue;
 
-                    if (!AllPrints.Any(print => Vector3.Distance(print.Position, Position(player)) < 0.5f && print.Color.a > 0.5 && print.PlayerId == player.PlayerId))
+                    if (!AllPrints.Any(print => Vector2.Distance(print.Position, Position(player)) < 0.5f && print.Color.a > 0.5 && print.PlayerId == player.PlayerId))
                         AllPrints.Add(new(player));
                 }
 
@@ -259,7 +272,7 @@ public class Retributionist : Crew
 
         switch (retAction)
         {
-            case RetActionsRPC.RetributionistRevive:
+            case RetActionsRPC.Revive:
                 Revived = reader.ReadPlayer();
                 break;
 
@@ -283,8 +296,12 @@ public class Retributionist : Crew
 
                 break;
 
-            case RetActionsRPC.EscRoleblock:
+            case RetActionsRPC.Roleblock:
                 BlockTarget = reader.ReadPlayer();
+                break;
+
+            case RetActionsRPC.Bomb:
+                BombedIDs.Add(reader.ReadInt32());
                 break;
 
             default:
@@ -301,7 +318,7 @@ public class Retributionist : Crew
         if (Selected != null)
         {
             Revived = PlayerByVoteArea(Selected);
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, RetActionsRPC.RetributionistRevive, Selected);
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, RetActionsRPC.Revive, Selected);
         }
     }
 
@@ -319,7 +336,7 @@ public class Retributionist : Crew
         if (Selected != null)
         {
             Revived = PlayerByVoteArea(Selected);
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, RetActionsRPC.RetributionistRevive, Selected);
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, RetActionsRPC.Revive, Selected);
         }
     }
 
@@ -340,8 +357,8 @@ public class Retributionist : Crew
             else if (BuggedPlayers.Count == 1)
             {
                 var result = BuggedPlayers[0];
-                var a_an = result is LayerEnum.Altruist or LayerEnum.Engineer or LayerEnum.Escort or LayerEnum.Inspector or LayerEnum.Operative or LayerEnum.Actor or LayerEnum.Amnesiac or
-                    LayerEnum.Arsonist or LayerEnum.Executioner or LayerEnum.Ambusher or LayerEnum.Enforcer or LayerEnum.Impostor or LayerEnum.Anarchist ? "n" : "";
+                var a_an = result is LayerEnum.Altruist or LayerEnum.Engineer or LayerEnum.Escort or LayerEnum.Operative or LayerEnum.Amnesiac or LayerEnum.Actor or LayerEnum.Arsonist or
+                    LayerEnum.Executioner or LayerEnum.Ambusher or LayerEnum.Enforcer or LayerEnum.Impostor or LayerEnum.Anarchist ? "n" : "";
                 message = $"A{a_an} {result} triggered your bug.";
             }
             else if (CustomGameOptions.PreciseOperativeInfo)
@@ -361,10 +378,7 @@ public class Retributionist : Crew
                 Run(HUD.Chat, "<color=#8D0F8CFF>〖 Bug Results 〗</color>", message);
         }
         else if (IsDet)
-        {
-            AllPrints.ForEach(x => x.Destroy());
-            AllPrints.Clear();
-        }
+            ClearFootprints();
 
         Revived = null;
     }
@@ -432,6 +446,8 @@ public class Retributionist : Crew
     public CustomButton ExamineButton { get; set; }
     public bool IsDet => RevivedRole?.Type == LayerEnum.Detective;
     private static float _time;
+    public List<Footprint> AllPrints { get; set; }
+    public List<byte> Investigated { get; set; }
 
     private static Vector2 Position(PlayerControl player) => player.GetTruePosition() + new Vector2(0, 0.366667f);
 
@@ -444,6 +460,7 @@ public class Retributionist : Crew
         {
             Flash(ExamineButton.TargetPlayer.IsFramed() || KilledPlayers.Any(x => x.KillerId == ExamineButton.TargetPlayer.PlayerId && (DateTime.UtcNow - x.KillTime).TotalSeconds <=
                 CustomGameOptions.RecentKill) ? UColor.red : UColor.green);
+            Investigated.Add(ExamineButton.TargetPlayer.PlayerId);
         }
 
         if (interact.Protected)
@@ -452,29 +469,11 @@ public class Retributionist : Crew
         ExamineButton.StartCooldown(cooldown);
     }
 
-    //Inspector Stuff
-    public List<byte> Inspected { get; set; }
-    public CustomButton InspectButton { get; set; }
-    public bool IsInsp => RevivedRole?.Type == LayerEnum.Inspector;
-
-    public void Inspect()
+    public void ClearFootprints()
     {
-        var interact = Interact(Player, InspectButton.TargetPlayer);
-        var cooldown = CooldownType.Reset;
-
-        if (interact.AbilityUsed)
-            Inspected.Add(InspectButton.TargetPlayer.PlayerId);
-
-        if (interact.Protected)
-            cooldown = CooldownType.GuardianAngel;
-
-        InspectButton.StartCooldown(cooldown);
+        AllPrints.ForEach(x => x.Destroy());
+        AllPrints.Clear();
     }
-
-    public bool InspException(PlayerControl player) => Inspected.Contains(player.PlayerId) || (((Faction is Faction.Intruder or Faction.Syndicate && player.Is(Faction)) ||
-        (player.Is(SubFaction) && SubFaction != SubFaction.None)) && CustomGameOptions.FactionSeeRoles) || (Player.IsOtherLover(player) && CustomGameOptions.LoversRoles) ||
-        (Player.IsOtherRival(player) && CustomGameOptions.RivalsRoles) || (player.Is(LayerEnum.Mafia) && Player.Is(LayerEnum.Mafia) && CustomGameOptions.MafiaRoles) ||
-        (Player.IsOtherLink(player) && CustomGameOptions.LinkedRoles);
 
     //Medium Stuff
     public Dictionary<byte, CustomArrow> MediateArrows { get; set; }
@@ -663,7 +662,7 @@ public class Retributionist : Crew
         }
 
         if (ReviveButton.Uses == 0 && Local)
-            RpcMurderPlayer(Player, Player);
+            RpcMurderPlayer(Player);
 
         if (formerKiller.Contains(CustomPlayer.LocalCustom.PlayerName))
         {
@@ -708,7 +707,7 @@ public class Retributionist : Crew
     public bool IsCham => RevivedRole?.Type == LayerEnum.Chameleon;
 
     public void Invis() => Utils.Invis(Player);
-    
+
     public bool SwoopEnd() => IsDead;
 
     public void UnInvis() => DefaultOutfit(Player);
@@ -979,11 +978,8 @@ public class Retributionist : Crew
 
         if (CustomPlayer.Local == TransportPlayer1 || CustomPlayer.Local == TransportPlayer2)
         {
-            if (Minigame.Instance)
-                Minigame.Instance.Close();
-
-            if (Map)
-                Map.Close();
+            ActiveTask?.Close();
+            Map?.Close();
         }
 
         TransportPlayer1.moveable = true;
@@ -1071,5 +1067,29 @@ public class Retributionist : Crew
             Coroutines.Start(TransportPlayers());
             TransportButton.StartCooldown(CooldownType.Reset);
         }
+    }
+
+    //Bastion Stuff
+    public CustomButton BombButton { get; set; }
+    public List<int> BombedIDs { get; set; }
+    public bool IsBast => RevivedRole?.Type == LayerEnum.Bastion;
+
+    public bool BastException(Vent vent) => BombedIDs.Contains(vent.Id);
+
+    public void Bomb()
+    {
+        var interact = Interact(Player, BombButton.TargetVent);
+        var cooldown = CooldownType.Reset;
+
+        if (interact.AbilityUsed)
+        {
+            BombedIDs.Add(BombButton.TargetVent.Id);
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, RetActionsRPC.Bomb, BombButton.TargetVent);
+        }
+
+        if (interact.Protected)
+            cooldown = CooldownType.GuardianAngel;
+
+        BombButton.StartCooldown(cooldown);
     }
 }

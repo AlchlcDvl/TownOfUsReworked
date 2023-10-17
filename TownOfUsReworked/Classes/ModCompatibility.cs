@@ -38,6 +38,7 @@ public static class ModCompatibility
     public static bool IsSubmerged => SubLoaded && ShipStatus.Instance && ShipStatus.Instance.Type == SUBMERGED_MAP_TYPE;
 
     private static Type SubmarineStatusType;
+
     private static MethodInfo CalculateLightRadiusMethod;
 
     private static MethodInfo RpcRequestChangeFloorMethod;
@@ -45,7 +46,7 @@ public static class ModCompatibility
     private static MethodInfo GetFloorHandlerMethod;
 
     private static Type VentPatchDataType;
-    private static PropertyInfo InTransitionField;
+    private static PropertyInfo InTrasntionProperty;
 
     private static Type CustomTaskTypesType;
     private static FieldInfo RetrieveOxygenMaskField;
@@ -83,8 +84,10 @@ public static class ModCompatibility
     {
         SubLoaded = IL2CPPChainloader.Instance.Plugins.TryGetValue(SM_GUID, out var subPlugin);
 
-        if (!SubLoaded)
+        if (!SubLoaded || subPlugin == null)
             return;
+
+        LogMessage("Submerged was detected");
 
         try
         {
@@ -109,7 +112,7 @@ public static class ModCompatibility
             RpcRequestChangeFloorMethod = AccessTools.Method(FloorHandlerType, "RpcRequestChangeFloor");
 
             VentPatchDataType = SubTypes.First(t => t.Name == "VentPatchData");
-            InTransitionField = AccessTools.Property(VentPatchDataType, "InTransition");
+            InTrasntionProperty = AccessTools.Property(VentPatchDataType, "InTransition");
 
             CustomTaskTypesType = SubTypes.First(t => t.Name == "CustomTaskTypes");
             RetrieveOxygenMaskField = AccessTools.Field(CustomTaskTypesType, "RetrieveOxygenMask");
@@ -316,7 +319,7 @@ public static class ModCompatibility
         if (!IsSubmerged)
             return false;
 
-        return (bool)InTransitionField.GetValue(null);
+        return (bool)InTrasntionProperty.GetValue(null);
     }
 
     public static void RepairOxygen()
@@ -349,7 +352,7 @@ public static class ModCompatibility
 
     public static void ImpartSub(PlayerControl bot)
     {
-        var comp = bot?.gameObject?.AddComponent(Il2CppType.From(CustomPlayerData)).TryCast(CustomPlayerData);
+        var comp = bot?.gameObject?.AddComponent(Il2CppType.From(CustomPlayerData))?.TryCast(CustomPlayerData);
         HasMap.SetValue(comp, true);
     }
 
@@ -362,21 +365,70 @@ public static class ModCompatibility
     public static SemanticVersioning.Version LIVersion { get; private set; }
     public static bool LILoaded { get; private set; }
     public static BasePlugin LIPlugin { get; private set; }
+    public static Assembly LIAssembly { get; private set; }
+    public static Type[] LITypes { get; private set; }
 
-    public static bool IsLIEnabled => LILoaded && ShipStatus.Instance && ShipStatus.Instance.Type == LI_MAP_TYPE;
+    private static MonoBehaviour _liStatus;
+
+    public static MonoBehaviour LIShipStatus
+    {
+        get
+        {
+            if (!LILoaded)
+                return null;
+
+            if (!_liStatus || _liStatus.WasCollected)
+            {
+                if (!ShipStatus.Instance || ShipStatus.Instance.WasCollected)
+                    return _liStatus = null;
+                else if (ShipStatus.Instance.Type == LI_MAP_TYPE)
+                    return _liStatus = ShipStatus.Instance.GetComponent(Il2CppType.From(LIShipStatusType))?.TryCast(LIShipStatusType) as MonoBehaviour;
+                else
+                    return _liStatus = null;
+            }
+            else
+                return _liStatus;
+        }
+    }
+
+    public static bool IsLevelImpostor => LILoaded && ShipStatus.Instance && ShipStatus.Instance.Type == LI_MAP_TYPE;
+
+    private static Type LIShipStatusType;
+
+    private static Type MapLoaderType;
+    private static Type LIMapType;
+    private static MethodInfo LoadMapMethod;
+    private static MethodInfo UnloadMapMethod;
+
+    public static string CurrentLIMap;
 
     public static void InitializeLevelImpostor()
     {
         LILoaded = IL2CPPChainloader.Instance.Plugins.TryGetValue(LI_GUID, out var liPlugin);
 
-        if (!LILoaded)
+        if (!LILoaded || liPlugin == null)
             return;
+
+        LogMessage("LevelImpostor was detected");
 
         try
         {
             LIPlugin = liPlugin!.Instance as BasePlugin;
             LIVersion = liPlugin.Metadata.Version;
             LogInfo(LIVersion);
+
+            LIAssembly = LIPlugin!.GetType().Assembly;
+            LITypes = AccessTools.GetTypesFromAssembly(LIAssembly);
+
+            LIShipStatusType = LITypes.First(t => t.Name == "LIShipStatus");
+
+            MapLoaderType = LITypes.First(t => t.Name == "MapLoader");
+            LIMapType = LITypes.First(t => t.Name == "LIMap");
+            LoadMapMethod = AccessTools.Method(MapLoaderType, "LoadMap", new[] { LIMapType, typeof(bool) });
+            UnloadMapMethod = AccessTools.Method(MapLoaderType, "UnloadMap");
+
+            TownOfUsReworked.ModInstance.Harmony.Patch(LoadMapMethod, null, new(AccessTools.Method(typeof(ModCompatibility), nameof(SetCurrentMap))));
+            TownOfUsReworked.ModInstance.Harmony.Patch(UnloadMapMethod, null, new(AccessTools.Method(typeof(ModCompatibility), nameof(UnloadMap))));
         }
         catch (Exception e)
         {
@@ -384,6 +436,19 @@ public static class ModCompatibility
             LILoaded = false;
         }
     }
+
+    public static void SetCurrentMap(ref dynamic map)
+    {
+        if (!LILoaded)
+        {
+            CurrentLIMap = "LevelImpostor";
+            return;
+        }
+
+        CurrentLIMap = $"{map?.name} <size=0.9>by {map?.authorName}</size>";
+    }
+
+    public static void UnloadMap() => CurrentLIMap = "LevelImpostor";
 
     public static void Init()
     {

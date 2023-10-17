@@ -9,7 +9,6 @@ public class Chameleon : Crew
     public override LayerEnum Type => LayerEnum.Chameleon;
     public override Func<string> StartText => () => "Go Invisible To Stalk Players";
     public override Func<string> Description => () => "- You can turn invisible";
-    public override InspectorResults InspectorResults => InspectorResults.Unseen;
 
     public Chameleon(PlayerControl player) : base(player) => SwoopButton = new(this, "Swoop", AbilityTypes.Targetless, "ActionSecondary", Swoop, CustomGameOptions.SwoopCd,
         CustomGameOptions.SwoopDur, Invis, UnInvis, CustomGameOptions.MaxSwoops);

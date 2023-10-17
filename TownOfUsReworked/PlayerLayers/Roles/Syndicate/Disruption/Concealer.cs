@@ -11,7 +11,6 @@ public class Concealer : Syndicate
     public override LayerEnum Type => LayerEnum.Concealer;
     public override Func<string> StartText => () => "Turn The <color=#8CFFFFFF>Crew</color> Invisible For Some Chaos";
     public override Func<string> Description => () => $"- You can turn {(HoldsDrive ? "everyone" : "a player")} invisible\n{CommonAbilities}";
-    public override InspectorResults InspectorResults => InspectorResults.Unseen;
 
     public Concealer(PlayerControl player) : base(player)
     {

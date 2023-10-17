@@ -9,7 +9,6 @@ public class Betrayer : Neutral
     public override LayerEnum Type => LayerEnum.Betrayer;
     public override Func<string> StartText => () => "Those Backs Are Ripe For Some Stabbing";
     public override Func<string> Description => () => "- You can kill";
-    public override InspectorResults InspectorResults => InspectorResults.IsAggressive;
 
     public Betrayer(PlayerControl player) : base(player)
     {

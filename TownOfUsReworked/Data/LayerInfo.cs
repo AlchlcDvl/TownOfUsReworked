@@ -9,6 +9,8 @@ public static class LayerInfo
             "player is revived, all evil players will be notified of the revival and will have an arrow pointing towards the revived player. Once the Altruist uses up all of their ability "
             + "charges, they sacrifice themselves on the last use of their ability.", Alignment.CrewProt, Faction.Crew, "I know what I have to do but I don't know if I have the strength to" +
             " do it.", Colors.Altruist),
+        new("Bastion", "Bast", "The Bastion can place bombs in vents. Anyone who tries to interact with the bombed vent will die.", Alignment.CrewKill, Faction.Crew, "Hop in there, I dare " +
+            "ya.", Colors.Bastion),
         new("Chameleon", "Cham", "The Chameleon can go invisible to stalk players and see what they do when no one is around.", Alignment.CrewSupport, Faction.Crew, "Are you sure you" +
             " can see me?", Colors.Chameleon),
         new("Coroner", "Cor", "The Coroner gets an alert when someone dies and briefly gets an arrow pointing in the direction of the body. They can autopsy bodies to get some info. They" +
@@ -17,13 +19,18 @@ public static class LayerInfo
             Faction.Crew, "A body? Where? I need it for...scientific purposes.", Colors.Coroner),
         new("Crewmate", "Crew", "Just a plain Crew with no abilities and only spawns if all the other roles are taken or set to spawn in Custom mode.", Alignment.CrewUtil, Faction.Crew,
             "I once made a pencil using 2 erasers...they were pointless, just like me.", Colors.Crew),
+        new("Detective", "Det", "The Detective can examine other players for bloody hands. If the examined player has killed recently, the Detective will be alerted about it. The " +
+            "Detective can also see the footprints of players. All footprints disappear after a set amount of time and only the Detective can see them.", Alignment.CrewInvest,
+            Faction.Crew, "I am skilled in identifying blood...yup that's defintely blood.", Colors.Detective),
+        new("Dictator", "Dict", "The Dictator has no active ability aside from revealing themselves as the Dictator to all players. When revealed, in the next meeting they can pick " +
+            "up to 3 players to be ejected. All selected players will be killed at the end of the meeting, along with the chosen 4th player everyone else votes on (if any). If any " +
+            "of the killed players happens to be Crew, the Dictator dies with them. The Dictator has no post ejection ability.", Alignment.CrewSov, Faction.Crew, "Out you go!",
+            Colors.Dictator),
         new("Engineer", "Engi", "The Engineer can fix sabotages from anywhere on the map. They can also use vents to get across the map easily.", Alignment.CrewSupport, Faction.Crew,
             "How am I going to stop some big mean mother hubbard from tearing me a structurally superfluous new behind? The solution? Use a wrench. And if that don't work, use more wrench."
             , Colors.Engineer),
         new("Escort", "Esc", "The Escort can roleblock players and prevent them from doing anything for a short while.", Alignment.CrewSupport, Faction.Crew, "Today, I will make you a "
             + "man.", Colors.Escort),
-        new("Inspector", "Insp", "The Inspector can inspect players for their roles. Upon being inspected, the target's name will be updated to give a list of what roles the target could" +
-            " possibly be.", Alignment.CrewInvest, Faction.Crew, "THAT'S THE GODFATHER! YOU GOTTA BELIEVE ME.", Colors.Inspector),
         new("Mayor", "Mayo (XD)", "The Mayor has no active ability aside from being able to reveal themselves as the Mayor to other players. Upon doing so, tthe value of their vote " +
             "increases.", Alignment.CrewSov, Faction.Crew, "Um, those votes are legitimate. No, the votes are not rigged.", Colors.Mayor),
         new("Medic", "Medic", "The Medic can give any player a shield that will make them largely immortal as long as the Medic is alive. Some ways of death still go through, like " +
@@ -67,6 +74,9 @@ public static class LayerInfo
             "Touch me, I dare you.", Colors.Veteran),
         new("Vigilante", "Vig", "The Vigilante can kill. However, if they kill someone they shouldn't, they instead die themselves.", Alignment.CrewKill, Faction.Crew, "I AM THE HAND" +
             " OF JUSTICE.", Colors.Vigilante),
+        new("Monarch", "Mon", "The Monarch can appoint players as knights. When the next meeting is called, all knighted players will be announced. Knighted players will have the value"
+            + " of their votes increased. As long as a Knight is alive, the Monarch cannot be killed. Knighted players have a pinkish red κ next to their names.", Alignment.CrewSov,
+            Faction.Crew, "Doth thou solemnly swear your allegiance to the lord?", Colors.Monarch),
         new("Actor", "Act", "The Actor gets a list of roles at the start of the game. This list of roles depends on which roles are present in the game so that it's easier for the Actor " +
             "to pretend with certain events. The Actor must pretend to be and get guessed as one of the roles in order to win.", Alignment.NeutralEvil, Faction.Neutral, "I am totally" +
             " what you think of me as.", Colors.Actor, "Get guessed as a role in their target role list"),
@@ -75,6 +85,9 @@ public static class LayerInfo
         new("Arsonist", "Arso", "The Arsonist can douse players in gasoline. After dousing, the Arsonist can choose to ignite all doused players which kills all doused players at once." +
             " Doused players have an orange Ξ next to their names", Alignment.NeutralKill, Faction.Neutral, "I like my meat well done.", Colors.Arsonist, "Douse and ignite anyone who" +
             " can oppose them"),
+        new("Betrayer", "Bet", "The Betrayer is a simple killer, who appears after a turned Traitor/Fanatic was the only member of their new faction remaning. This role does not spawn"
+            + " directly.", Alignment.NeutralPros, Faction.Neutral, "The back that trusts me the most is the sweetest to stab", Colors.Betrayer, "Kill anyone who opposes the faction " +
+            "they defected to"),
         new("Bounty Hunter", "BH", "The Bounty Hunter is assigned a target as the start of the game. Every meeting, the Bounty Hunter is given clue to who their target might be. They "
             + "do not know who the target is and must find them via a series of clues and limited guesses. Upon finding their target within the set amount of guesses, the guess " +
             "button becomes a kill button. The Bounty Hunter's target always knows that there is a bounty on their head. If the Bounty Hunter is unable to find their target within " +
@@ -220,19 +233,6 @@ public static class LayerInfo
         new("Bomber", "Bomb", "The Bomber can place a bomb which can be remotely detonated at any time. Anyone caught inside the bomb's radius at the time of detonation will be killed"
             + ". Only the latest placed bomb will detonate, unless the Bomber holds the Chaos Drive, with which they can detonate all bombs at once.", Alignment.SyndicateKill,
             Faction.Syndicate, "KABOOM!!", Colors.Bomber),
-        new("Detective", "Det", "The Detective can examine other players for bloody hands. If the examined player has killed recently, the Detective will be alerted about it. The " +
-            "Detective can also see the footprints of players. All footprints disappear after a set amount of time and only the Detective can see them.", Alignment.CrewInvest,
-            Faction.Crew, "I am skilled in identifying blood...yup that's defintely blood.", Colors.Detective),
-        new("Betrayer", "Bet", "The Betrayer is a simple killer, who appears after a turned Traitor/Fanatic was the only member of their new faction remaning. This role does not spawn"
-            + " directly.", Alignment.NeutralPros, Faction.Neutral, "The back that trusts me the most is the sweetest to stab", Colors.Betrayer, "Kill anyone who opposes the faction " +
-            "they defected to"),
-        new("Dictator", "Dict", "The Dictator has no active ability aside from revealing themselves as the Dictator to all players. When revealed, in the next meeting they can pick " +
-            "up to 3 players to be ejected. All selected players will be killed at the end of the meeting, along with the chosen 4th player everyone else votes on (if any). If any " +
-            "of the killed players happens to be Crew, the Dictator dies with them. The Dictator has no post ejection ability.", Alignment.CrewSov, Faction.Crew, "Out you go!",
-            Colors.Dictator),
-        new("Monarch", "Mon", "The Monarch can appoint players as knights. When the next meeting is called, all knighted players will be announced. Knighted players will have the value"
-            + " of their votes increased. As long as a Knight is alive, the Monarch cannot be killed. Knighted players have a pinkish red κ next to their names.", Alignment.CrewSov,
-            Faction.Crew, "Doth thou solemnly swear your allegiance to the lord?", Colors.Monarch),
         new("Stalker", "Stalk", "The Stalker is a buffed Tracker with no update interval. With the Chaos Drive, the arrows are no longer affected by camouflages and all players " +
             "instantly have an arrow pointing at them.", Alignment.SyndicateSupport, Faction.Syndicate, "I'll follow you.", Colors.Stalker),
         new("Spellslinger", "Spell", "The Spellslinger is a powerful role who can cast curses on players. When all non-Syndicate players are cursed, the game ends in a Syndicate " +
@@ -305,10 +305,10 @@ public static class LayerInfo
         new("Traitor", "CT (means Crew Traitor)", "The Traitor is a member of the Crew who must finish their tasks to switch sides. Upon doing so, they will either join the Intruders "
             + "or the Syndicate, and will win with that faction. If the Traitor is the only person in their new faction, they become a Betrayer, losing their original role's abilities "
             + "and gaining the ability to kill in the process.", "Finish tasks to join either the Intruders or Syndicate", "Crew", "♣", Colors.Traitor),
-        new("Mafia", "Maf", "The Mafia are a group of players with a linked win condition. They must kill anyone who is not a member of the Mafia. All Mafia win together.", "Kill " +
-            "anyone who is not a member of the Mafia", "Everyone", "ω", Colors.Mafia),
-        new("Linked", "Link", "The Linked players are a watered down pair of Lovers. They can help the other player win. As long as one of the links wins, the other does too, " +
-            "regardless of who or how they won.", "Help the other link win", "Neutrals", "Ψ", Colors.Linked),
+        new("Mafia", "Maf", "The Mafia are a group of players with a linked win condition. They must kill anyone who is not a member of the Mafia. All Mafia win together.", "Kill anyone" +
+            " who is not a member of the Mafia", "Everyone", "ω", Colors.Mafia),
+        new("Linked", "Link", "The Linked players are a watered down pair of Lovers. They can help the other player win. As long as one of the links wins, the other does too, regardless " +
+            "of how they won.", "Help the other link win", "Neutrals", "Ψ", Colors.Linked),
         new("Defector", "Defect", "A Defector switches sides when they happen to be the last player alive in their original faction.", "Kill off anyone who opposes their new faction",
             "Intruders And Syndicate", "ε", Colors.Defector)
     };
@@ -557,14 +557,6 @@ public static class LayerInfo
             " your win condition mid-game (see Traitor and Fanatic).", Colors.Objectifier),
         new("Modifier", "Mod", "Modifiers are passive afflictions, usually negative or benign in nature, that serve no purpose and are there for fun. It cam alter a player's gameplay based"
             + " on what they might have. For example, Baits and Diseased players would want to die for their modifiers to take effect.", Colors.Modifier),
-        new("Ability", "Ab", "Abilities give you an additional ability on top of your original abilities, to help boost your chances of winning.", Colors.Ability),
-        new("Inspector Results", "IR", "All roles are classified within certain role groups for the Inspector to see.", Colors.Inspector, "Results:\nDeals With Dead - Coroner, " +
-            "Amnesiac, Retributionist, Janitor, Cannibal\nPreserves Life - Medic, Guardian Angel, Altruist, Necromancer, Crusader\nLeads The Group - Mayor, Godfather, Rebel, Pestilence, " +
-            "Survivor\nBrings Chaos - Shifter, Thief, Camouflager, Whisperer, Jackal\nSeeks To Destroy - Arsonist, Cryomaniac, Plaguebearer, Spellslinger\nWants To Explore - Transporter, " +
-            "Teleporter, Warper, Timekeeper\nNew Lens - Engineer, Miner, Seer, Dracula, Medium, Monarch\nGains Information - Sheriff, Consigliere, Blackmailer, Detective, Inspector, " +
-            "Silencer\nIs Manipulative - Jester, Executioner, Actor, Troll, Framer, Dictator\nUnseen - Chameleon, Wraith, Concealer, Poisoner, Collider\nIs Cold - Veteran, Vigilante, " +
-            "Sidekick, Guesser, Mafioso\nTracks Others - Tracker, Mystic, Vampire Hunter, Bounty Hunter, Stalker\nIs Aggressive - Betrayer, Werewolf, Juggernaut, Serial Killer\nCreates " +
-            "Confusion - Morphling, Disguiser, Shapeshifter\nDrops Items - Bomber, Operative, Grenadier, Enforcer\nHinders Others - Escort, Consort, Glitch, Ambusher, Drunkard\nIs Basic - " +
-            "Crewmate, Impostor, Murderer, Anarchist\nGhostly - Revealer, Phantom, Ghoul, Banshee")
+        new("Ability", "Ab", "Abilities give you an additional ability on top of your original abilities, to help boost your chances of winning.", Colors.Ability)
     };
 }

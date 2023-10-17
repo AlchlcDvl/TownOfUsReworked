@@ -16,7 +16,6 @@ public class Cryomaniac : Neutral
     public override Func<string> StartText => () => "Who Likes Ice Cream?";
     public override Func<string> Description => () => "- You can douse players in coolant\n- Doused players can be frozen, which kills all of them at once at the start of the next " +
         $"meeting\n- People who interact with you will also get doused{(LastKiller ? "\n- You can kill normally" : "")}";
-    public override InspectorResults InspectorResults => InspectorResults.SeeksToDestroy;
 
     public Cryomaniac(PlayerControl player) : base(player)
     {
@@ -54,7 +53,7 @@ public class Cryomaniac : Neutral
     {
         base.OnMeetingStart(__instance);
 
-        foreach (var cryo in GetRoles<Cryomaniac>(LayerEnum.Cryomaniac))
+        foreach (var cryo in GetLayers<Cryomaniac>())
         {
             if (cryo.FreezeUsed)
             {
@@ -65,7 +64,7 @@ public class Cryomaniac : Neutral
                 {
                     var player2 = PlayerById(player);
 
-                    if (player2 == null || player2.HasDied() || player2.Is(LayerEnum.Pestilence) || player2.IsProtected())
+                    if (player2 == null || player2.HasDied() || player2.Is(Alignment.NeutralApoc) || player2.IsProtected())
                         continue;
 
                     RpcMurderPlayer(Player, player2, DeathReasonEnum.Frozen);

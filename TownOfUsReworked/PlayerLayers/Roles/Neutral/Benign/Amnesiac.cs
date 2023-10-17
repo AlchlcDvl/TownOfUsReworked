@@ -12,7 +12,6 @@ public class Amnesiac : Neutral
     public override Func<string> StartText => () => "You Forgor <i>:skull:</i>";
     public override Func<string> Description => () => "- You can copy over a player's role should you find their body" + (CustomGameOptions.RememberArrows ? ("\n- When someone dies, " +
         "you get an arrow pointing to their body") : "") + "\n- If there are less than 6 players alive, you will become a <color=#80FF00FF>Thief</color>";
-    public override InspectorResults InspectorResults => InspectorResults.LeadsTheGroup;
 
     public Amnesiac(PlayerControl player) : base(player)
     {
@@ -35,11 +34,7 @@ public class Amnesiac : Neutral
         BodyArrows.Clear();
     }
 
-    public void TurnThief()
-    {
-        var newRole = new Thief(Player);
-        newRole.RoleUpdate(this);
-    }
+    public void TurnThief() => new Thief(Player).RoleUpdate(this);
 
     public void Remember()
     {
@@ -92,6 +87,7 @@ public class Amnesiac : Neutral
             LayerEnum.Grenadier => new Grenadier(Player),
             LayerEnum.GuardianAngel => new GuardianAngel(Player) { TargetPlayer = target },
             LayerEnum.Impostor => new Impostor(Player),
+            LayerEnum.Bastion => new Bastion(Player) { BombedIDs = ((Bastion)role).BombedIDs },
             LayerEnum.Jackal => new Jackal(Player)
             {
                 Recruited = ((Jackal)role).Recruited,
@@ -129,7 +125,7 @@ public class Amnesiac : Neutral
             LayerEnum.Mystic => new Mystic(Player),
             LayerEnum.Dictator => new Dictator(Player),
             LayerEnum.Seer => new Seer(Player),
-            LayerEnum.Actor => new Actor(Player) { TargetRole = actor },
+            LayerEnum.Actor => new Actor(Player) { PretendRoles = actor },
             LayerEnum.BountyHunter => new BountyHunter(Player) { TargetPlayer = target },
             LayerEnum.Guesser => new Guesser(Player) { TargetPlayer = target },
             LayerEnum.Necromancer => new Necromancer(Player) { Resurrected = ((Necromancer)role).Resurrected },
@@ -139,7 +135,6 @@ public class Amnesiac : Neutral
             LayerEnum.Crusader => new Crusader(Player),
             LayerEnum.Altruist => new Altruist(Player),
             LayerEnum.Engineer => new Engineer(Player),
-            LayerEnum.Inspector => new Inspector(Player),
             LayerEnum.Tracker => new Tracker(Player),
             LayerEnum.Stalker => new Stalker(Player),
             LayerEnum.Transporter => new Transporter(Player),
@@ -157,7 +152,8 @@ public class Amnesiac : Neutral
             LayerEnum.Retributionist => new Retributionist(Player)
             {
                 Selected = ((Retributionist)role).Selected,
-                ShieldedPlayer = ((Retributionist)role).ShieldedPlayer
+                ShieldedPlayer = ((Retributionist)role).ShieldedPlayer,
+                BombedIDs = ((Retributionist)role).BombedIDs
             },
             _ => new Amnesiac(Player),
         };
@@ -182,7 +178,7 @@ public class Amnesiac : Neutral
 
         if (Player.Is(Faction.Intruder) || Player.Is(Faction.Syndicate) || (Player.Is(Faction.Neutral) && CustomGameOptions.SnitchSeesNeutrals))
         {
-            foreach (var snitch in Ability.GetAbilities<Snitch>(LayerEnum.Snitch))
+            foreach (var snitch in PlayerLayer.GetLayers<Snitch>())
             {
                 if (snitch.TasksLeft <= CustomGameOptions.SnitchTasksRemaining && CustomPlayer.Local == Player)
                     LocalRole.AllArrows.Add(snitch.PlayerId, new(Player, Colors.Snitch));
@@ -190,7 +186,7 @@ public class Amnesiac : Neutral
                     GetRole(snitch.Player).AllArrows.Add(Player.PlayerId, new(snitch.Player, Colors.Snitch));
             }
 
-            foreach (var revealer in GetRoles<Revealer>(LayerEnum.Revealer))
+            foreach (var revealer in GetLayers<Revealer>())
             {
                 if (revealer.Revealed && CustomPlayer.Local == Player)
                     LocalRole.AllArrows.Add(revealer.PlayerId, new(Player, Colors.Revealer));

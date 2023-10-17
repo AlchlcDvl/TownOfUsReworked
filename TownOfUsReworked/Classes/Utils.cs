@@ -2,9 +2,9 @@
 
 public static class Utils
 {
-    private static bool Shapeshifted;
+    public static bool Shapeshifted;
 
-    public static bool HasDied(this PlayerControl player) => player.Data.IsDead || player.Data.Disconnected;
+    public static bool HasDied(this PlayerControl player) => player == null || player.Data.IsDead || player.Data.Disconnected;
 
     public static TextMeshPro NameText(this PlayerControl p) => p.cosmetics.nameText;
 
@@ -32,12 +32,12 @@ public static class Utils
         playerControl.SetOutfit(customOutfitType);
     }
 
-    public static void SetOutfit(this PlayerControl playerControl, CustomPlayerOutfitType CustomOutfitType)
+    public static void SetOutfit(this PlayerControl playerControl, CustomPlayerOutfitType customOutfit)
     {
         if (playerControl == null)
             return;
 
-        var outfitType = (PlayerOutfitType)CustomOutfitType;
+        var outfitType = (PlayerOutfitType)customOutfit;
 
         if (!playerControl.Data.Outfits.TryGetValue(outfitType, out var newOutfit))
             return;
@@ -59,26 +59,23 @@ public static class Utils
 
     public static CustomPlayerOutfitType GetCustomOutfitType(this PlayerControl playerControl) => (CustomPlayerOutfitType)playerControl.CurrentOutfitType;
 
-    public static void Morph(PlayerControl player, PlayerControl morphTarget) => Coroutines.Start(MorphCoro(player, morphTarget));
-
-    public static IEnumerator MorphCoro(PlayerControl player, PlayerControl morphTarget)
+    public static void Morph(PlayerControl player, PlayerControl morphTarget)
     {
-        if (HudUpdate.IsCamoed || CustomPlayer.Local.Is(LayerEnum.Colorblind))
-            yield break;
-
-        if (player.GetCustomOutfitType() is not (CustomPlayerOutfitType.Morph or CustomPlayerOutfitType.Invis))
+        if ((int)player.GetCustomOutfitType() is not (3 or 4 or 5 or 6 or 7))
         {
             var morphTo = PlayerById(CachedMorphs.TryGetValue(player.PlayerId, out var morphId) ? morphId : morphTarget.PlayerId);
             player.SetOutfit(CustomPlayerOutfitType.Morph, morphTo.Data.DefaultOutfit);
             CachedMorphs.TryAdd(player.PlayerId, morphTarget.PlayerId);
+
+            if (morphTo == player)
+                morphTo = morphTarget;
+
             HUD.StartCoroutine(Effects.Lerp(1, new Action<float>(p =>
             {
                 var color = Color.Lerp(Palette.PlayerColors[player.GetDefaultOutfit().ColorId], Palette.PlayerColors[morphTarget.GetDefaultOutfit().ColorId], p);
                 PlayerMaterial.SetColors(color, player.MyRend());
             })));
         }
-
-        yield return null;
     }
 
     public static void DefaultOutfit(PlayerControl player) => Coroutines.Start(DefaultOutfitCoro(player));
@@ -95,6 +92,12 @@ public static class Utils
                 text.color = new(text.color.a, text.color.a, text.color.a, p);
                 var cbtext = player.ColorBlindText();
                 cbtext.color = new(cbtext.color.a, cbtext.color.a, cbtext.color.a, p);
+
+                if (HudUpdate.IsCamoed)
+                {
+                    var color = Color.Lerp(Palette.PlayerColors[6], UColor.grey, p);
+                    PlayerMaterial.SetColors(color, player.MyRend());
+                }
             })));
 
             yield return new WaitForSeconds(1f);
@@ -127,15 +130,13 @@ public static class Utils
         if (Shapeshifted)
             Shapeshifted = false;
 
-        player.SetOutfit(CustomPlayerOutfitType.Default);
-        yield return null;
+        if (!HudUpdate.IsCamoed)
+            player.SetOutfit(CustomPlayerOutfitType.Default);
     }
 
     public static void Camouflage() => CustomPlayer.AllPlayers.ForEach(CamoSingle);
 
-    public static void CamoSingle(PlayerControl player) => Coroutines.Start(CamoSingleCoro(player));
-
-    public static IEnumerator CamoSingleCoro(PlayerControl player)
+    public static void CamoSingle(PlayerControl player)
     {
         if ((int)player.GetCustomOutfitType() is not (4 or 5 or 6 or 7) && !player.Data.IsDead && !CustomPlayer.LocalCustom.IsDead && player != CustomPlayer.Local)
         {
@@ -146,34 +147,38 @@ public static class Utils
                 PlayerMaterial.SetColors(color, player.MyRend());
             })));
         }
-
-        yield return null;
     }
 
-    public static void Invis(PlayerControl player, bool condition = false) => Coroutines.Start(InvisCoro(player, condition));
-
-    public static IEnumerator InvisCoro(PlayerControl player, bool condition)
+    public static void Invis(PlayerControl player, bool condition = false)
     {
         var ca = condition || CustomPlayer.LocalCustom.IsDead || player == CustomPlayer.Local || CustomPlayer.Local.Is(LayerEnum.Torch) ? 0.1f : 0f;
 
         if (player.GetCustomOutfitType() != CustomPlayerOutfitType.Invis && !player.Data.IsDead)
         {
-            player.SetOutfit(CustomPlayerOutfitType.Invis, InvisOutfit(player));
+            player.SetOutfit(CustomPlayerOutfitType.Invis, InvisOutfit());
             HUD.StartCoroutine(Effects.Lerp(1, new Action<float>(p =>
             {
                 var rend = player.MyRend();
                 rend.color = new(1f, 1f, 1f, Mathf.Clamp(1 - p, ca, 1));
-                var text = player.NameText();
-                text.color = new(text.color.a, text.color.a, text.color.a, 1 - p);
-                var cbtext = player.ColorBlindText();
-                cbtext.color = new(cbtext.color.a, cbtext.color.a, cbtext.color.a, 1 - p);
+
+                if (player != CustomPlayer.Local)
+                {
+                    var text = player.NameText();
+                    text.color = new(text.color.r, text.color.g, text.color.b, 1 - p);
+                    var cbtext = player.ColorBlindText();
+                    cbtext.color = new(cbtext.color.r, cbtext.color.g, cbtext.color.b, 1 - p);
+                }
+
+                if (HudUpdate.IsCamoed)
+                {
+                    var color = Color.Lerp(UColor.grey, Palette.PlayerColors[6], p);
+                    PlayerMaterial.SetColors(color, player.MyRend());
+                }
             })));
         }
-
-        yield return null;
     }
 
-    public static GameData.PlayerOutfit InvisOutfit(PlayerControl player) => new()
+    public static GameData.PlayerOutfit InvisOutfit() => new()
     {
         ColorId = 6,
         HatId = "",
@@ -195,43 +200,27 @@ public static class Utils
         PetId = ""
     };
 
-    public static GameData.PlayerOutfit ColorblindOutfit(PlayerControl player) => new()
+    public static GameData.PlayerOutfit ColorblindOutfit() => new()
     {
-        ColorId = player.GetDefaultOutfit().ColorId,
+        ColorId = 7,
         HatId = "",
         SkinId = "",
         VisorId = "",
-        NamePlateId = player.GetDefaultOutfit().NamePlateId,
+        NamePlateId = "",
         PlayerName = " ",
         PetId = ""
     };
 
-    public static void Shapeshift()
+    public static GameData.PlayerOutfit NightVisonOutfit() => new()
     {
-        if (!Shapeshifted)
-        {
-            Shapeshifted = true;
-            var allPlayers = CustomPlayer.AllPlayers;
-            var shuffledPlayers = CustomPlayer.AllPlayers;
-            shuffledPlayers.Shuffle();
-
-            for (var i = 0; i < allPlayers.Count; i++)
-            {
-                var morphed = allPlayers[i];
-                var morphTarget = shuffledPlayers[i];
-                Morph(morphed, morphTarget);
-                CachedMorphs.Add(morphed.PlayerId, morphTarget.PlayerId);
-            }
-        }
-        else
-        {
-            CustomPlayer.AllPlayers.ForEach(x =>
-            {
-                if (CachedMorphs.ContainsKey(x.PlayerId))
-                    Morph(x, PlayerById(CachedMorphs[x.PlayerId]));
-            });
-        }
-    }
+        ColorId = 11,
+        HatId = "",
+        SkinId = "",
+        VisorId = "",
+        PlayerName = " ",
+        NamePlateId = "",
+        PetId = ""
+    };
 
     public static void DefaultOutfitAll() => CustomPlayer.AllPlayers.ForEach(DefaultOutfit);
 
@@ -299,6 +288,8 @@ public static class Utils
         return Vector2.Distance(refBody.TruePosition, player.transform.position);
     }
 
+    public static void RpcMurderPlayer(PlayerControl self, DeathReasonEnum reason = DeathReasonEnum.Killed, bool lunge = true) => RpcMurderPlayer(self, self, reason, lunge);
+
     public static void RpcMurderPlayer(PlayerControl killer, PlayerControl target, DeathReasonEnum reason = DeathReasonEnum.Killed, bool lunge = true)
     {
         if (killer == null || target == null)
@@ -323,11 +314,11 @@ public static class Utils
         if (data.IsDead)
             return;
 
+        if (IsCustomHnS || CustomPlayer.LocalCustom.IsDead)
+            UObject.Instantiate(GameManagerCreator.Instance.HideAndSeekManagerPrefab.DeathPopupPrefab, HUD.transform.parent).Show(target, 0);
+
         if (IsCustomHnS)
-        {
-            var popup = GameManagerCreator.Instance.HideAndSeekManagerPrefab.DeathPopupPrefab;
-            UObject.Instantiate(popup, HUD.transform.parent).Show(target, 0);
-        }
+            GameData.Instance.RecomputeTaskCounts();
 
         if (killer == CustomPlayer.Local || target == CustomPlayer.Local)
             Play("Kill");
@@ -368,12 +359,8 @@ public static class Utils
 
         if (target.AmOwner)
         {
-            if (Minigame.Instance)
-                Minigame.Instance.Close();
-
-            if (Map)
-                Map.Close();
-
+            ActiveTask?.Close();
+            Map?.Close();
             HUD.KillOverlay.ShowKillAnimation(killer.Data, data);
             HUD.ShadowQuad.gameObject.SetActive(false);
             HUD.Chat.SetVisible(true);
@@ -406,12 +393,12 @@ public static class Utils
             var lover = target.GetOtherLover();
 
             if (!lover.Is(LayerEnum.Pestilence) && CustomGameOptions.BothLoversDie && !lover.Data.IsDead)
-                RpcMurderPlayer(lover, lover);
+                RpcMurderPlayer(lover);
         }
 
-        if (target.Is(LayerEnum.Diseased))
+        if (target.Is(LayerEnum.Diseased) && killer != target)
             killerRole.Diseased = true;
-        else if (target.Is(LayerEnum.Bait))
+        else if (target.Is(LayerEnum.Bait) && killer != target)
             BaitReport(killer, target);
 
         if (killer.Is(LayerEnum.Politician))
@@ -499,7 +486,7 @@ public static class Utils
         voteArea.XMark.gameObject.SetActive(true);
         voteArea.XMark.transform.localScale = Vector3.one;
 
-        foreach (var role in Role.GetRoles<Blackmailer>(LayerEnum.Blackmailer))
+        foreach (var role in PlayerLayer.GetLayers<Blackmailer>())
         {
             if (target == role.BlackmailedPlayer && role.PrevOverlay != null)
             {
@@ -508,7 +495,7 @@ public static class Utils
             }
         }
 
-        foreach (var role in Role.GetRoles<Silencer>(LayerEnum.Silencer))
+        foreach (var role in PlayerLayer.GetLayers<Silencer>())
         {
             if (target == role.SilencedPlayer && role.PrevOverlay != null)
             {
@@ -517,7 +504,7 @@ public static class Utils
             }
         }
 
-        foreach (var role in Role.GetRoles<PromotedGodfather>(LayerEnum.PromotedGodfather))
+        foreach (var role in PlayerLayer.GetLayers<PromotedGodfather>())
         {
             if (target == role.BlackmailedPlayer && role.PrevOverlay != null && role.IsBM)
             {
@@ -526,7 +513,7 @@ public static class Utils
             }
         }
 
-        foreach (var role in Role.GetRoles<PromotedRebel>(LayerEnum.PromotedRebel))
+        foreach (var role in PlayerLayer.GetLayers<PromotedRebel>())
         {
             if (target == role.SilencedPlayer && role.PrevOverlay != null && role.IsSil)
             {
@@ -605,7 +592,7 @@ public static class Utils
 
         if (AmongUsClient.Instance.AmHost)
         {
-            foreach (var pol in Ability.GetAbilities<Politician>(LayerEnum.Politician))
+            foreach (var pol in PlayerLayer.GetLayers<Politician>())
             {
                 if (pol.Player == target)
                     pol.ExtraVotes.Clear();
@@ -618,12 +605,6 @@ public static class Utils
 
                     CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, pol, PoliticianActionsRPC.Add, votesRegained);
                 }
-            }
-
-            foreach (var mayor in Role.GetRoles<Mayor>(LayerEnum.Mayor))
-            {
-                if (mayor.Voted == target.PlayerId)
-                    mayor.Voted = 255;
             }
 
             AssignPostmortals(target);
@@ -652,11 +633,9 @@ public static class Utils
         if (killer == null || target == null || killer == target)
             yield break;
 
-        var extraDelay = URandom.RandomRangeInt(0, (int)((100 * (CustomGameOptions.BaitMaxDelay - CustomGameOptions.BaitMinDelay)) + 1));
-        yield return new WaitForSeconds(CustomGameOptions.BaitMinDelay + 0.01f + (CustomGameOptions.BaitMaxDelay <= CustomGameOptions.BaitMinDelay ? 0f : (extraDelay / 100f)));
-        var body = BodyById(target.PlayerId);
+        yield return new WaitForSeconds(URandom.RandomRange(CustomGameOptions.BaitMinDelay, CustomGameOptions.BaitMaxDelay));
 
-        if (body != null)
+        if (BodyById(target.PlayerId) != null)
         {
             if (AmongUsClient.Instance.AmHost)
                 killer.ReportDeadBody(target.Data);
@@ -703,33 +682,15 @@ public static class Utils
 
     public static void Spread(PlayerControl interacter, PlayerControl target)
     {
-        Role.GetRoles<Plaguebearer>(LayerEnum.Plaguebearer).ForEach(pb => pb.RpcSpreadInfection(interacter, target));
-        Role.GetRoles<Arsonist>(LayerEnum.Arsonist).ForEach(arso => arso.RpcSpreadDouse(target, interacter));
-        Role.GetRoles<Cryomaniac>(LayerEnum.Cryomaniac).ForEach(cryo => cryo.RpcSpreadDouse(target, interacter));
+        PlayerLayer.GetLayers<Plaguebearer>().ForEach(pb => pb.RpcSpreadInfection(interacter, target));
+        PlayerLayer.GetLayers<Arsonist>().ForEach(arso => arso.RpcSpreadDouse(target, interacter));
+        PlayerLayer.GetLayers<Cryomaniac>().ForEach(cryo => cryo.RpcSpreadDouse(target, interacter));
     }
 
     public static void StopDragging(byte id)
     {
-        Role.GetRoles<Janitor>(LayerEnum.Janitor).Where(x => x.CurrentlyDragging != null && x.CurrentlyDragging.ParentId == id).ForEach(x => x.Drop());
-        Role.GetRoles<PromotedGodfather>(LayerEnum.PromotedGodfather).Where(x => x.CurrentlyDragging != null && x.CurrentlyDragging.ParentId == id).ForEach(x => x.Drop());
-    }
-
-    public static string CreateText(string itemName, string folder = "")
-    {
-        try
-        {
-            var resourceName = $"{TownOfUsReworked.Resources}{(folder == "" ? "" : $"{folder}.")}{itemName}";
-            var stream = TownOfUsReworked.Executing.GetManifestResourceStream(resourceName);
-            var reader = new StreamReader(stream);
-            var text = reader.ReadToEnd();
-            KeyWords.ForEach(x => text = text.Replace(x.Key, x.Value));
-            return text;
-        }
-        catch
-        {
-            LogError($"Error Loading {itemName}");
-            return "";
-        }
+        PlayerLayer.GetLayers<Janitor>().Where(x => x.CurrentlyDragging != null && x.CurrentlyDragging.ParentId == id).ForEach(x => x.Drop());
+        PlayerLayer.GetLayers<PromotedGodfather>().Where(x => x.CurrentlyDragging != null && x.CurrentlyDragging.ParentId == id).ForEach(x => x.Drop());
     }
 
     public static bool IsInRange(this float num, float min, float max, bool minInclusive = false, bool maxInclusive = false)
@@ -786,26 +747,20 @@ public static class Utils
         if (role.Type is not (LayerEnum.Godfather or LayerEnum.Miner))
             return;
 
-        var position = role.Player.transform.position;
-        CallRpc(CustomRPC.Action, ActionsRPC.Mine, role, position, role.Name);
-        AddVent(role, position, role.Name);
+        var position = (Vector2)role.Player.transform.position;
+        CallRpc(CustomRPC.Action, ActionsRPC.Mine, role, position);
+        AddVent(role, position);
     }
 
-    public static void AddVent(Role role, Vector3 position, string name)
+    public static void AddVent(Role role, Vector2 position)
     {
         if (role is Miner miner)
-        {
-            var vent = SpawnVent(miner.Vents, position, name);
-            miner.Vents.Add(vent);
-        }
+            miner.Vents.Add(SpawnVent(miner.Vents, position, "Miner"));
         else if (role is PromotedGodfather gf)
-        {
-            var vent = SpawnVent(gf.Vents, position, name);
-            gf.Vents.Add(vent);
-        }
+            gf.Vents.Add(SpawnVent(gf.Vents, position, "Godfather"));
     }
 
-    public static Vent SpawnVent(List<Vent> vents, Vector3 position, string name)
+    public static Vent SpawnVent(List<Vent> vents, Vector2 position, string name)
     {
         var ventPrefab = UObject.FindObjectOfType<Vent>();
         var vent = UObject.Instantiate(ventPrefab, ventPrefab.transform.parent);
@@ -835,12 +790,12 @@ public static class Utils
             vent.gameObject.layer = 12;
             vent.gameObject.AddSubmergedComponent("ElevatorMover"); //Just in case elevator vent is not blocked
 
-            if (vent.gameObject.transform.position.y > -7)
-                vent.gameObject.transform.position = new(vent.gameObject.transform.position.x, vent.gameObject.transform.position.y, 0.03f);
+            if (vent.transform.position.y > -7)
+                vent.transform.position = new(vent.transform.position.x, vent.transform.position.y, 0.03f);
             else
             {
-                vent.gameObject.transform.position = new(vent.gameObject.transform.position.x, vent.gameObject.transform.position.y, 0.0009f);
-                vent.gameObject.transform.localPosition = new(vent.gameObject.transform.localPosition.x, vent.gameObject.transform.localPosition.y, -0.003f);
+                vent.transform.position = new(vent.transform.position.x, vent.transform.position.y, 0.0009f);
+                vent.transform.localPosition = new(vent.transform.localPosition.x, vent.transform.localPosition.y, -0.003f);
             }
         }
 
@@ -902,9 +857,7 @@ public static class Utils
         {
             switch (TownOfUsReworked.NormalOptions.MapId)
             {
-                case 0:
-                case 1:
-                case 3:
+                case 0 or 1 or 3:
                     var reactor1 = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
                     var oxygen1 = ShipStatus.Instance.Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
                     fs = reactor1.IsActive || oxygen1.IsActive;
@@ -966,12 +919,8 @@ public static class Utils
         if (coordinates.ContainsKey(CustomPlayer.Local.PlayerId))
         {
             Flash(Colors.Warper);
-
-            if (Minigame.Instance)
-                Minigame.Instance.Close();
-
-            if (Map)
-                Map.Close();
+            ActiveTask?.Close();
+            Map?.Close();
 
             if (CustomPlayer.Local.inVent)
             {
@@ -991,8 +940,8 @@ public static class Utils
 
         if (AmongUsClient.Instance.AmHost)
         {
-            Role.GetRoles<Janitor>(LayerEnum.Janitor).Where(x => x.CurrentlyDragging != null).ForEach(x => x.Drop());
-            Role.GetRoles<PromotedGodfather>(LayerEnum.PromotedGodfather).Where(x => x.CurrentlyDragging != null).ForEach(x => x.Drop());
+            PlayerLayer.GetLayers<Janitor>().Where(x => x.CurrentlyDragging != null).ForEach(x => x.Drop());
+            PlayerLayer.GetLayers<PromotedGodfather>().Where(x => x.CurrentlyDragging != null).ForEach(x => x.Drop());
         }
     }
 
@@ -1014,7 +963,7 @@ public static class Utils
             0 => SkeldSpawns,
             1 => MiraSpawns,
             2 => PolusSpawns,
-            3 => dlekSSpawns,
+            //3 => dlekSSpawns,
             _ => null
         };
 
@@ -1056,11 +1005,11 @@ public static class Utils
         SetFullScreenHUD();
     }
 
-    public static IEnumerator CoTeleportPlayer(PlayerControl instance, Vector2 position)
+    public static IEnumerator CoTeleportPlayer(PlayerControl __instance, Vector2 position)
     {
         Coroutines.Start(Fade(false));
         yield return new WaitForSeconds(0.25f);
-        instance.NetTransform.RpcSnapTo(position);
+        __instance.NetTransform.RpcSnapTo(position);
         yield return new WaitForSeconds(0.25f);
         Coroutines.Start(Fade(true));
     }
@@ -1070,21 +1019,17 @@ public static class Utils
         player.MyPhysics.ResetMoveState();
         player.NetTransform.RpcSnapTo(position);
 
-        if (IsSubmerged && CustomPlayer.Local == player)
-        {
-            ChangeFloor(player.GetTruePosition().y > -7);
-            CheckOutOfBoundsElevator(CustomPlayer.Local);
-        }
-
         if (CustomPlayer.Local == player)
         {
             Flash(Colors.Teleporter);
+            ActiveTask?.Close();
+            Map?.Close();
 
-            if (Minigame.Instance)
-                Minigame.Instance.Close();
-
-            if (Map)
-                Map.Close();
+            if (IsSubmerged)
+            {
+                ChangeFloor(player.GetTruePosition().y > -7);
+                CheckOutOfBoundsElevator(CustomPlayer.Local);
+            }
         }
 
         player.moveable = true;
@@ -1109,7 +1054,7 @@ public static class Utils
                 dictionary[playerVoteArea.VotedFor] = 1;
         }
 
-        foreach (var role in Ability.GetAbilities<Politician>(LayerEnum.Politician))
+        foreach (var role in PlayerLayer.GetLayers<Politician>())
         {
             foreach (var number in role.ExtraVotes)
             {
@@ -1120,20 +1065,20 @@ public static class Utils
             }
         }
 
-        foreach (var role in Role.GetRoles<Mayor>(LayerEnum.Mayor))
+        foreach (var role in PlayerLayer.GetLayers<Mayor>())
         {
-            if (role.Revealed && role.Voted != 255)
+            if (role.Revealed)
             {
-                if (dictionary.TryGetValue(role.Voted, out var num))
-                    dictionary[role.Voted] = num + CustomGameOptions.MayorVoteCount;
+                if (dictionary.TryGetValue(VoteAreaByPlayer(role.Player).VotedFor, out var num))
+                    dictionary[VoteAreaByPlayer(role.Player).VotedFor] = num + CustomGameOptions.MayorVoteCount;
                 else
-                    dictionary[role.Voted] = 1 + CustomGameOptions.MayorVoteCount;
+                    dictionary[VoteAreaByPlayer(role.Player).VotedFor] = 1 + CustomGameOptions.MayorVoteCount;
             }
         }
 
         var knighted = new List<byte>();
 
-        foreach (var role in Role.GetRoles<Monarch>(LayerEnum.Monarch))
+        foreach (var role in PlayerLayer.GetLayers<Monarch>())
         {
             foreach (var id in role.Knighted)
             {
@@ -1151,7 +1096,7 @@ public static class Utils
             }
         }
 
-        foreach (var swapper in Ability.GetAbilities<Swapper>(LayerEnum.Swapper))
+        foreach (var swapper in PlayerLayer.GetLayers<Swapper>())
         {
             if (swapper.Player.HasDied() || swapper.Swap1 == null || swapper.Swap2 == null)
                 continue;
@@ -1320,39 +1265,8 @@ public static class Utils
         AssignPostmortals(revealer, ghoul, banshee, phantom);
     }
 
-    public static PlayerControl GetClosestPlayer(this PlayerControl refPlayer, IEnumerable<PlayerControl> allPlayers = null, float maxDistance = 0f, bool ignoreWalls = false)
-    {
-        if (refPlayer.Data.IsDead && !refPlayer.Is(LayerEnum.Jester) && !refPlayer.Is(LayerEnum.Ghoul))
-            return null;
-
-        var truePosition = refPlayer.GetTruePosition();
-        var closestDistance = double.MaxValue;
-        PlayerControl closestPlayer = null;
-        allPlayers ??= CustomPlayer.AllPlayers;
-
-        if (maxDistance == 0f)
-            maxDistance = CustomGameOptions.InteractionDistance;
-
-        foreach (var player in allPlayers)
-        {
-            if (player.Data.IsDead || player == refPlayer || !player.Collider.enabled || player.onLadder || player.inMovingPlat || (player.inVent && !CustomGameOptions.VentTargeting))
-                continue;
-
-            var distance = Vector2.Distance(truePosition, player.GetTruePosition());
-            var vector = player.GetTruePosition() - truePosition;
-
-            if (distance > closestDistance || distance > maxDistance)
-                continue;
-
-            if (PhysicsHelpers.AnyNonTriggersBetween(truePosition, vector.normalized, distance, Constants.ShipAndObjectsMask) && !ignoreWalls)
-                continue;
-
-            closestPlayer = player;
-            closestDistance = distance;
-        }
-
-        return closestPlayer;
-    }
+    public static PlayerControl GetClosestPlayer(this PlayerControl refPlayer, IEnumerable<PlayerControl> allPlayers = null, float maxDistance = 0f, bool ignoreWalls = false) =>
+        GetClosestPlayer(refPlayer.transform.position, allPlayers, maxDistance, ignoreWalls);
 
     public static PlayerControl GetClosestPlayer(Vector3 position, IEnumerable<PlayerControl> allPlayers = null, float maxDistance = 0f, bool ignoreWalls = false)
     {
@@ -1368,8 +1282,8 @@ public static class Utils
             if (player.Data.IsDead || !player.Collider.enabled || player.onLadder || player.inMovingPlat || (player.inVent && !CustomGameOptions.VentTargeting))
                 continue;
 
-            var distance = Vector2.Distance(position, player.GetTruePosition());
-            var vector = player.GetTruePosition() - (Vector2)position;
+            var distance = Vector2.Distance(position, player.transform.position);
+            var vector = (Vector2)player.transform.position - (Vector2)position;
 
             if (distance > closestDistance || distance > maxDistance)
                 continue;
@@ -1384,24 +1298,27 @@ public static class Utils
         return closestPlayer;
     }
 
-    public static Vent GetClosestVent(this PlayerControl refPlayer, float maxDistance = 0f, bool ignoreWalls = false)
+    public static Vent GetClosestVent(this PlayerControl refPlayer, IEnumerable<Vent> allVents = null, float maxDistance = 0f, bool ignoreWalls = false) =>
+        GetClosestVent(refPlayer.transform.position, allVents, maxDistance, ignoreWalls);
+
+    public static Vent GetClosestVent(Vector3 position, IEnumerable<Vent> allVents = null, float maxDistance = 0f, bool ignoreWalls = false)
     {
-        var truePosition = refPlayer.GetTruePosition();
         var closestDistance = double.MaxValue;
         Vent closestVent = null;
+        allVents ??= AllVents;
 
         if (maxDistance == 0f)
-            maxDistance = CustomGameOptions.InteractionDistance / 2;
+            maxDistance = AllMapVents[0].UsableDistance;
 
-        foreach (var vent in AllVents)
+        foreach (var vent in allVents)
         {
-            var distance = Vector2.Distance(truePosition, new(vent.transform.position.x, vent.transform.position.y));
-            var vector = new Vector2(vent.transform.position.x, vent.transform.position.y) - truePosition;
+            var distance = Vector2.Distance(position, vent.transform.position);
+            var vector = (Vector2)vent.transform.position - (Vector2)position;
 
             if (distance > maxDistance || distance > closestDistance)
                 continue;
 
-            if (PhysicsHelpers.AnyNonTriggersBetween(truePosition, vector.normalized, distance, Constants.ShipAndObjectsMask) && !ignoreWalls)
+            if (PhysicsHelpers.AnyNonTriggersBetween(position, vector.normalized, distance, Constants.ShipAndObjectsMask) && !ignoreWalls)
                 continue;
 
             closestVent = vent;
@@ -1411,24 +1328,30 @@ public static class Utils
         return closestVent;
     }
 
-    public static DeadBody GetClosestBody(this PlayerControl refPlayer, float maxDistance = 0f, bool ignoreWalls = false)
+    public static DeadBody GetClosestBody(this PlayerControl refPlayer, IEnumerable<DeadBody> allBodies = null, float maxDistance = 0f, bool ignoreWalls = false) =>
+        GetClosestBody(refPlayer.transform.position, allBodies, maxDistance, ignoreWalls);
+
+    public static DeadBody GetClosestBody(Vector3 position, IEnumerable<DeadBody> allBodies = null, float maxDistance = 0f, bool ignoreWalls = false)
     {
-        var truePosition = refPlayer.GetTruePosition();
         var closestDistance = double.MaxValue;
         DeadBody closestBody = null;
+        allBodies ??= AllBodies;
 
         if (maxDistance == 0f)
             maxDistance = CustomGameOptions.InteractionDistance;
 
-        foreach (var body in AllBodies)
+        foreach (var body in allBodies)
         {
-            var distance = Vector2.Distance(truePosition, body.TruePosition);
-            var vector = body.TruePosition - truePosition;
+            if (Role.Cleaned.Any(x => x.PlayerId == body.ParentId))
+                continue;
+
+            var distance = Vector2.Distance(position, body.transform.position);
+            var vector = (Vector2)body.transform.position - (Vector2)position;
 
             if (distance > maxDistance || distance > closestDistance)
                 continue;
 
-            if (PhysicsHelpers.AnyNonTriggersBetween(truePosition, vector.normalized, distance, Constants.ShipAndObjectsMask) && !ignoreWalls)
+            if (PhysicsHelpers.AnyNonTriggersBetween(position, vector.normalized, distance, Constants.ShipAndObjectsMask) && !ignoreWalls)
                 continue;
 
             closestBody = body;
@@ -1442,9 +1365,10 @@ public static class Utils
     {
         foreach (var task in player.myTasks)
         {
-            if (task.TryCast<NormalPlayerTask>() != null)
+            var normalPlayerTask = task.TryCast<NormalPlayerTask>();
+
+            if (normalPlayerTask != null)
             {
-                var normalPlayerTask = task.Cast<NormalPlayerTask>();
                 var updateArrow = normalPlayerTask.taskStep > 0;
                 normalPlayerTask.taskStep = 0;
                 normalPlayerTask.Initialize();
@@ -1457,14 +1381,13 @@ public static class Utils
                 if (normalPlayerTask.TaskType == TaskTypes.UploadData)
                     normalPlayerTask.taskStep = 1;
 
-                if ((normalPlayerTask.TaskType is TaskTypes.EmptyGarbage or TaskTypes.EmptyChute) && (TownOfUsReworked.NormalOptions.MapId is 0 or 3 or 4))
+                if ((normalPlayerTask.TaskType is TaskTypes.EmptyGarbage or TaskTypes.EmptyChute) && (TownOfUsReworked.NormalOptions.MapId is 0 or 3 or 4 or 6))
                     normalPlayerTask.taskStep = 1;
 
                 if (updateArrow)
                     normalPlayerTask.UpdateArrow();
 
-                var taskInfo = player.Data.FindTaskById(task.Id);
-                taskInfo.Complete = false;
+                player.Data.FindTaskById(task.Id).Complete = false;
             }
         }
     }
@@ -1558,35 +1481,7 @@ public static class Utils
         return result;
     }
 
-    public static bool IsNullEmptyOrWhiteSpace(string text) => text is null or "" || text.All(x => x == ' ');
+    public static bool IsNullEmptyOrWhiteSpace(string text) => text is null or "" || text.All(x => x is ' ' or '\n');
 
-    public static void SaveText(string fileName, string textToSave, bool overrideText = true)
-    {
-        try
-        {
-            var text = Path.Combine(Application.persistentDataPath, $"{fileName}-temp");
-            var text2 = Path.Combine(Application.persistentDataPath, fileName);
-            var toOverride = overrideText ? "" : ReadText(fileName);
-            File.WriteAllText(text, toOverride + textToSave);
-            File.Delete(text2);
-            File.Move(text, text2);
-        }
-        catch
-        {
-            LogError($"Unable to save {textToSave} to {fileName}");
-        }
-    }
-
-    public static string ReadText(string fileName)
-    {
-        try
-        {
-            return File.ReadAllText(Path.Combine(Application.persistentDataPath, fileName));
-        }
-        catch
-        {
-            LogError($"Error Loading {fileName}");
-            return "";
-        }
-    }
+    public static AudioClip GetIntroSound(RoleTypes roleType) => RoleManager.Instance.AllRoles.Where(x => x.Role == roleType).FirstOrDefault().IntroSound;
 }

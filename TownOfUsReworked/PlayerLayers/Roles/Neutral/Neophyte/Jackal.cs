@@ -17,7 +17,6 @@ public class Jackal : Neutral
     public override Func<string> Description => () => "- You start off with 2 recruits. 1 of them is always <color=#8CFFFFFF>Crew</color>\nand the other is either a <color=#008000FF>" +
         "Syndicate</color>, <color=#FF0000FF>Intruder</color> or a <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killer</color>\n- When both recruits die, you can recruit a third" +
         " member into the <color=#575657FF>Cabal</color>";
-    public override InspectorResults InspectorResults => InspectorResults.BringsChaos;
 
     public Jackal(PlayerControl player) : base(player)
     {
@@ -28,6 +27,7 @@ public class Jackal : Neutral
         Recruited = new() { Player.PlayerId };
         RecruitButton = new(this, "Recruit", AbilityTypes.Target, "ActionSecondary", Recruit, Exception);
         SubFactionSymbol = "$";
+        player.Data.Role.IntroSound = GetAudio("JackalIntro");
     }
 
     public void Recruit()

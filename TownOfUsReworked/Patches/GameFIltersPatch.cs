@@ -13,7 +13,7 @@ public static class GameFilters
     [HarmonyPatch(typeof(FilterTagsMenu), nameof(FilterTagsMenu.ChooseOption))]
     public static class FilterTagsMenuChooseOptionPatch
     {
-        public static void Postfix(FilterTagsMenu __instance, ChatLanguageButton button, string filter)
+        public static void Postfix(FilterTagsMenu __instance, ref ChatLanguageButton button, ref string filter)
         {
             if (__instance.targetOpts.FilterTags.Contains(FilterText))
             {

@@ -11,7 +11,6 @@ public class Altruist : Crew
     public override Func<string> StartText => () => "Sacrifice Yourself To Save Another";
     public override Func<string> Description => () => $"- You can revive a dead body\n- Reviving a body takes {CustomGameOptions.ReviveDur}s\n- If a meeting is called or you are killed " +
         "during your revive, the revive fails";
-    public override InspectorResults InspectorResults => InspectorResults.PreservesLife;
 
     public Altruist(PlayerControl player) : base(player)
     {
@@ -56,7 +55,7 @@ public class Altruist : Crew
         }
 
         if (ReviveButton.Uses == 0 && Local)
-            RpcMurderPlayer(Player, Player);
+            RpcMurderPlayer(Player);
 
         if (formerKiller.Contains(CustomPlayer.LocalCustom.PlayerName))
         {

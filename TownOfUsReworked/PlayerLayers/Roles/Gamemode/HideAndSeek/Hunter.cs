@@ -36,8 +36,7 @@ public class Hunter : HideAndSeek
         newRole.KilledBy = PlayerName;
         newRole.DeathReason = DeathReasonEnum.Converted;
         newRole.HuntButton.StartCooldown(CooldownType.Reset);
-        var popup = GameManagerCreator.Instance.HideAndSeekManagerPrefab.DeathPopupPrefab;
-        UObject.Instantiate(popup, HUD.transform.parent).Show(player, 0);
+        UObject.Instantiate(GameManagerCreator.Instance.HideAndSeekManagerPrefab.DeathPopupPrefab, HUD.transform.parent).Show(player, 0);
         GameData.Instance.RecomputeTaskCounts();
     }
 

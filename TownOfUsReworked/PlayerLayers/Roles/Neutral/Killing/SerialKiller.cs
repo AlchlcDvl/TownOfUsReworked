@@ -11,7 +11,6 @@ public class SerialKiller : Neutral
     public override Func<string> StartText => () => "You Like To Play With Knives";
     public override Func<string> Description => () => "- You can go into bloodlust\n- When in bloodlust, your kill cooldown is very short\n- If and when an <color=#803333FF>Escort</color>," +
         " <color=#801780FF>Consort</color> or <color=#00FF00FF>Glitch</color> tries to block you, you will immediately kill them, regardless of your cooldown\n- You are immune to roleblocks";
-    public override InspectorResults InspectorResults => InspectorResults.IsAggressive;
 
     public SerialKiller(PlayerControl player) : base(player)
     {

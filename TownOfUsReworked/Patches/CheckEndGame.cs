@@ -1,7 +1,6 @@
 namespace TownOfUsReworked.Patches;
 
 [HarmonyPatch(typeof(LogicGameFlowNormal), nameof(LogicGameFlowNormal.CheckEndCriteria))]
-[HarmonyPriority(Priority.First)]
 public static class CheckEndGame
 {
     public static bool Prefix()
@@ -9,8 +8,8 @@ public static class CheckEndGame
         if (IsFreePlay || IsHnS || !AmongUsClient.Instance.AmHost)
             return false;
 
-        var spell = Role.GetRoles<Spellslinger>(LayerEnum.Spellslinger).Find(x => !x.IsDead && !x.Disconnected && x.Spelled.Count == CustomPlayer.AllPlayers.Count(y => !y.HasDied()));
-        var reb = Role.GetRoles<PromotedRebel>(LayerEnum.PromotedRebel).Find(x => !x.IsDead && !x.Disconnected && x.Spelled.Count == CustomPlayer.AllPlayers.Count(y => !y.HasDied()));
+        var spell = PlayerLayer.GetLayers<Spellslinger>().Find(x => !x.IsDead && !x.Disconnected && x.Spelled.Count == CustomPlayer.AllPlayers.Count(y => !y.HasDied()));
+        var reb = PlayerLayer.GetLayers<PromotedRebel>().Find(x => !x.IsDead && !x.Disconnected && x.Spelled.Count == CustomPlayer.AllPlayers.Count(y => !y.HasDied()));
 
         if (TasksDone())
         {
@@ -252,7 +251,7 @@ public static class OverrideTaskEndGame1
     public static bool Prefix(ref bool __result)
     {
         GameData.Instance.RecomputeTaskCounts();
-        return __result = !IsHnS;
+        return __result = IsHnS;
     }
 }
 
@@ -272,6 +271,6 @@ public static class OverrideTaskEndGame2
         else
             GameData.Instance.RecomputeTaskCounts();
 
-        return __result = !IsHnS;
+        return __result = IsHnS;
     }
 }

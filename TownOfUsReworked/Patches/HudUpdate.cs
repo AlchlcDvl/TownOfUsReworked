@@ -1,14 +1,22 @@
 namespace TownOfUsReworked.Patches;
 
 [HarmonyPatch(typeof(SabotageButton), nameof(SabotageButton.Refresh))]
-[HarmonyPriority(Priority.First)]
 public static class RefreshPatch
 {
     public static bool Prefix() => false;
 }
 
+[HarmonyPatch(typeof(HudManager), nameof(HudManager.Start))]
+public static class StartHud
+{
+    public static void Postfix(HudManager __instance)
+    {
+        Sprites.TryAdd("DefaultVent", __instance.ImpostorVentButton.graphic.sprite);
+        Sprites.TryAdd("DefaultSabotage", __instance.SabotageButton.graphic.sprite);
+    }
+}
+
 [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
-[HarmonyPriority(Priority.First)]
 public static class HudUpdate
 {
     private static bool CommsEnabled;
@@ -18,14 +26,11 @@ public static class HudUpdate
 
     public static void Postfix(HudManager __instance)
     {
+        if (CustomPlayer.Local && !SoundEffects.ContainsKey("Kill"))
+            SoundEffects.TryAdd("Kill", CustomPlayer.Local.KillSfx);
+
         if (IsLobby || IsEnded || NoPlayers || IsHnS)
             return;
-
-        if (!Sprites.ContainsKey("DefaultVent"))
-            Sprites.Add("DefaultVent", __instance.ImpostorVentButton.graphic.sprite);
-
-        if (!Sprites.ContainsKey("DefaultSabotage"))
-            Sprites.Add("DefaultSabotage", __instance.SabotageButton.graphic.sprite);
 
         __instance.KillButton.SetTarget(null);
         __instance.KillButton.gameObject.SetActive(false);
@@ -51,7 +56,7 @@ public static class HudUpdate
         __instance.ImpostorVentButton.graphic.sprite = vent;
         __instance.ImpostorVentButton.buttonLabelText.text = LocalBlocked ? "BLOCKED" : "VENT";
         __instance.ImpostorVentButton.buttonLabelText.fontSharedMaterial = __instance.SabotageButton.buttonLabelText.fontSharedMaterial;
-        __instance.ImpostorVentButton.gameObject.SetActive((CustomPlayer.Local.CanVent() || CustomPlayer.Local.inVent) && !(Map && Map.IsOpen));
+        __instance.ImpostorVentButton.gameObject.SetActive((CustomPlayer.Local.CanVent() || CustomPlayer.Local.inVent) && !(Map && Map.IsOpen) && !ActiveTask);
 
         var closestDead = CustomPlayer.Local.GetClosestBody(maxDistance: CustomGameOptions.ReportDistance);
 
@@ -93,20 +98,20 @@ public static class HudUpdate
 
         __instance.SabotageButton.graphic.sprite = sab;
         __instance.SabotageButton.buttonLabelText.text = LocalBlocked ? "BLOCKED" : "SABOTAGE";
-        __instance.SabotageButton.gameObject.SetActive(CustomPlayer.Local.CanSabotage() && !(Map && Map.IsOpen));
+        __instance.SabotageButton.gameObject.SetActive(CustomPlayer.Local.CanSabotage() && !(Map && Map.IsOpen) && !ActiveTask);
 
-        if (LocalBlocked && Minigame.Instance)
-            Minigame.Instance.Close();
+        if (LocalBlocked)
+            ActiveTask?.Close();
 
-        if (Map && LocalBlocked)
-            Map.Close();
+        if (LocalBlocked)
+            Map?.Close();
 
         CustomArrow.AllArrows.Where(x => x.Owner != CustomPlayer.Local).ForEach(x => x?.Update());
         PlayerLayer.LocalLayers.ForEach(x => x?.UpdateHud(__instance));
         PlayerLayer.AllLayers.ForEach(x => x?.TryEndEffect());
         CustomButton.AllButtons.ForEach(x => x?.Timers());
 
-        foreach (var phantom in Role.GetRoles<Phantom>(LayerEnum.Phantom))
+        foreach (var phantom in PlayerLayer.GetLayers<Phantom>())
         {
             if (!phantom.Caught)
                 phantom.Fade();
@@ -114,7 +119,7 @@ public static class HudUpdate
                 phantom.UnFade();
         }
 
-        foreach (var banshee in Role.GetRoles<Banshee>(LayerEnum.Banshee))
+        foreach (var banshee in PlayerLayer.GetLayers<Banshee>())
         {
             if (!banshee.Caught)
                 banshee.Fade();
@@ -122,7 +127,7 @@ public static class HudUpdate
                 banshee.UnFade();
         }
 
-        foreach (var ghoul in Role.GetRoles<Ghoul>(LayerEnum.Ghoul))
+        foreach (var ghoul in PlayerLayer.GetLayers<Ghoul>())
         {
             if (!ghoul.Caught)
                 ghoul.Fade();
@@ -130,7 +135,7 @@ public static class HudUpdate
                 ghoul.UnFade();
         }
 
-        foreach (var revealer in Role.GetRoles<Revealer>(LayerEnum.Revealer))
+        foreach (var revealer in PlayerLayer.GetLayers<Revealer>())
         {
             if (!revealer.Caught)
                 revealer.Fade();
@@ -144,6 +149,11 @@ public static class HudUpdate
 
             if (IsCamoed)
                 PlayerMaterial.SetColors(UColor.grey, renderer);
+            else if (SurveillancePatches.NVActive)
+            {
+                renderer.material.SetColor("_BackColor", Palette.ShadowColors[11]);
+                renderer.material.SetColor("_BodyColor", Palette.PlayerColors[11]);
+            }
             else
             {
                 renderer.material.SetColor("_BackColor", PlayerByBody(body).GetShadowColor());
@@ -157,12 +167,7 @@ public static class HudUpdate
             {
                 switch (TownOfUsReworked.NormalOptions.MapId)
                 {
-                    case 0:
-                    case 2:
-                    case 3:
-                    case 4:
-                    case 5:
-                    case 6:
+                    case 0 or 2 or 3 or 4 or 5 or 6:
                         var comms5 = ShipStatus.Instance.Systems[SystemTypes.Comms]?.Cast<HudOverrideSystemType>();
 
                         if (comms5.IsActive)
@@ -202,11 +207,14 @@ public static class HudUpdate
 [HarmonyPatch(typeof(UObject), nameof(UObject.Destroy), typeof(UObject))]
 public static class MeetingCooldowns
 {
-    public static void Postfix(UObject obj)
+    public static void Postfix(ref UObject obj)
     {
-        if (obj == null || obj != ExileController.Instance?.gameObject)
+        if (obj == null)
             return;
 
-        ButtonUtils.ResetCustomTimers(CooldownType.Meeting);
+        if (ExileController.Instance && obj == ExileController.Instance?.gameObject)
+            ButtonUtils.ResetCustomTimers(CooldownType.Meeting);
+        else if (ActiveTask && obj == ActiveTask?.gameObject)
+            CustomPlayer.Local.EnableButtons();
     }
 }

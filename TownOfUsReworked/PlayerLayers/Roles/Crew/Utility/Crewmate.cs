@@ -5,7 +5,10 @@ public class Crewmate : Crew
     public override string Name => "Crewmate";
     public override LayerEnum Type => LayerEnum.Crewmate;
     public override Func<string> StartText => () => "Do Your Tasks";
-    public override InspectorResults InspectorResults => InspectorResults.IsBasic;
 
-    public Crewmate(PlayerControl player) : base(player) => Alignment = Alignment.CrewUtil;
+    public Crewmate(PlayerControl player) : base(player)
+    {
+        Alignment = Alignment.CrewUtil;
+        player.Data.Role.IntroSound = GetAudio("CrewmateIntro");
+    }
 }

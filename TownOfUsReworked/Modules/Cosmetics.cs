@@ -6,8 +6,6 @@ public class HatExtension
     public string Condition { get; set; }
     public Sprite FlipImage { get; set; }
     public Sprite BackFlipImage { get; set; }
-    public Sprite FloorImage { get; set; }
-    public Sprite ClimbImage { get; set; }
 }
 
 public class CustomHat
@@ -31,14 +29,11 @@ public class CustomHat
 public class VisorExtension
 {
     public string Artist { get; set; }
-    public string Condition { get; set; }
-    public Sprite FlipImage { get; set; }
 }
 
 public class CustomVisor
 {
     public string Artist { get; set; }
-    public string Condition { get; set; }
     public string Name { get; set; }
     public string ID { get; set; }
     public string FlipID { get; set; }
@@ -51,13 +46,11 @@ public class CustomVisor
 public class NameplateExtension
 {
     public string Artist { get; set; }
-    public string Condition { get; set; }
 }
 
 public class CustomNameplate
 {
     public string Artist { get; set; }
-    public string Condition { get; set; }
     public string Name { get; set; }
     public string ID { get; set; }
 }

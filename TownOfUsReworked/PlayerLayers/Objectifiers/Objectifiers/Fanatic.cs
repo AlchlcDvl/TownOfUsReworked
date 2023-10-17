@@ -58,7 +58,7 @@ public class Fanatic : Objectifier
         Side = faction;
         fanaticRole.Alignment = fanaticRole.Alignment.GetNewAlignment(fanaticRole.Faction);
 
-        foreach (var snitch in Ability.GetAbilities<Snitch>(LayerEnum.Snitch))
+        foreach (var snitch in GetLayers<Snitch>())
         {
             if (CustomGameOptions.SnitchSeesFanatic)
             {
@@ -69,7 +69,7 @@ public class Fanatic : Objectifier
             }
         }
 
-        foreach (var revealer in Role.GetRoles<Revealer>(LayerEnum.Revealer))
+        foreach (var revealer in GetLayers<Revealer>())
         {
             if (revealer.Revealed && CustomGameOptions.RevealerRevealsTraitor && Local)
                 Role.LocalRole.AllArrows.Add(revealer.PlayerId, new(Player, revealer.Color));
@@ -90,8 +90,7 @@ public class Fanatic : Objectifier
         if (role.Type == LayerEnum.Betrayer)
             return;
 
-        var betrayer = new Betrayer(Player) { Objectives = role.Objectives };
-        betrayer.RoleUpdate(role);
+        new Betrayer(Player) { Objectives = role.Objectives }.RoleUpdate(role);
     }
 
     public override void UpdateHud(HudManager __instance)

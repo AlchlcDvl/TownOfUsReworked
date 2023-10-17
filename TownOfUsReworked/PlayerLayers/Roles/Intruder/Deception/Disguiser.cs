@@ -14,7 +14,6 @@ public class Disguiser : Intruder
     public override LayerEnum Type => LayerEnum.Disguiser;
     public override Func<string> StartText => () => "Disguise The <color=#8CFFFFFF>Crew</color> To Frame Them";
     public override Func<string> Description => () => $"- You can disguise a player into someone else's appearance\n{CommonAbilities}";
-    public override InspectorResults InspectorResults => InspectorResults.CreatesConfusion;
 
     public Disguiser(PlayerControl player) : base(player)
     {

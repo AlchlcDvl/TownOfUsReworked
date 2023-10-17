@@ -84,6 +84,12 @@ public static class SecurityLoggerPatch
     public static void Postfix(ref SecurityLogger __instance) => __instance.Timers = new float[127];
 }
 
+[HarmonyPatch(typeof(MapBehaviour), nameof(MapBehaviour.Close))]
+public static class CloseMapMenuPatch
+{
+    public static void Postfix() => CustomPlayer.Local.EnableButtons();
+}
+
 [HarmonyPatch(typeof(MapBehaviour), nameof(MapBehaviour.Show))]
 public static class OpenMapMenuPatch
 {
@@ -112,6 +118,7 @@ public static class OpenMapMenuPatch
     {
         PlayerLayer.LocalLayers.ForEach(x => x?.UpdateMap(__instance));
         CustomArrow.AllArrows.ForEach(x => x?.UpdateArrowBlip(__instance));
+        CustomPlayer.Local.DisableButtons();
     }
 }
 
@@ -120,16 +127,17 @@ public static class DisconnectHandler
 {
     public static readonly List<PlayerControl> Disconnected = new();
 
-    public static void Prefix([HarmonyArgument(0)] PlayerControl player)
+    public static void Prefix(ref PlayerControl player)
     {
-        CustomPlayer.AllCustomPlayers.RemoveAll(x => x.Player == player || x.Player == null);
+        var player2 = player;
+        CustomPlayer.AllCustomPlayers.RemoveAll(x => x.Player == player2 || x.Player == null);
 
         if (IsLobby)
             return;
 
         ReassignPostmortals(player);
         Disconnected.Add(player);
-        Summary.AddSummaryInfo(player, true);
+        OnGameEndPatch.AddSummaryInfo(player, true);
     }
 }
 
@@ -138,7 +146,7 @@ public static class CanMove
 {
     public static bool Prefix(PlayerControl __instance, ref bool __result)
     {
-        __result = __instance.moveable && !Minigame.Instance && !__instance.shapeshifting && (!HudManager.InstanceExists || (!HUD.Chat.IsOpenOrOpening && !HUD.KillOverlay.IsOpen &&
+        __result = __instance.moveable && !ActiveTask && !__instance.shapeshifting && (!HudManager.InstanceExists || (!HUD.Chat.IsOpenOrOpening && !HUD.KillOverlay.IsOpen &&
             !HUD.GameMenu.IsOpen)) && (!Map || !Map.IsOpenStopped) && !Meeting && !IntroCutscene.Instance && !PlayerCustomizationMenu.Instance;
         return false;
     }
@@ -147,7 +155,7 @@ public static class CanMove
 [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.HandleAnimation))]
 public static class HandleAnimation
 {
-    public static void Prefix(PlayerPhysics __instance, [HarmonyArgument(0)] ref bool amDead)
+    public static void Prefix(PlayerPhysics __instance, ref bool amDead)
     {
         if (__instance.myPlayer.IsPostmortal())
             amDead = __instance.myPlayer.Caught();
@@ -157,7 +165,7 @@ public static class HandleAnimation
 [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.Visible), MethodType.Setter)]
 public static class VisibleOverride
 {
-    public static void Prefix(PlayerControl __instance, [HarmonyArgument(0)] ref bool value)
+    public static void Prefix(PlayerControl __instance, ref bool value)
     {
         if (!__instance.IsPostmortal() || (__instance.IsPostmortal() && __instance.Caught()))
             return;
@@ -177,11 +185,16 @@ public static class ResetMoveState
 }
 
 [HarmonyPatch(typeof(Minigame), nameof(Minigame.Begin))]
-public static class MinigamePatch
+public static class MinigameBeginPatch
 {
     public static void Postfix(Minigame __instance)
     {
-        if (!__instance || !CustomPlayer.Local.Is(LayerEnum.Multitasker))
+        if (!__instance)
+            return;
+
+        CustomPlayer.Local.DisableButtons();
+
+        if (!CustomPlayer.Local.Is(LayerEnum.Multitasker))
             return;
 
         __instance.GetComponentsInChildren<SpriteRenderer>().ForEach(x => x.color = new(x.color.r, x.color.g, x.color.b, CustomGameOptions.Transparancy / 100f));
@@ -233,13 +246,17 @@ public static class AirshipSpawnInPatch
 [HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.ExitGame))]
 public static class ExitGamePatch
 {
-    public static void Prefix() => CustomOption.SaveSettings("LastUsedSettings");
+    public static void Prefix()
+    {
+        SaveText("ReworkedLogs.txt", SavedLogs);
+        CustomOption.SaveSettings("LastUsedSettings");
+    }
 }
 
 [HarmonyPatch(typeof(PlayerPurchasesData), nameof(PlayerPurchasesData.GetPurchase))]
 public static class GetPurchasePatch
 {
-    public static bool Prefix(out bool __result)
+    public static bool Prefix(ref bool __result)
     {
         __result = true;
         return false;
@@ -257,7 +274,7 @@ public static class OverlayKillAnimationPatch
 {
     private static int CurrentOutfitTypeCache;
 
-    public static void Prefix(GameData.PlayerInfo kInfo)
+    public static void Prefix(ref GameData.PlayerInfo kInfo)
     {
         var playerControl = PlayerById(kInfo.PlayerId);
         CurrentOutfitTypeCache = (int)playerControl.CurrentOutfitType;
@@ -337,18 +354,15 @@ public static class BegoneModstamp
 {
     public static bool Prefix(ModManager __instance)
     {
-        if (__instance == null || __instance.ModStamp == null)
-            return true;
-
         try
         {
             //try catch my beloved <3
             __instance.localCamera = !HudManager.InstanceExists ? Camera.main : HUD.GetComponentInChildren<Camera>();
             __instance.ModStamp.transform.position = AspectPosition.ComputeWorldPosition(__instance.localCamera, AspectPosition.EdgeAlignments.RightTop, new(0.6f, 0.6f, 0.1f +
                 __instance.localCamera.nearClipPlane));
+            __instance.ModStamp.gameObject.SetActive(IsEnded || NoLobby || LobbyBehaviour.Instance);
         } catch {}
 
-        __instance.ModStamp.enabled = NoPlayers || IsEnded || NoLobby || LobbyBehaviour.Instance;
         return false;
     }
 }
@@ -366,7 +380,7 @@ public static class ConstantsPatch
 [HarmonyPatch(typeof(ActivityManager), nameof(ActivityManager.UpdateActivity))]
 public static class DiscordPatch
 {
-    public static void Prefix([HarmonyArgument(0)] Activity activity) => activity.Details += "Town Of Us Reworked";
+    public static void Prefix(ref Activity activity) => activity.Details += "Town Of Us Reworked";
 }
 
 [HarmonyPatch(typeof(RoleManager), nameof(RoleManager.SelectRoles))]
@@ -379,19 +393,6 @@ public static class SetRoles
 public static class FixHudNullRef
 {
     public static bool Prefix() => !IsEnded;
-}
-
-[HarmonyPatch(typeof(PlanetSurveillanceMinigame), nameof(PlanetSurveillanceMinigame.Update))]
-public static class PlanetSurveillanceMinigameUpdatePatch
-{
-    public static void Postfix(PlanetSurveillanceMinigame __instance)
-    {
-        if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D))
-            __instance.NextCamera(1);
-
-        if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A))
-            __instance.NextCamera(-1);
-    }
 }
 
 [HarmonyPatch(typeof(EmergencyMinigame), nameof(EmergencyMinigame.Update))]
@@ -441,5 +442,37 @@ public static class LobbyBehaviourPatch
                     MCIUtils.CreatePlayerInstance();
             }
         }
+    }
+}
+
+[HarmonyPatch(typeof(HideAndSeekDeathPopup), nameof(HideAndSeekDeathPopup.Show))]
+public static class DeathPopUpPatch
+{
+    public static void Prefix(HideAndSeekDeathPopup __instance)
+    {
+        if (!IsCustomHnS)
+            return;
+
+        __instance.StartCoroutine(Effects.Lerp(0.01f, new Action<float>(_ => __instance.text.text = $"Was {(CustomGameOptions.HnSMode == HnSMode.Infection ? "Converted" : "Killed")}")));
+    }
+}
+
+[HarmonyPatch]
+public static class RestartAppIfNecessaryPatch
+{
+    public const string TypeName = "Steamworks.SteamAPI, Assembly-CSharp-firstpass";
+    public const string MethodName = "RestartAppIfNecessary";
+    public const string FileName = "steam_appid.txt";
+
+    public static bool Prepare() => Type.GetType(TypeName, false) != null;
+
+    public static MethodBase TargetMethod() => AccessTools.Method($"{TypeName}:{MethodName}");
+
+    public static bool Prefix(out bool __result)
+    {
+        if (!File.Exists(FileName))
+            File.WriteAllText(FileName, "945360");
+
+        return __result = false;
     }
 }

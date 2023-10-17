@@ -117,10 +117,10 @@ public class DebuggerBehaviour : MonoBehaviour
                     Meeting.RpcClose();
 
                 if (GUILayout.Button("Kill Self"))
-                    RpcMurderPlayer(CustomPlayer.Local, CustomPlayer.Local);
+                    RpcMurderPlayer(CustomPlayer.Local);
 
                 if (GUILayout.Button("Kill All"))
-                    CustomPlayer.AllPlayers.ForEach(x => RpcMurderPlayer(x, x));
+                    CustomPlayer.AllPlayers.ForEach(x => RpcMurderPlayer(x));
 
                 if (GUILayout.Button("Revive Self"))
                     CustomPlayer.Local.Revive();

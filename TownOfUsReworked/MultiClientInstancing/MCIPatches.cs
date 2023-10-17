@@ -6,12 +6,17 @@ public static class OnGameStart
     public static void Prefix(AmongUsClient __instance)
     {
         if (TownOfUsReworked.MCIActive)
-            __instance.allClients.ForEach(x => x.IsReady = true);
+        {
+            foreach (var client in __instance.allClients)
+            {
+                client.IsReady = true;
+                client.Character.gameObject.GetComponent<DummyBehaviour>().enabled = false;
+            }
+        }
     }
 }
 
 [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Confirm))]
-[HarmonyPriority(Priority.Last)]
 public static class SameVoteAll
 {
     public static void Postfix(MeetingHud __instance, ref byte suspectStateIdx)

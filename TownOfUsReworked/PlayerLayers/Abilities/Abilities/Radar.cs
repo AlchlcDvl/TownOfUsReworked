@@ -25,8 +25,8 @@ public class Radar : Ability
             OnLobby();
         else
         {
-            var closest = Player.GetClosestPlayer(null, float.MaxValue, true);
-            var body = Player.GetClosestBody(float.MaxValue, true);
+            var closest = Player.GetClosestPlayer(ignoreWalls: true);
+            var body = Player.GetClosestBody(ignoreWalls: true);
             var transform = body != null && Vector2.Distance(closest.transform.position, Player.transform.position) > Vector2.Distance(body.transform.position,
                 Player.transform.position) ? body.transform : closest.transform;
             RadarArrow.Update(transform.position);

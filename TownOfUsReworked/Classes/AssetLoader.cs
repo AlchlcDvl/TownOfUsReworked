@@ -16,12 +16,21 @@ public static class AssetLoader
     public static readonly List<CustomVisor> VisorDetails = new();
     public static readonly List<Language> AllTranslations = new();
     private static bool Loaded;
+    private static HttpClient Client = null;
+
+    private static void SetUpClient()
+    {
+        Client = new() { DefaultRequestHeaders = { {"User-Agent", "Loader"} } };
+        Client.DefaultRequestHeaders.CacheControl = new() { NoCache = true };
+    }
 
     public static void LoadAssets()
     {
         SoundEffects.Clear();
         Sizes.Clear();
         Sprites.Clear();
+        Frequencies.Clear();
+        Array.Clear(PortalAnimation, 0, 205);
 
         foreach (var resourceName in TownOfUsReworked.Core.GetManifestResourceNames())
         {
@@ -35,23 +44,36 @@ public static class AssetLoader
                     Sizes.Add(name, 200);
                 else if (name == "Cursor")
                     Sizes.Add(name, 115);
+                else if (name == "NightVision")
+                    Sizes.Add(name, 350);
                 else
                     Sizes.Add(name, 100);
             }
+            else if (resourceName.EndsWith(".raw"))
+            {
+                var name = resourceName.Replace(".raw", "").Replace(TownOfUsReworked.Sounds, "");
+
+                if (name.Contains("Intro"))
+                    Frequencies.Add(name, 36000);
+                else
+                    Frequencies.Add(name, 48000);
+            }
         }
 
-        var position2 = 0;
+        var position = 0;
 
         foreach (var resourceName in TownOfUsReworked.Core.GetManifestResourceNames())
         {
             if ((resourceName.StartsWith(TownOfUsReworked.Buttons) || resourceName.StartsWith(TownOfUsReworked.Misc)) && resourceName.EndsWith(".png"))
                 Sprites.Add(resourceName.Replace(".png", "").Replace(TownOfUsReworked.Buttons, "").Replace(TownOfUsReworked.Misc, ""), CreateSprite(resourceName));
+            else if (resourceName.StartsWith(TownOfUsReworked.Sounds) && resourceName.EndsWith(".raw"))
+                SoundEffects.Add(resourceName.Replace(".raw", "").Replace(TownOfUsReworked.Sounds, ""), CreateAudio(resourceName));
             else if (resourceName.StartsWith(TownOfUsReworked.Portal) && resourceName.EndsWith(".png"))
             {
-                if (PortalAnimation[position2] == null)
-                    PortalAnimation[position2] = CreateSprite(resourceName);
+                if (PortalAnimation[position] == null)
+                    PortalAnimation[position] = CreateSprite(resourceName);
 
-                position2++;
+                position++;
             }
         }
 
@@ -63,11 +85,22 @@ public static class AssetLoader
         if (Loaded)
             return;
 
+        Loaded = true;
+        SetUpClient();
         LaunchHatFetcher(update);
         LaunchVisorFetcher(update);
         LaunchNameplateFetcher(update);
         LaunchTranslationFetcher();
-        Loaded = true;
+        LoadVanillaSounds();
+    }
+
+    public static void LoadVanillaSounds()
+    {
+        SoundEffects.TryAdd("EngineerIntro", GetIntroSound(RoleTypes.Engineer));
+        SoundEffects.TryAdd("MorphlingIntro", GetIntroSound(RoleTypes.Shapeshifter));
+        SoundEffects.TryAdd("MedicIntro", GetIntroSound(RoleTypes.Scientist));
+        SoundEffects.TryAdd("CrewmateIntro", GetIntroSound(RoleTypes.Crewmate));
+        SoundEffects.TryAdd("ImpostorIntro", GetIntroSound(RoleTypes.Impostor));
     }
 
     private static void LaunchHatFetcher(bool update)
@@ -117,7 +150,7 @@ public static class AssetLoader
             var status = await FetchHats(update);
 
             if (status != HttpStatusCode.OK)
-                LogError("Custom Hats could not be loaded");
+                LogError("Hats could not be loaded");
         }
         catch (Exception e)
         {
@@ -134,7 +167,7 @@ public static class AssetLoader
             var status = await FetchNameplates(update);
 
             if (status != HttpStatusCode.OK)
-                LogError("Custom Nameplates could not be loaded");
+                LogError("Nameplates could not be loaded");
         }
         catch (Exception e)
         {
@@ -151,7 +184,7 @@ public static class AssetLoader
             var status = await FetchVisors(update);
 
             if (status != HttpStatusCode.OK)
-                LogError("Custom Visors could not be loaded");
+                LogError("Visors could not be loaded");
         }
         catch (Exception e)
         {
@@ -168,7 +201,7 @@ public static class AssetLoader
             var status = await FetchTranslations();
 
             if (status != HttpStatusCode.OK)
-                LogError("Unable to fetch translations");
+                LogError("Translations could not be loaded");
         }
         catch (Exception e)
         {
@@ -180,19 +213,23 @@ public static class AssetLoader
 
     private static async Task<HttpStatusCode> FetchHats(bool update)
     {
-        var http = new HttpClient();
-        http.DefaultRequestHeaders.CacheControl = new() { NoCache = true };
-        var response = await http.GetAsync(new Uri($"{REPO}/Hats.json"), HttpCompletionOption.ResponseContentRead);
+        if (Client == null)
+        {
+            LogError($"Client was null");
+            return HttpStatusCode.NotFound;
+        }
 
         try
         {
+            var response = await Client.GetAsync(new Uri($"{REPO}/Hats.json"), HttpCompletionOption.ResponseContentRead);
+
             if (response.StatusCode != HttpStatusCode.OK)
                 return response.StatusCode;
 
             if (response.Content == null)
             {
                 LogError($"Server returned no data: {response.StatusCode}");
-                return HttpStatusCode.ExpectationFailed;
+                return response.StatusCode;
             }
 
             var json = await response.Content.ReadAsStringAsync();
@@ -264,10 +301,13 @@ public static class AssetLoader
 
             foreach (var file in markedfordownload)
             {
-                var hatFileResponse = await http.GetAsync($"{REPO}/hats/{file}.png", HttpCompletionOption.ResponseContentRead);
+                var hatFileResponse = await Client.GetAsync($"{REPO}/hats/{file}.png", HttpCompletionOption.ResponseContentRead);
 
                 if (hatFileResponse.StatusCode != HttpStatusCode.OK)
+                {
+                    LogError($"Error downloading {file}: {hatFileResponse.StatusCode}");
                     continue;
+                }
 
                 using var responseStream = await hatFileResponse.Content.ReadAsStreamAsync();
                 using var fileStream = File.Create($"{TownOfUsReworked.Hats}\\{file}.png");
@@ -284,19 +324,23 @@ public static class AssetLoader
 
     private static async Task<HttpStatusCode> FetchVisors(bool update)
     {
-        var http = new HttpClient();
-        http.DefaultRequestHeaders.CacheControl = new() { NoCache = true };
-        var response = await http.GetAsync(new Uri($"{REPO}/Visors.json"), HttpCompletionOption.ResponseContentRead);
+        if (Client == null)
+        {
+            LogError($"Client was null");
+            return HttpStatusCode.NotFound;
+        }
 
         try
         {
+            var response = await Client.GetAsync(new Uri($"{REPO}/Visors.json"), HttpCompletionOption.ResponseContentRead);
+
             if (response.StatusCode != HttpStatusCode.OK)
                 return response.StatusCode;
 
             if (response.Content == null)
             {
                 LogError($"Server returned no data: {response.StatusCode}");
-                return HttpStatusCode.ExpectationFailed;
+                return response.StatusCode;
             }
 
             var json = await response.Content.ReadAsStringAsync();
@@ -322,7 +366,6 @@ public static class AssetLoader
 
                     info.FlipID = current["flipid"]?.ToString();
                     info.Artist = current["artist"]?.ToString();
-                    info.Condition = current["condition"]?.ToString();
                     info.FloorID = current["floorid"]?.ToString();
                     info.ClimbID = current["climbid"]?.ToString();
                     info.Adaptive = current["adaptive"] != null;
@@ -359,10 +402,13 @@ public static class AssetLoader
 
             foreach (var file in markedfordownload)
             {
-                var visorFileResponse = await http.GetAsync($"{REPO}/visors/{file}.png", HttpCompletionOption.ResponseContentRead);
+                var visorFileResponse = await Client.GetAsync($"{REPO}/visors/{file}.png", HttpCompletionOption.ResponseContentRead);
 
                 if (visorFileResponse.StatusCode != HttpStatusCode.OK)
+                {
+                    LogError($"Error downloading {file}: {visorFileResponse.StatusCode}");
                     continue;
+                }
 
                 using var responseStream = await visorFileResponse.Content.ReadAsStreamAsync();
                 using var fileStream = File.Create($"{TownOfUsReworked.Visors}\\{file}.png");
@@ -379,19 +425,23 @@ public static class AssetLoader
 
     private static async Task<HttpStatusCode> FetchNameplates(bool update)
     {
-        var http = new HttpClient();
-        http.DefaultRequestHeaders.CacheControl = new() { NoCache = true };
-        var response = await http.GetAsync(new Uri($"{REPO}/Nameplates.json"), HttpCompletionOption.ResponseContentRead);
+        if (Client == null)
+        {
+            LogError($"Client was null");
+            return HttpStatusCode.NotFound;
+        }
 
         try
         {
+            var response = await Client.GetAsync(new Uri($"{REPO}/Nameplates.json"), HttpCompletionOption.ResponseContentRead);
+
             if (response.StatusCode != HttpStatusCode.OK)
                 return response.StatusCode;
 
             if (response.Content == null)
             {
                 LogError($"Server returned no data: {response.StatusCode}");
-                return HttpStatusCode.ExpectationFailed;
+                return response.StatusCode;
             }
 
             var json = await response.Content.ReadAsStringAsync();
@@ -416,7 +466,6 @@ public static class AssetLoader
                         continue;
 
                     info.Artist = current["artist"]?.ToString();
-                    info.Condition = current["condition"]?.ToString();
                     NameplateDetails.Add(info);
                 }
             }
@@ -440,10 +489,13 @@ public static class AssetLoader
 
             foreach (var file in markedfordownload)
             {
-                var nameplateFileResponse = await http.GetAsync($"{REPO}/nameplates/{file}.png", HttpCompletionOption.ResponseContentRead);
+                var nameplateFileResponse = await Client.GetAsync($"{REPO}/nameplates/{file}.png", HttpCompletionOption.ResponseContentRead);
 
                 if (nameplateFileResponse.StatusCode != HttpStatusCode.OK)
+                {
+                    LogError($"Error downloading {file}: {nameplateFileResponse.StatusCode}");
                     continue;
+                }
 
                 using var responseStream = await nameplateFileResponse.Content.ReadAsStreamAsync();
                 using var fileStream = File.Create($"{TownOfUsReworked.Nameplates}\\{file}.png");
@@ -460,19 +512,23 @@ public static class AssetLoader
 
     private static async Task<HttpStatusCode> FetchTranslations()
     {
-        var http = new HttpClient();
-        http.DefaultRequestHeaders.CacheControl = new() { NoCache = true };
-        var response = await http.GetAsync(new Uri($"{REPO}/Languages.json"), HttpCompletionOption.ResponseContentRead);
+        if (Client == null)
+        {
+            LogError($"Client was null");
+            return HttpStatusCode.NotFound;
+        }
 
         try
         {
+            var response = await Client.GetAsync(new Uri($"{REPO}/Languages.json"), HttpCompletionOption.ResponseContentRead);
+
             if (response.StatusCode != HttpStatusCode.OK)
                 return response.StatusCode;
 
             if (response.Content == null)
             {
                 LogError($"Server returned no data: {response.StatusCode}");
-                return HttpStatusCode.ExpectationFailed;
+                return response.StatusCode;
             }
 
             var json = await response.Content.ReadAsStringAsync();
@@ -505,6 +561,4 @@ public static class AssetLoader
 
         return HttpStatusCode.OK;
     }
-
-    private static string ConvertToBaseName(string name) => name.Split('/').Last().Split('.').First();
 }

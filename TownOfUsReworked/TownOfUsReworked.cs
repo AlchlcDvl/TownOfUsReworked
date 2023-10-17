@@ -1,8 +1,5 @@
 namespace TownOfUsReworked;
 
-//God I'm so bored I want to add more layers
-//I wonder if I should make an api with the common functions I've been using
-//AD from 2.5 weeks later here, working on a side project with MyDragonBreath ;)
 [BepInPlugin(Id, Name, VersionString)]
 [BepInDependency(ReactorPlugin.Id)]
 [ReactorModFlags(ModFlags.RequireOnAllClients)]
@@ -11,12 +8,12 @@ public class TownOfUsReworked : BasePlugin
 {
     public const string Id = "me.alchlcdvl.reworked";
     public const string Name = "TownOfUsReworked";
-    public const string VersionString = "0.5.3.0";
+    public const string VersionString = "0.5.4.0";
     public static readonly Version Version = new(VersionString);
 
     public const bool IsDev = false;
     public static bool IsTest { get; set; }
-    public static string VersionS => VersionString.Remove(VersionString.Length - 2);
+    private static string VersionS => VersionString.Remove(VersionString.Length - 2);
     private static string DevString => IsDev ? "-dev" : "";
     private static string TestString => IsTest ? "_test" : "";
     public static string VersionFinal => $"v{VersionS}{DevString}{TestString}";
@@ -26,6 +23,7 @@ public class TownOfUsReworked : BasePlugin
     public const string Misc = $"{Resources}Misc.";
     public const string Portal = $"{Resources}Portal.";
     public const string Presets = $"{Resources}Presets.";
+    public const string Sounds = $"{Resources}Sounds.";
 
     public static string DataPath => $"{Path.GetDirectoryName(Application.dataPath)}\\";
     public static string Hats => $"{DataPath}CustomHats\\";
@@ -38,7 +36,6 @@ public class TownOfUsReworked : BasePlugin
     public const string AssetsLink = "https://github.com/AlchlcDvl/ReworkedAssets";
 
     public static Assembly Core => typeof(TownOfUsReworked).Assembly;
-    public static Assembly Executing => Assembly.GetExecutingAssembly();
 
     public static NormalGameOptionsV07 NormalOptions => GameOptionsManager.Instance.currentNormalGameOptions;
     public static HideNSeekGameOptionsV07 HNSOptions => GameOptionsManager.Instance.currentHideNSeekGameOptions;
@@ -73,12 +70,12 @@ public class TownOfUsReworked : BasePlugin
     public override void Load()
     {
         Logging.Init();
-        LogMessage("Loading...");
+        LogMessage("Loading");
         CheckAbort(out var abort, out var mod);
 
         if (abort)
         {
-            LogFatal($"Unsupported mod {mod} detected, aborting load...");
+            LogFatal($"Unsupported mod {mod} detected, aborting mod loading");
             return;
         }
 
@@ -87,9 +84,6 @@ public class TownOfUsReworked : BasePlugin
             Harmony.PatchAll();
 
             ModInstance = this;
-
-            if (!File.Exists($"{DataPath}steam_appid.txt"))
-                File.WriteAllText($"{DataPath}steam_appid.txt", "945360");
 
             DataManager.Player.Onboarding.ViewedHideAndSeekHowToPlay = true;
 

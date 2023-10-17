@@ -11,7 +11,6 @@ public class Phantom : Neutral
     public override LayerEnum Type => LayerEnum.Phantom;
     public override Func<string> StartText => () => "Peek-A-Boo!";
     public override Func<string> Description => () => "- You end the game upon finishing your objective";
-    public override InspectorResults InspectorResults => InspectorResults.Ghostly;
 
     public Phantom(PlayerControl player) : base(player)
     {

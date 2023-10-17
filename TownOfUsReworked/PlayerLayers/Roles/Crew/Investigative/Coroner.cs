@@ -14,7 +14,6 @@ public class Coroner : Crew
     public override Func<string> StartText => () => "Examine The Dead For Information";
     public override Func<string> Description => () => "- You know when players die and will be notified to as to where their body is for a brief period of time\n- You will get a report " +
         "when you report a body\n- You can perform an autopsy on bodies, to get a reference\n- You can compare the autopsy reference with players to see if they killed the body you examined";
-    public override InspectorResults InspectorResults => InspectorResults.DealsWithDead;
 
     public Coroner(PlayerControl player) : base(player)
     {

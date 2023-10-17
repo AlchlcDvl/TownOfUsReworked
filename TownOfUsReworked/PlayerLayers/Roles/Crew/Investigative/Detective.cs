@@ -4,6 +4,8 @@ public class Detective : Crew
 {
     public CustomButton ExamineButton { get; set; }
     private static float _time;
+    public List<Footprint> AllPrints { get; set; }
+    public List<byte> Investigated { get; set; }
 
     public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Detective : Colors.Crew;
     public override string Name => "Detective";
@@ -11,10 +13,11 @@ public class Detective : Crew
     public override Func<string> StartText => () => "Examine Players For <color=#AA0000FF>Blood</color>";
     public override Func<string> Description => () => "- You can examine players to see if they have killed recently\n- Your screen will flash red if your target has killed in the last " +
         $"{CustomGameOptions.RecentKill}s\n- You can view everyone's footprints to see where they go or where they came from";
-    public override InspectorResults InspectorResults => InspectorResults.GainsInfo;
 
     public Detective(PlayerControl player) : base(player)
     {
+        AllPrints = new();
+        Investigated = new();
         Alignment = Alignment.CrewInvest;
         ExamineButton = new(this, "Examine", AbilityTypes.Target, "ActionSecondary", Examine, CustomGameOptions.ExamineCd);
     }
@@ -22,13 +25,17 @@ public class Detective : Crew
     public override void OnLobby()
     {
         base.OnLobby();
-        AllPrints.ForEach(x => x.Destroy());
-        AllPrints.Clear();
+        Clear();
     }
 
     public override void OnMeetingStart(MeetingHud __instance)
     {
         base.OnMeetingStart(__instance);
+        Clear();
+    }
+
+    public void Clear()
+    {
         AllPrints.ForEach(x => x.Destroy());
         AllPrints.Clear();
     }
@@ -44,6 +51,7 @@ public class Detective : Crew
         {
             Flash(ExamineButton.TargetPlayer.IsFramed() || KilledPlayers.Any(x => x.KillerId == ExamineButton.TargetPlayer.PlayerId && (DateTime.UtcNow - x.KillTime).TotalSeconds <=
                 CustomGameOptions.RecentKill) ? UColor.red : UColor.green);
+            Investigated.Add(ExamineButton.TargetPlayer.PlayerId);
         }
 
         if (interact.Protected)
@@ -65,12 +73,14 @@ public class Detective : Crew
             {
                 _time -= CustomGameOptions.FootprintInterval;
 
-                foreach (var player in CustomPlayer.AllPlayers)
+                foreach (var id in Investigated)
                 {
+                    var player = PlayerById(id);
+
                     if (player.HasDied() || player == CustomPlayer.Local)
                         continue;
 
-                    if (!AllPrints.Any(print => Vector3.Distance(print.Position, Position(player)) < 0.5f && print.Color.a > 0.5 && print.PlayerId == player.PlayerId))
+                    if (!AllPrints.Any(print => Vector2.Distance(print.Position, Position(player)) < 0.5f && print.Color.a > 0.5 && print.PlayerId == player.PlayerId))
                         AllPrints.Add(new(player));
                 }
 

@@ -13,7 +13,6 @@ public class Dracula : Neutral
     public override Func<string> Description => () => "- You can convert the <color=#8CFFFFFF>Crew</color> into your own sub faction\n- If the target cannot be converted or the " +
         $"number of alive <color=#7B8968FF>Undead</color> exceeds {CustomGameOptions.AliveVampCount}, you will kill them instead\n- Attempting to convert a <color=#C0C0C0FF>Vampire " +
         "Hunter</color> will force them to kill you";
-    public override InspectorResults InspectorResults => InspectorResults.NewLens;
 
     public Dracula(PlayerControl player) : base(player)
     {

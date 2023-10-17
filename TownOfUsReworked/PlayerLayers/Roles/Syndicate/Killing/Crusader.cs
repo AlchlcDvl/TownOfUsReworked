@@ -11,7 +11,6 @@ public class Crusader : Syndicate
     public override Func<string> StartText => () => "Cleanse This Land Of The Unholy Filth";
     public override Func<string> Description => () => "- You can crusade players\n- Crusaded players will be forced to be on alert, and will kill whoever interacts with then" +
         $"{(HoldsDrive ? $"\n- Crusaded players will also kill anyone within a {CustomGameOptions.ChaosDriveCrusadeRadius}m radies" : "")}\n{CommonAbilities}";
-    public override InspectorResults InspectorResults => InspectorResults.PreservesLife;
 
     public Crusader(PlayerControl player) : base(player)
     {

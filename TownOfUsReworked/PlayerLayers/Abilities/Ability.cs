@@ -23,14 +23,14 @@ public abstract class Ability : PlayerLayer
         base.OnMeetingStart(__instance);
         GetAssassins().ForEach(x => x.AssassinMenu.HideButtons());
 
-        foreach (var swapper in GetAbilities<Swapper>(LayerEnum.Swapper))
+        foreach (var swapper in GetLayers<Swapper>())
         {
             swapper.SwapMenu.HideButtons();
             swapper.Swap1 = null;
             swapper.Swap2 = null;
         }
 
-        foreach (var pol in GetAbilities<Politician>(LayerEnum.Politician))
+        foreach (var pol in GetLayers<Politician>())
         {
             pol.DestroyAbstain();
             pol.ExtraVotes.Clear();
@@ -52,8 +52,6 @@ public abstract class Ability : PlayerLayer
     public static Ability GetAbility(PlayerVoteArea area) => GetAbility(PlayerByVoteArea(area));
 
     public static List<Ability> GetAbilities(LayerEnum abilitytype) => AllAbilities.Where(x => x.Type == abilitytype).ToList();
-
-    public static List<T> GetAbilities<T>(LayerEnum abilitytype) where T : Ability => GetAbilities(abilitytype).Cast<T>().ToList();
 
     public static List<Assassin> GetAssassins() => AllAbilities.Where(x => x.Type is LayerEnum.CrewAssassin or LayerEnum.NeutralAssassin or LayerEnum.IntruderAssassin or
         LayerEnum.SyndicateAssassin).Cast<Assassin>().ToList();

@@ -11,7 +11,6 @@ public class Troll : Neutral
     public override Func<string> StartText => () => "Troll Everyone With Your Death";
     public override Func<string> Description => () => "- You can interact with players\n- Your interactions do nothing except spread infection and possibly kill you via touch " +
         "sensitive roles\n- If you are killed, you will also kill your killer";
-    public override InspectorResults InspectorResults => InspectorResults.Manipulative;
 
     public Troll(PlayerControl player) : base(player)
     {

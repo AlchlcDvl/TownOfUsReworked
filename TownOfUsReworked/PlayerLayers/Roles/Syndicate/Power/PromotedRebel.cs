@@ -49,7 +49,7 @@ public class PromotedRebel : Syndicate
         FrameButton = new(this, "Frame", AbilityTypes.Target, "Secondary", Frame, CustomGameOptions.FrameCd, FrameException);
         RadialFrameButton = new(this, "RadialFrame", AbilityTypes.Targetless, "Secondary", RadialFrame, CustomGameOptions.FrameCd);
         ShapeshiftButton = new(this, "Shapeshift", AbilityTypes.Targetless, "Secondary", HitShapeshift, CustomGameOptions.ShapeshiftCd, CustomGameOptions.ShapeshiftDur,
-            (CustomButton.EffectVoid)Shapeshift, UnShapeshift);
+            (CustomButton.EffectVoid)Shift, UnShapeshift);
         BombButton = new(this, "Plant", AbilityTypes.Targetless, "ActionSecondary", Place, CustomGameOptions.BombCd);
         DetonateButton = new(this, "Detonate", AbilityTypes.Targetless, "Secondary", Detonate, CustomGameOptions.DetonateCd);
         CrusadeButton = new(this, "Crusade", AbilityTypes.Target, "Secondary", Crusade, CustomGameOptions.CrusadeCd, CustomGameOptions.CrusadeDur, UnCrusade, CrusadeException);
@@ -63,15 +63,25 @@ public class PromotedRebel : Syndicate
     }
 
     //Rebel Stuff
-    public Role FormerRole { get; set; }
+    public Syndicate FormerRole { get; set; }
 
-    public override Color Color => ClientGameOptions.CustomSynColors ? Colors.Rebel : Colors.Syndicate;
+    public override Color Color
+    {
+        get
+        {
+            if (!ClientGameOptions.CustomSynColors)
+                return Colors.Syndicate;
+            else if (FormerRole != null)
+                return FormerRole.Color;
+            else
+                return Colors.Rebel;
+        }
+    }
     public override string Name => "Rebel";
     public override LayerEnum Type => LayerEnum.PromotedRebel;
     public override Func<string> StartText => () => "Lead The <color=#008000FF>Syndicate</color>";
     public override Func<string> Description => () => "- You have succeeded the former <color=#FFFCCEFF>Rebel</color> and have a shorter cooldown on your former role's abilities" +
         (FormerRole == null ? CommonAbilities : $"\n{FormerRole.ColorString}{FormerRole.Description()}</color>");
-    public override InspectorResults InspectorResults => FormerRole == null ? InspectorResults.LeadsTheGroup : FormerRole.InspectorResults;
 
     public override void TryEndEffect()
     {
@@ -476,16 +486,7 @@ public class PromotedRebel : Syndicate
         !CustomGameOptions.ShapeshiftMates && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) && SubFaction != SubFaction.None &&
         !CustomGameOptions.ShapeshiftMates);
 
-    public void Shapeshift()
-    {
-        if (!HoldsDrive)
-        {
-            Morph(ShapeshiftPlayer1, ShapeshiftPlayer2);
-            Morph(ShapeshiftPlayer2, ShapeshiftPlayer1);
-        }
-        else
-            Utils.Shapeshift();
-    }
+    public void Shift() => Shapeshifter.Shapeshift(ShapeshiftPlayer1, ShapeshiftPlayer2, HoldsDrive);
 
     public void UnShapeshift()
     {
@@ -713,11 +714,8 @@ public class PromotedRebel : Syndicate
 
         if (CustomPlayer.Local == WarpPlayer1)
         {
-            if (Minigame.Instance)
-                Minigame.Instance.Close();
-
-            if (Map)
-                Map.Close();
+            ActiveTask?.Close();
+            Map?.Close();
         }
 
         WarpPlayer1.moveable = true;

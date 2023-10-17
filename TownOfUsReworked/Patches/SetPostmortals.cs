@@ -11,6 +11,8 @@ public static class SetPostmortals
 {
     public static readonly List<PlayerControl> AssassinatedPlayers = new();
     public static readonly List<PlayerControl> EscapedPlayers = new();
+    public static readonly List<PlayerControl> MarkedPlayers = new();
+    public static readonly List<PlayerControl> MisfiredPlayers = new();
 
     public static void Postfix(ExileController __instance) => ExileControllerPostfix(__instance);
 
@@ -29,13 +31,20 @@ public static class SetPostmortals
         }
 
         AssassinatedPlayers.Clear();
+        EscapedPlayers.Clear();
+        MarkedPlayers.Clear();
+        MisfiredPlayers.Clear();
 
-        foreach (var ghoul in Role.GetRoles<Ghoul>(LayerEnum.Ghoul))
+        foreach (var ghoul in PlayerLayer.GetLayers<Ghoul>())
         {
             if (ghoul.Caught)
                 ghoul.MarkedPlayer = null;
             else if (ghoul.MarkedPlayer != null && !ghoul.MarkedPlayer.HasDied() && !ghoul.MarkedPlayer.Is(Alignment.NeutralApoc))
+            {
                 ghoul.MarkedPlayer.Exiled();
+                MarkedPlayers.Add(ghoul.MarkedPlayer);
+                ghoul.MarkedPlayer = null;
+            }
         }
 
         var exiled = __instance.exiled?.Object;
@@ -54,7 +63,7 @@ public static class SetPostmortals
             }
         }
 
-        foreach (var dict in Role.GetRoles<Dictator>(LayerEnum.Dictator))
+        foreach (var dict in PlayerLayer.GetLayers<Dictator>())
         {
             if (dict.Revealed && dict.ToBeEjected.Count > 0 && !dict.ToBeEjected.Any(x => x == 255))
             {
@@ -75,6 +84,7 @@ public static class SetPostmortals
                 {
                     dict.Player.Exiled();
                     dict.DeathReason = DeathReasonEnum.Suicide;
+                    MisfiredPlayers.Add(dict.Player);
                 }
 
                 dict.Ejected = true;
@@ -82,7 +92,7 @@ public static class SetPostmortals
             }
         }
 
-        foreach (var bh in Role.GetRoles<BountyHunter>(LayerEnum.BountyHunter))
+        foreach (var bh in PlayerLayer.GetLayers<BountyHunter>())
         {
             if (bh.TargetKilled && !bh.IsDead)
             {
@@ -92,7 +102,7 @@ public static class SetPostmortals
             }
         }
 
-        foreach (var exe in Role.GetRoles<Executioner>(LayerEnum.Executioner))
+        foreach (var exe in PlayerLayer.GetLayers<Executioner>())
         {
             if (exe.TargetVotedOut && !exe.IsDead)
             {
@@ -102,7 +112,7 @@ public static class SetPostmortals
             }
         }
 
-        foreach (var guess in Role.GetRoles<Guesser>(LayerEnum.Guesser))
+        foreach (var guess in PlayerLayer.GetLayers<Guesser>())
         {
             if (guess.TargetGuessed && !guess.IsDead)
             {
@@ -112,7 +122,7 @@ public static class SetPostmortals
             }
         }
 
-        foreach (var cann in Role.GetRoles<Cannibal>(LayerEnum.Cannibal))
+        foreach (var cann in PlayerLayer.GetLayers<Cannibal>())
         {
             if (cann.Eaten && !cann.IsDead)
             {
@@ -122,13 +132,13 @@ public static class SetPostmortals
             }
         }
 
-        foreach (var vigi in Role.GetRoles<Vigilante>(LayerEnum.Vigilante))
+        foreach (var vigi in PlayerLayer.GetLayers<Vigilante>())
         {
             if (vigi.PostMeetingDie)
             {
                 vigi.Player.Exiled();
                 vigi.DeathReason = DeathReasonEnum.Suicide;
-                RecentlyKilled.Add(vigi.Player);
+                MisfiredPlayers.Add(vigi.Player);
             }
         }
 
@@ -145,7 +155,7 @@ public static class SetPostmortals
 
     private static void JesterWin(PlayerControl player)
     {
-        foreach (var jest in Role.GetRoles<Jester>(LayerEnum.Jester))
+        foreach (var jest in PlayerLayer.GetLayers<Jester>())
         {
             if (jest.Player == player)
             {
@@ -157,7 +167,7 @@ public static class SetPostmortals
 
     private static void ExecutionerWin(PlayerControl player)
     {
-        foreach (var exe in Role.GetRoles<Executioner>(LayerEnum.Executioner))
+        foreach (var exe in PlayerLayer.GetLayers<Executioner>())
         {
             if (exe.TargetPlayer == null || (!CustomGameOptions.ExeCanWinBeyondDeath && exe.IsDead))
                 continue;
@@ -205,8 +215,7 @@ public static class SetPostmortals
             if (!rev.Is(LayerEnum.Revealer))
             {
                 var former = Role.GetRole(rev);
-                var role = new Revealer(rev) { FormerRole = former };
-                role.RoleUpdate(former);
+                new Revealer(rev) { FormerRole = former }.RoleUpdate(former);
                 RemoveTasks(CustomPlayer.Local);
                 rev.gameObject.layer = LayerMask.NameToLayer("Players");
 
@@ -232,11 +241,8 @@ public static class SetPostmortals
         if (!PhantomOn)
             return;
 
-        if (!WillBePhantoms.Contains(exiled) && WillBePhantoms.Count < CustomGameOptions.PhantomCount && exiled.Is(Faction.Neutral) &&
-            !NeutralHasUnfinishedBusiness(exiled))
-        {
+        if (!WillBePhantoms.Contains(exiled) && WillBePhantoms.Count < CustomGameOptions.PhantomCount && exiled.Is(Faction.Neutral) && !NeutralHasUnfinishedBusiness(exiled))
             WillBePhantoms.Add(exiled);
-        }
 
         foreach (var phan in WillBePhantoms)
         {
@@ -246,8 +252,7 @@ public static class SetPostmortals
             if (!phan.Is(LayerEnum.Phantom))
             {
                 var former = Role.GetRole(phan);
-                var role = new Phantom(phan);
-                role.RoleUpdate(former);
+                new Phantom(phan).RoleUpdate(former);
                 RemoveTasks(phan);
                 phan.gameObject.layer = LayerMask.NameToLayer("Players");
 
@@ -284,8 +289,7 @@ public static class SetPostmortals
             if (!ban.Is(LayerEnum.Banshee))
             {
                 var former = Role.GetRole(ban);
-                var role = new Banshee(ban);
-                role.RoleUpdate(former);
+                new Banshee(ban).RoleUpdate(former);
                 ban.gameObject.layer = LayerMask.NameToLayer("Players");
 
                 if (CustomPlayer.Local != ban)
@@ -321,8 +325,7 @@ public static class SetPostmortals
             if (!ghoul.Is(LayerEnum.Ghoul))
             {
                 var former = Role.GetRole(ghoul);
-                var role = new Ghoul(ghoul);
-                role.RoleUpdate(former);
+                new Ghoul(ghoul).RoleUpdate(former);
                 ghoul.gameObject.layer = LayerMask.NameToLayer("Players");
 
                 if (CustomPlayer.Local != ghoul)

@@ -15,7 +15,6 @@ public class Necromancer : Neutral
     public override Func<string> StartText => () => "Resurrect The Dead Into Doing Your Bidding";
     public override Func<string> Description => () => "- You can resurrect a dead body and bring them into the <color=#E6108AFF>Reanimated</color>\n- You can kill players to speed " +
         "up the process";
-    public override InspectorResults InspectorResults => InspectorResults.PreservesLife;
 
     public Necromancer(PlayerControl player) : base(player)
     {
@@ -104,7 +103,7 @@ public class Necromancer : Neutral
             cooldown = CooldownType.Survivor;
 
         SacrificeButton.StartCooldown(cooldown);
-    
+
         if (CustomGameOptions.NecroCooldownsLinked)
             ResurrectButton.StartCooldown(cooldown);
     }

@@ -12,7 +12,6 @@ public class Framer : Syndicate
     public override Func<string> StartText => () => "Make Everyone Suspicious";
     public override Func<string> Description => () => $"- You can frame {(HoldsDrive ? $"all players within a {CustomGameOptions.ChaosDriveFrameRadius}m radius" : "a player")}\n- Framed " +
         $"players will die very easily to killing roles and will appear to have the wrong results to investigative roles till you are dead\n{CommonAbilities}";
-    public override InspectorResults InspectorResults => InspectorResults.Manipulative;
 
     public Framer(PlayerControl player) : base(player)
     {

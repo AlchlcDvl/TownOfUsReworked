@@ -12,7 +12,6 @@ public class Drunkard : Syndicate
     public override LayerEnum Type => LayerEnum.Drunkard;
     public override Func<string> StartText => () => "<i>Burp</i>";
     public override Func<string> Description => () => $"- You can confuse {(HoldsDrive ? "everyone" : "a player")}\n- Confused players will have their controls reverse\n{CommonAbilities}";
-    public override InspectorResults InspectorResults => InspectorResults.HindersOthers;
 
     public Drunkard(PlayerControl player) : base(player)
     {

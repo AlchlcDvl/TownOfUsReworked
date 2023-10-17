@@ -58,7 +58,7 @@ public static class Colors
     public static Color Shifter => new Color32(223, 133, 31, 255); //#DF851FFF
     public static Color VampireHunter => new Color32(192, 192, 192, 255); //#C0C0C0FF
     public static Color Escort => new Color32(128, 51, 51, 255); //#803333FF
-    public static Color Inspector => new Color32(126, 60, 100, 255); //#7E3C64FF
+    public static Color Bastion => new Color32(126, 60, 100, 255); //#7E3C64FF
     public static Color Revealer => new Color32(211, 211, 211, 255); //#D3D3D3FF
     public static Color Mystic => new Color32(112, 142, 239, 255); //#708EEFFF
     public static Color Retributionist => new Color32(141, 15, 140, 255); //#8D0F8CFF

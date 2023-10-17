@@ -18,17 +18,17 @@ public class CustomMeeting
     private static Vector3 BasePosition => new(-0.95f, 0.03f, -1.3f);
     public static readonly List<CustomMeeting> AllCustomMeetings = new();
 
-    public CustomMeeting(PlayerControl owner, string active, string disabled, bool vote, OnClick click, Exemption isExempt = null, Vector3? position = default) : this(owner, active, disabled,
+    public CustomMeeting(PlayerControl owner, string active, string disabled, bool vote, OnClick click, Exemption isExempt = null, Vector3? position = null) : this(owner, active, disabled,
         MeetingTypes.Toggle, vote, click, isExempt, null, position) {}
 
-    public CustomMeeting(PlayerControl owner, string sprite, bool vote, OnClick click, Exemption isExempt = null, Action parallel = null, Vector3? position = default) : this(owner,
-        sprite, "", MeetingTypes.Click, vote, click, isExempt, parallel, position) {}
+    public CustomMeeting(PlayerControl owner, string sprite, bool vote, OnClick click, Exemption isExempt = null, Action parallel = null, Vector3? position = null) : this(owner, sprite, "",
+        MeetingTypes.Click, vote, click, isExempt, parallel, position) {}
 
-    public CustomMeeting(PlayerControl owner, string active, string disabled, bool vote, OnClick click, Exemption isExempt = null, Action parallel = null, Vector3? position = default)
-        : this(owner, active, disabled, MeetingTypes.Toggle, vote, click, isExempt, parallel, position) {}
+    public CustomMeeting(PlayerControl owner, string active, string disabled, bool vote, OnClick click, Exemption isExempt = null, Action parallel = null, Vector3? position = null) :
+        this(owner, active, disabled, MeetingTypes.Toggle, vote, click, isExempt, parallel, position) {}
 
     private CustomMeeting(PlayerControl owner, string active, string disabled, MeetingTypes type, bool vote, OnClick click, Exemption isExempt = null, Action parallel = null, Vector3?
-        position = default)
+        position = null)
     {
         Owner = owner;
         Click = click;

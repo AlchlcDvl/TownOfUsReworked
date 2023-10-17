@@ -54,8 +54,8 @@ public class MeetingHudPagingBehaviour : BasePagingBehaviour
 
         foreach (var button in Targets)
         {
-            if (i >= PageIndex * 15 && i < (PageIndex + 1) * 15 && !Ability.GetAssassins().Any(x => x.Phone) && !Role.GetRoles<Guesser>(LayerEnum.Guesser).Any(x => x.Phone)
-                && !Role.GetRoles<Thief>(LayerEnum.Thief).Any(x => x.Phone) && !Ability.GetAssassins().Any(x => x.Phone))
+            if (i >= PageIndex * 15 && i < (PageIndex + 1) * 15 && !Ability.GetAssassins().Any(x => x.Phone) && !PlayerLayer.GetLayers<Guesser>().Any(x => x.Phone) &&
+                !PlayerLayer.GetLayers<Thief>().Any(x => x.Phone) && !Ability.GetAssassins().Any(x => x.Phone))
             {
                 button.gameObject.SetActive(true);
                 var relativeIndex = i % 15;

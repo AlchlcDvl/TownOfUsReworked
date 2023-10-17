@@ -44,9 +44,9 @@ public static class SkeldShipStatusPatch
         }
     }
 
-    private static void ApplyChanges(ShipStatus instance)
+    private static void ApplyChanges(ShipStatus __instance)
     {
-        if (instance.Type == ShipStatus.MapType.Ship)
+        if (__instance.Type == ShipStatus.MapType.Ship)
         {
             FindVents();
             AdjustSkeld();

@@ -137,9 +137,38 @@ public class InteractionData
             RpcMurderPlayer(target, player);
         }
 
-        if (!abilityUsed)
-            abilityUsed = !(toKill || toConvert);
-
         return new(fullReset, survReset, gaReset, abilityUsed);
+    }
+
+    public static InteractionData Interact(PlayerControl player, Vent target)
+    {
+        var fullReset = false;
+        var gaReset = false;
+        var abilityUsed = false;
+
+        if (target.IsBombed())
+        {
+            if (player.IsShielded() || player.IsRetShielded())
+            {
+                fullReset = CustomGameOptions.ShieldBreaks;
+                Role.BreakShield(player, CustomGameOptions.ShieldBreaks);
+                CallRpc(CustomRPC.Misc, MiscRPC.AttemptSound, player);
+            }
+            else if (player.IsProtected())
+                gaReset = true;
+            else
+                RpcMurderPlayer(player, PlayerLayer.GetLayers<Bastion>().First(x => x.BombedIDs.Contains(target.Id)).Player, DeathReasonEnum.Bombed, false);
+
+            Role.BastionBomb(target, CustomGameOptions.BombRemovedOnKill);
+            CallRpc(CustomRPC.Misc, MiscRPC.BastionBomb, target);
+            Flash(Colors.Bastion);
+        }
+        else
+        {
+            abilityUsed = true;
+            fullReset = true;
+        }
+
+        return new(fullReset, false, gaReset, abilityUsed);
     }
 }

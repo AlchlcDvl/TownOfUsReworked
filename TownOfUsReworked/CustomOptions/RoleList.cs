@@ -13,6 +13,7 @@ public class RoleListEntryOption : CustomOption
         { LayerEnum.None, "None"},
 
         { LayerEnum.Altruist, "<color=#660000FF>Altruist</color>"},
+        { LayerEnum.Bastion, "<color=#7E3C64FF>Bastion</color>"},
         { LayerEnum.Chameleon, "<color=#5411F8FF>Chameleon</color>"},
         { LayerEnum.Coroner, "<color=#4D99E6FF>Coroner</color>"},
         { LayerEnum.Crewmate, "<color=#8CFFFFFF>Crewmate</color>"},
@@ -20,7 +21,6 @@ public class RoleListEntryOption : CustomOption
         { LayerEnum.Dictator, "<color=#00CB97FF>Dictator</color>"},
         { LayerEnum.Engineer, "<color=#FFA60AFF>Engineer</color>"},
         { LayerEnum.Escort, "<color=#803333FF>Escort</color>"},
-        { LayerEnum.Inspector, "<color=#7E3C64FF>Inspector</color>"},
         { LayerEnum.Mayor, "<color=#704FA8FF>Mayor</color>"},
         { LayerEnum.Medic, "<color=#006600FF>Medic</color>"},
         { LayerEnum.Medium, "<color=#A680FFFF>Medium</color>"},
@@ -37,7 +37,6 @@ public class RoleListEntryOption : CustomOption
         { LayerEnum.Veteran, "<color=#998040FF>Veteran</color>"},
         { LayerEnum.Vigilante, "<color=#FFFF00FF>Vigilante</color>"},
 
-        { LayerEnum.Actor, "<color=#00ACC2FF>Actor</color>"},
         { LayerEnum.Amnesiac, "<color=#22FFFFFF>Amnesiac</color>"},
         { LayerEnum.Arsonist, "<color=#EE7600FF>Arsonist</color>"},
         { LayerEnum.BountyHunter, "<color=#B51E39FF>Bounty Hunter</color>"},

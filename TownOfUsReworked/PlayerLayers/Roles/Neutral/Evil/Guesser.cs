@@ -7,7 +7,6 @@ public class Guesser : Neutral
     public int RemainingGuesses { get; set; }
     public bool FactionHintGiven { get; set; }
     public bool AlignmentHintGiven { get; set; }
-    public bool InspectorGiven { get; set; }
     public bool Failed => TargetPlayer != null && !TargetGuessed && (RemainingGuesses <= 0 || TargetPlayer.HasDied());
     private int LettersGiven { get; set; }
     private bool LettersExhausted { get; set; }
@@ -33,7 +32,6 @@ public class Guesser : Neutral
     public override Func<string> Description => () => TargetPlayer == null ? "- You can select a player to guess their role" : ((TargetGuessed ? "- You can guess player's roles " +
         "without penalties" : $"- You can only try to guess {TargetPlayer?.name}") + $"\n- If {TargetPlayer?.name} dies without getting guessed by you, you will become an " +
         "<color=#00ACC2FF>Actor</color>");
-    public override InspectorResults InspectorResults => InspectorResults.IsCold;
 
     public Guesser(PlayerControl player) : base(player)
     {
@@ -90,9 +88,10 @@ public class Guesser : Neutral
             if (CustomGameOptions.VigilanteOn > 0) ColorMapping.Add("Vigilante", Colors.Vigilante);
             if (CustomGameOptions.RetributionistOn > 0) ColorMapping.Add("Retributionist", Colors.Retributionist);
             if (CustomGameOptions.ChameleonOn > 0) ColorMapping.Add("Chameleon", Colors.Chameleon);
-            if (CustomGameOptions.MysticOn > 0) ColorMapping.Add("Mystic", Colors.Mystic);
+            if (CustomGameOptions.MysticOn > 0 && (CustomGameOptions.DraculaOn > 0 || CustomGameOptions.JackalOn > 0 || CustomGameOptions.WhispererOn > 0 || CustomGameOptions.NecromancerOn > 0)) ColorMapping.Add("Mystic", Colors.Mystic);
             if (CustomGameOptions.MonarchOn > 0) ColorMapping.Add("Monarch", Colors.Monarch);
             if (CustomGameOptions.DictatorOn > 0) ColorMapping.Add("Dictator", Colors.Dictator);
+            if (CustomGameOptions.BastionOn > 0) ColorMapping.Add("Bastion", Colors.Bastion);
             if (CustomGameOptions.VampireHunterOn > 0 && CustomGameOptions.DraculaOn > 0) ColorMapping.Add("Vampire Hunter", Colors.VampireHunter);
         }
 
@@ -297,11 +296,7 @@ public class Guesser : Neutral
         }
     }
 
-    public void TurnAct(Role target)
-    {
-        var newRole = new Actor(Player) { TargetRole = target };
-        newRole.RoleUpdate(this);
-    }
+    public void TurnAct(List<Role> targets) => new Actor(Player) { PretendRoles = targets }.RoleUpdate(this);
 
     public override void UpdateHud(HudManager __instance)
     {
@@ -310,10 +305,9 @@ public class Guesser : Neutral
 
         if ((TargetFailed || (TargetPlayer != null && Failed)) && !IsDead)
         {
-            var target = TargetPlayer ?? CustomPlayer.AllPlayers.Random(x => x != Player);
-            var role = GetRole(target);
-            CallRpc(CustomRPC.Change, TurnRPC.TurnAct, this, role);
-            TurnAct(role);
+            var targets = new List<Role>();
+            CallRpc(CustomRPC.Change, TurnRPC.TurnAct, this, targets);
+            TurnAct(targets);
         }
     }
 
@@ -346,7 +340,6 @@ public class Guesser : Neutral
             LettersExhausted = false;
             Letters.Clear();
             FactionHintGiven = false;
-            InspectorGiven = false;
         }
         else if (!LettersExhausted)
         {
@@ -428,11 +421,6 @@ public class Guesser : Neutral
         {
             something = $"Your target's role belongs to {targetRole.Alignment.AlignmentName()} alignment!";
             AlignmentHintGiven = true;
-        }
-        else if (!InspectorGiven && LettersExhausted)
-        {
-            something = $"Your target belongs to the {targetRole.InspectorResults} role list!";
-            InspectorGiven = true;
         }
 
         if (string.IsNullOrEmpty(something))

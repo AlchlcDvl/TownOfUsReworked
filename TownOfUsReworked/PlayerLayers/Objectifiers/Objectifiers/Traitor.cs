@@ -41,8 +41,7 @@ public class Traitor : Objectifier
         if (role.Type == LayerEnum.Betrayer)
             return;
 
-        var betrayer = new Betrayer(Player) { Objectives = role.Objectives };
-        betrayer.RoleUpdate(role);
+        new Betrayer(Player) { Objectives = role.Objectives }.RoleUpdate(role);
     }
 
     public static void GetFactionChoice(out bool turnSyndicate, out bool turnIntruder)
@@ -102,7 +101,7 @@ public class Traitor : Objectifier
         Turned = true;
         traitorRole.Alignment = traitorRole.Alignment.GetNewAlignment(traitorRole.Faction);
 
-        foreach (var snitch in Ability.GetAbilities<Snitch>(LayerEnum.Snitch))
+        foreach (var snitch in GetLayers<Snitch>())
         {
             if (CustomGameOptions.SnitchSeesTraitor)
             {
@@ -113,7 +112,7 @@ public class Traitor : Objectifier
             }
         }
 
-        foreach (var revealer in Role.GetRoles<Revealer>(LayerEnum.Revealer))
+        foreach (var revealer in GetLayers<Revealer>())
         {
             if (revealer.Revealed && CustomGameOptions.RevealerRevealsTraitor && Local)
                 Role.LocalRole.AllArrows.Add(revealer.PlayerId, new(Player, revealer.Color));

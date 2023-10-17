@@ -185,7 +185,7 @@ public class CustomOption
             }
             catch (Exception e)
             {
-                LogError("Unable to set - " + option.Name + " : " + value + " " + splitText[0] + "\nException: " + e);
+                LogError($"Unable to set - {option.Name} : {value} {splitText[0]}\nException:\n{e}");
             }
         }
 

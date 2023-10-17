@@ -328,12 +328,12 @@ public static class CustomColors
         };
     }
 
-    [HarmonyPatch(typeof(TranslationController), nameof(TranslationController.GetString), new[] { typeof(StringNames), typeof(Il2CppReferenceArray<Il2CppSystem.Object>) })]
+    [HarmonyPatch(typeof(TranslationController), nameof(TranslationController.GetString), typeof(StringNames), typeof(Il2CppReferenceArray<Il2CppSystem.Object>))]
     public static class PatchColours
     {
-        public static bool Prefix(ref string __result, [HarmonyArgument(0)] StringNames name)
+        public static bool Prefix(ref string __result, ref StringNames id)
         {
-            var newResult = (int)name switch
+            var newResult = (int)id switch
             {
                 999967 => "Watermelon",
                 999968 => "Chocolate",
@@ -410,7 +410,7 @@ public static class CustomColors
     [HarmonyPatch(typeof(PlayerMaterial), nameof(PlayerMaterial.SetColors), typeof(int), typeof(Renderer))]
     public static class SetPlayerMaterialPatch
     {
-        public static bool Prefix([HarmonyArgument(0)] int colorId, [HarmonyArgument(1)] Renderer rend)
+        public static bool Prefix(ref int colorId, ref Renderer rend)
         {
             var r = rend.gameObject.GetComponent<ColorBehaviour>() ?? rend.gameObject.AddComponent<ColorBehaviour>();
             r.AddRend(rend, colorId);
@@ -418,10 +418,10 @@ public static class CustomColors
         }
     }
 
-    [HarmonyPatch(typeof(PlayerMaterial), nameof(PlayerMaterial.SetColors), typeof(Color), typeof(Renderer))]
+    [HarmonyPatch(typeof(PlayerMaterial), nameof(PlayerMaterial.SetColors), typeof(UColor), typeof(Renderer))]
     public static class SetPlayerMaterialPatch2
     {
-        public static bool Prefix([HarmonyArgument(1)] Renderer rend)
+        public static bool Prefix(ref Renderer rend)
         {
             var r = rend.gameObject.GetComponent<ColorBehaviour>() ?? rend.gameObject.AddComponent<ColorBehaviour>();
             r.AddRend(rend, 0);
@@ -432,10 +432,10 @@ public static class CustomColors
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.CmdCheckColor))]
     public static class CmdCheckColorPatch
     {
-        public static bool Prefix(PlayerControl __instance, [HarmonyArgument(0)] byte colorId)
+        public static bool Prefix(PlayerControl __instance, ref byte bodyColor)
         {
-            CallRpc(CustomRPC.Misc, MiscRPC.SetColor, __instance, colorId);
-            __instance.SetColor(colorId);
+            CallRpc(CustomRPC.Misc, MiscRPC.SetColor, __instance, bodyColor);
+            __instance.SetColor(bodyColor);
             return false;
         }
     }

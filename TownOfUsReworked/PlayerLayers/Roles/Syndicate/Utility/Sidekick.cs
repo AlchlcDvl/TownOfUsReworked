@@ -2,7 +2,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public class Sidekick : Syndicate
 {
-    public Role FormerRole { get; set; }
+    public Syndicate FormerRole { get; set; }
     public Rebel Rebel { get; set; }
     public bool CanPromote => (Rebel.IsDead || Rebel.Disconnected) && !IsDead;
 
@@ -12,19 +12,17 @@ public class Sidekick : Syndicate
     public override Func<string> StartText => () => "Succeed The <color=#FFFCCEFF>Rebel</color>";
     public override Func<string> Description => () => "- When the <color=#FFFCCEFF>Rebel</color> dies, you will become the new <color=#FFFCCEFF>Rebel</color> with boosted abilities of your" +
         $" former role\n{CommonAbilities}";
-    public override InspectorResults InspectorResults => InspectorResults.IsCold;
 
     public Sidekick(PlayerControl player) : base(player) => Alignment = Alignment.SyndicateUtil;
 
     public void TurnRebel()
     {
-        var newRole = new PromotedRebel(Player)
+        FormerRole.IsPromoted = true;
+        new PromotedRebel(Player)
         {
             FormerRole = FormerRole,
             RoleBlockImmune = FormerRole.RoleBlockImmune
-        };
-
-        newRole.RoleUpdate(this);
+        }.RoleUpdate(this);
     }
 
     public override void UpdateHud(HudManager __instance)

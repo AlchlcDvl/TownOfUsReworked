@@ -10,14 +10,14 @@ public static class Logging
 
     public static void Init()
     {
+        SavedLogs = "";
         Log = BepInEx.Logging.Logger.CreateLogSource("Reworked");
-        //Application.add_logMessageReceived(new Action<string, string, LogType>(OnUnityLog));
     }
 
     private static void LogSomething(object message, LogLevel type)
     {
         Log?.Log(type, message);
-        SavedLogs += $"[{type}] {message}\n";
+        SavedLogs += $"[{type, -7}] {message}\n";
     }
 
     public static void LogError(object message) => LogSomething(message, LogLevel.Error);
@@ -35,6 +35,4 @@ public static class Logging
     public static void LogNone(object message) => LogSomething(message, LogLevel.None);
 
     public static void LogAll(object message) => LogSomething(message, LogLevel.All);
-
-    //private static void OnUnityLog(string msg, string stackTrace, LogType type) => LogSomething($"Unity Stack Trace:\n{msg}\n{stackTrace}", LogLevel.All);
 }

@@ -33,14 +33,12 @@ public static class MeetingPatches
     }
 
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.CmdReportDeadBody))]
-    [HarmonyPriority(Priority.First)]
     public static class SetReported
     {
-        public static void Postfix([HarmonyArgument(0)] GameData.PlayerInfo target) => Reported = target;
+        public static void Postfix(ref GameData.PlayerInfo target) => Reported = target;
     }
 
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
-    [HarmonyPriority(Priority.First)]
     public static class MeetingHUD_Start
     {
         public static void Postfix(MeetingHud __instance)
@@ -172,7 +170,25 @@ public static class MeetingPatches
                 {
                     if (player != check)
                     {
-                        Run(HUD.Chat, "<color=#6C29ABFF>》 Game Announcement 《</color>", $"{player.name} escaped last round.");
+                        Run(HUD.Chat, "<color=#6C29ABFF>》 Game Announcement 《</color>", $"{player.name} accomplished their objective and escaped last round.");
+                        yield return new WaitForSeconds(2f);
+                    }
+                }
+
+                foreach (var player in SetPostmortals.MisfiredPlayers)
+                {
+                    if (player != check)
+                    {
+                        Run(HUD.Chat, "<color=#6C29ABFF>》 Game Announcement 《</color>", $"{player.name} was ejected for their misuse of power.");
+                        yield return new WaitForSeconds(2f);
+                    }
+                }
+
+                foreach (var player in SetPostmortals.MarkedPlayers)
+                {
+                    if (player != check)
+                    {
+                        Run(HUD.Chat, "<color=#6C29ABFF>》 Game Announcement 《</color>", $"A Ghoul's curse forced {player.name} to be ejected!");
                         yield return new WaitForSeconds(2f);
                     }
                 }
@@ -208,7 +224,7 @@ public static class MeetingPatches
 
             var knighted = new List<byte>();
 
-            foreach (var monarch in Role.GetRoles<Monarch>(LayerEnum.Monarch))
+            foreach (var monarch in PlayerLayer.GetLayers<Monarch>())
             {
                 foreach (var id in monarch.ToBeKnighted)
                 {
@@ -261,9 +277,9 @@ public static class MeetingPatches
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.StartMeeting))]
     public static class StartMeetingPatch
     {
-        public static void Prefix([HarmonyArgument(0)] GameData.PlayerInfo meetingTarget)
+        public static void Prefix(ref GameData.PlayerInfo target)
         {
-            VoteTarget = meetingTarget;
+            VoteTarget = target;
 
             if (CustomPlayer.Local.Is(LayerEnum.Astral) && !CustomPlayer.Local.inMovingPlat && !CustomPlayer.Local.onLadder)
                 Modifier.GetModifier<Astral>(CustomPlayer.Local).LastPosition = CustomPlayer.LocalCustom.Position;
@@ -271,15 +287,14 @@ public static class MeetingPatches
     }
 
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Update))]
-    [HarmonyPriority(Priority.First)]
     public static class MeetingHudUpdatePatch
     {
         public static void Postfix(MeetingHud __instance)
         {
             //Deactivate skip Button if skipping on emergency meetings is disabled
             __instance.SkipVoteButton.gameObject.SetActive(!((VoteTarget == null && CustomGameOptions.SkipButtonDisable == DisableSkipButtonMeetings.Emergency) ||
-                (CustomGameOptions.SkipButtonDisable == DisableSkipButtonMeetings.Always)) && __instance.state == MeetingHud.VoteStates.NotVoted &&
-                !Ability.GetAssassins().Any(x => x.Phone != null) && !Role.GetRoles<Guesser>(LayerEnum.Guesser).Any(x => x.Phone != null));
+                (CustomGameOptions.SkipButtonDisable == DisableSkipButtonMeetings.Always)) && __instance.state == MeetingHud.VoteStates.NotVoted && !Ability.GetAssassins().Any(x => x.Phone)
+                && !PlayerLayer.GetLayers<Guesser>().Any(x => x.Phone));
 
             AllVoteAreas.ForEach(x => x.SetName());
             PlayerLayer.LocalLayers.ForEach(x => x?.UpdateMeeting(__instance));
@@ -289,7 +304,7 @@ public static class MeetingPatches
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.VotingComplete))]
     public static class VotingComplete
     {
-        public static void Postfix(MeetingHud __instance, [HarmonyArgument(1)] GameData.PlayerInfo exiled, [HarmonyArgument(2)] bool tie)
+        public static void Postfix(MeetingHud __instance, ref GameData.PlayerInfo exiled, ref bool tie)
         {
             var exiledString = exiled == null ? "null" : exiled.PlayerName;
             LogInfo($"Exiled PlayerName = {exiledString}");
@@ -302,7 +317,11 @@ public static class MeetingPatches
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Select))]
     public static class MeetingHudSelect
     {
-        public static void Postfix(MeetingHud __instance, int __0) => PlayerLayer.LocalLayers.ForEach(x => x?.SelectVote(__instance, __0));
+        public static void Postfix(MeetingHud __instance, ref int suspectStateIdx)
+        {
+            var id = suspectStateIdx;
+            PlayerLayer.LocalLayers.ForEach(x => x?.SelectVote(__instance, id));
+        }
     }
 
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.ClearVote))]
@@ -355,8 +374,7 @@ public static class MeetingPatches
                 }
 
                 __instance.RpcVotingComplete(array, exiled, tie);
-                Ability.GetAbilities<Politician>(LayerEnum.Politician).ForEach(x => CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, x, PoliticianActionsRPC.Remove,
-                    x.ExtraVotes.ToArray()));
+                PlayerLayer.GetLayers<Politician>().ForEach(x => CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, x, PoliticianActionsRPC.Remove, x.ExtraVotes.ToArray()));
             }
 
             return false;
@@ -366,7 +384,7 @@ public static class MeetingPatches
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.PopulateResults))]
     public static class PopulateResults
     {
-        public static bool Prefix(MeetingHud __instance, [HarmonyArgument(0)] Il2CppStructArray<MeetingHud.VoterState> states)
+        public static bool Prefix(MeetingHud __instance, ref Il2CppStructArray<MeetingHud.VoterState> states)
         {
             var allNums = new Dictionary<int, int>();
             __instance.TitleText.text = TranslationController.Instance.GetString(StringNames.MeetingVotingResults, Array.Empty<Il2CppSystem.Object>());
@@ -398,7 +416,7 @@ public static class MeetingPatches
                 }
             }
 
-            foreach (var politician in Ability.GetAbilities<Politician>(LayerEnum.Politician))
+            foreach (var politician in PlayerLayer.GetLayers<Politician>())
             {
                 var playerInfo = politician.Player.Data;
                 TownOfUsReworked.NormalOptions.AnonymousVotes = CustomGameOptions.PoliticianAnonymous;
@@ -438,7 +456,7 @@ public static class MeetingPatches
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.BloopAVoteIcon))]
     public static class DeadSeeVoteColorsPatch
     {
-        public static bool Prefix(MeetingHud __instance, [HarmonyArgument(0)] GameData.PlayerInfo voterPlayer, [HarmonyArgument(1)] int index, [HarmonyArgument(2)] Transform parent)
+        public static bool Prefix(MeetingHud __instance, ref GameData.PlayerInfo voterPlayer, ref int index, ref Transform parent)
         {
             var spriteRenderer = UObject.Instantiate(__instance.PlayerVotePrefab);
             var insiderFlag = false;
@@ -513,20 +531,6 @@ public static class MeetingPatches
                     if (godfather.Investigated.Contains(player.TargetPlayerId))
                         godfather.Investigated.Remove(player.TargetPlayerId);
                 }
-                else if (CustomPlayer.Local.Is(LayerEnum.Inspector))
-                {
-                    var inspector = localinfo[0] as Inspector;
-
-                    if (inspector.Inspected.Contains(player.TargetPlayerId))
-                        inspector.Inspected.Remove(player.TargetPlayerId);
-                }
-                else if (CustomPlayer.Local.Is(LayerEnum.Retributionist))
-                {
-                    var retributionist = localinfo[0] as Retributionist;
-
-                    if (retributionist.Inspected.Contains(player.TargetPlayerId))
-                        retributionist.Inspected.Remove(player.TargetPlayerId);
-                }
             }
         }
         else if (player.Is(LayerEnum.Dictator) && !DeadSeeEverything && CustomPlayer.Local.PlayerId != player.TargetPlayerId)
@@ -552,20 +556,6 @@ public static class MeetingPatches
 
                     if (godfather.Investigated.Contains(player.TargetPlayerId))
                         godfather.Investigated.Remove(player.TargetPlayerId);
-                }
-                else if (CustomPlayer.Local.Is(LayerEnum.Inspector))
-                {
-                    var inspector = localinfo[0] as Inspector;
-
-                    if (inspector.Inspected.Contains(player.TargetPlayerId))
-                        inspector.Inspected.Remove(player.TargetPlayerId);
-                }
-                else if (CustomPlayer.Local.Is(LayerEnum.Retributionist))
-                {
-                    var retributionist = localinfo[0] as Retributionist;
-
-                    if (retributionist.Inspected.Contains(player.TargetPlayerId))
-                        retributionist.Inspected.Remove(player.TargetPlayerId);
                 }
             }
         }
@@ -641,13 +631,7 @@ public static class MeetingPatches
         {
             var ret = localinfo[0] as Retributionist;
 
-            if (ret.Inspected.Contains(player.TargetPlayerId))
-            {
-                name += $"\n{player.GetInspResults()}";
-                color = ret.Color;
-                roleRevealed = true;
-            }
-            else if (ret.Reported.Contains(player.TargetPlayerId) && !roleRevealed)
+            if (ret.Reported.Contains(player.TargetPlayerId) && !roleRevealed)
             {
                 var role = info[0] as Role;
                 color = role.Color;
@@ -818,17 +802,6 @@ public static class MeetingPatches
                 roleRevealed = true;
             }
         }
-        else if (CustomPlayer.Local.Is(LayerEnum.Inspector))
-        {
-            var inspector = localinfo[0] as Inspector;
-
-            if (inspector.Inspected.Contains(player.TargetPlayerId) && !roleRevealed)
-            {
-                name += $"\n{player.GetInspResults()}";
-                color = inspector.Color;
-                roleRevealed = true;
-            }
-        }
 
         if (CustomPlayer.Local.IsBitten() && !DeadSeeEverything)
         {
@@ -856,20 +829,6 @@ public static class MeetingPatches
 
                         if (godfather.Investigated.Contains(player.TargetPlayerId))
                             godfather.Investigated.Remove(player.TargetPlayerId);
-                    }
-                    else if (CustomPlayer.Local.Is(LayerEnum.Inspector))
-                    {
-                        var inspector = localinfo[0] as Inspector;
-
-                        if (inspector.Inspected.Contains(player.TargetPlayerId))
-                            inspector.Inspected.Remove(player.TargetPlayerId);
-                    }
-                    else if (CustomPlayer.Local.Is(LayerEnum.Retributionist))
-                    {
-                        var retributionist = localinfo[0] as Retributionist;
-
-                        if (retributionist.Inspected.Contains(player.TargetPlayerId))
-                            retributionist.Inspected.Remove(player.TargetPlayerId);
                     }
                 }
                 else
@@ -903,20 +862,6 @@ public static class MeetingPatches
                         if (godfather.Investigated.Contains(player.TargetPlayerId))
                             godfather.Investigated.Remove(player.TargetPlayerId);
                     }
-                    else if (CustomPlayer.Local.Is(LayerEnum.Inspector))
-                    {
-                        var inspector = localinfo[0] as Inspector;
-
-                        if (inspector.Inspected.Contains(player.TargetPlayerId))
-                            inspector.Inspected.Remove(player.TargetPlayerId);
-                    }
-                    else if (CustomPlayer.Local.Is(LayerEnum.Retributionist))
-                    {
-                        var retributionist = localinfo[0] as Retributionist;
-
-                        if (retributionist.Inspected.Contains(player.TargetPlayerId))
-                            retributionist.Inspected.Remove(player.TargetPlayerId);
-                    }
                 }
                 else
                     color = jackal.SubFactionColor;
@@ -948,20 +893,6 @@ public static class MeetingPatches
 
                         if (godfather.Investigated.Contains(player.TargetPlayerId))
                             godfather.Investigated.Remove(player.TargetPlayerId);
-                    }
-                    else if (CustomPlayer.Local.Is(LayerEnum.Inspector))
-                    {
-                        var inspector = localinfo[0] as Inspector;
-
-                        if (inspector.Inspected.Contains(player.TargetPlayerId))
-                            inspector.Inspected.Remove(player.TargetPlayerId);
-                    }
-                    else if (CustomPlayer.Local.Is(LayerEnum.Retributionist))
-                    {
-                        var retributionist = localinfo[0] as Retributionist;
-
-                        if (retributionist.Inspected.Contains(player.TargetPlayerId))
-                            retributionist.Inspected.Remove(player.TargetPlayerId);
                     }
                 }
                 else
@@ -995,20 +926,6 @@ public static class MeetingPatches
                         if (godfather.Investigated.Contains(player.TargetPlayerId))
                             godfather.Investigated.Remove(player.TargetPlayerId);
                     }
-                    else if (CustomPlayer.Local.Is(LayerEnum.Inspector))
-                    {
-                        var inspector = localinfo[0] as Inspector;
-
-                        if (inspector.Inspected.Contains(player.TargetPlayerId))
-                            inspector.Inspected.Remove(player.TargetPlayerId);
-                    }
-                    else if (CustomPlayer.Local.Is(LayerEnum.Retributionist))
-                    {
-                        var retributionist = localinfo[0] as Retributionist;
-
-                        if (retributionist.Inspected.Contains(player.TargetPlayerId))
-                            retributionist.Inspected.Remove(player.TargetPlayerId);
-                    }
                 }
                 else
                     color = whisperer.SubFactionColor;
@@ -1017,7 +934,7 @@ public static class MeetingPatches
             {
                 foreach (var (key, value) in whisperer.PlayerConversion)
                 {
-                    if (player.TargetPlayerId == key)
+                    if (player.TargetPlayerId == key && !player.Is(SubFaction.Sect))
                         name += $" {value}%";
                 }
             }
@@ -1053,20 +970,6 @@ public static class MeetingPatches
                         if (godfather.Investigated.Contains(player.TargetPlayerId))
                             godfather.Investigated.Remove(player.TargetPlayerId);
                     }
-                    else if (CustomPlayer.Local.Is(LayerEnum.Inspector))
-                    {
-                        var inspector = localinfo[0] as Inspector;
-
-                        if (inspector.Inspected.Contains(player.TargetPlayerId))
-                            inspector.Inspected.Remove(player.TargetPlayerId);
-                    }
-                    else if (CustomPlayer.Local.Is(LayerEnum.Retributionist))
-                    {
-                        var retributionist = localinfo[0] as Retributionist;
-
-                        if (retributionist.Inspected.Contains(player.TargetPlayerId))
-                            retributionist.Inspected.Remove(player.TargetPlayerId);
-                    }
                 }
             }
         }
@@ -1099,20 +1002,6 @@ public static class MeetingPatches
 
                         if (godfather.Investigated.Contains(player.TargetPlayerId))
                             godfather.Investigated.Remove(player.TargetPlayerId);
-                    }
-                    else if (CustomPlayer.Local.Is(LayerEnum.Inspector))
-                    {
-                        var inspector = localinfo[0] as Inspector;
-
-                        if (inspector.Inspected.Contains(player.TargetPlayerId))
-                            inspector.Inspected.Remove(player.TargetPlayerId);
-                    }
-                    else if (CustomPlayer.Local.Is(LayerEnum.Retributionist))
-                    {
-                        var retributionist = localinfo[0] as Retributionist;
-
-                        if (retributionist.Inspected.Contains(player.TargetPlayerId))
-                            retributionist.Inspected.Remove(player.TargetPlayerId);
                     }
                 }
             }
@@ -1147,20 +1036,6 @@ public static class MeetingPatches
                         if (godfather.Investigated.Contains(player.TargetPlayerId))
                             godfather.Investigated.Remove(player.TargetPlayerId);
                     }
-                    else if (CustomPlayer.Local.Is(LayerEnum.Inspector))
-                    {
-                        var inspector = localinfo[0] as Inspector;
-
-                        if (inspector.Inspected.Contains(player.TargetPlayerId))
-                            inspector.Inspected.Remove(player.TargetPlayerId);
-                    }
-                    else if (CustomPlayer.Local.Is(LayerEnum.Retributionist))
-                    {
-                        var retributionist = localinfo[0] as Retributionist;
-
-                        if (retributionist.Inspected.Contains(player.TargetPlayerId))
-                            retributionist.Inspected.Remove(player.TargetPlayerId);
-                    }
                 }
             }
         }
@@ -1192,20 +1067,6 @@ public static class MeetingPatches
 
                         if (godfather.Investigated.Contains(player.TargetPlayerId))
                             godfather.Investigated.Remove(player.TargetPlayerId);
-                    }
-                    else if (CustomPlayer.Local.Is(LayerEnum.Inspector))
-                    {
-                        var inspector = localinfo[0] as Inspector;
-
-                        if (inspector.Inspected.Contains(player.TargetPlayerId))
-                            inspector.Inspected.Remove(player.TargetPlayerId);
-                    }
-                    else if (CustomPlayer.Local.Is(LayerEnum.Retributionist))
-                    {
-                        var retributionist = localinfo[0] as Retributionist;
-
-                        if (retributionist.Inspected.Contains(player.TargetPlayerId))
-                            retributionist.Inspected.Remove(player.TargetPlayerId);
                     }
                 }
             }
@@ -1305,7 +1166,7 @@ public static class MeetingPatches
             name += " <color=#008000FF>Δ</color>";
         }
 
-        if (Role.GetRoles<Revealer>(LayerEnum.Revealer).Any(x => x.CompletedTasks) && CustomPlayer.Local.Is(Faction.Crew))
+        if (PlayerLayer.GetLayers<Revealer>().Any(x => x.CompletedTasks) && CustomPlayer.Local.Is(Faction.Crew))
         {
             var role = info[0] as Role;
 
@@ -1411,30 +1272,6 @@ public static class MeetingPatches
 
             if (player.IsCryoDoused())
                 name += " <<color=#642DEAFF>λ</color>";
-
-            if (CustomPlayer.Local.Is(LayerEnum.Consigliere))
-            {
-                var consigliere = localinfo[0] as Consigliere;
-                consigliere.Investigated.Clear();
-            }
-
-            if (CustomPlayer.Local.Is(LayerEnum.PromotedGodfather))
-            {
-                var godfather = localinfo[0] as PromotedGodfather;
-                godfather.Investigated.Clear();
-            }
-
-            if (CustomPlayer.Local.Is(LayerEnum.Inspector))
-            {
-                var inspector = localinfo[0] as Inspector;
-                inspector.Inspected.Clear();
-            }
-
-            if (CustomPlayer.Local.Is(LayerEnum.Retributionist))
-            {
-                var retributionist = localinfo[0] as Retributionist;
-                retributionist.Inspected.Clear();
-            }
         }
 
         if (DeadSeeEverything || player.TargetPlayerId == CustomPlayer.Local.PlayerId)
@@ -1457,14 +1294,14 @@ public static class MeetingPatches
         }
 
         if (roleRevealed)
-            player.ColorBlindName.transform.localPosition = new(-0.93f, -0.2f, -0.1f);
+            player.ColorBlindName.transform.localPosition = new(-0.93f, 0f, -0.1f);
 
         return (name, color);
     }
 
     private static IEnumerator Slide2D(Transform target, Vector2 source, Vector2 dest, float duration)
     {
-        var temp = default(Vector3);
+        var temp = (Vector3)default;
         temp.z = target.position.z;
 
         for (var time = 0f; time < duration; time += Time.deltaTime)
@@ -1483,7 +1320,7 @@ public static class MeetingPatches
 
     private static IEnumerator PerformSwaps()
     {
-        foreach (var role in Ability.GetAbilities<Swapper>(LayerEnum.Swapper))
+        foreach (var role in PlayerLayer.GetLayers<Swapper>())
         {
             if (role.IsDead || role.Disconnected || role.Swap1 == null || role.Swap2 == null)
                 continue;
@@ -1491,7 +1328,7 @@ public static class MeetingPatches
             var swapPlayer1 = PlayerByVoteArea(role.Swap1);
             var swapPlayer2 = PlayerByVoteArea(role.Swap2);
 
-            if (swapPlayer1 == null || swapPlayer2 == null || swapPlayer1.HasDied() || swapPlayer2.HasDied())
+            if (swapPlayer1.HasDied() || swapPlayer2.HasDied())
                 continue;
 
             var pool1 = role.Swap1.PlayerIcon.transform;

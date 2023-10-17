@@ -15,7 +15,6 @@ public class Dictator : Crew
     public override LayerEnum Type => LayerEnum.Dictator;
     public override Func<string> StartText => () => "You Have The Final Say";
     public override Func<string> Description => () => "- You can reveal yourself to the crew to eject up to 3 players for one meeting\n- When revealed, you cannot be protected";
-    public override InspectorResults InspectorResults => InspectorResults.Manipulative;
 
     public Dictator(PlayerControl player) : base(player)
     {

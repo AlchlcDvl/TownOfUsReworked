@@ -56,7 +56,7 @@ public static class ExtraRegions
         if (TownOfUsReworked.RegionsToRemove != null)
         {
             var rmRegions = TownOfUsReworked.RegionsToRemove.Value.Split(",");
-            LogInfo($"Removing User Regions: \"{string.Join("\", \"", rmRegions)}\"");
+            LogInfo($"Removing User Regions: {string.Join("\", \"", rmRegions)}");
             RemoveRegions(rmRegions);
         }
 

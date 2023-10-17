@@ -9,7 +9,6 @@ public class Murderer : Neutral
     public override LayerEnum Type => LayerEnum.Murderer;
     public override Func<string> StartText => () => "I Got Murder On My Mind";
     public override Func<string> Description => () => "- You can kill";
-    public override InspectorResults InspectorResults => InspectorResults.IsBasic;
 
     public Murderer(PlayerControl player) : base(player)
     {

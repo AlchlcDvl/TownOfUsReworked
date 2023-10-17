@@ -45,7 +45,7 @@ public class Colorblind : Modifier
 
         if (fit is not (CustomPlayerOutfitType.Colorblind or CustomPlayerOutfitType.Invis or CustomPlayerOutfitType.PlayerNameOnly))
         {
-            player.SetOutfit(CustomPlayerOutfitType.Colorblind, ColorblindOutfit(player));
+            player.SetOutfit(CustomPlayerOutfitType.Colorblind, ColorblindOutfit());
             player.cosmetics.SetBodyColor(15);
             player.MyRend().color = Color.grey;
             player.NameText().color = Color.clear;

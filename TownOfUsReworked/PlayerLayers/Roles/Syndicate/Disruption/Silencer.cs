@@ -15,7 +15,6 @@ public class Silencer : Syndicate
     public override Func<string> Description => () => "- You can silence players to ensure they cannot hear what others say" + (CustomGameOptions.SilenceRevealed ? "\n- Everyone will be"  +
         "alerted at the start of the meeting that someone has been silenced " : "") + (CustomGameOptions.WhispersNotPrivateSilencer ? "\n- You can read whispers during meetings" : "") +
         CommonAbilities;
-    public override InspectorResults InspectorResults => InspectorResults.GainsInfo;
 
     public Silencer(PlayerControl player) : base(player)
     {

@@ -10,13 +10,13 @@ public class Camouflager : Intruder
     public override Func<string> StartText => () => "Hinder The <color=#8CFFFFFF>Crew</color>'s Recognition";
     public override Func<string> Description => () => "- You can disrupt everyone's vision, causing them to be unable to tell players apart\n- When camouflaged, everyone will appear grey " +
         $"with fluctuating names and no cosmetics\n{CommonAbilities}";
-    public override InspectorResults InspectorResults => InspectorResults.BringsChaos;
 
     public Camouflager(PlayerControl player) : base(player)
     {
         Alignment = Alignment.IntruderConceal;
         CamouflageButton = new(this, "Camouflage", AbilityTypes.Targetless, "Secondary", HitCamouflage, CustomGameOptions.CamouflagerCd, CustomGameOptions.CamouflageDur,
             (CustomButton.EffectVoid)Camouflage, UnCamouflage);
+        player.Data.Role.IntroSound = GetAudio("CamouflagerIntro");
     }
 
     public void Camouflage()

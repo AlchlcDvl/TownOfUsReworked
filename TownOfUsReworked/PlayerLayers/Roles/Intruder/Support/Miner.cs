@@ -10,7 +10,6 @@ public class Miner : Intruder
     public override LayerEnum Type => LayerEnum.Miner;
     public override Func<string> StartText => () => "From The Top, Make It Drop, Boom, That's A Vent";
     public override Func<string> Description => () => $"- You can mine a vent, forming a vent system of your own\n{CommonAbilities}";
-    public override InspectorResults InspectorResults => InspectorResults.NewLens;
 
     public Miner(PlayerControl player) : base(player)
     {

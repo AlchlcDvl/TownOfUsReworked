@@ -3,21 +3,14 @@ namespace TownOfUsReworked.Patches;
 [HarmonyPatch(typeof(MedScanMinigame), nameof(MedScanMinigame.Begin))]
 public static class MedScanMinigamePatch
 {
-    private const float oldHeightFeet = 3f;
     private const float oldHeightInch = 6f;
     private const float oldWeight = 92f;
 
     public static void Postfix(MedScanMinigame __instance)
     {
-        var newHeightFeet = oldHeightFeet * CustomPlayer.Local.GetModifiedSize();
+        var newHeightFeet = 0f;
         var newHeightInch = oldHeightInch * CustomPlayer.Local.GetModifiedSize();
         var newWeight = oldWeight * CustomPlayer.Local.GetModifiedSize();
-
-        while (newHeightFeet.IsInRange(0, 1))
-        {
-            newHeightInch += 12 * newHeightFeet;
-            newHeightFeet--;
-        }
 
         if (newHeightFeet < 0f)
             newHeightFeet = 0f;

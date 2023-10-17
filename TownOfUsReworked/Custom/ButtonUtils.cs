@@ -10,12 +10,9 @@ public static class ButtonUtils
         HUD.SabotageButton.gameObject.SetActive(false);
         HUD.ReportButton.gameObject.SetActive(false);
         HUD.ImpostorVentButton.gameObject.SetActive(false);
+        HUD.UseButton.gameObject.SetActive(false);
+        HUD.PetButton.gameObject.SetActive(false);
         Use = HUD.UseButton.isActiveAndEnabled;
-
-        if (Use)
-            HUD.UseButton.gameObject.SetActive(false);
-        else
-            HUD.PetButton.gameObject.SetActive(false);
     }
 
     public static List<CustomButton> GetButtons(this PlayerControl player) => CustomButton.AllButtons.Where(x => x.Owner.Player == player).ToList();
@@ -41,12 +38,9 @@ public static class ButtonUtils
         HUD.SabotageButton.gameObject.SetActive(false);
         HUD.ReportButton.gameObject.SetActive(false);
         HUD.ImpostorVentButton.gameObject.SetActive(false);
+        HUD.UseButton.gameObject.SetActive(false);
+        HUD.PetButton.gameObject.SetActive(false);
         Use = HUD.UseButton.isActiveAndEnabled;
-
-        if (Use)
-            HUD.UseButton.gameObject.SetActive(false);
-        else
-            HUD.PetButton.gameObject.SetActive(false);
     }
 
     public static void SetDelay(this ActionButton button, float timer)
@@ -124,8 +118,6 @@ public static class ButtonUtils
 
         if (local.Is(LayerEnum.Escort))
             ((Escort)role).BlockTarget = null;
-        else if (local.Is(LayerEnum.Inspector) && local.HasDied() && DeadSeeEverything)
-            ((Inspector)role).Inspected.Clear();
         else if (local.Is(LayerEnum.Operative))
         {
             var role2 = (Operative)role;
@@ -168,9 +160,6 @@ public static class ButtonUtils
             role2.MediateArrows.Values.ToList().DestroyAll();
             role2.MediateArrows.Clear();
             role2.MediatedPlayers.Clear();
-
-            if (local.HasDied() && DeadSeeEverything)
-                role2.Inspected.Clear();
 
             if (CustomGameOptions.BugsRemoveOnNewRound && meeting)
                 Bug.Clear(role2.Bugs);
@@ -291,7 +280,7 @@ public static class ButtonUtils
         {
             var role2 = (Actor)role;
 
-            if (meeting && role2.TargetRole == null)
+            if (meeting && !role2.Targeted)
                 role2.Rounds++;
         }
         else if (local.Is(LayerEnum.BountyHunter))
@@ -315,7 +304,7 @@ public static class ButtonUtils
             if (meeting && role2.TargetPlayer == null)
                 role2.Rounds++;
         }
-        else if (local.Is(LayerEnum.Werewolf))
+        else if (local.Is(LayerEnum.Werewolf) && meeting)
             ((Werewolf)role).Rounds++;
     }
 }

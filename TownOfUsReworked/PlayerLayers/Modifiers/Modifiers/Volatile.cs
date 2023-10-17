@@ -19,7 +19,7 @@ public class Volatile : Modifier
     {
         base.UpdateHud(__instance);
 
-        if (Minigame.Instance || IntroCutscene.Instance || IsDead)
+        if (ActiveTask || IntroCutscene.Instance || IsDead)
             return;
 
         _time += Time.deltaTime;

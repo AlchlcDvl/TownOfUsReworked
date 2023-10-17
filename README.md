@@ -24,8 +24,6 @@ Quick warning: This mod adds a whole LOT of stuff, and is currently not very beg
 
 [**Changelogs**](#changelogs)
 
-[**Additional Notes**](#additional-notes)
-
 [**Installation**](#installation)
 - [Requirements](#requirements)
 - [Steam Guide](#steam-guide)
@@ -44,14 +42,14 @@ Quick warning: This mod adds a whole LOT of stuff, and is currently not very beg
 | [Intruders](#intruder-roles) | [Syndicate](#syndicate-roles) | [Crew](#crew-roles)               | [Neutrals](#neutral-roles)        | [Game Mode](#game-mode-roles) |
 |------------------------------|-------------------------------|-----------------------------------|-----------------------------------|-------------------------------|
 | [Ambusher](#ambusher)        | [Anarchist](#anarchist)       | [Altruist](#altruist)             | [Actor](#actor)                   | [Hunted](#hunted)             |
-| [Blackmailer](#blackmailer)  | [Banshee](#banshee)           | [Chameleon](#chameleon)           | [Amnesiac](#amnesiac)             | [Hunter](#hunter)             |
-| [Camouflager](#camouflager)  | [Bomber](#bomber)             | [Coroner](#coroner)               | [Arsonist](#arsonist)             | [Runner](#runner)             |
-| [Consigliere](#consigliere)  | [Collider](#collider)         | [Crewmate](#crewmate)             | [Betrayer](betrayer)              |                               |
-| [Consort](#consort)          | [Concealer](#concealer)       | [Detective](#detective)           | [Bounty Hunter](#bounty-hunter)   |                               |
-| [Disguiser](#disguiser)      | [Crusader](#crusader)         | [Dictator](#dictator)             | [Cannibal](#cannibal)             |                               |
-| [Enforcer](#enforcer)        | [Drunkard](#drunkard)         | [Engineer](#engineer)             | [Cryomaniac](#cryomaniac)         |                               |
-| [Ghoul](#ghoul)              | [Framer](#framer)             | [Escort](#escort)                 | [Dracula](#dracula)               |                               |
-| [Godfather](#godfather)      | [Poisoner](#poisoner)         | [Inspector](#inspector)           | [Executioner](#executioner)       |                               |
+| [Blackmailer](#blackmailer)  | [Banshee](#banshee)           | [Bastion](#bastion)               | [Amnesiac](#amnesiac)             | [Hunter](#hunter)             |
+| [Camouflager](#camouflager)  | [Bomber](#bomber)             | [Chameleon](#chameleon)           | [Arsonist](#arsonist)             | [Runner](#runner)             |
+| [Consigliere](#consigliere)  | [Collider](#collider)         | [Coroner](#coroner)               | [Betrayer](betrayer)              |                               |
+| [Consort](#consort)          | [Concealer](#concealer)       | [Crewmate](#crewmate)             | [Bounty Hunter](#bounty-hunter)   |                               |
+| [Disguiser](#disguiser)      | [Crusader](#crusader)         | [Detective](#detective)           | [Cannibal](#cannibal)             |                               |
+| [Enforcer](#enforcer)        | [Drunkard](#drunkard)         | [Dictator](#dictator)             | [Cryomaniac](#cryomaniac)         |                               |
+| [Ghoul](#ghoul)              | [Framer](#framer)             | [Engineer](#engineer)             | [Dracula](#dracula)               |                               |
+| [Godfather](#godfather)      | [Poisoner](#poisoner)         | [Escort](#escort)                 | [Executioner](#executioner)       |                               |
 | [Grenadier](#grenadier)      | [Rebel](#rebel)               | [Mayor](#mayor)                   | [Glitch](#glitch)                 |                               |
 | [Impostor](#impostor)        | [Shapeshifter](#shapeshifter) | [Medic](#medic)                   | [Guardian Angel](#guardian-angel) |                               |
 | [Janitor](#janitor)          | [Sidekick](#sidekick)         | [Medium](#medium)                 | [Guesser](#guesser)               |                               |
@@ -118,6 +116,7 @@ Quick warning: This mod adds a whole LOT of stuff, and is currently not very beg
 - [Inspector Results](#inspector-results)
 - [Subfactions](#subfactions)
 - [Syndicate Chaos Drive Role Priority](#syndicate-chaos-drive-role-priority)
+- [Role List Entries](#role-list-entries)
 
 [**Extras**](#extras)
 - [New Colors](#new-colors)
@@ -138,6 +137,7 @@ Quick warning: This mod adds a whole LOT of stuff, and is currently not very beg
 
 | Among Us          | Mod Version | Link                                                                                            |
 |-------------------|------------ |-------------------------------------------------------------------------------------------------|
+| 2023.7.12 (s & e) | 0.5.4       | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.5.4/Reworked.zip) |
 | 2023.7.12 (s & e) | 0.5.3       | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.5.3/Reworked.zip) |
 | 2023.7.12 (s & e) | 0.5.2       | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.5.2/Reworked.zip) |
 | 2023.7.12 (s & e) | 0.5.1       | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.5.1/Reworked.zip) |
@@ -197,13 +197,39 @@ Quick warning: This mod adds a whole LOT of stuff, and is currently not very beg
 <details>
 <summary>Changelog</summary>
 <details>
+<summary>v0.5.4</summary>
+<ul> <li>New Role: Bastion [Crew (Killing)]</li> </ul>
+<ul> <li>Addition: Added night vision cameras</li> </ul>
+<ul> <li>Addition: You can now optionally download Submerged right from the main menu (LevelImpostor soon to follow)</li> </ul>
+<ul> <li>Return: Sounds effects are back</li> </ul>
+<ul> <li>Improvement: The death popup in Hide And Seek mode now changes to match the mode (X was converted/killed)</li> </ul>
+<ul> <li>Improvement: There can be multiple chat notifications for every player that chats now</li> </ul>
+<ul> <li>Improvement: Improved how the intro screen appears</li> </ul>
+<ul> <li>Improvement: The Level Impostor map option now changes to match the custom map you loaded (to be tested)</li> </ul>
+<ul> <li>Change: Actor can now get a randomised list (instead of a fixed one) of roles present in the game to be guessed as</li> </ul>
+<ul> <li>Change: Actor can no longer spawn in Role List (because it depends on Assasin which cannot spawn in Role List either)</li> </ul>
+<ul> <li>Change: The Assassin ability's name now changes depending on the faction it's applied to</li> </ul>
+<ul> <li>Change: As the Assassin, you now have to specify what ype of Assassin someone is to correctly guess them</li> </ul>
+<ul> <li>Change: Detective now has to examine players to be able to see their footprints</li> </ul>
+<ul> <li>Optimisation: Improved more code handling</li> </ul>
+<ul> <li>Bug Fix: Fixed role generation breaking on one player</li> </ul>
+<ul> <li>Bug Fix: Fixed tasks not resetting properly on LevelImpostor maps (when turning into Revealer/Phantom)</li> </ul>
+<ul> <li>Bug Fix: Fixed games incorrectly ending</li> </ul>
+<ul> <li>Bug Fix: Fixed targets not being set properly</li> </ul>
+<ul> <li>Bug Fix: Fixed some data desync between roles</li> </ul>
+<ul> <li>Visual Fix: Buttons now correctly appear and disappear when opening tasks or other interactibles</li> </ul>
+<ul> <li>Visual Fix: Fixed vanilla color names being capitalised when using colorblind mode</li> </ul>
+<ul> <li>Role Fix: Fixed Werewolf being able to maul at the wrong times</li> </ul>
+<ul> <li>Removed: Inspector (as I've come to realise, locking players to certain claims is not healthy for the mod)</li> </ul>
+</details>
+<details>
 <summary>v0.5.3</summary>
 <ul> <li>New Game Mode: Task Race - See who's the best at finishing their tasks!</li> </ul>
 <ul> <li>New Game Mode: Hide And Seek - Hunt or be hunted!</li> </ul>
 <ul> <li>New Modifier: Colorblind</li> </ul>
 <ul> <li>New Alignment: Intruder (Head)</li> </ul>
 <ul> <li>Addition: Added an intro splash text</li> </ul>
-<ul> <li>Addition: Added new selection options for the Role List game mode (see additional notes)</li> </ul>
+<ul> <li>Addition: Added new selection options for the Role List game mode</li> </ul>
 <ul> <li>Addition: Added some animations for morphing and camouflaging</li> </ul>
 <ul> <li>Return: Custom nameplates are back</li> </ul>
 <ul> <li>Revert: Reverted the changes made to the auto updater</li> </ul>
@@ -1116,24 +1142,6 @@ Quick warning: This mod adds a whole LOT of stuff, and is currently not very beg
 
 -----------------------
 
-# Additional Notes
-
-<details>
-<summary>Additional Notes</summary>
-<details>
-<summary>v0.5.3</summary>
-There were new Role List options added for the Role List mode, here's what each of those options do:
-<ul> <li>Regular Crew - Spawns only Crew (Support), (Protective), (Investigative) and (Killing) roles</li> </ul>
-<ul> <li>Regular Intruder - Spawns only Intruder (Deception), (Killing), (Concealing) and (Support) roles</li> </ul>
-<ul> <li>Regular Syndicate - Spawns only Syndicate (Disruption), (Support) and (Killing) roles</li> </ul>
-<ul> <li>Regular Neutral - Spawns only Neutral (Evil) and (Benign) roles</li> </ul>
-<ul> <li>Harmful Neutral - Spawns only Neutral (Killing), (Harbinger) and (Neophyte) roles</li> </ul>
-<ul> <li>Ban Murderer - A free ban slot for the Murderer role (as it has no abilities and is very bland)</li> </ul>
-</details>
-</details>
-
------------------------
-
 # Installation
 
 ## Requirements
@@ -1294,6 +1302,22 @@ The Altruist is capable of reviving dead players. After a set period of time, th
 
 ![Altruist](./Images/Altruist.png)
 
+## Bastion
+### Alignment: Crew (Killing)
+### Origin: Town Of Host: The Other Roles
+
+The Bastion can place bombs in vents. Anyone who tries to interact with the bombed vent will die.
+
+### Game Options
+
+| Name | Description | Type | Default |
+|------|-------------|------|---------|
+| Max Bombs | The number of times the Bastion can place bombs throughout the game | Number | 5 |
+| Bastion Cooldown | The cooldown on the Bastion's bomb button | Time | 5s |
+| Bombs Are Removed Upon Kills | Toggles whether the bombs in vents are permanent or not. If not, they disappear after killing someone | Toggle | True |
+
+![Bastion](./Images/Bastion.png)
+
 ## Chameleon
 ### Alignment: Crew (Support)
 ### Origin: Town Of Us
@@ -1399,20 +1423,6 @@ The Escort can roleblock players and prevent them from doing anything for a shor
 | Roleblock Duration | The duration of the Escort's Roleblock | Time | 10s |
 
 ![Escort](./Images/Escort.png)
-
-## Inspector
-### Alignment: Crew (Investigative)
-### Origin: Town Of Salem 1 Investigator
-
-The Inspector can inspect players for their roles. Upon being inspected, the target's name will be updated to give a list of what roles could the target possibly be.
-
-### Game Options
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Inspect Cooldown | The cooldown on the Inspector's Inspect button. | Time | 25s |
-
-![Inspector](./Images/Inspector.png)
 
 ## Mayor
 ### Alignment: Crew (Sovereign)
@@ -1636,7 +1646,7 @@ The Vampire Hunter only spawns if there are Undead in the game. They can check p
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Stake Cooldown | The cooldown on the Vampire Hunter's Stake button. | Time | 5s |
+| Stake Cooldown | The cooldown on the Vampire Hunter's Stake button | Time | 5s |
 
 ![Vampire Hunter](./Images/VampireHunter.png)
 
@@ -1651,7 +1661,7 @@ The Veteran can go on alert. Anyone who interacts with a Veteran on alert will b
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Max Alerts | The number of times the Veteran can alert throughout the game | Number | 5 |
-| Alert Cooldown | The cooldown on the Veteran's Alert button. | Time | 5s |
+| Alert Cooldown | The cooldown on the Veteran's Alert button | Time | 5s |
 | Alert Duration | The duration of the Veteran's Alert | Time | 25s |
 
 ![Veteran](./Images/Veteran.png)
@@ -1706,6 +1716,7 @@ The Actor gets a list of roles at the start of the game. This list of roles depe
 | Actor Can Button | Whether the Actor call a meeting | Toggle | True |
 | Actor Can Hide In Vents | Whether the Actor Can Vent | Toggle | False |
 | Actor Can Switch Vents | Whether the Actor Can Switch while in Vents | Toggle | False |
+| Actor Role List Guess Count | How many roles are included within the Actor's pretend list | Number | 3 |
 | Vigilante Kills Actor | Whether the Vigilante is able to kill the Actor | Toggle | False |
 
 ![Actor](./Images/Actor.png)
@@ -1777,7 +1788,7 @@ The Bounty Hunter is assigned a target as the start of the game. Every meeting, 
 | Bounty Hunter Can Indirectly Pick Their Own Target | Whether the Bounty Hunter can choose a player to pick a target for them | Toggle | False |
 | Max Target Guesses | The number of times the Bounty Hunter can try to guess players as their target before losing | Number | 5 |
 | Guess Cooldown | The cooldown on the Bounty Hunter's Guess button | Time | 25s |
-| Bounty Hunter Can Vent | Whether the Bounty Hunter Can Vent | Toggle | False |
+| Bounty Hunter Can Vent | Whether the Bounty Hunter can vent | Toggle | False |
 | Vigilante Kills Bounty Hunter | Whether the Vigilante is able to kill the Bounty Hunter | Toggle | False |
 
 ![BountyHunter](./Images/BountyHunter.png)
@@ -1849,7 +1860,7 @@ The Executioner has no abilities and instead must use gas-lighting techniques to
 |------|-------------|------|---------|
 | Executioner Can Pick Their Own Target | Whether the Executioner can choose a player to be ejected | Toggle | False |
 | Executioner Can Button | Whether the Executioner can call a meeting | Toggle | True |
-| Executioner Can Hide In Vents | Whether the Executioner Can Vent | Toggle | False |
+| Executioner Can Hide In Vents | Whether the Executioner can vent | Toggle | False |
 | Executioner Can Switch Vents | Whether the Executioner Can Switch while in Vents | Toggle | False |
 | Target Knows Executioner Exists | Whether the Executioner's target knows that they have an Executioner for them | Toggle | False |
 | Executioner Knows Target's Role | Whether the Executioner knows their target's role | Toggle | False |
@@ -2444,7 +2455,7 @@ The Teleporter can mark a location which they can then teleport to later.
 ![Teleporter](./Images/Teleporter.png)
 
 ## Wraith
-### Alignment: Intruder (Concealing)
+### Alignment: Intruder (Deception)
 ### Origin: Town Of Us Swooper
 
 The Wraith can temporarily turn invisible.
@@ -3286,7 +3297,7 @@ This mode has no restrictions on how many instances of a layer can spawn. Each l
 
 In this mode, you can make a set list of what roles can spawn. You can decide the exact number of a certain alignment/faction. However, other layers like modifiers, abilities and objectifiers cannot spawn in this mode. All Any's "Uniqueness" property of roles also applies here.
 
-### Role List Only Settings
+### Role List Settings
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
@@ -3421,6 +3432,8 @@ This mode is a skill check mode to see who's the best at planning their task pat
 | Camouflaged Meetings | Whether everyone becomes camouflaged when a meeting is called when Comms are sabotaged | Toggle | False |
 | Oxygen Sabotage Slows Down Players | Self descriptive | Toggle | True |
 | Reactor Sabotage Shakes The Screen By | Self descriptive | Percentage | 30% |
+| Night Vision Cameras | When lights are sabotaged, the cameras turn on night vision mode | Toggle | True |
+| Evils Ignore Night Vision | Self descriptive | Toggle | False |
 
 ## Better Skeld Settings
 
@@ -3581,6 +3594,16 @@ This mode is a skill check mode to see who's the best at planning their task pat
 
 **If there are multiple alive and active roles from the same alignment, the Chaos Drive is given to the player with a higher player id (aka whoever joined the lobby earlier).**
 
+## Role List Entries
+
+The Role List game mode have special entries that are used to allow spawning of roles based on them.
+
+Regular Crew - Spawns only Crew (Support), (Protective), (Investigative) and (Killing) roles
+Regular Intruder - Spawns only Intruder (Deception), (Killing), (Concealing) and (Support) roles
+Regular Syndicate - Spawns only Syndicate (Disruption), (Support) and (Killing) roles
+Regular Neutral - Spawns only Neutral (Evil) and (Benign) roles
+Harmful Neutral - Spawns only Neutral (Killing), (Harbinger) and (Neophyte) roles
+
 -----------------------
 
 # Extras
@@ -3668,7 +3691,7 @@ After that, it's gaming time.
 [Slushigoose](https://github.com/slushiegoose) - For making the mod in the first place\
 [eDonnes](https://github.com/eDonnes124/) - For continuing the mod after it was discontinued\
 [Det](https://github.com/FERTAILS) - For getting me into modding\
-[TownOfHost-TheOtherRoles](https://github.com/music-discussion/TownOfHost-TheOtherRoles) - For a lot of the QoL code plus some chat command ideas\
+[TownOfHost-TheOtherRoles](https://github.com/music-discussion/TownOfHost-TheOtherRoles) - For a lot of the QoL code plus some chat command ideas, inspiration for the Bastion role\
 [Essentials](https://github.com/DorCoMaNdO/Reactor-Essentials) - For creating most of the custom game options which are now embedded into the mod [here](https://github.com/AlchlcDvl/TownOfUsReworked/tree/master/TownOfUsReworked/CustomOptions)\
 [VincentVision](https://github.com/VincentVision) - For some code here and there from his version of Town Of Us (which was deleted sadly)\
 [Lunastellia](https://github.com/Lunastellia) - For Better Skeld code\

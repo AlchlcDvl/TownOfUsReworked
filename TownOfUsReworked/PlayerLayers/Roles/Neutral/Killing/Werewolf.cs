@@ -11,13 +11,13 @@ public class Werewolf : Neutral
     public override LayerEnum Type => LayerEnum.Werewolf;
     public override Func<string> StartText => () => "AWOOOOOOOOOO";
     public override Func<string> Description => () => $"- You kill everyone within {CustomGameOptions.MaulRadius}m";
-    public override InspectorResults InspectorResults => InspectorResults.IsAggressive;
 
     public Werewolf(PlayerControl player) : base(player)
     {
         Objectives = () => "- Maul anyone who can oppose you";
         Alignment = Alignment.NeutralKill;
         MaulButton = new(this, "Maul", AbilityTypes.Target, "ActionSecondary", HitMaul, CustomGameOptions.MaulCd, Exception);
+        player.Data.Role.IntroSound = GetAudio("WerewolfIntro");
     }
 
     public void Maul()

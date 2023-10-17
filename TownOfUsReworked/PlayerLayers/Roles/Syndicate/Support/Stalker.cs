@@ -11,7 +11,6 @@ public class Stalker : Syndicate
     public override Func<string> StartText => () => "Stalk Everyone To Monitor Their Movements";
     public override Func<string> Description => () => $"- You always know where your targets are" + (HoldsDrive ? "\n- Camouflages do not stop you seeing who's where" : "") + "\n" +
         CommonAbilities;
-    public override InspectorResults InspectorResults => InspectorResults.TracksOthers;
 
     public Stalker(PlayerControl player) : base(player)
     {

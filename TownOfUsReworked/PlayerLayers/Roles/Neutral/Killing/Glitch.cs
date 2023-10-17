@@ -15,18 +15,17 @@ public class Glitch : Neutral
     public override Func<string> StartText => () => "foreach var PlayerControl Glitch.MurderPlayer";
     public override Func<string> Description => () => "- You can mimic players' appearances whenever you want to\n- Hacking blocks your target from being able to use their abilities for a " +
         "short while\n- You are immune to blocks\n- If you hack a <color=#336EFFFF>Serial Killer</color> they will be forced to kill you";
-    public override InspectorResults InspectorResults => InspectorResults.HindersOthers;
 
-    public Glitch(PlayerControl owner) : base(owner)
+    public Glitch(PlayerControl player) : base(player)
     {
         Objectives = () => "- Neutralise anyone who can oppose you";
         Alignment = Alignment.NeutralKill;
         MimicMenu = new(Player, Click, Exception3);
         RoleBlockImmune = true;
         NeutraliseButton = new(this, "Neutralise", AbilityTypes.Target, "ActionSecondary", Neutralise, CustomGameOptions.NeutraliseCd, Exception1);
-        HackButton = new(this, "Hack", AbilityTypes.Target, "ActionSecondary", HitHack, CustomGameOptions.HackCd, CustomGameOptions.HackDur, (CustomButton.EffectVoid)Hack, UnHack,
-            Exception2);
+        HackButton = new(this, "Hack", AbilityTypes.Target, "ActionSecondary", HitHack, CustomGameOptions.HackCd, CustomGameOptions.HackDur, Hack, UnHack, Exception2);
         MimicButton = new(this, "Mimic", AbilityTypes.Targetless, "Secondary", HitMimic, CustomGameOptions.MimicCd, CustomGameOptions.MimicDur, (CustomButton.EffectVoid)Mimic, UnMimic);
+        player.Data.Role.IntroSound = GetAudio("GlitchIntro");
     }
 
     public void UnHack()

@@ -12,7 +12,6 @@ public class Operative : Crew
     public override Func<string> StartText => () => "Detect Which Roles Are Here";
     public override Func<string> Description => () => "- You can place bugs around the map\n- Upon triggering the bugs, the player's role will be included in a list to be shown in the next" +
         " meeting\n- You can see which colors are where on the admin table\n- On Vitals, the time of death for each player will be shown";
-    public override InspectorResults InspectorResults => InspectorResults.DropsItems;
 
     public Operative(PlayerControl player) : base(player)
     {
@@ -41,8 +40,8 @@ public class Operative : Crew
         else if (BuggedPlayers.Count == 1)
         {
             var result = BuggedPlayers[0];
-            var a_an = result is LayerEnum.Altruist or LayerEnum.Engineer or LayerEnum.Escort or LayerEnum.Inspector or LayerEnum.Operative or LayerEnum.Actor or LayerEnum.Amnesiac or
-                LayerEnum.Arsonist or LayerEnum.Executioner or LayerEnum.Ambusher or LayerEnum.Enforcer or LayerEnum.Impostor or LayerEnum.Anarchist ? "n" : "";
+            var a_an = result is LayerEnum.Altruist or LayerEnum.Engineer or LayerEnum.Escort or LayerEnum.Operative or LayerEnum.Amnesiac or LayerEnum.Actor or LayerEnum.Arsonist or
+                LayerEnum.Executioner or LayerEnum.Ambusher or LayerEnum.Enforcer or LayerEnum.Impostor or LayerEnum.Anarchist ? "n" : "";
             message = $"A{a_an} {result} triggered your bug.";
         }
         else if (CustomGameOptions.PreciseOperativeInfo)

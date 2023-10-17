@@ -14,7 +14,6 @@ public class Vigilante : Crew
     public override LayerEnum Type => LayerEnum.Vigilante;
     public override Func<string> StartText => () => "Shoot The <color=#FF0000FF>Evildoers</color>";
     public override Func<string> Description => () => "- You can shoot players\n- If you shoot someone you're not supposed to, you will die to guilt";
-    public override InspectorResults InspectorResults => InspectorResults.IsCold;
 
     public Vigilante(PlayerControl player) : base(player)
     {
@@ -27,7 +26,7 @@ public class Vigilante : Crew
         base.OnMeetingStart(__instance);
 
         if (PreMeetingDie)
-            RpcMurderPlayer(Player, Player);
+            RpcMurderPlayer(Player);
         else if (InnoMessage)
             Run(HUD.Chat, "<color=#FFFF00FF>〖 How Dare You 〗</color>", "You killed an innocent an innocent crew! You have put your gun away out of guilt.");
     }
@@ -70,10 +69,10 @@ public class Vigilante : Crew
                 PostMeetingDie = CustomGameOptions.VigiOptions == VigiOptions.PostMeeting;
 
                 if (CustomGameOptions.VigiOptions == VigiOptions.Immediate)
-                    RpcMurderPlayer(Player, Player);
+                    RpcMurderPlayer(Player);
             }
         }
-        
+
         if (interact.Protected)
             cooldown = CooldownType.GuardianAngel;
         else if (interact.Vested)

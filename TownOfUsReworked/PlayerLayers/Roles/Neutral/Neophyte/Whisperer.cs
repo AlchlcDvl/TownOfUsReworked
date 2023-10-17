@@ -15,7 +15,6 @@ public class Whisperer : Neutral
     public override Func<string> StartText => () => "PSST";
     public override Func<string> Description => () => "- You can whisper to players around, slowly bending them to your ideals\n- When a player reaches 100% conversion, they will " +
         "defect and join the <color=#F995FCFF>Sect</color>";
-    public override InspectorResults InspectorResults => InspectorResults.BringsChaos;
 
     public Whisperer(PlayerControl player) : base(player)
     {

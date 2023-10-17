@@ -18,12 +18,9 @@ public abstract class Intruder : Role
         Player.Data.SetImpostor(true);
     }
 
-    public override void IntroPrefix(IntroCutscene._ShowTeam_d__36 __instance)
+    public override List<PlayerControl> Team()
     {
-        if (!Local)
-            return;
-
-        var team = new List<PlayerControl>() { CustomPlayer.Local };
+        var team = base.Team();
 
         if (IsRecruit)
         {
@@ -34,7 +31,7 @@ public abstract class Intruder : Role
 
         foreach (var player in CustomPlayer.AllPlayers)
         {
-            if (player.Is(Faction) && player != CustomPlayer.Local)
+            if (player.Is(Faction) && player != Player)
                 team.Add(player);
         }
 
@@ -51,7 +48,7 @@ public abstract class Intruder : Role
             }
         }
 
-        __instance.teamToShow = team.SystemToIl2Cpp();
+        return team;
     }
 
     public void Kill()

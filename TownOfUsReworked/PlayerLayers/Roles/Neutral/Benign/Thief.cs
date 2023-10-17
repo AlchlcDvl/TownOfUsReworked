@@ -18,7 +18,6 @@ public class Thief : Neutral
     public override LayerEnum Type => LayerEnum.Thief;
     public override Func<string> StartText => () => "Steal From The Killers";
     public override Func<string> Description => () => "- You can kill players to steal their roles\n- You cannot steal roles from players who cannot kill";
-    public override InspectorResults InspectorResults => InspectorResults.BringsChaos;
 
     public Thief(PlayerControl player) : base(player)
     {
@@ -47,13 +46,12 @@ public class Thief : Neutral
         SortedColorMapping.Clear();
         Sorted.Clear();
 
-        ColorMapping.Add("Crewmate", Colors.Crew);
-
         //Adds all the roles that have a non-zero chance of being in the game
         if (CustomGameOptions.CrewMax > 0 && CustomGameOptions.CrewMin > 0)
         {
             if (CustomGameOptions.VeteranOn > 0) ColorMapping.Add("Veteran", Colors.Veteran);
             if (CustomGameOptions.VigilanteOn > 0) ColorMapping.Add("Vigilante", Colors.Vigilante);
+            if (CustomGameOptions.BastionOn > 0) ColorMapping.Add("Bastion", Colors.Bastion);
             if (CustomGameOptions.VampireHunterOn > 0 && CustomGameOptions.DraculaOn > 0) ColorMapping.Add("Vampire Hunter", Colors.VampireHunter);
         }
 
@@ -119,7 +117,6 @@ public class Thief : Neutral
             if (CustomGameOptions.CryomaniacOn > 0) ColorMapping.Add("Cryomaniac", Colors.Cryomaniac);
             if (CustomGameOptions.WerewolfOn > 0) ColorMapping.Add("Werewolf", Colors.Werewolf);
             if (CustomGameOptions.PlaguebearerOn > 0) ColorMapping.Add("Plaguebearer", Colors.Plaguebearer);
-            if (CustomGameOptions.ThiefOn > 0) ColorMapping.Add("Thief", Colors.Thief);
             if (CustomGameOptions.BountyHunterOn > 0) ColorMapping.Add("Bounty Hunter", Colors.BountyHunter);
         }
 
@@ -323,7 +320,7 @@ public class Thief : Neutral
             if (!(StealButton.TargetPlayer.GetFaction() is Faction.Intruder or Faction.Syndicate || StealButton.TargetPlayer.GetAlignment() is Alignment.NeutralKill or Alignment.NeutralNeo
                 or Alignment.NeutralPros or Alignment.CrewKill))
             {
-                Utils.RpcMurderPlayer(Player, Player);
+                Utils.RpcMurderPlayer(Player);
             }
             else
             {
@@ -398,6 +395,7 @@ public class Thief : Neutral
             LayerEnum.Warper => new Warper(Player),
             LayerEnum.Wraith => new Wraith(Player),
             LayerEnum.BountyHunter => new BountyHunter(Player) { TargetPlayer = target },
+            LayerEnum.Bastion => new Bastion(Player) { BombedIDs = ((Bastion)role).BombedIDs },
             LayerEnum.Jackal => new Jackal(Player)
             {
                 Recruited = ((Jackal)role).Recruited,
@@ -449,7 +447,7 @@ public class Thief : Neutral
 
         if (Player.Is(Faction.Intruder) || Player.Is(Faction.Syndicate) || (Player.Is(Faction.Neutral) && CustomGameOptions.SnitchSeesNeutrals))
         {
-            foreach (var snitch in Ability.GetAbilities<Snitch>(LayerEnum.Snitch))
+            foreach (var snitch in PlayerLayer.GetLayers<Snitch>())
             {
                 if (snitch.TasksLeft <= CustomGameOptions.SnitchTasksRemaining && CustomPlayer.Local == Player)
                     LocalRole.AllArrows.Add(snitch.PlayerId, new(Player, Colors.Snitch));
@@ -457,7 +455,7 @@ public class Thief : Neutral
                     GetRole(snitch.Player).AllArrows.Add(Player.PlayerId, new(snitch.Player, Colors.Snitch));
             }
 
-            foreach (var revealer in GetRoles<Revealer>(LayerEnum.Revealer))
+            foreach (var revealer in GetLayers<Revealer>())
             {
                 if (revealer.Revealed && CustomPlayer.Local == Player)
                     LocalRole.AllArrows.Add(revealer.PlayerId, new(Player, Colors.Revealer));

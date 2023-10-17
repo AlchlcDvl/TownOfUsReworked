@@ -58,8 +58,8 @@ public static class CustomGameOptions
     public static bool OxySlow => Generate.OxySlow;
     public static bool CamouflagedComms => Generate.CamouflagedComms;
     public static bool CamouflagedMeetings => Generate.CamouflagedMeetings;
-    //public static bool NightVision => Generate.NightVision;
-    //public static bool EvilsIgnoreNV => Generate.EvilsIgnoreNV;
+    public static bool NightVision => Generate.NightVision;
+    public static bool EvilsIgnoreNV => Generate.EvilsIgnoreNV;
 
     //Announcement Settings
     public static bool LocationReports => Generate.LocationReports;
@@ -222,7 +222,6 @@ public static class CustomGameOptions
     public static int TrackerOn => Generate.TrackerOn.GetChance();
     public static int OperativeOn => Generate.OperativeOn.GetChance();
     public static int PoisonerOn => Generate.PoisonerOn.GetChance();
-    public static int InspectorOn => Generate.InspectorOn.GetChance();
     public static int EscortOn => Generate.EscortOn.GetChance();
     public static int GodfatherOn => Generate.GodfatherOn.GetChance();
     public static int RebelOn => Generate.RebelOn.GetChance();
@@ -278,6 +277,7 @@ public static class CustomGameOptions
     public static int DrunkardOn => Generate.DrunkardOn.GetChance();
     public static int TimekeeperOn => Generate.TimekeeperOn.GetChance();
     public static int SilencerOn => Generate.SilencerOn.GetChance();
+    public static int BastionOn => Generate.BastionOn.GetChance();
 
     //Ability Spawn
     public static int CrewAssassinOn => Generate.CrewAssassinOn.GetChance();
@@ -391,11 +391,6 @@ public static class CustomGameOptions
     public static float FootprintDur => Generate.FootprintDur;
     public static bool AnonymousFootPrint => Generate.AnonymousFootPrint;
 
-    //Inspector Settings
-    public static int InspectorCount => Generate.InspectorOn.GetCount();
-    public static float InspectCd => Generate.InspectCd;
-    public static bool UniqueInspector => Generate.UniqueInspector;
-
     //Medium Settings
     public static int MediumCount => Generate.MediumOn.GetCount();
     public static DeadRevealed DeadRevealed => (DeadRevealed)Generate.DeadRevealed.GetInt();
@@ -458,6 +453,13 @@ public static class CustomGameOptions
     public static int MaxAlerts => Generate.MaxAlerts;
     public static int VeteranCount => Generate.VeteranOn.GetCount();
     public static bool UniqueVeteran => Generate.UniqueVeteran;
+
+    //Bastion Settings
+    public static float BastionCd => Generate.BastionCd;
+    public static int MaxBombs => Generate.MaxBombs;
+    public static int BastionCount => Generate.BastionOn.GetCount();
+    public static bool UniqueBastion => Generate.UniqueBastion;
+    public static bool BombRemovedOnKill => Generate.BombRemovedOnKill;
 
     //Vigilante Settings
     public static VigiOptions VigiOptions => (VigiOptions)Generate.VigiOptions.GetInt();
@@ -609,6 +611,7 @@ public static class CustomGameOptions
     public static int ActorCount => Generate.ActorOn.GetCount();
     public static bool UniqueActor => Generate.UniqueActor;
     public static bool ActorCanPickRole => Generate.ActorCanPickRole;
+    public static int ActorRoleCount => Generate.ActorRoleCount;
 
     //Troll Settings
     public static bool TrollVent => Generate.TrollVent;

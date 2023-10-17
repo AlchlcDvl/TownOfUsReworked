@@ -12,7 +12,6 @@ public class Plaguebearer : Neutral
     public override Func<string> StartText => () => "Spread Disease To Summon <color=#424242FF>Pestilence</color>";
     public override Func<string> Description => () => "- You can infect players\n- When all players are infected, you will turn into <color=#424242FF>Pestilence</color>\n- Infections spread"
         + " via interaction between players";
-    public override InspectorResults InspectorResults => InspectorResults.SeeksToDestroy;
 
     public Plaguebearer(PlayerControl player) : base(player)
     {
@@ -61,8 +60,7 @@ public class Plaguebearer : Neutral
 
     public void TurnPestilence()
     {
-        var newRole = new Pestilence(Player);
-        newRole.RoleUpdate(this);
+        new Pestilence(Player).RoleUpdate(this);
 
         if (CustomGameOptions.PlayersAlerted)
             Flash(Colors.Pestilence);

@@ -1,6 +1,6 @@
 ﻿namespace TownOfUsReworked.Patches;
 
-[HarmonyPatch(typeof(IntroCutscene._ShowRole_d__39), nameof(IntroCutscene._ShowRole_d__39.MoveNext))]
+[HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.ShowRole))]
 public static class SubmergedStartPatch
 {
     public static void Postfix()
@@ -23,33 +23,28 @@ public static class SubmergedHudPatch
 }
 
 [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.HandleAnimation))]
-[HarmonyPriority(Priority.Low)]
 public static class SubmergedPhysicsPatch
 {
     public static void Postfix(PlayerPhysics __instance) => Ghostrolefix(__instance);
 }
 
 [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.LateUpdate))]
-[HarmonyPriority(Priority.Low)]
 public static class SubmergedLateUpdatePhysicsPatch
 {
     public static void Postfix(PlayerPhysics __instance) => Ghostrolefix(__instance);
 }
 
-[HarmonyPatch(typeof(UObject), nameof(UObject.Destroy), new Type[] { typeof(GameObject) })]
+[HarmonyPatch(typeof(UObject), nameof(UObject.Destroy), typeof(UObject))]
 public static class SubmergedExile
 {
-    public static void Prefix(GameObject obj)
+    public static void Prefix(UObject obj)
     {
         if ((!SubLoaded && !LILoaded) || TownOfUsReworked.NormalOptions?.MapId != 5 || obj == null || obj.name == null)
             return;
 
         if (obj.name.Contains("ExileCutscene"))
             SetPostmortals.ExileControllerPostfix(ConfirmEjects.LastExiled);
-        else if (obj.name.Contains("SpawnInMinigame"))
-        {
-            if (CustomPlayer.Local.Is(LayerEnum.Astral) && !CustomPlayer.LocalCustom.IsDead)
-                Modifier.GetModifier<Astral>(CustomPlayer.Local).SetPosition();
-        }
+        else if (obj.name.Contains("SpawnInMinigame") && CustomPlayer.Local.Is(LayerEnum.Astral) && !CustomPlayer.LocalCustom.IsDead)
+            Modifier.GetModifier<Astral>(CustomPlayer.Local).SetPosition();
     }
 }

@@ -12,7 +12,6 @@ public class Rebel : Syndicate
     public override Func<string> Description => () => "- You can promote a fellow <color=#008000FF>Syndicate</color> into becoming your successor\n- Promoting a <color=#008000FF>" +
         "Syndicate</color> turns them into a <color=#979C9FFF>Sidekick</color>\n- If you die, the <color=#979C9FFF>Sidekick</color> become the new <color=#FFFCCEFF>Rebel</color>\n" +
         $"and inherits better abilities of their former role\n{CommonAbilities}";
-    public override InspectorResults InspectorResults => InspectorResults.LeadsTheGroup;
 
     public Rebel(PlayerControl player) : base(player)
     {
@@ -23,15 +22,12 @@ public class Rebel : Syndicate
     public void Sidekick(PlayerControl target)
     {
         HasDeclared = true;
-        var formerRole = GetRole(target);
-
-        var sidekick = new Sidekick(target)
+        var formerRole = GetRole<Syndicate>(target);
+        new Sidekick(target)
         {
             FormerRole = formerRole,
             Rebel = this
-        };
-
-        sidekick.RoleUpdate(formerRole);
+        }.RoleUpdate(formerRole);
     }
 
     public void Sidekick()

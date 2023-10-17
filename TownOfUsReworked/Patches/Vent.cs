@@ -3,16 +3,15 @@ namespace TownOfUsReworked.Patches;
 [HarmonyPatch(typeof(Vent), nameof(Vent.CanUse))]
 public static class VentPatches
 {
-    public static void Postfix(Vent __instance, [HarmonyArgument(0)] GameData.PlayerInfo playerInfo, [HarmonyArgument(1)] ref bool canUse, [HarmonyArgument(2)] ref bool couldUse, ref float
-        __result)
+    public static void Postfix(Vent __instance, ref GameData.PlayerInfo pc, ref bool canUse, ref bool couldUse, ref float __result)
     {
         var num = float.MaxValue;
-        var playerControl = playerInfo.Object;
+        var playerControl = pc.Object;
 
         if (IsNormal)
             couldUse = playerControl.CanVent();
         else if (IsHnS)
-            couldUse = !playerInfo.IsImpostor();
+            couldUse = !pc.IsImpostor();
         else
             couldUse = canUse;
 
@@ -22,12 +21,42 @@ public static class VentPatches
             couldUse = false;
 
         canUse = couldUse;
+        var center = playerControl.Collider.bounds.center;
+        var position = __instance.transform.position;
+
+        if (IsSubmerged)
+        {
+            if (GetInTransition())
+            {
+                __result = float.MaxValue;
+                return;
+            }
+
+            switch (__instance.Id)
+            {
+                case 9:  //Engine Room Exit Only Vent
+                    if (CustomPlayer.Local.inVent)
+                        break;
+
+                    __result = float.MaxValue;
+                    return;
+
+                case 14: //Lower Central
+                    __result = float.MaxValue;
+
+                    if (canUse)
+                    {
+                        __result = Vector2.Distance(center, position);
+                        canUse &= __result <= __instance.UsableDistance;
+                    }
+
+                    return;
+            }
+        }
 
         if (canUse)
         {
-            var center = playerControl.Collider.bounds.center;
-            var position = __instance.transform.position;
-            num = Vector2.Distance((Vector2)center, (Vector2)position);
+            num = Vector2.Distance(center, position);
 
             if (__instance.Id == 14 && IsSubmerged)
                 canUse &= num <= __instance.UsableDistance;
@@ -77,7 +106,7 @@ public static class EnterVentPatch
 [HarmonyPatch(typeof(Vent), nameof(Vent.SetOutline))]
 public static class SetVentOutlinePatch
 {
-    public static void Postfix(Vent __instance, [HarmonyArgument(1)] ref bool mainTarget)
+    public static void Postfix(Vent __instance, ref bool mainTarget)
     {
         var active = CustomPlayer.Local && !Meeting && CustomPlayer.Local.CanVent();
 
@@ -86,5 +115,89 @@ public static class SetVentOutlinePatch
 
         __instance.myRend.material.SetColor("_OutlineColor", Role.LocalRole.Color);
         __instance.myRend.material.SetColor("_AddColor", mainTarget ? Role.LocalRole.Color : UColor.clear);
+    }
+}
+
+[HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.RpcEnterVent))]
+public static class TryToEnterVentPatch
+{
+    public static bool Prefix(PlayerPhysics __instance, ref int id)
+    {
+        var vent = VentById(id);
+
+        if (vent.IsBombed())
+        {
+            RpcMurderPlayer(__instance.myPlayer);
+            Role.BastionBomb(vent, CustomGameOptions.BombRemovedOnKill);
+            CallRpc(CustomRPC.Misc, MiscRPC.BastionBomb, vent);
+            return false;
+        }
+
+        return true;
+    }
+}
+
+[HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.RpcExitVent))]
+public static class TryToExitVentPatch
+{
+    public static bool Prefix(PlayerPhysics __instance, ref int id)
+    {
+        var vent = VentById(id);
+
+        if (vent.IsBombed())
+        {
+            RpcMurderPlayer(__instance.myPlayer);
+            Role.BastionBomb(vent, CustomGameOptions.BombRemovedOnKill);
+            CallRpc(CustomRPC.Misc, MiscRPC.BastionBomb, vent);
+            return false;
+        }
+
+        return true;
+    }
+}
+
+[HarmonyPatch(typeof(Vent), nameof(Vent.Use))]
+public static class UseVent
+{
+    public static bool Prefix(Vent __instance)
+    {
+        if (NoPlayers)
+            return true;
+
+        if (!CustomPlayer.Local.CanVent())
+            return false;
+
+        if (__instance.IsBombed())
+        {
+            RpcMurderPlayer(CustomPlayer.Local);
+            Role.BastionBomb(__instance, CustomGameOptions.BombRemovedOnKill);
+            CallRpc(CustomRPC.Misc, MiscRPC.BastionBomb, __instance);
+            return false;
+        }
+
+        return LocalNotBlocked;
+    }
+}
+
+[HarmonyPatch(typeof(Vent), nameof(Vent.TryMoveToVent))]
+public static class MoveToVentPatch
+{
+    public static bool Prefix(ref Vent otherVent)
+    {
+        if (NoPlayers)
+            return true;
+
+        if (!CustomPlayer.Local.CanVent())
+            return false;
+
+        if (otherVent.IsBombed())
+        {
+            RpcMurderPlayer(CustomPlayer.Local);
+            Role.BastionBomb(otherVent, CustomGameOptions.BombRemovedOnKill);
+            CallRpc(CustomRPC.Misc, MiscRPC.BastionBomb, otherVent);
+            return false;
+        }
+
+        return LocalNotBlocked;
     }
 }

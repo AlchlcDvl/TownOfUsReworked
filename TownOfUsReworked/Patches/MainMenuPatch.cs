@@ -44,20 +44,23 @@ public static class MainMenuStartPatch
         if (template == null)
             return;
 
-        var y = 0.6f;
+        var y = 0f;
 
-        //If there's an update, create and show the update button
+        //If there's a possible download, create and show the buttons for it
+
         if (ModUpdater.ReworkedUpdate)
         {
+            LogInfo("Reworked can be updated");
             var touButton = UObject.Instantiate(template, rightPanel.transform);
             touButton.transform.localPosition = new(touButton.transform.localPosition.x, y, touButton.transform.localPosition.z);
             touButton.transform.localScale = new(0.44f, 0.84f, 1f);
-            touButton.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = GetSprite("UpdateToUButton");
-            touButton.transform.GetChild(1).GetComponent<SpriteRenderer>().sprite = GetSprite("UpdateToUButton");
+            touButton.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = GetSprite("UpdateReworked");
+            touButton.transform.GetChild(1).GetComponent<SpriteRenderer>().sprite = GetSprite("UpdateReworked");
+            touButton.name = "ReworkedDownload";
 
             var pos = touButton.GetComponent<AspectPosition>();
             pos.Alignment = AspectPosition.EdgeAlignments.LeftBottom;
-            pos.DistanceFromEdge = new(1.5f, 1f, 0f);
+            pos.DistanceFromEdge = new(1.5f, 0.75f, 0f);
 
             var passiveTOUButton = touButton.GetComponent<PassiveButton>();
             passiveTOUButton.OnClick = new();
@@ -76,18 +79,19 @@ public static class MainMenuStartPatch
             y += 0.6f;
         }
 
-        //If there's an update, create and show the update button
-        if (ModUpdater.SubmergedUpdate)
+        if (ModUpdater.SubmergedUpdate || ModUpdater.CanDownloadSubmerged)
         {
+            LogInfo($"Submerged can be {(ModUpdater.SubmergedUpdate ? "updated" : "downloaded")}");
             var submergedButton = UObject.Instantiate(template, rightPanel.transform);
             submergedButton.transform.localPosition = new(submergedButton.transform.localPosition.x, y, submergedButton.transform.localPosition.z);
             submergedButton.transform.localScale = new(0.44f, 0.84f, 1f);
-            submergedButton.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = GetSprite("UpdateSubmergedButton");
-            submergedButton.transform.GetChild(1).GetComponent<SpriteRenderer>().sprite = GetSprite("UpdateSubmergedButton");
+            submergedButton.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = GetSprite($"{(SubLoaded ? "Update" : "Download")}Submerged");
+            submergedButton.transform.GetChild(1).GetComponent<SpriteRenderer>().sprite = GetSprite($"{(SubLoaded ? "Update" : "Download")}Submerged");
+            submergedButton.name = "SubmergedDownload";
 
             var pos = submergedButton.GetComponent<AspectPosition>();
             pos.Alignment = AspectPosition.EdgeAlignments.LeftBottom;
-            pos.DistanceFromEdge = new(1.5f, 1.5f, 0f);
+            pos.DistanceFromEdge = new(1.5f, 1.25f, 0f);
 
             var passiveSubmergedButton = submergedButton.GetComponent<PassiveButton>();
             passiveSubmergedButton.OnClick = new();
@@ -102,13 +106,6 @@ public static class MainMenuStartPatch
                 submergedButton.transform.GetChild(2).GetChild(0).GetComponent<TMP_Text>().SetText("");
                 pos.AdjustPosition();
             })));
-        }
-
-        if (ModUpdater.ReworkedUpdate || ModUpdater.SubmergedUpdate)
-        {
-            ModUpdater.InfoPopup = UObject.Instantiate(TwitchManager.Instance.TwitchPopup);
-            ModUpdater.InfoPopup.TextAreaTMP.fontSize *= 0.7f;
-            ModUpdater.InfoPopup.TextAreaTMP.enableAutoSizing = false;
         }
     }
 

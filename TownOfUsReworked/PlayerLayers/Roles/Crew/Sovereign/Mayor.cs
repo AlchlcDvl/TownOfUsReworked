@@ -5,7 +5,6 @@ public class Mayor : Crew
     public bool RoundOne { get; set; }
     public CustomButton RevealButton { get; set; }
     public bool Revealed { get; set; }
-    public byte Voted { get; set; }
 
     public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Mayor : Colors.Crew;
     public override string Name => "Mayor";
@@ -13,13 +12,12 @@ public class Mayor : Crew
     public override Func<string> StartText => () => "Reveal Yourself To Commit Voter Fraud";
     public override Func<string> Description => () => $"- You can reveal yourself to the crew\n- When revealed, your votes count {CustomGameOptions.MayorVoteCount + 1} times but you cannot "
         + "be protected";
-    public override InspectorResults InspectorResults => InspectorResults.LeadsTheGroup;
 
     public Mayor(PlayerControl player) : base(player)
     {
         Alignment = Alignment.CrewSov;
-        Voted = 255;
         RevealButton = new(this, "MayorReveal", AbilityTypes.Targetless, "ActionSecondary", Reveal);
+        player.Data.Role.IntroSound = GetAudio("MayorIntro");
     }
 
     public void Reveal()
@@ -28,7 +26,6 @@ public class Mayor : Crew
         Revealed = true;
         Flash(Color);
         BreakShield(Player, true);
-        Voted = 255;
     }
 
     public override void UpdateHud(HudManager __instance)

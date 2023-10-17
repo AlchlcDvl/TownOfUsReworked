@@ -52,6 +52,7 @@ public enum AbilityTypes
     Dead,
     Vent,
     Targetless,
+    Console,
     None
 }
 
@@ -316,7 +317,8 @@ public enum CustomPlayerOutfitType
     Camouflage,
     Invis,
     PlayerNameOnly,
-    Colorblind
+    Colorblind,
+    NightVision
 }
 
 public enum TargetRPC
@@ -366,6 +368,7 @@ public enum MiscRPC
     SyncSummary,
     //ShareFriendCode,
     BodyLocation,
+    BastionBomb,
 
     None
 }
@@ -395,6 +398,7 @@ public enum PlayerLayerEnum
 public enum LayerEnum
 {
     Altruist,
+    Bastion,
     Chameleon,
     Coroner,
     Crewmate,
@@ -402,7 +406,6 @@ public enum LayerEnum
     Dictator,
     Engineer,
     Escort,
-    Inspector,
     Mayor,
     Medic,
     Medium,
@@ -578,30 +581,6 @@ public enum LayerEnum
     None
 }
 
-public enum InspectorResults
-{
-    DealsWithDead, //Coroner, Amnesiac, Retributionist, Janitor, Cannibal
-    PreservesLife, //Medic, Guardian Angel, Altruist, Necromancer, Crusader
-    LeadsTheGroup, //Mayor, Godfather, Rebel, Pestilence, Survivor
-    BringsChaos, //Shifter, Thief, Camouflager, Whisperer, Jackal
-    SeeksToDestroy, //Arsonist, Cryomaniac, Plaguebearer, Spellslinger
-    MovesAround, //Transporter, Teleporter, Warper, Timekeeper
-    NewLens, //Engineer, Miner, Seer, Dracula, Medium, Monarch
-    GainsInfo, //Sheriff, Consigliere, Blackmailer, Detective, Inspector, Silencer
-    Manipulative, //Jester, Executioner, Actor, Troll, Framer, Dictator
-    Unseen, //Chameleon, Wraith, Concealer, Poisoner, Collider
-    IsCold, //Veteran, Vigilante, Sidekick, Guesser, Mafioso
-    TracksOthers, //Tracker, Mystic, Vampire Hunter, Bounty Hunter, Stalker
-    IsAggressive, //Betrayer, Werewolf, Juggernaut, Serial Killer
-    CreatesConfusion, //Morphling, Disguiser, Shapeshifter
-    DropsItems, //Bomber, Operative, Grenadier, Enforcer
-    HindersOthers, //Escort, Consort, Glitch, Ambusher, Drunkard
-    IsBasic, //Crewmate, Impostor, Murderer, Anarchist
-    Ghostly, //Revealer, Phantom, Banshee, Ghoul
-
-    None
-}
-
 public enum DeathReasonEnum
 {
     Alive,
@@ -721,10 +700,11 @@ public enum BecomeEnum
 public enum RetActionsRPC
 {
     Protect,
-    EscRoleblock,
+    Roleblock,
     Transport,
     Mediate,
-    RetributionistRevive
+    Revive,
+    Bomb
 }
 
 public enum JanitorOptions
@@ -769,7 +749,7 @@ public enum GFActionsRPC
     Disguise,
     Drag,
     Blackmail,
-    ConsRoleblock,
+    Roleblock,
     Ambush
 }
 

@@ -10,7 +10,6 @@ public class Survivor : Neutral
     public override LayerEnum Type => LayerEnum.Survivor;
     public override Func<string> StartText => () => "Do Whatever It Takes To Live";
     public override Func<string> Description => () => "- You can put on a vest, which makes you unkillable for a short duration of time";
-    public override InspectorResults InspectorResults => InspectorResults.LeadsTheGroup;
 
     public Survivor(PlayerControl player) : base(player)
     {

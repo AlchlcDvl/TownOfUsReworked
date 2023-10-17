@@ -9,7 +9,6 @@ public class Shifter : Crew
     public override LayerEnum Type => LayerEnum.Shifter;
     public override Func<string> StartText => () => "Shift Around Roles";
     public override Func<string> Description => () => "- You can steal another player's role\n- Shifting withn on-<color=#8CFFFFFF>Crew</color> will cause you to kill yourself";
-    public override InspectorResults InspectorResults => InspectorResults.BringsChaos;
 
     public Shifter(PlayerControl player) : base(player)
     {
@@ -39,7 +38,7 @@ public class Shifter : Crew
         if (!other.Is(Faction.Crew) || other.IsFramed())
         {
             if (AmongUsClient.Instance.AmHost)
-                RpcMurderPlayer(Player, Player);
+                RpcMurderPlayer(Player);
 
             return;
         }
@@ -64,7 +63,6 @@ public class Shifter : Crew
             LayerEnum.Seer => new Seer(Player),
             LayerEnum.Altruist => new Altruist(Player),
             LayerEnum.Engineer => new Engineer(Player),
-            LayerEnum.Inspector => new Inspector(Player),
             LayerEnum.Transporter => new Transporter(Player),
             LayerEnum.Mayor => new Mayor(Player),
             LayerEnum.Operative => new Operative(Player),
@@ -74,6 +72,7 @@ public class Shifter : Crew
             LayerEnum.Dictator => new Dictator(Player),
             LayerEnum.Tracker => new Tracker(Player),
             LayerEnum.Coroner => new Coroner(Player),
+            LayerEnum.Bastion => new Bastion(Player) { BombedIDs = ((Bastion)role).BombedIDs },
             LayerEnum.Medic => new Medic(Player) { ShieldedPlayer = ((Medic)role).ShieldedPlayer },
             LayerEnum.Monarch => new Monarch(Player)
             {
@@ -83,7 +82,8 @@ public class Shifter : Crew
             LayerEnum.Retributionist => new Retributionist(Player)
             {
                 Selected = ((Retributionist)role).Selected,
-                ShieldedPlayer = ((Retributionist)role).ShieldedPlayer
+                ShieldedPlayer = ((Retributionist)role).ShieldedPlayer,
+                BombedIDs = ((Retributionist)role).BombedIDs
             },
             LayerEnum.Shifter or _ => new Shifter(Player),
         };

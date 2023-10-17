@@ -14,19 +14,15 @@ public class Seer : Crew
     public override Func<string> StartText => () => "You Can See People's Histories";
     public override Func<string> Description => () => "- You can investigate players to see if their roles have changed\n- If all players whose roles changed have died, you will become a " +
         "<color=#FFCC80FF>Sheriff</color>";
-    public override InspectorResults InspectorResults => InspectorResults.GainsInfo;
 
     public Seer(PlayerControl player) : base(player)
     {
         Alignment = Alignment.CrewInvest;
         SeerButton = new(this, "Seer", AbilityTypes.Target, "ActionSecondary", See, CustomGameOptions.SeerCd);
+        player.Data.Role.IntroSound = GetAudio("SeerIntro");
     }
 
-    public void TurnSheriff()
-    {
-        var role = new Sheriff(Player);
-        role.RoleUpdate(this);
-    }
+    public void TurnSheriff() => new Sheriff(Player).RoleUpdate(this);
 
     public void See()
     {

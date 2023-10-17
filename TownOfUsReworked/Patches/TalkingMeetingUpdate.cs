@@ -8,7 +8,7 @@ public static class MeetingHudStart
 
     public static void Postfix()
     {
-        foreach (var role in Role.GetRoles<Blackmailer>(LayerEnum.Blackmailer))
+        foreach (var role in PlayerLayer.GetLayers<Blackmailer>())
         {
             if (role.BlackmailedPlayer == null)
                 continue;
@@ -19,7 +19,7 @@ public static class MeetingHudStart
             role.ShookAlready = false;
         }
 
-        foreach (var role in Role.GetRoles<PromotedGodfather>(LayerEnum.PromotedGodfather))
+        foreach (var role in PlayerLayer.GetLayers<PromotedGodfather>())
         {
             if (role.BlackmailedPlayer == null || !role.IsBM)
                 continue;
@@ -30,7 +30,7 @@ public static class MeetingHudStart
             role.ShookAlready = false;
         }
 
-        foreach (var role in Role.GetRoles<Silencer>(LayerEnum.Silencer))
+        foreach (var role in PlayerLayer.GetLayers<Silencer>())
         {
             if (role.SilencedPlayer == null)
                 continue;
@@ -41,7 +41,7 @@ public static class MeetingHudStart
             role.ShookAlready = false;
         }
 
-        foreach (var role in Role.GetRoles<PromotedRebel>(LayerEnum.PromotedRebel))
+        foreach (var role in PlayerLayer.GetLayers<PromotedRebel>())
         {
             if (role.SilencedPlayer == null || !role.IsSil)
                 continue;
@@ -106,7 +106,7 @@ public static class MeetingHud_Update
     {
         if (CustomGameOptions.BMRevealed)
         {
-            foreach (var role in Role.GetRoles<Blackmailer>(LayerEnum.Blackmailer))
+            foreach (var role in PlayerLayer.GetLayers<Blackmailer>())
             {
                 if (role.BlackmailedPlayer == null)
                     continue;
@@ -139,7 +139,7 @@ public static class MeetingHud_Update
                 }
             }
 
-            foreach (var role in Role.GetRoles<PromotedGodfather>(LayerEnum.PromotedGodfather))
+            foreach (var role in PlayerLayer.GetLayers<PromotedGodfather>())
             {
                 if (role.BlackmailedPlayer == null || !role.IsBM)
                     continue;
@@ -175,7 +175,7 @@ public static class MeetingHud_Update
 
         if (CustomGameOptions.SilenceRevealed)
         {
-            foreach (var role in Role.GetRoles<Silencer>(LayerEnum.Silencer))
+            foreach (var role in PlayerLayer.GetLayers<Silencer>())
             {
                 if (role.SilencedPlayer == null)
                     continue;
@@ -208,7 +208,7 @@ public static class MeetingHud_Update
                 }
             }
 
-            foreach (var role in Role.GetRoles<PromotedRebel>(LayerEnum.PromotedRebel))
+            foreach (var role in PlayerLayer.GetLayers<PromotedRebel>())
             {
                 if (role.SilencedPlayer == null || !role.IsSil)
                     continue;

@@ -12,11 +12,8 @@ public abstract class HideAndSeek : Role
         FactionColor = Colors.HideAndSeek;
     }
 
-    public override void IntroPrefix(IntroCutscene._ShowTeam_d__36 __instance)
+    public override List<PlayerControl> Team()
     {
-        if (!Local)
-            return;
-
         var team = new List<PlayerControl>();
 
         foreach (var player in CustomPlayer.AllPlayers)
@@ -25,7 +22,7 @@ public abstract class HideAndSeek : Role
                 team.Add(player);
         }
 
-        __instance.teamToShow = team.SystemToIl2Cpp();
+        return team;
     }
 
     public override void UpdateHud(HudManager __instance)

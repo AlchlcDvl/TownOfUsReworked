@@ -13,7 +13,6 @@ public class Medium : Crew
     public override Func<string> StartText => () => "<size=80%>Spooky Scary Ghosties Send Shivers Down Your Spine</size>";
     public override Func<string> Description => () => "- You can mediate which makes ghosts visible to you" + (CustomGameOptions.ShowMediumToDead == ShowMediumToDead.No ? "" : ("\n- When" +
         " mediating, dead players will be able to see you"));
-    public override InspectorResults InspectorResults => InspectorResults.NewLens;
 
     public Medium(PlayerControl player) : base(player)
     {

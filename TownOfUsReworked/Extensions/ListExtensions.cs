@@ -85,13 +85,13 @@ public static class ListExtensions
         if (contains)
         {
             var pos = 0;
-            var clone = list;
+            var clone = new List<T>(list);
 
             foreach (var item in clone)
             {
                 if (Equals(item, item1))
                 {
-                    pos = clone.IndexOf(item);
+                    pos = list.IndexOf(item);
                     list.Remove(item);
                     list.Insert(pos, item2);
                 }

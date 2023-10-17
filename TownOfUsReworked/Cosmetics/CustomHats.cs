@@ -101,7 +101,6 @@ public static class CustomHats
         if (sprite == null)
             return null;
 
-        texture.hideFlags |= HideFlags.HideAndDontSave | HideFlags.DontUnloadUnusedAsset;
         sprite.hideFlags |= HideFlags.HideAndDontSave | HideFlags.DontUnloadUnusedAsset;
         return sprite;
     }
@@ -159,7 +158,6 @@ public static class CustomHats
             Artist = ch.Artist ?? "Misc",
             Condition = ch.Condition ?? "none",
             FlipImage = viewData.LeftMainImage,
-            FloorImage = viewData.FloorImage,
             BackFlipImage = viewData.LeftBackImage
         };
 
@@ -171,7 +169,7 @@ public static class CustomHats
         else
             CustomHatRegistry.TryAdd(hat.name, extend);
 
-        CustomHatViewDatas.TryAdd(hat.name, viewData);
+        CustomHatViewDatas.TryAdd(hat.ProductId, viewData);
         hat.ViewDataRef = new(viewData.Pointer);
         hat.CreateAddressableAsset();
         return hat;
@@ -217,10 +215,9 @@ public static class CustomHats
     {
         public static void Postfix(PlayerPhysics __instance)
         {
-            if (!CustomHatViewDatas.ContainsKey(__instance.myPlayer.cosmetics.hat.Hat.name))
+            if (!CustomHatViewDatas.TryGetValue(__instance.myPlayer.cosmetics.hat.Hat.ProductId, out var viewData))
                 return;
 
-            var viewData = CustomHatViewDatas[__instance.myPlayer.cosmetics.hat.Hat.name];
             var currentAnimation = __instance.Animations.Animator.GetCurrentAnimation();
 
             if (currentAnimation == __instance.Animations.group.ClimbUpAnim || currentAnimation == __instance.Animations.group.ClimbDownAnim)
@@ -245,31 +242,30 @@ public static class CustomHats
     }
 
     [HarmonyPatch(typeof(HatParent), nameof(HatParent.SetHat), typeof(int))]
-    [HarmonyPriority(Priority.High)]
     public static class HatParentSetHatPatchColor
     {
         public static void Prefix(HatParent __instance)
         {
-            if (TutorialManager.InstanceExists)
+            if (!TutorialManager.InstanceExists)
+                return;
+
+            try
             {
-                try
-                {
-                    var filePath = Path.GetDirectoryName(Application.dataPath) + "\\CustomHats\\Test";
+                var filePath = TownOfUsReworked.Hats + "Test";
 
-                    if (!Directory.Exists(filePath))
-                        Directory.CreateDirectory(filePath);
+                if (!Directory.Exists(filePath))
+                    Directory.CreateDirectory(filePath);
 
-                    var d = new DirectoryInfo(filePath);
-                    var filePaths = d.GetFiles("*.png").Select(x => x.FullName).ToArray();
-                    var hats = CreateCustomHatDetails(filePaths, true);
+                var d = new DirectoryInfo(filePath);
+                var filePaths = d.GetFiles("*.png").Select(x => x.FullName).ToArray();
+                var hats = CreateCustomHatDetails(filePaths, true);
 
-                    if (hats.Count > 0)
-                        __instance.Hat = CreateHatBehaviour(hats[0], true, true);
-                }
-                catch (Exception e)
-                {
-                    LogError("Unable to create test hat\n" + e);
-                }
+                if (hats.Count > 0)
+                    __instance.Hat = CreateHatBehaviour(hats[0], true, true);
+            }
+            catch (Exception e)
+            {
+                LogError("Unable to create test hat\n" + e);
             }
         }
     }
@@ -277,7 +273,7 @@ public static class CustomHats
     [HarmonyPatch(typeof(HatParent), nameof(HatParent.SetHat), typeof(HatData), typeof(int))]
     public static class HatParentSetHatPatchExtra
     {
-        public static bool Prefix(HatParent __instance, HatData hat, int color)
+        public static bool Prefix(HatParent __instance, ref HatData hat, ref int color)
         {
             if (!TutorialManager.InstanceExists)
                 return true;
@@ -316,9 +312,9 @@ public static class CustomHats
     [HarmonyPatch(typeof(HatParent), nameof(HatParent.SetHat), typeof(int))]
     public static class SetHatPatch
     {
-        public static bool Prefix(HatParent __instance, int color)
+        public static bool Prefix(HatParent __instance, ref int color)
         {
-            if (!CustomHatViewDatas.ContainsKey(__instance.Hat.name))
+            if (!CustomHatViewDatas.ContainsKey(__instance.Hat.ProductId))
                 return true;
 
             __instance.hatDataAsset = null;
@@ -344,7 +340,7 @@ public static class CustomHats
             {
                 try
                 {
-                    asset = CustomHatViewDatas[__instance.Hat.name];
+                    CustomHatViewDatas.TryGetValue(__instance.Hat.ProductId, out asset);
                 }
                 catch
                 {
@@ -406,7 +402,7 @@ public static class CustomHats
                 {
                     try
                     {
-                        hatViewData = CustomHatViewDatas[__instance.Hat.name];
+                        CustomHatViewDatas.TryGetValue(__instance.Hat.ProductId, out hatViewData);
                     }
                     catch
                     {
@@ -460,7 +456,7 @@ public static class CustomHats
                 return true;
             } catch {}
 
-            if (!CustomHatViewDatas.TryGetValue(__instance.Hat.name, out hatViewData))
+            if (!CustomHatViewDatas.TryGetValue(__instance.Hat.ProductId, out hatViewData))
                 return true;
 
             __instance.BackLayer.enabled = false;
@@ -473,12 +469,12 @@ public static class CustomHats
     [HarmonyPatch(typeof(HatParent), nameof(HatParent.SetIdleAnim))]
     public static class HatParentSetIdleAnimPatch
     {
-        public static bool Prefix(HatParent __instance, int colorId)
+        public static bool Prefix(HatParent __instance, ref int colorId)
         {
             if (!__instance.Hat)
                 return false;
 
-            if (!CustomHatViewDatas.TryGetValue(__instance.Hat.name, out var hatViewData))
+            if (!CustomHatViewDatas.TryGetValue(__instance.Hat.ProductId, out var hatViewData))
                 return true;
 
             __instance.hatDataAsset = null;
@@ -501,7 +497,7 @@ public static class CustomHats
                 return true;
             } catch {}
 
-            if (!CustomHatViewDatas.TryGetValue(__instance.Hat.name, out hatViewData))
+            if (!CustomHatViewDatas.TryGetValue(__instance.Hat.ProductId, out hatViewData))
                 return true;
 
             if (!__instance.options.ShowForClimb)
@@ -519,18 +515,18 @@ public static class CustomHats
     {
         public static bool Prefix(HatParent __instance)
         {
+            HatViewData asset = null;
+
             try
             {
-                _ = __instance.hatDataAsset.GetAsset();
+                asset = __instance.hatDataAsset.GetAsset();
                 return true;
             }
             catch
             {
-                if (__instance.Hat && !CustomHatViewDatas.ContainsKey(__instance.Hat.name))
+                if (__instance.Hat && !CustomHatViewDatas.TryGetValue(__instance.Hat.ProductId, out asset))
                     return true;
             }
-
-            var asset = CustomHatViewDatas[__instance.Hat.name];
 
             if (!asset)
                 return true;
@@ -575,7 +571,7 @@ public static class CustomHats
     [HarmonyPatch(typeof(CosmeticsCache), nameof(CosmeticsCache.GetHat))]
     public static class CosmeticsCacheGetVisorPatch
     {
-        public static bool Prefix(CosmeticsCache __instance, string id, ref HatViewData __result)
+        public static bool Prefix(CosmeticsCache __instance, ref string id, ref HatViewData __result)
         {
             if (!CustomHatViewDatas.TryGetValue(id, out __result))
                 return true;
@@ -701,7 +697,7 @@ public static class CustomHats
 
     public static HatExtension GetHatExtension(this HatData hat)
     {
-        if (TestExt?.Condition.Equals(hat.name) == true)
+        if (TestExt?.Condition == hat.name)
             return TestExt;
 
         CustomHatRegistry.TryGetValue(hat.name, out var ret);

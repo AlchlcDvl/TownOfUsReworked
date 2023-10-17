@@ -13,7 +13,6 @@ public class Revealer : Crew
     public override LayerEnum Type => LayerEnum.Revealer;
     public override Func<string> StartText => () => "OOOOOOO";
     public override Func<string> Description => () => "- You can reveal evils players to the <color=#8CFFFFFF>Crew</color> once you finish your tasks without getting clicked.";
-    public override InspectorResults InspectorResults => InspectorResults.Ghostly;
 
     public Revealer(PlayerControl player) : base(player) => Alignment = Alignment.CrewUtil;
 

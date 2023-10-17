@@ -3,7 +3,7 @@ namespace TownOfUsReworked.Patches;
 [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.CalculateLightRadius))]
 public static class CalculateLightRadiusPatch
 {
-    public static bool Prefix(ShipStatus __instance, [HarmonyArgument(0)] GameData.PlayerInfo player, ref float __result)
+    public static bool Prefix(ShipStatus __instance, ref GameData.PlayerInfo player, ref float __result)
     {
         if (player == null)
             return false;
@@ -55,14 +55,8 @@ public static class AdjustLightingPatch
 {
     public static bool Prefix(PlayerControl __instance)
     {
-        AdjustLighting(__instance);
-        return false;
-    }
-
-    private static void AdjustLighting(PlayerControl __instance)
-    {
         if (CustomPlayer.Local != __instance)
-            return;
+            return true;
 
         var flashlights = false;
         var size = ShipStatus.Instance.CalculateLightRadius(__instance.Data);
@@ -88,5 +82,6 @@ public static class AdjustLightingPatch
         __instance.TargetFlashlight.gameObject.SetActive(flashlights);
         __instance.StartCoroutine(__instance.EnableRightJoystick(flashlights));
         __instance.lightSource.SetupLightingForGameplay(flashlights, size, __instance.TargetFlashlight.transform);
+        return false;
     }
 }

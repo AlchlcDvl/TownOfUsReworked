@@ -13,7 +13,6 @@ public class Ghoul : Intruder
     public override Func<string> StartText => () => "BOO!";
     public override Func<string> Description => () => "- You can mark a player for death every round\n- Marked players will be announced to all players and will die at the end of the "
         + "next meeting if you are not clicked";
-    public override InspectorResults InspectorResults => InspectorResults.Ghostly;
 
     public Ghoul(PlayerControl player) : base(player)
     {

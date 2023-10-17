@@ -5,14 +5,8 @@ public static class PlayerControlRevivePatch
 {
     public static bool Prefix(PlayerControl __instance)
     {
-        CustomRevive(__instance);
-        return false;
-    }
-
-    private static void CustomRevive(PlayerControl __instance)
-    {
         if (!__instance.Data.IsDead)
-            return;
+            return false;
 
         __instance.Data.IsDead = false;
         __instance.gameObject.layer = LayerMask.NameToLayer("Players");
@@ -21,9 +15,9 @@ public static class PlayerControlRevivePatch
         __instance.Collider.enabled = true;
         __instance.cosmetics.SetPetSource(__instance);
         __instance.cosmetics.SetNameMask(true);
-        KilledPlayers.RemoveAll(x => x.PlayerId == __instance.PlayerId);
-        RecentlyKilled.RemoveAll(x => x.PlayerId == __instance.PlayerId);
-        Role.Cleaned.RemoveAll(x => x.PlayerId == __instance.PlayerId);
+        KilledPlayers.RemoveAll(x => x.PlayerId == __instance.PlayerId || x == null);
+        RecentlyKilled.RemoveAll(x => x.PlayerId == __instance.PlayerId || x == null);
+        Role.Cleaned.RemoveAll(x => x == __instance || x == null);
         ReassignPostmortals(__instance);
         __instance.Data.SetImpostor(__instance.Is(Faction.Intruder) || __instance.Is(Faction.Syndicate));
         var body = BodyByPlayer(__instance);
@@ -42,7 +36,7 @@ public static class PlayerControlRevivePatch
             Role.GetRole<Troll>(__instance).Killed = false;
 
         if (!__instance.AmOwner)
-            return;
+            return false;
 
         HUD.ShadowQuad.gameObject.SetActive(true);
         HUD.KillButton.ToggleVisible(false);
@@ -55,5 +49,6 @@ public static class PlayerControlRevivePatch
             HUD.Chat.ForceClosed();
 
         HUD.Chat.SetVisible(__instance.CanChat());
+        return false;
     }
 }

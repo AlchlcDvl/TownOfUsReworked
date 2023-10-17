@@ -46,13 +46,23 @@ public class PromotedGodfather : Intruder
     //PromotedGodfather Stuff
     public Role FormerRole { get; set; }
 
-    public override Color Color => ClientGameOptions.CustomIntColors ? Colors.Godfather : Colors.Intruder;
+    public override Color Color
+    {
+        get
+        {
+            if (!ClientGameOptions.CustomIntColors)
+                return Colors.Intruder;
+            else if (FormerRole != null)
+                return FormerRole.Color;
+            else
+                return Colors.Godfather;
+        }
+    }
     public override string Name => "Godfather";
     public override LayerEnum Type => LayerEnum.PromotedGodfather;
     public override Func<string> StartText => () => "Lead The <color=#FF0000FF>Intruders</color>";
     public override Func<string> Description => () => "- You have succeeded the former <color=#404C08FF>Godfather</color> and have a shorter cooldown on your former role's abilities"
         + (FormerRole == null ? "" : $"\n{FormerRole.ColorString}{FormerRole.Description()}</color>");
-    public override InspectorResults InspectorResults => FormerRole == null ? InspectorResults.LeadsTheGroup : FormerRole.InspectorResults;
 
     public override void TryEndEffect()
     {
@@ -111,7 +121,7 @@ public class PromotedGodfather : Intruder
                 CopiedPlayer = reader.ReadPlayer();
                 break;
 
-            case GFActionsRPC.ConsRoleblock:
+            case GFActionsRPC.Roleblock:
                 BlockTarget = reader.ReadPlayer();
                 break;
 
@@ -239,11 +249,8 @@ public class PromotedGodfather : Intruder
                     FlashButton.EffectTime = 0f;
                 }
 
-                if (Map)
-                    Map.Close();
-
-                if (Minigame.Instance)
-                    Minigame.Instance.Close();
+                Map?.Close();
+                ActiveTask?.Close();
             }
         }
     }

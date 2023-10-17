@@ -71,8 +71,8 @@ public static class Generate
     public static CustomNumberOption ReactorShake;
     public static CustomToggleOption CamouflagedComms;
     public static CustomToggleOption CamouflagedMeetings;
-    //public static CustomToggleOption NightVision;
-    //public static CustomToggleOption EvilsIgnoreNV;
+    public static CustomToggleOption NightVision;
+    public static CustomToggleOption EvilsIgnoreNV;
 
     //Better Skeld Options
     public static CustomHeaderOption BetterSkeld;
@@ -156,7 +156,6 @@ public static class Generate
     public static CustomLayersOption SheriffOn;
     public static CustomLayersOption MediumOn;
     public static CustomLayersOption TrackerOn;
-    public static CustomLayersOption InspectorOn;
     public static CustomLayersOption OperativeOn;
     public static CustomLayersOption SeerOn;
 
@@ -180,6 +179,7 @@ public static class Generate
     public static CustomHeaderOption CKRoles;
     public static CustomLayersOption VeteranOn;
     public static CustomLayersOption VigilanteOn;
+    public static CustomLayersOption BastionOn;
 
     //CS Role Spawn
     public static CustomHeaderOption CSRoles;
@@ -429,6 +429,13 @@ public static class Generate
     public static CustomNumberOption AlertDur;
     public static CustomNumberOption MaxAlerts;
 
+    //Bastion Options
+    public static CustomHeaderOption Bastion;
+    public static CustomToggleOption UniqueBastion;
+    public static CustomToggleOption BombRemovedOnKill;
+    public static CustomNumberOption BastionCd;
+    public static CustomNumberOption MaxBombs;
+
     //CS Options
     public static CustomHeaderOption CSSettings;
     public static CustomNumberOption CSMax;
@@ -518,11 +525,6 @@ public static class Generate
     public static CustomNumberOption CoronerKillerNameTime;
     public static CustomNumberOption CompareCd;
     public static CustomNumberOption AutopsyCd;
-
-    //Inspector Options
-    public static CustomHeaderOption Inspector;
-    public static CustomToggleOption UniqueInspector;
-    public static CustomNumberOption InspectCd;
 
     //Medium Options
     public static CustomHeaderOption Medium;
@@ -947,6 +949,7 @@ public static class Generate
     public static CustomToggleOption VigiKillsActor;
     public static CustomToggleOption UniqueActor;
     public static CustomToggleOption ActorCanPickRole;
+    public static CustomNumberOption ActorRoleCount;
 
     //Troll Options
     public static CustomHeaderOption Troll;
@@ -1558,7 +1561,7 @@ public static class Generate
             RandomMapSubmerged = new(num++, MultiMenu.Main, "Submerged Chance", 0, 0, 100, 10, PercentFormat, MapEnum.Random);
 
         if (LILoaded)
-            RandomMapLevelImpostor = new(num++, MultiMenu.Main, "Level Impostor Chance", 0, 0, 100, 10, PercentFormat, MapEnum.Random);
+            RandomMapLevelImpostor = new(num++, MultiMenu.Main, "LevelImpostor Chance", 0, 0, 100, 10, PercentFormat, MapEnum.Random);
 
         AutoAdjustSettings = new(num++, MultiMenu.Main, "Auto Adjust Settings", false);
         SmallMapHalfVision = new(num++, MultiMenu.Main, "Half Vision On Small Maps", false, new object[] { MapEnum.Skeld, /*MapEnum.dlekS,*/ MapEnum.Random, MapEnum.MiraHQ });
@@ -1577,8 +1580,8 @@ public static class Generate
         BetterSabotages = new(MultiMenu.Main, "Better Sabotages");
         CamouflagedComms = new(num++, MultiMenu.Main, "Camouflaged Comms", true);
         CamouflagedMeetings = new(num++, MultiMenu.Main, "Camouflaged Meetings", false);
-        //NightVision = new(num++, MultiMenu.Main, "Night Vision Cameras", false);
-        //EvilsIgnoreNV = new(num++, MultiMenu.Main, "Evils Ignore Night Vision", false);
+        NightVision = new(num++, MultiMenu.Main, "Night Vision Cameras", false);
+        EvilsIgnoreNV = new(num++, MultiMenu.Main, "Evils Ignore Night Vision", false, NightVision);
         OxySlow = new(num++, MultiMenu.Main, "Oxygen Sabotage Slows Down Players", true, new object[] { MapEnum.Skeld, /*MapEnum.dlekS,*/ MapEnum.Random, MapEnum.MiraHQ });
         ReactorShake = new(num++, MultiMenu.Main, "Reactor Sabotage Shakes The Screen By", 30, 0, 100, 5, PercentFormat);
 
@@ -1631,7 +1634,6 @@ public static class Generate
             GameMode.AllAny, GameMode.Custom });
         CoronerOn = new(num++, MultiMenu.Crew, "<color=#4D99E6FF>Coroner</color>", parent: CIRoles);
         DetectiveOn = new(num++, MultiMenu.Crew, "<color=#4D4DFFFF>Detective</color>", parent: CIRoles);
-        InspectorOn = new(num++, MultiMenu.Crew, "<color=#7E3C64FF>Inspector</color>", parent: CIRoles);
         MediumOn = new(num++, MultiMenu.Crew, "<color=#A680FFFF>Medium</color>", parent: CIRoles);
         OperativeOn = new(num++, MultiMenu.Crew, "<color=#A7D1B3FF>Operative</color>", parent: CIRoles);
         SeerOn = new(num++, MultiMenu.Crew, "<color=#71368AFF>Seer</color>", parent: CIRoles);
@@ -1640,6 +1642,7 @@ public static class Generate
 
         CKRoles = new(MultiMenu.Crew, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Killing</color> <color=#FFD700FF>Roles</color>", new object[] { GameMode.Classic, GameMode.AllAny,
             GameMode.Custom });
+        BastionOn = new(num++, MultiMenu.Crew, "<color=#7E3C64FF>Bastion</color>", parent: CKRoles);
         VeteranOn = new(num++, MultiMenu.Crew, "<color=#998040FF>Veteran</color>", parent: CKRoles);
         VigilanteOn = new(num++, MultiMenu.Crew, "<color=#FFFF00FF>Vigilante</color>", parent: CKRoles);
 
@@ -1680,8 +1683,8 @@ public static class Generate
         UniqueVampireHunter = new(num++, MultiMenu.Crew, "<color=#C0C0C0FF>Vampire Hunter</color> Is Unique", false, new object[] { VampireHunter, EnableUniques }, true);
         StakeCd = new(num++, MultiMenu.Crew, "Stake Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, VampireHunter);
 
-        CISettings = new(MultiMenu.Crew, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Investigative</color> Settings", new object[] { CoronerOn, DetectiveOn, InspectorOn, SeerOn,
-            MediumOn, SheriffOn, TrackerOn, OperativeOn, LayerEnum.CrewInvest, LayerEnum.Coroner, LayerEnum.Detective, LayerEnum.Inspector, LayerEnum.Seer, LayerEnum.Medium,
+        CISettings = new(MultiMenu.Crew, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Investigative</color> Settings", new object[] { CoronerOn, DetectiveOn, SeerOn,
+            MediumOn, SheriffOn, TrackerOn, OperativeOn, LayerEnum.CrewInvest, LayerEnum.Coroner, LayerEnum.Detective, LayerEnum.Seer, LayerEnum.Medium,
             LayerEnum.Sheriff, LayerEnum.Tracker, LayerEnum.Operative, LayerEnum.RandomCrew, LayerEnum.Mystic, LayerEnum.CrewAudit, MysticOn, LayerEnum.RegularCrew });
         CIMax = new(num++, MultiMenu.Crew, "Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Investigatives</color>", 1, 1, 14, 1, CISettings);
 
@@ -1703,11 +1706,6 @@ public static class Generate
         FootprintInterval = new(num++, MultiMenu.Crew, "Footprint Interval", 0.15f, 0.05f, 2f, 0.05f, CooldownFormat, Detective);
         FootprintDur = new(num++, MultiMenu.Crew, "Footprint Duration", 10f, 1f, 10f, 0.5f, CooldownFormat, Detective);
         AnonymousFootPrint = new(num++, MultiMenu.Crew, "Anonymous Footprint", false, Detective);
-
-        Inspector = new(MultiMenu.Crew, "<color=#7E3C64FF>Inspector</color>", new object[] { InspectorOn, LayerEnum.Inspector, LayerEnum.CrewInvest, LayerEnum.RandomCrew,
-            LayerEnum.RegularCrew });
-        UniqueInspector = new(num++, MultiMenu.Crew, "<color=#7E3C64FF>Inspector</color> Is Unique", false, Inspector);
-        InspectCd = new(num++, MultiMenu.Crew, "Inspect Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Inspector);
 
         Medium = new(MultiMenu.Crew, "<color=#A680FFFF>Medium</color>", new object[] { MediumOn, LayerEnum.Medium, LayerEnum.CrewInvest, LayerEnum.RandomCrew , LayerEnum.RegularCrew});
         UniqueMedium = new(num++, MultiMenu.Crew, "<color=#A680FFFF>Medium</color> Is Unique", false, new object[] { Medium, EnableUniques }, true);
@@ -1747,8 +1745,14 @@ public static class Generate
         UpdateInterval = new(num++, MultiMenu.Crew, "Arrow Update Interval", 5f, 0f, 15f, 0.5f, CooldownFormat, Tracker);
 
         CKSettings = new(MultiMenu.Crew, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Killing</color> Settings", new object[] { VigilanteOn, VeteranOn, LayerEnum.Vigilante,
-            LayerEnum.Veteran, LayerEnum.CrewKill, LayerEnum.RandomCrew, VampireHunterOn, LayerEnum.CrewAudit, LayerEnum.VampireHunter, LayerEnum.RegularCrew });
+            LayerEnum.Veteran, LayerEnum.Bastion, LayerEnum.CrewKill, LayerEnum.RandomCrew, VampireHunterOn, LayerEnum.CrewAudit, LayerEnum.VampireHunter, LayerEnum.RegularCrew });
         CKMax = new(num++, MultiMenu.Crew, "Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Killers</color>", 1, 1, 14, 1, CKSettings);
+
+        Bastion = new(MultiMenu.Crew, "<color=#7E3C64FF>Bastion</color>", new object[] { BastionOn, LayerEnum.Bastion, LayerEnum.CrewKill, LayerEnum.RandomCrew, LayerEnum.RegularCrew });
+        UniqueBastion = new(num++, MultiMenu.Crew, "<color=#7E3C64FF>Bastion</color> Is Unique", false, new object[] { Bastion, EnableUniques }, true);
+        MaxBombs = new(num++, MultiMenu.Crew, "Max Bombs", 5, 1, 15, 1, Bastion);
+        BastionCd = new(num++, MultiMenu.Crew, "<color=#7E3C64FF>Bastion</color> Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Bastion);
+        BombRemovedOnKill = new(num++, MultiMenu.Crew, "Bombs Are Removed Upon Kills", true, Bastion);
 
         Veteran = new(MultiMenu.Crew, "<color=#998040FF>Veteran</color>", new object[] { VeteranOn, LayerEnum.Veteran, LayerEnum.CrewKill, LayerEnum.RandomCrew, LayerEnum.RegularCrew });
         UniqueVeteran = new(num++, MultiMenu.Crew, "<color=#998040FF>Veteran</color> Is Unique", false, new object[] { Veteran, EnableUniques }, true);
@@ -1912,7 +1916,7 @@ public static class Generate
             LayerEnum.Jackal, LayerEnum.BountyHunter, LayerEnum.Cannibal, LayerEnum.Executioner, LayerEnum.Guesser, LayerEnum.Jester, LayerEnum.Troll, LayerEnum.Arsonist,
             LayerEnum.Cryomaniac, LayerEnum.Glitch, LayerEnum.Juggernaut, LayerEnum.Murderer, LayerEnum.SerialKiller, LayerEnum.Werewolf, LayerEnum.Dracula, LayerEnum.Whisperer,
             LayerEnum.Necromancer, LayerEnum.Necromancer, LayerEnum.NeutralApoc, LayerEnum.NeutralBen, LayerEnum.NeutralEvil, LayerEnum.NeutralHarb, LayerEnum.NeutralKill,
-            LayerEnum.NeutralNeo, LayerEnum.RegularNeutral, LayerEnum.HarmfulNeutral });
+            LayerEnum.NeutralNeo, LayerEnum.RegularNeutral, LayerEnum.HarmfulNeutral, LayerEnum.Actor });
         NeutralVision = new(num++, MultiMenu.Neutral, "<color=#B3B3B3FF>Neutral</color> Vision", 1.5f, 0.25f, 5f, 0.25f, MultiplierFormat, NeutralSettings);
         LightsAffectNeutrals = new(num++, MultiMenu.Neutral, "Lights Sabotage Affects <color=#B3B3B3FF>Neutral</color> Vision", true, NeutralSettings);
         NeutralFlashlight = new(num++, MultiMenu.Neutral, "<color=#B3B3B3FF>Neutrals</color> Use A Flashlight", false, NeutralSettings);
@@ -1986,14 +1990,14 @@ public static class Generate
         NEMax = new(num++, MultiMenu.Neutral, "Max <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Evils</color>", 1, 1, 14, 1, NESettings);
         NeutralEvilsEndGame = new(num++, MultiMenu.Neutral, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Evils</color> End The Game When Winning", false, NESettings);
 
-        Actor = new(MultiMenu.Neutral, "<color=#00ACC2FF>Actor</color>", new object[] { ActorOn, LayerEnum.Actor, LayerEnum.NeutralEvil, LayerEnum.RandomNeutral, Guesser,
-            LayerEnum.RegularNeutral });
+        Actor = new(MultiMenu.Neutral, "<color=#00ACC2FF>Actor</color>");
         UniqueActor = new(num++, MultiMenu.Neutral, "<color=#00ACC2FF>Actor</color> Is Unique", false, new object[] { Actor, EnableUniques }, true);
         ActorCanPickRole = new(num++, MultiMenu.Neutral, "<color=#00ACC2FF>Actor</color> Can Choose A Target Role", false, Actor);
         ActorButton = new(num++, MultiMenu.Neutral, "<color=#00ACC2FF>Actor</color> Can Button", true, Actor);
         ActorVent = new(num++, MultiMenu.Neutral, "<color=#00ACC2FF>Actor</color> Can Hide In Vents", false, Actor);
         ActSwitchVent = new(num++, MultiMenu.Neutral, "<color=#00ACC2FF>Actor</color> Can Switch Vents", false, Actor);
-        VigiKillsActor = new(num++, MultiMenu.Neutral, "<color=#FFFF00FF>Vigilante</color> Kills <color=#00ACC2FF>Actor</color>", false, new[] { ActorOn, VigilanteOn }, true);
+        ActorRoleCount = new(num++, MultiMenu.Neutral, "<color=#00ACC2FF>Actor</color> Role List Guess Count", 3, 1, 4, 1, Actor);
+        VigiKillsActor = new(num++, MultiMenu.Neutral, "<color=#FFFF00FF>Vigilante</color> Kills <color=#00ACC2FF>Actor</color>", false, new object[] { ActorOn, Vigilante }, true);
 
         BountyHunter = new(MultiMenu.Neutral, "<color=#B51E39FF>Bounty Hunter</color>", new object[] { BountyHunterOn, LayerEnum.BountyHunter, LayerEnum.NeutralEvil,
             LayerEnum.RandomNeutral, LayerEnum.RegularNeutral });
@@ -2041,6 +2045,8 @@ public static class Generate
         MaxGuesses = new(num++, MultiMenu.Neutral, "Max Meeting Guesses", 5, 1, 15, 1, Guesser);
         GuesserAfterVoting = new(num++, MultiMenu.Neutral, "<color=#EEE5BEFF>Guesser</color> Can Guess After Voting", false, Guesser);
         VigiKillsGuesser = new(num++, MultiMenu.Neutral, "<color=#FFFF00FF>Vigilante</color> Kills <color=#EEE5BEFF>Guesser</color>", false, new object[] { GuesserOn, Vigilante }, true);
+
+        Actor.Parents = new object[] { ActorOn, LayerEnum.Actor, LayerEnum.NeutralEvil, LayerEnum.RandomNeutral, Guesser, LayerEnum.RegularNeutral };
 
         Jester = new(MultiMenu.Neutral, "<color=#F7B3DAFF>Jester</color>", new object[] { JesterOn, LayerEnum.Jester, LayerEnum.NeutralEvil, LayerEnum.RandomNeutral, Executioner,
             LayerEnum.RegularNeutral });
@@ -2617,18 +2623,18 @@ public static class Generate
 
         Abilities = new(MultiMenu.Ability, "<color=#FF9900FF>Abilities</color>", new object[] { GameMode.Classic, GameMode.KillingOnly, GameMode.AllAny, GameMode.Custom });
         ButtonBarryOn = new(num++, MultiMenu.Ability, "<color=#E600FFFF>Button Barry</color>", parent: Abilities);
-        CrewAssassinOn = new(num++, MultiMenu.Ability, "<color=#8CFFFFFF>Crew</color> <color=#073763FF>Assassin</color>", parent: Abilities);
+        CrewAssassinOn = new(num++, MultiMenu.Ability, "<color=#8CFFFFFF>Bullseye</color>", parent: Abilities);
+        IntruderAssassinOn = new(num++, MultiMenu.Ability, "<color=#FF0000FF>Hitman</color>", parent: Abilities);
         InsiderOn = new(num++, MultiMenu.Ability, "<color=#26FCFBFF>Insider</color>", parent: Abilities);
-        IntruderAssassinOn = new(num++, MultiMenu.Ability, "<color=#FF0000FF>Intruder</color> <color=#073763FF>Assassin</color>", parent: Abilities);
         MultitaskerOn = new(num++, MultiMenu.Ability, "<color=#FF804DFF>Multitasker</color>", parent: Abilities);
-        NeutralAssassinOn = new(num++, MultiMenu.Ability, "<color=#B3B3B3FF>Neutral</color> <color=#073763FF>Assassin</color>", parent: Abilities);
         NinjaOn = new(num++, MultiMenu.Ability, "<color=#A84300FF>Ninja</color>", parent: Abilities);
         PoliticianOn = new(num++, MultiMenu.Ability, "<color=#CCA3CCFF>Politician</color>", parent: Abilities);
         RadarOn = new(num++, MultiMenu.Ability, "<color=#FF0080FF>Radar</color>", parent: Abilities);
         RuthlessOn = new(num++, MultiMenu.Ability, "<color=#2160DDFF>Ruthless</color>", parent: Abilities);
         SnitchOn = new(num++, MultiMenu.Ability, "<color=#D4AF37FF>Snitch</color>", parent: Abilities);
         SwapperOn = new(num++, MultiMenu.Ability, "<color=#66E666FF>Swapper</color>", parent: Abilities);
-        SyndicateAssassinOn = new(num++, MultiMenu.Ability, "<color=#008000FF>Syndicate</color> <color=#073763FF>Assassin</color>", parent: Abilities);
+        NeutralAssassinOn = new(num++, MultiMenu.Ability, "<color=#B3B3B3FF>Slayer</color>", parent: Abilities);
+        SyndicateAssassinOn = new(num++, MultiMenu.Ability, "<color=#008000FF>Sniper</color>", parent: Abilities);
         TiebreakerOn = new(num++, MultiMenu.Ability, "<color=#99E699FF>Tiebreaker</color>", parent: Abilities);
         TorchOn = new(num++, MultiMenu.Ability, "<color=#FFFF99FF>Torch</color>", parent: Abilities);
         TunnelerOn = new(num++, MultiMenu.Ability, "<color=#E91E63FF>Tunneler</color>", parent: Abilities);
@@ -2640,14 +2646,10 @@ public static class Generate
         MinAbilities = new(num++, MultiMenu.Ability, "Min <color=#FF9900FF>Abilities</color>", 5, 1, 14, 1, AbilitySettings);
 
         Assassin = new(MultiMenu.Ability, "<color=#073763FF>Assassin</color>", new[] { CrewAssassinOn, NeutralAssassinOn, IntruderAssassinOn, SyndicateAssassinOn });
-        UniqueCrewAssassin = new(num++, MultiMenu.Ability, "<color=#8CFFFFFF>Crew</color> <color=#073763FF>Assassin</color> Is Unique", false, new object[] { CrewAssassinOn,
-            EnableUniques }, true);
-        UniqueNeutralAssassin = new(num++, MultiMenu.Ability, "<color=#B3B3B3FF>Neutral</color> <color=#073763FF>Assassin</color> Is Unique", false, new object[] { NeutralAssassinOn,
-            EnableUniques }, true);
-        UniqueIntruderAssassin = new(num++, MultiMenu.Ability, "<color=#FF0000FF>Intruder</color> <color=#073763FF>Assassin</color> Is Unique", false, new object[] { IntruderAssassinOn,
-            EnableUniques }, true);
-        UniqueSyndicateAssassin = new(num++, MultiMenu.Ability, "<color=#008000FF>Syndicate</color> <color=#073763FF>Assassin</color> Is Unique", false, new object[] { SyndicateAssassinOn,
-            EnableUniques }, true);
+        UniqueCrewAssassin = new(num++, MultiMenu.Ability, "<color=#8CFFFFFF>Bullseye</color> Is Unique", false, new object[] { CrewAssassinOn, EnableUniques }, true);
+        UniqueNeutralAssassin = new(num++, MultiMenu.Ability, "<color=#B3B3B3FF>Slayer</color> Is Unique", false, new object[] { NeutralAssassinOn, EnableUniques }, true);
+        UniqueIntruderAssassin = new(num++, MultiMenu.Ability, "<color=#FF0000FF>Hitman</color> Is Unique", false, new object[] { IntruderAssassinOn, EnableUniques }, true);
+        UniqueSyndicateAssassin = new(num++, MultiMenu.Ability, "<color=#008000FF>Sniper</color> Is Unique", false, new object[] { SyndicateAssassinOn, EnableUniques }, true);
         AssassinKills = new(num++, MultiMenu.Ability, "<color=#073763FF>Assassin</color> Guess Limit", 1, 1, 15, 1, Assassin);
         AssassinMultiKill = new(num++, MultiMenu.Ability, "<color=#073763FF>Assassin</color> Can Kill More Than Once Per Meeting", false, Assassin);
         AssassinGuessNeutralBenign = new(num++, MultiMenu.Ability, "<color=#073763FF>Assassin</color> Can Guess <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Benigns</color>", false,

@@ -9,9 +9,8 @@ public class Pestilence : Neutral
     public override LayerEnum Type => LayerEnum.Pestilence;
     public override Func<string> StartText => () => "THE APOCALYPSE IS NIGH";
     public override Func<string> Description => () => "- Anyone who interacts with you will be killed";
-    public override InspectorResults InspectorResults => InspectorResults.LeadsTheGroup;
 
-    public Pestilence(PlayerControl owner) : base(owner)
+    public Pestilence(PlayerControl player) : base(player)
     {
         Objectives = () => "- Obliterate anyone who can oppose you";
         Alignment = Alignment.NeutralApoc;

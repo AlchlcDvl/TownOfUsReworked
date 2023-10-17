@@ -88,8 +88,7 @@ public static class FixExtentions
 
                 break;
 
-            case 0:
-            case 3:
+            case 0 or 3:
                 var comms1 = ShipStatus.Instance.Systems[SystemTypes.Comms].Cast<HudOverrideSystemType>();
 
                 if (comms1.IsActive)

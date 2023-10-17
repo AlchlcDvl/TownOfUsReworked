@@ -21,7 +21,6 @@ public static class CustomNameplates
         if (sprite == null)
             return null;
 
-        texture.hideFlags |= HideFlags.HideAndDontSave | HideFlags.DontUnloadUnusedAsset;
         sprite.hideFlags |= HideFlags.HideAndDontSave | HideFlags.DontUnloadUnusedAsset;
         return sprite;
     }
@@ -41,13 +40,7 @@ public static class CustomNameplates
         nameplate.ProductId = "customNameplate_" + cn.Name.Replace(' ', '_');
         nameplate.ChipOffset = new(0f, 0.2f);
         nameplate.Free = true;
-
-        var extend = new NameplateExtension()
-        {
-            Artist = cn.Artist ?? "Unknown",
-            Condition = cn.Condition ?? "none"
-        };
-
+        var extend = new NameplateExtension() { Artist = cn.Artist ?? "Unknown" };
         CustomNameplateRegistry.TryAdd(nameplate.name, extend);
         CustomNameplateViewDatas.TryAdd(nameplate.ProductId, viewData);
         nameplate.ViewDataRef = new(viewData.Pointer);
@@ -189,7 +182,7 @@ public static class CustomNameplates
     [HarmonyPatch(typeof(CosmeticsCache), nameof(CosmeticsCache.GetNameplate))]
     public static class CosmeticsCacheGetPlatePatch
     {
-        public static bool Prefix(CosmeticsCache __instance, string id, ref NamePlateViewData __result)
+        public static bool Prefix(CosmeticsCache __instance, ref string id, ref NamePlateViewData __result)
         {
             if (!CustomNameplateViewDatas.TryGetValue(id, out __result))
                 return true;
@@ -209,8 +202,7 @@ public static class CustomNameplates
             if (!CustomNameplateViewDatas.TryGetValue(plateID, out var viewData))
                 return;
 
-            if (viewData != null)
-                __instance.Background.sprite = viewData.Image;
+            __instance.Background.sprite = viewData?.Image;
         }
     }
 

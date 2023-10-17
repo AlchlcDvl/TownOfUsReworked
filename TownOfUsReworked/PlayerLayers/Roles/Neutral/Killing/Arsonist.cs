@@ -14,7 +14,6 @@ public class Arsonist : Neutral
     public override Func<string> StartText => () => "PYROMANIAAAAAAAAAAAAAA";
     public override Func<string> Description => () => "- You can douse players in gasoline\n- Doused players can be ignited, killing them all at once\n- Players who interact with " +
         "you will get doused";
-    public override InspectorResults InspectorResults => InspectorResults.SeeksToDestroy;
 
     public Arsonist(PlayerControl player) : base(player)
     {
@@ -27,7 +26,7 @@ public class Arsonist : Neutral
 
     public void Ignite()
     {
-        foreach (var arso in GetRoles<Arsonist>(LayerEnum.Arsonist))
+        foreach (var arso in GetLayers<Arsonist>())
         {
             if (arso.Player != Player && !CustomGameOptions.ArsoIgniteAll)
                 continue;
@@ -36,7 +35,7 @@ public class Arsonist : Neutral
             {
                 var player = PlayerById(playerId);
 
-                if (player == null || player.HasDied() || player.Is(LayerEnum.Pestilence) || player.IsProtected())
+                if (player == null || player.HasDied() || player.Is(Alignment.NeutralApoc) || player.IsProtected())
                     continue;
 
                 RpcMurderPlayer(Player, player, DeathReasonEnum.Ignited, false);

@@ -12,19 +12,16 @@ public class Mafioso : Intruder
     public override Func<string> StartText => () => "Succeed The <color=#404C08FF>Godfather</color>";
     public override Func<string> Description => () => "- When the <color=#404C08FF>Godfather</color> dies, you will become the new <color=#404C08FF>Godfather</color> with boosted abilities" +
         $" of your former role\n{CommonAbilities}";
-    public override InspectorResults InspectorResults => InspectorResults.IsCold;
 
     public Mafioso(PlayerControl player) : base(player) => Alignment = Alignment.IntruderUtil;
 
     public void TurnGodfather()
     {
-        var newRole = new PromotedGodfather(Player)
+        new PromotedGodfather(Player)
         {
             FormerRole = FormerRole,
             RoleBlockImmune = FormerRole.RoleBlockImmune
-        };
-
-        newRole.RoleUpdate(this);
+        }.RoleUpdate(this);
     }
 
     public override void UpdateHud(HudManager __instance)

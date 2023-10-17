@@ -11,7 +11,6 @@ public class Mystic : Crew
     public override Func<string> StartText => () => "You Know When Converts Happen";
     public override Func<string> Description => () => "- You can investigate players to see if they have been converted\n- Whenever someone has been converted, you will be alerted to it\n-" +
         " When all converted and converters die, you will become a <color=#71368AFF>Seer</color>";
-    public override InspectorResults InspectorResults => InspectorResults.TracksOthers;
 
     public Mystic(PlayerControl player) : base(player)
     {
@@ -19,11 +18,7 @@ public class Mystic : Crew
         RevealButton = new(this, "MysticReveal", AbilityTypes.Target, "ActionSecondary", Reveal, CustomGameOptions.MysticRevealCd, Exception);
     }
 
-    public void TurnSeer()
-    {
-        var newRole = new Seer(Player);
-        newRole.RoleUpdate(this);
-    }
+    public void TurnSeer() => new Seer(Player).RoleUpdate(this);
 
     public override void UpdateHud(HudManager __instance)
     {

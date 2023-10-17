@@ -13,12 +13,9 @@ public abstract class Crew : Role
         Player.Data.SetImpostor(false);
     }
 
-    public override void IntroPrefix(IntroCutscene._ShowTeam_d__36 __instance)
+    public override List<PlayerControl> Team()
     {
-        if (!Local)
-            return;
-
-        var team = new List<PlayerControl>() { CustomPlayer.Local };
+        var team = base.Team();
 
         if (IsRecruit)
         {
@@ -40,6 +37,6 @@ public abstract class Crew : Role
             }
         }
 
-        __instance.teamToShow = team.SystemToIl2Cpp();
+        return team;
     }
 }

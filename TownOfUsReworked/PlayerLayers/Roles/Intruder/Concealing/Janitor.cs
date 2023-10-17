@@ -13,7 +13,6 @@ public class Janitor : Intruder
     public override Func<string> StartText => () => "Sanitise The Ship, By Any Means Neccessary";
     public override Func<string> Description => () => "- You can clean up dead bodies, making them disappear from sight\n- You can drag bodies away to prevent them from getting " +
         $"reported\n{CommonAbilities}";
-    public override InspectorResults InspectorResults => InspectorResults.DealsWithDead;
 
     public Janitor(PlayerControl player) : base(player)
     {

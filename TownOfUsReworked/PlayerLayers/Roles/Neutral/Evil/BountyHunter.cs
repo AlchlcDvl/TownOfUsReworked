@@ -30,7 +30,6 @@ public class BountyHunter : Neutral
     public override Func<string> Description => () => TargetPlayer == null ? "- You can request a hit from a player to set your bounty" : ("- You can guess a player to be your bounty\n- " +
         "Upon finding the bounty, you can kill them\n- After your bounty has been killed by you, you can kill others as many times as you want\n- If your target dies not by your hands, you" +
         " will become a <color=#678D36FF>Troll</color>");
-    public override InspectorResults InspectorResults => InspectorResults.TracksOthers;
 
     public BountyHunter(PlayerControl player) : base(player)
     {
@@ -45,11 +44,7 @@ public class BountyHunter : Neutral
     public bool Exception(PlayerControl player) => player == TargetPlayer || player.IsLinkedTo(Player) || GetRole(player).Requesting || (player.Is(SubFaction) && SubFaction !=
         SubFaction.None);
 
-    public void TurnTroll()
-    {
-        var newRole = new Troll(Player);
-        newRole.RoleUpdate(this);
-    }
+    public void TurnTroll() => new Troll(Player).RoleUpdate(this);
 
     public override void OnMeetingStart(MeetingHud __instance)
     {

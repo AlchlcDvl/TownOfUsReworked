@@ -13,7 +13,7 @@ public class CustomPlayer
         Player.GetModifiedSpeed());
     public Vector3 SizeFactor => DefaultSize * Size;
     public float Size => IsLobby || IsDead || Disconnected ? 1f : Player.GetModifiedSize();
-    public GameData.PlayerOutfit DefaultOutfit => Data.DefaultOutfit;
+    public GameData.PlayerOutfit DefaultOutfit => Player.GetDefaultOutfit();
     public string PlayerName => Data.PlayerName;
 
     public static PlayerControl Local => PlayerControl.LocalPlayer;

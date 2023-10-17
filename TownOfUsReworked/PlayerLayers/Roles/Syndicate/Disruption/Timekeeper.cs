@@ -10,12 +10,12 @@ public class Timekeeper : Syndicate
     public override Func<string> StartText => () => "Bend Time To Your Will";
     public override Func<string> Description => () => $"- You can {(HoldsDrive ? "rewind" : "freeze")} time, making people {(HoldsDrive ? "go backwards" : "unable to move")}\n" +
         CommonAbilities;
-    public override InspectorResults InspectorResults => InspectorResults.MovesAround;
 
     public Timekeeper(PlayerControl player) : base(player)
     {
         Alignment = Alignment.SyndicateDisrup;
         TimeButton = new(this, "Time", AbilityTypes.Targetless, "Secondary", TimeControl, CustomGameOptions.TimeCd, CustomGameOptions.TimeDur, Control, ControlStart, UnControl);
+        player.Data.Role.IntroSound = GetAudio("TimekeeperIntro");
     }
 
     public void ControlStart() => Flash(Color, CustomGameOptions.TimeDur);

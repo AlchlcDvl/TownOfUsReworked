@@ -3,40 +3,35 @@ namespace TownOfUsReworked.Patches;
 [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.HandleDisconnect), typeof(PlayerControl), typeof(DisconnectReasons))]
 public static class HandleDisconnect
 {
-    public static void Prefix([HarmonyArgument(0)] PlayerControl player)
+    public static void Prefix(ref PlayerControl pc)
     {
+        var player2 = pc;
+
         if (AmongUsClient.Instance.AmHost && Meeting)
         {
-            foreach (var pol in Ability.GetAbilities<Politician>(LayerEnum.Politician))
+            foreach (var pol in PlayerLayer.GetLayers<Politician>())
             {
-                var votesRegained = pol.ExtraVotes.RemoveAll(x => x == player.PlayerId);
+                var votesRegained = pol.ExtraVotes.RemoveAll(x => x == player2.PlayerId);
 
                 if (pol.Local)
                     pol.VoteBank += votesRegained;
 
                 CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, pol, PoliticianActionsRPC.Add, votesRegained);
             }
-
-            foreach (var mayor in Role.GetRoles<Mayor>(LayerEnum.Mayor))
-            {
-                if (mayor.Voted == player.PlayerId)
-                    mayor.Voted = 255;
-            }
         }
 
-        CustomPlayer.AllCustomPlayers.RemoveAll(x => x.Player == player || x.Player == null);
-        DisconnectHandler.Disconnected.Add(player);
-        ReassignPostmortals(player);
-        MarkMeetingDead(player, player, false, true);
-        Summary.AddSummaryInfo(player, true);
+        CustomPlayer.AllCustomPlayers.RemoveAll(x => x.Player == player2 || x.Player == null);
+        DisconnectHandler.Disconnected.Add(pc);
+        ReassignPostmortals(pc);
+        MarkMeetingDead(pc, pc, false, true);
+        OnGameEndPatch.AddSummaryInfo(pc, true);
 
-        if (!Summary.Disconnected.Any(x => x.PlayerName == player.name))
-            Summary.AddSummaryInfo(player, true);
+        if (!OnGameEndPatch.Disconnected.Any(x => x.PlayerName == player2.name))
+            OnGameEndPatch.AddSummaryInfo(pc, true);
     }
 }
 
 [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Confirm))]
-[HarmonyPriority(Priority.First)]
 public static class Confirm
 {
     public static void Prefix(MeetingHud __instance) => PlayerLayer.LocalLayers.ForEach(x => x?.ConfirmVotePrefix(__instance));
@@ -47,12 +42,9 @@ public static class Confirm
 [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.CastVote))]
 public static class CastVote
 {
-    public static bool Prefix(MeetingHud __instance, [HarmonyArgument(0)] byte srcPlayerId, [HarmonyArgument(1)] byte suspectPlayerId)
+    public static bool Prefix(MeetingHud __instance, ref byte srcPlayerId, ref byte suspectPlayerId)
     {
         var player = PlayerById(srcPlayerId);
-
-        if (player.Is(LayerEnum.Mayor))
-            Role.GetRole<Mayor>(player).Voted = suspectPlayerId;
 
         if (!player.Is(LayerEnum.Politician))
             return true;

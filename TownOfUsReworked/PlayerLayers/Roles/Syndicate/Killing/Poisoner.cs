@@ -13,7 +13,6 @@ public class Poisoner : Syndicate
     public override Func<string> StartText => () => "Delay A Kill To Decieve The <color=#8CFFFFFF>Crew</color>";
     public override Func<string> Description => () => $"- You can poison players{(HoldsDrive ? " from afar" : "")}\n- Poisoned players will die after {CustomGameOptions.PoisonDur}s\n" +
         CommonAbilities;
-    public override InspectorResults InspectorResults => InspectorResults.Unseen;
 
     public Poisoner(PlayerControl player) : base(player)
     {

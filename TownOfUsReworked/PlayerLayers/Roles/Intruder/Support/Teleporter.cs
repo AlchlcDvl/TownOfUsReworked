@@ -11,7 +11,6 @@ public class Teleporter : Intruder
     public override LayerEnum Type => LayerEnum.Teleporter;
     public override Func<string> StartText => () => "X Marks The Spot";
     public override Func<string> Description => () => $"- You can mark a spot to teleport to later\n{CommonAbilities}";
-    public override InspectorResults InspectorResults => InspectorResults.MovesAround;
 
     public Teleporter(PlayerControl player) : base(player)
     {

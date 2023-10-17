@@ -37,6 +37,4 @@ public abstract class Objectifier : PlayerLayer
     public static Objectifier GetObjectifier(PlayerVoteArea area) => GetObjectifier(PlayerByVoteArea(area));
 
     public static List<Objectifier> GetObjectifiers(LayerEnum objectifiertype) => AllObjectifiers.Where(x => x.Type == objectifiertype).ToList();
-
-    public static List<T> GetObjectifiers<T>(LayerEnum objectifiertype) where T : Objectifier => GetObjectifiers(objectifiertype).Cast<T>().ToList();
 }

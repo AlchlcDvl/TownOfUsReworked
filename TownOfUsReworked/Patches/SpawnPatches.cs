@@ -36,7 +36,7 @@ public static class SpawnPatches
             0 => SkeldSpawns,
             1 => MiraSpawns,
             2 => PolusSpawns,
-            3 => dlekSSpawns,
+            //3 => dlekSSpawns,
             _ => null
         };
 
