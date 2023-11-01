@@ -181,8 +181,8 @@ public class PromotedRebel : Syndicate
 
                 if (CustomGameOptions.CollideResetsCooldown)
                 {
-                    PositiveButton.StartCooldown(CooldownType.Reset);
-                    NegativeButton.StartCooldown(CooldownType.Reset);
+                    PositiveButton.StartCooldown();
+                    NegativeButton.StartCooldown();
                 }
             }
             else if (GetDistBetweenPlayers(Player, Negative) <= Range && HoldsDrive && ChargeButton.EffectActive)
@@ -197,8 +197,8 @@ public class PromotedRebel : Syndicate
 
                 if (CustomGameOptions.CollideResetsCooldown)
                 {
-                    PositiveButton.StartCooldown(CooldownType.Reset);
-                    NegativeButton.StartCooldown(CooldownType.Reset);
+                    PositiveButton.StartCooldown();
+                    NegativeButton.StartCooldown();
                 }
             }
             else if (GetDistBetweenPlayers(Player, Positive) <= Range && HoldsDrive && ChargeButton.EffectActive)
@@ -213,8 +213,8 @@ public class PromotedRebel : Syndicate
 
                 if (CustomGameOptions.CollideResetsCooldown)
                 {
-                    PositiveButton.StartCooldown(CooldownType.Reset);
-                    NegativeButton.StartCooldown(CooldownType.Reset);
+                    PositiveButton.StartCooldown();
+                    NegativeButton.StartCooldown();
                 }
             }
         }
@@ -227,7 +227,7 @@ public class PromotedRebel : Syndicate
                 if (player == null || player.HasDied())
                     continue;
 
-                if (UnwarpablePlayers.ContainsKey(player.PlayerId) && player.moveable && UnwarpablePlayers.GetValueSafe(player.PlayerId).AddSeconds(0.5) < DateTime.UtcNow)
+                if (UnwarpablePlayers.ContainsKey(player.PlayerId) && player.moveable && UnwarpablePlayers[player.PlayerId].AddSeconds(6) < DateTime.UtcNow)
                     UnwarpablePlayers.Remove(player.PlayerId);
             }
         }
@@ -350,7 +350,7 @@ public class PromotedRebel : Syndicate
         if (interact.AbilityUsed)
             ConcealedPlayer = player;
         else if (interact.Reset)
-            ConcealButton.StartCooldown(CooldownType.Reset);
+            ConcealButton.StartCooldown();
         else if (interact.Protected)
             ConcealButton.StartCooldown(CooldownType.GuardianAngel);
     }
@@ -406,7 +406,7 @@ public class PromotedRebel : Syndicate
     public void RadialFrame()
     {
         GetClosestPlayers(Player.transform.position, CustomGameOptions.ChaosDriveFrameRadius).ForEach(RpcFrame);
-        RadialFrameButton.StartCooldown(CooldownType.Reset);
+        RadialFrameButton.StartCooldown();
     }
 
     //Poisoner Stuff
@@ -434,7 +434,7 @@ public class PromotedRebel : Syndicate
         if (interact.AbilityUsed)
             PoisonedPlayer = player;
         else if (interact.Reset)
-            GlobalPoisonButton.StartCooldown(CooldownType.Reset);
+            GlobalPoisonButton.StartCooldown();
         else if (interact.Protected)
             GlobalPoisonButton.StartCooldown(CooldownType.GuardianAngel);
         else if (interact.Vested)
@@ -452,7 +452,7 @@ public class PromotedRebel : Syndicate
             PoisonButton.Begin();
         }
         else if (interact.Reset)
-            PoisonButton.StartCooldown(CooldownType.Reset);
+            PoisonButton.StartCooldown();
         else if (interact.Protected)
             PoisonButton.StartCooldown(CooldownType.GuardianAngel);
         else if (interact.Vested)
@@ -509,7 +509,7 @@ public class PromotedRebel : Syndicate
         if (interact.AbilityUsed)
             ShapeshiftPlayer1 = player;
         else if (interact.Reset)
-            ShapeshiftButton.StartCooldown(CooldownType.Reset);
+            ShapeshiftButton.StartCooldown();
         else if (interact.Protected)
             ShapeshiftButton.StartCooldown(CooldownType.GuardianAngel);
     }
@@ -521,7 +521,7 @@ public class PromotedRebel : Syndicate
         if (interact.AbilityUsed)
             ShapeshiftPlayer2 = player;
         else if (interact.Reset)
-            ShapeshiftButton.StartCooldown(CooldownType.Reset);
+            ShapeshiftButton.StartCooldown();
         else if (interact.Protected)
             ShapeshiftButton.StartCooldown(CooldownType.GuardianAngel);
     }
@@ -565,19 +565,19 @@ public class PromotedRebel : Syndicate
     public void Place()
     {
         Bombs.Add(new(Player, HoldsDrive));
-        BombButton.StartCooldown(CooldownType.Reset);
+        BombButton.StartCooldown();
 
         if (CustomGameOptions.BombCooldownsLinked)
-            DetonateButton.StartCooldown(CooldownType.Reset);
+            DetonateButton.StartCooldown();
     }
 
     public void Detonate()
     {
         Bomb.DetonateBombs(Bombs);
-        DetonateButton.StartCooldown(CooldownType.Reset);
+        DetonateButton.StartCooldown();
 
         if (CustomGameOptions.BombCooldownsLinked)
-            BombButton.StartCooldown(CooldownType.Reset);
+            BombButton.StartCooldown();
     }
 
     //Warper Stuff
@@ -714,8 +714,11 @@ public class PromotedRebel : Syndicate
 
         if (CustomPlayer.Local == WarpPlayer1)
         {
-            ActiveTask?.Close();
-            Map?.Close();
+            if (ActiveTask)
+                ActiveTask.Close();
+
+            if (Map)
+                Map.Close();
         }
 
         WarpPlayer1.moveable = true;
@@ -725,6 +728,7 @@ public class PromotedRebel : Syndicate
         WarpPlayer1 = null;
         WarpPlayer2 = null;
         Warping = false;
+        yield break;
     }
 
     public void AnimateWarp()
@@ -752,7 +756,7 @@ public class PromotedRebel : Syndicate
         if (interact.AbilityUsed)
             WarpPlayer1 = player;
         else if (interact.Reset)
-            WarpButton.StartCooldown(CooldownType.Reset);
+            WarpButton.StartCooldown();
         else if (interact.Protected)
             WarpButton.StartCooldown(CooldownType.GuardianAngel);
     }
@@ -764,7 +768,7 @@ public class PromotedRebel : Syndicate
         if (interact.AbilityUsed)
             WarpPlayer2 = player;
         else if (interact.Reset)
-            WarpButton.StartCooldown(CooldownType.Reset);
+            WarpButton.StartCooldown();
         else if (interact.Protected)
             WarpButton.StartCooldown(CooldownType.GuardianAngel);
     }
@@ -774,7 +778,7 @@ public class PromotedRebel : Syndicate
         if (HoldsDrive)
         {
             Utils.Warp();
-            WarpButton.StartCooldown(CooldownType.Reset);
+            WarpButton.StartCooldown();
         }
         else if (WarpPlayer1 == null)
             WarpMenu1.Open();
@@ -808,7 +812,7 @@ public class PromotedRebel : Syndicate
             CrusadeButton.Begin();
         }
         else if (interact.Reset)
-            CrusadeButton.StartCooldown(CooldownType.Reset);
+            CrusadeButton.StartCooldown();
         else if (interact.Protected)
             CrusadeButton.StartCooldown(CooldownType.GuardianAngel);
     }
@@ -889,7 +893,7 @@ public class PromotedRebel : Syndicate
         if (HoldsDrive)
         {
             Spell(SpellButton.TargetPlayer);
-            SpellButton.StartCooldown(CooldownType.Reset);
+            SpellButton.StartCooldown();
         }
         else
         {
@@ -899,7 +903,7 @@ public class PromotedRebel : Syndicate
                 Spell(SpellButton.TargetPlayer);
 
             if (interact.Reset)
-                SpellButton.StartCooldown(CooldownType.Reset);
+                SpellButton.StartCooldown();
             else if (interact.Protected)
                 SpellButton.StartCooldown(CooldownType.GuardianAngel);
         }
@@ -957,7 +961,7 @@ public class PromotedRebel : Syndicate
         if (interact.AbilityUsed)
             ConfusedPlayer = player;
         else if (interact.Reset)
-            ConfuseButton.StartCooldown(CooldownType.Reset);
+            ConfuseButton.StartCooldown();
         else if (interact.Protected)
             ConfuseButton.StartCooldown(CooldownType.GuardianAngel);
     }

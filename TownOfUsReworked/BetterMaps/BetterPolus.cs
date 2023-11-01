@@ -63,6 +63,9 @@ public static class PolusShipStatusPatch
 
         public static void Postfix(ShipStatus __instance)
         {
+            if (!CustomGameOptions.EnableBetterPolus)
+                return;
+
             if (!IsVentModified && __instance.Type == ShipStatus.MapType.Pb)
             {
                 SpeciVent.Id = GetAvailableId();
@@ -73,6 +76,9 @@ public static class PolusShipStatusPatch
 
     private static void ApplyChanges(ShipStatus __instance)
     {
+        if (!CustomGameOptions.EnableBetterPolus)
+            return;
+
         if (__instance.Type == ShipStatus.MapType.Pb)
         {
             FindPolusObjects();
@@ -291,15 +297,17 @@ public static class PolusShipStatusPatch
     }
 }
 
-[HarmonyPatch(typeof(ReactorSystemType), nameof(ReactorSystemType.RepairDamage))]
+[HarmonyPatch(typeof(ReactorSystemType), nameof(ReactorSystemType.UpdateSystem))]
 public static class Seismic
 {
-    public static bool Prefix(ReactorSystemType __instance, ref byte opCode)
+    public static bool Prefix(ReactorSystemType __instance, ref MessageReader msgReader)
     {
-        if (ShipStatus.Instance.Type == ShipStatus.MapType.Pb && opCode == 128 && !__instance.IsActive)
+        if (!CustomGameOptions.EnableBetterPolus)
+            return true;
+
+        if (ShipStatus.Instance.Type == ShipStatus.MapType.Pb && msgReader.ReadByte() == 128 && !__instance.IsActive)
         {
-            __instance.Countdown = CustomGameOptions.SeismicTimer;
-            __instance.ReactorDuration = CustomGameOptions.SeismicTimer;
+            __instance.Countdown = __instance.ReactorDuration = CustomGameOptions.SeismicTimer;
             __instance.UserConsolePairs.Clear();
             __instance.IsDirty = true;
             return false;
@@ -307,4 +315,56 @@ public static class Seismic
 
         return true;
     }
+}
+
+[HarmonyPatch(typeof(NormalPlayerTask), nameof(NormalPlayerTask.AppendTaskText))]
+public static class NormalPlayerTaskPatches
+{
+    public static bool Prefix(NormalPlayerTask __instance, Il2CppSystem.Text.StringBuilder sb)
+    {
+        if (!CustomGameOptions.EnableBetterPolus || !ShipStatus.Instance || ShipStatus.Instance.Type != ShipStatus.MapType.Pb || __instance.TaskType is not (TaskTypes.RebootWifi or
+            TaskTypes.RecordTemperature or TaskTypes.ChartCourse))
+        {
+            return true;
+        }
+
+        var flag = __instance.ShouldYellowText();
+
+        if (flag)
+            sb.Append(__instance.IsComplete ? "<color=#00DD00FF>" : "<color=#FFFF00FF>");
+
+        var room = GetUpdatedRoom(__instance);
+        sb.Append(TranslationController.Instance.GetString(room));
+        sb.Append(": ");
+        sb.Append(TranslationController.Instance.GetString(__instance.TaskType));
+
+        if (__instance is { ShowTaskTimer: true, TimerStarted: NormalPlayerTask.TimerState.Started })
+        {
+            sb.Append(" (");
+            sb.Append(TranslationController.Instance.GetString(StringNames.SecondsAbbv, (int)__instance.TaskTimer));
+            sb.Append(')');
+        }
+        else if (__instance.ShowTaskStep)
+        {
+            sb.Append(" (");
+            sb.Append(__instance.taskStep);
+            sb.Append('/');
+            sb.Append(__instance.MaxStep);
+            sb.Append(')');
+        }
+
+        if (flag)
+            sb.Append("</color>");
+
+        sb.AppendLine();
+        return false;
+    }
+
+    private static SystemTypes GetUpdatedRoom(NormalPlayerTask task) => task.TaskType switch
+    {
+        TaskTypes.RecordTemperature => SystemTypes.Outside,
+        TaskTypes.RebootWifi => SystemTypes.Dropship,
+        TaskTypes.ChartCourse => SystemTypes.Comms,
+        _ => task.StartAt
+    };
 }

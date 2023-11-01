@@ -6,19 +6,30 @@ public class Miner : Intruder
     public List<Vent> Vents { get; set; }
 
     public override Color Color => ClientGameOptions.CustomIntColors ? Colors.Miner : Colors.Intruder;
-    public override string Name => "Miner";
+    public override string Name => MapPatches.CurrentMap == 5 ? "Herbalist" : "Miner";
     public override LayerEnum Type => LayerEnum.Miner;
-    public override Func<string> StartText => () => "From The Top, Make It Drop, Boom, That's A Vent";
+    public override Func<string> StartText => () => MapPatches.CurrentMap == 5 ? "<size=80%>Screw The <color=#8CFFFFFF>Crew</color>, Plants Are Your New Best Friends Now</size>" :
+        "From The Top, Make It Drop, Boom, That's A Vent";
     public override Func<string> Description => () => $"- You can mine a vent, forming a vent system of your own\n{CommonAbilities}";
 
     public Miner(PlayerControl player) : base(player)
     {
         Alignment = Alignment.IntruderSupport;
-        MineButton = new(this, "Mine", AbilityTypes.Targetless, "Secondary", Mine, CustomGameOptions.MineCd);
+        MineButton = new(this, SpriteName, AbilityTypes.Targetless, "Secondary", Mine, CustomGameOptions.MineCd);
         Vents = new();
     }
 
-    public void Mine() => RpcSpawnVent(this);
+    public static string SpriteName => MapPatches.CurrentMap switch
+    {
+        5 => "PlantPlant",
+        _ => "Mine"
+    };
+
+    public void Mine()
+    {
+        RpcSpawnVent(this);
+        MineButton.StartCooldown();
+    }
 
     public bool Condition()
     {
@@ -30,6 +41,6 @@ public class Miner : Intruder
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        MineButton.Update2("MINE VENT", condition: Condition());
+        MineButton.Update2(MapPatches.CurrentMap == 5 ? "PLANT" : "MINE VENT", condition: Condition());
     }
 }

@@ -43,7 +43,7 @@ public static class SubmergedExile
             return;
 
         if (obj.name.Contains("ExileCutscene"))
-            SetPostmortals.ExileControllerPostfix(ConfirmEjects.LastExiled);
+            SetPostmortals.ExileControllerPostfix(ExileController.Instance);
         else if (obj.name.Contains("SpawnInMinigame") && CustomPlayer.Local.Is(LayerEnum.Astral) && !CustomPlayer.LocalCustom.IsDead)
             Modifier.GetModifier<Astral>(CustomPlayer.Local).SetPosition();
     }

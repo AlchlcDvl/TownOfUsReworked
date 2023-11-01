@@ -26,15 +26,16 @@ public static class OtherButtonsPatch
     private static Transform BackButton;
     private static Transform LoreButton;
     private static Transform YourStatus;
-    private static Transform PasteToChat;
     private static readonly Dictionary<int, List<Transform>> Buttons = new();
     private static readonly Dictionary<int, KeyValuePair<string, Info>> Sorted = new();
     private static int Page;
+    private static int ResultPage;
     private static int MaxPage;
     private static bool PagesSet;
     private static Info Selected;
     private static bool LoreActive;
-    //private static Dictionary<int, string> Entry = new();
+    private static bool SelectionActive;
+    private static readonly List<string> Entry = new();
     //Max page line limit is 20, keeping this in mind for now
 
     private static Vector3 MapPos;
@@ -44,7 +45,6 @@ public static class OtherButtonsPatch
 
     public static void Postfix(HudManager __instance)
     {
-        //Fucking sick of my logs getting spammed by my CustomPlayer being null in line 110 (now 113), take this try-catch and get the fuck out of my logs
         try
         {
             if (IsHnS)
@@ -83,7 +83,7 @@ public static class OtherButtonsPatch
             {
                 var floorButton = __instance.MapButton.transform.parent.Find(__instance.MapButton.name + "(Clone)");
 
-                if (floorButton)
+                if (floorButton && floorButton.gameObject.active)
                 {
                     Pos += new Vector3(0, -0.66f, 0f);
                     floorButton.localPosition = Pos;
@@ -130,14 +130,30 @@ public static class OtherButtonsPatch
             ZoomButton.transform.localPosition = Pos4;
             ZoomButton.GetComponent<SpriteRenderer>().sprite = GetSprite(Zooming ? "Plus" : "Minus");
 
-            if (PhoneText && RoleCardActive)
-                PhoneText.text = CustomPlayer.Local.RoleCardInfo();
+            if (PhoneText)
+            {
+                if (RoleCardActive)
+                    PhoneText.text = CustomPlayer.Local.RoleCardInfo();
+                else if ((LoreActive || SelectionActive) && Entry.Count > 1)
+                {
+                    if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.LeftArrow) || Input.mouseScrollDelta.y > 0f)
+                        ResultPage = CycleInt(Entry.Count - 1, 0, ResultPage, false);
+                    else if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.RightArrow) || Input.mouseScrollDelta.y < 0f)
+                        ResultPage = CycleInt(Entry.Count - 1, 0, ResultPage, true);
+
+                    PhoneText.text = Entry[ResultPage];
+                }
+            }
         } catch {}
     }
 
     public static void Zoom()
     {
         Zooming = !Zooming;
+
+        if (!Zooming)
+            return;
+
         Camera.main.orthographicSize = 3f * Size;
 
         foreach (var cam in Camera.allCameras)
@@ -227,7 +243,7 @@ public static class OtherButtonsPatch
 
         if (ToTheWiki == null)
         {
-            ToTheWiki = CreateButton("ToTheWikiButton", "Mod Wiki", () =>
+            ToTheWiki = CreateButton("ToTheWiki", "Mod Wiki", () =>
             {
                 OpenRoleCard();
                 OpenWiki();
@@ -309,20 +325,9 @@ public static class OtherButtonsPatch
             });
         }
 
-        if (PasteToChat == null)
-        {
-            PasteToChat = CreateButton("PasteToChatButton", "Paste To Chat", () =>
-            {
-                if (Selected == null || string.IsNullOrEmpty(PhoneText.text))
-                    return;
-
-                Run(HUD.Chat, $"<color={Selected.Color.ToHtmlStringRGBA()}>요 Lore 요</color>", PhoneText.text, false, true);
-            });
-        }
-
         if (BackButton == null)
         {
-            BackButton = CreateButton("WikiBackButton", "Previous Page", () =>
+            BackButton = CreateButton("WikiBack", "Previous Page", () =>
             {
                 if (Selected == null)
                     Page = CycleInt(MaxPage, 0, Page, false);
@@ -335,10 +340,12 @@ public static class OtherButtonsPatch
                 else
                 {
                     Selected = null;
+                    SelectionActive = false;
                     LoreButton.gameObject.SetActive(false);
                     NextButton.gameObject.SetActive(true);
                     NextButton.localPosition = new(2.5f, 1.6f, 0f);
                     DisableText();
+                    Entry.Clear();
                 }
 
                 ResetButtonPos();
@@ -347,7 +354,7 @@ public static class OtherButtonsPatch
 
         if (YourStatus == null)
         {
-            YourStatus = CreateButton("YourStatusButton", "Your Status", () =>
+            YourStatus = CreateButton("YourStatus", "Your Status", () =>
             {
                 OpenWiki();
                 OpenRoleCard();
@@ -356,11 +363,13 @@ public static class OtherButtonsPatch
 
         if (LoreButton == null)
         {
-            LoreButton = CreateButton("WikiLoreButton", "Lore", () =>
+            LoreButton = CreateButton("WikiLore", "Lore", () =>
             {
                 LoreActive = !LoreActive;
-                PhoneText.text = Info.ColorIt(WrapText(LayerInfo.AllLore.Find(x => x.Name == Selected.Name || x.Short == Selected.Short).Description));
+                SetEntryText(Info.ColorIt(WrapText(LayerInfo.AllLore.Find(x => x.Name == Selected.Name || x.Short == Selected.Short).Description)));
+                PhoneText.text = Entry[0];
                 PhoneText.transform.localPosition = new(-2.6f, 0.45f, -5f);
+                SelectionActive = true;
             });
         }
 
@@ -374,8 +383,8 @@ public static class OtherButtonsPatch
                 if (!Buttons.ContainsKey(i))
                     Buttons.Add(i, new());
 
-                var cache = Sorted[k];
-                var button = CreateButton($"{Sorted[k].Key}InfoButton", Sorted[k].Key, () =>
+                var cache = Sorted[k].Value;
+                var button = CreateButton($"{Sorted[k].Key}Info", Sorted[k].Key, () =>
                 {
                     foreach (var buttons in Buttons.Values)
                     {
@@ -383,7 +392,7 @@ public static class OtherButtonsPatch
                             buttons.ForEach(x => x?.gameObject?.SetActive(false));
                     }
 
-                    Selected = cache.Value;
+                    Selected = cache;
                     NextButton.gameObject.SetActive(false);
                     AddInfo();
                 }, Sorted[k].Value.Color);
@@ -433,12 +442,6 @@ public static class OtherButtonsPatch
                 LoreButton.localPosition = new(0f, -1.7f, 0f);
             }
 
-            if (PasteToChat != null)
-            {
-                PasteToChat.gameObject.SetActive(LoreActive);
-                PasteToChat.localPosition = new(2.5f, 1.6f, 0f);
-            }
-
             return;
         }
 
@@ -469,9 +472,10 @@ public static class OtherButtonsPatch
             PhoneText.gameObject.Destroy();
 
         Selected.WikiEntry(out var result);
+        SetEntryText(result);
         PhoneText = UObject.Instantiate(HUD.TaskPanel.taskText, Phone.transform);
         PhoneText.color = UColor.white;
-        PhoneText.text = result;
+        PhoneText.text = Entry[0];
         PhoneText.enableWordWrapping = false;
         PhoneText.transform.localScale = Vector3.one * 0.75f;
         PhoneText.transform.localPosition = new(-2.6f, 0.45f, -5f);
@@ -479,18 +483,19 @@ public static class OtherButtonsPatch
         PhoneText.fontStyle = FontStyles.Bold;
         PhoneText.gameObject.SetActive(true);
         PhoneText.name = "PhoneText";
+        SelectionActive = true;
     }
 
     private static void DisableText() => PhoneText.gameObject.SetActive(false);
 
-    private static Transform CreateButton(string name, string labelText, Action onClick, Color textColor = default)
+    private static Transform CreateButton(string name, string labelText, Action onClick, Color? textColor = null)
     {
         var button = UObject.Instantiate(HUD.MapButton.transform, Phone.transform);
-        button.name = name;
+        button.name = $"{name}Button";
         button.localScale = new(0.5f, 0.5f, 1f);
         button.GetComponent<BoxCollider2D>().size = new(2.5f, 0.55f);
         var label = UObject.Instantiate(HUD.TaskPanel.taskText, button);
-        label.color = textColor == default ? UColor.white : textColor;
+        label.color = textColor ?? UColor.white;
         label.text = labelText;
         label.enableWordWrapping = false;
         label.transform.localPosition = new(0f, 0f, label.transform.localPosition.z);
@@ -526,5 +531,30 @@ public static class OtherButtonsPatch
 
         if (Map)
             Map.Close();
+    }
+
+    private static void SetEntryText(string result)
+    {
+        Entry.Clear();
+        ResultPage = 0;
+        var texts = result.Split('\n');
+        var pos = 0;
+        var result2 = "";
+
+        foreach (var text in texts)
+        {
+            result2 += $"{text}\n";
+            pos++;
+
+            if (pos >= 19)
+            {
+                Entry.Add(result2);
+                result2 = "";
+                pos -= 19;
+            }
+        }
+
+        if (!IsNullEmptyOrWhiteSpace(result2))
+            Entry.Add(result2);
     }
 }

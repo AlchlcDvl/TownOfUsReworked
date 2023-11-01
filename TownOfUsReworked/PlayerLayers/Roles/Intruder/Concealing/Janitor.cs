@@ -28,10 +28,10 @@ public class Janitor : Intruder
         Spread(Player, PlayerByBody(CleanButton.TargetBody));
         CallRpc(CustomRPC.Action, ActionsRPC.FadeBody, this, CleanButton.TargetBody);
         Coroutines.Start(FadeBody(CleanButton.TargetBody));
-        CleanButton.StartCooldown(CooldownType.Reset);
+        CleanButton.StartCooldown();
 
         if (CustomGameOptions.JaniCooldownsLinked)
-            KillButton.StartCooldown(CooldownType.Reset);
+            KillButton.StartCooldown();
     }
 
     public void Drag()
@@ -49,7 +49,7 @@ public class Janitor : Intruder
         CallRpc(CustomRPC.Action, ActionsRPC.Drop, CurrentlyDragging);
         CurrentlyDragging.gameObject.GetComponent<DragBehaviour>().Destroy();
         CurrentlyDragging = null;
-        DragButton.StartCooldown(CooldownType.Reset);
+        DragButton.StartCooldown();
     }
 
     public override void UpdateHud(HudManager __instance)

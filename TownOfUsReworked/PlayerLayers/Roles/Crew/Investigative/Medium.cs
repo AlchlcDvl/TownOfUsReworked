@@ -60,7 +60,7 @@ public class Medium : Crew
 
     public void Mediate()
     {
-        MediateButton.StartCooldown(CooldownType.Reset);
+        MediateButton.StartCooldown();
         var playersDead = KilledPlayers.GetRange(0, KilledPlayers.Count);
 
         if (playersDead.Count == 0)

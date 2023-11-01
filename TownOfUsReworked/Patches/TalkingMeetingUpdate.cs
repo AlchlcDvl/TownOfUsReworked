@@ -72,6 +72,7 @@ public static class MeetingHudStart
         HUD.shhhEmblem.HoldDuration = TempDuration;
         yield return HUD.CoFadeFullScreen(new(0f, 0f, 0f, 0.98f), UColor.clear);
         BeingBlackmailed = false;
+        yield break;
     }
 
     public static IEnumerator SilencedShhh()
@@ -93,6 +94,7 @@ public static class MeetingHudStart
         HUD.shhhEmblem.HoldDuration = TempDuration;
         yield return HUD.CoFadeFullScreen(new(0f, 0f, 0f, 0.98f), UColor.clear);
         BeingSilenced = false;
+        yield break;
     }
 }
 

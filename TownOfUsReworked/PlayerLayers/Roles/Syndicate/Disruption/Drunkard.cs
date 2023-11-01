@@ -37,7 +37,7 @@ public class Drunkard : Syndicate
         if (interact.AbilityUsed)
             ConfusedPlayer = player;
         else if (interact.Reset)
-            ConfuseButton.StartCooldown(CooldownType.Reset);
+            ConfuseButton.StartCooldown();
         else if (interact.Protected)
             ConfuseButton.StartCooldown(CooldownType.GuardianAngel);
     }

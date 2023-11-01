@@ -40,7 +40,7 @@ public class Poisoner : Syndicate
         if (interact.AbilityUsed)
             PoisonedPlayer = player;
         else if (interact.Reset)
-            GlobalPoisonButton.StartCooldown(CooldownType.Reset);
+            GlobalPoisonButton.StartCooldown();
         else if (interact.Protected)
             GlobalPoisonButton.StartCooldown(CooldownType.GuardianAngel);
         else if (interact.Vested)
@@ -76,7 +76,7 @@ public class Poisoner : Syndicate
             PoisonButton.Begin();
         }
         else if (interact.Reset)
-            PoisonButton.StartCooldown(CooldownType.Reset);
+            PoisonButton.StartCooldown();
         else if (interact.Protected)
             PoisonButton.StartCooldown(CooldownType.GuardianAngel);
         else if (interact.Vested)

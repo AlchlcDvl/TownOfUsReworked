@@ -15,7 +15,7 @@ public abstract class Intruder : Role
         FactionColor = Colors.Intruder;
         Objectives = () => IntrudersWinCon;
         KillButton = new(this, "IntruderKill", AbilityTypes.Target, "ActionSecondary", Kill, CustomGameOptions.IntKillCd, Exception);
-        Player.Data.SetImpostor(true);
+        Data.SetImpostor(true);
     }
 
     public override List<PlayerControl> Team()
@@ -85,7 +85,7 @@ public abstract class Intruder : Role
         }
 
         if (interact.AbilityUsed || interact.Reset)
-            KillButton.StartCooldown(CooldownType.Reset);
+            KillButton.StartCooldown();
         else if (interact.Protected)
             KillButton.StartCooldown(CooldownType.GuardianAngel);
         else if (interact.Vested)

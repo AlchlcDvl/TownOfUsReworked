@@ -15,6 +15,7 @@ public class Retributionist : Crew
         AllPrints = new();
         BombedIDs = new();
         Investigated = new();
+        BuggedPlayers = new();
         Selected = null;
         TransportPlayer1 = null;
         TransportPlayer2 = null;
@@ -58,7 +59,7 @@ public class Retributionist : Crew
         BlockButton = new(this, "EscortRoleblock", AbilityTypes.Target, "ActionSecondary", Roleblock, CustomGameOptions.EscortCd, CustomGameOptions.EscortDur,
             (CustomButton.EffectVoid)Block, UnBlock);
         TransportButton = new(this, "Transport", AbilityTypes.Targetless, "ActionSecondary", Transport, CustomGameOptions.TransportCd, CustomGameOptions.MaxTransports);
-        BombButton = new(this, "VentBomb", AbilityTypes.Vent, "ActionSecondary", Bomb, CustomGameOptions.BastionCd, CustomGameOptions.MaxBombs, BastException);
+        BombButton = new(this, $"{Bastion.SpriteName}VentBomb", AbilityTypes.Vent, "ActionSecondary", Bomb, CustomGameOptions.BastionCd, CustomGameOptions.MaxBombs, BastException);
         RetMenu = new(Player, "RetActive", "RetDisabled", CustomGameOptions.ReviveAfterVoting, SetActive, IsExempt, new(-0.4f, 0.03f, -1.3f));
     }
 
@@ -260,7 +261,7 @@ public class Retributionist : Crew
                 if (player == null || player.HasDied())
                     continue;
 
-                if (UntransportablePlayers.ContainsKey(player.PlayerId) && player.moveable && UntransportablePlayers.GetValueSafe(player.PlayerId).AddSeconds(0.5) < DateTime.UtcNow)
+                if (UntransportablePlayers.ContainsKey(player.PlayerId) && player.moveable && UntransportablePlayers[player.PlayerId].AddSeconds(6) < DateTime.UtcNow)
                     UntransportablePlayers.Remove(player.PlayerId);
             }
         }
@@ -401,7 +402,7 @@ public class Retributionist : Crew
             body.KillAge = (float)(DateTime.UtcNow - body.KillTime).TotalMilliseconds;
             var reportMsg = body.ParseBodyReport();
 
-            if (string.IsNullOrWhiteSpace(reportMsg))
+            if (IsNullEmptyOrWhiteSpace(reportMsg))
                 return;
 
             //Only Retributionist-Coroner can see this
@@ -423,7 +424,7 @@ public class Retributionist : Crew
         var playerId = AutopsyButton.TargetBody.ParentId;
         Spread(Player, PlayerById(playerId));
         ReferenceBodies.AddRange(KilledPlayers.Where(x => x.PlayerId == playerId));
-        AutopsyButton.StartCooldown(CooldownType.Reset);
+        AutopsyButton.StartCooldown();
     }
 
     public void Compare()
@@ -483,7 +484,7 @@ public class Retributionist : Crew
 
     public void Mediate()
     {
-        MediateButton.StartCooldown(CooldownType.Reset);
+        MediateButton.StartCooldown();
         var playersDead = KilledPlayers.GetRange(0, KilledPlayers.Count);
 
         if (playersDead.Count == 0)
@@ -531,7 +532,7 @@ public class Retributionist : Crew
     public void PlaceBug()
     {
         Bugs.Add(new(Player));
-        BugButton.StartCooldown(CooldownType.Reset);
+        BugButton.StartCooldown();
     }
 
     //Sheriff Stuff
@@ -722,13 +723,7 @@ public class Retributionist : Crew
     public CustomButton FixButton { get; set; }
     public bool IsEngi => RevivedRole?.Type == LayerEnum.Engineer;
 
-    public bool Condition()
-    {
-        var system = ShipStatus.Instance.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>();
-        var dummyActive = system?.dummy.IsActive;
-        var active = system?.specials.Any(s => s.IsActive);
-        return active == true && dummyActive == false;
-    }
+    public bool Condition() => ShipStatus.Instance.Systems[SystemTypes.Sabotage].TryCast<SabotageSystemType>()?.AnyActive == true;
 
     public void Fix()
     {
@@ -801,7 +796,7 @@ public class Retributionist : Crew
             BlockButton.Begin();
         }
         else if (interact.Reset)
-            BlockButton.StartCooldown(CooldownType.Reset);
+            BlockButton.StartCooldown();
         else if (interact.Protected)
             BlockButton.StartCooldown(CooldownType.GuardianAngel);
     }
@@ -978,8 +973,11 @@ public class Retributionist : Crew
 
         if (CustomPlayer.Local == TransportPlayer1 || CustomPlayer.Local == TransportPlayer2)
         {
-            ActiveTask?.Close();
-            Map?.Close();
+            if (ActiveTask)
+                ActiveTask.Close();
+
+            if (Map)
+                Map.Close();
         }
 
         TransportPlayer1.moveable = true;
@@ -991,6 +989,7 @@ public class Retributionist : Crew
         TransportPlayer1 = null;
         TransportPlayer2 = null;
         Transporting = false;
+        yield break;
     }
 
     public string Label() => TransportPlayer1 == null ? "FIRST TARGET" : (TransportPlayer2 == null ? "SECOND TARGET" : "TRANSPORT");
@@ -1038,7 +1037,7 @@ public class Retributionist : Crew
         if (interact.AbilityUsed)
             TransportPlayer1 = player;
         else if (interact.Reset)
-            TransportButton.StartCooldown(CooldownType.Reset);
+            TransportButton.StartCooldown();
         else if (interact.Protected)
             TransportButton.StartCooldown(CooldownType.GuardianAngel);
     }
@@ -1050,7 +1049,7 @@ public class Retributionist : Crew
         if (interact.AbilityUsed)
             TransportPlayer2 = player;
         else if (interact.Reset)
-            TransportButton.StartCooldown(CooldownType.Reset);
+            TransportButton.StartCooldown();
         else if (interact.Protected)
             TransportButton.StartCooldown(CooldownType.GuardianAngel);
     }
@@ -1065,7 +1064,7 @@ public class Retributionist : Crew
         {
             CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, RetActionsRPC.Transport, TransportPlayer1, TransportPlayer2);
             Coroutines.Start(TransportPlayers());
-            TransportButton.StartCooldown(CooldownType.Reset);
+            TransportButton.StartCooldown();
         }
     }
 

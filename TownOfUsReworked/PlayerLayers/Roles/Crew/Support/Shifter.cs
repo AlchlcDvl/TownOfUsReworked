@@ -26,7 +26,7 @@ public class Shifter : Crew
             Shift(ShiftButton.TargetPlayer);
         }
         else if (interact.Reset)
-            ShiftButton.StartCooldown(CooldownType.Reset);
+            ShiftButton.StartCooldown();
         else if (interact.Protected)
             ShiftButton.StartCooldown(CooldownType.GuardianAngel);
     }

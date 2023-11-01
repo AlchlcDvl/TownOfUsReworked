@@ -144,7 +144,7 @@ public static class References
         new(15f, -17f), //Between coms-office
         new(17.5f, -25.7f) //Snowman under office
     };
-    /*public static readonly List<Vector2> dlekSSpawns = new()
+    public static readonly List<Vector2> dlekSSpawns = new()
     {
         new(2.2f, 2.2f), //Cafeteria. botton. top left.
         new(-0.7f, 2.2f), //Caffeteria. button. top right.
@@ -184,5 +184,5 @@ public static class References
         new(10.5f, 1.0f), //Upper-mad hall
         new(10.5f, -2.0f), //Medbay top
         new(6.5f, -4.5f) //Medbay bottom
-    };*/
+    };
 }

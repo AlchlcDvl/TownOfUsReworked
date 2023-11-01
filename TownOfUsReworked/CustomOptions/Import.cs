@@ -49,6 +49,7 @@ public class Import : CustomButtonOption
         SettingsPatches.SettingsPage = 0;
         yield return new WaitForEndOfFrame();
         yield return flashCoro();
+        yield break;
     }
 
     public void ToDo()
@@ -86,7 +87,7 @@ public class Import : CustomButtonOption
             text = "";
         }
 
-        if (string.IsNullOrEmpty(text))
+        if (IsNullEmptyOrWhiteSpace(text))
         {
             Cancel(FlashRed);
             LogError("Slot no exist");

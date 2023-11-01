@@ -2,23 +2,23 @@ namespace TownOfUsReworked.Extensions;
 
 public static class FixExtentions
 {
-    public static void FixComms() => ShipStatus.Instance.RpcRepairSystem(SystemTypes.Comms, 0);
+    public static void FixComms() => ShipStatus.Instance.RpcUpdateSystem(SystemTypes.Comms, 0);
 
     public static void FixMiraComms()
     {
-        ShipStatus.Instance.RpcRepairSystem(SystemTypes.Comms, 16 | 0);
-        ShipStatus.Instance.RpcRepairSystem(SystemTypes.Comms, 16 | 1);
+        ShipStatus.Instance.RpcUpdateSystem(SystemTypes.Comms, 16 | 0);
+        ShipStatus.Instance.RpcUpdateSystem(SystemTypes.Comms, 16 | 1);
     }
 
     public static void FixAirshipReactor()
     {
-        ShipStatus.Instance.RpcRepairSystem(SystemTypes.Reactor, 16 | 0);
-        ShipStatus.Instance.RpcRepairSystem(SystemTypes.Reactor, 16 | 1);
+        ShipStatus.Instance.RpcUpdateSystem(SystemTypes.Reactor, 16 | 0);
+        ShipStatus.Instance.RpcUpdateSystem(SystemTypes.Reactor, 16 | 1);
     }
 
-    public static void FixReactor(SystemTypes system) => ShipStatus.Instance.RpcRepairSystem(system, 16);
+    public static void FixReactor(SystemTypes system) => ShipStatus.Instance.RpcUpdateSystem(system, 16);
 
-    public static void FixOxygen() => ShipStatus.Instance.RpcRepairSystem(SystemTypes.LifeSupp, 16);
+    public static void FixOxygen() => ShipStatus.Instance.RpcUpdateSystem(SystemTypes.LifeSupp, 16);
 
     public static void FixSubOxygen()
     {
@@ -36,16 +36,10 @@ public static class FixExtentions
     {
         var system = ShipStatus.Instance.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>();
 
-        if (system == null)
+        if (system == null || !system.AnyActive)
             return;
 
-        var dummyActive = system.dummy.IsActive;
-        var sabActive = system.specials.Any(s => s.IsActive);
-
-        if (!sabActive || dummyActive)
-            return;
-
-        switch (TownOfUsReworked.NormalOptions.MapId)
+        switch (MapPatches.CurrentMap)
         {
             case 1:
                 var comms2 = ShipStatus.Instance.Systems[SystemTypes.Comms].Cast<HqHudSystemType>();
@@ -129,7 +123,7 @@ public static class FixExtentions
 
                 break;
 
-            case 5:
+            case 6:
                 if (!SubLoaded)
                     break;
 
@@ -156,7 +150,7 @@ public static class FixExtentions
 
                 break;
 
-            case 6:
+            case 7:
                 if (!LILoaded)
                     break;
 

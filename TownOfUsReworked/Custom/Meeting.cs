@@ -52,16 +52,13 @@ public class CustomMeeting
     {
         Buttons.Keys.ForEach(HideSingle);
         Buttons.Clear();
-
-        if (Type == MeetingTypes.Toggle)
-        {
-            Actives.Keys.ForEach(x => Actives[x] = false);
-            Actives.Clear();
-        }
+        Actives.Clear();
     }
 
     public void HideSingle(byte targetId)
     {
+        Actives[targetId] = false;
+
         if (!Buttons.TryGetValue(targetId, out var button) || button == null)
             return;
 
@@ -71,9 +68,6 @@ public class CustomMeeting
         button.SetActive(false);
         button.Destroy();
         Buttons[targetId] = null;
-
-        if (Type == MeetingTypes.Toggle)
-            Actives[targetId] = false;
     }
 
     private void GenButton(PlayerVoteArea voteArea, MeetingHud __instance, bool usable = true)
@@ -84,13 +78,11 @@ public class CustomMeeting
         if (!usable || Owner != CustomPlayer.Local)
             return;
 
+        Actives.Add(voteArea.TargetPlayerId, false);
+
         if (IsExempt(voteArea))
         {
             Buttons.Add(voteArea.TargetPlayerId, null);
-
-            if (Type == MeetingTypes.Toggle)
-                Actives.Add(voteArea.TargetPlayerId, false);
-
             return;
         }
 
@@ -111,9 +103,6 @@ public class CustomMeeting
         collider.offset = Vector2.zero;
         targetBox.transform.GetChild(0).gameObject.Destroy();
         Buttons.Add(voteArea.TargetPlayerId, targetBox);
-
-        if (Type == MeetingTypes.Toggle)
-            Actives.Add(voteArea.TargetPlayerId, false);
     }
 
     public void GenButtons(MeetingHud __instance, bool usable = true)

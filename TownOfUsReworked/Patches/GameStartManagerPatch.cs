@@ -138,15 +138,12 @@ public static class GameStartManagerPatch
 
                 if (DiscordManager.InstanceExists)
                 {
-                    if (AmongUsClient.Instance.AmHost && IsOnlineGame)
+                    if (AmongUsClient.Instance.AmHost)
                         DiscordManager.Instance.SetInLobbyHost(__instance.LastPlayerCount, CustomGameOptions.LobbySize, AmongUsClient.Instance.GameId);
                     else
                         DiscordManager.Instance.SetInLobbyClient(__instance.LastPlayerCount, CustomGameOptions.LobbySize, AmongUsClient.Instance.GameId);
                 }
             }
-
-            if (__instance.LastPlayerCount != TownOfUsReworked.NormalOptions.MaxPlayers)
-                __instance.LastPlayerCount = TownOfUsReworked.NormalOptions.MaxPlayers;
 
             //Check version handshake infos
             var versionMismatch = false;

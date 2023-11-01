@@ -3,7 +3,8 @@ namespace TownOfUsReworked.MultiClientInstancing;
 public static class MCIUtils
 {
     public static readonly Dictionary<int, ClientData> Clients = new();
-    public static readonly Dictionary<byte, int> PlayerIdClientId = new();
+    public static readonly Dictionary<byte, int> PlayerIdClientIDs = new();
+    public static readonly Dictionary<byte, Vector3> SavedPositions = new();
 
     public static int AvailableId()
     {
@@ -21,7 +22,7 @@ public static class MCIUtils
         if (GameData.Instance.AllPlayers.Count == 1)
         {
             Clients.Clear();
-            PlayerIdClientId.Clear();
+            PlayerIdClientIDs.Clear();
         }
     }
 
@@ -40,15 +41,15 @@ public static class MCIUtils
         AmongUsClient.Instance.allClients.Add(sampleC);
 
         sampleC.Character.SetName($"Bot {sampleC.Character.PlayerId}");
-        sampleC.Character.SetSkin(HatManager.Instance.allSkins[URandom.Range(0, HatManager.Instance.allSkins.Count)].ProdId, 0);
-        sampleC.Character.SetNamePlate(HatManager.Instance.allNamePlates[URandom.Range(0, HatManager.Instance.allNamePlates.Count)].ProdId);
-        sampleC.Character.SetPet(HatManager.Instance.allPets[URandom.Range(0, HatManager.Instance.allPets.Count)].ProdId);
+        sampleC.Character.SetSkin(HatManager.Instance.allSkins[URandom.RandomRangeInt(0, HatManager.Instance.allSkins.Count)].ProdId, 0);
+        sampleC.Character.SetNamePlate(HatManager.Instance.allNamePlates[URandom.RandomRangeInt(0, HatManager.Instance.allNamePlates.Count)].ProdId);
+        sampleC.Character.SetPet(HatManager.Instance.allPets[URandom.RandomRangeInt(0, HatManager.Instance.allPets.Count)].ProdId);
         sampleC.Character.SetHat("hat_NoHat", 0);
-        sampleC.Character.SetColor(URandom.Range(0, Palette.PlayerColors.Length));
+        sampleC.Character.SetColor(URandom.RandomRangeInt(0, Palette.PlayerColors.Length));
         sampleC.Character.MyPhysics.ResetMoveState();
 
         Clients.Add(sampleId, sampleC);
-        PlayerIdClientId.Add(sampleC.Character.PlayerId, sampleId);
+        PlayerIdClientIDs.Add(sampleC.Character.PlayerId, sampleId);
 
         if (SubLoaded)
             ImpartSub(sampleC.Character);
@@ -63,14 +64,15 @@ public static class MCIUtils
 
         var clientId = Clients.FirstOrDefault(x => x.Value.Character.PlayerId == id).Key;
         Clients.Remove(clientId, out var outputData);
-        PlayerIdClientId.Remove(id);
+        PlayerIdClientIDs.Remove(id);
+        SavedPositions.Remove(id);
         AmongUsClient.Instance.RemovePlayer(clientId, DisconnectReasons.Custom);
         AmongUsClient.Instance.allClients.Remove(outputData);
     }
 
     public static void RemoveAllPlayers()
     {
-        PlayerIdClientId.Keys.ForEach(RemovePlayer);
+        PlayerIdClientIDs.Keys.ForEach(RemovePlayer);
         SwitchTo(0);
     }
 
@@ -90,12 +92,18 @@ public static class MCIUtils
             CustomPlayer.Local.DisableArrows();
         }
 
+        if (!SavedPositions.ContainsKey(CustomPlayer.Local.PlayerId))
+            SavedPositions.Add(CustomPlayer.Local.PlayerId, CustomPlayer.LocalCustom.Position);
+        else
+            SavedPositions[CustomPlayer.Local.PlayerId] = CustomPlayer.LocalCustom.Position;
+
         PlayerLayer.LocalLayers.ForEach(x => x.ExitingLayer());
 
         CustomPlayer.Local.NetTransform.RpcSnapTo(CustomPlayer.LocalCustom.Position);
         CustomPlayer.Local.moveable = false;
 
         var light = CustomPlayer.Local.lightSource;
+        var savedId = CustomPlayer.Local.PlayerId;
 
         //Setup new player
         var newPlayer = PlayerById(playerId);
@@ -131,6 +139,12 @@ public static class MCIUtils
         PlayerLayer.LocalLayers.ForEach(x => x.EnteringLayer());
 
         HUD.Chat.SetVisible(CustomPlayer.Local.CanChat());
+
+        if (SavedPositions.TryGetValue(playerId, out var pos))
+            CustomPlayer.Local.NetTransform.RpcSnapTo(pos);
+
+        if (SavedPositions.TryGetValue(savedId, out var pos2))
+            PlayerById(savedId).NetTransform.RpcSnapTo(pos2);
     }
 
     public static void SetForegroundForAlive(this MeetingHud __instance)

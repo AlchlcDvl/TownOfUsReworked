@@ -217,7 +217,7 @@ public enum WhoCanVentOptions
 {
     Default,
     Everyone,
-    Noone
+    NoOne
 }
 
 public enum DisableSkipButtonMeetings
@@ -279,9 +279,9 @@ public enum MapEnum
     Skeld,
     MiraHQ,
     Polus,
-    //dlekS,
+    dlekS,
     Airship,
-    //Fungle,
+    Fungle,
     Submerged,
     LevelImpostor,
     Random
@@ -833,4 +833,20 @@ public enum CooldownType
     Survivor,
     GuardianAngel,
     Reset
+}
+
+public enum AnonVotes
+{
+    Enabled,
+    NonPolitician,
+    PoliticianOnly,
+    NotVisible,
+    Disabled
+}
+
+public enum FootprintVisibility
+{
+    OnlyWhenCamouflaged,
+    AlwaysVisible,
+    AlwaysCamouflaged
 }

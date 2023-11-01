@@ -49,6 +49,7 @@ public class Preset : CustomButtonOption
         SettingsPatches.SettingsPage = 0;
         yield return new WaitForEndOfFrame();
         yield return flashCoro();
+        yield break;
     }
 
     public void ToDo()
@@ -85,7 +86,7 @@ public class Preset : CustomButtonOption
             text = "";
         }
 
-        if (string.IsNullOrEmpty(text))
+        if (IsNullEmptyOrWhiteSpace(text))
         {
             Cancel(FlashRed);
             LogError($"{presetName} no exist");

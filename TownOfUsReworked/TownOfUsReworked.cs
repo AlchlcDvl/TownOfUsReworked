@@ -1,14 +1,14 @@
 namespace TownOfUsReworked;
 
-[BepInPlugin(Id, Name, VersionString)]
+[BepInPlugin(ID, Name, VersionString)]
 [BepInDependency(ReactorPlugin.Id)]
 [ReactorModFlags(ModFlags.RequireOnAllClients)]
 [BepInProcess("Among Us.exe")]
 public class TownOfUsReworked : BasePlugin
 {
-    public const string Id = "me.alchlcdvl.reworked";
+    public const string ID = "me.alchlcdvl.reworked";
     public const string Name = "TownOfUsReworked";
-    public const string VersionString = "0.5.4.0";
+    public const string VersionString = "0.6.0.0";
     public static readonly Version Version = new(VersionString);
 
     public const bool IsDev = false;
@@ -45,9 +45,9 @@ public class TownOfUsReworked : BasePlugin
     public static bool SameVote { get; set; } = true;
     public static bool MCIActive { get; set; }
 
-    public readonly Harmony Harmony = new(Id);
+    public readonly Harmony Harmony = new(ID);
 
-    public override string ToString() => $"{Id} {Name} {VersionFinal} {Version}";
+    public override string ToString() => $"{ID} {Name} {VersionFinal} {Version}";
 
     public static ConfigEntry<string> Ip { get; set; }
     public static ConfigEntry<ushort> Port { get; set; }
@@ -81,39 +81,8 @@ public class TownOfUsReworked : BasePlugin
 
         try
         {
-            Harmony.PatchAll();
-
             ModInstance = this;
-
-            DataManager.Player.Onboarding.ViewedHideAndSeekHowToPlay = true;
-
-            NormalGameOptionsV07.MaxImpostors = Enumerable.Repeat(127, 127).ToArray();
-            NormalGameOptionsV07.MinPlayers = Enumerable.Repeat(1, 127).ToArray();
-
-            Ip = Config.Bind("Custom", "Custom Server IP", "127.0.0.1", "IP for the Custom Server");
-            Port = Config.Bind("Custom", "Custom Server Port", (ushort)22023, "Port for the Custom Server");
-            LighterDarker = Config.Bind("Custom", "Lighter Darker Colors", true, "Adds smaller descriptions of colors as lighter or darker for body report purposes");
-            WhiteNameplates = Config.Bind("Custom", "White Nameplates", false, "Enables custom nameplates");
-            NoLevels = Config.Bind("Custom", "No Levels", false, "Enables the little level icon during meetings");
-            CustomCrewColors = Config.Bind("Custom", "Custom Crew Colors", true, "Enables custom colors for Crew roles");
-            CustomNeutColors = Config.Bind("Custom", "Custom Neutral Colors", true, "Enables custom colors for Neutral roles");
-            CustomIntColors = Config.Bind("Custom", "Custom Intruder Colors", true, "Enables custom colors for Intruder roles");
-            CustomSynColors = Config.Bind("Custom", "Custom Syndicate Colors", true, "Enables custom colors for Syndicate roles");
-            CustomModColors = Config.Bind("Custom", "Custom Modifier Colors", true, "Enables custom colors for Modifiers");
-            CustomObjColors = Config.Bind("Custom", "Custom Objectifier Colors", true, "Enables custom colors for Objectifiers");
-            CustomAbColors = Config.Bind("Custom", "Custom Ability Colors", true, "Enables custom colors for Abilities");
-            CustomEjects = Config.Bind("Custom", "Custom Ejects", true, "Enables funny ejection messages compared to the monotone \"X was ejected\"");
-            Regions = Config.Bind("Custom", "Regions", "{\"CurrentRegionIdx\":0,\"Regions\":[]}",
-                "Create an array of Regions you want to add/update. To create this array, go to https://impostor.github.io/Impostor/ and put the Regions array from the server file in here");
-            RegionsToRemove = Config.Bind("Custom", "Remove Regions", "", "Comma-seperated list of region names that should be removed");
-
-            AllMonos.RegisterMonos();
-            CustomColors.LoadColors();
-            AssetLoader.LoadAssets();
-            ExtraRegions.UpdateRegions();
-            Info.SetAllInfo();
-            AllMonos.AddComponents();
-
+            Reworked.LoadComponents();
             LogMessage($"Mod Loaded - {this}");
         }
         catch (Exception e)
@@ -125,6 +94,7 @@ public class TownOfUsReworked : BasePlugin
     public override bool Unload()
     {
         ModInstance = null;
+        Harmony.UnpatchSelf();
         return base.Unload();
     }
 }

@@ -69,7 +69,7 @@ public class Cannibal : Neutral
     {
         Spread(Player, PlayerByBody(EatButton.TargetBody));
         CallRpc(CustomRPC.Action, ActionsRPC.FadeBody, EatButton.TargetBody);
-        EatButton.StartCooldown(CooldownType.Reset);
+        EatButton.StartCooldown();
         EatNeed--;
         Coroutines.Start(FadeBody(EatButton.TargetBody));
 

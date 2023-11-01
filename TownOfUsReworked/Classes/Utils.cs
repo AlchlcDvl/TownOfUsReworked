@@ -132,6 +132,8 @@ public static class Utils
 
         if (!HudUpdate.IsCamoed)
             player.SetOutfit(CustomPlayerOutfitType.Default);
+
+        yield break;
     }
 
     public static void Camouflage() => CustomPlayer.AllPlayers.ForEach(CamoSingle);
@@ -172,7 +174,7 @@ public static class Utils
                 if (HudUpdate.IsCamoed)
                 {
                     var color = Color.Lerp(UColor.grey, Palette.PlayerColors[6], p);
-                    PlayerMaterial.SetColors(color, player.MyRend());
+                    PlayerMaterial.SetColors(color, rend);
                 }
             })));
         }
@@ -262,7 +264,7 @@ public static class Utils
 
     public static PlayerControl PlayerByVoteArea(PlayerVoteArea state) => PlayerById(state.TargetPlayerId);
 
-    public static Vector2 GetSize() => Vector2.Scale(AllVents[0].GetComponent<BoxCollider2D>().size, AllVents[0].transform.localScale) * 0.75f;
+    public static Vector2 GetSize() => Vector2.Scale(AllMapVents[0].GetComponent<BoxCollider2D>().size, AllMapVents[0].transform.localScale) * 0.75f;
 
     public static double GetDistBetweenPlayers(PlayerControl player, PlayerControl refplayer)
     {
@@ -359,8 +361,12 @@ public static class Utils
 
         if (target.AmOwner)
         {
-            ActiveTask?.Close();
-            Map?.Close();
+            if (ActiveTask)
+                ActiveTask.Close();
+
+            if (Map)
+                Map.Close();
+
             HUD.KillOverlay.ShowKillAnimation(killer.Data, data);
             HUD.ShadowQuad.gameObject.SetActive(false);
             HUD.Chat.SetVisible(true);
@@ -642,6 +648,8 @@ public static class Utils
             else
                 CallRpc(CustomRPC.Action, ActionsRPC.BaitReport, killer, target);
         }
+
+        yield break;
     }
 
     public static void EndGame()
@@ -740,6 +748,7 @@ public static class Utils
 
         body.gameObject.Destroy();
         Role.Cleaned.Add(PlayerById(body.ParentId));
+        yield break;
     }
 
     public static void RpcSpawnVent(Role role)
@@ -781,7 +790,7 @@ public static class Utils
         vent.Center = null;
         vent.name = $"{name}{vents.Count}";
 
-        var allVents = ShipStatus.Instance.AllVents.ToList();
+        var allVents = AllMapVents;
         allVents.Add(vent);
         ShipStatus.Instance.AllVents = allVents.ToArray();
 
@@ -808,7 +817,7 @@ public static class Utils
 
         while (true)
         {
-            if (ShipStatus.Instance.AllVents.All(v => v.Id != id))
+            if (AllMapVents.All(v => v.Id != id))
                 return id;
 
             id++;
@@ -840,6 +849,8 @@ public static class Utils
 
         if (HudManager.InstanceExists && HUD.FullScreen)
             SetFullScreenHUD();
+
+        yield break;
     }
 
     public static void SetFullScreenHUD()
@@ -855,7 +866,7 @@ public static class Utils
 
         if (ShipStatus.Instance && !LobbyBehaviour.Instance)
         {
-            switch (TownOfUsReworked.NormalOptions.MapId)
+            switch (MapPatches.CurrentMap)
             {
                 case 0 or 1 or 3:
                     var reactor1 = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
@@ -873,14 +884,14 @@ public static class Utils
                     fs = reactor.IsActive;
                     break;
 
-                case 5:
+                case 6:
                     if (!SubLoaded)
                         break;
 
                     fs = CustomPlayer.Local.myTasks.Any(x => x.TaskType == RetrieveOxygenMask);
                     break;
 
-                case 6:
+                case 7:
                     if (!LILoaded)
                         break;
 
@@ -919,8 +930,12 @@ public static class Utils
         if (coordinates.ContainsKey(CustomPlayer.Local.PlayerId))
         {
             Flash(Colors.Warper);
-            ActiveTask?.Close();
-            Map?.Close();
+
+            if (ActiveTask)
+                ActiveTask.Close();
+
+            if (Map)
+                Map.Close();
 
             if (CustomPlayer.Local.inVent)
             {
@@ -958,12 +973,12 @@ public static class Utils
         }
 
         AllVents.ForEach(x => allLocations.Add(GetVentPosition(x)));
-        var tobeadded = TownOfUsReworked.NormalOptions.MapId switch
+        var tobeadded = MapPatches.CurrentMap switch
         {
             0 => SkeldSpawns,
             1 => MiraSpawns,
             2 => PolusSpawns,
-            //3 => dlekSSpawns,
+            3 => dlekSSpawns,
             _ => null
         };
 
@@ -1003,15 +1018,17 @@ public static class Utils
         }
 
         SetFullScreenHUD();
+        yield break;
     }
 
     public static IEnumerator CoTeleportPlayer(PlayerControl __instance, Vector2 position)
     {
-        Coroutines.Start(Fade(false));
+        yield return Fade(false);
         yield return new WaitForSeconds(0.25f);
         __instance.NetTransform.RpcSnapTo(position);
         yield return new WaitForSeconds(0.25f);
-        Coroutines.Start(Fade(true));
+        yield return Fade(true);
+        yield break;
     }
 
     public static void Teleport(PlayerControl player, Vector2 position)
@@ -1022,8 +1039,12 @@ public static class Utils
         if (CustomPlayer.Local == player)
         {
             Flash(Colors.Teleporter);
-            ActiveTask?.Close();
-            Map?.Close();
+
+            if (ActiveTask)
+                ActiveTask.Close();
+
+            if (Map)
+                Map.Close();
 
             if (IsSubmerged)
             {
@@ -1305,7 +1326,7 @@ public static class Utils
     {
         var closestDistance = double.MaxValue;
         Vent closestVent = null;
-        allVents ??= AllVents;
+        allVents ??= AllMapVents;
 
         if (maxDistance == 0f)
             maxDistance = AllMapVents[0].UsableDistance;
@@ -1381,11 +1402,11 @@ public static class Utils
                 if (normalPlayerTask.TaskType == TaskTypes.UploadData)
                     normalPlayerTask.taskStep = 1;
 
-                if ((normalPlayerTask.TaskType is TaskTypes.EmptyGarbage or TaskTypes.EmptyChute) && (TownOfUsReworked.NormalOptions.MapId is 0 or 3 or 4 or 6))
+                if ((normalPlayerTask.TaskType is TaskTypes.EmptyGarbage or TaskTypes.EmptyChute) && (MapPatches.CurrentMap is 0 or 3 or 4 or 7))
                     normalPlayerTask.taskStep = 1;
 
                 if (updateArrow)
-                    normalPlayerTask.UpdateArrow();
+                    normalPlayerTask.UpdateArrowAndLocation();
 
                 player.Data.FindTaskById(task.Id).Complete = false;
             }
@@ -1417,7 +1438,7 @@ public static class Utils
 
         while (startIndex < text.Length)
         {
-            var num = text.IndexOfAny(new char[] { ' ', '\t', '\r' }, startIndex);
+            var num = text.IndexOfAny(new[] { ' ', '\t', '\r' }, startIndex);
 
             if (num != -1)
             {
@@ -1483,5 +1504,9 @@ public static class Utils
 
     public static bool IsNullEmptyOrWhiteSpace(string text) => text is null or "" || text.All(x => x is ' ' or '\n');
 
-    public static AudioClip GetIntroSound(RoleTypes roleType) => RoleManager.Instance.AllRoles.Where(x => x.Role == roleType).FirstOrDefault().IntroSound;
+    public static AudioClip GetIntroSound(RoleTypes roleType) => RoleManager.Instance.AllRoles.ToList().Find(x => x.Role == roleType).IntroSound;
+
+    public static Color FromHex(string hexCode) => ColorUtility.TryParseHtmlString(hexCode, out var color) ? color : default;
+
+    //public static Color32 FromHex32(string hexCode) => (Color32)FromHex(hexCode);
 }

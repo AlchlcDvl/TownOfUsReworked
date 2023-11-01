@@ -40,7 +40,7 @@ public class Spellslinger : Syndicate
         if (HoldsDrive)
         {
             Spell(SpellButton.TargetPlayer);
-            SpellButton.StartCooldown(CooldownType.Reset);
+            SpellButton.StartCooldown();
         }
         else
         {
@@ -50,7 +50,7 @@ public class Spellslinger : Syndicate
                 Spell(SpellButton.TargetPlayer);
 
             if (interact.Reset)
-                SpellButton.StartCooldown(CooldownType.Reset);
+                SpellButton.StartCooldown();
             else if (interact.Protected)
                 SpellButton.StartCooldown(CooldownType.GuardianAngel);
         }

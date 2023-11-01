@@ -46,7 +46,10 @@ public static class SkeldShipStatusPatch
 
     private static void ApplyChanges(ShipStatus __instance)
     {
-        if (__instance.Type == ShipStatus.MapType.Ship)
+        if (!CustomGameOptions.EnableBetterSkeld)
+            return;
+
+        if (__instance.Type == ShipStatus.MapType.Ship && MapPatches.CurrentMap != 3)
         {
             FindVents();
             AdjustSkeld();
@@ -165,15 +168,17 @@ public static class SkeldShipStatusPatch
     }
 }
 
-[HarmonyPatch(typeof(ReactorSystemType), nameof(ReactorSystemType.RepairDamage))]
+[HarmonyPatch(typeof(ReactorSystemType), nameof(ReactorSystemType.UpdateSystem))]
 public static class ReactorSkeld
 {
-    public static bool Prefix(ReactorSystemType __instance, ref byte opCode)
+    public static bool Prefix(ReactorSystemType __instance, ref MessageReader msgReader)
     {
-        if (ShipStatus.Instance.Type == ShipStatus.MapType.Ship && opCode == 128 && !__instance.IsActive)
+        if (!CustomGameOptions.EnableBetterSkeld)
+            return true;
+
+        if (ShipStatus.Instance.Type == ShipStatus.MapType.Ship && msgReader.ReadByte() == 128 && !__instance.IsActive)
         {
-            __instance.Countdown = CustomGameOptions.SkeldReactorTimer;
-            __instance.ReactorDuration = CustomGameOptions.SkeldReactorTimer;
+            __instance.Countdown = __instance.ReactorDuration = CustomGameOptions.SkeldReactorTimer;
             __instance.UserConsolePairs.Clear();
             __instance.IsDirty = true;
             return false;
@@ -183,15 +188,17 @@ public static class ReactorSkeld
     }
 }
 
-[HarmonyPatch(typeof(LifeSuppSystemType), nameof(LifeSuppSystemType.RepairDamage))]
+[HarmonyPatch(typeof(LifeSuppSystemType), nameof(LifeSuppSystemType.UpdateSystem))]
 public static class O2Skeld
 {
-    public static bool Prefix(LifeSuppSystemType __instance, ref byte opCode)
+    public static bool Prefix(LifeSuppSystemType __instance, ref MessageReader msgReader)
     {
-        if (ShipStatus.Instance.Type == ShipStatus.MapType.Ship && opCode == 128 && !__instance.IsActive)
+        if (!CustomGameOptions.EnableBetterSkeld)
+            return true;
+
+        if (ShipStatus.Instance.Type == ShipStatus.MapType.Ship && msgReader.ReadByte() == 128 && !__instance.IsActive)
         {
-            __instance.Countdown = CustomGameOptions.SkeldO2Timer;
-            __instance.LifeSuppDuration = CustomGameOptions.SkeldO2Timer;
+            __instance.Countdown = __instance.LifeSuppDuration = CustomGameOptions.SkeldO2Timer;
             __instance.CompletedConsoles.Clear();
             __instance.IsDirty = true;
             return false;

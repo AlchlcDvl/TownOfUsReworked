@@ -24,7 +24,7 @@ public class Cryomaniac : Neutral
         Doused = new();
         DouseButton = new(this, "CryoDouse", AbilityTypes.Target, "ActionSecondary", Douse, CustomGameOptions.CryoDouseCd, Exception);
         FreezeButton = new(this, "Freeze", AbilityTypes.Targetless, "Secondary", Freeze);
-        KillButton = new(this, "CryoKill", AbilityTypes.Target, "Tertiary", Kill, CustomGameOptions.CryoDouseCd, Exception);
+        KillButton = new(this, "CryoKill", AbilityTypes.Target, "Tertiary", Kill, CustomGameOptions.CryoKillCd, Exception);
     }
 
     public void Kill()

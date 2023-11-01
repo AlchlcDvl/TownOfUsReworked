@@ -71,7 +71,7 @@ public class Coroner : Crew
         var playerId = AutopsyButton.TargetBody.ParentId;
         Spread(Player, PlayerById(playerId));
         ReferenceBodies.AddRange(KilledPlayers.Where(x => x.PlayerId == playerId));
-        AutopsyButton.StartCooldown(CooldownType.Reset);
+        AutopsyButton.StartCooldown();
     }
 
     public void Compare()
@@ -105,7 +105,7 @@ public class Coroner : Crew
         body.KillAge = (float)(DateTime.UtcNow - body.KillTime).TotalMilliseconds;
         var reportMsg = body.ParseBodyReport();
 
-        if (string.IsNullOrWhiteSpace(reportMsg))
+        if (IsNullEmptyOrWhiteSpace(reportMsg))
             return;
 
         //Only Coroner can see this

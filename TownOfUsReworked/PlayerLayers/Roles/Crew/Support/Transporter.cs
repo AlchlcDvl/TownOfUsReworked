@@ -199,8 +199,11 @@ public class Transporter : Crew
 
         if (CustomPlayer.Local == TransportPlayer1 || CustomPlayer.Local == TransportPlayer2)
         {
-            ActiveTask?.Close();
-            Map?.Close();
+            if (ActiveTask)
+                ActiveTask.Close();
+
+            if (Map)
+                Map.Close();
         }
 
         TransportPlayer1.moveable = true;
@@ -212,6 +215,7 @@ public class Transporter : Crew
         TransportPlayer1 = null;
         TransportPlayer2 = null;
         Transporting = false;
+        yield break;
     }
 
     public void Click1(PlayerControl player)
@@ -221,7 +225,7 @@ public class Transporter : Crew
         if (interact.AbilityUsed)
             TransportPlayer1 = player;
         else if (interact.Reset)
-            TransportButton.StartCooldown(CooldownType.Reset);
+            TransportButton.StartCooldown();
         else if (interact.Protected)
             TransportButton.StartCooldown(CooldownType.GuardianAngel);
     }
@@ -233,7 +237,7 @@ public class Transporter : Crew
         if (interact.AbilityUsed)
             TransportPlayer2 = player;
         else if (interact.Reset)
-            TransportButton.StartCooldown(CooldownType.Reset);
+            TransportButton.StartCooldown();
         else if (interact.Protected)
             TransportButton.StartCooldown(CooldownType.GuardianAngel);
     }
@@ -290,7 +294,7 @@ public class Transporter : Crew
         {
             CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, TransportPlayer1, TransportPlayer2);
             Coroutines.Start(TransportPlayers());
-            TransportButton.StartCooldown(CooldownType.Reset);
+            TransportButton.StartCooldown();
         }
     }
 
@@ -326,7 +330,7 @@ public class Transporter : Crew
             if (player == null || player.HasDied())
                 continue;
 
-            if (UntransportablePlayers.ContainsKey(player.PlayerId) && player.moveable && UntransportablePlayers.GetValueSafe(player.PlayerId).AddSeconds(0.5) < DateTime.UtcNow)
+            if (UntransportablePlayers.ContainsKey(player.PlayerId) && player.moveable && UntransportablePlayers[player.PlayerId].AddSeconds(6) < DateTime.UtcNow)
                 UntransportablePlayers.Remove(player.PlayerId);
         }
     }

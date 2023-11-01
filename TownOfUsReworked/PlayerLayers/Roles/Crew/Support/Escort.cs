@@ -40,7 +40,7 @@ public class Escort : Crew
             BlockButton.Begin();
         }
         else if (interact.Reset)
-            BlockButton.StartCooldown(CooldownType.Reset);
+            BlockButton.StartCooldown();
         else if (interact.Protected)
             BlockButton.StartCooldown(CooldownType.GuardianAngel);
     }

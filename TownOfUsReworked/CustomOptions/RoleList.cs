@@ -100,6 +100,7 @@ public class RoleListEntryOption : CustomOption
         { LayerEnum.Any, "Any"},
 
         { LayerEnum.RandomCrew, "<color=#1D7CF2FF>Random</color> <color=#8CFFFFFF>Crew</color>"},
+        { LayerEnum.RegularCrew, "<color=#1D7CF2FF>Regular</color> <color=#8CFFFFFF>Crew</color>"},
         { LayerEnum.CrewAudit, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Auditor</color>"},
         { LayerEnum.CrewInvest, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Investigative</color>"},
         { LayerEnum.CrewKill, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Killing</color>"},
@@ -107,34 +108,33 @@ public class RoleListEntryOption : CustomOption
         { LayerEnum.CrewSov, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Sovereign</color>"},
         { LayerEnum.CrewSupport, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Support</color>"},
         { LayerEnum.CrewUtil, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Utility</color>"},
-        { LayerEnum.RegularCrew, "<color=#1D7CF2FF>Regular</color> <color=#8CFFFFFF>Crew</color>"},
 
         { LayerEnum.RandomNeutral, "<color=#1D7CF2FF>Random</color> <color=#B3B3B3FF>Neutral</color>"},
+        { LayerEnum.RegularNeutral, "<color=#1D7CF2FF>Regular</color> <color=#B3B3B3FF>Neutral</color>"},
+        { LayerEnum.HarmfulNeutral, "<color=#1D7CF2FF>Harmful</color> <color=#B3B3B3FF>Neutral</color>"},
         { LayerEnum.NeutralApoc, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Apocalypse</color>"},
         { LayerEnum.NeutralBen, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Benign</color>"},
         { LayerEnum.NeutralEvil, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Evil</color>"},
         { LayerEnum.NeutralHarb, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Harbinger</color>"},
         { LayerEnum.NeutralKill, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killing</color>"},
         { LayerEnum.NeutralNeo, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Neophyte</color>"},
-        { LayerEnum.RegularNeutral, "<color=#1D7CF2FF>Regular</color> <color=#B3B3B3FF>Neutral</color>"},
-        { LayerEnum.HarmfulNeutral, "<color=#1D7CF2FF>Harmful</color> <color=#B3B3B3FF>Neutral</color>"},
 
         { LayerEnum.RandomIntruder, "<color=#1D7CF2FF>Random</color> <color=#FF0000FF>Intruder</color>"},
+        { LayerEnum.RegularIntruder, "<color=#1D7CF2FF>Regular</color> <color=#FF0000FF>Intruder</color>"},
         { LayerEnum.IntruderHead, "<color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Head</color>"},
         { LayerEnum.IntruderConceal, "<color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Concealing</color>"},
         { LayerEnum.IntruderDecep, "<color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Deception</color>"},
         { LayerEnum.IntruderKill, "<color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Killing</color>"},
         { LayerEnum.IntruderSupport, "<color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Support</color>"},
         { LayerEnum.IntruderUtil, "<color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Utility</color>"},
-        { LayerEnum.RegularIntruder, "<color=#1D7CF2FF>Regular</color> <color=#FF0000FF>Intruder</color>"},
 
         { LayerEnum.RandomSyndicate, "<color=#1D7CF2FF>Random</color> <color=#008000FF>Syndicate</color>"},
+        { LayerEnum.RegularSyndicate, "<color=#1D7CF2FF>Regular</color> <color=#008000FF>Syndicate</color>"},
         { LayerEnum.SyndicateDisrup, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Disruption</color>"},
         { LayerEnum.SyndicateKill, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Killing</color>"},
         { LayerEnum.SyndicatePower, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Power</color>"},
         { LayerEnum.SyndicateSupport, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Support</color>"},
-        { LayerEnum.SyndicateUtil, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Utility</color>"},
-        { LayerEnum.RegularSyndicate, "<color=#1D7CF2FF>Regular</color> <color=#008000FF>Syndicate</color>"}
+        { LayerEnum.SyndicateUtil, "<color=#008000FF>Syndicate</color> <color=#1D7CF2FF>Utility</color>"}
     };
 
     public RoleListEntryOption(int id, string name) : base(id, MultiMenu.RoleList, $"{name} {(name.Contains("Entry") ? EntryNum : BanNum) + 1}", CustomOptionType.Entry, LayerEnum.None)
@@ -153,7 +153,18 @@ public class RoleListEntryOption : CustomOption
         Setting.Cast<ToggleOption>().TitleText.text = GetString(Value);
     }
 
-    public static string GetString(object val) => Alignments.TryGetValue((LayerEnum)val, out var result) ? result : Entries[(LayerEnum)val];
+    public string GetString(object val)
+    {
+        try
+        {
+            return Alignments.TryGetValue((LayerEnum)val, out var result) ? result : Entries[(LayerEnum)val];
+        }
+        catch
+        {
+            Value = LayerEnum.None;
+            return "None";
+        }
+    }
 
     public LayerEnum Get() => (LayerEnum)Value;
 

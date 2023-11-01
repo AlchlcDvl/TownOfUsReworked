@@ -46,7 +46,7 @@ public class Concealer : Syndicate
         if (interact.AbilityUsed)
             ConcealedPlayer = player;
         else if (interact.Reset)
-            ConcealButton.StartCooldown(CooldownType.Reset);
+            ConcealButton.StartCooldown();
         else if (interact.Protected)
             ConcealButton.StartCooldown(CooldownType.GuardianAngel);
     }

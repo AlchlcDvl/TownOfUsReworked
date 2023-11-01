@@ -32,7 +32,7 @@ public class Crusader : Syndicate
             CrusadeButton.Begin();
         }
         else if (interact.Reset)
-            CrusadeButton.StartCooldown(CooldownType.Reset);
+            CrusadeButton.StartCooldown();
         else if (interact.Protected)
             CrusadeButton.StartCooldown(CooldownType.GuardianAngel);
     }

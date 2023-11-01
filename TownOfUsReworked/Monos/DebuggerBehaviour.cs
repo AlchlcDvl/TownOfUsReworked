@@ -168,7 +168,7 @@ public class DebuggerBehaviour : MonoBehaviour
                 CustomPlayer.Local.GetButtons().ForEach(x => x.CooldownTime = 0f);
 
             if (GUILayout.Button("Reset Full Cooldown"))
-                CustomPlayer.Local.GetButtons().ForEach(x => x.StartCooldown(CooldownType.Reset));
+                CustomPlayer.Local.GetButtons().ForEach(x => x.StartCooldown());
 
             if (GUILayout.Button("Reset Survivor Cooldown"))
                 CustomPlayer.Local.GetButtons().ForEach(x => x.StartCooldown(CooldownType.Survivor));

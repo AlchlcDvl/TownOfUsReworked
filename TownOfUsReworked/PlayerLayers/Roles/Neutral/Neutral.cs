@@ -9,7 +9,7 @@ public abstract class Neutral : Role
     {
         Faction = Faction.Neutral;
         FactionColor = Colors.Neutral;
-        Player.Data.SetImpostor(false);
+        Data.SetImpostor(false);
     }
 
     public override List<PlayerControl> Team()

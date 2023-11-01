@@ -556,6 +556,9 @@ public static class LayerExtentions
 
     public static bool CanVent(this PlayerControl player)
     {
+        if (MapPatches.CurrentMap == 3)
+            return false;
+
         var playerInfo = player?.Data;
 
         if (player == null || playerInfo == null)
@@ -998,6 +1001,7 @@ public static class LayerExtentions
         Alignment.CrewConceal => withColors ? "<color=#8CFFFFFF>Crew (<color=#1D7CF2FF>Concealing</color>)</color>" : "Crew (Concealing)",
         Alignment.CrewPower => withColors ? "<color=#8CFFFFFF>Crew (<color=#1D7CF2FF>Power</color>)</color>" : "Crew (Power)",
         Alignment.CrewDisrup => withColors ? "<color=#8CFFFFFF>Crew (<color=#1D7CF2FF>Disruption</color>)</color>" : "Crew (Disruption)",
+        Alignment.CrewHead => withColors ? "<color=#8CFFFFFF>Crew (<color=#1D7CF2FF>Head</color>)</color>" : "Crew (Head)",
         Alignment.IntruderSupport => withColors ? "<color=#FF0000FF>Intruder (<color=#1D7CF2FF>Support</color>)</color>" : "Intruder (Support)",
         Alignment.IntruderConceal => withColors ? "<color=#FF0000FF>Intruder (<color=#1D7CF2FF>Concealing</color>)</color>" : "Intruder (Concealing)",
         Alignment.IntruderDecep => withColors ? "<color=#FF0000FF>Intruder (<color=#1D7CF2FF>Deception</color>)</color>" : "Intuder (Deception)",
@@ -1009,6 +1013,7 @@ public static class LayerExtentions
         Alignment.IntruderSov => withColors ? "<color=#FF0000FF>Intruder (<color=#1D7CF2FF>Sovereign</color>)</color>" : "Intruder (Sovereign)",
         Alignment.IntruderDisrup=> withColors ? "<color=#FF0000FF>Intruder (<color=#1D7CF2FF>Disruption</color>)</color>" : "Intruder (Disruption)",
         Alignment.IntruderPower => withColors ? "<color=#FF0000FF>Intruder (<color=#1D7CF2FF>Power</color>)</color>" : "Intruder (Power)",
+        Alignment.IntruderHead => withColors ? "<color=#FF0000FF>Intruder (<color=#1D7CF2FF>Head</color>)</color>" : "Intruder (Head)",
         Alignment.NeutralKill => withColors ? "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Killing</color>)</color>" : "Neutral (Killing)",
         Alignment.NeutralNeo => withColors ? "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Neophyte</color>)</color>" : "Neutral (Neophyte)",
         Alignment.NeutralEvil => withColors ? "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Evil</color>)</color>" : "Neutral (Evil)",
@@ -1026,6 +1031,7 @@ public static class LayerExtentions
         Alignment.NeutralDisrup => withColors ? "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Apocalypse</color>)</color>" : "Neutral (Disruption)",
         Alignment.NeutralApoc => withColors ? "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Disruption</color>)</color>" : "Neutral (Apocalypse)",
         Alignment.NeutralHarb => withColors ? "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Harbinger</color>)</color>" : "Neutral (Harbinger)",
+        Alignment.NeutralHead => withColors ? "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Head</color>)</color>" : "Neutral (Head)",
         Alignment.SyndicateKill => withColors ? "<color=#008000FF>Syndicate (<color=#1D7CF2FF>Killing</color>)</color>" : "Syndicate (Killing)",
         Alignment.SyndicateSupport => withColors ? "<color=#008000FF>Syndicate (<color=#1D7CF2FF>Support</color>)</color>" : "Syndicate (Support)",
         Alignment.SyndicateDisrup => withColors ? "<color=#008000FF>Syndicate (<color=#1D7CF2FF>Disruption</color>)</color>" : "Syndicate (Disruption)",
@@ -1037,10 +1043,7 @@ public static class LayerExtentions
         Alignment.SyndicateProt => withColors ? "<color=#008000FF>Syndicate (<color=#1D7CF2FF>Protective</color>)</color>" : "Syndicate (Protective)",
         Alignment.SyndicateConceal => withColors ? "<color=#008000FF>Syndicate (<color=#1D7CF2FF>Concealing</color>)</color>" : "Syndicate (Concealing)",
         Alignment.SyndicateDecep => withColors ? "<color=#008000FF>Syndicate (<color=#1D7CF2FF>Deception</color>)</color>" : "Syndicate (Deception)",
-        Alignment.IntruderHead => withColors ? "<color=#FF0000FF>Intruder (<color=#1D7CF2FF>Head</color>)</color>" : "Intruder (Head)",
-        Alignment.CrewHead => withColors ? "<color=#8CFFFFFF>Crew (<color=#1D7CF2FF>Head</color>)</color>" : "Crew (Head)",
         Alignment.SyndicateHead => withColors ? "<color=#008000FF>Syndicate (<color=#1D7CF2FF>Head</color>)</color>" : "Syndicate (Head)",
-        Alignment.NeutralHead => withColors ? "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Head</color>)</color>" : "Neutral (Head)",
         Alignment.GameModeHideAndSeek => withColors ? "<color=#A81538FF>Game Mode (<color=#7500AFFF>Hide And Seek</color>)</color>" : "Game Mode (Hide And Seek)",
         Alignment.GameModeTaskRace => withColors ? "<color=#A81538FF>Game Mode (<color=#1E49CFFF>Task Race</color>)</color>" : "Game Mode (Task Race)",
         _ => "Invalid"

@@ -64,6 +64,8 @@ public class CustomOption
             return GetOptions<RoleListEntryOption>(CustomOptionType.Entry).Any(x => x.Name.Contains("Entry") && (x.Get() == layer || x.Get() == LayerEnum.Any)) && IsRoleList;
         else if (option is CustomOption custom)
             return custom.Active;
+        else if (option is bool boolean)
+            return boolean;
 
         return false;
     }
@@ -86,7 +88,7 @@ public class CustomOption
         if (Setting is ToggleOption toggle)
         {
             if (Type == CustomOptionType.Entry)
-                toggle.TitleText.text = RoleListEntryOption.GetString(Value);
+                toggle.TitleText.text = ((RoleListEntryOption)this).GetString(Value);
             else
             {
                 var newValue = (bool)Value;

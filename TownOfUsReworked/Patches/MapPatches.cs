@@ -4,6 +4,7 @@ namespace TownOfUsReworked.Patches;
 public static class MapPatches
 {
     public static byte CurrentMap;
+    private static readonly byte[] TBModes = { 1, 0, 2 };
 
     public static void Prefix()
     {
@@ -12,12 +13,10 @@ public static class MapPatches
 
         if (AmongUsClient.Instance.AmHost)
         {
-            byte[] maps = { 0, 1, 2, 4, 5, 6, 7 };
-            byte[] tbModes = { 1, 0, 2 };
-            CurrentMap = maps[(int)CustomGameOptions.Map];
-            var tbMode = tbModes[(int)CustomGameOptions.TaskBarMode];
+            CurrentMap = (byte)CustomGameOptions.Map;
+            var tbMode = TBModes[(int)CustomGameOptions.TaskBarMode];
 
-            if (CustomGameOptions.Map == MapEnum.Random || (CurrentMap == 5 && !SubLoaded) || (CurrentMap == 6 && !LILoaded) || CurrentMap == 7)
+            if ((CurrentMap == 6 && !SubLoaded) || (CurrentMap == 7 && !LILoaded) || CurrentMap == 8)
                 CurrentMap = GetRandomMap();
 
             TownOfUsReworked.NormalOptions.MapId = CurrentMap;
@@ -27,7 +26,7 @@ public static class MapPatches
             TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.Shapeshifter, 0, 0);
             TownOfUsReworked.NormalOptions.CrewLightMod = CustomGameOptions.CrewVision;
             TownOfUsReworked.NormalOptions.ImpostorLightMod = CustomGameOptions.IntruderVision;
-            TownOfUsReworked.NormalOptions.AnonymousVotes = CustomGameOptions.AnonymousVoting;
+            TownOfUsReworked.NormalOptions.AnonymousVotes = CustomGameOptions.AnonymousVoting != AnonVotes.Disabled;
             TownOfUsReworked.NormalOptions.VisualTasks = CustomGameOptions.VisualTasks;
             TownOfUsReworked.NormalOptions.PlayerSpeedMod = CustomGameOptions.PlayerSpeed;
             TownOfUsReworked.NormalOptions.NumImpostors = CustomGameOptions.IntruderCount;
@@ -45,6 +44,7 @@ public static class MapPatches
             TownOfUsReworked.NormalOptions.NumLongTasks = CustomGameOptions.LongTasks;
             TownOfUsReworked.NormalOptions.NumCommonTasks = CustomGameOptions.CommonTasks;
             GameOptionsManager.Instance.currentNormalGameOptions = TownOfUsReworked.NormalOptions;
+            CustomPlayer.AllPlayers.ForEach(x => x.MaxReportDistance = CustomGameOptions.ReportDistance);
             AdjustSettings(CurrentMap);
             CallRpc(CustomRPC.Misc, MiscRPC.SetSettings, CurrentMap, tbMode);
         }
@@ -57,16 +57,18 @@ public static class MapPatches
         totalWeight += CustomGameOptions.RandomMapSkeld;
         totalWeight += CustomGameOptions.RandomMapMira;
         totalWeight += CustomGameOptions.RandomMapPolus;
+        totalWeight += CustomGameOptions.RandomMapdlekS;
         totalWeight += CustomGameOptions.RandomMapAirship;
+        totalWeight += CustomGameOptions.RandomMapFungle;
         totalWeight += CustomGameOptions.RandomMapSubmerged;
         totalWeight += CustomGameOptions.RandomMapLevelImpostor;
-        var maps = new List<byte>() { 0, 1, 2, 4 };
+        var maps = new List<byte>() { 0, 1, 2, 3, 4, 5 };
 
         if (SubLoaded)
-            maps.Add(5);
+            maps.Add(6);
 
         if (LILoaded)
-            maps.Add(6);
+            maps.Add(7);
 
         if (totalWeight == 0)
             return maps.Random();
@@ -88,18 +90,28 @@ public static class MapPatches
 
         randomNumber -= CustomGameOptions.RandomMapPolus;
 
+        if (randomNumber < CustomGameOptions.RandomMapdlekS)
+            return 3;
+
+        randomNumber -= CustomGameOptions.RandomMapdlekS;
+
         if (randomNumber < CustomGameOptions.RandomMapAirship)
             return 4;
 
         randomNumber -= CustomGameOptions.RandomMapAirship;
 
-        if (SubLoaded && randomNumber < CustomGameOptions.RandomMapSubmerged)
+        if (randomNumber < CustomGameOptions.RandomMapFungle)
             return 5;
+
+        randomNumber -= CustomGameOptions.RandomMapFungle;
+
+        if (SubLoaded && randomNumber < CustomGameOptions.RandomMapSubmerged)
+            return 6;
 
         randomNumber -= CustomGameOptions.RandomMapSubmerged;
 
         if (LILoaded && randomNumber < CustomGameOptions.RandomMapLevelImpostor)
-            return 6;
+            return 7;
 
         return maps.Random();
     }
@@ -116,7 +128,7 @@ public static class MapPatches
             AdjustCooldowns(-CustomGameOptions.SmallMapDecreasedCooldown);
         }
 
-        if (map is 4 or 5)
+        if (map is 4 or 5 or 6)
         {
             TownOfUsReworked.NormalOptions.NumShortTasks -= CustomGameOptions.LargeMapDecreasedShortTasks;
             TownOfUsReworked.NormalOptions.NumLongTasks -= CustomGameOptions.LargeMapDecreasedLongTasks;
@@ -131,5 +143,33 @@ public static class MapPatches
             if (option.Type == CustomOptionType.Number)
                 option.Set((float)option.Value + change);
         }
+    }
+}
+
+[HarmonyPatch(typeof(AmongUsClient._CoStartGameHost_d__30), nameof(AmongUsClient._CoStartGameHost_d__30.MoveNext))]
+public static class AmongUsClientCoStartHostPatch
+{
+    public static bool Prefix(AmongUsClient._CoStartGameHost_d__30 __instance, ref bool __result)
+    {
+        if (__instance.__1__state != 0)
+            return true;
+
+        __instance.__1__state = -1;
+
+        if (LobbyBehaviour.Instance)
+            LobbyBehaviour.Instance.Despawn();
+
+        if (ShipStatus.Instance)
+        {
+            __instance.__2__current = null;
+            __instance.__1__state = 2;
+            __result = true;
+            return false;
+        }
+
+        __instance.__2__current = __instance.__4__this.ShipLoadingAsyncHandle = __instance.__4__this.ShipPrefabs[MapPatches.CurrentMap].InstantiateAsync();
+        __instance.__1__state = 1;
+        __result = true;
+        return false;
     }
 }

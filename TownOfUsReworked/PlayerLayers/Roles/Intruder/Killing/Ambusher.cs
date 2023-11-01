@@ -32,7 +32,7 @@ public class Ambusher : Intruder
             AmbushButton.Begin();
         }
         else if (interact.Reset)
-            AmbushButton.StartCooldown(CooldownType.Reset);
+            AmbushButton.StartCooldown();
         else if (interact.Protected)
             AmbushButton.StartCooldown(CooldownType.GuardianAngel);
     }

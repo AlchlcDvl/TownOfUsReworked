@@ -11,7 +11,10 @@ public static class IntroSplash
         "I need my knife, where is it?",
         "You son of a trash can, I'm in",
         "real",
-        "bous"
+        "bous",
+        "My life be like",
+        "Man I'm ded",
+        "LET. HIM. COOK."
     };
     public static TextMeshPro Intro;
 

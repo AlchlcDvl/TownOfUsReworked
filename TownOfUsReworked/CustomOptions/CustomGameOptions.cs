@@ -35,7 +35,7 @@ public static class CustomGameOptions
     //Game Modifiers
     public static WhoCanVentOptions WhoCanVent => (WhoCanVentOptions)Generate.WhoCanVent.GetInt();
     public static bool VisualTasks => Generate.VisualTasks;
-    public static bool AnonymousVoting => Generate.AnonymousVoting;
+    public static AnonVotes AnonymousVoting => (AnonVotes)Generate.AnonymousVoting.GetInt();
     public static bool FactionSeeRoles => Generate.FactionSeeRoles;
     public static bool ParallelMedScans => Generate.ParallelMedScans;
     public static DisableSkipButtonMeetings SkipButtonDisable => (DisableSkipButtonMeetings)Generate.SkipButtonDisable.GetInt();
@@ -84,11 +84,11 @@ public static class CustomGameOptions
     {
         get
         {
-            var map = Generate.Map.GetInt();
+            var map = Generate.Map?.GetInt();
 
-            if (map is 0 or 1 or 2 or 3)
+            if (map is 0 or 1 or 2 or 3 or 4 or 5)
                 return (MapEnum)map;
-            else if (map == 4)
+            else if (map == 6)
             {
                 if (SubLoaded)
                     return MapEnum.Submerged;
@@ -97,7 +97,7 @@ public static class CustomGameOptions
                 else
                     return MapEnum.Random;
             }
-            else if (map == 5 && LILoaded)
+            else if (map == 7 && LILoaded)
                 return MapEnum.LevelImpostor;
             else
                 return MapEnum.Random;
@@ -107,6 +107,8 @@ public static class CustomGameOptions
     public static int RandomMapMira => Generate.RandomMapMira;
     public static int RandomMapPolus => Generate.RandomMapPolus;
     public static int RandomMapAirship => Generate.RandomMapAirship;
+    public static int RandomMapdlekS => Generate.RandomMapdlekS;
+    public static int RandomMapFungle => Generate.RandomMapFungle;
     public static int RandomMapSubmerged => SubLoaded ? Generate.RandomMapSubmerged : 0;
     public static int RandomMapLevelImpostor => LILoaded ? Generate.RandomMapLevelImpostor : 0;
     public static float SmallMapDecreasedCooldown => Generate.SmallMapDecreasedCooldown;
@@ -173,16 +175,24 @@ public static class CustomGameOptions
     public static bool WifiChartCourseSwap => Generate.WifiChartCourseSwap;
     public static bool PolusVentImprovements => Generate.PolusVentImprovements;
     public static float SeismicTimer => Generate.SeismicTimer;
+    public static bool EnableBetterPolus => Generate.EnableBetterPolus;
 
     //Mira Settings
     public static bool MiraHQVentImprovements => Generate.MiraHQVentImprovements;
     public static float MiraO2Timer => Generate.MiraO2Timer;
     public static float MiraReactorTimer => Generate.MiraReactorTimer;
+    public static bool EnableBetterMiraHQ => Generate.EnableBetterMiraHQ;
+
+    //Fungle Settings
+    public static float FungleReactorTimer => Generate.FungleReactorTimer;
+    public static float FungleMixupTimer => Generate.FungleMixupTimer;
+    public static bool EnableBetterFungle => Generate.EnableBetterFungle;
 
     //Skeld Settings
     public static bool SkeldVentImprovements => Generate.SkeldVentImprovements;
     public static float SkeldO2Timer => Generate.SkeldO2Timer;
     public static float SkeldReactorTimer => Generate.SkeldReactorTimer;
+    public static bool EnableBetterSkeld => Generate.EnableBetterSkeld;
 
     //Airship Settings
     public static bool MoveDivert => Generate.MoveDivert;
@@ -193,6 +203,7 @@ public static class CustomGameOptions
     public static AirshipSpawnType SpawnType => (AirshipSpawnType)Generate.SpawnType.GetInt();
     public static MoveAdmin MoveAdmin => (MoveAdmin)Generate.MoveAdmin.GetInt();
     public static MoveElectrical MoveElectrical => (MoveElectrical)Generate.MoveElectrical.GetInt();
+    public static bool EnableBetterAirship => Generate.EnableBetterAirship;
 
     //Role Spawn
     public static int MayorOn => Generate.MayorOn.GetChance();
@@ -389,7 +400,7 @@ public static class CustomGameOptions
     public static float RecentKill => Generate.RecentKill;
     public static float FootprintInterval => Generate.FootprintInterval;
     public static float FootprintDur => Generate.FootprintDur;
-    public static bool AnonymousFootPrint => Generate.AnonymousFootPrint;
+    public static FootprintVisibility AnonymousFootPrint => (FootprintVisibility)Generate.AnonymousFootPrint.GetInt();
 
     //Medium Settings
     public static int MediumCount => Generate.MediumOn.GetCount();
@@ -686,6 +697,7 @@ public static class CustomGameOptions
     public static bool CryoVent => Generate.CryoVent;
     public static int CryomaniacCount => Generate.CryomaniacOn.GetCount();
     public static float CryoDouseCd => Generate.CryoDouseCd;
+    public static float CryoKillCd => Generate.CryoKillCd;
     public static bool UniqueCryomaniac => Generate.UniqueCryomaniac;
     public static bool CryoFreezeAll => Generate.CryoFreezeAll;
     public static bool CryoLastKillerBoost => Generate.CryoLastKillerBoost;
@@ -1081,7 +1093,6 @@ public static class CustomGameOptions
     public static bool UniqueSwapper => Generate.UniqueSwapper;
 
     //Politician Settings
-    public static bool PoliticianAnonymous => Generate.PoliticianAnonymous;
     public static int PoliticianVoteBank => Generate.PoliticianVoteBank;
     public static bool UniquePolitician => Generate.UniquePolitician;
     public static int PoliticianCount => Generate.PoliticianOn.GetCount();

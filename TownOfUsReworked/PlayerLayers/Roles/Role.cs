@@ -74,7 +74,7 @@ public abstract class Role : PlayerLayer
     public Faction Faction { get; set; } = Faction.None;
     public Alignment Alignment { get; set; } = Alignment.None;
     public SubFaction SubFaction { get; set; } = SubFaction.None;
-    public List<Role> RoleHistory { get; set; } = new();
+    public List<Role> RoleHistory { get; set; }
     public ChatChannel CurrentChannel { get; set; } = ChatChannel.All;
     public Dictionary<byte, CustomArrow> AllArrows { get; set; }
     public Dictionary<byte, CustomArrow> DeadArrows { get; set; }
@@ -85,9 +85,6 @@ public abstract class Role : PlayerLayer
 
     public string FactionColorString => $"<color=#{FactionColor.ToHtmlStringRGBA()}>";
     public string SubFactionColorString => $"<color=#{SubFactionColor.ToHtmlStringRGBA()}>";
-
-    public string IntroSound => $"{Name}Intro";
-    public bool IntroPlayed { get; set; }
 
     public Func<string> Objectives { get; set; } = () => "- None";
 
@@ -134,6 +131,32 @@ public abstract class Role : PlayerLayer
         !Player.IsTurnedTraitor() && !Ignore;
 
     public bool HasTarget => Type is LayerEnum.Executioner or LayerEnum.GuardianAngel or LayerEnum.Guesser or LayerEnum.BountyHunter;
+
+    protected Role(PlayerControl player) : base(player)
+    {
+        if (GetRole(player))
+            GetRole(player).Player = null;
+
+        RoleHistory = new();
+        AllArrows = new();
+        DeadArrows = new();
+        Positions = new();
+        YellerArrows = new();
+        PlayerNumbers = new();
+        AllRoles.Add(this);
+
+        /*if (MapPatches.CurrentMap == 4 && CustomGameOptions.CallPlatformButton)
+            CallButton = new(this, "CallPlatform", AbilityTypes.Targetless, "Quarternary", UsePlatform);*/
+
+        if (!IsCustomHnS && !IsTaskRace)
+        {
+            if (CustomGameOptions.EnforcerOn > 0)
+                BombKillButton = new(this, "BombKill", AbilityTypes.Target, "Quarternary", BombKill);
+
+            if (CustomGameOptions.BountyHunterOn > 0 && CustomGameOptions.BountyHunterCanPickTargets)
+                PlaceHitButton = new(this, "PlaceHit", AbilityTypes.Target, "Quarternary", PlaceHit);
+        }
+    }
 
     public override void UpdateHud(HudManager __instance)
     {
@@ -235,11 +258,11 @@ public abstract class Role : PlayerLayer
         }
     }
 
-    /*private bool CanCall() => ((IsLeft && PlayerIsLeft) || (!IsLeft && !PlayerIsLeft)) && !PlateformIsUsed && TownOfUsReworked.NormalOptions.MapId != 4;
+    /*private bool CanCall() => ((IsLeft && PlayerIsLeft) || (!IsLeft && !PlayerIsLeft)) && !PlateformIsUsed && MapPatches.CurrentMap != 4;
 
     private bool IsInPosition()
     {
-        if (TownOfUsReworked.NormalOptions.MapId != 4)
+        if (MapPatches.CurrentMap != 4)
             return false;
 
         var pos = Player.transform.position;
@@ -292,6 +315,7 @@ public abstract class Role : PlayerLayer
         yield return Effects.Wait(0.1f);
 
         PlateformIsUsed = false;
+        yield break;
     }*/
 
     public void DestroyArrowR(byte targetPlayerId)
@@ -432,32 +456,6 @@ public abstract class Role : PlayerLayer
     public static string SyndicateWinCon => (CustomGameOptions.AltImps ? "- Have a critical sabotage reach 0 seconds\n" : "") + "- Cause chaos and kill off anyone who opposes the " +
         "<color=#008000FF>Syndicate</color>";
     public const string CrewWinCon = "- Finish all tasks\n- Eject all <color=#FF0000FF>evildoers</color>";
-
-    protected Role(PlayerControl player) : base(player)
-    {
-        if (GetRole(player))
-            GetRole(player).Player = null;
-
-        RoleHistory = new();
-        AllArrows = new();
-        DeadArrows = new();
-        Positions = new();
-        YellerArrows = new();
-        PlayerNumbers = new();
-        AllRoles.Add(this);
-
-        /*if (TownOfUsReworked.NormalOptions.MapId == 4 && CustomGameOptions.CallPlatformButton)
-            CallButton = new(this, "CallPlatform", AbilityTypes.Targetless, "Quarternary", UsePlatform);*/
-
-        if (!IsCustomHnS && !IsTaskRace)
-        {
-            if (CustomGameOptions.EnforcerOn > 0)
-                BombKillButton = new(this, "BombKill", AbilityTypes.Target, "Quarternary", BombKill);
-
-            if (CustomGameOptions.BountyHunterOn > 0 && CustomGameOptions.BountyHunterCanPickTargets)
-                PlaceHitButton = new(this, "PlaceHit", AbilityTypes.Target, "Quarternary", PlaceHit);
-        }
-    }
 
     public void PlaceHit()
     {

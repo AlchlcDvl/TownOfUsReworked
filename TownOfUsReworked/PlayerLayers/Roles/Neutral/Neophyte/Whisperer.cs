@@ -64,7 +64,7 @@ public class Whisperer : Neutral
         WhisperCount++;
         Persuaded.ForEach(x => PlayerConversion.Remove(x));
         removals.ForEach(x => PlayerConversion.Remove(x));
-        WhisperButton.StartCooldown(CooldownType.Reset);
+        WhisperButton.StartCooldown();
     }
 
     public override void UpdateHud(HudManager __instance)

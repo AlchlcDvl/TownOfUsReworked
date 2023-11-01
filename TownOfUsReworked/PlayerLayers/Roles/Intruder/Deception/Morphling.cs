@@ -32,7 +32,7 @@ public class Morphling : Intruder
         DefaultOutfit(Player);
 
         if (CustomGameOptions.MorphCooldownsLinked)
-            SampleButton.StartCooldown(CooldownType.Reset);
+            SampleButton.StartCooldown();
     }
 
     public void HitMorph()

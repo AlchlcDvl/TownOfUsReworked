@@ -78,10 +78,10 @@ public static class RecomputeTaskCounts
     }
 }
 
-[HarmonyPatch(typeof(PlayerControl._CoSetTasks_d__114), nameof(PlayerControl._CoSetTasks_d__114.MoveNext))]
+[HarmonyPatch(typeof(PlayerControl._CoSetTasks_d__126), nameof(PlayerControl._CoSetTasks_d__126.MoveNext))]
 public static class PlayerControl_SetTasks
 {
-    public static void Postfix(PlayerControl._CoSetTasks_d__114 __instance)
+    public static void Postfix(PlayerControl._CoSetTasks_d__126 __instance)
     {
         if (__instance == null || IsHnS)
             return;

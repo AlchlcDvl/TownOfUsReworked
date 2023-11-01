@@ -47,6 +47,9 @@ public static class MiraShipStatusPatch
 
         public static void Postfix(ShipStatus __instance)
         {
+            if (!CustomGameOptions.EnableBetterMiraHQ)
+                return;
+
             if (!IsVentModified && __instance.Type == ShipStatus.MapType.Hq)
             {
                 CommsVent.Id = GetAvailableId();
@@ -57,6 +60,9 @@ public static class MiraShipStatusPatch
 
     private static void ApplyChanges(ShipStatus __instance)
     {
+        if (!CustomGameOptions.EnableBetterMiraHQ)
+            return;
+
         if (__instance.Type == ShipStatus.MapType.Hq)
         {
             FindRooms();
@@ -187,15 +193,17 @@ public static class MiraShipStatusPatch
     }
 }
 
-[HarmonyPatch(typeof(ReactorSystemType), nameof(ReactorSystemType.RepairDamage))]
+[HarmonyPatch(typeof(ReactorSystemType), nameof(ReactorSystemType.UpdateSystem))]
 public static class ReactorMira
 {
-    public static bool Prefix(ReactorSystemType __instance, ref byte opCode)
+    public static bool Prefix(ReactorSystemType __instance, ref MessageReader msgReader)
     {
-        if (ShipStatus.Instance.Type == ShipStatus.MapType.Hq && opCode == 128 && !__instance.IsActive)
+        if (!CustomGameOptions.EnableBetterMiraHQ)
+            return true;
+
+        if (ShipStatus.Instance.Type == ShipStatus.MapType.Hq && msgReader.ReadByte() == 128 && !__instance.IsActive)
         {
-            __instance.Countdown = CustomGameOptions.MiraReactorTimer;
-            __instance.ReactorDuration = CustomGameOptions.MiraReactorTimer;
+            __instance.Countdown = __instance.ReactorDuration = CustomGameOptions.MiraReactorTimer;
             __instance.UserConsolePairs.Clear();
             __instance.IsDirty = true;
             return false;
@@ -205,15 +213,17 @@ public static class ReactorMira
     }
 }
 
-[HarmonyPatch(typeof(LifeSuppSystemType), nameof(LifeSuppSystemType.RepairDamage))]
+[HarmonyPatch(typeof(LifeSuppSystemType), nameof(LifeSuppSystemType.UpdateSystem))]
 public static class O2Mira
 {
-    public static bool Prefix(LifeSuppSystemType __instance, ref byte opCode)
+    public static bool Prefix(LifeSuppSystemType __instance, ref MessageReader msgReader)
     {
-        if (ShipStatus.Instance.Type == ShipStatus.MapType.Hq && opCode == 128 && !__instance.IsActive)
+        if (!CustomGameOptions.EnableBetterMiraHQ)
+            return true;
+
+        if (ShipStatus.Instance.Type == ShipStatus.MapType.Hq && msgReader.ReadByte() == 128 && !__instance.IsActive)
         {
-            __instance.Countdown = CustomGameOptions.MiraO2Timer;
-            __instance.LifeSuppDuration = CustomGameOptions.MiraO2Timer;
+            __instance.Countdown = __instance.LifeSuppDuration = CustomGameOptions.MiraO2Timer;
             __instance.CompletedConsoles.Clear();
             __instance.IsDirty = true;
             return false;

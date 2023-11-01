@@ -23,7 +23,7 @@ public static class UpdateNames
             ColorNames.Add(player.PlayerId, player.Data.ColorName.Replace("(", "").Replace(")", ""));
 
         (player.NameText().text, player.NameText().color) = UpdateGameName(player);
-        player.ColorBlindText().text = UpdateColorblind(player);
+        (player.ColorBlindText().text, player.ColorBlindText().color) = (UpdateColorblind(player), player.NameText().color);
     }
 
     private static string UpdateColorblind(PlayerControl player)

@@ -19,22 +19,8 @@ public class Info
         Type = type;
     }
 
-    public override string ToString()
-    {
-        var builder = new StringBuilder();
-        builder.AppendLine($"Name: {Name}")
-            .AppendLine($"Short Form: {Short}")
-            .AppendLine($"Description: {Description}");
-        return builder.ToString();
-    }
-
-    public static List<Info> ConvertToBase<T>(List<T> list) where T : Info => list.Cast<Info>().ToList();
-
-    public static void SetAllInfo()
-    {
-        AllInfo.AddRanges(ConvertToBase(LayerInfo.AllRoles), ConvertToBase(LayerInfo.AllModifiers), ConvertToBase(LayerInfo.AllAbilities), ConvertToBase(LayerInfo.AllObjectifiers),
-            ConvertToBase(LayerInfo.AllFactions), ConvertToBase(LayerInfo.AllSubFactions), ConvertToBase(LayerInfo.AllModes), ConvertToBase(LayerInfo.AllOthers));
-    }
+    public static void SetAllInfo() => AllInfo.AddRanges(LayerInfo.AllRoles, LayerInfo.AllModifiers, LayerInfo.AllAbilities, LayerInfo.AllObjectifiers, LayerInfo.AllFactions,
+        LayerInfo.AllSubFactions, LayerInfo.AllModes, LayerInfo.AllOthers);
 
     public static string ColorIt(string result)
     {
@@ -83,18 +69,6 @@ public class RoleInfo : Info
         };
     }
 
-    public override string ToString()
-    {
-        var builder = new StringBuilder();
-        builder.AppendLine($"Name: {Name}")
-            .AppendLine($"Short Form: {Short}")
-            .AppendLine($"Alignment: {Alignment}")
-            .AppendLine($"Win Condition: {WinCon}")
-            .AppendLine($"Description: {Description}")
-            .AppendLine($"\n{Quote}");
-        return builder.ToString();
-    }
-
     public override void WikiEntry(out string result)
     {
         base.WikiEntry(out result);
@@ -139,15 +113,6 @@ public class FactionInfo : Info
         };
     }
 
-    public override string ToString()
-    {
-        var builder = new StringBuilder();
-        builder.AppendLine($"Name: {Name}")
-            .AppendLine($"Short Form: {Short}")
-            .AppendLine($"Description: {Description}");
-        return builder.ToString();
-    }
-
     public override void WikiEntry(out string result)
     {
         base.WikiEntry(out result);
@@ -181,16 +146,6 @@ public class SubFactionInfo : Info
             SubFaction.Sect => (SectDescription, "Sect", Colors.Sect, "Λ"),
             _ => ("Invalid", "Invalid", Colors.SubFaction, "φ")
         };
-    }
-
-    public override string ToString()
-    {
-        var builder = new StringBuilder();
-        builder.AppendLine($"Name: {Name}")
-            .AppendLine($"Short Form: {Short}")
-            .AppendLine($"Symbol: {Symbol}")
-            .AppendLine($"Description: {Description}");
-        return builder.ToString();
     }
 
     public override void WikiEntry(out string result)
@@ -347,15 +302,6 @@ public class AlignmentInfo : Info
         };
     }
 
-    public override string ToString()
-    {
-        var builder = new StringBuilder();
-        builder.AppendLine($"Name: {Base.AlignmentName(true)}")
-            .AppendLine($"Short Form: {Short}")
-            .AppendLine($"Description: {Description}");
-        return builder.ToString();
-    }
-
     public override void WikiEntry(out string result)
     {
         base.WikiEntry(out result);
@@ -370,16 +316,6 @@ public class ModifierInfo : Info
     public readonly string AppliesTo;
 
     public ModifierInfo(string name, string shortF, string description, string applies, Color color) : base(name, shortF, description, color, InfoType.Modifier) => AppliesTo = applies;
-
-    public override string ToString()
-    {
-        var builder = new StringBuilder();
-        builder.AppendLine($"Name: {Name}")
-            .AppendLine($"Short Form: {Short}")
-            .AppendLine($"Applies To: {AppliesTo}")
-            .AppendLine($"Description: {Description}");
-        return builder.ToString();
-    }
 
     public override void WikiEntry(out string result)
     {
@@ -404,18 +340,6 @@ public class ObjectifierInfo : Info
         Symbol = symbol;
     }
 
-    public override string ToString()
-    {
-        var builder = new StringBuilder();
-        builder.AppendLine($"Name: {Name}")
-            .AppendLine($"Short Form: {Short}")
-            .AppendLine($"Symbol: {Symbol}")
-            .AppendLine($"Applies To: {AppliesTo}")
-            .AppendLine($"Win Condition: {WinCon}")
-            .AppendLine($"Description: {Description}");
-        return builder.ToString();
-    }
-
     public override void WikiEntry(out string result)
     {
         base.WikiEntry(out result);
@@ -434,16 +358,6 @@ public class AbilityInfo : Info
 
     public AbilityInfo(string name, string shortF, string description, string applies, Color color) : base(name, shortF, description, color, InfoType.Ability) => AppliesTo = applies;
 
-    public override string ToString()
-    {
-        var builder = new StringBuilder();
-        builder.AppendLine($"Name: {Name}")
-            .AppendLine($"Short Form: {Short}")
-            .AppendLine($"Applies To: {AppliesTo}")
-            .AppendLine($"Description: {Description}");
-        return builder.ToString();
-    }
-
     public override void WikiEntry(out string result)
     {
         base.WikiEntry(out result);
@@ -458,8 +372,6 @@ public class Lore : Info
 {
     public Lore(string name, string story, string shortF, Color color) : base(name, shortF, story, color, InfoType.Lore) {}
 
-    public override string ToString() => Description;
-
     public override void WikiEntry(out string result)
     {
         base.WikiEntry(out result);
@@ -472,16 +384,6 @@ public class OtherInfo : Info
     public readonly string OtherNotes;
 
     public OtherInfo(string name, string shortF, string description, Color color, string otherNotes = "") : base(name, shortF, description, color, InfoType.Other) => OtherNotes = otherNotes;
-
-    public override string ToString()
-    {
-        var builder = new StringBuilder();
-        builder.AppendLine($"Name: {Name}")
-            .AppendLine($"Short Form: {Short}")
-            .AppendLine($"Description: {Description}")
-            .Append($"\n{OtherNotes}");
-        return builder.ToString();
-    }
 
     public override void WikiEntry(out string result)
     {
@@ -527,15 +429,6 @@ public class GameModeInfo : Info
             GameMode.TaskRace => (TRDescription, "TR", Colors.TaskRace),
             _ => ("Invalid", "Invalid", Colors.GameMode)
         };
-    }
-
-    public override string ToString()
-    {
-        var builder = new StringBuilder();
-        builder.AppendLine($"Name: {Mode.GameModeName(true)}")
-            .AppendLine($"Short Form: {Short}")
-            .AppendLine($"Description: {Description}");
-        return builder.ToString();
     }
 
     public override void WikiEntry(out string result)

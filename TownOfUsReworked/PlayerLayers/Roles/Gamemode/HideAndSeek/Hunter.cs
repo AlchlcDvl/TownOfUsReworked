@@ -16,14 +16,21 @@ public class Hunter : HideAndSeek
     {
         Objectives = () => "- Hunt the others down before they finish their tasks";
         HuntButton = new(this, "IntruderKill", AbilityTypes.Target, "ActionSecondary", Hunt, CustomGameOptions.HuntCd, Exception);
-        Player.Data.SetImpostor(true);
+        Data.SetImpostor(true);
     }
 
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
         HuntButton.Update2("HUNT");
-        StartingTimer = Mathf.Clamp(StartingTimer - Time.deltaTime, 0f, CustomGameOptions.StartTime);
+
+        if (Starting)
+        {
+            StartingTimer = Mathf.Clamp(StartingTimer - Time.deltaTime, 0f, CustomGameOptions.StartTime);
+
+            if (!Starting)
+                HuntButton.StartCooldown();
+        }
     }
 
     public bool Exception(PlayerControl player) => player.Is(LayerEnum.Hunter);
@@ -33,9 +40,9 @@ public class Hunter : HideAndSeek
         var oldRole = GetRole<Hunted>(player);
         var newRole = new Hunter(player);
         newRole.RoleUpdate(oldRole);
-        newRole.KilledBy = PlayerName;
+        newRole.KilledBy = " By " + PlayerName;
         newRole.DeathReason = DeathReasonEnum.Converted;
-        newRole.HuntButton.StartCooldown(CooldownType.Reset);
+        newRole.HuntButton.StartCooldown();
         UObject.Instantiate(GameManagerCreator.Instance.HideAndSeekManagerPrefab.DeathPopupPrefab, HUD.transform.parent).Show(player, 0);
         GameData.Instance.RecomputeTaskCounts();
     }
@@ -52,7 +59,7 @@ public class Hunter : HideAndSeek
             CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, HuntButton.TargetPlayer);
         }
 
-        HuntButton.StartCooldown(CooldownType.Reset);
+        HuntButton.StartCooldown();
     }
 
     public override void ReadRPC(MessageReader reader) => TurnHunter(reader.ReadPlayer());

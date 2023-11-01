@@ -69,7 +69,7 @@ public class Necromancer : Neutral
         if (RoleGen.Convertible <= 0 || !PlayerByBody(ResurrectButton.TargetBody).Is(SubFaction.None))
         {
             Flash(new(255, 0, 0, 255));
-            ResurrectButton.StartCooldown(CooldownType.Reset);
+            ResurrectButton.StartCooldown();
         }
         else
         {
@@ -83,7 +83,7 @@ public class Necromancer : Neutral
                 ResurrectButton.TargetBody?.gameObject.Destroy();
 
             if (CustomGameOptions.NecroCooldownsLinked)
-                SacrificeButton.StartCooldown(CooldownType.Reset);
+                SacrificeButton.StartCooldown();
         }
     }
 

@@ -89,7 +89,7 @@ public class ModUpdater
         InfoPopup.StartCoroutine(Effects.Lerp(0.01f, new Action<float>((p) => { SetPopupText(info); })));
     }
 
-    private static async Task<bool> CheckForUpdate(string? updateType)
+    private static async Task<bool> CheckForUpdate(string updateType)
     {
         if (Client == null)
         {

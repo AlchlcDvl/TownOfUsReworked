@@ -215,7 +215,7 @@ public static class CustomHats
     {
         public static void Postfix(PlayerPhysics __instance)
         {
-            if (!CustomHatViewDatas.TryGetValue(__instance.myPlayer.cosmetics.hat.Hat.ProductId, out var viewData))
+            if (__instance.myPlayer == null || !CustomHatViewDatas.TryGetValue(__instance.myPlayer.cosmetics.hat.Hat.ProductId, out var viewData))
                 return;
 
             var currentAnimation = __instance.Animations.Animator.GetCurrentAnimation();
@@ -348,13 +348,13 @@ public static class CustomHats
                 }
             }
 
-            if (asset = null)
+            if (asset == null || asset.AltShader == null)
                 return true;
 
-            __instance.FrontLayer.sharedMaterial = asset.AltShader ? asset.AltShader : HatManager.Instance.DefaultShader;
+            __instance.FrontLayer.sharedMaterial = asset.AltShader ?? HatManager.Instance.DefaultShader;
 
             if (__instance.BackLayer)
-                __instance.BackLayer.sharedMaterial = asset.AltShader ? asset.AltShader : HatManager.Instance.DefaultShader;
+                __instance.BackLayer.sharedMaterial = asset.AltShader ?? HatManager.Instance.DefaultShader;
 
             var colorId = __instance.matProperties.ColorId;
             PlayerMaterial.SetColors(colorId, __instance.FrontLayer);

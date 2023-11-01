@@ -4,7 +4,7 @@
 
 -----------------------
 
-![LOGO](./Images/Reworked.png)
+<img align="centre" width="" height="" src="./Images/Reworked.png">
 
 <p align="center"><a href="https://github.com/AlchlcDvl/TownOfUsReworked/releases/"><img src="https://badgen.net/github/release/AlchlcDvl/TownOfUsReworked?icon=github"></a></p>
 
@@ -39,33 +39,33 @@ Quick warning: This mod adds a whole LOT of stuff, and is currently not very beg
 
 [**Player Layers**](#player-layers)
 
-| [Intruders](#intruder-roles) | [Syndicate](#syndicate-roles) | [Crew](#crew-roles)               | [Neutrals](#neutral-roles)        | [Game Mode](#game-mode-roles) |
-|------------------------------|-------------------------------|-----------------------------------|-----------------------------------|-------------------------------|
-| [Ambusher](#ambusher)        | [Anarchist](#anarchist)       | [Altruist](#altruist)             | [Actor](#actor)                   | [Hunted](#hunted)             |
-| [Blackmailer](#blackmailer)  | [Banshee](#banshee)           | [Bastion](#bastion)               | [Amnesiac](#amnesiac)             | [Hunter](#hunter)             |
-| [Camouflager](#camouflager)  | [Bomber](#bomber)             | [Chameleon](#chameleon)           | [Arsonist](#arsonist)             | [Runner](#runner)             |
-| [Consigliere](#consigliere)  | [Collider](#collider)         | [Coroner](#coroner)               | [Betrayer](betrayer)              |                               |
-| [Consort](#consort)          | [Concealer](#concealer)       | [Crewmate](#crewmate)             | [Bounty Hunter](#bounty-hunter)   |                               |
-| [Disguiser](#disguiser)      | [Crusader](#crusader)         | [Detective](#detective)           | [Cannibal](#cannibal)             |                               |
-| [Enforcer](#enforcer)        | [Drunkard](#drunkard)         | [Dictator](#dictator)             | [Cryomaniac](#cryomaniac)         |                               |
-| [Ghoul](#ghoul)              | [Framer](#framer)             | [Engineer](#engineer)             | [Dracula](#dracula)               |                               |
-| [Godfather](#godfather)      | [Poisoner](#poisoner)         | [Escort](#escort)                 | [Executioner](#executioner)       |                               |
-| [Grenadier](#grenadier)      | [Rebel](#rebel)               | [Mayor](#mayor)                   | [Glitch](#glitch)                 |                               |
-| [Impostor](#impostor)        | [Shapeshifter](#shapeshifter) | [Medic](#medic)                   | [Guardian Angel](#guardian-angel) |                               |
-| [Janitor](#janitor)          | [Sidekick](#sidekick)         | [Medium](#medium)                 | [Guesser](#guesser)               |                               |
-| [Mafioso](#mafioso)          | [Silencer](#silencer)         | [Monarch](#monarch)               | [Jackal](#jackal)                 |                               |
-| [Miner](#miner)              | [Spellslinger](#spellslinger) | [Mystic](#mystic)                 | [Jester](#jester)                 |                               |
-| [Morphling](#morphling)      | [Stalker](#stalker)           | [Operative](#operative)           | [Juggernaut](#juggernaut)         |                               |
-| [Teleporter](#teleporter)    | [Timekeeper](time-keeper)     | [Retributionist](#retributionist) | [Murderer](#murderer)             |                               |
-| [Wraith](#wraith)            | [Warper](#warper)             | [Revealer](#revealer)             | [Necromancer](#necromancer)       |                               |
-|                              |                               | [Seer](#seer)                     | [Pestilence](#pestilence)         |                               |
-|                              |                               | [Sheriff](#sheriff)               | [Phantom](#phantom)               |                               |
-|                              |                               | [Shifter](#shifter)               | [Plaguebearer](#plaguebearer)     |                               |
-|                              |                               | [Tracker](#tracker)               | [Serial Killer](#serial-killer)   |                               |
-|                              |                               | [Transporter](#transporter)       | [Survivor](#survivor)             |                               |
-|                              |                               | [Vampire Hunter](#vampire-hunter) | [Thief](#thief)                   |                               |
-|                              |                               | [Veteran](#veteran)               | [Werewolf](#werewolf)             |                               |
-|                              |                               | [Vigilante](#vigilante)           | [Whisperer](#whisperer)           |                               |
+| [Intruders](#intruder-roles)       | [Syndicate](#syndicate-roles) | [Crew](#crew-roles)               | [Neutrals](#neutral-roles)        | [Game Mode](#game-mode-roles) |
+|------------------------------------|-------------------------------|-----------------------------------|-----------------------------------|-------------------------------|
+| [Ambusher](#ambusher)              | [Anarchist](#anarchist)       | [Altruist](#altruist)             | [Actor](#actor)                   | [Hunted](#hunted)             |
+| [Blackmailer](#blackmailer)        | [Banshee](#banshee)           | [Bastion](#bastion)               | [Amnesiac](#amnesiac)             | [Hunter](#hunter)             |
+| [Camouflager](#camouflager)        | [Bomber](#bomber)             | [Chameleon](#chameleon)           | [Arsonist](#arsonist)             | [Runner](#runner)             |
+| [Consigliere](#consigliere)        | [Collider](#collider)         | [Coroner](#coroner)               | [Betrayer](betrayer)              |                               |
+| [Consort](#consort)                | [Concealer](#concealer)       | [Crewmate](#crewmate)             | [Bounty Hunter](#bounty-hunter)   |                               |
+| [Disguiser](#disguiser)            | [Crusader](#crusader)         | [Detective](#detective)           | [Cannibal](#cannibal)             |                               |
+| [Enforcer](#enforcer)              | [Drunkard](#drunkard)         | [Dictator](#dictator)             | [Cryomaniac](#cryomaniac)         |                               |
+| [Ghoul](#ghoul)                    | [Framer](#framer)             | [Engineer](#engineer)             | [Dracula](#dracula)               |                               |
+| [Godfather](#godfather)            | [Poisoner](#poisoner)         | [Escort](#escort)                 | [Executioner](#executioner)       |                               |
+| [Grenadier](#grenadier)            | [Rebel](#rebel)               | [Mayor](#mayor)                   | [Glitch](#glitch)                 |                               |
+| [Impostor](#impostor)              | [Shapeshifter](#shapeshifter) | [Medic](#medic)                   | [Guardian Angel](#guardian-angel) |                               |
+| [Janitor](#janitor)                | [Sidekick](#sidekick)         | [Medium](#medium)                 | [Guesser](#guesser)               |                               |
+| [Mafioso](#mafioso)                | [Silencer](#silencer)         | [Monarch](#monarch)               | [Jackal](#jackal)                 |                               |
+| [Miner/Herbalist](#minerherbalist) | [Spellslinger](#spellslinger) | [Mystic](#mystic)                 | [Jester](#jester)                 |                               |
+| [Morphling](#morphling)            | [Stalker](#stalker)           | [Operative](#operative)           | [Juggernaut](#juggernaut)         |                               |
+| [Teleporter](#teleporter)          | [Timekeeper](#timekeeper)     | [Retributionist](#retributionist) | [Murderer](#murderer)             |                               |
+| [Wraith](#wraith)                  | [Warper](#warper)             | [Revealer](#revealer)             | [Necromancer](#necromancer)       |                               |
+|                                    |                               | [Seer](#seer)                     | [Pestilence](#pestilence)         |                               |
+|                                    |                               | [Sheriff](#sheriff)               | [Phantom](#phantom)               |                               |
+|                                    |                               | [Shifter](#shifter)               | [Plaguebearer](#plaguebearer)     |                               |
+|                                    |                               | [Tracker](#tracker)               | [Serial Killer](#serial-killer)   |                               |
+|                                    |                               | [Transporter](#transporter)       | [Survivor](#survivor)             |                               |
+|                                    |                               | [Vampire Hunter](#vampire-hunter) | [Thief](#thief)                   |                               |
+|                                    |                               | [Veteran](#veteran)               | [Werewolf](#werewolf)             |                               |
+|                                    |                               | [Vigilante](#vigilante)           | [Whisperer](#whisperer)           |                               |
 
 | [Modifiers](#modifiers)       | [Abilities](#abilities)       | [Objectifiers](#objectifiers) |
 |-------------------------------|-------------------------------|-------------------------------|
@@ -109,6 +109,7 @@ Quick warning: This mod adds a whole LOT of stuff, and is currently not very beg
 - [Better Mira HQ Settings](#better-mira-hq-settings)
 - [Better Polus Settings](#better-polus-settings)
 - [Better Airship Settings](#better-airship-settings)
+- [Better Fungle Settings](#better-fungle-settings)
 - [Custom Client Side Options](#custom-client-side-options)
 
 [**Game Info**](#game-info)
@@ -135,19 +136,20 @@ Quick warning: This mod adds a whole LOT of stuff, and is currently not very beg
 
 **Disclaimer: The mod is *not* guaranteed to work on the latest versions of Among Us when the game updates.**
 
-| Among Us          | Mod Version | Link                                                                                            |
-|-------------------|------------ |-------------------------------------------------------------------------------------------------|
-| 2023.7.12 (s & e) | 0.5.4       | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.5.4/Reworked.zip) |
-| 2023.7.12 (s & e) | 0.5.3       | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.5.3/Reworked.zip) |
-| 2023.7.12 (s & e) | 0.5.2       | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.5.2/Reworked.zip) |
-| 2023.7.12 (s & e) | 0.5.1       | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.5.1/Reworked.zip) |
-| 2023.7.12 (s & e) | 0.5.0       | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.5.0/Reworked.zip) |
+| Among Us           | Mod Version | Link                                                                                            |
+|--------------------|-------------|-------------------------------------------------------------------------------------------------|
+| 2023.10.24 (s & e) | 0.6.0       | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.6.0/Reworked.zip) |
 
 <details>
 <summary>Older Versions</summary>
 
 | Among Us           | Mod Version  | Link                                                                                                                  |
 |--------------------|--------------|-----------------------------------------------------------------------------------------------------------------------|
+| 2023.7.12 (s & e)  | 0.5.4        | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.5.4/Reworked.zip)                       |
+| 2023.7.12 (s & e)  | 0.5.3        | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.5.3/Reworked.zip)                       |
+| 2023.7.12 (s & e)  | 0.5.2        | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.5.2/Reworked.zip)                       |
+| 2023.7.12 (s & e)  | 0.5.1        | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.5.1/Reworked.zip)                       |
+| 2023.7.12 (s & e)  | 0.5.0        | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.5.0/Reworked.zip)                       |
 | 2023.7.12 (s & e)  | 0.4.5        | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.4.5/Reworked.zip)                       |
 | 2023.7.12 (s & e)  | 0.4.4        | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.4.4/Reworked.zip)                       |
 | 2023.7.12 (s & e)  | 0.4.3        | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.4.3/Reworked.zip)                       |
@@ -197,946 +199,1056 @@ Quick warning: This mod adds a whole LOT of stuff, and is currently not very beg
 <details>
 <summary>Changelog</summary>
 <details>
+<summary>v0.6.0</summary>
+<ul>
+    <li>Update: Updated the mod to 2023.10.24 and updated BepInEx to 6.0.0-be.674</li>
+    <li>Update: Updated presets</li>
+    <li>Mega Addition: dlekS is back! (credits to Galster from CrowdedMod, vents do not work and so Bastion and Miner won't spawn here for now)</li>
+    <li>Addition: Bastion has button art now (on maps that are not Fungle)</li>
+    <li>Addition: Anonymous Votes have been changed a bit</li>
+    <li>Change: You can now whisper in lobby</li>
+    <li>Change: Some hats have been turned into visors</li>
+    <li>Change: Miner will be named Herbalist on Fungle (for consistency)</li>
+    <li>Change: Miner and Bastion can no longer spawn when the Serial Venters option is set to no one</li>
+    <li>Change: The role list for the Ranked preset has been changed</li>
+    <li>Critical Fix: Fixed deaths just not deathing sometimes</li>
+    <li>Bug Fix: Fixed meeting ability buttons weirding out when hovering over them</li>
+    <li>Bug Fix: Fixed a minor bug with custom hats</li>
+    <li>Bug Fix: Fixed Amnesiac and Thief weirding out when changing roles</li>
+    <li>Bug Fix: Fixed role generation not sorting correctly</li>
+    <li>Visual Fix: Fixed the task list showing the incorrect task location</li>
+    <li>Role Fix: Fixed Miners and Godfather-Miners not having cooldowns</li>
+</ul>
+</details>
+<details>
 <summary>v0.5.4</summary>
-<ul> <li>New Role: Bastion [Crew (Killing)]</li> </ul>
-<ul> <li>Addition: Added night vision cameras</li> </ul>
-<ul> <li>Addition: You can now optionally download Submerged right from the main menu (LevelImpostor soon to follow)</li> </ul>
-<ul> <li>Return: Sounds effects are back</li> </ul>
-<ul> <li>Improvement: The death popup in Hide And Seek mode now changes to match the mode (X was converted/killed)</li> </ul>
-<ul> <li>Improvement: There can be multiple chat notifications for every player that chats now</li> </ul>
-<ul> <li>Improvement: Improved how the intro screen appears</li> </ul>
-<ul> <li>Improvement: The Level Impostor map option now changes to match the custom map you loaded (to be tested)</li> </ul>
-<ul> <li>Change: Actor can now get a randomised list (instead of a fixed one) of roles present in the game to be guessed as</li> </ul>
-<ul> <li>Change: Actor can no longer spawn in Role List (because it depends on Assasin which cannot spawn in Role List either)</li> </ul>
-<ul> <li>Change: The Assassin ability's name now changes depending on the faction it's applied to</li> </ul>
-<ul> <li>Change: As the Assassin, you now have to specify what ype of Assassin someone is to correctly guess them</li> </ul>
-<ul> <li>Change: Detective now has to examine players to be able to see their footprints</li> </ul>
-<ul> <li>Optimisation: Improved more code handling</li> </ul>
-<ul> <li>Bug Fix: Fixed role generation breaking on one player</li> </ul>
-<ul> <li>Bug Fix: Fixed tasks not resetting properly on LevelImpostor maps (when turning into Revealer/Phantom)</li> </ul>
-<ul> <li>Bug Fix: Fixed games incorrectly ending</li> </ul>
-<ul> <li>Bug Fix: Fixed targets not being set properly</li> </ul>
-<ul> <li>Bug Fix: Fixed some data desync between roles</li> </ul>
-<ul> <li>Visual Fix: Buttons now correctly appear and disappear when opening tasks or other interactibles</li> </ul>
-<ul> <li>Visual Fix: Fixed vanilla color names being capitalised when using colorblind mode</li> </ul>
-<ul> <li>Role Fix: Fixed Werewolf being able to maul at the wrong times</li> </ul>
-<ul> <li>Removed: Inspector (as I've come to realise, locking players to certain claims is not healthy for the mod)</li> </ul>
+<ul>
+    <li>New Role: Bastion [Crew (Killing)]</li>
+    <li>Addition: Added night vision cameras</li>
+    <li>Addition: You can now optionally download Submerged right from the main menu (LevelImpostor soon to follow)</li>
+    <li>Return: Sounds effects are back</li>
+    <li>Improvement: The death popup in Hide And Seek mode now changes to match the mode (X was converted/killed)</li>
+    <li>Improvement: There can be multiple chat notifications for every player that chats now</li>
+    <li>Improvement: Improved how the intro screen appears</li>
+    <li>Improvement: The Level Impostor map option now changes to match the custom map you loaded (to be tested)</li>
+    <li>Change: Actor can now get a randomised list (instead of a fixed one) of roles present in the game to be guessed as</li>
+    <li>Change: Actor can no longer spawn in Role List (because it depends on Assasin which cannot spawn in Role List either)</li>
+    <li>Change: The Assassin ability's name now changes depending on the faction it's applied to</li>
+    <li>Change: As the Assassin, you now have to specify what ype of Assassin someone is to correctly guess them</li>
+    <li>Change: Detective now has to examine players to be able to see their footprints</li>
+    <li>Optimisation: Improved more code handling</li>
+    <li>Bug Fix: Fixed role generation breaking on one player</li>
+    <li>Bug Fix: Fixed tasks not resetting properly on LevelImpostor maps (when turning into Revealer/Phantom)</li>
+    <li>Bug Fix: Fixed games incorrectly ending</li>
+    <li>Bug Fix: Fixed targets not being set properly</li>
+    <li>Bug Fix: Fixed some data desync between roles</li>
+    <li>Visual Fix: Buttons now correctly appear and disappear when opening tasks or other interactibles</li>
+    <li>Visual Fix: Fixed vanilla color names being capitalised when using colorblind mode</li>
+    <li>Role Fix: Fixed Werewolf being able to maul at the wrong times</li>
+    <li>Removed: Inspector (as I've come to realise, locking players to certain claims is not healthy for the mod)</li>
+</ul>
 </details>
 <details>
 <summary>v0.5.3</summary>
-<ul> <li>New Game Mode: Task Race - See who's the best at finishing their tasks!</li> </ul>
-<ul> <li>New Game Mode: Hide And Seek - Hunt or be hunted!</li> </ul>
-<ul> <li>New Modifier: Colorblind</li> </ul>
-<ul> <li>New Alignment: Intruder (Head)</li> </ul>
-<ul> <li>Addition: Added an intro splash text</li> </ul>
-<ul> <li>Addition: Added new selection options for the Role List game mode</li> </ul>
-<ul> <li>Addition: Added some animations for morphing and camouflaging</li> </ul>
-<ul> <li>Return: Custom nameplates are back</li> </ul>
-<ul> <li>Revert: Reverted the changes made to the auto updater</li> </ul>
-<ul> <li>Improvement: Improved how the player numbers and the lighter darker mentions appear</li> </ul>
-<ul> <li>Improvement: Improved how settings are loaded (might lead to loading issues with previously set settings)</li> </ul>
-<ul> <li>Improvement: Improved the sorting on role generation again</li> </ul>
-<ul> <li>Improvement: Improved how the invisibility animation is handled</li> </ul>
-<ul> <li>Change: The following alignment changes have been made - Godfather => Intruder (Head), Rebel => Syndicate (Power), Timekeeper => Syndicate (Disruption)</li> </ul>
-<ul> <li>Change: Seers no longer require other Seers to die in order to become Sheriffs</li> </ul>
-<ul> <li>Bug Fix: Fixed the side buttons overlapping with the Submerged floor change button (To be tested)</li> </ul>
-<ul> <li>Role Fix: Fixed Ghoul being able to kill Pestilence</li> </ul>
-<ul> <li>Role Fix: Fixed being unable to guess as Guesser</li> </ul>
-<ul> <li>Role Fix: Fixed Werewolf unable to kill</li> </ul>
-<ul> <li>Role Fix: Fixed Jackal being able to recruit players at the start of the game, even if they have both spawning recruits</li> </ul>
-<ul> <li>Potential Fix: Attempt number 4 at trying to reduce the "Fatal Error in GC" error</li> </ul>
+<ul>
+    <li>New Game Mode: Task Race - See who's the best at finishing their tasks!</li>
+    <li>New Game Mode: Hide And Seek - Hunt or be hunted!</li>
+    <li>New Modifier: Colorblind</li>
+    <li>New Alignment: Intruder (Head)</li>
+    <li>Addition: Added an intro splash text</li>
+    <li>Addition: Added new selection options for the Role List game mode</li>
+    <li>Addition: Added some animations for morphing and camouflaging</li>
+    <li>Return: Custom nameplates are back</li>
+    <li>Revert: Reverted the changes made to the auto updater</li>
+    <li>Improvement: Improved how the player numbers and the lighter darker mentions appear</li>
+    <li>Improvement: Improved how settings are loaded (might lead to loading issues with previously set settings)</li>
+    <li>Improvement: Improved the sorting on role generation again</li>
+    <li>Improvement: Improved how the invisibility animation is handled</li>
+    <li>Change: The following alignment changes have been made - Godfather => Intruder (Head), Rebel => Syndicate (Power), Timekeeper => Syndicate (Disruption)</li>
+    <li>Change: Seers no longer require other Seers to die in order to become Sheriffs</li>
+    <li>Bug Fix: Fixed the side buttons overlapping with the Submerged floor change button (To be tested)</li>
+    <li>Role Fix: Fixed Ghoul being able to kill Pestilence</li>
+    <li>Role Fix: Fixed being unable to guess as Guesser</li>
+    <li>Role Fix: Fixed Werewolf unable to kill</li>
+    <li>Role Fix: Fixed Jackal being able to recruit players at the start of the game, even if they have both spawning recruits</li>
+    <li>Potential Fix: Attempt number 4 at trying to reduce the "Fatal Error in GC" error</li>
+</ul>
 </details>
 <details>
 <summary>v0.5.2</summary>
-<ul> <li>Return: Custom visors are back</li> </ul>
-<ul> <li>Recode: Recoded how buttons are handled</li> </ul>
-<ul> <li>Recode: Recoded the many RPCs between roles</li> </ul>
-<ul> <li>Change: Being revived/resurrected now resets your cooldowns (to avoid the revived people killing their killers immediately)</li> </ul>
-<ul> <li>Change: Bugs and Bombs can no longer overlap ranges</li> </ul>
-<ul> <li>Change: Changed the abbreviation of "Crew (Protective)" to "CrP" because the original abbreviation is a practice no one supports</li> </ul>
-<ul> <li>Change: Warper can now spawn in Airship, Submerged and LevelImpostor maps</li> </ul>
-<ul> <li>Nerf: Jesters and Executioners can no longer kill more than one player</li> </ul>
-<ul> <li>Improvement: Postmortal roles that are not clicked will only see camouflaged players</li> </ul>
-<ul> <li>General Fix: Fixed some issues with game logic</li> </ul>
-<ul> <li>Visual Fix: Fixed Retibutionist and Operative seeing double numbers when whispering is turned on</li> </ul>
-<ul> <li>Visual Fix: Fixed the meeting timer sometimes being spammed with the page count</li> </ul>
-<ul> <li>Visual Fix: Fixed Janitor having the incorrect intro text</li> </ul>
-<ul> <li>Visual Fix: Fixed text run off in the hats and visors menus</li> </ul>
-<ul> <li>Visual Fix: Fixed appearance changes not changing the players names</li> </ul>
-<ul> <li>Role Fix: Fixed Vigilantes being unable to target Crew</li> </ul>
+<ul>
+    <li>Return: Custom visors are back</li>
+    <li>Recode: Recoded how buttons are handled</li>
+    <li>Recode: Recoded the many RPCs between roles</li>
+    <li>Change: Being revived/resurrected now resets your cooldowns (to avoid the revived people killing their killers immediately)</li>
+    <li>Change: Bugs and Bombs can no longer overlap ranges</li>
+    <li>Change: Changed the abbreviation of "Crew (Protective)" to "CrP" because the original abbreviation is a practice no one supports</li>
+    <li>Change: Warper can now spawn in Airship, Submerged and LevelImpostor maps</li>
+    <li>Nerf: Jesters and Executioners can no longer kill more than one player</li>
+    <li>Improvement: Postmortal roles that are not clicked will only see camouflaged players</li>
+    <li>General Fix: Fixed some issues with game logic</li>
+    <li>Visual Fix: Fixed Retibutionist and Operative seeing double numbers when whispering is turned on</li>
+    <li>Visual Fix: Fixed the meeting timer sometimes being spammed with the page count</li>
+    <li>Visual Fix: Fixed Janitor having the incorrect intro text</li>
+    <li>Visual Fix: Fixed text run off in the hats and visors menus</li>
+    <li>Visual Fix: Fixed appearance changes not changing the players names</li>
+    <li>Role Fix: Fixed Vigilantes being unable to target Crew</li>
+</ul>
 </details>
 <details>
 <summary>v0.5.1</summary>
-<ul> <li>Update: Updated BepInEx to 6.0.0-be.673</li> </ul>
-<ul> <li>Addition: Ability delays animate the button a little differently</li> </ul>
-<ul> <li>Improvement: Improved how custom options and buttons are visually handled</li> </ul>
-<ul> <li>Improvement: Improved how layers are sorted for even more guaranteed randomness</li> </ul>
-<ul> <li>Optimisation: The code was optimised even more</li> </ul>
-<ul> <li>Critical Fix: Fixed games sometimes not starting properly</li> </ul>
-<ul> <li>Role Fix: Fixed Medium and Retributionist-Medium mediates behaving weirdly</li> </ul>
+<ul>
+    <li>Update: Updated BepInEx to 6.0.0-be.673</li>
+    <li>Addition: Ability delays animate the button a little differently</li>
+    <li>Improvement: Improved how custom options and buttons are visually handled</li>
+    <li>Improvement: Improved how layers are sorted for even more guaranteed randomness</li>
+    <li>Optimisation: The code was optimised even more</li>
+    <li>Critical Fix: Fixed games sometimes not starting properly</li>
+    <li>Role Fix: Fixed Medium and Retributionist-Medium mediates behaving weirdly</li>
+</ul>
 </details>
 <details>
 <summary>v0.5.0</summary>
-<ul> <li>Mega Addition: Translations (WIP)</li> </ul>
-<ul> <li>Addition: Added free ban slots for Crewmate, Impostor and Anarchist for the Role List game mode</li> </ul>
-<ul> <li>Addition: Phantom, Ghoul, Banshee and Revealer spawns can now be toggled on for the Role List game mode</li> </ul>
-<ul> <li>Addition: Added a game filter tag for modded games on the official servers</li> </ul>
-<ul> <li>Overhaul: Overhauled how custom options work</li> </ul>
-<ul> <li>Nerf: Retributionists using a Vigilante's ability will also decrease their ability usage upon killing someone</li> </ul>
-<ul> <li>Nerf: Reviving a winning Troll now disables their win (meaning they have to be killed again to win :trol)</li> </ul>
-<ul> <li>Change: Crewmate, Anarchist and Impostor are now included in the Random Faction slot</li> </ul>
-<ul> <li>Change: Pestilence/Plaguebearer win screen has been changed (to make way for future roles of similar types)</li> </ul>
-<ul> <li>Change: Dying and getting revived now resets your status as a doused/infected/spelled player</li> </ul>
-<ul> <li>Change: Warper no longer spawns on Submerged or on Level Impostor maps (mainly because it's hard to set precise locations for post-CD warping there)</li> </ul>
-<ul> <li>Improvement: Improved how the meeting button appears to those who cannot call a meeting</li> </ul>
-<ul> <li>Improvement: Pressing A, D or the Right/Left arrows will now cycle through the cameras on Polus</li> </ul>
-<ul> <li>Improvement: Improved how chat commands are handled (and are even dynamic now!)</li> </ul>
-<ul> <li>Improvement: Task outlines now match the color of your role</li> </ul>
-<ul> <li>Improvement: Improved how the auto updater works (and removed Submerged auto updater for now)</li> </ul>
-<ul> <li>Improvement: Added an aborter for if the mod detects any other mods that are not Submerged or LevelImpostor (mainly to avoid having games breaking/corrupting because of conflicting mods)</li> </ul>
-<ul> <li>Improvement: Added some code here and there to improve performance</li> </ul>
-<ul> <li>Critical Fix: Fixed games not ending when everyone died</li> </ul>
-<ul> <li>Critical Fix: Fixed the issue where the game would end in no one's victory when 0 crew spawned and a meeting is called</li> </ul>
-<ul> <li>Vanilla Fix: The colorblind text now updates according properly regarding seeing them through walls</li> </ul>
-<ul> <li>General Fix: Corrected some parts of the mod</li> </ul>
-<ul> <li>Bug Fix: Fixed even more log spam</li> </ul>
-<ul> <li>Bug Fix: Fixed failed conversions sometimes appearing to be converted to non-host players</li> </ul>
-<ul> <li>Bug Fix: Fixed some issues with other win conditions</li> </ul>
-<ul> <li>Bug Fix: Fixed chat messages not color coding properly when needed</li> </ul>
-<ul> <li>Bug Fix: Fixed the chaos preset breaking settings if you don't have LevelImposter or Submerged</li> </ul>
-<ul> <li>Bug Fix: Fixed the issue where the scrollbar would freak out</li> </ul>
-<ul> <li>Bug Fix: Fixed the strange desync with rpcs and strings (like issues with whispering and guesses)</li> </ul>
-<ul> <li>Bug Fix: Fixed shapeshifts not working (for like the 10th time)</li> </ul>
-<ul> <li>Visual Fix: Fixed the highlight staying permanent for some reason on the role lists menu button in the game settings menu</li> </ul>
-<ul> <li>Visual Fix: Fixed the mod logo being visible when the credits screen is active</li> </ul>
-<ul> <li>Visual Fix: Fixed Drunkard appearing to have 2 colors in the wiki entries</li> </ul>
-<ul> <li>Visual Fix: Fixed the Sabotage and Vent buttons not disappearing when the minimap is opened</li> </ul>
-<ul> <li>Role Fix: Fixed Amnesiacs and Thieves from not winning or ending the game when they change roles</li> </ul>
-<ul> <li>Role Fix: Fixed Rebel-Crusaders not actually being able to crusade</li> </ul>
-<ul> <li>Role Fix: Fixed Spellslinger somehow winning the game beyond death without doing anything</li> </ul>
-<ul> <li>Role Fix: Fixed Plaguebearers being unable to infect the host by any way (and thus being unable to transform into Pestilence)</li> </ul>
-<ul> <li>Potential Fix: Attempted fix for the occasional "Fatal Error In GC" error</li> </ul>
+<ul>
+    <li>Mega Addition: Translations (WIP)</li>
+    <li>Addition: Added free ban slots for Crewmate, Impostor and Anarchist for the Role List game mode</li>
+    <li>Addition: Phantom, Ghoul, Banshee and Revealer spawns can now be toggled on for the Role List game mode</li>
+    <li>Addition: Added a game filter tag for modded games on the official servers</li>
+    <li>Overhaul: Overhauled how custom options work</li>
+    <li>Nerf: Retributionists using a Vigilante's ability will also decrease their ability usage upon killing someone</li>
+    <li>Nerf: Reviving a winning Troll now disables their win (meaning they have to be killed again to win :trol)</li>
+    <li>Change: Crewmate, Anarchist and Impostor are now included in the Random Faction slot</li>
+    <li>Change: Pestilence/Plaguebearer win screen has been changed (to make way for future roles of similar types)</li>
+    <li>Change: Dying and getting revived now resets your status as a doused/infected/spelled player</li>
+    <li>Change: Warper no longer spawns on Submerged or on Level Impostor maps (mainly because it's hard to set precise locations for post-CD warping there)</li>
+    <li>Improvement: Improved how the meeting button appears to those who cannot call a meeting</li>
+    <li>Improvement: Pressing A, D or the Right/Left arrows will now cycle through the cameras on Polus</li>
+    <li>Improvement: Improved how chat commands are handled (and are even dynamic now!)</li>
+    <li>Improvement: Task outlines now match the color of your role</li>
+    <li>Improvement: Improved how the auto updater works (and removed Submerged auto updater for now)</li>
+    <li>Improvement: Added an aborter for if the mod detects any other mods that are not Submerged or LevelImpostor (mainly to avoid having games breaking/corrupting because of conflicting mods)</li>
+    <li>Improvement: Added some code here and there to improve performance</li>
+    <li>Critical Fix: Fixed games not ending when everyone died</li>
+    <li>Critical Fix: Fixed the issue where the game would end in no one's victory when 0 crew spawned and a meeting is called</li>
+    <li>Vanilla Fix: The colorblind text now updates according properly regarding seeing them through walls</li>
+    <li>General Fix: Corrected some parts of the mod</li>
+    <li>Bug Fix: Fixed even more log spam</li>
+    <li>Bug Fix: Fixed failed conversions sometimes appearing to be converted to non-host players</li>
+    <li>Bug Fix: Fixed some issues with other win conditions</li>
+    <li>Bug Fix: Fixed chat messages not color coding properly when needed</li>
+    <li>Bug Fix: Fixed the chaos preset breaking settings if you don't have LevelImposter or Submerged</li>
+    <li>Bug Fix: Fixed the issue where the scrollbar would freak out</li>
+    <li>Bug Fix: Fixed the strange desync with rpcs and strings (like issues with whispering and guesses)</li>
+    <li>Bug Fix: Fixed shapeshifts not working (for like the 10th time)</li>
+    <li>Visual Fix: Fixed the highlight staying permanent for some reason on the role lists menu button in the game settings menu</li>
+    <li>Visual Fix: Fixed the mod logo being visible when the credits screen is active</li>
+    <li>Visual Fix: Fixed Drunkard appearing to have 2 colors in the wiki entries</li>
+    <li>Visual Fix: Fixed the Sabotage and Vent buttons not disappearing when the minimap is opened</li>
+    <li>Role Fix: Fixed Amnesiacs and Thieves from not winning or ending the game when they change roles</li>
+    <li>Role Fix: Fixed Rebel-Crusaders not actually being able to crusade</li>
+    <li>Role Fix: Fixed Spellslinger somehow winning the game beyond death without doing anything</li>
+    <li>Role Fix: Fixed Plaguebearers being unable to infect the host by any way (and thus being unable to transform into Pestilence)</li>
+    <li>Potential Fix: Attempted fix for the occasional "Fatal Error In GC" error</li>
+</ul>
 </details>
 <details>
 <summary>v0.4.5</summary>
-<ul> <li>Addition: Added Better Mira HQ options</li> </ul>
-<ul> <li>Addition: You are are told who is the host (for situations where people start asking who's the host)</li> </ul>
-<ul> <li>Buff: Vampire Hunters are now notified if the one they killed was actually an Undead or not</li> </ul>
-<ul> <li>Buff: Coroners are no longer fooled by frames</li> </ul>
-<ul> <li>Optimisation: The code was optimised a bit more</li> </ul>
-<ul> <li>Change: Random maps option has been merged into the Map option (it's the last one in the set of values)</li> </ul>
-<ul> <li>Completion: The mod is now fully compatible with Submerged</li> </ul>
-<ul> <li>Improvement: Role generation is now even more randomisable (meaning repetitive games are less likely to happen)</li> </ul>
-<ul> <li>Improvement: Your discord activity presence now reflects the mod being active</li> </ul>
-<ul> <li>Improvement: Improved how other better map options are handled</li> </ul>
-<ul> <li>General Fix: Fixed some inconsistencies within the settings</li> </ul>
-<ul> <li>Bug Fix: Fixed the win condition of objectifiers not showing up on their wiki pages</li> </ul>
-<ul> <li>Bug Fix: Fixed ability buttons stacking when switching between robots during a meeting</li> </ul>
-<ul> <li>Bug Fix: Fixed weird target assignment for Lovers, Linked and Rivals</li> </ul>
-<ul> <li>Bug Fix: Fixed being able to guess even after voting has been completed</li> </ul>
-<ul> <li>Bug Fix: Fixed the occasional log spam</li> </ul>
-<ul> <li>Visual Fix: Fixed Swapper swaps not appearing to swap</li> </ul>
-<ul> <li>Visual Fix: Fixed sabotage flashes not occurring after a custom flash</li> </ul>
-<ul> <li>Role Fix: Fixed Retributionist actions not being up to date with the roles they are mimicking</li> </ul>
-<ul> <li>Removal: Removed some Better Airship settings</li> </ul>
+<ul>
+    <li>Addition: Added Better Mira HQ options</li>
+    <li>Addition: You are are told who is the host (for situations where people start asking who's the host)</li>
+    <li>Buff: Vampire Hunters are now notified if the one they killed was actually an Undead or not</li>
+    <li>Buff: Coroners are no longer fooled by frames</li>
+    <li>Optimisation: The code was optimised a bit more</li>
+    <li>Change: Random maps option has been merged into the Map option (it's the last one in the set of values)</li>
+    <li>Completion: The mod is now fully compatible with Submerged</li>
+    <li>Improvement: Role generation is now even more randomisable (meaning repetitive games are less likely to happen)</li>
+    <li>Improvement: Your discord activity presence now reflects the mod being active</li>
+    <li>Improvement: Improved how other better map options are handled</li>
+    <li>General Fix: Fixed some inconsistencies within the settings</li>
+    <li>Bug Fix: Fixed the win condition of objectifiers not showing up on their wiki pages</li>
+    <li>Bug Fix: Fixed ability buttons stacking when switching between robots during a meeting</li>
+    <li>Bug Fix: Fixed weird target assignment for Lovers, Linked and Rivals</li>
+    <li>Bug Fix: Fixed being able to guess even after voting has been completed</li>
+    <li>Bug Fix: Fixed the occasional log spam</li>
+    <li>Visual Fix: Fixed Swapper swaps not appearing to swap</li>
+    <li>Visual Fix: Fixed sabotage flashes not occurring after a custom flash</li>
+    <li>Role Fix: Fixed Retributionist actions not being up to date with the roles they are mimicking</li>
+    <li>Removal: Removed some Better Airship settings</li>
+</ul>
 </details>
 <details>
 <summary>v0.4.4</summary>
-<ul> <li>Change: The numbers on the admin table now reflect the player's ID rather than their outfit color for Operative and Retributionist (to avoid confusion with multiple same color players)</li> </ul>
-<ul> <li>Change: Operative and Retributionist color blind help is now tied to the vanilla colorblind setting</li> </ul>
-<ul> <li>Optimisation: The code for all layers have been improved</li> </ul>
-<ul> <li>Improvement: You are now told if you are recruited in the intro screen</li> </ul>
-<ul> <li>Improvement: Whisperers and members of the Sect now know how much percentage is left to convert someone</li> </ul>
-<ul> <li>Improvement: Improved how cooldowns are handled</li> </ul>
-<ul> <li>Big Critical Fix: Fixed being unable to play on any servers (only impostor servers right now, official servers fix is soon to come)</li> </ul>
-<ul> <li>Critical Fix: Fixed Whisperer being unable to convert players</li> </ul>
-<ul> <li>Visual Fix: Fixed some mod options layering issues in the main menu</li> </ul>
-<ul> <li>Objectifier Fix: Fixed Allied Neutral Killers being unable the sabotage when they should</li> </ul>
-<ul> <li>Objectifier Fix: Fixed Traitor and Defector conversions being inconsistent between players</li> </ul>
-<ul> <li>Removal: Removed Flincher because it's boring now, farewell soldier :saluting_face:</li> </ul>
+<ul>
+    <li>Change: The numbers on the admin table now reflect the player's ID rather than their outfit color id for Operative and Retributionist (to avoid confusion with multiple same color players)</li>
+    <li>Change: Operative and Retributionist color blind help is now tied to the vanilla colorblind setting</li>
+    <li>Optimisation: The code for all layers have been improved</li>
+    <li>Improvement: You are now told if you are recruited in the intro screen</li>
+    <li>Improvement: Whisperers and members of the Sect now know how much percentage is left to convert someone</li>
+    <li>Improvement: Improved how cooldowns are handled</li>
+    <li>Big Critical Fix: Fixed being unable to play on any servers (only impostor servers right now, official servers fix is soon to come)</li>
+    <li>Critical Fix: Fixed Whisperer being unable to convert players</li>
+    <li>Visual Fix: Fixed some mod options layering issues in the main menu</li>
+    <li>Objectifier Fix: Fixed Allied Neutral Killers being unable the sabotage when they should</li>
+    <li>Objectifier Fix: Fixed Traitor and Defector conversions being inconsistent between players</li>
+    <li>Removal: Removed Flincher because it's boring now, farewell soldier :saluting_face:</li>
+</ul>
 </details>
 <details>
 <summary>v0.4.3</summary>
-<ul> <li>Update: Updated presets</li> </ul>
-<ul> <li>Optimisation: The code was optimised in certain parts</li> </ul>
-<ul> <li>Improvement: Improved how Operative bugs and Bomber bombs are handled</li> </ul>
-<ul> <li>Critical Fix: Fixed teleporting crashing games</li> </ul>
-<ul> <li>Bug Fix: Fixed meeting results not being sent to roles with meeting info (like Operative and Coroner)</li> </ul>
+<ul>
+    <li>Update: Updated presets</li>
+    <li>Optimisation: The code was optimised in certain parts</li>
+    <li>Improvement: Improved how Operative bugs and Bomber bombs are handled</li>
+    <li>Critical Fix: Fixed teleporting crashing games</li>
+    <li>Bug Fix: Fixed meeting results not being sent to roles with meeting info (like Operative and Coroner)</li>
+</ul>
 </details>
 <details>
 <summary>v0.4.2</summary>
-<ul> <li>New Game Mode: New way to edit the role generation yourself! Role Lists! (also includes the ability to ban the spawning of up to 5 roles)</li> </ul>
-<ul> <li>New Objectifier: Linked</li> </ul>
-<ul> <li>Addition: Added a custom cursor</li> </ul>
-<ul> <li>Addition: Added a welcoming message to get started when joining a lobby</li> </ul>
-<ul> <li>Addition: Added Warper lore</li> </ul>
-<ul> <li>Addition: Added some more settings</li> </ul>
-<ul> <li>Addition: Added even more parameters for hat customisation</li> </ul>
-<ul> <li>Completion: Finished compatibility with LevelImpostor (Submerged refuses to work with the mod)</li> </ul>
-<ul> <li>Update: Updated dependencies, updated mod to v2023.7.12 and merged fixes from v5.0.0</li> </ul>
-<ul> <li>Merge: Merged the Region Install mod into this mod</li> </ul>
-<ul> <li>Rework: Certain NE roles with targets now have toggle-able options for letting rng decide their targets</li> </ul>
-<ul> <li>Buff: Assassin can now be given to Neutral (Harbinger) roles</li> </ul>
-<ul> <li>Buff: With the Chaos Drive, the Collider can now charge themselves to kill those they marked</li> </ul>
-<ul> <li>Buff: Blocking players now renders them unable to open anything, not just not letting them use their abilities (yes I just want to be a troll)</li> </ul>
-<ul> <li>Buff: Bounty Hunters can now request players to set a target for them (only if the options for letting them pick a target is on)</li> </ul>
-<ul> <li>Buff: Made Actor more likely to win by making them able to win by being guessed as a role that's not in the game and their inspector results change based on their target role</li> </ul>
-<ul> <li>Nerf: Intruders/Syndicate can no longer sabotage if everyone from their faction is dead</li> </ul>
-<ul> <li>Nerf: Crew can no longer win by tasks if all of them are dead</li> </ul>
-<ul> <li>Change: Juggernaut can no longer get the Ruthless ability (because it already gets the ability when reaching 4 kills)</li> </ul>
-<ul> <li>Change: Radar will now also point towards the closest body if it happens to be closer than the closest alive player</li> </ul>
-<ul> <li>Change: Split the "Assassin Is Unique" setting into settings for each faction</li> </ul>
-<ul> <li>Change: A Retributionist's inspector results now change based on the role they are mimicking</li> </ul>
-<ul> <li>Recode: The in-game wiki has received a full recode (WIP)</li> </ul>
-<ul> <li>Recode: The role gen has been slightly recoded again for like the 30th time (I promise they get better with each change)</li> </ul>
-<ul> <li>Return: Executioner, Guardian Angel and Guesser automatically get their targets again, but can be toggled to pick their own targets</li> </ul>
-<ul> <li>Return: Custom hats are back (nameplates and visors soon to follow)</li> </ul>
-<ul> <li>Big Improvement: Added a stalemate detector to avoid unwinnable situations</li> </ul>
-<ul> <li>Improvement: Improved how ability buttons are handled in online games and fixed a couple of bugs relating to them</li> </ul>
-<ul> <li>Improvement: Slightly improved version control to be a bit more lightweight</li> </ul>
-<ul> <li>Improvement: Added page counters to the custom player selection menus and the vitals menus (bottom right)</li> </ul>
-<ul> <li>Improvement: Changed up how game settings look like in lobby (inspired by the game options in Project Lotus)</li> </ul>
-<ul> <li>Improvement: You can now move backwards in the settings pages by pressing the Backspace button</li> </ul>
-<ul> <li>Improvement: Clicking on players/dead bodies will trigger the first clickable button before executing the rest (for the mouse point and click players)</li> </ul>
-<ul> <li>Improvement: Random Spawns now also include vent positions, so people are less likely to be sent to the same place</li> </ul>
-<ul> <li>Improvement: Improved how custom meeting ability buttons and their cooldowns are handled</li> </ul>
-<ul> <li>Improvement: Messages are now color coded if possible</li> </ul>
-<ul> <li>Improvement: Settings now auto update their visibility based on which settings are active</li> </ul>
-<ul> <li>Improvement: Heavily worked on how information between players are handled, hopefully this fixes some lag/desync issues</li> </ul>
-<ul> <li>Optimisation: Improved some code here and there to smoothen out the mod</li> </ul>
-<ul> <li>Critical Fix: Fixed several bugs with playing on Hide And Seek (not sure why you'd want to play Hide And Seek on this mod but ok)</li> </ul>
-<ul> <li>Critical Fix: Added rate limits to role gen to prevent hosts from occasionally crashing on lower player numbers</li> </ul>
-<ul> <li>Critical Fix: Fixed games ending even with Neutral (Harbinger) and (Apocalypse) roles still alive against other factions</li> </ul>
-<ul> <li>Critical Fix: Fixed Syndicate (Killing) roles getting kills buttons when recieving the Chaos Drive</li> </ul>
-<ul> <li>Vanilla Fix: Players who dc now update in the meeting correctly</li> </ul>
-<ul> <li>Vanilla Fix: Fixed dying/game starting not updating the hud correctly</li> </ul>
-<ul> <li>Bug Fix: Fixed a couple of underlying issues with button cooldowns</li> </ul>
-<ul> <li>Bug Fix: Fixed being unable to set the lobby size below 5 in the lobby making menu</li> </ul>
-<ul> <li>Bug Fix: Fixed Oxygen sabotage slowing down players forever</li> </ul>
-<ul> <li>Bug Fix: Fixed random arrows appearing to trail you</li> </ul>
-<ul> <li>Bug Fix: Fixed the count settings incorrectly updating for Lovers, Rivals and Mafia</li> </ul>
-<ul> <li>Bug Fix: Fixed Bounty Hunters getting their own Mafia members as targets</li> </ul>
-<ul> <li>Bug Fix: Fixed a couple of minor bugs here and there</li> </ul>
-<ul> <li>Bug Fix: Fixed being able to talk before the game announcements begin</li> </ul>
-<ul> <li>Bug Fix: Fixed switching between Robots not disabling the chat</li> </ul>
-<ul> <li>Bug Fix: Fixed the 'Task Bar Updates' settings being wrong</li> </ul>
-<ul> <li>Bug Fix: Fixed chat not disappearing when switching between dead and alive players</li> </ul>
-<ul> <li>Bug Fix: Fixed the kick and ban chat commands from not working as intended</li> </ul>
-<ul> <li>Bug Fix: Fixed Plaguebearer/Pestilence somehow spawning way too often</li> </ul>
-<ul> <li>Visual Fix: The roleblock icons no longer appear to drag on the screen</li> </ul>
-<ul> <li>Visual Fix: Fixed a couple of layering issues with the spectate, help and game settings buttons</li> </ul>
-<ul> <li>Visual Fix: Fixed the intro screens for some roles being a little off</li> </ul>
-<ul> <li>Visual Fix: Fixed player names sometimes not updating correctly for Mafia, Lovers and Rivals in meetings</li> </ul>
-<ul> <li>Visual Fix: Fixed Assassin menus having transparent buttons and the exit button being blown out of proportion</li> </ul>
-<ul> <li>Role Fix: Fixed Promoted Godfather effects never ending</li> </ul>
-<ul> <li>Role Fix: Fixed Collider bypassing basically every form of defense</li> </ul>
-<ul> <li>Role Fix: Fixed Consort and Consort-Godfathers not being able to deselect targets</li> </ul>
-<ul> <li>Removal: Removed some debugging statements I forgot to remove earlier</li> </ul>
+<ul>
+    <li>New Game Mode: New way to edit the role generation yourself! Role Lists! (also includes the ability to ban the spawning of up to 5 roles)</li>
+    <li>New Objectifier: Linked</li>
+    <li>Addition: Added a custom cursor</li>
+    <li>Addition: Added a welcoming message to get started when joining a lobby</li>
+    <li>Addition: Added Warper lore</li>
+    <li>Addition: Added some more settings</li>
+    <li>Addition: Added even more parameters for hat customisation</li>
+    <li>Completion: Finished compatibility with LevelImpostor (Submerged refuses to work with the mod)</li>
+    <li>Update: Updated dependencies, updated mod to v2023.7.12 and merged fixes from v5.0.0</li>
+    <li>Merge: Merged the Region Install mod into this mod</li>
+    <li>Rework: Certain NE roles with targets now have toggle-able options for letting rng decide their targets</li>
+    <li>Buff: Assassin can now be given to Neutral (Harbinger) roles</li>
+    <li>Buff: With the Chaos Drive, the Collider can now charge themselves to kill those they marked</li>
+    <li>Buff: Blocking players now renders them unable to open anything, not just not letting them use their abilities (yes I just want to be a troll)</li>
+    <li>Buff: Bounty Hunters can now request players to set a target for them (only if the options for letting them pick a target is on)</li>
+    <li>Buff: Made Actor more likely to win by making them able to win by being guessed as a role that's not in the game and their inspector results change based on their target role</li>
+    <li>Nerf: Intruders/Syndicate can no longer sabotage if everyone from their faction is dead</li>
+    <li>Nerf: Crew can no longer win by tasks if all of them are dead</li>
+    <li>Change: Juggernaut can no longer get the Ruthless ability (because it already gets the ability when reaching 4 kills)</li>
+    <li>Change: Radar will now also point towards the closest body if it happens to be closer than the closest alive player</li>
+    <li>Change: Split the "Assassin Is Unique" setting into settings for each faction</li>
+    <li>Change: A Retributionist's inspector results now change based on the role they are mimicking</li>
+    <li>Recode: The in-game wiki has received a full recode (WIP)</li>
+    <li>Recode: The role gen has been slightly recoded again for like the 30th time (I promise they get better with each change)</li>
+    <li>Return: Executioner, Guardian Angel and Guesser automatically get their targets again, but can be toggled to pick their own targets</li>
+    <li>Return: Custom hats are back (nameplates and visors soon to follow)</li>
+    <li>Big Improvement: Added a stalemate detector to avoid unwinnable situations</li>
+    <li>Improvement: Improved how ability buttons are handled in online games and fixed a couple of bugs relating to them</li>
+    <li>Improvement: Slightly improved version control to be a bit more lightweight</li>
+    <li>Improvement: Added page counters to the custom player selection menus and the vitals menus (bottom right)</li>
+    <li>Improvement: Changed up how game settings look like in lobby (inspired by the game options in Project Lotus)</li>
+    <li>Improvement: You can now move backwards in the settings pages by pressing the Backspace button</li>
+    <li>Improvement: Clicking on players/dead bodies will trigger the first clickable button before executing the rest (for the mouse point and click players)</li>
+    <li>Improvement: Random Spawns now also include vent positions, so people are less likely to be sent to the same place</li>
+    <li>Improvement: Improved how custom meeting ability buttons and their cooldowns are handled</li>
+    <li>Improvement: Messages are now color coded if possible</li>
+    <li>Improvement: Settings now auto update their visibility based on which settings are active</li>
+    <li>Improvement: Heavily worked on how information between players are handled, hopefully this fixes some lag/desync issues</li>
+    <li>Optimisation: Improved some code here and there to smoothen out the mod</li>
+    <li>Critical Fix: Fixed several bugs with playing on Hide And Seek (not sure why you'd want to play Hide And Seek on this mod but ok)</li>
+    <li>Critical Fix: Added rate limits to role gen to prevent hosts from occasionally crashing on lower player numbers</li>
+    <li>Critical Fix: Fixed games ending even with Neutral (Harbinger) and (Apocalypse) roles still alive against other factions</li>
+    <li>Critical Fix: Fixed Syndicate (Killing) roles getting kills buttons when recieving the Chaos Drive</li>
+    <li>Vanilla Fix: Players who dc now update in the meeting correctly</li>
+    <li>Vanilla Fix: Fixed dying/game starting not updating the hud correctly</li>
+    <li>Bug Fix: Fixed a couple of underlying issues with button cooldowns</li>
+    <li>Bug Fix: Fixed being unable to set the lobby size below 5 in the lobby making menu</li>
+    <li>Bug Fix: Fixed Oxygen sabotage slowing down players forever</li>
+    <li>Bug Fix: Fixed random arrows appearing to trail you</li>
+    <li>Bug Fix: Fixed the count settings incorrectly updating for Lovers, Rivals and Mafia</li>
+    <li>Bug Fix: Fixed Bounty Hunters getting their own Mafia members as targets</li>
+    <li>Bug Fix: Fixed a couple of minor bugs here and there</li>
+    <li>Bug Fix: Fixed being able to talk before the game announcements begin</li>
+    <li>Bug Fix: Fixed switching between Robots not disabling the chat</li>
+    <li>Bug Fix: Fixed the 'Task Bar Updates' settings being wrong</li>
+    <li>Bug Fix: Fixed chat not disappearing when switching between dead and alive players</li>
+    <li>Bug Fix: Fixed the kick and ban chat commands from not working as intended</li>
+    <li>Bug Fix: Fixed Plaguebearer/Pestilence somehow spawning way too often</li>
+    <li>Visual Fix: The roleblock icons no longer appear to drag on the screen</li>
+    <li>Visual Fix: Fixed a couple of layering issues with the spectate, help and game settings buttons</li>
+    <li>Visual Fix: Fixed the intro screens for some roles being a little off</li>
+    <li>Visual Fix: Fixed player names sometimes not updating correctly for Mafia, Lovers and Rivals in meetings</li>
+    <li>Visual Fix: Fixed Assassin menus having transparent buttons and the exit button being blown out of proportion</li>
+    <li>Role Fix: Fixed Promoted Godfather effects never ending</li>
+    <li>Role Fix: Fixed Collider bypassing basically every form of defense</li>
+    <li>Role Fix: Fixed Consort and Consort-Godfathers not being able to deselect targets</li>
+    <li>Removal: Removed some debugging statements I forgot to remove earlier</li>
+</ul>
 </details>
 <details>
 <summary>v0.4.1</summary>
-<ul> <li>Update: Updated MCI</li> </ul>
-<ul> <li>Addition: A lot more buttons have their sprites now</li> </ul>
-<ul> <li>Addition: There can now be multiple Revealers, Banshees, Ghouls and Phantoms</li> </ul>
-<ul> <li>Buff: Actor now becomes a role from the role list they were supposed to be guessed as when all guessing capable players have died</li> </ul>
-<ul> <li>Improvement: Layer count and chance settings have been merged into one setting type</li> </ul>
-<ul> <li>Critical Fix: Fixed Crew-Allied Neutral Killers being shown who the other Crew are in the intro screen</li> </ul>
-<ul> <li>Critical Fix: Fixed Spellslinger not ending the game when needed</li> </ul>
-<ul> <li>Critical Fix: Fixed games not ending with a Guardian Angel without a target active</li> </ul>
-<ul> <li>Visual Fix: Fixed the vent button disappearing when role blocked</li> </ul>
-<ul> <li>Visual Fix: Fixed the Engrish in some parts of the mod</li> </ul>
-<ul> <li>Visual Fix: Fixed outlines persisting on targets after death</li> </ul>
-<ul> <li>Bug Fix: Fixed decreasing the lobby size not kicking players when needed</li> </ul>
-<ul> <li>Bug Fix: Fixed arrows not updating correctly</li> </ul>
-<ul> <li>Bug Fix: Fixed being unable to change the lobby size when opening up a lobby</li> </ul>
-<ul> <li>Bug Fix: Fixed Footprints only spawning the left/right foot for each person</li> </ul>
-<ul> <li>Bug Fix: Fixed some issues with button targeting</li> </ul>
-<ul> <li>Bug Fix: Fixed the Chat Cooldown option not actually changing up the chat cooldown</li> </ul>
-<ul> <li>Role Fix: Fixed Neutral (Neophyte) roles being appointed as the Jackal's Recruits</li> </ul>
-<ul> <li>Role Fix: Fixed Ghouls not spawning in</li> </ul>
-<ul> <li>Role Fix: Fixed Shifters constantly dying upon failing to shift</li> </ul>
-<ul> <li>Objectifier Fix: Fixed unturned Defectors appearing twice on the Victory screen</li> </ul>
-<ul> <li>Ability Fix: Fixed the sheer amount of Assassins being assigned in All Any</li> </ul>
-<ul> <li>Ability Fix: Fixed Neutral Assassins not spawning</li> </ul>
+<ul>
+    <li>Update: Updated MCI</li>
+    <li>Addition: A lot more buttons have their sprites now</li>
+    <li>Addition: There can now be multiple Revealers, Banshees, Ghouls and Phantoms</li>
+    <li>Buff: Actor now becomes a role from the role list they were supposed to be guessed as when all guessing capable players have died</li>
+    <li>Improvement: Layer count and chance settings have been merged into one setting type</li>
+    <li>Critical Fix: Fixed Crew-Allied Neutral Killers being shown who the other Crew are in the intro screen</li>
+    <li>Critical Fix: Fixed Spellslinger not ending the game when needed</li>
+    <li>Critical Fix: Fixed games not ending with a Guardian Angel without a target active</li>
+    <li>Visual Fix: Fixed the vent button disappearing when role blocked</li>
+    <li>Visual Fix: Fixed the Engrish in some parts of the mod</li>
+    <li>Visual Fix: Fixed outlines persisting on targets after death</li>
+    <li>Bug Fix: Fixed decreasing the lobby size not kicking players when needed</li>
+    <li>Bug Fix: Fixed arrows not updating correctly</li>
+    <li>Bug Fix: Fixed being unable to change the lobby size when opening up a lobby</li>
+    <li>Bug Fix: Fixed Footprints only spawning the left/right foot for each person</li>
+    <li>Bug Fix: Fixed some issues with button targeting</li>
+    <li>Bug Fix: Fixed the Chat Cooldown option not actually changing up the chat cooldown</li>
+    <li>Role Fix: Fixed Neutral (Neophyte) roles being appointed as the Jackal's Recruits</li>
+    <li>Role Fix: Fixed Ghouls not spawning in</li>
+    <li>Role Fix: Fixed Shifters constantly dying upon failing to shift</li>
+    <li>Objectifier Fix: Fixed unturned Defectors appearing twice on the Victory screen</li>
+    <li>Ability Fix: Fixed the sheer amount of Assassins being assigned in All Any</li>
+    <li>Ability Fix: Fixed Neutral Assassins not spawning</li>
+</ul>
 </details>
 <details>
 <summary>v0.4.0</summary>
-<ul> <li>Update: Merged changes from v4.0.6 of ToU-R</li> </ul>
-<ul> <li>Update: Updated the mod to v2023.6.13</li> </ul>
-<ul> <li>Update: Updated BepInEx to be.670</li> </ul>
-<ul> <li>Update: Updated Reactor to 2.2.0-ci.234</li> </ul>
-<ul> <li>Addition: Added the "Avoid Neutral Kingmakers" option which disables Survivors and Guardian Angels and kills off any Neutral (Evil) role after finishing their objective</li> </ul>
-<ul> <li>Recode: Role generation and Chat commands have been recoded</li> </ul>
-<ul> <li>Recode: Roleblocks have also received a slight recode</li> </ul>
-<ul> <li>Buff: Coroner reference bodies now stack on top of each other and there is no longer a compare limit</li> </ul>
-<ul> <li>Buff: Executioners, Guessers and Guardian Angels can pick their own targets within the first 2 rounds (to avoid having their chosen targets die early)</li> </ul>
-<ul> <li>Nerf: Medics who haven't shielded yet can no longer shield revealed Mayors and Dictators</li> </ul>
-<ul> <li>Improvement: Improved how players and chat messages are handled</li> </ul>
-<ul> <li>Improvement: Added meeting compatibility to MCI so that switching between players during meetings is possible</li> </ul>
-<ul> <li>Improvement: Disconnected players are now also added to the end game summary</li> </ul>
-<ul> <li>Visual Fix: Fixed player visors sometimes being blue in color in meetings</li> </ul>
-<ul> <li>Visual Fix: Fixed the Use button inverting colors when near a non-task interactable</li> </ul>
-<ul> <li>Visual Fix: Fixed the intro fade sometimes disappearing</li> </ul>
-<ul> <li>Bug Fix: Fixed shields not breaking properly</li> </ul>
-<ul> <li>Bug Fix: Fixed colors occasionally bugging out</li> </ul>
-<ul> <li>Bug Fix: Fixed Janitor and Godfather-Janitors teleporting bodies when dragging them</li> </ul>
-<ul> <li>Bug Fix: Fixed incorrect guessing results being displayed</li> </ul>
-<ul> <li>Bug Fix: Fixed players being warped into walls</li> </ul>
-<ul> <li>Role Fix: Fixed Amnesiac, Shifter and Thief role changing bugging out buttons</li> </ul>
-<ul> <li>Role Fix: Fixed Godfather and Rebel being able promote those they shouldn't</li> </ul>
-<ul> <li>Temporary Removal: Custom cosmetics have been removed on account of the update, they'll return when I can fix the bugs relating to them</li> </ul>
-<ul> <li>Removal: Removed the "Min" setting for all role alignments, they bug out role gen a lot so only the min setting for the factions and layers exist</li> </ul>
+<ul>
+    <li>Update: Merged changes from v4.0.6 of ToU-R</li>
+    <li>Update: Updated the mod to v2023.6.13</li>
+    <li>Update: Updated BepInEx to be.670</li>
+    <li>Update: Updated Reactor to 2.2.0-ci.234</li>
+    <li>Addition: Added the "Avoid Neutral Kingmakers" option which disables Survivors and Guardian Angels and kills off any Neutral (Evil) role after finishing their objective</li>
+    <li>Recode: Role generation and Chat commands have been recoded</li>
+    <li>Recode: Roleblocks have also received a slight recode</li>
+    <li>Buff: Coroner reference bodies now stack on top of each other and there is no longer a compare limit</li>
+    <li>Buff: Executioners, Guessers and Guardian Angels can pick their own targets within the first 2 rounds (to avoid having their chosen targets die early)</li>
+    <li>Nerf: Medics who haven't shielded yet can no longer shield revealed Mayors and Dictators</li>
+    <li>Improvement: Improved how players and chat messages are handled</li>
+    <li>Improvement: Added meeting compatibility to MCI so that switching between players during meetings is possible</li>
+    <li>Improvement: Disconnected players are now also added to the end game summary</li>
+    <li>Visual Fix: Fixed player visors sometimes being blue in color in meetings</li>
+    <li>Visual Fix: Fixed the Use button inverting colors when near a non-task interactable</li>
+    <li>Visual Fix: Fixed the intro fade sometimes disappearing</li>
+    <li>Bug Fix: Fixed shields not breaking properly</li>
+    <li>Bug Fix: Fixed colors occasionally bugging out</li>
+    <li>Bug Fix: Fixed Janitor and Godfather-Janitors teleporting bodies when dragging them</li>
+    <li>Bug Fix: Fixed incorrect guessing results being displayed</li>
+    <li>Bug Fix: Fixed players being warped into walls</li>
+    <li>Role Fix: Fixed Amnesiac, Shifter and Thief role changing bugging out buttons</li>
+    <li>Role Fix: Fixed Godfather and Rebel being able promote those they shouldn't</li>
+    <li>Temporary Removal: Custom cosmetics have been removed on account of the update, they'll return when I can fix the bugs relating to them</li>
+    <li>Removal: Removed the "Min" setting for all role alignments, they bug out role gen a lot so only the min setting for the factions and layers exist</li>
+</ul>
 </details>
 <details>
 <summary>v0.3.1</summary>
-<ul> <li>Addition: Added /subfactioninfo and /otherinfo commands for more details about the mod</li> </ul>
-<ul> <li>Addition: Added an FPS tracker</li> </ul>
-<ul> <li>Change: Players being transported/warped are now susceptible to everything during the animation (that means team killing is possible)</li> </ul>
-<ul> <li>Improvement: Improved how body reports, role cards and colors are handled</li> </ul>
-<ul> <li>Improvement: Added more parameters to customise cosmetics</li> </ul>
-<ul> <li>Improvement: Updated the info in the in-game wiki to include meanings of the symbols next to players' names</li> </ul>
-<ul> <li>Improvement: Improved how shield breaking is handled</li> </ul>
-<ul> <li>Critical Fix: Fixed role cards crashing the game upon opening</li> </ul>
-<ul> <li>Critical Fix: Fixed the end game summary not showing sometimes and therefore making the game unplayable</li> </ul>
-<ul> <li>Vanilla Fix: Fixed the horrid log spam during games and potential stuttering</li> </ul>
-<ul> <li>Bug Fix: Fixed being able to zoom out on game start</li> </ul>
-<ul> <li>Bug Fix: Fixed non-role layers having their texts appear strange in the role card</li> </ul>
-<ul> <li>Bug Fix: Fixed roles not changing when they are supposed to (Like Executioner to Jester)</li> </ul>
-<ul> <li>Bug Fix: Fixed postmortal roles sometimes weirding out while doing tasks</li> </ul>
-<ul> <li>Bug Fix: Fixed arrow blips being updated on other people's maps</li> </ul>
-<ul> <li>Visual Fix: Fixed the skip button always being visible</li> </ul>
-<ul> <li>Visual Fix: Fixed typos in the wiki</li> </ul>
-<ul> <li>Visual Fix: Fixed Dictator hammer icons being the other way round</li> </ul>
-<ul> <li>Role Fix: Fixed Thief not stealing the roles of those they guessed</li> </ul>
-<ul> <li>Role Fix: Fixed Monarch knighting cooldown not resetting</li> </ul>
-<ul> <li>Role Fix: Fixed the incorrect scaling of the transport animation</li> </ul>
-<ul> <li>Role Fix: Fixed Rebel/Godfather promotions behaving weirdly</li> </ul>
-<ul> <li>Role Fix: Fixed non former Drunkard Rebels being able to confuse players</li> </ul>
-<ul> <li>Role Fix; Fixed Banshee's role history being spammed</li> </ul>
-<ul> <li>Ability Fix: Fixed Assassins being unable to guess after playing for a while</li> </ul>
+<ul>
+    <li>Addition: Added /subfactioninfo and /otherinfo commands for more details about the mod</li>
+    <li>Addition: Added an FPS tracker</li>
+    <li>Change: Players being transported/warped are now susceptible to everything during the animation (that means team killing is possible)</li>
+    <li>Improvement: Improved how body reports, role cards and colors are handled</li>
+    <li>Improvement: Added more parameters to customise cosmetics</li>
+    <li>Improvement: Updated the info in the in-game wiki to include meanings of the symbols next to players' names</li>
+    <li>Improvement: Improved how shield breaking is handled</li>
+    <li>Critical Fix: Fixed role cards crashing the game upon opening</li>
+    <li>Critical Fix: Fixed the end game summary not showing sometimes and therefore making the game unplayable</li>
+    <li>Vanilla Fix: Fixed the horrid log spam during games and potential stuttering</li>
+    <li>Bug Fix: Fixed being able to zoom out on game start</li>
+    <li>Bug Fix: Fixed non-role layers having their texts appear strange in the role card</li>
+    <li>Bug Fix: Fixed roles not changing when they are supposed to (Like Executioner to Jester)</li>
+    <li>Bug Fix: Fixed postmortal roles sometimes weirding out while doing tasks</li>
+    <li>Bug Fix: Fixed arrow blips being updated on other people's maps</li>
+    <li>Visual Fix: Fixed the skip button always being visible</li>
+    <li>Visual Fix: Fixed typos in the wiki</li>
+    <li>Visual Fix: Fixed Dictator hammer icons being the other way round</li>
+    <li>Role Fix: Fixed Thief not stealing the roles of those they guessed</li>
+    <li>Role Fix: Fixed Monarch knighting cooldown not resetting</li>
+    <li>Role Fix: Fixed the incorrect scaling of the transport animation</li>
+    <li>Role Fix: Fixed Rebel/Godfather promotions behaving weirdly</li>
+    <li>Role Fix: Fixed non former Drunkard Rebels being able to confuse players</li>
+    <li>Role Fix; Fixed Banshee's role history being spammed</li>
+    <li>Ability Fix: Fixed Assassins being unable to guess after playing for a while</li>
+</ul>
 </details>
 <details>
 <summary>v0.3.0</summary>
-<ul> <li>New Modifiers: Astral, Yeller</li> </ul>
-<ul> <li>Buff: Dead bodies are now camouflaged along with players</li> </ul>
-<ul> <li>Buff: Jackal can now spawn with Neutral (Benign) roles as the good recruits and Neutral (Evil) and (Harbinger) roles as the evil recruits</li> </ul>
-<ul> <li>Nerf: Assassin and Guesser can no longer guess Crew (Investigative) roles and has been made optional for Assassin (to actually make the game social deduction and not "stfu and play")</li> </ul>
-<ul> <li>Change: Monarch protection now extends to as long as someone is knighted and not that any of the knighted players is Crew</li> </ul>
-<ul> <li>Change: Guardian Angels can no longer have Neutral (Evil) targets</li> </ul>
-<ul> <li>Change: Guesser can no longer get Crew (Investigative) targets</li> </ul>
-<ul> <li>Change: Mystic's subfaction checks now compare to the Mystic's own subfaction, rather than the default one (in case of a converted Mystic)</li> </ul>
-<ul> <li>Improvement: Swapping animation now swaps everything</li> </ul>
-<ul> <li>Improvement: Minor improvements were made to the role card and the task</li> </ul>
-<ul> <li>Improvement: Custom cosmetics now update (in case I ever decide to change up how a hat appears)</li> </ul>
-<ul> <li>Improvement: Improved how roles with targets are assigned their targets</li> </ul>
-<ul> <li>Improvement: String options now looks like the vanilla map option</li> </ul>
-<ul> <li>Improvement: Improved how Role Cards are handled</li> </ul>
-<ul> <li>Visual Fix: Fixed the sabotage button being visible when in a meeting</li> </ul>
-<ul> <li>Critical Fix: Fixed the mod sometimes not loading</li> </ul>
-<ul> <li>Bug Fix: Fixed being able to see the roles of players right after dying using the Haunt Menu</li> </ul>
-<ul> <li>Bug Fix: Fixed colorblind support for Operative being applied to all roles</li> </ul>
-<ul> <li>Bug Fix: Fixed the issue where the options menu would spasm out of control and then stop letting you switch tabs</li> </ul>
-<ul> <li>Bug Fix: Fixed some Neutral (Evil) roles ending the game even with the Neutral Evils End Game setting is off</li> </ul>
-<ul> <li>Bug Fix: Fixed Lovers and Rivals not spawning</li> </ul>
-<ul> <li>Bug Fix: Fixed the local player's colors not updating for themselves but for everyone else</li> </ul>
-<ul> <li>Role Fix: Fixed Silencer and Promoted Rebel cooldowns from not resetting correctly</li> </ul>
-<ul> <li>Role Fix: Fixed Actor getting role lists that cannot be guessed</li> </ul>
-<ul> <li>Role Fix: Fixed Survivors and Guardian Angels not winning</li> </ul>
-<ul> <li>Potential Fix: Fixed the updater not working as intended</li> </ul>
-<ul> <li>Removed: Removed the outline around the role names because it makes them look a little bloated during the intro scene</li> </ul>
+<ul>
+    <li>New Modifiers: Astral, Yeller</li>
+    <li>Buff: Dead bodies are now camouflaged along with players</li>
+    <li>Buff: Jackal can now spawn with Neutral (Benign) roles as the good recruits and Neutral (Evil) and (Harbinger) roles as the evil recruits</li>
+    <li>Nerf: Assassin and Guesser can no longer guess Crew (Investigative) roles and has been made optional for Assassin (to actually make the game social deduction and not "stfu and play")</li>
+    <li>Change: Monarch protection now extends to as long as someone is knighted and not that any of the knighted players is Crew</li>
+    <li>Change: Guardian Angels can no longer have Neutral (Evil) targets</li>
+    <li>Change: Guesser can no longer get Crew (Investigative) targets</li>
+    <li>Change: Mystic's subfaction checks now compare to the Mystic's own subfaction, rather than the default one (in case of a converted Mystic)</li>
+    <li>Improvement: Swapping animation now swaps everything</li>
+    <li>Improvement: Minor improvements were made to the role card and the task</li>
+    <li>Improvement: Custom cosmetics now update (in case I ever decide to change up how a hat appears)</li>
+    <li>Improvement: Improved how roles with targets are assigned their targets</li>
+    <li>Improvement: String options now looks like the vanilla map option</li>
+    <li>Improvement: Improved how Role Cards are handled</li>
+    <li>Visual Fix: Fixed the sabotage button being visible when in a meeting</li>
+    <li>Critical Fix: Fixed the mod sometimes not loading</li>
+    <li>Bug Fix: Fixed being able to see the roles of players right after dying using the Haunt Menu</li>
+    <li>Bug Fix: Fixed colorblind support for Operative being applied to all roles</li>
+    <li>Bug Fix: Fixed the issue where the options menu would spasm out of control and then stop letting you switch tabs</li>
+    <li>Bug Fix: Fixed some Neutral (Evil) roles ending the game even with the Neutral Evils End Game setting is off</li>
+    <li>Bug Fix: Fixed Lovers and Rivals not spawning</li>
+    <li>Bug Fix: Fixed the local player's colors not updating for themselves but for everyone else</li>
+    <li>Role Fix: Fixed Silencer and Promoted Rebel cooldowns from not resetting correctly</li>
+    <li>Role Fix: Fixed Actor getting role lists that cannot be guessed</li>
+    <li>Role Fix: Fixed Survivors and Guardian Angels not winning</li>
+    <li>Potential Fix: Fixed the updater not working as intended</li>
+    <li>Removed: Removed the outline around the role names because it makes them look a little bloated during the intro scene</li>
+</ul>
 </details>
 <details>
 <summary>v0.2.5</summary>
-<ul> <li>New Role: Silencer [Syndicate (Disruption)]</li> </ul>
-<ul> <li>Return: Time Lord and Time Master are back, and more vengeful then ever as the Timekeeper [Syndicate (Power)]!</li> </ul>
-<ul> <li>Return: Neutral (Evil) roles now end the game again, but this is togglable</li> </ul>
-<ul> <li>Addition: Added a credits button to the main menu</li> </ul>
-<ul> <li>Finished: Role cards are now complete</li> </ul>
-<ul> <li>Buff: Players with the Torch ability can now see the silhouette of invisible players</li> </ul>
-<ul> <li>Buff: VIP dying will now create an arrow pointing towards the VIP's body</li> </ul>
-<ul> <li>Buff: Thief can now guess players as killing roles to steal their roles (yes, I took the idea from The Other Roles)</li> </ul>
-<ul> <li>Change: Collider's Inspector results are now Unseen rather than MovesAround</li> </ul>
-<ul> <li>Recode: Medium has been recoded a little bit for better functionality</li> </ul>
-<ul> <li>Recode: Shapeshifts have been recoded again along with appearances being handled even better than before</li> </ul>
-<ul> <li>Improvement: Transport and Warp animation sizes now scale with the size of the teleported player</li> </ul>
-<ul> <li>Improvement: Improved how arrows and map blips are handled</li> </ul>
-<ul> <li>Improvement: Some parts were improved internally</li> </ul>
-<ul> <li>Improvement: Improved how kills are handled</li> </ul>
-<ul> <li>Improvement: Improved Level Impostor compatibility (WIP)</li> </ul>
-<ul> <li>Visual Fix: Fixed the intro messages being clipped off screen for some roles</li> </ul>
-<ul> <li>Critical Fix: Fixed Giant and Dwarf crashing the game upon game start</li> </ul>
-<ul> <li>Critical Fix: Fixed cosmetics not loading correctly</li> </ul>
-<ul> <li>Bug Fix: Fixed Radar and Tiebreaker not being assigned</li> </ul>
-<ul> <li>Bug Fix: Fixed only one player being shaken when blackmailed players are revealed</li> </ul>
-<ul> <li>Bug Fix: Fixed some rpc spamming regarding kills</li> </ul>
-<ul> <li>Role Fix: Fixed Glitch being unable to hack</li> </ul>
-<ul> <li>Role Fix: Fixed Drunkard-Rebels not inverting players' controls</li> </ul>
-<ul> <li>Role Fix: Fixed Drunkard inverting controls of players forever</li> </ul>
-<ul> <li>Role Fix: Fixed winning Cannibals not showing up on the win screen</li> </ul>
-<ul> <li>Role Fix: Guardian Angel, Bounty Hunter, Execuioner and Guesser can no longer get their Lover/Rival as targets</li> </ul>
-<ul> <li>Role Fix: Fixed Dictator not dying for all players upon misfiring on Crew</li> </ul>
-<ul> <li>Objectifier Fix: Fixed Syndicate defected Intruders being able to see the sabotage button</li> </ul>
-<ul> <li>Objectifier Fix: Fixed Defectors not letting the games end properly</li> </ul>
-<ul> <li>Objectifier Fix: Fixed only 1 Mafia spawning</li> </ul>
+<ul>
+    <li>New Role: Silencer [Syndicate (Disruption)]</li>
+    <li>Return: Time Lord and Time Master are back, and more vengeful then ever as the Timekeeper [Syndicate (Power)]!</li>
+    <li>Return: Neutral (Evil) roles now end the game again, but this is togglable</li>
+    <li>Addition: Added a credits button to the main menu</li>
+    <li>Finished: Role cards are now complete</li>
+    <li>Buff: Players with the Torch ability can now see the silhouette of invisible players</li>
+    <li>Buff: VIP dying will now create an arrow pointing towards the VIP's body</li>
+    <li>Buff: Thief can now guess players as killing roles to steal their roles (yes, I took the idea from The Other Roles)</li>
+    <li>Change: Collider's Inspector results are now Unseen rather than MovesAround</li>
+    <li>Recode: Medium has been recoded a little bit for better functionality</li>
+    <li>Recode: Shapeshifts have been recoded again along with appearances being handled even better than before</li>
+    <li>Improvement: Transport and Warp animation sizes now scale with the size of the teleported player</li>
+    <li>Improvement: Improved how arrows and map blips are handled</li>
+    <li>Improvement: Some parts were improved internally</li>
+    <li>Improvement: Improved how kills are handled</li>
+    <li>Improvement: Improved Level Impostor compatibility (WIP)</li>
+    <li>Visual Fix: Fixed the intro messages being clipped off screen for some roles</li>
+    <li>Critical Fix: Fixed Giant and Dwarf crashing the game upon game start</li>
+    <li>Critical Fix: Fixed cosmetics not loading correctly</li>
+    <li>Bug Fix: Fixed Radar and Tiebreaker not being assigned</li>
+    <li>Bug Fix: Fixed only one player being shaken when blackmailed players are revealed</li>
+    <li>Bug Fix: Fixed some rpc spamming regarding kills</li>
+    <li>Role Fix: Fixed Glitch being unable to hack</li>
+    <li>Role Fix: Fixed Drunkard-Rebels not inverting players' controls</li>
+    <li>Role Fix: Fixed Drunkard inverting controls of players forever</li>
+    <li>Role Fix: Fixed winning Cannibals not showing up on the win screen</li>
+    <li>Role Fix: Guardian Angel, Bounty Hunter, Execuioner and Guesser can no longer get their Lover/Rival as targets</li>
+    <li>Role Fix: Fixed Dictator not dying for all players upon misfiring on Crew</li>
+    <li>Objectifier Fix: Fixed Syndicate defected Intruders being able to see the sabotage button</li>
+    <li>Objectifier Fix: Fixed Defectors not letting the games end properly</li>
+    <li>Objectifier Fix: Fixed only 1 Mafia spawning</li>
+</ul>
 </details>
 <details>
 <summary>v0.2.4</summary>
-<ul> <li>New Objectifier: Defector
-<ul> <li>New Alignments: Neutral (Harbinger) and Neutral (Apocalypse)</li> </ul>
-<ul> <li>Addition: Added some secret role alignments, try seeing how to get them (hint: betrayal and change)</li> </ul>
-<ul> <li>Addition: Some actions are now animated</li> </ul>
-<ul> <li>Addition: Added a button to be able to see what settings are there in game</li> </ul>
-<ul> <li>Addition: Role cards: this is where the info about your role goes instead of the task list (WIP)</li> </ul>
-<ul> <li>Buff: Ruthless and Ninja can now be assigned to Crew (Killing) roles and those with the Corrupted objectifier</li> </ul>
-<ul> <li>Nerf: Intruders and Syndicate with Ruthless can no longer convert Fanatics</li> </ul>
-<ul> <li>Change: Plaguebearer can no longer get Allied</li> </ul>
-<ul> <li>Improvement: Improved how appearance changes are handled</li> </ul>
-<ul> <li>Improvement: Added a logo next to the ping tracker (thanks to @Jsushi7)</li> </ul>
-<ul> <li>Improvement: Improved the layout of the main menu (inspired by the main menu changes made by @Zeo666 in All The Roles)</li> </ul>
-<ul> <li>Improvement: The task counter has been moved from your name to the task tab</li> </ul>
-<ul> <li>Improvement: The zooming buttons are now smaller and moved to a different location</li> </ul>
-<ul> <li>Improvement: The in-game wiki has received a slight recode</li> </ul>
-<ul> <li>Improvement: You no longer know the status of players until the meeting after your death (to avoid players coming back to life and ratting everyone out)</li> </ul>
-<ul> <li>Improvement: Improved the footprint graphics for Detectives and Retributionist-Detectives</li> </ul>
-<ul> <li>Bug Fix: Fixed the spectate button opening up the haunting menu</li> </ul>
-<ul> <li>Bug Fix: Fixed being unable to leave vents</li> </ul>
-<ul> <li>Bug Fix: Fixed vision not updating correctly when switching between dead and alive players using MCI</li> </ul>
-<ul> <li>Bug Fix: Fixed Pestilence spawning instead of Plaguebearer with the Pestilence Spawn option is turned off</li> </ul>
-<ul> <li>Visual Fix: Fixed ghosts being unable to see the names and roles of players through walls with the obstruct names option turned on</li> </ul>
-<ul> <li>Role Fix: Fixed the Concealer's target staying invisible forever</li> </ul>
-<ul> <li>Role Fix: Fixed the Guesser's target's alignment hint having text hexcode color control</li> </ul>
-<ul> <li>Role Fix: Fixed Bounty Hunter being shown their target on the intro screen</li> </ul>
-<ul> <li>Role Fix: Fixed Dracula and Jackal killing those they are trying to convert</li> </ul>
-<ul> <li>Role Fix: Fixed turning betrayer being spammed in the end game summary</li> </ul>
-<ul> <li>Ability Fix: Fixed killing Politicians being unable to vote players</li> </ul>
-<ul> <li>Removal: The lobby timer because it's kind of useless as most people play on modded servers anyways, which don't expire</li> </ul>
+<ul>
+    <li>New Objectifier: Defector
+    <li>New Alignments: Neutral (Harbinger) and Neutral (Apocalypse)</li>
+    <li>Addition: Added some secret role alignments, try seeing how to get them (hint: betrayal and change)</li>
+    <li>Addition: Some actions are now animated</li>
+    <li>Addition: Added a button to be able to see what settings are there in game</li>
+    <li>Addition: Role cards: this is where the info about your role goes instead of the task list (WIP)</li>
+    <li>Buff: Ruthless and Ninja can now be assigned to Crew (Killing) roles and those with the Corrupted objectifier</li>
+    <li>Nerf: Intruders and Syndicate with Ruthless can no longer convert Fanatics</li>
+    <li>Change: Plaguebearer can no longer get Allied</li>
+    <li>Improvement: Improved how appearance changes are handled</li>
+    <li>Improvement: Added a logo next to the ping tracker (thanks to @Jsushi7)</li>
+    <li>Improvement: Improved the layout of the main menu (inspired by the main menu changes made by @Zeo666 in All The Roles)</li>
+    <li>Improvement: The task counter has been moved from your name to the task tab</li>
+    <li>Improvement: The zooming buttons are now smaller and moved to a different location</li>
+    <li>Improvement: The in-game wiki has received a slight recode</li>
+    <li>Improvement: You no longer know the status of players until the meeting after your death (to avoid players coming back to life and ratting everyone out)</li>
+    <li>Improvement: Improved the footprint graphics for Detectives and Retributionist-Detectives</li>
+    <li>Bug Fix: Fixed the spectate button opening up the haunting menu</li>
+    <li>Bug Fix: Fixed being unable to leave vents</li>
+    <li>Bug Fix: Fixed vision not updating correctly when switching between dead and alive players using MCI</li>
+    <li>Bug Fix: Fixed Pestilence spawning instead of Plaguebearer with the Pestilence Spawn option is turned off</li>
+    <li>Visual Fix: Fixed ghosts being unable to see the names and roles of players through walls with the obstruct names option turned on</li>
+    <li>Role Fix: Fixed the Concealer's target staying invisible forever</li>
+    <li>Role Fix: Fixed the Guesser's target's alignment hint having text hexcode color control</li>
+    <li>Role Fix: Fixed Bounty Hunter being shown their target on the intro screen</li>
+    <li>Role Fix: Fixed Dracula and Jackal killing those they are trying to convert</li>
+    <li>Role Fix: Fixed turning betrayer being spammed in the end game summary</li>
+    <li>Ability Fix: Fixed killing Politicians being unable to vote players</li>
+    <li>Removal: The lobby timer because it's kind of useless as most people play on modded servers anyways, which don't expire</li>
+</ul>
 </details>
 <details>
 <summary>v0.2.3</summary>
-<ul> <li>Nerf: Reporting a body while being flashed yields no results for the Coroner and the Retributionist-Coroner</li> </ul>
-<ul> <li>Addition: Added "Hide Obstructed Player Names" option so that you don't see players' names through walls</li> </ul>
-<ul> <li>Improvement: Improved some rpc handling between roles</li> </ul>
-<ul> <li>Improvement: Reduced the mod size even more, god I love doing this</li> </ul>
-<ul> <li>Critical Fix: Fixed custom cosmetics not loading</li> </ul>
-<ul> <li>Visual Fix: Fixed the hat and visor tabs not displaying cosmetics</li> </ul>
-<ul> <li>Ability Fix: Fixed Ninja appearing invisible (ironic, I know)</li> </ul>
+<ul>
+    <li>Nerf: Reporting a body while being flashed yields no results for the Coroner and the Retributionist-Coroner</li>
+    <li>Addition: Added "Hide Obstructed Player Names" option so that you don't see players' names through walls</li>
+    <li>Improvement: Improved some rpc handling between roles</li>
+    <li>Improvement: Reduced the mod size even more, god I love doing this</li>
+    <li>Critical Fix: Fixed custom cosmetics not loading</li>
+    <li>Visual Fix: Fixed the hat and visor tabs not displaying cosmetics</li>
+    <li>Ability Fix: Fixed Ninja appearing invisible (ironic, I know)</li>
+</ul>
 </details>
 <details>
 <summary>v0.2.2</summary>
-<ul> <li>Critical Fix: Fixed the sudden issue of players just not dying at all</li> </ul>
-<ul> <li>Temporary Removal: Custom cosmetics are temporarily removed till I figure out why they aren't loading</li> </ul>
+<ul>
+    <li>Critical Fix: Fixed the sudden issue of players just not dying at all</li>
+    <li>Temporary Removal: Custom cosmetics are temporarily removed till I figure out why they aren't loading</li>
+</ul>
 </details>
 <details>
 <summary>v0.2.1</summary>
-<ul> <li>New Preset: Ranked
-<ul> <li>Return: Drunkard's back, new and improved!</li> </ul>
-<ul> <li>Return: Cosmetic sections are back</li> </ul>
-<ul> <li>Addition: Added the /summary (or /sum for short) command for being able to see the game summary of the previous game when in lobby</li> </ul>
-<ul> <li>Addition: Dwarf and Giant were changed interally, mix and match with the settings to find things out ;)</li> </ul>
-<ul> <li>Buff: Completing tasks restores a charge for roles with limited uses</li> </ul>
-<ul> <li>Buff: On low player counts, Amnesiac now becomes a Thief</li> </ul>
-<ul> <li>Buff: Monarchs with alive knights now cannot be killed as long as one of the alive knights is Crew (Ruthless still bypasses this)</li> </ul>
-<ul> <li>Nerf: Clicking a Revealer who has finished their tasks now disables their ability</li> </ul>
-<ul> <li>Nerf: Everyone is told who has been spelled during meetings, so at least the dangers of Spellslinger is known</li> </ul>
-<ul> <li>Nerf: Misfiring on a framed innocent player will no longer kill the Vigilante, unless the Misfire setting is turned on</li> </ul>
-<ul> <li>Recode: Cosmetic handling was recoded to work like how The Other Roles does it</li> </ul>
-<ul> <li>Optimisation: Some code was optimsed</li> </ul>
-<ul> <li>Improvement: Turned Traitors and Fanatics with the Assassin ability now have their guessing menus updated to their new factions</li> </ul>
-<ul> <li>Improvement: Added a paging behaviour for the guessing menu, to prevent guess buttons going off-screen</li> </ul>
-<ul> <li>Improvement: The mod's weight has been heavily reduced</li> </ul>
-<ul> <li>Improvement: Improved player targeting some more</li> </ul>
-<ul> <li>Change: Teleporter's color was changed because it was too close to the Grenadier's green</li> </ul>
-<ul> <li>Critical Fix: Fixed Airship crashing players when loading in</li> </ul>
-<ul> <li>Bug Fix: Fixed the weird issue with blank abilities appearing</li> </ul>
-<ul> <li>Bug Fix: Fixed being able to target dead players and postmortal roles</li> </ul>
-<ul> <li>Bug Fix: Fixed loading presets not actually closing the option menu</li> </ul>
-<ul> <li>Bug Fix: Changing the screen resolution no longer clips the settings out of bounds</li> </ul>
-<ul> <li>Bug Fix: Fixed players being assigned multiple abilities</li> </ul>
-<ul> <li>Modifier Fix: Fixed Volatile weirding out the spawn in sequence</li> </ul>
-<ul> <li>Objectifier Fix: Fixed Corrupted being unable to kill players</li> </ul>
-<ul> <li>Ability Fix: Fixed Multitasker not making the task windows transparent</li> </ul>
-<ul> <li>Role + Ability Fix: Fixed the weird scaling of the guessing menu (it looped the size for every button added lmao, making it smaller with each possible guess added)</li> </ul>
-<ul> <li>Role Fix: Fixed incorrect distance scaling for a lot of roles</li> </ul>
-<ul> <li>Role Fix: Fixed Anarchist's kill cooldown not resetting correctly</li> </ul>
-<ul> <li>Role Fix: Fixed Stalker's Stalk button not appearing</li> </ul>
-<ul> <li>Role Fix: Fixed (Collider/Spellslinger/Stalker)-Rebels not having their buttons</li> </ul>
-<ul> <li>Role Fix: Fixed Executioner being unable to doom players</li> </ul>
-<ul> <li>Role Fix: Fixed Jester being unable to haunt players</li> </ul>
-<ul> <li>Role Fix: Fixed Bomber and Enforcer bomb kills being marked as suicides</li> </ul>
-<ul> <li>Role Fix: Enforcer can no longer place bombs on their teammates</li> </ul>
-<ul> <li>Role Fix: Fixed Spellslinger not being able to see who they spelled</li> </ul>
-<ul> <li>Role Fix: Fixed Tracker-Retributionist's Track button not updating</li> </ul>
-<ul> <li>Role Fix: Retributionist's ability uses now update correctly</li> </ul>
-<ul> <li>Potential Fix: Lag on the cosmetics screen and the cosmetic icons not having the hats in them</li> </ul>
+<ul>
+    <li>New Preset: Ranked
+    <li>Return: Drunkard's back, new and improved!</li>
+    <li>Return: Cosmetic sections are back</li>
+    <li>Addition: Added the /summary (or /sum for short) command for being able to see the game summary of the previous game when in lobby</li>
+    <li>Addition: Dwarf and Giant were changed interally, mix and match with the settings to find things out ;)</li>
+    <li>Buff: Completing tasks restores a charge for roles with limited uses</li>
+    <li>Buff: On low player counts, Amnesiac now becomes a Thief</li>
+    <li>Buff: Monarchs with alive knights now cannot be killed as long as one of the alive knights is Crew (Ruthless still bypasses this)</li>
+    <li>Nerf: Clicking a Revealer who has finished their tasks now disables their ability</li>
+    <li>Nerf: Everyone is told who has been spelled during meetings, so at least the dangers of Spellslinger is known</li>
+    <li>Nerf: Misfiring on a framed innocent player will no longer kill the Vigilante, unless the Misfire setting is turned on</li>
+    <li>Recode: Cosmetic handling was recoded to work like how The Other Roles does it</li>
+    <li>Optimisation: Some code was optimsed</li>
+    <li>Improvement: Turned Traitors and Fanatics with the Assassin ability now have their guessing menus updated to their new factions</li>
+    <li>Improvement: Added a paging behaviour for the guessing menu, to prevent guess buttons going off-screen</li>
+    <li>Improvement: The mod's weight has been heavily reduced</li>
+    <li>Improvement: Improved player targeting some more</li>
+    <li>Change: Teleporter's color was changed because it was too close to the Grenadier's green</li>
+    <li>Critical Fix: Fixed Airship crashing players when loading in</li>
+    <li>Bug Fix: Fixed the weird issue with blank abilities appearing</li>
+    <li>Bug Fix: Fixed being able to target dead players and postmortal roles</li>
+    <li>Bug Fix: Fixed loading presets not actually closing the option menu</li>
+    <li>Bug Fix: Changing the screen resolution no longer clips the settings out of bounds</li>
+    <li>Bug Fix: Fixed players being assigned multiple abilities</li>
+    <li>Modifier Fix: Fixed Volatile weirding out the spawn in sequence</li>
+    <li>Objectifier Fix: Fixed Corrupted being unable to kill players</li>
+    <li>Ability Fix: Fixed Multitasker not making the task windows transparent</li>
+    <li>Role + Ability Fix: Fixed the weird scaling of the guessing menu (it looped the size for every button added lmao, making it smaller with each possible guess added)</li>
+    <li>Role Fix: Fixed incorrect distance scaling for a lot of roles</li>
+    <li>Role Fix: Fixed Anarchist's kill cooldown not resetting correctly</li>
+    <li>Role Fix: Fixed Stalker's Stalk button not appearing</li>
+    <li>Role Fix: Fixed (Collider/Spellslinger/Stalker)-Rebels not having their buttons</li>
+    <li>Role Fix: Fixed Executioner being unable to doom players</li>
+    <li>Role Fix: Fixed Jester being unable to haunt players</li>
+    <li>Role Fix: Fixed Bomber and Enforcer bomb kills being marked as suicides</li>
+    <li>Role Fix: Enforcer can no longer place bombs on their teammates</li>
+    <li>Role Fix: Fixed Spellslinger not being able to see who they spelled</li>
+    <li>Role Fix: Fixed Tracker-Retributionist's Track button not updating</li>
+    <li>Role Fix: Retributionist's ability uses now update correctly</li>
+    <li>Potential Fix: Lag on the cosmetics screen and the cosmetic icons not having the hats in them</li>
+</ul>
 </details>
 <details>
 <summary>v0.2.0</summary>
-<ul> <li>New Roles: Monarch, Dictator [Crew (Sovereign)]</li> </ul>
-<ul> <li>New Role: Spellslinger [Syndicate (Power)]</li> </ul>
-<ul> <li>New Role: Collider [Syndicate (Killing)]</li> </ul>
-<ul> <li>New Role: Stalker [Syndicate (Support)]</li> </ul>
-<ul> <li>New Objectifier: Mafia</li> </ul>
-<ul> <li>New Preset: Last Used <ul> <li>This preset always loads the settings you last played with in your previous Among Us session</li> </ul>
-<ul> <li>Addition: 2 new nameplates</li> </ul>
-<ul> <li>Buff: Added an optional buff for Arsonist to cremate ignited bodies</li> </ul>
-<ul> <li>Buff: Cryomaniac's last killer kill ability has been given its own kill button</li> </ul>
-<ul> <li>Nerf: The number of assassinations are now linked between all Assassins</li> </ul>
-<ul> <li>Recode: Guesser and Assassin have been recoded to work like in The Other Roles</li> </ul>
-<ul> <li>Rework: Mayor now works the same as its Town Of Salem counterpart</li> </ul>
-<ul> <li>Rework: Politician has been fused with the original Mayor and was changed into an ability</li> </ul>
-<ul> <li>Rework: Swapper is now an ability</li> </ul>
-<ul> <li>Change: Changed the Shapeshifter color as it's too dark</li> </ul>
-<ul> <li>Completion: Inspector results are now finished</li> </ul>
-<ul> <li>Improvement: The Stalemate screen will now include any Neutral (Evil) role that has won</li> </ul>
-<ul> <li>Improvement: Improved Chaos Drive assignment between players</li> </ul>
-<ul> <li>Improvement: Improved how task completion is handled</li> </ul>
-<ul> <li>Improvement: Improved how guesses are handled</li> </ul>
-<ul> <li>Improvement: All actions now occur within their respective layers to hopefully reduce the lag</li> </ul>
-<ul> <li>Improvement: Increased the size of the changelogs for better readability</li> </ul>
-<ul> <li>Improvement: Improved how win conditions are handled to remove any underlying issues</li> </ul>
-<ul> <li>Improvement: The main menu buttons are much closer now to look neater</li> </ul>
-<ul> <li>Improvement: Swapper swaps don't need to be disabled anymore, they automatically update to swapping the new targets</li> </ul>
-<ul> <li>Improvement: Decreased mod weight</li> </ul>
-<ul> <li>Improvement: Assassinated players will have buttons generate on them for the Retributionist</li> </ul>
-<ul> <li>Improvement: The default settings preset now auto updates</li> </ul>
-<ul> <li>Improvement: Arrow targets are now reflected on maps</li> </ul>
-<ul> <li>Critical Fix: Fixed being able to select targets through walls</li> </ul>
-<ul> <li>Bug Fix: Fixed the wiki not giving the correct results for alignments</li> </ul>
-<ul> <li>Bug Fix: Fixed string options occasionally freaking out</li> </ul>
-<ul> <li>Bug Fix: Fixed nameplates not being displayed properly</li> </ul>
-<ul> <li>Bug Fix: Fixed being able to call meetings when you can't</li> </ul>
-<ul> <li>Bug Fix: Fixed chaos drive messages being repeated</li> </ul>
-<ul> <li>Layer Fix: Fixed arrows not updating correctly</li> </ul>
-<ul> <li>Role Fix: Fixed Retributionist buttons not appearing on the game screen or disappearing when getting assassinated</li> </ul>
-<ul> <li>Role Fix: Fixed Sidekick being unable to kill</li> </ul>
-<ul> <li>Role Fix: Fixed weird/inconsistent role changing interactions for Thief, Amnesiac and Shifter</li> </ul>
-<ul> <li>Role Fix: Fixed Altruist and Necromancer revivals bugging out other players</li> </ul>
-<ul> <li>Role Fix: Fixed Promoted Godfather cooldowns not resetting</li> </ul>
-<ul> <li>Modifier Fix: Fixed Shy being assigned to Politicians when they cannot button</li> </ul>
-<ul> <li>Ability Fix: Fixed Swapper buttons not appearing on the game screen</li> </ul>
-<ul> <li>Revert: Reverted flashes back to the original Town Of Us style (but with still some modifications like in The Other Roles)</li> </ul>
-<ul> <li>Removed: Removed the test features that I forgot to remove in the previous release</li> </ul>
+<ul>
+    <li>New Roles: Monarch, Dictator [Crew (Sovereign)]</li>
+    <li>New Role: Spellslinger [Syndicate (Power)]</li>
+    <li>New Role: Collider [Syndicate (Killing)]</li>
+    <li>New Role: Stalker [Syndicate (Support)]</li>
+    <li>New Objectifier: Mafia</li>
+    <li>New Preset: Last Used     <li>This preset always loads the settings you last played with in your previous Among Us session</li>
+    <li>Addition: 2 new nameplates</li>
+    <li>Buff: Added an optional buff for Arsonist to cremate ignited bodies</li>
+    <li>Buff: Cryomaniac's last killer kill ability has been given its own kill button</li>
+    <li>Nerf: The number of assassinations are now linked between all Assassins</li>
+    <li>Recode: Guesser and Assassin have been recoded to work like in The Other Roles</li>
+    <li>Rework: Mayor now works the same as its Town Of Salem counterpart</li>
+    <li>Rework: Politician has been fused with the original Mayor and was changed into an ability</li>
+    <li>Rework: Swapper is now an ability</li>
+    <li>Change: Changed the Shapeshifter color as it's too dark</li>
+    <li>Completion: Inspector results are now finished</li>
+    <li>Improvement: The Stalemate screen will now include any Neutral (Evil) role that has won</li>
+    <li>Improvement: Improved Chaos Drive assignment between players</li>
+    <li>Improvement: Improved how task completion is handled</li>
+    <li>Improvement: Improved how guesses are handled</li>
+    <li>Improvement: All actions now occur within their respective layers to hopefully reduce the lag</li>
+    <li>Improvement: Increased the size of the changelogs for better readability</li>
+    <li>Improvement: Improved how win conditions are handled to remove any underlying issues</li>
+    <li>Improvement: The main menu buttons are much closer now to look neater</li>
+    <li>Improvement: Swapper swaps don't need to be disabled anymore, they automatically update to swapping the new targets</li>
+    <li>Improvement: Decreased mod weight</li>
+    <li>Improvement: Assassinated players will have buttons generate on them for the Retributionist</li>
+    <li>Improvement: The default settings preset now auto updates</li>
+    <li>Improvement: Arrow targets are now reflected on maps</li>
+    <li>Critical Fix: Fixed being able to select targets through walls</li>
+    <li>Bug Fix: Fixed the wiki not giving the correct results for alignments</li>
+    <li>Bug Fix: Fixed string options occasionally freaking out</li>
+    <li>Bug Fix: Fixed nameplates not being displayed properly</li>
+    <li>Bug Fix: Fixed being able to call meetings when you can't</li>
+    <li>Bug Fix: Fixed chaos drive messages being repeated</li>
+    <li>Layer Fix: Fixed arrows not updating correctly</li>
+    <li>Role Fix: Fixed Retributionist buttons not appearing on the game screen or disappearing when getting assassinated</li>
+    <li>Role Fix: Fixed Sidekick being unable to kill</li>
+    <li>Role Fix: Fixed weird/inconsistent role changing interactions for Thief, Amnesiac and Shifter</li>
+    <li>Role Fix: Fixed Altruist and Necromancer revivals bugging out other players</li>
+    <li>Role Fix: Fixed Promoted Godfather cooldowns not resetting</li>
+    <li>Modifier Fix: Fixed Shy being assigned to Politicians when they cannot button</li>
+    <li>Ability Fix: Fixed Swapper buttons not appearing on the game screen</li>
+    <li>Revert: Reverted flashes back to the original Town Of Us style (but with still some modifications like in The Other Roles)</li>
+    <li>Removed: Removed the test features that I forgot to remove in the previous release</li>
+</ul>
 </details>
 <details>
 <summary>v0.1.0-dev1</summary>
-<ul> <li>Buff: Altruist can now revive players multiple times and sacrifices themselves on the last revive</li> </ul>
-<ul> <li>Update: Updated Crowded to fix the double click issue</li> </ul>
-<ul> <li>Update: Updated the role info from the recent updates in the in-game wiki</li> </ul>
-<ul> <li>Improvement: Improved player targeting</li> </ul>
-<ul> <li>Improvement: Settings now open to the last tab you were on, and keybinds for page jumping also work in there</li> </ul>
-<ul> <li>Critical Fix: Fixed the Haunt button not working</li> </ul>
-<ul> <li>Visual Fix: Fixed Poisoner having 2 buttons</li> </ul>
-<ul> <li>Visual Fix: Fixed the sheer amount of ability buttons spawning (hopefully)</li> </ul>
-<ul> <li>Visual Fix: Fixed buttons not disappearing when a meeting is called</li> </ul>
-<ul> <li>Visual Fix: Fixed the spectate button looking a little cut off</li> </ul>
-<ul> <li>Bug Fix: Fixed Vitals immediately closing upon opening</li> </ul>
-<ul> <li>Bug Fix: Fixed staying zoomed out during a meeting</li> </ul>
-<ul> <li>Bug Fix: Fixed the issue with targets not being higlighted at the times they are supposed to be</li> </ul>
-<ul> <li>Bug Fix: Fixed settings looping incorrectly</li> </ul>
-<ul> <li>Bug Fix: Fixed the issue with friendly fire</li> </ul>
-<ul> <li>Objectifier Fix: Fixed Corrupted not ending the game when it is supposed to</li> </ul>
-<ul> <li>Modifier Fix: Fixed continuously walking when being fake killed as Volatile</li> </ul>
-<ul> <li>Ability Fix: Button Barry no longer bugs out a meeting for themselves</li> </ul>
-<ul> <li>Role + Ability Fix: Fixed not being able to guess Crusader (for Assassin and Guesser)</li> </ul>
-<ul> <li>Role Fix: Fixed Arsonist buttons not working</li> </ul>
-<ul> <li>Role Fix: Fixed footprints not disappearing after a meeting for Detectives and Retributionist-Detectives</li> </ul>
-<ul> <li>Role Fix: Fixed Rebel not being able to promote anyone</li> </ul>
-<ul> <li>Role Fix: Fixed Disguiser not being able to disguise players</li> </ul>
-<ul> <li>Role Fix: Fixed Syndicate roles having a kill button from the start</li> </ul>
-<ul> <li>Role Fix: Fixed Troll screwing with the end game upon dying</li> </ul>
-<ul> <li>Role Fix: Fixed Godfather-Janitors not dropping bodies when being warped/transported</li> </ul>
-<ul> <li>Removed: Time Lord, Time Master and Drunkard because they break the game often, they'll return when I find a way to fix that</li> </ul>
-<ul> <li>Removed: Removed the /setname chat command because it visually bugs out a lot (thanks to a certain group of people)</li> </ul>
+<ul>
+    <li>Buff: Altruist can now revive players multiple times and sacrifices themselves on the last revive</li>
+    <li>Update: Updated Crowded to fix the double click issue</li>
+    <li>Update: Updated the role info from the recent updates in the in-game wiki</li>
+    <li>Improvement: Improved player targeting</li>
+    <li>Improvement: Settings now open to the last tab you were on, and keybinds for page jumping also work in there</li>
+    <li>Critical Fix: Fixed the Haunt button not working</li>
+    <li>Visual Fix: Fixed Poisoner having 2 buttons</li>
+    <li>Visual Fix: Fixed the sheer amount of ability buttons spawning (hopefully)</li>
+    <li>Visual Fix: Fixed buttons not disappearing when a meeting is called</li>
+    <li>Visual Fix: Fixed the spectate button looking a little cut off</li>
+    <li>Bug Fix: Fixed Vitals immediately closing upon opening</li>
+    <li>Bug Fix: Fixed staying zoomed out during a meeting</li>
+    <li>Bug Fix: Fixed the issue with targets not being higlighted at the times they are supposed to be</li>
+    <li>Bug Fix: Fixed settings looping incorrectly</li>
+    <li>Bug Fix: Fixed the issue with friendly fire</li>
+    <li>Objectifier Fix: Fixed Corrupted not ending the game when it is supposed to</li>
+    <li>Modifier Fix: Fixed continuously walking when being fake killed as Volatile</li>
+    <li>Ability Fix: Button Barry no longer bugs out a meeting for themselves</li>
+    <li>Role + Ability Fix: Fixed not being able to guess Crusader (for Assassin and Guesser)</li>
+    <li>Role Fix: Fixed Arsonist buttons not working</li>
+    <li>Role Fix: Fixed footprints not disappearing after a meeting for Detectives and Retributionist-Detectives</li>
+    <li>Role Fix: Fixed Rebel not being able to promote anyone</li>
+    <li>Role Fix: Fixed Disguiser not being able to disguise players</li>
+    <li>Role Fix: Fixed Syndicate roles having a kill button from the start</li>
+    <li>Role Fix: Fixed Troll screwing with the end game upon dying</li>
+    <li>Role Fix: Fixed Godfather-Janitors not dropping bodies when being warped/transported</li>
+    <li>Removed: Time Lord, Time Master and Drunkard because they break the game often, they'll return when I find a way to fix that</li>
+    <li>Removed: Removed the /setname chat command because it visually bugs out a lot (thanks to a certain group of people)</li>
+</ul>
 </details>
 <details>
 <summary>v0.0.4-dev2</summary>
-<ul> <li>Addition: Added a disconnect handler to hopefully reduce future errors</li> </ul>
-<ul> <li>Improvement: Added support for multiple Swappers swapping</li> </ul>
-<ul> <li>Visual Fix: Fixed Whisperer not being able to see how much someone is left to be converted for</li> </ul>
-<ul> <li>Bug Fix: Fixed a random log spam caused by players leaving</li> </ul>
-<ul> <li>Potential Fix: Lag spikes</li> </ul>
-<ul> <li>Role Fix: Fixed Medic-Retributionists not actually protecting anyone</li> </ul>
-<ul> <li>Role Fix: Fixed Guardian Angel having 2 buttons</li> </ul>
-<ul> <li>Role Fix: An attempt at fixing Retributionist and Swapper meeting buttons</li> </ul>
-<ul> <li>Role Fix: Fixed Politician-Rebels not having their votes refunded on assassinations</li> </ul>
+<ul>
+    <li>Addition: Added a disconnect handler to hopefully reduce future errors</li>
+    <li>Improvement: Added support for multiple Swappers swapping</li>
+    <li>Visual Fix: Fixed Whisperer not being able to see how much someone is left to be converted for</li>
+    <li>Bug Fix: Fixed a random log spam caused by players leaving</li>
+    <li>Potential Fix: Lag spikes</li>
+    <li>Role Fix: Fixed Medic-Retributionists not actually protecting anyone</li>
+    <li>Role Fix: Fixed Guardian Angel having 2 buttons</li>
+    <li>Role Fix: An attempt at fixing Retributionist and Swapper meeting buttons</li>
+    <li>Role Fix: Fixed Politician-Rebels not having their votes refunded on assassinations</li>
+</ul>
 </details>
 <details>
 <summary>v0.0.4-dev1</summary>
-<ul> <li>Buff: Framer frames work on Vampire Hunters as well and framed Vigilantes can shoot anyone</li> </ul>
-<ul> <li>Buff: Coroner-Retributionists also get meeting info like Coroners do</li> </ul>
-<ul> <li>Buff: Diseased now applies to every cooldown for the rest of the round</li> </ul>
-<ul> <li>Nerf: Reporting bodies no longer spreads douses or infections (because they often break the game rather than be helpful)</li> </ul>
-<ul> <li>Nerf: Werewolf mauls can now be stopped if the target is on alert among other things</li> </ul>
-<ul> <li>Update: Added changes from v4.0.4 and v4.0.5 of ToU-R</li> </ul>
-<ul> <li>Change: Sheriff now sees flashes as indicator for guilt, rather than name changes</li> </ul>
-<ul> <li>Recode: The mod was recoded a lot, so you know what that means! more bugs! (kill me please)</li> </ul>
-<ul> <li>Improvement: Moved the status text from the intro screen to the too splash screen for better readability</li> </ul>
-<ul> <li>Improvement: Improved how buttons work...for like the 20th time but I promise it gets better</li> </ul>
-<ul> <li>Improvement: Made the mod a little more lightweight; fingers crossed it also fixes the issue of lag spikes</li> </ul>
-<ul> <li>Improvement: Improved spawn code for Revealer, Phantom, Ghoul and Banshee</li> </ul>
-<ul> <li>Improvement: Optimised how blackmails work</li> </ul>
-<ul> <li>Critical Fix: Fixed not being able to enter codes or names</li> </ul>
-<ul> <li>Visual Fix: Fixed player outlines appearing too thin</li> </ul>
-<ul> <li>Visual Fix: Fixed the issue with custom buttons not disappearing during meetings</li> </ul>
-<ul> <li>Visual Fix: Fixed the Use button having the Haunt sprite when dead</li> </ul>
-<ul> <li>Bug Fix: Fixed revived players still having their death reports being sent</li> </ul>
-<ul> <li>Bug Fix: Fixed players becoming Revealer, Banshee, Phantom or Ghouls after being revived</li> </ul>
-<ul> <li>Bug Fix: Fixed votes being calculated incorrectly</li> </ul>
-<ul> <li>Bug Fix: Fixed the end game screen showing the wrong role for players whose roles changed</li> </ul>
-<ul> <li>Bug Fix: Fixed the log spam because of the Debugger window</li> </ul>
-<ul> <li>Objectifier Fix: Fixed Allied sometimes breaking the game upon start</li> </ul>
-<ul> <li>Role Fix: Fixed Godfather being unable to promote Consorts</li> </ul>
-<ul> <li>Role Fix: Fixed Godfathers and Rebels being able to promote other Godfather, Rebels, Mafiosos and Sidekicks to...Mafioso or Sidekick</li> </ul>
-<ul> <li>Role Fix: Fixed Ambusher/Enforcer-Godfathers from being unable to use their abilities</li> </ul>
-<ul> <li>Role Fix: Fixed Bounty Hunter crashing the game on hunting their target</li> </ul>
-<ul> <li>Role Fix: Fixed Bounty Hunter cooldowns not resetting upon usage</li> </ul>
-<ul> <li>Role Fix: Fixed Bounty Hunter sometimes killing themselves</li> </ul>
-<ul> <li>Role Fix: Fixed Cannibal not winning properly</li> </ul>
-<ul> <li>Role Fix: Fixed Necromancer's resurrect sometimes crashing the game</li> </ul>
-<ul> <li>Role Fix: Fixed the issue with Glitch staying permanently mimicked</li> </ul>
+<ul>
+    <li>Buff: Framer frames work on Vampire Hunters as well and framed Vigilantes can shoot anyone</li>
+    <li>Buff: Coroner-Retributionists also get meeting info like Coroners do</li>
+    <li>Buff: Diseased now applies to every cooldown for the rest of the round</li>
+    <li>Nerf: Reporting bodies no longer spreads douses or infections (because they often break the game rather than be helpful)</li>
+    <li>Nerf: Werewolf mauls can now be stopped if the target is on alert among other things</li>
+    <li>Update: Added changes from v4.0.4 and v4.0.5 of ToU-R</li>
+    <li>Change: Sheriff now sees flashes as indicator for guilt, rather than name changes</li>
+    <li>Recode: The mod was recoded a lot, so you know what that means! more bugs! (kill me please)</li>
+    <li>Improvement: Moved the status text from the intro screen to the too splash screen for better readability</li>
+    <li>Improvement: Improved how buttons work...for like the 20th time but I promise it gets better</li>
+    <li>Improvement: Made the mod a little more lightweight; fingers crossed it also fixes the issue of lag spikes</li>
+    <li>Improvement: Improved spawn code for Revealer, Phantom, Ghoul and Banshee</li>
+    <li>Improvement: Optimised how blackmails work</li>
+    <li>Critical Fix: Fixed not being able to enter codes or names</li>
+    <li>Visual Fix: Fixed player outlines appearing too thin</li>
+    <li>Visual Fix: Fixed the issue with custom buttons not disappearing during meetings</li>
+    <li>Visual Fix: Fixed the Use button having the Haunt sprite when dead</li>
+    <li>Bug Fix: Fixed revived players still having their death reports being sent</li>
+    <li>Bug Fix: Fixed players becoming Revealer, Banshee, Phantom or Ghouls after being revived</li>
+    <li>Bug Fix: Fixed votes being calculated incorrectly</li>
+    <li>Bug Fix: Fixed the end game screen showing the wrong role for players whose roles changed</li>
+    <li>Bug Fix: Fixed the log spam because of the Debugger window</li>
+    <li>Objectifier Fix: Fixed Allied sometimes breaking the game upon start</li>
+    <li>Role Fix: Fixed Godfather being unable to promote Consorts</li>
+    <li>Role Fix: Fixed Godfathers and Rebels being able to promote other Godfather, Rebels, Mafiosos and Sidekicks to...Mafioso or Sidekick</li>
+    <li>Role Fix: Fixed Ambusher/Enforcer-Godfathers from being unable to use their abilities</li>
+    <li>Role Fix: Fixed Bounty Hunter crashing the game on hunting their target</li>
+    <li>Role Fix: Fixed Bounty Hunter cooldowns not resetting upon usage</li>
+    <li>Role Fix: Fixed Bounty Hunter sometimes killing themselves</li>
+    <li>Role Fix: Fixed Cannibal not winning properly</li>
+    <li>Role Fix: Fixed Necromancer's resurrect sometimes crashing the game</li>
+    <li>Role Fix: Fixed the issue with Glitch staying permanently mimicked</li>
+</ul>
 </details>
 <details>
 <summary>v0.0.3-dev3</summary>
-<ul> <li>Addition: All Syndicate roles now have Chaos Drive abilities</li> </ul>
-<ul> <li>Merge: Beamer has been merged into Warper</li> </ul>
-<ul> <li>Buff: Consort can roleblock a player from anywhere (to differentiate it from Escort)</li> </ul>
-<ul> <li>Buff: Godfather can now promote a Consort to eventually become the new Godfather</li> </ul>
-<ul> <li>Buff: Rebel can now promote a Politician to eventually become the new Rebel</li> </ul>
-<ul> <li>Buff: Retributionists can use the dead bodies as many times as they want and can also use Transporters and Escorts</li> </ul>
-<ul> <li>Nerf: Chameleon and Retributionist now have a limited number of uses for their swoop ability</li> </ul>
-<ul> <li>Nerf: Bomber now only detonates their latest bomb and the their Chaos Drive ability is to detonate all placed bombs</li> </ul>
-<ul> <li>Nerf: Syndicate (Killing) roles not longer get an extra kill button, their kill abilities just become more powerful</li> </ul>
-<ul> <li>Nerf: Retributionist does not know if a player is Crew and must attempt to use them to find out</li> </ul>
-<ul> <li>Nerf: The Chaos Drive is no longer global and is instead assigned to a random player within a specific order, the global Chaos Drive is instead an option</li> </ul>
-<ul> <li>Change: Concealer can now select a player to make them invisible and its chaos drive ability is its former ability</li> </ul>
-<ul> <li>Change: Shapeshifter can now select 2 players to swap appearances and its chaos drive ability is its former ability</li> </ul>
-<ul> <li>Change: Poisoner has been moved into the Syndicate (Killing) alignment</li> </ul>
-<ul> <li>Improvement: Improved how Transporter and Beamer buttons work</li> </ul>
-<ul> <li>Improvement: Moved the MCI keybinds into a tiny debug menu of their own (based off of Reactor Debugger code)</li> </ul>
-<ul> <li>Improvement: Roles with shapeshifter menus can deselect players by prassing backspace</li> </ul>
-<ul> <li>Improvement: Game announcements are heavily improved on</li> </ul>
-<ul> <li>Improvement: Godfather and Rebel are now optimised and rewritten for less bugs</li> </ul>
-<ul> <li>Improvement: Lobby size has been moved from a chat command to an actual setting</li> </ul>
-<ul> <li>Improvement: Improved how conversions work to fix the occasional lag spike</li> </ul>
-<ul> <li>Visual Fix: Fixed the issue where the Use button would appear to be deepfried</li> </ul>
-<ul> <li>Visual Fix: Fixed the issue with revived players being able to see the spectate button</li> </ul>
-<ul> <li>Bug Fix: Fixed Retributionist arrows sometimes popping up in lobby</li> </ul>
-<ul> <li>Bug Fix: Potential fix for roles not spawning correctly on lower player counts</li> </ul>
-<ul> <li>Bug Fix: Fixed being able to zoom out while in a meeting</li> </ul>
-<ul> <li>Bug Fix: Fixed the issue with /setname not letting you change your name properly</li> </ul>
-<ul> <li>Bug Fix: Fixed games sometimes crashing on end game</li> </ul>
-<ul> <li>Bug Fix: Fixed the issue with multiple Overlord and Chaos Drive related messages being sent</li> </ul>
-<ul> <li>Bug Fix: Fixed the issue with votes being doubled</li> </ul>
-<ul> <li>Bug Fix: Fixed being able to whisper with alive players</li> </ul>
-<ul> <li>Role Fix: Retributionist ability use limits actually work this time</li> </ul>
-<ul> <li>Modifier Fix: Fixed Shy sometimes being able to button</li> </ul>
-<ul> <li>Role Fix: Fixed the issue where Poisoner would occasionally directly kill their target</li> </ul>
-<ul> <li>Role Fix: Prevented Jackal from spawning on lower player counts to prevent errors</li> </ul>
-<ul> <li>Role Fix: Fixed Jackal not spawning with recruits</li> </ul>
-<ul> <li>Role Fix: Fixed Framer framing players not registering for others</li> </ul>
-<ul> <li>Removed: Gorgon because of the countless bugs it has</li> </ul>
-<ul> <li>Removed: Custom Airship spawns because they break the game</li> </ul>
-<ul> <li>Temporary Removal: Sound effects have been temporarily removed, they'll make a return when there's a sound for everything</li> </ul>
+<ul>
+    <li>Addition: All Syndicate roles now have Chaos Drive abilities</li>
+    <li>Merge: Beamer has been merged into Warper</li>
+    <li>Buff: Consort can roleblock a player from anywhere (to differentiate it from Escort)</li>
+    <li>Buff: Godfather can now promote a Consort to eventually become the new Godfather</li>
+    <li>Buff: Rebel can now promote a Politician to eventually become the new Rebel</li>
+    <li>Buff: Retributionists can use the dead bodies as many times as they want and can also use Transporters and Escorts</li>
+    <li>Nerf: Chameleon and Retributionist now have a limited number of uses for their swoop ability</li>
+    <li>Nerf: Bomber now only detonates their latest bomb and the their Chaos Drive ability is to detonate all placed bombs</li>
+    <li>Nerf: Syndicate (Killing) roles not longer get an extra kill button, their kill abilities just become more powerful</li>
+    <li>Nerf: Retributionist does not know if a player is Crew and must attempt to use them to find out</li>
+    <li>Nerf: The Chaos Drive is no longer global and is instead assigned to a random player within a specific order, the global Chaos Drive is instead an option</li>
+    <li>Change: Concealer can now select a player to make them invisible and its chaos drive ability is its former ability</li>
+    <li>Change: Shapeshifter can now select 2 players to swap appearances and its chaos drive ability is its former ability</li>
+    <li>Change: Poisoner has been moved into the Syndicate (Killing) alignment</li>
+    <li>Improvement: Improved how Transporter and Beamer buttons work</li>
+    <li>Improvement: Moved the MCI keybinds into a tiny debug menu of their own (based off of Reactor Debugger code)</li>
+    <li>Improvement: Roles with shapeshifter menus can deselect players by prassing backspace</li>
+    <li>Improvement: Game announcements are heavily improved on</li>
+    <li>Improvement: Godfather and Rebel are now optimised and rewritten for less bugs</li>
+    <li>Improvement: Lobby size has been moved from a chat command to an actual setting</li>
+    <li>Improvement: Improved how conversions work to fix the occasional lag spike</li>
+    <li>Visual Fix: Fixed the issue where the Use button would appear to be deepfried</li>
+    <li>Visual Fix: Fixed the issue with revived players being able to see the spectate button</li>
+    <li>Bug Fix: Fixed Retributionist arrows sometimes popping up in lobby</li>
+    <li>Bug Fix: Potential fix for roles not spawning correctly on lower player counts</li>
+    <li>Bug Fix: Fixed being able to zoom out while in a meeting</li>
+    <li>Bug Fix: Fixed the issue with /setname not letting you change your name properly</li>
+    <li>Bug Fix: Fixed games sometimes crashing on end game</li>
+    <li>Bug Fix: Fixed the issue with multiple Overlord and Chaos Drive related messages being sent</li>
+    <li>Bug Fix: Fixed the issue with votes being doubled</li>
+    <li>Bug Fix: Fixed being able to whisper with alive players</li>
+    <li>Role Fix: Retributionist ability use limits actually work this time</li>
+    <li>Modifier Fix: Fixed Shy sometimes being able to button</li>
+    <li>Role Fix: Fixed the issue where Poisoner would occasionally directly kill their target</li>
+    <li>Role Fix: Prevented Jackal from spawning on lower player counts to prevent errors</li>
+    <li>Role Fix: Fixed Jackal not spawning with recruits</li>
+    <li>Role Fix: Fixed Framer framing players not registering for others</li>
+    <li>Removed: Gorgon because of the countless bugs it has</li>
+    <li>Removed: Custom Airship spawns because they break the game</li>
+    <li>Temporary Removal: Sound effects have been temporarily removed, they'll make a return when there's a sound for everything</li>
+</ul>
 </details>
 <details>
 <summary>v0.0.3-dev2</summary>
-<ul> <li>Critical Fix: Fixed the issue where the game would crash when someone was ejected</li> </ul>
+<ul>
+    <li>Critical Fix: Fixed the issue where the game would crash when someone was ejected</li>
+</ul>
 </details>
 <details>
-<summary>v0.0.3.1</summary>
-<ul> <li>Changes: Forgot to do a couple of things</li> </ul>
+<summary>v0.0.3-dev1</summary>
+<ul>
+    <li>Changes: Forgot to do a couple of things</li>
+</ul>
 </details>
 <details>
 <summary>v0.0.3</summary>
-<ul> <li>New Role: Politician [Syndicate (Power)]</li> </ul>
-<ul> <li>New Role: Enforcer [Intruder (Killing)]</li> </ul>
-<ul> <li>Merge: Agent has been merged into Operative, yet another soldier down :saluting_face:</li> </ul>
-<ul> <li>Update: Updated the presets</li> </ul>
-<ul> <li>Improvement: Task lists are finally finished</li> </ul>
-<ul> <li>Improvement: Improved how certain functions work and are called</li> </ul>
-<ul> <li>Improvement: Winning Guessers can now guess anyone after guessing their target's role</li> </ul>
-<ul> <li>Bug Fix: Fixed the issue where an Amnesiac/Thief/Shifter changing roles reset everyone's cooldowns</li> </ul>
-<ul> <li>Bug Fix: Fixed where bots would spawn in a public lobby after turning on persistance for robots in a local lobby</li> </ul>
-<ul> <li>Bug Fix: Fixed the occasional log spam when assassinating which leads to lag spikes</li> </ul>
-<ul> <li>Bug Fix: Fixed incorrect Torch assignment</li> </ul>
-<ul> <li>Role Fix: Fixed the issue where shapeshift morphed multiple players into the same player</li> </ul>
-<ul> <li>Role Fix: Fixed the issue where an assassinated player who is also blackmailed by the Godfather-Blackmailer would bug out</li> </ul>
-<ul> <li>Role Fix: Fixed the issue with Murderer being unable to kill</li> </ul>
-<ul> <li>Temporary Removal: Removed the second Spectate button till I figure out why you can't haunt</li> </ul>
+<ul>
+    <li>New Role: Politician [Syndicate (Power)]</li>
+    <li>New Role: Enforcer [Intruder (Killing)]</li>
+    <li>Merge: Agent has been merged into Operative, yet another soldier down :saluting_face:</li>
+    <li>Update: Updated the presets</li>
+    <li>Improvement: Task lists are finally finished</li>
+    <li>Improvement: Improved how certain functions work and are called</li>
+    <li>Improvement: Winning Guessers can now guess anyone after guessing their target's role</li>
+    <li>Bug Fix: Fixed the issue where an Amnesiac/Thief/Shifter changing roles reset everyone's cooldowns</li>
+    <li>Bug Fix: Fixed where bots would spawn in a public lobby after turning on persistance for robots in a local lobby</li>
+    <li>Bug Fix: Fixed the occasional log spam when assassinating which leads to lag spikes</li>
+    <li>Bug Fix: Fixed incorrect Torch assignment</li>
+    <li>Role Fix: Fixed the issue where shapeshift morphed multiple players into the same player</li>
+    <li>Role Fix: Fixed the issue where an assassinated player who is also blackmailed by the Godfather-Blackmailer would bug out</li>
+    <li>Role Fix: Fixed the issue with Murderer being unable to kill</li>
+    <li>Temporary Removal: Removed the second Spectate button till I figure out why you can't haunt</li>
+</ul>
 </details>
 <details>
 <summary>v0.0.2dev8.75</summary>
-<ul> <li>Critical Fix: Fixed the issue of the mod not being recognised by BepInEx</li> </ul>
+<ul>
+    <li>Critical Fix: Fixed the issue of the mod not being recognised by BepInEx</li>
+</ul>
 </details>
 <details>
 <summary>v0.0.2dev8.5</summary>
-<ul> <li>Removed: Removed a couple things I forgot to</li> </ul>
+<ul>
+    <li>Removed: Removed a couple things I forgot to</li>
+</ul>
 </details>
 <details>
 <summary>v0.0.2dev8</summary>
-<ul> <li>Merge: Janitor and Undertaker were merged because Undertaker was a bit weak, farewell Undertaker, you will be remembered soldier :saluting_face:</li> </ul>
-<ul> <li>Update: Updated the mod to v2023.3.28</li> </ul>
-<ul> <li>Changes: Made minor changes to how emergency buttons can be called (credits to @whichtwix)</li> </ul>
-<ul> <li>Changes: Transporter, Beamer and Glitch had minor changes on how their buttons work</li> </ul>
-<ul> <li>Improvement: Reworked layer gen *again* to squash more bugs (and hopefully not create new ones)</li> </ul>
-<ul> <li>Improvement: Improved RPC handling between players</li> </ul>
-<ul> <li>Improvement: Migrated to using the vanilla Shapeshifter menu over chats for menu usage (thanks to @Zeo666 from All The Roles for help)</li> </ul>
-<ul> <li>Improvement: Improved how roleblocks work internally by a bit</li> </ul>
-<ul> <li>Improvement: Minor improvements to Amnesiac/Shifter/Thief interactions</li> </ul>
-<ul> <li>Visual Fix: Fixed the issue where hidden player layers would still sometimes show up for players</li> </ul>
-<ul> <li>Bug Fix: Fixed Button Barry cooldown not setting correctly if they don't have an Objectifier</li> </ul>
-<ul> <li>Bug Fix: Fixed the issue with  and odd number of Lovers or Rivals spawning in</li> </ul>
-<ul> <li>Bug Fix: Potential fix for ability buttons sometimes disabling with comms being turned on</li> </ul>
-<ul> <li>Bug Fix: Potential fix for null errors regarding player layers</li> </ul>
-<ul> <li>Role Fix: Fixed buttons not disappearing when changing roles</li> </ul>
-<ul> <li>Role Fix: Potential fix for Godfather and Janitor being unable to move when dragging bodies</li> </ul>
+<ul>
+    <li>Merge: Janitor and Undertaker were merged because Undertaker was a bit weak, farewell Undertaker, you will be remembered soldier :saluting_face:</li>
+    <li>Update: Updated the mod to v2023.3.28</li>
+    <li>Changes: Made minor changes to how emergency buttons can be called (credits to @whichtwix)</li>
+    <li>Changes: Transporter, Beamer and Glitch had minor changes on how their buttons work</li>
+    <li>Improvement: Reworked layer gen *again* to squash more bugs (and hopefully not create new ones)</li>
+    <li>Improvement: Improved RPC handling between players</li>
+    <li>Improvement: Migrated to using the vanilla Shapeshifter menu over chats for menu usage (thanks to @Zeo666 from All The Roles for help)</li>
+    <li>Improvement: Improved how roleblocks work internally by a bit</li>
+    <li>Improvement: Minor improvements to Amnesiac/Shifter/Thief interactions</li>
+    <li>Visual Fix: Fixed the issue where hidden player layers would still sometimes show up for players</li>
+    <li>Bug Fix: Fixed Button Barry cooldown not setting correctly if they don't have an Objectifier</li>
+    <li>Bug Fix: Fixed the issue with  and odd number of Lovers or Rivals spawning in</li>
+    <li>Bug Fix: Potential fix for ability buttons sometimes disabling with comms being turned on</li>
+    <li>Bug Fix: Potential fix for null errors regarding player layers</li>
+    <li>Role Fix: Fixed buttons not disappearing when changing roles</li>
+    <li>Role Fix: Potential fix for Godfather and Janitor being unable to move when dragging bodies</li>
+</ul>
 </details>
 <details>
 <summary>v0.0.2dev7</summary>
-<ul> <li>Addition: Some Lore</li> </ul>
-<ul> <li>Addition: Added framework for translations, feel free to let me know when you want to add a language</li> </ul>
-<ul> <li>Addition: 1 new nameplate</li> </ul>
-<ul> <li>Code Change: Chat commands have been optimised</li> </ul>
-<ul> <li>Code Change: The code was reorganised for better functionality</li> </ul>
-<ul> <li>Improvement: The in-game wiki is now complete</li> </ul>
-<ul> <li>Improvement: Improved how game cooldowns work by a bit (with lesser lag hopefully)</li> </ul>
-<ul> <li>Improvement: Flashes were changed to inclulde text and work like The Other Roles flashes</li> </ul>
-<ul> <li>Improvement: Optimised spawn code for Revealers, Phantoms, Ghouls and Banshees</li> </ul>
-<ul> <li>Bug Fix: Fixed the win screens not showing up properly</li> </ul>
-<ul> <li>Visual Fix: Fixed body outlines not disappearing if they are no longer the main target for roles who interact with dead bodies</li> </ul>
-<ul> <li>Visual Fix: Fixed outros sometimes not loading correctly</li> </ul>
-<ul> <li>Modifier Fix: Stopped giving Shy to someone with the Button Barry ability</li> </ul>
-<ul> <li>Modifier Fix: Fixed the issue where the game nulls out if you kill a Diseased as a Werewolf or Vigilante</li> </ul>
-<ul> <li>Ability Fix: Stopped giving Button Barry to someone who cannot button</li> </ul>
-<ul> <li>Ability Fix: Stopped giving Torch to Neutrals or Neutral Killers when their respective lights settings are off</li> </ul>
-<ul> <li>Role Fix: Fixed Revealers, Phantoms, Ghouls and Banshees sometimes not being able to leave vents</li> </ul>
+<ul>
+    <li>Addition: Some Lore</li>
+    <li>Addition: Added framework for translations, feel free to let me know when you want to add a language</li>
+    <li>Addition: 1 new nameplate</li>
+    <li>Code Change: Chat commands have been optimised</li>
+    <li>Code Change: The code was reorganised for better functionality</li>
+    <li>Improvement: The in-game wiki is now complete</li>
+    <li>Improvement: Improved how game cooldowns work by a bit (with lesser lag hopefully)</li>
+    <li>Improvement: Flashes were changed to inclulde text and work like The Other Roles flashes</li>
+    <li>Improvement: Optimised spawn code for Revealers, Phantoms, Ghouls and Banshees</li>
+    <li>Bug Fix: Fixed the win screens not showing up properly</li>
+    <li>Visual Fix: Fixed body outlines not disappearing if they are no longer the main target for roles who interact with dead bodies</li>
+    <li>Visual Fix: Fixed outros sometimes not loading correctly</li>
+    <li>Modifier Fix: Stopped giving Shy to someone with the Button Barry ability</li>
+    <li>Modifier Fix: Fixed the issue where the game nulls out if you kill a Diseased as a Werewolf or Vigilante</li>
+    <li>Ability Fix: Stopped giving Button Barry to someone who cannot button</li>
+    <li>Ability Fix: Stopped giving Torch to Neutrals or Neutral Killers when their respective lights settings are off</li>
+    <li>Role Fix: Fixed Revealers, Phantoms, Ghouls and Banshees sometimes not being able to leave vents</li>
+</ul>
 </details>
 <details>
 <summary>v0.0.2dev6</summary>
-<ul> <li>Critical Fix: Fixed buttons not working</li> </ul>
-<ul> <li>Code Change: Changed how outros work</li> </ul>
+<ul>
+    <li>Critical Fix: Fixed buttons not working</li>
+    <li>Code Change: Changed how outros work</li>
+</ul>
 </details>
 <details>
 <summary>v0.0.2dev5</summary>
-<ul> <li>WARNING THIS UPDATE IS EXPERIMENTAL</li> </ul>
-<ul> <li>Changes: Information now passes from one to another when an Amnesiac, Shifter or Thief changes roles</li> </ul>
-<ul> <li>Code Change: The code was optimised again for better functionality (this means there might be new bugs :cri:)</li> </ul>
-<ul> <li>Critical Fix: Fixed the issue where you could keep clicking the button and it would perform its function, regardless of cooldown</li> </ul>
-<ul> <li>Bug Fix: There were a lot of misc bug fixes, most annoying errors should be gone</li> </ul>
-<ul> <li>Role Fix: Fixed the Glitch's mimic list not closing when they start mimicking</li> </ul>
-<ul> <li>Role Fix: Fixed players crusaded by a Rebel-Crusader not killing upon interacting</li> </ul>
+<ul>
+    <li>WARNING THIS UPDATE IS EXPERIMENTAL</li>
+    <li>Changes: Information now passes from one to another when an Amnesiac, Shifter or Thief changes roles</li>
+    <li>Code Change: The code was optimised again for better functionality (this means there might be new bugs :cri:)</li>
+    <li>Critical Fix: Fixed the issue where you could keep clicking the button and it would perform its function, regardless of cooldown</li>
+    <li>Bug Fix: There were a lot of misc bug fixes, most annoying errors should be gone</li>
+    <li>Role Fix: Fixed the Glitch's mimic list not closing when they start mimicking</li>
+    <li>Role Fix: Fixed players crusaded by a Rebel-Crusader not killing upon interacting</li>
+</ul>
 </details>
 <details>
 <summary>v0.0.2dev4</summary>
-<ul> <li>Addition: Added a zooming button for dead players</li> </ul>
-<ul> <li>Code Change: Changed how games end to squash bugs; past, present and future</li> </ul>
-<ul> <li>Critical Fix: Fixed the the issue with turned Traitors and Fanatics not letting the game end</li> </ul>
-<ul> <li>Critical Fix: Fixed games not ending correctly again</li> </ul>
-<ul> <li>Role Fix: Fixed Juggernaut not being able to bypass protections after getting a certain number of kills</li> </ul>
-<ul> <li>Role Fix: Clamped Juggernaut kill cooldown so that it does not become too op</li> </ul>
+<ul>
+    <li>Addition: Added a zooming button for dead players</li>
+    <li>Code Change: Changed how games end to squash bugs; past, present and future</li>
+    <li>Critical Fix: Fixed the the issue with turned Traitors and Fanatics not letting the game end</li>
+    <li>Critical Fix: Fixed games not ending correctly again</li>
+    <li>Role Fix: Fixed Juggernaut not being able to bypass protections after getting a certain number of kills</li>
+    <li>Role Fix: Clamped Juggernaut kill cooldown so that it does not become too op</li>
+</ul>
 </details>
 <details>
 <summary>v0.0.2dev3</summary>
-<ul> <li>New Role: Ambusher [Intruder (Killing)]</li> </ul>
-<ul> <li>New Role: Crusader [Syndicate (Killing)]</li> </ul>
-<ul> <li>New Role: Ghoul [Intruder (Utility)]</li> </ul>
-<ul> <li>New Role: Beamer [Syndicate (Support)]</li> </ul>
-<ul> <li>New Role: Banshee [Syndicate (Utility)]</li> </ul>
-<ul> <li>New Role: Betrayer [Neutral (Proselyte)]</li> </ul>
-<ul> <li>Addition: New keybind settings</li> </ul>
-<ul> <li>Addition: Added a proper in-game wiki that can be accessed from /[type]info chat commands (WIP)</li> </ul>
-<ul> <li>Addition: Added setting pages for easier browsing while in lobby</li> </ul>
-<ul> <li>Addition: Added a semi functioning profanity filter to the /setname chat command</li> </ul>
-<ul> <li>Update: Merged features from v4.0.3 of Town Of Us</li> </ul>
-<ul> <li>Changes: Guardian Angel turned Survivor will have the same number of vests as the number of protects they had as Guardian Angels</li> </ul>
-<ul> <li>Critical Fix: Fixed Crew roles not spawning under certain conditions</li> </ul>
-<ul> <li>Visual Fix: All buttons now have consistent fonts</li> </ul>
-<ul> <li>Visual Fix: Fixed the Report button lighting up incorrectly</li> </ul>
-<ul> <li>Visual Fix: Potential fix for color flashes preventing reactor/oxygen flashes from showing up</li> </ul>
-<ul> <li>Bug Fix: Fixed Button Barry being unable to spawn</li> </ul>
-<ul> <li>Bug Fix: Fixed Neutral Killing roles from not being able to win properly, nor their proper win screens showing up</li> </ul>
-<ul> <li>Bug Fix: Fixed sound effects not working the way they were supposed to, now some roles have an intro sound</li> </ul>
-<ul> <li>Bug Fix: Fixed dynamic lobbies not allowing you to set the lobby max or min to 127 and 1 respectively</li> </ul>
-<ul> <li>Role Fix: Fixed Executioner being unable to doom players</li> </ul>
-<ul> <li>Role Fix: Fixed Glitch being unable to mimic players</li> </ul>
-<ul> <li>Role Fix: Fixed Arsonist breaking the game</li> </ul>
-<ul> <li>Role Fix: Fixed Transporter's button not lighting up or working properly</li> </ul>
-<ul> <li>Role Fix: Fixed Guardian Angels randomly bugging out</li> </ul>
-<ul> <li>Role Fix: Fixed winning Neutrals becoming Phantom when they are a dead neutral</li> </ul>
-<ul> <li>Role Fix: Fixed the limits on Necromancer not decreasing properly</li> </ul>
-<ul> <li>Role Fix: Fixed Godfather-Undertaker being unable to drag bodies</li> </ul>
-<ul> <li>Role Fix: Fixed Revealer and Phantom being unable to leave vents</li> </ul>
-<ul> <li>Role Fix: Fixed Phantom and Revealer clicking themselves into losing</li> </ul>
-<ul> <li>Role Fix: Fixed Guesser interactions with other meeting-based roles/abilities</li> </ul>
-<ul> <li>Role Fix: Fixed Revealer not being able to reveal players upon finishing their tasks</li> </ul>
-<ul> <li>Role Fix: Fixed Rebel-Poisoner from not being able to poison players</li> </ul>
-<ul> <li>Removed: Vanilla setting tabs since their options have been moved into custom settings</li> </ul>
-<ul> <li>Removed: BepInEx updater because...just no</li> </ul>
+<ul>
+    <li>New Role: Ambusher [Intruder (Killing)]</li>
+    <li>New Role: Crusader [Syndicate (Killing)]</li>
+    <li>New Role: Ghoul [Intruder (Utility)]</li>
+    <li>New Role: Beamer [Syndicate (Support)]</li>
+    <li>New Role: Banshee [Syndicate (Utility)]</li>
+    <li>New Role: Betrayer [Neutral (Proselyte)]</li>
+    <li>Addition: New keybind settings</li>
+    <li>Addition: Added a proper in-game wiki that can be accessed from /[type]info chat commands (WIP)</li>
+    <li>Addition: Added setting pages for easier browsing while in lobby</li>
+    <li>Addition: Added a semi functioning profanity filter to the /setname chat command</li>
+    <li>Update: Merged features from v4.0.3 of Town Of Us</li>
+    <li>Changes: Guardian Angel turned Survivor will have the same number of vests as the number of protects they had as Guardian Angels</li>
+    <li>Critical Fix: Fixed Crew roles not spawning under certain conditions</li>
+    <li>Visual Fix: All buttons now have consistent fonts</li>
+    <li>Visual Fix: Fixed the Report button lighting up incorrectly</li>
+    <li>Visual Fix: Potential fix for color flashes preventing reactor/oxygen flashes from showing up</li>
+    <li>Bug Fix: Fixed Button Barry being unable to spawn</li>
+    <li>Bug Fix: Fixed Neutral Killing roles from not being able to win properly, nor their proper win screens showing up</li>
+    <li>Bug Fix: Fixed sound effects not working the way they were supposed to, now some roles have an intro sound</li>
+    <li>Bug Fix: Fixed dynamic lobbies not allowing you to set the lobby max or min to 127 and 1 respectively</li>
+    <li>Role Fix: Fixed Executioner being unable to doom players</li>
+    <li>Role Fix: Fixed Glitch being unable to mimic players</li>
+    <li>Role Fix: Fixed Arsonist breaking the game</li>
+    <li>Role Fix: Fixed Transporter's button not lighting up or working properly</li>
+    <li>Role Fix: Fixed Guardian Angels randomly bugging out</li>
+    <li>Role Fix: Fixed winning Neutrals becoming Phantom when they are a dead neutral</li>
+    <li>Role Fix: Fixed the limits on Necromancer not decreasing properly</li>
+    <li>Role Fix: Fixed Godfather-Undertaker being unable to drag bodies</li>
+    <li>Role Fix: Fixed Revealer and Phantom being unable to leave vents</li>
+    <li>Role Fix: Fixed Phantom and Revealer clicking themselves into losing</li>
+    <li>Role Fix: Fixed Guesser interactions with other meeting-based roles/abilities</li>
+    <li>Role Fix: Fixed Revealer not being able to reveal players upon finishing their tasks</li>
+    <li>Role Fix: Fixed Rebel-Poisoner from not being able to poison players</li>
+    <li>Removed: Vanilla setting tabs since their options have been moved into custom settings</li>
+    <li>Removed: BepInEx updater because...just no</li>
+</ul>
 </details>
 <details>
 <summary>v0.0.2dev2</summary>
-<ul> <li>Update: Updated to v2023.2.28</li> </ul>
-<ul> <li>Addition: New colors</li> </ul>
-<ul> <li>Addition: Better sabotages</li> </ul>
-<ul> <li>Addition: Some more settings for game customisation</li> </ul>
-<ul> <li>Addition: Version control: Having the wrong/modified versions of the mod compared to the host's will boot you out of the lobby</li> </ul>
-<ul> <li>Improvement: Role buttons are now dynamic, meaning they appear and disappear based on certain actions</li> </ul>
-<ul> <li>Improvement: Camouflages are now a little more fun now</li> </ul>
-<ul> <li>Improvement: Ability uses now appear a little differently than how they used to originally</li> </ul>
-<ul> <li>Merge: Torch ability has been fused with Lighter (mainly because I couldn't get Imp vision affected by lights to work)</li> </ul>
-<ul> <li>Nerf: Retributionist can only use a dead player once</li> </ul>
-<ul> <li>Critical Fix: Fixed Killing Only crashing the game for the host and nulling everyone else's roles</li> </ul>
-<ul> <li>Critical Fix: Fixed All Any nulling roles when not a single role is turned on</li> </ul>
-<ul> <li>Critical Fix: Fixed Modifiers not spawning in Classic or Custom mode</li> </ul>
-<ul> <li>Critical Fix: Roleblocks actually work now!</li> </ul>
-<ul> <li>Critical Fix: Fixed Intruder roles sometimes killing their targets upon using their abilities</li> </ul>
-<ul> <li>Vanilla Fix: Fixed Report button being visible in lobby</li> </ul>
-<ul> <li>Visual Fix: Fixed footprints sometimes being stupidly small</li> </ul>
-<ul> <li>Visual Fix: Corrected some more color names</li> </ul>
-<ul> <li>Visual Fix: Fixed haunting players not showing their objectifier symbols as being colored</li> </ul>
-<ul> <li>Visual Fix: Fixed kill buttons not having text</li> </ul>
-<ul> <li>Visual Fix: Fixed all nks winning not having a win screen</li> </ul>
-<ul> <li>Visual Fix: Fixed Poisoner and Gorgon buttons being in the centre of the screen rather than the side</li> </ul>
-<ul> <li>Role Fix: Fixed Bounty Hunter winning regardless of who they kill and then proceeding to be able to kill with no cooldown</li> </ul>
-<ul> <li>Role Fix: Fixed Retributionist being unable to use a Mystic or Seer</li> </ul>
-<ul> <li>Role Fix: Fixed Bomber placing bomb not reseting the detonate button with the linked cooldown setting being on</li> </ul>
-<ul> <li>Role Fix: Fixed Retributionist unable to interact sometimes</li> </ul>
-<ul> <li>Role Fix: Fixed Engineer and Retributionist-Engineer unable to fix sabotages on Skeld</li> </ul>
-<ul> <li>Role Fix: Fixed Time Master's time freeze not stopping</li> </ul>
-<ul> <li>Role Fix: Fixed Drunkard's invert controls staying inverted forever</li> </ul>
-<ul> <li>ROle Fix: Fixed Time Master and Drunkard lag spiking the game when their abilities are active</li> </ul>
-<ul> <li>Role Fix: Fixed Teleporter clipping through walls if they place their teleport points just right</li> </ul>
-<ul> <li>Role Fix: Fixed Godfather and Rebel not being able to promote fellow team mates</li> </ul>
-<ul> <li>Role Fix: Attempt no. 23 in fixing Glitch, here's to hoping it works</li> </ul>
-<ul> <li>Objectifier Fix: Fixed Amnesiac/Thief Taskmaster turned Intruder/Syndicate being unable to do tasks to win</li> </ul>
-<ul> <li>Objectifier Fix: Fixed the bug where alive Overlords did not win together</li> </ul>
-<ul> <li>Objectifier Fix: Fixed Lovers and Rivals nulling when spawning in</li> </ul>
-<ul> <li>Objectifier Fix: Fixed Traitor, Fanatic and Allied not winning with their selected factions</li> </ul>
-<ul> <li>Code Change: Redid layer generation yet again to squash any hidden bugs + optimisation</li> </ul>
-<ul> <li>Code Change: Player HUDs were redone again</li> </ul>
-<ul> <li>Code Change: Disguiser, Morphling, Teleporter and Undertaker were recoded a little</li> </ul>
-<ul> <li>Code Change: MCI was changed up a bit, the controls are redone and for some reason I'm yet to post controls smh</li> </ul>
-<ul> <li>Removed: Retributionist can no longer use a Time Lord because of the countless bugs it creates</li> </ul>
+<ul>
+    <li>Update: Updated to v2023.2.28</li>
+    <li>Addition: New colors</li>
+    <li>Addition: Better sabotages</li>
+    <li>Addition: Some more settings for game customisation</li>
+    <li>Addition: Version control: Having the wrong/modified versions of the mod compared to the host's will boot you out of the lobby</li>
+    <li>Improvement: Role buttons are now dynamic, meaning they appear and disappear based on certain actions</li>
+    <li>Improvement: Camouflages are now a little more fun now</li>
+    <li>Improvement: Ability uses now appear a little differently than how they used to originally</li>
+    <li>Merge: Torch ability has been fused with Lighter (mainly because I couldn't get Imp vision affected by lights to work)</li>
+    <li>Nerf: Retributionist can only use a dead player once</li>
+    <li>Critical Fix: Fixed Killing Only crashing the game for the host and nulling everyone else's roles</li>
+    <li>Critical Fix: Fixed All Any nulling roles when not a single role is turned on</li>
+    <li>Critical Fix: Fixed Modifiers not spawning in Classic or Custom mode</li>
+    <li>Critical Fix: Roleblocks actually work now!</li>
+    <li>Critical Fix: Fixed Intruder roles sometimes killing their targets upon using their abilities</li>
+    <li>Vanilla Fix: Fixed Report button being visible in lobby</li>
+    <li>Visual Fix: Fixed footprints sometimes being stupidly small</li>
+    <li>Visual Fix: Corrected some more color names</li>
+    <li>Visual Fix: Fixed haunting players not showing their objectifier symbols as being colored</li>
+    <li>Visual Fix: Fixed kill buttons not having text</li>
+    <li>Visual Fix: Fixed all nks winning not having a win screen</li>
+    <li>Visual Fix: Fixed Poisoner and Gorgon buttons being in the centre of the screen rather than the side</li>
+    <li>Role Fix: Fixed Bounty Hunter winning regardless of who they kill and then proceeding to be able to kill with no cooldown</li>
+    <li>Role Fix: Fixed Retributionist being unable to use a Mystic or Seer</li>
+    <li>Role Fix: Fixed Bomber placing bomb not reseting the detonate button with the linked cooldown setting being on</li>
+    <li>Role Fix: Fixed Retributionist unable to interact sometimes</li>
+    <li>Role Fix: Fixed Engineer and Retributionist-Engineer unable to fix sabotages on Skeld</li>
+    <li>Role Fix: Fixed Time Master's time freeze not stopping</li>
+    <li>Role Fix: Fixed Drunkard's invert controls staying inverted forever</li>
+    <li>ROle Fix: Fixed Time Master and Drunkard lag spiking the game when their abilities are active</li>
+    <li>Role Fix: Fixed Teleporter clipping through walls if they place their teleport points just right</li>
+    <li>Role Fix: Fixed Godfather and Rebel not being able to promote fellow team mates</li>
+    <li>Role Fix: Attempt no. 23 in fixing Glitch, here's to hoping it works</li>
+    <li>Objectifier Fix: Fixed Amnesiac/Thief Taskmaster turned Intruder/Syndicate being unable to do tasks to win</li>
+    <li>Objectifier Fix: Fixed the bug where alive Overlords did not win together</li>
+    <li>Objectifier Fix: Fixed Lovers and Rivals nulling when spawning in</li>
+    <li>Objectifier Fix: Fixed Traitor, Fanatic and Allied not winning with their selected factions</li>
+    <li>Code Change: Redid layer generation yet again to squash any hidden bugs + optimisation</li>
+    <li>Code Change: Player HUDs were redone again</li>
+    <li>Code Change: Disguiser, Morphling, Teleporter and Undertaker were recoded a little</li>
+    <li>Code Change: MCI was changed up a bit, the controls are redone and for some reason I'm yet to post controls smh</li>
+    <li>Removed: Retributionist can no longer use a Time Lord because of the countless bugs it creates</li>
+</ul>
 </details>
 <details>
 <summary>v0.0.1dev19</summary>
-<ul> <li>Addition: New 'Default' preset for those who want to reset their settings to default</li> </ul>
-<ul> <li>Addition: New 'Vanilla' gamemode, no idea why I added it so just roll with it</li> </ul>
-<ul> <li>Addition: Added LevelImpostor compatibility</li> </ul>
-<ul> <li>Improvement: Settings now loop (for example if the setting allows for the range 1 to 10, moving beyond 10 will result in the setting becoming 1)</li> </ul>
-<ul> <li>Changes: None of the Neutral (Evil) roles end the game anymore, instead making them win brings about a penalty to players</li> </ul>
-<ul> <li>Critical Fix: Another attempt at fixing games not ending properly</li> </ul>
-<ul> <li>Critical Fix: MCI works now (albiet with some bugs of its own)! Controls will be coming later so until then, just press random buttons</li> </ul>
-<ul> <li>Bug Fix: Presets can now be loaded properly</li> </ul>
-<ul> <li>Bug Fix: Fixed changelogs appearing as "Fetching..." always</li> </ul>
-<ul> <li>Bug Fix: Fixed the Corrupted kill button not lighting up properly</li> </ul>
-<ul> <li>Bug Fix: Fixed the Speci vent not having the proper vent connections</li> </ul>
-<ul> <li>Visual Fix: Fixed Detective footprints being absolutely huge</li> </ul>
-<ul> <li>Role Fix: Fixed Retributionist mediate button not showing up</li> </ul>
-<ul> <li>Role Fix: Fixed Poisoner returning an Intruder win rather than a Syndicate one</li> </ul>
-<ul> <li>Removal: Removed the 'Footprint Size' settings because it's kind of useless</li> </ul>
+<ul>
+    <li>Addition: New 'Default' preset for those who want to reset their settings to default</li>
+    <li>Addition: New 'Vanilla' gamemode, no idea why I added it so just roll with it</li>
+    <li>Addition: Added LevelImpostor compatibility</li>
+    <li>Improvement: Settings now loop (for example if the setting allows for the range 1 to 10, moving beyond 10 will result in the setting becoming 1)</li>
+    <li>Changes: None of the Neutral (Evil) roles end the game anymore, instead making them win brings about a penalty to players</li>
+    <li>Critical Fix: Another attempt at fixing games not ending properly</li>
+    <li>Critical Fix: MCI works now (albiet with some bugs of its own)! Controls will be coming later so until then, just press random buttons</li>
+    <li>Bug Fix: Presets can now be loaded properly</li>
+    <li>Bug Fix: Fixed changelogs appearing as "Fetching..." always</li>
+    <li>Bug Fix: Fixed the Corrupted kill button not lighting up properly</li>
+    <li>Bug Fix: Fixed the Speci vent not having the proper vent connections</li>
+    <li>Visual Fix: Fixed Detective footprints being absolutely huge</li>
+    <li>Role Fix: Fixed Retributionist mediate button not showing up</li>
+    <li>Role Fix: Fixed Poisoner returning an Intruder win rather than a Syndicate one</li>
+    <li>Removal: Removed the 'Footprint Size' settings because it's kind of useless</li>
+</ul>
 </details>
 <details>
 <summary>v0.0.1dev18.5</summary>
-<ul> <li>Critical Fix: Fixed games not ending correctly (hopefully)</li> </ul>
+<ul>
+    <li>Critical Fix: Fixed games not ending correctly (hopefully)</li>
+</ul>
 </details>
 <details>
 <summary>v0.0.1dev18</summary>
-<ul> <li>New Ability: Ninja
-<ul> <li>Addition: Chaos drive abilities! Earlier it only added a kill button but now the Syndicate also has buffed abilities (only some roles have it as of right now)</li> </ul>
-<ul> <li>Addition: Added an announcements and updates button for those who are too lazy to check the changelogs</li> </ul>
-<ul> <li>Buff: Coroner can now autopsy dead bodies and compare them to players to find the killers</li> </ul>
-<ul> <li>Changes: Seer now turns into Sheriff if all players whose roles can change/have changed are dead</li> </ul>
-<ul> <li>Changes: The Main Menu was changed a bit</li> </ul>
-<ul> <li>Improvement: Better task lists</li> </ul>
-<ul> <li>Improvement: All the non-role layer details are finally complete</li> </ul>
-<ul> <li>Improvement: Removed the "Sabotage and kill everyone" text that all Intruders have (to make way for the new task lists)</li> </ul>
-<ul> <li>Bug Fix: Fixed the report button not showing for some reason</li> </ul>
-<ul> <li>Bug Fix: Fixed Modifiers, Objectifiers and Abilities from sometimes not spawning</li> </ul>
-<ul> <li>Bug Fix: Fixed Shy being assigned to roles who cannot button (like Mayor with the Mayor Button settings turned off)</li> </ul>
-<ul> <li>Visual Fix: Fixed Janitor's clean button incorrectly lighting up</li> </ul>
-<ul> <li>Visual Fix: Fixed the good recruit not showing up on your screen if you are the Serial Killer recruit</li> </ul>
-<ul> <li>Objectifier Fix: Fixed Allied not winning with and displaying their decided faction</li> </ul>
-<ul> <li>Objectifier Fix: Fixed Fanatic not changing factions properly</li> </ul>
-<ul> <li>Role Fix: Fixed Bounty Hunter not being able to check for targets</li> </ul>
-<ul> <li>Role Fix: Fixed Vampire Hunter not killing an Undead interactor</li> </ul>
+<ul>
+    <li>New Ability: Ninja
+    <li>Addition: Chaos drive abilities! Earlier it only added a kill button but now the Syndicate also has buffed abilities (only some roles have it as of right now)</li>
+    <li>Addition: Added an announcements and updates button for those who are too lazy to check the changelogs</li>
+    <li>Buff: Coroner can now autopsy dead bodies and compare them to players to find the killers</li>
+    <li>Changes: Seer now turns into Sheriff if all players whose roles can change/have changed are dead</li>
+    <li>Changes: The Main Menu was changed a bit</li>
+    <li>Improvement: Better task lists</li>
+    <li>Improvement: All the non-role layer details are finally complete</li>
+    <li>Improvement: Removed the "Sabotage and kill everyone" text that all Intruders have (to make way for the new task lists)</li>
+    <li>Bug Fix: Fixed the report button not showing for some reason</li>
+    <li>Bug Fix: Fixed Modifiers, Objectifiers and Abilities from sometimes not spawning</li>
+    <li>Bug Fix: Fixed Shy being assigned to roles who cannot button (like Mayor with the Mayor Button settings turned off)</li>
+    <li>Visual Fix: Fixed Janitor's clean button incorrectly lighting up</li>
+    <li>Visual Fix: Fixed the good recruit not showing up on your screen if you are the Serial Killer recruit</li>
+    <li>Objectifier Fix: Fixed Allied not winning with and displaying their decided faction</li>
+    <li>Objectifier Fix: Fixed Fanatic not changing factions properly</li>
+    <li>Role Fix: Fixed Bounty Hunter not being able to check for targets</li>
+    <li>Role Fix: Fixed Vampire Hunter not killing an Undead interactor</li>
+</ul>
 </details>
 <details>
 <summary>v0.0.1dev17</summary>
-<ul> <li>Addition: Custom nameplates and visors</li> </ul>
-<ul> <li>Addition: New 'Casual' preset</li> </ul>
-<ul> <li>Addition: You minimap now reflects the color of your role</li> </ul>
-<ul> <li>Addition: Polus Reactor countdown can be changed now</li> </ul>
-<ul> <li>Improvement: The end game screen shows your role under your name if you win</li> </ul>
-<ul> <li>Internal: The code received yet another restructuring</li> </ul>
-<ul> <li>Internal: The code for custom hats and role names was changed</li> </ul>
-<ul> <li>Changes: Some buttons have their art now</li> </ul>
-<ul> <li>Bug Fix: Fixed Seer not spawning when Godfather and Plaguebearer are on</li> </ul>
-<ul> <li>Bug Fix: Fixed Seer not flashing when someone's role changes</li> </ul>
-<ul> <li>Bug Fix: Fixed Revealers and Phantoms being unable to leave vents (WIP)</li> </ul>
-<ul> <li>Bug Fix: Fixed Plaguebearer turning Pestilence not appearing on the end game summary</li> </ul>
-<ul> <li>Bug Fix: Fixed Indomitable messing with role gen</li> </ul>
-<ul> <li>Bug Fix: Fixed Inspector not being able to use their buttons</li> </ul>
-<ul> <li>Visual Fix: Fixed Turquoise and Lilac having the wrong names</li> </ul>
-<ul> <li>Visual Fix: Fixed role names not appearing under people's names if they are not the player themselves</li> </ul>
-<ul> <li>Role Fix: Another attempt at unglitching Glitch</li> </ul>
+<ul>
+    <li>Addition: Custom nameplates and visors</li>
+    <li>Addition: New 'Casual' preset</li>
+    <li>Addition: You minimap now reflects the color of your role</li>
+    <li>Addition: Polus Reactor countdown can be changed now</li>
+    <li>Improvement: The end game screen shows your role under your name if you win</li>
+    <li>Internal: The code received yet another restructuring</li>
+    <li>Internal: The code for custom hats and role names was changed</li>
+    <li>Changes: Some buttons have their art now</li>
+    <li>Bug Fix: Fixed Seer not spawning when Godfather and Plaguebearer are on</li>
+    <li>Bug Fix: Fixed Seer not flashing when someone's role changes</li>
+    <li>Bug Fix: Fixed Revealers and Phantoms being unable to leave vents (WIP)</li>
+    <li>Bug Fix: Fixed Plaguebearer turning Pestilence not appearing on the end game summary</li>
+    <li>Bug Fix: Fixed Indomitable messing with role gen</li>
+    <li>Bug Fix: Fixed Inspector not being able to use their buttons</li>
+    <li>Visual Fix: Fixed Turquoise and Lilac having the wrong names</li>
+    <li>Visual Fix: Fixed role names not appearing under people's names if they are not the player themselves</li>
+    <li>Role Fix: Another attempt at unglitching Glitch</li>
+</ul>
 </details>
 <details>
 <summary>v0.0.1dev16</summary>
-<ul> <li>Addition: Added dynamic lobby size changing</li> </ul>
-<ul> <li>Role Fix: Time Lord and Retributionist-Time Lord getting stuck when rewinding</li> </ul>
-<ul> <li>Role Fix: Bounty Hunter, Guesser and Actor hints not being sent</li> </ul>
-<ul> <li>Bug Fix: Fixed Time Lord and Retributionist-Time Lord rewind not reviving those who were poisoned by the Rebel-Poisoner</li> </ul>
-<ul> <li>Bug Fix: Fixed being able to whisper to dead players and dead players being able to whisper to the living</li> </ul>
-<ul> <li>Bug Fix: Fixed Ruthless messing with role gen</li> </ul>
-<ul> <li>Bug Fix: Conceal not working</li> </ul>
-<ul> <li>Visual Fix: Changed Necromancer's color because it was too similar to Impostor Red</li> </ul>
-<ul> <li>Buff: Blackmailer and dead players can read whispers now (both of which are togglable)</li> </ul>
-<ul> <li>Changes: Changed how do the Undead work</li> </ul>
-<ul> <li>Changes: Changed the appearance of footprints</li> </ul>
-<ul> <li>Update: Updated CrowdedMod code</li> </ul>
-<ul> <li>Removed: Dampyr and Vampire</li> </ul>
+<ul>
+    <li>Addition: Added dynamic lobby size changing</li>
+    <li>Role Fix: Time Lord and Retributionist-Time Lord getting stuck when rewinding</li>
+    <li>Role Fix: Bounty Hunter, Guesser and Actor hints not being sent</li>
+    <li>Bug Fix: Fixed Time Lord and Retributionist-Time Lord rewind not reviving those who were poisoned by the Rebel-Poisoner</li>
+    <li>Bug Fix: Fixed being able to whisper to dead players and dead players being able to whisper to the living</li>
+    <li>Bug Fix: Fixed Ruthless messing with role gen</li>
+    <li>Bug Fix: Conceal not working</li>
+    <li>Visual Fix: Changed Necromancer's color because it was too similar to Impostor Red</li>
+    <li>Buff: Blackmailer and dead players can read whispers now (both of which are togglable)</li>
+    <li>Changes: Changed how do the Undead work</li>
+    <li>Changes: Changed the appearance of footprints</li>
+    <li>Update: Updated CrowdedMod code</li>
+    <li>Removed: Dampyr and Vampire</li>
+</ul>
 </details>
 <details>
 <summary>v0.0.1dev15</summary>
-<ul> <li>Addition: Preset settings (WIP)</li> </ul>
-<ul> <li>Addition: Custom intro screen sounds (WIP)</li> </ul>
-<ul> <li>Addition: Whispering system</li> </ul>
-<ul> <li>RoleFix: Fixed the issue with Bomber count messing with role gen</li> </ul>
-<ul> <li>Role Fix: Fixed Bounty Hunter not winning</li> </ul>
-<ul> <li>Visual Fix: Fixed Chameleon not appearing semi-invisible for themselves</li> </ul>
+<ul>
+    <li>Addition: Preset settings (WIP)</li>
+    <li>Addition: Custom intro screen sounds (WIP)</li>
+    <li>Addition: Whispering system</li>
+    <li>RoleFix: Fixed the issue with Bomber count messing with role gen</li>
+    <li>Role Fix: Fixed Bounty Hunter not winning</li>
+    <li>Visual Fix: Fixed Chameleon not appearing semi-invisible for themselves</li>
+</ul>
 </details>
 <details>
 <summary>v0.0.1dev14</summary>
-<ul> <li>Fixed Necromancer not being able to kill</li> </ul>
-<ul> <li>Fixed the uses count on the Necromancer's buttons</li> </ul>
-<ul> <li>Fixed Necromancer's settings being misplaced</li> </ul>
-<ul> <li>Fixed some more cooldown issues (jeez they are one too many)</li> </ul>
-<ul> <li>Bomber now works!</li> </ul>
+<ul>
+    <li>Fixed Necromancer not being able to kill</li>
+    <li>Fixed the uses count on the Necromancer's buttons</li>
+    <li>Fixed Necromancer's settings being misplaced</li>
+    <li>Fixed some more cooldown issues (jeez they are one too many)</li>
+    <li>Bomber now works!</li>
+</ul>
 </details>
 <details>
 <summary>v0.0.1dev13.5</summary>
-<ul> <li>Fixed some cooldowns</li> </ul>
+<ul>
+    <li>Fixed some cooldowns</li>
+</ul>
 </details>
 <details>
 <summary>v0.0.1dev13</summary>
-<ul> <li>New Roles, Modifiers and Abilities!</li> </ul>
-<ul> <li>Introducing Objectifiers! They are essentially secondary roles for you!</li> </ul>
-<ul> <li>New Faction: The Syndicate! Can you survive the chaos they bring?</li> </ul>
-<ul> <li>New Subfactions: Undead, Cabal, Reanimated and Sect! Stop them from over taking the mission!</li> </ul>
-<ul> <li>New Features! Chat scrolling, chat commands and more!</li> </ul>
-<ul> <li>Reworks, renames, buffs and nerfs! A lot of roles are different from the base mod, can you guess which ones were which?</li> </ul>
-<ul> <li>New Settings with room for even more customisation!</li> </ul>
-<ul> <li>New Mode: Custom! Allow multiple of the same roles to spawn, all at your discretion!</li> </ul>
-<ul> <li>Modifiers, Abilities and Objectifiers can now also spawn in Killing Only mode!</li> </ul>
-<ul> <li>New Game Modifiers! Spice up your game with settings that can drastically change the outcome of a game!</li> </ul>
-<ul> <li>(Most) Vanilla settings have been integrated into the Custom Settings!</li> </ul>
-<ul> <li>All Any is now truly All Any!</li> </ul>
-<ul> <li>Brought back old and forgotten features from previous versions!</li> </ul>
-<ul> <li>Improved features like better end game summaries!</li> </ul>
-<ul> <li>Improved the win conditions of a lot of roles!</li> </ul>
-<ul> <li>More QoL features!</li> </ul>
-<ul> <li>A lot of internal code changes for smoother (and hopefully less buggy) game experiences!</li> </ul>
+<ul>
+    <li>New Roles, Modifiers and Abilities!</li>
+    <li>Introducing Objectifiers! They are essentially secondary roles for you!</li>
+    <li>New Faction: The Syndicate! Can you survive the chaos they bring?</li>
+    <li>New Subfactions: Undead, Cabal, Reanimated and Sect! Stop them from over taking the mission!</li>
+    <li>New Features! Chat scrolling, chat commands and more!</li>
+    <li>Reworks, renames, buffs and nerfs! A lot of roles are different from the base mod, can you guess which ones were which?</li>
+    <li>New Settings with room for even more customisation!</li>
+    <li>New Mode: Custom! Allow multiple of the same roles to spawn, all at your discretion!</li>
+    <li>Modifiers, Abilities and Objectifiers can now also spawn in Killing Only mode!</li>
+    <li>New Game Modifiers! Spice up your game with settings that can drastically change the outcome of a game!</li>
+    <li>(Most) Vanilla settings have been integrated into the Custom Settings!</li>
+    <li>All Any is now truly All Any!</li>
+    <li>Brought back old and forgotten features from previous versions!</li>
+    <li>Improved features like better end game summaries!</li>
+    <li>Improved the win conditions of a lot of roles!</li>
+    <li>More QoL features!</li>
+    <li>A lot of internal code changes for smoother (and hopefully less buggy) game experiences!</li>
+</ul>
 </details>
 </details>
 
@@ -1147,9 +1259,9 @@ Quick warning: This mod adds a whole LOT of stuff, and is currently not very beg
 ## Requirements
 - Among Us
 - Steam or Epic Games
-- Windows/Linux operating system [download](#releases) the Town of Us Reworked zip file corresponding to the installed Among Us version.
+- Windows/Linux operating system
 
-To start off any installation,
+To start off any installation, [download](#releases) the Town of Us Reworked zip file corresponding to the installed Among Us version.
 
 ## Windows Steam Guide
 1. Go to your Steam library.
@@ -1245,6 +1357,17 @@ In this mod, we have :-
 | Layer Count | How many instances of the specified type should spawn in Custom Mode, for certain layers it's the number of pairs | Number | 1 |
 | Layer Is Unique | Dictates whether only one of the specified type should spawn in All Any/Role Lists | Toggle | Off |
 
+## Some layers have these settings
+
+| Name | Description | Type | Default |
+|------|-------------|------|---------|
+| Ability Cooldown | The cooldown on the ability's button, if any | Time | 25s |
+| Ability Duration | How long does the ability last for | Time | 10s |
+| Ability Delay | How much time must pass for the ability to trigegr | Time | 5s |
+| Max Ability Uses | How many times can the ability if used if there's a limit on it | Number | 5 |
+
+Beyond these options, some of the layers have their own unique settings aside from these
+
 ## Each alignment has these settings
 
 | Name | Description | Type | Default |
@@ -1258,7 +1381,7 @@ In this mod, we have :-
 | Max/Min Role Count | Dictates the minimum/maximum number of roles from the faction will spawn (not a hard cap since role gen might go out of bounds) | Number | 5 |
 | Faction Can Vent | Dictates whether members of this faction can vent, this is then overriden by the specific venting settings for the roles | Toggle | True if not Crew |
 | Vision | How far can members of the faction see | Factor | 1x for Crew, 2x for Intruders and Syndicate, 1.5x for Neutrals |
-| Flashlight | Dictates whether members of the faction use a flashlight or not | Toggle | False |
+| Flashlights | Dictates whether members of the faction use a flashlight or not | Toggle | False |
 
 ## Each non-role layer has these settings
 
@@ -1272,6 +1395,8 @@ In this mod, we have :-
 
 # Crew Roles
 
+<img align="right" width="" height="200" src="./Images/Crew.png">
+
 Each member has a special ability which determines who’s who and can help weed out the evils. The main theme of this faction is deduction and goodwill. This faction is an uninformed majority meaning they make up most of the players and don't who the other members are. The Crew can do tasks which sort of act like a timer for non-Crew roles.
 
 ### Crew Settings
@@ -1283,9 +1408,10 @@ Each member has a special ability which determines who’s who and can help weed
 | Short Tasks | How many short tasks must be assigned | Number | 4 |
 | Crew Ghost Tasks Count To Win | Dictates whether dead Crew should finish their tasks or not to achieve a task win | Toggle | True |
 
-![Crew](./Images/Crew.png)
-
 ## Altruist
+
+<img align="right" width="" height="200" src="./Images/Altruist.png">
+
 ### Alignment: Crew (Protective)
 ### Origin: Town Of Us, based off of the original Retributionist in Town Of Salem
 
@@ -1295,14 +1421,12 @@ The Altruist is capable of reviving dead players. After a set period of time, th
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Max Revives | The number of times the Altruist can revive players | Number | 5 |
-| Revive Cooldown | The cooldown on the Altruist's Revuve button | Time | 25s |
-| Revive Duration | The time it takes for the Altruist to revive a dead body | Time | 10s |
 | Target's Body Disappears On Beginning Of Revive | Whether the reviving body disappears upon start of the revival | Toggle | False |
 
-![Altruist](./Images/Altruist.png)
-
 ## Bastion
+
+<img align="right" width="" height="200" src="./Images/Bastion.png">
+
 ### Alignment: Crew (Killing)
 ### Origin: Town Of Host: The Other Roles
 
@@ -1312,29 +1436,21 @@ The Bastion can place bombs in vents. Anyone who tries to interact with the bomb
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Max Bombs | The number of times the Bastion can place bombs throughout the game | Number | 5 |
-| Bastion Cooldown | The cooldown on the Bastion's bomb button | Time | 5s |
 | Bombs Are Removed Upon Kills | Toggles whether the bombs in vents are permanent or not. If not, they disappear after killing someone | Toggle | True |
 
-![Bastion](./Images/Bastion.png)
-
 ## Chameleon
+
+<img align="right" width="" height="200" src="./Images/Chameleon.png">
+
 ### Alignment: Crew (Support)
 ### Origin: Town Of Us
 
 The Chameleon can go invisible to stalk players and see what they do when no one is around.
 
-### Game Options
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Max Swoops | The number of times the Chameleon can use Swoop | Number | 5 |
-| Swoop Cooldown | The cooldown on the Chameleon's Swoop button | Time | 25s |
-| Swoop Duration | The duration of the Chameleon's Swoop | Time | 10s |
-
-![Chameleon](./Images/Chameleon.png)
-
 ## Coroner
+
+<img align="right" width="" height="200" src="./Images/Coroner.png">
+
 ### Alignment: Crew (Investigative)
 
 The Coroner gets an alert when someone dies and briefly gets an arrow pointing in the direction of the body. They can autopsy bodies to get some information. They can then compare that information with players to see if they killed the body or not. The Coroner also gets a body report from the body they reported. The report will include the cause and time of death, player's faction/role, the killer's faction/role and (according to the settings) the killer's name.
@@ -1346,21 +1462,21 @@ The Coroner gets an alert when someone dies and briefly gets an arrow pointing i
 | Dead Body Arrow Duration | The duration of the arrows pointing to the bodies | Time | 0.1s |
 | Coroner Gets Roles | This dictates whether the Coroner gets the killer's and body's role, otherwise only their factions are revealed | Toggle | False |
 | Coroner Gets Killer's Name | This dictates whether the Coroner gets the killer's name from the report | Toggle | False |
-| Coroner Gets Killer's Name Under | This dictates how old must a body be for the Coroner to get the killer's name | Time | 1s |
-| Compare Cooldown | The cooldown on the Coroner's Compare button | Time | 25s |
-| Autopsy Cooldown | The cooldown on the Coroner's Autopsy button | Time | 25s |
-
-![Coroner](./Images/Coroner.png)
+| ┗ Coroner Gets Killer's Name Under | This dictates how old must a body be for the Coroner to get the killer's name | Time | 1s |
 
 ## Crewmate
+
+<img align="right" width="" height="200" src="./Images/Crewmate.png">
+
 ### Alignment: Crew (Utility)
 ### Origin: Among Us
 
 Just a plain Crew with no abilities and only spawns if all the other roles are taken or set to spawn in Custom mode.
 
-![Crewmate](./Images/Crewmate.png)
-
 ## Detective
+
+<img align="right" width="" height="200" src="./Images/Detective.png">
+
 ### Alignment: Crew (Investigative)
 ### Origin: Town Of Us, formed from the fusion of Investigator and Detective and removing body reports
 
@@ -1370,15 +1486,15 @@ The Detective can examine other players for bloody hands. If the examined player
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Examine Cooldown | The cooldown on the Detective's Examine button | Time | 25s |
 | Bloody Hands Duration | How long players remain bloody after a kill | Time | 10s |
 | Footprint Interval | The time interval between two footprints | Time | 0.15s |
 | Footprint Duration | The amount of time that the footprint stays on the ground for | Time | 10s |
-| Anonymous Footprint | When enabled, all footprints are grey instead of the player's colors | Toggle | False |
-
-![Detective](./Images/Detective.png)
+| Anonymous Footprint | When enabled, all footprints are grey instead of the player's colors | String | Only When Camouflaged |
 
 ## Dictator
+
+<img align="right" width="" height="200" src="./Images/Dictator.png">
+
 ### Alignment: Crew (Sovereign)
 ### Origin: Better TOS Marshall
 
@@ -1392,39 +1508,28 @@ The Dictator has no active ability aside from revealing themselves as the Dictat
 | Dictator Can Dictate After Voting | Self descriptive | Toggle | True |
 | Dictator Can Button | Whether the Dictator can call a meeting | Toggle | True |
 
-![Dictator](./Images/Dictator.png)
-
 ## Engineer
+
+<img align="right" width="" height="200" src="./Images/Engineer.png">
+
 ### Alignment: Crew (Support)
 ### Origin: Town Of Us
 
 The Engineer can fix sabotages from anywhere on the map. They can also use vents to get across the map easily.
 
-### Game Options
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Max Fixes | How many times can the Engineer fix sabotages | Number | 5 |
-| Fix Cooldown | The cooldown on the Engineer's Fix button | Time | 25s |
-
-![Engineer](./Images/Engineer.png)
-
 ## Escort
+
+<img align="right" width="" height="200" src="./Images/Escort.png">
+
 ### Alignment: Crew (Support)
 ### Origin: Town Of Salem
 
 The Escort can roleblock players and prevent them from doing anything for a short while.
 
-### Game Options
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Roleblock Cooldown | The cooldown on the Escort's Roleblock button | Time | 25s |
-| Roleblock Duration | The duration of the Escort's Roleblock | Time | 10s |
-
-![Escort](./Images/Escort.png)
-
 ## Mayor
+
+<img align="right" width="" height="200" src="./Images/Mayor.png">
+
 ### Alignment: Crew (Sovereign)
 ### Origin: Town Of Salem
 
@@ -1438,9 +1543,10 @@ The Mayor has no active ability aside from being able to reveal themselves as th
 | Mayor Cannot Reveal Round One | Self descriptive | Toggle | True |
 | Mayor Can Button | Whether the Mayor can call a meeting | Toggle | True |
 
-![Mayor](./Images/Mayor.png)
-
 ## Medic
+
+<img align="right" width="" height="200" src="./Images/Medic.png">
+
 ### Alignment: Crew (Protective)
 ### Origin: Town Of Us
 
@@ -1454,9 +1560,10 @@ The Medic can give any player a shield that will make them largely immortal as l
 | Who Gets Murder Attempt Indicator | Who will receive an indicator when someone tries to Kill them | String | Medic |
 | Shield Breaks On Murder Attempt | Whether the Shield breaks when someone attempts to Kill them | Toggle | True |
 
-![Medic](./Images/Medic.png)
-
 ## Medium
+
+<img align="right" width="" height="200" src="./Images/Medium.png">
+
 ### Alignment: Crew (Investigative)
 ### Origin: Town Of Us
 
@@ -1466,14 +1573,14 @@ The Medium can mediate to be able to see ghosts. If the Medium uses this ability
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Mediate Cooldown | The cooldown on the Medium's Mediate button | Time | 25s |
 | Reveal Appearance Of Mediate Target | Whether the Ghosts will show as themselves, or camouflaged | Toggle | True |
 | Reveal The Medium To The Mediate Target | Whether certain ghosts can see that the Medium is the Medium | String | No |
 | Who Is Revealed With Mediate | Which players are revealed to the Medium | String | Oldest Dead |
 
-![Medium](./Images/Medium.png)
-
 ## Monarch
+
+<img align="right" width="" height="200" src="./Images/Monarch.png">
+
 ### Alignment: Crew (Sovereign)
 ### Origin: Traitors In Salem King/Town Of Salem 2
 
@@ -1483,29 +1590,23 @@ The Monarch can appoint players as knights. When the next meeting is called, all
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Knighting Cooldown | The cooldown on the Monarch's Knight button | Time | 10s |
 | Monarch Cannot Knight Round One | Self descriptive | Toggle | True |
-| Knighted Count | The number of times the Monarch can knight players | Number | 1 |
 | Knighted Votes Count As | The additional number of votes that are added to a knighted player's vote | Number | 1 |
 | Monarch Can Button | Whether the Monarch can call a meeting | Toggle | True |
 | Knights Can Button | Whether knighted players can call a meeting | Toggle | True |
 
-![Monarch](./Images/Monarch.png)
-
 ## Mystic
+
+<img align="right" width="" height="200" src="./Images/Mystic.png">
+
 ### Alignment: Crew (Auditor)
 
 The Mystic only spawns when there is at least one Neutral (Neophyte) role present in the game. Whenever someone's subfaction is changed, the Mystic will be alerted about it. The Mystic can also investigate players to see if their subfactions have been changed. If the target has a different subfaction from the Mystic's, the Mystic's screen will flash red, otherwise it will flash green. It will not, however, work on the Neutral (Neophyte) roles themselves so even people who flashed green might still be evil. Once all subfactions are dead, the Mystic becomes a Seer. If the player is framed, they will appear to have their subfactions changed.
 
-### Game Options
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Reveal Cooldown | The cooldown on the Medium's Investigate button | Time | 10s |
-
-![Mystic](./Images/Mystic.png)
-
 ## Operative
+
+<img align="right" width="" height="200" src="./Images/Operative.png">
+
 ### Alignment: Crew (Investigative)
 ### Origin: Town Of Us, formed from the fusion of Town Of Us Spy and Trapper
 
@@ -1515,18 +1616,17 @@ The Operative can place bugs around the map. When players enter the range of the
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Bug Cooldown | The cooldown on the Operative's Bug button | Time | 25s |
 | Min Amount Of Time Required For Bug To Trigger | How long a player must stay in the bug for it to trigger | Time | 0s |
 | Bugs Are Removed Each Round | Whether the Operative's bugs are removed after each meeting | Toggle | True |
-| Max Bugs | The number of bugs they can place in a game | Number | 5 |
 | Bug Range | The size of each trap | Factor | 0.25x |
 | Number Of Roles Required To Trigger Bug | The number of players that must enter the bug for it to be triggered | Number | 1 |
 | Who Sees Dead Bodies On Admin | Which players see dead bodies on the admin map | String | Nobody |
 | Operative Gets Precise Information | Whether the information from the Operative's bugs are more accurate and precise | Toggle | False |
 
-![Operative](./Images/Operative.png)
-
 ## Retributionist
+
+<img align="right" width="" height="200" src="./Images/Retributionist.png">
+
 ### Alignment: Crew (Support)
 ### Origin: Town Of Us Imitator
 
@@ -1538,9 +1638,10 @@ The Retributionist can mimic dead crewmates. During meetings, the Retributionist
 |------|-------------|------|---------|
 | Retributionist Can Mimic After Voting | Self descriptive | Toggle | True |
 
-![Retributionist](./Images/Retributionist.png)
-
 ## Revealer
+
+<img align="right" width="" height="200" src="./Images/Revealer.png">
+
 ### Alignment: Crew (Utility)
 ### Origin: Town Of Us Haunter
 
@@ -1550,29 +1651,25 @@ The Revealer is a dead Crew. Upon finishing all their tasks, the evils, and poss
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| When Revealer Can Be Clicked | The amount of tasks remaining when the Revealer can be clicked | Number | 5 |
+| When Can Revealer Be Clicked | The amount of tasks remaining when the Revealer can be clicked | Number | 5 |
 | Tasks Remaining When Revealed | The amount of tasks remaining when evils are alerted that the Revealer is nearly finished | Number | 1 |
 | Revealer Reveals Neutrals | Whether the Revealer also reveals neutral roles | Toggle | False |
 | Revealer Reveals Crew | Whether the Revealer also Reveals crew roles | Toggle | False |
 | Revealer Reveals Exact Roles | Whether the Revealer also Reveals all roles | Toggle | False |
 | Who Can Click Revealer | Which players can click the Revealer | String | All |
 
-![Revealer](./Images/Revealer.png)
-
 ## Seer
+
+<img align="right" width="" height="200" src="./Images/Seer.png">
+
 ### Alignment: Crew (Investigative)
 
 The Seer only spawns if there are roles capable of changing their initial roles or if there's a [Traitor](#traitor) or [Fanatic](#fanatic) in the game. The Seer can investigate players to see if their role is different from what they started out as. If a player's role has been changed, the Seer's screen will flash red, otherwise it will flash green. This, however, does not work on those whose subfactions have changed so those who flashed green might still be evil. If all players capable of changing or have changed their initial roles are dead, the Seer becomes a Sheriff. If the player is framed, they will appear to have their role changed.
 
-### Game Options
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Seer Cooldown | The cooldown on the Seer's Investigate button | Time | 25s |
-
-![Seer](./Images/Seer.png)
-
 ## Sheriff
+
+<img align="right" width="" height="200" src="./Images/Sheriff.png">
+
 ### Alignment: Crew (Investigative)
 ### Origin: Town Of Us Seer
 
@@ -1582,13 +1679,13 @@ The Sheriff can reveal the alliance of other players. Based on settings, the She
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Interrogate Cooldown | The cooldown on the Sheriff's Interrogate button | Time | 25s |
 | Neutral Evils Show Up As Evil | Neutral Evil roles show up as Red | Toggle | False |
 | Neutral Killing Show Up As Evil | Neutral Killing roles show up as Red | Toggle | False |
 
-![Sheriff](./Images/Sheriff.png)
-
 ## Shifter
+
+<img align="right" width="" height="200" src="./Images/Shifter.png">
+
 ### Alignment: Crew (Support)
 ### Origin: Town Of Us
 
@@ -1598,12 +1695,12 @@ The Shifter can swap roles with someone, as long as they are Crew. If the shift 
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Shift Cooldown | The cooldown on the Shifter's Shift button | Time | 25s |
 | Shifted Becomes | Dictates what the shift target becomes after getting shifted | String | Shifter |
 
-![Shifter](./Images/Shifter.png)
-
 ## Tracker
+
+<img align="right" width="" height="200" src="./Images/Tracker.png">
+
 ### Alignment: Crew (Investigative)
 ### Origin: Town Of Us + The Other Roles
 
@@ -1613,14 +1710,13 @@ The Tracker can track others during a round. Once they track someone, an arrow i
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Max Tracks | The number of new people they can track each round | Number | 5 |
-| Track Cooldown | The cooldown on the Tracker's Track button | Time | 25s |
 | Tracker Arrows Reset Each Round | Whether Tracker Arrows are removed after each meeting | Toggle | False |
 | Arrow Update Interval | The time it takes for the arrow to update to the new location of the tracked player | Time | 5s |
 
-![Tracker](./Images/Tracker.png)
-
 ## Transporter
+
+<img align="right" width="" height="200" src="./Images/Transporter.png">
+
 ### Alignment: Crew (Support)
 ### Origin: Town Of Salem
 
@@ -1630,47 +1726,34 @@ The Transporter can swap the locations of two players at will. Being transported
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Max Transports | The amount of times the Transport ability can be used | Number | 5 |
-| Transport Cooldown | The cooldown on the Transporter's Transport ability | Time | 25s |
-| Transport Duration | The duration of the transport animation | Time | 5s |
 | Transporter Can Transport Themselves | Self descriptive | Toggle | False |
 
-![Transporter](./Images/Transporter.png)
-
 ## Vampire Hunter
+
+<img align="right" width="" height="200" src="./Images/VampireHunter.png">
+
 ### Alignment: Crew (Auditor)
+### Origin: Town Of Salem
 
 The Vampire Hunter only spawns if there are Undead in the game. They can check players to see if they are an Undead. When the Vampire Hunter finds them, the target is killed. Otherwise they only interact and nothing else happens. When all Undead are dead, the Vampire Hunter turns into a Vigilante. Interacting with a Vampire Hunter as an Undead will force the Vampire Hunter to kill you.
 
-### Game Options
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Stake Cooldown | The cooldown on the Vampire Hunter's Stake button | Time | 5s |
-
-![Vampire Hunter](./Images/VampireHunter.png)
-
 ## Veteran
+
+<img align="right" width="" height="200" src="./Images/Veteran.png">
+
 ### Alignment: Crew (Killing)
 ### Origin: Town Of Salem
 
 The Veteran can go on alert. Anyone who interacts with a Veteran on alert will be killed by the Veteran in question.
 
-### Game Options
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Max Alerts | The number of times the Veteran can alert throughout the game | Number | 5 |
-| Alert Cooldown | The cooldown on the Veteran's Alert button | Time | 5s |
-| Alert Duration | The duration of the Veteran's Alert | Time | 25s |
-
-![Veteran](./Images/Veteran.png)
-
 ## Vigilante
+
+<img align="right" width="" height="200" src="./Images/Vigilante.png">
+
 ### Alignment: Crew (Killing)
 ### Origin: Town Of Us Sheriff
 
-The Vigilante can kill. However, if they kill someone they shouldn't, they instead die themselves.
+The Vigilante can kill. However, if they kill someone they shouldn't, they instead kill themselves.
 
 ### Game Options
 
@@ -1681,12 +1764,10 @@ The Vigilante can kill. However, if they kill someone they shouldn't, they inste
 | Vigilante Cannot Shoot Round One | Self descriptive | Toggle | True |
 | How Is The Vigilante Notified Of Their Target's Innocence | Whether the Vigilante is notified of their target's innocent upon misfire | String | Never |
 | How Does Vigilante Die | Dictates how does the Vigilante die, should they kill or attempt to kill someone they shouldn't | String | Immediately |
-| Max Bullets | The number of times the Vigilante can shoot players throughout the game | Number | 5 |
-| Shoot Cooldown | The cooldown on the Vigilante's Shoot button | Time | 25s |
-
-![Vigiante](./Images/Vigilante.png)
 
 # Neutral Roles
+
+<img align="right" width="" height="200" src="./Images/Neutral.png">
 
 Each member of this faction has their own unique way to win, seperate from the other roles in the same faction. The main theme of this faction is free for all. This faction is an uninformed minority of the game, meaning they make up a small part of the crew while not knowing who the other members are. Each role is unique in its own way, some can be helpful, some exist to destroy others and some just exist for the sake of existing.
 
@@ -1700,9 +1781,10 @@ Each member of this faction has their own unique way to win, seperate from the o
 | Neutral Killers Have Intruder Vision | Whether Neutral (Killing) roles have higher vision or not | Toggle | False |
 | Neutral Killers Know Each Other | If Neutrals can win together, this settings lets Neutral Killers know of each other | Toggle | False |
 
-![Neutral](./Images/Neutral.png)
-
 ## Actor
+
+<img align="right" width="" height="200" src="./Images/Actor.png">
+
 ### Alignment: Neutral (Evil)
 ### Win Condition: Get guessed as a role in their target role list
 
@@ -1714,14 +1796,15 @@ The Actor gets a list of roles at the start of the game. This list of roles depe
 |------|-------------|------|---------|
 | Actor Can Choose A Target Role | Whether the Actor can target a player to try and get guessed as their role | Toggle | True |
 | Actor Can Button | Whether the Actor call a meeting | Toggle | True |
-| Actor Can Hide In Vents | Whether the Actor Can Vent | Toggle | False |
-| Actor Can Switch Vents | Whether the Actor Can Switch while in Vents | Toggle | False |
+| Actor Can Hide In Vents | Whether the Actor can vent | Toggle | False |
+| ┗ Actor Can Switch Vents | Whether the Actor Can Switch while in Vents | Toggle | False |
 | Actor Role List Guess Count | How many roles are included within the Actor's pretend list | Number | 3 |
 | Vigilante Kills Actor | Whether the Vigilante is able to kill the Actor | Toggle | False |
 
-![Actor](./Images/Actor.png)
-
 ## Amnesiac
+
+<img align="right" width="" height="200" src="./Images/Amnesiac.png">
+
 ### Alignment: Neutral (Benign)
 ### Win Condition: Find a dead body, take their role and then win as that role
 ### Origin: Town Of Salem
@@ -1735,11 +1818,12 @@ The Amnesiac is essentially roleless and cannot win without remembering the role
 | Amnesiac Gets Arrows To Dead Bodies | Self descriptive | Toggle | False |
 | Remember Arrow Appearance Delay | The delay of the arrows appearing after the person died | Time | 5s |
 | Amnesiac Can Hide In Vents | Decides whether the Amnesiac can vent | Toggle | False |
-| Amnesiac Can Switch Vents | Decides whether the Amnesiac can switch while in vents | Toggle | True |
-
-![Amnesiac](./Images/Amnesiac.png)
+| ┗ Amnesiac Can Switch Vents | Decides whether the Amnesiac can switch while in vents | Toggle | True |
 
 ## Arsonist
+
+<img align="right" width="" height="200" src="./Images/Arsonist.png">
+
 ### Alignment: Neutral (Killing)
 ### Win Condition: Ignite anyone who can oppose them
 ### Origin: Town Of Salem
@@ -1750,32 +1834,31 @@ The Arsonist can douse players with gasoline. After dousing, the Arsonist can ch
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Douse Cooldown | The cooldown on the Arsonist's Douse button | Time | 25s |
-| Ignite Cooldown | The cooldown on the Arsonist's Ignite button | Time | 25s |
 | Ignite Cooldown Removed When Arsonist Is Last Killer | Decides whether the Arsonist's Ignite cooldown is reduced to 0s if they happen to be the last killer alive | Toggle | False |
 | Ignition Ignites All Doused Players | One Arsonist igniting ignites all doused players of other Arsonists as well | Toggle | False |
 | Douse And Ignite Cooldowns Are Linked | Decides whether the Arsonist's cooldowns are linked so that dousing resets ignition and vice versa | Toggle | False |
 | Ignition Cremates Bodies | Ignited players have their bodies burnt away, leaving behind unreportable ash | Toggle | False |
-| Arsonist Can Vent | Decides whether the Arsonist can vent | Toggle | True |
-
-![Arsonist](./Images/Arsonist.png)
+| Arsonist Can Vent | Toggles the Arsonist's ability to vent | Toggle | True |
 
 ## Betrayer
+
+<img align="right" width="" height="200" src="./Images/Betrayer.png">
+
 ### Alignment: Neutral (Proselyte)
 ### Win Condition: Kill anyone who opposes the faction they defected to
 
-The Betrayer is a simple killer, who appears after a turned Traitor/Fanatic was the only member of their new faction remaning. This role does not spawn directly.
+The Betrayer is a simple killer, who appears after a turned [Traitor](#traitor)/[Fanatic](#fanatic) was the only member of their new faction remaning. This role does not spawn directly.
 
 ### Game Options
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Betray Cooldown | The cooldown on the Betrayer's Betray button | Time | 25s |
-| Betrayer Can Vent | Decides whether the Betrayer can vent | Toggle | True |
-
-![Betrayer](./Images/Betrayer.png)
+| Betrayer Can Vent | Toggles the Betrayer's ability to vent | Toggle | True |
 
 ## Bounty Hunter
+
+<img align="right" width="" height="200" src="./Images/BountyHunter.png">
+
 ### Alignment: Neutral (Evil)
 ### Win Condition: Find and kill thier target
 
@@ -1786,14 +1869,13 @@ The Bounty Hunter is assigned a target as the start of the game. Every meeting, 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Bounty Hunter Can Indirectly Pick Their Own Target | Whether the Bounty Hunter can choose a player to pick a target for them | Toggle | False |
-| Max Target Guesses | The number of times the Bounty Hunter can try to guess players as their target before losing | Number | 5 |
-| Guess Cooldown | The cooldown on the Bounty Hunter's Guess button | Time | 25s |
-| Bounty Hunter Can Vent | Whether the Bounty Hunter can vent | Toggle | False |
+| Bounty Hunter Can Vent | Toggles the Bounty Hunter's ability to vent | Toggle | True |
 | Vigilante Kills Bounty Hunter | Whether the Vigilante is able to kill the Bounty Hunter | Toggle | False |
 
-![BountyHunter](./Images/BountyHunter.png)
-
 ## Cannibal
+
+<img align="right" width="" height="200" src="./Images/Cannibal.png">
+
 ### Alignment: Neutral (Evil)
 ### Win Condition: Eat a certain number of bodies
 ### Origin: The Other Roles Vulture
@@ -1804,16 +1886,16 @@ The Cannibal can eat the body which wipes it away, like the Janitor.
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Eat Cooldown | The cooldown on the Cannibal's eat button | Time | 25s |
 | Bodies Needed To Win | Self descriptive | Number | 5 or changes to half the lobby size if not enough players |
-| Cannibal Can Vent | Decides whether the Cannibal can vent | Toggle | False |
+| Cannibal Can Vent | Toggles the Cannibal's ability to vent | Toggle | True |
 | Cannibal Gets Arrows | Whether the Cannibal has arrows pointing to dead bodies | Toggle | False |
-| Eat Arrow Appearance Delay | The delay of the arrows appearing after the person died | Time | 5s |
+| Hunger Arrow Appearance Delay | The delay of the arrows appearing after the person died | Time | 5s |
 | Vigilante Kills Cannibal | Whether the Vigilante is able to kill the Cannibal | Toggle | False |
 
-![Cannibal](./Images/Cannibal.png)
-
 ## Cryomaniac
+
+<img align="right" width="" height="200" src="./Images/Cryomaniac.png">
+
 ### Alignment: Neutral (Killing)
 ### Win Condition: Freeze anyone who can oppose them
 
@@ -1823,14 +1905,14 @@ The Cryomaniac can douse players in coolant and freeze them similar to the Arson
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Douse Cooldown | The cooldown on the Cryomaniac's Douse button | Time | 25s |
 | Freezing Freezes All Doused Players | One Cryomaniac freezing freezes all doused players of other Cryomaniacs as well | Toggle | False |
 | Cryomaniac Can Kill Normally When Last Killer | Whether the Cryomaniac is able to kill players directly if they happen to be the last evil alive | Toggle | False |
-| Cryomaniac Can Vent | Decides whether the Cryomaniac can vent | Toggle | False |
-
-![Cryomaniac](./Images/Cryomaniac.png)
+| Cryomaniac Can Vent | Toggles the Cryomaniac's ability to vent | Toggle | True |
 
 ## Dracula
+
+<img align="right" width="" height="200" src="./Images/Dracula.png">
+
 ### Alignment: Neutral (Neophyte)
 ### Win Condition: Convert or kill anyone who can oppose them
 
@@ -1840,14 +1922,14 @@ The Dracula is the only Undead that spawns in. The Dracula is the leader of the 
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Bite Cooldown | The cooldown on the Dracula's bite button | Time | 25s |
-| Dracula Can Vent | Decides whether the Dracula can vent | Toggle | False |
-| Undead Can Vent | Decides whether the Undead can vent, overriding their role's vent settings | Toggle | False |
-| Alive Undead Count | Limits the number of Undead that can be alive, attempting to convert player after this limit has been reached will kill the target player | Number | 3 |
-
-![Dracula](./Images/Dracula.png)
+| Dracula Can Vent | Toggles the Dracula's ability to vent | Toggle | True |
+| Undead Can Vent | Toggles the Undead's ability to vent, overriding their role's vent settings | Toggle | False |
+| Alive Undead Count | Limits the number of Undead that can be alive, attempting to convert players after this limit has been reached will kill the target player | Number | 3 |
 
 ## Executioner
+
+<img align="right" width="" height="200" src="./Images/Executioner.png">
+
 ### Alignment: Neutral (Evil)
 ### Win Condition: Live (or die according to the settings) to see their target get ejected
 ### Origin: Town Of Salem
@@ -1861,16 +1943,17 @@ The Executioner has no abilities and instead must use gas-lighting techniques to
 | Executioner Can Pick Their Own Target | Whether the Executioner can choose a player to be ejected | Toggle | False |
 | Executioner Can Button | Whether the Executioner can call a meeting | Toggle | True |
 | Executioner Can Hide In Vents | Whether the Executioner can vent | Toggle | False |
-| Executioner Can Switch Vents | Whether the Executioner Can Switch while in Vents | Toggle | False |
+| ┗ Executioner Can Switch Vents | Whether the Executioner Can Switch while in Vents | Toggle | False |
 | Target Knows Executioner Exists | Whether the Executioner's target knows that they have an Executioner for them | Toggle | False |
 | Executioner Knows Target's Role | Whether the Executioner knows their target's role | Toggle | False |
 | Target Ejection Reveals Existence Of Executioner | Decides if the target is ejected, it will reveal the fact that they were an Executioner's target | Toggle | False |
 | Executioner Can Win After Death | Decides if the Executioner can still win if their target has been ejected after they died | Toggle | False |
 | Vigilante Kills Executioner | Whether the Vigilante is able to kill the Executioner | Toggle | False |
 
-![Executioner](./Images/Executioner.png)
-
 ## Glitch
+
+<img align="right" width="" height="200" src="./Images/Glitch.png">
+
 ### Alignment: Neutral (Killing)
 ### Win Condition: Neutralise anyone who can oppose them
 ### Origin: Town Of Us
@@ -1881,16 +1964,12 @@ The Glitch can hack players, resulting in them being unable to do anything for a
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Mimic Cooldown | The cooldown of Glitch's Mimic button | Time | 25s |
-| Mimic Duration | How long Glitch can Mimic a player | Time | 10s |
-| Hack Cooldown | The cooldown of Glitch's Hack button | Time | 25s |
-| Hack Duration | How long Glitch can Hack a player | Time | 10s |
-| Neutralise Cooldown | The cooldown of Glitch's Neutralise button | Time | 25s |
-| Glitch Can Vent | Whether Glitch can Vent | Toggle | False |
-
-![Glitch](./Images/Glitch.png)
+| Glitch Can Vent | Toggles the Glitch's ability to vent | Toggle | True |
 
 ## Guardian Angel
+
+<img align="right" width="" height="200" src="./Images/GuardianAngel.png">
+
 ### Alignment: Neutral (Benign)
 ### Win Condition: Have their target live to see the end of the game
 ### Origin: Town Of Salem
@@ -1902,20 +1981,18 @@ The Guardian Angel more or less aligns themselves with the faction of their targ
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Guardian Angel Can Pick Their Own Target | Whether the Guardian Angel can choose a player to be protected | Toggle | False |
-| Protect Cooldown | The cooldown on the Guardian Angel's Protect button | Time | 25s |
-| Protect Duration | How long The Guardian Angel's Protect lasts | Time | 10s |
-| Cooldown Reset When Protected | The attackers kill cooldown after they attacked the protected target | Time | 2.5s |
-| Max Protects | The amount of times the Protect ability can be used | Number | 5 |
+| Cooldown Reset Upon Attacking Protected | The attackers kill cooldown after they attacked the protected target | Time | 2.5s |
 | Show Protected Player | Who should be able to see who is Protected | String | Self |
 | Target Knows Guardian Angel Exists | Whether the Guardian Angel's Target knows they have a Guardian Angel | Toggle | False |
 | Guardian Angel Can Protect After Death | Whether the Guardian Angel can continue to protect their target if they happen to die | Toggle | False |
 | Guardian Angel Knows Target's Role | Whether the Guardian Angel knows their target's role | Toggle | False |
-| Guardian Angel Can Hide In Vents | Whether the Guardian Angel Can Vent | Toggle | False |
-| Guardian Angel Can Switch Vents | Whether the Guardian Angel Can Switch while in Vents | Toggle | False |
-
-![Guardian Angel](./Images/GuardianAngel.png)
+| Guardian Angel Can Hide In Vents | Whether the Guardian Angel can vent | Toggle | False |
+| ┗ Guardian Angel Can Switch Vents | Whether the Guardian Angel Can Switch while in Vents | Toggle | False |
 
 ## Guesser
+
+<img align="right" width="" height="200" src="./Images/Guesser.png">
+
 ### Alignment: Neutral (Evil)
 ### Win Condition: Guess their target's role
 
@@ -1927,19 +2004,19 @@ The Guesser has no abilities aside from guessing only their target. Every meetin
 |------|-------------|------|---------|
 | Guesser Can Pick Their Own Target | Whether the Guesser can choose a player to be guessed | Toggle | False |
 | Guesser Can Button | Whether the Guesser can call a meeting | Toggle | True |
-| Guesser Can Hide In Vents | Whether the Guesser Can Vent | Toggle | False |
-| Guesser Can Switch Vents | Whether the Guesser Can Switch while in Vents | Toggle | False |
+| Guesser Can Hide In Vents | Whether the Guesser can vent | Toggle | False |
+| ┗ Guesser Can Switch Vents | Whether the Guesser Can Switch while in Vents | Toggle | False |
 | Target Knows Guesser Exists | Whether the Guesser's target knows that they have a Guesser | Toggle | False |
 | Guesser Can Guess Multiple Times | Whether the Guesser's can attempt to guess their target multiple times in a single meeting | Toggle | False |
-| Max Guesses | The number of times the Guesser can try to guess their target before losing | Number | 5 |
 | Guesser Can Guess After Voting | Whether the Guesser's can continue guessing their target after voting | Toggle | False |
 | Vigilante Kills Guesser | Whether the Vigilante is able to kill the Guesser | Toggle | False |
 
-![Guesser](./Images/Guesser.png)
-
 ## Jackal
+
+<img align="right" width="" height="200" src="./Images/Jackal.png">
+
 ### Alignment: Neutral (Neophyte)
-### Win Condition: Bribe the crew into joining your side and eliminate any threats
+### Win Condition: Bribe the crew into joining their side and eliminate any threats
 ### Origin: Better TOS
 
 The Jackal is the leader of the Cabal. They spawn in with 2 recruits at the start of the game. One of the recruits is the "good" one, meaning they are Crew or Neutral (Benign). The other is the "evil" recruit, who can be either Intruder, Syndicate or Neutral (Killing) or (Harbinger). When both recruits die, the Jackal can then recruit another player to join the Cabal and become the backup recruit. If the target happens to be a member of a rival subfaction, they will be attacked instead. Members of the Cabal have a dark grey $ next to their names.
@@ -1948,13 +2025,13 @@ The Jackal is the leader of the Cabal. They spawn in with 2 recruits at the star
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Recruit Cooldown | The cooldown on the Jackal's Recruit button | Time | 25s |
-| Jackal Can Vent | Whether the Jackal Can Vent | Toggle | False |
-| Recruits Can Vent | Whether the Jackal's recruits Can Vent, overriding their role's vent settings | Toggle | False |
-
-![Jackal](./Images/Jackal.png)
+| Jackal Can Vent | Toggles the Jackal's ability to vent | Toggle | True |
+| Recruits Can Vent | Toggles the Recruited's ability to vent, overriding their role's vent settings | Toggle | False |
 
 ## Jester
+
+<img align="right" width="" height="200" src="./Images/Jester.png">
+
 ### Alignment: Neutral (Evil)
 ### Win Condition: Get ejected
 ### Origin: Town Of Salem
@@ -1966,14 +2043,15 @@ The Jester has no abilities and must make themselves appear to be evil to the Cr
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Jester Can Button | Whether the Jester can call a meeting | Toggle | True |
-| Jester Can Hide In Vents | Whether the Jester Can Vent | Toggle | False |
-| Jester Can Switch Vents | Whether the Jester Can Switch while in Vents | Toggle | False |
+| Jester Can Hide In Vents | Whether the Jester can vent | Toggle | False |
+| ┗ Jester Can Switch Vents | Whether the Jester Can Switch while in Vents | Toggle | False |
 | Ejection Reveals Existence Of Jester | Decides if the Jester is ejected, it will reveal the fact that they were a Jester | Toggle | False |
 | Vigilante Kills Jester | Whether the Vigilante is able to kill the Jester | Toggle | False |
 
-![Jester](./Images/Jester.png)
-
 ## Juggernaut
+
+<img align="right" width="" height="200" src="./Images/Juggernaut.png">
+
 ### Alignment: Neutral (Killing)
 ### Win Condition: Assault anyone who can oppose them
 ### Origin: Town Of Us + Town Of Salem
@@ -1984,13 +2062,13 @@ The Juggernaut's kill cooldown decreases with every kill they make. When they re
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Assault Cooldown | The initial cooldown on the Juggernaut's Assault button | Time | 25s |
 | Assault Bonus | By how much the Juggernaut's assault cooldown decreases | Time | 5s |
-| Juggernaut Can Vent | Toggles the Juggernaut's ability to vent | Toggle | False|
-
-![Juggernaut](./Images/Juggernaut.png)
+| Juggernaut Can Vent | Toggles the Juggernaut's ability to vent | Toggle | True |
 
 ## Murderer
+
+<img align="right" width="" height="200" src="./Images/Murderer.png">
+
 ### Alignment: Neutral (Killing)
 ### Win Condition: Murder anyone who can oppose them
 
@@ -2000,12 +2078,12 @@ The Murderer is a simple Neutral Killer with no special abilities.
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Murder Cooldown | The cooldown on the Murderer's Murder button | Time | 25s |
-| Murderer Can Vent | Toggles the Murderer's ability to vent | Toggle | False |
-
-![Murderer](./Images/Murderer.png)
+| Murderer Can Vent | Toggles the Murderer's ability to vent | Toggle | True |
 
 ## Necromancer
+
+<img align="right" width="" height="200" src="./Images/Necromancer.png">
+
 ### Alignment: Neutral (Neophyte)
 ### Win Condition: Bring the dead to their side and gain a majority
 ### Origin: Partly Town Of Us
@@ -2016,23 +2094,20 @@ The Necromancer is essentially an evil Altruist. They can resurrect dead players
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Resurrect Cooldown | The cooldown on the Necromancer's Resurrect button | Time | 25s |
 | Resurrect Cooldown Increases | Toggles whether the Necromancer's Resurrect cooldown increases each use | Toggle | True |
-| Resurrect Cooldown Increases By | The increase on the Necromancer's Resurrect cooldown with each use | Time | 5s |
-| Max Resurrects | The number of times the Necromancer can resurrect | Number | 5 |
-| Sacrifice Cooldown | The cooldown on the Necromancer's Sacrifice button | Time | 25s |
+| ┗ Resurrect Cooldown Increases By | The increase on the Necromancer's Resurrect cooldown with each use | Time | 5s |
 | Sacrifice Cooldown Increases | Toggles whether the Necromancer's sacrifice cooldown increases each use | Toggle | True |
-| Sacrifice Cooldown Increases By | The increase on the Necromancer's sacrifice cooldown with each use | Time | 5s |
-| Max Sacrifices | The number of times the Necromancer can sacrifice | Number | 5 |
-| Necromancer Can Vent | Toggles the Necromancer's ability to vent | Toggle | False |
+| ┗ Sacrifice Cooldown Increases By | The increase on the Necromancer's sacrifice cooldown with each use | Time | 5s |
+| Necromancer Can Vent | Toggles the Necromancer's ability to vent | Toggle | True |
 | Sacrifice And Resurrect Cooldowns Are Linked | Decides whether the Necromancer's cooldowns are linked so that killing resets resurrection and vice versa | Toggle | False |
 | Resurrect Duration | The time it takes for the Necromancer to resurrect a dead body | Time | 10s |
 | Target's Body Disappears On Beginning Of Resurrect | Whether the dead body of the player the Necromancer is resurrecting disappears upon resurrection | Toggle | False |
-| Reanimated Can Vent | Whether the Necromancer's Reanimated Can Vent, overriding their role's vent settings | Toggle | False |
-
-![Necromancer](./Images/Necromancer.png)
+| Reanimated Can Vent | Toggles the Reanimated's ability to vent, overriding their role's vent settings | Toggle | False |
 
 ## Pestilence
+
+<img align="right" width="" height="200" src="./Images/Pestilence.png">
+
 ### Alignment: Neutral (Apocalypse)
 ### Win Condition: Obliterate anyone who can oppose them
 ### Origin: Town Of Salem
@@ -2045,12 +2120,12 @@ The Pestilence is always on permanent alert, where anyone who tries to interact 
 |------|-------------|------|---------|
 | Pestilence Can Spawn Directly | Dictates whether Pestilence can appear even if no one is infected | Toggle | False |
 | Pestilence Transformation Alerts Everyone | Dictates whether everyone is alerted when the Plaguebearer turns into Pestilence | Toggle | False |
-| Obliterate Cooldown | The cooldown on Pestilence's Obliterate cooldown | Timer | 25s |
-| Pestilence Can Vent | Whether Pestilence Can Vent | Toggle | False |
-
-![Pestilence](./Images/Pestilence.png)
+| Pestilence Can Vent | Toggles the Pestilence's ability to vent | Toggle | True |
 
 ## Phantom
+
+<img align="right" width="" height="200" src="./Images/Phantom.png">
+
 ### Alignment: Neutral (Proselyte)
 ### Win Condition: Finish your tasks without getting clicked or having the game end
 ### Origin: Ottomated
@@ -2062,11 +2137,12 @@ The Phantom spawns when a Neutral player dies withouth accomplishing their objec
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Tasks Remaining When Phantom Can Be Clicked | The amount of tasks remaining when the Phantom Can Be Clicked | Number | 5 |
-| Players Are Alerted When Phantom Is Clickable | Whether players are alerted to the Phantom's existence and clickability | Number | 5 |
-
-![Phantom](./Images/Phantom.png)
+| Players Are Alerted When Phantom Is Clickable | Whether players are alerted to the Phantom's existence and clickability | Toggle | False |
 
 ## Plaguebearer
+
+<img align="right" width="" height="200" src="./Images/Plaguebearer.png">
+
 ### Alignment: Neutral (Harbinger)
 ### Win Condition: Infect everyone and turn into Pestilence or live to the end by killing off anyone who can oppose them
 ### Origin: Town Of Salem
@@ -2077,12 +2153,12 @@ The Plaguebearer can infect other players. Once infected, the infected player ca
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Infect Cooldown | The cooldown on the Plaguebearer's Infect button | Time | 25s |
-| Plaguebearer Can Vent | Whether the Plaguebearer can Vent | Toggle | False |
-
-![Plaguebearer](./Images/Plaguebearer.png)
+| Plaguebearer Can Vent | Toggles the Plaguebearer's ability to vent | Toggle | True |
 
 ## Serial Killer
+
+<img align="right" width="" height="200" src="./Images/SerialKiller.png">
+
 ### Alignment: Neutral (Killing)
 ### Win Condition: Stab anyone who can oppose them
 ### Origin: Town Of Us Werewolf
@@ -2093,14 +2169,12 @@ Although the Serial Killer has a kill button, they can't use it unless they are 
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Bloodlust Cooldown | The cooldown on the Serial Killer's Bloodlust button | Time | 25s |
-| Bloodlust Duration | The duration of the Serial Killer's Bloodlust | Time | 25s |
-| Stab Cooldown | The cooldown on the Serial Killer's Stab button | Time | 10s |
-| Serial Killer Can Vent | Whether the Serial Killer can Vent when Rampaged | String | Always |
-
-![Serial Killer](./Images/SerialKiller.png)
+| Serial Killer Can Vent | Toggles the Serial Killer's ability to vent | String | Always |
 
 ## Survivor
+
+<img align="right" width="" height="200" src="./Images/Survivor.png">
+
 ### Alignment: Neutral (Benign)
 ### Win Condition: Live to see the end of the game
 ### Origin: Town Of Salem
@@ -2111,16 +2185,14 @@ The Survivor wins by simply surviving. They can vest which makes them immortal f
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Vest Cooldown | The cooldown on the Survivor's Vest button | Time | 25s |
-| Vest Duration | How long The Survivor's Vest lasts | Time | 10s |
-| Cooldown Reset When Vested | The attackers kill cooldown after they attack a vested Survivor | Time | 2.5s |
-| Max Vests | The amount of times the Vest ability can be used | Number | 5 |
-| Survivor Can Hide In Vents | Whether the Survivor Can Vent | Toggle | False |
-| Survivor Can Switch Vents | Whether the Survivor Can Switch while in Vents | Toggle | False |
-
-![Survivor](./Images/Survivor.png)
+| Cooldown Reset Upon Attacking Vested | The attackers kill cooldown after they attack a vested Survivor | Time | 2.5s |
+| Survivor Can Hide In Vents | Whether the Survivor can vent | Toggle | False |
+| ┗ Survivor Can Switch Vents | Whether the Survivor Can Switch while in Vents | Toggle | False |
 
 ## Thief
+
+<img align="right" width="" height="200" src="./Images/Thief.png">
+
 ### Alignment: Neutral (Benign)
 ### Win Condition: Kill a killer and win as their role
 ### Origin: The Other Roles
@@ -2131,15 +2203,15 @@ The Thief can kill players to steal their roles. The player, however, must be a 
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Steals Cooldown | The cooldown on the Thief's Steal button | Time | 25s |
 | Thief Assigns Thief Role To Target | Whether the Thief completely steals their target's role or just copies it | Toggle | False |
 | Thief Can Guess To Steal Roles | Self descriptive | Toggle | True |
 | Thief Can Guess After Voting | Self descriptive | Toggle | True |
-| Thief Can Vent | Whether Thief Can Vent | Toggle | False |
-
-![Thief](./Images/Thief.png)
+| Thief Can Vent | Toggles the Thief's ability to vent | Toggle | True |
 
 ## Troll
+
+<img align="right" width="" height="200" src="./Images/Troll.png">
+
 ### Alignment: Neutral (Evil)
 ### Win Condition: Get killed
 ### Origin: SocksFor1
@@ -2150,13 +2222,13 @@ The Troll just wants to be killed, but not ejected. The Troll can "interact" wit
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Interaction Cooldown | The cooldown on the Troll's Interact button | Time | 25s |
-| Troll Can Hide In Vents | Whether the Troll Can Vent | Toggle | False |
-| Troll Can Switch Vents | Whether the Troll Can Switch while in Vents | Toggle | False |
-
-![Troll](./Images/Troll.png)
+| Troll Can Hide In Vents | Whether the Troll can vent | Toggle | False |
+| ┗ Troll Can Switch Vents | Whether the Troll Can Switch while in Vents | Toggle | False |
 
 ## Werewolf
+
+<img align="right" width="" height="200" src="./Images/Werewolf.png">
+
 ### Alignment: Neutral (Killing)
 ### Win Condition: Maul anyone who can oppose them
 
@@ -2166,13 +2238,13 @@ The Werewolf can kill all players within a certain radius.
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Maul Cooldown | The cooldown on the Werewolf's Maul button | Time | 30s |
 | Maul Radius | How far must a player be to survive a Werewolf's attack | Factor | 1x |
-| Werewolf Can Vent | Toggles the Werewolf's ability to vent | Toggle | False |
-
-![Werewolf](./Images/Werewolf.png)
+| Werewolf Can Vent | Toggles the Werewolf's ability to vent | Toggle | True |
 
 ## Whisperer
+
+<img align="right" width="" height="200" src="./Images/Whisperer.png">
+
 ### Alignment: Neutral (Neophyte)
 ### Win Condition: Persuade others into joining the cult
 ### Origin: Partly Town Of Us
@@ -2183,49 +2255,51 @@ The Whisperer can whisper to all players within a certain radius. With each whis
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Whisper Cooldown | The cooldown on the Whisperer's Whisper button | Time | 25s |
 | Whisper Cooldown Increases | Toggles whether the Whisperer's whisper cooldown increases each use | Time | 5s |
-| Whisper Cooldown Increases By | The increase on the Whisperer's whisper cooldown with each use | Time | 5s |
+| ┗ Whisper Cooldown Increases By | The increase on the Whisperer's whisper cooldown with each use | Time | 5s |
 | Whisper Rate | The inital rate for each whisper | Percentage | 5% |
 | Whisper Rate Decreases | Toggles whether the Whisperer's whisper rate decreases each use | Toggle | True |
-| Whisper Rate Decreases By | The decrease on the Whisperer's whisper rate with each use | Percentage | 5% |
+| ┗ Whisper Rate Decreases By | The decrease on the Whisperer's whisper rate with each use | Percentage | 5% |
 | Whisper Radius | How far a player must be to avoid a whisper | Factor | 1x |
-| Whisperer Can Vent | Toggles the Whisperer's ability to vent | Toggle | False |
-| Persuaded Can Vent | Whether the Whisperer's Sect Can Vent, overriding their role's vent settings | Toggle | False |
-
-![Whisperer](./Images/Whisperer.png)
+| Whisperer Can Vent | Toggles the Whisperer's ability to vent | Toggle | True |
+| Persuaded Can Vent | Toggles the Persuaded's ability to vent, overriding their role's vent settings | Toggle | False |
 
 # Intruder Roles
 
+<img align="right" width="" height="200" src="./Images/Intruder.png">
+
 Each member of this faction has the ability to kill alongside an ability pertaining to their role. The main theme of this faction is destruction and raw power. This faction is an informed minority meaning they make up a tiny fraction of the crew and know who the other members are. All members can sabotage to distract the Crew from their tasks.
+
+<br>
 
 ### Intruder Settings
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Intruder Count | How many Intruders can spawn | Number | 1 |
-| Kill Cooldown | The cooldown on the all of the Intruder's Kill button | Time | 25s |
 | Intruders Can Sabotage | Self descriptive | Toggle | True |
 | Dead Intruders Can Sabotage | Self descriptive | Toggle | False |
 
-![Intruder](./Images/Intruder.png)
-
 ## Ambusher
+
+<img align="right" width="" height="200" src="./Images/Ambusher.png">
+
 ### Alignment: Intruder (Killing)
 
 The Ambusher can temporarily force anyone to go on alert, killing anyone who interacts with the Ambusher's target.
+
+<br>
 
 ### Game Options
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Ambush Cooldown | The cooldown on the Ambusher's Ambush button | Time | 10s |
-| Ambush Duration | The duration of the Ambusher target's Alert | Time | 25s |
 | Ambusher Can Ambush Teammates | Dictates whether the Ambusher can target teammates, while also being able to kill them | Toggle | False |
 
-![Ambusher](./Images/Ambusher.png)
-
 ## Blackmailer
+
+<img align="right" width="" height="200" src="./Images/Blackmailer.png">
+
 ### Alignment: Intruder (Concealing)
 ### Origin: Town Of Salem
 
@@ -2235,14 +2309,14 @@ The Blackmailer can blackmail people. Blackmailed players cannot speak during th
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Blackmail Cooldown | The cooldown on the Blackmailer's Blackmail button | Time | 25s |
 | Blackmailer Can Read Whispers | Self descriptive | Toggle | False |
 | Blackmailer Can Blackmail Teammates | Self descriptive | Toggle | False |
 | Blackmail Is Revealed To Everyone | Self descriptive | Toggle | False |
 
-![Blackmailer](./Images/Blackmailer.png)
-
 ## Camouflager
+
+<img align="right" width="" height="200" src="./Images/Camouflager.png">
+
 ### Alignment: Intruder (Concealing)
 ### Origin: Town Of Us
 
@@ -2252,14 +2326,13 @@ The Camouflager does the same thing as the Better Comms Sabotage, but their camo
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Camouflage Cooldown | The cooldown on the Camouflager's Camouflage button | Time | 25s |
-| Camouflage Duration | How long the Camouflage lasts for | Time | 10s |
 | Camouflage Hides Size | Whether the camouflage can change a player's size to match that of the other players | Toggle | False |
 | Camouflage Hides Speed | Whether the camouflage can change a player's speed to match that of the other players | Toggle | False |
 
-![Camouflager](./Images/Camouflager.png)
-
 ## Consigliere
+
+<img align="right" width="" height="200" src="./Images/Consigliere.png">
+
 ### Alignment: Intruder (Support)
 ### Origin: Town Of Salem
 
@@ -2269,27 +2342,21 @@ The Consigliere can reveal people's roles. They cannot guess those they revealed
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Investigate Cooldown | The cooldown on the Consigliere's Investigate button | Time | 25s |
 | Info That Consigliere Sees | Decides what the Consigliere gets as a result of checking someone | String | Role |
 
-![Consiglere](./Images/Consigliere.png)
-
 ## Consort
+
+<img align="right" width="" height="200" src="./Images/Consort.png">
+
 ### Alignment: Intruder (Support)
 ### Origin: Town Of Salem
 
 The Consort can roleblock players and prevent them from doing anything for a short while. They behave just like an [Escort](#escort) but the Consort can roleblock from any range.
 
-### Game Options
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Roleblock Cooldown | The cooldown on the Consort's roleblock button | Time | 25s |
-| Roleblock Duration | The duration of the Consort's roleblock | Time | 10s |
-
-![Consort](./Images/Consort.png)
-
 ## Disguiser
+
+<img align="right" width="" height="200" src="./Images/Disguiser.png">
+
 ### Alignment: Intruder (Deception)
 ### Origin: Partly Town Of Salem
 
@@ -2299,16 +2366,13 @@ The Disguiser can disguise other players. At the beginning of each, they can cho
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Disguise Cooldown | The cooldown on the Disguiser's Disguise button | Time | 25s |
-| Disguise Duration | How long the disguise lasts for | Time | 10s |
-| Delay Before Disguising | The time it takes for the disguise to take place | Time | 5s |
-| Measure Cooldown | The cooldown on the Disguiser's Measure button | Time | 25s |
 | Disguise And Measure Cooldowns Are Linked | Decides whether the Disguiser's cooldowns are linked so that measuring resets disguises and vice versa | Toggle | False |
 | Disguise Targets | Who can be disguised by the Disguiser | String | Everyone |
 
-![Disguiser](./Images/Disguiser.png)
-
 ## Enforcer
+
+<img align="right" width="" height="200" src="./Images/Enforcer.png">
+
 ### Alignment: Intruder (Killing)
 
 The Enforcer can plant bombs on players. After a short while, their target will be alerted to the bomb's presence and must kill someone to get rid of it. If they fail to do so within a certain time limit, the bomb will explode, killing everyone within its vicinity.
@@ -2317,28 +2381,23 @@ The Enforcer can plant bombs on players. After a short while, their target will 
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Enforce Cooldown | The cooldown on the Enforce button | Time | 25s |
-| Enforce Duration | The duration of the bomb's presence | Time | 10s |
-| Enforce Delay | Amount of time the target has to kill someone | Time | 5s |
 | Enforce Explosion Radius | Self descriptive | Factor | 0.25m |
 
-![Enforcer](./Images/Enforcer.png)
-
 ## Ghoul
+
+<img align="right" width="" height="200" src="./Images/Ghoul.png">
+
 ### Alignment: Intruder (Utility)
 ### Origin: Partly The Other Roles Witch
 
 The Ghoul is a dead Intruder. Every round, the Ghoul can mark a player for death. All players are told who is marked and the marked player will die at the end of the next meeting. The only way to save a marked player is to click the Ghoul that marked them. Marked players have a yellow χ next to their names.
 
-### Game Options
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Mark Cooldown | The cooldown on the Ghoul's Mark button | Time | 25s |
-
-![Ghoul](./Images/Ghoul.png)
-
 ## Godfather
+
+<img align="right" width="" height="200" src="./Images/Godfather.png">
+
+<img align="right" width="" height="200" src="./Images/PromotedGodfather.png">
+
 ### Alignment: Intruder (Head)
 
 The Godfather can only spawn in 3+ Intruder games. They can choose to promote a fellow Intruder to Mafioso. When the Godfather dies, the Mafioso becomes the new Godfather and has lowered cooldowns.
@@ -2349,11 +2408,10 @@ The Godfather can only spawn in 3+ Intruder games. They can choose to promote a 
 |------|-------------|------|---------|
 | Cooldown Bonus | How much do the cooldowns decrease by upon promotion to Godfather | Factor | 0.75x |
 
-![Godfather](./Images/Godfather.png)
-
-![Godfather](./Images/PromotedGodfather.png)
-
 ## Grenadier
+
+<img align="right" width="" height="200" src="./Images/Grenadier.png">
+
 ### Alignment: Intruder (Concealing)
 ### Origin: Town Of Polus
 
@@ -2363,23 +2421,23 @@ The Grenadier can throw flash grenades which blinds nearby players. However, a s
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Flash Grenade Cooldown | The cooldown on the Grenadier's Flash button | Time | 25s |
-| Flash Grenade Duration | How long the Flash Grenade lasts for | Time | 10s |
 | Flash Radius | How wide the flash radius is | Factor | 1x |
 | Indicate Flashed Players | Whether the Grenadier can see who has been flashed | Toggle | False |
-| Grenadier can Vent | Whether the Grenadier can Vent | Toggle | False |
-
-![Grenadier](./Images/Grenadier.png)
+| Grenadier Can Vent | Toggles the Grenadier's ability to vent | Toggle | True |
 
 ## Impostor
+
+<img align="right" width="" height="200" src="./Images/Impostor.png">
+
 ### Alignment: Intruder (Utility)
 ### Origin: Among Us
 
 Just a plain Intruder with no abilities and only spawns if all the other roles are taken or set to spawn in Custom mode.
 
-![Impostor](./Images/Impostor.png)
-
 ## Janitor
+
+<img align="right" width="" height="200" src="./Images/Janitor.png">
+
 ### Alignment: Intruder (Concealing)
 ### Origin: Fusion of Town Of Us Janitor and Undertaker
 
@@ -2389,37 +2447,34 @@ The Janitor can drag, drop and clean up bodies. Both their Kill and Clean abilit
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Clean Cooldown | The cooldown on the Janitor's Clean button | Time | 25s |
 | Janitor Has Lower Clean Cooldown When Solo | Self descriptive | Toggle | False |
 | Kill And Clean Cooldowns Are Linked | Decides whether the Janitor's cooldowns are linked so that killing resets cleaning and vice versa | Toggle | False |
-| Drag Cooldown | The cooldown on the Janitor Drag ability | Time | 25s |
 | Drag Speed | How fast will the Janitor become when dragging a body | Factor | 0.5x |
-| Janitor Can Vent | Whether the Janitor can Vent | String | Never |
-
-![Janitor](./Images/Janitor.png)
+| Janitor Can Vent | Toggles the Janitor's ability to vent | String | Never |
 
 ## Mafioso
+
+<img align="right" width="" height="200" src="./Images/Mafioso.png">
+
 ### Alignment: Intruder (Utility)
 
 The Mafioso is promoted from a random non-Godfather Intruder role. The Mafioso by themself is nothing special, but when the Godfather dies, the Mafioso becomes the new Godfather. As a result, the new Godfather has a lower cooldown on all of their original role's abilities.
 
-![Mafioso](./Images/Mafioso.png)
+## Miner/Herbalist
 
-## Miner
+<img align="right" width="" height="200" src="./Images/Miner.png">
+
+<img align="right" width="" height="200" src="./Images/Herbalist.png">
+
 ### Alignment: Intruder (Support)
 ### Origin: Town Of Us
 
-The Miner can create new vents. These vents only connect to each other, forming a new passageway.
-
-### Game Options
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Mine Cooldown | The cooldown on the Miner's Mine button | Time | 25s |
-
-![Miner](./Images/Miner.png)
+The Miner can create new vents. These vents only connect to each other, forming a new passageway. On the Fungle map, the Miner is named Herbalist for consistency.
 
 ## Morphling
+
+<img align="right" width="" height="200" src="./Images/Morphling.png">
+
 ### Alignment: Intruder (Deception)
 ### Origin: Town Of Us
 
@@ -2429,15 +2484,13 @@ The Morphling can morph into another player. During the round, they can choose s
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Morph Cooldown | The cooldown on the Morphling's Morph button | Time | 25s |
-| Morph Duration | How long the Morph lasts for | Time | 10s |
-| Sample Cooldown | The cooldown on the Morphling's Sample button | Time | 25s |
 | Morph And Sample Cooldowns Are Linked | Decides whether the Morphling's cooldowns are linked so that morphing resets sampling and vice versa | Toggle | False |
-| Morphling can Vent | Whether the Morphling can Vent | Toggle | False |
-
-![Morphling](./Images/Morphling.png)
+| Morphling Can Vent | Toggles the Morphling's ability to vent | Toggle | True |
 
 ## Teleporter
+
+<img align="right" width="" height="200" src="./Images/Teleporter.png">
+
 ### Alignment: Intruder (Support)
 ### Origin: Town Of Us Escapist
 
@@ -2447,14 +2500,13 @@ The Teleporter can mark a location which they can then teleport to later.
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Teleport Cooldown | The cooldown on the Teleporter's Teleport button | Time | 25s |
-| Mark Cooldown | The cooldown on the Teleporter's Mark button | Time | 25s |
 | Teleport And Mark Cooldowns Are Linked | Decides whether the Teleporter's cooldowns are linked so that marking resets teleportation and vice versa | Toggle | False |
-| Teleporter can Vent | Whether the Teleporter can Vent | Toggle | False |
-
-![Teleporter](./Images/Teleporter.png)
+| Teleporter Can Vent | Toggles the Teleporter's ability to vent | Toggle | True |
 
 ## Wraith
+
+<img align="right" width="" height="200" src="./Images/Wraith.png">
+
 ### Alignment: Intruder (Deception)
 ### Origin: Town Of Us Swooper
 
@@ -2464,13 +2516,11 @@ The Wraith can temporarily turn invisible.
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Invis Cooldown | The cooldown on the Wraith's Invis button | Time | 25s |
-| Invis Duration | How duration of the Wraith's invisibility | Time | 10s |
-| Wraith can Vent | Whether the Wraith can Vent | Toggle | False |
-
-![Wraith](./Images/Wraith.png)
+| Wraith Can Vent | Toggles the Wraith's ability to vent | Toggle | True |
 
 # Syndicate Roles
+
+<img align="right" width="" height="200" src="./Images/Syndicate.png">
 
 Each member of this faction has a special ability and then after a certain number of meetings, can also kill. The main theme of this faction is chaos. This faction is an informed minority meaning they make up a tiny fraction of the crew and know who the other members are. After a certain number of meetings, the Syndicate can retreive the "Chaos Drive" which gives the holder the ability to kill (if they couldn't already) while also enhancing their existing abilities.
 
@@ -2479,35 +2529,34 @@ Each member of this faction has a special ability and then after a certain numbe
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Syndicate Count | How many Syndicate can spawn | Number | 1 |
-| Chaos Drive Holder Kill Cooldown | The cooldown on the all of the Syndicate's Kill button upon receiving the Chaos Drive | Time | 25s |
 | Syndicate Replaces Intruders | Self descriptive | Toggle | False |
 | Chaos Drive Timer | How many meetings must pass before the Chaos Drive is handed out | Number | 3 |
 | Chaos Drive Is Global | The Chaos Drive is handed out to every member of the Syndicate rather than only one | Toggle | False |
 
-![Syndicate](./Images/Syndicate.png)
-
 ## Anarchist
+
+<img align="right" width="" height="200" src="./Images/Anarchist.png">
+
 ### Alignment: Syndicate (Utility)
 
 Just a plain Syndicate with no abilities and only spawns if all the other roles are taken or set to spawn in Custom mode. Its only benefit is its ability to kill from the beginning of the game.
 
-![Anarchist](./Images/Anarchist.png)
+<br>
 
 ## Banshee
+
+<img align="right" width="" height="200" src="./Images/Banshee.png">
+
 ### Alignment: Syndicate (Utility)
 
 The Banshee is a dead Syndicate. The Banshee can block every non-Syndicate player every once in a while. This role cannot get the Chaos Drive.
 
-### Game Options
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Scream Cooldown | The cooldown on the Banshee's Scream button | Time | 25s |
-| Scream Duration | The duration of the scream | Time | 10s |
-
-![Banshee](./Images/Banshee.png)
+<br>
 
 ## Bomber
+
+<img align="right" width="" height="200" src="./Images/Bomber.png">
+
 ### Alignment: Syndicate (Killing)
 
 The Bomber can place a bomb which can be remotely detonated at any time. Anyone caught inside the bomb's radius at the time of detonation will be killed. Only the latest placed bomb will detonate, unless the Bomber holds the Chaos Drive, with which they can detonate all bombs at once.
@@ -2516,18 +2565,16 @@ The Bomber can place a bomb which can be remotely detonated at any time. Anyone 
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Bomb Cooldown | The cooldown on the Bomber's Bomb button | Time | 25s |
-| Detonate Cooldown | The cooldown on the Bomber's Detonate button | Time | 25s |
 | Bomb Radius | The bomb's radius | Distance | 0.25m |
 | Chaos Drive Bomb Radius Increase | By how much does the range of the bomb increase | Distance | 0.1m |
 | Bomb and Detonate Cooldowns Are Linked | Decides whether the Bomber's cooldowns are linked so that detonating resets placing and vice versa | Toggle | False |
 | Bombs Are Cleared Every Meeting | Self descriptive | Toggle | False |
 | Bombs Detonate When A Meeting Is Called | Self descriptive | Toggle | False |
-| Bomb Detonation Kills Members Of The Syndicate | Dictates whether members of the Syndicate are immune to bomb detonations | Toggle | True |
-
-![Bomber](./Images/Bomber.png)
 
 ## Concealer
+
+<img align="right" width="" height="200" src="./Images/Concealer.png">
+
 ### Alignment: Syndicate (Disruption)
 
 The Concealer can make a player invisible for a short while. With the Chaos Drive, this applies to everyone.
@@ -2536,13 +2583,12 @@ The Concealer can make a player invisible for a short while. With the Chaos Driv
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Conceal Cooldown | The cooldown on the Concealer's conceal button | Time | 25s |
-| Conceal Duration | The duration of the Concealer's conceal | Time | 10s |
 | Concealer Can Conceal Teammates | Self descriptive | Toggle | False |
 
-![Concealer](./Images/Concealer.png)
-
 ## Crusader
+
+<img align="right" width="" height="200" src="./Images/Crusader.png">
+
 ### Alignment: Syndicate (Killing)
 
 The Crusader can temporaily force anyone to go on alert, killing anyone who interacts with the Crusader's target. With the Chaos Drive, attempting to interact with the Crusader's target will cause the target to kill everyone within a certain range, including the target themselves.
@@ -2551,14 +2597,13 @@ The Crusader can temporaily force anyone to go on alert, killing anyone who inte
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Crusade Cooldown | The cooldown on the Crusader's Crusade button | Time | 25s |
-| Crusade Duration | The duration of the Crusader target's Crusade | Time | 10s |
 | Chaos Drive Crusade Radius | By how much does the range of the charged up crusade effect have | Distance | 0.1m |
 | Crusader Can Crusade Teammates | Dictates whether the Crusader can target teammates, while also being able to kill them | Toggle | False |
 
-![Crusader](./Images/Crusader.png)
-
 ## Collider
+
+<img align="right" width="" height="200" src="./Images/Collider.png">
+
 ### Alignment: Syndicate (Killing)
 ### Origin: Partly Las Monjas YinYanger
 
@@ -2568,32 +2613,31 @@ The Collider can mark players as positive and negative. If these charged players
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Set Charges Cooldown | The cooldown on the Collider's Collide button | Time | 25s |
 | Collide Radius | How much distance must be between the charged players for them to survive | Distance | 1m |
 | Chaos Drive Collide Radius Increase | How much does the collide distance increase by upon receiving the Chaos Drive | Distance | 1m |
-| Charge Cooldown | The cooldown on the Collider's Charge button | Time | 25s |
-| Charge Duration | The duration of the Collider's Charge | Time | 10s |
 | Set Charge Cooldowns Are Linked | Decides whether the Collider's positive and negative button cooldowns are linked | Toggle | False |
 | Collision Resets Charge Cooldowns | Decides whether the Collider's positive and negative button cooldowns are reset when a successful collision happens | Toggle | False |
 
-![Collider](./Images/Collider.png)
-
 ## Drunkard
+
+<img align="right" width="" height="200" src="./Images/Drunkard.png">
+
 ### Alignment: Syndicate (Disruption)
 
 The Drunkard can reverse a player's controls for a short while. With the Chaos Drive, this applies to everyone.
+
+<br><br>
 
 ### Game Options
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Confuse Cooldown | The cooldown on the Drunkard's confuse button | Time | 25s |
-| Confuse Duration | The duration of the Drunkard's confusion | Time | 10s |
 | Syndicate Are Immune To Confuse | Self descriptive | Toggle | False |
 
-![Drunkard](./Images/Drunkard.png)
-
 ## Framer
+
+<img align="right" width="" height="200" src="./Images/Framer.png">
+
 ### Alignment: Syndicate (Disruption)
 ### Origin: Partly Town Of Salem
 
@@ -2603,27 +2647,23 @@ The Framer can frame players, making them appear to be evil or have wrong result
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Frame Cooldown | The cooldown on the Framer's frame button | Time | 25s |
 | Chaos Drive Frame Radius | How much distance must be between the players to not be framed | Distance | 1m |
 
-![Framer](./Images/Framer.png)
-
 ## Poisoner
+
+<img align="right" width="" height="200" src="./Images/Poisoner.png">
+
 ### Alignment: Syndicate (Killing)
 ### Origin: Town Of Us
 
 The Poisoner can poison a player instead of killing them. When they poison a player, the poisoned player dies either upon the start of the next meeting or after a set duration. With the Chaos Drive, the Poisoner can poison a player from anywhere.
 
-### Game Options
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Poison Cooldown | The cooldown on the Poisoner's Poison button | Time | 25s |
-| Poison Kill Delay | The delay of the kill after being poisoned | Time | 5s |
-
-![Poisoner](./Images/Poisoner.png)
-
 ## Rebel
+
+<img align="right" width="" height="200" src="./Images/Rebel.png">
+
+<img align="right" width="" height="200" src="./Images/PromotedRebel.png">
+
 ### Alignment: Syndicate (Power)
 
 The Rebel can only spawn in 3+ Syndicate games. They can choose to promote a fellow Syndicate to Sidekick. When the Rebel dies, the Sidekick becomes the new Rebel and has lowered cooldowns. With the Chaos Drive, the Rebel's gains the improved abilities of their former role.
@@ -2634,33 +2674,34 @@ The Rebel can only spawn in 3+ Syndicate games. They can choose to promote a fel
 |------|-------------|------|---------|
 | Cooldown Bonus | How much do the cooldowns decrease by upon promotion | Factor | 0.75x |
 
-![Rebel](./Images/Rebel.png)
-
-![Rebel](./Images/PromotedRebel.png)
-
 ## Shapeshifter
-### Alignment: Syndicate (Support)
+
+<img align="right" width="" height="200" src="./Images/Shapeshifter.png">
+
+### Alignment: Syndicate (Disruption)
 
 The Shapeshifter can swap the appearances of 2 players. With the Chaos Drive, everyone's appearances are suffled.
+
+<br><br>
 
 ### Game Options
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Shapeshift Cooldown | The cooldown on the Shapeshifter's Shapeshift button | Time | 25s |
-| Shapeshift Duration | The duration of the Shapeshifter's Shapeshift | Time | 10s |
 | Shapeshifter Can Shapeshift Teammates | Self descriptive | Toggle | False |
 
-![Shapeshifter](./Images/Shapeshifter.png)
-
 ## Sidekick
+
+<img align="right" width="" height="200" src="./Images/Sidekick.png">
+
 ### Alignment: Syndicate (Utility)
 
 The Sidekick is promoted from a random non-Rebel Syndicate role. The Sidekick by themselves is nothing special, but when the Rebel dies, the Sidekick becomes the new Rebel. As a result, the new Rebel has a lower cooldown on all of their original role's abilities.
 
-![Sidekick](./Images/Sidekick.png)
-
 ## Silencer
+
+<img align="right" width="" height="200" src="./Images/Silencer.png">
+
 ### Alignment: Syndicate (Disruption)
 ### Origin: Better TOS Banshee
 
@@ -2670,14 +2711,14 @@ The Silencer can silencer people. Silenced plaeyrs cannot see the messages being
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Silence Cooldown | The cooldown on the Silencer's Silence button | Time | 25s |
 | Silencer Can Read Whispers | Self descriptive | Toggle | False |
 | Silencer Can Silence Teammates | Self descriptive | Toggle | False |
 | Silence Is Revealed To Everyone | Self descriptive | Toggle | False |
 
-![Silencer](./Images/Silencer.png)
-
 ## Spellslinger
+
+<img align="right" width="" height="200" src="./Images/Spellslinger.png">
+
 ### Alignment: Syndicate (Power)
 ### Origin: Town Of Salem Hex Master
 
@@ -2687,25 +2728,22 @@ The Spellslinger is a powerful role who can cast curses on players. When all non
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Spell Cooldown | The cooldown on the Spellslinger's Spell button | Time | 25s |
 | Spell Cooldown Increases By | By how much does the cooldown increase with each curse cast | Time | 5s |
 
-![Spellslinger](./Images/Spellslinger.png)
-
 ## Stalker
+
+<img align="right" width="" height="200" src="./Images/Stalker.png">
+
 ### Alignment: Syndicate (Support)
 
 The Stalker is a buffed Tracker with no update interval. With the Chaos Drive, the arrows are no longer affected by camouflages and all players instantly have an arrow pointing at them.
 
-### Game Options
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Stalk Cooldown | The cooldown on the Stalker's Stalk button | Time | 25s |
-
-![Stalker](./Images/Stalker.png)
+<br>
 
 ## Timekeeper
+
+<img align="right" width="" height="200" src="./Images/Timekeeper.png">
+
 ### Alignment: Syndicate (Disruption)
 ### Origin: Reworked Town Of Us Time Lord
 
@@ -2715,14 +2753,13 @@ The Timekeeper can control time. Without the Chaos Drive, the Timekeeper can fre
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Time Control Cooldown | The cooldown on the Timekeeper's time control button | Time | 25s |
-| Time Control Duration | The duration of the Timekeeper's time control | Time | 10s |
 | Syndicate Are Immune To Freeze | Self descriptive | Toggle | False |
 | Syndicate Are Immune To Rewind | Self descriptive | Toggle | False |
 
-![Timekeeper](./Images/Timekeeper.png)
-
 ## Warper
+
+<img align="right" width="" height="200" src="./Images/Warper.png">
+
 ### Alignment: Syndicate (Support)
 ### Origin: Partly Town Of Us Disperser
 
@@ -2732,33 +2769,40 @@ The Warper can teleport a player to another player. With the Chaos Drive, the Wa
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Warp Cooldown | The cooldown on the Warper's Warp button | Time | 25s |
-| Warp Duration | The duration of the warp animation | Time | 5s |
 | Warper Can Warp Themselves | Self descriptive | Toggle | False |
-
-![Warper](./Images/Warper.png)
 
 # Game Mode Roles
 
 Each role within this group only spawns in certain game modes and come with their own special interactions with the game.
 
 ## Hunted
+
+<img align="right" width="" height="200" src="./Images/Hunted.png">
+
 ### Game Mode: Hide And Seek
 ### Win Condition: Finish tasks with the other Hunted before the Hunters kill or convert all of them
 
 The Hunted is one of the two roles that spawn in this mod's version of Hide And Seek. The Hunted has no active abilities and just has a higher vision than the Hunters and might be able to chat.
 
 ## Hunter
+
+<img align="right" width="" height="200" src="./Images/Hunter.png">
+
 ### Game Mode: Hide And Seek
 ### Win Condition: Kill or convert all of the Hunted
 
 The Hunter is one of the two roles that spawn in this mod's version of Hide And Seek. The Hunter can kill Hunted, or convert them to Hunters. The Hunters also have a higher run speed than Hunters but can barely see in exchange.
 
 ## Runner
+
+<img align="right" width="" height="200" src="./Images/Runner.png">
+
 ### Game Mode: Task Race
 ### Win Condition: Finish tasks before the others
 
 The Runner is a role that only spawns in the Task Race game mode. It has no abilities and just ends the game when they are the first to finish.
+
+<br>
 
 -----------------------
 
@@ -2769,7 +2813,6 @@ Objectifiers are basically a second objective for the player. They can either ch
 ## Allied
 ### Applied To: Neutral (Killing)
 ### Win Condition: Win with whichever faction they are aligned with
-### Origin: Town Of Us Reworked
 
 An Allied Neutral Killer now sides with either the Crew, Intruders or the Syndicate. In the case of the latter two, all faction members are shown who is their Ally, and can no longer kill them. A Crew-Allied will have tasks that they must complete.
 
@@ -2782,7 +2825,6 @@ An Allied Neutral Killer now sides with either the Crew, Intruders or the Syndic
 ## Corrupted
 ### Applied to: Crew
 ### Win Condition: Kill everyone
-### Origin: Town Of Us Reworked
 
 The Corrupted is a member of the Crew with the alignment of a Neutral Killer. On top of their base role's attributes, they also gain a kill button. Their win condition is so strict that not even Neutral Benigns or Evils can be spared.
 
@@ -2790,14 +2832,12 @@ The Corrupted is a member of the Crew with the alignment of a Neutral Killer. On
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Corrupt Cooldown | The cooldown on the Corrupted player's kill button | Time | 25s |
 | All Corrupted Win Together | Self descriptive | Toggle | False |
-| Corrupted Can Vent | Self descriptive | Toggle | False |
+| Corrupted Can Vent | Toggles the Corrupted's ability to vent | Toggle | True |
 
 ## Defector
 ### Applied To: Intruders and Syndicate
 ### Win Condition: Be the last one of thier faction to switch sides
-### Origin: Town Of Us Reworked
 
 A Defector switches sides when they happen to be the last player alive in their original faction.
 
@@ -2827,7 +2867,6 @@ When attacked, the Fanatic joins whichever faction their attacker belongs to. Fr
 ## Linked
 ### Applied To: Neutrals
 ### Win Condition: Help the other link win
-### Origin: Town Of Us Reworked
 
 The Linked players are a watered down pair of [Lovers](#lovers). They can help the other player win. As long as one of the links wins, the other does too, regardless of who or how they won.
 
@@ -2856,7 +2895,6 @@ The Lovers are two players who are linked together. They gain the primary object
 ## Mafia
 ### Applied To: Everyone
 ### Win Condition: Kill off anyone who is not a Mafia member
-### Origin: Town Of Us Reworked
 
 The Mafia are a group of players with a linked win condition. They must kill anyone who is not a member of the Mafia. All Mafia win together.
 
@@ -2865,12 +2903,11 @@ The Mafia are a group of players with a linked win condition. They must kill any
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Mafia Know Each Other's Roles | Self descriptive | Toggle | True |
-| Mafia Can Vent | Whether the members of the Mafia can vent, this overrides their role's vent settings | Toggle | True |
+| Mafia Can Vent | Toggles the Mafia's ability to vent, this overrides their role's vent settings | Toggle | True |
 
 ## Overlord
 ### Applied To: Neutrals
 ### Win Condition: Survive a set amount of meetings
-### Origin: Town Of Us Reworked
 
 Every meeting, for as long as an Overlord is alive, players will be alerted to their existence. The game ends if the Overlord lives long enough. All alive Overlords win together.
 
@@ -2884,7 +2921,6 @@ Every meeting, for as long as an Overlord is alive, players will be alerted to t
 ## Rivals
 ### Applied To: Everyone
 ### Win condition: Get the other rival killed without directly interfering, then live to the final 2
-### Origin: Town Of Us Reworked
 
 The Rivals cannot do anything to each other and must get the other one killed.
 
@@ -2898,7 +2934,6 @@ The Rivals cannot do anything to each other and must get the other one killed.
 ## Taskmaster
 ### Applied To: Neutrals
 ### Win Condition: Finish tasks before the game ends or dying
-### Origin: Town Of Us Reworked
 
 The Taskmaster is basically a living Phantom. When a certain number of tasks are remaining, the Taskmaster is revealed to Intruders and the Syndicate and the Crew only sees a flash to indicate the Taskmaster's existence.
 
@@ -2911,7 +2946,6 @@ The Taskmaster is basically a living Phantom. When a certain number of tasks are
 ## Traitor
 ### Applied To: Crew
 ### Win Condition: Finish tasks to join either the Intruders or Syndicate
-### Origin: Town Of Us Reworked
 
 The Traitor is a member of the Crew who must finish their tasks to switch sides. Upon doing so, they will either join the Intruders or the Syndicate, and will win with that faction. If the Traitor is the only person in their new faction, they become a Betrayer, losing their original role's abilities and gaining the ability to kill in the process.
 
@@ -2987,7 +3021,7 @@ The Drunk player's controls are inverted.
 |------|-------------|------|---------|
 | Drunk Knows Who They Are | Whether a player knows they are Drunk at the start of a game | Toggle | True |
 | Drunk Controls Swap Over Time | Self descriptive | Toggle | True |
-| Swap Interval | How much time must pass before the controls swap | Time | 15s |
+| ┗ Swap Interval | How much time must pass before the controls swap | Time | 15s |
 
 ## Dwarf
 ### Applied To: Everyone
@@ -3025,7 +3059,7 @@ The Indomitable player cannot be guessed.
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| Indomitable Knows Who They Are | Whether a player knows they are Indomitable at the start of a game | Toggle | False |
+| Indomitable Knows Who They Are | Whether a player knows they are Indomitable at the start of a game | Toggle | True |
 
 ## Professional
 ### Applied To: Assassins
@@ -3060,7 +3094,7 @@ Everyone is alerted of the VIP's death through a flash of the VIP's role color a
 ### Applied To: Everyone
 ### Origin: Town Of H
 
-A Volatile player will see random things happen to them and cannot distinguish real kill and flashes from the fake ones.
+A Volatile player will see and hear random things happen to them and cannot distinguish real kills and flashes from the fake ones.
 
 ### Game Options
 
@@ -3084,7 +3118,7 @@ Abilities give you extra perks on top of your role's regular powers.
 ### Applied To: Intruders, Crew, Syndicate, Neutral (Killing), Neutral (Harbinger) and Neutral (Neophyte)
 ### Origin: Town Of Us
 
-The Assassin can guess the layers of others. If they guess right, the target is killed mid-meeting and if they guess wrong, they die instead.
+The Assassin can guess the layers of others. If they guess right, the target is killed mid-meeting and if they guess wrong, they die instead. The name os the Assassin ability depends on the faction it affects. Bullseye is for Crew, Hitman is for Intruders, Slayer is for Neutrals and Sniper is for the Syndicate.
 
 ### Game Options
 
@@ -3107,15 +3141,8 @@ The Assassin can guess the layers of others. If they guess right, the target is 
 
 The Button Barry can call a meeting from anywhere on the map, even during sabotages. Calling a meeting during a sabotage will fix the sabotage.
 
-### Game Options
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Button Cooldown | How much time must pass since the last meeting to be able to call a meeting | Cooldown | 10s |
-
 ## Insider
 ### Applied To: Crew
-### Origin: Town Of Us Reworked
 
 The Insider will be able to view everyone's votes in meetings upon finishing their tasks. Only spawns if Anonymous Votes is turn on.
 
@@ -3139,7 +3166,6 @@ When doing tasks, the Multitasker's task window is transparent.
 
 ## Ninja
 ### Applied To: Killers
-### Origin: Town Of Us Reworked
 
 Ninjas don't lunge when killing.
 
@@ -3154,7 +3180,6 @@ The Politician can vote multiple times. If the Politician cannot kill, they gain
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Politician Initial Vote Bank | The amount of votes the Politician has at the start of the game | Number | 1 |
-| Politician Anonymous Votes | Self descriptive | Toggle | False |
 | Politician Can Button | Whether the Politician can call a meeting | Toggle | True |
 
 ## Radar
@@ -3325,7 +3350,7 @@ This mode is the unofficial addition of the Hide And Seek game mode that people 
 | Hunter Count | How many Hunters should spawn in | Number | 1 |
 | Hunt Cooldown | The cooldown on the Hunter's Hunt button | Time | 10s |
 | Start Time | The delayed start that the Hunters have when the game begins, to allow the Hunted to find places to hide/finish tasks fast | Time | 10s |
-| Hunter Can Vent | Self descriptive | Toggle | True |
+| Hunter Can Vent | Toggles the Hunter's ability to vent | Toggle | True |
 | Hunter Vision | How much can the Hunters see | Factor | x0.25 |
 | Hunted Vision | How much can the Hunted see | Factor | x1.5 |
 | Hunter Speed Modifier | How fast are the Hunters compared to the Hunted | Factor | x1.25 |
@@ -3361,11 +3386,11 @@ This mode is a skill check mode to see who's the best at planning their task pat
 | Voting Time | Self descriptive | Factor | 60s |
 | Taskbar Updates | How does the taskbar update | String | Meeting Only |
 | Confirm Ejects | Displays the roles/factions of ejected players | Toggle | False |
-| Ejection Reveals Roles | Displays the roles/factions of ejected players | Toggle | False |
+| ┗ Ejection Reveals Roles | Displays the roles/factions of ejected players | Toggle | False |
 | Enable Game Start Cooldowns | Toggles whether the game start cooldowns are applied or not | Toggle | True |
-| Game Start Cooldowns | Upon the start of the game, overrides the cooldowns of all roles with a cooldown | Time | 10s |
+| ┗ Game Start Cooldowns | Upon the start of the game, overrides the cooldowns of all roles with a cooldown | Time | 10s |
 | Enable Meeting End Cooldowns | Toggles whether the meeting end cooldowns are applied or not | Toggle | True |
-| Meeting End Cooldowns | Upon the end of the meeting, overrides the cooldowns of all roles with a cooldown | Time | 15s |
+| ┗ Meeting End Cooldowns | Upon the end of the meeting, overrides the cooldowns of all roles with a cooldown | Time | 15s |
 | Player Report Distance | how close must a player be to a body to report it | Distance | 3.5m |
 | Chat Cooldown | How much should a player wait to send a message | Time | 3s |
 | Chat Character Limit | How much can a player type out before they can't anymore | Number | 200 |
@@ -3376,15 +3401,15 @@ This mode is a skill check mode to see who's the best at planning their task pat
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Serial Venters | Decides how players vent | String | Default |
-| Anonymous Voting | Votes are grayed out so that it's unknown who voted for who | Toggle | True |
+| Anonymous Voting | Voter bloops are modified to be grey or invisible during vote tallying | String | Enabled |
 | No Skipping | Whether the meeting button is disabled | String | Never |
 | First Kill Shield | Adds a shield that protects the first dead player from the previous round | Toggle | True |
-| Who Sees First Kill Shield | Self descriptive | String | Everyone |
+| ┗ Who Sees First Kill Shield | Self descriptive | String | Everyone |
 | Factioned Evils Know The Roles Of Their Team | Self descriptive | Toggle | True |
 | Visual Tasks | Disables animations for certain tasks | Toggle | False |
 | Player Names | How the game handles player names locally | String | Hide Obstructed |
 | Whispering | Toggles the whispering system | Toggle | True |
-| Everyone Is Alerted To Whispers | Players are told who's whispering who | Toggle | True |
+| ┗ Everyone Is Alerted To Whispers | Players are told who's whispering who | Toggle | True |
 | Kill Animations Show Modified Player | Toggles whether the player's changed outfit is what appears on the kill animation | Toggle | True |
 | Enable Abilities | Self descriptive | Toggle | True |
 | Enable Objectifiers | Self descriptive | Toggle | True |
@@ -3399,29 +3424,31 @@ This mode is a skill check mode to see who's the best at planning their task pat
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Enable Game Announcements | Toggles messages being sent at the start of the meeting dictating who died to who, where and other things (some message will still be sent, regardless of this setting) | Toggle | False |
-| Reported Body's Location Is Announced | Self descriptive | Toggle | False |
-| Every Body's Role/Faction Is Announced | Self descriptive | String | Never |
-| Every Body's Killer's Role/Faction Is Announced | Self descriptive | String | Never |
+| ┣ Reported Body's Location Is Announced | Self descriptive | Toggle | False |
+| ┣ Every Body's Role/Faction Is Announced | Self descriptive | String | Never |
+| ┗ Every Body's Killer's Role/Faction Is Announced | Self descriptive | String | Never |
 
 ## Map Settings
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Map | Selects the next map | String | Skeld |
-| Skeld Chance | The percentage probability of the Skeld map being chosen | Percentage | 0% |
-| Mira HQ Chance | The percentage probability of the Mira HQ map being chosen | Percentage | 0% |
-| Polus Chance | The percentage probability of the Polus map being chosen | Percentage | 0% |
-| Airship Chance | The percentage probability of the Airship map being chosen | Percentage | 0% |
-| Submerged Chance | The percentage probability of the Submerged map being chosen | Percentage | 0% |
-| LevelImpostor Chance | The percentage probability of a Level Impostor map being chosen | Percentage | 0% |
+| ┣ Skeld Chance | The percentage probability of the Skeld map being chosen | Percentage | 0% |
+| ┣ Mira HQ Chance | The percentage probability of the Mira HQ map being chosen | Percentage | 0% |
+| ┣ Polus Chance | The percentage probability of the Polus map being chosen | Percentage | 0% |
+| ┣ dlekS Chance | The percentage probability of the dlekS map being chosen | Percentage | 0% |
+| ┣ Airship Chance | The percentage probability of the Airship map being chosen | Percentage | 0% |
+| ┣ Fungle Chance | The percentage probability of the Fungle map being chosen | Percentage | 0% |
+| ┣ Submerged Chance | The percentage probability of the Submerged map being chosen with the mod active | Percentage | 0% |
+| ┗ LevelImpostor Chance | The percentage probability of a Level Impostor map being chosen with the mod active | Percentage | 0% |
 | Auto Adjust Settings | Whether the settings of the game are auto adjusted depending on the map | Toggle | False |
 | Half Vision On Small Maps | Whether the Vision is automatically halved on smaller maps | Toggle | False |
 | Small Maps Decreased Cooldowns | How much less time the cooldowns are set to for smaller maps | Time | 0s |
-| Large Maps Increased Cooldowns | How much more time the cooldowns are set to for larger maps | Time | 0s |
 | Small Maps Increased Short Tasks | How many extra short tasks when the map is smaller maps | Number | 0 |
 | Small Maps Increased Long Tasks | How many extra long tasks when the map is smaller maps | Number | 0 |
 | Large Maps Decreased Short Tasks | How many less short tasks when the map is larger maps | Number | 0 |
 | Large Maps Decreased Long Tasks | How many less long tasks when the map is larger maps | Number | 0 |
+| Large Maps Increased Cooldowns | How much more time the cooldowns are set to for larger maps | Time | 0s |
 | Random Player Spawns | Self descriptive | Toggle | False |
 
 ## Better Sabotage Settings
@@ -3429,7 +3456,7 @@ This mode is a skill check mode to see who's the best at planning their task pat
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Camouflaged Comms | Whether everyone becomes camouflaged when Comms are sabotaged | Toggle | True |
-| Camouflaged Meetings | Whether everyone becomes camouflaged when a meeting is called when Comms are sabotaged | Toggle | False |
+| ┗ Camouflaged Meetings | Whether everyone becomes camouflaged when a meeting is called when Comms are sabotaged | Toggle | False |
 | Oxygen Sabotage Slows Down Players | Self descriptive | Toggle | True |
 | Reactor Sabotage Shakes The Screen By | Self descriptive | Percentage | 30% |
 | Night Vision Cameras | When lights are sabotaged, the cameras turn on night vision mode | Toggle | True |
@@ -3439,6 +3466,7 @@ This mode is a skill check mode to see who's the best at planning their task pat
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
+| Enable Better Skeld Changes | Self descriptive | Toggle | True |
 | Changed Vent Layout | Optimizes the vent layout on Skeld | Toggle | False |
 | Reactor Meltdown Countdown | What is the countdown for the reactor sabotage | Time | 60s |
 | Oxygen Depletion Countdown | What is the countdown for the O2 sabotage | Time | 60s |
@@ -3447,6 +3475,7 @@ This mode is a skill check mode to see who's the best at planning their task pat
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
+| Enable Better Mira HQ Changes | Self descriptive | Toggle | True |
 | Changed Vent Layout | Optimizes the vent layout on Mira HQ | Toggle | False |
 | Reactor Meltdown Countdown | What is the countdown for the reactor sabotage | Time | 60s |
 | Oxygen Depletion Countdown | What is the countdown for the O2 sabotage | Time | 60s |
@@ -3455,6 +3484,7 @@ This mode is a skill check mode to see who's the best at planning their task pat
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
+| Enable Better Polus Changes | Self descriptive | Toggle | True |
 | Changed Vent Layout | Optimizes the vent layout on Polus | Toggle | False |
 | Vitals Moved to Lab | Whether the Vitals panel is moved into the Laboratory | Toggle | False |
 | Cold Temp Moved to Death Valley | Whether the cold temperature task is moved to death valley | Toggle | False |
@@ -3465,6 +3495,7 @@ This mode is a skill check mode to see who's the best at planning their task pat
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
+| Enable Better Airship Changes | Self descriptive | Toggle | True |
 | Spawn Type | Decides how spawns on Airship are handled | String | Normal |
 | Move Fuel | Moves the refuel station elsewhere on the map | Toggle | False |
 | Move Vitals | Moves vitals elsewhere on the map | Toggle | False |
@@ -3473,6 +3504,14 @@ This mode is a skill check mode to see who's the best at planning their task pat
 | Move Electrical | Moves the electrical lights staion elsewhere on the map | String | Don't Move |
 | Min Time For Door Swipe | What is the minimum time required for the card swipe to be correct | Time | 60s |
 | Heli Crash Countdown | What is the countdown for the helicopter crash sabotage | Time | 60s |
+
+## Better Fungle Settings
+
+| Name | Description | Type | Default |
+|------|-------------|------|---------|
+| Enable Better Fungle Changes | Self descriptive | Toggle | True |
+| Reactor Meltdown Countdown | What is the countdown for the reactor sabotage | Time | 60s |
+| Mushroom Mixup Timer | How long does the Mushroom Mixup sabotage last | Time | 10s |
 
 ## Custom Client Side Options
 
@@ -3677,9 +3716,9 @@ After that, it's gaming time.
 [Evan91380](https://github.com/Evan91380/BetterAirShip) & [Hardel](https://github.com/Hardel-DW) - For some code for improving Airship\
 [TorchMod](https://github.com/tomozbot/TorchMod) - For the inspiration of the Torch ability\
 [XtraCube](https://github.com/XtraCube) - For the custom colors\
-[The Other Roles](https://github.com/Eisbison/TheOtherRoles) - For the inspiration of the Tracker role and the Astral and Bait modifiers, cosmetics system, teleport animation and version control\
+[The Other Roles](https://github.com/Eisbison/TheOtherRoles) - For the inspiration of the Ghoul and Tracker roles and the Astral and Bait modifiers, cosmetics system, teleport animation and version control\
 [The Other Roles: Community Edition](https://github.com/JustASysAdmin/TheOtherRoles2) - For the random spawns option\
-[Las Monjas](https://github.com/KiraYamato94/LasMonjas) - For the inspiration of the VIP modifier\
+[Las Monjas](https://github.com/KiraYamato94/LasMonjas) - For the inspiration of the VIP modifier and Collider role, some code for nameplates\
 [MyDragonBreath](https://github.com/MyDragonBreath) - For Submerged Compatibility, basis for mod debugging (found [here](https://github.com/AlchlcDvl/TownOfUsReworked/tree/master/TownOfUsReworked/MultiClientInstancing) and [here](https://github.com/AlchlcDvl/TownOfUsReworked/tree/master/TownOfUsReworked/Monos/DebuggerBehaviour.cs)), partially the Operative role, general help and moral support\
 [Guus](https://github.com/OhMyGuus) - For support for the old Among Us versions (v2021.11.9.5 and v2021.12.15)\
 [ItsTheNumberH](https://github.com/itsTheNumberH/Town-Of-H) - For Coward, Volatile and Bait modifiers, Poisoner and Cannibal roles, partially for Tracker and Coroner roles and bug fixes\

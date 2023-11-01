@@ -47,7 +47,7 @@ public class Framer : Syndicate
     public void RadialFrame()
     {
         GetClosestPlayers(Player.transform.position, CustomGameOptions.ChaosDriveFrameRadius).ForEach(RpcFrame);
-        RadialFrameButton.StartCooldown(CooldownType.Reset);
+        RadialFrameButton.StartCooldown();
     }
 
     public bool Exception1(PlayerControl player) => Framed.Contains(player.PlayerId) || (player.Is(Faction) && Faction is Faction.Intruder or Faction.Syndicate) || (player.Is(SubFaction) &&

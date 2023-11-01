@@ -261,6 +261,8 @@ public static class MeetingPatches
 
                 yield return new WaitForSeconds(0.5f);
             }
+
+            yield break;
         }
     }
 
@@ -377,103 +379,6 @@ public static class MeetingPatches
                 PlayerLayer.GetLayers<Politician>().ForEach(x => CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, x, PoliticianActionsRPC.Remove, x.ExtraVotes.ToArray()));
             }
 
-            return false;
-        }
-    }
-
-    [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.PopulateResults))]
-    public static class PopulateResults
-    {
-        public static bool Prefix(MeetingHud __instance, ref Il2CppStructArray<MeetingHud.VoterState> states)
-        {
-            var allNums = new Dictionary<int, int>();
-            __instance.TitleText.text = TranslationController.Instance.GetString(StringNames.MeetingVotingResults, Array.Empty<Il2CppSystem.Object>());
-            var amountOfSkippedVoters = 0;
-
-            for (var i = 0; i < __instance.playerStates.Length; i++)
-            {
-                var playerVoteArea = __instance.playerStates[i];
-                playerVoteArea.ClearForResults();
-                allNums.Add(i, 0);
-
-                for (var stateIdx = 0; stateIdx < states.Length; stateIdx++)
-                {
-                    var voteState = states[stateIdx];
-                    var playerInfo = GameData.Instance.GetPlayerById(voteState.VoterId);
-
-                    if (playerInfo == null)
-                        Debug.LogError(string.Format("Couldn't find player info for voter: {0}", voteState.VoterId));
-                    else if (i == 0 && voteState.SkippedVote)
-                    {
-                        __instance.BloopAVoteIcon(playerInfo, amountOfSkippedVoters, __instance.SkippedVoting.transform);
-                        amountOfSkippedVoters++;
-                    }
-                    else if (voteState.VotedForId == playerVoteArea.TargetPlayerId)
-                    {
-                        __instance.BloopAVoteIcon(playerInfo, allNums[i], playerVoteArea.transform);
-                        allNums[i]++;
-                    }
-                }
-            }
-
-            foreach (var politician in PlayerLayer.GetLayers<Politician>())
-            {
-                var playerInfo = politician.Player.Data;
-                TownOfUsReworked.NormalOptions.AnonymousVotes = CustomGameOptions.PoliticianAnonymous;
-
-                foreach (var extraVote in politician.ExtraVotes)
-                {
-                    if (extraVote == PlayerVoteArea.HasNotVoted || extraVote == PlayerVoteArea.MissedVote || extraVote == PlayerVoteArea.DeadVote)
-                        continue;
-
-                    if (extraVote == PlayerVoteArea.SkippedVote)
-                    {
-                        __instance.BloopAVoteIcon(playerInfo, amountOfSkippedVoters, __instance.SkippedVoting.transform);
-                        amountOfSkippedVoters++;
-                    }
-                    else
-                    {
-                        for (var i = 0; i < __instance.playerStates.Length; i++)
-                        {
-                            var area = __instance.playerStates[i];
-
-                            if (extraVote != area.TargetPlayerId)
-                                continue;
-
-                            __instance.BloopAVoteIcon(playerInfo, allNums[i], area.transform);
-                            allNums[i]++;
-                        }
-                    }
-                }
-
-                TownOfUsReworked.NormalOptions.AnonymousVotes = CustomGameOptions.AnonymousVoting;
-            }
-
-            return false;
-        }
-    }
-
-    [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.BloopAVoteIcon))]
-    public static class DeadSeeVoteColorsPatch
-    {
-        public static bool Prefix(MeetingHud __instance, ref GameData.PlayerInfo voterPlayer, ref int index, ref Transform parent)
-        {
-            var spriteRenderer = UObject.Instantiate(__instance.PlayerVotePrefab);
-            var insiderFlag = false;
-            var deadFlag = CustomGameOptions.DeadSeeEverything && CustomPlayer.LocalCustom.IsDead;
-
-            if (CustomPlayer.Local.Is(LayerEnum.Insider))
-                insiderFlag = Role.LocalRole.TasksDone;
-
-            if (TownOfUsReworked.NormalOptions.AnonymousVotes && !(deadFlag || insiderFlag))
-                PlayerMaterial.SetColors(Palette.DisabledGrey, spriteRenderer);
-            else
-                PlayerMaterial.SetColors(voterPlayer.DefaultOutfit.ColorId, spriteRenderer);
-
-            spriteRenderer.transform.SetParent(parent);
-            spriteRenderer.transform.localScale = Vector3.zero;
-            __instance.StartCoroutine(Effects.Bloop(index * 0.3f, spriteRenderer.transform, 1f, 0.5f));
-            parent.GetComponent<VoteSpreader>().AddVote(spriteRenderer);
             return false;
         }
     }
@@ -1316,6 +1221,7 @@ public static class MeetingPatches
         temp.x = dest.x;
         temp.y = dest.y;
         target.position = temp;
+        yield break;
     }
 
     private static IEnumerator PerformSwaps()
@@ -1392,5 +1298,7 @@ public static class MeetingPatches
 
             yield return new WaitForSeconds(duration);
         }
+
+        yield break;
     }
 }

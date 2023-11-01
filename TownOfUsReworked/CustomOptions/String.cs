@@ -49,7 +49,7 @@ public class CustomStringOption : CustomOption
         str.Values = list.SystemToIl2Cpp();
     }
 
-    public static implicit operator string(CustomStringOption option) => option.GetString();
+    public static implicit operator string(CustomStringOption option) => option == null ? "" : option.GetString();
 
-    public static implicit operator int(CustomStringOption option) => option.GetInt();
+    public static implicit operator int(CustomStringOption option) => option == null ? 0 : option.GetInt();
 }

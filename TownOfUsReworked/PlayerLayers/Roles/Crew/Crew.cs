@@ -10,7 +10,7 @@ public abstract class Crew : Role
         Faction = Faction.Crew;
         FactionColor = Colors.Crew;
         Objectives = () => CrewWinCon;
-        Player.Data.SetImpostor(false);
+        Data.SetImpostor(false);
     }
 
     public override List<PlayerControl> Team()

@@ -64,8 +64,11 @@ public class Grenadier : Intruder
                     FlashButton.EffectTime = 0f;
                 }
 
-                Map?.Close();
-                ActiveTask?.Close();
+                if (Map)
+                    Map.Close();
+
+                if (ActiveTask)
+                    ActiveTask.Close();
             }
         }
     }
@@ -88,13 +91,7 @@ public class Grenadier : Intruder
         FlashButton.Begin();
     }
 
-    public bool Condition()
-    {
-        var system = ShipStatus.Instance.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>();
-        var dummyActive = system?.dummy?.IsActive;
-        var sabActive = system?.specials?.Any(s => s.IsActive);
-        return dummyActive == false && sabActive == false;
-    }
+    public bool Condition() => ShipStatus.Instance.Systems[SystemTypes.Sabotage].TryCast<SabotageSystemType>()?.AnyActive == true;
 
     public void StartFlash() => FlashedPlayers = GetClosestPlayers(Player.transform.position, CustomGameOptions.FlashRadius);
 

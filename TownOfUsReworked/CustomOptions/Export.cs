@@ -49,6 +49,7 @@ public class Export : CustomButtonOption
         SettingsPatches.SettingsPage = 0;
         yield return new WaitForEndOfFrame();
         yield return flashCoro();
+        yield break;
     }
 
     public void ToDo()

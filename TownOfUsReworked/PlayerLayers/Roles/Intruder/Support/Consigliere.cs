@@ -28,7 +28,7 @@ public class Consigliere : Intruder
             Investigated.Add(InvestigateButton.TargetPlayer.PlayerId);
 
         if (interact.Reset)
-            InvestigateButton.StartCooldown(CooldownType.Reset);
+            InvestigateButton.StartCooldown();
         else if (interact.Protected)
             InvestigateButton.StartCooldown(CooldownType.GuardianAngel);
     }

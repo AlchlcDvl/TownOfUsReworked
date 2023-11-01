@@ -22,20 +22,20 @@ public class Teleporter : Intruder
     public void Mark()
     {
         TeleportPoint = Player.transform.position;
-        MarkButton.StartCooldown(CooldownType.Reset);
+        MarkButton.StartCooldown();
 
         if (CustomGameOptions.TeleCooldownsLinked)
-            TeleportButton.StartCooldown(CooldownType.Reset);
+            TeleportButton.StartCooldown();
     }
 
     public void Teleport()
     {
         CallRpc(CustomRPC.Action, ActionsRPC.Teleport, Player, TeleportPoint);
         Utils.Teleport(Player, TeleportPoint);
-        TeleportButton.StartCooldown(CooldownType.Reset);
+        TeleportButton.StartCooldown();
 
         if (CustomGameOptions.TeleCooldownsLinked)
-            MarkButton.StartCooldown(CooldownType.Reset);
+            MarkButton.StartCooldown();
     }
 
     public bool Condition()

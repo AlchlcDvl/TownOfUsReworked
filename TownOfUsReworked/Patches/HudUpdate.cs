@@ -100,11 +100,11 @@ public static class HudUpdate
         __instance.SabotageButton.buttonLabelText.text = LocalBlocked ? "BLOCKED" : "SABOTAGE";
         __instance.SabotageButton.gameObject.SetActive(CustomPlayer.Local.CanSabotage() && !(Map && Map.IsOpen) && !ActiveTask);
 
-        if (LocalBlocked)
-            ActiveTask?.Close();
+        if (LocalBlocked && ActiveTask)
+            ActiveTask.Close();
 
-        if (LocalBlocked)
-            Map?.Close();
+        if (LocalBlocked && Map)
+            Map.Close();
 
         CustomArrow.AllArrows.Where(x => x.Owner != CustomPlayer.Local).ForEach(x => x?.Update());
         PlayerLayer.LocalLayers.ForEach(x => x?.UpdateHud(__instance));
@@ -163,41 +163,32 @@ public static class HudUpdate
 
         if (CustomGameOptions.CamouflagedComms)
         {
-            if (ShipStatus.Instance)
+            var commsactive = ShipStatus.Instance?.Systems?.TryGetValue(SystemTypes.Comms, out var comms) == true;
+
+            if (commsactive)
             {
-                switch (TownOfUsReworked.NormalOptions.MapId)
+                var comms1 = ShipStatus.Instance?.Systems[SystemTypes.Comms]?.TryCast<HudOverrideSystemType>();
+
+                if (comms1 != null && comms1.IsActive)
                 {
-                    case 0 or 2 or 3 or 4 or 5 or 6:
-                        var comms5 = ShipStatus.Instance.Systems[SystemTypes.Comms]?.Cast<HudOverrideSystemType>();
+                    CommsEnabled = true;
+                    Camouflage();
+                    return;
+                }
 
-                        if (comms5.IsActive)
-                        {
-                            CommsEnabled = true;
-                            Camouflage();
-                            return;
-                        }
+                var comms2 = ShipStatus.Instance?.Systems[SystemTypes.Comms]?.TryCast<HqHudSystemType>();
 
-                        break;
-
-                    case 1:
-                        var comms2 = ShipStatus.Instance.Systems[SystemTypes.Comms]?.Cast<HqHudSystemType>();
-
-                        if (comms2.IsActive)
-                        {
-                            CommsEnabled = true;
-                            Camouflage();
-                            return;
-                        }
-
-                        break;
+                if (comms2 != null && comms2.IsActive)
+                {
+                    CommsEnabled = true;
+                    Camouflage();
+                    return;
                 }
             }
 
-            if (CommsEnabled)
+            if (CommsEnabled && !(CamouflagerEnabled || GodfatherEnabled))
             {
                 CommsEnabled = false;
-                CamouflagerEnabled = false;
-                GodfatherEnabled = false;
                 DefaultOutfitAll();
             }
         }
@@ -214,7 +205,7 @@ public static class MeetingCooldowns
 
         if (ExileController.Instance && obj == ExileController.Instance?.gameObject)
             ButtonUtils.ResetCustomTimers(CooldownType.Meeting);
-        else if (ActiveTask && obj == ActiveTask?.gameObject)
+        else if (ActiveTask && obj == ActiveTask.gameObject)
             CustomPlayer.Local.EnableButtons();
     }
 }

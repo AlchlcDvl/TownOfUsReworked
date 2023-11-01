@@ -182,13 +182,13 @@ public static class SetPostmortals
 
     private static void SetStartingVent(PlayerControl player)
     {
-        var vents = ShipStatus.Instance.AllVents.ToList();
-        var clean = PlayerControl.LocalPlayer.myTasks.ToArray().Where(x => x.TaskType == TaskTypes.VentCleaning).ToList();
+        var vents = AllMapVents.ToList();
+        var clean = PlayerControl.LocalPlayer.myTasks.Where(x => x.TaskType == TaskTypes.VentCleaning).ToList();
 
         if (clean != null)
         {
             var ids = clean.Where(x => !x.IsComplete).ToList().ConvertAll(x => x.FindConsoles()[0].ConsoleId);
-            vents = ShipStatus.Instance.AllVents.Where(x => !ids.Contains(x.Id)).ToList();
+            vents = AllMapVents.Where(x => !ids.Contains(x.Id)).ToList();
         }
 
         var startingVent = vents[URandom.RandomRangeInt(0, vents.Count)];

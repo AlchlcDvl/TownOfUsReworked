@@ -3,8 +3,6 @@ namespace TownOfUsReworked.Patches;
 [HarmonyPatch(typeof(IntroCutscene._ShowTeam_d__36), nameof(IntroCutscene._ShowTeam_d__36.MoveNext))]
 public static class ShowTeamPatch
 {
-    public static void Prefix(IntroCutscene._ShowTeam_d__36 __instance)=> __instance.teamToShow = Role.LocalRole.Team().SystemToIl2Cpp();
-
     public static void Postfix(IntroCutscene._ShowTeam_d__36 __instance)
     {
         __instance.__4__this.TeamTitle.text = Role.LocalRole.FactionName;
@@ -60,4 +58,14 @@ public static class CreatePlayerPatch
     public static void Prefix(ref bool impostorPositioning) => impostorPositioning = true;
 
     public static void Postfix(ref PoolablePlayer __result) => __result.SetNameColor(Role.LocalRole.FactionColor);
+}
+
+[HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.SelectTeamToShow))]
+public static class OverrideShowTeam
+{
+    public static bool Prefix(ref ISystem.List<PlayerControl> __result)
+    {
+        __result = Role.LocalRole.Team().SystemToIl2Cpp();
+        return false;
+    }
 }

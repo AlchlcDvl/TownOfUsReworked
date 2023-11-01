@@ -94,11 +94,11 @@ public class CustomButton
     public CustomButton(PlayerLayer owner, string sprite, AbilityTypes type, string keybind, Action click, float cooldown, float duration, int uses, bool postDeath = false) : this(owner,
         sprite, type, keybind, click, cooldown, null, null, null, null, duration, null, null, null, 0f, uses, null, postDeath) {}
 
+    public CustomButton(PlayerLayer owner, string sprite, AbilityTypes type, string keybind, Action click, float cooldown, int uses, Exclude2 exception2, bool postDeath = false) : this(owner,
+        sprite, type, keybind, click, cooldown, null, null, null, null, 0f, null, null, null, 0f, uses, null, exception2, postDeath) {}
+
     public CustomButton(PlayerLayer owner, string sprite, AbilityTypes type, string keybind, Action click, float cooldown, float duration, EffectEndVoid offEffect, bool postDeath = false) :
         this(owner, sprite, type, keybind, click, cooldown, null, null, null, offEffect, duration, null, null, null, 0f, 0, null, postDeath) {}
-
-    public CustomButton(PlayerLayer owner, string sprite, AbilityTypes type, string keybind, Action click, float cooldown, int uses, Exclude2 exception2, bool postDeath = false) :
-        this(owner, sprite, type, keybind, click, cooldown, null, null, null, null, 0f, null, null, null, 0f, uses, null, exception2, postDeath) {}
 
     public CustomButton(PlayerLayer owner, string sprite, AbilityTypes type, string keybind, Action click, float cooldown, float duration, EffectEndVoid offEffect, int uses, bool postDeath =
         false) : this(owner, sprite, type, keybind, click, cooldown, null, null, null, offEffect, duration, null, null, null, 0f, uses, null, postDeath) {}
@@ -178,10 +178,10 @@ public class CustomButton
         Block.transform.localScale *= 0.75f;
         Block.SetActive(false);
         Block.transform.SetParent(Base.transform);
-        Block.transform.localPosition = new(0f, 0f, 5f);
+        Block.transform.localPosition = new(0f, 0f, -5f);
     }
 
-    private static AbilityButton InstantiateButton()
+    private static ActionButton InstantiateButton()
     {
         var button = UObject.Instantiate(HUD.AbilityButton, HUD.AbilityButton.transform.parent);
         button.buttonLabelText.fontSharedMaterial = HUD.SabotageButton.buttonLabelText.fontSharedMaterial;
@@ -192,6 +192,8 @@ public class CustomButton
         button.commsDown.Destroy();
         button.commsDown = null;
         button.GetComponent<PassiveButton>().OnClick = new();
+        button.GetComponent<PassiveButton>().OnMouseOut = new();
+        button.GetComponent<PassiveButton>().OnMouseOver = new();
         return button;
     }
 
@@ -209,7 +211,7 @@ public class CustomButton
             return false;
     }
 
-    public void StartCooldown(CooldownType type) => CooldownTime = type switch
+    public void StartCooldown(CooldownType type = CooldownType.Reset) => CooldownTime = type switch
     {
         CooldownType.Start => CustomGameOptions.EnableInitialCds ? CustomGameOptions.InitialCooldowns : MaxCooldown,
         CooldownType.Meeting => CustomGameOptions.EnableMeetingCds ? CustomGameOptions.MeetingCooldowns : MaxCooldown,
@@ -258,7 +260,7 @@ public class CustomButton
         OnEffectEnd();
         EffectEnabled = false;
         End = false;
-        StartCooldown(CooldownType.Reset);
+        StartCooldown();
     }
 
     private void ButtonDelay()
@@ -286,6 +288,9 @@ public class CustomButton
 
     private void Timer()
     {
+        if (Owner.Player == null)
+            return;
+
         if (!((Owner.Player.inVent && !CustomGameOptions.CooldownInVent) || Owner.Player.inMovingPlat || Owner.Player.onLadder))
             CooldownTime -= Time.deltaTime;
 
@@ -350,11 +355,11 @@ public class CustomButton
 
     public void Update1()
     {
-        if (!Local || Disabled || Base == null)
+        if (!Local || Disabled || Base == null || Owner.Player == null)
             return;
 
         Base.buttonLabelText.SetOutlineColor(Owner.Color);
-        Block.transform.position = new(Base.transform.position.x, Base.transform.position.y, 50f);
+        Block.transform.position = new(Base.transform.position.x, Base.transform.position.y, -50f);
         Update();
 
         if (DelayActive)
@@ -375,6 +380,9 @@ public class CustomButton
 
     public void Update2(string label = "ABILITY", bool usable = true, bool condition = true, float difference = 0f, float multiplier = 1f)
     {
+        if (Owner.Player == null)
+            return;
+
         if ((!Local || IsLobby || (HasUses && Uses <= 0) || Meeting || NoPlayers || !usable || !Active) && !Disabled)
             Disable();
 
@@ -391,11 +399,16 @@ public class CustomButton
             !CooldownActive && !(HasUses && Uses <= 0) && Base.isActiveAndEnabled && Targeting;
     }
 
-    public void Update3(bool end = false) => End = end;
+    public void Update3(bool end = false)
+    {
+        if (Owner.Player == null)
+            return;
+
+        End = end;
+    }
 
     private void DisableTarget()
     {
-        Base.SetDisabled();
         Targeting = false;
 
         switch (Type)
@@ -416,6 +429,11 @@ public class CustomButton
                 TargetVent = null;
                 break;
         }
+
+        if (Base == null)
+            return;
+
+        Base.SetDisabled();
     }
 
     public void Disable()

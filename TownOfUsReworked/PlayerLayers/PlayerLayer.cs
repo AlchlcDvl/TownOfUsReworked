@@ -18,15 +18,15 @@ public abstract class PlayerLayer
     public bool IsDead => Data.IsDead;
     public bool Disconnected => Data.Disconnected;
     public bool IsAlive => !(IsDead || Disconnected);
+    public bool Local => Player == CustomPlayer.Local;
 
     public GameData.PlayerInfo Data => Player.Data;
     public string PlayerName => Data.PlayerName;
-    public bool Local => Player == CustomPlayer.Local;
     public byte PlayerId => Player.PlayerId;
     public int TasksLeft => Data.Tasks.Count(x => !x.Complete);
     public int TasksCompleted => Data.Tasks.Count(x => x.Complete);
     public int TotalTasks => Data.Tasks.Count;
-    public bool TasksDone => Player != null && Player.CanDoTasks() && (TasksLeft <= 0 || TasksCompleted >= TotalTasks);
+    public bool TasksDone => Player.CanDoTasks() && (TasksLeft <= 0 || TasksCompleted >= TotalTasks);
 
     public string ColorString => $"<color=#{Color.ToHtmlStringRGBA()}>";
 
@@ -34,6 +34,12 @@ public abstract class PlayerLayer
 
     public static readonly List<PlayerLayer> AllLayers = new();
     public static List<PlayerLayer> LocalLayers => GetLayers(CustomPlayer.Local);
+
+    protected PlayerLayer(PlayerControl player)
+    {
+        Player = player;
+        AllLayers.Add(this);
+    }
 
     public virtual void OnLobby() => OnGameEndPatch.Reset();
 
@@ -81,13 +87,7 @@ public abstract class PlayerLayer
 
     public virtual void ReadRPC(MessageReader reader) {}
 
-    protected PlayerLayer(PlayerControl player)
-    {
-        Player = player;
-        AllLayers.Add(this);
-    }
-
-    public void GameEnd()
+    public virtual void GameEnd()
     {
         if (Player == null || Disconnected)
             return;
@@ -357,7 +357,7 @@ public abstract class PlayerLayer
 
     private bool Equals(PlayerLayer other) => Equals(Player, other.Player) && Type == other.Type && GetHashCode() == other.GetHashCode();
 
-    public override bool Equals(object? obj)
+    public override bool Equals(object obj)
     {
         if (obj is null)
             return false;

@@ -57,7 +57,7 @@ public class Glitch : Neutral
             HackButton.Begin();
         }
         else if (interact.Reset)
-            HackButton.StartCooldown(CooldownType.Reset);
+            HackButton.StartCooldown();
         else if (interact.Protected)
             HackButton.StartCooldown(CooldownType.GuardianAngel);
     }

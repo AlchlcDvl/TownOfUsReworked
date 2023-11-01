@@ -10,7 +10,7 @@ public class ChatCommand
 
     private static readonly List<ChatCommand> AllCommands = new()
     {
-        new(new[] { "controls", "ctrl" }, Controls),
+        new(new[] { "controls", "ctrl", "mci" }, Controls),
         new(new[] { "kick", "k", "ban", "b" }, KickBan),
         new(new[] { "summary", "sum" }, Summary),
         new(new[] { "clearlobby", "cl", "clear" }, Clear),
@@ -56,7 +56,7 @@ public class ChatCommand
 
     public static ChatCommand Find(string[] args) => AllCommands.Find(x => x.Aliases.Any(x => args[0] == $"/{x}"));
 
-    public static void Run(ChatController __instance, string title, string text, bool withColor = true, bool hasColor = false)
+    public static void Run(ChatController __instance, string title, string text, bool withColor = true, bool hasColor = false, UColor? color = null)
     {
         var pooledBubble = __instance.GetPooledBubble();
 
@@ -76,6 +76,7 @@ public class ChatCommand
             pooledBubble.Background.size = new(5.52f, 0.2f + pooledBubble.NameText.GetNotDumbRenderedHeight() + pooledBubble.TextArea.GetNotDumbRenderedHeight());
             pooledBubble.MaskArea.size = pooledBubble.Background.size - new Vector2(0.0f, 0.03f);
             pooledBubble.TextArea.richText = withColor;
+            pooledBubble.Background.color = color ?? UColor.white;
 
             if (withColor && !hasColor)
                 pooledBubble.TextArea.text = Info.ColorIt(text);
@@ -96,19 +97,13 @@ public class ChatCommand
 
     private static void Whisper(string[] args, ChatController __instance)
     {
-        if (IsLobby)
-        {
-            Run(__instance, "<color=#FF0000FF>⚠ Invalid Command ⚠</color>", "This command does not exist.");
-            return;
-        }
-
-        if (!CustomGameOptions.Whispers)
+        if (!CustomGameOptions.Whispers && IsInGame)
         {
             Run(__instance, "<color=#00FF00FF>⚠ No Whispering ⚠</color>", "Whispering is not turned on.");
             return;
         }
 
-        if (args.Length < 3 || string.IsNullOrEmpty(args[1]) || string.IsNullOrEmpty(args[2]))
+        if (args.Length < 3 || IsNullEmptyOrWhiteSpace(args[1]) || IsNullEmptyOrWhiteSpace(args[2]))
         {
             Run(__instance, "<color=#00FF00FF>★ Help ★</color>", "Usage: /<whisper | w> <meeting number> <message>");
             return;
@@ -134,7 +129,7 @@ public class ChatCommand
                 Run(__instance, "<color=#FF0000FF>⚠ Whispering Error ⚠</color>", "Don't whisper to yourself, weirdo.");
             else if (whispered)
             {
-                if (whispered.Data.IsDead || whispered.Data.Disconnected)
+                if (whispered.HasDied())
                     Run(__instance, "<color=#FF0000FF>⚠ Whispering Error ⚠</color>", $"{whispered.name} is not in this world anymore.");
                 else
                 {
@@ -157,7 +152,7 @@ public class ChatCommand
             return;
         }
 
-        if (args.Length < 2 || string.IsNullOrEmpty(args[1]))
+        if (args.Length < 2 || IsNullEmptyOrWhiteSpace(args[1]))
         {
             Run(__instance, "<color=#00FF00FF>★ Help ★</color>", "Usage: /<setcolour | setcolor | sc> <color id>");
             return;
@@ -188,7 +183,7 @@ public class ChatCommand
             return;
         }
 
-        if (args.Length < 2 || string.IsNullOrEmpty(args[1]))
+        if (args.Length < 2 || IsNullEmptyOrWhiteSpace(args[1]))
         {
             Run(__instance, "<color=#00FF00FF>★ Help ★</color>", "Usage: /<setname | sn> <name>");
             return;
@@ -265,7 +260,7 @@ public class ChatCommand
 
         var ban = args[0].Replace("/", "") is "ban" or "b";
 
-        if (args.Length < 2 || string.IsNullOrEmpty(args[1]))
+        if (args.Length < 2 || IsNullEmptyOrWhiteSpace(args[1]))
         {
             Run(__instance, "<color=#00FF00FF>★ Help ★</color>", $"Usage: /{(ban ? "<ban | b>" : "<kick | k>")} <player name>");
             return;
@@ -335,7 +330,7 @@ public class ChatCommand
 
     private static void Translate(string[] args, ChatController __instance)
     {
-        if (args.Length < 2 || string.IsNullOrEmpty(args[1]))
+        if (args.Length < 2 || IsNullEmptyOrWhiteSpace(args[1]))
         {
             Run(__instance, "<color=#00FF00FF>★ Help ★</color>", "Usage: /<translate | trans> <text id>");
             return;

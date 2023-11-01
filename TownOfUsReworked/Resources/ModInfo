@@ -7,29 +7,23 @@ This mod is a mish mash of code and ideas from different mods and forks, mainly 
 If you want to know more try using the other info commands, visiting the %github% page or joining the %discord% server. Happy ejections!
 
 Changelog-
-- New Role: Bastion [Crew (Killing)]
-- Addition: Added night vision cameras
-- Addition: You can now optionally download Submerged right from the main menu (LevelImpostor soon to follow)
-- Return: Sounds effects are back
-- Improvement: The death popup in Hide And Seek mode now changes to match the mode (X was converted/killed)
-- Improvement: There can be multiple chat notifications for every player that chats now
-- Improvement: Improved how the intro screen appears
-- Improvement: The Level Impostor map option now changes to match the custom map you loaded (to be tested)
-- Change: Actor can now get a randomised list (instead of a fixed one) of roles present in the game to be guessed as
-- Change: Actor can no longer spawn in Role List (because it depends on Assasin which cannot spawn in Role List either)
-- Change: The Assassin ability's name now changes depending on the faction it's applied to
-- Change: As the Assassin, you now have to specify what ype of Assassin someone is to correctly guess them
-- Change: Detective now has to examine players to be able to see their footprints
-- Optimisation: Improved more code handling
-- Bug Fix: Fixed role generation breaking on one player
-- Bug Fix: Fixed tasks not resetting properly on LevelImpostor maps (when turning into Revealer/Phantom)
-- Bug Fix: Fixed games incorrectly ending
-- Bug Fix: Fixed targets not being set properly
-- Bug Fix: Fixed some data desync between roles
-- Visual Fix: Buttons now correctly appear and disappear when opening tasks or other interactibles
-- Visual Fix: Fixed vanilla color names being capitalised when using colorblind mode
-- Role Fix: Fixed Werewolf being able to maul at the wrong times
-- Removed: Inspector (as I've come to realise, locking players to certain claims is not healthy for the mod)
+- Update: Updated the mod to 2023.10.24 and updated BepInEx to 6.0.0-be.674
+- Update: Updated presets
+- Mega Addition: dlekS is back! (credits to Galster from CrowdedMod, vents do not work and so Bastion and Miner won't spawn here for now)
+- Addition: Bastion has button art now (on maps that are not Fungle)
+- Addition: Anonymous Votes have been changed a bit
+- Change: You can now whisper in lobby
+- Change: Some hats have been turned into visors
+- Change: Miner will be named Herbalist on Fungle (for consistency)
+- Change: Miner and Bastion can no longer spawn when the Serial Venters option is set to no one
+- Change: The role list for the Ranked preset has been changed
+- Critical Fix: Fixed deaths just not deathing sometimes
+- Bug Fix: Fixed meeting ability buttons weirding out when hovering over them
+- Bug Fix: Fixed a minor bug with custom hats
+- Bug Fix: Fixed Amnesiac and Thief weirding out when changing roles
+- Bug Fix: Fixed role generation not sorting correctly
+- Visual Fix: Fixed the task list showing the incorrect task location
+- Role Fix: Fixed Miners and Godfather-Miners not having cooldowns
 
 Credits-
 Reworked Creator - AlchlcDvl

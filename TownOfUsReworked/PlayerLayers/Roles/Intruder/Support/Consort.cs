@@ -38,7 +38,7 @@ public class Consort : Intruder
         if (interact.AbilityUsed)
             BlockTarget = player;
         else if (interact.Reset)
-            BlockButton.StartCooldown(CooldownType.Reset);
+            BlockButton.StartCooldown();
         else if (interact.Protected)
             BlockButton.StartCooldown(CooldownType.GuardianAngel);
     }

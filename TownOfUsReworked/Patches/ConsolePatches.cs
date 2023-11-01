@@ -1,24 +1,5 @@
 namespace TownOfUsReworked.Patches;
 
-[HarmonyPatch(typeof(Console), nameof(Console.CanUse))]
-public static class ConsoleCanUse
-{
-    public static bool Prefix(Console __instance, ref GameData.PlayerInfo pc, ref float __result)
-    {
-        var playerControl = pc.Object;
-        var flag = !playerControl.CanDoTasks();
-
-        //If the console is not a sabotage repair console
-        if (flag && !__instance.AllowImpostor)
-        {
-            __result = float.MaxValue;
-            return false;
-        }
-
-        return true;
-    }
-}
-
 #region OpenDoorConsole
 [HarmonyPatch(typeof(OpenDoorConsole), nameof(OpenDoorConsole.CanUse))]
 public static class OpenDoorConsoleCanUse
@@ -51,9 +32,9 @@ public static class OpenDoorConsoleUse
 
         if (canUse)
         {
-            ShipStatus.Instance.RpcRepairSystem(SystemTypes.Doors, __instance.MyDoor.Id | 64);
-            CallRpc(CustomRPC.Misc, MiscRPC.DoorSyncToilet, __instance.MyDoor.Id);
-            __instance.MyDoor.SetDoorway(true);
+            ShipStatus.Instance.RpcUpdateSystem(SystemTypes.Doors, (byte)(__instance.myDoor.Id | 64));
+            CallRpc(CustomRPC.Misc, MiscRPC.DoorSyncToilet, __instance.myDoor.Id);
+            __instance.myDoor.SetDoorway(true);
         }
 
         return false;
@@ -200,6 +181,21 @@ public static class DeconControlUse
 [HarmonyPatch(typeof(Console), nameof(Console.CanUse))]
 public static class ConsoleCanUsePatch
 {
+    public static bool Prefix(Console __instance, ref GameData.PlayerInfo pc, ref float __result)
+    {
+        var playerControl = pc.Object;
+        var flag = !playerControl.CanDoTasks();
+
+        //If the console is not a sabotage repair console
+        if (flag && !__instance.AllowImpostor)
+        {
+            __result = float.MaxValue;
+            return false;
+        }
+
+        return true;
+    }
+
     public static void Prefix(ref GameData.PlayerInfo pc, ref bool __state)
     {
         __state = false;

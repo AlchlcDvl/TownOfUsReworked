@@ -26,17 +26,17 @@ public static class SpawnPatches
 
     private static void RandomSpawn()
     {
-        if (!AmongUsClient.Instance.AmHost || !CustomGameOptions.RandomSpawns || TownOfUsReworked.NormalOptions.MapId is 4 or 5 or 6)
+        if (!AmongUsClient.Instance.AmHost || !CustomGameOptions.RandomSpawns || MapPatches.CurrentMap is 4 or 5 or 6)
             return;
 
         var allLocations = new List<Vector2>();
         AllVents.ForEach(x => allLocations.Add(GetVentPosition(x)));
-        var tobeadded = TownOfUsReworked.NormalOptions.MapId switch
+        var tobeadded = MapPatches.CurrentMap switch
         {
             0 => SkeldSpawns,
             1 => MiraSpawns,
             2 => PolusSpawns,
-            //3 => dlekSSpawns,
+            3 => dlekSSpawns,
             _ => null
         };
 

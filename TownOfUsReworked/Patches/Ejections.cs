@@ -3,13 +3,9 @@ namespace TownOfUsReworked.Patches;
 [HarmonyPatch(typeof(ExileController), nameof(ExileController.Begin))]
 public static class ConfirmEjects
 {
-    public static ExileController LastExiled;
-
-    public static void Prefix(ExileController __instance) => LastExiled = __instance;
-
     public static void Postfix(ExileController __instance, ref bool tie)
     {
-        var exiled = LastExiled.exiled;
+        var exiled = __instance.exiled;
 
         if (exiled == null)
         {
@@ -42,18 +38,20 @@ public static class ConfirmEjects
         {
             if (ClientGameOptions.CustomEjects)
             {
-                if (TownOfUsReworked.NormalOptions.MapId is 0 or 3)
+                if (MapPatches.CurrentMap is 0 or 3)
                     ejectString = $"{player.name} is now one with space.";
-                else if (TownOfUsReworked.NormalOptions.MapId == 1)
+                else if (MapPatches.CurrentMap == 1)
                     ejectString = $"{player.name} is now experiencing fatal free fall.";
-                else if (TownOfUsReworked.NormalOptions.MapId == 2)
+                else if (MapPatches.CurrentMap == 2)
                     ejectString = $"{player.name} is now enjoying a hot bath.";
-                else if (TownOfUsReworked.NormalOptions.MapId == 4)
+                else if (MapPatches.CurrentMap == 4)
                     ejectString = $"{player.name} is now experiencing gravity.";
-                else if (TownOfUsReworked.NormalOptions.MapId == 5)
-                    ejectString = $"{player.name} is now off to a scuba adventure.";
-                else if (TownOfUsReworked.NormalOptions.MapId == 6)
+                else if (MapPatches.CurrentMap == 5)
                     ejectString = $"{player.name} has decided to leave for a new journey.";
+                else if (MapPatches.CurrentMap == 6)
+                    ejectString = $"{player.name} is now off to a scuba adventure.";
+                else if (MapPatches.CurrentMap == 7)
+                    ejectString = $"{player.name} has decided to explore newer frontiers.";
             }
             else
                 ejectString = $"{player.name} was ejected.";

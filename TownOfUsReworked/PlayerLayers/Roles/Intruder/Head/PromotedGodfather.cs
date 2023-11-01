@@ -38,7 +38,7 @@ public class PromotedGodfather : Intruder
         InvisButton = new(this, "Invis", AbilityTypes.Targetless, "Secondary", HitInvis, CustomGameOptions.InvisCd, CustomGameOptions.InvisDur, (CustomButton.EffectVoid)Invis, UnInvis);
         AmbushButton = new(this, "Ambush", AbilityTypes.Target, "Secondary", Ambush, CustomGameOptions.AmbushCd, CustomGameOptions.AmbushDur, UnAmbush, AmbushException);
         InvestigateButton = new(this, "Investigate", AbilityTypes.Target, "Secondary", Investigate, CustomGameOptions.InvestigateCd, ConsigException);
-        MineButton = new(this, "Mine", AbilityTypes.Targetless, "Secondary", Mine, CustomGameOptions.MineCd);
+        MineButton = new(this, Miner.SpriteName, AbilityTypes.Targetless, "Secondary", Mine, CustomGameOptions.MineCd);
         MarkButton = new(this, "Mark", AbilityTypes.Targetless, "Secondary", Mark, CustomGameOptions.TeleMarkCd);
         TeleportButton = new(this, "Teleport", AbilityTypes.Targetless, "Secondary", Teleport, CustomGameOptions.TeleportCd);
     }
@@ -168,7 +168,7 @@ public class PromotedGodfather : Intruder
         }
 
         if (interact.Reset)
-            BlackmailButton.StartCooldown(CooldownType.Reset);
+            BlackmailButton.StartCooldown();
         else if (interact.Protected)
             BlackmailButton.StartCooldown(CooldownType.GuardianAngel);
     }
@@ -249,8 +249,11 @@ public class PromotedGodfather : Intruder
                     FlashButton.EffectTime = 0f;
                 }
 
-                Map?.Close();
-                ActiveTask?.Close();
+                if (Map)
+                    Map.Close();
+
+                if (ActiveTask)
+                    ActiveTask.Close();
             }
         }
     }
@@ -273,13 +276,7 @@ public class PromotedGodfather : Intruder
         FlashButton.Begin();
     }
 
-    public bool FlashCondition()
-    {
-        var system = ShipStatus.Instance.Systems[SystemTypes.Sabotage].Cast<SabotageSystemType>();
-        var dummyActive = system?.dummy?.IsActive;
-        var sabActive = system?.specials?.Any(s => s.IsActive);
-        return dummyActive == false && sabActive == false;
-    }
+    public bool FlashCondition() => ShipStatus.Instance.Systems[SystemTypes.Sabotage].TryCast<SabotageSystemType>()?.AnyActive == true;
 
     public void StartFlash() => FlashedPlayers = GetClosestPlayers(Player.transform.position, CustomGameOptions.FlashRadius);
 
@@ -295,10 +292,10 @@ public class PromotedGodfather : Intruder
         Spread(Player, PlayerByBody(CleanButton.TargetBody));
         CallRpc(CustomRPC.Action, ActionsRPC.FadeBody, this, CleanButton.TargetBody);
         Coroutines.Start(FadeBody(CleanButton.TargetBody));
-        CleanButton.StartCooldown(CooldownType.Reset);
+        CleanButton.StartCooldown();
 
         if (CustomGameOptions.JaniCooldownsLinked)
-            KillButton.StartCooldown(CooldownType.Reset);
+            KillButton.StartCooldown();
     }
 
     public void Drag()
@@ -316,7 +313,7 @@ public class PromotedGodfather : Intruder
         CallRpc(CustomRPC.Action, ActionsRPC.Drop, CurrentlyDragging);
         CurrentlyDragging.gameObject.GetComponent<DragBehaviour>().Destroy();
         CurrentlyDragging = null;
-        DragButton.StartCooldown(CooldownType.Reset);
+        DragButton.StartCooldown();
     }
 
     //Disguiser Stuff
@@ -397,7 +394,7 @@ public class PromotedGodfather : Intruder
         DefaultOutfit(Player);
 
         if (CustomGameOptions.MorphCooldownsLinked)
-            SampleButton.StartCooldown(CooldownType.Reset);
+            SampleButton.StartCooldown();
     }
 
     public void HitMorph()
@@ -445,7 +442,11 @@ public class PromotedGodfather : Intruder
     public List<Vent> Vents { get; set; }
     public bool IsMiner => FormerRole?.Type == LayerEnum.Miner;
 
-    public void Mine() => RpcSpawnVent(this);
+    public void Mine()
+    {
+        RpcSpawnVent(this);
+        MineButton.StartCooldown();
+    }
 
     public bool MineCondition()
     {
@@ -467,7 +468,7 @@ public class PromotedGodfather : Intruder
             Investigated.Add(InvestigateButton.TargetPlayer.PlayerId);
 
         if (interact.Reset)
-            InvestigateButton.StartCooldown(CooldownType.Reset);
+            InvestigateButton.StartCooldown();
         else if (interact.Protected)
             InvestigateButton.StartCooldown(CooldownType.GuardianAngel);
     }
@@ -486,20 +487,20 @@ public class PromotedGodfather : Intruder
     public void Mark()
     {
         TeleportPoint = Player.transform.position;
-        MarkButton.StartCooldown(CooldownType.Reset);
+        MarkButton.StartCooldown();
 
         if (CustomGameOptions.TeleCooldownsLinked)
-            TeleportButton.StartCooldown(CooldownType.Reset);
+            TeleportButton.StartCooldown();
     }
 
     public void Teleport()
     {
         CallRpc(CustomRPC.Action, ActionsRPC.Teleport, Player, TeleportPoint);
         Utils.Teleport(Player, TeleportPoint);
-        TeleportButton.StartCooldown(CooldownType.Reset);
+        TeleportButton.StartCooldown();
 
         if (CustomGameOptions.TeleCooldownsLinked)
-            MarkButton.StartCooldown(CooldownType.Reset);
+            MarkButton.StartCooldown();
     }
 
     public bool MarkCondition()
@@ -527,7 +528,7 @@ public class PromotedGodfather : Intruder
             AmbushButton.Begin();
         }
         else if (interact.Reset)
-            AmbushButton.StartCooldown(CooldownType.Reset);
+            AmbushButton.StartCooldown();
         else if (interact.Protected)
             AmbushButton.StartCooldown(CooldownType.GuardianAngel);
     }
@@ -559,7 +560,7 @@ public class PromotedGodfather : Intruder
         if (interact.AbilityUsed)
             BlockTarget = player;
         else if (interact.Reset)
-            BlockButton.StartCooldown(CooldownType.Reset);
+            BlockButton.StartCooldown();
         else if (interact.Protected)
             BlockButton.StartCooldown(CooldownType.GuardianAngel);
     }
@@ -630,7 +631,7 @@ public class PromotedGodfather : Intruder
             BombButton.Begin();
         }
         else if (interact.Reset)
-            BombButton.StartCooldown(CooldownType.Reset);
+            BombButton.StartCooldown();
         else if (interact.Protected)
             BombButton.StartCooldown(CooldownType.GuardianAngel);
     }

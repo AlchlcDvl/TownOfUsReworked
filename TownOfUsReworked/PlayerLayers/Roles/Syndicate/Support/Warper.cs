@@ -157,8 +157,11 @@ public class Warper : Syndicate
 
         if (CustomPlayer.Local == WarpPlayer1)
         {
-            ActiveTask?.Close();
-            Map?.Close();
+            if (ActiveTask)
+                ActiveTask.Close();
+
+            if (Map)
+                Map.Close();
         }
 
         WarpPlayer1.moveable = true;
@@ -168,6 +171,7 @@ public class Warper : Syndicate
         WarpPlayer1 = null;
         WarpPlayer2 = null;
         Warping = false;
+        yield break;
     }
 
     public void Click1(PlayerControl player)
@@ -177,7 +181,7 @@ public class Warper : Syndicate
         if (interact.AbilityUsed)
             WarpPlayer1 = player;
         else if (interact.Reset)
-            WarpButton.StartCooldown(CooldownType.Reset);
+            WarpButton.StartCooldown();
         else if (interact.Protected)
             WarpButton.StartCooldown(CooldownType.GuardianAngel);
     }
@@ -189,7 +193,7 @@ public class Warper : Syndicate
         if (interact.AbilityUsed)
             WarpPlayer2 = player;
         else if (interact.Reset)
-            WarpButton.StartCooldown(CooldownType.Reset);
+            WarpButton.StartCooldown();
         else if (interact.Protected)
             WarpButton.StartCooldown(CooldownType.GuardianAngel);
     }
@@ -223,7 +227,7 @@ public class Warper : Syndicate
         if (HoldsDrive)
         {
             Utils.Warp();
-            WarpButton.StartCooldown(CooldownType.Reset);
+            WarpButton.StartCooldown();
         }
         else if (WarpPlayer1 == null)
             WarpMenu1.Open();
@@ -268,7 +272,7 @@ public class Warper : Syndicate
             if (player == null || player.HasDied())
                 continue;
 
-            if (UnwarpablePlayers.ContainsKey(player.PlayerId) && player.moveable && UnwarpablePlayers.GetValueSafe(player.PlayerId).AddSeconds(0.5) < DateTime.UtcNow)
+            if (UnwarpablePlayers.ContainsKey(player.PlayerId) && player.moveable && UnwarpablePlayers[player.PlayerId].AddSeconds(6) < DateTime.UtcNow)
                 UnwarpablePlayers.Remove(player.PlayerId);
         }
     }

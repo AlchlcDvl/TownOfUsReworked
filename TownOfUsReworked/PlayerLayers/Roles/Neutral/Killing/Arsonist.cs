@@ -56,10 +56,10 @@ public class Arsonist : Neutral
         }
 
         if (!LastKiller)
-            IgniteButton.StartCooldown(CooldownType.Reset);
+            IgniteButton.StartCooldown();
 
         if (CustomGameOptions.ArsoCooldownsLinked)
-            DouseButton.StartCooldown(CooldownType.Reset);
+            DouseButton.StartCooldown();
     }
 
     public void Douse()
@@ -76,7 +76,7 @@ public class Arsonist : Neutral
         DouseButton.StartCooldown(cooldown);
 
         if (CustomGameOptions.ArsoCooldownsLinked)
-            IgniteButton.StartCooldown(CooldownType.Reset);
+            IgniteButton.StartCooldown();
     }
 
     public void RpcSpreadDouse(PlayerControl source, PlayerControl target)

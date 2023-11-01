@@ -740,18 +740,17 @@ public static class OnGameEndPatch
 
             var winnerCount = 0;
             var loserCount = 0;
-            var discCount = 0;
 
-            roleSummaryText.AppendLine("<size=125%><u><b>End Game Summary</b></u>:</size>");
+            roleSummaryText.AppendLine("<size=125%><u><b>Game Summary</b></u>:</size>");
             roleSummaryText.AppendLine();
-            roleSummaryCache.AppendLine("End Game Summary:");
+            roleSummaryCache.AppendLine("Game Summary:");
             roleSummaryCache.AppendLine();
-            winnersText.AppendLine("<size=105%><b>Winners</b></size>");
-            losersText.AppendLine("<size=105%><b>Losers</b></size>");
-            discText.AppendLine("<size=105%><b>Disconnected</b></size>");
-            winnersCache.AppendLine("Winners");
-            losersCache.AppendLine("Losers");
-            discCache.AppendLine("Disconnected");
+            winnersText.AppendLine("<size=105%><color=#00FF00FF><b>◈ - Winners - ◈</b></color></size>");
+            losersText.AppendLine("<size=105%><color=#FF0000FF><b>◆ - Losers - ◆</b></color></size>");
+            discText.AppendLine("<size=105%><color=#0000FFFF><b>◇ - Disconnected - ◇</b></color></size>");
+            winnersCache.AppendLine("◈ - Winners - ◈");
+            losersCache.AppendLine("◆ - Losers - ◆");
+            discCache.AppendLine("◇ - Disconnected - ◇");
 
             foreach (var data in PlayerRoles)
             {
@@ -778,7 +777,6 @@ public static class OnGameEndPatch
                 var dataCache = $"{data.PlayerName} - {data.CachedHistory}";
                 discText.AppendLine(dataString);
                 discCache.AppendLine(dataCache);
-                discCount++;
             }
 
             if (winnerCount == 0)
@@ -800,7 +798,7 @@ public static class OnGameEndPatch
             roleSummaryCache.AppendLine();
             roleSummaryCache.Append(losersCache);
 
-            if (discCount > 0)
+            if (Disconnected.Any())
             {
                 roleSummaryText.AppendLine();
                 roleSummaryText.Append(discText);

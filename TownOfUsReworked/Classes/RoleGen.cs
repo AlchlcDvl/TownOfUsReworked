@@ -2,38 +2,38 @@ namespace TownOfUsReworked.Classes;
 
 public static class RoleGen
 {
-    private static readonly List<GenerationData> CrewAuditorRoles = new();
-    private static readonly List<GenerationData> CrewKillingRoles = new();
-    private static readonly List<GenerationData> CrewSupportRoles = new();
-    private static readonly List<GenerationData> CrewSovereignRoles = new();
-    private static readonly List<GenerationData> CrewProtectiveRoles = new();
-    private static readonly List<GenerationData> CrewInvestigativeRoles = new();
-    private static readonly List<GenerationData> CrewRoles = new();
+    private static List<GenerationData> CrewAuditorRoles = new();
+    private static List<GenerationData> CrewKillingRoles = new();
+    private static List<GenerationData> CrewSupportRoles = new();
+    private static List<GenerationData> CrewSovereignRoles = new();
+    private static List<GenerationData> CrewProtectiveRoles = new();
+    private static List<GenerationData> CrewInvestigativeRoles = new();
+    private static List<GenerationData> CrewRoles = new();
 
-    private static readonly List<GenerationData> NeutralEvilRoles = new();
-    private static readonly List<GenerationData> NeutralBenignRoles = new();
-    private static readonly List<GenerationData> NeutralKillingRoles = new();
-    private static readonly List<GenerationData> NeutralNeophyteRoles = new();
-    private static readonly List<GenerationData> NeutralHarbingerRoles = new();
-    private static readonly List<GenerationData> NeutralRoles = new();
+    private static List<GenerationData> NeutralEvilRoles = new();
+    private static List<GenerationData> NeutralBenignRoles = new();
+    private static List<GenerationData> NeutralKillingRoles = new();
+    private static List<GenerationData> NeutralNeophyteRoles = new();
+    private static List<GenerationData> NeutralHarbingerRoles = new();
+    private static List<GenerationData> NeutralRoles = new();
 
-    private static readonly List<GenerationData> IntruderKillingRoles = new();
-    private static readonly List<GenerationData> IntruderSupportRoles = new();
-    private static readonly List<GenerationData> IntruderDeceptionRoles = new();
-    private static readonly List<GenerationData> IntruderConcealingRoles = new();
-    private static readonly List<GenerationData> IntruderHeadRoles = new();
-    private static readonly List<GenerationData> IntruderRoles = new();
+    private static List<GenerationData> IntruderHeadRoles = new();
+    private static List<GenerationData> IntruderKillingRoles = new();
+    private static List<GenerationData> IntruderSupportRoles = new();
+    private static List<GenerationData> IntruderDeceptionRoles = new();
+    private static List<GenerationData> IntruderConcealingRoles = new();
+    private static List<GenerationData> IntruderRoles = new();
 
-    private static readonly List<GenerationData> SyndicatePowerRoles = new();
-    private static readonly List<GenerationData> SyndicateSupportRoles = new();
-    private static readonly List<GenerationData> SyndicateKillingRoles = new();
-    private static readonly List<GenerationData> SyndicateDisruptionRoles = new();
-    private static readonly List<GenerationData> SyndicateRoles = new();
+    private static List<GenerationData> SyndicatePowerRoles = new();
+    private static List<GenerationData> SyndicateSupportRoles = new();
+    private static List<GenerationData> SyndicateKillingRoles = new();
+    private static List<GenerationData> SyndicateDisruptionRoles = new();
+    private static List<GenerationData> SyndicateRoles = new();
 
-    private static readonly List<GenerationData> AllModifiers = new();
-    private static readonly List<GenerationData> AllAbilities = new();
-    private static readonly List<GenerationData> AllObjectifiers = new();
-    private static readonly List<GenerationData> AllRoles = new();
+    private static List<GenerationData> AllModifiers = new();
+    private static List<GenerationData> AllAbilities = new();
+    private static List<GenerationData> AllObjectifiers = new();
+    private static List<GenerationData> AllRoles = new();
 
     public static PlayerControl PureCrew;
     public static int Convertible;
@@ -128,7 +128,7 @@ public static class RoleGen
         return URandom.RandomRangeInt(1, 100) <= probability;
     }
 
-    private static void Sort(this List<GenerationData> items, int amount)
+    private static List<GenerationData> Sort(List<GenerationData> items, int amount)
     {
         var newList = new List<GenerationData>();
         items.Shuffle();
@@ -166,11 +166,13 @@ public static class RoleGen
             newList.AddRanges(guaranteed, optionals);
         }
 
+        _ = newList.OrderBy(x => 100 - x.Chance);
+
         while (newList.Count > amount && newList.Count > 1)
             newList.Remove(newList[^1]);
 
-        items = newList;
-        items.Shuffle();
+        newList.Shuffle();
+        return newList;
     }
 
     private static void GetAdjustedFactions(out int impostors, out int syndicate, out int neutrals, out int crew)
@@ -387,14 +389,7 @@ public static class RoleGen
 
     private static void GenKilling()
     {
-        GetAdjustedFactions(out var imps, out var syn, out var neutrals, out var crew);
-
-        CrewRoles.Clear();
-        IntruderRoles.Clear();
-        SyndicateRoles.Clear();
-        NeutralRoles.Clear();
-
-        LogInfo("Lists Cleared - Killing Only");
+        GetAdjustedFactions(out var imps, out var syn, out var neut, out var crew);
 
         IntruderRoles.Add(GenerateSpawnItem(LayerEnum.Enforcer));
         IntruderRoles.Add(GenerateSpawnItem(LayerEnum.Morphling));
@@ -439,7 +434,7 @@ public static class RoleGen
         if (CustomGameOptions.AddPlaguebearer)
             NeutralRoles.Add(GenerateSpawnItem(CustomGameOptions.PestSpawn ? LayerEnum.Pestilence : LayerEnum.Plaguebearer));
 
-        NeutralRoles.Sort(neutrals);
+        NeutralRoles = Sort(NeutralRoles, neut);
 
         var vigis = crew / 2;
         var vets = crew / 2;
@@ -459,8 +454,8 @@ public static class RoleGen
             }
         }
 
-        IntruderRoles.Sort(imps);
-        CrewRoles.Sort(crew);
+        IntruderRoles = Sort(IntruderRoles, imps);
+        CrewRoles = Sort(CrewRoles, crew);
 
         AllRoles.AddRange(NeutralRoles);
         AllRoles.AddRange(CrewRoles);
@@ -599,7 +594,7 @@ public static class RoleGen
             LogInfo("Veteran Done");
         }
 
-        if (CustomGameOptions.BastionOn > 0 && CustomGameOptions.WhoCanVent != WhoCanVentOptions.Noone)
+        if (CustomGameOptions.BastionOn > 0 && CustomGameOptions.WhoCanVent != WhoCanVentOptions.NoOne && MapPatches.CurrentMap != 3)
         {
             num = CustomGameOptions.BastionCount;
 
@@ -1125,7 +1120,7 @@ public static class RoleGen
             LogInfo("Blackmailer Done");
         }
 
-        if (CustomGameOptions.MinerOn > 0)
+        if (CustomGameOptions.MinerOn > 0 && CustomGameOptions.WhoCanVent != WhoCanVentOptions.NoOne && MapPatches.CurrentMap != 3)
         {
             num = CustomGameOptions.MinerCount;
 
@@ -1534,11 +1529,11 @@ public static class RoleGen
                     maxIntSum = maxIC + maxID + maxIK + maxIS + maxIH;
                 }
 
-                IntruderConcealingRoles.Sort(maxIC);
-                IntruderDeceptionRoles.Sort(maxID);
-                IntruderKillingRoles.Sort(maxIK);
-                IntruderSupportRoles.Sort(maxIS);
-                IntruderHeadRoles.Sort(maxIH);
+                IntruderConcealingRoles = Sort(IntruderConcealingRoles, maxIC);
+                IntruderDeceptionRoles = Sort(IntruderDeceptionRoles, maxID);
+                IntruderKillingRoles = Sort(IntruderKillingRoles, maxIK);
+                IntruderSupportRoles = Sort(IntruderSupportRoles, maxIS);
+                IntruderHeadRoles = Sort(IntruderHeadRoles, maxIH);
 
                 IntruderRoles.AddRanges(IntruderConcealingRoles, IntruderDeceptionRoles, IntruderKillingRoles, IntruderSupportRoles, IntruderHeadRoles);
 
@@ -1548,7 +1543,7 @@ public static class RoleGen
                 while (minInt > imps)
                     minInt--;
 
-                IntruderRoles.Sort(URandom.RandomRangeInt(minInt, maxInt + 1));
+                IntruderRoles = Sort(IntruderRoles, URandom.RandomRangeInt(minInt, maxInt + 1));
 
                 while (IntruderRoles.Count < imps)
                     IntruderRoles.Add(GenerateSpawnItem(LayerEnum.Impostor));
@@ -1594,10 +1589,10 @@ public static class RoleGen
                     maxSynSum = maxSSu + maxSD + maxSyK + maxSP;
                 }
 
-                SyndicateSupportRoles.Sort(maxSSu);
-                SyndicateDisruptionRoles.Sort(maxSD);
-                SyndicateKillingRoles.Sort(maxSyK);
-                SyndicatePowerRoles.Sort(maxSP);
+                SyndicateSupportRoles = Sort(SyndicateSupportRoles, maxSSu);
+                SyndicateDisruptionRoles = Sort(SyndicateDisruptionRoles, maxSD);
+                SyndicateKillingRoles = Sort(SyndicateKillingRoles, maxSyK);
+                SyndicatePowerRoles = Sort(SyndicatePowerRoles, maxSP);
 
                 SyndicateRoles.AddRanges(SyndicateSupportRoles, SyndicateKillingRoles, SyndicatePowerRoles, SyndicateDisruptionRoles);
 
@@ -1607,7 +1602,7 @@ public static class RoleGen
                 while (minSyn > syn)
                     minSyn--;
 
-                SyndicateRoles.Sort(URandom.RandomRangeInt(minSyn, maxSyn + 1));
+                SyndicateRoles = Sort(SyndicateRoles, URandom.RandomRangeInt(minSyn, maxSyn + 1));
 
                 while (SyndicateRoles.Count < syn)
                     SyndicateRoles.Add(GenerateSpawnItem(LayerEnum.Anarchist));
@@ -1658,11 +1653,11 @@ public static class RoleGen
                     maxNeutSum = maxNE + maxNB + maxNK + maxNN + maxNH;
                 }
 
-                NeutralBenignRoles.Sort(maxNB);
-                NeutralEvilRoles.Sort(maxNE);
-                NeutralKillingRoles.Sort(maxNK);
-                NeutralNeophyteRoles.Sort(maxNN);
-                NeutralHarbingerRoles.Sort(maxNH);
+                NeutralBenignRoles = Sort(NeutralBenignRoles, maxNB);
+                NeutralEvilRoles = Sort(NeutralEvilRoles, maxNE);
+                NeutralKillingRoles = Sort(NeutralKillingRoles, maxNK);
+                NeutralNeophyteRoles = Sort(NeutralNeophyteRoles, maxNN);
+                NeutralHarbingerRoles = Sort(NeutralHarbingerRoles, maxNH);
 
                 NeutralRoles.AddRanges(NeutralBenignRoles, NeutralEvilRoles, NeutralKillingRoles, NeutralNeophyteRoles, NeutralHarbingerRoles);
 
@@ -1672,7 +1667,7 @@ public static class RoleGen
                 while (minNeut > neut)
                     minNeut--;
 
-                NeutralRoles.Sort(URandom.RandomRangeInt(minNeut, maxNeut + 1));
+                NeutralRoles = Sort(NeutralRoles, URandom.RandomRangeInt(minNeut, maxNeut + 1));
                 NeutralRoles.Shuffle();
             }
 
@@ -1724,12 +1719,12 @@ public static class RoleGen
                     maxCrewSum = maxCA + maxCI + maxCK + maxCrP + maxCS + maxCSv;
                 }
 
-                CrewAuditorRoles.Sort(maxCA);
-                CrewInvestigativeRoles.Sort(maxCI);
-                CrewKillingRoles.Sort(maxCK);
-                CrewProtectiveRoles.Sort(maxCrP);
-                CrewSupportRoles.Sort(maxCS);
-                CrewSovereignRoles.Sort(maxCSv);
+                CrewAuditorRoles = Sort(CrewAuditorRoles, maxCA);
+                CrewInvestigativeRoles = Sort(CrewInvestigativeRoles, maxCI);
+                CrewKillingRoles = Sort(CrewKillingRoles, maxCK);
+                CrewProtectiveRoles = Sort(CrewProtectiveRoles, maxCrP);
+                CrewSupportRoles = Sort(CrewSupportRoles, maxCS);
+                CrewSovereignRoles = Sort(CrewSovereignRoles, maxCSv);
 
                 CrewRoles.AddRanges(CrewAuditorRoles, CrewInvestigativeRoles, CrewKillingRoles, CrewSupportRoles, CrewProtectiveRoles, CrewSovereignRoles);
 
@@ -1739,7 +1734,7 @@ public static class RoleGen
                 while (minCrew > crew)
                     minCrew--;
 
-                CrewRoles.Sort(URandom.RandomRangeInt(minCrew, maxCrew + 1));
+                CrewRoles = Sort(CrewRoles, URandom.RandomRangeInt(minCrew, maxCrew + 1));
 
                 while (CrewRoles.Count < crew)
                     CrewRoles.Add(GenerateSpawnItem(LayerEnum.Crewmate));
@@ -1761,6 +1756,11 @@ public static class RoleGen
             IntruderRoles.Shuffle();
             NeutralRoles.Shuffle();
 
+            IntruderRoles = Sort(IntruderRoles, imps);
+            CrewRoles = Sort(CrewRoles, crew);
+            NeutralRoles = Sort(NeutralRoles, neut);
+            SyndicateRoles = Sort(SyndicateRoles, syn);
+
             LogInfo("All Any Sorting Done");
         }
 
@@ -1770,12 +1770,8 @@ public static class RoleGen
             IntruderRoles.AddRange(SyndicateRoles);
             SyndicateRoles.Clear();
         }
-        else
-            SyndicateRoles.Sort(syn);
 
-        IntruderRoles.Sort(CustomGameOptions.AltImps ? syn : imps);
-        CrewRoles.Sort(crew);
-        NeutralRoles.Sort(neut);
+        AllRoles = new();
         AllRoles.AddRanges(IntruderRoles, CrewRoles, NeutralRoles, SyndicateRoles);
 
         if (!AllRoles.Any(x => x.ID == LayerEnum.Dracula) && AllRoles.Any(x => x.ID == LayerEnum.VampireHunter))
@@ -2145,7 +2141,6 @@ public static class RoleGen
 
     private static void GenAbilities()
     {
-        AllAbilities.Clear();
         var num = 0;
 
         if (CustomGameOptions.CrewAssassinOn > 0)
@@ -2226,7 +2221,7 @@ public static class RoleGen
             LogInfo("Snitch Done");
         }
 
-        if (CustomGameOptions.InsiderOn > 0 && CustomGameOptions.AnonymousVoting)
+        if (CustomGameOptions.InsiderOn > 0 && CustomGameOptions.AnonymousVoting != AnonVotes.Disabled)
         {
             num = CustomGameOptions.InsiderCount;
 
@@ -2378,7 +2373,7 @@ public static class RoleGen
         while (minAb > CustomPlayer.AllPlayers.Count)
             minAb--;
 
-        AllAbilities.Sort(URandom.RandomRangeInt(minAb, maxAb + 1));
+        AllAbilities = Sort(AllAbilities, URandom.RandomRangeInt(minAb, maxAb + 1));
 
         var canHaveIntruderAbility = CustomPlayer.AllPlayers;
         var canHaveNeutralAbility = CustomPlayer.AllPlayers;
@@ -2438,13 +2433,6 @@ public static class RoleGen
 
         canHavePolitician.RemoveAll(x => x.Is(Alignment.NeutralEvil) || x.Is(Alignment.NeutralBen) || x.Is(Alignment.NeutralNeo));
         canHavePolitician.Shuffle();
-
-        AllAbilities.Sort((a, b) =>
-        {
-            var a_ = 100 - a.Chance;
-            var b_ = 100 - b.Chance;
-            return a_.CompareTo(b_);
-        });
 
         while (AllAbilities.Count > CustomPlayer.AllPlayers.Count)
             AllAbilities.Remove(AllAbilities[^1]);
@@ -2544,7 +2532,6 @@ public static class RoleGen
 
     private static void GenObjectifiers()
     {
-        AllObjectifiers.Clear();
         var num = 0;
 
         if (CustomGameOptions.LoversOn > 0 && GameData.Instance.PlayerCount > 4)
@@ -2700,7 +2687,7 @@ public static class RoleGen
         while (minObj > CustomPlayer.AllPlayers.Count)
             minObj--;
 
-        AllObjectifiers.Sort(URandom.RandomRangeInt(minObj, maxObj + 1));
+        AllObjectifiers = Sort(AllObjectifiers, URandom.RandomRangeInt(minObj, maxObj + 1));
 
         var canHaveLoverorRival = CustomPlayer.AllPlayers;
         var canHaveNeutralObjectifier = CustomPlayer.AllPlayers;
@@ -2726,13 +2713,6 @@ public static class RoleGen
 
         canHaveDefector.RemoveAll(x => x == PureCrew || !(x.Is(Faction.Intruder) || x.Is(Faction.Syndicate)));
         canHaveDefector.Shuffle();
-
-        AllObjectifiers.Sort((a, b) =>
-        {
-            var a_ = 100 - a.Chance;
-            var b_ = 100 - b.Chance;
-            return a_.CompareTo(b_);
-        });
 
         while (AllObjectifiers.Count > CustomPlayer.AllPlayers.Count)
             AllObjectifiers.Remove(AllObjectifiers[^1]);
@@ -2820,7 +2800,6 @@ public static class RoleGen
 
     private static void GenModifiers()
     {
-        AllModifiers.Clear();
         var num = 0;
 
         if (CustomGameOptions.DiseasedOn > 0)
@@ -3015,7 +2994,7 @@ public static class RoleGen
         while (minMod > CustomPlayer.AllPlayers.Count)
             minMod--;
 
-        AllModifiers.Sort(URandom.RandomRangeInt(minMod, maxMod + 1));
+        AllModifiers = Sort(AllModifiers, URandom.RandomRangeInt(minMod, maxMod + 1));
 
         var canHaveBait = CustomPlayer.AllPlayers;
         var canHaveDiseased = CustomPlayer.AllPlayers;
@@ -3038,13 +3017,6 @@ public static class RoleGen
             (x.Is(LayerEnum.Executioner) && !CustomGameOptions.ExecutionerButton) || x.Is(LayerEnum.ButtonBarry) || (x.Is(LayerEnum.Politician) && !CustomGameOptions.PoliticianButton) ||
             (!CustomGameOptions.DictatorButton && x.Is(LayerEnum.Dictator)) || (!CustomGameOptions.MonarchButton && x.Is(LayerEnum.Monarch)));
         canHaveShy.Shuffle();
-
-        AllModifiers.Sort((a, b) =>
-        {
-            var a_ = 100 - a.Chance;
-            var b_ = 100 - b.Chance;
-            return a_.CompareTo(b_);
-        });
 
         while (AllModifiers.Count > CustomPlayer.AllPlayers.Count)
             AllModifiers.Remove(AllModifiers[^1]);
@@ -3522,8 +3494,6 @@ public static class RoleGen
         UpdateNames.PlayerNames.Clear();
         UpdateNames.ColorNames.Clear();
 
-        ConfirmEjects.LastExiled = null;
-
         Role.AllRoles.Clear();
         Objectifier.AllObjectifiers.Clear();
         Modifier.AllModifiers.Clear();
@@ -3536,6 +3506,9 @@ public static class RoleGen
         SetPostmortals.EscapedPlayers.Clear();
 
         AllRoles.Clear();
+        AllModifiers.Clear();
+        AllAbilities.Clear();
+        AllObjectifiers.Clear();
 
         CrewAuditorRoles.Clear();
         CrewInvestigativeRoles.Clear();
@@ -3552,10 +3525,11 @@ public static class RoleGen
         NeutralHarbingerRoles.Clear();
         NeutralRoles.Clear();
 
-        IntruderDeceptionRoles.Clear();
-        IntruderConcealingRoles.Clear();
+        IntruderHeadRoles.Clear();
         IntruderKillingRoles.Clear();
         IntruderSupportRoles.Clear();
+        IntruderDeceptionRoles.Clear();
+        IntruderConcealingRoles.Clear();
         IntruderRoles.Clear();
 
         SyndicateDisruptionRoles.Clear();
@@ -3621,7 +3595,6 @@ public static class RoleGen
         CallRpc(CustomRPC.Misc, MiscRPC.Start);
         LogInfo("Cleared Variables");
         LogInfo("Role Gen Start");
-        AllRoles.Clear();
 
         if (IsKilling)
             GenKilling();
@@ -3637,12 +3610,6 @@ public static class RoleGen
             GenClassicCustomAA();
 
         var players = CustomPlayer.AllPlayers;
-        AllRoles.Sort((a, b) =>
-        {
-            var a_ = 100 - a.Chance;
-            var b_ = 100 - b.Chance;
-            return a_.CompareTo(b_);
-        });
 
         while (AllRoles.Count > players.Count)
             AllRoles.Remove(AllRoles[^1]);
@@ -3677,7 +3644,7 @@ public static class RoleGen
             LogInfo("Assigned Drive");
         }
 
-        PureCrew = CustomPlayer.AllPlayers.Where(x => x.Is(Faction.Crew)).ToList().Random();
+        PureCrew = CustomPlayer.AllPlayers.Where(x => x.Is(Faction.Crew)).Random();
         CallRpc(CustomRPC.Misc, MiscRPC.SyncPureCrew, PureCrew);
         LogInfo("Synced Pure Crew");
 

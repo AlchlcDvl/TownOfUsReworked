@@ -114,7 +114,7 @@ public static class CustomColors
         { 12, "Darker" }, //Maroon
         { 13, "Lighter" }, //Rose
         { 14, "Lighter" }, //Banana
-        { 15, "Darker" }, //Gray
+        { 15, "Darker" }, //Grey
         { 16, "Darker" }, //Tan
         { 17, "Lighter" }, //Coral
         //New colors

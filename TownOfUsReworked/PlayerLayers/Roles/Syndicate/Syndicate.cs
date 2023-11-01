@@ -17,7 +17,7 @@ public abstract class Syndicate : Role
         FactionColor = Colors.Syndicate;
         Objectives = () => SyndicateWinCon;
         KillButton = new(this, "SyndicateKill", AbilityTypes.Target, "ActionSecondary", Kill, CustomGameOptions.CDKillCd, Exception);
-        Player.Data.SetImpostor(true);
+        Data.SetImpostor(true);
         IsPromoted = false;
     }
 
@@ -59,7 +59,7 @@ public abstract class Syndicate : Role
         var interact = Interact(Player, KillButton.TargetPlayer, true);
 
         if (interact.AbilityUsed || interact.Reset)
-            KillButton.StartCooldown(CooldownType.Reset);
+            KillButton.StartCooldown();
         else if (interact.Protected)
             KillButton.StartCooldown(CooldownType.GuardianAngel);
         else if (interact.Vested)

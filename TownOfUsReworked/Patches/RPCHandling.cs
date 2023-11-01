@@ -121,7 +121,7 @@ public static class RPCHandling
                     case MiscRPC.SetColor:
                         var player = reader.ReadPlayer();
                         player.SetColor(reader.ReadByte());
-                        UpdateNames.ColorNames[player.PlayerId] = TranslationController.Instance.GetString(Palette.ColorNames[player.CurrentOutfit.ColorId]);
+                        UpdateNames.ColorNames[player.PlayerId] = player.Data.ColorName.Replace("(", "").Replace(")", "");
                         break;
 
                     case MiscRPC.SyncSummary:
@@ -161,14 +161,14 @@ public static class RPCHandling
 
                     case MiscRPC.SetSettings:
                         var map = reader.ReadByte();
-                        TownOfUsReworked.NormalOptions.MapId = map;
+                        TownOfUsReworked.NormalOptions.MapId = MapPatches.CurrentMap = map;
                         TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.Scientist, 0, 0);
                         TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.Engineer, 0, 0);
                         TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.GuardianAngel, 0, 0);
                         TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.Shapeshifter, 0, 0);
                         TownOfUsReworked.NormalOptions.CrewLightMod = CustomGameOptions.CrewVision;
                         TownOfUsReworked.NormalOptions.ImpostorLightMod = CustomGameOptions.IntruderVision;
-                        TownOfUsReworked.NormalOptions.AnonymousVotes = CustomGameOptions.AnonymousVoting;
+                        TownOfUsReworked.NormalOptions.AnonymousVotes = CustomGameOptions.AnonymousVoting != AnonVotes.Disabled;
                         TownOfUsReworked.NormalOptions.VisualTasks = CustomGameOptions.VisualTasks;
                         TownOfUsReworked.NormalOptions.PlayerSpeedMod = CustomGameOptions.PlayerSpeed;
                         TownOfUsReworked.NormalOptions.NumImpostors = CustomGameOptions.IntruderCount;

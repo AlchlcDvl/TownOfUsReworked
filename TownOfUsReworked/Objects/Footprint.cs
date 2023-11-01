@@ -10,7 +10,8 @@ public class Footprint
     private readonly Vector2 Velocity;
     public Color Color { get; set; }
     public readonly Vector3 Position;
-    private static bool Grey => CustomGameOptions.AnonymousFootPrint || HudUpdate.IsCamoed;
+    private static bool Grey => CustomGameOptions.AnonymousFootPrint == FootprintVisibility.AlwaysCamouflaged || (HudUpdate.IsCamoed && CustomGameOptions.AnonymousFootPrint ==
+        FootprintVisibility.OnlyWhenCamouflaged);
     public static readonly Dictionary<byte, int> OddEven = new();
 
     public Footprint(PlayerControl player)

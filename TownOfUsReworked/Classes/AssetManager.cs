@@ -44,21 +44,21 @@ public static class AssetManager
     {
         if (!Sprites.ContainsKey(path))
         {
-            LogError($"{path} does not exist");
+            //LogError($"{path} does not exist");
             return Meeting ? Sprites["MeetingPlaceholder"] : Sprites["Placeholder"];
         }
 
         return Sprites[path];
     }
 
-    public static void Play(string path, bool loop = false)
+    public static void Play(string path, bool loop = false, float volume = 1f)
     {
         try
         {
             Stop(path);
 
             if (Constants.ShouldPlaySfx())
-                SoundManager.Instance.PlaySound(GetAudio(path), loop);
+                SoundManager.Instance.PlaySound(GetAudio(path), loop, volume);
         }
         catch
         {

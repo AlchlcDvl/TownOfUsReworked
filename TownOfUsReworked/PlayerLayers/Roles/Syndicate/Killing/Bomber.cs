@@ -40,19 +40,19 @@ public class Bomber : Syndicate
     public void Place()
     {
         Bombs.Add(new(Player, HoldsDrive));
-        BombButton.StartCooldown(CooldownType.Reset);
+        BombButton.StartCooldown();
 
         if (CustomGameOptions.BombCooldownsLinked)
-            DetonateButton.StartCooldown(CooldownType.Reset);
+            DetonateButton.StartCooldown();
     }
 
     public void Detonate()
     {
         Bomb.DetonateBombs(Bombs);
-        DetonateButton.StartCooldown(CooldownType.Reset);
+        DetonateButton.StartCooldown();
 
         if (CustomGameOptions.BombCooldownsLinked)
-            BombButton.StartCooldown(CooldownType.Reset);
+            BombButton.StartCooldown();
     }
 
     public override void UpdateHud(HudManager __instance)

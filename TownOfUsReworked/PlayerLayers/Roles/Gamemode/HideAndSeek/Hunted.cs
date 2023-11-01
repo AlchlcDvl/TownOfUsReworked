@@ -11,6 +11,6 @@ public class Hunted : HideAndSeek
     public Hunted(PlayerControl player) : base(player)
     {
         Objectives = () => "- Finish your tasks before the others";
-        Player.Data.SetImpostor(false);
+        Data.SetImpostor(false);
     }
 }

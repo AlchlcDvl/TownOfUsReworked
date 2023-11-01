@@ -82,7 +82,7 @@ public class Shapeshifter : Syndicate
         if (interact.AbilityUsed)
             ShapeshiftPlayer1 = player;
         else if (interact.Reset)
-            ShapeshiftButton.StartCooldown(CooldownType.Reset);
+            ShapeshiftButton.StartCooldown();
         else if (interact.Protected)
             ShapeshiftButton.StartCooldown(CooldownType.GuardianAngel);
     }
@@ -94,7 +94,7 @@ public class Shapeshifter : Syndicate
         if (interact.AbilityUsed)
             ShapeshiftPlayer2 = player;
         else if (interact.Reset)
-            ShapeshiftButton.StartCooldown(CooldownType.Reset);
+            ShapeshiftButton.StartCooldown();
         else if (interact.Protected)
             ShapeshiftButton.StartCooldown(CooldownType.GuardianAngel);
     }

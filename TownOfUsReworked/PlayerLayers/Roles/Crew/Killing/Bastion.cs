@@ -15,8 +15,15 @@ public class Bastion : Crew
     {
         Alignment = Alignment.CrewKill;
         BombedIDs = new();
-        BombButton = new(this, "VentBomb", AbilityTypes.Vent, "ActionSecondary", Bomb, CustomGameOptions.BastionCd, CustomGameOptions.MaxBombs, Exception);
+        BombButton = new(this, $"{SpriteName}VentBomb", AbilityTypes.Vent, "ActionSecondary", Bomb, CustomGameOptions.BastionCd, CustomGameOptions.MaxBombs, Exception);
     }
+
+    public static string SpriteName => MapPatches.CurrentMap switch
+    {
+        2 => "Polus",
+        3 => "Plant",
+        _ => "Metal"
+    };
 
     public bool Exception(Vent vent) => BombedIDs.Contains(vent.Id);
 

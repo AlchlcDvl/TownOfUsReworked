@@ -138,7 +138,7 @@ public class BountyHunter : Neutral
             RoleHintGiven = true;
         }
 
-        if (string.IsNullOrEmpty(something))
+        if (IsNullEmptyOrWhiteSpace(something))
             return;
 
         //Ensures only the Bounty Hunter sees this
@@ -180,10 +180,10 @@ public class BountyHunter : Neutral
     {
         TargetFound = GuessButton.TargetPlayer == TargetPlayer;
         Flash(new(TargetFound ? 0 : 255, TargetFound ? 255 : 0, 0, 255));
-        GuessButton.StartCooldown(CooldownType.Reset);
+        GuessButton.StartCooldown();
 
         if (TargetFound)
-            HuntButton.StartCooldown(CooldownType.Reset);
+            HuntButton.StartCooldown();
     }
 
     public void Hunt()
@@ -191,7 +191,7 @@ public class BountyHunter : Neutral
         if (HuntButton.TargetPlayer != TargetPlayer && !TargetKilled)
         {
             Flash(new(255, 0, 0, 255));
-            HuntButton.StartCooldown(CooldownType.Reset);
+            HuntButton.StartCooldown();
         }
         else if (HuntButton.TargetPlayer == TargetPlayer && !TargetKilled)
         {
@@ -201,7 +201,7 @@ public class BountyHunter : Neutral
                 RpcMurderPlayer(Player, HuntButton.TargetPlayer);
 
             TargetKilled = true;
-            HuntButton.StartCooldown(CooldownType.Reset);
+            HuntButton.StartCooldown();
             CallRpc(CustomRPC.WinLose, WinLoseRPC.BountyHunterWin, this);
         }
         else

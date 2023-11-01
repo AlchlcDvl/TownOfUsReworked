@@ -106,8 +106,8 @@ public class Collider : Syndicate
 
             if (CustomGameOptions.CollideResetsCooldown)
             {
-                PositiveButton.StartCooldown(CooldownType.Reset);
-                NegativeButton.StartCooldown(CooldownType.Reset);
+                PositiveButton.StartCooldown();
+                NegativeButton.StartCooldown();
             }
         }
         else if (GetDistBetweenPlayers(Player, Negative) <= Range && HoldsDrive && ChargeButton.EffectActive)
@@ -122,8 +122,8 @@ public class Collider : Syndicate
 
             if (CustomGameOptions.CollideResetsCooldown)
             {
-                PositiveButton.StartCooldown(CooldownType.Reset);
-                NegativeButton.StartCooldown(CooldownType.Reset);
+                PositiveButton.StartCooldown();
+                NegativeButton.StartCooldown();
             }
         }
         else if (GetDistBetweenPlayers(Player, Positive) <= Range && HoldsDrive && ChargeButton.EffectActive)
@@ -138,8 +138,8 @@ public class Collider : Syndicate
 
             if (CustomGameOptions.CollideResetsCooldown)
             {
-                PositiveButton.StartCooldown(CooldownType.Reset);
-                NegativeButton.StartCooldown(CooldownType.Reset);
+                PositiveButton.StartCooldown();
+                NegativeButton.StartCooldown();
             }
         }
     }

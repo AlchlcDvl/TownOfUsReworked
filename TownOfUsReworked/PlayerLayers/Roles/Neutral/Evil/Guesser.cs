@@ -55,8 +55,6 @@ public class Guesser : Neutral
     public bool Exception(PlayerControl player) => player == TargetPlayer || player.IsLinkedTo(Player) || player.Is(Alignment.CrewInvest) || (player.Is(SubFaction) && SubFaction !=
         SubFaction.None);
 
-    public bool CanTarget() => TargetPlayer == null;
-
     public void SelectTarget()
     {
         if (TargetPlayer != null)
@@ -296,7 +294,13 @@ public class Guesser : Neutral
         }
     }
 
-    public void TurnAct(List<Role> targets) => new Actor(Player) { PretendRoles = targets }.RoleUpdate(this);
+    public void TurnAct(List<Role> targets)
+    {
+        if (IsRoleList)
+            new Jester(Player).RoleUpdate(this);
+        else
+            new Actor(Player) { PretendRoles = targets }.RoleUpdate(this);
+    }
 
     public override void UpdateHud(HudManager __instance)
     {
@@ -423,7 +427,7 @@ public class Guesser : Neutral
             AlignmentHintGiven = true;
         }
 
-        if (string.IsNullOrEmpty(something))
+        if (IsNullEmptyOrWhiteSpace(something))
             return;
 
         //Ensures only the Guesser sees this

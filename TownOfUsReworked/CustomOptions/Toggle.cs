@@ -20,5 +20,5 @@ public class CustomToggleOption : CustomOption
         toggle.CheckMark.enabled = Get();
     }
 
-    public static implicit operator bool(CustomToggleOption option) => option.Get();
+    public static implicit operator bool(CustomToggleOption option) => option != null && option.Get();
 }

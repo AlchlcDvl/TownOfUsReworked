@@ -67,7 +67,7 @@ public class Enforcer : Intruder
             BombButton.Begin();
         }
         else if (interact.Reset)
-            BombButton.StartCooldown(CooldownType.Reset);
+            BombButton.StartCooldown();
         else if (interact.Protected)
             BombButton.StartCooldown(CooldownType.GuardianAngel);
     }

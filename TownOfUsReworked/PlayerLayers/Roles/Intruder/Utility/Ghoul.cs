@@ -55,7 +55,7 @@ public class Ghoul : Intruder
     {
         MarkedPlayer = MarkButton.TargetPlayer;
         CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, MarkedPlayer);
-        MarkButton.StartCooldown(CooldownType.Reset);
+        MarkButton.StartCooldown();
     }
 
     public void UnFade()

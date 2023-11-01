@@ -344,7 +344,7 @@ public static class SpeedNetworkPatch
 {
     public static void Postfix(CustomNetworkTransform __instance)
     {
-        if (!__instance.AmOwner && __instance.interpolateMovement != 0 && GameData.Instance)
+        if (!__instance.AmOwner && GameData.Instance && __instance.gameObject.GetComponent<PlayerControl>().CanMove)
             __instance.body.velocity *= CustomPlayer.Custom(__instance.gameObject.GetComponent<PlayerControl>()).SpeedFactor;
     }
 }
@@ -372,9 +372,15 @@ public static class ConstantsPatch
 {
     public static void Postfix(ref int __result)
     {
-        if (IsOnlineGame)
-            __result = Constants.GetVersion(2222, 0, 0, 0);
+        if (IsOnlineGame && __result % 50 < 25)
+            __result += 25;
     }
+}
+
+[HarmonyPatch(typeof(Constants), nameof(Constants.IsVersionModded))]
+public static class IsModdedPatch
+{
+    public static void Postfix(ref bool __result) => __result = true;
 }
 
 [HarmonyPatch(typeof(ActivityManager), nameof(ActivityManager.UpdateActivity))]
@@ -430,17 +436,15 @@ public static class LobbyBehaviourPatch
         DefaultOutfitAll();
         var count = MCIUtils.Clients.Count;
         MCIUtils.Clients.Clear();
-        MCIUtils.PlayerIdClientId.Clear();
+        MCIUtils.PlayerIdClientIDs.Clear();
+        MCIUtils.SavedPositions.Clear();
         DebuggerBehaviour.Instance.TestWindow.Enabled = TownOfUsReworked.MCIActive && IsLocalGame;
         DebuggerBehaviour.Instance.CooldownsWindow.Enabled = false;
 
-        if (count > 0)
+        if (count > 0 && TownOfUsReworked.Persistence)
         {
-            if (TownOfUsReworked.Persistence)
-            {
-                for (var i = 0; i < count; i++)
-                    MCIUtils.CreatePlayerInstance();
-            }
+            for (var i = 0; i < count; i++)
+                MCIUtils.CreatePlayerInstance();
         }
     }
 }

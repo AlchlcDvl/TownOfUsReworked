@@ -10,6 +10,9 @@ public static class BetterAirship
     {
         public static void Postfix()
         {
+            if (!CustomGameOptions.EnableBetterAirship)
+                return;
+
             var adminTable = UObject.FindObjectOfType<MapConsole>();
 
             if (CustomGameOptions.MoveAdmin != 0)
@@ -94,6 +97,9 @@ public static class BetterAirship
                 }
             }
 
+            if (!CustomGameOptions.EnableBetterAirship)
+                return true;
+
             if (!GameStarted && CustomGameOptions.SpawnType != AirshipSpawnType.Meeting)
             {
                 GameStarted = true;
@@ -146,12 +152,15 @@ public static class BetterAirship
         public static void Prefix() => GameStarted = false;
     }
 
-    [HarmonyPatch(typeof(HeliSabotageSystem), nameof(HeliSabotageSystem.RepairDamage))]
+    [HarmonyPatch(typeof(HeliSabotageSystem), nameof(HeliSabotageSystem.UpdateSystem))]
     public static class HeliCountdownPatch
     {
-        public static bool Prefix(HeliSabotageSystem __instance, ref byte amount)
+        public static bool Prefix(HeliSabotageSystem __instance, ref MessageReader msgReader)
         {
-            if ((HeliSabotageSystem.Tags)(amount & 240) == HeliSabotageSystem.Tags.DamageBit)
+            if (!CustomGameOptions.EnableBetterAirship)
+                return true;
+
+            if ((HeliSabotageSystem.Tags)(msgReader.ReadByte() & 240) == HeliSabotageSystem.Tags.DamageBit)
             {
                 __instance.Countdown = CustomGameOptions.CrashTimer;
                 HeliSabotageSystem.CharlesDuration = CustomGameOptions.CrashTimer;

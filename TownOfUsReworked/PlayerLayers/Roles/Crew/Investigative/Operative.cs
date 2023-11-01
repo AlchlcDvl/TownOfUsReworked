@@ -70,6 +70,6 @@ public class Operative : Crew
     public void PlaceBug()
     {
         Bugs.Add(new(Player));
-        BugButton.StartCooldown(CooldownType.Reset);
+        BugButton.StartCooldown();
     }
 }

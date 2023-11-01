@@ -58,7 +58,7 @@ public class CustomNumberOption : CustomOption
         number.ValueText.text = Format(Value, OtherValue);
     }
 
-    public static implicit operator float(CustomNumberOption option) => option.Get();
+    public static implicit operator float(CustomNumberOption option) => option == null ? 0f : option.Get();
 
-    public static implicit operator int(CustomNumberOption option) => (int)option.Get();
+    public static implicit operator int(CustomNumberOption option) => option == null ? 0 : (int)option.Get();
 }
