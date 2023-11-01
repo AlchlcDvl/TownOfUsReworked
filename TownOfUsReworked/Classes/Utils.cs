@@ -884,6 +884,11 @@ public static class Utils
                     fs = reactor.IsActive;
                     break;
 
+                case 5:
+                    var reactor2 = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<HeliSabotageSystem>();
+                    fs = reactor2.IsActive;
+                    break;
+
                 case 6:
                     if (!SubLoaded)
                         break;

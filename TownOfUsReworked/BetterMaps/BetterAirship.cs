@@ -162,8 +162,7 @@ public static class BetterAirship
 
             if ((HeliSabotageSystem.Tags)(msgReader.ReadByte() & 240) == HeliSabotageSystem.Tags.DamageBit)
             {
-                __instance.Countdown = CustomGameOptions.CrashTimer;
-                HeliSabotageSystem.CharlesDuration = CustomGameOptions.CrashTimer;
+                __instance.Countdown = HeliSabotageSystem.CharlesDuration = CustomGameOptions.CrashTimer;
                 __instance.CompletedConsoles.Clear();
                 __instance.ActiveConsoles.Clear();
                 __instance.codeResetTimer = -1f;
