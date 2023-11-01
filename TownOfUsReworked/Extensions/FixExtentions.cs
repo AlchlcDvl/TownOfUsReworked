@@ -123,6 +123,19 @@ public static class FixExtentions
 
                 break;
 
+            case 5:
+                var comms7 = ShipStatus.Instance.Systems[SystemTypes.Comms].Cast<HudOverrideSystemType>();
+
+                if (comms7.IsActive)
+                    FixComms();
+
+                var reactor3 = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
+
+                if (reactor3.IsActive)
+                    FixReactor(SystemTypes.Reactor);
+
+                break;
+
             case 6:
                 if (!SubLoaded)
                     break;

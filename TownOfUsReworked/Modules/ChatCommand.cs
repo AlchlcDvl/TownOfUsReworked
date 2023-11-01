@@ -299,12 +299,11 @@ public class ChatCommand
     private static void Help(ChatController __instance)
     {
         var setColor = TownOfUsReworked.IsTest ? "/setcolour or /setcolor, /setname" : "";
-        var whisper = CustomGameOptions.Whispers ? "/whisper" : "";
         var comma = setColor.Length == 0 ? "" : ", ";
         var kickBan = comma + (AmongUsClient.Instance.AmHost && AmongUsClient.Instance.CanBan() ? "/kick, /ban, /clearlobby" : "");
         var test = TownOfUsReworked.IsTest ? ", /testargs, /testargless, /rpc" : "";
         var lobby = setColor + kickBan != "" ? $"\n\nCommands available in lobby:\n{setColor}{kickBan}" : "";
-        Run(__instance, "<color=#0000FFFF>✿ Help Menu ✿</color>", $"Commands available all the time:\n/help, /controls, /summary{test}\n\nCommands available in game:\n{whisper}{lobby}");
+        Run(__instance, "<color=#0000FFFF>✿ Help Menu ✿</color>", $"Commands available all the time:\n/help, /controls, /summary, /whisper{test}\n\nCommands available in game:\n{lobby}");
     }
 
     private static void Controls(ChatController __instance) => Run(__instance, "<color=#6697FFFF>◆ Controls ◆</color>", "Here are the controls:\nF1 - Start up the MCI control panel (local "
