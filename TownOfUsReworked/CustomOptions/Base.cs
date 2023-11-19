@@ -12,7 +12,7 @@ public class CustomOption
     public OptionBehaviour Setting { get; set; }
     public readonly CustomOptionType Type;
     public object[] Parents { get; set; }
-    public readonly bool All;
+    public bool All { get; set; }
     public bool Active => All ? Parents.All(IsActive) : Parents.Any(IsActive);
 
     public CustomOption(int id, MultiMenu menu, string name, CustomOptionType type, object defaultValue, object otherDefault, object[] parent, bool all = false)
@@ -51,7 +51,7 @@ public class CustomOption
         if (option == null)
             return true;
         else if (option is CustomToggleOption toggle)
-            return toggle.Get() && toggle.Active;
+            return toggle && toggle.Active;
         else if (option is CustomLayersOption layers)
             return layers.GetChance() > 0 && !IsRoleList && !IsVanilla && layers.Active;
         else if (option is CustomHeaderOption header)
@@ -115,6 +115,10 @@ public class CustomOption
             role.CountText.text = $"x{OtherValue}";
         }
     }
+
+    public void SetParents(params object[] objects) => Parents = objects;
+
+    public void SetAll(bool all) => All = all;
 
     public static void SaveSettings(string fileName)
     {

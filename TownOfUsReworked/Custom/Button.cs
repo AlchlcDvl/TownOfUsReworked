@@ -3,6 +3,7 @@ namespace TownOfUsReworked.Custom;
 public class CustomButton
 {
     public static readonly List<CustomButton> AllButtons = new();
+
     public ActionButton Base { get; set; }
     public PlayerLayer Owner { get; }
     public string Sprite { get; }
@@ -41,8 +42,11 @@ public class CustomButton
     public PlayerControl TargetPlayer { get; set; }
     public DeadBody TargetBody { get; set; }
     public Vent TargetVent { get; set; }
+    public Console TargetConsole { get; set; }
     public Exclude1 PlayerException { get; set; }
     public Exclude2 VentException { get; set; }
+    public Exclude3 ConsoleException { get; set; }
+    public bool ClickedAgain { get; set; }
     private GameObject Block { get; set; }
     public string ID { get; }
     private bool Local => Owner.Local || TownOfUsReworked.MCIActive;
@@ -51,12 +55,14 @@ public class CustomButton
     private bool KeyDown => Rewired.ReInput.players.GetPlayer(0).GetButtonDown(Keybind);
     private bool Active => IsRoaming && Owner.Local && ButtonsActive && !Disabled && Owner.IsDead == PostDeath;
     private IEnumerable<PlayerControl> PossibleTargets1 => CustomPlayer.AllPlayers.Where(x => x != Owner.Player && !x.IsPostmortal() && !x.Data.IsDead && (!Exception(x) || x.IsMoving()));
-    private IEnumerable<Vent> PossibleTargets2 => AllVents.Where(x => !Exception(x));
-    private IEnumerable<DeadBody> PossibleTargets3 => AllBodies.Where(x => !Exception(x));
+    private IEnumerable<DeadBody> PossibleTargets2 => AllBodies.Where(x => !Exception(x));
+    private IEnumerable<Vent> PossibleTargets3 => AllMapVents.Where(x => !Exception(x));
+    private IEnumerable<Console> PossibleTargets4 => AllConsoles.Where(x => !Exception(x));
     private static bool ButtonsActive => HUD.UseButton.isActiveAndEnabled || HUD.PetButton.isActiveAndEnabled;
 
     public delegate bool Exclude1(PlayerControl player);
     public delegate bool Exclude2(Vent vent);
+    public delegate bool Exclude3(Console console);
     public delegate void EffectVoid();
     public delegate void EffectStartVoid();
     public delegate void EffectEndVoid();
@@ -95,7 +101,7 @@ public class CustomButton
         sprite, type, keybind, click, cooldown, null, null, null, null, duration, null, null, null, 0f, uses, null, postDeath) {}
 
     public CustomButton(PlayerLayer owner, string sprite, AbilityTypes type, string keybind, Action click, float cooldown, int uses, Exclude2 exception2, bool postDeath = false) : this(owner,
-        sprite, type, keybind, click, cooldown, null, null, null, null, 0f, null, null, null, 0f, uses, null, exception2, postDeath) {}
+        sprite, type, keybind, click, cooldown, null, null, null, null, 0f, null, null, null, 0f, uses, null, exception2, null, postDeath) {}
 
     public CustomButton(PlayerLayer owner, string sprite, AbilityTypes type, string keybind, Action click, float cooldown, float duration, EffectEndVoid offEffect, bool postDeath = false) :
         this(owner, sprite, type, keybind, click, cooldown, null, null, null, offEffect, duration, null, null, null, 0f, 0, null, postDeath) {}
@@ -132,11 +138,12 @@ public class CustomButton
 
     private CustomButton(PlayerLayer owner, string sprite, AbilityTypes type, string keybind, Action click, float cooldown, Exclude1 exception1, EffectVoid effect, EffectStartVoid onEffect,
         EffectEndVoid offEffect, float duration, DelayVoid actionDelay, DelayStartVoid delayStart, DelayEndVoid delayEnd, float delay, int uses, CoUpdate update, bool postDeath = false) :
-        this(owner, sprite, type, keybind, click, cooldown, exception1, effect, onEffect, offEffect, duration, actionDelay, delayStart, delayEnd, delay, uses, update, null, postDeath) {}
+        this(owner, sprite, type, keybind, click, cooldown, exception1, effect, onEffect, offEffect, duration, actionDelay, delayStart, delayEnd, delay, uses, update, null, null, postDeath)
+        {}
 
     private CustomButton(PlayerLayer owner, string sprite, AbilityTypes type, string keybind, Action click, float cooldown, Exclude1 exception1, EffectVoid effect, EffectStartVoid onEffect,
-        EffectEndVoid offEffect, float duration, DelayVoid actionDelay, DelayStartVoid delayStart, DelayEndVoid delayEnd, float delay, int uses, CoUpdate update, Exclude2 exception2, bool
-        postDeath = false)
+        EffectEndVoid offEffect, float duration, DelayVoid actionDelay, DelayStartVoid delayStart, DelayEndVoid delayEnd, float delay, int uses, CoUpdate update, Exclude2 exception2,
+        Exclude3 exception3, bool postDeath = false)
     {
         Owner = owner;
         Sprite = sprite;
@@ -146,6 +153,7 @@ public class CustomButton
         PostDeath = postDeath;
         PlayerException = exception1 ?? BlankFalse;
         VentException = exception2 ?? BlankFalse;
+        ConsoleException = exception3 ?? BlankFalse;
         ID = Sprite + Owner.Name + Owner.PlayerName + AllButtons.Count;
         Cooldown = cooldown;
         Effect = effect ?? BlankVoid;
@@ -207,16 +215,19 @@ public class CustomButton
             return PlayerException(PlayerByBody(body));
         else if (obj is Vent vent)
             return VentException(vent);
+        else if (obj is Console console)
+            return ConsoleException(console);
         else
             return false;
     }
 
-    public void StartCooldown(CooldownType type = CooldownType.Reset) => CooldownTime = type switch
+    public void StartCooldown(CooldownType type = CooldownType.Reset, float cooldown = 0f) => CooldownTime = type switch
     {
         CooldownType.Start => CustomGameOptions.EnableInitialCds ? CustomGameOptions.InitialCooldowns : MaxCooldown,
         CooldownType.Meeting => CustomGameOptions.EnableMeetingCds ? CustomGameOptions.MeetingCooldowns : MaxCooldown,
         CooldownType.GuardianAngel => CustomGameOptions.ProtectKCReset,
         CooldownType.Survivor => CustomGameOptions.VestKCReset,
+        CooldownType.Custom => cooldown,
         CooldownType.Reset or _ => MaxCooldown
     };
 
@@ -229,6 +240,10 @@ public class CustomButton
             if (HasUses)
                 Uses--;
         }
+        else if (DelayActive || EffectActive)
+            ClickedAgain = true;
+
+        DisableTarget();
     }
 
     public void Begin()
@@ -260,6 +275,7 @@ public class CustomButton
         OnEffectEnd();
         EffectEnabled = false;
         End = false;
+        ClickedAgain = false;
         StartCooldown();
     }
 
@@ -283,6 +299,8 @@ public class CustomButton
     {
         OnDelayEnd();
         DelayEnabled = false;
+        End = false;
+        ClickedAgain = false;
         ButtonEffect();
     }
 
@@ -307,17 +325,23 @@ public class CustomButton
 
     private void SetDeadTarget()
     {
-        TargetBody = Owner.Player.GetClosestBody(PossibleTargets3);
+        TargetBody = Owner.Player.GetClosestBody(PossibleTargets2);
         Targeting = TargetBody != null;
         AllBodies.ForEach(x => x.MyRend().SetOutline(x == TargetBody && Clickable ? Owner.Color : null));
     }
 
     private void SetVentTarget()
     {
-        TargetVent = Owner.Player.GetClosestVent(PossibleTargets2);
+        TargetVent = Owner.Player.GetClosestVent(PossibleTargets3);
         Targeting = TargetVent != null;
-        AllVents.ForEach(x => x.MyRend().SetOutline(x == TargetVent && Clickable ? Owner.Color : null));
-        AllVents.ForEach(x => x.MyRend().material.SetColor("_AddColor", Targeting ? Owner.Color : UColor.clear));
+        AllMapVents.ForEach(x => x.MyRend().SetOutline(x == TargetVent && Clickable ? Owner.Color : null));
+    }
+
+    private void SetConsoleTarget()
+    {
+        TargetConsole = Owner.Player.GetClosestConsole(PossibleTargets4);
+        Targeting = TargetConsole != null;
+        AllConsoles.ForEach(x => x.MyRend().SetOutline(x == TargetConsole && Clickable ? Owner.Color : null));
     }
 
     private void SetNoTarget() => Targeting = true;
@@ -330,9 +354,14 @@ public class CustomButton
             SetDeadTarget();
         else if (Type == AbilityTypes.Vent)
             SetVentTarget();
+        else if (Type == AbilityTypes.Console)
+            SetConsoleTarget();
         else if (Type == AbilityTypes.Targetless)
             SetNoTarget();
+    }
 
+    private void EnableDisable()
+    {
         if (EffectActive || Clickable || DelayActive)
             Base.SetEnabled();
         else
@@ -389,23 +418,21 @@ public class CustomButton
         if (usable && Disabled && !(HasUses && Uses <= 0))
             Enable();
 
-        Base.buttonLabelText.text = Blocked ? "BLOCKED" : label;
+        Base.buttonLabelText.text = (Blocked ? "BLOCKED" : label).ToLower();
         MaxCooldown = PostDeath ? Cooldown : Owner.Player.GetModifiedCooldown(Cooldown, difference, multiplier);
         Base.gameObject.SetActive(Active);
         Block.SetActive(Blocked && Active);
-        SetTarget();
         Usable = usable && !(HasUses && Uses <= 0);
+
+        if (!EffectActive && !DelayActive && !CooldownActive)
+            SetTarget();
+
         Clickable = Base && !EffectActive && usable && condition && !Meeting && !Blocked && !DelayActive && !Owner.Player.CannotUse() && Owner.Local && Targeting && !Ejection && !Disabled &&
             !CooldownActive && !(HasUses && Uses <= 0) && Base.isActiveAndEnabled && Targeting;
+        EnableDisable();
     }
 
-    public void Update3(bool end = false)
-    {
-        if (Owner.Player == null)
-            return;
-
-        End = end;
-    }
+    public void Update3(bool end = false) => End = Owner.Player == null || end || ClickedAgain;
 
     private void DisableTarget()
     {
@@ -425,8 +452,12 @@ public class CustomButton
 
             case AbilityTypes.Vent:
                 TargetVent?.MyRend()?.SetOutline(null);
-                TargetVent?.MyRend().material.SetColor("_AddColor", UColor.clear);
                 TargetVent = null;
+                break;
+
+            case AbilityTypes.Console:
+                TargetConsole?.MyRend()?.SetOutline(null);
+                TargetConsole = null;
                 break;
         }
 

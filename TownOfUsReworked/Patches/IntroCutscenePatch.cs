@@ -63,9 +63,5 @@ public static class CreatePlayerPatch
 [HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.SelectTeamToShow))]
 public static class OverrideShowTeam
 {
-    public static bool Prefix(ref ISystem.List<PlayerControl> __result)
-    {
-        __result = Role.LocalRole.Team().SystemToIl2Cpp();
-        return false;
-    }
+    public static void Postfix(ref ISystem.List<PlayerControl> __result) => __result = Role.LocalRole.Team().SystemToIl2Cpp();
 }

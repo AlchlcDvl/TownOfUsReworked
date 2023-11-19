@@ -40,6 +40,7 @@ public static class UpdateNames
             return "";
         }
 
+        player = player.IsMimicking(out var mimicked) ? mimicked : player;
         var name = "";
 
         if (HudUpdate.IsCamoed && player != CustomPlayer.Local && !CustomPlayer.LocalCustom.IsDead)
@@ -71,6 +72,9 @@ public static class UpdateNames
         {
             return ("", UColor.clear);
         }
+
+        if (player != CustomPlayer.Local && !DeadSeeEverything)
+            player = player.IsMimicking(out var mimicked) ? mimicked : player;
 
         var name = "";
         var color = UColor.white;

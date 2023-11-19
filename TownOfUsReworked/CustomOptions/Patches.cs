@@ -10,8 +10,6 @@ public static class SettingsPatches
     public static Import ImportButton;
     public static Preset PresetButton;
 
-    public static bool Changed;
-
     private static RoleOptionSetting RolePrefab;
 
     public static int SettingsPage;
@@ -20,20 +18,20 @@ public static class SettingsPatches
     [HarmonyPatch(typeof(IGameOptionsExtensions), nameof(IGameOptionsExtensions.ToHudString))]
     public static class GameOptionsDataPatch
     {
-        public static IEnumerable<MethodBase> TargetMethods() => typeof(GameOptionsData).GetMethods(typeof(string), typeof(int));
-
-        public static bool Prefix(ref string __result)
+        public static void Postfix(ref string __result)
         {
             if (IsHnS)
-                return true;
+                return;
 
             __result = Settings();
-            return false;
         }
     }
 
     public static string Settings()
     {
+        if (SettingsPage == 9)
+            return "";
+
         var builder = new StringBuilder();
         builder.AppendLine($"<b><size=160%>{Translate($"GameSettings.Page{SettingsPage + 1}")}</size></b>");
 
@@ -68,10 +66,10 @@ public static class SettingsPatches
         if (!CustomGameOptions.EnableObjectifiers && !IsRoleList)
             result--;
 
-        if (!IsRoleList)
-            result--;
-        else
-            result -= 3;
+        result--;
+
+        if (IsRoleList)
+            result -= 2;
 
         return result;
     }
@@ -190,7 +188,8 @@ public static class SettingsPatches
                 CurrentPage = 8;
         }
 
-        Changed = cached != SettingsPage;
+        if (cached != SettingsPage)
+            ToggleButtonVoid(SettingsPage);
     }
 
     private static Dictionary<CustomOption, OptionBehaviour> CreateOptions()
@@ -203,7 +202,7 @@ public static class SettingsPatches
         if (RolePrefab == null)
         {
             //Title = 1, Count - = 2, Count Val = 3, Count + = 4, Chance - = 5, Chance Val = 6, Chance + = 7
-            RolePrefab = UObject.Instantiate(UObject.FindObjectOfType<RoleOptionSetting>(true), null);
+            RolePrefab = UObject.Instantiate(UObject.FindObjectOfType<RoleOptionSetting>(true), null).DontDestroy();
             RolePrefab.name = "CustomLayersOptionPrefab";
             RolePrefab.transform.GetChild(0).localScale = new(1.6f, 1f, 1f);
             RolePrefab.transform.GetChild(1).localPosition = new(-1.05f, 0f, 0f);
@@ -257,7 +256,7 @@ public static class SettingsPatches
                 switch (option.Type)
                 {
                     case CustomOptionType.Number: //+ = 1, - = 2, Title = 3, Val = 4
-                        var number = UObject.Instantiate(numberPrefab, numberPrefab.transform.parent);
+                        var number = UObject.Instantiate(numberPrefab, numberPrefab.transform.parent).DontDestroy();
                         number.transform.GetChild(0).localScale = new(1.6f, 1f, 1f);
                         number.transform.GetChild(1).localPosition += new Vector3(1.4f, 0f, 0f);
                         number.transform.GetChild(2).localPosition += new Vector3(1.0f, 0f, 0f);
@@ -269,7 +268,7 @@ public static class SettingsPatches
                         break;
 
                     case CustomOptionType.String: //+ = 1, - = 2, Title = 3, Val = 4
-                        var str = UObject.Instantiate(keyValPrefab, keyValPrefab.transform.parent);
+                        var str = UObject.Instantiate(keyValPrefab, keyValPrefab.transform.parent).DontDestroy();
                         str.transform.GetChild(0).localScale = new(1.6f, 1f, 1f);
                         str.transform.GetChild(1).localPosition += new Vector3(1.4f, 0f, 0f);
                         str.transform.GetChild(2).localPosition += new Vector3(1.0f, 0f, 0f);
@@ -281,7 +280,7 @@ public static class SettingsPatches
                         break;
 
                     case CustomOptionType.Layers:
-                        var layer = UObject.Instantiate(RolePrefab, keyValPrefab.transform.parent);
+                        var layer = UObject.Instantiate(RolePrefab, keyValPrefab.transform.parent).DontDestroy();
                         layer.transform.GetChild(2).gameObject.SetActive(IsCustom);
                         layer.transform.GetChild(3).gameObject.SetActive(IsCustom);
                         layer.transform.GetChild(4).gameObject.SetActive(IsCustom);
@@ -289,7 +288,7 @@ public static class SettingsPatches
                         break;
 
                     case CustomOptionType.Toggle or CustomOptionType.Header or CustomOptionType.Entry: //Title = 0, Check = 2
-                        var toggle = UObject.Instantiate(togglePrefab, togglePrefab.transform.parent);
+                        var toggle = UObject.Instantiate(togglePrefab, togglePrefab.transform.parent).DontDestroy();
                         toggle.transform.GetChild(0).localPosition = new(-1.05f, 0f, 0f);
                         toggle.transform.GetChild(0).GetComponent<RectTransform>().sizeDelta = new(5.5f, 0.37f);
                         toggle.transform.GetChild(1).localScale = new(1.6f, 1f, 1f);
@@ -399,11 +398,11 @@ public static class SettingsPatches
                 var sliderInner = gameGroup?.FindChild("SliderInner");
 
                 if (sliderInner)
-                    sliderInner.GetComponent<GameOptionsMenu>().name = $"{Menus[index]}OptionsMenu".Replace(" ", "");
+                    sliderInner.GetComponent<GameOptionsMenu>().name = $"{Menus[index].Replace(" ", "")}OptionsMenu";
 
                 var ourSettingsButton = UObject.Instantiate(obj.gameObject, obj.transform.parent);
                 ourSettingsButton.transform.localPosition = new(-4.3f + (0.7f * (index + 1)), 0f, -5f);
-                ourSettingsButton.name = $"{Menus[index]}Tab".Replace(" ", "");
+                ourSettingsButton.name = $"{Menus[index].Replace(" ", "")}Tab";
 
                 var hatButton = ourSettingsButton.transform.GetChild(0); //TODO: Change to FindChild I guess to be sure
                 hatButton.GetChild(0).GetComponent<SpriteRenderer>().sprite = GetSprite(GetSettingSprite(index));
@@ -451,7 +450,7 @@ public static class SettingsPatches
             6 => Colors.Objectifier,
             7 => Colors.Abilities,
             8 => Colors.RoleList,
-            0 or _ => UColor.white
+            _ => UColor.white
         };
     }
 
@@ -485,9 +484,6 @@ public static class SettingsPatches
                 return;
 
             DisableVanillaMenus(__instance);
-
-            if (Changed)
-                ToggleButtonVoid(SettingsPage);
 
             if (TownOfUsReworked.NormalOptions.MaxPlayers != CustomGameOptions.LobbySize)
             {
@@ -1113,22 +1109,21 @@ public static class SettingsPatches
     private static void InitializeMoreButtons(OptionsMenuBehaviour __instance)
     {
         var moreOptions = UObject.Instantiate(Prefab, __instance.CensorChatButton.transform.parent);
-        var transform = __instance.CensorChatButton.transform;
         __instance.CensorChatButton.Text.transform.localScale = new(1 / 0.66f, 1, 1);
-        Origin ??= transform.localPosition;
+        Origin ??= __instance.CensorChatButton.transform.localPosition;
 
-        transform.localPosition = Origin.Value + (Vector3.left * 0.45f);
-        transform.localScale = new(0.66f, 1, 1);
+        __instance.CensorChatButton.transform.localPosition = Origin.Value + (Vector3.left * 0.45f);
+        __instance.CensorChatButton.transform.localScale = new(0.66f, 1, 1);
         __instance.EnableFriendInvitesButton.transform.localScale = new(0.66f, 1, 1);
         __instance.EnableFriendInvitesButton.transform.localPosition += Vector3.right * 0.5f;
         __instance.EnableFriendInvitesButton.Text.transform.localScale = new(1.2f, 1, 1);
 
         moreOptions.transform.localPosition = Origin.Value + (Vector3.right * 4f / 3f);
         moreOptions.transform.localScale = new(0.66f, 1, 1);
-
         moreOptions.gameObject.SetActive(true);
         moreOptions.Text.text = "Mod Options";
         moreOptions.Text.transform.localScale = new(1 / 0.66f, 1, 1);
+
         var moreOptionsButton = moreOptions.GetComponent<PassiveButton>();
         moreOptionsButton.OnClick = new();
         moreOptionsButton.OnClick.AddListener((Action)(() =>
@@ -1136,7 +1131,7 @@ public static class SettingsPatches
             if (!PopUp)
                 return;
 
-            if (__instance.transform.parent && __instance.transform.parent == HUD.transform)
+            if (__instance.transform.parent == HUD.transform)
                 PopUp.transform.SetParent(HUD.transform);
             else
             {
@@ -1145,6 +1140,7 @@ public static class SettingsPatches
             }
 
             PopUp.transform.localPosition = new(0, 0, -1000f);
+            __instance.gameObject.SetActive(false);
             RefreshOpen();
         }));
     }
@@ -1159,7 +1155,10 @@ public static class SettingsPatches
     private static void SetUpOptions()
     {
         if (PopUp.transform.GetComponentInChildren<ToggleButtonBehaviour>())
+        {
+            PopUp.transform.GetComponentsInChildren<ToggleButtonBehaviour>().ForEach(x => x.transform.localPosition = new(x.transform.localPosition.x, x.transform.localPosition.y, -100));
             return;
+        }
 
         for (var i = 0; i < ClientOptions.Length; i++)
         {
@@ -1175,22 +1174,22 @@ public static class SettingsPatches
             button.Text.fontSizeMin = button.Text.fontSizeMax = 1.8f;
             button.Text.GetComponent<RectTransform>().sizeDelta = new(2, 2);
 
-            button.name = info.Title.Replace(" ", "") + "Toggle";
+            button.name = $"{info.Title.Replace(" ", "")}Toggle";
             button.gameObject.SetActive(true);
 
             button.GetComponent<BoxCollider2D>().size = new(2.2f, .7f);
 
             var passiveButton = button.GetComponent<PassiveButton>();
             passiveButton.OnClick = new();
-            passiveButton.OnClick.AddListener((Action) (() =>
+            passiveButton.OnClick.AddListener((Action)(() =>
             {
                 button.onState = info.OnClick();
                 button.Background.color = button.onState ? UColor.green : UColor.red;
             }));
             passiveButton.OnMouseOver = new();
-            passiveButton.OnMouseOver.AddListener((Action) (() => button.Background.color = new Color32(34, 139, 34, byte.MaxValue)));
+            passiveButton.OnMouseOver.AddListener((Action)(() => button.Background.color = new Color32(34, 139, 34, 255)));
             passiveButton.OnMouseOut = new();
-            passiveButton.OnMouseOut.AddListener((Action) (() => button.Background.color = button.onState ? UColor.green : UColor.red));
+            passiveButton.OnMouseOut.AddListener((Action)(() => button.Background.color = button.onState ? UColor.green : UColor.red));
             button.gameObject.GetComponentsInChildren<SpriteRenderer>().ForEach(x => x.size = new(2.2f, 0.7f));
         }
     }

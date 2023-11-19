@@ -42,7 +42,7 @@ public class Import : CustomButtonOption
         Loading.Do = () => {};
         Loading.Setting.Cast<ToggleOption>().TitleText.text = "Loading...";
         __instance.Children = new[] { Loading.Setting };
-        yield return new WaitForSeconds(0.5f);
+        yield return Wait(0.5f);
         Loading.Setting.gameObject.Destroy();
         OldButtons.ForEach(x => x.gameObject.SetActive(true));
         __instance.Children = OldButtons.ToArray();
@@ -102,14 +102,14 @@ public class Import : CustomButtonOption
     private IEnumerator FlashGreen()
     {
         Setting.Cast<ToggleOption>().TitleText.color = UColor.green;
-        yield return new WaitForSeconds(0.5f);
+        yield return Wait(0.5f);
         Setting.Cast<ToggleOption>().TitleText.color = UColor.white;
     }
 
     private IEnumerator FlashRed()
     {
         Setting.Cast<ToggleOption>().TitleText.color = UColor.red;
-        yield return new WaitForSeconds(0.5f);
+        yield return Wait(0.5f);
         Setting.Cast<ToggleOption>().TitleText.color = UColor.white;
     }
 

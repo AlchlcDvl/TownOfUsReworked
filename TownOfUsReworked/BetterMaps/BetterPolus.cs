@@ -70,6 +70,9 @@ public static class PolusShipStatusPatch
             {
                 SpeciVent.Id = GetAvailableId();
                 IsVentModified = true;
+                var vents = ShipStatus.Instance.AllVents.ToList();
+                vents.Add(SpeciVent);
+                ShipStatus.Instance.AllVents = vents.ToArray();
             }
         }
     }
@@ -154,22 +157,22 @@ public static class PolusShipStatusPatch
     private static void FindRooms()
     {
         if (Comms == null)
-            Comms = AllObjects.Find(o => o.name == "Comms");
+            Comms = AllGameObjects.Find(o => o.name == "Comms");
 
         if (DropShip == null)
-            DropShip = AllObjects.Find(o => o.name == "Dropship");
+            DropShip = AllGameObjects.Find(o => o.name == "Dropship");
 
         if (Outside == null)
-            Outside = AllObjects.Find(o => o.name == "Outside");
+            Outside = AllGameObjects.Find(o => o.name == "Outside");
 
         if (Science == null)
-            Science = AllObjects.Find(o => o.name == "Science");
+            Science = AllGameObjects.Find(o => o.name == "Science");
 
         if (Specimen == null)
-            Specimen = AllObjects.Find(o => o.name == "RightPod");
+            Specimen = AllGameObjects.Find(o => o.name == "RightPod");
 
         if (Office == null)
-            Office = AllObjects.Find(o => o.name == "Office");
+            Office = AllGameObjects.Find(o => o.name == "Office");
 
         IsRoomsFetched = Comms && DropShip && Outside && Science && Specimen && Office;
     }
@@ -187,7 +190,7 @@ public static class PolusShipStatusPatch
 
         if (DvdScreenOffice == null)
         {
-            var dvdScreenAdmin = AllObjects.Find(o => o.name == "dvdscreen");
+            var dvdScreenAdmin = AllGameObjects.Find(o => o.name == "dvdscreen");
 
             if (dvdScreenAdmin)
             {

@@ -12,7 +12,7 @@ public static class ModCompatibility
     public static Type[] SubTypes { get; private set; }
     public static Dictionary<string, Type> SubInjectedTypes { get; private set; }
 
-    public static bool IsSubmerged => SubLoaded && ShipStatus.Instance && ShipStatus.Instance.Type == SUBMERGED_MAP_TYPE;
+    public static bool IsSubmerged() => SubLoaded && ShipStatus.Instance && ShipStatus.Instance.Type == SUBMERGED_MAP_TYPE;
 
     private static Type SubmarineStatusType;
 
@@ -131,7 +131,7 @@ public static class ModCompatibility
 
     public static void CheckOutOfBoundsElevator(PlayerControl player)
     {
-        if (!IsSubmerged)
+        if (!IsSubmerged())
             return;
 
         var (isInElevator, elevator) = GetPlayerElevator(player);
@@ -149,12 +149,12 @@ public static class ModCompatibility
 
     public static void MoveDeadPlayerElevator(PlayerControl player)
     {
-        if (!IsSubmerged)
+        if (!IsSubmerged())
             return;
 
         var (isInElevator, elevator) = GetPlayerElevator(player);
 
-        if (!isInElevator)
+        if (!isInElevator || elevator == null)
             return;
 
         if ((int)GetMovementStageFromTimeMethod.Invoke(elevator, null) >= 5)
@@ -171,7 +171,7 @@ public static class ModCompatibility
 
     public static (bool IsInElevator, object Elevator) GetPlayerElevator(PlayerControl player)
     {
-        if (!IsSubmerged)
+        if (!IsSubmerged())
             return (false, null);
 
         foreach (var elevator in (IList)SubmergedElevatorsField.GetValue(SubmergedInstanceField.GetValue(null)))
@@ -185,7 +185,7 @@ public static class ModCompatibility
 
     public static void ExileRoleChangePostfix()
     {
-        Coroutines.Start(WaitMeeting(() => ButtonUtils.ResetCustomTimers(CooldownType.Meeting)));
+        Coroutines.Start(WaitMeeting(() => ButtonUtils.Reset(CooldownType.Meeting)));
         Coroutines.Start(WaitMeeting(GhostRoleBegin));
         SetPostmortals.ExileControllerPostfix(ExileController.Instance);
     }
@@ -195,7 +195,7 @@ public static class ModCompatibility
         while (HUD.UICamera.transform.Find("SpawnInMinigame(Clone)") == null)
             yield return null;
 
-        yield return new WaitForSeconds(0.5f);
+        yield return Wait(0.5f);
 
         while (HUD.UICamera.transform.Find("SpawnInMinigame(Clone)") != null)
             yield return null;
@@ -209,7 +209,7 @@ public static class ModCompatibility
         while (!CustomPlayer.Local.moveable)
             yield return null;
 
-        yield return new WaitForSeconds(0.5f);
+        yield return Wait(0.5f);
 
         while (HUD.PlayerCam.transform.Find("SpawnInMinigame(Clone)") != null)
             yield return null;
@@ -220,16 +220,15 @@ public static class ModCompatibility
 
     public static void GhostRoleBegin()
     {
-        if (!IsSubmerged || !CustomPlayer.LocalCustom.IsDead || !CustomPlayer.Local.IsPostmortal() || (CustomPlayer.Local.IsPostmortal() && CustomPlayer.Local.Caught()))
+        if (!IsSubmerged() || !CustomPlayer.LocalCustom.IsDead || !CustomPlayer.Local.IsPostmortal() || (CustomPlayer.Local.IsPostmortal() && CustomPlayer.Local.Caught()))
             return;
 
         var vents = AllMapVents;
-        var clean = PlayerControl.LocalPlayer.myTasks.Where(x => x.TaskType == TaskTypes.VentCleaning);
 
-        if (clean != null)
+        if (Ship.Systems.TryGetValue(SystemTypes.Ventilation, out var systemType))
         {
-            var ids = clean.Where(x => !x.IsComplete).ToList().ConvertAll(x => x.FindConsoles()[0].ConsoleId);
-            vents = AllMapVents.Where(x => !ids.Contains(x.Id)).ToList();
+            var ventilationSystem = systemType.Cast<VentilationSystem>();
+            vents = AllMapVents.Where(x => ventilationSystem.PlayersCleaningVents.ContainsValue((byte)x.Id)).ToList();
         }
 
         var startingVent = vents[URandom.RandomRangeInt(0, vents.Count)];
@@ -244,7 +243,7 @@ public static class ModCompatibility
 
     public static void Ghostrolefix(PlayerPhysics __instance)
     {
-        if (IsSubmerged && __instance.myPlayer.Data.IsDead)
+        if (IsSubmerged() && __instance.myPlayer.Data.IsDead)
         {
             var player = __instance.myPlayer;
 
@@ -267,7 +266,7 @@ public static class ModCompatibility
 
     public static MonoBehaviour AddSubmergedComponent(this GameObject obj, string typeName)
     {
-        if (!IsSubmerged)
+        if (!IsSubmerged())
             return obj.AddComponent<MissingBehaviour>();
 
         var validType = SubInjectedTypes.TryGetValue(typeName, out var type);
@@ -276,7 +275,7 @@ public static class ModCompatibility
 
     public static void ChangeFloor(bool toUpper)
     {
-        if (!IsSubmerged)
+        if (!IsSubmerged())
             return;
 
         var _floorHandler = ((Component)GetFloorHandlerMethod.Invoke(null, new[] { CustomPlayer.Local })).TryCast(FloorHandlerType) as MonoBehaviour;
@@ -285,7 +284,7 @@ public static class ModCompatibility
 
     public static bool GetInTransition()
     {
-        if (!IsSubmerged)
+        if (!IsSubmerged())
             return false;
 
         return (bool)InTrasntionProperty.GetValue(null);
@@ -293,7 +292,7 @@ public static class ModCompatibility
 
     public static void RepairOxygen()
     {
-        if (!IsSubmerged)
+        if (!IsSubmerged())
             return;
 
         try
@@ -336,7 +335,7 @@ public static class ModCompatibility
     public static Assembly LIAssembly { get; private set; }
     public static Type[] LITypes { get; private set; }
 
-    public static bool IsLevelImpostor => LILoaded && ShipStatus.Instance && ShipStatus.Instance.Type == LI_MAP_TYPE;
+    public static bool IsLevelImpostor() => LILoaded && ShipStatus.Instance && ShipStatus.Instance.Type == LI_MAP_TYPE;
 
     private static Type LIShipStatusType;
 
@@ -372,8 +371,8 @@ public static class ModCompatibility
             LoadMapMethod = AccessTools.Method(MapLoaderType, "LoadMap", new[] { LIMapType, typeof(bool) });
             UnloadMapMethod = AccessTools.Method(MapLoaderType, "UnloadMap");
 
-            TownOfUsReworked.ModInstance.Harmony.Patch(LoadMapMethod, new(AccessTools.Method(typeof(ModCompatibility), nameof(SetCurrentMap))));
-            TownOfUsReworked.ModInstance.Harmony.Patch(UnloadMapMethod, new(AccessTools.Method(typeof(ModCompatibility), nameof(UnloadMap))));
+            TownOfUsReworked.ModInstance.Harmony.Patch(LoadMapMethod, null, new(AccessTools.Method(typeof(ModCompatibility), nameof(SetCurrentMap))));
+            TownOfUsReworked.ModInstance.Harmony.Patch(UnloadMapMethod, null, new(AccessTools.Method(typeof(ModCompatibility), nameof(UnloadMap))));
 
             LogMessage("LevelImpostor compatibility finished");
             return true;
@@ -387,13 +386,13 @@ public static class ModCompatibility
 
     private static void SetCurrentMap(ref dynamic map)
     {
-        if (!LILoaded)
+        if (!LILoaded || map == null)
         {
             CurrentLIMap = "LevelImpostor";
             return;
         }
 
-        CurrentLIMap = $"{map?.name} <size=0.9>By {map?.authorName}</size>";
+        CurrentLIMap = $"{map.name} <size=0.9>By {map.authorName}</size>";
     }
 
     private static void UnloadMap() => CurrentLIMap = "LevelImpostor";

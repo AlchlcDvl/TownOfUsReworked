@@ -67,7 +67,7 @@ public static class MeetingPatches
 
         private static IEnumerator Announcements()
         {
-            yield return new WaitForSeconds(5f);
+            yield return Wait(5f);
 
             if (CustomGameOptions.GameAnnouncements)
             {
@@ -79,7 +79,7 @@ public static class MeetingPatches
                     check = player;
                     var report = $"{player.name} was found dead last round.";
                     Run(HUD.Chat, "<color=#6C29ABFF>》 Game Announcement 《</color>", report);
-                    yield return new WaitForSeconds(2f);
+                    yield return Wait(2f);
 
                     if (CustomGameOptions.LocationReports)
                         report = $"Their body was found in {BodyLocations[Reported.PlayerId]}.";
@@ -87,7 +87,7 @@ public static class MeetingPatches
                         report = "It is unknown where they died.";
 
                     Run(HUD.Chat, "<color=#6C29ABFF>》 Game Announcement 《</color>", report);
-                    yield return new WaitForSeconds(2f);
+                    yield return Wait(2f);
                     var killer = PlayerById(KilledPlayers.Find(x => x.PlayerId == player.PlayerId).KillerId);
                     var killerRole = Role.GetRole(killer);
 
@@ -99,7 +99,7 @@ public static class MeetingPatches
                         report = "They were killed by an unknown assailant.";
 
                     Run(HUD.Chat, "<color=#6C29ABFF>》 Game Announcement 《</color>", report);
-                    yield return new WaitForSeconds(2f);
+                    yield return Wait(2f);
                     var role = Role.GetRole(player);
 
                     if (CustomGameOptions.RoleFactionReports == RoleFactionReports.Role)
@@ -114,7 +114,7 @@ public static class MeetingPatches
                 else
                     Run(HUD.Chat, "<color=#6C29ABFF>》 Game Announcement 《</color>", "A meeting has been called.");
 
-                yield return new WaitForSeconds(2f);
+                yield return Wait(2f);
 
                 foreach (var player in RecentlyKilled)
                 {
@@ -122,10 +122,10 @@ public static class MeetingPatches
                     {
                         var report = $"{player.name} was found dead last round.";
                         Run(HUD.Chat, "<color=#6C29ABFF>》 Game Announcement 《</color>", report);
-                        yield return new WaitForSeconds(2f);
+                        yield return Wait(2f);
                         report = "It is unknown where they died.";
                         Run(HUD.Chat, "<color=#6C29ABFF>》 Game Announcement 《</color>", report);
-                        yield return new WaitForSeconds(2f);
+                        yield return Wait(2f);
 
                         var killer = PlayerById(KilledPlayers.Find(x => x.PlayerId == player.PlayerId).KillerId);
                         var killerRole = Role.GetRole(killer);
@@ -140,7 +140,7 @@ public static class MeetingPatches
                             report = "They were killed by an unknown assailant.";
 
                         Run(HUD.Chat, "<color=#6C29ABFF>》 Game Announcement 《</color>", report);
-                        yield return new WaitForSeconds(2f);
+                        yield return Wait(2f);
                         var role = Role.GetRole(player);
 
                         if (Role.Cleaned.Contains(player))
@@ -153,7 +153,7 @@ public static class MeetingPatches
                             report = $"We could not determine what {player.name} was.";
 
                         Run(HUD.Chat, "<color=#6C29ABFF>》 Game Announcement 《</color>", report);
-                        yield return new WaitForSeconds(2f);
+                        yield return Wait(2f);
                     }
                 }
 
@@ -162,7 +162,7 @@ public static class MeetingPatches
                     if (player != check)
                     {
                         Run(HUD.Chat, "<color=#6C29ABFF>》 Game Announcement 《</color>", $"{player.name} killed themselves last round.");
-                        yield return new WaitForSeconds(2f);
+                        yield return Wait(2f);
                     }
                 }
 
@@ -171,7 +171,7 @@ public static class MeetingPatches
                     if (player != check)
                     {
                         Run(HUD.Chat, "<color=#6C29ABFF>》 Game Announcement 《</color>", $"{player.name} accomplished their objective and escaped last round.");
-                        yield return new WaitForSeconds(2f);
+                        yield return Wait(2f);
                     }
                 }
 
@@ -180,7 +180,7 @@ public static class MeetingPatches
                     if (player != check)
                     {
                         Run(HUD.Chat, "<color=#6C29ABFF>》 Game Announcement 《</color>", $"{player.name} was ejected for their misuse of power.");
-                        yield return new WaitForSeconds(2f);
+                        yield return Wait(2f);
                     }
                 }
 
@@ -189,7 +189,7 @@ public static class MeetingPatches
                     if (player != check)
                     {
                         Run(HUD.Chat, "<color=#6C29ABFF>》 Game Announcement 《</color>", $"A Ghoul's curse forced {player.name} to be ejected!");
-                        yield return new WaitForSeconds(2f);
+                        yield return Wait(2f);
                     }
                 }
             }
@@ -207,7 +207,7 @@ public static class MeetingPatches
 
             Run(HUD.Chat, "<color=#6C29ABFF>》 Game Announcement 《</color>", message);
 
-            yield return new WaitForSeconds(2f);
+            yield return Wait(2f);
 
             if (Objectifier.GetObjectifiers(LayerEnum.Overlord).Any(x => x.IsAlive))
             {
@@ -219,7 +219,7 @@ public static class MeetingPatches
                 if (message != "")
                     Run(HUD.Chat, "<color=#6C29ABFF>》 Game Announcement 《</color>", message);
 
-                yield return new WaitForSeconds(2f);
+                yield return Wait(2f);
             }
 
             var knighted = new List<byte>();
@@ -242,7 +242,7 @@ public static class MeetingPatches
                         }
                     }
 
-                    yield return new WaitForSeconds(2f);
+                    yield return Wait(2f);
                 }
 
                 monarch.ToBeKnighted.Clear();
@@ -259,7 +259,7 @@ public static class MeetingPatches
                 layer?.OnBodyReport(Reported);
                 layer?.OnMeetingStart(Meeting);
 
-                yield return new WaitForSeconds(0.5f);
+                yield return Wait(0.5f);
             }
 
             yield break;
@@ -1296,7 +1296,7 @@ public static class MeetingPatches
             Coroutines.Start(Slide2D(whiteBackground1, whiteBackgroundDest1, whiteBackgroundDest2, duration));
             Coroutines.Start(Slide2D(whiteBackground2, whiteBackgroundDest2, whiteBackgroundDest1, duration));
 
-            yield return new WaitForSeconds(duration);
+            yield return Wait(duration);
         }
 
         yield break;

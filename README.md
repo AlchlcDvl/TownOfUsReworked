@@ -4,7 +4,11 @@
 
 -----------------------
 
-<img align="centre" width="" height="" src="./Images/Reworked.png">
+<p align="center">
+    <img width="" height="" src="./Images/Reworked.png" align="center" alt="logo" />
+    <h2 align="center">Town Of Us Reworked</h2>
+    <p align="center">Town Of Us but better! (hopefully)
+</p>
 
 <p align="center"><a href="https://github.com/AlchlcDvl/TownOfUsReworked/releases/"><img src="https://badgen.net/github/release/AlchlcDvl/TownOfUsReworked?icon=github"></a></p>
 
@@ -138,6 +142,7 @@ Quick warning: This mod adds a whole LOT of stuff, and is currently not very beg
 
 | Among Us           | Mod Version | Link                                                                                            |
 |--------------------|-------------|-------------------------------------------------------------------------------------------------|
+| 2023.10.24 (s & e) | 0.6.1       | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.6.1/Reworked.zip) |
 | 2023.10.24 (s & e) | 0.6.0       | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.6.0/Reworked.zip) |
 
 <details>
@@ -198,6 +203,24 @@ Quick warning: This mod adds a whole LOT of stuff, and is currently not very beg
 
 <details>
 <summary>Changelog</summary>
+<details>
+<summary>v0.6.1</summary>
+<ul>
+    <li>Improvement: The Random Spawns option has been expanded for additional options</li>
+    <li>Improvement: Improved animations for when changing appearances</li>
+    <li>Improvement: You can now cancel delays and effects by clicking the ability button again</li>
+    <li>Critical Fix: Fixed not being able to vent properly in dlekS</li>
+    <li>Bug Fix: Fixed the custom Polus Specimen and Mira Comms vents not being viable starting points for postmortal roles</li>
+    <li>Bug Fix: Fixed the rare bug where using a Miner's vent might get you stuck in a walking animation against the wall</li>
+    <li>Bug Fix: Hopefully fixed the role gen sorting issues</li>
+    <li>Bug Fix: Fixed being able to carry bots over to online games from local</li>
+    <li>Bug Fix: Fixed morphing not actually changing players' name and colorblind texts sometimes</li>
+    <li>Bug Fix: Fixed modifiers, objectifiers and abilities sometimes appearing in the mod's Hide And Seek mode</li>
+    <li>Visual Fix: Fixed Politician vote selection just skipping the animation</li>
+    <li>Visual Fix: Fixed body color transitions appearing weird and sometimes turning the character black</li>
+    <li>Potential Fix: Hopefully fixed the occasional stuttering</li>
+</ul>
+</details>
 <details>
 <summary>v0.6.0</summary>
 <ul>

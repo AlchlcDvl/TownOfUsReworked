@@ -27,7 +27,7 @@ public class Traitor : Objectifier
     public override string Name => "Traitor";
     public override string Symbol => "♣";
     public override LayerEnum Type => LayerEnum.Traitor;
-    public override Func<string> Description => () => !Turned ? "- Finish your tasks to switch sides to either <color=#FF0000FF>Intruders</color> or the <color=#008000FF>Syndicate</color>" :
+    public override Func<string> Description => () => !Turned ? "- Finish your tasks to switch sides to either <color=#FF1919FF>Intruders</color> or the <color=#008000FF>Syndicate</color>" :
         "";
     public override bool Hidden => !CustomGameOptions.TraitorKnows && !Turned && !IsDead;
 

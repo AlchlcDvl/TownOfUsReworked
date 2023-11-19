@@ -7,16 +7,8 @@ public static class SaveLadderPlayer
     {
         try
         {
-            if (CustomPlayer.Local.Is(LayerEnum.Transporter))
-                ((Transporter)Role.LocalRole).UntransportablePlayers.Add(__instance.myPlayer.PlayerId, DateTime.UtcNow);
-            else if (CustomPlayer.Local.Is(LayerEnum.Retributionist))
-                ((Retributionist)Role.LocalRole).UntransportablePlayers.Add(__instance.myPlayer.PlayerId, DateTime.UtcNow);
-            else if (CustomPlayer.Local.Is(LayerEnum.Warper))
-                ((Warper)Role.LocalRole).UnwarpablePlayers.Add(__instance.myPlayer.PlayerId, DateTime.UtcNow);
-            else if (CustomPlayer.Local.Is(LayerEnum.PromotedRebel))
-                ((PromotedRebel)Role.LocalRole).UnwarpablePlayers.Add(__instance.myPlayer.PlayerId, DateTime.UtcNow);
-            else
-                CallRpc(CustomRPC.Action, ActionsRPC.SetUninteractable, CustomPlayer.Local);
+            UninteractiblePlayers.TryAdd(__instance.myPlayer.PlayerId, DateTime.UtcNow);
+            CallRpc(CustomRPC.Action, ActionsRPC.SetUninteractable, CustomPlayer.Local);
         }
         catch (Exception e)
         {
@@ -28,23 +20,15 @@ public static class SaveLadderPlayer
     }
 }
 
-[HarmonyPatch(typeof(MovingPlatformBehaviour), nameof(MovingPlatformBehaviour.UsePlatform))]
+[HarmonyPatch(typeof(MovingPlatformBehaviour), nameof(MovingPlatformBehaviour.Use), typeof(PlayerControl))]
 public static class SavePlatformPlayer
 {
     public static void Prefix()
     {
         try
         {
-            if (CustomPlayer.Local.Is(LayerEnum.Transporter))
-                ((Transporter)Role.LocalRole).UntransportablePlayers.Add(CustomPlayer.Local.PlayerId, DateTime.UtcNow);
-            else if (CustomPlayer.Local.Is(LayerEnum.Retributionist))
-                ((Retributionist)Role.LocalRole).UntransportablePlayers.Add(CustomPlayer.Local.PlayerId, DateTime.UtcNow);
-            else if (CustomPlayer.Local.Is(LayerEnum.Warper))
-                ((Warper)Role.LocalRole).UnwarpablePlayers.Add(CustomPlayer.Local.PlayerId, DateTime.UtcNow);
-            else if (CustomPlayer.Local.Is(LayerEnum.PromotedRebel))
-                ((PromotedRebel)Role.LocalRole).UnwarpablePlayers.Add(CustomPlayer.Local.PlayerId, DateTime.UtcNow);
-            else
-                CallRpc(CustomRPC.Action, ActionsRPC.SetUninteractable, CustomPlayer.Local);
+            UninteractiblePlayers.TryAdd(CustomPlayer.Local.PlayerId, DateTime.UtcNow);
+            CallRpc(CustomRPC.Action, ActionsRPC.SetUninteractable, CustomPlayer.Local);
         }
         catch (Exception e)
         {
@@ -56,23 +40,15 @@ public static class SavePlatformPlayer
     }
 }
 
-[HarmonyPatch(typeof(ZiplineBehaviour), nameof(ZiplineBehaviour.CoUseZipline))]
+[HarmonyPatch(typeof(ZiplineBehaviour), nameof(ZiplineBehaviour.Use), typeof(PlayerControl), typeof(bool))]
 public static class SaveZiplinePlayer
 {
     public static void Prefix()
     {
         try
         {
-            if (CustomPlayer.Local.Is(LayerEnum.Transporter))
-                ((Transporter)Role.LocalRole).UntransportablePlayers.Add(CustomPlayer.Local.PlayerId, DateTime.UtcNow);
-            else if (CustomPlayer.Local.Is(LayerEnum.Retributionist))
-                ((Retributionist)Role.LocalRole).UntransportablePlayers.Add(CustomPlayer.Local.PlayerId, DateTime.UtcNow);
-            else if (CustomPlayer.Local.Is(LayerEnum.Warper))
-                ((Warper)Role.LocalRole).UnwarpablePlayers.Add(CustomPlayer.Local.PlayerId, DateTime.UtcNow);
-            else if (CustomPlayer.Local.Is(LayerEnum.PromotedRebel))
-                ((PromotedRebel)Role.LocalRole).UnwarpablePlayers.Add(CustomPlayer.Local.PlayerId, DateTime.UtcNow);
-            else
-                CallRpc(CustomRPC.Action, ActionsRPC.SetUninteractable, CustomPlayer.Local);
+            UninteractiblePlayers.TryAdd(CustomPlayer.Local.PlayerId, DateTime.UtcNow);
+            CallRpc(CustomRPC.Action, ActionsRPC.SetUninteractable, CustomPlayer.Local);
         }
         catch (Exception e)
         {

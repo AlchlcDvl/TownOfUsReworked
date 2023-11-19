@@ -24,7 +24,7 @@ public static class VentPatches
         var center = playerControl.Collider.bounds.center;
         var position = __instance.transform.position;
 
-        if (IsSubmerged)
+        if (IsSubmerged())
         {
             if (GetInTransition())
             {
@@ -58,7 +58,7 @@ public static class VentPatches
         {
             num = Vector2.Distance(center, position);
 
-            if (__instance.Id == 14 && IsSubmerged)
+            if (__instance.Id == 14 && IsSubmerged())
                 canUse &= num <= __instance.UsableDistance;
             else
             {
@@ -74,30 +74,75 @@ public static class VentPatches
 [HarmonyPatch(typeof(Vent), nameof(Vent.SetButtons))]
 public static class EnterVentPatch
 {
-    public static bool Prefix()
+    public static bool Prefix(Vent __instance, ref bool enabled)
     {
         var player = CustomPlayer.Local;
+        var flag = !player.IsMoving();
 
         if (player.Is(LayerEnum.Jester) && CustomGameOptions.JesterVent)
-            return CustomGameOptions.JestVentSwitch;
+            flag = CustomGameOptions.JestVentSwitch;
         else if (player.Is(LayerEnum.Executioner) && CustomGameOptions.ExeVent)
-            return CustomGameOptions.ExeVentSwitch;
+            flag = CustomGameOptions.ExeVentSwitch;
         else if (player.Is(LayerEnum.Survivor) && CustomGameOptions.SurvVent)
-            return CustomGameOptions.SurvVentSwitch;
+            flag = CustomGameOptions.SurvVentSwitch;
         else if (player.Is(LayerEnum.Amnesiac) && CustomGameOptions.AmneVent)
-            return CustomGameOptions.AmneVentSwitch;
+            flag = CustomGameOptions.AmneVentSwitch;
         else if (player.Is(LayerEnum.GuardianAngel) && CustomGameOptions.GAVent)
-            return CustomGameOptions.GAVentSwitch;
+            flag = CustomGameOptions.GAVentSwitch;
         else if (player.Is(LayerEnum.Guesser) && CustomGameOptions.GuessVent)
-            return CustomGameOptions.GuessVentSwitch;
+            flag = CustomGameOptions.GuessVentSwitch;
         else if (player.Is(LayerEnum.Troll) && CustomGameOptions.TrollVent)
-            return CustomGameOptions.TrollVentSwitch;
+            flag = CustomGameOptions.TrollVentSwitch;
         else if (player.Is(LayerEnum.Actor) && CustomGameOptions.ActorVent)
-            return CustomGameOptions.ActVentSwitch;
+            flag = CustomGameOptions.ActVentSwitch;
         else if (player.IsPostmortal())
-            return false;
-        else
-            return !player.IsMoving();
+            flag = false;
+
+        //Fix for dlekS
+        if (flag)
+        {
+            Vector2 vector;
+
+            if (__instance.Right && __instance.Left)
+                vector = (__instance.Right.transform.position + __instance.Left.transform.position) / 2f - __instance.transform.position;
+            else
+                vector = Vector2.zero;
+
+            for (var i = 0; i < __instance.Buttons.Length; i++)
+            {
+                var buttonBehavior = __instance.Buttons[i];
+
+                if (enabled)
+                {
+                    var vent = __instance.NearbyVents[i];
+
+                    if (vent)
+                    {
+                        var ventilationSystem = ShipStatus.Instance.Systems[SystemTypes.Ventilation].TryCast<VentilationSystem>();
+                        var flag1 = ventilationSystem != null && ventilationSystem.IsVentCurrentlyBeingCleaned(vent.Id);
+                        buttonBehavior.gameObject.SetActive(true);
+                        var gameObject = __instance.CleaningIndicators.Count > 0 ? __instance.CleaningIndicators[i] : null;
+                        __instance.ToggleNeighborVentBeingCleaned(flag, buttonBehavior, gameObject);
+                        var vector2 = vent.transform.position - __instance.transform.position;
+                        var vector3 = vector2.normalized * (0.7f + __instance.spreadShift);
+                        vector3.x *= Mathf.Sign(ShipStatus.Instance.transform.localScale.x);
+                        vector3.y -= 0.08f;
+                        vector3.z = -10f;
+                        buttonBehavior.transform.localPosition = vector3;
+                        buttonBehavior.transform.LookAt2d(vent.transform);
+                        vector3 = vector3.RotateZ((vector.AngleSigned(vector2) > 0f) ? __instance.spreadAmount : (-__instance.spreadAmount));
+                        buttonBehavior.transform.localPosition = vector3;
+                        buttonBehavior.transform.Rotate(0f, 0f, (vector.AngleSigned(vector2) > 0f) ? __instance.spreadAmount : (-__instance.spreadAmount));
+                    }
+                    else
+                        buttonBehavior.gameObject.SetActive(false);
+                }
+                else
+                    buttonBehavior.gameObject.SetActive(false);
+            }
+        }
+
+        return false;
     }
 }
 
@@ -199,5 +244,42 @@ public static class MoveToVentPatch
         }
 
         return LocalNotBlocked;
+    }
+}
+
+[HarmonyPatch(typeof(Vent), nameof(Vent.UpdateArrows))]
+public static class FixdlekSVents1
+{
+    public static bool Prefix(Vent __instance, ref VentilationSystem ventSystem)
+    {
+        if (__instance != Vent.currentVent || ventSystem == null)
+            return false;
+
+        for (var i = 0; i < __instance.NearbyVents.Length; i++)
+        {
+            var vent = __instance.NearbyVents[i];
+
+            if (vent)
+            {
+                __instance.ToggleNeighborVentBeingCleaned(ventSystem.IsVentCurrentlyBeingCleaned(vent.Id), __instance.Buttons[i], __instance.CleaningIndicators.Count > 0 ?
+                    __instance.CleaningIndicators[i] : null);
+            }
+        }
+
+        return false;
+    }
+}
+
+[HarmonyPatch(typeof(Vent), nameof(Vent.ToggleNeighborVentBeingCleaned))]
+public static class FixdlekSVents2
+{
+    public static bool Prefix(ref bool ventBeingCleaned, ref ButtonBehavior b, ref GameObject c)
+    {
+        if (MapPatches.CurrentMap != 3)
+            return true;
+
+        b.enabled = !ventBeingCleaned;
+        c?.SetActive(ventBeingCleaned);
+        return false;
     }
 }

@@ -409,14 +409,7 @@ public static class RPCHandling
                     case ActionsRPC.SetUninteractable:
                         try
                         {
-                            if (CustomPlayer.Local.Is(LayerEnum.Transporter))
-                                reader.ReadLayer<Transporter>().UntransportablePlayers.Add(reader.ReadByte(), DateTime.UtcNow);
-                            else if (CustomPlayer.Local.Is(LayerEnum.Warper))
-                                reader.ReadLayer<Warper>().UnwarpablePlayers.Add(reader.ReadByte(), DateTime.UtcNow);
-                            else if (CustomPlayer.Local.Is(LayerEnum.Retributionist))
-                                reader.ReadLayer<Retributionist>().UntransportablePlayers.Add(reader.ReadByte(), DateTime.UtcNow);
-                            else if (CustomPlayer.Local.Is(LayerEnum.PromotedRebel))
-                                reader.ReadLayer<PromotedRebel>().UnwarpablePlayers.Add(reader.ReadByte(), DateTime.UtcNow);
+                            UninteractiblePlayers.TryAdd(reader.ReadByte(), DateTime.UtcNow);
                         }
                         catch (Exception e)
                         {

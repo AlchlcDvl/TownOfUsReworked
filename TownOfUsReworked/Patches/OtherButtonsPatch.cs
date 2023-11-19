@@ -79,7 +79,7 @@ public static class OtherButtonsPatch
             Pos = MapPos + new Vector3(0, -0.66f, 0f);
             __instance.MapButton.transform.localPosition = Pos;
 
-            if (IsSubmerged)
+            if (IsSubmerged())
             {
                 var floorButton = __instance.MapButton.transform.parent.Find(__instance.MapButton.name + "(Clone)");
 

@@ -307,14 +307,11 @@ public static class LobbySizePatch
 {
     public static void Postfix()
     {
-        if (GameStartManager.Instance.LastPlayerCount > CustomGameOptions.LobbySize && AmongUsClient.Instance.AmHost && AmongUsClient.Instance.CanBan())
+        while (CustomPlayer.AllPlayers.Count > CustomGameOptions.LobbySize && AmongUsClient.Instance.AmHost && AmongUsClient.Instance.CanBan())
         {
-            while (CustomPlayer.AllPlayers.Count > CustomGameOptions.LobbySize)
-            {
-                var player = CustomPlayer.AllPlayers[^1];
-                var client = AmongUsClient.Instance.GetClient(player.OwnerId);
-                AmongUsClient.Instance.KickPlayer(client.Id, false);
-            }
+            var player = CustomPlayer.AllPlayers[^1];
+            var client = AmongUsClient.Instance.GetClient(player.OwnerId);
+            AmongUsClient.Instance.KickPlayer(client.Id, false);
         }
     }
 }
@@ -386,7 +383,7 @@ public static class IsModdedPatch
 [HarmonyPatch(typeof(ActivityManager), nameof(ActivityManager.UpdateActivity))]
 public static class DiscordPatch
 {
-    public static void Prefix(ref Activity activity) => activity.Details += "Town Of Us Reworked";
+    public static void Prefix(ref Activity activity) => activity.Details += " Town Of Us Reworked";
 }
 
 [HarmonyPatch(typeof(RoleManager), nameof(RoleManager.SelectRoles))]
@@ -429,7 +426,7 @@ public static class LobbyBehaviourPatch
     public static void Postfix()
     {
         SetFullScreenHUD();
-        DataManager.Settings.Gameplay.ScreenShake = false;
+        DataManager.Settings.Gameplay.ScreenShake = SpawnPatches.CachedChoice;
         RoleGen.ResetEverything();
         TownOfUsReworked.IsTest = IsLocalGame && (TownOfUsReworked.IsDev || (TownOfUsReworked.IsTest && TownOfUsReworked.MCIActive));
         StopAll();
@@ -441,7 +438,7 @@ public static class LobbyBehaviourPatch
         DebuggerBehaviour.Instance.TestWindow.Enabled = TownOfUsReworked.MCIActive && IsLocalGame;
         DebuggerBehaviour.Instance.CooldownsWindow.Enabled = false;
 
-        if (count > 0 && TownOfUsReworked.Persistence)
+        if (count > 0 && TownOfUsReworked.Persistence && !IsOnlineGame)
         {
             for (var i = 0; i < count; i++)
                 MCIUtils.CreatePlayerInstance();
@@ -461,22 +458,8 @@ public static class DeathPopUpPatch
     }
 }
 
-[HarmonyPatch]
-public static class RestartAppIfNecessaryPatch
+[HarmonyPatch(typeof(UnityExtensions), nameof(UnityExtensions.SetOutline))]
+public static class OneMoreThing
 {
-    public const string TypeName = "Steamworks.SteamAPI, Assembly-CSharp-firstpass";
-    public const string MethodName = "RestartAppIfNecessary";
-    public const string FileName = "steam_appid.txt";
-
-    public static bool Prepare() => Type.GetType(TypeName, false) != null;
-
-    public static MethodBase TargetMethod() => AccessTools.Method($"{TypeName}:{MethodName}");
-
-    public static bool Prefix(out bool __result)
-    {
-        if (!File.Exists(FileName))
-            File.WriteAllText(FileName, "945360");
-
-        return __result = false;
-    }
+    public static void Postfix(ref Renderer renderer, Color? color) => renderer.material.SetColor("_AddColor", color ?? UColor.clear);
 }

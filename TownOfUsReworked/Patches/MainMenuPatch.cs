@@ -45,68 +45,53 @@ public static class MainMenuStartPatch
             return;
 
         var y = 0f;
-
         //If there's a possible download, create and show the buttons for it
 
         if (ModUpdater.ReworkedUpdate)
         {
             LogInfo("Reworked can be updated");
-            var touButton = UObject.Instantiate(template, rightPanel.transform);
-            touButton.transform.localPosition = new(touButton.transform.localPosition.x, y, touButton.transform.localPosition.z);
-            touButton.transform.localScale = new(0.44f, 0.84f, 1f);
-            touButton.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = GetSprite("UpdateReworked");
-            touButton.transform.GetChild(1).GetComponent<SpriteRenderer>().sprite = GetSprite("UpdateReworked");
-            touButton.name = "ReworkedDownload";
-
-            var pos = touButton.GetComponent<AspectPosition>();
-            pos.Alignment = AspectPosition.EdgeAlignments.LeftBottom;
-            pos.DistanceFromEdge = new(1.5f, 0.75f, 0f);
-
-            var passiveTOUButton = touButton.GetComponent<PassiveButton>();
-            passiveTOUButton.OnClick = new();
-            passiveTOUButton.OnClick.AddListener((Action)(() =>
-            {
-                ModUpdater.ExecuteUpdate("Reworked");
-                touButton.SetActive(false);
-            }));
-
-            __instance.StartCoroutine(Effects.Lerp(0.1f, new Action<float>(_ =>
-            {
-                touButton.transform.GetChild(2).GetChild(0).GetComponent<TMP_Text>().SetText("");
-                pos.AdjustPosition();
-            })));
-
+            CreatDownloadButton(__instance, "Reworked", y, 0.75f, "UpdateReworked");
             y += 0.6f;
         }
 
         if (ModUpdater.SubmergedUpdate || ModUpdater.CanDownloadSubmerged)
         {
             LogInfo($"Submerged can be {(ModUpdater.SubmergedUpdate ? "updated" : "downloaded")}");
-            var submergedButton = UObject.Instantiate(template, rightPanel.transform);
-            submergedButton.transform.localPosition = new(submergedButton.transform.localPosition.x, y, submergedButton.transform.localPosition.z);
-            submergedButton.transform.localScale = new(0.44f, 0.84f, 1f);
-            submergedButton.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = GetSprite($"{(SubLoaded ? "Update" : "Download")}Submerged");
-            submergedButton.transform.GetChild(1).GetComponent<SpriteRenderer>().sprite = GetSprite($"{(SubLoaded ? "Update" : "Download")}Submerged");
-            submergedButton.name = "SubmergedDownload";
-
-            var pos = submergedButton.GetComponent<AspectPosition>();
-            pos.Alignment = AspectPosition.EdgeAlignments.LeftBottom;
-            pos.DistanceFromEdge = new(1.5f, 1.25f, 0f);
-
-            var passiveSubmergedButton = submergedButton.GetComponent<PassiveButton>();
-            passiveSubmergedButton.OnClick = new();
-            passiveSubmergedButton.OnClick.AddListener((Action)(() =>
-            {
-                ModUpdater.ExecuteUpdate("Submerged");
-                submergedButton.SetActive(false);
-            }));
-
-            __instance.StartCoroutine(Effects.Lerp(0.1f, new Action<float>(_ =>
-            {
-                submergedButton.transform.GetChild(2).GetChild(0).GetComponent<TMP_Text>().SetText("");
-                pos.AdjustPosition();
-            })));
+            CreatDownloadButton(__instance, "Submerged", y, 1.25f, $"{(SubLoaded ? "Update" : "Download")}Submerged");
         }
+    }
+
+    private static void CreatDownloadButton(MainMenuManager __instance, string downloadType, float yValue1, float yValue2, string spriteName)
+    {
+        var template = GameObject.Find("ExitGameButton");
+        var rightPanel = GameObject.Find("RightPanel");
+
+        if (template == null || rightPanel == null)
+            return;
+
+        var button = UObject.Instantiate(template, rightPanel.transform);
+        button.transform.localPosition = new(button.transform.localPosition.x, yValue1, button.transform.localPosition.z);
+        button.transform.localScale = new(0.44f, 0.84f, 1f);
+        button.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = button.transform.GetChild(1).GetComponent<SpriteRenderer>().sprite = GetSprite(spriteName);
+        button.name = $"{downloadType}Download";
+
+        var pos = button.GetComponent<AspectPosition>();
+        pos.Alignment = AspectPosition.EdgeAlignments.LeftBottom;
+        pos.DistanceFromEdge = new(1.5f, yValue2, 0f);
+
+        var passiveButton = button.GetComponent<PassiveButton>();
+        passiveButton.OnClick = new();
+        passiveButton.OnClick.AddListener((Action)(() =>
+        {
+            ModUpdater.ExecuteUpdate(downloadType);
+            button.SetActive(false);
+        }));
+
+        __instance.StartCoroutine(Effects.Lerp(0.1f, new Action<float>(_ =>
+        {
+            button.transform.GetChild(2).GetChild(0).GetComponent<TMP_Text>().SetText("");
+            pos.AdjustPosition();
+        })));
     }
 
     public static void Postfix(MainMenuManager __instance)

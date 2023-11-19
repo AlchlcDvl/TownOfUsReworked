@@ -463,13 +463,27 @@ public static class LayerExtentions
     public static bool IsLinkedTo(this PlayerControl player, PlayerControl refplayer) => player.IsOtherRival(refplayer) || player.IsOtherLover(refplayer) || player.IsOtherLink(refplayer)
         || (player.Is(LayerEnum.Mafia) && refplayer.Is(LayerEnum.Mafia));
 
-    public static float GetModifiedSpeed(this PlayerControl player) => player.IsMimicking(out var mimicked) ? player.GetSpeed() : mimicked.GetSpeed();
+    public static float GetBaseSpeed(this PlayerControl player)
+    {
+        if (player.HasDied() && (!player.IsPostmortal() || (player.IsPostmortal() && player.Caught())))
+            return CustomGameOptions.GhostSpeed;
+        else
+            return CustomGameOptions.PlayerSpeed;
+    }
+
+    public static float GetModifiedSpeed(this PlayerControl player)
+    {
+        if (TransitioningSpeed.ContainsKey(player.PlayerId))
+            return TransitioningSpeed[player.PlayerId];
+        else
+            return player.IsMimicking(out var mimicked) ? player.GetSpeed() : mimicked.GetSpeed();
+    }
 
     public static float GetSpeed(this PlayerControl player)
     {
         var result = 1f;
 
-        if (LobbyBehaviour.Instance || (HudUpdate.IsCamoed && CustomGameOptions.CamoHideSpeed))
+        if (player.HasDied() || LobbyBehaviour.Instance || (HudUpdate.IsCamoed && CustomGameOptions.CamoHideSpeed && !TransitioningSpeed.ContainsKey(player.PlayerId)))
             return result;
 
         if (IntroCutscene.Instance)
@@ -528,11 +542,17 @@ public static class LayerExtentions
     public static bool IsDragging(this PlayerControl player) => (player.Is(LayerEnum.Janitor) && Role.GetRole<Janitor>(player).CurrentlyDragging) || (player.Is(LayerEnum.PromotedGodfather)
         && Role.GetRole<PromotedGodfather>(player).CurrentlyDragging);
 
-    public static float GetModifiedSize(this PlayerControl player) => player.IsMimicking(out var mimicked) ? mimicked.GetSize() : player.GetSize();
+    public static float GetModifiedSize(this PlayerControl player)
+    {
+        if (TransitioningSize.ContainsKey(player.PlayerId))
+            return TransitioningSize[player.PlayerId];
+        else
+            return player.IsMimicking(out var mimicked) ? mimicked.GetSize() : player.GetSize();
+    }
 
     public static float GetSize(this PlayerControl player)
     {
-        if (LobbyBehaviour.Instance || (HudUpdate.IsCamoed && CustomGameOptions.CamoHideSize))
+        if (LobbyBehaviour.Instance || (HudUpdate.IsCamoed && CustomGameOptions.CamoHideSize && !TransitioningSize.ContainsKey(player.PlayerId)))
             return 1f;
         else if (player.Is(LayerEnum.Dwarf))
             return CustomGameOptions.DwarfScale;
@@ -544,21 +564,60 @@ public static class LayerExtentions
 
     public static bool IsMimicking(this PlayerControl player, out PlayerControl mimicked)
     {
-        var role = Role.GetRole(player);
         mimicked = player;
 
-        if (!role || !CachedMorphs.ContainsKey(player.PlayerId))
+        if (player.HasDied())
             return false;
 
-        mimicked = PlayerById(CachedMorphs[player.PlayerId]);
-        return true;
+        var flag = CachedMorphs.TryGetValue(player.PlayerId, out var mimickedId);
+
+        if (flag)
+            mimicked = PlayerById(mimickedId);
+
+        if (!flag || mimicked == player)
+        {
+            foreach (var morph in PlayerLayer.GetLayers<Morphling>())
+            {
+                if (morph.Player == player && morph.MorphedPlayer != null && morph.MorphButton.EffectActive)
+                {
+                    mimicked = morph.MorphedPlayer;
+                    return true;
+                }
+            }
+
+            foreach (var gf in PlayerLayer.GetLayers<PromotedGodfather>())
+            {
+                if (gf.IsMorph && gf.Player == player && gf.MorphedPlayer != null && gf.MorphButton.EffectActive)
+                {
+                    mimicked = gf.MorphedPlayer;
+                    return true;
+                }
+            }
+
+            foreach (var ss in PlayerLayer.GetLayers<Shapeshifter>())
+            {
+                if ((ss.ShapeshiftPlayer1 == player || ss.ShapeshiftPlayer2 == player) && ss.ShapeshiftButton.EffectActive)
+                {
+                    mimicked = ss.ShapeshiftPlayer1 == player ? ss.ShapeshiftPlayer1 : ss.ShapeshiftPlayer2;
+                    return true;
+                }
+            }
+
+            foreach (var reb in PlayerLayer.GetLayers<PromotedRebel>())
+            {
+                if (reb.IsSS && (reb.ShapeshiftPlayer1 == player || reb.ShapeshiftPlayer2 == player) && reb.ShapeshiftButton.EffectActive)
+                {
+                    mimicked = reb.ShapeshiftPlayer1 == player ? reb.ShapeshiftPlayer1 : reb.ShapeshiftPlayer2;
+                    return true;
+                }
+            }
+        }
+
+        return flag;
     }
 
     public static bool CanVent(this PlayerControl player)
     {
-        if (MapPatches.CurrentMap == 3)
-            return false;
-
         var playerInfo = player?.Data;
 
         if (player == null || playerInfo == null)
@@ -900,7 +959,7 @@ public static class LayerExtentions
             attributes += "\n<color=#ABCDEFFF>- Your tasks are fake</color>";
 
         if (player.Data.IsDead)
-            attributes += "\n<color=#FF0000FF>- You are dead</color>";
+            attributes += "\n<color=#FF1919FF>- You are dead</color>";
 
         if (attributes == $"{AttributesColorString}Attributes:")
             attributes = "";
@@ -969,12 +1028,14 @@ public static class LayerExtentions
 
         if (newRole.Local || former.Local)
         {
-            ButtonUtils.ResetCustomTimers();
+            ButtonUtils.Reset();
             Flash(newRole.Color);
         }
 
         if (CustomPlayer.Local.Is(LayerEnum.Seer))
             Flash(Colors.Seer);
+
+        ButtonUtils.Reset(CooldownType.Reset, newRole.Player);
     }
 
     public static void SetImpostor(this GameData.PlayerInfo player, bool impostor)
@@ -1002,18 +1063,18 @@ public static class LayerExtentions
         Alignment.CrewPower => withColors ? "<color=#8CFFFFFF>Crew (<color=#1D7CF2FF>Power</color>)</color>" : "Crew (Power)",
         Alignment.CrewDisrup => withColors ? "<color=#8CFFFFFF>Crew (<color=#1D7CF2FF>Disruption</color>)</color>" : "Crew (Disruption)",
         Alignment.CrewHead => withColors ? "<color=#8CFFFFFF>Crew (<color=#1D7CF2FF>Head</color>)</color>" : "Crew (Head)",
-        Alignment.IntruderSupport => withColors ? "<color=#FF0000FF>Intruder (<color=#1D7CF2FF>Support</color>)</color>" : "Intruder (Support)",
-        Alignment.IntruderConceal => withColors ? "<color=#FF0000FF>Intruder (<color=#1D7CF2FF>Concealing</color>)</color>" : "Intruder (Concealing)",
-        Alignment.IntruderDecep => withColors ? "<color=#FF0000FF>Intruder (<color=#1D7CF2FF>Deception</color>)</color>" : "Intuder (Deception)",
-        Alignment.IntruderKill => withColors ? "<color=#FF0000FF>Intruder (<color=#1D7CF2FF>Killing</color>)</color>" : "Intruder (Killing)",
-        Alignment.IntruderUtil => withColors ? "<color=#FF0000FF>Intruder (<color=#1D7CF2FF>Utility</color>)</color>" : "Intruder (Utility)",
-        Alignment.IntruderInvest => withColors ? "<color=#FF0000FF>Intruder (<color=#1D7CF2FF>Investigative</color>)</color>" : "Intruder (Investigative)",
-        Alignment.IntruderAudit => withColors ? "<color=#FF0000FF>Intruder (<color=#1D7CF2FF>Auditor</color>)</color>" : "Intruder (Auditor)",
-        Alignment.IntruderProt => withColors ? "<color=#FF0000FF>Intruder (<color=#1D7CF2FF>Protective</color>)</color>" : "Intruder (Protective)",
-        Alignment.IntruderSov => withColors ? "<color=#FF0000FF>Intruder (<color=#1D7CF2FF>Sovereign</color>)</color>" : "Intruder (Sovereign)",
-        Alignment.IntruderDisrup=> withColors ? "<color=#FF0000FF>Intruder (<color=#1D7CF2FF>Disruption</color>)</color>" : "Intruder (Disruption)",
-        Alignment.IntruderPower => withColors ? "<color=#FF0000FF>Intruder (<color=#1D7CF2FF>Power</color>)</color>" : "Intruder (Power)",
-        Alignment.IntruderHead => withColors ? "<color=#FF0000FF>Intruder (<color=#1D7CF2FF>Head</color>)</color>" : "Intruder (Head)",
+        Alignment.IntruderSupport => withColors ? "<color=#FF1919FF>Intruder (<color=#1D7CF2FF>Support</color>)</color>" : "Intruder (Support)",
+        Alignment.IntruderConceal => withColors ? "<color=#FF1919FF>Intruder (<color=#1D7CF2FF>Concealing</color>)</color>" : "Intruder (Concealing)",
+        Alignment.IntruderDecep => withColors ? "<color=#FF1919FF>Intruder (<color=#1D7CF2FF>Deception</color>)</color>" : "Intuder (Deception)",
+        Alignment.IntruderKill => withColors ? "<color=#FF1919FF>Intruder (<color=#1D7CF2FF>Killing</color>)</color>" : "Intruder (Killing)",
+        Alignment.IntruderUtil => withColors ? "<color=#FF1919FF>Intruder (<color=#1D7CF2FF>Utility</color>)</color>" : "Intruder (Utility)",
+        Alignment.IntruderInvest => withColors ? "<color=#FF1919FF>Intruder (<color=#1D7CF2FF>Investigative</color>)</color>" : "Intruder (Investigative)",
+        Alignment.IntruderAudit => withColors ? "<color=#FF1919FF>Intruder (<color=#1D7CF2FF>Auditor</color>)</color>" : "Intruder (Auditor)",
+        Alignment.IntruderProt => withColors ? "<color=#FF1919FF>Intruder (<color=#1D7CF2FF>Protective</color>)</color>" : "Intruder (Protective)",
+        Alignment.IntruderSov => withColors ? "<color=#FF1919FF>Intruder (<color=#1D7CF2FF>Sovereign</color>)</color>" : "Intruder (Sovereign)",
+        Alignment.IntruderDisrup=> withColors ? "<color=#FF1919FF>Intruder (<color=#1D7CF2FF>Disruption</color>)</color>" : "Intruder (Disruption)",
+        Alignment.IntruderPower => withColors ? "<color=#FF1919FF>Intruder (<color=#1D7CF2FF>Power</color>)</color>" : "Intruder (Power)",
+        Alignment.IntruderHead => withColors ? "<color=#FF1919FF>Intruder (<color=#1D7CF2FF>Head</color>)</color>" : "Intruder (Head)",
         Alignment.NeutralKill => withColors ? "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Killing</color>)</color>" : "Neutral (Killing)",
         Alignment.NeutralNeo => withColors ? "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Neophyte</color>)</color>" : "Neutral (Neophyte)",
         Alignment.NeutralEvil => withColors ? "<color=#B3B3B3FF>Neutral (<color=#1D7CF2FF>Evil</color>)</color>" : "Neutral (Evil)",

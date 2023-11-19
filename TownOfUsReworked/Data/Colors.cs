@@ -12,7 +12,7 @@ public static class Colors
     //Faction Colors
     public static readonly Color Crew = FromHex("#8CFFFFFF");
     public static readonly Color Neutral = FromHex("#B3B3B3FF");
-    public static readonly Color Intruder = FromHex("#FF0000FF");
+    public static readonly Color Intruder = FromHex("#FF1919FF");
     public static readonly Color Syndicate = FromHex("#008000FF");
     public static readonly Color Faction = FromHex("#00E66DFF");
 

@@ -299,3 +299,15 @@ public static class ChatControllerAwakePatch
             DataManager.Settings.Multiplayer.ChatMode = QuickChatModes.FreeChatOrQuickChat;
     }
 }
+
+[HarmonyPatch(typeof(ChatController), nameof(ChatController.Toggle))]
+public static class ChatFontPatch
+{
+    private static TMP_FontAsset Font = null;
+
+    public static void Postfix(ChatController __instance)
+    {
+        Font??= __instance.scroller.transform.GetChild(1).GetChild(5).GetComponent<TextMeshPro>().font;
+        __instance.freeChatField.textArea.GetComponent<TextMeshPro>().font = Font;
+    }
+}

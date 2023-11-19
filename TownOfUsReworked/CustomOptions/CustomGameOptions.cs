@@ -42,7 +42,7 @@ public static class CustomGameOptions
     public static bool Whispers => Generate.Whispers;
     public static bool WhispersAnnouncement => Generate.WhispersAnnouncement;
     public static bool AppearanceAnimation => Generate.AppearanceAnimation;
-    public static bool RandomSpawns => Generate.RandomSpawns;
+    public static RandomSpawning RandomSpawns => (RandomSpawning)Generate.RandomSpawns.GetInt();
     public static bool EnableAbilities => Generate.EnableAbilities;
     public static bool EnableModifiers => Generate.EnableModifiers;
     public static bool EnableObjectifiers => Generate.EnableObjectifiers;

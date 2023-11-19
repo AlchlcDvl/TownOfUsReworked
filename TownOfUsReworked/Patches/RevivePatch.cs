@@ -29,7 +29,7 @@ public static class PlayerControlRevivePatch
             body.gameObject.Destroy();
         }
 
-        if (IsSubmerged && CustomPlayer.Local == __instance)
+        if (IsSubmerged() && CustomPlayer.Local == __instance)
             ChangeFloor(__instance.transform.position.y > -7);
 
         if (__instance.Is(LayerEnum.Troll))
@@ -43,7 +43,7 @@ public static class PlayerControlRevivePatch
         HUD.AdminButton.ToggleVisible(__instance.IsImpostor() && IsHnS);
         HUD.SabotageButton.ToggleVisible(__instance.CanSabotage());
         HUD.ImpostorVentButton.ToggleVisible(__instance.CanVent());
-        ButtonUtils.ResetCustomTimers();
+        ButtonUtils.Reset();
 
         if (HUD.Chat.IsOpenOrOpening)
             HUD.Chat.ForceClosed();

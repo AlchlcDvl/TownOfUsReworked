@@ -43,7 +43,7 @@ public abstract class PlayerLayer
 
     public virtual void OnLobby() => OnGameEndPatch.Reset();
 
-    public virtual void OnIntroEnd() => ButtonUtils.ResetCustomTimers(CooldownType.Start);
+    public virtual void OnIntroEnd() => ButtonUtils.Reset(CooldownType.Start);
 
     public virtual void UpdateHud(HudManager __instance) {}
 
@@ -78,7 +78,7 @@ public abstract class PlayerLayer
     {
         Player.EnableButtons();
         OnGameEndPatch.Reset();
-        ButtonUtils.ResetCustomTimers(CooldownType.Meeting);
+        ButtonUtils.Reset(CooldownType.Meeting);
     }
 
     public virtual void OnBodyReport(GameData.PlayerInfo info) => OnGameEndPatch.Reset();

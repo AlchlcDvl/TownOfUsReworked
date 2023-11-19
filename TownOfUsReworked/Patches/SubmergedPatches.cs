@@ -5,10 +5,10 @@ public static class SubmergedStartPatch
 {
     public static void Postfix()
     {
-        if (CustomPlayer.Local == null || CustomPlayer.Local.Data == null || !IsSubmerged)
+        if (CustomPlayer.Local == null || CustomPlayer.Local.Data == null || !IsSubmerged())
             return;
 
-        Coroutines.Start(WaitStart(() => ButtonUtils.ResetCustomTimers(CooldownType.Start)));
+        Coroutines.Start(WaitStart(() => ButtonUtils.Reset(CooldownType.Start)));
     }
 }
 
@@ -17,7 +17,7 @@ public static class SubmergedHudPatch
 {
     public static void Postfix(HudManager __instance)
     {
-        if (IsSubmerged && CustomPlayer.Local.IsPostmortal())
+        if (IsSubmerged() && CustomPlayer.Local.IsPostmortal())
             __instance.MapButton.transform.parent.Find(__instance.MapButton.name + "(Clone)").gameObject.SetActive(CustomPlayer.Local.Caught());
     }
 }

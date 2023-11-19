@@ -15,7 +15,7 @@ public class CustomButtonOption : CustomOption
     public static ToggleOption CreateButton()
     {
         var togglePrefab = UObject.FindObjectOfType<ToggleOption>();
-        var toggle = UObject.Instantiate(togglePrefab, togglePrefab.transform.parent);
+        var toggle = UObject.Instantiate(togglePrefab, togglePrefab.transform.parent).DontDestroy();
         toggle.transform.GetChild(0).localPosition = new(-1.05f, 0f, 0f);
         toggle.transform.GetChild(0).GetComponent<RectTransform>().sizeDelta = new(5.5f, 0.37f);
         toggle.transform.GetChild(1).localScale = new(1.6f, 1f, 1f);

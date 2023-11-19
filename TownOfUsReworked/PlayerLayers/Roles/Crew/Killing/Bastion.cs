@@ -21,7 +21,7 @@ public class Bastion : Crew
     public static string SpriteName => MapPatches.CurrentMap switch
     {
         2 => "Polus",
-        3 => "Plant",
+        5 => "Plant",
         _ => "Metal"
     };
 

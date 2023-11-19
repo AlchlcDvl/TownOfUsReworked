@@ -807,7 +807,7 @@ Infect Cooldown
 False
 Max <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color>
 2
-<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color> Have <color=#FF0000FF>Intruder</color> Vision
+<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color> Have <color=#FF1919FF>Intruder</color> Vision
 True
 <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killers</color> Know Each Other
 False
@@ -887,7 +887,7 @@ Maul Radius
 False
 Max <color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Neophytes</color>
 1
-<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Neophytes</color> Have <color=#FF0000FF>Intruder</color> Vision
+<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Neophytes</color> Have <color=#FF1919FF>Intruder</color> Vision
 True
 <color=#AC8A00FF>Dracula</color> Is Unique
 False
@@ -963,23 +963,23 @@ Tasks Remaining When <color=#662962FF>Phantom</color> Can Be Clicked
 2
 Players Are Alerted When <color=#662962FF>Phantom</color> Is Clickable
 True
-<color=#FF0000FF>Intruder</color> Count
+<color=#FF1919FF>Intruder</color> Count
 1
-<color=#FF0000FF>Intruder</color> Vision
+<color=#FF1919FF>Intruder</color> Vision
 2
-<color=#FF0000FF>Intruders</color> Use A Flashlight
+<color=#FF1919FF>Intruders</color> Use A Flashlight
 False
-<color=#FF0000FF>Intruder</color> Kill Cooldown
+<color=#FF1919FF>Intruder</color> Kill Cooldown
 25
-<color=#FF0000FF>Intruder</color> Can Vent
+<color=#FF1919FF>Intruder</color> Can Vent
 False
-<color=#FF0000FF>Intruder</color> Can Sabotage
+<color=#FF1919FF>Intruder</color> Can Sabotage
 True
-Dead <color=#FF0000FF>Intruders</color> Can Sabotage
+Dead <color=#FF1919FF>Intruders</color> Can Sabotage
 False
-Max <color=#FF0000FF>Intruder</color> <color=#FFD700FF>Roles</color>
+Max <color=#FF1919FF>Intruder</color> <color=#FFD700FF>Roles</color>
 2
-Min <color=#FF0000FF>Intruder</color> <color=#FFD700FF>Roles</color>
+Min <color=#FF1919FF>Intruder</color> <color=#FFD700FF>Roles</color>
 2
 <color=#02A752FF>Blackmailer</color>
 70
@@ -1026,10 +1026,10 @@ Min <color=#FF0000FF>Intruder</color> <color=#FFD700FF>Roles</color>
 <color=#F1C40FFF>Ghoul</color>
 60
 1
-<color=#FF0000FF>Impostor</color>
+<color=#FF1919FF>Impostor</color>
 0
 0
-Max <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Concealers</color>
+Max <color=#FF1919FF>Intruder</color> <color=#1D7CF2FF>Concealers</color>
 1
 <color=#02A752FF>Blackmailer</color> Is Unique
 False
@@ -1077,7 +1077,7 @@ Drag Speed
 0.5
 <color=#2647A2FF>Janitor</color> Can Vent
 0
-Max <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Deceivers</color>
+Max <color=#FF1919FF>Intruder</color> <color=#1D7CF2FF>Deceivers</color>
 1
 <color=#40B4FFFF>Disguiser</color> Is Unique
 False
@@ -1113,13 +1113,13 @@ Invis Duration
 12
 <color=#5C4F75FF>Wraith</color> Can Vent
 False
-Max <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Heads</color>
+Max <color=#FF1919FF>Intruder</color> <color=#1D7CF2FF>Heads</color>
 1
 <color=#404C08FF>Godfather</color> Is Unique
 False
 Ability Cooldown Bonus
 0.75
-Max <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Killers</color>
+Max <color=#FF1919FF>Intruder</color> <color=#1D7CF2FF>Killers</color>
 1
 <color=#2BD29CFF>Ambusher</color> Is Unique
 False
@@ -1139,7 +1139,7 @@ Enforce Delay
 5
 Enforce Explosion Radius
 0.25
-Max <color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Supporters</color>
+Max <color=#FF1919FF>Intruder</color> <color=#1D7CF2FF>Supporters</color>
 1
 <color=#FFFF99FF>Consigliere</color> Is Unique
 False
@@ -1181,7 +1181,7 @@ Chaos Drive Holder Kill Cooldown
 25
 <color=#008000FF>Syndicate</color> Can Vent
 0
-<color=#008000FF>Syndicate</color> Replaces <color=#FF0000FF>Intruders</color>
+<color=#008000FF>Syndicate</color> Replaces <color=#FF1919FF>Intruders</color>
 False
 Chaos Drive Is Global
 False
@@ -1485,7 +1485,7 @@ False
 <color=#8CFFFFFF>Bullseye</color>
 100
 1
-<color=#FF0000FF>Hitman</color>
+<color=#FF1919FF>Hitman</color>
 100
 1
 <color=#26FCFBFF>Insider</color>
@@ -1538,7 +1538,7 @@ Min <color=#FF9900FF>Abilities</color>
 False
 <color=#B3B3B3FF>Slayer</color> Is Unique
 False
-<color=#FF0000FF>Hitman</color> Is Unique
+<color=#FF1919FF>Hitman</color> Is Unique
 False
 <color=#008000FF>Sniper</color> Is Unique
 False
@@ -1781,7 +1781,7 @@ Ban 5
 None
 Ban <color=#8CFFFFFF>Crewmate</color>
 True
-Ban <color=#FF0000FF>Impostor</color>
+Ban <color=#FF1919FF>Impostor</color>
 True
 Ban <color=#008000FF>Anarchist</color>
 True

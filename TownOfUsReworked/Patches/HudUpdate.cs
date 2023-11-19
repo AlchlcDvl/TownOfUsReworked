@@ -161,6 +161,17 @@ public static class HudUpdate
             }
         }
 
+        foreach (var id in UninteractiblePlayers.Keys)
+        {
+            var player = PlayerById(id);
+
+            if (player == null || player.HasDied())
+                continue;
+
+            if (UninteractiblePlayers.ContainsKey(player.PlayerId) && player.moveable && UninteractiblePlayers[player.PlayerId].AddSeconds(6) < DateTime.UtcNow)
+                UninteractiblePlayers.Remove(player.PlayerId);
+        }
+
         if (CustomGameOptions.CamouflagedComms)
         {
             var commsactive = ShipStatus.Instance?.Systems?.TryGetValue(SystemTypes.Comms, out var comms) == true;
@@ -204,7 +215,7 @@ public static class MeetingCooldowns
             return;
 
         if (ExileController.Instance && obj == ExileController.Instance?.gameObject)
-            ButtonUtils.ResetCustomTimers(CooldownType.Meeting);
+            ButtonUtils.Reset(CooldownType.Meeting);
         else if (ActiveTask && obj == ActiveTask.gameObject)
             CustomPlayer.Local.EnableButtons();
     }

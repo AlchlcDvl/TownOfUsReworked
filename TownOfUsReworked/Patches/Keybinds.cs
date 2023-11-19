@@ -20,7 +20,6 @@ public static class Keybinds
     {
         self.AddAction(0);
         var action = self.GetAction(self.actions.Count - 1)!;
-
         action.name = name;
         action.descriptiveName = description;
         action.categoryId = 0;
@@ -36,7 +35,7 @@ public static class Keybinds
             _keyboardKeyCode = keycode,
             _modifierKey1 = ModifierKey.None,
             _modifierKey2 = ModifierKey.None,
-            _modifierKey3 = ModifierKey.None,
+            _modifierKey3 = ModifierKey.None
         };
 
         self.keyboardMaps[0].actionElementMaps.Add(map);

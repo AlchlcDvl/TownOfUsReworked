@@ -59,7 +59,7 @@ public class Amnesiac : Neutral
             Flash(Colors.Amnesiac);
             role.OnLobby();
             OnLobby();
-            ButtonUtils.ResetCustomTimers();
+            ButtonUtils.Reset();
         }
 
         Role newRole = role.Type switch
@@ -193,7 +193,7 @@ public class Amnesiac : Neutral
         }
 
         if (CustomPlayer.Local == player || CustomPlayer.Local == other)
-            ButtonUtils.ResetCustomTimers();
+            ButtonUtils.Reset();
     }
 
     public override void UpdateHud(HudManager __instance)

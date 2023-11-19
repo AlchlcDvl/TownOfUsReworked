@@ -48,7 +48,7 @@ public class Shifter : Crew
             Flash(Colors.Shifter);
             role.OnLobby();
             OnLobby();
-            ButtonUtils.ResetCustomTimers();
+            ButtonUtils.Reset();
         }
 
         Role newRole = role.Type switch

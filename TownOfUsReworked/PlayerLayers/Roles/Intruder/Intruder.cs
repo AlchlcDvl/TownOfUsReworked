@@ -3,7 +3,7 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 public abstract class Intruder : Role
 {
     public CustomButton KillButton { get; set; }
-    public string CommonAbilities => "<color=#FF0000FF>- You can kill players" + (CustomGameOptions.IntrudersCanSabotage || (IsDead && CustomGameOptions.GhostsCanSabotage) ? ("\n- You can " +
+    public string CommonAbilities => "<color=#FF1919FF>- You can kill players" + (CustomGameOptions.IntrudersCanSabotage || (IsDead && CustomGameOptions.GhostsCanSabotage) ? ("\n- You can " +
         "call sabotages to distract the <color=#8CFFFFFF>Crew</color>") : "") + "</color>";
 
     public override Color Color => Colors.Intruder;

@@ -4,7 +4,7 @@ using System.Text.Json;
 
 namespace TownOfUsReworked.Classes;
 
-public class ModUpdater
+public static class ModUpdater
 {
     private static bool Running = false;
     public static bool ReworkedUpdate = false;
@@ -15,13 +15,6 @@ public class ModUpdater
     private static Task ReworkedTask = null;
     private static Task SubmergedTask = null;
     private static GenericPopup InfoPopup;
-    private static HttpClient Client = null;
-
-    private static void SetUpClient()
-    {
-        Client = new() { DefaultRequestHeaders = { {"User-Agent", "Downloader"} } };
-        Client.DefaultRequestHeaders.CacheControl = new() { NoCache = true };
-    }
 
     private static string GetLink(string tag) => tag switch
     {
@@ -44,9 +37,8 @@ public class ModUpdater
 
         Running = true;
         CanDownloadSubmerged = !SubLoaded;
-        SetUpClient();
-        CheckForUpdate("Reworked").GetAwaiter().GetResult();
-        CheckForUpdate("Submerged").GetAwaiter().GetResult();
+        CheckForUpdate("Reworked").GetAwaiter();
+        CheckForUpdate("Submerged").GetAwaiter();
 
         if (ReworkedUpdate || SubmergedUpdate || CanDownloadSubmerged)
         {
@@ -86,21 +78,17 @@ public class ModUpdater
                 info = Translate("Updates.Mod.InProgress");
         }
 
-        InfoPopup.StartCoroutine(Effects.Lerp(0.01f, new Action<float>((p) => { SetPopupText(info); })));
+        InfoPopup.StartCoroutine(Effects.Lerp(0.01f, new Action<float>(_ => SetPopupText(info))));
     }
 
     private static async Task<bool> CheckForUpdate(string updateType)
     {
-        if (Client == null)
-        {
-            LogError("Client was null");
-            return false;
-        }
-
         //Checks the github api for tags. Compares current version to the latest tag version on GitHub
         try
         {
-            var response = await Client.GetAsync(new Uri(GetLink(updateType)), HttpCompletionOption.ResponseContentRead);
+            using var client = new HttpClient();
+            client.DefaultRequestHeaders.Add("User-Agent", "Updater");
+            using var response = await client.GetAsync(GetLink(updateType), HttpCompletionOption.ResponseContentRead);
 
             if (response.StatusCode != HttpStatusCode.OK || response.Content == null)
             {
@@ -114,7 +102,10 @@ public class ModUpdater
             var tagname = data.Tag;
 
             if (tagname == null)
+            {
+                LogError($"{updateType} tag doesn't exist");
                 return false; // Something went wrong
+            }
 
             //Check Reworked version
             if (updateType == "Reworked")
@@ -154,21 +145,17 @@ public class ModUpdater
 
     private static async Task<bool> DownloadUpdate(string updateType)
     {
-        if (Client == null)
-        {
-            LogError("Client was null");
-            return false;
-        }
-
         try
         {
             //Downloads the new dll from GitHub into the plugins folder
-            var info = Translate("Updates.Mod.Success").Replace("%mod%", Translate($"Mod.{updateType}"));
-            var response = await Client.GetAsync(new Uri(GetLink2(updateType)), HttpCompletionOption.ResponseContentRead);
+            using var client = new HttpClient();
+            client.DefaultRequestHeaders.Add("User-Agent", "Updater");
+            using var response = await client.GetAsync(GetLink2(updateType), HttpCompletionOption.ResponseContentRead);
 
             if (response.StatusCode != HttpStatusCode.OK || response.Content == null)
             {
                 LogError($"Server returned no data: {response.StatusCode} for {updateType}");
+                ShowPopUp(Translate("Updates.Mod.NoSuccess"));
                 return false;
             }
 
@@ -180,10 +167,9 @@ public class ModUpdater
             if (File.Exists(fullname)) // Rename current executable to old, if any
                 File.Move(fullname, fullname + ".old");
 
-            using var responseStream = await response.Content.ReadAsStreamAsync();
-            using var fileStream = File.Create(fullname);
-            responseStream.CopyTo(fileStream);
-            ShowPopUp(info);
+            var array = await response.Content.ReadAsByteArrayAsync();
+            File.WriteAllBytes(fullname, array);
+            ShowPopUp(Translate("Updates.Mod.Success").Replace("%mod%", Translate($"Mod.{updateType}")));
             return true;
         }
         catch (Exception ex)

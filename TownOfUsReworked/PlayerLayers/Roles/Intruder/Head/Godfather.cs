@@ -8,8 +8,8 @@ public class Godfather : Intruder
     public override Color Color => ClientGameOptions.CustomIntColors ? Colors.Godfather : Colors.Intruder;
     public override string Name => "Godfather";
     public override LayerEnum Type => LayerEnum.Godfather;
-    public override Func<string> StartText => () => "Promote Your Fellow <color=#FF0000FF>Intruder</color> To Do Better";
-    public override Func<string> Description => () => "- You can promote a fellow <color=#FF0000FF>Intruder</color> into becoming your successor\n- Promoting an <color=#FF0000FF>" +
+    public override Func<string> StartText => () => "Promote Your Fellow <color=#FF1919FF>Intruder</color> To Do Better";
+    public override Func<string> Description => () => "- You can promote a fellow <color=#FF1919FF>Intruder</color> into becoming your successor\n- Promoting an <color=#FF1919FF>" +
         "Intruder</color> turns them into a <color=#6400FFFF>Mafioso</color>\n- If you die, the <color=#6400FFFF>Mafioso</color> will become the new <color=#404C08FF>Godfather</color>"
         + $"\nand inherits better abilities of their former role\n{CommonAbilities}";
 

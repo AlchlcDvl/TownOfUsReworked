@@ -18,7 +18,7 @@ public class Astral : Modifier
 
         Player.NetTransform.RpcSnapTo(LastPosition);
 
-        if (IsSubmerged)
+        if (IsSubmerged())
             ChangeFloor(LastPosition.y > -7);
     }
 }

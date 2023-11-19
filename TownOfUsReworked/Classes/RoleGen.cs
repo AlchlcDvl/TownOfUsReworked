@@ -391,75 +391,88 @@ public static class RoleGen
     {
         GetAdjustedFactions(out var imps, out var syn, out var neut, out var crew);
 
-        IntruderRoles.Add(GenerateSpawnItem(LayerEnum.Enforcer));
-        IntruderRoles.Add(GenerateSpawnItem(LayerEnum.Morphling));
-        IntruderRoles.Add(GenerateSpawnItem(LayerEnum.Blackmailer));
-        IntruderRoles.Add(GenerateSpawnItem(LayerEnum.Miner));
-        IntruderRoles.Add(GenerateSpawnItem(LayerEnum.Teleporter));
-        IntruderRoles.Add(GenerateSpawnItem(LayerEnum.Wraith));
-        IntruderRoles.Add(GenerateSpawnItem(LayerEnum.Consort));
-        IntruderRoles.Add(GenerateSpawnItem(LayerEnum.Janitor));
-        IntruderRoles.Add(GenerateSpawnItem(LayerEnum.Camouflager));
-        IntruderRoles.Add(GenerateSpawnItem(LayerEnum.Grenadier));
-        IntruderRoles.Add(GenerateSpawnItem(LayerEnum.Impostor));
-        IntruderRoles.Add(GenerateSpawnItem(LayerEnum.Consigliere));
-        IntruderRoles.Add(GenerateSpawnItem(LayerEnum.Disguiser));
-        IntruderRoles.Add(GenerateSpawnItem(LayerEnum.Ambusher));
-
-        if (imps >= 3)
-            IntruderRoles.Add(GenerateSpawnItem(LayerEnum.Godfather));
-
-        SyndicateRoles.Add(GenerateSpawnItem(LayerEnum.Anarchist));
-        SyndicateRoles.Add(GenerateSpawnItem(LayerEnum.Bomber));
-        SyndicateRoles.Add(GenerateSpawnItem(LayerEnum.Poisoner));
-        SyndicateRoles.Add(GenerateSpawnItem(LayerEnum.Crusader));
-        SyndicateRoles.Add(GenerateSpawnItem(LayerEnum.Collider));
-
-        if (syn >= 3)
-            SyndicateRoles.Add(GenerateSpawnItem(LayerEnum.Rebel));
-
-        NeutralRoles.Add(GenerateSpawnItem(LayerEnum.Glitch));
-        NeutralRoles.Add(GenerateSpawnItem(LayerEnum.Werewolf));
-        NeutralRoles.Add(GenerateSpawnItem(LayerEnum.SerialKiller));
-        NeutralRoles.Add(GenerateSpawnItem(LayerEnum.Juggernaut));
-        NeutralRoles.Add(GenerateSpawnItem(LayerEnum.Murderer));
-        NeutralRoles.Add(GenerateSpawnItem(LayerEnum.Thief));
-
-        if (CustomGameOptions.AddArsonist)
-            NeutralRoles.Add(GenerateSpawnItem(LayerEnum.Arsonist));
-
-        if (CustomGameOptions.AddCryomaniac)
-            NeutralRoles.Add(GenerateSpawnItem(LayerEnum.Cryomaniac));
-
-        if (CustomGameOptions.AddPlaguebearer)
-            NeutralRoles.Add(GenerateSpawnItem(CustomGameOptions.PestSpawn ? LayerEnum.Pestilence : LayerEnum.Plaguebearer));
-
-        NeutralRoles = Sort(NeutralRoles, neut);
-
-        var vigis = crew / 2;
-        var vets = crew / 2;
-
-        while (vigis > 0 || vets > 0)
+        if (imps > 0)
         {
-            if (vigis > 0)
-            {
-                CrewRoles.Add(GenerateSpawnItem(LayerEnum.Vigilante));
-                vigis--;
-            }
+            IntruderRoles.Add(GenerateSpawnItem(LayerEnum.Enforcer));
+            IntruderRoles.Add(GenerateSpawnItem(LayerEnum.Morphling));
+            IntruderRoles.Add(GenerateSpawnItem(LayerEnum.Blackmailer));
+            IntruderRoles.Add(GenerateSpawnItem(LayerEnum.Miner));
+            IntruderRoles.Add(GenerateSpawnItem(LayerEnum.Teleporter));
+            IntruderRoles.Add(GenerateSpawnItem(LayerEnum.Wraith));
+            IntruderRoles.Add(GenerateSpawnItem(LayerEnum.Consort));
+            IntruderRoles.Add(GenerateSpawnItem(LayerEnum.Janitor));
+            IntruderRoles.Add(GenerateSpawnItem(LayerEnum.Camouflager));
+            IntruderRoles.Add(GenerateSpawnItem(LayerEnum.Grenadier));
+            IntruderRoles.Add(GenerateSpawnItem(LayerEnum.Impostor));
+            IntruderRoles.Add(GenerateSpawnItem(LayerEnum.Consigliere));
+            IntruderRoles.Add(GenerateSpawnItem(LayerEnum.Disguiser));
+            IntruderRoles.Add(GenerateSpawnItem(LayerEnum.Ambusher));
 
-            if (vets > 0)
-            {
-                CrewRoles.Add(GenerateSpawnItem(LayerEnum.Veteran));
-                vets--;
-            }
+            if (imps >= 3)
+                IntruderRoles.Add(GenerateSpawnItem(LayerEnum.Godfather));
+
+            IntruderRoles = Sort(IntruderRoles, imps);
         }
 
-        IntruderRoles = Sort(IntruderRoles, imps);
-        CrewRoles = Sort(CrewRoles, crew);
+        if (syn > 0)
+        {
+            SyndicateRoles.Add(GenerateSpawnItem(LayerEnum.Anarchist));
+            SyndicateRoles.Add(GenerateSpawnItem(LayerEnum.Bomber));
+            SyndicateRoles.Add(GenerateSpawnItem(LayerEnum.Poisoner));
+            SyndicateRoles.Add(GenerateSpawnItem(LayerEnum.Crusader));
+            SyndicateRoles.Add(GenerateSpawnItem(LayerEnum.Collider));
 
-        AllRoles.AddRange(NeutralRoles);
-        AllRoles.AddRange(CrewRoles);
-        AllRoles.AddRange(SyndicateRoles);
+            if (syn >= 3)
+                SyndicateRoles.Add(GenerateSpawnItem(LayerEnum.Rebel));
+
+            SyndicateRoles = Sort(SyndicateRoles, syn);
+        }
+
+        if (neut > 0)
+        {
+            NeutralRoles.Add(GenerateSpawnItem(LayerEnum.Glitch));
+            NeutralRoles.Add(GenerateSpawnItem(LayerEnum.Werewolf));
+            NeutralRoles.Add(GenerateSpawnItem(LayerEnum.SerialKiller));
+            NeutralRoles.Add(GenerateSpawnItem(LayerEnum.Juggernaut));
+            NeutralRoles.Add(GenerateSpawnItem(LayerEnum.Murderer));
+            NeutralRoles.Add(GenerateSpawnItem(LayerEnum.Thief));
+
+            if (CustomGameOptions.AddArsonist)
+                NeutralRoles.Add(GenerateSpawnItem(LayerEnum.Arsonist));
+
+            if (CustomGameOptions.AddCryomaniac)
+                NeutralRoles.Add(GenerateSpawnItem(LayerEnum.Cryomaniac));
+
+            if (CustomGameOptions.AddPlaguebearer)
+                NeutralRoles.Add(GenerateSpawnItem(CustomGameOptions.PestSpawn ? LayerEnum.Pestilence : LayerEnum.Plaguebearer));
+
+            NeutralRoles = Sort(NeutralRoles, neut);
+        }
+
+        if (crew > 0)
+        {
+            var vigis = crew / 2;
+            var vets = crew / 2;
+
+            while (vigis > 0 || vets > 0)
+            {
+                if (vigis > 0)
+                {
+                    CrewRoles.Add(GenerateSpawnItem(LayerEnum.Vigilante));
+                    vigis--;
+                }
+
+                if (vets > 0)
+                {
+                    CrewRoles.Add(GenerateSpawnItem(LayerEnum.Veteran));
+                    vets--;
+                }
+            }
+
+            CrewRoles = Sort(CrewRoles, crew);
+        }
+
+        AllRoles.AddRanges(NeutralRoles, CrewRoles, SyndicateRoles);
 
         if (!CustomGameOptions.AltImps)
             AllRoles.AddRange(IntruderRoles);
@@ -477,1011 +490,1023 @@ public static class RoleGen
         GetAdjustedFactions(out var imps, out var syn, out var neut, out var crew);
         var num = 0;
 
-        if (CustomGameOptions.MayorOn > 0)
+        if (crew > 0)
         {
-            num = CustomGameOptions.MayorCount;
-
-            while (num > 0)
+            if (CustomGameOptions.MayorOn > 0)
             {
-                CrewSovereignRoles.Add(GenerateSpawnItem(LayerEnum.Mayor));
-                num--;
-            }
+                num = CustomGameOptions.MayorCount;
 
-            LogInfo("Mayor Done");
-        }
+                while (num > 0)
+                {
+                    CrewSovereignRoles.Add(GenerateSpawnItem(LayerEnum.Mayor));
+                    num--;
+                }
 
-        if (CustomGameOptions.MonarchOn > 0)
-        {
-            num = CustomGameOptions.MonarchCount;
+                LogInfo("Mayor Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.MonarchOn > 0)
             {
-                CrewSovereignRoles.Add(GenerateSpawnItem(LayerEnum.Monarch));
-                num--;
-            }
+                num = CustomGameOptions.MonarchCount;
 
-            LogInfo("Monarch Done");
-        }
+                while (num > 0)
+                {
+                    CrewSovereignRoles.Add(GenerateSpawnItem(LayerEnum.Monarch));
+                    num--;
+                }
 
-        if (CustomGameOptions.DictatorOn > 0)
-        {
-            num = CustomGameOptions.DictatorCount;
+                LogInfo("Monarch Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.DictatorOn > 0)
             {
-                CrewSovereignRoles.Add(GenerateSpawnItem(LayerEnum.Dictator));
-                num--;
-            }
+                num = CustomGameOptions.DictatorCount;
 
-            LogInfo("Dictator Done");
-        }
+                while (num > 0)
+                {
+                    CrewSovereignRoles.Add(GenerateSpawnItem(LayerEnum.Dictator));
+                    num--;
+                }
 
-        if (CustomGameOptions.SheriffOn > 0)
-        {
-            num = CustomGameOptions.SheriffCount;
+                LogInfo("Dictator Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.SheriffOn > 0)
             {
-                CrewInvestigativeRoles.Add(GenerateSpawnItem(LayerEnum.Sheriff));
-                num--;
-            }
+                num = CustomGameOptions.SheriffCount;
 
-            LogInfo("Sheriff Done");
-        }
+                while (num > 0)
+                {
+                    CrewInvestigativeRoles.Add(GenerateSpawnItem(LayerEnum.Sheriff));
+                    num--;
+                }
 
-        if (CustomGameOptions.VigilanteOn > 0)
-        {
-            num = CustomGameOptions.VigilanteCount;
+                LogInfo("Sheriff Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.VigilanteOn > 0)
             {
-                CrewKillingRoles.Add(GenerateSpawnItem(LayerEnum.Vigilante));
-                num--;
-            }
+                num = CustomGameOptions.VigilanteCount;
 
-            LogInfo("Vigilante Done");
-        }
+                while (num > 0)
+                {
+                    CrewKillingRoles.Add(GenerateSpawnItem(LayerEnum.Vigilante));
+                    num--;
+                }
 
-        if (CustomGameOptions.EngineerOn > 0)
-        {
-            num = CustomGameOptions.EngineerCount;
+                LogInfo("Vigilante Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.EngineerOn > 0)
             {
-                CrewSupportRoles.Add(GenerateSpawnItem(LayerEnum.Engineer));
-                num--;
-            }
+                num = CustomGameOptions.EngineerCount;
 
-            LogInfo("Engineer Done");
-        }
+                while (num > 0)
+                {
+                    CrewSupportRoles.Add(GenerateSpawnItem(LayerEnum.Engineer));
+                    num--;
+                }
 
-        if (CustomGameOptions.MedicOn > 0)
-        {
-            num = CustomGameOptions.MedicCount;
+                LogInfo("Engineer Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.MedicOn > 0)
             {
-                CrewProtectiveRoles.Add(GenerateSpawnItem(LayerEnum.Medic));
-                num--;
-            }
+                num = CustomGameOptions.MedicCount;
 
-            LogInfo("Medic Done");
-        }
+                while (num > 0)
+                {
+                    CrewProtectiveRoles.Add(GenerateSpawnItem(LayerEnum.Medic));
+                    num--;
+                }
 
-        if (CustomGameOptions.AltruistOn > 0)
-        {
-            num = CustomGameOptions.AltruistCount;
+                LogInfo("Medic Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.AltruistOn > 0)
             {
-                CrewProtectiveRoles.Add(GenerateSpawnItem(LayerEnum.Altruist));
-                num--;
-            }
+                num = CustomGameOptions.AltruistCount;
 
-            LogInfo("Altruist Done");
-        }
+                while (num > 0)
+                {
+                    CrewProtectiveRoles.Add(GenerateSpawnItem(LayerEnum.Altruist));
+                    num--;
+                }
 
-        if (CustomGameOptions.VeteranOn > 0)
-        {
-            num = CustomGameOptions.VeteranCount;
+                LogInfo("Altruist Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.VeteranOn > 0)
             {
-                CrewKillingRoles.Add(GenerateSpawnItem(LayerEnum.Veteran));
-                num--;
-            }
+                num = CustomGameOptions.VeteranCount;
 
-            LogInfo("Veteran Done");
-        }
+                while (num > 0)
+                {
+                    CrewKillingRoles.Add(GenerateSpawnItem(LayerEnum.Veteran));
+                    num--;
+                }
 
-        if (CustomGameOptions.BastionOn > 0 && CustomGameOptions.WhoCanVent != WhoCanVentOptions.NoOne && MapPatches.CurrentMap != 3)
-        {
-            num = CustomGameOptions.BastionCount;
+                LogInfo("Veteran Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.BastionOn > 0 && CustomGameOptions.WhoCanVent != WhoCanVentOptions.NoOne)
             {
-                CrewKillingRoles.Add(GenerateSpawnItem(LayerEnum.Bastion));
-                num--;
-            }
+                num = CustomGameOptions.BastionCount;
 
-            LogInfo("Bastion Done");
-        }
+                while (num > 0)
+                {
+                    CrewKillingRoles.Add(GenerateSpawnItem(LayerEnum.Bastion));
+                    num--;
+                }
 
-        if (CustomGameOptions.TrackerOn > 0)
-        {
-            num = CustomGameOptions.TrackerCount;
+                LogInfo("Bastion Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.TrackerOn > 0)
             {
-                CrewInvestigativeRoles.Add(GenerateSpawnItem(LayerEnum.Tracker));
-                num--;
-            }
+                num = CustomGameOptions.TrackerCount;
 
-            LogInfo("Tracker Done");
-        }
+                while (num > 0)
+                {
+                    CrewInvestigativeRoles.Add(GenerateSpawnItem(LayerEnum.Tracker));
+                    num--;
+                }
 
-        if (CustomGameOptions.TransporterOn > 0)
-        {
-            num = CustomGameOptions.TransporterCount;
+                LogInfo("Tracker Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.TransporterOn > 0)
             {
-                CrewSupportRoles.Add(GenerateSpawnItem(LayerEnum.Transporter));
-                num--;
-            }
+                num = CustomGameOptions.TransporterCount;
 
-            LogInfo("Transporter Done");
-        }
+                while (num > 0)
+                {
+                    CrewSupportRoles.Add(GenerateSpawnItem(LayerEnum.Transporter));
+                    num--;
+                }
 
-        if (CustomGameOptions.MediumOn > 0)
-        {
-            num = CustomGameOptions.MediumCount;
+                LogInfo("Transporter Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.MediumOn > 0)
             {
-                CrewInvestigativeRoles.Add(GenerateSpawnItem(LayerEnum.Medium));
-                num--;
-            }
+                num = CustomGameOptions.MediumCount;
 
-            LogInfo("Medium Done");
-        }
+                while (num > 0)
+                {
+                    CrewInvestigativeRoles.Add(GenerateSpawnItem(LayerEnum.Medium));
+                    num--;
+                }
 
-        if (CustomGameOptions.CoronerOn > 0)
-        {
-            num = CustomGameOptions.CoronerCount;
+                LogInfo("Medium Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.CoronerOn > 0)
             {
-                CrewInvestigativeRoles.Add(GenerateSpawnItem(LayerEnum.Coroner));
-                num--;
-            }
+                num = CustomGameOptions.CoronerCount;
 
-            LogInfo("Coroner Done");
-        }
+                while (num > 0)
+                {
+                    CrewInvestigativeRoles.Add(GenerateSpawnItem(LayerEnum.Coroner));
+                    num--;
+                }
 
-        if (CustomGameOptions.OperativeOn > 0)
-        {
-            num = CustomGameOptions.OperativeCount;
+                LogInfo("Coroner Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.OperativeOn > 0)
             {
-                CrewInvestigativeRoles.Add(GenerateSpawnItem(LayerEnum.Operative));
-                num--;
-            }
+                num = CustomGameOptions.OperativeCount;
 
-            LogInfo("Operative Done");
-        }
+                while (num > 0)
+                {
+                    CrewInvestigativeRoles.Add(GenerateSpawnItem(LayerEnum.Operative));
+                    num--;
+                }
 
-        if (CustomGameOptions.DetectiveOn > 0)
-        {
-            num = CustomGameOptions.DetectiveCount;
+                LogInfo("Operative Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.DetectiveOn > 0)
             {
-                CrewInvestigativeRoles.Add(GenerateSpawnItem(LayerEnum.Detective));
-                num--;
-            }
+                num = CustomGameOptions.DetectiveCount;
 
-            LogInfo("Detective Done");
-        }
+                while (num > 0)
+                {
+                    CrewInvestigativeRoles.Add(GenerateSpawnItem(LayerEnum.Detective));
+                    num--;
+                }
 
-        if (CustomGameOptions.EscortOn > 0)
-        {
-            num = CustomGameOptions.EscortCount;
+                LogInfo("Detective Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.EscortOn > 0)
             {
-                CrewSupportRoles.Add(GenerateSpawnItem(LayerEnum.Escort));
-                num--;
-            }
+                num = CustomGameOptions.EscortCount;
 
-            LogInfo("Escort Done");
-        }
+                while (num > 0)
+                {
+                    CrewSupportRoles.Add(GenerateSpawnItem(LayerEnum.Escort));
+                    num--;
+                }
 
-        if (CustomGameOptions.ShifterOn > 0)
-        {
-            num = CustomGameOptions.ShifterCount;
+                LogInfo("Escort Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.ShifterOn > 0)
             {
-                CrewSupportRoles.Add(GenerateSpawnItem(LayerEnum.Shifter));
-                num--;
-            }
+                num = CustomGameOptions.ShifterCount;
 
-            LogInfo("Shifter Done");
-        }
+                while (num > 0)
+                {
+                    CrewSupportRoles.Add(GenerateSpawnItem(LayerEnum.Shifter));
+                    num--;
+                }
 
-        if (CustomGameOptions.ChameleonOn > 0)
-        {
-            num = CustomGameOptions.ChameleonCount;
+                LogInfo("Shifter Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.ChameleonOn > 0)
             {
-                CrewSupportRoles.Add(GenerateSpawnItem(LayerEnum.Chameleon));
-                num--;
-            }
+                num = CustomGameOptions.ChameleonCount;
 
-            LogInfo("Chameleon Done");
-        }
+                while (num > 0)
+                {
+                    CrewSupportRoles.Add(GenerateSpawnItem(LayerEnum.Chameleon));
+                    num--;
+                }
 
-        if (CustomGameOptions.RetributionistOn > 0)
-        {
-            num = CustomGameOptions.RetributionistCount;
+                LogInfo("Chameleon Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.RetributionistOn > 0)
             {
-                CrewSupportRoles.Add(GenerateSpawnItem(LayerEnum.Retributionist));
-                num--;
-            }
+                num = CustomGameOptions.RetributionistCount;
 
-            LogInfo("Retributionist Done");
-        }
+                while (num > 0)
+                {
+                    CrewSupportRoles.Add(GenerateSpawnItem(LayerEnum.Retributionist));
+                    num--;
+                }
 
-        if (CustomGameOptions.CrewmateOn > 0 && IsCustom)
-        {
-            num = CustomGameOptions.CrewCount;
+                LogInfo("Retributionist Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.CrewmateOn > 0 && IsCustom)
             {
-                CrewRoles.Add(GenerateSpawnItem(LayerEnum.Crewmate));
-                num--;
-            }
+                num = CustomGameOptions.CrewCount;
 
-            LogInfo("Crewmate Done");
-        }
+                while (num > 0)
+                {
+                    CrewRoles.Add(GenerateSpawnItem(LayerEnum.Crewmate));
+                    num--;
+                }
 
-        if (CustomGameOptions.VampireHunterOn > 0 && CustomGameOptions.DraculaOn > 0)
-        {
-            num = CustomGameOptions.VampireHunterCount;
+                LogInfo("Crewmate Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.VampireHunterOn > 0 && CustomGameOptions.DraculaOn > 0)
             {
-                CrewAuditorRoles.Add(GenerateSpawnItem(LayerEnum.VampireHunter));
-                num--;
-            }
+                num = CustomGameOptions.VampireHunterCount;
 
-            LogInfo("Vampire Hunter Done");
-        }
+                while (num > 0)
+                {
+                    CrewAuditorRoles.Add(GenerateSpawnItem(LayerEnum.VampireHunter));
+                    num--;
+                }
 
-        if (CustomGameOptions.MysticOn > 0 && (CustomGameOptions.DraculaOn > 0 || CustomGameOptions.NecromancerOn > 0 || CustomGameOptions.WhispererOn > 0 || CustomGameOptions.JackalOn >
-            0))
-        {
-            num = CustomGameOptions.MysticCount;
+                LogInfo("Vampire Hunter Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.MysticOn > 0 && (CustomGameOptions.DraculaOn > 0 || CustomGameOptions.NecromancerOn > 0 || CustomGameOptions.WhispererOn > 0 || CustomGameOptions.JackalOn
+                > 0))
             {
-                CrewAuditorRoles.Add(GenerateSpawnItem(LayerEnum.Mystic));
-                num--;
-            }
+                num = CustomGameOptions.MysticCount;
 
-            LogInfo("Mystic Done");
-        }
+                while (num > 0)
+                {
+                    CrewAuditorRoles.Add(GenerateSpawnItem(LayerEnum.Mystic));
+                    num--;
+                }
 
-        if (CustomGameOptions.SeerOn > 0 && ((CustomGameOptions.VampireHunterOn > 0 && CustomGameOptions.DraculaOn > 0) || CustomGameOptions.BountyHunterOn > 0 ||
-            CustomGameOptions.GodfatherOn > 0 || CustomGameOptions.RebelOn > 0 || CustomGameOptions.PlaguebearerOn > 0 || CustomGameOptions.MysticOn > 0 ||  CustomGameOptions.TraitorOn > 0
-            || CustomGameOptions.AmnesiacOn > 0 || CustomGameOptions.ThiefOn > 0 || CustomGameOptions.ExecutionerOn > 0 || CustomGameOptions.GuardianAngelOn > 0 ||
-            CustomGameOptions.GuesserOn > 0 || CustomGameOptions.ShifterOn > 0))
-        {
-            num = CustomGameOptions.SeerCount;
+                LogInfo("Mystic Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.SeerOn > 0 && ((CustomGameOptions.VampireHunterOn > 0 && CustomGameOptions.DraculaOn > 0) || CustomGameOptions.BountyHunterOn > 0 ||
+                CustomGameOptions.GodfatherOn > 0 || CustomGameOptions.RebelOn > 0 || CustomGameOptions.PlaguebearerOn > 0 || CustomGameOptions.MysticOn > 0 ||  CustomGameOptions.TraitorOn
+                > 0 || CustomGameOptions.AmnesiacOn > 0 || CustomGameOptions.ThiefOn > 0 || CustomGameOptions.ExecutionerOn > 0 || CustomGameOptions.GuardianAngelOn > 0 ||
+                CustomGameOptions.GuesserOn > 0 || CustomGameOptions.ShifterOn > 0))
             {
-                CrewInvestigativeRoles.Add(GenerateSpawnItem(LayerEnum.Seer));
-                num--;
-            }
+                num = CustomGameOptions.SeerCount;
 
-            LogInfo("Seer Done");
+                while (num > 0)
+                {
+                    CrewInvestigativeRoles.Add(GenerateSpawnItem(LayerEnum.Seer));
+                    num--;
+                }
+
+                LogInfo("Seer Done");
+            }
         }
 
-        if (CustomGameOptions.JesterOn > 0)
+        if (neut > 0)
         {
-            num = CustomGameOptions.JesterCount;
-
-            while (num > 0)
+            if (CustomGameOptions.JesterOn > 0)
             {
-                NeutralEvilRoles.Add(GenerateSpawnItem(LayerEnum.Jester));
-                num--;
-            }
+                num = CustomGameOptions.JesterCount;
 
-            LogInfo("Jester Done");
-        }
+                while (num > 0)
+                {
+                    NeutralEvilRoles.Add(GenerateSpawnItem(LayerEnum.Jester));
+                    num--;
+                }
 
-        if (CustomGameOptions.AmnesiacOn > 0)
-        {
-            num = CustomGameOptions.AmnesiacCount;
+                LogInfo("Jester Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.AmnesiacOn > 0)
             {
-                NeutralBenignRoles.Add(GenerateSpawnItem(LayerEnum.Amnesiac));
-                num--;
-            }
+                num = CustomGameOptions.AmnesiacCount;
 
-            LogInfo("Amnesiac Done");
-        }
+                while (num > 0)
+                {
+                    NeutralBenignRoles.Add(GenerateSpawnItem(LayerEnum.Amnesiac));
+                    num--;
+                }
 
-        if (CustomGameOptions.ExecutionerOn > 0)
-        {
-            num = CustomGameOptions.ExecutionerCount;
+                LogInfo("Amnesiac Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.ExecutionerOn > 0)
             {
-                NeutralEvilRoles.Add(GenerateSpawnItem(LayerEnum.Executioner));
-                num--;
-            }
+                num = CustomGameOptions.ExecutionerCount;
 
-            LogInfo("Executioner Done");
-        }
+                while (num > 0)
+                {
+                    NeutralEvilRoles.Add(GenerateSpawnItem(LayerEnum.Executioner));
+                    num--;
+                }
 
-        if (CustomGameOptions.SurvivorOn > 0 && !CustomGameOptions.AvoidNeutralKingmakers)
-        {
-            num = CustomGameOptions.SurvivorCount;
+                LogInfo("Executioner Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.SurvivorOn > 0 && !CustomGameOptions.AvoidNeutralKingmakers)
             {
-                NeutralBenignRoles.Add(GenerateSpawnItem(LayerEnum.Survivor));
-                num--;
-            }
+                num = CustomGameOptions.SurvivorCount;
 
-            LogInfo("Survivor Done");
-        }
+                while (num > 0)
+                {
+                    NeutralBenignRoles.Add(GenerateSpawnItem(LayerEnum.Survivor));
+                    num--;
+                }
 
-        if (CustomGameOptions.GuardianAngelOn > 0 && !CustomGameOptions.AvoidNeutralKingmakers)
-        {
-            num = CustomGameOptions.GuardianAngelCount;
+                LogInfo("Survivor Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.GuardianAngelOn > 0 && !CustomGameOptions.AvoidNeutralKingmakers)
             {
-                NeutralBenignRoles.Add(GenerateSpawnItem(LayerEnum.GuardianAngel));
-                num--;
-            }
+                num = CustomGameOptions.GuardianAngelCount;
 
-            LogInfo("Guardian Angel Done");
-        }
+                while (num > 0)
+                {
+                    NeutralBenignRoles.Add(GenerateSpawnItem(LayerEnum.GuardianAngel));
+                    num--;
+                }
 
-        if (CustomGameOptions.GlitchOn > 0)
-        {
-            num = CustomGameOptions.GlitchCount;
+                LogInfo("Guardian Angel Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.GlitchOn > 0)
             {
-                NeutralKillingRoles.Add(GenerateSpawnItem(LayerEnum.Glitch));
-                num--;
-            }
+                num = CustomGameOptions.GlitchCount;
 
-            LogInfo("Glitch Done");
-        }
+                while (num > 0)
+                {
+                    NeutralKillingRoles.Add(GenerateSpawnItem(LayerEnum.Glitch));
+                    num--;
+                }
 
-        if (CustomGameOptions.MurdererOn > 0)
-        {
-            num = CustomGameOptions.MurdCount;
+                LogInfo("Glitch Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.MurdererOn > 0)
             {
-                NeutralKillingRoles.Add(GenerateSpawnItem(LayerEnum.Murderer));
-                num--;
-            }
+                num = CustomGameOptions.MurdCount;
 
-            LogInfo("Murderer Done");
-        }
+                while (num > 0)
+                {
+                    NeutralKillingRoles.Add(GenerateSpawnItem(LayerEnum.Murderer));
+                    num--;
+                }
 
-        if (CustomGameOptions.CryomaniacOn > 0)
-        {
-            num = CustomGameOptions.CryomaniacCount;
+                LogInfo("Murderer Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.CryomaniacOn > 0)
             {
-                NeutralKillingRoles.Add(GenerateSpawnItem(LayerEnum.Cryomaniac));
-                num--;
-            }
+                num = CustomGameOptions.CryomaniacCount;
 
-            LogInfo("Cryomaniac Done");
-        }
+                while (num > 0)
+                {
+                    NeutralKillingRoles.Add(GenerateSpawnItem(LayerEnum.Cryomaniac));
+                    num--;
+                }
 
-        if (CustomGameOptions.WerewolfOn > 0)
-        {
-            num = CustomGameOptions.WerewolfCount;
+                LogInfo("Cryomaniac Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.WerewolfOn > 0)
             {
-                NeutralKillingRoles.Add(GenerateSpawnItem(LayerEnum.Werewolf));
-                num--;
-            }
+                num = CustomGameOptions.WerewolfCount;
 
-            LogInfo("Werewolf Done");
-        }
+                while (num > 0)
+                {
+                    NeutralKillingRoles.Add(GenerateSpawnItem(LayerEnum.Werewolf));
+                    num--;
+                }
 
-        if (CustomGameOptions.ArsonistOn > 0)
-        {
-            num = CustomGameOptions.ArsonistCount;
+                LogInfo("Werewolf Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.ArsonistOn > 0)
             {
-                NeutralKillingRoles.Add(GenerateSpawnItem(LayerEnum.Arsonist));
-                num--;
-            }
+                num = CustomGameOptions.ArsonistCount;
 
-            LogInfo("Arsonist Done");
-        }
+                while (num > 0)
+                {
+                    NeutralKillingRoles.Add(GenerateSpawnItem(LayerEnum.Arsonist));
+                    num--;
+                }
 
-        if (CustomGameOptions.JackalOn > 0 && GameData.Instance.PlayerCount > 5)
-        {
-            num = CustomGameOptions.JackalCount;
+                LogInfo("Arsonist Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.JackalOn > 0 && GameData.Instance.PlayerCount > 5)
             {
-                NeutralNeophyteRoles.Add(GenerateSpawnItem(LayerEnum.Jackal));
-                num--;
-            }
+                num = CustomGameOptions.JackalCount;
 
-            LogInfo("Jackal Done");
-        }
+                while (num > 0)
+                {
+                    NeutralNeophyteRoles.Add(GenerateSpawnItem(LayerEnum.Jackal));
+                    num--;
+                }
 
-        if (CustomGameOptions.NecromancerOn > 0)
-        {
-            num = CustomGameOptions.NecromancerCount;
+                LogInfo("Jackal Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.NecromancerOn > 0)
             {
-                NeutralNeophyteRoles.Add(GenerateSpawnItem(LayerEnum.Necromancer));
-                num--;
-            }
+                num = CustomGameOptions.NecromancerCount;
 
-            LogInfo("Necromancer Done");
-        }
+                while (num > 0)
+                {
+                    NeutralNeophyteRoles.Add(GenerateSpawnItem(LayerEnum.Necromancer));
+                    num--;
+                }
 
-        if (CustomGameOptions.PlaguebearerOn > 0)
-        {
-            num = CustomGameOptions.PlaguebearerCount;
+                LogInfo("Necromancer Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.PlaguebearerOn > 0)
             {
-                NeutralHarbingerRoles.Add(GenerateSpawnItem(CustomGameOptions.PestSpawn ? LayerEnum.Pestilence : LayerEnum.Plaguebearer));
-                num--;
-            }
+                num = CustomGameOptions.PlaguebearerCount;
 
-            var PBorPest = CustomGameOptions.PestSpawn ? "Pestilence" : "Plaguebearer";
-            LogInfo($"{PBorPest} Done");
-        }
+                while (num > 0)
+                {
+                    NeutralHarbingerRoles.Add(GenerateSpawnItem(CustomGameOptions.PestSpawn ? LayerEnum.Pestilence : LayerEnum.Plaguebearer));
+                    num--;
+                }
 
-        if (CustomGameOptions.SerialKillerOn > 0)
-        {
-            num = CustomGameOptions.SKCount;
+                var PBorPest = CustomGameOptions.PestSpawn ? "Pestilence" : "Plaguebearer";
+                LogInfo($"{PBorPest} Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.SerialKillerOn > 0)
             {
-                NeutralKillingRoles.Add(GenerateSpawnItem(LayerEnum.SerialKiller));
-                num--;
-            }
+                num = CustomGameOptions.SKCount;
 
-            LogInfo("Serial Killer Done");
-        }
+                while (num > 0)
+                {
+                    NeutralKillingRoles.Add(GenerateSpawnItem(LayerEnum.SerialKiller));
+                    num--;
+                }
 
-        if (CustomGameOptions.JuggernautOn > 0)
-        {
-            num = CustomGameOptions.JuggernautCount;
+                LogInfo("Serial Killer Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.JuggernautOn > 0)
             {
-                NeutralKillingRoles.Add(GenerateSpawnItem(LayerEnum.Juggernaut));
-                num--;
-            }
+                num = CustomGameOptions.JuggernautCount;
 
-            LogInfo("Juggeraut Done");
-        }
+                while (num > 0)
+                {
+                    NeutralKillingRoles.Add(GenerateSpawnItem(LayerEnum.Juggernaut));
+                    num--;
+                }
 
-        if (CustomGameOptions.CannibalOn > 0)
-        {
-            num = CustomGameOptions.CannibalCount;
+                LogInfo("Juggeraut Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.CannibalOn > 0)
             {
-                NeutralEvilRoles.Add(GenerateSpawnItem(LayerEnum.Cannibal));
-                num--;
-            }
+                num = CustomGameOptions.CannibalCount;
 
-            LogInfo("Cannibal Done");
-        }
+                while (num > 0)
+                {
+                    NeutralEvilRoles.Add(GenerateSpawnItem(LayerEnum.Cannibal));
+                    num--;
+                }
 
-        if (CustomGameOptions.GuesserOn > 0)
-        {
-            num = CustomGameOptions.GuesserCount;
+                LogInfo("Cannibal Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.GuesserOn > 0)
             {
-                NeutralEvilRoles.Add(GenerateSpawnItem(LayerEnum.Guesser));
-                num--;
-            }
+                num = CustomGameOptions.GuesserCount;
 
-            LogInfo("Guesser Done");
-        }
+                while (num > 0)
+                {
+                    NeutralEvilRoles.Add(GenerateSpawnItem(LayerEnum.Guesser));
+                    num--;
+                }
 
-        if (CustomGameOptions.ActorOn > 0 && (CustomGameOptions.CrewAssassinOn > 0 || CustomGameOptions.NeutralAssassinOn > 0 || CustomGameOptions.SyndicateAssassinOn > 0 ||
-            CustomGameOptions.IntruderAssassinOn > 0))
-        {
-            num = CustomGameOptions.ActorCount;
+                LogInfo("Guesser Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.ActorOn > 0 && (CustomGameOptions.CrewAssassinOn > 0 || CustomGameOptions.NeutralAssassinOn > 0 || CustomGameOptions.SyndicateAssassinOn > 0 ||
+                CustomGameOptions.IntruderAssassinOn > 0))
             {
-                NeutralEvilRoles.Add(GenerateSpawnItem(LayerEnum.Actor));
-                num--;
-            }
+                num = CustomGameOptions.ActorCount;
 
-            LogInfo("Actor Done");
-        }
+                while (num > 0)
+                {
+                    NeutralEvilRoles.Add(GenerateSpawnItem(LayerEnum.Actor));
+                    num--;
+                }
 
-        if (CustomGameOptions.ThiefOn > 0)
-        {
-            num = CustomGameOptions.ThiefCount;
+                LogInfo("Actor Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.ThiefOn > 0)
             {
-                NeutralBenignRoles.Add(GenerateSpawnItem(LayerEnum.Thief));
-                num--;
-            }
+                num = CustomGameOptions.ThiefCount;
 
-            LogInfo("Thief Done");
-        }
+                while (num > 0)
+                {
+                    NeutralBenignRoles.Add(GenerateSpawnItem(LayerEnum.Thief));
+                    num--;
+                }
 
-        if (CustomGameOptions.DraculaOn > 0)
-        {
-            num = CustomGameOptions.DraculaCount;
+                LogInfo("Thief Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.DraculaOn > 0)
             {
-                NeutralNeophyteRoles.Add(GenerateSpawnItem(LayerEnum.Dracula));
-                num--;
-            }
+                num = CustomGameOptions.DraculaCount;
 
-            LogInfo("Dracula Done");
-        }
+                while (num > 0)
+                {
+                    NeutralNeophyteRoles.Add(GenerateSpawnItem(LayerEnum.Dracula));
+                    num--;
+                }
 
-        if (CustomGameOptions.WhispererOn > 0)
-        {
-            num = CustomGameOptions.WhispererCount;
+                LogInfo("Dracula Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.WhispererOn > 0)
             {
-                NeutralNeophyteRoles.Add(GenerateSpawnItem(LayerEnum.Whisperer));
-                num--;
-            }
+                num = CustomGameOptions.WhispererCount;
 
-            LogInfo("Whisperer Done");
-        }
+                while (num > 0)
+                {
+                    NeutralNeophyteRoles.Add(GenerateSpawnItem(LayerEnum.Whisperer));
+                    num--;
+                }
 
-        if (CustomGameOptions.TrollOn > 0)
-        {
-            num = CustomGameOptions.TrollCount;
+                LogInfo("Whisperer Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.TrollOn > 0)
             {
-                NeutralEvilRoles.Add(GenerateSpawnItem(LayerEnum.Troll));
-                num--;
-            }
+                num = CustomGameOptions.TrollCount;
 
-            LogInfo("Troll Done");
-        }
+                while (num > 0)
+                {
+                    NeutralEvilRoles.Add(GenerateSpawnItem(LayerEnum.Troll));
+                    num--;
+                }
 
-        if (CustomGameOptions.BountyHunterOn > 0)
-        {
-            num = CustomGameOptions.BHCount;
+                LogInfo("Troll Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.BountyHunterOn > 0)
             {
-                NeutralEvilRoles.Add(GenerateSpawnItem(LayerEnum.BountyHunter));
-                num--;
-            }
+                num = CustomGameOptions.BHCount;
+
+                while (num > 0)
+                {
+                    NeutralEvilRoles.Add(GenerateSpawnItem(LayerEnum.BountyHunter));
+                    num--;
+                }
 
-            LogInfo("Bounty Hunter Done");
+                LogInfo("Bounty Hunter Done");
+            }
         }
 
-        if (CustomGameOptions.MorphlingOn > 0)
+        if (imps > 0)
         {
-            num = CustomGameOptions.MorphlingCount;
-
-            while (num > 0)
+            if (CustomGameOptions.MorphlingOn > 0)
             {
-                IntruderDeceptionRoles.Add(GenerateSpawnItem(LayerEnum.Morphling));
-                num--;
-            }
+                num = CustomGameOptions.MorphlingCount;
 
-            LogInfo("Morphling Done");
-        }
+                while (num > 0)
+                {
+                    IntruderDeceptionRoles.Add(GenerateSpawnItem(LayerEnum.Morphling));
+                    num--;
+                }
 
-        if (CustomGameOptions.BlackmailerOn > 0)
-        {
-            num = CustomGameOptions.BlackmailerCount;
+                LogInfo("Morphling Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.BlackmailerOn > 0)
             {
-                IntruderConcealingRoles.Add(GenerateSpawnItem(LayerEnum.Blackmailer));
-                num--;
-            }
+                num = CustomGameOptions.BlackmailerCount;
 
-            LogInfo("Blackmailer Done");
-        }
+                while (num > 0)
+                {
+                    IntruderConcealingRoles.Add(GenerateSpawnItem(LayerEnum.Blackmailer));
+                    num--;
+                }
 
-        if (CustomGameOptions.MinerOn > 0 && CustomGameOptions.WhoCanVent != WhoCanVentOptions.NoOne && MapPatches.CurrentMap != 3)
-        {
-            num = CustomGameOptions.MinerCount;
+                LogInfo("Blackmailer Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.MinerOn > 0 && CustomGameOptions.WhoCanVent != WhoCanVentOptions.NoOne)
             {
-                IntruderSupportRoles.Add(GenerateSpawnItem(LayerEnum.Miner));
-                num--;
-            }
+                num = CustomGameOptions.MinerCount;
 
-            LogInfo("Miner Done");
-        }
+                while (num > 0)
+                {
+                    IntruderSupportRoles.Add(GenerateSpawnItem(LayerEnum.Miner));
+                    num--;
+                }
 
-        if (CustomGameOptions.TeleporterOn > 0)
-        {
-            num = CustomGameOptions.TeleporterCount;
+                LogInfo("Miner Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.TeleporterOn > 0)
             {
-                IntruderSupportRoles.Add(GenerateSpawnItem(LayerEnum.Teleporter));
-                num--;
-            }
+                num = CustomGameOptions.TeleporterCount;
 
-            LogInfo("Teleporter Done");
-        }
+                while (num > 0)
+                {
+                    IntruderSupportRoles.Add(GenerateSpawnItem(LayerEnum.Teleporter));
+                    num--;
+                }
 
-        if (CustomGameOptions.AmbusherOn > 0)
-        {
-            num = CustomGameOptions.AmbusherCount;
+                LogInfo("Teleporter Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.AmbusherOn > 0)
             {
-                IntruderKillingRoles.Add(GenerateSpawnItem(LayerEnum.Ambusher));
-                num--;
-            }
+                num = CustomGameOptions.AmbusherCount;
 
-            LogInfo("Ambusher Done");
-        }
+                while (num > 0)
+                {
+                    IntruderKillingRoles.Add(GenerateSpawnItem(LayerEnum.Ambusher));
+                    num--;
+                }
 
-        if (CustomGameOptions.WraithOn > 0)
-        {
-            num = CustomGameOptions.WraithCount;
+                LogInfo("Ambusher Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.WraithOn > 0)
             {
-                IntruderDeceptionRoles.Add(GenerateSpawnItem(LayerEnum.Wraith));
-                num--;
-            }
+                num = CustomGameOptions.WraithCount;
 
-            LogInfo("Wraith Done");
-        }
+                while (num > 0)
+                {
+                    IntruderDeceptionRoles.Add(GenerateSpawnItem(LayerEnum.Wraith));
+                    num--;
+                }
 
-        if (CustomGameOptions.ConsortOn > 0)
-        {
-            num = CustomGameOptions.ConsortCount;
+                LogInfo("Wraith Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.ConsortOn > 0)
             {
-                IntruderSupportRoles.Add(GenerateSpawnItem(LayerEnum.Consort));
-                num--;
-            }
+                num = CustomGameOptions.ConsortCount;
 
-            LogInfo("Consort Done");
-        }
+                while (num > 0)
+                {
+                    IntruderSupportRoles.Add(GenerateSpawnItem(LayerEnum.Consort));
+                    num--;
+                }
 
-        if (CustomGameOptions.JanitorOn > 0)
-        {
-            num = CustomGameOptions.JanitorCount;
+                LogInfo("Consort Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.JanitorOn > 0)
             {
-                IntruderConcealingRoles.Add(GenerateSpawnItem(LayerEnum.Janitor));
-                num--;
-            }
+                num = CustomGameOptions.JanitorCount;
 
-            LogInfo("Janitor Done");
-        }
+                while (num > 0)
+                {
+                    IntruderConcealingRoles.Add(GenerateSpawnItem(LayerEnum.Janitor));
+                    num--;
+                }
 
-        if (CustomGameOptions.CamouflagerOn > 0)
-        {
-            num = CustomGameOptions.CamouflagerCount;
+                LogInfo("Janitor Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.CamouflagerOn > 0)
             {
-                IntruderConcealingRoles.Add(GenerateSpawnItem(LayerEnum.Camouflager));
-                num--;
-            }
+                num = CustomGameOptions.CamouflagerCount;
 
-            LogInfo("Camouflager Done");
-        }
+                while (num > 0)
+                {
+                    IntruderConcealingRoles.Add(GenerateSpawnItem(LayerEnum.Camouflager));
+                    num--;
+                }
 
-        if (CustomGameOptions.GrenadierOn > 0)
-        {
-            num = CustomGameOptions.GrenadierCount;
+                LogInfo("Camouflager Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.GrenadierOn > 0)
             {
-                IntruderConcealingRoles.Add(GenerateSpawnItem(LayerEnum.Grenadier));
-                num--;
-            }
+                num = CustomGameOptions.GrenadierCount;
 
-            LogInfo("Grenadier Done");
-        }
+                while (num > 0)
+                {
+                    IntruderConcealingRoles.Add(GenerateSpawnItem(LayerEnum.Grenadier));
+                    num--;
+                }
 
-        if (CustomGameOptions.ImpostorOn > 0 && IsCustom)
-        {
-            num = CustomGameOptions.ImpCount;
+                LogInfo("Grenadier Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.ImpostorOn > 0 && IsCustom)
             {
-                IntruderRoles.Add(GenerateSpawnItem(LayerEnum.Impostor));
-                num--;
-            }
+                num = CustomGameOptions.ImpCount;
 
-            LogInfo("Impostor Done");
-        }
+                while (num > 0)
+                {
+                    IntruderRoles.Add(GenerateSpawnItem(LayerEnum.Impostor));
+                    num--;
+                }
 
-        if (CustomGameOptions.ConsigliereOn > 0)
-        {
-            num = CustomGameOptions.ConsigliereCount;
+                LogInfo("Impostor Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.ConsigliereOn > 0)
             {
-                IntruderSupportRoles.Add(GenerateSpawnItem(LayerEnum.Consigliere));
-                num--;
-            }
+                num = CustomGameOptions.ConsigliereCount;
 
-            LogInfo("Consigliere Done");
-        }
+                while (num > 0)
+                {
+                    IntruderSupportRoles.Add(GenerateSpawnItem(LayerEnum.Consigliere));
+                    num--;
+                }
 
-        if (CustomGameOptions.DisguiserOn > 0)
-        {
-            num = CustomGameOptions.DisguiserCount;
+                LogInfo("Consigliere Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.DisguiserOn > 0)
             {
-                IntruderDeceptionRoles.Add(GenerateSpawnItem(LayerEnum.Disguiser));
-                num--;
-            }
+                num = CustomGameOptions.DisguiserCount;
 
-            LogInfo("Disguiser Done");
-        }
+                while (num > 0)
+                {
+                    IntruderDeceptionRoles.Add(GenerateSpawnItem(LayerEnum.Disguiser));
+                    num--;
+                }
 
-        if (CustomGameOptions.EnforcerOn > 0)
-        {
-            num = CustomGameOptions.EnforcerCount;
+                LogInfo("Disguiser Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.EnforcerOn > 0)
             {
-                IntruderKillingRoles.Add(GenerateSpawnItem(LayerEnum.Enforcer));
-                num--;
-            }
+                num = CustomGameOptions.EnforcerCount;
 
-            LogInfo("Enforcer Done");
-        }
+                while (num > 0)
+                {
+                    IntruderKillingRoles.Add(GenerateSpawnItem(LayerEnum.Enforcer));
+                    num--;
+                }
 
-        if (CustomGameOptions.GodfatherOn > 0 && imps >= 3)
-        {
-            num = CustomGameOptions.GodfatherCount;
+                LogInfo("Enforcer Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.GodfatherOn > 0 && imps >= 3)
             {
-                IntruderHeadRoles.Add(GenerateSpawnItem(LayerEnum.Godfather));
-                num--;
-            }
+                num = CustomGameOptions.GodfatherCount;
+
+                while (num > 0)
+                {
+                    IntruderHeadRoles.Add(GenerateSpawnItem(LayerEnum.Godfather));
+                    num--;
+                }
 
-            LogInfo("Godfather Done");
+                LogInfo("Godfather Done");
+            }
         }
 
-        if (CustomGameOptions.AnarchistOn > 0 && IsCustom)
+        if (syn > 0)
         {
-            num = CustomGameOptions.AnarchistCount;
-
-            while (num > 0)
+            if (CustomGameOptions.AnarchistOn > 0 && IsCustom)
             {
-                SyndicateRoles.Add(GenerateSpawnItem(LayerEnum.Anarchist));
-                num--;
-            }
+                num = CustomGameOptions.AnarchistCount;
 
-            LogInfo("Anarchist Done");
-        }
+                while (num > 0)
+                {
+                    SyndicateRoles.Add(GenerateSpawnItem(LayerEnum.Anarchist));
+                    num--;
+                }
 
-        if (CustomGameOptions.ShapeshifterOn > 0)
-        {
-            num = CustomGameOptions.ShapeshifterCount;
+                LogInfo("Anarchist Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.ShapeshifterOn > 0)
             {
-                SyndicateDisruptionRoles.Add(GenerateSpawnItem(LayerEnum.Shapeshifter));
-                num--;
-            }
+                num = CustomGameOptions.ShapeshifterCount;
 
-            LogInfo("Shapeshifter Done");
-        }
+                while (num > 0)
+                {
+                    SyndicateDisruptionRoles.Add(GenerateSpawnItem(LayerEnum.Shapeshifter));
+                    num--;
+                }
 
-        if (CustomGameOptions.FramerOn > 0)
-        {
-            num = CustomGameOptions.FramerCount;
+                LogInfo("Shapeshifter Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.FramerOn > 0)
             {
-                SyndicateDisruptionRoles.Add(GenerateSpawnItem(LayerEnum.Framer));
-                num--;
-            }
+                num = CustomGameOptions.FramerCount;
 
-            LogInfo("Framer Done");
-        }
+                while (num > 0)
+                {
+                    SyndicateDisruptionRoles.Add(GenerateSpawnItem(LayerEnum.Framer));
+                    num--;
+                }
 
-        if (CustomGameOptions.CrusaderOn > 0)
-        {
-            num = CustomGameOptions.CrusaderCount;
+                LogInfo("Framer Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.CrusaderOn > 0)
             {
-                SyndicateKillingRoles.Add(GenerateSpawnItem(LayerEnum.Crusader));
-                num--;
-            }
+                num = CustomGameOptions.CrusaderCount;
 
-            LogInfo("Crusader Done");
-        }
+                while (num > 0)
+                {
+                    SyndicateKillingRoles.Add(GenerateSpawnItem(LayerEnum.Crusader));
+                    num--;
+                }
 
-        if (CustomGameOptions.RebelOn > 0 && syn >= 3)
-        {
-            num = CustomGameOptions.RebelCount;
+                LogInfo("Crusader Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.RebelOn > 0 && syn >= 3)
             {
-                SyndicatePowerRoles.Add(GenerateSpawnItem(LayerEnum.Rebel));
-                num--;
-            }
+                num = CustomGameOptions.RebelCount;
 
-            LogInfo("Rebel Done");
-        }
+                while (num > 0)
+                {
+                    SyndicatePowerRoles.Add(GenerateSpawnItem(LayerEnum.Rebel));
+                    num--;
+                }
 
-        if (CustomGameOptions.PoisonerOn > 0)
-        {
-            num = CustomGameOptions.PoisonerCount;
+                LogInfo("Rebel Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.PoisonerOn > 0)
             {
-                SyndicateKillingRoles.Add(GenerateSpawnItem(LayerEnum.Poisoner));
-                num--;
-            }
+                num = CustomGameOptions.PoisonerCount;
 
-            LogInfo("Poisoner Done");
-        }
+                while (num > 0)
+                {
+                    SyndicateKillingRoles.Add(GenerateSpawnItem(LayerEnum.Poisoner));
+                    num--;
+                }
 
-        if (CustomGameOptions.ColliderOn > 0)
-        {
-            num = CustomGameOptions.ColliderCount;
+                LogInfo("Poisoner Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.ColliderOn > 0)
             {
-                SyndicateKillingRoles.Add(GenerateSpawnItem(LayerEnum.Collider));
-                num--;
-            }
+                num = CustomGameOptions.ColliderCount;
 
-            LogInfo("Collider Done");
-        }
+                while (num > 0)
+                {
+                    SyndicateKillingRoles.Add(GenerateSpawnItem(LayerEnum.Collider));
+                    num--;
+                }
 
-        if (CustomGameOptions.ConcealerOn > 0)
-        {
-            num = CustomGameOptions.ConcealerCount;
+                LogInfo("Collider Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.ConcealerOn > 0)
             {
-                SyndicateDisruptionRoles.Add(GenerateSpawnItem(LayerEnum.Concealer));
-                num--;
-            }
+                num = CustomGameOptions.ConcealerCount;
 
-            LogInfo("Concealer Done");
-        }
+                while (num > 0)
+                {
+                    SyndicateDisruptionRoles.Add(GenerateSpawnItem(LayerEnum.Concealer));
+                    num--;
+                }
 
-        if (CustomGameOptions.WarperOn > 0)
-        {
-            num = CustomGameOptions.WarperCount;
+                LogInfo("Concealer Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.WarperOn > 0)
             {
-                SyndicateSupportRoles.Add(GenerateSpawnItem(LayerEnum.Warper));
-                num--;
-            }
+                num = CustomGameOptions.WarperCount;
 
-            LogInfo("Warper Done");
-        }
+                while (num > 0)
+                {
+                    SyndicateSupportRoles.Add(GenerateSpawnItem(LayerEnum.Warper));
+                    num--;
+                }
 
-        if (CustomGameOptions.BomberOn > 0)
-        {
-            num = CustomGameOptions.BomberCount;
+                LogInfo("Warper Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.BomberOn > 0)
             {
-                SyndicateKillingRoles.Add(GenerateSpawnItem(LayerEnum.Bomber));
-                num--;
-            }
+                num = CustomGameOptions.BomberCount;
 
-            LogInfo("Bomber Done");
-        }
+                while (num > 0)
+                {
+                    SyndicateKillingRoles.Add(GenerateSpawnItem(LayerEnum.Bomber));
+                    num--;
+                }
 
-        if (CustomGameOptions.SpellslingerOn > 0)
-        {
-            num = CustomGameOptions.SpellslingerCount;
+                LogInfo("Bomber Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.SpellslingerOn > 0)
             {
-                SyndicatePowerRoles.Add(GenerateSpawnItem(LayerEnum.Spellslinger));
-                num--;
-            }
+                num = CustomGameOptions.SpellslingerCount;
 
-            LogInfo("Spellslinger Done");
-        }
+                while (num > 0)
+                {
+                    SyndicatePowerRoles.Add(GenerateSpawnItem(LayerEnum.Spellslinger));
+                    num--;
+                }
 
-        if (CustomGameOptions.StalkerOn > 0)
-        {
-            num = CustomGameOptions.StalkerCount;
+                LogInfo("Spellslinger Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.StalkerOn > 0)
             {
-                SyndicateSupportRoles.Add(GenerateSpawnItem(LayerEnum.Stalker));
-                num--;
-            }
+                num = CustomGameOptions.StalkerCount;
 
-            LogInfo("Stalker Done");
-        }
+                while (num > 0)
+                {
+                    SyndicateSupportRoles.Add(GenerateSpawnItem(LayerEnum.Stalker));
+                    num--;
+                }
 
-        if (CustomGameOptions.DrunkardOn > 0)
-        {
-            num = CustomGameOptions.DrunkardCount;
+                LogInfo("Stalker Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.DrunkardOn > 0)
             {
-                SyndicateDisruptionRoles.Add(GenerateSpawnItem(LayerEnum.Drunkard));
-                num--;
-            }
+                num = CustomGameOptions.DrunkardCount;
 
-            LogInfo("Drunkard Done");
-        }
+                while (num > 0)
+                {
+                    SyndicateDisruptionRoles.Add(GenerateSpawnItem(LayerEnum.Drunkard));
+                    num--;
+                }
 
-        if (CustomGameOptions.TimekeeperOn > 0)
-        {
-            num = CustomGameOptions.TimekeeperCount;
+                LogInfo("Drunkard Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.TimekeeperOn > 0)
             {
-                SyndicateDisruptionRoles.Add(GenerateSpawnItem(LayerEnum.Timekeeper));
-                num--;
-            }
+                num = CustomGameOptions.TimekeeperCount;
 
-            LogInfo("Timekeeper Done");
-        }
+                while (num > 0)
+                {
+                    SyndicateDisruptionRoles.Add(GenerateSpawnItem(LayerEnum.Timekeeper));
+                    num--;
+                }
 
-        if (CustomGameOptions.SilencerOn > 0)
-        {
-            num = CustomGameOptions.SilencerCount;
+                LogInfo("Timekeeper Done");
+            }
 
-            while (num > 0)
+            if (CustomGameOptions.SilencerOn > 0)
             {
-                SyndicateDisruptionRoles.Add(GenerateSpawnItem(LayerEnum.Silencer));
-                num--;
-            }
+                num = CustomGameOptions.SilencerCount;
 
-            LogInfo("Silencer Done");
+                while (num > 0)
+                {
+                    SyndicateDisruptionRoles.Add(GenerateSpawnItem(LayerEnum.Silencer));
+                    num--;
+                }
+
+                LogInfo("Silencer Done");
+            }
         }
 
         if (IsClassic || IsCustom)
@@ -1764,17 +1789,13 @@ public static class RoleGen
             LogInfo("All Any Sorting Done");
         }
 
-        if (CustomGameOptions.AltImps)
-        {
-            IntruderRoles.Clear();
-            IntruderRoles.AddRange(SyndicateRoles);
-            SyndicateRoles.Clear();
-        }
-
         AllRoles = new();
-        AllRoles.AddRanges(IntruderRoles, CrewRoles, NeutralRoles, SyndicateRoles);
+        AllRoles.AddRanges(CrewRoles, NeutralRoles, SyndicateRoles);
 
-        if (!AllRoles.Any(x => x.ID == LayerEnum.Dracula) && AllRoles.Any(x => x.ID == LayerEnum.VampireHunter))
+        if (!CustomGameOptions.AltImps)
+            AllRoles.AddRange(IntruderRoles);
+
+        if (!AllRoles.Any(x => x.ID == LayerEnum.Dracula))
         {
             var count = AllRoles.RemoveAll(x => x.ID == LayerEnum.VampireHunter);
 
@@ -1786,7 +1807,7 @@ public static class RoleGen
             }
         }
 
-        if (!AllRoles.Any(x => x.ID is LayerEnum.Dracula or LayerEnum.Jackal or LayerEnum.Necromancer or LayerEnum.Whisperer) && AllRoles.Any(x => x.ID == LayerEnum.Mystic))
+        if (!AllRoles.Any(x => x.ID is LayerEnum.Dracula or LayerEnum.Jackal or LayerEnum.Necromancer or LayerEnum.Whisperer))
         {
             var count = AllRoles.RemoveAll(x => x.ID == LayerEnum.Mystic);
 
@@ -1799,7 +1820,7 @@ public static class RoleGen
         }
 
         if (!AllRoles.Any(x => x.ID is LayerEnum.VampireHunter or LayerEnum.Amnesiac or LayerEnum.Thief or LayerEnum.Godfather or LayerEnum.Shifter or LayerEnum.Guesser or LayerEnum.Rebel
-            or LayerEnum.Executioner or LayerEnum.GuardianAngel or LayerEnum.BountyHunter or LayerEnum.Mystic) && AllRoles.Any(x => x.ID == LayerEnum.Seer))
+            or LayerEnum.Executioner or LayerEnum.GuardianAngel or LayerEnum.BountyHunter or LayerEnum.Mystic))
         {
             var count = AllRoles.RemoveAll(x => x.ID == LayerEnum.Seer);
 
@@ -1815,6 +1836,7 @@ public static class RoleGen
         {
             AllRoles.Remove(AllRoles.Random());
             AllRoles.Add(CrewRoles.Count > 0 ? CrewRoles.Random() : GenerateSpawnItem(LayerEnum.Crewmate));
+            AllRoles.Shuffle();
 
             if (TownOfUsReworked.IsTest)
                 LogInfo("Added Solo Crew");
@@ -3414,25 +3436,7 @@ public static class RoleGen
             LogInfo("Jackal Recruits Set");
         }
 
-        foreach (var player in CustomPlayer.AllPlayers)
-        {
-            if (!Modifier.GetModifier(player))
-                NullLayer(player, PlayerLayerEnum.Modifier);
-
-            if (!Ability.GetAbility(player))
-                NullLayer(player, PlayerLayerEnum.Ability);
-
-            if (!Objectifier.GetObjectifier(player))
-                NullLayer(player, PlayerLayerEnum.Objectifier);
-
-            if (!Role.GetRole(player))
-                NullLayer(player, PlayerLayerEnum.Role);
-
-            if (TownOfUsReworked.IsTest)
-                LogMessage($"{player.name} -> {Role.GetRole(player)}, {Objectifier.GetObjectifier(player)}, {Modifier.GetModifier(player)}, {Ability.GetAbility(player)}");
-        }
-
-        LogInfo("Players Set");
+        LogInfo("Targets Set");
     }
 
     public static void ResetEverything()
@@ -3582,6 +3586,14 @@ public static class RoleGen
         OtherButtonsPatch.CloseMenus();
 
         BodyLocations.Clear();
+
+        CachedMorphs.Clear();
+
+        TransitioningSize.Clear();
+
+        TransitioningSpeed.Clear();
+
+        UninteractiblePlayers.Clear();
     }
 
     public static void BeginRoleGen()
@@ -3650,7 +3662,7 @@ public static class RoleGen
 
         if (!IsVanilla)
         {
-            if (!IsRoleList && !IsTaskRace)
+            if (!IsRoleList && !IsTaskRace && !IsCustomHnS)
             {
                 if (CustomGameOptions.EnableObjectifiers)
                     GenObjectifiers();
@@ -3666,10 +3678,36 @@ public static class RoleGen
             SetTargets();
         }
 
-        BetterAirship.SpawnPoints.Clear();
-        Spawns.Shuffle();
-        BetterAirship.SpawnPoints.AddRange(Spawns.GetRange(0, 3));
-        CallRpc(CustomRPC.Misc, MiscRPC.SetSpawnAirship, BetterAirship.SpawnPoints);
+        if (MapPatches.CurrentMap == 4)
+        {
+            BetterAirship.SpawnPoints.Clear();
+            Spawns.Shuffle();
+            BetterAirship.SpawnPoints.AddRange(Spawns.GetRange(0, 3));
+            CallRpc(CustomRPC.Misc, MiscRPC.SetSpawnAirship, BetterAirship.SpawnPoints);
+        }
+
+        if (TownOfUsReworked.IsTest)
+            LogMessage("Name -> Role, Objectifier, Modifier, Ability");
+
+        foreach (var player in CustomPlayer.AllPlayers)
+        {
+            if (!Modifier.GetModifier(player))
+                NullLayer(player, PlayerLayerEnum.Modifier);
+
+            if (!Ability.GetAbility(player))
+                NullLayer(player, PlayerLayerEnum.Ability);
+
+            if (!Objectifier.GetObjectifier(player))
+                NullLayer(player, PlayerLayerEnum.Objectifier);
+
+            if (!Role.GetRole(player))
+                NullLayer(player, PlayerLayerEnum.Role);
+
+            if (TownOfUsReworked.IsTest)
+                LogMessage($"{player.name} -> {Role.GetRole(player)}, {Objectifier.GetObjectifier(player)}, {Modifier.GetModifier(player)}, {Ability.GetAbility(player)}");
+        }
+
+        LogMessage("Gen Ended");
     }
 
     private static void Gen(PlayerControl player, int id, PlayerLayerEnum rpc)

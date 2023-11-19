@@ -40,6 +40,9 @@ public static class CustomColors
 
     public static void SetColor(Renderer rend, int id)
     {
+        if (rend == null)
+            return;
+
         rend.material.SetColor("_BackColor", GetColor(id, true));
         rend.material.SetColor("_BodyColor", GetColor(id, false));
         rend.material.SetColor("_VisorColor", Palette.VisorColor);
@@ -50,9 +53,9 @@ public static class CustomColors
         if (!IsChanging(id) || rend == null)
             return;
 
-        rend.material.SetColor("_BackColor", GetColor(id, true));
-        rend.material.SetColor("_BodyColor", GetColor(id, false));
-        rend.material.SetColor("_VisorColor", Palette.VisorColor);
+        rend.material.SetColor(PlayerMaterial.BackColor, GetColor(id, true));
+        rend.material.SetColor(PlayerMaterial.BodyColor, GetColor(id, false));
+        rend.material.SetColor(PlayerMaterial.VisorColor, Palette.VisorColor);
     }
 
     public static bool OutOfBounds(int id) => id < 0 || id >= Palette.ColorNames.Count;
@@ -253,7 +256,7 @@ public static class CustomColors
             new(255, 255, 255, 255),
             new(255, 0, 0, 255),
             new(255, 255, 255, 255),
-            new(0, 0, 0, 255),
+            new(15, 15, 15, 255),
             new(251, 251, 255, 255),
             new(160, 101, 56, 255),
             new(255, 255, 16, 255),

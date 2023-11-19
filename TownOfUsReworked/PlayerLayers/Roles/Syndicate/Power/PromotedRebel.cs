@@ -7,7 +7,6 @@ public class PromotedRebel : Syndicate
         Alignment = Alignment.SyndicatePower;
         SpellCount = 0;
         Framed = new();
-        UnwarpablePlayers = new();
         StalkerArrows = new();
         Spelled = new();
         Bombs = new();
@@ -216,19 +215,6 @@ public class PromotedRebel : Syndicate
                     PositiveButton.StartCooldown();
                     NegativeButton.StartCooldown();
                 }
-            }
-        }
-        else if (IsWarp)
-        {
-            foreach (var entry in UnwarpablePlayers)
-            {
-                var player = PlayerById(entry.Key);
-
-                if (player == null || player.HasDied())
-                    continue;
-
-                if (UnwarpablePlayers.ContainsKey(player.PlayerId) && player.moveable && UnwarpablePlayers[player.PlayerId].AddSeconds(6) < DateTime.UtcNow)
-                    UnwarpablePlayers.Remove(player.PlayerId);
             }
         }
     }
@@ -586,7 +572,6 @@ public class PromotedRebel : Syndicate
     public PlayerControl WarpPlayer2 { get; set; }
     public CustomMenu WarpMenu1 { get; set; }
     public CustomMenu WarpMenu2 { get; set; }
-    public Dictionary<byte, DateTime> UnwarpablePlayers { get; set; }
     public SpriteRenderer AnimationPlaying { get; set; }
     public GameObject WarpObj { get; set; }
     public DeadBody Player1Body { get; set; }
@@ -596,10 +581,10 @@ public class PromotedRebel : Syndicate
     public Vent Vent { get; set; }
     public bool IsWarp => FormerRole?.Type == LayerEnum.Warper;
 
-    public bool WarpException1(PlayerControl player) => (player == Player && !CustomGameOptions.WarpSelf) || UnwarpablePlayers.ContainsKey(player.PlayerId) || player == WarpPlayer2 ||
+    public bool WarpException1(PlayerControl player) => (player == Player && !CustomGameOptions.WarpSelf) || UninteractiblePlayers.ContainsKey(player.PlayerId) || player == WarpPlayer2 ||
         (BodyById(player.PlayerId) == null && player.Data.IsDead) || player.IsMoving();
 
-    public bool WarpException2(PlayerControl player) => (player == Player && !CustomGameOptions.WarpSelf) || UnwarpablePlayers.ContainsKey(player.PlayerId) || player == WarpPlayer1 ||
+    public bool WarpException2(PlayerControl player) => (player == Player && !CustomGameOptions.WarpSelf) || UninteractiblePlayers.ContainsKey(player.PlayerId) || player == WarpPlayer1 ||
         (BodyById(player.PlayerId) == null && player.Data.IsDead) || player.IsMoving();
 
     public IEnumerator WarpPlayers()
@@ -675,7 +660,7 @@ public class PromotedRebel : Syndicate
             WarpPlayer1.MyPhysics.ResetMoveState();
             WarpPlayer1.NetTransform.SnapTo(new(WarpPlayer2.GetTruePosition().x, WarpPlayer2.GetTruePosition().y + 0.3636f));
 
-            if (IsSubmerged && CustomPlayer.Local == WarpPlayer1)
+            if (IsSubmerged() && CustomPlayer.Local == WarpPlayer1)
             {
                 ChangeFloor(WarpPlayer1.GetTruePosition().y > -7);
                 CheckOutOfBoundsElevator(CustomPlayer.Local);
@@ -689,7 +674,7 @@ public class PromotedRebel : Syndicate
             StopDragging(Player1Body.ParentId);
             Player1Body.transform.position = WarpPlayer2.GetTruePosition();
 
-            if (IsSubmerged && CustomPlayer.Local == WarpPlayer2)
+            if (IsSubmerged() && CustomPlayer.Local == WarpPlayer2)
             {
                 ChangeFloor(WarpPlayer2.GetTruePosition().y > -7);
                 CheckOutOfBoundsElevator(CustomPlayer.Local);
@@ -700,7 +685,7 @@ public class PromotedRebel : Syndicate
             WarpPlayer1.MyPhysics.ResetMoveState();
             WarpPlayer1.NetTransform.SnapTo(new(Player2Body.TruePosition.x, Player2Body.TruePosition.y + 0.3636f));
 
-            if (IsSubmerged && CustomPlayer.Local == WarpPlayer1)
+            if (IsSubmerged() && CustomPlayer.Local == WarpPlayer1)
             {
                 ChangeFloor(WarpPlayer1.GetTruePosition().y > -7);
                 CheckOutOfBoundsElevator(CustomPlayer.Local);

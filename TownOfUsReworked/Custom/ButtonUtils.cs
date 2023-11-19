@@ -102,13 +102,13 @@ public static class ButtonUtils
         return num;
     }
 
-    public static void ResetCustomTimers(CooldownType cooldown = CooldownType.Reset)
+    public static void Reset(CooldownType cooldown = CooldownType.Reset, PlayerControl player = null)
     {
-        var local = CustomPlayer.Local;
-        var role = Role.LocalRole;
+        player ??= CustomPlayer.Local;
+        var role = Role.GetRole(player);
         var start = cooldown == CooldownType.Start;
         var meeting = cooldown == CooldownType.Meeting;
-        CustomButton.AllButtons.Where(x => x.Owner.Player == local).ForEach(x => x.StartCooldown(cooldown));
+        CustomButton.AllButtons.Where(x => x.Owner.Player == player).ForEach(x => x.StartCooldown(cooldown));
 
         if (role.Requesting && !start)
             role.BountyTimer++;
@@ -116,195 +116,160 @@ public static class ButtonUtils
         if (!start && Role.SyndicateHasChaosDrive)
             RoleGen.AssignChaosDrive();
 
-        if (local.Is(LayerEnum.Escort))
-            ((Escort)role).BlockTarget = null;
-        else if (local.Is(LayerEnum.Operative))
+        if (role is Escort esc)
+            esc.BlockTarget = null;
+        else if (role is Operative op)
         {
-            var role2 = (Operative)role;
-            role2.BuggedPlayers.Clear();
+            op.BuggedPlayers.Clear();
 
             if (CustomGameOptions.BugsRemoveOnNewRound)
-                Bug.Clear(role2.Bugs);
+                Bug.Clear(op.Bugs);
         }
-        else if (local.Is(LayerEnum.Tracker))
+        else if (role is Tracker track)
         {
-            var role2 = (Tracker)role;
-
             if (CustomGameOptions.ResetOnNewRound)
             {
-                role2.TrackButton.Uses = role2.TrackButton.MaxUses + (role2.TasksDone ? 1 : 0);
-                role2.OnLobby();
+                track.TrackButton.Uses = track.TrackButton.MaxUses + (track.TasksDone ? 1 : 0);
+                track.OnLobby();
             }
         }
-        else if (local.Is(LayerEnum.Transporter))
+        else if (role is Transporter trans)
         {
-            var role2 = (Transporter)role;
-            role2.TransportPlayer1 = null;
-            role2.TransportPlayer2 = null;
+            trans.TransportPlayer1 = null;
+            trans.TransportPlayer2 = null;
         }
-        else if (local.Is(LayerEnum.Vigilante))
-            ((Vigilante)role).RoundOne = start && CustomGameOptions.RoundOneNoShot;
-        else if (local.Is(LayerEnum.Mayor))
-            ((Mayor)role).RoundOne = start && CustomGameOptions.RoundOneNoMayorReveal;
-        else if (local.Is(LayerEnum.Monarch))
-            ((Monarch)role).RoundOne = start && CustomGameOptions.RoundOneNoKnighting;
-        else if (local.Is(LayerEnum.Medium))
-            ((Medium)role).OnLobby();
-        else if (local.Is(LayerEnum.Retributionist))
+        else if (role is Vigilante vigi)
+            vigi.RoundOne = start && CustomGameOptions.RoundOneNoShot;
+        else if (role is Mayor mayor)
+            mayor.RoundOne = start && CustomGameOptions.RoundOneNoMayorReveal;
+        else if (role is Monarch mon)
+            mon.RoundOne = start && CustomGameOptions.RoundOneNoKnighting;
+        else if (role is Medium)
+            role.OnLobby();
+        else if (role is Retributionist ret)
         {
-            var role2 = (Retributionist)role;
-            role2.BuggedPlayers.Clear();
-            role2.BlockTarget = null;
-            role2.TransportPlayer1 = null;
-            role2.TransportPlayer2 = null;
-            role2.MediateArrows.Values.ToList().DestroyAll();
-            role2.MediateArrows.Clear();
-            role2.MediatedPlayers.Clear();
+            ret.BuggedPlayers.Clear();
+            ret.BlockTarget = null;
+            ret.TransportPlayer1 = null;
+            ret.TransportPlayer2 = null;
+            ret.MediateArrows.Values.ToList().DestroyAll();
+            ret.MediateArrows.Clear();
+            ret.MediatedPlayers.Clear();
 
             if (CustomGameOptions.BugsRemoveOnNewRound && meeting)
-                Bug.Clear(role2.Bugs);
+                Bug.Clear(ret.Bugs);
 
             if (CustomGameOptions.ResetOnNewRound)
             {
-                role2.TrackerArrows.Values.ToList().DestroyAll();
-                role2.TrackerArrows.Clear();
-                role2.TrackButton.Uses = role2.TrackButton.MaxUses + (role2.TasksDone ? 1 : 0);
+                ret.TrackerArrows.Values.ToList().DestroyAll();
+                ret.TrackerArrows.Clear();
+                ret.TrackButton.Uses = ret.TrackButton.MaxUses + (ret.TasksDone ? 1 : 0);
             }
         }
-        else if (local.Is(LayerEnum.Blackmailer))
-            ((Blackmailer)role).BlackmailedPlayer = null;
-        else if (local.Is(LayerEnum.Enforcer))
-            ((Enforcer)role).BombedPlayer = null;
-        else if (local.Is(LayerEnum.Consigliere) && local.HasDied() && DeadSeeEverything)
-            ((Consigliere)role).Investigated.Clear();
-        else if (local.Is(LayerEnum.Consort))
-            ((Consort)role).BlockTarget = null;
-        else if (local.Is(LayerEnum.Disguiser))
+        else if (role is Blackmailer bm)
+            bm.BlackmailedPlayer = null;
+        else if (role is Enforcer enf)
+            enf.BombedPlayer = null;
+        else if (role is Consigliere consig && player.HasDied() && DeadSeeEverything)
+            consig.Investigated.Clear();
+        else if (role is Consort cons)
+            cons.BlockTarget = null;
+        else if (role is Disguiser disg)
         {
-            var role2 = (Disguiser)role;
-            role2.MeasuredPlayer = null;
-            role2.DisguisedPlayer = null;
-            role2.CopiedPlayer = null;
+            disg.MeasuredPlayer = null;
+            disg.DisguisedPlayer = null;
+            disg.CopiedPlayer = null;
         }
-        else if (local.Is(LayerEnum.PromotedGodfather))
+        else if (role is PromotedGodfather gf)
         {
-            var role2 = (PromotedGodfather)role;
-            role2.BlackmailedPlayer = null;
-            role2.BlockTarget = null;
-            role2.MeasuredPlayer = null;
-            role2.DisguisedPlayer = null;
-            role2.CopiedPlayer = null;
-            role2.SampledPlayer = null;
-            role2.MorphedPlayer = null;
-            role2.AmbushedPlayer = null;
-            role2.BombedPlayer = null;
-            role2.CurrentlyDragging = null;
-            role2.TeleportPoint = Vector3.zero;
+            gf.BlackmailedPlayer = null;
+            gf.BlockTarget = null;
+            gf.MeasuredPlayer = null;
+            gf.DisguisedPlayer = null;
+            gf.CopiedPlayer = null;
+            gf.SampledPlayer = null;
+            gf.MorphedPlayer = null;
+            gf.AmbushedPlayer = null;
+            gf.BombedPlayer = null;
+            gf.CurrentlyDragging = null;
+            gf.TeleportPoint = Vector3.zero;
 
-            if (local.HasDied() && DeadSeeEverything)
-                role2.Investigated.Clear();
+            if (player.HasDied() && DeadSeeEverything)
+                gf.Investigated.Clear();
         }
-        else if (local.Is(LayerEnum.Janitor))
-            ((Janitor)role).CurrentlyDragging = null;
-        else if (local.Is(LayerEnum.Morphling))
+        else if (role is Janitor jani)
+            jani.CurrentlyDragging = null;
+        else if (role is Morphling morph)
         {
-            var role2 = (Morphling)role;
-            role2.SampledPlayer = null;
-            role2.MorphedPlayer = null;
+            morph.SampledPlayer = null;
+            morph.MorphedPlayer = null;
         }
-        else if (local.Is(LayerEnum.Teleporter))
-            ((Teleporter)role).TeleportPoint = Vector3.zero;
-        else if (local.Is(LayerEnum.Ambusher))
-            ((Ambusher)role).AmbushedPlayer = null;
-        else if (local.Is(LayerEnum.Concealer))
-            ((Concealer)role).ConcealedPlayer = null;
-        else if (local.Is(LayerEnum.Silencer))
-            ((Silencer)role).SilencedPlayer = null;
-        else if (local.Is(LayerEnum.Bomber) && CustomGameOptions.BombsRemoveOnNewRound && meeting)
-            Bomb.Clear(((Bomber)role).Bombs);
-        else if (local.Is(LayerEnum.Framer) && local.HasDied())
-            ((Framer)role).Framed.Clear();
-        else if (local.Is(LayerEnum.Crusader))
-            ((Crusader)role).CrusadedPlayer = null;
-        else if (local.Is(LayerEnum.Poisoner))
-            ((Poisoner)role).PoisonedPlayer = null;
-        else if (local.Is(LayerEnum.PromotedRebel))
+        else if (role is Teleporter tele)
+            tele.TeleportPoint = Vector3.zero;
+        else if (role is Ambusher amb)
+            amb.AmbushedPlayer = null;
+        else if (role is Concealer conc)
+            conc.ConcealedPlayer = null;
+        else if (role is Silencer sil)
+            sil.SilencedPlayer = null;
+        else if (role is Bomber bomb && CustomGameOptions.BombsRemoveOnNewRound && meeting)
+            Bomb.Clear(bomb.Bombs);
+        else if (role is Framer framer && player.HasDied())
+            framer.Framed.Clear();
+        else if (role is Crusader crus)
+            crus.CrusadedPlayer = null;
+        else if (role is Poisoner pois)
+            pois.PoisonedPlayer = null;
+        else if (role is PromotedRebel reb)
         {
-            var role2 = (PromotedRebel)role;
-            role2.ShapeshiftPlayer1 = null;
-            role2.ShapeshiftPlayer2 = null;
-            role2.PoisonedPlayer = null;
-            role2.ConcealedPlayer = null;
-            role2.WarpPlayer1 = null;
-            role2.WarpPlayer2 = null;
-            role2.Positive = null;
-            role2.Negative = null;
-            role2.SilencedPlayer = null;
-            role2.CrusadedPlayer = null;
+            reb.ShapeshiftPlayer1 = null;
+            reb.ShapeshiftPlayer2 = null;
+            reb.PoisonedPlayer = null;
+            reb.ConcealedPlayer = null;
+            reb.WarpPlayer1 = null;
+            reb.WarpPlayer2 = null;
+            reb.Positive = null;
+            reb.Negative = null;
+            reb.SilencedPlayer = null;
+            reb.CrusadedPlayer = null;
 
             if (CustomGameOptions.BombsRemoveOnNewRound && meeting)
-                Bomb.Clear(role2.Bombs);
-        }
-        else if (local.Is(LayerEnum.Shapeshifter))
-        {
-            var role2 = (Shapeshifter)role;
-            role2.ShapeshiftPlayer1 = null;
-            role2.ShapeshiftPlayer2 = null;
-        }
-        else if (local.Is(LayerEnum.Warper))
-        {
-            var role2 = (Warper)role;
-            role2.WarpPlayer1 = null;
-            role2.WarpPlayer2 = null;
-        }
-        else if (local.Is(LayerEnum.Collider))
-        {
-            var role2 = (PlayerLayers.Roles.Collider)role;
-            role2.Positive = null;
-            role2.Negative = null;
-        }
-        else if (local.Is(LayerEnum.Glitch))
-        {
-            var role2 = (Glitch)role;
-            role2.MimicTarget = null;
-            role2.HackTarget = null;
-        }
-        else if (local.Is(LayerEnum.GuardianAngel))
-        {
-            var role2 = (GuardianAngel)role;
+                Bomb.Clear(reb.Bombs);
 
-            if (meeting && role2.TargetPlayer == null)
-                role2.Rounds++;
+            if (player.HasDied())
+                reb.Framed.Clear();
         }
-        else if (local.Is(LayerEnum.Actor))
+        else if (role is Shapeshifter ss)
         {
-            var role2 = (Actor)role;
-
-            if (meeting && !role2.Targeted)
-                role2.Rounds++;
+            ss.ShapeshiftPlayer1 = null;
+            ss.ShapeshiftPlayer2 = null;
         }
-        else if (local.Is(LayerEnum.BountyHunter))
+        else if (role is Warper warp)
         {
-            var role2 = (BountyHunter)role;
-
-            if (meeting && role2.TargetPlayer == null)
-                role2.Rounds++;
+            warp.WarpPlayer1 = null;
+            warp.WarpPlayer2 = null;
         }
-        else if (local.Is(LayerEnum.Executioner))
+        else if (role is PlayerLayers.Roles.Collider col)
         {
-            var role2 = (Executioner)role;
-
-            if (meeting && role2.TargetPlayer == null)
-                role2.Rounds++;
+            col.Positive = null;
+            col.Negative = null;
         }
-        else if (local.Is(LayerEnum.Guesser))
+        else if (role is Glitch glitch)
         {
-            var role2 = (Guesser)role;
-
-            if (meeting && role2.TargetPlayer == null)
-                role2.Rounds++;
+            glitch.MimicTarget = null;
+            glitch.HackTarget = null;
         }
-        else if (local.Is(LayerEnum.Werewolf) && meeting)
-            ((Werewolf)role).Rounds++;
+        else if (role is GuardianAngel ga && meeting && ga.TargetPlayer == null)
+            ga.Rounds++;
+        else if (role is Actor act && meeting && !act.Targeted)
+            act.Rounds++;
+        else if (role is BountyHunter bh && meeting && bh.TargetPlayer == null)
+            bh.Rounds++;
+        else if (role is Executioner exe && meeting && exe.TargetPlayer == null)
+            exe.Rounds++;
+        else if (role is Guesser guess && meeting && guess.TargetPlayer == null)
+            guess.Rounds++;
+        else if (role is Werewolf ww && meeting)
+            ww.Rounds++;
     }
 }

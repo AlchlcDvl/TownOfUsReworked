@@ -5,10 +5,13 @@ public static class References
     public static readonly List<PlayerControl> RecentlyKilled = new();
     public static readonly Dictionary<byte, byte> CachedMorphs = new();
     public static readonly List<DeadPlayer> KilledPlayers = new();
+    public static readonly Dictionary<byte, float> TransitioningSize = new(); //wheeze
+    public static readonly Dictionary<byte, float> TransitioningSpeed = new(); //double wheeze
+    public static readonly Dictionary<byte, DateTime> UninteractiblePlayers = new();
     public static List<DeadBody> AllBodies => UObject.FindObjectsOfType<DeadBody>().ToList();
     public static List<Vent> AllVents => UObject.FindObjectsOfType<Vent>().ToList();
     public static List<Vent> AllMapVents => ShipStatus.Instance.AllVents.ToList();
-    public static List<GameObject> AllObjects => UObject.FindObjectsOfType<GameObject>().ToList();
+    public static List<GameObject> AllGameObjects => UObject.FindObjectsOfType<GameObject>().ToList();
     public static List<Console> AllConsoles => UObject.FindObjectsOfType<Console>().ToList();
     public static List<SystemConsole> AllSystemConsoles => UObject.FindObjectsOfType<SystemConsole>().ToList();
     public static List<PlayerVoteArea> AllVoteAreas => Meeting.playerStates.ToList();

@@ -84,7 +84,7 @@ public class DragBehaviour : MonoBehaviour
     {
         Vector3 position = Source.GetTruePosition();
 
-        if (IsSubmerged)
+        if (IsSubmerged())
             position.z = position.y > -7f ? 0.0208f : -0.0273f;
 
         position.y -= 0.3636f;
@@ -96,7 +96,7 @@ public class DragBehaviour : MonoBehaviour
 
     private void UpdateInSubmerged()
     {
-        if (!IsSubmerged)
+        if (!IsSubmerged())
             return;
 
         var position1 = transform.position;

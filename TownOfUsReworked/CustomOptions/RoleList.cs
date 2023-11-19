@@ -70,7 +70,7 @@ public class RoleListEntryOption : CustomOption
         { LayerEnum.Enforcer, "<color=#005643FF>Enforcer</color>"},
         { LayerEnum.Godfather, "<color=#404C08FF>Godfather</color>"},
         { LayerEnum.Grenadier, "<color=#85AA5BFF>Grenadier</color>"},
-        { LayerEnum.Impostor, "<color=#FF0000FF>Impostor</color>"},
+        { LayerEnum.Impostor, "<color=#FF1919FF>Impostor</color>"},
         { LayerEnum.Janitor, "<color=#2647A2FF>Janitor</color>"},
         { LayerEnum.Miner, "<color=#AA7632FF>Miner</color>"},
         { LayerEnum.Morphling, "<color=#BB45B0FF>Morphling</color>"},
@@ -119,14 +119,14 @@ public class RoleListEntryOption : CustomOption
         { LayerEnum.NeutralKill, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Killing</color>"},
         { LayerEnum.NeutralNeo, "<color=#B3B3B3FF>Neutral</color> <color=#1D7CF2FF>Neophyte</color>"},
 
-        { LayerEnum.RandomIntruder, "<color=#1D7CF2FF>Random</color> <color=#FF0000FF>Intruder</color>"},
-        { LayerEnum.RegularIntruder, "<color=#1D7CF2FF>Regular</color> <color=#FF0000FF>Intruder</color>"},
-        { LayerEnum.IntruderHead, "<color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Head</color>"},
-        { LayerEnum.IntruderConceal, "<color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Concealing</color>"},
-        { LayerEnum.IntruderDecep, "<color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Deception</color>"},
-        { LayerEnum.IntruderKill, "<color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Killing</color>"},
-        { LayerEnum.IntruderSupport, "<color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Support</color>"},
-        { LayerEnum.IntruderUtil, "<color=#FF0000FF>Intruder</color> <color=#1D7CF2FF>Utility</color>"},
+        { LayerEnum.RandomIntruder, "<color=#1D7CF2FF>Random</color> <color=#FF1919FF>Intruder</color>"},
+        { LayerEnum.RegularIntruder, "<color=#1D7CF2FF>Regular</color> <color=#FF1919FF>Intruder</color>"},
+        { LayerEnum.IntruderHead, "<color=#FF1919FF>Intruder</color> <color=#1D7CF2FF>Head</color>"},
+        { LayerEnum.IntruderConceal, "<color=#FF1919FF>Intruder</color> <color=#1D7CF2FF>Concealing</color>"},
+        { LayerEnum.IntruderDecep, "<color=#FF1919FF>Intruder</color> <color=#1D7CF2FF>Deception</color>"},
+        { LayerEnum.IntruderKill, "<color=#FF1919FF>Intruder</color> <color=#1D7CF2FF>Killing</color>"},
+        { LayerEnum.IntruderSupport, "<color=#FF1919FF>Intruder</color> <color=#1D7CF2FF>Support</color>"},
+        { LayerEnum.IntruderUtil, "<color=#FF1919FF>Intruder</color> <color=#1D7CF2FF>Utility</color>"},
 
         { LayerEnum.RandomSyndicate, "<color=#1D7CF2FF>Random</color> <color=#008000FF>Syndicate</color>"},
         { LayerEnum.RegularSyndicate, "<color=#1D7CF2FF>Regular</color> <color=#008000FF>Syndicate</color>"},
@@ -241,7 +241,7 @@ public class RoleListEntryOption : CustomOption
         Loading.Do = () => {};
         Loading.Setting.Cast<ToggleOption>().TitleText.text = "Loading...";
         __instance.Children = new[] { Loading.Setting };
-        yield return new WaitForSeconds(0.5f);
+        yield return Wait(0.5f);
         Loading.Setting.gameObject.Destroy();
         OldButtons.ForEach(x => x.gameObject.SetActive(true));
         __instance.Children = OldButtons.ToArray();

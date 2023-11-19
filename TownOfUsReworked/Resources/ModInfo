@@ -7,23 +7,19 @@ This mod is a mish mash of code and ideas from different mods and forks, mainly 
 If you want to know more try using the other info commands, visiting the %github% page or joining the %discord% server. Happy ejections!
 
 Changelog-
-- Update: Updated the mod to 2023.10.24 and updated BepInEx to 6.0.0-be.674
-- Update: Updated presets
-- Mega Addition: dlekS is back! (credits to Galster from CrowdedMod, vents do not work and so Bastion and Miner won't spawn here for now)
-- Addition: Bastion has button art now (on maps that are not Fungle)
-- Addition: Anonymous Votes have been changed a bit
-- Change: You can now whisper in lobby
-- Change: Some hats have been turned into visors
-- Change: Miner will be named Herbalist on Fungle (for consistency)
-- Change: Miner and Bastion can no longer spawn when the Serial Venters option is set to no one
-- Change: The role list for the Ranked preset has been changed
-- Critical Fix: Fixed deaths just not deathing sometimes
-- Bug Fix: Fixed meeting ability buttons weirding out when hovering over them
-- Bug Fix: Fixed a minor bug with custom hats
-- Bug Fix: Fixed Amnesiac and Thief weirding out when changing roles
-- Bug Fix: Fixed role generation not sorting correctly
-- Visual Fix: Fixed the task list showing the incorrect task location
-- Role Fix: Fixed Miners and Godfather-Miners not having cooldowns
+- Improvement: The Random Spawns option has been expanded for additional options
+- Improvement: Improved animations for when changing appearances
+- Improvement: You can now cancel delays and effects by clicking the ability button again
+- Critical Fix: Fixed not being able to vent properly in dlekS
+- Bug Fix: Fixed the custom Polus Specimen and Mira Comms vents not being viable starting points for postmortal roles
+- Bug Fix: Fixed the rare bug where using a Miner's vent might get you stuck in a walking animation against the wall
+- Bug Fix: Hopefully fixed the role gen sorting issues
+- Bug Fix: Fixed being able to carry bots over to online games from local
+- Bug Fix: Fixed morphing not actually changing players' name and colorblind texts sometimes
+- Bug Fix: Fixed modifiers, objectifiers and abilities sometimes appearing in the mod's Hide And Seek mode
+- Visual Fix: Fixed Politician vote selection just skipping the animation
+- Visual Fix: Fixed body color transitions appearing weird and sometimes turning the character black
+- Potential Fix: Hopefully fixed the occasional stuttering
 
 Credits-
 Reworked Creator - AlchlcDvl

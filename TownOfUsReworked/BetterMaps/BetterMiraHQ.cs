@@ -54,6 +54,9 @@ public static class MiraShipStatusPatch
             {
                 CommsVent.Id = GetAvailableId();
                 IsVentModified = true;
+                var vents = ShipStatus.Instance.AllVents.ToList();
+                vents.Add(CommsVent);
+                ShipStatus.Instance.AllVents = vents.ToArray();
             }
         }
     }
@@ -129,7 +132,7 @@ public static class MiraShipStatusPatch
     private static void FindRooms()
     {
         if (Comms == null)
-            Comms = AllObjects.Find(o => o.name == "Comms");
+            Comms = AllGameObjects.Find(o => o.name == "Comms");
 
         IsRoomsFetched = Comms;
     }

@@ -11,4 +11,6 @@ public static class Blanks
     public static bool BlankFalse(PlayerControl _) => false;
 
     public static bool BlankFalse(Vent _) => false;
+
+    public static bool BlankFalse(Console _) => false;
 }

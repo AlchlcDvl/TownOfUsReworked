@@ -9,7 +9,6 @@ public class Retributionist : Crew
         MediatedPlayers = new();
         Bugs = new();
         TrackerArrows = new();
-        UntransportablePlayers = new();
         Reported = new();
         ReferenceBodies = new();
         AllPrints = new();
@@ -252,17 +251,6 @@ public class Retributionist : Crew
                 }
 
                 LogInfo("Removed a target");
-            }
-
-            foreach (var entry in UntransportablePlayers)
-            {
-                var player = PlayerById(entry.Key);
-
-                if (player == null || player.HasDied())
-                    continue;
-
-                if (UntransportablePlayers.ContainsKey(player.PlayerId) && player.moveable && UntransportablePlayers[player.PlayerId].AddSeconds(6) < DateTime.UtcNow)
-                    UntransportablePlayers.Remove(player.PlayerId);
             }
         }
     }
@@ -806,7 +794,6 @@ public class Retributionist : Crew
     //Transporter Stuff
     public PlayerControl TransportPlayer1 { get; set; }
     public PlayerControl TransportPlayer2 { get; set; }
-    public Dictionary<byte, DateTime> UntransportablePlayers { get; set; }
     public CustomButton TransportButton { get; set; }
     public CustomMenu TransportMenu1 { get; set; }
     public CustomMenu TransportMenu2 { get; set; }
@@ -823,10 +810,10 @@ public class Retributionist : Crew
     public bool Transporting { get; set; }
     public bool IsTrans => RevivedRole?.Type == LayerEnum.Transporter;
 
-    public bool TransException1(PlayerControl player) => (player == Player && !CustomGameOptions.TransSelf) || UntransportablePlayers.ContainsKey(player.PlayerId) ||
+    public bool TransException1(PlayerControl player) => (player == Player && !CustomGameOptions.TransSelf) || UninteractiblePlayers.ContainsKey(player.PlayerId) ||
         (BodyById(player.PlayerId) == null && player.Data.IsDead) || player == TransportPlayer2 || player.IsMoving();
 
-    public bool TransException2(PlayerControl player) => (player == Player && !CustomGameOptions.TransSelf) || UntransportablePlayers.ContainsKey(player.PlayerId) ||
+    public bool TransException2(PlayerControl player) => (player == Player && !CustomGameOptions.TransSelf) || UninteractiblePlayers.ContainsKey(player.PlayerId) ||
         (BodyById(player.PlayerId) == null && player.Data.IsDead) || player == TransportPlayer1 || player.IsMoving();
 
     public IEnumerator TransportPlayers()
@@ -915,7 +902,7 @@ public class Retributionist : Crew
             TransportPlayer1.NetTransform.SnapTo(new(TransportPlayer2.GetTruePosition().x, TransportPlayer2.GetTruePosition().y + 0.3636f));
             TransportPlayer2.NetTransform.SnapTo(new(TempPosition.x, TempPosition.y + 0.3636f));
 
-            if (IsSubmerged)
+            if (IsSubmerged())
             {
                 if (CustomPlayer.Local == TransportPlayer1)
                 {
@@ -944,7 +931,7 @@ public class Retributionist : Crew
             Player1Body.transform.position = TransportPlayer2.GetTruePosition();
             TransportPlayer2.NetTransform.SnapTo(new(TempPosition.x, TempPosition.y + 0.3636f));
 
-            if (IsSubmerged && CustomPlayer.Local == TransportPlayer2)
+            if (IsSubmerged() && CustomPlayer.Local == TransportPlayer2)
             {
                 ChangeFloor(TransportPlayer2.GetTruePosition().y > -7);
                 CheckOutOfBoundsElevator(CustomPlayer.Local);
@@ -958,7 +945,7 @@ public class Retributionist : Crew
             TransportPlayer1.NetTransform.SnapTo(new(Player2Body.TruePosition.x, Player2Body.TruePosition.y + 0.3636f));
             Player2Body.transform.position = TempPosition;
 
-            if (IsSubmerged && CustomPlayer.Local == TransportPlayer1)
+            if (IsSubmerged() && CustomPlayer.Local == TransportPlayer1)
             {
                 ChangeFloor(TransportPlayer1.GetTruePosition().y > -7);
                 CheckOutOfBoundsElevator(CustomPlayer.Local);

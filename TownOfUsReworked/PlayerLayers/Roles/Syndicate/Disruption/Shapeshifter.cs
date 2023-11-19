@@ -54,8 +54,8 @@ public class Shapeshifter : Syndicate
             {
                 CustomPlayer.AllPlayers.ForEach(x =>
                 {
-                    if (CachedMorphs.ContainsKey(x.PlayerId))
-                        Morph(x, PlayerById(CachedMorphs[x.PlayerId]));
+                    if (CachedMorphs.TryGetValue(x.PlayerId, out var target))
+                        Morph(x, PlayerById(target));
                 });
             }
         }

@@ -145,32 +145,32 @@ public static class BetterAirship
             return position;
         }
     }
+}
 
-    [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.Start))]
-    static class GameEndedPatch
+[HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.Start))]
+static class GameEndedPatch
+{
+    public static void Prefix() => BetterAirship.GameStarted = false;
+}
+
+[HarmonyPatch(typeof(HeliSabotageSystem), nameof(HeliSabotageSystem.UpdateSystem))]
+public static class HeliCountdownPatch
+{
+    public static bool Prefix(HeliSabotageSystem __instance, ref MessageReader msgReader)
     {
-        public static void Prefix() => GameStarted = false;
-    }
-
-    [HarmonyPatch(typeof(HeliSabotageSystem), nameof(HeliSabotageSystem.UpdateSystem))]
-    public static class HeliCountdownPatch
-    {
-        public static bool Prefix(HeliSabotageSystem __instance, ref MessageReader msgReader)
-        {
-            if (!CustomGameOptions.EnableBetterAirship)
-                return true;
-
-            if ((HeliSabotageSystem.Tags)(msgReader.ReadByte() & 240) == HeliSabotageSystem.Tags.DamageBit)
-            {
-                __instance.Countdown = HeliSabotageSystem.CharlesDuration = CustomGameOptions.CrashTimer;
-                __instance.CompletedConsoles.Clear();
-                __instance.ActiveConsoles.Clear();
-                __instance.codeResetTimer = -1f;
-                __instance.IsDirty = true;
-                return false;
-            }
-
+        if (!CustomGameOptions.EnableBetterAirship)
             return true;
+
+        if ((HeliSabotageSystem.Tags)(msgReader.ReadByte() & 240) == HeliSabotageSystem.Tags.DamageBit)
+        {
+            __instance.Countdown = HeliSabotageSystem.CharlesDuration = CustomGameOptions.CrashTimer;
+            __instance.CompletedConsoles.Clear();
+            __instance.ActiveConsoles.Clear();
+            __instance.codeResetTimer = -1f;
+            __instance.IsDirty = true;
+            return false;
         }
+
+        return true;
     }
 }

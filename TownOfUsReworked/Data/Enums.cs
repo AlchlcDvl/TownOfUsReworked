@@ -832,7 +832,8 @@ public enum CooldownType
     Meeting,
     Survivor,
     GuardianAngel,
-    Reset
+    Reset,
+    Custom
 }
 
 public enum AnonVotes
@@ -849,4 +850,12 @@ public enum FootprintVisibility
     OnlyWhenCamouflaged,
     AlwaysVisible,
     AlwaysCamouflaged
+}
+
+public enum RandomSpawning
+{
+    Disabled,
+    GameStart,
+    PostMeeting,
+    Both
 }

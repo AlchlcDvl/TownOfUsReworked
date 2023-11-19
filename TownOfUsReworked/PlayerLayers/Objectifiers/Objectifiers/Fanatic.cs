@@ -27,7 +27,7 @@ public class Fanatic : Objectifier
     public override string Name => "Fanatic";
     public override string Symbol => "♠";
     public override LayerEnum Type => LayerEnum.Fanatic;
-    public override Func<string> Description => () => !Turned ? ("- Get attacked by either an <color=#FF0000FF>Intruder</color> or a <color=#008000FF>Syndicate</color> to join their " +
+    public override Func<string> Description => () => !Turned ? ("- Get attacked by either an <color=#FF1919FF>Intruder</color> or a <color=#008000FF>Syndicate</color> to join their " +
         "side") : "";
     public override bool Hidden => !CustomGameOptions.FanaticKnows && !Turned && !IsDead;
 

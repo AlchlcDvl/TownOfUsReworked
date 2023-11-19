@@ -5,7 +5,6 @@ public class Warper : Syndicate
     public CustomButton WarpButton { get; set; }
     public PlayerControl WarpPlayer1 { get; set; }
     public PlayerControl WarpPlayer2 { get; set; }
-    public Dictionary<byte, DateTime> UnwarpablePlayers { get; set; }
     public CustomMenu WarpMenu1 { get; set; }
     public CustomMenu WarpMenu2 { get; set; }
     public SpriteRenderer AnimationPlaying { get; set; }
@@ -27,7 +26,6 @@ public class Warper : Syndicate
     {
         WarpPlayer1 = null;
         WarpPlayer2 = null;
-        UnwarpablePlayers = new();
         WarpMenu1 = new(Player, Click1, Exception1);
         WarpMenu2 = new(Player, Click2, Exception2);
         WarpButton = new(this, "Warp", AbilityTypes.Targetless, "ActionSecondary", Warp, CustomGameOptions.WarpCd);
@@ -118,7 +116,7 @@ public class Warper : Syndicate
             WarpPlayer1.MyPhysics.ResetMoveState();
             WarpPlayer1.NetTransform.SnapTo(new(WarpPlayer2.GetTruePosition().x, WarpPlayer2.GetTruePosition().y + 0.3636f));
 
-            if (IsSubmerged && CustomPlayer.Local == WarpPlayer1)
+            if (IsSubmerged() && CustomPlayer.Local == WarpPlayer1)
             {
                 ChangeFloor(WarpPlayer1.GetTruePosition().y > -7);
                 CheckOutOfBoundsElevator(CustomPlayer.Local);
@@ -132,7 +130,7 @@ public class Warper : Syndicate
             StopDragging(Player1Body.ParentId);
             Player1Body.transform.position = WarpPlayer2.GetTruePosition();
 
-            if (IsSubmerged && CustomPlayer.Local == WarpPlayer2)
+            if (IsSubmerged() && CustomPlayer.Local == WarpPlayer2)
             {
                 ChangeFloor(WarpPlayer2.GetTruePosition().y > -7);
                 CheckOutOfBoundsElevator(CustomPlayer.Local);
@@ -143,7 +141,7 @@ public class Warper : Syndicate
             WarpPlayer1.MyPhysics.ResetMoveState();
             WarpPlayer1.NetTransform.SnapTo(new(Player2Body.TruePosition.x, Player2Body.TruePosition.y + 0.3636f));
 
-            if (IsSubmerged && CustomPlayer.Local == WarpPlayer1)
+            if (IsSubmerged() && CustomPlayer.Local == WarpPlayer1)
             {
                 ChangeFloor(WarpPlayer1.GetTruePosition().y > -7);
                 CheckOutOfBoundsElevator(CustomPlayer.Local);
@@ -198,10 +196,10 @@ public class Warper : Syndicate
             WarpButton.StartCooldown(CooldownType.GuardianAngel);
     }
 
-    public bool Exception1(PlayerControl player) => (player == Player && !CustomGameOptions.WarpSelf) || UnwarpablePlayers.ContainsKey(player.PlayerId) || player == WarpPlayer2 ||
+    public bool Exception1(PlayerControl player) => (player == Player && !CustomGameOptions.WarpSelf) || UninteractiblePlayers.ContainsKey(player.PlayerId) || player == WarpPlayer2 ||
         (BodyById(player.PlayerId) == null && player.Data.IsDead) || player.IsMoving();
 
-    public bool Exception2(PlayerControl player) => (player == Player && !CustomGameOptions.WarpSelf) || UnwarpablePlayers.ContainsKey(player.PlayerId) || player == WarpPlayer1 ||
+    public bool Exception2(PlayerControl player) => (player == Player && !CustomGameOptions.WarpSelf) || UninteractiblePlayers.ContainsKey(player.PlayerId) || player == WarpPlayer1 ||
         (BodyById(player.PlayerId) == null && player.Data.IsDead) || player.IsMoving();
 
     public void AnimateWarp()
@@ -263,17 +261,6 @@ public class Warper : Syndicate
             }
 
             LogInfo("Removed a target");
-        }
-
-        foreach (var entry in UnwarpablePlayers)
-        {
-            var player = PlayerById(entry.Key);
-
-            if (player == null || player.HasDied())
-                continue;
-
-            if (UnwarpablePlayers.ContainsKey(player.PlayerId) && player.moveable && UnwarpablePlayers[player.PlayerId].AddSeconds(6) < DateTime.UtcNow)
-                UnwarpablePlayers.Remove(player.PlayerId);
         }
     }
 }
