@@ -28,10 +28,7 @@ public static class MainMenuStartPatch
         AssetLoader.LaunchFetchers(ModUpdater.ReworkedUpdate || ModUpdater.SubmergedUpdate);
         var rightPanel = GameObject.Find("RightPanel");
 
-        if (rightPanel == null)
-            return;
-
-        if (!Logo)
+        if (!Logo && rightPanel)
         {
             Logo = new GameObject("ReworkedLogo");
             Logo.transform.position = new(2f, 0f, 100f);

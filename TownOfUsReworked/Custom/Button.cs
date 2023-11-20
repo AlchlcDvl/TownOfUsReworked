@@ -241,7 +241,10 @@ public class CustomButton
                 Uses--;
         }
         else if (DelayActive || EffectActive)
+        {
             ClickedAgain = true;
+            CallRpc(CustomRPC.Action, ActionsRPC.Cancel, ID);
+        }
 
         DisableTarget();
     }

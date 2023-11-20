@@ -480,6 +480,10 @@ public static class RPCHandling
                         reader.ReadLayer().ReadRPC(reader);
                         break;
 
+                    case ActionsRPC.Cancel:
+                        reader.ReadButton().ClickedAgain = true;
+                        break;
+
                     default:
                         LogError($"Received unknown RPC - {action}");
                         break;

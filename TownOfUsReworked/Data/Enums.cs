@@ -18,6 +18,7 @@ public enum ActionsRPC
     PlaceHit,
     LayerAction1,
     LayerAction2,
+    Cancel,
 
     None
 }

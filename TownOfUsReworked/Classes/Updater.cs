@@ -37,8 +37,8 @@ public static class ModUpdater
 
         Running = true;
         CanDownloadSubmerged = !SubLoaded;
-        CheckForUpdate("Reworked").GetAwaiter();
-        CheckForUpdate("Submerged").GetAwaiter();
+        CheckForUpdate("Reworked");
+        CheckForUpdate("Submerged");
 
         if (ReworkedUpdate || SubmergedUpdate || CanDownloadSubmerged)
         {
@@ -81,7 +81,7 @@ public static class ModUpdater
         InfoPopup.StartCoroutine(Effects.Lerp(0.01f, new Action<float>(_ => SetPopupText(info))));
     }
 
-    private static async Task<bool> CheckForUpdate(string updateType)
+    private static async void CheckForUpdate(string updateType)
     {
         //Checks the github api for tags. Compares current version to the latest tag version on GitHub
         try
@@ -93,7 +93,7 @@ public static class ModUpdater
             if (response.StatusCode != HttpStatusCode.OK || response.Content == null)
             {
                 LogError($"Server returned no data: {response.StatusCode} for {updateType}");
-                return false;
+                return;
             }
 
             var json = await response.Content.ReadAsStringAsync();
@@ -104,7 +104,7 @@ public static class ModUpdater
             if (tagname == null)
             {
                 LogError($"{updateType} tag doesn't exist");
-                return false; // Something went wrong
+                return; // Something went wrong
             }
 
             //Check Reworked version
@@ -117,7 +117,7 @@ public static class ModUpdater
             var assets = data.Assets;
 
             if (assets == null)
-                return false;
+                return;
 
             foreach (var asset in assets)
             {
@@ -131,7 +131,7 @@ public static class ModUpdater
                     else if (updateType == "Submerged")
                         SubmergedURI = asset.URL;
 
-                    return true;
+                    return;
                 }
             }
         }
@@ -139,8 +139,6 @@ public static class ModUpdater
         {
             LogError(ex);
         }
-
-        return false;
     }
 
     private static async Task<bool> DownloadUpdate(string updateType)

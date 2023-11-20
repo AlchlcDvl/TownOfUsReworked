@@ -6,7 +6,6 @@
 
 <p align="center">
     <img width="" height="" src="./Images/Reworked.png" align="center" alt="logo" />
-    <h2 align="center">Town Of Us Reworked</h2>
     <p align="center">Town Of Us but better! (hopefully)
 </p>
 

@@ -215,6 +215,15 @@ public static class AssetLoader
     {
         try
         {
+            if (update && Directory.Exists(TownOfUsReworked.Hats))
+            {
+                var d = new DirectoryInfo(TownOfUsReworked.Hats);
+                d.GetFiles("*.png").Select(x => x.FullName).ForEach(File.Delete);
+            }
+
+            if (!Directory.Exists(TownOfUsReworked.Hats))
+                Directory.CreateDirectory(TownOfUsReworked.Hats);
+
             using var client = new HttpClient();
             client.DefaultRequestHeaders.Add("User-Agent", "Loader");
             using var response = await client.GetAsync($"{REPO}/Hats.json", HttpCompletionOption.ResponseContentRead);
@@ -268,15 +277,6 @@ public static class AssetLoader
 
             var markedfordownload = new List<string>();
 
-            if (update && Directory.Exists(TownOfUsReworked.Hats))
-            {
-                var d = new DirectoryInfo(TownOfUsReworked.Hats);
-                d.GetFiles("*.png").Select(x => x.FullName).ForEach(File.Delete);
-            }
-
-            if (!Directory.Exists(TownOfUsReworked.Hats))
-                Directory.CreateDirectory(TownOfUsReworked.Hats);
-
             foreach (var data in HatDetails)
             {
                 if (!File.Exists(TownOfUsReworked.Hats + data.ID + ".png"))
@@ -297,6 +297,9 @@ public static class AssetLoader
                 if (data.FloorID != null && !File.Exists(TownOfUsReworked.Hats + data.FloorID + ".png"))
                     markedfordownload.Add(data.FloorID);
             }
+
+            if (markedfordownload.Count == 0)
+                return HttpStatusCode.OK;
 
             foreach (var file in markedfordownload)
             {
@@ -325,6 +328,15 @@ public static class AssetLoader
     {
         try
         {
+            if (update && Directory.Exists(TownOfUsReworked.Visors))
+            {
+                var d = new DirectoryInfo(TownOfUsReworked.Visors);
+                d.GetFiles("*.png").Select(x => x.FullName).ForEach(File.Delete);
+            }
+
+            if (!Directory.Exists(TownOfUsReworked.Visors))
+                Directory.CreateDirectory(TownOfUsReworked.Visors);
+
             using var client = new HttpClient();
             client.DefaultRequestHeaders.Add("User-Agent", "Loader");
             using var response = await client.GetAsync($"{REPO}/Visors.json", HttpCompletionOption.ResponseContentRead);
@@ -374,15 +386,6 @@ public static class AssetLoader
 
             var markedfordownload = new List<string>();
 
-            if (update && Directory.Exists(TownOfUsReworked.Visors))
-            {
-                var d = new DirectoryInfo(TownOfUsReworked.Visors);
-                d.GetFiles("*.png").Select(x => x.FullName).ForEach(File.Delete);
-            }
-
-            if (!Directory.Exists(TownOfUsReworked.Visors))
-                Directory.CreateDirectory(TownOfUsReworked.Visors);
-
             foreach (var data in VisorDetails)
             {
                 if (!File.Exists(TownOfUsReworked.Visors + data.ID + ".png"))
@@ -397,6 +400,9 @@ public static class AssetLoader
                 if (data.FloorID != null && !File.Exists(TownOfUsReworked.Visors + data.FloorID + ".png"))
                     markedfordownload.Add(data.FloorID);
             }
+
+            if (markedfordownload.Count == 0)
+                return HttpStatusCode.OK;
 
             foreach (var file in markedfordownload)
             {
@@ -425,6 +431,15 @@ public static class AssetLoader
     {
         try
         {
+            if (update && Directory.Exists(TownOfUsReworked.Nameplates))
+            {
+                var d = new DirectoryInfo(TownOfUsReworked.Nameplates);
+                d.GetFiles("*.png").Select(x => x.FullName).ForEach(File.Delete);
+            }
+
+            if (!Directory.Exists(TownOfUsReworked.Nameplates))
+                Directory.CreateDirectory(TownOfUsReworked.Nameplates);
+
             using var client = new HttpClient();
             client.DefaultRequestHeaders.Add("User-Agent", "Loader");
             using var response = await client.GetAsync($"{REPO}/Nameplates.json", HttpCompletionOption.ResponseContentRead);
@@ -469,20 +484,14 @@ public static class AssetLoader
 
             var markedfordownload = new List<string>();
 
-            if (update && Directory.Exists(TownOfUsReworked.Nameplates))
-            {
-                var d = new DirectoryInfo(TownOfUsReworked.Nameplates);
-                d.GetFiles("*.png").Select(x => x.FullName).ForEach(File.Delete);
-            }
-
-            if (!Directory.Exists(TownOfUsReworked.Nameplates))
-                Directory.CreateDirectory(TownOfUsReworked.Nameplates);
-
             foreach (var data in NameplateDetails)
             {
                 if (!File.Exists(TownOfUsReworked.Nameplates + data.ID + ".png"))
                     markedfordownload.Add(data.ID);
             }
+
+            if (markedfordownload.Count == 0)
+                return HttpStatusCode.OK;
 
             foreach (var file in markedfordownload)
             {

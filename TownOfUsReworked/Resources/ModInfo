@@ -7,19 +7,8 @@ This mod is a mish mash of code and ideas from different mods and forks, mainly 
 If you want to know more try using the other info commands, visiting the %github% page or joining the %discord% server. Happy ejections!
 
 Changelog-
-- Improvement: The Random Spawns option has been expanded for additional options
-- Improvement: Improved animations for when changing appearances
-- Improvement: You can now cancel delays and effects by clicking the ability button again
-- Critical Fix: Fixed not being able to vent properly in dlekS
-- Bug Fix: Fixed the custom Polus Specimen and Mira Comms vents not being viable starting points for postmortal roles
-- Bug Fix: Fixed the rare bug where using a Miner's vent might get you stuck in a walking animation against the wall
-- Bug Fix: Hopefully fixed the role gen sorting issues
-- Bug Fix: Fixed being able to carry bots over to online games from local
-- Bug Fix: Fixed morphing not actually changing players' name and colorblind texts sometimes
-- Bug Fix: Fixed modifiers, objectifiers and abilities sometimes appearing in the mod's Hide And Seek mode
-- Visual Fix: Fixed Politician vote selection just skipping the animation
-- Visual Fix: Fixed body color transitions appearing weird and sometimes turning the character black
-- Potential Fix: Hopefully fixed the occasional stuttering
+- Critical Fix: Fixed the occasional crash
+- Bug Fix: Fixed the desync caused from cancelling delays and effects
 
 Credits-
 Reworked Creator - AlchlcDvl

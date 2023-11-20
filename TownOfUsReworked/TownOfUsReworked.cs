@@ -8,10 +8,10 @@ public class TownOfUsReworked : BasePlugin
 {
     public const string ID = "me.alchlcdvl.reworked";
     public const string Name = "TownOfUsReworked";
-    public const string VersionString = "0.6.1.0";
+    public const string VersionString = "0.6.2.0";
     public static readonly Version Version = new(VersionString);
 
-    public const bool IsDev = true;
+    public const bool IsDev = false;
     public static bool IsTest { get; set; }
     private static string VersionS => VersionString.Remove(VersionString.Length - 2);
     private static string DevString => IsDev ? "-dev" : "";
