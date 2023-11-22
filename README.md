@@ -1,4 +1,3 @@
-
 ### ***Note: This repo is a fork of [Town of Us Reactivated](https://github.com/eDonnes124/Town-Of-Us-R) and is currently under development.***
 ### ***Also Note: This mod is NOT for mobile and console versions and is NOT host only either, do not ask for a port or a rewrite.***
 
@@ -90,49 +89,48 @@ Quick warning: This mod adds a whole LOT of stuff, and is currently not very beg
 | [Volatile](#volatile)         | [Tunneler](#tunneler)         |                               |
 | [Yeller](#yeller)             | [Underdog](#underdog)         |                               |
 
-[**Game Modes**](#game-modes-1)
-- [Vanilla](#vanilla)
-- [Classic](#classic)
-- [Killing Only](#killing-only)
-- [All Any](#all-any)
-- [Role List](#role-list)
-- [Custom](#custom)
-- [Hide And Seek](#hide-and-seek)
-- [Task Race](#task-race)
+[**Game Modes**](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Game-Modes)
+- [Vanilla](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Game-Modes#vanilla)
+- [Classic](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Game-Modes#classic)
+- [Killing Only](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Game-Modes#killing-only)
+- [All Any](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Game-Modes#all-any)
+- [Role List](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Game-Modes#role-list)
+- [Custom](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Game-Modes#custom)
+- [Hide And Seek](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Game-Modes#hide-and-seek)
+- [Task Race](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Game-Modes#task-race)
 
-[**Custom Game Settings**](#custom-game-settings)
-- [Common Settings](#common-settings)
+[**Custom Game Settings**](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Settings)
+- [Layer Settings](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Settings#layer)
+- [Alignment Settings](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Settings#alignments)
+- [Faction Settings](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Settings#factions)
+- [Non-Role Layers Settings](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Settings#non-role-layers)
 - [Crew Settings](#crew-settings)
 - [Intruder Settings](#intruder-settings)
 - [Syndicate Settings](#syndicate-settings)
 - [Neutral Settings](#neutral-settings)
-- [Game Settings](#game-settings)
-- [Game Modifiers](#game-modifiers)
-- [Game Announcements](#game-announcements)
-- [Map Settings](#map-settings)
-- [Better Sabotage Settings](#better-sabotage-settings)
-- [Better Skeld Settings](#better-skeld-settings)
-- [Better Mira HQ Settings](#better-mira-hq-settings)
-- [Better Polus Settings](#better-polus-settings)
-- [Better Airship Settings](#better-airship-settings)
-- [Better Fungle Settings](#better-fungle-settings)
-- [Custom Client Side Options](#custom-client-side-options)
+- [Game Settings](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Settings#game-settings)
+- [Game Modifiers](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Settings#game-modifiers)
+- [Game Announcements](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Settings#game-announcements)
+- [Map Settings](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Settings#map-settings)
+- [Better Sabotage Settings](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Settings#better-sabotage-settings)
+- [Better Skeld Settings](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Settings#better-skeld-settings)
+- [Better Mira HQ Settings](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Settings#better-mira-hq-settings)
+- [Better Polus Settings](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Settings#better-polus-settings)
+- [Better Airship Settings](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Settings#better-airship-settings)
+- [Better Fungle Settings](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Settings#better-fungle-settings)
+- [Custom Client Side Options](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Settings#custom-client-side-options)
 
-[**Game Info**](#game-info)
-- [Lighter Darker Colors](#lighter-darker-colors)
-- [Inspector Results](#inspector-results)
-- [Subfactions](#subfactions)
-- [Syndicate Chaos Drive Role Priority](#syndicate-chaos-drive-role-priority)
-- [Role List Entries](#role-list-entries)
+[**Mod Info**](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Mod-Info)
+- [Lighter Darker Colors](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Mod-Info#lighter-darker-colors)
+- [Subfactions](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Mod-Info#subfactions)
+- [Syndicate Chaos Drive Role Priority](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Mod-Info#syndicate-chaos-drive-role-priority)
+- [Role List Entries](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Mod-Info#role-list-entries)
+- [New Colors](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Mod-Info#new-colors)
+- [Custom Cosmetics](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Mod-Info#custom-cosmetics)
+- [Bug Reports, Suggestions & Additions](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Mod-Info#bug--suggestions--additions)
+- [Layer Explanation And Assignment](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Mod-Info#layer-explanation-and-assignment)
 
-[**Extras**](#extras)
-- [New Colors](#new-colors)
-- [Custom Cosmetics](#custom-cosmetics)
-- [Bug Reports, Suggestions & Additions](#bug--suggestions--additions)
-
-[**Layer Explanation And Assignment**](#layer-explanation-and-assignment)
-
-[**Credits & Resources**](#credits--resources)
+[**Credits & Resources**](https://github.com/AlchlcDvl/TownOfUsReworked/wiki/Credits)
 
 [**License**](#license)
 
@@ -198,50 +196,6 @@ Quick warning: This mod adds a whole LOT of stuff, and is currently not very beg
 | 2022.12.14 (s & e) | 0.0.1dev13   | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.0.1-dev13/ToU-Rew-v0.0.1dev13.rar)      |
 
 </details>
-
------------------------
-
-# Common Settings
-
-## Each layer has these settings
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Layer | The percentage probability of the specified type appearing in game | Percentage | 0% |
-| Layer Count | How many instances of the specified type should spawn in Custom Mode, for certain layers it's the number of pairs | Number | 1 |
-| Layer Is Unique | Dictates whether only one of the specified type should spawn in All Any/Role Lists | Toggle | Off |
-
-## Some layers have these settings
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Ability Cooldown | The cooldown on the ability's button, if any | Time | 25s |
-| Ability Duration | How long does the ability last for | Time | 10s |
-| Ability Delay | How much time must pass for the ability to trigegr | Time | 5s |
-| Max Ability Uses | How many times can the ability if used if there's a limit on it | Number | 5 |
-
-Beyond these options, some of the layers have their own unique settings aside from these
-
-## Each alignment has these settings
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Max Count | Dictates the maximum number of roles from the alignment will spawn | Number | 5 |
-
-## Each faction has these settings
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Max/Min Role Count | Dictates the minimum/maximum number of roles from the faction will spawn (not a hard cap since role gen might go out of bounds) | Number | 5 |
-| Faction Can Vent | Dictates whether members of this faction can vent, this is then overriden by the specific venting settings for the roles | Toggle | True if not Crew |
-| Vision | How far can members of the faction see | Factor | 1x for Crew, 2x for Intruders and Syndicate, 1.5x for Neutrals |
-| Flashlights | Dictates whether members of the faction use a flashlight or not | Toggle | False |
-
-## Each non-role layer has these settings
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Max/Min Layer Type | Dictates the minimum/maximum number of layers of the mentioned type will spawn | Number | 5 |
 
 -----------------------
 
@@ -2128,468 +2082,6 @@ The Underdog is an Intruder or Syndicate with prolonged cooldowns when with a te
 | Underdog Knows Who They Are | Whether a player knows they are a Underdog at the start of a game | Toggle | True |
 | Kill Cooldown Bonus | The amount of time added or removed from the Underdog's Kill Cooldown | Time | 5s |
 | Increased Kill Cooldown | Whether the Underdog's Kill Cooldown is Increased when they aren't alone | Toggle | True |
-
------------------------
-
-# Game Modes
-
-This mod has a lot of different modes which greatly change how the game continues!
-
-### Game Mode Settings
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Game Mode | What game mode the next game will be | String | Classic |
-
-## Vanilla
-
-This mode is nothing special, everyone is either a basic [Crewmate](#crewmate) or [Impostor](#impostor) (or [Anarchist](#anarchist) if alternate intruders is turned on).
-
-## Classic
-
-This is the main mode of the game. Any layer can spawn in this mode, but only once.
-
-## Killing Only
-
-This is a restricted Classic mode where only roles with the capability to kill can spawn and the Syndicate recieves their Chaos Drive at the start of the game.
-
-### Killing Only Settings
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Neutrals Count | How many neutral roles will spawn | Number | 1 |
-| Add Arsonist | Whether Arsonist will be added to the role list | Toggle | True |
-| Add Cryomaniac | Whether Cryomaniac will be added to the role list | Toggle | True |
-| Add Plaguebearer | Whether Plaguebearer will be added to the role list | Toggle | True |
-
-## All Any
-
-This mode has no restrictions on how many instances of a layer can spawn. Each layer has a property called "Uniqueness" which is basically if only one of that layer can spawn (or two for Lovers, Rivals, Mafia or Linked).
-
-### All Any Settings
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Enable Uniques (Also applies to Role List) | Decide whether roles can be toggled to have only one spawn or not | Toggle | True |
-
-## Role List
-
-In this mode, you can make a set list of what roles can spawn. You can decide the exact number of a certain alignment/faction. However, other layers like modifiers, abilities and objectifiers cannot spawn in this mode. All Any's "Uniqueness" property of roles also applies here.
-
-### Role List Settings
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Role List Spawn Entry | There are 15 of these, you can pick whatever faction/alignment/role to spawn, keep in mind the uniqueness settings also take effect meaning if a selected role is not permissible, it is replaced by a regular Crewmate | Entry | None |
-| Role List Ban Entry | There are 5 of these, you can pick whichever role to ban from spawning, making sure it does not appear in the selected role list | Entry | None |
-| Ban Crewmate/Anarchist/Impostor/Murderer | These are free ban slots to block the specified role from spawning | Toggle | True |
-| Enable Revealer/Phantom/Ghoul/Banshee | These are extra slots to allow the spawning of the postmortal role of that type | Toggle | True |
-
-## Custom
-
-This mode is basically Classic but you can decide how many instances of the layer can spawn in the game.
-
-## Hide And Seek
-
-This mode is the unofficial addition of the Hide And Seek game mode that people used to play before the vanilla Hide And Seek was added. Only two roles spawn and this mode can have two types. The Classic type makes it so that the Hunters have to kill everyone else, but their numbers do not increase. In the Infection type, however, the Hunters turn the Hunted into their own teammates.
-
-### Hide And Seek Settings
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Game Type | What mode of Hide And Seek is to be played | String | Classic |
-| Common Tasks | How many common tasks must be assigned | Number | 4 |
-| Long Tasks | How many long tasks must be assigned | Number | 4 |
-| Short Tasks | How many short tasks must be assigned | Number | 4 |
-| Hunter Count | How many Hunters should spawn in | Number | 1 |
-| Hunt Cooldown | The cooldown on the Hunter's Hunt button | Time | 10s |
-| Start Time | The delayed start that the Hunters have when the game begins, to allow the Hunted to find places to hide/finish tasks fast | Time | 10s |
-| Hunter Can Vent | Toggles the Hunter's ability to vent | Toggle | True |
-| Hunter Vision | How much can the Hunters see | Factor | x0.25 |
-| Hunted Vision | How much can the Hunted see | Factor | x1.5 |
-| Hunter Speed Modifier | How fast are the Hunters compared to the Hunted | Factor | x1.25 |
-| Hunters Use A Flashlight | Self descriptive | Toggle | False |
-| Hunted Use A Flashlight | Self descriptive | Toggle | False |
-| Hunted Can Chat | Self descriptive | Toggle | True |
-
-## Task Race
-
-This mode is a skill check mode to see who's the best at planning their task path and finishing tasks. No one can kill each other and must race to be the first one to finish their tasks.
-
-### Task Race Settings
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Common Tasks | How many common tasks must be assigned | Number | 4 |
-| Short Tasks | How many short tasks must be assigned | Number | 4 |
-
------------------------
-
-# Custom Game Settings
-
-## Game Settings
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Player Speed | Self descriptive | Factor | 1.25x |
-| Ghost Speed | Self descriptive | Factor | 3x |
-| Interaction Distance | How far is too far to interact | Distance | 2m |
-| Emergency Button Count | How many times can players call meetings | Number | 1 |
-| Emergency Button Cooldown | Self descriptive | Time | 25s |
-| Discussion Time | Self descriptive | Time | 30s |
-| Voting Time | Self descriptive | Factor | 60s |
-| Taskbar Updates | How does the taskbar update | String | Meeting Only |
-| Confirm Ejects | Displays the roles/factions of ejected players | Toggle | False |
-| ┗ Ejection Reveals Roles | Displays the roles/factions of ejected players | Toggle | False |
-| Enable Game Start Cooldowns | Toggles whether the game start cooldowns are applied or not | Toggle | True |
-| ┗ Game Start Cooldowns | Upon the start of the game, overrides the cooldowns of all roles with a cooldown | Time | 10s |
-| Enable Meeting End Cooldowns | Toggles whether the meeting end cooldowns are applied or not | Toggle | True |
-| ┗ Meeting End Cooldowns | Upon the end of the meeting, overrides the cooldowns of all roles with a cooldown | Time | 15s |
-| Player Report Distance | how close must a player be to a body to report it | Distance | 3.5m |
-| Chat Cooldown | How much should a player wait to send a message | Time | 3s |
-| Chat Character Limit | How much can a player type out before they can't anymore | Number | 200 |
-| Lobby Size | Self descriptive | Number | Auto-updates to whatever you set it as when making the lobby, otherwise 15 |
-
-## Game Modifiers
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Serial Venters | Decides how players vent | String | Default |
-| Anonymous Voting | Voter bloops are modified to be grey or invisible during vote tallying | String | Enabled |
-| No Skipping | Whether the meeting button is disabled | String | Never |
-| First Kill Shield | Adds a shield that protects the first dead player from the previous round | Toggle | True |
-| ┗ Who Sees First Kill Shield | Self descriptive | String | Everyone |
-| Factioned Evils Know The Roles Of Their Team | Self descriptive | Toggle | True |
-| Visual Tasks | Disables animations for certain tasks | Toggle | False |
-| Player Names | How the game handles player names locally | String | Hide Obstructed |
-| Whispering | Toggles the whispering system | Toggle | True |
-| ┗ Everyone Is Alerted To Whispers | Players are told who's whispering who | Toggle | True |
-| Kill Animations Show Modified Player | Toggles whether the player's changed outfit is what appears on the kill animation | Toggle | True |
-| Enable Abilities | Self descriptive | Toggle | True |
-| Enable Objectifiers | Self descriptive | Toggle | True |
-| Enable Modifiers | Self descriptive | Toggle | True |
-| Players In Vents Can Be Targeted | Self descriptive | Toggle | False |
-| Cooldown Decreases Even While In A Vent | Self descriptive | Toggle | False |
-| Parallel Medbay Scans | Whether players have to wait for others to scan | Toggle | False |
-| Dead Can See Everything | Whether dead players are able to see every little detail about players | Toggle | False |
-
-## Game Announcements
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Enable Game Announcements | Toggles messages being sent at the start of the meeting dictating who died to who, where and other things (some message will still be sent, regardless of this setting) | Toggle | False |
-| ┣ Reported Body's Location Is Announced | Self descriptive | Toggle | False |
-| ┣ Every Body's Role/Faction Is Announced | Self descriptive | String | Never |
-| ┗ Every Body's Killer's Role/Faction Is Announced | Self descriptive | String | Never |
-
-## Map Settings
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Map | Selects the next map | String | Skeld |
-| ┣ Skeld Chance | The percentage probability of the Skeld map being chosen | Percentage | 0% |
-| ┣ Mira HQ Chance | The percentage probability of the Mira HQ map being chosen | Percentage | 0% |
-| ┣ Polus Chance | The percentage probability of the Polus map being chosen | Percentage | 0% |
-| ┣ dlekS Chance | The percentage probability of the dlekS map being chosen | Percentage | 0% |
-| ┣ Airship Chance | The percentage probability of the Airship map being chosen | Percentage | 0% |
-| ┣ Fungle Chance | The percentage probability of the Fungle map being chosen | Percentage | 0% |
-| ┣ Submerged Chance | The percentage probability of the Submerged map being chosen with the mod active | Percentage | 0% |
-| ┗ LevelImpostor Chance | The percentage probability of a Level Impostor map being chosen with the mod active | Percentage | 0% |
-| Auto Adjust Settings | Whether the settings of the game are auto adjusted depending on the map | Toggle | False |
-| Half Vision On Small Maps | Whether the Vision is automatically halved on smaller maps | Toggle | False |
-| Small Maps Decreased Cooldowns | How much less time the cooldowns are set to for smaller maps | Time | 0s |
-| Small Maps Increased Short Tasks | How many extra short tasks when the map is smaller maps | Number | 0 |
-| Small Maps Increased Long Tasks | How many extra long tasks when the map is smaller maps | Number | 0 |
-| Large Maps Decreased Short Tasks | How many less short tasks when the map is larger maps | Number | 0 |
-| Large Maps Decreased Long Tasks | How many less long tasks when the map is larger maps | Number | 0 |
-| Large Maps Increased Cooldowns | How much more time the cooldowns are set to for larger maps | Time | 0s |
-| Random Player Spawns | Self descriptive | Toggle | False |
-
-## Better Sabotage Settings
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Camouflaged Comms | Whether everyone becomes camouflaged when Comms are sabotaged | Toggle | True |
-| ┗ Camouflaged Meetings | Whether everyone becomes camouflaged when a meeting is called when Comms are sabotaged | Toggle | False |
-| Oxygen Sabotage Slows Down Players | Self descriptive | Toggle | True |
-| Reactor Sabotage Shakes The Screen By | Self descriptive | Percentage | 30% |
-| Night Vision Cameras | When lights are sabotaged, the cameras turn on night vision mode | Toggle | True |
-| Evils Ignore Night Vision | Self descriptive | Toggle | False |
-
-## Better Skeld Settings
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Enable Better Skeld Changes | Self descriptive | Toggle | True |
-| Changed Vent Layout | Optimizes the vent layout on Skeld | Toggle | False |
-| Reactor Meltdown Countdown | What is the countdown for the reactor sabotage | Time | 60s |
-| Oxygen Depletion Countdown | What is the countdown for the O2 sabotage | Time | 60s |
-
-## Better Mira HQ Settings
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Enable Better Mira HQ Changes | Self descriptive | Toggle | True |
-| Changed Vent Layout | Optimizes the vent layout on Mira HQ | Toggle | False |
-| Reactor Meltdown Countdown | What is the countdown for the reactor sabotage | Time | 60s |
-| Oxygen Depletion Countdown | What is the countdown for the O2 sabotage | Time | 60s |
-
-## Better Polus Settings
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Enable Better Polus Changes | Self descriptive | Toggle | True |
-| Changed Vent Layout | Optimizes the vent layout on Polus | Toggle | False |
-| Vitals Moved to Lab | Whether the Vitals panel is moved into the Laboratory | Toggle | False |
-| Cold Temp Moved to Death Valley | Whether the cold temperature task is moved to death valley | Toggle | False |
-| Reboot Wifi and Chart Course Swapped | Whether the Reboot Wifi and Chart Course swap locations | Toggle | False |
-| Seimic Stabliser Malfunction Countdown | What is the countdown for the seismic sabotage | Time | 60s |
-
-## Better Airship Settings
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Enable Better Airship Changes | Self descriptive | Toggle | True |
-| Spawn Type | Decides how spawns on Airship are handled | String | Normal |
-| Move Fuel | Moves the refuel station elsewhere on the map | Toggle | False |
-| Move Vitals | Moves vitals elsewhere on the map | Toggle | False |
-| Move Divert Power | Moves the divert power station elsewhere on the map | Toggle | False |
-| Move Admin Table | Moves admin map elsewhere on the map | String | Don't Move |
-| Move Electrical | Moves the electrical lights staion elsewhere on the map | String | Don't Move |
-| Min Time For Door Swipe | What is the minimum time required for the card swipe to be correct | Time | 60s |
-| Heli Crash Countdown | What is the countdown for the helicopter crash sabotage | Time | 60s |
-
-## Better Fungle Settings
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Enable Better Fungle Changes | Self descriptive | Toggle | True |
-| Reactor Meltdown Countdown | What is the countdown for the reactor sabotage | Time | 60s |
-| Mushroom Mixup Timer | How long does the Mushroom Mixup sabotage last | Time | 10s |
-
-## Custom Client Side Options
-
-| Name | Description | Type | Default |
-|------|-------------|------|---------|
-| Disable Level Icons | Whether all level icons are removed in meetings | Toggle | False |
-| White Nameplates | Whether all decorative nameplates are disabled in meetings | Toggle | False |
-| Enable Lighter Darker Colors | Whether all players have their color types visible | Toggle | True |
-| Custom Crew Colors | Toggles whether the roles from the Crew faction have a color unqiue to them | Toggle | True |
-| Custom Neutral Colors | Toggles whether the roles from the Neutral faction have a color unqiue to them | Toggle | True |
-| Custom Intruder Colors | Toggles whether the roles from the Intruder faction have a color unqiue to them | Toggle | True |
-| Custom Syndicate Colors | Toggles whether the roles from the Syndicate faction have a color unqiue to them | Toggle | True |
-| Custom Ability Colors | Toggles whether abilities have a color unqiue to them | Toggle | True |
-| Custom Modifier Colors | Toggles whether modifiers have a color unqiue to them | Toggle | True |
-| Custom Objectifier Colors | Toggles whether objectifiers have a color unqiue to them | Toggle | True |
-| Custom Ejection Messages | Just jokes | Toggle | False |
-
------------------------
-
-# Game Info
-
-## Lighter Darker Colors
-
-- Red - Darker
-- Blue - Darker
-- Green - Darker
-- Pink - Lighter
-- Orange - Lighter
-- Yellow - Lighter
-- Black - Darker
-- White - Lighter
-- Purple - Darker
-- Brown - Darker
-- Cyan - Lighter
-- Lime - Lighter
-- Maroon - Darker
-- Rose - Lighter
-- Banana - Lighter
-- Gray - Darker
-- Tan - Darker
-- Coral - Lighter
-- Watermelon - Darker
-- Chocolate - Darker
-- Sky Blue - Lighter
-- Beige - Lighter
-- Hot Pink - Lighter
-- Turquoise - Lighter
-- Lilac - Lighter
-- Olive - Darker
-- Azure - Lighter
-- Plum - Darker
-- Jungle - Darker
-- Mint - Lighter
-- Chartreuse - Lighter
-- Macau - Darker
-- Tawny - Darker
-- Gold - Lighter
-- Rainbow - Lighter
-- Panda - Lighter
-- Contrast - Darker
-- Chroma - Darker
-- Galaxy - Lighter
-- Fire - Lighter
-- Monochrome - Lighter
-- Mantle - Darker
-- Lava - Lighter
-
-### Inspector Results
-- Deals With Dead - Coroner, Amnesiac, Retributionist, Janitor, Cannibal
-- Preserves Life - Medic, Guardian Angel, Altruist, Necromancer, Crusader
-- Leads The Group - Mayor, Godfather, Rebel, Pestilence, Survivor
-- Brings Chaos - Shifter, Thief, Camouflager, Whisperer, Jackal
-- Seeks To Destroy - Arsonist, Cryomaniac, Plaguebearer, Spellslinger
-- Wants To Explore - Transporter, Teleporter, Warper, Timekeeper
-- New Lens - Engineer, Miner, Seer, Dracula, Medium, Monarch
-- Gains Information - Sheriff, Consigliere, Blackmailer, Detective, Inspector, Silencer
-- Is Manipulative - Jester, Executioner, Actor, Troll, Framer, Dictator
-- Unseen - Chameleon, Wraith, Concealer, Poisoner, Collider
-- Is Cold - Veteran, Vigilante, Sidekick, Guesser, Mafioso
-- Tracks Others - Tracker, Mystic, Vampire Hunter, Bounty Hunter, Stalker
-- Is Aggressive - Betrayer, Werewolf, Juggernaut, Serial Killer
-- Creates Confusion - Morphling, Disguiser, Shapeshifter
-- Drops Items - Bomber, Operative, Grenadier, Enforcer
-- Hinders Others - Escort, Consort, Glitch, Ambusher, Drunkard
-- Is Basic - Crewmate, Impostor, Murderer, Anarchist
-- Ghostly - Revealer, Phantom, Ghoul, Banshee
-
-## Subfactions
-
-**Undead**
-- This subfaction is led by the Dracula
-- There is a limit of how many can be alive in the subfaction
-- If a Vampire Hunter interacts with an Undead, the Undead will be killed
-- Attempting to interact with a Vampire Hunter as an Undead will force them to kill you
-
-**Sect**
-- This subfaction is led by the Whisperer
-- The Whisperer can bring in as many people as they want, provided they have the cooldown and the % for it
-- The whispers are precious so the Whisperer must whisper near as many people as possible
-
-**Cabal**
-- This subfaction is led by the Jackal
-- There can be a maximum of 4 members in this subfaction, the Jackal and their 3 recruits
-- The Cabal starts off strong with 3 guaranteed members with the 4th one coming along if both the original recruits die
-
-**Reanimated**
-- This subfaction is led by the Necromancer
-- The only condition for becoming a member of this faction is the need to die so that the Necromancer can resurrect you
-
-## Syndicate Chaos Drive Role Priority
-### This list shows which Syndicate role alignments/roles gain the Chaos Drive first if "Chaos Drive Is Global" is turned off.
-
-1. Promoted Rebel
-2. Syndicate (Disruption)
-3. Syndicate (Support)
-4. Syndicate (Power)
-5. Syndicate (Killing)
-6. Original Rebel, Sidekick, Anarchist
-
-**If there are multiple alive and active roles from the same alignment, the Chaos Drive is given to the player with a higher player id (aka whoever joined the lobby earlier).**
-
-## Role List Entries
-
-The Role List game mode have special entries that are used to allow spawning of roles based on them.
-
-Regular Crew - Spawns only Crew (Support), (Protective), (Investigative) and (Killing) roles
-Regular Intruder - Spawns only Intruder (Deception), (Killing), (Concealing) and (Support) roles
-Regular Syndicate - Spawns only Syndicate (Disruption), (Support) and (Killing) roles
-Regular Neutral - Spawns only Neutral (Evil) and (Benign) roles
-Harmful Neutral - Spawns only Neutral (Killing), (Harbinger) and (Neophyte) roles
-
------------------------
-
-# Extras
-
-## New Colors!
-New colors are added for crewmates to pick from.
-
-## Custom Cosmetics!
-Custom hats, nameplates and visors have been added, made by some very talented artists. These are mostly for streamers. You can find these assets in the [ReworkedAssets](https://github.com/AlchlcDvl/ReworkedAssets) repo.
-
-## Bug / Suggestions / Additions
-If you have any bugs or any need to contact me, join the [Discord](https://discord.gg/cd27aDQDY9) or create an issue or pull request on GitHub.
-
------------------------
-
-# Layer Explanation And Assignment
-
-Since [TheOtherRoles](https://github.com/Eisbison/TheOtherRoles) has a section about this, might as well add my own. So here goes.
-
-A player's identity in the game is divided into 4 classifications, or Player Layers.
-
-The first and most important one is a [Role](#roles). It decides your abilities and goals for the game. Every game, you are guaranteed to have a role as not having one basically means you cannot play the game.
-
-The next one is an [Objectifier](#objectifiers). It provides an alternate way for you to win, and sometimes it may override the your original win condition (see [Corrupted](#corrupted) and [Mafia](#mafia)) or change your win condition mid-game (see [Traitor](#traitor) and [Fanatic](#fanatic)).
-
-The third layer is an [Ability](#abilities). It gives you an additional ability on top of your original abilities, to help boost your chances of winning.
-
-The last layer is a [Modifier](#modifiers). It is a passive affliction, usually negative or benign in nature, that serves no purpose and is there for fun. It cam alter a player's gameplay based on what they might have. For example, [Baits](#bait) and [Diseased](#diseased) players would want to die for their modifiers to take effect.
-
-With the general explanations out of the way, let's begin with how they are assigned.
-
-The Layer assignment is split into 7 phases.
-
-In the first phase, all required lists are cleared and all variables are reset.
-
-At the beginning of the phases 2 to 5, the spawn chances are handled. If the spawn chance is greater than 0%, the relevant layer is added to a list. If the mode is set to Custom, the same layer is added as many times as set by the count setting. For [Lovers](#lovers), [Linked](#linked) and [Rivals](#rivals), they are added twice for each count as they depend on pairs, rather than singluar assignment. So setting them to spawn twice means that the list will contain up to 4 instances of that type.
-
-The list's size is then modified to whatever the Max and Min settings for the specific layer or its alignment or faction (in case of Roles).
-
-The list is then shuffled around a lot and then sorted. During sorting, the first thing that happens is the addition of layers with 100% spawn chance being added to the list. If the spawn chance is between 0% and 100%, a random number is drawn from 1 to 99. If the number is less than or equal to the spawn chance, it is added to the spawning list.
-
-As a side note, setting a layer to 100% does not guarantee its spawn. This is because if there are multiple layers set to 100% and the number of assignable players is less than the amount of guaranteed layers, some of the layers will be left out.
-
-In All Any mode, however, the sorting is done differently. Any layer with a spawn chance of greater than 0% is guaranteed to be added, regardless to what it actually was set to. With this list, is then sorted on uniqueness. As long as the spawning list's size is lower than the number of players, it will keep adding a random layer from the initial list to the spawning list. If the layer has been set to unique, that layer is then removed from the initial list so that it is never randomly pulled again.
-
-In Role Lists mode, the provided role list is sorted between confirmed roles, alignments, anies (I have no idea how to derive the plural form of any) and the role bans. First, every instance of a confirmed role is added to the list. After that the alignments have certain role IDs associated to them. A random ID is pulled from these alignments and crosschecked to see if it exists in the role list. If it does exist, then it checks for uniqueness. If the ID is unique, the process is repeated again. This also happens if the ID matches that of a banned role. If the ID does not exist in the list, or it exists in the list but is not unique, it is added to the list and the process repeats for the next item on the role list. The same process happens for the 'Any' slots. Any slots have all IDs and are cross checked yet again for existence, bans and uniqueness.
-
-The second phase of layer assignment is Roles. The spawn list derived from the previous phase would be suffled. These have no special conditions as having a role is a requirement for other layers to spawn. If the number of assignable roles is less than the number of players, the outlying players will be assigned Crewmate, Impostor or Anarchist based on their faction.
-
-After the roles are assigned, a random Crew aligned player will be designated as the "Pure Crew" who will not recieve any Objectifier or be recruited by the [Jackal](#jackal). The Pure Crew cannot be converted into other subfactions either and would rather die than join them. This is a sort of hacky solution I came up for when there are no one capable of contributing to the task bar. Because of there technically being "0" tasks, the game would just end in no one's victory.
-
-Anyways, for the next 3 phases, the assignment also includes another action. Before the layers are assigned, a list of players is made for every restricted type (like making a list of players which only includes Crew because the layer can only be assigned to Crew). After that, the layers are assigned corresponding to their set player lists, which each assigned player being removed from other player lists.
-
-The next phase is the handing out of targets. During this phase, layers with targets, such as Guesser, Lovers, Rivals and Executioner are given their targets. Lovers, Linked or Rivals who are left out will have that objectifier be removed.
-
-The final phase is what I call "The Cleanup". During this phase, roles whose targets could not be assigned will be changed into roles that don't have targets. After that, empty layers are handed out to those who did not get any layer of that type prevent null errors during the game. Finally, certain variables for conversion are set, so that conversions are handled easier.
-
-After that, it's gaming time.
-
------------------------
-
-# Credits & Resources
-
-[Reactor](https://github.com/NuclearPowered/Reactor) - The framework of the mod\
-[BepInEx](https://github.com/BepInEx) - For hooking game functions\
-[Harmony](https://github.com/BepInEx/HarmonyX) - For mod patching\
-[Among-Us-Sheriff-Mod](https://github.com/Woodi-dev/Among-Us-Sheriff-Mod) - For the Sheriff role\
-[Among-Us-Love-Couple-Mod](https://github.com/Woodi-dev/Among-Us-Love-Couple-Mod) - For the inspiration of Lovers objectifier\
-[ExtraRolesAmongUs](https://github.com/NotHunter101/ExtraRolesAmongUs) - For the Engineer & Medic roles\
-[TooManyRolesMods](https://github.com/Hardel-DW/TooManyRolesMods) - For the Investigator & Time Lord roles\
-[Evan91380](https://github.com/Evan91380/BetterAirShip) & [Hardel](https://github.com/Hardel-DW) - For some code for improving Airship\
-[TorchMod](https://github.com/tomozbot/TorchMod) - For the inspiration of the Torch ability\
-[XtraCube](https://github.com/XtraCube) - For the custom colors\
-[The Other Roles](https://github.com/Eisbison/TheOtherRoles) - For the inspiration of the Ghoul and Tracker roles and the Astral and Bait modifiers, cosmetics system, teleport animation and version control\
-[The Other Roles: Community Edition](https://github.com/JustASysAdmin/TheOtherRoles2) - For the random spawns option\
-[Las Monjas](https://github.com/KiraYamato94/LasMonjas) - For the inspiration of the VIP modifier and Collider role, some code for nameplates\
-[MyDragonBreath](https://github.com/MyDragonBreath) - For Submerged Compatibility, basis for mod debugging (found [here](https://github.com/AlchlcDvl/TownOfUsReworked/tree/master/TownOfUsReworked/MultiClientInstancing) and [here](https://github.com/AlchlcDvl/TownOfUsReworked/tree/master/TownOfUsReworked/Monos/DebuggerBehaviour.cs)), partially the Operative role, general help and moral support\
-[Guus](https://github.com/OhMyGuus) - For support for the old Among Us versions (v2021.11.9.5 and v2021.12.15)\
-[ItsTheNumberH](https://github.com/itsTheNumberH/Town-Of-H) - For Coward, Volatile and Bait modifiers, Poisoner and Cannibal roles, partially for Tracker and Coroner roles and bug fixes\
-[Ruiner](https://github.com/ruiner189/Town-Of-Us-Redux) - For Lovers being changed into an objectifier and Task Tracking\
-[Term](https://www.twitch.tv/termboii) - For creating Medium, Blackmailer and Plaguebearer, partially for Transporter and porting to v2021.12.15\
-[Zeo](https://github.com/Zeo666/AllTheRoles) - For the idea of Ruthless and help with migrating to the use of shapeshifter menus\
-[BryBry16](https://github.com/Brybry16/BetterPolus) - For the code used for Better Polus\
-[5up](https://www.twitch.tv/5uppp) and the [Submerine Team](https://github.com/SubmergedAmongUs/Submerged) - For the Submerged map and the inspiration of the Grenadier role\
-[Slushigoose](https://github.com/slushiegoose) - For making the mod in the first place\
-[eDonnes](https://github.com/eDonnes124/) - For continuing the mod after it was discontinued\
-[Det](https://github.com/FERTAILS) - For getting me into modding\
-[TownOfHost-TheOtherRoles](https://github.com/music-discussion/TownOfHost-TheOtherRoles) - For a lot of the QoL code plus some chat command ideas, inspiration for the Bastion role\
-[Essentials](https://github.com/DorCoMaNdO/Reactor-Essentials) - For creating most of the custom game options which are now embedded into the mod [here](https://github.com/AlchlcDvl/TownOfUsReworked/tree/master/TownOfUsReworked/CustomOptions)\
-[VincentVision](https://github.com/VincentVision) - For some code here and there from his version of Town Of Us (which was deleted sadly)\
-[Lunastellia](https://github.com/Lunastellia) - For Better Skeld code\
-[CrowdedMod](https://github.com/CrowdedMods/CrowdedMod) - For allowing to bypass the 15 player limit and is embedded into the mod [here](https://github.com/AlchlcDvl/TownOfUsReworked/tree/master/TownOfUsReworked/Crowded)\
-[Town Of Salem](https://www.blankmediagames.com/TownOfSalem/), [Traitors In Salem](https://www.traitorsinsalem.com) & [Town Of Salem 2](https://store.steampowered.com/app/2140510/Town_of_Salem_2/) - For multiple role ideas
 
 -----------------------
 
