@@ -19,8 +19,12 @@ public class Info
         Type = type;
     }
 
-    public static void SetAllInfo() => AllInfo.AddRanges(LayerInfo.AllRoles, LayerInfo.AllModifiers, LayerInfo.AllAbilities, LayerInfo.AllObjectifiers, LayerInfo.AllFactions,
-        LayerInfo.AllSubFactions, LayerInfo.AllModes, LayerInfo.AllOthers);
+    public static void SetAllInfo()
+    {
+        AllInfo.AddRanges(LayerInfo.AllRoles, LayerInfo.AllModifiers, LayerInfo.AllAbilities, LayerInfo.AllObjectifiers, LayerInfo.AllFactions, LayerInfo.AllSubFactions, LayerInfo.AllModes,
+            LayerInfo.AllOthers);
+        AllInfo.OrderBy(x => x.Name);
+    }
 
     public static string ColorIt(string result)
     {
@@ -48,14 +52,18 @@ public class RoleInfo : Info
     public readonly string ColoredAlignment;
     public readonly string WinCon;
     public readonly string Quote;
+    public readonly Faction Faction;
+    public readonly LayerEnum Role;
 
     private const string IntruderObjective = "Have a critical sabotage set off by the Intruders reach 0 seconds or kill off all Syndicate, Unfaithful Intruders, Crew and opposing Neutrals.";
     private const string SyndicateObjective = "Have a critical sabotage set off by the Syndicate reach 0 seconds or kill off all Intruders, Unfaithful Syndicate, Crew and opposing Neutrals.";
     private const string CrewObjective = "Finish tasks along with other Crew or kill off all Intruders, Syndicate, Unfaithful Crew, and opposing Neutrals.";
 
-    public RoleInfo(string name, string shortF, string description, Alignment alignmentEnum, Faction faction, string quote, Color color, string wincon = "") : base(name, shortF, description,
-        color, InfoType.Role)
+    public RoleInfo(string name, string shortF, string description, Alignment alignmentEnum, Faction faction, string quote, Color color, LayerEnum role, string wincon = "") : base(name,
+        shortF, description, color, InfoType.Role)
     {
+        Faction = faction;
+        Role = role;
         Quote = quote;
         Alignment = alignmentEnum.AlignmentName();
         ColoredAlignment = alignmentEnum.AlignmentName(true);
@@ -100,8 +108,11 @@ public class FactionInfo : Info
     private const string GameModeDescription = "Game Mode roles only spawn in certain special game modes. They have their own special abilities and objectives that are not seen in other " +
         "factions.";
 
+    public readonly Faction Faction;
+
     public FactionInfo(Faction faction) : base($"{faction}", "", "", default, InfoType.Faction)
     {
+        Faction = faction;
         (Description, Short, Color) = faction switch
         {
             Faction.Syndicate => (SyndicateDescription, "Syn", Colors.Syndicate),
@@ -135,9 +146,11 @@ public class SubFactionInfo : Info
         "powerful growth as it may overrun you. The Sect is led by the Whisperer.";
 
     public readonly string Symbol;
+    public readonly SubFaction SubFaction;
 
     public SubFactionInfo(SubFaction sub) : base($"{sub}", "", "", default, InfoType.SubFaction)
     {
+        SubFaction = sub;
         (Description, Short, Color, Symbol) = sub switch
         {
             SubFaction.Undead => (UndeadDescription, "Und", Colors.Undead, "γ"),
@@ -235,12 +248,12 @@ public class AlignmentInfo : Info
     private const string TRDescription = "These roles spawn in the Task Race game mode.";
 
     public readonly string AlignmentName;
-    public readonly Alignment Base;
+    public readonly Alignment Alignment;
 
     public AlignmentInfo(Alignment alignmentEnum) : base(alignmentEnum.AlignmentName(), "", "", Colors.Alignment, InfoType.Alignment)
     {
-        Base = alignmentEnum;
-        (Short, Description, AlignmentName) = Base switch
+        Alignment = alignmentEnum;
+        (Short, Description, AlignmentName) = Alignment switch
         {
             Alignment.CrewSupport => ("CS", CSDescription, "Support"),
             Alignment.CrewInvest => ("CI", CIDescription, "Investigative"),
@@ -305,7 +318,7 @@ public class AlignmentInfo : Info
     public override void WikiEntry(out string result)
     {
         base.WikiEntry(out result);
-        result += $"Name: {Base.AlignmentName(true)}";
+        result += $"Name: {Alignment.AlignmentName(true)}";
         result += "\n" + ColorIt($"Short Form: {Short}");
         result += "\n" + ColorIt(WrapText($"Description: {Description}"));
     }
@@ -314,8 +327,13 @@ public class AlignmentInfo : Info
 public class ModifierInfo : Info
 {
     public readonly string AppliesTo;
+    public readonly LayerEnum Modifier;
 
-    public ModifierInfo(string name, string shortF, string description, string applies, Color color) : base(name, shortF, description, color, InfoType.Modifier) => AppliesTo = applies;
+    public ModifierInfo(string name, string shortF, string description, string applies, Color color, LayerEnum modifier) : base(name, shortF, description, color, InfoType.Modifier)
+    {
+        AppliesTo = applies;
+        Modifier = modifier;
+    }
 
     public override void WikiEntry(out string result)
     {
@@ -332,12 +350,15 @@ public class ObjectifierInfo : Info
     public readonly string AppliesTo;
     public readonly string WinCon;
     public readonly string Symbol;
+    public readonly LayerEnum Objectifier;
 
-    public ObjectifierInfo(string name, string shortF, string description, string wincon, string applies, string symbol, Color color) : base(name, shortF, description, color, (InfoType)1)
+    public ObjectifierInfo(string name, string shortF, string description, string wincon, string applies, string symbol, Color color, LayerEnum objectifier) : base(name, shortF, description,
+        color, InfoType.Objectifier)
     {
         AppliesTo = applies;
         WinCon = wincon;
         Symbol = symbol;
+        Objectifier = objectifier;
     }
 
     public override void WikiEntry(out string result)
@@ -355,8 +376,13 @@ public class ObjectifierInfo : Info
 public class AbilityInfo : Info
 {
     public readonly string AppliesTo;
+    public readonly LayerEnum Ability;
 
-    public AbilityInfo(string name, string shortF, string description, string applies, Color color) : base(name, shortF, description, color, InfoType.Ability) => AppliesTo = applies;
+    public AbilityInfo(string name, string shortF, string description, string applies, Color color, LayerEnum ability) : base(name, shortF, description, color, InfoType.Ability)
+    {
+        AppliesTo = applies;
+        Ability = ability;
+    }
 
     public override void WikiEntry(out string result)
     {

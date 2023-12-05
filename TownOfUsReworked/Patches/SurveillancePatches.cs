@@ -11,13 +11,13 @@ public static class SurveillancePatches
     {
         public static void Postfix(SurveillanceMinigame __instance)
         {
-            if (ShipStatus.Instance.AllCameras.Length > 4 && __instance.FilteredRooms.Length > 0)
+            if (Ship.AllCameras.Length > 4 && __instance.FilteredRooms.Length > 0)
             {
-                __instance.textures = __instance.textures.ToList().Concat(new RenderTexture[ShipStatus.Instance.AllCameras.Length - 4]).ToArray();
+                __instance.textures = __instance.textures.ToList().Concat(new RenderTexture[Ship.AllCameras.Length - 4]).ToArray();
 
-                for (var i = 4; i < ShipStatus.Instance.AllCameras.Length; i++)
+                for (var i = 4; i < Ship.AllCameras.Length; i++)
                 {
-                    var surv = ShipStatus.Instance.AllCameras[i];
+                    var surv = Ship.AllCameras[i];
                     var camera = UObject.Instantiate(__instance.CameraPrefab, __instance.transform);
                     camera.transform.position = new(surv.transform.position.x, surv.transform.position.y, 8f);
                     camera.orthographicSize = 2.35f;

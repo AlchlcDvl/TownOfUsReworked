@@ -30,10 +30,10 @@ public static class GameFilters
 
                     foreach (var btn in __instance.controllerSelectable)
                     {
-                        var LangBtn = btn.GetComponent<ChatLanguageButton>();
+                        var langBtn = btn.GetComponent<ChatLanguageButton>();
 
-                        if (LangBtn.Text.text == FilterText)
-                            LangBtn.SetSelected(false);
+                        if (langBtn.Text.text == FilterText)
+                            langBtn.SetSelected(false);
                     }
                 }
 

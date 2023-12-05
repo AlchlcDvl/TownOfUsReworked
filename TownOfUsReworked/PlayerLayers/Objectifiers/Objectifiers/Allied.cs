@@ -6,17 +6,13 @@ public class Allied : Objectifier
 
     public override Color Color
     {
-        get
+        get => Side switch
         {
-            if (Side == Faction.Crew)
-                return Colors.Crew;
-            else if (Side == Faction.Syndicate)
-                return Colors.Syndicate;
-            else if (Side == Faction.Intruder)
-                return Colors.Intruder;
-            else
-                return ClientGameOptions.CustomObjColors ? Colors.Allied : Colors.Objectifier;
-        }
+            Faction.Crew => Colors.Crew,
+            Faction.Syndicate => Colors.Syndicate,
+            Faction.Intruder => Colors.Intruder,
+            _ => ClientGameOptions.CustomObjColors ? Colors.Allied : Colors.Objectifier,
+        };
     }
     public override string Name => "Allied";
     public override string Symbol => "ζ";

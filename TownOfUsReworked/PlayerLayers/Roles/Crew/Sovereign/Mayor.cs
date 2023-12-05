@@ -22,22 +22,13 @@ public class Mayor : Crew
 
     public void Reveal()
     {
-        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this);
-        Revealed = true;
-        Flash(Color);
-        BreakShield(Player, true);
+        CallRpc(CustomRPC.Action, ActionsRPC.PublicReveal, Player);
+        PublicReveal(Player);
     }
 
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
         RevealButton.Update2("REVEAL", !Revealed && !RoundOne);
-    }
-
-    public override void ReadRPC(MessageReader reader)
-    {
-        Revealed = true;
-        Flash(Colors.Mayor);
-        BreakShield(Player, true);
     }
 }

@@ -9,6 +9,8 @@ public abstract class PlayerLayer
     public virtual LayerEnum Type => LayerEnum.None;
     public virtual Func<string> Description => () => "- None";
     public virtual Func<string> Attributes => () => "- None";
+    //public virtual AttackEnum AttackVal => AttackEnum.None;
+    //public virtual DefenseEnum DefenseVal => DefenseEnum.None;
 
     public PlayerControl Player { get; set; }
     public bool IsBlocked { get; set; }

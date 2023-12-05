@@ -39,11 +39,11 @@ public static class SubmergedExile
 {
     public static void Prefix(UObject obj)
     {
-        if ((!SubLoaded && !LILoaded) || TownOfUsReworked.NormalOptions?.MapId != 5 || obj == null || obj.name == null)
+        if (!IsSubmerged() || obj == null || obj.name == null)
             return;
 
         if (obj.name.Contains("ExileCutscene"))
-            SetPostmortals.ExileControllerPostfix(ExileController.Instance);
+            SetPostmortals.ExileControllerPostfix(Ejection);
         else if (obj.name.Contains("SpawnInMinigame") && CustomPlayer.Local.Is(LayerEnum.Astral) && !CustomPlayer.LocalCustom.IsDead)
             Modifier.GetModifier<Astral>(CustomPlayer.Local).SetPosition();
     }

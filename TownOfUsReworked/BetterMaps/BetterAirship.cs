@@ -13,10 +13,9 @@ public static class BetterAirship
             if (!CustomGameOptions.EnableBetterAirship)
                 return;
 
-            var adminTable = UObject.FindObjectOfType<MapConsole>();
-
             if (CustomGameOptions.MoveAdmin != 0)
             {
+                var adminTable = UObject.FindObjectOfType<MapConsole>();
                 var mapFloating = GameObject.Find("Cockpit/cockpit_mapfloating");
 
                 if ((int)CustomGameOptions.MoveAdmin == 1)
@@ -148,7 +147,7 @@ public static class BetterAirship
 }
 
 [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.Start))]
-static class GameEndedPatch
+public static class GameEndedPatch
 {
     public static void Prefix() => BetterAirship.GameStarted = false;
 }
@@ -156,21 +155,33 @@ static class GameEndedPatch
 [HarmonyPatch(typeof(HeliSabotageSystem), nameof(HeliSabotageSystem.UpdateSystem))]
 public static class HeliCountdownPatch
 {
-    public static bool Prefix(HeliSabotageSystem __instance, ref MessageReader msgReader)
+    public static bool Prefix(HeliSabotageSystem __instance, ref PlayerControl player, ref MessageReader msgReader)
     {
-        if (!CustomGameOptions.EnableBetterAirship)
+        if (!CustomGameOptions.EnableBetterAirship || MapPatches.CurrentMap != 4)
             return true;
 
-        if ((HeliSabotageSystem.Tags)(msgReader.ReadByte() & 240) == HeliSabotageSystem.Tags.DamageBit)
+        var b = msgReader.ReadByte();
+        var b2 = (byte)(b & 15);
+        var tags = (HeliSabotageSystem.Tags)(b & 240);
+
+        if (tags == HeliSabotageSystem.Tags.FixBit)
         {
-            __instance.Countdown = HeliSabotageSystem.CharlesDuration = CustomGameOptions.CrashTimer;
+            __instance.codeResetTimer = 10f;
+            __instance.CompletedConsoles.Add(b2);
+        }
+        else if (tags == HeliSabotageSystem.Tags.DeactiveBit)
+            __instance.ActiveConsoles.Remove(new(player.PlayerId, b2));
+        else if (tags == HeliSabotageSystem.Tags.ActiveBit)
+            __instance.ActiveConsoles.Add(new(player.PlayerId, b2));
+        else if (tags == HeliSabotageSystem.Tags.DamageBit)
+        {
+            __instance.codeResetTimer = -1f;
+            __instance.Countdown = CustomGameOptions.CrashTimer;
             __instance.CompletedConsoles.Clear();
             __instance.ActiveConsoles.Clear();
-            __instance.codeResetTimer = -1f;
-            __instance.IsDirty = true;
-            return false;
         }
 
-        return true;
+        __instance.IsDirty = true;
+        return false;
     }
 }

@@ -22,14 +22,11 @@ public static class CustomGameOptions
     public static int LobbySize => Generate.LobbySize;
     public static TaskBar TaskBarMode
     {
-        get
+        get => GameMode switch
         {
-            return GameMode switch
-            {
-                GameMode.TaskRace or GameMode.HideAndSeek => TaskBar.Normal,
-                _ => (TaskBar)Generate.TaskBarMode.GetInt()
-            };
-        }
+            GameMode.TaskRace or GameMode.HideAndSeek => TaskBar.Normal,
+            _ => (TaskBar)Generate.TaskBarMode.GetInt()
+        };
     }
 
     //Game Modifiers
@@ -84,7 +81,7 @@ public static class CustomGameOptions
     {
         get
         {
-            var map = Generate.Map?.GetInt();
+            var map = Generate.Map.GetInt();
 
             if (map is 0 or 1 or 2 or 3 or 4 or 5)
                 return (MapEnum)map;
@@ -121,39 +118,30 @@ public static class CustomGameOptions
     public static bool SmallMapHalfVision => Generate.SmallMapHalfVision;
     public static int ShortTasks
     {
-        get
+        get => GameMode switch
         {
-            return GameMode switch
-            {
-                GameMode.TaskRace => Generate.TRShortTasks,
-                GameMode.HideAndSeek => Generate.HnSShortTasks,
-                _ => Generate.ShortTasks
-            };
-        }
+            GameMode.TaskRace => Generate.TRShortTasks,
+            GameMode.HideAndSeek => Generate.HnSShortTasks,
+            _ => Generate.ShortTasks
+        };
     }
     public static int LongTasks
     {
-        get
+        get => GameMode switch
         {
-            return GameMode switch
-            {
-                GameMode.TaskRace => 0,
-                GameMode.HideAndSeek => Generate.HnSLongTasks,
-                _ => Generate.LongTasks
-            };
-        }
+            GameMode.TaskRace => 0,
+            GameMode.HideAndSeek => Generate.HnSLongTasks,
+            _ => Generate.LongTasks
+        };
     }
     public static int CommonTasks
     {
-        get
+        get => GameMode switch
         {
-            return GameMode switch
-            {
-                GameMode.TaskRace => Generate.TRCommonTasks,
-                GameMode.HideAndSeek => Generate.HnSCommonTasks,
-                _ => Generate.CommonTasks
-            };
-        }
+            GameMode.TaskRace => Generate.TRCommonTasks,
+            GameMode.HideAndSeek => Generate.HnSCommonTasks,
+            _ => Generate.CommonTasks
+        };
     }
 
     //Hide And Seek Settings
@@ -289,6 +277,7 @@ public static class CustomGameOptions
     public static int TimekeeperOn => Generate.TimekeeperOn.GetChance();
     public static int SilencerOn => Generate.SilencerOn.GetChance();
     public static int BastionOn => Generate.BastionOn.GetChance();
+    public static int TrapperOn => Generate.TrapperOn.GetChance();
 
     //Ability Spawn
     public static int CrewAssassinOn => Generate.CrewAssassinOn.GetChance();
@@ -392,6 +381,14 @@ public static class CustomGameOptions
     public static int SeerCount => Generate.SeerOn.GetCount();
     public static bool UniqueSeer => Generate.UniqueSeer;
     public static float SeerCd => Generate.SeerCd;
+
+    //Trapper Settings
+    public static int TrapperCount => Generate.TrapperOn.GetCount();
+    public static bool UniqueTrapper => Generate.UniqueTrapper;
+    public static float BuildCd => Generate.BuildCd;
+    public static float BuildDur => Generate.BuildDur;
+    public static float TrapCd => Generate.TrapCd;
+    public static int MaxTraps => Generate.MaxTraps;
 
     //Detective Settings
     public static int DetectiveCount => Generate.DetectiveOn.GetCount();

@@ -1,4 +1,3 @@
-
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public class BountyHunter : Neutral
@@ -143,7 +142,7 @@ public class BountyHunter : Neutral
 
         //Ensures only the Bounty Hunter sees this
         if (HUD && something != "")
-            Run(HUD.Chat, "<color=#B51E39FF>〖 Bounty Hunt 〗</color>", something);
+            Run(Chat, "<color=#B51E39FF>〖 Bounty Hunt 〗</color>", something);
     }
 
     public override void UpdateHud(HudManager __instance)

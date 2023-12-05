@@ -9,14 +9,19 @@
 </p>
 
 <p align="center">
-	<img src="https://badgen.net/static/AmongUs/2023.10.24/yellow">
-	<a href="https://github.com/AlchlcDvl/TownOfUsReworked/releases/"><img src="https://badgen.net/github/release/AlchlcDvl/TownOfUsReworked?icon=github"></a>
-	<a href="https://github.com/AlchlcDvl/TownOfUsReworked/releases"><img alt="GitHub Downloads" src="https://img.shields.io/github/downloads/AlchlcDvl/TownOfUsReworked/total"></a>
+    <img src="https://badgen.net/static/AmongUs/2023.10.24/yellow">
+    <a href="https://github.com/AlchlcDvl/TownOfUsReworked/releases/"><img src="https://badgen.net/github/release/AlchlcDvl/TownOfUsReworked?icon=github"></a>
+    <a href="https://github.com/AlchlcDvl/TownOfUsReworked/releases"><img alt="GitHub Downloads" src="https://img.shields.io/github/downloads/AlchlcDvl/TownOfUsReworked/total"></a>
+    <a href="https://discord.gg/cd27aDQDY9"> <img src="https://img.shields.io/discord/1039196456667582555.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2"></a>
 </p>
 
 An [Among Us](https://store.steampowered.com/app/945360/Among_Us) mod that adds a bunch of features!
 
+This mod is a mish mash of code and ideas from different games, mods and forks, mainly from Town Of Salem, Town Of Us Reactivated and The Other Roles. Enjoy the chaos that comes out as a result!
+
 Join our [Discord](https://discord.gg/cd27aDQDY9) if you have any problems or want to find people to play with!
+
+Check out the mod's [wiki](https://github.com/AlchlcDvl/TownOfUsReworked/wiki) for info!
 
 Quick warning: This mod adds a whole LOT of stuff, and is currently not very beginner friendly. I've added a bunch of helpful wiki entries to make the mod easier to understand, but it's still a lot of reading you're going to have to do.
 
@@ -68,7 +73,8 @@ Quick warning: This mod adds a whole LOT of stuff, and is currently not very beg
 |                                    |                               | [Shifter](#shifter)               | [Plaguebearer](#plaguebearer)     |                               |
 |                                    |                               | [Tracker](#tracker)               | [Serial Killer](#serial-killer)   |                               |
 |                                    |                               | [Transporter](#transporter)       | [Survivor](#survivor)             |                               |
-|                                    |                               | [Vampire Hunter](#vampire-hunter) | [Thief](#thief)                   |                               |
+|                                    |                               | [Trapper](#trapper)               | [Thief](#thief)                   |                               |
+|                                    |                               | [Vampire Hunter](#vampire-hunter) | [Troll](#troll)                   |                               |
 |                                    |                               | [Veteran](#veteran)               | [Werewolf](#werewolf)             |                               |
 |                                    |                               | [Vigilante](#vigilante)           | [Whisperer](#whisperer)           |                               |
 
@@ -142,6 +148,8 @@ Quick warning: This mod adds a whole LOT of stuff, and is currently not very beg
 
 | Among Us           | Mod Version | Link                                                                                            |
 |--------------------|-------------|-------------------------------------------------------------------------------------------------|
+| 2023.11.28 (s & e) | 0.6.3       | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.6.3/Reworked.zip) |
+| 2023.10.24 (s & e) | 0.6.2       | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.6.2/Reworked.zip) |
 | 2023.10.24 (s & e) | 0.6.1       | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.6.1/Reworked.zip) |
 | 2023.10.24 (s & e) | 0.6.0       | [Download](https://github.com/AlchlcDvl/TownOfUsReworked/releases/download/v0.6.0/Reworked.zip) |
 
@@ -535,6 +543,15 @@ The Transporter can swap the locations of two players at will. Being transported
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | Transporter Can Transport Themselves | Self descriptive | Toggle | False |
+
+## Trapper
+
+<img align="right" width="" height="200" src="./Images/Trapper.png">
+
+### Alignment: Crew (Protective)
+### Origin: Town Of Salem
+
+The Trapper can build traps and place them on other players. These traps will either register in interacter's role, or attack an attacker. At the start of the next meeting, the Trapper is told whether they attacked someone or not. If not, the Trapper gets a role of roles that interacted with the trapped targets.
 
 ## Vampire Hunter
 

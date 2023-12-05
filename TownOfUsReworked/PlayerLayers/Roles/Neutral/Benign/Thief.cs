@@ -159,7 +159,7 @@ public class Thief : Neutral
             var button = UObject.Instantiate(buttonTemplate, buttonParent);
             UObject.Instantiate(maskTemplate, buttonParent);
             var label = UObject.Instantiate(textTemplate, button);
-            button.GetComponent<SpriteRenderer>().sprite = ShipStatus.Instance.CosmeticsCache.GetNameplate("nameplate_NoPlate").Image;
+            button.GetComponent<SpriteRenderer>().sprite = Ship.CosmeticsCache.GetNameplate("nameplate_NoPlate").Image;
 
             if (!GuessButtons.ContainsKey(i))
                 GuessButtons.Add(i, new());
@@ -242,7 +242,7 @@ public class Thief : Neutral
 
         AllVoteAreas.ForEach(x => x.gameObject.SetActive(false));
         __instance.TimerText.gameObject.SetActive(false);
-        HUD.Chat.SetVisible(false);
+        Chat.SetVisible(false);
         Page = 0;
         var container = UObject.Instantiate(UObject.FindObjectsOfType<Transform>().FirstOrDefault(x => x.name == "PhoneUI"), __instance.transform);
         container.transform.localPosition = new(0, 0, -5f);
@@ -263,7 +263,7 @@ public class Thief : Neutral
     public void Exit(MeetingHud __instance)
     {
         Phone.Destroy();
-        HUD.Chat.SetVisible(true);
+        Chat.SetVisible(true);
         SelectedButton = null;
         __instance.TimerText.gameObject.SetActive(true);
         AllVoteAreas.ForEach(x => x.gameObject.SetActive(true));
@@ -514,23 +514,23 @@ public class Thief : Neutral
         {
             if (Player != player)
             {
-                Run(HUD.Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"You guessed {guessTarget.name} as {guess}!");
+                Run(Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"You guessed {guessTarget.name} as {guess}!");
                 GuessMenu.HideButtons();
             }
             else
-                Run(HUD.Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"You incorrectly guessed {guessTarget.name} as {guess} and died!");
+                Run(Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"You incorrectly guessed {guessTarget.name} as {guess} and died!");
         }
         else if (Player != player && CustomPlayer.Local == player)
-            Run(HUD.Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} guessed you as {guessTarget}!");
+            Run(Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} guessed you as {guessTarget}!");
         else if (DeadSeeEverything)
         {
             if (Player != player)
-                Run(HUD.Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} guessed {player.name} as {guessTarget} and stole their role!");
+                Run(Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} guessed {player.name} as {guessTarget} and stole their role!");
             else
-                Run(HUD.Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} incorrectly guessed {player.name} as {guessTarget} and died!");
+                Run(Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} incorrectly guessed {player.name} as {guessTarget} and died!");
         }
         else
-            Run(HUD.Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"{player.name} has been assassinated!");
+            Run(Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"{player.name} has been assassinated!");
 
         if (Player != player)
             Steal(player);

@@ -220,14 +220,16 @@ public static class RPC
             writer.Write((byte)gfAction);
         else if (item is RebActionsRPC rebAction)
             writer.Write((byte)rebAction);
-        else if (item is DictActionsRPC dictAction)
-            writer.Write((byte)dictAction);
+        else if (item is MedicActionsRPC medicAction)
+            writer.Write((byte)medicAction);
         else if (item is GlitchActionsRPC glitchAction)
             writer.Write((byte)glitchAction);
         else if (item is ThiefActionsRPC thiefAction)
             writer.Write((byte)thiefAction);
         else if (item is PoliticianActionsRPC polAction)
             writer.Write((byte)polAction);
+        else if (item is TrapperActionsRPC trapAction)
+            writer.Write((byte)trapAction);
         else if (item is MiscRPC misc)
             writer.Write((byte)misc);
         else if (item is CustomButton button)

@@ -11,7 +11,6 @@ public class Preset : CustomButtonOption
     private List<OptionBehaviour> CreateOptions()
     {
         var options = new List<OptionBehaviour>();
-        var togglePrefab = UObject.FindObjectOfType<ToggleOption>();
 
         foreach (var button in SlotButtons)
         {
@@ -69,7 +68,7 @@ public class Preset : CustomButtonOption
         for (var i = 0; i < options.Count; i++)
             options[i].transform.localPosition = new(x, y - (i * 0.5f), z);
 
-        __instance.Children = new(options.ToArray());
+        __instance.Children = options.ToArray();
     }
 
     public void LoadPreset(string presetName, bool inLobby = false)

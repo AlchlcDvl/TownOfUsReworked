@@ -3,9 +3,8 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers;
 public class Rivals : Objectifier
 {
     public PlayerControl OtherRival { get; set; }
-    public bool RivalDead => OtherRival == null || OtherRival.HasDied();
-    public bool IsDeadRival => Player == null || Player.HasDied();
-    public bool BothRivalsDead => IsDeadRival && RivalDead;
+    private bool RivalDead => OtherRival == null || OtherRival.HasDied();
+    private bool IsDeadRival => Player == null || Player.HasDied();
     public bool IsWinningRival =>  RivalDead && !IsDeadRival;
 
     public override Color Color => ClientGameOptions.CustomObjColors ? Colors.Rivals : Colors.Objectifier;

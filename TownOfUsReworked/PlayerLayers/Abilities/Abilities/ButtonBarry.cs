@@ -2,8 +2,8 @@ namespace TownOfUsReworked.PlayerLayers.Abilities;
 
 public class ButtonBarry : Ability
 {
-    public bool ButtonUsed { get; set; }
-    public CustomButton ButtonButton { get; set; }
+    private bool ButtonUsed { get; set; }
+    private CustomButton ButtonButton { get; set; }
 
     public override Color Color => ClientGameOptions.CustomAbColors ? Colors.ButtonBarry : Colors.Ability;
     public override string Name => "Button Barry";
@@ -12,7 +12,7 @@ public class ButtonBarry : Ability
 
     public ButtonBarry(PlayerControl player) : base(player) => ButtonButton = new(this, "Button", AbilityTypes.Targetless, "Quarternary", Call, CustomGameOptions.ButtonCooldown);
 
-    public void Call()
+    private void Call()
     {
         ButtonUsed = true;
         CallRpc(CustomRPC.Action, ActionsRPC.BarryButton, Player);

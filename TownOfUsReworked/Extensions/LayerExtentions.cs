@@ -11,8 +11,8 @@ public static class LayerExtentions
     public static string ModifierColorString => $"<color=#{Colors.Modifier.ToHtmlStringRGBA()}>";
     public static string AbilityColorString => $"<color=#{Colors.Ability.ToHtmlStringRGBA()}>";
     public static string SubFactionColorString => $"<color=#{Colors.SubFaction.ToHtmlStringRGBA()}>";
-
-    public static bool Is(this PlayerControl player, LayerEnum type, PlayerLayerEnum layer) => PlayerLayer.GetLayers(player).Any(x => x.Type == type && x.LayerType == layer);
+    public static string AttackColorString => $"<color=#{Colors.Attack.ToHtmlStringRGBA()}>";
+    public static string DefenseColorString => $"<color=#{Colors.Defense.ToHtmlStringRGBA()}>";
 
     public static bool Is(this PlayerControl player, LayerEnum type) => PlayerLayer.GetLayers(player).Any(x => x.Type == type);
 
@@ -30,16 +30,12 @@ public static class LayerExtentions
 
     public static bool Is(this PlayerVoteArea player, LayerEnum roleType) => PlayerByVoteArea(player).Is(roleType);
 
-    public static bool Is(this PlayerVoteArea player, Role role) => PlayerByVoteArea(player).Is(role);
-
     public static bool Is(this PlayerVoteArea player, SubFaction subFaction) => PlayerByVoteArea(player).Is(subFaction);
 
     public static bool Is(this PlayerVoteArea player, Faction faction) => PlayerByVoteArea(player).Is(faction);
 
-    public static bool Is(this PlayerVoteArea player, Alignment alignment) => PlayerByVoteArea(player).Is(alignment);
-
-    public static bool IsAssassin(this PlayerControl player) => player.Is(LayerEnum.CrewAssassin) || player.Is(LayerEnum.NeutralAssassin) || player.Is(LayerEnum.IntruderAssassin) ||
-        player.Is(LayerEnum.SyndicateAssassin);
+    public static bool IsAssassin(this PlayerControl player) => player.GetAbility() is LayerEnum.NeutralAssassin or LayerEnum.IntruderAssassin or LayerEnum.SyndicateAssassin or
+        LayerEnum.IntruderAssassin;
 
     public static Faction GetFaction(this PlayerControl player)
     {
@@ -48,7 +44,7 @@ public static class LayerExtentions
 
         var role = Role.GetRole(player);
 
-        if (role == null)
+        if (!role)
             return player.Data.IsImpostor() ? Faction.Intruder : Faction.Crew;
 
         return role.Faction;
@@ -61,7 +57,7 @@ public static class LayerExtentions
 
         var role = Role.GetRole(player);
 
-        if (role == null)
+        if (!role)
             return SubFaction.None;
 
         return role.SubFaction;
@@ -102,7 +98,7 @@ public static class LayerExtentions
 
         var role = Role.GetRole(player);
 
-        if (role == null)
+        if (!role)
             return Alignment.None;
 
         return role.Alignment;
@@ -280,7 +276,19 @@ public static class LayerExtentions
 
     public static Whisperer GetWhisperer(this PlayerVoteArea player) => PlayerByVoteArea(player).GetWhisperer();
 
-    public static bool IsShielded(this PlayerControl player) => PlayerLayer.GetLayers<Medic>().Any(role => player == role.ShieldedPlayer);
+    public static bool IsShielded(this PlayerControl player)
+    {
+        var medicFlag = PlayerLayer.GetLayers<Medic>().Any(role => player == role.ShieldedPlayer);
+        var retFlag = PlayerLayer.GetLayers<Retributionist>().Any(role => player == role.ShieldedPlayer);
+        return medicFlag || retFlag;
+    }
+
+    public static bool IsTrapped(this PlayerControl player)
+    {
+        var trapFlag = PlayerLayer.GetLayers<Trapper>().Any(role => role.Trapped.Contains(player.PlayerId));
+        var retFlag = PlayerLayer.GetLayers<Retributionist>().Any(role => role.Trapped.Contains(player.PlayerId));
+        return trapFlag || retFlag;
+    }
 
     public static bool IsKnighted(this PlayerControl player) => PlayerLayer.GetLayers<Monarch>().Any(role => role.Knighted.Contains(player.PlayerId));
 
@@ -308,11 +316,13 @@ public static class LayerExtentions
         return silFlag || rebFlag;
     }
 
-    public static Silencer GetSilencer(this PlayerControl player) => PlayerLayer.GetLayers<Silencer>().Find(x => x.SilencedPlayer == player);
-
-    public static PromotedRebel GetRebSilencer(this PlayerControl player) => PlayerLayer.GetLayers<PromotedRebel>().Find(x => x.SilencedPlayer == player && x.IsSil);
-
-    public static bool IsRetShielded(this PlayerControl player) => PlayerLayer.GetLayers<Retributionist>().Any(x => player == x.ShieldedPlayer && x.IsMedic);
+    public static bool SilenceActive(this PlayerControl player)
+    {
+        var silenced = !player.IsSilenced();
+        var silFlag = PlayerLayer.GetLayers<Silencer>().Any(role => role.HoldsDrive);
+        var rebFlag = PlayerLayer.GetLayers<PromotedRebel>().Any(role => role.HoldsDrive && role.IsSil);
+        return silenced && (silFlag || rebFlag);
+    }
 
     public static bool IsShielded(this PlayerVoteArea player) => PlayerByVoteArea(player).IsShielded();
 
@@ -323,14 +333,6 @@ public static class LayerExtentions
     public static bool IsArsoDoused(this PlayerVoteArea player) => PlayerByVoteArea(player).IsArsoDoused();
 
     public static bool IsCryoDoused(this PlayerVoteArea player) => PlayerByVoteArea(player).IsCryoDoused();
-
-    public static bool IsProtectedMonarch(this PlayerVoteArea player) => PlayerByVoteArea(player).IsProtectedMonarch();
-
-    public static bool IsRetShielded(this PlayerVoteArea player) => PlayerByVoteArea(player).IsRetShielded();
-
-    public static Medic GetMedic(this PlayerControl player) => PlayerLayer.GetLayers<Medic>().Find(role => role.ShieldedPlayer == player);
-
-    public static Retributionist GetRetMedic(this PlayerControl player) => PlayerLayer.GetLayers<Retributionist>().Find(role => player == role.ShieldedPlayer);
 
     public static Crusader GetCrusader(this PlayerControl player) => PlayerLayer.GetLayers<Crusader>().Find(role => player == role.CrusadedPlayer);
 
@@ -349,13 +351,26 @@ public static class LayerExtentions
 
     public static bool IsMarked(this PlayerControl player) => PlayerLayer.GetLayers<Ghoul>().Any(role => player == role.MarkedPlayer);
 
-    public static bool IsAmbushed(this PlayerControl player) => PlayerLayer.GetLayers<Ambusher>().Any(role => role.OnAmbush && player == role.AmbushedPlayer);
+    public static bool IsAmbushed(this PlayerControl player)
+    {
+        var ambFlag = PlayerLayer.GetLayers<Ambusher>().Any(role => role.AmbushButton.EffectActive && player == role.AmbushedPlayer);
+        var gfFlag = PlayerLayer.GetLayers<PromotedGodfather>().Any(role => role.AmbushButton.EffectActive && player == role.AmbushedPlayer && role.IsAmb);
+        return ambFlag || gfFlag;
+    }
 
-    public static bool IsGFAmbushed(this PlayerControl player) => PlayerLayer.GetLayers<PromotedGodfather>().Any(role => role.AmbushButton.EffectActive && player == role.AmbushedPlayer);
+    public static bool IsCrusaded(this PlayerControl player)
+    {
+        var crusFlag = PlayerLayer.GetLayers<Crusader>().Any(role => role.CrusadeButton.EffectActive && player == role.CrusadedPlayer);
+        var rebFlag = PlayerLayer.GetLayers<PromotedRebel>().Any(role => role.CrusadeButton.EffectActive && player == role.CrusadedPlayer && role.IsCrus);
+        return crusFlag || rebFlag;
+    }
 
-    public static bool IsCrusaded(this PlayerControl player) => PlayerLayer.GetLayers<Crusader>().Any(role => role.CrusadeButton.EffectActive && player == role.CrusadedPlayer);
-
-    public static bool IsRebCrusaded(this PlayerControl player) => PlayerLayer.GetLayers<PromotedRebel>().Any(role => role.CrusadeButton.EffectActive && player == role.CrusadedPlayer);
+    public static bool CrusadeActive(this PlayerControl player)
+    {
+        var crusFlag = PlayerLayer.GetLayers<Crusader>().Any(role => role.CrusadeButton.EffectActive && player == role.CrusadedPlayer && role.HoldsDrive);
+        var rebFlag = PlayerLayer.GetLayers<PromotedRebel>().Any(role => role.CrusadeButton.EffectActive && player == role.CrusadedPlayer && role.IsCrus && role.HoldsDrive);
+        return crusFlag || rebFlag;
+    }
 
     public static bool IsProtected(this PlayerControl player) => PlayerLayer.GetLayers<GuardianAngel>().Any(role => (role.ProtectButton.EffectActive || role.GraveProtectButton.EffectActive)
         && player == role.TargetPlayer);
@@ -370,7 +385,7 @@ public static class LayerExtentions
 
     public static bool IsMarked(this PlayerVoteArea player) => PlayerByVoteArea(player).IsMarked();
 
-    public static bool IsWinningRival(this PlayerControl player) => PlayerLayer.GetLayers<Rivals>().Any(x => x.Player == player && x.RivalDead);
+    public static bool IsWinningRival(this PlayerControl player) => PlayerLayer.GetLayers<Rivals>().Any(x => x.Player == player && x.IsWinningRival);
 
     public static bool IsTurnedTraitor(this PlayerControl player) => player.IsIntTraitor() || player.IsSynTraitor();
 
@@ -476,14 +491,14 @@ public static class LayerExtentions
         if (TransitioningSpeed.ContainsKey(player.PlayerId))
             return TransitioningSpeed[player.PlayerId];
         else
-            return player.IsMimicking(out var mimicked) ? player.GetSpeed() : mimicked.GetSpeed();
+            return player.IsMimicking(out var mimicked) ? mimicked.GetSpeed() : player.GetSpeed();
     }
 
     public static float GetSpeed(this PlayerControl player)
     {
         var result = 1f;
 
-        if (player.HasDied() || LobbyBehaviour.Instance || (HudUpdate.IsCamoed && CustomGameOptions.CamoHideSpeed && !TransitioningSpeed.ContainsKey(player.PlayerId)))
+        if (player.HasDied() || Lobby || (HudUpdate.IsCamoed && CustomGameOptions.CamoHideSpeed && !TransitioningSpeed.ContainsKey(player.PlayerId)))
             return result;
 
         if (IntroCutscene.Instance)
@@ -528,13 +543,16 @@ public static class LayerExtentions
             }
         }
 
-        if (ShipStatus.Instance != null && ShipStatus.Instance.Systems.ContainsKey(SystemTypes.LifeSupp))
+        if (Ship != null && Ship.Systems.ContainsKey(SystemTypes.LifeSupp))
         {
-            var lifeSuppSystemType = ShipStatus.Instance.Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
+            var lifeSuppSystemType = Ship.Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
 
             if (lifeSuppSystemType.IsActive && CustomGameOptions.OxySlow && !player.Data.IsDead)
                 result *= Math.Clamp(lifeSuppSystemType.Countdown / lifeSuppSystemType.LifeSuppDuration, 0.25f, 1f);
         }
+
+        if (player.Is(LayerEnum.Trapper))
+            result *= Role.GetRole<Trapper>(player).Building ? 0f : 1f;
 
         return result;
     }
@@ -552,7 +570,7 @@ public static class LayerExtentions
 
     public static float GetSize(this PlayerControl player)
     {
-        if (LobbyBehaviour.Instance || (HudUpdate.IsCamoed && CustomGameOptions.CamoHideSize && !TransitioningSize.ContainsKey(player.PlayerId)))
+        if (Lobby || (HudUpdate.IsCamoed && CustomGameOptions.CamoHideSize && !TransitioningSize.ContainsKey(player.PlayerId)))
             return 1f;
         else if (player.Is(LayerEnum.Dwarf))
             return CustomGameOptions.DwarfScale;
@@ -730,7 +748,7 @@ public static class LayerExtentions
 
         if (player == null || playerInfo == null)
             return false;
-        else if (playerInfo.IsDead || Meeting || LobbyBehaviour.Instance)
+        else if (playerInfo.IsDead || Meeting || Lobby)
             return true;
         else if (player.Is(LayerEnum.Lovers))
             return CustomGameOptions.LoversChat;
@@ -859,6 +877,7 @@ public static class LayerExtentions
         var modifierName = $"{ModifierColorString}Modifier: <b>";
         var alignment = $"{AlignmentColorString}Alignment: <b>";
         var subfaction = $"{SubFactionColorString}Sub-Faction: <b>";
+        //var attdef = $"{AttackColorString}Attack/{DefenseColorString}Defense</color>: <b>";
 
         if (info[0])
         {
@@ -866,17 +885,20 @@ public static class LayerExtentions
             objectives += $"\n{role.ColorString}{role.Objectives()}</color>";
             alignment += $"{role.Alignment.AlignmentName(true)}";
             subfaction += $"{role.SubFactionColorString}{role.SubFactionName} {role.SubFactionSymbol}</color>";
+            //attdef += $"{role.AttackVal}/{DefenseColorString}{role.DefenseVal}</color>";
         }
         else
         {
             roleName += "None";
             alignment += "None";
             subfaction += "None";
+            //attdef += $"None/{DefenseColorString}None</color>";
         }
 
         roleName += "</b></color>";
         alignment += "</b></color>";
         subfaction += "</b></color>";
+        //attdef += "</b></color>";
 
         if (info[3] && !objectifier.Hidden)
         {
@@ -967,6 +989,7 @@ public static class LayerExtentions
             attributes = $"\n{attributes}</color>";
 
         return $"{roleName}\n{alignment}\n{subfaction}\n{objectifierName}\n{abilityName}\n{modifierName}\n{objectives}{abilities}{attributes}";
+        //return $"{roleName}\n{attdef}\n{alignment}\n{subfaction}\n{objectifierName}\n{abilityName}\n{modifierName}\n{objectives}{abilities}{attributes}";
     }
 
     public static void RegenTask(this PlayerControl player)
@@ -988,6 +1011,7 @@ public static class LayerExtentions
         CustomButton.AllButtons.Where(x => x.Owner == former || x.Owner.Player == null).ForEach(x => x.Destroy());
         CustomArrow.AllArrows.Where(x => x.Owner == former.Player).ForEach(x => x.Disable());
         former.OnLobby();
+        former.ExitingLayer();
         former.Ignore = true;
         former.Player = null;
 
@@ -1265,5 +1289,21 @@ public static class LayerExtentions
         var bastflag = PlayerLayer.GetLayers<Bastion>().Any(x => x.BombedIDs.Contains(vent.Id));
         var retflag = PlayerLayer.GetLayers<Retributionist>().Any(x => x.BombedIDs.Contains(vent.Id) && x.IsBast);
         return bastflag || retflag;
+    }
+
+    public static PlayerLayerEnum GetLayerType(this LayerEnum layer)
+    {
+        var id = (int)layer;
+
+        if (id < 91)
+            return PlayerLayerEnum.Role;
+        else if (id < 105)
+            return PlayerLayerEnum.Modifier;
+        else if (id < 116)
+            return PlayerLayerEnum.Objectifier;
+        else if (id < 133)
+            return PlayerLayerEnum.Ability;
+        else
+            return PlayerLayerEnum.None;
     }
 }

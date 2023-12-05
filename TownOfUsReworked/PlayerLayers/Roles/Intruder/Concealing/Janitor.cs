@@ -27,7 +27,7 @@ public class Janitor : Intruder
     {
         Spread(Player, PlayerByBody(CleanButton.TargetBody));
         CallRpc(CustomRPC.Action, ActionsRPC.FadeBody, this, CleanButton.TargetBody);
-        Coroutines.Start(FadeBody(CleanButton.TargetBody));
+        FadeBody(CleanButton.TargetBody);
         CleanButton.StartCooldown();
 
         if (CustomGameOptions.JaniCooldownsLinked)

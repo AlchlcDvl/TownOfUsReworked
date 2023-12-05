@@ -346,6 +346,8 @@ public abstract class Role : PlayerLayer
             CurrentChannel = ChatChannel.Rivals;
         else if (Player.Is(LayerEnum.Linked))
             CurrentChannel = ChatChannel.Linked;
+
+        GetLayers<Werewolf>().ForEach(x => x.Rounds++);
     }
 
     public override void OnLobby()
@@ -401,7 +403,7 @@ public abstract class Role : PlayerLayer
             return;
 
         var playerControl = PlayerByVoteArea(voteArea);
-        var ld = CustomColors.LightDarkColors[playerControl.GetDefaultOutfit().ColorId] == "Lighter" ? "L" : "D";
+        var ld = CustomColors.LightDarkColors[playerControl.Data.DefaultOutfit.ColorId] == "Lighter" ? "L" : "D";
 
         if (ClientGameOptions.LighterDarker)
             nameText.text += $"({ld})";
@@ -447,7 +449,7 @@ public abstract class Role : PlayerLayer
 
                 //Ensures only the Bounty Hunter sees this
                 if (HUD && bh.Local)
-                    Run(HUD.Chat, "<color=#B51E39FF>〖 Bounty Hunt 〗</color>", "Your bounty has been received! Prepare to hunt.");
+                    Run(Chat, "<color=#B51E39FF>〖 Bounty Hunt 〗</color>", "Your bounty has been received! Prepare to hunt.");
             }
         }
     }
@@ -464,6 +466,21 @@ public abstract class Role : PlayerLayer
         Requesting = false;
         Requestor = null;
         CallRpc(CustomRPC.Action, ActionsRPC.PlaceHit, Player, target);
+    }
+
+    public static void PublicReveal(PlayerControl player)
+    {
+        var role = GetRole(player);
+
+        if (role is Mayor mayor)
+            mayor.Revealed = true;
+        else if (role is Dictator dict)
+            dict.Revealed = true;
+        else
+            return;
+
+        Flash(role.Color);
+        BreakShield(player, true);
     }
 
     public static void BreakShield(PlayerControl player, bool flag)

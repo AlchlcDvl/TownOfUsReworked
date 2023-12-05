@@ -42,7 +42,7 @@ public static class RoleGen
     private static readonly List<LayerEnum> CI = new() { LayerEnum.Sheriff, LayerEnum.Tracker, LayerEnum.Medium, LayerEnum.Coroner, LayerEnum.Operative, LayerEnum.Seer, LayerEnum.Detective
         };
     private static readonly List<LayerEnum> CSv = new() { LayerEnum.Mayor, LayerEnum.Dictator, LayerEnum.Monarch };
-    private static readonly List<LayerEnum> CrP = new() { LayerEnum.Altruist, LayerEnum.Medic };
+    private static readonly List<LayerEnum> CrP = new() { LayerEnum.Altruist, LayerEnum.Medic, LayerEnum.Trapper };
     private static readonly List<LayerEnum> CU = new() { LayerEnum.Crewmate };
     private static readonly List<LayerEnum> CK = new() { LayerEnum.Vigilante, LayerEnum.Veteran, LayerEnum.Bastion };
     private static readonly List<LayerEnum> CS = new() { LayerEnum.Engineer, LayerEnum.Transporter, LayerEnum.Escort, LayerEnum.Shifter, LayerEnum.Chameleon, LayerEnum.Retributionist };
@@ -750,6 +750,19 @@ public static class RoleGen
                 }
 
                 LogInfo("Retributionist Done");
+            }
+
+            if (CustomGameOptions.TrapperOn > 0)
+            {
+                num = CustomGameOptions.TrapperCount;
+
+                while (num > 0)
+                {
+                    CrewProtectiveRoles.Add(GenerateSpawnItem(LayerEnum.Trapper));
+                    num--;
+                }
+
+                LogInfo("Trapper Done");
             }
 
             if (CustomGameOptions.CrewmateOn > 0 && IsCustom)
@@ -1572,8 +1585,6 @@ public static class RoleGen
 
                 while (IntruderRoles.Count < imps)
                     IntruderRoles.Add(GenerateSpawnItem(LayerEnum.Impostor));
-
-                IntruderRoles.Shuffle();
             }
 
             if (CustomGameOptions.SyndicateCount > 0)
@@ -1631,8 +1642,6 @@ public static class RoleGen
 
                 while (SyndicateRoles.Count < syn)
                     SyndicateRoles.Add(GenerateSpawnItem(LayerEnum.Anarchist));
-
-                SyndicateRoles.Shuffle();
             }
 
             if (CustomGameOptions.NeutralMax > 0)
@@ -1693,7 +1702,6 @@ public static class RoleGen
                     minNeut--;
 
                 NeutralRoles = Sort(NeutralRoles, URandom.RandomRangeInt(minNeut, maxNeut + 1));
-                NeutralRoles.Shuffle();
             }
 
             if (CustomGameOptions.CrewMax > 0 && CustomGameOptions.CrewMin > 0)
@@ -1763,8 +1771,6 @@ public static class RoleGen
 
                 while (CrewRoles.Count < crew)
                     CrewRoles.Add(GenerateSpawnItem(LayerEnum.Crewmate));
-
-                CrewRoles.Shuffle();
             }
 
             LogInfo("Classic/Custom Sorting Done");
@@ -1776,11 +1782,6 @@ public static class RoleGen
             SyndicateRoles.AddRanges(SyndicateSupportRoles, SyndicateKillingRoles, SyndicatePowerRoles, SyndicateDisruptionRoles);
             NeutralRoles.AddRanges(NeutralBenignRoles, NeutralEvilRoles, NeutralKillingRoles, NeutralNeophyteRoles, NeutralHarbingerRoles);
 
-            CrewRoles.Shuffle();
-            SyndicateRoles.Shuffle();
-            IntruderRoles.Shuffle();
-            NeutralRoles.Shuffle();
-
             IntruderRoles = Sort(IntruderRoles, imps);
             CrewRoles = Sort(CrewRoles, crew);
             NeutralRoles = Sort(NeutralRoles, neut);
@@ -1788,6 +1789,11 @@ public static class RoleGen
 
             LogInfo("All Any Sorting Done");
         }
+
+        CrewRoles.Shuffle();
+        SyndicateRoles.Shuffle();
+        IntruderRoles.Shuffle();
+        NeutralRoles.Shuffle();
 
         AllRoles = new();
         AllRoles.AddRanges(CrewRoles, NeutralRoles, SyndicateRoles);
@@ -2032,7 +2038,7 @@ public static class RoleGen
 
     private static GenerationData GenerateSpawnItem(LayerEnum id)
     {
-        var things = id switch
+        var (chance, unique) = id switch
         {
             LayerEnum.Mayor => (CustomGameOptions.MayorOn, CustomGameOptions.UniqueMayor),
             LayerEnum.Sheriff => (CustomGameOptions.SheriffOn, CustomGameOptions.UniqueSheriff),
@@ -2154,11 +2160,12 @@ public static class RoleGen
             LayerEnum.Traitor => (CustomGameOptions.TraitorOn, CustomGameOptions.UniqueTraitor),
             LayerEnum.Colorblind => (CustomGameOptions.ColorblindOn, CustomGameOptions.UniqueColorblind),
             LayerEnum.Bastion => (CustomGameOptions.BastionOn, CustomGameOptions.UniqueBastion),
+            LayerEnum.Trapper => (CustomGameOptions.TrapperOn, CustomGameOptions.UniqueTrapper),
             LayerEnum.Runner or LayerEnum.Hunter or LayerEnum.Hunted => (100, false),
             _ => throw new NotImplementedException(),
         };
 
-        return new(things.Item1, id, things.Item2);
+        return new(chance, id, unique);
     }
 
     private static void GenAbilities()
@@ -3712,7 +3719,7 @@ public static class RoleGen
 
     private static void Gen(PlayerControl player, int id, PlayerLayerEnum rpc)
     {
-        _ = SetLayer(id, player, rpc);
+        SetLayer(id, player, rpc);
         CallRpc(CustomRPC.Misc, MiscRPC.SetLayer, id, player, rpc);
     }
 
@@ -3809,6 +3816,8 @@ public static class RoleGen
         LayerEnum.Runner => new Runner(player),
         LayerEnum.Hunter => new Hunter(player),
         LayerEnum.Hunted => new Hunted(player),
+        LayerEnum.Bastion => new Bastion(player),
+        LayerEnum.Trapper => new Trapper(player),
         LayerEnum.CrewAssassin => new CrewAssassin(player),
         LayerEnum.IntruderAssassin => new IntruderAssassin(player),
         LayerEnum.NeutralAssassin => new NeutralAssassin(player),
@@ -3851,7 +3860,6 @@ public static class RoleGen
         LayerEnum.Volatile => new Volatile(player),
         LayerEnum.Yeller => new Yeller(player),
         LayerEnum.Colorblind => new Colorblind(player),
-        LayerEnum.Bastion => new Bastion(player),
         _ => rpc switch
         {
             PlayerLayerEnum.Role => new Roleless(player),

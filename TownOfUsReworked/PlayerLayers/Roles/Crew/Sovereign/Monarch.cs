@@ -25,8 +25,19 @@ public class Monarch : Crew
 
     public void Knight()
     {
-        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, KnightButton.TargetPlayer.PlayerId);
-        ToBeKnighted.Add(KnightButton.TargetPlayer.PlayerId);
+        var interact = Interact(Player, KnightButton.TargetPlayer);
+        var cooldown = CooldownType.Reset;
+
+        if (interact.AbilityUsed)
+        {
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, KnightButton.TargetPlayer.PlayerId);
+            ToBeKnighted.Add(KnightButton.TargetPlayer.PlayerId);
+        }
+
+        if (interact.Protected)
+            cooldown = CooldownType.GuardianAngel;
+
+        KnightButton.StartCooldown(cooldown);
     }
 
     public bool Exception(PlayerControl player) => ToBeKnighted.Contains(player.PlayerId) || player.IsKnighted();

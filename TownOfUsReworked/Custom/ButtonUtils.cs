@@ -269,7 +269,5 @@ public static class ButtonUtils
             exe.Rounds++;
         else if (role is Guesser guess && meeting && guess.TargetPlayer == null)
             guess.Rounds++;
-        else if (role is Werewolf ww && meeting)
-            ww.Rounds++;
     }
 }

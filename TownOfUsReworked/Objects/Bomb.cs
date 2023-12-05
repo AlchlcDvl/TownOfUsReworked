@@ -31,8 +31,8 @@ public class Bomb : Range
     {
         foreach (var player in Players)
         {
-            if (player.Is(LayerEnum.Pestilence) || player.IsOnAlert() || player.IsProtected() || player.IsShielded() || player.IsRetShielded() || player.IsProtectedMonarch() ||
-                (player.Is(Faction.Syndicate) && !CustomGameOptions.BombKillsSyndicate) || Owner.IsLinkedTo(player))
+            if (player.Is(LayerEnum.Pestilence) || player.IsOnAlert() || player.IsProtected() || player.IsShielded() || player.IsProtectedMonarch() || (player.Is(Faction.Syndicate) &&
+                !CustomGameOptions.BombKillsSyndicate) || Owner.IsLinkedTo(player))
             {
                 continue;
             }

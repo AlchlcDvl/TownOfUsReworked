@@ -23,7 +23,7 @@ public class Engineer : Crew
         FixButton.Update2("FIX SABOTAGE", condition: Condition());
     }
 
-    public bool Condition() => ShipStatus.Instance.Systems[SystemTypes.Sabotage].TryCast<SabotageSystemType>()?.AnyActive == true;
+    public bool Condition() => Ship.Systems[SystemTypes.Sabotage].TryCast<SabotageSystemType>()?.AnyActive == true;
 
     public void Fix()
     {

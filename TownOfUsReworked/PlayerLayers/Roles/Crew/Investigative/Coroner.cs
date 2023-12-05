@@ -110,6 +110,6 @@ public class Coroner : Crew
 
         //Only Coroner can see this
         if (HUD)
-            Run(HUD.Chat, "<color=#4D99E6FF>〖 Autopsy Results 〗</color>", reportMsg);
+            Run(Chat, "<color=#4D99E6FF>〖 Autopsy Results 〗</color>", reportMsg);
     }
 }

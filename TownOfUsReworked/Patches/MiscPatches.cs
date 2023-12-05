@@ -111,15 +111,20 @@ public static class OpenMapMenuPatch
             notmodified = false;
         }
 
-        return notmodified;
-    }
-
-    public static void Postfix(MapBehaviour __instance)
-    {
         PlayerLayer.LocalLayers.ForEach(x => x?.UpdateMap(__instance));
         CustomArrow.AllArrows.ForEach(x => x?.UpdateArrowBlip(__instance));
         CustomPlayer.Local.DisableButtons();
+        MapPatch.MapActive = true;
+        return notmodified;
     }
+}
+
+[HarmonyPatch(typeof(MapBehaviour), nameof(MapBehaviour.Close))]
+public static class MapPatch
+{
+    public static bool MapActive;
+
+    public static void Postfix() => MapActive = false;
 }
 
 [HarmonyPatch(typeof(GameData), nameof(GameData.HandleDisconnect), typeof(PlayerControl), typeof(DisconnectReasons))]
@@ -131,6 +136,12 @@ public static class DisconnectHandler
     {
         var player2 = player;
         CustomPlayer.AllCustomPlayers.RemoveAll(x => x.Player == player2 || x.Player == null);
+
+        if (player == CustomPlayer.Local)
+        {
+            MCIUtils.RemoveAllPlayers();
+            DebuggerBehaviour.Instance.ControllingFigure = 0;
+        }
 
         if (IsLobby)
             return;
@@ -146,7 +157,7 @@ public static class CanMove
 {
     public static bool Prefix(PlayerControl __instance, ref bool __result)
     {
-        __result = __instance.moveable && !ActiveTask && !__instance.shapeshifting && (!HudManager.InstanceExists || (!HUD.Chat.IsOpenOrOpening && !HUD.KillOverlay.IsOpen &&
+        __result = __instance.moveable && !ActiveTask && !__instance.shapeshifting && (!HudManager.InstanceExists || (!Chat.IsOpenOrOpening && !HUD.KillOverlay.IsOpen &&
             !HUD.GameMenu.IsOpen)) && (!Map || !Map.IsOpenStopped) && !Meeting && !IntroCutscene.Instance && !PlayerCustomizationMenu.Instance;
         return false;
     }
@@ -189,7 +200,7 @@ public static class MinigameBeginPatch
 {
     public static void Postfix(Minigame __instance)
     {
-        if (!__instance)
+        if (!__instance || __instance is TaskAdderGame)
             return;
 
         CustomPlayer.Local.DisableButtons();
@@ -276,14 +287,30 @@ public static class OverlayKillAnimationPatch
 
     public static void Prefix(ref GameData.PlayerInfo kInfo)
     {
-        var playerControl = PlayerById(kInfo.PlayerId);
+        var playerControl = kInfo.Object;
         CurrentOutfitTypeCache = (int)playerControl.CurrentOutfitType;
 
         if (!CustomGameOptions.AppearanceAnimation)
             playerControl.CurrentOutfitType = PlayerOutfitType.Default;
     }
 
-    public static void Postfix(GameData.PlayerInfo kInfo) => PlayerById(kInfo.PlayerId).CurrentOutfitType = (PlayerOutfitType)CurrentOutfitTypeCache;
+    public static void Postfix(GameData.PlayerInfo kInfo) => kInfo.Object.CurrentOutfitType = (PlayerOutfitType)CurrentOutfitTypeCache;
+}
+
+[HarmonyPatch(typeof(OverlayKillAnimation._CoShow_d__13), nameof(OverlayKillAnimation._CoShow_d__13.MoveNext))]
+public static class FixMeetingKills
+{
+    public static void Postfix(OverlayKillAnimation._CoShow_d__13 __instance)
+    {
+        if (__instance.__1__state != 0)
+            return;
+
+        if (Meeting)
+        {
+            __instance.__4__this.killerParts.SetMaskLayer(PlayerMaterial.MaskLayer);
+            __instance.__4__this.victimParts.SetMaskLayer(PlayerMaterial.MaskLayer);
+        }
+    }
 }
 
 [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.Awake))]
@@ -321,8 +348,11 @@ public static class SizePatch
 {
     public static void Postfix()
     {
-        CustomPlayer.AllPlayers.ForEach(x => x.transform.localScale = CustomPlayer.Custom(x).SizeFactor);
-        AllBodies.ForEach(x => x.transform.localScale = CustomPlayer.Custom(PlayerByBody(x)).SizeFactor);
+        try
+        {
+            CustomPlayer.AllPlayers.ForEach(x => x.transform.localScale = CustomPlayer.Custom(x).SizeFactor);
+            AllBodies.ForEach(x => x.transform.localScale = CustomPlayer.Custom(PlayerByBody(x)).SizeFactor);
+        } catch {}
     }
 }
 
@@ -341,8 +371,8 @@ public static class SpeedNetworkPatch
 {
     public static void Postfix(CustomNetworkTransform __instance)
     {
-        if (!__instance.AmOwner && GameData.Instance && __instance.gameObject.GetComponent<PlayerControl>().CanMove)
-            __instance.body.velocity *= CustomPlayer.Custom(__instance.gameObject.GetComponent<PlayerControl>()).SpeedFactor;
+        if (!__instance.AmOwner && GameData.Instance && __instance.myPlayer.CanMove)
+            __instance.body.velocity *= CustomPlayer.Custom(__instance.myPlayer).SpeedFactor;
     }
 }
 
@@ -357,7 +387,7 @@ public static class BegoneModstamp
             __instance.localCamera = !HudManager.InstanceExists ? Camera.main : HUD.GetComponentInChildren<Camera>();
             __instance.ModStamp.transform.position = AspectPosition.ComputeWorldPosition(__instance.localCamera, AspectPosition.EdgeAlignments.RightTop, new(0.6f, 0.6f, 0.1f +
                 __instance.localCamera.nearClipPlane));
-            __instance.ModStamp.gameObject.SetActive(IsEnded || NoLobby || LobbyBehaviour.Instance);
+            __instance.ModStamp.gameObject.SetActive(IsEnded || NoLobby || IsLobby);
         } catch {}
 
         return false;
@@ -433,16 +463,13 @@ public static class LobbyBehaviourPatch
         DefaultOutfitAll();
         var count = MCIUtils.Clients.Count;
         MCIUtils.Clients.Clear();
-        MCIUtils.PlayerIdClientIDs.Clear();
+        MCIUtils.PlayerClientIDs.Clear();
         MCIUtils.SavedPositions.Clear();
         DebuggerBehaviour.Instance.TestWindow.Enabled = TownOfUsReworked.MCIActive && IsLocalGame;
         DebuggerBehaviour.Instance.CooldownsWindow.Enabled = false;
 
         if (count > 0 && TownOfUsReworked.Persistence && !IsOnlineGame)
-        {
-            for (var i = 0; i < count; i++)
-                MCIUtils.CreatePlayerInstance();
-        }
+            MCIUtils.CreatePlayerInstances(count);
     }
 }
 
@@ -461,5 +488,99 @@ public static class DeathPopUpPatch
 [HarmonyPatch(typeof(UnityExtensions), nameof(UnityExtensions.SetOutline))]
 public static class OneMoreThing
 {
-    public static void Postfix(ref Renderer renderer, Color? color) => renderer.material.SetColor("_AddColor", color ?? UColor.clear);
+    public static void Postfix(ref Renderer renderer, ref Color? color) => renderer.material.SetColor(Shader.PropertyToID("_AddColor"), color ?? UColor.clear);
+}
+
+[HarmonyPatch(typeof(CustomNetworkTransform), nameof(CustomNetworkTransform.SnapTo), typeof(Vector2))]
+public static class TeleportationPatch
+{
+    public static void Prefix(CustomNetworkTransform __instance)
+    {
+        __instance.myPlayer.MyPhysics.ResetMoveState();
+        __instance.myPlayer.moveable = false;
+        __instance.myPlayer.Collider.enabled = false;
+        __instance.Halt();
+
+        if (__instance.myPlayer.inVent)
+            __instance.myPlayer.MyPhysics.ExitAllVents();
+    }
+
+    public static void Postfix(CustomNetworkTransform __instance)
+    {
+        if (__instance.myPlayer == CustomPlayer.Local)
+        {
+            if (ActiveTask)
+                ActiveTask.Close();
+
+            if (MapPatch.MapActive)
+                Map.Close();
+
+            if (IsSubmerged())
+            {
+                ChangeFloor(CustomPlayer.Local.GetTruePosition().y > -7);
+                CheckOutOfBoundsElevator(CustomPlayer.Local);
+            }
+
+            if (CustomPlayer.Local.inVent)
+            {
+                CustomPlayer.Local.MyPhysics.RpcExitVent(Vent.currentVent.Id);
+                CustomPlayer.Local.MyPhysics.ExitAllVents();
+            }
+        }
+
+        if (AmongUsClient.Instance.AmHost)
+        {
+            PlayerLayer.GetLayers<Janitor>().Where(x => x.CurrentlyDragging != null).ForEach(x => x.Drop());
+            PlayerLayer.GetLayers<PromotedGodfather>().Where(x => x.CurrentlyDragging != null).ForEach(x => x.Drop());
+        }
+
+        __instance.myPlayer.moveable = true;
+        __instance.myPlayer.Collider.enabled = true;
+        __instance.myPlayer.MyPhysics.ResetMoveState();
+    }
+}
+
+[HarmonyPatch(typeof(CustomNetworkTransform), nameof(CustomNetworkTransform.Halt))]
+public static class TaskSnapHaltPatch
+{
+    public static bool Prefix(CustomNetworkTransform __instance)
+    {
+        if (ActiveTask)
+        {
+            __instance.body.velocity = Vector2.zero;
+            return false;
+        }
+
+        return true;
+    }
+}
+
+[HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.OnPlayerJoined))]
+public static class AmongUsClientOnPlayerJoined
+{
+    public static bool Prefix(AmongUsClient __instance, ref ClientData data)
+    {
+        if (CustomGameOptions.LobbySize < __instance.allClients.Count)
+        {
+            DisconnectPlayer(__instance, data.Id);
+            return false;
+        }
+
+        return true;
+    }
+
+    private static void DisconnectPlayer(InnerNetClient _this, int clientId)
+    {
+        if (_this.AmHost)
+        {
+            var val = MessageWriter.Get(SendOption.Reliable);
+            val.StartMessage(4);
+            val.Write(_this.GameId);
+            val.WritePacked(clientId);
+            val.Write((byte)1);
+            val.EndMessage();
+            _this.SendOrDisconnect(val);
+            val.Recycle();
+        }
+    }
 }

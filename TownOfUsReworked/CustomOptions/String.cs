@@ -4,7 +4,7 @@ public class CustomStringOption : CustomOption
 {
     public readonly string[] Values;
 
-    public CustomStringOption(int id, MultiMenu menu, string name, string[] values, object parent = null) : base(id, menu, name, CustomOptionType.String, 0, parent)
+    public CustomStringOption(int id, MultiMenu menu, string name, string[] values, object parent = null) : base(id, menu, name, CustomOptionType.String, 0, parent, null)
     {
         Values = values;
         Format = (val, _) => StringFormat(val);
@@ -16,15 +16,7 @@ public class CustomStringOption : CustomOption
         Format = (val, _) => StringFormat(val);
     }
 
-    private string StringFormat(object value)
-    {
-        var result = Values[(int)value];
-
-        if (this == Generate.Map)
-            result.Replace("LevelImpostor", CurrentLIMap);
-
-        return result;
-    }
+    private string StringFormat(object value) => Values[(int)value].Replace("LevelImpostor", CurrentLIMap);
 
     public int GetInt() => (int)Value;
 

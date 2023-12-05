@@ -13,12 +13,8 @@ public static class MapPatches
 
         if (AmongUsClient.Instance.AmHost)
         {
-            CurrentMap = (byte)CustomGameOptions.Map;
             var tbMode = TBModes[(int)CustomGameOptions.TaskBarMode];
-
-            if ((CurrentMap == 6 && !SubLoaded) || (CurrentMap == 7 && !LILoaded) || CurrentMap == 8)
-                CurrentMap = GetRandomMap();
-
+            CurrentMap = GetSelectedMap();
             TownOfUsReworked.NormalOptions.MapId = CurrentMap;
             TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.Scientist, 0, 0);
             TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.Engineer, 0, 0);
@@ -45,13 +41,18 @@ public static class MapPatches
             TownOfUsReworked.NormalOptions.NumCommonTasks = CustomGameOptions.CommonTasks;
             GameOptionsManager.Instance.currentNormalGameOptions = TownOfUsReworked.NormalOptions;
             CustomPlayer.AllPlayers.ForEach(x => x.MaxReportDistance = CustomGameOptions.ReportDistance);
-            AdjustSettings(CurrentMap);
             CallRpc(CustomRPC.Misc, MiscRPC.SetSettings, CurrentMap, tbMode);
+            AdjustSettings();
         }
     }
 
-    private static byte GetRandomMap()
+    private static byte GetSelectedMap()
     {
+        var map = (byte)CustomGameOptions.Map;
+
+        if (!((CurrentMap == 6 && !SubLoaded) || (CurrentMap == 7 && !LILoaded) || CurrentMap == 8))
+            return map;
+
         var random = new SRandom();
         var totalWeight = 0;
         totalWeight += CustomGameOptions.RandomMapSkeld;
@@ -116,19 +117,19 @@ public static class MapPatches
         return maps.Random();
     }
 
-    public static void AdjustSettings(byte map)
+    public static void AdjustSettings()
     {
         if (!CustomGameOptions.AutoAdjustSettings)
             return;
 
-        if (map is 0 or 1 or 3)
+        if (CurrentMap is 0 or 1 or 3)
         {
             TownOfUsReworked.NormalOptions.NumShortTasks += CustomGameOptions.SmallMapIncreasedShortTasks;
             TownOfUsReworked.NormalOptions.NumLongTasks += CustomGameOptions.SmallMapIncreasedLongTasks;
             AdjustCooldowns(-CustomGameOptions.SmallMapDecreasedCooldown);
         }
 
-        if (map is 4 or 5 or 6)
+        if (CurrentMap is 4 or 5 or 6)
         {
             TownOfUsReworked.NormalOptions.NumShortTasks -= CustomGameOptions.LargeMapDecreasedShortTasks;
             TownOfUsReworked.NormalOptions.NumLongTasks -= CustomGameOptions.LargeMapDecreasedLongTasks;
@@ -138,7 +139,7 @@ public static class MapPatches
 
     private static void AdjustCooldowns(float change)
     {
-        foreach (var option in CustomOption.AllOptions.Where(x => x.Name.Contains("Cooldown")))
+        foreach (var option in CustomOption.AllOptions.Where(x => x.Name.Contains("Cooldown") && !x.Name.Contains("Increase") && !x.Name.Contains("Decrease")))
         {
             if (option.Type == CustomOptionType.Number)
                 option.Set((float)option.Value + change);
@@ -156,10 +157,10 @@ public static class AmongUsClientCoStartHostPatch
 
         __instance.__1__state = -1;
 
-        if (LobbyBehaviour.Instance)
-            LobbyBehaviour.Instance.Despawn();
+        if (Lobby)
+            Lobby.Despawn();
 
-        if (ShipStatus.Instance)
+        if (Ship)
         {
             __instance.__2__current = null;
             __instance.__1__state = 2;

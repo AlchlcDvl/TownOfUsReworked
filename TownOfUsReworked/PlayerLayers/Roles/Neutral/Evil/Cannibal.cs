@@ -71,7 +71,7 @@ public class Cannibal : Neutral
         CallRpc(CustomRPC.Action, ActionsRPC.FadeBody, EatButton.TargetBody);
         EatButton.StartCooldown();
         EatNeed--;
-        Coroutines.Start(FadeBody(EatButton.TargetBody));
+        FadeBody(EatButton.TargetBody);
 
         if (EatWin && !Eaten)
         {

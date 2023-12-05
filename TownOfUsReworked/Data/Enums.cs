@@ -7,9 +7,6 @@ public enum ActionsRPC
     Drop,
     BaitReport,
     Convert,
-    WarpAll,
-    SetUnwarpable,
-    Teleport,
     BypassKill,
     FadeBody,
     ForceKill,
@@ -19,14 +16,9 @@ public enum ActionsRPC
     LayerAction1,
     LayerAction2,
     Cancel,
+    PublicReveal,
 
     None
-}
-
-public enum DictActionsRPC
-{
-    SetExiles,
-    Reveal
 }
 
 public enum GlitchActionsRPC
@@ -314,6 +306,7 @@ public enum CustomPlayerOutfitType
     Default,
     Shapeshifted,
     HorseWrangler,
+    MushroomMixup,
     Morph,
     Camouflage,
     Invis,
@@ -359,7 +352,6 @@ public enum MiscRPC
     Whisper,
     SetSpawnAirship,
     DoorSyncToilet,
-    //SyncPlatform,
     SetColor,
     VersionHandshake,
     ChaosDrive,
@@ -367,9 +359,9 @@ public enum MiscRPC
     SetFirstKilled,
     SyncPureCrew,
     SyncSummary,
-    //ShareFriendCode,
     BodyLocation,
     BastionBomb,
+    MoveBody,
 
     None
 }
@@ -420,6 +412,7 @@ public enum LayerEnum
     Shifter,
     Tracker,
     Transporter,
+    Trapper,
     VampireHunter,
     Veteran,
     Vigilante,
@@ -705,7 +698,9 @@ public enum RetActionsRPC
     Transport,
     Mediate,
     Revive,
-    Bomb
+    Bomb,
+    Place,
+    Trigger
 }
 
 public enum JanitorOptions
@@ -859,4 +854,34 @@ public enum RandomSpawning
     GameStart,
     PostMeeting,
     Both
+}
+
+/*public enum AttackEnum
+{
+    None,
+    Basic,
+    Powerful,
+    Unstoppable,
+    Debug
+}
+
+public enum DefenseEnum
+{
+    None,
+    Basic,
+    Powerful,
+    Invincible,
+    Debug
+}*/
+
+public enum MedicActionsRPC
+{
+    Add,
+    Remove
+}
+
+public enum TrapperActionsRPC
+{
+    Place,
+    Trigger
 }

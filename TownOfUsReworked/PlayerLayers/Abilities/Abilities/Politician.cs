@@ -22,7 +22,7 @@ public class Politician : Ability
         ExtraVotes = new();
     }
 
-    public void UpdateButton(MeetingHud __instance)
+    private void UpdateButton(MeetingHud __instance)
     {
         if (CanKill)
             return;
@@ -46,8 +46,10 @@ public class Politician : Ability
         ExtraVotes.Clear();
     }
 
-    public void GenButton(MeetingHud __instance)
+    public override void OnMeetingStart(MeetingHud __instance)
     {
+        base.OnMeetingStart(__instance);
+
         if (CanKill)
             return;
 
@@ -57,12 +59,6 @@ public class Politician : Ability
         Abstain.transform.localPosition = __instance.SkipVoteButton.transform.localPosition + new Vector3(0f, -0.17f, 0f);
         __instance.SkipVoteButton.transform.localPosition += new Vector3(0f, 0.17f, 0f);
         UpdateButton(__instance);
-    }
-
-    public override void OnMeetingStart(MeetingHud __instance)
-    {
-        base.OnMeetingStart(__instance);
-        GenButton(__instance);
     }
 
     public override void UpdateMeeting(MeetingHud __instance)

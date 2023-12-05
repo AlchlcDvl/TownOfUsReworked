@@ -249,7 +249,7 @@ public class PromotedGodfather : Intruder
                     FlashButton.EffectTime = 0f;
                 }
 
-                if (Map)
+                if (MapPatch.MapActive)
                     Map.Close();
 
                 if (ActiveTask)
@@ -276,7 +276,7 @@ public class PromotedGodfather : Intruder
         FlashButton.Begin();
     }
 
-    public bool FlashCondition() => ShipStatus.Instance.Systems[SystemTypes.Sabotage].TryCast<SabotageSystemType>()?.AnyActive == true;
+    public bool FlashCondition() => Ship.Systems[SystemTypes.Sabotage].TryCast<SabotageSystemType>()?.AnyActive == true;
 
     public void StartFlash() => FlashedPlayers = GetClosestPlayers(Player.transform.position, CustomGameOptions.FlashRadius);
 
@@ -291,7 +291,7 @@ public class PromotedGodfather : Intruder
     {
         Spread(Player, PlayerByBody(CleanButton.TargetBody));
         CallRpc(CustomRPC.Action, ActionsRPC.FadeBody, this, CleanButton.TargetBody);
-        Coroutines.Start(FadeBody(CleanButton.TargetBody));
+        FadeBody(CleanButton.TargetBody);
         CleanButton.StartCooldown();
 
         if (CustomGameOptions.JaniCooldownsLinked)
@@ -495,8 +495,8 @@ public class PromotedGodfather : Intruder
 
     public void Teleport()
     {
-        CallRpc(CustomRPC.Action, ActionsRPC.Teleport, Player, TeleportPoint);
-        Utils.Teleport(Player, TeleportPoint);
+        Player.NetTransform.RpcSnapTo(TeleportPoint);
+        Utils.Flash(Color);
         TeleportButton.StartCooldown();
 
         if (CustomGameOptions.TeleCooldownsLinked)
@@ -610,11 +610,8 @@ public class PromotedGodfather : Intruder
         {
             Spread(BombedPlayer, player);
 
-            if (player.IsVesting() || player.IsProtected() || player.IsOnAlert() || player.IsShielded() || player.IsRetShielded() || player.IsProtectedMonarch() ||
-                player.Is(LayerEnum.Pestilence))
-            {
+            if (player.IsVesting() || player.IsProtected() || player.IsOnAlert() || player.IsShielded() || player.IsProtectedMonarch() || player.Is(LayerEnum.Pestilence))
                 continue;
-            }
 
             RpcMurderPlayer(Player, player, DeathReasonEnum.Bombed, false);
         }

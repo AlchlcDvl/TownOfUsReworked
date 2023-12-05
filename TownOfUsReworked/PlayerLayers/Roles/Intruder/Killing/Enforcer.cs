@@ -18,7 +18,7 @@ public class Enforcer : Intruder
         Alignment = Alignment.IntruderKill;
         BombedPlayer = null;
         BombButton = new(this, "Enforce", AbilityTypes.Target, "Secondary", Bomb, CustomGameOptions.EnforceCd, CustomGameOptions.EnforceDur, BoomStart, UnBoom, CustomGameOptions.EnforceDelay,
-            Exception1);
+            Exception1, canClickAgain: false);
     }
 
     public void BoomStart()
@@ -46,11 +46,8 @@ public class Enforcer : Intruder
         {
             Spread(BombedPlayer, player);
 
-            if (player.IsVesting() || player.IsProtected() || player.IsOnAlert() || player.IsShielded() || player.IsRetShielded() || player.IsProtectedMonarch() ||
-                player.Is(LayerEnum.Pestilence))
-            {
+            if (player.IsVesting() || player.IsProtected() || player.IsOnAlert() || player.IsShielded() || player.IsProtectedMonarch() || player.Is(LayerEnum.Pestilence))
                 continue;
-            }
 
             RpcMurderPlayer(Player, player, DeathReasonEnum.Bombed, false);
         }

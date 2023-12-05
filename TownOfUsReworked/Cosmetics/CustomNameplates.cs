@@ -195,7 +195,7 @@ public static class CustomNameplates
     }
 
     [HarmonyPatch(typeof(PlayerVoteArea), nameof(PlayerVoteArea.PreviewNameplate))]
-    public class PreviewNameplatesPatch
+    public static class PreviewNameplatesPatch
     {
         public static void Postfix(PlayerVoteArea __instance, ref string plateID)
         {

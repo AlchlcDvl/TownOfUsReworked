@@ -40,6 +40,8 @@ public static class Colors
     public static readonly Color Sect = FromHex("#F995FCFF");
     public static readonly Color Apocalypse = FromHex("#A7C596FF");
     public static readonly Color SubFaction = FromHex("#204D42FF");
+    public static readonly Color Attack = FromHex("#E37C21FF");
+    public static readonly Color Defense = FromHex("#2B0538FF");
 
     //Crew Colors
     public static readonly Color Mayor = FromHex("#704FA8FF");
@@ -66,6 +68,7 @@ public static class Colors
     public static readonly Color Seer = FromHex("#71368AFF");
     public static readonly Color Monarch = FromHex("#FF004EFF");
     public static readonly Color Dictator = FromHex("#00CB97FF");
+    public static readonly Color Trapper = FromHex("#BE1C8CFF");
 
     //Neutral Colors
     public static readonly Color Jester = FromHex("#F7B3DAFF");
@@ -186,13 +189,14 @@ public static class Colors
     public static readonly Color Abilities =FromHex("#206694FF");
     public static readonly Color What = FromHex("#6697FFFF");
 
+    private static Color FromHex(string hexCode) => ColorUtility.TryParseHtmlString(hexCode, out var color) ? color : default;
+
     //Color Storage
     //#dcee85 #6c29ab #800000 #808000 #008000 #800080 #000080 #e74c3c #992d22 #00FFFD #917ac0 #Eac1d2 #286e58 #db4f20 #abd432 #2e3b97 #ffd100 #fffcce #40b4ff #a82626 #8ff731 #942b3b #80B3FF
     //#4e4e4e #fffead #1abc9c #2ecc71 #1f8b4c #3498db #ad1457 #c27c0e #ffd2fb #805bc4 #95a5a6 #979c9f #888888 #ff7272 #f25ff1 #FF00FF #916640 #1AFF74 #2672FF #8637C2 #e7dae2 #9B7038 #EDC240
     //#6a1515 #569d29 #f1612b #7d86e1 #EC62A5 #78c689 #fccc52 #6b2d2a #FCBA03 #F8CD46 #FF4D00 #7EFBC2 #4d4d4d #38b553 #0000FF #0000A7 #f25e75 #5865F2 #0437EF #7FFF00 #FB9327 #FAE57E #06DF0C
-    //#1E300B #F3A6D3 #F9BFA7 #E1E4E4 #869919 #2B0538 #78081C #69201B #9000D7 #CF036F #B0BF1A #A64D79 #B3D94D #73AD09 #41d1c3 #B0BF1A #80B2FF #33FF77 #AAFF00 #452112 #663366 #9C4A14 #A9A9A9
-    //#1A3270 #E37C21 #20A1B7 #606168 #99007F #ECFF45 #BE1C8C #603FEF #610F69 #67A836 #B545FF #DB7601 #1D4DFC #6699FF #9D7038 #00CC99 #949797 #F5A6D4 #404040 #9C9A9A #A22929 #B34D99 #FFC34F
-    //#8BFDFD
+    //#1E300B #F3A6D3 #F9BFA7 #E1E4E4 #869919 #78081C #69201B #9000D7 #CF036F #B0BF1A #A64D79 #B3D94D #73AD09 #41d1c3 #B0BF1A #80B2FF #33FF77 #AAFF00 #452112 #663366 #9C4A14 #A9A9A9 #8BFDFD
+    //#1A3270 #20A1B7 #606168 #99007F #ECFF45 #603FEF #610F69 #67A836 #B545FF #DB7601 #1D4DFC #6699FF #9D7038 #00CC99 #949797 #F5A6D4 #404040 #9C9A9A #A22929 #B34D99 #FFC34F
 
     //Symbol Storage
     //⟡ ☆ ♡ ♧ ♤ ▶ ❥ ι ν σ τ ψ ✧ ¢ 乂 ⁂ ¤ ∮ 彡 个 「 」 人 요 〖 〗 ロ 米 卄 王 ī l 【 】 · ㅇ ° ◥ ◤ ◢ ◣ 《 》 ︵ ︶ ☆ ☀ ☂ ☹ ☺ ♡ ♩ ♪ ♫ ♬ ✓ ☜ ☞ ☟ ☯ ☃ ✿ ❀ ÷ º ¿ ※ ⁑ ∞ ≠ +

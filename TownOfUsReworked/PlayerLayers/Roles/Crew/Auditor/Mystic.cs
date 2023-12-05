@@ -2,8 +2,8 @@ namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public class Mystic : Crew
 {
-    public static bool ConvertedDead => !CustomPlayer.AllPlayers.Any(x => !x.HasDied() && !x.Is(SubFaction.None));
-    public CustomButton RevealButton { get; set; }
+    private static bool ConvertedDead => !CustomPlayer.AllPlayers.Any(x => !x.HasDied() && !x.Is(SubFaction.None));
+    private CustomButton RevealButton { get; set; }
 
     public override Color Color => ClientGameOptions.CustomCrewColors ? Colors.Mystic : Colors.Crew;
     public override string Name => "Mystic";
@@ -32,7 +32,7 @@ public class Mystic : Crew
         }
     }
 
-    public void Reveal()
+    private void Reveal()
     {
         var interact = Interact(Player, RevealButton.TargetPlayer);
         var cooldown = CooldownType.Reset;
@@ -49,5 +49,5 @@ public class Mystic : Crew
         RevealButton.StartCooldown(cooldown);
     }
 
-    public bool Exception(PlayerControl player) => player.Is(SubFaction) && SubFaction != SubFaction.None;
+    private bool Exception(PlayerControl player) => player.Is(SubFaction) && SubFaction != SubFaction.None;
 }

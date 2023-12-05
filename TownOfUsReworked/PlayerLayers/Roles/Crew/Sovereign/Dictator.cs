@@ -28,10 +28,8 @@ public class Dictator : Crew
 
     public void Reveal()
     {
-        CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, DictActionsRPC.Reveal);
-        Revealed = true;
-        Flash(Color);
-        BreakShield(Player, true);
+        CallRpc(CustomRPC.Action, ActionsRPC.PublicReveal, Player);
+        PublicReveal(Player);
     }
 
     public override void UpdateHud(HudManager __instance)
@@ -48,7 +46,7 @@ public class Dictator : Crew
         if (ToBeEjected.Count > 0 && !Ejected)
         {
             ToDie = ToBeEjected.Any(x => PlayerById(x).Is(Faction.Crew));
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, DictActionsRPC.SetExiles, ToDie, ToBeEjected.ToArray());
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, ToDie, ToBeEjected);
         }
     }
 
@@ -97,7 +95,7 @@ public class Dictator : Crew
         if (ToBeEjected.Count > 0 && !Ejected)
         {
             ToDie = ToBeEjected.Any(x => PlayerById(x).Is(Faction.Crew));
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, DictActionsRPC.SetExiles, ToDie, ToBeEjected.ToArray());
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, ToDie, ToBeEjected);
         }
     }
 
@@ -109,24 +107,7 @@ public class Dictator : Crew
 
     public override void ReadRPC(MessageReader reader)
     {
-        var dictAction = (DictActionsRPC)reader.ReadByte();
-
-        switch (dictAction)
-        {
-            case DictActionsRPC.Reveal:
-                Revealed = true;
-                Flash(Colors.Dictator);
-                BreakShield(Player, true);
-                break;
-
-            case DictActionsRPC.SetExiles:
-                ToDie = reader.ReadBoolean();
-                ToBeEjected = reader.ReadByteList();
-                break;
-
-            default:
-                LogError($"Received unknown RPC - {dictAction}");
-                break;
-        }
+        ToDie = reader.ReadBoolean();
+        ToBeEjected = reader.ReadByteList();
     }
 }

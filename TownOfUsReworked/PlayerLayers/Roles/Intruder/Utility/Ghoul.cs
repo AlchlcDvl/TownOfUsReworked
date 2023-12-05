@@ -30,7 +30,7 @@ public class Ghoul : Intruder
         Player.Visible = true;
         var color = new Color(1f, 1f, 1f, 0f);
 
-        var maxDistance = ShipStatus.Instance.MaxLightRadius * TownOfUsReworked.NormalOptions.CrewLightMod;
+        var maxDistance = Ship.MaxLightRadius * TownOfUsReworked.NormalOptions.CrewLightMod;
         var distance = (CustomPlayer.Local.GetTruePosition() - Player.GetTruePosition()).magnitude;
 
         var distPercent = distance / maxDistance;

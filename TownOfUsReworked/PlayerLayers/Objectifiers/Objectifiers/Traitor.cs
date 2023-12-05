@@ -2,10 +2,10 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers;
 
 public class Traitor : Objectifier
 {
-    public bool Turned { get; set; }
-    public bool Betrayed { get; set; }
+    private bool Turned { get; set; }
+    private bool Betrayed { get; set; }
     public Faction Side { get; set; }
-    public bool Betray => ((Side == Faction.Intruder && LastImp) || (Side == Faction.Syndicate && LastSyn)) && !IsDead && Turned && !Betrayed;
+    private bool Betray => ((Side == Faction.Intruder && LastImp) || (Side == Faction.Syndicate && LastSyn)) && !IsDead && Turned && !Betrayed;
 
     public override Color Color
     {

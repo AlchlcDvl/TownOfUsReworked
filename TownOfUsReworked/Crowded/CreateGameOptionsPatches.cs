@@ -64,7 +64,7 @@ public static class CreateOptionsPicker_Awake
     }
 }
 
-[HarmonyPatch(typeof(MapPickerMenu), nameof(MapPickerMenu.SetMap))]
+[HarmonyPatch(typeof(CreateOptionsPicker), nameof(CreateOptionsPicker.SetMap))]
 public static class MapPickerPatch
 {
     public static void Postfix(ref int mapId) => Generate.Map.Set(mapId);

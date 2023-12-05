@@ -15,7 +15,7 @@ public static class VentPatches
         else
             couldUse = canUse;
 
-        var ventitaltionSystem = ShipStatus.Instance.Systems[SystemTypes.Ventilation].Cast<VentilationSystem>();
+        var ventitaltionSystem = Ship.Systems[SystemTypes.Ventilation].Cast<VentilationSystem>();
 
         if (ventitaltionSystem != null && ventitaltionSystem.IsVentCurrentlyBeingCleaned(__instance.Id))
             couldUse = false;
@@ -29,6 +29,7 @@ public static class VentPatches
             if (GetInTransition())
             {
                 __result = float.MaxValue;
+                canUse = couldUse = false;
                 return;
             }
 
@@ -118,14 +119,14 @@ public static class EnterVentPatch
 
                     if (vent)
                     {
-                        var ventilationSystem = ShipStatus.Instance.Systems[SystemTypes.Ventilation].TryCast<VentilationSystem>();
+                        var ventilationSystem = Ship.Systems[SystemTypes.Ventilation].TryCast<VentilationSystem>();
                         var flag1 = ventilationSystem != null && ventilationSystem.IsVentCurrentlyBeingCleaned(vent.Id);
                         buttonBehavior.gameObject.SetActive(true);
                         var gameObject = __instance.CleaningIndicators.Count > 0 ? __instance.CleaningIndicators[i] : null;
                         __instance.ToggleNeighborVentBeingCleaned(flag, buttonBehavior, gameObject);
                         var vector2 = vent.transform.position - __instance.transform.position;
                         var vector3 = vector2.normalized * (0.7f + __instance.spreadShift);
-                        vector3.x *= Mathf.Sign(ShipStatus.Instance.transform.localScale.x);
+                        vector3.x *= Mathf.Sign(Ship.transform.localScale.x);
                         vector3.y -= 0.08f;
                         vector3.z = -10f;
                         buttonBehavior.transform.localPosition = vector3;

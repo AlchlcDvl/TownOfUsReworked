@@ -2,13 +2,30 @@ Welcome to Town Of Us Reworked %modversion%!
 
 Town Of Us Reactivated but better! (hopefully)
 
-This mod is a mish mash of code and ideas from different mods and forks, mainly from Town Of Us Reactivated and The Other Roles. Enjoy the chaos that comes out as a result!
+This mod is a mish mash of code and ideas from different games, mods and forks, mainly from Town Of Salem, Town Of Us Reactivated and The Other Roles. Enjoy the chaos that comes out as a result!
 
 If you want to know more try using the other info commands, visiting the %github% page or joining the %discord% server. Happy ejections!
 
 Changelog-
-- Critical Fix: Fixed the occasional crash
-- Bug Fix: Fixed the desync caused from cancelling delays and effects
+- Update: Updated Among Us to 2023.11.28 and BepInEx to 6.0.0-be.679
+- Return: Trapper has returned with a new set of skills!
+- Buff: Medic can now change who the shield is applied to
+- Improvement: You can now view all active settings by pressing Left Shift + Tab
+- Change: The dead body being dragged now changes sides depending on your movement
+- Change: Enforcers can no longer cancel their effects (to avoid them just blowing up their targets)
+- Role Fix: Fixed Monarchs being immune to interactions (alerts, infections and such)
+- Role Fix: Fixed Retributionist-Medics being able to shield revealed Dictators and Mayors
+- Role Fix: Fixed Retributionists being able to copy non-Crew roles (although it did nothing)
+- Bug Fix: Fixed the desync caused by teleportation
+- Bug Fix: Fixed several cases of log spams and general lag
+- Bug Fix: Fixed morphed players having the wrong speeds
+- Bug Fix: Fixed MCI sometimes randomly switching to unintended bots
+- Bug Fix: Fixed sabotages sometimes behaving weirdly
+- Bug Fix: Fixed being unable to open the minimap using the map button
+- Visual Fix: Fixed the start button appearing disabled in lobby
+- Visual Fix: Fixed fading bodies turning into solid colors while fading
+- Visual Fix: Fixed target outline not working properly
+- Vanilla Fix: Fixed task snapping
 
 Credits-
 Reworked Creator - AlchlcDvl

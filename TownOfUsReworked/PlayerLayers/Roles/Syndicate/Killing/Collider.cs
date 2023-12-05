@@ -28,7 +28,7 @@ public class Collider : Syndicate
 
     public void Charge() => ChargeButton.Begin();
 
-    private void Reset()
+    public void ResetCharges()
     {
         Positive = null;
         Negative = null;
@@ -37,7 +37,7 @@ public class Collider : Syndicate
     public override void OnLobby()
     {
         base.OnLobby();
-        Reset();
+        ResetCharges();
     }
 
     public void SetPositive()
@@ -87,19 +87,13 @@ public class Collider : Syndicate
         NegativeButton.Update2("SET NEGATIVE");
         ChargeButton.Update2("CHARGE", HoldsDrive);
 
-        if (GetDistBetweenPlayers(Positive, Negative) <= Range)
+        if (GetDistance(Positive, Negative) <= Range)
         {
-            if (!(Negative.IsShielded() || Negative.IsProtected() || Negative.IsProtectedMonarch() || Negative.Is(LayerEnum.Pestilence) || Negative.IsOnAlert() || Negative.IsVesting() ||
-                Negative.IsRetShielded()))
-            {
+            if (!(Negative.IsShielded() || Negative.IsProtected() || Negative.IsProtectedMonarch() || Negative.Is(LayerEnum.Pestilence) || Negative.IsOnAlert() || Negative.IsVesting()))
                 RpcMurderPlayer(Player, Negative, DeathReasonEnum.Collided, false);
-            }
 
-            if (!(Positive.IsShielded() || Positive.IsProtected() || Positive.IsProtectedMonarch() || Positive.Is(LayerEnum.Pestilence) || Positive.IsOnAlert() || Positive.IsVesting() ||
-                Positive.IsRetShielded()))
-            {
+            if (!(Positive.IsShielded() || Positive.IsProtected() || Positive.IsProtectedMonarch() || Positive.Is(LayerEnum.Pestilence) || Positive.IsOnAlert() || Positive.IsVesting()))
                 RpcMurderPlayer(Player, Positive, DeathReasonEnum.Collided, false);
-            }
 
             Positive = null;
             Negative = null;
@@ -110,13 +104,10 @@ public class Collider : Syndicate
                 NegativeButton.StartCooldown();
             }
         }
-        else if (GetDistBetweenPlayers(Player, Negative) <= Range && HoldsDrive && ChargeButton.EffectActive)
+        else if (GetDistance(Player, Negative) <= Range && HoldsDrive && ChargeButton.EffectActive)
         {
-            if (!(Negative.IsShielded() || Negative.IsProtected() || Negative.IsProtectedMonarch() || Negative.Is(LayerEnum.Pestilence) || Negative.IsOnAlert() || Negative.IsVesting() ||
-                Negative.IsRetShielded()))
-            {
+            if (!(Negative.IsShielded() || Negative.IsProtected() || Negative.IsProtectedMonarch() || Negative.Is(LayerEnum.Pestilence) || Negative.IsOnAlert() || Negative.IsVesting()))
                 RpcMurderPlayer(Player, Negative, DeathReasonEnum.Collided, false);
-            }
 
             Negative = null;
 
@@ -126,13 +117,10 @@ public class Collider : Syndicate
                 NegativeButton.StartCooldown();
             }
         }
-        else if (GetDistBetweenPlayers(Player, Positive) <= Range && HoldsDrive && ChargeButton.EffectActive)
+        else if (GetDistance(Player, Positive) <= Range && HoldsDrive && ChargeButton.EffectActive)
         {
-            if (!(Positive.IsShielded() || Positive.IsProtected() || Positive.IsProtectedMonarch() || Positive.Is(LayerEnum.Pestilence) || Positive.IsOnAlert() || Positive.IsVesting() ||
-                Positive.IsRetShielded()))
-            {
+            if (!(Positive.IsShielded() || Positive.IsProtected() || Positive.IsProtectedMonarch() || Positive.Is(LayerEnum.Pestilence) || Positive.IsOnAlert() || Positive.IsVesting()))
                 RpcMurderPlayer(Player, Positive, DeathReasonEnum.Collided, false);
-            }
 
             Positive = null;
 
@@ -149,6 +137,6 @@ public class Collider : Syndicate
     public override void OnMeetingStart(MeetingHud __instance)
     {
         base.OnMeetingStart(__instance);
-        Reset();
+        ResetCharges();
     }
 }

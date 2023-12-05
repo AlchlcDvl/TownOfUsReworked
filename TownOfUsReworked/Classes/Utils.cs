@@ -22,11 +22,9 @@ public static class Utils
 
     public static bool IsImpostor(this GameData.PlayerInfo playerinfo) => playerinfo?.Role?.TeamType == RoleTeamTypes.Impostor;
 
-    public static bool IsImpostor(this PlayerControl playerinfo) => playerinfo?.Data?.Role?.TeamType == RoleTeamTypes.Impostor;
+    public static bool IsImpostor(this PlayerControl playerinfo) => playerinfo?.Data?.IsImpostor() == true;
 
     public static bool IsImpostor(this PlayerVoteArea playerinfo) => PlayerByVoteArea(playerinfo).IsImpostor();
-
-    public static GameData.PlayerOutfit GetDefaultOutfit(this PlayerControl playerControl) => playerControl.Data.DefaultOutfit;
 
     public static void SetOutfit(this PlayerControl playerControl, CustomPlayerOutfitType customOutfitType, GameData.PlayerOutfit outfit)
     {
@@ -41,20 +39,8 @@ public static class Utils
 
         var outfitType = (PlayerOutfitType)customOutfit;
 
-        if (!playerControl.Data.Outfits.TryGetValue(outfitType, out var newOutfit))
-            return;
-
-        playerControl.CurrentOutfitType = outfitType;
-        playerControl.RawSetName(newOutfit.PlayerName);
-        playerControl.RawSetColor(newOutfit.ColorId);
-        playerControl.RawSetHat(newOutfit.HatId, newOutfit.ColorId);
-        playerControl.RawSetVisor(newOutfit.VisorId, newOutfit.ColorId);
-
-        if (!playerControl.Data.IsDead)
-            playerControl.RawSetPet(newOutfit.PetId, newOutfit.ColorId);
-
-        if (!playerControl.Data.IsDead)
-            playerControl.RawSetSkin(newOutfit.SkinId, newOutfit.ColorId);
+        if (playerControl.Data.Outfits.TryGetValue(outfitType, out var newOutfit))
+            playerControl.RawSetOutfit(newOutfit, outfitType);
     }
 
     public static CustomPlayerOutfitType GetCustomOutfitType(this PlayerControl playerControl) => (CustomPlayerOutfitType)playerControl.CurrentOutfitType;
@@ -72,26 +58,15 @@ public static class Utils
 
             HUD.StartCoroutine(Effects.Lerp(1, new Action<float>(p =>
             {
-                var color = UColor.Lerp(CustomColors.GetColor(player.GetDefaultOutfit().ColorId, false), CustomColors.GetColor(morphTarget.GetDefaultOutfit().ColorId, false), p);
+                var color = UColor.Lerp(CustomColors.GetColor(player.Data.DefaultOutfit.ColorId, false), CustomColors.GetColor(morphTarget.Data.DefaultOutfit.ColorId, false), p);
                 PlayerMaterial.SetColors(color, player.MyRend());
-                var size = Mathf.Lerp(player.GetSize(), morphTarget.GetSize(), p);
-                var speed = Mathf.Lerp(player.GetSpeed(), morphTarget.GetSpeed(), p);
-
-                if (!TransitioningSize.ContainsKey(player.PlayerId))
-                    TransitioningSize.TryAdd(player.PlayerId, size);
-                else
-                    TransitioningSize[player.PlayerId] = size;
-
-                if (!TransitioningSpeed.ContainsKey(player.PlayerId))
-                    TransitioningSpeed.TryAdd(player.PlayerId, speed);
-                else
-                    TransitioningSpeed[player.PlayerId] = speed;
+                TransitioningSize[player.PlayerId] = Mathf.Lerp(player.GetSize(), morphTarget.GetSize(), p);
+                TransitioningSpeed[player.PlayerId] = Mathf.Lerp(player.GetSpeed(), morphTarget.GetSpeed(), p);
 
                 if (p == 1)
                 {
                     TransitioningSize.Remove(player.PlayerId);
                     TransitioningSpeed.Remove(player.PlayerId);
-                    player.SetOutfit(CustomPlayerOutfitType.Morph, morphTarget.Data.DefaultOutfit);
                 }
             })));
 
@@ -104,8 +79,6 @@ public static class Utils
 
             yield return Wait(0.5f);
 
-            player.SetOutfit(CustomPlayerOutfitType.Morph, morphTarget.Data.DefaultOutfit);
-
             HUD.StartCoroutine(Effects.Lerp(0.5f, new Action<float>(p =>
             {
                 player.SetHatAndVisorAlpha(p);
@@ -113,7 +86,11 @@ public static class Utils
                 player.cosmetics.skin.layer.color = new(color.r, color.g, color.b, p);
             })));
 
+            player.SetOutfit(CustomPlayerOutfitType.Morph, morphTarget.Data.DefaultOutfit);
+
             yield return Wait(0.5f);
+
+            player.SetOutfit(CustomPlayerOutfitType.Morph, morphTarget.Data.DefaultOutfit);
         }
 
         yield break;
@@ -126,10 +103,10 @@ public static class Utils
         if (player.GetCustomOutfitType() == CustomPlayerOutfitType.Invis)
         {
             player.SetOutfit(CustomPlayerOutfitType.Invis, InvisOutfit1(player));
-            var a = player.MyRend().color.a;
+            var rend = player.MyRend();
+            var a = rend.color.a;
             HUD.StartCoroutine(Effects.Lerp(1, new Action<float>(p =>
             {
-                var rend = player.MyRend();
                 rend.color = new(1f, 1f, 1f, Mathf.Clamp(p, a, 1));
 
                 if (player != CustomPlayer.Local)
@@ -147,8 +124,8 @@ public static class Utils
                     player.cosmetics.skin.layer.color = new(color2.r, color2.g, color2.b, p);
                 }
 
-                var color = Color.Lerp(CustomColors.GetColor(37, false), HudUpdate.IsCamoed ? UColor.grey : CustomColors.GetColor(player.GetDefaultOutfit().ColorId, false), p);
-                PlayerMaterial.SetColors(color, player.MyRend());
+                var color = Color.Lerp(CustomColors.GetColor(37, false), HudUpdate.IsCamoed ? UColor.grey : CustomColors.GetColor(player.Data.DefaultOutfit.ColorId, false), p);
+                PlayerMaterial.SetColors(color, rend);
             })));
 
             yield return Wait(1f);
@@ -157,36 +134,22 @@ public static class Utils
         {
             HUD.StartCoroutine(Effects.Lerp(1, new Action<float>(p =>
             {
-                var color = UColor.Lerp(UColor.grey, CustomColors.GetColor(player.GetDefaultOutfit().ColorId, false), p);
+                var color = UColor.Lerp(UColor.grey, CustomColors.GetColor(player.Data.DefaultOutfit.ColorId, false), p);
                 PlayerMaterial.SetColors(color, player.MyRend());
                 player.SetHatAndVisorAlpha(p);
                 var color2 = player.cosmetics.skin.layer.color;
                 player.cosmetics.skin.layer.color = new(color2.r, color2.g, color2.b, p);
 
                 if (CustomGameOptions.CamoHideSize)
-                {
-                    var size = Mathf.Lerp(1f, player.GetSize(), p);
-
-                    if (!TransitioningSize.ContainsKey(player.PlayerId))
-                        TransitioningSize.TryAdd(player.PlayerId, size);
-                    else
-                        TransitioningSize[player.PlayerId] = size;
-
-                    if (p == 1)
-                        TransitioningSize.Remove(player.PlayerId);
-                }
+                    TransitioningSize[player.PlayerId] = Mathf.Lerp(1f, player.GetSize(), p);
 
                 if (CustomGameOptions.CamoHideSpeed)
+                    TransitioningSpeed[player.PlayerId] = Mathf.Lerp(1f, player.GetSpeed(), p);
+
+                if (p == 1)
                 {
-                    var speed = Mathf.Lerp(1f, player.GetSpeed(), p);
-
-                    if (!TransitioningSpeed.ContainsKey(player.PlayerId))
-                        TransitioningSpeed.TryAdd(player.PlayerId, speed);
-                    else
-                        TransitioningSpeed[player.PlayerId] = speed;
-
-                    if (p == 1)
-                        TransitioningSpeed.Remove(player.PlayerId);
+                    TransitioningSize.Remove(player.PlayerId);
+                    TransitioningSpeed.Remove(player.PlayerId);
                 }
             })));
 
@@ -198,26 +161,15 @@ public static class Utils
 
             HUD.StartCoroutine(Effects.Lerp(1, new Action<float>(p =>
             {
-                var color = UColor.Lerp(CustomColors.GetColor(morphTarget.GetDefaultOutfit().ColorId, false), CustomColors.GetColor(player.GetDefaultOutfit().ColorId, false), p);
+                var color = UColor.Lerp(CustomColors.GetColor(morphTarget.Data.DefaultOutfit.ColorId, false), CustomColors.GetColor(player.Data.DefaultOutfit.ColorId, false), p);
                 PlayerMaterial.SetColors(color, player.MyRend());
-                var size = Mathf.Lerp(morphTarget.GetSize(), player.GetSize(), p);
-                var speed = Mathf.Lerp(morphTarget.GetSpeed(), player.GetSpeed(), p);
-
-                if (!TransitioningSize.ContainsKey(player.PlayerId))
-                    TransitioningSize.TryAdd(player.PlayerId, size);
-                else
-                    TransitioningSize[player.PlayerId] = size;
-
-                if (!TransitioningSpeed.ContainsKey(player.PlayerId))
-                    TransitioningSpeed.TryAdd(player.PlayerId, speed);
-                else
-                    TransitioningSpeed[player.PlayerId] = speed;
+                TransitioningSize[player.PlayerId] = Mathf.Lerp(morphTarget.GetSize(), player.GetSize(), p);
+                TransitioningSpeed[player.PlayerId] = Mathf.Lerp(morphTarget.GetSpeed(), player.GetSpeed(), p);
 
                 if (p == 1)
                 {
                     TransitioningSize.Remove(player.PlayerId);
                     TransitioningSpeed.Remove(player.PlayerId);
-                    player.SetOutfit(CustomPlayerOutfitType.Default);
                 }
             })));
 
@@ -242,6 +194,7 @@ public static class Utils
             yield return Wait(0.5f);
 
             CachedMorphs.Remove(player.PlayerId);
+            player.SetOutfit(CustomPlayerOutfitType.Default);
         }
 
         if (!HudUpdate.IsCamoed && player.GetCustomOutfitType() != CustomPlayerOutfitType.Default)
@@ -260,36 +213,22 @@ public static class Utils
             player.SetOutfit(CustomPlayerOutfitType.Camouflage, CamoOutfit(player));
             HUD.StartCoroutine(Effects.Lerp(1, new Action<float>(p =>
             {
-                var color = Color.Lerp(CustomColors.GetColor(player.GetDefaultOutfit().ColorId, false), UColor.grey, p);
+                var color = Color.Lerp(CustomColors.GetColor(player.Data.DefaultOutfit.ColorId, false), UColor.grey, p);
                 PlayerMaterial.SetColors(color, player.MyRend());
                 player.SetHatAndVisorAlpha(1 - p);
                 var color2 = player.cosmetics.skin.layer.color;
                 player.cosmetics.skin.layer.color = new(color2.r, color2.g, color2.b, 1 - p);
 
                 if (CustomGameOptions.CamoHideSize)
-                {
-                    var size = Mathf.Lerp(player.GetSize(), 1f, p);
-
-                    if (!TransitioningSize.ContainsKey(player.PlayerId))
-                        TransitioningSize.TryAdd(player.PlayerId, size);
-                    else
-                        TransitioningSize[player.PlayerId] = size;
-
-                    if (p == 1)
-                        TransitioningSize.Remove(player.PlayerId);
-                }
+                    TransitioningSize[player.PlayerId] = Mathf.Lerp(player.GetSpeed(), 1f, p);
 
                 if (CustomGameOptions.CamoHideSpeed)
+                    TransitioningSpeed[player.PlayerId] = Mathf.Lerp(player.GetSpeed(), 1f, p);
+
+                if (p == 1)
                 {
-                    var speed = Mathf.Lerp(player.GetSpeed(), 1f, p);
-
-                    if (!TransitioningSpeed.ContainsKey(player.PlayerId))
-                        TransitioningSpeed.TryAdd(player.PlayerId, speed);
-                    else
-                        TransitioningSpeed[player.PlayerId] = speed;
-
-                    if (p == 1)
-                        TransitioningSpeed.Remove(player.PlayerId);
+                    TransitioningSize.Remove(player.PlayerId);
+                    TransitioningSpeed.Remove(player.PlayerId);
                 }
             })));
         }
@@ -309,7 +248,7 @@ public static class Utils
                 player.SetHatAndVisorAlpha(1 - p);
                 var color2 = player.cosmetics.skin.layer.color;
                 player.cosmetics.skin.layer.color = new(color2.r, color2.g, color2.b, 1 - p);
-                var color = Color.Lerp(HudUpdate.IsCamoed ? UColor.grey : CustomColors.GetColor(player.GetDefaultOutfit().ColorId, false), CustomColors.GetColor(37, false), p);
+                var color = Color.Lerp(HudUpdate.IsCamoed ? UColor.grey : CustomColors.GetColor(player.Data.DefaultOutfit.ColorId, false), CustomColors.GetColor(37, false), p);
                 PlayerMaterial.SetColors(color, player.MyRend());
 
                 if (player != CustomPlayer.Local)
@@ -359,7 +298,7 @@ public static class Utils
 
     public static GameData.PlayerOutfit BlankOutfit(PlayerControl player) => new()
     {
-        ColorId = player.GetDefaultOutfit().ColorId,
+        ColorId = player.Data.DefaultOutfit.ColorId,
         HatId = "",
         SkinId = "",
         VisorId = "",
@@ -412,9 +351,9 @@ public static class Utils
     public static Color GetShadowColor(this PlayerControl player, bool camoCondition = true, bool otherCondition = false)
     {
         if ((HudUpdate.IsCamoed && camoCondition) || otherCondition)
-            return new(0.5f, 0.5f, 0.5f, 1f);
+            return CustomColors.Shadow(UColor.grey);
         else
-            return CustomColors.GetColor(player.GetDefaultOutfit().ColorId, true);
+            return CustomColors.GetColor(player.Data.DefaultOutfit.ColorId, true);
     }
 
     public static Color GetPlayerColor(this PlayerControl player, bool camoCondition = true, bool otherCondition = false)
@@ -422,7 +361,7 @@ public static class Utils
         if ((HudUpdate.IsCamoed && camoCondition) || otherCondition)
             return UColor.grey;
         else
-            return CustomColors.GetColor(player.GetDefaultOutfit().ColorId, false);
+            return CustomColors.GetColor(player.Data.DefaultOutfit.ColorId, false);
     }
 
     public static PlayerControl PlayerById(byte id) => CustomPlayer.AllPlayers.Find(x => x.PlayerId == id);
@@ -443,7 +382,7 @@ public static class Utils
 
     public static Vector2 GetSize() => Vector2.Scale(AllMapVents[0].GetComponent<BoxCollider2D>().size, AllMapVents[0].transform.localScale) * 0.75f;
 
-    public static double GetDistBetweenPlayers(PlayerControl player, PlayerControl refplayer)
+    public static double GetDistance(PlayerControl player, PlayerControl refplayer)
     {
         if (player == null || refplayer == null)
             return double.MaxValue;
@@ -451,23 +390,9 @@ public static class Utils
         return Vector2.Distance(refplayer.transform.position, player.transform.position);
     }
 
-    public static double GetDistBetweenPlayers(PlayerControl player, Vent refVent)
-    {
-        if (player == null || refVent == null)
-            return double.MaxValue;
+    public static void RpcMurderPlayer(PlayerControl self, DeathReasonEnum reason = DeathReasonEnum.Killed) => RpcMurderPlayer(self, self, reason, false);
 
-        return Vector2.Distance(refVent.transform.position, player.transform.position);
-    }
-
-    public static double GetDistBetweenPlayers(PlayerControl player, DeadBody refBody)
-    {
-        if (player == null || refBody == null)
-            return double.MaxValue;
-
-        return Vector2.Distance(refBody.TruePosition, player.transform.position);
-    }
-
-    public static void RpcMurderPlayer(PlayerControl self, DeathReasonEnum reason = DeathReasonEnum.Killed, bool lunge = true) => RpcMurderPlayer(self, self, reason, lunge);
+    public static void RpcMurderPlayer(PlayerControl killer, PlayerControl target, bool lunge) => RpcMurderPlayer(killer, target, DeathReasonEnum.Killed, lunge);
 
     public static void RpcMurderPlayer(PlayerControl killer, PlayerControl target, DeathReasonEnum reason = DeathReasonEnum.Killed, bool lunge = true)
     {
@@ -544,19 +469,19 @@ public static class Utils
             if (ActiveTask)
                 ActiveTask.Close();
 
-            if (Map)
+            if (MapPatch.MapActive)
                 Map.Close();
 
             HUD.KillOverlay.ShowKillAnimation(killer.Data, data);
             HUD.ShadowQuad.gameObject.SetActive(false);
-            HUD.Chat.SetVisible(true);
+            Chat.SetVisible(true);
             target.NameText().GetComponent<MeshRenderer>().material.SetInt("_Mask", 0);
             target.RpcSetScanner(false);
         }
 
         killer.MyPhysics.StartCoroutine(killer.KillAnimations.Random().CoPerformKill(lunge ? killer : target, target));
 
-        if (killer != target)
+        if (killer != target || (killer == target && reason != DeathReasonEnum.Killed))
         {
             targetRole.KilledBy = " By " + killerRole.PlayerName;
             targetRole.DeathReason = reason;
@@ -604,6 +529,8 @@ public static class Utils
             MarkMeetingDead(target, killer);
     }
 
+    public static void MarkMeetingDead(PlayerControl target, bool doesKill = true, bool noReason = false) => MarkMeetingDead(target, target, doesKill, noReason);
+
     public static void MarkMeetingDead(PlayerControl target, PlayerControl killer, bool doesKill = true, bool noReason = false)
     {
         Play("Kill");
@@ -631,7 +558,7 @@ public static class Utils
                 dict.DictMenu.HideButtons();
                 dict.ToBeEjected.Clear();
                 dict.ToDie = false;
-                CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, dict, DictActionsRPC.SetExiles, false, dict.ToBeEjected.ToArray());
+                CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, dict, false, dict.ToBeEjected.ToArray());
             }
 
             if (target.Is(LayerEnum.Retributionist))
@@ -758,8 +685,7 @@ public static class Utils
                 for (byte i = 0; i < dictator.DictMenu.Actives.Count; i++)
                     dictator.DictMenu.Actives[i] = false;
 
-                dictator.DictMenu.Actives[target.PlayerId] = false;
-                CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, dictator, DictActionsRPC.SetExiles, false, dictator.ToBeEjected.ToArray());
+                CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, dictator, false, dictator.ToBeEjected.ToArray());
             }
 
             dictator.DictMenu.HideSingle(target.PlayerId);
@@ -838,30 +764,6 @@ public static class Utils
     public static List<PlayerControl> GetClosestPlayers(Vector2 truePosition, float radius, bool includeDead = false) => CustomPlayer.AllPlayers.Where(x => Vector2.Distance(truePosition,
         x.GetTruePosition()) <= radius && (!x.Data.IsDead || (x.Data.IsDead && includeDead))).ToList();
 
-    public static bool IsTooFar(PlayerControl player, PlayerControl target)
-    {
-        if (player == null || target == null)
-            return true;
-
-        return GetDistBetweenPlayers(player, target) > CustomGameOptions.InteractionDistance;
-    }
-
-    public static bool IsTooFar(PlayerControl player, DeadBody target)
-    {
-        if (player == null || target == null)
-            return true;
-
-        return GetDistBetweenPlayers(player, target) > CustomGameOptions.InteractionDistance;
-    }
-
-    public static bool IsTooFar(PlayerControl player, Vent target)
-    {
-        if (player == null || target == null)
-            return true;
-
-        return GetDistBetweenPlayers(player, target) > CustomGameOptions.InteractionDistance / 2;
-    }
-
     public static bool NoButton(PlayerControl target, LayerEnum layer) => CustomPlayer.AllPlayers.Count <= 1 || target == null || target.Data == null || !target.CanMove ||
         !target.Is(layer) || !IsRoaming || Meeting || target != CustomPlayer.Local;
 
@@ -904,28 +806,25 @@ public static class Utils
         return name;
     }
 
-    public static IEnumerator FadeBody(DeadBody body)
+    public static void FadeBody(DeadBody body)
     {
         if (body == null)
-            yield break;
+            return;
 
-        foreach (var renderer in body.bodyRenderers)
+        HUD.StartCoroutine(Effects.Lerp(1f, new Action<float>(p =>
         {
-            var backColor = renderer.material.GetColor(Shader.PropertyToID("_BackColor"));
-            var bodyColor = renderer.material.GetColor(Shader.PropertyToID("_BodyColor"));
-            var newColor = new Color(1f, 1f, 1f, 0f);
-
-            for (var i = 0; i < 60; i++)
+            foreach (var renderer in body.bodyRenderers)
             {
-                renderer.color = Color.Lerp(backColor, newColor, i / 60f);
-                renderer.color = Color.Lerp(bodyColor, newColor, i / 60f);
-                yield return null;
+                var color = renderer.color;
+                renderer.color = new(color.r, color.g, color.b, 1 - p);
             }
-        }
 
-        body.gameObject.Destroy();
-        Role.Cleaned.Add(PlayerById(body.ParentId));
-        yield break;
+            if (p == 1)
+            {
+                body.gameObject.Destroy();
+                Role.Cleaned.Add(PlayerById(body.ParentId));
+            }
+        })));
     }
 
     public static void RpcSpawnVent(Role role)
@@ -969,7 +868,7 @@ public static class Utils
 
         var allVents = AllMapVents;
         allVents.Add(vent);
-        ShipStatus.Instance.AllVents = allVents.ToArray();
+        Ship.AllVents = allVents.ToArray();
 
         if (IsSubmerged())
         {
@@ -1032,7 +931,7 @@ public static class Utils
 
     public static void SetFullScreenHUD()
     {
-        if (!(HudManager.InstanceExists && HudManager.Instance.FullScreen))
+        if (!(HudManager.InstanceExists && HUD.FullScreen))
             return;
 
         var fullscreen = HUD.FullScreen;
@@ -1041,28 +940,28 @@ public static class Utils
         fullscreen.gameObject.active = true;
         var fs = false;
 
-        if (ShipStatus.Instance && !LobbyBehaviour.Instance)
+        if (Ship && !Lobby)
         {
             switch (MapPatches.CurrentMap)
             {
                 case 0 or 1 or 3:
-                    var reactor1 = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
-                    var oxygen1 = ShipStatus.Instance.Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
+                    var reactor1 = Ship.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
+                    var oxygen1 = Ship.Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
                     fs = reactor1.IsActive || oxygen1.IsActive;
                     break;
 
                 case 2:
-                    var seismic = ShipStatus.Instance.Systems[SystemTypes.Laboratory].Cast<ReactorSystemType>();
+                    var seismic = Ship.Systems[SystemTypes.Laboratory].Cast<ReactorSystemType>();
                     fs = seismic.IsActive;
                     break;
 
                 case 4:
-                    var reactor = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<HeliSabotageSystem>();
+                    var reactor = Ship.Systems[SystemTypes.HeliSabotage].Cast<HeliSabotageSystem>();
                     fs = reactor.IsActive;
                     break;
 
                 case 5:
-                    var reactor2 = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<HeliSabotageSystem>();
+                    var reactor2 = Ship.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
                     fs = reactor2.IsActive;
                     break;
 
@@ -1077,9 +976,9 @@ public static class Utils
                     if (!LILoaded)
                         break;
 
-                    var reactor3 = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
-                    var oxygen3 = ShipStatus.Instance.Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
-                    var seismic2 = ShipStatus.Instance.Systems[SystemTypes.Laboratory].Cast<ReactorSystemType>();
+                    var reactor3 = Ship.Systems[SystemTypes.Reactor].Cast<ReactorSystemType>();
+                    var oxygen3 = Ship.Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
+                    var seismic2 = Ship.Systems[SystemTypes.Laboratory].Cast<ReactorSystemType>();
                     fs = reactor3.IsActive || seismic2.IsActive || oxygen3.IsActive;
                     break;
             }
@@ -1089,72 +988,15 @@ public static class Utils
             fullscreen.color = new(1f, 0f, 0f, 0.37254903f);
     }
 
-    public static void Warp()
-    {
-        var coordinates = GenerateWarpCoordinates();
-        var writer = AmongUsClient.Instance.StartRpcImmediately(CustomPlayer.Local.NetId, 255, SendOption.Reliable);
-        writer.Write((byte)CustomRPC.Action);
-        writer.Write((byte)ActionsRPC.WarpAll);
-        writer.Write((byte)coordinates.Count);
-
-        foreach (var (key, value) in coordinates)
-        {
-            writer.Write(key);
-            writer.Write(value);
-        }
-
-        AmongUsClient.Instance.FinishRpcImmediately(writer);
-        WarpPlayersToCoordinates(coordinates);
-    }
-
-    public static void WarpPlayersToCoordinates(Dictionary<byte, Vector2> coordinates)
-    {
-        if (coordinates.ContainsKey(CustomPlayer.Local.PlayerId))
-        {
-            Flash(Colors.Warper);
-
-            if (ActiveTask)
-                ActiveTask.Close();
-
-            if (Map)
-                Map.Close();
-
-            if (CustomPlayer.Local.inVent)
-            {
-                CustomPlayer.Local.MyPhysics.RpcExitVent(Vent.currentVent.Id);
-                CustomPlayer.Local.MyPhysics.ExitAllVents();
-            }
-        }
-
-        foreach (var (key, value) in coordinates)
-        {
-            var player = PlayerById(key);
-            player.transform.position = value;
-
-            if (TownOfUsReworked.IsTest)
-                LogError($"Warping {player.name} to {value}");
-        }
-
-        if (AmongUsClient.Instance.AmHost)
-        {
-            PlayerLayer.GetLayers<Janitor>().Where(x => x.CurrentlyDragging != null).ForEach(x => x.Drop());
-            PlayerLayer.GetLayers<PromotedGodfather>().Where(x => x.CurrentlyDragging != null).ForEach(x => x.Drop());
-        }
-    }
-
     public static Dictionary<byte, Vector2> GenerateWarpCoordinates()
     {
-        var targets = CustomPlayer.AllPlayers.Where(player => !player.HasDied());
+        var targets = CustomPlayer.AllPlayers.Where(player => !player.HasDied() && !UninteractiblePlayers.ContainsKey(player.PlayerId) && !player.inVent);
         var coordinates = new Dictionary<byte, Vector2>();
         var allLocations = new List<Vector2>();
-
-        foreach (var player in targets)
-        {
-            if (!player.onLadder && !player.inMovingPlat && !player.inVent)
-                allLocations.Add(player.transform.position);
-        }
-
+        targets.ForEach(x => allLocations.Add(x.transform.position));
         AllVents.ForEach(x => allLocations.Add(GetVentPosition(x)));
+        AllConsoles.ForEach(x => allLocations.Add(GetConsolePosition(x)));
+        AllBodies.ForEach(x => allLocations.Add(x.transform.position));
         var tobeadded = MapPatches.CurrentMap switch
         {
             0 => SkeldSpawns,
@@ -1167,11 +1009,15 @@ public static class Utils
         if (tobeadded != null)
             allLocations.AddRange(tobeadded);
 
+        allLocations.Shuffle();
         targets.ForEach(x => coordinates.Add(x.PlayerId, allLocations.Random()));
+        AllBodies.ForEach(x => coordinates.Add(x.ParentId, allLocations.Random()));
         return coordinates;
     }
 
     public static Vector2 GetVentPosition(Vent vent) => new(vent.transform.position.x, vent.transform.position.y + 0.3636f);
+
+    public static Vector2 GetConsolePosition(Console console) => new(console.transform.position.x, console.transform.position.y - 0.5f);
 
     public static IEnumerator Fade(bool fadeAway)
     {
@@ -1205,33 +1051,6 @@ public static class Utils
         yield return Wait(0.25f);
         yield return Fade(true);
         yield break;
-    }
-
-    public static void Teleport(PlayerControl player, Vector2 position)
-    {
-        player.MyPhysics.ResetMoveState();
-        player.NetTransform.RpcSnapTo(position);
-
-        if (CustomPlayer.Local == player)
-        {
-            Flash(Colors.Teleporter);
-
-            if (ActiveTask)
-                ActiveTask.Close();
-
-            if (Map)
-                Map.Close();
-
-            if (IsSubmerged())
-            {
-                ChangeFloor(player.GetTruePosition().y > -7);
-                CheckOutOfBoundsElevator(CustomPlayer.Local);
-            }
-        }
-
-        player.moveable = true;
-        player.Collider.enabled = true;
-        player.NetTransform.enabled = true;
     }
 
     public static Dictionary<byte, int> CalculateAllVotes(this MeetingHud __instance, out bool tie, out KeyValuePair<byte, int> max)
@@ -1712,5 +1531,14 @@ public static class Utils
 
     public static AudioClip GetIntroSound(RoleTypes roleType) => RoleManager.Instance.AllRoles.ToList().Find(x => x.Role == roleType).IntroSound;
 
-    public static Color FromHex(string hexCode) => ColorUtility.TryParseHtmlString(hexCode, out var color) ? color : default;
+    public static bool RpcBreakShield(PlayerControl target)
+    {
+        Role.BreakShield(target, CustomGameOptions.ShieldBreaks);
+        CallRpc(CustomRPC.Misc, MiscRPC.AttemptSound, target);
+        return CustomGameOptions.ShieldBreaks;
+    }
+
+    public static T EnsureComponent<T>(this Component component) where T : Component => component?.gameObject?.EnsureComponent<T>();
+
+    public static T EnsureComponent<T>(this GameObject gameObject) where T : Component => gameObject?.GetComponent<T>() ?? gameObject?.AddComponent<T>();
 }

@@ -103,8 +103,8 @@ public class CustomArrow
             return;
 
         var v = Target;
-        v /= ShipStatus.Instance.MapScale;
-        v.x *= Mathf.Sign(ShipStatus.Instance.transform.localScale.x);
+        v /= Ship.MapScale;
+        v.x *= Mathf.Sign(Ship.transform.localScale.x);
         v.z = -1f;
 
         if (!Point)

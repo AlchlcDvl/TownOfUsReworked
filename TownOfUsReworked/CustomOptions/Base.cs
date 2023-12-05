@@ -7,6 +7,7 @@ public class CustomOption
     public readonly MultiMenu Menu;
     public Func<object, object, string> Format { get; set; }
     public readonly string Name;
+    public readonly Action OnChanged;
     public object Value { get; set; }
     public object OtherValue { get; set; }
     public OptionBehaviour Setting { get; set; }
@@ -15,7 +16,7 @@ public class CustomOption
     public bool All { get; set; }
     public bool Active => All ? Parents.All(IsActive) : Parents.Any(IsActive);
 
-    public CustomOption(int id, MultiMenu menu, string name, CustomOptionType type, object defaultValue, object otherDefault, object[] parent, bool all = false)
+    public CustomOption(int id, MultiMenu menu, string name, CustomOptionType type, object defaultValue, object otherDefault, object[] parent, bool all = false, Action onChanged = null)
     {
         ID = id;
         Menu = menu;
@@ -25,18 +26,20 @@ public class CustomOption
         All = all;
         Value = defaultValue;
         OtherValue = otherDefault;
+        OnChanged = onChanged ?? BlankVoid;
 
         if (Type != CustomOptionType.Button)
             AllOptions.Add(this);
     }
 
-    public CustomOption(int id, MultiMenu menu, string name, CustomOptionType type, object defaultValue, object parent = null) : this(id, menu, name, type, defaultValue, new[] { parent }) {}
+    public CustomOption(int id, MultiMenu menu, string name, CustomOptionType type, object defaultValue, object parent = null, Action onChanged = null) : this(id, menu, name, type,
+        defaultValue, new[] { parent }, false, onChanged) {}
 
-    public CustomOption(int id, MultiMenu menu, string name, CustomOptionType type, object defaultValue, object[] parent, bool all = false) : this(id, menu, name, type, defaultValue, null,
-        parent, all) {}
+    public CustomOption(int id, MultiMenu menu, string name, CustomOptionType type, object defaultValue, object[] parent, bool all = false, Action onChanged = null) : this(id, menu, name,
+        type, defaultValue, null, parent, all, onChanged) {}
 
-    public CustomOption(int id, MultiMenu menu, string name, CustomOptionType type, object defaultValue, object otherDefault, object parent = null) : this(id, menu, name, type, defaultValue,
-        otherDefault, new[] { parent }) {}
+    public CustomOption(int id, MultiMenu menu, string name, CustomOptionType type, object defaultValue, object otherDefault, object parent = null, Action onChanged = null) : this(id, menu,
+        name, type, defaultValue, otherDefault, new[] { parent }, false, onChanged) {}
 
     public override string ToString()
     {
@@ -87,14 +90,14 @@ public class CustomOption
 
         if (Setting is ToggleOption toggle)
         {
-            if (Type == CustomOptionType.Entry)
-                toggle.TitleText.text = ((RoleListEntryOption)this).GetString(Value);
+            if (this is RoleListEntryOption entry)
+                toggle.TitleText.text = entry.GetString(Value);
             else
             {
                 var newValue = (bool)Value;
                 toggle.oldValue = newValue;
 
-                if (toggle.CheckMark != null)
+                if (toggle.CheckMark)
                     toggle.CheckMark.enabled = newValue;
             }
         }
@@ -114,6 +117,8 @@ public class CustomOption
             role.ChanceText.text = $"{Value}%";
             role.CountText.text = $"x{OtherValue}";
         }
+
+        OnChanged();
     }
 
     public void SetParents(params object[] objects) => Parents = objects;

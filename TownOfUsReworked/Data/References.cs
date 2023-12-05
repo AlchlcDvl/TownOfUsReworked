@@ -10,7 +10,7 @@ public static class References
     public static readonly Dictionary<byte, DateTime> UninteractiblePlayers = new();
     public static List<DeadBody> AllBodies => UObject.FindObjectsOfType<DeadBody>().ToList();
     public static List<Vent> AllVents => UObject.FindObjectsOfType<Vent>().ToList();
-    public static List<Vent> AllMapVents => ShipStatus.Instance.AllVents.ToList();
+    public static List<Vent> AllMapVents => Ship.AllVents.ToList();
     public static List<GameObject> AllGameObjects => UObject.FindObjectsOfType<GameObject>().ToList();
     public static List<Console> AllConsoles => UObject.FindObjectsOfType<Console>().ToList();
     public static List<SystemConsole> AllSystemConsoles => UObject.FindObjectsOfType<SystemConsole>().ToList();
@@ -23,6 +23,8 @@ public static class References
     public static ShipStatus Ship => ShipStatus.Instance;
     public static MapBehaviour Map => MapBehaviour.Instance;
     public static Minigame ActiveTask => Minigame.Instance;
+    public static LobbyBehaviour Lobby => LobbyBehaviour.Instance;
+    public static ChatController Chat => HUD.Chat;
     public static Dictionary<byte, string> BodyLocations = new();
     public const string Everything = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890!@#$%^&*()|{}[],.<>;':\"-+=*/`~_\\ ⟡☆♡♧♤ø▶❥✔εΔΓικνστυφψΨωχӪζδ♠♥βαµ♣✚Ξρλς§π★ηΛγΣΦΘξ✧¢" +
         "乂⁂¤∮彡个「」人요〖〗ロ米卄王īl【】·ㅇ°◈◆◇◥◤◢◣《》︵︶☆☀☂☹☺♡♩♪♫♬✓☜☞☟☯☃✿❀÷º¿※⁑∞≠";

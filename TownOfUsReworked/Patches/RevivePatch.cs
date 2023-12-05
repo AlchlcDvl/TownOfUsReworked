@@ -45,10 +45,10 @@ public static class PlayerControlRevivePatch
         HUD.ImpostorVentButton.ToggleVisible(__instance.CanVent());
         ButtonUtils.Reset();
 
-        if (HUD.Chat.IsOpenOrOpening)
-            HUD.Chat.ForceClosed();
+        if (Chat.IsOpenOrOpening)
+            Chat.ForceClosed();
 
-        HUD.Chat.SetVisible(__instance.CanChat());
+        Chat.SetVisible(__instance.CanChat());
         return false;
     }
 }

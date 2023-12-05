@@ -43,20 +43,17 @@ public class Crusader : Syndicate
         {
             Spread(player2, player);
 
-            if (player.IsVesting() || player.IsProtected() || player2.IsLinkedTo(player) || player.IsShielded() || player.IsRetShielded() || (player.Is(Faction.Syndicate) &&
-                !CustomGameOptions.CrusadeMates))
-            {
+            if (player.IsVesting() || player.IsProtected() || player2.IsLinkedTo(player) || player.IsShielded() || (player.Is(Faction.Syndicate) && !CustomGameOptions.CrusadeMates))
                 continue;
-            }
 
             if (!player.Is(LayerEnum.Pestilence))
                 RpcMurderPlayer(player2, player, DeathReasonEnum.Crusaded, false);
 
             if (player.IsOnAlert() || player.Is(LayerEnum.Pestilence))
                 RpcMurderPlayer(player, player2);
-            else if (player.IsAmbushed() || player.IsGFAmbushed())
+            else if (player.IsAmbushed())
                 RpcMurderPlayer(player, player2, DeathReasonEnum.Ambushed);
-            else if (player.IsCrusaded() || player.IsRebCrusaded())
+            else if (player.IsCrusaded())
                 RpcMurderPlayer(player, player2, DeathReasonEnum.Crusaded);
         }
     }

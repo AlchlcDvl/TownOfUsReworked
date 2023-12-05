@@ -5,7 +5,7 @@ public static class PlayerControlOnClick
 {
     public static bool Prefix(PlayerControl __instance)
     {
-        if (__instance == null || Meeting || CustomPlayer.LocalCustom.IsDead || LobbyBehaviour.Instance)
+        if (__instance == null || Meeting || CustomPlayer.LocalCustom.IsDead || Lobby)
             return false;
 
         if (IsHnS)
@@ -81,7 +81,7 @@ public static class DeadBodyOnClick
 {
     public static bool Prefix(DeadBody __instance)
     {
-        if (__instance == null || Meeting || LobbyBehaviour.Instance || IsHnS)
+        if (__instance == null || Meeting || Lobby || IsHnS)
             return true;
 
         var button = CustomButton.AllButtons.Find(x => x.Owner.Local && x.TargetBody == __instance && x.Clickable&& !x.Blocked);

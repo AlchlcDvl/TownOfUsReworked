@@ -4,7 +4,6 @@ public class Ambusher : Intruder
 {
     public PlayerControl AmbushedPlayer { get; set; }
     public CustomButton AmbushButton { get; set; }
-    public bool OnAmbush => AmbushButton.EffectActive;
 
     public override Color Color => ClientGameOptions.CustomIntColors ? Colors.Ambusher : Colors.Intruder;
     public override string Name => "Ambusher";

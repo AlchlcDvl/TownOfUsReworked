@@ -3,23 +3,23 @@ namespace TownOfUsReworked.Patches;
 [HarmonyPatch(typeof(HudManager), nameof(HudManager.Update))]
 public static class OtherButtonsPatch
 {
-    private static GameObject ZoomButton;
+    private static PassiveButton ZoomButton;
     public static bool Zooming;
     private static Vector3 Pos;
 
     private static SpriteRenderer Phone;
     private static TextMeshPro PhoneText;
 
-    private static GameObject RoleCardButton;
+    private static PassiveButton RoleCardButton;
     public static bool RoleCardActive;
     private static Vector3 Pos2;
     private static Transform ToTheWiki;
 
-    private static GameObject SettingsButton;
+    private static PassiveButton SettingsButton;
     public static bool SettingsActive;
     private static Vector3 Pos3;
 
-    private static GameObject WikiButton;
+    private static PassiveButton WikiButton;
     public static bool WikiActive;
     private static Vector3 Pos4;
     private static Transform NextButton;
@@ -60,19 +60,43 @@ public static class OtherButtonsPatch
             if (!MapModified)
             {
                 MapModified = true;
-                __instance.MapButton.gameObject.GetComponent<PassiveButton>().OnClick.AddListener(new Action(CloseMenus));
+                __instance.MapButton.OnClick = new();
+                __instance.MapButton.OnClick.AddListener((Action)(() =>
+                {
+                    if (WikiActive)
+                        OpenWiki();
+
+                    if (RoleCardActive)
+                        OpenRoleCard();
+
+                    if (Zooming)
+                        Zoom();
+
+                    if (SettingsActive)
+                        OpenSettings();
+
+                    if (MapPatch.MapActive)
+                        Map.Close();
+                    else
+                    {
+                        if (!Map)
+                            HUD.InitMap();
+
+                        Map.Show(new() { Mode = MapOptions.Modes.Normal });
+                    }
+                }));
             }
 
             if (!WikiButton)
             {
-                WikiButton = UObject.Instantiate(__instance.MapButton.gameObject, __instance.MapButton.transform.parent);
+                WikiButton = UObject.Instantiate(__instance.MapButton, __instance.MapButton.transform.parent);
                 WikiButton.GetComponent<SpriteRenderer>().sprite = GetSprite("Wiki");
                 WikiButton.GetComponent<PassiveButton>().OnClick = new();
                 WikiButton.GetComponent<PassiveButton>().OnClick.AddListener(new Action(OpenWiki));
                 WikiButton.name = "WikiButton";
             }
 
-            WikiButton.SetActive(!IntroCutscene.Instance && !IsFreePlay);
+            WikiButton.gameObject.SetActive(!IntroCutscene.Instance && !IsFreePlay);
             WikiButton.transform.localPosition = MapPos;
             ResetButtonPos();
 
@@ -92,41 +116,41 @@ public static class OtherButtonsPatch
 
             if (!SettingsButton)
             {
-                SettingsButton = UObject.Instantiate(__instance.MapButton.gameObject, __instance.MapButton.transform.parent);
+                SettingsButton = UObject.Instantiate(__instance.MapButton, __instance.MapButton.transform.parent);
                 SettingsButton.GetComponent<SpriteRenderer>().sprite = GetSprite("CurrentSettings");
-                SettingsButton.GetComponent<PassiveButton>().OnClick = new();
-                SettingsButton.GetComponent<PassiveButton>().OnClick.AddListener(new Action(OpenSettings));
+                SettingsButton.OnClick = new();
+                SettingsButton.OnClick.AddListener(new Action(OpenSettings));
                 SettingsButton.name = "CustomSettingsButton";
             }
 
             Pos2 = Pos + new Vector3(0, -0.66f, 0f);
-            SettingsButton.SetActive(__instance.MapButton.gameObject.active && !IntroCutscene.Instance && IsNormal && !IsFreePlay);
+            SettingsButton.gameObject.SetActive(__instance.MapButton.gameObject.active && !IntroCutscene.Instance && IsNormal && !IsFreePlay);
             SettingsButton.transform.localPosition = Pos2;
 
             if (!RoleCardButton)
             {
-                RoleCardButton = UObject.Instantiate(__instance.MapButton.gameObject, __instance.MapButton.transform.parent);
+                RoleCardButton = UObject.Instantiate(__instance.MapButton, __instance.MapButton.transform.parent);
                 RoleCardButton.GetComponent<SpriteRenderer>().sprite = GetSprite("Help");
-                RoleCardButton.GetComponent<PassiveButton>().OnClick = new();
-                RoleCardButton.GetComponent<PassiveButton>().OnClick.AddListener(new Action(OpenRoleCard));
+                RoleCardButton.OnClick = new();
+                RoleCardButton.OnClick.AddListener(new Action(OpenRoleCard));
                 RoleCardButton.name = "RoleCardButton";
             }
 
             Pos3 = Pos2 + new Vector3(0, -0.66f, 0f);
-            RoleCardButton.SetActive(__instance.MapButton.gameObject.active && IsNormal && !IntroCutscene.Instance && !IsFreePlay);
+            RoleCardButton.gameObject.SetActive(__instance.MapButton.gameObject.active && IsNormal && !IntroCutscene.Instance && !IsFreePlay);
             RoleCardButton.transform.localPosition = Pos3;
 
             if (!ZoomButton)
             {
-                ZoomButton = UObject.Instantiate(__instance.MapButton.gameObject, __instance.MapButton.transform.parent);
-                ZoomButton.GetComponent<PassiveButton>().OnClick = new();
-                ZoomButton.GetComponent<PassiveButton>().OnClick.AddListener(new Action(ClickZoom));
+                ZoomButton = UObject.Instantiate(__instance.MapButton, __instance.MapButton.transform.parent);
+                ZoomButton.OnClick = new();
+                ZoomButton.OnClick.AddListener(new Action(ClickZoom));
                 ZoomButton.name = "ZoomButton";
             }
 
             Pos4 = Pos3 + new Vector3(0, -0.66f, 0f);
-            ZoomButton.SetActive(__instance.MapButton.gameObject.active && IsNormal && CustomPlayer.LocalCustom.IsDead && !IntroCutscene.Instance && (!CustomPlayer.Local.IsPostmortal() ||
-                (CustomPlayer.Local.IsPostmortal() && CustomPlayer.Local.Caught())) && !IsFreePlay);
+            ZoomButton.gameObject.SetActive(__instance.MapButton.gameObject.active && IsNormal && CustomPlayer.LocalCustom.IsDead && !IntroCutscene.Instance&& !IsFreePlay &&
+                (!CustomPlayer.Local.IsPostmortal() || (CustomPlayer.Local.IsPostmortal() && CustomPlayer.Local.Caught())) );
             ZoomButton.transform.localPosition = Pos4;
             ZoomButton.GetComponent<SpriteRenderer>().sprite = GetSprite(Zooming ? "Plus" : "Minus");
 
@@ -176,7 +200,7 @@ public static class OtherButtonsPatch
         if (SettingsActive)
             OpenSettings();
 
-        if (Map)
+        if (MapPatch.MapActive)
             Map.Close();
 
         if (!Meeting)
@@ -194,7 +218,7 @@ public static class OtherButtonsPatch
         if (Zooming)
             Zoom();
 
-        if (Map)
+        if (MapPatch.MapActive)
             Map.Close();
 
         if (LocalBlocked)
@@ -215,7 +239,7 @@ public static class OtherButtonsPatch
         if (SettingsActive)
             OpenSettings();
 
-        if (Map)
+        if (MapPatch.MapActive)
             Map.Close();
 
         if (LocalBlocked)
@@ -268,7 +292,7 @@ public static class OtherButtonsPatch
         if (SettingsActive)
             OpenSettings();
 
-        if (Map)
+        if (MapPatch.MapActive)
             Map.Close();
 
         if (LocalBlocked)
@@ -490,11 +514,11 @@ public static class OtherButtonsPatch
 
     private static Transform CreateButton(string name, string labelText, Action onClick, Color? textColor = null)
     {
-        var button = UObject.Instantiate(HUD.MapButton.transform, Phone.transform);
+        var button = UObject.Instantiate(HUD.MapButton, Phone.transform);
         button.name = $"{name}Button";
-        button.localScale = new(0.5f, 0.5f, 1f);
+        button.transform.localScale = new(0.5f, 0.5f, 1f);
         button.GetComponent<BoxCollider2D>().size = new(2.5f, 0.55f);
-        var label = UObject.Instantiate(HUD.TaskPanel.taskText, button);
+        var label = UObject.Instantiate(HUD.TaskPanel.taskText, button.transform);
         label.color = textColor ?? UColor.white;
         label.text = labelText;
         label.enableWordWrapping = false;
@@ -505,14 +529,13 @@ public static class OtherButtonsPatch
         label.name = $"{name}Text";
         var rend = button.GetComponent<SpriteRenderer>();
         rend.sprite = GetSprite("Plate");
-        var passive = button.GetComponent<PassiveButton>();
-        passive.OnClick = new();
-        passive.OnClick.AddListener(onClick);
-        passive.OnMouseOver = new();
-        passive.OnMouseOver.AddListener((Action)(() => rend.color = UColor.yellow));
-        passive.OnMouseOut = new();
-        passive.OnMouseOut.AddListener((Action)(() => rend.color = UColor.white));
-        return button;
+        button.OnClick = new();
+        button.OnClick.AddListener(onClick);
+        button.OnMouseOver = new();
+        button.OnMouseOver.AddListener((Action)(() => rend.color = UColor.yellow));
+        button.OnMouseOut = new();
+        button.OnMouseOut.AddListener((Action)(() => rend.color = UColor.white));
+        return button.transform;
     }
 
     public static void CloseMenus()
@@ -529,7 +552,7 @@ public static class OtherButtonsPatch
         if (SettingsActive)
             OpenSettings();
 
-        if (Map)
+        if (MapPatch.MapActive)
             Map.Close();
     }
 

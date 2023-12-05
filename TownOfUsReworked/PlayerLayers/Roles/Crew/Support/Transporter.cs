@@ -99,10 +99,18 @@ public class Transporter : Crew
         }
 
         Transporting = true;
-        TransportPlayer1.moveable = false;
-        TransportPlayer2.moveable = false;
-        TransportPlayer1.NetTransform.Halt();
-        TransportPlayer2.NetTransform.Halt();
+
+        if (!TransportPlayer1.HasDied())
+        {
+            TransportPlayer1.moveable = false;
+            TransportPlayer1.NetTransform.Halt();
+        }
+
+        if (!TransportPlayer2.HasDied())
+        {
+            TransportPlayer2.moveable = false;
+            TransportPlayer2.NetTransform.Halt();
+        }
 
         if (CustomPlayer.Local == TransportPlayer1 || CustomPlayer.Local == TransportPlayer2)
             Flash(Color, CustomGameOptions.TransportDur);
@@ -200,16 +208,10 @@ public class Transporter : Crew
             if (ActiveTask)
                 ActiveTask.Close();
 
-            if (Map)
+            if (MapPatch.MapActive)
                 Map.Close();
         }
 
-        TransportPlayer1.moveable = true;
-        TransportPlayer2.moveable = true;
-        TransportPlayer1.Collider.enabled = true;
-        TransportPlayer2.Collider.enabled = true;
-        TransportPlayer1.NetTransform.enabled = true;
-        TransportPlayer2.NetTransform.enabled = true;
         TransportPlayer1 = null;
         TransportPlayer2 = null;
         Transporting = false;
@@ -254,7 +256,7 @@ public class Transporter : Crew
             TransportPlayer1.SetPlayerMaterialColors(AnimationPlaying1);
 
             if (p == 1)
-                AnimationPlaying1.sprite = null;
+                AnimationPlaying1.sprite = PortalAnimation[0];
         })));
     }
 
@@ -272,7 +274,7 @@ public class Transporter : Crew
             TransportPlayer2.SetPlayerMaterialColors(AnimationPlaying2);
 
             if (p == 1)
-                AnimationPlaying2.sprite = null;
+                AnimationPlaying2.sprite = PortalAnimation[0];
         })));
     }
 

@@ -5,6 +5,7 @@ public class ChatCommand
     private readonly string[] Aliases;
     private readonly ExecuteArgsCommand ExecuteArgs;
     private readonly ExecuteArglessCommand ExecuteArgless;
+
     private delegate void ExecuteArgsCommand(string[] args, ChatController __instance);
     private delegate void ExecuteArglessCommand(ChatController __instance);
 
@@ -117,9 +118,7 @@ public class ChatCommand
             Run(__instance, "<color=#FFFF00FF>米 Shhhh 米</color>", "You are dead.");
         else if (CustomPlayer.Local.IsBlackmailed())
             Run(__instance, "<color=#02A752FF>米 Shhhh 米</color>", "You are blackmailed.");
-        else if (CustomPlayer.AllPlayers.Any(x => x.IsSilenced() && x.GetSilencer()?.HoldsDrive == true && x != CustomPlayer.Local))
-            Run(__instance, "<color=#AAB43EFF>米 Shhhh 米</color>", "You are silenced.");
-        else if (CustomPlayer.AllPlayers.Any(x => x.IsSilenced() && x.GetRebSilencer()?.HoldsDrive == true && x != CustomPlayer.Local))
+        else if (CustomPlayer.Local.SilenceActive())
             Run(__instance, "<color=#AAB43EFF>米 Shhhh 米</color>", "You are silenced.");
         else if (byte.TryParse(args[1], out var id))
         {

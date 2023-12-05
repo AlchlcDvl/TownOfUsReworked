@@ -14,7 +14,7 @@ public static class RPCHandling
         {
             case CustomRPC.Test:
                 LogMessage("Received RPC!");
-                Run(HUD.Chat, "<color=#FF00FFFF>⚠ TEST ⚠</color>", "Received RPC!");
+                Run(Chat, "<color=#FF00FFFF>⚠ TEST ⚠</color>", "Received RPC!");
                 break;
 
             case CustomRPC.Misc:
@@ -43,7 +43,7 @@ public static class RPCHandling
                         break;
 
                     case MiscRPC.Whisper:
-                        if (!HUD.Chat)
+                        if (!Chat)
                             break;
 
                         var whisperer = reader.ReadPlayer();
@@ -51,14 +51,14 @@ public static class RPCHandling
                         var message = reader.ReadString();
 
                         if (whispered == CustomPlayer.Local)
-                            Run(HUD.Chat, "<color=#4D4DFFFF>「 Whispers 」</color>", $"{whisperer.name} whispers to you: {message}");
+                            Run(Chat, "<color=#4D4DFFFF>「 Whispers 」</color>", $"{whisperer.name} whispers to you: {message}");
                         else if ((CustomPlayer.Local.Is(LayerEnum.Blackmailer) && CustomGameOptions.WhispersNotPrivate) || DeadSeeEverything || (CustomPlayer.Local.Is(LayerEnum.Silencer)
                             && CustomGameOptions.WhispersNotPrivateSilencer))
                         {
-                            Run(HUD.Chat, "<color=#4D4DFFFF>「 Whispers 」</color>", $"{whisperer.name} is whispering to {whispered.name} : {message}");
+                            Run(Chat, "<color=#4D4DFFFF>「 Whispers 」</color>", $"{whisperer.name} is whispering to {whispered.name} : {message}");
                         }
                         else if (CustomGameOptions.WhispersAnnouncement)
-                            Run(HUD.Chat, "<color=#4D4DFFFF>「 Whispers 」</color>", $"{whisperer.name} is whispering to {whispered.name}.");
+                            Run(Chat, "<color=#4D4DFFFF>「 Whispers 」</color>", $"{whisperer.name} is whispering to {whispered.name}.");
 
                         break;
 
@@ -114,10 +114,6 @@ public static class RPCHandling
                         UObject.FindObjectsOfType<PlainDoor>().FirstOrDefault(door => door.Id == id2)?.SetDoorway(true);
                         break;
 
-                    /*case MiscRPC.SyncPlatform:
-                        Role.SyncPlatform();
-                        break;*/
-
                     case MiscRPC.SetColor:
                         var player = reader.ReadPlayer();
                         player.SetColor(reader.ReadByte());
@@ -137,7 +133,7 @@ public static class RPCHandling
                         break;
 
                     case MiscRPC.FixLights:
-                        var lights = ShipStatus.Instance.Systems[SystemTypes.Electrical].Cast<SwitchSystem>();
+                        var lights = Ship.Systems[SystemTypes.Electrical].Cast<SwitchSystem>();
                         lights.ActualSwitches = lights.ExpectedSwitches;
                         break;
 
@@ -160,8 +156,7 @@ public static class RPCHandling
                         break;
 
                     case MiscRPC.SetSettings:
-                        var map = reader.ReadByte();
-                        TownOfUsReworked.NormalOptions.MapId = MapPatches.CurrentMap = map;
+                        TownOfUsReworked.NormalOptions.MapId = MapPatches.CurrentMap = reader.ReadByte();
                         TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.Scientist, 0, 0);
                         TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.Engineer, 0, 0);
                         TownOfUsReworked.NormalOptions.RoleOptions.SetRoleRate(RoleTypes.GuardianAngel, 0, 0);
@@ -187,16 +182,12 @@ public static class RPCHandling
                         TownOfUsReworked.NormalOptions.NumCommonTasks = CustomGameOptions.CommonTasks;
                         GameOptionsManager.Instance.currentNormalGameOptions = TownOfUsReworked.NormalOptions;
                         CustomPlayer.AllPlayers.ForEach(x => x.MaxReportDistance = CustomGameOptions.ReportDistance);
-                        MapPatches.AdjustSettings(map);
+                        MapPatches.AdjustSettings();
                         break;
 
                     case MiscRPC.SetFirstKilled:
                         CachedFirstDead = FirstDead = reader.ReadPlayer();
                         break;
-
-                    /*case MiscRPC.ShareFriendCode:
-                        reader.ReadPlayer().FriendCode = reader.ReadString();
-                        break;*/
 
                     case MiscRPC.BodyLocation:
                         var id = reader.ReadByte();
@@ -205,6 +196,10 @@ public static class RPCHandling
                         if (!BodyLocations.TryAdd(id, location))
                             BodyLocations[id] = location;
 
+                        break;
+
+                    case MiscRPC.MoveBody:
+                        reader.ReadBody().transform.position = reader.ReadVector2();
                         break;
 
                     default:
@@ -380,15 +375,11 @@ public static class RPCHandling
                 switch (action)
                 {
                     case ActionsRPC.FadeBody:
-                        Coroutines.Start(FadeBody(reader.ReadBody()));
+                        FadeBody(reader.ReadBody());
                         break;
 
                     case ActionsRPC.Convert:
                         RoleGen.Convert(reader.ReadByte(), reader.ReadByte(), (SubFaction)reader.ReadByte(), reader.ReadBoolean());
-                        break;
-
-                    case ActionsRPC.Teleport:
-                        Teleport(reader.ReadPlayer(), reader.ReadVector2());
                         break;
 
                     case ActionsRPC.BypassKill:
@@ -416,16 +407,6 @@ public static class RPCHandling
                             LogError(e);
                         }
 
-                        break;
-
-                    case ActionsRPC.WarpAll:
-                        var teleports = reader.ReadByte();
-                        var coordinates = new Dictionary<byte, Vector2>();
-
-                        for (var i = 0; i < teleports; i++)
-                            coordinates.Add(reader.ReadByte(), reader.ReadVector2());
-
-                        WarpPlayersToCoordinates(coordinates);
                         break;
 
                     case ActionsRPC.BarryButton:
@@ -482,6 +463,10 @@ public static class RPCHandling
 
                     case ActionsRPC.Cancel:
                         reader.ReadButton().ClickedAgain = true;
+                        break;
+
+                    case ActionsRPC.PublicReveal:
+                        Role.PublicReveal(reader.ReadPlayer());
                         break;
 
                     default:

@@ -20,7 +20,7 @@ public static class SaveLadderPlayer
     }
 }
 
-[HarmonyPatch(typeof(MovingPlatformBehaviour), nameof(MovingPlatformBehaviour.Use), typeof(PlayerControl))]
+[HarmonyPatch(typeof(PlatformConsole), nameof(PlatformConsole.Use))]
 public static class SavePlatformPlayer
 {
     public static void Prefix()

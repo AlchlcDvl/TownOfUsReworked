@@ -58,7 +58,7 @@ public static class AdminPatch
 
     public static void UpdateBlips(MapCountOverlay __instance, bool isOP)
     {
-        var rooms = ShipStatus.Instance.FastRooms;
+        var rooms = Ship.FastRooms;
         var colorMapDuplicate = new List<byte>();
 
         foreach (var area in __instance.CountAreas)

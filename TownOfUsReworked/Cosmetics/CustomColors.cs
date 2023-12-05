@@ -415,8 +415,7 @@ public static class CustomColors
     {
         public static bool Prefix(ref int colorId, ref Renderer rend)
         {
-            var r = rend.gameObject.GetComponent<ColorBehaviour>() ?? rend.gameObject.AddComponent<ColorBehaviour>();
-            r.AddRend(rend, colorId);
+            rend.gameObject.EnsureComponent<ColorBehaviour>().AddRend(rend, colorId);
             return !IsChanging(colorId);
         }
     }
@@ -426,8 +425,7 @@ public static class CustomColors
     {
         public static bool Prefix(ref Renderer rend)
         {
-            var r = rend.gameObject.GetComponent<ColorBehaviour>() ?? rend.gameObject.AddComponent<ColorBehaviour>();
-            r.AddRend(rend, 0);
+            rend.gameObject.EnsureComponent<ColorBehaviour>().AddRend(rend, 0);
             return true;
         }
     }
@@ -456,6 +454,16 @@ public static class CustomColors
                     __instance.AvailableColors.Add(i);
             }
 
+            return false;
+        }
+    }
+
+    [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.SetPlayerMaterialColors))]
+    public static class FixPlayerMaterials
+    {
+        public static bool Prefix(PlayerControl __instance, ref Renderer rend)
+        {
+            PlayerMaterial.SetColors(__instance.Data.DefaultOutfit.ColorId, rend);
             return false;
         }
     }

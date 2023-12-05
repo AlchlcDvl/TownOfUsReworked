@@ -28,14 +28,11 @@ public class Language
 
     public static string CurrentLanguage
     {
-        get
+        get => (int)DataManager.Settings.Language.CurrentLanguage switch
         {
-            return (int)DataManager.Settings.Language.CurrentLanguage switch
-            {
-                13 => "SChinese",
-                _ => "English"
-            };
-        }
+            13 => "SChinese",
+            _ => "English"
+        };
     }
 
     private static readonly List<string> SupportedLangs = new() { "English", "SChinese" };

@@ -30,8 +30,8 @@ public class Teleporter : Intruder
 
     public void Teleport()
     {
-        CallRpc(CustomRPC.Action, ActionsRPC.Teleport, Player, TeleportPoint);
-        Utils.Teleport(Player, TeleportPoint);
+        Player.NetTransform.RpcSnapTo(TeleportPoint);
+        Flash(Color);
         TeleportButton.StartCooldown();
 
         if (CustomGameOptions.TeleCooldownsLinked)

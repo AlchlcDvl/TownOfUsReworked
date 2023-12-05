@@ -11,7 +11,7 @@ public class CustomPlayer
     public float SpeedFactor => Player.GetBaseSpeed() * Player.GetModifiedSpeed();
     public Vector3 SizeFactor => new(0.7f * Size, 0.7f * Size, 1f);
     public float Size => IsLobby || IsDead || Disconnected ? 1f : Player.GetModifiedSize();
-    public GameData.PlayerOutfit DefaultOutfit => Player.GetDefaultOutfit();
+    public GameData.PlayerOutfit DefaultOutfit => Data.DefaultOutfit;
     public string PlayerName => Data.PlayerName;
 
     public static PlayerControl Local => PlayerControl.LocalPlayer;
@@ -26,6 +26,8 @@ public class CustomPlayer
     }
 
     public static implicit operator bool(CustomPlayer exists) => exists != null && exists.Player;
+
+    public static implicit operator PlayerControl(CustomPlayer exists) => exists.Player;
 
     public static CustomPlayer Custom(PlayerControl player) => AllCustomPlayers.Find(x => x.Player == player) ?? new(player);
 

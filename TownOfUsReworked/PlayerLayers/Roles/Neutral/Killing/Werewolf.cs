@@ -27,7 +27,7 @@ public class Werewolf : Neutral
             Spread(Player, player);
 
             if (player.IsVesting() || player.IsProtected() || Player.IsLinkedTo(player) || Player == player || MaulButton.TargetPlayer == player || player.IsShielded() ||
-                player.IsRetShielded() || player.IsProtectedMonarch())
+                player.IsProtectedMonarch())
             {
                 continue;
             }
@@ -37,11 +37,11 @@ public class Werewolf : Neutral
 
             if (player.IsOnAlert() || player.Is(LayerEnum.Pestilence))
                 RpcMurderPlayer(player, Player);
-            else if (player.IsAmbushed() || player.IsGFAmbushed())
+            else if (player.IsAmbushed())
                 RpcMurderPlayer(player, Player, DeathReasonEnum.Ambushed);
-            else if (player.IsCrusaded() || player.IsRebCrusaded())
+            else if (player.IsCrusaded())
             {
-                if (player.GetCrusader()?.HoldsDrive == true || player.GetRebCrus()?.HoldsDrive == true)
+                if (player.CrusadeActive())
                     Crusader.RadialCrusade(player);
                 else
                     RpcMurderPlayer(player, Player, DeathReasonEnum.Crusaded, true);

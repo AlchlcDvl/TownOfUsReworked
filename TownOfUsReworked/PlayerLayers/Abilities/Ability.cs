@@ -33,7 +33,6 @@ public abstract class Ability : PlayerLayer
         foreach (var pol in GetLayers<Politician>())
         {
             pol.DestroyAbstain();
-            pol.ExtraVotes.Clear();
 
             if (pol.VoteBank < 0)
                 pol.VoteBank = 0;

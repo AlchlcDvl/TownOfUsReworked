@@ -34,15 +34,15 @@ public class SyndicateAssassin : Assassin
 
 public abstract class Assassin : Ability
 {
-    public Dictionary<string, Color> ColorMapping { get; set; }
-    public Dictionary<string, Color> SortedColorMapping { get; set; }
+    private Dictionary<string, Color> ColorMapping { get; set; }
+    private Dictionary<string, Color> SortedColorMapping { get; set; }
     public static int RemainingKills { get; set; }
     public GameObject Phone { get; set; }
-    public Transform SelectedButton { get; set; }
-    public int Page { get; set; }
-    public int MaxPage { get; set; }
-    public Dictionary<int, List<Transform>> Buttons { get; set; }
-    public Dictionary<int, KeyValuePair<string, Color>> Sorted { get; set; }
+    private Transform SelectedButton { get; set; }
+    private int Page { get; set; }
+    private int MaxPage { get; set; }
+    private Dictionary<int, List<Transform>> Buttons { get; set; }
+    private Dictionary<int, KeyValuePair<string, Color>> Sorted { get; set; }
     public CustomMeeting AssassinMenu { get; set; }
 
     public override Color Color => ClientGameOptions.CustomAbColors ? Colors.Assassin : Colors.Ability;
@@ -302,7 +302,7 @@ public abstract class Assassin : Ability
             var button = UObject.Instantiate(buttonTemplate, buttonParent);
             UObject.Instantiate(maskTemplate, buttonParent);
             var label = UObject.Instantiate(textTemplate, button);
-            button.GetComponent<SpriteRenderer>().sprite = ShipStatus.Instance.CosmeticsCache.GetNameplate("nameplate_NoPlate").Image;
+            button.GetComponent<SpriteRenderer>().sprite = Ship.CosmeticsCache.GetNameplate("nameplate_NoPlate").Image;
 
             if (!Buttons.ContainsKey(i))
                 Buttons.Add(i, new());
@@ -416,7 +416,7 @@ public abstract class Assassin : Ability
 
         AllVoteAreas.ForEach(x => x.gameObject.SetActive(false));
         __instance.TimerText.gameObject.SetActive(false);
-        HUD.Chat.SetVisible(false);
+        Chat.SetVisible(false);
         Page = 0;
         var container = UObject.Instantiate(UObject.FindObjectsOfType<Transform>().FirstOrDefault(x => x.name == "PhoneUI"), __instance.transform);
         container.transform.localPosition = new(0, 0, -5f);
@@ -440,7 +440,7 @@ public abstract class Assassin : Ability
             return;
 
         Phone.Destroy();
-        HUD.Chat.SetVisible(true);
+        Chat.SetVisible(true);
         SelectedButton = null;
         __instance.TimerText.gameObject.SetActive(true);
         AllVoteAreas.ForEach(x => x.gameObject.SetActive(true));
@@ -500,9 +500,9 @@ public abstract class Assassin : Ability
         if (player.Is(LayerEnum.Indomitable) && player != Player)
         {
             if (Local)
-                Run(HUD.Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"You failed to assassinate {guessTarget.name}!");
+                Run(Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"You failed to assassinate {guessTarget.name}!");
             else if (player == CustomPlayer.Local)
-                Run(HUD.Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"Someone tried to assassinate you!");
+                Run(Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"Someone tried to assassinate you!");
 
             Flash(Colors.Indomitable);
             Modifier.GetModifier<Indomitable>(player).AttemptedGuess = true;
@@ -519,10 +519,10 @@ public abstract class Assassin : Ability
                 if (Local)
                 {
                     Flash(modifier.Color);
-                    Run(HUD.Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"You incorrectly guessed {guessTarget.name} as {guess} and lost a life!");
+                    Run(Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"You incorrectly guessed {guessTarget.name} as {guess} and lost a life!");
                 }
                 else if ((Player.GetFaction() == CustomPlayer.Local.GetFaction() && (Player.GetFaction() is Faction.Intruder or Faction.Syndicate)) || DeadSeeEverything)
-                    Run(HUD.Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} incorrectly guessed {guessTarget.name} as {guess} and lost a life!");
+                    Run(Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} incorrectly guessed {guessTarget.name} as {guess} and lost a life!");
 
                 return;
             }
@@ -542,21 +542,21 @@ public abstract class Assassin : Ability
         if (Local)
         {
             if (Player != player)
-                Run(HUD.Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"You guessed {guessTarget.name} as {guess}!");
+                Run(Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"You guessed {guessTarget.name} as {guess}!");
             else
-                Run(HUD.Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"You incorrectly guessed {guessTarget.name} as {guess} and died!");
+                Run(Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"You incorrectly guessed {guessTarget.name} as {guess} and died!");
         }
         else if (Player != player && CustomPlayer.Local == player)
-            Run(HUD.Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} guessed you as {guess}!");
+            Run(Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} guessed you as {guess}!");
         else if ((Player.GetFaction() == CustomPlayer.Local.GetFaction() && (Player.GetFaction() is Faction.Intruder or Faction.Syndicate)) || DeadSeeEverything)
         {
             if (Player != player)
-                Run(HUD.Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} guessed {guessTarget.name} as {guess}!");
+                Run(Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} guessed {guessTarget.name} as {guess}!");
             else
-                Run(HUD.Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} incorrectly guessed {guessTarget.name} as {guess} and died!");
+                Run(Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"{Player.name} incorrectly guessed {guessTarget.name} as {guess} and died!");
         }
         else
-            Run(HUD.Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"{player.name} has been assassinated!");
+            Run(Chat, "<color=#EC1C45FF>∮ Assassination ∮</color>", $"{player.name} has been assassinated!");
     }
 
     public override void VoteComplete(MeetingHud __instance)

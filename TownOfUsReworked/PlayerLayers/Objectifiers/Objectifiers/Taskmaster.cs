@@ -2,7 +2,6 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers;
 
 public class Taskmaster : Objectifier
 {
-    public bool Revealed => TasksLeft <= CustomGameOptions.TMTasksRemaining;
     public bool WinTasksDone { get; set; }
 
     public override Color Color => ClientGameOptions.CustomObjColors ? Colors.Taskmaster : Colors.Objectifier;

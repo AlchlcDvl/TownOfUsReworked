@@ -206,25 +206,32 @@ public static class CheckEndGame
     {
         try
         {
-            if (ShipStatus.Instance.Systems.ContainsKey(SystemTypes.LifeSupp))
+            if (Ship.Systems.ContainsKey(SystemTypes.LifeSupp))
             {
-                var lifeSuppSystemType = ShipStatus.Instance.Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
+                var lifeSuppSystemType = Ship.Systems[SystemTypes.LifeSupp].Cast<LifeSuppSystemType>();
 
-                if (lifeSuppSystemType.Countdown < 0f)
+                if (lifeSuppSystemType.Countdown <= 0f)
                     return true;
             }
-            else if (ShipStatus.Instance.Systems.ContainsKey(SystemTypes.Laboratory))
+            else if (Ship.Systems.ContainsKey(SystemTypes.Laboratory))
             {
-                var reactorSystemType = ShipStatus.Instance.Systems[SystemTypes.Laboratory].Cast<ReactorSystemType>();
+                var reactorSystemType = Ship.Systems[SystemTypes.Laboratory].Cast<ReactorSystemType>();
 
-                if (reactorSystemType.Countdown < 0f)
+                if (reactorSystemType.Countdown <= 0f)
                     return true;
             }
-            else if (ShipStatus.Instance.Systems.ContainsKey(SystemTypes.Reactor))
+            else if (Ship.Systems.ContainsKey(SystemTypes.Reactor))
             {
-                var reactorSystemType = ShipStatus.Instance.Systems[SystemTypes.Reactor].Cast<ICriticalSabotage>();
+                var reactorSystemType = Ship.Systems[SystemTypes.Reactor].Cast<ICriticalSabotage>();
 
-                if (reactorSystemType.Countdown < 0f)
+                if (reactorSystemType.Countdown <= 0f)
+                    return true;
+            }
+            else if (Ship.Systems.ContainsKey(SystemTypes.HeliSabotage))
+            {
+                var reactorSystemType = Ship.Systems[SystemTypes.HeliSabotage].Cast<HeliSabotageSystem>();
+
+                if (reactorSystemType.Countdown <= 0f)
                     return true;
             }
         } catch {}

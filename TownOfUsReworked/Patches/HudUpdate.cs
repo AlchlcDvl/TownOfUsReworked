@@ -103,7 +103,7 @@ public static class HudUpdate
         if (LocalBlocked && ActiveTask)
             ActiveTask.Close();
 
-        if (LocalBlocked && Map)
+        if (LocalBlocked && MapPatch.MapActive)
             Map.Close();
 
         CustomArrow.AllArrows.Where(x => x.Owner != CustomPlayer.Local).ForEach(x => x?.Update());
@@ -150,22 +150,16 @@ public static class HudUpdate
             if (IsCamoed)
                 PlayerMaterial.SetColors(UColor.grey, renderer);
             else if (SurveillancePatches.NVActive)
-            {
-                renderer.material.SetColor("_BackColor", Palette.ShadowColors[11]);
-                renderer.material.SetColor("_BodyColor", Palette.PlayerColors[11]);
-            }
+                PlayerMaterial.SetColors(UColor.green, renderer);
             else
-            {
-                renderer.material.SetColor("_BackColor", PlayerByBody(body).GetShadowColor());
-                renderer.material.SetColor("_BodyColor", PlayerByBody(body).GetPlayerColor());
-            }
+                PlayerMaterial.SetColors(PlayerByBody(body).Data.DefaultOutfit.ColorId, renderer);
         }
 
         foreach (var id in UninteractiblePlayers.Keys)
         {
             var player = PlayerById(id);
 
-            if (player == null || player.HasDied())
+            if (player.HasDied())
                 continue;
 
             if (UninteractiblePlayers.ContainsKey(player.PlayerId) && player.moveable && UninteractiblePlayers[player.PlayerId].AddSeconds(6) < DateTime.UtcNow)
@@ -174,11 +168,9 @@ public static class HudUpdate
 
         if (CustomGameOptions.CamouflagedComms)
         {
-            var commsactive = ShipStatus.Instance?.Systems?.TryGetValue(SystemTypes.Comms, out var comms) == true;
-
-            if (commsactive)
+            if (Ship?.Systems?.TryGetValue(SystemTypes.Comms, out var comms) == true)
             {
-                var comms1 = ShipStatus.Instance?.Systems[SystemTypes.Comms]?.TryCast<HudOverrideSystemType>();
+                var comms1 = comms?.TryCast<HudOverrideSystemType>();
 
                 if (comms1 != null && comms1.IsActive)
                 {
@@ -187,7 +179,7 @@ public static class HudUpdate
                     return;
                 }
 
-                var comms2 = ShipStatus.Instance?.Systems[SystemTypes.Comms]?.TryCast<HqHudSystemType>();
+                var comms2 = comms?.TryCast<HqHudSystemType>();
 
                 if (comms2 != null && comms2.IsActive)
                 {
@@ -214,7 +206,7 @@ public static class MeetingCooldowns
         if (obj == null)
             return;
 
-        if (ExileController.Instance && obj == ExileController.Instance?.gameObject)
+        if (Ejection && obj == Ejection.gameObject)
             ButtonUtils.Reset(CooldownType.Meeting);
         else if (ActiveTask && obj == ActiveTask.gameObject)
             CustomPlayer.Local.EnableButtons();

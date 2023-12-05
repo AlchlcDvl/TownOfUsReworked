@@ -10,8 +10,9 @@ public class Medic : Crew
     public override string Name => "Medic";
     public override LayerEnum Type => LayerEnum.Medic;
     public override Func<string> StartText => () => "Shield A Player To Protect Them";
-    public override Func<string> Description => () => "- You can shield a player to prevent them from dying to others\n- If your target is attacked, you will be notified of it\n- Your " +
-        "shield does not save your target from suicides or ejections";
+    public override Func<string> Description => () => "- You can shield a player to give them Powerful defense" +
+        (CustomGameOptions.NotificationShield is ShieldOptions.Everyone or ShieldOptions.Medic or ShieldOptions.SelfAndMedic ? "\n- If your target is attacked, you will be notified of it" :
+        "");
 
     public Medic(PlayerControl player) : base(player)
     {
@@ -28,18 +29,32 @@ public class Medic : Crew
 
         if (interact.AbilityUsed)
         {
-            ShieldedPlayer = ShieldButton.TargetPlayer;
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, ShieldedPlayer);
+            if (ShieldedPlayer == null)
+            {
+                ShieldedPlayer = ShieldButton.TargetPlayer;
+                CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, MedicActionsRPC.Add, ShieldedPlayer);
+            }
+            else
+            {
+                ShieldedPlayer = null;
+                CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, MedicActionsRPC.Remove);
+            }
         }
     }
 
-    public bool Exception(PlayerControl player) => (player.Is(LayerEnum.Mayor) && GetRole<Mayor>(player).Revealed) || (player.Is(LayerEnum.Dictator) && GetRole<Dictator>(player).Revealed);
-
-    public override void ReadRPC(MessageReader reader) => ShieldedPlayer = reader.ReadPlayer();
+    public bool Exception(PlayerControl player)
+    {
+        if (ShieldedPlayer == null)
+            return (player.Is(LayerEnum.Mayor) && GetRole<Mayor>(player).Revealed) || (player.Is(LayerEnum.Dictator) && GetRole<Dictator>(player).Revealed);
+        else
+            return ShieldedPlayer != player;
+    }
 
     public override void UpdateHud(HudManager __instance)
     {
         base.UpdateHud(__instance);
-        ShieldButton.Update2("SHIELD", ShieldedPlayer == null && ExShielded == null);
+        ShieldButton.Update2("SHIELD", ExShielded == null);
     }
+
+    public override void ReadRPC(MessageReader reader) => ShieldedPlayer = (MedicActionsRPC)reader.ReadByte() == MedicActionsRPC.Add ? reader.ReadPlayer() : null;
 }

@@ -103,6 +103,6 @@ public class Medium : Crew
         MediatedPlayers.Add(playerid2);
 
         if (CustomPlayer.Local.PlayerId == playerid2 || (CustomPlayer.LocalCustom.IsDead && CustomGameOptions.ShowMediumToDead == ShowMediumToDead.AllDead))
-            LocalRole.DeadArrows.Add(PlayerId, new(CustomPlayer.Local, Colors.Retributionist));
+            LocalRole.DeadArrows.Add(PlayerId, new(CustomPlayer.Local, Color));
     }
 }

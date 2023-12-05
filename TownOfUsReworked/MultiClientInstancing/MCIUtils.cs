@@ -3,7 +3,7 @@ namespace TownOfUsReworked.MultiClientInstancing;
 public static class MCIUtils
 {
     public static readonly Dictionary<int, ClientData> Clients = new();
-    public static readonly Dictionary<byte, int> PlayerIdClientIDs = new();
+    public static readonly Dictionary<byte, int> PlayerClientIDs = new();
     public static readonly Dictionary<byte, Vector3> SavedPositions = new();
 
     public static int AvailableId()
@@ -22,20 +22,25 @@ public static class MCIUtils
         if (GameData.Instance.AllPlayers.Count == 1)
         {
             Clients.Clear();
-            PlayerIdClientIDs.Clear();
+            PlayerClientIDs.Clear();
+            SavedPositions.Clear();
         }
     }
 
-    public static PlayerControl CreatePlayerInstance()
+    public static void CreatePlayerInstances(int count)
     {
-        var samplePSD = new PlatformSpecificData()
+        for (var i = 0; i < count; i++)
+            CreatePlayerInstance();
+    }
+
+    public static void CreatePlayerInstance()
+    {
+        var sampleId = AvailableId();
+        var sampleC = new ClientData(sampleId, $"Bot-{sampleId}", new()
         {
             Platform = Platforms.StandaloneWin10,
             PlatformName = "Bot"
-        };
-
-        var sampleId = AvailableId();
-        var sampleC = new ClientData(sampleId, $"Bot-{sampleId}", samplePSD, 1, "", "robotmodeactivate");
+        }, 1, "", "robotmodeactivate");
 
         AmongUsClient.Instance.CreatePlayer(sampleC);
         AmongUsClient.Instance.allClients.Add(sampleC);
@@ -49,12 +54,11 @@ public static class MCIUtils
         sampleC.Character.MyPhysics.ResetMoveState();
 
         Clients.Add(sampleId, sampleC);
-        PlayerIdClientIDs.Add(sampleC.Character.PlayerId, sampleId);
+        PlayerClientIDs.Add(sampleC.Character.PlayerId, sampleId);
+        SavedPositions.Remove(sampleC.Character.PlayerId);
 
         if (SubLoaded)
             ImpartSub(sampleC.Character);
-
-        return sampleC.Character;
     }
 
     public static void RemovePlayer(byte id)
@@ -64,7 +68,7 @@ public static class MCIUtils
 
         var clientId = Clients.FirstOrDefault(x => x.Value.Character.PlayerId == id).Key;
         Clients.Remove(clientId, out var outputData);
-        PlayerIdClientIDs.Remove(id);
+        PlayerClientIDs.Remove(id);
         SavedPositions.Remove(id);
         AmongUsClient.Instance.RemovePlayer(clientId, DisconnectReasons.Custom);
         AmongUsClient.Instance.allClients.Remove(outputData);
@@ -72,7 +76,7 @@ public static class MCIUtils
 
     public static void RemoveAllPlayers()
     {
-        PlayerIdClientIDs.Keys.ForEach(RemovePlayer);
+        PlayerClientIDs.Keys.ForEach(RemovePlayer);
         SwitchTo(0);
     }
 
@@ -92,10 +96,7 @@ public static class MCIUtils
             CustomPlayer.Local.DisableArrows();
         }
 
-        if (!SavedPositions.ContainsKey(CustomPlayer.Local.PlayerId))
-            SavedPositions.Add(CustomPlayer.Local.PlayerId, CustomPlayer.LocalCustom.Position);
-        else
-            SavedPositions[CustomPlayer.Local.PlayerId] = CustomPlayer.LocalCustom.Position;
+        SavedPositions[CustomPlayer.Local.PlayerId] = CustomPlayer.LocalCustom.Position;
 
         PlayerLayer.LocalLayers.ForEach(x => x.ExitingLayer());
 
@@ -115,18 +116,19 @@ public static class MCIUtils
         CustomPlayer.Local.lightSource = light;
         CustomPlayer.Local.moveable = true;
 
-        AmongUsClient.Instance.ClientId = newPlayer.OwnerId;
-        AmongUsClient.Instance.HostId = newPlayer.OwnerId;
+        AmongUsClient.Instance.ClientId = CustomPlayer.Local.OwnerId;
+        AmongUsClient.Instance.HostId = CustomPlayer.Local.OwnerId;
 
         HUD.SetHudActive(true);
-        HUD.ShadowQuad.gameObject.SetActive(!newPlayer.Data.IsDead);
+        HUD.ShadowQuad.gameObject.SetActive(!CustomPlayer.Local.Data.IsDead);
 
         light.transform.SetParent(CustomPlayer.LocalCustom.Transform);
         light.transform.localPosition = CustomPlayer.Local.Collider.offset;
 
-        Camera.main!.GetComponent<FollowerCamera>().SetTarget(newPlayer);
+        Camera.main.GetComponent<FollowerCamera>().SetTarget(CustomPlayer.Local);
         CustomPlayer.Local.MyPhysics.ResetMoveState(true);
         KillAnimation.SetMovement(CustomPlayer.Local, true);
+        CustomPlayer.Local.MyPhysics.inputHandler.enabled = true;
 
         if (Meeting)
             PlayerLayer.LocalLayers.ForEach(x => x.OnMeetingStart(Meeting));
@@ -138,7 +140,7 @@ public static class MCIUtils
 
         PlayerLayer.LocalLayers.ForEach(x => x.EnteringLayer());
 
-        HUD.Chat.SetVisible(CustomPlayer.Local.CanChat());
+        Chat.SetVisible(CustomPlayer.Local.CanChat());
 
         if (SavedPositions.TryGetValue(playerId, out var pos))
             CustomPlayer.Local.NetTransform.RpcSnapTo(pos);

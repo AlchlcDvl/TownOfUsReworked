@@ -40,7 +40,7 @@ public static class UpdateNames
             return "";
         }
 
-        player = player.IsMimicking(out var mimicked) ? mimicked : player;
+        player.IsMimicking(out player);
         var name = "";
 
         if (HudUpdate.IsCamoed && player != CustomPlayer.Local && !CustomPlayer.LocalCustom.IsDead)
@@ -74,7 +74,7 @@ public static class UpdateNames
         }
 
         if (player != CustomPlayer.Local && !DeadSeeEverything)
-            player = player.IsMimicking(out var mimicked) ? mimicked : player;
+            player.IsMimicking(out player);
 
         var name = "";
         var color = UColor.white;
@@ -818,7 +818,7 @@ public static class UpdateNames
 
         if (player == CustomPlayer.Local && !DeadSeeEverything)
         {
-            if ((player.IsShielded() || player.IsRetShielded()) && (int)CustomGameOptions.ShowShielded is 0 or 2)
+            if (player.IsShielded() && (int)CustomGameOptions.ShowShielded is 0 or 2)
                 name += " <color=#006600FF>✚</color>";
 
             if (player.IsProtected() && (int)CustomGameOptions.ShowProtect is 0 or 2)
@@ -851,7 +851,7 @@ public static class UpdateNames
 
         if (DeadSeeEverything)
         {
-            if ((player.IsShielded() || player.IsRetShielded()) && CustomGameOptions.ShowShielded != ShieldOptions.Everyone)
+            if (player.IsShielded() && CustomGameOptions.ShowShielded != ShieldOptions.Everyone)
                 name += " <color=#006600FF>✚</color>";
 
             if (player.IsProtected() && CustomGameOptions.ShowProtect != ProtectOptions.Everyone)
@@ -897,7 +897,7 @@ public static class UpdateNames
                 name += " <color=#0028F5FF>ø</color>";
         }
 
-        if ((player.IsShielded() || player.IsRetShielded()) && (int)CustomGameOptions.ShowShielded is 3 && !DeadSeeEverything)
+        if (player.IsShielded() && (int)CustomGameOptions.ShowShielded is 3 && !DeadSeeEverything)
             name += " <color=#006600FF>✚</color>";
 
         if (player.IsProtected() && (int)CustomGameOptions.ShowProtect is 3 && !DeadSeeEverything)

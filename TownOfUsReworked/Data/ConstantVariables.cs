@@ -5,8 +5,8 @@ public static class ConstantVariables
 {
     public static bool IsCountDown => GameStartManager.Instance?.startState == GameStartManager.StartingStates.Countdown;
     public static bool IsInGame => (AmongUsClient.Instance.GameState == InnerNetClient.GameStates.Started || GameManager.Instance?.GameHasStarted == true ||
-        AmongUsClient.Instance.IsGameStarted) && !LobbyBehaviour.Instance;
-    public static bool IsLobby => AmongUsClient.Instance.GameState == InnerNetClient.GameStates.Joined || LobbyBehaviour.Instance;
+        AmongUsClient.Instance.IsGameStarted) && !Lobby;
+    public static bool IsLobby => AmongUsClient.Instance.GameState == InnerNetClient.GameStates.Joined || Lobby;
     public static bool IsEnded => AmongUsClient.Instance.GameState == InnerNetClient.GameStates.Ended || AmongUsClient.Instance.IsGameOver;
     public static bool IsHnS => GameOptionsManager.Instance.CurrentGameOptions.GameMode == GameModes.HideNSeek;
     public static bool IsNormal => GameOptionsManager.Instance.CurrentGameOptions.GameMode == GameModes.Normal;

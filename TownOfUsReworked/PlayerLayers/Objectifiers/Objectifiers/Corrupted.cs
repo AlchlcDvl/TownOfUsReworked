@@ -2,7 +2,7 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers;
 
 public class Corrupted : Objectifier
 {
-    public CustomButton CorruptButton { get; set; }
+    private CustomButton CorruptButton { get; set; }
 
     public override Color Color => ClientGameOptions.CustomObjColors ? Colors.Corrupted : Colors.Objectifier;
     public override string Name => "Corrupted";
@@ -16,7 +16,7 @@ public class Corrupted : Objectifier
         Role.GetRole(Player).Alignment = Role.GetRole(Player).Alignment.GetNewAlignment(Faction.Neutral);
     }
 
-    public void Corrupt()
+    private void Corrupt()
     {
         var interact = Interact(Player, CorruptButton.TargetPlayer, true);
         var cooldown = CooldownType.Reset;

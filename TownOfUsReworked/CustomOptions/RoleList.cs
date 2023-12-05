@@ -33,6 +33,7 @@ public class RoleListEntryOption : CustomOption
         { LayerEnum.Shifter, "<color=#DF851FFF>Shifter</color>"},
         { LayerEnum.Tracker, "<color=#009900FF>Tracker</color>"},
         { LayerEnum.Transporter, "<color=#00EEFFFF>Transporter</color>"},
+        { LayerEnum.Trapper, "<color=#BE1C8CFF>Trapper</color>"},
         { LayerEnum.VampireHunter, "<color=#C0C0C0FF>Vampire Hunter</color>"},
         { LayerEnum.Veteran, "<color=#998040FF>Veteran</color>"},
         { LayerEnum.Vigilante, "<color=#FFFF00FF>Vigilante</color>"},
@@ -171,7 +172,6 @@ public class RoleListEntryOption : CustomOption
     private List<OptionBehaviour> CreateOptions()
     {
         var options = new List<OptionBehaviour>();
-        var togglePrefab = UObject.FindObjectOfType<ToggleOption>();
 
         foreach (var button in SlotButtons)
         {
@@ -219,7 +219,7 @@ public class RoleListEntryOption : CustomOption
         for (var i = 0; i < options.Count; i++)
             options[i].transform.localPosition = new(x, y - (i * 0.5f), z);
 
-        __instance.Children = new(options.ToArray());
+        __instance.Children = options.ToArray();
     }
 
     public void SetVal(LayerEnum value)

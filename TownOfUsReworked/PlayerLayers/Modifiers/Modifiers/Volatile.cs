@@ -5,7 +5,7 @@ public class Volatile : Modifier
     private float _time;
     private int OtherNumber { get; set; }
     private static bool RickRolled;
-    public bool Exposed { get; set; }
+    private bool Exposed { get; set; }
 
     public override Color Color => ClientGameOptions.CustomModColors ? Colors.Volatile : Colors.Modifier;
     public override string Name => "Volatile";

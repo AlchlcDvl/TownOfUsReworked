@@ -84,8 +84,12 @@ public class Warper : Syndicate
         }
 
         Warping = true;
-        WarpPlayer1.moveable = false;
-        WarpPlayer1.NetTransform.Halt();
+
+        if (!WarpPlayer1.HasDied())
+        {
+            WarpPlayer1.moveable = false;
+            WarpPlayer1.NetTransform.Halt();
+        }
 
         if (CustomPlayer.Local == WarpPlayer1)
             Flash(Color, CustomGameOptions.WarpDur);
@@ -158,14 +162,10 @@ public class Warper : Syndicate
             if (ActiveTask)
                 ActiveTask.Close();
 
-            if (Map)
+            if (MapPatch.MapActive)
                 Map.Close();
         }
 
-        WarpPlayer1.moveable = true;
-        WarpPlayer1.Collider.enabled = true;
-        WarpPlayer1.NetTransform.enabled = true;
-        WarpPlayer2.MyPhysics.ResetMoveState();
         WarpPlayer1 = null;
         WarpPlayer2 = null;
         Warping = false;
@@ -216,15 +216,34 @@ public class Warper : Syndicate
             WarpPlayer1.SetPlayerMaterialColors(AnimationPlaying);
 
             if (p == 1)
-                AnimationPlaying.sprite = null;
+                AnimationPlaying.sprite = PortalAnimation[0];
         })));
+    }
+
+    public static void WarpAll()
+    {
+        var coords = GenerateWarpCoordinates();
+
+        foreach (var (id, pos) in coords)
+        {
+            var player = PlayerById(id);
+            var body = BodyById(id);
+
+            if (body != null)
+            {
+                body.transform.position = pos;
+                CallRpc(CustomRPC.Misc, MiscRPC.MoveBody, body, pos);
+            }
+            else
+                player.NetTransform.RpcSnapTo(pos);
+        }
     }
 
     public void Warp()
     {
         if (HoldsDrive)
         {
-            Utils.Warp();
+            WarpAll();
             WarpButton.StartCooldown();
         }
         else if (WarpPlayer1 == null)

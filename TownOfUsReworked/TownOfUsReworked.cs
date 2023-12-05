@@ -8,7 +8,7 @@ public class TownOfUsReworked : BasePlugin
 {
     public const string ID = "me.alchlcdvl.reworked";
     public const string Name = "TownOfUsReworked";
-    public const string VersionString = "0.6.2.0";
+    public const string VersionString = "0.6.3.0";
     public static readonly Version Version = new(VersionString);
 
     public const bool IsDev = false;
@@ -82,10 +82,6 @@ public class TownOfUsReworked : BasePlugin
         try
         {
             ModInstance = this;
-
-            if (!File.Exists($"{DataPath}steam_appid.txt"))
-                File.WriteAllText($"{DataPath}steam_appid.txt", "945360");
-
             Reworked.LoadComponents();
             LogMessage($"Mod Loaded - {this}");
         }

@@ -133,9 +133,7 @@ public static class AssetLoader
 
         try
         {
-            var status = await FetchHats(update);
-
-            if (status != HttpStatusCode.OK)
+            if (await FetchHats(update) != HttpStatusCode.OK)
                 LogError("Hats could not be loaded");
             else
                 LogMessage("Fetched hats");
@@ -154,9 +152,7 @@ public static class AssetLoader
 
         try
         {
-            var status = await FetchNameplates(update);
-
-            if (status != HttpStatusCode.OK)
+            if (await FetchNameplates(update) != HttpStatusCode.OK)
                 LogError("Nameplates could not be loaded");
             else
                 LogMessage("Fetched nameplates");
@@ -175,9 +171,7 @@ public static class AssetLoader
 
         try
         {
-            var status = await FetchVisors(update);
-
-            if (status != HttpStatusCode.OK)
+            if (await FetchVisors(update) != HttpStatusCode.OK)
                 LogError("Visors could not be loaded");
             else
                 LogMessage("Fetched visors");
@@ -196,9 +190,7 @@ public static class AssetLoader
 
         try
         {
-            var status = await FetchTranslations();
-
-            if (status != HttpStatusCode.OK)
+            if (await FetchTranslations() != HttpStatusCode.OK)
                 LogError("Translations could not be loaded");
             else
                 LogMessage("Fetched translations");

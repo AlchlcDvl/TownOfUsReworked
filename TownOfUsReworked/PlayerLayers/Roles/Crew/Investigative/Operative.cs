@@ -58,7 +58,7 @@ public class Operative : Crew
         }
 
         if (HUD)
-            Run(HUD.Chat, "<color=#A7D1B3FF>〖 Bug Results 〗</color>", message);
+            Run(Chat, "<color=#A7D1B3FF>〖 Bug Results 〗</color>", message);
     }
 
     public override void UpdateHud(HudManager __instance)

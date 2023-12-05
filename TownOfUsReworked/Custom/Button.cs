@@ -39,6 +39,7 @@ public class CustomButton
     public bool Targeting { get; set; }
     public bool Clickable { get; set; }
     public bool Usable { get; set; }
+    public bool CanClickAgain { get; set; }
     public PlayerControl TargetPlayer { get; set; }
     public DeadBody TargetBody { get; set; }
     public Vent TargetVent { get; set; }
@@ -54,10 +55,6 @@ public class CustomButton
     public bool Blocked => Owner.IsBlocked;
     private bool KeyDown => Rewired.ReInput.players.GetPlayer(0).GetButtonDown(Keybind);
     private bool Active => IsRoaming && Owner.Local && ButtonsActive && !Disabled && Owner.IsDead == PostDeath;
-    private IEnumerable<PlayerControl> PossibleTargets1 => CustomPlayer.AllPlayers.Where(x => x != Owner.Player && !x.IsPostmortal() && !x.Data.IsDead && (!Exception(x) || x.IsMoving()));
-    private IEnumerable<DeadBody> PossibleTargets2 => AllBodies.Where(x => !Exception(x));
-    private IEnumerable<Vent> PossibleTargets3 => AllMapVents.Where(x => !Exception(x));
-    private IEnumerable<Console> PossibleTargets4 => AllConsoles.Where(x => !Exception(x));
     private static bool ButtonsActive => HUD.UseButton.isActiveAndEnabled || HUD.PetButton.isActiveAndEnabled;
 
     public delegate bool Exclude1(PlayerControl player);
@@ -100,11 +97,11 @@ public class CustomButton
     public CustomButton(PlayerLayer owner, string sprite, AbilityTypes type, string keybind, Action click, float cooldown, float duration, int uses, bool postDeath = false) : this(owner,
         sprite, type, keybind, click, cooldown, null, null, null, null, duration, null, null, null, 0f, uses, null, postDeath) {}
 
-    public CustomButton(PlayerLayer owner, string sprite, AbilityTypes type, string keybind, Action click, float cooldown, int uses, Exclude2 exception2, bool postDeath = false) : this(owner,
-        sprite, type, keybind, click, cooldown, null, null, null, null, 0f, null, null, null, 0f, uses, null, exception2, null, postDeath) {}
-
     public CustomButton(PlayerLayer owner, string sprite, AbilityTypes type, string keybind, Action click, float cooldown, float duration, EffectEndVoid offEffect, bool postDeath = false) :
         this(owner, sprite, type, keybind, click, cooldown, null, null, null, offEffect, duration, null, null, null, 0f, 0, null, postDeath) {}
+
+    public CustomButton(PlayerLayer owner, string sprite, AbilityTypes type, string keybind, Action click, float cooldown, int uses, Exclude2 exception2, bool postDeath = false) : this(owner,
+        sprite, type, keybind, click, cooldown, null, null, null, null, 0f, null, null, null, 0f, true, uses, null, exception2, null, postDeath) {}
 
     public CustomButton(PlayerLayer owner, string sprite, AbilityTypes type, string keybind, Action click, float cooldown, float duration, EffectEndVoid offEffect, int uses, bool postDeath =
         false) : this(owner, sprite, type, keybind, click, cooldown, null, null, null, offEffect, duration, null, null, null, 0f, uses, null, postDeath) {}
@@ -117,6 +114,9 @@ public class CustomButton
 
     public CustomButton(PlayerLayer owner, string sprite, AbilityTypes type, string keybind, Action click, float cooldown, float duration, EffectStartVoid onEffect, EffectEndVoid offEffect,
         bool postDeath = false) : this(owner, sprite, type, keybind, click, cooldown, null, null, onEffect, offEffect, duration, null, null, null, 0f, 0, null, postDeath) {}
+
+    public CustomButton(PlayerLayer owner, string sprite, AbilityTypes type, string keybind, Action click, float cooldown, float duration, EffectEndVoid offEffect, bool canClickAgain, bool
+        postDeath = false) : this(owner, sprite, type, keybind, click, cooldown, null, null, null, offEffect, duration, null, null, null, 0f, canClickAgain, 0, null, postDeath) {}
 
     public CustomButton(PlayerLayer owner, string sprite, AbilityTypes type, string keybind, Action click, float cooldown, float duration, EffectVoid effect, EffectEndVoid offEffect, int
         uses, bool postDeath = false) : this(owner, sprite, type, keybind, click, cooldown, null, effect, null, offEffect, duration, null, null, null, 0f, uses, null, postDeath) {}
@@ -132,18 +132,32 @@ public class CustomButton
         Exclude1 exception1, bool postDeath = false) : this(owner, sprite, type, keybind, click, cooldown, exception1, effect, null, offEffect, duration, null, null, null, 0f, 0, null,
         postDeath) {}
 
+    public CustomButton(PlayerLayer owner, string sprite, AbilityTypes type, string keybind, Action click, float cooldown, Exclude1 exception1, EffectVoid effect, EffectStartVoid onEffect,
+        EffectEndVoid offEffect, float duration, DelayVoid actionDelay, DelayStartVoid delayStart, DelayEndVoid delayEnd, float delay, int uses, CoUpdate update, bool postDeath = false) :
+        this(owner, sprite, type, keybind, click, cooldown, exception1, effect, onEffect, offEffect, duration, actionDelay, delayStart, delayEnd, delay, true, uses, update, null, null,
+        postDeath) {}
+
     public CustomButton(PlayerLayer owner, string sprite, AbilityTypes type, string keybind, Action click, float cooldown, float duration, EffectVoid effect, EffectEndVoid offEffect, float
         delay, Exclude1 exception, bool postDeath = false) : this(owner, sprite, type, keybind, click, cooldown, exception, effect, null, offEffect, duration, null, null, null, delay, 0,
         null, postDeath) {}
 
-    private CustomButton(PlayerLayer owner, string sprite, AbilityTypes type, string keybind, Action click, float cooldown, Exclude1 exception1, EffectVoid effect, EffectStartVoid onEffect,
-        EffectEndVoid offEffect, float duration, DelayVoid actionDelay, DelayStartVoid delayStart, DelayEndVoid delayEnd, float delay, int uses, CoUpdate update, bool postDeath = false) :
-        this(owner, sprite, type, keybind, click, cooldown, exception1, effect, onEffect, offEffect, duration, actionDelay, delayStart, delayEnd, delay, uses, update, null, null, postDeath)
-        {}
+    public CustomButton(PlayerLayer owner, string sprite, AbilityTypes type, string keybind, Action click, float cooldown, float duration, EffectVoid effect, EffectEndVoid offEffect, float
+        delay, Exclude1 exception, bool canClickAgain, bool postDeath = false) : this(owner, sprite, type, keybind, click, cooldown, exception, effect, null, offEffect, duration, null, null,
+        null, delay, 0, canClickAgain, null, postDeath) {}
 
-    private CustomButton(PlayerLayer owner, string sprite, AbilityTypes type, string keybind, Action click, float cooldown, Exclude1 exception1, EffectVoid effect, EffectStartVoid onEffect,
-        EffectEndVoid offEffect, float duration, DelayVoid actionDelay, DelayStartVoid delayStart, DelayEndVoid delayEnd, float delay, int uses, CoUpdate update, Exclude2 exception2,
-        Exclude3 exception3, bool postDeath = false)
+    public CustomButton(PlayerLayer owner, string sprite, AbilityTypes type, string keybind, Action click, float cooldown, Exclude1 exception1, EffectVoid effect, EffectStartVoid onEffect,
+        EffectEndVoid offEffect, float duration, DelayVoid actionDelay, DelayStartVoid delayStart, DelayEndVoid delayEnd, float delay, int uses, bool canClickAgain, CoUpdate update, bool
+        postDeath = false) : this(owner, sprite, type, keybind, click, cooldown, exception1, effect, onEffect, offEffect, duration, actionDelay, delayStart, delayEnd, delay, canClickAgain,
+        uses, update, null, null, postDeath) {}
+
+    public CustomButton(PlayerLayer owner, string sprite, AbilityTypes type, string keybind, Action click, float cooldown, Exclude1 exception1, EffectVoid effect, EffectStartVoid onEffect,
+        EffectEndVoid offEffect, float duration, DelayVoid actionDelay, DelayStartVoid delayStart, DelayEndVoid delayEnd, float delay, bool canClickAgain, int uses, CoUpdate update, bool
+        postDeath = false) : this(owner, sprite, type, keybind, click, cooldown, exception1, effect, onEffect, offEffect, duration, actionDelay, delayStart, delayEnd, delay, canClickAgain,
+        uses, update, null, null, postDeath) {}
+
+    public CustomButton(PlayerLayer owner, string sprite, AbilityTypes type, string keybind, Action click, float cooldown, Exclude1 exception1, EffectVoid effect, EffectStartVoid onEffect,
+        EffectEndVoid offEffect, float duration, DelayVoid actionDelay, DelayStartVoid delayStart, DelayEndVoid delayEnd, float delay, bool canClickAgain, int uses, CoUpdate update, Exclude2
+        exception2, Exclude3 exception3, bool postDeath = false)
     {
         Owner = owner;
         Sprite = sprite;
@@ -167,6 +181,7 @@ public class CustomButton
         Uses = MaxUses = uses;
         Update = update ?? BlankVoid;
         CooldownTime = EffectTime = DelayTime = 0f;
+        CanClickAgain = canClickAgain;
         Disabled = !Owner.Local;
         CreateButton();
         AllButtons.Add(this);
@@ -240,7 +255,7 @@ public class CustomButton
             if (HasUses)
                 Uses--;
         }
-        else if (DelayActive || EffectActive)
+        else if ((DelayActive || EffectActive) && CanClickAgain)
         {
             ClickedAgain = true;
             CallRpc(CustomRPC.Action, ActionsRPC.Cancel, ID);
@@ -269,7 +284,7 @@ public class CustomButton
         EffectTime -= Time.deltaTime;
         Effect();
 
-        if (End || Meeting)
+        if (End || Meeting || ClickedAgain)
             EffectTime = 0f;
     }
 
@@ -294,7 +309,7 @@ public class CustomButton
         DelayTime -= Time.deltaTime;
         ActionDelay();
 
-        if (End || Meeting)
+        if (End || Meeting || ClickedAgain)
             DelayTime = 0f;
     }
 
@@ -321,33 +336,49 @@ public class CustomButton
 
     private void SetAliveTarget()
     {
-        TargetPlayer = Owner.Player.GetClosestPlayer(PossibleTargets1);
+        var previousRend = TargetPlayer?.MyRend();
+        TargetPlayer = Owner.Player.GetClosestPlayer(CustomPlayer.AllPlayers.Where(x => x != Owner.Player && !x.IsPostmortal() && !x.Data.IsDead && (!Exception(x) || x.IsMoving())));
         Targeting = TargetPlayer != null;
-        CustomPlayer.AllPlayers.ForEach(x => x.MyRend().SetOutline(x == TargetPlayer && Clickable ? Owner.Color : null));
+        SetOutline(previousRend, TargetPlayer?.MyRend());
     }
 
     private void SetDeadTarget()
     {
-        TargetBody = Owner.Player.GetClosestBody(PossibleTargets2);
+        var previousRend = TargetBody?.MyRend();
+        TargetBody = Owner.Player.GetClosestBody(AllBodies.Where(x => !Exception(x)));
         Targeting = TargetBody != null;
-        AllBodies.ForEach(x => x.MyRend().SetOutline(x == TargetBody && Clickable ? Owner.Color : null));
+        SetOutline(previousRend, TargetBody?.MyRend());
     }
 
     private void SetVentTarget()
     {
-        TargetVent = Owner.Player.GetClosestVent(PossibleTargets3);
+        var previousRend = TargetVent?.MyRend();
+        TargetVent = Owner.Player.GetClosestVent(AllMapVents.Where(x => !Exception(x)));
         Targeting = TargetVent != null;
-        AllMapVents.ForEach(x => x.MyRend().SetOutline(x == TargetVent && Clickable ? Owner.Color : null));
+        SetOutline(previousRend, TargetVent?.MyRend());
     }
 
     private void SetConsoleTarget()
     {
-        TargetConsole = Owner.Player.GetClosestConsole(PossibleTargets4);
+        var previousRend = TargetConsole?.MyRend();
+        TargetConsole = Owner.Player.GetClosestConsole(AllConsoles.Where(x => !Exception(x)));
         Targeting = TargetConsole != null;
-        AllConsoles.ForEach(x => x.MyRend().SetOutline(x == TargetConsole && Clickable ? Owner.Color : null));
+        SetOutline(previousRend, TargetConsole?.MyRend());
     }
 
     private void SetNoTarget() => Targeting = true;
+
+    private void SetOutline(Renderer prevRend, Renderer newRend)
+    {
+        if (prevRend == newRend)
+            return;
+
+        if (prevRend)
+            prevRend.SetOutline(UColor.clear);
+
+        if (newRend)
+            newRend.SetOutline(Owner.Color);
+    }
 
     private void SetTarget()
     {
@@ -435,7 +466,7 @@ public class CustomButton
         EnableDisable();
     }
 
-    public void Update3(bool end = false) => End = Owner.Player == null || end || ClickedAgain;
+    public void Update3(bool end = false) => End = Owner.Player == null || end;
 
     private void DisableTarget()
     {
@@ -444,22 +475,22 @@ public class CustomButton
         switch (Type)
         {
             case AbilityTypes.Target:
-                TargetPlayer?.MyRend()?.SetOutline(null);
+                TargetPlayer?.MyRend()?.SetOutline(UColor.clear);
                 TargetPlayer = null;
                 break;
 
             case AbilityTypes.Dead:
-                TargetBody?.MyRend()?.SetOutline(null);
+                TargetBody?.MyRend()?.SetOutline(UColor.clear);
                 TargetBody = null;
                 break;
 
             case AbilityTypes.Vent:
-                TargetVent?.MyRend()?.SetOutline(null);
+                TargetVent?.MyRend()?.SetOutline(UColor.clear);
                 TargetVent = null;
                 break;
 
             case AbilityTypes.Console:
-                TargetConsole?.MyRend()?.SetOutline(null);
+                TargetConsole?.MyRend()?.SetOutline(UColor.clear);
                 TargetConsole = null;
                 break;
         }

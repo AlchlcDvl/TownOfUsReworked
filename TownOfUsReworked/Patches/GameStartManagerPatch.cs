@@ -63,7 +63,7 @@ public static class GameStartManagerPatch
                 else
                 {
                     LobbyBehaviour.Instance = UObject.Instantiate(__instance.LobbyPrefab);
-                    AmongUsClient.Instance.Spawn(LobbyBehaviour.Instance);
+                    AmongUsClient.Instance.Spawn(Lobby);
                 }
 
                 __instance.MakePublicButton.gameObject.SetActive(IsOnlineGame);
@@ -111,7 +111,7 @@ public static class GameStartManagerPatch
             __instance.MakePublicButton.sprite = AmongUsClient.Instance.IsGamePublic ? __instance.PublicGameImage : __instance.PrivateGameImage;
             __instance.privatePublicText.text = TranslationController.Instance.GetString(AmongUsClient.Instance.IsGamePublic ? StringNames.PublicHeader : StringNames.PrivateHeader);
 
-            if ((Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) && Input.GetKeyDown(KeyCode.C) && !HUD.Chat)
+            if ((Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) && Input.GetKeyDown(KeyCode.C) && !Chat)
                 GUIUtility.systemCopyBuffer = GameCode.IntToGameName(AmongUsClient.Instance.GameId);
 
             if (DiscordManager.InstanceExists)
@@ -201,6 +201,8 @@ public static class GameStartManagerPatch
                         __instance.GameStartText.text = message;
                         __instance.GameStartText.transform.localPosition = __instance.StartButton.transform.localPosition + (Vector3.up * 2);
                     }
+                    else if (!IsCountDown)
+                        __instance.StartButton.color = __instance.startLabelText.color = Palette.EnabledColor;
                 }
                 //Client update with handshake infos
                 else if (!PlayerVersions.ContainsKey(AmongUsClient.Instance.HostId) || TownOfUsReworked.Version.CompareTo(PlayerVersions[AmongUsClient.Instance.HostId].Version) != 0)

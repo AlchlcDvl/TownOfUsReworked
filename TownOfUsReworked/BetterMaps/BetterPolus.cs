@@ -70,9 +70,9 @@ public static class PolusShipStatusPatch
             {
                 SpeciVent.Id = GetAvailableId();
                 IsVentModified = true;
-                var vents = ShipStatus.Instance.AllVents.ToList();
+                var vents = Ship.AllVents.ToList();
                 vents.Add(SpeciVent);
-                ShipStatus.Instance.AllVents = vents.ToArray();
+                Ship.AllVents = vents.ToArray();
             }
         }
     }
@@ -300,33 +300,13 @@ public static class PolusShipStatusPatch
     }
 }
 
-[HarmonyPatch(typeof(ReactorSystemType), nameof(ReactorSystemType.UpdateSystem))]
-public static class Seismic
-{
-    public static bool Prefix(ReactorSystemType __instance, ref MessageReader msgReader)
-    {
-        if (!CustomGameOptions.EnableBetterPolus)
-            return true;
-
-        if (ShipStatus.Instance.Type == ShipStatus.MapType.Pb && msgReader.ReadByte() == 128 && !__instance.IsActive)
-        {
-            __instance.Countdown = __instance.ReactorDuration = CustomGameOptions.SeismicTimer;
-            __instance.UserConsolePairs.Clear();
-            __instance.IsDirty = true;
-            return false;
-        }
-
-        return true;
-    }
-}
-
 [HarmonyPatch(typeof(NormalPlayerTask), nameof(NormalPlayerTask.AppendTaskText))]
 public static class NormalPlayerTaskPatches
 {
-    public static bool Prefix(NormalPlayerTask __instance, Il2CppSystem.Text.StringBuilder sb)
+    public static bool Prefix(NormalPlayerTask __instance, ref Il2CppSystem.Text.StringBuilder sb)
     {
-        if (!CustomGameOptions.EnableBetterPolus || !ShipStatus.Instance || ShipStatus.Instance.Type != ShipStatus.MapType.Pb || __instance.TaskType is not (TaskTypes.RebootWifi or
-            TaskTypes.RecordTemperature or TaskTypes.ChartCourse))
+        if (!CustomGameOptions.EnableBetterPolus || !Ship || MapPatches.CurrentMap != 2 || __instance.TaskType is not (TaskTypes.RebootWifi or TaskTypes.RecordTemperature or
+            TaskTypes.ChartCourse))
         {
             return true;
         }

@@ -2,9 +2,9 @@ namespace TownOfUsReworked.PlayerLayers.Objectifiers;
 
 public class Defector : Objectifier
 {
-    public bool Turned { get; set; }
+    private bool Turned { get; set; }
     public Faction Side { get; set; }
-    public bool Defect => ((Side == Faction.Intruder && LastImp) || (Side == Faction.Syndicate && LastSyn)) && !IsDead && !Turned;
+    private bool Defect => ((Side == Faction.Intruder && LastImp) || (Side == Faction.Syndicate && LastSyn)) && !IsDead && !Turned;
 
     public override Color Color
     {
@@ -51,7 +51,6 @@ public class Defector : Objectifier
     public void TurnSides(bool crew, bool evil)
     {
         Turned = true;
-
         var role = Role.GetRole(Player);
 
         if (crew)

@@ -12,7 +12,7 @@ public static class ModCompatibility
     public static Type[] SubTypes { get; private set; }
     public static Dictionary<string, Type> SubInjectedTypes { get; private set; }
 
-    public static bool IsSubmerged() => SubLoaded && ShipStatus.Instance && ShipStatus.Instance.Type == SUBMERGED_MAP_TYPE;
+    public static bool IsSubmerged() => SubLoaded && Ship && Ship.Type == SUBMERGED_MAP_TYPE;
 
     private static Type SubmarineStatusType;
 
@@ -57,9 +57,7 @@ public static class ModCompatibility
 
     public static bool InitializeSubmerged()
     {
-        var loaded = IL2CPPChainloader.Instance.Plugins.TryGetValue(SM_GUID, out var subPlugin);
-
-        if (!loaded || subPlugin == null)
+        if (!IL2CPPChainloader.Instance.Plugins.TryGetValue(SM_GUID, out var subPlugin) || subPlugin == null)
             return false;
 
         LogMessage("Submerged was detected");
@@ -187,7 +185,7 @@ public static class ModCompatibility
     {
         Coroutines.Start(WaitMeeting(() => ButtonUtils.Reset(CooldownType.Meeting)));
         Coroutines.Start(WaitMeeting(GhostRoleBegin));
-        SetPostmortals.ExileControllerPostfix(ExileController.Instance);
+        SetPostmortals.ExileControllerPostfix(Ejection);
     }
 
     public static IEnumerator WaitStart(Action next)
@@ -297,7 +295,7 @@ public static class ModCompatibility
 
         try
         {
-            ShipStatus.Instance.RpcUpdateSystem((SystemTypes)130, 64);
+            Ship.RpcUpdateSystem((SystemTypes)130, 64);
             RepairDamageMethod.Invoke(SubmarineOxygenSystemInstanceProperty.GetValue(null), new object[] { CustomPlayer.Local, 64 });
         } catch {}
     }
@@ -335,7 +333,7 @@ public static class ModCompatibility
     public static Assembly LIAssembly { get; private set; }
     public static Type[] LITypes { get; private set; }
 
-    public static bool IsLevelImpostor() => LILoaded && ShipStatus.Instance && ShipStatus.Instance.Type == LI_MAP_TYPE;
+    public static bool IsLevelImpostor() => LILoaded && Ship && Ship.Type == LI_MAP_TYPE;
 
     private static Type LIShipStatusType;
 
@@ -348,9 +346,7 @@ public static class ModCompatibility
 
     public static bool InitializeLevelImpostor()
     {
-        var loaded = IL2CPPChainloader.Instance.Plugins.TryGetValue(LI_GUID, out var liPlugin);
-
-        if (!loaded || liPlugin == null)
+        if (!IL2CPPChainloader.Instance.Plugins.TryGetValue(LI_GUID, out var liPlugin) || liPlugin == null)
             return false;
 
         LogMessage("LevelImpostor was detected");

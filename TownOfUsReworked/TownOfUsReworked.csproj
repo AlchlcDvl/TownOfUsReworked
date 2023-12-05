@@ -3,14 +3,13 @@
         <AssemblyName>Reworked</AssemblyName>
         <RootNamespace>TownOfUsReworked</RootNamespace>
         <TargetFramework>net6.0</TargetFramework>
-        <Version>0.6.2.0</Version>
+        <Version>0.6.3.0</Version>
         <DebugType>embedded</DebugType>
         <LangVersion>latest</LangVersion>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <Authors>AlchlcDvl</Authors>
         <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
         <EnableDynamicLoading>true</EnableDynamicLoading>
-        <Configurations>Debug;Release</Configurations>
         <RepositoryType>git</RepositoryType>
         <RepositoryUrl>https://github.com/AlchlcDvl/TownOfUsReworked.git</RepositoryUrl>
         <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
@@ -20,8 +19,8 @@
 
     <ItemGroup>
         <PackageReference Include="Reactor" Version="2.2.0" />
-        <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.674" />
-        <PackageReference Include="AmongUs.GameLibs.Steam" Version="2023.10.24" />
+        <PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.679" />
+        <PackageReference Include="AmongUs.GameLibs.Steam" Version="2023.11.28" />
         <PackageReference Include="BepInEx.AutoPlugin" Version="1.1.0" />
         <PackageReference Include="BepInEx.IL2CPP.MSBuild" Version="2.1.0-rc.1" />
         <PackageReference Include="System.Text.Json" Version="6.0.7" />

@@ -161,19 +161,13 @@ public class PromotedRebel : Syndicate
         }
         else if (IsCol)
         {
-            if (GetDistBetweenPlayers(Positive, Negative) <= Range)
+            if (GetDistance(Positive, Negative) <= Range)
             {
-                if (!(Negative.IsShielded() || Negative.IsProtected() || Negative.IsProtectedMonarch() || Negative.Is(LayerEnum.Pestilence) || Negative.IsOnAlert() ||
-                    Negative.IsRetShielded() || Negative.IsVesting()))
-                {
+                if (!(Negative.IsShielded() || Negative.IsProtected() || Negative.IsProtectedMonarch() || Negative.Is(LayerEnum.Pestilence) || Negative.IsOnAlert() || Negative.IsVesting()))
                     RpcMurderPlayer(Player, Negative, DeathReasonEnum.Collided, false);
-                }
 
-                if (!(Positive.IsShielded() || Positive.IsProtected() || Positive.IsProtectedMonarch() || Positive.Is(LayerEnum.Pestilence) || Positive.IsOnAlert() ||
-                    Positive.IsRetShielded() || Positive.IsVesting()))
-                {
+                if (!(Positive.IsShielded() || Positive.IsProtected() || Positive.IsProtectedMonarch() || Positive.Is(LayerEnum.Pestilence) || Positive.IsOnAlert() || Positive.IsVesting()))
                     RpcMurderPlayer(Player, Positive, DeathReasonEnum.Collided, false);
-                }
 
                 Positive = null;
                 Negative = null;
@@ -184,13 +178,10 @@ public class PromotedRebel : Syndicate
                     NegativeButton.StartCooldown();
                 }
             }
-            else if (GetDistBetweenPlayers(Player, Negative) <= Range && HoldsDrive && ChargeButton.EffectActive)
+            else if (GetDistance(Player, Negative) <= Range && HoldsDrive && ChargeButton.EffectActive)
             {
-                if (!(Negative.IsShielded() || Negative.IsProtected() || Negative.IsProtectedMonarch() || Negative.Is(LayerEnum.Pestilence) || Negative.IsOnAlert() ||
-                    Negative.IsRetShielded() || Negative.IsVesting()))
-                {
+                if (!(Negative.IsShielded() || Negative.IsProtected() || Negative.IsProtectedMonarch() || Negative.Is(LayerEnum.Pestilence) || Negative.IsOnAlert() || Negative.IsVesting()))
                     RpcMurderPlayer(Player, Negative, DeathReasonEnum.Collided, false);
-                }
 
                 Negative = null;
 
@@ -200,13 +191,10 @@ public class PromotedRebel : Syndicate
                     NegativeButton.StartCooldown();
                 }
             }
-            else if (GetDistBetweenPlayers(Player, Positive) <= Range && HoldsDrive && ChargeButton.EffectActive)
+            else if (GetDistance(Player, Positive) <= Range && HoldsDrive && ChargeButton.EffectActive)
             {
-                if (!(Positive.IsShielded() || Positive.IsProtected() || Positive.IsProtectedMonarch() || Positive.Is(LayerEnum.Pestilence) || Positive.IsOnAlert() ||
-                    Positive.IsRetShielded() || Positive.IsVesting()))
-                {
+                if (!(Positive.IsShielded() || Positive.IsProtected() || Positive.IsProtectedMonarch() || Positive.Is(LayerEnum.Pestilence) || Positive.IsOnAlert() || Positive.IsVesting()))
                     RpcMurderPlayer(Player, Positive, DeathReasonEnum.Collided, false);
-                }
 
                 Positive = null;
 
@@ -228,16 +216,18 @@ public class PromotedRebel : Syndicate
 
         StalkerArrows.Values.ToList().DestroyAll();
         StalkerArrows.Clear();
+
+        ResetCharges();
     }
 
     public override void OnMeetingStart(MeetingHud __instance)
     {
         base.OnMeetingStart(__instance);
-        Positive = null;
-        Negative = null;
 
-        if (CustomGameOptions.BombsDetonateOnMeetingStart)
+        if (CustomGameOptions.BombsDetonateOnMeetingStart && IsBomb)
             Bomb.DetonateBombs(Bombs);
+        else if (IsCol)
+            ResetCharges();
     }
 
     public override void ReadRPC(MessageReader reader)
@@ -628,8 +618,12 @@ public class PromotedRebel : Syndicate
         }
 
         Warping = true;
-        WarpPlayer1.moveable = false;
-        WarpPlayer1.NetTransform.Halt();
+
+        if (!WarpPlayer1.HasDied())
+        {
+            WarpPlayer1.moveable = false;
+            WarpPlayer1.NetTransform.Halt();
+        }
 
         if (CustomPlayer.Local == WarpPlayer1)
             Flash(Color, CustomGameOptions.WarpDur);
@@ -702,14 +696,10 @@ public class PromotedRebel : Syndicate
             if (ActiveTask)
                 ActiveTask.Close();
 
-            if (Map)
+            if (MapPatch.MapActive)
                 Map.Close();
         }
 
-        WarpPlayer1.moveable = true;
-        WarpPlayer1.Collider.enabled = true;
-        WarpPlayer1.NetTransform.enabled = true;
-        WarpPlayer2.MyPhysics.ResetMoveState();
         WarpPlayer1 = null;
         WarpPlayer2 = null;
         Warping = false;
@@ -730,7 +720,7 @@ public class PromotedRebel : Syndicate
             WarpPlayer1.SetPlayerMaterialColors(AnimationPlaying);
 
             if (p == 1)
-                AnimationPlaying.sprite = null;
+                AnimationPlaying.sprite = PortalAnimation[0];
         })));
     }
 
@@ -762,7 +752,7 @@ public class PromotedRebel : Syndicate
     {
         if (HoldsDrive)
         {
-            Utils.Warp();
+            Warper.WarpAll();
             WarpButton.StartCooldown();
         }
         else if (WarpPlayer1 == null)
@@ -849,6 +839,12 @@ public class PromotedRebel : Syndicate
 
         if (CustomGameOptions.ChargeCooldownsLinked)
             PositiveButton.StartCooldown(cooldown);
+    }
+
+    private void ResetCharges()
+    {
+        Positive = null;
+        Negative = null;
     }
 
     //Spellslinger Stuff

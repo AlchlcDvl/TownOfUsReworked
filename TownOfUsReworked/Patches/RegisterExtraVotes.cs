@@ -17,10 +17,16 @@ public static class HandleDisconnect
             }
         }
 
+        if (pc == CustomPlayer.Local)
+        {
+            MCIUtils.RemoveAllPlayers();
+            DebuggerBehaviour.Instance.ControllingFigure = 0;
+        }
+
         CustomPlayer.AllCustomPlayers.RemoveAll(x => x.Player == player2 || x.Player == null);
         DisconnectHandler.Disconnected.Add(pc);
         ReassignPostmortals(pc);
-        MarkMeetingDead(pc, pc, false, true);
+        MarkMeetingDead(pc, false, true);
         OnGameEndPatch.AddSummaryInfo(pc, true);
 
         if (!OnGameEndPatch.Disconnected.Any(x => x.PlayerName == player2.name))

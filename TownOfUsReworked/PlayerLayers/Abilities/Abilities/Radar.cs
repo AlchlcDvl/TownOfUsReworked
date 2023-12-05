@@ -2,7 +2,7 @@ namespace TownOfUsReworked.PlayerLayers.Abilities;
 
 public class Radar : Ability
 {
-    public CustomArrow RadarArrow { get; set; }
+    private CustomArrow RadarArrow { get; set; }
 
     public override Color Color => ClientGameOptions.CustomAbColors ? Colors.Radar : Colors.Ability;
     public override string Name => "Radar";

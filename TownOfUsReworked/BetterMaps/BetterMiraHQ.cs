@@ -54,9 +54,9 @@ public static class MiraShipStatusPatch
             {
                 CommsVent.Id = GetAvailableId();
                 IsVentModified = true;
-                var vents = ShipStatus.Instance.AllVents.ToList();
+                var vents = Ship.AllVents.ToList();
                 vents.Add(CommsVent);
-                ShipStatus.Instance.AllVents = vents.ToArray();
+                Ship.AllVents = vents.ToArray();
             }
         }
     }
@@ -193,45 +193,5 @@ public static class MiraShipStatusPatch
     {
         if (CommsVent.transform.position != CommsPos)
             CommsVent.transform.position = CommsPos;
-    }
-}
-
-[HarmonyPatch(typeof(ReactorSystemType), nameof(ReactorSystemType.UpdateSystem))]
-public static class ReactorMira
-{
-    public static bool Prefix(ReactorSystemType __instance, ref MessageReader msgReader)
-    {
-        if (!CustomGameOptions.EnableBetterMiraHQ)
-            return true;
-
-        if (ShipStatus.Instance.Type == ShipStatus.MapType.Hq && msgReader.ReadByte() == 128 && !__instance.IsActive)
-        {
-            __instance.Countdown = __instance.ReactorDuration = CustomGameOptions.MiraReactorTimer;
-            __instance.UserConsolePairs.Clear();
-            __instance.IsDirty = true;
-            return false;
-        }
-
-        return true;
-    }
-}
-
-[HarmonyPatch(typeof(LifeSuppSystemType), nameof(LifeSuppSystemType.UpdateSystem))]
-public static class O2Mira
-{
-    public static bool Prefix(LifeSuppSystemType __instance, ref MessageReader msgReader)
-    {
-        if (!CustomGameOptions.EnableBetterMiraHQ)
-            return true;
-
-        if (ShipStatus.Instance.Type == ShipStatus.MapType.Hq && msgReader.ReadByte() == 128 && !__instance.IsActive)
-        {
-            __instance.Countdown = __instance.LifeSuppDuration = CustomGameOptions.MiraO2Timer;
-            __instance.CompletedConsoles.Clear();
-            __instance.IsDirty = true;
-            return false;
-        }
-
-        return true;
     }
 }

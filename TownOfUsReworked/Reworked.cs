@@ -26,6 +26,9 @@ public static class Reworked
 
     public static void LoadComponents()
     {
+        if (!File.Exists($"{TownOfUsReworked.DataPath}steam_appid.txt"))
+            File.WriteAllText($"{TownOfUsReworked.DataPath}steam_appid.txt", "945360");
+
         TownOfUsReworked.ModInstance.Harmony.PatchAll();
         SetUpConfigs();
         AllMonos.RegisterMonos();

@@ -15,6 +15,28 @@ public class InteractionData
         AbilityUsed = abilityUsed;
     }
 
+    private static bool TargetShouldAttack(PlayerControl player, PlayerControl target, bool harmful)
+    {
+        if (target.IsOnAlert())
+            return true;
+        else if (target.IsAmbushed() && (!player.Is(Faction.Intruder) || (player.Is(Faction.Intruder) && CustomGameOptions.AmbushMates)))
+            return true;
+        else if (target.Is(LayerEnum.VampireHunter) && player.Is(SubFaction.Undead))
+            return true;
+        else if (target.Is(LayerEnum.SerialKiller) && (player.Is(LayerEnum.Escort) || player.Is(LayerEnum.Consort) || player.Is(LayerEnum.Glitch)) && !harmful)
+            return true;
+        else if (target.IsCrusaded() && (!player.Is(Faction.Syndicate) || (player.Is(Faction.Syndicate) && CustomGameOptions.CrusadeMates)))
+            return true;
+        else
+            return false;
+    }
+
+    private static void Trigger(PlayerControl player, PlayerControl target, bool harmful)
+    {
+        PlayerLayer.GetLayers<Trapper>().ForEach(x => x.TriggerTrap(target, player, harmful));
+        PlayerLayer.GetLayers<Retributionist>().ForEach(x => x.TriggerTrap(target, player, harmful));
+    }
+
     public static InteractionData Interact(PlayerControl player, PlayerControl target, bool toKill = false, bool toConvert = false, bool bypass = false, bool poisoning = false)
     {
         var fullReset = false;
@@ -26,84 +48,48 @@ public class InteractionData
 
         if ((target == CachedFirstDead || target.IsProtectedMonarch() || player.IsOtherRival(target) || player.NotTransformed()) && (toConvert || toKill || poisoning))
             fullReset = true;
-        else if ((target.IsOnAlert() || ((target.IsAmbushed() || target.IsGFAmbushed()) && (!player.Is(Faction.Intruder) || (player.Is(Faction.Intruder) && CustomGameOptions.AmbushMates)))
-            || target.Is(LayerEnum.Pestilence) || (target.Is(LayerEnum.VampireHunter) && player.Is(SubFaction.Undead)) || (target.Is(LayerEnum.SerialKiller) && (player.Is(LayerEnum.Escort)
-            || player.Is(LayerEnum.Consort) || player.Is(LayerEnum.Glitch)) && !toKill)) && !bypass)
+        else if (TargetShouldAttack(player, target, toKill) && !bypass)
         {
             if (player.Is(LayerEnum.Pestilence))
             {
-                if ((target.IsShielded() || target.IsRetShielded()) && (toKill || toConvert || poisoning))
-                {
-                    fullReset = CustomGameOptions.ShieldBreaks;
-                    Role.BreakShield(target, CustomGameOptions.ShieldBreaks);
-                    CallRpc(CustomRPC.Misc, MiscRPC.AttemptSound, target);
-                }
+                if (target.IsShielded() && (toKill || toConvert || poisoning))
+                    fullReset = RpcBreakShield(target);
                 else if (target.IsProtected())
                     gaReset = true;
             }
-            else if ((player.IsShielded() || player.IsRetShielded()) && !target.Is(LayerEnum.Ruthless))
-            {
-                fullReset = CustomGameOptions.ShieldBreaks;
-                Role.BreakShield(player, CustomGameOptions.ShieldBreaks);
-                CallRpc(CustomRPC.Misc, MiscRPC.AttemptSound, player);
-            }
+            else if (player.IsShielded() && !target.Is(LayerEnum.Ruthless))
+                fullReset = RpcBreakShield(player);
             else if (player.IsProtected() && !target.Is(LayerEnum.Ruthless))
                 gaReset = true;
             else
-                RpcMurderPlayer(target, player, target.IsAmbushed() ? DeathReasonEnum.Ambushed : DeathReasonEnum.Killed);
+                RpcMurderPlayer(target, player);
 
-            if ((target.IsShielded() || target.IsRetShielded()) && (toKill || toConvert || poisoning))
-            {
-                fullReset = CustomGameOptions.ShieldBreaks;
-                Role.BreakShield(target, CustomGameOptions.ShieldBreaks);
-                CallRpc(CustomRPC.Misc, MiscRPC.AttemptSound, target);
-            }
+            if (target.IsShielded() && (toKill || toConvert || poisoning))
+                fullReset = RpcBreakShield(target);
+
+            if (target.CrusadeActive())
+                Crusader.RadialCrusade(target);
         }
-        else if ((target.IsCrusaded() || target.IsRebCrusaded()) && (!player.Is(Faction.Syndicate) || (player.Is(Faction.Syndicate) && CustomGameOptions.CrusadeMates)) && !bypass)
+        else if (target.IsTrapped())
         {
-            if (player.Is(LayerEnum.Pestilence))
-            {
-                if ((target.IsShielded() || target.IsRetShielded()) && (toKill || toConvert || poisoning))
-                {
-                    fullReset = CustomGameOptions.ShieldBreaks;
-                    Role.BreakShield(target, CustomGameOptions.ShieldBreaks);
-                    CallRpc(CustomRPC.Misc, MiscRPC.AttemptSound, target);
-                }
-                else if (target.IsProtected())
-                    gaReset = true;
-            }
-            else if ((player.IsShielded() || player.IsRetShielded()) && !target.Is(LayerEnum.Ruthless))
-            {
-                fullReset = CustomGameOptions.ShieldBreaks;
-                Role.BreakShield(player, CustomGameOptions.ShieldBreaks);
-                CallRpc(CustomRPC.Misc, MiscRPC.AttemptSound, player);
-            }
-            else if (player.IsProtected() && !target.Is(LayerEnum.Ruthless))
-                gaReset = true;
-            else
-            {
-                var crus = target.GetCrusader();
-                var reb = target.GetRebCrus();
+            Trigger(player, target, toKill || toConvert || poisoning);
+            abilityUsed = !(toKill || toConvert || poisoning);
 
-                if (crus?.HoldsDrive == true || reb?.HoldsDrive == true)
-                    Crusader.RadialCrusade(target);
+            if (!abilityUsed)
+            {
+                if (player.IsShielded())
+                    fullReset = RpcBreakShield(player);
+                else if (player.IsProtected())
+                    gaReset = true;
                 else
-                    RpcMurderPlayer(target, player, DeathReasonEnum.Crusaded);
-            }
+                    RpcMurderPlayer(target, player);
 
-            if ((target.IsShielded() || target.IsRetShielded()) && (toKill || toConvert || poisoning))
-            {
-                fullReset = CustomGameOptions.ShieldBreaks;
-                Role.BreakShield(target, CustomGameOptions.ShieldBreaks);
-                CallRpc(CustomRPC.Misc, MiscRPC.AttemptSound, target);
+                if (target.IsShielded())
+                    fullReset = RpcBreakShield(target);
             }
         }
-        else if ((target.IsShielded() || target.IsRetShielded()) && (toKill || toConvert || poisoning) && !bypass)
-        {
-            fullReset = CustomGameOptions.ShieldBreaks;
-            Role.BreakShield(target, CustomGameOptions.ShieldBreaks);
-            CallRpc(CustomRPC.Misc, MiscRPC.AttemptSound, target);
-        }
+        else if (target.IsShielded() && (toKill || toConvert || poisoning) && !bypass)
+            fullReset = RpcBreakShield(target);
         else if (target.IsVesting() && (toKill || toConvert || poisoning) && !bypass)
             survReset = true;
         else if (target.IsProtected() && (toKill || toConvert || poisoning) && !bypass)
@@ -129,13 +115,8 @@ public class InteractionData
             fullReset = true;
         }
 
-        if ((target.IsOnAlert() || ((target.IsAmbushed() || target.IsGFAmbushed()) && (!player.Is(Faction.Intruder) || (player.Is(Faction.Intruder) && CustomGameOptions.AmbushMates))) ||
-            target.Is(LayerEnum.Pestilence) || (target.Is(LayerEnum.VampireHunter) && player.Is(SubFaction.Undead)) || (target.Is(LayerEnum.SerialKiller) && (player.Is(LayerEnum.Escort) ||
-            player.Is(LayerEnum.Consort) || player.Is(LayerEnum.Glitch)) && !toKill) || ((target.IsCrusaded() || target.IsRebCrusaded()) && (!player.Is(Faction.Syndicate) ||
-            (player.Is(Faction.Syndicate) && CustomGameOptions.CrusadeMates)))) && bypass && !target.Is(LayerEnum.Pestilence))
-        {
+        if (TargetShouldAttack(player, target, toKill || poisoning) && bypass)
             RpcMurderPlayer(target, player);
-        }
 
         return new(fullReset, survReset, gaReset, abilityUsed);
     }
@@ -148,12 +129,8 @@ public class InteractionData
 
         if (target.IsBombed())
         {
-            if (player.IsShielded() || player.IsRetShielded())
-            {
-                fullReset = CustomGameOptions.ShieldBreaks;
-                Role.BreakShield(player, CustomGameOptions.ShieldBreaks);
-                CallRpc(CustomRPC.Misc, MiscRPC.AttemptSound, player);
-            }
+            if (player.IsShielded())
+                fullReset = RpcBreakShield(player);
             else if (player.IsProtected())
                 gaReset = true;
             else
@@ -161,7 +138,6 @@ public class InteractionData
 
             Role.BastionBomb(target, CustomGameOptions.BombRemovedOnKill);
             CallRpc(CustomRPC.Misc, MiscRPC.BastionBomb, target);
-            Flash(Colors.Bastion);
         }
         else
         {

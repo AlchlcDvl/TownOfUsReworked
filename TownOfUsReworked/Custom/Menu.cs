@@ -2,12 +2,14 @@ namespace TownOfUsReworked.Custom;
 
 public class CustomMenu
 {
+    public static readonly List<CustomMenu> AllMenus = new();
+
     public ShapeshifterMinigame Menu { get; set; }
     public readonly PlayerControl Owner;
     public readonly Select Click;
     public readonly Exclude Exception;
-    public List<PlayerControl> Targets { get; set; }
-    public static readonly List<CustomMenu> AllMenus = new();
+    public List<PlayerControl> Targets => CustomPlayer.AllPlayers.Where(x => !Exception(x) && !x.IsPostmortal() && !x.Data.Disconnected).ToList();
+
     public delegate void Select(PlayerControl player);
     public delegate bool Exclude(PlayerControl player);
 
@@ -16,14 +18,11 @@ public class CustomMenu
         Owner = owner;
         Click = click;
         Exception = exception;
-        Targets = new();
         AllMenus.Add(this);
     }
 
     public void Open()
     {
-        Targets = CustomPlayer.AllPlayers.Where(x => !Exception(x) && !x.IsPostmortal() && !x.Data.Disconnected).ToList();
-
         if (Menu == null)
         {
             if (Camera.main == null)

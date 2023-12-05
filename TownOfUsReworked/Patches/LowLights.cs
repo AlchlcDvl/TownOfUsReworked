@@ -10,7 +10,7 @@ public static class CalculateLightRadiusPatch
 
         if (IsHnS)
         {
-            var hns = GameOptionsManager.Instance.currentHideNSeekGameOptions;
+            var hns = TownOfUsReworked.HNSOptions;
 
             if (hns.useFlashlight)
                 __result = __instance.MaxLightRadius * (player.IsImpostor() ? hns.ImpostorFlashlightSize : hns.CrewmateFlashlightSize);
@@ -21,6 +21,12 @@ public static class CalculateLightRadiusPatch
         }
 
         var pc = player.Object;
+
+        if (!Role.GetRole(pc))
+        {
+            __result = __instance.MaxLightRadius * (pc.IsImpostor() ? TownOfUsReworked.NormalOptions.ImpostorLightMod : TownOfUsReworked.NormalOptions.CrewLightMod);
+            return false;
+        }
 
         if (player.IsDead)
             __result = __instance.MaxLightRadius;
@@ -65,7 +71,7 @@ public static class AdjustLightingPatch
             return true;
 
         var flashlights = false;
-        var size = ShipStatus.Instance.CalculateLightRadius(__instance.Data);
+        var size = Ship.CalculateLightRadius(__instance.Data);
 
         if (__instance.Is(Faction.Crew))
             flashlights = CustomGameOptions.CrewFlashlight;
@@ -83,7 +89,7 @@ public static class AdjustLightingPatch
         flashlights &= !__instance.Data.IsDead;
 
         if (flashlights)
-            size /= ShipStatus.Instance.MaxLightRadius;
+            size /= Ship.MaxLightRadius;
 
         __instance.TargetFlashlight.gameObject.SetActive(flashlights);
         __instance.StartCoroutine(__instance.EnableRightJoystick(flashlights));

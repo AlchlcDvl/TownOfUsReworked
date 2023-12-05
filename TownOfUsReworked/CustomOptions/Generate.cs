@@ -179,6 +179,7 @@ public static class Generate
     public static CustomHeaderOption CrPRoles;
     public static CustomLayersOption AltruistOn;
     public static CustomLayersOption MedicOn;
+    public static CustomLayersOption TrapperOn;
 
     //CA Role Spawn
     public static CustomHeaderOption CARoles;
@@ -402,6 +403,14 @@ public static class Generate
     public static CustomToggleOption RoundOneNoKnighting;
     public static CustomToggleOption KnightButton;
     public static CustomToggleOption MonarchButton;
+
+    //Trapper Options
+    public static CustomHeaderOption Trapper;
+    public static CustomToggleOption UniqueTrapper;
+    public static CustomNumberOption BuildCd;
+    public static CustomNumberOption BuildDur;
+    public static CustomNumberOption TrapCd;
+    public static CustomNumberOption MaxTraps;
 
     //CA Options
     public static CustomHeaderOption CASettings;
@@ -1667,6 +1676,7 @@ public static class Generate
             GameMode.Custom });
         AltruistOn = new(num++, MultiMenu.Crew, "<color=#660000FF>Altruist</color>", parent: CrPRoles);
         MedicOn = new(num++, MultiMenu.Crew, "<color=#006600FF>Medic</color>", parent: CrPRoles);
+        TrapperOn = new(num++, MultiMenu.Crew, "<color=#BE1C8CFF>Trapper</color>", parent: CrPRoles);
 
         CSvRoles = new(MultiMenu.Crew, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Sovereign</color> <color=#FFD700FF>Roles</color>", new object[] { GameMode.Classic, GameMode.AllAny,
             GameMode.Custom });
@@ -1790,7 +1800,7 @@ public static class Generate
         ShootCd = new(num++, MultiMenu.Crew, "Shoot Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Vigilante);
 
         CrPSettings = new(MultiMenu.Crew, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Protective</color> Settings", new object[] { AltruistOn, MedicOn, LayerEnum.Altruist,
-            LayerEnum.Medic, LayerEnum.CrewProt, LayerEnum.RandomCrew, LayerEnum.RegularCrew });
+            LayerEnum.Medic, LayerEnum.CrewProt, LayerEnum.RandomCrew, LayerEnum.RegularCrew, TrapperOn, LayerEnum.Trapper });
         CrPMax = new(num++, MultiMenu.Crew, "Max <color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Protectives</color>", 1, 1, 14, 1, CrPSettings);
 
         Altruist = new(MultiMenu.Crew, "<color=#660000FF>Altruist</color>", new object[] { AltruistOn, LayerEnum.Altruist, LayerEnum.CrewProt, LayerEnum.RandomCrew, LayerEnum.RegularCrew
@@ -1808,6 +1818,13 @@ public static class Generate
         WhoGetsNotification = new(num++, MultiMenu.Crew, "Who Gets Murder Attempt Indicator", new[] { "<color=#006600FF>Medic</color>", "Self", "Self And <color=#006600FF>Medic</color>",
             "Everyone", "Nobody" }, Medic);
         ShieldBreaks = new(num++, MultiMenu.Crew, "Shield Breaks On Murder Attempt", true, Medic);
+
+        Trapper = new(MultiMenu.Crew, "<color=#BE1C8CFF>Trapper</color>", new object[] { TrapperOn, LayerEnum.Trapper, LayerEnum.CrewProt, LayerEnum.RandomCrew });
+        UniqueTrapper = new(num++, MultiMenu.Crew, "<color=#BE1C8CFF>Trapper</color> Is Unique", false, new object[] { Trapper, EnableUniques }, true);
+        MaxTraps = new(num++, MultiMenu.Crew, "Max Traps", 5, 1, 15, 1, Trapper);
+        BuildCd = new(num++, MultiMenu.Crew, "Build Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Trapper);
+        BuildDur = new(num++, MultiMenu.Crew, "Build Duration", 10f, 5f, 30f, 1f, CooldownFormat, Trapper);
+        TrapCd = new(num++, MultiMenu.Crew, "Trap Cooldown", 25f, 10f, 60f, 2.5f, CooldownFormat, Trapper);
 
         CSvSettings = new(MultiMenu.Crew, "<color=#8CFFFFFF>Crew</color> <color=#1D7CF2FF>Sovereign</color> Settings", new object[] { MayorOn, DictatorOn, MonarchOn, LayerEnum.Monarch,
             LayerEnum.Mayor, LayerEnum.Monarch, LayerEnum.CrewSov, LayerEnum.RandomCrew });

@@ -11,7 +11,7 @@ public class DebuggerBehaviour : MonoBehaviour
     [HideFromIl2Cpp]
     public DragWindow CooldownsWindow { get; }
 
-    private byte ControllingFigure;
+    public byte ControllingFigure;
 
     public static DebuggerBehaviour Instance { get; private set; }
 
@@ -51,6 +51,7 @@ public class DebuggerBehaviour : MonoBehaviour
                 if (GUILayout.Button("Remove Last Bot"))
                 {
                     MCIUtils.RemovePlayer((byte)MCIUtils.Clients.Count);
+                    ControllingFigure = 0;
 
                     if (MCIUtils.Clients.Count == 0)
                         TownOfUsReworked.MCIActive = false;
@@ -59,6 +60,7 @@ public class DebuggerBehaviour : MonoBehaviour
                 if (GUILayout.Button("Remove All Bots"))
                 {
                     MCIUtils.RemoveAllPlayers();
+                    ControllingFigure = 0;
                     TownOfUsReworked.MCIActive = false;
                 }
 
@@ -228,5 +230,11 @@ public class DebuggerBehaviour : MonoBehaviour
     {
         TestWindow.OnGUI();
         CooldownsWindow.OnGUI();
+    }
+
+    public void OnDestroy()
+    {
+        TestWindow.Enabled = false;
+        CooldownsWindow.Enabled = false;
     }
 }

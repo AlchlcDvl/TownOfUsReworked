@@ -142,7 +142,7 @@ public static class ChatChannels
 {
     public static bool Prefix(ChatController __instance, ref PlayerControl sourcePlayer)
     {
-        if (__instance != HUD.Chat)
+        if (__instance != Chat)
             return true;
 
         var localPlayer = CustomPlayer.Local;
@@ -158,7 +158,7 @@ public static class ChatChannels
         if (DateTime.UtcNow - MeetingStart.MeetingStartTime < TimeSpan.FromSeconds(1))
             return shouldSeeMessage;
 
-        return (Meeting || LobbyBehaviour.Instance || localPlayer.Data.IsDead || sourcePlayer == localPlayer || sourcerole.CurrentChannel == ChatChannel.All || shouldSeeMessage) && !(Meeting
+        return (Meeting || Lobby || localPlayer.Data.IsDead || sourcePlayer == localPlayer || sourcerole.CurrentChannel == ChatChannel.All || shouldSeeMessage) && !(Meeting
             && CustomPlayer.Local.IsSilenced());
     }
 }
@@ -196,12 +196,7 @@ public static class ChatCommands
             chatHandled = true;
             Run(__instance, "<color=#02A752FF>米 Shhhh 米</color>", "You are blackmailed.");
         }
-        else if (!CustomPlayer.Local.IsSilenced() && text != "i am silenced." && CustomPlayer.AllPlayers.Any(x => x.IsSilenced() && x.GetSilencer().HoldsDrive))
-        {
-            chatHandled = true;
-            Run(__instance, "<color=#AAB43EFF>米 Shhhh 米</color>", "You are silenced.");
-        }
-        else if (!CustomPlayer.Local.IsSilenced() && text != "i am silenced." && CustomPlayer.AllPlayers.Any(x => x.IsSilenced() && x.GetRebSilencer().HoldsDrive))
+        else if (!CustomPlayer.Local.SilenceActive() && text != "i am silenced.")
         {
             chatHandled = true;
             Run(__instance, "<color=#AAB43EFF>米 Shhhh 米</color>", "You are silenced.");
@@ -307,7 +302,13 @@ public static class ChatFontPatch
 
     public static void Postfix(ChatController __instance)
     {
-        Font??= __instance.scroller.transform.GetChild(1).GetChild(5).GetComponent<TextMeshPro>().font;
+        Font ??= __instance.scroller.transform.GetChild(1).GetChild(5).GetComponent<TextMeshPro>().font;
         __instance.freeChatField.textArea.GetComponent<TextMeshPro>().font = Font;
     }
+}
+
+[HarmonyPatch(typeof(InnerNetClient), nameof(InnerNetClient.JoinGame))]
+public static class InnerNetClientJoinPatch
+{
+    public static void Prefix() => DataManager.Settings.Multiplayer.ChatMode = QuickChatModes.FreeChatOrQuickChat;
 }

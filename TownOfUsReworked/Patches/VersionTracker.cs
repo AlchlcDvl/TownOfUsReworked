@@ -42,10 +42,10 @@ public static class PingTracker_Update
 
         deltaTime += (Time.deltaTime - deltaTime) * 0.1f;
         var fps = Mathf.Ceil(1f / deltaTime);
-        var host = GameData.Instance.GetHost();
 
         try
         {
+            var host = GameData.Instance?.GetHost();
             //try catch my beloved <3
             __instance.text.text = $"<size=80%>Ping: {AmongUsClient.Instance.Ping}ms FPS: {fps}\n" +
                 "<b><color=#00FF00FF>TownOfUs</color><color=#FF00FFFF>Reworked</color></b>\n" +

@@ -15,6 +15,8 @@ public class Retributionist : Crew
         BombedIDs = new();
         Investigated = new();
         BuggedPlayers = new();
+        Trapped = new();
+        TriggeredRoles = new();
         Selected = null;
         TransportPlayer1 = null;
         TransportPlayer2 = null;
@@ -59,7 +61,11 @@ public class Retributionist : Crew
             (CustomButton.EffectVoid)Block, UnBlock);
         TransportButton = new(this, "Transport", AbilityTypes.Targetless, "ActionSecondary", Transport, CustomGameOptions.TransportCd, CustomGameOptions.MaxTransports);
         BombButton = new(this, $"{Bastion.SpriteName}VentBomb", AbilityTypes.Vent, "ActionSecondary", Bomb, CustomGameOptions.BastionCd, CustomGameOptions.MaxBombs, BastException);
+        BuildButton = new(this, "Build", AbilityTypes.Targetless, "Secondary", StartBuildling, CustomGameOptions.BuildCd, CustomGameOptions.BuildDur, EndBuildling, canClickAgain: false);
+        TrapButton = new(this, "Trap", AbilityTypes.Target, "ActionSecondary", SetTrap, CustomGameOptions.TrapCd, TrapException, CustomGameOptions.MaxTraps);
         RetMenu = new(Player, "RetActive", "RetDisabled", CustomGameOptions.ReviveAfterVoting, SetActive, IsExempt, new(-0.4f, 0.03f, -1.3f));
+        TrapsMade = 0;
+        TrapButton.Uses = 0;
     }
 
     //Retributionist Stuff
@@ -119,7 +125,7 @@ public class Retributionist : Crew
         }
     }
 
-    private bool IsExempt(PlayerVoteArea voteArea) => !voteArea.AmDead || PlayerByVoteArea(voteArea).Data.Disconnected || IsDead || !PlayerByVoteArea(voteArea).Is(Faction.Crew);
+    private bool IsExempt(PlayerVoteArea voteArea) => !voteArea.AmDead || PlayerByVoteArea(voteArea).Data.Disconnected || IsDead || GetRole(voteArea).BaseFaction != Faction.Crew;
 
     private void SetActive(PlayerVoteArea voteArea, MeetingHud __instance)
     {
@@ -138,7 +144,7 @@ public class Retributionist : Crew
         base.UpdateHud(__instance);
         TransportButton.Update2(TransportPlayer1 == null ? "FIRST TARGET" : (TransportPlayer2 == null ? "SECOND TARGET" : "TRANSPORT"), IsTrans);
         FixButton.Update2("FIX SABOTAGE", IsEngi, Condition());
-        ShieldButton.Update2("SHIELD", ShieldedPlayer == null && ExShielded == null && IsMedic);
+        ShieldButton.Update2("SHIELD", ExShielded == null && IsMedic);
         RevealButton.Update2("REVEAL", IsMys);
         StakeButton.Update2("STAKE", IsVH);
         AutopsyButton.Update2("AUTOPSY", IsCor);
@@ -155,6 +161,8 @@ public class Retributionist : Crew
         BlockButton.Update2("ROLEBLOCK", IsEsc);
         TrackButton.Update2("TRACK", IsTrack);
         BombButton.Update2("PLACE BOMB", IsBast);
+        BuildButton.Update2("BUILD TRAP", IsTrap && TrapsMade < CustomGameOptions.MaxTraps);
+        TrapButton.Update2("PLACE TRAP", IsTrap);
 
         if (IsDead)
             OnLobby();
@@ -273,7 +281,7 @@ public class Retributionist : Crew
                 break;
 
             case RetActionsRPC.Protect:
-                ShieldedPlayer = reader.ReadPlayer();
+                ShieldedPlayer = (MedicActionsRPC)reader.ReadByte() == MedicActionsRPC.Add ? reader.ReadPlayer() : null;
                 break;
 
             case RetActionsRPC.Mediate:
@@ -281,7 +289,7 @@ public class Retributionist : Crew
                 MediatedPlayers.Add(playerid2);
 
                 if (CustomPlayer.Local.PlayerId == playerid2 || (CustomPlayer.LocalCustom.IsDead && CustomGameOptions.ShowMediumToDead == ShowMediumToDead.AllDead))
-                    LocalRole.DeadArrows.Add(PlayerId, new(CustomPlayer.Local, Colors.Retributionist));
+                    LocalRole.DeadArrows.Add(PlayerId, new(CustomPlayer.Local, Color));
 
                 break;
 
@@ -291,6 +299,14 @@ public class Retributionist : Crew
 
             case RetActionsRPC.Bomb:
                 BombedIDs.Add(reader.ReadInt32());
+                break;
+
+            case RetActionsRPC.Place:
+                Trapped.Add(reader.ReadByte());
+                break;
+
+            case RetActionsRPC.Trigger:
+                TriggerTrap(reader.ReadPlayer(), reader.ReadPlayer(), reader.ReadBoolean());
                 break;
 
             default:
@@ -363,23 +379,46 @@ public class Retributionist : Crew
                 message = message.Remove(message.Length - 2);
             }
 
+            //Only Retributionist-Operative can see this
             if (HUD)
-                Run(HUD.Chat, "<color=#8D0F8CFF>〖 Bug Results 〗</color>", message);
+                Run(Chat, "<color=#8D0F8CFF>〖 Bug Results 〗</color>", message);
         }
         else if (IsDet)
             ClearFootprints();
+        else if (IsTrap)
+        {
+            if (!AttackedSomeone && TriggeredRoles.Count > 0)
+            {
+                var message = "Your trap detected the following roles: ";
+                TriggeredRoles.Shuffle();
+                TriggeredRoles.ForEach(x => message += $"{x}, ");
+                message = message.Remove(message.Length - 2);
+
+                if (IsNullEmptyOrWhiteSpace(message))
+                    return;
+
+                //Only Retributionist-Trapper can see this
+                if (HUD)
+                    Run(Chat, "<color=#8D0F8CFF>〖 Trap Triggers 〗</color>", message);
+            }
+            else if (AttackedSomeone && HUD)
+                Run(Chat, "<color=#8D0F8CFF>〖 Trap Triggers 〗</color>", "Your trap attacked someone!");
+
+            TriggeredRoles.Clear();
+        }
 
         Revived = null;
     }
 
     public override void OnBodyReport(GameData.PlayerInfo info)
     {
+        base.OnBodyReport(info);
+
         if (info == null || !Local)
             return;
 
         if (IsCor)
         {
-            base.OnBodyReport(info);
             var body = KilledPlayers.Find(x => x.PlayerId == info.PlayerId);
 
             if (body == null)
@@ -395,7 +434,7 @@ public class Retributionist : Crew
 
             //Only Retributionist-Coroner can see this
             if (HUD)
-                Run(HUD.Chat, "<color=#8D0F8CFF>〖 Autopsy Results 〗</color>", reportMsg);
+                Run(Chat, "<color=#8D0F8CFF>〖 Autopsy Results 〗</color>", reportMsg);
         }
     }
 
@@ -684,12 +723,26 @@ public class Retributionist : Crew
 
         if (interact.AbilityUsed)
         {
-            ShieldedPlayer = ShieldButton.TargetPlayer;
-            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, RetActionsRPC.Protect, ShieldedPlayer);
+            if (ShieldedPlayer == null)
+            {
+                ShieldedPlayer = ShieldButton.TargetPlayer;
+                CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, RetActionsRPC.Protect, MedicActionsRPC.Add, ShieldedPlayer);
+            }
+            else
+            {
+                ShieldedPlayer = null;
+                CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, RetActionsRPC.Protect, MedicActionsRPC.Remove);
+            }
         }
     }
 
-    public bool MedicException(PlayerControl player) => player == ShieldedPlayer;
+    public bool MedicException(PlayerControl player)
+    {
+        if (ShieldedPlayer == null)
+            return (player.Is(LayerEnum.Mayor) && GetRole<Mayor>(player).Revealed) || (player.Is(LayerEnum.Dictator) && GetRole<Dictator>(player).Revealed);
+        else
+            return ShieldedPlayer != player;
+    }
 
     //Chameleon Stuff
     public CustomButton SwoopButton { get; set; }
@@ -711,7 +764,7 @@ public class Retributionist : Crew
     public CustomButton FixButton { get; set; }
     public bool IsEngi => RevivedRole?.Type == LayerEnum.Engineer;
 
-    public bool Condition() => ShipStatus.Instance.Systems[SystemTypes.Sabotage].TryCast<SabotageSystemType>()?.AnyActive == true;
+    public bool Condition() => Ship.Systems[SystemTypes.Sabotage].TryCast<SabotageSystemType>()?.AnyActive == true;
 
     public void Fix()
     {
@@ -862,10 +915,18 @@ public class Retributionist : Crew
         }
 
         Transporting = true;
-        TransportPlayer1.moveable = false;
-        TransportPlayer2.moveable = false;
-        TransportPlayer1.NetTransform.Halt();
-        TransportPlayer2.NetTransform.Halt();
+
+        if (!TransportPlayer1.HasDied())
+        {
+            TransportPlayer1.moveable = false;
+            TransportPlayer1.NetTransform.Halt();
+        }
+
+        if (!TransportPlayer2.HasDied())
+        {
+            TransportPlayer2.moveable = false;
+            TransportPlayer2.NetTransform.Halt();
+        }
 
         if (CustomPlayer.Local == TransportPlayer1 || CustomPlayer.Local == TransportPlayer2)
             Flash(Color, CustomGameOptions.TransportDur);
@@ -963,16 +1024,10 @@ public class Retributionist : Crew
             if (ActiveTask)
                 ActiveTask.Close();
 
-            if (Map)
+            if (MapPatch.MapActive)
                 Map.Close();
         }
 
-        TransportPlayer1.moveable = true;
-        TransportPlayer2.moveable = true;
-        TransportPlayer1.Collider.enabled = true;
-        TransportPlayer2.Collider.enabled = true;
-        TransportPlayer1.NetTransform.enabled = true;
-        TransportPlayer2.NetTransform.enabled = true;
         TransportPlayer1 = null;
         TransportPlayer2 = null;
         Transporting = false;
@@ -995,7 +1050,7 @@ public class Retributionist : Crew
             TransportPlayer1.SetPlayerMaterialColors(AnimationPlaying1);
 
             if (p == 1)
-                AnimationPlaying1.sprite = null;
+                AnimationPlaying1.sprite = PortalAnimation[0];
         })));
     }
 
@@ -1013,7 +1068,7 @@ public class Retributionist : Crew
             TransportPlayer2.SetPlayerMaterialColors(AnimationPlaying2);
 
             if (p == 1)
-                AnimationPlaying2.sprite = null;
+                AnimationPlaying2.sprite = PortalAnimation[0];
         })));
     }
 
@@ -1077,5 +1132,62 @@ public class Retributionist : Crew
             cooldown = CooldownType.GuardianAngel;
 
         BombButton.StartCooldown(cooldown);
+    }
+
+    //Trapper Stuff
+    private CustomButton BuildButton { get; set; }
+    private CustomButton TrapButton { get; set; }
+    public bool Building { get ; set; }
+    public List<byte> Trapped { get; set; }
+    private List<Role> TriggeredRoles { get; set; }
+    private int TrapsMade { get; set; }
+    private bool AttackedSomeone { get; set; }
+    public bool IsTrap => RevivedRole?.Type == LayerEnum.Trapper;
+
+    private void StartBuildling()
+    {
+        BuildButton.Begin();
+        Building = true;
+    }
+
+    private void EndBuildling()
+    {
+        TrapButton.Uses++;
+        TrapsMade++;
+        Building = false;
+    }
+
+    private void SetTrap()
+    {
+        var interact = Interact(Player, TrapButton.TargetPlayer);
+        var cooldown = CooldownType.Reset;
+
+        if (interact.AbilityUsed)
+        {
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, RetActionsRPC.Place, TrapButton.TargetPlayer.PlayerId);
+            Trapped.Add(TrapButton.TargetPlayer.PlayerId);
+        }
+
+        if (interact.Protected)
+            cooldown = CooldownType.GuardianAngel;
+
+        TrapButton.StartCooldown(cooldown);
+    }
+
+    private bool TrapException(PlayerControl player) => Trapped.Contains(player.PlayerId);
+
+    public void TriggerTrap(PlayerControl trapped, PlayerControl trigger, bool isAttack)
+    {
+        if (!Trapped.Contains(trapped.PlayerId))
+            return;
+
+        if (!isAttack)
+        {
+            TriggeredRoles.Add(GetRole(trigger));
+            Trapped.Remove(trapped.PlayerId);
+            CallRpc(CustomRPC.Action, ActionsRPC.LayerAction2, this, RetActionsRPC.Trigger, trapped, trigger, isAttack);
+        }
+        else
+            AttackedSomeone = true;
     }
 }

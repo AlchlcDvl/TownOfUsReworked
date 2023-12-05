@@ -1,4 +1,3 @@
-
 namespace TownOfUsReworked.PlayerLayers.Roles;
 
 public class Amnesiac : Neutral

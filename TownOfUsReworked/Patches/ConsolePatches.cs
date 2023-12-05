@@ -32,7 +32,7 @@ public static class OpenDoorConsoleUse
 
         if (canUse)
         {
-            ShipStatus.Instance.RpcUpdateSystem(SystemTypes.Doors, (byte)(__instance.myDoor.Id | 64));
+            Ship.RpcUpdateSystem(SystemTypes.Doors, (byte)(__instance.myDoor.Id | 64));
             CallRpc(CustomRPC.Misc, MiscRPC.DoorSyncToilet, __instance.myDoor.Id);
             __instance.myDoor.SetDoorway(true);
         }
@@ -78,12 +78,7 @@ public static class DoorConsoleUsePatch
         CustomPlayer.Local.NetTransform.Halt();
         var minigame = UObject.Instantiate(__instance.MinigamePrefab, Camera.main.transform);
         minigame.transform.localPosition = new(0f, 0f, -50f);
-
-        try
-        {
-            minigame.Cast<IDoorMinigame>().SetDoor(__instance.MyDoor);
-        } catch (InvalidCastException) {}
-
+        minigame.TryCast<IDoorMinigame>()?.SetDoor(__instance.MyDoor);
         minigame.Begin(null);
         return false;
     }
@@ -177,7 +172,7 @@ public static class DeconControlUse
 }
 #endregion
 
-#region global::Console
+#region Console
 [HarmonyPatch(typeof(Console), nameof(Console.CanUse))]
 public static class ConsoleCanUsePatch
 {
@@ -241,6 +236,7 @@ public static class ConsoleUsePatch
 }
 #endregion
 
+#region Other
 [HarmonyPatch(typeof(DoorCardSwipeGame), nameof(DoorCardSwipeGame.Begin))]
 public static class DoorSwipePatch
 {
@@ -259,3 +255,4 @@ public static class SetTaskOutline
         __instance.Image.material.SetColor("_AddColor", mainTarget ? Role.LocalRole.Color : UColor.clear);
     }
 }
+#endregion
